@@ -1,18 +1,18 @@
 # Vietnamese Translation for Nautilus.
-# Copyright © 2008 GNOME i18n Project for Vietnamese.
+# Copyright © 2009 GNOME i18n Project for Vietnamese.
 # Hoang Ngoc Tu <hntu@gmx.de>, 2001-2002.
 # Joern v. Kattchee <kattchee@gmx.net>, 2001-2002.
 # Nguyễn Thái Ngọc Duy <pclouds@gmail.com>, 2002, 2004, 2007-2008.
 # Trinh Minh Thanh <tmthanh@yahoo.com>, 2002-2003, 2005.
 # Phạm Thành Long <lngt@ngonngu.net>, 2007.
-# Clytie Siddall <clytie@riverland.net.au>, 2005-2008.
+# Clytie Siddall <clytie@riverland.net.au>, 2005-2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.25.4\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus&component=general\n"
-"POT-Creation-Date: 2009-02-02 00:11+0000\n"
-"PO-Revision-Date: 2009-02-07 18:00+0930\n"
+"POT-Creation-Date: 2009-02-12 23:05+0000\n"
+"PO-Revision-Date: 2009-02-13 21:52+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,6 @@ msgstr ""
 
 #: ../cut-n-paste-code/libegg/eggdesktopfile.c:165
 #, c-format
-#| msgid "Unable to rename desktop file"
 msgid "File is not a valid .desktop file"
 msgstr "Tập tin không phải là một tập tin .desktop hợp lệ"
 
@@ -66,7 +65,6 @@ msgid "Specify file containing saved configuration"
 msgstr "Ghi rõ tập tin chứa cấu hình đã lưu"
 
 #: ../cut-n-paste-code/libegg/eggsmclient.c:188
-#| msgid "FILENAME"
 msgid "FILE"
 msgstr "TẬP TIN"
 
@@ -1210,7 +1208,7 @@ msgid "Use De_fault"
 msgstr "_Dùng làm mặc định"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:275
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:273
 #: ../src/file-manager/fm-list-view.c:1453
 msgid "Name"
 msgstr "Tên"
@@ -1269,7 +1267,7 @@ msgid "The group of the file."
 msgstr "Nhóm của tập tin."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:97
-#: ../src/file-manager/fm-properties-window.c:4794
+#: ../src/file-manager/fm-properties-window.c:4789
 msgid "Permissions"
 msgstr "Quyền hạn"
 
@@ -1302,7 +1300,7 @@ msgid "The SELinux security context of the file."
 msgstr "Ngữ cảnh bảo mật SELinux của tập tin đó."
 
 #: ../libnautilus-private/nautilus-customization-data.c:405
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:430
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:428
 #: ../src/nautilus-property-browser.c:1863
 msgid "Reset"
 msgstr "Đặt lại"
@@ -1455,7 +1453,7 @@ msgstr[0] "khoảng %'d giờ"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:354
-#: ../libnautilus-private/nautilus-file.c:5628
+#: ../libnautilus-private/nautilus-file.c:5592
 #: ../src/file-manager/fm-directory-view.c:9363
 #, c-format
 msgid "Link to %s"
@@ -1874,7 +1872,6 @@ msgstr "%S trên %S"
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:2869
-#| msgid "%S of %S — %T left (%S/sec)"
 msgid "%S of %S — %T left (%S/sec)"
 msgid_plural "%S of %S — %T left (%S/sec)"
 msgstr[0] "%S trên %S — %T còn lại (%S/giây)"
@@ -2052,33 +2049,33 @@ msgstr "Gặp lỗi khi tạo tập tin %B."
 msgid "There was an error creating the directory in %F."
 msgstr "Gặp lỗi khi tạo thư mục trong %F."
 
-#: ../libnautilus-private/nautilus-file.c:921
+#: ../libnautilus-private/nautilus-file.c:885
 #: ../libnautilus-private/nautilus-vfs-file.c:264
 #, c-format
 msgid "This file cannot be mounted"
 msgstr "Không thể gắn kết tập tin này"
 
-#: ../libnautilus-private/nautilus-file.c:1333
+#: ../libnautilus-private/nautilus-file.c:1297
 #, c-format
 msgid "Slashes are not allowed in filenames"
 msgstr "Không cho phép dấu xuyệc trong tên tập tin"
 
-#: ../libnautilus-private/nautilus-file.c:1351
+#: ../libnautilus-private/nautilus-file.c:1315
 #, c-format
 msgid "File not found"
 msgstr "Không tìm thấy"
 
-#: ../libnautilus-private/nautilus-file.c:1379
+#: ../libnautilus-private/nautilus-file.c:1343
 #, c-format
 msgid "Toplevel files cannot be renamed"
 msgstr "Không thể thay đổi tên của tập tin cấp đầu"
 
-#: ../libnautilus-private/nautilus-file.c:1402
+#: ../libnautilus-private/nautilus-file.c:1366
 #, c-format
 msgid "Unable to rename desktop icon"
 msgstr "Không thể thay đổi tên của biểu tượng màn hình nền"
 
-#: ../libnautilus-private/nautilus-file.c:1439
+#: ../libnautilus-private/nautilus-file.c:1403
 #, c-format
 msgid "Unable to rename desktop file"
 msgstr "Không thể thay đổi tên của tập tin màn hình nền"
@@ -2098,65 +2095,65 @@ msgstr "Không thể thay đổi tên của tập tin màn hình nền"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: ../libnautilus-private/nautilus-file.c:3714
+#: ../libnautilus-private/nautilus-file.c:3678
 msgid "today at 00:00:00 PM"
 msgstr "hôm nay vào 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3715
+#: ../libnautilus-private/nautilus-file.c:3679
 #: ../src/nautilus-file-management-properties.c:471
 msgid "today at %-I:%M:%S %p"
 msgstr "hôm nay vào lúc %-H:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:3717
+#: ../libnautilus-private/nautilus-file.c:3681
 msgid "today at 00:00 PM"
 msgstr "hôm nay vào 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3718
+#: ../libnautilus-private/nautilus-file.c:3682
 msgid "today at %-I:%M %p"
 msgstr "hôm nay vào lúc %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3720
+#: ../libnautilus-private/nautilus-file.c:3684
 msgid "today, 00:00 PM"
 msgstr "hôm nay, 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3721
+#: ../libnautilus-private/nautilus-file.c:3685
 msgid "today, %-I:%M %p"
 msgstr "hôm nay, %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3723
-#: ../libnautilus-private/nautilus-file.c:3724
+#: ../libnautilus-private/nautilus-file.c:3687
+#: ../libnautilus-private/nautilus-file.c:3688
 msgid "today"
 msgstr "hôm nay"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: ../libnautilus-private/nautilus-file.c:3733
+#: ../libnautilus-private/nautilus-file.c:3697
 msgid "yesterday at 00:00:00 PM"
 msgstr "hôm qua vào 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3734
+#: ../libnautilus-private/nautilus-file.c:3698
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "hôm qua vào lúc %-H:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:3736
+#: ../libnautilus-private/nautilus-file.c:3700
 msgid "yesterday at 00:00 PM"
 msgstr "hôm qua vào 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3737
+#: ../libnautilus-private/nautilus-file.c:3701
 msgid "yesterday at %-I:%M %p"
 msgstr "hôm qua vào lúc %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3739
+#: ../libnautilus-private/nautilus-file.c:3703
 msgid "yesterday, 00:00 PM"
 msgstr "hôm qua, 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3740
+#: ../libnautilus-private/nautilus-file.c:3704
 msgid "yesterday, %-I:%M %p"
 msgstr "hôm qua, %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3742
-#: ../libnautilus-private/nautilus-file.c:3743
+#: ../libnautilus-private/nautilus-file.c:3706
+#: ../libnautilus-private/nautilus-file.c:3707
 msgid "yesterday"
 msgstr "hôm qua"
 
@@ -2165,152 +2162,152 @@ msgstr "hôm qua"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: ../libnautilus-private/nautilus-file.c:3754
+#: ../libnautilus-private/nautilus-file.c:3718
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Thứ tư, 00 tháng chín 0000 vào 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3755
+#: ../libnautilus-private/nautilus-file.c:3719
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %-d %B %Y vào lúc %-H:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:3757
+#: ../libnautilus-private/nautilus-file.c:3721
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Thứ hai, 00 T10 0000 vào 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3758
+#: ../libnautilus-private/nautilus-file.c:3722
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %-d %b %Y vào lúc %-H:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:3760
+#: ../libnautilus-private/nautilus-file.c:3724
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Thứ hai, 00 T10 0000 vào 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3761
+#: ../libnautilus-private/nautilus-file.c:3725
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %-d %b %Y vào lúc %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3763
+#: ../libnautilus-private/nautilus-file.c:3727
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "00 T10 0000 vào 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3764
+#: ../libnautilus-private/nautilus-file.c:3728
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d %b %Y vào lúc %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3766
+#: ../libnautilus-private/nautilus-file.c:3730
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "00 T10 0000, 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3767
+#: ../libnautilus-private/nautilus-file.c:3731
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d %b %Y, %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3769
+#: ../libnautilus-private/nautilus-file.c:3733
 msgid "00/00/00, 00:00 PM"
 msgstr "00.00.00, 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3770
+#: ../libnautilus-private/nautilus-file.c:3734
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%-d/%m/%y, %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:3772
+#: ../libnautilus-private/nautilus-file.c:3736
 msgid "00/00/00"
 msgstr "00.00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3773
+#: ../libnautilus-private/nautilus-file.c:3737
 msgid "%m/%d/%y"
 msgstr "%d.%m.%y"
 
-#: ../libnautilus-private/nautilus-file.c:4386
+#: ../libnautilus-private/nautilus-file.c:4350
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "Không được phép đặt quyền hạn"
 
-#: ../libnautilus-private/nautilus-file.c:4694
+#: ../libnautilus-private/nautilus-file.c:4658
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "Không được phép đặt chủ sở hữu"
 
-#: ../libnautilus-private/nautilus-file.c:4712
+#: ../libnautilus-private/nautilus-file.c:4676
 #, c-format
 msgid "Specified owner '%s' doesn't exist"
 msgstr "Chủ sở hữu đã ghi rõ « %s » không tồn tại"
 
-#: ../libnautilus-private/nautilus-file.c:4976
+#: ../libnautilus-private/nautilus-file.c:4940
 #, c-format
 msgid "Not allowed to set group"
 msgstr "Không được phép đặt nhóm"
 
-#: ../libnautilus-private/nautilus-file.c:4994
+#: ../libnautilus-private/nautilus-file.c:4958
 #, c-format
 msgid "Specified group '%s' doesn't exist"
 msgstr "Nhóm đã ghi rõ « %s » không tồn tại"
 
-#: ../libnautilus-private/nautilus-file.c:5137
+#: ../libnautilus-private/nautilus-file.c:5101
 #: ../src/file-manager/fm-directory-view.c:2202
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
 msgstr[0] "%'u mục"
 
-#: ../libnautilus-private/nautilus-file.c:5138
+#: ../libnautilus-private/nautilus-file.c:5102
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u thư mục"
 
-#: ../libnautilus-private/nautilus-file.c:5139
+#: ../libnautilus-private/nautilus-file.c:5103
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
 msgstr[0] "%'u tập tin"
 
 #. Do this in a separate stage so that we don't have to put G_GUINT64_FORMAT in the translated string
-#: ../libnautilus-private/nautilus-file.c:5218
+#: ../libnautilus-private/nautilus-file.c:5182
 msgid "%"
 msgstr "%"
 
-#: ../libnautilus-private/nautilus-file.c:5219
+#: ../libnautilus-private/nautilus-file.c:5183
 #, c-format
 msgid "%s (%s bytes)"
 msgstr "%s (%s byte)"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:5523
-#: ../libnautilus-private/nautilus-file.c:5539
+#: ../libnautilus-private/nautilus-file.c:5487
+#: ../libnautilus-private/nautilus-file.c:5503
 msgid "? items"
 msgstr "? mục"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:5529
+#: ../libnautilus-private/nautilus-file.c:5493
 msgid "? bytes"
 msgstr "? byte"
 
-#: ../libnautilus-private/nautilus-file.c:5544
+#: ../libnautilus-private/nautilus-file.c:5508
 msgid "unknown type"
 msgstr "dạng không rõ"
 
-#: ../libnautilus-private/nautilus-file.c:5547
+#: ../libnautilus-private/nautilus-file.c:5511
 msgid "unknown MIME type"
 msgstr "dạng MIME không rõ"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:5553
+#: ../libnautilus-private/nautilus-file.c:5517
 #: ../src/file-manager/fm-properties-window.c:1322
 msgid "unknown"
 msgstr "không rõ"
 
-#: ../libnautilus-private/nautilus-file.c:5602
+#: ../libnautilus-private/nautilus-file.c:5566
 msgid "program"
 msgstr "chương trình"
 
-#: ../libnautilus-private/nautilus-file.c:5622
+#: ../libnautilus-private/nautilus-file.c:5586
 msgid "link"
 msgstr "liên kết"
 
-#: ../libnautilus-private/nautilus-file.c:5644
+#: ../libnautilus-private/nautilus-file.c:5608
 msgid "link (broken)"
 msgstr "liên kết (bị ngắt)"
 
@@ -2394,12 +2391,10 @@ msgid "1 GB"
 msgstr "1 GB"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:99
-#| msgid "1 GB"
 msgid "2 GB"
 msgstr "2 GB"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:100
-#| msgid "1 GB"
 msgid "4 GB"
 msgstr "4 GB"
 
@@ -2623,12 +2618,10 @@ msgid_plural "This will open %d separate windows."
 msgstr[0] "Hành động này sẽ mở %d cửa sổ riêng."
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1068
-#| msgid "There was an error launching the application."
 msgid "There was an internal error trying to search for applications:"
 msgstr "Gặp lỗi nội bộ khi thử tìm kiếm ứng dụng:"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1070
-#| msgid "Unable to mount location"
 msgid "Unable to search for application"
 msgstr "Không thể tìm kiếm ứng dụng"
 
@@ -2648,19 +2641,16 @@ msgid "Could not display \"%s\"."
 msgstr "Không thể hiển thị « %s »."
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1225
-#| msgid "The file is not an image."
 msgid "The file is of an unknown type"
 msgstr "Tập tin này có dạng không rõ"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1228
 #, c-format
-#| msgid "There is no application installed for this file type"
 msgid "There is no application installed for %s files"
 msgstr "Không có ứng dụng nào được cài đặt để xử lý tập tin dạng %s"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1243
 #, c-format
-#| msgid "There is no application installed for this file type"
 msgid ""
 "There is no application installed for %s files.\n"
 "Do you want to search for an application to open this file?"
@@ -2684,51 +2674,51 @@ msgid "Opening %d item."
 msgid_plural "Opening %d items."
 msgstr[0] "Đang mở %d mục."
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:167
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:165
 #: ../libnautilus-private/nautilus-open-with-dialog.c:256
 #, c-format
 msgid "Could not set application as the default: %s"
 msgstr "Không thể đặt ứng dụng làm mặc định: %s"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:168
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:166
 #: ../libnautilus-private/nautilus-open-with-dialog.c:257
 msgid "Could not set as default application"
 msgstr "Không thể đặt làm ứng dụng mặc định"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:257
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:255
 msgid "Default"
 msgstr "Mặc định"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:266
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:264
 msgid "Icon"
 msgstr "Biểu tượng"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:328
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:326
 msgid "Could not remove application"
 msgstr "Không thể gỡ bỏ ứng dụng"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:540
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:538
 msgid "No applications selected"
 msgstr "Chưa chọn ứng dụng"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:568
-#: ../libnautilus-private/nautilus-open-with-dialog.c:944
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:566
+#: ../libnautilus-private/nautilus-open-with-dialog.c:942
 #, c-format
 msgid "%s document"
 msgstr "Tài liệu %s"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:575
-#: ../libnautilus-private/nautilus-open-with-dialog.c:950
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:573
+#: ../libnautilus-private/nautilus-open-with-dialog.c:948
 msgid "Unknown"
 msgstr "Không rõ"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:608
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:606
 #, c-format
 msgid "Select an application to open %s and other files of type \"%s\""
 msgstr "Chọn một ứng dụng để mở %s và các tập tin khác có dạng « %s »"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:676
-#: ../libnautilus-private/nautilus-open-with-dialog.c:962
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:674
+#: ../libnautilus-private/nautilus-open-with-dialog.c:960
 #, c-format
 msgid "Open all files of type \"%s\" with:"
 msgstr "Mở tất cả tập tin kiểu \"%s\" bằng:"
@@ -2755,30 +2745,30 @@ msgstr "Không thể thêm ứng dụng vào cơ sở dữ liệu ứng dụng: 
 msgid "Could not add application"
 msgstr "Không thể thêm ứng dụng"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:403
+#: ../libnautilus-private/nautilus-open-with-dialog.c:401
 msgid "Select an Application"
 msgstr "Chọn một ứng dụng"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:761
-#: ../src/file-manager/fm-properties-window.c:5104
+#: ../libnautilus-private/nautilus-open-with-dialog.c:759
+#: ../src/file-manager/fm-properties-window.c:5099
 msgid "Open With"
 msgstr "Mở bằng"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:798
+#: ../libnautilus-private/nautilus-open-with-dialog.c:796
 msgid "Select an application to view its description."
 msgstr "Chọn một ứng dụng nào đó để xem mô tả về nó."
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:823
+#: ../libnautilus-private/nautilus-open-with-dialog.c:821
 msgid "_Use a custom command"
 msgstr "Dùng một câ_u lệnh riêng"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:840
+#: ../libnautilus-private/nautilus-open-with-dialog.c:838
 msgid "_Browse..."
 msgstr "_Duyệt..."
 
 #. name, stock id
 #. label, accelerator
-#: ../libnautilus-private/nautilus-open-with-dialog.c:869
+#: ../libnautilus-private/nautilus-open-with-dialog.c:867
 #: ../src/file-manager/fm-directory-view.c:6599
 #: ../src/file-manager/fm-directory-view.c:7799
 #: ../src/file-manager/fm-tree-view.c:1208
@@ -2786,18 +2776,18 @@ msgstr "_Duyệt..."
 msgid "_Open"
 msgstr "_Mở"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:959
+#: ../libnautilus-private/nautilus-open-with-dialog.c:957
 #, c-format
 msgid "Open %s and other files of type \"%s\" with:"
 msgstr "Mở %s và các tập tin khác có dạng « %s » bằng:"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:995
-#: ../libnautilus-private/nautilus-open-with-dialog.c:1010
+#: ../libnautilus-private/nautilus-open-with-dialog.c:993
+#: ../libnautilus-private/nautilus-open-with-dialog.c:1008
 msgid "_Add"
 msgstr "Thê_m"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:996
-#: ../libnautilus-private/nautilus-open-with-dialog.c:1011
+#: ../libnautilus-private/nautilus-open-with-dialog.c:994
+#: ../libnautilus-private/nautilus-open-with-dialog.c:1009
 msgid "Add Application"
 msgstr "Thêm ứng dụng"
 
@@ -3017,7 +3007,7 @@ msgid_plural "This will open %'d separate windows."
 msgstr[0] "Hành động này sẽ mở %'d cửa sổ riêng."
 
 #: ../src/file-manager/fm-directory-view.c:1132
-#: ../src/file-manager/fm-properties-window.c:5453
+#: ../src/file-manager/fm-properties-window.c:5448
 #: ../src/nautilus-connect-server-dialog.c:341
 #: ../src/nautilus-location-dialog.c:108
 msgid "There was an error displaying help."
@@ -4152,13 +4142,13 @@ msgstr "Ô xem chặt gặp lỗi trong khi khởi động."
 msgid "Display this location with the compact view."
 msgstr "Hiển thị địa điểm này trong ô xem chặt."
 
-#: ../src/file-manager/fm-list-model.c:373
-#: ../src/file-manager/fm-tree-model.c:1265
+#: ../src/file-manager/fm-list-model.c:382
+#: ../src/file-manager/fm-tree-model.c:1268
 msgid "(Empty)"
 msgstr "(Rỗng)"
 
-#: ../src/file-manager/fm-list-model.c:375
-#: ../src/file-manager/fm-tree-model.c:1265
+#: ../src/file-manager/fm-list-model.c:384
+#: ../src/file-manager/fm-tree-model.c:1268
 #: ../src/nautilus-window-slot.c:191
 msgid "Loading..."
 msgstr "Đang nạp..."
@@ -4240,39 +4230,36 @@ msgstr "Thuộc tính"
 msgid "%s Properties"
 msgstr "Thuộc tính %s"
 
-#. FIXME: we should use C_ () instead. See bug #542658.
-#. *
-#. * Translators: The text before the "|" is context to help you decide on
-#. * the correct translation. Only translate the part after the pipe.
-#.
-#: ../src/file-manager/fm-properties-window.c:1368
+#: ../src/file-manager/fm-properties-window.c:1363
 #, c-format
-msgid "MIME type description (MIME type)|%s (%s)"
+#| msgid "%s (%s)"
+msgctxt "MIME type description (MIME type)"
+msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../src/file-manager/fm-properties-window.c:1585
+#: ../src/file-manager/fm-properties-window.c:1580
 msgid "Cancel Group Change?"
 msgstr "Có hủy thay đổi nhóm không?"
 
-#: ../src/file-manager/fm-properties-window.c:2003
+#: ../src/file-manager/fm-properties-window.c:1998
 msgid "Cancel Owner Change?"
 msgstr "Hủy thay đổi chủ sở hữu chứ?"
 
-#: ../src/file-manager/fm-properties-window.c:2334
+#: ../src/file-manager/fm-properties-window.c:2329
 msgid "nothing"
 msgstr "không có gì"
 
-#: ../src/file-manager/fm-properties-window.c:2336
+#: ../src/file-manager/fm-properties-window.c:2331
 msgid "unreadable"
 msgstr "không đọc được"
 
-#: ../src/file-manager/fm-properties-window.c:2346
+#: ../src/file-manager/fm-properties-window.c:2341
 #, c-format
 msgid "%'d item, with size %s"
 msgid_plural "%'d items, totalling %s"
 msgstr[0] "%'d mục, cỡ tổng cộng %s"
 
-#: ../src/file-manager/fm-properties-window.c:2355
+#: ../src/file-manager/fm-properties-window.c:2350
 msgid "(some contents unreadable)"
 msgstr "(không đọc được một vài nội dung)"
 
@@ -4282,245 +4269,245 @@ msgstr "(không đọc được một vài nội dung)"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: ../src/file-manager/fm-properties-window.c:2372
+#: ../src/file-manager/fm-properties-window.c:2367
 msgid "Contents:"
 msgstr "Nội dung:"
 
 #. Translators: "used" refers to the capacity of the filesystem
-#: ../src/file-manager/fm-properties-window.c:3139
+#: ../src/file-manager/fm-properties-window.c:3134
 msgid "used"
 msgstr "đã dùng"
 
 #. Translators: "free" refers to the capacity of the filesystem
-#: ../src/file-manager/fm-properties-window.c:3144
+#: ../src/file-manager/fm-properties-window.c:3139
 msgid "free"
 msgstr "trống"
 
-#: ../src/file-manager/fm-properties-window.c:3146
+#: ../src/file-manager/fm-properties-window.c:3141
 msgid "Total capacity:"
 msgstr "Tổng dung tích:"
 
-#: ../src/file-manager/fm-properties-window.c:3155
+#: ../src/file-manager/fm-properties-window.c:3150
 msgid "Filesystem type:"
 msgstr "Kiểu hệ tập tin:"
 
-#: ../src/file-manager/fm-properties-window.c:3231
+#: ../src/file-manager/fm-properties-window.c:3226
 msgid "Basic"
 msgstr "Cơ bản"
 
-#: ../src/file-manager/fm-properties-window.c:3291
+#: ../src/file-manager/fm-properties-window.c:3286
 msgid "Type:"
 msgstr "Kiểu :"
 
-#: ../src/file-manager/fm-properties-window.c:3299
+#: ../src/file-manager/fm-properties-window.c:3294
 msgid "Link target:"
 msgstr "Đích liên kết:"
 
-#: ../src/file-manager/fm-properties-window.c:3309
+#: ../src/file-manager/fm-properties-window.c:3304
 msgid "Size:"
 msgstr "Cỡ:"
 
-#: ../src/file-manager/fm-properties-window.c:3318
+#: ../src/file-manager/fm-properties-window.c:3313
 #: ../src/nautilus-location-bar.c:55
 msgid "Location:"
 msgstr "Vị trí:"
 
-#: ../src/file-manager/fm-properties-window.c:3324
+#: ../src/file-manager/fm-properties-window.c:3319
 msgid "Volume:"
 msgstr "Khối:"
 
-#: ../src/file-manager/fm-properties-window.c:3333
+#: ../src/file-manager/fm-properties-window.c:3328
 msgid "Accessed:"
 msgstr "Truy cập:"
 
-#: ../src/file-manager/fm-properties-window.c:3337
+#: ../src/file-manager/fm-properties-window.c:3332
 msgid "Modified:"
 msgstr "Sửa đổi:"
 
-#: ../src/file-manager/fm-properties-window.c:3346
+#: ../src/file-manager/fm-properties-window.c:3341
 msgid "Free space:"
 msgstr "Chỗ còn rảnh::"
 
-#: ../src/file-manager/fm-properties-window.c:3456
+#: ../src/file-manager/fm-properties-window.c:3451
 #: ../src/nautilus-emblem-sidebar.c:1032
 msgid "Emblems"
 msgstr "Hình tượng"
 
-#: ../src/file-manager/fm-properties-window.c:3859
+#: ../src/file-manager/fm-properties-window.c:3854
 msgid "_Read"
 msgstr "Đọ_c"
 
-#: ../src/file-manager/fm-properties-window.c:3861
+#: ../src/file-manager/fm-properties-window.c:3856
 msgid "_Write"
 msgstr "_Ghi"
 
-#: ../src/file-manager/fm-properties-window.c:3863
+#: ../src/file-manager/fm-properties-window.c:3858
 msgid "E_xecute"
 msgstr "_Thực thi"
 
 #. translators: this gets concatenated to "no read",
 #. * "no access", etc. (see following strings)
 #.
-#: ../src/file-manager/fm-properties-window.c:4131
-#: ../src/file-manager/fm-properties-window.c:4142
-#: ../src/file-manager/fm-properties-window.c:4154
+#: ../src/file-manager/fm-properties-window.c:4126
+#: ../src/file-manager/fm-properties-window.c:4137
+#: ../src/file-manager/fm-properties-window.c:4149
 msgid "no "
 msgstr "không "
 
-#: ../src/file-manager/fm-properties-window.c:4134
+#: ../src/file-manager/fm-properties-window.c:4129
 msgid "list"
 msgstr "liệt kê"
 
-#: ../src/file-manager/fm-properties-window.c:4136
+#: ../src/file-manager/fm-properties-window.c:4131
 msgid "read"
 msgstr "đọc"
 
-#: ../src/file-manager/fm-properties-window.c:4145
+#: ../src/file-manager/fm-properties-window.c:4140
 msgid "create/delete"
 msgstr "tạo/xoá"
 
-#: ../src/file-manager/fm-properties-window.c:4147
+#: ../src/file-manager/fm-properties-window.c:4142
 msgid "write"
 msgstr "ghi"
 
-#: ../src/file-manager/fm-properties-window.c:4156
+#: ../src/file-manager/fm-properties-window.c:4151
 msgid "access"
 msgstr "truy cập"
 
-#: ../src/file-manager/fm-properties-window.c:4205
+#: ../src/file-manager/fm-properties-window.c:4200
 msgid "Access:"
 msgstr "Truy cập:"
 
-#: ../src/file-manager/fm-properties-window.c:4207
+#: ../src/file-manager/fm-properties-window.c:4202
 msgid "Folder access:"
 msgstr "Truy cập thư mục:"
 
-#: ../src/file-manager/fm-properties-window.c:4209
+#: ../src/file-manager/fm-properties-window.c:4204
 msgid "File access:"
 msgstr "Truy cập tập tin:"
 
-#: ../src/file-manager/fm-properties-window.c:4221
-#: ../src/file-manager/fm-properties-window.c:4232
+#: ../src/file-manager/fm-properties-window.c:4216
+#: ../src/file-manager/fm-properties-window.c:4227
 #: ../src/nautilus-file-management-properties.c:291
 msgid "None"
 msgstr "Không"
 
-#: ../src/file-manager/fm-properties-window.c:4224
+#: ../src/file-manager/fm-properties-window.c:4219
 msgid "List files only"
 msgstr "Liệt kê chỉ tập tin"
 
-#: ../src/file-manager/fm-properties-window.c:4226
+#: ../src/file-manager/fm-properties-window.c:4221
 msgid "Access files"
 msgstr "Truy cập tập tin"
 
-#: ../src/file-manager/fm-properties-window.c:4228
+#: ../src/file-manager/fm-properties-window.c:4223
 msgid "Create and delete files"
 msgstr "Tạo và xoá tập tin"
 
-#: ../src/file-manager/fm-properties-window.c:4235
+#: ../src/file-manager/fm-properties-window.c:4230
 msgid "Read-only"
 msgstr "Chỉ đọc"
 
-#: ../src/file-manager/fm-properties-window.c:4237
+#: ../src/file-manager/fm-properties-window.c:4232
 msgid "Read and write"
 msgstr "Đọc và ghi"
 
-#: ../src/file-manager/fm-properties-window.c:4302
+#: ../src/file-manager/fm-properties-window.c:4297
 msgid "Set _user ID"
 msgstr "Đặt _UID (người dùng)"
 
-#: ../src/file-manager/fm-properties-window.c:4304
+#: ../src/file-manager/fm-properties-window.c:4299
 msgid "Special flags:"
 msgstr "Cờ đặc biệt:"
 
-#: ../src/file-manager/fm-properties-window.c:4306
+#: ../src/file-manager/fm-properties-window.c:4301
 msgid "Set gro_up ID"
 msgstr "Đặt _GID (nhóm)"
 
-#: ../src/file-manager/fm-properties-window.c:4307
+#: ../src/file-manager/fm-properties-window.c:4302
 msgid "_Sticky"
 msgstr "_Dính"
 
-#: ../src/file-manager/fm-properties-window.c:4387
-#: ../src/file-manager/fm-properties-window.c:4591
+#: ../src/file-manager/fm-properties-window.c:4382
+#: ../src/file-manager/fm-properties-window.c:4586
 msgid "_Owner:"
 msgstr "_Chủ :"
 
-#: ../src/file-manager/fm-properties-window.c:4393
-#: ../src/file-manager/fm-properties-window.c:4488
-#: ../src/file-manager/fm-properties-window.c:4599
+#: ../src/file-manager/fm-properties-window.c:4388
+#: ../src/file-manager/fm-properties-window.c:4483
+#: ../src/file-manager/fm-properties-window.c:4594
 msgid "Owner:"
 msgstr "Chủ:"
 
-#: ../src/file-manager/fm-properties-window.c:4416
-#: ../src/file-manager/fm-properties-window.c:4611
+#: ../src/file-manager/fm-properties-window.c:4411
+#: ../src/file-manager/fm-properties-window.c:4606
 msgid "_Group:"
 msgstr "_Nhóm:"
 
-#: ../src/file-manager/fm-properties-window.c:4425
-#: ../src/file-manager/fm-properties-window.c:4489
-#: ../src/file-manager/fm-properties-window.c:4620
+#: ../src/file-manager/fm-properties-window.c:4420
+#: ../src/file-manager/fm-properties-window.c:4484
+#: ../src/file-manager/fm-properties-window.c:4615
 msgid "Group:"
 msgstr "Nhóm:"
 
-#: ../src/file-manager/fm-properties-window.c:4450
+#: ../src/file-manager/fm-properties-window.c:4445
 msgid "Others"
 msgstr "Khác"
 
-#: ../src/file-manager/fm-properties-window.c:4467
+#: ../src/file-manager/fm-properties-window.c:4462
 msgid "Execute:"
 msgstr "Thực thi:"
 
-#: ../src/file-manager/fm-properties-window.c:4471
+#: ../src/file-manager/fm-properties-window.c:4466
 msgid "Allow _executing file as program"
 msgstr "Ch_o phép thực thi tập tin như là chương trình"
 
-#: ../src/file-manager/fm-properties-window.c:4490
+#: ../src/file-manager/fm-properties-window.c:4485
 msgid "Others:"
 msgstr "Khác:"
 
-#: ../src/file-manager/fm-properties-window.c:4638
+#: ../src/file-manager/fm-properties-window.c:4633
 msgid "Folder Permissions:"
 msgstr "Quyền hạn thư mục:"
 
-#: ../src/file-manager/fm-properties-window.c:4650
+#: ../src/file-manager/fm-properties-window.c:4645
 msgid "File Permissions:"
 msgstr "Quyền hạn tập tin:"
 
-#: ../src/file-manager/fm-properties-window.c:4660
+#: ../src/file-manager/fm-properties-window.c:4655
 msgid "Text view:"
 msgstr "Xem chữ:"
 
-#: ../src/file-manager/fm-properties-window.c:4807
+#: ../src/file-manager/fm-properties-window.c:4802
 msgid "You are not the owner, so you cannot change these permissions."
 msgstr "Bạn không phải là chủ nên bạn không thể thay đổi các quyền truy cập."
 
-#: ../src/file-manager/fm-properties-window.c:4831
+#: ../src/file-manager/fm-properties-window.c:4826
 msgid "SELinux context:"
 msgstr "Ngữ cảnh SELinux:"
 
-#: ../src/file-manager/fm-properties-window.c:4836
+#: ../src/file-manager/fm-properties-window.c:4831
 msgid "Last changed:"
 msgstr "Thay đổi cuối cùng:"
 
-#: ../src/file-manager/fm-properties-window.c:4850
+#: ../src/file-manager/fm-properties-window.c:4845
 msgid "Apply Permissions to Enclosed Files"
 msgstr "Áp dụng quyền hạn cho các tập tin bên trong"
 
-#: ../src/file-manager/fm-properties-window.c:4860
+#: ../src/file-manager/fm-properties-window.c:4855
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Không thể xác định quyền truy cập của « %s »."
 
-#: ../src/file-manager/fm-properties-window.c:4863
+#: ../src/file-manager/fm-properties-window.c:4858
 msgid "The permissions of the selected file could not be determined."
 msgstr "Không thể xác định quyền truy cập của tập tin được chọn."
 
-#: ../src/file-manager/fm-properties-window.c:5426
+#: ../src/file-manager/fm-properties-window.c:5421
 msgid "Creating Properties window."
 msgstr "Đang tạo cửa sổ Thuộc tính."
 
-#: ../src/file-manager/fm-properties-window.c:5691
+#: ../src/file-manager/fm-properties-window.c:5686
 msgid "Select Custom Icon"
 msgstr "Chọn biểu tượng riêng"
 
@@ -4559,7 +4546,7 @@ msgstr "Nautilus không thể tạo những thư mục cần thiết sau: %s."
 msgid "Before running Nautilus, please create these folders, or set permissions such that Nautilus can create them."
 msgstr "Trước khi chạy Nautilus, hãy tạo các thư mục này, hoặc lập quyền để Nautilus có thể tạo chúng."
 
-#: ../src/nautilus-application.c:1250
+#: ../src/nautilus-application.c:1249
 #: ../src/nautilus-places-sidebar.c:1680
 #: ../src/nautilus-places-sidebar.c:1703
 #: ../src/nautilus-places-sidebar.c:1726
@@ -5212,7 +5199,6 @@ msgid "Perform a quick set of self-check tests."
 msgstr "Thi hành một tập hợp nhanh của tự kiểm tra."
 
 #: ../src/nautilus-main.c:329
-#| msgid "The permissions of the file."
 msgid "Show the version of the program."
 msgstr "Hiện phiên bản của chương trình."
 
