@@ -1,5 +1,12 @@
 2009-02-13  Cosimo Cecchi  <cosimoc@gnome.org>
 
+	* libnautilus-private/nautilus-file.c: (nautilus_file_mount):
+	* libnautilus-private/nautilus-vfs-file.c: (vfs_file_mount):
+	use g_set_error_literal() where appropriate.
+	Patch by Christian Persch (#570537).
+
+2009-02-13  Cosimo Cecchi  <cosimoc@gnome.org>
+
 	* configure.in: require intltool 0.40.1.
 	* src/file-manager/fm-properties-window.c
 	(value_field_update_internal): use C_() to handle translator

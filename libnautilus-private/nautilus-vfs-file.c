@@ -260,8 +260,8 @@ vfs_file_mount (NautilusFile                   *file,
 	if (file->details->type != G_FILE_TYPE_MOUNTABLE) {
 		if (callback) {
 			error = NULL;
-			g_set_error (&error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
-				     _("This file cannot be mounted"));
+			g_set_error_literal (&error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+                                             _("This file cannot be mounted"));
 			callback (file, NULL, error, callback_data);
 			g_error_free (error);
 		}
