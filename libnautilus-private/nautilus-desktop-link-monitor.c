@@ -182,35 +182,48 @@ nautilus_desktop_link_monitor_make_filename_unique (NautilusDesktopLinkMonitor *
 	return unique_name;
 }
 
+static gboolean
+has_mount (NautilusDesktopLinkMonitor *monitor,
+	   GMount                     *mount)
+{
+	gboolean ret;
+	GMount *other_mount;
+	GList *l;
+
+	ret = FALSE;
+
+	for (l = monitor->details->mount_links; l != NULL; l = l->next) {
+		other_mount = nautilus_desktop_link_get_mount (l->data);
+		if (mount == other_mount) {
+			g_object_unref (other_mount);
+			ret = TRUE;
+			break;
+		}
+		g_object_unref (other_mount);
+	}
+
+	return ret;
+}
+
 static void
 create_mount_link (NautilusDesktopLinkMonitor *monitor,
 		   GMount *mount)
 {
 	NautilusDesktopLink *link;
 
-	link = NULL;
+	if (has_mount (monitor, mount))
+		return;
 
-	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_VOLUMES_VISIBLE)) {
+	if ((!g_mount_is_shadowed (mount)) &&
+	    eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_VOLUMES_VISIBLE)) {
 		link = nautilus_desktop_link_new_from_mount (mount);
 		monitor->details->mount_links = g_list_prepend (monitor->details->mount_links, link);
 	}
 }
 
-
-
 static void
-mount_added_callback (GVolumeMonitor *volume_monitor,
-		      GMount *mount, 
-		      NautilusDesktopLinkMonitor *monitor)
-{
-	create_mount_link (monitor, mount);
-}
-
-
-static void
-mount_removed_callback (GVolumeMonitor *volume_monitor,
-			GMount *mount, 
-			NautilusDesktopLinkMonitor *monitor)
+remove_mount_link (NautilusDesktopLinkMonitor *monitor,
+		   GMount *mount)
 {
 	GList *l;
 	NautilusDesktopLink *link;
@@ -233,13 +246,36 @@ mount_removed_callback (GVolumeMonitor *volume_monitor,
 	}
 }
 
+
+
+static void
+mount_added_callback (GVolumeMonitor *volume_monitor,
+		      GMount *mount, 
+		      NautilusDesktopLinkMonitor *monitor)
+{
+	create_mount_link (monitor, mount);
+}
+
+
+static void
+mount_removed_callback (GVolumeMonitor *volume_monitor,
+			GMount *mount, 
+			NautilusDesktopLinkMonitor *monitor)
+{
+	remove_mount_link (monitor, mount);
+}
+
 static void
 mount_changed_callback (GVolumeMonitor *volume_monitor,
 			GMount *mount, 
 			NautilusDesktopLinkMonitor *monitor)
 {
-	/* TODO: update the mount */
-}
+	/* TODO: update the mount with other details */
+
+	/* remove a mount if it goes into the shadows */
+	if (g_mount_is_shadowed (mount) && has_mount (monitor, mount)) {
+		remove_mount_link (monitor, mount);
+	}}
 
 static void
 update_link_visibility (NautilusDesktopLinkMonitor *monitor,

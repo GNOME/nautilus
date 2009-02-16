@@ -4146,10 +4146,15 @@ get_mount_at (GFile *target)
 
 	found = NULL;
 	for (l = mounts; l != NULL; l = l->next) {
-		root = g_mount_get_root (l->data);
+		GMount *mount = G_MOUNT (l->data);
+
+		if (g_mount_is_shadowed (mount))
+			continue;
+
+		root = g_mount_get_root (mount);
 
 		if (g_file_equal (target, root)) {
-			found = g_object_ref (l->data);
+			found = g_object_ref (mount);
 			break;
 		}
 		

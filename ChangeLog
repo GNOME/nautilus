@@ -1,3 +1,16 @@
+2009-02-10  David Zeuthen  <davidz@redhat.com>
+
+	Don't use shadowed mounts.
+
+	* libnautilus-private/nautilus-desktop-link-monitor.c (has_mount),
+	(create_mount_link), (remove_mount_link), (mount_added_callback),
+	(mount_removed_callback), (mount_changed_callback):
+	* libnautilus-private/nautilus-directory-async.c (get_mount_at):
+	* src/file-manager/fm-tree-view.c (add_root_for_mount):
+	* src/nautilus-pathbar.c (is_file_path_mounted_mount):
+	* src/nautilus-places-sidebar.c (update_places):
+	Honor g_mount_is_shadowed().
+
 2009-02-16  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-icon-info.c:

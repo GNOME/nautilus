@@ -587,6 +587,9 @@ add_root_for_mount (FMTreeView *view,
 	GFile *root;
 	GIcon *icon;
 
+	if (g_mount_is_shadowed (mount))
+		return;
+
 	icon = g_mount_get_icon (mount);
 	root = g_mount_get_root (mount);
 	mount_uri = g_file_get_uri (root);
