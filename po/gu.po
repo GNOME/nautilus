@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.gu\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus&component=general\n"
-"POT-Creation-Date: 2009-02-02 00:11+0000\n"
-"PO-Revision-Date: 2009-02-12 17:14+0530\n"
+"POT-Creation-Date: 2009-02-12 23:05+0000\n"
+"PO-Revision-Date: 2009-02-16 11:40+0530\n"
 "Last-Translator: Sweta Kothari <swkothar@redhat.com>\n"
 "Language-Team: Gujarati\n"
 "MIME-Version: 1.0\n"
@@ -527,9 +527,9 @@ msgid ""
 "\"mime_type\"."
 msgstr ""
 "ચિહ્નના દ્રશ્ય અને ડૅસ્કટોપમાં ચિહ્નની નીચેની નામોની યાદી. દેખાતા નામોની સંખ્યા તેના નાનું "
-"મોટુ કરવાના સ્તર પર આધારિત છે. શક્ય કિંમતો \"size (માપ)\", \"type (પ્રકાર)\", \"date_modified (સુધારાયેલ તારીખ)\", "
-"\"date_changed (બદલાયેલ તારીખ)\", \"date_accessed (કામ કરેલ તારીખ)\", \"owner (માલિક)\", \"group (જૂથ)\", \"permissions "
-"(પરવાનગીઓ)\", \"octal_permissions(અષ્ટાંકી પરવાનગીઓ)\" અને \"mime_type (mime પ્રકાર)\" છે."
+"મોટુ કરવાના સ્તર પર આધારિત છે. શક્ય કિંમતો \"size\", \"type\", \"date_modified\", \"date_changed\", "
+"\"date_accessed\", \"owner\", \"group\", \"permissions\", \"octal_permissions\" અને "
+"\"mime_type\" છે."
 
 #. TRANSLATORS: don't translate the zoom levels between quotes
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
@@ -1515,7 +1515,7 @@ msgid "Use De_fault"
 msgstr "મૂળભૂત વાપરો (_f)"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:275
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:273
 #: ../src/file-manager/fm-list-view.c:1453
 msgid "Name"
 msgstr "નામ"
@@ -1574,7 +1574,7 @@ msgid "The group of the file."
 msgstr "ફાઈલનું જૂથ."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:97
-#: ../src/file-manager/fm-properties-window.c:4794
+#: ../src/file-manager/fm-properties-window.c:4789
 msgid "Permissions"
 msgstr "પરવાનગીઓ"
 
@@ -1607,7 +1607,7 @@ msgid "The SELinux security context of the file."
 msgstr "ફાઈલનો SELinux સુરક્ષા સંદર્ભ."
 
 #: ../libnautilus-private/nautilus-customization-data.c:405
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:430
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:428
 #: ../src/nautilus-property-browser.c:1863
 msgid "Reset"
 msgstr "પુનઃસુયોજન"
@@ -1778,7 +1778,7 @@ msgstr[1] ""
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:354
-#: ../libnautilus-private/nautilus-file.c:5628
+#: ../libnautilus-private/nautilus-file.c:5592
 #: ../src/file-manager/fm-directory-view.c:9363
 #, c-format
 msgid "Link to %s"
@@ -2584,35 +2584,35 @@ msgstr "\"%s\" માં કડી બનાવતી વખતે ભૂલ."
 msgid "There was an error creating the directory in %F."
 msgstr "કાર્યક્રમને શરૂ કરતી વખતે ભૂલ હતી."
 
-#: ../libnautilus-private/nautilus-file.c:921
+#: ../libnautilus-private/nautilus-file.c:885
 #: ../libnautilus-private/nautilus-vfs-file.c:264
 #, fuzzy, c-format
 #| msgid "The emblem cannot be installed."
 msgid "This file cannot be mounted"
 msgstr "સાંકેતિક ચિહ્નો સ્થાપિત કરી શકાતા નથી."
 
-#: ../libnautilus-private/nautilus-file.c:1333
+#: ../libnautilus-private/nautilus-file.c:1297
 #, c-format
 msgid "Slashes are not allowed in filenames"
 msgstr ""
 
-#: ../libnautilus-private/nautilus-file.c:1351
+#: ../libnautilus-private/nautilus-file.c:1315
 #, c-format
 msgid "File not found"
 msgstr ""
 
-#: ../libnautilus-private/nautilus-file.c:1379
+#: ../libnautilus-private/nautilus-file.c:1343
 #, fuzzy, c-format
 #| msgid "The item could not be renamed."
 msgid "Toplevel files cannot be renamed"
 msgstr "વસ્તુનું નામ બદલી શકાયું નથી."
 
-#: ../libnautilus-private/nautilus-file.c:1402
+#: ../libnautilus-private/nautilus-file.c:1366
 #, c-format
 msgid "Unable to rename desktop icon"
 msgstr ""
 
-#: ../libnautilus-private/nautilus-file.c:1439
+#: ../libnautilus-private/nautilus-file.c:1403
 #, c-format
 msgid "Unable to rename desktop file"
 msgstr ""
@@ -2632,65 +2632,65 @@ msgstr ""
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: ../libnautilus-private/nautilus-file.c:3714
+#: ../libnautilus-private/nautilus-file.c:3678
 msgid "today at 00:00:00 PM"
 msgstr "આજે 00:00:00 PM વાગે"
 
-#: ../libnautilus-private/nautilus-file.c:3715
+#: ../libnautilus-private/nautilus-file.c:3679
 #: ../src/nautilus-file-management-properties.c:471
 msgid "today at %-I:%M:%S %p"
 msgstr "આજે %-l:%M:%S %p વાગે"
 
-#: ../libnautilus-private/nautilus-file.c:3717
+#: ../libnautilus-private/nautilus-file.c:3681
 msgid "today at 00:00 PM"
 msgstr "આજે 00:00 PM વાગે"
 
-#: ../libnautilus-private/nautilus-file.c:3718
+#: ../libnautilus-private/nautilus-file.c:3682
 msgid "today at %-I:%M %p"
 msgstr "આજે %-l:%M %p વાગે"
 
-#: ../libnautilus-private/nautilus-file.c:3720
+#: ../libnautilus-private/nautilus-file.c:3684
 msgid "today, 00:00 PM"
 msgstr "આજે, 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:3721
+#: ../libnautilus-private/nautilus-file.c:3685
 msgid "today, %-I:%M %p"
 msgstr "આજે, %-l:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:3723
-#: ../libnautilus-private/nautilus-file.c:3724
+#: ../libnautilus-private/nautilus-file.c:3687
+#: ../libnautilus-private/nautilus-file.c:3688
 msgid "today"
 msgstr "આજે"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: ../libnautilus-private/nautilus-file.c:3733
+#: ../libnautilus-private/nautilus-file.c:3697
 msgid "yesterday at 00:00:00 PM"
 msgstr "ગઈકાલે 00:00:00 PM વાગે"
 
-#: ../libnautilus-private/nautilus-file.c:3734
+#: ../libnautilus-private/nautilus-file.c:3698
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "ગઈકાલે %-l:%M:%S %p વાગે"
 
-#: ../libnautilus-private/nautilus-file.c:3736
+#: ../libnautilus-private/nautilus-file.c:3700
 msgid "yesterday at 00:00 PM"
 msgstr "ગઈકાલે 00:00 PM વાગે"
 
-#: ../libnautilus-private/nautilus-file.c:3737
+#: ../libnautilus-private/nautilus-file.c:3701
 msgid "yesterday at %-I:%M %p"
 msgstr "ગઈકાલે %-l:%M%p વાગે"
 
-#: ../libnautilus-private/nautilus-file.c:3739
+#: ../libnautilus-private/nautilus-file.c:3703
 msgid "yesterday, 00:00 PM"
 msgstr "ગઈકાલે, 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:3740
+#: ../libnautilus-private/nautilus-file.c:3704
 msgid "yesterday, %-I:%M %p"
 msgstr "ગઈકાલે, %l:%M%p"
 
-#: ../libnautilus-private/nautilus-file.c:3742
-#: ../libnautilus-private/nautilus-file.c:3743
+#: ../libnautilus-private/nautilus-file.c:3706
+#: ../libnautilus-private/nautilus-file.c:3707
 msgid "yesterday"
 msgstr "ગઈકાલે"
 
@@ -2699,90 +2699,90 @@ msgstr "ગઈકાલે"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: ../libnautilus-private/nautilus-file.c:3754
+#: ../libnautilus-private/nautilus-file.c:3718
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "બુધવાર, સપ્ટેમ્બર 00 0000 00:00:00 PM વાગે"
 
-#: ../libnautilus-private/nautilus-file.c:3755
+#: ../libnautilus-private/nautilus-file.c:3719
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A %B %-d %Y %-l:%M%S %p વાગે"
 
-#: ../libnautilus-private/nautilus-file.c:3757
+#: ../libnautilus-private/nautilus-file.c:3721
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "સોમવાર, ઓક્ટોબર 00 0000 00:00:00 PM વાગે"
 
-#: ../libnautilus-private/nautilus-file.c:3758
+#: ../libnautilus-private/nautilus-file.c:3722
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %b %-d %Y %-l:%M%S %p વાગે"
 
-#: ../libnautilus-private/nautilus-file.c:3760
+#: ../libnautilus-private/nautilus-file.c:3724
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "સોમવાર, ઓક્ટોબર 00 0000 00:00 PM વાગે"
 
-#: ../libnautilus-private/nautilus-file.c:3761
+#: ../libnautilus-private/nautilus-file.c:3725
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %b %-d %Y %-l:%M %p વાગે"
 
-#: ../libnautilus-private/nautilus-file.c:3763
+#: ../libnautilus-private/nautilus-file.c:3727
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "ઓક્ટોબર 00 0000 00:00 PM વાગે"
 
-#: ../libnautilus-private/nautilus-file.c:3764
+#: ../libnautilus-private/nautilus-file.c:3728
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%b, %-d %Y %-l:%M %p વાગે"
 
-#: ../libnautilus-private/nautilus-file.c:3766
+#: ../libnautilus-private/nautilus-file.c:3730
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "ઓક્ટોબર 00 0000, 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:3767
+#: ../libnautilus-private/nautilus-file.c:3731
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%b, %-d %Y, %-l:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:3769
+#: ../libnautilus-private/nautilus-file.c:3733
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:3770
+#: ../libnautilus-private/nautilus-file.c:3734
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%m/%-d/%y, %-l:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:3772
+#: ../libnautilus-private/nautilus-file.c:3736
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: ../libnautilus-private/nautilus-file.c:3773
+#: ../libnautilus-private/nautilus-file.c:3737
 msgid "%m/%d/%y"
 msgstr "%m/%d/%y"
 
-#: ../libnautilus-private/nautilus-file.c:4386
+#: ../libnautilus-private/nautilus-file.c:4350
 #, fuzzy, c-format
 #| msgid "Folder Permissions:"
 msgid "Not allowed to set permissions"
 msgstr "ફોલ્ડર પરવાનગીઓ:"
 
-#: ../libnautilus-private/nautilus-file.c:4694
+#: ../libnautilus-private/nautilus-file.c:4658
 #, c-format
 msgid "Not allowed to set owner"
 msgstr ""
 
-#: ../libnautilus-private/nautilus-file.c:4712
+#: ../libnautilus-private/nautilus-file.c:4676
 #, fuzzy, c-format
 #| msgid "The location \"%s\" does not exist."
 msgid "Specified owner '%s' doesn't exist"
 msgstr "\"%s\" સ્થાન અસ્તિત્વમાં નથી."
 
-#: ../libnautilus-private/nautilus-file.c:4976
+#: ../libnautilus-private/nautilus-file.c:4940
 #, c-format
 msgid "Not allowed to set group"
 msgstr ""
 
-#: ../libnautilus-private/nautilus-file.c:4994
+#: ../libnautilus-private/nautilus-file.c:4958
 #, c-format
 msgid "Specified group '%s' doesn't exist"
 msgstr ""
 
-#: ../libnautilus-private/nautilus-file.c:5137
+#: ../libnautilus-private/nautilus-file.c:5101
 #: ../src/file-manager/fm-directory-view.c:2202
 #, fuzzy, c-format
 #| msgid "%u item"
@@ -2792,7 +2792,7 @@ msgid_plural "%'u items"
 msgstr[0] "%u વસ્તુ"
 msgstr[1] "%u વસ્તુઓ"
 
-#: ../libnautilus-private/nautilus-file.c:5138
+#: ../libnautilus-private/nautilus-file.c:5102
 #, fuzzy, c-format
 #| msgid "%u folder"
 #| msgid_plural "%u folders"
@@ -2801,7 +2801,7 @@ msgid_plural "%'u folders"
 msgstr[0] "%u ફોલ્ડર"
 msgstr[1] "%u ફોલ્ડરો"
 
-#: ../libnautilus-private/nautilus-file.c:5139
+#: ../libnautilus-private/nautilus-file.c:5103
 #, fuzzy, c-format
 #| msgid "%u file"
 #| msgid_plural "%u files"
@@ -2811,52 +2811,52 @@ msgstr[0] "%u ફાઇલ"
 msgstr[1] "%u ફાઇલો"
 
 #. Do this in a separate stage so that we don't have to put G_GUINT64_FORMAT in the translated string
-#: ../libnautilus-private/nautilus-file.c:5218
+#: ../libnautilus-private/nautilus-file.c:5182
 msgid "%"
 msgstr ""
 
-#: ../libnautilus-private/nautilus-file.c:5219
+#: ../libnautilus-private/nautilus-file.c:5183
 #, fuzzy, c-format
 #| msgid "%s (%lld bytes)"
 msgid "%s (%s bytes)"
 msgstr "%s (%lld બાઈટો)"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:5523
-#: ../libnautilus-private/nautilus-file.c:5539
+#: ../libnautilus-private/nautilus-file.c:5487
+#: ../libnautilus-private/nautilus-file.c:5503
 msgid "? items"
 msgstr "? વસ્તુઓ"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:5529
+#: ../libnautilus-private/nautilus-file.c:5493
 msgid "? bytes"
 msgstr "? બાઇટો"
 
-#: ../libnautilus-private/nautilus-file.c:5544
+#: ../libnautilus-private/nautilus-file.c:5508
 msgid "unknown type"
 msgstr "અજાણ્યો પ્રકાર"
 
-#: ../libnautilus-private/nautilus-file.c:5547
+#: ../libnautilus-private/nautilus-file.c:5511
 msgid "unknown MIME type"
 msgstr "અજાણ્યો MIME પ્રકાર"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:5553
+#: ../libnautilus-private/nautilus-file.c:5517
 #: ../src/file-manager/fm-properties-window.c:1322
 msgid "unknown"
 msgstr "અજાણ્યુ"
 
-#: ../libnautilus-private/nautilus-file.c:5602
+#: ../libnautilus-private/nautilus-file.c:5566
 msgid "program"
 msgstr "કાર્યક્રમ"
 
-#: ../libnautilus-private/nautilus-file.c:5622
+#: ../libnautilus-private/nautilus-file.c:5586
 msgid "link"
 msgstr "કડી"
 
-#: ../libnautilus-private/nautilus-file.c:5644
+#: ../libnautilus-private/nautilus-file.c:5608
 msgid "link (broken)"
 msgstr "કડી (તુટેલી)"
 
@@ -3241,64 +3241,64 @@ msgid_plural "Opening %d items."
 msgstr[0] "%d વસ્તુ ખોલી રહ્યા છીએ."
 msgstr[1] "%d વસ્તુઓ ખોલી રહ્યા છીએ."
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:167
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:165
 #: ../libnautilus-private/nautilus-open-with-dialog.c:256
 #, c-format
 msgid "Could not set application as the default: %s"
 msgstr ""
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:168
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:166
 #: ../libnautilus-private/nautilus-open-with-dialog.c:257
 #, fuzzy
 #| msgid "Could not move \"%s\" to the new location."
 msgid "Could not set as default application"
 msgstr "\"%s\" ને નવી જગ્યાએ લઈ જઈ શકાઈ નહિ."
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:257
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:255
 #, fuzzy
 #| msgid "Use De_fault"
 msgid "Default"
 msgstr "મૂળભૂત વાપરો (_f)"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:266
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:264
 #, fuzzy
 #| msgid "Icons"
 msgid "Icon"
 msgstr "ચિહ્નો"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:328
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:326
 #, fuzzy
 #| msgid "Could not move \"%s\" to the new location."
 msgid "Could not remove application"
 msgstr "\"%s\" ને નવી જગ્યાએ લઈ જઈ શકાઈ નહિ."
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:540
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:538
 #, fuzzy
 #| msgid "No image was selected."
 msgid "No applications selected"
 msgstr "કોઈ ચિત્ર પસંદ થયેલ નથી."
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:568
-#: ../libnautilus-private/nautilus-open-with-dialog.c:944
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:566
+#: ../libnautilus-private/nautilus-open-with-dialog.c:942
 #, fuzzy, c-format
 #| msgid "Documents"
 msgid "%s document"
 msgstr "દસ્તાવેજો"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:575
-#: ../libnautilus-private/nautilus-open-with-dialog.c:950
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:573
+#: ../libnautilus-private/nautilus-open-with-dialog.c:948
 #, fuzzy
 #| msgid "unknown"
 msgid "Unknown"
 msgstr "અજાણ્યુ"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:608
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:606
 #, c-format
 msgid "Select an application to open %s and other files of type \"%s\""
 msgstr ""
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:676
-#: ../libnautilus-private/nautilus-open-with-dialog.c:962
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:674
+#: ../libnautilus-private/nautilus-open-with-dialog.c:960
 #, c-format
 msgid "Open all files of type \"%s\" with:"
 msgstr ""
@@ -3328,26 +3328,26 @@ msgstr ""
 msgid "Could not add application"
 msgstr "જગ્યા ડાઉનલોડ કરવી છે?"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:403
+#: ../libnautilus-private/nautilus-open-with-dialog.c:401
 #, fuzzy
 #| msgid "Select a Category:"
 msgid "Select an Application"
 msgstr "વર્ગ પસંદ કરો:"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:761
-#: ../src/file-manager/fm-properties-window.c:5104
+#: ../libnautilus-private/nautilus-open-with-dialog.c:759
+#: ../src/file-manager/fm-properties-window.c:5099
 msgid "Open With"
 msgstr "ની સાથે ખોલો"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:798
+#: ../libnautilus-private/nautilus-open-with-dialog.c:796
 msgid "Select an application to view its description."
 msgstr ""
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:823
+#: ../libnautilus-private/nautilus-open-with-dialog.c:821
 msgid "_Use a custom command"
 msgstr ""
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:840
+#: ../libnautilus-private/nautilus-open-with-dialog.c:838
 #, fuzzy
 #| msgid "_Remove..."
 msgid "_Browse..."
@@ -3355,7 +3355,7 @@ msgstr "દૂર કરો (_R)..."
 
 #. name, stock id
 #. label, accelerator
-#: ../libnautilus-private/nautilus-open-with-dialog.c:869
+#: ../libnautilus-private/nautilus-open-with-dialog.c:867
 #: ../src/file-manager/fm-directory-view.c:6599
 #: ../src/file-manager/fm-directory-view.c:7799
 #: ../src/file-manager/fm-tree-view.c:1208
@@ -3363,18 +3363,18 @@ msgstr "દૂર કરો (_R)..."
 msgid "_Open"
 msgstr "ખોલો (_O)"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:959
+#: ../libnautilus-private/nautilus-open-with-dialog.c:957
 #, c-format
 msgid "Open %s and other files of type \"%s\" with:"
 msgstr ""
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:995
-#: ../libnautilus-private/nautilus-open-with-dialog.c:1010
+#: ../libnautilus-private/nautilus-open-with-dialog.c:993
+#: ../libnautilus-private/nautilus-open-with-dialog.c:1008
 msgid "_Add"
 msgstr ""
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:996
-#: ../libnautilus-private/nautilus-open-with-dialog.c:1011
+#: ../libnautilus-private/nautilus-open-with-dialog.c:994
+#: ../libnautilus-private/nautilus-open-with-dialog.c:1009
 #, fuzzy
 #| msgid "Apparition"
 msgid "Add Application"
@@ -3632,7 +3632,7 @@ msgstr[0] "આ %d અલગ વિન્ડો ખોલશે."
 msgstr[1] "આ %d અલગ વિન્ડો ખોલશે."
 
 #: ../src/file-manager/fm-directory-view.c:1132
-#: ../src/file-manager/fm-properties-window.c:5453
+#: ../src/file-manager/fm-properties-window.c:5448
 #: ../src/nautilus-connect-server-dialog.c:341
 #: ../src/nautilus-location-dialog.c:108
 msgid "There was an error displaying help."
@@ -4896,13 +4896,13 @@ msgstr "ચિહ્ન દેખાવ શરૂ કરતી વખતે ભ�
 msgid "Display this location with the compact view."
 msgstr "ચિહ્ન દેખાવ સાથે આ સ્થાન દર્શાવો."
 
-#: ../src/file-manager/fm-list-model.c:373
-#: ../src/file-manager/fm-tree-model.c:1265
+#: ../src/file-manager/fm-list-model.c:382
+#: ../src/file-manager/fm-tree-model.c:1268
 msgid "(Empty)"
 msgstr "(ખાલી)"
 
-#: ../src/file-manager/fm-list-model.c:375
-#: ../src/file-manager/fm-tree-model.c:1265 ../src/nautilus-window-slot.c:191
+#: ../src/file-manager/fm-list-model.c:384
+#: ../src/file-manager/fm-tree-model.c:1268 ../src/nautilus-window-slot.c:191
 msgid "Loading..."
 msgstr "લાવી રહ્યા છે..."
 
@@ -4990,33 +4990,30 @@ msgstr "ગુણધર્મો"
 msgid "%s Properties"
 msgstr "%s ગુણધર્મો"
 
-#. FIXME: we should use C_ () instead. See bug #542658.
-#. *
-#. * Translators: The text before the "|" is context to help you decide on
-#. * the correct translation. Only translate the part after the pipe.
-#.
-#: ../src/file-manager/fm-properties-window.c:1368
-#, c-format
-msgid "MIME type description (MIME type)|%s (%s)"
-msgstr ""
+#: ../src/file-manager/fm-properties-window.c:1363
+#, fuzzy, c-format
+#| msgid "%s (%s)"
+msgctxt "MIME type description (MIME type)"
+msgid "%s (%s)"
+msgstr "%s (%s)"
 
-#: ../src/file-manager/fm-properties-window.c:1585
+#: ../src/file-manager/fm-properties-window.c:1580
 msgid "Cancel Group Change?"
 msgstr "જૂથ બદલાવનુ રદ કરવુ છે?"
 
-#: ../src/file-manager/fm-properties-window.c:2003
+#: ../src/file-manager/fm-properties-window.c:1998
 msgid "Cancel Owner Change?"
 msgstr "માલિકી બદલવાનું રદ કરવું છે?"
 
-#: ../src/file-manager/fm-properties-window.c:2334
+#: ../src/file-manager/fm-properties-window.c:2329
 msgid "nothing"
 msgstr "કંઇ જ નહી"
 
-#: ../src/file-manager/fm-properties-window.c:2336
+#: ../src/file-manager/fm-properties-window.c:2331
 msgid "unreadable"
 msgstr "ન વાંયી શકાય તેવુ"
 
-#: ../src/file-manager/fm-properties-window.c:2346
+#: ../src/file-manager/fm-properties-window.c:2341
 #, fuzzy, c-format
 #| msgid "%d item, with size %s"
 #| msgid_plural "%d items, totalling %s"
@@ -5026,7 +5023,7 @@ msgstr[0] "%d વસ્તુ, %s માપની"
 msgstr[1] "%d વસ્તુઓ, %s માપની"
 
 # src/file-manager/fm-properties-window.c:1174
-#: ../src/file-manager/fm-properties-window.c:2355
+#: ../src/file-manager/fm-properties-window.c:2350
 msgid "(some contents unreadable)"
 msgstr "(કેટલીક સમાવિષ્ટ વસ્તુઓ વાંચી ન શકાય તેવી છે)"
 
@@ -5036,259 +5033,259 @@ msgstr "(કેટલીક સમાવિષ્ટ વસ્તુઓ વા�
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: ../src/file-manager/fm-properties-window.c:2372
+#: ../src/file-manager/fm-properties-window.c:2367
 msgid "Contents:"
 msgstr "સમાવિષ્ટ વસ્તુઓ:"
 
 #. Translators: "used" refers to the capacity of the filesystem
-#: ../src/file-manager/fm-properties-window.c:3139
+#: ../src/file-manager/fm-properties-window.c:3134
 msgid "used"
 msgstr "વપરાયેલ"
 
 #. Translators: "free" refers to the capacity of the filesystem
-#: ../src/file-manager/fm-properties-window.c:3144
+#: ../src/file-manager/fm-properties-window.c:3139
 msgid "free"
 msgstr "મુક્ત"
 
-#: ../src/file-manager/fm-properties-window.c:3146
+#: ../src/file-manager/fm-properties-window.c:3141
 #, fuzzy
 #| msgid "Total capacity: "
 msgid "Total capacity:"
 msgstr "કુલ ક્ષમતા: "
 
-#: ../src/file-manager/fm-properties-window.c:3155
+#: ../src/file-manager/fm-properties-window.c:3150
 #, fuzzy
 #| msgid "Filesytem type: "
 msgid "Filesystem type:"
 msgstr "ફાઈલસિસ્ટમ પ્રકાર: "
 
-#: ../src/file-manager/fm-properties-window.c:3231
+#: ../src/file-manager/fm-properties-window.c:3226
 msgid "Basic"
 msgstr "આધારભૂત"
 
-#: ../src/file-manager/fm-properties-window.c:3291
+#: ../src/file-manager/fm-properties-window.c:3286
 msgid "Type:"
 msgstr "પ્રકાર:"
 
-#: ../src/file-manager/fm-properties-window.c:3299
+#: ../src/file-manager/fm-properties-window.c:3294
 msgid "Link target:"
 msgstr "કડીનુ લક્ષ્યાંક:"
 
-#: ../src/file-manager/fm-properties-window.c:3309
+#: ../src/file-manager/fm-properties-window.c:3304
 msgid "Size:"
 msgstr "માપ:"
 
-#: ../src/file-manager/fm-properties-window.c:3318
+#: ../src/file-manager/fm-properties-window.c:3313
 #: ../src/nautilus-location-bar.c:55
 msgid "Location:"
 msgstr "સ્થાન:"
 
-#: ../src/file-manager/fm-properties-window.c:3324
+#: ../src/file-manager/fm-properties-window.c:3319
 msgid "Volume:"
 msgstr "અવાજનું પ્રમાણ:"
 
-#: ../src/file-manager/fm-properties-window.c:3333
+#: ../src/file-manager/fm-properties-window.c:3328
 msgid "Accessed:"
 msgstr "વાપરેલ છે:"
 
-#: ../src/file-manager/fm-properties-window.c:3337
+#: ../src/file-manager/fm-properties-window.c:3332
 msgid "Modified:"
 msgstr "સુધારેલ છે:"
 
-#: ../src/file-manager/fm-properties-window.c:3346
+#: ../src/file-manager/fm-properties-window.c:3341
 msgid "Free space:"
 msgstr "ખાલી જગ્યા:"
 
-#: ../src/file-manager/fm-properties-window.c:3456
+#: ../src/file-manager/fm-properties-window.c:3451
 #: ../src/nautilus-emblem-sidebar.c:1032
 msgid "Emblems"
 msgstr "સાંકેતિક ચિહ્નો"
 
-#: ../src/file-manager/fm-properties-window.c:3859
+#: ../src/file-manager/fm-properties-window.c:3854
 msgid "_Read"
 msgstr "વાંચો (_R)"
 
-#: ../src/file-manager/fm-properties-window.c:3861
+#: ../src/file-manager/fm-properties-window.c:3856
 msgid "_Write"
 msgstr "લખો (_W)"
 
-#: ../src/file-manager/fm-properties-window.c:3863
+#: ../src/file-manager/fm-properties-window.c:3858
 msgid "E_xecute"
 msgstr "ચલાવો (_x)"
 
 #. translators: this gets concatenated to "no read",
 #. * "no access", etc. (see following strings)
 #.
-#: ../src/file-manager/fm-properties-window.c:4131
-#: ../src/file-manager/fm-properties-window.c:4142
-#: ../src/file-manager/fm-properties-window.c:4154
+#: ../src/file-manager/fm-properties-window.c:4126
+#: ../src/file-manager/fm-properties-window.c:4137
+#: ../src/file-manager/fm-properties-window.c:4149
 msgid "no "
 msgstr "ના "
 
-#: ../src/file-manager/fm-properties-window.c:4134
+#: ../src/file-manager/fm-properties-window.c:4129
 msgid "list"
 msgstr "યાદી"
 
-#: ../src/file-manager/fm-properties-window.c:4136
+#: ../src/file-manager/fm-properties-window.c:4131
 msgid "read"
 msgstr "વાંચો"
 
-#: ../src/file-manager/fm-properties-window.c:4145
+#: ../src/file-manager/fm-properties-window.c:4140
 msgid "create/delete"
 msgstr "બનાવો/કાઢી નાંખો"
 
-#: ../src/file-manager/fm-properties-window.c:4147
+#: ../src/file-manager/fm-properties-window.c:4142
 msgid "write"
 msgstr "લખો"
 
-#: ../src/file-manager/fm-properties-window.c:4156
+#: ../src/file-manager/fm-properties-window.c:4151
 msgid "access"
 msgstr "વપરાશ"
 
-#: ../src/file-manager/fm-properties-window.c:4205
+#: ../src/file-manager/fm-properties-window.c:4200
 msgid "Access:"
 msgstr "વપરાશ:"
 
-#: ../src/file-manager/fm-properties-window.c:4207
+#: ../src/file-manager/fm-properties-window.c:4202
 #, fuzzy
 #| msgid "Folder Access:"
 msgid "Folder access:"
 msgstr "ફોલ્ડર વપરાશ:"
 
-#: ../src/file-manager/fm-properties-window.c:4209
+#: ../src/file-manager/fm-properties-window.c:4204
 #, fuzzy
 #| msgid "File Access:"
 msgid "File access:"
 msgstr "ફાઈલ વપરાશ:"
 
-#: ../src/file-manager/fm-properties-window.c:4221
-#: ../src/file-manager/fm-properties-window.c:4232
+#: ../src/file-manager/fm-properties-window.c:4216
+#: ../src/file-manager/fm-properties-window.c:4227
 #: ../src/nautilus-file-management-properties.c:291
 msgid "None"
 msgstr "કંઈ નહિં"
 
-#: ../src/file-manager/fm-properties-window.c:4224
+#: ../src/file-manager/fm-properties-window.c:4219
 msgid "List files only"
 msgstr "માત્ર ફાઈલોની જ યાદી આપો"
 
-#: ../src/file-manager/fm-properties-window.c:4226
+#: ../src/file-manager/fm-properties-window.c:4221
 msgid "Access files"
 msgstr "ફાઈલો વાપરો"
 
-#: ../src/file-manager/fm-properties-window.c:4228
+#: ../src/file-manager/fm-properties-window.c:4223
 msgid "Create and delete files"
 msgstr "ફાઈલો બનાવો અને કાઢી નાંખો"
 
-#: ../src/file-manager/fm-properties-window.c:4235
+#: ../src/file-manager/fm-properties-window.c:4230
 msgid "Read-only"
 msgstr "માત્ર-વાંચી શકાય તેવું"
 
-#: ../src/file-manager/fm-properties-window.c:4237
+#: ../src/file-manager/fm-properties-window.c:4232
 msgid "Read and write"
 msgstr "લખો અને વાંચો"
 
-#: ../src/file-manager/fm-properties-window.c:4302
+#: ../src/file-manager/fm-properties-window.c:4297
 msgid "Set _user ID"
 msgstr "વપરાશકર્તા ID સુયોજિત કરો (_u)"
 
-#: ../src/file-manager/fm-properties-window.c:4304
+#: ../src/file-manager/fm-properties-window.c:4299
 msgid "Special flags:"
 msgstr "વિશેષ નિશાનીઓ:"
 
-#: ../src/file-manager/fm-properties-window.c:4306
+#: ../src/file-manager/fm-properties-window.c:4301
 msgid "Set gro_up ID"
 msgstr "જૂથ ID નુ સુયોજન કરો (_u)"
 
-#: ../src/file-manager/fm-properties-window.c:4307
+#: ../src/file-manager/fm-properties-window.c:4302
 msgid "_Sticky"
 msgstr "સ્ટીકી (_S)"
 
-#: ../src/file-manager/fm-properties-window.c:4387
-#: ../src/file-manager/fm-properties-window.c:4591
+#: ../src/file-manager/fm-properties-window.c:4382
+#: ../src/file-manager/fm-properties-window.c:4586
 msgid "_Owner:"
 msgstr "માલિક (_O):"
 
-#: ../src/file-manager/fm-properties-window.c:4393
-#: ../src/file-manager/fm-properties-window.c:4488
-#: ../src/file-manager/fm-properties-window.c:4599
+#: ../src/file-manager/fm-properties-window.c:4388
+#: ../src/file-manager/fm-properties-window.c:4483
+#: ../src/file-manager/fm-properties-window.c:4594
 msgid "Owner:"
 msgstr "માલિકી:"
 
-#: ../src/file-manager/fm-properties-window.c:4416
-#: ../src/file-manager/fm-properties-window.c:4611
+#: ../src/file-manager/fm-properties-window.c:4411
+#: ../src/file-manager/fm-properties-window.c:4606
 msgid "_Group:"
 msgstr "જૂથ (_G):"
 
-#: ../src/file-manager/fm-properties-window.c:4425
-#: ../src/file-manager/fm-properties-window.c:4489
-#: ../src/file-manager/fm-properties-window.c:4620
+#: ../src/file-manager/fm-properties-window.c:4420
+#: ../src/file-manager/fm-properties-window.c:4484
+#: ../src/file-manager/fm-properties-window.c:4615
 msgid "Group:"
 msgstr "જૂથ:"
 
-#: ../src/file-manager/fm-properties-window.c:4450
+#: ../src/file-manager/fm-properties-window.c:4445
 msgid "Others"
 msgstr "અન્ય"
 
-#: ../src/file-manager/fm-properties-window.c:4467
+#: ../src/file-manager/fm-properties-window.c:4462
 msgid "Execute:"
 msgstr "ચલાવો:"
 
-#: ../src/file-manager/fm-properties-window.c:4471
+#: ../src/file-manager/fm-properties-window.c:4466
 msgid "Allow _executing file as program"
 msgstr "ચલાવી શકાય તેવી ફાઈલને કાર્યક્રમ તરીકે પરવાનગી આપો (_e)"
 
-#: ../src/file-manager/fm-properties-window.c:4490
+#: ../src/file-manager/fm-properties-window.c:4485
 msgid "Others:"
 msgstr "અન્ય:"
 
-#: ../src/file-manager/fm-properties-window.c:4638
+#: ../src/file-manager/fm-properties-window.c:4633
 msgid "Folder Permissions:"
 msgstr "ફોલ્ડર પરવાનગીઓ:"
 
-#: ../src/file-manager/fm-properties-window.c:4650
+#: ../src/file-manager/fm-properties-window.c:4645
 msgid "File Permissions:"
 msgstr "ફાઈલ પરવાનગીઓ:"
 
-#: ../src/file-manager/fm-properties-window.c:4660
+#: ../src/file-manager/fm-properties-window.c:4655
 msgid "Text view:"
 msgstr "લખાણ દ્રશ્ય:"
 
-#: ../src/file-manager/fm-properties-window.c:4807
+#: ../src/file-manager/fm-properties-window.c:4802
 #, fuzzy
 #| msgid "You are not the owner, so you can't change these permissions."
 msgid "You are not the owner, so you cannot change these permissions."
 msgstr "તમે માલિક નથી, તેથી તમે આ પરવાનગીઓ બદલી શકતા નથી."
 
-#: ../src/file-manager/fm-properties-window.c:4831
+#: ../src/file-manager/fm-properties-window.c:4826
 #, fuzzy
 #| msgid "SELinux Context:"
 msgid "SELinux context:"
 msgstr "SELinux સંદર્ભ:"
 
-#: ../src/file-manager/fm-properties-window.c:4836
+#: ../src/file-manager/fm-properties-window.c:4831
 msgid "Last changed:"
 msgstr "છેલ્લે બદલાયેલ:"
 
-#: ../src/file-manager/fm-properties-window.c:4850
+#: ../src/file-manager/fm-properties-window.c:4845
 #, fuzzy
 #| msgid "Apply permissions to enclosed files"
 msgid "Apply Permissions to Enclosed Files"
 msgstr "બંધ કરાયેલ ફાઈલોને પરવાનગીઓ લાગુ કરો"
 
-#: ../src/file-manager/fm-properties-window.c:4860
+#: ../src/file-manager/fm-properties-window.c:4855
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "\"%s\" ની પરવાનગીઓ શોધી શકાઈ નથી."
 
-#: ../src/file-manager/fm-properties-window.c:4863
+#: ../src/file-manager/fm-properties-window.c:4858
 msgid "The permissions of the selected file could not be determined."
 msgstr "પસંદ કરેલ ફાઇલોની પરવાનગી શોધી શકાઈ નથી."
 
-#: ../src/file-manager/fm-properties-window.c:5426
+#: ../src/file-manager/fm-properties-window.c:5421
 msgid "Creating Properties window."
 msgstr "ગુણધર્મ માટેની વિન્ડો બનાવી રહ્યા છે."
 
-#: ../src/file-manager/fm-properties-window.c:5691
+#: ../src/file-manager/fm-properties-window.c:5686
 msgid "Select Custom Icon"
 msgstr "વૈવિધ્યપૂર્ણ ચિહ્ન પસંદ કરો"
 
@@ -5335,7 +5332,7 @@ msgstr ""
 "નોટિલસ ચાલુ કર્યા પહેલા, મહેરબાની કરીને આ ફોલ્ડર બનાવો, અથવા તેની પરવાનગી એવી રીતે "
 "સુયોજિત કરો કે જેથી નોટિલસ તે બનાવી શકે."
 
-#: ../src/nautilus-application.c:1250 ../src/nautilus-places-sidebar.c:1680
+#: ../src/nautilus-application.c:1249 ../src/nautilus-places-sidebar.c:1680
 #: ../src/nautilus-places-sidebar.c:1703 ../src/nautilus-places-sidebar.c:1726
 #, c-format
 msgid "Unable to eject %s"
