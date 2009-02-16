@@ -410,8 +410,23 @@ nautilus_icon_info_lookup (GIcon *icon,
 		gtk_icon_info_free (gtkicon_info);
 
 		return g_object_ref (icon_info);
-	} 
-	return nautilus_icon_info_new_for_pixbuf (NULL);
+	} else {
+                GdkPixbuf *pixbuf;
+                GtkIconInfo *gtk_icon_info;
+
+                gtk_icon_info = gtk_icon_theme_lookup_by_gicon (gtk_icon_theme_get_default (),
+                                                                icon,
+                                                                size,
+                                                                GTK_ICON_LOOKUP_GENERIC_FALLBACK);
+                if (gtk_icon_info != NULL) {
+                        pixbuf = gtk_icon_info_load_icon (gtk_icon_info, NULL);
+                        gtk_icon_info_free (gtk_icon_info);
+                } else {
+                        pixbuf = NULL;
+                }
+
+                return nautilus_icon_info_new_for_pixbuf (pixbuf);
+        }
 }
 
 NautilusIconInfo *
