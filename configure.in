@@ -110,11 +110,11 @@ AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
 
 dnl ==========================================================================
 
-AC_CHECK_HEADERS(sys/mount.h sys/vfs.h sys/param.h)
+AC_CHECK_HEADERS(sys/mount.h sys/vfs.h sys/param.h malloc.h)
 			      
 dnl ==========================================================================
 
-AC_CHECK_FUNCS(statfs statvfs)
+AC_CHECK_FUNCS(statfs statvfs mallopt)
 AC_CHECK_HEADERS(sys/statfs.h sys/statvfs.h)
 
 dnl

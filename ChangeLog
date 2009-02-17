@@ -1,3 +1,13 @@
+2009-02-17  Alexander Larsson  <alexl@redhat.com>
+
+        * configure.in:
+        * src/nautilus-main.c:
+	Set the glibc MMAP limit to a static value to avoid the dynamic
+	limit hitting bad behaviour due to the large temporary allocations
+	when creating the desktop background. It would raise the limit
+	to a large value causing several large allocations on the
+	heap which are then not returned to the OS.
+
 2009-02-16  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:
