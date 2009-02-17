@@ -1,3 +1,9 @@
+2009-02-17  Alexander Larsson  <alexl@redhat.com>
+
+	* eel-background.c (eel_background_ensure_realized):
+	Ignore pending background changes when we've realized the
+	background to avoid an unnecessary re-set of the pixmap.
+
 === nautilus 2.25.91 ===
 === nautilus 2.25.4 ===
 

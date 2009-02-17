@@ -374,6 +374,10 @@ eel_background_ensure_realized (EelBackground *background, GdkWindow *window)
 									 entire_width, entire_height,
 									 background->details->is_desktop);
 
+	/* We got the pixmap and everything, so we don't care about a change
+	   that is pending (unless things actually change after this time) */
+	g_object_set_data (G_OBJECT (background->details->bg),
+			   "ignore-pending-change", GINT_TO_POINTER (TRUE));
 	changed = TRUE;
 	
 	
