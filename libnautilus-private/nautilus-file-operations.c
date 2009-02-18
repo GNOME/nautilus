@@ -3784,6 +3784,41 @@ copy_move_file (CopyMoveJob *copy_job,
 
 		goto out;
 	}
+
+	/* Don't allow copying over the source or one of the parents of the source.
+	 */
+	if (test_dir_is_parent (src, dest)) {
+		if (job->skip_all_error) {
+			g_error_free (error);
+			goto out;
+		}
+		
+		/*  the run_warning() frees all strings passed in automatically  */
+		primary = copy_job->is_move ? g_strdup (_("You cannot move a file over itself."))
+					    : g_strdup (_("You cannot copy a file over itself."));
+		secondary = g_strdup (_("The source file is overwritten by the destination."));
+		
+		response = run_warning (job,
+					primary,
+					secondary,
+					NULL,
+					(source_info->num_files - transfer_info->num_files) > 1,
+					GTK_STOCK_CANCEL, SKIP_ALL, SKIP,
+					NULL);
+
+		if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
+			abort_job (job);
+		} else if (response == 1) { /* skip all */
+			job->skip_all_error = TRUE;
+		} else if (response == 2) { /* skip */
+			/* do nothing */
+		} else {
+			g_assert_not_reached ();
+		}
+
+		goto out;
+	}
+
 	
  retry:
 	

@@ -1,3 +1,12 @@
+2009-02-18  Alexander Larsson  <alexl@redhat.com>
+
+	Bug 565610 – Replacing folder with file from within that folder destroys both
+
+        * libnautilus-private/nautilus-file-operations.c:
+        (copy_move_file):
+	Give a warning when the source would be overwritten by the
+	destination on a copy.
+
 2009-02-17  Alexander Larsson  <alexl@redhat.com>
 
         * configure.in:
