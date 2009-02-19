@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-13 11:52+0100\n"
-"PO-Revision-Date: 2009-02-13 11:52+0100\n"
+"POT-Creation-Date: 2009-02-19 19:56+0100\n"
+"PO-Revision-Date: 2009-02-19 20:00+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -1528,16 +1528,16 @@ msgstr "_Beti landu ekintza hau"
 #
 #. add the "Eject" menu item
 #: ../libnautilus-private/nautilus-autorun.c:994
-#: ../src/file-manager/fm-tree-view.c:1323
-#: ../src/nautilus-places-sidebar.c:2010
+#: ../src/file-manager/fm-tree-view.c:1326
+#: ../src/nautilus-places-sidebar.c:2014
 msgid "_Eject"
 msgstr "E_gotzi"
 
 #
 #. add the "Unmount" menu item
 #: ../libnautilus-private/nautilus-autorun.c:1005
-#: ../src/file-manager/fm-tree-view.c:1314
-#: ../src/nautilus-places-sidebar.c:2003
+#: ../src/file-manager/fm-tree-view.c:1317
+#: ../src/nautilus-places-sidebar.c:2007
 msgid "_Unmount"
 msgstr "_Desmuntatu"
 
@@ -2022,7 +2022,7 @@ msgstr ""
 #. Empty Trash menu item
 #: ../libnautilus-private/nautilus-file-operations.c:1293
 #: ../libnautilus-private/nautilus-file-operations.c:2129
-#: ../src/nautilus-places-sidebar.c:2033 ../src/nautilus-trash-bar.c:125
+#: ../src/nautilus-places-sidebar.c:2037 ../src/nautilus-trash-bar.c:125
 msgid "Empty _Trash"
 msgstr "Hustu _zakarrontzia"
 
@@ -2352,8 +2352,8 @@ msgid ""
 msgstr "Ezin da \"%B\" karpeta kopiatu, irakurtzeko baimenik ez duzulako."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3464
-#: ../libnautilus-private/nautilus-file-operations.c:3989
-#: ../libnautilus-private/nautilus-file-operations.c:4560
+#: ../libnautilus-private/nautilus-file-operations.c:4024
+#: ../libnautilus-private/nautilus-file-operations.c:4595
 msgid "Error while moving \"%B\"."
 msgstr "Errorea \"%B\" lekuz aldatzean."
 
@@ -2363,8 +2363,8 @@ msgstr "Ezin izan da iturburuko karpeta ezabatu."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3550
 #: ../libnautilus-private/nautilus-file-operations.c:3591
-#: ../libnautilus-private/nautilus-file-operations.c:3991
-#: ../libnautilus-private/nautilus-file-operations.c:4065
+#: ../libnautilus-private/nautilus-file-operations.c:4026
+#: ../libnautilus-private/nautilus-file-operations.c:4100
 msgid "Error while copying \"%B\"."
 msgstr "Errorea \"%B\" kopiatzean."
 
@@ -2381,28 +2381,41 @@ msgstr "Ezin izan da existitzen den \"%F\" fitxategia kendu."
 
 #. the run_warning() frees all strings passed in automatically
 #: ../libnautilus-private/nautilus-file-operations.c:3763
-#: ../libnautilus-private/nautilus-file-operations.c:4386
+#: ../libnautilus-private/nautilus-file-operations.c:4421
 msgid "You cannot move a folder into itself."
 msgstr "Karpeta bat ezin da karpeta beraren barrura eraman."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3764
-#: ../libnautilus-private/nautilus-file-operations.c:4387
+#: ../libnautilus-private/nautilus-file-operations.c:4422
 msgid "You cannot copy a folder into itself."
 msgstr "Karpeta bat ezin da karpeta beraren barruan kopiatu."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3765
-#: ../libnautilus-private/nautilus-file-operations.c:4388
+#: ../libnautilus-private/nautilus-file-operations.c:4423
 msgid "The destination folder is inside the source folder."
 msgstr "Helburuko karpeta iturburuaren barruan kokatuta dago."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3887
-#: ../libnautilus-private/nautilus-file-operations.c:4469
+#. the run_warning() frees all strings passed in automatically
+#: ../libnautilus-private/nautilus-file-operations.c:3797
+msgid "You cannot move a file over itself."
+msgstr "Fitxategi bat ezin da bere burura eraman."
+
+#: ../libnautilus-private/nautilus-file-operations.c:3798
+msgid "You cannot copy a file over itself."
+msgstr "Fiotxategi bat ezin da bere gainean kopiatu."
+
+#: ../libnautilus-private/nautilus-file-operations.c:3799
+msgid "The source file is overwritten by the destination."
+msgstr "Iturburuko fitxategia helburukoak gainidatzi du."
+
+#: ../libnautilus-private/nautilus-file-operations.c:3922
+#: ../libnautilus-private/nautilus-file-operations.c:4504
 msgid ""
 "A folder named \"%B\" already exists.  Do you want to merge the source "
 "folder?"
 msgstr "\"%B\" izeneko karpeta badago lehendik. Iturburuko karpeta batzea nahi duzu?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3889
+#: ../libnautilus-private/nautilus-file-operations.c:3924
 msgid ""
 "The source folder already exists in \"%B\".  Merging will ask for "
 "confirmation before replacing any files in the folder that conflict with the "
@@ -2412,13 +2425,13 @@ msgstr ""
 "zaizu kopiatzen ari diren fitxategiekin gatazka duten karpetako fitxategiak "
 "ordeztu aurretik."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3894
-#: ../libnautilus-private/nautilus-file-operations.c:4476
+#: ../libnautilus-private/nautilus-file-operations.c:3929
+#: ../libnautilus-private/nautilus-file-operations.c:4511
 msgid "A folder named \"%B\" already exists.  Do you want to replace it?"
 msgstr "\"%B\" izeneko karpeta badago lehendik. Ordeztu nahi duzu?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3896
-#: ../libnautilus-private/nautilus-file-operations.c:4478
+#: ../libnautilus-private/nautilus-file-operations.c:3931
+#: ../libnautilus-private/nautilus-file-operations.c:4513
 #, c-format
 msgid ""
 "The folder already exists in \"%F\".  Replacing it will remove all files in "
@@ -2427,13 +2440,13 @@ msgstr ""
 "\"%F\"(e)n badago karpeta lehendik. Hau ordeztean bere eduki guztia "
 "gainidatziko da."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3901
-#: ../libnautilus-private/nautilus-file-operations.c:4483
+#: ../libnautilus-private/nautilus-file-operations.c:3936
+#: ../libnautilus-private/nautilus-file-operations.c:4518
 msgid "A file named \"%B\" already exists.  Do you want to replace it?"
 msgstr " \"%B\" izeneko fitxategia badago lehendik. Ordeztea nahi duzu?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3903
-#: ../libnautilus-private/nautilus-file-operations.c:4485
+#: ../libnautilus-private/nautilus-file-operations.c:3938
+#: ../libnautilus-private/nautilus-file-operations.c:4520
 #, c-format
 msgid "The file already exists in \"%F\".  Replacing it will overwrite its content."
 msgstr ""
@@ -2441,29 +2454,29 @@ msgstr ""
 "gainidatziko da."
 
 #
-#: ../libnautilus-private/nautilus-file-operations.c:3993
+#: ../libnautilus-private/nautilus-file-operations.c:4028
 #, c-format
 msgid "Could not remove the already existing file with the same name in %F."
 msgstr "Ezin izan da existitzen den fitxategia ezabatu (%F(e)n izen berdina duena)."
 
 #
-#: ../libnautilus-private/nautilus-file-operations.c:4066
+#: ../libnautilus-private/nautilus-file-operations.c:4101
 #, c-format
 msgid "There was an error copying the file into %F."
 msgstr "Errorea gertatu da fitxategia %F(e)n kopiatzean."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4295
+#: ../libnautilus-private/nautilus-file-operations.c:4330
 msgid "Preparing to Move to \"%B\""
 msgstr "\"%B\"(e)ra eramateko prestatzen"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4299
+#: ../libnautilus-private/nautilus-file-operations.c:4334
 #, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
 msgstr[0] "Fitxategi %'d lekuz aldatzeko prestatzen"
 msgstr[1] "%'d fitxategi lekuz aldatzeko prestatzen"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4471
+#: ../libnautilus-private/nautilus-file-operations.c:4506
 msgid ""
 "The source folder already exists in \"%B\".  Merging will ask for "
 "confirmation before replacing any files in the folder that conflict with the "
@@ -2474,72 +2487,71 @@ msgstr ""
 "ordeztu aurretik."
 
 #
-#: ../libnautilus-private/nautilus-file-operations.c:4561
+#: ../libnautilus-private/nautilus-file-operations.c:4596
 #, c-format
 msgid "There was an error moving the file into %F."
 msgstr "Errorea gertatu da fitxategia %F(e)ra eramatean."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4836
+#: ../libnautilus-private/nautilus-file-operations.c:4871
 msgid "Creating links in \"%B\""
 msgstr "\"%B\"(e)n estekak sortzen"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4840
+#: ../libnautilus-private/nautilus-file-operations.c:4875
 #, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
 msgstr[0] "Fitxategi %'derako esteka sortzen"
 msgstr[1] "%'d fitxategietarako estekak sortzen"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4938
+#: ../libnautilus-private/nautilus-file-operations.c:4973
 msgid "Error while creating link to %B."
 msgstr "Errorea \"%B\"-(r)erako esteka sortzean."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4940
+#: ../libnautilus-private/nautilus-file-operations.c:4975
 msgid "Symbolic links only supported for local files"
 msgstr "Lokaleko fitxategien esteka sinbolikoak soilik onartzen dira"
 
 #
-#: ../libnautilus-private/nautilus-file-operations.c:4943
+#: ../libnautilus-private/nautilus-file-operations.c:4978
 msgid "The target doesn't support symbolic links."
 msgstr "Helburuak ez du esteka sinbolikorik onartzen."
 
 #
-#: ../libnautilus-private/nautilus-file-operations.c:4946
+#: ../libnautilus-private/nautilus-file-operations.c:4981
 #, c-format
 msgid "There was an error creating the symlink in %F."
 msgstr "Errorea gertatu da esteka sinbolikoa sortzean %F(e)n."
 
-#: ../libnautilus-private/nautilus-file-operations.c:5240
+#: ../libnautilus-private/nautilus-file-operations.c:5275
 msgid "Setting permissions"
 msgstr "Baimenak ezartzea"
 
 #. localizers: the initial name of a new folder
-#: ../libnautilus-private/nautilus-file-operations.c:5489
+#: ../libnautilus-private/nautilus-file-operations.c:5524
 msgid "untitled folder"
 msgstr "izenik gabeko karpeta"
 
 #. localizers: the initial name of a new empty file
-#: ../libnautilus-private/nautilus-file-operations.c:5497
+#: ../libnautilus-private/nautilus-file-operations.c:5532
 msgid "new file"
 msgstr "fitxategi berria"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5645
+#: ../libnautilus-private/nautilus-file-operations.c:5680
 msgid "Error while creating directory %B."
 msgstr "Errorea \"%B\" direktorioa sortzean."
 
-#: ../libnautilus-private/nautilus-file-operations.c:5647
+#: ../libnautilus-private/nautilus-file-operations.c:5682
 msgid "Error while creating file %B."
 msgstr "Errorea \"%B\" fitxategia sortzean."
 
 #
-#: ../libnautilus-private/nautilus-file-operations.c:5649
+#: ../libnautilus-private/nautilus-file-operations.c:5684
 #, c-format
 msgid "There was an error creating the directory in %F."
 msgstr "Errorea gertatu da direktorioa sortzean %F(e)n."
 
 #: ../libnautilus-private/nautilus-file.c:885
 #: ../libnautilus-private/nautilus-vfs-file.c:264
-#, c-format
 msgid "This file cannot be mounted"
 msgstr "Fitxategi hau ezin da muntatu"
 
@@ -3029,7 +3041,7 @@ msgid "Computer"
 msgstr "Ordenagailua"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:576
-#: ../src/nautilus-places-sidebar.c:481 ../src/nautilus-trash-bar.c:121
+#: ../src/nautilus-places-sidebar.c:485 ../src/nautilus-trash-bar.c:121
 msgid "Trash"
 msgstr "Zakarrontzia"
 
@@ -3076,7 +3088,7 @@ msgstr "Esteka hori ezin da erabili, bere \"%s\" helburua ez dagoelako."
 #: ../src/file-manager/fm-directory-view.c:6780
 #: ../src/file-manager/fm-directory-view.c:7631
 #: ../src/file-manager/fm-directory-view.c:7896
-#: ../src/file-manager/fm-tree-view.c:1287
+#: ../src/file-manager/fm-tree-view.c:1290
 msgid "Mo_ve to Trash"
 msgstr "_Bota zakarrontzira"
 
@@ -3285,8 +3297,8 @@ msgstr "_Arakatu..."
 #: ../libnautilus-private/nautilus-open-with-dialog.c:867
 #: ../src/file-manager/fm-directory-view.c:6599
 #: ../src/file-manager/fm-directory-view.c:7799
-#: ../src/file-manager/fm-tree-view.c:1208
-#: ../src/nautilus-places-sidebar.c:1952
+#: ../src/file-manager/fm-tree-view.c:1211
+#: ../src/nautilus-places-sidebar.c:1956
 msgid "_Open"
 msgstr "_Ireki"
 
@@ -3466,7 +3478,7 @@ msgid "File Management"
 msgstr "Fitxategi-kudeaketa"
 
 #
-#: ../nautilus-home.desktop.in.in.h:1 ../src/file-manager/fm-tree-view.c:1375
+#: ../nautilus-home.desktop.in.in.h:1 ../src/file-manager/fm-tree-view.c:1378
 msgid "Home Folder"
 msgstr "Karpeta nagusia"
 
@@ -3751,13 +3763,13 @@ msgstr ""
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: uneko leihoaren kokalekua eta tamaina"
 
 #: ../src/file-manager/fm-directory-view.c:5693
-#: ../src/file-manager/fm-tree-view.c:966
+#: ../src/file-manager/fm-tree-view.c:969
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "\"%s\" lekuz aldatuko da 'Itsatsi' komandoa hautatzen baduzu"
 
 #: ../src/file-manager/fm-directory-view.c:5697
-#: ../src/file-manager/fm-tree-view.c:970
+#: ../src/file-manager/fm-tree-view.c:973
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "\"%s\" kopiatu egingo da 'Itsatsi' komandoa hautatzen baduzu"
@@ -3785,7 +3797,7 @@ msgstr[1] ""
 "baduzu"
 
 #: ../src/file-manager/fm-directory-view.c:5767
-#: ../src/file-manager/fm-tree-view.c:1009
+#: ../src/file-manager/fm-tree-view.c:1012
 msgid "There is nothing on the clipboard to paste."
 msgstr "Arbelean ez dago itsasteko ezer."
 
@@ -3853,7 +3865,7 @@ msgstr "Ikusi edo aldatu irekitako karpetaren propietateak"
 #. label, accelerator
 #. add the "create folder" menu item
 #: ../src/file-manager/fm-directory-view.c:6585
-#: ../src/file-manager/fm-tree-view.c:1239
+#: ../src/file-manager/fm-tree-view.c:1242
 msgid "Create _Folder"
 msgstr "Sortu _karpeta"
 
@@ -3906,8 +3918,8 @@ msgstr "Ireki hautatutako elementu bakoitza nabigazio leiho batean"
 #: ../src/file-manager/fm-directory-view.c:6757
 #: ../src/file-manager/fm-directory-view.c:7576
 #: ../src/file-manager/fm-directory-view.c:7850
-#: ../src/file-manager/fm-tree-view.c:1219
-#: ../src/nautilus-places-sidebar.c:1960
+#: ../src/file-manager/fm-tree-view.c:1222
+#: ../src/nautilus-places-sidebar.c:1964
 msgid "Open in New _Tab"
 msgstr "Ireki _fitxa berrian"
 
@@ -3987,7 +3999,7 @@ msgstr ""
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6649
 #: ../src/file-manager/fm-directory-view.c:6775
-#: ../src/file-manager/fm-tree-view.c:1271
+#: ../src/file-manager/fm-tree-view.c:1274
 msgid "_Paste Into Folder"
 msgstr "I_tsatsi karpetan"
 
@@ -4080,7 +4092,7 @@ msgstr "Hautatutako elementu guztiak zakarrontzira botatzen ditu"
 #: ../src/file-manager/fm-directory-view.c:6685
 #: ../src/file-manager/fm-directory-view.c:6784
 #: ../src/file-manager/fm-directory-view.c:7917
-#: ../src/file-manager/fm-tree-view.c:1301
+#: ../src/file-manager/fm-tree-view.c:1304
 msgid "_Delete"
 msgstr "E_zabatu"
 
@@ -4179,7 +4191,7 @@ msgstr "Egotzi hautatutako bolumena"
 #: ../src/file-manager/fm-directory-view.c:6719
 #: ../src/file-manager/fm-directory-view.c:6735
 #: ../src/file-manager/fm-directory-view.c:6804
-#: ../src/nautilus-places-sidebar.c:2024
+#: ../src/nautilus-places-sidebar.c:2028
 msgid "_Format"
 msgstr "_Formateatu"
 
@@ -4373,8 +4385,8 @@ msgstr[1] "Atera hautatutako elementu guztiak zakarrontzitik kanpo"
 #. add the "open in new window" menu item
 #: ../src/file-manager/fm-directory-view.c:7551
 #: ../src/file-manager/fm-directory-view.c:7810
-#: ../src/file-manager/fm-tree-view.c:1228
-#: ../src/nautilus-places-sidebar.c:1967
+#: ../src/file-manager/fm-tree-view.c:1231
+#: ../src/nautilus-places-sidebar.c:1971
 msgid "Open in New _Window"
 msgstr "Ireki leiho _berrian"
 
@@ -5188,20 +5200,20 @@ msgstr "Propietateen leihoa sortzen."
 msgid "Select Custom Icon"
 msgstr "Hautatu ikono pertsonalizatua"
 
-#: ../src/file-manager/fm-tree-view.c:1379
+#: ../src/file-manager/fm-tree-view.c:1382
 #: ../src/nautilus-places-sidebar.c:320
 msgid "File System"
 msgstr "Fitxategi-sistema"
 
-#: ../src/file-manager/fm-tree-view.c:1383
+#: ../src/file-manager/fm-tree-view.c:1386
 msgid "Network Neighbourhood"
 msgstr "Sare-ingurunea"
 
-#: ../src/file-manager/fm-tree-view.c:1637
+#: ../src/file-manager/fm-tree-view.c:1640
 msgid "Tree"
 msgstr "Zuhaitza"
 
-#: ../src/file-manager/fm-tree-view.c:1643
+#: ../src/file-manager/fm-tree-view.c:1646
 msgid "Show Tree"
 msgstr "Erakutsi zuhaitza"
 
@@ -5231,8 +5243,8 @@ msgstr ""
 "Nautilus exekutatu aurretik, sortu karpeta horiek edo ezarri Nautilus-ek "
 "karpetak sortzeko behar dituen baimenak."
 
-#: ../src/nautilus-application.c:1249 ../src/nautilus-places-sidebar.c:1680
-#: ../src/nautilus-places-sidebar.c:1703 ../src/nautilus-places-sidebar.c:1726
+#: ../src/nautilus-application.c:1249 ../src/nautilus-places-sidebar.c:1684
+#: ../src/nautilus-places-sidebar.c:1707 ../src/nautilus-places-sidebar.c:1730
 #, c-format
 msgid "Unable to eject %s"
 msgstr "Ezin da %s egotzi"
@@ -5954,27 +5966,27 @@ msgstr "Ireki helbidea"
 msgid "_Location:"
 msgstr "Helbidea:"
 
-#: ../src/nautilus-main.c:326
+#: ../src/nautilus-main.c:329
 msgid "Perform a quick set of self-check tests."
 msgstr "Burutu auto-egiaztapen proba azkarrak."
 
-#: ../src/nautilus-main.c:329
+#: ../src/nautilus-main.c:332
 msgid "Show the version of the program."
 msgstr "Erakutsi programaren bertsioa."
 
-#: ../src/nautilus-main.c:331
+#: ../src/nautilus-main.c:334
 msgid "Create the initial window with the given geometry."
 msgstr "Sortu hasierako leihoa emandako geometriarekin."
 
-#: ../src/nautilus-main.c:331
+#: ../src/nautilus-main.c:334
 msgid "GEOMETRY"
 msgstr "GEOMETRIA"
 
-#: ../src/nautilus-main.c:333
+#: ../src/nautilus-main.c:336
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Zehaztutako URIentzat bakarrik sortu leihoak."
 
-#: ../src/nautilus-main.c:335
+#: ../src/nautilus-main.c:338
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
@@ -5982,19 +5994,19 @@ msgstr ""
 "Ez kudeatu mahaigaina (ez egin jaramonik hobespenen elkarrizketa-koadroan "
 "ezarritako hobespenei)."
 
-#: ../src/nautilus-main.c:337
+#: ../src/nautilus-main.c:340
 msgid "open a browser window."
 msgstr "ireki arakatze-leihoa."
 
-#: ../src/nautilus-main.c:339
+#: ../src/nautilus-main.c:342
 msgid "Quit Nautilus."
 msgstr "Irten Nautilus-etik."
 
-#: ../src/nautilus-main.c:340
+#: ../src/nautilus-main.c:343
 msgid "[URI...]"
 msgstr "[URIa...]"
 
-#: ../src/nautilus-main.c:381
+#: ../src/nautilus-main.c:398
 msgid ""
 "\n"
 "\n"
@@ -6005,17 +6017,17 @@ msgstr ""
 "Arakatu fitxategi-sistema fitxategi-kudeatzailearekin"
 
 #. translators: %s is an option (e.g. --check)
-#: ../src/nautilus-main.c:417 ../src/nautilus-main.c:426
+#: ../src/nautilus-main.c:434 ../src/nautilus-main.c:443
 #, c-format
 msgid "nautilus: %s cannot be used with URIs.\n"
 msgstr "nautilus: %s ezin da URIekin erabili.\n"
 
-#: ../src/nautilus-main.c:422
+#: ../src/nautilus-main.c:439
 #, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check ezin da beste aukerekin erabili.\n"
 
-#: ../src/nautilus-main.c:431
+#: ../src/nautilus-main.c:448
 #, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry ezin da URI bat baino gehiagorekin erabili.\n"
@@ -6292,36 +6304,36 @@ msgstr "Erakutsi oharrak"
 msgid "Network"
 msgstr "Sarea"
 
-#: ../src/nautilus-places-sidebar.c:1859
+#: ../src/nautilus-places-sidebar.c:1863
 #, c-format
 msgid "Unable to poll %s for media changes"
 msgstr "Ezin da euskarri aldakorren %s berreskuratu"
 
-#: ../src/nautilus-places-sidebar.c:1975
+#: ../src/nautilus-places-sidebar.c:1979
 msgid "Remove"
 msgstr "Kendu"
 
 #
-#: ../src/nautilus-places-sidebar.c:1984
+#: ../src/nautilus-places-sidebar.c:1988
 msgid "Rename..."
 msgstr "Izena aldatu..."
 
-#: ../src/nautilus-places-sidebar.c:1996
+#: ../src/nautilus-places-sidebar.c:2000
 msgid "_Mount"
 msgstr "_Muntatu"
 
 #
-#: ../src/nautilus-places-sidebar.c:2017
+#: ../src/nautilus-places-sidebar.c:2021
 msgid "_Rescan"
 msgstr "_Berreskaneatu"
 
 #
-#: ../src/nautilus-places-sidebar.c:2382
+#: ../src/nautilus-places-sidebar.c:2386
 msgid "Places"
 msgstr "Lekuak"
 
 #
-#: ../src/nautilus-places-sidebar.c:2388
+#: ../src/nautilus-places-sidebar.c:2392
 msgid "Show Places"
 msgstr "Erakutsi lekuak"
 
