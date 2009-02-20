@@ -4171,8 +4171,9 @@ style_set (GtkWidget *widget,
 		invalidate_label_sizes (container);
 		nautilus_icon_container_request_update_all (container);
 	}
-	
-	GTK_WIDGET_CLASS (nautilus_icon_container_parent_class)->style_set (widget, previous_style);
+
+	/* Don't chain up to parent, because that sets the background of the window and we're doing
+	   that ourself with some delay, so this would cause flickering */
 }
 
 static gboolean

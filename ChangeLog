@@ -1,3 +1,8 @@
+2009-02-20  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-container.c (style_set):
+	Don't chain up on style_set, as this causes flicker.
+
 2009-02-20  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-file-operations.c (get_link_name),
