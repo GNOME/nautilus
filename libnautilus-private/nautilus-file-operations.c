@@ -3796,7 +3796,7 @@ copy_move_file (CopyMoveJob *copy_job,
 		/*  the run_warning() frees all strings passed in automatically  */
 		primary = copy_job->is_move ? g_strdup (_("You cannot move a file over itself."))
 					    : g_strdup (_("You cannot copy a file over itself."));
-		secondary = g_strdup (_("The source file is overwritten by the destination."));
+		secondary = g_strdup (_("The source file would be overwritten by the destination."));
 		
 		response = run_warning (job,
 					primary,
