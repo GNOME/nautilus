@@ -9574,15 +9574,11 @@ fm_directory_view_set_property (GObject         *object,
     }
 }
 
-/* handle Shift+Scroll, which will cause a zoom-in/out */
-static gboolean
-fm_directory_view_scroll_event (GtkWidget *widget,
-				GdkEventScroll *event)
+
+gboolean
+fm_directory_view_handle_scroll_event (FMDirectoryView *directory_view,
+				       GdkEventScroll *event)
 {
-	FMDirectoryView *directory_view;
-
-	directory_view = FM_DIRECTORY_VIEW (widget);
-
 	if (event->state & GDK_CONTROL_MASK) {
 		switch (event->direction) {
 		case GDK_SCROLL_UP:
@@ -9602,6 +9598,21 @@ fm_directory_view_scroll_event (GtkWidget *widget,
 		default:
 			g_assert_not_reached ();
 		}
+	}
+
+	return FALSE;
+}
+
+/* handle Shift+Scroll, which will cause a zoom-in/out */
+static gboolean
+fm_directory_view_scroll_event (GtkWidget *widget,
+				GdkEventScroll *event)
+{
+	FMDirectoryView *directory_view;
+
+	directory_view = FM_DIRECTORY_VIEW (widget);
+	if (fm_directory_view_handle_scroll_event (directory_view, event)) {
+		return TRUE;
 	}
 
 	return GTK_WIDGET_CLASS (parent_class)->scroll_event (widget, event);

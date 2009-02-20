@@ -439,6 +439,8 @@ void                fm_directory_view_ignore_hidden_file_preferences   (FMDirect
 void                fm_directory_view_set_show_foreign                 (FMDirectoryView  *view,
 		                                                        gboolean          show_foreign);
 void                fm_directory_view_init_view_iface                  (NautilusViewIface *iface);
+gboolean            fm_directory_view_handle_scroll_event              (FMDirectoryView  *view,
+									GdkEventScroll   *event);
 void                fm_directory_view_handle_netscape_url_drop         (FMDirectoryView  *view,
 									const char       *encoded_url,
 									const char       *target_uri,

@@ -1,3 +1,14 @@
+2009-02-20  Christian Neumair  <cneumair@gnome.org>
+
+	* src/file-manager/fm-directory-view.c
+	(fm_directory_view_handle_scroll_event),
+	(fm_directory_view_scroll_event):
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-icon-view.c (fm_icon_view_scroll_event),
+	(fm_icon_view_class_init):
+	Treat vertical scroll events as horizontal ones if compact view is
+	enabled, and if they do not bump the zoom level. Fixes #571770.
+
 2009-02-20  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-file-operations.c (copy_move_file):
