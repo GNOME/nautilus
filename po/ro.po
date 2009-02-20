@@ -9,15 +9,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.ro\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus&component=general\n"
-"POT-Creation-Date: 2009-02-19 17:55+0000\n"
-"PO-Revision-Date: 2009-02-20 13:12+0200\n"
+"POT-Creation-Date: 2009-02-20 20:26+0000\n"
+"PO-Revision-Date: 2009-02-20 23:18+0200\n"
 "Last-Translator: Adi Roiban <adi@roiban.ro>\n"
 "Language-Team: Gnome Romanian Team <gnomero-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n == 1 ? 0: (((n % 100 > 19) || ((n % 100 == 0) && (n != 0))) ? 2: 1));\n"
-
 
 #: ../cut-n-paste-code/libegg/eggdesktopfile.c:165
 #, c-format
@@ -483,7 +482,7 @@ msgstr "O listă de câmpuri explicative afișate sub iconițe în modul de vizu
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
 #, no-c-format
 msgid "A string specifying how parts of overlong file names should be replaced by ellipses, depending on the zoom level. Each of the list entries is of the form \"Zoom Level:Integer\". For each specified zoom level, if the given integer is larger than 0, the file name will not exceed the given number of lines. If the integer is 0 or smaller, no limit is imposed on the specified zoom level. A default entry of the form \"Integer\" without any specified zoom level is also allowed. It defines the maximum number of lines for all other zoom levels. Examples: 0 - always display overlong file names; 3 - shorten file names if they exceed three lines; smallest:5,smaller:4,0 - shorten file names if they exceed five lines for zoom level \"smallest\". Shorten file names if they exceed four lines for zoom level \"smaller\". Do not shorten file names for other zoom levels. Available zoom levels: smallest (33%), smaller (50%), small (66%), standard (100%), large (150%), larger (200%), largest (400%)"
-msgstr ""
+msgstr "Un șir de caractere ce specifică cum să fie înlocuite prin puncte de suspensie, părți din nume prea lungi de fișiere. Fiecare element al liste este de forma „Zoom Level:Întreg”. Pentru fiecare nivel de scalare specificat, dacă valoarea dată este mai mare decât 0, numele fișierului nu va depăzi lungimea valorii date. Dacă valoare este 0 sau mai mică, nu se impune nici o limită pentru nivelul de scalare specificat. Nu este permisă o valoare implicită, fără specificarea nivelului de scalare. O astfel de valoare definește numărul maxim de linii a tuturor celorlate nivele. Exemple: 0 - afișează întotdeanua numele lungi; 3 - scurtează numele fișierelor dacă depășesc 3 linii; „smallest:5,smaller:4,0” - scurtează numele fișierelor dacă depășesc 5 linii pentru nivelul de scalare „smallest”. Nu scurtează numele fișierelor pentru alte nivele. Nivele disponibile: smallest (33%), smaller (50%), small (66%), standard (100%), large (150%), larger (200%), largest (400%)"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:7
 msgid "All columns have same width"
@@ -898,7 +897,7 @@ msgstr "Compromisul de viteză pentru afișarea numărului de elemente dintr-un 
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:112
 msgid "Text Ellipsis Limit"
-msgstr ""
+msgstr "Limită omisie text"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:113
 msgid "The default size of an icon for a thumbnail in the icon view."
@@ -1444,12 +1443,19 @@ msgstr[0] "aproximativ %'d oră"
 msgstr[1] "aproximativ %'d ore"
 msgstr[2] "aproximativ %'d de ore"
 
+#. duplicate original file name
+#: ../libnautilus-private/nautilus-file-operations.c:354
+#, c-format
+#| msgid "%"
+msgid "%s"
+msgstr "%s"
+
 #. appended to new link file
 #. Note to localizers: convert file type string for file
 #. * (e.g. "folder", "plain text") to file type for symbolic link
 #. * to that kind of file (e.g. "link to folder").
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:354
+#: ../libnautilus-private/nautilus-file-operations.c:358
 #: ../libnautilus-private/nautilus-file.c:5592
 #: ../src/file-manager/fm-directory-view.c:9363
 #, c-format
@@ -1457,7 +1463,7 @@ msgid "Link to %s"
 msgstr "Legătură la %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:358
+#: ../libnautilus-private/nautilus-file-operations.c:362
 #, c-format
 msgid "Another link to %s"
 msgstr "O altă legătură la %s"
@@ -1466,25 +1472,25 @@ msgstr "O altă legătură la %s"
 #. * if there's no way to do that nicely for a
 #. * particular language.
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:374
+#: ../libnautilus-private/nautilus-file-operations.c:378
 #, c-format
 msgid "%'dst link to %s"
 msgstr "%'d legătura la %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:378
+#: ../libnautilus-private/nautilus-file-operations.c:382
 #, c-format
 msgid "%'dnd link to %s"
 msgstr "%'d legătura la %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:382
+#: ../libnautilus-private/nautilus-file-operations.c:386
 #, c-format
 msgid "%'drd link to %s"
 msgstr "%'d legătura la %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:386
+#: ../libnautilus-private/nautilus-file-operations.c:390
 #, c-format
 msgid "%'dth link to %s"
 msgstr "%'d legătura la %s"
@@ -1494,12 +1500,12 @@ msgstr "%'d legătura la %s"
 #. * make some or all of them match.
 #.
 #. localizers: tag used to detect the first copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:425
+#: ../libnautilus-private/nautilus-file-operations.c:429
 msgid " (copy)"
 msgstr " (copie)"
 
 #. localizers: tag used to detect the second copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:427
+#: ../libnautilus-private/nautilus-file-operations.c:431
 msgid " (another copy)"
 msgstr " (altă copie)"
 
@@ -1507,36 +1513,36 @@ msgstr " (altă copie)"
 #. localizers: tag used to detect the x12th copy of a file
 #. localizers: tag used to detect the x13th copy of a file
 #. localizers: tag used to detect the xxth copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:430
-#: ../libnautilus-private/nautilus-file-operations.c:432
 #: ../libnautilus-private/nautilus-file-operations.c:434
-#: ../libnautilus-private/nautilus-file-operations.c:444
+#: ../libnautilus-private/nautilus-file-operations.c:436
+#: ../libnautilus-private/nautilus-file-operations.c:438
+#: ../libnautilus-private/nautilus-file-operations.c:448
 msgid "th copy)"
 msgstr "-a copie)"
 
 #. localizers: tag used to detect the x1st copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:437
+#: ../libnautilus-private/nautilus-file-operations.c:441
 msgid "st copy)"
 msgstr "-a copie)"
 
 #. localizers: tag used to detect the x2nd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:439
+#: ../libnautilus-private/nautilus-file-operations.c:443
 msgid "nd copy)"
 msgstr "-a copie)"
 
 #. localizers: tag used to detect the x3rd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:441
+#: ../libnautilus-private/nautilus-file-operations.c:445
 msgid "rd copy)"
 msgstr "-a copie)"
 
 #. localizers: appended to first file copy
-#: ../libnautilus-private/nautilus-file-operations.c:458
+#: ../libnautilus-private/nautilus-file-operations.c:462
 #, c-format
 msgid "%s (copy)%s"
 msgstr "%s (copie)%s"
 
 #. localizers: appended to second file copy
-#: ../libnautilus-private/nautilus-file-operations.c:460
+#: ../libnautilus-private/nautilus-file-operations.c:464
 #, c-format
 msgid "%s (another copy)%s"
 msgstr "%s (altă copie)%s"
@@ -1545,48 +1551,48 @@ msgstr "%s (altă copie)%s"
 #. localizers: appended to x12th file copy
 #. localizers: appended to x13th file copy
 #. localizers: appended to xxth file copy
-#: ../libnautilus-private/nautilus-file-operations.c:463
-#: ../libnautilus-private/nautilus-file-operations.c:465
 #: ../libnautilus-private/nautilus-file-operations.c:467
-#: ../libnautilus-private/nautilus-file-operations.c:476
+#: ../libnautilus-private/nautilus-file-operations.c:469
+#: ../libnautilus-private/nautilus-file-operations.c:471
+#: ../libnautilus-private/nautilus-file-operations.c:480
 #, c-format
 msgid "%s (%'dth copy)%s"
 msgstr "%s (%'d copie)%s"
 
 #. localizers: appended to x1st file copy
-#: ../libnautilus-private/nautilus-file-operations.c:470
+#: ../libnautilus-private/nautilus-file-operations.c:474
 #, c-format
 msgid "%s (%'dst copy)%s"
 msgstr "%s (%'d copie)%s"
 
 #. localizers: appended to x2nd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:472
+#: ../libnautilus-private/nautilus-file-operations.c:476
 #, c-format
 msgid "%s (%'dnd copy)%s"
 msgstr "%s (%'d copie)%s"
 
 #. localizers: appended to x3rd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:474
+#: ../libnautilus-private/nautilus-file-operations.c:478
 #, c-format
 msgid "%s (%'drd copy)%s"
 msgstr "%s (%'d copie)%s"
 
 #. localizers: opening parentheses to match the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:574
+#: ../libnautilus-private/nautilus-file-operations.c:578
 msgid " ("
 msgstr " ("
 
 #. localizers: opening parentheses of the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:582
+#: ../libnautilus-private/nautilus-file-operations.c:586
 #, c-format
 msgid " (%'d"
 msgstr " (%'d"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1251
+#: ../libnautilus-private/nautilus-file-operations.c:1255
 msgid "Are you sure you want to permanently delete \"%B\" from the trash?"
 msgstr "Doriți să ștergeți ireversibil „%B” de la gunoi?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1254
+#: ../libnautilus-private/nautilus-file-operations.c:1258
 #, c-format
 msgid "Are you sure you want to permanently delete the %'d selected item from the trash?"
 msgid_plural "Are you sure you want to permanently delete the %'d selected items from the trash?"
@@ -1594,32 +1600,32 @@ msgstr[0] "Doriți să ștergeți ireversibil %'d element selectat de la gunoi?"
 msgstr[1] "Doriți să ștergeți ireversibil %'d elemente selectate de la gunoi?"
 msgstr[2] "Doriți să ștergeți ireversibil %'d de elemente selectate de la gunoi?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1264
-#: ../libnautilus-private/nautilus-file-operations.c:1332
+#: ../libnautilus-private/nautilus-file-operations.c:1268
+#: ../libnautilus-private/nautilus-file-operations.c:1336
 msgid "If you delete an item, it will be permanently lost."
 msgstr "Dacă ștergeți un element, nu îl veți mai putea recupera."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1284
+#: ../libnautilus-private/nautilus-file-operations.c:1288
 msgid "Empty all of the items from the trash?"
 msgstr "Ștergeți toate elementele din gunoi?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1288
+#: ../libnautilus-private/nautilus-file-operations.c:1292
 msgid "If you choose to empty the trash, all items in it will be permanently lost. Please note that you can also delete them separately."
 msgstr "Dacă alegeți să goliți gunoiul, toate elementele din el vor fi pierdute permanent. Nu uitați faptul ca puteți să ștergeți aceste elemente și separat."
 
 #. Empty Trash menu item
-#: ../libnautilus-private/nautilus-file-operations.c:1293
-#: ../libnautilus-private/nautilus-file-operations.c:2129
+#: ../libnautilus-private/nautilus-file-operations.c:1297
+#: ../libnautilus-private/nautilus-file-operations.c:2133
 #: ../src/nautilus-places-sidebar.c:2037
 #: ../src/nautilus-trash-bar.c:125
 msgid "Empty _Trash"
 msgstr "Golește _gunoiul"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1320
+#: ../libnautilus-private/nautilus-file-operations.c:1324
 msgid "Are you sure you want to permanently delete \"%B\"?"
 msgstr "Doriți să ștergeți ireversibil „%B” ?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1323
+#: ../libnautilus-private/nautilus-file-operations.c:1327
 #, c-format
 msgid "Are you sure you want to permanently delete the %'d selected item?"
 msgid_plural "Are you sure you want to permanently delete the %'d selected items?"
@@ -1627,7 +1633,7 @@ msgstr[0] "Doriți să ștergeți ireversibil %'d element selectat?"
 msgstr[1] "Doriți să ștergeți ireversibil %'d elemente selectate?"
 msgstr[2] "Doriți să ștergeți ireversibil %'d de elemente selectate?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1366
+#: ../libnautilus-private/nautilus-file-operations.c:1370
 #, c-format
 msgid "%'d file left to delete"
 msgid_plural "%'d files left to delete"
@@ -1635,66 +1641,66 @@ msgstr[0] "%'d fișier rămas pentru ștergere"
 msgstr[1] "%'d fișiere rămase pentru ștergere"
 msgstr[2] "%'d de fișiere rămase pentru ștergere"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1372
+#: ../libnautilus-private/nautilus-file-operations.c:1376
 msgid "Deleting files"
 msgstr "Se șterg fișierele"
 
 #. To translators: %T will expand to a time like "2 minutes".
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:1386
+#: ../libnautilus-private/nautilus-file-operations.c:1390
 msgid "%T left"
 msgid_plural "%T left"
 msgstr[0] "%T rămas"
 msgstr[1] "%T rămase"
 msgstr[2] "%T rămase"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1453
-#: ../libnautilus-private/nautilus-file-operations.c:1487
-#: ../libnautilus-private/nautilus-file-operations.c:1526
-#: ../libnautilus-private/nautilus-file-operations.c:1609
-#: ../libnautilus-private/nautilus-file-operations.c:2356
+#: ../libnautilus-private/nautilus-file-operations.c:1457
+#: ../libnautilus-private/nautilus-file-operations.c:1491
+#: ../libnautilus-private/nautilus-file-operations.c:1530
+#: ../libnautilus-private/nautilus-file-operations.c:1613
+#: ../libnautilus-private/nautilus-file-operations.c:2360
 msgid "Error while deleting."
 msgstr "Eroare la ștergere."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1457
+#: ../libnautilus-private/nautilus-file-operations.c:1461
 msgid "Files in the folder \"%B\" cannot be deleted because you do not have permissions to see them."
 msgstr "Fișiere din dosarul „%B” nu pot fi șterse deoarece nu aveți suficiente permisiuni."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1460
-#: ../libnautilus-private/nautilus-file-operations.c:2415
-#: ../libnautilus-private/nautilus-file-operations.c:3377
+#: ../libnautilus-private/nautilus-file-operations.c:1464
+#: ../libnautilus-private/nautilus-file-operations.c:2419
+#: ../libnautilus-private/nautilus-file-operations.c:3381
 msgid "There was an error getting information about the files in the folder \"%B\"."
 msgstr "S-a produs o eroare la obținerea informațiilor despre fișierele din dosarul „%B”."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1469
-#: ../libnautilus-private/nautilus-file-operations.c:3386
+#: ../libnautilus-private/nautilus-file-operations.c:1473
+#: ../libnautilus-private/nautilus-file-operations.c:3390
 msgid "_Skip files"
 msgstr "_Omite fișiere"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1490
+#: ../libnautilus-private/nautilus-file-operations.c:1494
 msgid "The folder \"%B\" cannot be deleted because you do not have permissions to read it."
 msgstr "Dosarul „%B” nu a putu fi șters deoarece nu aveți suficiente permisiuni pentru citirea lui."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1493
-#: ../libnautilus-private/nautilus-file-operations.c:2454
-#: ../libnautilus-private/nautilus-file-operations.c:3422
+#: ../libnautilus-private/nautilus-file-operations.c:1497
+#: ../libnautilus-private/nautilus-file-operations.c:2458
+#: ../libnautilus-private/nautilus-file-operations.c:3426
 msgid "There was an error reading the folder \"%B\"."
 msgstr "S-a produs o eroare la citirea dosarului „%B”."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1527
+#: ../libnautilus-private/nautilus-file-operations.c:1531
 msgid "Could not remove the folder %B."
 msgstr "Dosarul %B nu se poate șterge."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1610
+#: ../libnautilus-private/nautilus-file-operations.c:1614
 msgid "There was an error deleting %B."
 msgstr "S-a produs o eroare la ștergerea %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1690
+#: ../libnautilus-private/nautilus-file-operations.c:1694
 msgid "Moving files to trash"
 msgstr "Se mută fișiere la gunoi"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1692
+#: ../libnautilus-private/nautilus-file-operations.c:1696
 #, c-format
 msgid "%'d file left to trash"
 msgid_plural "%'d files left to trash"
@@ -1702,40 +1708,40 @@ msgstr[0] "%'d fișier rămas la gunoi"
 msgstr[1] "%'d fișiere rămase la gunoi"
 msgstr[2] "%'d de fișiere rămase la gunoi"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1742
+#: ../libnautilus-private/nautilus-file-operations.c:1746
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr "Fișierul nu poate fi mutat la gunoi. Doriți să-l ștergeți imediat?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1743
+#: ../libnautilus-private/nautilus-file-operations.c:1747
 msgid "The file \"%B\" cannot be moved to the trash."
 msgstr "Fișierul „%B” nu poate fi mutat la gunoi."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1977
+#: ../libnautilus-private/nautilus-file-operations.c:1981
 msgid "Unable to eject %V"
 msgstr "Nu s-a putut scoate %V"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1979
+#: ../libnautilus-private/nautilus-file-operations.c:1983
 msgid "Unable to unmount %V"
 msgstr "Nu s-a putut demonta %V"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2119
+#: ../libnautilus-private/nautilus-file-operations.c:2123
 msgid "Do you want to empty the trash before you unmount?"
 msgstr "Doriți să goliți coșul de gunoi înainte de a-l demonta?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2121
+#: ../libnautilus-private/nautilus-file-operations.c:2125
 msgid "In order to regain the free space on this volume the trash must be emptied. All trashed items on the volume will be permanently lost."
 msgstr "Pentru a recâștiga spațiu liber pe acest volum trebuie golit coșul de gunoi. Toate fișierele din coș vor fi șterse ireversibil."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2127
+#: ../libnautilus-private/nautilus-file-operations.c:2131
 msgid "Do _not Empty Trash"
 msgstr "_Nu goli gunoiul"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2226
+#: ../libnautilus-private/nautilus-file-operations.c:2230
 #, c-format
 msgid "Unable to mount %s"
 msgstr "Nu s-a putut monta %s"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2303
+#: ../libnautilus-private/nautilus-file-operations.c:2307
 #, c-format
 msgid "Preparing to copy %'d file (%S)"
 msgid_plural "Preparing to copy %'d files (%S)"
@@ -1743,7 +1749,7 @@ msgstr[0] "Se pregătește pentru copiere %'d fișier (%S)"
 msgstr[1] "Se pregătesc pentru copiere %'d fișiere (%S)"
 msgstr[2] "Se pregătesc pentru copiere %'d de fișiere (%S)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2309
+#: ../libnautilus-private/nautilus-file-operations.c:2313
 #, c-format
 msgid "Preparing to move %'d file (%S)"
 msgid_plural "Preparing to move %'d files (%S)"
@@ -1751,7 +1757,7 @@ msgstr[0] "Se pregătește pentru mutare %'d fișier (%S)"
 msgstr[1] "Se pregătesc pentru mutare %'d fișiere (%S)"
 msgstr[2] "Se pregătesc pentru mutare %'d de fișiere (%S)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2315
+#: ../libnautilus-private/nautilus-file-operations.c:2319
 #, c-format
 msgid "Preparing to delete %'d file (%S)"
 msgid_plural "Preparing to delete %'d files (%S)"
@@ -1759,7 +1765,7 @@ msgstr[0] "Se pregătește pentru ștergere %'d fișier (%S)"
 msgstr[1] "Se pregătesc pentru ștergere %'d fișiere (%S)"
 msgstr[2] "Se pregătesc pentru ștergere %'d de fișiere (%S)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2321
+#: ../libnautilus-private/nautilus-file-operations.c:2325
 #, c-format
 msgid "Preparing to trash %'d file"
 msgid_plural "Preparing to trash %'d files"
@@ -1767,119 +1773,119 @@ msgstr[0] "Se pregătește pentru mutare la gunoi %'d fișier"
 msgstr[1] "Se pregătesc pentru mutare la gunoi %'d fișiere"
 msgstr[2] "Se pregătesc pentru mutare la gunoi %'d de fișiere"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2352
-#: ../libnautilus-private/nautilus-file-operations.c:3243
-#: ../libnautilus-private/nautilus-file-operations.c:3369
-#: ../libnautilus-private/nautilus-file-operations.c:3414
+#: ../libnautilus-private/nautilus-file-operations.c:2356
+#: ../libnautilus-private/nautilus-file-operations.c:3247
+#: ../libnautilus-private/nautilus-file-operations.c:3373
+#: ../libnautilus-private/nautilus-file-operations.c:3418
 msgid "Error while copying."
 msgstr "Eroare la copiere."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2354
-#: ../libnautilus-private/nautilus-file-operations.c:3367
-#: ../libnautilus-private/nautilus-file-operations.c:3412
+#: ../libnautilus-private/nautilus-file-operations.c:2358
+#: ../libnautilus-private/nautilus-file-operations.c:3371
+#: ../libnautilus-private/nautilus-file-operations.c:3416
 msgid "Error while moving."
 msgstr "Eroare la mutare."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2358
+#: ../libnautilus-private/nautilus-file-operations.c:2362
 msgid "Error while moving files to trash."
 msgstr "Eroare la mutarea fișierelor la gunoi."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2412
+#: ../libnautilus-private/nautilus-file-operations.c:2416
 msgid "Files in the folder \"%B\" cannot be handled because you do not have permissions to see them."
 msgstr "Fișiere din dosarul „%B” nu pot fi accesate deoarece nu aveți suficiente permisiuni."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2451
+#: ../libnautilus-private/nautilus-file-operations.c:2455
 msgid "The folder \"%B\" cannot be handled because you do not have permissions to read it."
 msgstr "Dosarul „%B” nu poate fi accesat deoarece nu aveți permisiuni de citire."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2528
+#: ../libnautilus-private/nautilus-file-operations.c:2532
 msgid "The file \"%B\" cannot be handled because you do not have permissions to read it."
 msgstr "Fișierul „%B” nu poate fi accesat deoarece nu aveți permisiuni de citire."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2531
+#: ../libnautilus-private/nautilus-file-operations.c:2535
 msgid "There was an error getting information about \"%B\"."
 msgstr "S-a produs o eroare la obținerea informațiilor despre „%B”."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2631
-#: ../libnautilus-private/nautilus-file-operations.c:2673
-#: ../libnautilus-private/nautilus-file-operations.c:2706
-#: ../libnautilus-private/nautilus-file-operations.c:2732
+#: ../libnautilus-private/nautilus-file-operations.c:2635
+#: ../libnautilus-private/nautilus-file-operations.c:2677
+#: ../libnautilus-private/nautilus-file-operations.c:2710
+#: ../libnautilus-private/nautilus-file-operations.c:2736
 msgid "Error while copying to \"%B\"."
 msgstr "S-a produs o eroare la copierea în „%B”."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2635
+#: ../libnautilus-private/nautilus-file-operations.c:2639
 msgid "You do not have permissions to access the destination folder."
 msgstr "Nu aveți permisiuni pentru a accesa dosarul destinație."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2637
+#: ../libnautilus-private/nautilus-file-operations.c:2641
 msgid "There was an error getting information about the destination."
 msgstr "S-a produs o eroare la obținerea informațiilor despre destinație."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2674
+#: ../libnautilus-private/nautilus-file-operations.c:2678
 msgid "The destination is not a folder."
 msgstr "Destinația nu este un dosar."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2707
+#: ../libnautilus-private/nautilus-file-operations.c:2711
 msgid "There is not enough space on the destination. Try to remove files to make space."
 msgstr "Destinația nu are suficient spațiu liber. Pentru a obține spațiu încercați să ștergeți fișiere."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2709
+#: ../libnautilus-private/nautilus-file-operations.c:2713
 #, c-format
 msgid "There is %S available, but %S is required."
 msgstr "Există %S disponibili, dar sunt necesari %S."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2733
+#: ../libnautilus-private/nautilus-file-operations.c:2737
 msgid "The destination is read-only."
 msgstr "Destinația este doar pentru citire."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2792
+#: ../libnautilus-private/nautilus-file-operations.c:2796
 msgid "Moving \"%B\" to \"%B\""
 msgstr "Se mută „%B” în „%B”"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2793
+#: ../libnautilus-private/nautilus-file-operations.c:2797
 msgid "Copying \"%B\" to \"%B\""
 msgstr "Se copiază „%B” în „%B”"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2798
+#: ../libnautilus-private/nautilus-file-operations.c:2802
 msgid "Duplicating \"%B\""
 msgstr "Se duplică „%B”"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2806
+#: ../libnautilus-private/nautilus-file-operations.c:2810
 msgid "Moving %'d file (in \"%B\") to \"%B\""
 msgid_plural "Moving %'d files (in \"%B\") to \"%B\""
 msgstr[0] "Se mută %'d fișier (din „%B”) în „%B”"
 msgstr[1] "Se mută %'d fișiere (din „%B”) în „%B”"
 msgstr[2] "Se mută %'d de fișiere (din „%B”) în „%B”"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2810
+#: ../libnautilus-private/nautilus-file-operations.c:2814
 msgid "Copying %'d file (in \"%B\") to \"%B\""
 msgid_plural "Copying %'d files (in \"%B\") to \"%B\""
 msgstr[0] "Se copiază %'d fișier (în „%B”) în „%B”"
 msgstr[1] "Se copiază %'d fișiere (în „%B”) în „%B”"
 msgstr[2] "Se copiază %'d de fișiere (în „%B”) în „%B”"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2818
+#: ../libnautilus-private/nautilus-file-operations.c:2822
 msgid "Duplicating %'d file (in \"%B\")"
 msgid_plural "Duplicating %'d files (in \"%B\")"
 msgstr[0] "Se duplică %'d fișier (în „%B”)"
 msgstr[1] "Se duplică %'d fișiere (în „%B”)"
 msgstr[2] "Se duplică %'d de fișiere (în „%B”)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2828
+#: ../libnautilus-private/nautilus-file-operations.c:2832
 msgid "Moving %'d file to \"%B\""
 msgid_plural "Moving %'d files to \"%B\""
 msgstr[0] "Se mută %'d fișier în „%B”"
 msgstr[1] "Se mută %'d fișiere în „%B”"
 msgstr[2] "Se mută %'d de fișiere în „%B”"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2832
+#: ../libnautilus-private/nautilus-file-operations.c:2836
 msgid "Copying %'d file to \"%B\""
 msgid_plural "Copying %'d files to \"%B\""
 msgstr[0] "Se copiază %'d fișier în „%B”"
 msgstr[1] "Se copiază %'d fișiere în „%B”"
 msgstr[2] "Se copiază %'d de fișiere în „%B”"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2838
+#: ../libnautilus-private/nautilus-file-operations.c:2842
 #, c-format
 msgid "Duplicating %'d file"
 msgid_plural "Duplicating %'d files"
@@ -1888,7 +1894,7 @@ msgstr[1] "Se duplică %'d fișiere"
 msgstr[2] "Se duplică %'d de fișiere"
 
 #. To translators: %S will expand to a size like "2 bytes" or "3 MB", so something like "4 kb of 4 MB"
-#: ../libnautilus-private/nautilus-file-operations.c:2858
+#: ../libnautilus-private/nautilus-file-operations.c:2862
 #, c-format
 msgid "%S of %S"
 msgstr "%S din %S"
@@ -1898,131 +1904,132 @@ msgstr "%S din %S"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:2869
+#: ../libnautilus-private/nautilus-file-operations.c:2873
 msgid "%S of %S — %T left (%S/sec)"
 msgid_plural "%S of %S — %T left (%S/sec)"
 msgstr[0] "%S din %S — %T rămas (%S/sec)"
 msgstr[1] "%S din %S — %T rămase (%S/sec)"
 msgstr[2] "%S din %S — %T rămase (%S/sec)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3247
+#: ../libnautilus-private/nautilus-file-operations.c:3251
 msgid "The folder \"%B\" cannot be copied because you do not have permissions to create it in the destination."
 msgstr "Dosarul „%B” nu a putut fi copiat deoarece nu aveți permisiuni de creare în destinație."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3250
+#: ../libnautilus-private/nautilus-file-operations.c:3254
 msgid "There was an error creating the folder \"%B\"."
 msgstr "S-a produs o eroare la crearea dosarului „%B”."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3374
+#: ../libnautilus-private/nautilus-file-operations.c:3378
 msgid "Files in the folder \"%B\" cannot be copied because you do not have permissions to see them."
 msgstr "Fișiere din dosarul „%B” nu pot fi copiate deoarece nu aveți permisiuni de citire."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3419
+#: ../libnautilus-private/nautilus-file-operations.c:3423
 msgid "The folder \"%B\" cannot be copied because you do not have permissions to read it."
 msgstr "Dosarul „%B” nu poate fi copiat deoarece nu aveți permisiuni de citire."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3464
-#: ../libnautilus-private/nautilus-file-operations.c:4024
-#: ../libnautilus-private/nautilus-file-operations.c:4595
+#: ../libnautilus-private/nautilus-file-operations.c:3468
+#: ../libnautilus-private/nautilus-file-operations.c:4028
+#: ../libnautilus-private/nautilus-file-operations.c:4599
 msgid "Error while moving \"%B\"."
 msgstr "Eroare la mutarea „%B”."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3465
+#: ../libnautilus-private/nautilus-file-operations.c:3469
 msgid "Could not remove the source folder."
 msgstr "Dosarul sursă nu se poate șterge."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3550
-#: ../libnautilus-private/nautilus-file-operations.c:3591
-#: ../libnautilus-private/nautilus-file-operations.c:4026
-#: ../libnautilus-private/nautilus-file-operations.c:4100
+#: ../libnautilus-private/nautilus-file-operations.c:3554
+#: ../libnautilus-private/nautilus-file-operations.c:3595
+#: ../libnautilus-private/nautilus-file-operations.c:4030
+#: ../libnautilus-private/nautilus-file-operations.c:4104
 msgid "Error while copying \"%B\"."
 msgstr "Eroare la copierea „%B”."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3551
+#: ../libnautilus-private/nautilus-file-operations.c:3555
 #, c-format
 msgid "Could not remove files from the already existing folder %F."
 msgstr "Nu s-au putut șterge fișiere din dosarul existent %F."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3592
+#: ../libnautilus-private/nautilus-file-operations.c:3596
 #, c-format
 msgid "Could not remove the already existing file %F."
 msgstr "Nu s-a putut șterge fișierul existent %F."
 
 #. the run_warning() frees all strings passed in automatically
-#: ../libnautilus-private/nautilus-file-operations.c:3763
-#: ../libnautilus-private/nautilus-file-operations.c:4421
+#: ../libnautilus-private/nautilus-file-operations.c:3767
+#: ../libnautilus-private/nautilus-file-operations.c:4425
 msgid "You cannot move a folder into itself."
 msgstr "Nu puteți muta un dosar în el însuși."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3764
-#: ../libnautilus-private/nautilus-file-operations.c:4422
+#: ../libnautilus-private/nautilus-file-operations.c:3768
+#: ../libnautilus-private/nautilus-file-operations.c:4426
 msgid "You cannot copy a folder into itself."
 msgstr "Nu puteți copia un dosar în el însuși."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3765
-#: ../libnautilus-private/nautilus-file-operations.c:4423
+#: ../libnautilus-private/nautilus-file-operations.c:3769
+#: ../libnautilus-private/nautilus-file-operations.c:4427
 msgid "The destination folder is inside the source folder."
 msgstr "Dosarul destinație este în interiorul dosarului sursă."
 
 #. the run_warning() frees all strings passed in automatically
-#: ../libnautilus-private/nautilus-file-operations.c:3797
+#: ../libnautilus-private/nautilus-file-operations.c:3801
 msgid "You cannot move a file over itself."
 msgstr "Nu puteți muta un fișier peste el însuși."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3798
+#: ../libnautilus-private/nautilus-file-operations.c:3802
 msgid "You cannot copy a file over itself."
 msgstr "Nu puteți copia un fișier în el însuși."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3799
-msgid "The source file is overwritten by the destination."
-msgstr "Fișierul sursă e suprascris de destinație."
+#: ../libnautilus-private/nautilus-file-operations.c:3803
+#| msgid "The source file is overwritten by the destination."
+msgid "The source file would be overwritten by the destination."
+msgstr "Fișierul sursă ar fi suprascris de destinație."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3922
-#: ../libnautilus-private/nautilus-file-operations.c:4504
+#: ../libnautilus-private/nautilus-file-operations.c:3926
+#: ../libnautilus-private/nautilus-file-operations.c:4508
 msgid "A folder named \"%B\" already exists.  Do you want to merge the source folder?"
 msgstr "Există deja un dosar cu numele „%B”. Doriți să combinați dosarul sursă."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3924
+#: ../libnautilus-private/nautilus-file-operations.c:3928
 msgid "The source folder already exists in \"%B\".  Merging will ask for confirmation before replacing any files in the folder that conflict with the files being copied."
 msgstr "Dosarul sursă există deja în „%B”. Combinarea vă va întreba pentru confirmare înainte de înlocuirea oricărui fișier ce întră în conflict cu fișierele copiate."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3929
-#: ../libnautilus-private/nautilus-file-operations.c:4511
+#: ../libnautilus-private/nautilus-file-operations.c:3933
+#: ../libnautilus-private/nautilus-file-operations.c:4515
 msgid "A folder named \"%B\" already exists.  Do you want to replace it?"
 msgstr "Există deja un dosar cu numele „%B”. Doriți să îl înlocuiți?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3931
-#: ../libnautilus-private/nautilus-file-operations.c:4513
+#: ../libnautilus-private/nautilus-file-operations.c:3935
+#: ../libnautilus-private/nautilus-file-operations.c:4517
 #, c-format
 msgid "The folder already exists in \"%F\".  Replacing it will remove all files in the folder."
 msgstr "Există deja dosarul în „%F”. Înlocuirea lui va șterge toare fișierele din el."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3936
-#: ../libnautilus-private/nautilus-file-operations.c:4518
+#: ../libnautilus-private/nautilus-file-operations.c:3940
+#: ../libnautilus-private/nautilus-file-operations.c:4522
 msgid "A file named \"%B\" already exists.  Do you want to replace it?"
 msgstr "Există deja un fișier cu numele „%B”. Doriți să fie înlocuit?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3938
-#: ../libnautilus-private/nautilus-file-operations.c:4520
+#: ../libnautilus-private/nautilus-file-operations.c:3942
+#: ../libnautilus-private/nautilus-file-operations.c:4524
 #, c-format
 msgid "The file already exists in \"%F\".  Replacing it will overwrite its content."
 msgstr "Există deja fișierul în „%F”. Prin înlocuire conținutul va fi suprascris."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4028
+#: ../libnautilus-private/nautilus-file-operations.c:4032
 #, c-format
 msgid "Could not remove the already existing file with the same name in %F."
 msgstr "Nu s-a putut șterge fișierul existent cu același nume din %F."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4101
+#: ../libnautilus-private/nautilus-file-operations.c:4105
 #, c-format
 msgid "There was an error copying the file into %F."
 msgstr "S-a produs o eroare la copierea fișierului în %F."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4330
+#: ../libnautilus-private/nautilus-file-operations.c:4334
 msgid "Preparing to Move to \"%B\""
 msgstr "Se pregătește mutarea în „%B”"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4334
+#: ../libnautilus-private/nautilus-file-operations.c:4338
 #, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
@@ -2030,20 +2037,20 @@ msgstr[0] "Se pregătește mutarea a %'d fișier"
 msgstr[1] "Se pregătește mutarea a %'d fișiere"
 msgstr[2] "Se pregătește mutarea a %'d de fișiere"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4506
+#: ../libnautilus-private/nautilus-file-operations.c:4510
 msgid "The source folder already exists in \"%B\".  Merging will ask for confirmation before replacing any files in the folder that conflict with the files being moved."
 msgstr "Dosarul sursă există deja în „%B”. Combinarea va cere confirmare înainte de înlocuirea fișierelor ce întră în conflict."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4596
+#: ../libnautilus-private/nautilus-file-operations.c:4600
 #, c-format
 msgid "There was an error moving the file into %F."
 msgstr "S-a produs o eroare la mutarea fișierului în %F."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4871
+#: ../libnautilus-private/nautilus-file-operations.c:4875
 msgid "Creating links in \"%B\""
 msgstr "Se crează legături în „%B”"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4875
+#: ../libnautilus-private/nautilus-file-operations.c:4879
 #, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
@@ -2051,46 +2058,46 @@ msgstr[0] "Se face legătura la %'d fișier"
 msgstr[1] "Se fac legături la %'d fișiere"
 msgstr[2] "Se fac legături la %'d de fișiere"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4973
+#: ../libnautilus-private/nautilus-file-operations.c:4984
 msgid "Error while creating link to %B."
 msgstr "Eroare la efectuarea legături către %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4975
+#: ../libnautilus-private/nautilus-file-operations.c:4986
 msgid "Symbolic links only supported for local files"
 msgstr "Legăturile simbolice sunt suportate doar pentru fișiere locale"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4978
+#: ../libnautilus-private/nautilus-file-operations.c:4989
 msgid "The target doesn't support symbolic links."
 msgstr "Destinația nu suportă legături simbolice."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4981
+#: ../libnautilus-private/nautilus-file-operations.c:4992
 #, c-format
 msgid "There was an error creating the symlink in %F."
 msgstr "S-a produs o eroare la efectuarea legăturii simbolice în %F."
 
-#: ../libnautilus-private/nautilus-file-operations.c:5275
+#: ../libnautilus-private/nautilus-file-operations.c:5286
 msgid "Setting permissions"
 msgstr "Se definesc permisiuni"
 
 #. localizers: the initial name of a new folder
-#: ../libnautilus-private/nautilus-file-operations.c:5524
+#: ../libnautilus-private/nautilus-file-operations.c:5535
 msgid "untitled folder"
 msgstr "dosar fără nume"
 
 #. localizers: the initial name of a new empty file
-#: ../libnautilus-private/nautilus-file-operations.c:5532
+#: ../libnautilus-private/nautilus-file-operations.c:5543
 msgid "new file"
 msgstr "fișier nou"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5680
+#: ../libnautilus-private/nautilus-file-operations.c:5691
 msgid "Error while creating directory %B."
 msgstr "Eroare la crearea dosarului %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:5682
+#: ../libnautilus-private/nautilus-file-operations.c:5693
 msgid "Error while creating file %B."
 msgstr "Eroare la crearea fișierului %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:5684
+#: ../libnautilus-private/nautilus-file-operations.c:5695
 #, c-format
 msgid "There was an error creating the directory in %F."
 msgstr "S-a produs o eroare la crearea dosarului în %F."
@@ -2482,14 +2489,14 @@ msgstr "Caută fișiere după nume și proprietăți"
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:141
 #: ../src/file-manager/fm-icon-container.c:558
-#: ../src/file-manager/fm-icon-view.c:3009
+#: ../src/file-manager/fm-icon-view.c:3047
 msgid "Icon View"
 msgstr "Vizualizare iconițe"
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:142
-#: ../src/file-manager/fm-icon-view.c:3023
+#: ../src/file-manager/fm-icon-view.c:3061
 msgid "Compact View"
 msgstr "Mod afișare compact"
 
@@ -4211,36 +4218,36 @@ msgid "pointing at \"%s\""
 msgstr "ducă către „%s”"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-icon-view.c:3011
+#: ../src/file-manager/fm-icon-view.c:3049
 msgid "_Icons"
 msgstr "_Iconițe"
 
-#: ../src/file-manager/fm-icon-view.c:3012
+#: ../src/file-manager/fm-icon-view.c:3050
 msgid "The icon view encountered an error."
 msgstr "Vizualizarea ca iconițe a avut o eroare la pornire."
 
-#: ../src/file-manager/fm-icon-view.c:3013
+#: ../src/file-manager/fm-icon-view.c:3051
 msgid "The icon view encountered an error while starting up."
 msgstr "Vizualizarea ca iconițe a avut o eroare la pornire."
 
-#: ../src/file-manager/fm-icon-view.c:3014
+#: ../src/file-manager/fm-icon-view.c:3052
 msgid "Display this location with the icon view."
 msgstr "Afișează această locație cu vizualizarea ca iconițe."
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-icon-view.c:3025
+#: ../src/file-manager/fm-icon-view.c:3063
 msgid "_Compact"
 msgstr "_Compact"
 
-#: ../src/file-manager/fm-icon-view.c:3026
+#: ../src/file-manager/fm-icon-view.c:3064
 msgid "The compact view encountered an error."
 msgstr "Modul de afișare compact a întâmpinat o eroare."
 
-#: ../src/file-manager/fm-icon-view.c:3027
+#: ../src/file-manager/fm-icon-view.c:3065
 msgid "The compact view encountered an error while starting up."
 msgstr "Modul de afișare compact a întâmpinat o eroare în timpul pornirii."
 
-#: ../src/file-manager/fm-icon-view.c:3028
+#: ../src/file-manager/fm-icon-view.c:3066
 msgid "Display this location with the compact view."
 msgstr "Afișează locația cu modul de afișare compact."
 
