@@ -293,9 +293,9 @@ get_link_name (const char *name, int count, int max_length)
 	
 	g_assert (name != NULL);
 
-	if (count < 1) {
+	if (count < 0) {
 		g_warning ("bad count in get_link_name");
-		count = 1;
+		count = 0;
 	}
 
 	if (count <= 2) {
@@ -306,6 +306,10 @@ get_link_name (const char *name, int count, int max_length)
 		default:
 			g_assert_not_reached ();
 			/* fall through */
+		case 0:
+			/* duplicate original file name */
+			format = _("%s");
+			break;
 		case 1:
 			/* appended to new link file */
 			format = _("Link to %s");
@@ -4774,7 +4778,7 @@ link_file (CopyMoveJob *job,
 	   GdkPoint *position,
 	   int files_left)
 {
-	GFile *dest, *new_dest;
+	GFile *src_dir, *dest, *new_dest;
 	int count;
 	char *path;
 	gboolean not_local;
@@ -4786,7 +4790,14 @@ link_file (CopyMoveJob *job,
 
 	common = (CommonJob *)job;
 
-	count = 1;
+	count = 0;
+
+	src_dir = g_file_get_parent (src);
+	if (src_dir == dest_dir) {
+		count = 1;
+	}
+	g_object_unref (src_dir);
+
 	handled_invalid_filename = *dest_fs_type != NULL;
 
 	dest = get_target_file_for_link (src, dest_dir, *dest_fs_type, count);
