@@ -1,5 +1,12 @@
 2009-02-20  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-file-operations.c (get_link_name),
+	(link_file):
+	Do not put "Link to ..." in front of symbolic links that are created
+	in another directory via DND. Fixes #534432.
+
+2009-02-20  Christian Neumair  <cneumair@gnome.org>
+
 	* src/file-manager/fm-directory-view.c
 	(fm_directory_view_handle_scroll_event),
 	(fm_directory_view_scroll_event):
