@@ -2176,6 +2176,43 @@ fm_icon_view_screen_changed (GtkWidget *widget,
 	}
 }
 
+static gboolean
+fm_icon_view_scroll_event (GtkWidget *widget,
+			   GdkEventScroll *scroll_event)
+{
+	FMIconView *icon_view;
+	GdkEvent *event_copy;
+	GdkEventScroll *scroll_event_copy;
+	gboolean ret;
+
+	icon_view = FM_ICON_VIEW (widget);
+
+	if (icon_view->details->compact &&
+	    (scroll_event->direction == GDK_SCROLL_UP ||
+	     scroll_event->direction == GDK_SCROLL_DOWN)) {
+		ret = fm_directory_view_handle_scroll_event (FM_DIRECTORY_VIEW (icon_view), scroll_event);
+		if (!ret) {
+			/* in column-wise layout, re-emit vertical mouse scroll events as horizontal ones,
+			 * if they don't bump zoom */
+			event_copy = gdk_event_copy ((GdkEvent *) scroll_event);
+
+			scroll_event_copy = (GdkEventScroll *) event_copy;
+			if (scroll_event_copy->direction == GDK_SCROLL_UP) {
+				scroll_event_copy->direction = GDK_SCROLL_LEFT;
+			} else {
+				scroll_event_copy->direction = GDK_SCROLL_RIGHT;
+			}
+
+			ret = gtk_widget_event (widget, event_copy);
+			gdk_event_free (event_copy);
+		}
+
+		return ret;
+	}
+
+	return GTK_WIDGET_CLASS (fm_icon_view_parent_class)->scroll_event (widget, scroll_event);
+}
+
 static void
 selection_changed_callback (NautilusIconContainer *container,
 			    FMIconView *icon_view)
@@ -2791,6 +2828,7 @@ fm_icon_view_class_init (FMIconViewClass *klass)
 	GTK_OBJECT_CLASS (klass)->destroy = fm_icon_view_destroy;
 	
 	GTK_WIDGET_CLASS (klass)->screen_changed = fm_icon_view_screen_changed;
+	GTK_WIDGET_CLASS (klass)->scroll_event = fm_icon_view_scroll_event;
 	
 	fm_directory_view_class->add_file = fm_icon_view_add_file;
 	fm_directory_view_class->flush_added_files = fm_icon_view_flush_added_files;
