@@ -35,11 +35,9 @@ test_nautilus_search_engine_SOURCES = test-nautilus-search-engine.c
 test_nautilus_directory_async_SOURCES = test-nautilus-directory-async.c
 
 test_eel_background_SOURCES = test-eel-background.c
-test_eel_gtk_style_SOURCES = test-eel-gtk-style.c test.c
 test_eel_image_scrolled_SOURCES = test-eel-image-scrolled.c test.c test.h
 test_eel_image_table_SOURCES = test-eel-image-table.c test.c
 test_eel_labeled_image_SOURCES = test-eel-labeled-image.c test.c test.h
-test_eel_pixbuf_tile_SOURCES = test-eel-pixbuf-tile.c test.c test.h
 test_eel_pixbuf_scale_SOURCES = test-eel-pixbuf-scale.c test.c test.h
 
 EXTRA_DIST = \

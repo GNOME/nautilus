@@ -25,7 +25,7 @@ libegg_la_SOURCES = 		\
 
 libegg_la_CFLAGS =				\
 	-DEGG_SM_CLIENT_BACKEND_XSMP		\
-	-DG_LOG_DOMAIN=\""EggSMClient"\"	\	
+	-DG_LOG_DOMAIN=\""EggSMClient"\"	\
 	$(LIBEGG_CFLAGS)			\
 	$(WARNING_CFLAGS)			\
 	$(DISABLE_DEPRECATED)
