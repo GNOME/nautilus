@@ -59,6 +59,7 @@ AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
 PKG_CHECK_MODULES(ALL, [
 	glib-2.0		>= glib_minver
 	gnome-desktop-2.0	>= gnome_desktop_minver
+	gthread-2.0
 	gio-unix-2.0		
 	gio-2.0		
 	pango			>= pango_minver
@@ -414,9 +415,10 @@ AC_SUBST(RENDER_LIBS)
 dnl ==========================================================================
 	
 dnl libegg
-LIBEGG_MODULES="gtk+-2.0  gthread-2.0"
+LIBEGG_MODULES="gtk+-2.0"
 LIBEGG_CFLAGS="`$PKG_CONFIG --cflags $LIBEGG_MODULES`"
 AC_SUBST(LIBEGG_CFLAGS)
+LIBEGG_LIBS="`$PKG_CONFIG --libs $LIBEGG_MODULES`"
 AC_SUBST(LIBEGG_LIBS)
 
 dnl libnautilus-extension
@@ -427,7 +429,7 @@ LIBNAUTILUS_EXTENSION_LIBS="`$PKG_CONFIG --libs $LIBNAUTILUS_EXTENSION_MODULES`"
 AC_SUBST(LIBNAUTILUS_EXTENSION_LIBS)
 
 dnl core nautilus
-CORE_MODULES="glib-2.0 gnome-desktop-2.0 gio-2.0 gio-unix-2.0 unique-1.0 dbus-glib-1 gail gconf-2.0 libxml-2.0 $EXTRA_CORE_MODULES"
+CORE_MODULES="glib-2.0 gnome-desktop-2.0 gthread-2.0 gio-2.0 gio-unix-2.0 unique-1.0 dbus-glib-1 gail gconf-2.0 libxml-2.0 $EXTRA_CORE_MODULES"
 CORE_CFLAGS="`$PKG_CONFIG --cflags $CORE_MODULES` $x_cflags $WARNING_CFLAGS"
 AC_SUBST(CORE_CFLAGS)
 CORE_LIBS="`$PKG_CONFIG --libs $CORE_MODULES` $x_libs"
