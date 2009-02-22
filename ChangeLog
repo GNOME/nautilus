@@ -1,3 +1,10 @@
+2009-02-22  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* libnautilus-private/nautilus-file-operations.c
+	(seconds_count_format_time_units), (format_time):
+	don't add 30 seconds when formatting time, as float->int conversion
+	already truncates the value for us (#572284).
+
 2009-02-21  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* configure.in:

@@ -228,7 +228,7 @@ seconds_count_format_time_units (int seconds)
 
 	if (seconds < 60*60) {
 		/* minutes */
-		minutes = (seconds + 30) / 60;
+		minutes = seconds / 60;
 		return minutes;
 	}
 
@@ -236,7 +236,7 @@ seconds_count_format_time_units (int seconds)
 
 	if (seconds < 60*60*4) {
 		/* minutes + hours */
-		minutes = (seconds - hours * 60 * 60 + 30) / 60;
+		minutes = (seconds - hours * 60 * 60) / 60;
 		return minutes + hours;
 	}
 
@@ -260,7 +260,7 @@ format_time (int seconds)
 	}
 
 	if (seconds < 60*60) {
-		minutes = (seconds + 30) / 60;
+		minutes = seconds / 60;
 		return g_strdup_printf (ngettext ("%'d minute", "%'d minutes", minutes), minutes);
 	}
 
@@ -269,7 +269,7 @@ format_time (int seconds)
 	if (seconds < 60*60*4) {
 		char *h, *m;
 
-		minutes = (seconds - hours * 60 * 60 + 30) / 60;
+		minutes = (seconds - hours * 60 * 60) / 60;
 		
 		h = g_strdup_printf (ngettext ("%'d hour", "%'d hours", hours), hours);
 		m = g_strdup_printf (ngettext ("%'d minute", "%'d minutes", minutes), minutes);
