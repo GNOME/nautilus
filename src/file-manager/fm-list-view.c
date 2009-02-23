@@ -1007,19 +1007,24 @@ sort_criterion_changes_due_to_user (GtkTreeView *tree_view)
 	GtkTreeViewColumn *column;
 	GSignalInvocationHint *ihint;
 	unsigned int sort_signal_id;
+	gboolean ret;
 
 	sort_signal_id = g_signal_lookup ("clicked", gtk_tree_view_column_get_type ());
+
+	ret = FALSE;
 
 	columns = gtk_tree_view_get_columns (tree_view);
 	for (p = columns; p != NULL; p = p->next) {
 		column = p->data;
 		ihint = g_signal_get_invocation_hint (column);
 		if (ihint != NULL) {
-			return TRUE;
+			ret = TRUE;
+			break;
 		}
 	}
+	g_list_free (columns);
 
-	return FALSE;
+	return ret;
 }
 
 static void

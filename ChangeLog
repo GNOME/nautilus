@@ -1,5 +1,10 @@
 2009-02-23  Paolo Borelli  <pborelli@katamail.com>
 
+	* src/file-manager/fm-list-view.c (sort_criterion_changes_due_to_user):
+	do not leak the columns list.
+
+2009-02-23  Paolo Borelli  <pborelli@katamail.com>
+
 	* libnautilus-private/nautilus-thumbnails.c: check if the mtime
 	attribute is actually available.
 
