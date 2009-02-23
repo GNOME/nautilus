@@ -122,18 +122,24 @@ get_file_mtime (const char *file_uri, time_t* mtime)
 {
 	GFile *file;
 	GFileInfo *info;
+	gboolean ret;
 
+	ret = FALSE;
 	*mtime = INVALID_MTIME;
 
 	file = g_file_new_for_uri (file_uri);
 	info = g_file_query_info (file, G_FILE_ATTRIBUTE_TIME_MODIFIED, 0, NULL, NULL);
 	if (info) {
-		*mtime = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
+		if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_TIME_MODIFIED)) {
+			*mtime = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
+			ret = TRUE;
+		}
+
 		g_object_unref (info);
 	}
 	g_object_unref (file);
-	
-	return TRUE;
+
+	return ret;
 }
 
 static void
@@ -202,18 +208,14 @@ nautilus_update_thumbnail_file_copied (const char *source_file_uri,
 				       const char *destination_file_uri)
 {
 	char *old_thumbnail_path;
+	time_t mtime;
 	GdkPixbuf *pixbuf;
-	GFileInfo *file_info;
 	GnomeDesktopThumbnailFactory *factory;
-	GFile *destination_file;
 	
 	old_thumbnail_path = gnome_desktop_thumbnail_path_for_uri (source_file_uri, GNOME_DESKTOP_THUMBNAIL_SIZE_NORMAL);
 	if (old_thumbnail_path != NULL &&
 	    g_file_test (old_thumbnail_path, G_FILE_TEST_EXISTS)) {
-		destination_file = g_file_new_for_uri (destination_file_uri);
-		file_info = g_file_query_info (destination_file, G_FILE_ATTRIBUTE_TIME_MODIFIED, 0, NULL, NULL);
-		g_object_unref (destination_file);
-		if (file_info != NULL) {
+		if (get_file_mtime (destination_file_uri, &mtime)) {
 			pixbuf = gdk_pixbuf_new_from_file (old_thumbnail_path, NULL);
 			
 			if (pixbuf && gnome_desktop_thumbnail_has_uri (pixbuf, source_file_uri)) {
@@ -221,13 +223,12 @@ nautilus_update_thumbnail_file_copied (const char *source_file_uri,
 				gnome_desktop_thumbnail_factory_save_thumbnail (factory,
 										pixbuf,
 										destination_file_uri,
-										g_file_info_get_attribute_uint64 (file_info, G_FILE_ATTRIBUTE_TIME_MODIFIED));
+										mtime);
 			}
 			
 			if (pixbuf) {
 				g_object_unref (pixbuf);
 			}
-			g_object_unref (file_info);
 		}
 	}
 
