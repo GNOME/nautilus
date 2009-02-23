@@ -1,3 +1,10 @@
+2009-02-23  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* libnautilus-private/nautilus-thumbnails.c (get_types_table):
+	don't hardcode mimetypes for which we limit the file size,
+	but load the list of the supported mimetypes from GdkPixbuf
+	instead (#545934).
+
 2009-02-22  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* libnautilus-private/nautilus-file-operations.c

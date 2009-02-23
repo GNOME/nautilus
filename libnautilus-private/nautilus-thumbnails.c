@@ -115,14 +115,6 @@ static NautilusThumbnailInfo *currently_thumbnailing = NULL;
 
 static GnomeDesktopThumbnailFactory *thumbnail_factory = NULL;
 
-static const char *types [] = {
-	"image/x-bmp", "image/x-ico", "image/jpeg", "image/gif",
-	"image/png", "image/pnm", "image/ras", "image/tga",
-	"image/tiff", "image/wbmp", "image/bmp", "image/x-xbitmap",
-	"image/x-xpixmap"
-};
-static GHashTable *image_mime_types = NULL;
-
 static int thumbnail_icon_size = 0;
 
 static gboolean
@@ -740,15 +732,28 @@ thumbnail_thread_notify_file_changed (gpointer image_uri)
 static GHashTable *
 get_types_table (void)
 {
+	static GHashTable *image_mime_types = NULL;
+	GSList *format_list, *l;
+	char **types;
 	int i;
 
 	if (image_mime_types == NULL) {
 		image_mime_types = g_hash_table_new (g_str_hash, g_str_equal);
-		for (i = 0; i < G_N_ELEMENTS (types); i++) {
-			g_hash_table_insert (image_mime_types,
-					     (gpointer) types [i],
-					     GUINT_TO_POINTER (1));
+
+		format_list = gdk_pixbuf_get_formats ();
+		for (l = format_list; l; l = l->next) {
+			types = gdk_pixbuf_format_get_mime_types (l->data);
+
+			for (i = 0; i < G_N_ELEMENTS (types); i++) {
+				g_hash_table_insert (image_mime_types,
+						     types [i],
+						     GUINT_TO_POINTER (1));
+			}
+
+			g_free (types);
 		}
+
+		g_slist_free (format_list);
 	}
 
 	return image_mime_types;
