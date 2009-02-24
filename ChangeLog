@@ -1,3 +1,17 @@
+2009-02-24  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
+	Check for trusted desktop file launchers.
+
+        * libnautilus-private/nautilus-file-private.h:
+        * libnautilus-private/nautilus-file.c:
+        * libnautilus-private/nautilus-file.h:
+        Add nautilus_file_is_trusted_link.
+	Allow unsetting of custom display name.
+
+        * libnautilus-private/nautilus-mime-actions.c:
+	Display dialog when trying to launch a non-trusted desktop file.
+
 2009-02-23  Paolo Borelli  <pborelli@katamail.com>
 
 	* src/file-manager/fm-list-view.c (sort_criterion_changes_due_to_user):

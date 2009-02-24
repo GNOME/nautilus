@@ -27,6 +27,7 @@
 
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-stock-dialogs.h>
+#include <eel/eel-alert-dialog.h>
 #include <eel/eel-string.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
@@ -83,6 +84,7 @@ typedef struct {
 #define RESPONSE_RUN 1000
 #define RESPONSE_DISPLAY 1001
 #define RESPONSE_RUN_IN_TERMINAL 1002
+#define RESPONSE_MARK_TRUSTED 1003
 
 #define SILENT_WINDOW_OPEN_LIMIT 5
 
@@ -1044,6 +1046,7 @@ activate_parameters_install_free (ActivateParametersInstall *parameters_install)
 	if (parameters_install->parent_window) {
 		g_object_remove_weak_pointer (G_OBJECT (parameters_install->parent_window), (gpointer *)&parameters_install->parent_window);
 	}
+	nautilus_file_unref (parameters_install->file);
 	nautilus_file_list_free (parameters_install->files);
 	g_free (parameters_install->activation_directory);
 	g_free (parameters_install);
@@ -1266,6 +1269,142 @@ out:
 	g_free (error_message);
 }
 
+typedef struct {
+	GtkWindow *parent_window;
+	NautilusFile *file;
+} ActivateParametersDesktop;
+
+static void
+activate_parameters_desktop_free (ActivateParametersDesktop *parameters_desktop)
+{
+	if (parameters_desktop->parent_window) {
+		g_object_remove_weak_pointer (G_OBJECT (parameters_desktop->parent_window), (gpointer *)&parameters_desktop->parent_window);
+	}
+	nautilus_file_unref (parameters_desktop->file);
+	g_free (parameters_desktop);
+}
+
+static void
+mark_trusted_callback (NautilusFile  *file,
+		       GFile         *result_location,
+		       GError        *error,
+		       gpointer       callback_data)
+{
+	ActivateParametersDesktop *parameters;
+
+	parameters = callback_data;
+	if (error) {
+		eel_show_error_dialog (_("Unable to mark launcher trusted (executable)"),
+				       error->message,
+				       parameters->parent_window);
+	}
+	
+	activate_parameters_desktop_free (parameters);
+}
+
+static void
+untrusted_launcher_response_callback (GtkDialog *dialog,
+				      int response_id,
+				      ActivateParametersDesktop *parameters)
+{
+	GdkScreen *screen;
+	char *uri;
+	gboolean free_params;
+	
+	free_params = TRUE;
+	switch (response_id) {
+	case RESPONSE_RUN:
+		screen = gtk_widget_get_screen (GTK_WIDGET (parameters->parent_window));
+		uri = nautilus_file_get_uri (parameters->file);
+		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+				    "directory view activate_callback launch_desktop_file window=%p: %s",
+				    parameters->parent_window, uri);
+		nautilus_launch_desktop_file (screen, uri, NULL,
+					      parameters->parent_window);
+		g_free (uri);
+		break;
+	case RESPONSE_MARK_TRUSTED:
+		nautilus_file_set_permissions (parameters->file, 
+					       nautilus_file_get_permissions (parameters->file) | S_IXGRP | S_IXUSR | S_IXOTH,
+					       mark_trusted_callback,
+					       parameters);
+		free_params = FALSE;
+		break;
+	default:
+		/* Just destroy dialog */
+		break;
+	}
+	
+	gtk_widget_destroy (GTK_WIDGET (dialog));
+	if (free_params) {
+		activate_parameters_desktop_free (parameters);
+	}
+}
+
+static void
+activate_desktop_file (ActivateParameters *parameters,
+		       NautilusFile *file)
+{
+	ActivateParametersDesktop *parameters_desktop;
+	char *primary, *secondary, *display_name;
+	GtkWidget *dialog;
+	GdkScreen *screen;
+	char *uri;
+	
+	screen = gtk_widget_get_screen (GTK_WIDGET (parameters->parent_window));
+
+	if (!nautilus_file_is_trusted_link (file)) {
+		/* copy the parts of parameters we are interested in as the orignal will be freed */
+		parameters_desktop = g_new0 (ActivateParametersDesktop, 1);
+		if (parameters->parent_window) {
+			parameters_desktop->parent_window = parameters->parent_window;
+			g_object_add_weak_pointer (G_OBJECT (parameters_desktop->parent_window), (gpointer *)&parameters_desktop->parent_window);
+		}
+		parameters_desktop->file = nautilus_file_ref (file);
+
+		primary = _("Untrusted application launcher");
+		display_name = nautilus_file_get_display_name (file);
+		secondary =
+			g_strdup_printf (_("The application launcher \"%s\" has not been marked as trusted. "
+					   "If you do not know the source of this file, launching it may be unsafe."
+					   ),
+					 display_name);
+		
+		dialog = eel_alert_dialog_new (parameters->parent_window,
+					       0,
+					       GTK_MESSAGE_WARNING,
+					       GTK_BUTTONS_NONE,
+					       primary,
+					       secondary);
+		gtk_dialog_add_button (GTK_DIALOG (dialog),
+				       _("_Launch anyway"), RESPONSE_RUN);
+		if (nautilus_file_can_set_permissions (file)) {
+			gtk_dialog_add_button (GTK_DIALOG (dialog),
+					       _("Mark as _Trusted"), RESPONSE_MARK_TRUSTED);
+		}
+		gtk_dialog_add_button (GTK_DIALOG (dialog),
+				       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
+		gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_CANCEL);
+
+		g_signal_connect (dialog, "response",
+				  G_CALLBACK (untrusted_launcher_response_callback),
+				  parameters_desktop);
+		gtk_widget_show (dialog);
+		
+		g_free (display_name);
+		g_free (secondary);
+		return;
+	}
+	
+	uri = nautilus_file_get_uri (file);
+	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+			    "directory view activate_callback launch_desktop_file window=%p: %s",
+			    parameters->parent_window, uri);
+	nautilus_launch_desktop_file (screen, uri, NULL,
+				      parameters->parent_window);
+	g_free (uri);
+}
+
 static void
 activate_files (ActivateParameters *parameters)
 {
@@ -1340,14 +1479,8 @@ activate_files (ActivateParameters *parameters)
 	launch_desktop_files = g_list_reverse (launch_desktop_files);
 	for (l = launch_desktop_files; l != NULL; l = l->next) {
 		file = NAUTILUS_FILE (l->data);
-		
-		uri = nautilus_file_get_uri (file);
-		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-				    "directory view activate_callback launch_desktop_file window=%p: %s",
-				    parameters->parent_window, uri);
-		nautilus_launch_desktop_file (screen, uri, NULL,
-					      parameters->parent_window);
-		g_free (uri);
+
+		activate_desktop_file (parameters, file);
 	}
 
 	old_working_dir = NULL;

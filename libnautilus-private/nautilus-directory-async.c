@@ -3571,6 +3571,50 @@ file_info_start (NautilusDirectory *directory,
 	g_object_unref (location);
 }
 
+static gboolean
+is_link_trusted (NautilusFile *file,
+		 gboolean is_launcher)
+{
+	gboolean res;
+	
+	if (!is_launcher) {
+		return TRUE;
+	}
+	
+	if (nautilus_file_can_execute (file)) {
+		return TRUE;
+	}
+
+	res = FALSE;
+	
+	if (nautilus_file_is_local (file)) {
+		const char * const * data_dirs; 
+		char *uri, *path;
+		int i;
+			
+		data_dirs = g_get_system_data_dirs ();
+		
+		path = NULL;
+		uri = nautilus_file_get_uri (file);
+		if (uri) {
+			path = g_filename_from_uri (uri, NULL, NULL);
+			g_free (uri);
+		}
+
+		for (i = 0; path != NULL && data_dirs[i] != NULL; i++) {
+			if (g_str_has_prefix (path, data_dirs[i])) {
+				res = TRUE;
+				break;
+			}
+			
+		}
+		g_free (path);
+	}
+	
+	
+	return res;
+}
+
 static void
 link_info_done (NautilusDirectory *directory,
 		NautilusFile *file,
@@ -3580,12 +3624,21 @@ link_info_done (NautilusDirectory *directory,
 		gboolean is_launcher,
 		gboolean is_foreign)
 {
+	gboolean is_trusted;
+	
 	file->details->link_info_is_up_to_date = TRUE;
 
-	nautilus_file_set_display_name (file, name, name, TRUE);
+	is_trusted = is_link_trusted (file, is_launcher);
+
+	if (is_trusted) {
+		nautilus_file_set_display_name (file, name, name, TRUE);
+	} else {
+		nautilus_file_set_display_name (file, NULL, NULL, TRUE);
+	}
 	
 	file->details->got_link_info = TRUE;
 	g_free (file->details->custom_icon);
+	file->details->custom_icon = NULL;
 	if (uri) {
 		if (file->details->activation_location) {
 			g_object_unref (file->details->activation_location);
@@ -3594,9 +3647,12 @@ link_info_done (NautilusDirectory *directory,
 		file->details->got_custom_activation_location = TRUE;
 		file->details->activation_location = g_file_new_for_uri (uri);
 	}
-	file->details->custom_icon = g_strdup (icon);
+	if (is_trusted) {
+		file->details->custom_icon = g_strdup (icon);
+	}
 	file->details->is_launcher = is_launcher;
 	file->details->is_foreign_link = is_foreign;
+	file->details->is_trusted_link = is_trusted;
 	
 	nautilus_directory_async_state_changed (directory);
 }

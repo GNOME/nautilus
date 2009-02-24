@@ -195,14 +195,6 @@ nautilus_file_set_display_name (NautilusFile *file,
 {
 	gboolean changed;
 
-	if (display_name == NULL || *display_name == 0) {
-		return FALSE;
-	}
-	
-	if (!custom && file->details->got_custom_display_name) {
-		return FALSE;
-	}
-
 	if (custom && display_name == NULL) {
 		/* We're re-setting a custom display name, invalidate it if
 		   we already set it so that the old one is re-read */
@@ -211,6 +203,14 @@ nautilus_file_set_display_name (NautilusFile *file,
 			nautilus_file_invalidate_attributes (file,
 							     NAUTILUS_FILE_ATTRIBUTE_INFO);
 		}
+		return FALSE;
+	}
+	
+	if (display_name == NULL || *display_name == 0) {
+		return FALSE;
+	}
+	
+	if (!custom && file->details->got_custom_display_name) {
 		return FALSE;
 	}
 
@@ -295,6 +295,7 @@ nautilus_file_clear_info (NautilusFile *file)
 	
 	file->details->is_launcher = FALSE;
 	file->details->is_foreign_link = FALSE;
+	file->details->is_trusted_link = FALSE;
 	file->details->is_symlink = FALSE;
 	file->details->is_hidden = FALSE;
 	file->details->is_backup = FALSE;
@@ -3172,6 +3173,12 @@ gboolean
 nautilus_file_is_foreign_link (NautilusFile *file)
 {
 	return file->details->is_foreign_link;
+}
+
+gboolean
+nautilus_file_is_trusted_link (NautilusFile *file)
+{
+	return file->details->is_trusted_link;
 }
 
 gboolean
