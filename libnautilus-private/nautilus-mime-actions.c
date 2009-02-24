@@ -1377,7 +1377,7 @@ activate_desktop_file (ActivateParameters *parameters,
 					       primary,
 					       secondary);
 		gtk_dialog_add_button (GTK_DIALOG (dialog),
-				       _("_Launch anyway"), RESPONSE_RUN);
+				       _("_Launch Anyway"), RESPONSE_RUN);
 		if (nautilus_file_can_set_permissions (file)) {
 			gtk_dialog_add_button (GTK_DIALOG (dialog),
 					       _("Mark as _Trusted"), RESPONSE_MARK_TRUSTED);
