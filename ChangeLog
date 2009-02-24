@@ -1,5 +1,17 @@
 2009-02-24  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-file-operations.c:
+        * libnautilus-private/nautilus-file-operations.h:
+	Add nautilus_file_mark_desktop_file_trusted(), this now
+	adds a #! line if there is none as well as makes the file
+	executable.
+
+        * libnautilus-private/nautilus-mime-actions.c:
+	Use nautilus_file_mark_desktop_file_trusted() instead of
+	just setting the permissions.
+
+2009-02-24  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-mime-actions.c (activate_desktop_file):
 	Capitalize words in button.
 

@@ -124,6 +124,10 @@ void nautilus_file_operations_link      (GList                *files,
 					 GtkWindow            *parent_window,
 					 NautilusCopyCallback  done_callback,
 					 gpointer              done_callback_data);
+void nautilus_file_mark_desktop_file_trusted (GFile           *file,
+					      GtkWindow        *parent_window,
+					      NautilusOpCallback done_callback,
+					      gpointer          done_callback_data);
 
 
 #endif /* NAUTILUS_FILE_OPERATIONS_H */

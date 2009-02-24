@@ -1285,33 +1285,14 @@ activate_parameters_desktop_free (ActivateParametersDesktop *parameters_desktop)
 }
 
 static void
-mark_trusted_callback (NautilusFile  *file,
-		       GFile         *result_location,
-		       GError        *error,
-		       gpointer       callback_data)
-{
-	ActivateParametersDesktop *parameters;
-
-	parameters = callback_data;
-	if (error) {
-		eel_show_error_dialog (_("Unable to mark launcher trusted (executable)"),
-				       error->message,
-				       parameters->parent_window);
-	}
-	
-	activate_parameters_desktop_free (parameters);
-}
-
-static void
 untrusted_launcher_response_callback (GtkDialog *dialog,
 				      int response_id,
 				      ActivateParametersDesktop *parameters)
 {
 	GdkScreen *screen;
 	char *uri;
-	gboolean free_params;
+	GFile *file;
 	
-	free_params = TRUE;
 	switch (response_id) {
 	case RESPONSE_RUN:
 		screen = gtk_widget_get_screen (GTK_WIDGET (parameters->parent_window));
@@ -1324,11 +1305,11 @@ untrusted_launcher_response_callback (GtkDialog *dialog,
 		g_free (uri);
 		break;
 	case RESPONSE_MARK_TRUSTED:
-		nautilus_file_set_permissions (parameters->file, 
-					       nautilus_file_get_permissions (parameters->file) | S_IXGRP | S_IXUSR | S_IXOTH,
-					       mark_trusted_callback,
-					       parameters);
-		free_params = FALSE;
+		file = nautilus_file_get_location (parameters->file);
+		nautilus_file_mark_desktop_file_trusted (file,
+							 parameters->parent_window,
+							 NULL, NULL);
+		g_object_unref (file);
 		break;
 	default:
 		/* Just destroy dialog */
@@ -1336,9 +1317,7 @@ untrusted_launcher_response_callback (GtkDialog *dialog,
 	}
 	
 	gtk_widget_destroy (GTK_WIDGET (dialog));
-	if (free_params) {
-		activate_parameters_desktop_free (parameters);
-	}
+	activate_parameters_desktop_free (parameters);
 }
 
 static void
