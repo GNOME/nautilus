@@ -522,8 +522,10 @@ eel_background_get_image_uri (EelBackground *background)
 	g_return_val_if_fail (EEL_IS_BACKGROUND (background), NULL);
 
 	filename = gnome_bg_get_filename (background->details->bg);
-	
-	return g_filename_to_uri (filename, NULL, NULL);
+	if (filename) {
+		return g_filename_to_uri (filename, NULL, NULL);
+	}
+	return NULL;
 }
 
 /* Use style->base as the default color instead of bg */

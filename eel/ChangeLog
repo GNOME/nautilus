@@ -1,3 +1,8 @@
+2009-02-24  Alexander Larsson  <alexl@redhat.com>
+
+	* eel-background.c (eel_background_get_image_uri):
+	Don't spew warning if there is no uri.
+
 2009-02-17  Alexander Larsson  <alexl@redhat.com>
 
 	* eel-background.c (eel_background_ensure_realized):
@@ -383,7 +388,7 @@ Fri May 30 21:31:09 2008  Søren Sandmann  <sandmann@redhat.com>
 	* configure.in:
 	Use a slightly cleaner method of detecting libstartup-notification,
 	using macros instead of manually calling pkg-config (#507811).
-	Thanks to Lo�c Minier <lool@dooz.org>.
+	Thanks to Loïc Minier <lool@dooz.org>.
 
 2008-03-29  Christian Neumair  <cneumair@gnome.org>
 
@@ -1065,7 +1070,7 @@ Fri Jan 25 14:08:11 2008  Søren Sandmann  <sandmann@redhat.com>
 	* eel/eel-mime-application-chooser.c: (set_uri_and_mime_type):
 	Clarify message by replacing "others" with "other files" in the
 	application chooser dialog. (#150559)
-	Patch from Bj�rn Lindqvist  <bjourne@gmail.com>  
+	Patch from Björn Lindqvist  <bjourne@gmail.com>  
 
 2006-06-05  Martin Wehner  <martin.wehner@gmail.com>
 	
