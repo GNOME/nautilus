@@ -1308,6 +1308,7 @@ untrusted_launcher_response_callback (GtkDialog *dialog,
 		file = nautilus_file_get_location (parameters->file);
 		nautilus_file_mark_desktop_file_trusted (file,
 							 parameters->parent_window,
+							 TRUE, 
 							 NULL, NULL);
 		g_object_unref (file);
 		break;

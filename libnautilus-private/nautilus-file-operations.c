@@ -134,6 +134,7 @@ typedef struct {
 typedef struct {
 	CommonJob common;
 	GFile *file;
+	gboolean interactive;
 	NautilusOpCallback done_callback;
 	gpointer done_callback_data;
 } MarkTrustedJob;
@@ -6004,13 +6005,18 @@ mark_trusted_job (GIOSchedulerJob *io_job,
 				  cancellable,
 				  &contents, &length,
 				  NULL, &error)) {
-		response = run_error (common,
-				      g_strdup (_("Unable to mark launcher trusted (executable)")),
-				      error->message,
-				      NULL,
-				      FALSE,
-				      GTK_STOCK_CANCEL, RETRY,
-				      NULL);
+		if (job->interactive) {
+			response = run_error (common,
+					      g_strdup (_("Unable to mark launcher trusted (executable)")),
+					      error->message,
+					      NULL,
+					      FALSE,
+					      GTK_STOCK_CANCEL, RETRY,
+					      NULL);
+		} else {
+			response = 0;
+		}
+		
 
 		if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
 			abort_job (common);
@@ -6040,14 +6046,18 @@ mark_trusted_job (GIOSchedulerJob *io_job,
 			g_free (contents);
 			g_free (new_contents);
 			
-			response = run_error (common,
-					      g_strdup (_("Unable to mark launcher trusted (executable)")),
-					      error->message,
-					      NULL,
-					      FALSE,
-					      GTK_STOCK_CANCEL, RETRY,
-					      NULL);
-			
+			if (job->interactive) {
+				response = run_error (common,
+						      g_strdup (_("Unable to mark launcher trusted (executable)")),
+						      error->message,
+						      NULL,
+						      FALSE,
+						      GTK_STOCK_CANCEL, RETRY,
+						      NULL);
+			} else {
+				response = 0;
+			}
+
 			if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
 				abort_job (common);
 			} else if (response == 1) {
@@ -6071,13 +6081,17 @@ mark_trusted_job (GIOSchedulerJob *io_job,
 				  &error);
 
 	if (info == NULL) {
-		response = run_error (common,
-				      g_strdup (_("Unable to mark launcher trusted (executable)")),
-				      error->message,
-				      NULL,
-				      FALSE,
-				      GTK_STOCK_CANCEL, RETRY,
-				      NULL);
+		if (job->interactive) {
+			response = run_error (common,
+					      g_strdup (_("Unable to mark launcher trusted (executable)")),
+					      error->message,
+					      NULL,
+					      FALSE,
+					      GTK_STOCK_CANCEL, RETRY,
+					      NULL);
+		} else {
+			response = 0;
+		}
 		
 		if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
 			abort_job (common);
@@ -6135,6 +6149,7 @@ out:
 void
 nautilus_file_mark_desktop_file_trusted (GFile *file,
 					 GtkWindow *parent_window,
+					 gboolean interactive,
 					 NautilusOpCallback done_callback,
 					 gpointer done_callback_data)
 {
@@ -6142,6 +6157,7 @@ nautilus_file_mark_desktop_file_trusted (GFile *file,
 	
 	job = op_job_new (MarkTrustedJob, parent_window);
 	job->file = g_object_ref (file);
+	job->interactive = interactive;
 	job->done_callback = done_callback;
 	job->done_callback_data = done_callback_data;
 	

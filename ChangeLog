@@ -2,6 +2,18 @@
 
         * libnautilus-private/nautilus-file-operations.c:
         * libnautilus-private/nautilus-file-operations.h:
+        * libnautilus-private/nautilus-mime-actions.c:
+        Add "interactive" argument to
+	nautilus_file_mark_desktop_file_trusted.
+
+        * src/nautilus-application.c:
+	Mark all desktopfiles on the desktop trusted on first
+	run.
+
+2009-02-24  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
+        * libnautilus-private/nautilus-file-operations.h:
 	Add nautilus_file_mark_desktop_file_trusted(), this now
 	adds a #! line if there is none as well as makes the file
 	executable.
