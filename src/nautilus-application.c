@@ -461,16 +461,15 @@ automount_all_volumes_idle_cb (gpointer data)
 static void
 mark_desktop_files_trusted (void)
 {
-	char *user_dir, *do_once_file;
+	char *do_once_file;
 	GFile *f, *c;
 	GFileEnumerator *e;
 	GFileInfo *info;
 	const char *name;
 	int fd;
 	
-	user_dir = nautilus_get_user_directory ();
-	do_once_file = g_build_filename (user_dir, "converted-launchers", NULL);
-	g_free (user_dir);
+	do_once_file = g_build_filename (g_get_user_data_dir (),
+					 ".converted-launchers", NULL);
 
 	if (g_file_test (do_once_file, G_FILE_TEST_EXISTS)) {
 		goto out;

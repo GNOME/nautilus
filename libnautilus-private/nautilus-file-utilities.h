@@ -50,6 +50,7 @@ gboolean nautilus_is_desktop_directory               (GFile *dir);
 gboolean nautilus_is_home_directory                  (GFile *dir);
 gboolean nautilus_is_home_directory_file             (GFile *dir,
 						      const char *filename);
+gboolean nautilus_is_in_system_dir                   (GFile *location);
 char *   nautilus_get_gmc_desktop_directory          (void);
 char *   nautilus_get_pixmap_directory               (void);
 

@@ -975,6 +975,48 @@ nautilus_is_file_roller_installed (void)
 	return installed > 0 ? TRUE : FALSE;
 }
 
+/* Returns TRUE if the file is in XDG_DATA_DIRS or
+   in "~/.gnome2/". This is used for deciding
+   if a desktop file is "trusted" based on the path */
+gboolean
+nautilus_is_in_system_dir (GFile *file)
+{
+	const char * const * data_dirs; 
+	char *path, *gnome2;
+	int i;
+	gboolean res;
+	
+	if (!g_file_is_native (file)) {
+		return FALSE;
+	}
+
+	path = g_file_get_path (file);
+	
+	res = FALSE;
+
+	data_dirs = g_get_system_data_dirs ();
+	for (i = 0; path != NULL && data_dirs[i] != NULL; i++) {
+		if (g_str_has_prefix (path, data_dirs[i])) {
+			res = TRUE;
+			break;
+		}
+		
+	}
+
+	if (!res) {
+		/* Panel desktop files are here, trust them */
+		gnome2 = g_build_filename (g_get_home_dir (), ".gnome2", NULL);
+		if (g_str_has_prefix (path, gnome2)) {
+			res = TRUE;
+		}
+		g_free (gnome2);
+	}
+	g_free (path);
+	
+	return res;
+}
+
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 void

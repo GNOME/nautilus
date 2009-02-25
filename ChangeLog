@@ -1,3 +1,21 @@
+2009-02-25  Alexander Larsson  <alexl@redhat.com>
+
+        * src/nautilus-application.c:
+	Use $XDG_DATA_HOME/.converted-launchers as marker for
+	one-time desktop file trust operation.
+
+        * libnautilus-private/nautilus-file-utilities.[ch]:
+	Add nautilus_is_in_system_dir() to check if path is in
+	XDG_DATA_DIR or in ~/.gnome2.
+
+        * libnautilus-private/nautilus-directory-async.c:
+        (is_link_trusted):
+	Use new nautilus_is_in_system_dir() instead of open coding it.
+
+        * libnautilus-private/nautilus-file-operations.c:
+	When copying a desktop file from a trusted location to the desktop,
+	mark it as trusted.
+
 2009-02-24  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* test/test-eel-widgets.c: remove obsolete test.

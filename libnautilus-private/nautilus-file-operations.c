@@ -92,6 +92,7 @@ typedef struct {
 	gboolean is_move;
 	GList *files;
 	GFile *destination;
+	GFile *desktop_location;
 	GdkPoint *icon_positions;
 	int n_icon_positions;
 	GHashTable *debuting_files;
@@ -186,6 +187,12 @@ typedef struct {
 #define REPLACE_ALL _("Replace _All")
 #define MERGE _("_Merge")
 #define MERGE_ALL _("Merge _All")
+
+static void
+mark_desktop_file_trusted (CommonJob *common,
+			   GCancellable *cancellable,
+			   GFile *file,
+			   gboolean interactive);
 
 static gboolean
 is_all_button_text (const char *button_text)
@@ -3713,6 +3720,52 @@ query_fs_type (GFile *file,
 	return ret;
 }
 
+static gboolean
+is_trusted_desktop_file (GFile *file,
+			 GCancellable *cancellable)
+{
+	char *basename;
+	gboolean res;
+	GFileInfo *info;
+
+	/* Don't trust non-local files */
+	if (!g_file_is_native (file)) {
+		return FALSE;
+	}
+	
+	basename = g_file_get_basename (file);
+	if (!g_str_has_suffix (basename, ".desktop")) {
+		g_free (basename);
+		return FALSE;
+	}
+	g_free (basename);
+
+	info = g_file_query_info (file, 
+				  G_FILE_ATTRIBUTE_STANDARD_TYPE ","
+				  G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE,
+				  G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+				  cancellable,
+				  NULL);
+
+	if (info == NULL) {
+		return FALSE;
+	}
+
+	res = FALSE;
+	
+	/* Weird file => not trusted,
+	   Already executable => no need to mark trusted */
+	if (g_file_info_get_file_type (info) == G_FILE_TYPE_REGULAR &&
+	    !g_file_info_get_attribute_boolean (info,
+						G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE) &&
+	    nautilus_is_in_system_dir (file)) {
+		res = TRUE;
+	}
+	g_object_unref (info);
+	
+	return res;
+}
+
 /* Debuting files is non-NULL only for toplevel items */
 static void
 copy_move_file (CopyMoveJob *copy_job,
@@ -3887,6 +3940,18 @@ copy_move_file (CopyMoveJob *copy_job,
 		} else {
 			nautilus_file_changes_queue_file_added (dest);
 		}
+
+		/* If copying a trusted desktop file to the desktop,
+		   mark it as trusted. */
+		if (copy_job->desktop_location != NULL &&
+		    g_file_equal (copy_job->desktop_location, dest_dir) &&
+		    is_trusted_desktop_file (src, job->cancellable)) {
+			mark_desktop_file_trusted (job,
+						   job->cancellable,
+						   dest,
+						   FALSE);
+		}
+			
 		g_object_unref (dest);
 		return;
 	}
@@ -4226,6 +4291,7 @@ copy_job_done (gpointer user_data)
 	if (job->destination) {
 		g_object_unref (job->destination);
 	}
+	g_object_unref (job->desktop_location);
 	g_hash_table_unref (job->debuting_files);
 	g_free (job->icon_positions);
 	
@@ -4287,7 +4353,7 @@ copy_job (GIOSchedulerJob *io_job,
 	copy_files (job,
 		    dest_fs_id,
 		    &source_info, &transfer_info);
-	
+
  aborted:
 	
 	g_free (dest_fs_id);
@@ -4311,6 +4377,7 @@ nautilus_file_operations_copy (GList *files,
 	CopyMoveJob *job;
 
 	job = op_job_new (CopyMoveJob, parent_window);
+	job->desktop_location = nautilus_get_desktop_location ();
 	job->done_callback = done_callback;
 	job->done_callback_data = done_callback_data;
 	job->files = eel_g_object_list_copy (files);
@@ -5980,32 +6047,26 @@ mark_trusted_job_done (gpointer user_data)
 
 #define TRUSTED_SHEBANG "#!/usr/bin/env xdg-open\n"
 
-static gboolean
-mark_trusted_job (GIOSchedulerJob *io_job,
-		  GCancellable *cancellable,
-		  gpointer user_data)
+static void
+mark_desktop_file_trusted (CommonJob *common,
+			   GCancellable *cancellable,
+			   GFile *file,
+			   gboolean interactive)
 {
-	MarkTrustedJob *job = user_data;
-	CommonJob *common;
 	char *contents, *new_contents;
 	gsize length, new_length;
 	GError *error;
-	guint32 current;
+	guint32 current_perms, new_perms;
 	int response;
 	GFileInfo *info;
 	
-	common = (CommonJob *)job;
-	common->io_job = io_job;
-	
-	nautilus_progress_info_start (job->common.progress);
-
  retry:
 	error = NULL;
-	if (!g_file_load_contents (job->file,
+	if (!g_file_load_contents (file,
 				  cancellable,
 				  &contents, &length,
 				  NULL, &error)) {
-		if (job->interactive) {
+		if (interactive) {
 			response = run_error (common,
 					      g_strdup (_("Unable to mark launcher trusted (executable)")),
 					      error->message,
@@ -6037,7 +6098,7 @@ mark_trusted_job (GIOSchedulerJob *io_job,
 		memcpy (new_contents + strlen (TRUSTED_SHEBANG),
 			contents, length);
 		
-		if (!g_file_replace_contents (job->file,
+		if (!g_file_replace_contents (file,
 					      new_contents,
 					      new_length,
 					      NULL,
@@ -6046,7 +6107,7 @@ mark_trusted_job (GIOSchedulerJob *io_job,
 			g_free (contents);
 			g_free (new_contents);
 			
-			if (job->interactive) {
+			if (interactive) {
 				response = run_error (common,
 						      g_strdup (_("Unable to mark launcher trusted (executable)")),
 						      error->message,
@@ -6073,7 +6134,7 @@ mark_trusted_job (GIOSchedulerJob *io_job,
 	}
 	g_free (contents);
 	
-	info = g_file_query_info (job->file,
+	info = g_file_query_info (file,
 				  G_FILE_ATTRIBUTE_STANDARD_TYPE","
 				  G_FILE_ATTRIBUTE_UNIX_MODE,
 				  G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
@@ -6081,7 +6142,7 @@ mark_trusted_job (GIOSchedulerJob *io_job,
 				  &error);
 
 	if (info == NULL) {
-		if (job->interactive) {
+		if (interactive) {
 			response = run_error (common,
 					      g_strdup (_("Unable to mark launcher trusted (executable)")),
 					      error->message,
@@ -6106,22 +6167,27 @@ mark_trusted_job (GIOSchedulerJob *io_job,
 	
 	
 	if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_UNIX_MODE)) {
-		current = g_file_info_get_attribute_uint32 (info, G_FILE_ATTRIBUTE_UNIX_MODE);
-		current = current | S_IXGRP | S_IXUSR | S_IXOTH;
+		current_perms = g_file_info_get_attribute_uint32 (info, G_FILE_ATTRIBUTE_UNIX_MODE);
+		new_perms = current_perms | S_IXGRP | S_IXUSR | S_IXOTH;
 
-		if (!g_file_set_attribute_uint32 (job->file, G_FILE_ATTRIBUTE_UNIX_MODE,
-						  current, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+		if ((current_perms != new_perms) &&
+		    !g_file_set_attribute_uint32 (file, G_FILE_ATTRIBUTE_UNIX_MODE,
+						  new_perms, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
 						  common->cancellable, &error))
 			{
 				g_object_unref (info);
 				
-				response = run_error (common,
-						      g_strdup (_("Unable to mark launcher trusted (executable)")),
-						      error->message,
-						      NULL,
-						      FALSE,
-						      GTK_STOCK_CANCEL, RETRY,
-						      NULL);
+				if (interactive) {
+					response = run_error (common,
+							      g_strdup (_("Unable to mark launcher trusted (executable)")),
+							      error->message,
+							      NULL,
+							      FALSE,
+							      GTK_STOCK_CANCEL, RETRY,
+							      NULL);
+				} else {
+					response = 0;
+				}
 				
 				if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
 					abort_job (common);
@@ -6135,8 +6201,27 @@ mark_trusted_job (GIOSchedulerJob *io_job,
 			}
 	} 
 	g_object_unref (info);
+ out:
+	;
+}
 
-out:
+static gboolean
+mark_trusted_job (GIOSchedulerJob *io_job,
+		  GCancellable *cancellable,
+		  gpointer user_data)
+{
+	MarkTrustedJob *job = user_data;
+	CommonJob *common;
+	
+	common = (CommonJob *)job;
+	common->io_job = io_job;
+	
+	nautilus_progress_info_start (job->common.progress);
+
+	mark_desktop_file_trusted (common,
+				   cancellable,
+				   job->file,
+				   job->interactive);
 	
 	g_io_scheduler_job_send_to_mainloop_async (io_job,
 						   mark_trusted_job_done,
