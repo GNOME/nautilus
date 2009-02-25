@@ -1,5 +1,14 @@
 2009-02-25  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-file-operations.c (copy_files):
+	Don't unref info if == NULL
+	Query for readonly on the source directory, not the file because
+	otherwise we'll follow symlinks to the wrong filesystem.
+	OTOH, maybe query_filesystem_info shouldn't follow symlinks,
+	but that unfortunately seems hard to implement.
+
+2009-02-25  Alexander Larsson  <alexl@redhat.com>
+
         * src/nautilus-application.c:
 	Use $XDG_DATA_HOME/.converted-launchers as marker for
 	one-time desktop file trust operation.

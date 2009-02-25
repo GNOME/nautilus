@@ -4218,6 +4218,7 @@ copy_files (CopyMoveJob *job,
 	gboolean skipped_file;
 	gboolean unique_names;
 	GFile *dest;
+	GFile *source_dir;
 	char *dest_fs_type;
 	GFileInfo *inf;
 	gboolean readonly_source_fs;
@@ -4229,9 +4230,15 @@ copy_files (CopyMoveJob *job,
 
 	report_copy_progress (job, source_info, transfer_info);
 
-	inf = g_file_query_filesystem_info ((GFile *) job->files->data, "filesystem::readonly", NULL, NULL);
-	if (inf != NULL) {
-		readonly_source_fs = g_file_info_get_attribute_boolean (inf, "filesystem::readonly");
+	/* Query the source dir, not the file because if its a symlink we'll follow it */
+	source_dir = g_file_get_parent ((GFile *) job->files->data);
+	if (source_dir) {
+		inf = g_file_query_filesystem_info (source_dir, "filesystem::readonly", NULL, NULL);
+		if (inf != NULL) {
+			readonly_source_fs = g_file_info_get_attribute_boolean (inf, "filesystem::readonly");
+			g_object_unref (inf);
+		}
+		g_object_unref (source_dir);
 	}
 
 	unique_names = (job->destination == NULL);
@@ -4274,7 +4281,6 @@ copy_files (CopyMoveJob *job,
 	}
 
 	g_free (dest_fs_type);
-	g_object_unref (inf);
 }
 
 static gboolean
