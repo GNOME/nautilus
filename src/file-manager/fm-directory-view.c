@@ -4212,9 +4212,11 @@ add_submenu (GtkUIManager *ui_manager,
 						 escaped_label,
 						 NULL,
 						 NULL);
-			g_object_set_data_full (G_OBJECT (action), "menu-icon",
-						g_object_ref (pixbuf),
-						g_object_unref);
+			if (pixbuf != NULL) {
+				g_object_set_data_full (G_OBJECT (action), "menu-icon",
+							g_object_ref (pixbuf),
+							g_object_unref);
+			}
 			
 			g_object_set (action, "hide-if-empty", FALSE, NULL);
 			
