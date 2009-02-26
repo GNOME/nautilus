@@ -1,5 +1,16 @@
 2009-02-26  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-file-operations.c:
+        (get_abs_path_for_symlink):
+	Add helper to get the path to use for symlinks that also
+	works for non-local files.
+        (link_file):
+	Use get_abs_path_for_symlink() for target of symlink so that
+	it works for remote files too.
+	Also, fix GFile comparison to use g_file_equal, not ==
+
+2009-02-26  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-global-preferences.c:
         (nautilus_global_preferences_init):
 	Remove monitoring of old gnome-vfs gconf directory.

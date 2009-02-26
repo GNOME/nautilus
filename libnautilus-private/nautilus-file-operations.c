@@ -4964,6 +4964,29 @@ report_link_progress (CopyMoveJob *link_job, int total, int left)
 	nautilus_progress_info_set_progress (job->progress, left, total);
 }
 
+static char *
+get_abs_path_for_symlink (GFile *file)
+{
+	GFile *root, *parent;
+	char *relative, *abs;
+	
+	if (g_file_is_native (file)) {
+		return g_file_get_path (file);
+	}
+
+	root = g_object_ref (file);
+	while ((parent = g_file_get_parent (root)) != NULL) {
+		g_object_unref (root);
+		root = parent;
+	}
+	
+	relative = g_file_get_relative_path (root, file);
+	g_object_unref (root);
+	abs = g_strconcat ("/", relative, NULL);
+	g_free (relative);
+	return abs;
+}
+
 
 static void
 link_file (CopyMoveJob *job,
@@ -4988,7 +5011,7 @@ link_file (CopyMoveJob *job,
 	count = 0;
 
 	src_dir = g_file_get_parent (src);
-	if (src_dir == dest_dir) {
+	if (g_file_equal (src_dir, dest_dir)) {
 		count = 1;
 	}
 	g_object_unref (src_dir);
@@ -5000,7 +5023,8 @@ link_file (CopyMoveJob *job,
  retry:
 	error = NULL;
 	not_local = FALSE;
-	path = g_file_get_path (src);
+	
+	path = get_abs_path_for_symlink (src);
 	if (path == NULL) {
 		not_local = TRUE;
 	} else if (g_file_make_symbolic_link (dest,
