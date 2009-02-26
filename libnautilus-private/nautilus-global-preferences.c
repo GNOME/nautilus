@@ -40,8 +40,7 @@
 #define PREFERENCES_SORT_ORDER_MANUALLY 100
 
 /* Path for gnome-vfs preferences */
-static const char *EXTRA_MONITOR_PATHS[] = { "/system/gnome_vfs",
-					     "/desktop/gnome/file_views",
+static const char *EXTRA_MONITOR_PATHS[] = { "/desktop/gnome/file_views",
 					     NULL };
 
 /* Forward declarations */
@@ -818,5 +817,13 @@ nautilus_global_preferences_init (void)
 
 	/* Preload everything in a big batch */
 	eel_gconf_preload_cache ("/apps/nautilus/preferences",
+				 GCONF_CLIENT_PRELOAD_ONELEVEL);
+	eel_gconf_preload_cache ("/desktop/gnome/file_views",
+				 GCONF_CLIENT_PRELOAD_ONELEVEL);
+	
+	/* These are always needed for the desktop */
+	eel_gconf_preload_cache ("/apps/nautilus/desktop",
+				 GCONF_CLIENT_PRELOAD_ONELEVEL);
+	eel_gconf_preload_cache ("/apps/nautilus/icon_view",
 				 GCONF_CLIENT_PRELOAD_ONELEVEL);
 }

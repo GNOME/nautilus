@@ -1,5 +1,12 @@
 2009-02-26  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-global-preferences.c:
+        (nautilus_global_preferences_init):
+	Remove monitoring of old gnome-vfs gconf directory.
+	Preload the gconf directories that are used on startup.
+
+2009-02-26  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-directory-view.c (add_submenu):
 	Don't ref pixbuf if it is NULL
 
