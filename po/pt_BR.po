@@ -10,7 +10,7 @@
 # Afonso Celso Medina <medina@maua.br>, 2005.
 # Guilherme de S. Pastore <gpastore@gnome.org>, 2006.
 # Leonardo Fereira Fontenelle <leonardof@gnome.org>, 2006-2008.
-# Og Maciel <ogmaciel@gnome.org>, 2007-2008.
+# Og Maciel <ogmaciel@gnome.org>, 2007-2009.
 # Rodrigo Flores <rodrigomarquesflores@gmail.com>, 2007.
 # Vladimir Melo <vmelo@gnome.org>, 2008.
 # Fabrício Godoy <skarllot@gmail.com>, 2008-2009.
@@ -21,8 +21,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eel.HEAD.pt_BR\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-23 16:31-0500\n"
-"PO-Revision-Date: 2009-02-23 17:20-0300\n"
+"POT-Creation-Date: 2009-02-25 22:47-0500\n"
+"PO-Revision-Date: 2009-02-26 00:25-0300\n"
 "Last-Translator: Andre Gondim <andregondim@ubuntu.com>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1745,61 +1745,61 @@ msgstr "Desculpe, não foi possível salvar o emblema personalizado."
 msgid "Sorry, unable to save custom emblem name."
 msgstr "Desculpe, não foi possível salvar o nome de emblema personalizado."
 
-#: ../libnautilus-private/nautilus-file-operations.c:173
+#: ../libnautilus-private/nautilus-file-operations.c:182
 msgid "_Skip"
 msgstr "_Ignorar"
 
-#: ../libnautilus-private/nautilus-file-operations.c:174
+#: ../libnautilus-private/nautilus-file-operations.c:183
 msgid "S_kip All"
 msgstr "I_gnorar todos"
 
-#: ../libnautilus-private/nautilus-file-operations.c:175
+#: ../libnautilus-private/nautilus-file-operations.c:184
 msgid "_Retry"
 msgstr "_Repetir"
 
-#: ../libnautilus-private/nautilus-file-operations.c:176
+#: ../libnautilus-private/nautilus-file-operations.c:185
 msgid "Delete _All"
 msgstr "Excluir _tudo"
 
-#: ../libnautilus-private/nautilus-file-operations.c:177
+#: ../libnautilus-private/nautilus-file-operations.c:186
 msgid "_Replace"
 msgstr "_Substituir"
 
-#: ../libnautilus-private/nautilus-file-operations.c:178
+#: ../libnautilus-private/nautilus-file-operations.c:187
 msgid "Replace _All"
 msgstr "Substituir _todos"
 
-#: ../libnautilus-private/nautilus-file-operations.c:179
+#: ../libnautilus-private/nautilus-file-operations.c:188
 msgid "_Merge"
 msgstr "_Mesclar"
 
-#: ../libnautilus-private/nautilus-file-operations.c:180
+#: ../libnautilus-private/nautilus-file-operations.c:189
 msgid "Merge _All"
 msgstr "Mesclar _tudo"
 
-#: ../libnautilus-private/nautilus-file-operations.c:259
+#: ../libnautilus-private/nautilus-file-operations.c:274
 #, c-format
 msgid "%'d second"
 msgid_plural "%'d seconds"
 msgstr[0] "%'d segundo"
 msgstr[1] "%'d segundos"
 
-#: ../libnautilus-private/nautilus-file-operations.c:264
-#: ../libnautilus-private/nautilus-file-operations.c:275
+#: ../libnautilus-private/nautilus-file-operations.c:279
+#: ../libnautilus-private/nautilus-file-operations.c:290
 #, c-format
 msgid "%'d minute"
 msgid_plural "%'d minutes"
 msgstr[0] "%'d minuto"
 msgstr[1] "%'d minutos"
 
-#: ../libnautilus-private/nautilus-file-operations.c:274
+#: ../libnautilus-private/nautilus-file-operations.c:289
 #, c-format
 msgid "%'d hour"
 msgid_plural "%'d hours"
 msgstr[0] "%'d hora"
 msgstr[1] "%'d horas"
 
-#: ../libnautilus-private/nautilus-file-operations.c:282
+#: ../libnautilus-private/nautilus-file-operations.c:297
 #, c-format
 msgid "approximately %'d hour"
 msgid_plural "approximately %'d hours"
@@ -1807,7 +1807,7 @@ msgstr[0] "aproximadamente %'d hora"
 msgstr[1] "aproximadamente %'d horas"
 
 #. duplicate original file name
-#: ../libnautilus-private/nautilus-file-operations.c:354
+#: ../libnautilus-private/nautilus-file-operations.c:369
 #, c-format
 msgid "%s"
 msgstr "%s"
@@ -1817,15 +1817,15 @@ msgstr "%s"
 #. * (e.g. "folder", "plain text") to file type for symbolic link
 #. * to that kind of file (e.g. "link to folder").
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:358
-#: ../libnautilus-private/nautilus-file.c:5592
+#: ../libnautilus-private/nautilus-file-operations.c:373
+#: ../libnautilus-private/nautilus-file.c:5599
 #: ../src/file-manager/fm-directory-view.c:9363
 #, c-format
 msgid "Link to %s"
 msgstr "Link para %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:362
+#: ../libnautilus-private/nautilus-file-operations.c:377
 #, c-format
 msgid "Another link to %s"
 msgstr "Outro link para %s"
@@ -1834,25 +1834,25 @@ msgstr "Outro link para %s"
 #. * if there's no way to do that nicely for a
 #. * particular language.
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:378
+#: ../libnautilus-private/nautilus-file-operations.c:393
 #, c-format
 msgid "%'dst link to %s"
 msgstr "%'dº link para %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:382
+#: ../libnautilus-private/nautilus-file-operations.c:397
 #, c-format
 msgid "%'dnd link to %s"
 msgstr "%'dº link para %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:386
+#: ../libnautilus-private/nautilus-file-operations.c:401
 #, c-format
 msgid "%'drd link to %s"
 msgstr "%'dº link para %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:390
+#: ../libnautilus-private/nautilus-file-operations.c:405
 #, c-format
 msgid "%'dth link to %s"
 msgstr "%'dº link para %s"
@@ -1862,12 +1862,12 @@ msgstr "%'dº link para %s"
 #. * make some or all of them match.
 #.
 #. localizers: tag used to detect the first copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:429
+#: ../libnautilus-private/nautilus-file-operations.c:444
 msgid " (copy)"
 msgstr " (cópia)"
 
 #. localizers: tag used to detect the second copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:431
+#: ../libnautilus-private/nautilus-file-operations.c:446
 msgid " (another copy)"
 msgstr " (outra cópia)"
 
@@ -1875,36 +1875,36 @@ msgstr " (outra cópia)"
 #. localizers: tag used to detect the x12th copy of a file
 #. localizers: tag used to detect the x13th copy of a file
 #. localizers: tag used to detect the xxth copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:434
-#: ../libnautilus-private/nautilus-file-operations.c:436
-#: ../libnautilus-private/nautilus-file-operations.c:438
-#: ../libnautilus-private/nautilus-file-operations.c:448
+#: ../libnautilus-private/nautilus-file-operations.c:449
+#: ../libnautilus-private/nautilus-file-operations.c:451
+#: ../libnautilus-private/nautilus-file-operations.c:453
+#: ../libnautilus-private/nautilus-file-operations.c:463
 msgid "th copy)"
 msgstr "ª cópia)"
 
 #. localizers: tag used to detect the x1st copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:441
+#: ../libnautilus-private/nautilus-file-operations.c:456
 msgid "st copy)"
 msgstr "ª cópia)"
 
 #. localizers: tag used to detect the x2nd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:443
+#: ../libnautilus-private/nautilus-file-operations.c:458
 msgid "nd copy)"
 msgstr "ª cópia)"
 
 #. localizers: tag used to detect the x3rd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:445
+#: ../libnautilus-private/nautilus-file-operations.c:460
 msgid "rd copy)"
 msgstr "ª cópia)"
 
 #. localizers: appended to first file copy
-#: ../libnautilus-private/nautilus-file-operations.c:462
+#: ../libnautilus-private/nautilus-file-operations.c:477
 #, c-format
 msgid "%s (copy)%s"
 msgstr "%s (cópia)%s"
 
 #. localizers: appended to second file copy
-#: ../libnautilus-private/nautilus-file-operations.c:464
+#: ../libnautilus-private/nautilus-file-operations.c:479
 #, c-format
 msgid "%s (another copy)%s"
 msgstr "%s (outra cópia)%s"
@@ -1913,48 +1913,48 @@ msgstr "%s (outra cópia)%s"
 #. localizers: appended to x12th file copy
 #. localizers: appended to x13th file copy
 #. localizers: appended to xxth file copy
-#: ../libnautilus-private/nautilus-file-operations.c:467
-#: ../libnautilus-private/nautilus-file-operations.c:469
-#: ../libnautilus-private/nautilus-file-operations.c:471
-#: ../libnautilus-private/nautilus-file-operations.c:480
+#: ../libnautilus-private/nautilus-file-operations.c:482
+#: ../libnautilus-private/nautilus-file-operations.c:484
+#: ../libnautilus-private/nautilus-file-operations.c:486
+#: ../libnautilus-private/nautilus-file-operations.c:495
 #, c-format
 msgid "%s (%'dth copy)%s"
 msgstr "%s (%'dª cópia)%s"
 
 #. localizers: appended to x1st file copy
-#: ../libnautilus-private/nautilus-file-operations.c:474
+#: ../libnautilus-private/nautilus-file-operations.c:489
 #, c-format
 msgid "%s (%'dst copy)%s"
 msgstr "%s (%'dª cópia)%s"
 
 #. localizers: appended to x2nd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:476
+#: ../libnautilus-private/nautilus-file-operations.c:491
 #, c-format
 msgid "%s (%'dnd copy)%s"
 msgstr "%s (%'dª cópia)%s"
 
 #. localizers: appended to x3rd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:478
+#: ../libnautilus-private/nautilus-file-operations.c:493
 #, c-format
 msgid "%s (%'drd copy)%s"
 msgstr "%s (%'dª cópia)%s"
 
 #. localizers: opening parentheses to match the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:578
+#: ../libnautilus-private/nautilus-file-operations.c:593
 msgid " ("
 msgstr " ("
 
 #. localizers: opening parentheses of the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:586
+#: ../libnautilus-private/nautilus-file-operations.c:601
 #, c-format
 msgid " (%'d"
 msgstr " (%'d"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1255
+#: ../libnautilus-private/nautilus-file-operations.c:1270
 msgid "Are you sure you want to permanently delete \"%B\" from the trash?"
 msgstr "Você tem certeza que quer excluir permanentemente \"%B\" da lixeira?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1258
+#: ../libnautilus-private/nautilus-file-operations.c:1273
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %'d selected item from the "
@@ -1969,16 +1969,16 @@ msgstr[1] ""
 "Você tem certeza que quer excluir permanentemente da lixeira os %'d itens "
 "selecionados?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1268
-#: ../libnautilus-private/nautilus-file-operations.c:1336
+#: ../libnautilus-private/nautilus-file-operations.c:1283
+#: ../libnautilus-private/nautilus-file-operations.c:1351
 msgid "If you delete an item, it will be permanently lost."
 msgstr "Se você excluir um item, ele será perdido permanentemente."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1288
+#: ../libnautilus-private/nautilus-file-operations.c:1303
 msgid "Empty all of the items from the trash?"
 msgstr "Esvaziar todos os itens da lixeira?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1292
+#: ../libnautilus-private/nautilus-file-operations.c:1307
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
@@ -1988,17 +1988,17 @@ msgstr ""
 "separadamente."
 
 #. Empty Trash menu item
-#: ../libnautilus-private/nautilus-file-operations.c:1297
-#: ../libnautilus-private/nautilus-file-operations.c:2133
+#: ../libnautilus-private/nautilus-file-operations.c:1312
+#: ../libnautilus-private/nautilus-file-operations.c:2148
 #: ../src/nautilus-places-sidebar.c:2037 ../src/nautilus-trash-bar.c:125
 msgid "Empty _Trash"
 msgstr "Esvaziar _lixeira"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1324
+#: ../libnautilus-private/nautilus-file-operations.c:1339
 msgid "Are you sure you want to permanently delete \"%B\"?"
 msgstr "Você tem certeza que quer excluir permanentemente \"%B\"?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1327
+#: ../libnautilus-private/nautilus-file-operations.c:1342
 #, c-format
 msgid "Are you sure you want to permanently delete the %'d selected item?"
 msgid_plural ""
@@ -2008,35 +2008,35 @@ msgstr[0] ""
 msgstr[1] ""
 "Você tem certeza que quer excluir permanentemente os %'d itens selecionados?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1370
+#: ../libnautilus-private/nautilus-file-operations.c:1385
 #, c-format
 msgid "%'d file left to delete"
 msgid_plural "%'d files left to delete"
 msgstr[0] "%'d arquivo restante para excluir"
 msgstr[1] "%'d arquivos restantes para excluir"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1376
+#: ../libnautilus-private/nautilus-file-operations.c:1391
 msgid "Deleting files"
 msgstr "Excluindo arquivos"
 
 #. To translators: %T will expand to a time like "2 minutes".
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:1390
+#: ../libnautilus-private/nautilus-file-operations.c:1405
 msgid "%T left"
 msgid_plural "%T left"
 msgstr[0] "Faltando %T"
 msgstr[1] "Faltando %T"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1457
-#: ../libnautilus-private/nautilus-file-operations.c:1491
-#: ../libnautilus-private/nautilus-file-operations.c:1530
-#: ../libnautilus-private/nautilus-file-operations.c:1613
-#: ../libnautilus-private/nautilus-file-operations.c:2360
+#: ../libnautilus-private/nautilus-file-operations.c:1472
+#: ../libnautilus-private/nautilus-file-operations.c:1506
+#: ../libnautilus-private/nautilus-file-operations.c:1545
+#: ../libnautilus-private/nautilus-file-operations.c:1628
+#: ../libnautilus-private/nautilus-file-operations.c:2375
 msgid "Error while deleting."
 msgstr "Erro ao excluir."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1461
+#: ../libnautilus-private/nautilus-file-operations.c:1476
 msgid ""
 "Files in the folder \"%B\" cannot be deleted because you do not have "
 "permissions to see them."
@@ -2044,19 +2044,19 @@ msgstr ""
 "Os arquivos na pasta \"%B\" não podem ser excluídos porque você não tem "
 "permissões para vê-los."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1464
-#: ../libnautilus-private/nautilus-file-operations.c:2419
-#: ../libnautilus-private/nautilus-file-operations.c:3381
+#: ../libnautilus-private/nautilus-file-operations.c:1479
+#: ../libnautilus-private/nautilus-file-operations.c:2434
+#: ../libnautilus-private/nautilus-file-operations.c:3396
 msgid ""
 "There was an error getting information about the files in the folder \"%B\"."
 msgstr "Houve um erro ao obter informações sobre os arquivos na pasta \"%B\"."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1473
-#: ../libnautilus-private/nautilus-file-operations.c:3390
+#: ../libnautilus-private/nautilus-file-operations.c:1488
+#: ../libnautilus-private/nautilus-file-operations.c:3405
 msgid "_Skip files"
 msgstr "_Ignorar arquivos"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1494
+#: ../libnautilus-private/nautilus-file-operations.c:1509
 msgid ""
 "The folder \"%B\" cannot be deleted because you do not have permissions to "
 "read it."
@@ -2064,53 +2064,53 @@ msgstr ""
 "A pasta \"%B\" não pode ser excluída porque você não tem permissões de "
 "leitura."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1497
-#: ../libnautilus-private/nautilus-file-operations.c:2458
-#: ../libnautilus-private/nautilus-file-operations.c:3426
+#: ../libnautilus-private/nautilus-file-operations.c:1512
+#: ../libnautilus-private/nautilus-file-operations.c:2473
+#: ../libnautilus-private/nautilus-file-operations.c:3441
 msgid "There was an error reading the folder \"%B\"."
 msgstr "Houve um erro ao ler a pasta \"%B\"."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1531
+#: ../libnautilus-private/nautilus-file-operations.c:1546
 msgid "Could not remove the folder %B."
 msgstr "Não foi possível remover a pasta %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1614
+#: ../libnautilus-private/nautilus-file-operations.c:1629
 msgid "There was an error deleting %B."
 msgstr "Houve um erro ao excluir %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1694
+#: ../libnautilus-private/nautilus-file-operations.c:1709
 msgid "Moving files to trash"
 msgstr "Movendo arquivos para a lixeira"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1696
+#: ../libnautilus-private/nautilus-file-operations.c:1711
 #, c-format
 msgid "%'d file left to trash"
 msgid_plural "%'d files left to trash"
 msgstr[0] "%'d arquivo restante para mover para a lixeira"
 msgstr[1] "%'d arquivos restantes para mover para a lixeira"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1746
+#: ../libnautilus-private/nautilus-file-operations.c:1761
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr ""
 "Não é possível mover o arquivo para a lixeira, quer excluí-lo imediatamente?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1747
+#: ../libnautilus-private/nautilus-file-operations.c:1762
 msgid "The file \"%B\" cannot be moved to the trash."
 msgstr "O arquivo \"%B\" não pode ser movido para a lixeira."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1981
+#: ../libnautilus-private/nautilus-file-operations.c:1996
 msgid "Unable to eject %V"
 msgstr "Não foi possível ejetar %V"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1983
+#: ../libnautilus-private/nautilus-file-operations.c:1998
 msgid "Unable to unmount %V"
 msgstr "Não foi possível desmontar %V"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2123
+#: ../libnautilus-private/nautilus-file-operations.c:2138
 msgid "Do you want to empty the trash before you unmount?"
 msgstr "Você quer esvaziar a lixeira antes de desmontar?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2125
+#: ../libnautilus-private/nautilus-file-operations.c:2140
 msgid ""
 "In order to regain the free space on this volume the trash must be emptied. "
 "All trashed items on the volume will be permanently lost."
@@ -2118,61 +2118,61 @@ msgstr ""
 "Para recuperar o espaço livre neste volume, a lixeira deve ser esvaziada. "
 "Todos os itens da lixeira no volume serão perdidos permanentemente."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2131
+#: ../libnautilus-private/nautilus-file-operations.c:2146
 msgid "Do _not Empty Trash"
 msgstr "_Não esvaziar a lixeira"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2230
+#: ../libnautilus-private/nautilus-file-operations.c:2245
 #, c-format
 msgid "Unable to mount %s"
 msgstr "Não foi possível montar %s"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2307
+#: ../libnautilus-private/nautilus-file-operations.c:2322
 #, c-format
 msgid "Preparing to copy %'d file (%S)"
 msgid_plural "Preparing to copy %'d files (%S)"
 msgstr[0] "Preparando para copiar %'d arquivo (%S)"
 msgstr[1] "Preparando para copiar %'d arquivos (%S)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2313
+#: ../libnautilus-private/nautilus-file-operations.c:2328
 #, c-format
 msgid "Preparing to move %'d file (%S)"
 msgid_plural "Preparing to move %'d files (%S)"
 msgstr[0] "Preparando para mover %'d arquivo (%S)"
 msgstr[1] "Preparando para mover %'d arquivos (%S)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2319
+#: ../libnautilus-private/nautilus-file-operations.c:2334
 #, c-format
 msgid "Preparing to delete %'d file (%S)"
 msgid_plural "Preparing to delete %'d files (%S)"
 msgstr[0] "Preparando para excluir %'d arquivo (%S)"
 msgstr[1] "Preparando para excluir %'d arquivos (%S)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2325
+#: ../libnautilus-private/nautilus-file-operations.c:2340
 #, c-format
 msgid "Preparing to trash %'d file"
 msgid_plural "Preparing to trash %'d files"
 msgstr[0] "Preparando para mover para a lixeira %'d arquivo"
 msgstr[1] "Preparando para mover para a lixeira %'d arquivos"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2356
-#: ../libnautilus-private/nautilus-file-operations.c:3247
-#: ../libnautilus-private/nautilus-file-operations.c:3373
-#: ../libnautilus-private/nautilus-file-operations.c:3418
+#: ../libnautilus-private/nautilus-file-operations.c:2371
+#: ../libnautilus-private/nautilus-file-operations.c:3262
+#: ../libnautilus-private/nautilus-file-operations.c:3388
+#: ../libnautilus-private/nautilus-file-operations.c:3433
 msgid "Error while copying."
 msgstr "Erro ao copiar."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2358
-#: ../libnautilus-private/nautilus-file-operations.c:3371
-#: ../libnautilus-private/nautilus-file-operations.c:3416
+#: ../libnautilus-private/nautilus-file-operations.c:2373
+#: ../libnautilus-private/nautilus-file-operations.c:3386
+#: ../libnautilus-private/nautilus-file-operations.c:3431
 msgid "Error while moving."
 msgstr "Erro ao mover."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2362
+#: ../libnautilus-private/nautilus-file-operations.c:2377
 msgid "Error while moving files to trash."
 msgstr "Erro ao mover arquivos para a lixeira."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2416
+#: ../libnautilus-private/nautilus-file-operations.c:2431
 msgid ""
 "Files in the folder \"%B\" cannot be handled because you do not have "
 "permissions to see them."
@@ -2180,7 +2180,7 @@ msgstr ""
 "Os arquivos na pasta \"%B\" não podem ser manipulados porque você não tem "
 "permissões para vê-los."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2455
+#: ../libnautilus-private/nautilus-file-operations.c:2470
 msgid ""
 "The folder \"%B\" cannot be handled because you do not have permissions to "
 "read it."
@@ -2188,7 +2188,7 @@ msgstr ""
 "A pasta \"%B\" não pode ser manipulada porque você não tem permissões de "
 "leitura."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2532
+#: ../libnautilus-private/nautilus-file-operations.c:2547
 msgid ""
 "The file \"%B\" cannot be handled because you do not have permissions to "
 "read it."
@@ -2196,30 +2196,30 @@ msgstr ""
 "O arquivo \"%B\" não pode ser manipulado porque você não tem permissões de "
 "leitura."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2535
+#: ../libnautilus-private/nautilus-file-operations.c:2550
 msgid "There was an error getting information about \"%B\"."
 msgstr "Houve um erro ao obter informação sobre \"%B\"."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2635
-#: ../libnautilus-private/nautilus-file-operations.c:2677
-#: ../libnautilus-private/nautilus-file-operations.c:2710
-#: ../libnautilus-private/nautilus-file-operations.c:2736
+#: ../libnautilus-private/nautilus-file-operations.c:2650
+#: ../libnautilus-private/nautilus-file-operations.c:2692
+#: ../libnautilus-private/nautilus-file-operations.c:2725
+#: ../libnautilus-private/nautilus-file-operations.c:2751
 msgid "Error while copying to \"%B\"."
 msgstr "Erro ao copiar para \"%B\"."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2639
+#: ../libnautilus-private/nautilus-file-operations.c:2654
 msgid "You do not have permissions to access the destination folder."
 msgstr "Você não tem permissões para acessar a pasta de destino."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2641
+#: ../libnautilus-private/nautilus-file-operations.c:2656
 msgid "There was an error getting information about the destination."
 msgstr "Houve um erro ao obter as informações sobre o destino."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2678
+#: ../libnautilus-private/nautilus-file-operations.c:2693
 msgid "The destination is not a folder."
 msgstr "O destino não é uma pasta."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2711
+#: ../libnautilus-private/nautilus-file-operations.c:2726
 msgid ""
 "There is not enough space on the destination. Try to remove files to make "
 "space."
@@ -2227,58 +2227,58 @@ msgstr ""
 "Não há espaço suficiente no destino. Tente remover arquivos para criar "
 "espaço."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2713
+#: ../libnautilus-private/nautilus-file-operations.c:2728
 #, c-format
 msgid "There is %S available, but %S is required."
 msgstr "Existe %S disponível, mas %S é requerido."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2737
+#: ../libnautilus-private/nautilus-file-operations.c:2752
 msgid "The destination is read-only."
 msgstr "O destino é somente para leitura."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2796
+#: ../libnautilus-private/nautilus-file-operations.c:2811
 msgid "Moving \"%B\" to \"%B\""
 msgstr "Movendo \"%B\" para \"%B\""
 
-#: ../libnautilus-private/nautilus-file-operations.c:2797
+#: ../libnautilus-private/nautilus-file-operations.c:2812
 msgid "Copying \"%B\" to \"%B\""
 msgstr "Copiando \"%B\" para \"%B\""
 
-#: ../libnautilus-private/nautilus-file-operations.c:2802
+#: ../libnautilus-private/nautilus-file-operations.c:2817
 msgid "Duplicating \"%B\""
 msgstr "Duplicando \"%B\""
 
-#: ../libnautilus-private/nautilus-file-operations.c:2810
+#: ../libnautilus-private/nautilus-file-operations.c:2825
 msgid "Moving %'d file (in \"%B\") to \"%B\""
 msgid_plural "Moving %'d files (in \"%B\") to \"%B\""
 msgstr[0] "Movendo %'d arquivo (em \"%B\") para \"%B\""
 msgstr[1] "Movendo %'d arquivos (em \"%B\") para \"%B\""
 
-#: ../libnautilus-private/nautilus-file-operations.c:2814
+#: ../libnautilus-private/nautilus-file-operations.c:2829
 msgid "Copying %'d file (in \"%B\") to \"%B\""
 msgid_plural "Copying %'d files (in \"%B\") to \"%B\""
 msgstr[0] "Copiando %'d arquivo (em \"%B\") para \"%B\""
 msgstr[1] "Copiando %'d arquivos (em \"%B\") para \"%B\""
 
-#: ../libnautilus-private/nautilus-file-operations.c:2822
+#: ../libnautilus-private/nautilus-file-operations.c:2837
 msgid "Duplicating %'d file (in \"%B\")"
 msgid_plural "Duplicating %'d files (in \"%B\")"
 msgstr[0] "Duplicando %'d arquivo (em \"%B\")"
 msgstr[1] "Duplicando %'d arquivos (em \"%B\")"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2832
+#: ../libnautilus-private/nautilus-file-operations.c:2847
 msgid "Moving %'d file to \"%B\""
 msgid_plural "Moving %'d files to \"%B\""
 msgstr[0] "Movendo %'d arquivo para \"%B\""
 msgstr[1] "Movendo %'d arquivos para \"%B\""
 
-#: ../libnautilus-private/nautilus-file-operations.c:2836
+#: ../libnautilus-private/nautilus-file-operations.c:2851
 msgid "Copying %'d file to \"%B\""
 msgid_plural "Copying %'d files to \"%B\""
 msgstr[0] "Copiando %'d arquivo para \"%B\""
 msgstr[1] "Copiando %'d arquivos para \"%B\""
 
-#: ../libnautilus-private/nautilus-file-operations.c:2842
+#: ../libnautilus-private/nautilus-file-operations.c:2857
 #, c-format
 msgid "Duplicating %'d file"
 msgid_plural "Duplicating %'d files"
@@ -2286,7 +2286,7 @@ msgstr[0] "Duplicando %'d arquivo"
 msgstr[1] "Duplicando %'d arquivos"
 
 #. To translators: %S will expand to a size like "2 bytes" or "3 MB", so something like "4 kb of 4 MB"
-#: ../libnautilus-private/nautilus-file-operations.c:2862
+#: ../libnautilus-private/nautilus-file-operations.c:2877
 #, c-format
 msgid "%S of %S"
 msgstr "%S de %S"
@@ -2296,13 +2296,13 @@ msgstr "%S de %S"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:2873
+#: ../libnautilus-private/nautilus-file-operations.c:2888
 msgid "%S of %S — %T left (%S/sec)"
 msgid_plural "%S of %S — %T left (%S/sec)"
 msgstr[0] "%S de %S — faltando %T (%S/seg)"
 msgstr[1] "%S de %S — faltando %T (%S/seg)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3251
+#: ../libnautilus-private/nautilus-file-operations.c:3266
 msgid ""
 "The folder \"%B\" cannot be copied because you do not have permissions to "
 "create it in the destination."
@@ -2310,11 +2310,11 @@ msgstr ""
 "A pasta \"%B\" não pode ser copiada porque você não tem permissões para criá-"
 "la no destino."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3254
+#: ../libnautilus-private/nautilus-file-operations.c:3269
 msgid "There was an error creating the folder \"%B\"."
 msgstr "Houve um erro ao criar a pasta \"%B\"."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3378
+#: ../libnautilus-private/nautilus-file-operations.c:3393
 msgid ""
 "Files in the folder \"%B\" cannot be copied because you do not have "
 "permissions to see them."
@@ -2322,7 +2322,7 @@ msgstr ""
 "Os arquivos na pasta \"%B\" não podem ser copiados porque você não tem "
 "permissões para vê-los."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3423
+#: ../libnautilus-private/nautilus-file-operations.c:3438
 msgid ""
 "The folder \"%B\" cannot be copied because you do not have permissions to "
 "read it."
@@ -2330,64 +2330,64 @@ msgstr ""
 "A pasta \"%B\" não pode ser copiada porque você não tem permissões de "
 "leitura."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3468
-#: ../libnautilus-private/nautilus-file-operations.c:4028
-#: ../libnautilus-private/nautilus-file-operations.c:4599
+#: ../libnautilus-private/nautilus-file-operations.c:3483
+#: ../libnautilus-private/nautilus-file-operations.c:4101
+#: ../libnautilus-private/nautilus-file-operations.c:4680
 msgid "Error while moving \"%B\"."
 msgstr "Erro ao mover \"%B\"."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3469
+#: ../libnautilus-private/nautilus-file-operations.c:3484
 msgid "Could not remove the source folder."
 msgstr "Não foi possível remover a pasta de origem."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3554
-#: ../libnautilus-private/nautilus-file-operations.c:3595
-#: ../libnautilus-private/nautilus-file-operations.c:4030
-#: ../libnautilus-private/nautilus-file-operations.c:4104
+#: ../libnautilus-private/nautilus-file-operations.c:3569
+#: ../libnautilus-private/nautilus-file-operations.c:3610
+#: ../libnautilus-private/nautilus-file-operations.c:4103
+#: ../libnautilus-private/nautilus-file-operations.c:4177
 msgid "Error while copying \"%B\"."
 msgstr "Erro ao copiar \"%B\"."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3555
+#: ../libnautilus-private/nautilus-file-operations.c:3570
 #, c-format
 msgid "Could not remove files from the already existing folder %F."
 msgstr "Não foi possível remover arquivos da pasta %F já existente."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3596
+#: ../libnautilus-private/nautilus-file-operations.c:3611
 #, c-format
 msgid "Could not remove the already existing file %F."
 msgstr "Não foi possível remover o arquivo %F já existente."
 
 #. the run_warning() frees all strings passed in automatically
-#: ../libnautilus-private/nautilus-file-operations.c:3767
-#: ../libnautilus-private/nautilus-file-operations.c:4425
+#: ../libnautilus-private/nautilus-file-operations.c:3828
+#: ../libnautilus-private/nautilus-file-operations.c:4506
 msgid "You cannot move a folder into itself."
 msgstr "Você não pode mover uma pasta dentro dela mesma."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3768
-#: ../libnautilus-private/nautilus-file-operations.c:4426
+#: ../libnautilus-private/nautilus-file-operations.c:3829
+#: ../libnautilus-private/nautilus-file-operations.c:4507
 msgid "You cannot copy a folder into itself."
 msgstr "Você não pode copiar uma pasta dentro dela mesma."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3769
-#: ../libnautilus-private/nautilus-file-operations.c:4427
+#: ../libnautilus-private/nautilus-file-operations.c:3830
+#: ../libnautilus-private/nautilus-file-operations.c:4508
 msgid "The destination folder is inside the source folder."
 msgstr "A pasta de destino está dentro da pasta de origem."
 
 #. the run_warning() frees all strings passed in automatically
-#: ../libnautilus-private/nautilus-file-operations.c:3801
+#: ../libnautilus-private/nautilus-file-operations.c:3862
 msgid "You cannot move a file over itself."
 msgstr "Você não pode mover um arquivo sobre ele próprio."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3802
+#: ../libnautilus-private/nautilus-file-operations.c:3863
 msgid "You cannot copy a file over itself."
 msgstr "Você não pode copiar um arquivo sobre ele próprio."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3803
+#: ../libnautilus-private/nautilus-file-operations.c:3864
 msgid "The source file would be overwritten by the destination."
 msgstr "O arquivo fonte seria sobrescrito pelo destino."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3926
-#: ../libnautilus-private/nautilus-file-operations.c:4508
+#: ../libnautilus-private/nautilus-file-operations.c:3999
+#: ../libnautilus-private/nautilus-file-operations.c:4589
 msgid ""
 "A folder named \"%B\" already exists.  Do you want to merge the source "
 "folder?"
@@ -2395,7 +2395,7 @@ msgstr ""
 "Uma pasta com o nome \"%B\" já existe. Você quer mesclá-la com a pasta de "
 "origem?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3928
+#: ../libnautilus-private/nautilus-file-operations.c:4001
 msgid ""
 "The source folder already exists in \"%B\".  Merging will ask for "
 "confirmation before replacing any files in the folder that conflict with the "
@@ -2405,13 +2405,13 @@ msgstr ""
 "antes de substituir qualquer arquivo na pasta que esteja em conflito com os "
 "arquivos a serem copiados."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3933
-#: ../libnautilus-private/nautilus-file-operations.c:4515
+#: ../libnautilus-private/nautilus-file-operations.c:4006
+#: ../libnautilus-private/nautilus-file-operations.c:4596
 msgid "A folder named \"%B\" already exists.  Do you want to replace it?"
 msgstr "Uma pasta com o nome \"%B\" já existe. Você quer substituí-la?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3935
-#: ../libnautilus-private/nautilus-file-operations.c:4517
+#: ../libnautilus-private/nautilus-file-operations.c:4008
+#: ../libnautilus-private/nautilus-file-operations.c:4598
 #, c-format
 msgid ""
 "The folder already exists in \"%F\".  Replacing it will remove all files in "
@@ -2420,42 +2420,42 @@ msgstr ""
 "A pasta já existe em \"%F\". Substituí-la irá remover todos os arquivos na "
 "pasta."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3940
-#: ../libnautilus-private/nautilus-file-operations.c:4522
+#: ../libnautilus-private/nautilus-file-operations.c:4013
+#: ../libnautilus-private/nautilus-file-operations.c:4603
 msgid "A file named \"%B\" already exists.  Do you want to replace it?"
 msgstr "Um arquivo com o nome \"%B\" já existe. Você quer substituí-lo?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3942
-#: ../libnautilus-private/nautilus-file-operations.c:4524
+#: ../libnautilus-private/nautilus-file-operations.c:4015
+#: ../libnautilus-private/nautilus-file-operations.c:4605
 #, c-format
 msgid ""
 "The file already exists in \"%F\".  Replacing it will overwrite its content."
 msgstr ""
 "O arquivo já existe em \"%F\". Substituí-lo irá sobrescrever seu conteúdo."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4032
+#: ../libnautilus-private/nautilus-file-operations.c:4105
 #, c-format
 msgid "Could not remove the already existing file with the same name in %F."
 msgstr ""
 "Não foi possível remover o arquivo já existente com o mesmo nome em %F."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4105
+#: ../libnautilus-private/nautilus-file-operations.c:4178
 #, c-format
 msgid "There was an error copying the file into %F."
 msgstr "Houve um erro ao copiar o arquivo para %F."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4334
+#: ../libnautilus-private/nautilus-file-operations.c:4415
 msgid "Preparing to Move to \"%B\""
 msgstr "Preparando para mover para \"%B\""
 
-#: ../libnautilus-private/nautilus-file-operations.c:4338
+#: ../libnautilus-private/nautilus-file-operations.c:4419
 #, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
 msgstr[0] "Preparando para mover %'d arquivo"
 msgstr[1] "Preparando para mover %'d arquivos"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4510
+#: ../libnautilus-private/nautilus-file-operations.c:4591
 msgid ""
 "The source folder already exists in \"%B\".  Merging will ask for "
 "confirmation before replacing any files in the folder that conflict with the "
@@ -2465,92 +2465,99 @@ msgstr ""
 "antes de substituir qualquer arquivo na pasta que esteja em conflito com os "
 "arquivos a serem movidos."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4600
+#: ../libnautilus-private/nautilus-file-operations.c:4681
 #, c-format
 msgid "There was an error moving the file into %F."
 msgstr "Houve um erro ao mover o arquivo para %F."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4875
+#: ../libnautilus-private/nautilus-file-operations.c:4956
 msgid "Creating links in \"%B\""
 msgstr "Criando links em \"%B\""
 
-#: ../libnautilus-private/nautilus-file-operations.c:4879
+#: ../libnautilus-private/nautilus-file-operations.c:4960
 #, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
 msgstr[0] "Criando link para %'d arquivo"
 msgstr[1] "Criando links para %'d arquivos"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4984
+#: ../libnautilus-private/nautilus-file-operations.c:5065
 msgid "Error while creating link to %B."
 msgstr "Erro ao criar link para %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4986
+#: ../libnautilus-private/nautilus-file-operations.c:5067
 msgid "Symbolic links only supported for local files"
 msgstr "Suporte a links simbólicos apenas para arquivos locais"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4989
+#: ../libnautilus-private/nautilus-file-operations.c:5070
 msgid "The target doesn't support symbolic links."
 msgstr "O alvo não tem suporte a links simbólicos."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4992
+#: ../libnautilus-private/nautilus-file-operations.c:5073
 #, c-format
 msgid "There was an error creating the symlink in %F."
 msgstr "Houve um erro ao criar o link simbólico em %F."
 
-#: ../libnautilus-private/nautilus-file-operations.c:5286
+#: ../libnautilus-private/nautilus-file-operations.c:5367
 msgid "Setting permissions"
 msgstr "Definindo permissões"
 
 #. localizers: the initial name of a new folder
-#: ../libnautilus-private/nautilus-file-operations.c:5535
+#: ../libnautilus-private/nautilus-file-operations.c:5616
 msgid "untitled folder"
 msgstr "pasta sem título"
 
 #. localizers: the initial name of a new empty file
-#: ../libnautilus-private/nautilus-file-operations.c:5543
+#: ../libnautilus-private/nautilus-file-operations.c:5624
 msgid "new file"
 msgstr "novo arquivo"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5691
+#: ../libnautilus-private/nautilus-file-operations.c:5772
 msgid "Error while creating directory %B."
 msgstr "Erro ao criar diretório %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:5693
+#: ../libnautilus-private/nautilus-file-operations.c:5774
 msgid "Error while creating file %B."
 msgstr "Erro ao criar arquivo %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:5695
+#: ../libnautilus-private/nautilus-file-operations.c:5776
 #, c-format
 msgid "There was an error creating the directory in %F."
 msgstr "Houve um erro ao criar o diretório em %F."
 
-#: ../libnautilus-private/nautilus-file.c:885
+#: ../libnautilus-private/nautilus-file-operations.c:6077
+#: ../libnautilus-private/nautilus-file-operations.c:6118
+#: ../libnautilus-private/nautilus-file-operations.c:6153
+#: ../libnautilus-private/nautilus-file-operations.c:6188
+msgid "Unable to mark launcher trusted (executable)"
+msgstr "Não foi possível marcar o lançador como confiável (executável)"
+
+#: ../libnautilus-private/nautilus-file.c:886
 #: ../libnautilus-private/nautilus-vfs-file.c:264
 msgid "This file cannot be mounted"
 msgstr "Este arquivo não pode ser montado"
 
-#: ../libnautilus-private/nautilus-file.c:1297
+#: ../libnautilus-private/nautilus-file.c:1298
 #, c-format
 msgid "Slashes are not allowed in filenames"
 msgstr "Barras não são permitidas nos nomes dos arquivos"
 
-#: ../libnautilus-private/nautilus-file.c:1315
+#: ../libnautilus-private/nautilus-file.c:1316
 #, c-format
 msgid "File not found"
 msgstr "Arquivo não localizado"
 
-#: ../libnautilus-private/nautilus-file.c:1343
+#: ../libnautilus-private/nautilus-file.c:1344
 #, c-format
 msgid "Toplevel files cannot be renamed"
 msgstr "Os arquivos do nível superior não podem ser renomeados"
 
-#: ../libnautilus-private/nautilus-file.c:1366
+#: ../libnautilus-private/nautilus-file.c:1367
 #, c-format
 msgid "Unable to rename desktop icon"
 msgstr "Não foi possível renomear o ícone da área de trabalho"
 
-#: ../libnautilus-private/nautilus-file.c:1403
+#: ../libnautilus-private/nautilus-file.c:1404
 #, c-format
 msgid "Unable to rename desktop file"
 msgstr "Não foi possível renomear o arquivo da área de trabalho"
@@ -2570,65 +2577,65 @@ msgstr "Não foi possível renomear o arquivo da área de trabalho"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: ../libnautilus-private/nautilus-file.c:3678
+#: ../libnautilus-private/nautilus-file.c:3685
 msgid "today at 00:00:00 PM"
 msgstr "hoje às 00:00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:3679
+#: ../libnautilus-private/nautilus-file.c:3686
 #: ../src/nautilus-file-management-properties.c:471
 msgid "today at %-I:%M:%S %p"
 msgstr "hoje às %-H:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:3681
+#: ../libnautilus-private/nautilus-file.c:3688
 msgid "today at 00:00 PM"
 msgstr "hoje às 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:3682
+#: ../libnautilus-private/nautilus-file.c:3689
 msgid "today at %-I:%M %p"
 msgstr "hoje às %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3684
+#: ../libnautilus-private/nautilus-file.c:3691
 msgid "today, 00:00 PM"
 msgstr "hoje, 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:3685
+#: ../libnautilus-private/nautilus-file.c:3692
 msgid "today, %-I:%M %p"
 msgstr "hoje, %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3687
-#: ../libnautilus-private/nautilus-file.c:3688
+#: ../libnautilus-private/nautilus-file.c:3694
+#: ../libnautilus-private/nautilus-file.c:3695
 msgid "today"
 msgstr "hoje"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: ../libnautilus-private/nautilus-file.c:3697
+#: ../libnautilus-private/nautilus-file.c:3704
 msgid "yesterday at 00:00:00 PM"
 msgstr "ontem às 00:00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:3698
+#: ../libnautilus-private/nautilus-file.c:3705
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "ontem às %-H:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:3700
+#: ../libnautilus-private/nautilus-file.c:3707
 msgid "yesterday at 00:00 PM"
 msgstr "ontem às 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:3701
+#: ../libnautilus-private/nautilus-file.c:3708
 msgid "yesterday at %-I:%M %p"
 msgstr "ontem às %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3703
+#: ../libnautilus-private/nautilus-file.c:3710
 msgid "yesterday, 00:00 PM"
 msgstr "ontem, 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:3704
+#: ../libnautilus-private/nautilus-file.c:3711
 msgid "yesterday, %-I:%M %p"
 msgstr "ontem, %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3706
-#: ../libnautilus-private/nautilus-file.c:3707
+#: ../libnautilus-private/nautilus-file.c:3713
+#: ../libnautilus-private/nautilus-file.c:3714
 msgid "yesterday"
 msgstr "ontem"
 
@@ -2637,88 +2644,88 @@ msgstr "ontem"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: ../libnautilus-private/nautilus-file.c:3718
+#: ../libnautilus-private/nautilus-file.c:3725
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Segunda-feira, 00 de fevereiro de 0000 às 00:00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:3719
+#: ../libnautilus-private/nautilus-file.c:3726
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %-d de %B de %Y às %-H:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:3721
+#: ../libnautilus-private/nautilus-file.c:3728
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Seg, 00 de Out de 0000 às 00:00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:3722
+#: ../libnautilus-private/nautilus-file.c:3729
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %-d de %b de %Y às %-H:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:3724
+#: ../libnautilus-private/nautilus-file.c:3731
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Seg, 00 de Out de 0000 às 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:3725
+#: ../libnautilus-private/nautilus-file.c:3732
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %-d de %b de %Y às %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3727
+#: ../libnautilus-private/nautilus-file.c:3734
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "00 de Out de 0000 às 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:3728
+#: ../libnautilus-private/nautilus-file.c:3735
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d de %b de %Y às %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3730
+#: ../libnautilus-private/nautilus-file.c:3737
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "00 de Out de 0000, 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:3731
+#: ../libnautilus-private/nautilus-file.c:3738
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d de %b de %Y, %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3733
+#: ../libnautilus-private/nautilus-file.c:3740
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:3734
+#: ../libnautilus-private/nautilus-file.c:3741
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%-d/%m/%y, %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3736
+#: ../libnautilus-private/nautilus-file.c:3743
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: ../libnautilus-private/nautilus-file.c:3737
+#: ../libnautilus-private/nautilus-file.c:3744
 msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
-#: ../libnautilus-private/nautilus-file.c:4350
+#: ../libnautilus-private/nautilus-file.c:4357
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "Não autorizado a definir permissões"
 
-#: ../libnautilus-private/nautilus-file.c:4658
+#: ../libnautilus-private/nautilus-file.c:4665
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "Não autorizado a definir o proprietário"
 
-#: ../libnautilus-private/nautilus-file.c:4676
+#: ../libnautilus-private/nautilus-file.c:4683
 #, c-format
 msgid "Specified owner '%s' doesn't exist"
 msgstr "Proprietário especificado \"%s\" não existe"
 
-#: ../libnautilus-private/nautilus-file.c:4940
+#: ../libnautilus-private/nautilus-file.c:4947
 #, c-format
 msgid "Not allowed to set group"
 msgstr "Não autorizado a definir o grupo"
 
-#: ../libnautilus-private/nautilus-file.c:4958
+#: ../libnautilus-private/nautilus-file.c:4965
 #, c-format
 msgid "Specified group '%s' doesn't exist"
 msgstr "Grupo especificado \"%s\" não existe"
 
-#: ../libnautilus-private/nautilus-file.c:5101
+#: ../libnautilus-private/nautilus-file.c:5108
 #: ../src/file-manager/fm-directory-view.c:2202
 #, c-format
 msgid "%'u item"
@@ -2726,14 +2733,14 @@ msgid_plural "%'u items"
 msgstr[0] "%'u item"
 msgstr[1] "%'u itens"
 
-#: ../libnautilus-private/nautilus-file.c:5102
+#: ../libnautilus-private/nautilus-file.c:5109
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u pasta"
 msgstr[1] "%'u pastas"
 
-#: ../libnautilus-private/nautilus-file.c:5103
+#: ../libnautilus-private/nautilus-file.c:5110
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -2741,51 +2748,51 @@ msgstr[0] "%'u arquivo"
 msgstr[1] "%'u arquivos"
 
 #. Do this in a separate stage so that we don't have to put G_GUINT64_FORMAT in the translated string
-#: ../libnautilus-private/nautilus-file.c:5182
+#: ../libnautilus-private/nautilus-file.c:5189
 msgid "%"
 msgstr "%"
 
-#: ../libnautilus-private/nautilus-file.c:5183
+#: ../libnautilus-private/nautilus-file.c:5190
 #, c-format
 msgid "%s (%s bytes)"
 msgstr "%s (%s bytes)"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:5487
-#: ../libnautilus-private/nautilus-file.c:5503
+#: ../libnautilus-private/nautilus-file.c:5494
+#: ../libnautilus-private/nautilus-file.c:5510
 msgid "? items"
 msgstr "? itens"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:5493
+#: ../libnautilus-private/nautilus-file.c:5500
 msgid "? bytes"
 msgstr "? bytes"
 
-#: ../libnautilus-private/nautilus-file.c:5508
+#: ../libnautilus-private/nautilus-file.c:5515
 msgid "unknown type"
 msgstr "tipo desconhecido"
 
-#: ../libnautilus-private/nautilus-file.c:5511
+#: ../libnautilus-private/nautilus-file.c:5518
 msgid "unknown MIME type"
 msgstr "tipo MIME desconhecido"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:5517
+#: ../libnautilus-private/nautilus-file.c:5524
 #: ../src/file-manager/fm-properties-window.c:1322
 msgid "unknown"
 msgstr "desconhecido"
 
-#: ../libnautilus-private/nautilus-file.c:5566
+#: ../libnautilus-private/nautilus-file.c:5573
 msgid "program"
 msgstr "programa"
 
-#: ../libnautilus-private/nautilus-file.c:5586
+#: ../libnautilus-private/nautilus-file.c:5593
 msgid "link"
 msgstr "link"
 
-#: ../libnautilus-private/nautilus-file.c:5608
+#: ../libnautilus-private/nautilus-file.c:5615
 msgid "link (broken)"
 msgstr "link (quebrado)"
 
@@ -3024,28 +3031,28 @@ msgstr "O retângulo da seleção"
 msgid "Switch to Manual Layout?"
 msgstr "Mudar para disposição manual?"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:596
+#: ../libnautilus-private/nautilus-mime-actions.c:598
 #, c-format
 msgid "The Link \"%s\" is Broken."
 msgstr "O link \"%s\" está quebrado."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:598
+#: ../libnautilus-private/nautilus-mime-actions.c:600
 #, c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
 msgstr "O link \"%s\" está quebrado. Movê-lo para a lixeira?"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:604
+#: ../libnautilus-private/nautilus-mime-actions.c:606
 msgid "This link cannot be used, because it has no target."
 msgstr "Não é possível usar este link, porque ele não tem um destino."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:606
+#: ../libnautilus-private/nautilus-mime-actions.c:608
 #, c-format
 msgid "This link cannot be used, because its target \"%s\" doesn't exist."
 msgstr "Não é possível usar esse link, porque o destino \"%s\" não existe."
 
 #. name, stock id
 #. label, accelerator
-#: ../libnautilus-private/nautilus-mime-actions.c:616
+#: ../libnautilus-private/nautilus-mime-actions.c:618
 #: ../src/file-manager/fm-directory-view.c:6681
 #: ../src/file-manager/fm-directory-view.c:6780
 #: ../src/file-manager/fm-directory-view.c:7631
@@ -3054,42 +3061,42 @@ msgstr "Não é possível usar esse link, porque o destino \"%s\" não existe."
 msgid "Mo_ve to Trash"
 msgstr "_Mover para a lixeira"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:676
+#: ../libnautilus-private/nautilus-mime-actions.c:678
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "Você quer executar \"%s\" ou exibir seu conteúdo?"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:678
+#: ../libnautilus-private/nautilus-mime-actions.c:680
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "\"%s\" é um arquivo de texto executável."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:684
+#: ../libnautilus-private/nautilus-mime-actions.c:686
 msgid "Run in _Terminal"
 msgstr "Executar em _terminal"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:685
+#: ../libnautilus-private/nautilus-mime-actions.c:687
 msgid "_Display"
 msgstr "_Exibir"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:688
+#: ../libnautilus-private/nautilus-mime-actions.c:690
 #: ../src/nautilus-autorun-software.c:229
 msgid "_Run"
 msgstr "E_xecutar"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1008
+#: ../libnautilus-private/nautilus-mime-actions.c:1010
 #: ../src/file-manager/fm-directory-view.c:618
 msgid "Are you sure you want to open all files?"
 msgstr "Você tem certeza que quer abrir todos os arquivos?"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1010
+#: ../libnautilus-private/nautilus-mime-actions.c:1012
 #, c-format
 msgid "This will open %d separate tab."
 msgid_plural "This will open %d separate tabs."
 msgstr[0] "Isto abrirá %d aba separada."
 msgstr[1] "Isto abrirá %d abas separadas."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1013
+#: ../libnautilus-private/nautilus-mime-actions.c:1015
 #: ../src/nautilus-location-bar.c:148
 #, c-format
 msgid "This will open %d separate window."
@@ -3097,19 +3104,19 @@ msgid_plural "This will open %d separate windows."
 msgstr[0] "Isso abrirá %d janela separada."
 msgstr[1] "Isso abrirá %d janelas separadas."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1068
+#: ../libnautilus-private/nautilus-mime-actions.c:1071
 msgid "There was an internal error trying to search for applications:"
 msgstr "Houve um erro interno ao tentar pesquisar por aplicativos:"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1070
+#: ../libnautilus-private/nautilus-mime-actions.c:1073
 msgid "Unable to search for application"
 msgstr "Não foi possível pesquisar pelo aplicativo"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1146
+#: ../libnautilus-private/nautilus-mime-actions.c:1149
 msgid "Could not use system package installer"
 msgstr "Não foi possível usar o instalador de pacotes do sistema"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1204
+#: ../libnautilus-private/nautilus-mime-actions.c:1207
 #: ../src/nautilus-window-manage-views.c:1880
 #: ../src/nautilus-window-manage-views.c:1886
 #: ../src/nautilus-window-manage-views.c:1903
@@ -3120,16 +3127,16 @@ msgstr "Não foi possível usar o instalador de pacotes do sistema"
 msgid "Could not display \"%s\"."
 msgstr "Não foi possível exibir \"%s\"."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1225
+#: ../libnautilus-private/nautilus-mime-actions.c:1228
 msgid "The file is of an unknown type"
 msgstr "O tipo do arquivo é desconhecido"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1228
+#: ../libnautilus-private/nautilus-mime-actions.c:1231
 #, c-format
 msgid "There is no application installed for %s files"
 msgstr "Não existe aplicativo instalado para os arquivos %s"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1243
+#: ../libnautilus-private/nautilus-mime-actions.c:1246
 #, c-format
 msgid ""
 "There is no application installed for %s files.\n"
@@ -3138,17 +3145,38 @@ msgstr ""
 "Não existe aplicativo instalado para os arquivos %s.\n"
 "Você deseja pesquisar por um aplicativo capaz de abrir estes arquivos?"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1521
-#: ../libnautilus-private/nautilus-mime-actions.c:1779
+#: ../libnautilus-private/nautilus-mime-actions.c:1345
+msgid "Untrusted application launcher"
+msgstr "Lançador de aplicativo não confiável"
+
+#: ../libnautilus-private/nautilus-mime-actions.c:1348
+#, c-format
+msgid ""
+"The application launcher \"%s\" has not been marked as trusted. If you do "
+"not know the source of this file, launching it may be unsafe."
+msgstr ""
+"O lançador do aplicativo \"%s\" não foi marcado como confiável. Se você não "
+"conhece a fonte deste arquivo, a sua execução pode não ser segura."
+
+#: ../libnautilus-private/nautilus-mime-actions.c:1360
+msgid "_Launch Anyway"
+msgstr "_Lançar mesmo assim"
+
+#: ../libnautilus-private/nautilus-mime-actions.c:1363
+msgid "Mark as _Trusted"
+msgstr "Marcar como _confiável"
+
+#: ../libnautilus-private/nautilus-mime-actions.c:1634
+#: ../libnautilus-private/nautilus-mime-actions.c:1892
 msgid "Unable to mount location"
 msgstr "Não foi possível montar a localização"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1867
+#: ../libnautilus-private/nautilus-mime-actions.c:1980
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Abrindo \"%s\"."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1870
+#: ../libnautilus-private/nautilus-mime-actions.c:1983
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -5110,12 +5138,12 @@ msgstr "Árvore"
 msgid "Show Tree"
 msgstr "Mostrar árvore"
 
-#: ../src/nautilus-application.c:394
+#: ../src/nautilus-application.c:395
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "O Nautilus não pôde criar a pasta necessária: \"%s\"."
 
-#: ../src/nautilus-application.c:396
+#: ../src/nautilus-application.c:397
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
@@ -5123,12 +5151,12 @@ msgstr ""
 "Antes de executar o Nautilus, por favor crie a seguinte pasta ou configure "
 "as permissões de forma que o Nautilus possa criá-la."
 
-#: ../src/nautilus-application.c:399
+#: ../src/nautilus-application.c:400
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "O Nautilus não pôde criar as seguintes pastas necessárias: %s."
 
-#: ../src/nautilus-application.c:401
+#: ../src/nautilus-application.c:402
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -5136,7 +5164,7 @@ msgstr ""
 "Antes de executar o Nautilus, por favor crie essas pastas ou configure as "
 "permissões de forma que o Nautilus possa criá-las."
 
-#: ../src/nautilus-application.c:1249 ../src/nautilus-places-sidebar.c:1684
+#: ../src/nautilus-application.c:1321 ../src/nautilus-places-sidebar.c:1684
 #: ../src/nautilus-places-sidebar.c:1707 ../src/nautilus-places-sidebar.c:1730
 #, c-format
 msgid "Unable to eject %s"
