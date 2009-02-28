@@ -13,9 +13,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus&component=general\n"
-"POT-Creation-Date: 2009-02-20 14:40+0000\n"
-"PO-Revision-Date: 2009-02-23 16:56+0100\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus&component=Internationalization (i18n)\n"
+"POT-Creation-Date: 2009-02-24 12:21+0000\n"
+"PO-Revision-Date: 2009-02-28 14:23+0100\n"
 "Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
 "Language-Team: Hungarian <gnome@fsf.hu>\n"
 "MIME-Version: 1.0\n"
@@ -1542,7 +1542,7 @@ msgstr "Alapértelmezett _használata"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:273
-#: ../src/file-manager/fm-list-view.c:1453
+#: ../src/file-manager/fm-list-view.c:1458
 msgid "Name"
 msgstr "Név"
 
@@ -1795,7 +1795,6 @@ msgstr[1] "megközelítőleg %'d óra"
 #. duplicate original file name
 #: ../libnautilus-private/nautilus-file-operations.c:354
 #, c-format
-#| msgid "%"
 msgid "%s"
 msgstr "%s"
 
@@ -1805,7 +1804,7 @@ msgstr "%s"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:358
-#: ../libnautilus-private/nautilus-file.c:5592
+#: ../libnautilus-private/nautilus-file.c:5599
 #: ../src/file-manager/fm-directory-view.c:9363
 #, c-format
 msgid "Link to %s"
@@ -2344,7 +2343,6 @@ msgid "You cannot copy a file over itself."
 msgstr "A fájl nem másolható önmagára."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3803
-#| msgid "The source file is overwritten by the destination."
 msgid "The source file would be overwritten by the destination."
 msgstr "A forrásfájlt felülírná a célfájl."
 
@@ -2482,32 +2480,32 @@ msgstr "Hiba a következő fájl létrehozásakor: %B."
 msgid "There was an error creating the directory in %F."
 msgstr "Hiba a könyvtár létrehozásakor a következőben: %F."
 
-#: ../libnautilus-private/nautilus-file.c:885
+#: ../libnautilus-private/nautilus-file.c:886
 #: ../libnautilus-private/nautilus-vfs-file.c:264
 msgid "This file cannot be mounted"
 msgstr "Ez a fájl nem csatolható"
 
-#: ../libnautilus-private/nautilus-file.c:1297
+#: ../libnautilus-private/nautilus-file.c:1298
 #, c-format
 msgid "Slashes are not allowed in filenames"
 msgstr "A fájlnevek nem tartalmazhatnak osztásjelet"
 
-#: ../libnautilus-private/nautilus-file.c:1315
+#: ../libnautilus-private/nautilus-file.c:1316
 #, c-format
 msgid "File not found"
 msgstr "A fájl nem található"
 
-#: ../libnautilus-private/nautilus-file.c:1343
+#: ../libnautilus-private/nautilus-file.c:1344
 #, c-format
 msgid "Toplevel files cannot be renamed"
 msgstr "A felső szintű fájlok nem nevezhetők át"
 
-#: ../libnautilus-private/nautilus-file.c:1366
+#: ../libnautilus-private/nautilus-file.c:1367
 #, c-format
 msgid "Unable to rename desktop icon"
 msgstr "Az asztali ikon nem nevezhető át"
 
-#: ../libnautilus-private/nautilus-file.c:1403
+#: ../libnautilus-private/nautilus-file.c:1404
 #, c-format
 msgid "Unable to rename desktop file"
 msgstr "Az asztali fájl nem nevezhető át"
@@ -2527,65 +2525,65 @@ msgstr "Az asztali fájl nem nevezhető át"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: ../libnautilus-private/nautilus-file.c:3678
+#: ../libnautilus-private/nautilus-file.c:3685
 msgid "today at 00:00:00 PM"
 msgstr "ma, 00.00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3679
+#: ../libnautilus-private/nautilus-file.c:3686
 #: ../src/nautilus-file-management-properties.c:471
 msgid "today at %-I:%M:%S %p"
 msgstr "ma, %H.%M.%S"
 
-#: ../libnautilus-private/nautilus-file.c:3681
+#: ../libnautilus-private/nautilus-file.c:3688
 msgid "today at 00:00 PM"
 msgstr "ma, 00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3682
+#: ../libnautilus-private/nautilus-file.c:3689
 msgid "today at %-I:%M %p"
 msgstr "ma, %H.%M"
 
-#: ../libnautilus-private/nautilus-file.c:3684
+#: ../libnautilus-private/nautilus-file.c:3691
 msgid "today, 00:00 PM"
 msgstr "ma, 00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3685
+#: ../libnautilus-private/nautilus-file.c:3692
 msgid "today, %-I:%M %p"
 msgstr "ma, %H.%M"
 
-#: ../libnautilus-private/nautilus-file.c:3687
-#: ../libnautilus-private/nautilus-file.c:3688
+#: ../libnautilus-private/nautilus-file.c:3694
+#: ../libnautilus-private/nautilus-file.c:3695
 msgid "today"
 msgstr "ma"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: ../libnautilus-private/nautilus-file.c:3697
+#: ../libnautilus-private/nautilus-file.c:3704
 msgid "yesterday at 00:00:00 PM"
 msgstr "tegnap, 00.00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3698
+#: ../libnautilus-private/nautilus-file.c:3705
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "tegnap, %H.%M.%S"
 
-#: ../libnautilus-private/nautilus-file.c:3700
+#: ../libnautilus-private/nautilus-file.c:3707
 msgid "yesterday at 00:00 PM"
 msgstr "tegnap, 00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3701
+#: ../libnautilus-private/nautilus-file.c:3708
 msgid "yesterday at %-I:%M %p"
 msgstr "tegnap, %H.%M"
 
-#: ../libnautilus-private/nautilus-file.c:3703
+#: ../libnautilus-private/nautilus-file.c:3710
 msgid "yesterday, 00:00 PM"
 msgstr "tegnap, 00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3704
+#: ../libnautilus-private/nautilus-file.c:3711
 msgid "yesterday, %-I:%M %p"
 msgstr "tegnap, %H.%M"
 
-#: ../libnautilus-private/nautilus-file.c:3706
-#: ../libnautilus-private/nautilus-file.c:3707
+#: ../libnautilus-private/nautilus-file.c:3713
+#: ../libnautilus-private/nautilus-file.c:3714
 msgid "yesterday"
 msgstr "tegnap"
 
@@ -2594,88 +2592,88 @@ msgstr "tegnap"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: ../libnautilus-private/nautilus-file.c:3718
+#: ../libnautilus-private/nautilus-file.c:3725
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "0000. szeptember 00., szerda, 00.00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3719
+#: ../libnautilus-private/nautilus-file.c:3726
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%Y. %B %-d., %A, %H.%M.%S"
 
-#: ../libnautilus-private/nautilus-file.c:3721
+#: ../libnautilus-private/nautilus-file.c:3728
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "0000. okt. 00., hétfő, 00.00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3722
+#: ../libnautilus-private/nautilus-file.c:3729
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%Y. %b. %-d., %a., %H.%M.%S"
 
-#: ../libnautilus-private/nautilus-file.c:3724
+#: ../libnautilus-private/nautilus-file.c:3731
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "0000. okt. 00., hétfő, 00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3725
+#: ../libnautilus-private/nautilus-file.c:3732
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%Y. %b. %-d., %a., %H.%M"
 
-#: ../libnautilus-private/nautilus-file.c:3727
+#: ../libnautilus-private/nautilus-file.c:3734
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "0000. okt. 00., 00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3728
+#: ../libnautilus-private/nautilus-file.c:3735
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%Y. %b. %-d., %H.%M"
 
-#: ../libnautilus-private/nautilus-file.c:3730
+#: ../libnautilus-private/nautilus-file.c:3737
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "0000. okt. 00., 00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3731
+#: ../libnautilus-private/nautilus-file.c:3738
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%Y. %b. %-d., %H.%M"
 
-#: ../libnautilus-private/nautilus-file.c:3733
+#: ../libnautilus-private/nautilus-file.c:3740
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3734
+#: ../libnautilus-private/nautilus-file.c:3741
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%y/%m/%-d, %H.%M"
 
-#: ../libnautilus-private/nautilus-file.c:3736
+#: ../libnautilus-private/nautilus-file.c:3743
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: ../libnautilus-private/nautilus-file.c:3737
+#: ../libnautilus-private/nautilus-file.c:3744
 msgid "%m/%d/%y"
 msgstr "%y/%m/%d"
 
-#: ../libnautilus-private/nautilus-file.c:4350
+#: ../libnautilus-private/nautilus-file.c:4357
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "A jogosultságok beállítása nem engedélyezett"
 
-#: ../libnautilus-private/nautilus-file.c:4658
+#: ../libnautilus-private/nautilus-file.c:4665
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "A tulajdonos beállítása nem engedélyezett"
 
-#: ../libnautilus-private/nautilus-file.c:4676
+#: ../libnautilus-private/nautilus-file.c:4683
 #, c-format
 msgid "Specified owner '%s' doesn't exist"
 msgstr "A megadott tulajdonos („%s”) nem létezik"
 
-#: ../libnautilus-private/nautilus-file.c:4940
+#: ../libnautilus-private/nautilus-file.c:4947
 #, c-format
 msgid "Not allowed to set group"
 msgstr "A csoport beállítása nem engedélyezett"
 
-#: ../libnautilus-private/nautilus-file.c:4958
+#: ../libnautilus-private/nautilus-file.c:4965
 #, c-format
 msgid "Specified group '%s' doesn't exist"
 msgstr "A megadott csoport („%s”) nem létezik"
 
-#: ../libnautilus-private/nautilus-file.c:5101
+#: ../libnautilus-private/nautilus-file.c:5108
 #: ../src/file-manager/fm-directory-view.c:2202
 #, c-format
 msgid "%'u item"
@@ -2683,14 +2681,14 @@ msgid_plural "%'u items"
 msgstr[0] "%'u elem"
 msgstr[1] "%'u elem"
 
-#: ../libnautilus-private/nautilus-file.c:5102
+#: ../libnautilus-private/nautilus-file.c:5109
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u mappa"
 msgstr[1] "%'u mappa"
 
-#: ../libnautilus-private/nautilus-file.c:5103
+#: ../libnautilus-private/nautilus-file.c:5110
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -2698,51 +2696,51 @@ msgstr[0] "%'u fájl"
 msgstr[1] "%'u fájl"
 
 #. Do this in a separate stage so that we don't have to put G_GUINT64_FORMAT in the translated string
-#: ../libnautilus-private/nautilus-file.c:5182
+#: ../libnautilus-private/nautilus-file.c:5189
 msgid "%"
 msgstr "%"
 
-#: ../libnautilus-private/nautilus-file.c:5183
+#: ../libnautilus-private/nautilus-file.c:5190
 #, c-format
 msgid "%s (%s bytes)"
 msgstr "%s (%s bájt)"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:5487
-#: ../libnautilus-private/nautilus-file.c:5503
+#: ../libnautilus-private/nautilus-file.c:5494
+#: ../libnautilus-private/nautilus-file.c:5510
 msgid "? items"
 msgstr "? elem"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:5493
+#: ../libnautilus-private/nautilus-file.c:5500
 msgid "? bytes"
 msgstr "? bájt"
 
-#: ../libnautilus-private/nautilus-file.c:5508
+#: ../libnautilus-private/nautilus-file.c:5515
 msgid "unknown type"
 msgstr "ismeretlen típus"
 
-#: ../libnautilus-private/nautilus-file.c:5511
+#: ../libnautilus-private/nautilus-file.c:5518
 msgid "unknown MIME type"
 msgstr "ismeretlen MIME-típus"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:5517
+#: ../libnautilus-private/nautilus-file.c:5524
 #: ../src/file-manager/fm-properties-window.c:1322
 msgid "unknown"
 msgstr "ismeretlen"
 
-#: ../libnautilus-private/nautilus-file.c:5566
+#: ../libnautilus-private/nautilus-file.c:5573
 msgid "program"
 msgstr "program"
 
-#: ../libnautilus-private/nautilus-file.c:5586
+#: ../libnautilus-private/nautilus-file.c:5593
 msgid "link"
 msgstr "link"
 
-#: ../libnautilus-private/nautilus-file.c:5608
+#: ../libnautilus-private/nautilus-file.c:5615
 msgid "link (broken)"
 msgstr "link (törött)"
 
@@ -2880,8 +2878,8 @@ msgstr "Tömör nézet"
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:143
-#: ../src/file-manager/fm-list-view.c:1508
-#: ../src/file-manager/fm-list-view.c:2924
+#: ../src/file-manager/fm-list-view.c:1513
+#: ../src/file-manager/fm-list-view.c:2929
 msgid "List View"
 msgstr "Listanézet"
 
@@ -2980,28 +2978,28 @@ msgstr "A kijelölés téglalapja"
 msgid "Switch to Manual Layout?"
 msgstr "Átvált kézi elrendezésre?"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:596
+#: ../libnautilus-private/nautilus-mime-actions.c:598
 #, c-format
 msgid "The Link \"%s\" is Broken."
 msgstr "A(z) „%s” link törött."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:598
+#: ../libnautilus-private/nautilus-mime-actions.c:600
 #, c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
 msgstr "A(z) „%s” link törött. Áthelyezi a Kukába?"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:604
+#: ../libnautilus-private/nautilus-mime-actions.c:606
 msgid "This link cannot be used, because it has no target."
 msgstr "Ez a link nem használható, mert nem mutat semmire."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:606
+#: ../libnautilus-private/nautilus-mime-actions.c:608
 #, c-format
 msgid "This link cannot be used, because its target \"%s\" doesn't exist."
 msgstr "Ez a link nem használható, mert nem létezik, amire mutat („%s”)."
 
 #. name, stock id
 #. label, accelerator
-#: ../libnautilus-private/nautilus-mime-actions.c:616
+#: ../libnautilus-private/nautilus-mime-actions.c:618
 #: ../src/file-manager/fm-directory-view.c:6681
 #: ../src/file-manager/fm-directory-view.c:6780
 #: ../src/file-manager/fm-directory-view.c:7631
@@ -3010,42 +3008,42 @@ msgstr "Ez a link nem használható, mert nem létezik, amire mutat („%s”)."
 msgid "Mo_ve to Trash"
 msgstr "Át_helyezés a Kukába"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:676
+#: ../libnautilus-private/nautilus-mime-actions.c:678
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "Futtatja a(z) „%s” elemet, vagy megjeleníti a tartalmát?"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:678
+#: ../libnautilus-private/nautilus-mime-actions.c:680
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "A(z) „%s” egy végrehajtható szöveges fájl."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:684
+#: ../libnautilus-private/nautilus-mime-actions.c:686
 msgid "Run in _Terminal"
 msgstr "_Futtatás terminálban"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:685
+#: ../libnautilus-private/nautilus-mime-actions.c:687
 msgid "_Display"
 msgstr "_Megjelenítés"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:688
+#: ../libnautilus-private/nautilus-mime-actions.c:690
 #: ../src/nautilus-autorun-software.c:229
 msgid "_Run"
 msgstr "_Futtatás"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1008
+#: ../libnautilus-private/nautilus-mime-actions.c:1010
 #: ../src/file-manager/fm-directory-view.c:618
 msgid "Are you sure you want to open all files?"
 msgstr "Biztosan meg akarja nyitni az összes fájlt?"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1010
+#: ../libnautilus-private/nautilus-mime-actions.c:1012
 #, c-format
 msgid "This will open %d separate tab."
 msgid_plural "This will open %d separate tabs."
 msgstr[0] "Ez %d új lapot fog megnyitni."
 msgstr[1] "Ez %d új lapot fog megnyitni."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1013
+#: ../libnautilus-private/nautilus-mime-actions.c:1015
 #: ../src/nautilus-location-bar.c:148
 #, c-format
 msgid "This will open %d separate window."
@@ -3053,19 +3051,19 @@ msgid_plural "This will open %d separate windows."
 msgstr[0] "Ez %d új ablakot fog megnyitni."
 msgstr[1] "Ez %d új ablakot fog megnyitni."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1068
+#: ../libnautilus-private/nautilus-mime-actions.c:1071
 msgid "There was an internal error trying to search for applications:"
 msgstr "Belső hiba történt az alkalmazások keresésekor:"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1070
+#: ../libnautilus-private/nautilus-mime-actions.c:1073
 msgid "Unable to search for application"
 msgstr "Az alkalmazás nem kereshető"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1146
+#: ../libnautilus-private/nautilus-mime-actions.c:1149
 msgid "Could not use system package installer"
 msgstr "A rendszer csomagtelepítője nem használható"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1204
+#: ../libnautilus-private/nautilus-mime-actions.c:1207
 #: ../src/nautilus-window-manage-views.c:1880
 #: ../src/nautilus-window-manage-views.c:1886
 #: ../src/nautilus-window-manage-views.c:1903
@@ -3076,16 +3074,16 @@ msgstr "A rendszer csomagtelepítője nem használható"
 msgid "Could not display \"%s\"."
 msgstr "„%s” nem jeleníthető meg."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1225
+#: ../libnautilus-private/nautilus-mime-actions.c:1228
 msgid "The file is of an unknown type"
 msgstr "A fájl ismeretlen típusú"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1228
+#: ../libnautilus-private/nautilus-mime-actions.c:1231
 #, c-format
 msgid "There is no application installed for %s files"
 msgstr "Nincs alkalmazás telepítve a fájltípushoz (%s)"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1243
+#: ../libnautilus-private/nautilus-mime-actions.c:1246
 #, c-format
 msgid ""
 "There is no application installed for %s files.\n"
@@ -3094,17 +3092,41 @@ msgstr ""
 "Nincs alkalmazás telepítve a fájltípushoz (%s)\n"
 "Kíván a fájl megnyitására képes alkalmazást keresni?"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1521
-#: ../libnautilus-private/nautilus-mime-actions.c:1779
+#: ../libnautilus-private/nautilus-mime-actions.c:1297
+msgid "Unable to mark launcher trusted (executable)"
+msgstr "Az alkalmazásindító nem jelölhető megbízhatónak (végrehajthatónak)"
+
+#: ../libnautilus-private/nautilus-mime-actions.c:1365
+#| msgid "Choose what application to launch."
+msgid "Untrusted application launcher"
+msgstr "Az alkalmazásindító nem megbízható"
+
+#: ../libnautilus-private/nautilus-mime-actions.c:1368
+#, c-format
+msgid ""
+"The application launcher \"%s\" has not been marked as trusted. If you do "
+"not know the source of this file, launching it may be unsafe."
+msgstr "Az alkalmazásindító („%s”) nincs megbízhatónak jelölve. Ha nem ismeri a fájl forrását, az indítása kockázatos lehet."
+
+#: ../libnautilus-private/nautilus-mime-actions.c:1380
+msgid "_Launch Anyway"
+msgstr "_Indítás mindenképp"
+
+#: ../libnautilus-private/nautilus-mime-actions.c:1383
+msgid "Mark as _Trusted"
+msgstr "_Megjelölés megbízhatóként"
+
+#: ../libnautilus-private/nautilus-mime-actions.c:1654
+#: ../libnautilus-private/nautilus-mime-actions.c:1912
 msgid "Unable to mount location"
 msgstr "A hely nem csatolható"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1867
+#: ../libnautilus-private/nautilus-mime-actions.c:2000
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "„%s” megnyitása."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1870
+#: ../libnautilus-private/nautilus-mime-actions.c:2003
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -3690,7 +3712,7 @@ msgstr[0] ""
 "A(z) %'d kijelölt elem másolására a Beillesztés parancs kiválasztásakor "
 "kerül sor"
 msgstr[1] ""
-"A(z) %d kijelölt elem másolására a Beillesztés parancs kiválasztásakor kerül "
+"A(z) %'d kijelölt elem másolására a Beillesztés parancs kiválasztásakor kerül "
 "sor"
 
 #: ../src/file-manager/fm-directory-view.c:5767
@@ -4673,40 +4695,40 @@ msgstr "(Üres)"
 msgid "Loading..."
 msgstr "Betöltés…"
 
-#: ../src/file-manager/fm-list-view.c:2127
+#: ../src/file-manager/fm-list-view.c:2132
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s látható oszlop"
 
-#: ../src/file-manager/fm-list-view.c:2146
+#: ../src/file-manager/fm-list-view.c:2151
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Válassza ki az információk megjelenési sorrendjét a mappában:"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:2200
+#: ../src/file-manager/fm-list-view.c:2205
 msgid "Visible _Columns..."
 msgstr "Látható _oszlopok…"
 
 #. tooltip
-#: ../src/file-manager/fm-list-view.c:2201
+#: ../src/file-manager/fm-list-view.c:2206
 msgid "Select the columns visible in this folder"
 msgstr "Ebben a mappában látható oszlopok kiválasztása"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-list-view.c:2926
+#: ../src/file-manager/fm-list-view.c:2931
 msgid "_List"
 msgstr "_Lista"
 
-#: ../src/file-manager/fm-list-view.c:2927
+#: ../src/file-manager/fm-list-view.c:2932
 msgid "The list view encountered an error."
 msgstr "A listanézet hibát észlelt."
 
-#: ../src/file-manager/fm-list-view.c:2928
+#: ../src/file-manager/fm-list-view.c:2933
 msgid "The list view encountered an error while starting up."
 msgstr "A listanézet hibát észlelt induláskor."
 
-#: ../src/file-manager/fm-list-view.c:2929
+#: ../src/file-manager/fm-list-view.c:2934
 msgid "Display this location with the list view."
 msgstr "Ezen hely megjelenítése a listanézettel."
 
@@ -6203,7 +6225,7 @@ msgstr "A fájl nem egy kép."
 
 #: ../src/nautilus-property-browser.c:2149
 msgid "Select a Category:"
-msgstr "Kategória kiválasztása:"
+msgstr "Válasszon kategóriát:"
 
 #: ../src/nautilus-property-browser.c:2158
 msgid "C_ancel Remove"
