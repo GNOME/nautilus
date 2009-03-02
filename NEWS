@@ -1,3 +1,11 @@
+Major changes in 2.25.92 are:
+* Set mmap limit to avoid desktop background memory not being returned to the os
+* Warn when source overwrites destination in move
+* Don't put "link to ..." in front of symlinks unless there are name conflicts
+* Fix desktop flicker on theme change
+* Require desktop file app launchers to be executable
+* Support making symlinks on remote locations (if supported by backend)
+
 Major changes in 2.25.91 are:
 * Use G_DEFINE_TYPE_* instead of hand-written types
 * fix: opening a new window restores minimised ones
