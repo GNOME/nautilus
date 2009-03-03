@@ -1,3 +1,12 @@
+2009-03-03  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* src/nautilus-application.c (nautilus_application_finalize),
+	(ck_session_active_changed_cb), (ck_call_is_active_cb),
+	(ck_get_current_session_cb), (do_initialize_consolekit),
+	(finish_startup), (mount_added_callback):
+	* src/nautilus-application.h: commit properly the previous
+	ConsoleKit patch.
+
 2009-03-03  A. Walton  <awalton@gnome.org>
 
 	* src/nautilus-application.c (nautilus_application_finalize),
