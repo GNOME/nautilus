@@ -60,6 +60,7 @@
 #include <glib/gstdio.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
+#include <dbus/dbus-glib.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
@@ -95,6 +96,8 @@ enum
 
 #define START_STATE_CONFIG "start-state"
 
+static gboolean session_is_active = FALSE;
+
 /* Keeps track of all the desktop windows. */
 static GList *nautilus_application_desktop_windows;
 
@@ -123,6 +126,10 @@ static void     drive_listen_for_eject_button      (GDrive *drive,
 static gboolean is_kdesktop_present               (void);
 static void     nautilus_application_load_session     (NautilusApplication *application); 
 static char *   nautilus_application_get_session_data (void);
+static void     ck_session_active_changed_cb (DBusGProxy *proxy,
+		                              gboolean is_active,
+                		              void *user_data);
+
 
 G_DEFINE_TYPE (NautilusApplication, nautilus_application, G_TYPE_OBJECT);
 
@@ -346,6 +353,13 @@ nautilus_application_finalize (GObject *object)
 		application->automount_idle_id = 0;
 	}
 
+	if (application->ck_session_proxy != NULL) {
+		dbus_g_proxy_disconnect_signal (application->ck_session_proxy, "ActiveChanged",
+						G_CALLBACK (ck_session_active_changed_cb), NULL);
+		g_object_unref (application->ck_session_proxy);
+		application->ck_session_proxy = NULL;
+	}
+
         G_OBJECT_CLASS (nautilus_application_parent_class)->finalize (object);
 }
 
@@ -511,6 +525,189 @@ mark_desktop_files_trusted (void)
 	g_free (do_once_file);
 }
 
+#define CK_NAME "org.freedesktop.ConsoleKit"
+#define CK_PATH "/org/freedesktop/ConsoleKit"
+
+static void
+ck_session_active_changed_cb (DBusGProxy *proxy,
+			      gboolean is_active,
+			      void *user_data)
+{
+	is_session_active = is_active;
+}
+
+static void
+ck_call_is_active_cb (DBusGProxy *proxy,
+		      DBusGProxyCall *call_id,
+		      void *user_data)
+{
+	GError *error = NULL;
+	gboolean res, is_active;
+
+	res = dbus_g_proxy_end_call (proxy, call_id, &error,
+				     G_TYPE_BOOLEAN, &is_active,
+				     G_TYPE_INVALID);
+	if (!res) {
+		g_warning ("Can't initialize ConsoleKit: %s. Multi user "
+			   "support will be disabled.", error->message);
+		g_error_free (error);
+		is_session_active = TRUE;
+		return;
+	}
+
+	is_session_active = is_active;
+
+	dbus_g_proxy_connect_signal (proxy, "ActiveChanged",
+				     G_CALLBACK (ck_session_active_changed_cb), NULL,
+				     NULL);
+}
+
+static void
+ck_get_current_session (DBusGProxy *proxy,
+			DBusGProxyCall *call_id,
+			void *user_data)
+{
+	GError *error = NULL;
+	gboolean res;
+	char *session_id;
+	DBusGProxy *session_proxy;
+	DBusGConnection *conn;
+
+	conn = user_data;
+
+	res = dbus_g_proxy_end_call (proxy, call_id, &error,
+				     DBUS_TYPE_G_OBJECT_PATH, &id, G_TYPE_INVALID);
+	if (!res) {
+		g_warning ("Can't initialize ConsoleKit: %s. Multi user "
+			   "support will be disabled.", error->message);
+		g_error_free (error);
+		is_session_active = TRUE;
+		return;
+	}
+
+	session_proxy = dbus_g_proxy_new_for_name (conn, CK_NAME, session_id,
+						   CK_NAME ".Session");
+	dbus_g_proxy_begin_call (session_proxy, "IsActive", ck_call_is_active_cb,
+				 NULL, NULL, G_TYPE_INVALID);
+}
+
+
+static void
+do_initialize_consolekit (void)
+{
+	DBusGConnection *conn;
+	DBusGProxy *proxy;
+	GError *error = NULL;
+
+	conn = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+	if (error) {
+		g_warning ("Can't initialize ConsoleKit: %s. Multi user "
+			   "support will be disabled", error->message);
+		g_error_free (error);
+		is_session_active = TRUE;
+		return;
+	}
+
+	proxy = dbus_g_proxy_new_for_name (conn, CK_NAME, CK_PATH "/Manager",
+ 					   CK_NAME ".Manager");
+	dbus_g_proxy_begin_call (proxy, "GetCurrentSession",
+				 ck_get_current_session_cb, conn,
+				 NULL, G_TYPE_INVALID);
+}
+
+#define CK_NAME "org.freedesktop.ConsoleKit"
+#define CK_PATH "/org/freedesktop/ConsoleKit"
+
+static void
+ck_session_active_changed_cb (DBusGProxy *proxy,
+			      gboolean is_active,
+			      void *user_data)
+{
+	NautilusApplication *application = user_data;
+
+	application->session_is_active = is_active;
+}
+
+static void
+ck_call_is_active_cb (DBusGProxy *proxy,
+		      DBusGProxyCall *call_id,
+		      void *user_data)
+{
+	gboolean res, is_active;
+	NautilusApplication *application;
+
+	application = user_data;
+
+	res = dbus_g_proxy_end_call (proxy, call_id, NULL,
+				     G_TYPE_BOOLEAN, &is_active,
+				     G_TYPE_INVALID);
+	if (!res) {
+		g_object_unref (proxy);
+
+		application->session_is_active = TRUE;
+		return;
+	}
+
+	application->session_is_active = is_active;
+
+	dbus_g_proxy_add_signal (proxy, "ActiveChanged", G_TYPE_BOOLEAN, G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal (proxy, "ActiveChanged",
+				     G_CALLBACK (ck_session_active_changed_cb), application,
+				     NULL);
+}
+
+static void
+ck_get_current_session_cb (DBusGProxy *proxy,
+			   DBusGProxyCall *call_id,
+			   void *user_data)
+{
+	gboolean res;
+	char *session_id;
+	NautilusApplication *application;
+
+	application = user_data;
+
+	res = dbus_g_proxy_end_call (proxy, call_id, NULL,
+				     DBUS_TYPE_G_OBJECT_PATH, &session_id, G_TYPE_INVALID);
+	if (!res) {
+		g_object_unref (proxy);
+
+		application->session_is_active = TRUE;
+		return;
+	}
+
+	application->ck_session_proxy = dbus_g_proxy_new_from_proxy (proxy, CK_NAME ".Session",
+								     session_id);
+	dbus_g_proxy_begin_call (application->ck_session_proxy, "IsActive", ck_call_is_active_cb,
+				 application, NULL, G_TYPE_INVALID);
+
+	g_object_unref (proxy);
+}
+
+
+static void
+do_initialize_consolekit (NautilusApplication *application)
+{
+	DBusGConnection *conn;
+	DBusGProxy *proxy;
+	GError *error = NULL;
+
+	conn = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+	if (error) {
+		g_error_free (error);
+
+		application->session_is_active = TRUE;
+
+		return;
+	}
+
+	proxy = dbus_g_proxy_new_for_name (conn, CK_NAME, CK_PATH "/Manager",
+ 					   CK_NAME ".Manager");
+	dbus_g_proxy_begin_call (proxy, "GetCurrentSession",
+				 ck_get_current_session_cb, application,
+				 NULL, G_TYPE_INVALID);
+}
+
 static void
 do_upgrades_once (NautilusApplication *application,
 		  gboolean no_desktop)
@@ -537,6 +734,12 @@ finish_startup (NautilusApplication *application,
 	
 	/* Initialize the desktop link monitor singleton */
 	nautilus_desktop_link_monitor_get ();
+
+	/* Initialize the ConsoleKit listener for active session */
+	do_initialize_consolekit ();
+
+	/* Initialize the ConsoleKit listener for active session */
+	do_initialize_consolekit (application);
 
 	/* Watch for mounts so we can restore open windows This used
 	 * to be for showing new window on mount, but is not used
@@ -1386,6 +1589,10 @@ mount_added_callback (GVolumeMonitor *monitor,
 {
 	NautilusDirectory *directory;
 	GFile *root;
+
+	if (!application->session_is_active) {
+		return;
+	}
 		
 	root = g_mount_get_root (mount);
 	directory = nautilus_directory_get_existing (root);
