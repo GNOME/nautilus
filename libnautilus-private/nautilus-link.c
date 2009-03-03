@@ -312,7 +312,8 @@ get_language (void)
 static gboolean
 nautilus_link_local_set_key (const char *uri,
 			     const char *key,
-			     const char *value)
+			     const char *value,
+			     gboolean    localize)
 {
 	gboolean success;
 	GKeyFile *key_file;
@@ -325,12 +326,15 @@ nautilus_link_local_set_key (const char *uri,
 		g_object_unref (file);
 		return FALSE;
 	}
-
-	g_key_file_set_locale_string (key_file,
-				      MAIN_GROUP,
-				      key,
-				      get_language (), 
-				      value);
+	if (localize) {
+		g_key_file_set_locale_string (key_file,
+					      MAIN_GROUP,
+					      key,
+					      get_language (), 
+					      value);
+	} else {
+		g_key_file_set_string (key_file, MAIN_GROUP, key, value);
+	}
 	
 	
 	success = _g_key_file_save_to_gfile (key_file,  file, NULL);
@@ -343,7 +347,7 @@ gboolean
 nautilus_link_local_set_text (const char *uri,
 			      const char *text)
 {
-	return nautilus_link_local_set_key (uri, "Name", text);
+	return nautilus_link_local_set_key (uri, "Name", text, TRUE);
 }
 
 
@@ -351,7 +355,7 @@ gboolean
 nautilus_link_local_set_icon (const char        *uri,
 			      const char        *icon)
 {
-	return nautilus_link_local_set_key (uri, "Icon", icon);
+	return nautilus_link_local_set_key (uri, "Icon", icon, FALSE);
 }
 
 char *
