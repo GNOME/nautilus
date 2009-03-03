@@ -1,3 +1,10 @@
+2009-03-03  A. Walton  <awalton@gnome.org>
+
+	* src/nautilus-application.c (nautilus_application_finalize),
+	(finish_startup), (mount_added_callback):
+	* src/nautilus-application.h:
+	Fix the build by reverting Cosimo's CK double-patch.
+
 2009-03-02  A. Walton  <awalton@gnome.org>
 
 	* libnautilus-private/nautilus-link.c
