@@ -88,18 +88,6 @@ is_local_file_a_link (const char *uri)
 }
 
 static gboolean
-is_link_data (const char *file_contents, int file_size)
-{
-	char *mimetype;
-	gboolean res;
-
-	mimetype = g_content_type_guess (NULL, file_contents, file_size, NULL);
-	res =  is_link_mime_type (mimetype);
-	g_free (mimetype);
-	return res;
-}
-
-static gboolean
 _g_key_file_load_from_gfile (GKeyFile *key_file,
 			     GFile *file,
 			     GKeyFileFlags flags,
@@ -554,10 +542,6 @@ nautilus_link_get_link_info_given_file_contents (const char  *file_contents,
 	char *type;
 	char **only_show_in;
 	char **not_show_in;
-
-	if (!is_link_data (file_contents, link_file_size)) {
-		return;
-	}
 
 	key_file = g_key_file_new ();
 	if (!g_key_file_load_from_data (key_file,
