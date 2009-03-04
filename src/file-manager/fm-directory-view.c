@@ -7103,9 +7103,7 @@ file_should_show_foreach (NautilusFile *file,
 
 	if (nautilus_file_can_eject (file)) {
 		*show_eject = TRUE;
-	}
-
-	if (nautilus_file_can_unmount (file)) {
+	} else if (nautilus_file_can_unmount (file)) {
 		*show_unmount = TRUE;
 	}
 
@@ -7152,9 +7150,7 @@ file_should_show_self (NautilusFile *file,
 	
 	if (nautilus_file_can_eject (file)) {
 		*show_eject = TRUE;
-	}
-
-	if (nautilus_file_can_unmount (file)) {
+	} else if (nautilus_file_can_unmount (file)) {
 		*show_unmount = TRUE;
 	}
 	

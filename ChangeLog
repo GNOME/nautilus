@@ -1,5 +1,15 @@
 2009-03-04  Alexander Larsson  <alexl@redhat.com>
 
+	Bug 574067 – context menu lists eject and unmount option
+
+        * src/file-manager/fm-directory-view.c:
+        * src/file-manager/fm-tree-view.c:
+        * src/nautilus-places-sidebar.c:
+	Never show unmount menu item if we're showing eject, as its a superset
+	of unmount.
+
+2009-03-04  Alexander Larsson  <alexl@redhat.com>
+
 	Bug 573991 – Nautilus does not recognize some .desktop files as launchers
 
         * libnautilus-private/nautilus-link.c:

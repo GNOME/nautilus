@@ -738,6 +738,9 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
 			/* TODO: show both unmount and eject if there are more than one volume for the drive */
 			show_unmount = g_mount_can_unmount (mount);
 			show_eject = g_mount_can_eject (mount);
+			if (show_eject) {
+				show_unmount = FALSE;
+			}
 		} 
 		
 		if (show_unmount) {
