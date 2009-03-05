@@ -1,3 +1,13 @@
+2009-03-05  Alexander Larsson  <alexl@redhat.com>
+
+	Bug 449397 – misinterpreted uid over ssh
+	
+        * libnautilus-private/nautilus-file-private.h:
+        * libnautilus-private/nautilus-file.c:
+	Use the gvfs reported owner/group names instead of the local
+	uid/gui mapping. This allows remote shares to report the correct
+	names.
+
 2009-03-04  Alexander Larsson  <alexl@redhat.com>
 
 	Bug 574067 – context menu lists eject and unmount option

@@ -326,6 +326,12 @@ nautilus_file_clear_info (NautilusFile *file)
 	file->details->selinux_context = NULL;
 	g_free (file->details->description);
 	file->details->description = NULL;
+	eel_ref_str_unref (file->details->owner);
+	file->details->owner = NULL;
+	eel_ref_str_unref (file->details->owner_real);
+	file->details->owner_real = NULL;
+	eel_ref_str_unref (file->details->group);
+	file->details->group = NULL;
 
 	eel_ref_str_unref (file->details->filesystem_id);
 	file->details->filesystem_id = NULL;
@@ -636,6 +642,9 @@ finalize (GObject *object)
 	g_free (file->details->thumbnail_path);
 	g_free (file->details->symlink_name);
 	eel_ref_str_unref (file->details->mime_type);
+	eel_ref_str_unref (file->details->owner);
+	eel_ref_str_unref (file->details->owner_real);
+	eel_ref_str_unref (file->details->group);
 	g_free (file->details->selinux_context);
 	g_free (file->details->description);
 	g_free (file->details->top_left_text);
@@ -1550,6 +1559,8 @@ update_info_internal (NautilusFile *file,
 	const char *description;
 	const char *filesystem_id;
 	const char *trash_orig_path;
+	const char *group, *owner, *owner_real;
+	gboolean free_owner, free_group;
 	
 	if (file->details->is_gone) {
 		return FALSE;
@@ -1711,13 +1722,27 @@ update_info_internal (NautilusFile *file,
 	file->details->can_unmount = can_unmount;
 	file->details->can_eject = can_eject;
 
+	free_owner = FALSE;
+	owner = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_OWNER_USER);
+	owner_real = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_OWNER_USER_REAL);
+	free_group = FALSE;
+	group = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_OWNER_GROUP);
+	
 	uid = -1;
 	gid = -1;
 	if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_UNIX_UID)) {
 		uid = g_file_info_get_attribute_uint32 (info, G_FILE_ATTRIBUTE_UNIX_UID);
+		if (owner == NULL) {
+			free_owner = TRUE;
+			owner = g_strdup_printf ("%d", uid);
+		}
 	}
 	if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_UNIX_GID)) {
 		gid = g_file_info_get_attribute_uint32 (info, G_FILE_ATTRIBUTE_UNIX_GID);
+		if (group == NULL) {
+			free_group = TRUE;
+			group = g_strdup_printf ("%d", gid);
+		}
 	}
 	if (file->details->uid != uid ||
 	    file->details->gid != gid) {
@@ -1725,6 +1750,31 @@ update_info_internal (NautilusFile *file,
 	}
 	file->details->uid = uid;
 	file->details->gid = gid;
+
+	if (eel_strcmp (eel_ref_str_peek (file->details->owner), owner) != 0) {
+		changed = TRUE;
+		eel_ref_str_unref (file->details->owner);
+		file->details->owner = eel_ref_str_get_unique (owner);
+	}
+	
+	if (eel_strcmp (eel_ref_str_peek (file->details->owner_real), owner_real) != 0) {
+		changed = TRUE;
+		eel_ref_str_unref (file->details->owner_real);
+		file->details->owner_real = eel_ref_str_get_unique (owner_real);
+	}
+	
+	if (eel_strcmp (eel_ref_str_peek (file->details->group), group) != 0) {
+		changed = TRUE;
+		eel_ref_str_unref (file->details->group);
+		file->details->group = eel_ref_str_get_unique (group);
+	}
+
+	if (free_owner) {
+		g_free ((char *)owner);
+	}
+	if (free_group) {
+		g_free ((char *)group);
+	}
 	
 	size = -1;
 	if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_STANDARD_SIZE)) {
@@ -4480,29 +4530,6 @@ get_real_name (const char *name, const char *gecos)
 	return real_name;
 }
 
-static char *
-get_user_and_real_name_from_id (uid_t uid)
-{
-	char *name, *gecos;
-	char *real_name, *user_and_real_name;
-	
-	name = nautilus_users_cache_get_name (uid);
-	gecos = nautilus_users_cache_get_gecos (uid);
-
-	real_name = get_real_name (name, gecos);
-	if (real_name != NULL) {
-		user_and_real_name = g_strdup_printf ("%s - %s", name, real_name);
-	} else {
-		user_and_real_name = g_strdup (name);
-	}
-	g_free (real_name);
-
-	g_free (name);
-	g_free (gecos);
-
-	return user_and_real_name;
-}
-
 static gboolean
 get_group_id_from_group_name (const char *group_name, uid_t *gid)
 {
@@ -4767,22 +4794,7 @@ nautilus_file_can_get_group (NautilusFile *file)
 char *
 nautilus_file_get_group_name (NautilusFile *file)
 {
-	char *group_name;
-
-	/* Before we have info on a file, the owner is unknown. */
-	if (file->details->gid == -1) {
-		return NULL;
-	}
-
-	group_name = nautilus_groups_cache_get_name ((gid_t) file->details->gid);
-	if (group_name == NULL) {
-		/* In the oddball case that the group name has been set to an id for which
-		 * there is no defined group, return the id in string form.
-		 */
-		group_name = g_strdup_printf ("%d", file->details->gid);
-	}
-
-	return group_name;
+	return g_strdup (eel_ref_str_peek (file->details->group));
 }
 
 /**
@@ -5076,21 +5088,22 @@ nautilus_file_get_owner_as_string (NautilusFile *file, gboolean include_real_nam
 	char *user_name;
 
 	/* Before we have info on a file, the owner is unknown. */
-	if (file->details->uid == -1) {
+	if (file->details->owner == NULL &&
+	    file->details->owner_real == NULL) {
 		return NULL;
 	}
 
-	if (include_real_name) {
-		user_name = get_user_and_real_name_from_id (file->details->uid);
+	if (file->details->owner_real == NULL) {
+		user_name = g_strdup (eel_ref_str_peek (file->details->owner));
+	} else if (file->details->owner == NULL) {
+		user_name = g_strdup (eel_ref_str_peek (file->details->owner_real));
+	} else if (include_real_name &&
+		   strcmp (eel_ref_str_peek (file->details->owner), eel_ref_str_peek (file->details->owner_real)) != 0) {
+		user_name = g_strdup_printf ("%s - %s",
+					     eel_ref_str_peek (file->details->owner),
+					     eel_ref_str_peek (file->details->owner_real));
 	} else {
-		user_name = nautilus_users_cache_get_name (file->details->uid);
-	}
-
-	if (user_name == NULL) {
-		/* In the oddball case that the user name has been set to an id for which
-		 * there is no defined user, return the id in string form.
-		 */
-		user_name = g_strdup_printf ("%d", file->details->uid);
+		user_name = g_strdup (eel_ref_str_peek (file->details->owner));
 	}
 
 	return user_name;

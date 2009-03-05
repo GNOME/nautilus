@@ -39,12 +39,6 @@
 #define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_LINES               5
 #define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_BYTES               1024
 
-#define NAUTILUS_FILE_DEFAULT_FILE_INFO_OPTIONS \
-	(GNOME_VFS_FILE_INFO_FOLLOW_LINKS |	\
-	 GNOME_VFS_FILE_INFO_GET_MIME_TYPE |	  \
-	 GNOME_VFS_FILE_INFO_GET_SELINUX_CONTEXT |	\
-	 GNOME_VFS_FILE_INFO_GET_ACCESS_RIGHTS)
-
 #define NAUTILUS_FILE_DEFAULT_ATTRIBUTES				\
 	"standard::*,access::*,mountable::*,time::*,unix::*,owner::*,selinux::*,thumbnail::*,id::filesystem,trash::orig-path"
 
@@ -81,6 +75,10 @@ struct NautilusFileDetails
 	guint32 permissions;
 	int uid; /* -1 is none */
 	int gid; /* -1 is none */
+
+	eel_ref_str owner;
+	eel_ref_str owner_real;
+	eel_ref_str group;
 	
 	time_t atime; /* 0 is unknown */
 	time_t mtime; /* 0 is unknown */
