@@ -5038,27 +5038,34 @@ static gboolean
 should_show_open_with (FMPropertiesWindow *window)
 {
 	NautilusFile *file;
+
+	/* Don't show open with tab for desktop special icons (trash, etc)
+	 * or desktop files. We don't get the open-with menu for these anyway.
+	 *
+	 * Also don't show it for folders. Changing the default app for folders
+	 * leads to all sort of hard to understand errors.
+	 */
 	
 	if (is_multi_file_window (window)) {
 		if (!file_list_attributes_identical (window->details->original_files,
 						     "mime_type")) {
 			return FALSE;
 		} else {
-			/* Don't show open with tab for desktop special icons (trash, etc)
-			* or desktop files. We don't get the open-with menu for these anyway.
-			*/
 			
 			GList *l;
 			
 			for (l = window->details->original_files; l; l = l->next) {
-				if (is_a_special_file (NAUTILUS_FILE (l->data))) {
+				file = NAUTILUS_FILE (l->data);
+				if (nautilus_file_is_directory (file) ||
+				    is_a_special_file (file)) {
 					return FALSE;
 				}
 			}
 		}		
 	} else {
 		file = get_original_file (window);
-		if (is_a_special_file (file)) {
+		if (nautilus_file_is_directory (file) ||
+		    is_a_special_file (file)) {
 			return FALSE;
 		}
 	}
