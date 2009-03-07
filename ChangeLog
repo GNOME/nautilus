@@ -1,3 +1,10 @@
+2009-03-07  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* src/nautilus-application.c
+	(_unique_message_data_get_geometry_and_uris): if the geometry
+	string is empty, make it NULL, so that we don't trigger geometry
+	parsing later (#574410).
+
 2009-03-06  Alexander Larsson  <alexl@redhat.com>
 
         Bug 569668 – Don't allow changing default app for folders

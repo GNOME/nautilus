@@ -188,7 +188,13 @@ _unique_message_data_get_geometry_and_uris (UniqueMessageData *message_data,
 	  result = g_uri_list_extract_uris (uris);
 	  g_free (text);
   }
-  
+
+  /* if the string is empty, make it NULL */
+  if (*geometry && strlen (*geometry) == 0) {
+	  g_free (*geometry);
+	  *geometry = NULL;
+  }
+
   return result;
 }
 
