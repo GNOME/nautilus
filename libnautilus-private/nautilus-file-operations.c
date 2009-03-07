@@ -366,7 +366,7 @@ get_link_name (const char *name, int count, int max_length)
 			/* fall through */
 		case 0:
 			/* duplicate original file name */
-			format = _("%s");
+			format = "%s";
 			break;
 		case 1:
 			/* appended to new link file */

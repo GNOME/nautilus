@@ -1,5 +1,10 @@
 2009-03-07  Cosimo Cecchi  <cosimoc@gnome.org>
 
+	* libnautilus-private/nautilus-file-operations.c (get_link_name):
+	don't mark for translation a file name, as it's pointless (#534432).
+
+2009-03-07  Cosimo Cecchi  <cosimoc@gnome.org>
+
 	* src/nautilus-application.c
 	(_unique_message_data_get_geometry_and_uris): if the geometry
 	string is empty, make it NULL, so that we don't trigger geometry
