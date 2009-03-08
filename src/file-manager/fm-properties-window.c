@@ -4213,6 +4213,9 @@ add_permissions_combo_box (FMPropertiesWindow *window, GtkTable *table,
 	if (is_folder) {
 		if (type != PERMISSION_USER) {
 			gtk_list_store_append (store, &iter);
+			/* Translators: this is referred to the permissions
+			 * the user has in a directory.
+			 */
 			gtk_list_store_set (store, &iter, 0, _("None"), 1, 0, -1);
 		}
 		gtk_list_store_append (store, &iter);

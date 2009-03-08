@@ -288,6 +288,7 @@ create_icon_caption_combo_box_items (GtkComboBox *combo_box,
 
 	column_names = g_ptr_array_new ();
 
+	/* Translators: this is referred to captions under icons. */
 	gtk_combo_box_append_text (combo_box, _("None"));
 	g_ptr_array_add (column_names, g_strdup ("none"));
 
