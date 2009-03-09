@@ -583,17 +583,6 @@ nautilus_image_properties_page_init (NautilusImagePropertiesPage *page)
 	gtk_widget_show_all (GTK_WIDGET (page));
 }
 
-/* nautilus_property_page_provider_get_pages
- *  
- * This function is called by Nautilus when it wants property page
- * items from the extension.
- *
- * This function is called in the main thread before a property page
- * is shown, so it should return quickly.
- * 
- * The function should return a GList of allocated NautilusPropertyPage
- * items.
- */
 static GList *
 get_property_pages (NautilusPropertyPageProvider *provider,
                     GList *files)

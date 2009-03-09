@@ -60,9 +60,22 @@ nautilus_property_page_provider_get_type (void)
 	return type;
 }
 
+/**
+ * nautilus_property_page_provider_get_pages:
+ * @provider: a #NautilusPropertyPageProvider
+ * @files: a #GList of #NautilusFileInfo
+ *
+ * This function is called by Nautilus when it wants property page
+ * items from the extension.
+ *
+ * This function is called in the main thread before a property page
+ * is shown, so it should return quickly.
+ *
+ * Returns: A #GList of allocated #NautilusPropertyPage items.
+ */
 GList *
 nautilus_property_page_provider_get_pages (NautilusPropertyPageProvider *provider,
-				  GList *files)
+					   GList *files)
 {
 	g_return_val_if_fail (NAUTILUS_IS_PROPERTY_PAGE_PROVIDER (provider), NULL);
 	g_return_val_if_fail (NAUTILUS_PROPERTY_PAGE_PROVIDER_GET_IFACE (provider)->get_pages != NULL, NULL);
