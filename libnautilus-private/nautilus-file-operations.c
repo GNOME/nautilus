@@ -485,6 +485,11 @@ static const char untranslated_x12th_copy_duplicate_format[] = N_("%s (%'dth cop
 /* localizers: appended to x13th file copy */
 static const char untranslated_x13th_copy_duplicate_format[] = N_("%s (%'dth copy)%s");
 
+/* localizers: if in your language there's no difference between 1st, 2nd, 3rd and nth
+ * plurals, you can leave the st, nd, rd suffixes out and just make all the translated
+ * strings look like "%s (copy %'d)%s".
+ */
+
 /* localizers: appended to x1st file copy */
 static const char untranslated_st_copy_duplicate_format[] = N_("%s (%'dst copy)%s");
 /* localizers: appended to x2nd file copy */
