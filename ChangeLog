@@ -1,4 +1,11 @@
-2009-03-09  Cosimo Cecchi  <cosimoc@pluto>
+2009-03-09  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* libnautilus-private/nautilus-autorun.c:
+	(nautilus_allow_autorun_for_volume_finish):
+	inhibit autorun for 10 seconds instead of 5 seconds at login,
+	as that may be too short for slower machines (#520691).
+
+2009-03-09  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* libnautilus-private/nautilus-file-operations.c: added a translator
 	comment explaining how to handle ordinal numbers if the language

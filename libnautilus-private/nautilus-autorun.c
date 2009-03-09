@@ -1196,15 +1196,17 @@ nautilus_allow_autorun_for_volume (GVolume *volume)
 	g_object_set_data (G_OBJECT (volume), "nautilus-allow-autorun", GINT_TO_POINTER (1));
 }
 
+#define INHIBIT_AUTORUN_SECONDS 10
+
 void
 nautilus_allow_autorun_for_volume_finish (GVolume *volume)
 {
 	if (g_object_get_data (G_OBJECT (volume), "nautilus-allow-autorun") != NULL) {
-		g_timeout_add_full (0,
-				    5000,
-				    remove_allow_volume,
-				    g_object_ref (volume),
-				    g_object_unref);
+		g_timeout_add_seconds_full (0,
+					    INHIBIT_AUTORUN_SECONDS,
+					    remove_allow_volume,
+					    g_object_ref (volume),
+					    g_object_unref);
 	}
 }
 
