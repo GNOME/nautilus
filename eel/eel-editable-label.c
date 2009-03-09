@@ -2756,10 +2756,11 @@ eel_editable_label_move_forward_word (EelEditableLabel *label,
       eel_editable_label_ensure_layout (label, FALSE);
       
       pango_layout_get_log_attrs (label->layout, &log_attrs, &n_attrs);
-      
-      /* Find the next word end */
+
+      /* Find the next word end,
+	 (remember, n_attrs is one more than the number of of chars) */
       new_pos++;
-      while (new_pos < n_attrs && !log_attrs[new_pos].is_word_end)
+      while (new_pos < (n_attrs - 1) && !log_attrs[new_pos].is_word_end)
 	new_pos++;
 
       g_free (log_attrs);

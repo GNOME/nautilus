@@ -1,6 +1,12 @@
 2009-03-09  Alexander Larsson  <alexl@redhat.com>
 
         * eel-editable-label.c:
+	(eel_editable_label_move_forward_word):
+	Don't move past end of string (#569165).
+
+2009-03-09  Alexander Larsson  <alexl@redhat.com>
+
+        * eel-editable-label.c:
         (eel_editable_label_move_cursor):
 	Revert wrong cursor move change.
 
