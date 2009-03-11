@@ -151,6 +151,7 @@ static gboolean update_info_and_name                         (NautilusFile      
 							      GFileInfo             *info);
 static const char * nautilus_file_peek_display_name (NautilusFile *file);
 static const char * nautilus_file_peek_display_name_collation_key (NautilusFile *file);
+static void file_mount_unmounted (GMount *mount,  gpointer data);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusFile, nautilus_file, G_TYPE_OBJECT,
 			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_FILE_INFO,
@@ -658,6 +659,7 @@ finalize (GObject *object)
 		g_object_unref (file->details->thumbnail);
 	}
 	if (file->details->mount) {
+		g_signal_handlers_disconnect_by_func (file->details->mount, file_mount_unmounted, file);
 		g_object_unref (file->details->mount);
 	}
 
@@ -5937,6 +5939,34 @@ nautilus_file_get_mount (NautilusFile *file)
 	return NULL;
 }
 
+static void
+file_mount_unmounted (GMount *mount,
+		      gpointer data)
+{
+	NautilusFile *file;
+
+	file = NAUTILUS_FILE (data);
+
+	nautilus_file_invalidate_attributes (file, NAUTILUS_FILE_ATTRIBUTE_MOUNT);
+}
+
+void
+nautilus_file_set_mount (NautilusFile *file,
+			 GMount *mount)
+{
+	if (file->details->mount) {
+		g_signal_handlers_disconnect_by_func (file->details->mount, file_mount_unmounted, file);
+		g_object_unref (file->details->mount);
+		file->details->mount = NULL;
+	}
+
+	if (mount) {
+		file->details->mount = g_object_ref (mount);
+		g_signal_connect (mount, "unmounted",
+				  G_CALLBACK (file_mount_unmounted), file);
+	}
+}
+
 /**
  * nautilus_file_is_broken_symbolic_link
  * 
@@ -6569,6 +6599,12 @@ invalidate_thumbnail (NautilusFile *file)
 	file->details->thumbnail_is_up_to_date = FALSE;
 }
 
+static void
+invalidate_mount (NautilusFile *file)
+{
+	file->details->mount_is_up_to_date = FALSE;
+}
+
 void
 nautilus_file_invalidate_extension_info_internal (NautilusFile *file)
 {
@@ -6622,6 +6658,9 @@ nautilus_file_invalidate_attributes_internal (NautilusFile *file,
 	}
 	if (REQUEST_WANTS_TYPE (request, REQUEST_THUMBNAIL)) {
 		invalidate_thumbnail (file);
+	}
+	if (REQUEST_WANTS_TYPE (request, REQUEST_MOUNT)) {
+		invalidate_mount (file);
 	}
 
 	/* FIXME bugzilla.gnome.org 45075: implement invalidating metadata */

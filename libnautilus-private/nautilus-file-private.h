@@ -264,6 +264,8 @@ gboolean      nautilus_file_set_display_name               (NautilusFile        
 							    const char             *display_name,
 							    const char             *edit_name,
 							    gboolean                custom);
+void          nautilus_file_set_mount                      (NautilusFile           *file,
+							    GMount                 *mount);
 
 /* Return true if the top lefts of files in this directory should be
  * fetched, according to the preference settings.

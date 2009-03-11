@@ -4113,16 +4113,9 @@ got_mount (MountState *state, GMount *mount)
 	
 	file = nautilus_file_ref (state->file);
 
-	if (file->details->mount) {
-		g_object_unref (file->details->mount);
-		file->details->mount = NULL;
-	}
-	
 	file->details->mount_is_up_to_date = TRUE;
-	if (mount) {
-		file->details->mount = g_object_ref (mount);
-	}
-	
+	nautilus_file_set_mount (file, mount);
+
 	nautilus_directory_async_state_changed (directory);
 	nautilus_file_changed (file);
 	

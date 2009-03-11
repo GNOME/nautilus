@@ -1,3 +1,17 @@
+2009-03-11  Alexander Larsson  <alexl@redhat.com>
+
+	Bug 529295 – Unable to unmount
+
+        * libnautilus-private/nautilus-directory-async.c:
+        (got_mount):
+	Set mount on NautilusFile via nautilus_file_set_mount.
+
+        * libnautilus-private/nautilus-file-private.h:
+        * libnautilus-private/nautilus-file.c:
+	Add nautilus_file_set_mount to set GMount.
+	Connect to "unmounted" on GMount and invalidate mount attribute
+	in callback.
+
 2009-03-10  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* Makefile.am:
