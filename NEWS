@@ -1,3 +1,10 @@
+Major changes in 2.25.93 are:
+* Use ConsoleKit to make sure we only autorun on active sessions
+* Never show unmount if we show an eject menu item
+* Show the gvfs reported owner/group names
+* Don't allow changing default app for folders
+* Fix "can't unmount same location twice" bug
+
 Major changes in 2.25.92 are:
 * Set mmap limit to avoid desktop background memory not being returned to the os
 * Warn when source overwrites destination in move
