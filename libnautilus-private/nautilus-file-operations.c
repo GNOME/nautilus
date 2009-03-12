@@ -4302,7 +4302,9 @@ copy_job_done (gpointer user_data)
 	if (job->destination) {
 		g_object_unref (job->destination);
 	}
-	g_object_unref (job->desktop_location);
+	if (job->desktop_location) {
+		g_object_unref (job->desktop_location);
+	}
 	g_hash_table_unref (job->debuting_files);
 	g_free (job->icon_positions);
 	

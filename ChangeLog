@@ -1,5 +1,11 @@
 2009-03-12  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-file-operations.c:
+        (copy_job_done):
+	desktop_location can be NULL, check before unrefing
+
+2009-03-12  Alexander Larsson  <alexl@redhat.com>
+
 	Bug 550250 – nautilus crashed with SIGSEGV in g_type_check_instance_cast()
 
         * libnautilus-private/nautilus-autorun.c:
