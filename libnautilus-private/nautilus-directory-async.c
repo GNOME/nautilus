@@ -3832,9 +3832,13 @@ thumbnail_done (NautilusDirectory *directory,
 		file->details->thumbnail = NULL;
 	}
 	if (pixbuf) {
-		thumb_mtime_str = gdk_pixbuf_get_option (pixbuf, "tEXt::Thumb::MTime");
-		if (thumb_mtime_str) {
-			thumb_mtime = atol (thumb_mtime_str);
+		if (tried_original) {
+			thumb_mtime = file->details->mtime;
+		} else {
+			thumb_mtime_str = gdk_pixbuf_get_option (pixbuf, "tEXt::Thumb::MTime");
+			if (thumb_mtime_str) {
+				thumb_mtime = atol (thumb_mtime_str);
+			}
 		}
 		
 		if (thumb_mtime == 0 ||

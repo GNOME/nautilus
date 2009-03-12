@@ -1,5 +1,13 @@
 2009-03-12  Alexander Larsson  <alexl@redhat.com>
 
+        Bug 532725 – non-refreshing thumbnails: at 150% zoom
+
+        * libnautilus-private/nautilus-directory-async.c:
+        (thumbnail_done):
+	Get mtime from right place if loading the original as thumbnail.
+
+2009-03-12  Alexander Larsson  <alexl@redhat.com>
+
 	Bug 538888 – crash in Home Folder: I tried to open a direct...
 
 	* libnautilus-private/nautilus-thumbnails.c:
