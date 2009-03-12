@@ -1,5 +1,15 @@
 2009-03-12  Alexander Larsson  <alexl@redhat.com>
 
+	Bug 550250 – nautilus crashed with SIGSEGV in g_type_check_instance_cast()
+
+        * libnautilus-private/nautilus-autorun.c:
+        (nautilus_autorun_rebuild_combo_box):
+        (nautilus_autorun_prepare_combo_box):
+	Don't re-allocate data in nautilus_autorun_rebuild_combo_box(), as some
+	places still refer to the old version.
+
+2009-03-12  Alexander Larsson  <alexl@redhat.com>
+
         Bug 532725 – non-refreshing thumbnails: at 150% zoom
 
         * libnautilus-private/nautilus-directory-async.c:

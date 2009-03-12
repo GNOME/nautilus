@@ -366,6 +366,7 @@ static void
 nautilus_autorun_rebuild_combo_box (GtkWidget *combo_box)
 {
 	NautilusAutorunComboBoxData *data;
+	char *x_content_type;
 
 	data = g_object_get_data (G_OBJECT (combo_box), "nautilus_autorun_combobox_data");
 	if (data == NULL) {
@@ -373,13 +374,15 @@ nautilus_autorun_rebuild_combo_box (GtkWidget *combo_box)
 		return;
 	}
 
+	x_content_type = g_strdup (data->x_content_type);
 	nautilus_autorun_prepare_combo_box (combo_box,
-					    data->x_content_type,
+					    x_content_type,
 					    data->include_ask,
 					    data->include_open_with_other_app,
 					    data->update_settings,
 					    data->changed_cb,
 					    data->user_data);
+	g_free (x_content_type);
 }
 
 /* TODO: we need some kind of way to remove user-defined associations,
@@ -447,6 +450,7 @@ nautilus_autorun_prepare_combo_box (GtkWidget *combo_box,
 	gboolean pref_open_folder;
 	NautilusAutorunComboBoxData *data;
 	GtkCellRenderer *renderer;
+	gboolean new_data;
 
 	nautilus_autorun_get_preferences (x_content_type, &pref_start_app, &pref_ignore, &pref_open_folder);
 	pref_ask = !pref_start_app && !pref_ignore && !pref_open_folder;
@@ -455,6 +459,7 @@ nautilus_autorun_prepare_combo_box (GtkWidget *combo_box,
 
 	set_active = -1;
 	data = NULL;
+	new_data = TRUE;
 
 	app_info_list = g_app_info_get_all_for_type (x_content_type);
 	default_app_info = g_app_info_get_default_for_type (x_content_type, FALSE);
@@ -645,7 +650,15 @@ nautilus_autorun_prepare_combo_box (GtkWidget *combo_box,
 			gtk_combo_box_set_active (GTK_COMBO_BOX (combo_box), include_ask ? 1 : 0);
 		}
 
-		data = g_new0 (NautilusAutorunComboBoxData, 1);
+		/* See if we have an old data around */
+		data = g_object_get_data (G_OBJECT (combo_box), "nautilus_autorun_combobox_data");
+		if (data) {
+			new_data = FALSE;
+			g_free (data->x_content_type);
+		} else {
+			data = g_new0 (NautilusAutorunComboBoxData, 1);
+		}
+	
 		data->x_content_type = g_strdup (x_content_type);
 		data->include_ask = include_ask;
 		data->include_open_with_other_app = include_open_with_other_app;
@@ -653,16 +666,20 @@ nautilus_autorun_prepare_combo_box (GtkWidget *combo_box,
 		data->changed_cb = changed_cb;
 		data->user_data = user_data;
 		data->combo_box = combo_box;
-		data->changed_signal_id = g_signal_connect (G_OBJECT (combo_box),
-							    "changed",
-							    G_CALLBACK (combo_box_changed),
-							    data);
+		if (data->changed_signal_id == 0) {
+			data->changed_signal_id = g_signal_connect (G_OBJECT (combo_box),
+								    "changed",
+								    G_CALLBACK (combo_box_changed),
+								    data);
+		}
 	}
 
-	g_object_set_data_full (G_OBJECT (combo_box),
-				"nautilus_autorun_combobox_data",
-				data,
-				(GDestroyNotify) nautilus_autorun_combobox_data_destroy);
+	if (new_data) {
+		g_object_set_data_full (G_OBJECT (combo_box),
+					"nautilus_autorun_combobox_data",
+					data,
+					(GDestroyNotify) nautilus_autorun_combobox_data_destroy);
+	}
 }
 
 static gboolean
