@@ -1,3 +1,12 @@
+2009-03-12  Alexander Larsson  <alexl@redhat.com>
+
+	Bug 538888 – crash in Home Folder: I tried to open a direct...
+
+	* libnautilus-private/nautilus-thumbnails.c:
+	(get_pixbuf_from_data):
+	Don't crash when gdk-pixbuf returns an error but doesn't
+	set the GError properly.
+
 2009-03-11  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:
