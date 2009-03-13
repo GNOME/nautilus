@@ -21,10 +21,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=nautilus&component=general\n"
-"POT-Creation-Date: 2009-02-20 14:40+0000\n"
-"PO-Revision-Date: 2009-02-21 20:14+0200\n"
-"Last-Translator: Ivar Smolin <okul@linux.ee>\n"
+"product=nautilus&component=Internationalization (i18n)\n"
+"POT-Creation-Date: 2009-03-07 14:18+0000\n"
+"PO-Revision-Date: 2009-03-12 22:59+0300\n"
+"Last-Translator: Mattias Põldaru <mahfiaz gmail com>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -256,7 +256,7 @@ msgid "Sky Ridge"
 msgstr "Suusarajad"
 
 msgid "Snow Ridge"
-msgstr "Lumevaod"
+msgstr "Lume vaod"
 
 msgid "Stucco"
 msgstr "Krohv"
@@ -1427,11 +1427,6 @@ msgid_plural "approximately %'d hours"
 msgstr[0] "ligikaudu %'d tund"
 msgstr[1] "ligikaudu %'d tundi"
 
-#. duplicate original file name
-#, c-format
-msgid "%s"
-msgstr "%s"
-
 #. appended to new link file
 #. Note to localizers: convert file type string for file
 #. * (e.g. "folder", "plain text") to file type for symbolic link
@@ -1647,7 +1642,7 @@ msgstr[1] "Prügikasti on jäänud %'d faili"
 
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr ""
-"Faili pole võimalik prügikasti visata. Kas soovid seda koheselt kustutada?"
+"Faili pole võimalik prügikasti visata. Kas soovid selle koheselt kustutada?"
 
 msgid "The file \"%B\" cannot be moved to the trash."
 msgstr "Faili \"%B\" pole võimalik prügikasti visata."
@@ -1666,7 +1661,7 @@ msgid ""
 "All trashed items on the volume will be permanently lost."
 msgstr ""
 "Sellele seadmele täiendava vaba ruumi tekitamiseks tuleks prügikast tühjaks "
-"teha. Kõik prügikastis olevad kirjed lähevad siis jäädavalt kaotsi. "
+"teha. Kõik prügikastis olevad kirjed lähevad siis jäädavalt kaotsi."
 
 msgid "Do _not Empty Trash"
 msgstr "Ä_ra tühjenda prügikasti"
@@ -1751,7 +1746,7 @@ msgstr ""
 
 #, c-format
 msgid "There is %S available, but %S is required."
-msgstr " %S on saadaval, kui vajalik on %S."
+msgstr "%S on saadaval, kuid vajalik on %S."
 
 msgid "The destination is read-only."
 msgstr "Sihtkoht on kirjutuskaitsega."
@@ -1853,13 +1848,13 @@ msgstr "Juba olemasolevat faili %F pole võimalik eemaldada."
 
 #. the run_warning() frees all strings passed in automatically
 msgid "You cannot move a folder into itself."
-msgstr "Kataloogi pole võimalik iseenda alla tõsta."
+msgstr "Kataloogi pole võimalik iseendasse tõsta."
 
 msgid "You cannot copy a folder into itself."
-msgstr "Kataloogi pole võimalik iseenda alla kopeerida."
+msgstr "Kataloogi pole võimalik iseendasse kopeerida."
 
 msgid "The destination folder is inside the source folder."
-msgstr "Sihtkataloog kuulub lähtekataloogi alla."
+msgstr "Sihtkataloog asub lähtekataloogi sees."
 
 #. the run_warning() frees all strings passed in automatically
 msgid "You cannot move a file over itself."
@@ -1980,6 +1975,10 @@ msgstr "Viga faili %B loomisel."
 #, c-format
 msgid "There was an error creating the directory in %F."
 msgstr "%F sisse kataloogi loomisel tekkis viga."
+
+msgid "Unable to mark launcher trusted (executable)"
+msgstr ""
+"Rakenduse käivitajat pole võimalik määrata usaldusväärseks (käivitatavaks)"
 
 msgid "This file cannot be mounted"
 msgstr "Seda faili pole võimalik külge haakida"
@@ -2442,6 +2441,24 @@ msgstr ""
 "Failitüübi %s jaoks pole ühtegi rakendust paigaldatud.\n"
 "Kas otsida seda faili avav rakendus?"
 
+#| msgid "Choose what application to launch."
+msgid "Untrusted application launcher"
+msgstr "Käivitaja pole usaldusväärne"
+
+#, c-format
+msgid ""
+"The application launcher \"%s\" has not been marked as trusted. If you do "
+"not know the source of this file, launching it may be unsafe."
+msgstr ""
+"Rakenduse käivitaja \"%s\" ei ole usaldusväärne. Kui selle käivitaja "
+"päritolus pole teada, võib selle käivitamine olla ohtlik."
+
+msgid "_Launch Anyway"
+msgstr "_Käivita ikkagi"
+
+msgid "Mark as _Trusted"
+msgstr "Märgi _usaldusväärseks"
+
 msgid "Unable to mount location"
 msgstr "Asukohta pole võimalik külge haakida"
 
@@ -2598,7 +2615,7 @@ msgstr ""
 "Arvutis mitteasuvate failide avamiseks kopeeri need kõigepealt arvutisse."
 
 msgid "Details: "
-msgstr "Üksikasjad:"
+msgstr "Üksikasjad: "
 
 msgid "File Operations"
 msgstr "Failioperatsioonid"
@@ -4550,21 +4567,21 @@ msgid "New _Window"
 msgstr "_Uus aken"
 
 msgid "Open another Nautilus window for the displayed location"
-msgstr "Näidatud asukoha jaoks Nautiluse uue akna avamine"
+msgstr "Näidatava asukoha jaoks Nautiluse uue akna avamine"
 
 #. name, stock id, label
 msgid "New _Tab"
 msgstr "_Uus kaart"
 
 msgid "Open another tab for the displayed location"
-msgstr "Näidatud asukoha jaoks Nautiluse uue kaardi avamine"
+msgstr "Näidatava asukoha jaoks Nautiluse uue kaardi avamine"
 
 #. name, stock id, label
 msgid "Open Folder W_indow"
 msgstr "Ava _kataloogiaken"
 
 msgid "Open a folder window for the displayed location"
-msgstr "Iga näidatud asukoha jaoks uue kataloogiakna avamine"
+msgstr "Näidatava asukoha jaoks uue kataloogiakna avamine"
 
 #. name, stock id, label
 msgid "Close _All Windows"
@@ -5327,6 +5344,9 @@ msgstr "Suurendus"
 
 msgid "Set the zoom level of the current view"
 msgstr "Praeguse vaate suurendusastme seadmine"
+
+#~ msgid "%s"
+#~ msgstr "%s"
 
 #~ msgid "%'d file left to delete — %T left"
 #~ msgid_plural "%'d files left to delete — %T left"
