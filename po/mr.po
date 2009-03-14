@@ -1,4 +1,4 @@
-# translation of mr.po to marathi
+# translation of nautilus.mr.po to marathi
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
@@ -7,10 +7,10 @@
 # Sandeep Shedmake <sandeep.shedmake@gmail.com>, 2007, 2008, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: mr\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus&component=general\n"
-"POT-Creation-Date: 2009-02-12 23:05+0000\n"
-"PO-Revision-Date: 2009-02-16 09:53+0530\n"
+"Project-Id-Version: nautilus.mr\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus&component=Internationalization (i18n)\n"
+"POT-Creation-Date: 2009-02-24 12:21+0000\n"
+"PO-Revision-Date: 2009-03-14 19:18+0530\n"
 "Last-Translator: Sandeep Shedmake <sandeep.shedmake@gmail.com>\n"
 "Language-Team: marathi\n"
 "MIME-Version: 1.0\n"
@@ -1421,15 +1421,15 @@ msgstr "नेहमी ही कृती करा (_A)"
 
 #. add the "Eject" menu item
 #: ../libnautilus-private/nautilus-autorun.c:994
-#: ../src/file-manager/fm-tree-view.c:1323
-#: ../src/nautilus-places-sidebar.c:2010
+#: ../src/file-manager/fm-tree-view.c:1326
+#: ../src/nautilus-places-sidebar.c:2014
 msgid "_Eject"
 msgstr "बाहेर काढा (_E)"
 
 #. add the "Unmount" menu item
 #: ../libnautilus-private/nautilus-autorun.c:1005
-#: ../src/file-manager/fm-tree-view.c:1314
-#: ../src/nautilus-places-sidebar.c:2003
+#: ../src/file-manager/fm-tree-view.c:1317
+#: ../src/nautilus-places-sidebar.c:2007
 msgid "_Unmount"
 msgstr "अनारोहण (_U)"
 
@@ -1480,7 +1480,7 @@ msgstr "मुलभूत वापरा (_f)"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:273
-#: ../src/file-manager/fm-list-view.c:1453
+#: ../src/file-manager/fm-list-view.c:1458
 msgid "Name"
 msgstr "नाव"
 
@@ -1728,20 +1728,27 @@ msgid_plural "approximately %'d hours"
 msgstr[0] "अंदाजे %'d तास"
 msgstr[1] "अंदाजे %'d तास"
 
+#. duplicate original file name
+#: ../libnautilus-private/nautilus-file-operations.c:354
+#, c-format
+#| msgid "%"
+msgid "%s"
+msgstr "%s"
+
 #. appended to new link file
 #. Note to localizers: convert file type string for file
 #. * (e.g. "folder", "plain text") to file type for symbolic link
 #. * to that kind of file (e.g. "link to folder").
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:354
-#: ../libnautilus-private/nautilus-file.c:5592
+#: ../libnautilus-private/nautilus-file-operations.c:358
+#: ../libnautilus-private/nautilus-file.c:5599
 #: ../src/file-manager/fm-directory-view.c:9363
 #, c-format
 msgid "Link to %s"
 msgstr "%s करीता लिंक द्या"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:358
+#: ../libnautilus-private/nautilus-file-operations.c:362
 #, c-format
 msgid "Another link to %s"
 msgstr "%s करीता नविन लिंक द्या"
@@ -1750,25 +1757,25 @@ msgstr "%s करीता नविन लिंक द्या"
 #. * if there's no way to do that nicely for a
 #. * particular language.
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:374
+#: ../libnautilus-private/nautilus-file-operations.c:378
 #, c-format
 msgid "%'dst link to %s"
 msgstr "%2$s करीता %1$'dst लिंक"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:378
+#: ../libnautilus-private/nautilus-file-operations.c:382
 #, c-format
 msgid "%'dnd link to %s"
 msgstr "%2$s करीता %1$'dnd लिंक"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:382
+#: ../libnautilus-private/nautilus-file-operations.c:386
 #, c-format
 msgid "%'drd link to %s"
 msgstr "%2$s करीता %1$'drd लिंक"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:386
+#: ../libnautilus-private/nautilus-file-operations.c:390
 #, c-format
 msgid "%'dth link to %s"
 msgstr "%2$s करीता %1$'dth लिंक"
@@ -1778,12 +1785,12 @@ msgstr "%2$s करीता %1$'dth लिंक"
 #. * make some or all of them match.
 #.
 #. localizers: tag used to detect the first copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:425
+#: ../libnautilus-private/nautilus-file-operations.c:429
 msgid " (copy)"
 msgstr " (प्रत)"
 
 #. localizers: tag used to detect the second copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:427
+#: ../libnautilus-private/nautilus-file-operations.c:431
 msgid " (another copy)"
 msgstr " (दुसरी प्रत)"
 
@@ -1791,36 +1798,36 @@ msgstr " (दुसरी प्रत)"
 #. localizers: tag used to detect the x12th copy of a file
 #. localizers: tag used to detect the x13th copy of a file
 #. localizers: tag used to detect the xxth copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:430
-#: ../libnautilus-private/nautilus-file-operations.c:432
 #: ../libnautilus-private/nautilus-file-operations.c:434
-#: ../libnautilus-private/nautilus-file-operations.c:444
+#: ../libnautilus-private/nautilus-file-operations.c:436
+#: ../libnautilus-private/nautilus-file-operations.c:438
+#: ../libnautilus-private/nautilus-file-operations.c:448
 msgid "th copy)"
 msgstr "th प्रत)"
 
 #. localizers: tag used to detect the x1st copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:437
+#: ../libnautilus-private/nautilus-file-operations.c:441
 msgid "st copy)"
 msgstr "st प्रत)"
 
 #. localizers: tag used to detect the x2nd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:439
+#: ../libnautilus-private/nautilus-file-operations.c:443
 msgid "nd copy)"
 msgstr "nd प्रत)"
 
 #. localizers: tag used to detect the x3rd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:441
+#: ../libnautilus-private/nautilus-file-operations.c:445
 msgid "rd copy)"
 msgstr "rd प्रत)"
 
 #. localizers: appended to first file copy
-#: ../libnautilus-private/nautilus-file-operations.c:458
+#: ../libnautilus-private/nautilus-file-operations.c:462
 #, c-format
 msgid "%s (copy)%s"
 msgstr "%s (प्रत)%s"
 
 #. localizers: appended to second file copy
-#: ../libnautilus-private/nautilus-file-operations.c:460
+#: ../libnautilus-private/nautilus-file-operations.c:464
 #, c-format
 msgid "%s (another copy)%s"
 msgstr "%s (अन्य प्रत)%s"
@@ -1829,48 +1836,48 @@ msgstr "%s (अन्य प्रत)%s"
 #. localizers: appended to x12th file copy
 #. localizers: appended to x13th file copy
 #. localizers: appended to xxth file copy
-#: ../libnautilus-private/nautilus-file-operations.c:463
-#: ../libnautilus-private/nautilus-file-operations.c:465
 #: ../libnautilus-private/nautilus-file-operations.c:467
-#: ../libnautilus-private/nautilus-file-operations.c:476
+#: ../libnautilus-private/nautilus-file-operations.c:469
+#: ../libnautilus-private/nautilus-file-operations.c:471
+#: ../libnautilus-private/nautilus-file-operations.c:480
 #, c-format
 msgid "%s (%'dth copy)%s"
 msgstr "%s (%'dth प्रतिकृती)%s"
 
 #. localizers: appended to x1st file copy
-#: ../libnautilus-private/nautilus-file-operations.c:470
+#: ../libnautilus-private/nautilus-file-operations.c:474
 #, c-format
 msgid "%s (%'dst copy)%s"
 msgstr "%s (%'dst प्रत)%s"
 
 #. localizers: appended to x2nd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:472
+#: ../libnautilus-private/nautilus-file-operations.c:476
 #, c-format
 msgid "%s (%'dnd copy)%s"
 msgstr "%s (%'dnd प्रत)%s"
 
 #. localizers: appended to x3rd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:474
+#: ../libnautilus-private/nautilus-file-operations.c:478
 #, c-format
 msgid "%s (%'drd copy)%s"
 msgstr "%s (%'drd प्रत)%s"
 
 #. localizers: opening parentheses to match the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:574
+#: ../libnautilus-private/nautilus-file-operations.c:578
 msgid " ("
 msgstr " ("
 
 #. localizers: opening parentheses of the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:582
+#: ../libnautilus-private/nautilus-file-operations.c:586
 #, c-format
 msgid " (%'d"
 msgstr " (%'d"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1251
+#: ../libnautilus-private/nautilus-file-operations.c:1255
 msgid "Are you sure you want to permanently delete \"%B\" from the trash?"
 msgstr "तुम्हाला खात्री आहे का की कचरापेटीमधून \"%B\" कायमचे काढून टाकायचे?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1254
+#: ../libnautilus-private/nautilus-file-operations.c:1258
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %'d selected item from the "
@@ -1881,16 +1888,16 @@ msgid_plural ""
 msgstr[0] "तुम्हाला नक्की कचरापेटीमधून %'d निवडलेले घटक कायमस्वरूपी काढून टाकायचे?"
 msgstr[1] "तुम्हाला नक्की कचरापेटीमधून %'d निवडलेले घटक कायमस्वरूपी काढून टाकायचे?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1264
-#: ../libnautilus-private/nautilus-file-operations.c:1332
+#: ../libnautilus-private/nautilus-file-operations.c:1268
+#: ../libnautilus-private/nautilus-file-operations.c:1336
 msgid "If you delete an item, it will be permanently lost."
 msgstr "घटक काढुन टाकल्यास, ते नेहमी करता काढुन टाकल्या जाईल."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1284
+#: ../libnautilus-private/nautilus-file-operations.c:1288
 msgid "Empty all of the items from the trash?"
 msgstr "कचरापेटीतील सर्व घटके काढून टाका?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1288
+#: ../libnautilus-private/nautilus-file-operations.c:1292
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
@@ -1899,120 +1906,120 @@ msgstr ""
 "दखल घ्या की त्यास वेगळ्यारीत्याही काढुन टाकल्या जाऊ शकते."
 
 #. Empty Trash menu item
-#: ../libnautilus-private/nautilus-file-operations.c:1293
-#: ../libnautilus-private/nautilus-file-operations.c:2129
-#: ../src/nautilus-places-sidebar.c:2033 ../src/nautilus-trash-bar.c:125
+#: ../libnautilus-private/nautilus-file-operations.c:1297
+#: ../libnautilus-private/nautilus-file-operations.c:2133
+#: ../src/nautilus-places-sidebar.c:2037 ../src/nautilus-trash-bar.c:125
 msgid "Empty _Trash"
 msgstr "रिकामी कचरापेटी (_T)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1320
+#: ../libnautilus-private/nautilus-file-operations.c:1324
 msgid "Are you sure you want to permanently delete \"%B\"?"
 msgstr "तुम्हाला नक्की नेहमीसाठी \"%B\" काढुन टाकायचे?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1323
+#: ../libnautilus-private/nautilus-file-operations.c:1327
 #, c-format
 msgid "Are you sure you want to permanently delete the %'d selected item?"
 msgid_plural "Are you sure you want to permanently delete the %'d selected items?"
 msgstr[0] "तुम्हाला नक्की कचरापेटीमधून निवडलेले %'d घटक कायमस्वरूपी काढून टाकायचे?"
 msgstr[1] "तुम्हाला नक्की कचरापेटीमधून निवडलेले %'d घटक कायमस्वरूपी काढून टाकायचे?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1366
+#: ../libnautilus-private/nautilus-file-operations.c:1370
 #, c-format
 msgid "%'d file left to delete"
 msgid_plural "%'d files left to delete"
 msgstr[0] "काढूण टकण्याजोगी बाकी %'d फाइल"
 msgstr[1] "काढूण टकण्याजोगी बाकी %'d फाइल"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1372
+#: ../libnautilus-private/nautilus-file-operations.c:1376
 msgid "Deleting files"
 msgstr "फाइली काढून टाकत आहे"
 
 #. To translators: %T will expand to a time like "2 minutes".
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:1386
+#: ../libnautilus-private/nautilus-file-operations.c:1390
 msgid "%T left"
 msgid_plural "%T left"
 msgstr[0] "%T शिल्लक"
 msgstr[1] "%T शिल्लक"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1453
-#: ../libnautilus-private/nautilus-file-operations.c:1487
-#: ../libnautilus-private/nautilus-file-operations.c:1526
-#: ../libnautilus-private/nautilus-file-operations.c:1609
-#: ../libnautilus-private/nautilus-file-operations.c:2356
+#: ../libnautilus-private/nautilus-file-operations.c:1457
+#: ../libnautilus-private/nautilus-file-operations.c:1491
+#: ../libnautilus-private/nautilus-file-operations.c:1530
+#: ../libnautilus-private/nautilus-file-operations.c:1613
+#: ../libnautilus-private/nautilus-file-operations.c:2360
 msgid "Error while deleting."
 msgstr "काढुन टाकतेवेळी त्रुटी."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1457
+#: ../libnautilus-private/nautilus-file-operations.c:1461
 msgid ""
 "Files in the folder \"%B\" cannot be deleted because you do not have "
 "permissions to see them."
 msgstr "तुमच्याकडे वाचाण्याची परवानगी नसल्याने  \"%B\" ची प्रत बनवता येत नाही."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1460
-#: ../libnautilus-private/nautilus-file-operations.c:2415
-#: ../libnautilus-private/nautilus-file-operations.c:3377
+#: ../libnautilus-private/nautilus-file-operations.c:1464
+#: ../libnautilus-private/nautilus-file-operations.c:2419
+#: ../libnautilus-private/nautilus-file-operations.c:3381
 msgid "There was an error getting information about the files in the folder \"%B\"."
 msgstr "संचयीका \"%B\" मधील फाइलविषयी माहिती प्राप्त करतेवेळी त्रुटी."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1469
-#: ../libnautilus-private/nautilus-file-operations.c:3386
+#: ../libnautilus-private/nautilus-file-operations.c:1473
+#: ../libnautilus-private/nautilus-file-operations.c:3390
 msgid "_Skip files"
 msgstr "फाइल वगळा (_S)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1490
+#: ../libnautilus-private/nautilus-file-operations.c:1494
 msgid ""
 "The folder \"%B\" cannot be deleted because you do not have permissions to "
 "read it."
 msgstr "तुमच्याकडे वाचाण्याची परवानगी नसल्याने \"%B\" ची प्रत बनवता येत नाही."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1493
-#: ../libnautilus-private/nautilus-file-operations.c:2454
-#: ../libnautilus-private/nautilus-file-operations.c:3422
+#: ../libnautilus-private/nautilus-file-operations.c:1497
+#: ../libnautilus-private/nautilus-file-operations.c:2458
+#: ../libnautilus-private/nautilus-file-operations.c:3426
 msgid "There was an error reading the folder \"%B\"."
 msgstr "संचयीका \"%B\" वाचतेवेळी त्रुटी आढळली."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1527
+#: ../libnautilus-private/nautilus-file-operations.c:1531
 msgid "Could not remove the folder %B."
 msgstr "संचयीका %B काढून टाकले जाऊ शकत नाही."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1610
+#: ../libnautilus-private/nautilus-file-operations.c:1614
 msgid "There was an error deleting %B."
 msgstr "%B काढूण टाकतेवेळी त्रुटी आढळली."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1690
+#: ../libnautilus-private/nautilus-file-operations.c:1694
 msgid "Moving files to trash"
 msgstr "कचरापेटीत फाइल हलवित आहे"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1692
+#: ../libnautilus-private/nautilus-file-operations.c:1696
 #, c-format
 msgid "%'d file left to trash"
 msgid_plural "%'d files left to trash"
 msgstr[0] "%'d फाइल कचरापेटी मध्ये बाकी"
 msgstr[1] "%'d फाइल कचरापेटी मध्ये बाकी"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1742
+#: ../libnautilus-private/nautilus-file-operations.c:1746
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr "ही फाइल कचरापेटीत पाठवली जात नाही, तुम्हाला ती लगेचच काढून टाकायची आहे का?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1743
+#: ../libnautilus-private/nautilus-file-operations.c:1747
 msgid "The file \"%B\" cannot be moved to the trash."
 msgstr "\"%B\" फाइल कचरापेटीकडे हलविता येत नाही."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1977
+#: ../libnautilus-private/nautilus-file-operations.c:1981
 msgid "Unable to eject %V"
 msgstr "%V बाहेर काढू शकत नाही"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1979
+#: ../libnautilus-private/nautilus-file-operations.c:1983
 msgid "Unable to unmount %V"
 msgstr "%V अनारोहीत करू शकत नाही"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2119
+#: ../libnautilus-private/nautilus-file-operations.c:2123
 msgid "Do you want to empty the trash before you unmount?"
 msgstr "अनारोहीत करण्यापूर्वी तुम्हाला कचरापेटी रिकामी करायची?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2121
+#: ../libnautilus-private/nautilus-file-operations.c:2125
 msgid ""
 "In order to regain the free space on this volume the trash must be emptied. "
 "All trashed items on the volume will be permanently lost."
@@ -2020,159 +2027,159 @@ msgstr ""
 "या साधनावरील रिक्त जागा पुनःप्राप्त करण्याकरीता कचरापेटी रिक्त केली पाहिजे. "
 "कचरापेटीतील सर्व घटके नेहमीकरीता नाहीसे होतील."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2127
+#: ../libnautilus-private/nautilus-file-operations.c:2131
 msgid "Do _not Empty Trash"
 msgstr "कचरापेटी रिकामी करू नका (_n)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2226
+#: ../libnautilus-private/nautilus-file-operations.c:2230
 #, c-format
 msgid "Unable to mount %s"
 msgstr "%s अनारोहीत होऊ शकत नाही"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2303
+#: ../libnautilus-private/nautilus-file-operations.c:2307
 #, c-format
 msgid "Preparing to copy %'d file (%S)"
 msgid_plural "Preparing to copy %'d files (%S)"
 msgstr[0] "%'d फाइल (%S) चे प्रत बनवीत आहे"
 msgstr[1] "%'d फाइल (%S) चे प्रत बनवीत आहे"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2309
+#: ../libnautilus-private/nautilus-file-operations.c:2313
 #, c-format
 msgid "Preparing to move %'d file (%S)"
 msgid_plural "Preparing to move %'d files (%S)"
 msgstr[0] "%'d फाइल (%S) हलवीत आहे"
 msgstr[1] "%'d फाइल (%S) हलवीत आहे"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2315
+#: ../libnautilus-private/nautilus-file-operations.c:2319
 #, c-format
 msgid "Preparing to delete %'d file (%S)"
 msgid_plural "Preparing to delete %'d files (%S)"
 msgstr[0] "%'d फाइल (%S) काढूण टाकत आहे"
 msgstr[1] "%'d फाइल (%S) काढूण टाकत आहे"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2321
+#: ../libnautilus-private/nautilus-file-operations.c:2325
 #, c-format
 msgid "Preparing to trash %'d file"
 msgid_plural "Preparing to trash %'d files"
 msgstr[0] "%'d फाइल कचरापेटीकडे हलवीत आहे"
 msgstr[1] "%'d फाइल कचरापेटीकडे हलवीत आहे"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2352
-#: ../libnautilus-private/nautilus-file-operations.c:3243
-#: ../libnautilus-private/nautilus-file-operations.c:3369
-#: ../libnautilus-private/nautilus-file-operations.c:3414
+#: ../libnautilus-private/nautilus-file-operations.c:2356
+#: ../libnautilus-private/nautilus-file-operations.c:3247
+#: ../libnautilus-private/nautilus-file-operations.c:3373
+#: ../libnautilus-private/nautilus-file-operations.c:3418
 msgid "Error while copying."
 msgstr "प्रत बनवितेवेळी त्रुटी."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2354
-#: ../libnautilus-private/nautilus-file-operations.c:3367
-#: ../libnautilus-private/nautilus-file-operations.c:3412
+#: ../libnautilus-private/nautilus-file-operations.c:2358
+#: ../libnautilus-private/nautilus-file-operations.c:3371
+#: ../libnautilus-private/nautilus-file-operations.c:3416
 msgid "Error while moving."
 msgstr "स्थानांतरन करतेवेळी त्रुटी."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2358
+#: ../libnautilus-private/nautilus-file-operations.c:2362
 msgid "Error while moving files to trash."
 msgstr "फाइल कचरापेटीकडे हलवितेवेळी त्रुटी."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2412
+#: ../libnautilus-private/nautilus-file-operations.c:2416
 msgid ""
 "Files in the folder \"%B\" cannot be handled because you do not have "
 "permissions to see them."
 msgstr "तुमच्याकडे वाचाण्याची परवानगी नसल्याने संचयीका \"%B\" मधिल फाइल हाताळता येत नाही."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2451
+#: ../libnautilus-private/nautilus-file-operations.c:2455
 msgid ""
 "The folder \"%B\" cannot be handled because you do not have permissions to "
 "read it."
 msgstr "तुमच्याकडे वाचाण्याची परवानगी नसल्याने संचयीका \"%B\" हाताळता येत नाही."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2528
+#: ../libnautilus-private/nautilus-file-operations.c:2532
 msgid ""
 "The file \"%B\" cannot be handled because you do not have permissions to "
 "read it."
 msgstr "तुमच्याकडे वाचाण्याची परवानगी नसल्याने फाइल \"%B\" हाताळता येत नाही."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2531
+#: ../libnautilus-private/nautilus-file-operations.c:2535
 msgid "There was an error getting information about \"%B\"."
 msgstr "\"%B\" विषयी माहिती प्राप्त करतेवेळी त्रुटी आढळली."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2631
-#: ../libnautilus-private/nautilus-file-operations.c:2673
-#: ../libnautilus-private/nautilus-file-operations.c:2706
-#: ../libnautilus-private/nautilus-file-operations.c:2732
+#: ../libnautilus-private/nautilus-file-operations.c:2635
+#: ../libnautilus-private/nautilus-file-operations.c:2677
+#: ../libnautilus-private/nautilus-file-operations.c:2710
+#: ../libnautilus-private/nautilus-file-operations.c:2736
 msgid "Error while copying to \"%B\"."
 msgstr "\"%B\" ची प्रत बनवितेवेळी त्रुटी आढळली."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2635
+#: ../libnautilus-private/nautilus-file-operations.c:2639
 msgid "You do not have permissions to access the destination folder."
 msgstr "लक्ष्य संचयीकाच्या प्रवेश करीता तुमच्याकडे परवानगी नाही."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2637
+#: ../libnautilus-private/nautilus-file-operations.c:2641
 msgid "There was an error getting information about the destination."
 msgstr "लक्ष्य विषयी माहिती प्राप्त करतेवेळी त्रुटी आढळली."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2674
+#: ../libnautilus-private/nautilus-file-operations.c:2678
 msgid "The destination is not a folder."
 msgstr "लक्ष्य संचयीका नाही आहे."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2707
+#: ../libnautilus-private/nautilus-file-operations.c:2711
 msgid ""
 "There is not enough space on the destination. Try to remove files to make "
 "space."
 msgstr "लक्ष्यवर पुरेशी जागा नाही. जागा बनविण्याकरीता फाइल काढून टाका."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2709
+#: ../libnautilus-private/nautilus-file-operations.c:2713
 #, c-format
 msgid "There is %S available, but %S is required."
 msgstr "%S उपलब्ध आहे, पण %S आवश्यक आहे."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2733
+#: ../libnautilus-private/nautilus-file-operations.c:2737
 msgid "The destination is read-only."
 msgstr "लक्ष्य फ्कत-वाचण्याजोगी आहे."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2792
+#: ../libnautilus-private/nautilus-file-operations.c:2796
 msgid "Moving \"%B\" to \"%B\""
 msgstr "\"%B\" ला \"%B\" पर्यंत हलवित आहे"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2793
+#: ../libnautilus-private/nautilus-file-operations.c:2797
 msgid "Copying \"%B\" to \"%B\""
 msgstr "\"%B\" पासून \"%B\" असे प्रत बनवित आहे"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2798
+#: ../libnautilus-private/nautilus-file-operations.c:2802
 msgid "Duplicating \"%B\""
 msgstr "\"%B\" ची प्रत बनवित आहे"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2806
+#: ../libnautilus-private/nautilus-file-operations.c:2810
 msgid "Moving %'d file (in \"%B\") to \"%B\""
 msgid_plural "Moving %'d files (in \"%B\") to \"%B\""
 msgstr[0] "%'d फाइल (\"%B\" मध्ये) ला \"%B\" येथे स्थानांतरीत करीत आहे"
 msgstr[1] "%'d फाइल (\"%B\" मध्ये) ला \"%B\" येथे स्थानांतरीत करीत आहे"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2810
+#: ../libnautilus-private/nautilus-file-operations.c:2814
 msgid "Copying %'d file (in \"%B\") to \"%B\""
 msgid_plural "Copying %'d files (in \"%B\") to \"%B\""
 msgstr[0] "%'d फाइल (\"%B\" मधिल) \"%B\" येथे प्रतिकृत करीत आहे"
 msgstr[1] "%'d फाइल (\"%B\" मधिल) \"%B\" येथे प्रतिकृत करीत आहे"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2818
+#: ../libnautilus-private/nautilus-file-operations.c:2822
 msgid "Duplicating %'d file (in \"%B\")"
 msgid_plural "Duplicating %'d files (in \"%B\")"
 msgstr[0] "%'d फाइल (\"%B\" मध्ये) प्रतिकृत करीत आहे"
 msgstr[1] "%'d फाइल (\"%B\" मध्ये) प्रतिकृत करीत आहे"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2828
+#: ../libnautilus-private/nautilus-file-operations.c:2832
 msgid "Moving %'d file to \"%B\""
 msgid_plural "Moving %'d files to \"%B\""
 msgstr[0] "फाइल %'d ला \"%B\" येथे स्थारंतरीत करीत आहे"
 msgstr[1] "फाइल %'d ला \"%B\" येथे स्थारंतरीत करीत आहे"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2832
+#: ../libnautilus-private/nautilus-file-operations.c:2836
 msgid "Copying %'d file to \"%B\""
 msgid_plural "Copying %'d files to \"%B\""
 msgstr[0] "%'d फाइलचे \"%B\" असे प्रत बनवित आहे"
 msgstr[1] "%'d फाइलचे \"%B\" असे प्रत बनवित आहे"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2838
+#: ../libnautilus-private/nautilus-file-operations.c:2842
 #, c-format
 msgid "Duplicating %'d file"
 msgid_plural "Duplicating %'d files"
@@ -2180,7 +2187,7 @@ msgstr[0] "%'d फाइल प्रतिकृत करीत आहे"
 msgstr[1] "%'d फाइल प्रतिकृत करीत आहे"
 
 #. To translators: %S will expand to a size like "2 bytes" or "3 MB", so something like "4 kb of 4 MB"
-#: ../libnautilus-private/nautilus-file-operations.c:2858
+#: ../libnautilus-private/nautilus-file-operations.c:2862
 #, c-format
 msgid "%S of %S"
 msgstr "%S पैकी %S"
@@ -2190,80 +2197,94 @@ msgstr "%S पैकी %S"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:2869
-#| msgid "%S of %S — %T left (%S/sec)"
+#: ../libnautilus-private/nautilus-file-operations.c:2873
 msgid "%S of %S — %T left (%S/sec)"
 msgid_plural "%S of %S — %T left (%S/sec)"
 msgstr[0] "%S पैकी %S — %T शिल्लक (%S/sec)"
 msgstr[1] "%S पैकी %S — %T शिल्लक (%S/sec)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3247
+#: ../libnautilus-private/nautilus-file-operations.c:3251
 msgid ""
 "The folder \"%B\" cannot be copied because you do not have permissions to "
 "create it in the destination."
 msgstr "तुमच्याकडे वाचाण्याची परवानगी नसल्याने \"%B\" चे प्रत बनवता येत नाही."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3250
+#: ../libnautilus-private/nautilus-file-operations.c:3254
 msgid "There was an error creating the folder \"%B\"."
 msgstr "संचयीका \"%B\" बनवितेवेळी त्रुटी आढळली."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3374
+#: ../libnautilus-private/nautilus-file-operations.c:3378
 msgid ""
 "Files in the folder \"%B\" cannot be copied because you do not have "
 "permissions to see them."
 msgstr "तुमच्याकडे वाचाण्याची परवानगी नसल्याने \"%B\" मधिल फाइल प्रतिकृत करता येत नाही."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3419
+#: ../libnautilus-private/nautilus-file-operations.c:3423
 msgid ""
 "The folder \"%B\" cannot be copied because you do not have permissions to "
 "read it."
 msgstr "तुमच्याकडे वाचाण्याची परवानगी नसल्याने \"%s\" संचयीकाचे प्रत बनविता येत नाही."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3464
-#: ../libnautilus-private/nautilus-file-operations.c:3989
-#: ../libnautilus-private/nautilus-file-operations.c:4560
+#: ../libnautilus-private/nautilus-file-operations.c:3468
+#: ../libnautilus-private/nautilus-file-operations.c:4028
+#: ../libnautilus-private/nautilus-file-operations.c:4599
 msgid "Error while moving \"%B\"."
 msgstr "\"%B\" ला हलवितेवेळी त्रुटी आढळली."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3465
+#: ../libnautilus-private/nautilus-file-operations.c:3469
 msgid "Could not remove the source folder."
 msgstr "स्त्रोत संचयीका हटवू शकत नाही."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3550
-#: ../libnautilus-private/nautilus-file-operations.c:3591
-#: ../libnautilus-private/nautilus-file-operations.c:3991
-#: ../libnautilus-private/nautilus-file-operations.c:4065
+#: ../libnautilus-private/nautilus-file-operations.c:3554
+#: ../libnautilus-private/nautilus-file-operations.c:3595
+#: ../libnautilus-private/nautilus-file-operations.c:4030
+#: ../libnautilus-private/nautilus-file-operations.c:4104
 msgid "Error while copying \"%B\"."
 msgstr "\"%B\" ची प्रत बनवितेवेळी त्रुटी."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3551
+#: ../libnautilus-private/nautilus-file-operations.c:3555
 #, c-format
 msgid "Could not remove files from the already existing folder %F."
 msgstr "आधिपासूनच अस्तित्वातील संचयीका %F पासून फाइल काढू शकत नाही."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3592
+#: ../libnautilus-private/nautilus-file-operations.c:3596
 #, c-format
 msgid "Could not remove the already existing file %F."
 msgstr "आधिपासूनच अस्तित्वातील फाइल %F काढू शकत नाही."
 
 #. the run_warning() frees all strings passed in automatically
-#: ../libnautilus-private/nautilus-file-operations.c:3763
-#: ../libnautilus-private/nautilus-file-operations.c:4386
+#: ../libnautilus-private/nautilus-file-operations.c:3767
+#: ../libnautilus-private/nautilus-file-operations.c:4425
 msgid "You cannot move a folder into itself."
 msgstr "संचयीका यांस स्वअंतर्गत हलवू शकत नाही."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3764
-#: ../libnautilus-private/nautilus-file-operations.c:4387
+#: ../libnautilus-private/nautilus-file-operations.c:3768
+#: ../libnautilus-private/nautilus-file-operations.c:4426
 msgid "You cannot copy a folder into itself."
 msgstr "संचयीका यांस स्वअंतर्गत प्रतिकृत करू शकत नाही."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3765
-#: ../libnautilus-private/nautilus-file-operations.c:4388
+#: ../libnautilus-private/nautilus-file-operations.c:3769
+#: ../libnautilus-private/nautilus-file-operations.c:4427
 msgid "The destination folder is inside the source folder."
 msgstr "लक्ष्य संचयीका स्त्रोत संचयीकाच्या अंतर्गत स्थायीत आहे."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3887
-#: ../libnautilus-private/nautilus-file-operations.c:4469
+#. the run_warning() frees all strings passed in automatically
+#: ../libnautilus-private/nautilus-file-operations.c:3801
+#| msgid "You cannot move a folder into itself."
+msgid "You cannot move a file over itself."
+msgstr "तुम्ही फाइल स्वयं फाइलवर हलवू शकत नाही."
+
+#: ../libnautilus-private/nautilus-file-operations.c:3802
+#| msgid "You cannot copy a folder into itself."
+msgid "You cannot copy a file over itself."
+msgstr "तुम्ही फाइल स्वयं फाइलवर प्रतिकृत करू शकत नाही."
+
+#: ../libnautilus-private/nautilus-file-operations.c:3803
+msgid "The source file would be overwritten by the destination."
+msgstr "स्त्रोत फाइल लक्ष्य द्वारे खोडून पुन्हा लिहीले जाईल."
+
+#: ../libnautilus-private/nautilus-file-operations.c:3926
+#: ../libnautilus-private/nautilus-file-operations.c:4508
 msgid ""
 "A folder named \"%B\" already exists.  Do you want to merge the source "
 "folder?"
@@ -2271,7 +2292,7 @@ msgstr ""
 "\"%B\" नावाची संचयीका आधिपासूनच अस्तित्वात आहे.  तुम्हाला स्त्रोत संचयीका नक्की एकत्र "
 "करायचे आहे का?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3889
+#: ../libnautilus-private/nautilus-file-operations.c:3928
 msgid ""
 "The source folder already exists in \"%B\".  Merging will ask for "
 "confirmation before replacing any files in the folder that conflict with the "
@@ -2280,13 +2301,13 @@ msgstr ""
 "\"%B\" मध्ये संचयीका आधिपासूनच अस्तित्वात आहे.  त्याला बदलविल्यास फाइलची प्रत संचयीकेत "
 "उपलब्ध फाइल फाइलशी अधिलेखित केले जाईल."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3894
-#: ../libnautilus-private/nautilus-file-operations.c:4476
+#: ../libnautilus-private/nautilus-file-operations.c:3933
+#: ../libnautilus-private/nautilus-file-operations.c:4515
 msgid "A folder named \"%B\" already exists.  Do you want to replace it?"
 msgstr "\"%B\" नावाची संचयीका आधिपासूनच अस्तित्वात आहे.  तुम्हाला ते नक्की बदलवायचे?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3896
-#: ../libnautilus-private/nautilus-file-operations.c:4478
+#: ../libnautilus-private/nautilus-file-operations.c:3935
+#: ../libnautilus-private/nautilus-file-operations.c:4517
 #, c-format
 msgid ""
 "The folder already exists in \"%F\".  Replacing it will remove all files in "
@@ -2295,41 +2316,41 @@ msgstr ""
 "\"%F\" नावाची संचयीका आधिपासूनच अस्तित्वात आहे.  त्याला बदलविल्यास संचयीका मधिल सर्व "
 "फाइल बदलविले जाईल."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3901
-#: ../libnautilus-private/nautilus-file-operations.c:4483
+#: ../libnautilus-private/nautilus-file-operations.c:3940
+#: ../libnautilus-private/nautilus-file-operations.c:4522
 msgid "A file named \"%B\" already exists.  Do you want to replace it?"
 msgstr "\"%B\" नावाची संचयीका आधिपासूनच अस्तित्वात आहे.  तुम्हाला ते नक्की बदलवायचे?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3903
-#: ../libnautilus-private/nautilus-file-operations.c:4485
+#: ../libnautilus-private/nautilus-file-operations.c:3942
+#: ../libnautilus-private/nautilus-file-operations.c:4524
 #, c-format
 msgid "The file already exists in \"%F\".  Replacing it will overwrite its content."
 msgstr ""
 "\"%F\" नावाची फाइल आधिपासूनच अस्तित्वात आहे.  बदल केल्यास अनुक्रम खोडून पुन्हा लिहीले "
 "जातील."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3993
+#: ../libnautilus-private/nautilus-file-operations.c:4032
 #, c-format
 msgid "Could not remove the already existing file with the same name in %F."
 msgstr "%F अंतर्गत आधिपासूनस अस्तित्वातील समान नावाचे फाइलला काढून टाकले जाऊ शकत नाही."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4066
+#: ../libnautilus-private/nautilus-file-operations.c:4105
 #, c-format
 msgid "There was an error copying the file into %F."
 msgstr "फाइल %F येथे प्रतिकृत करतेवेळी त्रुटी आढळली."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4295
+#: ../libnautilus-private/nautilus-file-operations.c:4334
 msgid "Preparing to Move to \"%B\""
 msgstr "\"%B\" करीता हलवीत आहे"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4299
+#: ../libnautilus-private/nautilus-file-operations.c:4338
 #, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
 msgstr[0] "%'d फाइल हलवित आहे"
 msgstr[1] "%'d फाइल हलवित आहे"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4471
+#: ../libnautilus-private/nautilus-file-operations.c:4510
 msgid ""
 "The source folder already exists in \"%B\".  Merging will ask for "
 "confirmation before replacing any files in the folder that conflict with the "
@@ -2338,93 +2359,92 @@ msgstr ""
 "\"%B\" मध्ये संचयीका आधिपासूनच अस्तित्वात आहे.  बदलकेल्यास फाइलची प्रत संचयीकेत उपलब्ध "
 "फाइल फाइलशी अधिलेखित केले जाईल."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4561
+#: ../libnautilus-private/nautilus-file-operations.c:4600
 #, c-format
 msgid "There was an error moving the file into %F."
 msgstr "%F हलवितेवेळी त्रुटी आढळली."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4836
+#: ../libnautilus-private/nautilus-file-operations.c:4875
 msgid "Creating links in \"%B\""
 msgstr "\"%B\" करीता लिंक निर्माण करत आहे"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4840
+#: ../libnautilus-private/nautilus-file-operations.c:4879
 #, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
 msgstr[0] "%'d फाइल करीता लिंक बनवित आहे"
 msgstr[1] "%'d फाइल करीता लिंक बनवित आहे"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4938
+#: ../libnautilus-private/nautilus-file-operations.c:4984
 msgid "Error while creating link to %B."
 msgstr " %B करीता लिंक निर्माण करतेवेळी त्रुटी."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4940
+#: ../libnautilus-private/nautilus-file-operations.c:4986
 msgid "Symbolic links only supported for local files"
 msgstr "स्थानीक फाइल करीता चिन्हाकृत लिंक समर्थित आहे"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4943
+#: ../libnautilus-private/nautilus-file-operations.c:4989
 msgid "The target doesn't support symbolic links."
 msgstr "लक्ष्य चिन्हाकृत लिंक करीता समर्थन देत नाही."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4946
+#: ../libnautilus-private/nautilus-file-operations.c:4992
 #, c-format
 msgid "There was an error creating the symlink in %F."
 msgstr "%F करीता symlink बनवितेवेळी त्रुटी आढळली."
 
-#: ../libnautilus-private/nautilus-file-operations.c:5240
+#: ../libnautilus-private/nautilus-file-operations.c:5286
 msgid "Setting permissions"
 msgstr "संयोजना परवानगी"
 
 #. localizers: the initial name of a new folder
-#: ../libnautilus-private/nautilus-file-operations.c:5489
+#: ../libnautilus-private/nautilus-file-operations.c:5535
 msgid "untitled folder"
 msgstr "बिनशिर्षक संचयीका"
 
 #. localizers: the initial name of a new empty file
-#: ../libnautilus-private/nautilus-file-operations.c:5497
+#: ../libnautilus-private/nautilus-file-operations.c:5543
 msgid "new file"
 msgstr "नविन फाइल"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5645
+#: ../libnautilus-private/nautilus-file-operations.c:5691
 msgid "Error while creating directory %B."
 msgstr "संचयीका %B करीता लिंक निर्माण करतेवेळी त्रुटी."
 
-#: ../libnautilus-private/nautilus-file-operations.c:5647
+#: ../libnautilus-private/nautilus-file-operations.c:5693
 msgid "Error while creating file %B."
 msgstr "%B करीता लिंक निर्माण करतेवेळी त्रुटी."
 
-#: ../libnautilus-private/nautilus-file-operations.c:5649
+#: ../libnautilus-private/nautilus-file-operations.c:5695
 #, c-format
 msgid "There was an error creating the directory in %F."
 msgstr "%F मधिल संचयीका करीता लिंक निर्माण करतेवेळी त्रुटी."
 
-#: ../libnautilus-private/nautilus-file.c:885
+#: ../libnautilus-private/nautilus-file.c:886
 #: ../libnautilus-private/nautilus-vfs-file.c:264
-#, c-format
 msgid "This file cannot be mounted"
 msgstr "फाइल आरोहीत केले जाऊ शकत नाही"
 
-#: ../libnautilus-private/nautilus-file.c:1297
+#: ../libnautilus-private/nautilus-file.c:1298
 #, c-format
 msgid "Slashes are not allowed in filenames"
 msgstr "फाइलनावात स्लॅशला परवानगी नाही"
 
-#: ../libnautilus-private/nautilus-file.c:1315
+#: ../libnautilus-private/nautilus-file.c:1316
 #, c-format
 msgid "File not found"
 msgstr "फाइल आढळली नाही"
 
-#: ../libnautilus-private/nautilus-file.c:1343
+#: ../libnautilus-private/nautilus-file.c:1344
 #, c-format
 msgid "Toplevel files cannot be renamed"
 msgstr "उच्च स्थरीय फाइल पुन्हनामांकीत करू शकत नाही"
 
-#: ../libnautilus-private/nautilus-file.c:1366
+#: ../libnautilus-private/nautilus-file.c:1367
 #, c-format
 msgid "Unable to rename desktop icon"
 msgstr "डेस्कटॉप चिन्ह पुन्हनामांकीत करू शकत नाही"
 
-#: ../libnautilus-private/nautilus-file.c:1403
+#: ../libnautilus-private/nautilus-file.c:1404
 #, c-format
 msgid "Unable to rename desktop file"
 msgstr "डेस्कटॉप फाइल पुन्हनामांकीत करू शकत नाही"
@@ -2444,65 +2464,65 @@ msgstr "डेस्कटॉप फाइल पुन्हनामांक�
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: ../libnautilus-private/nautilus-file.c:3678
+#: ../libnautilus-private/nautilus-file.c:3685
 msgid "today at 00:00:00 PM"
 msgstr "आज 00:00:00 PM वाजता"
 
-#: ../libnautilus-private/nautilus-file.c:3679
+#: ../libnautilus-private/nautilus-file.c:3686
 #: ../src/nautilus-file-management-properties.c:471
 msgid "today at %-I:%M:%S %p"
 msgstr "आज %-I:%M:%S %p योवेळी"
 
-#: ../libnautilus-private/nautilus-file.c:3681
+#: ../libnautilus-private/nautilus-file.c:3688
 msgid "today at 00:00 PM"
 msgstr "आज 00:00 PM वाजता"
 
-#: ../libnautilus-private/nautilus-file.c:3682
+#: ../libnautilus-private/nautilus-file.c:3689
 msgid "today at %-I:%M %p"
 msgstr "आज %-I:%M %p वाजता"
 
-#: ../libnautilus-private/nautilus-file.c:3684
+#: ../libnautilus-private/nautilus-file.c:3691
 msgid "today, 00:00 PM"
 msgstr "आज, 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:3685
+#: ../libnautilus-private/nautilus-file.c:3692
 msgid "today, %-I:%M %p"
 msgstr "आज, %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:3687
-#: ../libnautilus-private/nautilus-file.c:3688
+#: ../libnautilus-private/nautilus-file.c:3694
+#: ../libnautilus-private/nautilus-file.c:3695
 msgid "today"
 msgstr "आज"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: ../libnautilus-private/nautilus-file.c:3697
+#: ../libnautilus-private/nautilus-file.c:3704
 msgid "yesterday at 00:00:00 PM"
 msgstr "काल 00:00:00 PM वाजता"
 
-#: ../libnautilus-private/nautilus-file.c:3698
+#: ../libnautilus-private/nautilus-file.c:3705
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "काल %-I:%M:%S %p"
 
-#: ../libnautilus-private/nautilus-file.c:3700
+#: ../libnautilus-private/nautilus-file.c:3707
 msgid "yesterday at 00:00 PM"
 msgstr "काल 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:3701
+#: ../libnautilus-private/nautilus-file.c:3708
 msgid "yesterday at %-I:%M %p"
 msgstr "काल %-I:%M %p वाजता"
 
-#: ../libnautilus-private/nautilus-file.c:3703
+#: ../libnautilus-private/nautilus-file.c:3710
 msgid "yesterday, 00:00 PM"
 msgstr "काल, 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:3704
+#: ../libnautilus-private/nautilus-file.c:3711
 msgid "yesterday, %-I:%M %p"
 msgstr "काल, %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:3706
-#: ../libnautilus-private/nautilus-file.c:3707
+#: ../libnautilus-private/nautilus-file.c:3713
+#: ../libnautilus-private/nautilus-file.c:3714
 msgid "yesterday"
 msgstr "काल"
 
@@ -2511,88 +2531,88 @@ msgstr "काल"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: ../libnautilus-private/nautilus-file.c:3718
+#: ../libnautilus-private/nautilus-file.c:3725
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "बुधवार, सप्टेम्बर 00 0000 00:00:00 PM वाजता"
 
-#: ../libnautilus-private/nautilus-file.c:3719
+#: ../libnautilus-private/nautilus-file.c:3726
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %B %-d %Y %-I:%M:%S %p यावेळी"
 
-#: ../libnautilus-private/nautilus-file.c:3721
+#: ../libnautilus-private/nautilus-file.c:3728
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "सोम, ऑक्टो 00 0000 00:00:00 PM यावेळी"
 
-#: ../libnautilus-private/nautilus-file.c:3722
+#: ../libnautilus-private/nautilus-file.c:3729
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %b %-d %Y %-I:%M:%S %p यावेळी"
 
-#: ../libnautilus-private/nautilus-file.c:3724
+#: ../libnautilus-private/nautilus-file.c:3731
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "सोम, ऑक्ट 00 0000 00:00 PM यावेळी"
 
-#: ../libnautilus-private/nautilus-file.c:3725
+#: ../libnautilus-private/nautilus-file.c:3732
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %b %-d %Y %-I:%M %p यावेळी"
 
-#: ../libnautilus-private/nautilus-file.c:3727
+#: ../libnautilus-private/nautilus-file.c:3734
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "ऑक्ट 00 0000 00:00 PM यावेळी"
 
-#: ../libnautilus-private/nautilus-file.c:3728
+#: ../libnautilus-private/nautilus-file.c:3735
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%b %-d %Y %-I:%M %p यावेळी"
 
-#: ../libnautilus-private/nautilus-file.c:3730
+#: ../libnautilus-private/nautilus-file.c:3737
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "ऑक्ट 00 0000, 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:3731
+#: ../libnautilus-private/nautilus-file.c:3738
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%b %-d %Y, %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:3733
+#: ../libnautilus-private/nautilus-file.c:3740
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:3734
+#: ../libnautilus-private/nautilus-file.c:3741
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%m/%-d/%y, %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:3736
+#: ../libnautilus-private/nautilus-file.c:3743
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: ../libnautilus-private/nautilus-file.c:3737
+#: ../libnautilus-private/nautilus-file.c:3744
 msgid "%m/%d/%y"
 msgstr "%m/%d/%y"
 
-#: ../libnautilus-private/nautilus-file.c:4350
+#: ../libnautilus-private/nautilus-file.c:4357
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "परवानगी निश्चित करण्यास परवानगी नाही"
 
-#: ../libnautilus-private/nautilus-file.c:4658
+#: ../libnautilus-private/nautilus-file.c:4665
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "मालकी निश्चित करू शकत नाही"
 
-#: ../libnautilus-private/nautilus-file.c:4676
+#: ../libnautilus-private/nautilus-file.c:4683
 #, c-format
 msgid "Specified owner '%s' doesn't exist"
 msgstr "निर्धारीत मालक '%s' अस्तित्वात नाही"
 
-#: ../libnautilus-private/nautilus-file.c:4940
+#: ../libnautilus-private/nautilus-file.c:4947
 #, c-format
 msgid "Not allowed to set group"
 msgstr "समुह निश्चित करण्यास परवानगी नाही"
 
-#: ../libnautilus-private/nautilus-file.c:4958
+#: ../libnautilus-private/nautilus-file.c:4965
 #, c-format
 msgid "Specified group '%s' doesn't exist"
 msgstr "निर्धारीत समुह '%s' अस्तित्वात नाही"
 
-#: ../libnautilus-private/nautilus-file.c:5101
+#: ../libnautilus-private/nautilus-file.c:5108
 #: ../src/file-manager/fm-directory-view.c:2202
 #, c-format
 msgid "%'u item"
@@ -2600,14 +2620,14 @@ msgid_plural "%'u items"
 msgstr[0] "%'u घटक"
 msgstr[1] "%'u घटक"
 
-#: ../libnautilus-private/nautilus-file.c:5102
+#: ../libnautilus-private/nautilus-file.c:5109
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u संचयीका"
 msgstr[1] "%'u संचयीका"
 
-#: ../libnautilus-private/nautilus-file.c:5103
+#: ../libnautilus-private/nautilus-file.c:5110
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -2615,51 +2635,51 @@ msgstr[0] "%'u फाइल"
 msgstr[1] "%'u फाइल"
 
 #. Do this in a separate stage so that we don't have to put G_GUINT64_FORMAT in the translated string
-#: ../libnautilus-private/nautilus-file.c:5182
+#: ../libnautilus-private/nautilus-file.c:5189
 msgid "%"
 msgstr "%"
 
-#: ../libnautilus-private/nautilus-file.c:5183
+#: ../libnautilus-private/nautilus-file.c:5190
 #, c-format
 msgid "%s (%s bytes)"
 msgstr "%s (%s बाईट्स)"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:5487
-#: ../libnautilus-private/nautilus-file.c:5503
+#: ../libnautilus-private/nautilus-file.c:5494
+#: ../libnautilus-private/nautilus-file.c:5510
 msgid "? items"
 msgstr "? माहिती"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:5493
+#: ../libnautilus-private/nautilus-file.c:5500
 msgid "? bytes"
 msgstr "? बाईट्स"
 
-#: ../libnautilus-private/nautilus-file.c:5508
+#: ../libnautilus-private/nautilus-file.c:5515
 msgid "unknown type"
 msgstr "अपरिचीत प्रकार"
 
-#: ../libnautilus-private/nautilus-file.c:5511
+#: ../libnautilus-private/nautilus-file.c:5518
 msgid "unknown MIME type"
 msgstr "अपरिचीत MIME प्रकार"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:5517
+#: ../libnautilus-private/nautilus-file.c:5524
 #: ../src/file-manager/fm-properties-window.c:1322
 msgid "unknown"
 msgstr "अपरिचीत"
 
-#: ../libnautilus-private/nautilus-file.c:5566
+#: ../libnautilus-private/nautilus-file.c:5573
 msgid "program"
 msgstr "कार्यक्रम"
 
-#: ../libnautilus-private/nautilus-file.c:5586
+#: ../libnautilus-private/nautilus-file.c:5593
 msgid "link"
 msgstr "लिंक"
 
-#: ../libnautilus-private/nautilus-file.c:5608
+#: ../libnautilus-private/nautilus-file.c:5615
 msgid "link (broken)"
 msgstr "लिंक (अनिश्चित)"
 
@@ -2783,22 +2803,22 @@ msgstr "फाइल नाव व फाइल गुणधर्मनुर�
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:141
 #: ../src/file-manager/fm-icon-container.c:558
-#: ../src/file-manager/fm-icon-view.c:3009
+#: ../src/file-manager/fm-icon-view.c:3047
 msgid "Icon View"
 msgstr "चिन्ह दर्शवा"
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:142
-#: ../src/file-manager/fm-icon-view.c:3023
+#: ../src/file-manager/fm-icon-view.c:3061
 msgid "Compact View"
 msgstr "संक्षिप्त दृश्य"
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:143
-#: ../src/file-manager/fm-list-view.c:1508
-#: ../src/file-manager/fm-list-view.c:2924
+#: ../src/file-manager/fm-list-view.c:1513
+#: ../src/file-manager/fm-list-view.c:2929
 msgid "List View"
 msgstr "यादी दर्शवा"
 
@@ -2881,7 +2901,7 @@ msgid "Computer"
 msgstr "संगणक"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:576
-#: ../src/nautilus-places-sidebar.c:481 ../src/nautilus-trash-bar.c:121
+#: ../src/nautilus-places-sidebar.c:485 ../src/nautilus-trash-bar.c:121
 msgid "Trash"
 msgstr "कचरापेटी"
 
@@ -2897,72 +2917,72 @@ msgstr "निवडक चौरस"
 msgid "Switch to Manual Layout?"
 msgstr "मानवी मांडणी वापरायचा काय?"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:596
+#: ../libnautilus-private/nautilus-mime-actions.c:598
 #, c-format
 msgid "The Link \"%s\" is Broken."
 msgstr "लिंक \"%s\" अनुपलब्ध स्थळास निर्देशीत आहे."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:598
+#: ../libnautilus-private/nautilus-mime-actions.c:600
 #, c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
 msgstr "लिंक \"%s\" अनुपलब्ध स्थळास निर्देशीत आहे. याला कचरापेटीकडे हलवायचे?"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:604
+#: ../libnautilus-private/nautilus-mime-actions.c:606
 msgid "This link cannot be used, because it has no target."
 msgstr "लक्ष्य अनुपलब्ध असल्यामुळे, ही लिंक वापरली जाऊ शकत नाही."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:606
+#: ../libnautilus-private/nautilus-mime-actions.c:608
 #, c-format
 msgid "This link cannot be used, because its target \"%s\" doesn't exist."
 msgstr "लक्ष्य \"%s\" अस्तित्वात नसल्यामुळे, ही लिंक वापरली जाऊ शकत नाही."
 
 #. name, stock id
 #. label, accelerator
-#: ../libnautilus-private/nautilus-mime-actions.c:616
+#: ../libnautilus-private/nautilus-mime-actions.c:618
 #: ../src/file-manager/fm-directory-view.c:6681
 #: ../src/file-manager/fm-directory-view.c:6780
 #: ../src/file-manager/fm-directory-view.c:7631
 #: ../src/file-manager/fm-directory-view.c:7896
-#: ../src/file-manager/fm-tree-view.c:1287
+#: ../src/file-manager/fm-tree-view.c:1290
 msgid "Mo_ve to Trash"
 msgstr "कचरापेटीत हलवा (_v)"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:676
+#: ../libnautilus-private/nautilus-mime-actions.c:678
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "तुम्हाला \"%s\" वापरायचे आहे का, किंवा त्यातील माहिती पहायची?"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:678
+#: ../libnautilus-private/nautilus-mime-actions.c:680
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "\"%s\" ही कार्यान्वीत करतायेण्याजोगी पाठ्य फाइल आहे."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:684
+#: ../libnautilus-private/nautilus-mime-actions.c:686
 msgid "Run in _Terminal"
 msgstr "टर्मिनल मध्ये कार्यान्वीत करा (_T)"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:685
+#: ../libnautilus-private/nautilus-mime-actions.c:687
 msgid "_Display"
 msgstr "दर्शवा (_D)"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:688
+#: ../libnautilus-private/nautilus-mime-actions.c:690
 #: ../src/nautilus-autorun-software.c:229
 msgid "_Run"
 msgstr "चालवा (_R)"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1008
+#: ../libnautilus-private/nautilus-mime-actions.c:1010
 #: ../src/file-manager/fm-directory-view.c:618
 msgid "Are you sure you want to open all files?"
 msgstr "तुम्हाला नक्की सर्व फाइल उघडायचे?"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1010
+#: ../libnautilus-private/nautilus-mime-actions.c:1012
 #, c-format
 msgid "This will open %d separate tab."
 msgid_plural "This will open %d separate tabs."
 msgstr[0] "यामुळे %d वेगळी चौकट उघडली जाईल."
 msgstr[1] "यामुळे %d वेगळी चौकट उघडली जाईल."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1013
+#: ../libnautilus-private/nautilus-mime-actions.c:1015
 #: ../src/nautilus-location-bar.c:148
 #, c-format
 msgid "This will open %d separate window."
@@ -2970,19 +2990,19 @@ msgid_plural "This will open %d separate windows."
 msgstr[0] "यामुळे %d वेगळी चौकट उघडली जाईल."
 msgstr[1] "यामुळे %d वेगळी चौकट उघडली जाईल."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1068
+#: ../libnautilus-private/nautilus-mime-actions.c:1071
 msgid "There was an internal error trying to search for applications:"
 msgstr "अनुप्रयोग प्रक्षेपित करतेवेळी त्रुटी आढळली:"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1070
+#: ../libnautilus-private/nautilus-mime-actions.c:1073
 msgid "Unable to search for application"
 msgstr "अनुप्रयोग करीता शोध करण्यास अपयशी"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1146
+#: ../libnautilus-private/nautilus-mime-actions.c:1149
 msgid "Could not use system package installer"
 msgstr "प्रणली संकुल प्रतिष्ठापकचा वापर करू शकत नाही"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1204
+#: ../libnautilus-private/nautilus-mime-actions.c:1207
 #: ../src/nautilus-window-manage-views.c:1880
 #: ../src/nautilus-window-manage-views.c:1886
 #: ../src/nautilus-window-manage-views.c:1903
@@ -2993,16 +3013,16 @@ msgstr "प्रणली संकुल प्रतिष्ठापकच�
 msgid "Could not display \"%s\"."
 msgstr "\"%s\" प्रदर्शित करू शकत नाही."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1225
+#: ../libnautilus-private/nautilus-mime-actions.c:1228
 msgid "The file is of an unknown type"
 msgstr "फाइलचे प्रकार परिचीत नाही"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1228
+#: ../libnautilus-private/nautilus-mime-actions.c:1231
 #, c-format
 msgid "There is no application installed for %s files"
 msgstr "%s फाइल करीता अनुप्रयोग प्रतिष्ठापीत नाही"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1243
+#: ../libnautilus-private/nautilus-mime-actions.c:1246
 #, c-format
 msgid ""
 "There is no application installed for %s files.\n"
@@ -3011,17 +3031,43 @@ msgstr ""
 "%s फाइल करीता कुठलाही अनुप्रयोग प्रतिष्ठापीत नाही.\n"
 "ही फाइल उघडण्याकरीता तुम्हाला अनुप्रयोग करीता शोध करायचे?"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1521
-#: ../libnautilus-private/nautilus-mime-actions.c:1779
+#: ../libnautilus-private/nautilus-mime-actions.c:1297
+msgid "Unable to mark launcher trusted (executable)"
+msgstr "प्रक्षेपक विश्वासर्ह नुरूप चिन्हाकृत करणे अशक्य (एक्जीक्यूटेबल)"
+
+#: ../libnautilus-private/nautilus-mime-actions.c:1365
+#| msgid "Choose what application to launch."
+msgid "Untrusted application launcher"
+msgstr "अविश्वासर्ह अनुप्रयोग प्रक्षेपक"
+
+#: ../libnautilus-private/nautilus-mime-actions.c:1368
+#, c-format
+msgid ""
+"The application launcher \"%s\" has not been marked as trusted. If you do "
+"not know the source of this file, launching it may be unsafe."
+msgstr ""
+"अनुप्रयोग प्रक्षेपक \"%s\" विश्वासर्ह नुरूप चिन्हाकृत केले गेले नाही. या फाइलचे "
+"स्त्रोत माहित नसल्यास, प्रक्षेपीत करणे धोकादायक ठरू शकते."
+
+#: ../libnautilus-private/nautilus-mime-actions.c:1380
+msgid "_Launch Anyway"
+msgstr "कसेहीकरून प्रक्षेपीत करा (_L)"
+
+#: ../libnautilus-private/nautilus-mime-actions.c:1383
+msgid "Mark as _Trusted"
+msgstr "विश्वासर्ह नुरूप चिन्हाकृत करा (_T)"
+
+#: ../libnautilus-private/nautilus-mime-actions.c:1654
+#: ../libnautilus-private/nautilus-mime-actions.c:1912
 msgid "Unable to mount location"
 msgstr "सद्याचे स्थळ आरोहीत करण्यास अपयशी"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1867
+#: ../libnautilus-private/nautilus-mime-actions.c:2000
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "\"%s\" उघडत आहे."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1870
+#: ../libnautilus-private/nautilus-mime-actions.c:2003
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -3125,8 +3171,8 @@ msgstr "संचार (_B)..."
 #: ../libnautilus-private/nautilus-open-with-dialog.c:867
 #: ../src/file-manager/fm-directory-view.c:6599
 #: ../src/file-manager/fm-directory-view.c:7799
-#: ../src/file-manager/fm-tree-view.c:1208
-#: ../src/nautilus-places-sidebar.c:1952
+#: ../src/file-manager/fm-tree-view.c:1211
+#: ../src/nautilus-places-sidebar.c:1956
 msgid "_Open"
 msgstr "उघडा (_O)"
 
@@ -3295,7 +3341,7 @@ msgstr "फाइल व्यवस्थापक चौकटींचे व
 msgid "File Management"
 msgstr "फाइल व्यवस्थापन"
 
-#: ../nautilus-home.desktop.in.in.h:1 ../src/file-manager/fm-tree-view.c:1375
+#: ../nautilus-home.desktop.in.in.h:1 ../src/file-manager/fm-tree-view.c:1378
 msgid "Home Folder"
 msgstr "मुळ संचयीका"
 
@@ -3566,13 +3612,13 @@ msgstr ""
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: सद्याच्या चौकटीचे निश्चित जागा व आकार"
 
 #: ../src/file-manager/fm-directory-view.c:5693
-#: ../src/file-manager/fm-tree-view.c:966
+#: ../src/file-manager/fm-tree-view.c:969
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "चिकटवा आदेश निवडल्यास \"%s\" तेथून हलविल्या जाईल"
 
 #: ../src/file-manager/fm-directory-view.c:5697
-#: ../src/file-manager/fm-tree-view.c:970
+#: ../src/file-manager/fm-tree-view.c:973
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "तुम्ही चिकटवा हा आदेश निवडल्यास \"%s\" ची प्रतिकृती होईल"
@@ -3592,7 +3638,7 @@ msgstr[0] "चिकटवा आदेश निवडल्यास %'d न�
 msgstr[1] "चिकटवा आदेश निवडल्यास %'d निवडलेले घटकाचे प्रत बनविले जाईल"
 
 #: ../src/file-manager/fm-directory-view.c:5767
-#: ../src/file-manager/fm-tree-view.c:1009
+#: ../src/file-manager/fm-tree-view.c:1012
 msgid "There is nothing on the clipboard to paste."
 msgstr "क्लिपबोर्डमध्ये चिकटविण्याकरीता काहीच नाही."
 
@@ -3654,7 +3700,7 @@ msgstr "उघड्या संचयीकेचे गुणधर्म प
 #. label, accelerator
 #. add the "create folder" menu item
 #: ../src/file-manager/fm-directory-view.c:6585
-#: ../src/file-manager/fm-tree-view.c:1239
+#: ../src/file-manager/fm-tree-view.c:1242
 msgid "Create _Folder"
 msgstr "संचयीका बनवा (_F)"
 
@@ -3707,8 +3753,8 @@ msgstr "प्रत्येक निवडलेले घटक संचा
 #: ../src/file-manager/fm-directory-view.c:6757
 #: ../src/file-manager/fm-directory-view.c:7576
 #: ../src/file-manager/fm-directory-view.c:7850
-#: ../src/file-manager/fm-tree-view.c:1219
-#: ../src/nautilus-places-sidebar.c:1960
+#: ../src/file-manager/fm-tree-view.c:1222
+#: ../src/nautilus-places-sidebar.c:1964
 msgid "Open in New _Tab"
 msgstr "नविन टॅब मध्ये उघडा (_T)"
 
@@ -3780,7 +3826,7 @@ msgstr "कापा किंवा प्रतिकृत करा आद�
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6649
 #: ../src/file-manager/fm-directory-view.c:6775
-#: ../src/file-manager/fm-tree-view.c:1271
+#: ../src/file-manager/fm-tree-view.c:1274
 msgid "_Paste Into Folder"
 msgstr "संचयीकेत चिकटवा (_P)"
 
@@ -3867,7 +3913,7 @@ msgstr "प्रत्येक निवडलेले घटक कचरा
 #: ../src/file-manager/fm-directory-view.c:6685
 #: ../src/file-manager/fm-directory-view.c:6784
 #: ../src/file-manager/fm-directory-view.c:7917
-#: ../src/file-manager/fm-tree-view.c:1301
+#: ../src/file-manager/fm-tree-view.c:1304
 msgid "_Delete"
 msgstr "काढून टाका (_D)"
 
@@ -3957,7 +4003,7 @@ msgstr "निवडलेल्या खंड बाहेर काढा"
 #: ../src/file-manager/fm-directory-view.c:6719
 #: ../src/file-manager/fm-directory-view.c:6735
 #: ../src/file-manager/fm-directory-view.c:6804
-#: ../src/nautilus-places-sidebar.c:2024
+#: ../src/nautilus-places-sidebar.c:2028
 msgid "_Format"
 msgstr "स्वरूपन (_F)"
 
@@ -4148,8 +4194,8 @@ msgstr[1] "निवडलेले घटक कचरापेटीतून 
 #. add the "open in new window" menu item
 #: ../src/file-manager/fm-directory-view.c:7551
 #: ../src/file-manager/fm-directory-view.c:7810
-#: ../src/file-manager/fm-tree-view.c:1228
-#: ../src/nautilus-places-sidebar.c:1967
+#: ../src/file-manager/fm-tree-view.c:1231
+#: ../src/nautilus-places-sidebar.c:1971
 msgid "Open in New _Window"
 msgstr "नविन चौकटीत उघडा (_W)"
 
@@ -4524,36 +4570,36 @@ msgid "pointing at \"%s\""
 msgstr "\"%s\" कडे केंद्रित"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-icon-view.c:3011
+#: ../src/file-manager/fm-icon-view.c:3049
 msgid "_Icons"
 msgstr "चिन्ह (_I)"
 
-#: ../src/file-manager/fm-icon-view.c:3012
+#: ../src/file-manager/fm-icon-view.c:3050
 msgid "The icon view encountered an error."
 msgstr "चिन्हदर्शकाने त्रुटी दर्शवली."
 
-#: ../src/file-manager/fm-icon-view.c:3013
+#: ../src/file-manager/fm-icon-view.c:3051
 msgid "The icon view encountered an error while starting up."
 msgstr "सुरू होताना चिन्ह दर्शकाने त्रुटी दर्शवली."
 
-#: ../src/file-manager/fm-icon-view.c:3014
+#: ../src/file-manager/fm-icon-view.c:3052
 msgid "Display this location with the icon view."
 msgstr "हे स्थान चिन्ह दर्शकाबरोबर प्रदर्शित करा."
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-icon-view.c:3025
+#: ../src/file-manager/fm-icon-view.c:3063
 msgid "_Compact"
 msgstr "संक्षिप्त (_C)"
 
-#: ../src/file-manager/fm-icon-view.c:3026
+#: ../src/file-manager/fm-icon-view.c:3064
 msgid "The compact view encountered an error."
 msgstr "संक्षिप्त दृश्य अंतर्गत त्रुटी आढळली."
 
-#: ../src/file-manager/fm-icon-view.c:3027
+#: ../src/file-manager/fm-icon-view.c:3065
 msgid "The compact view encountered an error while starting up."
 msgstr "प्रारंभवेळी संक्षिप्त दृश्य अंतर्गत त्रुटी आढळली."
 
-#: ../src/file-manager/fm-icon-view.c:3028
+#: ../src/file-manager/fm-icon-view.c:3066
 msgid "Display this location with the compact view."
 msgstr "संक्षिप्त दृश्यसह हे स्थान प्रदर्शित करा."
 
@@ -4567,40 +4613,40 @@ msgstr "(रिक्त)"
 msgid "Loading..."
 msgstr "दाखल करीत आहे..."
 
-#: ../src/file-manager/fm-list-view.c:2127
+#: ../src/file-manager/fm-list-view.c:2132
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s दृश्यीत स्तंभ"
 
-#: ../src/file-manager/fm-list-view.c:2146
+#: ../src/file-manager/fm-list-view.c:2151
 msgid "Choose the order of information to appear in this folder:"
 msgstr "या संचयीकामध्ये स्वीकार्य माहिती दर्शविण्याकरीता क्रमवारी निवडा:"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:2200
+#: ../src/file-manager/fm-list-view.c:2205
 msgid "Visible _Columns..."
 msgstr "दृश्यीत स्तंभ (_C)..."
 
 #. tooltip
-#: ../src/file-manager/fm-list-view.c:2201
+#: ../src/file-manager/fm-list-view.c:2206
 msgid "Select the columns visible in this folder"
 msgstr "या संचयीकेमधील दृश्यीत स्तंभ निवडा"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-list-view.c:2926
+#: ../src/file-manager/fm-list-view.c:2931
 msgid "_List"
 msgstr "यादी (_L)"
 
-#: ../src/file-manager/fm-list-view.c:2927
+#: ../src/file-manager/fm-list-view.c:2932
 msgid "The list view encountered an error."
 msgstr "यादी दर्शकाने त्रुटी दर्शवली."
 
-#: ../src/file-manager/fm-list-view.c:2928
+#: ../src/file-manager/fm-list-view.c:2933
 msgid "The list view encountered an error while starting up."
 msgstr "सुरू होताना यादी दर्शकाने त्रुटी दर्शवाली."
 
-#: ../src/file-manager/fm-list-view.c:2929
+#: ../src/file-manager/fm-list-view.c:2934
 msgid "Display this location with the list view."
 msgstr "हे ठिकाण यादी दर्शकेबरोबर प्रदर्शित करा."
 
@@ -4647,7 +4693,6 @@ msgstr "%s गुणधर्म"
 
 #: ../src/file-manager/fm-properties-window.c:1363
 #, c-format
-#| msgid "%s (%s)"
 msgctxt "MIME type description (MIME type)"
 msgid "%s (%s)"
 msgstr "%s (%s)"
@@ -4927,20 +4972,20 @@ msgstr "गुमधर्म चौकट निर्माण करीत �
 msgid "Select Custom Icon"
 msgstr "इच्छिक चिन्ह निवडा"
 
-#: ../src/file-manager/fm-tree-view.c:1379
+#: ../src/file-manager/fm-tree-view.c:1382
 #: ../src/nautilus-places-sidebar.c:320
 msgid "File System"
 msgstr "फाइल प्रणाली"
 
-#: ../src/file-manager/fm-tree-view.c:1383
+#: ../src/file-manager/fm-tree-view.c:1386
 msgid "Network Neighbourhood"
 msgstr "शेजारचे संजाळ"
 
-#: ../src/file-manager/fm-tree-view.c:1637
+#: ../src/file-manager/fm-tree-view.c:1640
 msgid "Tree"
 msgstr "वृक्ष"
 
-#: ../src/file-manager/fm-tree-view.c:1643
+#: ../src/file-manager/fm-tree-view.c:1646
 msgid "Show Tree"
 msgstr "वृक्ष दर्शवा"
 
@@ -4970,8 +5015,8 @@ msgstr ""
 "नॉटीलस कार्यरत करण्यापूर्वी, कृपया खालिल संचयीका तयार करा, किंवा परवानगी अशारित्या "
 "निश्चित करा की ज्यामुळे नॉटीलस संचयीका बनवू शकेल."
 
-#: ../src/nautilus-application.c:1249 ../src/nautilus-places-sidebar.c:1680
-#: ../src/nautilus-places-sidebar.c:1703 ../src/nautilus-places-sidebar.c:1726
+#: ../src/nautilus-application.c:1249 ../src/nautilus-places-sidebar.c:1684
+#: ../src/nautilus-places-sidebar.c:1707 ../src/nautilus-places-sidebar.c:1730
 #, c-format
 msgid "Unable to eject %s"
 msgstr "%s बाहेर काढू शकत नाही"
@@ -5629,45 +5674,45 @@ msgstr "स्थळ उघडा"
 msgid "_Location:"
 msgstr "स्थळ (_L):"
 
-#: ../src/nautilus-main.c:326
+#: ../src/nautilus-main.c:329
 msgid "Perform a quick set of self-check tests."
 msgstr "स्वपरिक्षणाची चाचणी जलदपणे प्रयोगात आणा."
 
-#: ../src/nautilus-main.c:329
+#: ../src/nautilus-main.c:332
 msgid "Show the version of the program."
 msgstr "कार्यक्रमाची आवृत्ती दर्शवा."
 
-#: ../src/nautilus-main.c:331
+#: ../src/nautilus-main.c:334
 msgid "Create the initial window with the given geometry."
 msgstr "दिलेल्या भूमितीनुरूप प्राथमिक चौकट तयार करा."
 
-#: ../src/nautilus-main.c:331
+#: ../src/nautilus-main.c:334
 msgid "GEOMETRY"
 msgstr "भूमिती"
 
-#: ../src/nautilus-main.c:333
+#: ../src/nautilus-main.c:336
 msgid "Only create windows for explicitly specified URIs."
 msgstr "फक्त स्पष्टपरीत्या नमूदकेल्या URIs करीता चौकटी निर्माण करा."
 
-#: ../src/nautilus-main.c:335
+#: ../src/nautilus-main.c:338
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
 msgstr "डेस्कटॉप नियंत्रीत करा (प्राधन्यता संवादपटातील प्राधन्यता संच दुर्लक्ष्य करा)."
 
-#: ../src/nautilus-main.c:337
+#: ../src/nautilus-main.c:340
 msgid "open a browser window."
 msgstr "ब्राउजर चौकट उघडा."
 
-#: ../src/nautilus-main.c:339
+#: ../src/nautilus-main.c:342
 msgid "Quit Nautilus."
 msgstr "नॉटीलस मधून बाहेर पडा."
 
-#: ../src/nautilus-main.c:340
+#: ../src/nautilus-main.c:343
 msgid "[URI...]"
 msgstr "[URI...]"
 
-#: ../src/nautilus-main.c:381
+#: ../src/nautilus-main.c:398
 msgid ""
 "\n"
 "\n"
@@ -5678,17 +5723,17 @@ msgstr ""
 "फाइल व्यवस्थापकाच्या मदतिने फाइल प्रणालीचे संचार करा"
 
 #. translators: %s is an option (e.g. --check)
-#: ../src/nautilus-main.c:417 ../src/nautilus-main.c:426
+#: ../src/nautilus-main.c:434 ../src/nautilus-main.c:443
 #, c-format
 msgid "nautilus: %s cannot be used with URIs.\n"
 msgstr "नॉटीलस: %s URI सह वापरता येत नाही.\n"
 
-#: ../src/nautilus-main.c:422
+#: ../src/nautilus-main.c:439
 #, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "नॉटीलस: --check इतर पर्यायासह वापरता येत नाह.\n"
 
-#: ../src/nautilus-main.c:431
+#: ../src/nautilus-main.c:448
 #, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "नॉटीलस: --geometry एकापेक्षा अधिक URI सह वापरता येत नाही.\n"
@@ -5948,32 +5993,32 @@ msgstr "टिपा दर्शवा"
 msgid "Network"
 msgstr "संजाळ"
 
-#: ../src/nautilus-places-sidebar.c:1859
+#: ../src/nautilus-places-sidebar.c:1863
 #, c-format
 msgid "Unable to poll %s for media changes"
 msgstr "मिडीया बदल करीता %s साठी पोल करू शकत नाही"
 
-#: ../src/nautilus-places-sidebar.c:1975
+#: ../src/nautilus-places-sidebar.c:1979
 msgid "Remove"
 msgstr "काढून टाका"
 
-#: ../src/nautilus-places-sidebar.c:1984
+#: ../src/nautilus-places-sidebar.c:1988
 msgid "Rename..."
 msgstr "पुनःनामांकीत करा..."
 
-#: ../src/nautilus-places-sidebar.c:1996
+#: ../src/nautilus-places-sidebar.c:2000
 msgid "_Mount"
 msgstr "आरोहण (_M)"
 
-#: ../src/nautilus-places-sidebar.c:2017
+#: ../src/nautilus-places-sidebar.c:2021
 msgid "_Rescan"
 msgstr "पुन्हस्कॅन (_R)"
 
-#: ../src/nautilus-places-sidebar.c:2382
+#: ../src/nautilus-places-sidebar.c:2386
 msgid "Places"
 msgstr "स्थान"
 
-#: ../src/nautilus-places-sidebar.c:2388
+#: ../src/nautilus-places-sidebar.c:2392
 msgid "Show Places"
 msgstr "ठिकाण दर्शवा"
 
@@ -6415,7 +6460,7 @@ msgstr ""
 
 #: ../src/nautilus-window-menus.c:521
 msgid "Copyright © 1999-2008 The Nautilus authors"
-msgstr "Copyright © 1999-2008 The Nautilus authors"
+msgstr "कॉपीराइट © 1999-2008 The Nautilus लेखक"
 
 #. Translators should localize the following string
 #. * which will be displayed at the bottom of the about
@@ -6425,7 +6470,7 @@ msgstr "Copyright © 1999-2008 The Nautilus authors"
 msgid "translator-credits"
 msgstr ""
 "Swapnil Hajare<dreamil1000a@yahoo.com>, 2003; Priti Labde <priti_labde@yahoo."
-"co.in>, 2006;संदिप शेडमाके <sandeep.shedmake@gmail.com>, 2007, 2008, 2009."
+"co.in>, 2006; संदिप शेडमाके <sandeep.shedmake@gmail.com>, 2007, 2008, 2009."
 
 #: ../src/nautilus-window-menus.c:534
 msgid "Nautilus Web Site"
@@ -6718,3 +6763,4 @@ msgstr "लहान मोठे"
 #: ../src/nautilus-zoom-control.c:894
 msgid "Set the zoom level of the current view"
 msgstr "सद्याचे दृश्यकरीता लहान मोठे स्थर निश्चित करा"
+
