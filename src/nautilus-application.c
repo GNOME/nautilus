@@ -1806,7 +1806,7 @@ nautilus_application_load_session (NautilusApplication *application)
 
 	data = g_key_file_get_string (state_file,
 				      "Nautilus",
-				      "sessiondata",
+				      "documents",
 				      NULL);
 	if (data == NULL) {
 		return;
