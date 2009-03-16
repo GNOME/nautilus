@@ -21,7 +21,6 @@ dependency_static_libs = \
         $(NULL)
 
 libnautilus_private_la_LDFLAGS =	\
-	-version-info 2:0:0		\
 	-no-undefined			\
 	$(NULL)
 

@@ -1,5 +1,11 @@
 2009-03-16  Cosimo Cecchi  <cosimoc@gnome.org>
 
+	* libnautilus-private/Makefile.am: remove -version-info LDFLAG
+	from libnautilus-private, as that's a private library.
+	Patch by Daniel Macks (#348301).
+
+2009-03-16  Cosimo Cecchi  <cosimoc@gnome.org>
+
 	* src/nautilus-application.c: (nautilus_application_load_session):
 	Fix a typo in the session loading code.
 	Patch by Vincent Untz (#575330).

@@ -16,7 +16,6 @@ INCLUDES =						\
 	$(NULL)
 
 libeel_2_la_LDFLAGS =				\
-	-version-info @EEL_VERSION_INFO@	\
 	-no-undefined				\
 	$(CORE_LIBS)				\
 	$(RENDER_LIBS)				\
