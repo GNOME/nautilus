@@ -99,6 +99,9 @@ fm_icon_container_get_icon_images (NautilusIconContainer *container,
 	if (!fm_icon_view_is_compact (icon_view) ||
 	    nautilus_icon_container_get_zoom_level (container) > NAUTILUS_ZOOM_LEVEL_STANDARD) {
 		flags |= NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS;
+		if (fm_icon_view_is_compact (icon_view)) {
+			flags |= NAUTILUS_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE;
+		}
 	}
 
 	if (use_embedding) {

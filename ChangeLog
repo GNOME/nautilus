@@ -1,5 +1,19 @@
 2009-03-16  Alexander Larsson  <alexl@redhat.com>
 
+	Bug 523883 – Thumbnails for 200% zoom are regenerated each time a folder is opened.
+
+        * libnautilus-private/nautilus-file.c:
+        (nautilus_file_get_icon):
+	allow scaling up thumbnails, use the scaled up thumnail
+	for up to 25% size increase.
+
+        * src/file-manager/fm-icon-container.c:
+        (fm_icon_container_get_icon_images):
+	Force thumbnail size for compact view to avoid loading at wrong size
+	and then rescaling
+
+2009-03-16  Alexander Larsson  <alexl@redhat.com>
+
 	* configure.in:
 	Post release version bump
 

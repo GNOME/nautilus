@@ -3579,27 +3579,17 @@ nautilus_file_get_icon (NautilusFile *file,
 			scale = (double)modified_size / s;
 
 
-			if (scale > 0.99) {
-				/* never scale any thumbnails up */
-				scaled_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
-								gdk_pixbuf_get_has_alpha (raw_pixbuf),
-								gdk_pixbuf_get_bits_per_sample (raw_pixbuf),
-								w * scale, h * scale);
-				gdk_pixbuf_fill (scaled_pixbuf, 0xffffff00);
-				gdk_pixbuf_copy_area (raw_pixbuf,
-						      0, 0, w, h,
-						      scaled_pixbuf,
-						      (gdk_pixbuf_get_width (scaled_pixbuf) - w) / 2,
-						      (gdk_pixbuf_get_height (scaled_pixbuf) - h) / 2);
-			} else {
-				scaled_pixbuf = gdk_pixbuf_scale_simple (raw_pixbuf,
-									 w * scale, h * scale,
-									 GDK_INTERP_BILINEAR);
-			}
+			scaled_pixbuf = gdk_pixbuf_scale_simple (raw_pixbuf,
+								 w * scale, h * scale,
+								 GDK_INTERP_BILINEAR);
 			nautilus_thumbnail_frame_image (&scaled_pixbuf);
 			g_object_unref (raw_pixbuf);
 
-			if (modified_size > 128 &&
+			/* Don't scale up if more than 25%, then read the original
+			   image instead. We don't want to compare to exactly 100%,
+			   since the zoom level 150% gives thumbnails at 144, which is
+			   ok to scale up from 128. */
+			if (modified_size > 128*1.25 &&
 			    !file->details->thumbnail_wants_original) {
 				/* Invalidate if we resize upward */
 				file->details->thumbnail_wants_original = TRUE;
