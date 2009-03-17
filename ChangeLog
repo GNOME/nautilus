@@ -1,5 +1,11 @@
 2009-03-17  Alexander Larsson  <alexl@redhat.com>
 
+        * src/file-manager/fm-desktop-icon-view.c:
+        (trash_link_is_selection):
+	Don't unref link if NULL
+
+2009-03-17  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-progress-info.c:
 	Center cancel button over progress bar, makes dialog
 	much nicer for long filenames.

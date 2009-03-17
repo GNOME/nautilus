@@ -650,7 +650,9 @@ trash_link_is_selection (FMDirectoryView *view)
 		    nautilus_desktop_link_get_link_type (link) == NAUTILUS_DESKTOP_LINK_TRASH) {
 			result = TRUE;
 		}
-		g_object_unref (link);
+		if (link) {
+			g_object_unref (link);
+		}
 	}
 	
 	nautilus_file_list_free (selection);
