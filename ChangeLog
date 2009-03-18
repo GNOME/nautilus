@@ -1,3 +1,10 @@
+2009-03-18  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* src/nautilus-application.c: (open_window), (open_windows),
+	(message_received_cb), (nautilus_application_startup):
+	Spawn the Nautilus windows on the right scren instead of always
+	using the default one (#555078).
+
 2009-03-17  Alexander Larsson  <alexl@redhat.com>
 
         * src/file-manager/fm-desktop-icon-view.c:

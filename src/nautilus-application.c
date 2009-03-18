@@ -685,7 +685,8 @@ finish_startup (NautilusApplication *application,
 static void
 open_window (NautilusApplication *application,
 	     const char *startup_id,
-	     const char *uri, const char *geometry, gboolean browser_window)
+	     const char *uri, GdkScreen *screen, const char *geometry,
+	     gboolean browser_window)
 {
 	GFile *location;
 	NautilusWindow *window;
@@ -694,7 +695,7 @@ open_window (NautilusApplication *application,
 	    eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
 		window = nautilus_application_create_navigation_window (application,
 									startup_id,
-									gdk_screen_get_default ());
+									screen);
 		if (uri == NULL) {
 			nautilus_window_go_home (window);
 		} else {
@@ -713,7 +714,7 @@ open_window (NautilusApplication *application,
 								      NULL,
 								      startup_id,
 								      location,
-								      gdk_screen_get_default ());
+								      screen);
 		g_object_unref (location);
 	}
 	
@@ -734,6 +735,7 @@ static void
 open_windows (NautilusApplication *application,
 	      const char *startup_id,
 	      char **uris,
+	      GdkScreen *screen,
 	      const char *geometry,
 	      gboolean browser_window)
 {
@@ -741,11 +743,11 @@ open_windows (NautilusApplication *application,
 
 	if (uris == NULL || uris[0] == NULL) {
 		/* Open a window pointing at the default location. */
-		open_window (application, startup_id, NULL, geometry, browser_window);
+		open_window (application, startup_id, NULL, screen, geometry, browser_window);
 	} else {
 		/* Open windows at each requested location. */
 		for (i = 0; uris[i] != NULL; i++) {
-			open_window (application, startup_id, uris[i], geometry, browser_window);
+			open_window (application, startup_id, uris[i], screen, geometry, browser_window);
 		}
 	}
 }
@@ -761,6 +763,7 @@ message_received_cb (UniqueApp         *unique_app,
 	UniqueResponse res;
 	char **uris;
 	char *geometry;
+	GdkScreen *screen;
 	
 	application =  user_data;
 	res = UNIQUE_RESPONSE_OK;
@@ -774,9 +777,11 @@ message_received_cb (UniqueApp         *unique_app,
 	case UNIQUE_OPEN:
 	case COMMAND_OPEN_BROWSER:
 		uris = _unique_message_data_get_geometry_and_uris (message, &geometry);
+		screen = unique_message_data_get_screen (message);
 		open_windows (application,
 			      unique_message_data_get_startup_id (message),
 			      uris,
+			      screen,
 			      geometry,
 			      command == COMMAND_OPEN_BROWSER);
 		g_strfreev (uris);
@@ -874,6 +879,7 @@ nautilus_application_startup (NautilusApplication *application,
 			} else {
 				open_windows (application, NULL,
 					      urls,
+					      gdk_screen_get_default (),
 					      geometry,
 					      browser_window);
 			}
