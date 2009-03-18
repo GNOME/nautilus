@@ -1,5 +1,16 @@
 2009-03-18  Cosimo Cecchi  <cosimoc@gnome.org>
 
+	* libnautilus-private/nautilus-icon-container.c:
+	(nautilus_icon_container_get_icon_text),
+	(nautilus_icon_container_search_iter),
+	(nautilus_icon_container_update_icon):
+	* libnautilus-private/nautilus-icon-container.h:
+	* src/file-manager/fm-icon-container.c:
+	(fm_icon_container_get_icon_text):
+	Unbreak typeahead find for 33% zoom level (#341708).
+
+2009-03-18  Cosimo Cecchi  <cosimoc@gnome.org>
+
 	* src/nautilus-application.c: (open_window), (open_windows),
 	(message_received_cb), (nautilus_application_startup):
 	Spawn the Nautilus windows on the right scren instead of always

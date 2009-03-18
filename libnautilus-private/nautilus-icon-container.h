@@ -142,7 +142,8 @@ typedef struct {
 	void         (* get_icon_text)            (NautilusIconContainer *container,
 						   NautilusIconData *data,
 						   char **editable_text,
-						   char **additional_text);
+						   char **additional_text,
+						   gboolean include_invisible);
 	char *       (* get_icon_description)     (NautilusIconContainer *container,
 						   NautilusIconData *data);
 	int          (* compare_icons)            (NautilusIconContainer *container,

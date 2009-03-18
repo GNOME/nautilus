@@ -283,7 +283,8 @@ static void
 fm_icon_container_get_icon_text (NautilusIconContainer *container,
 				 NautilusIconData      *data,
 				 char                 **editable_text,
-				 char                 **additional_text)
+				 char                 **additional_text,
+				 gboolean               include_invisible)
 {
 	char *actual_uri;
 	gchar *description;
@@ -292,21 +293,28 @@ fm_icon_container_get_icon_text (NautilusIconContainer *container,
 	int i, j, num_attributes;
 	FMIconView *icon_view;
 	NautilusFile *file;
+	gboolean use_additional;
 
 	file = NAUTILUS_FILE (data);
 
 	g_assert (NAUTILUS_IS_FILE (file));
 	g_assert (editable_text != NULL);
-	g_assert (additional_text != NULL);
 	icon_view = get_icon_view (container);
 	g_return_if_fail (icon_view != NULL);
 
+	use_additional = (additional_text != NULL);
+
 	/* In the smallest zoom mode, no text is drawn. */
-	if (nautilus_icon_container_get_zoom_level (container) == NAUTILUS_ZOOM_LEVEL_SMALLEST) {
+	if (nautilus_icon_container_get_zoom_level (container) == NAUTILUS_ZOOM_LEVEL_SMALLEST &&
+            !include_invisible) {
 		*editable_text = NULL;
 	} else {
 		/* Strip the suffix for nautilus object xml files. */
 		*editable_text = nautilus_file_get_display_name (file);
+	}
+
+	if (!use_additional) {
+		return;
 	}
 
 	if (fm_icon_view_is_compact (icon_view)) {

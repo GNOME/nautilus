@@ -4907,13 +4907,28 @@ nautilus_icon_container_search_button_press_event (GtkWidget *widget,
 	return TRUE;
 }
 
+static void
+nautilus_icon_container_get_icon_text (NautilusIconContainer *container,
+				       NautilusIconData      *data,
+				       char                 **editable_text,
+				       char                 **additional_text,
+				       gboolean               include_invisible)
+{
+	NautilusIconContainerClass *klass;
+
+	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (container);
+	g_assert (klass->get_icon_text != NULL);
+
+	klass->get_icon_text (container, data, editable_text, additional_text, include_invisible);
+}
+
 static gboolean
 nautilus_icon_container_search_iter (NautilusIconContainer *container,
 				     const char *key, gint n)
 {
 	GList *p;
 	NautilusIcon *icon;
-	const char *name;
+	char *name;
 	int count;
 	char *normalized_key, *case_normalized_key;
 	char *normalized_name, *case_normalized_name;
@@ -4932,10 +4947,12 @@ nautilus_icon_container_search_iter (NautilusIconContainer *container,
 	}
 	
 	icon = NULL;
+	name = NULL;
 	count = 0;
 	for (p = container->details->icons; p != NULL && count != n; p = p->next) {
 		icon = p->data;
-		name = nautilus_icon_canvas_item_get_editable_text (icon->item);
+		nautilus_icon_container_get_icon_text (container, icon->data, &name,
+						       NULL, TRUE);
 		
 		/* This can happen if a key event is handled really early while
 		 * loading the icon container, before the items have all been
@@ -4961,6 +4978,8 @@ nautilus_icon_container_search_iter (NautilusIconContainer *container,
 		}
 
 		g_free (case_normalized_name);
+		g_free (name);
+		name = NULL;
 	}
 
 	g_free (case_normalized_key);
@@ -6765,21 +6784,6 @@ nautilus_icon_container_get_icon_images (NautilusIconContainer *container,
 	return klass->get_icon_images (container, data, size, emblem_pixbufs, embedded_text, for_drag_accept, need_large_embeddded_text, embedded_text_needs_loading, has_open_window);
 }
 
-
-static void
-nautilus_icon_container_get_icon_text (NautilusIconContainer *container,
-				       NautilusIconData      *data,
-				       char                 **editable_text,
-				       char                 **additional_text)
-{
-	NautilusIconContainerClass *klass;
-
-	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (container);
-	g_assert (klass->get_icon_text != NULL);
-
-	klass->get_icon_text (container, data, editable_text, additional_text);
-}
-
 static void
 nautilus_icon_container_freeze_updates (NautilusIconContainer *container)
 {
@@ -6991,7 +6995,8 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	nautilus_icon_container_get_icon_text (container,
 					       icon->data,
 					       &editable_text,
-					       &additional_text);
+					       &additional_text,
+					       FALSE);
 
 	/* If name of icon being renamed was changed from elsewhere, end renaming mode. 
 	 * Alternatively, we could replace the characters in the editable text widget
