@@ -1,6 +1,6 @@
 /* generated with mime-types-include.sh in the totem module, don't edit or 
    commit in the nautilus module without filing a bug against totem */
-static char *audio_mime_types[] = {
+static const char *audio_mime_types[] = {
 "audio/3gpp",
 "audio/ac3",
 "audio/AMR",
@@ -9,18 +9,18 @@ static char *audio_mime_types[] = {
 "audio/midi",
 "audio/mp4",
 "audio/mpeg",
-"audio/mpegurl",
 "audio/ogg",
+"audio/prs.sid",
 "audio/vnd.rn-realaudio",
 "audio/x-ape",
 "audio/x-flac",
+"audio/x-gsm",
 "audio/x-it",
 "audio/x-m4a",
 "audio/x-matroska",
 "audio/x-mod",
 "audio/x-mp3",
 "audio/x-mpeg",
-"audio/x-mpegurl",
 "audio/x-ms-asf",
 "audio/x-ms-asx",
 "audio/x-ms-wax",
@@ -33,7 +33,6 @@ static char *audio_mime_types[] = {
 "audio/x-realaudio",
 "audio/x-real-audio",
 "audio/x-sbc",
-"audio/x-scpls",
 "audio/x-speex",
 "audio/x-tta",
 "audio/x-wav",
