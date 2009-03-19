@@ -39,6 +39,7 @@
 typedef struct ItemEntry {
 	const char *field;
 	const char *description;
+	char *current_value;
 	gboolean localized;
 	gboolean filename;
 } ItemEntry;
@@ -149,6 +150,7 @@ item_entry_new (const char *field,
 static void
 item_entry_free (ItemEntry *entry)
 {
+	g_free (entry->current_value);
 	g_free (entry);
 }
 
@@ -245,6 +247,13 @@ save_entry (GtkEntry *entry, GKeyFile *key_file, const char *uri)
 	item_entry = g_object_get_data (G_OBJECT (entry), "item_entry");
 	val = gtk_entry_get_text (entry);
 
+	if (strcmp (val, item_entry->current_value) == 0) {
+		return; /* No actual change, don't update file */
+	}
+
+	g_free (item_entry->current_value);
+	item_entry->current_value = g_strdup (val);
+	
 	if (item_entry->localized) {
 		languages = (gchar **) g_get_language_names ();
 		g_key_file_set_locale_string (key_file, MAIN_GROUP, item_entry->field, languages[0], val);
@@ -329,7 +338,8 @@ build_table (GtkWidget *container,
 						     NULL);
 		}
 		
-		gtk_entry_set_text (GTK_ENTRY (entry), val?val:"");
+		item_entry->current_value = g_strdup (val?val:"");
+		gtk_entry_set_text (GTK_ENTRY (entry), item_entry->current_value);
 		g_free (val);
 
 		gtk_table_attach (GTK_TABLE (table), label,
