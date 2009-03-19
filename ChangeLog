@@ -1,5 +1,14 @@
 2009-03-19  Cosimo Cecchi  <cosimoc@gnome.org>
 
+	* configure.in: bump required GTK+ version to 2.16.0.
+	* src/nautilus-window-menus.c: (trash_state_changed_cb),
+	(nautilus_window_initialize_trash_icon_monitor),
+	(nautilus_window_initialize_menus):
+	Update the trash icon in the "Go" menu according to the
+	trash state (#575282).
+
+2009-03-19  Cosimo Cecchi  <cosimoc@gnome.org>
+
 	* src/file-manager/nautilus-audio-mime-types.h:
 	Update mime types handled by totem-audio-preview.
 	Patch by Bastien Nocera (#575345).

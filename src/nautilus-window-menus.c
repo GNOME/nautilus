@@ -54,6 +54,7 @@
 #include <libnautilus-private/nautilus-search-directory.h>
 #include <libnautilus-private/nautilus-search-engine.h>
 #include <libnautilus-private/nautilus-signaller.h>
+#include <libnautilus-private/nautilus-trash-monitor.h>
 #include <string.h>
 
 #define MENU_PATH_EXTENSION_ACTIONS                     "/MenuBar/File/Extension Actions"
@@ -732,6 +733,39 @@ connect_proxy_cb (GtkUIManager *manager,
 	}
 }
 
+static void
+trash_state_changed_cb (NautilusTrashMonitor *monitor,
+			gboolean state,
+			NautilusWindow *window)
+{
+	GtkActionGroup *action_group;
+	GtkAction *action;
+	GIcon *gicon;
+
+	action_group = window->details->main_action_group;
+	action = gtk_action_group_get_action (action_group, "Go to Trash");
+
+	gicon = nautilus_trash_monitor_get_icon ();
+
+	if (gicon) {
+		g_object_set (action, "gicon", gicon, NULL);
+		g_object_unref (gicon);
+	}
+}
+
+static void
+nautilus_window_initialize_trash_icon_monitor (NautilusWindow *window)
+{
+	NautilusTrashMonitor *monitor;
+
+	monitor = nautilus_trash_monitor_get ();
+
+	trash_state_changed_cb (monitor, TRUE, window);
+
+	g_signal_connect (monitor, "trash_state_changed",
+			  G_CALLBACK (trash_state_changed_cb), window);
+}
+
 static const GtkActionEntry main_entries[] = {
   /* name, stock id, label */  { "File", NULL, N_("_File") },
   /* name, stock id, label */  { "Edit", NULL, N_("_Edit") },
@@ -889,6 +923,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 	ui = nautilus_ui_string_get ("nautilus-shell-ui.xml");
 	gtk_ui_manager_add_ui_from_string (ui_manager, ui, -1, NULL);
 
+	nautilus_window_initialize_trash_icon_monitor (window);
 	nautilus_window_initialize_bookmarks_menu (window);
 }
 
