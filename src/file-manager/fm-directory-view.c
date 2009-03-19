@@ -5924,6 +5924,22 @@ action_rename_select_all_callback (GtkAction *action,
 }
 
 static void
+file_mount_callback (NautilusFile  *file,
+		     GFile         *result_location,
+		     GError        *error,
+		     gpointer       callback_data)
+{
+	if (error != NULL &&
+	    (error->domain != G_IO_ERROR ||
+	     (error->code != G_IO_ERROR_CANCELLED &&
+	      error->code != G_IO_ERROR_FAILED_HANDLED &&
+	      error->code != G_IO_ERROR_ALREADY_MOUNTED))) {
+		eel_show_error_dialog (_("Unable to mount location"),
+				       error->message, NULL);
+	}
+}
+
+static void
 action_mount_volume_callback (GtkAction *action,
 			      gpointer data)
 {
@@ -5941,7 +5957,7 @@ action_mount_volume_callback (GtkAction *action,
 		if (nautilus_file_can_mount (file)) {
 			mount_op = gtk_mount_operation_new (fm_directory_view_get_containing_window (view));
 			nautilus_file_mount (file, mount_op, NULL,
-					     NULL, NULL);
+					     file_mount_callback, NULL);
 			g_object_unref (mount_op);
 		}
 	}
@@ -6029,7 +6045,7 @@ action_self_mount_volume_callback (GtkAction *action,
 	}
 
 	mount_op = gtk_mount_operation_new (fm_directory_view_get_containing_window (view));
-	nautilus_file_mount (file, mount_op, NULL, NULL, NULL);
+	nautilus_file_mount (file, mount_op, NULL, file_mount_callback, NULL);
 	g_object_unref (mount_op);
 }
 
@@ -6104,7 +6120,7 @@ action_location_mount_volume_callback (GtkAction *action,
 	}
 
 	mount_op = gtk_mount_operation_new (fm_directory_view_get_containing_window (view));
-	nautilus_file_mount (file, mount_op, NULL, NULL, NULL);
+	nautilus_file_mount (file, mount_op, NULL, file_mount_callback, NULL);
 	g_object_unref (mount_op);
 }
 
