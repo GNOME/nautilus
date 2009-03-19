@@ -1,5 +1,14 @@
 2009-03-19  Cosimo Cecchi  <cosimoc@gnome.org>
 
+	* src/nautilus-window-menus.c:
+	(nautilus_window_remove_trash_monitor_callback):
+	* src/nautilus-window-private.h:
+	* src/nautilus-window.c: (nautilus_window_finalize):
+	Remember to disconnect the signal handler to the trash monitor
+	when finalizing the window, as we don't own that object.
+
+2009-03-19  Cosimo Cecchi  <cosimoc@gnome.org>
+
 	* configure.in: bump required GTK+ version to 2.16.0.
 	* src/nautilus-window-menus.c: (trash_state_changed_cb),
 	(nautilus_window_initialize_trash_icon_monitor),

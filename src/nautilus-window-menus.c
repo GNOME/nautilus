@@ -1058,4 +1058,14 @@ nautilus_window_load_extension_menus (NautilusWindow *window)
 	}
 }
 
+void
+nautilus_window_remove_trash_monitor_callback (NautilusWindow *window)
+{
+	NautilusTrashMonitor *monitor;
+
+	monitor = nautilus_trash_monitor_get ();
+
+	g_signal_handlers_disconnect_by_func (monitor,
+					      trash_state_changed_cb, window);
+}
 
