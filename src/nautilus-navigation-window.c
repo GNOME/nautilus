@@ -531,14 +531,6 @@ always_use_location_entry_changed (gpointer callback_data)
 	} else {
 		nautilus_navigation_window_set_bar_mode (window, NAUTILUS_BAR_PATH);
 	}
-
-	g_signal_handlers_block_by_func (window->details->location_button,
-					 G_CALLBACK (location_button_toggled_cb),
-					 window);
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (window->details->location_button), use_entry);
-	g_signal_handlers_unblock_by_func (window->details->location_button,
-					   G_CALLBACK (location_button_toggled_cb),
-					   window);
 }
 
 static void
@@ -1644,6 +1636,8 @@ static void
 nautilus_navigation_window_set_bar_mode (NautilusNavigationWindow *window,
 					 NautilusBarMode mode)
 {
+	gboolean use_entry;
+
 	switch (mode) {
 
 	case NAUTILUS_BAR_PATH:
@@ -1663,6 +1657,19 @@ nautilus_navigation_window_set_bar_mode (NautilusNavigationWindow *window,
 		gtk_widget_hide (window->path_bar);
 		gtk_widget_hide (window->navigation_bar);
 		break;
+	}
+
+	if (mode == NAUTILUS_BAR_NAVIGATION || mode == NAUTILUS_BAR_PATH) {
+		use_entry = (mode == NAUTILUS_BAR_NAVIGATION);
+
+		g_signal_handlers_block_by_func (window->details->location_button,
+						 G_CALLBACK (location_button_toggled_cb),
+						 window);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (window->details->location_button),
+					      use_entry);
+		g_signal_handlers_unblock_by_func (window->details->location_button,
+						   G_CALLBACK (location_button_toggled_cb),
+						   window);
 	}
 }
 
