@@ -150,7 +150,11 @@ nautilus_query_editor_dispose (GObject *object)
 	NautilusQueryEditor *editor;
 
 	editor = NAUTILUS_QUERY_EDITOR (object);
-	
+
+	if (editor->details->typing_timeout_id) {
+		g_source_remove (editor->details->typing_timeout_id);
+		editor->details->typing_timeout_id = 0;
+	}
 
 	if (editor->details->bar != NULL) {
 		g_signal_handlers_disconnect_by_func (editor->details->entry,

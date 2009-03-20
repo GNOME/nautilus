@@ -1,3 +1,10 @@
+2009-03-20  Alexander Larsson  <alexl@redhat.com>
+
+	Bug 575244 – nautilus crashed with SIGSEGV in nautilus_query_editor_changed_force()
+
+	* src/nautilus-query-editor.c (nautilus_query_editor_dispose):
+	Remove typing timeout when destroying.
+
 2009-03-19  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* src/nautilus-window-menus.c:
@@ -32,7 +39,6 @@
 
 2009-03-19  Alexander Larsson  <alexl@redhat.com>
 
-	
         * src/file-manager/fm-directory-view.c:
 	Report error for failed mounts.
 
