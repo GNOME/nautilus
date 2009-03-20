@@ -5677,6 +5677,31 @@ update_preview_callback (GtkFileChooser *icon_chooser,
 }
 
 static void
+custom_icon_file_chooser_response_cb (GtkDialog *dialog,
+				      gint response,
+				      FMPropertiesWindow *window)
+{
+	char *uri;
+
+	switch (response) {
+	case GTK_RESPONSE_NO:
+		reset_icon (window);
+		break;
+
+	case GTK_RESPONSE_OK:
+		uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (dialog));
+		set_icon (uri, window);
+		g_free (uri);
+		break;
+
+	default:
+		break;
+	}
+
+	gtk_widget_hide (GTK_WIDGET (dialog));
+}
+
+static void
 select_image_button_callback (GtkWidget *widget,
 			      FMPropertiesWindow *window)
 {
@@ -5684,8 +5709,8 @@ select_image_button_callback (GtkWidget *widget,
 	GtkFileFilter *filter;
 	GList *l;
 	NautilusFile *file;
-	char *image_path;
 	char *uri;
+	char *image_path;
 	gboolean revert_is_sensitive;
 
 	g_assert (FM_IS_PROPERTIES_WINDOW (window));
@@ -5751,22 +5776,9 @@ select_image_button_callback (GtkWidget *widget,
 	}
 	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), GTK_RESPONSE_NO, revert_is_sensitive);
 
-	switch (gtk_dialog_run (GTK_DIALOG (dialog))) {
-	case GTK_RESPONSE_NO:
-		reset_icon (window);
-		break;
-
-	case GTK_RESPONSE_OK:
-		uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (dialog));
-		set_icon (uri, window);
-		g_free (uri);
-		break;
-
-	default:
-		break;
-	}
-
-	gtk_widget_hide (dialog);
+	g_signal_connect (dialog, "response",
+			  G_CALLBACK (custom_icon_file_chooser_response_cb), window);
+	gtk_widget_show (dialog);
 }
 
 static void

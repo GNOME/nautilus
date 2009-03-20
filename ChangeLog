@@ -1,3 +1,10 @@
+2009-03-20  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* src/file-manager/fm-properties-window.c:
+	(custom_icon_file_chooser_response_cb),
+	(select_image_button_callback): don't use gtk_dialog_run to
+	spawn the filechooser for a custom icon (#575344).
+
 2009-03-20  Alexander Larsson  <alexl@redhat.com>
 
 	Bug 575244 – nautilus crashed with SIGSEGV in nautilus_query_editor_changed_force()
