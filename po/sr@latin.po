@@ -9,11 +9,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=nautilus&component=general\n"
-"POT-Creation-Date: 2009-02-07 10:17+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-03-21 20:56+0100\n"
 "PO-Revision-Date: 2009-02-07 16:13-0500\n"
-"Last-Translator: Igor Miletic <grejigl-gnomeprevod@yahoo.ca>\n"
+"Last-Translator: Miloš Popović <gpopac@gmail.com>\n"
 "Language-Team: Serbian (sr) <gnom@prevod.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22,70 +21,67 @@ msgstr ""
 "%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 
 #: ../cut-n-paste-code/libegg/eggdesktopfile.c:165
-#, fuzzy, c-format
-#| msgid "Unable to rename desktop file"
+#, c-format
 msgid "File is not a valid .desktop file"
-msgstr "Ne mogu da preimenujem desktop datoteku"
+msgstr "Ovo nije ispravna .desktop datoteka"
 
 #: ../cut-n-paste-code/libegg/eggdesktopfile.c:188
 #, c-format
 msgid "Unrecognized desktop file Version '%s'"
-msgstr ""
+msgstr "Nije prepoznato izdanje desktop datoteke „%s“"
 
 #: ../cut-n-paste-code/libegg/eggdesktopfile.c:958
 #, c-format
 msgid "Starting %s"
-msgstr ""
+msgstr "Počinjem %s"
 
 #: ../cut-n-paste-code/libegg/eggdesktopfile.c:1100
 #, c-format
 msgid "Application does not accept documents on command line"
-msgstr ""
+msgstr "Program ne prihvata dokumente iz komandne linije"
 
 #: ../cut-n-paste-code/libegg/eggdesktopfile.c:1168
 #, c-format
 msgid "Unrecognized launch option: %d"
-msgstr ""
+msgstr "Nije prepoznata opcija pri pokretanju: %d"
 
 #: ../cut-n-paste-code/libegg/eggdesktopfile.c:1373
 #, c-format
 msgid "Can't pass document URIs to a 'Type=Link' desktop entry"
-msgstr ""
+msgstr "Ne mogu da prosledim adrese dokumenata u unos „Type=Link“"
 
 #: ../cut-n-paste-code/libegg/eggdesktopfile.c:1392
 #, c-format
 msgid "Not a launchable item"
-msgstr ""
+msgstr "Ne možete pokrenuti ovu stavku"
 
 #: ../cut-n-paste-code/libegg/eggsmclient.c:185
 msgid "Disable connection to session manager"
-msgstr ""
+msgstr "Onemogući vezu sa upravnikom sesije"
 
 #: ../cut-n-paste-code/libegg/eggsmclient.c:188
 msgid "Specify file containing saved configuration"
-msgstr ""
+msgstr "Izaberite datoteku sa sačuvanim postavkam"
 
 #: ../cut-n-paste-code/libegg/eggsmclient.c:188
-#, fuzzy
-#| msgid "FILENAME"
 msgid "FILE"
 msgstr "DATOTEKA"
 
 #: ../cut-n-paste-code/libegg/eggsmclient.c:191
 msgid "Specify session management ID"
-msgstr ""
+msgstr "Odredite IB za upravnika sesijama"
 
 #: ../cut-n-paste-code/libegg/eggsmclient.c:191
 msgid "ID"
-msgstr ""
+msgstr "IB"
 
 #: ../cut-n-paste-code/libegg/eggsmclient.c:245
 msgid "Session Management Options"
-msgstr ""
+msgstr "Opcije upravnika sesijama"
 
 #: ../cut-n-paste-code/libegg/eggsmclient.c:246
 msgid "Show Session Management options"
-msgstr ""
+msgstr "Prikaži opcije upravnika sesijama"
 
 # note(danilo):
 # PAŽNJA: koristim 4 oblika za množinu kako bih slučaj za jedan jedini stavljao
@@ -454,11 +450,11 @@ msgid ""
 "The position of the opposite end of the selection from the cursor in chars."
 msgstr "Pozicija suprotnog kraja izbora kao broj znakova od kurzora."
 
-#: ../eel/eel-editable-label.c:3217
+#: ../eel/eel-editable-label.c:3218
 msgid "Select All"
 msgstr "Izaberi sve"
 
-#: ../eel/eel-editable-label.c:3228
+#: ../eel/eel-editable-label.c:3229
 msgid "Input Methods"
 msgstr "Metode unosa"
 
@@ -798,7 +794,7 @@ msgid ""
 "If set to true, then Nautilus will automatically mount media such as user-"
 "visible hard disks and removable media on start-up and media insertion."
 msgstr ""
-"Ukoliko je postavljeno, Nautilus će sam priključiti medijume kao što su čvrsti "
+"Ukoliko je postavljeno, Nautilus će sam montirati medijume kao što su čvrsti "
 "diskovi (dostupni korisniku) i uklonjivi medijumi nakon njihovog priključivanja."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
@@ -808,7 +804,7 @@ msgid ""
 "detected; for media where a known x-content type is detected, the user "
 "configurable action will be taken instead."
 msgstr ""
-"Ukoliko je postavljeno, Nautilus će sam otvoriti fasciklu nakon priključitava "
+"Ukoliko je postavljeno, Nautilus će sam otvoriti fasciklu nakon montiranja "
 "medijuma. Ovo se odnosi samo na medijume za koje se ne zna sadržaj (x-"
 "content/*), dok za medijume sa poznatim sadržajem morate postaviti željenu "
 "radnju."
@@ -919,7 +915,7 @@ msgid ""
 "If this is set to true, icons linking to mounted volumes will be put on the "
 "desktop."
 msgstr ""
-"Ukoliko je ovo postavljeno, ikona koja ukazuje na priključene diskove će biti "
+"Ukoliko je ovo postavljeno, ikona koja ukazuje na montirane diskove će biti "
 "stavljena na radnu površinu."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
@@ -932,7 +928,7 @@ msgstr ""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
 msgid "If to show the package installer for unknown mime types"
-msgstr ""
+msgstr "Da li da pokrene upravnika paketima za nepoznate vrste datoteka"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
 msgid ""
@@ -1108,7 +1104,7 @@ msgstr "Prikaži polje za adresu u novim prozorima"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:103
 msgid "Show mounted volumes on the desktop"
-msgstr "Prikaži priključene diskove na radnoj površini"
+msgstr "Prikaži montirane diskove na radnoj površini"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:104
 msgid "Show side pane in new windows"
@@ -1327,11 +1323,11 @@ msgstr "Da li tražiti odobrenje pri brisanju datoteka ili pražnjenju smeća?"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:138
 msgid "Whether to automatically mount media"
-msgstr "Da li da sam priključim medijume"
+msgstr "Da li da sam montiram medijume"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:139
 msgid "Whether to automatically open a folder for automounted media"
-msgstr "Da li da sam otvorim fasciklu priključenog medijuma"
+msgstr "Da li da sam otvorim fasciklu montiranog medijuma"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:140
 msgid "Whether to enable immediate deletion"
@@ -1346,6 +1342,8 @@ msgid ""
 "Whether to present the user a dialog to search using the package installer "
 "for an application that can open an unknown mime type."
 msgstr ""
+"Da li da prikažem korisniku prozorče upravnika paketima za pretragu programa "
+"koji mogu da otvore ovu vrstu datoteke."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:143
 msgid "Whether to preview sounds when mousing over an icon"
@@ -1363,101 +1361,101 @@ msgstr "Da li da prikazujem sakrivene datoteke"
 msgid "Width of the side pane"
 msgstr "Širina bočne površi"
 
-#: ../libnautilus-private/nautilus-autorun.c:483
+#: ../libnautilus-private/nautilus-autorun.c:488
 msgid "No applications found"
 msgstr "Nisu nađeni programi"
 
-#: ../libnautilus-private/nautilus-autorun.c:499
+#: ../libnautilus-private/nautilus-autorun.c:504
 msgid "Ask what to do"
 msgstr "Pitaj me"
 
-#: ../libnautilus-private/nautilus-autorun.c:515
+#: ../libnautilus-private/nautilus-autorun.c:520
 msgid "Do Nothing"
 msgstr "Ne radi ništa"
 
-#: ../libnautilus-private/nautilus-autorun.c:530
+#: ../libnautilus-private/nautilus-autorun.c:535
 #: ../nautilus-folder-handler.desktop.in.in.h:1
 msgid "Open Folder"
 msgstr "Otvori fasciklu"
 
-#: ../libnautilus-private/nautilus-autorun.c:562
+#: ../libnautilus-private/nautilus-autorun.c:567
 #: ../src/nautilus-x-content-bar.c:122
 #, c-format
 msgid "Open %s"
 msgstr "Otvori %s"
 
-#: ../libnautilus-private/nautilus-autorun.c:601
+#: ../libnautilus-private/nautilus-autorun.c:606
 msgid "Open with other Application..."
 msgstr "Otvori nekim drugim programom..."
 
-#: ../libnautilus-private/nautilus-autorun.c:916
+#: ../libnautilus-private/nautilus-autorun.c:933
 msgid "You have just inserted an Audio CD."
 msgstr "Ubacili ste zvučni CD."
 
-#: ../libnautilus-private/nautilus-autorun.c:918
+#: ../libnautilus-private/nautilus-autorun.c:935
 msgid "You have just inserted an Audio DVD."
 msgstr "Ubacili ste zvučni DVD."
 
-#: ../libnautilus-private/nautilus-autorun.c:920
+#: ../libnautilus-private/nautilus-autorun.c:937
 msgid "You have just inserted a Video DVD."
 msgstr "Ubacili ste video DVD."
 
-#: ../libnautilus-private/nautilus-autorun.c:922
+#: ../libnautilus-private/nautilus-autorun.c:939
 msgid "You have just inserted a Video CD."
 msgstr "Ubacili ste video CD."
 
-#: ../libnautilus-private/nautilus-autorun.c:924
+#: ../libnautilus-private/nautilus-autorun.c:941
 msgid "You have just inserted a Super Video CD."
 msgstr "Ubacili ste super video CD."
 
-#: ../libnautilus-private/nautilus-autorun.c:926
+#: ../libnautilus-private/nautilus-autorun.c:943
 msgid "You have just inserted a blank CD."
 msgstr "Ubacili ste prazan CD."
 
-#: ../libnautilus-private/nautilus-autorun.c:928
+#: ../libnautilus-private/nautilus-autorun.c:945
 msgid "You have just inserted a blank DVD."
 msgstr "Ubacili ste prazan DVD."
 
-#: ../libnautilus-private/nautilus-autorun.c:930
+#: ../libnautilus-private/nautilus-autorun.c:947
 msgid "You have just inserted a blank Blu-Ray disc."
 msgstr "Ubacili ste prazan Blu-rej disk."
 
-#: ../libnautilus-private/nautilus-autorun.c:932
+#: ../libnautilus-private/nautilus-autorun.c:949
 msgid "You have just inserted a blank HD DVD."
 msgstr "Ubacili ste prazan HD DVD."
 
-#: ../libnautilus-private/nautilus-autorun.c:934
+#: ../libnautilus-private/nautilus-autorun.c:951
 msgid "You have just inserted a Photo CD."
 msgstr "Ubacili ste CD sa fotografijama."
 
-#: ../libnautilus-private/nautilus-autorun.c:936
+#: ../libnautilus-private/nautilus-autorun.c:953
 msgid "You have just inserted a Picture CD."
 msgstr "Ubacili ste CD sa slikama."
 
-#: ../libnautilus-private/nautilus-autorun.c:938
+#: ../libnautilus-private/nautilus-autorun.c:955
 msgid "You have just inserted a medium with digital photos."
 msgstr "Ubacili ste medijum sa digitalnim fotografijama."
 
-#: ../libnautilus-private/nautilus-autorun.c:940
+#: ../libnautilus-private/nautilus-autorun.c:957
 msgid "You have just inserted a digital audio player."
 msgstr "Ubacili ste muzički uređaj."
 
-#: ../libnautilus-private/nautilus-autorun.c:942
+#: ../libnautilus-private/nautilus-autorun.c:959
 msgid ""
 "You have just inserted a medium with software intended to be automatically "
 "started."
 msgstr "Ubacili ste medijum sa programima koji se sami pokreću."
 
 #. fallback to generic greeting
-#: ../libnautilus-private/nautilus-autorun.c:945
+#: ../libnautilus-private/nautilus-autorun.c:962
 msgid "You have just inserted a medium."
 msgstr "Ubacili ste medijum."
 
-#: ../libnautilus-private/nautilus-autorun.c:947
+#: ../libnautilus-private/nautilus-autorun.c:964
 msgid "Choose what application to launch."
 msgstr "Izaberite program za pokretanje."
 
-#: ../libnautilus-private/nautilus-autorun.c:956
+#: ../libnautilus-private/nautilus-autorun.c:973
 #, c-format
 msgid ""
 "Select how to open \"%s\" and whether to perform this action in the future "
@@ -1466,21 +1464,21 @@ msgstr ""
 "Izaberite način za otvaranje „%s“ i da li da se ova radnja ponavlja za ostale „%"
 "s“ medijume."
 
-#: ../libnautilus-private/nautilus-autorun.c:978
+#: ../libnautilus-private/nautilus-autorun.c:995
 msgid "_Always perform this action"
 msgstr "_Uvek izvrši ovu radnju"
 
 #. add the "Eject" menu item
-#: ../libnautilus-private/nautilus-autorun.c:994
-#: ../src/file-manager/fm-tree-view.c:1323
-#: ../src/nautilus-places-sidebar.c:2010
+#: ../libnautilus-private/nautilus-autorun.c:1011
+#: ../src/file-manager/fm-tree-view.c:1329
+#: ../src/nautilus-places-sidebar.c:2016
 msgid "_Eject"
 msgstr "I_zbaci"
 
 #. add the "Unmount" menu item
-#: ../libnautilus-private/nautilus-autorun.c:1005
-#: ../src/file-manager/fm-tree-view.c:1314
-#: ../src/nautilus-places-sidebar.c:2003
+#: ../libnautilus-private/nautilus-autorun.c:1022
+#: ../src/file-manager/fm-tree-view.c:1320
+#: ../src/nautilus-places-sidebar.c:2009
 msgid "_Unmount"
 msgstr "_Demontiraj"
 
@@ -1508,7 +1506,7 @@ msgstr "Ubacuje tekst iz spiska isečaka"
 #. name, stock id
 #. label, accelerator
 #: ../libnautilus-private/nautilus-clipboard.c:448
-#: ../src/file-manager/fm-directory-view.c:6653
+#: ../src/file-manager/fm-directory-view.c:6671
 msgid "Select _All"
 msgstr "Izaberi _sve"
 
@@ -1531,7 +1529,7 @@ msgstr "Koristi podra_zumevano"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:273
-#: ../src/file-manager/fm-list-view.c:1453
+#: ../src/file-manager/fm-list-view.c:1458
 msgid "Name"
 msgstr "Ime"
 
@@ -1589,7 +1587,7 @@ msgid "The group of the file."
 msgstr "Grupa datoteke."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:97
-#: ../src/file-manager/fm-properties-window.c:4794
+#: ../src/file-manager/fm-properties-window.c:4792
 msgid "Permissions"
 msgstr "Ovlašćenja"
 
@@ -1721,39 +1719,39 @@ msgstr "Ne mogu da sačuvam prilagođeno obeležje."
 msgid "Sorry, unable to save custom emblem name."
 msgstr "Ne moge da sačuvam ime prilagođenog obeležja."
 
-#: ../libnautilus-private/nautilus-file-operations.c:173
+#: ../libnautilus-private/nautilus-file-operations.c:182
 msgid "_Skip"
 msgstr "Pre_skoči"
 
-#: ../libnautilus-private/nautilus-file-operations.c:174
+#: ../libnautilus-private/nautilus-file-operations.c:183
 msgid "S_kip All"
 msgstr "P_reskoči sve"
 
-#: ../libnautilus-private/nautilus-file-operations.c:175
+#: ../libnautilus-private/nautilus-file-operations.c:184
 msgid "_Retry"
 msgstr "Po_novi"
 
-#: ../libnautilus-private/nautilus-file-operations.c:176
+#: ../libnautilus-private/nautilus-file-operations.c:185
 msgid "Delete _All"
 msgstr "O_briši sve"
 
-#: ../libnautilus-private/nautilus-file-operations.c:177
+#: ../libnautilus-private/nautilus-file-operations.c:186
 msgid "_Replace"
 msgstr "_Zameni"
 
-#: ../libnautilus-private/nautilus-file-operations.c:178
+#: ../libnautilus-private/nautilus-file-operations.c:187
 msgid "Replace _All"
 msgstr "Zameni _sve"
 
-#: ../libnautilus-private/nautilus-file-operations.c:179
+#: ../libnautilus-private/nautilus-file-operations.c:188
 msgid "_Merge"
 msgstr "_Spoji"
 
-#: ../libnautilus-private/nautilus-file-operations.c:180
+#: ../libnautilus-private/nautilus-file-operations.c:189
 msgid "Merge _All"
 msgstr "S_poji sve"
 
-#: ../libnautilus-private/nautilus-file-operations.c:259
+#: ../libnautilus-private/nautilus-file-operations.c:274
 #, c-format
 msgid "%'d second"
 msgid_plural "%'d seconds"
@@ -1762,8 +1760,8 @@ msgstr[1] "%'d sekunde"
 msgstr[2] "%'d sekundi"
 msgstr[3] "%'d sekunda"
 
-#: ../libnautilus-private/nautilus-file-operations.c:264
-#: ../libnautilus-private/nautilus-file-operations.c:275
+#: ../libnautilus-private/nautilus-file-operations.c:279
+#: ../libnautilus-private/nautilus-file-operations.c:290
 #, c-format
 msgid "%'d minute"
 msgid_plural "%'d minutes"
@@ -1772,7 +1770,7 @@ msgstr[1] "%'d minuta"
 msgstr[2] "%'d minuta"
 msgstr[3] "%'d minut"
 
-#: ../libnautilus-private/nautilus-file-operations.c:274
+#: ../libnautilus-private/nautilus-file-operations.c:289
 #, c-format
 msgid "%'d hour"
 msgid_plural "%'d hours"
@@ -1781,7 +1779,7 @@ msgstr[1] "%'d sata"
 msgstr[2] "%'d sati"
 msgstr[3] "%'d sat"
 
-#: ../libnautilus-private/nautilus-file-operations.c:282
+#: ../libnautilus-private/nautilus-file-operations.c:297
 #, c-format
 msgid "approximately %'d hour"
 msgid_plural "approximately %'d hours"
@@ -1796,15 +1794,15 @@ msgstr[3] "približno %'d sat"
 #. * (e.g. "folder", "plain text") to file type for symbolic link
 #. * to that kind of file (e.g. "link to folder").
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:354
-#: ../libnautilus-private/nautilus-file.c:5592
-#: ../src/file-manager/fm-directory-view.c:9363
+#: ../libnautilus-private/nautilus-file-operations.c:373
+#: ../libnautilus-private/nautilus-file.c:5604
+#: ../src/file-manager/fm-directory-view.c:9377
 #, c-format
 msgid "Link to %s"
 msgstr "Veza na %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:358
+#: ../libnautilus-private/nautilus-file-operations.c:377
 #, c-format
 msgid "Another link to %s"
 msgstr "Dopunska veza na %s"
@@ -1813,25 +1811,25 @@ msgstr "Dopunska veza na %s"
 #. * if there's no way to do that nicely for a
 #. * particular language.
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:374
+#: ../libnautilus-private/nautilus-file-operations.c:393
 #, c-format
 msgid "%'dst link to %s"
 msgstr "%'d. veza na %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:378
+#: ../libnautilus-private/nautilus-file-operations.c:397
 #, c-format
 msgid "%'dnd link to %s"
 msgstr "%'d. veza na %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:382
+#: ../libnautilus-private/nautilus-file-operations.c:401
 #, c-format
 msgid "%'drd link to %s"
 msgstr "%'d. veza na %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:386
+#: ../libnautilus-private/nautilus-file-operations.c:405
 #, c-format
 msgid "%'dth link to %s"
 msgstr "%'d. veza na %s"
@@ -1841,12 +1839,12 @@ msgstr "%'d. veza na %s"
 #. * make some or all of them match.
 #.
 #. localizers: tag used to detect the first copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:425
+#: ../libnautilus-private/nautilus-file-operations.c:444
 msgid " (copy)"
 msgstr " (umnožak)"
 
 #. localizers: tag used to detect the second copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:427
+#: ../libnautilus-private/nautilus-file-operations.c:446
 msgid " (another copy)"
 msgstr " (dodatni umnožak)"
 
@@ -1854,36 +1852,36 @@ msgstr " (dodatni umnožak)"
 #. localizers: tag used to detect the x12th copy of a file
 #. localizers: tag used to detect the x13th copy of a file
 #. localizers: tag used to detect the xxth copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:430
-#: ../libnautilus-private/nautilus-file-operations.c:432
-#: ../libnautilus-private/nautilus-file-operations.c:434
-#: ../libnautilus-private/nautilus-file-operations.c:444
+#: ../libnautilus-private/nautilus-file-operations.c:449
+#: ../libnautilus-private/nautilus-file-operations.c:451
+#: ../libnautilus-private/nautilus-file-operations.c:453
+#: ../libnautilus-private/nautilus-file-operations.c:463
 msgid "th copy)"
 msgstr ". umnožak)"
 
 #. localizers: tag used to detect the x1st copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:437
+#: ../libnautilus-private/nautilus-file-operations.c:456
 msgid "st copy)"
 msgstr ". umnožak)"
 
 #. localizers: tag used to detect the x2nd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:439
+#: ../libnautilus-private/nautilus-file-operations.c:458
 msgid "nd copy)"
 msgstr ". umnožak)"
 
 #. localizers: tag used to detect the x3rd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:441
+#: ../libnautilus-private/nautilus-file-operations.c:460
 msgid "rd copy)"
 msgstr ". umnožak)"
 
 #. localizers: appended to first file copy
-#: ../libnautilus-private/nautilus-file-operations.c:458
+#: ../libnautilus-private/nautilus-file-operations.c:477
 #, c-format
 msgid "%s (copy)%s"
 msgstr "%s (umnožak)%s"
 
 #. localizers: appended to second file copy
-#: ../libnautilus-private/nautilus-file-operations.c:460
+#: ../libnautilus-private/nautilus-file-operations.c:479
 #, c-format
 msgid "%s (another copy)%s"
 msgstr "%s (dodatni umnožak)%s"
@@ -1892,48 +1890,52 @@ msgstr "%s (dodatni umnožak)%s"
 #. localizers: appended to x12th file copy
 #. localizers: appended to x13th file copy
 #. localizers: appended to xxth file copy
-#: ../libnautilus-private/nautilus-file-operations.c:463
-#: ../libnautilus-private/nautilus-file-operations.c:465
-#: ../libnautilus-private/nautilus-file-operations.c:467
-#: ../libnautilus-private/nautilus-file-operations.c:476
+#: ../libnautilus-private/nautilus-file-operations.c:482
+#: ../libnautilus-private/nautilus-file-operations.c:484
+#: ../libnautilus-private/nautilus-file-operations.c:486
+#: ../libnautilus-private/nautilus-file-operations.c:500
 #, c-format
 msgid "%s (%'dth copy)%s"
 msgstr "%s (%'d. umnožak)%s"
 
+#. localizers: if in your language there's no difference between 1st, 2nd, 3rd and nth
+#. * plurals, you can leave the st, nd, rd suffixes out and just make all the translated
+#. * strings look like "%s (copy %'d)%s".
+#.
 #. localizers: appended to x1st file copy
-#: ../libnautilus-private/nautilus-file-operations.c:470
+#: ../libnautilus-private/nautilus-file-operations.c:494
 #, c-format
 msgid "%s (%'dst copy)%s"
 msgstr "%s (%'d. umnožak)%s"
 
 #. localizers: appended to x2nd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:472
+#: ../libnautilus-private/nautilus-file-operations.c:496
 #, c-format
 msgid "%s (%'dnd copy)%s"
 msgstr "%s (%'d. umnožak)%s"
 
 #. localizers: appended to x3rd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:474
+#: ../libnautilus-private/nautilus-file-operations.c:498
 #, c-format
 msgid "%s (%'drd copy)%s"
 msgstr "%s (%'d. umnožak)%s"
 
 #. localizers: opening parentheses to match the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:574
+#: ../libnautilus-private/nautilus-file-operations.c:598
 msgid " ("
 msgstr " ("
 
 #. localizers: opening parentheses of the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:582
+#: ../libnautilus-private/nautilus-file-operations.c:606
 #, c-format
 msgid " (%'d"
 msgstr " (%'d"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1251
+#: ../libnautilus-private/nautilus-file-operations.c:1275
 msgid "Are you sure you want to permanently delete \"%B\" from the trash?"
 msgstr "Sigurno želite da trajno uklonite „%B“ iz smeća?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1254
+#: ../libnautilus-private/nautilus-file-operations.c:1278
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %'d selected item from the "
@@ -1946,16 +1948,16 @@ msgstr[1] "Sigurno želite da trajno uklonite %'d izabrane stavke iz smeća?"
 msgstr[2] "Sigurno želite da trajno uklonite %'d izabranih stavki iz smeća?"
 msgstr[3] "Sigurno želite da trajno uklonite ovu %0d izabranu stavku iz smeća?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1264
-#: ../libnautilus-private/nautilus-file-operations.c:1332
+#: ../libnautilus-private/nautilus-file-operations.c:1288
+#: ../libnautilus-private/nautilus-file-operations.c:1356
 msgid "If you delete an item, it will be permanently lost."
 msgstr "Ukoliko obrišete stavku, ona će biti trajno uklonjena."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1284
+#: ../libnautilus-private/nautilus-file-operations.c:1308
 msgid "Empty all of the items from the trash?"
 msgstr "Da izbacim sve stavke iz smeća?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1288
+#: ../libnautilus-private/nautilus-file-operations.c:1312
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
@@ -1964,17 +1966,17 @@ msgstr ""
 "Primetite da svaku možete posebno izbaciti."
 
 #. Empty Trash menu item
-#: ../libnautilus-private/nautilus-file-operations.c:1293
-#: ../libnautilus-private/nautilus-file-operations.c:2129
-#: ../src/nautilus-places-sidebar.c:2033 ../src/nautilus-trash-bar.c:125
+#: ../libnautilus-private/nautilus-file-operations.c:1317
+#: ../libnautilus-private/nautilus-file-operations.c:2153
+#: ../src/nautilus-places-sidebar.c:2039 ../src/nautilus-trash-bar.c:125
 msgid "Empty _Trash"
 msgstr "Izbaci _smeće"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1320
+#: ../libnautilus-private/nautilus-file-operations.c:1344
 msgid "Are you sure you want to permanently delete \"%B\"?"
 msgstr "Sigurno želite da trajno uklonite „%B“?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1323
+#: ../libnautilus-private/nautilus-file-operations.c:1347
 #, c-format
 msgid "Are you sure you want to permanently delete the %'d selected item?"
 msgid_plural ""
@@ -1984,7 +1986,7 @@ msgstr[1] "Sigurno želite da trajno uklonite %'d izabrane stavke?"
 msgstr[2] "Sigurno želite da trajno uklonite %'d izabranih stavki?"
 msgstr[3] "Sigurno želite da trajno uklonite ovu %0d izabranu stavku?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1366
+#: ../libnautilus-private/nautilus-file-operations.c:1390
 #, c-format
 msgid "%'d file left to delete"
 msgid_plural "%'d files left to delete"
@@ -1993,14 +1995,14 @@ msgstr[1] "Preostale su %'d datoteke za brisanje"
 msgstr[2] "Preostalo je %'d datoteka za brisanje"
 msgstr[3] "Preostala je %'d datoteka za brisanje"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1372
+#: ../libnautilus-private/nautilus-file-operations.c:1396
 msgid "Deleting files"
 msgstr "Uklanjam datoteke"
 
 #. To translators: %T will expand to a time like "2 minutes".
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:1386
+#: ../libnautilus-private/nautilus-file-operations.c:1410
 msgid "%T left"
 msgid_plural "%T left"
 msgstr[0] ""
@@ -2008,15 +2010,15 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: ../libnautilus-private/nautilus-file-operations.c:1453
-#: ../libnautilus-private/nautilus-file-operations.c:1487
-#: ../libnautilus-private/nautilus-file-operations.c:1526
-#: ../libnautilus-private/nautilus-file-operations.c:1609
-#: ../libnautilus-private/nautilus-file-operations.c:2356
+#: ../libnautilus-private/nautilus-file-operations.c:1477
+#: ../libnautilus-private/nautilus-file-operations.c:1511
+#: ../libnautilus-private/nautilus-file-operations.c:1550
+#: ../libnautilus-private/nautilus-file-operations.c:1633
+#: ../libnautilus-private/nautilus-file-operations.c:2380
 msgid "Error while deleting."
 msgstr "Greška pri brisanju."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1457
+#: ../libnautilus-private/nautilus-file-operations.c:1481
 msgid ""
 "Files in the folder \"%B\" cannot be deleted because you do not have "
 "permissions to see them."
@@ -2024,43 +2026,43 @@ msgstr ""
 "Ne mogu da uklonim datoteke iz fascikle „%B“ jer nemate ovlašćenja da je "
 "čitate."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1460
-#: ../libnautilus-private/nautilus-file-operations.c:2415
-#: ../libnautilus-private/nautilus-file-operations.c:3377
+#: ../libnautilus-private/nautilus-file-operations.c:1484
+#: ../libnautilus-private/nautilus-file-operations.c:2439
+#: ../libnautilus-private/nautilus-file-operations.c:3401
 msgid ""
 "There was an error getting information about the files in the folder \"%B\"."
 msgstr "Javila se greška pri dobijanju podataka o datotekama u fascikli „%B“."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1469
-#: ../libnautilus-private/nautilus-file-operations.c:3386
+#: ../libnautilus-private/nautilus-file-operations.c:1493
+#: ../libnautilus-private/nautilus-file-operations.c:3410
 msgid "_Skip files"
 msgstr "_Preskoči datoteke"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1490
+#: ../libnautilus-private/nautilus-file-operations.c:1514
 msgid ""
 "The folder \"%B\" cannot be deleted because you do not have permissions to "
 "read it."
 msgstr "Ne mogu da obrišem fasciklu „%B“ jer nemate ovlašćenja za njeno čitanje."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1493
-#: ../libnautilus-private/nautilus-file-operations.c:2454
-#: ../libnautilus-private/nautilus-file-operations.c:3422
+#: ../libnautilus-private/nautilus-file-operations.c:1517
+#: ../libnautilus-private/nautilus-file-operations.c:2478
+#: ../libnautilus-private/nautilus-file-operations.c:3446
 msgid "There was an error reading the folder \"%B\"."
 msgstr "Javila se greška pri čitanju fascikle „%B“."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1527
+#: ../libnautilus-private/nautilus-file-operations.c:1551
 msgid "Could not remove the folder %B."
 msgstr "Ne mogu da uklonim fasciklu %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1610
+#: ../libnautilus-private/nautilus-file-operations.c:1634
 msgid "There was an error deleting %B."
 msgstr "Javila se greška pri brisanju %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1690
+#: ../libnautilus-private/nautilus-file-operations.c:1714
 msgid "Moving files to trash"
 msgstr "Premeštam datoteke u smeće"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1692
+#: ../libnautilus-private/nautilus-file-operations.c:1716
 #, c-format
 msgid "%'d file left to trash"
 msgid_plural "%'d files left to trash"
@@ -2069,27 +2071,27 @@ msgstr[1] "U smeću su ostale %'d datoteke"
 msgstr[2] "U smeću je ostalo %'d datoteka"
 msgstr[3] "U smeću je ostala %'d datoteka"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1742
+#: ../libnautilus-private/nautilus-file-operations.c:1766
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr "Ne mogu da prebacim datoteku u smeće, želite li da je odmah obrišete?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1743
+#: ../libnautilus-private/nautilus-file-operations.c:1767
 msgid "The file \"%B\" cannot be moved to the trash."
 msgstr "Me mogu da premestim datoteku „%B“ u smeće."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1977
+#: ../libnautilus-private/nautilus-file-operations.c:2001
 msgid "Unable to eject %V"
 msgstr "Ne mogu da izbacim %V"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1979
+#: ../libnautilus-private/nautilus-file-operations.c:2003
 msgid "Unable to unmount %V"
 msgstr "Ne mogu da demontiram %V"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2119
+#: ../libnautilus-private/nautilus-file-operations.c:2143
 msgid "Do you want to empty the trash before you unmount?"
 msgstr "Da li želite da ispraznite smeće pre nego što demontirate putanju?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2121
+#: ../libnautilus-private/nautilus-file-operations.c:2145
 msgid ""
 "In order to regain the free space on this volume the trash must be emptied. "
 "All trashed items on the volume will be permanently lost."
@@ -2097,17 +2099,17 @@ msgstr ""
 "Morate isprazniti smeće kako biste oslobodili prostor na ovom uređaju. Sve "
 "stavke iz smeća će biti trajno izgubljene."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2127
+#: ../libnautilus-private/nautilus-file-operations.c:2151
 msgid "Do _not Empty Trash"
 msgstr "_Ne prazni Smeće"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2226
+#: ../libnautilus-private/nautilus-file-operations.c:2250
 #, c-format
 msgid "Unable to mount %s"
-msgstr "Ne mogu da priključim %s"
+msgstr "Ne mogu da montiram %s"
 
 # msgstr3 je mogao i bez %’d, ali msgfmt prijavljuje grešku :(
-#: ../libnautilus-private/nautilus-file-operations.c:2303
+#: ../libnautilus-private/nautilus-file-operations.c:2327
 #, c-format
 msgid "Preparing to copy %'d file (%S)"
 msgid_plural "Preparing to copy %'d files (%S)"
@@ -2116,7 +2118,7 @@ msgstr[1] "Priprema za umnožavanje %'d datoteke (%S)"
 msgstr[2] "Priprema za umnožavanje %'d datoteka (%S)"
 msgstr[3] "Priprema za umnožavanje %'d datoteke (%S)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2309
+#: ../libnautilus-private/nautilus-file-operations.c:2333
 #, c-format
 msgid "Preparing to move %'d file (%S)"
 msgid_plural "Preparing to move %'d files (%S)"
@@ -2125,7 +2127,7 @@ msgstr[1] "Priprema za premeštanje %'d datoteke (%S)"
 msgstr[2] "Priprema za premeštanje %'d datoteka (%S)"
 msgstr[3] "Priprema za premeštanje %'d datoteke (%S)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2315
+#: ../libnautilus-private/nautilus-file-operations.c:2339
 #, c-format
 msgid "Preparing to delete %'d file (%S)"
 msgid_plural "Preparing to delete %'d files (%S)"
@@ -2134,7 +2136,7 @@ msgstr[1] "Priprema za brisanje %'d datoteke (%S)"
 msgstr[2] "Priprema za brisanje %'d datoteka (%S)"
 msgstr[3] "Priprema za brisanje %'d datoteke (%S)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2321
+#: ../libnautilus-private/nautilus-file-operations.c:2345
 #, c-format
 msgid "Preparing to trash %'d file"
 msgid_plural "Preparing to trash %'d files"
@@ -2143,68 +2145,68 @@ msgstr[1] "Priprema za slanje %'d datoteke u smeće"
 msgstr[2] "Priprema za slanje %'d datoteka u smeće"
 msgstr[3] "Priprema za slanje %0d datoteke u smeće"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2352
-#: ../libnautilus-private/nautilus-file-operations.c:3243
-#: ../libnautilus-private/nautilus-file-operations.c:3369
-#: ../libnautilus-private/nautilus-file-operations.c:3414
+#: ../libnautilus-private/nautilus-file-operations.c:2376
+#: ../libnautilus-private/nautilus-file-operations.c:3267
+#: ../libnautilus-private/nautilus-file-operations.c:3393
+#: ../libnautilus-private/nautilus-file-operations.c:3438
 msgid "Error while copying."
 msgstr "Greška pri umnožavanju."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2354
-#: ../libnautilus-private/nautilus-file-operations.c:3367
-#: ../libnautilus-private/nautilus-file-operations.c:3412
+#: ../libnautilus-private/nautilus-file-operations.c:2378
+#: ../libnautilus-private/nautilus-file-operations.c:3391
+#: ../libnautilus-private/nautilus-file-operations.c:3436
 msgid "Error while moving."
 msgstr "Greška pri premeštanju."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2358
+#: ../libnautilus-private/nautilus-file-operations.c:2382
 msgid "Error while moving files to trash."
 msgstr "Greška pri premeštanju datoteka u smeće."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2412
+#: ../libnautilus-private/nautilus-file-operations.c:2436
 msgid ""
 "Files in the folder \"%B\" cannot be handled because you do not have "
 "permissions to see them."
 msgstr ""
 "Ne mogu da umnožim datoteku „%B“ zato što nemate ovlašćenja za njen prikaz."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2451
+#: ../libnautilus-private/nautilus-file-operations.c:2475
 msgid ""
 "The folder \"%B\" cannot be handled because you do not have permissions to "
 "read it."
 msgstr ""
 "Ne mogu da umnožim datoteku „%B“ zato što nemate ovlašćenja da je čitate."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2528
+#: ../libnautilus-private/nautilus-file-operations.c:2552
 msgid ""
 "The file \"%B\" cannot be handled because you do not have permissions to "
 "read it."
 msgstr ""
 "Ne mogu da umnožim datoteku „%B“ zato što nemate ovlašćenja da je čitate."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2531
+#: ../libnautilus-private/nautilus-file-operations.c:2555
 msgid "There was an error getting information about \"%B\"."
 msgstr "Greška pri dobijanju podataka o „%B“."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2631
-#: ../libnautilus-private/nautilus-file-operations.c:2673
-#: ../libnautilus-private/nautilus-file-operations.c:2706
-#: ../libnautilus-private/nautilus-file-operations.c:2732
+#: ../libnautilus-private/nautilus-file-operations.c:2655
+#: ../libnautilus-private/nautilus-file-operations.c:2697
+#: ../libnautilus-private/nautilus-file-operations.c:2730
+#: ../libnautilus-private/nautilus-file-operations.c:2756
 msgid "Error while copying to \"%B\"."
 msgstr "Greška pri umnožavanju u „%B“."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2635
+#: ../libnautilus-private/nautilus-file-operations.c:2659
 msgid "You do not have permissions to access the destination folder."
 msgstr "Nemate ovlašćenja za pristup ciljnoj fascikli."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2637
+#: ../libnautilus-private/nautilus-file-operations.c:2661
 msgid "There was an error getting information about the destination."
 msgstr "Javila se greška pri u dobijanju podataka o odredištu."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2674
+#: ../libnautilus-private/nautilus-file-operations.c:2698
 msgid "The destination is not a folder."
 msgstr "Odredište nije fascikla."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2707
+#: ../libnautilus-private/nautilus-file-operations.c:2731
 msgid ""
 "There is not enough space on the destination. Try to remove files to make "
 "space."
@@ -2212,28 +2214,28 @@ msgstr "Nema dovoljno mesta u odredištu. Pokušajte da uklonite neke datoteke."
 
 # Šta je pisac hteo da kaže? Pretpostavljam:
 # Dostupno je 15 mb, ali je neophodno 100 mb.
-#: ../libnautilus-private/nautilus-file-operations.c:2709
+#: ../libnautilus-private/nautilus-file-operations.c:2733
 #, c-format
 msgid "There is %S available, but %S is required."
 msgstr "Dostupno je %S, neophodno je %S."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2733
+#: ../libnautilus-private/nautilus-file-operations.c:2757
 msgid "The destination is read-only."
 msgstr "Odredište možete samo čitati."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2792
+#: ../libnautilus-private/nautilus-file-operations.c:2816
 msgid "Moving \"%B\" to \"%B\""
 msgstr "Premeštam „%B“ u „%B“"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2793
+#: ../libnautilus-private/nautilus-file-operations.c:2817
 msgid "Copying \"%B\" to \"%B\""
 msgstr "Umnožavam „%B“ u „%B“"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2798
+#: ../libnautilus-private/nautilus-file-operations.c:2822
 msgid "Duplicating \"%B\""
 msgstr "Udvostručujem „%B“"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2806
+#: ../libnautilus-private/nautilus-file-operations.c:2830
 msgid "Moving %'d file (in \"%B\") to \"%B\""
 msgid_plural "Moving %'d files (in \"%B\") to \"%B\""
 msgstr[0] "Premeštam %'d datoteku (iz „%B“) u „%B“"
@@ -2241,7 +2243,7 @@ msgstr[1] "Premeštam %'d datoteke (iz „%B“) u „%B“"
 msgstr[2] "Premeštam %'d datoteka (iz „%B“) u „%B“"
 msgstr[3] "Premeštam %0d datoteku (iz „%B“) u „%B“"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2810
+#: ../libnautilus-private/nautilus-file-operations.c:2834
 msgid "Copying %'d file (in \"%B\") to \"%B\""
 msgid_plural "Copying %'d files (in \"%B\") to \"%B\""
 msgstr[0] "Umnožavam %'d datoteku (iz „%B“) u „%B“"
@@ -2249,7 +2251,7 @@ msgstr[1] "Umnožavam %'d datoteke (iz „%B“) u „%B“"
 msgstr[2] "Umnožavam %'d datoteka (iz „%B“) u „%B“"
 msgstr[3] "Umnožavam %0d datoteku (iz „%B“) u „%B“"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2818
+#: ../libnautilus-private/nautilus-file-operations.c:2842
 msgid "Duplicating %'d file (in \"%B\")"
 msgid_plural "Duplicating %'d files (in \"%B\")"
 msgstr[0] "Udvostručujem %'d datoteku (iz „%B“)"
@@ -2257,7 +2259,7 @@ msgstr[1] "Udvostručujem %'d datoteke (iz „%B“)"
 msgstr[2] "Udvostručujem %'d datoteka (iz „%B“)"
 msgstr[3] "Udvostručujem %0d datoteku (iz „%B“)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2828
+#: ../libnautilus-private/nautilus-file-operations.c:2852
 msgid "Moving %'d file to \"%B\""
 msgid_plural "Moving %'d files to \"%B\""
 msgstr[0] "Premeštam %'d datoteku u „%B“"
@@ -2265,7 +2267,7 @@ msgstr[1] "Premeštam %'d datoteke u „%B“"
 msgstr[2] "Premeštam %'d datoteka u „%B“"
 msgstr[3] "Premeštam %0d datoteku u „%B“"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2832
+#: ../libnautilus-private/nautilus-file-operations.c:2856
 msgid "Copying %'d file to \"%B\""
 msgid_plural "Copying %'d files to \"%B\""
 msgstr[0] "Umnožavam %'d datoteku u „%B“"
@@ -2273,7 +2275,7 @@ msgstr[1] "Umnožavam %'d datoteke u „%B“"
 msgstr[2] "Umnožavam %'d datoteka u „%B“"
 msgstr[3] "Umnožavam %0d datoteku u „%B“"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2838
+#: ../libnautilus-private/nautilus-file-operations.c:2862
 #, c-format
 msgid "Duplicating %'d file"
 msgid_plural "Duplicating %'d files"
@@ -2283,7 +2285,7 @@ msgstr[2] "Udvostručujem %'d datoteka"
 msgstr[3] "Udvostručujem %0d datoteku"
 
 #. To translators: %S will expand to a size like "2 bytes" or "3 MB", so something like "4 kb of 4 MB"
-#: ../libnautilus-private/nautilus-file-operations.c:2858
+#: ../libnautilus-private/nautilus-file-operations.c:2882
 #, c-format
 msgid "%S of %S"
 msgstr "%S od %S"
@@ -2293,9 +2295,7 @@ msgstr "%S od %S"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:2869
-#, fuzzy
-#| msgid "%S of %S — %T left (%S/sec)"
+#: ../libnautilus-private/nautilus-file-operations.c:2893
 msgid "%S of %S — %T left (%S/sec)"
 msgid_plural "%S of %S — %T left (%S/sec)"
 msgstr[0] "%S od %S — preostalo %T (%S/sek)"
@@ -2303,7 +2303,7 @@ msgstr[1] "%S od %S — preostalo %T (%S/sek)"
 msgstr[2] "%S od %S — preostalo %T (%S/sek)"
 msgstr[3] "%S od %S — preostalo %T (%S/sek)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3247
+#: ../libnautilus-private/nautilus-file-operations.c:3271
 msgid ""
 "The folder \"%B\" cannot be copied because you do not have permissions to "
 "create it in the destination."
@@ -2311,11 +2311,11 @@ msgstr ""
 "Ne mogu da umnožim fasciklu „%B“ zato što nemate ovlašćenja da je napravite u "
 "odredištu."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3250
+#: ../libnautilus-private/nautilus-file-operations.c:3274
 msgid "There was an error creating the folder \"%B\"."
 msgstr "Došlo je do greške pri pravljenju fascikle „%B“."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3374
+#: ../libnautilus-private/nautilus-file-operations.c:3398
 msgid ""
 "Files in the folder \"%B\" cannot be copied because you do not have "
 "permissions to see them."
@@ -2323,66 +2323,79 @@ msgstr ""
 "Ne mogu da umnožim datoteke u fasciklu „%B“ zato što nemate ovlašćenja za "
 "njihov prikaz."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3419
+#: ../libnautilus-private/nautilus-file-operations.c:3443
 msgid ""
 "The folder \"%B\" cannot be copied because you do not have permissions to "
 "read it."
 msgstr ""
 "Ne mogu da umnožim fasciklu „%B“ zato što nemate ovlašćenja da je čitate."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3464
-#: ../libnautilus-private/nautilus-file-operations.c:3989
-#: ../libnautilus-private/nautilus-file-operations.c:4560
+#: ../libnautilus-private/nautilus-file-operations.c:3488
+#: ../libnautilus-private/nautilus-file-operations.c:4106
+#: ../libnautilus-private/nautilus-file-operations.c:4687
 msgid "Error while moving \"%B\"."
 msgstr "Greška pri premeštanju „%B“."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3465
+#: ../libnautilus-private/nautilus-file-operations.c:3489
 msgid "Could not remove the source folder."
 msgstr "Ne mogu da uklonim izvornu fasciklu."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3550
-#: ../libnautilus-private/nautilus-file-operations.c:3591
-#: ../libnautilus-private/nautilus-file-operations.c:3991
-#: ../libnautilus-private/nautilus-file-operations.c:4065
+#: ../libnautilus-private/nautilus-file-operations.c:3574
+#: ../libnautilus-private/nautilus-file-operations.c:3615
+#: ../libnautilus-private/nautilus-file-operations.c:4108
+#: ../libnautilus-private/nautilus-file-operations.c:4182
 msgid "Error while copying \"%B\"."
 msgstr "Greška pri umnožavanju „%B“."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3551
+#: ../libnautilus-private/nautilus-file-operations.c:3575
 #, c-format
 msgid "Could not remove files from the already existing folder %F."
 msgstr "Ne mogu da uklonim datoteke iz već postojeće fascikle %F."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3592
+#: ../libnautilus-private/nautilus-file-operations.c:3616
 #, c-format
 msgid "Could not remove the already existing file %F."
 msgstr "Ne mogu da uklonim već postojeću datoteku „%F“."
 
 # Šaljivo, bat it vil du :)
 #. the run_warning() frees all strings passed in automatically
-#: ../libnautilus-private/nautilus-file-operations.c:3763
-#: ../libnautilus-private/nautilus-file-operations.c:4386
+#: ../libnautilus-private/nautilus-file-operations.c:3833
+#: ../libnautilus-private/nautilus-file-operations.c:4513
 msgid "You cannot move a folder into itself."
 msgstr "Ne možete premestiti fasciklu u sebe samu."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3764
-#: ../libnautilus-private/nautilus-file-operations.c:4387
+#: ../libnautilus-private/nautilus-file-operations.c:3834
+#: ../libnautilus-private/nautilus-file-operations.c:4514
 msgid "You cannot copy a folder into itself."
 msgstr "Ne možete umnožiti fasciklu u sebe samu."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3765
-#: ../libnautilus-private/nautilus-file-operations.c:4388
+#: ../libnautilus-private/nautilus-file-operations.c:3835
+#: ../libnautilus-private/nautilus-file-operations.c:4515
 msgid "The destination folder is inside the source folder."
 msgstr "Odredišna fascikla je unutar polazne fascikle."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3887
-#: ../libnautilus-private/nautilus-file-operations.c:4469
+#. the run_warning() frees all strings passed in automatically
+#: ../libnautilus-private/nautilus-file-operations.c:3867
+msgid "You cannot move a file over itself."
+msgstr "Ne možete premestiti datoteku u istu datoteku."
+
+#: ../libnautilus-private/nautilus-file-operations.c:3868
+msgid "You cannot copy a file over itself."
+msgstr "Ne možete umnožiti datoteku u istu datoteku."
+
+#: ../libnautilus-private/nautilus-file-operations.c:3869
+msgid "The source file would be overwritten by the destination."
+msgstr "Ovom datotekom ćete prepisati izvornu datoteku."
+
+#: ../libnautilus-private/nautilus-file-operations.c:4004
+#: ../libnautilus-private/nautilus-file-operations.c:4596
 msgid ""
 "A folder named \"%B\" already exists.  Do you want to merge the source "
 "folder?"
 msgstr ""
 "Već postoji fascikla „%B“.  Želite li da spojite sa izvornom fasciklom?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3889
+#: ../libnautilus-private/nautilus-file-operations.c:4006
 msgid ""
 "The source folder already exists in \"%B\".  Merging will ask for "
 "confirmation before replacing any files in the folder that conflict with the "
@@ -2391,13 +2404,13 @@ msgstr ""
 "Već postoji fascikla „%B“.  Spajanje će tražiti dozvolu za zamenu postojećih "
 "datoteka i fascikla koje se podudaraju sa novim."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3894
-#: ../libnautilus-private/nautilus-file-operations.c:4476
+#: ../libnautilus-private/nautilus-file-operations.c:4011
+#: ../libnautilus-private/nautilus-file-operations.c:4603
 msgid "A folder named \"%B\" already exists.  Do you want to replace it?"
 msgstr "Već postoji fascikla „%B“.  Želite li da je zamenite?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3896
-#: ../libnautilus-private/nautilus-file-operations.c:4478
+#: ../libnautilus-private/nautilus-file-operations.c:4013
+#: ../libnautilus-private/nautilus-file-operations.c:4605
 #, c-format
 msgid ""
 "The folder already exists in \"%F\".  Replacing it will remove all files in "
@@ -2406,34 +2419,34 @@ msgstr ""
 "Fascikla već postoji u „%F“.  Njena zamena će ukloniti sve datoteke u "
 "fascikli."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3901
-#: ../libnautilus-private/nautilus-file-operations.c:4483
+#: ../libnautilus-private/nautilus-file-operations.c:4018
+#: ../libnautilus-private/nautilus-file-operations.c:4610
 msgid "A file named \"%B\" already exists.  Do you want to replace it?"
 msgstr "Već postoji datoteka „%B“.  Želite li da je zamenite?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3903
-#: ../libnautilus-private/nautilus-file-operations.c:4485
+#: ../libnautilus-private/nautilus-file-operations.c:4020
+#: ../libnautilus-private/nautilus-file-operations.c:4612
 #, c-format
 msgid ""
 "The file already exists in \"%F\".  Replacing it will overwrite its content."
 msgstr ""
 "Datoteka već postoji u „%F“.  Njena zamena će prepisati postojeći sadržaj."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3993
+#: ../libnautilus-private/nautilus-file-operations.c:4110
 #, c-format
 msgid "Could not remove the already existing file with the same name in %F."
 msgstr "Ne mogu da uklonim već postojeću datoteku sa istim nazivom u %F."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4066
+#: ../libnautilus-private/nautilus-file-operations.c:4183
 #, c-format
 msgid "There was an error copying the file into %F."
 msgstr "Došlo je do greške pri umnožavanju datoteke u %F."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4295
+#: ../libnautilus-private/nautilus-file-operations.c:4422
 msgid "Preparing to Move to \"%B\""
 msgstr "Priprema za premeštanje u „%B“"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4299
+#: ../libnautilus-private/nautilus-file-operations.c:4426
 #, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
@@ -2442,7 +2455,7 @@ msgstr[1] "Priprema za premeštanje %'d datoteke"
 msgstr[2] "Priprema za premeštanje %'d datoteka"
 msgstr[3] "Priprema za premeštanje %0d datoteke"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4471
+#: ../libnautilus-private/nautilus-file-operations.c:4598
 msgid ""
 "The source folder already exists in \"%B\".  Merging will ask for "
 "confirmation before replacing any files in the folder that conflict with the "
@@ -2451,16 +2464,16 @@ msgstr ""
 "Već postoji fascikla „%B“.  Spajanje će tražiti dozvolu za zamenu postojećih "
 "datoteka i fascikla koje se podudaraju sa novim."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4561
+#: ../libnautilus-private/nautilus-file-operations.c:4688
 #, c-format
 msgid "There was an error moving the file into %F."
 msgstr "Došlo je do greške pri premeštanju u %F."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4836
+#: ../libnautilus-private/nautilus-file-operations.c:4963
 msgid "Creating links in \"%B\""
 msgstr "Pravim veze u „%B“"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4840
+#: ../libnautilus-private/nautilus-file-operations.c:4967
 #, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
@@ -2469,77 +2482,83 @@ msgstr[1] "Pravim veze ka %'d datoteke"
 msgstr[2] "Pravim veze ka %'d datoteka"
 msgstr[3] "Pravim vezu ka %0d datoteci"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4938
+#: ../libnautilus-private/nautilus-file-operations.c:5096
 msgid "Error while creating link to %B."
 msgstr "Greška pri pravljenju veze ka „%B“."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4940
+#: ../libnautilus-private/nautilus-file-operations.c:5098
 msgid "Symbolic links only supported for local files"
 msgstr "Simboličke veze su moguće samo nad lokalnim datotekama"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4943
+#: ../libnautilus-private/nautilus-file-operations.c:5101
 msgid "The target doesn't support symbolic links."
 msgstr "Odredište ne podržava simboličke veze."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4946
+#: ../libnautilus-private/nautilus-file-operations.c:5104
 #, c-format
 msgid "There was an error creating the symlink in %F."
 msgstr "Došlo je do greške pri obrazovanju simboličke veze u %F."
 
-#: ../libnautilus-private/nautilus-file-operations.c:5240
+#: ../libnautilus-private/nautilus-file-operations.c:5398
 msgid "Setting permissions"
 msgstr "Postavljam ovlašćenja"
 
 #. localizers: the initial name of a new folder
-#: ../libnautilus-private/nautilus-file-operations.c:5489
+#: ../libnautilus-private/nautilus-file-operations.c:5647
 msgid "untitled folder"
 msgstr "nova fascikla"
 
 #. localizers: the initial name of a new empty file
-#: ../libnautilus-private/nautilus-file-operations.c:5497
+#: ../libnautilus-private/nautilus-file-operations.c:5655
 msgid "new file"
 msgstr "nova datoteka"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5645
+#: ../libnautilus-private/nautilus-file-operations.c:5803
 msgid "Error while creating directory %B."
 msgstr "Greška pri obrazovanju direktorijuma %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:5647
+#: ../libnautilus-private/nautilus-file-operations.c:5805
 msgid "Error while creating file %B."
 msgstr "Greška pri obrazovanju datoteke %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:5649
+#: ../libnautilus-private/nautilus-file-operations.c:5807
 #, c-format
 msgid "There was an error creating the directory in %F."
 msgstr "Došlo je do greške pro obrazovanju direktorijuma u %F."
 
-#: ../libnautilus-private/nautilus-file.c:885
-#: ../libnautilus-private/nautilus-vfs-file.c:264
-#, c-format
-msgid "This file cannot be mounted"
-msgstr "Ne mogu da priključim datoteku"
+#: ../libnautilus-private/nautilus-file-operations.c:6108
+#: ../libnautilus-private/nautilus-file-operations.c:6149
+#: ../libnautilus-private/nautilus-file-operations.c:6184
+#: ../libnautilus-private/nautilus-file-operations.c:6219
+msgid "Unable to mark launcher trusted (executable)"
+msgstr "Ne mogu da označim pokretač kao poverljiv"
 
-#: ../libnautilus-private/nautilus-file.c:1297
+#: ../libnautilus-private/nautilus-file.c:897
+#: ../libnautilus-private/nautilus-vfs-file.c:264
+msgid "This file cannot be mounted"
+msgstr "Ne mogu da montiram datoteku"
+
+#: ../libnautilus-private/nautilus-file.c:1309
 #, c-format
 msgid "Slashes are not allowed in filenames"
 msgstr "Kose crte nisu dozvoljene u nazivu datoteka"
 
-#: ../libnautilus-private/nautilus-file.c:1315
+#: ../libnautilus-private/nautilus-file.c:1327
 #, c-format
 msgid "File not found"
 msgstr "Datoteka nije nađena"
 
-#: ../libnautilus-private/nautilus-file.c:1343
+#: ../libnautilus-private/nautilus-file.c:1355
 #, c-format
 msgid "Toplevel files cannot be renamed"
 msgstr "Ne možete da preimenujete datoteke najvišeg nivoa"
 
-#: ../libnautilus-private/nautilus-file.c:1366
+#: ../libnautilus-private/nautilus-file.c:1378
 #, c-format
 msgid "Unable to rename desktop icon"
 msgstr "Ne mogu da preimenujem desktop ikonicu"
 
-#: ../libnautilus-private/nautilus-file.c:1403
+#: ../libnautilus-private/nautilus-file.c:1415
 #, c-format
 msgid "Unable to rename desktop file"
 msgstr "Ne mogu da preimenujem desktop datoteku"
@@ -2559,65 +2578,65 @@ msgstr "Ne mogu da preimenujem desktop datoteku"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: ../libnautilus-private/nautilus-file.c:3678
+#: ../libnautilus-private/nautilus-file.c:3727
 msgid "today at 00:00:00 PM"
 msgstr "danas u 14:33:24"
 
-#: ../libnautilus-private/nautilus-file.c:3679
-#: ../src/nautilus-file-management-properties.c:471
+#: ../libnautilus-private/nautilus-file.c:3728
+#: ../src/nautilus-file-management-properties.c:472
 msgid "today at %-I:%M:%S %p"
 msgstr "danas u %-H:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:3681
+#: ../libnautilus-private/nautilus-file.c:3730
 msgid "today at 00:00 PM"
 msgstr "danas u 14:33"
 
-#: ../libnautilus-private/nautilus-file.c:3682
+#: ../libnautilus-private/nautilus-file.c:3731
 msgid "today at %-I:%M %p"
 msgstr "danas u %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3684
+#: ../libnautilus-private/nautilus-file.c:3733
 msgid "today, 00:00 PM"
 msgstr "danas, 14:33"
 
-#: ../libnautilus-private/nautilus-file.c:3685
+#: ../libnautilus-private/nautilus-file.c:3734
 msgid "today, %-I:%M %p"
 msgstr "danas, %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3687
-#: ../libnautilus-private/nautilus-file.c:3688
+#: ../libnautilus-private/nautilus-file.c:3736
+#: ../libnautilus-private/nautilus-file.c:3737
 msgid "today"
 msgstr "danas"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: ../libnautilus-private/nautilus-file.c:3697
+#: ../libnautilus-private/nautilus-file.c:3746
 msgid "yesterday at 00:00:00 PM"
 msgstr "juče u 14:12:34"
 
-#: ../libnautilus-private/nautilus-file.c:3698
+#: ../libnautilus-private/nautilus-file.c:3747
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "juče u %-H:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:3700
+#: ../libnautilus-private/nautilus-file.c:3749
 msgid "yesterday at 00:00 PM"
 msgstr "juče u 14:22"
 
-#: ../libnautilus-private/nautilus-file.c:3701
+#: ../libnautilus-private/nautilus-file.c:3750
 msgid "yesterday at %-I:%M %p"
 msgstr "juče u %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3703
+#: ../libnautilus-private/nautilus-file.c:3752
 msgid "yesterday, 00:00 PM"
 msgstr "juče, 14:22"
 
-#: ../libnautilus-private/nautilus-file.c:3704
+#: ../libnautilus-private/nautilus-file.c:3753
 msgid "yesterday, %-I:%M %p"
 msgstr "juče, %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3706
-#: ../libnautilus-private/nautilus-file.c:3707
+#: ../libnautilus-private/nautilus-file.c:3755
+#: ../libnautilus-private/nautilus-file.c:3756
 msgid "yesterday"
 msgstr "juče"
 
@@ -2626,88 +2645,88 @@ msgstr "juče"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: ../libnautilus-private/nautilus-file.c:3718
+#: ../libnautilus-private/nautilus-file.c:3767
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "sreda, 23. septembar 2003. u 14:34:27"
 
-#: ../libnautilus-private/nautilus-file.c:3719
+#: ../libnautilus-private/nautilus-file.c:3768
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %-d. %B %Y. u %-H:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:3721
+#: ../libnautilus-private/nautilus-file.c:3770
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "sre, 23. sep 2003. u 14:34:27"
 
-#: ../libnautilus-private/nautilus-file.c:3722
+#: ../libnautilus-private/nautilus-file.c:3771
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %-d. %b %Y. u %-H:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:3724
+#: ../libnautilus-private/nautilus-file.c:3773
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "sre, 23. sep 2003. u 14:34"
 
-#: ../libnautilus-private/nautilus-file.c:3725
+#: ../libnautilus-private/nautilus-file.c:3774
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %-d. %b %Y. u %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3727
+#: ../libnautilus-private/nautilus-file.c:3776
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "23. sep 2003. u 14:34"
 
-#: ../libnautilus-private/nautilus-file.c:3728
+#: ../libnautilus-private/nautilus-file.c:3777
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d. %b %Y. u %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3730
+#: ../libnautilus-private/nautilus-file.c:3779
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "23. sep 2003, 14:24"
 
-#: ../libnautilus-private/nautilus-file.c:3731
+#: ../libnautilus-private/nautilus-file.c:3780
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d. %b %Y, %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3733
+#: ../libnautilus-private/nautilus-file.c:3782
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3734
+#: ../libnautilus-private/nautilus-file.c:3783
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%-d.%m.'%y, %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3736
+#: ../libnautilus-private/nautilus-file.c:3785
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: ../libnautilus-private/nautilus-file.c:3737
+#: ../libnautilus-private/nautilus-file.c:3786
 msgid "%m/%d/%y"
 msgstr "%-d.%m.'%y."
 
-#: ../libnautilus-private/nautilus-file.c:4350
+#: ../libnautilus-private/nautilus-file.c:4399
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "Nemate dozvolu da postavite ovlašćenja"
 
-#: ../libnautilus-private/nautilus-file.c:4658
+#: ../libnautilus-private/nautilus-file.c:4684
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "Nemate dozvolu da menjate vlasništvo"
 
-#: ../libnautilus-private/nautilus-file.c:4676
+#: ../libnautilus-private/nautilus-file.c:4702
 #, c-format
 msgid "Specified owner '%s' doesn't exist"
 msgstr "Izabrani vlasnik „%s“ ne postoji"
 
-#: ../libnautilus-private/nautilus-file.c:4940
+#: ../libnautilus-private/nautilus-file.c:4951
 #, c-format
 msgid "Not allowed to set group"
 msgstr "Nemate dozvolu da postavite grupu"
 
-#: ../libnautilus-private/nautilus-file.c:4958
+#: ../libnautilus-private/nautilus-file.c:4969
 #, c-format
 msgid "Specified group '%s' doesn't exist"
 msgstr "Izabrana grupa „%s“ ne postoji"
 
-#: ../libnautilus-private/nautilus-file.c:5101
+#: ../libnautilus-private/nautilus-file.c:5113
 #: ../src/file-manager/fm-directory-view.c:2202
 #, c-format
 msgid "%'u item"
@@ -2717,7 +2736,7 @@ msgstr[1] "%'u stavke"
 msgstr[2] "%'u stavki"
 msgstr[3] "%'u stavka"
 
-#: ../libnautilus-private/nautilus-file.c:5102
+#: ../libnautilus-private/nautilus-file.c:5114
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
@@ -2726,7 +2745,7 @@ msgstr[1] "%'u fascikle"
 msgstr[2] "%'u fascikli"
 msgstr[3] "%'u fascikla"
 
-#: ../libnautilus-private/nautilus-file.c:5103
+#: ../libnautilus-private/nautilus-file.c:5115
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -2736,255 +2755,251 @@ msgstr[2] "%'u datoteka"
 msgstr[3] "%'u datoteka"
 
 #. Do this in a separate stage so that we don't have to put G_GUINT64_FORMAT in the translated string
-#: ../libnautilus-private/nautilus-file.c:5182
+#: ../libnautilus-private/nautilus-file.c:5194
 msgid "%"
 msgstr "%"
 
-#: ../libnautilus-private/nautilus-file.c:5183
+#: ../libnautilus-private/nautilus-file.c:5195
 #, c-format
 msgid "%s (%s bytes)"
 msgstr "%s (%s bajta)"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:5487
-#: ../libnautilus-private/nautilus-file.c:5503
+#: ../libnautilus-private/nautilus-file.c:5499
+#: ../libnautilus-private/nautilus-file.c:5515
 msgid "? items"
 msgstr "? stavki"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:5493
+#: ../libnautilus-private/nautilus-file.c:5505
 msgid "? bytes"
 msgstr "? bajtova"
 
-#: ../libnautilus-private/nautilus-file.c:5508
+#: ../libnautilus-private/nautilus-file.c:5520
 msgid "unknown type"
 msgstr "nepoznat tip"
 
-#: ../libnautilus-private/nautilus-file.c:5511
+#: ../libnautilus-private/nautilus-file.c:5523
 msgid "unknown MIME type"
 msgstr "nepoznat MIME tip"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:5517
+#: ../libnautilus-private/nautilus-file.c:5529
 #: ../src/file-manager/fm-properties-window.c:1322
 msgid "unknown"
 msgstr "nepoznato"
 
-#: ../libnautilus-private/nautilus-file.c:5566
+#: ../libnautilus-private/nautilus-file.c:5578
 msgid "program"
 msgstr "program"
 
-#: ../libnautilus-private/nautilus-file.c:5586
+#: ../libnautilus-private/nautilus-file.c:5598
 msgid "link"
 msgstr "veza"
 
 # Ne pokazuje na pravo mesto
-#: ../libnautilus-private/nautilus-file.c:5608
+#: ../libnautilus-private/nautilus-file.c:5620
 msgid "link (broken)"
 msgstr "veza (neispravna)"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:68
+#: ../libnautilus-private/nautilus-global-preferences.c:67
 msgid "_Always"
 msgstr "_Uvek"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:69
+#: ../libnautilus-private/nautilus-global-preferences.c:68
 msgid "_Local File Only"
 msgstr "_Samo lokalne datoteke"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:70
+#: ../libnautilus-private/nautilus-global-preferences.c:69
 msgid "_Never"
 msgstr "_Nikad"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:75
+#: ../libnautilus-private/nautilus-global-preferences.c:74
 #, no-c-format
 msgid "25%"
 msgstr "25%"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:77
+#: ../libnautilus-private/nautilus-global-preferences.c:76
 #, no-c-format
 msgid "50%"
 msgstr "50%"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:79
+#: ../libnautilus-private/nautilus-global-preferences.c:78
 #, no-c-format
 msgid "75%"
 msgstr "75%"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:81
+#: ../libnautilus-private/nautilus-global-preferences.c:80
 #, no-c-format
 msgid "100%"
 msgstr "100%"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:83
+#: ../libnautilus-private/nautilus-global-preferences.c:82
 #, no-c-format
 msgid "150%"
 msgstr "150%"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:85
+#: ../libnautilus-private/nautilus-global-preferences.c:84
 #, no-c-format
 msgid "200%"
 msgstr "200%"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:87
+#: ../libnautilus-private/nautilus-global-preferences.c:86
 #, no-c-format
 msgid "400%"
 msgstr "400%"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:91
+#: ../libnautilus-private/nautilus-global-preferences.c:90
 msgid "100 K"
 msgstr "100 KB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:92
+#: ../libnautilus-private/nautilus-global-preferences.c:91
 msgid "500 K"
 msgstr "500 KB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:93
+#: ../libnautilus-private/nautilus-global-preferences.c:92
 msgid "1 MB"
 msgstr "1 MB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:94
+#: ../libnautilus-private/nautilus-global-preferences.c:93
 msgid "3 MB"
 msgstr "3 MB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:95
+#: ../libnautilus-private/nautilus-global-preferences.c:94
 msgid "5 MB"
 msgstr "5 MB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:96
+#: ../libnautilus-private/nautilus-global-preferences.c:95
 msgid "10 MB"
 msgstr "10 MB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:97
+#: ../libnautilus-private/nautilus-global-preferences.c:96
 msgid "100 MB"
 msgstr "100 MB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:98
+#: ../libnautilus-private/nautilus-global-preferences.c:97
 msgid "1 GB"
 msgstr "1 GB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:99
-#, fuzzy
-#| msgid "1 GB"
+#: ../libnautilus-private/nautilus-global-preferences.c:98
 msgid "2 GB"
-msgstr "1 GB"
+msgstr "2 GB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:100
-#, fuzzy
-#| msgid "1 GB"
+#: ../libnautilus-private/nautilus-global-preferences.c:99
 msgid "4 GB"
-msgstr "1 GB"
+msgstr "4 GB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:105
+#: ../libnautilus-private/nautilus-global-preferences.c:104
 msgid "Activate items with a _single click"
 msgstr "Pokreni stavke pomoću _jednog klika"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:109
+#: ../libnautilus-private/nautilus-global-preferences.c:108
 msgid "Activate items with a _double click"
 msgstr "Pokreni stavke pomoću _dva klika"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:116
+#: ../libnautilus-private/nautilus-global-preferences.c:115
 msgid "E_xecute files when they are clicked"
 msgstr "_Izvrši datoteke kada se klikne na njih"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:120
+#: ../libnautilus-private/nautilus-global-preferences.c:119
 msgid "Display _files when they are clicked"
 msgstr "_Prikaži datoteke kada se klikne na njih"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:124
+#: ../libnautilus-private/nautilus-global-preferences.c:123
 #: ../src/nautilus-file-management-properties.ui.h:47
 msgid "_Ask each time"
 msgstr "_Pitaj svaki put"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:131
+#: ../libnautilus-private/nautilus-global-preferences.c:130
 msgid "Search for files by file name only"
 msgstr "Nađi datoteke samo prema imenu"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:135
+#: ../libnautilus-private/nautilus-global-preferences.c:134
 msgid "Search for files by file name and file properties"
 msgstr "Nađi datoteke prema imenu i osobinama"
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
-#: ../libnautilus-private/nautilus-global-preferences.c:141
-#: ../src/file-manager/fm-icon-container.c:558
-#: ../src/file-manager/fm-icon-view.c:3009
+#: ../libnautilus-private/nautilus-global-preferences.c:140
+#: ../src/file-manager/fm-icon-container.c:569
+#: ../src/file-manager/fm-icon-view.c:3047
 msgid "Icon View"
 msgstr "Prikaži kao ikone"
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
-#: ../libnautilus-private/nautilus-global-preferences.c:142
-#: ../src/file-manager/fm-icon-view.c:3023
+#: ../libnautilus-private/nautilus-global-preferences.c:141
+#: ../src/file-manager/fm-icon-view.c:3061
 msgid "Compact View"
 msgstr "Prikaži zbijeno"
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
-#: ../libnautilus-private/nautilus-global-preferences.c:143
-#: ../src/file-manager/fm-list-view.c:1508
-#: ../src/file-manager/fm-list-view.c:2924
+#: ../libnautilus-private/nautilus-global-preferences.c:142
+#: ../src/file-manager/fm-list-view.c:1513
+#: ../src/file-manager/fm-list-view.c:2929
 msgid "List View"
 msgstr "Prikaži kao spisak"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:147
+#: ../libnautilus-private/nautilus-global-preferences.c:146
 msgid "Manually"
 msgstr "Ručno"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:149
+#: ../libnautilus-private/nautilus-global-preferences.c:148
 msgid "By Name"
 msgstr "Prema imenu"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:150
+#: ../libnautilus-private/nautilus-global-preferences.c:149
 msgid "By Size"
 msgstr "Prema veličini"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:151
+#: ../libnautilus-private/nautilus-global-preferences.c:150
 msgid "By Type"
 msgstr "Prema vrsti"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:152
+#: ../libnautilus-private/nautilus-global-preferences.c:151
 msgid "By Modification Date"
 msgstr "Prema datumu izmene"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:153
+#: ../libnautilus-private/nautilus-global-preferences.c:152
 msgid "By Emblems"
 msgstr "Prema obeležjima"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:157
+#: ../libnautilus-private/nautilus-global-preferences.c:156
 msgid "8"
 msgstr "8"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:158
+#: ../libnautilus-private/nautilus-global-preferences.c:157
 msgid "10"
 msgstr "10"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:159
+#: ../libnautilus-private/nautilus-global-preferences.c:158
 msgid "12"
 msgstr "12"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:160
+#: ../libnautilus-private/nautilus-global-preferences.c:159
 msgid "14"
 msgstr "14"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:161
+#: ../libnautilus-private/nautilus-global-preferences.c:160
 msgid "16"
 msgstr "16"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:162
+#: ../libnautilus-private/nautilus-global-preferences.c:161
 msgid "18"
 msgstr "18"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:163
+#: ../libnautilus-private/nautilus-global-preferences.c:162
 msgid "20"
 msgstr "20"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:164
+#: ../libnautilus-private/nautilus-global-preferences.c:163
 msgid "22"
 msgstr "22"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:165
+#: ../libnautilus-private/nautilus-global-preferences.c:164
 msgid "24"
 msgstr "24"
 
@@ -2996,22 +3011,22 @@ msgstr "24"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: ../libnautilus-private/nautilus-global-preferences.c:564
+#: ../libnautilus-private/nautilus-global-preferences.c:563
 #, c-format
 msgid "%s's Home"
 msgstr "Lična fascikla (%s)"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:570
+#: ../libnautilus-private/nautilus-global-preferences.c:569
 #: ../nautilus-computer.desktop.in.in.h:2
 msgid "Computer"
 msgstr "Računar"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:576
-#: ../src/nautilus-places-sidebar.c:481 ../src/nautilus-trash-bar.c:121
+#: ../libnautilus-private/nautilus-global-preferences.c:575
+#: ../src/nautilus-places-sidebar.c:485 ../src/nautilus-trash-bar.c:121
 msgid "Trash"
 msgstr "Smeće"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:582
+#: ../libnautilus-private/nautilus-global-preferences.c:581
 msgid "Network Servers"
 msgstr "Mrežni serveri"
 
@@ -3023,66 +3038,66 @@ msgstr "Pravougaonik izbora"
 msgid "Switch to Manual Layout?"
 msgstr "Preći na ručno raspoređivanje?"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:596
+#: ../libnautilus-private/nautilus-mime-actions.c:598
 #, c-format
 msgid "The Link \"%s\" is Broken."
 msgstr "Veza „%s“ je neispravna."
 
 # bug: s/borken/broken/, though, one can always wonder :)
-#: ../libnautilus-private/nautilus-mime-actions.c:598
+#: ../libnautilus-private/nautilus-mime-actions.c:600
 #, c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
 msgstr "Veza „%s“ je neispravna. Da li želite da je bacite u smeće?"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:604
+#: ../libnautilus-private/nautilus-mime-actions.c:606
 msgid "This link cannot be used, because it has no target."
 msgstr "Ne možete koristiti ovu vezu zato što nema odredište."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:606
+#: ../libnautilus-private/nautilus-mime-actions.c:608
 #, c-format
 msgid "This link cannot be used, because its target \"%s\" doesn't exist."
 msgstr "Ne možete koristiti vezu zato što njeno odredište „%s“ ne postoji."
 
 #. name, stock id
 #. label, accelerator
-#: ../libnautilus-private/nautilus-mime-actions.c:616
-#: ../src/file-manager/fm-directory-view.c:6681
-#: ../src/file-manager/fm-directory-view.c:6780
-#: ../src/file-manager/fm-directory-view.c:7631
-#: ../src/file-manager/fm-directory-view.c:7896
-#: ../src/file-manager/fm-tree-view.c:1287
+#: ../libnautilus-private/nautilus-mime-actions.c:618
+#: ../src/file-manager/fm-directory-view.c:6699
+#: ../src/file-manager/fm-directory-view.c:6798
+#: ../src/file-manager/fm-directory-view.c:7645
+#: ../src/file-manager/fm-directory-view.c:7910
+#: ../src/file-manager/fm-tree-view.c:1293
 msgid "Mo_ve to Trash"
 msgstr "Pre_mesti u smeće"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:676
+#: ../libnautilus-private/nautilus-mime-actions.c:678
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "Želite li da pokrenete „%s“, ili prikažete njen sadržaj?"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:678
+#: ../libnautilus-private/nautilus-mime-actions.c:680
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "„%s“ je izvršna tekstualna datoteka."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:684
+#: ../libnautilus-private/nautilus-mime-actions.c:686
 msgid "Run in _Terminal"
 msgstr "Pokreni u _terminalu"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:685
+#: ../libnautilus-private/nautilus-mime-actions.c:687
 msgid "_Display"
 msgstr "_Prikaži"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:688
+#: ../libnautilus-private/nautilus-mime-actions.c:690
 #: ../src/nautilus-autorun-software.c:229
 msgid "_Run"
 msgstr "Po_kreni"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1008
+#: ../libnautilus-private/nautilus-mime-actions.c:1010
 #: ../src/file-manager/fm-directory-view.c:618
 msgid "Are you sure you want to open all files?"
 msgstr "Sigurno želite da otvorite sve datoteke?"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1010
+#: ../libnautilus-private/nautilus-mime-actions.c:1012
 #, c-format
 msgid "This will open %d separate tab."
 msgid_plural "This will open %d separate tabs."
@@ -3091,7 +3106,7 @@ msgstr[1] "Ovo će otvoriti %d zasebna lista."
 msgstr[2] "Ovo će otvoriti %d zasebnih listova."
 msgstr[3] "Ovo će otvoriti zasebni list."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1013
+#: ../libnautilus-private/nautilus-mime-actions.c:1015
 #: ../src/nautilus-location-bar.c:148
 #, c-format
 msgid "This will open %d separate window."
@@ -3101,23 +3116,19 @@ msgstr[1] "Ovo će otvoriti %d zasebna prozora."
 msgstr[2] "Ovo će otvoriti %d zasebnih prozora."
 msgstr[3] "Ovo će otvoriti zasebni prozor."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1068
-#, fuzzy
-#| msgid "There was an error launching the application."
+#: ../libnautilus-private/nautilus-mime-actions.c:1071
 msgid "There was an internal error trying to search for applications:"
-msgstr "Došlo je do greške pri pokretanju programa."
+msgstr "Došlo je do greške pri traženju programa:"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1070
-#, fuzzy
-#| msgid "Unable to mount location"
+#: ../libnautilus-private/nautilus-mime-actions.c:1073
 msgid "Unable to search for application"
-msgstr "Me mogu da priključim putanju"
+msgstr "Ne mogu da nađem program"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1146
+#: ../libnautilus-private/nautilus-mime-actions.c:1149
 msgid "Could not use system package installer"
-msgstr ""
+msgstr "Ne mogu da upotrebim sistemski upravnik paketima"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1204
+#: ../libnautilus-private/nautilus-mime-actions.c:1207
 #: ../src/nautilus-window-manage-views.c:1880
 #: ../src/nautilus-window-manage-views.c:1886
 #: ../src/nautilus-window-manage-views.c:1903
@@ -3128,37 +3139,57 @@ msgstr ""
 msgid "Could not display \"%s\"."
 msgstr "Ne mogu da prikažem „%s“."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1225
-#, fuzzy
-#| msgid "The file is not an image."
-msgid "The file is of an unknown type"
-msgstr "Ova datoteka nije slika."
-
 #: ../libnautilus-private/nautilus-mime-actions.c:1228
-#, fuzzy, c-format
-#| msgid "There is no application installed for this file type"
-msgid "There is no application installed for %s files"
-msgstr "Ne postoji program za otvaranje ove vrste datoteka"
+msgid "The file is of an unknown type"
+msgstr "Nije poznata ova vrsta datoteke"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1243
-#, fuzzy, c-format
-#| msgid "There is no application installed for this file type"
+#: ../libnautilus-private/nautilus-mime-actions.c:1231
+#, c-format
+msgid "There is no application installed for %s files"
+msgstr "Ne postoji program za otvaranje %s datoteka"
+
+#: ../libnautilus-private/nautilus-mime-actions.c:1246
+#, c-format
 msgid ""
 "There is no application installed for %s files.\n"
 "Do you want to search for an application to open this file?"
-msgstr "Ne postoji program za otvaranje ove vrste datoteka"
+msgstr ""
+"Ne postoji program za otvaranje %s datoteka.\n"
+"Da li želite da potražite program koji može da otvori ovu datoteku?"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1521
-#: ../libnautilus-private/nautilus-mime-actions.c:1779
+#: ../libnautilus-private/nautilus-mime-actions.c:1345
+msgid "Untrusted application launcher"
+msgstr "Nepoverljiv pokretač programa"
+
+#: ../libnautilus-private/nautilus-mime-actions.c:1348
+#, c-format
+msgid ""
+"The application launcher \"%s\" has not been marked as trusted. If you do "
+"not know the source of this file, launching it may be unsafe."
+msgstr ""
+"Pokretač programa „%s“ je označen kao poverljiv. Ukoliko ne znate odakle vam "
+"ova datoteka možda nije bezbedno da je pokrenete."
+
+#: ../libnautilus-private/nautilus-mime-actions.c:1360
+msgid "_Launch Anyway"
+msgstr "_Ipak pokreni"
+
+#: ../libnautilus-private/nautilus-mime-actions.c:1363
+msgid "Mark as _Trusted"
+msgstr "_Označi kao poverljivo"
+
+#: ../libnautilus-private/nautilus-mime-actions.c:1634
+#: ../libnautilus-private/nautilus-mime-actions.c:1892
+#: ../src/file-manager/fm-directory-view.c:5937
 msgid "Unable to mount location"
-msgstr "Me mogu da priključim putanju"
+msgstr "Me mogu da montiram putanju"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1867
+#: ../libnautilus-private/nautilus-mime-actions.c:1980
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Otvaram „%s“."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1870
+#: ../libnautilus-private/nautilus-mime-actions.c:1983
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -3179,13 +3210,8 @@ msgid "Could not set as default application"
 msgstr "Ne mogu da postavim kao podrazumevani program"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:255
-#, fuzzy
 msgid "Default"
-msgstr ""
-"#-#-#-#-#  sr.po (nautilus)  #-#-#-#-#\n"
-"Podrazumevani\n"
-"#-#-#-#-#  sr.po (eel)  #-#-#-#-#\n"
-"Podrazumevano"
+msgstr "Podrazumevano"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:264
 msgid "Icon"
@@ -3248,7 +3274,7 @@ msgid "Select an Application"
 msgstr "Izaberite program"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:759
-#: ../src/file-manager/fm-properties-window.c:5104
+#: ../src/file-manager/fm-properties-window.c:5109
 msgid "Open With"
 msgstr "Otvori pomoću"
 
@@ -3267,10 +3293,10 @@ msgstr "_Razgledaj..."
 #. name, stock id
 #. label, accelerator
 #: ../libnautilus-private/nautilus-open-with-dialog.c:867
-#: ../src/file-manager/fm-directory-view.c:6599
-#: ../src/file-manager/fm-directory-view.c:7799
-#: ../src/file-manager/fm-tree-view.c:1208
-#: ../src/nautilus-places-sidebar.c:1952
+#: ../src/file-manager/fm-directory-view.c:6617
+#: ../src/file-manager/fm-directory-view.c:7813
+#: ../src/file-manager/fm-tree-view.c:1214
+#: ../src/nautilus-places-sidebar.c:1958
 msgid "_Open"
 msgstr "_Otvori"
 
@@ -3370,11 +3396,11 @@ msgstr ""
 msgid "Details: "
 msgstr "Detalji:"
 
-#: ../libnautilus-private/nautilus-progress-info.c:222
+#: ../libnautilus-private/nautilus-progress-info.c:223
 msgid "File Operations"
 msgstr "Radnje nad datotekama"
 
-#: ../libnautilus-private/nautilus-progress-info.c:300
+#: ../libnautilus-private/nautilus-progress-info.c:304
 #, c-format
 msgid "%'d file operation active"
 msgid_plural "%'d file operations active"
@@ -3383,8 +3409,8 @@ msgstr[1] "U toku su %'d radnje nad datotekama"
 msgstr[2] "U toku su %'d radnje nad datotekama"
 msgstr[3] "U toku je jedna %0d radnja nad datotekama"
 
-#: ../libnautilus-private/nautilus-progress-info.c:493
-#: ../libnautilus-private/nautilus-progress-info.c:511
+#: ../libnautilus-private/nautilus-progress-info.c:495
+#: ../libnautilus-private/nautilus-progress-info.c:513
 msgid "Preparing"
 msgstr "Priprema"
 
@@ -3401,7 +3427,7 @@ msgid "Search for \"%s\""
 msgstr "Pronađi „%s“"
 
 #: ../libnautilus-private/nautilus-undo-signal-handlers.c:174
-#: ../src/nautilus-query-editor.c:979
+#: ../src/nautilus-query-editor.c:983
 msgid "Edit"
 msgstr "Uredi"
 
@@ -3434,7 +3460,7 @@ msgid "File Browser"
 msgstr "Razgledač datoteka"
 
 #. tooltip
-#: ../nautilus-computer.desktop.in.in.h:1 ../src/nautilus-window-menus.c:811
+#: ../nautilus-computer.desktop.in.in.h:1 ../src/nautilus-window-menus.c:845
 msgid ""
 "Browse all local and remote disks and folders accessible from this computer"
 msgstr ""
@@ -3448,12 +3474,12 @@ msgstr "Izmeni ponašanje i izgled prozora upravljača datoteka"
 msgid "File Management"
 msgstr "Upravljanje datotekama"
 
-#: ../nautilus-home.desktop.in.in.h:1 ../src/file-manager/fm-tree-view.c:1375
+#: ../nautilus-home.desktop.in.in.h:1 ../src/file-manager/fm-tree-view.c:1381
 msgid "Home Folder"
 msgstr "Lična fascikla"
 
 #. tooltip
-#: ../nautilus-home.desktop.in.in.h:2 ../src/nautilus-window-menus.c:807
+#: ../nautilus-home.desktop.in.in.h:2 ../src/nautilus-window-menus.c:841
 msgid "Open your personal folder"
 msgstr "Otvara ličnu fasciklu"
 
@@ -3467,33 +3493,33 @@ msgstr "Pozadina"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-desktop-icon-view.c:682
-#: ../src/file-manager/fm-directory-view.c:6631
-#: ../src/file-manager/fm-directory-view.c:7962
+#: ../src/file-manager/fm-desktop-icon-view.c:684
+#: ../src/file-manager/fm-directory-view.c:6649
+#: ../src/file-manager/fm-directory-view.c:7976
 msgid "E_mpty Trash"
 msgstr "Iz_baci smeće"
 
 #. label, accelerator
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-desktop-icon-view.c:694
-#: ../src/file-manager/fm-directory-view.c:6595
+#: ../src/file-manager/fm-desktop-icon-view.c:696
+#: ../src/file-manager/fm-directory-view.c:6613
 msgid "Create L_auncher..."
 msgstr "Novi _pokretač..."
 
 #. tooltip
-#: ../src/file-manager/fm-desktop-icon-view.c:696
-#: ../src/file-manager/fm-directory-view.c:6596
+#: ../src/file-manager/fm-desktop-icon-view.c:698
+#: ../src/file-manager/fm-directory-view.c:6614
 msgid "Create a new launcher"
 msgstr "Pravi novi pokretač"
 
 #. label, accelerator
-#: ../src/file-manager/fm-desktop-icon-view.c:701
+#: ../src/file-manager/fm-desktop-icon-view.c:703
 msgid "Change Desktop _Background"
 msgstr "Izmenite pozadinu _radne površine"
 
 #. tooltip
-#: ../src/file-manager/fm-desktop-icon-view.c:703
+#: ../src/file-manager/fm-desktop-icon-view.c:705
 msgid ""
 "Show a window that lets you set your desktop background's pattern or color"
 msgstr ""
@@ -3501,22 +3527,22 @@ msgstr ""
 "boju"
 
 #. label, accelerator
-#: ../src/file-manager/fm-desktop-icon-view.c:708
+#: ../src/file-manager/fm-desktop-icon-view.c:710
 msgid "Empty Trash"
 msgstr "Isprazni Smeće"
 
 #. tooltip
-#: ../src/file-manager/fm-desktop-icon-view.c:710
-#: ../src/file-manager/fm-directory-view.c:6632
+#: ../src/file-manager/fm-desktop-icon-view.c:712
+#: ../src/file-manager/fm-directory-view.c:6650
 #: ../src/nautilus-trash-bar.c:132
 msgid "Delete all items in the Trash"
 msgstr "Izbacuje sve stavke iz smeća"
 
-#: ../src/file-manager/fm-desktop-icon-view.c:803
+#: ../src/file-manager/fm-desktop-icon-view.c:805
 msgid "The desktop view encountered an error."
 msgstr "Pregled radne površi je naišao na grešku."
 
-#: ../src/file-manager/fm-desktop-icon-view.c:804
+#: ../src/file-manager/fm-desktop-icon-view.c:806
 msgid "The desktop view encountered an error while starting up."
 msgstr "Pregled radne površi je naišao na grešku pri pokretanju."
 
@@ -3539,7 +3565,7 @@ msgstr[2] "Ovo će otvoriti %'d odvojenih prozora."
 msgstr[3] "Ovo će otvoriti %'d odvojeni prozor."
 
 #: ../src/file-manager/fm-directory-view.c:1132
-#: ../src/file-manager/fm-properties-window.c:5453
+#: ../src/file-manager/fm-properties-window.c:5458
 #: ../src/nautilus-connect-server-dialog.c:341
 #: ../src/nautilus-location-dialog.c:108
 msgid "There was an error displaying help."
@@ -3663,12 +3689,12 @@ msgstr "Fascikla „%s“ sadrži više datoteka nego što Nautilus može da otv
 msgid "Some files will not be displayed."
 msgstr "Neke datoteke neće biti prikazane."
 
-#: ../src/file-manager/fm-directory-view.c:4258
+#: ../src/file-manager/fm-directory-view.c:4260
 #, c-format
 msgid "Open with \"%s\""
 msgstr "Otvori pomoću „%s“"
 
-#: ../src/file-manager/fm-directory-view.c:4259
+#: ../src/file-manager/fm-directory-view.c:4261
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgid_plural "Use \"%s\" to open the selected items"
@@ -3677,22 +3703,22 @@ msgstr[1] "Koristi „%s“ za otvaranje izabrane stavke"
 msgstr[2] "Koristi „%s“ za otvaranje izabranih stavki"
 msgstr[3] "Koristi „%s“ za otvaranje izabrane stavke"
 
-#: ../src/file-manager/fm-directory-view.c:5016
+#: ../src/file-manager/fm-directory-view.c:5018
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Pokreni „%s“ na svakoj izabranoj stavci"
 
-#: ../src/file-manager/fm-directory-view.c:5267
+#: ../src/file-manager/fm-directory-view.c:5269
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "Napravi dokument prema šablonu „%s“"
 
-#: ../src/file-manager/fm-directory-view.c:5517
+#: ../src/file-manager/fm-directory-view.c:5519
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
 "Sve izvršne datoteke u ovoj fascikli će se pojaviti u meniju „Skripte“."
 
-#: ../src/file-manager/fm-directory-view.c:5519
+#: ../src/file-manager/fm-directory-view.c:5521
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -3700,7 +3726,7 @@ msgstr ""
 "Izborom skripte iz menija se ona pokreće, a sve izabrane stavke će joj biti "
 "ulaz."
 
-#: ../src/file-manager/fm-directory-view.c:5521
+#: ../src/file-manager/fm-directory-view.c:5523
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -3741,19 +3767,19 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: mesto i veličina tekućeg prozora"
 
-#: ../src/file-manager/fm-directory-view.c:5693
-#: ../src/file-manager/fm-tree-view.c:966
+#: ../src/file-manager/fm-directory-view.c:5695
+#: ../src/file-manager/fm-tree-view.c:972
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "„%s“ će biti premešten ukoliko izaberete naredbu Ubaci"
 
-#: ../src/file-manager/fm-directory-view.c:5697
-#: ../src/file-manager/fm-tree-view.c:970
+#: ../src/file-manager/fm-directory-view.c:5699
+#: ../src/file-manager/fm-tree-view.c:976
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "„%s“ će biti umnožen ukoliko izaberete naredbu Ubaci"
 
-#: ../src/file-manager/fm-directory-view.c:5704
+#: ../src/file-manager/fm-directory-view.c:5706
 #, c-format
 msgid "The %'d selected item will be moved if you select the Paste command"
 msgid_plural ""
@@ -3767,7 +3793,7 @@ msgstr[2] ""
 msgstr[3] ""
 "%'d izabrana stavka će biti premeštena ukoliko izaberete naredbu Ubaci"
 
-#: ../src/file-manager/fm-directory-view.c:5711
+#: ../src/file-manager/fm-directory-view.c:5713
 #, c-format
 msgid "The %'d selected item will be copied if you select the Paste command"
 msgid_plural ""
@@ -3781,97 +3807,97 @@ msgstr[2] ""
 msgstr[3] ""
 "%'d izabrana stavka će biti umnožena ukoliko izaberete naredbu Ubaci"
 
-#: ../src/file-manager/fm-directory-view.c:5767
-#: ../src/file-manager/fm-tree-view.c:1009
+#: ../src/file-manager/fm-directory-view.c:5769
+#: ../src/file-manager/fm-tree-view.c:1015
 msgid "There is nothing on the clipboard to paste."
 msgstr "Nema ništa u spisku isečaka za ubacivanje."
 
-#: ../src/file-manager/fm-directory-view.c:6240
+#: ../src/file-manager/fm-directory-view.c:6258
 #, c-format
 msgid "Connect to Server %s"
 msgstr "Poveži se na server %s"
 
-#: ../src/file-manager/fm-directory-view.c:6245
+#: ../src/file-manager/fm-directory-view.c:6263
 msgid "_Connect"
 msgstr "_Poveži se"
 
-#: ../src/file-manager/fm-directory-view.c:6259
+#: ../src/file-manager/fm-directory-view.c:6277
 msgid "Link _name:"
 msgstr "_Ime veze:"
 
-#: ../src/file-manager/fm-directory-view.c:6477
+#: ../src/file-manager/fm-directory-view.c:6495
 #, c-format
 msgid "Could not determine original location of \"%s\" "
 msgstr "Ne mogu da odredim prvobitnu putanju za „%s“ "
 
-#: ../src/file-manager/fm-directory-view.c:6481
+#: ../src/file-manager/fm-directory-view.c:6499
 msgid "The item cannot be restored from trash"
 msgstr "Ne mogu da vratim stavku iz smeća"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6569
+#: ../src/file-manager/fm-directory-view.c:6587
 msgid "Create _Document"
 msgstr "Napravi do_kument"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6570
+#: ../src/file-manager/fm-directory-view.c:6588
 msgid "Open Wit_h"
 msgstr "Otvori po_moću"
 
-#: ../src/file-manager/fm-directory-view.c:6571
+#: ../src/file-manager/fm-directory-view.c:6589
 msgid "Choose a program with which to open the selected item"
 msgstr "Izaberi program kojim da otvorim izabranu stavku"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6573
-#: ../src/file-manager/fm-directory-view.c:6581
-#: ../src/file-manager/fm-directory-view.c:6809
+#: ../src/file-manager/fm-directory-view.c:6591
+#: ../src/file-manager/fm-directory-view.c:6599
+#: ../src/file-manager/fm-directory-view.c:6827
 msgid "_Properties"
 msgstr "_Osobine"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6574
+#: ../src/file-manager/fm-directory-view.c:6592
 msgid "View or modify the properties of each selected item"
 msgstr "Pogledajte ili izmenite osobine svake izabrane stavke"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6582
+#: ../src/file-manager/fm-directory-view.c:6600
 msgid "View or modify the properties of the open folder"
 msgstr "Pogledajte ili izmenite osobine otvorene fascikle"
 
 #. name, stock id
 #. label, accelerator
 #. add the "create folder" menu item
-#: ../src/file-manager/fm-directory-view.c:6585
-#: ../src/file-manager/fm-tree-view.c:1239
+#: ../src/file-manager/fm-directory-view.c:6603
+#: ../src/file-manager/fm-tree-view.c:1245
 msgid "Create _Folder"
 msgstr "Napravi _fasciklu"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6586
+#: ../src/file-manager/fm-directory-view.c:6604
 msgid "Create a new empty folder inside this folder"
 msgstr "Obrazuje praznu fasciklu unutar tekuće fascikle"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6588
+#: ../src/file-manager/fm-directory-view.c:6606
 msgid "No templates installed"
 msgstr "Nisu instalirani šabloni"
 
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6591
+#: ../src/file-manager/fm-directory-view.c:6609
 msgid "_Empty File"
 msgstr "Pr_azna datoteka"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6592
+#: ../src/file-manager/fm-directory-view.c:6610
 msgid "Create a new empty file inside this folder"
 msgstr "Obrazuje novu praznu datoteku unutar tekuće fascikle"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6600
+#: ../src/file-manager/fm-directory-view.c:6618
 msgid "Open the selected item in this window"
 msgstr "Otvara izabranu stavku u ovom prozoru"
 
@@ -3880,87 +3906,87 @@ msgstr "Otvara izabranu stavku u ovom prozoru"
 #. Location-specific actions
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6607
-#: ../src/file-manager/fm-directory-view.c:6753
+#: ../src/file-manager/fm-directory-view.c:6625
+#: ../src/file-manager/fm-directory-view.c:6771
 msgid "Open in Navigation Window"
 msgstr "Otvori u upravljačkom prozoru"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6608
+#: ../src/file-manager/fm-directory-view.c:6626
 msgid "Open each selected item in a navigation window"
 msgstr "Otvara svaku izabranu stavku u upravljačkom prozoru"
 
 #. name, stock id
 #. label, accelerator
 #. add the "open in new tab" menu item
-#: ../src/file-manager/fm-directory-view.c:6611
-#: ../src/file-manager/fm-directory-view.c:6757
-#: ../src/file-manager/fm-directory-view.c:7576
-#: ../src/file-manager/fm-directory-view.c:7850
-#: ../src/file-manager/fm-tree-view.c:1219
-#: ../src/nautilus-places-sidebar.c:1960
+#: ../src/file-manager/fm-directory-view.c:6629
+#: ../src/file-manager/fm-directory-view.c:6775
+#: ../src/file-manager/fm-directory-view.c:7590
+#: ../src/file-manager/fm-directory-view.c:7864
+#: ../src/file-manager/fm-tree-view.c:1225
+#: ../src/nautilus-places-sidebar.c:1966
 msgid "Open in New _Tab"
 msgstr "Otvori u novom _listu"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6612
+#: ../src/file-manager/fm-directory-view.c:6630
 msgid "Open each selected item in a new tab"
 msgstr "Otvara svaku izabranu stavku u novom listu"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6615
-#: ../src/file-manager/fm-directory-view.c:6762
+#: ../src/file-manager/fm-directory-view.c:6633
+#: ../src/file-manager/fm-directory-view.c:6780
 msgid "Open in _Folder Window"
 msgstr "Otvori u _novom prozoru"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6616
+#: ../src/file-manager/fm-directory-view.c:6634
 msgid "Open each selected item in a folder window"
 msgstr "Otvara svaku izabranu stavku u novom prozoru"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6619
-#: ../src/file-manager/fm-directory-view.c:6623
+#: ../src/file-manager/fm-directory-view.c:6637
+#: ../src/file-manager/fm-directory-view.c:6641
 msgid "Open with Other _Application..."
 msgstr "Otvori nekim drugim _programom..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6620
-#: ../src/file-manager/fm-directory-view.c:6624
+#: ../src/file-manager/fm-directory-view.c:6638
+#: ../src/file-manager/fm-directory-view.c:6642
 msgid "Choose another application with which to open the selected item"
 msgstr "Omogućava izbor nekog drugog programa za otvaranje izabrane stavke"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6627
+#: ../src/file-manager/fm-directory-view.c:6645
 msgid "_Open Scripts Folder"
 msgstr "_Otvori fasciklu sa skriptama"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6628
+#: ../src/file-manager/fm-directory-view.c:6646
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Prikazuje fasciklu koji sadrži skripte iz ovog menija"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6636
+#: ../src/file-manager/fm-directory-view.c:6654
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "Priprema izabrane datoteke za premeštanje pomoću naredbe Ubaci"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6640
+#: ../src/file-manager/fm-directory-view.c:6658
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "Priprema izabrane datoteke za umnožavanje pomoću naredbe Ubaci"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6644
+#: ../src/file-manager/fm-directory-view.c:6662
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr "Premešta ili umnožava datoteke izabrane naredbom Iseci ili Umnoži"
 
@@ -3968,14 +3994,14 @@ msgstr "Premešta ili umnožava datoteke izabrane naredbom Iseci ili Umnoži"
 #. accelerator for paste
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6649
-#: ../src/file-manager/fm-directory-view.c:6775
-#: ../src/file-manager/fm-tree-view.c:1271
+#: ../src/file-manager/fm-directory-view.c:6667
+#: ../src/file-manager/fm-directory-view.c:6793
+#: ../src/file-manager/fm-tree-view.c:1277
 msgid "_Paste Into Folder"
 msgstr "U_baci datoteke u fasciklu"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6650
+#: ../src/file-manager/fm-directory-view.c:6668
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
@@ -3984,47 +4010,47 @@ msgstr ""
 "fasciklu"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6654
+#: ../src/file-manager/fm-directory-view.c:6672
 msgid "Select all items in this window"
 msgstr "Bira sve stavke u ovom prozoru"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6657
+#: ../src/file-manager/fm-directory-view.c:6675
 msgid "Select I_tems Matching..."
 msgstr "Označi s_tavke po uslovu..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6658
+#: ../src/file-manager/fm-directory-view.c:6676
 msgid "Select items in this window matching a given pattern"
 msgstr "Pravi izbor od stavki koje odgovaraju datom obrascu u tekućem prozoru"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6661
+#: ../src/file-manager/fm-directory-view.c:6679
 msgid "_Invert Selection"
 msgstr "_Obrni izbor"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6662
+#: ../src/file-manager/fm-directory-view.c:6680
 msgid "Select all and only the items that are not currently selected"
 msgstr "Pravi izbor od svih stavki osim onih koje su trenutno izabrane"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6665
+#: ../src/file-manager/fm-directory-view.c:6683
 msgid "D_uplicate"
 msgstr "U_dvostruči"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6666
+#: ../src/file-manager/fm-directory-view.c:6684
 msgid "Duplicate each selected item"
 msgstr "Udvostručava svaku izabranu stavku"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6669
-#: ../src/file-manager/fm-directory-view.c:7936
+#: ../src/file-manager/fm-directory-view.c:6687
+#: ../src/file-manager/fm-directory-view.c:7950
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "Napravi _vezu"
@@ -4033,45 +4059,45 @@ msgstr[2] "Napravi _veze"
 msgstr[3] "Napravi _vezu"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6670
+#: ../src/file-manager/fm-directory-view.c:6688
 msgid "Create a symbolic link for each selected item"
 msgstr "Obrazuje simboličku vezu za svaku izabranu stavku"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6673
+#: ../src/file-manager/fm-directory-view.c:6691
 msgid "_Rename..."
 msgstr "P_reimenuj..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6674
+#: ../src/file-manager/fm-directory-view.c:6692
 msgid "Rename selected item"
 msgstr "Menja naziv izabrane stavke"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6682
-#: ../src/file-manager/fm-directory-view.c:7897
+#: ../src/file-manager/fm-directory-view.c:6700
+#: ../src/file-manager/fm-directory-view.c:7911
 msgid "Move each selected item to the Trash"
 msgstr "Premešta svaku izabranu stavku u smeće"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6685
-#: ../src/file-manager/fm-directory-view.c:6784
-#: ../src/file-manager/fm-directory-view.c:7917
-#: ../src/file-manager/fm-tree-view.c:1301
+#: ../src/file-manager/fm-directory-view.c:6703
+#: ../src/file-manager/fm-directory-view.c:6802
+#: ../src/file-manager/fm-directory-view.c:7931
+#: ../src/file-manager/fm-tree-view.c:1307
 msgid "_Delete"
 msgstr "_Obriši"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6686
+#: ../src/file-manager/fm-directory-view.c:6704
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "Uklanja izabranu stavku, bez premeštanja u smeće"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6689
-#: ../src/file-manager/fm-directory-view.c:6788
+#: ../src/file-manager/fm-directory-view.c:6707
+#: ../src/file-manager/fm-directory-view.c:6806
 msgid "_Restore"
 msgstr "_Vrati"
 
@@ -4083,158 +4109,158 @@ msgstr "_Vrati"
 #.
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6699
+#: ../src/file-manager/fm-directory-view.c:6717
 msgid "Reset View to _Defaults"
 msgstr "Postavi pregled na _podrazumevano"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6700
+#: ../src/file-manager/fm-directory-view.c:6718
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr "Vraća poredak i uvećanje prema postavkama za ovaj pregled"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6703
+#: ../src/file-manager/fm-directory-view.c:6721
 msgid "Connect To This Server"
 msgstr "Poveži se na ovaj server"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6704
+#: ../src/file-manager/fm-directory-view.c:6722
 msgid "Make a permanent connection to this server"
 msgstr "Pravi trajnu vezu sa ovim serverom"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6707
-#: ../src/file-manager/fm-directory-view.c:6723
-#: ../src/file-manager/fm-directory-view.c:6792
+#: ../src/file-manager/fm-directory-view.c:6725
+#: ../src/file-manager/fm-directory-view.c:6741
+#: ../src/file-manager/fm-directory-view.c:6810
 msgid "_Mount Volume"
-msgstr "_Priključi disk"
+msgstr "_Montiraj disk"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6708
+#: ../src/file-manager/fm-directory-view.c:6726
 msgid "Mount the selected volume"
-msgstr "Priključuje izabrani disk"
+msgstr "Montira izabrani disk"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6711
-#: ../src/file-manager/fm-directory-view.c:6727
-#: ../src/file-manager/fm-directory-view.c:6796
+#: ../src/file-manager/fm-directory-view.c:6729
+#: ../src/file-manager/fm-directory-view.c:6745
+#: ../src/file-manager/fm-directory-view.c:6814
 msgid "_Unmount Volume"
 msgstr "_Demontiraj disk"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6712
+#: ../src/file-manager/fm-directory-view.c:6730
 msgid "Unmount the selected volume"
 msgstr "Demontira izabrani disk"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6715
-#: ../src/file-manager/fm-directory-view.c:6731
-#: ../src/file-manager/fm-directory-view.c:6800
+#: ../src/file-manager/fm-directory-view.c:6733
+#: ../src/file-manager/fm-directory-view.c:6749
+#: ../src/file-manager/fm-directory-view.c:6818
 msgid "_Eject Volume"
 msgstr "_Izbaci disk"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6716
+#: ../src/file-manager/fm-directory-view.c:6734
 msgid "Eject the selected volume"
 msgstr "Izbacuje izabrani disk"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6719
-#: ../src/file-manager/fm-directory-view.c:6735
-#: ../src/file-manager/fm-directory-view.c:6804
-#: ../src/nautilus-places-sidebar.c:2024
+#: ../src/file-manager/fm-directory-view.c:6737
+#: ../src/file-manager/fm-directory-view.c:6753
+#: ../src/file-manager/fm-directory-view.c:6822
+#: ../src/nautilus-places-sidebar.c:2030
 msgid "_Format"
 msgstr "_Formatiraj"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6720
+#: ../src/file-manager/fm-directory-view.c:6738
 msgid "Format the selected volume"
 msgstr "Formatira izabrani disk"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6724
+#: ../src/file-manager/fm-directory-view.c:6742
 msgid "Mount the volume associated with the open folder"
-msgstr "Priključuje disk koji je pridružen otvorenoj fascikli"
+msgstr "Montira disk koji je pridružen otvorenoj fascikli"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6728
+#: ../src/file-manager/fm-directory-view.c:6746
 msgid "Unmount the volume associated with the open folder"
 msgstr "Demontira disk koji je pridružen otvorenoj fascikli"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6732
+#: ../src/file-manager/fm-directory-view.c:6750
 msgid "Eject the volume associated with the open folder"
 msgstr "Izbacuje disk koji je pridružen otvorenoj fascikli"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6736
+#: ../src/file-manager/fm-directory-view.c:6754
 msgid "Format the volume associated with the open folder"
 msgstr "Formatira disk koji je pridružen otvorenoj fascikli"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6739
+#: ../src/file-manager/fm-directory-view.c:6757
 msgid "Open File and Close window"
 msgstr "Otvori datoteku i zatvori prozor"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6743
+#: ../src/file-manager/fm-directory-view.c:6761
 msgid "Sa_ve Search"
 msgstr "_Sačuvaj pretragu"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6744
+#: ../src/file-manager/fm-directory-view.c:6762
 msgid "Save the edited search"
 msgstr "Čuva izmenjenu pretragu"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6747
+#: ../src/file-manager/fm-directory-view.c:6765
 msgid "Sa_ve Search As..."
 msgstr "_Sačuvaj pretragu kao..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6748
+#: ../src/file-manager/fm-directory-view.c:6766
 msgid "Save the current search as a file"
 msgstr "Čuva tekuću pretragu kao datoteku"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6754
+#: ../src/file-manager/fm-directory-view.c:6772
 msgid "Open this folder in a navigation window"
 msgstr "Otvara ovu fasciklu u upravljačkom prozoru"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6758
+#: ../src/file-manager/fm-directory-view.c:6776
 msgid "Open this folder in a new tab"
 msgstr "Otvara fasciklu u novom listu"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6763
+#: ../src/file-manager/fm-directory-view.c:6781
 msgid "Open this folder in a folder window"
 msgstr "Otvara fasciklu u novom prozoru"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6768
+#: ../src/file-manager/fm-directory-view.c:6786
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "Priprema ovu fasciklu za premeštanje pomoću naredbe Ubaci"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6772
+#: ../src/file-manager/fm-directory-view.c:6790
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "Priprema ovu fasciklu za umnožavanje pomoću naredbe Ubaci"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6776
+#: ../src/file-manager/fm-directory-view.c:6794
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into this "
 "folder"
@@ -4243,57 +4269,57 @@ msgstr ""
 "ovu fasciklu"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6781
+#: ../src/file-manager/fm-directory-view.c:6799
 msgid "Move this folder to the Trash"
 msgstr "Premešta ovu fasciklu u Smeće"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6785
+#: ../src/file-manager/fm-directory-view.c:6803
 msgid "Delete this folder, without moving to the Trash"
 msgstr "Briše ovu fasciklu, bez premeštanja u smeće"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6793
+#: ../src/file-manager/fm-directory-view.c:6811
 msgid "Mount the volume associated with this folder"
-msgstr "Priključuje disk koji je pridružen ovoj fascikli"
+msgstr "Montira disk koji je pridružen ovoj fascikli"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6797
+#: ../src/file-manager/fm-directory-view.c:6815
 msgid "Unmount the volume associated with this folder"
 msgstr "Demontira disk koji je pridružen ovoj fascikli"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6801
+#: ../src/file-manager/fm-directory-view.c:6819
 msgid "Eject the volume associated with this folder"
 msgstr "Izbacuje disk koji je pridružen ovoj fascikli"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6805
+#: ../src/file-manager/fm-directory-view.c:6823
 msgid "Format the volume associated with this folder"
 msgstr "Formatira disk koji je pridružen ovoj fascikli"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6810
+#: ../src/file-manager/fm-directory-view.c:6828
 msgid "View or modify the properties of this folder"
 msgstr "Prikazuje ili menja osobine ove fascikle"
 
 #. Translators: %s is a directory
-#: ../src/file-manager/fm-directory-view.c:6892
+#: ../src/file-manager/fm-directory-view.c:6910
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "Pokreni ili upravljaj skriptama iz %s"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/file-manager/fm-directory-view.c:6894
+#: ../src/file-manager/fm-directory-view.c:6912
 msgid "_Scripts"
 msgstr "_Skripte"
 
-#: ../src/file-manager/fm-directory-view.c:7306
+#: ../src/file-manager/fm-directory-view.c:7320
 #, c-format
 msgid "Move the open folder out of the trash to \"%s\""
 msgstr "Premesti otvorenu fasciklu iz smeća u „%s“"
 
-#: ../src/file-manager/fm-directory-view.c:7309
+#: ../src/file-manager/fm-directory-view.c:7323
 #, c-format
 msgid "Move the selected folder out of the trash to \"%s\""
 msgid_plural "Move the selected folders out of the trash to \"%s\""
@@ -4302,7 +4328,7 @@ msgstr[1] "Premesti izabrane fascikle iz smeća u „%s“"
 msgstr[2] "Premesti izabrane fascikle iz smeća u „%s“"
 msgstr[3] "Premesti izabranu fasciklu iz smeća u „%s“"
 
-#: ../src/file-manager/fm-directory-view.c:7313
+#: ../src/file-manager/fm-directory-view.c:7327
 #, c-format
 msgid "Move the selected folder out of the trash"
 msgid_plural "Move the selected folders out of the trash"
@@ -4311,7 +4337,7 @@ msgstr[1] "Premesti izabrane fascikle iz smeća"
 msgstr[2] "Premesti izabrane fascikle iz smeća"
 msgstr[3] "Premesti izabranu fasciklu iz smeća"
 
-#: ../src/file-manager/fm-directory-view.c:7319
+#: ../src/file-manager/fm-directory-view.c:7333
 #, c-format
 msgid "Move the selected file out of the trash to \"%s\""
 msgid_plural "Move the selected files out of the trash to \"%s\""
@@ -4320,7 +4346,7 @@ msgstr[1] "Premesti izabrane datoteke iz smeća u „%s“"
 msgstr[2] "Premesti izabrane datoteke iz smeća u „%s“"
 msgstr[3] "Premesti izabranu datoteku iz smeća u „%s“"
 
-#: ../src/file-manager/fm-directory-view.c:7323
+#: ../src/file-manager/fm-directory-view.c:7337
 #, c-format
 msgid "Move the selected file out of the trash"
 msgid_plural "Move the selected files out of the trash"
@@ -4329,7 +4355,7 @@ msgstr[1] "Premesti izabrane datoteke iz smeća"
 msgstr[2] "Premesti izabrane datoteke iz smeća"
 msgstr[3] "Premesti izabranu datoteku iz smeća"
 
-#: ../src/file-manager/fm-directory-view.c:7329
+#: ../src/file-manager/fm-directory-view.c:7343
 #, c-format
 msgid "Move the selected item out of the trash to \"%s\""
 msgid_plural "Move the selected items out of the trash to \"%s\""
@@ -4338,7 +4364,7 @@ msgstr[1] "Premesti izabrane stavke iz smeća u „%s“"
 msgstr[2] "Premesti izabrane stavke iz smeća u „%s“"
 msgstr[3] "Premesti izabranu stavku iz smeća u „%s“"
 
-#: ../src/file-manager/fm-directory-view.c:7333
+#: ../src/file-manager/fm-directory-view.c:7347
 #, c-format
 msgid "Move the selected item out of the trash"
 msgid_plural "Move the selected items out of the trash"
@@ -4348,20 +4374,20 @@ msgstr[2] "Premesti izabrane stavke iz smeća"
 msgstr[3] "Premesti izabranu stavku iz smeća"
 
 #. add the "open in new window" menu item
-#: ../src/file-manager/fm-directory-view.c:7551
-#: ../src/file-manager/fm-directory-view.c:7810
-#: ../src/file-manager/fm-tree-view.c:1228
-#: ../src/nautilus-places-sidebar.c:1967
+#: ../src/file-manager/fm-directory-view.c:7565
+#: ../src/file-manager/fm-directory-view.c:7824
+#: ../src/file-manager/fm-tree-view.c:1234
+#: ../src/nautilus-places-sidebar.c:1973
 msgid "Open in New _Window"
 msgstr "Otvori u _novom prozoru"
 
-#: ../src/file-manager/fm-directory-view.c:7553
-#: ../src/file-manager/fm-directory-view.c:7819
+#: ../src/file-manager/fm-directory-view.c:7567
+#: ../src/file-manager/fm-directory-view.c:7833
 msgid "Browse in New _Window"
 msgstr "_Razgledaj u novom prozoru"
 
-#: ../src/file-manager/fm-directory-view.c:7561
-#: ../src/file-manager/fm-directory-view.c:7829
+#: ../src/file-manager/fm-directory-view.c:7575
+#: ../src/file-manager/fm-directory-view.c:7843
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "Raz_gledaj fascikle"
@@ -4369,30 +4395,30 @@ msgstr[1] "Raz_gledaj fascikle"
 msgstr[2] "Raz_gledaj fascikle"
 msgstr[3] "Raz_gledaj fasciklu"
 
-#: ../src/file-manager/fm-directory-view.c:7578
-#: ../src/file-manager/fm-directory-view.c:7859
+#: ../src/file-manager/fm-directory-view.c:7592
+#: ../src/file-manager/fm-directory-view.c:7873
 msgid "Browse in New _Tab"
 msgstr "Razgledaj u novom _listu"
 
-#: ../src/file-manager/fm-directory-view.c:7627
-#: ../src/file-manager/fm-directory-view.c:7892
+#: ../src/file-manager/fm-directory-view.c:7641
+#: ../src/file-manager/fm-directory-view.c:7906
 msgid "_Delete Permanently"
 msgstr "_Trajno obriši"
 
-#: ../src/file-manager/fm-directory-view.c:7628
+#: ../src/file-manager/fm-directory-view.c:7642
 msgid "Delete the open folder permanently"
 msgstr "Trajno briše otvorenu fasciklu"
 
-#: ../src/file-manager/fm-directory-view.c:7632
+#: ../src/file-manager/fm-directory-view.c:7646
 msgid "Move the open folder to the Trash"
 msgstr "Premešta otvorenu fasciklu u Smeće"
 
-#: ../src/file-manager/fm-directory-view.c:7792
+#: ../src/file-manager/fm-directory-view.c:7806
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "_Otvori pomoću „%s“"
 
-#: ../src/file-manager/fm-directory-view.c:7812
+#: ../src/file-manager/fm-directory-view.c:7826
 #, c-format
 msgid "Open in %'d New _Window"
 msgid_plural "Open in %'d New _Windows"
@@ -4401,7 +4427,7 @@ msgstr[1] "Otvori u %'d nova prozora"
 msgstr[2] "Otvori u %'d novih prozora"
 msgstr[3] "Otvori u %0d novom prozoru"
 
-#: ../src/file-manager/fm-directory-view.c:7821
+#: ../src/file-manager/fm-directory-view.c:7835
 #, c-format
 msgid "Browse in %'d New _Window"
 msgid_plural "Browse in %'d New _Windows"
@@ -4410,7 +4436,7 @@ msgstr[1] "Razgledaj u %'d nova prozora"
 msgstr[2] "Razgledaj u %'d novih prozora"
 msgstr[3] "Razgledaj u %0d novom prozoru"
 
-#: ../src/file-manager/fm-directory-view.c:7852
+#: ../src/file-manager/fm-directory-view.c:7866
 #, c-format
 msgid "Open in %'d New _Tab"
 msgid_plural "Open in %'d New _Tabs"
@@ -4419,7 +4445,7 @@ msgstr[1] "Otvori u %'d nova lista"
 msgstr[2] "Otvori u %'d novih lista"
 msgstr[3] "Otvori u %0d novom listu"
 
-#: ../src/file-manager/fm-directory-view.c:7861
+#: ../src/file-manager/fm-directory-view.c:7875
 #, c-format
 msgid "Browse in %'d New _Tab"
 msgid_plural "Browse in %'d New _Tabs"
@@ -4428,62 +4454,62 @@ msgstr[1] "Razgledaj u %'d nova lista"
 msgstr[2] "Razgledaj u %'d novih lista"
 msgstr[3] "Razgledaj u %0d novom listu"
 
-#: ../src/file-manager/fm-directory-view.c:7893
+#: ../src/file-manager/fm-directory-view.c:7907
 msgid "Delete all selected items permanently"
 msgstr "Trajno obriši sve izabrane stavke"
 
-#: ../src/file-manager/fm-directory-view.c:9207
+#: ../src/file-manager/fm-directory-view.c:9221
 msgid "Download location?"
 msgstr "Putanja za preuzeto?"
 
-#: ../src/file-manager/fm-directory-view.c:9210
+#: ../src/file-manager/fm-directory-view.c:9224
 msgid "You can download it or make a link to it."
 msgstr "Možete ga preuzeti ili napraviti vezu do njega."
 
-#: ../src/file-manager/fm-directory-view.c:9213
+#: ../src/file-manager/fm-directory-view.c:9227
 msgid "Make a _Link"
 msgstr "Napravi _vezu"
 
-#: ../src/file-manager/fm-directory-view.c:9217
+#: ../src/file-manager/fm-directory-view.c:9231
 msgid "_Download"
 msgstr "_Preuzmi"
 
-#: ../src/file-manager/fm-directory-view.c:9279
-#: ../src/file-manager/fm-directory-view.c:9344
-#: ../src/file-manager/fm-directory-view.c:9449
+#: ../src/file-manager/fm-directory-view.c:9293
+#: ../src/file-manager/fm-directory-view.c:9358
+#: ../src/file-manager/fm-directory-view.c:9463
 msgid "Drag and drop is not supported."
 msgstr "Prevlačenje i puštanje nije podržano."
 
-#: ../src/file-manager/fm-directory-view.c:9280
+#: ../src/file-manager/fm-directory-view.c:9294
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Prevlačenje i puštanje je podržano samo za lokalne sisteme datoteka."
 
-#: ../src/file-manager/fm-directory-view.c:9345
-#: ../src/file-manager/fm-directory-view.c:9450
+#: ../src/file-manager/fm-directory-view.c:9359
+#: ../src/file-manager/fm-directory-view.c:9464
 msgid "An invalid drag type was used."
 msgstr "Upotrebljena je neispravna vrsta prevlačenja."
 
 #. Translator: This is the filename used for when you dnd text to a directory
-#: ../src/file-manager/fm-directory-view.c:9517
+#: ../src/file-manager/fm-directory-view.c:9531
 msgid "dropped text.txt"
 msgstr "Prevučeno.txt"
 
-#: ../src/file-manager/fm-ditem-page.c:401
 #: ../src/file-manager/fm-ditem-page.c:411
+#: ../src/file-manager/fm-ditem-page.c:421
 msgid "Comment"
 msgstr "Primedba"
 
-#: ../src/file-manager/fm-ditem-page.c:404
+#: ../src/file-manager/fm-ditem-page.c:414
 msgid "URL"
 msgstr "Adresa"
 
-#: ../src/file-manager/fm-ditem-page.c:407
 #: ../src/file-manager/fm-ditem-page.c:417
+#: ../src/file-manager/fm-ditem-page.c:427
 #: ../src/nautilus-image-properties-page.c:309
 msgid "Description"
 msgstr "Opis"
 
-#: ../src/file-manager/fm-ditem-page.c:414
+#: ../src/file-manager/fm-ditem-page.c:424
 msgid "Command"
 msgstr "Naredba"
 
@@ -4742,36 +4768,36 @@ msgid "pointing at \"%s\""
 msgstr "pokazuje na „%s“"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-icon-view.c:3011
+#: ../src/file-manager/fm-icon-view.c:3049
 msgid "_Icons"
 msgstr "_Ikone"
 
-#: ../src/file-manager/fm-icon-view.c:3012
+#: ../src/file-manager/fm-icon-view.c:3050
 msgid "The icon view encountered an error."
 msgstr "Prikaz ikona je naišao na grešku."
 
-#: ../src/file-manager/fm-icon-view.c:3013
+#: ../src/file-manager/fm-icon-view.c:3051
 msgid "The icon view encountered an error while starting up."
 msgstr "Prikaz ikona je naišao na grešku pri pokretanju."
 
-#: ../src/file-manager/fm-icon-view.c:3014
+#: ../src/file-manager/fm-icon-view.c:3052
 msgid "Display this location with the icon view."
 msgstr "Otvori ovu putanju u prikazu pomoću ikona."
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-icon-view.c:3025
+#: ../src/file-manager/fm-icon-view.c:3063
 msgid "_Compact"
 msgstr "_Zbijen"
 
-#: ../src/file-manager/fm-icon-view.c:3026
+#: ../src/file-manager/fm-icon-view.c:3064
 msgid "The compact view encountered an error."
 msgstr "Zbijeni prikaz je naišao na grešku."
 
-#: ../src/file-manager/fm-icon-view.c:3027
+#: ../src/file-manager/fm-icon-view.c:3065
 msgid "The compact view encountered an error while starting up."
 msgstr "Zbijeni prikaz je naišao na grešku pri pokretanju."
 
-#: ../src/file-manager/fm-icon-view.c:3028
+#: ../src/file-manager/fm-icon-view.c:3066
 msgid "Display this location with the compact view."
 msgstr "Otvori ovu putanju u zbijenom prikazu."
 
@@ -4786,40 +4812,40 @@ msgid "Loading..."
 msgstr "Učitava.."
 
 # bug: plural-forms?
-#: ../src/file-manager/fm-list-view.c:2127
+#: ../src/file-manager/fm-list-view.c:2132
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s prikazanih kolona"
 
-#: ../src/file-manager/fm-list-view.c:2146
+#: ../src/file-manager/fm-list-view.c:2151
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Izaberite dodatne podatke za prikaz u u ovoj fascikli:"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:2200
+#: ../src/file-manager/fm-list-view.c:2205
 msgid "Visible _Columns..."
 msgstr "Prikazane _kolone..."
 
 #. tooltip
-#: ../src/file-manager/fm-list-view.c:2201
+#: ../src/file-manager/fm-list-view.c:2206
 msgid "Select the columns visible in this folder"
 msgstr "Bira kolone prikazane u ovoj fascikli"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-list-view.c:2926
+#: ../src/file-manager/fm-list-view.c:2931
 msgid "_List"
 msgstr "Spis_ak"
 
-#: ../src/file-manager/fm-list-view.c:2927
+#: ../src/file-manager/fm-list-view.c:2932
 msgid "The list view encountered an error."
 msgstr "Prikaz spiska je naišao na grešku."
 
-#: ../src/file-manager/fm-list-view.c:2928
+#: ../src/file-manager/fm-list-view.c:2933
 msgid "The list view encountered an error while starting up."
 msgstr "Prikaz spiska je naišao na grešku pri pokretanju."
 
-#: ../src/file-manager/fm-list-view.c:2929
+#: ../src/file-manager/fm-list-view.c:2934
 msgid "Display this location with the list view."
 msgstr "Otvori ovu putanju u prikazu pomoću spiska."
 
@@ -4866,33 +4892,29 @@ msgstr "Osobine"
 msgid "%s Properties"
 msgstr "Osobine za %s"
 
-#. FIXME: we should use C_ () instead. See bug #542658.
-#. *
-#. * Translators: The text before the "|" is context to help you decide on
-#. * the correct translation. Only translate the part after the pipe.
-#.
-#: ../src/file-manager/fm-properties-window.c:1368
+#: ../src/file-manager/fm-properties-window.c:1363
 #, c-format
-msgid "MIME type description (MIME type)|%s (%s)"
+msgctxt "MIME type description (MIME type)"
+msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../src/file-manager/fm-properties-window.c:1585
+#: ../src/file-manager/fm-properties-window.c:1580
 msgid "Cancel Group Change?"
 msgstr "Odustani od izmene grupe?"
 
-#: ../src/file-manager/fm-properties-window.c:2003
+#: ../src/file-manager/fm-properties-window.c:1998
 msgid "Cancel Owner Change?"
 msgstr "Odustani od izmene vlasnika?"
 
-#: ../src/file-manager/fm-properties-window.c:2334
+#: ../src/file-manager/fm-properties-window.c:2329
 msgid "nothing"
 msgstr "ništa"
 
-#: ../src/file-manager/fm-properties-window.c:2336
+#: ../src/file-manager/fm-properties-window.c:2331
 msgid "unreadable"
 msgstr "nečitljiv"
 
-#: ../src/file-manager/fm-properties-window.c:2346
+#: ../src/file-manager/fm-properties-window.c:2341
 #, c-format
 msgid "%'d item, with size %s"
 msgid_plural "%'d items, totalling %s"
@@ -4901,7 +4923,7 @@ msgstr[1] "%'d stavke, ukupne veličine %s"
 msgstr[2] "%'d stavki, ukupne veličine %s"
 msgstr[3] "%'d stavka, veličine %s"
 
-#: ../src/file-manager/fm-properties-window.c:2355
+#: ../src/file-manager/fm-properties-window.c:2350
 msgid "(some contents unreadable)"
 msgstr "(deo sadržaja nečitljiv)"
 
@@ -4911,271 +4933,275 @@ msgstr "(deo sadržaja nečitljiv)"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: ../src/file-manager/fm-properties-window.c:2372
+#: ../src/file-manager/fm-properties-window.c:2367
 msgid "Contents:"
 msgstr "Sadržaj:"
 
 #. Translators: "used" refers to the capacity of the filesystem
-#: ../src/file-manager/fm-properties-window.c:3139
+#: ../src/file-manager/fm-properties-window.c:3134
 msgid "used"
 msgstr "zauzeto"
 
 #. Translators: "free" refers to the capacity of the filesystem
-#: ../src/file-manager/fm-properties-window.c:3144
+#: ../src/file-manager/fm-properties-window.c:3139
 msgid "free"
 msgstr "slobodno"
 
-#: ../src/file-manager/fm-properties-window.c:3146
+#: ../src/file-manager/fm-properties-window.c:3141
 msgid "Total capacity:"
 msgstr "Ukupan kapacitet:"
 
-#: ../src/file-manager/fm-properties-window.c:3155
+#: ../src/file-manager/fm-properties-window.c:3150
 msgid "Filesystem type:"
 msgstr "Sistem datoteka:"
 
-#: ../src/file-manager/fm-properties-window.c:3231
+#: ../src/file-manager/fm-properties-window.c:3226
 msgid "Basic"
 msgstr "Osnovno"
 
-#: ../src/file-manager/fm-properties-window.c:3291
+#: ../src/file-manager/fm-properties-window.c:3286
 msgid "Type:"
 msgstr "Vrsta:"
 
-#: ../src/file-manager/fm-properties-window.c:3299
+#: ../src/file-manager/fm-properties-window.c:3294
 msgid "Link target:"
 msgstr "Meta veze:"
 
-#: ../src/file-manager/fm-properties-window.c:3309
+#: ../src/file-manager/fm-properties-window.c:3304
 msgid "Size:"
 msgstr "Veličina:"
 
-#: ../src/file-manager/fm-properties-window.c:3318
+#: ../src/file-manager/fm-properties-window.c:3313
 #: ../src/nautilus-location-bar.c:55
 msgid "Location:"
 msgstr "Putanja:"
 
-#: ../src/file-manager/fm-properties-window.c:3324
+#: ../src/file-manager/fm-properties-window.c:3319
 msgid "Volume:"
 msgstr "Disk:"
 
-#: ../src/file-manager/fm-properties-window.c:3333
+#: ../src/file-manager/fm-properties-window.c:3328
 msgid "Accessed:"
 msgstr "Poslednji pristup:"
 
-#: ../src/file-manager/fm-properties-window.c:3337
+#: ../src/file-manager/fm-properties-window.c:3332
 msgid "Modified:"
 msgstr "Izmenjen:"
 
-#: ../src/file-manager/fm-properties-window.c:3346
+#: ../src/file-manager/fm-properties-window.c:3341
 msgid "Free space:"
 msgstr "Slobodan prostor:"
 
-#: ../src/file-manager/fm-properties-window.c:3456
+#: ../src/file-manager/fm-properties-window.c:3451
 #: ../src/nautilus-emblem-sidebar.c:1032
 msgid "Emblems"
 msgstr "Obeležja"
 
-#: ../src/file-manager/fm-properties-window.c:3859
+#: ../src/file-manager/fm-properties-window.c:3854
 msgid "_Read"
 msgstr "_Čitanje"
 
-#: ../src/file-manager/fm-properties-window.c:3861
+#: ../src/file-manager/fm-properties-window.c:3856
 msgid "_Write"
 msgstr "_Pisanje"
 
-#: ../src/file-manager/fm-properties-window.c:3863
+#: ../src/file-manager/fm-properties-window.c:3858
 msgid "E_xecute"
 msgstr "_Izvršavanje"
 
 #. translators: this gets concatenated to "no read",
 #. * "no access", etc. (see following strings)
 #.
-#: ../src/file-manager/fm-properties-window.c:4131
-#: ../src/file-manager/fm-properties-window.c:4142
-#: ../src/file-manager/fm-properties-window.c:4154
+#: ../src/file-manager/fm-properties-window.c:4126
+#: ../src/file-manager/fm-properties-window.c:4137
+#: ../src/file-manager/fm-properties-window.c:4149
 msgid "no "
 msgstr "zabranjeno "
 
-#: ../src/file-manager/fm-properties-window.c:4134
+#: ../src/file-manager/fm-properties-window.c:4129
 msgid "list"
 msgstr "listanje"
 
-#: ../src/file-manager/fm-properties-window.c:4136
+#: ../src/file-manager/fm-properties-window.c:4131
 msgid "read"
 msgstr "čitanje"
 
-#: ../src/file-manager/fm-properties-window.c:4145
+#: ../src/file-manager/fm-properties-window.c:4140
 msgid "create/delete"
 msgstr "stvaranje/brisanje"
 
-#: ../src/file-manager/fm-properties-window.c:4147
+#: ../src/file-manager/fm-properties-window.c:4142
 msgid "write"
 msgstr "upis"
 
-#: ../src/file-manager/fm-properties-window.c:4156
+#: ../src/file-manager/fm-properties-window.c:4151
 msgid "access"
 msgstr "pristupanje"
 
-#: ../src/file-manager/fm-properties-window.c:4205
+#: ../src/file-manager/fm-properties-window.c:4200
 msgid "Access:"
 msgstr "Dozvole:"
 
-#: ../src/file-manager/fm-properties-window.c:4207
+#: ../src/file-manager/fm-properties-window.c:4202
 msgid "Folder access:"
 msgstr "Dozvole za fasciklu:"
 
-#: ../src/file-manager/fm-properties-window.c:4209
+#: ../src/file-manager/fm-properties-window.c:4204
 msgid "File access:"
 msgstr "Dozvole za datoteku:"
 
-#: ../src/file-manager/fm-properties-window.c:4221
-#: ../src/file-manager/fm-properties-window.c:4232
-#: ../src/nautilus-file-management-properties.c:291
+#. Translators: this is referred to the permissions
+#. * the user has in a directory.
+#.
+#. Translators: this is referred to captions under icons.
+#: ../src/file-manager/fm-properties-window.c:4219
+#: ../src/file-manager/fm-properties-window.c:4230
+#: ../src/nautilus-file-management-properties.c:292
 msgid "None"
 msgstr "Ništa"
 
-#: ../src/file-manager/fm-properties-window.c:4224
+#: ../src/file-manager/fm-properties-window.c:4222
 msgid "List files only"
 msgstr "Samo prikaz liste datoteka"
 
-#: ../src/file-manager/fm-properties-window.c:4226
+#: ../src/file-manager/fm-properties-window.c:4224
 msgid "Access files"
 msgstr "Pristup datotekama"
 
-#: ../src/file-manager/fm-properties-window.c:4228
+#: ../src/file-manager/fm-properties-window.c:4226
 msgid "Create and delete files"
 msgstr "Stvaranje i brisanje datoteka"
 
-#: ../src/file-manager/fm-properties-window.c:4235
+#: ../src/file-manager/fm-properties-window.c:4233
 msgid "Read-only"
 msgstr "Samo čitanje"
 
-#: ../src/file-manager/fm-properties-window.c:4237
+#: ../src/file-manager/fm-properties-window.c:4235
 msgid "Read and write"
 msgstr "Čitanje i upisivanje"
 
-#: ../src/file-manager/fm-properties-window.c:4302
+#: ../src/file-manager/fm-properties-window.c:4300
 msgid "Set _user ID"
 msgstr "Postavi _IB korisnika (SUID)"
 
-#: ../src/file-manager/fm-properties-window.c:4304
+#: ../src/file-manager/fm-properties-window.c:4302
 msgid "Special flags:"
 msgstr "Naročite oznake:"
 
-#: ../src/file-manager/fm-properties-window.c:4306
+#: ../src/file-manager/fm-properties-window.c:4304
 msgid "Set gro_up ID"
 msgstr "Postavi IB _grupe (SGID)"
 
-#: ../src/file-manager/fm-properties-window.c:4307
+#: ../src/file-manager/fm-properties-window.c:4305
 msgid "_Sticky"
 msgstr "_Lepljiv"
 
-#: ../src/file-manager/fm-properties-window.c:4387
-#: ../src/file-manager/fm-properties-window.c:4591
+#: ../src/file-manager/fm-properties-window.c:4385
+#: ../src/file-manager/fm-properties-window.c:4589
 msgid "_Owner:"
 msgstr "_Vlasnik:"
 
-#: ../src/file-manager/fm-properties-window.c:4393
-#: ../src/file-manager/fm-properties-window.c:4488
-#: ../src/file-manager/fm-properties-window.c:4599
+#: ../src/file-manager/fm-properties-window.c:4391
+#: ../src/file-manager/fm-properties-window.c:4486
+#: ../src/file-manager/fm-properties-window.c:4597
 msgid "Owner:"
 msgstr "Vlasnik:"
 
-#: ../src/file-manager/fm-properties-window.c:4416
-#: ../src/file-manager/fm-properties-window.c:4611
+#: ../src/file-manager/fm-properties-window.c:4414
+#: ../src/file-manager/fm-properties-window.c:4609
 msgid "_Group:"
 msgstr "_Grupa:"
 
-#: ../src/file-manager/fm-properties-window.c:4425
-#: ../src/file-manager/fm-properties-window.c:4489
-#: ../src/file-manager/fm-properties-window.c:4620
+#: ../src/file-manager/fm-properties-window.c:4423
+#: ../src/file-manager/fm-properties-window.c:4487
+#: ../src/file-manager/fm-properties-window.c:4618
 msgid "Group:"
 msgstr "Grupa:"
 
-#: ../src/file-manager/fm-properties-window.c:4450
+#: ../src/file-manager/fm-properties-window.c:4448
 msgid "Others"
 msgstr "Ostali"
 
-#: ../src/file-manager/fm-properties-window.c:4467
+#: ../src/file-manager/fm-properties-window.c:4465
 msgid "Execute:"
 msgstr "Pokretanje:"
 
-#: ../src/file-manager/fm-properties-window.c:4471
+#: ../src/file-manager/fm-properties-window.c:4469
 msgid "Allow _executing file as program"
 msgstr "Dozvoli _pokretanje datoteke kao programa"
 
-#: ../src/file-manager/fm-properties-window.c:4490
+#: ../src/file-manager/fm-properties-window.c:4488
 msgid "Others:"
 msgstr "Ostali:"
 
-#: ../src/file-manager/fm-properties-window.c:4638
+#: ../src/file-manager/fm-properties-window.c:4636
 msgid "Folder Permissions:"
 msgstr "Ovlašćenja nad fasciklom:"
 
-#: ../src/file-manager/fm-properties-window.c:4650
+#: ../src/file-manager/fm-properties-window.c:4648
 msgid "File Permissions:"
 msgstr "Ovlašćenja nad datotekom:"
 
-#: ../src/file-manager/fm-properties-window.c:4660
+#: ../src/file-manager/fm-properties-window.c:4658
 msgid "Text view:"
 msgstr "Tekstualni pregled:"
 
-#: ../src/file-manager/fm-properties-window.c:4807
+#: ../src/file-manager/fm-properties-window.c:4805
 msgid "You are not the owner, so you cannot change these permissions."
 msgstr "Niste vlasnik, pa ne možete izmeniti ova ovlašćenja."
 
-#: ../src/file-manager/fm-properties-window.c:4831
+#: ../src/file-manager/fm-properties-window.c:4829
 msgid "SELinux context:"
 msgstr "SELinuks kontekst:"
 
-#: ../src/file-manager/fm-properties-window.c:4836
+#: ../src/file-manager/fm-properties-window.c:4834
 msgid "Last changed:"
 msgstr "Poslednja promena:"
 
-#: ../src/file-manager/fm-properties-window.c:4850
+#: ../src/file-manager/fm-properties-window.c:4848
 msgid "Apply Permissions to Enclosed Files"
 msgstr "Primeni ovlašćenja na sve sadržane datoteke"
 
-#: ../src/file-manager/fm-properties-window.c:4860
+#: ../src/file-manager/fm-properties-window.c:4858
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Ne može utvrditi ovlašćenja za „%s“."
 
-#: ../src/file-manager/fm-properties-window.c:4863
+#: ../src/file-manager/fm-properties-window.c:4861
 msgid "The permissions of the selected file could not be determined."
 msgstr "Ne može utvrditi ovlašćenja za izabranu datoteku."
 
-#: ../src/file-manager/fm-properties-window.c:5426
+#: ../src/file-manager/fm-properties-window.c:5431
 msgid "Creating Properties window."
 msgstr "Obrazujem prozor sa osobinama."
 
-#: ../src/file-manager/fm-properties-window.c:5691
+#: ../src/file-manager/fm-properties-window.c:5721
 msgid "Select Custom Icon"
 msgstr "Izaberite vašu ikonu"
 
-#: ../src/file-manager/fm-tree-view.c:1379
+#: ../src/file-manager/fm-tree-view.c:1385
 #: ../src/nautilus-places-sidebar.c:320
 msgid "File System"
 msgstr "Sistem datoteka"
 
-#: ../src/file-manager/fm-tree-view.c:1383
+#: ../src/file-manager/fm-tree-view.c:1389
 msgid "Network Neighbourhood"
 msgstr "Mreža"
 
-#: ../src/file-manager/fm-tree-view.c:1637
+#: ../src/file-manager/fm-tree-view.c:1643
 msgid "Tree"
 msgstr "Stablo"
 
-#: ../src/file-manager/fm-tree-view.c:1643
+#: ../src/file-manager/fm-tree-view.c:1649
 msgid "Show Tree"
 msgstr "Prikaži stablo"
 
-#: ../src/nautilus-application.c:394
+#: ../src/nautilus-application.c:413
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "Ne mogu da obrazujem neophodnu fasciklu „%s“."
 
-#: ../src/nautilus-application.c:396
+#: ../src/nautilus-application.c:415
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
@@ -5183,12 +5209,12 @@ msgstr ""
 "Pre pokretanja Nautilusa, napravite ovu fasciklu, ili postavite ovlašćenja "
 "tako da je Nautilus može napraviti."
 
-#: ../src/nautilus-application.c:399
+#: ../src/nautilus-application.c:418
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "Nautilus ne može da napravi sledeće neophodne fascikle: %s."
 
-#: ../src/nautilus-application.c:401
+#: ../src/nautilus-application.c:420
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -5196,8 +5222,8 @@ msgstr ""
 "Pre pokretanja Nautilusa, napravite ove fascikle, ili postavite ovlašćenja "
 "tako da ih Nautilus može napraviti."
 
-#: ../src/nautilus-application.c:1249 ../src/nautilus-places-sidebar.c:1680
-#: ../src/nautilus-places-sidebar.c:1703 ../src/nautilus-places-sidebar.c:1726
+#: ../src/nautilus-application.c:1441 ../src/nautilus-places-sidebar.c:1686
+#: ../src/nautilus-places-sidebar.c:1709 ../src/nautilus-places-sidebar.c:1732
 #, c-format
 msgid "Unable to eject %s"
 msgstr "Ne mogu da izbacim %s"
@@ -5240,7 +5266,7 @@ msgstr ""
 
 #: ../src/nautilus-bookmarks-window.c:158
 #: ../src/nautilus-file-management-properties.c:209
-#: ../src/nautilus-property-browser.c:1569 ../src/nautilus-window-menus.c:574
+#: ../src/nautilus-property-browser.c:1569 ../src/nautilus-window-menus.c:575
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -5289,7 +5315,7 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"Dodaj vezu sa priključenim diskom sa servera"
+"Dodaj vezu sa montiranim diskom sa servera"
 
 #: ../src/nautilus-connect-server-dialog.c:113
 msgid "Custom Location"
@@ -5819,7 +5845,7 @@ msgstr "Ne mogu da učitam podatke o slici"
 msgid "loading..."
 msgstr "učitava..."
 
-#: ../src/nautilus-image-properties-page.c:641
+#: ../src/nautilus-image-properties-page.c:630
 msgid "Image"
 msgstr "Slika"
 
@@ -5870,28 +5896,27 @@ msgstr "Otvori putanju"
 msgid "_Location:"
 msgstr "_Putanja:"
 
-#: ../src/nautilus-main.c:326
+#: ../src/nautilus-main.c:329
 msgid "Perform a quick set of self-check tests."
 msgstr "Sprovedi skup brzih samoprovera."
 
-#: ../src/nautilus-main.c:329
-#, fuzzy
+#: ../src/nautilus-main.c:332
 msgid "Show the version of the program."
-msgstr "Ovlašćenja datoteke."
+msgstr "Prikaži izdanje programa."
 
-#: ../src/nautilus-main.c:331
+#: ../src/nautilus-main.c:334
 msgid "Create the initial window with the given geometry."
 msgstr "Obrazuj početni prozor sa datim dimenzijama i pozicijom."
 
-#: ../src/nautilus-main.c:331
+#: ../src/nautilus-main.c:334
 msgid "GEOMETRY"
 msgstr "GEOMETRIJA"
 
-#: ../src/nautilus-main.c:333
+#: ../src/nautilus-main.c:336
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Obrazuj prozore samo za izričito navedene adrese."
 
-#: ../src/nautilus-main.c:335
+#: ../src/nautilus-main.c:338
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
@@ -5899,19 +5924,19 @@ msgstr ""
 "Ne upravljaj radnom površinom (zanemari sva podešavanja u prozorčetu sa "
 "postavkama)."
 
-#: ../src/nautilus-main.c:337
+#: ../src/nautilus-main.c:340
 msgid "open a browser window."
 msgstr "otvorite prozor razgledača."
 
-#: ../src/nautilus-main.c:339
+#: ../src/nautilus-main.c:342
 msgid "Quit Nautilus."
 msgstr "Napusti Nautilus."
 
-#: ../src/nautilus-main.c:340
+#: ../src/nautilus-main.c:343
 msgid "[URI...]"
 msgstr "[Adresa...]"
 
-#: ../src/nautilus-main.c:381
+#: ../src/nautilus-main.c:398
 msgid ""
 "\n"
 "\n"
@@ -5922,17 +5947,17 @@ msgstr ""
 "Razgledajte sistem datoteka pomoću upravnika datotekama"
 
 #. translators: %s is an option (e.g. --check)
-#: ../src/nautilus-main.c:417 ../src/nautilus-main.c:426
+#: ../src/nautilus-main.c:434 ../src/nautilus-main.c:443
 #, c-format
 msgid "nautilus: %s cannot be used with URIs.\n"
 msgstr "nautilus: %s se ne može koristiti sa adresama.\n"
 
-#: ../src/nautilus-main.c:422
+#: ../src/nautilus-main.c:439
 #, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check se ne može koristiti uz ostale opcije.\n"
 
-#: ../src/nautilus-main.c:431
+#: ../src/nautilus-main.c:448
 #, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry se ne može koristiti sa više od jedne adrese.\n"
@@ -6173,7 +6198,7 @@ msgstr "Prikazuje putanju dugmićima ili tekstualno"
 msgid "_Close Tab"
 msgstr "_Zatvori list"
 
-#: ../src/nautilus-navigation-window.c:1205
+#: ../src/nautilus-navigation-window.c:1197
 #, c-format
 msgid "%s - File Browser"
 msgstr "%s — Razgledač datoteka"
@@ -6182,7 +6207,7 @@ msgstr "%s — Razgledač datoteka"
 msgid "Close tab"
 msgstr "Zatvori list"
 
-#: ../src/nautilus-notes-viewer.c:382 ../src/nautilus-notes-viewer.c:496
+#: ../src/nautilus-notes-viewer.c:382 ../src/nautilus-notes-viewer.c:485
 msgid "Notes"
 msgstr "Beleške"
 
@@ -6194,32 +6219,32 @@ msgstr "Prikaži beleške"
 msgid "Network"
 msgstr "Mreža"
 
-#: ../src/nautilus-places-sidebar.c:1859
+#: ../src/nautilus-places-sidebar.c:1865
 #, c-format
 msgid "Unable to poll %s for media changes"
 msgstr "Ne mogu da pratim promene na %s"
 
-#: ../src/nautilus-places-sidebar.c:1975
+#: ../src/nautilus-places-sidebar.c:1981
 msgid "Remove"
 msgstr "Ukloni"
 
-#: ../src/nautilus-places-sidebar.c:1984
+#: ../src/nautilus-places-sidebar.c:1990
 msgid "Rename..."
 msgstr "Preimenuj..."
 
-#: ../src/nautilus-places-sidebar.c:1996
+#: ../src/nautilus-places-sidebar.c:2002
 msgid "_Mount"
-msgstr "_Priključi"
+msgstr "_Montiraj"
 
-#: ../src/nautilus-places-sidebar.c:2017
+#: ../src/nautilus-places-sidebar.c:2023
 msgid "_Rescan"
 msgstr "_Ponovo pretraži"
 
-#: ../src/nautilus-places-sidebar.c:2382
+#: ../src/nautilus-places-sidebar.c:2388
 msgid "Places"
 msgstr "Mesta"
 
-#: ../src/nautilus-places-sidebar.c:2388
+#: ../src/nautilus-places-sidebar.c:2394
 msgid "Show Places"
 msgstr "Prikaži mesta"
 
@@ -6392,91 +6417,91 @@ msgstr "_Uklonite obeležje..."
 msgid "File Type"
 msgstr "Vrsta datoteke"
 
-#: ../src/nautilus-query-editor.c:260
+#: ../src/nautilus-query-editor.c:264
 msgid "Select folder to search in"
 msgstr "Izaberite fasciklu u kojoj se obavlja pretraga"
 
-#: ../src/nautilus-query-editor.c:350
+#: ../src/nautilus-query-editor.c:354
 msgid "Documents"
 msgstr "Dokumenta"
 
-#: ../src/nautilus-query-editor.c:368
+#: ../src/nautilus-query-editor.c:372
 msgid "Music"
 msgstr "Muzika"
 
-#: ../src/nautilus-query-editor.c:382
+#: ../src/nautilus-query-editor.c:386
 msgid "Video"
 msgstr "Video"
 
-#: ../src/nautilus-query-editor.c:398
+#: ../src/nautilus-query-editor.c:402
 msgid "Picture"
 msgstr "Slika"
 
-#: ../src/nautilus-query-editor.c:418
+#: ../src/nautilus-query-editor.c:422
 msgid "Illustration"
 msgstr "Crtež"
 
-#: ../src/nautilus-query-editor.c:432
+#: ../src/nautilus-query-editor.c:436
 msgid "Spreadsheet"
 msgstr "Tabela"
 
-#: ../src/nautilus-query-editor.c:448
+#: ../src/nautilus-query-editor.c:452
 msgid "Presentation"
 msgstr "Prezentacija"
 
-#: ../src/nautilus-query-editor.c:457
+#: ../src/nautilus-query-editor.c:461
 msgid "Pdf / Postscript"
 msgstr "PDF / Postskript"
 
-#: ../src/nautilus-query-editor.c:465
+#: ../src/nautilus-query-editor.c:469
 msgid "Text File"
 msgstr "Tekstualna datoteka"
 
-#: ../src/nautilus-query-editor.c:544
+#: ../src/nautilus-query-editor.c:548
 msgid "Select type"
 msgstr "Izaberite vrstu"
 
-#: ../src/nautilus-query-editor.c:628
+#: ../src/nautilus-query-editor.c:632
 msgid "Any"
 msgstr "Bilo koja"
 
-#: ../src/nautilus-query-editor.c:643
+#: ../src/nautilus-query-editor.c:647
 msgid "Other Type..."
 msgstr "Neka druga vrsta..."
 
-#: ../src/nautilus-query-editor.c:928
+#: ../src/nautilus-query-editor.c:932
 msgid "Remove this criterion from the search"
 msgstr "Ukloni ovaj uslov iz pretrage"
 
-#: ../src/nautilus-query-editor.c:973
+#: ../src/nautilus-query-editor.c:977
 msgid "Search Folder"
 msgstr "Fascikla za pretragu"
 
-#: ../src/nautilus-query-editor.c:987
+#: ../src/nautilus-query-editor.c:991
 msgid "Edit the saved search"
 msgstr "Izmenite sačuvanu pretragu"
 
-#: ../src/nautilus-query-editor.c:1018
+#: ../src/nautilus-query-editor.c:1022
 msgid "Add a new criterion to this search"
 msgstr "Dodaj novi uslov za ovu pretragu"
 
-#: ../src/nautilus-query-editor.c:1022
+#: ../src/nautilus-query-editor.c:1026
 msgid "Go"
 msgstr "Idi"
 
-#: ../src/nautilus-query-editor.c:1024
+#: ../src/nautilus-query-editor.c:1028
 msgid "Reload"
 msgstr "Osveži"
 
-#: ../src/nautilus-query-editor.c:1029
+#: ../src/nautilus-query-editor.c:1033
 msgid "Perform or update the search"
 msgstr "Izvedi ili osveži pretragu"
 
-#: ../src/nautilus-query-editor.c:1050
+#: ../src/nautilus-query-editor.c:1054
 msgid "_Search for:"
 msgstr "T_raži:"
 
-#: ../src/nautilus-query-editor.c:1079
+#: ../src/nautilus-query-editor.c:1083
 msgid "Search results"
 msgstr "Rezultati pretrage"
 
@@ -6489,7 +6514,7 @@ msgid "Close the side pane"
 msgstr "Ukloni bočnu površ"
 
 #. Set initial window title
-#: ../src/nautilus-spatial-window.c:394 ../src/nautilus-window-menus.c:516
+#: ../src/nautilus-spatial-window.c:394 ../src/nautilus-window-menus.c:517
 #: ../src/nautilus-window.c:154
 msgid "Nautilus"
 msgstr "Nautilus"
@@ -6585,7 +6610,7 @@ msgstr "Nautilus ne podržava ovau vrstu putanja."
 
 #: ../src/nautilus-window-manage-views.c:1916
 msgid "Unable to mount the location."
-msgstr "Ne mogu da priključim putanju."
+msgstr "Ne mogu da montiram putanju."
 
 #: ../src/nautilus-window-manage-views.c:1922
 msgid "Access was denied."
@@ -6617,11 +6642,11 @@ msgstr ""
 "Greška: %s\n"
 "Izaberite neki drugi pregledač i pokušajte ponovo."
 
-#: ../src/nautilus-window-menus.c:180
+#: ../src/nautilus-window-menus.c:181
 msgid "Go to the location specified by this bookmark"
 msgstr "Idi na putanju navedenu u ovom obeleživaču"
 
-#: ../src/nautilus-window-menus.c:498
+#: ../src/nautilus-window-menus.c:499
 msgid ""
 "Nautilus is free software; you can redistribute it and/or modify it under "
 "the terms of the GNU General Public License as published by the Free "
@@ -6633,7 +6658,7 @@ msgstr ""
 "Slobodni Softver (FSF); bilo verzije 2 te Licence, bilo (po vašem nahođenju) "
 "bilo koje novije verzije."
 
-#: ../src/nautilus-window-menus.c:502
+#: ../src/nautilus-window-menus.c:503
 msgid ""
 "Nautilus is distributed in the hope that it will be useful, but WITHOUT ANY "
 "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
@@ -6644,7 +6669,7 @@ msgstr ""
 "GARANCIJA; čak i bez podrazumevane garancije KORISNOSTI ili PRILAGOĐENOSTI "
 "ODREĐENOJ NAMENI.  Vidite GNU Opštu Javnu Licencu za više detalja."
 
-#: ../src/nautilus-window-menus.c:506
+#: ../src/nautilus-window-menus.c:507
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "Nautilus; if not, write to the Free Software Foundation, Inc., 51 Franklin "
@@ -6654,13 +6679,15 @@ msgstr ""
 "niste, pišite Zadužbini za Slobodni Softver (Free Software Foundation, "
 "Inc.), 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA"
 
-#: ../src/nautilus-window-menus.c:518
+#: ../src/nautilus-window-menus.c:519
 msgid ""
 "Nautilus lets you organize files and folders, both on your computer and "
 "online."
 msgstr ""
+"Nautilus vam dozvoljava da organizujete datoteke i fascikle, bilo na vašem "
+"računaru ili na Internetu."
 
-#: ../src/nautilus-window-menus.c:521
+#: ../src/nautilus-window-menus.c:522
 msgid "Copyright © 1999-2008 The Nautilus authors"
 msgstr "Sva prava zadržana © 1999–2008 Autori Nautilusa"
 
@@ -6668,7 +6695,7 @@ msgstr "Sva prava zadržana © 1999–2008 Autori Nautilusa"
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window-menus.c:531
+#: ../src/nautilus-window-menus.c:532
 msgid "translator-credits"
 msgstr ""
 "Danilo Šegan <danilo@prevod.org>\n"
@@ -6676,230 +6703,230 @@ msgstr ""
 "\n"
 "http://prevod.org — prevod na srpski jezik."
 
-#: ../src/nautilus-window-menus.c:534
+#: ../src/nautilus-window-menus.c:535
 msgid "Nautilus Web Site"
 msgstr "Veb stranica Nautilusa"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:736
+#: ../src/nautilus-window-menus.c:770
 msgid "_File"
 msgstr "_Datoteka"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:737
+#: ../src/nautilus-window-menus.c:771
 msgid "_Edit"
 msgstr "_Uređivanje"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:738
+#: ../src/nautilus-window-menus.c:772
 msgid "_View"
 msgstr "P_regled"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:739
+#: ../src/nautilus-window-menus.c:773
 msgid "_Help"
 msgstr "_Pomoć"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:741
+#: ../src/nautilus-window-menus.c:775
 msgid "_Close"
 msgstr "_Zatvori"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:742
+#: ../src/nautilus-window-menus.c:776
 msgid "Close this folder"
 msgstr "Zatvara ovu fasciklu"
 
-#: ../src/nautilus-window-menus.c:745
+#: ../src/nautilus-window-menus.c:779
 msgid "_Backgrounds and Emblems..."
 msgstr "Pozadine i obe_ležja..."
 
-#: ../src/nautilus-window-menus.c:746
+#: ../src/nautilus-window-menus.c:780
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
 msgstr "Prikzuje obrasce, boje i obeležja kojima se može prilagoditi izgled"
 
-#: ../src/nautilus-window-menus.c:749
+#: ../src/nautilus-window-menus.c:783
 msgid "Prefere_nces"
 msgstr "Pos_tavke"
 
-#: ../src/nautilus-window-menus.c:750
+#: ../src/nautilus-window-menus.c:784
 msgid "Edit Nautilus preferences"
 msgstr "Uređuje postavke za Nautilus"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:752
+#: ../src/nautilus-window-menus.c:786
 msgid "_Undo"
 msgstr "_Opozovi"
 
-#: ../src/nautilus-window-menus.c:753
+#: ../src/nautilus-window-menus.c:787
 msgid "Undo the last text change"
 msgstr "Opoziva poslednju izmenu teksta"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:755
+#: ../src/nautilus-window-menus.c:789
 msgid "Open _Parent"
 msgstr "Otvori _nadfasciklu"
 
-#: ../src/nautilus-window-menus.c:756
+#: ../src/nautilus-window-menus.c:790
 msgid "Open the parent folder"
 msgstr "Otvara nadfasciklu"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:762
+#: ../src/nautilus-window-menus.c:796
 msgid "_Stop"
 msgstr "_Zaustavi"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:763
+#: ../src/nautilus-window-menus.c:797
 msgid "Stop loading the current location"
 msgstr "Prekida učitavanje tekuće putanje"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:766
+#: ../src/nautilus-window-menus.c:800
 msgid "_Reload"
 msgstr "_Osveži"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:767
+#: ../src/nautilus-window-menus.c:801
 msgid "Reload the current location"
 msgstr "Osvežava tekuću putanju"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:770
+#: ../src/nautilus-window-menus.c:804
 msgid "_Contents"
 msgstr "_Sadržaj"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:771
+#: ../src/nautilus-window-menus.c:805
 msgid "Display Nautilus help"
 msgstr "Prikazuje Nautilusovu pomoć"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:774
+#: ../src/nautilus-window-menus.c:808
 msgid "_About"
 msgstr "_O programu"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:775
+#: ../src/nautilus-window-menus.c:809
 msgid "Display credits for the creators of Nautilus"
 msgstr "Prikazuje zasluge za tvorce Nautilusa"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:778
+#: ../src/nautilus-window-menus.c:812
 msgid "Zoom _In"
 msgstr "U_većaj"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:779 ../src/nautilus-zoom-control.c:91
+#: ../src/nautilus-window-menus.c:813 ../src/nautilus-zoom-control.c:91
 #: ../src/nautilus-zoom-control.c:345
 msgid "Increase the view size"
 msgstr "Povećava pregled"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:790
+#: ../src/nautilus-window-menus.c:824
 msgid "Zoom _Out"
 msgstr "U_manji"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:791 ../src/nautilus-zoom-control.c:92
+#: ../src/nautilus-window-menus.c:825 ../src/nautilus-zoom-control.c:92
 #: ../src/nautilus-zoom-control.c:294
 msgid "Decrease the view size"
 msgstr "Umanjuje pregled"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:798
+#: ../src/nautilus-window-menus.c:832
 msgid "Normal Si_ze"
 msgstr "_Uobičajena veličina"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:799 ../src/nautilus-zoom-control.c:93
+#: ../src/nautilus-window-menus.c:833 ../src/nautilus-zoom-control.c:93
 #: ../src/nautilus-zoom-control.c:307
 msgid "Use the normal view size"
 msgstr "Vraća pregled na uobičajenu veličinu"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:802
+#: ../src/nautilus-window-menus.c:836
 msgid "Connect to _Server..."
 msgstr "Poveži se sa _serverom..."
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:803
+#: ../src/nautilus-window-menus.c:837
 msgid "Connect to a remote computer or shared disk"
 msgstr "Povezuje se na udaljeni računar ili deljeni disk"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:806
+#: ../src/nautilus-window-menus.c:840
 msgid "_Home Folder"
 msgstr "_Lična fascikla"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:810
+#: ../src/nautilus-window-menus.c:844
 msgid "_Computer"
 msgstr "_Računar"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:814
+#: ../src/nautilus-window-menus.c:848
 msgid "_Network"
 msgstr "M_reža"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:815 ../src/network-scheme.desktop.in.h:1
+#: ../src/nautilus-window-menus.c:849 ../src/network-scheme.desktop.in.h:1
 msgid "Browse bookmarked and local network locations"
 msgstr "Razgleda ranije obeležena i lokalna mrežna mesta"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:818
+#: ../src/nautilus-window-menus.c:852
 msgid "T_emplates"
 msgstr "_Šabloni"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:819
+#: ../src/nautilus-window-menus.c:853
 msgid "Open your personal templates folder"
 msgstr "Otvara fasciklu sa šablonima"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:822
+#: ../src/nautilus-window-menus.c:856
 msgid "_Trash"
 msgstr "_Smeće"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:823
+#: ../src/nautilus-window-menus.c:857
 msgid "Open your personal trash folder"
 msgstr "Otvara fasciklu sa smećem"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:829
+#: ../src/nautilus-window-menus.c:863
 msgid "Show _Hidden Files"
 msgstr "Prikaži _skrivene datoteke"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:830
+#: ../src/nautilus-window-menus.c:864
 msgid "Toggle the display of hidden files in the current window"
 msgstr "Određuje da li da se prikazuju skrivene datoteke u tekućem prozoru"
 
-#: ../src/nautilus-window-menus.c:860
+#: ../src/nautilus-window-menus.c:894
 msgid "_Up"
 msgstr "_Gore"
 
 # ako je za "home directory", onda bi bilo dobro "licni direktorijum", ako je za "home page", onda za "licna stranica"
-#: ../src/nautilus-window-menus.c:863
+#: ../src/nautilus-window-menus.c:897
 msgid "_Home"
 msgstr "_Lični"
 
@@ -6970,6 +6997,9 @@ msgstr "Uvećaj"
 #: ../src/nautilus-zoom-control.c:894
 msgid "Set the zoom level of the current view"
 msgstr "Postavi nivo uvećanja tekućeg pregleda"
+
+#~ msgid "MIME type description (MIME type)|%s (%s)"
+#~ msgstr "%s (%s)"
 
 #~ msgid "%'d file left to delete — %T left"
 #~ msgid_plural "%'d files left to delete — %T left"
