@@ -244,6 +244,9 @@ struct NautilusIconContainerDetails {
 
         /* Set to TRUE after first allocation has been done */
 	gboolean has_been_allocated;
+
+	int size_allocation_count;
+	guint size_allocation_count_id;
 	
 	/* Is the container fixed or resizable */
 	gboolean is_fixed_size;

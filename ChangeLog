@@ -1,3 +1,14 @@
+2009-03-23  Alexander Larsson  <alexl@redhat.com>
+
+	Bug 129963 – nautilus locks up during window resize (compact mode)
+
+        * libnautilus-private/nautilus-icon-container.c:
+        * libnautilus-private/nautilus-icon-private.h:
+	Work around possible infinite loop when relayouting by counting
+	the number of iterations. This could happen in certain cases in
+	with the compat mode. We use a clear-counter-at-idle-hack to detect
+	the end of the loop.
+
 2009-03-20  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* src/file-manager/fm-properties-window.c:

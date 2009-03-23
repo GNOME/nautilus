@@ -4001,6 +4001,11 @@ destroy (GtkObject *object)
 		container->details->selection_changed_id = 0;
 	}
 
+        if (container->details->size_allocation_count_id != 0) {
+		g_source_remove (container->details->size_allocation_count_id);
+		container->details->size_allocation_count_id = 0;
+	}
+
 	/* destroy interactive search dialog */
 	if (container->details->search_window) {
 		gtk_widget_destroy (container->details->search_window);
@@ -4058,6 +4063,19 @@ size_request (GtkWidget *widget,
 	requisition->height = 1;
 }
 
+static gboolean
+clear_size_allocation_count (gpointer data)
+{
+	NautilusIconContainer *container;
+
+	container = NAUTILUS_ICON_CONTAINER (data);
+
+	container->details->size_allocation_count_id = 0;
+	container->details->size_allocation_count = 0;
+
+	return FALSE;
+}
+
 static void
 size_allocate (GtkWidget *widget,
 	       GtkAllocation *allocation)
@@ -4077,6 +4095,28 @@ size_allocate (GtkWidget *widget,
 		need_layout_redone = TRUE;
 	}
 
+	/* Under some conditions we can end up in a loop when size allocating.
+	 * This happens when the icons don't fit without a scrollbar, but fits
+	 * when a scrollbar is added (bug #129963 for details).
+	 * We keep track of this looping by increasing a counter in size_allocate
+	 * and clearing it in a high-prio idle (the only way to detect the loop is
+	 * done).
+	 * When we've done at more than two iterations (with/without scrollbar)
+	 * we terminate this looping by not redoing the layout when the width
+	 * is wider than the current one (i.e when removing the scrollbar).
+	 */
+	if (container->details->size_allocation_count_id == 0) {
+		container->details->size_allocation_count_id = 
+			g_idle_add_full  (G_PRIORITY_HIGH,
+					  clear_size_allocation_count,
+					  container, NULL);
+	}
+	container->details->size_allocation_count++;
+	if (container->details->size_allocation_count > 2 &&
+	    allocation->width >= widget->allocation.width) {
+		need_layout_redone = FALSE;
+	}
+	
 	GTK_WIDGET_CLASS (nautilus_icon_container_parent_class)->size_allocate (widget, allocation);
 
 	container->details->has_been_allocated = TRUE;
