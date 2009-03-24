@@ -37,6 +37,7 @@
 #include <gtk/gtk.h>
 #include <eel/eel-canvas.h>
 #include <eel/eel-canvas-util.h>
+#include <gdk/gdkx.h>
 #include <gio/gio.h>
 #include <math.h>
 #include <stdio.h>
@@ -81,6 +82,7 @@ struct EelBackgroundDetails {
 	/* Realized data: */
 	gboolean background_changes_with_size;
 	GdkPixmap *background_pixmap;
+	gboolean background_pixmap_is_unset_root_pixmap;
 	GnomeBGCrossfade *fade;
 	int background_entire_width;
 	int background_entire_height;
@@ -200,6 +202,29 @@ free_fade (EelBackground *background)
 }
 
 static void
+free_background_pixmap (EelBackground *background)
+{
+	GdkDisplay *display;
+	GdkPixmap *pixmap;
+
+	pixmap = background->details->background_pixmap;
+	if (pixmap != NULL) {
+		/* If we created a root pixmap and didn't set it as background
+		   it will live forever, so we need to kill it manually.
+		   If set as root background it will be killed next time the
+		   background is changed. */
+		if (background->details->background_pixmap_is_unset_root_pixmap) {
+			display = gdk_drawable_get_display (GDK_DRAWABLE (pixmap));
+			XKillClient (GDK_DISPLAY_XDISPLAY (display),
+				     GDK_PIXMAP_XID (pixmap));
+		}
+		g_object_unref (pixmap);
+		background->details->background_pixmap = NULL;
+	}
+}
+
+
+static void
 eel_background_finalize (GObject *object)
 {
 	EelBackground *background;
@@ -209,10 +234,7 @@ eel_background_finalize (GObject *object)
 	g_free (background->details->color);
 	eel_background_remove_current_image (background);
 
-	if (background->details->background_pixmap != NULL) {
-		g_object_unref (background->details->background_pixmap);
-		background->details->background_pixmap = NULL;
-	}
+	free_background_pixmap (background);
 
 	free_fade (background);
 
@@ -286,10 +308,8 @@ eel_background_new (void)
 static void
 eel_background_unrealize (EelBackground *background)
 {
-	if (background->details->background_pixmap != NULL) {
-		g_object_unref (background->details->background_pixmap);
-		background->details->background_pixmap = NULL;
-	}
+	free_background_pixmap (background);
+	
 	background->details->background_entire_width = 0;
 	background->details->background_entire_height = 0;
 	background->details->default_color.red = 0xffff;
@@ -359,10 +379,7 @@ eel_background_ensure_realized (EelBackground *background, GdkWindow *window)
 		return FALSE;
 	}
 
-	if (background->details->background_pixmap != NULL) {
-		g_object_unref (background->details->background_pixmap);
-		background->details->background_pixmap = NULL;
-	}
+	free_background_pixmap (background);
 
 	changed = FALSE;
 
@@ -373,7 +390,8 @@ eel_background_ensure_realized (EelBackground *background, GdkWindow *window)
 									 window,
 									 entire_width, entire_height,
 									 background->details->is_desktop);
-
+	background->details->background_pixmap_is_unset_root_pixmap = background->details->is_desktop;
+		
 	/* We got the pixmap and everything, so we don't care about a change
 	   that is pending (unless things actually change after this time) */
 	g_object_set_data (G_OBJECT (background->details->bg),
@@ -659,6 +677,7 @@ set_root_pixmap (EelBackground *background,
 	screen = gdk_drawable_get_screen (window);
 
 	if (background->details->use_common_pixmap) {
+		background->details->background_pixmap_is_unset_root_pixmap = FALSE;
 		root_pixmap = g_object_ref (pixmap);
 	} else {
 		root_pixmap = gnome_bg_create_pixmap (background->details->bg, window,

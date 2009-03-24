@@ -1,3 +1,9 @@
+2009-03-24  Alexander Larsson  <alexl@redhat.com>
+
+        * eel-background.c:
+	Ensure that we correctly free root pixmaps that are never set
+	as desktop background, so that they are not leaked.
+
 2009-03-16  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* Makefile.am: remove -version-info LDFLAG from eel,
