@@ -1,3 +1,10 @@
+2009-03-26  Alexander Larsson  <alexl@redhat.com>
+
+	Bug 576761 – fallback icon when icon specified in .desktop doesn't exist is ugly
+
+	* libnautilus-private/nautilus-default-file-icon.c:
+	Replace the ancient gnome 1.x fallback icon with something contemporary.
+
 2009-03-23  Alexander Larsson  <alexl@redhat.com>
 
 	Bug 129963 – nautilus locks up during window resize (compact mode)
