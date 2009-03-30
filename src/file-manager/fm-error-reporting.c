@@ -51,6 +51,12 @@ fm_report_error_loading_directory (NautilusFile *file,
 		return;
 	}
 
+	if (error->domain == G_IO_ERROR &&
+	    error->code == G_IO_ERROR_NOT_MOUNTED) {
+		/* This case is retried automatically */
+		return;
+	}
+	
 	file_name = nautilus_file_get_display_name (file);
 	
 	if (error->domain == G_IO_ERROR) {

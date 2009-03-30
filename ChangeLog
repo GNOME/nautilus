@@ -1,3 +1,11 @@
+2009-03-30  Alexander Larsson  <alexl@redhat.com>
+
+        * src/file-manager/fm-error-reporting.c:
+        (fm_report_error_loading_directory):
+	Don't show error about not mounted when loading a directory, as
+	this will anyway automaticall trigger a mount operation (and possible
+	error from that).
+
 2009-03-26  Alexander Larsson  <alexl@redhat.com>
 
 	Bug 576761 – fallback icon when icon specified in .desktop doesn't exist is ugly
