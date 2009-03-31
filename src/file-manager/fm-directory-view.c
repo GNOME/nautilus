@@ -9261,10 +9261,12 @@ ask_link_action (FMDirectoryView *view)
 
 typedef struct {
 	FMDirectoryView  *view;
+	GCancellable *cancellable;
 	char *encoded_url;
 	char *target_uri;
 	int x;
 	int y;
+	guint timeout;
 } NetscapeUrlDropAsk;
 
 static void
@@ -9273,7 +9275,7 @@ handle_netscape_url_drop_ask_cb (GObject *source_object,
 				 gpointer user_data)
 {
 	NetscapeUrlDropAsk *data;
-	GdkDragAction  action;
+	GdkDragAction action;
 	GFileInfo *info;
 	GFile *f;
 	const char *mime_type;
@@ -9312,9 +9314,26 @@ handle_netscape_url_drop_ask_cb (GObject *source_object,
 	}
 	
 	g_object_unref (data->view);
+	g_object_unref (data->cancellable);
+	if (data->timeout != 0) {
+		g_source_remove (data->timeout);
+	}
 	g_free (data->encoded_url);
 	g_free (data->target_uri);
 	g_free (data);
+}
+
+static gboolean
+handle_netscape_url_drop_timeout (gpointer user_data)
+{
+	NetscapeUrlDropAsk *data;
+
+	data = user_data;
+
+	g_cancellable_cancel (data->cancellable);
+	data->timeout = 0;
+	
+	return FALSE;
 }
 
 void
@@ -9379,15 +9398,21 @@ fm_directory_view_handle_netscape_url_drop (FMDirectoryView  *view,
 		f = g_file_new_for_uri (url);
 		data = g_new0 (NetscapeUrlDropAsk, 1);
 		data->view = g_object_ref (view);
+		data->cancellable = g_cancellable_new ();
 		data->encoded_url = g_strdup (encoded_url);
 		data->target_uri = g_strdup (target_uri);
 		data->x = x;
 		data->y = y;
+		/* Ensure we wait at most 1 second for mimetype */
+		data->timeout = g_timeout_add (1000,
+					       handle_netscape_url_drop_timeout,
+					       data);
 		g_file_query_info_async (f,
 					 G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE, 0,
-					 0, NULL,
+					 0, data->cancellable,
 					 handle_netscape_url_drop_ask_cb,
 					 data);
+		
 		g_free (container_uri);
 		return;
 	}
