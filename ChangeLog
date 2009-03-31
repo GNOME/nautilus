@@ -1,3 +1,10 @@
+2009-03-31  Alexander Larsson  <alexl@redhat.com>
+
+        * src/file-manager/fm-directory-view.c:
+        (handle_netscape_url_drop_ask_cb):
+        (fm_directory_view_handle_netscape_url_drop):
+	Check http mimetype asynchronously to avoid hanging
+
 2009-03-30  Alexander Larsson  <alexl@redhat.com>
 
         * src/file-manager/fm-error-reporting.c:

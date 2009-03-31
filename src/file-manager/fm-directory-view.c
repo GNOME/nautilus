@@ -9259,6 +9259,64 @@ ask_link_action (FMDirectoryView *view)
 	return result;
 }
 
+typedef struct {
+	FMDirectoryView  *view;
+	char *encoded_url;
+	char *target_uri;
+	int x;
+	int y;
+} NetscapeUrlDropAsk;
+
+static void
+handle_netscape_url_drop_ask_cb (GObject *source_object,
+				 GAsyncResult *res,
+				 gpointer user_data)
+{
+	NetscapeUrlDropAsk *data;
+	GdkDragAction  action;
+	GFileInfo *info;
+	GFile *f;
+	const char *mime_type;
+
+	data = user_data;
+	f = G_FILE (source_object);
+
+	info = g_file_query_info_finish (f, res, NULL);
+	mime_type = NULL;
+
+	if (info) {
+		mime_type = g_file_info_get_content_type (info);
+	}
+
+	if (mime_type != NULL &&
+	    (g_content_type_equals (mime_type, "text/html") ||
+	     g_content_type_equals (mime_type, "text/xml")  ||
+	     g_content_type_equals (mime_type, "application/xhtml+xml"))) {
+		action = GDK_ACTION_LINK;
+	} else if (mime_type != NULL &&
+		   g_content_type_equals (mime_type, "text/plain")) {
+		action = ask_link_action (data->view);
+	} else {
+		action = GDK_ACTION_COPY;
+	}
+	if (info) {
+		g_object_unref (info);
+	}
+	
+	if (action != 0) {
+		fm_directory_view_handle_netscape_url_drop (data->view,
+							    data->encoded_url,
+							    data->target_uri,
+							    action,
+							    data->x, data->y);
+	}
+	
+	g_object_unref (data->view);
+	g_free (data->encoded_url);
+	g_free (data->target_uri);
+	g_free (data);
+}
+
 void
 fm_directory_view_handle_netscape_url_drop (FMDirectoryView  *view,
 					    const char       *encoded_url,
@@ -9316,37 +9374,22 @@ fm_directory_view_handle_netscape_url_drop (FMDirectoryView  *view,
 	}
 
 	if (action == GDK_ACTION_ASK) {
-		GFileInfo *info;
-		GFile *f;
-		const char *mime_type;
+		NetscapeUrlDropAsk *data;
 
 		f = g_file_new_for_uri (url);
-		info = g_file_query_info (f, G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE, 0, NULL, NULL);
-		mime_type = NULL;
-
-		if (info) {
-			mime_type = g_file_info_get_content_type (info);
-		}
-
-		if (mime_type != NULL &&
-		    (g_content_type_equals (mime_type, "text/html") ||
-		     g_content_type_equals (mime_type, "text/xml")  ||
-		     g_content_type_equals (mime_type, "application/xhtml+xml"))) {
-			action = GDK_ACTION_LINK;
-		} else if (mime_type != NULL &&
-			   g_content_type_equals (mime_type, "text/plain")) {
-			action = ask_link_action (view);
-		} else {
-			action = GDK_ACTION_COPY;
-		}
-		if (info) {
-			g_object_unref (info);
-		}
-
-		if (action == 0) {
-			g_free (container_uri);
-			return;
-		}
+		data = g_new0 (NetscapeUrlDropAsk, 1);
+		data->view = g_object_ref (view);
+		data->encoded_url = g_strdup (encoded_url);
+		data->target_uri = g_strdup (target_uri);
+		data->x = x;
+		data->y = y;
+		g_file_query_info_async (f,
+					 G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE, 0,
+					 0, NULL,
+					 handle_netscape_url_drop_ask_cb,
+					 data);
+		g_free (container_uri);
+		return;
 	}
 
 	/* We don't support GDK_ACTION_ASK or GDK_ACTION_PRIVATE
