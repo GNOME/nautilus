@@ -1,3 +1,41 @@
+2009-04-01  Alexander Larsson  <alexl@redhat.com>
+
+	Bug 518481 – URL shortcuts do not open query part
+
+	* libnautilus-private/nautilus-file-private.h:
+	* libnautilus-private/nautilus-file.[ch]:
+	* libnautilus-private/nautilus-desktop-icon-file.c:
+        (update_info_from_link):
+	* libnautilus-private/nautilus-directory-async.c:
+        (lacks_mount):
+        (link_info_done):
+	* libnautilus-private/nautilus-search-directory-file.c:
+        (nautilus_search_directory_file_init):
+	Store NautilusFile activation uri as char *uri, not
+	GFile, as we sometimes handle links that are not true
+	GFile locations such as mailto: links in desktop files.
+
+	* libnautilus-private/nautilus-desktop-link.[ch]:
+        Add nautilus_desktop_link_get_activation_uri
+
+	* libnautilus-private/nautilus-directory.c:
+        (nautilus_directory_notify_files_added_by_uri):
+        (nautilus_directory_notify_files_changed_by_uri):
+        (nautilus_directory_notify_files_removed_by_uri):
+        (nautilus_directory_schedule_metadata_remove_by_uri):
+	Use public nautilus_file_list_from_uris instead of local
+	copy of it.
+
+	* libnautilus-private/nautilus-mime-actions.c:
+	Store both NautilusFile and char *uri in ApplicationLaunchParameters.
+	This allows us to correctly handle uris that don't work well as
+	GFiles and pass them unmodified to the launched applications.
+
+	* libnautilus-private/nautilus-program-choosing.[ch]:
+	Add nautilus_launch_application_by_uri() that launches an application
+	by specifying the file as a uri, so that we can handle uris that
+	don't work well as GFile/NautilusFiles.
+
 2009-03-31  Alexander Larsson  <alexl@redhat.com>
 
         * src/file-manager/fm-directory-view.c:

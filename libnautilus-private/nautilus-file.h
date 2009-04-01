@@ -434,6 +434,7 @@ GList *                 nautilus_file_list_ref                          (GList  
 void                    nautilus_file_list_unref                        (GList                          *file_list);
 void                    nautilus_file_list_free                         (GList                          *file_list);
 GList *                 nautilus_file_list_copy                         (GList                          *file_list);
+GList *                 nautilus_file_list_from_uris                    (GList                          *uri_list);
 GList *			nautilus_file_list_sort_by_display_name		(GList				*file_list);
 void                    nautilus_file_list_call_when_ready              (GList                          *file_list,
 									 NautilusFileAttributes          attributes,

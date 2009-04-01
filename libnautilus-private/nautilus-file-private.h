@@ -111,7 +111,7 @@ struct NautilusFileDetails
 
 	/* Info you might get from a link (.desktop, .directory or nautilus link) */
 	char *custom_icon;
-	GFile *activation_location;
+	char *activation_uri;
 
 	/* used during DND, for checking whether source and destination are on
 	 * the same file system.
@@ -183,7 +183,7 @@ struct NautilusFileDetails
 	eel_boolean_bit got_link_info                 : 1;
 	eel_boolean_bit link_info_is_up_to_date       : 1;
 	eel_boolean_bit got_custom_display_name       : 1;
-	eel_boolean_bit got_custom_activation_location : 1;
+	eel_boolean_bit got_custom_activation_uri     : 1;
 
 	eel_boolean_bit thumbnail_is_up_to_date       : 1;
 	eel_boolean_bit thumbnail_wants_original      : 1;

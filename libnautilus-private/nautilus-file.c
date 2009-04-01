@@ -279,10 +279,10 @@ nautilus_file_clear_info (NautilusFile *file)
 		nautilus_file_clear_display_name (file);
 	}
 
-	if (!file->details->got_custom_activation_location &&
-	    file->details->activation_location != NULL) {
-		g_object_unref (file->details->activation_location);
-		file->details->activation_location = NULL;
+	if (!file->details->got_custom_activation_uri &&
+	    file->details->activation_uri != NULL) {
+		g_free (file->details->activation_uri);
+		file->details->activation_uri = NULL;
 	}
 	
 	if (file->details->icon != NULL) {
@@ -650,9 +650,7 @@ finalize (GObject *object)
 	g_free (file->details->description);
 	g_free (file->details->top_left_text);
 	g_free (file->details->custom_icon);
-	if (file->details->activation_location) {
-		g_object_unref (file->details->activation_location);
-	}
+	g_free (file->details->activation_uri);
 	g_free (file->details->compare_by_emblem_cache);
 
 	if (file->details->thumbnail) {
@@ -1556,7 +1554,7 @@ update_info_internal (NautilusFile *file,
 	const char *symlink_name, *mime_type, *selinux_context, *name, *thumbnail_path;
 	GFileType file_type;
 	GIcon *icon;
-	GFile *old_activation_location;
+	char *old_activation_uri;
 	const char *activation_uri;
 	const char *description;
 	const char *filesystem_id;
@@ -1599,24 +1597,24 @@ update_info_internal (NautilusFile *file,
 	}
 	file->details->type = file_type;
 
-	if (!file->details->got_custom_activation_location) {
+	if (!file->details->got_custom_activation_uri) {
 		activation_uri = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
 		if (activation_uri == NULL) {
-			if (file->details->activation_location) {
-				g_object_unref (file->details->activation_location);
-				file->details->activation_location = NULL;
+			if (file->details->activation_uri) {
+				g_free (file->details->activation_uri);
+				file->details->activation_uri = NULL;
 				changed = TRUE;
 			}
 		} else {
-			old_activation_location = file->details->activation_location;
-			file->details->activation_location = g_file_new_for_uri (activation_uri);
+			old_activation_uri = file->details->activation_uri;
+			file->details->activation_uri = g_strdup (activation_uri);
 			
-			if (old_activation_location) {
-				if (!g_file_equal (old_activation_location,
-						   file->details->activation_location)) {
+			if (old_activation_uri) {
+				if (strcmp (old_activation_uri,
+					    file->details->activation_uri) != 0) {
 					changed = TRUE;
 				}
-				g_object_unref (old_activation_location);
+				g_free (old_activation_uri);
 			} else {
 				changed = TRUE;
 			}
@@ -3236,7 +3234,7 @@ nautilus_file_is_trusted_link (NautilusFile *file)
 gboolean
 nautilus_file_has_activation_uri (NautilusFile *file)
 {
-	return file->details->activation_location != NULL;
+	return file->details->activation_uri != NULL;
 }
 
 
@@ -3249,8 +3247,8 @@ nautilus_file_get_activation_uri (NautilusFile *file)
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-	if (file->details->activation_location != NULL) {
-		return g_file_get_uri (file->details->activation_location);
+	if (file->details->activation_uri != NULL) {
+		return g_strdup (file->details->activation_uri);
 	}
 	
 	return nautilus_file_get_uri (file);
@@ -3261,8 +3259,8 @@ nautilus_file_get_activation_location (NautilusFile *file)
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-	if (file->details->activation_location != NULL) {
-		return g_object_ref (file->details->activation_location);
+	if (file->details->activation_uri != NULL) {
+		return g_file_new_for_uri (file->details->activation_uri);
 	}
 	
 	return nautilus_file_get_location (file);
@@ -6844,6 +6842,23 @@ GList *
 nautilus_file_list_copy (GList *list)
 {
 	return g_list_copy (nautilus_file_list_ref (list));
+}
+
+GList *
+nautilus_file_list_from_uris (GList *uri_list)
+{
+	GList *l, *file_list;
+	const char *uri;
+	GFile *file;
+	
+	file_list = NULL;
+
+	for (l = uri_list; l != NULL; l = l->next) {
+		uri = l->data;
+		file = g_file_new_for_uri (uri);
+		file_list = g_list_prepend (file_list, file);
+	}
+	return g_list_reverse (file_list);
 }
 
 static int

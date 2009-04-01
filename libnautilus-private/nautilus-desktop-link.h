@@ -67,6 +67,7 @@ char *                  nautilus_desktop_link_get_file_name           (NautilusD
 char *                  nautilus_desktop_link_get_display_name        (NautilusDesktopLink     *link);
 GIcon *                 nautilus_desktop_link_get_icon                (NautilusDesktopLink     *link);
 GFile *                 nautilus_desktop_link_get_activation_location (NautilusDesktopLink     *link);
+char *                  nautilus_desktop_link_get_activation_uri      (NautilusDesktopLink     *link);
 gboolean                nautilus_desktop_link_get_date                (NautilusDesktopLink     *link,
 								       NautilusDateType         date_type,
 								       time_t                  *date);

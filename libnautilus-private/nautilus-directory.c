@@ -1038,24 +1038,6 @@ nautilus_directory_notify_files_added (GList *files)
 	g_hash_table_destroy (parent_directories);
 }
 
-static GList *
-uri_list_to_file_list (GList *uris)
-{
-	GList *l, *file_list;
-	const char *uri;
-	GFile *file;
-		
-	
-	file_list = NULL;
-
-	for (l = uris; l != NULL; l = l->next) {
-		uri = l->data;
-		file = g_file_new_for_uri (uri);
-		file_list = g_list_prepend (file_list, file);
-	}
-	return g_list_reverse (file_list);
-}
-
 static void
 g_file_pair_free (GFilePair *pair)
 {
@@ -1089,7 +1071,7 @@ nautilus_directory_notify_files_added_by_uri (GList *uris)
 {
 	GList *files;
 
-	files = uri_list_to_file_list (uris);
+	files = nautilus_file_list_from_uris (uris);
 	nautilus_directory_notify_files_added (files);
 	eel_g_object_list_free (files);
 }
@@ -1136,7 +1118,7 @@ nautilus_directory_notify_files_changed_by_uri (GList *uris)
 {
 	GList *files;
 
-	files = uri_list_to_file_list (uris);
+	files = nautilus_file_list_from_uris (uris);
 	nautilus_directory_notify_files_changed (files);
 	eel_g_object_list_free (files);
 }
@@ -1194,7 +1176,7 @@ nautilus_directory_notify_files_removed_by_uri (GList *uris)
 {
 	GList *files;
 
-	files = uri_list_to_file_list (uris);
+	files = nautilus_file_list_from_uris (uris);
 	nautilus_directory_notify_files_changed (files);
 	eel_g_object_list_free (files);
 }
@@ -1595,7 +1577,7 @@ nautilus_directory_schedule_metadata_remove_by_uri (GList *uris)
 {
 	GList *files;
 
-	files = uri_list_to_file_list (uris);
+	files = nautilus_file_list_from_uris (uris);
 	nautilus_directory_schedule_metadata_remove (files);
 	eel_g_object_list_free (files);
 }

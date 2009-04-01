@@ -205,10 +205,8 @@ update_info_from_link (NautilusDesktopIconFile *icon_file)
 		g_object_unref (file->details->icon);
 	}
 	file->details->icon = nautilus_desktop_link_get_icon (link);
-	if (file->details->activation_location) {
-		g_object_unref (file->details->activation_location);
-	}
-	file->details->activation_location = nautilus_desktop_link_get_activation_location (link);
+	g_free (file->details->activation_uri);
+	file->details->activation_uri = nautilus_desktop_link_get_activation_uri (link);
 	file->details->got_link_info = TRUE;
 	file->details->link_info_is_up_to_date = TRUE;
 

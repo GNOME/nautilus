@@ -36,6 +36,9 @@ typedef void (*NautilusApplicationChoiceCallback) (GAppInfo                     
 void nautilus_launch_application                 (GAppInfo                          *application,
 						  GList                             *files,
 						  GtkWindow                         *parent_window);
+void nautilus_launch_application_by_uri          (GAppInfo                          *application,
+						  GList                             *uris,
+						  GtkWindow                         *parent_window);
 void nautilus_launch_application_from_command    (GdkScreen                         *screen,
 						  const char                        *name,
 						  const char                        *command_string,

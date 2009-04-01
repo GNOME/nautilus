@@ -1770,7 +1770,7 @@ lacks_mount (NautilusFile *file)
 		 
 		 /* Mountable with a target_uri, could be a mountpoint */
 		 (file->details->type == G_FILE_TYPE_MOUNTABLE &&
-		  file->details->activation_location != NULL)
+		  file->details->activation_uri != NULL)
 
 		 )
 		);
@@ -3622,12 +3622,10 @@ link_info_done (NautilusDirectory *directory,
 	g_free (file->details->custom_icon);
 	file->details->custom_icon = NULL;
 	if (uri) {
-		if (file->details->activation_location) {
-			g_object_unref (file->details->activation_location);
-			file->details->activation_location = NULL;
-		}
-		file->details->got_custom_activation_location = TRUE;
-		file->details->activation_location = g_file_new_for_uri (uri);
+		g_free (file->details->activation_uri);
+		file->details->activation_uri = NULL;
+		file->details->got_custom_activation_uri = TRUE;
+		file->details->activation_uri = g_strdup (uri);
 	}
 	if (is_trusted) {
 		file->details->custom_icon = g_strdup (icon);

@@ -319,6 +319,16 @@ nautilus_desktop_link_get_activation_location (NautilusDesktopLink *link)
 	return NULL;
 }
 
+char *
+nautilus_desktop_link_get_activation_uri (NautilusDesktopLink *link)
+{
+	if (link->details->activation_location) {
+		return g_file_get_uri (link->details->activation_location);
+	}
+	return NULL;
+}
+
+
 gboolean
 nautilus_desktop_link_get_date (NautilusDesktopLink *link,
 				NautilusDateType     date_type,

@@ -138,7 +138,7 @@ application_cannot_open_location (GAppInfo *application,
  * parameter. Provide a parent window for error dialogs. 
  * 
  * @application: The application to be launched.
- * @files: The files whose locations should be passed as a parameter to the application.
+ * @uris: The files whose locations should be passed as a parameter to the application.
  * @parent_window: A window to use as the parent for any error dialogs.
  */
 void
@@ -146,8 +146,25 @@ nautilus_launch_application (GAppInfo *application,
 			     GList *files,
 			     GtkWindow *parent_window)
 {
+	GList *uris, *l;
+
+	uris = NULL;
+	for (l = files; l != NULL; l = l->next) {
+		uris = g_list_prepend (uris, nautilus_file_get_activation_uri (l->data));
+	}
+	uris = g_list_reverse (uris);
+	nautilus_launch_application_by_uri (application, uris,
+					    parent_window);
+	eel_g_list_free_deep (uris);
+}
+
+void
+nautilus_launch_application_by_uri (GAppInfo *application, 
+				    GList *uris,
+				    GtkWindow *parent_window)
+{
 	char            *uri, *uri_scheme;
-	GList           *locations, *uris, *l;
+	GList           *locations, *l;
 	GFile *location;
 	NautilusFile    *file;
 	gboolean        result;
@@ -156,25 +173,20 @@ nautilus_launch_application (GAppInfo *application,
 	NautilusIconInfo *icon;
 	int count, total;
 
-	g_assert (files != NULL);
+	g_assert (uris != NULL);
 
 	/* count the number of uris with local paths */
 	count = 0;
-	total = g_list_length (files);
+	total = g_list_length (uris);
 	locations = NULL;
-	uris = NULL;
-	for (l = files; l != NULL; l = l->next) {
-		file = NAUTILUS_FILE (l->data);
+	for (l = uris; l != NULL; l = l->next) {
+		uri = l->data;
 		
-		location = nautilus_file_get_activation_location (file);
-		uri = nautilus_file_get_activation_uri (file);
-
+		location = g_file_new_for_uri (uri);
 		if (g_file_is_native (location)) {
 			count++;
 		}
-
 		locations = g_list_prepend (locations, location);
-		uris = g_list_prepend (uris, uri);
 	}
 	locations = g_list_reverse (locations);
 
@@ -183,8 +195,9 @@ nautilus_launch_application (GAppInfo *application,
 		gdk_app_launch_context_set_screen (launch_context,
 						   gtk_window_get_screen (parent_window));
 
-	file = NAUTILUS_FILE (files->data);
+	file = nautilus_file_get_by_uri (uris->data);
 	icon = nautilus_file_get_icon (file, 48, 0);
+	nautilus_file_unref (file);
 	if (icon) {
 		gdk_app_launch_context_set_icon_name (launch_context,
 							nautilus_icon_info_get_used_name (icon));
@@ -215,7 +228,7 @@ nautilus_launch_application (GAppInfo *application,
 	if (!result) {
 		if (error->domain == G_IO_ERROR &&
 		    error->code == G_IO_ERROR_NOT_SUPPORTED) {
-			uri_scheme = nautilus_file_get_uri_scheme (NAUTILUS_FILE (files->data));
+			uri_scheme = g_uri_parse_scheme (uris->data);
 			application_cannot_open_location (application,
 							  file,
 							  uri_scheme,
@@ -231,15 +244,14 @@ nautilus_launch_application (GAppInfo *application,
 		}
 		g_error_free (error);
 	} else {
-		for (l = files; l != NULL; l = l->next) {
-			file = NAUTILUS_FILE (l->data);
-			
+		for (l = uris; l != NULL; l = l->next) {
+			file = nautilus_file_get_by_uri (l->data);
 			nautilus_recent_add_file (file, application);
+			nautilus_file_unref (file);
 		}
 	}
 
 	eel_g_object_list_free (locations);
-	eel_g_list_free_deep (uris);
 }
 
 /**
