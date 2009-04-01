@@ -5977,6 +5977,39 @@ nautilus_file_is_broken_symbolic_link (NautilusFile *file)
 	return nautilus_file_get_file_type (file) == G_FILE_TYPE_SYMBOLIC_LINK;
 }
 
+static void
+get_fs_free_cb (GObject *source_object,
+		GAsyncResult *res,
+		gpointer user_data)
+{
+	NautilusDirectory *directory;
+	NautilusFile *file;
+	guint64 free_space;
+	GFileInfo *info;
+
+	directory = NAUTILUS_DIRECTORY (user_data);
+	
+	free_space = (guint64)-1;
+	info = g_file_query_filesystem_info_finish (G_FILE (source_object),
+						    res, NULL);
+	if (info) {
+		if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE)) {
+			free_space = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
+		}
+		g_object_unref (info);
+	}
+
+	if (directory->details->free_space != free_space) {
+		directory->details->free_space = free_space;
+		file = nautilus_directory_get_existing_corresponding_file (directory);
+		if (file) {
+			nautilus_file_emit_changed (file);
+			nautilus_file_unref (file);
+		}
+	}
+	nautilus_directory_unref (directory);
+}
+
 /**
  * nautilus_file_get_volume_free_space
  * Get a nicely formatted char with free space on the file's volume
@@ -5987,24 +6020,33 @@ nautilus_file_is_broken_symbolic_link (NautilusFile *file)
 char *
 nautilus_file_get_volume_free_space (NautilusFile *file)
 {
-	goffset free_space;
-	GFileInfo *info;
+	NautilusDirectory *directory;
 	GFile *location;
 	char *res;
+	time_t now;
+
+	directory = nautilus_directory_get_for_file (file);
+
+	now = time (NULL);
+	/* Update first time and then every 2 seconds */
+	if (directory->details->free_space_read == 0 ||
+	    (now - directory->details->free_space_read) > 2)  {
+		directory->details->free_space_read = now;
+		location = nautilus_file_get_location (file);
+		g_file_query_filesystem_info_async (location,
+						    G_FILE_ATTRIBUTE_FILESYSTEM_FREE,
+						    0, NULL,
+						    get_fs_free_cb,
+						    directory); /* Inherits ref */
+		g_object_unref (location);
+	}
+
 
 	res = NULL;
-
-	location = nautilus_file_get_location (file);
-	info = g_file_query_filesystem_info (location, G_FILE_ATTRIBUTE_FILESYSTEM_FREE, NULL, NULL);
-	if (info) {
-		if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE)) {
-			free_space = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
-			res = g_format_size_for_display (free_space);
-		}
-		g_object_unref (info);
+	if (directory->details->free_space != (guint64)-1) {
+		res = g_format_size_for_display (directory->details->free_space);
 	}
-	g_object_unref (location);
-
+	
 	return res;
 }
 

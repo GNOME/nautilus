@@ -1,5 +1,13 @@
 2009-04-01  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-directory-private.h:
+	* libnautilus-private/nautilus-directory.c:
+	* libnautilus-private/nautilus-file.c:
+	Call query_filesystem_info asynchronously.
+	Also, avoid calling it to often 
+
+2009-04-01  Alexander Larsson  <alexl@redhat.com>
+
 	Bug 518481 – URL shortcuts do not open query part
 
 	* libnautilus-private/nautilus-file-private.h:
