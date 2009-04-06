@@ -1,3 +1,12 @@
+2009-04-06  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-dnd.c:
+	(nautilus_drag_default_drop_action_for_icons):
+	Fix regression in the default dnd type. We don't
+	want to look recursively for the parent.
+	See https://bugzilla.redhat.com/show_bug.cgi?id=456515
+	for details.
+
 2009-04-02  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:

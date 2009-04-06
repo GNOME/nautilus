@@ -437,7 +437,7 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 	gboolean target_is_source_parent;
 	gboolean source_deletable;
 	const char *dropped_uri;
-	GFile *target, *dropped;
+	GFile *target, *dropped, *dropped_directory;
 	GdkDragAction actions;
 	NautilusFile *dropped_file, *target_file;
 
@@ -519,7 +519,16 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 	
 	/* Compare the first dropped uri with the target uri for same fs match. */
 	dropped = g_file_new_for_uri (dropped_uri);
-	target_is_source_parent = g_file_has_prefix (dropped, target);
+	dropped_directory = g_file_get_parent (dropped);
+	target_is_source_parent = FALSE;
+	if (dropped_directory != NULL) {
+		/* If the dropped file is already in the same directory but
+		   is in another filesystem we still want to move, not copy
+		   as this is then just a move of a mountpoint to another
+		   position in the dir */
+		target_is_source_parent = g_file_equal (dropped_directory, target);
+		g_object_unref (dropped_directory);
+	}
 	source_deletable = source_is_deletable (dropped);
 
 	if ((same_fs && source_deletable) || target_is_source_parent ||
