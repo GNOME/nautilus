@@ -1,5 +1,13 @@
 2009-04-07  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-icon-container.c:
+	(nautilus_icon_container_layout_now):
+	Ensure that we've also size-allocated for the new contents.
+	It may happen that newly added icons caused the size allocate
+	to turn on a scrollbar, which will change the layout.
+
+2009-04-07  Alexander Larsson  <alexl@redhat.com>
+
 	Bug 559863 – RTL locales: icons in folder icon view are aligned to the left
 
 	* libnautilus-private/nautilus-icon-container.c:

@@ -7301,6 +7301,11 @@ nautilus_icon_container_layout_now (NautilusIconContainer *container)
 		unschedule_redo_layout (container);
 		redo_layout_internal (container);
 	}
+
+	/* Also need to make sure we're properly resized, for instance
+	 * newly added files may trigger a change in the size allocation and
+	 * thus toggle scrollbars on */
+	gtk_container_check_resize (GTK_CONTAINER (GTK_WIDGET (container)->parent));
 }
 
 /**
