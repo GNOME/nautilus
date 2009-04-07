@@ -1,5 +1,11 @@
 2009-04-07  Alexander Larsson  <alexl@redhat.com>
 
+	* src/nautilus-spatial-window.c:
+	Make sure we save spatial geometry and data on close both
+	via WM close button and ctrl-w.
+
+2009-04-07  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-icon-container.c:
 	(nautilus_icon_container_get_first_visible_icon):
 	Fix up this for RTL in compact mode. We need to look

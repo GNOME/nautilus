@@ -75,10 +75,11 @@
 #define MENU_PATH_SPATIAL_BOOKMARKS_PLACEHOLDER	"/MenuBar/Other Menus/Places/Bookmarks Placeholder"
 
 struct _NautilusSpatialWindowDetails {
-        GtkActionGroup *spatial_action_group; /* owned by ui_manager */
-	char *last_geometry;	
-        guint save_geometry_timeout_id;	  
-	
+	GtkActionGroup *spatial_action_group; /* owned by ui_manager */
+	char *last_geometry;
+	guint save_geometry_timeout_id;
+
+	gboolean saved_data_on_close;
 	GtkWidget *content_box;
 	GtkWidget *location_button;
 	GtkWidget *location_label;
@@ -465,22 +466,43 @@ real_open_slot (NautilusWindow *window,
 }
 
 static void
+save_spatial_data (NautilusWindowSlot *slot)
+{
+	nautilus_spatial_window_save_geometry (slot);
+	nautilus_spatial_window_save_scroll_position (slot);
+	nautilus_spatial_window_save_show_hidden_files_mode (slot);
+}
+
+static void
+real_close_slot (NautilusWindow *window,
+		 NautilusWindowSlot *slot)
+{
+	/* Save spatial data for close if we didn't already */
+	if (!NAUTILUS_SPATIAL_WINDOW (window)->details->saved_data_on_close) {
+		save_spatial_data (slot);
+	}
+
+	EEL_CALL_PARENT (NAUTILUS_WINDOW_CLASS,
+			 close_slot, (window, slot));
+}
+
+static void
 real_window_close (NautilusWindow *window)
 {
 	NautilusWindowSlot *slot;
 
 	/* We're closing the window, save the geometry. */
 	/* Note that we do this in window close, not slot close, because slot
-	   close is too late, by then the widgets have been unrealized. */
+	 * close is too late, by then the widgets have been unrealized.
+	 * This is for the close by WM case, if you're closing via Ctrl-W that
+	 * means we close the slots first and this is not an issue */
 	if (window->details->slots != NULL) {
-
 		slot = window->details->slots->data;
 
-		nautilus_spatial_window_save_geometry (slot);
-		nautilus_spatial_window_save_scroll_position (slot);
-		nautilus_spatial_window_save_show_hidden_files_mode (slot);
+		save_spatial_data (slot);
+		NAUTILUS_SPATIAL_WINDOW (window)->details->saved_data_on_close = TRUE;
 	}
-	
+
 	EEL_CALL_PARENT (NAUTILUS_WINDOW_CLASS,
 			 close, (window));
 }
@@ -1052,6 +1074,7 @@ nautilus_spatial_window_class_init (NautilusSpatialWindowClass *class)
 
 	NAUTILUS_WINDOW_CLASS (class)->open_slot = real_open_slot;
 	NAUTILUS_WINDOW_CLASS (class)->close = real_window_close;
+	NAUTILUS_WINDOW_CLASS (class)->close_slot = real_close_slot;
 
 	binding_set = gtk_binding_set_by_class (class);
 	gtk_binding_entry_add_signal (binding_set, GDK_BackSpace, GDK_SHIFT_MASK,
