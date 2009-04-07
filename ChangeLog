@@ -1,6 +1,14 @@
 2009-04-07  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-icon-container.c:
+	(nautilus_icon_container_get_first_visible_icon):
+	Fix up this for RTL in compact mode. We need to look
+	at the right place and do the right kind of comparison
+	on pos.
+
+2009-04-07  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-container.c:
 	(nautilus_icon_container_layout_now):
 	Ensure that we've also size-allocated for the new contents.
 	It may happen that newly added icons caused the size allocate

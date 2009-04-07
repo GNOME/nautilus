@@ -6532,12 +6532,13 @@ nautilus_icon_container_get_first_visible_icon (NautilusIconContainer *container
 	double x1, y1, x2, y2;
 	double *pos, best_pos;
 	gboolean better_icon;
+	gboolean compare_lt;
 
 	hadj = gtk_layout_get_hadjustment (GTK_LAYOUT (container));
 	vadj = gtk_layout_get_vadjustment (GTK_LAYOUT (container));
 
 	if (nautilus_icon_container_is_layout_rtl (container)) {
-		x = hadj->value + hadj->page_size;
+		x = hadj->value + hadj->page_size - ICON_PAD_LEFT - 1;
 		y = vadj->value;
 	} else {
 		x = hadj->value;
@@ -6558,9 +6559,11 @@ nautilus_icon_container_get_first_visible_icon (NautilusIconContainer *container
 			eel_canvas_item_get_bounds (EEL_CANVAS_ITEM (icon->item),
 						    &x1, &y1, &x2, &y2);
 
+			compare_lt = FALSE;
 			if (nautilus_icon_container_is_layout_vertical (container)) {
 				pos = &x1;
 				if (nautilus_icon_container_is_layout_rtl (container)) {
+					compare_lt = TRUE;
 					better_icon = x1 < x + ICON_PAD_LEFT;
 				} else {
 					better_icon = x2 > x + ICON_PAD_LEFT;
@@ -6570,8 +6573,13 @@ nautilus_icon_container_get_first_visible_icon (NautilusIconContainer *container
 				better_icon = y2 > y + ICON_PAD_TOP;
 			}
 			if (better_icon) {
-				better_icon = (best_icon == NULL ||
-					       best_pos > *pos);
+				if (best_icon == NULL) {
+					better_icon = TRUE;
+				} else if (compare_lt) {
+					better_icon = best_pos < *pos;
+				} else {
+					better_icon = best_pos > *pos;
+				}
 
 				if (better_icon) {
 					best_icon = icon;
@@ -6579,7 +6587,7 @@ nautilus_icon_container_get_first_visible_icon (NautilusIconContainer *container
 				}
 			}
 		}
-		
+
 		l = l->next;
 	}
 
