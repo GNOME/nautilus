@@ -1035,7 +1035,7 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 
 	if (nautilus_icon_container_get_is_fixed_size (container)) {
 		pixels_per_unit = EEL_CANVAS (container)->pixels_per_unit;
-		
+
 		/* Set the scroll region to the size of the container allocation */
 		allocation = &GTK_WIDGET (container)->allocation;
 		eel_canvas_set_scroll_region
@@ -1056,7 +1056,7 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 	reset_scroll_region = container->details->reset_scroll_region_trigger
 		|| nautilus_icon_container_is_empty (container)
 		|| nautilus_icon_container_is_auto_layout (container);
-		
+
 	/* The trigger is only cleared when container is non-empty, so
 	 * callers can reliably reset the scroll region when an item
 	 * is added even if extraneous relayouts are called when the
@@ -1068,14 +1068,38 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 
 	get_all_icon_bounds (container, &x1, &y1, &x2, &y2, BOUNDS_USAGE_FOR_ENTIRE_ITEM);
 
-	/* Auto-layout assumes a 0, 0 scroll origin */
-	if (nautilus_icon_container_is_auto_layout (container)) {
-		if (!nautilus_icon_container_is_layout_rtl (container)) {
-			x1 = 0;
+	/* Add border at the "end"of the layout (i.e. after the icons), to
+	 * ensure we get some space when scrolled to the end.
+	 * For horizontal layouts, we add a bottom border.
+	 * Vertical layout is used by the compact view so the end
+	 * depends on the RTL setting.
+	 */
+	if (nautilus_icon_container_is_layout_vertical (container)) {
+		if (nautilus_icon_container_is_layout_rtl (container)) {
+			x1 -= ICON_PAD_LEFT + CONTAINER_PAD_LEFT;
+		} else {
+			x2 += ICON_PAD_RIGHT + CONTAINER_PAD_RIGHT;
 		}
+	} else {
+		y2 += ICON_PAD_BOTTOM + CONTAINER_PAD_BOTTOM;
+	}
+
+	/* Auto-layout assumes a 0, 0 scroll origin and at least allocation->width.
+	 * Then we lay out to the right or to the left, so
+	 * x can be < 0 and > allocation */
+	if (nautilus_icon_container_is_auto_layout (container)) {
+		allocation = &GTK_WIDGET (container)->allocation;
+		x1 = MIN (x1, 0);
+		x2 = MAX (x2, allocation->width);
 		y1 = 0;
 	} else {
-		x1 -= ICON_PAD_LEFT + CONTAINER_PAD_LEFT;
+		/* Otherwise we add the padding that is at the start of the
+		   layout */
+		if (nautilus_icon_container_is_layout_rtl (container)) {
+			x2 += ICON_PAD_RIGHT + CONTAINER_PAD_RIGHT;
+		} else {
+			x1 -= ICON_PAD_LEFT + CONTAINER_PAD_LEFT;
+		}
 		y1 -= ICON_PAD_TOP + CONTAINER_PAD_TOP;
 	}
 
@@ -1084,22 +1108,6 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 
 	y2 -= 1;
 	y2 = MAX(y1, y2);
-
-	/* for horizontal layouts, we add a bottom border.
-	 *
-	 * vertical layout is used by the compact view,
-	 * which does not need a bottom border.
-	 */
-	if (nautilus_icon_container_is_layout_vertical (container)) {
-		if (nautilus_icon_container_is_layout_rtl (container)) {
-			x2 += ICON_PAD_LEFT + CONTAINER_PAD_LEFT;
-			x1 -= ICON_PAD_RIGHT + CONTAINER_PAD_RIGHT;
-		} else {
-			x2 += ICON_PAD_RIGHT + CONTAINER_PAD_RIGHT;
-		}
-	} else {
-		y2 += ICON_PAD_BOTTOM + CONTAINER_PAD_BOTTOM;
-	}
 
 	if (reset_scroll_region) {
 		eel_canvas_set_scroll_region
@@ -1127,18 +1135,10 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 	}
 
 	/* Now that we have a new scroll region, clamp the
-         * adjustments so we are within the valid scroll area.
+	 * adjustments so we are within the valid scroll area.
 	 */
 	eel_gtk_adjustment_clamp_value (hadj);
 	eel_gtk_adjustment_clamp_value (vadj);
-
-	/*
-	 * In RTL mode, when displayed force horizontal scrollbar to the 
-	 * right side.
-	 */
-
-	if (nautilus_icon_container_is_layout_rtl(container))
-		gtk_adjustment_set_value (hadj, hadj->upper - hadj->page_size);
 }
 
 static int

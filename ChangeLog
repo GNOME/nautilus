@@ -1,3 +1,16 @@
+2009-04-07  Alexander Larsson  <alexl@redhat.com>
+
+	Bug 559863 – RTL locales: icons in folder icon view are aligned to the left
+
+	* libnautilus-private/nautilus-icon-container.c:
+	(nautilus_icon_container_update_scroll_region):
+	Fix up the icon view extents so that we always
+	include the full window allocation in the automatic
+	layout case, plus allow extents < 0 (due to layout
+	in RTL mode).
+	This makes sure we RTL auto-layouting works correctly
+	instead of being flushed to the left.
+
 2009-04-06  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-dnd.c:
