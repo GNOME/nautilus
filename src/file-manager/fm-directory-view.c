@@ -5026,7 +5026,7 @@ add_script_to_scripts_menus (FMDirectoryView *directory_view,
 				 escaped_label,
 				 tip,
 				 NULL);
-	
+
 	pixbuf = get_menu_icon_for_file (file);
 	if (pixbuf != NULL) {
 		g_object_set_data_full (G_OBJECT (action), "menu-icon",
@@ -5036,13 +5036,13 @@ add_script_to_scripts_menus (FMDirectoryView *directory_view,
 
 	g_signal_connect_data (action, "activate",
 			       G_CALLBACK (run_script_callback),
-			       launch_parameters, 
+			       launch_parameters,
 			       (GClosureNotify)script_launch_parameters_free, 0);
-	
-	gtk_action_group_add_action (directory_view->details->scripts_action_group,
-				     action);
+
+	gtk_action_group_add_action_with_accel (directory_view->details->scripts_action_group,
+						action, NULL);
 	g_object_unref (action);
-	
+
 	ui_manager = nautilus_window_info_get_ui_manager (directory_view->details->window);
 
 	gtk_ui_manager_add_ui (ui_manager,

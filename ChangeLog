@@ -1,5 +1,14 @@
 2009-04-08  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-directory-view.c:
+	(add_script_to_scripts_menus):
+	Use gtk_action_group_add_action_with_accel so that we
+	allow users to define key shortcuts for scripts.
+
+	Patch from Holger Berndt <berndth@gmx.de>
+
+2009-04-08  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-file-utilities.[ch]:
 	* libnautilus-private/nautilus-file-utilities.h:
 	Add nautilus_get_accel_map_file
