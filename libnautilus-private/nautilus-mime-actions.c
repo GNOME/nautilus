@@ -1136,6 +1136,7 @@ typedef struct {
 	NautilusWindowOpenFlags flags;
 	char *activation_directory;
 	gboolean user_confirmation;
+	char *uri;
 } ActivateParametersInstall;
 
 static void
@@ -1150,7 +1151,57 @@ activate_parameters_install_free (ActivateParametersInstall *parameters_install)
 	nautilus_file_unref (parameters_install->file);
 	nautilus_file_list_free (parameters_install->files);
 	g_free (parameters_install->activation_directory);
+	g_free (parameters_install->uri);
 	g_free (parameters_install);
+}
+
+static char *
+get_application_no_mime_type_handler_message (NautilusFile *file, char *uri)
+{
+	char *uri_for_display;
+	char *nice_uri;
+	char *error_message;
+	GFile *location;
+
+	/* For local files, we want to use filename if possible */
+	if (nautilus_file_is_local (file)) {
+		location = nautilus_file_get_location (file);
+		nice_uri = g_file_get_parse_name (location);
+		g_object_unref (location);
+	} else {
+		nice_uri = g_strdup (uri);
+	}
+
+	/* Truncate the URI so it doesn't get insanely wide. Note that even
+	 * though the dialog uses wrapped text, if the URI doesn't contain
+	 * white space then the text-wrapping code is too stupid to wrap it.
+	 */
+	uri_for_display = eel_str_middle_truncate (nice_uri, MAX_URI_IN_DIALOG_LENGTH);
+	error_message = g_strdup_printf (_("Could not display \"%s\"."), uri_for_display);
+	g_free (nice_uri);
+	g_free (uri_for_display);
+	return error_message;
+}
+
+static void
+show_unhandled_type_error (ActivateParametersInstall *parameters)
+{
+	char *mime_type = nautilus_file_get_mime_type (parameters->file);
+	char *error_message = get_application_no_mime_type_handler_message (parameters->file, parameters->uri);
+	if (g_content_type_is_unknown (mime_type)) {
+		eel_show_error_dialog (error_message,
+				       _("The file is of an unknown type"),
+				       parameters->parent_window);
+	} else {
+		char *text;
+		text = g_strdup_printf (_("There is no application installed for %s files"), g_content_type_get_description (mime_type));
+		eel_show_error_dialog (error_message,
+				       text,
+				       parameters->parent_window);
+		g_free (text);
+	}
+	g_free (error_message);
+	g_free (mime_type);
 }
 
 static void
@@ -1207,7 +1258,6 @@ search_for_application_mime_type (ActivateParametersInstall *parameters_install,
 	/* get bus */
 	connection = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
 	if (connection == NULL) {
-		g_warning ("Could not connect to session bus: %s\n", error->message);
 		g_error_free (error);
 		goto out;
 	}
@@ -1218,7 +1268,6 @@ search_for_application_mime_type (ActivateParametersInstall *parameters_install,
 					   "/org/freedesktop/PackageKit",
 					   "org.freedesktop.PackageKit.Modify");
 	if (proxy == NULL) {
-		g_warning ("Could not connect to PackageKit session service\n");
 		goto out;
 	}
 
@@ -1282,68 +1331,32 @@ application_unhandled_file_install (GtkDialog *dialog, gint response_id, Activat
 }
 
 static void
-application_unhandled_uri (ActivateParameters *parameters, char *uri)
+packagekit_present_dbus_call_notify_cb (DBusGProxy *proxy, DBusGProxyCall *call, ActivateParametersInstall *parameters_install)
 {
-	char *uri_for_display;
-	char *nice_uri;
-	char *error_message;
-	gboolean show_install_mime;
-	GtkWidget *dialog;
+	gboolean ret;
+	GError *error = NULL;
 	char *mime_type;
-	char *text;
-	GFile *location;
-	NautilusFile *file;
-	ActivateParametersInstall *parameters_install;
+	char *error_message;
+	gboolean present;
+	GtkWidget *dialog;
 
-	file = nautilus_file_get_by_uri (uri);
 
-	/* For local files, we want to use filename if possible */
-	if (nautilus_file_is_local (file)) {
-		location = nautilus_file_get_location (file);
-		nice_uri = g_file_get_parse_name (location);
-		g_object_unref (location);
-	} else {
-		nice_uri = g_strdup (uri);
+	ret = dbus_g_proxy_end_call (proxy, call, &error, G_TYPE_BOOLEAN, &present, G_TYPE_INVALID);
+	if (!ret) {
+		g_error_free (error);
+		show_unhandled_type_error (parameters_install);
+		activate_parameters_install_free (parameters_install);
+		present = FALSE;
+		goto out;
 	}
-	
-	/* Truncate the URI so it doesn't get insanely wide. Note that even
-	 * though the dialog uses wrapped text, if the URI doesn't contain
-	 * white space then the text-wrapping code is too stupid to wrap it.
-	 */
-	uri_for_display = eel_str_middle_truncate (nice_uri, MAX_URI_IN_DIALOG_LENGTH);
-	error_message = g_strdup_printf (_("Could not display \"%s\"."), uri_for_display);
-	g_free (nice_uri);
-	g_free (uri_for_display);
-
-	mime_type = nautilus_file_get_mime_type (file);
-	
-#ifdef ENABLE_PACKAGEKIT
-	/* allow an admin to disable the PackageKit search functionality */
-	show_install_mime = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_INSTALL_MIME_ACTIVATION);
-#else
-	/* we have no install functionality */
-	show_install_mime = FALSE;
-#endif
-	/* There is no use trying to look for handlers of application/octet-stream */
-	if (g_content_type_is_unknown (mime_type)) {
-		show_install_mime = FALSE;
-	}
-	if (!show_install_mime) {
-		/* show an unhelpful dialog */
-		if (g_content_type_is_unknown (mime_type)) {
-			eel_show_error_dialog (error_message,
-					       _("The file is of an unknown type"),
-					       parameters->parent_window);
-		} else {
-			text = g_strdup_printf (_("There is no application installed for %s files"), g_content_type_get_description (mime_type));
-			eel_show_error_dialog (error_message,
-					       text,
-					       parameters->parent_window);
-			g_free (text);
-		}
+	if (!present) {
+		show_unhandled_type_error (parameters_install);
+		activate_parameters_install_free (parameters_install);
 		goto out;
 	}
 
+	mime_type = nautilus_file_get_mime_type (parameters_install->file);
+	error_message = get_application_no_mime_type_handler_message (parameters_install->file, parameters_install->uri);
 	/* use a custom dialog to prompt the user to install new software */
 	dialog = gtk_message_dialog_new (NULL, 0,
 					 GTK_MESSAGE_ERROR,
@@ -1353,6 +1366,30 @@ application_unhandled_uri (ActivateParameters *parameters, char *uri)
 						  _("There is no application installed for %s files.\nDo you want to search for an application to open this file?"),
 						  g_content_type_get_description (mime_type));
 	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+
+	g_signal_connect (dialog, "response", G_CALLBACK (application_unhandled_file_install), parameters_install);
+	gtk_widget_show_all (dialog);
+	g_free (mime_type);
+
+out:
+	g_object_unref (proxy);
+}
+
+static void
+application_unhandled_uri (ActivateParameters *parameters, char *uri)
+{
+	gboolean show_install_mime;
+	char *mime_type;
+	NautilusFile *file;
+	ActivateParametersInstall *parameters_install;
+	DBusGConnection *connection;
+	DBusGProxy *proxy;
+	DBusGProxyCall *call;
+	GError *error = NULL;
+
+	file = nautilus_file_get_by_uri (uri);
+
+	mime_type = nautilus_file_get_mime_type (file);
 
 	/* copy the parts of parameters we are interested in as the orignal will be unref'd */
 	parameters_install = g_new0 (ActivateParametersInstall, 1);
@@ -1368,13 +1405,62 @@ application_unhandled_uri (ActivateParameters *parameters, char *uri)
 	parameters_install->mode = parameters->mode;
 	parameters_install->flags = parameters->flags;
 	parameters_install->user_confirmation = parameters->user_confirmation;
+	parameters_install->uri = g_strdup(uri);
 
-	g_signal_connect (dialog, "response", G_CALLBACK (application_unhandled_file_install), parameters_install);
-	gtk_widget_show_all (dialog);
+#ifdef ENABLE_PACKAGEKIT
+	/* allow an admin to disable the PackageKit search functionality */
+	show_install_mime = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_INSTALL_MIME_ACTIVATION);
+#else
+	/* we have no install functionality */
+	show_install_mime = FALSE;
+#endif
+	/* There is no use trying to look for handlers of application/octet-stream */
+	if (g_content_type_is_unknown (mime_type)) {
+		show_install_mime = FALSE;
+	}
+
+	if (!show_install_mime) {
+		goto out;
+	}
+
+	/* Check whether PackageKit can be spawned */
+	connection = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
+	if (connection == NULL) {
+		g_error_free (error);
+		show_install_mime = FALSE;
+		goto out;
+	}
+
+	proxy = dbus_g_proxy_new_for_name (connection,
+					   DBUS_SERVICE_DBUS,
+					   DBUS_PATH_DBUS,
+					   DBUS_INTERFACE_DBUS);
+
+	if (proxy == NULL) {
+		show_install_mime = FALSE;
+		goto out;
+	}
+	call = dbus_g_proxy_begin_call (proxy, "NameHasOwner",
+					(DBusGProxyCallNotify) packagekit_present_dbus_call_notify_cb,
+					parameters_install,
+					NULL, /* Don't want to free user_data as we need to pass it on */
+				        G_TYPE_STRING, "org.freedesktop.PackageKit",
+				        G_TYPE_INVALID);
+	if (call == NULL) {
+		show_install_mime = FALSE;
+		goto out;
+	}
+
 out:
+	if (!show_install_mime) {
+		/* show an unhelpful dialog */
+		show_unhandled_type_error (parameters_install);
+		/* The callback wasn't started, so we have to free the parameters */
+		activate_parameters_install_free (parameters_install);
+	}
+
 	nautilus_file_unref (file);
 	g_free (mime_type);
-	g_free (error_message);
 }
 
 typedef struct {
