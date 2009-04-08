@@ -120,7 +120,15 @@ get_builtin_columns (void)
 					       "label", _("SELinux Context"),
 					       "description", _("The SELinux security context of the file."),
 					       NULL));
-	
+	columns = g_list_append (columns,
+				 g_object_new (NAUTILUS_TYPE_COLUMN,
+					       "name", "where",
+					       "attribute", "where",
+					       "label", _("Location"),
+					       /* TODO: Change after string freeze over */
+					       "description", _("Location"),
+					       NULL));
+
 	return columns;
 }
 
