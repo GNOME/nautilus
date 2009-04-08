@@ -96,6 +96,8 @@ enum
 
 #define START_STATE_CONFIG "start-state"
 
+#define NAUTILUS_ACCEL_MAP_SAVE_DELAY 30
+
 /* Keeps track of all the desktop windows. */
 static GList *nautilus_application_desktop_windows;
 
@@ -104,6 +106,9 @@ static GList *nautilus_application_window_list;
 
 /* Keeps track of all the object windows */
 static GList *nautilus_application_spatial_window_list;
+
+/* The saving of the accelerator map was requested  */
+static gboolean save_of_accel_map_requested = FALSE;
 
 static void     desktop_changed_callback          (gpointer                  user_data);
 static void     desktop_location_changed_callback (gpointer                  user_data);
@@ -801,6 +806,35 @@ message_received_cb (UniqueApp         *unique_app,
 	return res;
 }
 
+gboolean 
+nautilus_application_save_accel_map (gpointer data)
+{
+	if (save_of_accel_map_requested) {
+		char *accel_map_filename;
+	 	accel_map_filename = nautilus_get_accel_map_file ();
+	 	if (accel_map_filename) {
+	 		gtk_accel_map_save (accel_map_filename);
+	 		g_free (accel_map_filename);
+	 	}
+		save_of_accel_map_requested = FALSE;
+	}
+
+	return FALSE;
+}
+
+
+static void 
+queue_accel_map_save_callback (GtkAccelMap *object, gchar *accel_path,
+		guint accel_key, GdkModifierType accel_mods,
+		gpointer user_data)
+{
+	if (!save_of_accel_map_requested) {
+		save_of_accel_map_requested = TRUE;
+		g_timeout_add_seconds (NAUTILUS_ACCEL_MAP_SAVE_DELAY, 
+				nautilus_application_save_accel_map, NULL);
+	}
+}
+
 void
 nautilus_application_startup (NautilusApplication *application,
 			      gboolean kill_shell,
@@ -826,6 +860,8 @@ nautilus_application_startup (NautilusApplication *application,
 			
 		}
 	} else {
+		char *accel_map_filename;
+
 		/* If KDE desktop is running, then force no_desktop */
 		if (is_kdesktop_present ()) {
 			no_desktop = TRUE;
@@ -887,6 +923,14 @@ nautilus_application_startup (NautilusApplication *application,
 
 		/* Load session info if availible */
 		nautilus_application_load_session (application);
+		
+		/* load accelerator map, and register save callback */
+		accel_map_filename = nautilus_get_accel_map_file ();
+		if (accel_map_filename) {
+			gtk_accel_map_load (accel_map_filename);
+			g_free (accel_map_filename);
+		}
+		g_signal_connect (gtk_accel_map_get (), "changed", G_CALLBACK (queue_accel_map_save_callback), NULL);
 	}
 }
 

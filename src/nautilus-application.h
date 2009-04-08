@@ -103,4 +103,7 @@ void                 nautilus_application_close_parent_windows     (NautilusSpat
 void                 nautilus_application_close_all_spatial_windows  (void);
 void                 nautilus_application_open_desktop      (NautilusApplication *application);
 void                 nautilus_application_close_desktop     (void);
+gboolean             nautilus_application_save_accel_map    (gpointer data);
+
+
 #endif /* NAUTILUS_APPLICATION_H */

@@ -96,4 +96,6 @@ GFile *  nautilus_find_existing_uri_in_hierarchy     (GFile *location);
 GFile *
 nautilus_find_file_insensitive (GFile *parent, const gchar *name);
 
+char * nautilus_get_accel_map_file (void);
+
 #endif /* NAUTILUS_FILE_UTILITIES_H */

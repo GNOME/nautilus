@@ -526,6 +526,8 @@ main (int argc, char *argv[])
 	}
 
  	eel_debug_shut_down ();
+ 	
+ 	nautilus_application_save_accel_map (NULL);
 	
 	return EXIT_SUCCESS;
 }

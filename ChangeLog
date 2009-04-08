@@ -1,3 +1,17 @@
+2009-04-08  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file-utilities.[ch]:
+	* libnautilus-private/nautilus-file-utilities.h:
+	Add nautilus_get_accel_map_file
+
+	* src/nautilus-application.[ch]:
+	Load accel map on startup, queue save when it changes.
+
+	* src/nautilus-main.c:
+	Save accel map on clean exit if it is dirty.
+
+	Patch from Holger Berndt <berndth@gmx.de>
+
 2009-04-07  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-spatial-window.c:
