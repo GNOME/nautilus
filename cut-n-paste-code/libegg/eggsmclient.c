@@ -249,8 +249,8 @@ egg_sm_client_get_option_group (void)
 		     egg_sm_client_debug_handler, NULL);
 
   group = g_option_group_new ("sm-client",
-			      _("Session management options:"),
-			      _("Show session management options"),
+			      _("Session Management Options"),
+			      _("Show Session Management options"),
 			      NULL, NULL);
   g_option_group_add_entries (group, entries);
   g_option_group_set_parse_hooks (group, NULL, sm_client_post_parse_func);
