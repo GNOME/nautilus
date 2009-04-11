@@ -1,3 +1,16 @@
+2009-04-11  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-tree-view.c:
+	* src/nautilus-places-sidebar.c:
+	Show both unmount and eject in menus. We need to show eject for
+	a lot of devices (that we can't detect ahead of time) so we're
+	enabling it much more generally. However, eject sometimes does
+	things you don't want (like unmounting all volumes on a drive),
+	so we also need to expose unmount.
+
+	For discussion, see bug 574067 and bug 576587.
+
 2009-04-09  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* cut-n-paste-code/libegg/eggsmclient.c:

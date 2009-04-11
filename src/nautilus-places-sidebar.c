@@ -1287,9 +1287,7 @@ check_unmount_and_eject (GMount *mount,
 	}
 	if (mount != NULL) {
 		*show_eject |= g_mount_can_eject (mount);
-		if (!*show_eject) {
-			*show_unmount = g_mount_can_unmount (mount);
-		}
+		*show_unmount = g_mount_can_unmount (mount);
 	}
 }
 

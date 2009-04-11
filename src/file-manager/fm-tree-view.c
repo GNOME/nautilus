@@ -732,17 +732,13 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
 		} else {
 			gtk_widget_hide (view->details->popup_delete);
 		}
-		
+
 		mount = fm_tree_model_get_mount_for_root_node_file (view->details->child_model, view->details->popup_file);
 		if (mount) {
-			/* TODO: show both unmount and eject if there are more than one volume for the drive */
 			show_unmount = g_mount_can_unmount (mount);
 			show_eject = g_mount_can_eject (mount);
-			if (show_eject) {
-				show_unmount = FALSE;
-			}
-		} 
-		
+		}
+
 		if (show_unmount) {
 			gtk_widget_show (view->details->popup_unmount);
 		} else {

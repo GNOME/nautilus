@@ -7107,7 +7107,7 @@ file_should_show_foreach (NautilusFile *file,
 			  gboolean     *show_unmount,
 			  gboolean     *show_eject,
 			  gboolean     *show_connect,
-                          gboolean     *show_format)
+			  gboolean     *show_format)
 {
 	char *uri;
 
@@ -7119,14 +7119,16 @@ file_should_show_foreach (NautilusFile *file,
 
 	if (nautilus_file_can_eject (file)) {
 		*show_eject = TRUE;
-	} else if (nautilus_file_can_unmount (file)) {
+	}
+
+	if (nautilus_file_can_unmount (file)) {
 		*show_unmount = TRUE;
 	}
 
 	if (nautilus_file_can_mount (file)) {
 		*show_mount = TRUE;
 
-#ifdef TODO_GIO		
+#ifdef TODO_GIO
 		if (something &&
 		    g_find_program_in_path ("gfloppy")) {
 			*show_format = TRUE;
@@ -7145,7 +7147,7 @@ file_should_show_foreach (NautilusFile *file,
 			*show_connect = TRUE;
 		}
 		g_free (uri);
-	} 
+	}
 }
 
 static void
@@ -7163,13 +7165,15 @@ file_should_show_self (NautilusFile *file,
 	if (file == NULL) {
 		return;
 	}
-	
+
 	if (nautilus_file_can_eject (file)) {
 		*show_eject = TRUE;
-	} else if (nautilus_file_can_unmount (file)) {
+	}
+
+	if (nautilus_file_can_unmount (file)) {
 		*show_unmount = TRUE;
 	}
-	
+
 	if (nautilus_file_can_mount (file)) {
 		*show_mount = TRUE;
 	}
