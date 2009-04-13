@@ -218,6 +218,7 @@ add_place (NautilusPlacesSidebar *sidebar,
 	NautilusIconInfo *icon_info;
 	int icon_size;
 	gboolean show_eject, show_unmount;
+	gboolean show_eject_button;
 
 	icon_size = nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU);
 	icon_info = nautilus_icon_info_lookup (icon, icon_size);
@@ -230,7 +231,13 @@ add_place (NautilusPlacesSidebar *sidebar,
 	if (show_unmount || show_eject) {
 		g_assert (place_type != PLACES_BOOKMARK);
 	}
- 		  
+
+	if (mount == NULL) {
+		show_eject_button = FALSE;
+	} else {
+		show_eject_button = (show_unmount || show_eject);
+	}
+
 	gtk_list_store_append (sidebar->store, &iter);
 	gtk_list_store_set (sidebar->store, &iter,
 			    PLACES_SIDEBAR_COLUMN_ICON, pixbuf,
@@ -241,8 +248,8 @@ add_place (NautilusPlacesSidebar *sidebar,
 			    PLACES_SIDEBAR_COLUMN_MOUNT, mount,
 			    PLACES_SIDEBAR_COLUMN_ROW_TYPE, place_type,
 			    PLACES_SIDEBAR_COLUMN_INDEX, index,
-			    PLACES_SIDEBAR_COLUMN_EJECT, (show_unmount || show_eject),
-			    PLACES_SIDEBAR_COLUMN_NO_EJECT, !(show_unmount || show_eject),
+			    PLACES_SIDEBAR_COLUMN_EJECT, show_eject_button,
+			    PLACES_SIDEBAR_COLUMN_NO_EJECT, !show_eject_button,
 			    PLACES_SIDEBAR_COLUMN_BOOKMARK, place_type != PLACES_BOOKMARK,
 			    PLACES_SIDEBAR_COLUMN_NO_BOOKMARK, place_type == PLACES_BOOKMARK,
 			    -1);
