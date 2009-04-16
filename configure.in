@@ -355,16 +355,17 @@ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 	-Werror"
 
 	for option in -Wstrict-aliasing=0 -Wno-pointer-sign; do
-		SAVE_CFLAGS="$WARNING_CFLAGS"
-		WARNING_CFLAGS="$WARNING_CFLAGS $option"
+		SAVE_CFLAGS="$CFLAGS"
+		CFLAGS="$CFLAGS $option"
 		AC_MSG_CHECKING([whether gcc understands $option])
 		AC_TRY_COMPILE([], [],
 			has_option=yes,
 			has_option=no,)
 		if test $has_option = no; then
-			WARNING_CFLAGS="$SAVE_CFLAGS"
+		   	WARNING_CFLAGS="$WARNING_CFLAGS $option"
 		fi
 		AC_MSG_RESULT($has_option)
+		CFLAGS="$SAVE_CFLAGS"
 		unset has_option
 		unset SAVE_CFLAGS
 	done
