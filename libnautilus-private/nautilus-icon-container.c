@@ -1033,9 +1033,9 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 	GtkAllocation *allocation;
 	gboolean reset_scroll_region;
 
-	if (nautilus_icon_container_get_is_fixed_size (container)) {
-		pixels_per_unit = EEL_CANVAS (container)->pixels_per_unit;
+	pixels_per_unit = EEL_CANVAS (container)->pixels_per_unit;
 
+	if (nautilus_icon_container_get_is_fixed_size (container)) {
 		/* Set the scroll region to the size of the container allocation */
 		allocation = &GTK_WIDGET (container)->allocation;
 		eel_canvas_set_scroll_region
@@ -1090,7 +1090,7 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 	if (nautilus_icon_container_is_auto_layout (container)) {
 		allocation = &GTK_WIDGET (container)->allocation;
 		x1 = MIN (x1, 0);
-		x2 = MAX (x2, allocation->width);
+		x2 = MAX (x2, allocation->width / pixels_per_unit);
 		y1 = 0;
 	} else {
 		/* Otherwise we add the padding that is at the start of the

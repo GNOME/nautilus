@@ -1,3 +1,11 @@
+2009-04-16  Alexander Larsson  <alexl@redhat.com>
+
+	Bug 579086 – Excessive white-space on right-hand side in icon view
+	
+	* libnautilus-private/nautilus-icon-container.c:
+	(nautilus_icon_container_update_scroll_region):
+	When using at allocation->width, take zoom into account
+
 2009-04-13  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:
