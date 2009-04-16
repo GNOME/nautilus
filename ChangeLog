@@ -1,5 +1,14 @@
 2009-04-16  Alexander Larsson  <alexl@redhat.com>
 
+	Bug 578468 – Change of font DPI setting does not effect desktop icons
+
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_invalidate_label_size):
+	Invalidate pango layouts since the context could have changed
+	For instance the font DPI.
+
+2009-04-16  Alexander Larsson  <alexl@redhat.com>
+
 	Bug 579086 – Excessive white-space on right-hand side in icon view
 	
 	* libnautilus-private/nautilus-icon-container.c:
