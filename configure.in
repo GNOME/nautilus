@@ -361,7 +361,7 @@ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 		AC_TRY_COMPILE([], [],
 			has_option=yes,
 			has_option=no,)
-		if test $has_option = no; then
+		if test $has_option = yes; then
 		   	WARNING_CFLAGS="$WARNING_CFLAGS $option"
 		fi
 		AC_MSG_RESULT($has_option)
