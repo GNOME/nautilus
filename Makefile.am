@@ -31,6 +31,7 @@ EXTRA_DIST=					\
 	COPYING-DOCS				\
 	HACKING					\
 	MAINTAINERS				\
+	README.commits				\
 	nautilus.desktop			\
 	nautilus.desktop.in			\
 	ChangeLog-20000414			\

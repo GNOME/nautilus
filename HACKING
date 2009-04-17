@@ -6,9 +6,10 @@ in releases on the GNOME FTP site
 (http://ftp.gnome.org/pub/GNOME/sources/nautilus/).
 
 If you plan to hack on Nautilus, please make sure you work from the
-SVN version. The SVN version can be checked from the GNOME svn server.
-See http://developer.gnome.org/tools/svn.html for details on how to get 
-started with GNOME SVN.
+Git version. The Git version can be checked from the GNOME git server.
+See http://live.gnome.org/GitMigration for details on how to get 
+started with GNOME Git. For details on how Nautilus uses git, see
+the README.commits file.
 
 If you want to contribute in development discussions, please send mail
 to the nautilus mailing list: <nautilus-list@gnome.org>.  Archives and
@@ -23,7 +24,7 @@ If you've been working on a change to Nautilus and want to propose it
 for inclusion, you have to generate a patch and submit it for review
 by the maintainers.
 
-Patches should be made with 'svn diff --diff-cmd diff -x -up >patch'
+Patches should be made with 'git format-patch -M'
 and should conform to Nautilus coding style as described in
 docs/style-guide.html. We are pretty strict about coding style, so
 please make sure you follow the style guide to avoid unnecessary
@@ -36,7 +37,9 @@ bugzilla (http://bugzilla.gnome.org, product 'nautilus'). If you do
 this, please send a mail to the list saying you did so, because it is
 very easy for the bugzilla email to get lost in all the bugzilla
 reports, and only the people CCd on the bug can partake in the
-discussion.
+discussion. When attaching bugs to bugzilla from git the git-bz
+command can be helpful, see:
+http://blog.fishsoup.net/2008/11/16/git-bz-bugzilla-subcommand-for-git/
 
 The Nautilus maintainers do their best to review patches and help
 developers that want to work on something, however we are often
