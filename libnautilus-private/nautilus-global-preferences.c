@@ -41,6 +41,7 @@
 
 /* Path for gnome-vfs preferences */
 static const char *EXTRA_MONITOR_PATHS[] = { "/desktop/gnome/file_views",
+					     "/desktop/gnome/background",
 					     NULL };
 
 /* Forward declarations */
@@ -803,7 +804,7 @@ nautilus_global_preferences_init (void)
 	/* Install defaults */
 	global_preferences_install_defaults ();
 
-	global_preferences_register_enumerations ();	
+	global_preferences_register_enumerations ();
 
 	/* Add monitors for any other GConf paths we have keys in */
 	for (i=0; EXTRA_MONITOR_PATHS[i] != NULL; i++) {
@@ -811,7 +812,7 @@ nautilus_global_preferences_init (void)
 	}
 
 	/* Set up storage for values accessed in this file */
- 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT,
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT,
 				      default_icon_view_sort_order_or_manual_layout_changed_callback, 
 				      NULL);
 
@@ -820,7 +821,9 @@ nautilus_global_preferences_init (void)
 				 GCONF_CLIENT_PRELOAD_ONELEVEL);
 	eel_gconf_preload_cache ("/desktop/gnome/file_views",
 				 GCONF_CLIENT_PRELOAD_ONELEVEL);
-	
+	eel_gconf_preload_cache ("/desktop/gnome/background",
+				 GCONF_CLIENT_PRELOAD_ONELEVEL);
+
 	/* These are always needed for the desktop */
 	eel_gconf_preload_cache ("/apps/nautilus/desktop",
 				 GCONF_CLIENT_PRELOAD_ONELEVEL);
