@@ -5124,6 +5124,15 @@ nautilus_icon_container_search_key_press_event (GtkWidget *widget,
 		return TRUE;
 	}
 
+	/* close window and activate alternate */
+	if (event->keyval == GDK_Return && event->state & GDK_SHIFT_MASK) {
+		nautilus_icon_container_search_dialog_hide (widget,
+							    container);
+
+		activate_selected_items_alternate (container, NULL);
+		return TRUE;
+	}
+
 	/* select previous matching iter */
 	if (event->keyval == GDK_Up || event->keyval == GDK_KP_Up) {
 		nautilus_icon_container_search_move (widget, container, TRUE);
