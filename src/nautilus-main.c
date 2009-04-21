@@ -391,9 +391,7 @@ main (int argc, char *argv[])
 	browser_window = FALSE;
 
 	g_set_prgname ("nautilus");
-	if (g_file_test (DATADIR "/applications/nautilus.desktop", G_FILE_TEST_EXISTS)) {
-		egg_set_desktop_file (DATADIR "/applications/nautilus.desktop");
-	}
+	egg_set_desktop_file (DATADIR "/applications/nautilus.desktop");
 
 	context = g_option_context_new (_("\n\nBrowse the file system with the file manager"));
 	g_option_context_add_main_entries (context, options, NULL);
