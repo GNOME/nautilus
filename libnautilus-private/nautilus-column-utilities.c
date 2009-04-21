@@ -250,6 +250,10 @@ GList *
 nautilus_sort_columns (GList  *columns, 
 		       char  **column_order)
 {
+	if (!column_order) {
+		return NULL;
+	}
+
 	return g_list_sort_with_data (columns,
 				      (GCompareDataFunc)column_compare,
 				      column_order);
