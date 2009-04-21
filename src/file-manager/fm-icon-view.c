@@ -1991,7 +1991,7 @@ preview_audio (FMIconView *icon_view, NautilusFile *file, gboolean start_flag)
 			
 	if (start_flag) {
 		icon_view->details->audio_preview_file = file;
-		icon_view->details->audio_preview_timeout = g_timeout_add (1000, play_file, icon_view);
+		icon_view->details->audio_preview_timeout = g_timeout_add_seconds (1, play_file, icon_view);
 	}
 }
 

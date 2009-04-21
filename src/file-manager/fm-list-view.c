@@ -120,7 +120,7 @@ struct SelectionForeachData {
 #define LIST_VIEW_MINIMUM_ROW_HEIGHT	28
 
 /* We wait two seconds after row is collapsed to unload the subdirectory */
-#define COLLAPSE_TO_UNLOAD_DELAY 2000 
+#define COLLAPSE_TO_UNLOAD_DELAY 2 
 
 /* Wait for the rename to end when activating a file being renamed */
 #define WAIT_FOR_RENAME_ON_ACTIVATE 200
@@ -890,7 +890,7 @@ row_collapsed_callback (GtkTreeView *treeview, GtkTreeIter *iter, GtkTreePath *p
 
 	eel_add_weak_pointer (&unload_data->view);
 	
-	g_timeout_add (COLLAPSE_TO_UNLOAD_DELAY,
+	g_timeout_add_seconds (COLLAPSE_TO_UNLOAD_DELAY,
 		       unload_file_timeout,
 		       unload_data);
 }

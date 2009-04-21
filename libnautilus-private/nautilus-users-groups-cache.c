@@ -32,9 +32,9 @@
 
 typedef struct _ExpiringCache ExpiringCache;
 
-/* times in milliseconds */
-#define USERS_CACHE_EXPIRE_TIME   (60 * 1000)
-#define GROUPS_CACHE_EXPIRE_TIME  (60 * 1000)
+/* times in seconds */
+#define USERS_CACHE_EXPIRE_TIME   60
+#define GROUPS_CACHE_EXPIRE_TIME  60
 
 /* cache of users' names */
 static ExpiringCache *users_cache = NULL;
@@ -136,7 +136,7 @@ expiring_cache_get_value (ExpiringCache *cache, guint key)
 	                                   NULL, (gpointer) &entry)) {
 		entry = expiring_cache_entry_new (cache, key, cache->get_value_func (key));
 		g_hash_table_insert (cache->cached_values, GSIZE_TO_POINTER (key), entry);
-		g_timeout_add (cache->expire_time, (GSourceFunc) cb_cache_entry_expired, entry);
+		g_timeout_add_seconds (cache->expire_time, (GSourceFunc) cb_cache_entry_expired, entry);
 	}
 
 	return entry->value;

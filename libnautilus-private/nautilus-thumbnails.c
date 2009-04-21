@@ -979,7 +979,7 @@ thumbnail_thread_start (gpointer data)
 				   info->image_uri);
 #endif
 			/* Reschedule thumbnailing via a change notification */
-			g_timeout_add (1000, thumbnail_thread_notify_file_changed,
+			g_timeout_add_seconds (1, thumbnail_thread_notify_file_changed,
 				       g_strdup (info->image_uri));
  			continue;
 		}

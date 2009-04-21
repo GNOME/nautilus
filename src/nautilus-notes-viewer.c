@@ -46,7 +46,7 @@
 #include <libnautilus-private/nautilus-window-slot-info.h>
 #include <libnautilus-extension/nautilus-property-page-provider.h>
 
-#define SAVE_TIMEOUT (3 * 1000)
+#define SAVE_TIMEOUT 3
 
 static void load_note_text_from_metadata             (NautilusFile                      *file,
                                                       NautilusNotesViewer               *notes);
@@ -124,7 +124,7 @@ schedule_save (NautilusNotesViewer *notes)
 {
 	cancel_pending_save (notes);
 	
-	notes->details->save_timeout_id = g_timeout_add (SAVE_TIMEOUT, schedule_save_callback, notes);
+	notes->details->save_timeout_id = g_timeout_add_seconds (SAVE_TIMEOUT, schedule_save_callback, notes);
 }
 
 /* notifies event listeners if the notes data actually changed */

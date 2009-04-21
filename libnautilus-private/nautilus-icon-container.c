@@ -145,7 +145,7 @@
 #define SNAP_CEIL_VERTICAL(y) SNAP_VERTICAL (ceil, y)
 
 /* Copied from NautilusIconContainer */
-#define NAUTILUS_ICON_CONTAINER_SEARCH_DIALOG_TIMEOUT 5000
+#define NAUTILUS_ICON_CONTAINER_SEARCH_DIALOG_TIMEOUT 5
 
 /* Copied from NautilusFile */
 #define UNDEFINED_TIME ((time_t) (-1))
@@ -4903,7 +4903,7 @@ nautilus_icon_container_search_preedit_changed (GtkIMContext *im_context,
 	if (container->details->typeselect_flush_timeout) {
 		g_source_remove (container->details->typeselect_flush_timeout);
 		container->details->typeselect_flush_timeout =
-			g_timeout_add (NAUTILUS_ICON_CONTAINER_SEARCH_DIALOG_TIMEOUT,
+			g_timeout_add_seconds (NAUTILUS_ICON_CONTAINER_SEARCH_DIALOG_TIMEOUT,
 				(GSourceFunc) nautilus_icon_container_search_entry_flush_timeout,
 				container);
 	}
@@ -5100,7 +5100,7 @@ nautilus_icon_container_search_scroll_event (GtkWidget *widget,
 	if (retval && container->details->typeselect_flush_timeout) {
 		g_source_remove (container->details->typeselect_flush_timeout);
 		container->details->typeselect_flush_timeout =
-			g_timeout_add (NAUTILUS_ICON_CONTAINER_SEARCH_DIALOG_TIMEOUT,
+			g_timeout_add_seconds (NAUTILUS_ICON_CONTAINER_SEARCH_DIALOG_TIMEOUT,
 				(GSourceFunc) nautilus_icon_container_search_entry_flush_timeout,
 				container);
 	}
@@ -5161,7 +5161,7 @@ nautilus_icon_container_search_key_press_event (GtkWidget *widget,
 	if (retval && container->details->typeselect_flush_timeout) {
 		g_source_remove (container->details->typeselect_flush_timeout);
 		container->details->typeselect_flush_timeout =
-			g_timeout_add (NAUTILUS_ICON_CONTAINER_SEARCH_DIALOG_TIMEOUT,
+			g_timeout_add_seconds (NAUTILUS_ICON_CONTAINER_SEARCH_DIALOG_TIMEOUT,
 				(GSourceFunc) nautilus_icon_container_search_entry_flush_timeout,
 				container);
 	}
@@ -5189,7 +5189,7 @@ nautilus_icon_container_search_init (GtkWidget   *entry,
 	{
 		g_source_remove (container->details->typeselect_flush_timeout);
 		container->details->typeselect_flush_timeout =
-			g_timeout_add (NAUTILUS_ICON_CONTAINER_SEARCH_DIALOG_TIMEOUT,
+			g_timeout_add_seconds (NAUTILUS_ICON_CONTAINER_SEARCH_DIALOG_TIMEOUT,
 				(GSourceFunc) nautilus_icon_container_search_entry_flush_timeout,
 				container);
 	}
@@ -5301,7 +5301,7 @@ nautilus_icon_container_real_start_interactive_search (NautilusIconContainer *co
 	}
 
 	container->details->typeselect_flush_timeout =
-		g_timeout_add (NAUTILUS_ICON_CONTAINER_SEARCH_DIALOG_TIMEOUT,
+		g_timeout_add_seconds (NAUTILUS_ICON_CONTAINER_SEARCH_DIALOG_TIMEOUT,
 			(GSourceFunc) nautilus_icon_container_search_entry_flush_timeout,
 			container);
 

@@ -154,7 +154,7 @@ nautilus_spatial_window_configure_event (GtkWidget *widget,
 		window->details->last_geometry = geometry_string;
 
 		window->details->save_geometry_timeout_id = 
-			g_timeout_add (1000, save_window_geometry_timeout, window);
+			g_timeout_add_seconds (1, save_window_geometry_timeout, window);
 	}
 	
 	return FALSE;

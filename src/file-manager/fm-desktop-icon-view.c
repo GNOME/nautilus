@@ -65,7 +65,7 @@
 #include <unistd.h>
 
 /* Timeout to check the desktop directory for updates */
-#define RESCAN_TIMEOUT 4000
+#define RESCAN_TIMEOUT 4
 
 struct FMDesktopIconViewDetails
 {
@@ -480,7 +480,7 @@ delayed_init (FMDesktopIconView *desktop_icon_view)
 
 	/* Monitor desktop directory. */
 	desktop_icon_view->details->reload_desktop_timeout =
-		g_timeout_add (RESCAN_TIMEOUT, do_desktop_rescan, desktop_icon_view);
+		g_timeout_add_seconds (RESCAN_TIMEOUT, do_desktop_rescan, desktop_icon_view);
 
 	g_signal_handler_disconnect (desktop_icon_view,
 				     desktop_icon_view->details->delayed_init_signal);
