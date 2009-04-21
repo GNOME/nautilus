@@ -31,11 +31,17 @@
 #include <gtk/gtk.h>
 #include <libnautilus-private/nautilus-icon-info.h> /* For NautilusZoomLevel */
 
-#define NAUTILUS_TYPE_ZOOM_CONTROL	      (nautilus_zoom_control_get_type ())
-#define NAUTILUS_ZOOM_CONTROL(obj)	      (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_ZOOM_CONTROL, NautilusZoomControl))
-#define NAUTILUS_ZOOM_CONTROL_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_ZOOM_CONTROL, NautilusZoomControlClass))
-#define NAUTILUS_IS_ZOOM_CONTROL(obj)	      (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_ZOOM_CONTROL))
-#define NAUTILUS_IS_ZOOM_CONTROL_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_ZOOM_CONTROL))
+#define NAUTILUS_TYPE_ZOOM_CONTROL nautilus_zoom_control_get_type()
+#define NAUTILUS_ZOOM_CONTROL(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_ZOOM_CONTROL, NautilusZoomControl))
+#define NAUTILUS_ZOOM_CONTROL_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_ZOOM_CONTROL, NautilusZoomControlClass))
+#define NAUTILUS_IS_ZOOM_CONTROL(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_ZOOM_CONTROL))
+#define NAUTILUS_IS_ZOOM_CONTROL_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_ZOOM_CONTROL))
+#define NAUTILUS_ZOOM_CONTROL_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_ZOOM_CONTROL, NautilusZoomControlClass))
 
 typedef struct NautilusZoomControl NautilusZoomControl;
 typedef struct NautilusZoomControlClass NautilusZoomControlClass;

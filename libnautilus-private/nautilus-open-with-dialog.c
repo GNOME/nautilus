@@ -380,7 +380,7 @@ chooser_response_cb (GtkFileChooser *chooser,
 
 			gtk_entry_set_text (GTK_ENTRY (dialog->details->entry),
 					    quoted_text);
-			gtk_entry_set_position (GTK_ENTRY (dialog->details->entry), -1);
+			gtk_editable_set_position (GTK_EDITABLE (dialog->details->entry), -1);
 			g_free (quoted_text);
 			g_free (filename);
 		}

@@ -1706,7 +1706,6 @@ fm_tree_view_create (NautilusSidebarProvider *provider,
 	sidebar = g_object_new (fm_tree_view_get_type (), NULL);
 	fm_tree_view_set_parent_window (sidebar, window);
 	g_object_ref (sidebar);
-	gtk_object_sink (GTK_OBJECT (sidebar));
 
 	return NAUTILUS_SIDEBAR (sidebar);
 }

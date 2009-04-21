@@ -27,13 +27,17 @@
 #include <gtk/gtk.h>
 #include <libnautilus-private/nautilus-query.h>
 
-#define NAUTILUS_TYPE_SEARCH_BAR (nautilus_search_bar_get_type ())
+#define NAUTILUS_TYPE_SEARCH_BAR nautilus_search_bar_get_type()
 #define NAUTILUS_SEARCH_BAR(obj) \
-	GTK_CHECK_CAST (obj, NAUTILUS_TYPE_SEARCH_BAR, NautilusSearchBar)
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_SEARCH_BAR, NautilusSearchBar))
 #define NAUTILUS_SEARCH_BAR_CLASS(klass) \
-	GTK_CHECK_CLASS_CAST (klass, NAUTILUS_TYPE_SEARCH_BAR, NautilusSearchBarClass)
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SEARCH_BAR, NautilusSearchBarClass))
 #define NAUTILUS_IS_SEARCH_BAR(obj) \
-	GTK_CHECK_TYPE (obj, NAUTILUS_TYPE_SEARCH_BAR)
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_SEARCH_BAR))
+#define NAUTILUS_IS_SEARCH_BAR_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SEARCH_BAR))
+#define NAUTILUS_SEARCH_BAR_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_SEARCH_BAR, NautilusSearchBarClass))
 
 typedef struct NautilusSearchBarDetails NautilusSearchBarDetails;
 

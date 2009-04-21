@@ -782,7 +782,6 @@ fm_desktop_icon_view_create (NautilusWindowSlotInfo *slot)
 			     "window-slot", slot,
 			     NULL);
 	g_object_ref (view);
-	gtk_object_sink (GTK_OBJECT (view));
 	return NAUTILUS_VIEW (view);
 }
 

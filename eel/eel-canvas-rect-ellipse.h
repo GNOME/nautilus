@@ -63,14 +63,17 @@ G_BEGIN_DECLS
  *							will be scaled when the canvas zoom factor is changed.
  */
 
-
-#define EEL_TYPE_CANVAS_RE            (eel_canvas_re_get_type ())
-#define EEL_CANVAS_RE(obj)            (GTK_CHECK_CAST ((obj), EEL_TYPE_CANVAS_RE, EelCanvasRE))
-#define EEL_CANVAS_RE_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), EEL_TYPE_CANVAS_RE, EelCanvasREClass))
-#define EEL_IS_CANVAS_RE(obj)         (GTK_CHECK_TYPE ((obj), EEL_TYPE_CANVAS_RE))
-#define EEL_IS_CANVAS_RE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), EEL_TYPE_CANVAS_RE))
-#define EEL_CANVAS_RE_GET_CLASS(obj)  (GTK_CHECK_GET_CLASS ((obj), EEL_TYPE_CANVAS_RE, EelCanvasREClass))
-
+#define EEL_TYPE_CANVAS_RE eel_canvas_re_get_type()
+#define EEL_CANVAS_RE(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), EEL_TYPE_CANVAS_RE, EelCanvasRE))
+#define EEL_CANVAS_RE_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), EEL_TYPE_CANVAS_RE, EelCanvasREClass))
+#define EEL_IS_CANVAS_RE(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), EEL_TYPE_CANVAS_RE))
+#define EEL_IS_CANVAS_RE_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), EEL_TYPE_CANVAS_RE))
+#define EEL_CANVAS_RE_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), EEL_TYPE_CANVAS_RE, EelCanvasREClass))
 
 typedef struct _EelCanvasRE      EelCanvasRE;
 typedef struct _EelCanvasREClass EelCanvasREClass;
@@ -113,14 +116,17 @@ GType eel_canvas_re_get_type (void) G_GNUC_CONST;
  * EelCanvasRE).
  */
 
-
-#define EEL_TYPE_CANVAS_RECT            (eel_canvas_rect_get_type ())
-#define EEL_CANVAS_RECT(obj)            (GTK_CHECK_CAST ((obj), EEL_TYPE_CANVAS_RECT, EelCanvasRect))
-#define EEL_CANVAS_RECT_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), EEL_TYPE_CANVAS_RECT, EelCanvasRectClass))
-#define EEL_IS_CANVAS_RECT(obj)         (GTK_CHECK_TYPE ((obj), EEL_TYPE_CANVAS_RECT))
-#define EEL_IS_CANVAS_RECT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), EEL_TYPE_CANVAS_RECT))
-#define EEL_CANVAS_RECT_GET_CLASS(obj)  (GTK_CHECK_GET_CLASS ((obj), EEL_TYPE_CANVAS_RECT, EelCanvasRectClass))
-
+#define EEL_TYPE_CANVAS_RECT eel_canvas_rect_get_type()
+#define EEL_CANVAS_RECT(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), EEL_TYPE_CANVAS_RECT, EelCanvasRect))
+#define EEL_CANVAS_RECT_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), EEL_TYPE_CANVAS_RECT, EelCanvasRectClass))
+#define EEL_IS_CANVAS_RECT(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), EEL_TYPE_CANVAS_RECT))
+#define EEL_IS_CANVAS_RECT_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), EEL_TYPE_CANVAS_RECT))
+#define EEL_CANVAS_RECT_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), EEL_TYPE_CANVAS_RECT, EelCanvasRectClass))
 
 typedef struct _EelCanvasRect EelCanvasRect;
 typedef struct _EelCanvasRectPrivate EelCanvasRectPrivate;
@@ -144,14 +150,17 @@ GType eel_canvas_rect_get_type (void) G_GNUC_CONST;
  * EelCanvasRE).
  */
 
-
-#define EEL_TYPE_CANVAS_ELLIPSE            (eel_canvas_ellipse_get_type ())
-#define EEL_CANVAS_ELLIPSE(obj)            (GTK_CHECK_CAST ((obj), EEL_TYPE_CANVAS_ELLIPSE, EelCanvasEllipse))
-#define EEL_CANVAS_ELLIPSE_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), EEL_TYPE_CANVAS_ELLIPSE, EelCanvasEllipseClass))
-#define EEL_IS_CANVAS_ELLIPSE(obj)         (GTK_CHECK_TYPE ((obj), EEL_TYPE_CANVAS_ELLIPSE))
-#define EEL_IS_CANVAS_ELLIPSE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), EEL_TYPE_CANVAS_ELLIPSE))
-#define EEL_CANVAS_ELLIPSE_GET_CLASS(obj)  (GTK_CHECK_GET_CLASS ((obj), EEL_TYPE_CANVAS_ELLIPSE, EelCanvasEllipseClass))
-
+#define EEL_TYPE_CANVAS_ELLIPSE eel_canvas_ellipse_get_type()
+#define EEL_CANVAS_ELLIPSE(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), EEL_TYPE_CANVAS_ELLIPSE, EelCanvasEllipse))
+#define EEL_CANVAS_ELLIPSE_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), EEL_TYPE_CANVAS_ELLIPSE, EelCanvasEllipseClass))
+#define EEL_IS_CANVAS_ELLIPSE(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), EEL_TYPE_CANVAS_ELLIPSE))
+#define EEL_IS_CANVAS_ELLIPSE_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), EEL_TYPE_CANVAS_ELLIPSE))
+#define EEL_CANVAS_ELLIPSE_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), EEL_TYPE_CANVAS_ELLIPSE, EelCanvasEllipseClass))
 
 typedef struct _EelCanvasEllipse EelCanvasEllipse;
 typedef struct _EelCanvasEllipseClass EelCanvasEllipseClass;

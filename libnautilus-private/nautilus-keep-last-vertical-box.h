@@ -28,11 +28,17 @@
 
 #include <gtk/gtk.h>
 
-#define NAUTILUS_TYPE_KEEP_LAST_VERTICAL_BOX            (nautilus_keep_last_vertical_box_get_type ())
-#define NAUTILUS_KEEP_LAST_VERTICAL_BOX(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_KEEP_LAST_VERTICAL_BOX, NautilusKeepLastVerticalBox))
-#define NAUTILUS_KEEP_LAST_VERTICAL_BOX_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_KEEP_LAST_VERTICAL_BOX, NautilusKeepLastVerticalBoxClass))
-#define NAUTILUS_IS_KEEP_LAST_VERTICAL_BOX(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_KEEP_LAST_VERTICAL_BOX))
-#define NAUTILUS_IS_KEEP_LAST_VERTICAL_BOX_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_KEEP_LAST_VERTICAL_BOX))
+#define NAUTILUS_TYPE_KEEP_LAST_VERTICAL_BOX nautilus_keep_last_vertical_box_get_type()
+#define NAUTILUS_KEEP_LAST_VERTICAL_BOX(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_KEEP_LAST_VERTICAL_BOX, NautilusKeepLastVerticalBox))
+#define NAUTILUS_KEEP_LAST_VERTICAL_BOX_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_KEEP_LAST_VERTICAL_BOX, NautilusKeepLastVerticalBoxClass))
+#define NAUTILUS_IS_KEEP_LAST_VERTICAL_BOX(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_KEEP_LAST_VERTICAL_BOX))
+#define NAUTILUS_IS_KEEP_LAST_VERTICAL_BOX_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_KEEP_LAST_VERTICAL_BOX))
+#define NAUTILUS_KEEP_LAST_VERTICAL_BOX_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_KEEP_LAST_VERTICAL_BOX, NautilusKeepLastVerticalBoxClass))
 
 typedef struct NautilusKeepLastVerticalBox NautilusKeepLastVerticalBox;
 typedef struct NautilusKeepLastVerticalBoxClass NautilusKeepLastVerticalBoxClass;

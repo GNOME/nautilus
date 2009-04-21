@@ -39,11 +39,17 @@
 #include "nautilus-side-pane.h"
 #include "nautilus-window.h"
 
-#define NAUTILUS_TYPE_NAVIGATION_WINDOW              (nautilus_navigation_window_get_type())
-#define NAUTILUS_NAVIGATION_WINDOW(obj)	          (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_NAVIGATION_WINDOW, NautilusNavigationWindow))
-#define NAUTILUS_NAVIGATION_WINDOW_CLASS(klass)      (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_NAVIGATION_WINDOW, NautilusNavigationWindowClass))
-#define NAUTILUS_IS_NAVIGATION_WINDOW(obj)	          (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_NAVIGATION_WINDOW))
-#define NAUTILUS_IS_NAVIGATION_WINDOW_CLASS(klass)   (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_NAVIGATION_WINDOW))
+#define NAUTILUS_TYPE_NAVIGATION_WINDOW nautilus_navigation_window_get_type()
+#define NAUTILUS_NAVIGATION_WINDOW(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_NAVIGATION_WINDOW, NautilusNavigationWindow))
+#define NAUTILUS_NAVIGATION_WINDOW_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_NAVIGATION_WINDOW, NautilusNavigationWindowClass))
+#define NAUTILUS_IS_NAVIGATION_WINDOW(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_NAVIGATION_WINDOW))
+#define NAUTILUS_IS_NAVIGATION_WINDOW_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_NAVIGATION_WINDOW))
+#define NAUTILUS_NAVIGATION_WINDOW_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_NAVIGATION_WINDOW, NautilusNavigationWindowClass))
 
 typedef struct _NautilusNavigationWindow        NautilusNavigationWindow;
 typedef struct _NautilusNavigationWindowClass   NautilusNavigationWindowClass;

@@ -32,11 +32,17 @@
 #include "nautilus-application.h"
 #include "nautilus-spatial-window.h"
 
-#define NAUTILUS_TYPE_DESKTOP_WINDOW            (nautilus_desktop_window_get_type())
-#define NAUTILUS_DESKTOP_WINDOW(object)         (GTK_CHECK_CAST ((object), NAUTILUS_TYPE_DESKTOP_WINDOW, NautilusDesktopWindow))
-#define NAUTILUS_DESKTOP_WINDOW_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_DESKTOP_WINDOW, NautilusDesktopWindowClass))
-#define NAUTILUS_IS_DESKTOP_WINDOW(object)      (GTK_CHECK_TYPE ((object), NAUTILUS_TYPE_DESKTOP_WINDOW))
-#define NAUTILUS_IS_DESKTOP_WINDOW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_DESKTOP_WINDOW))
+#define NAUTILUS_TYPE_DESKTOP_WINDOW nautilus_desktop_window_get_type()
+#define NAUTILUS_DESKTOP_WINDOW(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_DESKTOP_WINDOW, NautilusDesktopWindow))
+#define NAUTILUS_DESKTOP_WINDOW_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_DESKTOP_WINDOW, NautilusDesktopWindowClass))
+#define NAUTILUS_IS_DESKTOP_WINDOW(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_DESKTOP_WINDOW))
+#define NAUTILUS_IS_DESKTOP_WINDOW_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_DESKTOP_WINDOW))
+#define NAUTILUS_DESKTOP_WINDOW_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_DESKTOP_WINDOW, NautilusDesktopWindowClass))
 
 typedef struct NautilusDesktopWindowDetails NautilusDesktopWindowDetails;
 

@@ -449,7 +449,6 @@ nautilus_notes_viewer_create_sidebar (NautilusSidebarProvider *provider,
 	sidebar = g_object_new (nautilus_notes_viewer_get_type (), NULL);
 	nautilus_notes_viewer_set_parent_window (sidebar, window);
 	g_object_ref (sidebar);
-	gtk_object_sink (GTK_OBJECT (sidebar));
 
 	return NAUTILUS_SIDEBAR (sidebar);
 }

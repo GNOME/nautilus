@@ -1170,8 +1170,8 @@ select_pattern (FMDirectoryView *view)
 	label = gtk_label_new_with_mnemonic (_("_Pattern:"));
 	entry = gtk_entry_new ();
 	gtk_entry_set_activates_default (GTK_ENTRY (entry), TRUE);
-	gtk_box_pack_start_defaults (GTK_BOX (box), label);
-	gtk_box_pack_start_defaults (GTK_BOX (box), entry);
+	gtk_box_pack_start (GTK_BOX (box), label, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (box), entry, TRUE, TRUE, 0);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry);
 	gtk_widget_show_all (box);
 	gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), box);
@@ -1282,7 +1282,7 @@ action_save_search_as_callback (GtkAction *action,
 		gtk_container_set_border_width (GTK_CONTAINER (table), 5);
 		gtk_table_set_row_spacings (GTK_TABLE (table), 6);
 		gtk_table_set_col_spacings (GTK_TABLE (table), 12);
-		gtk_box_pack_start_defaults (GTK_BOX (GTK_DIALOG (dialog)->vbox), table);
+		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), table, TRUE, TRUE, 0);
 		gtk_widget_show (table);
 		
 		label = gtk_label_new_with_mnemonic (_("Search _name:"));

@@ -28,16 +28,17 @@
 
 #include <libnautilus-private/nautilus-directory.h>
 
-#define NAUTILUS_TYPE_VFS_DIRECTORY \
-	(nautilus_vfs_directory_get_type ())
+#define NAUTILUS_TYPE_VFS_DIRECTORY nautilus_vfs_directory_get_type()
 #define NAUTILUS_VFS_DIRECTORY(obj) \
-	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_VFS_DIRECTORY, NautilusVFSDirectory))
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_VFS_DIRECTORY, NautilusVFSDirectory))
 #define NAUTILUS_VFS_DIRECTORY_CLASS(klass) \
-	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_VFS_DIRECTORY, NautilusVFSDirectoryClass))
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_VFS_DIRECTORY, NautilusVFSDirectoryClass))
 #define NAUTILUS_IS_VFS_DIRECTORY(obj) \
-	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_VFS_DIRECTORY))
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_VFS_DIRECTORY))
 #define NAUTILUS_IS_VFS_DIRECTORY_CLASS(klass) \
-	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_VFS_DIRECTORY))
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_VFS_DIRECTORY))
+#define NAUTILUS_VFS_DIRECTORY_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_VFS_DIRECTORY, NautilusVFSDirectoryClass))
 
 typedef struct NautilusVFSDirectoryDetails NautilusVFSDirectoryDetails;
 

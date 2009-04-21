@@ -29,16 +29,17 @@
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-desktop-link.h>
 
-#define NAUTILUS_TYPE_DESKTOP_ICON_FILE \
-	(nautilus_desktop_icon_file_get_type ())
+#define NAUTILUS_TYPE_DESKTOP_ICON_FILE nautilus_desktop_icon_file_get_type()
 #define NAUTILUS_DESKTOP_ICON_FILE(obj) \
-	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_DESKTOP_ICON_FILE, NautilusDesktopIconFile))
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_DESKTOP_ICON_FILE, NautilusDesktopIconFile))
 #define NAUTILUS_DESKTOP_ICON_FILE_CLASS(klass) \
-	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_DESKTOP_ICON_FILE, NautilusDesktopIconFileClass))
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_DESKTOP_ICON_FILE, NautilusDesktopIconFileClass))
 #define NAUTILUS_IS_DESKTOP_ICON_FILE(obj) \
-	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_DESKTOP_ICON_FILE))
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_DESKTOP_ICON_FILE))
 #define NAUTILUS_IS_DESKTOP_ICON_FILE_CLASS(klass) \
-	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_DESKTOP_ICON_FILE))
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_DESKTOP_ICON_FILE))
+#define NAUTILUS_DESKTOP_ICON_FILE_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_DESKTOP_ICON_FILE, NautilusDesktopIconFileClass))
 
 typedef struct NautilusDesktopIconFileDetails NautilusDesktopIconFileDetails;
 

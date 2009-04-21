@@ -29,13 +29,17 @@
 
 #include <libnautilus-private/nautilus-entry.h>
 
-#define NAUTILUS_TYPE_LOCATION_ENTRY (nautilus_location_entry_get_type ())
+#define NAUTILUS_TYPE_LOCATION_ENTRY nautilus_location_entry_get_type()
 #define NAUTILUS_LOCATION_ENTRY(obj) \
-	GTK_CHECK_CAST (obj, NAUTILUS_TYPE_LOCATION_ENTRY, NautilusLocationEntry)
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_LOCATION_ENTRY, NautilusLocationEntry))
 #define NAUTILUS_LOCATION_ENTRY_CLASS(klass) \
-	GTK_CHECK_CLASS_CAST (klass, NAUTILUS_TYPE_LOCATION_ENTRY, NautilusLocationEntryClass)
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_LOCATION_ENTRY, NautilusLocationEntryClass))
 #define NAUTILUS_IS_LOCATION_ENTRY(obj) \
-	GTK_CHECK_TYPE (obj, NAUTILUS_TYPE_LOCATION_ENTRY)
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_LOCATION_ENTRY))
+#define NAUTILUS_IS_LOCATION_ENTRY_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_LOCATION_ENTRY))
+#define NAUTILUS_LOCATION_ENTRY_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_LOCATION_ENTRY, NautilusLocationEntryClass))
 
 typedef struct NautilusLocationEntryDetails NautilusLocationEntryDetails;
 

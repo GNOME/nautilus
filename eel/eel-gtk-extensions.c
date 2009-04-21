@@ -394,7 +394,7 @@ eel_pop_up_context_menu (GtkMenu	     *menu,
 			button,					/* button */
 			event ? event->time : GDK_CURRENT_TIME); /* activate_time */
 
-	gtk_object_sink (GTK_OBJECT (menu));
+	g_object_ref_sink (menu);
 }
 
 GtkMenuItem *
@@ -539,10 +539,10 @@ alive_disconnecter (GtkObject *object, DisconnectInfo *info)
 void
 eel_gtk_signal_connect_full_while_alive (GtkObject *object,
 					 const gchar *name,
-					 GtkSignalFunc func,
+					 GCallback func,
 					 GtkCallbackMarshal marshal,
 					 gpointer data,
-					 GtkDestroyNotify destroy_func,
+					 GDestroyNotify destroy_func,
 					 gboolean object_signal,
 					 gboolean after,
 					 GtkObject *alive_object)
@@ -628,7 +628,7 @@ while_realized_disconnecter (GtkObject *object,
 void
 eel_gtk_signal_connect_while_realized (GtkObject *object,
 					    const char *name,
-					    GtkSignalFunc callback,
+					    GCallback callback,
 					    gpointer callback_data,
 					    GtkWidget *realized_widget)
 {
@@ -1012,7 +1012,7 @@ eel_gtk_get_system_font (void)
 
 	font = pango_font_description_copy (label->style->font_desc);
 
- 	gtk_object_sink (GTK_OBJECT (label));
+ 	g_object_ref_sink (label);
 
 	return font;
 }
@@ -1044,20 +1044,6 @@ eel_gtk_widget_get_motion_event_location (GtkWidget *widget,
 					  int *y)
 {
 	eel_gtk_widget_get_button_event_location (widget, (const GdkEventButton *) event, x, y);
-}
-
-gboolean
-eel_gtk_tree_view_cell_is_completely_visible (GtkTreeView          *tree_view,
-					      GtkTreePath          *path,
-					      GtkTreeViewColumn    *column)
-{
-	GdkRectangle cell_rect, visible_rect;
-
-	gtk_tree_view_get_background_area (tree_view, path, column, &cell_rect);
-	gtk_tree_view_widget_to_tree_coords (tree_view, cell_rect.x, cell_rect.y,
-					     &cell_rect.x, &cell_rect.y);
-	gtk_tree_view_get_visible_rect (tree_view, &visible_rect);
-	return eel_gdk_rectangle_contains_rectangle (visible_rect, cell_rect);
 }
 
 static gboolean 

@@ -37,16 +37,17 @@
 typedef struct NautilusPropertyBrowser NautilusPropertyBrowser;
 typedef struct NautilusPropertyBrowserClass  NautilusPropertyBrowserClass;
 
-#define NAUTILUS_TYPE_PROPERTY_BROWSER \
-	(nautilus_property_browser_get_type ())
+#define NAUTILUS_TYPE_PROPERTY_BROWSER nautilus_property_browser_get_type()
 #define NAUTILUS_PROPERTY_BROWSER(obj) \
-	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_PROPERTY_BROWSER, NautilusPropertyBrowser))
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_PROPERTY_BROWSER, NautilusPropertyBrowser))
 #define NAUTILUS_PROPERTY_BROWSER_CLASS(klass) \
-	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_PROPERTY_BROWSER, NautilusPropertyBrowserClass))
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_PROPERTY_BROWSER, NautilusPropertyBrowserClass))
 #define NAUTILUS_IS_PROPERTY_BROWSER(obj) \
-	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_PROPERTY_BROWSER))
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_PROPERTY_BROWSER))
 #define NAUTILUS_IS_PROPERTY_BROWSER_CLASS(klass) \
-	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_PROPERTY_BROWSER))
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_PROPERTY_BROWSER))
+#define NAUTILUS_PROPERTY_BROWSER_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_PROPERTY_BROWSER, NautilusPropertyBrowserClass))
 
 typedef struct NautilusPropertyBrowserDetails NautilusPropertyBrowserDetails;
 

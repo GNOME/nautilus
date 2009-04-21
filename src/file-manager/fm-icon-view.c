@@ -2993,7 +2993,6 @@ fm_icon_view_create (NautilusWindowSlotInfo *slot)
 			     "compact", FALSE,
 			     NULL);
 	g_object_ref (view);
-	gtk_object_sink (GTK_OBJECT (view));
 	return NAUTILUS_VIEW (view);
 }
 
@@ -3007,7 +3006,6 @@ fm_compact_view_create (NautilusWindowSlotInfo *slot)
 			     "compact", TRUE,
 			     NULL);
 	g_object_ref (view);
-	gtk_object_sink (GTK_OBJECT (view));
 	return NAUTILUS_VIEW (view);
 }
 

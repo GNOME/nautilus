@@ -31,11 +31,17 @@
 typedef struct FMIconContainer FMIconContainer;
 typedef struct FMIconContainerClass FMIconContainerClass;
 
-#define FM_TYPE_ICON_CONTAINER			(fm_icon_container_get_type ())
-#define FM_ICON_CONTAINER(obj)			(GTK_CHECK_CAST ((obj), FM_TYPE_ICON_CONTAINER, FMIconContainer))
-#define FM_ICON_CONTAINER_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), FM_TYPE_ICON_CONTAINER, FMIconContainerClass))
-#define FM_IS_ICON_CONTAINER(obj)			(GTK_CHECK_TYPE ((obj), FM_TYPE_ICON_CONTAINER))
-#define FM_IS_ICON_CONTAINER_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((klass), FM_TYPE_ICON_CONTAINER))
+#define FM_TYPE_ICON_CONTAINER fm_icon_container_get_type()
+#define FM_ICON_CONTAINER(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), FM_TYPE_ICON_CONTAINER, FMIconContainer))
+#define FM_ICON_CONTAINER_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), FM_TYPE_ICON_CONTAINER, FMIconContainerClass))
+#define FM_IS_ICON_CONTAINER(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), FM_TYPE_ICON_CONTAINER))
+#define FM_IS_ICON_CONTAINER_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), FM_TYPE_ICON_CONTAINER))
+#define FM_ICON_CONTAINER_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), FM_TYPE_ICON_CONTAINER, FMIconContainerClass))
 
 typedef struct FMIconContainerDetails FMIconContainerDetails;
 

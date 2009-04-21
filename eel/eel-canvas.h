@@ -101,13 +101,17 @@ enum {
 	EEL_CANVAS_UPDATE_DEEP       = 1 << 1
 };
 
-#define EEL_TYPE_CANVAS_ITEM            (eel_canvas_item_get_type ())
-#define EEL_CANVAS_ITEM(obj)            (GTK_CHECK_CAST ((obj), EEL_TYPE_CANVAS_ITEM, EelCanvasItem))
-#define EEL_CANVAS_ITEM_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), EEL_TYPE_CANVAS_ITEM, EelCanvasItemClass))
-#define EEL_IS_CANVAS_ITEM(obj)         (GTK_CHECK_TYPE ((obj), EEL_TYPE_CANVAS_ITEM))
-#define EEL_IS_CANVAS_ITEM_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), EEL_TYPE_CANVAS_ITEM))
-#define EEL_CANVAS_ITEM_GET_CLASS(obj)  (GTK_CHECK_GET_CLASS ((obj), EEL_TYPE_CANVAS_ITEM, EelCanvasItemClass))
-
+#define EEL_TYPE_CANVAS_ITEM eel_canvas_item_get_type()
+#define EEL_CANVAS_ITEM(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), EEL_TYPE_CANVAS_ITEM, EelCanvasItem))
+#define EEL_CANVAS_ITEM_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), EEL_TYPE_CANVAS_ITEM, EelCanvasItemClass))
+#define EEL_IS_CANVAS_ITEM(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), EEL_TYPE_CANVAS_ITEM))
+#define EEL_IS_CANVAS_ITEM_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), EEL_TYPE_CANVAS_ITEM))
+#define EEL_CANVAS_ITEM_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), EEL_TYPE_CANVAS_ITEM, EelCanvasItemClass))
 
 struct _EelCanvasItem {
 	GtkObject object;
@@ -304,13 +308,17 @@ void eel_canvas_item_request_redraw (EelCanvasItem *item);
  */
 
 
-#define EEL_TYPE_CANVAS_GROUP            (eel_canvas_group_get_type ())
-#define EEL_CANVAS_GROUP(obj)            (GTK_CHECK_CAST ((obj), EEL_TYPE_CANVAS_GROUP, EelCanvasGroup))
-#define EEL_CANVAS_GROUP_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), EEL_TYPE_CANVAS_GROUP, EelCanvasGroupClass))
-#define EEL_IS_CANVAS_GROUP(obj)         (GTK_CHECK_TYPE ((obj), EEL_TYPE_CANVAS_GROUP))
-#define EEL_IS_CANVAS_GROUP_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), EEL_TYPE_CANVAS_GROUP))
-#define EEL_CANVAS_GROUP_GET_CLASS(obj)  (GTK_CHECK_GET_CLASS ((obj), EEL_TYPE_CANVAS_GROUP, EelCanvasGroupClass))
-
+#define EEL_TYPE_CANVAS_GROUP eel_canvas_group_get_type()
+#define EEL_CANVAS_GROUP(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), EEL_TYPE_CANVAS_GROUP, EelCanvasGroup))
+#define EEL_CANVAS_GROUP_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), EEL_TYPE_CANVAS_GROUP, EelCanvasGroupClass))
+#define EEL_IS_CANVAS_GROUP(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), EEL_TYPE_CANVAS_GROUP))
+#define EEL_IS_CANVAS_GROUP_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), EEL_TYPE_CANVAS_GROUP))
+#define EEL_CANVAS_GROUP_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), EEL_TYPE_CANVAS_GROUP, EelCanvasGroupClass))
 
 struct _EelCanvasGroup {
 	EelCanvasItem item;
@@ -333,14 +341,17 @@ GType eel_canvas_group_get_type (void) G_GNUC_CONST;
 
 /*** EelCanvas ***/
 
-
-#define EEL_TYPE_CANVAS            (eel_canvas_get_type ())
-#define EEL_CANVAS(obj)            (GTK_CHECK_CAST ((obj), EEL_TYPE_CANVAS, EelCanvas))
-#define EEL_CANVAS_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), EEL_TYPE_CANVAS, EelCanvasClass))
-#define EEL_IS_CANVAS(obj)         (GTK_CHECK_TYPE ((obj), EEL_TYPE_CANVAS))
-#define EEL_IS_CANVAS_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), EEL_TYPE_CANVAS))
-#define EEL_CANVAS_GET_CLASS(obj)  (GTK_CHECK_GET_CLASS ((obj), EEL_TYPE_CANVAS, EelCanvasClass))
-
+#define EEL_TYPE_CANVAS eel_canvas_get_type()
+#define EEL_CANVAS(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), EEL_TYPE_CANVAS, EelCanvas))
+#define EEL_CANVAS_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), EEL_TYPE_CANVAS, EelCanvasClass))
+#define EEL_IS_CANVAS(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), EEL_TYPE_CANVAS))
+#define EEL_IS_CANVAS_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), EEL_TYPE_CANVAS))
+#define EEL_CANVAS_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), EEL_TYPE_CANVAS, EelCanvasClass))
 
 struct _EelCanvas {
 	GtkLayout layout;

@@ -35,13 +35,13 @@ void
 eel_type_init (void)
 {
 	int i;
-	GtkType type_id;
+	GType type_id;
 	static gboolean initialized = FALSE;
 	
 	static struct {
 		const gchar *type_name;
-		GtkType *type_id;
-		GtkType parent;
+		GType *type_id;
+		GType parent;
 		gconstpointer pointer1;
 		gpointer pointer2;
 	} builtin_info[EEL_TYPE_N_BUILTINS] = {

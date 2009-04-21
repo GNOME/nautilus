@@ -30,11 +30,17 @@
 typedef struct FMIconView FMIconView;
 typedef struct FMIconViewClass FMIconViewClass;
 
-#define FM_TYPE_ICON_VIEW			(fm_icon_view_get_type ())
-#define FM_ICON_VIEW(obj)			(GTK_CHECK_CAST ((obj), FM_TYPE_ICON_VIEW, FMIconView))
-#define FM_ICON_VIEW_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), FM_TYPE_ICON_VIEW, FMIconViewClass))
-#define FM_IS_ICON_VIEW(obj)			(GTK_CHECK_TYPE ((obj), FM_TYPE_ICON_VIEW))
-#define FM_IS_ICON_VIEW_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((klass), FM_TYPE_ICON_VIEW))
+#define FM_TYPE_ICON_VIEW fm_icon_view_get_type()
+#define FM_ICON_VIEW(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), FM_TYPE_ICON_VIEW, FMIconView))
+#define FM_ICON_VIEW_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), FM_TYPE_ICON_VIEW, FMIconViewClass))
+#define FM_IS_ICON_VIEW(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), FM_TYPE_ICON_VIEW))
+#define FM_IS_ICON_VIEW_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), FM_TYPE_ICON_VIEW))
+#define FM_ICON_VIEW_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), FM_TYPE_ICON_VIEW, FMIconViewClass))
 
 #define FM_ICON_VIEW_ID "OAFIID:Nautilus_File_Manager_Icon_View"
 #define FM_COMPACT_VIEW_ID "OAFIID:Nautilus_File_Manager_Compact_View"

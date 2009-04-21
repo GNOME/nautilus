@@ -156,7 +156,7 @@ nautilus_search_bar_borrow_entry (NautilusSearchBar *bar)
 	bar->details->entry_borrowed = TRUE;
 
 	binding_set = gtk_binding_set_by_class (G_OBJECT_GET_CLASS (bar));
-	gtk_binding_entry_clear	(binding_set, GDK_Escape, 0);
+	gtk_binding_entry_remove (binding_set, GDK_Escape, 0);
 	return bar->details->entry;
 }
 

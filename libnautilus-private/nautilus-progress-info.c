@@ -305,7 +305,7 @@ update_status_icon_and_window (void)
 					     "%'d file operations active",
 					     n_progress_ops),
 				   n_progress_ops);
-	gtk_status_icon_set_tooltip (status_icon, tooltip);
+	gtk_status_icon_set_tooltip_text (status_icon, tooltip);
 	g_free (tooltip);
 	
 	if (n_progress_ops == 0) {

@@ -31,11 +31,17 @@
 #ifndef FM_LIST_MODEL_H
 #define FM_LIST_MODEL_H
 
-#define FM_TYPE_LIST_MODEL		(fm_list_model_get_type ())
-#define FM_LIST_MODEL(obj)		(GTK_CHECK_CAST ((obj), FM_TYPE_LIST_MODEL, FMListModel))
-#define FM_LIST_MODEL_CLASS(klass)	(GTK_CHECK_CLASS_CAST ((klass), FM_TYPE_LIST_MODEL, FMListModelClass))
-#define FM_IS_LIST_MODEL(obj)		(GTK_CHECK_TYPE ((obj), FM_TYPE_LIST_MODEL))
-#define FM_IS_LIST_MODEL_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((klass), FM_TYPE_LIST_MODEL))
+#define FM_TYPE_LIST_MODEL fm_list_model_get_type()
+#define FM_LIST_MODEL(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), FM_TYPE_LIST_MODEL, FMListModel))
+#define FM_LIST_MODEL_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), FM_TYPE_LIST_MODEL, FMListModelClass))
+#define FM_IS_LIST_MODEL(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), FM_TYPE_LIST_MODEL))
+#define FM_IS_LIST_MODEL_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), FM_TYPE_LIST_MODEL))
+#define FM_LIST_MODEL_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), FM_TYPE_LIST_MODEL, FMListModelClass))
 
 enum {
 	FM_LIST_MODEL_FILE_COLUMN,

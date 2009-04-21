@@ -178,46 +178,8 @@ static GdkGC *  make_cursor_gc                (GtkWidget   *widget,
 					       const gchar *property_name,
 					       GdkColor    *fallback);
 
-
-
-static GtkMiscClass *parent_class = NULL;
-
-GType
-eel_editable_label_get_type (void)
-{
-  static GType label_type = 0;
-  
-  if (!label_type)
-    {
-      const GTypeInfo label_info =
-      {
-	sizeof (EelEditableLabelClass),
-	NULL,           /* base_init */
-	NULL,           /* base_finalize */
-	(GClassInitFunc) eel_editable_label_class_init,
-	NULL,           /* class_finalize */
-	NULL,           /* class_data */
-	sizeof (EelEditableLabel),
-	32,             /* n_preallocs */
-	(GInstanceInitFunc) eel_editable_label_init,
-      };
-
-      const GInterfaceInfo editable_info =
-      {
-	(GInterfaceInitFunc) eel_editable_label_editable_init,	/* interface_init */
-	NULL,							/* interface_finalize */
-	NULL							/* interface_data */
-      };
-
-      
-      label_type = g_type_register_static (GTK_TYPE_MISC, "EelEditableLabel", &label_info, 0);
-      g_type_add_interface_static (label_type,
-				   GTK_TYPE_EDITABLE,
-				   &editable_info);
-    }
-  
-  return label_type;
-}
+G_DEFINE_TYPE_WITH_CODE (EelEditableLabel, eel_editable_label, GTK_TYPE_MISC,
+			 G_IMPLEMENT_INTERFACE (GTK_TYPE_EDITABLE, eel_editable_label_editable_init));
 
 static void
 add_move_binding (GtkBindingSet  *binding_set,
@@ -250,8 +212,6 @@ eel_editable_label_class_init (EelEditableLabelClass *class)
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (class);
   GtkBindingSet *binding_set;
 
-  parent_class = gtk_type_class (GTK_TYPE_MISC);
-  
   gobject_class->set_property = eel_editable_label_set_property;
   gobject_class->get_property = eel_editable_label_get_property;
   gobject_class->finalize = eel_editable_label_finalize;
@@ -903,7 +863,7 @@ eel_editable_label_finalize (GObject *object)
       label->layout = NULL;
     }
 
-  G_OBJECT_CLASS (parent_class)->finalize (object);
+  G_OBJECT_CLASS (eel_editable_label_parent_class)->finalize (object);
 }
 
 static void
@@ -1177,7 +1137,7 @@ static void
 eel_editable_label_size_allocate (GtkWidget     *widget,
 				  GtkAllocation *allocation)
 {
-  (* GTK_WIDGET_CLASS (parent_class)->size_allocate) (widget, allocation);
+  (* GTK_WIDGET_CLASS (eel_editable_label_parent_class)->size_allocate) (widget, allocation);
 }
 
 static void
@@ -1190,8 +1150,8 @@ eel_editable_label_state_changed (GtkWidget   *widget,
 
   eel_editable_label_select_region (label, 0, 0);
 
-  if (GTK_WIDGET_CLASS (parent_class)->state_changed)
-    GTK_WIDGET_CLASS (parent_class)->state_changed (widget, prev_state);
+  if (GTK_WIDGET_CLASS (eel_editable_label_parent_class)->state_changed)
+    GTK_WIDGET_CLASS (eel_editable_label_parent_class)->state_changed (widget, prev_state);
 }
 
 static void 
@@ -1246,7 +1206,7 @@ eel_editable_label_direction_changed (GtkWidget        *widget,
   if (label->layout)
     pango_layout_context_changed (label->layout);
 
-  GTK_WIDGET_CLASS (parent_class)->direction_changed (widget, previous_dir);
+  GTK_WIDGET_CLASS (eel_editable_label_parent_class)->direction_changed (widget, previous_dir);
 }
 
 static void
@@ -1809,19 +1769,19 @@ eel_editable_label_unrealize (GtkWidget *widget)
   /* Strange. Copied from GtkEntry, should be NULL? */
   gtk_im_context_set_client_window (label->im_context, NULL);
   
-  (* GTK_WIDGET_CLASS (parent_class)->unrealize) (widget);
+  (* GTK_WIDGET_CLASS (eel_editable_label_parent_class)->unrealize) (widget);
 }
 
 static void
 eel_editable_label_map (GtkWidget *widget)
 {
-  (* GTK_WIDGET_CLASS (parent_class)->map) (widget);
+  (* GTK_WIDGET_CLASS (eel_editable_label_parent_class)->map) (widget);
 }
 
 static void
 eel_editable_label_unmap (GtkWidget *widget)
 {
-  (* GTK_WIDGET_CLASS (parent_class)->unmap) (widget);
+  (* GTK_WIDGET_CLASS (eel_editable_label_parent_class)->unmap) (widget);
 }
 
 static void
@@ -2297,7 +2257,7 @@ eel_editable_label_key_press (GtkWidget   *widget,
       return TRUE;
     }
 
-  if (GTK_WIDGET_CLASS (parent_class)->key_press_event (widget, event))
+  if (GTK_WIDGET_CLASS (eel_editable_label_parent_class)->key_press_event (widget, event))
     /* Activate key bindings
      */
     return TRUE;
@@ -2317,7 +2277,7 @@ eel_editable_label_key_release (GtkWidget   *widget,
       return TRUE;
     }
 
-  return GTK_WIDGET_CLASS (parent_class)->key_release_event (widget, event);
+  return GTK_WIDGET_CLASS (eel_editable_label_parent_class)->key_release_event (widget, event);
 }
 
 static void
@@ -3117,8 +3077,8 @@ append_action_signal (EelEditableLabel     *label,
   GtkWidget *menuitem = gtk_image_menu_item_new_from_stock (stock_id, NULL);
 
   g_object_set_data (G_OBJECT (menuitem), "gtk-signal", (char *)signal);
-  g_signal_connect (GTK_OBJECT (menuitem), "activate",
-		    GTK_SIGNAL_FUNC (activate_cb), label);
+  g_signal_connect (menuitem, "activate",
+		    G_CALLBACK (activate_cb), label);
 
   gtk_widget_set_sensitive (menuitem, sensitive);
   
@@ -3216,8 +3176,8 @@ popup_targets_received (GtkClipboard     *clipboard,
 			    clipboard_contains_text);
   
       menuitem = gtk_menu_item_new_with_label (_("Select All"));
-      g_signal_connect_object (GTK_OBJECT (menuitem), "activate",
-			       GTK_SIGNAL_FUNC (eel_editable_label_select_all), label,
+      g_signal_connect_object (menuitem, "activate",
+			       G_CALLBACK (eel_editable_label_select_all), label,
 			       G_CONNECT_SWAPPED);
       gtk_widget_show (menuitem);
       gtk_menu_shell_append (GTK_MENU_SHELL (label->popup_menu), menuitem);

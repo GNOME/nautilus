@@ -29,16 +29,17 @@
 #include <gio/gio.h>
 typedef struct NautilusBookmark NautilusBookmark;
 
-#define NAUTILUS_TYPE_BOOKMARK \
-	(nautilus_bookmark_get_type ())
+#define NAUTILUS_TYPE_BOOKMARK nautilus_bookmark_get_type()
 #define NAUTILUS_BOOKMARK(obj) \
-	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_BOOKMARK, NautilusBookmark))
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_BOOKMARK, NautilusBookmark))
 #define NAUTILUS_BOOKMARK_CLASS(klass) \
-	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_BOOKMARK, NautilusBookmarkClass))
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_BOOKMARK, NautilusBookmarkClass))
 #define NAUTILUS_IS_BOOKMARK(obj) \
-	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_BOOKMARK))
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_BOOKMARK))
 #define NAUTILUS_IS_BOOKMARK_CLASS(klass) \
-	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_BOOKMARK))
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_BOOKMARK))
+#define NAUTILUS_BOOKMARK_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_BOOKMARK, NautilusBookmarkClass))
 
 typedef struct NautilusBookmarkDetails NautilusBookmarkDetails;
 

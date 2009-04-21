@@ -32,11 +32,17 @@
 #include <gio/gio.h>
 #include <libnautilus-private/nautilus-file.h>
 
-#define FM_TYPE_TREE_MODEL	    (fm_tree_model_get_type ())
-#define FM_TREE_MODEL(obj)	    (GTK_CHECK_CAST ((obj), FM_TYPE_TREE_MODEL, FMTreeModel))
-#define FM_TREE_MODEL_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), FM_TYPE_TREE_MODEL, FMTreeModelClass))
-#define FM_IS_TREE_MODEL(obj)	    (GTK_CHECK_TYPE ((obj), FM_TYPE_TREE_MODEL))
-#define FM_IS_TREE_MODEL_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), FM_TYPE_TREE_MODEL))
+#define FM_TYPE_TREE_MODEL fm_tree_model_get_type()
+#define FM_TREE_MODEL(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), FM_TYPE_TREE_MODEL, FMTreeModel))
+#define FM_TREE_MODEL_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), FM_TYPE_TREE_MODEL, FMTreeModelClass))
+#define FM_IS_TREE_MODEL(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), FM_TYPE_TREE_MODEL))
+#define FM_IS_TREE_MODEL_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), FM_TYPE_TREE_MODEL))
+#define FM_TREE_MODEL_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), FM_TYPE_TREE_MODEL, FMTreeModelClass))
 
 enum {
 	FM_TREE_MODEL_DISPLAY_NAME_COLUMN,

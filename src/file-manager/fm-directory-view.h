@@ -42,11 +42,17 @@
 typedef struct FMDirectoryView FMDirectoryView;
 typedef struct FMDirectoryViewClass FMDirectoryViewClass;
 
-#define FM_TYPE_DIRECTORY_VIEW			(fm_directory_view_get_type ())
-#define FM_DIRECTORY_VIEW(obj)			(GTK_CHECK_CAST ((obj), FM_TYPE_DIRECTORY_VIEW, FMDirectoryView))
-#define FM_DIRECTORY_VIEW_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), FM_TYPE_DIRECTORY_VIEW, FMDirectoryViewClass))
-#define FM_IS_DIRECTORY_VIEW(obj)		(GTK_CHECK_TYPE ((obj), FM_TYPE_DIRECTORY_VIEW))
-#define FM_IS_DIRECTORY_VIEW_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((klass), FM_TYPE_DIRECTORY_VIEW))
+#define FM_TYPE_DIRECTORY_VIEW fm_directory_view_get_type()
+#define FM_DIRECTORY_VIEW(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), FM_TYPE_DIRECTORY_VIEW, FMDirectoryView))
+#define FM_DIRECTORY_VIEW_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), FM_TYPE_DIRECTORY_VIEW, FMDirectoryViewClass))
+#define FM_IS_DIRECTORY_VIEW(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), FM_TYPE_DIRECTORY_VIEW))
+#define FM_IS_DIRECTORY_VIEW_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), FM_TYPE_DIRECTORY_VIEW))
+#define FM_DIRECTORY_VIEW_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), FM_TYPE_DIRECTORY_VIEW, FMDirectoryViewClass))
 
 typedef struct FMDirectoryViewDetails FMDirectoryViewDetails;
 

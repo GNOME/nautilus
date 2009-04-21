@@ -816,9 +816,9 @@ nautilus_drag_drop_action_ask (GtkWidget *widget,
 	gtk_grab_remove (menu);
 	
 	g_main_loop_unref (damd.loop);
-	
-	gtk_object_sink (GTK_OBJECT (menu));
-	
+
+	g_object_ref_sink (menu);	
+
 	return damd.chosen;
 }
 
@@ -869,9 +869,9 @@ nautilus_drag_drop_background_ask (GtkWidget *widget,
 	gtk_grab_remove (menu);
 	
 	g_main_loop_unref (damd.loop);
-	
-	gtk_object_sink (GTK_OBJECT (menu));
-	
+
+	g_object_ref_sink (menu);
+
 	return damd.chosen;	
 }
 

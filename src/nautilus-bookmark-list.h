@@ -34,16 +34,17 @@
 typedef struct NautilusBookmarkList NautilusBookmarkList;
 typedef struct NautilusBookmarkListClass NautilusBookmarkListClass;
 
-#define NAUTILUS_TYPE_BOOKMARK_LIST \
-	(nautilus_bookmark_list_get_type ())
+#define NAUTILUS_TYPE_BOOKMARK_LIST nautilus_bookmark_list_get_type()
 #define NAUTILUS_BOOKMARK_LIST(obj) \
-	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_BOOKMARK_LIST, NautilusBookmarkList))
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_BOOKMARK_LIST, NautilusBookmarkList))
 #define NAUTILUS_BOOKMARK_LIST_CLASS(klass) \
-	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_BOOKMARK_LIST, NautilusBookmarkListClass))
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_BOOKMARK_LIST, NautilusBookmarkListClass))
 #define NAUTILUS_IS_BOOKMARK_LIST(obj) \
-	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_BOOKMARK_LIST))
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_BOOKMARK_LIST))
 #define NAUTILUS_IS_BOOKMARK_LIST_CLASS(klass) \
-	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_BOOKMARK_LIST))
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_BOOKMARK_LIST))
+#define NAUTILUS_BOOKMARK_LIST_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_BOOKMARK_LIST, NautilusBookmarkListClass))
 
 struct NautilusBookmarkList {
 	GtkObject object;

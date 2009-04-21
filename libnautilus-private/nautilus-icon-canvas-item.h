@@ -30,16 +30,17 @@
 
 G_BEGIN_DECLS
 
-#define NAUTILUS_TYPE_ICON_CANVAS_ITEM \
-	(nautilus_icon_canvas_item_get_type ())
+#define NAUTILUS_TYPE_ICON_CANVAS_ITEM nautilus_icon_canvas_item_get_type()
 #define NAUTILUS_ICON_CANVAS_ITEM(obj) \
-	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_ICON_CANVAS_ITEM, NautilusIconCanvasItem))
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_ICON_CANVAS_ITEM, NautilusIconCanvasItem))
 #define NAUTILUS_ICON_CANVAS_ITEM_CLASS(klass) \
-	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_ICON_CANVAS_ITEM, NautilusIconCanvasItemClass))
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_ICON_CANVAS_ITEM, NautilusIconCanvasItemClass))
 #define NAUTILUS_IS_ICON_CANVAS_ITEM(obj) \
-        (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_ICON_CANVAS_ITEM))
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_ICON_CANVAS_ITEM))
 #define NAUTILUS_IS_ICON_CANVAS_ITEM_CLASS(klass) \
-	(GTK_CHECK_CLASS_TYPE ((klass),	NAUTILUS_TYPE_ICON_CANVAS_ITEM))
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_ICON_CANVAS_ITEM))
+#define NAUTILUS_ICON_CANVAS_ITEM_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_ICON_CANVAS_ITEM, NautilusIconCanvasItemClass))
 
 typedef struct NautilusIconCanvasItem NautilusIconCanvasItem;
 typedef struct NautilusIconCanvasItemClass NautilusIconCanvasItemClass;

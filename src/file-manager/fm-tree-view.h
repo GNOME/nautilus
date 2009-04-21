@@ -31,11 +31,17 @@
 
 #include <gtk/gtk.h>
 
-#define FM_TYPE_TREE_VIEW	           (fm_tree_view_get_type ())
-#define FM_TREE_VIEW(obj)	           (GTK_CHECK_CAST ((obj), FM_TYPE_TREE_VIEW, FMTreeView))
-#define FM_TREE_VIEW_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), FM_TYPE_TREE_VIEW, FMTreeViewClass))
-#define FM_IS_TREE_VIEW(obj)	   (GTK_CHECK_TYPE ((obj), FM_TYPE_TREE_VIEW))
-#define FM_IS_TREE_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), FM_TYPE_TREE_VIEW))
+#define FM_TYPE_TREE_VIEW fm_tree_view_get_type()
+#define FM_TREE_VIEW(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), FM_TYPE_TREE_VIEW, FMTreeView))
+#define FM_TREE_VIEW_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), FM_TYPE_TREE_VIEW, FMTreeViewClass))
+#define FM_IS_TREE_VIEW(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), FM_TYPE_TREE_VIEW))
+#define FM_IS_TREE_VIEW_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), FM_TYPE_TREE_VIEW))
+#define FM_TREE_VIEW_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), FM_TYPE_TREE_VIEW, FMTreeViewClass))
 
 #define TREE_SIDEBAR_ID "NautilusTreeSidebar"
 

@@ -27,16 +27,17 @@
 
 #include <gtk/gtk.h>
 
-#define NAUTILUS_TYPE_CLIPBOARD_MONITOR \
-	(nautilus_clipboard_monitor_get_type ())
+#define NAUTILUS_TYPE_CLIPBOARD_MONITOR nautilus_clipboard_monitor_get_type()
 #define NAUTILUS_CLIPBOARD_MONITOR(obj) \
-	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_CLIPBOARD_MONITOR, NautilusClipboardMonitor))
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_CLIPBOARD_MONITOR, NautilusClipboardMonitor))
 #define NAUTILUS_CLIPBOARD_MONITOR_CLASS(klass) \
-	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_CLIPBOARD_MONITOR, NautilusClipboardMonitor))
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_CLIPBOARD_MONITOR, NautilusClipboardMonitorClass))
 #define NAUTILUS_IS_CLIPBOARD_MONITOR(obj) \
-	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_CLIPBOARD_MONITOR))
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_CLIPBOARD_MONITOR))
 #define NAUTILUS_IS_CLIPBOARD_MONITOR_CLASS(klass) \
-	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_CLIPBOARD_MONITOR))
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_CLIPBOARD_MONITOR))
+#define NAUTILUS_CLIPBOARD_MONITOR_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_CLIPBOARD_MONITOR, NautilusClipboardMonitorClass))
 
 typedef struct NautilusClipboardMonitorDetails NautilusClipboardMonitorDetails;
 

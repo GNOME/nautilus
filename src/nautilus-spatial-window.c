@@ -742,7 +742,7 @@ location_button_clicked_callback (GtkWidget             *widget,
 	g_main_loop_run (loop);
 	gtk_grab_remove (popup);
 	g_main_loop_unref (loop);
- 	gtk_object_sink (GTK_OBJECT (popup));
+	g_object_ref_sink (popup);
 }
 
 static int

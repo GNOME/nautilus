@@ -33,16 +33,17 @@ typedef struct NautilusTrashMonitor NautilusTrashMonitor;
 typedef struct NautilusTrashMonitorClass NautilusTrashMonitorClass;
 typedef struct NautilusTrashMonitorDetails NautilusTrashMonitorDetails;
 
-#define NAUTILUS_TYPE_TRASH_MONITOR \
-	(nautilus_trash_monitor_get_type ())
+#define NAUTILUS_TYPE_TRASH_MONITOR nautilus_trash_monitor_get_type()
 #define NAUTILUS_TRASH_MONITOR(obj) \
-	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_TRASH_MONITOR, NautilusTrashMonitor))
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_TRASH_MONITOR, NautilusTrashMonitor))
 #define NAUTILUS_TRASH_MONITOR_CLASS(klass) \
-	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_TRASH_MONITOR, NautilusTrashMonitorClass))
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_TRASH_MONITOR, NautilusTrashMonitorClass))
 #define NAUTILUS_IS_TRASH_MONITOR(obj) \
-	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_TRASH_MONITOR))
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_TRASH_MONITOR))
 #define NAUTILUS_IS_TRASH_MONITOR_CLASS(klass) \
-	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_TRASH_MONITOR))
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_TRASH_MONITOR))
+#define NAUTILUS_TRASH_MONITOR_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_TRASH_MONITOR, NautilusTrashMonitorClass))
 
 struct NautilusTrashMonitor {
 	GObject object;
@@ -56,7 +57,7 @@ struct NautilusTrashMonitorClass {
 				      		 gboolean 		 new_state);
 };
 
-GtkType			nautilus_trash_monitor_get_type				(void);
+GType			nautilus_trash_monitor_get_type				(void);
 
 NautilusTrashMonitor   *nautilus_trash_monitor_get 				(void);
 gboolean		nautilus_trash_monitor_is_empty 			(void);

@@ -49,11 +49,11 @@
                                                                               \
 static gpointer parent_class;                                                 \
                                                                               \
-GtkType                                                                       \
+GType                                                                         \
 prefix##_get_type (void)                                                      \
 {                                                                             \
-	GtkType parent_type;                                                  \
-	static GtkType type;                                                  \
+	GType parent_type;                                                    \
+	static GType type;                                                    \
                                                                               \
 	if (type == 0) {                                                      \
 		static GTypeInfo info = {                                     \

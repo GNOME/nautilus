@@ -4902,8 +4902,8 @@ append_extension_pages (FMPropertiesWindow *window)
 					   "is-extension-page",
 					   page);
 
-			gtk_widget_unref (page_widget);
-			gtk_widget_unref (label);
+			g_object_unref (page_widget);
+			g_object_unref (label);
 
 			g_object_unref (page);
 		}

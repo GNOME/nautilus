@@ -28,16 +28,17 @@
 
 #include <libnautilus-private/nautilus-undo.h>
 
-#define NAUTILUS_TYPE_UNDO_MANAGER \
-	(nautilus_undo_manager_get_type ())
+#define NAUTILUS_TYPE_UNDO_MANAGER nautilus_undo_manager_get_type()
 #define NAUTILUS_UNDO_MANAGER(obj) \
-	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_UNDO_MANAGER, NautilusUndoManager))
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_UNDO_MANAGER, NautilusUndoManager))
 #define NAUTILUS_UNDO_MANAGER_CLASS(klass) \
-	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_UNDO_MANAGER, NautilusUndoManagerClass))
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_UNDO_MANAGER, NautilusUndoManagerClass))
 #define NAUTILUS_IS_UNDO_MANAGER(obj) \
-        (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_UNDO_MANAGER))
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_UNDO_MANAGER))
 #define NAUTILUS_IS_UNDO_MANAGER_CLASS(klass) \
-	(GTK_CHECK_CLASS_TYPE ((klass),	NAUTILUS_TYPE_UNDO_MANAGER))
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_UNDO_MANAGER))
+#define NAUTILUS_UNDO_MANAGER_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_UNDO_MANAGER, NautilusUndoManagerClass))
 	
 typedef struct NautilusUndoManagerDetails NautilusUndoManagerDetails;
 

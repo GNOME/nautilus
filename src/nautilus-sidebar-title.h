@@ -33,11 +33,17 @@
 #include <eel/eel-background.h>
 #include <libnautilus-private/nautilus-file.h>
 
-#define NAUTILUS_TYPE_SIDEBAR_TITLE	       (nautilus_sidebar_title_get_type ())
-#define NAUTILUS_SIDEBAR_TITLE(obj)	       (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_SIDEBAR_TITLE, NautilusSidebarTitle))
-#define NAUTILUS_SIDEBAR_TITLE_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SIDEBAR_TITLE, NautilusSidebarTitleClass))
-#define NAUTILUS_IS_SIDEBAR_TITLE(obj)	       (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_SIDEBAR_TITLE))
-#define NAUTILUS_IS_SIDEBAR_TITLE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SIDEBAR_TITLE))
+#define NAUTILUS_TYPE_SIDEBAR_TITLE nautilus_sidebar_title_get_type()
+#define NAUTILUS_SIDEBAR_TITLE(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_SIDEBAR_TITLE, NautilusSidebarTitle))
+#define NAUTILUS_SIDEBAR_TITLE_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SIDEBAR_TITLE, NautilusSidebarTitleClass))
+#define NAUTILUS_IS_SIDEBAR_TITLE(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_SIDEBAR_TITLE))
+#define NAUTILUS_IS_SIDEBAR_TITLE_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SIDEBAR_TITLE))
+#define NAUTILUS_SIDEBAR_TITLE_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_SIDEBAR_TITLE, NautilusSidebarTitleClass))
 
 typedef struct NautilusSidebarTitleDetails NautilusSidebarTitleDetails;
 

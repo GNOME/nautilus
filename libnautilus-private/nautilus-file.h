@@ -41,18 +41,17 @@
 typedef struct NautilusFile NautilusFile;
 #endif
 
-#define NAUTILUS_TYPE_FILE \
-	(nautilus_file_get_type ())
+#define NAUTILUS_TYPE_FILE nautilus_file_get_type()
 #define NAUTILUS_FILE(obj) \
-	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_FILE, NautilusFile))
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_FILE, NautilusFile))
 #define NAUTILUS_FILE_CLASS(klass) \
-	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_FILE, NautilusFileClass))
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_FILE, NautilusFileClass))
 #define NAUTILUS_IS_FILE(obj) \
-	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_FILE))
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_FILE))
 #define NAUTILUS_IS_FILE_CLASS(klass) \
-	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_FILE))
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_FILE))
 #define NAUTILUS_FILE_GET_CLASS(obj) \
-	(G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_FILE, NautilusFileClass))
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_FILE, NautilusFileClass))
 
 typedef enum {
 	NAUTILUS_FILE_SORT_NONE,

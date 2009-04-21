@@ -38,16 +38,16 @@
 /* signals */
 void                  eel_gtk_signal_connect_full_while_alive         (GtkObject            *object,
 								       const gchar          *name,
-								       GtkSignalFunc         func,
+								       GCallback             func,
 								       GtkCallbackMarshal    marshal,
 								       gpointer              data,
-								       GtkDestroyNotify      destroy_func,
+								       GDestroyNotify        destroy_func,
 								       gboolean              object_signal,
 								       gboolean              after,
 								       GtkObject            *alive_object);
 void                  eel_gtk_signal_connect_while_realized           (GtkObject            *object,
 								       const char           *name,
-								       GtkSignalFunc         callback,
+								       GCallback             callback,
 								       gpointer              callback_data,
 								       GtkWidget            *realized_widget);
 
@@ -128,9 +128,6 @@ void                  eel_gtk_adjustment_set_value                    (GtkAdjust
 void                  eel_gtk_adjustment_clamp_value                  (GtkAdjustment        *adjustment);
 
 /* GtkTreeView */
-gboolean              eel_gtk_tree_view_cell_is_completely_visible    (GtkTreeView          *tree_view,
-								       GtkTreePath          *path,
-								       GtkTreeViewColumn    *column);
 void                  eel_gtk_tree_view_set_activate_on_single_click  (GtkTreeView               *tree_view,
 								       gboolean                   should_activate);
 

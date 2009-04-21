@@ -30,8 +30,18 @@
 
 #define NAUTILUS_PLACES_SIDEBAR_ID    "NautilusPlacesSidebar"
 
-#define NAUTILUS_TYPE_PLACES_SIDEBAR (nautilus_places_sidebar_get_type ())
-#define NAUTILUS_PLACES_SIDEBAR(obj) (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_PLACES_SIDEBAR, NautilusPlacesSidebar))
+#define NAUTILUS_TYPE_PLACES_SIDEBAR nautilus_places_sidebar_get_type()
+#define NAUTILUS_PLACES_SIDEBAR(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_PLACES_SIDEBAR, NautilusPlacesSidebar))
+#define NAUTILUS_PLACES_SIDEBAR_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_PLACES_SIDEBAR, NautilusPlacesSidebarClass))
+#define NAUTILUS_IS_PLACES_SIDEBAR(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_PLACES_SIDEBAR))
+#define NAUTILUS_IS_PLACES_SIDEBAR_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_PLACES_SIDEBAR))
+#define NAUTILUS_PLACES_SIDEBAR_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_PLACES_SIDEBAR, NautilusPlacesSidebarClass))
+
 
 GType nautilus_places_sidebar_get_type (void);
 void nautilus_places_sidebar_register (void);

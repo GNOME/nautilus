@@ -1158,7 +1158,6 @@ static void   eel_canvas_group_bounds      (EelCanvasItem *item, double *x1, dou
 
 static EelCanvasItemClass *group_parent_class;
 
-
 /**
  * eel_canvas_group_get_type:
  *
@@ -1208,7 +1207,7 @@ eel_canvas_group_class_init (EelCanvasGroupClass *class)
 	object_class = (GtkObjectClass *) class;
 	item_class = (EelCanvasItemClass *) class;
 
-	group_parent_class = gtk_type_class (eel_canvas_item_get_type ());
+	group_parent_class = g_type_class_peek (EEL_TYPE_CANVAS_ITEM);
 
 	gobject_class->set_property = eel_canvas_group_set_property;
 	gobject_class->get_property = eel_canvas_group_get_property;
@@ -1630,8 +1629,7 @@ eel_canvas_group_bounds (EelCanvasItem *item, double *x1, double *y1, double *x2
 static void
 group_add (EelCanvasGroup *group, EelCanvasItem *item)
 {
-	g_object_ref (GTK_OBJECT (item));
-	gtk_object_sink (GTK_OBJECT (item));
+	g_object_ref (item);
 
 	if (!group->item_list) {
 		group->item_list = g_list_append (group->item_list, item);
@@ -2002,7 +2000,7 @@ eel_canvas_class_init (EelCanvasClass *klass)
 	object_class  = (GtkObjectClass *) klass;
 	widget_class  = (GtkWidgetClass *) klass;
 
-	canvas_parent_class = gtk_type_class (gtk_layout_get_type ());
+	canvas_parent_class = g_type_class_peek (GTK_TYPE_LAYOUT);
 
 	gobject_class->set_property = eel_canvas_set_property;
 	gobject_class->get_property = eel_canvas_get_property;
@@ -2079,11 +2077,10 @@ eel_canvas_init (EelCanvas *canvas)
 	canvas->root = EEL_CANVAS_ITEM (g_object_new (eel_canvas_group_get_type (), NULL));
 	canvas->root->canvas = canvas;
 
-	g_object_ref (GTK_OBJECT (canvas->root));
-	gtk_object_sink (GTK_OBJECT (canvas->root));
+	g_object_ref (canvas->root);
 
-	canvas->root_destroy_id = g_signal_connect (GTK_OBJECT (canvas->root), "destroy",
-						    (GtkSignalFunc) panic_root_destroyed,
+	canvas->root_destroy_id = g_signal_connect (canvas->root, "destroy",
+						    G_CALLBACK (panic_root_destroyed),
 						    canvas);
 
 	canvas->need_repick = TRUE;
@@ -3938,7 +3935,7 @@ eel_canvas_item_class_init (EelCanvasItemClass *class)
 
 	gobject_class = (GObjectClass *) class;
 
-	item_parent_class = gtk_type_class (gtk_object_get_type ());
+	item_parent_class = g_type_class_peek (GTK_TYPE_OBJECT);
 
 	gobject_class->set_property = eel_canvas_item_set_property;
 	gobject_class->get_property = eel_canvas_item_get_property;

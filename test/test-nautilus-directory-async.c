@@ -69,7 +69,7 @@ done_loading (NautilusDirectory *directory)
 	g_print ("done loading\n");
 
 	if (i == 0) {
-		gtk_timeout_add (5000, (GSourceFunc)force_reload, directory);
+		g_timeout_add (5000, (GSourceFunc)force_reload, directory);
 		i++;
 	} else {
 	}

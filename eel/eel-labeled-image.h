@@ -52,11 +52,17 @@
 
 G_BEGIN_DECLS
 
-#define EEL_TYPE_LABELED_IMAGE            (eel_labeled_image_get_type ())
-#define EEL_LABELED_IMAGE(obj)            (GTK_CHECK_CAST ((obj), EEL_TYPE_LABELED_IMAGE, EelLabeledImage))
-#define EEL_LABELED_IMAGE_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), EEL_TYPE_LABELED_IMAGE, EelLabeledImageClass))
-#define EEL_IS_LABELED_IMAGE(obj)         (GTK_CHECK_TYPE ((obj), EEL_TYPE_LABELED_IMAGE))
-#define EEL_IS_LABELED_IMAGE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), EEL_TYPE_LABELED_IMAGE))
+#define EEL_TYPE_LABELED_IMAGE eel_labeled_image_get_type()
+#define EEL_LABELED_IMAGE(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), EEL_TYPE_LABELED_IMAGE, EelLabeledImage))
+#define EEL_LABELED_IMAGE_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), EEL_TYPE_LABELED_IMAGE, EelLabeledImageClass))
+#define EEL_IS_LABELED_IMAGE(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), EEL_TYPE_LABELED_IMAGE))
+#define EEL_IS_LABELED_IMAGE_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), EEL_TYPE_LABELED_IMAGE))
+#define EEL_LABELED_IMAGE_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), EEL_TYPE_LABELED_IMAGE, EelLabeledImageClass))
 
 typedef struct EelLabeledImage		  EelLabeledImage;
 typedef struct EelLabeledImageClass	  EelLabeledImageClass;
@@ -79,7 +85,7 @@ struct EelLabeledImageClass
 };
 
 /* Public GtkLabeledImage methods */
-GtkType         eel_labeled_image_get_type                         (void);
+GType           eel_labeled_image_get_type                         (void);
 GtkWidget *     eel_labeled_image_new                              (const char              *text,
 								    GdkPixbuf               *pixbuf);
 GtkWidget *     eel_labeled_image_new_from_file_name               (const char              *text,

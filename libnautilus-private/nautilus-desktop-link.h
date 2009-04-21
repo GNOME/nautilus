@@ -28,16 +28,17 @@
 #include <libnautilus-private/nautilus-file.h>
 #include <gio/gio.h>
 
-#define NAUTILUS_TYPE_DESKTOP_LINK \
-	(nautilus_desktop_link_get_type ())
+#define NAUTILUS_TYPE_DESKTOP_LINK nautilus_desktop_link_get_type()
 #define NAUTILUS_DESKTOP_LINK(obj) \
-	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_DESKTOP_LINK, NautilusDesktopLink))
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_DESKTOP_LINK, NautilusDesktopLink))
 #define NAUTILUS_DESKTOP_LINK_CLASS(klass) \
-	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_DESKTOP_LINK, NautilusDesktopLink))
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_DESKTOP_LINK, NautilusDesktopLinkClass))
 #define NAUTILUS_IS_DESKTOP_LINK(obj) \
-	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_DESKTOP_LINK))
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_DESKTOP_LINK))
 #define NAUTILUS_IS_DESKTOP_LINK_CLASS(klass) \
-	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_DESKTOP_LINK))
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_DESKTOP_LINK))
+#define NAUTILUS_DESKTOP_LINK_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_DESKTOP_LINK, NautilusDesktopLinkClass))
 
 typedef struct NautilusDesktopLinkDetails NautilusDesktopLinkDetails;
 

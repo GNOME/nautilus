@@ -30,11 +30,17 @@
 
 G_BEGIN_DECLS
 
-#define EEL_TYPE_WRAP_TABLE            (eel_wrap_table_get_type ())
-#define EEL_WRAP_TABLE(obj)            (GTK_CHECK_CAST ((obj), EEL_TYPE_WRAP_TABLE, EelWrapTable))
-#define EEL_WRAP_TABLE_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), EEL_TYPE_WRAP_TABLE, EelWrapTableClass))
-#define EEL_IS_WRAP_TABLE(obj)         (GTK_CHECK_TYPE ((obj), EEL_TYPE_WRAP_TABLE))
-#define EEL_IS_WRAP_TABLE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), EEL_TYPE_WRAP_TABLE))
+#define EEL_TYPE_WRAP_TABLE eel_wrap_table_get_type()
+#define EEL_WRAP_TABLE(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), EEL_TYPE_WRAP_TABLE, EelWrapTable))
+#define EEL_WRAP_TABLE_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), EEL_TYPE_WRAP_TABLE, EelWrapTableClass))
+#define EEL_IS_WRAP_TABLE(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), EEL_TYPE_WRAP_TABLE))
+#define EEL_IS_WRAP_TABLE_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), EEL_TYPE_WRAP_TABLE))
+#define EEL_WRAP_TABLE_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), EEL_TYPE_WRAP_TABLE, EelWrapTableClass))
 
 typedef struct EelWrapTable	       EelWrapTable;
 typedef struct EelWrapTableClass       EelWrapTableClass;
@@ -62,7 +68,7 @@ typedef enum
 } EelJustification;
 
 /* Public GtkWrapTable methods */
-GtkType          eel_wrap_table_get_type                  (void);
+GType            eel_wrap_table_get_type                  (void);
 GtkWidget *      eel_wrap_table_new                       (gboolean            homogeneous);
 void             eel_wrap_table_set_x_spacing             (EelWrapTable       *wrap_table,
 							   guint               x_spacing);

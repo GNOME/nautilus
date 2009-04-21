@@ -29,16 +29,17 @@
 
 #include <libnautilus-private/nautilus-undo.h>
 
-#define NAUTILUS_TYPE_UNDO_TRANSACTION \
-	(nautilus_undo_transaction_get_type ())
+#define NAUTILUS_TYPE_UNDO_TRANSACTION nautilus_undo_transaction_get_type()
 #define NAUTILUS_UNDO_TRANSACTION(obj) \
-	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_UNDO_TRANSACTION, NautilusUndoTransaction))
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_UNDO_TRANSACTION, NautilusUndoTransaction))
 #define NAUTILUS_UNDO_TRANSACTION_CLASS(klass) \
-	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_UNDO_TRANSACTION, NautilusUndoTransactionClass))
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_UNDO_TRANSACTION, NautilusUndoTransactionClass))
 #define NAUTILUS_IS_UNDO_TRANSACTION(obj) \
-        (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_UNDO_TRANSACTION))
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_UNDO_TRANSACTION))
 #define NAUTILUS_IS_UNDO_TRANSACTION_CLASS(klass) \
-	(GTK_CHECK_CLASS_TYPE ((klass),	NAUTILUS_TYPE_UNDO_TRANSACTION))
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_UNDO_TRANSACTION))
+#define NAUTILUS_UNDO_TRANSACTION_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_UNDO_TRANSACTION, NautilusUndoTransactionClass))
 
 /* The typedef for NautilusUndoTransaction is in nautilus-undo.h
    to avoid circular deps */

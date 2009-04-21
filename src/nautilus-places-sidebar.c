@@ -54,10 +54,6 @@
 
 #define EJECT_BUTTON_XPAD 5
 
-#define NAUTILUS_PLACES_SIDEBAR_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_PLACES_SIDEBAR, NautilusPlacesSidebarClass))
-#define NAUTILUS_IS_PLACES_SIDEBAR(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_PLACES_SIDEBAR))
-#define NAUTILUS_IS_PLACES_SIDEBAR_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_PLACES_SIDEBAR))
-
 typedef struct {
 	GtkScrolledWindow  parent;
 	GtkTreeView        *tree_view;
@@ -2486,7 +2482,6 @@ nautilus_places_sidebar_create (NautilusSidebarProvider *provider,
 	sidebar = g_object_new (nautilus_places_sidebar_get_type (), NULL);
 	nautilus_places_sidebar_set_parent_window (sidebar, window);
 	g_object_ref (sidebar);
-	gtk_object_sink (GTK_OBJECT (sidebar));
 
 	return NAUTILUS_SIDEBAR (sidebar);
 }

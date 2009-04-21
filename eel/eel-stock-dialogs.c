@@ -120,7 +120,7 @@ timed_wait_free (TimedWait *wait)
 
 	g_free (wait->wait_message);
 	if (wait->parent_window != NULL) {
-		gtk_widget_unref (GTK_WIDGET (wait->parent_window));
+		g_object_unref (wait->parent_window);
 	}
 	if (wait->timeout_handler_id != 0) {
 		g_source_remove (wait->timeout_handler_id);
@@ -260,7 +260,7 @@ eel_timed_wait_start_with_duration (int duration,
 	wait->parent_window = parent_window;
 	
 	if (parent_window != NULL) {
-		gtk_widget_ref (GTK_WIDGET (parent_window));
+		g_object_ref (parent_window);
 	}
 
 	/* Start the timer. */

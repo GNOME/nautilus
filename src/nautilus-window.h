@@ -38,12 +38,17 @@
 #include "nautilus-information-panel.h"
 #include "nautilus-side-pane.h"
 
-#define NAUTILUS_TYPE_WINDOW              (nautilus_window_get_type())
-#define NAUTILUS_WINDOW(obj)	          (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_WINDOW, NautilusWindow))
-#define NAUTILUS_WINDOW_CLASS(klass)      (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_WINDOW, NautilusWindowClass))
-#define NAUTILUS_WINDOW_GET_CLASS(obj)    (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_WINDOW, NautilusWindowClass))
-#define NAUTILUS_IS_WINDOW(obj)	          (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_WINDOW))
-#define NAUTILUS_IS_WINDOW_CLASS(klass)   (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_WINDOW))
+#define NAUTILUS_TYPE_WINDOW nautilus_window_get_type()
+#define NAUTILUS_WINDOW(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_WINDOW, NautilusWindow))
+#define NAUTILUS_WINDOW_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_WINDOW, NautilusWindowClass))
+#define NAUTILUS_IS_WINDOW(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_WINDOW))
+#define NAUTILUS_IS_WINDOW_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_WINDOW))
+#define NAUTILUS_WINDOW_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_WINDOW, NautilusWindowClass))
 
 #ifndef NAUTILUS_WINDOW_DEFINED
 #define NAUTILUS_WINDOW_DEFINED

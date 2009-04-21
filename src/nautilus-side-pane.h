@@ -28,11 +28,17 @@
 
 G_BEGIN_DECLS
 
-#define NAUTILUS_TYPE_SIDE_PANE                (nautilus_side_pane_get_type ())
-#define NAUTILUS_SIDE_PANE(obj)                (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_SIDE_PANE, NautilusSidePane))
-#define NAUTILUS_SIDE_PANE_CLASS(klass)        (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SIDE_PANE, NautilusSidePaneClass))
-#define NAUTILUS_IS_SIDE_PANE(obj)             (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_SIDE_PANE))
-#define NAUTILUS_IS_SIDE_PANE_CLASS(klass)     (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SIDE_PANE))
+#define NAUTILUS_TYPE_SIDE_PANE nautilus_side_pane_get_type()
+#define NAUTILUS_SIDE_PANE(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_SIDE_PANE, NautilusSidePane))
+#define NAUTILUS_SIDE_PANE_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SIDE_PANE, NautilusSidePaneClass))
+#define NAUTILUS_IS_SIDE_PANE(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_SIDE_PANE))
+#define NAUTILUS_IS_SIDE_PANE_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SIDE_PANE))
+#define NAUTILUS_SIDE_PANE_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_SIDE_PANE, NautilusSidePaneClass))
 
 typedef struct _NautilusSidePaneDetails NautilusSidePaneDetails;
 

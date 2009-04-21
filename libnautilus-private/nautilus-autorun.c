@@ -904,7 +904,7 @@ show_dialog:
 
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 	hbox = gtk_hbox_new (FALSE, 12);
-	gtk_box_pack_start_defaults (GTK_BOX (GTK_DIALOG (dialog)->vbox), hbox);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), hbox, TRUE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox), 12);
 
 	icon = g_mount_get_icon (mount);
@@ -915,7 +915,7 @@ show_dialog:
 	g_object_unref (icon);
 	image = gtk_image_new_from_pixbuf (pixbuf);
 	gtk_misc_set_alignment (GTK_MISC (image), 0.5, 0.0);
-	gtk_box_pack_start_defaults (GTK_BOX (hbox), image);
+	gtk_box_pack_start (GTK_BOX (hbox), image, TRUE, TRUE, 0);
 	/* also use the icon on the dialog */
 	gtk_window_set_title (GTK_WINDOW (dialog), mount_name);
 	gtk_window_set_icon (GTK_WINDOW (dialog), pixbuf);
@@ -923,7 +923,7 @@ show_dialog:
 	g_object_unref (pixbuf);
 
 	vbox = gtk_vbox_new (FALSE, 12);
-	gtk_box_pack_start_defaults (GTK_BOX (hbox), vbox);
+	gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
 
 	label = gtk_label_new (NULL);
 
@@ -966,7 +966,7 @@ show_dialog:
 	g_free (markup);
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_box_pack_start_defaults (GTK_BOX (vbox), label);
+	gtk_box_pack_start (GTK_BOX (vbox), label, TRUE, TRUE, 0);
 
 	label = gtk_label_new (NULL);
 	content_description = g_content_type_get_description (x_content_type);
@@ -976,7 +976,7 @@ show_dialog:
 	g_free (markup);
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_box_pack_start_defaults (GTK_BOX (vbox), label);
+	gtk_box_pack_start (GTK_BOX (vbox), label, TRUE, TRUE, 0);
 	
 	data = g_new0 (AutorunDialogData, 1);
 	data->dialog = dialog;
@@ -990,7 +990,7 @@ show_dialog:
 
 	combo_box = gtk_combo_box_new ();
 	nautilus_autorun_prepare_combo_box (combo_box, x_content_type, FALSE, TRUE, FALSE, autorun_combo_changed, data);
-	gtk_box_pack_start_defaults (GTK_BOX (vbox), combo_box);
+	gtk_box_pack_start (GTK_BOX (vbox), combo_box, TRUE, TRUE, 0);
 
 	always_check_button = gtk_check_button_new_with_mnemonic (_("_Always perform this action"));
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (always_check_button), data->remember);
@@ -998,7 +998,7 @@ show_dialog:
 			  "toggled",
 			  G_CALLBACK (autorun_always_toggled),
 			  data);
-	gtk_box_pack_start_defaults (GTK_BOX (vbox), always_check_button);
+	gtk_box_pack_start (GTK_BOX (vbox), always_check_button, TRUE, TRUE, 0);
 
 	gtk_dialog_add_buttons (GTK_DIALOG (dialog), 
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,

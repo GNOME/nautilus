@@ -34,14 +34,17 @@
 extern "C" {
 #endif /* __cplusplus */
 
-
-#define EEL_TYPE_EDITABLE_LABEL		  (eel_editable_label_get_type ())
-#define EEL_EDITABLE_LABEL(obj)		  (GTK_CHECK_CAST ((obj), EEL_TYPE_EDITABLE_LABEL, EelEditableLabel))
-#define EEL_EDITABLE_LABEL_CLASS(klass)	  (GTK_CHECK_CLASS_CAST ((klass), EEL_TYPE_EDITABLE_LABEL, EelEditableLabelClass))
-#define EEL_IS_EDITABLE_LABEL(obj)	  (GTK_CHECK_TYPE ((obj), EEL_TYPE_EDITABLE_LABEL))
-#define EEL_IS_EDITABLE_LABEL_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), EEL_TYPE_EDITABLE_LABEL))
-#define EEL_EDITABLE_LABEL_GET_CLASS(obj)  (GTK_CHECK_GET_CLASS ((obj), EEL_TYPE_EDITABLE_LABEL, EelEditableLabelClass))
-       
+#define EEL_TYPE_EDITABLE_LABEL eel_editable_label_get_type()
+#define EEL_EDITABLE_LABEL(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), EEL_TYPE_EDITABLE_LABEL, EelEditableLabel))
+#define EEL_EDITABLE_LABEL_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), EEL_TYPE_EDITABLE_LABEL, EelEditableLabelClass))
+#define EEL_IS_EDITABLE_LABEL(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), EEL_TYPE_EDITABLE_LABEL))
+#define EEL_IS_EDITABLE_LABEL_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), EEL_TYPE_EDITABLE_LABEL))
+#define EEL_EDITABLE_LABEL_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), EEL_TYPE_EDITABLE_LABEL, EelEditableLabelClass))
 
 typedef struct _EelEditableLabel       EelEditableLabel;
 typedef struct _EelEditableLabelClass  EelEditableLabelClass;

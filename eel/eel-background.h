@@ -48,16 +48,17 @@
 typedef struct EelBackground EelBackground;
 typedef struct EelBackgroundClass EelBackgroundClass;
 
-#define EEL_TYPE_BACKGROUND \
-	(eel_background_get_type ())
+#define EEL_TYPE_BACKGROUND eel_background_get_type()
 #define EEL_BACKGROUND(obj) \
-	(GTK_CHECK_CAST ((obj), EEL_TYPE_BACKGROUND, EelBackground))
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), EEL_TYPE_BACKGROUND, EelBackground))
 #define EEL_BACKGROUND_CLASS(klass) \
-	(GTK_CHECK_CLASS_CAST ((klass), EEL_TYPE_BACKGROUND, EelBackgroundClass))
+  (G_TYPE_CHECK_CLASS_CAST ((klass), EEL_TYPE_BACKGROUND, EelBackgroundClass))
 #define EEL_IS_BACKGROUND(obj) \
-	(GTK_CHECK_TYPE ((obj), EEL_TYPE_BACKGROUND))
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), EEL_TYPE_BACKGROUND))
 #define EEL_IS_BACKGROUND_CLASS(klass) \
-	(GTK_CHECK_CLASS_TYPE ((klass), EEL_TYPE_BACKGROUND))
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), EEL_TYPE_BACKGROUND))
+#define EEL_BACKGROUND_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), EEL_TYPE_BACKGROUND, EelBackgroundClass))
 
 typedef enum {
 	EEL_BACKGROUND_TILED = 0, /* zero makes this the default placement */
@@ -67,7 +68,7 @@ typedef enum {
 	EEL_BACKGROUND_ZOOM
 } EelBackgroundImagePlacement;
 
-GtkType                     eel_background_get_type                         (void);
+GType                       eel_background_get_type                         (void);
 EelBackground *             eel_background_new                              (void);
 
 

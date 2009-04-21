@@ -32,8 +32,9 @@
 
 #define NAUTILUS_NOTES_SIDEBAR_ID    "NautilusNotesSidebar"
 
-#define NAUTILUS_TYPE_NOTES_VIEWER (nautilus_notes_viewer_get_type ())
-#define NAUTILUS_NOTES_VIEWER(obj) (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_NOTES_VIEWER, NautilusNotesViewer))
+#define NAUTILUS_TYPE_NOTES_VIEWER nautilus_notes_viewer_get_type()
+#define NAUTILUS_NOTES_VIEWER(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_NOTES_VIEWER, NautilusNotesViewer))
 
 typedef struct _NautilusNotesViewerDetails NautilusNotesViewerDetails;
 

@@ -31,16 +31,17 @@
 
 typedef struct FMPropertiesWindow FMPropertiesWindow;
 
-#define FM_TYPE_PROPERTIES_WINDOW \
-	(fm_properties_window_get_type ())
+#define FM_TYPE_PROPERTIES_WINDOW fm_properties_window_get_type()
 #define FM_PROPERTIES_WINDOW(obj) \
-	(GTK_CHECK_CAST ((obj), FM_TYPE_PROPERTIES_WINDOW, FMPropertiesWindow))
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), FM_TYPE_PROPERTIES_WINDOW, FMPropertiesWindow))
 #define FM_PROPERTIES_WINDOW_CLASS(klass) \
-	(GTK_CHECK_CLASS_CAST ((klass), FM_TYPE_PROPERTIES_WINDOW, FMPropertiesWindowClass))
+  (G_TYPE_CHECK_CLASS_CAST ((klass), FM_TYPE_PROPERTIES_WINDOW, FMPropertiesWindowClass))
 #define FM_IS_PROPERTIES_WINDOW(obj) \
-	(GTK_CHECK_TYPE ((obj), FM_TYPE_PROPERTIES_WINDOW))
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), FM_TYPE_PROPERTIES_WINDOW))
 #define FM_IS_PROPERTIES_WINDOW_CLASS(klass) \
-	(GTK_CHECK_CLASS_TYPE ((klass), FM_TYPE_PROPERTIES_WINDOW))
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), FM_TYPE_PROPERTIES_WINDOW))
+#define FM_PROPERTIES_WINDOW_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), FM_TYPE_PROPERTIES_WINDOW, FMPropertiesWindowClass))
 
 typedef struct FMPropertiesWindowDetails FMPropertiesWindowDetails;
 

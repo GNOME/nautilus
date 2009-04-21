@@ -31,13 +31,17 @@
 
 #include <gtk/gtk.h>
 
-#define NAUTILUS_TYPE_NAVIGATION_BAR (nautilus_navigation_bar_get_type ())
+#define NAUTILUS_TYPE_NAVIGATION_BAR nautilus_navigation_bar_get_type()
 #define NAUTILUS_NAVIGATION_BAR(obj) \
-	GTK_CHECK_CAST (obj, NAUTILUS_TYPE_NAVIGATION_BAR, NautilusNavigationBar)
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_NAVIGATION_BAR, NautilusNavigationBar))
 #define NAUTILUS_NAVIGATION_BAR_CLASS(klass) \
-	GTK_CHECK_CLASS_CAST (klass, NAUTILUS_TYPE_NAVIGATION_BAR, NautilusNavigationBarClass)
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_NAVIGATION_BAR, NautilusNavigationBarClass))
 #define NAUTILUS_IS_NAVIGATION_BAR(obj) \
-	GTK_CHECK_TYPE (obj, NAUTILUS_TYPE_NAVIGATION_BAR)
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_NAVIGATION_BAR))
+#define NAUTILUS_IS_NAVIGATION_BAR_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_NAVIGATION_BAR))
+#define NAUTILUS_NAVIGATION_BAR_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_NAVIGATION_BAR, NautilusNavigationBarClass))
 
 typedef struct {
 	GtkHBox parent;

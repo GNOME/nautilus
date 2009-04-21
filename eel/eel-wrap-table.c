@@ -89,7 +89,7 @@ static void          eel_wrap_table_forall               (GtkContainer        *c
 							  gboolean             include_internals,
 							  GtkCallback          callback,
 							  gpointer             callback_data);
-static GtkType       eel_wrap_table_child_type           (GtkContainer        *container);
+static GType         eel_wrap_table_child_type           (GtkContainer        *container);
 
 
 /* Private EelWrapTable methods */
@@ -477,7 +477,7 @@ eel_wrap_table_forall (GtkContainer *container,
 	}
 }
 
-static GtkType
+static GType
 eel_wrap_table_child_type (GtkContainer   *container)
 {
 	return GTK_TYPE_WIDGET;

@@ -29,16 +29,17 @@
 
 #include <libnautilus-private/nautilus-directory.h>
 
-#define NAUTILUS_TYPE_DESKTOP_DIRECTORY \
-	(nautilus_desktop_directory_get_type ())
+#define NAUTILUS_TYPE_DESKTOP_DIRECTORY nautilus_desktop_directory_get_type()
 #define NAUTILUS_DESKTOP_DIRECTORY(obj) \
-	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_DESKTOP_DIRECTORY, NautilusDesktopDirectory))
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_DESKTOP_DIRECTORY, NautilusDesktopDirectory))
 #define NAUTILUS_DESKTOP_DIRECTORY_CLASS(klass) \
-	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_DESKTOP_DIRECTORY, NautilusDesktopDirectoryClass))
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_DESKTOP_DIRECTORY, NautilusDesktopDirectoryClass))
 #define NAUTILUS_IS_DESKTOP_DIRECTORY(obj) \
-	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_DESKTOP_DIRECTORY))
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_DESKTOP_DIRECTORY))
 #define NAUTILUS_IS_DESKTOP_DIRECTORY_CLASS(klass) \
-	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_DESKTOP_DIRECTORY))
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_DESKTOP_DIRECTORY))
+#define NAUTILUS_DESKTOP_DIRECTORY_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_DESKTOP_DIRECTORY, NautilusDesktopDirectoryClass))
 
 typedef struct NautilusDesktopDirectoryDetails NautilusDesktopDirectoryDetails;
 

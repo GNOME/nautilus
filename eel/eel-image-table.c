@@ -76,7 +76,7 @@ static void    eel_image_table_unrealize            (GtkWidget          *widget)
 /* GtkContainerClass methods */
 static void    eel_image_table_remove               (GtkContainer       *container,
 						     GtkWidget          *widget);
-static GtkType eel_image_table_child_type           (GtkContainer       *container);
+static GType   eel_image_table_child_type           (GtkContainer       *container);
 
 /* Private EelImageTable methods */
 static void    image_table_emit_signal              (EelImageTable      *image_table,
@@ -292,7 +292,7 @@ eel_image_table_remove (GtkContainer *container,
 	EEL_CALL_PARENT (GTK_CONTAINER_CLASS, remove, (container, child));
 }
 
-static GtkType
+static GType
 eel_image_table_child_type (GtkContainer *container)
 {
 	return EEL_TYPE_LABELED_IMAGE;

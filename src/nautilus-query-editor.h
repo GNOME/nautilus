@@ -29,10 +29,17 @@
 #include <libnautilus-private/nautilus-window-info.h>
 #include <nautilus-search-bar.h>
 
-#define NAUTILUS_TYPE_QUERY_EDITOR (nautilus_query_editor_get_type ())
-#define NAUTILUS_QUERY_EDITOR(obj) GTK_CHECK_CAST (obj, NAUTILUS_TYPE_QUERY_EDITOR, NautilusQueryEditor)
-#define NAUTILUS_QUERY_EDITOR_CLASS(klass) GTK_CHECK_CLASS_CAST (klass, NAUTILUS_TYPE_QUERY_EDITOR, NautilusQueryEditorClass)
-#define NAUTILUS_IS_QUERY_EDITOR(obj) GTK_CHECK_TYPE (obj, NAUTILUS_TYPE_QUERY_EDITOR)
+#define NAUTILUS_TYPE_QUERY_EDITOR nautilus_query_editor_get_type()
+#define NAUTILUS_QUERY_EDITOR(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_QUERY_EDITOR, NautilusQueryEditor))
+#define NAUTILUS_QUERY_EDITOR_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_QUERY_EDITOR, NautilusQueryEditorClass))
+#define NAUTILUS_IS_QUERY_EDITOR(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_QUERY_EDITOR))
+#define NAUTILUS_IS_QUERY_EDITOR_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_QUERY_EDITOR))
+#define NAUTILUS_QUERY_EDITOR_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_QUERY_EDITOR, NautilusQueryEditorClass))
 
 typedef struct NautilusQueryEditorDetails NautilusQueryEditorDetails;
 

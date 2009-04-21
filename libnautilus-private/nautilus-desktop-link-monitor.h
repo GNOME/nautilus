@@ -28,16 +28,17 @@
 #include <gtk/gtk.h>
 #include <libnautilus-private/nautilus-desktop-link.h>
 
-#define NAUTILUS_TYPE_DESKTOP_LINK_MONITOR \
-	(nautilus_desktop_link_monitor_get_type ())
+#define NAUTILUS_TYPE_DESKTOP_LINK_MONITOR nautilus_desktop_link_monitor_get_type()
 #define NAUTILUS_DESKTOP_LINK_MONITOR(obj) \
-	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_DESKTOP_LINK_MONITOR, NautilusDesktopLinkMonitor))
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_DESKTOP_LINK_MONITOR, NautilusDesktopLinkMonitor))
 #define NAUTILUS_DESKTOP_LINK_MONITOR_CLASS(klass) \
-	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_DESKTOP_LINK_MONITOR, NautilusDesktopLinkMonitor))
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_DESKTOP_LINK_MONITOR, NautilusDesktopLinkMonitorClass))
 #define NAUTILUS_IS_DESKTOP_LINK_MONITOR(obj) \
-	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_DESKTOP_LINK_MONITOR))
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_DESKTOP_LINK_MONITOR))
 #define NAUTILUS_IS_DESKTOP_LINK_MONITOR_CLASS(klass) \
-	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_DESKTOP_LINK_MONITOR))
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_DESKTOP_LINK_MONITOR))
+#define NAUTILUS_DESKTOP_LINK_MONITOR_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_DESKTOP_LINK_MONITOR, NautilusDesktopLinkMonitorClass))
 
 typedef struct NautilusDesktopLinkMonitorDetails NautilusDesktopLinkMonitorDetails;
 

@@ -48,14 +48,17 @@
  * We cant use EelImage for this because part of the reason
  * for pixbuf debugging is to debug EelImage itself.
  */
-#define DEBUG_TYPE_PIXBUF_VIEWER (debug_pixbuf_viewer_get_type ())
-#define DEBUG_PIXBUF_VIEWER(obj) (GTK_CHECK_CAST ((obj), DEBUG_TYPE_PIXBUF_VIEWER, DebugPixbufViewer))
-#define DEBUG_IS_PIXBUF_VIEWER(obj) (GTK_CHECK_TYPE ((obj), DEBUG_TYPE_PIXBUF_VIEWER))
+
+#define DEBUG_TYPE_PIXBUF_VIEWER debug_pixbuf_viewer_get_type()
+#define DEBUG_PIXBUF_VIEWER(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), DEBUG_TYPE_PIXBUF_VIEWER, DebugPixbufViewer))
+#define DEBUG_IS_PIXBUF_VIEWER(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), DEBUG_TYPE_PIXBUF_VIEWER))
 
 typedef struct DebugPixbufViewer DebugPixbufViewer;
 typedef struct DebugPixbufViewerClass DebugPixbufViewerClass;
 
-static GtkType debug_pixbuf_viewer_get_type   (void);
+static GType   debug_pixbuf_viewer_get_type   (void);
 static void    debug_pixbuf_viewer_set_pixbuf (DebugPixbufViewer *viewer,
 					       GdkPixbuf         *pixbuf);
 

@@ -34,13 +34,17 @@
 #include "nautilus-navigation-window.h"
 #include <gtk/gtk.h>
 
-#define NAUTILUS_TYPE_LOCATION_BAR (nautilus_location_bar_get_type ())
+#define NAUTILUS_TYPE_LOCATION_BAR nautilus_location_bar_get_type()
 #define NAUTILUS_LOCATION_BAR(obj) \
-	GTK_CHECK_CAST (obj, NAUTILUS_TYPE_LOCATION_BAR, NautilusLocationBar)
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_LOCATION_BAR, NautilusLocationBar))
 #define NAUTILUS_LOCATION_BAR_CLASS(klass) \
-	GTK_CHECK_CLASS_CAST (klass, NAUTILUS_TYPE_LOCATION_BAR, NautilusLocationBarClass)
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_LOCATION_BAR, NautilusLocationBarClass))
 #define NAUTILUS_IS_LOCATION_BAR(obj) \
-	GTK_CHECK_TYPE (obj, NAUTILUS_TYPE_LOCATION_BAR)
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_LOCATION_BAR))
+#define NAUTILUS_IS_LOCATION_BAR_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_LOCATION_BAR))
+#define NAUTILUS_LOCATION_BAR_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_LOCATION_BAR, NautilusLocationBarClass))
 
 typedef struct NautilusLocationBarDetails NautilusLocationBarDetails;
 

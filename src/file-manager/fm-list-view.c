@@ -1349,7 +1349,7 @@ create_and_set_up_tree_view (FMListView *view)
 
 	/* Don't handle backspace key. It's used to open the parent folder. */
 	binding_set = gtk_binding_set_by_class (GTK_WIDGET_GET_CLASS (view->details->tree_view));
-	gtk_binding_entry_clear (binding_set, GDK_BackSpace, 0);
+	gtk_binding_entry_remove (binding_set, GDK_BackSpace, 0);
 
 	view->details->drag_dest = 
 		nautilus_tree_view_drag_dest_new (view->details->tree_view);
@@ -1445,7 +1445,6 @@ create_and_set_up_tree_view (FMListView *view)
 			
 			view->details->file_name_column = gtk_tree_view_column_new ();
 			g_object_ref (view->details->file_name_column);
-			gtk_object_sink (GTK_OBJECT (view->details->file_name_column));
 			view->details->file_name_column_num = column_num;
 			
 			g_hash_table_insert (view->details->columns,
@@ -1484,7 +1483,6 @@ create_and_set_up_tree_view (FMListView *view)
 									   "text", column_num,
 									   NULL);
 			g_object_ref (column);
-			gtk_object_sink (GTK_OBJECT (column));
 			gtk_tree_view_column_set_sort_column_id (column, column_num);
 			g_hash_table_insert (view->details->columns, 
 					     g_strdup (name), 
@@ -2897,7 +2895,6 @@ fm_list_view_create (NautilusWindowSlotInfo *slot)
 			     "window-slot", slot,
 			     NULL);
 	g_object_ref (view);
-	gtk_object_sink (GTK_OBJECT (view));
 	return NAUTILUS_VIEW (view);
 }
 

@@ -31,17 +31,18 @@
 
 #include <gtk/gtk.h>
 
-#define NAUTILUS_TYPE_CELL_RENDERER_PIXBUF_EMBLEM \
-	(nautilus_cell_renderer_pixbuf_emblem_get_type ())
+#define NAUTILUS_TYPE_CELL_RENDERER_PIXBUF_EMBLEM nautilus_cell_renderer_pixbuf_emblem_get_type()
 #define NAUTILUS_CELL_RENDERER_PIXBUF_EMBLEM(obj) \
-	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_CELL_RENDERER_PIXBUF_EMBLEM, NautilusCellRendererPixbufEmblem))
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_CELL_RENDERER_PIXBUF_EMBLEM, NautilusCellRendererPixbufEmblem))
 #define NAUTILUS_CELL_RENDERER_PIXBUF_EMBLEM_CLASS(klass) \
-	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_CELL_RENDERER_PIXBUF_EMBLEM, NautilusCellRendererPixbufEmblemClass))
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_CELL_RENDERER_PIXBUF_EMBLEM, NautilusCellRendererPixbufEmblemClass))
 #define NAUTILUS_IS_CELL_RENDERER_PIXBUF_EMBLEM(obj) \
-	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_CELL_RENDERER_PIXBUF_EMBLEM))
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_CELL_RENDERER_PIXBUF_EMBLEM))
 #define NAUTILUS_IS_CELL_RENDERER_PIXBUF_EMBLEM_CLASS(klass) \
-	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_CELL_RENDERER_PIXBUF_EMBLEM))
-	
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_CELL_RENDERER_PIXBUF_EMBLEM))
+#define NAUTILUS_CELL_RENDERER_PIXBUF_EMBLEM_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_CELL_RENDERER_PIXBUF_EMBLEM, NautilusCellRendererPixbufEmblemClass))
+
 typedef struct _NautilusCellRendererPixbufEmblem NautilusCellRendererPixbufEmblem;
 typedef struct _NautilusCellRendererPixbufEmblemClass NautilusCellRendererPixbufEmblemClass;
 

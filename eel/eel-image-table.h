@@ -29,11 +29,17 @@
 
 G_BEGIN_DECLS
 
-#define EEL_TYPE_IMAGE_TABLE            (eel_image_table_get_type ())
-#define EEL_IMAGE_TABLE(obj)            (GTK_CHECK_CAST ((obj), EEL_TYPE_IMAGE_TABLE, EelImageTable))
-#define EEL_IMAGE_TABLE_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), EEL_TYPE_IMAGE_TABLE, EelImageTableClass))
-#define EEL_IS_IMAGE_TABLE(obj)         (GTK_CHECK_TYPE ((obj), EEL_TYPE_IMAGE_TABLE))
-#define EEL_IS_IMAGE_TABLE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), EEL_TYPE_IMAGE_TABLE))
+#define EEL_TYPE_IMAGE_TABLE eel_image_table_get_type()
+#define EEL_IMAGE_TABLE(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), EEL_TYPE_IMAGE_TABLE, EelImageTable))
+#define EEL_IMAGE_TABLE_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), EEL_TYPE_IMAGE_TABLE, EelImageTableClass))
+#define EEL_IS_IMAGE_TABLE(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), EEL_TYPE_IMAGE_TABLE))
+#define EEL_IS_IMAGE_TABLE_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), EEL_TYPE_IMAGE_TABLE))
+#define EEL_IMAGE_TABLE_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), EEL_TYPE_IMAGE_TABLE, EelImageTableClass))
 
 typedef struct EelImageTable		EelImageTable;
 typedef struct EelImageTableClass	EelImageTableClass;
@@ -80,7 +86,7 @@ struct EelImageTableClass
 };
 
 /* Public GtkImageTable methods */
-GtkType    eel_image_table_get_type         (void);
+GType      eel_image_table_get_type         (void);
 GtkWidget *eel_image_table_new              (gboolean       homogeneous);
 GtkWidget *eel_image_table_add_empty_image  (EelImageTable *image_table);
 

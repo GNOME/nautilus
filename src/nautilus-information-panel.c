@@ -221,8 +221,8 @@ static void
 make_button_box (NautilusInformationPanel *information_panel)
 {
 	information_panel->details->button_box_centerer = GTK_HBOX (gtk_hbox_new (FALSE, 0));
-	gtk_box_pack_start_defaults (GTK_BOX (information_panel->details->container),
-			    	     GTK_WIDGET (information_panel->details->button_box_centerer));
+	gtk_box_pack_start (GTK_BOX (information_panel->details->container),
+			    GTK_WIDGET (information_panel->details->button_box_centerer), TRUE, TRUE, 0);
 
 	information_panel->details->button_box = GTK_VBOX (nautilus_keep_last_vertical_box_new (4));
 	gtk_container_set_border_width (GTK_CONTAINER (information_panel->details->button_box), 8);				
@@ -1142,7 +1142,6 @@ nautilus_information_panel_create (NautilusSidebarProvider *provider,
 	panel = g_object_new (nautilus_information_panel_get_type (), NULL);
 	nautilus_information_panel_set_parent_window (panel, window);
 	g_object_ref (panel);
-	gtk_object_sink (GTK_OBJECT (panel));
 
 	return NAUTILUS_SIDEBAR (panel);
 }

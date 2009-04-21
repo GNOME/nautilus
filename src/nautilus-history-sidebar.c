@@ -119,7 +119,7 @@ update_history (NautilusHistorySidebar *sidebar)
 
 	selection = GTK_TREE_SELECTION (gtk_tree_view_get_selection (sidebar->tree_view));
 
-	if (gtk_tree_model_get_iter_root (GTK_TREE_MODEL (store), &iter)) {
+	if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (store), &iter)) {
 		gtk_tree_selection_select_iter (selection, &iter);
 	}
 }
@@ -381,7 +381,6 @@ nautilus_history_sidebar_create (NautilusSidebarProvider *provider,
 	sidebar = g_object_new (nautilus_history_sidebar_get_type (), NULL);
 	nautilus_history_sidebar_set_parent_window (sidebar, window);
 	g_object_ref (sidebar);
-	gtk_object_sink (GTK_OBJECT (sidebar));
 
 	return NAUTILUS_SIDEBAR (sidebar);
 }

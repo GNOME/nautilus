@@ -30,16 +30,17 @@
 
 #include <eel/eel-background-box.h>
 
-#define NAUTILUS_TYPE_INFORMATION_PANEL \
-	(nautilus_information_panel_get_type ())
+#define NAUTILUS_TYPE_INFORMATION_PANEL nautilus_information_panel_get_type()
 #define NAUTILUS_INFORMATION_PANEL(obj) \
-	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_INFORMATION_PANEL, NautilusInformationPanel))
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_INFORMATION_PANEL, NautilusInformationPanel))
 #define NAUTILUS_INFORMATION_PANEL_CLASS(klass) \
-	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_INFORMATION_PANEL, NautilusInformationPanelClass))
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_INFORMATION_PANEL, NautilusInformationPanelClass))
 #define NAUTILUS_IS_INFORMATION_PANEL(obj) \
-	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_INFORMATION_PANEL))
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_INFORMATION_PANEL))
 #define NAUTILUS_IS_INFORMATION_PANEL_CLASS(klass) \
-	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_INFORMATION_PANEL))
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_INFORMATION_PANEL))
+#define NAUTILUS_INFORMATION_PANEL_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_INFORMATION_PANEL, NautilusInformationPanelClass))
 
 typedef struct NautilusInformationPanelDetails NautilusInformationPanelDetails;
 

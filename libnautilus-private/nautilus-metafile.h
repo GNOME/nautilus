@@ -27,11 +27,17 @@
 #include <libnautilus-private/nautilus-directory.h>
 #include <libxml/tree.h>
 
-#define NAUTILUS_TYPE_METAFILE	          (nautilus_metafile_get_type ())
-#define NAUTILUS_METAFILE(obj)	          (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_METAFILE, NautilusMetafile))
-#define NAUTILUS_METAFILE_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_METAFILE, NautilusMetafileClass))
-#define NAUTILUS_IS_METAFILE(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_METAFILE))
-#define NAUTILUS_IS_METAFILE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_METAFILE))
+#define NAUTILUS_TYPE_METAFILE nautilus_metafile_get_type()
+#define NAUTILUS_METAFILE(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_METAFILE, NautilusMetafile))
+#define NAUTILUS_METAFILE_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_METAFILE, NautilusMetafileClass))
+#define NAUTILUS_IS_METAFILE(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_METAFILE))
+#define NAUTILUS_IS_METAFILE_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_METAFILE))
+#define NAUTILUS_METAFILE_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_METAFILE, NautilusMetafileClass))
 
 typedef struct _NautilusMetafile NautilusMetafile;
 

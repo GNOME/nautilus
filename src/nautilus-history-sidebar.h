@@ -33,8 +33,9 @@
 
 #define NAUTILUS_HISTORY_SIDEBAR_ID    "NautilusHistorySidebar"
 
-#define NAUTILUS_TYPE_HISTORY_SIDEBAR (nautilus_history_sidebar_get_type ())
-#define NAUTILUS_HISTORY_SIDEBAR(obj) (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_HISTORY_SIDEBAR, NautilusHistorySidebar))
+#define NAUTILUS_TYPE_HISTORY_SIDEBAR nautilus_history_sidebar_get_type()
+#define NAUTILUS_HISTORY_SIDEBAR(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_HISTORY_SIDEBAR, NautilusHistorySidebar))
 
 typedef struct {
 	GtkScrolledWindow parent;
