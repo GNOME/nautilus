@@ -29,17 +29,19 @@
 
 #include <gtk/gtk.h>
 
-#define NAUTILUS_TYPE_CELL_RENDERER_TEXT_ELLIPSIZED \
-	(nautilus_cell_renderer_text_ellipsized_get_type ())
+#define NAUTILUS_TYPE_CELL_RENDERER_TEXT_ELLIPSIZED nautilus_cell_renderer_text_ellipsized_get_type()
 #define NAUTILUS_CELL_RENDERER_TEXT_ELLIPSIZED(obj) \
-	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_CELL_RENDERER_TEXT_ELLIPSIZED, NautilusCellRendererTextEllipsized))
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_CELL_RENDERER_TEXT_ELLIPSIZED, NautilusCellRendererTextEllipsized))
 #define NAUTILUS_CELL_RENDERER_TEXT_ELLIPSIZED_CLASS(klass) \
-	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_CELL_RENDERER_TEXT_ELLIPSIZED, NautilusCellRendererTextEllipsizedClass))
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_CELL_RENDERER_TEXT_ELLIPSIZED, NautilusCellRendererTextEllipsizedClass))
 #define NAUTILUS_IS_CELL_RENDERER_TEXT_ELLIPSIZED(obj) \
-	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_CELL_RENDERER_TEXT_ELLIPSIZED))
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_CELL_RENDERER_TEXT_ELLIPSIZED))
 #define NAUTILUS_IS_CELL_RENDERER_TEXT_ELLIPSIZED_CLASS(klass) \
-	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_CELL_RENDERER_TEXT_ELLIPSIZED))
-	
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_CELL_RENDERER_TEXT_ELLIPSIZED))
+#define NAUTILUS_CELL_RENDERER_TEXT_ELLIPSIZED_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_CELL_RENDERER_TEXT_ELLIPSIZED, NautilusCellRendererTextEllipsizedClass))
+
+
 typedef struct _NautilusCellRendererTextEllipsized NautilusCellRendererTextEllipsized;
 typedef struct _NautilusCellRendererTextEllipsizedClass NautilusCellRendererTextEllipsizedClass;
 

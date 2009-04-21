@@ -11,17 +11,10 @@ main  (int argc, char *argv[])
 	GtkWidget *window;
 	EelBackground *background;
 	char *image_uri;
-#if 0
-	char *titles[] = { "test 1", "test 2", "test 3"};
-#endif
 
 	gtk_init (&argc, &argv);
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-#if 0
-	ctree = gtk_ctree_new_with_titles (3, 2, titles);
-	gtk_container_add (GTK_CONTAINER (window), ctree);
-#endif
 	g_signal_connect (window, "destroy",
 			    gtk_main_quit, NULL);
 

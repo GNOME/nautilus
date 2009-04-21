@@ -28,16 +28,18 @@
 
 #include <libnautilus-private/nautilus-vfs-file.h>
 
-#define NAUTILUS_TYPE_SAVED_SEARCH_FILE \
-	(nautilus_saved_search_file_get_type ())
+#define NAUTILUS_TYPE_SAVED_SEARCH_FILE nautilus_saved_search_file_get_type()
 #define NAUTILUS_SAVED_SEARCH_FILE(obj) \
-	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_SAVED_SEARCH_FILE, NautilusSavedSearchFile))
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_SAVED_SEARCH_FILE, NautilusSavedSearchFile))
 #define NAUTILUS_SAVED_SEARCH_FILE_CLASS(klass) \
-	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SAVED_SEARCH_FILE, NautilusSavedSearchFileClass))
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SAVED_SEARCH_FILE, NautilusSavedSearchFileClass))
 #define NAUTILUS_IS_SAVED_SEARCH_FILE(obj) \
-	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_SAVED_SEARCH_FILE))
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_SAVED_SEARCH_FILE))
 #define NAUTILUS_IS_SAVED_SEARCH_FILE_CLASS(klass) \
-	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SAVED_SEARCH_FILE))
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SAVED_SEARCH_FILE))
+#define NAUTILUS_SAVED_SEARCH_FILE_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_SAVED_SEARCH_FILE, NautilusSavedSearchFileClass))
+
 
 typedef struct NautilusSavedSearchFileDetails NautilusSavedSearchFileDetails;
 

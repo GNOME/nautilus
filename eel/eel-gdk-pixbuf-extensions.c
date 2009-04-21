@@ -897,7 +897,7 @@ pixbuf_destroy_callback (guchar  *pixels,
  *
  * Create a pixbuf from a sub area of another pixbuf.  The resulting pixbuf
  * will share the pixel data of the source pixbuf.  Memory bookeeping is
- * all taken care for the caller.  All you need to do is gdk_pixbuf_unref()
+ * all taken care for the caller.  All you need to do is g_object_unref()
  * the resulting pixbuf to properly free resources.
  */
 GdkPixbuf *

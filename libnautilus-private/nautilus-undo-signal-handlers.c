@@ -323,8 +323,8 @@ nautilus_undo_editable_set_undo_key (GtkEditable *editable, gboolean value)
 		 * is not already connected. We could use object data
 		 * to prevent that little problem.
 		 */
-		gtk_signal_disconnect_by_func (editable, 
-					       G_CALLBACK (editable_key_press_event), NULL);
+		g_signal_disconnect_by_func (editable, 
+					     G_CALLBACK (editable_key_press_event), NULL);
 	}
 #endif
 }

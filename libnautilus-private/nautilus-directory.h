@@ -156,8 +156,8 @@ NautilusDirectory *nautilus_directory_get                      (GFile           
 NautilusDirectory *nautilus_directory_get_by_uri               (const char                *uri);
 NautilusDirectory *nautilus_directory_get_for_file             (NautilusFile              *file);
 
-/* Covers for gtk_object_ref and gtk_object_unref that provide two conveniences:
- * 1) You don't have to cast to GtkObject *, so using these is type safe.
+/* Covers for g_object_ref and g_object_unref that provide two conveniences:
+ * 1) Using these is type safe.
  * 2) You are allowed to call these with NULL,
  */
 NautilusDirectory *nautilus_directory_ref                      (NautilusDirectory         *directory);
