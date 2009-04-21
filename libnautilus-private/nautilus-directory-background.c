@@ -309,15 +309,20 @@ desktop_background_gconf_notify_cb (GConfClient *client, guint notification_id, 
 	guint notification_timeout_id;
 	
 	background = EEL_BACKGROUND (data);
-	/* 
-	 * Wallpaper capplet changes picture, background color and placement with
-	 * gconf_change_set API, but unfortunately, this operation is not atomic in
-	 * GConf as it should be. So we update background after small timeout to
-	 * let GConf change all values.
-	 */
-	notification_timeout_id = g_timeout_add (300, (GSourceFunc) call_settings_changed, background);
 
-	g_object_set_data (G_OBJECT (background), "desktop_gconf_notification_timeout", GUINT_TO_POINTER (notification_timeout_id));
+	notification_timeout_id = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (background), "desktop_gconf_notification_timeout"));
+
+        if (strcmp (entry->key, "/desktop/gnome/background/stamp") == 0) {
+                if (notification_timeout_id != 0) 
+                        g_source_remove (notification_timeout_id);
+                
+                call_settings_changed (background);
+        }
+        else if (notification_timeout_id == 0) {
+                notification_timeout_id = g_timeout_add (300, (GSourceFunc) call_settings_changed, background);
+                
+                g_object_set_data (G_OBJECT (background), "desktop_gconf_notification_timeout", GUINT_TO_POINTER (notification_timeout_id));
+        }
 }
 
 static void
