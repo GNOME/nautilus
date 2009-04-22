@@ -3600,8 +3600,7 @@ nautilus_file_get_icon (NautilusFile *file,
 		} else if (file->details->thumbnail_path == NULL &&
 			   file->details->can_read &&				
 			   !file->details->is_thumbnailing &&
-			   (!file->details->thumbnailing_failed ||
-			    !nautilus_has_valid_failed_thumbnail (file))) {
+			   !file->details->thumbnailing_failed) {
 			if (nautilus_can_thumbnail (file)) {
 				nautilus_create_thumbnail (file);
 			}
