@@ -802,22 +802,6 @@ nautilus_can_thumbnail (NautilusFile *file)
 	return res;
 }
 
-gboolean
-nautilus_has_valid_failed_thumbnail (NautilusFile *file)
-{
-	GnomeDesktopThumbnailFactory *factory;
-	char *uri;
-	gboolean res;
-
-	factory = get_thumbnail_factory ();
-
-	uri = nautilus_file_get_uri (file);
-	res = gnome_desktop_thumbnail_factory_has_valid_failed_thumbnail (factory, uri, file->details->mtime);
-	g_free (uri);
-
-	return res;
-}
-
 void
 nautilus_create_thumbnail (NautilusFile *file)
 {
