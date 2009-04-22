@@ -136,7 +136,7 @@ build_dialog_appearance (NautilusFileConflictDialog *fcd)
 	g_free (secondary_text);
 
 	/* Set up file icons */
-	pixbuf = nautilus_file_get_icon_pixbuf (src,
+	pixbuf = nautilus_file_get_icon_pixbuf (dest,
 						NAUTILUS_ICON_SIZE_LARGE,
 						TRUE,
 						NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
@@ -146,7 +146,7 @@ build_dialog_appearance (NautilusFileConflictDialog *fcd)
 	gtk_widget_show (image);
 	g_object_unref (pixbuf);
 
-	pixbuf = nautilus_file_get_icon_pixbuf (dest,
+	pixbuf = nautilus_file_get_icon_pixbuf (src,
 						NAUTILUS_ICON_SIZE_LARGE,
 						TRUE,
 						NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
@@ -158,10 +158,10 @@ build_dialog_appearance (NautilusFileConflictDialog *fcd)
 
 	/* Set up labels */
 	label = gtk_label_new (NULL);
-	date = nautilus_file_get_string_attribute (src,
+	date = nautilus_file_get_string_attribute (dest,
 						   "date_modified");
-	size = nautilus_file_get_string_attribute (src, "size");
-	type = nautilus_file_get_string_attribute (src, "type");
+	size = nautilus_file_get_string_attribute (dest, "size");
+	type = nautilus_file_get_string_attribute (dest, "type");
 	label_text = g_markup_printf_escaped (_("<b>Original file</b>\n"
 						"<i>Size:</i> %s\n"
 						"<i>Type:</i> %s\n"
@@ -181,10 +181,10 @@ build_dialog_appearance (NautilusFileConflictDialog *fcd)
 	g_free (label_text);
 	
 	label = gtk_label_new (NULL);
-	date = nautilus_file_get_string_attribute (dest,
+	date = nautilus_file_get_string_attribute (src,
 						   "date_modified");
-	size = nautilus_file_get_string_attribute (dest, "size");
-	type = nautilus_file_get_string_attribute (dest, "type");
+	size = nautilus_file_get_string_attribute (src, "size");
+	type = nautilus_file_get_string_attribute (src, "type");
 	label_text = g_markup_printf_escaped (_("<b>Replace with</b>\n"
 						"<i>Size:</i> %s\n"
 						"<i>Type:</i> %s\n"
