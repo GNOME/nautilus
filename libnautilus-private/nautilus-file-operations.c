@@ -3916,6 +3916,22 @@ conflict_response_data_free (ConflictResponseData *data)
 	g_slice_free (ConflictResponseData, data);
 }
 
+static GFile *
+get_target_file_for_display_name (GFile *dir,
+				  char *name)
+{
+	GFile *dest;
+	
+	dest = NULL;
+	dest = g_file_get_child_for_display_name (dir, name, NULL);
+
+	if (dest == NULL) {
+		dest = g_file_get_child (dir, name);
+	}
+	
+	return dest;		
+}
+
 /* Debuting files is non-NULL only for toplevel items */
 static void
 copy_move_file (CopyMoveJob *copy_job,
@@ -4129,10 +4145,11 @@ copy_move_file (CopyMoveJob *copy_job,
 		gboolean is_merge;
 		ConflictResponseData *response;
 
+		g_error_free (error);
+
 		if (unique_names) {
 			g_object_unref (dest);
 			dest = get_unique_target_file (src, dest_dir, same_fs, *dest_fs_type, unique_name_nr++);
-			g_error_free (error);
 			goto retry;
 		}
 
@@ -4144,22 +4161,16 @@ copy_move_file (CopyMoveJob *copy_job,
 
 		if ((is_merge && job->merge_all) ||
 		    (!is_merge && job->replace_all)) {
-			g_error_free (error);
-	
 			overwrite = TRUE;
 			goto retry;
 		}
 
 		if (job->skip_all_conflict) {
-			g_error_free (error);
-			
 			goto out;
 		}
 
 		response = run_conflict_dialog (job, src, dest, dest_dir);	
 
-		g_error_free (error);
-		
 		if (response->id == GTK_RESPONSE_CANCEL ||
 		    response->id == GTK_RESPONSE_DELETE_EVENT) {
 			conflict_response_data_free (response);
@@ -4178,6 +4189,13 @@ copy_move_file (CopyMoveJob *copy_job,
 				}
 			}
 			overwrite = TRUE;
+			conflict_response_data_free (response);
+			goto retry;
+		} else if (response->id == CONFLICT_RESPONSE_RENAME) {
+			g_object_unref (dest);
+			dest = get_target_file_for_display_name (dest_dir,
+								 response->new_name);
+			conflict_response_data_free (response);
 			goto retry;
 		} else {
 			g_assert_not_reached ();
@@ -4593,7 +4611,7 @@ move_file_prepare (CopyMoveJob *move_job,
 	GFile *dest, *new_dest;
 	GError *error;
 	CommonJob *job;
-	gboolean overwrite;
+	gboolean overwrite, renamed;
 	char *primary, *secondary, *details;
 	int response;
 	GFileCopyFlags flags;
@@ -4601,6 +4619,7 @@ move_file_prepare (CopyMoveJob *move_job,
 	gboolean handled_invalid_filename;
 
 	overwrite = FALSE;
+	renamed = FALSE;
 	handled_invalid_filename = *dest_fs_type != NULL;
 
 	job = (CommonJob *)move_job;
@@ -4660,8 +4679,10 @@ move_file_prepare (CopyMoveJob *move_job,
 		if (debuting_files) {
 			g_hash_table_replace (debuting_files, g_object_ref (dest), GINT_TO_POINTER (TRUE));
 		}
-		
+
 		nautilus_file_changes_queue_file_moved (src, dest);
+		nautilus_file_changes_queue_schedule_metadata_move (src, dest);
+
 		if (position) {
 			nautilus_file_changes_queue_schedule_position_set (dest, *position, job->screen_num);
 		} else {
@@ -4731,6 +4752,19 @@ move_file_prepare (CopyMoveJob *move_job,
 				}
 			}
 			overwrite = TRUE;
+			conflict_response_data_free (response);
+			goto retry;
+		} else if (response->id == CONFLICT_RESPONSE_RENAME) {
+			g_object_unref (dest);
+			dest = get_target_file_for_display_name (dest_dir,
+								 response->new_name);
+			conflict_response_data_free (response);
+			goto retry;
+		} else if (response->id == CONFLICT_RESPONSE_RENAME) {
+			g_object_unref (dest);
+			dest = get_target_file_for_display_name (dest_dir,
+								 response->new_name);
+			renamed = TRUE;
 			conflict_response_data_free (response);
 			goto retry;
 		} else {
