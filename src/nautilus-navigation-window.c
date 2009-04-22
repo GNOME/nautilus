@@ -91,6 +91,12 @@ enum {
 
 static int side_pane_width_auto_value = 0;
 
+
+/* Forward and back buttons on the mouse */
+static gboolean mouse_extra_buttons = TRUE;
+static int mouse_forward_button = 8;
+static int mouse_back_button = 9;
+
 static void add_sidebar_panels                       (NautilusNavigationWindow *window);
 static void load_view_as_menu                        (NautilusWindow           *window);
 static void side_panel_image_changed_callback        (NautilusSidebar          *side_panel,
@@ -109,6 +115,9 @@ static void path_bar_path_set_callback               (GtkWidget                *
 static void always_use_location_entry_changed        (gpointer                  callback_data);
 static void always_use_browser_changed               (gpointer                  callback_data);
 static void enable_tabs_changed			     (gpointer                  callback_data);
+static void mouse_back_button_changed		     (gpointer                  callback_data);
+static void mouse_forward_button_changed	     (gpointer                  callback_data);
+static void use_extra_mouse_buttons_changed          (gpointer                  callback_data);
 
 static void nautilus_navigation_window_set_bar_mode  (NautilusNavigationWindow *window, 
 						      NautilusBarMode           mode);
@@ -553,6 +562,49 @@ enable_tabs_changed (gpointer callback_data)
 	nautilus_navigation_window_update_tab_menu_item_visibility (window);
 }
 
+/* Sanity check: highest mouse button value I could find was 14. 5 is our 
+ * lower threshold (well-documented to be the one of the button events for the 
+ * scrollwheel), so it's hardcoded in the functions below. However, if you have
+ * a button that registers higher and want to map it, file a bug and 
+ * we'll move the bar. Makes you wonder why the X guys don't have 
+ * defined values for these like the XKB stuff, huh?
+ */
+#define UPPER_MOUSE_LIMIT 14
+
+static void
+mouse_back_button_changed (gpointer callback_data)
+{
+	int new_back_button;	
+
+	new_back_button = eel_preferences_get_integer (NAUTILUS_PREFERENCES_MOUSE_BACK_BUTTON);
+
+	/* Bounds checking */
+	if (new_back_button < 6 || new_back_button > UPPER_MOUSE_LIMIT)
+		return;
+
+	mouse_back_button = new_back_button;
+}
+
+static void
+mouse_forward_button_changed (gpointer callback_data)
+{
+	int new_forward_button;	
+
+	new_forward_button = eel_preferences_get_integer (NAUTILUS_PREFERENCES_MOUSE_FORWARD_BUTTON);
+
+	/* Bounds checking */
+	if (new_forward_button < 6 || new_forward_button > UPPER_MOUSE_LIMIT)
+		return;
+
+	mouse_forward_button = new_forward_button;
+}
+
+static void
+use_extra_mouse_buttons_changed (gpointer callback_data)
+{
+	mouse_extra_buttons = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_MOUSE_USE_EXTRA_BUTTONS);
+}
+
 static int
 bookmark_list_get_uri_index (GList *list,
 			     GFile *location)
@@ -919,7 +971,6 @@ nautilus_navigation_window_key_press_event (GtkWidget *widget,
 
 			action = gtk_action_group_get_action (window->details->navigation_action_group,
 							      extra_navigation_window_keybindings[i].action);
-			g_assert (action != NULL);
 
 			g_assert (action != NULL);
 			if (gtk_action_is_sensitive (action)) {
@@ -932,6 +983,28 @@ nautilus_navigation_window_key_press_event (GtkWidget *widget,
 	}
 
 	return GTK_WIDGET_CLASS (nautilus_navigation_window_parent_class)->key_press_event (widget, event);
+}
+
+static gboolean
+nautilus_navigation_window_button_press_event (GtkWidget *widget,
+					       GdkEventButton *event)
+{
+	NautilusNavigationWindow *window;
+	gboolean handled;
+	
+	handled = FALSE;
+	window = NAUTILUS_NAVIGATION_WINDOW (widget);
+	
+	if (mouse_extra_buttons && (event->button == mouse_back_button)) {
+		nautilus_navigation_window_go_back (window);
+		handled = TRUE; 
+	} else if (mouse_extra_buttons && (event->button == mouse_forward_button)) {
+		nautilus_navigation_window_go_forward (window);
+		handled = TRUE;
+	} else {
+		handled = GTK_WIDGET_CLASS (nautilus_navigation_window_parent_class)->button_press_event (widget, event);
+	}
+	return handled;
 }
 
 static void
@@ -1824,7 +1897,7 @@ nautilus_navigation_window_get_base_page_index (NautilusNavigationWindow *window
 
 /**
  * nautilus_navigation_window_show:
- * @widget:	GtkWidget
+ * @widget: a #GtkWidget.
  *
  * Call parent and then show/hide window items
  * base on user prefs.
@@ -1995,6 +2068,7 @@ nautilus_navigation_window_class_init (NautilusNavigationWindowClass *class)
 	GTK_WIDGET_CLASS (class)->unrealize = nautilus_navigation_window_unrealize;
 	GTK_WIDGET_CLASS (class)->window_state_event = nautilus_navigation_window_state_event;
 	GTK_WIDGET_CLASS (class)->key_press_event = nautilus_navigation_window_key_press_event;
+	GTK_WIDGET_CLASS (class)->button_press_event = nautilus_navigation_window_button_press_event;
 	NAUTILUS_WINDOW_CLASS (class)->load_view_as_menu = real_load_view_as_menu;
 	NAUTILUS_WINDOW_CLASS (class)->sync_allow_stop = real_sync_allow_stop;
 	NAUTILUS_WINDOW_CLASS (class)->prompt_for_location = real_prompt_for_location;
@@ -2009,4 +2083,17 @@ nautilus_navigation_window_class_init (NautilusNavigationWindowClass *class)
 	NAUTILUS_WINDOW_CLASS (class)->close_slot = real_close_slot;
 
 	g_type_class_add_private (G_OBJECT_CLASS (class), sizeof (NautilusNavigationWindowDetails));
+
+
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_MOUSE_BACK_BUTTON, 
+				      mouse_back_button_changed, 
+				      NULL);
+
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_MOUSE_FORWARD_BUTTON, 
+				      mouse_forward_button_changed, 
+				      NULL);
+
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_MOUSE_USE_EXTRA_BUTTONS,
+				      use_extra_mouse_buttons_changed,
+				      NULL);
 }

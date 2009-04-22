@@ -71,6 +71,11 @@ G_BEGIN_DECLS
 #define NAUTILUS_PREFERENCES_SHOW_ADVANCED_PERMISSIONS		"preferences/show_advanced_permissions"
 #define NAUTILUS_PREFERENCES_DATE_FORMAT			"preferences/date_format"
 
+/* Mouse */
+#define NAUTILUS_PREFERENCES_MOUSE_USE_EXTRA_BUTTONS 		"preferences/mouse_use_extra_buttons"
+#define NAUTILUS_PREFERENCES_MOUSE_FORWARD_BUTTON		"preferences/mouse_forward_button"
+#define NAUTILUS_PREFERENCES_MOUSE_BACK_BUTTON			"preferences/mouse_back_button"
+
 typedef enum
 {
 	NAUTILUS_DATE_FORMAT_LOCALE,
