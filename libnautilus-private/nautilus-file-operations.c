@@ -3831,7 +3831,7 @@ is_trusted_desktop_file (GFile *file,
 }
 
 typedef struct {
-	int response;
+	int id;
 	char *new_name;
 	gboolean apply_to_all;
 } ConflictResponseData;
@@ -3845,7 +3845,7 @@ typedef struct {
 } ConflictDialogData;
 
 static gboolean
-do_run_my_dialog (gpointer _data)
+do_run_conflict_dialog (gpointer _data)
 {
 	ConflictDialogData *data = _data;
 	GtkWidget *dialog;
@@ -3867,7 +3867,7 @@ do_run_my_dialog (gpointer _data)
 				(NAUTILUS_FILE_CONFLICT_DIALOG (dialog));
 	}
 	
-	data->resp_data->response = response;
+	data->resp_data->id = response;
 	
 	gtk_widget_destroy (dialog);
 	
@@ -3892,11 +3892,12 @@ run_conflict_dialog (CommonJob *job,
 	data->dest_dir = dest_dir;
 
 	resp_data = g_slice_new0 (ConflictResponseData);
+	resp_data->new_name = NULL;
 	data->resp_data = resp_data;
 	
 	nautilus_progress_info_pause (job->progress);
 	g_io_scheduler_job_send_to_mainloop (job->io_job,
-					     do_run_my_dialog,
+					     do_run_conflict_dialog,
 					     data,
 					     NULL);
 	nautilus_progress_info_resume (job->progress);
@@ -3906,6 +3907,13 @@ run_conflict_dialog (CommonJob *job,
 	g_timer_continue (job->time);
 	
 	return resp_data;
+}
+
+static void
+conflict_response_data_free (ConflictResponseData *data)
+{
+	g_free (data->new_name);
+	g_slice_free (ConflictResponseData, data);
 }
 
 /* Debuting files is non-NULL only for toplevel items */
@@ -4127,76 +4135,42 @@ copy_move_file (CopyMoveJob *copy_job,
 			g_error_free (error);
 			goto retry;
 		}
-		    
-		response = run_conflict_dialog (job, src, dest, dest_dir);
-		g_print ("my response was: id %d, new name %s, apply all %d\n",
-			 response->response, response->new_name, (int) response->apply_to_all);
+
 		is_merge = FALSE;
-#if 0
-		    if (is_dir (dest)) {
-			if (is_dir (src)) {
-				is_merge = TRUE;
-				primary = f (_("A folder named \"%B\" already exists.  Do you want to merge the source folder?"), 
-					     dest);
-				secondary = f (_("The source folder already exists in \"%B\".  "
-						 "Merging will ask for confirmation before replacing any files in the folder that conflict with the files being copied."), 
-					       dest_dir);
-				
-			} else {
-				primary = f (_("A folder named \"%B\" already exists.  Do you want to replace it?"), 
-							    dest);
-				secondary = f (_("The folder already exists in \"%F\".  "
-						 "Replacing it will remove all files in the folder."), 
-					       dest_dir);
-			}
-		} else {
-			primary = f (_("A file named \"%B\" already exists.  Do you want to replace it?"), 
-				     dest);
-			secondary = f (_("The file already exists in \"%F\".  "
-					 "Replacing it will overwrite its content."), 
-				       dest_dir);
+
+		if (is_dir (dest) && is_dir (src)) {
+			is_merge = TRUE;
 		}
 
 		if ((is_merge && job->merge_all) ||
 		    (!is_merge && job->replace_all)) {
-			g_free (primary);
-			g_free (secondary);
 			g_error_free (error);
-			
+	
 			overwrite = TRUE;
 			goto retry;
 		}
 
 		if (job->skip_all_conflict) {
-			g_free (primary);
-			g_free (secondary);
 			g_error_free (error);
 			
 			goto out;
 		}
-		
-		response = run_warning (job,
-					primary,
-					secondary,
-					NULL,
-					(source_info->num_files - transfer_info->num_files) > 1,
-					GTK_STOCK_CANCEL,
-					SKIP_ALL,
-					is_merge?MERGE_ALL:REPLACE_ALL,
-					SKIP,
-					is_merge?MERGE:REPLACE,
-					NULL);
-		
+
+		response = run_conflict_dialog (job, src, dest, dest_dir);	
+
 		g_error_free (error);
 		
-		if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
+		if (response->id == GTK_RESPONSE_CANCEL ||
+		    response->id == GTK_RESPONSE_DELETE_EVENT) {
+			conflict_response_data_free (response);
 			abort_job (job);
-		} else if (response == 1 || response == 3) { /* skip all / skip */
-			if (response == 1) {
+		} else if (response->id == CONFLICT_RESPONSE_SKIP) {
+			if (response->apply_to_all) {
 				job->skip_all_conflict = TRUE;
 			}
-		} else if (response == 2 || response == 4) { /* merge/replace all  / merge/replace*/
-			if (response == 2) {
+			conflict_response_data_free (response);
+		} else if (response->id == CONFLICT_RESPONSE_REPLACE) { /* merge/replace */
+			if (response->apply_to_all) {
 				if (is_merge) {
 					job->merge_all = TRUE;
 				} else {
@@ -4208,7 +4182,6 @@ copy_move_file (CopyMoveJob *copy_job,
 		} else {
 			g_assert_not_reached ();
 		}
-#endif
 	}
 	
 	else if (overwrite &&
@@ -4719,70 +4692,38 @@ move_file_prepare (CopyMoveJob *move_job,
 	else if (!overwrite &&
 		 IS_IO_ERROR (error, EXISTS)) {
 		gboolean is_merge;
+		ConflictResponseData *response;
 		
 		g_error_free (error);
-		
+
 		is_merge = FALSE;
-		if (is_dir (dest)) {
-			if (is_dir (src)) {
-				is_merge = TRUE;
-				primary = f (_("A folder named \"%B\" already exists.  Do you want to merge the source folder?"), 
-					     dest);
-				secondary = f (_("The source folder already exists in \"%B\".  "
-						 "Merging will ask for confirmation before replacing any files in the folder that conflict with the files being moved."), 
-					       dest_dir);
-				
-			} else {
-				primary = f (_("A folder named \"%B\" already exists.  Do you want to replace it?"), 
-							    dest);
-				secondary = f (_("The folder already exists in \"%F\".  "
-						 "Replacing it will remove all files in the folder."), 
-					       dest_dir);
-			}
-		} else {
-			primary = f (_("A file named \"%B\" already exists.  Do you want to replace it?"), 
-				     dest);
-			secondary = f (_("The file already exists in \"%F\".  "
-					 "Replacing it will overwrite its content."), 
-				       dest_dir);
+		if (is_dir (dest) && is_dir (src)) {
+			is_merge = TRUE;
 		}
 
 		if ((is_merge && job->merge_all) ||
 		    (!is_merge && job->replace_all)) {
-			g_free (primary);
-			g_free (secondary);
-			
 			overwrite = TRUE;
 			goto retry;
 		}
 
 		if (job->skip_all_conflict) {
-			g_free (primary);
-			g_free (secondary);
-			
 			goto out;
 		}
-		
-		response = run_warning (job,
-					primary,
-					secondary,
-					NULL,
-					files_left > 1,
-					GTK_STOCK_CANCEL,
-					SKIP_ALL,
-					is_merge?MERGE_ALL:REPLACE_ALL,
-					SKIP,
-					is_merge?MERGE:REPLACE,
-					NULL);
-		
-		if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
+
+		response = run_conflict_dialog (job, src, dest, dest_dir);
+
+		if (response->id == GTK_RESPONSE_CANCEL ||
+		    response->id == GTK_RESPONSE_DELETE_EVENT) {
+			conflict_response_data_free (response);	
 			abort_job (job);
-		} else if (response == 1 || response == 3) { /* skip all / skip */
-			if (response == 1) {
+		} else if (response->id == CONFLICT_RESPONSE_SKIP) {
+			if (response->apply_to_all) {
 				job->skip_all_conflict = TRUE;
 			}
-		} else if (response == 2 || response == 4) { /* merge/replace all  / merge/replace*/
-			if (response == 2) {
+			conflict_response_data_free (response);
+		} else if (response->id == CONFLICT_RESPONSE_REPLACE) { /* merge/replace */
+			if (response->apply_to_all) {
 				if (is_merge) {
 					job->merge_all = TRUE;
 				} else {
@@ -4790,6 +4731,7 @@ move_file_prepare (CopyMoveJob *move_job,
 				}
 			}
 			overwrite = TRUE;
+			conflict_response_data_free (response);
 			goto retry;
 		} else {
 			g_assert_not_reached ();

@@ -235,7 +235,8 @@ build_dialog_appearance (NautilusFileConflictDialog *fcd)
 				  FALSE);
 	details->rename_button = button;
 	gtk_dialog_add_button (dialog,
-			       _("_Replace"),
+			       (source_is_dir && dest_is_dir) ?
+			       _("_Merge") : _("_Replace"),
 			       CONFLICT_RESPONSE_REPLACE);
 }
 
