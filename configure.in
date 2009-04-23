@@ -28,6 +28,7 @@ dnl ===========================================================================
 
 AC_CONFIG_SRCDIR(src)
 AC_CONFIG_HEADERS(config.h)
+AC_CONFIG_MACRO_DIR([m4])
 
 AM_INIT_AUTOMAKE([1.9 tar-ustar])
 AM_MAINTAINER_MODE
@@ -464,6 +465,7 @@ AC_ARG_ENABLE(update-mimedb,
     enable_update_mimedb=yes)
 AM_CONDITIONAL(ENABLE_UPDATE_MIMEDB, test x$enable_update_mimedb = xyes)
 
+SHAVE_INIT([m4], [enable])
 	
 AC_CONFIG_FILES([
 Makefile
@@ -489,6 +491,9 @@ libnautilus-private/Makefile
 libnautilus-extension/Makefile
 libnautilus-extension/libnautilus-extension.pc
 libnautilus-extension/libnautilus-extension-uninstalled.pc
+m4/Makefile
+m4/shave-libtool
+m4/shave
 po/Makefile.in
 src/Makefile
 src/file-manager/Makefile
