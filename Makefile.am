@@ -1,18 +1,5 @@
 include $(top_srcdir)/Makefile.shared
 
-@INTLTOOL_DESKTOP_RULE@
-
-desktopdir       = $(datadir)/applications
-desktop_DATA     = $(desktop_in_files:.desktop.in=.desktop)
-desktop_in_files = 					\
-	nautilus.desktop.in				\
-	nautilus-home.desktop.in			\
-	nautilus-computer.desktop.in			\
-	nautilus-folder-handler.desktop.in		\
-	nautilus-file-management-properties.desktop.in  \
-	nautilus-browser.desktop.in                     \
-	nautilus-autorun-software.desktop.in
-
 SUBDIRS =			\
 	eel			\
 	libnautilus-extension	\
@@ -47,10 +34,7 @@ EXTRA_DIST=					\
 	intltool-update.in			\
 	Makefile.shared				\
 	add-include-prefix			\
-	$(desktop_in_files)			\
 	$(NULL)
-
-CLEANFILES = $(desktop_DATA)
 
 DISTCLEANFILES = \
   intltool-extract \

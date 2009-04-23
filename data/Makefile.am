@@ -4,6 +4,19 @@ xml_in_files = nautilus.xml.in
 xml_files = $(xml_in_files:.xml.in=.xml)
 @INTLTOOL_XML_RULE@
 
+@INTLTOOL_DESKTOP_RULE@
+
+desktopdir       = $(datadir)/applications
+desktop_DATA     = $(desktop_in_files:.desktop.in=.desktop)
+desktop_in_files = 					\
+	nautilus.desktop.in				\
+	nautilus-home.desktop.in			\
+	nautilus-computer.desktop.in			\
+	nautilus-folder-handler.desktop.in		\
+	nautilus-file-management-properties.desktop.in  \
+	nautilus-browser.desktop.in                     \
+	nautilus-autorun-software.desktop.in
+
 mimedir = $(datadir)/mime/packages
 mime_DATA = $(xml_files)
 
@@ -15,11 +28,14 @@ nautilusdata_DATA = \
 	nautilus-suggested.placeholder 	\
 	$(NULL)
 
-EXTRA_DIST = $(nautilusdata_DATA) \
-	$(xml_in_files) \
+EXTRA_DIST = $(nautilusdata_DATA) 	\
+	$(xml_in_files) 		\
+	$(desktop_in_files)		\
 	$(NULL)
 
-CLEANFILES = $(xml_files)
+CLEANFILES = $(xml_files)	\
+	$(desktop_DATA)		\
+	$(NULL)
 
 SUBDIRS = \
 	icons    \
