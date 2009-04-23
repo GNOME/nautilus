@@ -1446,6 +1446,11 @@ nautilus_window_slot_show_x_content_bar (NautilusWindowSlot *slot, GMount *mount
 			continue;
 		}
 
+		/* don't show the cluebar for windows software */
+		if (g_content_type_is_a (x_content_types[n], "x-content/win32-software")) {
+			continue;
+		}
+
 		/* only show the cluebar if a default app is available */
 		default_app = g_app_info_get_default_for_type (x_content_types[n], FALSE);
 		if (default_app != NULL)  {

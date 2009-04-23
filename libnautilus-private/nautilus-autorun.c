@@ -869,6 +869,13 @@ do_autorun_for_content_type (GMount *mount, const char *x_content_type, Nautilus
 	ret = FALSE;
 	mount_name = NULL;
 
+	if (g_content_type_is_a (x_content_type, "x-content/win32-software")) {
+		/* don't pop up the dialog anyway if the content type says
+ 		 * windows software.
+ 		 */
+		goto out;
+	}
+
 	user_forced_dialog = is_shift_pressed ();
 
 	nautilus_autorun_get_preferences (x_content_type, &pref_start_app, &pref_ignore, &pref_open_folder);
@@ -955,7 +962,7 @@ show_dialog:
 		media_greeting = _("You have just inserted a medium with digital photos.");
 	} else if (strcmp (x_content_type, "x-content/audio-player") == 0) {
 		media_greeting = _("You have just inserted a digital audio player.");
-	} else if (strcmp (x_content_type, "x-content/software") == 0) {
+	} else if (g_content_type_is_a (x_content_type, "x-content/software")) {
 		media_greeting = _("You have just inserted a medium with software intended to be automatically started.");
 	} else {
 		/* fallback to generic greeting */
