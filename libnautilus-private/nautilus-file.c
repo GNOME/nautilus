@@ -3446,16 +3446,23 @@ nautilus_file_should_show_thumbnail (NautilusFile *file)
 	return FALSE;
 }
 
+static void
+prepend_icon_name (const char *name,
+		   GThemedIcon *icon)
+{
+	g_themed_icon_prepend_name(icon, name);
+}
+
 GIcon *
 nautilus_file_get_gicon (NautilusFile *file,
 			 NautilusFileIconFlags flags)
 {
 	const char * const * names;
 	const char *name;
-	GPtrArray *array;
+	GPtrArray *prepend_array;
 	GIcon *icon;
 	int i;
-	gboolean changed;
+	gboolean is_folder = FALSE, is_preview = FALSE, is_inode_directory = FALSE;
 
 	if (file == NULL) {
 		return NULL;
@@ -3471,41 +3478,54 @@ nautilus_file_get_gicon (NautilusFile *file,
 		      nautilus_file_has_open_window (file))) &&
 		    G_IS_THEMED_ICON (file->details->icon)) {
 			names = g_themed_icon_get_names (G_THEMED_ICON (file->details->icon));
-			array = g_ptr_array_new ();
-			
-			changed = TRUE;
+			prepend_array = g_ptr_array_new ();
+
 			for (i = 0; names[i] != NULL; i++) {
 				name = names[i];
 
-				if (strcmp (name, "folder") == 0 &&
-				    (flags & NAUTILUS_FILE_ICON_FLAGS_IGNORE_VISITING) == 0 &&
-				    nautilus_file_has_open_window (file)) {
-					changed = TRUE;
-					g_ptr_array_add (array, "folder-visiting");
+				if (strcmp (name, "folder") == 0) {
+					is_folder = TRUE;
 				}
-				if (strcmp (name, "folder") == 0 &&
-				    (flags & NAUTILUS_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT)) {
-					changed = TRUE;
-					g_ptr_array_add (array, "folder-drag-accept");
-				}
-				if (strcmp (name, "folder") == 0 &&
-				    (flags & NAUTILUS_FILE_ICON_FLAGS_FOR_OPEN_FOLDER)) {
-					changed = TRUE;
-					g_ptr_array_add (array, "folder-open");
+				if (strcmp (name, "inode-directory") == 0) {
+					is_inode_directory = TRUE;
 				}
 				if (strcmp (name, "text-x-generic") == 0 &&
 				    (flags & NAUTILUS_FILE_ICON_FLAGS_EMBEDDING_TEXT)) {
-					changed = TRUE;
-					g_ptr_array_add (array, "text-x-preview");
+					is_preview = TRUE;
 				}
-				g_ptr_array_add (array, (char *)name);
 			}
 
-			if (changed) {
-				icon = g_themed_icon_new_from_names ((char **)array->pdata, array->len);
+			/* Here, we add icons in reverse order of precedence,
+			 * because they are later prepended */
+			if (is_preview) {
+				g_ptr_array_add (prepend_array, "text-x-preview");
 			}
 			
-			g_ptr_array_free (array, TRUE);			
+			/* "folder" should override "inode-directory", not the other way around */
+			if (is_inode_directory) {
+				g_ptr_array_add (prepend_array, "folder");
+			}
+			if (is_folder && (flags & NAUTILUS_FILE_ICON_FLAGS_FOR_OPEN_FOLDER)) {
+				g_ptr_array_add (prepend_array, "folder-open");
+			}
+			if (is_folder &&
+			    (flags & NAUTILUS_FILE_ICON_FLAGS_IGNORE_VISITING) == 0 &&
+			    nautilus_file_has_open_window (file)) {
+				g_ptr_array_add (prepend_array, "folder-visiting");
+			}
+			if (is_folder &&
+			    (flags & NAUTILUS_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT)) {
+				g_ptr_array_add (prepend_array, "folder-drag-accept");
+			}
+
+			if (prepend_array->len) {
+				/* When constructing GThemed Icon, pointers from the array
+				 * are reused, but not the array itself, so the cast is safe */
+				icon = g_themed_icon_new_from_names ((char**) names, -1);
+				g_ptr_array_foreach (prepend_array, (GFunc) prepend_icon_name, icon);
+			}
+
+			g_ptr_array_free (prepend_array, TRUE);			
 		}
 
 		if (icon == NULL) {
