@@ -511,6 +511,9 @@ reload_tab_menu (NautilusNavigationWindow *window)
 	/* Add new tab menu items */
 	window->details->tabs_menu_merge_id = gtk_ui_manager_new_merge_id (ui_manager);
 	window->details->tabs_menu_action_group = gtk_action_group_new ("TabsMenuGroup");
+
+	g_signal_connect (window->details->tabs_menu_action_group, "connect-proxy",
+			  G_CALLBACK (connect_proxy_cb), NULL);
 	
 	gtk_ui_manager_insert_action_group (ui_manager,
 					    window->details->tabs_menu_action_group,
