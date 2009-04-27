@@ -6613,7 +6613,7 @@ static const GtkActionEntry directory_view_entries[] = {
   /* label, accelerator */       N_("Create L_auncher..."), NULL,
   /* tooltip */                  N_("Create a new launcher"),
                                  G_CALLBACK (action_new_launcher_callback) },
-  /* name, stock id */         { "Open", GTK_STOCK_OPEN,
+  /* name, stock id */         { "Open", NULL,
   /* label, accelerator */       N_("_Open"), "<control>o",
   /* tooltip */                  N_("Open the selected item in this window"),
                                  G_CALLBACK (action_open_callback) },
@@ -7746,6 +7746,7 @@ real_update_menus (FMDirectoryView *view)
 	gboolean show_open_folder_window;
 	GtkAction *action;
 	GAppInfo *app;
+	GIcon *app_icon;
 
 	selection = fm_directory_view_get_selection (view);
 	selection_count = g_list_length (selection);
@@ -7800,15 +7801,21 @@ real_update_menus (FMDirectoryView *view)
 	label_with_underscore = NULL;
 
 	app = NULL;
+	app_icon = NULL;
+
 	if (can_open && show_app) {
 		app = nautilus_mime_get_default_application_for_files (selection);
 	}
 
 	if (app != NULL) {
 		char *escaped_app;
+
 		escaped_app = eel_str_double_underscores (g_app_info_get_name (app));
 		label_with_underscore = g_strdup_printf (_("_Open with \"%s\""),
 							 escaped_app);
+
+		app_icon = g_object_ref (g_app_info_get_icon (app));
+
 		g_free (escaped_app);
 		g_object_unref (app);
 	}
@@ -7816,6 +7823,14 @@ real_update_menus (FMDirectoryView *view)
 	g_object_set (action, "label", 
 		      label_with_underscore ? label_with_underscore : _("_Open"),
 		      NULL);
+
+	if (app_icon == NULL) {
+		app_icon = g_themed_icon_new (GTK_STOCK_OPEN);
+	}
+
+	gtk_action_set_gicon (action, app_icon);
+	g_object_unref (app_icon);
+
 	gtk_action_set_visible (action, can_open);
 	
 	g_free (label_with_underscore);
