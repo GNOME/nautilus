@@ -21,14 +21,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-17 17:33+0200\n"
+"POT-Creation-Date: 2009-04-30 14:58+0300\n"
 "PO-Revision-Date: 2009-04-17 17:40+0300\n"
 "Last-Translator: Khaled Hosny <khaledhosny@eglug.org>\n"
 "Language-Team: Arabic <doc@arabeyes.org>\n"
-"Language: ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ar\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n>=3 && "
 "n<=10 ? 3 : n>=11 && n<=99 ? 4 : 5;\n"
 "X-Generator: Virtaal 0.3.1\n"
@@ -1330,7 +1330,6 @@ msgstr "فيما إذا ستعرض الملفات المخفية"
 msgid "Width of the side pane"
 msgstr "عرض اللوح الجانبي"
 
-# fuzzy, c-format
 #: ../libnautilus-private/nautilus-autorun.c:488
 msgid "No applications found"
 msgstr "لا يوجد أي تطبيقات"
@@ -2834,6 +2833,7 @@ msgid "25%"
 msgstr "25%"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:77
+#: ../src/nautilus-file-management-properties.ui.h:21
 #, no-c-format
 msgid "50%"
 msgstr "50%"
@@ -2844,21 +2844,25 @@ msgid "75%"
 msgstr "75%"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:81
+#: ../src/nautilus-file-management-properties.ui.h:7
 #, no-c-format
 msgid "100%"
 msgstr "100%"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:83
+#: ../src/nautilus-file-management-properties.ui.h:9
 #, no-c-format
 msgid "150%"
 msgstr "150%"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:85
+#: ../src/nautilus-file-management-properties.ui.h:12
 #, no-c-format
 msgid "200%"
 msgstr "200%"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:87
+#: ../src/nautilus-file-management-properties.ui.h:18
 #, no-c-format
 msgid "400%"
 msgstr "400%"
@@ -2872,34 +2876,42 @@ msgid "500 K"
 msgstr "500 ك"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:93
+#: ../src/nautilus-file-management-properties.ui.h:2
 msgid "1 MB"
 msgstr "ا م.بايت"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:94
+#: ../src/nautilus-file-management-properties.ui.h:13
 msgid "3 MB"
 msgstr "3 م.بايت"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:95
+#: ../src/nautilus-file-management-properties.ui.h:19
 msgid "5 MB"
 msgstr "5 م.بايت"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:96
+#: ../src/nautilus-file-management-properties.ui.h:3
 msgid "10 MB"
 msgstr "10 م.بايت"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:97
+#: ../src/nautilus-file-management-properties.ui.h:5
 msgid "100 MB"
 msgstr "100 م.بايت"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:98
+#: ../src/nautilus-file-management-properties.ui.h:1
 msgid "1 GB"
 msgstr "1 ج.بايت"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:99
+#: ../src/nautilus-file-management-properties.ui.h:10
 msgid "2 GB"
 msgstr "2 ج.بايت"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:100
+#: ../src/nautilus-file-management-properties.ui.h:16
 msgid "4 GB"
 msgstr "4 ج.بايت"
 
@@ -2920,7 +2932,7 @@ msgid "Display _files when they are clicked"
 msgstr "اعرض الم_لفات عند نقرها"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:124
-#: ../src/nautilus-file-management-properties.ui.h:47
+#: ../src/nautilus-file-management-properties.ui.h:82
 msgid "_Ask each time"
 msgstr "ا_سأل كل مرة"
 
@@ -2937,6 +2949,7 @@ msgstr "ابحث عن الملفات باعتبار اسم الملف و خصا�
 #: ../libnautilus-private/nautilus-global-preferences.c:141
 #: ../src/file-manager/fm-icon-container.c:569
 #: ../src/file-manager/fm-icon-view.c:3047
+#: ../src/nautilus-file-management-properties.ui.h:65
 msgid "Icon View"
 msgstr "منظور الأيقونات"
 
@@ -2944,6 +2957,7 @@ msgstr "منظور الأيقونات"
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:142
 #: ../src/file-manager/fm-icon-view.c:3061
+#: ../src/nautilus-file-management-properties.ui.h:58
 msgid "Compact View"
 msgstr "منظور متضام"
 
@@ -2952,6 +2966,7 @@ msgstr "منظور متضام"
 #: ../libnautilus-private/nautilus-global-preferences.c:143
 #: ../src/file-manager/fm-list-view.c:1513
 #: ../src/file-manager/fm-list-view.c:2929
+#: ../src/nautilus-file-management-properties.ui.h:68
 msgid "List View"
 msgstr "منظور القائمة"
 
@@ -2960,22 +2975,27 @@ msgid "Manually"
 msgstr "يدويا"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:149
+#: ../src/nautilus-file-management-properties.ui.h:51
 msgid "By Name"
 msgstr "بالاسم"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:150
+#: ../src/nautilus-file-management-properties.ui.h:52
 msgid "By Size"
 msgstr "بالحجم"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:151
+#: ../src/nautilus-file-management-properties.ui.h:53
 msgid "By Type"
 msgstr "بالنوع"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:152
+#: ../src/nautilus-file-management-properties.ui.h:50
 msgid "By Modification Date"
 msgstr "بتاريخ التعديل"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:153
+#: ../src/nautilus-file-management-properties.ui.h:49
 msgid "By Emblems"
 msgstr "بالشعارات"
 
@@ -3238,7 +3258,6 @@ msgstr "أيقونة"
 msgid "Could not remove application"
 msgstr "تعذر إزالة التطبيق"
 
-# fuzzy, c-format
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:538
 msgid "No applications selected"
 msgstr "لم تختر أي تطبيقات"
@@ -3655,7 +3674,6 @@ msgstr[3] " (يحتوي ما مجموعه %I'd عناصر)"
 msgstr[4] " (يحتوي ما مجموعه %I'd عنصرًا)"
 msgstr[5] " (يحتوي ما مجموعه %I'd عنصر)"
 
-# fuzzy, c-format
 #: ../src/file-manager/fm-directory-view.c:2162
 #, c-format
 msgid "%'d item selected"
@@ -5526,103 +5544,125 @@ msgstr "لا يمكن إضافة الشعار."
 msgid "Show Emblems"
 msgstr "أظهر الشعارات"
 
-#: ../src/nautilus-file-management-properties.ui.h:1
+#: ../src/nautilus-file-management-properties.ui.h:4
+msgid "100 KB"
+msgstr "100 ك.ب"
+
+#: ../src/nautilus-file-management-properties.ui.h:15
+#, no-c-format
+msgid "33%"
+msgstr "٣٣٪"
+
+#: ../src/nautilus-file-management-properties.ui.h:22
+msgid "500 KB"
+msgstr "500 ك.ب"
+
+#: ../src/nautilus-file-management-properties.ui.h:24
+#, no-c-format
+msgid "66%"
+msgstr "٦٦٪"
+
+#: ../src/nautilus-file-management-properties.ui.h:25
 msgid "<b>Behavior</b>"
 msgstr "<b>السلوك</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:2
+#: ../src/nautilus-file-management-properties.ui.h:26
 msgid "<b>Compact View Defaults</b>"
 msgstr "<b>افتراضات المنظور المتضام</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:3
+#: ../src/nautilus-file-management-properties.ui.h:27
 msgid "<b>Date</b>"
 msgstr "<b>التاريخ</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:4
+#: ../src/nautilus-file-management-properties.ui.h:28
 msgid "<b>Default View</b>"
 msgstr "<b>المنظور المبدئي</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:5
+#: ../src/nautilus-file-management-properties.ui.h:29
 msgid "<b>Executable Text Files</b>"
 msgstr "<b>ملفات نصية تنفيذية</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:6
+#: ../src/nautilus-file-management-properties.ui.h:30
 msgid "<b>Folders</b>"
 msgstr "<b>المجلدات</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:7
+#: ../src/nautilus-file-management-properties.ui.h:31
 msgid "<b>Icon Captions</b>"
 msgstr "<b>العناوين الفرعية للأيقونات</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:8
+#: ../src/nautilus-file-management-properties.ui.h:32
 msgid "<b>Icon View Defaults</b>"
 msgstr "<b>افتراضات منظور الأيقونة</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:9
+#: ../src/nautilus-file-management-properties.ui.h:33
 msgid "<b>List Columns</b>"
 msgstr "<b>أعمدة القوائم</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:10
+#: ../src/nautilus-file-management-properties.ui.h:34
 msgid "<b>List View Defaults</b>"
 msgstr "<b>افتراضات منظور القوائم</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:11
+#: ../src/nautilus-file-management-properties.ui.h:35
 msgid "<b>Media Handling</b>"
 msgstr "<b>معالجة الوسائط</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:12
+#: ../src/nautilus-file-management-properties.ui.h:36
 msgid "<b>Other Media</b>"
 msgstr "<b>وسائط أخرى</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:13
+#: ../src/nautilus-file-management-properties.ui.h:37
 msgid "<b>Other Previewable Files</b>"
 msgstr "<b>ملفات أخرى قابلة للعرض المسبق</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:14
+#: ../src/nautilus-file-management-properties.ui.h:38
 msgid "<b>Sound Files</b>"
 msgstr "<b>الملفات الصوتية</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:15
+#: ../src/nautilus-file-management-properties.ui.h:39
 msgid "<b>Text Files</b>"
 msgstr "<b>ملف نصي</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:16
+#: ../src/nautilus-file-management-properties.ui.h:40
 msgid "<b>Trash</b>"
 msgstr "<b>المهملات</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:17
+#: ../src/nautilus-file-management-properties.ui.h:41
 msgid "<b>Tree View Defaults</b>"
 msgstr "<b>افتراضات المنظور الشجري</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:18
+#: ../src/nautilus-file-management-properties.ui.h:42
 msgid "A_ll columns have the same width"
 msgstr "كل الأ_عمدة لها نفس العرض"
 
-#: ../src/nautilus-file-management-properties.ui.h:19
+#: ../src/nautilus-file-management-properties.ui.h:43
 msgid "Acti_on:"
 msgstr "إجرا_ء:"
 
-#: ../src/nautilus-file-management-properties.ui.h:20
+#: ../src/nautilus-file-management-properties.ui.h:44
+msgid "Always"
+msgstr "دا_ئمًا"
+
+#: ../src/nautilus-file-management-properties.ui.h:45
 msgid "Always open in _browser windows"
 msgstr "افتح دائمًا في نوافذ ال_متصفّح"
 
-#: ../src/nautilus-file-management-properties.ui.h:21
+#: ../src/nautilus-file-management-properties.ui.h:46
 msgid "Ask before _emptying the Trash or deleting files"
 msgstr "اسأل قبل إ_فراغ المهملات أو حذف الملفات"
 
-#: ../src/nautilus-file-management-properties.ui.h:22
+#: ../src/nautilus-file-management-properties.ui.h:47
 msgid "B_rowse media when inserted"
 msgstr "تصفح الوسائط عند إدخالها"
 
-#: ../src/nautilus-file-management-properties.ui.h:23
+#: ../src/nautilus-file-management-properties.ui.h:48
 msgid "Behavior"
 msgstr "السلوك"
 
-#: ../src/nautilus-file-management-properties.ui.h:24
+#: ../src/nautilus-file-management-properties.ui.h:54
 msgid "CD _Audio:"
 msgstr "اسطوانة صوتية:"
 
-#: ../src/nautilus-file-management-properties.ui.h:25
+#: ../src/nautilus-file-management-properties.ui.h:55
 msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
@@ -5630,148 +5670,156 @@ msgstr ""
 "اختر ترتيب ظهور المعلومات بجانب أسماء الأيقونات. ستظهر المزيد من المعلومات "
 "عند التكبير."
 
-#: ../src/nautilus-file-management-properties.ui.h:26
+#: ../src/nautilus-file-management-properties.ui.h:56
 msgid "Choose the order of information to appear in the list view."
 msgstr "اختر ترتيب ظهور المعلومات في منظور القائمة."
 
-#: ../src/nautilus-file-management-properties.ui.h:27
+#: ../src/nautilus-file-management-properties.ui.h:57
 msgid ""
 "Choose what happens when inserting media or connecting devices to the system"
 msgstr "اختر ماذا يحدث عند إدخال الوسائط أو ربط الأجهزة بالنظام"
 
-#: ../src/nautilus-file-management-properties.ui.h:28
+#: ../src/nautilus-file-management-properties.ui.h:59
 msgid "Count _number of items:"
 msgstr "_عدد العناصر:"
 
-#: ../src/nautilus-file-management-properties.ui.h:29
+#: ../src/nautilus-file-management-properties.ui.h:60
 msgid "D_efault zoom level:"
 msgstr "مستوى الت_قريب المبدئي:"
 
-#: ../src/nautilus-file-management-properties.ui.h:30
+#: ../src/nautilus-file-management-properties.ui.h:61
 msgid "Default _zoom level:"
 msgstr "م_ستوى التقريب المبدئي:"
 
-#: ../src/nautilus-file-management-properties.ui.h:31
+#: ../src/nautilus-file-management-properties.ui.h:62
 msgid "Display"
 msgstr "العرض"
 
-#: ../src/nautilus-file-management-properties.ui.h:32
+#: ../src/nautilus-file-management-properties.ui.h:63
 msgid "File Management Preferences"
 msgstr "تفضيلات إدارة الملفات"
 
-#: ../src/nautilus-file-management-properties.ui.h:33
+#: ../src/nautilus-file-management-properties.ui.h:64
 msgid "I_nclude a Delete command that bypasses Trash"
 msgstr "_ضمّن أمر حذف يتخطى المهملات"
 
-#: ../src/nautilus-file-management-properties.ui.h:34
+#: ../src/nautilus-file-management-properties.ui.h:66
 msgid "Less common media formats can be configured here"
 msgstr "أقل هيئات وسائط مشتركة يُمكن ضبطها هنا"
 
-#: ../src/nautilus-file-management-properties.ui.h:35
+#: ../src/nautilus-file-management-properties.ui.h:67
 msgid "List Columns"
 msgstr "أعمدة القوائم"
 
-#: ../src/nautilus-file-management-properties.ui.h:36
+#: ../src/nautilus-file-management-properties.ui.h:69
+msgid "Local Files Only"
+msgstr "الملفات ال_محلية فقط"
+
+#: ../src/nautilus-file-management-properties.ui.h:70
 msgid "Media"
 msgstr "وسائط"
 
-#: ../src/nautilus-file-management-properties.ui.h:37
+#: ../src/nautilus-file-management-properties.ui.h:71
+msgid "Never"
+msgstr "أ_بدًا"
+
+#: ../src/nautilus-file-management-properties.ui.h:72
 msgid "Preview"
 msgstr "معاينة"
 
-#: ../src/nautilus-file-management-properties.ui.h:38
+#: ../src/nautilus-file-management-properties.ui.h:73
 msgid "Preview _sound files:"
 msgstr "معاينة الملفات ال_صوتية:"
 
-#: ../src/nautilus-file-management-properties.ui.h:39
+#: ../src/nautilus-file-management-properties.ui.h:74
 msgid "Show _only folders"
 msgstr "اعرض المجلدات _فقط"
 
-#: ../src/nautilus-file-management-properties.ui.h:40
+#: ../src/nautilus-file-management-properties.ui.h:75
 msgid "Show _thumbnails:"
 msgstr "اعرض مُص_غّرات:"
 
-#: ../src/nautilus-file-management-properties.ui.h:41
+#: ../src/nautilus-file-management-properties.ui.h:76
 msgid "Show hidden and _backup files"
 msgstr "أظهر الملفات المخفية و ال_نسخ الاحتياطي"
 
-#: ../src/nautilus-file-management-properties.ui.h:42
+#: ../src/nautilus-file-management-properties.ui.h:77
 msgid "Show te_xt in icons:"
 msgstr "أظهر الن_ص على الأيقونات:"
 
-#: ../src/nautilus-file-management-properties.ui.h:43
+#: ../src/nautilus-file-management-properties.ui.h:78
 msgid "Sort _folders before files"
 msgstr "رتّب ال_مجلدات قبل الملفات"
 
-#: ../src/nautilus-file-management-properties.ui.h:44
+#: ../src/nautilus-file-management-properties.ui.h:79
 msgid "View _new folders using:"
 msgstr "اعرض ال_مجلدات الجديدة باستخدام:"
 
-#: ../src/nautilus-file-management-properties.ui.h:45
+#: ../src/nautilus-file-management-properties.ui.h:80
 msgid "Views"
 msgstr "المشاهد"
 
-#: ../src/nautilus-file-management-properties.ui.h:46
+#: ../src/nautilus-file-management-properties.ui.h:81
 msgid "_Arrange items:"
 msgstr "_رتّب العناصر:"
 
-#: ../src/nautilus-file-management-properties.ui.h:48
+#: ../src/nautilus-file-management-properties.ui.h:83
 msgid "_DVD Video:"
 msgstr "ديڤيدي فيديو:"
 
-#: ../src/nautilus-file-management-properties.ui.h:49
+#: ../src/nautilus-file-management-properties.ui.h:84
 msgid "_Default zoom level:"
 msgstr "مستوى التقريب ال_مبدئي:"
 
-#: ../src/nautilus-file-management-properties.ui.h:50
+#: ../src/nautilus-file-management-properties.ui.h:85
 msgid "_Double click to open items"
 msgstr "_نقر مزدوج لفتح العناصر"
 
-#: ../src/nautilus-file-management-properties.ui.h:51
+#: ../src/nautilus-file-management-properties.ui.h:86
 msgid "_Format:"
 msgstr "ال_تهيئة:"
 
-#: ../src/nautilus-file-management-properties.ui.h:52
+#: ../src/nautilus-file-management-properties.ui.h:87
 msgid "_Music Player:"
 msgstr "_قارئ موسيقى:"
 
-#: ../src/nautilus-file-management-properties.ui.h:53
+#: ../src/nautilus-file-management-properties.ui.h:88
 msgid "_Never prompt or start programs on media insertion"
 msgstr "لا تحث أو تبدأ البرامج أبدا عند إدخال الوسائط"
 
-#: ../src/nautilus-file-management-properties.ui.h:54
+#: ../src/nautilus-file-management-properties.ui.h:89
 msgid "_Only for files smaller than:"
 msgstr "_فقط للملفات الأصغر من:"
 
-#: ../src/nautilus-file-management-properties.ui.h:55
+#: ../src/nautilus-file-management-properties.ui.h:90
 msgid "_Photos:"
 msgstr "_صور:"
 
-#: ../src/nautilus-file-management-properties.ui.h:56
+#: ../src/nautilus-file-management-properties.ui.h:91
 msgid "_Run executable text files when they are opened"
 msgstr "_شغّل ملفات النصوص التنفيذية عند نقرها "
 
-#: ../src/nautilus-file-management-properties.ui.h:57
+#: ../src/nautilus-file-management-properties.ui.h:92
 msgid "_Single click to open items"
 msgstr "_نقرة مفردة لفتح العناصر"
 
-#: ../src/nautilus-file-management-properties.ui.h:58
+#: ../src/nautilus-file-management-properties.ui.h:93
 msgid "_Software:"
 msgstr "البر_مجيات:"
 
-#: ../src/nautilus-file-management-properties.ui.h:59
+#: ../src/nautilus-file-management-properties.ui.h:94
 msgid "_Text beside icons"
 msgstr "_نص بجانب الأيقونات"
 
-#: ../src/nautilus-file-management-properties.ui.h:60
+#: ../src/nautilus-file-management-properties.ui.h:95
 msgid "_Type:"
 msgstr "ال_نوع:"
 
-#: ../src/nautilus-file-management-properties.ui.h:61
+#: ../src/nautilus-file-management-properties.ui.h:96
 msgid "_Use compact layout"
 msgstr "ا_ستخدم النسق المتضام"
 
-#: ../src/nautilus-file-management-properties.ui.h:62
+#: ../src/nautilus-file-management-properties.ui.h:97
 msgid "_View executable text files when they are opened"
 msgstr "ا_عرض ملفات النصوص التنفيذية عند فتحها"
 
