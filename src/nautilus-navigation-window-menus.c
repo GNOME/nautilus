@@ -77,6 +77,11 @@ should_open_in_new_tab (void)
 	GdkEvent *event;
 
 	event = gtk_get_current_event ();
+
+	if (event == NULL) {
+		return FALSE;
+	}
+
 	if (event->type == GDK_BUTTON_PRESS || event->type == GDK_BUTTON_RELEASE) {
 		return event->button.button == 2;
 	}
