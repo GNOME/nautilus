@@ -22,8 +22,8 @@ msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2009-03-07 14:18+0000\n"
-"PO-Revision-Date: 2009-04-20 11:00+0300\n"
+"POT-Creation-Date: 2009-05-01 18:17+0000\n"
+"PO-Revision-Date: 2009-05-02 11:12+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -63,13 +63,13 @@ msgid "Disable connection to session manager"
 msgstr "Seansihalduriga ühendumise keelamine"
 
 msgid "Specify file containing saved configuration"
-msgstr "Salvestatud seadistusi sisaldava faili määramine"
+msgstr "Määra salvestatud seadistust sisaldav fail"
 
 msgid "FILE"
 msgstr "FAIL"
 
 msgid "Specify session management ID"
-msgstr "Seansihalduse ID määramine"
+msgstr "Määra seansihalduse ID"
 
 msgid "ID"
 msgstr "ID"
@@ -1305,6 +1305,10 @@ msgstr "SELinux'i kontekst"
 msgid "The SELinux security context of the file."
 msgstr "Faili SELinux'i turvakontekst."
 
+#. TODO: Change after string freeze over
+msgid "Location"
+msgstr "Asukoht"
+
 msgid "Reset"
 msgstr "Taasta"
 
@@ -1513,6 +1517,10 @@ msgstr "%s (veel üks koopia)%s"
 msgid "%s (%'dth copy)%s"
 msgstr "%s (%d. koopia)%s"
 
+#. localizers: if in your language there's no difference between 1st, 2nd, 3rd and nth
+#. * plurals, you can leave the st, nd, rd suffixes out and just make all the translated
+#. * strings look like "%s (copy %'d)%s".
+#.
 #. localizers: appended to x1st file copy
 #, c-format
 msgid "%s (%'dst copy)%s"
@@ -2413,15 +2421,6 @@ msgid_plural "This will open %d separate windows."
 msgstr[0] "See avab %d eraldi akna."
 msgstr[1] "See avab %d eraldi akent."
 
-msgid "There was an internal error trying to search for applications:"
-msgstr "Rakenduse otsimisel tekkis sisemine viga:"
-
-msgid "Unable to search for application"
-msgstr "Rakendust pole võimalik otsida"
-
-msgid "Could not use system package installer"
-msgstr "Süsteemset pakipaigaldajat pole võimalik kasutada"
-
 #, c-format
 msgid "Could not display \"%s\"."
 msgstr "\"%s\" ei ole kuvatav."
@@ -2433,6 +2432,15 @@ msgstr "Tundmatut tüüpi fail"
 msgid "There is no application installed for %s files"
 msgstr "Failitüübi %s jaoks pole ühtegi rakendust paigaldatud"
 
+msgid "There was an internal error trying to search for applications:"
+msgstr "Rakenduse otsimisel tekkis sisemine viga:"
+
+msgid "Unable to search for application"
+msgstr "Rakendust pole võimalik otsida"
+
+msgid "Could not use system package installer"
+msgstr "Süsteemset pakipaigaldajat pole võimalik kasutada"
+
 #, c-format
 msgid ""
 "There is no application installed for %s files.\n"
@@ -2441,7 +2449,6 @@ msgstr ""
 "Failitüübi %s jaoks pole ühtegi rakendust paigaldatud.\n"
 "Kas otsida seda faili avav rakendus?"
 
-#| msgid "Choose what application to launch."
 msgid "Untrusted application launcher"
 msgstr "Käivitaja pole usaldusväärne"
 
@@ -3852,6 +3859,10 @@ msgstr "Kataloogi pääsuõigused:"
 msgid "File access:"
 msgstr "Faili pääsuõigused:"
 
+#. Translators: this is referred to the permissions
+#. * the user has in a directory.
+#.
+#. Translators: this is referred to captions under icons.
 msgid "None"
 msgstr "Puudub"
 
@@ -4178,6 +4189,20 @@ msgstr "Embleemi pole võimalik lisada"
 msgid "Show Emblems"
 msgstr "Näita embleeme"
 
+msgid "100 KB"
+msgstr "100 KB"
+
+#, no-c-format
+msgid "33%"
+msgstr "33%"
+
+msgid "500 KB"
+msgstr "500 KB"
+
+#, no-c-format
+msgid "66%"
+msgstr "66%"
+
 msgid "<b>Behavior</b>"
 msgstr "<b>Käitumine</b>"
 
@@ -4235,6 +4260,9 @@ msgstr "Kõigile _veergudele sama laius"
 msgid "Acti_on:"
 msgstr "T_egevus:"
 
+msgid "Always"
+msgstr "Alati"
+
 msgid "Always open in _browser windows"
 msgstr "Avatakse alati si_rvija akendes"
 
@@ -4290,8 +4318,14 @@ msgstr "Siin on võimalik seadistada vähemtuntud meediumivorminguid"
 msgid "List Columns"
 msgstr "Nimekirja veerud"
 
+msgid "Local Files Only"
+msgstr "Ainult kohalikel failidel"
+
 msgid "Media"
 msgstr "Meedium"
+
+msgid "Never"
+msgstr "Mitte kunagi"
 
 msgid "Preview"
 msgstr "Eelvaatlemine"
@@ -4412,9 +4446,6 @@ msgstr "Fookuskaugus"
 
 msgid "Software"
 msgstr "Tarkvara"
-
-msgid "Location"
-msgstr "Asukoht"
 
 msgid "Keywords"
 msgstr "Võtmesõnad"
@@ -5344,175 +5375,3 @@ msgstr "Suurendus"
 
 msgid "Set the zoom level of the current view"
 msgstr "Praeguse vaate suurendusastme seadmine"
-
-#~ msgid "%s"
-#~ msgstr "%s"
-
-#~ msgid "%'d file left to delete — %T left"
-#~ msgid_plural "%'d files left to delete — %T left"
-#~ msgstr[0] "Kustutada jäänud on veel %'d fail - %T"
-#~ msgstr[1] "Kustutada jäänud on veel %'d faili - %T"
-
-#~ msgid "MIME type description (MIME type)|%s (%s)"
-#~ msgstr "%s (%s)"
-
-#~ msgid "Factory for Nautilus shell and file manager"
-#~ msgstr "Factory for Nautilus shell and file manager"
-
-#~ msgid ""
-#~ "Nautilus operations that can be done from subsequent command-line "
-#~ "invocations"
-#~ msgstr "Nautiluse toimingud, mis täidetakse väljakutsutava käsurea abil"
-
-#~ msgid "Produces metafile objects for accessing Nautilus metadata"
-#~ msgstr "Metafailiobjektide tegemine Nautiluse metaandmetele ligipääsuks"
-
-#~ msgid ""
-#~ "Nautilus cannot be used now. Running the command \"bonobo-slay\" from the "
-#~ "console may fix the problem. If not, you can try rebooting the computer "
-#~ "or installing Nautilus again."
-#~ msgstr ""
-#~ "Nautilust pole praegu võimalik kasutada. Selle olukorra võib lahendada "
-#~ "käsu \"bonobo-slay\" kävitamine konsoolilt. Kui probleem säilib, siis "
-#~ "võib proovida arvuti alglaadimist või Nautiluse uuestipaigaldamist."
-
-#~ msgid ""
-#~ "Nautilus cannot be used now. Running the command \"bonobo-slay\" from the "
-#~ "console may fix the problem. If not, you can try rebooting the computer "
-#~ "or installing Nautilus again.\n"
-#~ "\n"
-#~ "Bonobo could not locate the Nautilus_shell.server file. One cause of this "
-#~ "seems to be an LD_LIBRARY_PATH that does not include the bonobo-"
-#~ "activation library's directory. Another possible cause would be bad "
-#~ "install with a missing Nautilus_Shell.server file.\n"
-#~ "\n"
-#~ "Running \"bonobo-slay\" will kill all Bonobo Activation and GConf "
-#~ "processes, which may be needed by other applications.\n"
-#~ "\n"
-#~ "Sometimes killing bonobo-activation-server and gconfd fixes the problem, "
-#~ "but we do not know why.\n"
-#~ "\n"
-#~ "We have also seen this error when a faulty version of bonobo-activation "
-#~ "was installed."
-#~ msgstr ""
-#~ "Nautilust pole praegu võimalik kasutada. Selle olukorra võib lahendada "
-#~ "käsu \"bonobo-slay\" kävitamine konsoolilt. Kui probleem säilib, siis "
-#~ "võib proovida arvuti alglaadimist või Nautiluse uuestipaigaldamist.\n"
-#~ "\n"
-#~ "Bonobo'l pole võimalik leida faili Nautilus_shell.server. Üks põhjus võib "
-#~ "olla see, et LD_LIBRARY_PATH ei sisalda bonobo-activation teegi "
-#~ "kataloogi. Teine põhjus võib olla see, et fail Nautilus_Shell.server "
-#~ "puudub vigase paigalduse tõttu.\n"
-#~ "\n"
-#~ "Käsk \"bonobo-slay\" kõrvaldab kõik Bonobo Aktiveerimise ja GConf'i "
-#~ "protsessid, need aga võivad olla teistele rakendustele vajalikud.\n"
-#~ "\n"
-#~ "Mõnikord likvideerib bonobo-activation-server'i ja gconfd kõrvaldamine "
-#~ "probleemi aga pole täpselt teada, miks.\n"
-#~ "\n"
-#~ "See probleem on tekkinud ka olukorras, kus bonobo-activation'ist on "
-#~ "paigaldatud vigane versioon."
-
-#~ msgid "Nautilus cannot be used now, due to an unexpected error."
-#~ msgstr "Ootamatu vea tõttu pole võimalik Nautilust praegu kasutada."
-
-#~ msgid ""
-#~ "Nautilus cannot be used now, due to an unexpected error from Bonobo when "
-#~ "attempting to register the file manager view server."
-#~ msgstr ""
-#~ "Nautilust pole võimalik praegu kasutada, kuna failihalduri "
-#~ "vaatamisserveri Bonobo'sse registreerimisel tekkis ootamatu viga."
-
-#~ msgid ""
-#~ "Nautilus cannot be used now, due to an unexpected error from Bonobo when "
-#~ "attempting to locate the factory. Killing bonobo-activation-server and "
-#~ "restarting Nautilus may help fix the problem."
-#~ msgstr ""
-#~ "Nautilust pole hetkel võimalik Bonobo ootamatu vea tõttu kasutada. Viga "
-#~ "tekkis factory asukoha tuvastamise katsel. Probleemi võib aidata "
-#~ "lahendada Bonobo-activation-server'i kõrvaldamine ja Nautiluse "
-#~ "taaskäivitamine."
-
-#~ msgid ""
-#~ "Nautilus cannot be used now, due to an unexpected error from Bonobo when "
-#~ "attempting to locate the shell object. Killing bonobo-activation-server "
-#~ "and restarting Nautilus may help fix the problem."
-#~ msgstr ""
-#~ "Nautilust pole hetkel võimalik Bonobo ootamatu vea tõttu kasutada. Viga "
-#~ "tekkis kestobjekti asukoha määramise katsel. Probleemi võib aidata "
-#~ "lahendada Bonobo-activation-server'i kõrvaldamine ja Nautiluse "
-#~ "taaskäivitamine."
-
-#~ msgid ""
-#~ "Always\n"
-#~ "Local Files Only\n"
-#~ "Never"
-#~ msgstr ""
-#~ "Alati\n"
-#~ "Ainult kohalikele failidele\n"
-#~ "Mitte kunagi"
-
-#~ msgid ""
-#~ "By Name\n"
-#~ "By Size\n"
-#~ "By Type\n"
-#~ "By Modification Date\n"
-#~ "By Emblems"
-#~ msgstr ""
-#~ "Nime järgi\n"
-#~ "Suuruse järgi\n"
-#~ "Liigi järgi\n"
-#~ "Muutmisaja järgi\n"
-#~ "Embleemi järgi"
-
-#~ msgid ""
-#~ "Icon View\n"
-#~ "List View\n"
-#~ "Compact View"
-#~ msgstr ""
-#~ "Ikoonivaadet\n"
-#~ "Loendivaadet\n"
-#~ "Kompaktvaadet"
-
-#~ msgid "Restart Nautilus."
-#~ msgstr "Taaskäivita Nautilus."
-
-#~ msgid ""
-#~ "Load a saved session from the specified file. Implies \"--no-default-"
-#~ "window\"."
-#~ msgstr ""
-#~ "Salvestatud seansi laadimine määratud failist. Rakendab ka võtme \"--no-"
-#~ "default-window\"."
-
-#~ msgid "Sorry, but \"%s\" is not a valid file name."
-#~ msgstr "Vabandust, \"%s\" ei ole sobilik failinimi."
-
-#~ msgid "Sorry, but you did not supply a valid file name."
-#~ msgstr "Vabandust, kuid sobilikku failinime ei ole sisestatud."
-
-#~ msgid "Please try again."
-#~ msgstr "Palun proovi uuesti."
-
-#~ msgid ""
-#~ "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
-#~ "files and the rest of your system."
-#~ msgstr ""
-#~ "Nautilus on GNOME graafiline kest, mis lihtsustab failihaldust ja üldse "
-#~ "kogu süsteemi käsitlemist."
-
-#~ msgid "CD/_DVD Creator"
-#~ msgstr "CD/_DVD looja"
-
-#~ msgid "Open a folder into which you can drag files to burn to a CD or DVD"
-#~ msgstr ""
-#~ "Kataloogi avamine, millesse Sa saad CD- või DVD-plaadile kirjutatavaid "
-#~ "faile lohistada"
-
-#~ msgid "No image was selected."
-#~ msgstr "Ühtegi pilti pole valitud."
-
-#~ msgid "You must click on an image to select it."
-#~ msgstr "Pildi valimiseks pead sa sellel klõpsama."
-
-#~ msgid "Opening %s"
-#~ msgstr "Kirje %s avamine"
