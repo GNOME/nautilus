@@ -4,8 +4,6 @@ xml_in_files = nautilus.xml.in
 xml_files = $(xml_in_files:.xml.in=.xml)
 @INTLTOOL_XML_RULE@
 
-@INTLTOOL_DESKTOP_RULE@
-
 desktopdir       = $(datadir)/applications
 desktop_DATA     = $(desktop_in_files:.desktop.in=.desktop)
 desktop_in_files = 					\
@@ -16,6 +14,7 @@ desktop_in_files = 					\
 	nautilus-file-management-properties.desktop.in  \
 	nautilus-browser.desktop.in                     \
 	nautilus-autorun-software.desktop.in
+@INTLTOOL_DESKTOP_RULE@
 
 mimedir = $(datadir)/mime/packages
 mime_DATA = $(xml_files)
@@ -29,6 +28,8 @@ nautilusdata_DATA = \
 	$(NULL)
 
 EXTRA_DIST = $(nautilusdata_DATA) 	\
+	nautilus.desktop		\
+	nautilus.desktop.in		\
 	$(xml_in_files) 		\
 	$(desktop_in_files)		\
 	$(NULL)

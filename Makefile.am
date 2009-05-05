@@ -20,8 +20,6 @@ EXTRA_DIST=					\
 	HACKING					\
 	MAINTAINERS				\
 	README.commits				\
-	nautilus.desktop			\
-	nautilus.desktop.in			\
 	ChangeLog-20000414			\
 	ChangeLog-20000625			\
 	ChangeLog-20000831			\
