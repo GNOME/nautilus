@@ -598,7 +598,8 @@ receive_uris (NautilusTreeViewDragDest *dest,
 	}
 
 	if (context->action > 0) {
-		if (!nautilus_drag_uris_local (drop_target, source_uris)) {
+		if (!nautilus_drag_uris_local (drop_target, source_uris)
+			|| context->action != GDK_ACTION_MOVE) {
 			g_signal_emit (dest, signals[MOVE_COPY_ITEMS], 0,
 				       source_uris, 
 				       drop_target,
