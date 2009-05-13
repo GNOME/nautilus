@@ -991,18 +991,20 @@ nautilus_navigation_window_button_press_event (GtkWidget *widget,
 {
 	NautilusNavigationWindow *window;
 	gboolean handled;
-	
+
 	handled = FALSE;
 	window = NAUTILUS_NAVIGATION_WINDOW (widget);
-	
+
 	if (mouse_extra_buttons && (event->button == mouse_back_button)) {
 		nautilus_navigation_window_go_back (window);
 		handled = TRUE; 
 	} else if (mouse_extra_buttons && (event->button == mouse_forward_button)) {
 		nautilus_navigation_window_go_forward (window);
 		handled = TRUE;
-	} else {
+	} else if (GTK_WIDGET_CLASS (nautilus_navigation_window_parent_class)->button_press_event) {
 		handled = GTK_WIDGET_CLASS (nautilus_navigation_window_parent_class)->button_press_event (widget, event);
+	} else {
+		handled = FALSE;
 	}
 	return handled;
 }
