@@ -42,6 +42,7 @@
 #include "nautilus-navigation-window-slot.h"
 #include "nautilus-notebook.h"
 #include "nautilus-window-manage-views.h"
+#include "nautilus-navigation-window-pane.h"
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
@@ -347,13 +348,13 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 	GtkToolItem *item;
 	GtkWidget *hbox;
 	NautilusWindow *win;
-	NautilusWindowPane *pane;
+	NautilusNavigationWindowPane *pane;
 
 	win = NAUTILUS_WINDOW (window);
 
 	window->details = G_TYPE_INSTANCE_GET_PRIVATE (window, NAUTILUS_TYPE_NAVIGATION_WINDOW, NautilusNavigationWindowDetails);
 
-	pane = nautilus_window_pane_new (win);
+	pane = nautilus_navigation_window_pane_new (win);
 	win->details->panes = g_list_prepend (win->details->panes, pane);
 
 	window->details->content_paned = nautilus_horizontal_splitter_new ();
