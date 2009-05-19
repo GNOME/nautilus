@@ -122,7 +122,9 @@ entry_activate_callback (GtkEntry *entry,
 	NautilusLocationDialog *dialog;
 	
 	dialog = NAUTILUS_LOCATION_DIALOG (user_data);
-	gtk_dialog_response (GTK_DIALOG (dialog), RESPONSE_OPEN);
+
+	if (gtk_entry_get_text_length (GTK_ENTRY (dialog->details->entry)) != 0)
+		gtk_dialog_response (GTK_DIALOG (dialog), RESPONSE_OPEN);
 }
 
 static void
