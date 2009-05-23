@@ -36,6 +36,8 @@
 
 #include <libnautilus-private/nautilus-directory.h>
 
+struct _NautilusNavigationWindowPane;
+
 /* FIXME bugzilla.gnome.org 42575: Migrate more fields into here. */
 struct NautilusWindowDetails
 {
@@ -95,9 +97,6 @@ struct _NautilusNavigationWindowDetails {
 	guint refresh_go_menu_idle_id;
         guint go_menu_merge_id;
         
-	GtkActionGroup *tabs_menu_action_group;
-	guint tabs_menu_merge_id;
-
         /* Toolbar */
         GtkWidget *toolbar;
 
@@ -157,6 +156,7 @@ void               nautilus_window_set_status                            (Nautil
 void               nautilus_window_load_view_as_menus                    (NautilusWindow    *window);
 void               nautilus_window_load_extension_menus                  (NautilusWindow    *window);
 void               nautilus_window_initialize_menus                      (NautilusWindow    *window);
+void               nautilus_navigation_window_pane_initialize_tabs_menu  (struct _NautilusNavigationWindowPane *pane);
 void               nautilus_window_remove_trash_monitor_callback         (NautilusWindow    *window);
 void               nautilus_menus_append_bookmark_to_menu                (NautilusWindow    *window, 
                                                                           NautilusBookmark  *bookmark, 
@@ -179,13 +179,10 @@ void               nautilus_window_zoom_to_default                       (Nautil
 
 NautilusWindowSlot *nautilus_window_open_slot                            (NautilusWindowPane *pane,
 									  NautilusWindowOpenSlotFlags flags);
-void                nautilus_window_close_slot                           (NautilusWindowPane *pane,
-									  NautilusWindowSlot *slot);
+void                nautilus_window_close_slot                           (NautilusWindowSlot *slot);
 
 NautilusWindowSlot *nautilus_window_get_slot_for_view                    (NautilusWindow *window,
 									  NautilusView   *view);
-NautilusWindowSlot *nautilus_window_get_slot_for_content_box             (NautilusWindow *window,
-									  GtkWidget *content_box);
 
 GList *              nautilus_window_get_slots                           (NautilusWindow    *window);
 NautilusWindowSlot * nautilus_window_get_active_slot                     (NautilusWindow    *window);
@@ -205,6 +202,8 @@ gboolean           nautilus_add_to_history_list_no_notify                (GFile 
 GList *            nautilus_get_history_list                             (void);
 void               nautilus_window_bookmarks_preference_changed_callback (gpointer           user_data);
 void               nautilus_window_constructed                           (NautilusWindow    *window);
+NautilusWindowPane* nautilus_window_get_pane_from_slot                   (NautilusWindow *window,
+									  NautilusWindowSlot *slot);
 
 
 /* sync window GUI with current slot. Used when changing slots,
@@ -227,7 +226,7 @@ void               nautilus_navigation_window_remove_bookmarks_menu_items       
 void               nautilus_navigation_window_update_show_hide_menu_items           (NautilusNavigationWindow     *window);
 void               nautilus_navigation_window_update_spatial_menu_item              (NautilusNavigationWindow     *window);
 void               nautilus_navigation_window_update_tab_menu_item_visibility       (NautilusNavigationWindow     *window);
-void               nautilus_navigation_window_sync_tab_menu_title                   (NautilusNavigationWindow     *window,
+void               nautilus_navigation_window_pane_sync_tab_menu_title              (struct _NautilusNavigationWindowPane *pane,
 										     NautilusWindowSlot           *slot);
 void               nautilus_navigation_window_remove_go_menu_callback    (NautilusNavigationWindow    *window);
 void               nautilus_navigation_window_remove_go_menu_items       (NautilusNavigationWindow    *window);

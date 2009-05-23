@@ -63,7 +63,6 @@ struct _NautilusNavigationWindow {
         
         /** UI stuff **/
         NautilusSidePane *sidebar;
-        GtkWidget *notebook;
 
         /* Current views stuff */
         GList *sidebar_panels;

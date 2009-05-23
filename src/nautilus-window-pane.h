@@ -76,5 +76,8 @@ void nautilus_window_pane_zoom_out (NautilusWindowPane *pane);
 void nautilus_window_pane_zoom_to_default (NautilusWindowPane *pane);
 void nautilus_window_pane_sync_location_widgets (NautilusWindowPane *pane);
 void nautilus_window_pane_set_active (NautilusWindowPane *pane, gboolean is_active);
+void nautilus_window_pane_slot_close (NautilusWindowPane *pane, NautilusWindowSlot *slot);
+
+NautilusWindowSlot* nautilus_window_pane_get_slot_for_content_box (NautilusWindowPane *pane, GtkWidget *content_box);
 
 #endif /* NAUTILUS_WINDOW_PANE_H */

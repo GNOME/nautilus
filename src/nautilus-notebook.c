@@ -32,6 +32,7 @@
 #include "nautilus-window-private.h"
 #include "nautilus-window-slot.h"
 #include "ephy-spinner.h"
+#include "nautilus-navigation-window-pane.h"
 #include <libnautilus-private/nautilus-dnd.h>
 
 #include <glib/gi18n.h>
@@ -128,7 +129,7 @@ find_notebook_at_pointer (gint abs_x, gint abs_y)
 	/* toplevel should be an NautilusWindow */
 	if (toplevel != NULL && NAUTILUS_IS_NAVIGATION_WINDOW (toplevel))
 	{
-		return NAUTILUS_NOTEBOOK (NAUTILUS_NAVIGATION_WINDOW (toplevel)->notebook);
+		return NAUTILUS_NOTEBOOK (NAUTILUS_NAVIGATION_WINDOW_PANE (NAUTILUS_WINDOW (toplevel)->details->active_pane)->notebook);
 	}
 
 	return NULL;

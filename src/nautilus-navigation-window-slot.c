@@ -173,16 +173,18 @@ nautilus_navigation_window_slot_active (NautilusWindowSlot *slot)
 {
 	NautilusNavigationWindow *window;
 	NautilusNavigationWindowSlot *navigation_slot;
+    NautilusNavigationWindowPane *pane;
 	int page_num;
 
 	navigation_slot = NAUTILUS_NAVIGATION_WINDOW_SLOT (slot);
+    pane = NAUTILUS_NAVIGATION_WINDOW_PANE (slot->pane);
 	window = NAUTILUS_NAVIGATION_WINDOW (slot->pane->window);
 
-	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (window->notebook),
+	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (pane->notebook),
 					  slot->content_box);
 	g_assert (page_num >= 0);
 
-	gtk_notebook_set_current_page (GTK_NOTEBOOK (window->notebook), page_num);
+	gtk_notebook_set_current_page (GTK_NOTEBOOK (pane->notebook), page_num);
 
 	EEL_CALL_PARENT (NAUTILUS_WINDOW_SLOT_CLASS, active, (slot));
 

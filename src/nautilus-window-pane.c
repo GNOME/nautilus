@@ -36,6 +36,23 @@ G_DEFINE_TYPE (NautilusWindowPane,
 	       G_TYPE_OBJECT)
 #define parent_class nautilus_window_pane_parent_class
 
+
+static inline NautilusWindowSlot *
+get_first_inactive_slot (NautilusWindowPane *pane)
+{
+	GList *l;
+	NautilusWindowSlot *slot;
+
+	for (l = pane->slots; l != NULL; l = l->next) {
+		slot = NAUTILUS_WINDOW_SLOT (l->data);
+		if (slot != pane->active_slot) {
+			return slot;
+		}
+	}
+
+	return NULL;
+}
+
 void
 nautilus_window_pane_zoom_in (NautilusWindowPane *pane)
 {
@@ -94,6 +111,35 @@ nautilus_window_pane_zoom_to_default (NautilusWindowPane *pane)
 	slot = pane->active_slot;
 	if (slot->content_view != NULL) {
 		nautilus_view_restore_default_zoom_level (slot->content_view);
+	}
+}
+
+void
+nautilus_window_pane_slot_close (NautilusWindowPane *pane, NautilusWindowSlot *slot)
+{
+	NautilusWindowSlot *next_slot;
+
+	if (pane->window) {
+		if (pane->active_slot == slot) {
+			g_assert (pane->active_slots != NULL);
+			g_assert (pane->active_slots->data == slot);
+
+			next_slot = NULL;
+			if (pane->active_slots->next != NULL) {
+				next_slot = NAUTILUS_WINDOW_SLOT (pane->active_slots->next->data);
+			}
+
+			if (next_slot == NULL) {
+				next_slot = get_first_inactive_slot (NAUTILUS_WINDOW_PANE (pane));
+			}
+
+			nautilus_window_set_active_slot (pane->window, next_slot);
+		}
+		nautilus_window_close_slot (slot);
+
+		if (g_list_length (pane->window->details->active_pane->slots) == 0) {
+			nautilus_window_close (pane->window);
+		}
 	}
 }
 
@@ -169,4 +215,21 @@ nautilus_window_pane_new (NautilusWindow *window)
 	pane = g_object_new (NAUTILUS_TYPE_WINDOW_PANE, NULL);
 	pane->window = window;
 	return pane;
+}
+
+NautilusWindowSlot *
+nautilus_window_pane_get_slot_for_content_box (NautilusWindowPane *pane,
+					       GtkWidget *content_box)
+{
+	NautilusWindowSlot *slot;
+	GList *l;
+
+	for (l = pane->slots; l != NULL; l = l->next) {
+		slot = NAUTILUS_WINDOW_SLOT (l->data);
+
+		if (slot->content_box == content_box) {
+			return slot;
+		}
+	}
+	return NULL;
 }
