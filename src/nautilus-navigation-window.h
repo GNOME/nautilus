@@ -106,5 +106,7 @@ void     nautilus_navigation_window_hide_search          (NautilusNavigationWind
 void     nautilus_navigation_window_set_search_button	 (NautilusNavigationWindow *window,
                                                           gboolean		    state);
 void     nautilus_navigation_window_restore_focus_widget (NautilusNavigationWindow *window);
+void     nautilus_navigation_window_split_view_on        (NautilusNavigationWindow *window);
+void     nautilus_navigation_window_split_view_off       (NautilusNavigationWindow *window);
 
 #endif

@@ -109,6 +109,9 @@ struct _NautilusNavigationWindowDetails {
 
         /* focus widget before the location bar has been shown temporarily */
         GtkWidget *last_focus_widget;
+        	
+        /* split view */
+        GtkWidget *split_view_hpane;
 };
 
 #define NAUTILUS_MENU_PATH_BACK_ITEM			"/menu/Go/Back"

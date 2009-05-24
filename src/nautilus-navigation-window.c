@@ -593,6 +593,7 @@ nautilus_navigation_window_destroy (GtkObject *object)
 	window->sidebar_panels = NULL;
 
 	window->details->content_paned = NULL;
+	window->details->split_view_hpane = NULL;
 
 	GTK_OBJECT_CLASS (parent_class)->destroy (object);
 }
@@ -1238,4 +1239,16 @@ nautilus_navigation_window_class_init (NautilusNavigationWindowClass *class)
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_MOUSE_USE_EXTRA_BUTTONS,
 				      use_extra_mouse_buttons_changed,
 				      NULL);
+}
+
+void nautilus_navigation_window_split_view_on (NautilusNavigationWindow *window)
+{
+    /* hhb: TODO: implement this */
+	g_print("hhb: split view on\n");
+}
+
+void nautilus_navigation_window_split_view_off (NautilusNavigationWindow *window)
+{
+    /* hhb: TODO: implement this */
+	g_print("hhb: split view off\n");
 }
