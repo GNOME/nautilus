@@ -30,6 +30,9 @@
 
 G_BEGIN_DECLS
 
+/* Whether exit when last window destroyed */
+#define NAUTILUS_PREFERENCES_EXIT_WITH_LAST_WINDOW				"preferences/exit_with_last_window"
+
 /* Which theme is active */
 #define NAUTILUS_PREFERENCES_THEME				"/desktop/gnome/file_views/icon_theme"
 

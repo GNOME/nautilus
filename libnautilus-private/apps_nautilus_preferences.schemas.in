@@ -7,6 +7,23 @@
     <!-- General preferences -->
 
     <schema>
+      <key>/schemas/apps/nautilus/preferences/exit_with_last_window</key>
+      <applyto>/apps/nautilus/preferences/exit_with_last_window</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+         <short>Nautilus will exit when last window destroyed.</short>
+         <long>
+          If set to true, then Nautilus will exit when all windows are destroyed.
+          This is the default setting. If set to false, it can be started without
+          any window, so nautilus can serve as a daemon to monitor media automount,
+          or similar tasks.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
       <key>/schemas/desktop/gnome/file_views/show_hidden_files</key>
       <applyto>/desktop/gnome/file_views/show_hidden_files</applyto>
       <owner>nautilus</owner>
