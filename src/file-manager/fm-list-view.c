@@ -2985,3 +2985,9 @@ fm_list_view_register (void)
 
 	nautilus_view_factory_register (&fm_list_view);
 }
+
+GtkTreeView*
+fm_list_view_get_tree_view (FMListView *list_view)
+{
+	return list_view->details->tree_view;
+}

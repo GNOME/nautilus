@@ -849,6 +849,10 @@ nautilus_navigation_window_pane_class_init (NautilusNavigationWindowPaneClass *c
 static void
 nautilus_navigation_window_pane_dispose (GObject *object)
 {
+	NautilusNavigationWindowPane *pane = NAUTILUS_NAVIGATION_WINDOW_PANE (object);
+
+	gtk_widget_destroy (pane->widget);
+
 	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 

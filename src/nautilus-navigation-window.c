@@ -42,6 +42,7 @@
 #include "nautilus-notebook.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-navigation-window-pane.h"
+#include "file-manager/fm-list-view.h"
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
@@ -140,6 +141,7 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 	GtkWidget *toolbar;
 	NautilusWindow *win;
 	NautilusNavigationWindowPane *pane;
+	GtkWidget *hpaned;
 
 	win = NAUTILUS_WINDOW (window);
 
@@ -157,10 +159,14 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 			  0,                                  0);
 	gtk_widget_show (window->details->content_paned);
 
+	hpaned = gtk_hpaned_new ();
+	gtk_widget_show (hpaned);
+	nautilus_horizontal_splitter_pack2 (NAUTILUS_HORIZONTAL_SPLITTER (window->details->content_paned), hpaned);
+	window->details->split_view_hpane = hpaned;
+
 	nautilus_navigation_window_pane_setup (pane);
 
-	nautilus_horizontal_splitter_pack2 (NAUTILUS_HORIZONTAL_SPLITTER (window->details->content_paned),
-					    pane->widget);
+	gtk_paned_pack1 (GTK_PANED(hpaned), pane->widget, TRUE, TRUE);
 	gtk_widget_show (pane->widget);
 
 	/* this has to be done after the location bar has been set up,
@@ -1241,14 +1247,93 @@ nautilus_navigation_window_class_init (NautilusNavigationWindowClass *class)
 				      NULL);
 }
 
-void nautilus_navigation_window_split_view_on (NautilusNavigationWindow *window)
+static void
+split_view_added_to_container_callback (GtkContainer *container,
+					GtkWidget *widget,
+					gpointer user_data)
 {
-    /* hhb: TODO: implement this */
-	g_print("hhb: split view on\n");
+	/* list view doesn't focus automatically */
+	if (FM_IS_LIST_VIEW (widget)) {
+		GtkWidget *focus_widget;
+		focus_widget = GTK_WIDGET (fm_list_view_get_tree_view (FM_LIST_VIEW (widget)));
+		gtk_widget_grab_focus (focus_widget); 
+	}
+
+	gtk_widget_show (pane->widget);
 }
 
-void nautilus_navigation_window_split_view_off (NautilusNavigationWindow *window)
+void
+nautilus_navigation_window_split_view_on (NautilusNavigationWindow *window)
 {
-    /* hhb: TODO: implement this */
-	g_print("hhb: split view off\n");
+	NautilusWindow *win;
+	NautilusNavigationWindowPane *pane;
+	NautilusWindowSlot *slot, *old_active_slot;
+	GtkPaned *paned;
+	GFile *location;
+
+	win = NAUTILUS_WINDOW (window);
+	old_active_slot = nautilus_window_get_active_slot (win);
+
+	/* New pane */
+	pane = nautilus_navigation_window_pane_new (win);
+	win->details->panes = g_list_append (win->details->panes, pane);
+
+	nautilus_navigation_window_pane_setup (pane);
+
+	paned = GTK_PANED (window->details->split_view_hpane);
+	if (gtk_paned_get_child1 (paned) == NULL) {
+		gtk_paned_pack1 (paned, pane->widget, TRUE, TRUE);
+	} else {
+		gtk_paned_pack2 (paned, pane->widget, TRUE, TRUE);
+	}
+
+	/* slot */
+	slot = nautilus_window_open_slot (NAUTILUS_WINDOW_PANE (pane),
+					  NAUTILUS_WINDOW_OPEN_SLOT_APPEND);
+
+	nautilus_navigation_window_pane_initialize_tabs_menu (pane);
+
+	nautilus_window_set_active_slot (win, slot);
+
+	location = nautilus_window_slot_get_location (old_active_slot);
+	if (!location) {
+		char *scheme;
+		scheme = g_file_get_uri_scheme (location);
+		if (!strcmp (scheme, "x-nautilus-search")) {
+			g_object_unref (location);
+		}
+		g_free (scheme);
+		location = g_file_new_for_path (g_get_home_dir ());
+	}
+
+	nautilus_window_slot_go_to (slot, location, FALSE);
+	g_object_unref (location);
+	nautilus_navigation_window_pane_sync_location_widgets(pane);
+
+	/* listen when view is finally added */
+	g_signal_connect_object (GTK_CONTAINER (NAUTILUS_WINDOW_PANE (pane)->active_slot->view_box), "add",
+				 G_CALLBACK (split_view_added_to_container_callback), pane, 0);
+}
+
+void
+nautilus_navigation_window_split_view_off (NautilusNavigationWindow *window)
+{
+	NautilusWindow *win;
+	NautilusWindowPane *pane, *active_pane;
+	GList *l, *next;
+
+	win = NAUTILUS_WINDOW (window);
+
+	g_return_if_fail (win);
+
+	active_pane = win->details->active_pane;
+
+	/* delete all panes except the first (main) pane */
+	for (l = win->details->panes; l != NULL; l = next) {
+		next = l->next;
+		pane = l->data;
+		if (pane != active_pane) {
+			nautilus_window_close_pane (pane);
+		}
+	}
 }
