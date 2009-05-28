@@ -86,8 +86,6 @@ static void     nautilus_information_panel_style_set             (GtkWidget     
 static void     nautilus_information_panel_theme_changed         (gpointer                      user_data);
 static void     nautilus_information_panel_update_appearance     (NautilusInformationPanel     *information_panel);
 static void     nautilus_information_panel_update_buttons        (NautilusInformationPanel     *information_panel);
-static void     add_command_buttons                              (NautilusInformationPanel     *information_panel,
-								  GList                        *application_list);
 static void     background_metadata_changed_callback             (NautilusInformationPanel     *information_panel);
 static void     nautilus_information_panel_iface_init            (NautilusSidebarIface         *iface);
 static void     nautilus_information_panel_iface_init            (NautilusSidebarIface         *iface);
@@ -819,40 +817,34 @@ metadata_button_callback (GtkWidget *button, const char *command_str)
 /* utility routine that allocates the command buttons from the command list */
 
 static void
-add_command_buttons (NautilusInformationPanel *information_panel, GList *application_list)
+add_command_button (NautilusInformationPanel *information_panel, GAppInfo *application)
 {
 	char *temp_str;
-	GList *p;
 	GtkWidget *temp_button, *label;
-	GAppInfo *application;
 
 	/* There's always at least the "Open with..." button */
 	information_panel->details->has_buttons = TRUE;
 
-	for (p = application_list; p != NULL; p = p->next) {
-	        application = p->data;	        
+	temp_str = g_strdup_printf (_("Open with %s"), g_app_info_get_name (application));
+        temp_button = gtk_button_new_with_label (temp_str);
+	label = GTK_BIN (temp_button)->child;
+	gtk_label_set_ellipsize (GTK_LABEL (label), PANGO_ELLIPSIZE_START);
+	g_free (temp_str);
+	gtk_box_pack_start (GTK_BOX (information_panel->details->button_box), 
+			    temp_button, 
+			    FALSE, FALSE, 
+			    0);
 
-		temp_str = g_strdup_printf (_("Open with %s"), g_app_info_get_name (application));
-	        temp_button = gtk_button_new_with_label (temp_str);
-		label = GTK_BIN (temp_button)->child;
-		gtk_label_set_ellipsize (GTK_LABEL (label), PANGO_ELLIPSIZE_START);
-		g_free (temp_str);
-		gtk_box_pack_start (GTK_BOX (information_panel->details->button_box), 
-				    temp_button, 
-				    FALSE, FALSE, 
-				    0);
+	g_signal_connect_data (temp_button,
+			       "clicked",
+			       G_CALLBACK (command_button_callback),
+			       g_object_ref (application),
+			       (GClosureNotify)g_object_unref,
+			       0);
 
-		g_signal_connect_data (temp_button,
-				       "clicked",
-				       G_CALLBACK (command_button_callback),
-				       g_object_ref (application),
-				       (GClosureNotify)g_object_unref,
-				       0);
-
-                g_object_set_data (G_OBJECT (temp_button), "user_data", information_panel);
-		
-		gtk_widget_show (temp_button);
-	}
+	g_object_set_data (G_OBJECT (temp_button), "user_data", information_panel);
+	
+	gtk_widget_show (temp_button);
 }
 
 /* utility to construct command buttons for the information_panel from the passed in metadata string */
@@ -917,7 +909,7 @@ static void
 nautilus_information_panel_update_buttons (NautilusInformationPanel *information_panel)
 {
 	char *button_data;
-	GList *short_application_list;
+	GAppInfo *default_app;
 	
 	/* dispose of any existing buttons */
 	if (information_panel->details->has_buttons) {
@@ -935,12 +927,13 @@ nautilus_information_panel_update_buttons (NautilusInformationPanel *information
 		g_free(button_data);
 	}
 
-	/* Make buttons for each application */
-	if (nautilus_mime_has_any_applications_for_file (information_panel->details->file)) {
-		short_application_list = 
-			nautilus_mime_get_applications_for_file (information_panel->details->file);
-		add_command_buttons (information_panel, short_application_list);
-		eel_g_object_list_free (short_application_list);
+	/* Make a button for the default application */
+	if (nautilus_mime_has_any_applications_for_file (information_panel->details->file) &&
+	    !nautilus_file_is_directory (information_panel->details->file)) {
+		default_app = 
+			nautilus_mime_get_default_application_for_file (information_panel->details->file);
+		add_command_button (information_panel, default_app);
+		g_object_unref (default_app);
 	}
 
 	gtk_widget_show (GTK_WIDGET (information_panel->details->button_box_centerer));
@@ -1109,6 +1102,41 @@ loading_uri_callback (NautilusWindowInfo *window,
 }
 
 static void
+selection_changed_callback (NautilusWindowInfo *window,
+			    NautilusInformationPanel *panel)
+{
+	int selection_count;
+	GList *selection;
+	GFile *selected;
+	NautilusFile *file;
+	char *uri, *name;
+
+	selection = nautilus_window_info_get_selection (window);
+	selection_count = g_list_length (selection);
+
+	if (selection_count == 1) {
+		selection = nautilus_window_info_get_selection (window);
+		selected = selection->data;
+
+		/* this should never fail here, as we're displaying the file */
+		file = nautilus_file_get_existing (selected);
+		uri = nautilus_file_get_uri (file);
+		name = nautilus_file_get_display_name (file);
+
+		nautilus_file_unref (file);
+	} else {
+		uri = nautilus_window_info_get_current_location (window);
+		name = nautilus_window_info_get_title (window);
+	}
+
+	nautilus_information_panel_set_uri (panel, uri, name);
+
+	eel_g_object_list_unref (selection);
+	g_free (uri);
+	g_free (name);
+}
+
+static void
 nautilus_information_panel_set_parent_window (NautilusInformationPanel *panel,
 					      NautilusWindowInfo *window)
 {
@@ -1121,6 +1149,8 @@ nautilus_information_panel_set_parent_window (NautilusInformationPanel *panel,
 				 G_CALLBACK (loading_uri_callback), panel, 0);
 	g_signal_connect_object (window, "title_changed",
 				 G_CALLBACK (title_changed_callback), panel, 0);
+	g_signal_connect_object (window, "selection-changed",
+				 G_CALLBACK (selection_changed_callback), panel, 0);
 
 	slot = nautilus_window_info_get_active_slot (window);
 	
