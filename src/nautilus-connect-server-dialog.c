@@ -887,6 +887,8 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 			    table, TRUE, TRUE, 0);
 
 	dialog->details->uri_entry = nautilus_location_entry_new ();
+	/* hide the clean icon, as it doesn't make sense here */
+	g_object_set (dialog->details->uri_entry, "secondary-icon-name", NULL, NULL);
 	dialog->details->server_entry = gtk_entry_new ();
 	dialog->details->share_entry = gtk_entry_new ();
 	dialog->details->port_entry = gtk_entry_new ();

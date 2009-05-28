@@ -282,6 +282,15 @@ nautilus_location_entry_text_changed (NautilusLocationEntry *entry,
 	entry->details->has_special_text = FALSE;
 }
 
+static void
+nautilus_location_entry_icon_release (GtkEntry *gentry,
+				      GtkEntryIconPosition position,
+				      GdkEvent *event,
+				      gpointer unused)
+{
+	gtk_entry_set_text (gentry, "");
+}
+
 static gboolean
 nautilus_location_entry_focus_in (GtkWidget     *widget,
 				  GdkEventFocus *event)
@@ -322,6 +331,9 @@ nautilus_location_entry_init (NautilusLocationEntry *entry)
 
 	entry->details->completer = g_filename_completer_new ();
 	g_filename_completer_set_dirs_only (entry->details->completer, TRUE);
+
+	gtk_entry_set_icon_from_stock (GTK_ENTRY (entry), GTK_ENTRY_ICON_SECONDARY,
+				       GTK_STOCK_CLEAR);
 	
 	nautilus_entry_set_special_tab_handling (NAUTILUS_ENTRY (entry), TRUE);
 
@@ -330,6 +342,9 @@ nautilus_location_entry_init (NautilusLocationEntry *entry)
 
 	g_signal_connect (entry, "notify::text",
 			  G_CALLBACK (nautilus_location_entry_text_changed), NULL);
+
+	g_signal_connect (entry, "icon-release",
+			  G_CALLBACK (nautilus_location_entry_icon_release), NULL);
 
 	g_signal_connect (entry->details->completer, "got_completion_data",
 		          G_CALLBACK (got_completion_data_callback), entry);
