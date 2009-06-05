@@ -123,8 +123,9 @@ entry_activate_callback (GtkEntry *entry,
 	
 	dialog = NAUTILUS_LOCATION_DIALOG (user_data);
 
-	if (gtk_entry_get_text_length (GTK_ENTRY (dialog->details->entry)) != 0)
+	if (gtk_entry_get_text_length (GTK_ENTRY (dialog->details->entry)) != 0) {
 		gtk_dialog_response (GTK_DIALOG (dialog), RESPONSE_OPEN);
+	}
 }
 
 static void
@@ -138,6 +139,20 @@ nautilus_location_dialog_class_init (NautilusLocationDialogClass *class)
 	
 	object_class = GTK_OBJECT_CLASS (class);
 	object_class->destroy = nautilus_location_dialog_destroy;
+}
+
+static void
+entry_text_changed (GObject *object, GParamSpec *spec, gpointer user_data)
+{
+	NautilusLocationDialog *dialog;
+
+	dialog = NAUTILUS_LOCATION_DIALOG (user_data);
+
+	if (gtk_entry_get_text_length (GTK_ENTRY (dialog->details->entry)) != 0) {
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), RESPONSE_OPEN, TRUE);
+	} else {
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), RESPONSE_OPEN, FALSE);
+	}
 }
 
 static void
@@ -191,6 +206,9 @@ nautilus_location_dialog_init (NautilusLocationDialog *dialog)
 			       RESPONSE_OPEN);
 	gtk_dialog_set_default_response (GTK_DIALOG (dialog),
 					 RESPONSE_OPEN);
+
+	g_signal_connect (dialog->details->entry, "notify::text", 
+                          G_CALLBACK (entry_text_changed), dialog);
 
 	g_signal_connect (dialog, "response",
 			  G_CALLBACK (response_callback),
