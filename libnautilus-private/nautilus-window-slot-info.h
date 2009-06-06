@@ -73,6 +73,7 @@ struct _NautilusWindowSlotInfoIface
 				       NautilusWindowOpenMode mode,
 				       NautilusWindowOpenFlags flags,
 				       GList *selection);
+	void   (* make_hosting_pane_active) (NautilusWindowSlotInfo *slot);
 };
 
 
@@ -85,6 +86,7 @@ void                              nautilus_window_slot_info_open_location       
 										 GList                             *selection);
 void                              nautilus_window_slot_info_set_status          (NautilusWindowSlotInfo            *slot,
 										 const char *status);
+void                              nautilus_window_slot_info_make_hosting_pane_active (NautilusWindowSlotInfo       *slot);
 
 char *                            nautilus_window_slot_info_get_current_location (NautilusWindowSlotInfo           *slot);
 NautilusView *                    nautilus_window_slot_info_get_current_view     (NautilusWindowSlotInfo           *slot);

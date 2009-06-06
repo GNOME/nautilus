@@ -96,6 +96,12 @@ nautilus_window_slot_info_set_status (NautilusWindowSlotInfo *slot,
 								    status);
 }
 
+void
+nautilus_window_slot_info_make_hosting_pane_active (NautilusWindowSlotInfo *slot)
+{
+	g_assert (NAUTILUS_IS_WINDOW_SLOT_INFO (slot));
+	(* NAUTILUS_WINDOW_SLOT_INFO_GET_IFACE (slot)->make_hosting_pane_active) (slot);
+}
 
 void
 nautilus_window_slot_info_open_location (NautilusWindowSlotInfo  *slot,

@@ -2661,6 +2661,19 @@ store_layout_timestamp (NautilusIconContainer *container,
 	return TRUE;
 }
 
+static gboolean
+focus_in_event_callback (GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
+{
+	NautilusWindowSlotInfo *slot_info;
+	FMIconView *icon_view = FM_ICON_VIEW (user_data);
+	
+	/* make the corresponding slot (and the pane that contains it) active */
+	slot_info = fm_directory_view_get_nautilus_window_slot (FM_DIRECTORY_VIEW (icon_view));
+	nautilus_window_slot_info_make_hosting_pane_active (slot_info);
+
+	return FALSE; 
+}
+
 static NautilusIconContainer *
 create_icon_container (FMIconView *icon_view)
 {
@@ -2670,6 +2683,8 @@ create_icon_container (FMIconView *icon_view)
 
 	GTK_WIDGET_SET_FLAGS (icon_container, GTK_CAN_FOCUS);
 	
+	g_signal_connect_object (icon_container, "focus_in_event",
+			 G_CALLBACK (focus_in_event_callback), icon_view, 0);
 	g_signal_connect_object (icon_container, "activate",	
 			 G_CALLBACK (icon_container_activate_callback), icon_view, 0);
 	g_signal_connect_object (icon_container, "activate_alternate",	
