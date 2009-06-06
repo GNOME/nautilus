@@ -1369,6 +1369,19 @@ filename_cell_data_func (GtkTreeViewColumn *column,
 	g_free (text);
 }
 
+static gboolean
+focus_in_event_callback (GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
+{
+	NautilusWindowSlotInfo *slot_info;
+	FMListView *list_view = FM_LIST_VIEW (user_data);
+
+	/* make the corresponding slot (and the pane that contains it) active */
+	slot_info = fm_directory_view_get_nautilus_window_slot (FM_DIRECTORY_VIEW (list_view));
+	nautilus_window_slot_info_make_hosting_pane_active (slot_info);
+
+	return FALSE;
+}
+
 static void
 create_and_set_up_tree_view (FMListView *view)
 {
@@ -1443,6 +1456,9 @@ create_and_set_up_tree_view (FMListView *view)
 	g_signal_connect_object (view->details->tree_view, "row-activated",
                                  G_CALLBACK (row_activated_callback), view, 0);
 	
+    	g_signal_connect_object (view->details->tree_view, "focus_in_event",
+				 G_CALLBACK(focus_in_event_callback), view, 0);
+    
 	view->details->model = g_object_new (FM_TYPE_LIST_MODEL, NULL);
 	gtk_tree_view_set_model (view->details->tree_view, GTK_TREE_MODEL (view->details->model));
 	/* Need the model for the dnd drop icon "accept" change */
