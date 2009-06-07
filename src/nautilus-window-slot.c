@@ -416,7 +416,7 @@ nautilus_window_slot_disconnect_content_view (NautilusWindowSlot *slot,
 	g_signal_handlers_disconnect_by_func (view, G_CALLBACK (title_changed_callback), slot);
 
 	window = slot->pane->window;
-	if (window != NULL && slot == nautilus_window_get_active_slot (window)) {
+	if (window != NULL && window->details->active_pane && window->details->active_pane->active_slot == slot) {
 		nautilus_window_disconnect_content_view (window, view);
 	}
 }
