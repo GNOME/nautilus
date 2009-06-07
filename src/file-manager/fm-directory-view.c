@@ -424,6 +424,18 @@ typedef struct {
 	FMDirectoryView *directory_view;
 } CreateTemplateParameters;
 
+static FMDirectoryView*
+get_active_directory_view (NautilusWindowInfo *window_info)
+{
+	NautilusWindowSlotInfo *slot_info;
+	NautilusView *view;
+	
+	slot_info = nautilus_window_info_get_active_slot (window_info);
+	view = nautilus_window_slot_info_get_current_view (slot_info);
+	
+	return FM_IS_DIRECTORY_VIEW (view) ? FM_DIRECTORY_VIEW (view) : NULL;
+}
+
 static ApplicationLaunchParameters *
 application_launch_parameters_new (GAppInfo *application,
 			      	   GList *files,
@@ -751,7 +763,8 @@ action_open_callback (GtkAction *action,
 	GList *selection;
 	FMDirectoryView *view;
 
-	view = FM_DIRECTORY_VIEW (callback_data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	selection = fm_directory_view_get_selection (view);
 	fm_directory_view_activate_files (view,
@@ -769,7 +782,8 @@ action_open_close_parent_callback (GtkAction *action,
 	GList *selection;
 	FMDirectoryView *view;
 
-	view = FM_DIRECTORY_VIEW (callback_data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	selection = fm_directory_view_get_selection (view);
 	fm_directory_view_activate_files (view,
@@ -789,7 +803,9 @@ action_open_alternate_callback (GtkAction *action,
 	GList *selection;
 	GtkWindow *window;
 
-	view = FM_DIRECTORY_VIEW (callback_data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
 	selection = fm_directory_view_get_selection (view);
 
 	window = fm_directory_view_get_containing_window (view);
@@ -813,7 +829,9 @@ action_open_new_tab_callback (GtkAction *action,
 		return;
 	}
 
-	view = FM_DIRECTORY_VIEW (callback_data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
 	selection = fm_directory_view_get_selection (view);
 
 	window = fm_directory_view_get_containing_window (view);
@@ -837,7 +855,9 @@ action_open_folder_window_callback (GtkAction *action,
 	GList *selection;
 	GtkWindow *window;
 
-	view = FM_DIRECTORY_VIEW (callback_data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
 	selection = fm_directory_view_get_selection (view);
 
 	window = fm_directory_view_get_containing_window (view);
@@ -945,9 +965,12 @@ static void
 action_other_application_callback (GtkAction *action,
 				   gpointer callback_data)
 {
-	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+	FMDirectoryView *view;
+    
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
-	open_with_other_program (FM_DIRECTORY_VIEW (callback_data));
+	open_with_other_program (view);
 }
 
 static void
@@ -980,7 +1003,12 @@ static void
 action_trash_callback (GtkAction *action,
 		       gpointer callback_data)
 {
-        trash_or_delete_selected_files (FM_DIRECTORY_VIEW (callback_data));
+	FMDirectoryView *view;
+
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
+	trash_or_delete_selected_files (view);
 }
 
 static void
@@ -1012,7 +1040,12 @@ static void
 action_delete_callback (GtkAction *action,
 			gpointer callback_data)
 {
-        delete_selected_files (FM_DIRECTORY_VIEW (callback_data));
+	FMDirectoryView *view;
+
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
+	delete_selected_files (view);
 }
 
 static void
@@ -1022,7 +1055,8 @@ action_restore_from_trash_callback (GtkAction *action,
 	FMDirectoryView *view;
 	GList *selection;
 
-	view = FM_DIRECTORY_VIEW (callback_data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	selection = fm_directory_view_get_selection_for_file_transfer (view);
 	restore_from_trash (selection, view);
@@ -1049,7 +1083,9 @@ action_duplicate_callback (GtkAction *action,
         GList *selection;
         GArray *selected_item_locations;
  
-        view = FM_DIRECTORY_VIEW (callback_data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
 	selection = fm_directory_view_get_selection_for_file_transfer (view);
 	if (selection_not_empty_in_menu_callback (view, selection)) {
 		/* FIXME bugzilla.gnome.org 45061:
@@ -1074,9 +1110,9 @@ action_create_link_callback (GtkAction *action,
         GList *selection;
         GArray *selected_item_locations;
         
-        g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
-        view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
 	if (selection_not_empty_in_menu_callback (view, selection)) {
 		selected_item_locations = fm_directory_view_get_selected_icon_locations (view);
@@ -1091,18 +1127,24 @@ static void
 action_select_all_callback (GtkAction *action, 
 			    gpointer callback_data)
 {
-	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+	FMDirectoryView *view;
 
-	fm_directory_view_select_all (callback_data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
+	fm_directory_view_select_all (view);
 }
 
 static void
 action_invert_selection_callback (GtkAction *action,
 				  gpointer callback_data)
 {
-	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+	FMDirectoryView *view;
 
-	fm_directory_view_invert_selection (callback_data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
+	fm_directory_view_invert_selection (view);
 }
 
 
@@ -1199,18 +1241,24 @@ static void
 action_select_pattern_callback (GtkAction *action, 
 				gpointer callback_data)
 {
-	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+	FMDirectoryView *view;
+	
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
-	select_pattern(callback_data);
+	select_pattern(view);
 }
 
 static void
 action_reset_to_defaults_callback (GtkAction *action, 
 				   gpointer callback_data)
 {
-	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+	FMDirectoryView *view;
 
-	fm_directory_view_reset_to_defaults (callback_data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
+	fm_directory_view_reset_to_defaults (view);
 }
 
 
@@ -1232,7 +1280,8 @@ action_save_search_callback (GtkAction *action,
 	NautilusSearchDirectory *search;
 	FMDirectoryView	*directory_view;
 	
-        directory_view = FM_DIRECTORY_VIEW (callback_data);
+	directory_view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
 
 	if (directory_view->details->model &&
 	    NAUTILUS_IS_SEARCH_DIRECTORY (directory_view->details->model)) {
@@ -1270,7 +1319,8 @@ action_save_search_as_callback (GtkAction *action,
 	char *filename, *filename_utf8, *dirname, *path, *uri;
 	GFile *location;
 	
-        directory_view = FM_DIRECTORY_VIEW (callback_data);
+	directory_view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
 
 	if (directory_view->details->model &&
 	    NAUTILUS_IS_SEARCH_DIRECTORY (directory_view->details->model)) {
@@ -1365,27 +1415,36 @@ static void
 action_empty_trash_callback (GtkAction *action,
 			     gpointer callback_data)
 {                
-        g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
-
-	nautilus_file_operations_empty_trash (GTK_WIDGET (callback_data));
+	FMDirectoryView *view;
+	
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	
+	nautilus_file_operations_empty_trash (GTK_WIDGET (view));
 }
 
 static void
 action_new_folder_callback (GtkAction *action,
 			    gpointer callback_data)
 {                
-        g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+	FMDirectoryView *view;
 
-	fm_directory_view_new_folder (FM_DIRECTORY_VIEW (callback_data));
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
+	fm_directory_view_new_folder (view);
 }
 
 static void
 action_new_empty_file_callback (GtkAction *action,
 				gpointer callback_data)
 {                
-        g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+	FMDirectoryView *view;
 
-	fm_directory_view_new_file (FM_DIRECTORY_VIEW (callback_data), NULL, NULL);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
+	fm_directory_view_new_file (view, NULL, NULL);
 }
 
 static void
@@ -1396,9 +1455,8 @@ action_new_launcher_callback (GtkAction *action,
 	FMDirectoryView *view;
 	GtkWindow *window;
 
-	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
-
-	view = FM_DIRECTORY_VIEW (callback_data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	parent_uri = fm_directory_view_get_backing_uri (view);
 
@@ -1421,9 +1479,9 @@ action_properties_callback (GtkAction *action,
         FMDirectoryView *view;
         GList *selection;
         
-        g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
-        view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
 
 	fm_properties_window_present (selection, GTK_WIDGET (view));
@@ -1438,9 +1496,8 @@ action_self_properties_callback (GtkAction *action,
 	FMDirectoryView *view;
 	GList           *files;
 
-	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
-
-	view = FM_DIRECTORY_VIEW (callback_data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	if (view->details->directory_as_file != NULL) {
 		files = g_list_append (NULL, nautilus_file_ref (view->details->directory_as_file));
@@ -1458,9 +1515,9 @@ action_location_properties_callback (GtkAction *action,
 	FMDirectoryView *view;
 	GList           *files;
 
-	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
-	view = FM_DIRECTORY_VIEW (callback_data);
 	g_assert (NAUTILUS_IS_FILE (view->details->location_popup_directory_as_file));
 
 	files = g_list_append (NULL, nautilus_file_ref (view->details->location_popup_directory_as_file));
@@ -5575,7 +5632,8 @@ action_open_scripts_folder_callback (GtkAction *action,
 {      
 	FMDirectoryView *view;
 
-	view = FM_DIRECTORY_VIEW (callback_data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	open_location (view, scripts_directory_uri, NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE, 0);
 	
@@ -5795,7 +5853,8 @@ action_copy_files_callback (GtkAction *action,
 	FMDirectoryView *view;
 	GList *selection;
 
-	view = FM_DIRECTORY_VIEW (callback_data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	selection = fm_directory_view_get_selection_for_file_transfer (view);
 	copy_or_cut_files (view, selection, FALSE);
@@ -5809,7 +5868,8 @@ action_cut_files_callback (GtkAction *action,
 	FMDirectoryView *view;
 	GList *selection;
 
-	view = FM_DIRECTORY_VIEW (callback_data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	selection = fm_directory_view_get_selection_for_file_transfer (view);
 	copy_or_cut_files (view, selection, TRUE);
@@ -5904,13 +5964,14 @@ action_paste_files_callback (GtkAction *action,
 {
 	FMDirectoryView *view;
 
-	view = FM_DIRECTORY_VIEW (callback_data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	
 	g_object_ref (view);
 	gtk_clipboard_request_contents (nautilus_clipboard_get (GTK_WIDGET (view)),
 					copied_files_atom,
 					paste_clipboard_received_callback,
-					callback_data);
+					view);
 }
 
 static void
@@ -5940,7 +6001,9 @@ action_paste_files_into_callback (GtkAction *action,
 	FMDirectoryView *view;
 	GList *selection;
 
-	view = FM_DIRECTORY_VIEW (callback_data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
 	selection = fm_directory_view_get_selection (view);
 	if (selection != NULL) {
 		paste_into (view, NAUTILUS_FILE (selection->data));
@@ -5977,14 +6040,24 @@ static void
 action_rename_callback (GtkAction *action,
 			gpointer callback_data)
 {
-	real_action_rename (FM_DIRECTORY_VIEW (callback_data), FALSE);
+	FMDirectoryView *view;
+
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
+	real_action_rename (FM_DIRECTORY_VIEW (view), FALSE);
 }
 
 static void
 action_rename_select_all_callback (GtkAction *action,
 				   gpointer callback_data)
 {
-	real_action_rename (FM_DIRECTORY_VIEW (callback_data), TRUE);
+	FMDirectoryView *view;
+
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
+	real_action_rename (FM_DIRECTORY_VIEW (view), TRUE);
 }
 
 static void
@@ -6057,7 +6130,8 @@ action_mount_volume_callback (GtkAction *action,
 	FMDirectoryView *view;
 	GMountOperation *mount_op;
 
-        view = FM_DIRECTORY_VIEW (data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	
 	selection = fm_directory_view_get_selection (view);
 	for (l = selection; l != NULL; l = l->next) {
@@ -6081,7 +6155,8 @@ action_unmount_volume_callback (GtkAction *action,
 	GList *selection, *l;
 	FMDirectoryView *view;
 
-        view = FM_DIRECTORY_VIEW (data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	
 	selection = fm_directory_view_get_selection (view);
 
@@ -6107,7 +6182,8 @@ action_format_volume_callback (GtkAction *action,
 	GList *selection, *l;
 	FMDirectoryView *view;
 
-        view = FM_DIRECTORY_VIEW (data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	
 	selection = fm_directory_view_get_selection (view);
 	for (l = selection; l != NULL; l = l->next) {
@@ -6129,7 +6205,8 @@ action_eject_volume_callback (GtkAction *action,
 	GList *selection, *l;
 	FMDirectoryView *view;
 
-        view = FM_DIRECTORY_VIEW (data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	
 	selection = fm_directory_view_get_selection (view);
 	for (l = selection; l != NULL; l = l->next) {
@@ -6241,7 +6318,8 @@ action_self_mount_volume_callback (GtkAction *action,
 	FMDirectoryView *view;
 	GMountOperation *mount_op;
 
-	view = FM_DIRECTORY_VIEW (data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	file = fm_directory_view_get_directory_as_file (view);
 	if (file == NULL) {
@@ -6261,7 +6339,8 @@ action_self_unmount_volume_callback (GtkAction *action,
 	FMDirectoryView *view;
 	GMountOperation *mount_op;
 
-	view = FM_DIRECTORY_VIEW (data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	file = fm_directory_view_get_directory_as_file (view);
 	if (file == NULL) {
@@ -6281,7 +6360,8 @@ action_self_eject_volume_callback (GtkAction *action,
 	FMDirectoryView *view;
 	GMountOperation *mount_op;
 
-	view = FM_DIRECTORY_VIEW (data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	file = fm_directory_view_get_directory_as_file (view);
 	if (file == NULL) {
@@ -6300,7 +6380,8 @@ action_self_format_volume_callback (GtkAction *action,
 	NautilusFile *file;
 	FMDirectoryView *view;
 
-	view = FM_DIRECTORY_VIEW (data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	file = fm_directory_view_get_directory_as_file (view);
 	if (file == NULL) {
@@ -6380,7 +6461,8 @@ action_location_mount_volume_callback (GtkAction *action,
 	FMDirectoryView *view;
 	GMountOperation *mount_op;
 
-	view = FM_DIRECTORY_VIEW (data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	file = view->details->location_popup_directory_as_file;
 	if (file == NULL) {
@@ -6400,7 +6482,8 @@ action_location_unmount_volume_callback (GtkAction *action,
 	FMDirectoryView *view;
 	GMountOperation *mount_op;
 
-	view = FM_DIRECTORY_VIEW (data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	file = view->details->location_popup_directory_as_file;
 	if (file == NULL) {
@@ -6421,7 +6504,8 @@ action_location_eject_volume_callback (GtkAction *action,
 	FMDirectoryView *view;
 	GMountOperation *mount_op;
 
-	view = FM_DIRECTORY_VIEW (data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	file = view->details->location_popup_directory_as_file;
 	if (file == NULL) {
@@ -6441,7 +6525,8 @@ action_location_format_volume_callback (GtkAction *action,
 	NautilusFile *file;
 	FMDirectoryView *view;
 
-	view = FM_DIRECTORY_VIEW (data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	file = view->details->location_popup_directory_as_file;
 	if (file == NULL) {
@@ -6572,7 +6657,8 @@ action_connect_to_server_link_callback (GtkAction *action,
 	GtkWidget *box;
 	char *title;
 
-        view = FM_DIRECTORY_VIEW (data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	
 	selection = fm_directory_view_get_selection (view);
 
@@ -6647,7 +6733,8 @@ action_location_open_alternate_callback (GtkAction *action,
 	FMDirectoryView *view;
 	NautilusFile *file;
 
-	view = FM_DIRECTORY_VIEW (callback_data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	file = view->details->location_popup_directory_as_file;
 	if (file == NULL) {
@@ -6667,7 +6754,8 @@ action_location_open_in_new_tab_callback (GtkAction *action,
 	FMDirectoryView *view;
 	NautilusFile *file;
 
-	view = FM_DIRECTORY_VIEW (callback_data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	file = view->details->location_popup_directory_as_file;
 	if (file == NULL) {
@@ -6687,7 +6775,8 @@ action_location_open_folder_window_callback (GtkAction *action,
 	FMDirectoryView *view;
 	NautilusFile *file;
 
-	view = FM_DIRECTORY_VIEW (callback_data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	file = view->details->location_popup_directory_as_file;
 	g_return_if_fail (file != NULL);
@@ -6706,7 +6795,8 @@ action_location_cut_callback (GtkAction *action,
 	NautilusFile *file;
 	GList *files;
 
-	view = FM_DIRECTORY_VIEW (callback_data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	file = view->details->location_popup_directory_as_file;
 	g_return_if_fail (file != NULL);
@@ -6724,7 +6814,8 @@ action_location_copy_callback (GtkAction *action,
 	NautilusFile *file;
 	GList *files;
 
-	view = FM_DIRECTORY_VIEW (callback_data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	file = view->details->location_popup_directory_as_file;
 	g_return_if_fail (file != NULL);
@@ -6741,7 +6832,8 @@ action_location_paste_files_into_callback (GtkAction *action,
 	FMDirectoryView *view;
 	NautilusFile *file;
 
-	view = FM_DIRECTORY_VIEW (callback_data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	file = view->details->location_popup_directory_as_file;
 	g_return_if_fail (file != NULL);
@@ -6757,7 +6849,8 @@ action_location_trash_callback (GtkAction *action,
 	NautilusFile *file;
 	GList *files;
 
-	view = FM_DIRECTORY_VIEW (callback_data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	file = view->details->location_popup_directory_as_file;
 	g_return_if_fail (file != NULL);
@@ -6778,7 +6871,8 @@ action_location_delete_callback (GtkAction *action,
 	GFile *location;
 	GList *files;
 
-	view = FM_DIRECTORY_VIEW (callback_data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	file = view->details->location_popup_directory_as_file;
 	g_return_if_fail (file != NULL);
@@ -6869,7 +6963,9 @@ action_location_restore_from_trash_callback (GtkAction *action,
 	NautilusFile *file;
 	GList l;
 
-	view = FM_DIRECTORY_VIEW (callback_data);
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+    
 	file = view->details->location_popup_directory_as_file;
 
 	l.prev = NULL;
@@ -7286,7 +7382,7 @@ real_merge_menus (FMDirectoryView *view)
 	view->details->dir_action_group = action_group;
 	gtk_action_group_add_actions (action_group, 
 				      directory_view_entries, G_N_ELEMENTS (directory_view_entries),
-				      view);
+				      view->details->window);
 
 	/* Translators: %s is a directory */
 	tooltip = g_strdup_printf (_("Run or manage scripts from %s"), "~/.gnome2/nautilus-scripts");
