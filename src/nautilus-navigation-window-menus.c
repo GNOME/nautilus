@@ -565,6 +565,11 @@ reload_tab_menu (NautilusNavigationWindowPane *pane)
 		pane->tabs_menu_action_group = NULL;
 	}
 
+	/* Don't add anything if not active */
+	if (!NAUTILUS_WINDOW_PANE (pane)->is_active) {
+		return;
+	}
+
 	/* Add new tab menu items */
 	pane->tabs_menu_merge_id = gtk_ui_manager_new_merge_id (ui_manager);
 	pane->tabs_menu_action_group = gtk_action_group_new ("TabsMenuGroup");

@@ -67,6 +67,11 @@ nautilus_navigation_window_pane_set_active (NautilusNavigationWindowPane *pane, 
 
 	/* navigation bar (manual entry) */
 	nautilus_location_bar_set_active (NAUTILUS_LOCATION_BAR (pane->navigation_bar), is_active);
+
+	/* if actions/menus exist, update those as well */
+	if (NAUTILUS_NAVIGATION_WINDOW (NAUTILUS_WINDOW_PANE (pane)->window)->details->navigation_action_group) {
+		nautilus_navigation_window_pane_initialize_tabs_menu(pane);
+	}
 }
 
 static gboolean

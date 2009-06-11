@@ -1291,8 +1291,6 @@ nautilus_navigation_window_split_view_on (NautilusNavigationWindow *window)
 	slot = nautilus_window_open_slot (NAUTILUS_WINDOW_PANE (pane),
 					  NAUTILUS_WINDOW_OPEN_SLOT_APPEND);
 
-	nautilus_navigation_window_pane_initialize_tabs_menu (pane);
-
 	nautilus_window_set_active_slot (win, slot);
 
 	location = nautilus_window_slot_get_location (old_active_slot);
