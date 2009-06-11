@@ -84,4 +84,6 @@ gboolean          nautilus_zoom_control_has_max_zoom_level (NautilusZoomControl 
 gboolean          nautilus_zoom_control_can_zoom_in        (NautilusZoomControl *zoom_control);
 gboolean          nautilus_zoom_control_can_zoom_out       (NautilusZoomControl *zoom_control);
 
+void              nautilus_zoom_control_set_active_appearance (NautilusZoomControl *zoom_control, gboolean is_active);
+
 #endif /* NAUTILUS_ZOOM_CONTROL_H */

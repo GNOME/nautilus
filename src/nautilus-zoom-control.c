@@ -945,3 +945,11 @@ nautilus_zoom_control_accessible_get_type (void)
 
 	return type;
 }
+
+void
+nautilus_zoom_control_set_active_appearance (NautilusZoomControl *zoom_control, gboolean is_active)
+{
+	gtk_widget_set_sensitive (gtk_bin_get_child (GTK_BIN (zoom_control->details->zoom_in)), is_active);
+	gtk_widget_set_sensitive (gtk_bin_get_child (GTK_BIN (zoom_control->details->zoom_out)), is_active);
+	gtk_widget_set_sensitive (zoom_control->details->zoom_label, is_active);
+}
