@@ -161,6 +161,7 @@ void               nautilus_window_load_extension_menus                  (Nautil
 void               nautilus_window_initialize_menus                      (NautilusWindow    *window);
 void               nautilus_navigation_window_pane_initialize_tabs_menu  (struct _NautilusNavigationWindowPane *pane);
 void               nautilus_window_remove_trash_monitor_callback         (NautilusWindow    *window);
+NautilusWindowPane *nautilus_window_get_next_pane                        (NautilusWindow *window);
 void               nautilus_menus_append_bookmark_to_menu                (NautilusWindow    *window, 
                                                                           NautilusBookmark  *bookmark, 
                                                                           const char        *parent_path,

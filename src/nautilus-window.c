@@ -42,6 +42,7 @@
 #include "nautilus-zoom-control.h"
 #include "nautilus-search-bar.h"
 #include "nautilus-navigation-window-pane.h"
+#include "file-manager/fm-directory-view.h"
 #include <eel/eel-debug.h>
 #include <eel/eel-marshal.h>
 #include <eel/eel-gtk-macros.h>
@@ -1487,6 +1488,75 @@ nautilus_window_get_ui_manager (NautilusWindow *window)
 	return window->details->ui_manager;
 }
 
+NautilusWindowPane *
+nautilus_window_get_next_pane (NautilusWindow *window)
+{
+	NautilusWindowPane *next_pane;
+	GList *node;
+
+	/* return NULL if there is only one pane */
+	if (!window->details->panes || !window->details->panes->next) {
+		return NULL;
+	}
+	
+	/* get next pane in the (wrapped around) list */
+	node = g_list_find(window->details->panes, window->details->active_pane);
+	g_return_val_if_fail (node, FALSE);
+	if (node->next) {
+		next_pane = node->next->data;
+	}
+	else {
+		next_pane =  window->details->panes->data;
+	}
+	
+	return next_pane;
+}
+
+static gboolean
+nautilus_window_next_pane_is_writable (NautilusWindow *window)
+{
+	NautilusWindowPane *next_pane;
+	
+	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), FALSE);
+	
+	/* check if there is just one pane */
+	if (!window->details->panes || !window->details->panes->next) {
+		return FALSE;
+	}
+
+	/* get next pane */
+	next_pane = nautilus_window_get_next_pane (window);
+	if(!next_pane) {
+		return FALSE;
+	}
+
+	g_return_val_if_fail(FM_IS_DIRECTORY_VIEW (next_pane->active_slot->content_view), FALSE);	
+
+	return !fm_directory_view_is_read_only (FM_DIRECTORY_VIEW (next_pane->active_slot->content_view));
+}
+
+static void
+nautilus_window_copy_move_selection_to_next_pane (NautilusWindow *window,
+						  gboolean want_copy)
+{
+	NautilusWindowPane *source_pane, *target_pane;
+	FMDirectoryView *source, *target;
+
+	/* there must be more than one pane */
+	g_return_if_fail (window->details->panes && window->details->panes->next);
+
+	source_pane = NAUTILUS_WINDOW_PANE (window->details->active_pane);
+	target_pane = nautilus_window_get_next_pane(window);
+
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (source_pane->active_slot->content_view));
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (target_pane->active_slot->content_view));
+
+	source = FM_DIRECTORY_VIEW (source_pane->active_slot->content_view);
+	target = FM_DIRECTORY_VIEW (target_pane->active_slot->content_view);
+
+	fm_directory_view_move_copy_items_between_views (source, target, want_copy);
+}
+
 void
 nautilus_window_slot_set_viewed_file (NautilusWindowSlot *slot,
 				      NautilusFile *file)
@@ -1867,6 +1937,8 @@ nautilus_window_info_iface_init (NautilusWindowInfoIface *iface)
 	iface->get_bookmark_list = nautilus_window_get_bookmark_list;
 	iface->get_current_location = nautilus_window_get_location_uri;
 	iface->get_ui_manager = nautilus_window_get_ui_manager;
+    iface->next_pane_is_writable = nautilus_window_next_pane_is_writable;
+    iface->copy_move_selection_to_next_pane = nautilus_window_copy_move_selection_to_next_pane;
 	iface->get_selection_count = nautilus_window_get_selection_count;
 	iface->get_selection = nautilus_window_get_selection;
 	iface->get_hidden_files_mode = nautilus_window_get_hidden_files_mode;

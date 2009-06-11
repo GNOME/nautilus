@@ -260,6 +260,23 @@ nautilus_window_info_get_ui_manager (NautilusWindowInfo *window)
 	return (* NAUTILUS_WINDOW_INFO_GET_IFACE (window)->get_ui_manager) (window);
 }
 
+gboolean
+nautilus_window_info_next_pane_is_writable (NautilusWindowInfo *window)
+{
+	g_return_val_if_fail (NAUTILUS_IS_WINDOW_INFO (window), FALSE);
+	
+	return (* NAUTILUS_WINDOW_INFO_GET_IFACE (window)->next_pane_is_writable) (window);
+}
+
+void
+nautilus_window_info_copy_move_selection_to_next_pane (NautilusWindowInfo *window,
+						       gboolean want_copy)
+{
+	g_return_if_fail (NAUTILUS_IS_WINDOW_INFO (window));
+	
+	(* NAUTILUS_WINDOW_INFO_GET_IFACE (window)->copy_move_selection_to_next_pane) (window, want_copy);
+}
+
 NautilusWindowSlotInfo *
 nautilus_window_info_get_active_slot (NautilusWindowInfo *window)
 {

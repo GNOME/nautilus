@@ -482,4 +482,7 @@ void                fm_directory_view_remove_subdirectory             (FMDirecto
 
 gboolean            fm_directory_view_is_editable                     (FMDirectoryView *view);
 
+/* operations affecting two directory views */
+void                fm_directory_view_move_copy_items_between_views   (FMDirectoryView *source, FMDirectoryView *target, gboolean copy);
+
 #endif /* FM_DIRECTORY_VIEW_H */
