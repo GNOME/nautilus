@@ -65,7 +65,8 @@ nautilus_navigation_window_pane_set_active (NautilusNavigationWindowPane *pane, 
 		gtk_widget_set_sensitive (gtk_bin_get_child (GTK_BIN (nautilus_path_bar_get_button_from_button_list_entry (walk->data))), is_active);
 	}
 
-	/* hhb: TODO: deal with navigation bar (manual entry) */
+	/* navigation bar (manual entry) */
+	nautilus_location_bar_set_active (NAUTILUS_LOCATION_BAR (pane->navigation_bar), is_active);
 }
 
 static gboolean

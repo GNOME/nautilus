@@ -588,6 +588,23 @@ nautilus_location_bar_update_label (NautilusLocationBar *bar)
 	g_object_unref (last_location);
 }
 
+/* change background color based on activity state */
+void
+nautilus_location_bar_set_active(NautilusLocationBar *location_bar, gboolean is_active)
+{
+	if(is_active) {
+		/* reset style to default */
+		gtk_widget_modify_base (GTK_WIDGET (location_bar->details->entry), GTK_STATE_NORMAL, NULL);
+	}
+	else {
+		GtkStyle *style;
+		GdkColor color;
+		style = gtk_widget_get_style (GTK_WIDGET (location_bar->details->entry));
+		color = style->base[GTK_STATE_INSENSITIVE];
+		gtk_widget_modify_base(GTK_WIDGET (location_bar->details->entry), GTK_STATE_NORMAL, &color);
+	}
+}
+
 NautilusEntry *
 nautilus_location_bar_get_entry (NautilusLocationBar *location_bar)
 {
