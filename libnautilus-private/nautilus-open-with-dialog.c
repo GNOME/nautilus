@@ -596,8 +596,9 @@ nautilus_open_with_dialog_add_items_idle (NautilusOpenWithDialog *dialog)
 {
 	GtkCellRenderer   *renderer;
 	GtkTreeViewColumn *column;
-	GList            *all_applications;
-	GList            *l;
+	GtkTreeModel      *sort;
+	GList             *all_applications;
+	GList             *l;
 	const char        *prev_name;
 
 	/* create list store */
@@ -608,7 +609,7 @@ nautilus_open_with_dialog_add_items_idle (NautilusOpenWithDialog *dialog)
 								  G_TYPE_STRING,
 								  G_TYPE_STRING,
 								  G_TYPE_STRING);
-
+	sort = gtk_tree_model_sort_new_with_model (GTK_TREE_MODEL (dialog->details->program_list_store));
 	all_applications = g_app_info_get_all ();
 	
 	prev_name = NULL;
@@ -639,7 +640,9 @@ nautilus_open_with_dialog_add_items_idle (NautilusOpenWithDialog *dialog)
 	g_list_free (all_applications);
 
 	gtk_tree_view_set_model (GTK_TREE_VIEW (dialog->details->program_list), 
-				 GTK_TREE_MODEL (dialog->details->program_list_store));
+				 GTK_TREE_MODEL (sort));
+	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (sort),
+					      COLUMN_NAME, GTK_SORT_ASCENDING);
 	gtk_tree_view_set_search_equal_func (GTK_TREE_VIEW (dialog->details->program_list),
 					     nautilus_open_with_search_equal_func,
 					     NULL, NULL);
@@ -656,7 +659,7 @@ nautilus_open_with_dialog_add_items_idle (NautilusOpenWithDialog *dialog)
 	gtk_tree_view_column_set_attributes (column, renderer,
                                              "text", COLUMN_NAME,
                                              NULL);
-					          
+	gtk_tree_view_column_set_sort_column_id (column, COLUMN_NAME);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (dialog->details->program_list), column);
 
 	dialog->details->add_icon_paths = g_slist_reverse (dialog->details->add_icon_paths);
