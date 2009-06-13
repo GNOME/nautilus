@@ -244,5 +244,6 @@ void               nautilus_navigation_window_set_throbber_active               
 void               nautilus_navigation_window_go_back                               (NautilusNavigationWindow    *window);
 void               nautilus_navigation_window_go_forward                            (NautilusNavigationWindow    *window);
 void               nautilus_window_close_pane                                       (NautilusWindowPane *pane);
+void               nautilus_navigation_window_update_split_view_actions_sensitivity (NautilusNavigationWindow    *window);
 
 #endif /* NAUTILUS_WINDOW_PRIVATE_H */

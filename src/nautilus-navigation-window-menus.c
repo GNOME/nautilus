@@ -147,6 +147,13 @@ action_clear_history_callback (GtkAction *action,
 }
 
 static void
+action_split_view_switch_next_pane_callback(GtkAction *action, 
+					    gpointer user_data)
+{
+	nautilus_window_pane_switch_to (nautilus_window_get_next_pane (NAUTILUS_WINDOW (user_data)));
+}
+
+static void
 action_show_hide_toolbar_callback (GtkAction *action, 
 				   gpointer user_data)
 {
@@ -473,6 +480,55 @@ nautilus_navigation_window_initialize_go_menu (NautilusNavigationWindow *window)
 	 */
 	g_signal_connect_object (nautilus_signaller_get_current (), "history_list_changed",
 				 G_CALLBACK (schedule_refresh_go_menu), window, G_CONNECT_SWAPPED);
+}
+
+void
+nautilus_navigation_window_update_split_view_actions_sensitivity (NautilusNavigationWindow *window)
+{
+	NautilusWindow *win;
+	GtkActionGroup *action_group;
+	GtkAction *action;
+	gboolean have_multiple_panes;
+	gboolean next_pane_is_in_same_location;
+	GFile *active_pane_location;
+	GFile *next_pane_location;
+	NautilusWindowPane *next_pane;
+
+	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
+
+	action_group = window->details->navigation_action_group;
+	win = NAUTILUS_WINDOW (window);
+
+	/* collect information */
+	have_multiple_panes = (win->details->panes && win->details->panes->next);
+	if (win->details->active_pane->active_slot) {
+		active_pane_location = nautilus_window_slot_get_location (win->details->active_pane->active_slot);
+	}
+	else {
+		active_pane_location = NULL;
+	}
+	next_pane = nautilus_window_get_next_pane (win);
+	if (next_pane && next_pane->active_slot) {
+		next_pane_location = nautilus_window_slot_get_location (next_pane->active_slot);
+		next_pane_is_in_same_location = (active_pane_location && next_pane_location &&
+						 g_file_equal (active_pane_location, next_pane_location));
+	}
+	else {
+		next_pane_location = NULL;
+		next_pane_is_in_same_location = FALSE;
+	}
+
+    /* switch to next pane */
+	action = gtk_action_group_get_action (action_group, "SplitViewNextPane");
+	gtk_action_set_sensitive (action, have_multiple_panes);
+
+	/* clean up */
+	if (active_pane_location) {
+		g_object_unref (active_pane_location);
+	}
+	if (next_pane_location) {
+		g_object_unref (next_pane_location);
+	}
 }
 
 static void
@@ -906,6 +962,9 @@ static const GtkActionEntry navigation_entries[] = {
   /* name, stock id, label */  { "Clear History", NULL, N_("Clea_r History"),
                                  NULL, N_("Clear contents of Go menu and Back/Forward lists"),
                                  G_CALLBACK (action_clear_history_callback) },
+  /* name, stock id, label */  { "SplitViewNextPane", NULL, N_("Switch to other pane"),
+				 NULL, N_("Move focus to the other pane in a split view window"),
+				 G_CALLBACK (action_split_view_switch_next_pane_callback) },                                 
   /* name, stock id, label */  { "Add Bookmark", GTK_STOCK_ADD, N_("_Add Bookmark"),
                                  "<control>d", N_("Add a bookmark for the current location to this menu"),
                                  G_CALLBACK (action_add_bookmark_callback) },
