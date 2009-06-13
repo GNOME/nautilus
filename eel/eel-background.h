@@ -118,6 +118,10 @@ void                        eel_background_receive_dropped_background_image (Eel
 EelBackground *             eel_get_widget_background                       (GtkWidget                   *widget);
 void			    eel_background_save_to_gconf                    (EelBackground               *background);
 
+/* Set activity status of background. Inactive backgrounds are drawn in the theme's INSENSITIVE color. */
+void                        eel_background_set_active                       (EelBackground               *background,
+									     gboolean                     is_active);
+
 typedef struct EelBackgroundDetails EelBackgroundDetails;
 
 struct EelBackground

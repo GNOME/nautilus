@@ -188,6 +188,9 @@ nautilus_window_pane_set_active (NautilusWindowPane *pane, gboolean is_active)
 	}
 
 	pane->is_active = is_active;
+
+	/* notify the current slot about its activity state (so that it can e.g. modify the bg color) */
+	nautilus_window_slot_is_in_active_pane (pane->active_slot, is_active);
 }
 
 static void

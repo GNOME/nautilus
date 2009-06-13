@@ -176,4 +176,6 @@ void    nautilus_window_slot_remove_extra_location_widgets (NautilusWindowSlot *
 
 void    nautilus_window_slot_add_current_location_to_history_list (NautilusWindowSlot *slot);
 
+void    nautilus_window_slot_is_in_active_pane (NautilusWindowSlot *slot, gboolean is_active);
+
 #endif /* NAUTILUS_WINDOW_SLOT_H */

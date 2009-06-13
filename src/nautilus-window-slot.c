@@ -27,11 +27,13 @@
 #include "nautilus-desktop-window.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window-manage-views.h"
+#include "file-manager/fm-directory-view.h"
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-window-slot-info.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
+#include <eel/eel-background.h>
 
 static void nautilus_window_slot_init       (NautilusWindowSlot *slot);
 static void nautilus_window_slot_class_init (NautilusWindowSlotClass *class);
@@ -390,6 +392,22 @@ title_changed_callback (NautilusView *view,
 	nautilus_window_slot_update_icon (slot);
 }
 
+void
+nautilus_window_slot_is_in_active_pane (NautilusWindowSlot *slot,
+					gboolean is_active)
+{
+	EelBackground *bg;
+
+	/* NULL is valid, and happens during init */
+	if (!slot) {
+		return;
+	}
+
+	bg = EEL_BACKGROUND (fm_directory_view_get_background (FM_DIRECTORY_VIEW (slot->content_view)));
+	g_return_if_fail (EEL_IS_BACKGROUND (bg));
+
+	eel_background_set_active (bg, is_active);
+}
 
 void
 nautilus_window_slot_connect_content_view (NautilusWindowSlot *slot,

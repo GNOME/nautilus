@@ -98,6 +98,9 @@ struct EelBackgroundDetails {
 	/* Can we use common pixmap for root window and desktop window */
 	gboolean use_common_pixmap;
 	guint change_idle_id;
+
+	/* activity status */
+	gboolean is_active;
 };
 
 static void
@@ -171,6 +174,7 @@ eel_background_init (gpointer object, gpointer klass)
 	background->details->default_color.green = 0xffff;
 	background->details->default_color.blue = 0xffff;
 	background->details->bg = gnome_bg_new ();
+	background->details->is_active = TRUE;
 
 	g_signal_connect (background->details->bg, "changed",
 			  G_CALLBACK (on_bg_changed), background);
@@ -397,6 +401,38 @@ eel_background_ensure_realized (EelBackground *background, GdkWindow *window)
 	return changed;
 }
 
+#define CLAMP_COLOR(v) (t = (v), CLAMP (t, 0, G_MAXUSHORT))
+#define SATURATE(v) ((1.0 - saturation) * intensity + saturation * (v))
+
+static void
+make_color_inactive (EelBackground *background, GdkColor *color)
+{
+	double intensity, saturation;
+	gushort t;
+
+	if (!background->details->is_active) {
+		saturation = 0.7;
+		intensity = color->red * 0.30 + color->green * 0.59 + color->blue * 0.11;
+		color->red = SATURATE (color->red);
+		color->green = SATURATE (color->green);
+		color->blue = SATURATE (color->blue);
+
+		if (intensity > G_MAXUSHORT / 2) {
+			color->red *= 0.9;
+			color->green *= 0.9;
+			color->blue *= 0.9;
+		} else {
+			color->red *= 1.25;
+			color->green *= 1.25;
+			color->blue *= 1.25;
+		}
+
+		color->red = CLAMP_COLOR (color->red);
+		color->green = CLAMP_COLOR (color->green);
+		color->blue = CLAMP_COLOR (color->blue);
+	}
+}
+
 static GdkPixmap *
 eel_background_get_pixmap_and_color (EelBackground *background,
 				     GdkWindow     *window,
@@ -408,9 +444,10 @@ eel_background_get_pixmap_and_color (EelBackground *background,
 	drawable_get_adjusted_size (background, window, &entire_width, &entire_height);
 
 	eel_background_ensure_realized (background, window);
-	
+
 	*color = background->details->default_color;
-	
+	make_color_inactive (background, color);
+
 	if (background->details->background_pixmap != NULL) {
 		return g_object_ref (background->details->background_pixmap);
 	} 
@@ -472,14 +509,15 @@ eel_background_expose (GtkWidget                   *widget,
 static void
 set_image_properties (EelBackground *background)
 {
+	GdkColor c;
 	if (!background->details->color) {
+		c = background->details->default_color;
+		make_color_inactive (background, &c);
 		gnome_bg_set_color (background->details->bg, GNOME_BG_COLOR_SOLID,
-				 &background->details->default_color, NULL);
+				    &c, NULL);
 	} else if (!eel_gradient_is_gradient (background->details->color)) {
-		GdkColor c;
-
 		eel_gdk_color_parse_with_white_default (background->details->color, &c);
-	
+		make_color_inactive (background, &c);
 		gnome_bg_set_color (background->details->bg, GNOME_BG_COLOR_SOLID, &c, NULL);
 	} else {
 		GdkColor c1;
@@ -488,10 +526,12 @@ set_image_properties (EelBackground *background)
 
 		spec = eel_gradient_get_start_color_spec (background->details->color);
 		eel_gdk_color_parse_with_white_default (spec, &c1);
+		make_color_inactive (background, &c1);
 		g_free (spec);
 
 		spec = eel_gradient_get_end_color_spec (background->details->color);
 		eel_gdk_color_parse_with_white_default (spec, &c2);
+		make_color_inactive (background, &c2);
 		g_free (spec);
 
 		if (eel_gradient_is_horizontal (background->details->color))
@@ -739,8 +779,8 @@ eel_background_set_up_widget (EelBackground *background, GtkWidget *widget)
 			gdk_window_set_back_pixmap (window, NULL, FALSE);
 			gdk_window_set_background (window, &color);
 		}
-        }
-	
+	}
+
 	if (background->details->is_desktop && !in_fade) {
 		set_root_pixmap (background, window);
 	}
@@ -1077,6 +1117,16 @@ eel_background_save_to_gconf (EelBackground *background)
 
 	if (background->details->bg)
 		gnome_bg_save_to_preferences (background->details->bg, client);
+}
+
+void
+eel_background_set_active (EelBackground *background,
+			   gboolean is_active)
+{
+	if (background->details->is_active != is_active) {
+		background->details->is_active = is_active;
+		set_image_properties (background);
+	}
 }
 
 /* self check code */
