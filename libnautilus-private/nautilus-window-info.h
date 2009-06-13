@@ -146,6 +146,7 @@ struct _NautilusWindowInfoIface
 	gboolean (* next_pane_is_writable) (NautilusWindowInfo *window);
 	void (* copy_move_selection_to_next_pane) (NautilusWindowInfo *window,
 						   gboolean want_copy);
+	struct FMDirectoryView * (* get_directory_view_of_next_pane) (NautilusWindowInfo *window);
 };
 
 GType                             nautilus_window_info_get_type                 (void);
@@ -175,6 +176,7 @@ GtkUIManager *                    nautilus_window_info_get_ui_manager           
 gboolean                          nautilus_window_info_next_pane_is_writable    (NautilusWindowInfo                *window);
 void                              nautilus_window_info_copy_move_selection_to_next_pane (NautilusWindowInfo        *window,
 										 gboolean                   want_copy);
+struct FMDirectoryView *         nautilus_window_info_get_directory_view_of_next_pane (NautilusWindowInfo         *window);
 
 G_END_DECLS
 

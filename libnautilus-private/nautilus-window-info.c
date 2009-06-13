@@ -285,3 +285,10 @@ nautilus_window_info_get_active_slot (NautilusWindowInfo *window)
 	return (* NAUTILUS_WINDOW_INFO_GET_IFACE (window)->get_active_slot) (window);
 }
 
+struct FMDirectoryView *
+nautilus_window_info_get_directory_view_of_next_pane (NautilusWindowInfo *window)
+{
+	g_return_val_if_fail (NAUTILUS_IS_WINDOW_INFO (window), NULL);
+
+	return (* NAUTILUS_WINDOW_INFO_GET_IFACE (window)->get_directory_view_of_next_pane) (window);	
+}

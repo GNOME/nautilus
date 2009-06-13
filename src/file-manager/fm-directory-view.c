@@ -5013,6 +5013,35 @@ get_file_uris_as_newline_delimited_string (GList *selection)
 	return get_file_paths_or_uris_as_newline_delimited_string (selection, FALSE);
 }
 
+/* returns newly allocated strings for setting the environment variables */
+static void
+get_strings_for_environment_variables (FMDirectoryView *view, GList *selected_files,
+				       char **file_paths, char **uris, char **uri)
+{
+	char *directory_uri;
+
+	/* We need to check that the directory uri starts with "file:" since
+	 * nautilus_directory_is_local returns FALSE for nfs.
+	 */
+	directory_uri = nautilus_directory_get_uri (view->details->model);
+	if (eel_str_has_prefix (directory_uri, "file:") ||
+	    eel_uri_is_desktop (directory_uri) ||
+	    eel_uri_is_trash (directory_uri)) {
+		*file_paths = get_file_paths_as_newline_delimited_string (selected_files);
+	} else {
+		*file_paths = g_strdup ("");
+	}
+	g_free (directory_uri);
+
+	*uris = get_file_uris_as_newline_delimited_string (selected_files);
+
+	*uri = nautilus_directory_get_uri (view->details->model);
+	if (eel_uri_is_desktop (*uri)) {
+		g_free (*uri);
+		*uri = nautilus_get_desktop_directory_uri ();
+	}
+}
+
 /*
  * Set up some environment variables that scripts can use
  * to take advantage of the current Nautilus state.
@@ -5024,33 +5053,17 @@ set_script_environment_variables (FMDirectoryView *view, GList *selected_files)
 	char *uris;
 	char *uri;
 	char *geometry_string;
-	char *directory_uri;
+	FMDirectoryView *next_view;
 
-	/* We need to check that the directory uri starts with "file:" since
-	 * nautilus_directory_is_local returns FALSE for nfs.
-	 */
-	directory_uri = nautilus_directory_get_uri (view->details->model);
-	if (eel_str_has_prefix (directory_uri, "file:") ||
-	    eel_uri_is_desktop (directory_uri) ||
-	    eel_uri_is_trash (directory_uri)) {
-		file_paths = get_file_paths_as_newline_delimited_string (selected_files);
-	} else {
-		file_paths = g_strdup ("");
-	}
-	g_free (directory_uri);
+	get_strings_for_environment_variables (view, selected_files,
+					       &file_paths, &uris, &uri);
 	
 	g_setenv ("NAUTILUS_SCRIPT_SELECTED_FILE_PATHS", file_paths, TRUE);
 	g_free (file_paths);
 
-	uris = get_file_uris_as_newline_delimited_string (selected_files);
 	g_setenv ("NAUTILUS_SCRIPT_SELECTED_URIS", uris, TRUE);
 	g_free (uris);
 
-	uri = nautilus_directory_get_uri (view->details->model);
-	if (eel_uri_is_desktop (uri)) {
-		g_free (uri);
-		uri = nautilus_get_desktop_directory_uri ();
-	}
 	g_setenv ("NAUTILUS_SCRIPT_CURRENT_URI", uri, TRUE);
 	g_free (uri);
 
@@ -5058,6 +5071,31 @@ set_script_environment_variables (FMDirectoryView *view, GList *selected_files)
 		(GTK_WINDOW (fm_directory_view_get_containing_window (view)));
 	g_setenv ("NAUTILUS_SCRIPT_WINDOW_GEOMETRY", geometry_string, TRUE);
 	g_free (geometry_string);
+    
+    /* next pane */
+    next_view = nautilus_window_info_get_directory_view_of_next_pane (fm_directory_view_get_nautilus_window (view));
+    if (next_view) {
+		GList *next_pane_selected_files;
+		next_pane_selected_files = fm_directory_view_get_selection (next_view);
+
+		get_strings_for_environment_variables (next_view, next_pane_selected_files,
+						       &file_paths, &uris, &uri);
+		nautilus_file_list_free (next_pane_selected_files);
+    }
+    else {
+		file_paths = g_strdup("");
+		uris = g_strdup("");
+		uri = g_strdup("");        
+    }
+    
+	g_setenv ("NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_FILE_PATHS", file_paths, TRUE);
+	g_free (file_paths);
+	
+	g_setenv ("NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_URIS", uris, TRUE);
+	g_free (uris);
+	
+	g_setenv ("NAUTILUS_SCRIPT_NEXT_PANE_CURRENT_URI", uri, TRUE);
+	g_free (uri);    
 }
 
 /* Unset all the special script environment variables. */
@@ -5068,6 +5106,9 @@ unset_script_environment_variables (void)
 	g_unsetenv ("NAUTILUS_SCRIPT_SELECTED_URIS");
 	g_unsetenv ("NAUTILUS_SCRIPT_CURRENT_URI");
 	g_unsetenv ("NAUTILUS_SCRIPT_WINDOW_GEOMETRY");
+	g_unsetenv ("NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_FILE_PATHS");
+	g_unsetenv ("NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_URIS");
+	g_unsetenv ("NAUTILUS_SCRIPT_NEXT_PANE_CURRENT_URI");
 }
 
 static void
@@ -5658,7 +5699,10 @@ action_open_scripts_folder_callback (GtkAction *action,
 		   "NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: newline-delimited paths for selected files (only if local)\n\n"
 		   "NAUTILUS_SCRIPT_SELECTED_URIS: newline-delimited URIs for selected files\n\n"
 		   "NAUTILUS_SCRIPT_CURRENT_URI: URI for current location\n\n"
-		   "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"),
+		   "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window\n\n"
+		   "NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_FILE_PATHS: newline-delimited paths for selected files in the inactive pane of a split-view window (only if local)\n\n"
+		   "NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_URIS: newline-delimited URIs for selected files in the inactive pane of a split-view window\n\n"
+		   "NAUTILUS_SCRIPT_NEXT_PANE_CURRENT_URI: URI for current location in the inactive pane of a split-view window"),
 		 fm_directory_view_get_containing_window (view));
 }
 

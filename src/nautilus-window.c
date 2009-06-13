@@ -1906,6 +1906,22 @@ nautilus_window_get_active_slot (NautilusWindow *window)
 	return window->details->active_pane->active_slot;
 }
 
+static FMDirectoryView *
+nautilus_window_get_directory_view_of_next_pane (NautilusWindow *window)
+{
+	NautilusWindowPane *next_pane;
+	g_assert (NAUTILUS_IS_WINDOW (window));
+	
+	next_pane = nautilus_window_get_next_pane (window);
+	
+	if (next_pane && FM_IS_DIRECTORY_VIEW (next_pane->active_slot->content_view)) {
+		return FM_DIRECTORY_VIEW (next_pane->active_slot->content_view);
+	}
+	else {
+		return NULL;
+	}
+}
+
 GList *
 nautilus_window_get_slots (NautilusWindow *window)
 {
@@ -1944,6 +1960,7 @@ nautilus_window_info_iface_init (NautilusWindowInfoIface *iface)
 	iface->get_hidden_files_mode = nautilus_window_get_hidden_files_mode;
 	iface->set_hidden_files_mode = nautilus_window_set_hidden_files_mode;
 	iface->get_active_slot = nautilus_window_get_active_slot;
+	iface->get_directory_view_of_next_pane = nautilus_window_get_directory_view_of_next_pane;
 }
 
 static void
