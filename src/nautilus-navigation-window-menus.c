@@ -147,10 +147,28 @@ action_clear_history_callback (GtkAction *action,
 }
 
 static void
-action_split_view_switch_next_pane_callback(GtkAction *action, 
+action_split_view_switch_next_pane_callback(GtkAction *action,
 					    gpointer user_data)
 {
 	nautilus_window_pane_switch_to (nautilus_window_get_next_pane (NAUTILUS_WINDOW (user_data)));
+}
+
+static void
+action_split_view_same_location_callback (GtkAction *action,
+					  gpointer user_data)
+{
+	NautilusWindow *window;
+	NautilusWindowPane *next_pane;
+	GFile *location;
+
+	window = NAUTILUS_WINDOW (user_data);
+	next_pane = nautilus_window_get_next_pane (window);
+
+	location = nautilus_window_slot_get_location (next_pane->active_slot);
+	if (location) {
+		nautilus_window_slot_go_to (window->details->active_pane->active_slot, location, FALSE);
+		g_object_unref (location);
+	}
 }
 
 static void
@@ -521,6 +539,10 @@ nautilus_navigation_window_update_split_view_actions_sensitivity (NautilusNaviga
     /* switch to next pane */
 	action = gtk_action_group_get_action (action_group, "SplitViewNextPane");
 	gtk_action_set_sensitive (action, have_multiple_panes);
+
+	/* same location */
+	action = gtk_action_group_get_action (action_group, "SplitViewSameLocation");
+	gtk_action_set_sensitive (action, have_multiple_panes && !next_pane_is_in_same_location);
 
 	/* clean up */
 	if (active_pane_location) {
@@ -965,6 +987,9 @@ static const GtkActionEntry navigation_entries[] = {
   /* name, stock id, label */  { "SplitViewNextPane", NULL, N_("Switch to other pane"),
 				 NULL, N_("Move focus to the other pane in a split view window"),
 				 G_CALLBACK (action_split_view_switch_next_pane_callback) },                                 
+  /* name, stock id, label */  { "SplitViewSameLocation", NULL, N_("Go to same location as other pane"),
+				 NULL, N_("Go to the same location in the other pane of a split view window"),
+				 G_CALLBACK (action_split_view_same_location_callback) },
   /* name, stock id, label */  { "Add Bookmark", GTK_STOCK_ADD, N_("_Add Bookmark"),
                                  "<control>d", N_("Add a bookmark for the current location to this menu"),
                                  G_CALLBACK (action_add_bookmark_callback) },
@@ -1106,7 +1131,11 @@ nautilus_navigation_window_initialize_actions (NautilusNavigationWindow *window)
 	gtk_ui_manager_insert_action_group (ui_manager, action_group, 0);
 	g_object_unref (action_group); /* owned by ui_manager */
 
-	/* hhb: updates for split view needed here */
+	g_signal_connect (window, "loading_uri",
+			  G_CALLBACK (nautilus_navigation_window_update_split_view_actions_sensitivity),
+			  NULL);
+
+	nautilus_navigation_window_update_split_view_actions_sensitivity (window);
 }
 
 
