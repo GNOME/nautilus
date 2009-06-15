@@ -276,8 +276,11 @@ xdg_dir_changed (NautilusFile *file,
 				      G_SPAWN_STDERR_TO_DEV_NULL,
 				      NULL, NULL,
 				      NULL, NULL, NULL, NULL);
+			g_reload_user_special_dirs_cache ();
 			schedule_user_dirs_changed ();
 			desktop_dir_changed ();
+			/* Icon might have changed */
+			nautilus_file_invalidate_attributes (file, NAUTILUS_FILE_ATTRIBUTE_INFO);
 		}
 	}
 	g_object_unref (location);
@@ -367,6 +370,7 @@ update_xdg_dir_cache (void)
 	int i;
 
 	free_xdg_dir_cache ();
+	g_reload_user_special_dirs_cache ();
 	schedule_user_dirs_changed ();
 	desktop_dir_changed ();
 
