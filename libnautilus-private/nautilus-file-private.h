@@ -214,6 +214,9 @@ struct NautilusFileDetails
 	eel_boolean_bit can_mount                     : 1;
 	eel_boolean_bit can_unmount                   : 1;
 	eel_boolean_bit can_eject                     : 1;
+	eel_boolean_bit can_start                     : 1;
+	eel_boolean_bit can_stop                      : 1;
+	eel_boolean_bit start_stop_type               : 3; /* GDriveStartStopType */
 
 	eel_boolean_bit filesystem_readonly           : 1;
 	eel_boolean_bit filesystem_use_preview        : 2; /* GFilesystemPreviewType */

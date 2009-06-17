@@ -312,6 +312,9 @@ nautilus_file_clear_info (NautilusFile *file)
 	file->details->can_mount = FALSE;
 	file->details->can_unmount = FALSE;
 	file->details->can_eject = FALSE;
+	file->details->can_start = FALSE;
+	file->details->can_stop = FALSE;
+	file->details->start_stop_type = G_DRIVE_START_STOP_TYPE_UNKNOWN;
 	file->details->has_permissions = FALSE;
 	file->details->permissions = 0;
 	file->details->size = -1;
@@ -879,6 +882,86 @@ nautilus_file_can_eject (NautilusFile *file)
 		 g_mount_can_eject (file->details->mount));
 }
 
+gboolean
+nautilus_file_can_start (NautilusFile *file)
+{
+	gboolean ret;
+	GDrive *drive;
+
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+	ret = FALSE;
+
+	if (file->details->can_start) {
+		ret = TRUE;
+		goto out;
+	}
+
+	if (file->details->mount != NULL) {
+		drive = g_mount_get_drive (file->details->mount);
+		if (drive != NULL) {
+			ret = g_drive_can_start (drive);
+			g_object_unref (drive);
+		}
+	}
+
+ out:
+	return ret;
+}
+
+gboolean
+nautilus_file_can_stop (NautilusFile *file)
+{
+	gboolean ret;
+	GDrive *drive;
+
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+	ret = FALSE;
+
+	if (file->details->can_stop) {
+		ret = TRUE;
+		goto out;
+	}
+
+	if (file->details->mount != NULL) {
+		drive = g_mount_get_drive (file->details->mount);
+		if (drive != NULL) {
+			ret = g_drive_can_stop (drive);
+			g_object_unref (drive);
+		}
+	}
+
+ out:
+	return ret;
+}
+
+GDriveStartStopType
+nautilus_file_get_start_stop_type (NautilusFile *file)
+{
+	GDriveStartStopType ret;
+	GDrive *drive;
+
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+	ret = G_DRIVE_START_STOP_TYPE_UNKNOWN;
+
+	ret = file->details->start_stop_type;
+	if (ret != G_DRIVE_START_STOP_TYPE_UNKNOWN)
+		goto out;
+
+	if (file->details->mount != NULL) {
+		drive = g_mount_get_drive (file->details->mount);
+		if (drive != NULL) {
+			ret = g_drive_get_start_stop_type (drive);
+			g_object_unref (drive);
+		}
+	}
+
+ out:
+	return ret;
+}
+
 void
 nautilus_file_mount (NautilusFile                   *file,
 		     GMountOperation                *mount_op,
@@ -924,6 +1007,45 @@ nautilus_file_eject (NautilusFile *file)
 	} else if (file->details->mount != NULL &&
 		   g_mount_can_eject (file->details->mount)) {
 		nautilus_file_operations_unmount_mount (NULL, file->details->mount, TRUE, TRUE);
+	}
+}
+
+void
+nautilus_file_start (NautilusFile                   *file,
+		     GMountOperation                *start_op,
+		     GCancellable                   *cancellable,
+		     NautilusFileOperationCallback   callback,
+		     gpointer                        callback_data)
+{
+	GError *error;
+
+	if (NAUTILUS_FILE_GET_CLASS (file)->start == NULL) {
+		if (callback) {
+			error = NULL;
+			g_set_error_literal (&error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+                                             _("This file cannot be started"));
+			callback (file, NULL, error, callback_data);
+			g_error_free (error);
+		}
+	} else {
+		NAUTILUS_FILE_GET_CLASS (file)->start (file, start_op, cancellable, callback, callback_data);
+	}
+}
+
+void
+nautilus_file_stop (NautilusFile *file)
+{
+	if (file->details->can_stop) {
+		if (NAUTILUS_FILE_GET_CLASS (file)->stop != NULL) {
+			NAUTILUS_FILE_GET_CLASS (file)->stop (file);
+		}
+	} else if (file->details->mount != NULL) {
+		GDrive *drive;
+		drive = g_mount_get_drive (file->details->mount);
+		if (drive != NULL) {
+			g_drive_stop (drive, 0, NULL, NULL, NULL);
+			g_object_unref (drive);
+		}
 	}
 }
 
@@ -1546,6 +1668,8 @@ update_info_internal (NautilusFile *file,
 	gboolean has_permissions;
 	guint32 permissions;
 	gboolean can_read, can_write, can_execute, can_delete, can_trash, can_rename, can_mount, can_unmount, can_eject;
+	gboolean can_start, can_stop;
+	GDriveStartStopType start_stop_type;
 	gboolean thumbnailing_failed;
 	int uid, gid;
 	goffset size;
@@ -1664,6 +1788,9 @@ update_info_internal (NautilusFile *file,
 	can_mount = FALSE;
 	can_unmount = FALSE;
 	can_eject = FALSE;
+	can_start = FALSE;
+	can_stop = FALSE;
+	start_stop_type = G_DRIVE_START_STOP_TYPE_UNKNOWN;
 	if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_ACCESS_CAN_READ)) {
 		can_read = g_file_info_get_attribute_boolean (info,
 							      G_FILE_ATTRIBUTE_ACCESS_CAN_READ);
@@ -1700,6 +1827,18 @@ update_info_internal (NautilusFile *file,
 		can_eject = g_file_info_get_attribute_boolean (info,
 							       G_FILE_ATTRIBUTE_MOUNTABLE_CAN_EJECT);
 	}
+	if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_START)) {
+		can_start = g_file_info_get_attribute_boolean (info,
+							       G_FILE_ATTRIBUTE_MOUNTABLE_CAN_START);
+	}
+	if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_STOP)) {
+		can_stop = g_file_info_get_attribute_boolean (info,
+							      G_FILE_ATTRIBUTE_MOUNTABLE_CAN_STOP);
+	}
+	if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_MOUNTABLE_START_STOP_TYPE)) {
+		start_stop_type = g_file_info_get_attribute_uint32 (info,
+								    G_FILE_ATTRIBUTE_MOUNTABLE_START_STOP_TYPE);
+	}
 	if (file->details->can_read != can_read ||
 	    file->details->can_write != can_write ||
 	    file->details->can_execute != can_execute ||
@@ -1708,7 +1847,10 @@ update_info_internal (NautilusFile *file,
 	    file->details->can_rename != can_rename ||
 	    file->details->can_mount != can_mount ||
 	    file->details->can_unmount != can_unmount ||
-	    file->details->can_eject != can_eject) {
+	    file->details->can_eject != can_eject ||
+	    file->details->can_start != can_start ||
+	    file->details->can_stop != can_stop ||
+	    file->details->start_stop_type != start_stop_type) {
 		changed = TRUE;
 	}
 	
@@ -1721,6 +1863,9 @@ update_info_internal (NautilusFile *file,
 	file->details->can_mount = can_mount;
 	file->details->can_unmount = can_unmount;
 	file->details->can_eject = can_eject;
+	file->details->can_start = can_start;
+	file->details->can_stop = can_stop;
+	file->details->start_stop_type = start_stop_type;
 
 	free_owner = FALSE;
 	owner = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_OWNER_USER);

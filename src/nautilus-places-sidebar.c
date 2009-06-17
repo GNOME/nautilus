@@ -83,6 +83,8 @@ typedef struct {
 	GtkWidget *popup_menu_rescan_item;
 	GtkWidget *popup_menu_format_item;
 	GtkWidget *popup_menu_empty_trash_item;
+	GtkWidget *popup_menu_start_item;
+	GtkWidget *popup_menu_stop_item;
 
 	/* volume mounting - delayed open process */
 	gboolean mounting;
@@ -1268,6 +1270,8 @@ bookmarks_popup_menu_detach_cb (GtkWidget *attach_widget,
 	sidebar->popup_menu_eject_item = NULL;
 	sidebar->popup_menu_rescan_item = NULL;
 	sidebar->popup_menu_format_item = NULL;
+	sidebar->popup_menu_start_item = NULL;
+	sidebar->popup_menu_stop_item = NULL;
 	sidebar->popup_menu_empty_trash_item = NULL;
 }
 
@@ -1302,11 +1306,15 @@ check_visibility (GMount           *mount,
 		  gboolean         *show_unmount,
 		  gboolean         *show_eject,
 		  gboolean         *show_rescan,
-		  gboolean         *show_format)
+		  gboolean         *show_format,
+		  gboolean         *show_start,
+		  gboolean         *show_stop)
 {
 	*show_mount = FALSE;
 	*show_format = FALSE;
 	*show_rescan = FALSE;
+	*show_start = FALSE;
+	*show_stop = FALSE;
 
 	check_unmount_and_eject (mount, volume, drive, show_unmount, show_eject);
 
@@ -1315,6 +1323,9 @@ check_visibility (GMount           *mount,
 		    !g_drive_is_media_check_automatic (drive) && 
 		    g_drive_can_poll_for_media (drive))
 			*show_rescan = TRUE;
+
+		*show_start = g_drive_can_start (drive);
+		*show_stop  = g_drive_can_stop (drive);
 	}
 
 	if (volume != NULL) {
@@ -1343,6 +1354,8 @@ bookmarks_check_popup_sensitivity (NautilusPlacesSidebar *sidebar)
 	gboolean show_eject;
 	gboolean show_rescan;
 	gboolean show_format;
+	gboolean show_start;
+	gboolean show_stop;
 	gboolean show_empty_trash;
 	char *uri = NULL;
 	
@@ -1373,7 +1386,7 @@ bookmarks_check_popup_sensitivity (NautilusPlacesSidebar *sidebar)
 	gtk_widget_set_sensitive (sidebar->popup_menu_empty_trash_item, !nautilus_trash_monitor_is_empty ());
 
  	check_visibility (mount, volume, drive,
- 			  &show_mount, &show_unmount, &show_eject, &show_rescan, &show_format);
+ 			  &show_mount, &show_unmount, &show_eject, &show_rescan, &show_format, &show_start, &show_stop);
 
 	/* We actually want both eject and unmount since eject will unmount all volumes. 
 	 * TODO: hide unmount if the drive only has a single mountable volume 
@@ -1389,7 +1402,41 @@ bookmarks_check_popup_sensitivity (NautilusPlacesSidebar *sidebar)
 	eel_gtk_widget_set_shown (sidebar->popup_menu_eject_item, show_eject);
 	eel_gtk_widget_set_shown (sidebar->popup_menu_rescan_item, show_rescan);
 	eel_gtk_widget_set_shown (sidebar->popup_menu_format_item, show_format);
+	eel_gtk_widget_set_shown (sidebar->popup_menu_start_item, show_start);
+	eel_gtk_widget_set_shown (sidebar->popup_menu_stop_item, show_stop);
 	eel_gtk_widget_set_shown (sidebar->popup_menu_empty_trash_item, show_empty_trash);
+
+	/* Adjust start/stop items to reflect the type of the drive */
+	gtk_menu_item_set_label (GTK_MENU_ITEM (sidebar->popup_menu_start_item), _("_Start"));
+	gtk_menu_item_set_label (GTK_MENU_ITEM (sidebar->popup_menu_stop_item), _("_Stop"));
+	if ((show_start || show_stop) && drive != NULL) {
+		switch (g_drive_get_start_stop_type (drive)) {
+		case G_DRIVE_START_STOP_TYPE_SHUTDOWN:
+			/* start() for type G_DRIVE_START_STOP_TYPE_SHUTDOWN is normally not used */
+			gtk_menu_item_set_label (GTK_MENU_ITEM (sidebar->popup_menu_start_item), _("_Power On"));
+			gtk_menu_item_set_label (GTK_MENU_ITEM (sidebar->popup_menu_stop_item), _("_Safely Remove Drive"));
+			break;
+		case G_DRIVE_START_STOP_TYPE_NETWORK:
+			gtk_menu_item_set_label (GTK_MENU_ITEM (sidebar->popup_menu_start_item), _("_Connect Drive"));
+			gtk_menu_item_set_label (GTK_MENU_ITEM (sidebar->popup_menu_stop_item), _("_Disconnect Drive"));
+			break;
+		case G_DRIVE_START_STOP_TYPE_MULTIDISK:
+			gtk_menu_item_set_label (GTK_MENU_ITEM (sidebar->popup_menu_start_item), _("_Start Multi-disk Device"));
+			gtk_menu_item_set_label (GTK_MENU_ITEM (sidebar->popup_menu_stop_item), _("_Stop Multi-disk Device"));
+			break;
+		case G_DRIVE_START_STOP_TYPE_PASSWORD:
+			/* stop() for type G_DRIVE_START_STOP_TYPE_PASSWORD is normally not used */
+			gtk_menu_item_set_label (GTK_MENU_ITEM (sidebar->popup_menu_start_item), _("_Unlock Drive"));
+			gtk_menu_item_set_label (GTK_MENU_ITEM (sidebar->popup_menu_stop_item), _("_Lock Drive"));
+			break;
+
+		default:
+		case G_DRIVE_START_STOP_TYPE_UNKNOWN:
+			/* uses defaults set above */
+			break;
+		}
+	}
+
 
 	g_free (uri);
 }
@@ -1443,6 +1490,30 @@ volume_mounted_cb (GVolume *volume,
 }
 
 static void
+drive_start_from_bookmark_cb (GObject      *source_object,
+			      GAsyncResult *res,
+			      gpointer      user_data)
+{
+	GError *error;
+	char *primary;
+	char *name;
+
+	error = NULL;
+	if (!g_drive_poll_for_media_finish (G_DRIVE (source_object), res, &error)) {
+		if (error->code != G_IO_ERROR_FAILED_HANDLED) {
+			name = g_drive_get_name (G_DRIVE (source_object));
+			primary = g_strdup_printf (_("Unable to start %s"), name);
+			g_free (name);
+			eel_show_error_dialog (primary,
+					       error->message,
+					       NULL);
+			g_free (primary);
+		}
+		g_error_free (error);
+	}
+}
+
+static void
 open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 			GtkTreeModel	      *model,
 			GtkTreePath	      *path,
@@ -1493,9 +1564,15 @@ open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 		g_free (uri);
 
 	} else {
+		GDrive *drive;
 		GVolume *volume;
 		NautilusWindowSlot *slot;
-		gtk_tree_model_get (model, &iter, PLACES_SIDEBAR_COLUMN_VOLUME, &volume, -1);
+
+		gtk_tree_model_get (model, &iter,
+				    PLACES_SIDEBAR_COLUMN_DRIVE, &drive,
+				    PLACES_SIDEBAR_COLUMN_VOLUME, &volume,
+				    -1);
+
 		if (volume != NULL && !sidebar->mounting) {
 			sidebar->mounting = TRUE;
 
@@ -1510,8 +1587,18 @@ open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 			nautilus_file_operations_mount_volume_full (NULL, volume, FALSE,
 								    volume_mounted_cb,
 								    G_OBJECT (sidebar));
-			g_object_unref (volume);
+		} else if (volume == NULL && drive != NULL && g_drive_can_start (drive)) {
+			GMountOperation *start_op;
+
+			start_op = gtk_mount_operation_new (NULL);
+			g_drive_start (drive, G_DRIVE_START_NONE, start_op, NULL, drive_start_from_bookmark_cb, NULL);
+			g_object_unref (start_op);
 		}
+
+		if (drive != NULL)
+			g_object_unref (drive);
+		if (volume != NULL)
+			g_object_unref (volume);
 	}
 }
 
@@ -1903,6 +1990,102 @@ format_shortcut_cb (GtkMenuItem           *item,
 }
 
 static void
+drive_start_cb (GObject      *source_object,
+		GAsyncResult *res,
+		gpointer      user_data)
+{
+	GError *error;
+	char *primary;
+	char *name;
+
+	error = NULL;
+	if (!g_drive_poll_for_media_finish (G_DRIVE (source_object), res, &error)) {
+		if (error->code != G_IO_ERROR_FAILED_HANDLED) {
+			name = g_drive_get_name (G_DRIVE (source_object));
+			primary = g_strdup_printf (_("Unable to start %s"), name);
+			g_free (name);
+			eel_show_error_dialog (primary,
+					       error->message,
+					       NULL);
+			g_free (primary);
+		}
+		g_error_free (error);
+	}
+}
+
+static void
+start_shortcut_cb (GtkMenuItem           *item,
+		   NautilusPlacesSidebar *sidebar)
+{
+	GtkTreeIter iter;
+	GDrive  *drive;
+
+	if (!get_selected_iter (sidebar, &iter)) {
+		return;
+	}
+
+	gtk_tree_model_get (GTK_TREE_MODEL (sidebar->store), &iter,
+			    PLACES_SIDEBAR_COLUMN_DRIVE, &drive,
+			    -1);
+
+	if (drive != NULL) {
+		GMountOperation *start_op;
+
+		start_op = gtk_mount_operation_new (NULL);
+
+		g_drive_start (drive, G_DRIVE_START_NONE, start_op, NULL, drive_start_cb, NULL);
+
+		g_object_unref (start_op);
+	}
+	g_object_unref (drive);
+}
+
+static void
+drive_stop_cb (GObject *source_object,
+	       GAsyncResult *res,
+	       gpointer user_data)
+{
+	GError *error;
+	char *primary;
+	char *name;
+
+	error = NULL;
+	if (!g_drive_poll_for_media_finish (G_DRIVE (source_object), res, &error)) {
+		if (error->code != G_IO_ERROR_FAILED_HANDLED) {
+			name = g_drive_get_name (G_DRIVE (source_object));
+			primary = g_strdup_printf (_("Unable to stop %s"), name);
+			g_free (name);
+			eel_show_error_dialog (primary,
+					       error->message,
+					       NULL);
+			g_free (primary);
+		}
+		g_error_free (error);
+	}
+}
+
+static void
+stop_shortcut_cb (GtkMenuItem           *item,
+		  NautilusPlacesSidebar *sidebar)
+{
+	GtkTreeIter iter;
+	GDrive  *drive;
+
+	if (!get_selected_iter (sidebar, &iter)) {
+		return;
+	}
+
+	gtk_tree_model_get (GTK_TREE_MODEL (sidebar->store), &iter,
+			    PLACES_SIDEBAR_COLUMN_DRIVE, &drive,
+			    -1);
+
+	if (drive != NULL) {
+		g_drive_stop (drive, G_MOUNT_UNMOUNT_NONE, NULL, drive_stop_cb, NULL);
+	}
+	g_object_unref (drive);
+}
+
+static void
 empty_trash_cb (GtkMenuItem           *item,
 		NautilusPlacesSidebar *sidebar)
 {
@@ -2032,6 +2215,20 @@ bookmarks_build_popup_menu (NautilusPlacesSidebar *sidebar)
 	sidebar->popup_menu_format_item = item;
 	g_signal_connect (item, "activate",
 		    G_CALLBACK (format_shortcut_cb), sidebar);
+	gtk_widget_show (item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
+
+	item = gtk_menu_item_new_with_mnemonic (_("_Start"));
+	sidebar->popup_menu_start_item = item;
+	g_signal_connect (item, "activate",
+			  G_CALLBACK (start_shortcut_cb), sidebar);
+	gtk_widget_show (item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
+
+	item = gtk_menu_item_new_with_mnemonic (_("_Stop"));
+	sidebar->popup_menu_stop_item = item;
+	g_signal_connect (item, "activate",
+			  G_CALLBACK (stop_shortcut_cb), sidebar);
 	gtk_widget_show (item);
 	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
 

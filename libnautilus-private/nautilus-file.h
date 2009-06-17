@@ -255,6 +255,9 @@ gboolean                nautilus_file_can_trash                         (Nautilu
 gboolean                nautilus_file_can_mount                         (NautilusFile                   *file);
 gboolean                nautilus_file_can_unmount                       (NautilusFile                   *file);
 gboolean                nautilus_file_can_eject                         (NautilusFile                   *file);
+gboolean                nautilus_file_can_start                         (NautilusFile                   *file);
+gboolean                nautilus_file_can_stop                          (NautilusFile                   *file);
+GDriveStartStopType     nautilus_file_get_start_stop_type               (NautilusFile                   *file);
 
 void                    nautilus_file_mount                             (NautilusFile                   *file,
 									 GMountOperation                *mount_op,
@@ -263,6 +266,13 @@ void                    nautilus_file_mount                             (Nautilu
 									 gpointer                        callback_data);
 void                    nautilus_file_unmount                           (NautilusFile                   *file);
 void                    nautilus_file_eject                             (NautilusFile                   *file);
+
+void                    nautilus_file_start                             (NautilusFile                   *file,
+									 GMountOperation                *start_op,
+									 GCancellable                   *cancellable,
+									 NautilusFileOperationCallback   callback,
+									 gpointer                        callback_data);
+void                    nautilus_file_stop                              (NautilusFile                   *file);
 
 /* Basic operations for file objects. */
 void                    nautilus_file_set_owner                         (NautilusFile                   *file,
@@ -512,6 +522,13 @@ typedef struct {
 							  gpointer                        callback_data);
 	void                 (* unmount)                 (NautilusFile *file);
 	void                 (* eject)                   (NautilusFile *file);
+
+	void                  (* start)                  (NautilusFile                   *file,
+							  GMountOperation                *start_op,
+							  GCancellable                   *cancellable,
+							  NautilusFileOperationCallback   callback,
+							  gpointer                        callback_data);
+	void                 (* stop)                    (NautilusFile *file);
 } NautilusFileClass;
 
 #endif /* NAUTILUS_FILE_H */
