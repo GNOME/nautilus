@@ -7600,6 +7600,7 @@ real_update_menus_volumes (FMDirectoryView *view,
 	show_start = (selection != NULL && selection_count == 1);
 	show_stop = (selection != NULL && selection_count == 1);
 	start_stop_type = G_DRIVE_START_STOP_TYPE_UNKNOWN;
+	self_start_stop_type = G_DRIVE_START_STOP_TYPE_UNKNOWN;
 
 	for (l = selection; l != NULL && (show_mount || show_unmount
 					  || show_eject || show_connect
