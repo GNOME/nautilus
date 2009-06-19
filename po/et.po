@@ -22,9 +22,9 @@ msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2009-06-08 15:04+0000\n"
-"PO-Revision-Date: 2009-06-18 12:32+0300\n"
-"Last-Translator: Mattias Põldaru <mahfiaz gmail com>\n"
+"POT-Creation-Date: 2009-06-18 15:18+0000\n"
+"PO-Revision-Date: 2009-06-19 14:55+0300\n"
+"Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1242,10 +1242,14 @@ msgstr ""
 msgid "_Always perform this action"
 msgstr "Seda tehakse _alati"
 
+#. name, stock id
+#. label, accelerator
 #. add the "Eject" menu item
 msgid "_Eject"
 msgstr "_Väljasta"
 
+#. name, stock id
+#. label, accelerator
 #. add the "Unmount" menu item
 msgid "_Unmount"
 msgstr "_Ühenda lahti"
@@ -2038,6 +2042,11 @@ msgstr ""
 msgid "This file cannot be mounted"
 msgstr "Seda faili pole võimalik külge haakida"
 
+#, fuzzy
+#| msgid "This file cannot be mounted"
+msgid "This file cannot be started"
+msgstr "Seda faili pole võimalik külge haakida"
+
 #, c-format
 msgid "Slashes are not allowed in filenames"
 msgstr "Failinimedes pole kaldkriipsud lubatud"
@@ -2514,6 +2523,11 @@ msgid "Mark as _Trusted"
 msgstr "Märgi _usaldusväärseks"
 
 msgid "Unable to mount location"
+msgstr "Asukohta pole võimalik külge haakida"
+
+#, fuzzy
+#| msgid "Unable to mount location"
+msgid "Unable to start location"
 msgstr "Asukohta pole võimalik külge haakida"
 
 #, c-format
@@ -3226,26 +3240,16 @@ msgstr "Selle serveriga pideva ühenduse loomine"
 
 #. name, stock id
 #. label, accelerator
-msgid "_Mount Volume"
-msgstr "_Ühenda kettaseade"
+msgid "_Mount"
+msgstr "Ü_henda"
 
 #. tooltip
 msgid "Mount the selected volume"
 msgstr "Valitud kettaseadme haakimine"
 
-#. name, stock id
-#. label, accelerator
-msgid "_Unmount Volume"
-msgstr "_Haagi ketas lahti"
-
 #. tooltip
 msgid "Unmount the selected volume"
 msgstr "Valitud kettaseadme lahtihaakimine"
-
-#. name, stock id
-#. label, accelerator
-msgid "_Eject Volume"
-msgstr "_Väljasta andmekandja"
 
 #. tooltip
 msgid "Eject the selected volume"
@@ -3259,6 +3263,31 @@ msgstr "_Vorming"
 #. tooltip
 msgid "Format the selected volume"
 msgstr "Valitud kettaseadme vormindamine"
+
+#. name, stock id
+#. label, accelerator
+#. Adjust start/stop items to reflect the type of the drive
+#, fuzzy
+#| msgid "_Software:"
+msgid "_Start"
+msgstr "_Tarkvara:"
+
+#. tooltip
+#, fuzzy
+#| msgid "Format the selected volume"
+msgid "Start the selected volume"
+msgstr "Valitud kettaseadme vormindamine"
+
+#. name, stock id
+#. label, accelerator
+msgid "_Stop"
+msgstr "_Peata"
+
+#. tooltip
+#, fuzzy
+#| msgid "Mount the selected volume"
+msgid "Stop the selected volume"
+msgstr "Valitud kettaseadme haakimine"
 
 #. tooltip
 msgid "Mount the volume associated with the open folder"
@@ -3275,6 +3304,18 @@ msgstr "Avatud kataloogiga seotud ketta väljastamine"
 #. tooltip
 msgid "Format the volume associated with the open folder"
 msgstr "Avatud kataloogiga seotud kettaseadme vormindamine"
+
+#. tooltip
+#, fuzzy
+#| msgid "Format the volume associated with the open folder"
+msgid "Start the volume associated with the open folder"
+msgstr "Avatud kataloogiga seotud kettaseadme vormindamine"
+
+#. tooltip
+#, fuzzy
+#| msgid "Mount the volume associated with the open folder"
+msgid "Stop the volume associated with the open folder"
+msgstr "Avatud kataloogiga seotud kettaseadme haakimine"
 
 #. name, stock id
 #. label, accelerator
@@ -3357,6 +3398,18 @@ msgid "Format the volume associated with this folder"
 msgstr "Selle kataloogiga seotud kettaseadme vormindamine"
 
 #. tooltip
+#, fuzzy
+#| msgid "Format the volume associated with this folder"
+msgid "Start the volume associated with this folder"
+msgstr "Selle kataloogiga seotud kettaseadme vormindamine"
+
+#. tooltip
+#, fuzzy
+#| msgid "Mount the volume associated with this folder"
+msgid "Stop the volume associated with this folder"
+msgstr "Selle kataloogiga seotud kettaseadme haakimine"
+
+#. tooltip
 msgid "View or modify the properties of this folder"
 msgstr "Selle kataloogi omaduste vaatamine või muutmine"
 
@@ -3408,6 +3461,123 @@ msgid "Move the selected item out of the trash"
 msgid_plural "Move the selected items out of the trash"
 msgstr[0] "Valitud kirje prügikastist väljatõstmine"
 msgstr[1] "Valitud kirjete prügikastist väljatõstmine"
+
+#, fuzzy
+#| msgid "Format the selected volume"
+msgid "Start the select drive"
+msgstr "Valitud kettaseadme vormindamine"
+
+#, fuzzy
+#| msgid "Mount the selected volume"
+msgid "Connect to the selected drive"
+msgstr "Valitud kettaseadme haakimine"
+
+msgid "_Start Multi-disk Drive"
+msgstr ""
+
+msgid "Start the selected multi-disk drive"
+msgstr ""
+
+msgid "U_nlock Drive"
+msgstr ""
+
+#, fuzzy
+#| msgid "Unmount the selected volume"
+msgid "Unlock the selected drive"
+msgstr "Valitud kettaseadme lahtihaakimine"
+
+#, fuzzy
+#| msgid "Mount the selected volume"
+msgid "Stop the selected drive"
+msgstr "Valitud kettaseadme haakimine"
+
+#, fuzzy
+#| msgid "C_ancel Remove"
+msgid "_Safely Remove Drive"
+msgstr "T_ühista eemaldamine"
+
+#, fuzzy
+#| msgid "Format the selected volume"
+msgid "Safely remove the selected drive"
+msgstr "Valitud kettaseadme vormindamine"
+
+#, fuzzy
+#| msgid "_Connect"
+msgid "_Disconnect"
+msgstr "Ü_hendu"
+
+#, fuzzy
+#| msgid "Mount the selected volume"
+msgid "Disconnect the selected drive"
+msgstr "Valitud kettaseadme haakimine"
+
+msgid "_Stop Multi-disk Drive"
+msgstr ""
+
+msgid "Stop the selected multi-disk drive"
+msgstr ""
+
+msgid "_Lock Drive"
+msgstr ""
+
+#, fuzzy
+#| msgid "Mount the selected volume"
+msgid "Lock the selected drive"
+msgstr "Valitud kettaseadme haakimine"
+
+#, fuzzy
+#| msgid "Format the volume associated with the open folder"
+msgid "Start the drive associated with the open folder"
+msgstr "Avatud kataloogiga seotud kettaseadme vormindamine"
+
+#, fuzzy
+#| msgid "Mount the volume associated with the open folder"
+msgid "Connect to the drive associated with the open folder"
+msgstr "Avatud kataloogiga seotud kettaseadme haakimine"
+
+#, fuzzy
+#| msgid "Format the volume associated with the open folder"
+msgid "Start the multi-disk drive associated with the open folder"
+msgstr "Avatud kataloogiga seotud kettaseadme vormindamine"
+
+#. stop() for type G_DRIVE_START_STOP_TYPE_PASSWORD is normally not used
+msgid "_Unlock Drive"
+msgstr ""
+
+#, fuzzy
+#| msgid "Unmount the volume associated with the open folder"
+msgid "Unlock the drive associated with the open folder"
+msgstr "Avatud kataloogiga seotud kettaseadme lahtihaakimine"
+
+#, fuzzy
+#| msgid "Mount the volume associated with the open folder"
+msgid "_Stop the drive associated with the open folder"
+msgstr "Avatud kataloogiga seotud kettaseadme haakimine"
+
+#, fuzzy
+#| msgid "Format the volume associated with the open folder"
+msgid "Safely remove the drive associated with the open folder"
+msgstr "Avatud kataloogiga seotud kettaseadme vormindamine"
+
+#, fuzzy
+#| msgid "Mount the volume associated with the open folder"
+msgid "Disconnect the drive associated with the open folder"
+msgstr "Avatud kataloogiga seotud kettaseadme haakimine"
+
+#, fuzzy
+#| msgid "Mount the volume associated with the open folder"
+msgid "Stop the multi-disk drive associated with the open folder"
+msgstr "Avatud kataloogiga seotud kettaseadme haakimine"
+
+#, fuzzy
+#| msgid "Mount the volume associated with the open folder"
+msgid "Lock the drive associated with the open folder"
+msgstr "Avatud kataloogiga seotud kettaseadme haakimine"
+
+#, fuzzy
+#| msgid "Format the selected volume"
+msgid "Start the selected drive"
+msgstr "Valitud kettaseadme vormindamine"
 
 #. add the "open in new window" menu item
 msgid "Open in New _Window"
@@ -4809,18 +4979,42 @@ msgstr "Näita märkmeid"
 msgid "Network"
 msgstr "Võrk"
 
+#. start() for type G_DRIVE_START_STOP_TYPE_SHUTDOWN is normally not used
+msgid "_Power On"
+msgstr "_Lülita sisse"
+
+#, fuzzy
+#| msgid "_Connect"
+msgid "_Connect Drive"
+msgstr "Ü_hendu"
+
+msgid "_Disconnect Drive"
+msgstr ""
+
+msgid "_Start Multi-disk Device"
+msgstr ""
+
+msgid "_Stop Multi-disk Device"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "Unable to mount %s"
+msgid "Unable to start %s"
+msgstr "%s külgehaakimine pole võimalik"
+
 #, c-format
 msgid "Unable to poll %s for media changes"
 msgstr "%s meediumimuutuste pollimine pole võimalik"
+
+#, c-format
+msgid "Unable to stop %s"
+msgstr "%s seiskamine pole võimalik"
 
 msgid "Remove"
 msgstr "Eemalda"
 
 msgid "Rename..."
 msgstr "Muuda nime..."
-
-msgid "_Mount"
-msgstr "Ü_henda"
 
 msgid "_Rescan"
 msgstr "_Otsi uuesti"
@@ -5104,8 +5298,8 @@ msgstr "Palun kontrolli õigekirja ja proovi uuesti."
 msgid "Nautilus cannot handle \"%s\" locations."
 msgstr "Nautilusel pole võimalik \"%s\" asukohti käsitleda."
 
-msgid "Nautilus cannot handle this kind of locations."
-msgstr "Nautilusel pole võimalik sellist liiki asukohti käsitleda."
+msgid "Nautilus cannot handle this kind of location."
+msgstr "Nautilusel pole võimalik seda liiki asukohta käsitleda."
 
 msgid "Unable to mount the location."
 msgstr "Asukohta pole võimalik külge haakida."
@@ -5248,11 +5442,6 @@ msgstr "Ava ü_lemine"
 
 msgid "Open the parent folder"
 msgstr "Ülemise kataloogi avamine"
-
-#. name, stock id
-#. label, accelerator
-msgid "_Stop"
-msgstr "_Peata"
 
 #. tooltip
 msgid "Stop loading the current location"
@@ -5422,3 +5611,12 @@ msgstr "Suurendus"
 
 msgid "Set the zoom level of the current view"
 msgstr "Praeguse vaate suurendusastme seadmine"
+
+#~ msgid "_Mount Volume"
+#~ msgstr "_Ühenda kettaseade"
+
+#~ msgid "_Unmount Volume"
+#~ msgstr "_Haagi ketas lahti"
+
+#~ msgid "_Eject Volume"
+#~ msgstr "_Väljasta andmekandja"
