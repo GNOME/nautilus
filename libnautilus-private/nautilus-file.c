@@ -3206,7 +3206,7 @@ nautilus_file_set_time_metadata (NautilusFile *file,
 
 	if (time != UNDEFINED_TIME) {
 		/* 2^64 turns out to be 20 characters */
-		snprintf (time_str, 20, "%ld", time);
+		g_snprintf (time_str, 20, "%ld", time);
 		time_str[20] = '\0';
 		metadata = time_str;
 	} else {
