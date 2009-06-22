@@ -884,7 +884,7 @@ set_file_node_timestamp (xmlNode *node)
 	char time_str[21];
 
 	/* 2^64 turns out to be 20 characters */
-	snprintf (time_str, 20, "%ld", time (NULL));
+	g_snprintf (time_str, 20, "%ld", (long int)time (NULL));
 	time_str [20] = '\0';
 	xmlSetProp (node, "timestamp", time_str);
 }
