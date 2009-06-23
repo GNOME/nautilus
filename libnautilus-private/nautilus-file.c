@@ -25,7 +25,6 @@
 #include <config.h>
 #include "nautilus-file.h"
 
-#include "nautilus-directory-metafile.h"
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-signaller.h"
@@ -90,9 +89,6 @@
 /* Files that start with these characters sort after files that don't. */
 #define SORT_LAST_CHAR1 '.'
 #define SORT_LAST_CHAR2 '#'
-
-/* Name to use to tag metadata for the directory itself. */
-#define FILE_NAME_FOR_DIRECTORY_METADATA "."
 
 /* Name of Nautilus trash directories */
 #define TRASH_DIRECTORY_NAME ".Trash"
@@ -1451,15 +1447,6 @@ rename_get_info_callback (GObject *source_object,
 		old_name = g_strdup (eel_ref_str_peek (op->file->details->name));
 		
 		update_info_and_name (op->file, new_info);
-		
-		/* Self-owned files store their metadata under the
-		 * hard-code name "."  so there's no need to rename
-		 * their metadata when they are renamed.
-		 */
-		if (!nautilus_file_is_self_owned (op->file)) {
-			nautilus_directory_rename_file_metadata
-				(directory, old_name, eel_ref_str_peek (op->file->details->name));
-		}
 		
 		g_free (old_name);
 		
@@ -3241,7 +3228,9 @@ set_metadata_get_info_callback (GObject *source_object,
 	error = NULL;
 	new_info = g_file_query_info_finish (G_FILE (source_object), res, &error);
 	if (new_info != NULL) {
-		nautilus_file_update_info (file, new_info);
+		if (nautilus_file_update_info (file, new_info)) {
+			nautilus_file_changed (file);
+		}
 		g_object_unref (new_info);
 	}
 	nautilus_file_unref (file);
@@ -3307,7 +3296,6 @@ nautilus_file_set_metadata (NautilusFile *file,
 		val = "<null>";
 	}
 
-	g_print ("setting key %s to %s\n", key, val);
 	gio_key = g_strconcat ("metadata::", key, NULL);
 	g_file_info_set_attribute_string (info, gio_key, val);
 	g_free (gio_key);
@@ -3349,7 +3337,6 @@ nautilus_file_set_metadata_list (NautilusFile *file,
 	}
 	val[i] = NULL;
 
-	g_print ("setting list key %s to %d items\n", key, len);
 	gio_key = g_strconcat ("metadata::", key, NULL);
 	g_file_info_set_attribute_stringv (info, gio_key, val);
 	g_free (gio_key);
@@ -4681,7 +4668,9 @@ set_attributes_get_info_callback (GObject *source_object,
 	error = NULL;
 	new_info = g_file_query_info_finish (G_FILE (source_object), res, &error);
 	if (new_info != NULL) {
-		nautilus_file_update_info (op->file, new_info);
+		if (nautilus_file_update_info (op->file, new_info)) {
+			nautilus_file_changed (op->file);
+		}
 		g_object_unref (new_info);
 	}
 	nautilus_file_operation_complete (op, NULL, error);
@@ -7208,7 +7197,6 @@ nautilus_file_get_all_attributes (void)
 		NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS |
 		NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT | 
 		NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES | 
-		NAUTILUS_FILE_ATTRIBUTE_METADATA | 
 		NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT | 
 		NAUTILUS_FILE_ATTRIBUTE_LARGE_TOP_LEFT_TEXT |
 		NAUTILUS_FILE_ATTRIBUTE_EXTENSION_INFO |

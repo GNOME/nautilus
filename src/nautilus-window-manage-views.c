@@ -870,8 +870,7 @@ begin_location_change (NautilusWindowSlot *slot,
 
 	nautilus_file_call_when_ready (slot->determine_view_file,
 				       NAUTILUS_FILE_ATTRIBUTE_INFO |
-				       NAUTILUS_FILE_ATTRIBUTE_MOUNT |
-				       NAUTILUS_FILE_ATTRIBUTE_METADATA,
+				       NAUTILUS_FILE_ATTRIBUTE_MOUNT,
                                        got_file_info_for_view_selection_callback,
 				       slot);
 
@@ -1001,8 +1000,7 @@ mount_not_mounted_callback (GObject *source_object,
 	} else {
 		nautilus_file_invalidate_all_attributes (slot->determine_view_file);
 		nautilus_file_call_when_ready (slot->determine_view_file,
-					       NAUTILUS_FILE_ATTRIBUTE_INFO |
-					       NAUTILUS_FILE_ATTRIBUTE_METADATA,
+					       NAUTILUS_FILE_ATTRIBUTE_INFO,
 					       got_file_info_for_view_selection_callback,
 					       slot);
 	}

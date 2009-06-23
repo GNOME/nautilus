@@ -27,7 +27,6 @@
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-file-queue.h>
 #include <libnautilus-private/nautilus-file.h>
-#include <libnautilus-private/nautilus-metafile.h>
 #include <libnautilus-private/nautilus-monitor.h>
 #include <libnautilus-private/nautilus-idle-queue.h>
 #include <libnautilus-extension/nautilus-info-provider.h>
@@ -52,7 +51,6 @@ typedef enum {
 	REQUEST_DIRECTORY_COUNT,
 	REQUEST_FILE_INFO,
 	REQUEST_FILE_LIST, /* always FALSE if file != NULL */
-	REQUEST_METAFILE,
 	REQUEST_MIME_LIST,
 	REQUEST_TOP_LEFT_TEXT,
 	REQUEST_LARGE_TOP_LEFT_TEXT,
@@ -96,10 +94,6 @@ struct NautilusDirectoryDetails
 
 	NautilusMonitor *monitor;
 	gulong 		 mime_db_monitor;
-
-	NautilusIdleQueue *idle_queue;
-	gboolean metafile_monitored;
-	NautilusMetafile *metafile;
 
 	gboolean in_async_service_loop;
 	gboolean state_changed;

@@ -562,7 +562,7 @@ monitor_add (NautilusSidebarTitle *sidebar_title)
 
 	sidebar_title->details->monitoring_count = item_count_ready (sidebar_title);
 
-	attributes = NAUTILUS_FILE_ATTRIBUTES_FOR_ICON | NAUTILUS_FILE_ATTRIBUTE_METADATA;
+	attributes = NAUTILUS_FILE_ATTRIBUTES_FOR_ICON | NAUTILUS_FILE_ATTRIBUTE_INFO;
 	if (sidebar_title->details->monitoring_count) {
 		attributes |= NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT;
 	}

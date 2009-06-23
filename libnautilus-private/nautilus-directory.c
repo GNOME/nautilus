@@ -25,7 +25,6 @@
 #include <config.h>
 #include "nautilus-directory-private.h"
 
-#include "nautilus-directory-metafile.h"
 #include "nautilus-directory-notify.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-file-private.h"
@@ -35,7 +34,6 @@
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-marshal.h"
 #include "nautilus-metadata.h"
-#include "nautilus-metafile.h"
 #include "nautilus-desktop-directory.h"
 #include "nautilus-vfs-directory.h"
 #include <eel/eel-glib-extensions.h>
@@ -52,14 +50,6 @@ enum {
 };
 
 static guint signals[LAST_SIGNAL];
-
-/* Specifications for parallel-directory metafile. */
-#define METAFILES_DIRECTORY_NAME "metafiles"
-#define METAFILE_SUFFIX ".xml"
-#define METAFILES_DIRECTORY_PERMISSIONS  \
-	(S_IRUSR | S_IWUSR | S_IXUSR |   \
-	 S_IRGRP | S_IWGRP | S_IXGRP |   \
-	 S_IROTH | S_IWOTH | S_IXOTH)
 
 static GHashTable *directories;
 
@@ -139,7 +129,6 @@ nautilus_directory_init (gpointer object, gpointer klass)
 	directory->details->high_priority_queue = nautilus_file_queue_new ();
 	directory->details->low_priority_queue = nautilus_file_queue_new ();
 	directory->details->extension_queue = nautilus_file_queue_new ();
-	directory->details->idle_queue = nautilus_idle_queue_new ();
 	directory->details->free_space = (guint64)-1;
 }
 
@@ -190,14 +179,6 @@ nautilus_directory_finalize (GObject *object)
 		nautilus_monitor_cancel (directory->details->monitor);
 	}
 
-	if (directory->details->metafile_monitored) {
-		nautilus_directory_unregister_metadata_monitor (directory);
-	}
-
-	if (directory->details->metafile != NULL) {
-		g_object_unref (directory->details->metafile);
-	}
-
 	if (directory->details->dequeue_pending_idle_id != 0) {
 		g_source_remove (directory->details->dequeue_pending_idle_id);
 	}
@@ -220,7 +201,6 @@ nautilus_directory_finalize (GObject *object)
 	nautilus_file_queue_destroy (directory->details->high_priority_queue);
 	nautilus_file_queue_destroy (directory->details->low_priority_queue);
 	nautilus_file_queue_destroy (directory->details->extension_queue);
-	nautilus_idle_queue_destroy (directory->details->idle_queue);
 	g_assert (directory->details->directory_load_in_progress == NULL);
 	g_assert (directory->details->count_in_progress == NULL);
 	g_assert (directory->details->dequeue_pending_idle_id == 0);
@@ -1197,8 +1177,6 @@ static void
 change_directory_location (NautilusDirectory *directory,
 			   GFile *new_location)
 {
-	char *new_uri;
-	
 	/* I believe it's impossible for a self-owned file/directory
 	 * to be moved. But if that did somehow happen, this function
 	 * wouldn't do enough to handle it.
@@ -1213,10 +1191,6 @@ change_directory_location (NautilusDirectory *directory,
 	g_hash_table_insert (directories,
 			     directory->details->location,
 			     directory);
-
-	new_uri = g_file_get_uri (new_location);
-	nautilus_directory_rename_directory_metadata (directory, new_uri);
-	g_free (new_uri);
 }
 
 typedef struct {
@@ -1462,125 +1436,6 @@ nautilus_directory_notify_files_moved_by_uri (GList *uri_pairs)
 	nautilus_directory_notify_files_moved (file_pairs);
 	g_list_foreach (file_pairs, (GFunc)g_file_pair_free, NULL);
 	g_list_free (file_pairs);
-}
-
-void 
-nautilus_directory_schedule_metadata_copy (GList *file_pairs)
-{
-	GList *p;
-	GFilePair *pair;
-	NautilusDirectory *source_directory, *destination_directory;
-	char *source_basename, *destination_basename;
-
-	for (p = file_pairs; p != NULL; p = p->next) {
-		pair = p->data;
-
-		source_directory = get_parent_directory (pair->from);
-		destination_directory = get_parent_directory (pair->to);
-
-		source_basename = g_file_get_basename (pair->from);
-		destination_basename = g_file_get_basename (pair->to);
-		
-		if (source_directory != NULL && destination_directory != NULL) {
-			nautilus_directory_copy_file_metadata (source_directory,
-							       source_basename,
-							       destination_directory,
-							       destination_basename);
-		}
-
-		g_free (source_basename);
-		g_free (destination_basename);
-		
-		nautilus_directory_unref (source_directory);
-		nautilus_directory_unref (destination_directory);
-	}
-}
-
-void 
-nautilus_directory_schedule_metadata_copy_by_uri (GList *uri_pairs)
-{
-	GList *file_pairs;
-
-	file_pairs = uri_pairs_to_file_pairs (uri_pairs);
-	nautilus_directory_schedule_metadata_copy (file_pairs);
-	g_list_foreach (file_pairs, (GFunc)g_file_pair_free, NULL);
-	g_list_free (file_pairs);
-}
-
-
-void 
-nautilus_directory_schedule_metadata_move (GList *file_pairs)
-{
-	GList *p;
-	GFilePair *pair;
-	NautilusDirectory *source_directory, *destination_directory;
-	char *source_basename, *destination_basename;
-
-	for (p = file_pairs; p != NULL; p = p->next) {
-		pair = p->data;
-
-		source_directory = get_parent_directory (pair->from);
-		destination_directory = get_parent_directory (pair->to);
-		
-		source_basename = g_file_get_basename (pair->from);
-		destination_basename = g_file_get_basename (pair->to);
-		
-		nautilus_directory_copy_file_metadata (source_directory,
-						       source_basename,
-						       destination_directory,
-						       destination_basename);
-		nautilus_directory_remove_file_metadata (source_directory,
-							 source_basename);
-		
-		g_free (source_basename);
-		g_free (destination_basename);
-		
-		nautilus_directory_unref (source_directory);
-		nautilus_directory_unref (destination_directory);
-	}
-}
-
-void 
-nautilus_directory_schedule_metadata_move_by_uri (GList *uri_pairs)
-{
-	GList *file_pairs;
-
-	file_pairs = uri_pairs_to_file_pairs (uri_pairs);
-	nautilus_directory_schedule_metadata_move (file_pairs);
-	g_list_foreach (file_pairs, (GFunc)g_file_pair_free, NULL);
-	g_list_free (file_pairs);
-}
-
-void 
-nautilus_directory_schedule_metadata_remove (GList *files)
-{
-	GList *p;
-	NautilusDirectory *directory;
-	char *basename;
-	GFile *location;
-
-	for (p = files; p != NULL; p = p->next) {
-		location = p->data;
-
-		directory = get_parent_directory (location);
-
-		basename = g_file_get_basename (location);
-		nautilus_directory_remove_file_metadata (directory, basename);
-		g_free (basename);
-
-		
-		nautilus_directory_unref (directory);
-	}
-}
-
-void 
-nautilus_directory_schedule_metadata_remove_by_uri (GList *uris)
-{
-	GList *files;
-
-	files = nautilus_file_list_from_uris (uris);
-	nautilus_directory_schedule_metadata_remove (files);
-	eel_g_object_list_free (files);
 }
 
 void
@@ -1937,17 +1792,7 @@ nautilus_directory_is_desktop_directory (NautilusDirectory   *directory)
 #include "nautilus-file-attributes.h"
 
 static int data_dummy;
-static gboolean got_metadata_flag;
 static gboolean got_files_flag;
-
-static void
-got_metadata_callback (NautilusDirectory *directory, GList *files, gpointer callback_data)
-{
-	g_assert (NAUTILUS_IS_DIRECTORY (directory));
-	g_assert (callback_data == &data_dummy);
-
-	got_metadata_flag = TRUE;
-}
 
 static void
 got_files_callback (NautilusDirectory *directory, GList *files, gpointer callback_data)
@@ -1980,15 +1825,6 @@ nautilus_self_check_directory (void)
 	nautilus_directory_file_monitor_add
 		(directory, &data_dummy,
 		 TRUE, TRUE, 0, NULL, NULL);
-
-	got_metadata_flag = FALSE;
-
-	nautilus_directory_call_when_ready (directory, NAUTILUS_FILE_ATTRIBUTE_METADATA, TRUE,
-					    got_metadata_callback, &data_dummy);
-
-	while (!got_metadata_flag) {
-		gtk_main_iteration ();
-	}
 
 	nautilus_file_set_metadata (file, "test", "default", "value");
 	EEL_CHECK_STRING_RESULT (nautilus_file_get_metadata (file, "test", "default"), "value");
@@ -2030,16 +1866,6 @@ nautilus_self_check_directory (void)
 	EEL_CHECK_INTEGER_RESULT (g_hash_table_size (directories), 0);
 
 	directory = nautilus_directory_get_by_uri ("file:///etc");
-
-	got_metadata_flag = FALSE;
-	nautilus_directory_call_when_ready (directory, NAUTILUS_FILE_ATTRIBUTE_METADATA, TRUE,
-					    got_metadata_callback, &data_dummy);
-
-	while (!got_metadata_flag) {
-		gtk_main_iteration ();
-	}
-
-	EEL_CHECK_BOOLEAN_RESULT (nautilus_directory_is_metadata_read (directory), TRUE);
 
 	got_files_flag = FALSE;
 

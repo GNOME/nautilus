@@ -5160,7 +5160,7 @@ create_properties_window (StartupData *startup_data)
 			attributes |= NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS;
 		}
 		
-		attributes |= NAUTILUS_FILE_ATTRIBUTE_METADATA;
+		attributes |= NAUTILUS_FILE_ATTRIBUTE_INFO;
 		nautilus_file_monitor_add (file, &window->details->target_files, attributes);
 	}	
 		

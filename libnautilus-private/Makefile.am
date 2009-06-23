@@ -75,8 +75,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-directory-async.c \
 	nautilus-directory-background.c \
 	nautilus-directory-background.h \
-	nautilus-directory-metafile.c \
-	nautilus-directory-metafile.h \
 	nautilus-directory-notify.h \
 	nautilus-directory-private.h \
 	nautilus-directory.c \
@@ -130,8 +128,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-merged-directory.h \
 	nautilus-metadata.h \
 	nautilus-metadata.c \
-	nautilus-metafile.c \
-	nautilus-metafile.h \
 	nautilus-mime-actions.c \
 	nautilus-mime-actions.h \
 	nautilus-mime-application-chooser.c \

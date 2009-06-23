@@ -653,7 +653,7 @@ nautilus_connect_background_to_file_metadata (GtkWidget    *widget,
 		/* arrange to receive file metadata */
 		nautilus_file_monitor_add (file,
                                            background,
-                                           NAUTILUS_FILE_ATTRIBUTE_METADATA);
+                                           NAUTILUS_FILE_ATTRIBUTE_INFO);
 
 		/* arrange for notification when the theme changes */
 		eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,

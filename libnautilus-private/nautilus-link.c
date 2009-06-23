@@ -262,7 +262,6 @@ nautilus_link_local_create (const char     *directory_uri,
 	dummy_list.next = NULL;
 	dummy_list.prev = NULL;
 	nautilus_directory_notify_files_added (&dummy_list);
-	nautilus_directory_schedule_metadata_remove (&dummy_list);
 
 	if (point != NULL) {
 		item.location = file;

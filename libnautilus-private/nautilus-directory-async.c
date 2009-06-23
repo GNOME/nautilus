@@ -24,7 +24,6 @@
 
 #include <config.h>
 
-#include "nautilus-directory-metafile.h"
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-file-attributes.h"
@@ -34,7 +33,6 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-link.h"
 #include "nautilus-marshal.h"
-#include "nautilus-metafile.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 #include <gtk/gtk.h>
@@ -663,10 +661,6 @@ nautilus_directory_set_up_request (NautilusFileAttributes file_attributes)
 		REQUEST_SET_TYPE (request, REQUEST_FILE_INFO);
 	}
 
-	if ((file_attributes & NAUTILUS_FILE_ATTRIBUTE_METADATA) != 0) {
-		REQUEST_SET_TYPE (request, REQUEST_METAFILE);
-	}
-	
 	if ((file_attributes & NAUTILUS_FILE_ATTRIBUTE_EXTENSION_INFO) != 0) {
 		REQUEST_SET_TYPE (request, REQUEST_EXTENSION_INFO);
 	}
@@ -698,7 +692,6 @@ mime_db_changed_callback (GObject *ignore, NautilusDirectory *dir)
 
 	attrs = NAUTILUS_FILE_ATTRIBUTE_INFO |
 		NAUTILUS_FILE_ATTRIBUTE_LINK_INFO |
-		NAUTILUS_FILE_ATTRIBUTE_METADATA |
 		NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES;
 
 	nautilus_directory_force_reload_internal (dir, attrs);
@@ -753,13 +746,6 @@ nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 		directory->details->monitor = nautilus_monitor_directory (directory->details->location);
 	}
 	
-	/* We could just call update_metadata_monitors here, but we can be smarter
-	 * since we know what monitor was just added.
-	 */
-	if (REQUEST_WANTS_TYPE (monitor->request, REQUEST_METAFILE) &&
-	    !directory->details->metafile_monitored) {
-		nautilus_directory_register_metadata_monitor (directory);	
-	}
 
 	if (REQUEST_WANTS_TYPE (monitor->request, REQUEST_FILE_INFO) &&
 	    directory->details->mime_db_monitor == 0) {
@@ -1119,39 +1105,6 @@ directory_load_done (NautilusDirectory *directory,
 	directory_load_cancel (directory);
 }
 
-/* This checks if there's a request for the metafile contents. */
-static gboolean
-is_anyone_waiting_for_metafile (NautilusDirectory *directory)
-{
-	if (directory->details->call_when_ready_counters[REQUEST_METAFILE] > 0) {
-		return TRUE;
-	}
-
-	if (directory->details->monitor_counters[REQUEST_METAFILE] > 0) {
-		return TRUE;
-	}
-
-	return FALSE;
-}
-
-static void
-update_metadata_monitors (NautilusDirectory *directory)
-{
-	gboolean is_metadata_monitored;
-	
-	is_metadata_monitored = is_anyone_waiting_for_metafile (directory);
-	
-	if (!directory->details->metafile_monitored) {
-		if (is_metadata_monitored) {
-			nautilus_directory_register_metadata_monitor (directory);
-		}
-	} else {
-		if (!is_metadata_monitored) {
-			nautilus_directory_unregister_metadata_monitor (directory);
-		}
-	}
-}
-
 void
 nautilus_directory_monitor_remove_internal (NautilusDirectory *directory,
 					    NautilusFile *file,
@@ -1168,8 +1121,6 @@ nautilus_directory_monitor_remove_internal (NautilusDirectory *directory,
 		nautilus_monitor_cancel (directory->details->monitor);
 		directory->details->monitor = NULL;
 	}
-
-	update_metadata_monitors (directory);
 
 	/* XXX - do we need to remove anything from the work queue? */
 
@@ -1200,8 +1151,6 @@ nautilus_directory_remove_file_monitors (NautilusDirectory *directory,
 		}
 	}
 
-	update_metadata_monitors (directory);
-
 	/* XXX - do we need to remove anything from the work queue? */
 
 	nautilus_directory_async_state_changed (directory);
@@ -1229,7 +1178,6 @@ nautilus_directory_add_file_monitors (NautilusDirectory *directory,
 
 	nautilus_directory_add_file_to_work_queue (directory, file);
 
-	update_metadata_monitors (directory);
 	nautilus_directory_async_state_changed (directory);
 }
 
@@ -1374,15 +1322,6 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 	request_counter_add_request (directory->details->call_when_ready_counters,
 				     callback.request);
 
-	/* When we change the ready list we need to sync up metadata monitors.
-	 * We could just call update_metadata_monitors here, but we can be smarter
-	 * since we know what was just added.
-	 */
-	if (REQUEST_WANTS_TYPE (callback.request, REQUEST_METAFILE) &&
-	    !directory->details->metafile_monitored) {
-		nautilus_directory_register_metadata_monitor (directory);	
-	}
-
 	/* Put the callback file or all the files on the work queue. */
 	if (file != NULL) {
 		nautilus_directory_add_file_to_work_queue (directory, file);
@@ -1468,8 +1407,6 @@ nautilus_directory_cancel_callback_internal (NautilusDirectory *directory,
 					   ready_callback_key_compare);
 		if (node != NULL) {
 			remove_callback_link (directory, node);
-			/* When we change the ready list we need to sync up metadata monitors. */
-			update_metadata_monitors (directory);
 			
 			nautilus_directory_async_state_changed (directory);
 		}
@@ -1597,11 +1534,6 @@ nautilus_async_destroying_file (NautilusFile *file)
 			remove_monitor_link (directory, node);
 			changed = TRUE;
 		}
-	}
-
-	/* When we change the monitor or ready list we need to sync up metadata monitors */
-	if (changed) {
-		update_metadata_monitors (directory);
 	}
 
 	/* Check if it's a file that's currently being worked on.
@@ -1799,11 +1731,6 @@ request_is_satisfied (NautilusDirectory *directory,
 		      NautilusFile *file,
 		      Request request)
 {
-	if (REQUEST_WANTS_TYPE (request, REQUEST_METAFILE) &&
-	    !nautilus_directory_is_metadata_read (directory)) {
-		return FALSE;
-	}
-
 	if (REQUEST_WANTS_TYPE (request, REQUEST_FILE_LIST) &&
 	    !(directory->details->directory_loaded &&
 				    directory->details->directory_loaded_sent_notification)) {
@@ -1908,9 +1835,6 @@ call_ready_callbacks_at_idle (gpointer callback_data)
 		ready_callback_call (directory, callback);
 		g_free (callback);
 	}
-
-	/* When we change the ready list we need to sync up metadata monitors. */
-	update_metadata_monitors (directory);
 
 	nautilus_directory_async_state_changed (directory);
 
@@ -4822,9 +4746,6 @@ cancel_loading_attributes (NautilusDirectory *directory,
 		mount_cancel (directory);
 	}
 	
-	/* FIXME bugzilla.gnome.org 45064: implement cancelling metadata when we
-	   implement invalidating metadata */
-
 	nautilus_directory_async_state_changed (directory);
 }
 
@@ -4866,9 +4787,6 @@ nautilus_directory_cancel_loading_file_attributes (NautilusDirectory      *direc
 	if (REQUEST_WANTS_TYPE (request, REQUEST_MOUNT)) {
 		cancel_mount_for_file (directory, file);
 	}
-
-	/* FIXME bugzilla.gnome.org 45064: implement cancelling metadata when we
-	   implement invalidating metadata */
 
 	nautilus_directory_async_state_changed (directory);
 }

@@ -46,7 +46,6 @@
 #include <glib/gi18n.h>
 #include <gio/gdesktopappinfo.h>
 #include <libnautilus-private/nautilus-debug-log.h>
-#include <libnautilus-private/nautilus-directory-metafile.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-lib-self-check-functions.h>
 #include <libnautilus-private/nautilus-icon-names.h>

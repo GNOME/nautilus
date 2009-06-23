@@ -264,7 +264,7 @@ notes_load_metainfo (NautilusNotesViewer *notes)
 		return;
         }
 
-        attributes = NAUTILUS_FILE_ATTRIBUTE_METADATA;
+        attributes = NAUTILUS_FILE_ATTRIBUTE_INFO;
         nautilus_file_monitor_add (notes->details->file, notes, attributes);
 
 	if (nautilus_file_check_if_ready (notes->details->file, attributes)) {

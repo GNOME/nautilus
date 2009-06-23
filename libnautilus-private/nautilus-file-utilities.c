@@ -28,7 +28,6 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-metadata.h"
-#include "nautilus-metafile.h"
 #include "nautilus-file.h"
 #include "nautilus-search-directory.h"
 #include "nautilus-signaller.h"
