@@ -27,11 +27,12 @@
 
 /* Keys for getting/setting Nautilus metadata. All metadata used in Nautilus
  * should define its key here, so we can keep track of the whole set easily.
+ * Any updates here needs to be added in nautilus-metadata.c too.
  */
 
-/* Per-file */
+#include <glib.h>
 
-#define NAUTILUS_METADATA_KEY_CONTENT_VIEWS              	"content_views"
+/* Per-file */
 
 #define NAUTILUS_METADATA_KEY_DEFAULT_COMPONENT		 	"default_component"
 
@@ -51,7 +52,6 @@
 #define NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED    	"list_view_sort_reversed"
 #define NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS    	"list_view_visible_columns"
 #define NAUTILUS_METADATA_KEY_LIST_VIEW_COLUMN_ORDER    	"list_view_column_order"
-#define NAUTILUS_METADATA_SUBKEY_COLUMNS                        "columns" 
 
 #define NAUTILUS_METADATA_KEY_COMPACT_VIEW_ZOOM_LEVEL		"compact_view_zoom_level"
 
@@ -65,8 +65,6 @@
 #define NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR   	"sidebar_background_color"
 #define NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE   	"sidebar_background_tile_image"
 #define NAUTILUS_METADATA_KEY_SIDEBAR_BUTTONS			"sidebar_buttons"
-#define NAUTILUS_METADATA_KEY_SIDEBAR_TAB_COLOR		 	"sidebar_tab_color"
-#define NAUTILUS_METADATA_KEY_SIDEBAR_TITLE_TAB_COLOR	 	"sidebar_title_tab_color"
 
 #define NAUTILUS_METADATA_KEY_ANNOTATION                 	"annotation"
 #define NAUTILUS_METADATA_KEY_ICON_POSITION              	"icon_position"
@@ -74,9 +72,9 @@
 #define NAUTILUS_METADATA_KEY_ICON_SCALE                 	"icon_scale"
 #define NAUTILUS_METADATA_KEY_CUSTOM_ICON                	"custom_icon"
 #define NAUTILUS_METADATA_KEY_SCREEN				"screen"
+#define NAUTILUS_METADATA_KEY_KEYWORD				"keyword"
 
-/* per link file */
 
-#define NAUTILUS_METADATA_KEY_EXTRA_TEXT		 	"extra_text"
+guint nautilus_metadata_get_id (const char *metadata);
 
 #endif /* NAUTILUS_METADATA_H */

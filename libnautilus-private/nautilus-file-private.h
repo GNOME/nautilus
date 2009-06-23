@@ -40,7 +40,7 @@
 #define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_BYTES               1024
 
 #define NAUTILUS_FILE_DEFAULT_ATTRIBUTES				\
-	"standard::*,access::*,mountable::*,time::*,unix::*,owner::*,selinux::*,thumbnail::*,id::filesystem,trash::orig-path"
+	"standard::*,access::*,mountable::*,time::*,unix::*,owner::*,selinux::*,thumbnail::*,id::filesystem,trash::orig-path,metadata::*"
 
 /* These are in the typical sort order. Known things come first, then
  * things where we can't know, finally things where we don't yet know.
@@ -141,6 +141,8 @@ struct NautilusFileDetails
 	/* Attributes provided by extensions */
 	GHashTable *extension_attributes;
 	GHashTable *pending_extension_attributes;
+
+	GHashTable *metadata;
 
 	/* Mount for mountpoint or the references GMount for a "mountable" */
 	GMount *mount;

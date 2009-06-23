@@ -129,6 +129,7 @@ libnautilus_private_la_SOURCES = \
 	nautilus-merged-directory.c \
 	nautilus-merged-directory.h \
 	nautilus-metadata.h \
+	nautilus-metadata.c \
 	nautilus-metafile.c \
 	nautilus-metafile.h \
 	nautilus-mime-actions.c \

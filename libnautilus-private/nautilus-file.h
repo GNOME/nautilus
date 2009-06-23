@@ -312,15 +312,13 @@ char *                  nautilus_file_get_metadata                      (Nautilu
 									 const char                     *key,
 									 const char                     *default_metadata);
 GList *                 nautilus_file_get_metadata_list                 (NautilusFile                   *file,
-									 const char                     *list_key,
-									 const char                     *list_subkey);
+									 const char                     *key);
 void                    nautilus_file_set_metadata                      (NautilusFile                   *file,
 									 const char                     *key,
 									 const char                     *default_metadata,
 									 const char                     *metadata);
 void                    nautilus_file_set_metadata_list                 (NautilusFile                   *file,
-									 const char                     *list_key,
-									 const char                     *list_subkey,
+									 const char                     *key,
 									 GList                          *list);
 
 /* Covers for common data types. */
