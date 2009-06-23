@@ -437,6 +437,23 @@ eel_g_strv_find (char **strv, const char *find_me)
 	return -1;
 }
 
+gboolean
+eel_g_strv_equal (char **a, char **b)
+{
+	int i;
+
+	if (g_strv_length (a) != g_strv_length (b)) {
+		return FALSE;
+	}
+
+	for (i = 0; a[i] != NULL; i++) {
+		if (strcmp (a[i], b[i]) != 0) {
+			return FALSE;
+		}
+	}
+	return TRUE;
+}
+
 static int
 compare_pointers (gconstpointer pointer_1, gconstpointer pointer_2)
 {

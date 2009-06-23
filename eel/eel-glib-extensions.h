@@ -101,6 +101,8 @@ void        eel_g_hash_table_safe_for_each              (GHashTable            *
 /* NULL terminated string arrays (strv). */
 int         eel_g_strv_find                             (char                 **strv,
 							 const char            *find_me);
+gboolean    eel_g_strv_equal                            (char                 **a,
+							 char                 **b);
 
 /* return the time in microseconds since the machine was started */
 gint64      eel_get_system_time                         (void);
