@@ -3291,13 +3291,15 @@ nautilus_file_set_metadata (NautilusFile *file,
 		val = default_metadata;
 	}
 
-	if (val == NULL) {
-		g_print ("TODO: setting NULL string metadata");
-		val = "<null>";
-	}
-
 	gio_key = g_strconcat ("metadata::", key, NULL);
-	g_file_info_set_attribute_string (info, gio_key, val);
+	if (val != NULL) {
+		g_file_info_set_attribute_string (info, gio_key, val);
+	} else {
+		/* Unset the key */
+		g_file_info_set_attribute (info, gio_key,
+					   G_FILE_ATTRIBUTE_TYPE_INVALID,
+					   NULL);
+	}
 	g_free (gio_key);
 
 	location = nautilus_file_get_location (file);
