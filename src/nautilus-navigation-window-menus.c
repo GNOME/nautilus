@@ -204,6 +204,18 @@ action_show_hide_sidebar_callback (GtkAction *action,
 }
 
 static void
+pane_show_hide_location_bar (NautilusNavigationWindowPane *pane, gboolean is_active)
+{
+	if (nautilus_navigation_window_pane_location_bar_showing (pane) != is_active) {
+		if (is_active) {
+			nautilus_navigation_window_pane_show_location_bar (pane, TRUE);
+		} else {
+			nautilus_navigation_window_pane_hide_location_bar (pane, TRUE);
+		}
+	}
+}
+
+static void
 action_show_hide_location_bar_callback (GtkAction *action, 
 					gpointer user_data)
 {
@@ -214,13 +226,13 @@ action_show_hide_location_bar_callback (GtkAction *action,
 	window = NAUTILUS_WINDOW (user_data);
 
 	is_active = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
+
+	/* Do the active pane first, because this will trigger an update of the menu items,
+	 * which in turn relies on the active pane. */
+	pane_show_hide_location_bar (NAUTILUS_NAVIGATION_WINDOW_PANE (window->details->active_pane), is_active);
+
 	for (walk = window->details->panes; walk; walk = walk->next) {
-		NautilusNavigationWindowPane *pane = walk->data;
-		if (is_active) {
-			nautilus_navigation_window_pane_show_location_bar (pane, TRUE);
-		} else {
-			nautilus_navigation_window_pane_hide_location_bar (pane, TRUE);
-		}
+		pane_show_hide_location_bar (NAUTILUS_NAVIGATION_WINDOW_PANE (walk->data), is_active);
 	}
 }
 

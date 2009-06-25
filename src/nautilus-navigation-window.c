@@ -1254,6 +1254,19 @@ split_view_added_to_container_callback (GtkContainer *container,
 					GtkWidget *widget,
 					gpointer user_data)
 {
+	NautilusNavigationWindowPane *pane;
+	GtkAction *action;
+
+	/* now that view is ready, show the location bar if the active pane has one, too */
+	pane = NAUTILUS_NAVIGATION_WINDOW_PANE (user_data);
+	action = gtk_action_group_get_action (NAUTILUS_NAVIGATION_WINDOW (NAUTILUS_WINDOW_PANE (pane)->window)->details->navigation_action_group,
+					      NAUTILUS_ACTION_SHOW_HIDE_LOCATION_BAR);
+	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action))) {
+		nautilus_navigation_window_pane_show_location_bar (pane, TRUE);
+	} else {
+		nautilus_navigation_window_pane_hide_location_bar (pane, TRUE);
+	}
+
 	/* list view doesn't focus automatically */
 	if (FM_IS_LIST_VIEW (widget)) {
 		GtkWidget *focus_widget;
