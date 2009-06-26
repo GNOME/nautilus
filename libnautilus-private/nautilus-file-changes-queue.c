@@ -301,7 +301,6 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 {
 	NautilusFileChange *change;
 	GList *additions, *changes, *deletions, *moves;
-	GList *metadata_copy_requests, *metadata_move_requests, *metadata_remove_requests;
 	GList *position_set_requests;
 	GFilePair *pair;
 	NautilusFileChangesQueuePosition *position_set;
@@ -314,9 +313,6 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 	changes = NULL;
 	deletions = NULL;
 	moves = NULL;
-	metadata_copy_requests = NULL;
-	metadata_move_requests = NULL;
-	metadata_remove_requests = NULL;
 	position_set_requests = NULL;
 
 	queue = nautilus_file_changes_queue_get();
@@ -351,19 +347,6 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 			flush_needed |= deletions != NULL
 				&& change->kind != CHANGE_FILE_REMOVED;
 			
-			flush_needed |= metadata_copy_requests != NULL
-				&& change->kind != CHANGE_FILE_ADDED
-				&& change->kind != CHANGE_POSITION_SET
-				&& change->kind != CHANGE_POSITION_REMOVE;
-			
-			flush_needed |= metadata_move_requests != NULL
-				&& change->kind != CHANGE_FILE_MOVED
-				&& change->kind != CHANGE_POSITION_SET
-				&& change->kind != CHANGE_POSITION_REMOVE;
-			
-			flush_needed |= metadata_remove_requests != NULL
-				&& change->kind != CHANGE_FILE_REMOVED;
-	
 			flush_needed |= position_set_requests != NULL
 				&& change->kind != CHANGE_POSITION_SET
 				&& change->kind != CHANGE_POSITION_REMOVE
@@ -403,24 +386,6 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 				nautilus_directory_notify_files_changed (changes);
 				eel_g_object_list_free (changes);
 				changes = NULL;
-			}
-			if (metadata_copy_requests != NULL) {
-				metadata_copy_requests = g_list_reverse (metadata_copy_requests);
-				nautilus_directory_schedule_metadata_copy (metadata_copy_requests);
-				pairs_list_free (metadata_copy_requests);
-				metadata_copy_requests = NULL;
-			}
-			if (metadata_move_requests != NULL) {
-				metadata_move_requests = g_list_reverse (metadata_move_requests);
-				nautilus_directory_schedule_metadata_move (metadata_move_requests);
-				pairs_list_free (metadata_move_requests);
-				metadata_move_requests = NULL;
-			}
-			if (metadata_remove_requests != NULL) {
-				metadata_remove_requests = g_list_reverse (metadata_remove_requests);
-				nautilus_directory_schedule_metadata_remove (metadata_remove_requests);
-				eel_g_object_list_free (metadata_remove_requests);
-				metadata_remove_requests = NULL;
 			}
 			if (position_set_requests != NULL) {
 				position_set_requests = g_list_reverse (position_set_requests);
