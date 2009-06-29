@@ -260,6 +260,8 @@ gboolean      nautilus_file_update_info                    (NautilusFile        
 							    GFileInfo              *info);
 gboolean      nautilus_file_update_name                    (NautilusFile           *file,
 							    const char             *name);
+gboolean      nautilus_file_update_metadata_from_info      (NautilusFile           *file,
+							    GFileInfo              *info);
 
 gboolean      nautilus_file_update_name_and_directory      (NautilusFile           *file,
 							    const char             *name,

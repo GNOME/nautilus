@@ -378,6 +378,31 @@ get_metadata_from_info (GFileInfo *info)
 	return metadata;
 }
 
+gboolean
+nautilus_file_update_metadata_from_info (NautilusFile *file,
+					 GFileInfo *info)
+{
+	gboolean changed = FALSE;
+
+	if (g_file_info_has_namespace (info, "metadata")) {
+		GHashTable *metadata;
+
+		metadata = get_metadata_from_info (info);
+		if (!metadata_hash_equal (metadata,
+					  file->details->metadata)) {
+			changed = TRUE;
+			clear_metadata (file);
+			file->details->metadata = metadata;
+		} else {
+			metadata_hash_free (metadata);
+		}
+	} else if (file->details->metadata) {
+		changed = TRUE;
+		clear_metadata (file);
+	}
+	return changed;
+}
+
 void
 nautilus_file_clear_info (NautilusFile *file)
 {
@@ -2132,22 +2157,8 @@ update_info_internal (NautilusFile *file,
 		file->details->trash_orig_path = g_strdup (trash_orig_path);
 	}
 
-	if (g_file_info_has_namespace (info, "metadata")) {
-		GHashTable *metadata;
-
-		metadata = get_metadata_from_info (info);
-		if (!metadata_hash_equal (metadata,
-					  file->details->metadata)) {
-			changed = TRUE;
-			clear_metadata (file);
-			file->details->metadata = metadata;
-		} else {
-			metadata_hash_free (metadata);
-		}
-	} else if (file->details->metadata) {
-		changed = TRUE;
-		clear_metadata (file);
-	}
+	changed |=
+		nautilus_file_update_metadata_from_info (file, info);
 
 	if (update_name) {
 		name = g_file_info_get_name (info);
@@ -3214,104 +3225,26 @@ nautilus_file_get_metadata_list (NautilusFile *file,
 	return NULL;
 }
 
-static void
-set_metadata_get_info_callback (GObject *source_object,
-				GAsyncResult *res,
-				gpointer callback_data)
-{
-	NautilusFile *file;
-	GFileInfo *new_info;
-	GError *error;
-
-	file = callback_data;
-
-	error = NULL;
-	new_info = g_file_query_info_finish (G_FILE (source_object), res, &error);
-	if (new_info != NULL) {
-		if (nautilus_file_update_info (file, new_info)) {
-			nautilus_file_changed (file);
-		}
-		g_object_unref (new_info);
-	}
-	nautilus_file_unref (file);
-	if (error) {
-		g_error_free (error);
-	}
-}
-
-static void
-set_metadata_callback (GObject *source_object,
-		       GAsyncResult *result,
-		       gpointer callback_data)
-{
-	NautilusFile *file;
-	GError *error;
-	gboolean res;
-
-	file = callback_data;
-
-	error = NULL;
-	res = g_file_set_attributes_finish (G_FILE (source_object),
-					    result,
-					    NULL,
-					    &error);
-
-	if (res) {
-		g_file_query_info_async (G_FILE (source_object),
-					 NAUTILUS_FILE_DEFAULT_ATTRIBUTES,
-					 0,
-					 G_PRIORITY_DEFAULT,
-					 NULL,
-					 set_metadata_get_info_callback, file);
-	} else {
-		nautilus_file_unref (file);
-		g_error_free (error);
-	}
-}
-
 void
 nautilus_file_set_metadata (NautilusFile *file,
 			    const char *key,
 			    const char *default_metadata,
 			    const char *metadata)
 {
-	GFile *location;
-	GFileInfo *info;
 	const char *val;
-	char *gio_key;
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (key != NULL);
 	g_return_if_fail (key[0] != '\0');
-
-	info = g_file_info_new ();
 
 	val = metadata;
 	if (val == NULL) {
 		val = default_metadata;
 	}
 
-	gio_key = g_strconcat ("metadata::", key, NULL);
-	if (val != NULL) {
-		g_file_info_set_attribute_string (info, gio_key, val);
-	} else {
-		/* Unset the key */
-		g_file_info_set_attribute (info, gio_key,
-					   G_FILE_ATTRIBUTE_TYPE_INVALID,
-					   NULL);
-	}
-	g_free (gio_key);
-
-	location = nautilus_file_get_location (file);
-	g_file_set_attributes_async (location,
-				     info,
-				     0,
-				     G_PRIORITY_DEFAULT,
-				     NULL,
-				     set_metadata_callback,
-				     nautilus_file_ref (file));
-	g_object_unref (location);
-	g_object_unref (info);
+	EEL_CALL_METHOD
+		(NAUTILUS_FILE_CLASS, file,
+		 set_metadata, (file, key, val));
 }
 
 void
@@ -3319,18 +3252,13 @@ nautilus_file_set_metadata_list (NautilusFile *file,
 				 const char *key,
 				 GList *list)
 {
-	GFile *location;
-	GFileInfo *info;
 	char **val;
 	int len, i;
 	GList *l;
-	char *gio_key;
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (key != NULL);
 	g_return_if_fail (key[0] != '\0');
-
-	info = g_file_info_new ();
 
 	len = g_list_length (list);
 	val = g_new (char *, len + 1);
@@ -3339,20 +3267,11 @@ nautilus_file_set_metadata_list (NautilusFile *file,
 	}
 	val[i] = NULL;
 
-	gio_key = g_strconcat ("metadata::", key, NULL);
-	g_file_info_set_attribute_stringv (info, gio_key, val);
-	g_free (gio_key);
+	EEL_CALL_METHOD
+		(NAUTILUS_FILE_CLASS, file,
+		 set_metadata_as_list, (file, key, val));
 
-	location = nautilus_file_get_location (file);
-	g_file_set_attributes_async (location,
-				     info,
-				     0,
-				     G_PRIORITY_DEFAULT,
-				     NULL,
-				     set_metadata_callback,
-				     nautilus_file_ref (file));
-	g_object_unref (info);
-	g_object_unref (location);
+	g_free (val);
 }
 
 

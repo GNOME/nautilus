@@ -26,6 +26,7 @@
 #include <config.h>
 #include "nautilus-vfs-file.h"
 
+#include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-file-private.h"
 #include "nautilus-autorun.h"
@@ -87,6 +88,122 @@ vfs_file_check_if_ready (NautilusFile *file,
 	return nautilus_directory_check_if_ready_internal
 		(file->details->directory, file,
 		 file_attributes);
+}
+
+static void
+set_metadata_get_info_callback (GObject *source_object,
+				GAsyncResult *res,
+				gpointer callback_data)
+{
+	NautilusFile *file;
+	GFileInfo *new_info;
+	GError *error;
+
+	file = callback_data;
+
+	error = NULL;
+	new_info = g_file_query_info_finish (G_FILE (source_object), res, &error);
+	if (new_info != NULL) {
+		if (nautilus_file_update_info (file, new_info)) {
+			nautilus_file_changed (file);
+		}
+		g_object_unref (new_info);
+	}
+	nautilus_file_unref (file);
+	if (error) {
+		g_error_free (error);
+	}
+}
+
+static void
+set_metadata_callback (GObject *source_object,
+		       GAsyncResult *result,
+		       gpointer callback_data)
+{
+	NautilusFile *file;
+	GError *error;
+	gboolean res;
+
+	file = callback_data;
+
+	error = NULL;
+	res = g_file_set_attributes_finish (G_FILE (source_object),
+					    result,
+					    NULL,
+					    &error);
+
+	if (res) {
+		g_file_query_info_async (G_FILE (source_object),
+					 NAUTILUS_FILE_DEFAULT_ATTRIBUTES,
+					 0,
+					 G_PRIORITY_DEFAULT,
+					 NULL,
+					 set_metadata_get_info_callback, file);
+	} else {
+		nautilus_file_unref (file);
+		g_error_free (error);
+	}
+}
+
+static void
+vfs_file_set_metadata (NautilusFile           *file,
+		       const char             *key,
+		       const char             *value)
+{
+	GFileInfo *info;
+	GFile *location;
+	char *gio_key;
+
+	info = g_file_info_new ();
+	
+	gio_key = g_strconcat ("metadata::", key, NULL);
+	if (value != NULL) {
+		g_file_info_set_attribute_string (info, gio_key, value);
+	} else {
+		/* Unset the key */
+		g_file_info_set_attribute (info, gio_key,
+					   G_FILE_ATTRIBUTE_TYPE_INVALID,
+					   NULL);
+	}
+	g_free (gio_key);
+
+	location = nautilus_file_get_location (file);
+	g_file_set_attributes_async (location,
+				     info,
+				     0,
+				     G_PRIORITY_DEFAULT,
+				     NULL,
+				     set_metadata_callback,
+				     nautilus_file_ref (file));
+	g_object_unref (location);
+	g_object_unref (info);
+}
+
+static void
+vfs_file_set_metadata_as_list (NautilusFile           *file,
+			       const char             *key,
+			       char                  **value)
+{
+	GFile *location;
+	GFileInfo *info;
+	char *gio_key;
+
+	info = g_file_info_new ();
+
+	gio_key = g_strconcat ("metadata::", key, NULL);
+	g_file_info_set_attribute_stringv (info, gio_key, value);
+	g_free (gio_key);
+
+	location = nautilus_file_get_location (file);
+	g_file_set_attributes_async (location,
+				     info,
+				     0,
+				     G_PRIORITY_DEFAULT,
+				     NULL,
+				     set_metadata_callback,
+				     nautilus_file_ref (file));
+	g_object_unref (info);
+	g_object_unref (location);
 }
 
 static gboolean
@@ -515,6 +632,8 @@ nautilus_vfs_file_class_init (gpointer klass)
 	file_class->get_deep_counts = vfs_file_get_deep_counts;
 	file_class->get_date = vfs_file_get_date;
 	file_class->get_where_string = vfs_file_get_where_string;
+	file_class->set_metadata = vfs_file_set_metadata;
+	file_class->set_metadata_as_list = vfs_file_set_metadata_as_list;
 	file_class->mount = vfs_file_mount;
 	file_class->unmount = vfs_file_unmount;
 	file_class->eject = vfs_file_eject;

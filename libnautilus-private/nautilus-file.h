@@ -513,6 +513,13 @@ typedef struct {
 							  time_t                 *date);
 	char *                (* get_where_string)       (NautilusFile           *file);
 
+	void                  (* set_metadata)           (NautilusFile           *file,
+							  const char             *key,
+							  const char             *value);
+	void                  (* set_metadata_as_list)   (NautilusFile           *file,
+							  const char             *key,
+							  char                  **value);
+	
 	void                  (* mount)                  (NautilusFile                   *file,
 							  GMountOperation                *mount_op,
 							  GCancellable                   *cancellable,
