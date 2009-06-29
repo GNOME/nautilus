@@ -845,4 +845,6 @@ nautilus_global_preferences_init (void)
 				 GCONF_CLIENT_PRELOAD_ONELEVEL);
 	eel_gconf_preload_cache ("/apps/nautilus/icon_view",
 				 GCONF_CLIENT_PRELOAD_ONELEVEL);
+	eel_gconf_preload_cache ("/apps/nautilus/desktop-metadata",
+				 GCONF_CLIENT_PRELOAD_RECURSIVE);
 }

@@ -51,6 +51,16 @@ typedef struct {
 	NautilusFileClass parent_slot;
 } NautilusDesktopDirectoryFileClass;
 
-GType   nautilus_desktop_directory_file_get_type (void);
+GType    nautilus_desktop_directory_file_get_type    (void);
+gboolean nautilus_desktop_update_metadata_from_gconf (NautilusFile  *file,
+						      const char    *name);
+void     nautilus_desktop_set_metadata_string        (NautilusFile  *file,
+						      const char    *name,
+						      const char    *key,
+						      const char    *string);
+void     nautilus_desktop_set_metadata_stringv       (NautilusFile  *file,
+						      const char    *name,
+						      const char    *key,
+						      char         **stringv);
 
 #endif /* NAUTILUS_DESKTOP_DIRECTORY_FILE_H */

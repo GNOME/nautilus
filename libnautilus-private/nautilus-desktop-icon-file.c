@@ -26,6 +26,7 @@
 #include <config.h>
 #include "nautilus-desktop-icon-file.h"
 
+#include "nautilus-desktop-directory-file.h"
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-file-attributes.h"
@@ -282,6 +283,8 @@ nautilus_desktop_icon_file_new (NautilusDesktopLink *link)
 
 	update_info_from_link (icon_file);
 
+	nautilus_desktop_update_metadata_from_gconf (file, file->details->name);
+
 	nautilus_directory_add_file (directory, file);
 
 	list.data = file;
@@ -333,7 +336,27 @@ nautilus_desktop_icon_file_eject (NautilusFile *file)
 	}
 }
 
+static void
+nautilus_desktop_icon_file_set_metadata (NautilusFile           *file,
+					 const char             *key,
+					 const char             *value)
+{
+	NautilusDesktopIconFile *desktop_file;
+	
+	desktop_file = NAUTILUS_DESKTOP_ICON_FILE (file);
+	nautilus_desktop_set_metadata_string (file, file->details->name, key, value);
+}
 
+static void
+nautilus_desktop_icon_file_set_metadata_as_list (NautilusFile           *file,
+						 const char             *key,
+						 char                  **value)
+{
+	NautilusDesktopIconFile *desktop_file;
+	
+	desktop_file = NAUTILUS_DESKTOP_ICON_FILE (file);
+	nautilus_desktop_set_metadata_stringv (file, file->details->name, key, value);
+}
 
 static void
 nautilus_desktop_icon_file_class_init (NautilusDesktopIconFileClass *klass)
@@ -355,6 +378,8 @@ nautilus_desktop_icon_file_class_init (NautilusDesktopIconFileClass *klass)
 	file_class->get_deep_counts = desktop_icon_file_get_deep_counts;
 	file_class->get_date = desktop_icon_file_get_date;
 	file_class->get_where_string = desktop_icon_file_get_where_string;
+	file_class->set_metadata = nautilus_desktop_icon_file_set_metadata;
+	file_class->set_metadata_as_list = nautilus_desktop_icon_file_set_metadata_as_list;
 	file_class->unmount = nautilus_desktop_icon_file_unmount;
 	file_class->eject = nautilus_desktop_icon_file_eject;
 
