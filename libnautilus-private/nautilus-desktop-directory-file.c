@@ -454,9 +454,15 @@ monitor_destroy (gpointer data)
 
 static char *
 get_metadata_gconf_path (const char *name,
-			const char *key)
+			 const char *key)
 {
-	return g_build_filename (NAUTILUS_DESKTOP_METADATA_GCONF_PATH, name, key, NULL);
+	char *res, *escaped_name;
+
+	escaped_name = gconf_escape_key (name, -1);
+	res = g_build_filename (NAUTILUS_DESKTOP_METADATA_GCONF_PATH, escaped_name, key, NULL);
+	g_free (escaped_name);
+
+	return res;
 }
 
 void
