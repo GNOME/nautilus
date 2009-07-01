@@ -1324,7 +1324,7 @@ check_visibility (GMount           *mount,
 		    g_drive_can_poll_for_media (drive))
 			*show_rescan = TRUE;
 
-		*show_start = g_drive_can_start (drive);
+		*show_start = g_drive_can_start (drive) || g_drive_can_start_degraded (drive);
 		*show_stop  = g_drive_can_stop (drive);
 	}
 
@@ -1587,12 +1587,13 @@ open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 			nautilus_file_operations_mount_volume_full (NULL, volume, FALSE,
 								    volume_mounted_cb,
 								    G_OBJECT (sidebar));
-		} else if (volume == NULL && drive != NULL && g_drive_can_start (drive)) {
-			GMountOperation *start_op;
+		} else if (volume == NULL && drive != NULL &&
+			   (g_drive_can_start (drive) || g_drive_can_start_degraded (drive))) {
+			GMountOperation *mount_op;
 
-			start_op = gtk_mount_operation_new (NULL);
-			g_drive_start (drive, G_DRIVE_START_NONE, start_op, NULL, drive_start_from_bookmark_cb, NULL);
-			g_object_unref (start_op);
+			mount_op = gtk_mount_operation_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (sidebar))));
+			g_drive_start (drive, G_DRIVE_START_NONE, mount_op, NULL, drive_start_from_bookmark_cb, NULL);
+			g_object_unref (mount_op);
 		}
 
 		if (drive != NULL)
@@ -1768,7 +1769,7 @@ drive_eject_cb (GObject *source_object,
 	char *primary;
 	char *name;
 	error = NULL;
-	if (!g_drive_eject_finish (G_DRIVE (source_object), res, &error)) {
+	if (!g_drive_eject_with_operation_finish (G_DRIVE (source_object), res, &error)) {
 		if (error->code != G_IO_ERROR_FAILED_HANDLED) {
 			name = g_drive_get_name (G_DRIVE (source_object));
 			primary = g_strdup_printf (_("Unable to eject %s"), name);
@@ -1791,7 +1792,7 @@ volume_eject_cb (GObject *source_object,
 	char *primary;
 	char *name;
 	error = NULL;
-	if (!g_volume_eject_finish (G_VOLUME (source_object), res, &error)) {
+	if (!g_volume_eject_with_operation_finish (G_VOLUME (source_object), res, &error)) {
 		if (error->code != G_IO_ERROR_FAILED_HANDLED) {
 			name = g_volume_get_name (G_VOLUME (source_object));
 			primary = g_strdup_printf (_("Unable to eject %s"), name);
@@ -1814,7 +1815,7 @@ mount_eject_cb (GObject *source_object,
 	char *primary;
 	char *name;
 	error = NULL;
-	if (!g_mount_eject_finish (G_MOUNT (source_object), res, &error)) {
+	if (!g_mount_eject_with_operation_finish (G_MOUNT (source_object), res, &error)) {
 		if (error->code != G_IO_ERROR_FAILED_HANDLED) {
 			name = g_mount_get_name (G_MOUNT (source_object));
 			primary = g_strdup_printf (_("Unable to eject %s"), name);
@@ -1834,13 +1835,17 @@ do_eject (GMount *mount,
 	  GDrive *drive,
 	  NautilusPlacesSidebar *sidebar)
 {
+	GMountOperation *mount_op;
+
+	mount_op = gtk_mount_operation_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (sidebar))));
 	if (mount != NULL) {
-		g_mount_eject (mount, 0, NULL, mount_eject_cb, NULL);
+		g_mount_eject_with_operation (mount, 0, mount_op, NULL, mount_eject_cb, NULL);
 	} else if (volume != NULL) {
-		g_volume_eject (volume, 0, NULL, volume_eject_cb, NULL);
+		g_volume_eject_with_operation (volume, 0, mount_op, NULL, volume_eject_cb, NULL);
 	} else if (drive != NULL) {
-		g_drive_eject (drive, 0, NULL, drive_eject_cb, NULL);
+		g_drive_eject_with_operation (drive, 0, mount_op, NULL, drive_eject_cb, NULL);
 	}
+	g_object_unref (mount_op);
 }
 
 static void
@@ -2029,13 +2034,13 @@ start_shortcut_cb (GtkMenuItem           *item,
 			    -1);
 
 	if (drive != NULL) {
-		GMountOperation *start_op;
+		GMountOperation *mount_op;
 
-		start_op = gtk_mount_operation_new (NULL);
+		mount_op = gtk_mount_operation_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (sidebar))));
 
-		g_drive_start (drive, G_DRIVE_START_NONE, start_op, NULL, drive_start_cb, NULL);
+		g_drive_start (drive, G_DRIVE_START_NONE, mount_op, NULL, drive_start_cb, NULL);
 
-		g_object_unref (start_op);
+		g_object_unref (mount_op);
 	}
 	g_object_unref (drive);
 }
@@ -2080,7 +2085,11 @@ stop_shortcut_cb (GtkMenuItem           *item,
 			    -1);
 
 	if (drive != NULL) {
-		g_drive_stop (drive, G_MOUNT_UNMOUNT_NONE, NULL, drive_stop_cb, NULL);
+		GMountOperation *mount_op;
+
+		mount_op = gtk_mount_operation_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (sidebar))));
+		g_drive_stop (drive, G_MOUNT_UNMOUNT_NONE, mount_op, NULL, drive_stop_cb, NULL);
+		g_object_unref (mount_op);
 	}
 	g_object_unref (drive);
 }
@@ -2204,7 +2213,7 @@ bookmarks_build_popup_menu (NautilusPlacesSidebar *sidebar)
 	gtk_widget_show (item);
 	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
 
-	item = gtk_menu_item_new_with_mnemonic (_("_Rescan"));
+	item = gtk_menu_item_new_with_mnemonic (_("_Detect Media"));
 	sidebar->popup_menu_rescan_item = item;
 	g_signal_connect (item, "activate",
 		    G_CALLBACK (rescan_shortcut_cb), sidebar);

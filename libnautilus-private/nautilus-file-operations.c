@@ -1981,11 +1981,11 @@ unmount_mount_callback (GObject *source_object,
 
 	error = NULL;
 	if (data->eject) {
-		unmounted = g_mount_eject_finish (G_MOUNT (source_object),
-		      							res, &error);
+		unmounted = g_mount_eject_with_operation_finish (G_MOUNT (source_object),
+								 res, &error);
 	} else {
-		unmounted = g_mount_unmount_finish (G_MOUNT (source_object),
-		      							res, &error);
+		unmounted = g_mount_unmount_with_operation_finish (G_MOUNT (source_object),
+								   res, &error);
 	}
 	
 	if (! unmounted) {
@@ -2011,17 +2011,25 @@ unmount_mount_callback (GObject *source_object,
 static void
 do_unmount (UnmountData *data)
 {
+	GMountOperation *mount_op;
+
+	mount_op = gtk_mount_operation_new (data->parent_window);
 	if (data->eject) {
-		g_mount_eject (data->mount,
-				 0, NULL,
-				 unmount_mount_callback,
-				 data);
+		g_mount_eject_with_operation (data->mount,
+					      0,
+					      mount_op,
+					      NULL,
+					      unmount_mount_callback,
+					      data);
 	} else {
-		g_mount_unmount (data->mount,
-				 0, NULL,
-				 unmount_mount_callback,
-				 data);
+		g_mount_unmount_with_operation (data->mount,
+						0,
+						mount_op,
+						NULL,
+						unmount_mount_callback,
+						data);
 	}
+	g_object_unref (mount_op);
 }
 
 static gboolean

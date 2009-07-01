@@ -1479,7 +1479,7 @@ drive_eject_cb (GObject *source_object,
 	char *primary;
 	char *name;
 	error = NULL;
-	if (!g_drive_eject_finish (G_DRIVE (source_object), res, &error)) {
+	if (!g_drive_eject_with_operation_finish (G_DRIVE (source_object), res, &error)) {
 		if (error->code != G_IO_ERROR_FAILED_HANDLED) {
 			name = g_drive_get_name (G_DRIVE (source_object));
 			primary = g_strdup_printf (_("Unable to eject %s"), name);
@@ -1497,7 +1497,11 @@ static void
 drive_eject_button_pressed (GDrive *drive,
 			    NautilusApplication *application)
 {
-	g_drive_eject (drive, 0, NULL, drive_eject_cb, NULL);
+	GMountOperation *mount_op;
+
+	mount_op = gtk_mount_operation_new (NULL);
+	g_drive_eject_with_operation (drive, 0, mount_op, NULL, drive_eject_cb, NULL);
+	g_object_unref (mount_op);
 }
 
 static void

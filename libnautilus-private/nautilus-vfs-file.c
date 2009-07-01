@@ -413,8 +413,8 @@ vfs_file_unmount_callback (GObject *source_object,
 	op = callback_data;
 
 	error = NULL;
-	unmounted = g_file_unmount_mountable_finish (G_FILE (source_object),
-						    res, &error);
+	unmounted = g_file_unmount_mountable_with_operation_finish (G_FILE (source_object),
+								    res, &error);
 	
     if (!unmounted &&
 	error->domain == G_IO_ERROR && 
@@ -431,19 +431,28 @@ vfs_file_unmount_callback (GObject *source_object,
 }
 
 static void
-vfs_file_unmount (NautilusFile *file)
+vfs_file_unmount (NautilusFile                   *file,
+		  GMountOperation                *mount_op,
+		  GCancellable                   *cancellable,
+		  NautilusFileOperationCallback   callback,
+		  gpointer                        callback_data)
 {
 	NautilusFileOperation *op;
 	GFile *location;
 	
-	op = nautilus_file_operation_new (file, NULL, NULL);
+	op = nautilus_file_operation_new (file, callback, callback_data);
+	if (cancellable) {
+		g_object_unref (op->cancellable);
+		op->cancellable = g_object_ref (cancellable);
+	}
 
 	location = nautilus_file_get_location (file);
-	g_file_unmount_mountable (location,
-				G_MOUNT_UNMOUNT_NONE,
-				op->cancellable,
-				vfs_file_unmount_callback,
-				op);
+	g_file_unmount_mountable_with_operation (location,
+						 G_MOUNT_UNMOUNT_NONE,
+						 mount_op,
+						 op->cancellable,
+						 vfs_file_unmount_callback,
+						 op);
 	g_object_unref (location);
 }
 
@@ -459,8 +468,8 @@ vfs_file_eject_callback (GObject *source_object,
 	op = callback_data;
 
 	error = NULL;
-	ejected = g_file_eject_mountable_finish (G_FILE (source_object),
-						    res, &error);
+	ejected = g_file_eject_mountable_with_operation_finish (G_FILE (source_object),
+								res, &error);
 
 	if (!ejected &&
 	    error->domain == G_IO_ERROR &&
@@ -477,19 +486,28 @@ vfs_file_eject_callback (GObject *source_object,
 }
 
 static void
-vfs_file_eject (NautilusFile *file)
+vfs_file_eject (NautilusFile                   *file,
+		GMountOperation                *mount_op,
+		GCancellable                   *cancellable,
+		NautilusFileOperationCallback   callback,
+		gpointer                        callback_data)
 {
 	NautilusFileOperation *op;
 	GFile *location;
 	
-	op = nautilus_file_operation_new (file, NULL, NULL);
+	op = nautilus_file_operation_new (file, callback, callback_data);
+	if (cancellable) {
+		g_object_unref (op->cancellable);
+		op->cancellable = g_object_ref (cancellable);
+	}
 
 	location = nautilus_file_get_location (file);
-	g_file_eject_mountable (location,
-				G_MOUNT_UNMOUNT_NONE,
-				op->cancellable,
-				vfs_file_eject_callback,
-				op);
+	g_file_eject_mountable_with_operation (location,
+					       G_MOUNT_UNMOUNT_NONE,
+					       mount_op,
+					       op->cancellable,
+					       vfs_file_eject_callback,
+					       op);
 	g_object_unref (location);
 }
 
@@ -525,7 +543,7 @@ vfs_file_start_callback (GObject *source_object,
 
 static void
 vfs_file_start (NautilusFile                   *file,
-		GMountOperation                *start_op,
+		GMountOperation                *mount_op,
 		GCancellable                   *cancellable,
 		NautilusFileOperationCallback   callback,
 		gpointer                        callback_data)
@@ -554,7 +572,7 @@ vfs_file_start (NautilusFile                   *file,
 	location = nautilus_file_get_location (file);
 	g_file_start_mountable (location,
 				0,
-				start_op,
+				mount_op,
 				op->cancellable,
 				vfs_file_start_callback,
 				op);
@@ -591,7 +609,62 @@ vfs_file_stop_callback (GObject *source_object,
 }
 
 static void
-vfs_file_stop (NautilusFile *file)
+vfs_file_stop (NautilusFile                   *file,
+	       GMountOperation                *mount_op,
+	       GCancellable                   *cancellable,
+	       NautilusFileOperationCallback   callback,
+	       gpointer                        callback_data)
+{
+	NautilusFileOperation *op;
+	GFile *location;
+
+	op = nautilus_file_operation_new (file, callback, callback_data);
+	if (cancellable) {
+		g_object_unref (op->cancellable);
+		op->cancellable = g_object_ref (cancellable);
+	}
+
+	location = nautilus_file_get_location (file);
+	g_file_stop_mountable (location,
+			       G_MOUNT_UNMOUNT_NONE,
+			       mount_op,
+			       op->cancellable,
+			       vfs_file_stop_callback,
+			       op);
+	g_object_unref (location);
+}
+
+static void
+vfs_file_poll_callback (GObject *source_object,
+			GAsyncResult *res,
+			gpointer callback_data)
+{
+	NautilusFileOperation *op;
+	gboolean stopped;
+	GError *error;
+
+	op = callback_data;
+
+	error = NULL;
+	stopped = g_file_poll_mountable_finish (G_FILE (source_object),
+						res, &error);
+
+	if (!stopped &&
+	    error->domain == G_IO_ERROR &&
+	    (error->code == G_IO_ERROR_FAILED_HANDLED ||
+	     error->code == G_IO_ERROR_CANCELLED)) {
+		g_error_free (error);
+		error = NULL;
+	}
+
+	nautilus_file_operation_complete (op, G_FILE (source_object), error);
+	if (error) {
+		g_error_free (error);
+	}
+}
+
+static void
+vfs_file_poll_for_media (NautilusFile *file)
 {
 	NautilusFileOperation *op;
 	GFile *location;
@@ -599,10 +672,9 @@ vfs_file_stop (NautilusFile *file)
 	op = nautilus_file_operation_new (file, NULL, NULL);
 
 	location = nautilus_file_get_location (file);
-	g_file_stop_mountable (location,
-			       G_MOUNT_UNMOUNT_NONE,
+	g_file_poll_mountable (location,
 			       op->cancellable,
-			       vfs_file_stop_callback,
+			       vfs_file_poll_callback,
 			       op);
 	g_object_unref (location);
 }
@@ -639,4 +711,5 @@ nautilus_vfs_file_class_init (gpointer klass)
 	file_class->eject = vfs_file_eject;
 	file_class->start = vfs_file_start;
 	file_class->stop = vfs_file_stop;
+	file_class->poll_for_media = vfs_file_poll_for_media;
 }
