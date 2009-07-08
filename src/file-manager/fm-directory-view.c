@@ -4250,7 +4250,8 @@ add_application_to_open_with_menu (FMDirectoryView *view,
 				   GList *files,
 				   int index,
 				   const char *menu_placeholder,
-				   const char *popup_placeholder)
+				   const char *popup_placeholder,
+				   const gboolean submenu)
 {
 	ApplicationLaunchParameters *launch_parameters;
 	char *tip;
@@ -4258,11 +4259,16 @@ add_application_to_open_with_menu (FMDirectoryView *view,
 	char *action_name;
 	char *escaped_app;
 	GtkAction *action;
+	GIcon *app_icon;
 
 	launch_parameters = application_launch_parameters_new 
 		(application, files, view);
 	escaped_app = eel_str_double_underscores (g_app_info_get_name (application));
-	label = g_strdup_printf (_("Open with \"%s\""), escaped_app);
+	if (submenu)
+		label = g_strdup_printf ("%s", escaped_app);
+	else
+		label = g_strdup_printf (_("Open with %s"), escaped_app);
+
 	tip = g_strdup_printf (ngettext ("Use \"%s\" to open the selected item",
 					 "Use \"%s\" to open the selected items",
 					 g_list_length (files)),
@@ -4276,6 +4282,14 @@ add_application_to_open_with_menu (FMDirectoryView *view,
 				 tip,
 				 NULL);
 	
+	app_icon = g_object_ref (g_app_info_get_icon (application));
+
+	if (app_icon == NULL)
+		app_icon = g_themed_icon_new ("application-x-executable");
+
+	gtk_action_set_gicon (action, app_icon);
+	g_object_unref (app_icon);
+
 	g_signal_connect_data (action, "activate",
 			       G_CALLBACK (open_with_launch_application_callback),
 			       launch_parameters, 
@@ -4450,7 +4464,7 @@ reset_open_with_menu (FMDirectoryView *view, GList *selection)
 						   node->data, 
 						   selection, 
 						   index, 
-						   menu_path, popup_path);
+						   menu_path, popup_path, submenu_visible);
 	}
 	eel_g_object_list_free (applications);
 	if (default_app != NULL) {
@@ -6909,7 +6923,7 @@ static const GtkActionEntry directory_view_entries[] = {
   /* tooltip */                  N_("Open each selected item in a folder window"),
                                  G_CALLBACK (action_open_folder_window_callback) },
   /* name, stock id */         { "OtherApplication1", NULL,
-  /* label, accelerator */       N_("Open with Other _Application..."), NULL,
+  /* label, accelerator */       N_("Other _Application..."), NULL,
   /* tooltip */                  N_("Choose another application with which to open the selected item"),
                                  G_CALLBACK (action_other_application_callback) },
   /* name, stock id */         { "OtherApplication2", NULL,
@@ -8389,7 +8403,7 @@ real_update_menus (FMDirectoryView *view)
 		char *escaped_app;
 
 		escaped_app = eel_str_double_underscores (g_app_info_get_name (app));
-		label_with_underscore = g_strdup_printf (_("_Open with \"%s\""),
+		label_with_underscore = g_strdup_printf (_("_Open with %s"),
 							 escaped_app);
 
 		app_icon = g_object_ref (g_app_info_get_icon (app));
