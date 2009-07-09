@@ -328,7 +328,7 @@ nautilus_notes_viewer_init (NautilusNotesViewer *sidebar)
         gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (details->note_text_field),
                                      GTK_WRAP_WORD);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sidebar),
-					GTK_POLICY_NEVER,
+					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sidebar),
                                              GTK_SHADOW_IN);
