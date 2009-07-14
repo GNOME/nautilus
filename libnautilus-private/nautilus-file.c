@@ -6440,7 +6440,7 @@ nautilus_file_get_keywords (NautilusFile *file)
 
 	/* Put all the keywords into a list. */
 	keywords = nautilus_file_get_metadata_list
-		(file, NAUTILUS_METADATA_KEY_KEYWORD);
+		(file, NAUTILUS_METADATA_KEY_EMBLEMS);
 
 	keywords = g_list_concat (keywords, eel_g_str_list_copy (file->details->extension_emblems));
 	keywords = g_list_concat (keywords, eel_g_str_list_copy (file->details->pending_extension_emblems));
@@ -6470,7 +6470,7 @@ nautilus_file_set_keywords (NautilusFile *file, GList *keywords)
 	canonical_keywords = sort_keyword_list_and_remove_duplicates
 		(g_list_copy (keywords));
 	nautilus_file_set_metadata_list
-		(file, NAUTILUS_METADATA_KEY_KEYWORD, canonical_keywords);
+		(file, NAUTILUS_METADATA_KEY_EMBLEMS, canonical_keywords);
 	g_list_free (canonical_keywords);
 }
 

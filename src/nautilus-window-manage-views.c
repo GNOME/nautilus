@@ -1071,7 +1071,7 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 		if (slot->location_change_type != NAUTILUS_LOCATION_CHANGE_FALLBACK) {
 			/* Look in metadata for view */
 			view_id = nautilus_file_get_metadata 
-				(file, NAUTILUS_METADATA_KEY_DEFAULT_COMPONENT, NULL);
+				(file, NAUTILUS_METADATA_KEY_DEFAULT_VIEW, NULL);
 			if (view_id != NULL && 
 			    !nautilus_view_factory_view_supports_uri (view_id,
 								      location,
@@ -2006,7 +2006,7 @@ nautilus_window_slot_set_content_view (NautilusWindowSlot *slot,
 
 	file = nautilus_file_get (slot->location);
 	nautilus_file_set_metadata 
-		(file, NAUTILUS_METADATA_KEY_DEFAULT_COMPONENT, NULL, id);
+		(file, NAUTILUS_METADATA_KEY_DEFAULT_VIEW, NULL, id);
         nautilus_file_unref (file);
         
         nautilus_window_slot_set_allow_stop (slot, TRUE);
