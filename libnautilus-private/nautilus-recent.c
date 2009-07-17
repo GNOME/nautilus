@@ -61,7 +61,7 @@ nautilus_recent_add_file (NautilusFile *file,
 	recent_data.app_name = g_strdup (g_get_application_name ());
 
 	if (application != NULL)
-		recent_data.app_exec = g_strdup (g_app_info_get_executable (application));
+		recent_data.app_exec = g_strdup (g_app_info_get_commandline (application));
 	else
 		recent_data.app_exec = g_strdup (DEFAULT_APP_EXEC);
 
