@@ -4137,7 +4137,6 @@ nautilus_file_get_icon (NautilusFile *file,
 	} else {
 		modified_size = size * cached_thumbnail_size / NAUTILUS_ICON_SIZE_STANDARD; 
 	}
-
 	if (flags & NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS &&
 	    nautilus_file_should_show_thumbnail (file)) {
 		if (file->details->thumbnail) {
@@ -4150,13 +4149,26 @@ nautilus_file_get_icon (NautilusFile *file,
 			h = gdk_pixbuf_get_height (raw_pixbuf);
 			
 			s = MAX (w, h);
-			scale = (double)modified_size / s;
-
+			/* Don't scale up small thumbnails in the standard view */
+			if (s <= cached_thumbnail_size) {
+				scale = (double)size / NAUTILUS_ICON_SIZE_STANDARD;
+			}
+			else {
+				scale = (double)modified_size / s;
+			}
+			/* Make sure that icons don't get smaller than NAUTILUS_ICON_SIZE_SMALLEST */
+			if (s*scale <= NAUTILUS_ICON_SIZE_SMALLEST) {
+				scale = (double) NAUTILUS_ICON_SIZE_SMALLEST / s;
+			}
 
 			scaled_pixbuf = gdk_pixbuf_scale_simple (raw_pixbuf,
 								 w * scale, h * scale,
 								 GDK_INTERP_BILINEAR);
-			nautilus_thumbnail_frame_image (&scaled_pixbuf);
+
+			/* We don't want frames around small icons */
+			if (!gdk_pixbuf_get_has_alpha(raw_pixbuf) || s >= 128) {
+				nautilus_thumbnail_frame_image (&scaled_pixbuf);
+			}
 			g_object_unref (raw_pixbuf);
 
 			/* Don't scale up if more than 25%, then read the original
