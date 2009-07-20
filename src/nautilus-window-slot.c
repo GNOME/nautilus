@@ -28,6 +28,7 @@
 #include "nautilus-window-private.h"
 #include "nautilus-window-manage-views.h"
 #include "file-manager/fm-directory-view.h"
+#include "file-manager/fm-list-view.h"
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-window-slot-info.h>
@@ -407,6 +408,20 @@ nautilus_window_slot_is_in_active_pane (NautilusWindowSlot *slot,
 	g_return_if_fail (EEL_IS_BACKGROUND (bg));
 
 	eel_background_set_active (bg, is_active);
+
+	/* list view draws its background itself, so it needs special treatment */
+	if (FM_IS_LIST_VIEW (slot->content_view)) {
+		GtkWidget *tree_view = GTK_WIDGET (fm_list_view_get_tree_view (FM_LIST_VIEW (slot->content_view)));
+		if (is_active) {
+			gtk_widget_modify_base (tree_view, GTK_STATE_NORMAL, NULL);
+		} else {
+			GtkStyle *style;
+			GdkColor color;
+			style = gtk_widget_get_style (tree_view);
+			color = style->base[GTK_STATE_INSENSITIVE];
+			gtk_widget_modify_base (tree_view, GTK_STATE_NORMAL, &color);
+		}
+	}
 }
 
 void
