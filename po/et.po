@@ -22,9 +22,9 @@ msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2009-06-22 13:04+0000\n"
-"PO-Revision-Date: 2009-06-24 23:24+0300\n"
-"Last-Translator: Mattias Põldaru <mahfiaz gmail com>\n"
+"POT-Creation-Date: 2009-07-18 14:34+0000\n"
+"PO-Revision-Date: 2009-07-20 15:16+0300\n"
+"Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1176,7 +1176,7 @@ msgid "Open %s"
 msgstr "Avatakse: %s"
 
 msgid "Open with other Application..."
-msgstr "Ava mõne muu rakendusega..."
+msgstr "Avatakse mõne muu rakendusega..."
 
 msgid "You have just inserted an Audio CD."
 msgstr "Sa sisestasid audio-CD."
@@ -2042,9 +2042,17 @@ msgstr ""
 msgid "This file cannot be mounted"
 msgstr "Seda faili pole võimalik külge haakida"
 
-#| msgid "This file cannot be mounted"
+msgid "This file cannot be unmounted"
+msgstr "Seda faili pole võimalik lahti haakida"
+
+msgid "This file cannot be ejected"
+msgstr "Seda faili pole võimalik väljastada"
+
 msgid "This file cannot be started"
 msgstr "Seda faili pole võimalik käivitada"
+
+msgid "This file cannot be stopped"
+msgstr "Seda faili pole võimalik seisata"
 
 #, c-format
 msgid "Slashes are not allowed in filenames"
@@ -2524,7 +2532,6 @@ msgstr "Märgi _usaldusväärseks"
 msgid "Unable to mount location"
 msgstr "Asukohta pole võimalik külge haakida"
 
-#| msgid "Unable to mount location"
 msgid "Unable to start location"
 msgstr "Asukohta pole võimalik käivitada"
 
@@ -2570,7 +2577,7 @@ msgstr "Vali rakendus, millega faili %s ja teisi \"%s\"-liigilisi faile avada"
 
 #, c-format
 msgid "Open all files of type \"%s\" with:"
-msgstr "Kõik \"%s\"-liigilised failid avatakse järgneva rakendusega:"
+msgstr "Kõik \"%s\" liigi alla kuuluvad failid avatakse rakendusega:"
 
 msgid "Could not run application"
 msgstr "Rakendust pole võimalik käivitada"
@@ -2593,13 +2600,13 @@ msgid "Select an Application"
 msgstr "Rakenduse valimine"
 
 msgid "Open With"
-msgstr "Avamine programmiga"
+msgstr "Avamine rakendusega"
 
 msgid "Select an application to view its description."
 msgstr "Rakenduse kirjelduse vaatamiseks klõpsa selle nime peal."
 
 msgid "_Use a custom command"
-msgstr "_Kasuta kohandatud käsku"
+msgstr "_Kasutatakse kohandatud käsku"
 
 msgid "_Browse..."
 msgstr "_Sirvi..."
@@ -2614,7 +2621,7 @@ msgid "Open %s and other files of type \"%s\" with:"
 msgstr "Faili %s ja teisi \"%s\"-liigilisi faile tuleb avada rakendusega:"
 
 msgid "_Add"
-msgstr "_Lisa"
+msgstr "L_isa"
 
 msgid "Add Application"
 msgstr "Rakenduse lisamine"
@@ -2894,8 +2901,8 @@ msgid "Some files will not be displayed."
 msgstr "Osasid faile ei kuvata."
 
 #, c-format
-msgid "Open with \"%s\""
-msgstr "Ava programmiga \"%s\""
+msgid "Open with %s"
+msgstr "Ava programmiga %s"
 
 #, c-format
 msgid "Use \"%s\" to open the selected item"
@@ -2986,6 +2993,17 @@ msgstr[1] "%'d valitud kirjet kopeeritakse, kui valid käsu \"Aseta\""
 
 msgid "There is nothing on the clipboard to paste."
 msgstr "Lõikelaualt ei ole midagi asetada."
+
+msgid "Unable to unmount location"
+msgstr "Asukohta pole võimalik lahti haakida"
+
+msgid "Unable to eject location"
+msgstr "Asukohta pole võimalik väljastada"
+
+#, fuzzy
+#| msgid "Unable to stop %s"
+msgid "Unable to stop drive"
+msgstr "%s seiskamine pole võimalik"
 
 #, c-format
 msgid "Connect to Server %s"
@@ -3089,12 +3107,19 @@ msgstr "Iga valitud kirje avamine kataloogiaknas"
 
 #. name, stock id
 #. label, accelerator
-msgid "Open with Other _Application..."
+#, fuzzy
+#| msgid "Open with Other _Application..."
+msgid "Other _Application..."
 msgstr "_Ava mõne muu rakendusega..."
 
 #. tooltip
 msgid "Choose another application with which to open the selected item"
 msgstr "Valitud kirje avamiseks teise rakenduse valimine"
+
+#. name, stock id
+#. label, accelerator
+msgid "Open with Other _Application..."
+msgstr "_Ava mõne muu rakendusega..."
 
 #. name, stock id
 #. label, accelerator
@@ -3265,12 +3290,10 @@ msgstr "Valitud kettaseadme vormindamine"
 #. name, stock id
 #. label, accelerator
 #. Adjust start/stop items to reflect the type of the drive
-#| msgid "_Software:"
 msgid "_Start"
 msgstr "_Käivita"
 
 #. tooltip
-#| msgid "Format the selected volume"
 msgid "Start the selected volume"
 msgstr "Valitud andmeruumi käivitamine"
 
@@ -3280,9 +3303,19 @@ msgid "_Stop"
 msgstr "_Peata"
 
 #. tooltip
-#| msgid "Mount the selected volume"
 msgid "Stop the selected volume"
 msgstr "Valitud andmeruumi peatamine"
+
+#. name, stock id
+#. label, accelerator
+msgid "_Detect Media"
+msgstr "_Tuvasta meedia"
+
+#. tooltip
+#, fuzzy
+#| msgid "Connect to the selected drive"
+msgid "Detect media in the selected drive"
+msgstr "Ühendab valitud kettale"
 
 #. tooltip
 msgid "Mount the volume associated with the open folder"
@@ -3301,12 +3334,10 @@ msgid "Format the volume associated with the open folder"
 msgstr "Avatud kataloogiga seotud kettaseadme vormindamine"
 
 #. tooltip
-#| msgid "Format the volume associated with the open folder"
 msgid "Start the volume associated with the open folder"
 msgstr "Käivitab avatud kaustaga seotud andmeruumi"
 
 #. tooltip
-#| msgid "Mount the volume associated with the open folder"
 msgid "Stop the volume associated with the open folder"
 msgstr "Seiskab avatud kaustaga seotud andmeruumi"
 
@@ -3391,12 +3422,10 @@ msgid "Format the volume associated with this folder"
 msgstr "Selle kataloogiga seotud kettaseadme vormindamine"
 
 #. tooltip
-#| msgid "Format the volume associated with this folder"
 msgid "Start the volume associated with this folder"
 msgstr "Käivitab selle kaustaga seotud andmeruumi"
 
 #. tooltip
-#| msgid "Mount the volume associated with this folder"
 msgid "Stop the volume associated with this folder"
 msgstr "Seiskab selle kaustaga seotud andmeruumi"
 
@@ -3453,11 +3482,9 @@ msgid_plural "Move the selected items out of the trash"
 msgstr[0] "Valitud kirje prügikastist väljatõstmine"
 msgstr[1] "Valitud kirjete prügikastist väljatõstmine"
 
-#| msgid "Format the selected volume"
 msgid "Start the select drive"
 msgstr "Käivitab valitud ketta"
 
-#| msgid "Mount the selected volume"
 msgid "Connect to the selected drive"
 msgstr "Ühendab valitud kettale"
 
@@ -3470,27 +3497,21 @@ msgstr "Mitmekettaseadme käivitamine"
 msgid "U_nlock Drive"
 msgstr "_Võta ketas lukust lahti"
 
-#| msgid "Unmount the selected volume"
 msgid "Unlock the selected drive"
 msgstr "Lukustab valitud ketta lahti"
 
-#| msgid "Mount the selected volume"
 msgid "Stop the selected drive"
 msgstr "Seiskab valitud ketta"
 
-#| msgid "C_ancel Remove"
 msgid "_Safely Remove Drive"
 msgstr "_Eemalda ketas turvaliselt"
 
-#| msgid "Format the selected volume"
 msgid "Safely remove the selected drive"
 msgstr "Valitud kettaseadme turvaline eemaldamine"
 
-#| msgid "_Connect"
 msgid "_Disconnect"
 msgstr "Ü_henda lahti"
 
-#| msgid "Mount the selected volume"
 msgid "Disconnect the selected drive"
 msgstr "Valitud kettaseadme lahtiühendamine"
 
@@ -3503,19 +3524,15 @@ msgstr "Mitmekettaseadme seiskamine"
 msgid "_Lock Drive"
 msgstr "_Lukusta ketas"
 
-#| msgid "Mount the selected volume"
 msgid "Lock the selected drive"
 msgstr "Valitud kettaseadme lukustamine"
 
-#| msgid "Format the volume associated with the open folder"
 msgid "Start the drive associated with the open folder"
 msgstr "Avatud kataloogiga seotud kettaseadme käivitamine"
 
-#| msgid "Mount the volume associated with the open folder"
 msgid "Connect to the drive associated with the open folder"
 msgstr "Avatud kataloogiga seotud kettaseadme ühendamine"
 
-#| msgid "Format the volume associated with the open folder"
 msgid "Start the multi-disk drive associated with the open folder"
 msgstr "Avatud kataloogiga seotud mitmekettaseadme käivitamine"
 
@@ -3523,31 +3540,24 @@ msgstr "Avatud kataloogiga seotud mitmekettaseadme käivitamine"
 msgid "_Unlock Drive"
 msgstr "_Võta ketas lukust lahti"
 
-#| msgid "Unmount the volume associated with the open folder"
 msgid "Unlock the drive associated with the open folder"
 msgstr "Avatud kataloogiga seotud kettaseadme lukust lahti võtmine"
 
-#| msgid "Mount the volume associated with the open folder"
 msgid "_Stop the drive associated with the open folder"
 msgstr "Avatud kataloogiga seotud kettaseadme _seiskamine"
 
-#| msgid "Format the volume associated with the open folder"
 msgid "Safely remove the drive associated with the open folder"
 msgstr "Avatud kataloogiga seotud kettaseadme turvaline eemaldamine"
 
-#| msgid "Mount the volume associated with the open folder"
 msgid "Disconnect the drive associated with the open folder"
 msgstr "Avatud kataloogiga seotud kettaseadme lahtiühendamine"
 
-#| msgid "Mount the volume associated with the open folder"
 msgid "Stop the multi-disk drive associated with the open folder"
 msgstr "Avatud kataloogiga seotud mitmekettaseadme seiskamine"
 
-#| msgid "Mount the volume associated with the open folder"
 msgid "Lock the drive associated with the open folder"
 msgstr "Avatud kataloogiga seotud kettaseadme lukustamine"
 
-#| msgid "Format the selected volume"
 msgid "Start the selected drive"
 msgstr "Valitud kettaseadme käivitamine"
 
@@ -3575,9 +3585,10 @@ msgstr "Avatud kataloogi jäädavalt kustutamine"
 msgid "Move the open folder to the Trash"
 msgstr "Avatud kataloogi prügikasti viskamine"
 
-#, c-format
-msgid "_Open with \"%s\""
-msgstr "_Ava rakendusega \"%s\""
+#, fuzzy, c-format
+#| msgid "Open with %s"
+msgid "_Open with %s"
+msgstr "Ava programmiga %s"
 
 #, c-format
 msgid "Open in %'d New _Window"
@@ -4508,7 +4519,7 @@ msgid "List Columns"
 msgstr "Nimekirja veerud"
 
 msgid "Local Files Only"
-msgstr "Ainult kohalikel failidel"
+msgstr "Ainult kohalikel failide korral"
 
 msgid "Media"
 msgstr "Meedium"
@@ -4520,7 +4531,7 @@ msgid "Preview"
 msgstr "Eelvaatlemine"
 
 msgid "Preview _sound files:"
-msgstr "_Helifaile eelvaatlemine"
+msgstr "_Helifaile eelvaadeldakse:"
 
 msgid "Show _only folders"
 msgstr "Näidatakse ai_nult katalooge"
@@ -4687,10 +4698,6 @@ msgstr "Korraga pole võimalik rohkem kui üht kohandatud ikooni lisada."
 
 msgid "You can only use images as custom icons."
 msgstr "Pilte saab kasutada ainult kohandatud ikoonidena."
-
-#, c-format
-msgid "Open with %s"
-msgstr "Ava programmiga %s"
 
 msgid "Go To:"
 msgstr "Mine:"
@@ -4955,7 +4962,6 @@ msgstr "Võrk"
 msgid "_Power On"
 msgstr "_Lülita sisse"
 
-#| msgid "_Connect"
 msgid "_Connect Drive"
 msgstr "Ü_henda ketas"
 
@@ -4969,7 +4975,6 @@ msgid "_Stop Multi-disk Device"
 msgstr "_Seiska mitmekettaseade"
 
 #, c-format
-#| msgid "Unable to mount %s"
 msgid "Unable to start %s"
 msgstr "%s käivitamine pole võimalik"
 
@@ -4986,9 +4991,6 @@ msgstr "Eemalda"
 
 msgid "Rename..."
 msgstr "Muuda nime..."
-
-msgid "_Rescan"
-msgstr "_Otsi uuesti"
 
 msgid "Places"
 msgstr "Asukohad"
@@ -5583,6 +5585,15 @@ msgstr "Suurendus"
 
 msgid "Set the zoom level of the current view"
 msgstr "Praeguse vaate suurendusastme seadmine"
+
+#~ msgid "Open with \"%s\""
+#~ msgstr "Ava programmiga \"%s\""
+
+#~ msgid "_Open with \"%s\""
+#~ msgstr "_Ava rakendusega \"%s\""
+
+#~ msgid "_Rescan"
+#~ msgstr "_Otsi uuesti"
 
 #~ msgid "_Mount Volume"
 #~ msgstr "_Ühenda kettaseade"
