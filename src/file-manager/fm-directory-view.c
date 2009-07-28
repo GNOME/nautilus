@@ -1586,6 +1586,15 @@ sort_directories_first_changed_callback (gpointer callback_data)
 }
 
 static void
+lockdown_disable_command_line_changed_callback (gpointer callback_data)
+{
+	FMDirectoryView *view;
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+	schedule_update_menus (view);
+}
+
+static void
 set_up_scripts_directory_global (void)
 {
 	char *scripts_directory_path;
@@ -1929,6 +1938,8 @@ fm_directory_view_init (FMDirectoryView *view)
 				      click_policy_changed_callback, view);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST, 
 				      sort_directories_first_changed_callback, view);
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE,
+				      lockdown_disable_command_line_changed_callback, view);
 }
 
 static void
@@ -2043,6 +2054,8 @@ fm_directory_view_finalize (GObject *object)
 					 click_policy_changed_callback, view);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
 					 sort_directories_first_changed_callback, view);
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE,
+					 lockdown_disable_command_line_changed_callback, view);
 
 	unschedule_pop_up_location_context_menu (view);
 	if (view->details->location_popup_event != NULL) {
@@ -8329,6 +8342,7 @@ real_update_menus (FMDirectoryView *view)
 	gboolean can_duplicate_files;
 	gboolean show_separate_delete_command;
 	gboolean vfolder_directory;
+	gboolean disable_command_line;
 	gboolean show_open_alternate;
 	gboolean can_open;
 	gboolean show_app;
@@ -8635,9 +8649,10 @@ real_update_menus (FMDirectoryView *view)
 
 	real_update_paste_menu (view, selection, selection_count);
 
+	disable_command_line = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE);
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_NEW_LAUNCHER);
-	gtk_action_set_visible (action, vfolder_directory);
+	gtk_action_set_visible (action, vfolder_directory && !disable_command_line);
 	gtk_action_set_sensitive (action, can_create_files);
 
 	real_update_menus_volumes (view, selection, selection_count);

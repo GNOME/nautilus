@@ -42,6 +42,7 @@
 /* Path for gnome-vfs preferences */
 static const char *EXTRA_MONITOR_PATHS[] = { "/desktop/gnome/file_views",
 					     "/desktop/gnome/background",
+					     "/desktop/gnome/lockdown",
 					     NULL };
 
 /* Forward declarations */
@@ -563,6 +564,10 @@ static const PreferenceDefault preference_defaults[] = {
 	  PREFERENCE_INTEGER,
 	  GINT_TO_POINTER (9)
 	},
+	{ NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE,
+	  PREFERENCE_BOOLEAN,
+	  GINT_TO_POINTER (FALSE)
+	},
 	{ NULL }
 };
 
@@ -838,6 +843,8 @@ nautilus_global_preferences_init (void)
 	eel_gconf_preload_cache ("/desktop/gnome/file_views",
 				 GCONF_CLIENT_PRELOAD_ONELEVEL);
 	eel_gconf_preload_cache ("/desktop/gnome/background",
+				 GCONF_CLIENT_PRELOAD_ONELEVEL);
+	eel_gconf_preload_cache ("/desktop/gnome/lockdown",
 				 GCONF_CLIENT_PRELOAD_ONELEVEL);
 
 	/* These are always needed for the desktop */

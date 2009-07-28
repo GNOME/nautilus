@@ -105,6 +105,12 @@ desktop_directory_changed_callback (gpointer callback_data)
 	desktop_directory = nautilus_get_desktop_directory ();
 }
 
+static void
+lockdown_disable_command_line_changed_callback (gpointer callback_data)
+{
+	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (callback_data));
+}
+
 static NautilusIconContainer *
 get_icon_container (FMDesktopIconView *icon_view)
 {
@@ -286,6 +292,10 @@ fm_desktop_icon_view_finalize (GObject *object)
 	
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
 					 default_zoom_level_changed,
+					 icon_view);
+
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE,
+					 lockdown_disable_command_line_changed_callback,
 					 icon_view);
 	
 	g_free (icon_view->details);
@@ -589,6 +599,11 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 	
 	default_zoom_level_changed (desktop_icon_view);
 	fm_desktop_icon_view_update_icon_container_fonts (desktop_icon_view);
+
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE,
+				      lockdown_disable_command_line_changed_callback,
+				      desktop_icon_view);
+
 }
 
 static void
@@ -665,6 +680,7 @@ real_update_menus (FMDirectoryView *view)
 {
 	FMDesktopIconView *desktop_view;
 	char *label;
+	gboolean disable_command_line;
 	gboolean include_empty_trash;
 	GtkAction *action;
 	
@@ -673,6 +689,13 @@ real_update_menus (FMDirectoryView *view)
 	EEL_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
 
 	desktop_view = FM_DESKTOP_ICON_VIEW (view);
+
+	/* New Launcher */
+	disable_command_line = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE);
+	action = gtk_action_group_get_action (desktop_view->details->desktop_action_group,
+					      FM_ACTION_NEW_LAUNCHER_DESKTOP);
+	gtk_action_set_visible (action,
+				!disable_command_line);
 
 	/* Empty Trash */
 	include_empty_trash = trash_link_is_selection (view);
