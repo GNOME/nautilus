@@ -258,6 +258,7 @@ create_tree_view (NautilusMimeApplicationChooser *chooser)
 							   COLUMN_DEFAULT,
 							   NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
+	chooser->details->toggle_renderer = renderer;
 
 	renderer = gtk_cell_renderer_pixbuf_new ();
         g_object_set (renderer, "stock-size", GTK_ICON_SIZE_LARGE_TOOLBAR, NULL);
@@ -268,7 +269,6 @@ create_tree_view (NautilusMimeApplicationChooser *chooser)
 							   NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
 
-	chooser->details->toggle_renderer = renderer;
 	renderer = gtk_cell_renderer_text_new ();
 	column = gtk_tree_view_column_new_with_attributes (_("Name"),
 							   renderer,
