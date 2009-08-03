@@ -180,23 +180,26 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 	g_assert (index < G_N_ELEMENTS (methods) && index >= 0);
 	meth = &(methods[index]);
 
+	uri = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->server_entry), 0, -1);
+	if (strlen (uri) == 0) {
+		eel_show_error_dialog (_("Cannot Connect to Server. You must enter a name for the server."), 
+				       _("Please enter a name and try again."), 
+				       GTK_WINDOW (dialog));
+		g_free (uri);
+		return;
+	}
+
 	if (meth->scheme == NULL) {
 		uri = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->uri_entry), 0, -1);
 		/* FIXME: we should validate it in some way? */
 	} else {
-		char *user, *port, *initial_path, *server, *folder ,*domain ;
+		char *user, *port, *initial_path, *server, *folder, *domain;
 		char *t, *join;
 		gboolean free_initial_path, free_user, free_domain, free_port;
-
-		server = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->server_entry), 0, -1);
-		if (strlen (server) == 0) {
-			eel_show_error_dialog (_("Cannot Connect to Server. You must enter a name for the server."), 
-					       _("Please enter a name and try again."), 
-					       GTK_WINDOW (dialog));
-			g_free (server);
-			return;
-		}
 		
+		server = uri;
+		uri = NULL;
+
 		user = "";
 		port = "";
 		initial_path = "";
