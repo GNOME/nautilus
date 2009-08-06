@@ -21,8 +21,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-04 11:13+0300\n"
-"PO-Revision-Date: 2009-08-05 15:33+0300\n"
+"POT-Creation-Date: 2009-08-06 13:24+0300\n"
+"PO-Revision-Date: 2009-08-06 13:26+0300\n"
 "Last-Translator: Khaled Hosny <khaledhosny@eglug.org>\n"
 "Language-Team: Arabic <doc@arabeyes.org>\n"
 "Language: ar\n"
@@ -31,7 +31,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
-"X-Generator: Virtaal 0.4.0-rc2\n"
+"X-Generator: Virtaal 0.4.0\n"
 
 #: ../cut-n-paste-code/libegg/eggdesktopfile.c:165
 #, c-format
@@ -1780,6 +1780,7 @@ msgid "Merge _All"
 msgstr "ادمج ال_كل"
 
 #: ../libnautilus-private/nautilus-file-operations.c:274
+#, c-format
 msgid "%'d second"
 msgid_plural "%'d seconds"
 msgstr[0] "أقل من ثانية"
@@ -1791,6 +1792,7 @@ msgstr[5] "%I'd ثانية "
 
 #: ../libnautilus-private/nautilus-file-operations.c:279
 #: ../libnautilus-private/nautilus-file-operations.c:290
+#, c-format
 msgid "%'d minute"
 msgid_plural "%'d minutes"
 msgstr[0] "أقل من دقيقة"
@@ -1801,6 +1803,7 @@ msgstr[4] "%I'd دقيقة"
 msgstr[5] "%I'd دقيقة"
 
 #: ../libnautilus-private/nautilus-file-operations.c:289
+#, c-format
 msgid "%'d hour"
 msgid_plural "%'d hours"
 msgstr[0] "أقل من ساعة"
@@ -1811,6 +1814,7 @@ msgstr[4] "%I'd ساعة"
 msgstr[5] "%I'd ساعة"
 
 #: ../libnautilus-private/nautilus-file-operations.c:297
+#, c-format
 msgid "approximately %'d hour"
 msgid_plural "approximately %'d hours"
 msgstr[0] "أقل من ساعة تقريبا"
@@ -1967,6 +1971,7 @@ msgid "Are you sure you want to permanently delete \"%B\" from the trash?"
 msgstr "أمتأكد أنك تريد حذف \"%B\" نهائيا من المهملات؟"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1278
+#, c-format
 msgid ""
 "Are you sure you want to permanently delete the %'d selected item from the "
 "trash?"
@@ -2009,6 +2014,7 @@ msgid "Are you sure you want to permanently delete \"%B\"?"
 msgstr "أمتأكد من أنك تريد حذف \"%B\" نهائيا؟"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1347
+#, c-format
 msgid "Are you sure you want to permanently delete the %'d selected item?"
 msgid_plural ""
 "Are you sure you want to permanently delete the %'d selected items?"
@@ -2020,14 +2026,15 @@ msgstr[4] "أمتأكد أنّك تريد حذف الـ%I'd عنصرا المخ�
 msgstr[5] "أمتأكد أنّك تريد حذف الـ%I'd عنصر المختارة نهائيا؟"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1390
+#, c-format
 msgid "%'d file left to delete"
 msgid_plural "%'d files left to delete"
-msgstr[0] "لم تتبق مجلدات للحذف"
-msgstr[1] "تبقى مجلد واحد للحذف"
-msgstr[2] "تبقى مجلدان للحذف"
-msgstr[3] "تبقى %I'd مجلدات للحذف"
-msgstr[4] "تبقى %I'd مجلدا للحذف"
-msgstr[5] "تبقى %I'd مجلد للحذف"
+msgstr[0] "لم تتبق ملفات للحذف"
+msgstr[1] "تبقى ملف واحد للحذف"
+msgstr[2] "تبقى ملفان للحذف"
+msgstr[3] "تبقى %I'd ملفات للحذف"
+msgstr[4] "تبقى %I'd ملفا للحذف"
+msgstr[5] "تبقى %I'd ملف للحذف"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1396
 msgid "Deleting files"
@@ -2099,6 +2106,7 @@ msgid "Moving files to trash"
 msgstr "يجري نقل الملفات إلى المهملات"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1710
+#, c-format
 msgid "%'d file left to trash"
 msgid_plural "%'d files left to trash"
 msgstr[0] "لم يبقى أي ملفات لنقلها إلى المهملات"
@@ -3502,18 +3510,18 @@ msgstr "التفاصيل: "
 
 #: ../libnautilus-private/nautilus-progress-info.c:223
 msgid "File Operations"
-msgstr "عمليات الملف"
+msgstr "عمليات الملفات"
 
 #: ../libnautilus-private/nautilus-progress-info.c:304
 #, c-format
 msgid "%'d file operation active"
 msgid_plural "%'d file operations active"
-msgstr[0] "لا عمليات ملف نشطة"
-msgstr[1] "عملية ملف واحدة نشطة"
-msgstr[2] "عمليتا ملف نشطتان"
-msgstr[3] "%I'd عمليات ملف نشطة"
-msgstr[4] "%I'd عملية ملف نشطة"
-msgstr[5] "%I'd عملية ملف نشطة"
+msgstr[0] "لا عمليات ملفات نشطة"
+msgstr[1] "عملية ملفات واحدة نشطة"
+msgstr[2] "عمليتا ملفات نشطتان"
+msgstr[3] "%I'd عمليات ملفات نشطة"
+msgstr[4] "%I'd عملية ملفات نشطة"
+msgstr[5] "%I'd عملية ملفات نشطة"
 
 #: ../libnautilus-private/nautilus-progress-info.c:495
 #: ../libnautilus-private/nautilus-progress-info.c:513
