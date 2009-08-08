@@ -162,8 +162,10 @@ nautilus_menus_append_bookmark_to_menu (NautilusWindow *window,
 	BookmarkHolder *bookmark_holder;
 	char action_name[128];
 	char *name;
+	char *path;
 	GdkPixbuf *pixbuf;
 	GtkAction *action;
+	GtkWidget *menuitem;
 
 	g_assert (NAUTILUS_IS_WINDOW (window));
 	g_assert (NAUTILUS_IS_BOOKMARK (bookmark));
@@ -203,7 +205,14 @@ nautilus_menus_append_bookmark_to_menu (NautilusWindow *window,
 			       GTK_UI_MANAGER_MENUITEM,
 			       FALSE);
 
+	path = g_strdup_printf ("%s/%s", parent_path, action_name);
+	menuitem = gtk_ui_manager_get_widget (window->details->ui_manager,
+					      path);
+	gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (menuitem),
+						   TRUE);
+
 	g_object_unref (pixbuf);
+	g_free (path);
 	g_free (name);
 }
 
