@@ -105,12 +105,14 @@
 #define FM_DIRECTORY_VIEW_MENU_PATH_SCRIPTS_PLACEHOLDER    		"/MenuBar/File/Open Placeholder/Scripts/Scripts Placeholder"
 #define FM_DIRECTORY_VIEW_MENU_PATH_EXTENSION_ACTIONS_PLACEHOLDER       "/MenuBar/Edit/Extension Actions"
 #define FM_DIRECTORY_VIEW_MENU_PATH_NEW_DOCUMENTS_PLACEHOLDER  		"/MenuBar/File/New Items Placeholder/New Documents/New Documents Placeholder"
+#define FM_DIRECTORY_VIEW_MENU_PATH_OPEN				"/MenuBar/File/Open Placeholder/Open"
 
 #define FM_DIRECTORY_VIEW_POPUP_PATH_SELECTION				"/selection"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_APPLICATIONS_SUBMENU_PLACEHOLDER  	"/selection/Open Placeholder/Open With/Applications Placeholder"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_APPLICATIONS_PLACEHOLDER    	"/selection/Open Placeholder/Applications Placeholder"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_SCRIPTS_PLACEHOLDER    		"/selection/Open Placeholder/Scripts/Scripts Placeholder"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_EXTENSION_ACTIONS			"/selection/Extension Actions"
+#define FM_DIRECTORY_VIEW_POPUP_PATH_OPEN				"/selection/Open Placeholder/Open"
 
 #define FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND				"/background"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND_SCRIPTS_PLACEHOLDER	"/background/Before Zoom Items/New Object Items/Scripts/Scripts Placeholder"
@@ -4271,8 +4273,10 @@ add_application_to_open_with_menu (FMDirectoryView *view,
 	char *label;
 	char *action_name;
 	char *escaped_app;
+	char *path;
 	GtkAction *action;
 	GIcon *app_icon;
+	GtkWidget *menuitem;
 
 	launch_parameters = application_launch_parameters_new 
 		(application, files, view);
@@ -4320,6 +4324,13 @@ add_application_to_open_with_menu (FMDirectoryView *view,
 			       GTK_UI_MANAGER_MENUITEM,
 			       FALSE);
 
+	path = g_strdup_printf ("%s/%s", menu_placeholder, action_name);
+	menuitem = gtk_ui_manager_get_widget (
+			nautilus_window_info_get_ui_manager (view->details->window),
+			path);
+	gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (menuitem), TRUE);
+	g_free (path);
+
 	gtk_ui_manager_add_ui (nautilus_window_info_get_ui_manager (view->details->window),
 			       view->details->open_with_merge_id,
 			       popup_placeholder,
@@ -4328,6 +4339,13 @@ add_application_to_open_with_menu (FMDirectoryView *view,
 			       GTK_UI_MANAGER_MENUITEM,
 			       FALSE);
 
+	path = g_strdup_printf ("%s/%s", popup_placeholder, action_name);
+	menuitem = gtk_ui_manager_get_widget (
+			nautilus_window_info_get_ui_manager (view->details->window),
+			path);
+	gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (menuitem), TRUE);
+
+	g_free (path);
 	g_free (action_name);
 	g_free (label);
 	g_free (tip);
@@ -8353,6 +8371,7 @@ real_update_menus (FMDirectoryView *view)
 	GtkAction *action;
 	GAppInfo *app;
 	GIcon *app_icon;
+	GtkWidget *menuitem;
 
 	selection = fm_directory_view_get_selection (view);
 	selection_count = g_list_length (selection);
@@ -8429,6 +8448,14 @@ real_update_menus (FMDirectoryView *view)
 	g_object_set (action, "label", 
 		      label_with_underscore ? label_with_underscore : _("_Open"),
 		      NULL);
+
+	menuitem = gtk_ui_manager_get_widget (
+			nautilus_window_info_get_ui_manager (view->details->window),
+			FM_DIRECTORY_VIEW_MENU_PATH_OPEN);
+
+	/* Only force displaying the icon if it is an application icon */
+	gtk_image_menu_item_set_always_show_image (
+		GTK_IMAGE_MENU_ITEM (menuitem), app_icon != NULL);
 
 	if (app_icon == NULL) {
 		app_icon = g_themed_icon_new (GTK_STOCK_OPEN);
