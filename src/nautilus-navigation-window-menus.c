@@ -361,7 +361,6 @@ refresh_go_menu (NautilusNavigationWindow *window)
 	GList *node;
 	GtkWidget *menuitem;
 	int index;
-	const char *ui;
 	int i;
 	
 	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
