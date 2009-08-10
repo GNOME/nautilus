@@ -82,6 +82,10 @@ char *   nautilus_get_data_file_path                 (const char *partial_path);
 
 gboolean nautilus_is_file_roller_installed           (void);
 
+/* Inhibit/Uninhibit GNOME Power Manager */
+int    nautilus_inhibit_power_manager                (const char *message) G_GNUC_WARN_UNUSED_RESULT;
+void     nautilus_uninhibit_power_manager            (int cookie);
+
 /* Return an allocated file name that is guranteed to be unique, but
  * tries to make the name readable to users.
  * This isn't race-free, so don't use for security-related things

@@ -38,6 +38,7 @@
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <gio/gio.h>
+#include <dbus/dbus-glib.h>
 #include <unistd.h>
 #include <stdlib.h>
 
@@ -997,6 +998,123 @@ nautilus_is_file_roller_installed (void)
 	}
 
 	return installed > 0 ? TRUE : FALSE;
+}
+
+#define GSM_NAME  "org.gnome.SessionManager"
+#define GSM_PATH "/org/gnome/SessionManager"
+
+/* The following values come from
+ * http://www.gnome.org/~mccann/gnome-session/docs/gnome-session.html#org.gnome.SessionManager.Inhibit 
+ */
+#define INHIBIT_LOGOUT 1
+#define INHIBIT_SUSPEND 4
+
+static DBusGProxy *_gsm_proxy = NULL;
+
+static DBusGProxy *
+get_power_manager_proxy (void)
+{
+	if (!_gsm_proxy)
+	{
+		DBusGConnection *bus;
+		GError *error;
+
+		bus = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
+		if (!bus)
+		{
+			g_warning ("Could not connect to session bus: %s",
+				   error->message);
+			g_error_free (error);
+			return NULL;
+		}
+
+		_gsm_proxy = dbus_g_proxy_new_for_name (bus,
+						        GSM_NAME,
+						        GSM_PATH,
+						        GSM_NAME);
+		dbus_g_connection_unref (bus);
+
+		if (!_gsm_proxy)
+		{
+			g_warning ("Creating DBus proxy failed.");
+			return NULL;
+		}
+	}
+
+	return _gsm_proxy;
+}
+
+/**
+ * nautilus_inhibit_power_manager:
+ * @message: a human readable message for the reason why power management
+ *       is being suspended.
+ *
+ * Inhibits the power manager from logging out or suspending the machine
+ * (e.g. whenever Nautilus is doing file operations).
+ *
+ * Returns: an integer cookie, which must be passed to
+ *    nautilus_uninhibit_power_manager() to resume
+ *    normal power management.
+ */
+int
+nautilus_inhibit_power_manager (const char *message)
+{
+	DBusGProxy *proxy;
+	GError *error;
+	int cookie;
+
+	proxy = get_power_manager_proxy ();
+
+	g_return_val_if_fail (proxy != NULL, -1);
+
+	error = NULL;
+	cookie = -1;
+	if (!dbus_g_proxy_call (proxy, "Inhibit", &error,
+				G_TYPE_STRING, "Nautilus",
+				G_TYPE_UINT, 0,
+				G_TYPE_STRING, message,
+				G_TYPE_UINT, INHIBIT_LOGOUT | INHIBIT_SUSPEND,
+				G_TYPE_INVALID,
+				G_TYPE_UINT, &cookie,
+				G_TYPE_INVALID))
+	{
+		g_warning ("Could not inhibit power management: %s", error->message);
+		g_error_free (error);
+		return -1;
+	}
+
+	return cookie;
+}
+
+/**
+ * nautilus_uninhibit_power_manager:
+ * @cookie: the cookie value returned by nautilus_inhibit_power_manager()
+ *
+ * Uninhibits power management. This function must be called after the task
+ * which inhibited power management has finished, or the system will not
+ * return to normal power management.
+ */
+void
+nautilus_uninhibit_power_manager (gint cookie)
+{
+	DBusGProxy *proxy;
+	GError *error;
+	g_return_if_fail (cookie < 0);
+
+	proxy = get_power_manager_proxy ();
+
+	g_return_if_fail (proxy != NULL);
+
+	error = NULL;
+
+	if (!dbus_g_proxy_call (proxy, "Uninhibit", &error,
+                                G_TYPE_UINT, cookie,
+                                G_TYPE_INVALID,
+                                G_TYPE_INVALID))
+	{
+		g_warning ("Could not uninhibit power management: %s", error->message);
+		g_error_free (error);
+	}
 }
 
 /* Returns TRUE if the file is in XDG_DATA_DIRS or
