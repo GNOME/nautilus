@@ -1019,6 +1019,7 @@ get_power_manager_proxy (void)
 		DBusGConnection *bus;
 		GError *error;
 
+		error = NULL;
 		bus = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
 		if (!bus)
 		{
