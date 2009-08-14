@@ -178,6 +178,8 @@ typedef struct {
 #define NSEC_PER_SEC 1000000000
 #define NSEC_PER_MSEC 1000000
 
+#define MAXIMUM_DISPLAYED_FILE_NAME_LENGTH 50
+
 #define IS_IO_ERROR(__error, KIND) (((__error)->domain == G_IO_ERROR && (__error)->code == G_IO_ERROR_ ## KIND))
 
 #define SKIP _("_Skip")
@@ -819,6 +821,14 @@ custom_basename_to_string (char *format, va_list va)
 		name = g_uri_escape_string (name, G_URI_RESERVED_CHARS_ALLOWED_IN_PATH, TRUE);
 		g_free (tmp);
 	}
+
+	/* Finally, if the string is too long, truncate it. */
+	if (name != NULL) {
+		tmp = name;
+		name = eel_str_middle_truncate (tmp, MAXIMUM_DISPLAYED_FILE_NAME_LENGTH);
+		g_free (tmp);
+	}
+
 	
 	return name;
 }
