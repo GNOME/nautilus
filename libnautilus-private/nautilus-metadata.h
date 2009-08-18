@@ -74,6 +74,8 @@
 #define NAUTILUS_METADATA_KEY_SCREEN				"screen"
 #define NAUTILUS_METADATA_KEY_EMBLEMS				"emblems"
 
+/* This is where desktop item metadata are stored in gconf */
+#define NAUTILUS_DESKTOP_METADATA_GCONF_PATH "/apps/nautilus/desktop-metadata"
 
 guint nautilus_metadata_get_id (const char *metadata);
 

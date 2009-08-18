@@ -36,11 +36,10 @@
 #include <gconf/gconf-client.h>
 #include <gconf/gconf-value.h>
 #include "nautilus-desktop-directory.h"
+#include "nautilus-metadata.h"
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <string.h>
-
-#define NAUTILUS_DESKTOP_METADATA_GCONF_PATH "/apps/nautilus/desktop-metadata"
 
 struct NautilusDesktopDirectoryFileDetails {
 	NautilusDesktopDirectory *desktop_directory;
