@@ -22,6 +22,7 @@ INCLUDES =							\
 	$(EXEMPI_CFLAGS)                                        \
 	-DDATADIR=\""$(datadir)"\" 				\
 	-DLIBDIR=\""$(libdir)"\" 				\
+	-DLIBEXECDIR=\""$(libexecdir)"\" 			\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 		\
 	-DUIDIR=\""$(datadir)/nautilus/ui"\" 		\
 	-DNAUTILUS_PIXMAPDIR=\""$(datadir)/pixmaps/nautilus"\" 	\

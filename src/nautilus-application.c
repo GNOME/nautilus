@@ -631,11 +631,28 @@ static void
 do_upgrades_once (NautilusApplication *application,
 		  gboolean no_desktop)
 {
+	char *metafile_dir, *updated;
+	int fd;
+
 	if (!no_desktop) {
 		mark_desktop_files_trusted ();
 	}
-}
 
+	metafile_dir = g_build_filename (g_get_home_dir (),
+					 ".nautilus/metafiles", NULL);
+	if (g_file_test (metafile_dir, G_FILE_TEST_IS_DIR)) {
+		updated = g_build_filename (metafile_dir, "migrated-to-gvfs", NULL);
+		if (!g_file_test (updated, G_FILE_TEST_EXISTS)) {
+			g_spawn_command_line_async (LIBEXECDIR"/nautilus-convert-metadata --quiet", NULL);
+			fd = g_creat (updated, 0600);
+			if (fd != -1) {
+				close (fd);
+			}
+		}
+		g_free (updated);
+	}
+	g_free (metafile_dir);
+}
 
 static void
 finish_startup (NautilusApplication *application,
