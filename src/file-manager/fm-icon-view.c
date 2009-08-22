@@ -470,6 +470,8 @@ should_show_file_on_screen (FMDirectoryView *view, NautilusFile *file)
 static void
 fm_icon_view_remove_file (FMDirectoryView *view, NautilusFile *file, NautilusDirectory *directory)
 {
+	FMIconView *icon_view;
+
 	/* This used to assert that 'directory == fm_directory_view_get_model (view)', but that
 	 * resulted in a lot of crash reports (bug #352592). I don't see how that trace happens.
 	 * It seems that somehow we get a files_changed event sent to the view from a directory
@@ -491,8 +493,14 @@ fm_icon_view_remove_file (FMDirectoryView *view, NautilusFile *file, NautilusDir
 		g_free (model_uri);
 	}
 	
-	if (nautilus_icon_container_remove (get_icon_container (FM_ICON_VIEW (view)),
+	icon_view = FM_ICON_VIEW (view);
+
+	if (nautilus_icon_container_remove (get_icon_container (icon_view),
 					    NAUTILUS_ICON_CONTAINER_ICON_DATA (file))) {
+		if (file == icon_view->details->audio_preview_file) {
+			preview_audio (icon_view, NULL, FALSE);
+		}
+
 		nautilus_file_unref (file);
 	}
 }
