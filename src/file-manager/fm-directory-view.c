@@ -8457,6 +8457,14 @@ real_update_menus (FMDirectoryView *view)
 	gtk_image_menu_item_set_always_show_image (
 		GTK_IMAGE_MENU_ITEM (menuitem), app_icon != NULL);
 
+	menuitem = gtk_ui_manager_get_widget (
+			nautilus_window_info_get_ui_manager (view->details->window),
+			FM_DIRECTORY_VIEW_POPUP_PATH_OPEN);
+
+	/* Only force displaying the icon if it is an application icon */
+	gtk_image_menu_item_set_always_show_image (
+		GTK_IMAGE_MENU_ITEM (menuitem), app_icon != NULL);
+
 	if (app_icon == NULL) {
 		app_icon = g_themed_icon_new (GTK_STOCK_OPEN);
 	}
