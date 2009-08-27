@@ -1100,7 +1100,7 @@ nautilus_uninhibit_power_manager (gint cookie)
 {
 	DBusGProxy *proxy;
 	GError *error;
-	g_return_if_fail (cookie < 0);
+	g_return_if_fail (cookie > 0);
 
 	proxy = get_power_manager_proxy ();
 
