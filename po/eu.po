@@ -10,9 +10,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eu\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-27 21:55+0200\n"
-"PO-Revision-Date: 2009-08-27 22:18+0200\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus&component=Internationalization (i18n)\n"
+"POT-Creation-Date: 2009-08-27 20:10+0000\n"
+"PO-Revision-Date: 2009-08-29 09:48+0200\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -746,8 +746,8 @@ msgid ""
 "pressed."
 msgstr ""
 "\"Aurrera\" eta \"Atzera\" botoidun saguak dituzten erabiltzaileentzako, "
-"gako honek zehaztuko du Nautilus barruan ekintzarik landuko den botoi hauetariko "
-"bat sakatzean."
+"gako honek zehaztuko du Nautilus barruan ekintzarik landuko den botoi "
+"hauetariko bat sakatzean."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
 msgid ""
@@ -756,7 +756,8 @@ msgid ""
 "Possible values range between 6 and 14."
 msgstr ""
 "\"Aurrera\" eta \"Atzera\" botoidun saguak dituzten erabiltzaileentzako, "
-"gako honek \"Atzera\" komandoa zein botoik aktibatuko duen arakatzailearen leihoan zehazten du. Balio erabilgarriak 6 eta 14 artekoa dira."
+"gako honek \"Atzera\" komandoa zein botoik aktibatuko duen arakatzailearen "
+"leihoan zehazten du. Balio erabilgarriak 6 eta 14 artekoa dira."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
 msgid ""
@@ -765,7 +766,8 @@ msgid ""
 "Possible values range between 6 and 14."
 msgstr ""
 "\"Aurrera\" eta \"Atzera\" botoidun saguak dituzten erabiltzaileentzako, "
-"gako honek \"Aurrera\" komandoa zein botoik aktibatuko duen arakatzailearen leihoan zehazten du. Balio erabilgarriak 6 eta 14 artekoa dira."
+"gako honek \"Aurrera\" komandoa zein botoik aktibatuko duen arakatzailearen "
+"leihoan zehazten du. Balio erabilgarriak 6 eta 14 artekoa dira."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
 msgid "Home icon visible on desktop"
@@ -871,9 +873,10 @@ msgid ""
 "window, so nautilus can serve as a daemon to monitor media automount, or "
 "similar tasks."
 msgstr ""
-"TRUE (egia) gisa ezartzen bada, Nautilus irten egingo da leiho guztiak apurtzean. "
-"Hau ezarpen lehenetsia da. False (faltsua) gisa ezartzen bada, leihorik gabe "
-"has daiteke, honela multimediako muntatze automatikoak (edo antzeko atazak) monitorizatzeko daemon gisa erabil daiteke nautilus."
+"TRUE (egia) gisa ezartzen bada, Nautilus irten egingo da leiho guztiak "
+"apurtzean. Hau ezarpen lehenetsia da. False (faltsua) gisa ezartzen bada, "
+"leihorik gabe has daiteke, honela multimediako muntatze automatikoak (edo "
+"antzeko atazak) monitorizatzeko daemon gisa erabil daiteke nautilus."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
 msgid ""
@@ -1354,7 +1357,9 @@ msgstr "Fitxategiak abiarazteko/irekitzeko erabiliko den klik mota"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:133
 msgid "Use extra mouse button events in Nautilus' browser window"
-msgstr "Erabili saguaren botoi gehigarriaren gertaerak Nautilus-eko arakatzailearen leihoan"
+msgstr ""
+"Erabili saguaren botoi gehigarriaren gertaerak Nautilus-eko arakatzailearen "
+"leihoan"
 
 #
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:134
@@ -1461,7 +1466,10 @@ msgstr "Fitxategi ezkutuak erakutsiko diren ala ez"
 msgid ""
 "Whether to show the user a package installer dialog in case an unknown mime "
 "type is opened, in order to search for an application to handle it."
-msgstr "MIME mota ezezagun bat irekitzen denean, pakete-instalatzailearen elkarrizketa-koadroa erabiltzaileari erakutsi edo ez, hura kudeatzeko aplikazio bat bilatzeko asmoz."
+msgstr ""
+"MIME mota ezezagun bat irekitzen denean, pakete-instalatzailearen "
+"elkarrizketa-koadroa erabiltzaileari erakutsi edo ez, hura kudeatzeko "
+"aplikazio bat bilatzeko asmoz."
 
 #
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:154
@@ -5293,6 +5301,13 @@ msgstr "Propietateak"
 #, c-format
 msgid "%s Properties"
 msgstr "%s - Propietateak"
+
+#: ../src/file-manager/fm-properties-window.c:1360
+#, c-format
+#| msgid "%s (%s)"
+msgctxt "MIME type description (MIME type)"
+msgid "%s (%s)"
+msgstr "%s (%s)"
 
 #: ../src/file-manager/fm-properties-window.c:1577
 msgid "Cancel Group Change?"
