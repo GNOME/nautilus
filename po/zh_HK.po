@@ -9,10 +9,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus 2.27.5\n"
+"Project-Id-Version: nautilus 2.27.92\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-07-18 22:32+0800\n"
-"PO-Revision-Date: 2009-07-18 22:32+0800\n"
+"POT-Creation-Date: 2009-09-06 15:06+0800\n"
+"PO-Revision-Date: 2009-09-06 15:07+0800\n"
 "Last-Translator: Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>\n"
 "Language-Team: Chinese (Hong Kong) <community@linuxhall.org>\n"
 "MIME-Version: 1.0\n"
@@ -676,7 +676,7 @@ msgid ""
 "For users with mice that have \"Forward\" and \"Back\" buttons, this key "
 "will determine if any action is taken inside of Nautilus when either is "
 "pressed."
-msgstr ""
+msgstr "用於使用者的滑鼠有「往前」和「往後」按鈕時，這個設定鍵會決定當 Nautilus 被按下時所進行的行動。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
 msgid ""
@@ -1359,9 +1359,9 @@ msgstr "永遠執行這個動作(_A)"
 #. label, accelerator
 #. add the "Eject" menu item
 #: ../libnautilus-private/nautilus-autorun.c:1018
-#: ../src/file-manager/fm-directory-view.c:7022
-#: ../src/file-manager/fm-directory-view.c:7050
-#: ../src/file-manager/fm-directory-view.c:7131
+#: ../src/file-manager/fm-directory-view.c:7053
+#: ../src/file-manager/fm-directory-view.c:7081
+#: ../src/file-manager/fm-directory-view.c:7162
 #: ../src/file-manager/fm-tree-view.c:1325
 #: ../src/nautilus-places-sidebar.c:2209
 msgid "_Eject"
@@ -1371,9 +1371,9 @@ msgstr "退出(_E)"
 #. label, accelerator
 #. add the "Unmount" menu item
 #: ../libnautilus-private/nautilus-autorun.c:1029
-#: ../src/file-manager/fm-directory-view.c:7018
-#: ../src/file-manager/fm-directory-view.c:7046
-#: ../src/file-manager/fm-directory-view.c:7127
+#: ../src/file-manager/fm-directory-view.c:7049
+#: ../src/file-manager/fm-directory-view.c:7077
+#: ../src/file-manager/fm-directory-view.c:7158
 #: ../src/file-manager/fm-tree-view.c:1316
 #: ../src/nautilus-places-sidebar.c:2202
 msgid "_Unmount"
@@ -1403,7 +1403,7 @@ msgstr "貼上存於剪貼簿內的文字"
 #. name, stock id
 #. label, accelerator
 #: ../libnautilus-private/nautilus-clipboard.c:448
-#: ../src/file-manager/fm-directory-view.c:6960
+#: ../src/file-manager/fm-directory-view.c:6991
 msgid "Select _All"
 msgstr "全部選取(_A)"
 
@@ -1530,7 +1530,7 @@ msgstr "位置"
 msgid "Reset"
 msgstr "重設"
 
-#: ../libnautilus-private/nautilus-desktop-directory-file.c:441
+#: ../libnautilus-private/nautilus-desktop-directory-file.c:440
 #: ../libnautilus-private/nautilus-desktop-icon-file.c:150
 msgid "on the desktop"
 msgstr "在桌面上"
@@ -1620,61 +1620,61 @@ msgstr "抱歉，無法儲存自選圖章。"
 msgid "Sorry, unable to save custom emblem name."
 msgstr "抱歉，無法儲存自選圖章的名稱。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:182
+#: ../libnautilus-private/nautilus-file-operations.c:185
 msgid "_Skip"
 msgstr "略過(_S)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:183
+#: ../libnautilus-private/nautilus-file-operations.c:186
 msgid "S_kip All"
 msgstr "略過全部(_K)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:184
+#: ../libnautilus-private/nautilus-file-operations.c:187
 msgid "_Retry"
 msgstr "重試(_R)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:185
+#: ../libnautilus-private/nautilus-file-operations.c:188
 msgid "Delete _All"
 msgstr "全部刪除(_A)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:186
+#: ../libnautilus-private/nautilus-file-operations.c:189
 msgid "_Replace"
 msgstr "取代(_R)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:187
+#: ../libnautilus-private/nautilus-file-operations.c:190
 msgid "Replace _All"
 msgstr "全部取代(_A)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:188
+#: ../libnautilus-private/nautilus-file-operations.c:191
 msgid "_Merge"
 msgstr "合併(_M)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:189
+#: ../libnautilus-private/nautilus-file-operations.c:192
 msgid "Merge _All"
 msgstr "全部合併(_A)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:274
+#: ../libnautilus-private/nautilus-file-operations.c:277
 #, c-format
 msgid "%'d second"
 msgid_plural "%'d seconds"
 msgstr[0] "%'d 秒"
 msgstr[1] "%'d 秒"
 
-#: ../libnautilus-private/nautilus-file-operations.c:279
-#: ../libnautilus-private/nautilus-file-operations.c:290
+#: ../libnautilus-private/nautilus-file-operations.c:282
+#: ../libnautilus-private/nautilus-file-operations.c:293
 #, c-format
 msgid "%'d minute"
 msgid_plural "%'d minutes"
 msgstr[0] "%'d 分鐘"
 msgstr[1] "%'d 分鐘"
 
-#: ../libnautilus-private/nautilus-file-operations.c:289
+#: ../libnautilus-private/nautilus-file-operations.c:292
 #, c-format
 msgid "%'d hour"
 msgid_plural "%'d hours"
 msgstr[0] "%'d 小時"
 msgstr[1] "%'d 小時"
 
-#: ../libnautilus-private/nautilus-file-operations.c:297
+#: ../libnautilus-private/nautilus-file-operations.c:300
 #, c-format
 msgid "approximately %'d hour"
 msgid_plural "approximately %'d hours"
@@ -1686,15 +1686,15 @@ msgstr[1] "大約 %'d 小時"
 #. * (e.g. "folder", "plain text") to file type for symbolic link
 #. * to that kind of file (e.g. "link to folder").
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:373
-#: ../libnautilus-private/nautilus-file.c:6179
-#: ../src/file-manager/fm-directory-view.c:10055
+#: ../libnautilus-private/nautilus-file-operations.c:376
+#: ../libnautilus-private/nautilus-file.c:6191
+#: ../src/file-manager/fm-directory-view.c:10105
 #, c-format
 msgid "Link to %s"
 msgstr "連結至 %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:377
+#: ../libnautilus-private/nautilus-file-operations.c:380
 #, c-format
 msgid "Another link to %s"
 msgstr "另一個連結至 %s"
@@ -1703,25 +1703,25 @@ msgstr "另一個連結至 %s"
 #. * if there's no way to do that nicely for a
 #. * particular language.
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:393
+#: ../libnautilus-private/nautilus-file-operations.c:396
 #, c-format
 msgid "%'dst link to %s"
 msgstr "第 %'d 個連至 %s 的連結"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:397
+#: ../libnautilus-private/nautilus-file-operations.c:400
 #, c-format
 msgid "%'dnd link to %s"
 msgstr "第 %'d 個連至 %s 的連結"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:401
+#: ../libnautilus-private/nautilus-file-operations.c:404
 #, c-format
 msgid "%'drd link to %s"
 msgstr "第 %'d 個連至 %s 的連結"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:405
+#: ../libnautilus-private/nautilus-file-operations.c:408
 #, c-format
 msgid "%'dth link to %s"
 msgstr "第 %'d 個連至 %s 的連結"
@@ -1731,12 +1731,12 @@ msgstr "第 %'d 個連至 %s 的連結"
 #. * make some or all of them match.
 #.
 #. localizers: tag used to detect the first copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:444
+#: ../libnautilus-private/nautilus-file-operations.c:447
 msgid " (copy)"
 msgstr " (副本)"
 
 #. localizers: tag used to detect the second copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:446
+#: ../libnautilus-private/nautilus-file-operations.c:449
 msgid " (another copy)"
 msgstr " (另一個副本)"
 
@@ -1744,36 +1744,36 @@ msgstr " (另一個副本)"
 #. localizers: tag used to detect the x12th copy of a file
 #. localizers: tag used to detect the x13th copy of a file
 #. localizers: tag used to detect the xxth copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:449
-#: ../libnautilus-private/nautilus-file-operations.c:451
-#: ../libnautilus-private/nautilus-file-operations.c:453
-#: ../libnautilus-private/nautilus-file-operations.c:463
+#: ../libnautilus-private/nautilus-file-operations.c:452
+#: ../libnautilus-private/nautilus-file-operations.c:454
+#: ../libnautilus-private/nautilus-file-operations.c:456
+#: ../libnautilus-private/nautilus-file-operations.c:466
 msgid "th copy)"
 msgstr "個副本)"
 
 #. localizers: tag used to detect the x1st copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:456
+#: ../libnautilus-private/nautilus-file-operations.c:459
 msgid "st copy)"
 msgstr "個副本)"
 
 #. localizers: tag used to detect the x2nd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:458
+#: ../libnautilus-private/nautilus-file-operations.c:461
 msgid "nd copy)"
 msgstr "個副本)"
 
 #. localizers: tag used to detect the x3rd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:460
+#: ../libnautilus-private/nautilus-file-operations.c:463
 msgid "rd copy)"
 msgstr "個副本)"
 
 #. localizers: appended to first file copy
-#: ../libnautilus-private/nautilus-file-operations.c:477
+#: ../libnautilus-private/nautilus-file-operations.c:480
 #, c-format
 msgid "%s (copy)%s"
 msgstr "%s (副本)%s"
 
 #. localizers: appended to second file copy
-#: ../libnautilus-private/nautilus-file-operations.c:479
+#: ../libnautilus-private/nautilus-file-operations.c:482
 #, c-format
 msgid "%s (another copy)%s"
 msgstr "%s (另一個副本)%s"
@@ -1782,10 +1782,10 @@ msgstr "%s (另一個副本)%s"
 #. localizers: appended to x12th file copy
 #. localizers: appended to x13th file copy
 #. localizers: appended to xxth file copy
-#: ../libnautilus-private/nautilus-file-operations.c:482
-#: ../libnautilus-private/nautilus-file-operations.c:484
-#: ../libnautilus-private/nautilus-file-operations.c:486
-#: ../libnautilus-private/nautilus-file-operations.c:500
+#: ../libnautilus-private/nautilus-file-operations.c:485
+#: ../libnautilus-private/nautilus-file-operations.c:487
+#: ../libnautilus-private/nautilus-file-operations.c:489
+#: ../libnautilus-private/nautilus-file-operations.c:503
 #, c-format
 msgid "%s (%'dth copy)%s"
 msgstr "%s (第 %'d 個副本)%s"
@@ -1795,39 +1795,39 @@ msgstr "%s (第 %'d 個副本)%s"
 #. * strings look like "%s (copy %'d)%s".
 #.
 #. localizers: appended to x1st file copy
-#: ../libnautilus-private/nautilus-file-operations.c:494
+#: ../libnautilus-private/nautilus-file-operations.c:497
 #, c-format
 msgid "%s (%'dst copy)%s"
 msgstr "%s (第 %'d 個副本)%s"
 
 #. localizers: appended to x2nd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:496
+#: ../libnautilus-private/nautilus-file-operations.c:499
 #, c-format
 msgid "%s (%'dnd copy)%s"
 msgstr "%s (第 %'d 個副本)%s"
 
 #. localizers: appended to x3rd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:498
+#: ../libnautilus-private/nautilus-file-operations.c:501
 #, c-format
 msgid "%s (%'drd copy)%s"
 msgstr "%s (第 %'d 個副本)%s"
 
 #. localizers: opening parentheses to match the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:598
+#: ../libnautilus-private/nautilus-file-operations.c:601
 msgid " ("
 msgstr " ("
 
 #. localizers: opening parentheses of the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:606
+#: ../libnautilus-private/nautilus-file-operations.c:609
 #, c-format
 msgid " (%'d"
 msgstr " (第 %'d 個"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1275
+#: ../libnautilus-private/nautilus-file-operations.c:1296
 msgid "Are you sure you want to permanently delete \"%B\" from the trash?"
 msgstr "確定要將“%B”從回收筒中永久刪除嗎？"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1278
+#: ../libnautilus-private/nautilus-file-operations.c:1299
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %'d selected item from the "
@@ -1838,33 +1838,33 @@ msgid_plural ""
 msgstr[0] "確定要將 %'d 個已選的項目從回收筒中永久刪除嗎？"
 msgstr[1] "確定要將 %'d 個已選的項目從回收筒中永久刪除嗎？"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1288
-#: ../libnautilus-private/nautilus-file-operations.c:1356
+#: ../libnautilus-private/nautilus-file-operations.c:1309
+#: ../libnautilus-private/nautilus-file-operations.c:1377
 msgid "If you delete an item, it will be permanently lost."
 msgstr "如果直接刪除本項目，它會無法還原。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1308
+#: ../libnautilus-private/nautilus-file-operations.c:1329
 msgid "Empty all of the items from the trash?"
 msgstr "確定要清理回收筒內的所有項目嗎？"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1312
+#: ../libnautilus-private/nautilus-file-operations.c:1333
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
 msgstr "如果要清理回收筒，裏面的項目將被永久刪除。請記得你是可以將它們逐一刪除的。"
 
 #. Empty Trash menu item
-#: ../libnautilus-private/nautilus-file-operations.c:1317
-#: ../libnautilus-private/nautilus-file-operations.c:2154
+#: ../libnautilus-private/nautilus-file-operations.c:1338
+#: ../libnautilus-private/nautilus-file-operations.c:2181
 #: ../src/nautilus-places-sidebar.c:2246 ../src/nautilus-trash-bar.c:125
 msgid "Empty _Trash"
 msgstr "清理回收筒(_T)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1344
+#: ../libnautilus-private/nautilus-file-operations.c:1365
 msgid "Are you sure you want to permanently delete \"%B\"?"
 msgstr "確定要將“%B”永久地刪除嗎？"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1347
+#: ../libnautilus-private/nautilus-file-operations.c:1368
 #, c-format
 msgid "Are you sure you want to permanently delete the %'d selected item?"
 msgid_plural ""
@@ -1872,262 +1872,270 @@ msgid_plural ""
 msgstr[0] "確定要將 %'d 個已選的項目永久地刪除嗎？"
 msgstr[1] "確定要將 %'d 個已選的項目永久地刪除嗎？"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1390
+#: ../libnautilus-private/nautilus-file-operations.c:1411
 #, c-format
 msgid "%'d file left to delete"
 msgid_plural "%'d files left to delete"
 msgstr[0] "剩下 %'d 個檔案要刪除"
 msgstr[1] "剩下 %'d 個檔案要刪除"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1396
+#: ../libnautilus-private/nautilus-file-operations.c:1417
 msgid "Deleting files"
 msgstr "正在刪除檔案"
 
 #. To translators: %T will expand to a time like "2 minutes".
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:1410
+#: ../libnautilus-private/nautilus-file-operations.c:1431
 msgid "%T left"
 msgid_plural "%T left"
 msgstr[0] "剩下 %T"
 msgstr[1] "剩下 %T"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1477
-#: ../libnautilus-private/nautilus-file-operations.c:1511
-#: ../libnautilus-private/nautilus-file-operations.c:1550
-#: ../libnautilus-private/nautilus-file-operations.c:1627
-#: ../libnautilus-private/nautilus-file-operations.c:2381
+#: ../libnautilus-private/nautilus-file-operations.c:1498
+#: ../libnautilus-private/nautilus-file-operations.c:1532
+#: ../libnautilus-private/nautilus-file-operations.c:1571
+#: ../libnautilus-private/nautilus-file-operations.c:1648
+#: ../libnautilus-private/nautilus-file-operations.c:2408
 msgid "Error while deleting."
 msgstr "刪除時發生錯誤。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1481
+#: ../libnautilus-private/nautilus-file-operations.c:1502
 msgid ""
 "Files in the folder \"%B\" cannot be deleted because you do not have "
 "permissions to see them."
 msgstr "無法刪除資料夾“%B”中的檔案，因為你沒有權限讀取它們。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1484
-#: ../libnautilus-private/nautilus-file-operations.c:2440
-#: ../libnautilus-private/nautilus-file-operations.c:3402
+#: ../libnautilus-private/nautilus-file-operations.c:1505
+#: ../libnautilus-private/nautilus-file-operations.c:2467
+#: ../libnautilus-private/nautilus-file-operations.c:3429
 msgid ""
 "There was an error getting information about the files in the folder \"%B\"."
 msgstr "在取得資料夾「%s」中檔案的相關資訊時發生錯誤。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1493
-#: ../libnautilus-private/nautilus-file-operations.c:3411
+#: ../libnautilus-private/nautilus-file-operations.c:1514
+#: ../libnautilus-private/nautilus-file-operations.c:3438
 msgid "_Skip files"
 msgstr "略過檔案(_S)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1514
+#: ../libnautilus-private/nautilus-file-operations.c:1535
 msgid ""
 "The folder \"%B\" cannot be deleted because you do not have permissions to "
 "read it."
 msgstr "無法刪除資料夾“%B”，因為你沒有權限讀取它。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1517
-#: ../libnautilus-private/nautilus-file-operations.c:2479
-#: ../libnautilus-private/nautilus-file-operations.c:3447
+#: ../libnautilus-private/nautilus-file-operations.c:1538
+#: ../libnautilus-private/nautilus-file-operations.c:2506
+#: ../libnautilus-private/nautilus-file-operations.c:3474
 msgid "There was an error reading the folder \"%B\"."
 msgstr "讀取資料夾「%B」時發生錯誤。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1551
+#: ../libnautilus-private/nautilus-file-operations.c:1572
 msgid "Could not remove the folder %B."
 msgstr "無法移除資料夾 %B。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1628
+#: ../libnautilus-private/nautilus-file-operations.c:1649
 msgid "There was an error deleting %B."
 msgstr "刪除 %B 時發生錯誤。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1708
+#: ../libnautilus-private/nautilus-file-operations.c:1729
 msgid "Moving files to trash"
 msgstr "將檔案丟進回收筒"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1710
+#: ../libnautilus-private/nautilus-file-operations.c:1731
 #, c-format
 msgid "%'d file left to trash"
 msgid_plural "%'d files left to trash"
 msgstr[0] "剩下 %'d 個檔案要丟進回收筒"
 msgstr[1] "剩下 %'d 個檔案要丟進回收筒"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1760
+#: ../libnautilus-private/nautilus-file-operations.c:1781
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr "不能將檔案移到回收筒。要立刻刪除嗎？"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1761
+#: ../libnautilus-private/nautilus-file-operations.c:1782
 msgid "The file \"%B\" cannot be moved to the trash."
 msgstr "檔案“%B”不能移至回收筒。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1994
+#: ../libnautilus-private/nautilus-file-operations.c:1957
+msgid "Trashing Files"
+msgstr "正將檔案移至回收筒"
+
+#: ../libnautilus-private/nautilus-file-operations.c:1959
+msgid "Deleting Files"
+msgstr "正在刪除檔案"
+
+#: ../libnautilus-private/nautilus-file-operations.c:2021
 msgid "Unable to eject %V"
 msgstr "無法退出 %V"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1996
+#: ../libnautilus-private/nautilus-file-operations.c:2023
 msgid "Unable to unmount %V"
 msgstr "無法卸載 %V"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2144
+#: ../libnautilus-private/nautilus-file-operations.c:2171
 msgid "Do you want to empty the trash before you unmount?"
 msgstr "卸載前是否要清空回收筒？"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2146
+#: ../libnautilus-private/nautilus-file-operations.c:2173
 msgid ""
 "In order to regain the free space on this volume the trash must be emptied. "
 "All trashed items on the volume will be permanently lost."
 msgstr "要恢復此裝置的空間，必須清空回收筒。所有在回收筒的東面將會永久地刪除。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2152
+#: ../libnautilus-private/nautilus-file-operations.c:2179
 msgid "Do _not Empty Trash"
 msgstr "不要清空回收筒(_N)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2251
+#: ../libnautilus-private/nautilus-file-operations.c:2278
 #, c-format
 msgid "Unable to mount %s"
 msgstr "無法掛載 %s"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2328
+#: ../libnautilus-private/nautilus-file-operations.c:2355
 #, c-format
 msgid "Preparing to copy %'d file (%S)"
 msgid_plural "Preparing to copy %'d files (%S)"
 msgstr[0] "準備複製 %'d 個檔案 (%S)"
 msgstr[1] "準備複製 %'d 個檔案 (%S)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2334
+#: ../libnautilus-private/nautilus-file-operations.c:2361
 #, c-format
 msgid "Preparing to move %'d file (%S)"
 msgid_plural "Preparing to move %'d files (%S)"
 msgstr[0] "準備移動 %'d 個檔案 (%S)"
 msgstr[1] "準備移動 %'d 個檔案 (%S)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2340
+#: ../libnautilus-private/nautilus-file-operations.c:2367
 #, c-format
 msgid "Preparing to delete %'d file (%S)"
 msgid_plural "Preparing to delete %'d files (%S)"
 msgstr[0] "準備刪除 %'d 個檔案 (%S)"
 msgstr[1] "準備刪除 %'d 個檔案 (%S)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2346
+#: ../libnautilus-private/nautilus-file-operations.c:2373
 #, c-format
 msgid "Preparing to trash %'d file"
 msgid_plural "Preparing to trash %'d files"
 msgstr[0] "準備將 %'d 個檔案移至回收筒"
 msgstr[1] "準備將 %'d 個檔案移至回收筒"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2377
-#: ../libnautilus-private/nautilus-file-operations.c:3268
-#: ../libnautilus-private/nautilus-file-operations.c:3394
-#: ../libnautilus-private/nautilus-file-operations.c:3439
+#: ../libnautilus-private/nautilus-file-operations.c:2404
+#: ../libnautilus-private/nautilus-file-operations.c:3295
+#: ../libnautilus-private/nautilus-file-operations.c:3421
+#: ../libnautilus-private/nautilus-file-operations.c:3466
 msgid "Error while copying."
 msgstr "複製時發生錯誤。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2379
-#: ../libnautilus-private/nautilus-file-operations.c:3392
-#: ../libnautilus-private/nautilus-file-operations.c:3437
+#: ../libnautilus-private/nautilus-file-operations.c:2406
+#: ../libnautilus-private/nautilus-file-operations.c:3419
+#: ../libnautilus-private/nautilus-file-operations.c:3464
 msgid "Error while moving."
 msgstr "移動時發生錯誤。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2383
+#: ../libnautilus-private/nautilus-file-operations.c:2410
 msgid "Error while moving files to trash."
 msgstr "移動檔案至回收筒時發生錯誤。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2437
+#: ../libnautilus-private/nautilus-file-operations.c:2464
 msgid ""
 "Files in the folder \"%B\" cannot be handled because you do not have "
 "permissions to see them."
 msgstr "無法處理資料夾“%B”中的檔案，因為你沒有權限讀取它們。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2476
+#: ../libnautilus-private/nautilus-file-operations.c:2503
 msgid ""
 "The folder \"%B\" cannot be handled because you do not have permissions to "
 "read it."
 msgstr "無法處理資料夾“%B”，因為你沒有權限讀取它。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2553
+#: ../libnautilus-private/nautilus-file-operations.c:2580
 msgid ""
 "The file \"%B\" cannot be handled because you do not have permissions to "
 "read it."
 msgstr "無法處理檔案“%B”，因為你沒有權限讀取它。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2556
+#: ../libnautilus-private/nautilus-file-operations.c:2583
 msgid "There was an error getting information about \"%B\"."
 msgstr "取得關於「%B」的資訊時發生錯誤。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2656
-#: ../libnautilus-private/nautilus-file-operations.c:2698
-#: ../libnautilus-private/nautilus-file-operations.c:2731
-#: ../libnautilus-private/nautilus-file-operations.c:2757
+#: ../libnautilus-private/nautilus-file-operations.c:2683
+#: ../libnautilus-private/nautilus-file-operations.c:2725
+#: ../libnautilus-private/nautilus-file-operations.c:2758
+#: ../libnautilus-private/nautilus-file-operations.c:2784
 msgid "Error while copying to \"%B\"."
 msgstr "複製至“%B”時發生錯誤。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2660
+#: ../libnautilus-private/nautilus-file-operations.c:2687
 msgid "You do not have permissions to access the destination folder."
 msgstr "你沒有存取目的端資料夾的權限。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2662
+#: ../libnautilus-private/nautilus-file-operations.c:2689
 msgid "There was an error getting information about the destination."
 msgstr "取得關於目的地的資訊時發生錯誤。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2699
+#: ../libnautilus-private/nautilus-file-operations.c:2726
 msgid "The destination is not a folder."
 msgstr "該目的地並非資料夾。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2732
+#: ../libnautilus-private/nautilus-file-operations.c:2759
 msgid ""
 "There is not enough space on the destination. Try to remove files to make "
 "space."
 msgstr "目的地空間不足。請嘗試移除檔案以挪出空間。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2734
+#: ../libnautilus-private/nautilus-file-operations.c:2761
 #, c-format
 msgid "There is %S available, but %S is required."
 msgstr "這裏有 %S，但需要 %S。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2758
+#: ../libnautilus-private/nautilus-file-operations.c:2785
 msgid "The destination is read-only."
 msgstr "目的地的磁碟是唯讀的。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2817
+#: ../libnautilus-private/nautilus-file-operations.c:2844
 msgid "Moving \"%B\" to \"%B\""
 msgstr "正將“%B”移動到“%B”。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2818
+#: ../libnautilus-private/nautilus-file-operations.c:2845
 msgid "Copying \"%B\" to \"%B\""
 msgstr "正將“%B”複製到“%B”。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2823
+#: ../libnautilus-private/nautilus-file-operations.c:2850
 msgid "Duplicating \"%B\""
 msgstr "正在重製“%B”"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2831
+#: ../libnautilus-private/nautilus-file-operations.c:2858
 msgid "Moving %'d file (in \"%B\") to \"%B\""
 msgid_plural "Moving %'d files (in \"%B\") to \"%B\""
 msgstr[0] "正移動 %'d 個檔案(於「%B」)到「%B」"
 msgstr[1] "正移動 %'d 個檔案(於「%B」)到「%B」"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2835
+#: ../libnautilus-private/nautilus-file-operations.c:2862
 msgid "Copying %'d file (in \"%B\") to \"%B\""
 msgid_plural "Copying %'d files (in \"%B\") to \"%B\""
 msgstr[0] "正複製 %'d 個檔案(於「%B」)到「%B」"
 msgstr[1] "正複製 %'d 個檔案(於「%B」)到「%B」"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2843
+#: ../libnautilus-private/nautilus-file-operations.c:2870
 msgid "Duplicating %'d file (in \"%B\")"
 msgid_plural "Duplicating %'d files (in \"%B\")"
 msgstr[0] "正重製 %'d 個檔案(於「%B」)"
 msgstr[1] "正重製 %'d 個檔案(於「%B」)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2853
+#: ../libnautilus-private/nautilus-file-operations.c:2880
 msgid "Moving %'d file to \"%B\""
 msgid_plural "Moving %'d files to \"%B\""
 msgstr[0] "正在移動 %'d 個檔案到「%B」"
 msgstr[1] "正在移動 %'d 個檔案到「%B」"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2857
+#: ../libnautilus-private/nautilus-file-operations.c:2884
 msgid "Copying %'d file to \"%B\""
 msgid_plural "Copying %'d files to \"%B\""
 msgstr[0] "正在複製 %'d 個檔案到「%B」"
 msgstr[1] "正在複製 %'d 個檔案到「%B」"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2863
+#: ../libnautilus-private/nautilus-file-operations.c:2890
 #, c-format
 msgid "Duplicating %'d file"
 msgid_plural "Duplicating %'d files"
@@ -2135,7 +2143,7 @@ msgstr[0] "正在重製 %'d 個檔案"
 msgstr[1] "正在重製 %'d 個檔案"
 
 #. To translators: %S will expand to a size like "2 bytes" or "3 MB", so something like "4 kb of 4 MB"
-#: ../libnautilus-private/nautilus-file-operations.c:2883
+#: ../libnautilus-private/nautilus-file-operations.c:2910
 #, c-format
 msgid "%S of %S"
 msgstr "%S / %S"
@@ -2145,221 +2153,233 @@ msgstr "%S / %S"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:2894
+#: ../libnautilus-private/nautilus-file-operations.c:2921
 msgid "%S of %S — %T left (%S/sec)"
 msgid_plural "%S of %S — %T left (%S/sec)"
 msgstr[0] "%S / %S — 剩餘 %T (%S/秒)"
 msgstr[1] "%S / %S — 剩餘 %T (%S/秒)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3272
+#: ../libnautilus-private/nautilus-file-operations.c:3299
 msgid ""
 "The folder \"%B\" cannot be copied because you do not have permissions to "
 "create it in the destination."
 msgstr "無法複製資料夾“%B”，因為你沒有權限在目的地建立它。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3275
+#: ../libnautilus-private/nautilus-file-operations.c:3302
 msgid "There was an error creating the folder \"%B\"."
 msgstr "建立資料夾「%B」時發生錯誤。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3399
+#: ../libnautilus-private/nautilus-file-operations.c:3426
 msgid ""
 "Files in the folder \"%B\" cannot be copied because you do not have "
 "permissions to see them."
 msgstr "無法複製資料夾“%B”中的檔案，因為你沒有權限讀取它們。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3444
+#: ../libnautilus-private/nautilus-file-operations.c:3471
 msgid ""
 "The folder \"%B\" cannot be copied because you do not have permissions to "
 "read it."
 msgstr "無法複製資料夾“%B”，因為你沒有權限讀取它。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3489
-#: ../libnautilus-private/nautilus-file-operations.c:4101
-#: ../libnautilus-private/nautilus-file-operations.c:4678
+#: ../libnautilus-private/nautilus-file-operations.c:3516
+#: ../libnautilus-private/nautilus-file-operations.c:4128
+#: ../libnautilus-private/nautilus-file-operations.c:4707
 msgid "Error while moving \"%B\"."
 msgstr "移動“%B”時發生錯誤。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3490
+#: ../libnautilus-private/nautilus-file-operations.c:3517
 msgid "Could not remove the source folder."
 msgstr "無法移除來源資料夾。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3575
-#: ../libnautilus-private/nautilus-file-operations.c:3616
-#: ../libnautilus-private/nautilus-file-operations.c:4103
-#: ../libnautilus-private/nautilus-file-operations.c:4174
+#: ../libnautilus-private/nautilus-file-operations.c:3602
+#: ../libnautilus-private/nautilus-file-operations.c:3643
+#: ../libnautilus-private/nautilus-file-operations.c:4130
+#: ../libnautilus-private/nautilus-file-operations.c:4201
 msgid "Error while copying \"%B\"."
 msgstr "複製“%B”時發生錯誤。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3576
+#: ../libnautilus-private/nautilus-file-operations.c:3603
 #, c-format
 msgid "Could not remove files from the already existing folder %F."
 msgstr "無法自既存的資料夾 %F 移除檔案。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3617
+#: ../libnautilus-private/nautilus-file-operations.c:3644
 #, c-format
 msgid "Could not remove the already existing file %F."
 msgstr "無法移除既存的檔案 %F。"
 
 #. the run_warning() frees all strings passed in automatically
-#: ../libnautilus-private/nautilus-file-operations.c:3833
-#: ../libnautilus-private/nautilus-file-operations.c:4505
+#: ../libnautilus-private/nautilus-file-operations.c:3860
+#: ../libnautilus-private/nautilus-file-operations.c:4534
 msgid "You cannot move a folder into itself."
 msgstr "不可將資料夾移至資料夾本身之內。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3834
-#: ../libnautilus-private/nautilus-file-operations.c:4506
+#: ../libnautilus-private/nautilus-file-operations.c:3861
+#: ../libnautilus-private/nautilus-file-operations.c:4535
 msgid "You cannot copy a folder into itself."
 msgstr "不可將資料夾複製至資料夾本身之內。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3835
-#: ../libnautilus-private/nautilus-file-operations.c:4507
+#: ../libnautilus-private/nautilus-file-operations.c:3862
+#: ../libnautilus-private/nautilus-file-operations.c:4536
 msgid "The destination folder is inside the source folder."
 msgstr "目的地資料夾在原始資料夾內。"
 
 #. the run_warning() frees all strings passed in automatically
-#: ../libnautilus-private/nautilus-file-operations.c:3867
+#: ../libnautilus-private/nautilus-file-operations.c:3894
 msgid "You cannot move a file over itself."
 msgstr "不可將檔案複製至同一位置之上。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3868
+#: ../libnautilus-private/nautilus-file-operations.c:3895
 msgid "You cannot copy a file over itself."
 msgstr "不可將檔案複製至同一位置之上。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3869
+#: ../libnautilus-private/nautilus-file-operations.c:3896
 msgid "The source file would be overwritten by the destination."
 msgstr "來源檔案會被目的端覆蓋。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3999
-#: ../libnautilus-private/nautilus-file-operations.c:4587
+#: ../libnautilus-private/nautilus-file-operations.c:4026
+#: ../libnautilus-private/nautilus-file-operations.c:4616
 msgid ""
 "A folder named \"%B\" already exists.  Do you want to merge the source "
 "folder?"
 msgstr "名為“%B”的資料夾已經存在。是否要與來源資料夾合併？"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4001
+#: ../libnautilus-private/nautilus-file-operations.c:4028
 msgid ""
 "The source folder already exists in \"%B\".  Merging will ask for "
 "confirmation before replacing any files in the folder that conflict with the "
 "files being copied."
 msgstr "來源資料夾已經存在於“%B”中。合併功能會在替換該資料夾中內任何與被複製檔案發生衝突的檔案前先要求確認。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4006
-#: ../libnautilus-private/nautilus-file-operations.c:4594
+#: ../libnautilus-private/nautilus-file-operations.c:4033
+#: ../libnautilus-private/nautilus-file-operations.c:4623
 msgid "A folder named \"%B\" already exists.  Do you want to replace it?"
 msgstr "名為“%B”的資料夾已經存在。要取代它嗎？"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4008
-#: ../libnautilus-private/nautilus-file-operations.c:4596
+#: ../libnautilus-private/nautilus-file-operations.c:4035
+#: ../libnautilus-private/nautilus-file-operations.c:4625
 #, c-format
 msgid ""
 "The folder already exists in \"%F\".  Replacing it will remove all files in "
 "the folder."
 msgstr "資料夾已經存在於“%F”中。取代它將會移除該資料夾中所有的檔案。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4013
-#: ../libnautilus-private/nautilus-file-operations.c:4601
+#: ../libnautilus-private/nautilus-file-operations.c:4040
+#: ../libnautilus-private/nautilus-file-operations.c:4630
 msgid "A file named \"%B\" already exists.  Do you want to replace it?"
 msgstr "名為“%B”的檔案已經存在。要取代它嗎？"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4015
-#: ../libnautilus-private/nautilus-file-operations.c:4603
+#: ../libnautilus-private/nautilus-file-operations.c:4042
+#: ../libnautilus-private/nautilus-file-operations.c:4632
 #, c-format
 msgid ""
 "The file already exists in \"%F\".  Replacing it will overwrite its content."
 msgstr "檔案已經存在於“%F”中。取代它將會覆蓋其內容。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4105
+#: ../libnautilus-private/nautilus-file-operations.c:4132
 #, c-format
 msgid "Could not remove the already existing file with the same name in %F."
 msgstr "無法移除既存與 %F 中的檔案同名的檔案。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4175
+#: ../libnautilus-private/nautilus-file-operations.c:4202
 #, c-format
 msgid "There was an error copying the file into %F."
 msgstr "複製檔案到 %F 時發生錯誤。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4414
+#: ../libnautilus-private/nautilus-file-operations.c:4426
+msgid "Copying Files"
+msgstr "正在複製檔案"
+
+#: ../libnautilus-private/nautilus-file-operations.c:4443
 msgid "Preparing to Move to \"%B\""
 msgstr "準備移動至「%B」"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4418
+#: ../libnautilus-private/nautilus-file-operations.c:4447
 #, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
 msgstr[0] "準備移動 %'d 個檔案"
 msgstr[1] "準備移動 %'d 個檔案"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4589
+#: ../libnautilus-private/nautilus-file-operations.c:4618
 msgid ""
 "The source folder already exists in \"%B\".  Merging will ask for "
 "confirmation before replacing any files in the folder that conflict with the "
 "files being moved."
 msgstr "來源資料夾已經存在於“%B”中。合併功能會在替換該資料夾中內任何與被移動檔案發生衝突的檔案前先要求確認。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4679
+#: ../libnautilus-private/nautilus-file-operations.c:4708
 #, c-format
 msgid "There was an error moving the file into %F."
 msgstr "移動檔案到 %F 時發生錯誤。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4954
+#: ../libnautilus-private/nautilus-file-operations.c:4968
+msgid "Moving Files"
+msgstr "正在移動檔案"
+
+#: ../libnautilus-private/nautilus-file-operations.c:4985
 msgid "Creating links in \"%B\""
 msgstr "正在「%B」中建立連結"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4958
+#: ../libnautilus-private/nautilus-file-operations.c:4989
 #, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
 msgstr[0] "正在建立到 %'d 個檔案的連結"
 msgstr[1] "正在建立到 %'d 個檔案的連結"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5087
+#: ../libnautilus-private/nautilus-file-operations.c:5118
 msgid "Error while creating link to %B."
 msgstr "建立連結 “%B” 時發生錯誤。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5089
+#: ../libnautilus-private/nautilus-file-operations.c:5120
 msgid "Symbolic links only supported for local files"
 msgstr "符號連結只支援本地端檔案"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5092
+#: ../libnautilus-private/nautilus-file-operations.c:5123
 msgid "The target doesn't support symbolic links."
 msgstr "目標不支援符號連結。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5095
+#: ../libnautilus-private/nautilus-file-operations.c:5126
 #, c-format
 msgid "There was an error creating the symlink in %F."
 msgstr "在 %F 建立符號連結時發生錯誤。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5389
+#: ../libnautilus-private/nautilus-file-operations.c:5420
 msgid "Setting permissions"
 msgstr "設定權限"
 
 #. localizers: the initial name of a new folder
-#: ../libnautilus-private/nautilus-file-operations.c:5638
+#: ../libnautilus-private/nautilus-file-operations.c:5669
 msgid "untitled folder"
 msgstr "未命名資料夾"
 
 #. localizers: the initial name of a new empty file
-#: ../libnautilus-private/nautilus-file-operations.c:5646
+#: ../libnautilus-private/nautilus-file-operations.c:5677
 msgid "new file"
 msgstr "新檔案"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5794
+#: ../libnautilus-private/nautilus-file-operations.c:5825
 msgid "Error while creating directory %B."
 msgstr "建立目錄 %B 時發生錯誤。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5796
+#: ../libnautilus-private/nautilus-file-operations.c:5827
 msgid "Error while creating file %B."
 msgstr "建立檔案 %B 時發生錯誤。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5798
+#: ../libnautilus-private/nautilus-file-operations.c:5829
 #, c-format
 msgid "There was an error creating the directory in %F."
 msgstr "在 %F 中建立目錄時發生錯誤。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:6099
-#: ../libnautilus-private/nautilus-file-operations.c:6140
-#: ../libnautilus-private/nautilus-file-operations.c:6175
-#: ../libnautilus-private/nautilus-file-operations.c:6210
+#: ../libnautilus-private/nautilus-file-operations.c:6085
+msgid "Emptying Trash"
+msgstr "正在清理回收筒"
+
+#: ../libnautilus-private/nautilus-file-operations.c:6132
+#: ../libnautilus-private/nautilus-file-operations.c:6173
+#: ../libnautilus-private/nautilus-file-operations.c:6208
+#: ../libnautilus-private/nautilus-file-operations.c:6243
 msgid "Unable to mark launcher trusted (executable)"
 msgstr "無法標記啟動圖示為受信任的（可執行的）"
 
@@ -2378,17 +2398,13 @@ msgstr "這個檔案無法被退出"
 
 #: ../libnautilus-private/nautilus-file.c:1284
 #: ../libnautilus-private/nautilus-vfs-file.c:559
-#, fuzzy
-#| msgid "This file cannot be mounted"
 msgid "This file cannot be started"
-msgstr "這個檔案無法被掛載"
+msgstr "這個檔案無法開啟"
 
 #: ../libnautilus-private/nautilus-file.c:1336
 #: ../libnautilus-private/nautilus-file.c:1367
-#, fuzzy
-#| msgid "This file cannot be mounted"
 msgid "This file cannot be stopped"
-msgstr "這個檔案無法被掛載"
+msgstr "這個檔案無法關閉"
 
 #: ../libnautilus-private/nautilus-file.c:1767
 #, c-format
@@ -2430,65 +2446,65 @@ msgstr "無法重新命名桌面檔案"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: ../libnautilus-private/nautilus-file.c:4300
+#: ../libnautilus-private/nautilus-file.c:4312
 msgid "today at 00:00:00 PM"
 msgstr "今天凌晨 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4301
+#: ../libnautilus-private/nautilus-file.c:4313
 #: ../src/nautilus-file-management-properties.c:472
 msgid "today at %-I:%M:%S %p"
 msgstr "今天%p %-I:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:4303
+#: ../libnautilus-private/nautilus-file.c:4315
 msgid "today at 00:00 PM"
 msgstr "今天凌晨 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4304
+#: ../libnautilus-private/nautilus-file.c:4316
 msgid "today at %-I:%M %p"
 msgstr "今天%p %-I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4306
+#: ../libnautilus-private/nautilus-file.c:4318
 msgid "today, 00:00 PM"
 msgstr "今天凌晨 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4307
+#: ../libnautilus-private/nautilus-file.c:4319
 msgid "today, %-I:%M %p"
 msgstr "今天%p %-I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4309
-#: ../libnautilus-private/nautilus-file.c:4310
+#: ../libnautilus-private/nautilus-file.c:4321
+#: ../libnautilus-private/nautilus-file.c:4322
 msgid "today"
 msgstr "今天"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: ../libnautilus-private/nautilus-file.c:4319
+#: ../libnautilus-private/nautilus-file.c:4331
 msgid "yesterday at 00:00:00 PM"
 msgstr "昨天凌晨 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4320
+#: ../libnautilus-private/nautilus-file.c:4332
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "昨天%p %-I:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:4322
+#: ../libnautilus-private/nautilus-file.c:4334
 msgid "yesterday at 00:00 PM"
 msgstr "昨天凌晨 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4323
+#: ../libnautilus-private/nautilus-file.c:4335
 msgid "yesterday at %-I:%M %p"
 msgstr "昨天%p %-I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4325
+#: ../libnautilus-private/nautilus-file.c:4337
 msgid "yesterday, 00:00 PM"
 msgstr "昨天凌晨 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4326
+#: ../libnautilus-private/nautilus-file.c:4338
 msgid "yesterday, %-I:%M %p"
 msgstr "昨天%p %-I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4328
-#: ../libnautilus-private/nautilus-file.c:4329
+#: ../libnautilus-private/nautilus-file.c:4340
+#: ../libnautilus-private/nautilus-file.c:4341
 msgid "yesterday"
 msgstr "昨天"
 
@@ -2497,103 +2513,103 @@ msgstr "昨天"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: ../libnautilus-private/nautilus-file.c:4340
+#: ../libnautilus-private/nautilus-file.c:4352
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "公元0000年00月00日(週三)於下午 00時00分00秒"
 
-#: ../libnautilus-private/nautilus-file.c:4341
+#: ../libnautilus-private/nautilus-file.c:4353
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%Y年%m月%-d日(%A) %p %-I時%M分%S秒"
 
-#: ../libnautilus-private/nautilus-file.c:4343
+#: ../libnautilus-private/nautilus-file.c:4355
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "0000年00月00日(一) 下午 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4344
+#: ../libnautilus-private/nautilus-file.c:4356
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%Y年%m月%-d日(%a) %p %-I:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:4346
+#: ../libnautilus-private/nautilus-file.c:4358
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "0000年00月00日(週一) 下午 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4347
+#: ../libnautilus-private/nautilus-file.c:4359
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%Y年%m月%-d日(%a) %p %-I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4349
+#: ../libnautilus-private/nautilus-file.c:4361
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "0000年00月00日下午 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4350
+#: ../libnautilus-private/nautilus-file.c:4362
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%Y年%m月%-d日%p %-I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4352
+#: ../libnautilus-private/nautilus-file.c:4364
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "0000年00月00日下午 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4353
+#: ../libnautilus-private/nautilus-file.c:4365
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%Y年%m月%-d日%p %-I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4355
+#: ../libnautilus-private/nautilus-file.c:4367
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00 下午 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4356
+#: ../libnautilus-private/nautilus-file.c:4368
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%y/%m/%-d %p %-I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4358
+#: ../libnautilus-private/nautilus-file.c:4370
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: ../libnautilus-private/nautilus-file.c:4359
+#: ../libnautilus-private/nautilus-file.c:4371
 msgid "%m/%d/%y"
 msgstr "%y/%m/%d"
 
-#: ../libnautilus-private/nautilus-file.c:4974
+#: ../libnautilus-private/nautilus-file.c:4986
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "不允許設定權限"
 
-#: ../libnautilus-private/nautilus-file.c:5259
+#: ../libnautilus-private/nautilus-file.c:5271
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "不允許設定擁有者"
 
-#: ../libnautilus-private/nautilus-file.c:5277
+#: ../libnautilus-private/nautilus-file.c:5289
 #, c-format
 msgid "Specified owner '%s' doesn't exist"
 msgstr "指定的擁有者“%s”不存在"
 
-#: ../libnautilus-private/nautilus-file.c:5526
+#: ../libnautilus-private/nautilus-file.c:5538
 #, c-format
 msgid "Not allowed to set group"
 msgstr "不允許設定羣組"
 
-#: ../libnautilus-private/nautilus-file.c:5544
+#: ../libnautilus-private/nautilus-file.c:5556
 #, c-format
 msgid "Specified group '%s' doesn't exist"
 msgstr "指定的羣組「%s」不存在"
 
-#: ../libnautilus-private/nautilus-file.c:5688
-#: ../src/file-manager/fm-directory-view.c:2208
+#: ../libnautilus-private/nautilus-file.c:5700
+#: ../src/file-manager/fm-directory-view.c:2223
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
 msgstr[0] "%'u 個項目"
 msgstr[1] "%'u 個項目"
 
-#: ../libnautilus-private/nautilus-file.c:5689
+#: ../libnautilus-private/nautilus-file.c:5701
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u 個資料夾"
 msgstr[1] "%'u 個資料夾"
 
-#: ../libnautilus-private/nautilus-file.c:5690
+#: ../libnautilus-private/nautilus-file.c:5702
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -2601,271 +2617,271 @@ msgstr[0] "%'u 個檔案"
 msgstr[1] "%'u 個檔案"
 
 #. Do this in a separate stage so that we don't have to put G_GUINT64_FORMAT in the translated string
-#: ../libnautilus-private/nautilus-file.c:5769
+#: ../libnautilus-private/nautilus-file.c:5781
 msgid "%"
 msgstr "%"
 
-#: ../libnautilus-private/nautilus-file.c:5770
+#: ../libnautilus-private/nautilus-file.c:5782
 #, c-format
 msgid "%s (%s bytes)"
 msgstr "%s (%s 位元組)"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:6074
-#: ../libnautilus-private/nautilus-file.c:6090
+#: ../libnautilus-private/nautilus-file.c:6086
+#: ../libnautilus-private/nautilus-file.c:6102
 msgid "? items"
 msgstr "? 個項目"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:6080
+#: ../libnautilus-private/nautilus-file.c:6092
 msgid "? bytes"
 msgstr "? 個位元組"
 
-#: ../libnautilus-private/nautilus-file.c:6095
+#: ../libnautilus-private/nautilus-file.c:6107
 msgid "unknown type"
 msgstr "類型不詳"
 
-#: ../libnautilus-private/nautilus-file.c:6098
+#: ../libnautilus-private/nautilus-file.c:6110
 msgid "unknown MIME type"
 msgstr "MIME 類型不詳"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:6104
+#: ../libnautilus-private/nautilus-file.c:6116
 #: ../src/file-manager/fm-properties-window.c:1319
 msgid "unknown"
 msgstr "不明"
 
-#: ../libnautilus-private/nautilus-file.c:6153
+#: ../libnautilus-private/nautilus-file.c:6165
 msgid "program"
 msgstr "程式"
 
-#: ../libnautilus-private/nautilus-file.c:6173
+#: ../libnautilus-private/nautilus-file.c:6185
 msgid "link"
 msgstr "連結"
 
-#: ../libnautilus-private/nautilus-file.c:6195
+#: ../libnautilus-private/nautilus-file.c:6207
 msgid "link (broken)"
 msgstr "連結（目標不存在）"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:68
+#: ../libnautilus-private/nautilus-global-preferences.c:69
 msgid "_Always"
 msgstr "總是(_A)"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:69
+#: ../libnautilus-private/nautilus-global-preferences.c:70
 msgid "_Local File Only"
 msgstr "只有本機檔案適用(_L)"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:70
+#: ../libnautilus-private/nautilus-global-preferences.c:71
 msgid "_Never"
 msgstr "永不(_N)"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:75
+#: ../libnautilus-private/nautilus-global-preferences.c:76
 #, no-c-format
 msgid "25%"
 msgstr "25%"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:77
+#: ../libnautilus-private/nautilus-global-preferences.c:78
 #: ../src/nautilus-file-management-properties.ui.h:21
 #, no-c-format
 msgid "50%"
 msgstr "50%"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:79
+#: ../libnautilus-private/nautilus-global-preferences.c:80
 #, no-c-format
 msgid "75%"
 msgstr "75%"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:81
+#: ../libnautilus-private/nautilus-global-preferences.c:82
 #: ../src/nautilus-file-management-properties.ui.h:7
 #, no-c-format
 msgid "100%"
 msgstr "100%"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:83
+#: ../libnautilus-private/nautilus-global-preferences.c:84
 #: ../src/nautilus-file-management-properties.ui.h:9
 #, no-c-format
 msgid "150%"
 msgstr "150%"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:85
+#: ../libnautilus-private/nautilus-global-preferences.c:86
 #: ../src/nautilus-file-management-properties.ui.h:12
 #, no-c-format
 msgid "200%"
 msgstr "200%"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:87
+#: ../libnautilus-private/nautilus-global-preferences.c:88
 #: ../src/nautilus-file-management-properties.ui.h:18
 #, no-c-format
 msgid "400%"
 msgstr "400%"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:91
+#: ../libnautilus-private/nautilus-global-preferences.c:92
 msgid "100 K"
 msgstr "100 K"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:92
+#: ../libnautilus-private/nautilus-global-preferences.c:93
 msgid "500 K"
 msgstr "500 K"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:93
+#: ../libnautilus-private/nautilus-global-preferences.c:94
 #: ../src/nautilus-file-management-properties.ui.h:2
 msgid "1 MB"
 msgstr "1 MB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:94
+#: ../libnautilus-private/nautilus-global-preferences.c:95
 #: ../src/nautilus-file-management-properties.ui.h:13
 msgid "3 MB"
 msgstr "3 MB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:95
+#: ../libnautilus-private/nautilus-global-preferences.c:96
 #: ../src/nautilus-file-management-properties.ui.h:19
 msgid "5 MB"
 msgstr "5 MB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:96
+#: ../libnautilus-private/nautilus-global-preferences.c:97
 #: ../src/nautilus-file-management-properties.ui.h:3
 msgid "10 MB"
 msgstr "10 MB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:97
+#: ../libnautilus-private/nautilus-global-preferences.c:98
 #: ../src/nautilus-file-management-properties.ui.h:5
 msgid "100 MB"
 msgstr "100 MB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:98
+#: ../libnautilus-private/nautilus-global-preferences.c:99
 #: ../src/nautilus-file-management-properties.ui.h:1
 msgid "1 GB"
 msgstr "1 GB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:99
+#: ../libnautilus-private/nautilus-global-preferences.c:100
 #: ../src/nautilus-file-management-properties.ui.h:10
 msgid "2 GB"
 msgstr "2 GB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:100
+#: ../libnautilus-private/nautilus-global-preferences.c:101
 #: ../src/nautilus-file-management-properties.ui.h:16
 msgid "4 GB"
 msgstr "4 GB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:105
+#: ../libnautilus-private/nautilus-global-preferences.c:106
 msgid "Activate items with a _single click"
 msgstr "按一下滑鼠按鈕可開啟圖示(_S)"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:109
+#: ../libnautilus-private/nautilus-global-preferences.c:110
 msgid "Activate items with a _double click"
 msgstr "連按兩下滑鼠按鈕可開啟圖示(_D)"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:116
+#: ../libnautilus-private/nautilus-global-preferences.c:117
 msgid "E_xecute files when they are clicked"
 msgstr "當按下檔案時執行該檔案(_X)"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:120
+#: ../libnautilus-private/nautilus-global-preferences.c:121
 msgid "Display _files when they are clicked"
 msgstr "當按下檔案時顯示檔案內容(_F)"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:124
+#: ../libnautilus-private/nautilus-global-preferences.c:125
 #: ../src/nautilus-file-management-properties.ui.h:82
 msgid "_Ask each time"
 msgstr "每次都會詢問(_A)"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:131
+#: ../libnautilus-private/nautilus-global-preferences.c:132
 msgid "Search for files by file name only"
 msgstr "只根據檔案名稱搜尋檔案"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:135
+#: ../libnautilus-private/nautilus-global-preferences.c:136
 msgid "Search for files by file name and file properties"
 msgstr "根據檔案名稱及屬性搜尋檔案"
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
-#: ../libnautilus-private/nautilus-global-preferences.c:141
+#: ../libnautilus-private/nautilus-global-preferences.c:142
 #: ../src/file-manager/fm-icon-container.c:569
-#: ../src/file-manager/fm-icon-view.c:3045
+#: ../src/file-manager/fm-icon-view.c:3053
 #: ../src/nautilus-file-management-properties.ui.h:65
 msgid "Icon View"
 msgstr "圖示檢視"
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
-#: ../libnautilus-private/nautilus-global-preferences.c:142
-#: ../src/file-manager/fm-icon-view.c:3059
+#: ../libnautilus-private/nautilus-global-preferences.c:143
+#: ../src/file-manager/fm-icon-view.c:3067
 #: ../src/nautilus-file-management-properties.ui.h:58
 msgid "Compact View"
 msgstr "精簡檢視"
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
-#: ../libnautilus-private/nautilus-global-preferences.c:143
+#: ../libnautilus-private/nautilus-global-preferences.c:144
 #: ../src/file-manager/fm-list-view.c:1511
 #: ../src/file-manager/fm-list-view.c:2922
 #: ../src/nautilus-file-management-properties.ui.h:68
 msgid "List View"
 msgstr "清單檢視"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:147
+#: ../libnautilus-private/nautilus-global-preferences.c:148
 msgid "Manually"
 msgstr "手動"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:149
+#: ../libnautilus-private/nautilus-global-preferences.c:150
 #: ../src/nautilus-file-management-properties.ui.h:51
 msgid "By Name"
 msgstr "以名稱"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:150
+#: ../libnautilus-private/nautilus-global-preferences.c:151
 #: ../src/nautilus-file-management-properties.ui.h:52
 msgid "By Size"
 msgstr "以大小"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:151
+#: ../libnautilus-private/nautilus-global-preferences.c:152
 #: ../src/nautilus-file-management-properties.ui.h:53
 msgid "By Type"
 msgstr "以類型"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:152
+#: ../libnautilus-private/nautilus-global-preferences.c:153
 #: ../src/nautilus-file-management-properties.ui.h:50
 msgid "By Modification Date"
 msgstr "以修改日期"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:153
+#: ../libnautilus-private/nautilus-global-preferences.c:154
 #: ../src/nautilus-file-management-properties.ui.h:49
 msgid "By Emblems"
 msgstr "以圖章"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:157
+#: ../libnautilus-private/nautilus-global-preferences.c:158
 msgid "8"
 msgstr "8"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:158
+#: ../libnautilus-private/nautilus-global-preferences.c:159
 msgid "10"
 msgstr "10"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:159
+#: ../libnautilus-private/nautilus-global-preferences.c:160
 msgid "12"
 msgstr "12"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:160
+#: ../libnautilus-private/nautilus-global-preferences.c:161
 msgid "14"
 msgstr "14"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:161
+#: ../libnautilus-private/nautilus-global-preferences.c:162
 msgid "16"
 msgstr "16"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:162
+#: ../libnautilus-private/nautilus-global-preferences.c:163
 msgid "18"
 msgstr "18"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:163
+#: ../libnautilus-private/nautilus-global-preferences.c:164
 msgid "20"
 msgstr "20"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:164
+#: ../libnautilus-private/nautilus-global-preferences.c:165
 msgid "22"
 msgstr "22"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:165
+#: ../libnautilus-private/nautilus-global-preferences.c:166
 msgid "24"
 msgstr "24"
 
@@ -2877,22 +2893,22 @@ msgstr "24"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: ../libnautilus-private/nautilus-global-preferences.c:580
+#: ../libnautilus-private/nautilus-global-preferences.c:585
 #, c-format
 msgid "%s's Home"
 msgstr "%.0s個人資料夾"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:586
+#: ../libnautilus-private/nautilus-global-preferences.c:591
 #: ../data/nautilus-computer.desktop.in.in.h:2
 msgid "Computer"
 msgstr "電腦"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:592
+#: ../libnautilus-private/nautilus-global-preferences.c:597
 #: ../src/nautilus-places-sidebar.c:490 ../src/nautilus-trash-bar.c:121
 msgid "Trash"
 msgstr "回收筒"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:598
+#: ../libnautilus-private/nautilus-global-preferences.c:603
 msgid "Network Servers"
 msgstr "網絡伺服器"
 
@@ -2926,10 +2942,10 @@ msgstr "連結無法使用，因為它的目標位置「%s」不存在。"
 #. name, stock id
 #. label, accelerator
 #: ../libnautilus-private/nautilus-mime-actions.c:717
-#: ../src/file-manager/fm-directory-view.c:6988
-#: ../src/file-manager/fm-directory-view.c:7111
-#: ../src/file-manager/fm-directory-view.c:8241
-#: ../src/file-manager/fm-directory-view.c:8521
+#: ../src/file-manager/fm-directory-view.c:7019
+#: ../src/file-manager/fm-directory-view.c:7142
+#: ../src/file-manager/fm-directory-view.c:8272
+#: ../src/file-manager/fm-directory-view.c:8570
 #: ../src/file-manager/fm-tree-view.c:1289
 msgid "Mo_ve to Trash"
 msgstr "丟進回收筒(_V)"
@@ -2958,7 +2974,7 @@ msgid "_Run"
 msgstr "執行(_R)"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1113
-#: ../src/file-manager/fm-directory-view.c:624
+#: ../src/file-manager/fm-directory-view.c:626
 msgid "Are you sure you want to open all files?"
 msgstr "確定要開啟所有檔案嗎？"
 
@@ -3039,16 +3055,14 @@ msgstr "標記成受信任的(_T)"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1832
 #: ../libnautilus-private/nautilus-mime-actions.c:2105
-#: ../src/file-manager/fm-directory-view.c:5956
+#: ../src/file-manager/fm-directory-view.c:5987
 msgid "Unable to mount location"
 msgstr "無法掛載位置"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:2183
-#: ../src/file-manager/fm-directory-view.c:6115
-#, fuzzy
-#| msgid "Unable to mount location"
+#: ../src/file-manager/fm-directory-view.c:6146
 msgid "Unable to start location"
-msgstr "無法掛載位置"
+msgstr "無法開啟位置"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:2271
 #, c-format
@@ -3077,7 +3091,7 @@ msgstr "無法設定為預設的應用程式"
 msgid "Default"
 msgstr "預設值"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:264
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:265
 msgid "Icon"
 msgstr "圖示"
 
@@ -3157,8 +3171,8 @@ msgstr "瀏覽(_B)..."
 #. name, stock id
 #. label, accelerator
 #: ../libnautilus-private/nautilus-open-with-dialog.c:870
-#: ../src/file-manager/fm-directory-view.c:6906
-#: ../src/file-manager/fm-directory-view.c:8416
+#: ../src/file-manager/fm-directory-view.c:6937
+#: ../src/file-manager/fm-directory-view.c:8449
 #: ../src/file-manager/fm-tree-view.c:1210
 #: ../src/nautilus-places-sidebar.c:2151
 msgid "_Open"
@@ -3311,7 +3325,7 @@ msgstr "檔案瀏覽器"
 
 #. tooltip
 #: ../data/nautilus-computer.desktop.in.in.h:1
-#: ../src/nautilus-window-menus.c:845
+#: ../src/nautilus-window-menus.c:854
 msgid ""
 "Browse all local and remote disks and folders accessible from this computer"
 msgstr "從本電腦瀏覽所有本機及遠端磁碟及資料夾"
@@ -3330,7 +3344,7 @@ msgid "Home Folder"
 msgstr "家目錄"
 
 #. tooltip
-#: ../data/nautilus-home.desktop.in.in.h:2 ../src/nautilus-window-menus.c:841
+#: ../data/nautilus-home.desktop.in.in.h:2 ../src/nautilus-window-menus.c:850
 msgid "Open your personal folder"
 msgstr "開啟你的個人資料夾"
 
@@ -3338,123 +3352,123 @@ msgstr "開啟你的個人資料夾"
 msgid "File Manager"
 msgstr "檔案管理程式"
 
-#: ../src/file-manager/fm-desktop-icon-view.c:619
+#: ../src/file-manager/fm-desktop-icon-view.c:634
 msgid "Background"
 msgstr "背景"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-desktop-icon-view.c:684
-#: ../src/file-manager/fm-directory-view.c:6938
-#: ../src/file-manager/fm-directory-view.c:8587
+#: ../src/file-manager/fm-desktop-icon-view.c:707
+#: ../src/file-manager/fm-directory-view.c:6969
+#: ../src/file-manager/fm-directory-view.c:8636
 msgid "E_mpty Trash"
 msgstr "清理回收筒(_M)"
 
 #. label, accelerator
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-desktop-icon-view.c:696
-#: ../src/file-manager/fm-directory-view.c:6902
+#: ../src/file-manager/fm-desktop-icon-view.c:719
+#: ../src/file-manager/fm-directory-view.c:6933
 msgid "Create L_auncher..."
 msgstr "新增啟動圖示(_A)..."
 
 #. tooltip
-#: ../src/file-manager/fm-desktop-icon-view.c:698
-#: ../src/file-manager/fm-directory-view.c:6903
+#: ../src/file-manager/fm-desktop-icon-view.c:721
+#: ../src/file-manager/fm-directory-view.c:6934
 msgid "Create a new launcher"
 msgstr "新增啟動圖示"
 
 #. label, accelerator
-#: ../src/file-manager/fm-desktop-icon-view.c:703
+#: ../src/file-manager/fm-desktop-icon-view.c:726
 msgid "Change Desktop _Background"
 msgstr "更改桌面背景(_B)"
 
 #. tooltip
-#: ../src/file-manager/fm-desktop-icon-view.c:705
+#: ../src/file-manager/fm-desktop-icon-view.c:728
 msgid ""
 "Show a window that lets you set your desktop background's pattern or color"
 msgstr "顯示一個可設定桌面背景圖樣或顏色的視窗"
 
 #. label, accelerator
-#: ../src/file-manager/fm-desktop-icon-view.c:710
+#: ../src/file-manager/fm-desktop-icon-view.c:733
 msgid "Empty Trash"
 msgstr "清理回收筒"
 
 #. tooltip
-#: ../src/file-manager/fm-desktop-icon-view.c:712
-#: ../src/file-manager/fm-directory-view.c:6939
+#: ../src/file-manager/fm-desktop-icon-view.c:735
+#: ../src/file-manager/fm-directory-view.c:6970
 #: ../src/nautilus-trash-bar.c:132
 msgid "Delete all items in the Trash"
 msgstr "清理回收筒所有項目"
 
-#: ../src/file-manager/fm-desktop-icon-view.c:804
+#: ../src/file-manager/fm-desktop-icon-view.c:827
 msgid "The desktop view encountered an error."
 msgstr "桌面顯示模式發生錯誤。"
 
-#: ../src/file-manager/fm-desktop-icon-view.c:805
+#: ../src/file-manager/fm-desktop-icon-view.c:828
 msgid "The desktop view encountered an error while starting up."
 msgstr "啟動桌面顯示模式時發生錯誤。"
 
-#: ../src/file-manager/fm-directory-view.c:626
+#: ../src/file-manager/fm-directory-view.c:628
 #, c-format
 msgid "This will open %'d separate tab."
 msgid_plural "This will open %'d separate tabs."
 msgstr[0] "這樣會開啟 %'d 個分頁。"
 msgstr[1] "這樣會開啟 %'d 個分頁。"
 
-#: ../src/file-manager/fm-directory-view.c:629
+#: ../src/file-manager/fm-directory-view.c:631
 #, c-format
 msgid "This will open %'d separate window."
 msgid_plural "This will open %'d separate windows."
 msgstr[0] "這樣會多開啟 %'d 個視窗。"
 msgstr[1] "這樣會多開啟 %'d 個視窗。"
 
-#: ../src/file-manager/fm-directory-view.c:1138
+#: ../src/file-manager/fm-directory-view.c:1140
 #: ../src/file-manager/fm-properties-window.c:5455
-#: ../src/nautilus-connect-server-dialog.c:341
+#: ../src/nautilus-connect-server-dialog.c:344
 #: ../src/nautilus-location-dialog.c:108
 msgid "There was an error displaying help."
 msgstr "顯示說明文件時發生錯誤。"
 
-#: ../src/file-manager/fm-directory-view.c:1158
+#: ../src/file-manager/fm-directory-view.c:1160
 msgid "Select Items Matching"
 msgstr "選擇項目比對"
 
-#: ../src/file-manager/fm-directory-view.c:1176
+#: ../src/file-manager/fm-directory-view.c:1178
 msgid "_Pattern:"
 msgstr "樣式(_P):"
 
-#: ../src/file-manager/fm-directory-view.c:1274
+#: ../src/file-manager/fm-directory-view.c:1276
 msgid "Save Search as"
 msgstr "另存搜尋為"
 
-#: ../src/file-manager/fm-directory-view.c:1294
+#: ../src/file-manager/fm-directory-view.c:1296
 msgid "Search _name:"
 msgstr "搜尋名稱(_N):"
 
-#: ../src/file-manager/fm-directory-view.c:1308
-#: ../src/nautilus-connect-server-dialog.c:518
+#: ../src/file-manager/fm-directory-view.c:1310
+#: ../src/nautilus-connect-server-dialog.c:521
 msgid "_Folder:"
 msgstr "資料夾(_F):"
 
-#: ../src/file-manager/fm-directory-view.c:1313
+#: ../src/file-manager/fm-directory-view.c:1315
 msgid "Select Folder to Save Search In"
 msgstr "選取儲存搜尋的資料夾"
 
-#: ../src/file-manager/fm-directory-view.c:2128
-#: ../src/file-manager/fm-directory-view.c:2165
+#: ../src/file-manager/fm-directory-view.c:2143
+#: ../src/file-manager/fm-directory-view.c:2180
 #, c-format
 msgid "\"%s\" selected"
 msgstr "已選取“%s”"
 
-#: ../src/file-manager/fm-directory-view.c:2130
+#: ../src/file-manager/fm-directory-view.c:2145
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "已選取 %'d 個資料夾"
 msgstr[1] "已選取 %'d 個資料夾"
 
-#: ../src/file-manager/fm-directory-view.c:2140
+#: ../src/file-manager/fm-directory-view.c:2155
 #, c-format
 msgid " (containing %'d item)"
 msgid_plural " (containing %'d items)"
@@ -3462,14 +3476,14 @@ msgstr[0] "(包含 %'d 個項目)"
 msgstr[1] "(包含 %'d 個項目)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: ../src/file-manager/fm-directory-view.c:2151
+#: ../src/file-manager/fm-directory-view.c:2166
 #, c-format
 msgid " (containing a total of %'d item)"
 msgid_plural " (containing a total of %'d items)"
 msgstr[0] "(總共包含 %'d 個項目)"
 msgstr[1] "(總共包含 %'d 個項目)"
 
-#: ../src/file-manager/fm-directory-view.c:2168
+#: ../src/file-manager/fm-directory-view.c:2183
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -3477,7 +3491,7 @@ msgstr[0] "已選取 %'d 個項目"
 msgstr[1] "已選取 %'d 個項目"
 
 #. Folders selected also, use "other" terminology
-#: ../src/file-manager/fm-directory-view.c:2175
+#: ../src/file-manager/fm-directory-view.c:2190
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -3489,12 +3503,12 @@ msgstr[1] "另外選取了 %'d 個項目"
 #. * first message gives the number of items selected;
 #. * the message in parentheses the size of those items.
 #.
-#: ../src/file-manager/fm-directory-view.c:2190
+#: ../src/file-manager/fm-directory-view.c:2205
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../src/file-manager/fm-directory-view.c:2212
+#: ../src/file-manager/fm-directory-view.c:2227
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s，可用空間：%s"
@@ -3506,7 +3520,7 @@ msgstr "%s，可用空間：%s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: ../src/file-manager/fm-directory-view.c:2237
+#: ../src/file-manager/fm-directory-view.c:2252
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s，%s"
@@ -3515,49 +3529,49 @@ msgstr "%s%s，%s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: ../src/file-manager/fm-directory-view.c:2319
+#: ../src/file-manager/fm-directory-view.c:2334
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr "資料夾“%s”中的檔案數目超出 Nautilus 所能處理的最大數目。"
 
-#: ../src/file-manager/fm-directory-view.c:2325
+#: ../src/file-manager/fm-directory-view.c:2340
 msgid "Some files will not be displayed."
 msgstr "某些檔案將會不能顯示。"
 
-#: ../src/file-manager/fm-directory-view.c:4270
+#: ../src/file-manager/fm-directory-view.c:4287
 #: ../src/nautilus-information-panel.c:828
 #, c-format
 msgid "Open with %s"
 msgstr "用 %s 開啟"
 
-#: ../src/file-manager/fm-directory-view.c:4272
+#: ../src/file-manager/fm-directory-view.c:4289
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgid_plural "Use \"%s\" to open the selected items"
 msgstr[0] "使用“%s”來開啟選定的項目"
 msgstr[1] "使用“%s”來開啟選定的項目"
 
-#: ../src/file-manager/fm-directory-view.c:5037
+#: ../src/file-manager/fm-directory-view.c:5068
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "針對所有選定的項目執行“%s”"
 
-#: ../src/file-manager/fm-directory-view.c:5288
+#: ../src/file-manager/fm-directory-view.c:5319
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "以樣板“%s”建立文件"
 
-#: ../src/file-manager/fm-directory-view.c:5538
+#: ../src/file-manager/fm-directory-view.c:5569
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "所有此資料夾的可執行檔都會在「指令稿」選單中出現。"
 
-#: ../src/file-manager/fm-directory-view.c:5540
+#: ../src/file-manager/fm-directory-view.c:5571
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 msgstr "在選單中選取其中一個指令稿會以所有已選取的項目作為輸入資料來執行該指令稿。"
 
-#: ../src/file-manager/fm-directory-view.c:5542
+#: ../src/file-manager/fm-directory-view.c:5573
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -3592,19 +3606,19 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY：目前視窗的位置及大小"
 
-#: ../src/file-manager/fm-directory-view.c:5714
+#: ../src/file-manager/fm-directory-view.c:5745
 #: ../src/file-manager/fm-tree-view.c:968
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "選取「貼上」指令則會移動“%s”"
 
-#: ../src/file-manager/fm-directory-view.c:5718
+#: ../src/file-manager/fm-directory-view.c:5749
 #: ../src/file-manager/fm-tree-view.c:972
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "選取「貼上」指令則會複製“%s”"
 
-#: ../src/file-manager/fm-directory-view.c:5725
+#: ../src/file-manager/fm-directory-view.c:5756
 #, c-format
 msgid "The %'d selected item will be moved if you select the Paste command"
 msgid_plural ""
@@ -3612,7 +3626,7 @@ msgid_plural ""
 msgstr[0] "選取「貼上」指令則會移動 %'d 個已選的項目"
 msgstr[1] "選取「貼上」指令則會移動 %'d 個已選的項目"
 
-#: ../src/file-manager/fm-directory-view.c:5732
+#: ../src/file-manager/fm-directory-view.c:5763
 #, c-format
 msgid "The %'d selected item will be copied if you select the Paste command"
 msgid_plural ""
@@ -3620,112 +3634,112 @@ msgid_plural ""
 msgstr[0] "選取「貼上」指令則會複製 %'d 個已選的項目"
 msgstr[1] "選取「貼上」指令則會複製 %'d 個已選的項目"
 
-#: ../src/file-manager/fm-directory-view.c:5788
+#: ../src/file-manager/fm-directory-view.c:5819
 #: ../src/file-manager/fm-tree-view.c:1011
 msgid "There is nothing on the clipboard to paste."
 msgstr "剪貼簿中沒有內容可供貼上。"
 
-#: ../src/file-manager/fm-directory-view.c:5971
+#: ../src/file-manager/fm-directory-view.c:6002
 msgid "Unable to unmount location"
 msgstr "無法卸載位置"
 
-#: ../src/file-manager/fm-directory-view.c:5986
+#: ../src/file-manager/fm-directory-view.c:6017
 msgid "Unable to eject location"
 msgstr "無法退出位置"
 
-#: ../src/file-manager/fm-directory-view.c:6001
+#: ../src/file-manager/fm-directory-view.c:6032
 msgid "Unable to stop drive"
 msgstr "無法停止裝置"
 
-#: ../src/file-manager/fm-directory-view.c:6547
+#: ../src/file-manager/fm-directory-view.c:6578
 #, c-format
 msgid "Connect to Server %s"
 msgstr "連接伺服器 %s"
 
-#: ../src/file-manager/fm-directory-view.c:6552
-#: ../src/file-manager/fm-directory-view.c:7852
-#: ../src/file-manager/fm-directory-view.c:7944
-#: ../src/file-manager/fm-directory-view.c:8054
+#: ../src/file-manager/fm-directory-view.c:6583
+#: ../src/file-manager/fm-directory-view.c:7883
+#: ../src/file-manager/fm-directory-view.c:7975
+#: ../src/file-manager/fm-directory-view.c:8085
 msgid "_Connect"
 msgstr "連接(_C)"
 
-#: ../src/file-manager/fm-directory-view.c:6566
+#: ../src/file-manager/fm-directory-view.c:6597
 msgid "Link _name:"
 msgstr "連結名稱(_N):"
 
-#: ../src/file-manager/fm-directory-view.c:6784
+#: ../src/file-manager/fm-directory-view.c:6815
 #, c-format
 msgid "Could not determine original location of \"%s\" "
 msgstr "無法決定「%s」的原始位置"
 
-#: ../src/file-manager/fm-directory-view.c:6788
+#: ../src/file-manager/fm-directory-view.c:6819
 msgid "The item cannot be restored from trash"
 msgstr "此項目不能自回收筒還原。"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6876
+#: ../src/file-manager/fm-directory-view.c:6907
 msgid "Create _Document"
 msgstr "新增文件(_D)"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6877
+#: ../src/file-manager/fm-directory-view.c:6908
 msgid "Open Wit_h"
 msgstr "以其它方式開啟(_H)"
 
-#: ../src/file-manager/fm-directory-view.c:6878
+#: ../src/file-manager/fm-directory-view.c:6909
 msgid "Choose a program with which to open the selected item"
 msgstr "請選取程式來開啟選定的項目"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6880
-#: ../src/file-manager/fm-directory-view.c:6888
-#: ../src/file-manager/fm-directory-view.c:7152
+#: ../src/file-manager/fm-directory-view.c:6911
+#: ../src/file-manager/fm-directory-view.c:6919
+#: ../src/file-manager/fm-directory-view.c:7183
 msgid "_Properties"
 msgstr "屬性(_P)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6881
+#: ../src/file-manager/fm-directory-view.c:6912
 msgid "View or modify the properties of each selected item"
 msgstr "顯示或修改所有選定項目的屬性"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6889
+#: ../src/file-manager/fm-directory-view.c:6920
 msgid "View or modify the properties of the open folder"
 msgstr "顯示或修改開啟的資料夾的屬性"
 
 #. name, stock id
 #. label, accelerator
 #. add the "create folder" menu item
-#: ../src/file-manager/fm-directory-view.c:6892
+#: ../src/file-manager/fm-directory-view.c:6923
 #: ../src/file-manager/fm-tree-view.c:1241
 msgid "Create _Folder"
 msgstr "建立資料夾(_F)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6893
+#: ../src/file-manager/fm-directory-view.c:6924
 msgid "Create a new empty folder inside this folder"
 msgstr "在本資料夾中新增空白資料夾"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6895
+#: ../src/file-manager/fm-directory-view.c:6926
 msgid "No templates installed"
 msgstr "沒有安裝任何樣板"
 
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6898
+#: ../src/file-manager/fm-directory-view.c:6929
 msgid "_Empty File"
 msgstr "空白檔案(_E)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6899
+#: ../src/file-manager/fm-directory-view.c:6930
 msgid "Create a new empty file inside this folder"
 msgstr "在本資料夾中新增空白的文件"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6907
+#: ../src/file-manager/fm-directory-view.c:6938
 msgid "Open the selected item in this window"
 msgstr "在本視窗中開啟選定的項目"
 
@@ -3734,92 +3748,92 @@ msgstr "在本視窗中開啟選定的項目"
 #. Location-specific actions
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6914
-#: ../src/file-manager/fm-directory-view.c:7084
+#: ../src/file-manager/fm-directory-view.c:6945
+#: ../src/file-manager/fm-directory-view.c:7115
 msgid "Open in Navigation Window"
 msgstr "在視窗中開啟"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6915
+#: ../src/file-manager/fm-directory-view.c:6946
 msgid "Open each selected item in a navigation window"
 msgstr "用新的視窗分別開啟每個選定的項目"
 
 #. name, stock id
 #. label, accelerator
 #. add the "open in new tab" menu item
-#: ../src/file-manager/fm-directory-view.c:6918
-#: ../src/file-manager/fm-directory-view.c:7088
-#: ../src/file-manager/fm-directory-view.c:8186
-#: ../src/file-manager/fm-directory-view.c:8475
+#: ../src/file-manager/fm-directory-view.c:6949
+#: ../src/file-manager/fm-directory-view.c:7119
+#: ../src/file-manager/fm-directory-view.c:8217
+#: ../src/file-manager/fm-directory-view.c:8524
 #: ../src/file-manager/fm-tree-view.c:1221
 #: ../src/nautilus-places-sidebar.c:2159
 msgid "Open in New _Tab"
 msgstr "在新的分頁中開啟(_T)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6919
+#: ../src/file-manager/fm-directory-view.c:6950
 msgid "Open each selected item in a new tab"
 msgstr "在新的分頁分別開啟每個選取的項目"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6922
-#: ../src/file-manager/fm-directory-view.c:7093
+#: ../src/file-manager/fm-directory-view.c:6953
+#: ../src/file-manager/fm-directory-view.c:7124
 msgid "Open in _Folder Window"
 msgstr "在資料夾視窗開啟(_F)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6923
+#: ../src/file-manager/fm-directory-view.c:6954
 msgid "Open each selected item in a folder window"
 msgstr "用資料夾視窗分別開啟每個選定的項目"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6926
+#: ../src/file-manager/fm-directory-view.c:6957
 msgid "Other _Application..."
 msgstr "其他應用程式(_A)..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6927
-#: ../src/file-manager/fm-directory-view.c:6931
+#: ../src/file-manager/fm-directory-view.c:6958
+#: ../src/file-manager/fm-directory-view.c:6962
 msgid "Choose another application with which to open the selected item"
 msgstr "請選取其它程式來開啟選定的項目"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6930
+#: ../src/file-manager/fm-directory-view.c:6961
 msgid "Open with Other _Application..."
 msgstr "以其它程式開啟(_A)..."
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6934
+#: ../src/file-manager/fm-directory-view.c:6965
 msgid "_Open Scripts Folder"
 msgstr "開啟指令稿資料夾(_O)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6935
+#: ../src/file-manager/fm-directory-view.c:6966
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "顯示載有本選單中出現的指令稿的資料夾"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6943
+#: ../src/file-manager/fm-directory-view.c:6974
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "以「貼上」指令來準備移動選定的檔案"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6947
+#: ../src/file-manager/fm-directory-view.c:6978
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "以「貼上」指令來準備複製選定的檔案"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6951
+#: ../src/file-manager/fm-directory-view.c:6982
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr "將剛才以「剪下」或「複製」指令選取的檔案移動或複製"
 
@@ -3827,106 +3841,106 @@ msgstr "將剛才以「剪下」或「複製」指令選取的檔案移動或複
 #. accelerator for paste
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6956
-#: ../src/file-manager/fm-directory-view.c:7106
+#: ../src/file-manager/fm-directory-view.c:6987
+#: ../src/file-manager/fm-directory-view.c:7137
 #: ../src/file-manager/fm-tree-view.c:1273
 msgid "_Paste Into Folder"
 msgstr "貼上至資料夾內(_P)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6957
+#: ../src/file-manager/fm-directory-view.c:6988
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
 msgstr "將剛才以「剪下」或「複製」指令選取的檔案移動或複製至選定的資料夾"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6961
+#: ../src/file-manager/fm-directory-view.c:6992
 msgid "Select all items in this window"
 msgstr "選取本視窗中所有項目"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6964
+#: ../src/file-manager/fm-directory-view.c:6995
 msgid "Select I_tems Matching..."
 msgstr "選擇項目比對(_T)..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6965
+#: ../src/file-manager/fm-directory-view.c:6996
 msgid "Select items in this window matching a given pattern"
 msgstr "選取本視窗中所有符合指定樣式的項目"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6968
+#: ../src/file-manager/fm-directory-view.c:6999
 msgid "_Invert Selection"
 msgstr "反向選擇(_I)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6969
+#: ../src/file-manager/fm-directory-view.c:7000
 msgid "Select all and only the items that are not currently selected"
 msgstr "選擇所有目前尚未被選取的項目"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6972
+#: ../src/file-manager/fm-directory-view.c:7003
 msgid "D_uplicate"
 msgstr "複製(_U)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6973
+#: ../src/file-manager/fm-directory-view.c:7004
 msgid "Duplicate each selected item"
 msgstr "複製所有選定的項目"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6976
-#: ../src/file-manager/fm-directory-view.c:8561
+#: ../src/file-manager/fm-directory-view.c:7007
+#: ../src/file-manager/fm-directory-view.c:8610
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "建立連結(_K)"
 msgstr[1] "建立連結(_K)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6977
+#: ../src/file-manager/fm-directory-view.c:7008
 msgid "Create a symbolic link for each selected item"
 msgstr "為所有選定的項目建立連結"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6980
+#: ../src/file-manager/fm-directory-view.c:7011
 msgid "_Rename..."
 msgstr "重新命名(_R)..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6981
+#: ../src/file-manager/fm-directory-view.c:7012
 msgid "Rename selected item"
 msgstr "將選定的項目重新命名"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6989
-#: ../src/file-manager/fm-directory-view.c:8522
+#: ../src/file-manager/fm-directory-view.c:7020
+#: ../src/file-manager/fm-directory-view.c:8571
 msgid "Move each selected item to the Trash"
 msgstr "將每個選定的項目丟進回收筒"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6992
-#: ../src/file-manager/fm-directory-view.c:7115
-#: ../src/file-manager/fm-directory-view.c:8542
+#: ../src/file-manager/fm-directory-view.c:7023
+#: ../src/file-manager/fm-directory-view.c:7146
+#: ../src/file-manager/fm-directory-view.c:8591
 #: ../src/file-manager/fm-tree-view.c:1303
 msgid "_Delete"
 msgstr "刪除(_D)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6993
+#: ../src/file-manager/fm-directory-view.c:7024
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "將所有選定的項目直接刪除而不丟進回收筒"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6996
-#: ../src/file-manager/fm-directory-view.c:7119
+#: ../src/file-manager/fm-directory-view.c:7027
+#: ../src/file-manager/fm-directory-view.c:7150
 msgid "_Restore"
 msgstr "還原(_R)"
 
@@ -3938,592 +3952,554 @@ msgstr "還原(_R)"
 #.
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7006
+#: ../src/file-manager/fm-directory-view.c:7037
 msgid "Reset View to _Defaults"
 msgstr "重新設定顯示模式(_D)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7007
+#: ../src/file-manager/fm-directory-view.c:7038
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr "重設此顯示模式的排列次序及縮放倍率以配合偏好設定"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7010
+#: ../src/file-manager/fm-directory-view.c:7041
 msgid "Connect To This Server"
 msgstr "連接此伺服器"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7011
+#: ../src/file-manager/fm-directory-view.c:7042
 msgid "Make a permanent connection to this server"
 msgstr "永遠地連接到此伺服器"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7014
-#: ../src/file-manager/fm-directory-view.c:7042
-#: ../src/file-manager/fm-directory-view.c:7123
+#: ../src/file-manager/fm-directory-view.c:7045
+#: ../src/file-manager/fm-directory-view.c:7073
+#: ../src/file-manager/fm-directory-view.c:7154
 #: ../src/nautilus-places-sidebar.c:2195
 msgid "_Mount"
 msgstr "掛載(_M)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7015
+#: ../src/file-manager/fm-directory-view.c:7046
 msgid "Mount the selected volume"
 msgstr "掛載選定的檔案系統"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7019
+#: ../src/file-manager/fm-directory-view.c:7050
 msgid "Unmount the selected volume"
 msgstr "卸載選定的檔案系統"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7023
+#: ../src/file-manager/fm-directory-view.c:7054
 msgid "Eject the selected volume"
 msgstr "退出選定的檔案系統"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7026
-#: ../src/file-manager/fm-directory-view.c:7054
-#: ../src/file-manager/fm-directory-view.c:7135
+#: ../src/file-manager/fm-directory-view.c:7057
+#: ../src/file-manager/fm-directory-view.c:7085
+#: ../src/file-manager/fm-directory-view.c:7166
 #: ../src/nautilus-places-sidebar.c:2223
 msgid "_Format"
 msgstr "格式(_F)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7027
+#: ../src/file-manager/fm-directory-view.c:7058
 msgid "Format the selected volume"
 msgstr "將選定的檔案系統格式化"
 
 #. name, stock id
 #. label, accelerator
 #. Adjust start/stop items to reflect the type of the drive
-#: ../src/file-manager/fm-directory-view.c:7030
-#: ../src/file-manager/fm-directory-view.c:7058
-#: ../src/file-manager/fm-directory-view.c:7139
-#: ../src/file-manager/fm-directory-view.c:7844
-#: ../src/file-manager/fm-directory-view.c:7848
-#: ../src/file-manager/fm-directory-view.c:7936
-#: ../src/file-manager/fm-directory-view.c:7940
-#: ../src/file-manager/fm-directory-view.c:8046
-#: ../src/file-manager/fm-directory-view.c:8050
+#: ../src/file-manager/fm-directory-view.c:7061
+#: ../src/file-manager/fm-directory-view.c:7089
+#: ../src/file-manager/fm-directory-view.c:7170
+#: ../src/file-manager/fm-directory-view.c:7875
+#: ../src/file-manager/fm-directory-view.c:7879
+#: ../src/file-manager/fm-directory-view.c:7967
+#: ../src/file-manager/fm-directory-view.c:7971
+#: ../src/file-manager/fm-directory-view.c:8077
+#: ../src/file-manager/fm-directory-view.c:8081
 #: ../src/nautilus-places-sidebar.c:1410 ../src/nautilus-places-sidebar.c:2230
-#, fuzzy
-#| msgid "_Software:"
 msgid "_Start"
-msgstr "開始(_S)"
+msgstr "開啟(_S)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7031
-#, fuzzy
-#| msgid "Format the selected volume"
+#: ../src/file-manager/fm-directory-view.c:7062
 msgid "Start the selected volume"
-msgstr "掛載選定的檔案系統"
+msgstr "開啟選取的儲存區"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7034
-#: ../src/file-manager/fm-directory-view.c:7062
-#: ../src/file-manager/fm-directory-view.c:7143
-#: ../src/file-manager/fm-directory-view.c:7873
-#: ../src/file-manager/fm-directory-view.c:7965
-#: ../src/file-manager/fm-directory-view.c:8075
+#: ../src/file-manager/fm-directory-view.c:7065
+#: ../src/file-manager/fm-directory-view.c:7093
+#: ../src/file-manager/fm-directory-view.c:7174
+#: ../src/file-manager/fm-directory-view.c:7904
+#: ../src/file-manager/fm-directory-view.c:7996
+#: ../src/file-manager/fm-directory-view.c:8106
 #: ../src/nautilus-places-sidebar.c:1411 ../src/nautilus-places-sidebar.c:2237
-#: ../src/nautilus-window-menus.c:796
+#: ../src/nautilus-window-menus.c:805
 msgid "_Stop"
 msgstr "停止(_S)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7035
-#: ../src/file-manager/fm-directory-view.c:8076
-#, fuzzy
-#| msgid "Mount the selected volume"
+#: ../src/file-manager/fm-directory-view.c:7066
+#: ../src/file-manager/fm-directory-view.c:8107
 msgid "Stop the selected volume"
-msgstr "掛載選定的檔案系統"
+msgstr "關閉選取的儲存區"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7038
-#: ../src/file-manager/fm-directory-view.c:7066
-#: ../src/file-manager/fm-directory-view.c:7147
+#: ../src/file-manager/fm-directory-view.c:7069
+#: ../src/file-manager/fm-directory-view.c:7097
+#: ../src/file-manager/fm-directory-view.c:7178
 #: ../src/nautilus-places-sidebar.c:2216
 msgid "_Detect Media"
 msgstr "偵測媒體(_D)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7039
-#: ../src/file-manager/fm-directory-view.c:7067
-#: ../src/file-manager/fm-directory-view.c:7148
+#: ../src/file-manager/fm-directory-view.c:7070
+#: ../src/file-manager/fm-directory-view.c:7098
+#: ../src/file-manager/fm-directory-view.c:7179
 msgid "Detect media in the selected drive"
 msgstr "偵測在選取光碟機中的媒體"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7043
+#: ../src/file-manager/fm-directory-view.c:7074
 msgid "Mount the volume associated with the open folder"
 msgstr "掛載與所開啟資料夾相關聯的檔案系統"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7047
+#: ../src/file-manager/fm-directory-view.c:7078
 msgid "Unmount the volume associated with the open folder"
 msgstr "卸載與所開啟資料夾相關聯的檔案系統"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7051
+#: ../src/file-manager/fm-directory-view.c:7082
 msgid "Eject the volume associated with the open folder"
 msgstr "退出與所開啟資料夾相關聯的檔案系統"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7055
+#: ../src/file-manager/fm-directory-view.c:7086
 msgid "Format the volume associated with the open folder"
 msgstr "格式化與所開啟資料夾相關聯的檔案系統"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7059
-#, fuzzy
-#| msgid "Format the volume associated with the open folder"
+#: ../src/file-manager/fm-directory-view.c:7090
 msgid "Start the volume associated with the open folder"
-msgstr "掛載與所開啟資料夾相關聯的檔案系統"
+msgstr "掛載與所開啟資料夾相關聯的儲存區"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7063
-#, fuzzy
-#| msgid "Mount the volume associated with the open folder"
+#: ../src/file-manager/fm-directory-view.c:7094
 msgid "Stop the volume associated with the open folder"
-msgstr "掛載與所開啟資料夾相關聯的檔案系統"
+msgstr "卸載與所開啟資料夾相關聯的儲存區"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7070
+#: ../src/file-manager/fm-directory-view.c:7101
 msgid "Open File and Close window"
 msgstr "開啟檔案及關閉視窗"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7074
+#: ../src/file-manager/fm-directory-view.c:7105
 msgid "Sa_ve Search"
 msgstr "儲存搜尋(_V)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7075
+#: ../src/file-manager/fm-directory-view.c:7106
 msgid "Save the edited search"
 msgstr "儲存已編輯搜尋"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7078
+#: ../src/file-manager/fm-directory-view.c:7109
 msgid "Sa_ve Search As..."
 msgstr "另存搜尋為(_V)..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7079
+#: ../src/file-manager/fm-directory-view.c:7110
 msgid "Save the current search as a file"
 msgstr "另存目前的搜尋為檔案"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7085
+#: ../src/file-manager/fm-directory-view.c:7116
 msgid "Open this folder in a navigation window"
 msgstr "在導航視窗中開啟本資料夾"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7089
+#: ../src/file-manager/fm-directory-view.c:7120
 msgid "Open this folder in a new tab"
 msgstr "在新的分頁中開啟本資料夾"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7094
+#: ../src/file-manager/fm-directory-view.c:7125
 msgid "Open this folder in a folder window"
 msgstr "在資料夾視窗中開啟本資料夾"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7099
+#: ../src/file-manager/fm-directory-view.c:7130
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "以「貼上」指令來準備移動本資料夾"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7103
+#: ../src/file-manager/fm-directory-view.c:7134
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "以「貼上」指令來準備複製本資料夾"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7107
+#: ../src/file-manager/fm-directory-view.c:7138
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into this "
 "folder"
 msgstr "將剛才以「剪下」或「複製」指令選取的檔案移動或複製至這個資料夾"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7112
+#: ../src/file-manager/fm-directory-view.c:7143
 msgid "Move this folder to the Trash"
 msgstr "將本資料夾丟進回收筒"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7116
+#: ../src/file-manager/fm-directory-view.c:7147
 msgid "Delete this folder, without moving to the Trash"
 msgstr "直接刪除本資料夾，毋需丟進回收筒"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7124
+#: ../src/file-manager/fm-directory-view.c:7155
 msgid "Mount the volume associated with this folder"
 msgstr "掛載與這個資料夾相關聯的檔案系統"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7128
+#: ../src/file-manager/fm-directory-view.c:7159
 msgid "Unmount the volume associated with this folder"
 msgstr "卸載與這個資料夾相關聯的檔案系統"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7132
+#: ../src/file-manager/fm-directory-view.c:7163
 msgid "Eject the volume associated with this folder"
 msgstr "退出與這個資料夾相關聯的檔案系統"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7136
+#: ../src/file-manager/fm-directory-view.c:7167
 msgid "Format the volume associated with this folder"
 msgstr "格式化與這個資料夾相關聯的檔案系統"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7140
-#, fuzzy
-#| msgid "Format the volume associated with this folder"
+#: ../src/file-manager/fm-directory-view.c:7171
 msgid "Start the volume associated with this folder"
-msgstr "掛載與這個資料夾相關聯的檔案系統"
+msgstr "掛載與這個資料夾相關聯的儲存區"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7144
-#, fuzzy
-#| msgid "Mount the volume associated with this folder"
+#: ../src/file-manager/fm-directory-view.c:7175
 msgid "Stop the volume associated with this folder"
-msgstr "掛載與這個資料夾相關聯的檔案系統"
+msgstr "卸載與這個資料夾相關聯的儲存區"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7153
+#: ../src/file-manager/fm-directory-view.c:7184
 msgid "View or modify the properties of this folder"
 msgstr "顯示或修改這個資料夾的屬性"
 
 #. Translators: %s is a directory
-#: ../src/file-manager/fm-directory-view.c:7235
+#: ../src/file-manager/fm-directory-view.c:7266
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "執行或管理 %s 中的指令稿"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/file-manager/fm-directory-view.c:7237
+#: ../src/file-manager/fm-directory-view.c:7268
 msgid "_Scripts"
 msgstr "命令稿(_S)"
 
-#: ../src/file-manager/fm-directory-view.c:7692
+#: ../src/file-manager/fm-directory-view.c:7723
 #, c-format
 msgid "Move the open folder out of the trash to \"%s\""
 msgstr "將開啟的資料夾自回收筒移至「%s」"
 
-#: ../src/file-manager/fm-directory-view.c:7695
+#: ../src/file-manager/fm-directory-view.c:7726
 #, c-format
 msgid "Move the selected folder out of the trash to \"%s\""
 msgid_plural "Move the selected folders out of the trash to \"%s\""
 msgstr[0] "將選取的資料夾自回收筒移至「%s」"
 msgstr[1] "將選取的資料夾自回收筒移至「%s」"
 
-#: ../src/file-manager/fm-directory-view.c:7699
+#: ../src/file-manager/fm-directory-view.c:7730
 #, c-format
 msgid "Move the selected folder out of the trash"
 msgid_plural "Move the selected folders out of the trash"
 msgstr[0] "將選取的資料夾自回收筒移出"
 msgstr[1] "將選取的資料夾自回收筒移出"
 
-#: ../src/file-manager/fm-directory-view.c:7705
+#: ../src/file-manager/fm-directory-view.c:7736
 #, c-format
 msgid "Move the selected file out of the trash to \"%s\""
 msgid_plural "Move the selected files out of the trash to \"%s\""
 msgstr[0] "將選取的檔案自回收筒移至「%s」"
 msgstr[1] "將選取的檔案自回收筒移至「%s」"
 
-#: ../src/file-manager/fm-directory-view.c:7709
+#: ../src/file-manager/fm-directory-view.c:7740
 #, c-format
 msgid "Move the selected file out of the trash"
 msgid_plural "Move the selected files out of the trash"
 msgstr[0] "將選取的檔案自回收筒移出"
 msgstr[1] "將選取的檔案自回收筒移出"
 
-#: ../src/file-manager/fm-directory-view.c:7715
+#: ../src/file-manager/fm-directory-view.c:7746
 #, c-format
 msgid "Move the selected item out of the trash to \"%s\""
 msgid_plural "Move the selected items out of the trash to \"%s\""
 msgstr[0] "將選取的項目自回收筒移至「%s」"
 msgstr[1] "將選取的項目自回收筒移至「%s」"
 
-#: ../src/file-manager/fm-directory-view.c:7719
+#: ../src/file-manager/fm-directory-view.c:7750
 #, c-format
 msgid "Move the selected item out of the trash"
 msgid_plural "Move the selected items out of the trash"
 msgstr[0] "將選取的項目自回收筒移出"
 msgstr[1] "將選取的項目自回收筒移出"
 
-#: ../src/file-manager/fm-directory-view.c:7845
-#: ../src/file-manager/fm-directory-view.c:7849
-#, fuzzy
-#| msgid "Format the selected volume"
+#: ../src/file-manager/fm-directory-view.c:7876
+#: ../src/file-manager/fm-directory-view.c:7880
 msgid "Start the select drive"
-msgstr "未指定裝置"
+msgstr "開啟選擇的裝置"
 
-#: ../src/file-manager/fm-directory-view.c:7853
-#: ../src/file-manager/fm-directory-view.c:8055
+#: ../src/file-manager/fm-directory-view.c:7884
+#: ../src/file-manager/fm-directory-view.c:8086
 msgid "Connect to the selected drive"
 msgstr "連接到選取的裝置"
 
-#: ../src/file-manager/fm-directory-view.c:7856
-#: ../src/file-manager/fm-directory-view.c:7948
-#: ../src/file-manager/fm-directory-view.c:8058
+#: ../src/file-manager/fm-directory-view.c:7887
+#: ../src/file-manager/fm-directory-view.c:7979
+#: ../src/file-manager/fm-directory-view.c:8089
 msgid "_Start Multi-disk Drive"
-msgstr ""
+msgstr "開啟多磁碟裝置(_S)"
 
-#: ../src/file-manager/fm-directory-view.c:7857
-#: ../src/file-manager/fm-directory-view.c:8059
+#: ../src/file-manager/fm-directory-view.c:7888
+#: ../src/file-manager/fm-directory-view.c:8090
 msgid "Start the selected multi-disk drive"
-msgstr ""
+msgstr "開啟選取的多磁碟裝置"
 
-#: ../src/file-manager/fm-directory-view.c:7860
+#: ../src/file-manager/fm-directory-view.c:7891
 msgid "U_nlock Drive"
 msgstr "解鎖裝置(_N)"
 
-#: ../src/file-manager/fm-directory-view.c:7861
-#: ../src/file-manager/fm-directory-view.c:8063
+#: ../src/file-manager/fm-directory-view.c:7892
+#: ../src/file-manager/fm-directory-view.c:8094
 msgid "Unlock the selected drive"
 msgstr "解鎖選取的裝置"
 
-#: ../src/file-manager/fm-directory-view.c:7874
-#, fuzzy
-#| msgid "Mount the selected volume"
+#: ../src/file-manager/fm-directory-view.c:7905
 msgid "Stop the selected drive"
-msgstr "未指定裝置"
+msgstr "關閉選擇的裝置"
 
-#: ../src/file-manager/fm-directory-view.c:7877
-#: ../src/file-manager/fm-directory-view.c:7969
-#: ../src/file-manager/fm-directory-view.c:8079
+#: ../src/file-manager/fm-directory-view.c:7908
+#: ../src/file-manager/fm-directory-view.c:8000
+#: ../src/file-manager/fm-directory-view.c:8110
 #: ../src/nautilus-places-sidebar.c:1417
 msgid "_Safely Remove Drive"
 msgstr "安全的移除裝置(_S)"
 
-#: ../src/file-manager/fm-directory-view.c:7878
-#: ../src/file-manager/fm-directory-view.c:8080
+#: ../src/file-manager/fm-directory-view.c:7909
+#: ../src/file-manager/fm-directory-view.c:8111
 msgid "Safely remove the selected drive"
 msgstr "安全的移除選取的裝置"
 
-#: ../src/file-manager/fm-directory-view.c:7881
-#: ../src/file-manager/fm-directory-view.c:7973
-#: ../src/file-manager/fm-directory-view.c:8083
+#: ../src/file-manager/fm-directory-view.c:7912
+#: ../src/file-manager/fm-directory-view.c:8004
+#: ../src/file-manager/fm-directory-view.c:8114
 msgid "_Disconnect"
 msgstr "中斷(_D)"
 
-#: ../src/file-manager/fm-directory-view.c:7882
-#: ../src/file-manager/fm-directory-view.c:8084
+#: ../src/file-manager/fm-directory-view.c:7913
+#: ../src/file-manager/fm-directory-view.c:8115
 msgid "Disconnect the selected drive"
 msgstr "中斷選取的裝置"
 
-#: ../src/file-manager/fm-directory-view.c:7885
-#: ../src/file-manager/fm-directory-view.c:7977
-#: ../src/file-manager/fm-directory-view.c:8087
+#: ../src/file-manager/fm-directory-view.c:7916
+#: ../src/file-manager/fm-directory-view.c:8008
+#: ../src/file-manager/fm-directory-view.c:8118
 msgid "_Stop Multi-disk Drive"
-msgstr ""
+msgstr "關閉多磁碟裝置(_S)"
 
-#: ../src/file-manager/fm-directory-view.c:7886
-#: ../src/file-manager/fm-directory-view.c:8088
+#: ../src/file-manager/fm-directory-view.c:7917
+#: ../src/file-manager/fm-directory-view.c:8119
 msgid "Stop the selected multi-disk drive"
-msgstr ""
+msgstr "關閉選取的多磁碟裝置"
 
-#: ../src/file-manager/fm-directory-view.c:7889
-#: ../src/file-manager/fm-directory-view.c:7981
-#: ../src/file-manager/fm-directory-view.c:8091
+#: ../src/file-manager/fm-directory-view.c:7920
+#: ../src/file-manager/fm-directory-view.c:8012
+#: ../src/file-manager/fm-directory-view.c:8122
 #: ../src/nautilus-places-sidebar.c:1430
 msgid "_Lock Drive"
 msgstr "鎖定裝置(_L)"
 
-#: ../src/file-manager/fm-directory-view.c:7890
-#: ../src/file-manager/fm-directory-view.c:8092
+#: ../src/file-manager/fm-directory-view.c:7921
+#: ../src/file-manager/fm-directory-view.c:8123
 msgid "Lock the selected drive"
 msgstr "鎖定選取的裝置"
 
-#: ../src/file-manager/fm-directory-view.c:7937
-#: ../src/file-manager/fm-directory-view.c:7941
-#, fuzzy
-#| msgid "Format the volume associated with the open folder"
+#: ../src/file-manager/fm-directory-view.c:7968
+#: ../src/file-manager/fm-directory-view.c:7972
 msgid "Start the drive associated with the open folder"
-msgstr "掛載與所開啟資料夾相關聯的檔案系統"
+msgstr "掛載與所開啟資料夾相關聯的裝置"
 
-#: ../src/file-manager/fm-directory-view.c:7945
-#, fuzzy
-#| msgid "Mount the volume associated with the open folder"
+#: ../src/file-manager/fm-directory-view.c:7976
 msgid "Connect to the drive associated with the open folder"
-msgstr "掛載與所開啟資料夾相關聯的檔案系統"
+msgstr "卸載與所開啟資料夾相關聯的裝置"
 
-#: ../src/file-manager/fm-directory-view.c:7949
-#, fuzzy
-#| msgid "Format the volume associated with the open folder"
+#: ../src/file-manager/fm-directory-view.c:7980
 msgid "Start the multi-disk drive associated with the open folder"
-msgstr "格式化與所開啟資料夾相關聯的檔案系統"
+msgstr "掛載與所開啟資料夾相關聯的多磁碟裝置"
 
 #. stop() for type G_DRIVE_START_STOP_TYPE_PASSWORD is normally not used
-#: ../src/file-manager/fm-directory-view.c:7952
-#: ../src/file-manager/fm-directory-view.c:8062
+#: ../src/file-manager/fm-directory-view.c:7983
+#: ../src/file-manager/fm-directory-view.c:8093
 #: ../src/nautilus-places-sidebar.c:1429
 msgid "_Unlock Drive"
 msgstr "解鎖裝置"
 
-#: ../src/file-manager/fm-directory-view.c:7953
-#, fuzzy
-#| msgid "Unmount the volume associated with the open folder"
+#: ../src/file-manager/fm-directory-view.c:7984
 msgid "Unlock the drive associated with the open folder"
-msgstr "掛載與所開啟資料夾相關聯的檔案系統"
+msgstr "解鎖與所開啟資料夾相關聯的裝置"
 
-#: ../src/file-manager/fm-directory-view.c:7966
-#, fuzzy
-#| msgid "Mount the volume associated with the open folder"
+#: ../src/file-manager/fm-directory-view.c:7997
 msgid "_Stop the drive associated with the open folder"
-msgstr "掛載與所開啟資料夾相關聯的檔案系統"
+msgstr "卸載與所開啟資料夾相關聯的裝置(_S)"
 
-#: ../src/file-manager/fm-directory-view.c:7970
-#, fuzzy
-#| msgid "Format the volume associated with the open folder"
+#: ../src/file-manager/fm-directory-view.c:8001
 msgid "Safely remove the drive associated with the open folder"
-msgstr "格式化與所開啟資料夾相關聯的檔案系統"
+msgstr "安全的移除與所開啟資料夾相關聯的裝置"
 
-#: ../src/file-manager/fm-directory-view.c:7974
-#, fuzzy
-#| msgid "Mount the volume associated with the open folder"
+#: ../src/file-manager/fm-directory-view.c:8005
 msgid "Disconnect the drive associated with the open folder"
-msgstr "掛載與所開啟資料夾相關聯的檔案系統"
+msgstr "中斷與所開啟資料夾相關聯裝置的連線"
 
-#: ../src/file-manager/fm-directory-view.c:7978
-#, fuzzy
-#| msgid "Mount the volume associated with the open folder"
+#: ../src/file-manager/fm-directory-view.c:8009
 msgid "Stop the multi-disk drive associated with the open folder"
-msgstr "掛載與所開啟資料夾相關聯的檔案系統"
+msgstr "卸載與所開啟資料夾相關聯的多磁碟裝置"
 
-#: ../src/file-manager/fm-directory-view.c:7982
-#, fuzzy
-#| msgid "Mount the volume associated with the open folder"
+#: ../src/file-manager/fm-directory-view.c:8013
 msgid "Lock the drive associated with the open folder"
-msgstr "掛載與所開啟資料夾相關聯的檔案系統"
+msgstr "鎖定與所開啟資料夾相關聯的裝置"
 
-#: ../src/file-manager/fm-directory-view.c:8047
-#: ../src/file-manager/fm-directory-view.c:8051
-#, fuzzy
-#| msgid "Format the selected volume"
+#: ../src/file-manager/fm-directory-view.c:8078
+#: ../src/file-manager/fm-directory-view.c:8082
 msgid "Start the selected drive"
-msgstr "未指定裝置"
+msgstr "開啟選擇的裝置"
 
 #. add the "open in new window" menu item
-#: ../src/file-manager/fm-directory-view.c:8161
-#: ../src/file-manager/fm-directory-view.c:8435
+#: ../src/file-manager/fm-directory-view.c:8192
+#: ../src/file-manager/fm-directory-view.c:8484
 #: ../src/file-manager/fm-tree-view.c:1230
 #: ../src/nautilus-places-sidebar.c:2166
 msgid "Open in New _Window"
 msgstr "在新的視窗中開啟(_W)"
 
-#: ../src/file-manager/fm-directory-view.c:8163
-#: ../src/file-manager/fm-directory-view.c:8444
+#: ../src/file-manager/fm-directory-view.c:8194
+#: ../src/file-manager/fm-directory-view.c:8493
 msgid "Browse in New _Window"
 msgstr "用新的視窗瀏覽(_W)"
 
-#: ../src/file-manager/fm-directory-view.c:8171
-#: ../src/file-manager/fm-directory-view.c:8454
+#: ../src/file-manager/fm-directory-view.c:8202
+#: ../src/file-manager/fm-directory-view.c:8503
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "瀏覽資料夾(_B)"
 msgstr[1] "瀏覽資料夾(_B)"
 
-#: ../src/file-manager/fm-directory-view.c:8188
-#: ../src/file-manager/fm-directory-view.c:8484
+#: ../src/file-manager/fm-directory-view.c:8219
+#: ../src/file-manager/fm-directory-view.c:8533
 msgid "Browse in New _Tab"
 msgstr "用新的分頁瀏覽(_T)"
 
-#: ../src/file-manager/fm-directory-view.c:8237
-#: ../src/file-manager/fm-directory-view.c:8517
+#: ../src/file-manager/fm-directory-view.c:8268
+#: ../src/file-manager/fm-directory-view.c:8566
 msgid "_Delete Permanently"
 msgstr "永久刪除(_D)"
 
-#: ../src/file-manager/fm-directory-view.c:8238
+#: ../src/file-manager/fm-directory-view.c:8269
 msgid "Delete the open folder permanently"
 msgstr "永久刪除開啟的資料夾"
 
-#: ../src/file-manager/fm-directory-view.c:8242
+#: ../src/file-manager/fm-directory-view.c:8273
 msgid "Move the open folder to the Trash"
 msgstr "將開啟的資料夾丟進回收筒"
 
-#: ../src/file-manager/fm-directory-view.c:8406
+#: ../src/file-manager/fm-directory-view.c:8439
 #, c-format
 msgid "_Open with %s"
 msgstr "以 %s 開啟(_O)"
 
-#: ../src/file-manager/fm-directory-view.c:8437
+#: ../src/file-manager/fm-directory-view.c:8486
 #, c-format
 msgid "Open in %'d New _Window"
 msgid_plural "Open in %'d New _Windows"
 msgstr[0] "在 %'d 個新的視窗內開啟(_W)"
 msgstr[1] "在 %'d 個新的視窗內開啟(_W)"
 
-#: ../src/file-manager/fm-directory-view.c:8446
+#: ../src/file-manager/fm-directory-view.c:8495
 #, c-format
 msgid "Browse in %'d New _Window"
 msgid_plural "Browse in %'d New _Windows"
 msgstr[0] "用 %'d 個新的視窗瀏覽(_W)"
 msgstr[1] "用 %'d 個新的視窗瀏覽(_W)"
 
-#: ../src/file-manager/fm-directory-view.c:8477
+#: ../src/file-manager/fm-directory-view.c:8526
 #, c-format
 msgid "Open in %'d New _Tab"
 msgid_plural "Open in %'d New _Tabs"
 msgstr[0] "在 %'d 個新的分頁開啟(_T)"
 msgstr[1] "在 %'d 個新的分頁開啟(_T)"
 
-#: ../src/file-manager/fm-directory-view.c:8486
+#: ../src/file-manager/fm-directory-view.c:8535
 #, c-format
 msgid "Browse in %'d New _Tab"
 msgid_plural "Browse in %'d New _Tabs"
 msgstr[0] "用 %'d 個新的分頁瀏覽(_T)"
 msgstr[1] "用 %'d 個新的分頁瀏覽(_T)"
 
-#: ../src/file-manager/fm-directory-view.c:8518
+#: ../src/file-manager/fm-directory-view.c:8567
 msgid "Delete all selected items permanently"
 msgstr "永久刪除所有選定的項目"
 
-#: ../src/file-manager/fm-directory-view.c:9831
+#: ../src/file-manager/fm-directory-view.c:9881
 msgid "Download location?"
 msgstr "下載位置？"
 
-#: ../src/file-manager/fm-directory-view.c:9834
+#: ../src/file-manager/fm-directory-view.c:9884
 msgid "You can download it or make a link to it."
 msgstr "你可以將它下載或給它建立連結。"
 
-#: ../src/file-manager/fm-directory-view.c:9837
+#: ../src/file-manager/fm-directory-view.c:9887
 msgid "Make a _Link"
 msgstr "建立連結(_L)"
 
-#: ../src/file-manager/fm-directory-view.c:9841
+#: ../src/file-manager/fm-directory-view.c:9891
 msgid "_Download"
 msgstr "下載(_D)"
 
-#: ../src/file-manager/fm-directory-view.c:9980
-#: ../src/file-manager/fm-directory-view.c:10036
-#: ../src/file-manager/fm-directory-view.c:10141
+#: ../src/file-manager/fm-directory-view.c:10030
+#: ../src/file-manager/fm-directory-view.c:10086
+#: ../src/file-manager/fm-directory-view.c:10191
 msgid "Drag and drop is not supported."
 msgstr "不支援拖放圖示。"
 
-#: ../src/file-manager/fm-directory-view.c:9981
+#: ../src/file-manager/fm-directory-view.c:10031
 msgid "Drag and drop is only supported on local file systems."
 msgstr "拖放圖示只在本機的檔案系統之間適用。"
 
-#: ../src/file-manager/fm-directory-view.c:10037
-#: ../src/file-manager/fm-directory-view.c:10142
+#: ../src/file-manager/fm-directory-view.c:10087
+#: ../src/file-manager/fm-directory-view.c:10192
 msgid "An invalid drag type was used."
 msgstr "拖曳方式不正確。"
 
 #. Translator: This is the filename used for when you dnd text to a directory
-#: ../src/file-manager/fm-directory-view.c:10209
+#: ../src/file-manager/fm-directory-view.c:10259
 msgid "dropped text.txt"
 msgstr "拖放的 text.txt"
 
@@ -4649,7 +4625,7 @@ msgid "by _Name"
 msgstr "以名稱(_N)"
 
 #: ../src/file-manager/fm-icon-view.c:124
-#: ../src/file-manager/fm-icon-view.c:1527
+#: ../src/file-manager/fm-icon-view.c:1535
 msgid "Keep icons sorted by name in rows"
 msgstr "以名稱排列圖示"
 
@@ -4658,7 +4634,7 @@ msgid "by _Size"
 msgstr "根據大小(_S)"
 
 #: ../src/file-manager/fm-icon-view.c:131
-#: ../src/file-manager/fm-icon-view.c:1531
+#: ../src/file-manager/fm-icon-view.c:1539
 msgid "Keep icons sorted by size in rows"
 msgstr "以大小排列圖示"
 
@@ -4667,7 +4643,7 @@ msgid "by _Type"
 msgstr "以檔案類型(_T)"
 
 #: ../src/file-manager/fm-icon-view.c:138
-#: ../src/file-manager/fm-icon-view.c:1535
+#: ../src/file-manager/fm-icon-view.c:1543
 msgid "Keep icons sorted by type in rows"
 msgstr "以檔案類型排列圖示"
 
@@ -4676,7 +4652,7 @@ msgid "by Modification _Date"
 msgstr "以修改日期(_D)"
 
 #: ../src/file-manager/fm-icon-view.c:145
-#: ../src/file-manager/fm-icon-view.c:1539
+#: ../src/file-manager/fm-icon-view.c:1547
 msgid "Keep icons sorted by modification date in rows"
 msgstr "以修改日期排列圖示"
 
@@ -4685,150 +4661,150 @@ msgid "by _Emblems"
 msgstr "以圖章(_E)"
 
 #: ../src/file-manager/fm-icon-view.c:152
-#: ../src/file-manager/fm-icon-view.c:1543
+#: ../src/file-manager/fm-icon-view.c:1551
 msgid "Keep icons sorted by emblems in rows"
 msgstr "以圖章的次序排列圖示"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-icon-view.c:1487
+#: ../src/file-manager/fm-icon-view.c:1495
 msgid "Arran_ge Items"
 msgstr "項目排列方式(_G)"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1489
+#: ../src/file-manager/fm-icon-view.c:1497
 msgid "Stretc_h Icon..."
 msgstr "伸展圖示(_H)..."
 
 #. tooltip
-#: ../src/file-manager/fm-icon-view.c:1490
+#: ../src/file-manager/fm-icon-view.c:1498
 msgid "Make the selected icon stretchable"
 msgstr "令已選取的圖示可以伸展"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1493
-#: ../src/file-manager/fm-icon-view.c:1663
+#: ../src/file-manager/fm-icon-view.c:1501
+#: ../src/file-manager/fm-icon-view.c:1671
 msgid "Restore Icons' Original Si_zes"
 msgstr "還原圖示大小(_Z)"
 
 #. tooltip
-#: ../src/file-manager/fm-icon-view.c:1494
+#: ../src/file-manager/fm-icon-view.c:1502
 msgid "Restore each selected icon to its original size"
 msgstr "還原所有選定圖示的大小"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1497
+#: ../src/file-manager/fm-icon-view.c:1505
 msgid "Clean _Up by Name"
 msgstr "以名稱排列桌面圖示(_U)"
 
 #. tooltip
-#: ../src/file-manager/fm-icon-view.c:1498
+#: ../src/file-manager/fm-icon-view.c:1506
 msgid "Reposition icons to better fit in the window and avoid overlapping"
 msgstr "重新排列圖示以符合視窗及避免重疊"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1504
+#: ../src/file-manager/fm-icon-view.c:1512
 msgid "Compact _Layout"
 msgstr "緊密排列(_L)"
 
 #. tooltip
-#: ../src/file-manager/fm-icon-view.c:1505
+#: ../src/file-manager/fm-icon-view.c:1513
 msgid "Toggle using a tighter layout scheme"
 msgstr "切換是否使用較緊密的排列方式"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1509
+#: ../src/file-manager/fm-icon-view.c:1517
 msgid "Re_versed Order"
 msgstr "相反次序(_V)"
 
 #. tooltip
-#: ../src/file-manager/fm-icon-view.c:1510
+#: ../src/file-manager/fm-icon-view.c:1518
 msgid "Display icons in the opposite order"
 msgstr "以相反次序顯示圖示"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1514
+#: ../src/file-manager/fm-icon-view.c:1522
 msgid "_Keep Aligned"
 msgstr "保持整齊排列(_K)"
 
 #. tooltip
-#: ../src/file-manager/fm-icon-view.c:1515
+#: ../src/file-manager/fm-icon-view.c:1523
 msgid "Keep icons lined up on a grid"
 msgstr "令圖示貼齊格線"
 
-#: ../src/file-manager/fm-icon-view.c:1522
+#: ../src/file-manager/fm-icon-view.c:1530
 msgid "_Manually"
 msgstr "手動(_M)"
 
-#: ../src/file-manager/fm-icon-view.c:1523
+#: ../src/file-manager/fm-icon-view.c:1531
 msgid "Leave icons wherever they are dropped"
 msgstr "拖放圖示後不自動編排圖示的位置"
 
-#: ../src/file-manager/fm-icon-view.c:1526
+#: ../src/file-manager/fm-icon-view.c:1534
 msgid "By _Name"
 msgstr "根據名稱(_N)"
 
-#: ../src/file-manager/fm-icon-view.c:1530
+#: ../src/file-manager/fm-icon-view.c:1538
 msgid "By _Size"
 msgstr "以大小(_S)"
 
-#: ../src/file-manager/fm-icon-view.c:1534
+#: ../src/file-manager/fm-icon-view.c:1542
 msgid "By _Type"
 msgstr "以類型(_T)"
 
-#: ../src/file-manager/fm-icon-view.c:1538
+#: ../src/file-manager/fm-icon-view.c:1546
 msgid "By Modification _Date"
 msgstr "以修改日期(_D)"
 
-#: ../src/file-manager/fm-icon-view.c:1542
+#: ../src/file-manager/fm-icon-view.c:1550
 msgid "By _Emblems"
 msgstr "以圖章(_E)"
 
-#: ../src/file-manager/fm-icon-view.c:1664
+#: ../src/file-manager/fm-icon-view.c:1672
 msgid "Restore Icon's Original Si_ze"
 msgstr "還原圖示大小(_Z)"
 
-#: ../src/file-manager/fm-icon-view.c:2086
+#: ../src/file-manager/fm-icon-view.c:2094
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "目標為“%s”"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-icon-view.c:3047
+#: ../src/file-manager/fm-icon-view.c:3055
 msgid "_Icons"
 msgstr "圖示(_I)"
 
-#: ../src/file-manager/fm-icon-view.c:3048
+#: ../src/file-manager/fm-icon-view.c:3056
 msgid "The icon view encountered an error."
 msgstr "圖示顯示模式發生錯誤。"
 
-#: ../src/file-manager/fm-icon-view.c:3049
+#: ../src/file-manager/fm-icon-view.c:3057
 msgid "The icon view encountered an error while starting up."
 msgstr "啟動圖示顯示模式時發生錯誤。"
 
-#: ../src/file-manager/fm-icon-view.c:3050
+#: ../src/file-manager/fm-icon-view.c:3058
 msgid "Display this location with the icon view."
 msgstr "以圖示顯示模式來顯示本位置。"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-icon-view.c:3061
+#: ../src/file-manager/fm-icon-view.c:3069
 msgid "_Compact"
 msgstr "精簡(_C)"
 
-#: ../src/file-manager/fm-icon-view.c:3062
+#: ../src/file-manager/fm-icon-view.c:3070
 msgid "The compact view encountered an error."
 msgstr "精簡顯示模式發生錯誤。"
 
-#: ../src/file-manager/fm-icon-view.c:3063
+#: ../src/file-manager/fm-icon-view.c:3071
 msgid "The compact view encountered an error while starting up."
 msgstr "啟動精簡顯示模式時發生錯誤。"
 
-#: ../src/file-manager/fm-icon-view.c:3064
+#: ../src/file-manager/fm-icon-view.c:3072
 msgid "Display this location with the compact view."
 msgstr "以精簡顯示模式來顯示本位置。"
 
@@ -5244,7 +5220,7 @@ msgid ""
 "such that Nautilus can create them."
 msgstr "執行 Nautilus 之前，請自行建立這些資料夾，或是設定正確的權限使 Nautilus 可以建立這些資料夾。"
 
-#: ../src/nautilus-application.c:1485 ../src/nautilus-places-sidebar.c:1775
+#: ../src/nautilus-application.c:1502 ../src/nautilus-places-sidebar.c:1775
 #: ../src/nautilus-places-sidebar.c:1798 ../src/nautilus-places-sidebar.c:1821
 #, c-format
 msgid "Unable to eject %s"
@@ -5285,7 +5261,7 @@ msgstr ""
 
 #: ../src/nautilus-bookmarks-window.c:158
 #: ../src/nautilus-file-management-properties.c:209
-#: ../src/nautilus-property-browser.c:1569 ../src/nautilus-window-menus.c:575
+#: ../src/nautilus-property-browser.c:1569 ../src/nautilus-window-menus.c:584
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -5363,59 +5339,59 @@ msgstr "WebDAV (HTTP)"
 msgid "Secure WebDAV (HTTPS)"
 msgstr "Secure WebDAV (HTTPS)"
 
-#: ../src/nautilus-connect-server-dialog.c:193
+#: ../src/nautilus-connect-server-dialog.c:185
 msgid "Cannot Connect to Server. You must enter a name for the server."
 msgstr "不能連接伺服器。你必須輸入伺服器名稱。"
 
-#: ../src/nautilus-connect-server-dialog.c:194
+#: ../src/nautilus-connect-server-dialog.c:186
 msgid "Please enter a name and try again."
 msgstr "請輸入名稱並再試一次。"
 
-#: ../src/nautilus-connect-server-dialog.c:424
+#: ../src/nautilus-connect-server-dialog.c:427
 msgid "_Location (URI):"
 msgstr "位置(_URI):"
 
-#: ../src/nautilus-connect-server-dialog.c:446
+#: ../src/nautilus-connect-server-dialog.c:449
 msgid "_Server:"
 msgstr "伺服器(_S):"
 
-#: ../src/nautilus-connect-server-dialog.c:465
+#: ../src/nautilus-connect-server-dialog.c:468
 msgid "Optional information:"
 msgstr "選擇性的資訊："
 
-#: ../src/nautilus-connect-server-dialog.c:477
+#: ../src/nautilus-connect-server-dialog.c:480
 msgid "_Share:"
 msgstr "分享(_S):"
 
-#: ../src/nautilus-connect-server-dialog.c:498
+#: ../src/nautilus-connect-server-dialog.c:501
 msgid "_Port:"
 msgstr "連接埠(_P):"
 
-#: ../src/nautilus-connect-server-dialog.c:538
+#: ../src/nautilus-connect-server-dialog.c:541
 msgid "_User Name:"
 msgstr "使用者名稱(_U):"
 
-#: ../src/nautilus-connect-server-dialog.c:559
+#: ../src/nautilus-connect-server-dialog.c:562
 msgid "_Domain Name:"
 msgstr "網域名稱(_D):"
 
-#: ../src/nautilus-connect-server-dialog.c:591
+#: ../src/nautilus-connect-server-dialog.c:594
 msgid "Bookmark _name:"
 msgstr "書籤名稱(_N):"
 
-#: ../src/nautilus-connect-server-dialog.c:787
+#: ../src/nautilus-connect-server-dialog.c:790
 msgid "Connect to Server"
 msgstr "連接伺服器"
 
-#: ../src/nautilus-connect-server-dialog.c:804
+#: ../src/nautilus-connect-server-dialog.c:807
 msgid "Service _type:"
 msgstr "服務類型(_T):"
 
-#: ../src/nautilus-connect-server-dialog.c:900
+#: ../src/nautilus-connect-server-dialog.c:903
 msgid "Add _bookmark"
 msgstr "加入書籤(_B)"
 
-#: ../src/nautilus-connect-server-dialog.c:938
+#: ../src/nautilus-connect-server-dialog.c:941
 msgid "C_onnect"
 msgstr "連線(_O)"
 
@@ -5998,214 +5974,214 @@ msgid "The history location doesn't exist."
 msgstr "瀏覽紀錄位置不存在。"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:770
+#: ../src/nautilus-navigation-window-menus.c:790
 msgid "_Go"
 msgstr "前往(_G)"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:771
+#: ../src/nautilus-navigation-window-menus.c:791
 msgid "_Bookmarks"
 msgstr "書籤(_B)"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:772
+#: ../src/nautilus-navigation-window-menus.c:792
 msgid "_Tabs"
 msgstr "分頁(_T)"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:773
+#: ../src/nautilus-navigation-window-menus.c:793
 msgid "New _Window"
 msgstr "開新視窗(_W)"
 
-#: ../src/nautilus-navigation-window-menus.c:774
+#: ../src/nautilus-navigation-window-menus.c:794
 msgid "Open another Nautilus window for the displayed location"
 msgstr "在已顯示的位置中開啟另一個 Nautilus 視窗"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:776
+#: ../src/nautilus-navigation-window-menus.c:796
 msgid "New _Tab"
 msgstr "新增分頁(_T)"
 
-#: ../src/nautilus-navigation-window-menus.c:777
+#: ../src/nautilus-navigation-window-menus.c:797
 msgid "Open another tab for the displayed location"
 msgstr "在已顯示的位置中開啟另一個分頁"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:779
+#: ../src/nautilus-navigation-window-menus.c:799
 msgid "Open Folder W_indow"
 msgstr "開啟資料夾視窗(_I)"
 
-#: ../src/nautilus-navigation-window-menus.c:780
+#: ../src/nautilus-navigation-window-menus.c:800
 msgid "Open a folder window for the displayed location"
 msgstr "在已顯示的位置中開啟另一個資料夾視窗"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:782
+#: ../src/nautilus-navigation-window-menus.c:802
 msgid "Close _All Windows"
 msgstr "關閉所有視窗(_A)"
 
-#: ../src/nautilus-navigation-window-menus.c:783
+#: ../src/nautilus-navigation-window-menus.c:803
 msgid "Close all Navigation windows"
 msgstr "關閉所有導航視窗"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:785
+#: ../src/nautilus-navigation-window-menus.c:805
 msgid "_Location..."
 msgstr "位置(_L)..."
 
-#: ../src/nautilus-navigation-window-menus.c:786
-#: ../src/nautilus-spatial-window.c:925
+#: ../src/nautilus-navigation-window-menus.c:806
+#: ../src/nautilus-spatial-window.c:926
 msgid "Specify a location to open"
 msgstr "指定一個位置來開啟"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:788
+#: ../src/nautilus-navigation-window-menus.c:808
 msgid "Clea_r History"
 msgstr "清除紀錄(_R)"
 
-#: ../src/nautilus-navigation-window-menus.c:789
+#: ../src/nautilus-navigation-window-menus.c:809
 msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "清除「前往」選單及「上一頁/下一頁」清單的內容"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:791
-#: ../src/nautilus-spatial-window.c:933
+#: ../src/nautilus-navigation-window-menus.c:811
+#: ../src/nautilus-spatial-window.c:934
 msgid "_Add Bookmark"
 msgstr "加入書籤(_A)"
 
-#: ../src/nautilus-navigation-window-menus.c:792
-#: ../src/nautilus-spatial-window.c:934
+#: ../src/nautilus-navigation-window-menus.c:812
+#: ../src/nautilus-spatial-window.c:935
 msgid "Add a bookmark for the current location to this menu"
 msgstr "將目前的位置加入書籤中"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:794
-#: ../src/nautilus-spatial-window.c:936
+#: ../src/nautilus-navigation-window-menus.c:814
+#: ../src/nautilus-spatial-window.c:937
 msgid "_Edit Bookmarks..."
 msgstr "編輯書籤(_E)..."
 
-#: ../src/nautilus-navigation-window-menus.c:795
-#: ../src/nautilus-spatial-window.c:937
+#: ../src/nautilus-navigation-window-menus.c:815
+#: ../src/nautilus-spatial-window.c:938
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "顯示可修改書籤的視窗"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:797
-#: ../src/nautilus-spatial-window.c:939
+#: ../src/nautilus-navigation-window-menus.c:817
+#: ../src/nautilus-spatial-window.c:940
 msgid "_Search for Files..."
 msgstr "搜尋檔案(_S)..."
 
-#: ../src/nautilus-navigation-window-menus.c:798
-#: ../src/nautilus-spatial-window.c:940
+#: ../src/nautilus-navigation-window-menus.c:818
+#: ../src/nautilus-spatial-window.c:941
 msgid "Locate documents and folders on this computer by name or content"
 msgstr "以名稱或內容尋找此電腦中的文件及資料夾"
 
-#: ../src/nautilus-navigation-window-menus.c:801
+#: ../src/nautilus-navigation-window-menus.c:821
 msgid "_Previous Tab"
 msgstr "上一個分頁(_P)"
 
-#: ../src/nautilus-navigation-window-menus.c:802
+#: ../src/nautilus-navigation-window-menus.c:822
 msgid "Activate previous tab"
 msgstr "使用上一個分頁"
 
-#: ../src/nautilus-navigation-window-menus.c:804
+#: ../src/nautilus-navigation-window-menus.c:824
 msgid "_Next Tab"
 msgstr "下一個分頁(_N)"
 
-#: ../src/nautilus-navigation-window-menus.c:805
+#: ../src/nautilus-navigation-window-menus.c:825
 msgid "Activate next tab"
 msgstr "使用下一個分頁"
 
-#: ../src/nautilus-navigation-window-menus.c:807
+#: ../src/nautilus-navigation-window-menus.c:827
 #: ../src/nautilus-navigation-window.c:273
 msgid "Move Tab _Left"
 msgstr "將分頁左移(_L)"
 
-#: ../src/nautilus-navigation-window-menus.c:808
+#: ../src/nautilus-navigation-window-menus.c:828
 msgid "Move current tab to left"
 msgstr "將目前的分頁向左移動"
 
-#: ../src/nautilus-navigation-window-menus.c:810
+#: ../src/nautilus-navigation-window-menus.c:830
 #: ../src/nautilus-navigation-window.c:281
 msgid "Move Tab _Right"
 msgstr "將分頁右移(_R)"
 
-#: ../src/nautilus-navigation-window-menus.c:811
+#: ../src/nautilus-navigation-window-menus.c:831
 msgid "Move current tab to right"
 msgstr "將目前的分頁向右移動"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:818
+#: ../src/nautilus-navigation-window-menus.c:838
 msgid "_Main Toolbar"
 msgstr "主工具列(_M)"
 
 #. tooltip
-#: ../src/nautilus-navigation-window-menus.c:819
+#: ../src/nautilus-navigation-window-menus.c:839
 msgid "Change the visibility of this window's main toolbar"
 msgstr "顯示或隱藏本視窗的主工具列"
 
 #. is_active
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:823
+#: ../src/nautilus-navigation-window-menus.c:843
 msgid "_Side Pane"
 msgstr "側面窗格(_S)"
 
 #. tooltip
-#: ../src/nautilus-navigation-window-menus.c:824
+#: ../src/nautilus-navigation-window-menus.c:844
 msgid "Change the visibility of this window's side pane"
 msgstr "顯示或隱藏本視窗的側面窗格"
 
 #. is_active
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:828
+#: ../src/nautilus-navigation-window-menus.c:848
 msgid "Location _Bar"
 msgstr "位置列(_B)"
 
 #. tooltip
-#: ../src/nautilus-navigation-window-menus.c:829
+#: ../src/nautilus-navigation-window-menus.c:849
 msgid "Change the visibility of this window's location bar"
 msgstr "顯示或隱藏本視窗的位置列"
 
 #. is_active
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:833
+#: ../src/nautilus-navigation-window-menus.c:853
 msgid "St_atusbar"
 msgstr "狀態列(_A)"
 
 #. tooltip
-#: ../src/nautilus-navigation-window-menus.c:834
+#: ../src/nautilus-navigation-window-menus.c:854
 msgid "Change the visibility of this window's statusbar"
 msgstr "顯示或隱藏本視窗的狀態列"
 
-#: ../src/nautilus-navigation-window-menus.c:858
+#: ../src/nautilus-navigation-window-menus.c:878
 msgid "_Back"
 msgstr "上一頁(_B)"
 
-#: ../src/nautilus-navigation-window-menus.c:860
+#: ../src/nautilus-navigation-window-menus.c:880
 msgid "Go to the previous visited location"
 msgstr "回到上一個瀏覽過的位置"
 
-#: ../src/nautilus-navigation-window-menus.c:861
+#: ../src/nautilus-navigation-window-menus.c:881
 msgid "Back history"
 msgstr "上一頁紀錄"
 
-#: ../src/nautilus-navigation-window-menus.c:875
+#: ../src/nautilus-navigation-window-menus.c:895
 msgid "_Forward"
 msgstr "下一頁(_F)"
 
-#: ../src/nautilus-navigation-window-menus.c:877
+#: ../src/nautilus-navigation-window-menus.c:897
 msgid "Go to the next visited location"
 msgstr "前住下一個瀏覽過的位置"
 
-#: ../src/nautilus-navigation-window-menus.c:878
+#: ../src/nautilus-navigation-window-menus.c:898
 msgid "Forward history"
 msgstr "上一頁紀錄"
 
-#: ../src/nautilus-navigation-window-menus.c:892
+#: ../src/nautilus-navigation-window-menus.c:912
 msgid "_Search"
 msgstr "搜尋(_S)"
 
@@ -6253,17 +6229,16 @@ msgstr "中斷裝置(_D)"
 
 #: ../src/nautilus-places-sidebar.c:1424
 msgid "_Start Multi-disk Device"
-msgstr ""
+msgstr "開啟多磁碟裝置(_S)"
 
 #: ../src/nautilus-places-sidebar.c:1425
 msgid "_Stop Multi-disk Device"
-msgstr ""
+msgstr "關閉多磁碟裝置(_S)"
 
 #: ../src/nautilus-places-sidebar.c:1505 ../src/nautilus-places-sidebar.c:2010
-#, fuzzy, c-format
-#| msgid "Unable to mount %s"
+#, c-format
 msgid "Unable to start %s"
-msgstr "無法啟動新的顯示畫面"
+msgstr "無法開啟 %s"
 
 #: ../src/nautilus-places-sidebar.c:1958
 #, c-format
@@ -6271,10 +6246,9 @@ msgid "Unable to poll %s for media changes"
 msgstr "無法監測 %s 的媒體更改"
 
 #: ../src/nautilus-places-sidebar.c:2061
-#, fuzzy, c-format
-#| msgid "Unable to mount %s"
+#, c-format
 msgid "Unable to stop %s"
-msgstr "無法退出 %V"
+msgstr "無法關閉 %s"
 
 #: ../src/nautilus-places-sidebar.c:2174
 msgid "Remove"
@@ -6559,36 +6533,36 @@ msgid "Close the side pane"
 msgstr "關閉側面窗格"
 
 #. Set initial window title
-#: ../src/nautilus-spatial-window.c:395 ../src/nautilus-window-menus.c:517
+#: ../src/nautilus-spatial-window.c:395 ../src/nautilus-window-menus.c:526
 #: ../src/nautilus-window.c:154
 msgid "Nautilus"
 msgstr "Nautilus"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:923
+#: ../src/nautilus-spatial-window.c:924
 msgid "_Places"
 msgstr "位置(_P)"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:924
+#: ../src/nautilus-spatial-window.c:925
 msgid "Open _Location..."
 msgstr "開啟位置(_L)..."
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:927
+#: ../src/nautilus-spatial-window.c:928
 msgid "Close P_arent Folders"
 msgstr "關閉上一層的資料夾(_A)"
 
-#: ../src/nautilus-spatial-window.c:928
+#: ../src/nautilus-spatial-window.c:929
 msgid "Close this folder's parents"
 msgstr "關閉資料夾的上一層"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:930
+#: ../src/nautilus-spatial-window.c:931
 msgid "Clos_e All Folders"
 msgstr "關閉所有資料夾(_E)"
 
-#: ../src/nautilus-spatial-window.c:931
+#: ../src/nautilus-spatial-window.c:932
 msgid "Close all folder windows"
 msgstr "關閉所有資料夾視窗"
 
@@ -6684,11 +6658,11 @@ msgstr ""
 "錯誤：%s\n"
 "請選擇另一種顯示模式並再嘗試。"
 
-#: ../src/nautilus-window-menus.c:181
+#: ../src/nautilus-window-menus.c:183
 msgid "Go to the location specified by this bookmark"
 msgstr "前往該書籤指定的位置"
 
-#: ../src/nautilus-window-menus.c:499
+#: ../src/nautilus-window-menus.c:508
 msgid ""
 "Nautilus is free software; you can redistribute it and/or modify it under "
 "the terms of the GNU General Public License as published by the Free "
@@ -6699,7 +6673,7 @@ msgstr ""
 "條款規定，就本程式再為散佈與／或修改；無論你根據據的是本授權的第二版或\n"
 "（你自行選擇的）任一日後發行的版本。"
 
-#: ../src/nautilus-window-menus.c:503
+#: ../src/nautilus-window-menus.c:512
 msgid ""
 "Nautilus is distributed in the hope that it will be useful, but WITHOUT ANY "
 "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
@@ -6709,20 +6683,20 @@ msgstr ""
 "Nautilus 係基於使用目的而加以散佈，然而不負任何擔保責任；亦無對適售性\n"
 "或特定目的適用性所為的默示性擔保。詳情請參照 GNU 通用公共授權。"
 
-#: ../src/nautilus-window-menus.c:507
+#: ../src/nautilus-window-menus.c:516
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "Nautilus; if not, write to the Free Software Foundation, Inc., 51 Franklin "
 "Street, Fifth Floor, Boston, MA 02110-1301 USA"
 msgstr "你應該已經和程式一起收到一份 GNU 通用公共許可證的副本。如果還沒有，寫信給：  the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA"
 
-#: ../src/nautilus-window-menus.c:519
+#: ../src/nautilus-window-menus.c:528
 msgid ""
 "Nautilus lets you organize files and folders, both on your computer and "
 "online."
 msgstr "Nautilus 讓你組織檔案和資料夾，不管是在你的電腦或是在網絡上。"
 
-#: ../src/nautilus-window-menus.c:522
+#: ../src/nautilus-window-menus.c:531
 msgid "Copyright © 1999-2009 The Nautilus authors"
 msgstr "版權所有 © 1999-2009 Nautilus 作者羣"
 
@@ -6730,7 +6704,7 @@ msgstr "版權所有 © 1999-2009 Nautilus 作者羣"
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window-menus.c:532
+#: ../src/nautilus-window-menus.c:541
 msgid "translator-credits"
 msgstr ""
 "如對翻譯有任何意見，請送一封電子郵件給\n"
@@ -6741,223 +6715,223 @@ msgstr ""
 "Abel Cheung <abel@oaka.org>, 2001-2004\n"
 "Gong Yi LIAO <granziliao@sinamail.com>, 2000"
 
-#: ../src/nautilus-window-menus.c:535
+#: ../src/nautilus-window-menus.c:544
 msgid "Nautilus Web Site"
 msgstr "Nautilus 網站"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:770
+#: ../src/nautilus-window-menus.c:779
 msgid "_File"
 msgstr "檔案(_F)"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:771
+#: ../src/nautilus-window-menus.c:780
 msgid "_Edit"
 msgstr "編輯(_E)"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:772
+#: ../src/nautilus-window-menus.c:781
 msgid "_View"
 msgstr "檢視(_V)"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:773
+#: ../src/nautilus-window-menus.c:782
 msgid "_Help"
 msgstr "求助(_H)"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:775
+#: ../src/nautilus-window-menus.c:784
 msgid "_Close"
 msgstr "關閉(_C)"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:776
+#: ../src/nautilus-window-menus.c:785
 msgid "Close this folder"
 msgstr "關閉本資料夾"
 
-#: ../src/nautilus-window-menus.c:779
+#: ../src/nautilus-window-menus.c:788
 msgid "_Backgrounds and Emblems..."
 msgstr "背景及圖章(_B)..."
 
-#: ../src/nautilus-window-menus.c:780
+#: ../src/nautilus-window-menus.c:789
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
 msgstr "顯示自選外觀時所用的圖樣、色彩及圖章"
 
-#: ../src/nautilus-window-menus.c:783
+#: ../src/nautilus-window-menus.c:792
 msgid "Prefere_nces"
 msgstr "偏好設定(_N)"
 
-#: ../src/nautilus-window-menus.c:784
+#: ../src/nautilus-window-menus.c:793
 msgid "Edit Nautilus preferences"
 msgstr "修改 Nautilus 偏好設定"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:786
+#: ../src/nautilus-window-menus.c:795
 msgid "_Undo"
 msgstr "復原(_U)"
 
-#: ../src/nautilus-window-menus.c:787
+#: ../src/nautilus-window-menus.c:796
 msgid "Undo the last text change"
 msgstr "復原上一次文字修改"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:789
+#: ../src/nautilus-window-menus.c:798
 msgid "Open _Parent"
 msgstr "開啟上一層(_P)"
 
-#: ../src/nautilus-window-menus.c:790
+#: ../src/nautilus-window-menus.c:799
 msgid "Open the parent folder"
 msgstr "開啟上層資料夾"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:797
+#: ../src/nautilus-window-menus.c:806
 msgid "Stop loading the current location"
 msgstr "停止載入目前的位置"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:800
+#: ../src/nautilus-window-menus.c:809
 msgid "_Reload"
 msgstr "重新載入(_R)"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:801
+#: ../src/nautilus-window-menus.c:810
 msgid "Reload the current location"
 msgstr "重新載入目前的位置"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:804
+#: ../src/nautilus-window-menus.c:813
 msgid "_Contents"
 msgstr "內容(_C)"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:805
+#: ../src/nautilus-window-menus.c:814
 msgid "Display Nautilus help"
 msgstr "顯示 Nautilus 說明文件"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:808
+#: ../src/nautilus-window-menus.c:817
 msgid "_About"
 msgstr "關於(_A)"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:809
+#: ../src/nautilus-window-menus.c:818
 msgid "Display credits for the creators of Nautilus"
 msgstr "顯示鳴謝 Nautilus 開發者的清單"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:812
+#: ../src/nautilus-window-menus.c:821
 msgid "Zoom _In"
 msgstr "拉近(_I)"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:813 ../src/nautilus-zoom-control.c:91
+#: ../src/nautilus-window-menus.c:822 ../src/nautilus-zoom-control.c:91
 #: ../src/nautilus-zoom-control.c:345
 msgid "Increase the view size"
 msgstr "增加檢視的大小"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:824
+#: ../src/nautilus-window-menus.c:833
 msgid "Zoom _Out"
 msgstr "拉遠(_O)"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:825 ../src/nautilus-zoom-control.c:92
+#: ../src/nautilus-window-menus.c:834 ../src/nautilus-zoom-control.c:92
 #: ../src/nautilus-zoom-control.c:294
 msgid "Decrease the view size"
 msgstr "減少檢視的大小"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:832
+#: ../src/nautilus-window-menus.c:841
 msgid "Normal Si_ze"
 msgstr "原來大小(_Z)"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:833 ../src/nautilus-zoom-control.c:93
+#: ../src/nautilus-window-menus.c:842 ../src/nautilus-zoom-control.c:93
 #: ../src/nautilus-zoom-control.c:307
 msgid "Use the normal view size"
 msgstr "使用一般的檢視大小"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:836
+#: ../src/nautilus-window-menus.c:845
 msgid "Connect to _Server..."
 msgstr "連接伺服器(_S)..."
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:837
+#: ../src/nautilus-window-menus.c:846
 msgid "Connect to a remote computer or shared disk"
 msgstr "連接遠端電腦或磁碟共享"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:840
+#: ../src/nautilus-window-menus.c:849
 msgid "_Home Folder"
 msgstr "個人資料夾(_H)"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:844
+#: ../src/nautilus-window-menus.c:853
 msgid "_Computer"
 msgstr "電腦(_C)"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:848
+#: ../src/nautilus-window-menus.c:857
 msgid "_Network"
 msgstr "網絡(_N)"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:849 ../src/network-scheme.desktop.in.h:1
+#: ../src/nautilus-window-menus.c:858 ../src/network-scheme.desktop.in.h:1
 msgid "Browse bookmarked and local network locations"
 msgstr "瀏覽已記錄及本地網絡的位置"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:852
+#: ../src/nautilus-window-menus.c:861
 msgid "T_emplates"
 msgstr "樣板(_E)"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:853
+#: ../src/nautilus-window-menus.c:862
 msgid "Open your personal templates folder"
 msgstr "開啟個人樣板資料夾"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:856
+#: ../src/nautilus-window-menus.c:865
 msgid "_Trash"
 msgstr "回收筒(_T)"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:857
+#: ../src/nautilus-window-menus.c:866
 msgid "Open your personal trash folder"
 msgstr "開啟個人回收筒資料夾"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:863
+#: ../src/nautilus-window-menus.c:872
 msgid "Show _Hidden Files"
 msgstr "顯示隱藏檔(_H)"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:864
+#: ../src/nautilus-window-menus.c:873
 msgid "Toggle the display of hidden files in the current window"
 msgstr "在目前視窗中切換隱藏檔的顯示"
 
-#: ../src/nautilus-window-menus.c:894
+#: ../src/nautilus-window-menus.c:903
 msgid "_Up"
 msgstr "上層(_U)"
 
-#: ../src/nautilus-window-menus.c:897
+#: ../src/nautilus-window-menus.c:906
 msgid "_Home"
 msgstr "個人資料夾(_H)"
 
@@ -7520,9 +7494,6 @@ msgstr "設定本顯示模式的縮放倍率"
 #~ msgid "Moving"
 #~ msgstr "正在移動"
 
-#~ msgid "Moving file:"
-#~ msgstr "正在移動檔案："
-
 #~ msgid "Finishing Move..."
 #~ msgstr "完成移動..."
 
@@ -7537,9 +7508,6 @@ msgstr "設定本顯示模式的縮放倍率"
 
 #~ msgid "Finishing Creating Links..."
 #~ msgstr "完成建立連結..."
-
-#~ msgid "Copying file:"
-#~ msgstr "正在複製檔案："
 
 #~ msgid "Preparing To Copy..."
 #~ msgstr "準備複製..."
