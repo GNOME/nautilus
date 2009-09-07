@@ -326,7 +326,7 @@ main (int argc, char *argv[])
 	gboolean autostart_mode;
 	const char *autostart_id;
 	gchar *geometry;
-	const gchar **remaining;
+	gchar **remaining;
 	gboolean perform_self_check;
 	NautilusApplication *application;
 	GOptionContext *context;
@@ -516,6 +516,7 @@ main (int argc, char *argv[])
 			}
 			g_ptr_array_add (uris_array, NULL);
 			uris = (char **)g_ptr_array_free (uris_array, FALSE);
+			g_strfreev (remaining);
 		}
 
 		
