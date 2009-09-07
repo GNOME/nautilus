@@ -150,6 +150,7 @@ static gboolean update_info_and_name                         (NautilusFile      
 static const char * nautilus_file_peek_display_name (NautilusFile *file);
 static const char * nautilus_file_peek_display_name_collation_key (NautilusFile *file);
 static void file_mount_unmounted (GMount *mount,  gpointer data);
+static void metadata_hash_free (GHashTable *hash);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusFile, nautilus_file, G_TYPE_OBJECT,
 			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_FILE_INFO,
@@ -823,6 +824,10 @@ finalize (GObject *object)
 	
 	if (file->details->extension_attributes) {
 		g_hash_table_destroy (file->details->extension_attributes);
+	}
+
+	if (file->details->metadata) {
+		metadata_hash_free (file->details->metadata);
 	}
 
 	G_OBJECT_CLASS (nautilus_file_parent_class)->finalize (object);
