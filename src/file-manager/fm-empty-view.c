@@ -355,7 +355,6 @@ fm_empty_view_create (NautilusWindowSlotInfo *slot)
 	view = g_object_new (FM_TYPE_EMPTY_VIEW,
 			     "window-slot", slot,
 			     NULL);
-	g_object_ref (view);
 
 	return NAUTILUS_VIEW (view);
 }

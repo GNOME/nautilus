@@ -804,7 +804,6 @@ fm_desktop_icon_view_create (NautilusWindowSlotInfo *slot)
 	view = g_object_new (FM_TYPE_DESKTOP_ICON_VIEW,
 			     "window-slot", slot,
 			     NULL);
-	g_object_ref (view);
 	return NAUTILUS_VIEW (view);
 }
 

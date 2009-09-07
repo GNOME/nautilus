@@ -60,13 +60,18 @@ nautilus_view_factory_create (const char *id,
 			      NautilusWindowSlotInfo *slot)
 {
 	const NautilusViewInfo *view_info;
+	NautilusView *view;
 
 	view_info = nautilus_view_factory_lookup (id);
 	if (view_info == NULL) {
 		return NULL;
 	}
 
-	return view_info->create (slot);
+	view = view_info->create (slot);
+	if (g_object_is_floating (view)) {
+		g_object_ref_sink (view);
+	}
+	return view;
 }
 
 gboolean
