@@ -395,6 +395,7 @@ eel_pop_up_context_menu (GtkMenu	     *menu,
 			event ? event->time : GDK_CURRENT_TIME); /* activate_time */
 
 	g_object_ref_sink (menu);
+	g_object_unref (menu);
 }
 
 GtkMenuItem *
@@ -1012,7 +1013,8 @@ eel_gtk_get_system_font (void)
 
 	font = pango_font_description_copy (label->style->font_desc);
 
- 	g_object_ref_sink (label);
+	g_object_ref_sink (label);
+	g_object_unref (label);
 
 	return font;
 }

@@ -1444,7 +1444,7 @@ create_and_set_up_tree_view (FMListView *view)
 			view->details->pixbuf_cell = (GtkCellRendererPixbuf *)cell;
 			
 			view->details->file_name_column = gtk_tree_view_column_new ();
-			g_object_ref (view->details->file_name_column);
+			g_object_ref_sink (view->details->file_name_column);
 			view->details->file_name_column_num = column_num;
 			
 			g_hash_table_insert (view->details->columns,
@@ -1482,7 +1482,7 @@ create_and_set_up_tree_view (FMListView *view)
 									   cell,
 									   "text", column_num,
 									   NULL);
-			g_object_ref (column);
+			g_object_ref_sink (column);
 			gtk_tree_view_column_set_sort_column_id (column, column_num);
 			g_hash_table_insert (view->details->columns, 
 					     g_strdup (name), 

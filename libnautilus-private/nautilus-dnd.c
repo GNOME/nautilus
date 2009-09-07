@@ -817,7 +817,8 @@ nautilus_drag_drop_action_ask (GtkWidget *widget,
 	
 	g_main_loop_unref (damd.loop);
 
-	g_object_ref_sink (menu);	
+	g_object_ref_sink (menu);
+	g_object_unref (menu);
 
 	return damd.chosen;
 }
@@ -871,6 +872,7 @@ nautilus_drag_drop_background_ask (GtkWidget *widget,
 	g_main_loop_unref (damd.loop);
 
 	g_object_ref_sink (menu);
+	g_object_unref (menu);
 
 	return damd.chosen;	
 }

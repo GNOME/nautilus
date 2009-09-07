@@ -383,7 +383,7 @@ nautilus_history_sidebar_create (NautilusSidebarProvider *provider,
 	
 	sidebar = g_object_new (nautilus_history_sidebar_get_type (), NULL);
 	nautilus_history_sidebar_set_parent_window (sidebar, window);
-	g_object_ref (sidebar);
+	g_object_ref_sink (sidebar);
 
 	return NAUTILUS_SIDEBAR (sidebar);
 }

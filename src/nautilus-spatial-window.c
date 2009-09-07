@@ -744,6 +744,7 @@ location_button_clicked_callback (GtkWidget             *widget,
 	gtk_grab_remove (popup);
 	g_main_loop_unref (loop);
 	g_object_ref_sink (popup);
+	g_object_unref (popup);
 }
 
 static int

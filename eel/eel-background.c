@@ -990,7 +990,7 @@ eel_get_widget_background (GtkWidget *widget)
 
 	/* Store the background in the widget's data. */
 	background = eel_background_new ();
-	g_object_ref (background);
+	g_object_ref_sink (background);
 	g_object_set_data_full (G_OBJECT (widget), "eel_background",
 				background, g_object_unref);
 	background->details->widget = widget;
@@ -1108,6 +1108,7 @@ eel_self_check_background (void)
 	eel_background_set_color (background, "red-blue:h");
 
 	g_object_ref_sink (background);
+	g_object_unref (background);
 }
 
 #endif

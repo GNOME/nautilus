@@ -1171,7 +1171,7 @@ nautilus_information_panel_create (NautilusSidebarProvider *provider,
 	
 	panel = g_object_new (nautilus_information_panel_get_type (), NULL);
 	nautilus_information_panel_set_parent_window (panel, window);
-	g_object_ref (panel);
+	g_object_ref_sink (panel);
 
 	return NAUTILUS_SIDEBAR (panel);
 }
