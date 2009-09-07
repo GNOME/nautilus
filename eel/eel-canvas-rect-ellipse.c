@@ -65,7 +65,7 @@ enum {
 };
 
 
-static void eel_canvas_re_class_init (EelCanvasREClass *class);
+static void eel_canvas_re_class_init (EelCanvasREClass *klass);
 static void eel_canvas_re_init       (EelCanvasRE      *re);
 static void eel_canvas_re_destroy    (GtkObject          *object);
 static void eel_canvas_re_set_property (GObject              *object,
@@ -126,17 +126,17 @@ eel_canvas_re_get_type (void)
 }
 
 static void
-eel_canvas_re_class_init (EelCanvasREClass *class)
+eel_canvas_re_class_init (EelCanvasREClass *klass)
 {
 	GObjectClass *gobject_class;
 	GtkObjectClass *object_class;
 	EelCanvasItemClass *item_class;
 
-	gobject_class = (GObjectClass *) class;
-	object_class = (GtkObjectClass *) class;
-	item_class = (EelCanvasItemClass *) class;
+	gobject_class = (GObjectClass *) klass;
+	object_class = (GtkObjectClass *) klass;
+	item_class = (EelCanvasItemClass *) klass;
 
-	re_parent_class = g_type_class_peek_parent (class);
+	re_parent_class = g_type_class_peek_parent (klass);
 
 	gobject_class->set_property = eel_canvas_re_set_property;
 	gobject_class->get_property = eel_canvas_re_get_property;
@@ -146,85 +146,85 @@ eel_canvas_re_class_init (EelCanvasREClass *class)
                  PROP_X1,
                  g_param_spec_double ("x1", NULL, NULL,
 				      -G_MAXDOUBLE, G_MAXDOUBLE, 0,
-				      (G_PARAM_READABLE | G_PARAM_WRITABLE)));
+				      G_PARAM_READWRITE));
         g_object_class_install_property
                 (gobject_class,
                  PROP_Y1,
                  g_param_spec_double ("y1", NULL, NULL,
 				      -G_MAXDOUBLE, G_MAXDOUBLE, 0,
-				      (G_PARAM_READABLE | G_PARAM_WRITABLE)));
+				      G_PARAM_READWRITE));
         g_object_class_install_property
                 (gobject_class,
                  PROP_X2,
                  g_param_spec_double ("x2", NULL, NULL,
 				      -G_MAXDOUBLE, G_MAXDOUBLE, 0,
-				      (G_PARAM_READABLE | G_PARAM_WRITABLE)));
+				      G_PARAM_READWRITE));
         g_object_class_install_property
                 (gobject_class,
                  PROP_Y2,
                  g_param_spec_double ("y2", NULL, NULL,
 				      -G_MAXDOUBLE, G_MAXDOUBLE, 0,
-				      (G_PARAM_READABLE | G_PARAM_WRITABLE)));
+				      G_PARAM_READWRITE));
         g_object_class_install_property
                 (gobject_class,
                  PROP_FILL_COLOR,
-                 g_param_spec_string ("fill_color", NULL, NULL,
+                 g_param_spec_string ("fill-color", NULL, NULL,
                                       NULL,
-                                      (G_PARAM_READABLE | G_PARAM_WRITABLE)));
+                                      G_PARAM_READWRITE));
         g_object_class_install_property
                 (gobject_class,
                  PROP_FILL_COLOR_GDK,
-                 g_param_spec_boxed ("fill_color_gdk", NULL, NULL,
+                 g_param_spec_boxed ("fill-color-gdk", NULL, NULL,
 				     GDK_TYPE_COLOR,
-				     (G_PARAM_READABLE | G_PARAM_WRITABLE)));
+				     G_PARAM_READWRITE));
         g_object_class_install_property
                 (gobject_class,
                  PROP_FILL_COLOR_RGBA,
-                 g_param_spec_uint ("fill_color_rgba", NULL, NULL,
+                 g_param_spec_uint ("fill-color-rgba", NULL, NULL,
 				    0, G_MAXUINT, 0,
-				    (G_PARAM_READABLE | G_PARAM_WRITABLE)));
+				    G_PARAM_READWRITE));
         g_object_class_install_property
                 (gobject_class,
                  PROP_FILL_STIPPLE,
-                 g_param_spec_object ("fill_stipple", NULL, NULL,
+                 g_param_spec_object ("fill-stipple", NULL, NULL,
                                       GDK_TYPE_DRAWABLE,
-                                      (G_PARAM_READABLE | G_PARAM_WRITABLE)));
+                                      G_PARAM_READWRITE));
         g_object_class_install_property
                 (gobject_class,
                  PROP_OUTLINE_COLOR,
-                 g_param_spec_string ("outline_color", NULL, NULL,
+                 g_param_spec_string ("outline-color", NULL, NULL,
                                       NULL,
-                                      (G_PARAM_READABLE | G_PARAM_WRITABLE)));
+                                      G_PARAM_READWRITE));
         g_object_class_install_property
                 (gobject_class,
                  PROP_OUTLINE_COLOR_GDK,
-                 g_param_spec_boxed ("outline_color_gdk", NULL, NULL,
+                 g_param_spec_boxed ("outline-color-gdk", NULL, NULL,
 				     GDK_TYPE_COLOR,
-				     (G_PARAM_READABLE | G_PARAM_WRITABLE)));
+				     G_PARAM_READWRITE));
         g_object_class_install_property
                 (gobject_class,
                  PROP_OUTLINE_COLOR_RGBA,
-                 g_param_spec_uint ("outline_color_rgba", NULL, NULL,
+                 g_param_spec_uint ("outline-color-rgba", NULL, NULL,
 				    0, G_MAXUINT, 0,
-				    (G_PARAM_READABLE | G_PARAM_WRITABLE)));
+				    G_PARAM_READWRITE));
         g_object_class_install_property
                 (gobject_class,
                  PROP_OUTLINE_STIPPLE,
-                 g_param_spec_object ("outline_stipple", NULL, NULL,
+                 g_param_spec_object ("outline-stipple", NULL, NULL,
                                       GDK_TYPE_DRAWABLE,
-                                      (G_PARAM_READABLE | G_PARAM_WRITABLE)));
+                                      G_PARAM_READWRITE));
         g_object_class_install_property
                 (gobject_class,
                  PROP_WIDTH_PIXELS,
-                 g_param_spec_uint ("width_pixels", NULL, NULL,
+                 g_param_spec_uint ("width-pixels", NULL, NULL,
 				    0, G_MAXUINT, 0,
-				    (G_PARAM_READABLE | G_PARAM_WRITABLE)));
+				    G_PARAM_READWRITE));
         g_object_class_install_property
                 (gobject_class,
                  PROP_WIDTH_UNITS,
-                 g_param_spec_double ("width_units", NULL, NULL,
+                 g_param_spec_double ("width-units", NULL, NULL,
 				      0.0, G_MAXDOUBLE, 0.0,
-				      (G_PARAM_READABLE | G_PARAM_WRITABLE)));
+				      G_PARAM_READWRITE));
 
 	object_class->destroy = eel_canvas_re_destroy;
 
@@ -249,8 +249,8 @@ eel_canvas_re_destroy (GtkObject *object)
 {
 	EelCanvasRE *re;
 
-	g_assert (object != NULL);
-	g_assert (EEL_IS_CANVAS_RE (object));
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (EEL_IS_CANVAS_RE (object));
 
 	re = EEL_CANVAS_RE (object);
 
@@ -388,8 +388,8 @@ eel_canvas_re_set_property (GObject              *object,
 	GdkColor *pcolor;
 	int have_pixel;
 
-	g_assert (object != NULL);
-	g_assert (EEL_IS_CANVAS_RE (object));
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (EEL_IS_CANVAS_RE (object));
 
 	item = EEL_CANVAS_ITEM (object);
 	re = EEL_CANVAS_RE (object);
@@ -583,8 +583,8 @@ eel_canvas_re_get_property (GObject              *object,
 {
 	EelCanvasRE *re;
 
-	g_assert (object != NULL);
-	g_assert (EEL_IS_CANVAS_RE (object));
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (EEL_IS_CANVAS_RE (object));
 
 	re = EEL_CANVAS_RE (object);
 
@@ -747,7 +747,7 @@ eel_canvas_re_bounds (EelCanvasItem *item, double *x1, double *y1, double *x2, d
 /* Rectangle item */
 
 
-static void eel_canvas_rect_class_init (EelCanvasRectClass *class);
+static void eel_canvas_rect_class_init (EelCanvasRectClass *klass);
 static void eel_canvas_rect_init (EelCanvasRect *rect);
 static void eel_canvas_rect_finalize (GObject *object);
 static void eel_canvas_rect_realize  (EelCanvasItem *item);
@@ -795,20 +795,20 @@ eel_canvas_rect_get_type (void)
 }
 
 static void
-eel_canvas_rect_class_init (EelCanvasRectClass *class)
+eel_canvas_rect_class_init (EelCanvasRectClass *klass)
 {
 	EelCanvasItemClass *item_class;
 
-	rect_parent_class = g_type_class_peek_parent (class);
+	rect_parent_class = g_type_class_peek_parent (klass);
 
-	item_class = (EelCanvasItemClass *) class;
+	item_class = (EelCanvasItemClass *) klass;
 
 	item_class->draw = eel_canvas_rect_draw;
 	item_class->point = eel_canvas_rect_point;
 	item_class->update = eel_canvas_rect_update;
 	item_class->realize = eel_canvas_rect_realize;
 
-	G_OBJECT_CLASS (class)->finalize = eel_canvas_rect_finalize;
+	G_OBJECT_CLASS (klass)->finalize = eel_canvas_rect_finalize;
 	
 }
 
@@ -836,17 +836,17 @@ eel_canvas_rect_realize  (EelCanvasItem *item)
 #ifdef HAVE_RENDER
 	EelCanvasRectPrivate *priv;
 	int event_base, error_base;
+	Display *dpy;
 
 	priv = EEL_CANVAS_RECT (item)->priv;
 
-	priv->use_render = XRenderQueryExtension (gdk_display, &event_base, &error_base);
+	dpy = gdk_x11_drawable_get_xdisplay (GTK_WIDGET (item->canvas)->window);
+	priv->use_render = XRenderQueryExtension (dpy, &event_base, &error_base);
 
 	if (priv->use_render) {
-		Display *dpy;
 		GdkVisual *gdk_visual;
 		Visual *visual;
 
-		dpy = gdk_x11_drawable_get_xdisplay (GTK_WIDGET (item->canvas)->window);
 		gdk_visual = gtk_widget_get_visual (GTK_WIDGET (item->canvas));
 		visual = gdk_x11_visual_get_xvisual (gdk_visual);
 
@@ -1224,7 +1224,7 @@ eel_canvas_rect_update (EelCanvasItem *item, double i2w_dx, double i2w_dy, gint 
 /* Ellipse item */
 
 
-static void eel_canvas_ellipse_class_init (EelCanvasEllipseClass *class);
+static void eel_canvas_ellipse_class_init (EelCanvasEllipseClass *klass);
 
 static void   eel_canvas_ellipse_draw   (EelCanvasItem *item, GdkDrawable *drawable, GdkEventExpose *expose);
 static double eel_canvas_ellipse_point  (EelCanvasItem *item, double x, double y, int cx, int cy,
@@ -1260,11 +1260,11 @@ eel_canvas_ellipse_get_type (void)
 }
 
 static void
-eel_canvas_ellipse_class_init (EelCanvasEllipseClass *class)
+eel_canvas_ellipse_class_init (EelCanvasEllipseClass *klass)
 {
 	EelCanvasItemClass *item_class;
 
-	item_class = (EelCanvasItemClass *) class;
+	item_class = (EelCanvasItemClass *) klass;
 
 	item_class->draw = eel_canvas_ellipse_draw;
 	item_class->point = eel_canvas_ellipse_point;

@@ -257,6 +257,9 @@ eel_canvas_polygon_to_point (double *poly, int num_points, double x, double y)
 	 */
 
 	best = 1.0e36;
+	if (poly == NULL)
+		return best;
+
 	intersections = 0;
 
 	for (i = num_points, p = poly; i > 1; i--, p += 2) {

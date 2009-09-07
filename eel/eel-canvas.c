@@ -97,7 +97,7 @@ enum {
 	ITEM_LAST_SIGNAL
 };
 
-static void eel_canvas_item_class_init     (EelCanvasItemClass *class);
+static void eel_canvas_item_class_init     (EelCanvasItemClass *klass);
 static void eel_canvas_item_init           (EelCanvasItem      *item);
 static int  emit_event                       (EelCanvas *canvas, GdkEvent *event);
 
@@ -123,7 +123,7 @@ eel_canvas_item_get_type (void)
 	static GType canvas_item_type = 0;
 
 	if (!canvas_item_type) {
-		const GTypeInfo canvas_item_info = {
+		static const GTypeInfo canvas_item_info = {
 			sizeof (EelCanvasItemClass),
 			(GBaseInitFunc) NULL,
 			(GBaseFinalizeFunc) NULL,
@@ -205,7 +205,7 @@ eel_canvas_item_set_property (GObject *gobject, guint param_id,
 {
 	EelCanvasItem *item;
 
-	g_assert (EEL_IS_CANVAS_ITEM (gobject));
+	g_return_if_fail (EEL_IS_CANVAS_ITEM (gobject));
 
 	item = EEL_CANVAS_ITEM (gobject);
 
@@ -240,7 +240,7 @@ eel_canvas_item_get_property (GObject *gobject, guint param_id,
 {
 	EelCanvasItem *item;
 
-	g_assert (EEL_IS_CANVAS_ITEM (gobject));
+	g_return_if_fail (EEL_IS_CANVAS_ITEM (gobject));
 
 	item = EEL_CANVAS_ITEM (gobject);
 
@@ -288,53 +288,57 @@ redraw_and_repick_if_mapped (EelCanvasItem *item)
 	}
 }
 
-
-/* Standard object dispose function for canvas items */
+/* Dispose handler for canvas items */
 static void
 eel_canvas_item_dispose (GObject *object)
 {
 	EelCanvasItem *item;
 
-	g_assert (EEL_IS_CANVAS_ITEM (object));
+	g_return_if_fail (EEL_IS_CANVAS_ITEM (object));
 
 	item = EEL_CANVAS_ITEM (object);
 
-	eel_canvas_item_request_redraw (item);
+	if (item->canvas) {
+		eel_canvas_item_request_redraw (item);
 
-	/* Make the canvas forget about us */
+		/* Make the canvas forget about us */
 
-	if (item == item->canvas->current_item) {
-		item->canvas->current_item = NULL;
-		item->canvas->need_repick = TRUE;
+		if (item == item->canvas->current_item) {
+			item->canvas->current_item = NULL;
+			item->canvas->need_repick = TRUE;
+		}
+
+		if (item == item->canvas->new_current_item) {
+			item->canvas->new_current_item = NULL;
+			item->canvas->need_repick = TRUE;
+		}
+
+		if (item == item->canvas->grabbed_item) {
+			GdkDisplay *display = gtk_widget_get_display (GTK_WIDGET (item->canvas));
+			item->canvas->grabbed_item = NULL;
+			gdk_display_pointer_ungrab (display, GDK_CURRENT_TIME);
+		}
+
+		if (item == item->canvas->focused_item)
+			item->canvas->focused_item = NULL;
+
+		/* Normal destroy stuff */
+
+		if (item->object.flags & EEL_CANVAS_ITEM_MAPPED)
+			(* EEL_CANVAS_ITEM_GET_CLASS (item)->unmap) (item);
+
+		if (item->object.flags & EEL_CANVAS_ITEM_REALIZED)
+			(* EEL_CANVAS_ITEM_GET_CLASS (item)->unrealize) (item);
+
+		if (item->parent)
+			group_remove (EEL_CANVAS_GROUP (item->parent), item);
+
+		item->canvas = NULL;
 	}
-
-	if (item == item->canvas->new_current_item) {
-		item->canvas->new_current_item = NULL;
-		item->canvas->need_repick = TRUE;
-	}
-
-	if (item == item->canvas->grabbed_item) {
-		GdkDisplay *display = gtk_widget_get_display (GTK_WIDGET (item->canvas));
-		item->canvas->grabbed_item = NULL;
-		gdk_display_pointer_ungrab (display, GDK_CURRENT_TIME);
-	}
-
-	if (item == item->canvas->focused_item)
-		item->canvas->focused_item = NULL;
-
-	/* Normal destroy stuff */
-
-	if (item->object.flags & EEL_CANVAS_ITEM_MAPPED)
-		(* EEL_CANVAS_ITEM_GET_CLASS (item)->unmap) (item);
-
-	if (item->object.flags & EEL_CANVAS_ITEM_REALIZED)
-		(* EEL_CANVAS_ITEM_GET_CLASS (item)->unrealize) (item);
-
-	if (item->parent)
-		group_remove (EEL_CANVAS_GROUP (item->parent), item);
 
 	G_OBJECT_CLASS (item_parent_class)->dispose (object);
 }
+
 
 /* Realize handler for canvas items */
 static void
@@ -422,7 +426,7 @@ eel_canvas_item_invoke_update (EelCanvasItem *item,
  
 	/* If this fail you probably forgot to chain up to
 	 * EelCanvasItem::update from a derived class */
- 	g_assert (!(item->object.flags & EEL_CANVAS_ITEM_NEED_UPDATE));
+ 	g_return_if_fail (!(item->object.flags & EEL_CANVAS_ITEM_NEED_UPDATE));
 }
 
 /*
@@ -974,19 +978,20 @@ eel_canvas_item_reparent (EelCanvasItem *item, EelCanvasGroup *new_group)
 
 	/* Everything is ok, now actually reparent the item */
 
-	g_object_ref (GTK_OBJECT (item)); /* protect it from the unref in group_remove */
+	g_object_ref (G_OBJECT (item)); /* protect it from the unref in group_remove */
 
 	eel_canvas_item_request_redraw (item);
 
 	group_remove (EEL_CANVAS_GROUP (item->parent), item);
 	item->parent = EEL_CANVAS_ITEM (new_group);
+	/* item->canvas is unchanged.  */
 	group_add (new_group, item);
 
 	/* Redraw and repick */
 
 	redraw_and_repick_if_mapped (item);
 
-	g_object_unref (GTK_OBJECT (item));
+	g_object_unref (G_OBJECT (item));
 }
 
 /**
@@ -1082,6 +1087,9 @@ eel_canvas_item_get_bounds (EelCanvasItem *item, double *x1, double *y1, double 
 void
 eel_canvas_item_request_update (EelCanvasItem *item)
 {
+	if (NULL == item->canvas)
+		return;
+
 	g_return_if_fail (!item->canvas->doing_update);
 
 	if (item->object.flags & EEL_CANVAS_ITEM_NEED_UPDATE)
@@ -1126,7 +1134,7 @@ enum {
 };
 
 
-static void eel_canvas_group_class_init  (EelCanvasGroupClass *class);
+static void eel_canvas_group_class_init  (EelCanvasGroupClass *klass);
 static void eel_canvas_group_init        (EelCanvasGroup      *group);
 static void eel_canvas_group_set_property(GObject               *object, 
 					    guint                  param_id,
@@ -1158,6 +1166,7 @@ static void   eel_canvas_group_bounds      (EelCanvasItem *item, double *x1, dou
 
 static EelCanvasItemClass *group_parent_class;
 
+
 /**
  * eel_canvas_group_get_type:
  *
@@ -1172,7 +1181,7 @@ eel_canvas_group_get_type (void)
 	static GType group_type = 0;
 
 	if (!group_type) {
-		const GTypeInfo group_info = {
+		static const GTypeInfo group_info = {
 			sizeof (EelCanvasGroupClass),
 			(GBaseInitFunc) NULL,
 			(GBaseFinalizeFunc) NULL,
@@ -1197,17 +1206,17 @@ eel_canvas_group_get_type (void)
 
 /* Class initialization function for EelCanvasGroupClass */
 static void
-eel_canvas_group_class_init (EelCanvasGroupClass *class)
+eel_canvas_group_class_init (EelCanvasGroupClass *klass)
 {
 	GObjectClass *gobject_class;
 	GtkObjectClass *object_class;
 	EelCanvasItemClass *item_class;
 
-	gobject_class = (GObjectClass *) class;
-	object_class = (GtkObjectClass *) class;
-	item_class = (EelCanvasItemClass *) class;
+	gobject_class = (GObjectClass *) klass;
+	object_class = (GtkObjectClass *) klass;
+	item_class = (EelCanvasItemClass *) klass;
 
-	group_parent_class = g_type_class_peek (EEL_TYPE_CANVAS_ITEM);
+	group_parent_class = g_type_class_peek_parent (klass);
 
 	gobject_class->set_property = eel_canvas_group_set_property;
 	gobject_class->get_property = eel_canvas_group_get_property;
@@ -1218,14 +1227,14 @@ eel_canvas_group_class_init (EelCanvasGroupClass *class)
 				      _("X"),
 				      _("X"),
 				      -G_MAXDOUBLE, G_MAXDOUBLE, 0.0,
-				      (G_PARAM_READABLE | G_PARAM_WRITABLE)));
+				      G_PARAM_READWRITE));
 	g_object_class_install_property
 		(gobject_class, GROUP_PROP_Y,
 		 g_param_spec_double ("y",
 				      _("Y"),
 				      _("Y"),
 				      -G_MAXDOUBLE, G_MAXDOUBLE, 0.0,
-				      (G_PARAM_READABLE | G_PARAM_WRITABLE)));
+				      G_PARAM_READWRITE));
 
 	object_class->destroy = eel_canvas_group_destroy;
 
@@ -1257,7 +1266,7 @@ eel_canvas_group_set_property (GObject *gobject, guint param_id,
 	double old;
 	gboolean moved;
 
-	g_assert (EEL_IS_CANVAS_GROUP (gobject));
+	g_return_if_fail (EEL_IS_CANVAS_GROUP (gobject));
 
 	item = EEL_CANVAS_ITEM (gobject);
 	group = EEL_CANVAS_GROUP (gobject);
@@ -1297,10 +1306,12 @@ static void
 eel_canvas_group_get_property (GObject *gobject, guint param_id,
 				 GValue *value, GParamSpec *pspec)
 {
+	EelCanvasItem *item;
 	EelCanvasGroup *group;
 
-	g_assert (EEL_IS_CANVAS_GROUP (gobject));
+	g_return_if_fail (EEL_IS_CANVAS_GROUP (gobject));
 
+	item = EEL_CANVAS_ITEM (gobject);
 	group = EEL_CANVAS_GROUP (gobject);
 
 	switch (param_id) {
@@ -1326,7 +1337,7 @@ eel_canvas_group_destroy (GtkObject *object)
 	EelCanvasItem *child;
 	GList *list;
 
-	g_assert (EEL_IS_CANVAS_GROUP (object));
+	g_return_if_fail (EEL_IS_CANVAS_GROUP (object));
 
 	group = EEL_CANVAS_GROUP (object);
 
@@ -1538,7 +1549,7 @@ eel_canvas_group_point (EelCanvasItem *item, double x, double y, int cx, int cy,
 	return best;
 }
 
-static void
+void
 eel_canvas_group_translate (EelCanvasItem *item, double dx, double dy)
 {
         EelCanvasGroup *group;
@@ -1629,7 +1640,12 @@ eel_canvas_group_bounds (EelCanvasItem *item, double *x1, double *y1, double *x2
 static void
 group_add (EelCanvasGroup *group, EelCanvasItem *item)
 {
+#if GLIB_CHECK_VERSION(2,10,0) && GTK_CHECK_VERSION(2,8,14)
+	g_object_ref_sink (item);
+#else
 	g_object_ref (item);
+	gtk_object_sink (GTK_OBJECT (item));
+#endif
 
 	if (!group->item_list) {
 		group->item_list = g_list_append (group->item_list, item);
@@ -1653,8 +1669,8 @@ group_remove (EelCanvasGroup *group, EelCanvasItem *item)
 {
 	GList *children;
 
-	g_assert (EEL_IS_CANVAS_GROUP (group));
-	g_assert (EEL_IS_CANVAS_ITEM (item));
+	g_return_if_fail (EEL_IS_CANVAS_GROUP (group));
+	g_return_if_fail (EEL_IS_CANVAS_ITEM (item));
 
 	for (children = group->item_list; children; children = children->next)
 		if (children->data == item) {
@@ -1667,7 +1683,8 @@ group_remove (EelCanvasGroup *group, EelCanvasItem *item)
 			/* Unparent the child */
 
 			item->parent = NULL;
-			g_object_unref (GTK_OBJECT (item));
+			/* item->canvas = NULL; */
+			g_object_unref (G_OBJECT (item));
 
 			/* Remove it from the list */
 
@@ -1689,7 +1706,7 @@ enum {
 	LAST_SIGNAL
 };
 
-static void eel_canvas_class_init          (EelCanvasClass *class);
+static void eel_canvas_class_init          (EelCanvasClass *klass);
 static void eel_canvas_init                (EelCanvas      *canvas);
 static void eel_canvas_destroy             (GtkObject        *object);
 static void eel_canvas_map                 (GtkWidget        *widget);
@@ -1738,7 +1755,7 @@ eel_canvas_get_type (void)
 	static GType canvas_type = 0;
 
 	if (!canvas_type) {
-		const GTypeInfo canvas_info = {
+		static const GTypeInfo canvas_info = {
 			sizeof (EelCanvasClass),
 			(GBaseInitFunc) NULL,
 			(GBaseFinalizeFunc) NULL,
@@ -1834,11 +1851,11 @@ eel_canvas_accessible_get_n_children (AtkObject* obj)
 		return 0;
 	}
 
-	g_assert (EEL_IS_CANVAS (widget));
+	g_return_val_if_fail (EEL_IS_CANVAS (widget), 0);
 
 	canvas = EEL_CANVAS (widget);
 	root_group = eel_canvas_root (canvas);
-	g_assert (root_group != NULL);
+	g_return_val_if_fail (root_group, 0);
 	return 1;
 }
 
@@ -1866,7 +1883,7 @@ eel_canvas_accessible_ref_child (AtkObject *obj,
 
 	canvas = EEL_CANVAS (widget);
 	root_group = eel_canvas_root (canvas);
-	g_assert (root_group != NULL);
+	g_return_val_if_fail (root_group, NULL);
 	atk_object = atk_gobject_accessible_for_object (G_OBJECT (root_group));
 	g_object_ref (atk_object);
 	
@@ -1924,7 +1941,7 @@ eel_canvas_accessible_create (GObject *for_object)
 	EelCanvas *canvas;
 
 	canvas = EEL_CANVAS (for_object);
-	g_assert (canvas != NULL);
+	g_return_val_if_fail (canvas != NULL, NULL);
 
 	type = eel_canvas_accessible_get_type ();
 
@@ -1948,7 +1965,7 @@ eel_canvas_accessible_factory_create_accessible (GObject *obj)
 {
 	AtkObject *accessible;
 
-	g_assert (G_IS_OBJECT (obj));
+	g_return_val_if_fail (G_IS_OBJECT (obj), NULL);
 
 	accessible = eel_canvas_accessible_create (obj);
 
@@ -1968,7 +1985,7 @@ eel_canvas_accessible_factory_get_type (void)
 	static GType type = 0;
 
 	if (!type) {
-		const GTypeInfo tinfo = {
+		static const GTypeInfo tinfo = {
 			sizeof (AtkObjectFactoryClass),
 			(GBaseInitFunc) NULL,
 			(GBaseFinalizeFunc) NULL,
@@ -2000,7 +2017,7 @@ eel_canvas_class_init (EelCanvasClass *klass)
 	object_class  = (GtkObjectClass *) klass;
 	widget_class  = (GtkWidgetClass *) klass;
 
-	canvas_parent_class = g_type_class_peek (GTK_TYPE_LAYOUT);
+	canvas_parent_class = g_type_class_peek_parent (klass);
 
 	gobject_class->set_property = eel_canvas_set_property;
 	gobject_class->get_property = eel_canvas_get_property;
@@ -2077,11 +2094,15 @@ eel_canvas_init (EelCanvas *canvas)
 	canvas->root = EEL_CANVAS_ITEM (g_object_new (eel_canvas_group_get_type (), NULL));
 	canvas->root->canvas = canvas;
 
+#if GLIB_CHECK_VERSION(2,10,0) && GTK_CHECK_VERSION(2,8,14)
+	g_object_ref_sink (canvas->root);
+#else
 	g_object_ref (canvas->root);
+	gtk_object_sink (GTK_OBJECT (canvas->root));
+#endif
 
-	canvas->root_destroy_id = g_signal_connect (canvas->root, "destroy",
-						    G_CALLBACK (panic_root_destroyed),
-						    canvas);
+	canvas->root_destroy_id = g_signal_connect (G_OBJECT (canvas->root),
+		"destroy", G_CALLBACK (panic_root_destroyed), canvas);
 
 	canvas->need_repick = TRUE;
 	canvas->doing_update = FALSE;
@@ -2126,19 +2147,21 @@ eel_canvas_destroy (GtkObject *object)
 {
 	EelCanvas *canvas;
 
-	g_assert (EEL_IS_CANVAS (object));
+	g_return_if_fail (EEL_IS_CANVAS (object));
 
 	/* remember, destroy can be run multiple times! */
 
 	canvas = EEL_CANVAS (object);
 
 	if (canvas->root_destroy_id) {
-		g_signal_handler_disconnect (GTK_OBJECT (canvas->root), canvas->root_destroy_id);
+		g_signal_handler_disconnect (G_OBJECT (canvas->root), canvas->root_destroy_id);
 		canvas->root_destroy_id = 0;
 	}
 	if (canvas->root) {
-		g_object_unref (GTK_OBJECT (canvas->root));
+		EelCanvasItem *root = canvas->root;
 		canvas->root = NULL;
+		gtk_object_destroy (GTK_OBJECT (root));
+		g_object_unref (root);
 	}
 
 	shutdown_transients (canvas);
@@ -2170,7 +2193,7 @@ eel_canvas_map (GtkWidget *widget)
 {
 	EelCanvas *canvas;
 
-	g_assert (EEL_IS_CANVAS (widget));
+	g_return_if_fail (EEL_IS_CANVAS (widget));
 
 	/* Normal widget mapping stuff */
 
@@ -2193,7 +2216,7 @@ eel_canvas_unmap (GtkWidget *widget)
 {
 	EelCanvas *canvas;
 
-	g_assert (EEL_IS_CANVAS (widget));
+	g_return_if_fail (EEL_IS_CANVAS (widget));
 
 	canvas = EEL_CANVAS (widget);
 
@@ -2216,7 +2239,7 @@ eel_canvas_realize (GtkWidget *widget)
 {
 	EelCanvas *canvas;
 
-	g_assert (EEL_IS_CANVAS (widget));
+	g_return_if_fail (EEL_IS_CANVAS (widget));
 
 	/* Normal widget realization stuff */
 
@@ -2250,7 +2273,7 @@ eel_canvas_unrealize (GtkWidget *widget)
 {
 	EelCanvas *canvas;
 
-	g_assert (EEL_IS_CANVAS (widget));
+	g_return_if_fail (EEL_IS_CANVAS (widget));
 
 	canvas = EEL_CANVAS (widget);
 
@@ -2352,9 +2375,9 @@ scroll_to (EelCanvas *canvas, int cx, int cy)
 	
 	/* Signal GtkLayout that it should do a redraw. */
 	if (changed_x)
-		g_signal_emit_by_name (GTK_OBJECT (canvas->layout.hadjustment), "value_changed");
+		g_signal_emit_by_name (G_OBJECT (canvas->layout.hadjustment), "value_changed");
 	if (changed_y)
-		g_signal_emit_by_name (GTK_OBJECT (canvas->layout.vadjustment), "value_changed");
+		g_signal_emit_by_name (G_OBJECT (canvas->layout.vadjustment), "value_changed");
 }
 
 /* Size allocation handler for the canvas */
@@ -2363,8 +2386,8 @@ eel_canvas_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 {
 	EelCanvas *canvas;
 
-	g_assert (EEL_IS_CANVAS (widget));
-	g_assert (allocation != NULL);
+	g_return_if_fail (EEL_IS_CANVAS (widget));
+	g_return_if_fail (allocation != NULL);
 
 	if (GTK_WIDGET_CLASS (canvas_parent_class)->size_allocate)
 		(* GTK_WIDGET_CLASS (canvas_parent_class)->size_allocate) (widget, allocation);
@@ -2383,8 +2406,8 @@ eel_canvas_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 		   canvas->layout.hadjustment->value,
 		   canvas->layout.vadjustment->value);
 
-	g_signal_emit_by_name (GTK_OBJECT (canvas->layout.hadjustment), "changed");
-	g_signal_emit_by_name (GTK_OBJECT (canvas->layout.vadjustment), "changed");
+	g_signal_emit_by_name (G_OBJECT (canvas->layout.hadjustment), "changed");
+	g_signal_emit_by_name (G_OBJECT (canvas->layout.vadjustment), "changed");
 }
 
 /* Emits an event for an item in the canvas, be it the current item, grabbed
@@ -2513,7 +2536,7 @@ emit_event (EelCanvas *canvas, GdkEvent *event)
 		g_object_ref (GTK_OBJECT (item));
 
 		g_signal_emit (
-		       GTK_OBJECT (item), item_signals[ITEM_EVENT], 0,
+		       G_OBJECT (item), item_signals[ITEM_EVENT], 0,
 			&ev, &finished);
 		
 		parent = item->parent;
@@ -2627,6 +2650,9 @@ pick_current_item (EelCanvas *canvas, GdkEvent *event)
 	    && (canvas->current_item != NULL)
 	    && !canvas->left_grabbed_item) {
 		GdkEvent new_event;
+		EelCanvasItem *item;
+
+		item = canvas->current_item;
 
 		new_event = canvas->pick_event;
 		new_event.type = GDK_LEAVE_NOTIFY;
@@ -2671,8 +2697,8 @@ eel_canvas_button (GtkWidget *widget, GdkEventButton *event)
 	int mask;
 	int retval;
 
-	g_assert (EEL_IS_CANVAS (widget));
-	g_assert (event != NULL);
+	g_return_val_if_fail (EEL_IS_CANVAS (widget), FALSE);
+	g_return_val_if_fail (event != NULL, FALSE);
 
 	retval = FALSE;
 
@@ -2743,8 +2769,8 @@ eel_canvas_motion (GtkWidget *widget, GdkEventMotion *event)
 {
 	EelCanvas *canvas;
 
-	g_assert (EEL_IS_CANVAS (widget));
-	g_assert (event != NULL);
+	g_return_val_if_fail (EEL_IS_CANVAS (widget), FALSE);
+	g_return_val_if_fail (event != NULL, FALSE);
 
 	canvas = EEL_CANVAS (widget);
 
@@ -2762,8 +2788,8 @@ eel_canvas_key (GtkWidget *widget, GdkEventKey *event)
 {
 	EelCanvas *canvas;
 	
-	g_assert (EEL_IS_CANVAS (widget));
-	g_assert (event != NULL);
+	g_return_val_if_fail (EEL_IS_CANVAS (widget), FALSE);
+	g_return_val_if_fail (event != NULL, FALSE);
 
 	canvas = EEL_CANVAS (widget);
 	
@@ -2782,8 +2808,8 @@ eel_canvas_crossing (GtkWidget *widget, GdkEventCrossing *event)
 {
 	EelCanvas *canvas;
 
-	g_assert (EEL_IS_CANVAS (widget));
-	g_assert (event != NULL);
+	g_return_val_if_fail (EEL_IS_CANVAS (widget), FALSE);
+	g_return_val_if_fail (event != NULL, FALSE);
 
 	canvas = EEL_CANVAS (widget);
 
@@ -2845,12 +2871,12 @@ eel_canvas_expose (GtkWidget *widget, GdkEventExpose *event)
 		canvas->idle_id = 0;
 	}
 	if (canvas->need_update) {
-		g_assert (!canvas->doing_update);
+		g_return_val_if_fail (!canvas->doing_update, FALSE);
 
 		canvas->doing_update = TRUE;
 		eel_canvas_item_invoke_update (canvas->root, 0, 0, 0);
 
-		g_assert (canvas->doing_update);
+		g_return_val_if_fail (canvas->doing_update, FALSE);
 
 		canvas->doing_update = FALSE;
 
@@ -2899,12 +2925,12 @@ do_update (EelCanvas *canvas)
 
 update_again:
 	if (canvas->need_update) {
-		g_assert (!canvas->doing_update);
+		g_return_if_fail (!canvas->doing_update);
 
 		canvas->doing_update = TRUE;
 		eel_canvas_item_invoke_update (canvas->root, 0, 0, 0);
 
-		g_assert (canvas->doing_update);
+		g_return_if_fail (canvas->doing_update);
 
 		canvas->doing_update = FALSE;
 
@@ -3352,7 +3378,7 @@ eel_canvas_w2c_rect_d (EelCanvas *canvas,
  * @cy: Y pixel coordinate (return value).
  *
  * Converts world coordinates into canvas pixel coordinates.  This version
- * returns coordinates in floating point coordinates, for greater precision.
+ * produces coordinates in floating point coordinates, for greater precision.
  **/
 void
 eel_canvas_w2c_d (EelCanvas *canvas, double wx, double wy, double *cx, double *cy)
@@ -3591,10 +3617,10 @@ eel_canvas_item_accessible_get_item_extents (EelCanvasItem *item,
 	eel_canvas_item_get_bounds (item, &bx1, &by1, &bx2, &by2);
 	eel_canvas_w2c_rect_d (item->canvas, &bx1, &by1, &bx2, &by2);
 	eel_canvas_get_scroll_offsets (item->canvas, &scroll_x, &scroll_y);
-	x1 = floor (bx1);
-	y1 = floor (by1);
-	x2 = ceil (bx2);
-	y2 = ceil (by2);
+	x1 = floor (bx1 + .5);
+	y1 = floor (by1 + .5);
+	x2 = floor (bx2 + .5);
+	y2 = floor (by2 + .5);
 	rect->x = x1 - scroll_x;
 	rect->y = y1 - scroll_y;
 	rect->width = x2 - x1;
@@ -3661,7 +3687,7 @@ eel_canvas_item_accessible_get_extents (AtkComponent *component,
 	item = EEL_CANVAS_ITEM (obj);
 
 	/* If this item has no parent canvas, something's broken */
-	g_assert (GTK_IS_WIDGET (item->canvas));
+	g_return_if_fail (GTK_IS_WIDGET (item->canvas));
 
 	eel_canvas_item_accessible_get_item_extents (item, &rect);
 	*width = rect.width;
@@ -3704,7 +3730,7 @@ eel_canvas_item_accessible_get_mdi_zorder (AtkComponent *component)
 	if (item->parent) {
        		return g_list_index (EEL_CANVAS_GROUP (item->parent)->item_list, item);
 	} else {
-		g_assert (item->canvas->root == item);
+		g_return_val_if_fail (item->canvas->root == item, -1);
 		return 0;
 	}
 }
@@ -3745,7 +3771,7 @@ eel_canvas_item_accessible_remove_focus_handler (AtkComponent *component,
 static void
 eel_canvas_item_accessible_component_interface_init (AtkComponentIface *iface)
 {
-	g_assert (iface != NULL);
+	g_return_if_fail (iface != NULL);
 
 	iface->add_focus_handler = eel_canvas_item_accessible_add_focus_handler;
 	iface->get_extents = eel_canvas_item_accessible_get_extents;
@@ -3822,7 +3848,7 @@ eel_canvas_item_accessible_get_type (void)
 	static GType type = 0;
 
 	if (!type) {
-		const GInterfaceInfo atk_component_info = {
+		static const GInterfaceInfo atk_component_info = {
 			(GInterfaceInitFunc) eel_canvas_item_accessible_component_interface_init,
                  	(GInterfaceFinalizeFunc) NULL,
 			NULL
@@ -3865,7 +3891,7 @@ eel_canvas_item_accessible_create (GObject *for_object)
 	EelCanvasItem *item;
 
 	item = EEL_CANVAS_ITEM (for_object);
-	g_assert (item != NULL);
+	g_return_val_if_fail (item != NULL, NULL);
 
 	type = eel_canvas_item_accessible_get_type ();
 	if (type == G_TYPE_INVALID) {
@@ -3888,7 +3914,7 @@ eel_canvas_item_accessible_factory_create_accessible (GObject *obj)
 {
 	AtkObject *accessible;
 
-	g_assert (G_IS_OBJECT (obj));
+	g_return_val_if_fail (G_IS_OBJECT (obj), NULL);
 
 	accessible = eel_canvas_item_accessible_create (obj);
 
@@ -3908,7 +3934,7 @@ eel_canvas_item_accessible_factory_get_type (void)
 	static GType type = 0;
 
 	if (!type) {
-		const GTypeInfo tinfo = {
+		static const GTypeInfo tinfo = {
 			sizeof (AtkObjectFactoryClass),
 			(GBaseInitFunc) NULL,
 			(GBaseFinalizeFunc) NULL,
@@ -3929,32 +3955,31 @@ eel_canvas_item_accessible_factory_get_type (void)
 
 /* Class initialization function for EelCanvasItemClass */
 static void
-eel_canvas_item_class_init (EelCanvasItemClass *class)
+eel_canvas_item_class_init (EelCanvasItemClass *klass)
 {
-	GObjectClass *gobject_class;
+	GObjectClass *gobject_class = (GObjectClass *) klass;
 
-	gobject_class = (GObjectClass *) class;
-
-	item_parent_class = g_type_class_peek (GTK_TYPE_OBJECT);
+	item_parent_class = g_type_class_peek_parent (klass);
 
 	gobject_class->set_property = eel_canvas_item_set_property;
 	gobject_class->get_property = eel_canvas_item_get_property;
+	gobject_class->dispose = eel_canvas_item_dispose;
 
 	g_object_class_install_property
 		(gobject_class, ITEM_PROP_PARENT,
 		 g_param_spec_object ("parent", NULL, NULL,
 				      EEL_TYPE_CANVAS_ITEM,
-				      (G_PARAM_READABLE | G_PARAM_WRITABLE)));
+				      G_PARAM_READWRITE));
 	
 	g_object_class_install_property
 		(gobject_class, ITEM_PROP_VISIBLE,
 		 g_param_spec_boolean ("visible", NULL, NULL,
 				      TRUE,
-				      (G_PARAM_READABLE | G_PARAM_WRITABLE)));
+				      G_PARAM_READWRITE));
 
 	item_signals[ITEM_EVENT] =
 		g_signal_new ("event",
-			      G_TYPE_FROM_CLASS (class),
+			      G_TYPE_FROM_CLASS (klass),
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (EelCanvasItemClass, event),
 			      boolean_handled_accumulator, NULL,
@@ -3962,13 +3987,11 @@ eel_canvas_item_class_init (EelCanvasItemClass *class)
 			      G_TYPE_BOOLEAN, 1,
 			      GDK_TYPE_EVENT | G_SIGNAL_TYPE_STATIC_SCOPE);
 
-	gobject_class->dispose = eel_canvas_item_dispose;
-
-	class->realize = eel_canvas_item_realize;
-	class->unrealize = eel_canvas_item_unrealize;
-	class->map = eel_canvas_item_map;
-	class->unmap = eel_canvas_item_unmap;
-	class->update = eel_canvas_item_update;
+	klass->realize = eel_canvas_item_realize;
+	klass->unrealize = eel_canvas_item_unrealize;
+	klass->map = eel_canvas_item_map;
+	klass->unmap = eel_canvas_item_unmap;
+	klass->update = eel_canvas_item_update;
 
 	atk_registry_set_factory_type (atk_get_default_registry (),
                                        EEL_TYPE_CANVAS_ITEM,
