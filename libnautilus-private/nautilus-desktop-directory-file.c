@@ -554,6 +554,9 @@ nautilus_desktop_update_metadata_from_gconf (NautilusFile *file,
 		key = gconf_entry_get_key (entry);
 		value = gconf_entry_get_value (entry);
 
+                if (value == NULL) {
+			continue;
+		}
 		key = strrchr (key, '/') + 1;
 
 		gio_key = g_strconcat ("metadata::", key, NULL);
