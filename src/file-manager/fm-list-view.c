@@ -1546,6 +1546,7 @@ get_visible_columns (FMListView *list_view)
 		g_ptr_array_add (res, NULL);
 
 		ret = (char **) g_ptr_array_free (res, FALSE);
+		g_list_free (visible_columns);
 	}
 
 	return ret ? ret : g_strdupv (default_visible_columns_auto_value);
@@ -1577,6 +1578,7 @@ get_column_order (FMListView *list_view)
 		g_ptr_array_add (res, NULL);
 
 		ret = (char **) g_ptr_array_free (res, FALSE);
+		g_list_free (column_order);
 	}
 
 	return ret ? ret : g_strdupv (default_visible_columns_auto_value);
