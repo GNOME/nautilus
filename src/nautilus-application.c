@@ -600,6 +600,7 @@ ck_get_current_session_cb (DBusGProxy *proxy,
 	dbus_g_proxy_begin_call (application->ck_session_proxy, "IsActive", ck_call_is_active_cb,
 				 application, NULL, G_TYPE_INVALID);
 
+	g_free (session_id);
 	g_object_unref (proxy);
 }
 
