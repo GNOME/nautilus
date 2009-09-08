@@ -29,6 +29,7 @@
 #include <locale.h>
 #include <stdlib.h>
 #include <string.h>
+#include <eel-glib-extensions.h>
 
 #if !defined (EEL_OMIT_SELF_CHECK)
 #include "eel-lib-self-check-functions.h"
@@ -852,7 +853,9 @@ eel_ref_str_get_unique (const char *string)
 	
 	G_LOCK (unique_ref_strs);
 	if (unique_ref_strs == NULL) {
-		unique_ref_strs = g_hash_table_new (g_str_hash, g_str_equal);
+		unique_ref_strs =
+			eel_g_hash_table_new_free_at_exit (g_str_hash, g_str_equal,
+							   "unique eel_ref_str");
 	}
 
 	res = g_hash_table_lookup (unique_ref_strs, string);
