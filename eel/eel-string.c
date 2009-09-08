@@ -890,6 +890,7 @@ eel_ref_str_unref (eel_ref_str str)
 	
 	count = (volatile gint *)((char *)str - sizeof (gint));
 
+ retry_atomic_decrement:
 	old_ref = g_atomic_int_get (count);
 	if (old_ref == 1) {
 		g_free ((char *)count);
@@ -901,8 +902,9 @@ eel_ref_str_unref (eel_ref_str str)
 			g_free ((char *)count);
 		} 
 		G_UNLOCK (unique_ref_strs);
-	} else {
-		g_atomic_int_exchange_and_add (count, -1);
+	} else if (!g_atomic_int_compare_and_exchange (count,
+						       old_ref, old_ref - 1)) {
+		goto retry_atomic_decrement;
 	}
 }
 
