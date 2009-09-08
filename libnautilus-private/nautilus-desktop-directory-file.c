@@ -579,6 +579,7 @@ nautilus_desktop_update_metadata_from_gconf (NautilusFile *file,
 
 		gconf_entry_unref (entry);
 	}
+	g_slist_free (entries);
 
 	changed = nautilus_file_update_metadata_from_info (file, info);
 
