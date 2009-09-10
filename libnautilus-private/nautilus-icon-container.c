@@ -50,6 +50,7 @@
 #include <eel/eel-canvas-rect-ellipse.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
+#include <gdk/gdkx.h>
 #include <glib/gi18n.h>
 #include <stdio.h>
 #include <string.h>
@@ -4132,13 +4133,22 @@ realize (GtkWidget *widget)
 	GtkWindow *window;
 	GdkBitmap *stipple;
 	GtkAdjustment *vadj, *hadj;
+	NautilusIconContainer *container;
 
 	GTK_WIDGET_CLASS (nautilus_icon_container_parent_class)->realize (widget);
 
-	/* Set up DnD.  */
-	nautilus_icon_dnd_init (NAUTILUS_ICON_CONTAINER (widget), NULL);
+	container = NAUTILUS_ICON_CONTAINER (widget);
 
-	setup_label_gcs (NAUTILUS_ICON_CONTAINER (widget));
+	/* Ensure that the desktop window is native so the background
+	   set on it is drawn by X. */
+	if (container->details->is_desktop) {
+		gdk_x11_drawable_get_xid (gtk_layout_get_bin_window (GTK_LAYOUT (widget)));
+	}
+
+	/* Set up DnD.  */
+	nautilus_icon_dnd_init (container, NULL);
+
+	setup_label_gcs (container);
 
  	/* make us the focused widget */
  	g_assert (GTK_IS_WINDOW (gtk_widget_get_toplevel (widget)));
@@ -4148,7 +4158,7 @@ realize (GtkWidget *widget)
 	stipple = eel_stipple_bitmap_for_screen (
 			gdk_drawable_get_screen (GDK_DRAWABLE (widget->window)));
 
-	nautilus_icon_dnd_set_stipple (NAUTILUS_ICON_CONTAINER (widget), stipple);
+	nautilus_icon_dnd_set_stipple (container, stipple);
 
 	hadj = gtk_layout_get_hadjustment (GTK_LAYOUT (widget));
 	g_signal_connect (hadj, "value_changed",
