@@ -4298,11 +4298,13 @@ add_application_to_open_with_menu (FMDirectoryView *view,
 				 label,
 				 tip,
 				 NULL);
-	
-	app_icon = g_object_ref (g_app_info_get_icon (application));
 
-	if (app_icon == NULL)
+	app_icon = g_app_info_get_icon (application);
+	if (app_icon != NULL) {
+		g_object_ref (app_icon);
+	} else {
 		app_icon = g_themed_icon_new ("application-x-executable");
+	}
 
 	gtk_action_set_gicon (action, app_icon);
 	g_object_unref (app_icon);
@@ -8439,7 +8441,10 @@ real_update_menus (FMDirectoryView *view)
 		label_with_underscore = g_strdup_printf (_("_Open with %s"),
 							 escaped_app);
 
-		app_icon = g_object_ref (g_app_info_get_icon (app));
+		app_icon = g_app_info_get_icon (app);
+		if (app_icon != NULL) {
+			g_object_ref (app_icon);
+		}
 
 		g_free (escaped_app);
 		g_object_unref (app);
