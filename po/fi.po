@@ -27,8 +27,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-13 06:57+0300\n"
-"PO-Revision-Date: 2009-09-13 07:15+0300\n"
+"POT-Creation-Date: 2009-09-15 16:15+0300\n"
+"PO-Revision-Date: 2009-09-15 16:20+0300\n"
 "Last-Translator: Ilkka Tuohela <hile@hut.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1513,9 +1513,9 @@ msgstr "_Suorita aina tämä toiminto"
 #. label, accelerator
 #. add the "Eject" menu item
 #: ../libnautilus-private/nautilus-autorun.c:1018
-#: ../src/file-manager/fm-directory-view.c:7053
-#: ../src/file-manager/fm-directory-view.c:7081
-#: ../src/file-manager/fm-directory-view.c:7162
+#: ../src/file-manager/fm-directory-view.c:7055
+#: ../src/file-manager/fm-directory-view.c:7083
+#: ../src/file-manager/fm-directory-view.c:7164
 #: ../src/file-manager/fm-tree-view.c:1325
 #: ../src/nautilus-places-sidebar.c:2209
 msgid "_Eject"
@@ -1525,9 +1525,9 @@ msgstr "Poista _asemasta"
 #. label, accelerator
 #. add the "Unmount" menu item
 #: ../libnautilus-private/nautilus-autorun.c:1029
-#: ../src/file-manager/fm-directory-view.c:7049
-#: ../src/file-manager/fm-directory-view.c:7077
-#: ../src/file-manager/fm-directory-view.c:7158
+#: ../src/file-manager/fm-directory-view.c:7051
+#: ../src/file-manager/fm-directory-view.c:7079
+#: ../src/file-manager/fm-directory-view.c:7160
 #: ../src/file-manager/fm-tree-view.c:1316
 #: ../src/nautilus-places-sidebar.c:2202
 msgid "_Unmount"
@@ -1557,7 +1557,7 @@ msgstr "Liitä leikepöydän sisältämä teksti"
 #. name, stock id
 #. label, accelerator
 #: ../libnautilus-private/nautilus-clipboard.c:448
-#: ../src/file-manager/fm-directory-view.c:6991
+#: ../src/file-manager/fm-directory-view.c:6993
 msgid "Select _All"
 msgstr "Valitse _kaikki"
 
@@ -1849,7 +1849,7 @@ msgstr[1] "arviolta %'d tuntia"
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:376
 #: ../libnautilus-private/nautilus-file.c:6196
-#: ../src/file-manager/fm-directory-view.c:10105
+#: ../src/file-manager/fm-directory-view.c:10110
 #, c-format
 msgid "Link to %s"
 msgstr "Linkki kohteeseen %s"
@@ -2876,7 +2876,6 @@ msgid "25%"
 msgstr "25%"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:78
-#: ../src/nautilus-file-management-properties.ui.h:21
 #, no-c-format
 msgid "50%"
 msgstr "50%"
@@ -2887,25 +2886,21 @@ msgid "75%"
 msgstr "75%"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:82
-#: ../src/nautilus-file-management-properties.ui.h:7
 #, no-c-format
 msgid "100%"
 msgstr "100%"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:84
-#: ../src/nautilus-file-management-properties.ui.h:9
 #, no-c-format
 msgid "150%"
 msgstr "150%"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:86
-#: ../src/nautilus-file-management-properties.ui.h:12
 #, no-c-format
 msgid "200%"
 msgstr "200%"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:88
-#: ../src/nautilus-file-management-properties.ui.h:18
 #, no-c-format
 msgid "400%"
 msgstr "400%"
@@ -2919,42 +2914,34 @@ msgid "500 K"
 msgstr "500 kt"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:94
-#: ../src/nautilus-file-management-properties.ui.h:2
 msgid "1 MB"
 msgstr "1 Mt"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:95
-#: ../src/nautilus-file-management-properties.ui.h:13
 msgid "3 MB"
 msgstr "3 Mt"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:96
-#: ../src/nautilus-file-management-properties.ui.h:19
 msgid "5 MB"
 msgstr "5 Mt"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:97
-#: ../src/nautilus-file-management-properties.ui.h:3
 msgid "10 MB"
 msgstr "10 Mt"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:98
-#: ../src/nautilus-file-management-properties.ui.h:5
 msgid "100 MB"
 msgstr "100 Mt"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:99
-#: ../src/nautilus-file-management-properties.ui.h:1
 msgid "1 GB"
 msgstr "1 Gt"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:100
-#: ../src/nautilus-file-management-properties.ui.h:10
 msgid "2 GB"
 msgstr "2 Gt"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:101
-#: ../src/nautilus-file-management-properties.ui.h:16
 msgid "4 GB"
 msgstr "4 Gt"
 
@@ -2975,7 +2962,7 @@ msgid "Display _files when they are clicked"
 msgstr "_Näytä tiedostot, kun niitä napsautetaan"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:125
-#: ../src/nautilus-file-management-properties.ui.h:82
+#: ../src/nautilus-file-management-properties.ui.h:47
 msgid "_Ask each time"
 msgstr "Kysy _joka kerta"
 
@@ -2992,7 +2979,6 @@ msgstr "Etsi tiedostoja nimen ja ominaisuuksien perusteella"
 #: ../libnautilus-private/nautilus-global-preferences.c:142
 #: ../src/file-manager/fm-icon-container.c:569
 #: ../src/file-manager/fm-icon-view.c:3051
-#: ../src/nautilus-file-management-properties.ui.h:65
 msgid "Icon View"
 msgstr "Kuvakenäkymä"
 
@@ -3000,7 +2986,6 @@ msgstr "Kuvakenäkymä"
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:143
 #: ../src/file-manager/fm-icon-view.c:3065
-#: ../src/nautilus-file-management-properties.ui.h:58
 msgid "Compact View"
 msgstr "Tiivis näkymä"
 
@@ -3009,7 +2994,6 @@ msgstr "Tiivis näkymä"
 #: ../libnautilus-private/nautilus-global-preferences.c:144
 #: ../src/file-manager/fm-list-view.c:1511
 #: ../src/file-manager/fm-list-view.c:2923
-#: ../src/nautilus-file-management-properties.ui.h:68
 msgid "List View"
 msgstr "Luettelonäkymä"
 
@@ -3018,27 +3002,22 @@ msgid "Manually"
 msgstr "Käsin"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:150
-#: ../src/nautilus-file-management-properties.ui.h:51
 msgid "By Name"
 msgstr "Nimen mukaan"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:151
-#: ../src/nautilus-file-management-properties.ui.h:52
 msgid "By Size"
 msgstr "Koon mukaan"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:152
-#: ../src/nautilus-file-management-properties.ui.h:53
 msgid "By Type"
 msgstr "Tyypin mukaan"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:153
-#: ../src/nautilus-file-management-properties.ui.h:50
 msgid "By Modification Date"
 msgstr "Muokkauspäivämäärän mukaan"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:154
-#: ../src/nautilus-file-management-properties.ui.h:49
 msgid "By Emblems"
 msgstr "Tunnusmerkkien mukaan"
 
@@ -3136,10 +3115,10 @@ msgstr "Tätä linkkiä ei voi käyttää, koska kohdetta \"%s\" ei ole olemassa
 #. name, stock id
 #. label, accelerator
 #: ../libnautilus-private/nautilus-mime-actions.c:717
-#: ../src/file-manager/fm-directory-view.c:7019
-#: ../src/file-manager/fm-directory-view.c:7142
-#: ../src/file-manager/fm-directory-view.c:8272
-#: ../src/file-manager/fm-directory-view.c:8570
+#: ../src/file-manager/fm-directory-view.c:7021
+#: ../src/file-manager/fm-directory-view.c:7144
+#: ../src/file-manager/fm-directory-view.c:8274
+#: ../src/file-manager/fm-directory-view.c:8575
 #: ../src/file-manager/fm-tree-view.c:1289
 msgid "Mo_ve to Trash"
 msgstr "Siirrä _roskakoriin"
@@ -3251,12 +3230,12 @@ msgstr "Merkitse luo_tetuksi"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1832
 #: ../libnautilus-private/nautilus-mime-actions.c:2105
-#: ../src/file-manager/fm-directory-view.c:5987
+#: ../src/file-manager/fm-directory-view.c:5989
 msgid "Unable to mount location"
 msgstr "Sijaintia ei voi liittää"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:2183
-#: ../src/file-manager/fm-directory-view.c:6146
+#: ../src/file-manager/fm-directory-view.c:6148
 msgid "Unable to start location"
 msgstr "Sijaintia ei voi käynnistää"
 
@@ -3367,8 +3346,8 @@ msgstr "_Selaa..."
 #. name, stock id
 #. label, accelerator
 #: ../libnautilus-private/nautilus-open-with-dialog.c:870
-#: ../src/file-manager/fm-directory-view.c:6937
-#: ../src/file-manager/fm-directory-view.c:8449
+#: ../src/file-manager/fm-directory-view.c:6939
+#: ../src/file-manager/fm-directory-view.c:8454
 #: ../src/file-manager/fm-tree-view.c:1210
 #: ../src/nautilus-places-sidebar.c:2151
 msgid "_Open"
@@ -3568,8 +3547,8 @@ msgstr "Tausta"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:707
-#: ../src/file-manager/fm-directory-view.c:6969
-#: ../src/file-manager/fm-directory-view.c:8636
+#: ../src/file-manager/fm-directory-view.c:6971
+#: ../src/file-manager/fm-directory-view.c:8641
 msgid "E_mpty Trash"
 msgstr "T_yhjennä roskakori"
 
@@ -3577,13 +3556,13 @@ msgstr "T_yhjennä roskakori"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:719
-#: ../src/file-manager/fm-directory-view.c:6933
+#: ../src/file-manager/fm-directory-view.c:6935
 msgid "Create L_auncher..."
 msgstr "Luo _käynnistin..."
 
 #. tooltip
 #: ../src/file-manager/fm-desktop-icon-view.c:721
-#: ../src/file-manager/fm-directory-view.c:6934
+#: ../src/file-manager/fm-directory-view.c:6936
 msgid "Create a new launcher"
 msgstr "Luo uusi käynnistin"
 
@@ -3605,7 +3584,7 @@ msgstr "Tyhjennä roskakori"
 
 #. tooltip
 #: ../src/file-manager/fm-desktop-icon-view.c:735
-#: ../src/file-manager/fm-directory-view.c:6970
+#: ../src/file-manager/fm-directory-view.c:6972
 #: ../src/nautilus-trash-bar.c:132
 msgid "Delete all items in the Trash"
 msgstr "Poista kaikki roskakorin sisältö"
@@ -3760,23 +3739,23 @@ msgid_plural "Use \"%s\" to open the selected items"
 msgstr[0] "Käytä ohjelmaa \"%s\" valitun kohteen avaamiseen"
 msgstr[1] "Käytä ohjelmaa \"%s\" valittujen kohteiden avaamiseen"
 
-#: ../src/file-manager/fm-directory-view.c:5068
+#: ../src/file-manager/fm-directory-view.c:5070
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Aja ohjelma \"%s\" valituilla kohteilla"
 
-#: ../src/file-manager/fm-directory-view.c:5319
+#: ../src/file-manager/fm-directory-view.c:5321
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "Luo asiakirja mallin \"%s\" mukaan"
 
-#: ../src/file-manager/fm-directory-view.c:5569
+#: ../src/file-manager/fm-directory-view.c:5571
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
 "Kaikki tässä kansiossa olevat suoritettavat tiedostot näkyvät myös "
 "skriptivalikossa."
 
-#: ../src/file-manager/fm-directory-view.c:5571
+#: ../src/file-manager/fm-directory-view.c:5573
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -3784,7 +3763,7 @@ msgstr ""
 "Kun skripti käynnistetään tästä valikosta, se saa syötteenään valitut "
 "tiedostot."
 
-#: ../src/file-manager/fm-directory-view.c:5573
+#: ../src/file-manager/fm-directory-view.c:5575
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -3825,19 +3804,19 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: nykyisen ikkunan sijainti ja koko"
 
-#: ../src/file-manager/fm-directory-view.c:5745
+#: ../src/file-manager/fm-directory-view.c:5747
 #: ../src/file-manager/fm-tree-view.c:968
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "\"%s\" siirretään jos annat \"liitä\"-komennon"
 
-#: ../src/file-manager/fm-directory-view.c:5749
+#: ../src/file-manager/fm-directory-view.c:5751
 #: ../src/file-manager/fm-tree-view.c:972
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "\"%s\" kopioidaan, jos annat \"liitä\"-komennon"
 
-#: ../src/file-manager/fm-directory-view.c:5756
+#: ../src/file-manager/fm-directory-view.c:5758
 #, c-format
 msgid "The %'d selected item will be moved if you select the Paste command"
 msgid_plural ""
@@ -3845,7 +3824,7 @@ msgid_plural ""
 msgstr[0] "%'d valittu kohde siirretään, jos annat \"liitä\"-komennon"
 msgstr[1] "%i'd valittua kohdetta siirretään, jos annat \"liitä\"-komennon"
 
-#: ../src/file-manager/fm-directory-view.c:5763
+#: ../src/file-manager/fm-directory-view.c:5765
 #, c-format
 msgid "The %'d selected item will be copied if you select the Paste command"
 msgid_plural ""
@@ -3853,112 +3832,112 @@ msgid_plural ""
 msgstr[0] "%'d valittu kohde kopioidaan, jos annat \"liitä\"-komennon"
 msgstr[1] "%'d valittua kohdetta kopioidaan, jos annat \"liitä\"-komennon"
 
-#: ../src/file-manager/fm-directory-view.c:5819
+#: ../src/file-manager/fm-directory-view.c:5821
 #: ../src/file-manager/fm-tree-view.c:1011
 msgid "There is nothing on the clipboard to paste."
 msgstr "Leikepöydällä ei ole mitään liitettävää."
 
-#: ../src/file-manager/fm-directory-view.c:6002
+#: ../src/file-manager/fm-directory-view.c:6004
 msgid "Unable to unmount location"
 msgstr "Sijaintia ei voi irrottaa"
 
-#: ../src/file-manager/fm-directory-view.c:6017
+#: ../src/file-manager/fm-directory-view.c:6019
 msgid "Unable to eject location"
 msgstr "Sijaintia ei voi poistaa asemasta"
 
-#: ../src/file-manager/fm-directory-view.c:6032
-msgid "Unawble to stop drive"
+#: ../src/file-manager/fm-directory-view.c:6034
+msgid "Unable to stop drive"
 msgstr "Asemaa ei voi pysäyttää"
 
-#: ../src/file-manager/fm-directory-view.c:6578
+#: ../src/file-manager/fm-directory-view.c:6580
 #, c-format
 msgid "Connect to Server %s"
 msgstr "Yhdistä palvelimeen %s"
 
-#: ../src/file-manager/fm-directory-view.c:6583
-#: ../src/file-manager/fm-directory-view.c:7883
-#: ../src/file-manager/fm-directory-view.c:7975
-#: ../src/file-manager/fm-directory-view.c:8085
+#: ../src/file-manager/fm-directory-view.c:6585
+#: ../src/file-manager/fm-directory-view.c:7885
+#: ../src/file-manager/fm-directory-view.c:7977
+#: ../src/file-manager/fm-directory-view.c:8087
 msgid "_Connect"
 msgstr "_Yhdistä"
 
-#: ../src/file-manager/fm-directory-view.c:6597
+#: ../src/file-manager/fm-directory-view.c:6599
 msgid "Link _name:"
 msgstr "Linkin _nimi:"
 
-#: ../src/file-manager/fm-directory-view.c:6815
+#: ../src/file-manager/fm-directory-view.c:6817
 #, c-format
 msgid "Could not determine original location of \"%s\" "
 msgstr "Kohteen \"%s\" alkuperäistä sijaintia ei voitu selvittää."
 
-#: ../src/file-manager/fm-directory-view.c:6819
+#: ../src/file-manager/fm-directory-view.c:6821
 msgid "The item cannot be restored from trash"
 msgstr "Kohdetta ei voi palauttaa roskakorista."
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6907
+#: ../src/file-manager/fm-directory-view.c:6909
 msgid "Create _Document"
 msgstr "Luo _asiakirja"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6908
+#: ../src/file-manager/fm-directory-view.c:6910
 msgid "Open Wit_h"
 msgstr "Avaa oh_jelmalla"
 
-#: ../src/file-manager/fm-directory-view.c:6909
+#: ../src/file-manager/fm-directory-view.c:6911
 msgid "Choose a program with which to open the selected item"
 msgstr "Valitse ohjelma, jolla valittu kohde avataan"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6911
-#: ../src/file-manager/fm-directory-view.c:6919
-#: ../src/file-manager/fm-directory-view.c:7183
+#: ../src/file-manager/fm-directory-view.c:6913
+#: ../src/file-manager/fm-directory-view.c:6921
+#: ../src/file-manager/fm-directory-view.c:7185
 msgid "_Properties"
 msgstr "_Ominaisuudet"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6912
+#: ../src/file-manager/fm-directory-view.c:6914
 msgid "View or modify the properties of each selected item"
 msgstr "Katsele tai muokkaa jokaisen valitun kohteen ominaisuuksia"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6920
+#: ../src/file-manager/fm-directory-view.c:6922
 msgid "View or modify the properties of the open folder"
 msgstr "Katsele tai muokkaa avatun kansion ominaisuuksia"
 
 #. name, stock id
 #. label, accelerator
 #. add the "create folder" menu item
-#: ../src/file-manager/fm-directory-view.c:6923
+#: ../src/file-manager/fm-directory-view.c:6925
 #: ../src/file-manager/fm-tree-view.c:1241
 msgid "Create _Folder"
 msgstr "Luo _kansio"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6924
+#: ../src/file-manager/fm-directory-view.c:6926
 msgid "Create a new empty folder inside this folder"
 msgstr "Luo uusi tyhjä kansio tähän kansioon"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6926
+#: ../src/file-manager/fm-directory-view.c:6928
 msgid "No templates installed"
 msgstr "Asiakirjamalleja ei ole asennettu"
 
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6929
+#: ../src/file-manager/fm-directory-view.c:6931
 msgid "_Empty File"
 msgstr "_Tyhjä tiedosto"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6930
+#: ../src/file-manager/fm-directory-view.c:6932
 msgid "Create a new empty file inside this folder"
 msgstr "Luo uusi tyhjä tiedosto tähän kansioon"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6938
+#: ../src/file-manager/fm-directory-view.c:6940
 msgid "Open the selected item in this window"
 msgstr "Avaa valittu kohde tässä ikkunassa"
 
@@ -3967,92 +3946,92 @@ msgstr "Avaa valittu kohde tässä ikkunassa"
 #. Location-specific actions
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6945
-#: ../src/file-manager/fm-directory-view.c:7115
+#: ../src/file-manager/fm-directory-view.c:6947
+#: ../src/file-manager/fm-directory-view.c:7117
 msgid "Open in Navigation Window"
 msgstr "Avaa ikkunassa"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6946
+#: ../src/file-manager/fm-directory-view.c:6948
 msgid "Open each selected item in a navigation window"
 msgstr "Avaa jokainen valittu kohde ikkunassa"
 
 #. name, stock id
 #. label, accelerator
 #. add the "open in new tab" menu item
-#: ../src/file-manager/fm-directory-view.c:6949
-#: ../src/file-manager/fm-directory-view.c:7119
-#: ../src/file-manager/fm-directory-view.c:8217
-#: ../src/file-manager/fm-directory-view.c:8524
+#: ../src/file-manager/fm-directory-view.c:6951
+#: ../src/file-manager/fm-directory-view.c:7121
+#: ../src/file-manager/fm-directory-view.c:8219
+#: ../src/file-manager/fm-directory-view.c:8529
 #: ../src/file-manager/fm-tree-view.c:1221
 #: ../src/nautilus-places-sidebar.c:2159
 msgid "Open in New _Tab"
 msgstr "Avaa uudessa _välilehdessä"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6950
+#: ../src/file-manager/fm-directory-view.c:6952
 msgid "Open each selected item in a new tab"
 msgstr "Avaa kukin valittu kohde uudessa välilehdessä"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6953
-#: ../src/file-manager/fm-directory-view.c:7124
+#: ../src/file-manager/fm-directory-view.c:6955
+#: ../src/file-manager/fm-directory-view.c:7126
 msgid "Open in _Folder Window"
 msgstr "Avaa _kansioikkunassa"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6954
+#: ../src/file-manager/fm-directory-view.c:6956
 msgid "Open each selected item in a folder window"
 msgstr "Avaa jokainen valittu kohde kansionäkymässä"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6957
+#: ../src/file-manager/fm-directory-view.c:6959
 msgid "Other _Application..."
 msgstr "Muu _ohjelma..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6958
-#: ../src/file-manager/fm-directory-view.c:6962
+#: ../src/file-manager/fm-directory-view.c:6960
+#: ../src/file-manager/fm-directory-view.c:6964
 msgid "Choose another application with which to open the selected item"
 msgstr "Valitse muu ohjelma, jolla valittu kohde avataan"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6961
+#: ../src/file-manager/fm-directory-view.c:6963
 msgid "Open with Other _Application..."
 msgstr "Avaa muulla _ohjelmalla"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6965
+#: ../src/file-manager/fm-directory-view.c:6967
 msgid "_Open Scripts Folder"
 msgstr "Avaa _skriptikansio"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6966
+#: ../src/file-manager/fm-directory-view.c:6968
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Näytä kansio, jossa on tämän valikon skriptit"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6974
+#: ../src/file-manager/fm-directory-view.c:6976
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "Valmistele valittujen tiedostojen siirtoa \"liitä\"-komennolla"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6978
+#: ../src/file-manager/fm-directory-view.c:6980
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "Valmistele valittujen tiedostojen kopiointia \"liitä\"-komennolla"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6982
+#: ../src/file-manager/fm-directory-view.c:6984
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr ""
 "Siirrä tai kopioi viimeksi \"leikkaa\"- tai \"kopioi\"-komennolla valitut "
@@ -4062,14 +4041,14 @@ msgstr ""
 #. accelerator for paste
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6987
-#: ../src/file-manager/fm-directory-view.c:7137
+#: ../src/file-manager/fm-directory-view.c:6989
+#: ../src/file-manager/fm-directory-view.c:7139
 #: ../src/file-manager/fm-tree-view.c:1273
 msgid "_Paste Into Folder"
 msgstr "L_iitä tiedostoja kansioon"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6988
+#: ../src/file-manager/fm-directory-view.c:6990
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
@@ -4078,93 +4057,93 @@ msgstr ""
 "tiedostot valittuun kansioon"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6992
+#: ../src/file-manager/fm-directory-view.c:6994
 msgid "Select all items in this window"
 msgstr "Valitse tämän ikkunan kaikki kohteet"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6995
+#: ../src/file-manager/fm-directory-view.c:6997
 msgid "Select I_tems Matching..."
 msgstr "Valitse _täsmäävät kohteet..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6996
+#: ../src/file-manager/fm-directory-view.c:6998
 msgid "Select items in this window matching a given pattern"
 msgstr ""
 "Valitse tämän ikkunan kaikki kohteet, jotka täsmäävät annettuun lausekkeeseen"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6999
+#: ../src/file-manager/fm-directory-view.c:7001
 msgid "_Invert Selection"
 msgstr "_Käänteinen valinta"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7000
+#: ../src/file-manager/fm-directory-view.c:7002
 msgid "Select all and only the items that are not currently selected"
 msgstr "Valitse kaikki ne kohdat, jotka eivät ole nyt valittuna"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7003
+#: ../src/file-manager/fm-directory-view.c:7005
 msgid "D_uplicate"
 msgstr "_Monista"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7004
+#: ../src/file-manager/fm-directory-view.c:7006
 msgid "Duplicate each selected item"
 msgstr "Monista valitut kohteet"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7007
-#: ../src/file-manager/fm-directory-view.c:8610
+#: ../src/file-manager/fm-directory-view.c:7009
+#: ../src/file-manager/fm-directory-view.c:8615
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "T_ee linkki"
 msgstr[1] "T_ee linkit"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7008
+#: ../src/file-manager/fm-directory-view.c:7010
 msgid "Create a symbolic link for each selected item"
 msgstr "Luo symbolinen linkki jokaiselle valitulle kohteelle"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7011
+#: ../src/file-manager/fm-directory-view.c:7013
 msgid "_Rename..."
 msgstr "_Nimeä uudelleen..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7012
+#: ../src/file-manager/fm-directory-view.c:7014
 msgid "Rename selected item"
 msgstr "Nimeä valittu kohta uudelleen"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7020
-#: ../src/file-manager/fm-directory-view.c:8571
+#: ../src/file-manager/fm-directory-view.c:7022
+#: ../src/file-manager/fm-directory-view.c:8576
 msgid "Move each selected item to the Trash"
 msgstr "Siirrä jokainen valittu kohde roskakoriin"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7023
-#: ../src/file-manager/fm-directory-view.c:7146
-#: ../src/file-manager/fm-directory-view.c:8591
+#: ../src/file-manager/fm-directory-view.c:7025
+#: ../src/file-manager/fm-directory-view.c:7148
+#: ../src/file-manager/fm-directory-view.c:8596
 #: ../src/file-manager/fm-tree-view.c:1303
 msgid "_Delete"
 msgstr "P_oista"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7024
+#: ../src/file-manager/fm-directory-view.c:7026
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "Poista jokainen valittu kohde siirtämättä roskakoriin"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7027
-#: ../src/file-manager/fm-directory-view.c:7150
+#: ../src/file-manager/fm-directory-view.c:7029
+#: ../src/file-manager/fm-directory-view.c:7152
 msgid "_Restore"
 msgstr "_Palauta"
 
@@ -4176,210 +4155,210 @@ msgstr "_Palauta"
 #.
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7037
+#: ../src/file-manager/fm-directory-view.c:7039
 msgid "Reset View to _Defaults"
 msgstr "Palauta näky_mään oletukset"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7038
+#: ../src/file-manager/fm-directory-view.c:7040
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr ""
 "Palauta kohteiden järjestys ja mittakaava tämän näkymän asetusten mukaisiksi"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7041
+#: ../src/file-manager/fm-directory-view.c:7043
 msgid "Connect To This Server"
 msgstr "Yhdistä tähän palvelimeen"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7042
+#: ../src/file-manager/fm-directory-view.c:7044
 msgid "Make a permanent connection to this server"
 msgstr "Yhdistä tähän palvelimeen pysyvästi"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7045
-#: ../src/file-manager/fm-directory-view.c:7073
-#: ../src/file-manager/fm-directory-view.c:7154
+#: ../src/file-manager/fm-directory-view.c:7047
+#: ../src/file-manager/fm-directory-view.c:7075
+#: ../src/file-manager/fm-directory-view.c:7156
 #: ../src/nautilus-places-sidebar.c:2195
 msgid "_Mount"
 msgstr "_Liitä"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7046
+#: ../src/file-manager/fm-directory-view.c:7048
 msgid "Mount the selected volume"
 msgstr "Liitä valittu taltio"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7050
+#: ../src/file-manager/fm-directory-view.c:7052
 msgid "Unmount the selected volume"
 msgstr "Irrota valittu taltio"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7054
+#: ../src/file-manager/fm-directory-view.c:7056
 msgid "Eject the selected volume"
 msgstr "Poista valittu taltio asemasta"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7057
-#: ../src/file-manager/fm-directory-view.c:7085
-#: ../src/file-manager/fm-directory-view.c:7166
+#: ../src/file-manager/fm-directory-view.c:7059
+#: ../src/file-manager/fm-directory-view.c:7087
+#: ../src/file-manager/fm-directory-view.c:7168
 #: ../src/nautilus-places-sidebar.c:2223
 msgid "_Format"
 msgstr "_Alusta"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7058
+#: ../src/file-manager/fm-directory-view.c:7060
 msgid "Format the selected volume"
 msgstr "Alusta valittu taltio"
 
 #. name, stock id
 #. label, accelerator
 #. Adjust start/stop items to reflect the type of the drive
-#: ../src/file-manager/fm-directory-view.c:7061
-#: ../src/file-manager/fm-directory-view.c:7089
-#: ../src/file-manager/fm-directory-view.c:7170
-#: ../src/file-manager/fm-directory-view.c:7875
-#: ../src/file-manager/fm-directory-view.c:7879
-#: ../src/file-manager/fm-directory-view.c:7967
-#: ../src/file-manager/fm-directory-view.c:7971
-#: ../src/file-manager/fm-directory-view.c:8077
-#: ../src/file-manager/fm-directory-view.c:8081
+#: ../src/file-manager/fm-directory-view.c:7063
+#: ../src/file-manager/fm-directory-view.c:7091
+#: ../src/file-manager/fm-directory-view.c:7172
+#: ../src/file-manager/fm-directory-view.c:7877
+#: ../src/file-manager/fm-directory-view.c:7881
+#: ../src/file-manager/fm-directory-view.c:7969
+#: ../src/file-manager/fm-directory-view.c:7973
+#: ../src/file-manager/fm-directory-view.c:8079
+#: ../src/file-manager/fm-directory-view.c:8083
 #: ../src/nautilus-places-sidebar.c:1410 ../src/nautilus-places-sidebar.c:2230
 msgid "_Start"
 msgstr "_Käynnistä"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7062
+#: ../src/file-manager/fm-directory-view.c:7064
 msgid "Start the selected volume"
 msgstr "Käynnistä valittu taltio"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7065
-#: ../src/file-manager/fm-directory-view.c:7093
-#: ../src/file-manager/fm-directory-view.c:7174
-#: ../src/file-manager/fm-directory-view.c:7904
-#: ../src/file-manager/fm-directory-view.c:7996
-#: ../src/file-manager/fm-directory-view.c:8106
+#: ../src/file-manager/fm-directory-view.c:7067
+#: ../src/file-manager/fm-directory-view.c:7095
+#: ../src/file-manager/fm-directory-view.c:7176
+#: ../src/file-manager/fm-directory-view.c:7906
+#: ../src/file-manager/fm-directory-view.c:7998
+#: ../src/file-manager/fm-directory-view.c:8108
 #: ../src/nautilus-places-sidebar.c:1411 ../src/nautilus-places-sidebar.c:2237
 #: ../src/nautilus-window-menus.c:805
 msgid "_Stop"
 msgstr "_Pysäytä"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7066
-#: ../src/file-manager/fm-directory-view.c:8107
+#: ../src/file-manager/fm-directory-view.c:7068
+#: ../src/file-manager/fm-directory-view.c:8109
 msgid "Stop the selected volume"
 msgstr "Pysäytä valittu taltio"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7069
-#: ../src/file-manager/fm-directory-view.c:7097
-#: ../src/file-manager/fm-directory-view.c:7178
+#: ../src/file-manager/fm-directory-view.c:7071
+#: ../src/file-manager/fm-directory-view.c:7099
+#: ../src/file-manager/fm-directory-view.c:7180
 #: ../src/nautilus-places-sidebar.c:2216
 msgid "_Detect Media"
 msgstr "_Tunnista media"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7070
-#: ../src/file-manager/fm-directory-view.c:7098
-#: ../src/file-manager/fm-directory-view.c:7179
+#: ../src/file-manager/fm-directory-view.c:7072
+#: ../src/file-manager/fm-directory-view.c:7100
+#: ../src/file-manager/fm-directory-view.c:7181
 msgid "Detect media in the selected drive"
 msgstr "Tunnista media valitussa asemassa"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7074
+#: ../src/file-manager/fm-directory-view.c:7076
 msgid "Mount the volume associated with the open folder"
 msgstr "Liitä avoimeen kansioon liittyvä osio"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7078
+#: ../src/file-manager/fm-directory-view.c:7080
 msgid "Unmount the volume associated with the open folder"
 msgstr "Irrota avoimeen kansioon liittyvä osio"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7082
+#: ../src/file-manager/fm-directory-view.c:7084
 msgid "Eject the volume associated with the open folder"
 msgstr "Avaa kelkka avoimeen kansioon liittyvältä laitteelta"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7086
+#: ../src/file-manager/fm-directory-view.c:7088
 msgid "Format the volume associated with the open folder"
 msgstr "Alusta avoimeen kansioon liittyvän osion tiedostojärjestelmä"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7090
+#: ../src/file-manager/fm-directory-view.c:7092
 msgid "Start the volume associated with the open folder"
 msgstr "Käynnistä avoimeen kansioon liittyvän taltio"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7094
+#: ../src/file-manager/fm-directory-view.c:7096
 msgid "Stop the volume associated with the open folder"
 msgstr "Pysäytä avoimeen kansioon liittyvä taltio"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7101
+#: ../src/file-manager/fm-directory-view.c:7103
 msgid "Open File and Close window"
 msgstr "Avaa tiedosto ja sulje ikkuna"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7105
+#: ../src/file-manager/fm-directory-view.c:7107
 msgid "Sa_ve Search"
 msgstr "Tallenna _haku"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7106
+#: ../src/file-manager/fm-directory-view.c:7108
 msgid "Save the edited search"
 msgstr "Tallenna muokattu haku"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7109
+#: ../src/file-manager/fm-directory-view.c:7111
 msgid "Sa_ve Search As..."
 msgstr "Tallenna _haku nimellä..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7110
+#: ../src/file-manager/fm-directory-view.c:7112
 msgid "Save the current search as a file"
 msgstr "Tallenna nykyinen haku tiedostoon"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7116
+#: ../src/file-manager/fm-directory-view.c:7118
 msgid "Open this folder in a navigation window"
 msgstr "Avaa tämä kansio selausikkunassa"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7120
+#: ../src/file-manager/fm-directory-view.c:7122
 msgid "Open this folder in a new tab"
 msgstr "Avaa tämä kansio uudessa välilehdessä"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7125
+#: ../src/file-manager/fm-directory-view.c:7127
 msgid "Open this folder in a folder window"
 msgstr "Avaa tämä kansio kansionäkymässä"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7130
+#: ../src/file-manager/fm-directory-view.c:7132
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "Valmistele tämän kansion siirtoa \"liitä\"-komennolla"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7134
+#: ../src/file-manager/fm-directory-view.c:7136
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "Valmistele tämän kansion kopiointia \"liitä\"-komennolla"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7138
+#: ../src/file-manager/fm-directory-view.c:7140
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into this "
 "folder"
@@ -4388,345 +4367,345 @@ msgstr ""
 "tiedostot tähän kansioon"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7143
+#: ../src/file-manager/fm-directory-view.c:7145
 msgid "Move this folder to the Trash"
 msgstr "Siirretään tämä kansio roskakoriin"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7147
+#: ../src/file-manager/fm-directory-view.c:7149
 msgid "Delete this folder, without moving to the Trash"
 msgstr "Poista tämä kansio siirtämättä roskakoriin"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7155
+#: ../src/file-manager/fm-directory-view.c:7157
 msgid "Mount the volume associated with this folder"
 msgstr "Liitä tähän kansioon liittyvä taltio"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7159
+#: ../src/file-manager/fm-directory-view.c:7161
 msgid "Unmount the volume associated with this folder"
 msgstr "Irrota tähän kansioon liittyvä taltio"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7163
+#: ../src/file-manager/fm-directory-view.c:7165
 msgid "Eject the volume associated with this folder"
 msgstr "Poista asemasta tähän kansioon liittyvä taltio"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7167
+#: ../src/file-manager/fm-directory-view.c:7169
 msgid "Format the volume associated with this folder"
 msgstr "Alusta tähän kansioon liittyvä taltio"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7171
+#: ../src/file-manager/fm-directory-view.c:7173
 msgid "Start the volume associated with this folder"
 msgstr "Käynnistä tähän kansioon liittyvä taltio"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7175
+#: ../src/file-manager/fm-directory-view.c:7177
 msgid "Stop the volume associated with this folder"
 msgstr "Pysäytä tähän kansioon liittyvä taltio"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7184
+#: ../src/file-manager/fm-directory-view.c:7186
 msgid "View or modify the properties of this folder"
 msgstr "Näytä tai muokkaa tämän kansion ominaisuuksia"
 
 #. Translators: %s is a directory
-#: ../src/file-manager/fm-directory-view.c:7266
+#: ../src/file-manager/fm-directory-view.c:7268
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "Aja tai muokkaa kansion %s skriptejä"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/file-manager/fm-directory-view.c:7268
+#: ../src/file-manager/fm-directory-view.c:7270
 msgid "_Scripts"
 msgstr "Sk_riptit"
 
-#: ../src/file-manager/fm-directory-view.c:7723
+#: ../src/file-manager/fm-directory-view.c:7725
 #, c-format
 msgid "Move the open folder out of the trash to \"%s\""
 msgstr "Siirrä avoin kansio roskakorista kohteeseen \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:7726
+#: ../src/file-manager/fm-directory-view.c:7728
 #, c-format
 msgid "Move the selected folder out of the trash to \"%s\""
 msgid_plural "Move the selected folders out of the trash to \"%s\""
 msgstr[0] "Siirrä valittu kansio roskakorista kohteeseen \"%s\""
 msgstr[1] "Siirrä valitut kansiot roskakorista kohteeseen \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:7730
+#: ../src/file-manager/fm-directory-view.c:7732
 #, c-format
 msgid "Move the selected folder out of the trash"
 msgid_plural "Move the selected folders out of the trash"
 msgstr[0] "Siirrä valittu kansio pois roskakorista"
 msgstr[1] "Siirrä valitut kansiot pois roskakorista"
 
-#: ../src/file-manager/fm-directory-view.c:7736
+#: ../src/file-manager/fm-directory-view.c:7738
 #, c-format
 msgid "Move the selected file out of the trash to \"%s\""
 msgid_plural "Move the selected files out of the trash to \"%s\""
 msgstr[0] "Siirrä valittu tiedosto roskakorista kohteeseen \"%s\""
 msgstr[1] "Siirrä valitut tiedostot roskakorista kohteeseen \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:7740
+#: ../src/file-manager/fm-directory-view.c:7742
 #, c-format
 msgid "Move the selected file out of the trash"
 msgid_plural "Move the selected files out of the trash"
 msgstr[0] "Siirrä valittu tiedosto roskakorista kohteeseen"
 msgstr[1] "Siirrä valitut tiedostot roskakorista kohteeseen"
 
-#: ../src/file-manager/fm-directory-view.c:7746
+#: ../src/file-manager/fm-directory-view.c:7748
 #, c-format
 msgid "Move the selected item out of the trash to \"%s\""
 msgid_plural "Move the selected items out of the trash to \"%s\""
 msgstr[0] "Siirrä valittu kohde roskakorista kohteeseen \"%s\""
 msgstr[1] "Siirrä valitut kohteet roskakorista kohteeseen \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:7750
+#: ../src/file-manager/fm-directory-view.c:7752
 #, c-format
 msgid "Move the selected item out of the trash"
 msgid_plural "Move the selected items out of the trash"
 msgstr[0] "Siirrä valittu kohde roskakorista kohteeseen"
 msgstr[1] "Siirrä valitut kohteet roskakorista kohteeseen"
 
-#: ../src/file-manager/fm-directory-view.c:7876
-#: ../src/file-manager/fm-directory-view.c:7880
+#: ../src/file-manager/fm-directory-view.c:7878
+#: ../src/file-manager/fm-directory-view.c:7882
 msgid "Start the select drive"
 msgstr "Käynnistä valittu asema"
 
-#: ../src/file-manager/fm-directory-view.c:7884
-#: ../src/file-manager/fm-directory-view.c:8086
+#: ../src/file-manager/fm-directory-view.c:7886
+#: ../src/file-manager/fm-directory-view.c:8088
 msgid "Connect to the selected drive"
 msgstr "Liitä valittuun asemaan"
 
-#: ../src/file-manager/fm-directory-view.c:7887
-#: ../src/file-manager/fm-directory-view.c:7979
-#: ../src/file-manager/fm-directory-view.c:8089
+#: ../src/file-manager/fm-directory-view.c:7889
+#: ../src/file-manager/fm-directory-view.c:7981
+#: ../src/file-manager/fm-directory-view.c:8091
 msgid "_Start Multi-disk Drive"
 msgstr "_Käynnistä usean levyn asema"
 
-#: ../src/file-manager/fm-directory-view.c:7888
-#: ../src/file-manager/fm-directory-view.c:8090
+#: ../src/file-manager/fm-directory-view.c:7890
+#: ../src/file-manager/fm-directory-view.c:8092
 msgid "Start the selected multi-disk drive"
 msgstr "Käynnistä valittu usean levyn asema"
 
-#: ../src/file-manager/fm-directory-view.c:7891
+#: ../src/file-manager/fm-directory-view.c:7893
 msgid "U_nlock Drive"
 msgstr "Avaa _aseman lukitus"
 
-#: ../src/file-manager/fm-directory-view.c:7892
-#: ../src/file-manager/fm-directory-view.c:8094
+#: ../src/file-manager/fm-directory-view.c:7894
+#: ../src/file-manager/fm-directory-view.c:8096
 msgid "Unlock the selected drive"
 msgstr "Avaa valitun aseman lukitus"
 
-#: ../src/file-manager/fm-directory-view.c:7905
+#: ../src/file-manager/fm-directory-view.c:7907
 msgid "Stop the selected drive"
 msgstr "Pysäytä valittu asema"
 
-#: ../src/file-manager/fm-directory-view.c:7908
-#: ../src/file-manager/fm-directory-view.c:8000
-#: ../src/file-manager/fm-directory-view.c:8110
+#: ../src/file-manager/fm-directory-view.c:7910
+#: ../src/file-manager/fm-directory-view.c:8002
+#: ../src/file-manager/fm-directory-view.c:8112
 #: ../src/nautilus-places-sidebar.c:1417
 msgid "_Safely Remove Drive"
 msgstr "_Irrota asema turvallisesti"
 
-#: ../src/file-manager/fm-directory-view.c:7909
-#: ../src/file-manager/fm-directory-view.c:8111
+#: ../src/file-manager/fm-directory-view.c:7911
+#: ../src/file-manager/fm-directory-view.c:8113
 msgid "Safely remove the selected drive"
 msgstr "Irrota valittu asema turvallisesti"
 
-#: ../src/file-manager/fm-directory-view.c:7912
-#: ../src/file-manager/fm-directory-view.c:8004
-#: ../src/file-manager/fm-directory-view.c:8114
+#: ../src/file-manager/fm-directory-view.c:7914
+#: ../src/file-manager/fm-directory-view.c:8006
+#: ../src/file-manager/fm-directory-view.c:8116
 msgid "_Disconnect"
 msgstr "_Katkaise yhteys"
 
-#: ../src/file-manager/fm-directory-view.c:7913
-#: ../src/file-manager/fm-directory-view.c:8115
+#: ../src/file-manager/fm-directory-view.c:7915
+#: ../src/file-manager/fm-directory-view.c:8117
 msgid "Disconnect the selected drive"
 msgstr "Katkaise yhteys valittuun asemaan"
 
-#: ../src/file-manager/fm-directory-view.c:7916
-#: ../src/file-manager/fm-directory-view.c:8008
-#: ../src/file-manager/fm-directory-view.c:8118
+#: ../src/file-manager/fm-directory-view.c:7918
+#: ../src/file-manager/fm-directory-view.c:8010
+#: ../src/file-manager/fm-directory-view.c:8120
 msgid "_Stop Multi-disk Drive"
 msgstr "_Pysäytä usean levyn asema"
 
-#: ../src/file-manager/fm-directory-view.c:7917
-#: ../src/file-manager/fm-directory-view.c:8119
+#: ../src/file-manager/fm-directory-view.c:7919
+#: ../src/file-manager/fm-directory-view.c:8121
 msgid "Stop the selected multi-disk drive"
 msgstr "Pysäytä valittu usean levyn asema"
 
-#: ../src/file-manager/fm-directory-view.c:7920
-#: ../src/file-manager/fm-directory-view.c:8012
-#: ../src/file-manager/fm-directory-view.c:8122
+#: ../src/file-manager/fm-directory-view.c:7922
+#: ../src/file-manager/fm-directory-view.c:8014
+#: ../src/file-manager/fm-directory-view.c:8124
 #: ../src/nautilus-places-sidebar.c:1430
 msgid "_Lock Drive"
 msgstr "_Lukitse asema"
 
-#: ../src/file-manager/fm-directory-view.c:7921
-#: ../src/file-manager/fm-directory-view.c:8123
+#: ../src/file-manager/fm-directory-view.c:7923
+#: ../src/file-manager/fm-directory-view.c:8125
 msgid "Lock the selected drive"
 msgstr "Lukitse valittu asema"
 
-#: ../src/file-manager/fm-directory-view.c:7968
-#: ../src/file-manager/fm-directory-view.c:7972
+#: ../src/file-manager/fm-directory-view.c:7970
+#: ../src/file-manager/fm-directory-view.c:7974
 msgid "Start the drive associated with the open folder"
 msgstr "Käynnistä avoimeen kansioon liittyvä asema"
 
-#: ../src/file-manager/fm-directory-view.c:7976
+#: ../src/file-manager/fm-directory-view.c:7978
 msgid "Connect to the drive associated with the open folder"
 msgstr "Liitä avoimeen kansioon liittyvä asema"
 
-#: ../src/file-manager/fm-directory-view.c:7980
+#: ../src/file-manager/fm-directory-view.c:7982
 msgid "Start the multi-disk drive associated with the open folder"
 msgstr "Käynnistä avoimeen kansioon liittyvä monen levyn asema"
 
 #. stop() for type G_DRIVE_START_STOP_TYPE_PASSWORD is normally not used
-#: ../src/file-manager/fm-directory-view.c:7983
-#: ../src/file-manager/fm-directory-view.c:8093
+#: ../src/file-manager/fm-directory-view.c:7985
+#: ../src/file-manager/fm-directory-view.c:8095
 #: ../src/nautilus-places-sidebar.c:1429
 msgid "_Unlock Drive"
 msgstr "_Avaa aseman lukitus"
 
-#: ../src/file-manager/fm-directory-view.c:7984
+#: ../src/file-manager/fm-directory-view.c:7986
 msgid "Unlock the drive associated with the open folder"
 msgstr "Avaa avoimeen kansioon liittyvän aseman lukitus"
 
-#: ../src/file-manager/fm-directory-view.c:7997
+#: ../src/file-manager/fm-directory-view.c:7999
 msgid "_Stop the drive associated with the open folder"
 msgstr "_Pysäytä avoimeen kansioon liittyvä asema"
 
-#: ../src/file-manager/fm-directory-view.c:8001
+#: ../src/file-manager/fm-directory-view.c:8003
 msgid "Safely remove the drive associated with the open folder"
 msgstr "Irrota avoimeen kansioon liittyvä asema turvallisesti"
 
-#: ../src/file-manager/fm-directory-view.c:8005
+#: ../src/file-manager/fm-directory-view.c:8007
 msgid "Disconnect the drive associated with the open folder"
 msgstr "Katkaise yhteys avoimeen kansioon liittyvään asemaan"
 
-#: ../src/file-manager/fm-directory-view.c:8009
+#: ../src/file-manager/fm-directory-view.c:8011
 msgid "Stop the multi-disk drive associated with the open folder"
 msgstr "Pysäytä avoimeen kansioon liittyvä monen levyn asema"
 
-#: ../src/file-manager/fm-directory-view.c:8013
+#: ../src/file-manager/fm-directory-view.c:8015
 msgid "Lock the drive associated with the open folder"
 msgstr "Lukitse avoimeen kansioon liittyvä osio"
 
-#: ../src/file-manager/fm-directory-view.c:8078
-#: ../src/file-manager/fm-directory-view.c:8082
+#: ../src/file-manager/fm-directory-view.c:8080
+#: ../src/file-manager/fm-directory-view.c:8084
 msgid "Start the selected drive"
 msgstr "Käynnistä valittu asema"
 
 #. add the "open in new window" menu item
-#: ../src/file-manager/fm-directory-view.c:8192
-#: ../src/file-manager/fm-directory-view.c:8484
+#: ../src/file-manager/fm-directory-view.c:8194
+#: ../src/file-manager/fm-directory-view.c:8489
 #: ../src/file-manager/fm-tree-view.c:1230
 #: ../src/nautilus-places-sidebar.c:2166
 msgid "Open in New _Window"
 msgstr "Avaa uudessa _ikkunassa"
 
-#: ../src/file-manager/fm-directory-view.c:8194
-#: ../src/file-manager/fm-directory-view.c:8493
+#: ../src/file-manager/fm-directory-view.c:8196
+#: ../src/file-manager/fm-directory-view.c:8498
 msgid "Browse in New _Window"
 msgstr "Selaa uudessa _ikkunassa"
 
-#: ../src/file-manager/fm-directory-view.c:8202
-#: ../src/file-manager/fm-directory-view.c:8503
+#: ../src/file-manager/fm-directory-view.c:8204
+#: ../src/file-manager/fm-directory-view.c:8508
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "_Selaa kansiota"
 msgstr[1] "_Selaa kansioita"
 
-#: ../src/file-manager/fm-directory-view.c:8219
-#: ../src/file-manager/fm-directory-view.c:8533
+#: ../src/file-manager/fm-directory-view.c:8221
+#: ../src/file-manager/fm-directory-view.c:8538
 msgid "Browse in New _Tab"
 msgstr "Selaa uudessa _välilehdessä"
 
-#: ../src/file-manager/fm-directory-view.c:8268
-#: ../src/file-manager/fm-directory-view.c:8566
+#: ../src/file-manager/fm-directory-view.c:8270
+#: ../src/file-manager/fm-directory-view.c:8571
 msgid "_Delete Permanently"
 msgstr "Poista pysyvästi"
 
-#: ../src/file-manager/fm-directory-view.c:8269
+#: ../src/file-manager/fm-directory-view.c:8271
 msgid "Delete the open folder permanently"
 msgstr "Poistetaanko avoin kansio pysyvästi?"
 
-#: ../src/file-manager/fm-directory-view.c:8273
+#: ../src/file-manager/fm-directory-view.c:8275
 msgid "Move the open folder to the Trash"
 msgstr "Siirrä valittu kansio roskakoriin"
 
-#: ../src/file-manager/fm-directory-view.c:8439
+#: ../src/file-manager/fm-directory-view.c:8441
 #, c-format
 msgid "_Open with %s"
 msgstr "_Avaa ohjelmalla %s"
 
-#: ../src/file-manager/fm-directory-view.c:8486
+#: ../src/file-manager/fm-directory-view.c:8491
 #, c-format
 msgid "Open in %'d New _Window"
 msgid_plural "Open in %'d New _Windows"
 msgstr[0] "Avaa %'d uudessa _ikkunassa"
 msgstr[1] "Avaa %'d uudessa _ikkunassa"
 
-#: ../src/file-manager/fm-directory-view.c:8495
+#: ../src/file-manager/fm-directory-view.c:8500
 #, c-format
 msgid "Browse in %'d New _Window"
 msgid_plural "Browse in %'d New _Windows"
 msgstr[0] "Selaa %'d uudessa _ikkunassa"
 msgstr[1] "Selaa %'d uudessa _ikkunassa"
 
-#: ../src/file-manager/fm-directory-view.c:8526
+#: ../src/file-manager/fm-directory-view.c:8531
 #, c-format
 msgid "Open in %'d New _Tab"
 msgid_plural "Open in %'d New _Tabs"
 msgstr[0] "Avaa %'d uudessa _välilehdessä"
 msgstr[1] "Avaa %'d uudessa _välilehdessä"
 
-#: ../src/file-manager/fm-directory-view.c:8535
+#: ../src/file-manager/fm-directory-view.c:8540
 #, c-format
 msgid "Browse in %'d New _Tab"
 msgid_plural "Browse in %'d New _Tabs"
 msgstr[0] "Selaa %'d uudessa _välilehdessä"
 msgstr[1] "Selaa %'d uudessa _välilehdessä"
 
-#: ../src/file-manager/fm-directory-view.c:8567
+#: ../src/file-manager/fm-directory-view.c:8572
 msgid "Delete all selected items permanently"
 msgstr "Poista kaikki valitut kohteet pysyvästi"
 
-#: ../src/file-manager/fm-directory-view.c:9881
+#: ../src/file-manager/fm-directory-view.c:9886
 msgid "Download location?"
 msgstr "Tallennetaanko sijainti verkosta?"
 
-#: ../src/file-manager/fm-directory-view.c:9884
+#: ../src/file-manager/fm-directory-view.c:9889
 msgid "You can download it or make a link to it."
 msgstr "Voit tallentaa sijainnin tai luoda siihen osoittavan linkin."
 
-#: ../src/file-manager/fm-directory-view.c:9887
+#: ../src/file-manager/fm-directory-view.c:9892
 msgid "Make a _Link"
 msgstr "Tee _linkki"
 
-#: ../src/file-manager/fm-directory-view.c:9891
+#: ../src/file-manager/fm-directory-view.c:9896
 msgid "_Download"
 msgstr "_Tallenna"
 
-#: ../src/file-manager/fm-directory-view.c:10030
-#: ../src/file-manager/fm-directory-view.c:10086
-#: ../src/file-manager/fm-directory-view.c:10191
+#: ../src/file-manager/fm-directory-view.c:10035
+#: ../src/file-manager/fm-directory-view.c:10091
+#: ../src/file-manager/fm-directory-view.c:10196
 msgid "Drag and drop is not supported."
 msgstr "Veto ja pudotus ei toimi."
 
-#: ../src/file-manager/fm-directory-view.c:10031
+#: ../src/file-manager/fm-directory-view.c:10036
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Veto ja pudotus toimii vain paikallisissa tiedostojärjestelmissä."
 
-#: ../src/file-manager/fm-directory-view.c:10087
-#: ../src/file-manager/fm-directory-view.c:10192
+#: ../src/file-manager/fm-directory-view.c:10092
+#: ../src/file-manager/fm-directory-view.c:10197
 msgid "An invalid drag type was used."
 msgstr "Vetotyyppi oli väärä."
 
 #. Translator: This is the filename used for when you dnd text to a directory
-#: ../src/file-manager/fm-directory-view.c:10259
+#: ../src/file-manager/fm-directory-view.c:10264
 msgid "dropped text.txt"
 msgstr "raahattu teksti.txt"
 
@@ -5130,12 +5109,6 @@ msgstr "Ominaisuudet"
 #, c-format
 msgid "%s Properties"
 msgstr "Kohteen %s ominaisuudet"
-
-#: ../src/file-manager/fm-properties-window.c:1360
-#, c-format
-msgctxt "MIME type description (MIME type)"
-msgid "%s (%s)"
-msgstr "%s (%s)"
 
 #: ../src/file-manager/fm-properties-window.c:1577
 msgid "Cancel Group Change?"
@@ -5718,125 +5691,103 @@ msgstr "Tunnusmerkin lisääminen epäonnistui."
 msgid "Show Emblems"
 msgstr "Näytä tunnusmerkit"
 
-#: ../src/nautilus-file-management-properties.ui.h:4
-msgid "100 KB"
-msgstr "100 kt"
-
-#: ../src/nautilus-file-management-properties.ui.h:15
-#, no-c-format
-msgid "33%"
-msgstr "33 %"
-
-#: ../src/nautilus-file-management-properties.ui.h:22
-msgid "500 KB"
-msgstr "500 kt"
-
-#: ../src/nautilus-file-management-properties.ui.h:24
-#, no-c-format
-msgid "66%"
-msgstr "66 %"
-
-#: ../src/nautilus-file-management-properties.ui.h:25
+#: ../src/nautilus-file-management-properties.ui.h:1
 msgid "<b>Behavior</b>"
 msgstr "<b>Toiminta</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:26
+#: ../src/nautilus-file-management-properties.ui.h:2
 msgid "<b>Compact View Defaults</b>"
 msgstr "<b>Tiiviin näkymän oletukset</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:27
+#: ../src/nautilus-file-management-properties.ui.h:3
 msgid "<b>Date</b>"
 msgstr "<b>Päiväys</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:28
+#: ../src/nautilus-file-management-properties.ui.h:4
 msgid "<b>Default View</b>"
 msgstr "<b>Oletusnäkymä</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:29
+#: ../src/nautilus-file-management-properties.ui.h:5
 msgid "<b>Executable Text Files</b>"
 msgstr "<b>Suoritettavat tekstitiedostot</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:30
+#: ../src/nautilus-file-management-properties.ui.h:6
 msgid "<b>Folders</b>"
 msgstr "<b>Kansiot</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:31
+#: ../src/nautilus-file-management-properties.ui.h:7
 msgid "<b>Icon Captions</b>"
 msgstr "<b>Kuvakkeiden tekstit</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:32
+#: ../src/nautilus-file-management-properties.ui.h:8
 msgid "<b>Icon View Defaults</b>"
 msgstr "<b>Kuvakenäkymän oletukset</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:33
+#: ../src/nautilus-file-management-properties.ui.h:9
 msgid "<b>List Columns</b>"
 msgstr "<b>Luettelon sarakkeet</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:34
+#: ../src/nautilus-file-management-properties.ui.h:10
 msgid "<b>List View Defaults</b>"
 msgstr "<b>Luettelonäkymän oletukset</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:35
+#: ../src/nautilus-file-management-properties.ui.h:11
 msgid "<b>Media Handling</b>"
 msgstr "<b>Median käsittely</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:36
+#: ../src/nautilus-file-management-properties.ui.h:12
 msgid "<b>Other Media</b>"
 msgstr "<b>Muu media/</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:37
+#: ../src/nautilus-file-management-properties.ui.h:13
 msgid "<b>Other Previewable Files</b>"
 msgstr "<b>Muut esikatseltavat tiedostot</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:38
+#: ../src/nautilus-file-management-properties.ui.h:14
 msgid "<b>Sound Files</b>"
 msgstr "<b>Äänitiedostot</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:39
+#: ../src/nautilus-file-management-properties.ui.h:15
 msgid "<b>Text Files</b>"
 msgstr "<b>Tekstitiedostot</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:40
+#: ../src/nautilus-file-management-properties.ui.h:16
 msgid "<b>Trash</b>"
 msgstr "<b>Roskakori</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:41
+#: ../src/nautilus-file-management-properties.ui.h:17
 msgid "<b>Tree View Defaults</b>"
 msgstr "<b>Puunäkymän oletukset</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:42
+#: ../src/nautilus-file-management-properties.ui.h:18
 msgid "A_ll columns have the same width"
 msgstr "Kai_kki sarakkeet ovat samanlevyisiä"
 
-#: ../src/nautilus-file-management-properties.ui.h:43
+#: ../src/nautilus-file-management-properties.ui.h:19
 msgid "Acti_on:"
 msgstr "T_oiminto:"
 
-#: ../src/nautilus-file-management-properties.ui.h:44
-msgid "Always"
-msgstr "Aina"
-
-#: ../src/nautilus-file-management-properties.ui.h:45
+#: ../src/nautilus-file-management-properties.ui.h:20
 msgid "Always open in _browser windows"
 msgstr "Avaa aina _selainikkunoissa"
 
-#: ../src/nautilus-file-management-properties.ui.h:46
+#: ../src/nautilus-file-management-properties.ui.h:21
 msgid "Ask before _emptying the Trash or deleting files"
 msgstr "Kysy ennen roskakorin _tyhjennystä tai tiedostojen poistoa"
 
-#: ../src/nautilus-file-management-properties.ui.h:47
+#: ../src/nautilus-file-management-properties.ui.h:22
 msgid "B_rowse media when inserted"
 msgstr "_Selaa mediaa liitettäessä"
 
-#: ../src/nautilus-file-management-properties.ui.h:48
+#: ../src/nautilus-file-management-properties.ui.h:23
 msgid "Behavior"
 msgstr "Toiminta"
 
-#: ../src/nautilus-file-management-properties.ui.h:54
+#: ../src/nautilus-file-management-properties.ui.h:24
 msgid "CD _Audio:"
 msgstr "CD-ääni:"
 
-#: ../src/nautilus-file-management-properties.ui.h:55
+#: ../src/nautilus-file-management-properties.ui.h:25
 msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
@@ -5844,158 +5795,150 @@ msgstr ""
 "Valitse tietojen ilmestymisjärjestys. Niitä ilmestyy kuvakkeiden alle, kun "
 "kasvatat mittakaavaa."
 
-#: ../src/nautilus-file-management-properties.ui.h:56
+#: ../src/nautilus-file-management-properties.ui.h:26
 msgid "Choose the order of information to appear in the list view."
 msgstr "Valitse tietojen ilmestymisjärjestys luettelonäkymässä."
 
-#: ../src/nautilus-file-management-properties.ui.h:57
+#: ../src/nautilus-file-management-properties.ui.h:27
 msgid ""
 "Choose what happens when inserting media or connecting devices to the system"
 msgstr ""
 "Valitse, mitä tehdään kun asemaan laitetaan media tai laitteita yhdistetään "
 "tietokoneeseen"
 
-#: ../src/nautilus-file-management-properties.ui.h:59
+#: ../src/nautilus-file-management-properties.ui.h:28
 msgid "Count _number of items:"
 msgstr "_Laske kohteiden lukumäärät:"
 
-#: ../src/nautilus-file-management-properties.ui.h:60
+#: ../src/nautilus-file-management-properties.ui.h:29
 msgid "D_efault zoom level:"
 msgstr "_Oletusmittakaava:"
 
-#: ../src/nautilus-file-management-properties.ui.h:61
+#: ../src/nautilus-file-management-properties.ui.h:30
 msgid "Default _zoom level:"
 msgstr "Oletus_mittakaava:"
 
-#: ../src/nautilus-file-management-properties.ui.h:62
+#: ../src/nautilus-file-management-properties.ui.h:31
 msgid "Display"
 msgstr "Näytä"
 
-#: ../src/nautilus-file-management-properties.ui.h:63
+#: ../src/nautilus-file-management-properties.ui.h:32
 msgid "File Management Preferences"
 msgstr "Tiedostonhallinnan asetukset"
 
-#: ../src/nautilus-file-management-properties.ui.h:64
+#: ../src/nautilus-file-management-properties.ui.h:33
 msgid "I_nclude a Delete command that bypasses Trash"
 msgstr "Näytä myös poistokomento, joka ei käytä _roskakoria"
 
-#: ../src/nautilus-file-management-properties.ui.h:66
+#: ../src/nautilus-file-management-properties.ui.h:34
 msgid "Less common media formats can be configured here"
 msgstr "Voit määritellä harvinaisemmat mediatyypit tähän"
 
-#: ../src/nautilus-file-management-properties.ui.h:67
+#: ../src/nautilus-file-management-properties.ui.h:35
 msgid "List Columns"
 msgstr "Luettelon sarakkeet"
 
-#: ../src/nautilus-file-management-properties.ui.h:69
-msgid "Local Files Only"
-msgstr "Vain paikalliset tiedostot"
-
-#: ../src/nautilus-file-management-properties.ui.h:70
+#: ../src/nautilus-file-management-properties.ui.h:36
 msgid "Media"
 msgstr "Media"
 
-#: ../src/nautilus-file-management-properties.ui.h:71
-msgid "Never"
-msgstr "Ei koskaan"
-
-#: ../src/nautilus-file-management-properties.ui.h:72
+#: ../src/nautilus-file-management-properties.ui.h:37
 msgid "Preview"
 msgstr "Esikatselu"
 
-#: ../src/nautilus-file-management-properties.ui.h:73
+#: ../src/nautilus-file-management-properties.ui.h:38
 msgid "Preview _sound files:"
 msgstr "Kuuntele _äänitiedostoja:"
 
-#: ../src/nautilus-file-management-properties.ui.h:74
+#: ../src/nautilus-file-management-properties.ui.h:39
 msgid "Show _only folders"
 msgstr "Nä_ytä vain kansiot"
 
-#: ../src/nautilus-file-management-properties.ui.h:75
+#: ../src/nautilus-file-management-properties.ui.h:40
 msgid "Show _thumbnails:"
 msgstr "Näytä _pienoiskuvat:"
 
-#: ../src/nautilus-file-management-properties.ui.h:76
+#: ../src/nautilus-file-management-properties.ui.h:41
 msgid "Show hidden and _backup files"
 msgstr "Näytä piilotiedostot ja _varmuuskopiot"
 
-#: ../src/nautilus-file-management-properties.ui.h:77
+#: ../src/nautilus-file-management-properties.ui.h:42
 msgid "Show te_xt in icons:"
 msgstr "Näytä t_ekstit kuvakkeissa:"
 
-#: ../src/nautilus-file-management-properties.ui.h:78
+#: ../src/nautilus-file-management-properties.ui.h:43
 msgid "Sort _folders before files"
 msgstr "_Kansiot ennen tiedostoja"
 
-#: ../src/nautilus-file-management-properties.ui.h:79
+#: ../src/nautilus-file-management-properties.ui.h:44
 msgid "View _new folders using:"
 msgstr "_Katsele uusia kansioita muodossa:"
 
-#: ../src/nautilus-file-management-properties.ui.h:80
+#: ../src/nautilus-file-management-properties.ui.h:45
 msgid "Views"
 msgstr "Näkymät"
 
-#: ../src/nautilus-file-management-properties.ui.h:81
+#: ../src/nautilus-file-management-properties.ui.h:46
 msgid "_Arrange items:"
 msgstr "_Järjestä:"
 
-#: ../src/nautilus-file-management-properties.ui.h:83
+#: ../src/nautilus-file-management-properties.ui.h:48
 msgid "_DVD Video:"
 msgstr "_DVD-video:"
 
-#: ../src/nautilus-file-management-properties.ui.h:84
+#: ../src/nautilus-file-management-properties.ui.h:49
 msgid "_Default zoom level:"
 msgstr "Olet_usmittakaava:"
 
-#: ../src/nautilus-file-management-properties.ui.h:85
+#: ../src/nautilus-file-management-properties.ui.h:50
 msgid "_Double click to open items"
 msgstr "Avaa kohteet _kaksoisnapsautuksella"
 
-#: ../src/nautilus-file-management-properties.ui.h:86
+#: ../src/nautilus-file-management-properties.ui.h:51
 msgid "_Format:"
 msgstr "_Muoto:"
 
-#: ../src/nautilus-file-management-properties.ui.h:87
+#: ../src/nautilus-file-management-properties.ui.h:52
 msgid "_Music Player:"
 msgstr "_Musiikkisoitin:"
 
-#: ../src/nautilus-file-management-properties.ui.h:88
+#: ../src/nautilus-file-management-properties.ui.h:53
 msgid "_Never prompt or start programs on media insertion"
 msgstr "_Älä koskaan kysy tai käynnistä ohjelmia liitettäessä media"
 
-#: ../src/nautilus-file-management-properties.ui.h:89
+#: ../src/nautilus-file-management-properties.ui.h:54
 msgid "_Only for files smaller than:"
 msgstr "_Vain kun tiedosto on pienempi kuin:"
 
-#: ../src/nautilus-file-management-properties.ui.h:90
+#: ../src/nautilus-file-management-properties.ui.h:55
 msgid "_Photos:"
 msgstr "_Valokuvat:"
 
-#: ../src/nautilus-file-management-properties.ui.h:91
+#: ../src/nautilus-file-management-properties.ui.h:56
 msgid "_Run executable text files when they are opened"
 msgstr "Suorita _suoritettavat tekstitiedostot avattaessa"
 
-#: ../src/nautilus-file-management-properties.ui.h:92
+#: ../src/nautilus-file-management-properties.ui.h:57
 msgid "_Single click to open items"
 msgstr "_Avaa kohteet yhdellä napsautuksella"
 
-#: ../src/nautilus-file-management-properties.ui.h:93
+#: ../src/nautilus-file-management-properties.ui.h:58
 msgid "_Software:"
 msgstr "_Ohjelmisto:"
 
-#: ../src/nautilus-file-management-properties.ui.h:94
+#: ../src/nautilus-file-management-properties.ui.h:59
 msgid "_Text beside icons"
 msgstr "T_eksti kuvakkeiden vierellä"
 
-#: ../src/nautilus-file-management-properties.ui.h:95
+#: ../src/nautilus-file-management-properties.ui.h:60
 msgid "_Type:"
 msgstr "_Tyyppi:"
 
-#: ../src/nautilus-file-management-properties.ui.h:96
+#: ../src/nautilus-file-management-properties.ui.h:61
 msgid "_Use compact layout"
 msgstr "_Tiivis asettelu"
 
-#: ../src/nautilus-file-management-properties.ui.h:97
+#: ../src/nautilus-file-management-properties.ui.h:62
 msgid "_View executable text files when they are opened"
 msgstr "_Näytä suoritettavat tekstitiedostot avattaessa"
 
@@ -7256,6 +7199,31 @@ msgstr "Mittakaava"
 #: ../src/nautilus-zoom-control.c:894
 msgid "Set the zoom level of the current view"
 msgstr "Aseta nykyisen näkymän mittakaava"
+
+#~ msgctxt "MIME type description (MIME type)"
+#~ msgid "%s (%s)"
+#~ msgstr "%s (%s)"
+
+#~ msgid "100 KB"
+#~ msgstr "100 kt"
+
+#~ msgid "33%"
+#~ msgstr "33 %"
+
+#~ msgid "500 KB"
+#~ msgstr "500 kt"
+
+#~ msgid "66%"
+#~ msgstr "66 %"
+
+#~ msgid "Always"
+#~ msgstr "Aina"
+
+#~ msgid "Local Files Only"
+#~ msgstr "Vain paikalliset tiedostot"
+
+#~ msgid "Never"
+#~ msgstr "Ei koskaan"
 
 #~ msgid ""
 #~ "Whether to present the user a dialog to search using the package "
