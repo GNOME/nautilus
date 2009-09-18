@@ -4181,7 +4181,8 @@ nautilus_file_get_icon (NautilusFile *file,
 			   since the zoom level 150% gives thumbnails at 144, which is
 			   ok to scale up from 128. */
 			if (modified_size > 128*1.25 &&
-			    !file->details->thumbnail_wants_original) {
+			    !file->details->thumbnail_wants_original &&
+			    nautilus_can_thumbnail_internally (file)) {
 				/* Invalidate if we resize upward */
 				file->details->thumbnail_wants_original = TRUE;
 				nautilus_file_invalidate_attributes (file, NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL);
