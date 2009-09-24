@@ -382,6 +382,11 @@ static void action_location_properties_callback     (GtkAction *action,
 
 static void unschedule_pop_up_location_context_menu (FMDirectoryView *view);
 
+static inline void fm_directory_view_widget_to_file_operation_position (FMDirectoryView *view,
+									GdkPoint *position); 
+static void        fm_directory_view_widget_to_file_operation_position_xy (FMDirectoryView *view,
+									   int *x, int *y);
+
 EEL_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
 
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, add_file)
@@ -4030,16 +4035,18 @@ static void
 fm_directory_view_new_file_with_initial_contents (FMDirectoryView *directory_view,
 						  const char *parent_uri,
 						  const char *filename,
-						  const char *initial_contents)
+						  const char *initial_contents,
+						  GdkPoint *pos)
 {
-	GdkPoint *pos;
 	NewFolderData *data;
 
 	g_assert (parent_uri != NULL);
 
 	data = setup_new_folder_data (directory_view);
 
-	pos = context_menu_to_file_operation_position (directory_view);
+	if (pos == NULL) {
+		pos = context_menu_to_file_operation_position (directory_view);
+	}
 
 	nautilus_file_operations_new_file (GTK_WIDGET (directory_view),
 					   pos, parent_uri, filename,
@@ -4066,6 +4073,7 @@ fm_directory_view_new_file (FMDirectoryView *directory_view,
 	if (source == NULL) {
 		fm_directory_view_new_file_with_initial_contents (directory_view,
 								  parent_uri != NULL ? parent_uri : container_uri,
+								  NULL,
 								  NULL,
 								  NULL);
 		g_free (container_uri);
@@ -10001,6 +10009,28 @@ handle_netscape_url_drop_timeout (gpointer user_data)
 	return FALSE;
 }
 
+static inline void
+fm_directory_view_widget_to_file_operation_position (FMDirectoryView *view,
+						     GdkPoint *position)
+{
+	EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view,
+			 widget_to_file_operation_position,
+			 (view, position));
+}
+
+static void
+fm_directory_view_widget_to_file_operation_position_xy (FMDirectoryView *view,
+							int *x, int *y)
+{
+	GdkPoint position;
+
+	position.x = *x;
+	position.y = *y;
+	fm_directory_view_widget_to_file_operation_position (view, &position);
+	*x = position.x;
+	*y = position.y;
+}
+
 void
 fm_directory_view_handle_netscape_url_drop (FMDirectoryView  *view,
 					    const char       *encoded_url,
@@ -10081,6 +10111,8 @@ fm_directory_view_handle_netscape_url_drop (FMDirectoryView  *view,
 		g_free (container_uri);
 		return;
 	}
+
+	fm_directory_view_widget_to_file_operation_position_xy (view, &x, &y);
 
 	/* We don't support GDK_ACTION_ASK or GDK_ACTION_PRIVATE
 	 * and we don't support combinations either. */
@@ -10224,6 +10256,8 @@ fm_directory_view_handle_uri_list_drop (FMDirectoryView  *view,
 		points = NULL;
 	}
 
+	fm_directory_view_widget_to_file_operation_position_xy (view, &x, &y);
+
 	fm_directory_view_move_copy_items (real_uri_list, points,
 					   target_uri != NULL ? target_uri : container_uri,
 					   action, x, y, view);
@@ -10245,6 +10279,7 @@ fm_directory_view_handle_text_drop (FMDirectoryView  *view,
 				    int               y)
 {
 	char *container_uri;
+	GdkPoint pos;
 
 	if (text == NULL) {
 		return;
@@ -10258,11 +10293,15 @@ fm_directory_view_handle_text_drop (FMDirectoryView  *view,
 		g_assert (container_uri != NULL);
 	}
 
+	pos.x = x;
+	pos.y = y;
+	fm_directory_view_widget_to_file_operation_position (view, &pos);
+
 	fm_directory_view_new_file_with_initial_contents (
 		view, target_uri != NULL ? target_uri : container_uri,
 		/* Translator: This is the filename used for when you dnd text to a directory */
 		_("dropped text.txt"),
-		text);
+		text, &pos);
 
 	g_free (container_uri);
 }
