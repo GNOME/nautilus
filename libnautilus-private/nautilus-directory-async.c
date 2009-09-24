@@ -1700,9 +1700,8 @@ lacks_mount (NautilusFile *file)
 		 (file->details->type == G_FILE_TYPE_DIRECTORY &&
 		  nautilus_file_is_self_owned (file)) ||
 		 
-		 /* Mountable with a target_uri, could be a mountpoint */
-		 (file->details->type == G_FILE_TYPE_MOUNTABLE &&
-		  file->details->activation_uri != NULL)
+		 /* Mountable, could be a mountpoint */
+		 (file->details->type == G_FILE_TYPE_MOUNTABLE)
 
 		 )
 		);
