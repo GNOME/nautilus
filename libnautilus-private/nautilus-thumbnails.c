@@ -765,17 +765,35 @@ get_types_table (void)
 	return image_mime_types;
 }
 
+static gboolean
+pixbuf_can_load_type (const char *mime_type)
+{
+	GHashTable *image_mime_types;
+
+	image_mime_types = get_types_table ();
+	if (g_hash_table_lookup (image_mime_types, mime_type)) {
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+gboolean
+nautilus_can_thumbnail_internally (NautilusFile *file)
+{
+	char *mime_type;
+	gboolean res;
+
+	mime_type = nautilus_file_get_mime_type (file);
+	res = pixbuf_can_load_type (mime_type);
+	g_free (mime_type);
+	return res;
+}
+
 gboolean
 nautilus_thumbnail_is_mimetype_limited_by_size (const char *mime_type)
 {
-	GHashTable *image_mime_types;
-	
-	image_mime_types = get_types_table ();
-        if (g_hash_table_lookup (image_mime_types, mime_type)) {
-                return TRUE;
-	}
-
-        return FALSE;
+	return pixbuf_can_load_type (mime_type);
 }
 
 gboolean
