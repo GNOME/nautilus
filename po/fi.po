@@ -24,7 +24,7 @@ msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-09-15 16:15+0300\n"
-"PO-Revision-Date: 2009-09-15 16:30+0300\n"
+"PO-Revision-Date: 2009-09-25 20:42+0300\n"
 "Last-Translator: Ilkka Tuohela <hile@hut.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -947,7 +947,7 @@ msgstr "Jos tosi, roskakorin kuvake näkyy työpöydällä."
 msgid ""
 "If this is set to true, icons linking to mounted volumes will be put on the "
 "desktop."
-msgstr "Jos tosi, liitettyjen taltioiden kuvakkeet näkyvät työpöydällä."
+msgstr "Jos tosi, liitettyjen asemien kuvakkeet näkyvät työpöydällä."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
 msgid ""
@@ -1140,7 +1140,7 @@ msgstr "Näytä sijaintipalkki uusissa ikkunoissa"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:109
 msgid "Show mounted volumes on the desktop"
-msgstr "Näytä liitetyt taltiot työpöydällä"
+msgstr "Näytä liitetyt asemat työpöydällä"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:110
 msgid "Show side pane in new windows"
@@ -1514,7 +1514,7 @@ msgid ""
 "for other media of type \"%s\"."
 msgstr ""
 "Valitse, kuinka kohde \"%s\" avataan ja suoritetaanko sama toiminto aina "
-"havaittessa \"%s\"-tyyppisiä taltioita."
+"havaittessa \"%s\"-tyyppisiä asemia."
 
 #: ../libnautilus-private/nautilus-autorun.c:1002
 msgid "_Always perform this action"
@@ -1703,14 +1703,14 @@ msgstr "työpöydällä"
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:101
 #, c-format
 msgid "You cannot move the volume \"%s\" to the trash."
-msgstr "Taltiota \"%s\" ei voida siirtää roskakoriin."
+msgstr "Asemaa \"%s\" ei voida siirtää roskakoriin."
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:111
 msgid ""
 "If you want to eject the volume, please use \"Eject\" in the popup menu of "
 "the volume."
 msgstr ""
-"Jos haluat poistaa taltion asemasta, valitse \"Poista asemasta\" taltion "
+"Jos haluat poistaa levyn asemasta, valitse \"Poista asemasta\" levyn "
 "kontekstivalikosta."
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:120
@@ -1718,7 +1718,7 @@ msgid ""
 "If you want to unmount the volume, please use \"Unmount Volume\" in the "
 "popup menu of the volume."
 msgstr ""
-"Jos haluat poistaa taltion asemasta, valitse \"Poista asemasta\" taltion "
+"Jos haluat poistaa levyn asemasta, valitse \"Poista asemasta\" levyn "
 "kontekstivalikosta."
 
 #: ../libnautilus-private/nautilus-dnd.c:776
@@ -2163,7 +2163,7 @@ msgid ""
 "All trashed items on the volume will be permanently lost."
 msgstr ""
 "Jotta vapaa tila laitteella oikeasti vapautuisi, täytyy sen roskakori "
-"tyhjentää. Kaikki taltion roskakorissa olevat tiedostot hukataan pysyvästi."
+"tyhjentää. Kaikki aseman roskakorissa olevat tiedostot hukataan pysyvästi."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2179
 msgid "Do _not Empty Trash"
@@ -4199,17 +4199,17 @@ msgstr "_Liitä"
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7048
 msgid "Mount the selected volume"
-msgstr "Liitä valittu taltio"
+msgstr "Liitä valittu asema"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7052
 msgid "Unmount the selected volume"
-msgstr "Irrota valittu taltio"
+msgstr "Irrota valittu asema"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7056
 msgid "Eject the selected volume"
-msgstr "Poista valittu taltio asemasta"
+msgstr "Poista valittu levy asemasta"
 
 #. name, stock id
 #. label, accelerator
@@ -4223,7 +4223,7 @@ msgstr "_Alusta"
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7060
 msgid "Format the selected volume"
-msgstr "Alusta valittu taltio"
+msgstr "Alusta valittu asema"
 
 #. name, stock id
 #. label, accelerator
@@ -4244,7 +4244,7 @@ msgstr "_Käynnistä"
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7064
 msgid "Start the selected volume"
-msgstr "Käynnistä valittu taltio"
+msgstr "Käynnistä valittu asema"
 
 #. name, stock id
 #. label, accelerator
@@ -4263,7 +4263,7 @@ msgstr "_Pysäytä"
 #: ../src/file-manager/fm-directory-view.c:7068
 #: ../src/file-manager/fm-directory-view.c:8109
 msgid "Stop the selected volume"
-msgstr "Pysäytä valittu taltio"
+msgstr "Pysäytä valittu asema"
 
 #. name, stock id
 #. label, accelerator
@@ -4304,12 +4304,12 @@ msgstr "Alusta avoimeen kansioon liittyvän osion tiedostojärjestelmä"
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7092
 msgid "Start the volume associated with the open folder"
-msgstr "Käynnistä avoimeen kansioon liittyvän taltio"
+msgstr "Käynnistä avoimeen kansioon liittyvän asema"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7096
 msgid "Stop the volume associated with the open folder"
-msgstr "Pysäytä avoimeen kansioon liittyvä taltio"
+msgstr "Pysäytä avoimeen kansioon liittyvä asema"
 
 #. name, stock id
 #. label, accelerator
@@ -4390,32 +4390,32 @@ msgstr "Poista tämä kansio siirtämättä roskakoriin"
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7157
 msgid "Mount the volume associated with this folder"
-msgstr "Liitä tähän kansioon liittyvä taltio"
+msgstr "Liitä tähän kansioon liittyvä asema"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7161
 msgid "Unmount the volume associated with this folder"
-msgstr "Irrota tähän kansioon liittyvä taltio"
+msgstr "Irrota tähän kansioon liittyvä asema"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7165
 msgid "Eject the volume associated with this folder"
-msgstr "Poista asemasta tähän kansioon liittyvä taltio"
+msgstr "Poista asemasta tähän kansioon liittyvä levy"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7169
 msgid "Format the volume associated with this folder"
-msgstr "Alusta tähän kansioon liittyvä taltio"
+msgstr "Alusta tähän kansioon liittyvä asema"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7173
 msgid "Start the volume associated with this folder"
-msgstr "Käynnistä tähän kansioon liittyvä taltio"
+msgstr "Käynnistä tähän kansioon liittyvä asema"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7177
 msgid "Stop the volume associated with this folder"
-msgstr "Pysäytä tähän kansioon liittyvä taltio"
+msgstr "Pysäytä tähän kansioon liittyvä asema"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7186
@@ -5199,7 +5199,7 @@ msgstr "Sijainti:"
 
 #: ../src/file-manager/fm-properties-window.c:3316
 msgid "Volume:"
-msgstr "Taltio:"
+msgstr "Asema:"
 
 #: ../src/file-manager/fm-properties-window.c:3325
 msgid "Accessed:"
