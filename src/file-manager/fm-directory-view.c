@@ -7883,11 +7883,11 @@ real_update_menus_volumes (FMDirectoryView *view,
 		default:
 		case G_DRIVE_START_STOP_TYPE_UNKNOWN:
 			gtk_action_set_label (action, _("_Start"));
-			gtk_action_set_tooltip (action, _("Start the select drive"));
+			gtk_action_set_tooltip (action, _("Start the selected drive"));
 			break;
 		case G_DRIVE_START_STOP_TYPE_SHUTDOWN:
 			gtk_action_set_label (action, _("_Start"));
-			gtk_action_set_tooltip (action, _("Start the select drive"));
+			gtk_action_set_tooltip (action, _("Start the selected drive"));
 			break;
 		case G_DRIVE_START_STOP_TYPE_NETWORK:
 			gtk_action_set_label (action, _("_Connect"));
