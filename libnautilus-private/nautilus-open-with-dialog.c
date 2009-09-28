@@ -44,11 +44,11 @@ struct _NautilusOpenWithDialogDetails {
 	
 	char *content_type;
 	char *extension;
-	char *type_description;
 
 	GtkWidget *label;
 	GtkWidget *entry;
 	GtkWidget *button;
+	GtkWidget *checkbox;
 
 	GtkWidget *desc_label;
 
@@ -59,6 +59,8 @@ struct _NautilusOpenWithDialogDetails {
 	GSList	      *add_icon_paths;
 	gint	       add_items_idle_id;
 	gint	       add_icons_idle_id;
+
+	gboolean add_mode;
 };
 
 enum {
@@ -104,7 +106,6 @@ nautilus_open_with_dialog_finalize (GObject *object)
 	}
 	g_free (dialog->details->content_type);
 	g_free (dialog->details->extension);
-	g_free (dialog->details->type_description);
 
 	g_free (dialog->details);
 
@@ -242,27 +243,31 @@ add_or_find_application (NautilusOpenWithDialog *dialog)
 	}
 
 
-	if (dialog->details->content_type) {
-		success = g_app_info_add_supports_type (app,
-							dialog->details->content_type,
-							&error);
-	} else {
-		success = g_app_info_set_as_default_for_extension (app,
-								   dialog->details->extension,
-								   &error);
-	}
+	if (dialog->details->add_mode || 
+			(!dialog->details->add_mode &&
+			gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->details->checkbox)))) {
+		if (dialog->details->content_type) {
+			success = g_app_info_add_supports_type (app,
+								dialog->details->content_type,
+								&error);
+		} else {
+			success = g_app_info_set_as_default_for_extension (app,
+									   dialog->details->extension,
+									   &error);
+		}
 	
-	if (!success) {
-		message = g_strdup_printf (_("Could not set application as the default: %s"), error->message);
-		eel_show_error_dialog (_("Could not set as default application"),
-				       message,
-				       GTK_WINDOW (dialog));
-		g_free (message);
-		g_error_free (error);
-	}
+		if (!success) {
+			message = g_strdup_printf (_("Could not set application as the default: %s"), error->message);
+			eel_show_error_dialog (_("Could not set as default application"),
+					       message,
+					       GTK_WINDOW (dialog));
+			g_free (message);
+			g_error_free (error);
+		}
 
-	g_signal_emit_by_name (nautilus_signaller_get_current (),
-			       "mime_data_changed");
+		g_signal_emit_by_name (nautilus_signaller_get_current (),
+				       "mime_data_changed");
+	}
 
 	return app;
 }
@@ -844,6 +849,13 @@ nautilus_open_with_dialog_init (NautilusOpenWithDialog *dialog)
 	gtk_box_pack_start (GTK_BOX (hbox), dialog->details->button, FALSE, FALSE, 0);
 	gtk_widget_show (dialog->details->button);
 
+	/* Add remember this application checkbox - only visible in open mode */
+	dialog->details->checkbox = gtk_check_button_new ();
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->details->checkbox), TRUE);
+	gtk_button_set_use_underline (GTK_BUTTON (dialog->details->checkbox), TRUE);
+	gtk_widget_show (GTK_WIDGET (dialog->details->checkbox));
+	gtk_box_pack_start (GTK_BOX (vbox), dialog->details->checkbox, FALSE, FALSE, 0);
+
         gtk_dialog_add_button (GTK_DIALOG (dialog),
                                GTK_STOCK_REMOVE,
 			       RESPONSE_REMOVE);
@@ -914,12 +926,14 @@ static void
 set_uri_and_type (NautilusOpenWithDialog *dialog,
 		  const char *uri,
 		  const char *mime_type,
-		  const char *passed_extension)
+		  const char *passed_extension,
+		  gboolean add_mode)
 {
 	char *label;
 	char *emname;
 	char *name, *extension;
 	char *description;
+	char *checkbox_text;
 	
 	name = NULL;
 	extension = NULL;
@@ -940,9 +954,29 @@ set_uri_and_type (NautilusOpenWithDialog *dialog,
 	if (extension != NULL &&
 	    g_content_type_is_unknown (mime_type)) {
 		dialog->details->extension = g_strdup (extension);
-		/* the %s here is a file extension */
-		dialog->details->type_description =
-			g_strdup_printf (_("%s document"), extension);
+
+		if (name != NULL) {
+			emname = g_strdup_printf ("<i>%s</i>", name);
+			if (add_mode) {
+				/* first %s is a filename and second %s is a file extension */
+				label = g_strdup_printf (_("Open %s and other %s document with:"),
+							 emname, dialog->details->extension);
+			} else {
+				/* the %s here is a file name */
+				label = g_strdup_printf (_("Open %s with:"), emname);
+				checkbox_text = g_strdup_printf (_("_Remember this application for %s documents"), 
+								 dialog->details->extension);
+
+				gtk_button_set_label (GTK_BUTTON (dialog->details->checkbox), checkbox_text);
+				g_free (checkbox_text);
+			}
+			g_free (emname);
+		} else {
+			/* Only in add mode - the %s here is a file extension */
+			label = g_strdup_printf (_("Open all %s documents with:"),
+						 dialog->details->extension);
+		}
+		g_free (extension);
 	} else {
 		dialog->details->content_type = g_strdup (mime_type);
 		description = g_content_type_get_description (mime_type);
@@ -951,17 +985,39 @@ set_uri_and_type (NautilusOpenWithDialog *dialog,
 			description = g_strdup (_("Unknown"));
 		}
 
-		dialog->details->type_description = description;
-	}
-	g_free (extension);
+		if (name != NULL) {
+			emname = g_strdup_printf ("<i>%s</i>", name);
+			if (add_mode) {
+				/* First %s is a filename, second is a description
+				 * of the type, eg "plain text document" */
+				label = g_strdup_printf (_("Open %s and other \"%s\" files with:"), 
+							 emname, description);
+			} else {
+				/* %s is a filename */
+				label = g_strdup_printf (_("Open %s with:"), emname);
+				/* %s is a file type description */
+				checkbox_text = g_strdup_printf (_("_Remember this application for \"%s\" files"),
+								 description);
 
-	if (name != NULL) {
-		emname = g_strdup_printf ("<i>%s</i>", name);
-		label = g_strdup_printf (_("Open %s and other files of type \"%s\" with:"), emname, dialog->details->type_description);
-		g_free (emname);
-	} else {
-		label = g_strdup_printf (_("Open all files of type \"%s\" with:"),
-					 dialog->details->type_description);
+				gtk_button_set_label (GTK_BUTTON (dialog->details->checkbox), checkbox_text);
+				g_free (checkbox_text);
+			}
+			g_free (emname);
+		} else {
+			/* Only in add mode */
+			label = g_strdup_printf (_("Open all \"%s\" files with:"), description);
+		}
+
+		g_free (description);
+	}
+
+	dialog->details->add_mode = add_mode;
+	if (add_mode) {
+		gtk_widget_hide (dialog->details->checkbox);
+
+		gtk_label_set_text_with_mnemonic (GTK_LABEL (dialog->details->open_label),
+						  _("_Add"));
+		gtk_window_set_title (GTK_WINDOW (dialog), _("Add Application"));
 	}
 
 	gtk_label_set_markup (GTK_LABEL (dialog->details->label), label);
@@ -970,47 +1026,49 @@ set_uri_and_type (NautilusOpenWithDialog *dialog,
 	g_free (name);
 }
 
-GtkWidget *
-nautilus_open_with_dialog_new (const char *uri,
-			       const char *mime_type,
-			       const char *extension)
+
+static GtkWidget *
+real_nautilus_open_with_dialog_new (const char *uri,
+				    const char *mime_type,
+				    const char *extension,
+				    gboolean add_mode)
 {
 	GtkWidget *dialog;
 
 	dialog = gtk_widget_new (NAUTILUS_TYPE_OPEN_WITH_DIALOG, NULL);
 
-	set_uri_and_type (NAUTILUS_OPEN_WITH_DIALOG (dialog), uri, mime_type, extension);
+	set_uri_and_type (NAUTILUS_OPEN_WITH_DIALOG (dialog), uri, mime_type, extension, add_mode);
 
 	return dialog;
 }
 
-GtkWidget* 
+GtkWidget *
+nautilus_open_with_dialog_new (const char *uri,
+			       const char *mime_type,
+			       const char *extension)
+{
+	return real_nautilus_open_with_dialog_new (uri, mime_type, extension, FALSE);
+}
+
+GtkWidget * 
 nautilus_add_application_dialog_new (const char *uri,
-				const char *mime_type)
+				     const char *mime_type)
 {
 	NautilusOpenWithDialog *dialog;
 	
-	dialog = NAUTILUS_OPEN_WITH_DIALOG (nautilus_open_with_dialog_new (uri, mime_type, NULL));
-	
-	gtk_label_set_text_with_mnemonic (GTK_LABEL (dialog->details->open_label),
-					  _("_Add"));
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Add Application"));
+	dialog = NAUTILUS_OPEN_WITH_DIALOG (real_nautilus_open_with_dialog_new (uri, mime_type, NULL, TRUE));
 
 	return GTK_WIDGET (dialog);
 }
 
-GtkWidget* 
+GtkWidget * 
 nautilus_add_application_dialog_new_for_multiple_files (const char *extension,
 							const char *mime_type)
 {
 	NautilusOpenWithDialog *dialog;
 	
-	dialog = NAUTILUS_OPEN_WITH_DIALOG (nautilus_open_with_dialog_new (NULL, mime_type, extension));
+	dialog = NAUTILUS_OPEN_WITH_DIALOG (real_nautilus_open_with_dialog_new (NULL, mime_type, extension, TRUE));
 	
-	gtk_label_set_text_with_mnemonic (GTK_LABEL (dialog->details->open_label),
-					  _("_Add"));
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Add Application"));
-
 	return GTK_WIDGET (dialog);
 }
 
