@@ -690,9 +690,36 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 				if (view->details->row_selected_on_button_down) {
 					call_parent = on_expander;
 					view->details->ignore_button_release = call_parent;
-				} else if  ((event->state & GDK_CONTROL_MASK) != 0) {
+				} else if ((event->state & GDK_CONTROL_MASK) != 0) {
+					GList *selected_rows;
+					GList *l;
+
 					call_parent = FALSE;
-					gtk_tree_selection_select_path (selection, path);
+					if ((event->state & GDK_SHIFT_MASK) != 0) {
+						GtkTreePath *cursor;
+						gtk_tree_view_get_cursor (tree_view, &cursor, NULL);
+						if (cursor != NULL) {
+							gtk_tree_selection_select_range (selection, cursor, path);
+						} else {
+							gtk_tree_selection_select_path (selection, path);
+						}
+					} else {
+						gtk_tree_selection_select_path (selection, path);
+					}
+					selected_rows = gtk_tree_selection_get_selected_rows (selection, NULL);
+
+					/* This unselects everything */
+					gtk_tree_view_set_cursor (tree_view, path, NULL, FALSE);
+
+					/* So select it again */
+					l = selected_rows;
+					while (l != NULL) {
+						GtkTreePath *p = l->data;
+						l = l->next;
+						gtk_tree_selection_select_path (selection, p);
+						gtk_tree_path_free (p);
+					}
+					g_list_free (selected_rows);
 				} else {
 					view->details->ignore_button_release = on_expander;
 				}
