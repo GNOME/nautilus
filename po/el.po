@@ -63,10 +63,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2009-09-29 12:36+0000\n"
-"PO-Revision-Date: 2009-09-29 16:35+0200\n"
-"Last-Translator: nikosCharonitakis <nikosx@gmail.com>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-09-29 17:41+0300\n"
+"PO-Revision-Date: 2009-09-29 17:42+0200\n"
+"Last-Translator: Kostas Papadimas <pkst@gnome.org>\n"
 "Language-Team: Greek <team@gnome.gr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1317,7 +1317,7 @@ msgstr "Χρήση _προεπιλογής"
 #
 #: ../libnautilus-private/nautilus-column-utilities.c:43
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:273
-#: ../src/file-manager/fm-list-view.c:1484
+#: ../src/file-manager/fm-list-view.c:1457
 msgid "Name"
 msgstr "Όνομα"
 
@@ -2675,8 +2675,8 @@ msgstr "Συμπτυγμένη προβολή"
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:144
-#: ../src/file-manager/fm-list-view.c:1538
-#: ../src/file-manager/fm-list-view.c:2950
+#: ../src/file-manager/fm-list-view.c:1511
+#: ../src/file-manager/fm-list-view.c:2923
 #: ../src/nautilus-file-management-properties.ui.h:68
 msgid "List View"
 msgstr "Προβολή λίστας"
@@ -2940,14 +2940,14 @@ msgstr[0] "Άνοιγμα %d αντικειμένου..."
 msgstr[1] "Άνοιγμα %d αντικειμένων..."
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:165
-#: ../libnautilus-private/nautilus-open-with-dialog.c:260
+#: ../libnautilus-private/nautilus-open-with-dialog.c:256
 #, c-format
 msgid "Could not set application as the default: %s"
 msgstr "Αδυναμία ορισμού της εφαρμογής ως προεπιλεγμένης: %s"
 
 #
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:166
-#: ../libnautilus-private/nautilus-open-with-dialog.c:261
+#: ../libnautilus-private/nautilus-open-with-dialog.c:257
 msgid "Could not set as default application"
 msgstr "Αδυναμία ορισμού της εφαρμογής ως προεπιλεγμένης"
 
@@ -2972,13 +2972,14 @@ msgid "No applications selected"
 msgstr "Δεν επιλέχθηκαν εφαρμογές"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:566
+#: ../libnautilus-private/nautilus-open-with-dialog.c:945
 #, c-format
 msgid "%s document"
 msgstr "Έγγραφο %s"
 
 #
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:573
-#: ../libnautilus-private/nautilus-open-with-dialog.c:985
+#: ../libnautilus-private/nautilus-open-with-dialog.c:951
 msgid "Unknown"
 msgstr "Άγνωστο"
 
@@ -2988,58 +2989,59 @@ msgid "Select an application to open %s and other files of type \"%s\""
 msgstr "Επιλογή εφαρμογής για το άνοιγμα του %s και άλλων αρχείων του τύπου \"%s\""
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:674
+#: ../libnautilus-private/nautilus-open-with-dialog.c:963
 #, c-format
 msgid "Open all files of type \"%s\" with:"
 msgstr "Άνοιγμα όλων των αρχείων του τύπου \"%s\" με:"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:147
+#: ../libnautilus-private/nautilus-open-with-dialog.c:146
 msgid "Could not run application"
 msgstr "Αδυναμία εκτέλεσης εφαρμογής"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:159
+#: ../libnautilus-private/nautilus-open-with-dialog.c:158
 #, c-format
 msgid "Could not find '%s'"
 msgstr "Δε βρέθηκε το '%s'"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:162
+#: ../libnautilus-private/nautilus-open-with-dialog.c:161
 msgid "Could not find application"
 msgstr "Δε βρέθηκε η εφαρμογή"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:236
+#: ../libnautilus-private/nautilus-open-with-dialog.c:235
 #, c-format
 msgid "Could not add application to the application database: %s"
 msgstr "Αδυναμία προσθήκης της εφαρμογής στη βάση εφαρμογών: %s"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:237
+#: ../libnautilus-private/nautilus-open-with-dialog.c:236
 msgid "Could not add application"
 msgstr "Αδυναμία προσθήκης εφαρμογής"
 
 #
-#: ../libnautilus-private/nautilus-open-with-dialog.c:406
+#: ../libnautilus-private/nautilus-open-with-dialog.c:401
 msgid "Select an Application"
 msgstr "Επιλογή εφαρμογής"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:767
+#: ../libnautilus-private/nautilus-open-with-dialog.c:762
 #: ../src/file-manager/fm-properties-window.c:5106
 msgid "Open With"
 msgstr "Άνοιγμα με"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:804
+#: ../libnautilus-private/nautilus-open-with-dialog.c:799
 msgid "Select an application to view its description."
 msgstr "Επιλέξτε μια εφαρμογή για να δείτε την περιγραφή της."
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:829
+#: ../libnautilus-private/nautilus-open-with-dialog.c:824
 msgid "_Use a custom command"
 msgstr "_Χρήση προσαρμοσμένης εντολής"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:846
+#: ../libnautilus-private/nautilus-open-with-dialog.c:841
 msgid "_Browse..."
 msgstr "_Περιήγηση..."
 
 #
 #. name, stock id
 #. label, accelerator
-#: ../libnautilus-private/nautilus-open-with-dialog.c:882
+#: ../libnautilus-private/nautilus-open-with-dialog.c:870
 #: ../src/file-manager/fm-directory-view.c:6947
 #: ../src/file-manager/fm-directory-view.c:8462
 #: ../src/file-manager/fm-tree-view.c:1210
@@ -3047,62 +3049,18 @@ msgstr "_Περιήγηση..."
 msgid "_Open"
 msgstr "Άν_οιγμα"
 
-#. first %s is a filename and second %s is a file extension
-#: ../libnautilus-private/nautilus-open-with-dialog.c:962
+#: ../libnautilus-private/nautilus-open-with-dialog.c:960
 #, c-format
-#| msgid "Open %s and other files of type \"%s\" with:"
-msgid "Open %s and other %s document with:"
-msgstr "Άνοιγμα %s και άλλων αρχείων %s  με:"
+msgid "Open %s and other files of type \"%s\" with:"
+msgstr "Άνοιγμα %s  και άλλων των αρχείων του τύπου \"%s\" με:"
 
-#. the %s here is a file name
-#. %s is a filename
-#: ../libnautilus-private/nautilus-open-with-dialog.c:966
-#: ../libnautilus-private/nautilus-open-with-dialog.c:997
-#, c-format
-#| msgid "Open With"
-msgid "Open %s with:"
-msgstr "Άνοιγμα %s  με:"
-
-#: ../libnautilus-private/nautilus-open-with-dialog.c:967
-#, c-format
-#| msgid "There is no application installed for %s files"
-msgid "_Remember this application for %s documents"
-msgstr "_Απομνημόνευση αυτής της εφαρμογής για έγγραφα %s"
-
-#. Only in add mode - the %s here is a file extension
-#: ../libnautilus-private/nautilus-open-with-dialog.c:976
-#, c-format
-#| msgid "Open all files of type \"%s\" with:"
-msgid "Open all %s documents with:"
-msgstr "Άνοιγμα όλων των αρχείων %s με:"
-
-#. First %s is a filename, second is a description
-#. * of the type, eg "plain text document"
-#: ../libnautilus-private/nautilus-open-with-dialog.c:993
-#, c-format
-#| msgid "Open %s and other files of type \"%s\" with:"
-msgid "Open %s and other \"%s\" files with:"
-msgstr "Άνοιγμα %s και άλλων αρχείων  \"%s\" με:"
-
-#. %s is a file type description
-#: ../libnautilus-private/nautilus-open-with-dialog.c:999
-#, c-format
-#| msgid "There is no application installed for %s files"
-msgid "_Remember this application for \"%s\" files"
-msgstr "_Απομνημόνευση αυτής της εφαρμογής για αρχεία \"%s\""
-
-#. Only in add mode
-#: ../libnautilus-private/nautilus-open-with-dialog.c:1008
-#, c-format
-#| msgid "Open all files of type \"%s\" with:"
-msgid "Open all \"%s\" files with:"
-msgstr "Άνοιγμα όλων των αρχείων  \"%s\" με:"
-
-#: ../libnautilus-private/nautilus-open-with-dialog.c:1019
+#: ../libnautilus-private/nautilus-open-with-dialog.c:996
+#: ../libnautilus-private/nautilus-open-with-dialog.c:1011
 msgid "_Add"
 msgstr "_Προσθήκη"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:1020
+#: ../libnautilus-private/nautilus-open-with-dialog.c:997
+#: ../libnautilus-private/nautilus-open-with-dialog.c:1012
 msgid "Add Application"
 msgstr "Προσθήκη εφαρμογής"
 
@@ -4188,9 +4146,7 @@ msgstr[1] "Μεταφορά των επιλεγμένων αντικειμένω
 
 #: ../src/file-manager/fm-directory-view.c:7886
 #: ../src/file-manager/fm-directory-view.c:7890
-#: ../src/file-manager/fm-directory-view.c:8088
-#: ../src/file-manager/fm-directory-view.c:8092
-msgid "Start the selected drive"
+msgid "Start the select drive"
 msgstr "Εκκίνηση του επιλεγμένου οδηγού"
 
 #: ../src/file-manager/fm-directory-view.c:7894
@@ -4311,6 +4267,11 @@ msgstr "Διακοπή του οδηγού πολλαπλών δίσκων πο�
 #: ../src/file-manager/fm-directory-view.c:8023
 msgid "Lock the drive associated with the open folder"
 msgstr "Κλείδωμα του οδηγού που αντιστοιχεί στον ανοικτό φάκελο"
+
+#: ../src/file-manager/fm-directory-view.c:8088
+#: ../src/file-manager/fm-directory-view.c:8092
+msgid "Start the selected drive"
+msgstr "Εκκίνηση του επιλεγμένου οδηγού"
 
 #. add the "open in new window" menu item
 #: ../src/file-manager/fm-directory-view.c:8202
@@ -4734,40 +4695,40 @@ msgstr "(Άδειο)"
 msgid "Loading..."
 msgstr "Φόρτωση..."
 
-#: ../src/file-manager/fm-list-view.c:2155
+#: ../src/file-manager/fm-list-view.c:2128
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s ορατές στήλες"
 
-#: ../src/file-manager/fm-list-view.c:2174
+#: ../src/file-manager/fm-list-view.c:2147
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Επιλέξτε τον τρόπο ταξινόμησης των πληροφοριών στο φάκελο:"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:2228
+#: ../src/file-manager/fm-list-view.c:2201
 msgid "Visible _Columns..."
 msgstr "Ορατές _στήλες..."
 
 #. tooltip
-#: ../src/file-manager/fm-list-view.c:2229
+#: ../src/file-manager/fm-list-view.c:2202
 msgid "Select the columns visible in this folder"
 msgstr "Επιλέξτε τις στήλες που θα είναι ορατές στο φάκελο"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-list-view.c:2952
+#: ../src/file-manager/fm-list-view.c:2925
 msgid "_List"
 msgstr "_Λίστα"
 
-#: ../src/file-manager/fm-list-view.c:2953
+#: ../src/file-manager/fm-list-view.c:2926
 msgid "The list view encountered an error."
 msgstr "Η προβολή λίστας παρουσίασε σφάλμα."
 
-#: ../src/file-manager/fm-list-view.c:2954
+#: ../src/file-manager/fm-list-view.c:2927
 msgid "The list view encountered an error while starting up."
 msgstr "Η προβολή λίστας παρουσίασε σφάλμα κατά την εκκίνηση."
 
-#: ../src/file-manager/fm-list-view.c:2955
+#: ../src/file-manager/fm-list-view.c:2928
 msgid "Display this location with the list view."
 msgstr "Εμφάνιση αυτής της τοποθεσίας με την προβολή λίστας."
 
@@ -6643,7 +6604,6 @@ msgstr ""
 " Κώστας Παπαδήμας <pkst@gnome.org>\n"
 " Πιέρρος Παπαδέας <ppapadeas@gmail.com>\n"
 " Τζένη Πετούμενου <epetoumenou@gmail.gr>\n"
-" Νίκος Χαρωνιτάκης <nikosx@gmail.com>\n"
 "\n"
 "Για περισσότερες πληροφορίες, επισκεφθείτε τη σελίδα http://www.gnome.gr/"
 
@@ -6942,4 +6902,19 @@ msgstr "Εστίαση"
 #: ../src/nautilus-zoom-control.c:894
 msgid "Set the zoom level of the current view"
 msgstr "Ορισμός του επιπέδου εστίασης της τρέχουσας προβολής"
+
+#~ msgid "Open %s and other %s document with:"
+#~ msgstr "Άνοιγμα %s και άλλου  εγγράφου %s με:"
+#~ msgid "Open %s with:"
+#~ msgstr "Άνοιγμα %s με:"
+#~ msgid "_Remember this application for %s documents"
+#~ msgstr "Απομνη_μόνευση αυτής της εφαρμογή για έγγραφα %s"
+#~ msgid "Open all %s documents with:"
+#~ msgstr "Άνοιγμα όλων των εγγράφων \"%s\" με:"
+#~ msgid "Open %s and other \"%s\" files with:"
+#~ msgstr "Άνοιγμα %s και άλλων αρχείων του τύπου \"%s\" με:"
+#~ msgid "_Remember this application for \"%s\" files"
+#~ msgstr "Απομνη_μόνευση αυτής της εφαρμογή για αρχεία του  \"%s\" "
+#~ msgid "Open all \"%s\" files with:"
+#~ msgstr "Άνοιγμα όλων των αρχείων του τύπου \"%s\" με:"
 
