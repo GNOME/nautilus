@@ -44,6 +44,7 @@
 #include "nautilus-desktop-icon-file.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-debug-log.h"
+#include "nautilus-open-with-dialog.h"
 
 typedef enum {
 	ACTIVATION_ACTION_LAUNCH_DESKTOP_FILE,
@@ -1186,22 +1187,114 @@ get_application_no_mime_type_handler_message (NautilusFile *file, char *uri)
 }
 
 static void
+application_selected_cb (NautilusOpenWithDialog *dialog,
+			 GAppInfo *app,
+			 gpointer user_data)
+{
+	GtkWindow *parent_window;
+	NautilusFile *file;
+	GList files;
+
+	parent_window = GTK_WINDOW (user_data);
+	
+	file = g_object_get_data (G_OBJECT (dialog), "mime-action:file");
+
+	files.next = NULL;
+	files.prev = NULL;
+	files.data = file;
+	nautilus_launch_application (app, &files, parent_window);
+}
+
+static void
+choose_program (GtkDialog *message_dialog, int response, gpointer callback_data)
+{
+	GtkWidget *dialog;
+	char *uri;
+	char *mime_type;
+	NautilusFile *file;
+
+	if (response != GTK_RESPONSE_ACCEPT){
+		gtk_widget_destroy (GTK_WIDGET (message_dialog));
+		return;
+	}
+
+	file = g_object_get_data (G_OBJECT (message_dialog), "mime-action:file");
+
+	g_assert (NAUTILUS_IS_FILE (file));
+
+	nautilus_file_ref (file);
+	uri = nautilus_file_get_uri (file);
+	mime_type = nautilus_file_get_mime_type (file);
+
+	dialog = nautilus_open_with_dialog_new (uri, mime_type, NULL);
+	g_object_set_data_full (G_OBJECT (dialog), 
+				"mime-action:file",
+				nautilus_file_ref (file),
+				(GDestroyNotify)nautilus_file_unref);
+	
+	gtk_window_set_screen (GTK_WINDOW (dialog), 
+			       gtk_widget_get_screen (GTK_WIDGET (callback_data)));
+
+	/* Destroy the message dialog after ref:ing the file */
+	gtk_widget_destroy (GTK_WIDGET (message_dialog));
+
+	gtk_widget_show (dialog);
+
+	g_signal_connect_object (dialog, 
+				 "application_selected", 
+				 G_CALLBACK (application_selected_cb),
+				 callback_data,
+				 0);
+			  
+ 	g_free (uri);
+	g_free (mime_type);
+	nautilus_file_unref (file);	
+}
+
+static void
 show_unhandled_type_error (ActivateParametersInstall *parameters)
 {
+	GtkWidget *dialog;
+
 	char *mime_type = nautilus_file_get_mime_type (parameters->file);
 	char *error_message = get_application_no_mime_type_handler_message (parameters->file, parameters->uri);
 	if (g_content_type_is_unknown (mime_type)) {
-		eel_show_error_dialog (error_message,
-				       _("The file is of an unknown type"),
-				       parameters->parent_window);
+		dialog = eel_alert_dialog_new (parameters->parent_window,
+		                      GTK_DIALOG_DESTROY_WITH_PARENT,
+                		      GTK_MESSAGE_ERROR,
+		                      0,
+                		      error_message,
+                		      _("The file is of an unknown type"));
 	} else {
 		char *text;
 		text = g_strdup_printf (_("There is no application installed for %s files"), g_content_type_get_description (mime_type));
-		eel_show_error_dialog (error_message,
-				       text,
-				       parameters->parent_window);
+
+		dialog = eel_alert_dialog_new (parameters->parent_window,
+		                      GTK_DIALOG_DESTROY_WITH_PARENT,
+                		      GTK_MESSAGE_ERROR,
+		                      0,
+                		      error_message,
+                		      text);
+
 		g_free (text);
 	}
+
+	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Select Application"), GTK_RESPONSE_ACCEPT);
+
+	gtk_dialog_add_button (GTK_DIALOG (dialog), GTK_STOCK_OK, GTK_RESPONSE_OK);
+
+	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
+
+	g_object_set_data_full (G_OBJECT (dialog), 
+				"mime-action:file",
+				nautilus_file_ref (parameters->file),
+				(GDestroyNotify)nautilus_file_unref);
+
+	gtk_widget_show (GTK_WIDGET (dialog));
+	
+	g_signal_connect (dialog, "response",
+			  G_CALLBACK (choose_program), parameters->parent_window);
+
 	g_free (error_message);
 	g_free (mime_type);
 }
