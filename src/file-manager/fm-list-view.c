@@ -2064,10 +2064,10 @@ column_chooser_changed_callback (NautilusColumnChooser *chooser,
 					 list);
 	g_list_free (list);
 
+	apply_columns_settings (view, column_order, visible_columns);
+
 	g_strfreev (visible_columns);
 	g_strfreev (column_order);
-
-	set_columns_settings_from_metadata_and_preferences (view);
 }
 
 static void
