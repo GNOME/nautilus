@@ -190,6 +190,7 @@ typedef struct {
 #define REPLACE_ALL _("Replace _All")
 #define MERGE _("_Merge")
 #define MERGE_ALL _("Merge _All")
+#define COPY_FORCE _("Copy _Anyway")
 
 static void
 mark_desktop_file_trusted (CommonJob *common,
@@ -2765,13 +2766,17 @@ verify_destination (CommonJob *job,
 						secondary,
 						details,
 						FALSE,
-						GTK_STOCK_CANCEL, RETRY,
+						GTK_STOCK_CANCEL,
+						COPY_FORCE,
+						RETRY,
 						NULL);
 			
 			if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
 				abort_job (job);
-			} else if (response == 1) {
+			} else if (response == 2) {
 				goto retry;
+			} else if (response == 1) {
+				/* We are forced to copy - just fall through ... */
 			} else {
 				g_assert_not_reached ();
 			}
