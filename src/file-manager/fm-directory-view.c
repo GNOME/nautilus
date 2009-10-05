@@ -1171,10 +1171,12 @@ static void
 select_pattern (FMDirectoryView *view)
 {
 	GtkWidget *dialog;
-	GtkWidget *box;
 	GtkWidget *label;
+	GtkWidget *example;
+	GtkWidget *table;
 	GtkWidget *entry;
 	GList *ret;
+	char *example_pattern;
 
 	ret = NULL;
 	dialog = gtk_dialog_new_with_buttons (_("Select Items Matching"),
@@ -1193,16 +1195,40 @@ select_pattern (FMDirectoryView *view)
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
 	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 2);
 
-	box = gtk_hbox_new (FALSE, 12);
-	gtk_container_set_border_width (GTK_CONTAINER (box), 5);
 	label = gtk_label_new_with_mnemonic (_("_Pattern:"));
+	example = gtk_label_new (NULL);
+	example_pattern = g_strdup_printf ("<b>%s</b><i>%s</i>", 
+					   _("Examples: "),
+					   _("*.png, file\?\?.txt, pict*.\?\?\?"));
+	gtk_label_set_markup (GTK_LABEL (example), example_pattern);
+	g_free (example_pattern);
+	gtk_misc_set_alignment (GTK_MISC (example), 0.0, 0.5);
 	entry = gtk_entry_new ();
 	gtk_entry_set_activates_default (GTK_ENTRY (entry), TRUE);
-	gtk_box_pack_start (GTK_BOX (box), label, TRUE, TRUE, 0);
-	gtk_box_pack_start (GTK_BOX (box), entry, TRUE, TRUE, 0);
+
+	table = gtk_table_new (2, 2, FALSE);
+	
+	gtk_table_attach (GTK_TABLE (table), label,
+			  0, 1,
+			  0, 1,
+			  GTK_FILL, GTK_FILL,
+			  5, 5);
+
+	gtk_table_attach (GTK_TABLE (table), entry,
+			  1, 2,
+			  0, 1,
+			  GTK_EXPAND | GTK_FILL, GTK_FILL,
+			  5, 5);
+
+	gtk_table_attach (GTK_TABLE (table), example,
+			  1, 2,
+			  1, 2,
+			  GTK_FILL, GTK_FILL,
+			  5, 0);
+
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry);
-	gtk_widget_show_all (box);
-	gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), box);
+	gtk_widget_show_all (table);
+	gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), table);
 	g_object_set_data (G_OBJECT (dialog), "entry", entry);
 	g_signal_connect (dialog, "response",
 			  G_CALLBACK (pattern_select_response_cb),
