@@ -8285,9 +8285,12 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	int x, y, width;
 	int start_offset, end_offset;
 
-	/* Check if it already in renaming mode. */
+	/* Check if it already in renaming mode, if so - select all */
 	details = container->details;
 	if (details->renaming) {
+		eel_editable_label_select_region (EEL_EDITABLE_LABEL (details->rename_widget),
+						  0,
+						  -1);
 		return;
 	}
 

@@ -2483,9 +2483,12 @@ fm_list_view_start_renaming_file (FMDirectoryView *view,
 	
 	list_view = FM_LIST_VIEW (view);
 	
-	/* Don't start renaming if another rename in this listview is
-	 * already in progress. */
+	/* Select all if we are in renaming mode already */
 	if (list_view->details->file_name_column && list_view->details->file_name_column->editable_widget) {
+		gtk_editable_select_region (
+				GTK_EDITABLE (list_view->details->file_name_column->editable_widget),
+				0,
+				-1);
 		return;
 	}
 
