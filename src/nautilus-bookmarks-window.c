@@ -814,6 +814,10 @@ update_bookmark_from_text (void)
 		g_assert (GTK_IS_ENTRY (name_field));
 		g_assert (GTK_IS_ENTRY (uri_field));
 
+		if (gtk_entry_get_text_length (GTK_ENTRY (uri_field)) == 0) {
+			return;
+		}
+
 		location = g_file_parse_name 
 			(gtk_entry_get_text (GTK_ENTRY (uri_field)));
 		
