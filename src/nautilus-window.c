@@ -78,7 +78,6 @@
 
 #define EXTRA_VIEW_WIDGETS_BACKGROUND "#a7c6e1"
 
-/* FIXME bugzilla.gnome.org 41245: hardwired sizes */
 #define SIDE_PANE_MINIMUM_WIDTH 1
 #define SIDE_PANE_MINIMUM_HEIGHT 400
 

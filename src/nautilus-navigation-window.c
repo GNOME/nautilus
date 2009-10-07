@@ -831,9 +831,6 @@ setup_side_pane_width (NautilusNavigationWindow *window)
 
 	window->details->side_pane_width = side_pane_width_auto_value;
 
-	/* FIXME bugzilla.gnome.org 41245: Saved in pixels instead of in %? */
-        /* FIXME bugzilla.gnome.org 41245: No reality check on the value? */
-	
 	gtk_paned_set_position (GTK_PANED (window->details->content_paned), 
 				side_pane_width_auto_value);
 }
