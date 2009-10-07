@@ -757,6 +757,7 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 		/* Deselect if people click outside any row. It's OK to
 		   let default code run; it won't reselect anything. */
 		gtk_tree_selection_unselect_all (gtk_tree_view_get_selection (tree_view));
+		tree_view_class->button_press_event (widget, event);
 
 		if (event->button == 3) {
 			do_popup_menu (widget, view, event);
