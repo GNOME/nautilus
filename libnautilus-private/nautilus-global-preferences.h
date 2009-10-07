@@ -106,7 +106,7 @@ typedef enum
 
 /* Spatial or browser mode */
 #define NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER       		"preferences/always_use_browser"
-#define NAUTILUS_PREFERENCES_ENABLE_TABS       			"preferences/tabs_enable"
+#define NAUTILUS_PREFERENCES_ENABLE_TABS       			"/desktop/gnome/file_views/tabs_enable"
 #define NAUTILUS_PREFERENCES_NEW_TAB_POSITION       		"preferences/tabs_open_position"
 
 /* Which views should be displayed for new windows */
