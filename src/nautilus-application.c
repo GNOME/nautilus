@@ -86,10 +86,6 @@ enum
   COMMAND_OPEN_BROWSER,
 };
 
-/* Needed for the is_kdesktop_present check */
-#include <gdk/gdkx.h>
-#include <X11/Xlib.h>
-
 /* Keep window from shrinking down ridiculously small; numbers are somewhat arbitrary */
 #define APPLICATION_WINDOW_MIN_WIDTH	300
 #define APPLICATION_WINDOW_MIN_HEIGHT	100
@@ -126,7 +122,6 @@ static void     drive_connected_callback           (GVolumeMonitor           *mo
 						    NautilusApplication      *application);
 static void     drive_listen_for_eject_button      (GDrive *drive, 
 						    NautilusApplication *application);
-static gboolean is_kdesktop_present               (void);
 static void     nautilus_application_load_session     (NautilusApplication *application); 
 static char *   nautilus_application_get_session_data (void);
 static void     ck_session_active_changed_cb (DBusGProxy *proxy,
@@ -880,11 +875,6 @@ nautilus_application_startup (NautilusApplication *application,
 	} else {
 		char *accel_map_filename;
 
-		/* If KDE desktop is running, then force no_desktop */
-		if (is_kdesktop_present ()) {
-			no_desktop = TRUE;
-		}
-		
 		if (!no_desktop &&
 		    !eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP)) {
 			no_desktop = TRUE;
@@ -2056,137 +2046,6 @@ nautilus_application_load_session (NautilusApplication *application)
 	if (bail) {
 		g_message ("failed to load session");
 	} 
-}
-
-#ifdef UGLY_HACK_TO_DETECT_KDE
-
-static gboolean
-get_self_typed_prop (Window      xwindow,
-                     Atom        atom,
-                     gulong     *val)
-{  
-	Atom type;
-	int format;
-	gulong nitems;
-	gulong bytes_after;
-	gulong *num;
-	int err;
-  
-	gdk_error_trap_push ();
-	type = None;
-	XGetWindowProperty (gdk_display,
-			    xwindow,
-			    atom,
-			    0, G_MAXLONG,
-			    False, atom, &type, &format, &nitems,
-			    &bytes_after, (guchar **)&num);  
-
-	err = gdk_error_trap_pop ();
-	if (err != Success) {
-		return FALSE;
-	}
-  
-	if (type != atom) {
-		return FALSE;
-	}
-
-	if (val)
-		*val = *num;
-  
-	XFree (num);
-
-	return TRUE;
-}
-
-static gboolean
-has_wm_state (Window xwindow)
-{
-	return get_self_typed_prop (xwindow,
-				    XInternAtom (gdk_display, "WM_STATE", False),
-				    NULL);
-}
-
-static gboolean
-look_for_kdesktop_recursive (Window xwindow)
-{
-  
-	Window ignored1, ignored2;
-	Window *children;
-	unsigned int n_children;
-	unsigned int i;
-	gboolean retval;
-  
-	/* If WM_STATE is set, this is a managed client, so look
-	 * for the class hint and end recursion. Otherwise,
-	 * this is probably just a WM frame, so keep recursing.
-	 */
-	if (has_wm_state (xwindow)) {      
-		XClassHint ch;
-      
-		gdk_error_trap_push ();
-		ch.res_name = NULL;
-		ch.res_class = NULL;
-      
-		XGetClassHint (gdk_display, xwindow, &ch);
-      
-		gdk_error_trap_pop ();
-      
-		if (ch.res_name)
-			XFree (ch.res_name);
-      
-		if (ch.res_class) {
-			if (strcmp (ch.res_class, "kdesktop") == 0) {
-				XFree (ch.res_class);
-				return TRUE;
-			}
-			else
-				XFree (ch.res_class);
-		}
-
-		return FALSE;
-	}
-  
-	retval = FALSE;
-  
-	gdk_error_trap_push ();
-  
-	XQueryTree (gdk_display,
-		    xwindow,
-		    &ignored1, &ignored2, &children, &n_children);
-
-	if (gdk_error_trap_pop ()) {
-		return FALSE;
-	}
-
-	i = 0;
-	while (i < n_children) {
-		if (look_for_kdesktop_recursive (children[i])) {
-			retval = TRUE;
-			break;
-		}
-      
-		++i;
-	}
-  
-	if (children)
-		XFree (children);
-
-	return retval;
-}
-#endif /* UGLY_HACK_TO_DETECT_KDE */
-
-static gboolean
-is_kdesktop_present (void)
-{
-#ifdef UGLY_HACK_TO_DETECT_KDE
-	/* FIXME this is a pretty lame hack, should be replaced
-	 * eventually with e.g. a requirement that desktop managers
-	 * support a manager selection, ICCCM sec 2.8
-	 */
-	return look_for_kdesktop_recursive (GDK_ROOT_WINDOW ());
-#else
-	return FALSE;
-#endif
 }
 
 static void
