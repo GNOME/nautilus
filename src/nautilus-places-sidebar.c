@@ -850,7 +850,7 @@ compute_drop_position (GtkTreeView *tree_view,
 }
 
 
-static void
+static gboolean
 get_drag_data (GtkTreeView *tree_view,
 	       GdkDragContext *context, 
 	       unsigned int time)
@@ -861,8 +861,14 @@ get_drag_data (GtkTreeView *tree_view,
 					    context, 
 					    NULL);
 
+	if (target == GDK_NONE) {
+		return FALSE;
+	}
+
 	gtk_drag_get_data (GTK_WIDGET (tree_view),
 			   context, target, time);
+
+	return TRUE;
 }
 
 static void
@@ -928,7 +934,9 @@ drag_motion_callback (GtkTreeView *tree_view,
 	char *uri;
 
 	if (!sidebar->drag_data_received) {
-		get_drag_data (tree_view, context, time);
+		if (!get_drag_data (tree_view, context, time)) {
+			return FALSE;
+		}
 	}
 
 	compute_drop_position (tree_view, x, y, &path, &pos, sidebar);
@@ -1269,10 +1277,11 @@ drag_drop_callback (GtkTreeView *tree_view,
 		    unsigned int time,
 		    NautilusPlacesSidebar *sidebar)
 {
+	gboolean retval = FALSE;
 	sidebar->drop_occured = TRUE;
-	get_drag_data (tree_view, context, time);
+	retval = get_drag_data (tree_view, context, time);
 	g_signal_stop_emission_by_name (tree_view, "drag-drop");
-	return TRUE;
+	return retval;
 }
 
 /* Callback used when the file list's popup menu is detached */
