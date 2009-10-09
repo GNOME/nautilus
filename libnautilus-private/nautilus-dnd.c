@@ -1010,7 +1010,7 @@ nautilus_drag_selection_includes_special_link (GList *selection_list)
 	return FALSE;
 }
 
-static void
+static gboolean
 slot_proxy_drag_motion (GtkWidget          *widget,
 			GdkDragContext     *context,
 			int                 x,
@@ -1038,6 +1038,11 @@ slot_proxy_drag_motion (GtkWidget          *widget,
 
 	if (!drag_info->have_data) {
 		target = gtk_drag_dest_find_target (widget, context, NULL);
+
+		if (target == GDK_NONE) {
+			goto out;
+		}
+
 		gtk_drag_get_data (widget, context, target, time);
 	}
 
@@ -1079,6 +1084,8 @@ out:
 	}
 
 	gdk_drag_status (context, action, time);
+
+	return TRUE;
 }
 
 static void
