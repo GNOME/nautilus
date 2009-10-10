@@ -150,6 +150,13 @@ static const SortCriterion sort_criteria[] = {
 		"Sort by Emblems",
 		N_("by _Emblems"),
 		N_("Keep icons sorted by emblems in rows")
+	},
+	{
+		NAUTILUS_FILE_SORT_BY_TRASHED_TIME,
+		"trashed",
+		"Sort by Trash Time",
+		N_("by T_rash Time"),
+		N_("Keep icons sorted by trash time in rows")
 	}
 };
 
@@ -1550,6 +1557,10 @@ static const GtkRadioActionEntry arrange_radio_entries[] = {
     N_("By _Emblems"), NULL,
     N_("Keep icons sorted by emblems in rows"),
     NAUTILUS_FILE_SORT_BY_EMBLEMS },
+  { "Sort by Trash Time", NULL,
+    N_("By T_rash Time"), NULL,
+    N_("Keep icons sorted by trash time in rows"),
+    NAUTILUS_FILE_SORT_BY_TRASHED_TIME },
 };
 
 static void

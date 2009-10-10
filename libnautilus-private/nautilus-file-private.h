@@ -40,7 +40,7 @@
 #define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_BYTES               1024
 
 #define NAUTILUS_FILE_DEFAULT_ATTRIBUTES				\
-	"standard::*,access::*,mountable::*,time::*,unix::*,owner::*,selinux::*,thumbnail::*,id::filesystem,trash::orig-path,metadata::*"
+	"standard::*,access::*,mountable::*,time::*,unix::*,owner::*,selinux::*,thumbnail::*,id::filesystem,trash::orig-path,trash::deletion-date,metadata::*"
 
 /* These are in the typical sort order. Known things come first, then
  * things where we can't know, finally things where we don't yet know.
@@ -226,6 +226,8 @@ struct NautilusFileDetails
 	eel_boolean_bit filesystem_readonly           : 1;
 	eel_boolean_bit filesystem_use_preview        : 2; /* GFilesystemPreviewType */
 	eel_boolean_bit filesystem_info_is_up_to_date : 1;
+
+	time_t trash_time; /* 0 is unknown */
 };
 
 typedef struct {
