@@ -130,6 +130,8 @@ static GQuark attribute_name_q,
 	attribute_deep_directory_count_q,
 	attribute_deep_total_count_q,
 	attribute_date_changed_q,
+	attribute_trashed_on_q,
+	attribute_trash_orig_path_q,
 	attribute_date_permissions_q,
 	attribute_permissions_q,
 	attribute_selinux_context_q,
@@ -467,6 +469,7 @@ nautilus_file_clear_info (NautilusFile *file)
 	file->details->mtime = 0;
 	file->details->atime = 0;
 	file->details->ctime = 0;
+	file->details->trash_time = 0;
 	g_free (file->details->symlink_name);
 	file->details->symlink_name = NULL;
 	eel_ref_str_unref (file->details->mime_type);
@@ -2052,6 +2055,9 @@ update_info_internal (NautilusFile *file,
 	goffset size;
 	int sort_order;
 	time_t atime, mtime, ctime;
+	time_t trash_time;
+	GTimeVal g_trash_time;
+	const char * time_string;
 	const char *symlink_name, *mime_type, *selinux_context, *name, *thumbnail_path;
 	GFileType file_type;
 	GIcon *icon;
@@ -2415,6 +2421,17 @@ update_info_internal (NautilusFile *file,
 		file->details->filesystem_id = eel_ref_str_get_unique (filesystem_id);
 	}
 
+	trash_time = 0;
+	time_string = g_file_info_get_attribute_string (info, "trash::deletion-date");
+	if (time_string != NULL) {
+		g_time_val_from_iso8601 (time_string, &g_trash_time);
+		trash_time = g_trash_time.tv_sec;
+	}
+	if (file->details->trash_time != trash_time) {
+		changed = TRUE;
+		file->details->trash_time = trash_time;
+	}
+
 	trash_orig_path = g_file_info_get_attribute_byte_string (info, "trash::orig-path");
 	if (eel_strcmp (file->details->trash_orig_path, trash_orig_path) != 0) {
 		changed = TRUE;
@@ -2667,6 +2684,9 @@ get_time (NautilusFile *file,
 		break;
 	case NAUTILUS_DATE_TYPE_ACCESSED:
 		time = file->details->atime;
+		break;
+	case NAUTILUS_DATE_TYPE_TRASHED:
+		time = file->details->trash_time;
 		break;
 	default:
 		g_assert_not_reached ();
@@ -3182,6 +3202,12 @@ nautilus_file_compare_for_sort (NautilusFile *file_1,
 				result = compare_by_full_path (file_1, file_2);
 			}
 			break;
+		case NAUTILUS_FILE_SORT_BY_TRASHED_TIME:
+			result = compare_by_time (file_1, file_2, NAUTILUS_DATE_TYPE_TRASHED);
+			if (result == 0) {
+				result = compare_by_full_path (file_1, file_2);
+			}
+			break;
 		case NAUTILUS_FILE_SORT_BY_EMBLEMS:
 			/* GnomeVFS doesn't know squat about our emblems, so
 			 * we handle comparing them here, before falling back
@@ -3243,6 +3269,11 @@ nautilus_file_compare_for_sort_by_attribute_q   (NautilusFile                   
         } else if (attribute == attribute_accessed_date_q || attribute == attribute_date_accessed_q) {
 		return nautilus_file_compare_for_sort (file_1, file_2,
 						       NAUTILUS_FILE_SORT_BY_ATIME,
+						       directories_first,
+						       reversed);
+        } else if (attribute == attribute_trashed_on_q) {
+		return nautilus_file_compare_for_sort (file_1, file_2,
+						       NAUTILUS_FILE_SORT_BY_TRASHED_TIME,
 						       directories_first,
 						       reversed);
 	} else if (attribute == attribute_emblems_q) {
@@ -4340,6 +4371,7 @@ nautilus_file_get_date (NautilusFile *file,
 	g_return_val_if_fail (date_type == NAUTILUS_DATE_TYPE_CHANGED
 			      || date_type == NAUTILUS_DATE_TYPE_ACCESSED
 			      || date_type == NAUTILUS_DATE_TYPE_MODIFIED
+			      || date_type == NAUTILUS_DATE_TYPE_TRASHED
 			      || date_type == NAUTILUS_DATE_TYPE_PERMISSIONS_CHANGED, FALSE);
 
 	if (file == NULL) {
@@ -4577,6 +4609,30 @@ nautilus_file_fit_modified_date_as_string (NautilusFile *file,
 {
 	return nautilus_file_fit_date_as_string (file, NAUTILUS_DATE_TYPE_MODIFIED,
 		width, measure_callback, truncate_callback, measure_context);
+}
+
+static char *
+nautilus_file_get_trash_original_file_parent_as_string (NautilusFile *file)
+{
+	NautilusFile *orig_file, *parent;
+	GFile *location;
+	char *filename;
+
+	if (file->details->trash_orig_path != NULL) {
+		orig_file = nautilus_file_get_trash_original_file (file);
+		parent = nautilus_file_get_parent (orig_file);
+		location = nautilus_file_get_location (parent);
+
+		filename = g_file_get_parse_name (location);
+
+		g_object_unref (location);
+		nautilus_file_unref (parent);
+		nautilus_file_unref (orig_file);
+
+		return filename;
+	}
+
+	return NULL;
 }
 
 /**
@@ -6008,7 +6064,7 @@ nautilus_file_get_deep_directory_count_as_string (NautilusFile *file)
  * set includes "name", "type", "mime_type", "size", "deep_size", "deep_directory_count",
  * "deep_file_count", "deep_total_count", "date_modified", "date_changed", "date_accessed", 
  * "date_permissions", "owner", "group", "permissions", "octal_permissions", "uri", "where",
- * "link_target", "volume", "free_space", "selinux_context"
+ * "link_target", "volume", "free_space", "selinux_context", "trashed_on", "trashed_orig_path"
  * 
  * Returns: Newly allocated string ready to display to the user, or NULL
  * if the value is unknown or @attribute_name is not supported.
@@ -6046,6 +6102,9 @@ nautilus_file_get_string_attribute_q (NautilusFile *file, GQuark attribute_q)
 	if (attribute_q == attribute_deep_total_count_q) {
 		return nautilus_file_get_deep_total_count_as_string (file);
 	}
+	if (attribute_q == attribute_trash_orig_path_q) {
+		return nautilus_file_get_trash_original_file_parent_as_string (file);
+	}
 	if (attribute_q == attribute_date_modified_q) {
 		return nautilus_file_get_date_as_string (file, 
 							 NAUTILUS_DATE_TYPE_MODIFIED);
@@ -6057,6 +6116,10 @@ nautilus_file_get_string_attribute_q (NautilusFile *file, GQuark attribute_q)
 	if (attribute_q == attribute_date_accessed_q) {
 		return nautilus_file_get_date_as_string (file,
 							 NAUTILUS_DATE_TYPE_ACCESSED);
+	}
+	if (attribute_q == attribute_trashed_on_q) {
+		return nautilus_file_get_date_as_string (file,
+							 NAUTILUS_DATE_TYPE_TRASHED);
 	}
 	if (attribute_q == attribute_date_permissions_q) {
 		return nautilus_file_get_date_as_string (file,
@@ -6183,6 +6246,14 @@ nautilus_file_get_string_attribute_with_default_q (NautilusFile *file, GQuark at
 	if (attribute_q == attribute_mime_type_q) {
 		return g_strdup (_("unknown MIME type"));
 	}
+	if (attribute_q == attribute_trashed_on_q) {
+		/* If n/a */
+		return g_strdup ("");
+	}
+	if (attribute_q == attribute_trash_orig_path_q) {
+		/* If n/a */
+		return g_strdup ("");
+	}
 	
 	/* Fallback, use for both unknown attributes and attributes
 	 * for which we have no more appropriate default.
@@ -6204,6 +6275,7 @@ nautilus_file_is_date_sort_attribute_q (GQuark attribute_q)
 	    attribute_q == attribute_accessed_date_q ||
 	    attribute_q == attribute_date_accessed_q ||
 	    attribute_q == attribute_date_changed_q ||
+	    attribute_q == attribute_trashed_on_q ||
 	    attribute_q == attribute_date_permissions_q) {
 		return TRUE;
 	}
@@ -7916,6 +7988,8 @@ nautilus_file_class_init (NautilusFileClass *class)
 	attribute_deep_directory_count_q = g_quark_from_static_string ("deep_directory_count");
 	attribute_deep_total_count_q = g_quark_from_static_string ("deep_total_count");
 	attribute_date_changed_q = g_quark_from_static_string ("date_changed");
+	attribute_trashed_on_q = g_quark_from_static_string ("trashed_on");
+	attribute_trash_orig_path_q = g_quark_from_static_string ("trash_orig_path");
 	attribute_date_permissions_q = g_quark_from_static_string ("date_permissions");
 	attribute_permissions_q = g_quark_from_static_string ("permissions");
 	attribute_selinux_context_q = g_quark_from_static_string ("selinux_context");

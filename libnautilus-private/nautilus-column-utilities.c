@@ -128,6 +128,20 @@ get_builtin_columns (void)
 					       /* TODO: Change after string freeze over */
 					       "description", _("Location"),
 					       NULL));
+	columns = g_list_append (columns,
+				 g_object_new (NAUTILUS_TYPE_COLUMN,
+					       "name", "trashed_on",
+					       "attribute", "trashed_on",
+					       "label", _("Trashed On"),
+					       "description", _("Date when file was moved to the Trash"),
+					       NULL));
+	columns = g_list_append (columns,
+				 g_object_new (NAUTILUS_TYPE_COLUMN,
+					       "name", "trash_orig_path",
+					       "attribute", "trash_orig_path",
+					       "label", _("Original Location"),
+					       "description", _("Original location of file before moved to the Trash"),
+					       NULL));
 
 	return columns;
 }

@@ -312,6 +312,15 @@ vfs_file_get_date (NautilusFile *file,
 			*date = file->details->mtime;
 		}
 		return TRUE;
+	case NAUTILUS_DATE_TYPE_TRASHED:
+		/* Before we have info on a file, the date is unknown. */
+		if (file->details->trash_time == 0) {
+			return FALSE;
+		}
+		if (date != NULL) {
+			*date = file->details->trash_time;
+		}
+		return TRUE;
 	case NAUTILUS_DATE_TYPE_PERMISSIONS_CHANGED:
 		/* Before we have info on a file, the date is unknown. */
 		if (file->details->mtime == 0 || file->details->ctime == 0) {
