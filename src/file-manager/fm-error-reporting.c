@@ -132,6 +132,11 @@ fm_report_error_renaming_file (NautilusFile *file,
 							   new_name_truncated);
 			}
 			break;
+                case G_IO_ERROR_FILENAME_TOO_LONG:
+                        message = g_strdup_printf (_("The name \"%s\" is too long. "
+                                                     "Please use a different name."),
+                                                     new_name_truncated);
+                        break;
 		default:
 			break;
 		}
