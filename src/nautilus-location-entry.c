@@ -61,6 +61,7 @@ struct NautilusLocationEntryDetails {
 	gboolean has_special_text;
 	gboolean setting_special_text;
 	gchar *special_text;
+	NautilusLocationEntryAction secondary_action;
 };
 
 static void  nautilus_location_entry_class_init       (NautilusLocationEntryClass *class);
@@ -288,7 +289,16 @@ nautilus_location_entry_icon_release (GtkEntry *gentry,
 				      GdkEvent *event,
 				      gpointer unused)
 {
-	gtk_entry_set_text (gentry, "");
+	switch (NAUTILUS_LOCATION_ENTRY (gentry)->details->secondary_action) {
+	case NAUTILUS_LOCATION_ENTRY_ACTION_GOTO:
+		g_signal_emit_by_name (gentry, "activate", gentry);
+		break;
+	case NAUTILUS_LOCATION_ENTRY_ACTION_CLEAR:
+		gtk_entry_set_text (gentry, "");
+		break;
+	default:
+		g_assert_not_reached ();
+	}
 }
 
 static gboolean
@@ -324,6 +334,30 @@ nautilus_location_entry_class_init (NautilusLocationEntryClass *class)
 	object_class->destroy = destroy;
 }
 
+void
+nautilus_location_entry_set_secondary_action (NautilusLocationEntry *entry,
+					      NautilusLocationEntryAction secondary_action)
+{
+	if (entry->details->secondary_action == secondary_action) {
+		return;
+	}
+	switch (secondary_action) {
+	case NAUTILUS_LOCATION_ENTRY_ACTION_CLEAR:
+		gtk_entry_set_icon_from_stock (GTK_ENTRY (entry), 
+					       GTK_ENTRY_ICON_SECONDARY,
+					       GTK_STOCK_CLEAR);
+		break;
+	case NAUTILUS_LOCATION_ENTRY_ACTION_GOTO:
+		gtk_entry_set_icon_from_stock (GTK_ENTRY (entry),
+					       GTK_ENTRY_ICON_SECONDARY,
+					       GTK_STOCK_GO_FORWARD);
+		break;
+	default:
+		g_assert_not_reached ();
+	}
+	entry->details->secondary_action = secondary_action;
+}
+
 static void
 nautilus_location_entry_init (NautilusLocationEntry *entry)
 {
@@ -332,9 +366,9 @@ nautilus_location_entry_init (NautilusLocationEntry *entry)
 	entry->details->completer = g_filename_completer_new ();
 	g_filename_completer_set_dirs_only (entry->details->completer, TRUE);
 
-	gtk_entry_set_icon_from_stock (GTK_ENTRY (entry), GTK_ENTRY_ICON_SECONDARY,
-				       GTK_STOCK_CLEAR);
-	
+	nautilus_location_entry_set_secondary_action (entry,
+						      NAUTILUS_LOCATION_ENTRY_ACTION_CLEAR);
+
 	nautilus_entry_set_special_tab_handling (NAUTILUS_ENTRY (entry), TRUE);
 
 	g_signal_connect (entry, "event_after",

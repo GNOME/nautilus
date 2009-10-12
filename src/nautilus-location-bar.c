@@ -318,9 +318,8 @@ editable_activate_callback (GtkEntry *entry,
 }
 
 static void
-editable_event_after_callback (GtkEntry *entry,
-			       GdkEvent *event,
-			       gpointer user_data)
+editable_changed_callback (GtkEntry *entry,
+			   gpointer user_data)
 {
 	nautilus_location_bar_update_label (NAUTILUS_LOCATION_BAR (user_data));
 }
@@ -429,8 +428,8 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 	
 	g_signal_connect_object (entry, "activate",
 				 G_CALLBACK (editable_activate_callback), bar, 0);
-	g_signal_connect_object (entry, "event_after",
-				 G_CALLBACK (editable_event_after_callback), bar, G_CONNECT_AFTER);
+	g_signal_connect_object (entry, "changed",
+				 G_CALLBACK (editable_changed_callback), bar, 0);
 
 	gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, TRUE, 0);
 
@@ -563,14 +562,25 @@ nautilus_location_bar_update_label (NautilusLocationBar *bar)
 	GFile *location;
 	GFile *last_location;
 	
+	if (bar->details->last_location == NULL){
+		gtk_label_set_text (GTK_LABEL (bar->details->label), GO_TO_LABEL);
+		nautilus_location_entry_set_secondary_action (NAUTILUS_LOCATION_ENTRY (bar->details->entry), 
+							      NAUTILUS_LOCATION_ENTRY_ACTION_GOTO);
+		return;
+	}
+
 	current_text = gtk_entry_get_text (GTK_ENTRY (bar->details->entry));
 	location = g_file_parse_name (current_text);
 	last_location = g_file_parse_name (bar->details->last_location);
 	
 	if (g_file_equal (last_location, location)) {
 		gtk_label_set_text (GTK_LABEL (bar->details->label), LOCATION_LABEL);
+		nautilus_location_entry_set_secondary_action (NAUTILUS_LOCATION_ENTRY (bar->details->entry), 
+							      NAUTILUS_LOCATION_ENTRY_ACTION_CLEAR);
 	} else {		 
 		gtk_label_set_text (GTK_LABEL (bar->details->label), GO_TO_LABEL);
+		nautilus_location_entry_set_secondary_action (NAUTILUS_LOCATION_ENTRY (bar->details->entry), 
+							      NAUTILUS_LOCATION_ENTRY_ACTION_GOTO);
 	}
 
 	g_object_unref (location);
