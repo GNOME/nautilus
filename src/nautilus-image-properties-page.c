@@ -48,7 +48,8 @@
 
 struct NautilusImagePropertiesPageDetails {
 	GCancellable *cancellable;
-	GtkWidget *resolution;
+	GtkWidget *vbox;
+	GtkWidget *loading_label;
 	GdkPixbufLoader *loader;
 	gboolean got_size;
 	gboolean pixbuf_still_loading;
@@ -196,8 +197,37 @@ exifdata_get_tag_value_utf8 (ExifData *data, ExifTag tag)
 	return utf8_value;
 }
 
+static GtkWidget *
+append_label (GtkWidget *vbox,
+	      const char *str)
+{
+	GtkWidget *label;
+
+	label = gtk_label_new (NULL);
+	gtk_label_set_markup (GTK_LABEL (label), str);
+	gtk_misc_set_alignment (GTK_MISC (label), 0, 0);
+	gtk_label_set_selectable (GTK_LABEL (label), TRUE);
+
+	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
+	gtk_widget_show (label);
+
+	return label;
+}
+
+static GtkWidget *
+append_label_take_str (GtkWidget *vbox,
+		       char *str)
+{
+	GtkWidget *retval;
+
+	retval = append_label (vbox, str);
+	g_free (str);
+
+	return retval;
+}
+
 static gboolean
-append_tag_value_pair (GString  *string,
+append_tag_value_pair (NautilusImagePropertiesPage *page,
 		       ExifData *data,
 		       ExifTag   tag,
 		       char     *description) 
@@ -214,9 +244,11 @@ append_tag_value_pair (GString  *string,
    		return FALSE;
 	}
 
-	g_string_append_printf (string, "<b>%s:</b> %s\n",
-				description ? description : utf_attribute,
-				utf_value);
+	append_label_take_str
+		(page->details->vbox,
+		 g_strdup_printf ("<b>%s:</b> %s",
+				  description ? description : utf_attribute,
+				  utf_value));
 
         g_free (utf_attribute);
         g_free (utf_value);
@@ -224,36 +256,36 @@ append_tag_value_pair (GString  *string,
 }
 
 static void
-append_exifdata_string (ExifData *exifdata, GString *string)
+append_exifdata_string (ExifData *exifdata, NautilusImagePropertiesPage *page)
 {
 	if (exifdata && exifdata->ifd[0] && exifdata->ifd[0]->count) {
-                append_tag_value_pair (string, exifdata, EXIF_TAG_MAKE, _("Camera Brand"));
-                append_tag_value_pair (string, exifdata, EXIF_TAG_MODEL, _("Camera Model"));
+                append_tag_value_pair (page, exifdata, EXIF_TAG_MAKE, _("Camera Brand"));
+                append_tag_value_pair (page, exifdata, EXIF_TAG_MODEL, _("Camera Model"));
 
                 /* Choose which date to show in order of relevance */
-                if (!append_tag_value_pair (string, exifdata, EXIF_TAG_DATE_TIME_ORIGINAL, _("Date Taken")))
+                if (!append_tag_value_pair (page, exifdata, EXIF_TAG_DATE_TIME_ORIGINAL, _("Date Taken")))
                 {
-                        if (!append_tag_value_pair (string, exifdata, EXIF_TAG_DATE_TIME_DIGITIZED, _("Date Digitized")))
+                        if (!append_tag_value_pair (page, exifdata, EXIF_TAG_DATE_TIME_DIGITIZED, _("Date Digitized")))
                         {
-                                append_tag_value_pair (string, exifdata, EXIF_TAG_DATE_TIME, _("Date Modified"));
+                                append_tag_value_pair (page, exifdata, EXIF_TAG_DATE_TIME, _("Date Modified"));
                         }
                 }
 
-                append_tag_value_pair (string, exifdata, EXIF_TAG_EXPOSURE_TIME, _("Exposure Time"));
-                append_tag_value_pair (string, exifdata, EXIF_TAG_APERTURE_VALUE, _("Aperture Value"));
-                append_tag_value_pair (string, exifdata, EXIF_TAG_ISO_SPEED_RATINGS, _("ISO Speed Rating"));
-                append_tag_value_pair (string, exifdata, EXIF_TAG_FLASH,_("Flash Fired"));
-                append_tag_value_pair (string, exifdata, EXIF_TAG_METERING_MODE, _("Metering Mode"));
-                append_tag_value_pair (string, exifdata, EXIF_TAG_EXPOSURE_PROGRAM, _("Exposure Program"));
-                append_tag_value_pair (string, exifdata, EXIF_TAG_FOCAL_LENGTH,_("Focal Length"));
-                append_tag_value_pair (string, exifdata, EXIF_TAG_SOFTWARE, _("Software"));
+                append_tag_value_pair (page, exifdata, EXIF_TAG_EXPOSURE_TIME, _("Exposure Time"));
+                append_tag_value_pair (page, exifdata, EXIF_TAG_APERTURE_VALUE, _("Aperture Value"));
+                append_tag_value_pair (page, exifdata, EXIF_TAG_ISO_SPEED_RATINGS, _("ISO Speed Rating"));
+                append_tag_value_pair (page, exifdata, EXIF_TAG_FLASH,_("Flash Fired"));
+                append_tag_value_pair (page, exifdata, EXIF_TAG_METERING_MODE, _("Metering Mode"));
+                append_tag_value_pair (page, exifdata, EXIF_TAG_EXPOSURE_PROGRAM, _("Exposure Program"));
+                append_tag_value_pair (page, exifdata, EXIF_TAG_FOCAL_LENGTH,_("Focal Length"));
+                append_tag_value_pair (page, exifdata, EXIF_TAG_SOFTWARE, _("Software"));
 	}
 }
 #endif /*HAVE_EXIF*/
 
 #ifdef HAVE_EXEMPI
 static void
-append_xmp_value_pair (GString    *string,
+append_xmp_value_pair (NautilusImagePropertiesPage *page,
 		       XmpPtr      xmp,
 		       const char *ns,
 		       const char *propname,
@@ -269,32 +301,38 @@ append_xmp_value_pair (GString    *string,
 	if (xmp_get_property_and_bits (xmp, ns, propname, value, &options)) {
 #endif
 		if (XMP_IS_PROP_SIMPLE (options)) {
-			g_string_append_printf (string,
-						"<b>%s:</b> %s\n",
-						descr,
-						xmp_string_cstr (value));
+			append_label_take_str
+				(page->details->vbox,
+				 g_strdup_printf ("<b>%s:</b> %s",
+						  descr, xmp_string_cstr (value)));
 		}
 		else if (XMP_IS_PROP_ARRAY (options)) {
 			XmpIteratorPtr iter;
 
 			iter = xmp_iterator_new (xmp, ns, propname, XMP_ITER_JUSTLEAFNODES);
 			if (iter) {
+				GString *str;
 				gboolean first = TRUE;
-				g_string_append_printf (string, "<b>%s:</b> ", descr);
+
+				str = g_string_new (NULL);
+
+				g_string_append_printf (str, "<b>%s:</b> ",
+							descr);
 				while (xmp_iterator_next (iter, NULL, NULL, value, &options) 
 				       && !XMP_IS_PROP_QUALIFIER(options)) {
 					if (!first) {
-						g_string_append_printf (string, ", ");
+						g_string_append_printf (str, ", ");
 					}
 					else {
 						first = FALSE;
 					}
-					g_string_append_printf (string,
+					g_string_append_printf (str,
 								"%s",
 								xmp_string_cstr(value));
 				}
 				xmp_iterator_free(iter);
-				g_string_append_printf(string, "\n");
+				append_label_take_str (page->details->vbox,
+						       g_string_free (str, FALSE));
 			}
 		}
 	}
@@ -302,15 +340,15 @@ append_xmp_value_pair (GString    *string,
 }
 
 static void
-append_xmpdata_string(XmpPtr xmp, GString *string)
+append_xmpdata_string (XmpPtr xmp, NautilusImagePropertiesPage *page)
 {
-	if(xmp != NULL) {
-		append_xmp_value_pair(string, xmp, NS_IPTC4XMP, "Location", _("Location"));
-		append_xmp_value_pair(string, xmp, NS_DC, "description", _("Description"));
-		append_xmp_value_pair(string, xmp, NS_DC, "subject", _("Keywords"));
-		append_xmp_value_pair(string, xmp, NS_DC, "creator", _("Creator"));
-		append_xmp_value_pair(string, xmp, NS_DC, "rights", _("Copyright"));
-		append_xmp_value_pair(string, xmp, NS_XAP,"Rating", _("Rating"));
+	if (xmp != NULL) {
+		append_xmp_value_pair (page, xmp, NS_IPTC4XMP, "Location", _("Location"));
+		append_xmp_value_pair (page, xmp, NS_DC, "description", _("Description"));
+		append_xmp_value_pair (page, xmp, NS_DC, "subject", _("Keywords"));
+		append_xmp_value_pair (page, xmp, NS_DC, "creator", _("Creator"));
+		append_xmp_value_pair (page, xmp, NS_DC, "rights", _("Copyright"));
+		append_xmp_value_pair (page, xmp, NS_XAP,"Rating", _("Rating"));
 		/* TODO add CC licenses */
 	}
 }
@@ -321,45 +359,48 @@ load_finished (NautilusImagePropertiesPage *page)
 {
 	GdkPixbufFormat *format;
 	char *name, *desc;
-	GString *str;
+
+	gtk_widget_destroy (page->details->loading_label);
 
 	if (page->details->got_size) {
 #ifdef HAVE_EXIF
                 ExifData *exif_data;
 #endif
 
-		str = g_string_new (NULL);
 		format = gdk_pixbuf_loader_get_format (page->details->loader);
 	
 		name = gdk_pixbuf_format_get_name (format);
 		desc = gdk_pixbuf_format_get_description (format);
-		g_string_append_printf (str, "<b>%s</b> %s (%s)\n",
-					_("Image Type:"), name, desc);
-		g_string_append_printf (str, ngettext ("<b>Width:</b> %d pixel\n",
-						       "<b>Width:</b> %d pixels\n",
-						       page->details->width),
-					page->details->width);
-		g_string_append_printf (str, ngettext ("<b>Height:</b> %d pixel\n",
-						       "<b>Height:</b> %d pixels\n",
-						       page->details->height),
-					page->details->height);
+		append_label_take_str
+			(page->details->vbox,
+			 g_strdup_printf ("<b>%s</b> %s (%s)",
+					  _("Image Type:"), name, desc));
+		append_label_take_str
+			(page->details->vbox,
+			 g_strdup_printf (ngettext ("<b>Width:</b> %d pixel",
+						    "<b>Width:</b> %d pixels",
+						    page->details->width),
+					  page->details->width));
+		append_label_take_str
+			(page->details->vbox,
+			 g_strdup_printf (ngettext ("<b>Height:</b> %d pixel",
+						    "<b>Height:</b> %d pixels",
+						    page->details->height),
+					  page->details->height));
 		g_free (name);
 		g_free (desc);
 		
 #ifdef HAVE_EXIF
 		exif_data = exif_loader_get_data (page->details->exifldr);
-                append_exifdata_string (exif_data, str);
+                append_exifdata_string (exif_data, page);
                 exif_data_unref (exif_data);
 #endif /*HAVE_EXIF*/
 #ifdef HAVE_EXEMPI
-		append_xmpdata_string(page->details->xmp, str);
-#endif /*HAVE EXEMPI*/
-		
-		gtk_label_set_markup (GTK_LABEL (page->details->resolution), str->str);
-		gtk_label_set_selectable (GTK_LABEL (page->details->resolution), TRUE);
-		g_string_free (str, TRUE);
+		append_xmpdata_string (page->details->xmp, page);
+#endif /*HAVE EXEMPI*/		
 	} else {
-		gtk_label_set_text (GTK_LABEL (page->details->resolution), _("Failed to load image information"));
+		append_label (page->details->vbox,
+			      _("Failed to load image information"));
 	}
 
 	if (page->details->loader != NULL) {
@@ -570,14 +611,12 @@ nautilus_image_properties_page_init (NautilusImagePropertiesPage *page)
 	gtk_box_set_homogeneous (GTK_BOX (page), FALSE);
 	gtk_box_set_spacing (GTK_BOX (page), 2);
 	gtk_container_set_border_width (GTK_CONTAINER (page), 6);
-	
-	page->details->resolution = gtk_label_new (_("loading..."));
-	gtk_misc_set_alignment (GTK_MISC (page->details->resolution),
-				0,
-				0);
 
+	page->details->vbox = gtk_vbox_new (FALSE, 6);
+	page->details->loading_label =
+		append_label (page->details->vbox,_("loading..."));
 	gtk_box_pack_start (GTK_BOX (page),
-			    page->details->resolution,
+			    page->details->vbox,
 			    FALSE, TRUE, 2);
 
 	gtk_widget_show_all (GTK_WIDGET (page));
