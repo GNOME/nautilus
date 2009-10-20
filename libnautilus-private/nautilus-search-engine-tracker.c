@@ -97,7 +97,7 @@ search_callback (char **results, GError *error, gpointer user_data)
 		char *uri;
 
 #ifdef HAVE_TRACKER_0_7
-		uri = *results_p;
+		uri = g_strdup ((char *)*results_p);
 #else
 		uri = g_filename_to_uri ((char *)*results_p, NULL, NULL);
 #endif
@@ -109,12 +109,7 @@ search_callback (char **results, GError *error, gpointer user_data)
 	nautilus_search_engine_hits_added (NAUTILUS_SEARCH_ENGINE (tracker), hit_uris);
 	nautilus_search_engine_finished (NAUTILUS_SEARCH_ENGINE (tracker));
 	g_strfreev  (results);
-#ifdef HAVE_TRACKER_0_7
-	g_list_free (hit_uris);
-#else
 	eel_g_list_free_deep (hit_uris);
-#endif
-
 }
 
 
@@ -145,11 +140,11 @@ nautilus_search_engine_tracker_start (NautilusSearchEngine *engine)
 
 	if (location_uri) {
 #ifdef HAVE_TRACKER_0_7
-		location = location_uri;
+		location = g_strdup (location_uri);
 #else
 		location = g_filename_from_uri (location_uri, NULL, NULL);
-		g_free (location_uri);
 #endif
+		g_free (location_uri);
 	} else {
 		location = NULL;
 	}
@@ -279,13 +274,15 @@ nautilus_search_engine_tracker_new (void)
 #ifdef HAVE_TRACKER_0_7
 	tracker_client = tracker_connect (FALSE, -1);
 #else
-	GError *err = NULL;
-
-	tracker_client =  tracker_connect (FALSE);
+	tracker_client = tracker_connect (FALSE);
+#endif
 
 	if (!tracker_client) {
 		return NULL;
 	}
+
+#ifndef HAVE_TRACKER_0_7
+	GError *err = NULL;
 
 	tracker_get_version (tracker_client, &err);
 
