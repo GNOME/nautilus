@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.master.ta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-10 19:32+0530\n"
-"PO-Revision-Date: 2009-10-10 19:41+0530\n"
+"POT-Creation-Date: 2009-10-23 21:34+0530\n"
+"PO-Revision-Date: 2009-10-23 21:37+0530\n"
 "Last-Translator: Dr.T.Vasudevan <agnihot3@gmail.com>\n"
 "Language-Team: Tamil <Ubuntu-l10n-tam@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
@@ -1562,7 +1562,7 @@ msgid "The type of the file."
 msgstr "கோப்பின்  வகை"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:65
-#: ../src/nautilus-image-properties-page.c:238
+#: ../src/nautilus-image-properties-page.c:270
 msgid "Date Modified"
 msgstr "திருத்தப்பட்ட தேதி"
 
@@ -1630,7 +1630,7 @@ msgstr "கோப்பின் எஸ்ஈலினக்ஸ் பாது�
 #. TODO: Change after string freeze over
 #: ../libnautilus-private/nautilus-column-utilities.c:127
 #: ../libnautilus-private/nautilus-column-utilities.c:129
-#: ../src/nautilus-image-properties-page.c:308
+#: ../src/nautilus-image-properties-page.c:346
 #: ../src/nautilus-query-editor.c:117
 msgid "Location"
 msgstr "இடம்"
@@ -3317,39 +3317,46 @@ msgid "_Open"
 msgstr "(_O)திற"
 
 #. first %s is a filename and second %s is a file extension
-#: ../libnautilus-private/nautilus-open-with-dialog.c:962, c-format
+#: ../libnautilus-private/nautilus-open-with-dialog.c:962
+#, c-format
 msgid "Open %s and other %s document with:"
 msgstr "%s  மற்றும் மற்ற \"%s\"  ஆவணைங்களை இதில் திற:"
 
 #. the %s here is a file name
 #. %s is a filename
 #: ../libnautilus-private/nautilus-open-with-dialog.c:966
-#: ../libnautilus-private/nautilus-open-with-dialog.c:997, c-format
+#: ../libnautilus-private/nautilus-open-with-dialog.c:997
+#, c-format
 msgid "Open %s with:"
 msgstr "%s  ஐ இதனால் திற:"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:967, c-format
+#: ../libnautilus-private/nautilus-open-with-dialog.c:967
+#, c-format
 msgid "_Remember this application for %s documents"
 msgstr "(_R)  இந்த பயன்பாட்டை %s ஆவணைங்களுக்கு  நினைவில் கொள்க"
 
 #. Only in add mode - the %s here is a file extension
-#: ../libnautilus-private/nautilus-open-with-dialog.c:976, c-format
+#: ../libnautilus-private/nautilus-open-with-dialog.c:976
+#, c-format
 msgid "Open all %s documents with:"
 msgstr "அனைத்து %s வகை ஆவணங்களையும் திறக்க இதை பயன்படுத்துக:"
 
 #. First %s is a filename, second is a description
 #. * of the type, eg "plain text document"
-#: ../libnautilus-private/nautilus-open-with-dialog.c:993, c-format
+#: ../libnautilus-private/nautilus-open-with-dialog.c:993
+#, c-format
 msgid "Open %s and other \"%s\" files with:"
 msgstr "%s  மற்றும் மற்ற \"%s\"  கோப்புகளையும் இதில் திற:"
 
 #. %s is a file type description
-#: ../libnautilus-private/nautilus-open-with-dialog.c:999, c-format
+#: ../libnautilus-private/nautilus-open-with-dialog.c:999
+#, c-format
 msgid "_Remember this application for \"%s\" files"
 msgstr "(_R)  இந்த பயன்பாட்டை  \"%s\" ஆவணைங்களுக்கு  நினைவில் கொள்க"
 
 #. Only in add mode
-#: ../libnautilus-private/nautilus-open-with-dialog.c:1008, c-format
+#: ../libnautilus-private/nautilus-open-with-dialog.c:1008
+#, c-format
 msgid "Open all \"%s\" files with:"
 msgstr "அனைத்து \"%s\" வகை கோப்புகளையும் இதனால் திற:"
 
@@ -4698,7 +4705,7 @@ msgstr "வலைமனை"
 
 #: ../src/file-manager/fm-ditem-page.c:417
 #: ../src/file-manager/fm-ditem-page.c:427
-#: ../src/nautilus-image-properties-page.c:309
+#: ../src/nautilus-image-properties-page.c:347
 msgid "Description"
 msgstr "விளக்கம்"
 
@@ -5953,98 +5960,96 @@ msgstr "வரலாறு"
 msgid "Show History"
 msgstr "வரலாற்றைக் காட்டு"
 
-#: ../src/nautilus-image-properties-page.c:230
+#: ../src/nautilus-image-properties-page.c:262
 msgid "Camera Brand"
 msgstr "கேமரா வகை"
 
-#: ../src/nautilus-image-properties-page.c:231
+#: ../src/nautilus-image-properties-page.c:263
 msgid "Camera Model"
 msgstr "காமரா மாதிரி"
 
 #. Choose which date to show in order of relevance
-#: ../src/nautilus-image-properties-page.c:234
+#: ../src/nautilus-image-properties-page.c:266
 msgid "Date Taken"
 msgstr "எடுத்த தேதி"
 
-#: ../src/nautilus-image-properties-page.c:236
+#: ../src/nautilus-image-properties-page.c:268
 msgid "Date Digitized"
 msgstr "தேதி எண்ணிடல்"
 
-#: ../src/nautilus-image-properties-page.c:242
+#: ../src/nautilus-image-properties-page.c:274
 msgid "Exposure Time"
 msgstr "வெளிக்காட்டிய நேரம்"
 
-#: ../src/nautilus-image-properties-page.c:243
+#: ../src/nautilus-image-properties-page.c:275
 msgid "Aperture Value"
 msgstr "குவிய மதிப்பு"
 
-#: ../src/nautilus-image-properties-page.c:244
+#: ../src/nautilus-image-properties-page.c:276
 msgid "ISO Speed Rating"
 msgstr "ISO வேக அளவு"
 
-#: ../src/nautilus-image-properties-page.c:245
+#: ../src/nautilus-image-properties-page.c:277
 msgid "Flash Fired"
 msgstr "ஒளி அளவு"
 
-#: ../src/nautilus-image-properties-page.c:246
+#: ../src/nautilus-image-properties-page.c:278
 msgid "Metering Mode"
 msgstr "மீட்டர் பாங்கு"
 
-#: ../src/nautilus-image-properties-page.c:247
+#: ../src/nautilus-image-properties-page.c:279
 msgid "Exposure Program"
 msgstr "வெளிக்காட்டிய நிரல்"
 
-#: ../src/nautilus-image-properties-page.c:248
+#: ../src/nautilus-image-properties-page.c:280
 msgid "Focal Length"
 msgstr "குவிய தூரம்"
 
-#: ../src/nautilus-image-properties-page.c:249
+#: ../src/nautilus-image-properties-page.c:281
 msgid "Software"
 msgstr "மென்பொருள்"
 
-#: ../src/nautilus-image-properties-page.c:310
+#: ../src/nautilus-image-properties-page.c:348
 msgid "Keywords"
 msgstr "முதன்மைச்சொற்கள்"
 
-#: ../src/nautilus-image-properties-page.c:311
+#: ../src/nautilus-image-properties-page.c:349
 msgid "Creator"
 msgstr "உருவாக்குபவர்"
 
-#: ../src/nautilus-image-properties-page.c:312
+#: ../src/nautilus-image-properties-page.c:350
 msgid "Copyright"
 msgstr "பதிப்புரிமை"
 
-#: ../src/nautilus-image-properties-page.c:313
+#: ../src/nautilus-image-properties-page.c:351
 msgid "Rating"
 msgstr "தரவரிசை"
 
-#: ../src/nautilus-image-properties-page.c:337
+#: ../src/nautilus-image-properties-page.c:377
 msgid "Image Type:"
 msgstr "பிம்ப வகை:"
 
-#: ../src/nautilus-image-properties-page.c:338
-#, c-format
-msgid "<b>Width:</b> %d pixel\n"
-msgid_plural "<b>Width:</b> %d pixels\n"
-msgstr[0] "<b>அகலம்:</b> %d பிக்ஸல்\n"
-msgstr[1] "<b>அகலம்:</b> %d பிக்ஸல்கள்\n"
+#: ../src/nautilus-image-properties-page.c:380, c-format
+msgid "<b>Width:</b> %d pixel"
+msgid_plural "<b>Width:</b> %d pixels"
+msgstr[0] "<b>அகலம்:</b> %d பிக்ஸல்"
+msgstr[1] "<b>அகலம்:</b> %d பிக்ஸல்கள்"
 
-#: ../src/nautilus-image-properties-page.c:342
-#, c-format
-msgid "<b>Height:</b> %d pixel\n"
-msgid_plural "<b>Height:</b> %d pixels\n"
-msgstr[0] "<b>உயரம்:</b> %d பிக்ஸல்\n"
-msgstr[1] "<b>உயரம்:</b> %d பிக்ஸல்கள்\n"
+#: ../src/nautilus-image-properties-page.c:386, c-format
+msgid "<b>Height:</b> %d pixel"
+msgid_plural "<b>Height:</b> %d pixels"
+msgstr[0] "<b>உயரம்:</b> %d பிக்ஸல்"
+msgstr[1] "<b>உயரம்:</b> %d பிக்ஸல்கள்"
 
-#: ../src/nautilus-image-properties-page.c:362
+#: ../src/nautilus-image-properties-page.c:403
 msgid "Failed to load image information"
 msgstr "பிம்பத்தகவலை ஏற்றுவதில் தோல்வி"
 
-#: ../src/nautilus-image-properties-page.c:574
+#: ../src/nautilus-image-properties-page.c:617
 msgid "loading..."
 msgstr "ஏற்றுகிறது..."
 
-#: ../src/nautilus-image-properties-page.c:630
+#: ../src/nautilus-image-properties-page.c:669
 msgid "Image"
 msgstr "பிம்பம்"
 
