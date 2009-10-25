@@ -128,6 +128,35 @@ file_close_callback (GObject      *object,
 	page->details->cancellable = NULL;
 }
 
+static GtkWidget *
+append_label (GtkWidget *vbox,
+	      const char *str)
+{
+	GtkWidget *label;
+
+	label = gtk_label_new (NULL);
+	gtk_label_set_markup (GTK_LABEL (label), str);
+	gtk_misc_set_alignment (GTK_MISC (label), 0, 0);
+	gtk_label_set_selectable (GTK_LABEL (label), TRUE);
+
+	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
+	gtk_widget_show (label);
+
+	return label;
+}
+
+static GtkWidget *
+append_label_take_str (GtkWidget *vbox,
+		       char *str)
+{
+	GtkWidget *retval;
+
+	retval = append_label (vbox, str);
+	g_free (str);
+
+	return retval;
+}
+
 #ifdef HAVE_EXIF
 static char *
 exif_string_to_utf8 (const char *exif_str)
@@ -195,35 +224,6 @@ exifdata_get_tag_value_utf8 (ExifData *data, ExifTag tag)
 	}
 
 	return utf8_value;
-}
-
-static GtkWidget *
-append_label (GtkWidget *vbox,
-	      const char *str)
-{
-	GtkWidget *label;
-
-	label = gtk_label_new (NULL);
-	gtk_label_set_markup (GTK_LABEL (label), str);
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0);
-	gtk_label_set_selectable (GTK_LABEL (label), TRUE);
-
-	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
-	gtk_widget_show (label);
-
-	return label;
-}
-
-static GtkWidget *
-append_label_take_str (GtkWidget *vbox,
-		       char *str)
-{
-	GtkWidget *retval;
-
-	retval = append_label (vbox, str);
-	g_free (str);
-
-	return retval;
 }
 
 static gboolean
