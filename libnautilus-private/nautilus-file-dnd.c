@@ -122,6 +122,7 @@ nautilus_drag_can_accept_info (NautilusFile *drop_target_item,
 			return nautilus_drag_can_accept_files (drop_target_item);
 
 		case NAUTILUS_ICON_DND_XDNDDIRECTSAVE:
+		case NAUTILUS_ICON_DND_RAW:
 			return nautilus_drag_can_accept_files (drop_target_item); /* Check if we can accept files at this location */
 
 		case NAUTILUS_ICON_DND_KEYWORD:

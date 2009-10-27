@@ -117,6 +117,7 @@ typedef struct {
 	gboolean make_dir;
 	GFile *src;
 	char *src_data;
+	int length;
 	GdkPoint position;
 	gboolean has_position;
 	GFile *created_file;
@@ -5638,6 +5639,7 @@ create_job (GIOSchedulerJob *io_job,
 	char *primary, *secondary, *details;
 	int response;
 	char *data;
+	int length;
 	GFileOutputStream *out;
 	gboolean handled_invalid_filename;
 	int max_length;
@@ -5711,8 +5713,10 @@ create_job (GIOSchedulerJob *io_job,
 					   &error);
 		} else {
 			data = "";
+			length = 0;
 			if (job->src_data) {
 				data = job->src_data;
+				length = job->length;
 			}
 
 			out = g_file_create (dest,
@@ -5721,7 +5725,7 @@ create_job (GIOSchedulerJob *io_job,
 					     &error);
 			if (out) {
 				res = g_output_stream_write_all (G_OUTPUT_STREAM (out),
-								 data, strlen (data),
+								 data, length,
 								 NULL,
 								 common->cancellable,
 								 &error);
@@ -5944,6 +5948,7 @@ nautilus_file_operations_new_file (GtkWidget *parent_view,
 				   const char *parent_dir,
 				   const char *target_filename,
 				   const char *initial_contents,
+				   int length,
 				   NautilusCreateCallback done_callback,
 				   gpointer done_callback_data)
 {
@@ -5963,7 +5968,8 @@ nautilus_file_operations_new_file (GtkWidget *parent_view,
 		job->position = *target_point;
 		job->has_position = TRUE;
 	}
-	job->src_data = g_strdup (initial_contents);
+	job->src_data = g_memdup (initial_contents, length);
+	job->length = length;
 	job->filename = g_strdup (target_filename);
 
 	g_io_scheduler_push_job (create_job,

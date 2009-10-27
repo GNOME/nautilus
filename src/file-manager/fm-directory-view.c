@@ -4036,6 +4036,7 @@ fm_directory_view_new_file_with_initial_contents (FMDirectoryView *directory_vie
 						  const char *parent_uri,
 						  const char *filename,
 						  const char *initial_contents,
+						  int length,
 						  GdkPoint *pos)
 {
 	NewFolderData *data;
@@ -4050,7 +4051,7 @@ fm_directory_view_new_file_with_initial_contents (FMDirectoryView *directory_vie
 
 	nautilus_file_operations_new_file (GTK_WIDGET (directory_view),
 					   pos, parent_uri, filename,
-					   initial_contents,
+					   initial_contents, length,
 					   new_folder_done, data);
 }
 
@@ -4075,6 +4076,7 @@ fm_directory_view_new_file (FMDirectoryView *directory_view,
 								  parent_uri != NULL ? parent_uri : container_uri,
 								  NULL,
 								  NULL,
+								  0,
 								  NULL);
 		g_free (container_uri);
 		return;
@@ -10278,6 +10280,7 @@ fm_directory_view_handle_text_drop (FMDirectoryView  *view,
 				    int               x,
 				    int               y)
 {
+	int length;
 	char *container_uri;
 	GdkPoint pos;
 
@@ -10293,6 +10296,8 @@ fm_directory_view_handle_text_drop (FMDirectoryView  *view,
 		g_assert (container_uri != NULL);
 	}
 
+	length = strlen (text);
+
 	pos.x = x;
 	pos.y = y;
 	fm_directory_view_widget_to_file_operation_position (view, &pos);
@@ -10301,7 +10306,56 @@ fm_directory_view_handle_text_drop (FMDirectoryView  *view,
 		view, target_uri != NULL ? target_uri : container_uri,
 		/* Translator: This is the filename used for when you dnd text to a directory */
 		_("dropped text.txt"),
-		text, &pos);
+		text, length, &pos);
+
+	g_free (container_uri);
+}
+
+void
+fm_directory_view_handle_raw_drop (FMDirectoryView  *view,
+				    const char       *raw_data,
+				    int               length,
+				    const char       *target_uri,
+				    const char       *direct_save_uri,
+				    GdkDragAction     action,
+				    int               x,
+				    int               y)
+{
+	char *container_uri, *filename;
+	GFile *direct_save_full;
+	GdkPoint pos;
+
+	if (raw_data == NULL) {
+		return;
+	}
+
+	g_return_if_fail (action == GDK_ACTION_COPY);
+
+	container_uri = NULL;
+	if (target_uri == NULL) {
+		container_uri = fm_directory_view_get_backing_uri (view);
+		g_assert (container_uri != NULL);
+	}
+
+	pos.x = x;
+	pos.y = y;
+	fm_directory_view_widget_to_file_operation_position (view, &pos);
+
+	filename = NULL;
+	if (direct_save_uri != NULL) {
+		direct_save_full = g_file_new_for_uri (direct_save_uri);
+		filename = g_file_get_basename (direct_save_full);
+	}
+	if (filename == NULL) {
+		/* Translator: This is the filename used for when you dnd raw
+		 * data to a directory, if the source didn't supply a name.
+		 */
+		filename = _("dropped data");
+	}
+
+	fm_directory_view_new_file_with_initial_contents (
+		view, target_uri != NULL ? target_uri : container_uri,
+		filename, raw_data, length, &pos);
 
 	g_free (container_uri);
 }

@@ -40,6 +40,7 @@
 #define NAUTILUS_ICON_DND_RESET_BACKGROUND_TYPE "x-special/gnome-reset-background"
 #define NAUTILUS_ICON_DND_ROOTWINDOW_DROP_TYPE	"application/x-rootwindow-drop"
 #define NAUTILUS_ICON_DND_XDNDDIRECTSAVE_TYPE	"XdndDirectSave0" /* XDS Protocol Type */
+#define NAUTILUS_ICON_DND_RAW_TYPE	"application/octet-stream"
 
 /* Item of the drag selection list */
 typedef struct {
@@ -60,6 +61,7 @@ typedef enum {
 	NAUTILUS_ICON_DND_TEXT,
 	NAUTILUS_ICON_DND_RESET_BACKGROUND,
 	NAUTILUS_ICON_DND_XDNDDIRECTSAVE,
+	NAUTILUS_ICON_DND_RAW,
 	NAUTILUS_ICON_DND_ROOTWINDOW_DROP
 } NautilusIconDndTargetType;
 

@@ -82,6 +82,14 @@ struct _NautilusTreeViewDragDestClass {
 				  GdkDragAction action,
 				  int x,
 				  int y);
+	void (* handle_raw)    (NautilusTreeViewDragDest *dest,
+				  char *raw_data,
+				  int length,
+				  const char *target_uri,
+				  const char *direct_save_uri,
+				  GdkDragAction action,
+				  int x,
+				  int y);
 };
 
 GType                     nautilus_tree_view_drag_dest_get_type (void);

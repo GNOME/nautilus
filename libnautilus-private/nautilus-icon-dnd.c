@@ -75,6 +75,7 @@ static const GtkTargetEntry drop_types [] = {
 	{ NAUTILUS_ICON_DND_KEYWORD_TYPE, 0, NAUTILUS_ICON_DND_KEYWORD },
 	{ NAUTILUS_ICON_DND_RESET_BACKGROUND_TYPE,  0, NAUTILUS_ICON_DND_RESET_BACKGROUND },
 	{ NAUTILUS_ICON_DND_XDNDDIRECTSAVE_TYPE, 0, NAUTILUS_ICON_DND_XDNDDIRECTSAVE }, /* XDS Protocol Type */
+	{ NAUTILUS_ICON_DND_RAW_TYPE, 0, NAUTILUS_ICON_DND_RAW },
 	/* Must be last: */
 	{ NAUTILUS_ICON_DND_ROOTWINDOW_DROP_TYPE,  0, NAUTILUS_ICON_DND_ROOTWINDOW_DROP }
 };
@@ -383,7 +384,7 @@ get_direct_save_filename (GdkDragContext *context)
 			       &prop_len, &prop_text) && prop_text != NULL) {
 		return NULL;
 	}
-	
+
 	/* Zero-terminate the string */
 	prop_text = g_realloc (prop_text, prop_len + 1);
 	prop_text[prop_len] = '\0';
@@ -767,6 +768,29 @@ receive_dropped_text (NautilusIconContainer *container, const char *text, GdkDra
 	g_signal_emit_by_name (container, "handle_text",
 			       text,
 			       drop_target,
+			       context->action,
+			       x, y);
+
+	g_free (drop_target);
+}
+
+/* handle dropped raw data */
+static void
+receive_dropped_raw (NautilusIconContainer *container, const char *raw_data, int length, const char *direct_save_uri, GdkDragContext *context, int x, int y)
+{
+	char *drop_target;
+
+	if (raw_data == NULL) {
+		return;
+	}
+
+	drop_target = nautilus_icon_container_find_drop_target (container, context, x, y, NULL, TRUE);
+
+	g_signal_emit_by_name (container, "handle_raw",
+			       raw_data,
+			       length,
+			       drop_target,
+			       direct_save_uri,
 			       context->action,
 			       x, y);
 
@@ -1304,6 +1328,7 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 
 	case NAUTILUS_ICON_DND_TEXT:
 	case NAUTILUS_ICON_DND_XDNDDIRECTSAVE:
+	case NAUTILUS_ICON_DND_RAW:
 		*action = GDK_ACTION_COPY;
 		break;
 	}
@@ -1699,6 +1724,8 @@ drag_data_received_callback (GtkWidget *widget,
     	NautilusDragInfo *drag_info;
 	EelBackground *background;
 	char *tmp;
+	const char *tmp_raw;
+	int length;
 	gboolean success;
 
 	drag_info = &(NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info->drag_info);
@@ -1717,6 +1744,7 @@ drag_data_received_callback (GtkWidget *widget,
 	case NAUTILUS_ICON_DND_TEXT:
 	case NAUTILUS_ICON_DND_RESET_BACKGROUND:
 	case NAUTILUS_ICON_DND_XDNDDIRECTSAVE:
+	case NAUTILUS_ICON_DND_RAW:
 		/* Save the data so we can do the actual work on drop. */
 		if (drag_info->selection_data != NULL) {
 			gtk_selection_data_free (drag_info->selection_data);
@@ -1786,6 +1814,15 @@ drag_data_received_callback (GtkWidget *widget,
 			success = TRUE;
 			g_free (tmp);
 			break;
+		case NAUTILUS_ICON_DND_RAW:
+			length = gtk_selection_data_get_length (data);
+			tmp_raw = gtk_selection_data_get_data (data);
+			receive_dropped_raw
+				(NAUTILUS_ICON_CONTAINER (widget),
+				 tmp_raw, length, drag_info->direct_save_uri,
+				 context, x, y);
+			success = TRUE;
+			break;
 		case NAUTILUS_ICON_DND_RESET_BACKGROUND:
 			background = eel_get_widget_background (widget);
 			if (background != NULL) {
@@ -1797,18 +1834,18 @@ drag_data_received_callback (GtkWidget *widget,
 			/* Do nothing, everything is done by the sender */
 			break;
 		case NAUTILUS_ICON_DND_XDNDDIRECTSAVE:
-			/* Indicate that we don't provide "F" fallback */
-          		if (drag_info->selection_data->format == 8 &&
+			if (drag_info->selection_data->format == 8 &&
 			    drag_info->selection_data->length == 1 &&
 			    drag_info->selection_data->data[0] == 'F') {
-	              		gdk_property_change (GDK_DRAWABLE (context->source_window),
-						     gdk_atom_intern (NAUTILUS_ICON_DND_XDNDDIRECTSAVE_TYPE, FALSE),
-						     gdk_atom_intern ("text/plain", FALSE), 8,
-						     GDK_PROP_MODE_REPLACE, (const guchar *) "", 0);
-            		} else if (drag_info->selection_data->format == 8 &&
-				   drag_info->selection_data->length == 1 &&
-				   drag_info->selection_data->data[0] == 'S' &&
-				   drag_info->direct_save_uri != NULL) {
+				gtk_drag_get_data (widget, context,
+				                  gdk_atom_intern (NAUTILUS_ICON_DND_RAW_TYPE,
+				                                   FALSE),
+				                  time);
+				return;
+			} else if (drag_info->selection_data->format == 8 &&
+			           drag_info->selection_data->length == 1 &&
+			           drag_info->selection_data->data[0] == 'S' &&
+			           drag_info->direct_save_uri != NULL) {
 				GdkPoint p;
 				GFile *location;
 
@@ -1816,13 +1853,15 @@ drag_data_received_callback (GtkWidget *widget,
 
 				nautilus_file_changes_queue_file_added (location);
 				p.x = x; p.y = y;
-				nautilus_file_changes_queue_schedule_position_set (location,
-										   p,
-										   gdk_screen_get_number (gtk_widget_get_screen (widget)));
+				nautilus_file_changes_queue_schedule_position_set (
+				                 location,
+				                 p,
+				                 gdk_screen_get_number (
+				                             gtk_widget_get_screen (widget)));
 				g_object_unref (location);
 				nautilus_file_changes_consume_changes (TRUE);
-            		}
-		        success = TRUE;
+				success = TRUE;
+			}
 			break;
 		}
 		gtk_drag_finish (context, success, FALSE, time);

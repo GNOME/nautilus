@@ -1220,6 +1220,16 @@ list_view_handle_text (NautilusTreeViewDragDest *dest, const char *text,
 }
 
 static void
+list_view_handle_raw (NautilusTreeViewDragDest *dest, const char *raw_data,
+		       int length, const char *target_uri, const char *direct_save_uri,
+		       GdkDragAction action, int x, int y, FMListView *view)
+{
+	fm_directory_view_handle_raw_drop (FM_DIRECTORY_VIEW (view),
+					    raw_data, length, target_uri, direct_save_uri,
+					    action, x, y);
+}
+
+static void
 move_copy_items_callback (NautilusTreeViewDragDest *dest,
 			  const GList *item_uris,
 			  const char *target_uri,
@@ -1401,6 +1411,8 @@ create_and_set_up_tree_view (FMListView *view)
 				 G_CALLBACK (list_view_handle_uri_list), view, 0);
 	g_signal_connect_object (view->details->drag_dest, "handle_text",
 				 G_CALLBACK (list_view_handle_text), view, 0);
+	g_signal_connect_object (view->details->drag_dest, "handle_raw",
+				 G_CALLBACK (list_view_handle_raw), view, 0);
 
 	g_signal_connect_object (gtk_tree_view_get_selection (view->details->tree_view),
 				 "changed",

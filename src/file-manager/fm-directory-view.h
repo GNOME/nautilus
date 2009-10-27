@@ -465,6 +465,14 @@ void                fm_directory_view_handle_text_drop                 (FMDirect
 									GdkDragAction     action,
 									int               x,
 									int               y);
+void                fm_directory_view_handle_raw_drop                 (FMDirectoryView  *view,
+									const char       *raw_data,
+									int               length,
+									const char       *target_uri,
+									const char       *direct_save_uri,
+									GdkDragAction     action,
+									int               x,
+									int               y);
 void                fm_directory_view_freeze_updates                   (FMDirectoryView  *view);
 void                fm_directory_view_unfreeze_updates                 (FMDirectoryView  *view);
 void                fm_directory_view_add_subdirectory                (FMDirectoryView  *view,

@@ -120,6 +120,14 @@ typedef struct {
 						   GdkDragAction action,
 						   int x,
 						   int y);
+	void	     (* handle_raw)		  (NautilusIconContainer *container,
+						   char *raw_data,
+						   int length,
+						   const char *target_uri,
+						   const char *direct_save_uri,
+						   GdkDragAction action,
+						   int x,
+						   int y);
 
 	/* Queries on the container for subclass/client.
 	 * These must be implemented. The default "do nothing" is not good enough.
