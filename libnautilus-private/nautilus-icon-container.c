@@ -7543,6 +7543,8 @@ nautilus_icon_container_invert_selection (NautilusIconContainer *container)
 		icon = p->data;
 		icon_toggle_selected (container, icon);
 	}
+
+	g_signal_emit (container, signals[SELECTION_CHANGED], 0);
 }
 
 
