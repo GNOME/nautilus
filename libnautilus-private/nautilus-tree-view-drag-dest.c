@@ -242,7 +242,7 @@ clear_drag_dest_row (NautilusTreeViewDragDest *dest)
 	set_widget_highlight (dest, FALSE);
 }
 
-static void
+static gboolean
 get_drag_data (NautilusTreeViewDragDest *dest,
 	       GdkDragContext *context, 
 	       guint32 time)
@@ -252,15 +252,22 @@ get_drag_data (NautilusTreeViewDragDest *dest,
 	target = gtk_drag_dest_find_target (GTK_WIDGET (dest->details->tree_view), 
 					    context, 
 					    NULL);
+
+	if (target == GDK_NONE) {
+		return FALSE;
+	}
+
 	if (target == gdk_atom_intern (NAUTILUS_ICON_DND_XDNDDIRECTSAVE_TYPE, FALSE) &&
 	    !dest->details->drop_occurred) {
 		dest->details->drag_type = NAUTILUS_ICON_DND_XDNDDIRECTSAVE;
 		dest->details->have_drag_data = TRUE;
-		return;
+		return TRUE;
 	}
 
 	gtk_drag_get_data (GTK_WIDGET (dest->details->tree_view),
 			   context, target, time);
+
+	return TRUE;
 }
 
 static void
@@ -455,6 +462,7 @@ drag_motion_callback (GtkWidget *widget,
 	GtkTreeViewDropPosition pos;
 	GdkWindow *bin_window;
 	guint action;
+	gboolean res = TRUE;
 
 	dest = NAUTILUS_TREE_VIEW_DRAG_DEST (data);
 
@@ -463,8 +471,13 @@ drag_motion_callback (GtkWidget *widget,
 	
 
 	if (!dest->details->have_drag_data) {
-		get_drag_data (dest, context, time);
+		res = get_drag_data (dest, context, time);
 	}
+
+	if (!res) {
+		return FALSE;
+	}
+
 	drop_path = get_drop_path (dest, path);
 	
 	action = 0;
