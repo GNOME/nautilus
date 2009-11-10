@@ -1107,6 +1107,7 @@ cell_renderer_edited (GtkCellRendererText *cell,
 		g_object_set (G_OBJECT (view->details->file_name_cell),
 			      "editable", FALSE,
 			      NULL);
+		fm_directory_view_unfreeze_updates (FM_DIRECTORY_VIEW (view));
 		return;
 	}
 	
