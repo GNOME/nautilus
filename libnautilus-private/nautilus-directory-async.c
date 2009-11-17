@@ -604,7 +604,7 @@ remove_monitor_link (NautilusDirectory *directory,
 		     GList *link)
 {
 	Monitor *monitor;
-	
+
 	if (link != NULL) {
 		monitor = link->data;
 		request_counter_remove_request (directory->details->monitor_counters,
@@ -1148,6 +1148,8 @@ nautilus_directory_remove_file_monitors (NautilusDirectory *directory,
 		if (monitor->file == file) {
 			*list = g_list_remove_link (*list, node);
 			result = g_list_concat (node, result);
+			request_counter_remove_request (directory->details->monitor_counters,
+							monitor->request);
 		}
 	}
 
@@ -1164,6 +1166,8 @@ nautilus_directory_add_file_monitors (NautilusDirectory *directory,
 				      FileMonitors *monitors)
 {
 	GList **list;
+	GList *l;
+	Monitor *monitor;
 
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 	g_assert (NAUTILUS_IS_FILE (file));
@@ -1171,6 +1175,12 @@ nautilus_directory_add_file_monitors (NautilusDirectory *directory,
 
 	if (monitors == NULL) {
 		return;
+	}
+
+	for (l = (GList *)monitors; l != NULL; l = l->next) {
+		monitor = l->data;
+		request_counter_add_request (directory->details->monitor_counters,
+					     monitor->request);
 	}
 
 	list = &directory->details->monitor_list;
@@ -1283,7 +1293,7 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 	g_assert (directory == NULL || NAUTILUS_IS_DIRECTORY (directory));
 	g_assert (file == NULL || NAUTILUS_IS_FILE (file));
 	g_assert (file != NULL || directory_callback != NULL);
-	
+
 	/* Construct a callback object. */
 	callback.active = TRUE;
 	callback.file = file;
@@ -3956,7 +3966,7 @@ thumbnail_start (NautilusDirectory *directory,
 {
 	GFile *location;
 	ThumbnailState *state;
-	
+
 	if (directory->details->thumbnail_state != NULL) {
 		*doing_io = TRUE;
 		return;
@@ -3987,7 +3997,7 @@ thumbnail_start (NautilusDirectory *directory,
 	}
 	
 	directory->details->thumbnail_state = state;
-	
+
 	g_file_load_contents_async (location,
 				    state->cancellable,
 				    thumbnail_read_callback,
