@@ -1396,7 +1396,7 @@ report_delete_progress (CommonJob *job,
 
 	now = g_thread_gettime ();
 	if (transfer_info->last_report_time != 0 &&
-	    ABS (transfer_info->last_report_time - now) < 100 * NSEC_PER_MSEC) {
+	    ABS ((gint64)(transfer_info->last_report_time - now)) < 100 * NSEC_PER_MSEC) {
 		return;
 	}
 	transfer_info->last_report_time = now;
@@ -2820,7 +2820,7 @@ report_copy_progress (CopyMoveJob *copy_job,
 	now = g_thread_gettime ();
 	
 	if (transfer_info->last_report_time != 0 &&
-	    ABS (transfer_info->last_report_time - now) < 100 * NSEC_PER_MSEC) {
+	    ABS ((gint64)(transfer_info->last_report_time - now)) < 100 * NSEC_PER_MSEC) {
 		return;
 	}
 	transfer_info->last_report_time = now;
