@@ -2418,7 +2418,7 @@ static void
 fm_list_view_bump_zoom_level (FMDirectoryView *view, int zoom_increment)
 {
 	FMListView *list_view;
-	NautilusZoomLevel new_level;
+	gint new_level;
 
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
 
