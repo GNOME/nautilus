@@ -128,6 +128,23 @@ extension_action_sensitive_callback (NautilusMenuItem *item,
 	gtk_action_set_sensitive (GTK_ACTION (user_data), value);
 }
 
+static GdkPixbuf *
+get_action_icon (const char *icon_name, int size)
+{
+	NautilusIconInfo *info;
+	GdkPixbuf *pixbuf;
+
+	if (g_path_is_absolute (icon_name)) {
+		info = nautilus_icon_info_lookup_from_path (icon_name, size);
+	} else {
+		info = nautilus_icon_info_lookup_from_name (icon_name, size);
+	}
+	pixbuf = nautilus_icon_info_get_pixbuf_nodefault_at_size (info, size);
+	g_object_unref (info);
+
+	return pixbuf;
+}
+
 GtkAction *
 nautilus_action_from_menu_item (NautilusMenuItem *item)
 {
@@ -135,47 +152,42 @@ nautilus_action_from_menu_item (NautilusMenuItem *item)
 	gboolean sensitive, priority;
 	GtkAction *action;
 	GdkPixbuf *pixbuf;
-	NautilusIconInfo *info;
-	
-	g_object_get (G_OBJECT (item), 
-		      "name", &name, "label", &label, 
+
+	g_object_get (G_OBJECT (item),
+		      "name", &name, "label", &label,
 		      "tip", &tip, "icon", &icon_name,
 		      "sensitive", &sensitive,
 		      "priority", &priority,
 		      NULL);
-	
+
 	action = gtk_action_new (name,
 				 label,
 				 tip,
 				 icon_name);
-	
-	if (icon_name != NULL) {
-		info = nautilus_icon_info_lookup_from_name (icon_name,
-							    nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU));
 
-		pixbuf = nautilus_icon_info_get_pixbuf_nodefault_at_size (info,
-									  nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU));
+	if (icon_name != NULL) {
+		pixbuf = get_action_icon (icon_name,
+								nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU));
 		if (pixbuf != NULL) {
 			g_object_set_data_full (G_OBJECT (action), "menu-icon",
 						pixbuf,
 						g_object_unref);
 		}
-		g_object_unref (info);
 	}
-	
+
 	gtk_action_set_sensitive (action, sensitive);
 	g_object_set (action, "is-important", priority, NULL);
-	
+
 	g_signal_connect_data (action, "activate",
 			       G_CALLBACK (extension_action_callback),
-			       g_object_ref (item), 
+			       g_object_ref (item),
 			       (GClosureNotify)g_object_unref, 0);
-	
+
 	g_free (name);
 	g_free (label);
 	g_free (tip);
 	g_free (icon_name);
-	
+
 	return action;
 }
 
@@ -186,40 +198,35 @@ nautilus_toolbar_action_from_menu_item (NautilusMenuItem *item)
 	gboolean sensitive, priority;
 	GtkAction *action;
 	GdkPixbuf *pixbuf;
-	NautilusIconInfo *info;
-	int icon_size;
-	
-	g_object_get (G_OBJECT (item), 
-		      "name", &name, "label", &label, 
+
+	g_object_get (G_OBJECT (item),
+		      "name", &name, "label", &label,
 		      "tip", &tip, "icon", &icon_name,
 		      "sensitive", &sensitive,
 		      "priority", &priority,
 		      NULL);
-	
+
 	action = gtk_action_new (name,
 				 label,
 				 tip,
 				 icon_name);
-	
-	if (icon_name != NULL) {
-		icon_size = nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_LARGE_TOOLBAR);
-		info = nautilus_icon_info_lookup_from_name (icon_name, icon_size);
 
-		pixbuf = nautilus_icon_info_get_pixbuf_nodefault_at_size (info, icon_size);
+	if (icon_name != NULL) {
+		pixbuf = get_action_icon (icon_name,
+								nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_LARGE_TOOLBAR));
 		if (pixbuf != NULL) {
 			g_object_set_data_full (G_OBJECT (action), "toolbar-icon",
 						pixbuf,
 						g_object_unref);
 		}
-		g_object_unref (info);
 	}
-	
+
 	gtk_action_set_sensitive (action, sensitive);
 	g_object_set (action, "is-important", priority, NULL);
-	
+
 	g_signal_connect_data (action, "activate",
 			       G_CALLBACK (extension_action_callback),
-			       g_object_ref (item), 
+			       g_object_ref (item),
 			       (GClosureNotify)g_object_unref, 0);
 
 	g_signal_connect_object (item, "notify::sensitive",
