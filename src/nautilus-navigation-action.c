@@ -199,7 +199,7 @@ proxy_button_press_event_cb (GtkButton *button,
 			     gpointer user_data)
 {
 	if (event->button == 2) {
-		gtk_button_pressed (button);
+                g_signal_emit_by_name (button, "pressed", 0);
 	}
 
 	return FALSE;
@@ -211,7 +211,7 @@ proxy_button_release_event_cb (GtkButton *button,
 			       gpointer user_data)
 {
 	if (event->button == 2) {
-		gtk_button_released (button);
+                g_signal_emit_by_name (button, "released", 0);
 	}
 
 	return FALSE;
