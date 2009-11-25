@@ -64,9 +64,12 @@ struct _NautilusNavigationWindow {
         /** UI stuff **/
         NautilusSidePane *sidebar;
         GtkWidget *view_as_combo_box;
+
+        GtkSizeGroup *navigation_group;
         GtkWidget *navigation_bar;
 	GtkWidget *path_bar;
         GtkWidget *search_bar;
+
 	GtkWidget *notebook;
 
         /* Current views stuff */
@@ -120,5 +123,8 @@ void     nautilus_navigation_window_back_or_forward      (NautilusNavigationWind
                                                           guint                     distance,
 							  gboolean                  new_tab);
 void     nautilus_navigation_window_show_search          (NautilusNavigationWindow *window);
+void     nautilus_navigation_window_hide_search          (NautilusNavigationWindow *window);
+void     nautilus_navigation_window_set_search_button	  (NautilusNavigationWindow *window,
+							   gboolean		    state);
 
 #endif

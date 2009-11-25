@@ -1157,6 +1157,10 @@ nautilus_query_editor_get_query (NautilusQueryEditor *editor)
 	GList *l;
 	NautilusQueryEditorRow *row;
 
+	if (editor == NULL || editor->details == NULL || editor->details->entry == NULL) {
+		return NULL;
+	}
+
 	query_text = gtk_entry_get_text (GTK_ENTRY (editor->details->entry));
 
 	/* Empty string is a NULL query */

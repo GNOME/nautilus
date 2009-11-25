@@ -424,11 +424,16 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 	gtk_toolbar_insert (GTK_TOOLBAR (location_bar),
 			    item, -1);
 
+	window->navigation_group = gtk_size_group_new (GTK_SIZE_GROUP_VERTICAL);
+	gtk_size_group_set_ignore_hidden (window->navigation_group, FALSE);
+
 	window->details->location_button = location_button_create (window);
+	gtk_size_group_add_widget (window->navigation_group, window->details->location_button);
 	gtk_box_pack_start (GTK_BOX (hbox), window->details->location_button, FALSE, FALSE, 0);
 	gtk_widget_show (window->details->location_button);
 
 	window->path_bar = g_object_new (NAUTILUS_TYPE_PATH_BAR, NULL);
+	gtk_size_group_add_widget (window->navigation_group, window->path_bar);
  	gtk_widget_show (window->path_bar);
 	
 	g_signal_connect_object (window->path_bar, "path_clicked",
@@ -441,6 +446,7 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 			    TRUE, TRUE, 0);
 
 	window->navigation_bar = nautilus_location_bar_new (window);
+	gtk_size_group_add_widget (window->navigation_group, window->navigation_bar);
 	g_signal_connect_object (window->navigation_bar, "location_changed",
 				 G_CALLBACK (navigation_bar_location_changed_callback), window, 0);
 	g_signal_connect_object (window->navigation_bar, "cancel",
@@ -451,6 +457,7 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 			    TRUE, TRUE, 0);
 
 	window->search_bar = nautilus_search_bar_new ();
+	gtk_size_group_add_widget (window->navigation_group, window->search_bar);
 	g_signal_connect_object (window->search_bar, "activate",
 				 G_CALLBACK (search_bar_activate_callback), window, 0);
 	g_signal_connect_object (window->search_bar, "cancel",
@@ -753,6 +760,7 @@ hide_temporary_bars (NautilusNavigationWindow *window)
 		} else {
 			nautilus_navigation_window_set_bar_mode (window, NAUTILUS_BAR_NAVIGATION);
 		}
+		nautilus_navigation_window_set_search_button (window, FALSE);
 		window->details->temporary_search_bar = FALSE;
 		success = TRUE;
 	}
@@ -1519,8 +1527,28 @@ nautilus_navigation_window_show_search (NautilusNavigationWindow *window)
 		window->details->temporary_search_bar = TRUE;
 		nautilus_search_bar_clear (NAUTILUS_SEARCH_BAR (window->search_bar));
 	}
-	
+
 	nautilus_search_bar_grab_focus (NAUTILUS_SEARCH_BAR (window->search_bar));
+}
+
+void
+nautilus_navigation_window_hide_search (NautilusNavigationWindow *window)
+{
+	if (nautilus_navigation_window_search_bar_showing (window)) {
+		if (hide_temporary_bars (window)) {
+			restore_focus_widget (window);
+		}
+	}
+}
+
+void
+nautilus_navigation_window_set_search_button (NautilusNavigationWindow *window,
+					      gboolean state)
+{
+	GtkAction *action;
+
+	action = gtk_action_group_get_action (window->details->navigation_action_group, "Search");
+	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), state);
 }
 
 /* either called due to slot change, or due to location change in the current slot. */
@@ -1709,17 +1737,20 @@ nautilus_navigation_window_set_bar_mode (NautilusNavigationWindow *window,
 					 NautilusBarMode mode)
 {
 	gboolean use_entry;
+	GtkWidget *focus_widget;
 
 	switch (mode) {
 
 	case NAUTILUS_BAR_PATH:
 		gtk_widget_show (window->path_bar);
+		gtk_widget_show (window->details->location_button);
 		gtk_widget_hide (window->navigation_bar);
 		gtk_widget_hide (window->search_bar);
 		break;
 
 	case NAUTILUS_BAR_NAVIGATION:
 		gtk_widget_show (window->navigation_bar);
+		gtk_widget_show (window->details->location_button);
 		gtk_widget_hide (window->path_bar);
 		gtk_widget_hide (window->search_bar);
 		break;
@@ -1728,6 +1759,7 @@ nautilus_navigation_window_set_bar_mode (NautilusNavigationWindow *window,
 		gtk_widget_show (window->search_bar);
 		gtk_widget_hide (window->path_bar);
 		gtk_widget_hide (window->navigation_bar);
+		gtk_widget_hide (window->details->location_button);
 		break;
 	}
 
@@ -1742,6 +1774,16 @@ nautilus_navigation_window_set_bar_mode (NautilusNavigationWindow *window,
 		g_signal_handlers_unblock_by_func (window->details->location_button,
 						   G_CALLBACK (location_button_toggled_cb),
 						   window);
+	}
+
+	focus_widget = gtk_window_get_focus (GTK_WINDOW (window));
+	if (focus_widget != NULL && !is_in_temporary_navigation_bar (focus_widget, window) &&
+				    !is_in_temporary_search_bar (focus_widget, window)) {
+		if (mode == NAUTILUS_BAR_NAVIGATION || mode == NAUTILUS_BAR_PATH) {
+			nautilus_navigation_window_set_search_button (window, FALSE);
+		} else {
+			nautilus_navigation_window_set_search_button (window, TRUE);
+		}
 	}
 }
 
