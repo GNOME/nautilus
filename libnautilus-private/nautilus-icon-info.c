@@ -435,13 +435,28 @@ nautilus_icon_info_lookup_from_name (const char *name,
 {
 	GIcon *icon;
 	NautilusIconInfo *info;
-	
+
 	icon = g_themed_icon_new (name);
 	info = nautilus_icon_info_lookup (icon, size);
 	g_object_unref (icon);
 	return info;
 }
 
+NautilusIconInfo *
+nautilus_icon_info_lookup_from_path (const char *path,
+				     int size)
+{
+	GFile *icon_file;
+	GIcon *icon;
+	NautilusIconInfo *info;
+
+	icon_file = g_file_new_for_path (path);
+	icon = g_file_icon_new (icon_file);
+	info = nautilus_icon_info_lookup (icon, size);
+	g_object_unref (icon);
+	g_object_unref (icon_file);
+	return info;
+}
 
 GdkPixbuf *
 nautilus_icon_info_get_pixbuf_nodefault (NautilusIconInfo  *icon)
