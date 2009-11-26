@@ -885,6 +885,7 @@ setup_new_spatial_window (NautilusWindowSlot *slot, NautilusFile *file)
 	char *geometry_string;
 	char *scroll_string;
 	gboolean maximized, sticky, above;
+	GtkAction *action;
 
 	window = slot->window;
 
@@ -895,15 +896,22 @@ setup_new_spatial_window (NautilusWindowSlot *slot, NautilusFile *file)
 			 NULL);
 		if (show_hidden_file_setting != NULL) {
 			if (strcmp (show_hidden_file_setting, "1") == 0) {
-				NAUTILUS_WINDOW (window)->details->show_hidden_files_mode = NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_ENABLE;	
+				window->details->show_hidden_files_mode = NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_ENABLE;
 			} else {
-				NAUTILUS_WINDOW (window)->details->show_hidden_files_mode = NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DISABLE;
+				window->details->show_hidden_files_mode = NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DISABLE;
 			}
+
+			/* Update the UI, since we initialize it to the default */
+			action = gtk_action_group_get_action (window->details->main_action_group, NAUTILUS_ACTION_SHOW_HIDDEN_FILES);
+			gtk_action_block_activate (action);
+			gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
+						      window->details->show_hidden_files_mode == NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_ENABLE);
+			gtk_action_unblock_activate (action);
 		} else {
 			NAUTILUS_WINDOW (window)->details->show_hidden_files_mode = NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT;
 		}
 		g_free (show_hidden_file_setting);
-		
+
 		/* load the saved window geometry */
 		maximized = nautilus_file_get_boolean_metadata
 			(file, NAUTILUS_METADATA_KEY_WINDOW_MAXIMIZED, FALSE);
