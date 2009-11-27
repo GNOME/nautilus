@@ -80,7 +80,7 @@ mount_changed_callback (GMount *mount, NautilusDesktopLink *link)
 	}
 	
 	link->details->display_name = g_mount_get_name (mount);
-	link->details->activation_location = g_mount_get_root (mount);
+	link->details->activation_location = g_mount_get_default_location (mount);
 	link->details->icon = g_mount_get_icon (mount);
 	
 	nautilus_desktop_link_changed (link);
@@ -261,7 +261,7 @@ nautilus_desktop_link_new_from_mount (GMount *mount)
 	
 	link->details->display_name = g_mount_get_name (mount);
 	
-	link->details->activation_location = g_mount_get_root (mount);
+	link->details->activation_location = g_mount_get_default_location (mount);
 	link->details->icon = g_mount_get_icon (mount);
 	
 	link->details->signal_handler_obj = G_OBJECT (mount);
