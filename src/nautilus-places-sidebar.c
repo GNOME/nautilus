@@ -362,7 +362,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 				if (mount != NULL) {
 					/* Show mounted volume in the sidebar */
 					icon = g_mount_get_icon (mount);
-					root = g_mount_get_root (mount);
+					root = g_mount_get_default_location (mount);
 					mount_uri = g_file_get_uri (root);
 					name = g_mount_get_name (mount);
 					tooltip = g_file_get_parse_name (root);
@@ -438,7 +438,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 		mount = g_volume_get_mount (volume);
 		if (mount != NULL) {
 			icon = g_mount_get_icon (mount);
-			root = g_mount_get_root (mount);
+			root = g_mount_get_default_location (mount);
 			mount_uri = g_file_get_uri (root);
 			tooltip = g_file_get_parse_name (root);
 			g_object_unref (root);
@@ -483,7 +483,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 			continue;
 		}
 		icon = g_mount_get_icon (mount);
-		root = g_mount_get_root (mount);
+		root = g_mount_get_default_location (mount);
 		mount_uri = g_file_get_uri (root);
 		name = g_mount_get_name (mount);
 		tooltip = g_file_get_parse_name (root);
@@ -1496,7 +1496,7 @@ volume_mounted_cb (GVolume *volume,
 
 	mount = g_volume_get_mount (volume);
 	if (mount != NULL) {
-		location = g_mount_get_root (mount);
+		location = g_mount_get_default_location (mount);
 
 		if (sidebar->go_to_after_mount_slot != NULL) {
 			if ((sidebar->go_to_after_mount_flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) == 0) {
