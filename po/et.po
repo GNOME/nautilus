@@ -22,8 +22,8 @@ msgstr ""
 "Project-Id-Version: nautilus MASTER\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2009-10-06 15:12+0000\n"
-"PO-Revision-Date: 2009-11-29 11:18+0200\n"
+"POT-Creation-Date: 2009-11-29 21:24+0000\n"
+"PO-Revision-Date: 2009-12-01 10:36+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -2639,47 +2639,40 @@ msgid "_Open"
 msgstr "_Ava"
 
 #. first %s is a filename and second %s is a file extension
-#, fuzzy, c-format
-#| msgid "Open %s and other files of type \"%s\" with:"
+#, c-format
 msgid "Open %s and other %s document with:"
-msgstr "Faili %s ja teisi \"%s\"-liigilisi faile tuleb avada rakendusega:"
+msgstr "Faili %s ja teisi \"%s\" dokumente tuleb avada rakendusega:"
 
 #. the %s here is a file name
 #. %s is a filename
-#, fuzzy, c-format
-#| msgid "Open With"
+#, c-format
 msgid "Open %s with:"
-msgstr "Avamine rakendusega"
+msgstr "Faili %s avamine rakendusega:"
 
-#, fuzzy, c-format
-#| msgid "There is no application installed for %s files"
+#, c-format
 msgid "_Remember this application for %s documents"
-msgstr "Failitüübi %s jaoks pole ühtegi rakendust paigaldatud"
+msgstr ""
 
 #. Only in add mode - the %s here is a file extension
-#, fuzzy, c-format
-#| msgid "Open all files of type \"%s\" with:"
+#, c-format
 msgid "Open all %s documents with:"
-msgstr "Kõik \"%s\" liigi alla kuuluvad failid avatakse rakendusega:"
+msgstr "Kõiki %s-dokumente avatakse rakendusega:"
 
 #. First %s is a filename, second is a description
 #. * of the type, eg "plain text document"
-#, fuzzy, c-format
-#| msgid "Open %s and other files of type \"%s\" with:"
+#, c-format
 msgid "Open %s and other \"%s\" files with:"
-msgstr "Faili %s ja teisi \"%s\"-liigilisi faile tuleb avada rakendusega:"
+msgstr "Faili %s ja teisi \"%s\" faile tuleb avada rakendusega:"
 
 #. %s is a file type description
-#, fuzzy, c-format
-#| msgid "There is no application installed for %s files"
+#, c-format
 msgid "_Remember this application for \"%s\" files"
-msgstr "Failitüübi %s jaoks pole ühtegi rakendust paigaldatud"
+msgstr ""
 
 #. Only in add mode
-#, fuzzy, c-format
-#| msgid "Open all files of type \"%s\" with:"
+#, c-format
 msgid "Open all \"%s\" files with:"
-msgstr "Kõik \"%s\" liigi alla kuuluvad failid avatakse rakendusega:"
+msgstr ""
 
 msgid "_Add"
 msgstr "L_isa"
@@ -3692,6 +3685,12 @@ msgstr "Kasutati vale lohistamisliiki."
 #. Translator: This is the filename used for when you dnd text to a directory
 msgid "dropped text.txt"
 msgstr "hiirega lohistatud tekst.txt"
+
+#. Translator: This is the filename used for when you dnd raw
+#. * data to a directory, if the source didn't supply a name.
+#.
+msgid "dropped data"
+msgstr "hiirega lohistatud andmed"
 
 msgid "Comment"
 msgstr "Kommentaar"
@@ -4714,16 +4713,16 @@ msgid "Image Type:"
 msgstr "Pildi liik:"
 
 #, c-format
-msgid "<b>Width:</b> %d pixel\n"
-msgid_plural "<b>Width:</b> %d pixels\n"
-msgstr[0] "<b>Laius:</b> %d piksel\n"
-msgstr[1] "<b>Laius:</b> %d pikslit\n"
+msgid "<b>Width:</b> %d pixel"
+msgid_plural "<b>Width:</b> %d pixels"
+msgstr[0] "<b>Laius:</b> %d piksel"
+msgstr[1] "<b>Laius:</b> %d pikslit"
 
 #, c-format
-msgid "<b>Height:</b> %d pixel\n"
-msgid_plural "<b>Height:</b> %d pixels\n"
-msgstr[0] "<b>Kõrgus:</b> %d piksel\n"
-msgstr[1] "<b>Kõrgus:</b> %d pikslit\n"
+msgid "<b>Height:</b> %d pixel"
+msgid_plural "<b>Height:</b> %d pixels"
+msgstr[0] "<b>Kõrgus:</b> %d piksel"
+msgstr[1] "<b>Kõrgus:</b> %d pikslit"
 
 msgid "Failed to load image information"
 msgstr "Tõrge pildi andmete laadimisel"
@@ -4896,13 +4895,6 @@ msgstr "_Redigeeri järjehoidjaid..."
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "Selles menüüs olevate järjehoidjate redigeerimisakna kuvamine"
 
-#. name, stock id, label
-msgid "_Search for Files..."
-msgstr "_Failide otsing..."
-
-msgid "Locate documents and folders on this computer by name or content"
-msgstr "Arvutis asuvate dokumentide ja kataloogide otsing nime või sisu järgi"
-
 msgid "_Previous Tab"
 msgstr "_Eelmine kaart"
 
@@ -4926,6 +4918,9 @@ msgstr "Tõsta kaart _paremale"
 
 msgid "Move current tab to right"
 msgstr "Käesoleva kaardi tõstmine paremale"
+
+msgid "Show search"
+msgstr ""
 
 #. name, stock id
 #. label, accelerator
@@ -4965,6 +4960,18 @@ msgstr "_Olekuriba"
 #. tooltip
 msgid "Change the visibility of this window's statusbar"
 msgstr "Selle akna olekuriba näitamine või peitmine"
+
+#. is_active
+#. name, stock id
+#. label, accelerator
+#. name, stock id, label
+msgid "_Search for Files..."
+msgstr "_Failide otsing..."
+
+#. Accelerator is in ShowSearch
+#. tooltip
+msgid "Search documents and folders by name"
+msgstr "Dokumentide ja kataloogide otsing nime järgi"
 
 msgid "_Back"
 msgstr "_Tagasi"
@@ -5022,10 +5029,8 @@ msgstr "Võrgus olevate ressursside sirvimine"
 msgid "Mount and open %s"
 msgstr ""
 
-#, fuzzy
-#| msgid "Open with %s"
 msgid "Open the trash"
-msgstr "Ava programmiga %s"
+msgstr ""
 
 #. start() for type G_DRIVE_START_STOP_TYPE_SHUTDOWN is normally not used
 msgid "_Power On"
@@ -5292,6 +5297,9 @@ msgstr "_Sulge kõik kataloogid"
 
 msgid "Close all folder windows"
 msgstr "Kõigi kataloogiakende sulgemine"
+
+msgid "Locate documents and folders on this computer by name or content"
+msgstr "Arvutis asuvate dokumentide ja kataloogide otsing nime või sisu järgi"
 
 msgid "throbber"
 msgstr "tuksuja"
@@ -5663,9 +5671,6 @@ msgstr "Praeguse vaate suurendusastme seadmine"
 
 #~ msgid "_Open with \"%s\""
 #~ msgstr "_Ava rakendusega \"%s\""
-
-#~ msgid "_Rescan"
-#~ msgstr "_Otsi uuesti"
 
 #~ msgid "_Mount Volume"
 #~ msgstr "_Ühenda kettaseade"
