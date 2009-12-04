@@ -50,8 +50,8 @@ static void       eel_background_init                      (gpointer       objec
 static void       eel_background_finalize                  (GObject       *object);
 static GdkPixmap *eel_background_get_pixmap_and_color      (EelBackground *background,
 							    GdkWindow     *window,
-							    GdkColor      *color,
-							    gboolean      *changes_with_size);
+							    GdkColor      *color);
+
 static void set_image_properties (EelBackground *background);
 
 static void init_fade (EelBackground *background, GtkWidget *widget);
@@ -80,7 +80,6 @@ struct EelBackgroundDetails {
 	GtkWidget *widget;
 
 	/* Realized data: */
-	gboolean background_changes_with_size;
 	GdkPixmap *background_pixmap;
 	gboolean background_pixmap_is_unset_root_pixmap;
 	GnomeBGCrossfade *fade;
@@ -94,6 +93,8 @@ struct EelBackgroundDetails {
 	gboolean is_desktop;
 	/* Desktop screen size watcher */
 	gulong screen_size_handler;
+	/* Desktop monitors configuration watcher */
+	gulong screen_monitors_handler;
 	/* Can we use common pixmap for root window and desktop window */
 	gboolean use_common_pixmap;
 	guint change_idle_id;
@@ -365,14 +366,6 @@ eel_background_ensure_realized (EelBackground *background, GdkWindow *window)
 		gdk_rgb_find_color (style->colormap, &(background->details->default_color));
 	}
 
-	/* If the pixmap doesn't change with the window size, never update
-	 * it again.
-	 */
-	if (background->details->background_pixmap != NULL &&
-	    !background->details->background_changes_with_size) {
-		return FALSE;
-	}
-
 	/* If the window size is the same as last time, don't update */
 	if (entire_width == background->details->background_entire_width &&
 	    entire_height == background->details->background_entire_height) {
@@ -385,7 +378,6 @@ eel_background_ensure_realized (EelBackground *background, GdkWindow *window)
 
 	set_image_properties (background);
 
-	background->details->background_changes_with_size = gnome_bg_changes_with_size (background->details->bg);
 	background->details->background_pixmap = gnome_bg_create_pixmap (background->details->bg,
 									 window,
 									 entire_width, entire_height,
@@ -408,8 +400,7 @@ eel_background_ensure_realized (EelBackground *background, GdkWindow *window)
 static GdkPixmap *
 eel_background_get_pixmap_and_color (EelBackground *background,
 				     GdkWindow     *window,
-				     GdkColor      *color,
-				     gboolean      *changes_with_size)
+				     GdkColor      *color)
 {
 	int entire_width;
 	int entire_height;
@@ -419,7 +410,6 @@ eel_background_get_pixmap_and_color (EelBackground *background,
 	eel_background_ensure_realized (background, window);
 	
 	*color = background->details->default_color;
-	*changes_with_size = background->details->background_changes_with_size;
 	
 	if (background->details->background_pixmap != NULL) {
 		return g_object_ref (background->details->background_pixmap);
@@ -434,7 +424,6 @@ eel_background_expose (GtkWidget                   *widget,
 	GdkColor color;
 	int window_width;
 	int window_height;
-	gboolean changes_with_size;
 	GdkPixmap *pixmap;
 	GdkGC *gc;
 	GdkGCValues gc_values;
@@ -452,19 +441,8 @@ eel_background_expose (GtkWidget                   *widget,
 	
 	pixmap = eel_background_get_pixmap_and_color (background,
 						      widget->window,
-						      &color,
-						      &changes_with_size);
+						      &color);
 
-        if (!changes_with_size) {
-                /* The background was already drawn by X, since we set
-                 * the GdkWindow background/back_pixmap.
-                 * No need to draw it again. */
-                if (pixmap) {
-                        g_object_unref (pixmap);
-                }
-                return;
-        }
- 
 	if (pixmap) {
 		gc_values.tile = pixmap;
 		gc_values.ts_x_origin = 0;
@@ -668,12 +646,10 @@ set_root_pixmap (EelBackground *background,
 	GdkPixmap *pixmap, *root_pixmap;
 	GdkScreen *screen;
 	GdkColor color;
-	gboolean changes_with_size;
 
 	pixmap = eel_background_get_pixmap_and_color (background,
 						      window,
-						      &color,
-						      &changes_with_size);
+						      &color);
 	screen = gdk_drawable_get_screen (window);
 
 	if (background->details->use_common_pixmap) {
@@ -728,7 +704,6 @@ eel_background_set_up_widget (EelBackground *background, GtkWidget *widget)
 	int window_height;
 	
 	GdkWindow *window;
-	gboolean changes_with_size;
 	gboolean in_fade;
 
 	if (!GTK_WIDGET_REALIZED (widget)) {
@@ -739,8 +714,7 @@ eel_background_set_up_widget (EelBackground *background, GtkWidget *widget)
 	
 	pixmap = eel_background_get_pixmap_and_color (background,
 						      widget->window,
-						      &color, 
-						      &changes_with_size);
+						      &color);
 
 	style = gtk_widget_get_style (widget);
 	
@@ -759,16 +733,13 @@ eel_background_set_up_widget (EelBackground *background, GtkWidget *widget)
 	}
 
 	if (!in_fade) {
-	if (!changes_with_size || background->details->is_desktop) {
-		gdk_window_set_back_pixmap (window, pixmap, FALSE);
-	} else {
-		gdk_window_set_back_pixmap (window, NULL, FALSE);
-		gdk_window_set_background (window, &color);
-	}
+		if (background->details->is_desktop) {
+			gdk_window_set_back_pixmap (window, pixmap, FALSE);
+		} else {
+			gdk_window_set_back_pixmap (window, NULL, FALSE);
+			gdk_window_set_background (window, &color);
+		}
         }
-	
-	background->details->background_changes_with_size =
-		gnome_bg_changes_with_size (background->details->bg);
 	
 	if (background->details->is_desktop && !in_fade) {
 		set_root_pixmap (background, window);
@@ -869,7 +840,6 @@ screen_size_changed (GdkScreen *screen, EelBackground *background)
 	g_signal_emit (background, signals[APPEARANCE_CHANGED], 0);
 }
 
-
 static void
 widget_realized_setup (GtkWidget *widget, gpointer data)
 {
@@ -891,6 +861,13 @@ widget_realized_setup (GtkWidget *widget, gpointer data)
 		background->details->screen_size_handler = 
 			g_signal_connect (screen, "size_changed",
             				  G_CALLBACK (screen_size_changed), background);
+		if (background->details->screen_monitors_handler > 0) {
+		        g_signal_handler_disconnect (screen,
+				                     background->details->screen_monitors_handler);
+		}
+		background->details->screen_monitors_handler =
+			g_signal_connect (screen, "monitors-changed",
+					  G_CALLBACK (screen_size_changed), background);
 
 		root_window = gdk_screen_get_root_window(screen);			
 		
@@ -927,6 +904,11 @@ widget_unrealize_cb (GtkWidget *widget, gpointer data)
 		        g_signal_handler_disconnect (gtk_widget_get_screen (GTK_WIDGET (widget)),
 				                     background->details->screen_size_handler);
 			background->details->screen_size_handler = 0;
+	}
+	if (background->details->screen_monitors_handler > 0) {
+		        g_signal_handler_disconnect (gtk_widget_get_screen (GTK_WIDGET (widget)),
+				                     background->details->screen_monitors_handler);
+			background->details->screen_monitors_handler = 0;
 	}
 	background->details->use_common_pixmap = FALSE;
 }
@@ -1022,7 +1004,14 @@ eel_get_widget_background (GtkWidget *widget)
 gboolean
 eel_background_is_dark (EelBackground *background)
 {
-	return gnome_bg_is_dark (background->details->bg);
+	GdkScreen *screen;
+	GdkRectangle rect;
+
+	/* only check for the background on the 0th monitor */
+	screen = gdk_screen_get_default ();
+	gdk_screen_get_monitor_geometry (screen, 0, &rect);
+
+	return gnome_bg_is_dark (background->details->bg, rect.width, rect.height);
 }
    
 /* handle dropped colors */
