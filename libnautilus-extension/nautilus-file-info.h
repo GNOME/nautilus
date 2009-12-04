@@ -126,6 +126,10 @@ void              nautilus_file_info_add_string_attribute (NautilusFileInfo *fil
 /* Invalidating file info */
 void              nautilus_file_info_invalidate_extension_info (NautilusFileInfo *file);
 
+NautilusFileInfo *nautilus_file_info_lookup                (GFile *location);
+NautilusFileInfo *nautilus_file_info_create                (GFile *location);
+NautilusFileInfo *nautilus_file_info_lookup_for_uri        (const char *uri);
+NautilusFileInfo *nautilus_file_info_create_for_uri        (const char *uri);
 
 G_END_DECLS
 

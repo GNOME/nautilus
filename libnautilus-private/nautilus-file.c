@@ -59,6 +59,7 @@
 #include <gio/gio.h>
 #include <glib.h>
 #include <libnautilus-extension/nautilus-file-info.h>
+#include <libnautilus-extension/nautilus-extension-private.h>
 #include <libxml/parser.h>
 #include <pwd.h>
 #include <stdlib.h>
@@ -7828,7 +7829,9 @@ static void
 nautilus_file_class_init (NautilusFileClass *class)
 {
 	GtkIconTheme *icon_theme;
-	
+
+	nautilus_file_info_getter = nautilus_file_get_internal;
+
 	attribute_name_q = g_quark_from_static_string ("name");
 	attribute_size_q = g_quark_from_static_string ("size");
 	attribute_type_q = g_quark_from_static_string ("type");

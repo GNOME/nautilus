@@ -21,7 +21,9 @@
 
 #include <config.h>
 #include "nautilus-file-info.h"
+#include "nautilus-extension-private.h"
 
+NautilusFileInfo *(*nautilus_file_info_getter) (GFile *location, gboolean create);
 
 GList *
 nautilus_file_info_list_copy (GList *files)
@@ -261,4 +263,42 @@ nautilus_file_info_invalidate_extension_info (NautilusFileInfo *file)
 	g_return_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->invalidate_extension_info != NULL);
 	
 	NAUTILUS_FILE_INFO_GET_IFACE (file)->invalidate_extension_info (file);
+}
+
+NautilusFileInfo *
+nautilus_file_info_lookup (GFile *location)
+{
+	return nautilus_file_info_getter (location, FALSE);
+}
+
+NautilusFileInfo *
+nautilus_file_info_create (GFile *location)
+{
+	return nautilus_file_info_getter (location, TRUE);
+}
+
+NautilusFileInfo *
+nautilus_file_info_lookup_for_uri (const char *uri)
+{
+	GFile *location;
+	NautilusFile *file;
+
+	location = g_file_new_for_uri (uri);
+	file = nautilus_file_info_lookup (location);
+	g_object_unref (location);
+
+	return file;
+}
+
+NautilusFileInfo *
+nautilus_file_info_create_for_uri (const char *uri)
+{
+	GFile *location;
+	NautilusFile *file;
+
+	location = g_file_new_for_uri (uri);
+	file = nautilus_file_info_create (location);
+	g_object_unref (location);
+
+	return file;
 }
