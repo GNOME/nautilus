@@ -563,8 +563,6 @@ eel_background_set_color (EelBackground *background,
 		background->details->color = g_strdup (color);
 		
 		set_image_properties (background);
-
-		g_signal_emit (background, signals[APPEARANCE_CHANGED], 0);
 	}
 }
 
