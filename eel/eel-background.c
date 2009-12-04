@@ -857,8 +857,10 @@ widget_style_set_cb (GtkWidget *widget, GtkStyle *previous_style, gpointer data)
 	EelBackground *background;
 	
 	background = EEL_BACKGROUND (data);
-	
-	eel_widget_queue_background_change (widget);
+
+	if (previous_style != NULL) {
+		eel_widget_queue_background_change (widget);
+	}
 }
 
 static void
