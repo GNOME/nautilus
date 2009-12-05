@@ -297,8 +297,8 @@ nautilus_navigation_window_unset_focus_widget (NautilusNavigationWindow *window)
 	}
 }
 
-static inline gboolean
-is_in_temporary_navigation_bar (GtkWidget *widget,
+inline gboolean
+nautilus_navigation_window_is_in_temporary_navigation_bar (GtkWidget *widget,
 				NautilusNavigationWindow *window)
 {
 	GList *walk;
@@ -313,8 +313,8 @@ is_in_temporary_navigation_bar (GtkWidget *widget,
 	return is_in_any;
 }
 
-static inline gboolean
-is_in_temporary_search_bar (GtkWidget *widget,
+inline gboolean
+nautilus_navigation_window_is_in_temporary_search_bar (GtkWidget *widget,
 			    NautilusNavigationWindow *window)
 {
 	GList *walk;
@@ -339,8 +339,8 @@ remember_focus_widget (NautilusNavigationWindow *window)
 
 	focus_widget = gtk_window_get_focus (GTK_WINDOW (window));
 	if (focus_widget != NULL &&
-	    !is_in_temporary_navigation_bar (focus_widget, navigation_window) &&
-	    !is_in_temporary_search_bar (focus_widget, navigation_window)) {
+	    !nautilus_navigation_window_is_in_temporary_navigation_bar (focus_widget, navigation_window) &&
+	    !nautilus_navigation_window_is_in_temporary_search_bar (focus_widget, navigation_window)) {
 		nautilus_navigation_window_unset_focus_widget (navigation_window);
 
 		navigation_window->details->last_focus_widget = focus_widget;

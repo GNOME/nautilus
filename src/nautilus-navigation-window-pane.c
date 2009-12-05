@@ -616,11 +616,15 @@ nautilus_navigation_window_pane_hide_temporary_bars (NautilusNavigationWindowPan
 		nautilus_directory_unref (directory);
 	}
 	if (pane->temporary_search_bar) {
+		NautilusNavigationWindow *window;
+
 		if (!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY)) {
 			nautilus_navigation_window_pane_set_bar_mode (pane, NAUTILUS_BAR_PATH);
 		} else {
 			nautilus_navigation_window_pane_set_bar_mode (pane, NAUTILUS_BAR_NAVIGATION);
 		}
+		window = NAUTILUS_NAVIGATION_WINDOW (NAUTILUS_WINDOW_PANE (pane)->window);
+		nautilus_navigation_window_set_search_button (window, FALSE);
 		pane->temporary_search_bar = FALSE;
 		success = TRUE;
 	}
@@ -766,7 +770,9 @@ void
 nautilus_navigation_window_pane_set_bar_mode (NautilusNavigationWindowPane *pane,
 					      NautilusBarMode mode)
 {
-    gboolean use_entry;
+	gboolean use_entry;
+	GtkWidget *focus_widget;
+	NautilusNavigationWindow *window;
 
 	switch (mode) {
 
@@ -800,6 +806,17 @@ nautilus_navigation_window_pane_set_bar_mode (NautilusNavigationWindowPane *pane
 		g_signal_handlers_unblock_by_func (pane->location_button,
 						   G_CALLBACK (location_button_toggled_cb),
 						   pane);
+	}
+
+	window = NAUTILUS_NAVIGATION_WINDOW (NAUTILUS_WINDOW_PANE (pane)->window);
+	focus_widget = gtk_window_get_focus (GTK_WINDOW (window));
+	if (focus_widget != NULL && !nautilus_navigation_window_is_in_temporary_navigation_bar (focus_widget, window) &&
+				    !nautilus_navigation_window_is_in_temporary_search_bar (focus_widget, window)) {
+		if (mode == NAUTILUS_BAR_NAVIGATION || mode == NAUTILUS_BAR_PATH) {
+			nautilus_navigation_window_set_search_button (window, FALSE);
+		} else {
+			nautilus_navigation_window_set_search_button (window, TRUE);
+		}
 	}
 }
 
