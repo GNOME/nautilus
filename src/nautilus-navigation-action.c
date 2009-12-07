@@ -139,7 +139,7 @@ fill_menu (NautilusNavigationWindow *window,
 
 	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
 
-	slot = NAUTILUS_NAVIGATION_WINDOW_SLOT (NAUTILUS_WINDOW (window)->details->active_slot);
+	slot = NAUTILUS_NAVIGATION_WINDOW_SLOT (NAUTILUS_WINDOW (window)->details->active_pane->active_slot);
 	
 	list = back ? slot->back_list : slot->forward_list;
 	index = 0;

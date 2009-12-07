@@ -266,7 +266,7 @@ label_button_pressed_callback (GtkWidget             *widget,
 	}
 
 	window = nautilus_location_bar_get_window (widget->parent);
-	slot = NAUTILUS_WINDOW (window)->details->active_slot;
+	slot = NAUTILUS_WINDOW (window)->details->active_pane->active_slot;
 	view = slot->content_view;
 	label = GTK_BIN (widget)->child;
 	/* only pop-up if the URI in the entry matches the displayed location */

@@ -190,7 +190,7 @@ nautilus_spatial_window_state_event (GtkWidget *widget,
 	NautilusFile *viewed_file;
 
 	window = NAUTILUS_WINDOW (widget);
-	slot = window->details->active_slot;
+	slot = window->details->active_pane->active_slot;
 	viewed_file = slot->viewed_file;
 
 	if (!NAUTILUS_IS_DESKTOP_WINDOW (widget)) {
@@ -496,8 +496,9 @@ real_window_close (NautilusWindow *window)
 	 * close is too late, by then the widgets have been unrealized.
 	 * This is for the close by WM case, if you're closing via Ctrl-W that
 	 * means we close the slots first and this is not an issue */
-	if (window->details->slots != NULL) {
-		slot = window->details->slots->data;
+	if (window->details->active_pane != NULL &&
+	    window->details->active_pane->active_slot != NULL) {
+		slot = window->details->active_pane->active_slot;
 
 		save_spatial_data (slot);
 		NAUTILUS_SPATIAL_WINDOW (window)->details->saved_data_on_close = TRUE;
@@ -517,7 +518,7 @@ location_menu_item_activated_callback (GtkWidget *menu_item,
 	GFile *dest;
 	GdkEvent *event;
 
-	slot = window->details->active_slot;
+	slot = window->details->active_pane->active_slot;
 
 	location = nautilus_window_slot_get_location_uri (slot);
 	current = g_file_new_for_uri (location);
@@ -643,7 +644,7 @@ location_button_pressed_callback (GtkWidget      *widget,
 {
 	NautilusView *view;
 
-	view = window->details->active_slot->content_view;
+	view = window->details->active_pane->active_slot->content_view;
 
 	if (event->button == 3 && view != NULL) {
 		nautilus_view_pop_up_location_context_menu (view, event, NULL);
@@ -663,7 +664,7 @@ location_button_clicked_callback (GtkWidget             *widget,
 	GFile *child_uri;
 	GMainLoop *loop;
 
-	slot = NAUTILUS_WINDOW (window)->details->active_slot;
+	slot = NAUTILUS_WINDOW (window)->details->active_pane->active_slot;
 
 	popup = gtk_menu_new ();
 	first_item = NULL;
@@ -755,7 +756,7 @@ get_dnd_icon_size (NautilusSpatialWindow *window)
 	NautilusZoomLevel zoom_level;
 
 	parent = NAUTILUS_WINDOW(window);
-	view = parent->details->active_slot->content_view;
+	view = parent->details->active_pane->active_slot->content_view;
 
 	if (view == NULL) {
 		return NAUTILUS_ICON_SIZE_STANDARD;
@@ -774,7 +775,7 @@ location_button_drag_begin_callback (GtkWidget             *widget,
 	NautilusWindowSlot *slot;
 	GdkPixbuf *pixbuf;
 
-	slot = NAUTILUS_WINDOW (window)->details->active_slot;
+	slot = NAUTILUS_WINDOW (window)->details->active_pane->active_slot;
 
 	pixbuf = nautilus_file_get_icon_pixbuf (slot->viewed_file,
 						get_dnd_icon_size (window),
@@ -802,7 +803,7 @@ get_data_binder (NautilusDragEachSelectedItemDataGet iteratee,
 	g_assert (NAUTILUS_IS_SPATIAL_WINDOW (iterator_context));
 	window = NAUTILUS_SPATIAL_WINDOW (iterator_context);
 
-	slot = NAUTILUS_WINDOW (window)->details->active_slot;
+	slot = NAUTILUS_WINDOW (window)->details->active_pane->active_slot;
 
 	location = nautilus_window_slot_get_location_uri (slot);
 	icon_size = get_dnd_icon_size (window);

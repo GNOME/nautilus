@@ -138,7 +138,7 @@ nautilus_navigation_window_slot_update_query_editor (NautilusWindowSlot *slot)
 		} else {
 			query_editor = nautilus_query_editor_new_with_bar (FALSE,
 									   nautilus_search_directory_is_indexed (search_directory),
-									   slot->pane->window->details->active_slot == slot,
+									   slot->pane->window->details->active_pane->active_slot == slot,
 									   NAUTILUS_SEARCH_BAR (navigation_window->search_bar),
 									   slot);
 		}

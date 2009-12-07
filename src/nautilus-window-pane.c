@@ -37,6 +37,9 @@ G_DEFINE_TYPE (NautilusWindowPane,
 static void
 nautilus_window_pane_init (NautilusWindowPane *pane)
 {
+	pane->slots = NULL;
+	pane->active_slots = NULL;
+	pane->active_slot = NULL;
 }
 
 static void
@@ -50,7 +53,6 @@ nautilus_window_pane_dispose (GObject *object)
 {
 	NautilusWindowPane *pane = NAUTILUS_WINDOW_PANE (object);
 
-	/* the slots list should now be empty */
 	g_assert (pane->slots == NULL);
 
 	pane->window = NULL;

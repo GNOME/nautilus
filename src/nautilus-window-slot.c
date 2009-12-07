@@ -128,12 +128,14 @@ static void
 nautilus_window_slot_active (NautilusWindowSlot *slot)
 {
 	NautilusWindow *window;
+	NautilusWindowPane *pane;
 
 	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
 
+	pane = NAUTILUS_WINDOW_PANE (slot->pane);
 	window = NAUTILUS_WINDOW (slot->pane->window);
-	g_assert (g_list_find (window->details->slots, slot) != NULL);
-	g_assert (slot == window->details->active_slot);
+	g_assert (g_list_find (pane->slots, slot) != NULL);
+	g_assert (slot == window->details->active_pane->active_slot);
 
 	EEL_CALL_METHOD (NAUTILUS_WINDOW_SLOT_CLASS, slot,
 			 active, (slot));
@@ -145,19 +147,22 @@ real_inactive (NautilusWindowSlot *slot)
 	NautilusWindow *window;
 
 	window = NAUTILUS_WINDOW (slot->pane->window);
-	g_assert (slot == window->details->active_slot);
+	g_assert (slot == window->details->active_pane->active_slot);
 }
 
 static void
 nautilus_window_slot_inactive (NautilusWindowSlot *slot)
 {
 	NautilusWindow *window;
+	NautilusWindowPane *pane;
 
 	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
 
-	window = NAUTILUS_WINDOW (slot->pane->window);
-	g_assert (g_list_find (window->details->slots, slot) != NULL);
-	g_assert (slot == window->details->active_slot);
+	pane = NAUTILUS_WINDOW_PANE (slot->pane);
+	window = NAUTILUS_WINDOW (pane->window);
+
+	g_assert (g_list_find (pane->slots, slot) != NULL);
+	g_assert (slot == window->details->active_pane->active_slot);
 
 	EEL_CALL_METHOD (NAUTILUS_WINDOW_SLOT_CLASS, slot,
 			 inactive, (slot));
@@ -468,7 +473,7 @@ nautilus_window_slot_set_status (NautilusWindowSlot *slot,
 	slot->status_text = g_strdup (status);
 
 	window = NAUTILUS_WINDOW (slot->pane->window);
-	if (slot == window->details->active_slot) {
+	if (slot == window->details->active_pane->active_slot) {
 		nautilus_window_sync_status (window);
 	}
 }

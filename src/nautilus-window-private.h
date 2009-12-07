@@ -55,13 +55,6 @@ struct NautilusWindowDetails
         guint refresh_bookmarks_menu_idle_id;
         guint bookmarks_merge_id;
 
-	/* available slots, and active slot.
- 	 * Both of them may never be NULL.
- 	 */
-	GList *slots;
-	GList *active_slots;
-	NautilusWindowSlot *active_slot;
-
 	NautilusWindowShowHiddenFilesMode show_hidden_files_mode;
 
 	/* View As menu */

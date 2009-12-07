@@ -143,7 +143,7 @@ get_extension_toolbar_items (NautilusNavigationWindow *window)
 	providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_MENU_PROVIDER);
 	items = NULL;
 
-	slot = NAUTILUS_WINDOW (window)->details->active_slot;
+	slot = NAUTILUS_WINDOW (window)->details->active_pane->active_slot;
 
 	for (l = providers; l != NULL; l = l->next) {
 		NautilusMenuProvider *provider;

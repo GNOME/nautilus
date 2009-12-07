@@ -301,7 +301,7 @@ update_up_button (NautilusWindow *window)
         gboolean allowed;
 	GFile *parent;
 
-	slot = window->details->active_slot;
+	slot = window->details->active_pane->active_slot;
 
         allowed = FALSE;
         if (slot->location != NULL) {
@@ -326,6 +326,7 @@ viewed_file_changed_callback (NautilusFile *file,
 	window = slot->pane->window;
 
         g_assert (NAUTILUS_IS_FILE (file));
+	g_assert (NAUTILUS_IS_WINDOW_PANE (slot->pane));
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
 	g_assert (file == slot->viewed_file);
@@ -376,7 +377,7 @@ viewed_file_changed_callback (NautilusFile *file,
 					/* the path bar URI will be set to go_to_uri immediately
 					 * in begin_location_change, but we don't want the
 					 * inexistant children to show up anymore */
-					if (slot == window->details->active_slot) {
+					if (slot == window->details->active_pane->active_slot) {
 						/* multiview-TODO also update NautilusWindowSlot
 						 * [which as of writing doesn't save/store any path bar state]
 						 */
@@ -401,7 +402,7 @@ viewed_file_changed_callback (NautilusFile *file,
 				   slot->location)) {
                         g_object_unref (slot->location);
                         slot->location = new_location;
-			if (slot == window->details->active_slot) {
+			if (slot == window->details->active_pane->active_slot) {
 				nautilus_window_sync_location_widgets (window);
 			}
                 } else {
@@ -609,7 +610,7 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 		if (target_window == window) {
 			target_slot = slot;
 		} else {
-			target_slot = target_window->details->active_slot;
+			target_slot = target_window->details->active_pane->active_slot;
 		}
 	}
 
@@ -1136,13 +1137,13 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 
 				if (!nautilus_is_root_directory (location)) {
 					if (!nautilus_is_home_directory (location)) {	
-						nautilus_window_slot_go_home (NAUTILUS_WINDOW (window)->details->active_slot, FALSE);
+						nautilus_window_slot_go_home (NAUTILUS_WINDOW (window)->details->active_pane->active_slot, FALSE);
 					} else {
 						GFile *root;
 
 						root = g_file_new_for_path ("/");
 						/* the last fallback is to go to a known place that can't be deleted! */
-						nautilus_window_slot_go_to (NAUTILUS_WINDOW (window)->details->active_slot, location, FALSE);
+						nautilus_window_slot_go_to (NAUTILUS_WINDOW (window)->details->active_pane->active_slot, location, FALSE);
 						g_object_unref (root);
 					}
 				} else {
@@ -1351,7 +1352,7 @@ nautilus_window_report_location_change (NautilusWindow *window)
 
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
-	slot = window->details->active_slot;
+	slot = window->details->active_pane->active_slot;
 	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
 
 	location = NULL;
@@ -1549,7 +1550,7 @@ nautilus_window_sync_location_widgets (NautilusWindow *window)
 	NautilusWindowSlot *slot;
 	char *uri;
 
-	slot = window->details->active_slot;
+	slot = window->details->active_pane->active_slot;
 
 	if (NAUTILUS_IS_NAVIGATION_WINDOW (window)) {
 		NautilusNavigationWindowSlot *navigation_slot;
@@ -1626,12 +1627,12 @@ update_for_new_location (NautilusWindowSlot *slot)
 				 G_CALLBACK (viewed_file_changed_callback), slot, 0);
         nautilus_file_unref (file);
 
-	if (slot == window->details->active_slot) {
+	if (slot == window->details->active_pane->active_slot) {
 		/* Check if we can go up. */
 		update_up_button (window);
 	}
 
-	if (slot == window->details->active_slot) {
+	if (slot == window->details->active_pane->active_slot) {
 		nautilus_window_sync_zoom_widgets (window);
 		/* Set up the content view menu for this new location. */
 		nautilus_window_load_view_as_menus (window);
@@ -1674,7 +1675,7 @@ update_for_new_location (NautilusWindowSlot *slot)
 		slot_add_extension_extra_widgets (slot);
 	}
 
-	if (slot == window->details->active_slot) {
+	if (slot == window->details->active_pane->active_slot) {
 		nautilus_window_sync_location_widgets (window);
 
 		if (location_really_changed) {
@@ -2052,7 +2053,7 @@ nautilus_navigation_window_back_or_forward (NautilusNavigationWindow *window,
         guint len;
         NautilusBookmark *bookmark;
 
-	slot = NAUTILUS_WINDOW (window)->details->active_slot;
+	slot = NAUTILUS_WINDOW (window)->details->active_pane->active_slot;
 	navigation_slot = (NautilusNavigationWindowSlot *) slot;
 	list = back ? navigation_slot->back_list : navigation_slot->forward_list;
 
@@ -2129,6 +2130,6 @@ nautilus_window_reload (NautilusWindow *window)
 {
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
-	nautilus_window_slot_reload (window->details->active_slot);
+	nautilus_window_slot_reload (window->details->active_pane->active_slot);
 }
 

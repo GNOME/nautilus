@@ -56,6 +56,12 @@ struct _NautilusWindowPane {
 
 	/* hosting window */
 	NautilusWindow *window;
+
+	/* available slots, and active slot.
+	 * Both of them may never be NULL. */
+	GList *slots;
+	GList *active_slots;
+	NautilusWindowSlot *active_slot;
 };
 
 GType nautilus_window_pane_get_type (void);
