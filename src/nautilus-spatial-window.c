@@ -963,10 +963,17 @@ nautilus_spatial_window_init (NautilusSpatialWindow *window)
 	const char *ui;
 	int i;
 	GtkWidget *menuitem;
+	NautilusWindow *win;
+	NautilusWindowPane *pane;
 
 	window->details = G_TYPE_INSTANCE_GET_PRIVATE (window,
 						       NAUTILUS_TYPE_SPATIAL_WINDOW,
 						       NautilusSpatialWindowDetails);
+
+	win = NAUTILUS_WINDOW (window);
+
+	pane = nautilus_window_pane_new (win);
+	win->details->panes = g_list_prepend (win->details->panes, pane);
 
 	window->affect_spatial_window_on_next_location_change = TRUE;
 
@@ -1059,6 +1066,7 @@ nautilus_spatial_window_init (NautilusSpatialWindow *window)
 		menuitem = gtk_ui_manager_get_widget (ui_manager, icon_entries[i]);
 		gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (menuitem), TRUE);
 	}
+	nautilus_window_set_active_pane (win, pane);
 }
 
 static void

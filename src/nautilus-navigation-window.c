@@ -346,8 +346,15 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 	GtkWidget *location_bar;
 	GtkToolItem *item;
 	GtkWidget *hbox;
+	NautilusWindow *win;
+	NautilusWindowPane *pane;
+
+	win = NAUTILUS_WINDOW (window);
 
 	window->details = G_TYPE_INSTANCE_GET_PRIVATE (window, NAUTILUS_TYPE_NAVIGATION_WINDOW, NautilusNavigationWindowDetails);
+
+	pane = nautilus_window_pane_new (win);
+	win->details->panes = g_list_prepend (win->details->panes, pane);
 
 	window->details->content_paned = nautilus_horizontal_splitter_new ();
 	gtk_table_attach (GTK_TABLE (NAUTILUS_WINDOW (window)->details->table),
@@ -468,6 +475,8 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 			  0, 1,                                2, 3,
 			  GTK_EXPAND | GTK_FILL | GTK_SHRINK,  0,
 			  0,                                   0);
+
+	nautilus_window_set_active_pane (win, NAUTILUS_WINDOW_PANE (pane));
 
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY,
 						  always_use_location_entry_changed,

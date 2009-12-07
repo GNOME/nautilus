@@ -255,6 +255,6 @@ void               nautilus_navigation_window_set_throbber_active               
                                                                                      gboolean                     active);
 void               nautilus_navigation_window_go_back                               (NautilusNavigationWindow    *window);
 void               nautilus_navigation_window_go_forward                            (NautilusNavigationWindow    *window);
-
+void               nautilus_window_close_pane                                       (NautilusWindowPane *pane);
 
 #endif /* NAUTILUS_WINDOW_PRIVATE_H */

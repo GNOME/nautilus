@@ -150,6 +150,9 @@ nautilus_window_init (NautilusWindow *window)
 
 	window->details = G_TYPE_INSTANCE_GET_PRIVATE (window, NAUTILUS_TYPE_WINDOW, NautilusWindowDetails);
 
+	window->details->panes = NULL;
+	window->details->active_pane = NULL;
+
 	window->details->show_hidden_files_mode = NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT;
 	
 	/* Set initial window title */
@@ -596,20 +599,17 @@ static void
 nautilus_window_destroy (GtkObject *object)
 {
 	NautilusWindow *window;
-	NautilusWindowSlot *slot;
-	GList *l, *slots;
+	GList *panes_copy;
 
 	window = NAUTILUS_WINDOW (object);
 
-	nautilus_window_set_active_slot (window, NULL);
+	/* close all panes safely */
+	panes_copy = g_list_copy (window->details->panes);
+	g_list_foreach (panes_copy, (GFunc) nautilus_window_close_pane, NULL);
+	g_list_free (panes_copy);
 
-	/* close all slots */
-	slots = g_list_copy (window->details->slots);
-	for (l = slots; l != NULL; l = l->next) {
-		slot = NAUTILUS_WINDOW_SLOT (l->data);
-		nautilus_window_close_slot (window, slot);
-	}
-	g_list_free (slots);
+	/* the panes list should now be empty */
+	g_assert (window->details->panes == NULL);
 
 	GTK_OBJECT_CLASS (nautilus_window_parent_class)->destroy (object);
 }
@@ -707,11 +707,44 @@ nautilus_window_open_slot (NautilusWindow *window,
 						  open_slot, (window, flags));
 
 	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
-	g_assert (window == slot->window);
+	g_assert (window == slot->pane->window);
 
 	window->details->slots = g_list_append (window->details->slots, slot);
 
 	return slot;
+}
+
+void
+nautilus_window_close_pane (NautilusWindowPane *pane)
+{
+	NautilusWindow *window;
+	GList *slots_copy;
+
+	g_assert (NAUTILUS_IS_WINDOW_PANE (pane));
+	g_assert (NAUTILUS_IS_WINDOW (pane->window));
+	g_assert (g_list_find (pane->window->details->panes, pane) != NULL);
+
+	window = pane->window;
+
+	/* close all slots safely */
+	slots_copy = g_list_copy (pane->slots);
+	g_list_foreach (slots_copy, (GFunc) nautilus_window_close_slot, NULL);
+	g_list_free (slots_copy);
+
+	/* the slots list should now be empty */
+	g_assert (pane->slots == NULL);
+
+	/* if the pane was active, select the next one, or NULL */
+	if (window->details->active_pane == pane) {
+		if (window->details->panes) {
+			window->details->active_pane = window->details->panes->data;
+		} else {
+			window->details->active_pane = NULL;
+		}
+	}
+
+	window->details->panes = g_list_remove (window->details->panes, pane);
+	g_object_unref (pane);
 }
 
 static void
@@ -751,7 +784,8 @@ void
 nautilus_window_set_active_pane (NautilusWindow *window,
 				 NautilusWindowPane *new_pane)
 {
-	/* hhb: TODO: not yet implemented */
+	/* hhb: TODO: temporary implementaion */
+	window->details->active_pane = new_pane;
 }
 
 void
