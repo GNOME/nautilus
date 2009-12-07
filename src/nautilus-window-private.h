@@ -185,9 +185,9 @@ void               nautilus_window_zoom_to_level                         (Nautil
                                                                           NautilusZoomLevel  level);
 void               nautilus_window_zoom_to_default                       (NautilusWindow    *window);
 
-NautilusWindowSlot *nautilus_window_open_slot                            (NautilusWindow     *window,
+NautilusWindowSlot *nautilus_window_open_slot                            (NautilusWindowPane *pane,
 									  NautilusWindowOpenSlotFlags flags);
-void                nautilus_window_close_slot                           (NautilusWindow     *window,
+void                nautilus_window_close_slot                           (NautilusWindowPane *pane,
 									  NautilusWindowSlot *slot);
 
 NautilusWindowSlot *nautilus_window_get_slot_for_view                    (NautilusWindow *window,
@@ -197,7 +197,7 @@ NautilusWindowSlot *nautilus_window_get_slot_for_content_box             (Nautil
 
 GList *              nautilus_window_get_slots                           (NautilusWindow    *window);
 NautilusWindowSlot * nautilus_window_get_active_slot                     (NautilusWindow    *window);
-void                 nautilus_window_set_active_slot                     (NautilusWindow     *window,
+void                 nautilus_window_set_active_slot                     (NautilusWindowPane *pane,
 									  NautilusWindowSlot *slot);
 void                 nautilus_window_set_active_pane                     (NautilusWindow *window,
                                                                           NautilusWindowPane *new_pane);

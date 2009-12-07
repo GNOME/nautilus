@@ -203,7 +203,7 @@ notebook_switch_page_cb (GtkNotebook *notebook,
 	slot = nautilus_window_get_slot_for_content_box (nautilus_window, widget);
 	g_assert (slot != NULL);
 
-	nautilus_window_set_active_slot (nautilus_window, slot);
+	nautilus_window_set_active_slot (slot->pane, slot);
 
 	return FALSE;
 }
@@ -1847,23 +1847,22 @@ real_get_default_size (NautilusWindow *window,
 }
 
 static NautilusWindowSlot *
-real_open_slot (NautilusWindow *window,
+real_open_slot (NautilusWindowPane *pane,
 		NautilusWindowOpenSlotFlags flags)
 {
 	NautilusNavigationWindow *navigation_window;
 	NautilusWindowSlot *slot;
 	NautilusNotebook *notebook;
 
-	navigation_window = NAUTILUS_NAVIGATION_WINDOW (window);
+	navigation_window = NAUTILUS_NAVIGATION_WINDOW (pane->window);
 	notebook = NAUTILUS_NOTEBOOK (navigation_window->notebook);
 
 	slot = (NautilusWindowSlot *) g_object_new (NAUTILUS_TYPE_NAVIGATION_WINDOW_SLOT, NULL);
-
-	slot->pane = window->details->active_pane;
+	slot->pane = pane;
 
 	g_signal_handlers_block_by_func (notebook,
 					 G_CALLBACK (notebook_switch_page_cb),
-					 window);
+					 pane->window);
 	nautilus_notebook_add_tab (notebook,
 				   slot,
 				   (flags & NAUTILUS_WINDOW_OPEN_SLOT_APPEND) != 0 ?
@@ -1872,21 +1871,21 @@ real_open_slot (NautilusWindow *window,
 				   FALSE);
 	g_signal_handlers_unblock_by_func (notebook,
 					   G_CALLBACK (notebook_switch_page_cb),
-					   window);
+					   pane->window);
 	gtk_widget_show (slot->content_box);
 
 	return slot;
 }
 
 static void
-real_close_slot (NautilusWindow *window,
+real_close_slot (NautilusWindowPane *pane,
 		 NautilusWindowSlot *slot)
 {
 	NautilusNavigationWindow *navigation_window;
 	GtkNotebook *notebook;
 	int page_num;
 
-	navigation_window = NAUTILUS_NAVIGATION_WINDOW (window);
+	navigation_window = NAUTILUS_NAVIGATION_WINDOW (pane->window);
 	notebook = GTK_NOTEBOOK (navigation_window->notebook);
 
 	page_num = gtk_notebook_page_num (notebook, slot->content_box);
@@ -1894,17 +1893,17 @@ real_close_slot (NautilusWindow *window,
 
 	g_signal_handlers_block_by_func (notebook,
 					 G_CALLBACK (notebook_switch_page_cb),
-					 window);
+					 pane->window);
 	gtk_notebook_remove_page (notebook, page_num);
 	g_signal_handlers_unblock_by_func (notebook,
 					   G_CALLBACK (notebook_switch_page_cb),
-					   window);
+					   pane->window);
 
 	gtk_notebook_set_show_tabs (notebook,
 				    gtk_notebook_get_n_pages (notebook) > 1);
 
 	EEL_CALL_PARENT (NAUTILUS_WINDOW_CLASS,
-			 close_slot, (window, slot));
+			 close_slot, (pane, slot));
 }
 
 static void

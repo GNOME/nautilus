@@ -28,10 +28,11 @@
 #define NAUTILUS_WINDOW_MANAGE_VIEWS_H
 
 #include "nautilus-window.h"
+#include "nautilus-window-pane.h"
 #include "nautilus-navigation-window.h"
 
-void                    nautilus_window_manage_views_close_slot       (NautilusWindow           *window,
-								       NautilusWindowSlot       *slot);
+void nautilus_window_manage_views_close_slot (NautilusWindowPane *pane,
+                                              NautilusWindowSlot *slot);
 
 
 /* NautilusWindowInfo implementation: */

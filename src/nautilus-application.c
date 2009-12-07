@@ -2001,14 +2001,14 @@ nautilus_application_load_session (NautilusApplication *application)
 								if (i == 0) {
 									slot = window->details->active_pane->active_slot;
 								} else {
-									slot = nautilus_window_open_slot (window, NAUTILUS_WINDOW_OPEN_SLOT_APPEND);
+									slot = nautilus_window_open_slot (window->details->active_pane, NAUTILUS_WINDOW_OPEN_SLOT_APPEND);
 								}
 								
 								location = g_file_new_for_uri (slot_uri);
 								nautilus_window_slot_open_location (slot, location, FALSE);
 								
 								if (xmlHasProp (slot_node, "active")) {
-									nautilus_window_set_active_slot (window, slot);
+									nautilus_window_set_active_slot (slot->pane, slot);
 								}
 								
 								i++;

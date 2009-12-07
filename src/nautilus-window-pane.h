@@ -35,7 +35,6 @@
 #define NAUTILUS_WINDOW_PANE_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), NAUTILUS_TYPE_WINDOW_PANE, NautilusWindowPaneClass))
 
 typedef struct _NautilusWindowPaneClass NautilusWindowPaneClass;
-typedef struct _NautilusWindowPane      NautilusWindowPane;
 
 struct _NautilusWindowPaneClass {
 	GObjectClass parent_class;

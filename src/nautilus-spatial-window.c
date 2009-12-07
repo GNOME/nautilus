@@ -445,21 +445,21 @@ real_set_allow_up (NautilusWindow *window, gboolean allow)
 }
 
 static NautilusWindowSlot *
-real_open_slot (NautilusWindow *window,
+real_open_slot (NautilusWindowPane *pane,
 		NautilusWindowOpenSlotFlags flags)
 {
 	NautilusWindowSlot *slot;
 	GList *slots;
 
-	g_assert (nautilus_window_get_active_slot (window) == NULL);
+	g_assert (nautilus_window_get_active_slot (pane->window) == NULL);
 
-	slots = nautilus_window_get_slots (window);
+	slots = nautilus_window_get_slots (pane->window);
 	g_assert (slots == NULL);
 	g_list_free (slots);
 
 	slot = g_object_new (NAUTILUS_TYPE_WINDOW_SLOT, NULL);
-	slot->pane = window->details->active_pane;
-	gtk_container_add (GTK_CONTAINER (NAUTILUS_SPATIAL_WINDOW (window)->details->content_box),
+	slot->pane = pane;
+	gtk_container_add (GTK_CONTAINER (NAUTILUS_SPATIAL_WINDOW (pane->window)->details->content_box),
 			   slot->content_box);
 	gtk_widget_show (slot->content_box);
 	return slot;
@@ -474,16 +474,16 @@ save_spatial_data (NautilusWindowSlot *slot)
 }
 
 static void
-real_close_slot (NautilusWindow *window,
+real_close_slot (NautilusWindowPane *pane,
 		 NautilusWindowSlot *slot)
 {
 	/* Save spatial data for close if we didn't already */
-	if (!NAUTILUS_SPATIAL_WINDOW (window)->details->saved_data_on_close) {
+	if (!NAUTILUS_SPATIAL_WINDOW (pane->window)->details->saved_data_on_close) {
 		save_spatial_data (slot);
 	}
 
 	EEL_CALL_PARENT (NAUTILUS_WINDOW_CLASS,
-			 close_slot, (window, slot));
+			 close_slot, (pane, slot));
 }
 
 static void

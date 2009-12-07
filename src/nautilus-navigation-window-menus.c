@@ -702,8 +702,8 @@ action_new_tab_callback (GtkAction *action,
 		}
 		g_free (scheme);
 
-		new_slot = nautilus_window_open_slot (window, flags);
-		nautilus_window_set_active_slot (window, new_slot);
+		new_slot = nautilus_window_open_slot (current_slot->pane, flags);
+		nautilus_window_set_active_slot (new_slot->pane, new_slot);
 		nautilus_window_slot_go_to (new_slot, location, FALSE);
 		g_object_unref (location);
 	}

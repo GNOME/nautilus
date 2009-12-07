@@ -589,7 +589,7 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 			slot_flags = NAUTILUS_WINDOW_OPEN_SLOT_APPEND;
 		}
 
-		target_slot = nautilus_window_open_slot (window, slot_flags);
+		target_slot = nautilus_window_open_slot (window->details->active_pane, slot_flags);
 	}
 
         if ((flags & NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND) != 0) {
@@ -2031,7 +2031,7 @@ nautilus_window_slot_set_content_view (NautilusWindowSlot *slot,
 }
 
 void
-nautilus_window_manage_views_close_slot (NautilusWindow *window,
+nautilus_window_manage_views_close_slot (NautilusWindowPane *pane,
 					 NautilusWindowSlot *slot)
 {
 	if (slot->content_view != NULL) {

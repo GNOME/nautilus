@@ -650,8 +650,8 @@ nautilus_window_constructor (GType type,
 
 	window = NAUTILUS_WINDOW (object);
 
-	slot = nautilus_window_open_slot (window, 0);
-	nautilus_window_set_active_slot (window, slot);
+	slot = nautilus_window_open_slot (window->details->active_pane, 0);
+	nautilus_window_set_active_slot (window->details->active_pane, slot);
 
 	return object;
 }
@@ -700,20 +700,21 @@ nautilus_window_close (NautilusWindow *window)
 }
 
 NautilusWindowSlot *
-nautilus_window_open_slot (NautilusWindow *window,
+nautilus_window_open_slot (NautilusWindowPane *pane,
 			   NautilusWindowOpenSlotFlags flags)
 {
 	NautilusWindowSlot *slot;
 
-	g_assert (NAUTILUS_IS_WINDOW (window));
+	g_assert (NAUTILUS_IS_WINDOW_PANE (pane));
+	g_assert (NAUTILUS_IS_WINDOW (pane->window));
 
-	slot = EEL_CALL_METHOD_WITH_RETURN_VALUE (NAUTILUS_WINDOW_CLASS, window,
-						  open_slot, (window, flags));
+	slot = EEL_CALL_METHOD_WITH_RETURN_VALUE (NAUTILUS_WINDOW_CLASS, pane->window,
+						  open_slot, (pane, flags));
 
 	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
-	g_assert (window == slot->pane->window);
+	g_assert (pane->window == slot->pane->window);
 
-	window->details->active_pane->slots = g_list_append (window->details->active_pane->slots, slot);
+	pane->slots = g_list_append (pane->slots, slot);
 
 	return slot;
 }
@@ -750,28 +751,29 @@ nautilus_window_close_pane (NautilusWindowPane *pane)
 }
 
 static void
-real_close_slot (NautilusWindow *window,
+real_close_slot (NautilusWindowPane *pane,
 		 NautilusWindowSlot *slot)
 {
-	nautilus_window_manage_views_close_slot (window, slot);
+	nautilus_window_manage_views_close_slot (pane, slot);
 	cancel_view_as_callback (slot);
 	g_object_unref (slot);
 }
 
 void
-nautilus_window_close_slot (NautilusWindow *window,
+nautilus_window_close_slot (NautilusWindowPane *pane,
 			    NautilusWindowSlot *slot)
 {
-	g_assert (NAUTILUS_IS_WINDOW (window));
+	g_assert (NAUTILUS_IS_WINDOW_PANE(pane));
+	g_assert (NAUTILUS_IS_WINDOW (pane->window));
 	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
-	g_assert (window == slot->pane->window);
-	g_assert (g_list_find (window->details->active_pane->slots, slot) != NULL);
+	g_assert (pane->window == slot->pane->window);
+	g_assert (g_list_find (pane->slots, slot) != NULL);
 
-	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
-			 close_slot, (window, slot));
+	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, pane->window,
+			 close_slot, (pane, slot));
 
-	window->details->active_pane->slots = g_list_remove (window->details->active_pane->slots, slot);
-	window->details->active_pane->active_slots = g_list_remove (window->details->active_pane->active_slots, slot);
+	pane->slots = g_list_remove (pane->slots, slot);
+	pane->active_slots = g_list_remove (pane->active_slots, slot);
 
 }
 
@@ -791,13 +793,17 @@ nautilus_window_set_active_pane (NautilusWindow *window,
 }
 
 void
-nautilus_window_set_active_slot (NautilusWindow *window,
+nautilus_window_set_active_slot (NautilusWindowPane *pane,
 				 NautilusWindowSlot *new_slot)
 {
+	NautilusWindow *window;
 	NautilusWindowSlot *old_slot;
 	NautilusWindowPane *new_pane;
 	GList *walk;
 
+	g_assert (NAUTILUS_IS_WINDOW_PANE (pane));
+
+	window = pane->window;
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
 	/* find the pane that contains the new slot */
@@ -891,11 +897,11 @@ nautilus_window_slot_close (NautilusWindowSlot *slot)
 					next_slot = get_first_inactive_slot (pane);
 				}
 
-				nautilus_window_set_active_slot (pane->window, next_slot);
+				nautilus_window_set_active_slot (pane, next_slot);
 			}
 		}
 
-		nautilus_window_close_slot (window, slot);
+		nautilus_window_close_slot (slot->pane, slot);
 
 		if (g_list_length (window->details->active_pane->slots) == 0) {
 			nautilus_window_close (window);

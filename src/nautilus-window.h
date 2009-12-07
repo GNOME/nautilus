@@ -60,6 +60,8 @@ typedef struct NautilusWindow NautilusWindow;
 typedef struct NautilusWindowSlot NautilusWindowSlot;
 #endif
 
+typedef struct _NautilusWindowPane      NautilusWindowPane;
+
 typedef struct NautilusWindowSlotClass NautilusWindowSlotClass;
 typedef enum NautilusWindowOpenSlotFlags NautilusWindowOpenSlotFlags;
 
@@ -102,11 +104,11 @@ typedef struct {
         void   (* show_window)  (NautilusWindow *window);
         void   (* close) (NautilusWindow *window);
 
-        NautilusWindowSlot * (* open_slot) (NautilusWindow *window,
+        NautilusWindowSlot * (* open_slot) (NautilusWindowPane *pane,
 					    NautilusWindowOpenSlotFlags flags);
-        void                 (* close_slot) (NautilusWindow *window,
+        void                 (* close_slot) (NautilusWindowPane *pane,
 					     NautilusWindowSlot *slot);
-        void                 (* set_active_slot) (NautilusWindow *window,
+        void                 (* set_active_slot) (NautilusWindowPane *pane,
 						  NautilusWindowSlot *slot);
 
         /* Signals used only for keybindings */
