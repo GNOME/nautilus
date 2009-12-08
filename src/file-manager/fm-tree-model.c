@@ -214,7 +214,7 @@ tree_node_destroy (FMTreeModel *model, TreeNode *node)
 	g_assert (node->done_loading_id == 0);
 	g_assert (node->files_added_id == 0);
 	g_assert (node->files_changed_id == 0);
-	object_unref_if_not_NULL (node->directory);
+	nautilus_directory_unref (node->directory);
 
 	g_free (node);
 }
