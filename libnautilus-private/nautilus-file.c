@@ -6635,6 +6635,8 @@ nautilus_file_get_volume_free_space (NautilusFile *file)
 						    get_fs_free_cb,
 						    directory); /* Inherits ref */
 		g_object_unref (location);
+	} else {
+		nautilus_directory_unref (directory);
 	}
 
 
