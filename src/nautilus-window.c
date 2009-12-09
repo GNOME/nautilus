@@ -98,6 +98,7 @@ enum {
 	RELOAD,
 	PROMPT_FOR_LOCATION,
 	ZOOM_CHANGED,
+	VIEW_AS_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -1219,6 +1220,9 @@ real_load_view_as_menu (NautilusWindow *window)
 	g_object_unref (window->details->view_as_action_group); /* owned by ui_manager */
 
 	nautilus_window_synch_view_as_menus (window);
+
+	g_signal_emit (window, signals[VIEW_AS_CHANGED], 0);
+
 }
 
 static void
@@ -1880,6 +1884,14 @@ nautilus_window_class_init (NautilusWindowClass *class)
 			      G_TYPE_NONE, 5,
 			      G_TYPE_INT, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN,
 			      G_TYPE_BOOLEAN, G_TYPE_BOOLEAN);
+	signals[VIEW_AS_CHANGED] =
+		g_signal_new ("view-as-changed",
+			      G_TYPE_FROM_CLASS (class),
+			      G_SIGNAL_RUN_LAST,
+			      0,
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE, 0);
 
 	binding_set = gtk_binding_set_by_class (class);
 	gtk_binding_entry_add_signal (binding_set, GDK_BackSpace, 0,
