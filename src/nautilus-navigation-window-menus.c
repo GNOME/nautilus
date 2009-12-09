@@ -33,6 +33,7 @@
 #include "nautilus-notebook.h"
 #include "nautilus-navigation-action.h"
 #include "nautilus-zoom-action.h"
+#include "nautilus-view-as-action.h"
 #include "nautilus-application.h"
 #include "nautilus-bookmark-list.h"
 #include "nautilus-bookmarks-window.h"
@@ -980,6 +981,16 @@ nautilus_navigation_window_initialize_actions (NautilusNavigationWindow *window)
 	action = g_object_new (NAUTILUS_TYPE_ZOOM_ACTION,
 			       "name", "Zoom",
 			       "label", _("_Zoom"),
+			       "window", window,
+			       "is_important", FALSE,
+			       NULL);
+	gtk_action_group_add_action (action_group,
+				     action);
+	g_object_unref (action);
+
+	action = g_object_new (NAUTILUS_TYPE_VIEW_AS_ACTION,
+			       "name", "ViewAs",
+			       "label", _("_View As"),
 			       "window", window,
 			       "is_important", FALSE,
 			       NULL);
