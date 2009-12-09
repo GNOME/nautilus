@@ -23,6 +23,9 @@
 */
 
 #include "nautilus-window-pane.h"
+#include "nautilus-window-private.h"
+#include "nautilus-navigation-window-pane.h"
+#include "nautilus-window-manage-views.h"
 
 static void nautilus_window_pane_init       (NautilusWindowPane *pane);
 static void nautilus_window_pane_class_init (NautilusWindowPaneClass *class);
@@ -33,6 +36,94 @@ G_DEFINE_TYPE (NautilusWindowPane,
 	       G_TYPE_OBJECT)
 #define parent_class nautilus_window_pane_parent_class
 
+void
+nautilus_window_pane_zoom_in (NautilusWindowPane *pane)
+{
+	NautilusWindowSlot *slot;
+
+	g_assert (pane != NULL);
+
+	nautilus_window_set_active_pane (pane->window, pane);
+
+	slot = pane->active_slot;
+	if (slot->content_view != NULL) {
+		nautilus_view_bump_zoom_level (slot->content_view, 1);
+	}
+}
+
+void
+nautilus_window_pane_zoom_to_level (NautilusWindowPane *pane,
+			       NautilusZoomLevel level)
+{
+	NautilusWindowSlot *slot;
+
+	g_assert (pane != NULL);
+
+	nautilus_window_set_active_pane (pane->window, pane);
+
+	slot = pane->active_slot;
+	if (slot->content_view != NULL) {
+		nautilus_view_zoom_to_level (slot->content_view, level);
+	}
+}
+
+void
+nautilus_window_pane_zoom_out (NautilusWindowPane *pane)
+{
+	NautilusWindowSlot *slot;
+
+	g_assert (pane != NULL);
+
+	nautilus_window_set_active_pane (pane->window, pane);
+
+	slot = pane->active_slot;
+	if (slot->content_view != NULL) {
+		nautilus_view_bump_zoom_level (slot->content_view, -1);
+	}
+}
+
+void
+nautilus_window_pane_zoom_to_default (NautilusWindowPane *pane)
+{
+	NautilusWindowSlot *slot;
+
+	g_assert (pane != NULL);
+
+	nautilus_window_set_active_pane (pane->window, pane);
+
+	slot = pane->active_slot;
+	if (slot->content_view != NULL) {
+		nautilus_view_restore_default_zoom_level (slot->content_view);
+	}
+}
+
+void
+nautilus_window_pane_sync_location_widgets (NautilusWindowPane *pane)
+{
+	if (NAUTILUS_IS_NAVIGATION_WINDOW_PANE (pane)) {
+		NautilusNavigationWindowSlot *navigation_slot;
+		
+		nautilus_navigation_window_pane_sync_location_widgets (NAUTILUS_NAVIGATION_WINDOW_PANE (pane));
+		nautilus_window_update_up_button (pane->window);
+		
+		/* Check if the back and forward buttons need enabling or disabling. */
+		navigation_slot = NAUTILUS_NAVIGATION_WINDOW_SLOT (pane->window->details->active_pane->active_slot);
+		nautilus_navigation_window_allow_back (NAUTILUS_NAVIGATION_WINDOW (pane->window),
+						       navigation_slot->back_list != NULL);
+		nautilus_navigation_window_allow_forward (NAUTILUS_NAVIGATION_WINDOW (pane->window),
+							  navigation_slot->forward_list != NULL);
+
+	}
+
+	if (NAUTILUS_IS_SPATIAL_WINDOW (pane->window)) {
+		NautilusWindowSlot *slot;
+
+		slot = pane->window->details->active_pane->active_slot;
+		/* Change the location button to match the current location. */
+		nautilus_spatial_window_set_location_button (NAUTILUS_SPATIAL_WINDOW (pane->window),
+							     slot->location);
+	}
+}
 
 static void
 nautilus_window_pane_init (NautilusWindowPane *pane)
@@ -40,6 +131,17 @@ nautilus_window_pane_init (NautilusWindowPane *pane)
 	pane->slots = NULL;
 	pane->active_slots = NULL;
 	pane->active_slot = NULL;
+    pane->is_active = FALSE;
+}
+
+void
+nautilus_window_pane_set_active (NautilusWindowPane *pane, gboolean is_active)
+{
+	if (is_active == pane->is_active) {
+		return;
+	}
+
+	pane->is_active = is_active;
 }
 
 static void

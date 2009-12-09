@@ -2008,7 +2008,7 @@ nautilus_application_load_session (NautilusApplication *application)
 								nautilus_window_slot_open_location (slot, location, FALSE);
 								
 								if (xmlHasProp (slot_node, "active")) {
-									nautilus_window_set_active_slot (slot->pane, slot);
+									nautilus_window_set_active_slot (slot->pane->window, slot);
 								}
 								
 								i++;

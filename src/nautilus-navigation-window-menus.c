@@ -42,6 +42,7 @@
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window-bookmarks.h"
+#include "nautilus-navigation-window-pane.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-stock-dialogs.h>
@@ -181,14 +182,20 @@ static void
 action_show_hide_location_bar_callback (GtkAction *action, 
 					gpointer user_data)
 {
-	NautilusNavigationWindow *window;
+	NautilusWindow *window;
+	GList *walk;
+	gboolean is_active;
 
-	window = NAUTILUS_NAVIGATION_WINDOW (user_data);
+	window = NAUTILUS_WINDOW (user_data);
 
-	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action))) {
-		nautilus_navigation_window_show_location_bar (window, TRUE);
-	} else {
-		nautilus_navigation_window_hide_location_bar (window, TRUE);
+	is_active = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
+	for (walk = window->details->panes; walk; walk = walk->next) {
+		NautilusNavigationWindowPane *pane = walk->data;
+		if (is_active) {
+			nautilus_navigation_window_pane_show_location_bar (pane, TRUE);
+		} else {
+			nautilus_navigation_window_pane_hide_location_bar (pane, TRUE);
+		}
 	}
 }
 
@@ -227,7 +234,7 @@ nautilus_navigation_window_update_show_hide_menu_items (NautilusNavigationWindow
 	action = gtk_action_group_get_action (window->details->navigation_action_group,
 					      NAUTILUS_ACTION_SHOW_HIDE_LOCATION_BAR);
 	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
-				      nautilus_navigation_window_location_bar_showing (window));
+					  nautilus_navigation_window_pane_location_bar_showing (NAUTILUS_NAVIGATION_WINDOW_PANE (NAUTILUS_WINDOW (window)->details->active_pane)));
 
 	action = gtk_action_group_get_action (window->details->navigation_action_group,
 					      NAUTILUS_ACTION_SHOW_HIDE_STATUSBAR);
@@ -685,8 +692,6 @@ action_new_tab_callback (GtkAction *action,
 	current_slot = window->details->active_pane->active_slot;
 	location = nautilus_window_slot_get_location (current_slot);
 
-	window = NAUTILUS_WINDOW (current_slot->pane->window);
-
 	if (location != NULL) {
 		flags = 0;
 
@@ -703,7 +708,7 @@ action_new_tab_callback (GtkAction *action,
 		g_free (scheme);
 
 		new_slot = nautilus_window_open_slot (current_slot->pane, flags);
-		nautilus_window_set_active_slot (new_slot->pane, new_slot);
+		nautilus_window_set_active_slot (window, new_slot);
 		nautilus_window_slot_go_to (new_slot, location, FALSE);
 		g_object_unref (location);
 	}

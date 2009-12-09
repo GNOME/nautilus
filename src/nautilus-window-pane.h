@@ -61,10 +61,20 @@ struct _NautilusWindowPane {
 	GList *slots;
 	GList *active_slots;
 	NautilusWindowSlot *active_slot;
+
+	/* whether or not this pane is active */
+	gboolean is_active;    
 };
 
 GType nautilus_window_pane_get_type (void);
 NautilusWindowPane *nautilus_window_pane_new (NautilusWindow *window);
 
+
+void nautilus_window_pane_zoom_in (NautilusWindowPane *pane);
+void nautilus_window_pane_zoom_to_level (NautilusWindowPane *pane, NautilusZoomLevel level);
+void nautilus_window_pane_zoom_out (NautilusWindowPane *pane);
+void nautilus_window_pane_zoom_to_default (NautilusWindowPane *pane);
+void nautilus_window_pane_sync_location_widgets (NautilusWindowPane *pane);
+void nautilus_window_pane_set_active (NautilusWindowPane *pane, gboolean is_active);
 
 #endif /* NAUTILUS_WINDOW_PANE_H */

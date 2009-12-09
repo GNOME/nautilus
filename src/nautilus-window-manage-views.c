@@ -40,6 +40,7 @@
 #include "nautilus-trash-bar.h"
 #include "nautilus-x-content-bar.h"
 #include "nautilus-zoom-control.h"
+#include "nautilus-navigation-window-pane.h"
 #include <eel/eel-accessibility.h>
 #include <eel/eel-debug.h>
 #include <eel/eel-gdk-extensions.h>
@@ -294,25 +295,25 @@ handle_go_elsewhere (NautilusWindowSlot *slot, GFile *location)
 #endif
 }
 
-static void
-update_up_button (NautilusWindow *window)
+void
+nautilus_window_update_up_button (NautilusWindow *window)
 {
-	NautilusWindowSlot *slot;
-        gboolean allowed;
-	GFile *parent;
+    NautilusWindowSlot *slot;
+    gboolean allowed;
+    GFile *parent;
 
-	slot = window->details->active_pane->active_slot;
+    slot = window->details->active_pane->active_slot;
 
-        allowed = FALSE;
-        if (slot->location != NULL) {
-		parent = g_file_get_parent (slot->location);
-		allowed = parent != NULL;
-		if (parent != NULL) {
-			g_object_unref (parent);
+    allowed = FALSE;
+    if (slot->location != NULL) {
+        parent = g_file_get_parent (slot->location);
+        allowed = parent != NULL;
+        if (parent != NULL) {
+            g_object_unref (parent);
 		}
-        }
+    }
 
-        nautilus_window_allow_up (window, allowed);
+    nautilus_window_allow_up (window, allowed);
 }
 
 static void
@@ -377,11 +378,11 @@ viewed_file_changed_callback (NautilusFile *file,
 					/* the path bar URI will be set to go_to_uri immediately
 					 * in begin_location_change, but we don't want the
 					 * inexistant children to show up anymore */
-					if (slot == window->details->active_pane->active_slot) {
+					if (slot == slot->pane->active_slot) {
 						/* multiview-TODO also update NautilusWindowSlot
 						 * [which as of writing doesn't save/store any path bar state]
 						 */
-						nautilus_path_bar_clear_buttons (NAUTILUS_PATH_BAR (NAUTILUS_NAVIGATION_WINDOW (window)->path_bar));
+						nautilus_path_bar_clear_buttons (NAUTILUS_PATH_BAR (NAUTILUS_NAVIGATION_WINDOW_PANE (slot->pane)->path_bar));
 					}
 
 					nautilus_window_slot_go_to (slot, go_to_file, FALSE);
@@ -1547,40 +1548,9 @@ found_mount_cb (GObject *source_object,
 void
 nautilus_window_sync_location_widgets (NautilusWindow *window)
 {
-	NautilusWindowSlot *slot;
-	char *uri;
-
-	slot = window->details->active_pane->active_slot;
-
-	if (NAUTILUS_IS_NAVIGATION_WINDOW (window)) {
-		NautilusNavigationWindowSlot *navigation_slot;
-
-		navigation_slot = NAUTILUS_NAVIGATION_WINDOW_SLOT (slot);
-
-		/* Check if the back and forward buttons need enabling or disabling. */
-		update_up_button (window);
-		nautilus_navigation_window_allow_back (NAUTILUS_NAVIGATION_WINDOW (window),
-						       navigation_slot->back_list != NULL);
-		nautilus_navigation_window_allow_forward (NAUTILUS_NAVIGATION_WINDOW (window),
-							  navigation_slot->forward_list != NULL);
-
-		/* Change the location bar and path bar to match the current location. */
-		if (slot->location != NULL) {
-			/* this may be NULL if we just created the
- 			 * slot */
-			uri = nautilus_window_slot_get_location_uri (slot);
-			nautilus_navigation_bar_set_location (NAUTILUS_NAVIGATION_BAR (NAUTILUS_NAVIGATION_WINDOW (window)->navigation_bar),
-							      uri);
-			g_free (uri);
-			nautilus_path_bar_set_path (NAUTILUS_PATH_BAR (NAUTILUS_NAVIGATION_WINDOW (window)->path_bar),
-						    slot->location);
-		}
-	}
-
-	if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
-		/* Change the location button to match the current location. */
-		nautilus_spatial_window_set_location_button (NAUTILUS_SPATIAL_WINDOW (window),
-							     slot->location);
+	GList *walk;
+	for (walk = window->details->panes; walk; walk = walk->next) {
+		nautilus_window_pane_sync_location_widgets (walk->data);
 	}
 }
 
@@ -1629,7 +1599,7 @@ update_for_new_location (NautilusWindowSlot *slot)
 
 	if (slot == window->details->active_pane->active_slot) {
 		/* Check if we can go up. */
-		update_up_button (window);
+		nautilus_window_update_up_button (window);
 	}
 
 	if (slot == window->details->active_pane->active_slot) {

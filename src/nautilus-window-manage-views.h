@@ -44,5 +44,6 @@ void nautilus_window_report_view_failed       (NautilusWindow     *window,
 void nautilus_window_report_load_complete     (NautilusWindow     *window,
                                                NautilusView       *view);
 void nautilus_window_report_location_change   (NautilusWindow     *window);
+void nautilus_window_update_up_button         (NautilusWindow     *window);
 
 #endif /* NAUTILUS_WINDOW_MANAGE_VIEWS_H */
