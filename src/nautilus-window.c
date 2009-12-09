@@ -58,6 +58,7 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-horizontal-splitter.h>
 #include <libnautilus-private/nautilus-metadata.h>
+#include <libnautilus-private/nautilus-marshal.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
 #include <libnautilus-private/nautilus-view-factory.h>
@@ -96,6 +97,7 @@ enum {
 	GO_UP,
 	RELOAD,
 	PROMPT_FOR_LOCATION,
+	ZOOM_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -1313,18 +1315,21 @@ real_sync_zoom_widgets (NautilusWindow *window)
 	GtkAction *action;
 	gboolean supports_zooming;
 	gboolean can_zoom, can_zoom_in, can_zoom_out;
+	NautilusZoomLevel zoom_level;
 
 	slot = window->details->active_slot;
 	view = slot->content_view;
 
 	if (view != NULL) {
 		supports_zooming = nautilus_view_supports_zooming (view);
+		zoom_level = nautilus_view_get_zoom_level (view);
 		can_zoom = supports_zooming &&
-			   nautilus_view_get_zoom_level (view) >= NAUTILUS_ZOOM_LEVEL_SMALLEST &&
-			   nautilus_view_get_zoom_level (view) <= NAUTILUS_ZOOM_LEVEL_LARGEST;
+			   zoom_level >= NAUTILUS_ZOOM_LEVEL_SMALLEST &&
+			   zoom_level <= NAUTILUS_ZOOM_LEVEL_LARGEST;
 		can_zoom_in = can_zoom && nautilus_view_can_zoom_in (view);
 		can_zoom_out = can_zoom && nautilus_view_can_zoom_out (view);
 	} else {
+		zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
 		supports_zooming = FALSE;
 		can_zoom = FALSE;
 		can_zoom_in = FALSE;
@@ -1345,6 +1350,10 @@ real_sync_zoom_widgets (NautilusWindow *window)
 					      NAUTILUS_ACTION_ZOOM_NORMAL);
 	gtk_action_set_visible (action, supports_zooming);
 	gtk_action_set_sensitive (action, can_zoom);
+
+	g_signal_emit (window, signals[ZOOM_CHANGED], 0,
+		       zoom_level, supports_zooming, can_zoom,
+		       can_zoom_in, can_zoom_out);
 }
 
 void
@@ -1861,7 +1870,17 @@ nautilus_window_class_init (NautilusWindowClass *class)
 			      NULL, NULL,
 			      g_cclosure_marshal_VOID__STRING,
 			      G_TYPE_NONE, 1, G_TYPE_STRING);
-	
+	signals[ZOOM_CHANGED] =
+		g_signal_new ("zoom-changed",
+			      G_TYPE_FROM_CLASS (class),
+			      G_SIGNAL_RUN_LAST,
+			      0,
+			      NULL, NULL,
+			      nautilus_marshal_VOID__INT_BOOLEAN_BOOLEAN_BOOLEAN_BOOLEAN,
+			      G_TYPE_NONE, 5,
+			      G_TYPE_INT, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN,
+			      G_TYPE_BOOLEAN, G_TYPE_BOOLEAN);
+
 	binding_set = gtk_binding_set_by_class (class);
 	gtk_binding_entry_add_signal (binding_set, GDK_BackSpace, 0,
 				      "go_up", 1,
