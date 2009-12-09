@@ -118,6 +118,8 @@ nautilus_SOURCES = \
 	nautilus-throbber.h			\
 	nautilus-trash-bar.c			\
 	nautilus-trash-bar.h			\
+	nautilus-view-as-action.c		\
+	nautilus-view-as-action.h		\
 	nautilus-window-bookmarks.c		\
 	nautilus-window-bookmarks.h		\
 	nautilus-window-manage-views.c		\
