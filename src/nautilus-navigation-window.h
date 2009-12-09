@@ -63,7 +63,6 @@ struct _NautilusNavigationWindow {
         
         /** UI stuff **/
         NautilusSidePane *sidebar;
-        GtkWidget *view_as_combo_box;
 
         GtkSizeGroup *navigation_group;
         GtkWidget *navigation_bar;
@@ -74,9 +73,6 @@ struct _NautilusNavigationWindow {
 
         /* Current views stuff */
         GList *sidebar_panels;
-        
-        /* Widgets to keep track of (for state changes, etc) */      
-        GtkWidget *zoom_control;
 };
 
 

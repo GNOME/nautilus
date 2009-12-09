@@ -42,7 +42,6 @@
 #include "nautilus-navigation-window-slot.h"
 #include "nautilus-notebook.h"
 #include "nautilus-window-manage-views.h"
-#include "nautilus-zoom-control.h"
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
@@ -98,7 +97,6 @@ static int mouse_forward_button = 9;
 static int mouse_back_button = 8;
 
 static void add_sidebar_panels                       (NautilusNavigationWindow *window);
-static void load_view_as_menu                        (NautilusWindow           *window);
 static void side_panel_image_changed_callback        (NautilusSidebar          *side_panel,
 						      gpointer                  callback_data);
 static void navigation_bar_location_changed_callback (GtkWidget                *widget,
@@ -127,9 +125,6 @@ static void search_bar_cancel_callback               (GtkWidget                *
 						      NautilusNavigationWindow *window);
 
 static void nautilus_navigation_window_show_location_bar_temporarily (NautilusNavigationWindow *window);
-
-static void view_as_menu_switch_views_callback	     (GtkComboBox              *combo_box,
-						      NautilusWindow           *window);
 
 G_DEFINE_TYPE (NautilusNavigationWindow, nautilus_navigation_window, NAUTILUS_TYPE_WINDOW)
 #define parent_class nautilus_navigation_window_parent_class
@@ -349,7 +344,6 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 	GtkUIManager *ui_manager;
 	GtkWidget *toolbar;
 	GtkWidget *location_bar;
-	GtkWidget *view_as_menu_vbox;
 	GtkToolItem *item;
 	GtkWidget *hbox;
 
@@ -465,50 +459,6 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 	gtk_box_pack_start (GTK_BOX (hbox),
 			    window->search_bar,
 			    TRUE, TRUE, 0);
-
-	/* Option menu for content view types; it's empty here, filled in when a uri is set.
-	 * Pack it into vbox so it doesn't grow vertically when location bar does. 
-	 */
-	view_as_menu_vbox = gtk_vbox_new (FALSE, 4);
-	gtk_widget_show (view_as_menu_vbox);
-
-	item = gtk_tool_item_new ();
-	gtk_container_set_border_width (GTK_CONTAINER (item), 4);
-	gtk_widget_show (GTK_WIDGET (item));
-	gtk_container_add (GTK_CONTAINER (item), view_as_menu_vbox);
-	gtk_toolbar_insert (GTK_TOOLBAR (location_bar),
-			    item, -1);
-	
-	window->view_as_combo_box = gtk_combo_box_new_text ();
-	gtk_combo_box_set_focus_on_click (GTK_COMBO_BOX (window->view_as_combo_box), FALSE);
-	gtk_box_pack_end (GTK_BOX (view_as_menu_vbox), window->view_as_combo_box, TRUE, FALSE, 0);
-	gtk_widget_show (window->view_as_combo_box);
-	g_signal_connect_object (window->view_as_combo_box, "changed",
-				 G_CALLBACK (view_as_menu_switch_views_callback), window, 0);
-
-	/* Allocate the zoom control and place on the right next to the menu.
-	 * It gets shown later, if the view-frame contains something zoomable.
-	 */
-	window->zoom_control = nautilus_zoom_control_new ();
-	g_signal_connect_object (window->zoom_control, "zoom_in",
-				 G_CALLBACK (nautilus_window_zoom_in),
-				 window, G_CONNECT_SWAPPED);
-	g_signal_connect_object (window->zoom_control, "zoom_out",
-				 G_CALLBACK (nautilus_window_zoom_out),
-				 window, G_CONNECT_SWAPPED);
-	g_signal_connect_object (window->zoom_control, "zoom_to_level",
-				 G_CALLBACK (nautilus_window_zoom_to_level),
-				 window, G_CONNECT_SWAPPED);
-	g_signal_connect_object (window->zoom_control, "zoom_to_default",
-				 G_CALLBACK (nautilus_window_zoom_to_default),
-				 window, G_CONNECT_SWAPPED);
-	
-	item = gtk_tool_item_new ();
-	gtk_container_set_border_width (GTK_CONTAINER (item), 4);
-	gtk_widget_show (GTK_WIDGET (item));
-	gtk_container_add (GTK_CONTAINER (item),  window->zoom_control);
-	gtk_toolbar_insert (GTK_TOOLBAR (location_bar),
-			    item, 1);
 
 	gtk_widget_show (location_bar);
 
@@ -1028,10 +978,8 @@ nautilus_navigation_window_destroy (GtkObject *object)
 	g_list_free (window->sidebar_panels);
 	window->sidebar_panels = NULL;
 
-	window->view_as_combo_box = NULL;
 	window->navigation_bar = NULL;
 	window->path_bar = NULL;
-	window->zoom_control = NULL;
 
 	window->details->content_paned = NULL;
 
@@ -1153,110 +1101,6 @@ nautilus_navigation_window_allow_forward (NautilusNavigationWindow *window, gboo
 					      NAUTILUS_ACTION_FORWARD);
 	
 	gtk_action_set_sensitive (action, allow);
-}
-
-static void
-activate_nth_short_list_item (NautilusWindow *window, guint index)
-{
-	NautilusWindowSlot *slot;
-
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
-	slot = window->details->active_slot;
-	g_assert (index < g_list_length (window->details->short_list_viewers));
-
-	nautilus_window_slot_set_content_view (slot,
-					       g_list_nth_data (window->details->short_list_viewers, index));
-}
-
-static void
-activate_extra_viewer (NautilusWindow *window)
-{
-	NautilusWindowSlot *slot;
-
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
-	slot = window->details->active_slot;
-	g_assert (window->details->extra_viewer != NULL);
-
-	nautilus_window_slot_set_content_view (slot, window->details->extra_viewer);
-}
-
-static void
-view_as_menu_switch_views_callback (GtkComboBox *combo_box, NautilusWindow *window)
-{         
-	int active;
-	g_assert (GTK_IS_COMBO_BOX (combo_box));
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
-	active = gtk_combo_box_get_active (combo_box);
-
-	if (active < 0) {
-		return;
-	} else if (active < GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo_box), "num viewers"))) {
-		activate_nth_short_list_item (window, active);
-	} else {
-		activate_extra_viewer (window);
-	}
-}
-
-static void
-load_view_as_menu (NautilusWindow *window)
-{
-	NautilusWindowSlot *slot;
-	GList *node;
-	int index;
-	int selected_index = -1;
-	GtkTreeModel *model;
-	GtkListStore *store;
-	const NautilusViewInfo *info;
-	GtkComboBox* combo_box;
-	
-    	combo_box = GTK_COMBO_BOX (NAUTILUS_NAVIGATION_WINDOW (window)->view_as_combo_box);
-	/* Clear the contents of ComboBox in a wacky way because there
-	 * is no function to clear all items and also no function to obtain
-	 * the number of items in a combobox.
-	 */
-	model = gtk_combo_box_get_model (combo_box);
-	g_return_if_fail (GTK_IS_LIST_STORE (model));
-	store = GTK_LIST_STORE (model);
-	gtk_list_store_clear (store);
-
-	slot = window->details->active_slot;
-
-        /* Add a menu item for each view in the preferred list for this location. */
-        for (node = window->details->short_list_viewers, index = 0; 
-             node != NULL; 
-             node = node->next, ++index) {
-		info = nautilus_view_factory_lookup (node->data);
-		gtk_combo_box_append_text (combo_box, _(info->view_combo_label));
-
-		if (nautilus_window_slot_content_view_matches_iid (slot, (char *)node->data)) {
-			selected_index = index;
-		}
-        }
-	g_object_set_data (G_OBJECT (combo_box), "num viewers", GINT_TO_POINTER (index));
-	if (selected_index == -1) {
-		const char *id;
-		/* We're using an extra viewer, add a menu item for it */
-
-		id = nautilus_window_slot_get_content_view_id (slot);
-		info = nautilus_view_factory_lookup (id);
-		gtk_combo_box_append_text (GTK_COMBO_BOX (NAUTILUS_NAVIGATION_WINDOW (window)->view_as_combo_box),
-					   _(info->view_combo_label));
-		selected_index = index;
-	}
-
-	gtk_combo_box_set_active (GTK_COMBO_BOX (NAUTILUS_NAVIGATION_WINDOW (window)->view_as_combo_box), selected_index);
-}
-
-static void
-real_load_view_as_menu (NautilusWindow *window)
-{
-	EEL_CALL_PARENT (NAUTILUS_WINDOW_CLASS,
-			 load_view_as_menu, (window));
-
-	load_view_as_menu (window);
 }
 
 static void
@@ -1581,51 +1425,6 @@ real_sync_search_widgets (NautilusWindow *window)
 		hide_temporary_bars (navigation_window);
 	}
 	nautilus_directory_unref (directory);
-}
-
-
-static void
-real_sync_zoom_widgets (NautilusWindow *nautilus_window)
-{
-	NautilusNavigationWindow *window;
-	NautilusWindowSlot *slot;
-	NautilusView *view;
-	gboolean supports_zooming, can_zoom;
-
-	window = NAUTILUS_NAVIGATION_WINDOW (nautilus_window);
-
-	slot = nautilus_window->details->active_slot;
-	view = slot->content_view;
-
-	EEL_CALL_PARENT (NAUTILUS_WINDOW_CLASS,
-			 sync_zoom_widgets, (nautilus_window));
-
-	if (view == NULL) {
-		/* don't toggle UI state at all. This might be
-		 * wrong, but it prevents flickering when opening
-		 * a new tab and immediately switching to it -
-		 * before view selection.
-		 */
-		return;
-	}
-
-	supports_zooming = nautilus_view_supports_zooming (view);
-	can_zoom = supports_zooming &&
-		   nautilus_view_get_zoom_level (view) >= NAUTILUS_ZOOM_LEVEL_SMALLEST &&
-		   nautilus_view_get_zoom_level (view) <= NAUTILUS_ZOOM_LEVEL_LARGEST;
-
-	if (window->zoom_control != NULL) {
-		if (supports_zooming) {
-			gtk_widget_set_sensitive (window->zoom_control, can_zoom);
-			gtk_widget_show (window->zoom_control);
-			if (can_zoom) {
-				nautilus_zoom_control_set_zoom_level (NAUTILUS_ZOOM_CONTROL (window->zoom_control),
-								      nautilus_view_get_zoom_level (view));
-			}
-		} else {
-			gtk_widget_hide (window->zoom_control);
-		}
-	}
 }
 
 static void
@@ -2111,11 +1910,9 @@ nautilus_navigation_window_class_init (NautilusNavigationWindowClass *class)
 	GTK_WIDGET_CLASS (class)->window_state_event = nautilus_navigation_window_state_event;
 	GTK_WIDGET_CLASS (class)->key_press_event = nautilus_navigation_window_key_press_event;
 	GTK_WIDGET_CLASS (class)->button_press_event = nautilus_navigation_window_button_press_event;
-	NAUTILUS_WINDOW_CLASS (class)->load_view_as_menu = real_load_view_as_menu;
 	NAUTILUS_WINDOW_CLASS (class)->sync_allow_stop = real_sync_allow_stop;
 	NAUTILUS_WINDOW_CLASS (class)->prompt_for_location = real_prompt_for_location;
 	NAUTILUS_WINDOW_CLASS (class)->sync_search_widgets = real_sync_search_widgets;
-	NAUTILUS_WINDOW_CLASS (class)->sync_zoom_widgets = real_sync_zoom_widgets;
 	NAUTILUS_WINDOW_CLASS (class)->sync_title = real_sync_title;
 	NAUTILUS_WINDOW_CLASS (class)->get_icon = real_get_icon;
 	NAUTILUS_WINDOW_CLASS (class)->get_default_size = real_get_default_size;

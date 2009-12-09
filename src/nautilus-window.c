@@ -1167,7 +1167,7 @@ refresh_stored_viewers (NautilusWindow *window)
 }
 
 static void
-real_load_view_as_menu (NautilusWindow *window)
+load_view_as_menu (NautilusWindow *window)
 {
 	NautilusWindowSlot *slot;
 	GList *node;
@@ -1236,9 +1236,7 @@ load_view_as_menus_callback (NautilusFile *file,
 	window = NAUTILUS_WINDOW (slot->window);
 
 	if (slot == window->details->active_slot) {
-		/* slot may have changed in the meantime */
-		EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
-				 load_view_as_menu, (window));
+		load_view_as_menu (window);
 	}
 }
 
@@ -1311,8 +1309,8 @@ nautilus_window_sync_title (NautilusWindow *window,
 			 sync_title, (window, slot));
 }
 
-static void
-real_sync_zoom_widgets (NautilusWindow *window)
+void
+nautilus_window_sync_zoom_widgets (NautilusWindow *window)
 {
 	NautilusWindowSlot *slot;
 	NautilusView *view;
@@ -1358,13 +1356,6 @@ real_sync_zoom_widgets (NautilusWindow *window)
 	g_signal_emit (window, signals[ZOOM_CHANGED], 0,
 		       zoom_level, supports_zooming, can_zoom,
 		       can_zoom_in, can_zoom_out);
-}
-
-void
-nautilus_window_sync_zoom_widgets (NautilusWindow *window)
-{
-	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
-			 sync_zoom_widgets, (window));
 }
 
 static void
@@ -1837,8 +1828,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
 	GTK_WIDGET_CLASS (class)->key_press_event = nautilus_window_key_press_event;
 	class->get_title = real_get_title;
 	class->sync_title = real_sync_title;
-	class->sync_zoom_widgets = real_sync_zoom_widgets;
-	class->load_view_as_menu = real_load_view_as_menu;
 	class->set_allow_up = real_set_allow_up;
 	class->close_slot = real_close_slot;
 
