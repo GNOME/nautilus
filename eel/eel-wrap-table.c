@@ -1018,6 +1018,7 @@ eel_wrap_table_get_num_children (const EelWrapTable *wrap_table)
 
 GtkWidget *
 eel_scrolled_wrap_table_new (gboolean homogenous,
+			     GtkShadowType shadow_type,
 			     GtkWidget **wrap_table_out)
 {
 	GtkWidget *scrolled_window;
@@ -1034,7 +1035,7 @@ eel_scrolled_wrap_table_new (gboolean homogenous,
 	viewport = gtk_viewport_new (gtk_scrolled_window_get_hadjustment (GTK_SCROLLED_WINDOW (scrolled_window)),
 				     gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (scrolled_window)));
 	gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport),
-				      GTK_SHADOW_NONE);
+				      shadow_type);
 	
 	gtk_container_add (GTK_CONTAINER (scrolled_window),
 			   viewport);

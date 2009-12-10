@@ -3438,7 +3438,7 @@ create_emblems_page (FMPropertiesWindow *window)
 	NautilusIconInfo *info;
 
 	/* The emblems wrapped table */
-	scroller = eel_scrolled_wrap_table_new (TRUE, &emblems_table);
+	scroller = eel_scrolled_wrap_table_new (TRUE, GTK_SHADOW_NONE, &emblems_table);
 
 	gtk_container_set_border_width (GTK_CONTAINER (emblems_table), 12);
 	

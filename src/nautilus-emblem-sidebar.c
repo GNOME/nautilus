@@ -548,7 +548,7 @@ create_add_emblems_dialog (NautilusEmblemSidebar *emblem_sidebar,
 			    label, FALSE, FALSE, 8);
 	gtk_widget_show (label);
 	
-	scroller = eel_scrolled_wrap_table_new (TRUE, &table);
+	scroller = eel_scrolled_wrap_table_new (TRUE, GTK_SHADOW_NONE, &table);
 	eel_wrap_table_set_x_spacing (EEL_WRAP_TABLE (table), 8);
 	eel_wrap_table_set_y_spacing (EEL_WRAP_TABLE (table), 8);
 	
@@ -872,7 +872,7 @@ nautilus_emblem_sidebar_create_container (NautilusEmblemSidebar *emblem_sidebar)
 	GtkWidget *emblems_table, *scroller;
 
 	/* The emblems wrapped table */
-	scroller = eel_scrolled_wrap_table_new (TRUE, &emblems_table);
+	scroller = eel_scrolled_wrap_table_new (TRUE, GTK_SHADOW_NONE, &emblems_table);
 
 	gtk_container_set_border_width (GTK_CONTAINER (emblems_table), 8);
 
