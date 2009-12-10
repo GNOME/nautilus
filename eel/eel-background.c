@@ -813,6 +813,10 @@ init_fade (EelBackground *background, GtkWidget *widget)
 	if (widget == NULL || !GTK_WIDGET_REALIZED (widget))
 		return;
 
+	if (!background->details->is_desktop) {
+		return;
+	}
+
 	if (background->details->fade == NULL) {
 		int old_width, old_height, width, height;
 
