@@ -57,9 +57,6 @@ nautilus_navigation_window_pane_set_active (NautilusNavigationWindowPane *pane, 
 	}
 	nautilus_window_pane_set_active (NAUTILUS_WINDOW_PANE (pane), is_active);
 
-	/* location button */
-	gtk_widget_set_sensitive (gtk_bin_get_child (GTK_BIN (pane->location_button)), is_active);
-
 	/* path bar */
 	for (walk = NAUTILUS_PATH_BAR (pane->path_bar)->button_list; walk; walk = walk->next) {
 		gtk_widget_set_sensitive (gtk_bin_get_child (GTK_BIN (nautilus_path_bar_get_button_from_button_list_entry (walk->data))), is_active);
@@ -177,51 +174,6 @@ navigation_bar_location_changed_callback (GtkWidget *widget,
 	location = g_file_new_for_uri (uri);
 	nautilus_window_slot_go_to (NAUTILUS_WINDOW_PANE (pane)->active_slot, location, FALSE);
 	g_object_unref (location);
-}
-
-static gboolean
-location_button_should_be_active (NautilusNavigationWindowPane *pane)
-{
-	return eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY);
-}
-
-static void
-location_button_toggled_cb (GtkToggleButton *toggle,
-			    NautilusNavigationWindowPane *pane)
-{
-	gboolean is_active;
-
-	is_active = gtk_toggle_button_get_active (toggle);
-	eel_preferences_set_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY, is_active);
-
-	if (is_active) {
-		nautilus_navigation_bar_activate (NAUTILUS_NAVIGATION_BAR (pane->navigation_bar));
-	}
-
-	nautilus_window_set_active_pane (NAUTILUS_WINDOW_PANE (pane)->window, NAUTILUS_WINDOW_PANE (pane));
-}
-
-static GtkWidget *
-location_button_create (NautilusNavigationWindowPane *pane)
-{
-	GtkWidget *image;
-	GtkWidget *button;
-
-	image = gtk_image_new_from_stock (GTK_STOCK_EDIT, GTK_ICON_SIZE_BUTTON);
-	gtk_widget_show (image);
-
-	button = g_object_new (GTK_TYPE_TOGGLE_BUTTON,
-			       "image", image,
-			       "focus-on-click", FALSE,
-			       "active", location_button_should_be_active (pane),
-			       NULL);
-
-	gtk_widget_set_tooltip_text (button,
-				     _("Toggle between button and text-based location bar"));
-
-	g_signal_connect (button, "toggled",
-			  G_CALLBACK (location_button_toggled_cb), pane);
-	return button;
 }
 
 static void
@@ -640,14 +592,6 @@ nautilus_navigation_window_pane_always_use_location_entry (NautilusNavigationWin
 	} else {
 		nautilus_navigation_window_pane_set_bar_mode (pane, NAUTILUS_BAR_PATH);
 	}
-
-	g_signal_handlers_block_by_func (pane->location_button,
-					 G_CALLBACK (location_button_toggled_cb),
-					 pane);
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (pane->location_button), use_entry);
-	g_signal_handlers_unblock_by_func (pane->location_button,
-					   G_CALLBACK (location_button_toggled_cb),
-					   pane);
 }
 
 void
@@ -667,11 +611,6 @@ nautilus_navigation_window_pane_setup (NautilusNavigationWindowPane *pane)
 
 	pane->navigation_group = gtk_size_group_new (GTK_SIZE_GROUP_VERTICAL);
 	gtk_size_group_set_ignore_hidden (pane->navigation_group, FALSE);
-
-	pane->location_button = location_button_create (pane);
-	gtk_size_group_add_widget (pane->navigation_group, pane->location_button);
-	gtk_box_pack_start (GTK_BOX (hbox), pane->location_button, FALSE, FALSE, 0);
-	gtk_widget_show (pane->location_button);
 
 	pane->path_bar = g_object_new (NAUTILUS_TYPE_PATH_BAR, NULL);
 	gtk_size_group_add_widget (pane->navigation_group, pane->path_bar);
@@ -770,7 +709,6 @@ void
 nautilus_navigation_window_pane_set_bar_mode (NautilusNavigationWindowPane *pane,
 					      NautilusBarMode mode)
 {
-	gboolean use_entry;
 	GtkWidget *focus_widget;
 	NautilusNavigationWindow *window;
 
@@ -793,19 +731,6 @@ nautilus_navigation_window_pane_set_bar_mode (NautilusNavigationWindowPane *pane
 		gtk_widget_hide (pane->path_bar);
 		gtk_widget_hide (pane->navigation_bar);
 		break;
-	}
-
-	if (mode == NAUTILUS_BAR_NAVIGATION || mode == NAUTILUS_BAR_PATH) {
-		use_entry = (mode == NAUTILUS_BAR_NAVIGATION);
-
-		g_signal_handlers_block_by_func (pane->location_button,
-						 G_CALLBACK (location_button_toggled_cb),
-						 pane);
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (pane->location_button),
-					      use_entry);
-		g_signal_handlers_unblock_by_func (pane->location_button,
-						   G_CALLBACK (location_button_toggled_cb),
-						   pane);
 	}
 
 	window = NAUTILUS_NAVIGATION_WINDOW (NAUTILUS_WINDOW_PANE (pane)->window);

@@ -49,7 +49,6 @@ struct _NautilusNavigationWindowPane {
 
 	/* location bar */
 	GtkWidget *location_bar;
-	GtkWidget *location_button;
 	GtkSizeGroup *navigation_group;
 	GtkWidget *navigation_bar;
 	GtkWidget *path_bar;
