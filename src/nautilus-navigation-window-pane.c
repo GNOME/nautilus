@@ -671,6 +671,7 @@ nautilus_navigation_window_pane_setup (NautilusNavigationWindowPane *pane)
 	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (pane->notebook), FALSE);
 	gtk_notebook_set_show_border (GTK_NOTEBOOK (pane->notebook), FALSE);
 	gtk_widget_show (pane->notebook);
+	gtk_container_set_border_width (GTK_CONTAINER (pane->notebook), 0);
 }
 
 
