@@ -157,25 +157,15 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 			  0,                                  0);
 	gtk_widget_show (window->details->content_paned);
 
-    nautilus_navigation_window_pane_setup_notebook (pane);
-	
-    nautilus_horizontal_splitter_pack2 (
-		NAUTILUS_HORIZONTAL_SPLITTER (window->details->content_paned),
-		pane->notebook);
+	nautilus_navigation_window_pane_setup (pane);
 
-    nautilus_navigation_window_pane_setup_location_bar(pane);
-    gtk_widget_show (pane->location_bar);
-
-	gtk_table_attach (GTK_TABLE (NAUTILUS_WINDOW (window)->details->table),
-			  pane->location_bar,
-			  /* X direction */                    /* Y direction */
-			  0, 1,                                2, 3,
-			  GTK_EXPAND | GTK_FILL | GTK_SHRINK,  0,
-			  0,                                   0);
+	nautilus_horizontal_splitter_pack2 (NAUTILUS_HORIZONTAL_SPLITTER (window->details->content_paned),
+					    pane->widget);
+	gtk_widget_show (pane->widget);
 
 	/* this has to be done after the location bar has been set up,
 	 * but before menu stuff is being called */
-    nautilus_window_set_active_pane (win, NAUTILUS_WINDOW_PANE (pane));
+	nautilus_window_set_active_pane (win, NAUTILUS_WINDOW_PANE (pane));
 
 	nautilus_navigation_window_initialize_actions (window);
 	nautilus_navigation_window_initialize_menus (window);
@@ -216,7 +206,7 @@ static void
 always_use_location_entry_changed (gpointer callback_data)
 {
 	NautilusNavigationWindow *window;
-    GList *walk;
+	GList *walk;
 	gboolean use_entry;
 
 	window = NAUTILUS_NAVIGATION_WINDOW (callback_data);
@@ -777,12 +767,12 @@ real_sync_allow_stop (NautilusWindow *window,
 static void
 real_prompt_for_location (NautilusWindow *window, const char *initial)
 {
-    NautilusNavigationWindowPane *pane;
-    
+	NautilusNavigationWindowPane *pane;
+
 	remember_focus_widget (NAUTILUS_NAVIGATION_WINDOW (window));
 
-    pane = NAUTILUS_NAVIGATION_WINDOW_PANE (window->details->active_pane);
-    
+	pane = NAUTILUS_NAVIGATION_WINDOW_PANE (window->details->active_pane);
+
 	nautilus_navigation_window_pane_show_location_bar_temporarily (pane);
 	nautilus_navigation_window_pane_show_navigation_bar_temporarily (pane);
 	
@@ -836,13 +826,13 @@ static void
 real_sync_search_widgets (NautilusWindow *window)
 {
 	NautilusNavigationWindow *navigation_window;
-    NautilusNavigationWindowPane *pane;
+	NautilusNavigationWindowPane *pane;
 	NautilusWindowSlot *slot;
 	NautilusDirectory *directory;
 	NautilusSearchDirectory *search_directory;
 
 	navigation_window = NAUTILUS_NAVIGATION_WINDOW (window);
-    pane = NAUTILUS_NAVIGATION_WINDOW_PANE (window->details->active_pane);
+	pane = NAUTILUS_NAVIGATION_WINDOW_PANE (window->details->active_pane);
 	slot = window->details->active_pane->active_slot;
 
 	search_directory = NULL;
@@ -1200,7 +1190,7 @@ real_close_slot (NautilusWindowPane *pane,
 
 	page_num = gtk_notebook_page_num (notebook, slot->content_box);
 	g_assert (page_num >= 0);
-	
+
 	nautilus_navigation_window_pane_remove_page (NAUTILUS_NAVIGATION_WINDOW_PANE (pane), page_num);
 
 	gtk_notebook_set_show_tabs (notebook,

@@ -63,7 +63,7 @@ struct _NautilusWindowPane {
 	NautilusWindowSlot *active_slot;
 
 	/* whether or not this pane is active */
-	gboolean is_active;    
+	gboolean is_active;
 };
 
 GType nautilus_window_pane_get_type (void);

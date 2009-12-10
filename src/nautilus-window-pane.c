@@ -148,10 +148,10 @@ nautilus_window_pane_sync_location_widgets (NautilusWindowPane *pane)
 {
 	if (NAUTILUS_IS_NAVIGATION_WINDOW_PANE (pane)) {
 		NautilusNavigationWindowSlot *navigation_slot;
-		
+
 		nautilus_navigation_window_pane_sync_location_widgets (NAUTILUS_NAVIGATION_WINDOW_PANE (pane));
 		nautilus_window_update_up_button (pane->window);
-		
+
 		/* Check if the back and forward buttons need enabling or disabling. */
 		navigation_slot = NAUTILUS_NAVIGATION_WINDOW_SLOT (pane->window->details->active_pane->active_slot);
 		nautilus_navigation_window_allow_back (NAUTILUS_NAVIGATION_WINDOW (pane->window),
@@ -177,7 +177,7 @@ nautilus_window_pane_init (NautilusWindowPane *pane)
 	pane->slots = NULL;
 	pane->active_slots = NULL;
 	pane->active_slot = NULL;
-    pane->is_active = FALSE;
+	pane->is_active = FALSE;
 }
 
 void

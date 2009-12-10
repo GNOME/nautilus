@@ -744,14 +744,14 @@ void
 nautilus_window_close_slot (NautilusWindowSlot *slot)
 {
 	NautilusWindowPane *pane;
-	
+
 	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
 	g_assert (NAUTILUS_IS_WINDOW_PANE(slot->pane));
 	g_assert (g_list_find (slot->pane->slots, slot) != NULL);
 
 	/* save pane because slot is not valid anymore after this call */
 	pane = slot->pane;
-	
+
 	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, slot->pane->window,
 			 close_slot, (slot->pane, slot));
 
@@ -839,7 +839,7 @@ nautilus_window_set_active_slot (NautilusWindow *window, NautilusWindowSlot *new
 		if (old_slot->content_view != NULL) {
 			nautilus_window_slot_disconnect_content_view (old_slot, old_slot->content_view);
 		}
-		
+
 		/* inform slot & view */
 		g_signal_emit_by_name (old_slot, "inactive");
 	}
@@ -858,7 +858,7 @@ nautilus_window_set_active_slot (NautilusWindow *window, NautilusWindowSlot *new
 			g_list_remove (window->details->active_pane->active_slots, new_slot);
 		window->details->active_pane->active_slots =
 			g_list_prepend (window->details->active_pane->active_slots, new_slot);
-		
+
 		/* inform sidebar panels */
                 nautilus_window_report_location_change (window);
 		/* TODO decide whether "selection-changed" should be emitted */
@@ -1797,7 +1797,7 @@ NautilusWindowPane*
 nautilus_window_get_pane_from_slot (NautilusWindow *window, NautilusWindowSlot *slot)
 {
 	GList *walk, *wSlot;
-	
+
 	/* check active slot on active pane first */
 	if (slot == window->details->active_pane->active_slot) {
 		return window->details->active_pane;

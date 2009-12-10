@@ -234,7 +234,7 @@ nautilus_navigation_window_update_show_hide_menu_items (NautilusNavigationWindow
 	action = gtk_action_group_get_action (window->details->navigation_action_group,
 					      NAUTILUS_ACTION_SHOW_HIDE_LOCATION_BAR);
 	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
-					  nautilus_navigation_window_pane_location_bar_showing (NAUTILUS_NAVIGATION_WINDOW_PANE (NAUTILUS_WINDOW (window)->details->active_pane)));
+				      nautilus_navigation_window_pane_location_bar_showing (NAUTILUS_NAVIGATION_WINDOW_PANE (NAUTILUS_WINDOW (window)->details->active_pane)));
 
 	action = gtk_action_group_get_action (window->details->navigation_action_group,
 					      NAUTILUS_ACTION_SHOW_HIDE_STATUSBAR);
@@ -468,12 +468,12 @@ update_tab_action_sensitivity (NautilusNavigationWindowPane *pane)
 	NautilusNotebook *notebook;
 	gboolean sensitive;
 	int tab_num;
-    NautilusNavigationWindow *window;
+	NautilusNavigationWindow *window;
 
 	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW_PANE (pane));
 
-    window = NAUTILUS_NAVIGATION_WINDOW (NAUTILUS_WINDOW_PANE (pane)->window);
-    
+	window = NAUTILUS_NAVIGATION_WINDOW (NAUTILUS_WINDOW_PANE (pane)->window);
+
 	notebook = NAUTILUS_NOTEBOOK (pane->notebook);
 	action_group = window->details->navigation_action_group;
 
@@ -1021,8 +1021,8 @@ nautilus_navigation_window_initialize_actions (NautilusNavigationWindow *window)
 
 	gtk_ui_manager_insert_action_group (ui_manager, action_group, 0);
 	g_object_unref (action_group); /* owned by ui_manager */
-    
-    /* hhb: updates for split view needed here */
+
+	/* hhb: updates for split view needed here */
 }
 
 
@@ -1037,7 +1037,7 @@ nautilus_navigation_window_initialize_menus (NautilusNavigationWindow *window)
 {
 	GtkUIManager *ui_manager;
 	const char *ui;
-    GList *walk;
+	GList *walk;
 
 	ui_manager = nautilus_window_get_ui_manager (NAUTILUS_WINDOW (window));
 
@@ -1048,9 +1048,9 @@ nautilus_navigation_window_initialize_menus (NautilusNavigationWindow *window)
 	nautilus_navigation_window_update_spatial_menu_item (window);
 	nautilus_navigation_window_update_tab_menu_item_visibility (window);
 
-        nautilus_navigation_window_initialize_go_menu (window);
+	nautilus_navigation_window_initialize_go_menu (window);
 
-        for (walk = NAUTILUS_WINDOW(window)->details->panes; walk; walk = walk->next) {
-        	nautilus_navigation_window_pane_initialize_tabs_menu (walk->data);
-        }
+	for (walk = NAUTILUS_WINDOW(window)->details->panes; walk; walk = walk->next) {
+		nautilus_navigation_window_pane_initialize_tabs_menu (walk->data);
+	}
 }

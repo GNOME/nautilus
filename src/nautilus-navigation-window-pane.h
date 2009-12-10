@@ -39,30 +39,32 @@ typedef struct _NautilusNavigationWindowPaneClass NautilusNavigationWindowPaneCl
 typedef struct _NautilusNavigationWindowPane      NautilusNavigationWindowPane;
 
 struct _NautilusNavigationWindowPaneClass {
-    NautilusWindowPaneClass parent_class;
+	NautilusWindowPaneClass parent_class;
 };
 
 struct _NautilusNavigationWindowPane {
-    NautilusWindowPane parent;
+	NautilusWindowPane parent;
 
-    /* location bar */
-    GtkWidget *location_bar;
-    GtkWidget *location_button;
-    GtkSizeGroup *navigation_group;
-    GtkWidget *navigation_bar;
-    GtkWidget *path_bar;
-    GtkWidget *search_bar;
+	GtkWidget *widget;
 
-    gboolean temporary_navigation_bar;
-    gboolean temporary_location_bar;
-    gboolean temporary_search_bar;
-    
-    /* notebook */
-    GtkWidget *notebook;
-    
+	/* location bar */
+	GtkWidget *location_bar;
+	GtkWidget *location_button;
+	GtkSizeGroup *navigation_group;
+	GtkWidget *navigation_bar;
+	GtkWidget *path_bar;
+	GtkWidget *search_bar;
+
+	gboolean temporary_navigation_bar;
+	gboolean temporary_location_bar;
+	gboolean temporary_search_bar;
+
+	/* notebook */
+	GtkWidget *notebook;
+
 	/* tab menu */
 	GtkActionGroup *tabs_menu_action_group;
-	guint tabs_menu_merge_id;    
+	guint tabs_menu_merge_id;
 };
 
 GType    nautilus_navigation_window_pane_get_type (void);
@@ -70,7 +72,7 @@ GType    nautilus_navigation_window_pane_get_type (void);
 NautilusNavigationWindowPane* nautilus_navigation_window_pane_new (NautilusWindow *window);
 
 /* location bar */
-void     nautilus_navigation_window_pane_setup_location_bar (NautilusNavigationWindowPane *pane);
+void     nautilus_navigation_window_pane_setup             (NautilusNavigationWindowPane *pane);
 
 void     nautilus_navigation_window_pane_hide_location_bar (NautilusNavigationWindowPane *pane, gboolean save_preference);
 void     nautilus_navigation_window_pane_show_location_bar (NautilusNavigationWindowPane *pane, gboolean save_preference);
@@ -87,7 +89,6 @@ gboolean nautilus_navigation_window_pane_hide_temporary_bars (NautilusNavigation
 void     nautilus_navigation_window_pane_sync_location_widgets (NautilusNavigationWindowPane *pane);
 void     nautilus_navigation_window_pane_set_active (NautilusNavigationWindowPane *pane, gboolean is_active);
 /* notebook */
-void     nautilus_navigation_window_pane_setup_notebook (NautilusNavigationWindowPane *pane);
 void     nautilus_navigation_window_pane_add_slot_in_tab (NautilusNavigationWindowPane *pane, NautilusWindowSlot *slot, NautilusWindowOpenSlotFlags flags);
 void     nautilus_navigation_window_pane_remove_page (NautilusNavigationWindowPane *pane, int page_num);
 

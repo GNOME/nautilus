@@ -173,11 +173,11 @@ nautilus_navigation_window_slot_active (NautilusWindowSlot *slot)
 {
 	NautilusNavigationWindow *window;
 	NautilusNavigationWindowSlot *navigation_slot;
-    NautilusNavigationWindowPane *pane;
+	NautilusNavigationWindowPane *pane;
 	int page_num;
 
 	navigation_slot = NAUTILUS_NAVIGATION_WINDOW_SLOT (slot);
-    pane = NAUTILUS_NAVIGATION_WINDOW_PANE (slot->pane);
+	pane = NAUTILUS_NAVIGATION_WINDOW_PANE (slot->pane);
 	window = NAUTILUS_NAVIGATION_WINDOW (slot->pane->window);
 
 	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (pane->notebook),

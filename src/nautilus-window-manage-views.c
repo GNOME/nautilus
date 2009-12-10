@@ -298,22 +298,22 @@ handle_go_elsewhere (NautilusWindowSlot *slot, GFile *location)
 void
 nautilus_window_update_up_button (NautilusWindow *window)
 {
-    NautilusWindowSlot *slot;
-    gboolean allowed;
-    GFile *parent;
+	NautilusWindowSlot *slot;
+	gboolean allowed;
+	GFile *parent;
 
-    slot = window->details->active_pane->active_slot;
+	slot = window->details->active_pane->active_slot;
 
-    allowed = FALSE;
-    if (slot->location != NULL) {
-        parent = g_file_get_parent (slot->location);
-        allowed = parent != NULL;
-        if (parent != NULL) {
-            g_object_unref (parent);
+	allowed = FALSE;
+	if (slot->location != NULL) {
+		parent = g_file_get_parent (slot->location);
+		allowed = parent != NULL;
+		if (parent != NULL) {
+			g_object_unref (parent);
 		}
-    }
+	}
 
-    nautilus_window_allow_up (window, allowed);
+	nautilus_window_allow_up (window, allowed);
 }
 
 static void
