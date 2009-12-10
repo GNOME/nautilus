@@ -1060,8 +1060,6 @@ nautilus_navigation_window_get_base_page_index (NautilusNavigationWindow *window
 	return forward_count;
 }
 
-
-
 /**
  * nautilus_navigation_window_show:
  * @widget: a #GtkWidget.
@@ -1116,6 +1114,10 @@ nautilus_navigation_window_show (GtkWidget *widget)
 		nautilus_navigation_window_show_status_bar (window);
 	} else {
 		nautilus_navigation_window_hide_status_bar (window);
+	}
+
+	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_EXTRA_PANE)) {
+		nautilus_navigation_window_split_view_on (window);
 	}
 
 	GTK_WIDGET_CLASS (parent_class)->show (widget);
@@ -1311,6 +1313,12 @@ nautilus_navigation_window_split_view_on (NautilusNavigationWindow *window)
 	/* listen when view is finally added */
 	g_signal_connect_object (GTK_CONTAINER (NAUTILUS_WINDOW_PANE (pane)->active_slot->view_box), "add",
 				 G_CALLBACK (split_view_added_to_container_callback), pane, 0);
+
+	/* remember in gconf */
+	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_EXTRA_PANE) &&
+	    !eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_EXTRA_PANE)) {
+		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_EXTRA_PANE, TRUE);
+	}
 }
 
 void
@@ -1334,4 +1342,17 @@ nautilus_navigation_window_split_view_off (NautilusNavigationWindow *window)
 			nautilus_window_close_pane (pane);
 		}
 	}
+
+	nautilus_navigation_window_update_show_hide_menu_items (window);
+	/* remember in gconf */
+	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_EXTRA_PANE) &&
+	    eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_EXTRA_PANE)) {
+		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_EXTRA_PANE, FALSE);
+	}
+}
+
+gboolean
+nautilus_navigation_window_split_view_showing (NautilusNavigationWindow *window)
+{
+	return g_list_length (NAUTILUS_WINDOW (window)->details->panes) > 1;
 }

@@ -404,6 +404,11 @@ nautilus_window_slot_is_in_active_pane (NautilusWindowSlot *slot,
 		return;
 	}
 
+	/* it may also be that the content is not a valid directory view during init */
+	if (!FM_IS_DIRECTORY_VIEW (slot->content_view)) {
+		return;
+	}
+
 	bg = EEL_BACKGROUND (fm_directory_view_get_background (FM_DIRECTORY_VIEW (slot->content_view)));
 	g_return_if_fail (EEL_IS_BACKGROUND (bg));
 

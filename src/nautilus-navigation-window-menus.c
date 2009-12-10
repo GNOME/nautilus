@@ -244,13 +244,17 @@ action_split_view_callback (GtkAction *action,
 			    gpointer user_data)
 {
 	NautilusNavigationWindow *window;
+	gboolean is_active;
 
 	window = NAUTILUS_NAVIGATION_WINDOW (user_data);
 
-	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action))) {
-		nautilus_navigation_window_split_view_on (window);
-	} else {
-		nautilus_navigation_window_split_view_off (window);
+	is_active = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
+	if (is_active != nautilus_navigation_window_split_view_showing (window)) {
+		if (is_active) {
+			nautilus_navigation_window_split_view_on (window);
+		} else {
+			nautilus_navigation_window_split_view_off (window);
+		}
 	}
 }
 
@@ -280,6 +284,11 @@ nautilus_navigation_window_update_show_hide_menu_items (NautilusNavigationWindow
 					      NAUTILUS_ACTION_SHOW_HIDE_STATUSBAR);
 	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
 				      nautilus_navigation_window_status_bar_showing (window));
+
+	action = gtk_action_group_get_action (window->details->navigation_action_group,
+					      NAUTILUS_ACTION_SHOW_HIDE_EXTRA_PANE);
+	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
+				      nautilus_navigation_window_split_view_showing (window));
 }
 
 void
@@ -1041,7 +1050,7 @@ static const GtkToggleActionEntry navigation_toggle_entries[] = {
   /* tooltip */              N_("Search documents and folders by name"),
                              G_CALLBACK (action_show_hide_search_callback),
   /* is_active */            FALSE },
-  /* name, stock id */     { "Show Hide Extra Pane", NULL,
+  /* name, stock id */     { NAUTILUS_ACTION_SHOW_HIDE_EXTRA_PANE, NULL,
   /* label, accelerator */   N_("Extra Pane"), "F3",
   /* tooltip */              N_("Open an extra folder view side-by-side"),
                              G_CALLBACK (action_split_view_callback),

@@ -1530,7 +1530,9 @@ nautilus_window_next_pane_is_writable (NautilusWindow *window)
 		return FALSE;
 	}
 
-	g_return_val_if_fail(FM_IS_DIRECTORY_VIEW (next_pane->active_slot->content_view), FALSE);	
+	if (next_pane->active_slot->content_view == NULL) {
+		return FALSE;
+	}
 
 	return !fm_directory_view_is_read_only (FM_DIRECTORY_VIEW (next_pane->active_slot->content_view));
 }

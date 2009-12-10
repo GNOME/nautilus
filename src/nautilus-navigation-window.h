@@ -108,5 +108,6 @@ void     nautilus_navigation_window_set_search_button	 (NautilusNavigationWindow
 void     nautilus_navigation_window_restore_focus_widget (NautilusNavigationWindow *window);
 void     nautilus_navigation_window_split_view_on        (NautilusNavigationWindow *window);
 void     nautilus_navigation_window_split_view_off       (NautilusNavigationWindow *window);
+gboolean nautilus_navigation_window_split_view_showing   (NautilusNavigationWindow *window);
 
 #endif

@@ -1010,6 +1010,21 @@ most cases, this should be left alone. -->Sans 10</default>
     </schema>
 
     <schema>
+      <key>/schemas/apps/nautilus/preferences/start_with_extra_pane</key>
+      <applyto>/apps/nautilus/preferences/start_with_extra_pane</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+         <short>Show extra pane in new windows</short>
+         <long>
+           If set to true, newly opened windows will have the extra
+	   pane visible.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
       <key>/schemas/apps/nautilus/preferences/side_pane_view</key>
       <applyto>/apps/nautilus/preferences/side_pane_view</applyto>
       <owner>nautilus</owner>
