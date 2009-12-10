@@ -157,6 +157,14 @@ nautilus_window_init (NautilusWindow *window)
 
 	window->details->show_hidden_files_mode = NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT;
 	
+	/* Remove Top border on GtkStatusBar */
+	gtk_rc_parse_string (
+		"style \"statusbar-no-border\"\n"
+		"{\n"
+		"   GtkStatusbar::shadow_type = GTK_SHADOW_NONE\n"
+		"}\n"
+		"widget \"*.statusbar-noborder\" style \"statusbar-no-border\"");
+
 	/* Set initial window title */
 	gtk_window_set_title (GTK_WINDOW (window), _("Nautilus"));
 
@@ -166,6 +174,7 @@ nautilus_window_init (NautilusWindow *window)
 	gtk_container_add (GTK_CONTAINER (window), table);
 
 	statusbar = gtk_statusbar_new ();
+	gtk_widget_set_name (statusbar, "statusbar-noborder");
 	window->details->statusbar = statusbar;
 	gtk_table_attach (GTK_TABLE (table),
 			  statusbar,
