@@ -872,7 +872,7 @@ nautilus_emblem_sidebar_create_container (NautilusEmblemSidebar *emblem_sidebar)
 	GtkWidget *emblems_table, *scroller;
 
 	/* The emblems wrapped table */
-	scroller = eel_scrolled_wrap_table_new (TRUE, GTK_SHADOW_NONE, &emblems_table);
+	scroller = eel_scrolled_wrap_table_new (TRUE, GTK_SHADOW_IN, &emblems_table);
 
 	gtk_container_set_border_width (GTK_CONTAINER (emblems_table), 8);
 

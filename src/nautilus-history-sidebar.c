@@ -268,6 +268,7 @@ nautilus_history_sidebar_init (NautilusHistorySidebar *sidebar)
 					GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_hadjustment (GTK_SCROLLED_WINDOW (sidebar), NULL);
 	gtk_scrolled_window_set_vadjustment (GTK_SCROLLED_WINDOW (sidebar), NULL);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sidebar), GTK_SHADOW_IN);
 	gtk_container_add (GTK_CONTAINER (sidebar), GTK_WIDGET (tree_view));
 	gtk_widget_show (GTK_WIDGET (sidebar));
 	

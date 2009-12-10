@@ -318,6 +318,7 @@ nautilus_side_pane_init (GObject *object)
 
 	frame = gtk_frame_new (NULL);
 	side_pane->details->title_frame = frame;
+	gtk_frame_set_shadow_type (GTK_FRAME(frame), GTK_SHADOW_NONE);
 	gtk_widget_show (frame);
 	gtk_box_pack_start (GTK_BOX (side_pane), frame, FALSE, FALSE, 0);
 
