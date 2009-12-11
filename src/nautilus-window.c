@@ -1941,8 +1941,8 @@ nautilus_window_info_iface_init (NautilusWindowInfoIface *iface)
 	iface->get_bookmark_list = nautilus_window_get_bookmark_list;
 	iface->get_current_location = nautilus_window_get_location_uri;
 	iface->get_ui_manager = nautilus_window_get_ui_manager;
-    iface->next_pane_is_writable = nautilus_window_next_pane_is_writable;
-    iface->copy_move_selection_to_next_pane = nautilus_window_copy_move_selection_to_next_pane;
+	iface->next_pane_is_writable = nautilus_window_next_pane_is_writable;
+	iface->copy_move_selection_to_next_pane = nautilus_window_copy_move_selection_to_next_pane;
 	iface->get_selection_count = nautilus_window_get_selection_count;
 	iface->get_selection = nautilus_window_get_selection;
 	iface->get_hidden_files_mode = nautilus_window_get_hidden_files_mode;
