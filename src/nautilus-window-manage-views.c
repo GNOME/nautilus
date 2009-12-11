@@ -485,12 +485,14 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 {
 	NautilusWindow *window;
         NautilusWindow *target_window;
+        NautilusWindowPane *pane;
         NautilusWindowSlot *target_slot;
 	NautilusWindowOpenFlags slot_flags;
         gboolean do_load_location = TRUE;
 	GFile *old_location;
 	char *old_uri, *new_uri;
 	int new_slot_position;
+	GList *l;
 
 	window = slot->pane->window;
 
@@ -630,6 +632,17 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 
         begin_location_change (target_slot, location, new_selection,
                                NAUTILUS_LOCATION_CHANGE_STANDARD, 0, NULL);
+
+	/* Additionally, load this in all slots that have no location, this means
+	   we load both panes in e.g. a newly opened dual pane window. */
+	for (l = target_window->details->panes; l != NULL; l = l->next) {
+		pane = l->data;
+		slot = pane->active_slot;
+		if (slot->location == NULL && slot->pending_location == NULL) {
+			begin_location_change (slot, location, new_selection,
+					       NAUTILUS_LOCATION_CHANGE_STANDARD, 0, NULL);
+		}
+	}
 }
 
 void
