@@ -1874,29 +1874,6 @@ nautilus_window_get_bookmark_list (NautilusWindowInfo *window)
   return nautilus_get_bookmark_list ();
 }
 
-NautilusWindowPane*
-nautilus_window_get_pane_from_slot (NautilusWindow *window, NautilusWindowSlot *slot)
-{
-	GList *walk, *wSlot;
-
-	/* check active slot on active pane first */
-	if (slot == window->details->active_pane->active_slot) {
-		return window->details->active_pane;
-	}
-	for (walk = window->details->panes; walk; walk = walk->next) {
-		NautilusWindowPane *pane = walk->data;
-		if (pane->active_slot == slot) {
-			return pane;
-		}
-		for (wSlot = pane->slots; wSlot; wSlot = wSlot->next) {
-			if (wSlot->data == slot) {
-				return pane;
-			}
-		}
-	}
-	return NULL;
-}
-
 static char *
 nautilus_window_get_cached_title (NautilusWindow *window)
 {

@@ -206,8 +206,6 @@ gboolean           nautilus_add_to_history_list_no_notify                (GFile 
 GList *            nautilus_get_history_list                             (void);
 void               nautilus_window_bookmarks_preference_changed_callback (gpointer           user_data);
 void               nautilus_window_constructed                           (NautilusWindow    *window);
-NautilusWindowPane* nautilus_window_get_pane_from_slot                   (NautilusWindow *window,
-									  NautilusWindowSlot *slot);
 
 
 /* sync window GUI with current slot. Used when changing slots,
