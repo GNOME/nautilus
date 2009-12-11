@@ -403,7 +403,7 @@ viewed_file_changed_callback (NautilusFile *file,
 				   slot->location)) {
                         g_object_unref (slot->location);
                         slot->location = new_location;
-			if (slot == window->details->active_pane->active_slot) {
+			if (slot == slot->pane->active_slot) {
 				nautilus_window_sync_location_widgets (window);
 			}
                 } else {
@@ -1645,7 +1645,7 @@ update_for_new_location (NautilusWindowSlot *slot)
 		slot_add_extension_extra_widgets (slot);
 	}
 
-	if (slot == window->details->active_pane->active_slot) {
+	if (slot == slot->pane->active_slot) {
 		nautilus_window_sync_location_widgets (window);
 
 		if (location_really_changed) {
