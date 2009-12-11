@@ -144,6 +144,7 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 	NautilusNavigationWindowPane *pane;
 	NautilusWindowSlot *slot;
 	GtkWidget *hpaned;
+	GtkWidget *vbox;
 
 	win = NAUTILUS_WINDOW (window);
 
@@ -161,10 +162,17 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 			  0,                                  0);
 	gtk_widget_show (window->details->content_paned);
 
+	vbox = gtk_vbox_new (FALSE, 0);
+	nautilus_horizontal_splitter_pack2 (NAUTILUS_HORIZONTAL_SPLITTER (window->details->content_paned), vbox);
+	gtk_widget_show (vbox);
+
 	hpaned = gtk_hpaned_new ();
+	gtk_box_pack_start (GTK_BOX (vbox), hpaned, TRUE, TRUE, 0);
 	gtk_widget_show (hpaned);
-	nautilus_horizontal_splitter_pack2 (NAUTILUS_HORIZONTAL_SPLITTER (window->details->content_paned), hpaned);
 	window->details->split_view_hpane = hpaned;
+
+	gtk_box_pack_start (GTK_BOX (vbox), win->details->statusbar, FALSE, FALSE, 0);
+	gtk_widget_show (win->details->statusbar);
 
 	nautilus_navigation_window_pane_setup (pane);
 

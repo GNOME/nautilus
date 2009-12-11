@@ -176,15 +176,9 @@ nautilus_window_init (NautilusWindow *window)
 	statusbar = gtk_statusbar_new ();
 	gtk_widget_set_name (statusbar, "statusbar-noborder");
 	window->details->statusbar = statusbar;
-	gtk_table_attach (GTK_TABLE (table),
-			  statusbar,
-			  /* X direction */                   /* Y direction */
-			  0, 1,                               5, 6,
-			  GTK_EXPAND | GTK_FILL | GTK_SHRINK, 0,
-			  0,                                  0);
 	window->details->help_message_cid = gtk_statusbar_get_context_id
 		(GTK_STATUSBAR (statusbar), "help_message");
-	gtk_widget_show (statusbar);
+	/* Statusbar is packed in the subclasses */
 
 	nautilus_window_initialize_menus (window);
 	

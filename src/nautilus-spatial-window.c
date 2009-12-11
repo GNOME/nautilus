@@ -973,6 +973,14 @@ nautilus_spatial_window_init (NautilusSpatialWindow *window)
 
 	win = NAUTILUS_WINDOW (window);
 
+	gtk_table_attach (GTK_TABLE (win->details->table),
+			  win->details->statusbar,
+			  /* X direction */                   /* Y direction */
+			  0, 1,                               5, 6,
+			  GTK_EXPAND | GTK_FILL | GTK_SHRINK, 0,
+			  0,                                  0);
+	gtk_widget_show (win->details->statusbar);
+
 	pane = nautilus_window_pane_new (win);
 	win->details->panes = g_list_prepend (win->details->panes, pane);
 
