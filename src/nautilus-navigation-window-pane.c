@@ -797,9 +797,18 @@ nautilus_navigation_window_pane_init (NautilusNavigationWindowPane *pane)
 }
 
 static void
+nautilus_navigation_window_pane_show (NautilusWindowPane *pane)
+{
+	NautilusNavigationWindowPane *npane = NAUTILUS_NAVIGATION_WINDOW_PANE (pane);
+
+	gtk_widget_show (npane->widget);
+}
+
+static void
 nautilus_navigation_window_pane_class_init (NautilusNavigationWindowPaneClass *class)
 {
 	G_OBJECT_CLASS (class)->dispose = nautilus_navigation_window_pane_dispose;
+	NAUTILUS_WINDOW_PANE_CLASS (class)->show = nautilus_navigation_window_pane_show;
 }
 
 static void

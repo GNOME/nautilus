@@ -108,6 +108,8 @@ struct NautilusWindowSlot {
 	gboolean tried_mount;
 
 	GCancellable *find_mount_cancellable;
+
+	gboolean visible;
 };
 
 GType   nautilus_window_slot_get_type (void);

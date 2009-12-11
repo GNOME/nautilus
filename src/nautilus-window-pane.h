@@ -38,6 +38,8 @@ typedef struct _NautilusWindowPaneClass NautilusWindowPaneClass;
 
 struct _NautilusWindowPaneClass {
 	GObjectClass parent_class;
+
+	void (*show) (NautilusWindowPane *pane);
 };
 
 /* A NautilusWindowPane is a layer between a slot and a window.
@@ -55,6 +57,7 @@ struct _NautilusWindowPane {
 
 	/* hosting window */
 	NautilusWindow *window;
+	gboolean visible;
 
 	/* available slots, and active slot.
 	 * Both of them may never be NULL. */
@@ -70,6 +73,7 @@ GType nautilus_window_pane_get_type (void);
 NautilusWindowPane *nautilus_window_pane_new (NautilusWindow *window);
 
 
+void nautilus_window_pane_show (NautilusWindowPane *pane);
 void nautilus_window_pane_zoom_in (NautilusWindowPane *pane);
 void nautilus_window_pane_zoom_to_level (NautilusWindowPane *pane, NautilusZoomLevel level);
 void nautilus_window_pane_zoom_out (NautilusWindowPane *pane);

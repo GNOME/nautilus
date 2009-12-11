@@ -138,7 +138,8 @@ struct _NautilusWindowInfoIface
 
 	NautilusWindowSlotInfo * (* get_active_slot) (NautilusWindowInfo *window);
 
-	void   (* show_window)        (NautilusWindowInfo *window);
+	void   (* view_visible)        (NautilusWindowInfo *window,
+					NautilusView *view);
 	void   (* close_window)       (NautilusWindowInfo *window);
 	GtkUIManager *     (* get_ui_manager)   (NautilusWindowInfo *window);
 	/* return TRUE if other pane is writable (files can be moved/copied
@@ -158,7 +159,8 @@ void                              nautilus_window_info_report_view_failed       
 										 NautilusView                      *view);
 void                              nautilus_window_info_report_selection_changed (NautilusWindowInfo                *window);
 NautilusWindowSlotInfo *          nautilus_window_info_get_active_slot          (NautilusWindowInfo                *window);
-void                              nautilus_window_info_show_window              (NautilusWindowInfo                *window);
+void                              nautilus_window_info_view_visible             (NautilusWindowInfo                *window,
+										 NautilusView                      *view);
 void                              nautilus_window_info_close                    (NautilusWindowInfo                *window);
 void                              nautilus_window_info_push_status              (NautilusWindowInfo                *window,
 										 const char                        *status);

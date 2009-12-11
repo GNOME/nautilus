@@ -648,18 +648,14 @@ nautilus_window_constructor (GType type,
 }
 
 void
-nautilus_window_show_window (NautilusWindow *window)
+nautilus_window_show_window (NautilusWindow    *window)
 {
 	NautilusWindowSlot *slot;
+	NautilusWindowPane *pane;
 	GList *l, *walk;
 
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-
-	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
-			 show_window, (window));
-
 	for (walk = window->details->panes; walk; walk = walk->next) {
-		NautilusWindowPane *pane = walk->data;
+		pane = walk->data;
 		for (l = pane->slots; l != NULL; l = l->next) {
 			slot = l->data;
 
@@ -677,6 +673,55 @@ nautilus_window_show_window (NautilusWindow *window)
 			nautilus_file_set_has_open_window (slot->viewed_file, TRUE);
 		}
 	}
+}
+
+static void
+nautilus_window_view_visible (NautilusWindow *window,
+			      NautilusView *view)
+{
+	NautilusWindowSlot *slot;
+	NautilusWindowPane *pane;
+	GList *l, *walk;
+
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+
+	slot = nautilus_window_get_slot_for_view (window, view);
+
+	if (slot->visible) {
+		return;
+	}
+
+	slot->visible = TRUE;
+
+	pane = slot->pane;
+
+	if (pane->visible) {
+		return;
+	}
+
+	/* Look for other non-visible slots */
+	for (l = pane->slots; l != NULL; l = l->next) {
+		slot = l->data;
+
+		if (!slot->visible) {
+			return;
+		}
+	}
+
+	/* None, this pane is visible */
+	nautilus_window_pane_show (pane);
+
+	/* Look for other non-visible panes */
+	for (walk = window->details->panes; walk; walk = walk->next) {
+		pane = walk->data;
+
+		if (!pane->visible) {
+			return;
+		}
+	}
+
+	/* All slots and panes visible, show window */
+	nautilus_window_show_window (window);
 }
 
 void
@@ -1932,7 +1977,7 @@ nautilus_window_info_iface_init (NautilusWindowInfoIface *iface)
 	iface->report_load_complete = nautilus_window_report_load_complete;
 	iface->report_selection_changed = nautilus_window_report_selection_changed;
 	iface->report_view_failed = nautilus_window_report_view_failed;
-	iface->show_window = nautilus_window_show_window;
+	iface->view_visible = nautilus_window_view_visible;
 	iface->close_window = nautilus_window_close;
 	iface->push_status = nautilus_window_push_status;
 	iface->get_window_type = nautilus_window_get_window_type;

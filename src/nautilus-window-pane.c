@@ -26,6 +26,7 @@
 #include "nautilus-window-private.h"
 #include "nautilus-navigation-window-pane.h"
 #include "nautilus-window-manage-views.h"
+#include <eel/eel-gtk-macros.h>
 
 static void nautilus_window_pane_init       (NautilusWindowPane *pane);
 static void nautilus_window_pane_class_init (NautilusWindowPaneClass *class);
@@ -51,6 +52,14 @@ get_first_inactive_slot (NautilusWindowPane *pane)
 	}
 
 	return NULL;
+}
+
+void
+nautilus_window_pane_show (NautilusWindowPane *pane)
+{
+	pane->visible = TRUE;
+	EEL_CALL_METHOD (NAUTILUS_WINDOW_PANE_CLASS, pane,
+			 show, (pane));
 }
 
 void

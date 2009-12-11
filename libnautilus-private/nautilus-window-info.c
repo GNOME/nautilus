@@ -152,11 +152,12 @@ nautilus_window_info_report_selection_changed (NautilusWindowInfo      *window)
 }
 
 void
-nautilus_window_info_show_window (NautilusWindowInfo      *window)
+nautilus_window_info_view_visible (NautilusWindowInfo      *window,
+				   NautilusView            *view)
 {
 	g_return_if_fail (NAUTILUS_IS_WINDOW_INFO (window));
 
-	(* NAUTILUS_WINDOW_INFO_GET_IFACE (window)->show_window) (window);
+	(* NAUTILUS_WINDOW_INFO_GET_IFACE (window)->view_visible) (window, view);
 }
 
 void

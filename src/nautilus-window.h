@@ -101,7 +101,6 @@ typedef struct {
         void   (* prompt_for_location) (NautilusWindow *window, const char *initial);
         void   (* sync_search_widgets) (NautilusWindow *window);
         void   (* get_default_size) (NautilusWindow *window, guint *default_width, guint *default_height);
-        void   (* show_window)  (NautilusWindow *window);
         void   (* close) (NautilusWindow *window);
 
         NautilusWindowSlot * (* open_slot) (NautilusWindowPane *pane,
