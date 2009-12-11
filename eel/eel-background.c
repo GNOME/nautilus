@@ -776,8 +776,8 @@ eel_background_set_up_widget (EelBackground *background, GtkWidget *widget)
 		if (background->details->is_desktop) {
 			gdk_window_set_back_pixmap (window, pixmap, FALSE);
 		} else {
-			gdk_window_set_back_pixmap (window, NULL, FALSE);
 			gdk_window_set_background (window, &color);
+			gdk_window_set_back_pixmap (window, pixmap, FALSE);
 		}
 	}
 
