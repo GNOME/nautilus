@@ -337,34 +337,6 @@ close_button_clicked_cb (GtkWidget *widget,
 	}
 }
 
-static void
-tab_label_style_set_cb (GtkWidget *hbox,
-			GtkStyle *previous_style,
-			gpointer user_data)
-{
-	PangoFontMetrics *metrics;
-	PangoContext *context;
-	GtkWidget *button;
-	int char_width, h, w;
-
-	context = gtk_widget_get_pango_context (hbox);
-	metrics = pango_context_get_metrics (context,
-					     hbox->style->font_desc,
-					     pango_context_get_language (context));
-
-	char_width = pango_font_metrics_get_approximate_digit_width (metrics);
-	pango_font_metrics_unref (metrics);
-
-	gtk_icon_size_lookup_for_settings (gtk_widget_get_settings (hbox),
-					   GTK_ICON_SIZE_MENU, &w, &h);
-
-	gtk_widget_set_size_request
-		(hbox, TAB_WIDTH_N_CHARS * PANGO_PIXELS(char_width) + 2 * w, -1);
-
-	button = g_object_get_data (G_OBJECT (hbox), "close-button");
-	gtk_widget_set_size_request (button, w + 2, h + 2);
-}
-
 static GtkWidget *
 build_tab_label (NautilusNotebook *nb, NautilusWindowSlot *slot)
 {
@@ -414,10 +386,6 @@ build_tab_label (NautilusNotebook *nb, NautilusWindowSlot *slot)
 
 	gtk_box_pack_start (GTK_BOX (hbox), close_button, FALSE, FALSE, 0);
 	gtk_widget_show (close_button);
-
-	/* Set minimal size */
-	g_signal_connect (hbox, "style-set",
-			  G_CALLBACK (tab_label_style_set_cb), NULL);
 
 	drag_info = g_new0 (NautilusDragSlotProxyInfo, 1);
 	drag_info->target_slot = slot;
@@ -474,6 +442,11 @@ nautilus_notebook_add_tab (NautilusNotebook *notebook,
 					     slot->content_box,
 					     tab_label,
 					     position);
+
+	gtk_container_child_set (GTK_CONTAINER (notebook),
+				 slot->content_box,
+				 "tab-expand", TRUE,
+				 NULL);
 
 	nautilus_notebook_sync_tab_label (notebook, slot);
 	nautilus_notebook_sync_loading (notebook, slot);
