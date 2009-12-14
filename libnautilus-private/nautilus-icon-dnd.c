@@ -380,7 +380,7 @@ get_direct_save_filename (GdkDragContext *context)
 	
 	if (!gdk_property_get (context->source_window, gdk_atom_intern (NAUTILUS_ICON_DND_XDNDDIRECTSAVE_TYPE, FALSE),
 			       gdk_atom_intern ("text/plain", FALSE), 0, 1024, FALSE, NULL, NULL,
-			       &prop_len, &prop_text) && prop_text != NULL) {
+			       &prop_len, &prop_text)) {
 		return NULL;
 	}
 	
