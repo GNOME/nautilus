@@ -741,6 +741,7 @@ real_sync_title (NautilusWindow *window,
 		 NautilusWindowSlot *slot)
 {
 	NautilusNavigationWindow *navigation_window;
+	NautilusNavigationWindowPane *pane;
 	NautilusNotebook *notebook;
 	char *full_title;
 	char *window_title;
@@ -759,11 +760,12 @@ real_sync_title (NautilusWindow *window,
 		g_free (full_title);
 	}
 
-	notebook = NAUTILUS_NOTEBOOK (NAUTILUS_NAVIGATION_WINDOW_PANE (slot->pane)->notebook);
+	pane = NAUTILUS_NAVIGATION_WINDOW_PANE (slot->pane);
+	notebook = NAUTILUS_NOTEBOOK (pane->notebook);
 	nautilus_notebook_sync_tab_label (notebook, slot);
 
 	if (slot->pane->is_active) {
-		nautilus_navigation_window_pane_sync_tab_menu_title (NAUTILUS_NAVIGATION_WINDOW_PANE (slot->pane), slot);
+		nautilus_navigation_window_pane_sync_tab_menu_title (pane, slot);
 	}
 }
 
