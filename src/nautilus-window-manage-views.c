@@ -147,9 +147,6 @@ set_displayed_location (NautilusWindowSlot *slot, GFile *location)
                         : nautilus_bookmark_new (location, name);
 		g_free (name);
         }
-
-	nautilus_window_slot_update_title (slot);
-	nautilus_window_slot_update_icon (slot);
 }
 
 static void
@@ -1657,6 +1654,9 @@ update_for_new_location (NautilusWindowSlot *slot)
 
 		slot_add_extension_extra_widgets (slot);
 	}
+
+	nautilus_window_slot_update_title (slot);
+	nautilus_window_slot_update_icon (slot);
 
 	if (slot == slot->pane->active_slot) {
 		nautilus_window_sync_location_widgets (window);
