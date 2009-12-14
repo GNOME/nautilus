@@ -289,5 +289,5 @@ nautilus_horizontal_splitter_pack2 (NautilusHorizontalSplitter *splitter,
 	g_return_if_fail (NAUTILUS_IS_HORIZONTAL_SPLITTER (splitter));
 
 	paned = GTK_PANED (splitter);
-	gtk_paned_pack2 (paned, child2, TRUE, TRUE);
+	gtk_paned_pack2 (paned, child2, TRUE, FALSE);
 }
