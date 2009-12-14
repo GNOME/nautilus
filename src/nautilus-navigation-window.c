@@ -176,7 +176,7 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 
 	nautilus_navigation_window_pane_setup (pane);
 
-	gtk_paned_pack1 (GTK_PANED(hpaned), pane->widget, TRUE, TRUE);
+	gtk_paned_pack1 (GTK_PANED(hpaned), pane->widget, TRUE, FALSE);
 	gtk_widget_show (pane->widget);
 
 	/* this has to be done after the location bar has been set up,
@@ -1282,9 +1282,9 @@ create_extra_pane (NautilusNavigationWindow *window)
 
 	paned = GTK_PANED (window->details->split_view_hpane);
 	if (gtk_paned_get_child1 (paned) == NULL) {
-		gtk_paned_pack1 (paned, pane->widget, TRUE, TRUE);
+		gtk_paned_pack1 (paned, pane->widget, TRUE, FALSE);
 	} else {
-		gtk_paned_pack2 (paned, pane->widget, TRUE, TRUE);
+		gtk_paned_pack2 (paned, pane->widget, TRUE, FALSE);
 	}
 
 	/* slot */

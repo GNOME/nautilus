@@ -672,6 +672,12 @@ nautilus_navigation_window_pane_setup (NautilusNavigationWindowPane *pane)
 	gtk_notebook_set_show_border (GTK_NOTEBOOK (pane->notebook), FALSE);
 	gtk_widget_show (pane->notebook);
 	gtk_container_set_border_width (GTK_CONTAINER (pane->notebook), 0);
+
+	/* Ensure that the view has some minimal size and that other parts
+	 * of the UI (like location bar and tabs) don't request more and
+	 * thus affect the default position of the split view paned.
+	 */
+	gtk_widget_set_size_request (pane->widget, 60, 60);
 }
 
 
