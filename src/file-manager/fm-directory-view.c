@@ -10858,7 +10858,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		g_signal_new ("delete",
 			      G_TYPE_FROM_CLASS (klass),
 			      G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
-			      G_STRUCT_OFFSET (FMDirectoryViewClass, trash),
+			      G_STRUCT_OFFSET (FMDirectoryViewClass, delete),
 			      g_signal_accumulator_true_handled, NULL,
 			      eel_marshal_BOOLEAN__VOID,
 			      G_TYPE_BOOLEAN, 0);
