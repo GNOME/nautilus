@@ -999,8 +999,16 @@ trash_or_delete_selected_files (FMDirectoryView *view)
 static gboolean
 real_trash (FMDirectoryView *view)
 {
-        trash_or_delete_selected_files (view);
-	return TRUE;
+	GtkAction *action;
+
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_TRASH);
+	if (gtk_action_get_sensitive (action) &&
+	    gtk_action_get_visible (action)) {
+		trash_or_delete_selected_files (view);
+		return TRUE;
+	}
+	return FALSE;
 }
 
 static void
@@ -1072,11 +1080,16 @@ action_restore_from_trash_callback (GtkAction *action,
 static gboolean
 real_delete (FMDirectoryView *view)
 {
-	if (!show_delete_command_auto_value) {
-		return FALSE;
+	GtkAction *action;
+
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_DELETE);
+	if (gtk_action_get_sensitive (action) &&
+	    gtk_action_get_visible (action)) {
+		delete_selected_files (view);
+		return TRUE;
 	}
-        delete_selected_files (view);
-	return TRUE;
+	return FALSE;
 }
 
 static void
