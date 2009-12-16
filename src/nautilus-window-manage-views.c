@@ -1656,7 +1656,8 @@ update_for_new_location (NautilusWindowSlot *slot)
 			nautilus_window_pane_sync_search_widgets (slot->pane);
 		}
 
-		if (NAUTILUS_IS_NAVIGATION_WINDOW (window)) {
+		if (NAUTILUS_IS_NAVIGATION_WINDOW (window) &&
+		    slot->pane == window->details->active_pane) {
 			nautilus_navigation_window_load_extension_toolbar_items (NAUTILUS_NAVIGATION_WINDOW (window));
 		}
 	}
