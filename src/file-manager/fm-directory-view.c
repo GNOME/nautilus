@@ -5945,15 +5945,75 @@ action_copy_files_callback (GtkAction *action,
 }
 
 static void
+move_copy_selection_to_location (FMDirectoryView *view,
+				 int copy_action,
+				 char *target_uri)
+{
+	GList *selection, *uris, *l;
+
+	selection = fm_directory_view_get_selection_for_file_transfer (view);
+	if (selection == NULL) {
+		return;
+	}
+
+	uris = NULL;
+	for (l = selection; l != NULL; l = l->next) {
+		uris = g_list_prepend (uris,
+				       nautilus_file_get_uri ((NautilusFile *) l->data));
+	}
+	uris = g_list_reverse (uris);
+
+	fm_directory_view_move_copy_items (uris, NULL, target_uri,
+					   copy_action,
+					   0, 0,
+					   view);
+
+	eel_g_list_free_deep (uris);
+	nautilus_file_list_free (selection);
+}
+
+static void
+move_copy_selection_to_next_pane (FMDirectoryView *view,
+				  int copy_action)
+{
+	NautilusWindowSlotInfo *slot;
+	char *dest_location;
+
+	slot = nautilus_window_info_get_extra_slot (fm_directory_view_get_nautilus_window (view));
+	g_return_if_fail (slot != NULL);
+
+	dest_location = nautilus_window_slot_info_get_current_location (slot);
+	g_return_if_fail (dest_location != NULL);
+
+	move_copy_selection_to_location (view, copy_action, dest_location);
+}
+
+static void
 action_copy_to_next_pane_callback (GtkAction *action, gpointer callback_data)
 {
-	nautilus_window_info_copy_move_selection_to_next_pane (NAUTILUS_WINDOW_INFO (callback_data), TRUE);
+	FMDirectoryView *view;
+
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+	move_copy_selection_to_next_pane (view,
+					  GDK_ACTION_COPY);
 }
 
 static void
 action_move_to_next_pane_callback (GtkAction *action, gpointer callback_data)
 {
-	nautilus_window_info_copy_move_selection_to_next_pane (NAUTILUS_WINDOW_INFO (callback_data), FALSE);
+	NautilusWindowSlotInfo *slot;
+	char *dest_location;
+	FMDirectoryView *view;
+
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+
+	slot = nautilus_window_info_get_extra_slot (fm_directory_view_get_nautilus_window (view));
+	g_return_if_fail (slot != NULL);
+
+	dest_location = nautilus_window_slot_info_get_current_location (slot);
+	g_return_if_fail (dest_location != NULL);
+
+	move_copy_selection_to_location (view, GDK_ACTION_MOVE, dest_location);
 }
 
 static void
