@@ -42,7 +42,6 @@
 #include "nautilus-zoom-control.h"
 #include "nautilus-search-bar.h"
 #include "nautilus-navigation-window-pane.h"
-#include "file-manager/fm-directory-view.h"
 #include <eel/eel-debug.h>
 #include <eel/eel-marshal.h>
 #include <eel/eel-gtk-macros.h>
