@@ -693,6 +693,6 @@ nautilus_window_slot_info_iface_init (NautilusWindowSlotInfoIface *iface)
 	iface->set_status = nautilus_window_slot_set_status;
 	iface->get_title = nautilus_window_slot_get_title;
 	iface->open_location = nautilus_window_slot_open_location_full;
-    iface->make_hosting_pane_active = nautilus_window_slot_make_hosting_pane_active; 
+	iface->make_hosting_pane_active = nautilus_window_slot_make_hosting_pane_active; 
 }
 
