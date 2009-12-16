@@ -129,6 +129,8 @@ struct _NautilusViewIface
 							     const char           *source_url,
 							     const char           *target_location,
 							     GdkDragAction         action);
+	void           (* set_is_active)                    (NautilusView         *view,
+							     gboolean              is_active);
 
 	/* Padding for future expansion */
 	void (*_reserved1) (void);
@@ -177,6 +179,8 @@ void              nautilus_view_drop_proxy_received_netscape_url (NautilusView  
 								  const char           *source_url,
 								  const char           *target_location,
 								  GdkDragAction         action);
+void              nautilus_view_set_is_active              (NautilusView      *view,
+							    gboolean           is_active);
 
 G_END_DECLS
 

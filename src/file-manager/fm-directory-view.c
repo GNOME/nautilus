@@ -330,6 +330,8 @@ static void     fm_directory_view_select_file                  (FMDirectoryView 
 static GdkDragAction ask_link_action                           (FMDirectoryView      *view);
 static void     update_templates_directory                     (FMDirectoryView *view);
 static void     user_dirs_changed                              (FMDirectoryView *view);
+static void     fm_directory_view_set_is_active                (FMDirectoryView *view,
+								gboolean         is_active);
 
 static gboolean file_list_all_are_folders                      (GList *file_list);
 
@@ -1869,6 +1871,7 @@ fm_directory_view_init_view_iface (NautilusViewIface *iface)
 	iface->get_selection_count = fm_directory_view_get_selection_count;
 	iface->get_selection = fm_directory_view_get_selection_locations;
 	iface->set_selection = fm_directory_view_set_selection_locations;
+	iface->set_is_active = (gpointer)fm_directory_view_set_is_active;
 	
 	iface->supports_zooming = (gpointer)fm_directory_view_supports_zooming;
 	iface->bump_zoom_level = (gpointer)fm_directory_view_bump_zoom_level;
@@ -3492,6 +3495,26 @@ EelBackground *
 fm_directory_view_get_background (FMDirectoryView *view)
 {
 	return eel_get_widget_background (fm_directory_view_get_background_widget (view));
+}
+
+static void
+real_set_is_active (FMDirectoryView *view,
+		    gboolean is_active)
+{
+	EelBackground *bg;
+
+	bg = fm_directory_view_get_background (view);
+	eel_background_set_active (bg, is_active);
+}
+
+static void
+fm_directory_view_set_is_active (FMDirectoryView *view,
+				 gboolean is_active)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view,
+			 set_is_active, (view, is_active));
 }
 
 /**
@@ -10895,6 +10918,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
         klass->merge_menus = real_merge_menus;
         klass->unmerge_menus = real_unmerge_menus;
         klass->update_menus = real_update_menus;
+	klass->set_is_active = real_set_is_active;
 
 	/* Function pointers that subclasses must override */
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, add_file);

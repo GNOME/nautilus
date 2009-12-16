@@ -150,6 +150,16 @@ nautilus_view_set_selection (NautilusView *view,
 }
 
 void
+nautilus_view_set_is_active (NautilusView *view,
+			     gboolean is_active)
+{
+	g_return_if_fail (NAUTILUS_IS_VIEW (view));
+
+	(* NAUTILUS_VIEW_GET_IFACE (view)->set_is_active) (view,
+							   is_active);
+}
+
+void
 nautilus_view_invert_selection (NautilusView *view)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW (view));

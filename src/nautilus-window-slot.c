@@ -27,14 +27,11 @@
 #include "nautilus-desktop-window.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window-manage-views.h"
-#include "file-manager/fm-directory-view.h"
-#include "file-manager/fm-list-view.h"
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-window-slot-info.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
-#include <eel/eel-background.h>
 
 static void nautilus_window_slot_init       (NautilusWindowSlot *slot);
 static void nautilus_window_slot_class_init (NautilusWindowSlotClass *class);
@@ -397,35 +394,18 @@ void
 nautilus_window_slot_is_in_active_pane (NautilusWindowSlot *slot,
 					gboolean is_active)
 {
-	EelBackground *bg;
-
 	/* NULL is valid, and happens during init */
 	if (!slot) {
 		return;
 	}
 
 	/* it may also be that the content is not a valid directory view during init */
-	if (!FM_IS_DIRECTORY_VIEW (slot->content_view)) {
-		return;
+	if (slot->content_view != NULL) {
+		nautilus_view_set_is_active (slot->content_view, is_active);
 	}
 
-	bg = EEL_BACKGROUND (fm_directory_view_get_background (FM_DIRECTORY_VIEW (slot->content_view)));
-	g_return_if_fail (EEL_IS_BACKGROUND (bg));
-
-	eel_background_set_active (bg, is_active);
-
-	/* list view draws its background itself, so it needs special treatment */
-	if (FM_IS_LIST_VIEW (slot->content_view)) {
-		GtkWidget *tree_view = GTK_WIDGET (fm_list_view_get_tree_view (FM_LIST_VIEW (slot->content_view)));
-		if (is_active) {
-			gtk_widget_modify_base (tree_view, GTK_STATE_NORMAL, NULL);
-		} else {
-			GtkStyle *style;
-			GdkColor color;
-			style = gtk_widget_get_style (tree_view);
-			color = style->base[GTK_STATE_INSENSITIVE];
-			gtk_widget_modify_base (tree_view, GTK_STATE_NORMAL, &color);
-		}
+	if (slot->new_content_view != NULL) {
+		nautilus_view_set_is_active (slot->new_content_view, is_active);
 	}
 }
 

@@ -336,6 +336,9 @@ struct FMDirectoryViewClass {
 
 	void	(* emblems_changed)                (FMDirectoryView *view);
 
+	void    (* set_is_active)                  (FMDirectoryView *view,
+						    gboolean         is_active);
+
         /* Signals used only for keybindings */
         gboolean (* trash)                         (FMDirectoryView *view);
         gboolean (* delete)                        (FMDirectoryView *view);

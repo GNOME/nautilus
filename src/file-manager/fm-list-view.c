@@ -2834,6 +2834,27 @@ fm_list_view_grab_focus (NautilusView *view)
 	gtk_widget_grab_focus (GTK_WIDGET (FM_LIST_VIEW (view)->details->tree_view));
 }
 
+static void
+real_set_is_active (FMDirectoryView *view,
+		    gboolean is_active)
+{
+	GtkWidget *tree_view;
+	GtkStyle *style;
+	GdkColor color;
+
+	tree_view = GTK_WIDGET (fm_list_view_get_tree_view (FM_LIST_VIEW (view)));
+
+	if (is_active) {
+		gtk_widget_modify_base (tree_view, GTK_STATE_NORMAL, NULL);
+	} else {
+		style = gtk_widget_get_style (tree_view);
+		color = style->base[GTK_STATE_INSENSITIVE];
+		gtk_widget_modify_base (tree_view, GTK_STATE_NORMAL, &color);
+	}
+
+	EEL_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS,
+			 set_is_active, (view, is_active));
+}
 
 static void
 fm_list_view_class_init (FMListViewClass *class)
@@ -2876,6 +2897,7 @@ fm_list_view_class_init (FMListViewClass *class)
         fm_directory_view_class->emblems_changed = fm_list_view_emblems_changed;
 	fm_directory_view_class->end_file_changes = fm_list_view_end_file_changes;
 	fm_directory_view_class->using_manual_layout = fm_list_view_using_manual_layout;
+	fm_directory_view_class->set_is_active = real_set_is_active;
 
 	eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
 				       &click_policy_auto_value);
