@@ -152,32 +152,27 @@ nautilus_window_pane_slot_close (NautilusWindowPane *pane, NautilusWindowSlot *s
 	}
 }
 
+static void
+real_sync_location_widgets (NautilusWindowPane *pane)
+{
+	NautilusWindowSlot *slot;
+
+	/* TODO: Would be nice with a real subclass for spatial panes */
+	g_assert (NAUTILUS_IS_SPATIAL_WINDOW (pane->window));
+
+	slot = pane->active_slot;
+
+	/* Change the location button to match the current location. */
+	nautilus_spatial_window_set_location_button (NAUTILUS_SPATIAL_WINDOW (pane->window),
+						     slot->location);
+}
+
+
 void
 nautilus_window_pane_sync_location_widgets (NautilusWindowPane *pane)
 {
-	if (NAUTILUS_IS_NAVIGATION_WINDOW_PANE (pane)) {
-		NautilusNavigationWindowSlot *navigation_slot;
-
-		nautilus_navigation_window_pane_sync_location_widgets (NAUTILUS_NAVIGATION_WINDOW_PANE (pane));
-		nautilus_window_update_up_button (pane->window);
-
-		/* Check if the back and forward buttons need enabling or disabling. */
-		navigation_slot = NAUTILUS_NAVIGATION_WINDOW_SLOT (pane->window->details->active_pane->active_slot);
-		nautilus_navigation_window_allow_back (NAUTILUS_NAVIGATION_WINDOW (pane->window),
-						       navigation_slot->back_list != NULL);
-		nautilus_navigation_window_allow_forward (NAUTILUS_NAVIGATION_WINDOW (pane->window),
-							  navigation_slot->forward_list != NULL);
-
-	}
-
-	if (NAUTILUS_IS_SPATIAL_WINDOW (pane->window)) {
-		NautilusWindowSlot *slot;
-
-		slot = pane->window->details->active_pane->active_slot;
-		/* Change the location button to match the current location. */
-		nautilus_spatial_window_set_location_button (NAUTILUS_SPATIAL_WINDOW (pane->window),
-							     slot->location);
-	}
+	EEL_CALL_METHOD (NAUTILUS_WINDOW_PANE_CLASS, pane,
+			 sync_location_widgets, (pane));
 }
 
 void
@@ -229,6 +224,7 @@ static void
 nautilus_window_pane_class_init (NautilusWindowPaneClass *class)
 {
 	G_OBJECT_CLASS (class)->dispose = nautilus_window_pane_dispose;
+	NAUTILUS_WINDOW_PANE_CLASS (class)->sync_location_widgets = real_sync_location_widgets;
 }
 
 static void

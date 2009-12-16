@@ -41,6 +41,7 @@ struct _NautilusWindowPaneClass {
 
 	void (*show) (NautilusWindowPane *pane);
 	void (*sync_search_widgets) (NautilusWindowPane *pane);
+	void (*sync_location_widgets) (NautilusWindowPane *pane);
 };
 
 /* A NautilusWindowPane is a layer between a slot and a window.

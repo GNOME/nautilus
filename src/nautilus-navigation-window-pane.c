@@ -24,6 +24,7 @@
 
 #include "nautilus-navigation-window-pane.h"
 #include "nautilus-window-private.h"
+#include "nautilus-window-manage-views.h"
 #include "nautilus-navigation-bar.h"
 #include "nautilus-pathbar.h"
 #include "nautilus-location-bar.h"
@@ -514,12 +515,15 @@ nautilus_navigation_window_pane_add_slot_in_tab (NautilusNavigationWindowPane *p
 					   pane);
 }
 
-void
-nautilus_navigation_window_pane_sync_location_widgets (NautilusNavigationWindowPane *pane)
+static void
+real_sync_location_widgets (NautilusWindowPane *pane)
 {
+	NautilusNavigationWindowSlot *navigation_slot;
+	NautilusNavigationWindowPane *navigation_pane;
 	NautilusWindowSlot *slot;
 
-	slot = NAUTILUS_WINDOW_PANE (pane)->active_slot;
+	slot = pane->active_slot;
+	navigation_pane = NAUTILUS_NAVIGATION_WINDOW_PANE (pane);
 
 	/* Change the location bar and path bar to match the current location. */
 	if (slot->location != NULL) {
@@ -527,9 +531,21 @@ nautilus_navigation_window_pane_sync_location_widgets (NautilusNavigationWindowP
 
 		/* this may be NULL if we just created the slot */
 		uri = nautilus_window_slot_get_location_uri (slot);
-		nautilus_navigation_bar_set_location (NAUTILUS_NAVIGATION_BAR (pane->navigation_bar),uri);
+		nautilus_navigation_bar_set_location (NAUTILUS_NAVIGATION_BAR (navigation_pane->navigation_bar), uri);
 		g_free (uri);
-		nautilus_path_bar_set_path (NAUTILUS_PATH_BAR (pane->path_bar),slot->location);
+		nautilus_path_bar_set_path (NAUTILUS_PATH_BAR (navigation_pane->path_bar), slot->location);
+	}
+
+	/* Update window global UI if this is the active pane */
+	if (pane == pane->window->details->active_pane) {
+		nautilus_window_update_up_button (pane->window);
+
+		/* Check if the back and forward buttons need enabling or disabling. */
+		navigation_slot = NAUTILUS_NAVIGATION_WINDOW_SLOT (pane->window->details->active_pane->active_slot);
+		nautilus_navigation_window_allow_back (NAUTILUS_NAVIGATION_WINDOW (pane->window),
+						       navigation_slot->back_list != NULL);
+		nautilus_navigation_window_allow_forward (NAUTILUS_NAVIGATION_WINDOW (pane->window),
+							  navigation_slot->forward_list != NULL);
 	}
 }
 
@@ -846,6 +862,7 @@ nautilus_navigation_window_pane_class_init (NautilusNavigationWindowPaneClass *c
 	G_OBJECT_CLASS (class)->dispose = nautilus_navigation_window_pane_dispose;
 	NAUTILUS_WINDOW_PANE_CLASS (class)->show = nautilus_navigation_window_pane_show;
 	NAUTILUS_WINDOW_PANE_CLASS (class)->sync_search_widgets = real_sync_search_widgets;
+	NAUTILUS_WINDOW_PANE_CLASS (class)->sync_location_widgets = real_sync_location_widgets;
 }
 
 static void
