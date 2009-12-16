@@ -42,7 +42,6 @@
 #include "nautilus-notebook.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-navigation-window-pane.h"
-#include "file-manager/fm-list-view.h"
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
