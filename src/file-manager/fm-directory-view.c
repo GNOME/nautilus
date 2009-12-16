@@ -8567,6 +8567,18 @@ can_delete_all (GList *files)
 	return TRUE;
 }
 
+static gboolean
+has_writable_extra_pane (FMDirectoryView *view)
+{
+	FMDirectoryView *other_view;
+
+	other_view = get_directory_view_of_extra_pane (view);
+	if (other_view != NULL) {
+		return !fm_directory_view_is_read_only (other_view);
+	}
+	return FALSE;
+}
+
 static void
 real_update_menus (FMDirectoryView *view)
 {
@@ -8941,7 +8953,7 @@ real_update_menus (FMDirectoryView *view)
 		update_templates_menu (view);
 	}
 
-	next_pane_is_writable = nautilus_window_info_next_pane_is_writable(fm_directory_view_get_nautilus_window (view)); 
+	next_pane_is_writable = has_writable_extra_pane (view);
 
 	/* next pane: works if file is copyable, and next pane is writable */
 	action = gtk_action_group_get_action(view->details->dir_action_group,
