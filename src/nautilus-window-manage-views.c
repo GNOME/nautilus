@@ -1148,13 +1148,13 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 
 				if (!nautilus_is_root_directory (location)) {
 					if (!nautilus_is_home_directory (location)) {	
-						nautilus_window_slot_go_home (NAUTILUS_WINDOW (window)->details->active_pane->active_slot, FALSE);
+						nautilus_window_slot_go_home (slot, FALSE);
 					} else {
 						GFile *root;
 
 						root = g_file_new_for_path ("/");
 						/* the last fallback is to go to a known place that can't be deleted! */
-						nautilus_window_slot_go_to (NAUTILUS_WINDOW (window)->details->active_pane->active_slot, location, FALSE);
+						nautilus_window_slot_go_to (slot, location, FALSE);
 						g_object_unref (root);
 					}
 				} else {
