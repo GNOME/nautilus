@@ -5056,6 +5056,23 @@ get_strings_for_environment_variables (FMDirectoryView *view, GList *selected_fi
 	}
 }
 
+static FMDirectoryView *
+get_directory_view_of_extra_pane (FMDirectoryView *view)
+{
+	NautilusWindowSlotInfo *slot;
+	NautilusView *next_view;
+
+	slot = nautilus_window_info_get_extra_slot (fm_directory_view_get_nautilus_window (view));
+	if (slot != NULL) {
+		next_view = nautilus_window_slot_info_get_current_view (slot);
+
+		if (FM_IS_DIRECTORY_VIEW (next_view)) {
+			return FM_DIRECTORY_VIEW (next_view);
+		}
+	}
+	return NULL;
+}
+
 /*
  * Set up some environment variables that scripts can use
  * to take advantage of the current Nautilus state.
@@ -5071,7 +5088,7 @@ set_script_environment_variables (FMDirectoryView *view, GList *selected_files)
 
 	get_strings_for_environment_variables (view, selected_files,
 					       &file_paths, &uris, &uri);
-	
+
 	g_setenv ("NAUTILUS_SCRIPT_SELECTED_FILE_PATHS", file_paths, TRUE);
 	g_free (file_paths);
 
@@ -5081,35 +5098,34 @@ set_script_environment_variables (FMDirectoryView *view, GList *selected_files)
 	g_setenv ("NAUTILUS_SCRIPT_CURRENT_URI", uri, TRUE);
 	g_free (uri);
 
-	geometry_string = eel_gtk_window_get_geometry_string 
+	geometry_string = eel_gtk_window_get_geometry_string
 		(GTK_WINDOW (fm_directory_view_get_containing_window (view)));
 	g_setenv ("NAUTILUS_SCRIPT_WINDOW_GEOMETRY", geometry_string, TRUE);
 	g_free (geometry_string);
-    
-    /* next pane */
-    next_view = nautilus_window_info_get_directory_view_of_next_pane (fm_directory_view_get_nautilus_window (view));
-    if (next_view) {
+
+	/* next pane */
+	next_view = get_directory_view_of_extra_pane (view);
+	if (next_view) {
 		GList *next_pane_selected_files;
 		next_pane_selected_files = fm_directory_view_get_selection (next_view);
 
 		get_strings_for_environment_variables (next_view, next_pane_selected_files,
 						       &file_paths, &uris, &uri);
 		nautilus_file_list_free (next_pane_selected_files);
-    }
-    else {
+	} else {
 		file_paths = g_strdup("");
 		uris = g_strdup("");
-		uri = g_strdup("");        
-    }
-    
+		uri = g_strdup("");
+	}
+
 	g_setenv ("NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_FILE_PATHS", file_paths, TRUE);
 	g_free (file_paths);
-	
+
 	g_setenv ("NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_URIS", uris, TRUE);
 	g_free (uris);
-	
+
 	g_setenv ("NAUTILUS_SCRIPT_NEXT_PANE_CURRENT_URI", uri, TRUE);
-	g_free (uri);    
+	g_free (uri);
 }
 
 /* Unset all the special script environment variables. */
