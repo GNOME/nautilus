@@ -137,11 +137,13 @@ struct _NautilusWindowInfoIface
 				       NautilusWindowShowHiddenFilesMode mode);
 
 	NautilusWindowSlotInfo * (* get_active_slot) (NautilusWindowInfo *window);
+	NautilusWindowSlotInfo * (* get_extra_slot)  (NautilusWindowInfo *window);
 
 	void   (* view_visible)        (NautilusWindowInfo *window,
 					NautilusView *view);
 	void   (* close_window)       (NautilusWindowInfo *window);
 	GtkUIManager *     (* get_ui_manager)   (NautilusWindowInfo *window);
+
 	/* return TRUE if other pane is writable (files can be moved/copied
 	 * there), FALSE if it is not writable or no other pane exists */
 	gboolean (* next_pane_is_writable) (NautilusWindowInfo *window);
@@ -159,6 +161,7 @@ void                              nautilus_window_info_report_view_failed       
 										 NautilusView                      *view);
 void                              nautilus_window_info_report_selection_changed (NautilusWindowInfo                *window);
 NautilusWindowSlotInfo *          nautilus_window_info_get_active_slot          (NautilusWindowInfo                *window);
+NautilusWindowSlotInfo *          nautilus_window_info_get_extra_slot           (NautilusWindowInfo                *window);
 void                              nautilus_window_info_view_visible             (NautilusWindowInfo                *window,
 										 NautilusView                      *view);
 void                              nautilus_window_info_close                    (NautilusWindowInfo                *window);

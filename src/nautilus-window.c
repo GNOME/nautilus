@@ -1933,6 +1933,36 @@ nautilus_window_get_active_slot (NautilusWindow *window)
 	return window->details->active_pane->active_slot;
 }
 
+NautilusWindowSlot *
+nautilus_window_get_extra_slot (NautilusWindow *window)
+{
+	NautilusWindowPane *extra_pane;
+	GList *node;
+
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
+
+	/* return NULL if there is only one pane */
+	if (window->details->panes == NULL ||
+	    window->details->panes->next == NULL) {
+		return NULL;
+	}
+
+	/* get next pane in the (wrapped around) list */
+	node = g_list_find (window->details->panes,
+			    window->details->active_pane);
+	g_return_val_if_fail (node, FALSE);
+
+	if (node->next) {
+		extra_pane = node->next->data;
+	}
+	else {
+		extra_pane =  window->details->panes->data;
+	}
+
+	return extra_pane->active_slot;
+}
+
 static FMDirectoryView *
 nautilus_window_get_directory_view_of_next_pane (NautilusWindow *window)
 {
@@ -1987,6 +2017,7 @@ nautilus_window_info_iface_init (NautilusWindowInfoIface *iface)
 	iface->get_hidden_files_mode = nautilus_window_get_hidden_files_mode;
 	iface->set_hidden_files_mode = nautilus_window_set_hidden_files_mode;
 	iface->get_active_slot = nautilus_window_get_active_slot;
+	iface->get_extra_slot = nautilus_window_get_extra_slot;
 	iface->get_directory_view_of_next_pane = nautilus_window_get_directory_view_of_next_pane;
 }
 
