@@ -1555,15 +1555,6 @@ found_mount_cb (GObject *source_object,
 	g_free (data);
 }
 
-void
-nautilus_window_sync_location_widgets (NautilusWindow *window)
-{
-	GList *walk;
-	for (walk = window->details->panes; walk; walk = walk->next) {
-		nautilus_window_pane_sync_location_widgets (walk->data);
-	}
-}
-
 /* Handle the changes for the NautilusWindow itself. */
 static void
 update_for_new_location (NautilusWindowSlot *slot)
