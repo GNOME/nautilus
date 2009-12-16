@@ -5867,18 +5867,6 @@ copy_or_cut_files (FMDirectoryView *view,
 }
 
 static void
-action_copy_files (GtkAction *action,
-		   FMDirectoryView *view)
-{
-	GList *selection;
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
-
-	selection = fm_directory_view_get_selection_for_file_transfer (view);
-	copy_or_cut_files (view, selection, FALSE);
-	nautilus_file_list_free (selection);
-}
-
-static void
 action_copy_files_callback (GtkAction *action,
 			    gpointer callback_data)
 {
@@ -6017,19 +6005,6 @@ action_move_to_desktop_callback (GtkAction *action, gpointer callback_data)
 }
 
 static void
-action_cut_files (GtkAction *action,
-		  FMDirectoryView *view)
-{
-	GList *selection;
-
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
-
-	selection = fm_directory_view_get_selection_for_file_transfer (view);
-	copy_or_cut_files (view, selection, TRUE);
-	nautilus_file_list_free (selection);
-}
-
-static void
 action_cut_files_callback (GtkAction *action,
 			   gpointer callback_data)
 {
@@ -6123,19 +6098,6 @@ paste_into_clipboard_received_callback (GtkClipboard     *clipboard,
 	g_object_unref (view);
 	nautilus_file_unref (data->target);
 	g_free (data);
-}
-
-static void
-action_paste_files (GtkAction *action,
-		    FMDirectoryView *view)
-{
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
-	
-	g_object_ref (view);
-	gtk_clipboard_request_contents (nautilus_clipboard_get (GTK_WIDGET (view)),
-					copied_files_atom,
-					paste_clipboard_received_callback,
-					view);
 }
 
 static void
@@ -10992,16 +10954,4 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 
 	klass->trash = real_trash;
 	klass->delete = real_delete;
-}
-
-void
-fm_directory_view_move_copy_items_between_views (FMDirectoryView *source, FMDirectoryView *target, gboolean copy)
-{
-	if (copy) {
-		action_copy_files (NULL, source);
-	}
-	else {
-		action_cut_files (NULL, source);
-	}
-	action_paste_files (NULL, target); 
 }
