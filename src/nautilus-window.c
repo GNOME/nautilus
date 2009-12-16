@@ -785,7 +785,6 @@ real_close_slot (NautilusWindowPane *pane,
 {
 	nautilus_window_manage_views_close_slot (pane, slot);
 	cancel_view_as_callback (slot);
-	g_object_unref (slot);
 }
 
 void
@@ -803,6 +802,9 @@ nautilus_window_close_slot (NautilusWindowSlot *slot)
 	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, slot->pane->window,
 			 close_slot, (slot->pane, slot));
 
+	g_object_run_dispose (G_OBJECT (slot));
+	slot->pane = NULL;
+	g_object_unref (slot);
 	pane->slots = g_list_remove (pane->slots, slot);
 	pane->active_slots = g_list_remove (pane->active_slots, slot);
 
@@ -1566,8 +1568,6 @@ nautilus_window_slot_set_viewed_file (NautilusWindowSlot *slot,
 	NautilusWindow *window;
 	NautilusFileAttributes attributes;
 
-	window = slot->pane->window;
-
 	if (slot->viewed_file == file) {
 		return;
 	}
@@ -1577,6 +1577,8 @@ nautilus_window_slot_set_viewed_file (NautilusWindowSlot *slot,
 	cancel_view_as_callback (slot);
 
 	if (slot->viewed_file != NULL) {
+		window = slot->pane->window;
+
 		if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
 			nautilus_file_set_has_open_window (slot->viewed_file,
 							   FALSE);
