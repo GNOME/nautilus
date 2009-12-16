@@ -810,11 +810,42 @@ nautilus_navigation_window_pane_show (NautilusWindowPane *pane)
 	gtk_widget_show (npane->widget);
 }
 
+/* either called due to slot change, or due to location change in the current slot. */
+static void
+real_sync_search_widgets (NautilusWindowPane *window_pane)
+{
+	NautilusWindowSlot *slot;
+	NautilusDirectory *directory;
+	NautilusSearchDirectory *search_directory;
+	NautilusNavigationWindowPane *pane;
+
+	pane = NAUTILUS_NAVIGATION_WINDOW_PANE (window_pane);
+	slot = window_pane->active_slot;
+	search_directory = NULL;
+
+	directory = nautilus_directory_get (slot->location);
+	if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
+		search_directory = NAUTILUS_SEARCH_DIRECTORY (directory);
+	}
+
+	if (search_directory != NULL &&
+	    !nautilus_search_directory_is_saved_search (search_directory)) {
+		nautilus_navigation_window_pane_show_location_bar_temporarily (pane);
+		nautilus_navigation_window_pane_set_bar_mode (pane, NAUTILUS_BAR_SEARCH);
+		pane->temporary_search_bar = FALSE;
+	} else {
+		pane->temporary_search_bar = TRUE;
+		nautilus_navigation_window_pane_hide_temporary_bars (pane);
+	}
+	nautilus_directory_unref (directory);
+}
+
 static void
 nautilus_navigation_window_pane_class_init (NautilusNavigationWindowPaneClass *class)
 {
 	G_OBJECT_CLASS (class)->dispose = nautilus_navigation_window_pane_dispose;
 	NAUTILUS_WINDOW_PANE_CLASS (class)->show = nautilus_navigation_window_pane_show;
+	NAUTILUS_WINDOW_PANE_CLASS (class)->sync_search_widgets = real_sync_search_widgets;
 }
 
 static void

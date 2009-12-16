@@ -101,7 +101,6 @@ void     nautilus_navigation_window_back_or_forward      (NautilusNavigationWind
 							  gboolean                  new_tab);
 void     nautilus_navigation_window_show_search          (NautilusNavigationWindow *window);
 void     nautilus_navigation_window_unset_focus_widget   (NautilusNavigationWindow *window);
-gboolean nautilus_navigation_window_hide_temporary_bars  (NautilusNavigationWindow *window);
 void     nautilus_navigation_window_hide_search          (NautilusNavigationWindow *window);
 void     nautilus_navigation_window_set_search_button	 (NautilusNavigationWindow *window,
                                                           gboolean		    state);

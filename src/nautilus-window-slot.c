@@ -119,7 +119,7 @@ real_active (NautilusWindowSlot *slot)
 	nautilus_window_sync_title (window, slot);
 	nautilus_window_sync_zoom_widgets (window);
 	nautilus_window_pane_sync_location_widgets (slot->pane);
-	nautilus_window_sync_search_widgets (window);
+	nautilus_window_pane_sync_search_widgets (slot->pane);
 
 	if (slot->viewed_file != NULL) {
 		nautilus_window_load_view_as_menus (window);

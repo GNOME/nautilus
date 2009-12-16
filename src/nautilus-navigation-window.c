@@ -121,19 +121,6 @@ static const struct {
 #endif
 };
 
-gboolean
-nautilus_navigation_window_hide_temporary_bars (NautilusNavigationWindow *window)
-{
-	gboolean any = TRUE;
-	GList *walk;
-	for (walk = NAUTILUS_WINDOW(window)->details->panes; walk; walk = walk->next) {
-		if(!nautilus_navigation_window_pane_hide_temporary_bars (walk->data)) {
-			any = FALSE;
-		}
-	}
-	return any;
-}
-
 static void
 nautilus_navigation_window_init (NautilusNavigationWindow *window)
 {
@@ -846,39 +833,6 @@ nautilus_navigation_window_set_search_button (NautilusNavigationWindow *window,
 	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), state);
 }
 
-/* either called due to slot change, or due to location change in the current slot. */
-static void
-real_sync_search_widgets (NautilusWindow *window)
-{
-	NautilusNavigationWindow *navigation_window;
-	NautilusNavigationWindowPane *pane;
-	NautilusWindowSlot *slot;
-	NautilusDirectory *directory;
-	NautilusSearchDirectory *search_directory;
-
-	navigation_window = NAUTILUS_NAVIGATION_WINDOW (window);
-	pane = NAUTILUS_NAVIGATION_WINDOW_PANE (window->details->active_pane);
-	slot = window->details->active_pane->active_slot;
-
-	search_directory = NULL;
-
-	directory = nautilus_directory_get (slot->location);
-	if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
-		search_directory = NAUTILUS_SEARCH_DIRECTORY (directory);
-	}
-
-	if (search_directory != NULL &&
-	    !nautilus_search_directory_is_saved_search (search_directory)) {
-		nautilus_navigation_window_pane_show_location_bar_temporarily (pane);
-		nautilus_navigation_window_pane_set_bar_mode (pane, NAUTILUS_BAR_SEARCH);
-		pane->temporary_search_bar = FALSE;
-	} else {
-		pane->temporary_search_bar = TRUE;
-		nautilus_navigation_window_hide_temporary_bars (navigation_window);
-	}
-	nautilus_directory_unref (directory);
-}
-
 static void
 side_panel_image_changed_callback (NautilusSidebar *side_panel,
                                    gpointer callback_data)
@@ -1238,7 +1192,6 @@ nautilus_navigation_window_class_init (NautilusNavigationWindowClass *class)
 	GTK_WIDGET_CLASS (class)->button_press_event = nautilus_navigation_window_button_press_event;
 	NAUTILUS_WINDOW_CLASS (class)->sync_allow_stop = real_sync_allow_stop;
 	NAUTILUS_WINDOW_CLASS (class)->prompt_for_location = real_prompt_for_location;
-	NAUTILUS_WINDOW_CLASS (class)->sync_search_widgets = real_sync_search_widgets;
 	NAUTILUS_WINDOW_CLASS (class)->sync_title = real_sync_title;
 	NAUTILUS_WINDOW_CLASS (class)->get_icon = real_get_icon;
 	NAUTILUS_WINDOW_CLASS (class)->get_default_size = real_get_default_size;

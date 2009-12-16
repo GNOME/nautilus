@@ -40,6 +40,7 @@ struct _NautilusWindowPaneClass {
 	GObjectClass parent_class;
 
 	void (*show) (NautilusWindowPane *pane);
+	void (*sync_search_widgets) (NautilusWindowPane *pane);
 };
 
 /* A NautilusWindowPane is a layer between a slot and a window.
@@ -79,6 +80,7 @@ void nautilus_window_pane_zoom_to_level (NautilusWindowPane *pane, NautilusZoomL
 void nautilus_window_pane_zoom_out (NautilusWindowPane *pane);
 void nautilus_window_pane_zoom_to_default (NautilusWindowPane *pane);
 void nautilus_window_pane_sync_location_widgets (NautilusWindowPane *pane);
+void nautilus_window_pane_sync_search_widgets  (NautilusWindowPane *pane);
 void nautilus_window_pane_set_active (NautilusWindowPane *pane, gboolean is_active);
 void nautilus_window_pane_slot_close (NautilusWindowPane *pane, NautilusWindowSlot *slot);
 

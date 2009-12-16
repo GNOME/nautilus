@@ -181,6 +181,15 @@ nautilus_window_pane_sync_location_widgets (NautilusWindowPane *pane)
 }
 
 void
+nautilus_window_pane_sync_search_widgets (NautilusWindowPane *pane)
+{
+	g_assert (NAUTILUS_IS_WINDOW_PANE (pane));
+
+	EEL_CALL_METHOD (NAUTILUS_WINDOW_PANE_CLASS, pane,
+			 sync_search_widgets, (pane));
+}
+
+void
 nautilus_window_pane_switch_to (NautilusWindowPane *pane)
 {
 	if (NAUTILUS_IS_WINDOW_PANE (pane)) {

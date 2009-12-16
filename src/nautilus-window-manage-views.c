@@ -1653,7 +1653,7 @@ update_for_new_location (NautilusWindowSlot *slot)
 		nautilus_window_pane_sync_location_widgets (slot->pane);
 
 		if (location_really_changed) {
-			nautilus_window_sync_search_widgets (window);
+			nautilus_window_pane_sync_search_widgets (slot->pane);
 		}
 
 		if (NAUTILUS_IS_NAVIGATION_WINDOW (window)) {

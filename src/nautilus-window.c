@@ -414,15 +414,6 @@ nautilus_window_get_location_uri (NautilusWindow *window)
 }
 
 void
-nautilus_window_sync_search_widgets (NautilusWindow *window)
-{
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
-	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
-			 sync_search_widgets, (window));
-}
-
-void
 nautilus_window_zoom_in (NautilusWindow *window)
 {
 	g_assert (window != NULL);

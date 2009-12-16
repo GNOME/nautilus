@@ -99,7 +99,6 @@ typedef struct {
 	void   (* set_allow_up) (NautilusWindow *window, gboolean allow);
 	void   (* reload)              (NautilusWindow *window);
         void   (* prompt_for_location) (NautilusWindow *window, const char *initial);
-        void   (* sync_search_widgets) (NautilusWindow *window);
         void   (* get_default_size) (NautilusWindow *window, guint *default_width, guint *default_height);
         void   (* close) (NautilusWindow *window);
 
@@ -143,7 +142,6 @@ void             nautilus_window_go_up                (NautilusWindow    *window
 						       gboolean           new_tab);
 void             nautilus_window_prompt_for_location  (NautilusWindow    *window,
                                                        const char        *initial);
-void		 nautilus_window_sync_search_widgets  (NautilusWindow    *window);
 void             nautilus_window_launch_cd_burner     (NautilusWindow    *window);
 void             nautilus_window_display_error        (NautilusWindow    *window,
                                                        const char        *error_msg);
