@@ -8849,8 +8849,10 @@ real_update_menus (FMDirectoryView *view)
 		action = gtk_action_group_get_action (view->details->dir_action_group,
 						      FM_ACTION_OPEN_IN_NEW_TAB);
 		gtk_action_set_visible (action, FALSE);
+	}
 
-		/* next pane actions */
+	/* next pane actions, only in navigation mode */
+	if (nautilus_window_info_get_window_type (view->details->window) != NAUTILUS_WINDOW_NAVIGATION) {
 		action = gtk_action_group_get_action (view->details->dir_action_group,
 						      FM_ACTION_COPY_TO_NEXT_PANE);
 		gtk_action_set_visible (action, FALSE);
@@ -8859,11 +8861,9 @@ real_update_menus (FMDirectoryView *view)
 		gtk_action_set_visible (action, FALSE);
 	}
 
-	
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_OPEN_FOLDER_WINDOW);
 	gtk_action_set_visible (action, show_open_folder_window);
-	
 
 	/* Broken into its own function just for convenience */
 	reset_open_with_menu (view, selection);
