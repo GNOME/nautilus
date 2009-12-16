@@ -1601,10 +1601,9 @@ update_for_new_location (NautilusWindowSlot *slot)
 	if (slot == window->details->active_pane->active_slot) {
 		/* Check if we can go up. */
 		nautilus_window_update_up_button (window);
-	}
 
-	if (slot == window->details->active_pane->active_slot) {
 		nautilus_window_sync_zoom_widgets (window);
+
 		/* Set up the content view menu for this new location. */
 		nautilus_window_load_view_as_menus (window);
 
