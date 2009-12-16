@@ -6017,6 +6017,58 @@ action_move_to_next_pane_callback (GtkAction *action, gpointer callback_data)
 }
 
 static void
+action_copy_to_home_callback (GtkAction *action, gpointer callback_data)
+{
+	FMDirectoryView *view;
+	char *dest_location;
+
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+
+	dest_location = nautilus_get_home_directory_uri ();
+	move_copy_selection_to_location (view, GDK_ACTION_COPY, dest_location);
+	g_free (dest_location);
+}
+
+static void
+action_move_to_home_callback (GtkAction *action, gpointer callback_data)
+{
+	FMDirectoryView *view;
+	char *dest_location;
+
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+
+	dest_location = nautilus_get_home_directory_uri ();
+	move_copy_selection_to_location (view, GDK_ACTION_MOVE, dest_location);
+	g_free (dest_location);
+}
+
+static void
+action_copy_to_desktop_callback (GtkAction *action, gpointer callback_data)
+{
+	FMDirectoryView *view;
+	char *dest_location;
+
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+
+	dest_location = nautilus_get_desktop_directory_uri ();
+	move_copy_selection_to_location (view, GDK_ACTION_COPY, dest_location);
+	g_free (dest_location);
+}
+
+static void
+action_move_to_desktop_callback (GtkAction *action, gpointer callback_data)
+{
+	FMDirectoryView *view;
+	char *dest_location;
+
+	view = get_active_directory_view (NAUTILUS_WINDOW_INFO (callback_data));
+
+	dest_location = nautilus_get_desktop_directory_uri ();
+	move_copy_selection_to_location (view, GDK_ACTION_MOVE, dest_location);
+	g_free (dest_location);
+}
+
+static void
 action_cut_files (GtkAction *action,
 		  FMDirectoryView *view)
 {
@@ -7460,12 +7512,28 @@ static const GtkActionEntry directory_view_entries[] = {
   /* tooltip */                  N_("View or modify the properties of this folder"),
                                  G_CALLBACK (action_location_properties_callback) },
 
-  /* name, stock id, label */  {"Copy to next pane", NULL, N_("Copy to other pane"),
-				NULL, N_("Copy the current selection to the other side of the split view"),
+  /* name, stock id, label */  {FM_ACTION_COPY_TO_NEXT_PANE, NULL, N_("_Other pane"),
+				NULL, N_("Copy the current selection to the other pane in the window"),
 				G_CALLBACK (action_copy_to_next_pane_callback) },
-  /* name, stock id, label */  {"Move to next pane", NULL, N_("Move to other pane"),
-				NULL, N_("Move the current selection to the other side of the split view"),
-				G_CALLBACK (action_move_to_next_pane_callback) },                                 
+  /* name, stock id, label */  {FM_ACTION_MOVE_TO_NEXT_PANE, NULL, N_("_Other pane"),
+				NULL, N_("Move the current selection to the other pane in the window"),
+				G_CALLBACK (action_move_to_next_pane_callback) },
+  /* name, stock id, label */  {FM_ACTION_COPY_TO_HOME, NAUTILUS_ICON_HOME,
+				N_("_Home Folder"), NULL,
+				N_("Copy the current selection to the home folder"),
+				G_CALLBACK (action_copy_to_home_callback) },
+  /* name, stock id, label */  {FM_ACTION_MOVE_TO_HOME, NAUTILUS_ICON_HOME,
+				N_("_Home Folder"), NULL,
+				N_("Move the current selection to the home folder"),
+				G_CALLBACK (action_move_to_home_callback) },
+  /* name, stock id, label */  {FM_ACTION_COPY_TO_DESKTOP, NAUTILUS_ICON_DESKTOP,
+				N_("_Desktop"), NULL,
+				N_("Copy the current selection to the home folder"),
+				G_CALLBACK (action_copy_to_desktop_callback) },
+  /* name, stock id, label */  {FM_ACTION_MOVE_TO_DESKTOP, NAUTILUS_ICON_DESKTOP,
+				N_("_Desktop"), NULL,
+				N_("Move the current selection to the home folder"),
+				G_CALLBACK (action_move_to_desktop_callback) },
 };
 
 static void
@@ -9016,14 +9084,36 @@ real_update_menus (FMDirectoryView *view)
 	next_pane_is_writable = has_writable_extra_pane (view);
 
 	/* next pane: works if file is copyable, and next pane is writable */
-	action = gtk_action_group_get_action(view->details->dir_action_group,
-			FM_ACTION_COPY_TO_NEXT_PANE);
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_COPY_TO_NEXT_PANE);
 	gtk_action_set_sensitive (action, can_copy_files && next_pane_is_writable);
 
 	/* move to next pane: works if file is cuttable, and next pane is writable */
-	action = gtk_action_group_get_action(view->details->dir_action_group,
-			FM_ACTION_MOVE_TO_NEXT_PANE);
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_MOVE_TO_NEXT_PANE);
 	gtk_action_set_sensitive (action, can_delete_files && next_pane_is_writable);
+
+
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_COPY_TO_HOME);
+	gtk_action_set_sensitive (action, can_copy_files);
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_COPY_TO_DESKTOP);
+	gtk_action_set_sensitive (action, can_copy_files);
+
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_MOVE_TO_HOME);
+	gtk_action_set_sensitive (action, can_delete_files);
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_MOVE_TO_DESKTOP);
+	gtk_action_set_sensitive (action, can_delete_files);
+
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      "CopyToMenu");
+	gtk_action_set_sensitive (action, can_copy_files);
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      "MoveToMenu");
+	gtk_action_set_sensitive (action, can_delete_files);
 }
 
 /**
