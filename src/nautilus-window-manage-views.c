@@ -401,7 +401,7 @@ viewed_file_changed_callback (NautilusFile *file,
                         g_object_unref (slot->location);
                         slot->location = new_location;
 			if (slot == slot->pane->active_slot) {
-				nautilus_window_sync_location_widgets (window);
+				nautilus_window_pane_sync_location_widgets (slot->pane);
 			}
                 } else {
 			/* TODO?
@@ -1659,7 +1659,7 @@ update_for_new_location (NautilusWindowSlot *slot)
 	nautilus_window_slot_update_icon (slot);
 
 	if (slot == slot->pane->active_slot) {
-		nautilus_window_sync_location_widgets (window);
+		nautilus_window_pane_sync_location_widgets (slot->pane);
 
 		if (location_really_changed) {
 			nautilus_window_sync_search_widgets (window);
