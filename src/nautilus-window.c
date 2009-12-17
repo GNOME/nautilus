@@ -813,19 +813,11 @@ real_set_active_pane (NautilusWindow *window, NautilusWindowPane *new_pane)
 {
 	/* make old pane inactive, and new one active.
 	 * Currently active pane may be NULL (after init). */
-	if (NAUTILUS_IS_NAVIGATION_WINDOW (window)) {
-		if (new_pane->window->details->active_pane && new_pane->window->details->active_pane != new_pane) {
-			nautilus_navigation_window_pane_set_active
-				(NAUTILUS_NAVIGATION_WINDOW_PANE (new_pane->window->details->active_pane), FALSE);
-		}
-		nautilus_navigation_window_pane_set_active (NAUTILUS_NAVIGATION_WINDOW_PANE (new_pane), TRUE);
+	if (window->details->active_pane &&
+	    window->details->active_pane != new_pane) {
+		nautilus_window_pane_set_active (new_pane->window->details->active_pane, FALSE);
 	}
-	else {
-		if (new_pane->window->details->active_pane && new_pane->window->details->active_pane != new_pane) {
-			nautilus_window_pane_set_active (new_pane->window->details->active_pane, FALSE);
-		}
-		nautilus_window_pane_set_active (new_pane, TRUE);
-	}
+	nautilus_window_pane_set_active (new_pane, TRUE);
 
 	window->details->active_pane = new_pane;
 }

@@ -48,27 +48,25 @@ G_DEFINE_TYPE (NautilusNavigationWindowPane,
 #define parent_class nautilus_navigation_window_pane_parent_class
 
 
-void
-nautilus_navigation_window_pane_set_active (NautilusNavigationWindowPane *pane, gboolean is_active)
+static void
+real_set_active (NautilusWindowPane *pane, gboolean is_active)
 {
-	GList *walk;
+	NautilusNavigationWindowPane *nav_pane;
+	GList *l;
 
-	if (NAUTILUS_WINDOW_PANE (pane)->is_active == is_active) {
-		return;
-	}
-	nautilus_window_pane_set_active (NAUTILUS_WINDOW_PANE (pane), is_active);
+	nav_pane = NAUTILUS_NAVIGATION_WINDOW_PANE (pane);
 
 	/* path bar */
-	for (walk = NAUTILUS_PATH_BAR (pane->path_bar)->button_list; walk; walk = walk->next) {
-		gtk_widget_set_sensitive (gtk_bin_get_child (GTK_BIN (nautilus_path_bar_get_button_from_button_list_entry (walk->data))), is_active);
+	for (l = NAUTILUS_PATH_BAR (nav_pane->path_bar)->button_list; l; l = l->next) {
+		gtk_widget_set_sensitive (gtk_bin_get_child (GTK_BIN (nautilus_path_bar_get_button_from_button_list_entry (l->data))), is_active);
 	}
 
 	/* navigation bar (manual entry) */
-	nautilus_location_bar_set_active (NAUTILUS_LOCATION_BAR (pane->navigation_bar), is_active);
+	nautilus_location_bar_set_active (NAUTILUS_LOCATION_BAR (nav_pane->navigation_bar), is_active);
 
 	/* if actions/menus exist, update those as well */
-	if (NAUTILUS_NAVIGATION_WINDOW (NAUTILUS_WINDOW_PANE (pane)->window)->details->navigation_action_group) {
-		nautilus_navigation_window_pane_initialize_tabs_menu(pane);
+	if (NAUTILUS_NAVIGATION_WINDOW (pane->window)->details->navigation_action_group) {
+		nautilus_navigation_window_pane_initialize_tabs_menu (nav_pane);
 	}
 }
 
@@ -861,6 +859,7 @@ nautilus_navigation_window_pane_class_init (NautilusNavigationWindowPaneClass *c
 {
 	G_OBJECT_CLASS (class)->dispose = nautilus_navigation_window_pane_dispose;
 	NAUTILUS_WINDOW_PANE_CLASS (class)->show = nautilus_navigation_window_pane_show;
+	NAUTILUS_WINDOW_PANE_CLASS (class)->set_active = real_set_active;
 	NAUTILUS_WINDOW_PANE_CLASS (class)->sync_search_widgets = real_sync_search_widgets;
 	NAUTILUS_WINDOW_PANE_CLASS (class)->sync_location_widgets = real_sync_location_widgets;
 }

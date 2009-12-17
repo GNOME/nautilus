@@ -88,7 +88,6 @@ void     nautilus_navigation_window_pane_show_location_bar_temporarily (Nautilus
 void     nautilus_navigation_window_pane_show_navigation_bar_temporarily (NautilusNavigationWindowPane *pane);
 void     nautilus_navigation_window_pane_always_use_location_entry (NautilusNavigationWindowPane *pane, gboolean use_entry);
 gboolean nautilus_navigation_window_pane_hide_temporary_bars (NautilusNavigationWindowPane *pane);
-void     nautilus_navigation_window_pane_set_active (NautilusNavigationWindowPane *pane, gboolean is_active);
 /* notebook */
 void     nautilus_navigation_window_pane_add_slot_in_tab (NautilusNavigationWindowPane *pane, NautilusWindowSlot *slot, NautilusWindowOpenSlotFlags flags);
 void     nautilus_navigation_window_pane_remove_page (NautilusNavigationWindowPane *pane, int page_num);

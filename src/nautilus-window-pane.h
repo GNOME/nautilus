@@ -40,6 +40,8 @@ struct _NautilusWindowPaneClass {
 	GObjectClass parent_class;
 
 	void (*show) (NautilusWindowPane *pane);
+	void (*set_active) (NautilusWindowPane *pane,
+			    gboolean is_active);
 	void (*sync_search_widgets) (NautilusWindowPane *pane);
 	void (*sync_location_widgets) (NautilusWindowPane *pane);
 };
