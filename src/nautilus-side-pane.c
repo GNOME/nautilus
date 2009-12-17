@@ -634,3 +634,9 @@ nautilus_side_pane_get_current_panel (NautilusSidePane *side_pane)
 	index = gtk_notebook_get_current_page (GTK_NOTEBOOK (side_pane->details->notebook));
 	return gtk_notebook_get_nth_page (GTK_NOTEBOOK (side_pane->details->notebook), index);
 }
+
+GtkWidget *
+nautilus_side_pane_get_title (NautilusSidePane *side_pane)
+{
+	return side_pane->details->title_hbox;
+}

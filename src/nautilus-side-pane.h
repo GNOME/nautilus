@@ -69,6 +69,7 @@ void                   nautilus_side_pane_set_panel_image (NautilusSidePane *sid
 							   GtkWidget        *widget,
 							   GdkPixbuf        *pixbuf);
 GtkWidget             *nautilus_side_pane_get_current_panel (NautilusSidePane *side_pane);
+GtkWidget             *nautilus_side_pane_get_title        (NautilusSidePane *side_pane);
 
 G_END_DECLS
 
