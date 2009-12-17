@@ -621,6 +621,7 @@ nautilus_navigation_window_pane_setup (NautilusNavigationWindowPane *pane)
 {
 	GtkWidget *hbox;
 	NautilusEntry *entry;
+	GtkSizeGroup *header_size_group;
 
 	pane->widget = gtk_vbox_new (FALSE, 0);
 
@@ -631,11 +632,10 @@ nautilus_navigation_window_pane_setup (NautilusNavigationWindowPane *pane)
 			    FALSE, FALSE, 0);
 	gtk_widget_show (hbox);
 
-	pane->navigation_group = gtk_size_group_new (GTK_SIZE_GROUP_VERTICAL);
-	gtk_size_group_set_ignore_hidden (pane->navigation_group, FALSE);
+	header_size_group = NAUTILUS_NAVIGATION_WINDOW (NAUTILUS_WINDOW_PANE (pane)->window)->details->header_size_group;
 
 	pane->path_bar = g_object_new (NAUTILUS_TYPE_PATH_BAR, NULL);
-	gtk_size_group_add_widget (pane->navigation_group, pane->path_bar);
+	gtk_size_group_add_widget (header_size_group, pane->path_bar);
 	gtk_widget_show (pane->path_bar);
 
 	g_signal_connect_object (pane->path_bar, "path_clicked",
@@ -648,7 +648,7 @@ nautilus_navigation_window_pane_setup (NautilusNavigationWindowPane *pane)
 			    TRUE, TRUE, 0);
 
 	pane->navigation_bar = nautilus_location_bar_new (pane);
-	gtk_size_group_add_widget (pane->navigation_group, pane->navigation_bar);
+	gtk_size_group_add_widget (header_size_group, pane->navigation_bar);
 	g_signal_connect_object (pane->navigation_bar, "location_changed",
 				 G_CALLBACK (navigation_bar_location_changed_callback), pane, 0);
 	g_signal_connect_object (pane->navigation_bar, "cancel",
@@ -662,7 +662,7 @@ nautilus_navigation_window_pane_setup (NautilusNavigationWindowPane *pane)
 			    TRUE, TRUE, 0);
 
 	pane->search_bar = nautilus_search_bar_new ();
-	gtk_size_group_add_widget (pane->navigation_group, pane->search_bar);
+	gtk_size_group_add_widget (header_size_group, pane->search_bar);
 	g_signal_connect_object (pane->search_bar, "activate",
 				 G_CALLBACK (search_bar_activate_callback), pane, 0);
 	g_signal_connect_object (pane->search_bar, "cancel",

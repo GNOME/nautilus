@@ -139,6 +139,9 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 	pane = nautilus_navigation_window_pane_new (win);
 	win->details->panes = g_list_prepend (win->details->panes, pane);
 
+	window->details->header_size_group = gtk_size_group_new (GTK_SIZE_GROUP_VERTICAL);
+	gtk_size_group_set_ignore_hidden (window->details->header_size_group, FALSE);
+
 	window->details->content_paned = nautilus_horizontal_splitter_new ();
 	gtk_table_attach (GTK_TABLE (NAUTILUS_WINDOW (window)->details->table),
 			  window->details->content_paned,
@@ -456,7 +459,13 @@ side_pane_switch_page_callback (NautilusSidePane *side_pane,
 static void
 nautilus_navigation_window_set_up_sidebar (NautilusNavigationWindow *window)
 {
+	GtkWidget *title;
+
 	window->sidebar = nautilus_side_pane_new ();
+
+	title = nautilus_side_pane_get_title (window->sidebar);
+	gtk_size_group_add_widget (window->details->header_size_group,
+				   title);
 
 	gtk_paned_pack1 (GTK_PANED (window->details->content_paned),
 			 GTK_WIDGET (window->sidebar),

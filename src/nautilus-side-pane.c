@@ -41,7 +41,7 @@ typedef struct {
 struct _NautilusSidePaneDetails {
 	GtkWidget *notebook;
 	GtkWidget *menu;
-	
+
 	GtkWidget *title_frame;
 	GtkWidget *title_hbox;
 	GtkWidget *title_label;
@@ -316,12 +316,15 @@ nautilus_side_pane_init (GObject *object)
 
 	side_pane->details = G_TYPE_INSTANCE_GET_PRIVATE (object, NAUTILUS_TYPE_SIDE_PANE, NautilusSidePaneDetails);
 
-	frame = gtk_frame_new (NULL);
+	/* The frame (really a vbox) has the border */
+	frame = gtk_vbox_new (FALSE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (frame), 4);
 	side_pane->details->title_frame = frame;
-	gtk_frame_set_shadow_type (GTK_FRAME(frame), GTK_SHADOW_NONE);
 	gtk_widget_show (frame);
 	gtk_box_pack_start (GTK_BOX (side_pane), frame, FALSE, FALSE, 0);
 
+	/* And the title_hbox is what gets the same size as the other
+	   headers */
 	hbox = gtk_hbox_new (FALSE, 0);
 	side_pane->details->title_hbox = hbox;
 	gtk_widget_show (hbox);

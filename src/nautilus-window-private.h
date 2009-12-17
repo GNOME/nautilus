@@ -87,6 +87,8 @@ struct _NautilusNavigationWindowDetails {
         GtkWidget *content_paned;
         GtkWidget *content_box;
         GtkActionGroup *navigation_action_group; /* owned by ui_manager */
+
+        GtkSizeGroup *header_size_group;
         
         /* Side Pane */
         int side_pane_width;
