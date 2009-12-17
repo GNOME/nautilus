@@ -126,6 +126,9 @@ void           eel_preferences_init                      (const char            
 void eel_preferences_builder_connect_bool		         (GtkBuilder *builder,
 								  const char  *component,
 								  const char  *key);
+void eel_preferences_builder_connect_inverted_bool	         (GtkBuilder *builder,
+								  const char  *component,
+								  const char  *key);
 void eel_preferences_builder_connect_bool_slave			 (GtkBuilder *builder,
 								  const char  *component,
 								  const char  *key);

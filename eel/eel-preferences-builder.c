@@ -127,6 +127,58 @@ eel_preferences_builder_connect_bool (GtkBuilder *builder,
 	eel_preferences_builder_bool_update (toggle_button);
 }
 
+static void
+eel_preferences_builder_inverted_bool_toggled (GtkToggleButton *toggle_button,
+					       char *key)
+{
+	eel_preferences_set_boolean (key, !gtk_toggle_button_get_active (toggle_button));
+}
+
+static void
+eel_preferences_builder_inverted_bool_update (GtkToggleButton *toggle_button)
+{
+	gboolean value;
+	gpointer key;
+
+	key = g_object_get_data (G_OBJECT (toggle_button), EEL_PREFERENCES_BUILDER_DATA_KEY);
+
+	value = eel_preferences_get_boolean (key);
+	g_signal_handlers_block_by_func (toggle_button, eel_preferences_builder_bool_toggled, key);
+	gtk_toggle_button_set_active (toggle_button, !value);
+	g_signal_handlers_unblock_by_func (toggle_button, eel_preferences_builder_bool_toggled, key);
+}
+
+void
+eel_preferences_builder_connect_inverted_bool (GtkBuilder *builder,
+					       const char *component,
+					       const char *key)
+{
+	GtkToggleButton *toggle_button;
+
+	g_return_if_fail (builder != NULL);
+	g_return_if_fail (component != NULL);
+	g_return_if_fail (key != NULL);
+
+	toggle_button = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, component));
+	g_object_set_data_full (G_OBJECT (toggle_button), EEL_PREFERENCES_BUILDER_DATA_KEY,
+				g_strdup (key), (GDestroyNotify) g_free);
+
+	eel_preferences_add_callback_while_alive (key,
+						  (EelPreferencesCallback) eel_preferences_builder_inverted_bool_update,
+						  toggle_button, G_OBJECT (toggle_button));
+
+	if (!eel_preferences_key_is_writable (key)) {
+		eel_preferences_builder_set_never_sensitive (GTK_WIDGET (toggle_button));
+	}
+
+	g_signal_connect (G_OBJECT (toggle_button), "toggled",
+			  G_CALLBACK (eel_preferences_builder_inverted_bool_toggled),
+			  g_object_get_data (G_OBJECT (toggle_button),
+					     EEL_PREFERENCES_BUILDER_DATA_KEY));
+
+	eel_preferences_builder_inverted_bool_update (toggle_button);
+}
+
 void
 eel_preferences_builder_connect_bool_slave (GtkBuilder *builder,
 					    const char *component,
