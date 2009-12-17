@@ -707,6 +707,8 @@ nautilus_window_view_visible (NautilusWindow *window,
 		}
 	}
 
+	nautilus_view_grab_focus (window->details->active_pane->active_slot->content_view);
+
 	/* All slots and panes visible, show window */
 	nautilus_window_show_window (window);
 }
