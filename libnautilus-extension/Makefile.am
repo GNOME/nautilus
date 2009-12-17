@@ -38,6 +38,7 @@ libnautilus_extension_la_SOURCES=			\
 	nautilus-column.c                               \
 	nautilus-extension-i18n.h                       \
 	nautilus-extension-types.c                      \
+	nautilus-extension-private.h			\
 	nautilus-file-info.c                            \
 	nautilus-info-provider.c                        \
 	nautilus-location-widget-provider.c             \
