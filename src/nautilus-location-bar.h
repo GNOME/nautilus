@@ -33,7 +33,7 @@
 #include "nautilus-navigation-bar.h"
 #include "nautilus-navigation-window.h"
 #include "nautilus-navigation-window-pane.h"
-#include "nautilus-entry.h"
+#include <libnautilus-private/nautilus-entry.h>
 #include <gtk/gtk.h>
 
 #define NAUTILUS_TYPE_LOCATION_BAR nautilus_location_bar_get_type()
