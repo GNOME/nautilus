@@ -214,9 +214,9 @@ endif
 $(lib_LTLIBRARIES): $(dependency_static_libs)
 
 nautilus-marshal.h: nautilus-marshal.list $(GLIB_GENMARSHAL)
-	$(GLIB_GENMARSHAL) $< --header --prefix=nautilus_marshal > $@
+	$(AM_V_GEN)$(GLIB_GENMARSHAL) $< --header --prefix=nautilus_marshal > $@
 nautilus-marshal-guts.c: nautilus-marshal.list $(GLIB_GENMARSHAL)
-	$(GLIB_GENMARSHAL) $< --body --prefix=nautilus_marshal > $@
+	$(AM_V_GEN)$(GLIB_GENMARSHAL) $< --body --prefix=nautilus_marshal > $@
 
 $(libnautilus_private_la_OBJECTS): $(marshal_sources)
 
