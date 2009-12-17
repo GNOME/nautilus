@@ -704,9 +704,9 @@ nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow
 	eel_preferences_builder_connect_bool (builder,
 					      NAUTILUS_FILE_MANAGEMENT_PROPERTIES_FOLDERS_FIRST_WIDGET,
 					      NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST); 
-	eel_preferences_builder_connect_bool (builder,
-					      NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ALWAYS_USE_BROWSER_WIDGET,
-					      NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER);
+	eel_preferences_builder_connect_inverted_bool (builder,
+						       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ALWAYS_USE_BROWSER_WIDGET,
+						       NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER);
 
 	eel_preferences_builder_connect_bool (builder,
 					      NAUTILUS_FILE_MANAGEMENT_PROPERTIES_MEDIA_AUTOMOUNT_OPEN,
