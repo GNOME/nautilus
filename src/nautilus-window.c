@@ -832,8 +832,7 @@ nautilus_window_set_active_pane (NautilusWindow *window,
 	g_assert (NAUTILUS_IS_WINDOW_PANE (new_pane));
 	if (new_pane->active_slot) {
 		nautilus_window_set_active_slot (window, new_pane->active_slot);
-	}
-	else if (new_pane != window->details->active_pane) {
+	} else if (new_pane != window->details->active_pane) {
 		real_set_active_pane (window, new_pane);
 	}
 }
@@ -855,10 +854,9 @@ nautilus_window_set_active_slot (NautilusWindow *window, NautilusWindowSlot *new
 		g_assert (g_list_find (new_slot->pane->slots, new_slot) != NULL);
 	}
 
-	if (NAUTILUS_IS_WINDOW_PANE (window->details->active_pane)) {
+	if (window->details->active_pane != NULL) {
 		old_slot = window->details->active_pane->active_slot;
-	}
-	else {
+	} else {
 		old_slot = NULL;
 	}
 
@@ -878,10 +876,10 @@ nautilus_window_set_active_slot (NautilusWindow *window, NautilusWindowSlot *new
 	}
 
 	/* deal with panes */
-	if (new_slot && (new_slot->pane != new_slot->pane->window->details->active_pane)) {
+	if (new_slot &&
+	    new_slot->pane != window->details->active_pane) {
 		real_set_active_pane (window, new_slot->pane);
 	}
-
 
 	window->details->active_pane->active_slot = new_slot;
 
