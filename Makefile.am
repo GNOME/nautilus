@@ -1,7 +1,6 @@
 include $(top_srcdir)/Makefile.shared
 
 SUBDIRS =			\
-	m4			\
 	eel			\
 	libnautilus-extension	\
 	cut-n-paste-code 	\
