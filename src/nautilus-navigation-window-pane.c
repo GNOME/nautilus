@@ -104,6 +104,14 @@ bookmark_list_get_uri_index (GList *list, GFile *location)
 }
 
 static void
+search_bar_focus_in_callback (NautilusSearchBar *bar,
+			      NautilusWindowPane *pane)
+{
+	nautilus_window_set_active_pane (pane->window, pane);
+}
+
+
+static void
 search_bar_activate_callback (NautilusSearchBar *bar,
 			      NautilusNavigationWindowPane *pane)
 {
@@ -659,6 +667,8 @@ nautilus_navigation_window_pane_setup (NautilusNavigationWindowPane *pane)
 				 G_CALLBACK (search_bar_activate_callback), pane, 0);
 	g_signal_connect_object (pane->search_bar, "cancel",
 				 G_CALLBACK (search_bar_cancel_callback), pane, 0);
+	g_signal_connect_object (pane->search_bar, "focus-in",
+				 G_CALLBACK (search_bar_focus_in_callback), pane, 0);
 	gtk_box_pack_start (GTK_BOX (hbox),
 			    pane->search_bar,
 			    TRUE, TRUE, 0);
