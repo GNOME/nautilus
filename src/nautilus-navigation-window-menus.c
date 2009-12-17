@@ -905,6 +905,12 @@ action_show_hide_search_callback (GtkAction *action,
 {
 	NautilusNavigationWindow *window;
 
+	/* This is used when toggling the action for updating the UI
+	   state only, not actually activating the action */
+	if (g_object_get_data (G_OBJECT (action), "blocked") != NULL) {
+		return;
+	}
+
 	window = NAUTILUS_NAVIGATION_WINDOW (user_data);
 
 	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action))) {

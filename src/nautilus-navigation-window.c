@@ -823,14 +823,22 @@ nautilus_navigation_window_hide_search (NautilusNavigationWindow *window)
 	}
 }
 
+/* This updates the UI state of the search button, but does not
+   in itself trigger a search action */
 void
 nautilus_navigation_window_set_search_button (NautilusNavigationWindow *window,
 					      gboolean state)
 {
 	GtkAction *action;
 
-	action = gtk_action_group_get_action (window->details->navigation_action_group, "Search");
+	action = gtk_action_group_get_action (window->details->navigation_action_group,
+					      "Search");
+
+	/* Block callback so we don't activate the action and thus focus the
+	   search entry */
+	g_object_set_data (G_OBJECT (action), "blocked", GINT_TO_POINTER (1));
 	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), state);
+	g_object_set_data (G_OBJECT (action), "blocked", NULL);
 }
 
 static void
