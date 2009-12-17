@@ -557,7 +557,7 @@ nautilus_navigation_window_update_split_view_actions_sensitivity (NautilusNaviga
 		next_pane_is_in_same_location = FALSE;
 	}
 
-    /* switch to next pane */
+	/* switch to next pane */
 	action = gtk_action_group_get_action (action_group, "SplitViewNextPane");
 	gtk_action_set_sensitive (action, have_multiple_panes);
 
@@ -1012,7 +1012,7 @@ static const GtkActionEntry navigation_entries[] = {
                                  NULL, N_("Clear contents of Go menu and Back/Forward lists"),
                                  G_CALLBACK (action_clear_history_callback) },
   /* name, stock id, label */  { "SplitViewNextPane", NULL, N_("Switch to other pane"),
-				 NULL, N_("Move focus to the other pane in a split view window"),
+				 "F6", N_("Move focus to the other pane in a split view window"),
 				 G_CALLBACK (action_split_view_switch_next_pane_callback) },                                 
   /* name, stock id, label */  { "SplitViewSameLocation", NULL, N_("Go to same location as other pane"),
 				 NULL, N_("Go to the same location in the other pane of a split view window"),
