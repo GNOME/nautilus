@@ -37,6 +37,7 @@ struct NautilusSearchBarDetails {
 enum {
        ACTIVATE,
        CANCEL,
+       FOCUS_IN,
        LAST_SIGNAL
 }; 
 
@@ -79,7 +80,16 @@ nautilus_search_bar_class_init (NautilusSearchBarClass *class)
 			      NULL, NULL,
 			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
-	
+
+	signals[FOCUS_IN] =
+		g_signal_new ("focus-in",
+			      G_TYPE_FROM_CLASS (class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (NautilusSearchBarClass, focus_in),
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE, 0);
+
 	signals[CANCEL] =
 		g_signal_new ("cancel",
 			      G_TYPE_FROM_CLASS (class),
@@ -120,6 +130,19 @@ entry_activate_cb (GtkWidget *entry, NautilusSearchBar *bar)
        }
 }
 
+static gboolean
+focus_in_event_callback (GtkWidget *widget,
+			 GdkEventFocus *event,
+			 gpointer user_data)
+{
+	NautilusSearchBar *bar;
+
+	bar = NAUTILUS_SEARCH_BAR (user_data);
+
+	g_signal_emit (bar, signals[FOCUS_IN], 0);
+
+	return FALSE;
+}
 
 static void
 nautilus_search_bar_init (NautilusSearchBar *bar)
@@ -158,6 +181,8 @@ nautilus_search_bar_init (NautilusSearchBar *bar)
 			  G_CALLBACK (entry_activate_cb), bar);
 	g_signal_connect (bar->details->entry, "icon-release",
 			  G_CALLBACK (entry_icon_release_cb), bar);
+	g_signal_connect (bar->details->entry, "focus-in-event",
+			  G_CALLBACK (focus_in_event_callback), bar);
 
 	gtk_widget_show (bar->details->entry);
 }
