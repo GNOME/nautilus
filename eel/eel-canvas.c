@@ -509,7 +509,7 @@ eel_canvas_item_move (EelCanvasItem *item, double dx, double dy)
 
         if (!EEL_CANVAS_ITEM_GET_CLASS (item)->translate) {
                 g_warning ("Item type %s does not implement translate method.\n",
-                           g_type_name (GTK_OBJECT_TYPE (item)));
+                           g_type_name (G_OBJECT_TYPE (item)));
                 return;
         }
 
