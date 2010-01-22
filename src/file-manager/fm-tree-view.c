@@ -799,13 +799,6 @@ fm_tree_view_activate_file (FMTreeView *view,
 
 	cancel_activation (view);
 
-	if (view->details->activation_flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB &&
-	    !eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ENABLE_TABS)) {
-		view->details->activation_flags &= ~NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
-		view->details->activation_flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
-	}
-
-
 	view->details->activation_file = nautilus_file_ref (file);
 	view->details->activation_flags = flags;
 		

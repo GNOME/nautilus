@@ -60,10 +60,6 @@ struct _NautilusNavigationWindowPane {
 	/* notebook */
 	GtkWidget *notebook;
 
-	/* tab menu */
-	GtkActionGroup *tabs_menu_action_group;
-	guint tabs_menu_merge_id;
-
 	/* split view */
 	GtkWidget *split_view_hpane;
 };

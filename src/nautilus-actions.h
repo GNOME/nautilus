@@ -51,7 +51,6 @@
 #define NAUTILUS_ACTION_CLOSE "Close"
 #define NAUTILUS_ACTION_SEARCH "Search"
 #define NAUTILUS_ACTION_FOLDER_WINDOW "Folder Window"
-#define NAUTILUS_ACTION_TABS "Tabs"
 #define NAUTILUS_ACTION_NEW_TAB "New Tab"
 
 #endif /* NAUTILUS_ACTIONS_H */

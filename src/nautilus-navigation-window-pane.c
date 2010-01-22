@@ -63,11 +63,6 @@ real_set_active (NautilusWindowPane *pane, gboolean is_active)
 
 	/* navigation bar (manual entry) */
 	nautilus_location_bar_set_active (NAUTILUS_LOCATION_BAR (nav_pane->navigation_bar), is_active);
-
-	/* if actions/menus exist, update those as well */
-	if (NAUTILUS_NAVIGATION_WINDOW (pane->window)->details->navigation_action_group) {
-		nautilus_navigation_window_pane_initialize_tabs_menu (nav_pane);
-	}
 }
 
 static gboolean
@@ -263,11 +258,7 @@ path_bar_button_released_callback (GtkWidget *widget,
 		location = nautilus_path_bar_get_path_for_button (NAUTILUS_PATH_BAR (pane->path_bar), widget);
 
 		if (event->button == 2 && mask == 0) {
-			if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ENABLE_TABS)) {
-				flags = NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
-			} else {
-				flags = NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
-			}
+			flags = NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
 		} else if (event->button == 1 && mask == GDK_CONTROL_MASK) {
 			flags = NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
 		}

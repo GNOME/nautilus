@@ -815,10 +815,6 @@ action_open_new_tab_callback (GtkAction *action,
 	GList *selection;
 	GtkWindow *window;
 
-	if (!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ENABLE_TABS)) {
-		return;
-	}
-
 	view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
 
@@ -8459,9 +8455,7 @@ real_update_location_menu (FMDirectoryView *view)
 			show_open_folder_window = TRUE;
 		}
 
-		if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ENABLE_TABS)) {
-			show_open_in_new_tab = TRUE;
-		}
+		show_open_in_new_tab = TRUE;
 	} else {
 		label = g_strdup (ngettext ("_Browse Folder",
 					    "_Browse Folders", 1));
@@ -8796,8 +8790,7 @@ real_update_menus (FMDirectoryView *view)
 	gtk_action_set_visible (action, show_open_alternate);
 
 	/* Open in New Tab action */
-	if (nautilus_window_info_get_window_type (view->details->window) == NAUTILUS_WINDOW_NAVIGATION &&
-	    eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ENABLE_TABS)) {
+	if (nautilus_window_info_get_window_type (view->details->window) == NAUTILUS_WINDOW_NAVIGATION) {
 
 		if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
 			if (selection_count == 0 || selection_count == 1) {

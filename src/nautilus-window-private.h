@@ -161,7 +161,6 @@ void               nautilus_window_set_status                            (Nautil
 void               nautilus_window_load_view_as_menus                    (NautilusWindow    *window);
 void               nautilus_window_load_extension_menus                  (NautilusWindow    *window);
 void               nautilus_window_initialize_menus                      (NautilusWindow    *window);
-void               nautilus_navigation_window_pane_initialize_tabs_menu  (struct _NautilusNavigationWindowPane *pane);
 void               nautilus_window_remove_trash_monitor_callback         (NautilusWindow    *window);
 NautilusWindowPane *nautilus_window_get_next_pane                        (NautilusWindow *window);
 void               nautilus_menus_append_bookmark_to_menu                (NautilusWindow    *window, 
@@ -229,9 +228,6 @@ void               nautilus_navigation_window_remove_bookmarks_menu_callback    
 void               nautilus_navigation_window_remove_bookmarks_menu_items           (NautilusNavigationWindow    *window);
 void               nautilus_navigation_window_update_show_hide_menu_items           (NautilusNavigationWindow     *window);
 void               nautilus_navigation_window_update_spatial_menu_item              (NautilusNavigationWindow     *window);
-void               nautilus_navigation_window_update_tab_menu_item_visibility       (NautilusNavigationWindow     *window);
-void               nautilus_navigation_window_pane_sync_tab_menu_title              (struct _NautilusNavigationWindowPane *pane,
-										     NautilusWindowSlot           *slot);
 void               nautilus_navigation_window_remove_go_menu_callback    (NautilusNavigationWindow    *window);
 void               nautilus_navigation_window_remove_go_menu_items       (NautilusNavigationWindow    *window);
 

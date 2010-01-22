@@ -101,7 +101,6 @@ static void side_panel_image_changed_callback        (NautilusSidebar          *
 						      gpointer                  callback_data);
 static void always_use_location_entry_changed        (gpointer                  callback_data);
 static void always_use_browser_changed               (gpointer                  callback_data);
-static void enable_tabs_changed			     (gpointer                  callback_data);
 static void mouse_back_button_changed		     (gpointer                  callback_data);
 static void mouse_forward_button_changed	     (gpointer                  callback_data);
 static void use_extra_mouse_buttons_changed          (gpointer                  callback_data);
@@ -206,10 +205,6 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER,
 						  always_use_browser_changed,
 						  window, G_OBJECT (window));
-
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ENABLE_TABS,
-						  enable_tabs_changed,
-						  window, G_OBJECT (window));
 }
 
 static void
@@ -236,16 +231,6 @@ always_use_browser_changed (gpointer callback_data)
 	window = NAUTILUS_NAVIGATION_WINDOW (callback_data);
 
 	nautilus_navigation_window_update_spatial_menu_item (window);
-}
-
-static void
-enable_tabs_changed (gpointer callback_data)
-{
-	NautilusNavigationWindow *window;
-
-	window = NAUTILUS_NAVIGATION_WINDOW (callback_data);
-
-	nautilus_navigation_window_update_tab_menu_item_visibility (window);
 }
 
 /* Sanity check: highest mouse button value I could find was 14. 5 is our 
@@ -758,10 +743,6 @@ real_sync_title (NautilusWindow *window,
 	pane = NAUTILUS_NAVIGATION_WINDOW_PANE (slot->pane);
 	notebook = NAUTILUS_NOTEBOOK (pane->notebook);
 	nautilus_notebook_sync_tab_label (notebook, slot);
-
-	if (slot->pane->is_active) {
-		nautilus_navigation_window_pane_sync_tab_menu_title (pane, slot);
-	}
 }
 
 static NautilusIconInfo *

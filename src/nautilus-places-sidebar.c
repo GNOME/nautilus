@@ -718,16 +718,6 @@ desktop_location_changed_callback (gpointer user_data)
 }
 
 static void
-enable_tabs_changed_callback (gpointer user_data)
-{
-	NautilusPlacesSidebar *sidebar;
-
-	sidebar = NAUTILUS_PLACES_SIDEBAR (user_data);
-
-	bookmarks_check_popup_sensitivity (sidebar);
-}
-
-static void
 loading_uri_callback (NautilusWindowInfo *window,
 		      char *location,
 		      NautilusPlacesSidebar *sidebar)
@@ -1408,11 +1398,7 @@ bookmarks_check_popup_sensitivity (NautilusPlacesSidebar *sidebar)
 				    -1);
 	}
 
-	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ENABLE_TABS)) {
-		gtk_widget_show (sidebar->popup_menu_open_in_new_tab_item);
-	} else {
-		gtk_widget_hide (sidebar->popup_menu_open_in_new_tab_item);
-	}
+	gtk_widget_show (sidebar->popup_menu_open_in_new_tab_item);
 
 	gtk_widget_set_sensitive (sidebar->popup_menu_remove_item, (type == PLACES_BOOKMARK));
 	gtk_widget_set_sensitive (sidebar->popup_menu_rename_item, (type == PLACES_BOOKMARK));
@@ -1563,12 +1549,6 @@ open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 
 	if (!gtk_tree_model_get_iter (model, &iter, path)) {
 		return;
-	}
-
-	if (flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB &&
-	    !eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ENABLE_TABS)) {
-		flags &= ~NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
-		flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
 	}
 
 	gtk_tree_model_get (model, &iter, PLACES_SIDEBAR_COLUMN_URI, &uri, -1);
@@ -2570,11 +2550,6 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
 						  desktop_location_changed_callback,
-						  sidebar,
-						  G_OBJECT (sidebar));
-
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ENABLE_TABS,
-						  enable_tabs_changed_callback,
 						  sidebar,
 						  G_OBJECT (sidebar));
 

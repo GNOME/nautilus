@@ -1813,8 +1813,7 @@ activate_files (ActivateParameters *parameters)
 
 	flags = parameters->flags;
 	if (count > 1) {
-		if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ENABLE_TABS) &&
-		    (parameters->flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) == 0) {
+		if ((parameters->flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) == 0) {
 			flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
 		} else {
 			flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;

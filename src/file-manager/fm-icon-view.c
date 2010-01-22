@@ -1842,7 +1842,7 @@ icon_container_activate_alternate_callback (NautilusIconContainer *container,
 	}
 
 	flags = NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND;
-	if (open_in_tab && eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ENABLE_TABS)) {
+	if (open_in_tab) {
 		flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
 	} else {
 		flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;

@@ -347,10 +347,6 @@ static const PreferenceDefault preference_defaults[] = {
 	  PREFERENCE_BOOLEAN,
 	  GINT_TO_POINTER (TRUE)
 	},
-	{ NAUTILUS_PREFERENCES_ENABLE_TABS,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (TRUE)
-	},
 	{ NAUTILUS_PREFERENCES_NEW_TAB_POSITION,
 	  PREFERENCE_STRING,
 	  "after_current_tab",
