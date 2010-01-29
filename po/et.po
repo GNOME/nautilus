@@ -2,7 +2,7 @@
 # Estonian translation of Nautilus.
 #
 # Copyright (C) 2002-2006 Free Software Foundation, Inc.
-# Copyright (C) 2007-2009 The GNOME Project.
+# Copyright (C) 2007-2010 The GNOME Project.
 # This file is distributed under the same license as the nautilus package.
 #
 # Lauri Kasvandik <lauri.kasvandik@mail.ee>, 2002.
@@ -12,7 +12,7 @@
 # Priit Laes <plaes+gi18n@plaes.org>, 2004-2008.
 # Ivar Smolin <okul@linux.ee>, 2005-2009.
 # Sven Sapelson <sven.sapelson@gmail.com>, 2005.
-# Mattias Põldaru <mahfiaz@gmail.com>, 2009-2010.
+# Mattias Põldaru <mahfiaz gmail com>, 2009-2010.
 #
 # FIXME - selles tõlkes tuleks kontrollida, et failirekvisiitide "modified" ja
 # "changed" poleks omavahel sassi aetud.
@@ -22,8 +22,8 @@ msgstr ""
 "Project-Id-Version: nautilus MASTER\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2009-11-29 21:24+0000\n"
-"PO-Revision-Date: 2009-12-11 15:14+0300\n"
+"POT-Creation-Date: 2010-01-28 19:11+0000\n"
+"PO-Revision-Date: 2010-01-29 00:46+0300\n"
 "Last-Translator: Mattias Põldaru <mahfiaz gmail com>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -151,7 +151,7 @@ msgid "Drag a pattern tile to an object to change it"
 msgstr "Objekti mustri muutmiseks lohista muster objektile"
 
 msgid "Drag an emblem to an object to add it to the object"
-msgstr "Objekti embleemi lisamiseks lohista see objektile"
+msgstr "Objektile embleemi lisamiseks lohista see objektile"
 
 msgid "Eclipse"
 msgstr "Varjutus"
@@ -617,6 +617,9 @@ msgstr ""
 "Kui märgitud, näitab Nautilus külgpaanis ainult katalooge. Vastasel juhul "
 "näitab Nautilus katalooge ja faile."
 
+msgid "If set to true, newly opened windows will have the extra pane visible."
+msgstr "Kui märgitud, siis uutel akendel näidatakse lisapaani."
+
 msgid ""
 "If set to true, newly opened windows will have the location bar visible."
 msgstr "Kui märgitud, siis uutel akendel näidatakse asukohariba."
@@ -734,13 +737,6 @@ msgid ""
 msgstr ""
 "Failihaldur näitab peidetud faile. Peidetud failid algavad punktiga või on "
 "loetletud kataloogi failis nimega .hidden"
-
-msgid ""
-"If set to true, then multiple views can be opened in one browser window, "
-"each in a separate tab."
-msgstr ""
-"Kui märgitud, siis on ühes sirvija aknas võimalik avada mitu vaadet, igaüks "
-"eraldi kaardil."
 
 msgid ""
 "If this is set to true, an icon linking to the Network Servers view will be "
@@ -924,6 +920,9 @@ msgstr "Sans 10"
 
 msgid "Show advanced permissions in the file property dialog"
 msgstr "Laiendatud pääsuõiguste näitamine faili omaduste dialoogis"
+
+msgid "Show extra pane in new windows"
+msgstr "Uutes akendes külgpaani näitamine"
 
 msgid "Show folders first in windows"
 msgstr "Akendes kataloogide esimesena näitamine"
@@ -1138,9 +1137,6 @@ msgstr ""
 msgid "Whether to enable immediate deletion"
 msgstr "Kas kohene kustutamine on lubatud"
 
-msgid "Whether to enable tabs in Nautilus browser windows"
-msgstr "Kas Nautiluse sirvimisakendes on kaardid lubatud või mitte"
-
 msgid "Whether to preview sounds when mousing over an icon"
 msgstr "Kas kursori liikumisel üle ikooni on eelvaatehääled lubatud"
 
@@ -1352,10 +1348,10 @@ msgid "The mime type of the file."
 msgstr "Faili MIME-liik."
 
 msgid "SELinux Context"
-msgstr "SELinux'i kontekst"
+msgstr "SELinuxi kontekst"
 
 msgid "The SELinux security context of the file."
-msgstr "Faili SELinux'i turvakontekst."
+msgstr "Faili SELinuxi turvakontekst."
 
 #. TODO: Change after string freeze over
 msgid "Location"
@@ -2651,7 +2647,7 @@ msgstr "Faili %s avamine rakendusega:"
 
 #, c-format
 msgid "_Remember this application for %s documents"
-msgstr ""
+msgstr "_Pea meeles seda rakendust %s dokumentide jaoks"
 
 #. Only in add mode - the %s here is a file extension
 #, c-format
@@ -2667,12 +2663,12 @@ msgstr "Faili %s ja teisi \"%s\" faile tuleb avada rakendusega:"
 #. %s is a file type description
 #, c-format
 msgid "_Remember this application for \"%s\" files"
-msgstr ""
+msgstr "_Pea meeles seda rakendust \"%s\" failide jaoks"
 
 #. Only in add mode
 #, c-format
 msgid "Open all \"%s\" files with:"
-msgstr ""
+msgstr "Kõik \"%s\" failid avatakse rakendusega:"
 
 msgid "_Add"
 msgstr "L_isa"
@@ -2982,6 +2978,7 @@ msgstr ""
 "Menüüst skripti valides käivitatakse see valitud kirjel, sisendparameetrina "
 "kasutatakse valitud kirje nime."
 
+#, fuzzy
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -3000,7 +2997,16 @@ msgid ""
 "\n"
 "NAUTILUS_SCRIPT_CURRENT_URI: URI for current location\n"
 "\n"
-"NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"
+"NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window\n"
+"\n"
+"NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_FILE_PATHS: newline-delimited paths for "
+"selected files in the inactive pane of a split-view window (only if local)\n"
+"\n"
+"NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_URIS: newline-delimited URIs for selected "
+"files in the inactive pane of a split-view window\n"
+"\n"
+"NAUTILUS_SCRIPT_NEXT_PANE_CURRENT_URI: URI for current location in the "
+"inactive pane of a split-view window"
 msgstr ""
 "Kõik selles kataloogis olevad käivitatavad failid ilmuvad Skriptide "
 "menüüsse. Menüüst skripti valides käivitatakse see skript.\n"
@@ -3215,6 +3221,14 @@ msgstr ""
 "Eelnevalt käskudega Lõika/Kopeeri fail valitud failide valitud kataloogi "
 "ümbertõstmine või kopeerimine"
 
+#. name, stock id, label
+msgid "Copy to"
+msgstr "Kopeeri kuhu"
+
+#. name, stock id, label
+msgid "Move to"
+msgstr "Liiguta kuhu"
+
 #. tooltip
 msgid "Select all items in this window"
 msgstr "Kõigi selles aknas olevate kirjete avamine"
@@ -3422,7 +3436,7 @@ msgstr "Selle kataloogi avamine uuel kaardil"
 
 #. tooltip
 msgid "Open this folder in a folder window"
-msgstr "Selle kataloogi avamine kataloogisaknas"
+msgstr "Selle kataloogi avamine kataloogiaknas"
 
 #. name, stock id
 #. label, accelerator
@@ -3480,6 +3494,32 @@ msgstr "Seiskab selle kaustaga seotud andmeruumi"
 #. tooltip
 msgid "View or modify the properties of this folder"
 msgstr "Selle kataloogi omaduste vaatamine või muutmine"
+
+#. name, stock id, label
+msgid "_Other pane"
+msgstr "_Kõrvalpaneelile"
+
+msgid "Copy the current selection to the other pane in the window"
+msgstr "Valiku kopeerimine sama akna kõrvalpaanile"
+
+msgid "Move the current selection to the other pane in the window"
+msgstr "Valiku liigutamine sama akna kõrvalpaanile"
+
+#. name, stock id, label
+#. name, stock id
+#. label, accelerator
+msgid "_Home Folder"
+msgstr "_Kodukataloogi"
+
+msgid "Copy the current selection to the home folder"
+msgstr "Valiku kopeerimine kodukataloogi"
+
+msgid "Move the current selection to the home folder"
+msgstr "Valiku liigutamine kodukataloogi"
+
+#. name, stock id, label
+msgid "_Desktop"
+msgstr "_Töölauale"
 
 #. Translators: %s is a directory
 #, c-format
@@ -4180,13 +4220,13 @@ msgid "You are not the owner, so you cannot change these permissions."
 msgstr "Sa ei ole omanik, seega pole sul võimalik neid pääsuõigusi muuta."
 
 msgid "SELinux context:"
-msgstr "SELinux'i kontekst:"
+msgstr "SELinuxi kontekst:"
 
 msgid "Last changed:"
 msgstr "Viimati muudetud:"
 
 msgid "Apply Permissions to Enclosed Files"
-msgstr "Rakenda õigused määratud failidele"
+msgstr "Rakenda õigused ka sisalduvatele failidele"
 
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
@@ -4513,12 +4553,8 @@ msgstr "T_egevus:"
 msgid "Always"
 msgstr "Alati"
 
-msgid "Always open in _browser windows"
-msgstr "Avatakse alati si_rvija akendes"
-
 msgid "Ask before _emptying the Trash or deleting files"
-msgstr ""
-"_Prügikasti tühjendamisel ja failide kustutamisel küsitakse kasutajatelt luba"
+msgstr "_Prügikasti tühjendamisel ja failide kustutamisel küsitakse luba"
 
 msgid "B_rowse media when inserted"
 msgstr "Meediumi si_rvimine pärast sisestamist"
@@ -4577,6 +4613,9 @@ msgstr "Meedium"
 msgid "Never"
 msgstr "Mitte kunagi"
 
+msgid "Open each _folder its own window"
+msgstr "_Iga kataloogi avaneb oma aknas"
+
 msgid "Preview"
 msgstr "Eelvaatlemine"
 
@@ -4601,8 +4640,9 @@ msgstr "_Kataloogid sorditakse enne faile"
 msgid "View _new folders using:"
 msgstr "_Uusi katalooge näidatakse kasutades:"
 
+# Redaktor → Eelistused all saki pealkiri
 msgid "Views"
-msgstr "Vaated"
+msgstr "Vaade"
 
 msgid "_Arrange items:"
 msgstr "Kir_jed korrastatakse:"
@@ -4623,9 +4663,7 @@ msgid "_Music Player:"
 msgstr "_Muusikaesitaja:"
 
 msgid "_Never prompt or start programs on media insertion"
-msgstr ""
-"Meediumi sisestamisel ei kävitata _programme ega küsita programmide "
-"käivitamise kinnitust"
+msgstr "Meediumi sisestamisel ei käivitata _programme ega küsita"
 
 msgid "_Only for files smaller than:"
 msgstr "Ainult _failidele, mis on väiksemad kui:"
@@ -4652,7 +4690,7 @@ msgid "_Use compact layout"
 msgstr "Kasutatakse kom_paktset paigutust"
 
 msgid "_View executable text files when they are opened"
-msgstr "Käi_vitatavatele tekstifailide avamisel näidatakse nende sisu"
+msgstr "Käi_vitatavate tekstifailide avamisel näidatakse nende sisu"
 
 msgid "History"
 msgstr "Ajalugu"
@@ -4882,6 +4920,20 @@ msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "Liikumise menüü sisu ja Edasi/Tagasi loendite puhastamine"
 
 #. name, stock id, label
+msgid "Switch to other pane"
+msgstr "Lülitumine teisele paneelile"
+
+msgid "Move focus to the other pane in a split view window"
+msgstr "Kaksikvaate aknas fookuse vahetamine kõrvalpaanile"
+
+#. name, stock id, label
+msgid "Same location as other pane"
+msgstr "Sama asukoht kui teisel paneelil"
+
+msgid "Go to the same location as in the extra pane"
+msgstr "Liikumine samasse asukohta nagu lisapaanil"
+
+#. name, stock id, label
 msgid "_Add Bookmark"
 msgstr "_Lisa järjehoidja"
 
@@ -4920,7 +4972,7 @@ msgid "Move current tab to right"
 msgstr "Käesoleva kaardi tõstmine paremale"
 
 msgid "Show search"
-msgstr ""
+msgstr "Otsingu kuvamine"
 
 #. name, stock id
 #. label, accelerator
@@ -4973,6 +5025,16 @@ msgstr "_Failide otsing..."
 msgid "Search documents and folders by name"
 msgstr "Dokumentide ja kataloogide otsing nime järgi"
 
+#. is_active
+#. name, stock id
+#. label, accelerator
+msgid "Extra Pane"
+msgstr "Lisapaan"
+
+#. tooltip
+msgid "Open an extra folder view side-by-side"
+msgstr "Kataloogi lisavaate avamine eelmise kõrvale"
+
 msgid "_Back"
 msgstr "_Tagasi"
 
@@ -4991,11 +5053,14 @@ msgstr "Järgmise külastatud koha avamine"
 msgid "Forward history"
 msgstr "Liigu ajaloos edasi"
 
+msgid "_Zoom"
+msgstr "_Suurendus"
+
+msgid "_View As"
+msgstr "_Kuva kui"
+
 msgid "_Search"
 msgstr "_Otsing"
-
-msgid "Toggle between button and text-based location bar"
-msgstr "Nuppudel ja tekstil põhineva asukohariba vahel lülitumine"
 
 msgid "_Close Tab"
 msgstr "Sul_ge kaart"
@@ -5027,10 +5092,10 @@ msgstr "Võrgus olevate ressursside sirvimine"
 
 #, c-format
 msgid "Mount and open %s"
-msgstr ""
+msgstr "Haagi ja ava %s"
 
 msgid "Open the trash"
-msgstr ""
+msgstr "Ava prügikast"
 
 #. start() for type G_DRIVE_START_STOP_TYPE_SHUTDOWN is normally not used
 msgid "_Power On"
@@ -5102,7 +5167,7 @@ msgid "Select an Image File for the New Emblem"
 msgstr "Uue embleemi jaoks pildifaili valimine"
 
 msgid "Create a New Emblem"
-msgstr "Loo uus embleem"
+msgstr "Uue embleemi loomine"
 
 #. make the keyword label and field
 msgid "_Keyword:"
@@ -5436,7 +5501,7 @@ msgstr ""
 "Sven Sapelson <sven.sapelson@gmail.com>,2005.\n"
 "Priit Laes <plaes+gi18n@plaes.org>, 2004-2008.\n"
 "Ivar Smolin <okul@linux.ee>, 2005-2009.\n"
-"Mattias Põldaru <mahfiaz@gmail.com>, 2009."
+"Mattias Põldaru <mahfiaz gmail com>, 2009-2010."
 
 msgid "Nautilus Web Site"
 msgstr "Nautiluse veebisait"
@@ -5563,11 +5628,6 @@ msgstr "Loo ühendus eemalasuva arvuti või jagatud kettaga"
 
 #. name, stock id
 #. label, accelerator
-msgid "_Home Folder"
-msgstr "_Kodukataloog"
-
-#. name, stock id
-#. label, accelerator
 msgid "_Computer"
 msgstr "_Arvuti"
 
@@ -5662,21 +5722,3 @@ msgstr "Suurendus"
 
 msgid "Set the zoom level of the current view"
 msgstr "Praeguse vaate suurendusastme seadmine"
-
-#~ msgid "Start the select drive"
-#~ msgstr "Käivitab valitud ketta"
-
-#~ msgid "Open with \"%s\""
-#~ msgstr "Ava programmiga \"%s\""
-
-#~ msgid "_Open with \"%s\""
-#~ msgstr "_Ava rakendusega \"%s\""
-
-#~ msgid "_Mount Volume"
-#~ msgstr "_Ühenda kettaseade"
-
-#~ msgid "_Unmount Volume"
-#~ msgstr "_Haagi ketas lahti"
-
-#~ msgid "_Eject Volume"
-#~ msgstr "_Väljasta andmekandja"
