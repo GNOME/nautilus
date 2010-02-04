@@ -2353,6 +2353,7 @@ nautilus_file_operations_mount_volume_full (GtkWindow *parent_window,
 	GMountOperation *mount_op;
 
 	mount_op = gtk_mount_operation_new (parent_window);
+	g_mount_operation_set_password_save (mount_op, G_PASSWORD_SAVE_FOR_SESSION);
 	g_object_set_data (G_OBJECT (mount_op),
 			   "mount-callback",
 			   mount_callback);

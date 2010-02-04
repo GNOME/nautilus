@@ -150,6 +150,7 @@ nautilus_connect_server_dialog_present_uri (NautilusApplication *application,
 	GMountOperation *op;
 
 	op = gtk_mount_operation_new (GTK_WINDOW (widget));
+	g_mount_operation_set_password_save (op, G_PASSWORD_SAVE_FOR_SESSION);
 	g_file_mount_enclosing_volume (location,
 				       0, op,
 				       NULL,

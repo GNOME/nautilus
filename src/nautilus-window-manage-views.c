@@ -1062,6 +1062,7 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 		slot->tried_mount = TRUE;
 
 		mount_op = gtk_mount_operation_new (GTK_WINDOW (window));
+		g_mount_operation_set_password_save (mount_op, G_PASSWORD_SAVE_FOR_SESSION);
 		location = nautilus_file_get_location (file);
 		data = g_new0 (MountNotMountedData, 1);
 		data->cancellable = g_cancellable_new ();
