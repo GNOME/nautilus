@@ -7437,11 +7437,11 @@ static const GtkActionEntry directory_view_entries[] = {
 				G_CALLBACK (action_move_to_home_callback) },
   /* name, stock id, label */  {FM_ACTION_COPY_TO_DESKTOP, NAUTILUS_ICON_DESKTOP,
 				N_("_Desktop"), NULL,
-				N_("Copy the current selection to the home folder"),
+				N_("Copy the current selection to the desktop"),
 				G_CALLBACK (action_copy_to_desktop_callback) },
   /* name, stock id, label */  {FM_ACTION_MOVE_TO_DESKTOP, NAUTILUS_ICON_DESKTOP,
 				N_("_Desktop"), NULL,
-				N_("Move the current selection to the home folder"),
+				N_("Move the current selection to the desktop"),
 				G_CALLBACK (action_move_to_desktop_callback) },
 };
 
