@@ -1628,7 +1628,7 @@ mount_removed_callback (GVolumeMonitor *monitor,
 	NautilusWindow *window;
 	NautilusWindowSlot *slot;
 	NautilusWindowSlot *force_no_close_slot;
-	GFile *root;
+	GFile *root, *computer;
 
 	close_list = NULL;
 	force_no_close_slot = NULL;
@@ -1651,7 +1651,8 @@ mount_removed_callback (GVolumeMonitor *monitor,
 				for (l = pane->slots; l != NULL; l = l->next) {
 					slot = l->data;
 					location = slot->location;
-					if (g_file_has_prefix (location, root)) {
+					if (g_file_has_prefix (location, root) ||
+					    g_file_equal (location, root)) {
 						close_list = g_list_prepend (close_list, slot);
 					}
 				} /* for all slots */
@@ -1676,7 +1677,9 @@ mount_removed_callback (GVolumeMonitor *monitor,
 		     slot != force_no_close_slot)) {
 			nautilus_window_slot_close (slot);
 		} else {
-			nautilus_window_slot_go_home (slot, FALSE);
+			computer = g_file_new_for_uri ("computer:///");
+			nautilus_window_slot_go_to (slot, computer, FALSE);
+			g_object_unref(computer);
 		}
 	}
 
