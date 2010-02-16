@@ -54,7 +54,8 @@ nautilus_navigation_window_slot_should_close_with_mount (NautilusNavigationWindo
 		bookmark = NAUTILUS_BOOKMARK (l->data);
 
 		bookmark_location = nautilus_bookmark_get_location (bookmark);
-		close_with_mount &= g_file_has_prefix (bookmark_location, mount_location);
+		close_with_mount &= g_file_has_prefix (bookmark_location, mount_location) ||
+				    g_file_equal (bookmark_location, mount_location);
 		g_object_unref (bookmark_location);
 
 		if (!close_with_mount) {
@@ -62,7 +63,8 @@ nautilus_navigation_window_slot_should_close_with_mount (NautilusNavigationWindo
 		}
 	}
 
-	close_with_mount &= g_file_has_prefix (NAUTILUS_WINDOW_SLOT (slot)->location, mount_location);
+	close_with_mount &= g_file_has_prefix (NAUTILUS_WINDOW_SLOT (slot)->location, mount_location) ||
+			    g_file_equal (NAUTILUS_WINDOW_SLOT (slot)->location, mount_location);
 
 	/* we could also consider the forward list here, but since the “go home” request
 	 * in nautilus-window-manager-views.c:mount_removed_callback() would discard those
