@@ -262,6 +262,8 @@ placement_gnome_to_eel (GnomeBGPlacement p)
 		return EEL_BACKGROUND_ZOOM;
 	case GNOME_BG_PLACEMENT_TILED:
 		return EEL_BACKGROUND_TILED;
+        case GNOME_BG_PLACEMENT_SPANNED:
+                return EEL_BACKGROUND_SPANNED;
 	}
 
 	return EEL_BACKGROUND_TILED;
@@ -281,6 +283,8 @@ placement_eel_to_gnome (EelBackgroundImagePlacement p)
 		return GNOME_BG_PLACEMENT_ZOOMED;
 	case EEL_BACKGROUND_TILED:
 		return GNOME_BG_PLACEMENT_TILED;
+	case EEL_BACKGROUND_SPANNED:
+		return GNOME_BG_PLACEMENT_SPANNED;
 	}
 
 	return GNOME_BG_PLACEMENT_TILED;

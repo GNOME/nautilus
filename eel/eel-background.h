@@ -65,7 +65,8 @@ typedef enum {
 	EEL_BACKGROUND_CENTERED,
 	EEL_BACKGROUND_SCALED,
 	EEL_BACKGROUND_SCALED_ASPECT,
-	EEL_BACKGROUND_ZOOM
+	EEL_BACKGROUND_ZOOM,
+	EEL_BACKGROUND_SPANNED
 } EelBackgroundImagePlacement;
 
 GType                       eel_background_get_type                         (void);
