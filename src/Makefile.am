@@ -51,8 +51,6 @@ schemedir = $(datadir)/applications
 scheme_DATA = network-scheme.desktop
 
 nautilus_SOURCES = \
-	ephy-spinner.h				\
-	ephy-spinner.c				\
 	nautilus-actions.h			\
 	nautilus-application.c			\
 	nautilus-application.h			\
@@ -116,8 +114,6 @@ nautilus_SOURCES = \
 	nautilus-sidebar-title.h		\
 	nautilus-spatial-window.c               \
 	nautilus-spatial-window.h               \
-	nautilus-throbber.c			\
-	nautilus-throbber.h			\
 	nautilus-trash-bar.c			\
 	nautilus-trash-bar.h			\
 	nautilus-view-as-action.c		\

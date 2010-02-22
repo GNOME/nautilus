@@ -33,7 +33,6 @@
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window.h"
-#include "nautilus-throbber.h"
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-string.h>
@@ -56,50 +55,29 @@
 #define TOOLBAR_PATH_EXTENSION_ACTIONS "/Toolbar/Extra Buttons Placeholder/Extension Actions"
 
 void
-nautilus_navigation_window_set_throbber_active (NautilusNavigationWindow *window, 
-						gboolean allow)
+nautilus_navigation_window_set_spinner_active (NautilusNavigationWindow *window,
+					       gboolean allow)
 {
-	if (( window->details->throbber_active &&  allow) ||
-	    (!window->details->throbber_active && !allow)) {
+	if (( window->details->spinner_active &&  allow) ||
+	    (!window->details->spinner_active && !allow)) {
 		return;
 	}
 
-	window->details->throbber_active = allow;
+	window->details->spinner_active = allow;
 	if (allow) {
-		nautilus_throbber_start (NAUTILUS_THROBBER (window->details->throbber));
+		gtk_spinner_start (GTK_SPINNER (window->details->spinner));
 	} else {
-		nautilus_throbber_stop (NAUTILUS_THROBBER (window->details->throbber));
+		gtk_spinner_stop (GTK_SPINNER (window->details->spinner));
 	}
-}
-
-static void
-toolbar_reconfigured_cb (GtkToolItem *item,
-			 NautilusThrobber *throbber)
-{
-	GtkToolbarStyle style;
-	GtkIconSize size;
-
-	style = gtk_tool_item_get_toolbar_style (item);
-
-	if (style == GTK_TOOLBAR_BOTH)
-	{
-		size = GTK_ICON_SIZE_DIALOG;
-	}
-	else
-	{
-		size = GTK_ICON_SIZE_LARGE_TOOLBAR;
-	}
-
-	nautilus_throbber_set_size (throbber, size);
 }
 
 void
-nautilus_navigation_window_activate_throbber (NautilusNavigationWindow *window)
+nautilus_navigation_window_activate_spinner (NautilusNavigationWindow *window)
 {
 	GtkToolItem *item;
-	GtkWidget *throbber;
+	GtkWidget *spinner;
 
-	if (window->details->throbber != NULL) {
+	if (window->details->spinner != NULL) {
 		return;
 	}
 
@@ -109,26 +87,23 @@ nautilus_navigation_window_activate_throbber (NautilusNavigationWindow *window)
 	gtk_toolbar_insert (GTK_TOOLBAR (window->details->toolbar),
 			    item, -1);
 
-	throbber = nautilus_throbber_new ();
-	gtk_widget_show (GTK_WIDGET (throbber));
+	spinner = gtk_spinner_new ();
+	gtk_widget_show (GTK_WIDGET (spinner));
 
 	item = gtk_tool_item_new ();
-	gtk_container_add (GTK_CONTAINER (item), throbber);
+	gtk_container_add (GTK_CONTAINER (item), spinner);
 	gtk_widget_show (GTK_WIDGET (item));
-	
-	g_signal_connect (item, "toolbar-reconfigured",
-			  G_CALLBACK (toolbar_reconfigured_cb), throbber);
 
 	gtk_toolbar_insert (GTK_TOOLBAR (window->details->toolbar),
 			    item, -1);
 
-	window->details->throbber = throbber;
+	window->details->spinner = spinner;
 }
 
 void
 nautilus_navigation_window_initialize_toolbars (NautilusNavigationWindow *window)
 {
-	nautilus_navigation_window_activate_throbber (window);
+	nautilus_navigation_window_activate_spinner (window);
 }
 
 

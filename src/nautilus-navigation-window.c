@@ -760,7 +760,7 @@ real_sync_allow_stop (NautilusWindow *window,
 	NautilusNotebook *notebook;
 
 	navigation_window = NAUTILUS_NAVIGATION_WINDOW (window);
-	nautilus_navigation_window_set_throbber_active (navigation_window, slot->allow_stop);
+	nautilus_navigation_window_set_spinner_active (navigation_window, slot->allow_stop);
 
 	notebook = NAUTILUS_NOTEBOOK (NAUTILUS_NAVIGATION_WINDOW_PANE (slot->pane)->notebook);
 	nautilus_notebook_sync_loading (notebook, slot);

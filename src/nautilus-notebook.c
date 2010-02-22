@@ -31,7 +31,6 @@
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window-slot.h"
-#include "ephy-spinner.h"
 #include "nautilus-navigation-window-pane.h"
 #include <libnautilus-private/nautilus-dnd.h>
 
@@ -265,6 +264,7 @@ nautilus_notebook_sync_loading (NautilusNotebook *notebook,
 				NautilusWindowSlot *slot)
 {
 	GtkWidget *tab_label, *spinner, *icon;
+	gboolean active;
 
 	g_return_if_fail (NAUTILUS_IS_NOTEBOOK (notebook));
 	g_return_if_fail (NAUTILUS_IS_WINDOW_SLOT (slot));
@@ -276,19 +276,18 @@ nautilus_notebook_sync_loading (NautilusNotebook *notebook,
 	icon = GTK_WIDGET (g_object_get_data (G_OBJECT (tab_label), "icon"));
 	g_return_if_fail (spinner != NULL && icon != NULL);
 
-	if (ephy_spinner_get_spinning (EPHY_SPINNER (spinner)) == slot->allow_stop) {
+	active = FALSE;
+	g_object_get (spinner, "active", &active, NULL);
+	if (active == slot->allow_stop)	{
 		return;
 	}
 
-	if (slot->allow_stop)
-	{
+	if (slot->allow_stop) {
 		gtk_widget_hide (icon);
 		gtk_widget_show (spinner);
-		ephy_spinner_start (EPHY_SPINNER (spinner));
-	}
-	else
-	{
-		ephy_spinner_stop (EPHY_SPINNER (spinner));
+		gtk_spinner_start (GTK_SPINNER (spinner));
+	} else {
+		gtk_spinner_stop (GTK_SPINNER (spinner));
 		gtk_widget_hide (spinner);
 		gtk_widget_show (icon);
 	}
@@ -349,8 +348,7 @@ build_tab_label (NautilusNotebook *nb, NautilusWindowSlot *slot)
 	gtk_widget_show (hbox);
 
 	/* setup load feedback */
-	spinner = ephy_spinner_new ();
-	ephy_spinner_set_size (EPHY_SPINNER (spinner), GTK_ICON_SIZE_MENU);
+	spinner = gtk_spinner_new ();
 	gtk_box_pack_start (GTK_BOX (hbox), spinner, FALSE, FALSE, 0);
 
 	/* setup site icon, empty by default */

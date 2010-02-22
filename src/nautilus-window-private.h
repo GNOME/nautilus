@@ -105,9 +105,9 @@ struct _NautilusNavigationWindowDetails {
         guint extensions_toolbar_merge_id;
         GtkActionGroup *extensions_toolbar_action_group;
 
-	/* Throbber */
-        gboolean    throbber_active;
-        GtkWidget  *throbber;
+        /* spinner */
+        gboolean    spinner_active;
+        GtkWidget  *spinner;
 
         /* focus widget before the location bar has been shown temporarily */
         GtkWidget *last_focus_widget;
@@ -232,10 +232,10 @@ void               nautilus_navigation_window_remove_go_menu_callback    (Nautil
 void               nautilus_navigation_window_remove_go_menu_items       (NautilusNavigationWindow    *window);
 
 /* Navigation window toolbar */
-void               nautilus_navigation_window_activate_throbber                     (NautilusNavigationWindow    *window);
+void               nautilus_navigation_window_activate_spinner                     (NautilusNavigationWindow    *window);
 void               nautilus_navigation_window_initialize_toolbars                   (NautilusNavigationWindow    *window);
 void               nautilus_navigation_window_load_extension_toolbar_items          (NautilusNavigationWindow    *window);
-void               nautilus_navigation_window_set_throbber_active                   (NautilusNavigationWindow    *window, 
+void               nautilus_navigation_window_set_spinner_active                   (NautilusNavigationWindow    *window, 
                                                                                      gboolean                     active);
 void               nautilus_navigation_window_go_back                               (NautilusNavigationWindow    *window);
 void               nautilus_navigation_window_go_forward                            (NautilusNavigationWindow    *window);
