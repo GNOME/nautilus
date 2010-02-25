@@ -127,7 +127,6 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 	GtkWidget *toolbar;
 	NautilusWindow *win;
 	NautilusNavigationWindowPane *pane;
-	NautilusWindowSlot *slot;
 	GtkWidget *hpaned;
 	GtkWidget *vbox;
 
@@ -172,10 +171,6 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 	nautilus_window_set_active_pane (win, NAUTILUS_WINDOW_PANE (pane));
 
 	nautilus_navigation_window_initialize_actions (window);
-
-	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_EXTRA_PANE)) {
-		slot = create_extra_pane (window);
-	}
 
 	nautilus_navigation_window_initialize_menus (window);
 
@@ -1284,12 +1279,6 @@ nautilus_navigation_window_split_view_on (NautilusNavigationWindow *window)
 	} else {
 		nautilus_navigation_window_pane_hide_location_bar (pane, TRUE);
 	}
-
-	/* remember in gconf */
-	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_EXTRA_PANE) &&
-	    !eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_EXTRA_PANE)) {
-		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_EXTRA_PANE, TRUE);
-	}
 }
 
 void
@@ -1315,11 +1304,6 @@ nautilus_navigation_window_split_view_off (NautilusNavigationWindow *window)
 	}
 
 	nautilus_navigation_window_update_show_hide_menu_items (window);
-	/* remember in gconf */
-	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_EXTRA_PANE) &&
-	    eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_EXTRA_PANE)) {
-		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_EXTRA_PANE, FALSE);
-	}
 }
 
 gboolean
