@@ -4131,6 +4131,7 @@ size_allocate (GtkWidget *widget,
 static void
 realize (GtkWidget *widget)
 {
+	GtkWindow *window;
 	GdkBitmap *stipple;
 	GtkAdjustment *vadj, *hadj;
 	NautilusIconContainer *container;
@@ -4149,6 +4150,11 @@ realize (GtkWidget *widget)
 	nautilus_icon_dnd_init (container, NULL);
 
 	setup_label_gcs (container);
+
+ 	/* make us the focused widget */
+ 	g_assert (GTK_IS_WINDOW (gtk_widget_get_toplevel (widget)));
+	window = GTK_WINDOW (gtk_widget_get_toplevel (widget));
+	gtk_window_set_focus (window, widget);
 
 	stipple = eel_stipple_bitmap_for_screen (
 			gdk_drawable_get_screen (GDK_DRAWABLE (widget->window)));
@@ -4169,9 +4175,14 @@ static void
 unrealize (GtkWidget *widget)
 {
 	int i;
+	GtkWindow *window;
 	NautilusIconContainer *container;
 
 	container = NAUTILUS_ICON_CONTAINER (widget);
+
+        g_assert (GTK_IS_WINDOW (gtk_widget_get_toplevel (widget)));
+        window = GTK_WINDOW (gtk_widget_get_toplevel (widget));
+	gtk_window_set_focus (window, NULL);
 
 	for (i = 0; i < LAST_LABEL_COLOR; i++) {
 		if (container->details->label_gcs [i]) {
