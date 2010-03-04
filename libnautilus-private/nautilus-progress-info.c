@@ -197,7 +197,7 @@ static void
 status_icon_activate_cb (GtkStatusIcon *icon,
 			 GtkWidget *progress_window)
 {
-	if (GTK_WIDGET_VISIBLE (progress_window)) {
+	if (gtk_widget_get_visible (progress_window)) {
 		gtk_widget_hide (progress_window);
 	} else {
 		gtk_window_present (GTK_WINDOW (progress_window));

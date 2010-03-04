@@ -892,7 +892,7 @@ gboolean
 nautilus_navigation_window_toolbar_showing (NautilusNavigationWindow *window)
 {
 	if (window->details->toolbar != NULL) {
-		return GTK_WIDGET_VISIBLE (window->details->toolbar);
+		return gtk_widget_get_visible (window->details->toolbar);
 	}
 	/* If we're not visible yet we haven't changed visibility, so its TRUE */
 	return TRUE;
@@ -926,7 +926,7 @@ gboolean
 nautilus_navigation_window_status_bar_showing (NautilusNavigationWindow *window)
 {
 	if (NAUTILUS_WINDOW (window)->details->statusbar != NULL) {
-		return GTK_WIDGET_VISIBLE (NAUTILUS_WINDOW (window)->details->statusbar);
+		return gtk_widget_get_visible (NAUTILUS_WINDOW (window)->details->statusbar);
 	}
 	/* If we're not visible yet we haven't changed visibility, so its TRUE */
 	return TRUE;

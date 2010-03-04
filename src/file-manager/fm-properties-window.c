@@ -833,7 +833,7 @@ name_field_focus_out (NautilusEntry *name_field,
 {
 	g_assert (FM_IS_PROPERTIES_WINDOW (callback_data));
 
-	if (GTK_WIDGET_SENSITIVE (name_field)) {
+	if (gtk_widget_get_sensitive (GTK_WIDGET (name_field))) {
 		name_field_done_editing (name_field, FM_PROPERTIES_WINDOW (callback_data));
 	}
 

@@ -4218,7 +4218,7 @@ style_set (GtkWidget *widget,
 
 	nautilus_icon_container_theme_changed (NAUTILUS_ICON_CONTAINER (widget));	
 
-	if (GTK_WIDGET_REALIZED (widget)) {
+	if (gtk_widget_get_realized (widget)) {
 		invalidate_label_sizes (container);
 		nautilus_icon_container_request_update_all (container);
 	}
@@ -4254,7 +4254,7 @@ button_press_event (GtkWidget *widget,
 	/* Move focus to icon container, unless we're still renaming (to avoid exiting
 	 * renaming mode)
 	 */
-  	if (!GTK_WIDGET_HAS_FOCUS (widget) && !(is_renaming (container) || is_renaming_pending (container))) {
+  	if (!gtk_widget_has_focus (widget) && !(is_renaming (container) || is_renaming_pending (container))) {
     		gtk_widget_grab_focus (widget);
     	}
 
@@ -4485,7 +4485,7 @@ start_stretching (NautilusIconContainer *container)
 
 	/* Ensure the window itself is focused.. */
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (container));
-	if (toplevel != NULL && GTK_WIDGET_REALIZED (toplevel)) {
+	if (toplevel != NULL && gtk_widget_get_realized (toplevel)) {
 		eel_gdk_window_focus (toplevel->window, GDK_CURRENT_TIME);
 	}
 
@@ -5287,11 +5287,11 @@ nautilus_icon_container_real_start_interactive_search (NautilusIconContainer *co
 	GtkWidgetClass *entry_parent_class;
 
 	if (container->details->search_window != NULL &&
-	    GTK_WIDGET_VISIBLE (container->details->search_window)) {
+	    gtk_widget_get_visible (container->details->search_window)) {
 		return TRUE;
 	}
 
-	if (!GTK_WIDGET_HAS_FOCUS (container)) {
+	if (!gtk_widget_has_focus (GTK_WIDGET (container))) {
 		return FALSE;
 	}
 
@@ -8542,7 +8542,7 @@ nautilus_icon_container_get_label_color_and_gc (NautilusIconContainer *container
 	
 	if (is_name) {
 		if (is_highlight) {
-			if (GTK_WIDGET_HAS_FOCUS (GTK_WIDGET (container))) {
+			if (gtk_widget_has_focus (GTK_WIDGET (container))) {
 				idx = LABEL_COLOR_HIGHLIGHT;
 			} else {
 				idx = LABEL_COLOR_ACTIVE;
@@ -8556,7 +8556,7 @@ nautilus_icon_container_get_label_color_and_gc (NautilusIconContainer *container
 		}
 	} else {
 		if (is_highlight) {
-			if (GTK_WIDGET_HAS_FOCUS (GTK_WIDGET (container))) {
+			if (gtk_widget_has_focus (GTK_WIDGET (container))) {
 				idx = LABEL_INFO_COLOR_HIGHLIGHT;
 			} else {
 				idx = LABEL_INFO_COLOR_ACTIVE;
@@ -8601,7 +8601,7 @@ setup_label_gcs (NautilusIconContainer *container)
 	guint light_info_value, dark_info_value;
 	gboolean frame_text;
 	
-	if (!GTK_WIDGET_REALIZED (container))
+	if (!gtk_widget_get_realized (GTK_WIDGET (container)))
 		return;
 
 	widget = GTK_WIDGET (container);

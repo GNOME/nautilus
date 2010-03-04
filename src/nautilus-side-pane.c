@@ -210,7 +210,7 @@ menu_position_under (GtkMenu *menu,
 	GtkWidget *widget;
 	
 	g_return_if_fail (GTK_IS_BUTTON (user_data));
-	g_return_if_fail (GTK_WIDGET_NO_WINDOW (user_data));
+	g_return_if_fail (!gtk_widget_get_has_window (GTK_WIDGET (user_data)));
 
 	widget = GTK_WIDGET (user_data);
 	

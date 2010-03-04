@@ -970,7 +970,7 @@ key_press_callback (GtkWidget *widget, GdkEventKey *event, gpointer callback_dat
 			handled = FALSE;
 			break;
 		}
-		if (!GTK_WIDGET_HAS_FOCUS (GTK_WIDGET (FM_LIST_VIEW (view)->details->tree_view))) {
+		if (!gtk_widget_has_focus (GTK_WIDGET (FM_LIST_VIEW (view)->details->tree_view))) {
 			handled = FALSE;
 			break;
 		}
@@ -2594,7 +2594,7 @@ fm_list_view_click_policy_changed (FMDirectoryView *directory_view)
 		}
 
 		tree = view->details->tree_view;
-		if (GTK_WIDGET_REALIZED (GTK_WIDGET (tree))) {
+		if (gtk_widget_get_realized (GTK_WIDGET (tree))) {
 			win = GTK_WIDGET (tree)->window;
 			gdk_window_set_cursor (win, NULL);
 			

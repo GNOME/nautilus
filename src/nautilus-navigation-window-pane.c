@@ -721,7 +721,7 @@ gboolean
 nautilus_navigation_window_pane_path_bar_showing (NautilusNavigationWindowPane *pane)
 {
 	if (pane->path_bar != NULL) {
-		return GTK_WIDGET_VISIBLE (pane->path_bar);
+		return gtk_widget_get_visible (pane->path_bar);
 	}
 	/* If we're not visible yet we haven't changed visibility, so its TRUE */
 	return TRUE;
@@ -771,7 +771,7 @@ gboolean
 nautilus_navigation_window_pane_search_bar_showing (NautilusNavigationWindowPane *pane)
 {
 	if (pane->search_bar != NULL) {
-		return GTK_WIDGET_VISIBLE (pane->search_bar);
+		return gtk_widget_get_visible (pane->search_bar);
 	}
 	/* If we're not visible yet we haven't changed visibility, so its TRUE */
 	return TRUE;
@@ -806,7 +806,7 @@ nautilus_navigation_window_pane_location_bar_showing (NautilusNavigationWindowPa
 		return FALSE;
 	}
 	if (pane->location_bar != NULL) {
-		return GTK_WIDGET_VISIBLE (pane->location_bar);
+		return gtk_widget_get_visible (pane->location_bar);
 	}
 	/* If we're not visible yet we haven't changed visibility, so its TRUE */
 	return TRUE;

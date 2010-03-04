@@ -499,7 +499,7 @@ nautilus_bookmarks_window_save_geometry (GtkWindow *window)
 	g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
 
 	/* Don't bother if window is already closed */
-	if (GTK_WIDGET_VISIBLE (window)) {
+	if (gtk_widget_get_visible (GTK_WIDGET (window))) {
 		char *geometry_string;
 		
 		geometry_string = eel_gtk_window_get_geometry_string (window);

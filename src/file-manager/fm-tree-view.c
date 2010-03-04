@@ -226,7 +226,7 @@ show_selection_idle_callback (gpointer callback_data)
 		(view->details->sort_model, path);
 	gtk_tree_path_free (path);
 	gtk_tree_view_set_cursor (view->details->tree_widget, sort_path, NULL, FALSE);
-	if (GTK_WIDGET_REALIZED (view->details->tree_widget)) {
+	if (gtk_widget_get_realized (GTK_WIDGET (view->details->tree_widget))) {
 		gtk_tree_view_scroll_to_cell (view->details->tree_widget, sort_path, NULL, FALSE, 0, 0);
 	}
 	gtk_tree_path_free (sort_path);

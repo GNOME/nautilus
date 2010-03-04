@@ -131,7 +131,7 @@ nautilus_spatial_window_configure_event (GtkWidget *widget,
 	if (window->details->save_geometry_timeout_id != 0) {
 		g_source_remove (window->details->save_geometry_timeout_id);
 	}
-	if (GTK_WIDGET_VISIBLE (GTK_WIDGET (window)) && !NAUTILUS_IS_DESKTOP_WINDOW (window)) {
+	if (gtk_widget_get_visible (GTK_WIDGET (window)) && !NAUTILUS_IS_DESKTOP_WINDOW (window)) {
 		geometry_string = eel_gtk_window_get_geometry_string (GTK_WINDOW (window));
 	
 		/* If the last geometry is NULL the window must have just

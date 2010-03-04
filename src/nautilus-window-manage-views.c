@@ -594,7 +594,7 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 
         if ((flags & NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND) != 0) {
                 if (NAUTILUS_IS_SPATIAL_WINDOW (window) && !NAUTILUS_IS_DESKTOP_WINDOW (window)) {
-                        if (GTK_WIDGET_VISIBLE (target_window)) {
+                        if (gtk_widget_get_visible (GTK_WIDGET (target_window))) {
                                 nautilus_window_close (window);
                         } else {
                                 g_signal_connect_object (target_window,
@@ -1120,7 +1120,7 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 	}
 
 	if (view_id != NULL) {
-                if (!GTK_WIDGET_VISIBLE (window) && NAUTILUS_IS_SPATIAL_WINDOW (window)) {
+                if (!gtk_widget_get_visible (GTK_WIDGET (window)) && NAUTILUS_IS_SPATIAL_WINDOW (window)) {
 			/* We now have the metadata to set up the window position, etc */
 			setup_new_spatial_window (slot, file);
 		}
@@ -1130,7 +1130,7 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 		display_view_selection_failure (window, file,
 						location, error);
 
-		if (!GTK_WIDGET_VISIBLE (GTK_WIDGET (window))) {
+		if (!gtk_widget_get_visible (GTK_WIDGET (window))) {
 			/* Destroy never-had-a-chance-to-be-seen window. This case
 			 * happens when a new window cannot display its initial URI. 
 			 */
@@ -1817,7 +1817,7 @@ nautilus_window_report_view_failed (NautilusWindow *window,
 
 			fallback_load_location = g_object_ref (slot->pending_location);
 		} else {
-			if (!GTK_WIDGET_VISIBLE (window)) {
+			if (!gtk_widget_get_visible (GTK_WIDGET (window))) {
 				do_close_window = TRUE;
 			}
 		}

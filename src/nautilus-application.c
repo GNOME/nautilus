@@ -736,7 +736,7 @@ open_window (NautilusApplication *application,
 		g_object_unref (location);
 	}
 	
-	if (geometry != NULL && !GTK_WIDGET_VISIBLE (window)) {
+	if (geometry != NULL && !gtk_widget_get_visible (GTK_WIDGET (window))) {
 		/* never maximize windows opened from shell if a
 		 * custom geometry has been requested.
 		 */

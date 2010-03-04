@@ -129,7 +129,7 @@ splitter_is_hidden (NautilusHorizontalSplitter *splitter)
 	
 	parent = GTK_PANED (splitter);
 
-	return GTK_WIDGET_VISIBLE (parent->child1);
+	return gtk_widget_get_visible (parent->child1);
 }
 
 void
@@ -238,12 +238,12 @@ nautilus_horizontal_splitter_size_allocate (GtkWidget     *widget,
 
 	widget->allocation = *allocation;
 
-	if (paned->child2 != NULL && GTK_WIDGET_VISIBLE (paned->child2)) { 
+	if (paned->child2 != NULL && gtk_widget_get_visible (paned->child2)) { 
 		EEL_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate,
 				 (widget, allocation));
-	} else if (paned->child1 && GTK_WIDGET_VISIBLE (paned->child1)) {
+	} else if (paned->child1 && gtk_widget_get_visible (paned->child1)) {
 
-		if (GTK_WIDGET_REALIZED (widget)) {
+		if (gtk_widget_get_realized (widget)) {
 			gdk_window_hide (paned->handle);
 		}
 
@@ -259,7 +259,7 @@ nautilus_horizontal_splitter_size_allocate (GtkWidget     *widget,
 		
 		gtk_widget_size_allocate (paned->child1, &child_allocation);
 	} else
-		if (GTK_WIDGET_REALIZED (widget)) {
+		if (gtk_widget_get_realized (widget)) {
 			gdk_window_hide (paned->handle);
 		}
 

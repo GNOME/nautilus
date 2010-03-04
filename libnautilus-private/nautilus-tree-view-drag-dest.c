@@ -181,7 +181,7 @@ highlight_expose (GtkWidget *widget,
 	int width;
 	int height;
 
-	if (GTK_WIDGET_DRAWABLE (widget)) {
+	if (gtk_widget_is_drawable (widget)) {
 		bin_window = 
 			gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget));
 		

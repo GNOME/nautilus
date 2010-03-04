@@ -363,7 +363,7 @@ focus_changed_callback (GtkWidget *widget,
 			gpointer callback_data)
 {
 	/* Connect the component to the container if the widget has focus. */
-	if (GTK_WIDGET_HAS_FOCUS (widget)) {
+	if (gtk_widget_has_focus (widget)) {
 		if (!clipboard_items_are_merged_in (widget)) {
 			merge_in_clipboard_menu_items (G_OBJECT (widget), callback_data);
 		}

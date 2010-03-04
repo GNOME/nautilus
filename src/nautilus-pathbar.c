@@ -228,7 +228,7 @@ slider_timeout (gpointer user_data)
 
 	path_bar->drag_slider_timeout = 0;
 
-	if (GTK_WIDGET_VISIBLE (GTK_WIDGET (path_bar))) {
+	if (gtk_widget_get_visible (GTK_WIDGET (path_bar))) {
 		if (path_bar->drag_slider_timeout_for_up_button) {
 			nautilus_path_bar_scroll_up (path_bar);
 		} else {
@@ -780,7 +780,7 @@ static void
 nautilus_path_bar_remove_1 (GtkContainer *container,
 		       	    GtkWidget    *widget)
 {
-        gboolean was_visible = GTK_WIDGET_VISIBLE (widget);
+        gboolean was_visible = gtk_widget_get_visible (widget);
         gtk_widget_unparent (widget);
         if (was_visible) {
                 gtk_widget_queue_resize (GTK_WIDGET (container));
@@ -944,10 +944,10 @@ nautilus_path_bar_scroll_timeout (NautilusPathBar *path_bar)
         GDK_THREADS_ENTER ();
 
         if (path_bar->timer) {
-                if (GTK_WIDGET_HAS_FOCUS (path_bar->up_slider_button)) {
+                if (gtk_widget_has_focus (path_bar->up_slider_button)) {
 			nautilus_path_bar_scroll_up (path_bar);
 		} else {
-			if (GTK_WIDGET_HAS_FOCUS (path_bar->down_slider_button)) {
+			if (gtk_widget_has_focus (path_bar->down_slider_button)) {
 				nautilus_path_bar_scroll_down (path_bar);
 			}
          	}
@@ -984,7 +984,7 @@ nautilus_path_bar_slider_button_press (GtkWidget       *widget,
 	   			       GdkEventButton  *event,
 				       NautilusPathBar *path_bar)
 {
-        if (!GTK_WIDGET_HAS_FOCUS (widget)) {
+        if (!gtk_widget_has_focus (widget)) {
                 gtk_widget_grab_focus (widget);
 	}
 
@@ -1040,7 +1040,7 @@ static void
 nautilus_path_bar_state_changed (GtkWidget    *widget,
 			         GtkStateType  previous_state)
 {
-        if (!GTK_WIDGET_IS_SENSITIVE (widget)) {
+        if (!gtk_widget_get_sensitive (widget)) {
                 nautilus_path_bar_stop_scrolling (NAUTILUS_PATH_BAR (widget));
 	}
 }

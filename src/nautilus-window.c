@@ -359,7 +359,7 @@ nautilus_window_sync_allow_stop (NautilusWindow *window,
 			gtk_action_set_sensitive (action, slot->allow_stop);
 		}
 
-		if (GTK_WIDGET_REALIZED (GTK_WIDGET (window))) {
+		if (gtk_widget_get_realized (GTK_WIDGET (window))) {
 			update_cursor (window);
 		}
 

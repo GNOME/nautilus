@@ -176,7 +176,7 @@ find_tab_num_at_pos (NautilusNotebook *notebook, gint abs_x, gint abs_y)
 		tab = gtk_notebook_get_tab_label (nb, page);
 		g_return_val_if_fail (tab != NULL, -1);
 
-		if (!GTK_WIDGET_MAPPED (GTK_WIDGET (tab)))
+		if (!gtk_widget_get_mapped (GTK_WIDGET (tab)))
 		{
 			page_num++;
 			continue;
