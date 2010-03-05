@@ -757,6 +757,25 @@ action_tabs_move_right_callback (GtkAction *action,
 	nautilus_notebook_reorder_current_child_relative (NAUTILUS_NOTEBOOK (pane->notebook), 1);
 }
 
+static void
+action_tab_change_action_activate_callback (GtkAction *action, gpointer user_data)
+{
+	NautilusWindow *window;
+
+	window = NAUTILUS_WINDOW (user_data);
+	if (window && window->details->active_pane) {
+		GtkNotebook *notebook;
+		notebook = GTK_NOTEBOOK (NAUTILUS_NAVIGATION_WINDOW_PANE (window->details->active_pane)->notebook);
+		if (notebook) {
+			int num;
+			num = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (action), "num"));
+			if (num < gtk_notebook_get_n_pages (notebook)) {
+				gtk_notebook_set_current_page (notebook, num);
+			}
+		}
+	}
+}
+
 static const GtkActionEntry navigation_entries[] = {
   /* name, stock id, label */  { "Go", NULL, N_("_Go") },
   /* name, stock id, label */  { "Bookmarks", NULL, N_("_Bookmarks") },
@@ -848,6 +867,7 @@ nautilus_navigation_window_initialize_actions (NautilusNavigationWindow *window)
 	GtkActionGroup *action_group;
 	GtkUIManager *ui_manager;
 	GtkAction *action;
+	int i;
 	
 	action_group = gtk_action_group_new ("NavigationActions");
 	gtk_action_group_set_translation_domain (action_group, GETTEXT_PACKAGE);
@@ -914,13 +934,36 @@ nautilus_navigation_window_initialize_actions (NautilusNavigationWindow *window)
 				     action);
 	g_object_unref (action);
 
+	ui_manager = nautilus_window_get_ui_manager (NAUTILUS_WINDOW (window));
+
+	/* Alt+N for the first 10 tabs */
+	for (i = 0; i < 10; ++i) {
+		gchar action_name[80];
+		gchar accelerator[80];
+
+		snprintf(action_name, sizeof (action_name), "Tab%d", i);
+		action = gtk_action_new (action_name, NULL, NULL, NULL);
+		g_object_set_data (G_OBJECT (action), "num", GINT_TO_POINTER (i));
+		g_signal_connect (action, "activate",
+				G_CALLBACK (action_tab_change_action_activate_callback), window);
+		snprintf(accelerator, sizeof (accelerator), "<alt>%d", (i+1)%10);
+		gtk_action_group_add_action_with_accel (action_group, action, accelerator);
+		g_object_unref (action);
+		gtk_ui_manager_add_ui (ui_manager,
+				gtk_ui_manager_new_merge_id (ui_manager),
+				"/",
+				action_name,
+				action_name,
+				GTK_UI_MANAGER_ACCELERATOR,
+				FALSE);
+
+	}
+
 	action = gtk_action_group_get_action (action_group, NAUTILUS_ACTION_SEARCH);
 	g_object_set (action, "short_label", _("_Search"), NULL);
 
 	action = gtk_action_group_get_action (action_group, "ShowSearch");
 	gtk_action_set_sensitive (action, TRUE);
-
-	ui_manager = nautilus_window_get_ui_manager (NAUTILUS_WINDOW (window));
 
 	gtk_ui_manager_insert_action_group (ui_manager, action_group, 0);
 	g_object_unref (action_group); /* owned by ui_manager */
