@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2010-03-03 08:55+0000\n"
-"PO-Revision-Date: 2010-03-07 15:55+0100\n"
+"POT-Creation-Date: 2010-03-07 14:05+0000\n"
+"PO-Revision-Date: 2010-03-07 17:19+0100\n"
 "Last-Translator: Милош Поповић <gpopac@gmail.com>\n"
 "Language-Team: Serbian (sr) <gnom@prevod.org>\n"
 "MIME-Version: 1.0\n"
@@ -3268,7 +3268,6 @@ msgid "There is no application installed for %s files"
 msgstr "Не постоји програм за отварање %s датотека"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1282
-#| msgid "Select an Application"
 msgid "_Select Application"
 msgstr "И_забери програм"
 
@@ -3442,7 +3441,6 @@ msgstr "_Отвори"
 #. first %s is a filename and second %s is a file extension
 #: ../libnautilus-private/nautilus-open-with-dialog.c:962
 #, c-format
-#| msgid "Open %s and other files of type \"%s\" with:"
 msgid "Open %s and other %s document with:"
 msgstr "Отвори %s и остале „%s“ документе помоћу:"
 
@@ -3451,20 +3449,17 @@ msgstr "Отвори %s и остале „%s“ документе помоћу
 #: ../libnautilus-private/nautilus-open-with-dialog.c:966
 #: ../libnautilus-private/nautilus-open-with-dialog.c:997
 #, c-format
-#| msgid "Open With"
 msgid "Open %s with:"
 msgstr "Отвори %s помоћу:"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:967
 #, c-format
-#| msgid "There is no application installed for %s files"
 msgid "_Remember this application for %s documents"
 msgstr "_Увек отвори „%s“ документе овим програмом"
 
 #. Only in add mode - the %s here is a file extension
 #: ../libnautilus-private/nautilus-open-with-dialog.c:976
 #, c-format
-#| msgid "Open all files of type \"%s\" with:"
 msgid "Open all %s documents with:"
 msgstr "Отвори све „%s“ датотеке помоћу:"
 
@@ -3472,21 +3467,18 @@ msgstr "Отвори све „%s“ датотеке помоћу:"
 #. * of the type, eg "plain text document"
 #: ../libnautilus-private/nautilus-open-with-dialog.c:993
 #, c-format
-#| msgid "Open %s and other files of type \"%s\" with:"
 msgid "Open %s and other \"%s\" files with:"
 msgstr "Отвори %s и остале „%s“ датотеке помоћу:"
 
 #. %s is a file type description
 #: ../libnautilus-private/nautilus-open-with-dialog.c:999
 #, c-format
-#| msgid "There is no application installed for %s files"
 msgid "_Remember this application for \"%s\" files"
 msgstr "_Увек отвори „%s“ датотеке овим програмом"
 
 #. Only in add mode
 #: ../libnautilus-private/nautilus-open-with-dialog.c:1008
 #, c-format
-#| msgid "Open all files of type \"%s\" with:"
 msgid "Open all \"%s\" files with:"
 msgstr "Отвори све „%s“ датотеке помоћу:"
 
@@ -3702,7 +3694,7 @@ msgstr "Прави нови покретач"
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:726
 msgid "Change Desktop _Background"
-msgstr "Измените позадину _радне површине"
+msgstr "Из_мени позадину"
 
 #. tooltip
 #: ../src/file-manager/fm-desktop-icon-view.c:728
@@ -3914,25 +3906,6 @@ msgstr ""
 "улаз."
 
 #: ../src/file-manager/fm-directory-view.c:5681
-#| msgid ""
-#| "All executable files in this folder will appear in the Scripts menu. "
-#| "Choosing a script from the menu will run that script.\n"
-#| "\n"
-#| "When executed from a local folder, scripts will be passed the selected "
-#| "file names. When executed from a remote folder (e.g. a folder showing web "
-#| "or ftp content), scripts will be passed no parameters.\n"
-#| "\n"
-#| "In all cases, the following environment variables will be set by "
-#| "Nautilus, which the scripts may use:\n"
-#| "\n"
-#| "NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: newline-delimited paths for selected "
-#| "files (only if local)\n"
-#| "\n"
-#| "NAUTILUS_SCRIPT_SELECTED_URIS: newline-delimited URIs for selected files\n"
-#| "\n"
-#| "NAUTILUS_SCRIPT_CURRENT_URI: URI for current location\n"
-#| "\n"
-#| "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4256,13 +4229,11 @@ msgstr ""
 
 #. name, stock id, label
 #: ../src/file-manager/fm-directory-view.c:7225
-#| msgid "Copyright"
 msgid "Copy to"
 msgstr "Умножи у"
 
 #. name, stock id, label
 #: ../src/file-manager/fm-directory-view.c:7226
-#| msgid "Move Dow_n"
 msgid "Move to"
 msgstr "Премести у"
 
@@ -4624,17 +4595,14 @@ msgstr "Приказује или мења особине ове фасцикл�
 #. name, stock id, label
 #: ../src/file-manager/fm-directory-view.c:7424
 #: ../src/file-manager/fm-directory-view.c:7427
-#| msgid "Other Type..."
 msgid "_Other pane"
 msgstr "_Друга површ"
 
 #: ../src/file-manager/fm-directory-view.c:7425
-#| msgid "Open the selected item in this window"
 msgid "Copy the current selection to the other pane in the window"
 msgstr "Умножава изабрано у другу површ прозора"
 
 #: ../src/file-manager/fm-directory-view.c:7428
-#| msgid "Open the selected item in this window"
 msgid "Move the current selection to the other pane in the window"
 msgstr "Премешта изабрано у другу површ прозора"
 
@@ -4648,30 +4616,24 @@ msgid "_Home Folder"
 msgstr "_Лична фасцикла"
 
 #: ../src/file-manager/fm-directory-view.c:7432
-#| msgid "Stop the volume associated with the open folder"
 msgid "Copy the current selection to the home folder"
 msgstr "Умножава изабрано у личну фасциклу"
 
 #: ../src/file-manager/fm-directory-view.c:7436
-#| msgid "Mount the volume associated with the open folder"
 msgid "Move the current selection to the home folder"
 msgstr "Премешта изабрано у личну фасциклу"
 
 #. name, stock id, label
 #: ../src/file-manager/fm-directory-view.c:7439
 #: ../src/file-manager/fm-directory-view.c:7443
-#| msgid "Desktop"
 msgid "_Desktop"
 msgstr "_Радна површ"
 
 #: ../src/file-manager/fm-directory-view.c:7440
-#| msgid "Computer icon visible on desktop"
 msgid "Copy the current selection to the desktop"
 msgstr "Умножава изабрано на радну површину"
 
 #: ../src/file-manager/fm-directory-view.c:7444
-#| msgid "Move the selected file out of the trash"
-#| msgid_plural "Move the selected files out of the trash"
 msgid "Move the current selection to the desktop"
 msgstr "Премешта изабрано на радну површину"
 
@@ -4996,7 +4958,6 @@ msgstr "Превучено.txt"
 #. * data to a directory, if the source didn't supply a name.
 #.
 #: ../src/file-manager/fm-directory-view.c:10653
-#| msgid "dropped text.txt"
 msgid "dropped data"
 msgstr "Превучени подаци"
 
@@ -6170,7 +6131,6 @@ msgid "Never"
 msgstr "Никад"
 
 #: ../src/nautilus-file-management-properties.ui.h:71
-#| msgid "Open this folder in a folder window"
 msgid "Open each _folder its own window"
 msgstr "Отвори засебан прозор за сваку _фасциклу"
 
@@ -6353,8 +6313,6 @@ msgstr "Врста слике:"
 
 #: ../src/nautilus-image-properties-page.c:380
 #, c-format
-#| msgid "<b>Width:</b> %d pixel\n"
-#| msgid_plural "<b>Width:</b> %d pixels\n"
 msgid "<b>Width:</b> %d pixel"
 msgid_plural "<b>Width:</b> %d pixels"
 msgstr[0] "<b>Ширина:</b> %d пиксел"
@@ -6364,8 +6322,6 @@ msgstr[3] "<b>Ширина:</b> %d пиксел"
 
 #: ../src/nautilus-image-properties-page.c:386
 #, c-format
-#| msgid "<b>Height:</b> %d pixel\n"
-#| msgid_plural "<b>Height:</b> %d pixels\n"
 msgid "<b>Height:</b> %d pixel"
 msgid_plural "<b>Height:</b> %d pixels"
 msgstr[0] "<b>Висина:</b> %d пиксел"
@@ -6508,204 +6464,200 @@ msgid "The history location doesn't exist."
 msgstr "Путања историјата више не постоји."
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:761
+#: ../src/nautilus-navigation-window-menus.c:780
 msgid "_Go"
 msgstr "_Иди"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:762
+#: ../src/nautilus-navigation-window-menus.c:781
 msgid "_Bookmarks"
 msgstr "_Обележивачи"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:763
+#: ../src/nautilus-navigation-window-menus.c:782
 msgid "_Tabs"
 msgstr "_Листови"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:764
+#: ../src/nautilus-navigation-window-menus.c:783
 msgid "New _Window"
 msgstr "Нови _прозор"
 
 # tooltip
-#: ../src/nautilus-navigation-window-menus.c:765
+#: ../src/nautilus-navigation-window-menus.c:784
 msgid "Open another Nautilus window for the displayed location"
 msgstr "Отвара нови прозор Наутилуса за приказану путању"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:767
+#: ../src/nautilus-navigation-window-menus.c:786
 msgid "New _Tab"
 msgstr "Нови _лист"
 
 # tooltip
-#: ../src/nautilus-navigation-window-menus.c:768
+#: ../src/nautilus-navigation-window-menus.c:787
 msgid "Open another tab for the displayed location"
 msgstr "Отвара додатни лист за приказану путању"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:770
+#: ../src/nautilus-navigation-window-menus.c:789
 msgid "Open Folder W_indow"
 msgstr "Отвори прозор _фасцикле"
 
-#: ../src/nautilus-navigation-window-menus.c:771
+#: ../src/nautilus-navigation-window-menus.c:790
 msgid "Open a folder window for the displayed location"
 msgstr "Отвара приказану путању у прозору разгледача"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:773
+#: ../src/nautilus-navigation-window-menus.c:792
 msgid "Close _All Windows"
 msgstr "Затвори _све прозоре"
 
-#: ../src/nautilus-navigation-window-menus.c:774
+#: ../src/nautilus-navigation-window-menus.c:793
 msgid "Close all Navigation windows"
 msgstr "Затвара све управљачке прозоре"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:776
+#: ../src/nautilus-navigation-window-menus.c:795
 msgid "_Location..."
 msgstr "П_утања..."
 
-#: ../src/nautilus-navigation-window-menus.c:777
+#: ../src/nautilus-navigation-window-menus.c:796
 #: ../src/nautilus-spatial-window.c:928
 msgid "Specify a location to open"
 msgstr "Отвара наведену путању"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:779
+#: ../src/nautilus-navigation-window-menus.c:798
 msgid "Clea_r History"
 msgstr "О_чисти историјат"
 
-#: ../src/nautilus-navigation-window-menus.c:780
+#: ../src/nautilus-navigation-window-menus.c:799
 msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "Чисти садржај Иди менија и списка за Напред/Назад"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:782
-#| msgid "Width of the side pane"
+#: ../src/nautilus-navigation-window-menus.c:801
 msgid "Switch to other pane"
 msgstr "Пребаци се на другу површ"
 
-#: ../src/nautilus-navigation-window-menus.c:783
-#| msgid "The default width of the side pane in new windows."
+#: ../src/nautilus-navigation-window-menus.c:802
 msgid "Move focus to the other pane in a split view window"
 msgstr "Активира другу површ подељеног прозора"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:785
-#| msgid "The location is not a folder."
+#: ../src/nautilus-navigation-window-menus.c:804
 msgid "Same location as other pane"
 msgstr "Путања из другог прозора"
 
-#: ../src/nautilus-navigation-window-menus.c:786
+#: ../src/nautilus-navigation-window-menus.c:805
 msgid "Go to the same location as in the extra pane"
 msgstr "Иде на исту путању која је отворена у додатној површи"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:788
+#: ../src/nautilus-navigation-window-menus.c:807
 #: ../src/nautilus-spatial-window.c:936
 msgid "_Add Bookmark"
 msgstr "_Додај обележивач"
 
-#: ../src/nautilus-navigation-window-menus.c:789
+#: ../src/nautilus-navigation-window-menus.c:808
 #: ../src/nautilus-spatial-window.c:937
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Додаје обележивач за тренутну путању у овај мени"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:791
+#: ../src/nautilus-navigation-window-menus.c:810
 #: ../src/nautilus-spatial-window.c:939
 msgid "_Edit Bookmarks..."
 msgstr "_Уреди обележиваче..."
 
-#: ../src/nautilus-navigation-window-menus.c:792
+#: ../src/nautilus-navigation-window-menus.c:811
 #: ../src/nautilus-spatial-window.c:940
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "Приказује прозор за уређивање обележивача из приложеног менију"
 
-#: ../src/nautilus-navigation-window-menus.c:794
+#: ../src/nautilus-navigation-window-menus.c:813
 msgid "_Previous Tab"
 msgstr "_Претходни лист"
 
-#: ../src/nautilus-navigation-window-menus.c:795
+#: ../src/nautilus-navigation-window-menus.c:814
 msgid "Activate previous tab"
 msgstr "Иде на претходни лист"
 
-#: ../src/nautilus-navigation-window-menus.c:797
+#: ../src/nautilus-navigation-window-menus.c:816
 msgid "_Next Tab"
 msgstr "_Наредни лист"
 
-#: ../src/nautilus-navigation-window-menus.c:798
+#: ../src/nautilus-navigation-window-menus.c:817
 msgid "Activate next tab"
 msgstr "Иде на наредни лист"
 
-#: ../src/nautilus-navigation-window-menus.c:800
+#: ../src/nautilus-navigation-window-menus.c:819
 #: ../src/nautilus-navigation-window-pane.c:377
 msgid "Move Tab _Left"
 msgstr "Помери лист у_лево"
 
-#: ../src/nautilus-navigation-window-menus.c:801
+#: ../src/nautilus-navigation-window-menus.c:820
 msgid "Move current tab to left"
 msgstr "Помера текући лист улево"
 
-#: ../src/nautilus-navigation-window-menus.c:803
+#: ../src/nautilus-navigation-window-menus.c:822
 #: ../src/nautilus-navigation-window-pane.c:385
 msgid "Move Tab _Right"
 msgstr "Помери лист у_десно"
 
-#: ../src/nautilus-navigation-window-menus.c:804
+#: ../src/nautilus-navigation-window-menus.c:823
 msgid "Move current tab to right"
 msgstr "Помера текући лист удесно"
 
-#: ../src/nautilus-navigation-window-menus.c:806
-#: ../src/nautilus-navigation-window-menus.c:807
-#| msgid "Search"
+#: ../src/nautilus-navigation-window-menus.c:825
+#: ../src/nautilus-navigation-window-menus.c:826
 msgid "Show search"
 msgstr "Прикажи претрагу"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:813
+#: ../src/nautilus-navigation-window-menus.c:832
 msgid "_Main Toolbar"
 msgstr "_Главне алатке"
 
 #. tooltip
-#: ../src/nautilus-navigation-window-menus.c:814
+#: ../src/nautilus-navigation-window-menus.c:833
 msgid "Change the visibility of this window's main toolbar"
 msgstr "Мења видљивост главних алатки у овом прозору"
 
 #. is_active
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:818
+#: ../src/nautilus-navigation-window-menus.c:837
 msgid "_Side Pane"
 msgstr "_Бочна површ"
 
 #. tooltip
-#: ../src/nautilus-navigation-window-menus.c:819
+#: ../src/nautilus-navigation-window-menus.c:838
 msgid "Change the visibility of this window's side pane"
 msgstr "Мења видљивост бочног оквира у овом прозору"
 
 #. is_active
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:823
+#: ../src/nautilus-navigation-window-menus.c:842
 msgid "Location _Bar"
 msgstr "Поље са _путањом"
 
 #. tooltip
-#: ../src/nautilus-navigation-window-menus.c:824
+#: ../src/nautilus-navigation-window-menus.c:843
 msgid "Change the visibility of this window's location bar"
 msgstr "Мења видљивост поља са адресом у овом прозору"
 
 #. is_active
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:828
+#: ../src/nautilus-navigation-window-menus.c:847
 msgid "St_atusbar"
 msgstr "Линија са с_тањем"
 
 #. tooltip
-#: ../src/nautilus-navigation-window-menus.c:829
+#: ../src/nautilus-navigation-window-menus.c:848
 msgid "Change the visibility of this window's statusbar"
 msgstr "Мења видљивост стања у подножју овог прозора"
 
@@ -6713,65 +6665,62 @@ msgstr "Мења видљивост стања у подножју овог пр
 #. name, stock id
 #. label, accelerator
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:833
+#: ../src/nautilus-navigation-window-menus.c:852
 #: ../src/nautilus-spatial-window.c:942
 msgid "_Search for Files..."
 msgstr "_Тражи датотеке..."
 
 #. Accelerator is in ShowSearch
 #. tooltip
-#: ../src/nautilus-navigation-window-menus.c:835
-#| msgid "Locate documents and folders on this computer by name or content"
+#: ../src/nautilus-navigation-window-menus.c:854
 msgid "Search documents and folders by name"
 msgstr "Тражи документе и фасцикле на основу имена"
 
 #. is_active
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:839
+#: ../src/nautilus-navigation-window-menus.c:858
 msgid "Extra Pane"
 msgstr "Додатна површ"
 
 #. tooltip
-#: ../src/nautilus-navigation-window-menus.c:840
+#: ../src/nautilus-navigation-window-menus.c:859
 msgid "Open an extra folder view side-by-side"
 msgstr "Отвара додатни преглед фасцикле поред тренутног"
 
-#: ../src/nautilus-navigation-window-menus.c:864
+#: ../src/nautilus-navigation-window-menus.c:884
 msgid "_Back"
 msgstr "_Назад"
 
-#: ../src/nautilus-navigation-window-menus.c:866
+#: ../src/nautilus-navigation-window-menus.c:886
 msgid "Go to the previous visited location"
 msgstr "Иде на претходну посећену путању"
 
-#: ../src/nautilus-navigation-window-menus.c:867
+#: ../src/nautilus-navigation-window-menus.c:887
 msgid "Back history"
 msgstr "Назад у историјату"
 
-#: ../src/nautilus-navigation-window-menus.c:881
+#: ../src/nautilus-navigation-window-menus.c:901
 msgid "_Forward"
 msgstr "На_пред"
 
-#: ../src/nautilus-navigation-window-menus.c:883
+#: ../src/nautilus-navigation-window-menus.c:903
 msgid "Go to the next visited location"
 msgstr "Иде на следећу посећену путању"
 
-#: ../src/nautilus-navigation-window-menus.c:884
+#: ../src/nautilus-navigation-window-menus.c:904
 msgid "Forward history"
 msgstr "Напред у историјату"
 
-#: ../src/nautilus-navigation-window-menus.c:899
-#| msgid "Zoom"
+#: ../src/nautilus-navigation-window-menus.c:919
 msgid "_Zoom"
 msgstr "_Увећај"
 
-#: ../src/nautilus-navigation-window-menus.c:909
-#| msgid "Views"
+#: ../src/nautilus-navigation-window-menus.c:929
 msgid "_View As"
 msgstr "Пре_гледај као"
 
-#: ../src/nautilus-navigation-window-menus.c:918
+#: ../src/nautilus-navigation-window-menus.c:963
 msgid "_Search"
 msgstr "Т_ражи"
 
@@ -6784,7 +6733,7 @@ msgstr "_Затвори лист"
 msgid "%s - File Browser"
 msgstr "%s — Разгледач датотека"
 
-#: ../src/nautilus-notebook.c:378
+#: ../src/nautilus-notebook.c:377
 msgid "Close tab"
 msgstr "Затвори лист"
 
@@ -6797,7 +6746,6 @@ msgid "Show Notes"
 msgstr "Прикажи белешке"
 
 #: ../src/nautilus-places-sidebar.c:320
-#| msgid "Open your personal folder"
 msgid "Open the contents of your desktop in a folder"
 msgstr "Приказује садржај радне површи у виду фасцикле"
 
@@ -6819,7 +6767,6 @@ msgid "Mount and open %s"
 msgstr "Монтирај и отвори %s"
 
 #: ../src/nautilus-places-sidebar.c:510
-#| msgid "Open with %s"
 msgid "Open the trash"
 msgstr "Отвори смеће"
 
