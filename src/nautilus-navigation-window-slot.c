@@ -46,6 +46,10 @@ nautilus_navigation_window_slot_should_close_with_mount (NautilusNavigationWindo
 	GList *l;
 	gboolean close_with_mount;
 
+	if (slot->parent.pane->window->details->initiated_unmount) {
+		return FALSE;
+	}
+
 	mount_location = g_mount_get_root (mount);
 
 	close_with_mount = TRUE;

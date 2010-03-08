@@ -1578,26 +1578,6 @@ mount_added_callback (GVolumeMonitor *monitor,
 	nautilus_autorun (mount, autorun_show_window, application);
 }
 
-static inline int
-count_slots_of_windows (GList *window_list)
-{
-	NautilusWindow *window;
-	GList *slots, *l;
-	int count;
-
-	count = 0;
-
-	for (l = window_list; l != NULL; l = l->next) {
-		window = NAUTILUS_WINDOW (l->data);
-
-		slots = nautilus_window_get_slots (window);
-		count += g_list_length (slots);
-		g_list_free (slots);
-	}
-
-	return count;
-}
-
 static NautilusWindowSlot *
 get_first_navigation_slot (GList *slot_list)
 {
@@ -1610,6 +1590,19 @@ get_first_navigation_slot (GList *slot_list)
 	}
 
 	return NULL;
+}
+
+/* We redirect some slots and close others */
+static gboolean
+should_close_slot_with_mount (NautilusWindow *window,
+			      NautilusWindowSlot *slot,
+			      GMount *mount)
+{
+	if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
+		return TRUE;
+	}
+	return nautilus_navigation_window_slot_should_close_with_mount (NAUTILUS_NAVIGATION_WINDOW_SLOT (slot),
+									mount);
 }
 
 /* Called whenever a mount is unmounted. Check and see if there are
@@ -1629,10 +1622,12 @@ mount_removed_callback (GVolumeMonitor *monitor,
 	NautilusWindowSlot *slot;
 	NautilusWindowSlot *force_no_close_slot;
 	GFile *root, *computer;
+	gboolean unclosed_slot;
 
 	close_list = NULL;
 	force_no_close_slot = NULL;
-	
+	unclosed_slot = FALSE;
+
 	/* Check and see if any of the open windows are displaying contents from the unmounted mount */
 	window_list = nautilus_application_get_window_list ();
 
@@ -1654,6 +1649,13 @@ mount_removed_callback (GVolumeMonitor *monitor,
 					if (g_file_has_prefix (location, root) ||
 					    g_file_equal (location, root)) {
 						close_list = g_list_prepend (close_list, slot);
+
+						if (!should_close_slot_with_mount (window, slot, mount)) {
+							/* We'll be redirecting this, not closing */
+							unclosed_slot = TRUE;
+						}
+					} else {
+						unclosed_slot = TRUE;
 					}
 				} /* for all slots */
 			} /* for all panes */
@@ -1661,8 +1663,7 @@ mount_removed_callback (GVolumeMonitor *monitor,
 	}
 
 	if (nautilus_application_desktop_windows == NULL &&
-	    g_list_length (close_list) != 0 &&
-	    g_list_length (close_list) == count_slots_of_windows (window_list)) {
+	    !unclosed_slot) {
 		/* We are trying to close all open slots. Keep one navigation slot open. */
 		force_no_close_slot = get_first_navigation_slot (close_list);
 	}
@@ -1672,9 +1673,8 @@ mount_removed_callback (GVolumeMonitor *monitor,
 		slot = node->data;
 		window = slot->pane->window;
 
-		if (NAUTILUS_IS_SPATIAL_WINDOW (window) ||
-		    (nautilus_navigation_window_slot_should_close_with_mount (NAUTILUS_NAVIGATION_WINDOW_SLOT (slot), mount) &&
-		     slot != force_no_close_slot)) {
+		if (should_close_slot_with_mount (window, slot, mount) &&
+		    slot != force_no_close_slot) {
 			nautilus_window_slot_close (slot);
 		} else {
 			computer = g_file_new_for_uri ("computer:///");
