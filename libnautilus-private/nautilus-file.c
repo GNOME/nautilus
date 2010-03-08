@@ -1217,6 +1217,25 @@ nautilus_file_mount (NautilusFile                   *file,
 	}
 }
 
+typedef struct {
+	NautilusFile *file;
+	NautilusFileOperationCallback callback;
+	gpointer callback_data;
+} UnmountData;
+
+static void
+unmount_done (void *callback_data)
+{
+	UnmountData *data;
+
+	data = (UnmountData *)callback_data;
+	if (data->callback) {
+		data->callback (data->file, NULL, NULL, data->callback_data);
+	}
+	nautilus_file_unref (data->file);
+	g_free (data);
+}
+
 void
 nautilus_file_unmount (NautilusFile                   *file,
 		       GMountOperation                *mount_op,
@@ -1225,6 +1244,7 @@ nautilus_file_unmount (NautilusFile                   *file,
 		       gpointer                        callback_data)
 {
 	GError *error;
+	UnmountData *data;
 
 	if (file->details->can_unmount) {
 		if (NAUTILUS_FILE_GET_CLASS (file)->unmount != NULL) {
@@ -1240,7 +1260,13 @@ nautilus_file_unmount (NautilusFile                   *file,
 		}
 	} else if (file->details->mount != NULL &&
 		   g_mount_can_unmount (file->details->mount)) {
-		nautilus_file_operations_unmount_mount (NULL, file->details->mount, FALSE, TRUE);
+		data = g_new0 (UnmountData, 1);
+		data->file = nautilus_file_ref (file);
+		data->callback = callback;
+		data->callback_data = callback_data;
+		nautilus_file_operations_unmount_mount_full (NULL, file->details->mount, FALSE, TRUE, unmount_done, data);
+	} else if (callback) {
+		callback (file, NULL, NULL, callback_data);
 	}
 }
 
@@ -1252,6 +1278,7 @@ nautilus_file_eject (NautilusFile                   *file,
 		     gpointer                        callback_data)
 {
 	GError *error;
+	UnmountData *data;
 
 	if (file->details->can_eject) {
 		if (NAUTILUS_FILE_GET_CLASS (file)->eject != NULL) {
@@ -1267,7 +1294,13 @@ nautilus_file_eject (NautilusFile                   *file,
 		}
 	} else if (file->details->mount != NULL &&
 		   g_mount_can_eject (file->details->mount)) {
-		nautilus_file_operations_unmount_mount (NULL, file->details->mount, TRUE, TRUE);
+		data = g_new0 (UnmountData, 1);
+		data->file = nautilus_file_ref (file);
+		data->callback = callback;
+		data->callback_data = callback_data;
+		nautilus_file_operations_unmount_mount_full (NULL, file->details->mount, TRUE, TRUE, unmount_done, data);
+	} else if (callback) {
+		callback (file, NULL, NULL, callback_data);
 	}
 }
 
