@@ -1996,12 +1996,14 @@ typedef struct {
 	gboolean eject;
 	GMount *mount;
 	GtkWindow *parent_window;
+	NautilusUnmountCallback callback;
+	gpointer callback_data;
 } UnmountData;
 
 static void
 unmount_mount_callback (GObject *source_object,
-			 GAsyncResult *res,
-			 gpointer user_data)
+			GAsyncResult *res,
+			gpointer user_data)
 {
 	UnmountData *data = user_data;
 	GError *error;
@@ -2029,6 +2031,13 @@ unmount_mount_callback (GObject *source_object,
 					       data->parent_window);
 			g_free (primary);
 		}
+	}
+
+	if (data->callback) {
+		data->callback (data->callback_data);
+	}
+
+	if (error != NULL) {
 		g_error_free (error);
 	}
 	
@@ -2204,15 +2213,19 @@ prompt_empty_trash (GtkWindow *parent_window)
 }
 
 void
-nautilus_file_operations_unmount_mount (GtkWindow                      *parent_window,
-					GMount                         *mount,
-					gboolean                        eject,
-					gboolean                        check_trash)
+nautilus_file_operations_unmount_mount_full (GtkWindow                      *parent_window,
+					     GMount                         *mount,
+					     gboolean                        eject,
+					     gboolean                        check_trash,
+					     NautilusUnmountCallback         callback,
+					     gpointer                        callback_data)
 {
 	UnmountData *data;
 	int response;
 
 	data = g_new0 (UnmountData, 1);
+	data->callback = callback;
+	data->callback_data = callback_data;
 	if (parent_window) {
 		data->parent_window = parent_window;
 		eel_add_weak_pointer (&data->parent_window);
@@ -2239,6 +2252,9 @@ nautilus_file_operations_unmount_mount (GtkWindow                      *parent_w
 					   NULL);
 			return;
 		} else if (response == GTK_RESPONSE_CANCEL) {
+			if (callback) {
+				callback (callback_data);
+			}
 			eel_remove_weak_pointer (&data->parent_window);
 			g_object_unref (data->mount);
 			g_free (data);
@@ -2247,6 +2263,16 @@ nautilus_file_operations_unmount_mount (GtkWindow                      *parent_w
 	}
 	
 	do_unmount (data);
+}
+
+void
+nautilus_file_operations_unmount_mount (GtkWindow                      *parent_window,
+					GMount                         *mount,
+					gboolean                        eject,
+					gboolean                        check_trash)
+{
+	nautilus_file_operations_unmount_mount_full (parent_window, mount, eject,
+						     check_trash, NULL, NULL);
 }
 
 static void
