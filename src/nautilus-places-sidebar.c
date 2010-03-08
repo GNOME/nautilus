@@ -1738,11 +1738,24 @@ mount_shortcut_cb (GtkMenuItem           *item,
 }
 
 static void
+unmount_done (gpointer data)
+{
+	NautilusWindow *window;
+
+	window = data;
+	nautilus_window_info_set_initiated_unmount (window, FALSE);
+	g_object_unref (window);
+}
+
+static void
 do_unmount (GMount *mount,
 	    NautilusPlacesSidebar *sidebar)
 {
 	if (mount != NULL) {
-		nautilus_file_operations_unmount_mount (NULL, mount, FALSE, TRUE);
+		nautilus_window_info_set_initiated_unmount (sidebar->window, TRUE);
+		nautilus_file_operations_unmount_mount_full (NULL, mount, FALSE, TRUE,
+							     unmount_done,
+							     g_object_ref (sidebar->window));
 	}
 }
 
@@ -1778,9 +1791,15 @@ drive_eject_cb (GObject *source_object,
 		GAsyncResult *res,
 		gpointer user_data)
 {
+	NautilusWindow *window;
 	GError *error;
 	char *primary;
 	char *name;
+
+	window = user_data;
+	nautilus_window_info_set_initiated_unmount (window, FALSE);
+	g_object_unref (window);
+
 	error = NULL;
 	if (!g_drive_eject_with_operation_finish (G_DRIVE (source_object), res, &error)) {
 		if (error->code != G_IO_ERROR_FAILED_HANDLED) {
@@ -1801,9 +1820,15 @@ volume_eject_cb (GObject *source_object,
 		GAsyncResult *res,
 		gpointer user_data)
 {
+	NautilusWindow *window;
 	GError *error;
 	char *primary;
 	char *name;
+
+	window = user_data;
+	nautilus_window_info_set_initiated_unmount (window, FALSE);
+	g_object_unref (window);
+
 	error = NULL;
 	if (!g_volume_eject_with_operation_finish (G_VOLUME (source_object), res, &error)) {
 		if (error->code != G_IO_ERROR_FAILED_HANDLED) {
@@ -1824,9 +1849,15 @@ mount_eject_cb (GObject *source_object,
 		GAsyncResult *res,
 		gpointer user_data)
 {
+	NautilusWindow *window;
 	GError *error;
 	char *primary;
 	char *name;
+
+	window = user_data;
+	nautilus_window_info_set_initiated_unmount (window, FALSE);
+	g_object_unref (window);
+
 	error = NULL;
 	if (!g_mount_eject_with_operation_finish (G_MOUNT (source_object), res, &error)) {
 		if (error->code != G_IO_ERROR_FAILED_HANDLED) {
@@ -1852,11 +1883,17 @@ do_eject (GMount *mount,
 
 	mount_op = gtk_mount_operation_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (sidebar))));
 	if (mount != NULL) {
-		g_mount_eject_with_operation (mount, 0, mount_op, NULL, mount_eject_cb, NULL);
+		nautilus_window_info_set_initiated_unmount (sidebar->window, TRUE);
+		g_mount_eject_with_operation (mount, 0, mount_op, NULL, mount_eject_cb,
+					      g_object_ref (sidebar->window));
 	} else if (volume != NULL) {
-		g_volume_eject_with_operation (volume, 0, mount_op, NULL, volume_eject_cb, NULL);
+		nautilus_window_info_set_initiated_unmount (sidebar->window, TRUE);
+		g_volume_eject_with_operation (volume, 0, mount_op, NULL, volume_eject_cb,
+					      g_object_ref (sidebar->window));
 	} else if (drive != NULL) {
-		g_drive_eject_with_operation (drive, 0, mount_op, NULL, drive_eject_cb, NULL);
+		nautilus_window_info_set_initiated_unmount (sidebar->window, TRUE);
+		g_drive_eject_with_operation (drive, 0, mount_op, NULL, drive_eject_cb,
+					      g_object_ref (sidebar->window));
 	}
 	g_object_unref (mount_op);
 }
@@ -2063,9 +2100,14 @@ drive_stop_cb (GObject *source_object,
 	       GAsyncResult *res,
 	       gpointer user_data)
 {
+	NautilusWindow *window;
 	GError *error;
 	char *primary;
 	char *name;
+
+	window = user_data;
+	nautilus_window_info_set_initiated_unmount (window, FALSE);
+	g_object_unref (window);
 
 	error = NULL;
 	if (!g_drive_poll_for_media_finish (G_DRIVE (source_object), res, &error)) {
@@ -2101,7 +2143,9 @@ stop_shortcut_cb (GtkMenuItem           *item,
 		GMountOperation *mount_op;
 
 		mount_op = gtk_mount_operation_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (sidebar))));
-		g_drive_stop (drive, G_MOUNT_UNMOUNT_NONE, mount_op, NULL, drive_stop_cb, NULL);
+		nautilus_window_info_set_initiated_unmount (sidebar->window, TRUE);
+		g_drive_stop (drive, G_MOUNT_UNMOUNT_NONE, mount_op, NULL, drive_stop_cb,
+			      g_object_ref (sidebar->window));
 		g_object_unref (mount_op);
 	}
 	g_object_unref (drive);

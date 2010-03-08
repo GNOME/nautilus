@@ -484,6 +484,8 @@ void                fm_directory_view_remove_subdirectory             (FMDirecto
 									NautilusDirectory*directory);
 
 gboolean            fm_directory_view_is_editable                     (FMDirectoryView *view);
+void		    fm_directory_view_set_initiated_unmount	      (FMDirectoryView *view,
+									gboolean inititated_unmount);
 
 /* operations affecting two directory views */
 void                fm_directory_view_move_copy_items_between_views   (FMDirectoryView *source, FMDirectoryView *target, gboolean copy);
