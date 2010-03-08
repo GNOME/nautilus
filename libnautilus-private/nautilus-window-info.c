@@ -276,3 +276,21 @@ nautilus_window_info_get_extra_slot (NautilusWindowInfo *window)
 
 	return (* NAUTILUS_WINDOW_INFO_GET_IFACE (window)->get_extra_slot) (window);
 }
+
+gboolean
+nautilus_window_info_get_initiated_unmount (NautilusWindowInfo *window)
+{
+	g_return_val_if_fail (NAUTILUS_IS_WINDOW_INFO (window), FALSE);
+
+	return (* NAUTILUS_WINDOW_INFO_GET_IFACE (window)->get_initiated_unmount) (window);
+}
+
+void
+nautilus_window_info_set_initiated_unmount (NautilusWindowInfo *window, gboolean initiated_unmount)
+{
+	g_return_if_fail (NAUTILUS_IS_WINDOW_INFO (window));
+
+	(* NAUTILUS_WINDOW_INFO_GET_IFACE (window)->set_initiated_unmount) (window,
+									    initiated_unmount);
+
+}

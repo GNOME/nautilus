@@ -1847,6 +1847,19 @@ nautilus_window_set_hidden_files_mode (NautilusWindowInfo *window,
 	g_signal_emit_by_name (window, "hidden_files_mode_changed");
 }
 
+static gboolean
+nautilus_window_get_initiated_unmount (NautilusWindowInfo *window)
+{
+	return window->details->initiated_unmount;
+}
+
+static void
+nautilus_window_set_initiated_unmount (NautilusWindowInfo *window,
+				       gboolean initiated_unmount)
+{
+	window->details->initiated_unmount = initiated_unmount;
+}
+
 static NautilusBookmarkList *
 nautilus_window_get_bookmark_list (NautilusWindowInfo *window)
 {
@@ -1940,6 +1953,8 @@ nautilus_window_info_iface_init (NautilusWindowInfoIface *iface)
 	iface->set_hidden_files_mode = nautilus_window_set_hidden_files_mode;
 	iface->get_active_slot = nautilus_window_get_active_slot;
 	iface->get_extra_slot = nautilus_window_get_extra_slot;
+	iface->get_initiated_unmount = nautilus_window_get_initiated_unmount;
+	iface->set_initiated_unmount = nautilus_window_set_initiated_unmount;
 }
 
 static void
