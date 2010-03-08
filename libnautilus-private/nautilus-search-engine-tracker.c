@@ -25,13 +25,161 @@
 #include "nautilus-search-engine-tracker.h"
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-glib-extensions.h>
+#include <gmodule.h>
+#include <string.h>
 
-#ifdef HAVE_TRACKER_0_7
-#include <libtracker-client/tracker.h>
-#else
-#include <tracker.h>
-#endif
 
+typedef struct _TrackerClient TrackerClient;
+
+
+/* tracker 0.6 API */
+typedef void (*TrackerArrayReply) (char **result, GError *error, gpointer user_data);
+
+static TrackerClient *	(*tracker_connect)		(gboolean enable_warnings) = NULL;
+static TrackerClient *	(*tracker_connect_07)		(gboolean enable_warnings,
+							 gint     timeout) = NULL;
+static void		(*tracker_disconnect)		(TrackerClient *client) = NULL;
+static void		(*tracker_cancel_last_call)	(TrackerClient *client) = NULL;
+static int		(*tracker_get_version)		(TrackerClient *client, GError **error) = NULL;
+
+
+static void (*tracker_search_metadata_by_text_async) (TrackerClient *client,
+						      const char *query,
+						      TrackerArrayReply callback,
+						      gpointer user_data) = NULL;
+static void (*tracker_search_metadata_by_text_and_mime_async) (TrackerClient *client,
+							       const char *query,
+							       const char **mimes,
+							       TrackerArrayReply callback,
+							       gpointer user_data) = NULL;
+static void (*tracker_search_metadata_by_text_and_location_async) (TrackerClient *client,
+								   const char *query,
+								   const char *location,
+								   TrackerArrayReply callback,
+								   gpointer user_data) = NULL;
+static void (*tracker_search_metadata_by_text_and_mime_and_location_async) (TrackerClient *client,
+									    const char *query,
+									    const char **mimes,
+									    const char *location,
+									    TrackerArrayReply callback,
+									    gpointer user_data) = NULL;
+
+
+/* tracker 0.8 API */
+typedef enum {
+	TRACKER_CLIENT_ENABLE_WARNINGS = 1 << 0
+} TrackerClientFlags;
+
+typedef void (*TrackerReplyGPtrArray) (GPtrArray *result,
+				       GError    *error,
+				       gpointer   user_data);
+
+static TrackerClient *	(*tracker_client_new)			(TrackerClientFlags      flags,
+								 gint                    timeout) = NULL;
+
+static gboolean		(*tracker_cancel_call)			(TrackerClient          *client,
+								 guint                   call_id) = NULL;
+
+/*  -- we reuse tracker_cancel_last_call() from above, declaration is equal
+ *
+ *  static gboolean		(*tracker_cancel_last_call)		(TrackerClient          *client) = NULL;
+ */
+
+static gchar *		(*tracker_sparql_escape)		(const gchar            *str) = NULL;
+
+static guint		(*tracker_resources_sparql_query_async)	(TrackerClient          *client,
+								 const gchar            *query,
+								 TrackerReplyGPtrArray   callback,
+								 gpointer                user_data) = NULL;
+
+
+#define MAP(a, b) { #a, (gpointer *)&a, b }
+
+typedef struct {
+	const char	*fn_name;
+	gpointer	*fn_ptr_ref;
+	gboolean	 mandatory;
+} TrackerDlMapping;
+
+static TrackerDlMapping tracker_dl_mapping[] = {
+	MAP (tracker_connect, TRUE),
+	MAP (tracker_disconnect, TRUE),
+	MAP (tracker_cancel_last_call, TRUE),
+	MAP (tracker_search_metadata_by_text_async, TRUE),
+	MAP (tracker_search_metadata_by_text_and_mime_async, TRUE),
+	MAP (tracker_search_metadata_by_text_and_location_async, TRUE),
+	MAP (tracker_search_metadata_by_text_and_mime_and_location_async, TRUE),
+	MAP (tracker_get_version, FALSE)
+};
+
+static TrackerDlMapping tracker_dl_mapping_08[] = {
+	MAP (tracker_client_new, TRUE),
+	MAP (tracker_cancel_call, TRUE),
+	MAP (tracker_cancel_last_call, TRUE),
+	MAP (tracker_sparql_escape, TRUE),
+	MAP (tracker_resources_sparql_query_async, TRUE)
+};
+#undef MAP
+
+
+static gboolean tracker_07;
+static gboolean tracker_08;
+
+
+static gboolean
+load_symbols (GModule *tracker, TrackerDlMapping mapping[], gint num_elements)
+{
+	int i;
+
+	for (i = 0; i < num_elements; i++) {
+		if (! g_module_symbol (tracker, mapping[i].fn_name,
+		                       mapping[i].fn_ptr_ref) &&
+		      mapping[i].mandatory) {
+			g_warning ("Missing symbol '%s' in libtracker\n",
+				    mapping[i].fn_name);
+			g_module_close (tracker);
+
+			for (i = 0; i < num_elements; i++)
+				mapping[i].fn_ptr_ref = NULL;
+
+			return FALSE;
+		}
+	}
+
+	return TRUE;
+}
+
+static void
+open_libtracker (void)
+{
+	static gboolean done = FALSE;
+
+	if (! done) {
+		GModule *tracker;
+
+		done = TRUE;
+		tracker_07 = TRUE;
+		tracker_08 = TRUE;
+
+		tracker = g_module_open ("libtracker-client-0.7.so.0", G_MODULE_BIND_LAZY | G_MODULE_BIND_LOCAL);
+		if (! tracker) {
+			tracker = g_module_open ("libtrackerclient.so.0", G_MODULE_BIND_LAZY | G_MODULE_BIND_LOCAL);
+			tracker_07 = FALSE;
+			tracker_08 = FALSE;
+		}
+		if (! tracker)
+			return;
+
+		if (tracker_08)
+			tracker_08 = load_symbols (tracker, tracker_dl_mapping_08, G_N_ELEMENTS (tracker_dl_mapping_08));
+		if (! tracker_08) {
+			if (! load_symbols (tracker, tracker_dl_mapping, G_N_ELEMENTS (tracker_dl_mapping)))
+				return;
+			if (tracker_07)
+				tracker_connect_07 = (gpointer)tracker_connect;
+		}
+	}
+}
 
 
 struct NautilusSearchEngineTrackerDetails {
@@ -62,7 +210,11 @@ finalize (GObject *object)
 		tracker->details->query = NULL;
 	}
 
-	tracker_disconnect (tracker->details->client);
+	if (tracker_08) {
+		g_object_unref (tracker->details->client);
+	} else {
+		tracker_disconnect (tracker->details->client);
+	}
 
 	g_free (tracker->details);
 
@@ -70,12 +222,32 @@ finalize (GObject *object)
 }
 
 
+/* stolen from tracker sources, tracker.c */
 static void
-search_callback (char **results, GError *error, gpointer user_data)
+sparql_append_string_literal (GString     *sparql,
+                              const gchar *str)
+{
+	char *s;
+
+	s = tracker_sparql_escape (str);
+
+	g_string_append_c (sparql, '"');
+	g_string_append (sparql, s);
+	g_string_append_c (sparql, '"');
+
+	g_free (s);
+}
+
+
+static void
+search_callback (gpointer results, GError *error, gpointer user_data)
 {
 	NautilusSearchEngineTracker *tracker;
 	char **results_p;
+	GPtrArray *OUT_result;
 	GList *hit_uris;
+	gint i;
+	char *uri;
 	
 	tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (user_data);
 	hit_uris = NULL;
@@ -83,32 +255,42 @@ search_callback (char **results, GError *error, gpointer user_data)
 	tracker->details->query_pending = FALSE;
 
 	if (error) {
-		nautilus_search_engine_error ( NAUTILUS_SEARCH_ENGINE (tracker), error->message);
+		nautilus_search_engine_error (NAUTILUS_SEARCH_ENGINE (tracker), error->message);
 		g_error_free (error);
 		return;
 	}
 
-	if (!results) {
+	if (! results) {
 		return;
 	}
 	
-	for (results_p = results; *results_p; results_p++) {
-		
-		char *uri;
+	if (tracker_08) {
+		/* new tracker 0.8 API */
+		OUT_result = (GPtrArray*) results;
 
-#ifdef HAVE_TRACKER_0_7
-		uri = g_strdup ((char *)*results_p);
-#else
-		uri = g_filename_to_uri ((char *)*results_p, NULL, NULL);
-#endif
-		if (uri) {
-			hit_uris = g_list_prepend (hit_uris, (char *)uri);
+		for (i = 0; i < OUT_result->len; i++) {
+			uri = g_strdup (((gchar **) OUT_result->pdata[i])[0]);
+			if (uri) {
+				hit_uris = g_list_prepend (hit_uris, (char *)uri);
+			}
 		}
+
+		g_ptr_array_foreach (OUT_result, (GFunc) g_free, NULL);
+		g_ptr_array_free (OUT_result, TRUE);
+
+	} else {
+		/* old tracker 0.6 API */
+		for (results_p = results; *results_p; results_p++) {
+			uri = tracker_07 ? g_strdup ((char *)*results_p) : g_filename_to_uri ((char *)*results_p, NULL, NULL);
+			if (uri) {
+				hit_uris = g_list_prepend (hit_uris, (char *)uri);
+			}
+		}
+		g_strfreev ((gchar **)results);
 	}
 
 	nautilus_search_engine_hits_added (NAUTILUS_SEARCH_ENGINE (tracker), hit_uris);
 	nautilus_search_engine_finished (NAUTILUS_SEARCH_ENGINE (tracker));
-	g_strfreev  (results);
 	eel_g_list_free_deep (hit_uris);
 }
 
@@ -121,8 +303,10 @@ nautilus_search_engine_tracker_start (NautilusSearchEngine *engine)
 	char 	*search_text, *location, *location_uri;
 	char 	**mimes;
 	int 	i, mime_count;
+	GString *sparql;
 
 	tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (engine);
+
 
 	if (tracker->details->query_pending) {
 		return;
@@ -131,7 +315,7 @@ nautilus_search_engine_tracker_start (NautilusSearchEngine *engine)
 	if (tracker->details->query == NULL) {
 		return;
 	}
-	
+
 	search_text = nautilus_query_get_text (tracker->details->query);
 
 	mimetypes = nautilus_query_get_mime_types (tracker->details->query);
@@ -139,11 +323,7 @@ nautilus_search_engine_tracker_start (NautilusSearchEngine *engine)
 	location_uri = nautilus_query_get_location (tracker->details->query);
 
 	if (location_uri) {
-#ifdef HAVE_TRACKER_0_7
-		location = g_strdup (location_uri);
-#else
-		location = g_filename_from_uri (location_uri, NULL, NULL);
-#endif
+		location = (tracker_07 && !tracker_08) ? g_strdup (location_uri) : g_filename_from_uri (location_uri, NULL, NULL);
 		g_free (location_uri);
 	} else {
 		location = NULL;
@@ -152,51 +332,94 @@ nautilus_search_engine_tracker_start (NautilusSearchEngine *engine)
 	mime_count  = g_list_length (mimetypes);
 
 	i = 0;
+	sparql = NULL;
 
-	/* convert list into array */
-	if (mime_count > 0) {
+	if (tracker_08) {
+		/* new tracker 0.8 API */
+		if (mime_count > 0) {
+			sparql = g_string_new ("SELECT nie:url(?file) WHERE { ?file a nfo:FileDataObject ; nie:mimeType ?mime ; fts:match ");
+			sparql_append_string_literal (sparql, search_text);
 
-		mimes = g_new (char *, (mime_count + 1));
-		
-		for (l = mimetypes; l != NULL; l = l->next) {
-			mimes[i] = g_strdup (l->data);
-			i++;
-		}
+			g_string_append (sparql, " . FILTER (");
+			if (location) {
+				g_string_append (sparql, "fn:starts-with(?file,");
+				sparql_append_string_literal (sparql, location);
+				g_string_append (sparql, ")");
+				g_string_append (sparql, " && (");
+			}
 
-		mimes[mime_count] = NULL;			
 
-		if (location) {
-			tracker_search_metadata_by_text_and_mime_and_location_async (tracker->details->client,
-										     search_text, (const char **)mimes, location,
-										     search_callback, 
-										     tracker);
-			g_free (location);
+			for (l = mimetypes; l != NULL; l = l->next) {
+				if (l != mimetypes) {
+					g_string_append (sparql, " || ");
+				}
+
+				g_string_append (sparql, "?mime = ");
+				sparql_append_string_literal (sparql, l->data);
+			}
+
+			if (location)
+				g_string_append (sparql, ")");
+			g_string_append (sparql, ") }");
 		} else {
-			tracker_search_metadata_by_text_and_mime_async (tracker->details->client, 
-									search_text, (const char**)mimes, 
-									search_callback,
-									tracker);
+			sparql = g_string_new ("SELECT nie:url(?file) WHERE { ?file a nfo:FileDataObject ; fts:match ");
+			sparql_append_string_literal (sparql, search_text);
+			if (location) {
+				g_string_append (sparql, " . FILTER (fn:starts-with(?file,");
+				sparql_append_string_literal (sparql, location);
+				g_string_append (sparql, "))");
+			}
+			g_string_append (sparql, " }");
 		}
 
-		g_strfreev (mimes);
-		
-
+		tracker_resources_sparql_query_async (tracker->details->client, sparql->str, (TrackerReplyGPtrArray) search_callback, tracker);
+		g_string_free (sparql, TRUE);
 	} else {
-		if (location) {
-			tracker_search_metadata_by_text_and_location_async (tracker->details->client,
-									    search_text, 
-									    location, 
-								 	    search_callback,
-									    tracker);
-			g_free (location);
+		/* old tracker 0.6 API */
+		if (mime_count > 0) {
+			/* convert list into array */
+			mimes = g_new (char *, (mime_count + 1));
+
+			for (l = mimetypes; l != NULL; l = l->next) {
+				mimes[i] = g_strdup (l->data);
+				i++;
+			}
+
+			mimes[mime_count] = NULL;
+
+			if (location) {
+				tracker_search_metadata_by_text_and_mime_and_location_async (tracker->details->client,
+											     search_text, (const char **)mimes, location,
+											     (TrackerArrayReply) search_callback,
+											     tracker);
+			} else {
+				tracker_search_metadata_by_text_and_mime_async (tracker->details->client,
+										search_text, (const char**)mimes,
+										(TrackerArrayReply) search_callback,
+										tracker);
+			}
+
+			g_strfreev (mimes);
+
+
 		} else {
-			tracker_search_metadata_by_text_async (tracker->details->client, 
-							       search_text, 
-							       search_callback,
-							       tracker);
+			if (location) {
+				tracker_search_metadata_by_text_and_location_async (tracker->details->client,
+										    search_text,
+										    location,
+										    (TrackerArrayReply) search_callback,
+										    tracker);
+			} else {
+				tracker_search_metadata_by_text_async (tracker->details->client,
+								       search_text,
+								       (TrackerArrayReply) search_callback,
+								       tracker);
+			}
+
 		}
-		
 	}
+
+	g_free (location);
 
 	tracker->details->query_pending = TRUE;
 	g_free (search_text);
@@ -209,7 +432,7 @@ nautilus_search_engine_tracker_stop (NautilusSearchEngine *engine)
 	NautilusSearchEngineTracker *tracker;
 
 	tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (engine);
-
+	
 	if (tracker->details->query && tracker->details->query_pending) {
 		tracker_cancel_last_call (tracker->details->client);
 		tracker->details->query_pending = FALSE;
@@ -271,27 +494,36 @@ nautilus_search_engine_tracker_new (void)
 	NautilusSearchEngineTracker *engine;
 	TrackerClient *tracker_client;
 
-#ifdef HAVE_TRACKER_0_7
-	tracker_client = tracker_connect (FALSE, -1);
-#else
-	tracker_client = tracker_connect (FALSE);
-#endif
+	open_libtracker ();
+
+	if (tracker_08) {
+		tracker_client = tracker_client_new (TRACKER_CLIENT_ENABLE_WARNINGS, G_MAXINT);
+	} else {
+		if (! tracker_connect)
+			return NULL;
+
+		if (tracker_07) {
+			tracker_client = tracker_connect_07 (FALSE, -1);
+		} else {
+			tracker_client = tracker_connect (FALSE);
+		}
+	}
 
 	if (!tracker_client) {
 		return NULL;
 	}
 
-#ifndef HAVE_TRACKER_0_7
-	GError *err = NULL;
+	if (! tracker_07 && ! tracker_08) {
+		GError *err = NULL;
 
-	tracker_get_version (tracker_client, &err);
+		tracker_get_version (tracker_client, &err);
 
-	if (err != NULL) {
-		g_error_free (err);
-		tracker_disconnect (tracker_client);
-		return NULL;
+		if (err != NULL) {
+			g_error_free (err);
+			tracker_disconnect (tracker_client);
+			return NULL;
+		}
 	}
-#endif
 
 	engine = g_object_new (NAUTILUS_TYPE_SEARCH_ENGINE_TRACKER, NULL);
 

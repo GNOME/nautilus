@@ -23,10 +23,20 @@
 
 #include <config.h>
 #include "nautilus-search-engine-beagle.h"
-#include <beagle/beagle.h>
 
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-glib-extensions.h>
+#include <gmodule.h>
+
+typedef struct _BeagleHit BeagleHit;
+typedef struct _BeagleQuery BeagleQuery;
+typedef struct _BeagleClient BeagleClient;
+typedef struct _BeagleRequest BeagleRequest;
+typedef struct _BeagleFinishedResponse BeagleFinishedResponse;
+typedef struct _BeagleHitsAddedResponse BeagleHitsAddedResponse;
+typedef struct _BeagleQueryPartProperty BeagleQueryPartProperty;
+typedef struct _BeagleQueryPart BeagleQueryPart;
+typedef struct _BeagleHitsSubtractedResponse BeagleHitsSubtractedResponse;
 
 struct NautilusSearchEngineBeagleDetails {
 	BeagleClient *client;
@@ -37,6 +47,121 @@ struct NautilusSearchEngineBeagleDetails {
 	gboolean query_finished;
 };
 
+/* We dlopen() all the following from libbeagle at runtime */
+#define BEAGLE_HIT(x) ((BeagleHit *)(x))
+#define BEAGLE_REQUEST(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), beagle_request_get_type(), BeagleRequest))
+#define BEAGLE_QUERY_PART(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), beagle_query_part_get_type(), BeagleQueryPart))
+
+typedef enum {
+	BEAGLE_QUERY_PART_LOGIC_REQUIRED   = 1,
+	BEAGLE_QUERY_PART_LOGIC_PROHIBITED = 2
+} BeagleQueryPartLogic;
+
+typedef enum {
+	BEAGLE_PROPERTY_TYPE_UNKNOWN = 0,
+	BEAGLE_PROPERTY_TYPE_TEXT    = 1,
+	BEAGLE_PROPERTY_TYPE_KEYWORD = 2,
+	BEAGLE_PROPERTY_TYPE_DATE    = 3,
+	BEAGLE_PROPERTY_TYPE_LAST    = 4
+} BeaglePropertyType;
+
+/* *static* wrapper function pointers */
+static gboolean (*beagle_client_send_request_async) (BeagleClient  *client,
+                                                    BeagleRequest  *request,
+                                                    GError        **err) = NULL;
+static G_CONST_RETURN char *(*beagle_hit_get_uri) (BeagleHit *hit) = NULL;
+static GSList *(*beagle_hits_added_response_get_hits) (BeagleHitsAddedResponse *response) = NULL;
+static BeagleQuery *(*beagle_query_new) (void) = NULL;
+static void (*beagle_query_add_text) (BeagleQuery     *query,
+				      const char      *str) = NULL;
+static BeagleQueryPartProperty *(*beagle_query_part_property_new) (void) = NULL;
+static void (*beagle_query_part_set_logic) (BeagleQueryPart      *part,
+					    BeagleQueryPartLogic  logic) = NULL;
+static void (*beagle_query_part_property_set_key) (BeagleQueryPartProperty *part,
+						   const char              *key) = NULL;
+static void (*beagle_query_part_property_set_value) (BeagleQueryPartProperty *part,
+						     const char *             value) = NULL;
+static void (*beagle_query_part_property_set_property_type) (BeagleQueryPartProperty *part,
+							     BeaglePropertyType       prop_type) = NULL;
+static void (*beagle_query_add_part) (BeagleQuery     *query,
+				      BeagleQueryPart *part) = NULL;
+static GType (*beagle_request_get_type) (void) = NULL;
+static GType (*beagle_query_part_get_type) (void) = NULL;
+static gboolean (*beagle_util_daemon_is_running) (void) = NULL;
+static BeagleClient *(*beagle_client_new_real) (const char *client_name) = NULL;
+static void (*beagle_query_set_max_hits) (BeagleQuery *query,
+					  int max_hits) = NULL;
+static GSList *(*beagle_hits_subtracted_response_get_uris) (BeagleHitsSubtractedResponse *response) = NULL;
+
+static struct BeagleDlMapping
+{
+  const char *fn_name;
+  gpointer *fn_ptr_ref;
+} beagle_dl_mapping[] =
+{
+#define MAP(a) { #a, (gpointer *)&a }
+  MAP (beagle_client_send_request_async),
+  MAP (beagle_hit_get_uri),
+  MAP (beagle_hits_added_response_get_hits),
+  MAP (beagle_query_new),
+  MAP (beagle_query_add_text),
+  MAP (beagle_query_part_property_new),
+  MAP (beagle_query_part_set_logic),
+  MAP (beagle_query_part_property_set_key),
+  MAP (beagle_query_part_property_set_value),
+  MAP (beagle_query_part_property_set_property_type),
+  MAP (beagle_query_add_part),
+  MAP (beagle_request_get_type),
+  MAP (beagle_query_part_get_type),
+  MAP (beagle_util_daemon_is_running),
+  MAP (beagle_query_set_max_hits),
+  MAP (beagle_hits_subtracted_response_get_uris),
+#undef MAP
+  { "beagle_client_new", (gpointer *)&beagle_client_new_real },
+};
+
+static void 
+open_libbeagle (void)
+{
+  static gboolean done = FALSE;
+
+  if (!done)
+    {
+      int i;
+      GModule *beagle;
+      
+      done = TRUE;
+ 
+      beagle = g_module_open ("libbeagle.so.1", G_MODULE_BIND_LAZY | G_MODULE_BIND_LOCAL);
+      if (!beagle)
+	return;
+      
+      for (i = 0; i < G_N_ELEMENTS (beagle_dl_mapping); i++)
+	{
+	  if (!g_module_symbol (beagle, beagle_dl_mapping[i].fn_name,
+				beagle_dl_mapping[i].fn_ptr_ref))
+	    {
+	      g_warning ("Missing symbol '%s' in libbeagle\n",
+			 beagle_dl_mapping[i].fn_name);
+	      g_module_close (beagle);
+
+	      for (i = 0; i < G_N_ELEMENTS (beagle_dl_mapping); i++)
+		beagle_dl_mapping[i].fn_ptr_ref = NULL;
+
+	      return;
+	    }
+	}
+    }
+}
+
+static BeagleClient *
+beagle_client_new (const char *client_name)
+{
+  if (beagle_client_new_real)
+    return beagle_client_new_real (client_name);
+
+  return NULL;
+}
 
 static void  nautilus_search_engine_beagle_class_init       (NautilusSearchEngineBeagleClass *class);
 static void  nautilus_search_engine_beagle_init             (NautilusSearchEngineBeagle      *engine);
@@ -276,8 +401,11 @@ nautilus_search_engine_beagle_new (void)
 {
 	NautilusSearchEngineBeagle *engine;
 	BeagleClient *client;
+
+	open_libbeagle ();
 	
-	if (!beagle_util_daemon_is_running ()) {
+	if (beagle_util_daemon_is_running == NULL ||
+	    !beagle_util_daemon_is_running ()) {
 		/* check whether daemon is running as beagle_client_new
 		 * doesn't fail when a stale socket file exists */
 		return NULL;

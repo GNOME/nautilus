@@ -154,6 +154,10 @@ libnautilus_private_la_SOURCES = \
 	nautilus-search-engine.h \
 	nautilus-search-engine-simple.c \
 	nautilus-search-engine-simple.h \
+	nautilus-search-engine-beagle.c \
+	nautilus-search-engine-beagle.h \
+	nautilus-search-engine-tracker.c \
+	nautilus-search-engine-tracker.h \
 	nautilus-sidebar-provider.c \
 	nautilus-sidebar-provider.h \
 	nautilus-sidebar.c \
@@ -194,22 +198,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-window-slot-info.c \
 	nautilus-window-slot-info.h \
 	$(NULL)
-
-BEAGLE_SOURCES = \
-	nautilus-search-engine-beagle.c \
-	nautilus-search-engine-beagle.h
-
-if HAVE_BEAGLE
-libnautilus_private_la_SOURCES += $(BEAGLE_SOURCES)
-endif
-
-TRACKER_SOURCES = \
-	nautilus-search-engine-tracker.c \
-	nautilus-search-engine-tracker.h
-
-if HAVE_TRACKER
-libnautilus_private_la_SOURCES += $(TRACKER_SOURCES)
-endif
 
 $(lib_LTLIBRARIES): $(dependency_static_libs)
 
