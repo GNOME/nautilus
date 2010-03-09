@@ -56,6 +56,8 @@ AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
 AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
 
+AC_CHECK_LIB(m, floor)
+
 PKG_CHECK_MODULES(ALL, [
 	glib-2.0		>= glib_minver
 	gnome-desktop-2.0	>= gnome_desktop_minver
