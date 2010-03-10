@@ -189,7 +189,7 @@ highlight_expose (GtkWidget *widget,
 		
 		gtk_paint_focus (widget->style,
 				 bin_window,
-				 GTK_WIDGET_STATE (widget),
+				 gtk_widget_get_state (widget),
 				 NULL,
 				 widget,
 				 "treeview-drop-indicator",
