@@ -281,7 +281,7 @@ nautilus_navigation_window_unset_focus_widget (NautilusNavigationWindow *window)
 	}
 }
 
-inline gboolean
+gboolean
 nautilus_navigation_window_is_in_temporary_navigation_bar (GtkWidget *widget,
 				NautilusNavigationWindow *window)
 {
@@ -297,7 +297,7 @@ nautilus_navigation_window_is_in_temporary_navigation_bar (GtkWidget *widget,
 	return is_in_any;
 }
 
-inline gboolean
+gboolean
 nautilus_navigation_window_is_in_temporary_search_bar (GtkWidget *widget,
 			    NautilusNavigationWindow *window)
 {
