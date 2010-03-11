@@ -2829,12 +2829,6 @@ list_view_scroll_to_file (NautilusView *view,
 }
 
 static void
-fm_list_view_grab_focus (NautilusView *view)
-{
-	gtk_widget_grab_focus (GTK_WIDGET (FM_LIST_VIEW (view)->details->tree_view));
-}
-
-static void
 real_set_is_active (FMDirectoryView *view,
 		    gboolean is_active)
 {
@@ -2929,7 +2923,6 @@ fm_list_view_iface_init (NautilusViewIface *iface)
 	iface->get_first_visible_file = fm_list_view_get_first_visible_file;
 	iface->scroll_to_file = list_view_scroll_to_file;
 	iface->get_title = NULL;
-	iface->grab_focus = fm_list_view_grab_focus;
 }
 
 
