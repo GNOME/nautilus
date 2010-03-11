@@ -1773,6 +1773,17 @@ slot_inactive (NautilusWindowSlot *slot,
 	remove_update_menus_timeout_callback (view);
 }
 
+static void
+fm_directory_view_grab_focus (NautilusView *view)
+{
+	/* focus the child of the scrolled window if it exists */
+	GtkWidget *child;
+	child = gtk_bin_get_child (GTK_BIN (view));
+	if (child) {
+		gtk_widget_grab_focus (GTK_WIDGET (child));
+	}
+}
+
 static GtkWidget *
 fm_directory_view_get_widget (NautilusView *view)
 {
@@ -1860,6 +1871,8 @@ fm_directory_view_set_selection_locations (NautilusView *nautilus_view,
 void
 fm_directory_view_init_view_iface (NautilusViewIface *iface)
 {
+	iface->grab_focus = fm_directory_view_grab_focus;
+
 	iface->get_widget = fm_directory_view_get_widget;
   	iface->load_location = fm_directory_view_load_location;
 	iface->stop_loading = fm_directory_view_stop_loading;

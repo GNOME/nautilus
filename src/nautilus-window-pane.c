@@ -185,17 +185,17 @@ nautilus_window_pane_sync_search_widgets (NautilusWindowPane *pane)
 }
 
 void
+nautilus_window_pane_grab_focus (NautilusWindowPane *pane)
+{
+	if (NAUTILUS_IS_WINDOW_PANE (pane) && pane->active_slot) {
+		nautilus_view_grab_focus (pane->active_slot->content_view);
+	}	
+}
+
+void
 nautilus_window_pane_switch_to (NautilusWindowPane *pane)
 {
-	if (NAUTILUS_IS_WINDOW_PANE (pane)) {
-		GList *children;
-
-		children = gtk_container_get_children (GTK_CONTAINER (pane->active_slot->content_view));
-		if (children) {
-			gtk_widget_grab_focus (GTK_WIDGET (children->data));		
-			g_list_free (children);
-		}
-	}	
+	nautilus_window_pane_grab_focus (pane);
 }
 
 static void

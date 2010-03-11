@@ -89,5 +89,7 @@ void nautilus_window_pane_slot_close (NautilusWindowPane *pane, NautilusWindowSl
 
 NautilusWindowSlot* nautilus_window_pane_get_slot_for_content_box (NautilusWindowPane *pane, GtkWidget *content_box);
 void nautilus_window_pane_switch_to (NautilusWindowPane *pane);
+void nautilus_window_pane_grab_focus (NautilusWindowPane *pane);
+
 
 #endif /* NAUTILUS_WINDOW_PANE_H */
