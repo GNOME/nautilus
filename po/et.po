@@ -10,7 +10,7 @@
 # Tõivo Leedjärv <toivo@linux.ee>, 2003.
 # Allan Sims <allsi@eau.ee>, 2003.
 # Priit Laes <plaes+gi18n@plaes.org>, 2004-2008.
-# Ivar Smolin <okul@linux.ee>, 2005-2009.
+# Ivar Smolin <okul@linux.ee>, 2005-2010.
 # Sven Sapelson <sven.sapelson@gmail.com>, 2005.
 # Mattias Põldaru <mahfiaz gmail com>, 2009-2010.
 #
@@ -22,9 +22,9 @@ msgstr ""
 "Project-Id-Version: nautilus MASTER\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2010-01-28 19:11+0000\n"
-"PO-Revision-Date: 2010-02-16 16:05+0300\n"
-"Last-Translator: Rene Pärts <rene87@hot.ee>\n"
+"POT-Creation-Date: 2010-03-03 08:55+0000\n"
+"PO-Revision-Date: 2010-03-14 10:47+0200\n"
+"Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -617,9 +617,6 @@ msgstr ""
 "Kui märgitud, näitab Nautilus külgpaanis ainult katalooge. Vastasel juhul "
 "näitab Nautilus katalooge ja faile."
 
-msgid "If set to true, newly opened windows will have the extra pane visible."
-msgstr "Kui märgitud, siis uutel akendel näidatakse lisapaani."
-
 msgid ""
 "If set to true, newly opened windows will have the location bar visible."
 msgstr "Kui märgitud, siis uutel akendel näidatakse asukohariba."
@@ -920,9 +917,6 @@ msgstr "Sans 10"
 
 msgid "Show advanced permissions in the file property dialog"
 msgstr "Laiendatud pääsuõiguste näitamine faili omaduste dialoogis"
-
-msgid "Show extra pane in new windows"
-msgstr "Uutes akendes külgpaani näitamine"
 
 msgid "Show folders first in windows"
 msgstr "Akendes kataloogide esimesena näitamine"
@@ -2002,7 +1996,7 @@ msgid "There was an error moving the file into %F."
 msgstr "Faili ümbertõstmisel %F alla tekkis viga."
 
 msgid "Moving Files"
-msgstr "Failide liigutamine"
+msgstr "Failide ümbertõstmine"
 
 msgid "Creating links in \"%B\""
 msgstr "\"%B\" alla viitade loomine"
@@ -3511,7 +3505,7 @@ msgid "Copy the current selection to the other pane in the window"
 msgstr "Valiku kopeerimine sama akna kõrvalpaanile"
 
 msgid "Move the current selection to the other pane in the window"
-msgstr "Valiku liigutamine sama akna kõrvalpaanile"
+msgstr "Valiku ümbertõstmine sama akna kõrvalpaanile"
 
 #. name, stock id, label
 #. name, stock id
@@ -3523,11 +3517,17 @@ msgid "Copy the current selection to the home folder"
 msgstr "Valiku kopeerimine kodukataloogi"
 
 msgid "Move the current selection to the home folder"
-msgstr "Valiku liigutamine kodukataloogi"
+msgstr "Valiku ümbertõstmine kodukataloogi"
 
 #. name, stock id, label
 msgid "_Desktop"
 msgstr "_Töölauale"
+
+msgid "Copy the current selection to the desktop"
+msgstr "Valiku kopeerimine töölauale"
+
+msgid "Move the current selection to the desktop"
+msgstr "Valiku ümbertõstmine töölauale"
 
 #. Translators: %s is a directory
 #, c-format
@@ -5374,12 +5374,6 @@ msgstr "Kõigi kataloogiakende sulgemine"
 msgid "Locate documents and folders on this computer by name or content"
 msgstr "Arvutis asuvate dokumentide ja kataloogide otsing nime või sisu järgi"
 
-msgid "throbber"
-msgstr "tuksuja"
-
-msgid "provides visual status"
-msgstr "visuaalse oleku tagamine"
-
 msgid ""
 "Do you want to remove any bookmarks with the non-existing location from your "
 "list?"
@@ -5508,7 +5502,7 @@ msgstr ""
 "Allan Sims <allsi@eau.ee>, 2003.\n"
 "Sven Sapelson <sven.sapelson@gmail.com>,2005.\n"
 "Priit Laes <plaes+gi18n@plaes.org>, 2004-2008.\n"
-"Ivar Smolin <okul@linux.ee>, 2005-2009.\n"
+"Ivar Smolin <okul@linux.ee>, 2005-2010.\n"
 "Mattias Põldaru <mahfiaz gmail com>, 2009-2010."
 
 msgid "Nautilus Web Site"
