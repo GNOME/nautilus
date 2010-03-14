@@ -570,6 +570,9 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 	eel_gtk_adjustment_set_value (hadj, 0);
 	eel_gtk_adjustment_set_value (vadj, 0);
 
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (desktop_icon_view),
+					     GTK_SHADOW_NONE);
+
 	fm_directory_view_ignore_hidden_file_preferences
 		(FM_DIRECTORY_VIEW (desktop_icon_view));
 
