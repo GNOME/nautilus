@@ -12,6 +12,7 @@ static const char *audio_mime_types[] = {
 "audio/ogg",
 "audio/prs.sid",
 "audio/vnd.rn-realaudio",
+"audio/x-aiff",
 "audio/x-ape",
 "audio/x-flac",
 "audio/x-gsm",
