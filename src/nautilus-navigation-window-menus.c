@@ -261,10 +261,16 @@ action_split_view_callback (GtkAction *action,
 
 	is_active = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
 	if (is_active != nautilus_navigation_window_split_view_showing (window)) {
+		NautilusWindow *nautilus_window;
+
 		if (is_active) {
 			nautilus_navigation_window_split_view_on (window);
 		} else {
 			nautilus_navigation_window_split_view_off (window);
+		}
+		nautilus_window = NAUTILUS_WINDOW (window);
+		if (nautilus_window->details->active_pane && nautilus_window->details->active_pane->active_slot) {
+			nautilus_view_update_menus (nautilus_window->details->active_pane->active_slot->content_view);
 		}
 	}
 }

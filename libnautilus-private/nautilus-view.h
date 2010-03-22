@@ -108,6 +108,7 @@ struct _NautilusViewIface
         gboolean       (* can_zoom_out)	 	  (NautilusView          *view);
 
         void           (* grab_focus)             (NautilusView          *view);
+        void           (* update_menus)           (NautilusView          *view);
 
 	/* Request popup of context menu referring to the open location.
 	 * This is triggered in spatial windows by right-clicking the location button,
@@ -171,6 +172,7 @@ void              nautilus_view_pop_up_location_context_menu (NautilusView    *v
 							      GdkEventButton  *event,
 							      const char      *location);
 void              nautilus_view_grab_focus                 (NautilusView      *view);
+void              nautilus_view_update_menus               (NautilusView      *view);
 void              nautilus_view_drop_proxy_received_uris   (NautilusView         *view,
 							    GList                *uris,
 							    const char           *target_location,

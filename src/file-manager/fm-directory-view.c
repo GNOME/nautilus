@@ -1784,6 +1784,12 @@ fm_directory_view_grab_focus (NautilusView *view)
 	}
 }
 
+static void
+view_iface_update_menus (NautilusView *view)
+{
+	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (view));
+}
+
 static GtkWidget *
 fm_directory_view_get_widget (NautilusView *view)
 {
@@ -1872,6 +1878,7 @@ void
 fm_directory_view_init_view_iface (NautilusViewIface *iface)
 {
 	iface->grab_focus = fm_directory_view_grab_focus;
+	iface->update_menus = view_iface_update_menus;
 
 	iface->get_widget = fm_directory_view_get_widget;
   	iface->load_location = fm_directory_view_load_location;
