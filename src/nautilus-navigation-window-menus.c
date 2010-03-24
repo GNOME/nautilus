@@ -698,10 +698,12 @@ action_show_hide_search_callback (GtkAction *action,
 			char *uri;
 
 			query = nautilus_query_editor_get_query (slot->query_editor);
-			uri = nautilus_query_get_location (query);
-			if (uri != NULL) {
-				location = g_file_new_for_uri (uri);
-				g_free (uri);
+			if (query != NULL) {
+				uri = nautilus_query_get_location (query);
+				if (uri != NULL) {
+					location = g_file_new_for_uri (uri);
+					g_free (uri);
+				}
 			}
 		}
 
