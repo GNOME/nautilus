@@ -704,6 +704,7 @@ action_show_hide_search_callback (GtkAction *action,
 					location = g_file_new_for_uri (uri);
 					g_free (uri);
 				}
+				g_object_unref (query);
 			}
 		}
 
