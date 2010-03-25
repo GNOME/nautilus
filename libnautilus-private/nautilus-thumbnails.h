@@ -40,8 +40,8 @@ typedef void (* NautilusThumbnailAsyncLoadFunc) (NautilusThumbnailAsyncLoadHandl
 
 #define NAUTILUS_THUMBNAIL_FRAME_LEFT 3
 #define NAUTILUS_THUMBNAIL_FRAME_TOP 3
-#define NAUTILUS_THUMBNAIL_FRAME_RIGHT 6
-#define NAUTILUS_THUMBNAIL_FRAME_BOTTOM 6
+#define NAUTILUS_THUMBNAIL_FRAME_RIGHT 3
+#define NAUTILUS_THUMBNAIL_FRAME_BOTTOM 3
 
 /* Returns NULL if there's no thumbnail yet. */
 void       nautilus_create_thumbnail                (NautilusFile *file);
