@@ -14,6 +14,12 @@
 # inventory (package management) = sisällysluettelo
 # index (medusa) = luettelo
 #
+# unmount = irrota
+# safely remove = sammuta! tekemistä virranhallinnan kanssa ja erotukseksi
+# ejectin poistamisesta. ks. https://bugzilla.gnome.org/show_bug.cgi?id=598690
+# eject = poista asemasta - näkyy myös USB-muisteille tämäkin muttei voi 
+# mitään ellei tuota jo mainittua bugia jotenkin ratkota
+#
 # Problems:
 #
 # pattern = glob = lauseke (parempi suomennos tarvitaan)
@@ -25,8 +31,8 @@ msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-03-22 10:24+0200\n"
-"PO-Revision-Date: 2010-03-22 10:24+0200\n"
-"Last-Translator: Tommi Vainikainen <thv@iki.fi>\n"
+"PO-Revision-Date: 2010-03-26 14:01+0200\n"
+"Last-Translator: Timo Jyrinki <timo.jyrinki@iki.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1709,7 +1715,7 @@ msgid ""
 "If you want to unmount the volume, please use \"Unmount Volume\" in the "
 "popup menu of the volume."
 msgstr ""
-"Jos haluat poistaa levyn asemasta, valitse ”Poista asemasta” levyn "
+"Jos haluat irrottaa aseman, valitse ”Irrota” aseman "
 "kontekstivalikosta."
 
 #: ../libnautilus-private/nautilus-dnd.c:776
@@ -2146,7 +2152,7 @@ msgstr "Asemaa %V ei voi avata"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2027
 msgid "Unable to unmount %V"
-msgstr "Osoita %V ei voi irrottaa"
+msgstr "Osiota %V ei voi irrottaa"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2182
 msgid "Do you want to empty the trash before you unmount?"
@@ -4651,12 +4657,12 @@ msgstr "Pysäytä valittu asema"
 #: ../src/file-manager/fm-directory-view.c:8401
 #: ../src/nautilus-places-sidebar.c:1436
 msgid "_Safely Remove Drive"
-msgstr "_Poista asema turvallisesti"
+msgstr "_Sammuta asema turvallisesti"
 
 #: ../src/file-manager/fm-directory-view.c:8200
 #: ../src/file-manager/fm-directory-view.c:8402
 msgid "Safely remove the selected drive"
-msgstr "Poista valittu asema turvallisesti"
+msgstr "Sammuta valittu asema turvallisesti"
 
 #: ../src/file-manager/fm-directory-view.c:8203
 #: ../src/file-manager/fm-directory-view.c:8295
@@ -4722,7 +4728,7 @@ msgstr "_Pysäytä avoimeen kansioon liittyvä asema"
 
 #: ../src/file-manager/fm-directory-view.c:8292
 msgid "Safely remove the drive associated with the open folder"
-msgstr "Poista avoimeen kansioon liittyvä asema turvallisesti"
+msgstr "Sammuta avoimeen kansioon liittyvä asema turvallisesti"
 
 #: ../src/file-manager/fm-directory-view.c:8296
 msgid "Disconnect the drive associated with the open folder"
