@@ -1,3 +1,18 @@
+Major changes in 2.30.0 are:
+* By default, don't exit with last window even if desktop is
+  not visible. This way we still run to handle e.g. volume
+  monitoring. If you don't want this, change
+  /apps/nautilus/preferences/exit_with_last_window
+  to True in gconf
+* Don't show weird border around desktop
+* Correctly put focus on view for new windows
+* Extra view does not get focus when created
+* Add nicer thumbnail border
+* Fix crash when hiding search bar
+* Fix build on sun compiler
+* Support AIFF for audio preview
+* Translation updates
+
 Major changes in 2.29.92.1 are:
 * Fix compilation due to deprecated GTK_WIDGET_STATE symbol
 * Fix libm linking
