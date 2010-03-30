@@ -1317,7 +1317,7 @@ check_unmount_and_eject (GMount *mount,
 	}
 	if (mount != NULL) {
 		*show_eject |= g_mount_can_eject (mount);
-		*show_unmount = g_mount_can_unmount (mount);
+		*show_unmount = g_mount_can_unmount (mount) && !*show_eject;
 	}
 }
 
@@ -1349,6 +1349,9 @@ check_visibility (GMount           *mount,
 
 		*show_start = g_drive_can_start (drive) || g_drive_can_start_degraded (drive);
 		*show_stop  = g_drive_can_stop (drive);
+
+		if (*show_stop)
+			*show_unmount = FALSE;
 	}
 
 	if (volume != NULL) {

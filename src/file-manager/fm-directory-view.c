@@ -7782,10 +7782,6 @@ file_should_show_foreach (NautilusFile        *file,
 		*show_eject = TRUE;
 	}
 
-	if (nautilus_file_can_unmount (file)) {
-		*show_unmount = TRUE;
-	}
-
 	if (nautilus_file_can_mount (file)) {
 		*show_mount = TRUE;
 
@@ -7803,6 +7799,12 @@ file_should_show_foreach (NautilusFile        *file,
 
 	if (nautilus_file_can_stop (file)) {
 		*show_stop = TRUE;
+	}
+
+	/* Dot not show both Unmount and Eject/Safe Removal; too confusing to
+	 * have too many menu entries */
+	if (nautilus_file_can_unmount (file) && !*show_eject && !*show_stop) {
+		*show_unmount = TRUE;
 	}
 
 	if (nautilus_file_can_poll_for_media (file) && !nautilus_file_is_media_check_automatic (file)) {
@@ -7852,10 +7854,6 @@ file_should_show_self (NautilusFile        *file,
 		*show_eject = TRUE;
 	}
 
-	if (nautilus_file_can_unmount (file)) {
-		*show_unmount = TRUE;
-	}
-
 	if (nautilus_file_can_mount (file)) {
 		*show_mount = TRUE;
 	}
@@ -7872,6 +7870,12 @@ file_should_show_self (NautilusFile        *file,
 
 	if (nautilus_file_can_stop (file)) {
 		*show_stop = TRUE;
+	}
+
+	/* Dot not show both Unmount and Eject/Safe Removal; too confusing to
+	 * have too many menu entries */
+	if (nautilus_file_can_unmount (file) && !*show_eject && !*show_stop) {
+		*show_unmount = TRUE;
 	}
 
 	if (nautilus_file_can_poll_for_media (file) && !nautilus_file_is_media_check_automatic (file)) {
