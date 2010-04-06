@@ -161,7 +161,9 @@ open_libtracker (void)
 		tracker_07 = TRUE;
 		tracker_08 = TRUE;
 
-		tracker = g_module_open ("libtracker-client-0.7.so.0", G_MODULE_BIND_LAZY | G_MODULE_BIND_LOCAL);
+		tracker = g_module_open ("libtracker-client-0.8.so.0", G_MODULE_BIND_LAZY | G_MODULE_BIND_LOCAL);
+		if (! tracker)
+			tracker = g_module_open ("libtracker-client-0.7.so.0", G_MODULE_BIND_LAZY | G_MODULE_BIND_LOCAL);
 		if (! tracker) {
 			tracker = g_module_open ("libtrackerclient.so.0", G_MODULE_BIND_LAZY | G_MODULE_BIND_LOCAL);
 			tracker_07 = FALSE;
