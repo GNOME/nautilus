@@ -1172,20 +1172,25 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 			 *   cancel_viewed_file_changed_callback (slot);
 			 * at this point, or in end_location_change()
 			 */
-
-			/* We disconnected this, so we need to re-connect it */
-			viewed_file = nautilus_file_get (slot->location);
-			nautilus_window_slot_set_viewed_file (slot, viewed_file);
-			nautilus_file_monitor_add (viewed_file, &slot->viewed_file, 0);
-			g_signal_connect_object (viewed_file, "changed",
-						 G_CALLBACK (viewed_file_changed_callback), slot, 0);
-			nautilus_file_unref (viewed_file);
+			/* We're missing a previous location (if opened location
+			 * in a new tab) so close it and return */
+			if (slot->location == NULL) {
+				nautilus_window_slot_close (slot);
+			} else {
+				/* We disconnected this, so we need to re-connect it */
+				viewed_file = nautilus_file_get (slot->location);
+				nautilus_window_slot_set_viewed_file (slot, viewed_file);
+				nautilus_file_monitor_add (viewed_file, &slot->viewed_file, 0);
+				g_signal_connect_object (viewed_file, "changed",
+							 G_CALLBACK (viewed_file_changed_callback), slot, 0);
+				nautilus_file_unref (viewed_file);
 			
-			/* Leave the location bar showing the bad location that the user
-			 * typed (or maybe achieved by dragging or something). Many times
-			 * the mistake will just be an easily-correctable typo. The user
-			 * can choose "Refresh" to get the original URI back in the location bar.
-			 */
+				/* Leave the location bar showing the bad location that the user
+				 * typed (or maybe achieved by dragging or something). Many times
+				 * the mistake will just be an easily-correctable typo. The user
+				 * can choose "Refresh" to get the original URI back in the location bar.
+				 */
+			}
 		}
 	}
 	
