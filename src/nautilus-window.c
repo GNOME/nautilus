@@ -761,16 +761,14 @@ nautilus_window_close_pane (NautilusWindowPane *pane)
 
 	window = pane->window;
 
-	window->details->panes = g_list_remove (window->details->panes, pane);
-
-	/* if the pane was active, select the next one, or NULL */
+	/* If the pane was active, set it to NULL. The caller is responsible
+	 * for setting a new active pane with nautilus_window_pane_switch_to()
+	 * if it wants to continue using the window. */
 	if (window->details->active_pane == pane) {
-		if (window->details->panes) {
-			window->details->active_pane = window->details->panes->data;
-		} else {
-			window->details->active_pane = NULL;
-		}
+		window->details->active_pane = NULL;
 	}
+
+	window->details->panes = g_list_remove (window->details->panes, pane);
 
 	g_object_unref (pane);
 }
@@ -1536,7 +1534,7 @@ nautilus_window_get_next_pane (NautilusWindow *window)
 
        /* get next pane in the (wrapped around) list */
        node = g_list_find (window->details->panes, window->details->active_pane);
-       g_return_val_if_fail (node, FALSE);
+       g_return_val_if_fail (node, NULL);
        if (node->next) {
 	       next_pane = node->next->data;
        } else {

@@ -129,6 +129,8 @@ nautilus_window_pane_slot_close (NautilusWindowPane *pane, NautilusWindowSlot *s
 	NautilusWindowSlot *next_slot;
 
 	if (pane->window) {
+		NautilusWindow *window;
+		window = pane->window;
 		if (pane->active_slot == slot) {
 			g_assert (pane->active_slots != NULL);
 			g_assert (pane->active_slots->data == slot);
@@ -142,12 +144,27 @@ nautilus_window_pane_slot_close (NautilusWindowPane *pane, NautilusWindowSlot *s
 				next_slot = get_first_inactive_slot (NAUTILUS_WINDOW_PANE (pane));
 			}
 
-			nautilus_window_set_active_slot (pane->window, next_slot);
+			nautilus_window_set_active_slot (window, next_slot);
 		}
 		nautilus_window_close_slot (slot);
 
-		if (g_list_length (pane->window->details->active_pane->slots) == 0) {
-			nautilus_window_close (pane->window);
+		/* If that was the last slot in the active pane, close the pane or even the whole window. */
+		if (window->details->active_pane->slots == NULL) {
+			NautilusWindowPane *next_pane;
+			next_pane = nautilus_window_get_next_pane (window);
+			
+			/* If next_pane is non-NULL, we have more than one pane available. In this
+			 * case, close the current pane and switch to the next one. If there is
+			 * no next pane, close the window. */
+			if(next_pane) {
+				nautilus_window_close_pane (pane);
+				nautilus_window_pane_switch_to (next_pane);
+				if (NAUTILUS_IS_NAVIGATION_WINDOW (window)) {
+					nautilus_navigation_window_update_show_hide_menu_items (NAUTILUS_NAVIGATION_WINDOW (window));
+				}
+			} else {
+				nautilus_window_close (window);
+			}
 		}
 	}
 }
