@@ -3850,13 +3850,13 @@ do_run_conflict_dialog (gpointer _data)
 	ConflictDialogData *data = _data;
 	GtkWidget *dialog;
 	int response;
-	
+
 	dialog = nautilus_file_conflict_dialog_new (data->parent,
 						    data->src,
 						    data->dest,
 						    data->dest_dir);
 	response = gtk_dialog_run (GTK_DIALOG (dialog));
-	
+
 	if (response == CONFLICT_RESPONSE_RENAME) {
 		data->resp_data->new_name = 
 			nautilus_file_conflict_dialog_get_new_name (NAUTILUS_FILE_CONFLICT_DIALOG (dialog));
@@ -3866,11 +3866,11 @@ do_run_conflict_dialog (gpointer _data)
 			   nautilus_file_conflict_dialog_get_apply_to_all 
 				(NAUTILUS_FILE_CONFLICT_DIALOG (dialog));
 	}
-	
+
 	data->resp_data->id = response;
-	
+
 	gtk_widget_destroy (dialog);
-	
+
 	return FALSE;
 }
 
@@ -3882,9 +3882,9 @@ run_conflict_dialog (CommonJob *job,
 {
 	ConflictDialogData *data;
 	ConflictResponseData *resp_data;
-	
+
 	g_timer_stop (job->time);
-	
+
 	data = g_slice_new0 (ConflictDialogData);
 	data->parent = job->parent_window;
 	data->src = src;
@@ -3894,18 +3894,18 @@ run_conflict_dialog (CommonJob *job,
 	resp_data = g_slice_new0 (ConflictResponseData);
 	resp_data->new_name = NULL;
 	data->resp_data = resp_data;
-	
+
 	nautilus_progress_info_pause (job->progress);
 	g_io_scheduler_job_send_to_mainloop (job->io_job,
 					     do_run_conflict_dialog,
 					     data,
 					     NULL);
 	nautilus_progress_info_resume (job->progress);
-	
+
 	g_slice_free (ConflictDialogData, data);
-	
+
 	g_timer_continue (job->time);
-	
+
 	return resp_data;
 }
 
