@@ -60,8 +60,11 @@ G_DEFINE_TYPE (NautilusFileConflictDialog,
 				      NautilusFileConflictDialogDetails))
 
 static void
-build_dialog_appearance (NautilusFileConflictDialog *fcd)
+file_list_ready_cb (GList *files,
+		    gpointer user_data)
 {
+	NautilusFileConflictDialog *fcd = user_data;
+	NautilusFile *src, *dest, *dest_dir;
 	GtkDialog *dialog;
 	gboolean source_is_dir,	dest_is_dir, should_show_type;
 	NautilusFileConflictDialogDetails *details;
@@ -71,15 +74,14 @@ build_dialog_appearance (NautilusFileConflictDialog *fcd)
 	char *size, *date, *type = NULL;
 	GdkPixbuf *pixbuf;
 	GtkWidget *image, *label, *button;
-	NautilusFile *src, *dest, *dest_dir;
 	GString *str;
 
 	dialog = GTK_DIALOG (fcd);
 	details = fcd->details;
-
-	src = nautilus_file_get (details->source);
-	dest = nautilus_file_get (details->destination);
-	dest_dir = nautilus_file_get (details->dest_dir);
+	
+	dest_dir = g_list_nth_data (files, 0);
+	dest = g_list_nth_data (files, 1);
+	src = g_list_nth_data (files, 2);
 
 	src_name = nautilus_file_get_display_name (src);
 	dest_name = nautilus_file_get_display_name (dest);
@@ -245,6 +247,27 @@ build_dialog_appearance (NautilusFileConflictDialog *fcd)
 			       (source_is_dir && dest_is_dir) ?
 			       _("_Merge") : _("_Replace"),
 			       CONFLICT_RESPONSE_REPLACE);
+}
+
+static void
+build_dialog_appearance (NautilusFileConflictDialog *fcd)
+{
+	GList *files = NULL;
+	NautilusFile *src, *dest, *dest_dir;
+
+	src = nautilus_file_get (fcd->details->source);
+	dest = nautilus_file_get (fcd->details->destination);
+	dest_dir = nautilus_file_get (fcd->details->dest_dir);
+
+	files = g_list_prepend (files, src);
+	files = g_list_prepend (files, dest);
+	files = g_list_prepend (files, dest_dir);
+
+	nautilus_file_list_call_when_ready (files,
+					    NAUTILUS_FILE_ATTRIBUTE_INFO |
+					    NAUTILUS_FILE_ATTRIBUTE_LINK_INFO |
+					    NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL,
+					    NULL, file_list_ready_cb, fcd);
 }
 
 static void
