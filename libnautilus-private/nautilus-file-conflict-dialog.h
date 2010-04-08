@@ -30,12 +30,21 @@
 #include <gio/gio.h>
 #include <gtk/gtkmessagedialog.h>
 
-#define NAUTILUS_TYPE_FILE_CONFLICT_DIALOG         (nautilus_file_conflict_dialog_get_type ())
-#define NAUTILUS_FILE_CONFLICT_DIALOG(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), NAUTILUS_TYPE_FILE_CONFLICT_DIALOG, NautilusFileConflictDialog))
-#define NAUTILUS_FILE_CONFLICT_DIALOG_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), NAUTILUS_TYPE_FILE_CONFLICT_DIALOG, NautilusFileConflictDialogClass))
-#define NAUTILUS_IS_FILE_CONFLICT_DIALOG(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), NAUTILUS_TYPE_FILE_CONFLICT_DIALOG))
-#define NAUTILUS_IS_FILE_CONFLICT_DIALOG_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), NAUTILUS_TYPE_FILE_CONFLICT_DIALOG))
-#define NAUTILUS_FILE_CONFLICT_DIALOG_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), NAUTILUS_TYPE_FILE_CONFLICT_DIALOG, NautilusFileConflictDialogClass))
+#define NAUTILUS_TYPE_FILE_CONFLICT_DIALOG \
+	(nautilus_file_conflict_dialog_get_type ())
+#define NAUTILUS_FILE_CONFLICT_DIALOG(o) \
+	(G_TYPE_CHECK_INSTANCE_CAST ((o), NAUTILUS_TYPE_FILE_CONFLICT_DIALOG,\
+				     NautilusFileConflictDialog))
+#define NAUTILUS_FILE_CONFLICT_DIALOG_CLASS(k) \
+	(G_TYPE_CHECK_CLASS_CAST((k), NAUTILUS_TYPE_FILE_CONFLICT_DIALOG,\
+				 NautilusFileConflictDialogClass))
+#define NAUTILUS_IS_FILE_CONFLICT_DIALOG(o) \
+	(G_TYPE_CHECK_INSTANCE_TYPE ((o), NAUTILUS_TYPE_FILE_CONFLICT_DIALOG))
+#define NAUTILUS_IS_FILE_CONFLICT_DIALOG_CLASS(k) \
+	(G_TYPE_CHECK_CLASS_TYPE ((k), NAUTILUS_TYPE_FILE_CONFLICT_DIALOG))
+#define NAUTILUS_FILE_CONFLICT_DIALOG_GET_CLASS(o) \
+	(G_TYPE_INSTANCE_GET_CLASS ((o), NAUTILUS_TYPE_FILE_CONFLICT_DIALOG,\
+				    NautilusFileConflictDialogClass))
 
 typedef struct _NautilusFileConflictDialog        NautilusFileConflictDialog;
 typedef struct _NautilusFileConflictDialogClass   NautilusFileConflictDialogClass;

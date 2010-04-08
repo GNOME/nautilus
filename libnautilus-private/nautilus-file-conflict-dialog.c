@@ -229,14 +229,14 @@ set_source_and_destination (GtkWidget *w,
 {
 	NautilusFileConflictDialog *dialog;
 	NautilusFileConflictDialogDetails *details;
-	
+
 	dialog = NAUTILUS_FILE_CONFLICT_DIALOG (w);
 	details = dialog->details;
-	
+
 	details->source = source;
 	details->destination = destination;
 	details->dest_dir = dest_dir;
-	
+
 	build_dialog_appearance (dialog);
 }
 
@@ -278,17 +278,17 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 	GtkWidget *widget;
 	NautilusFileConflictDialogDetails *details;
 	GtkDialog *dialog;
-	
+
 	details = fcd->details = NAUTILUS_FILE_CONFLICT_DIALOG_GET_PRIVATE (fcd);
 	dialog = GTK_DIALOG (fcd);
-	
+
 	/* Setup the main hbox */
 	hbox = gtk_hbox_new (FALSE, 12);
 	gtk_box_pack_start (GTK_BOX (dialog->vbox),
 			    hbox, FALSE, FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox), 5);
 	gtk_widget_show (hbox);
-	
+
 	/* Setup the dialog image */
 	widget = gtk_image_new_from_stock (GTK_STOCK_DIALOG_WARNING,
 					   GTK_ICON_SIZE_DIALOG);
@@ -302,14 +302,13 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 	gtk_box_pack_start (GTK_BOX (hbox),
 			    vbox, FALSE, FALSE, 0);
 	gtk_widget_show (vbox);
-	
+
 	/* Setup the vbox for the dialog labels */
 	widget = gtk_vbox_new (FALSE, 12);
 	gtk_box_pack_start (GTK_BOX (vbox),
 			    widget, FALSE, FALSE, 0);
 	gtk_widget_show (widget);
 	details->titles_vbox = widget;
-	
 
 	/* Setup the hboxes to pack file infos into */
 	hbox = gtk_hbox_new (FALSE, 12);
@@ -347,7 +346,7 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 	g_signal_connect_object (widget, "notify::text",
 				 G_CALLBACK (entry_text_notify_cb),
 				 dialog, 0);
-	
+
 	/* Setup HIG properties */
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);		
 	gtk_box_set_spacing (GTK_BOX (dialog->vbox), 14);
