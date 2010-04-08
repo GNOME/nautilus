@@ -4681,7 +4681,6 @@ move_file_prepare (CopyMoveJob *move_job,
 		}
 
 		nautilus_file_changes_queue_file_moved (src, dest);
-		nautilus_file_changes_queue_schedule_metadata_move (src, dest);
 
 		if (position) {
 			nautilus_file_changes_queue_schedule_position_set (dest, *position, job->screen_num);
