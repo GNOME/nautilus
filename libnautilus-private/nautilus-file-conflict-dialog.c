@@ -87,7 +87,7 @@ file_list_ready_cb (GList *files,
 	GtkDialog *dialog;
 	gboolean source_is_dir,	dest_is_dir, should_show_type;
 	NautilusFileConflictDialogDetails *details;
-	char *primary_text, *secondary_text, *primary_markup;
+	char *primary_text, *secondary_text;
 	char *src_name, *dest_name, *dest_dir_name;
 	char *label_text;
 	char *size, *date, *type = NULL;
@@ -158,8 +158,7 @@ file_list_ready_cb (GList *files,
 	}
 
 	label = gtk_label_new (NULL);
-	primary_markup = g_strconcat ("<b>", primary_text, "</b>", NULL);
-	gtk_label_set_markup (GTK_LABEL (label), primary_markup);
+	gtk_label_set_text (GTK_LABEL (label), primary_text);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_box_pack_start (GTK_BOX (details->titles_vbox),
 			    label, FALSE, FALSE, 0);
@@ -178,7 +177,6 @@ file_list_ready_cb (GList *files,
 			    label, TRUE, TRUE, 0);
 	gtk_widget_show (label);
 	g_free (primary_text);
-	g_free (primary_markup);
 	g_free (secondary_text);
 
 	/* Set up file icons */
