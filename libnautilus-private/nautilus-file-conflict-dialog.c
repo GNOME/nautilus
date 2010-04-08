@@ -55,22 +55,25 @@ G_DEFINE_TYPE (NautilusFileConflictDialog,
 	       nautilus_file_conflict_dialog,
 	       GTK_TYPE_DIALOG);
 
-#define NAUTILUS_FILE_CONFLICT_DIALOG_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), NAUTILUS_TYPE_FILE_CONFLICT_DIALOG, NautilusFileConflictDialogDetails))
+#define NAUTILUS_FILE_CONFLICT_DIALOG_GET_PRIVATE(object)		\
+	(G_TYPE_INSTANCE_GET_PRIVATE ((object), NAUTILUS_TYPE_FILE_CONFLICT_DIALOG, \
+				      NautilusFileConflictDialogDetails))
 
 static void
 build_dialog_appearance (NautilusFileConflictDialog *fcd)
 {
 	GtkDialog *dialog;
-	gboolean source_is_dir,	dest_is_dir;
+	gboolean source_is_dir,	dest_is_dir, should_show_type;
 	NautilusFileConflictDialogDetails *details;
 	char *primary_text, *secondary_text, *primary_markup;
 	char *src_name, *dest_name, *dest_dir_name;
 	char *label_text;
-	char *size, *date, *type;
+	char *size, *date, *type = NULL;
 	GdkPixbuf *pixbuf;
 	GtkWidget *image, *label, *button;
 	NautilusFile *src, *dest, *dest_dir;
-	
+	GString *str;
+
 	dialog = GTK_DIALOG (fcd);
 	details = fcd->details;
 
@@ -81,9 +84,15 @@ build_dialog_appearance (NautilusFileConflictDialog *fcd)
 	src_name = nautilus_file_get_display_name (src);
 	dest_name = nautilus_file_get_display_name (dest);
 	dest_dir_name = nautilus_file_get_display_name (dest_dir);
-	
+
 	source_is_dir = nautilus_file_is_directory (src);
 	dest_is_dir = nautilus_file_is_directory (dest);
+
+	type = nautilus_file_get_mime_type (dest);
+	should_show_type = nautilus_file_is_mime_type (src, type);
+
+	g_free (type);
+	type = NULL;
 
 	/* Set up the right labels */
 	if (dest_is_dir) {
@@ -161,14 +170,22 @@ build_dialog_appearance (NautilusFileConflictDialog *fcd)
 	date = nautilus_file_get_string_attribute (dest,
 						   "date_modified");
 	size = nautilus_file_get_string_attribute (dest, "size");
-	type = nautilus_file_get_string_attribute (dest, "type");
-	label_text = g_markup_printf_escaped (_("<b>Original file</b>\n"
-						"<i>Size:</i> %s\n"
-						"<i>Type:</i> %s\n"
-						"<i>Last modified:</i> %s"),
-						size,
-						type,
-						date);
+
+	if (should_show_type) {
+		type = nautilus_file_get_string_attribute (dest, "type");
+	}
+
+	str = g_string_new (NULL);
+	g_string_append_printf (str, "<b>%s</b>\n", _("Original file"));
+	g_string_append_printf (str, "<i>%s</i> %s\n", _("Size:"), size);
+
+	if (should_show_type) {
+		g_string_append_printf (str, "<i>%s</i> %s\n", _("Type:"), type);
+	}
+
+	g_string_append_printf (str, "<i>%s</i> %s", _("Last modified:"), date);
+
+	label_text = str->str;
 	gtk_label_set_markup (GTK_LABEL (label),
 			      label_text);
 	gtk_box_pack_start (GTK_BOX (details->first_hbox),
@@ -178,20 +195,28 @@ build_dialog_appearance (NautilusFileConflictDialog *fcd)
 	g_free (size);
 	g_free (type);
 	g_free (date);
-	g_free (label_text);
-	
+	g_string_erase (str, 0, -1);
+
+	/* Second label */
 	label = gtk_label_new (NULL);
 	date = nautilus_file_get_string_attribute (src,
 						   "date_modified");
 	size = nautilus_file_get_string_attribute (src, "size");
-	type = nautilus_file_get_string_attribute (src, "type");
-	label_text = g_markup_printf_escaped (_("<b>Replace with</b>\n"
-						"<i>Size:</i> %s\n"
-						"<i>Type:</i> %s\n"
-						"<i>Last modified:</i> %s"),
-						size,
-						type,
-						date);
+
+	if (should_show_type) {
+		type = nautilus_file_get_string_attribute (src, "type");
+	}
+
+	g_string_append_printf (str, "<b>%s</b>\n", _("Replace with"));
+	g_string_append_printf (str, "<i>%s</i> %s\n", _("Size:"), size);
+
+	if (should_show_type) {
+		g_string_append_printf (str, "<i>%s</i> %s\n", _("Type:"), type);
+	}
+
+	g_string_append_printf (str, "<i>%s</i> %s", _("Last modified:"), date);
+	label_text = g_string_free (str, FALSE);
+
 	gtk_label_set_markup (GTK_LABEL (label),
 			      label_text);
 	gtk_box_pack_start (GTK_BOX (details->second_hbox),
@@ -200,8 +225,9 @@ build_dialog_appearance (NautilusFileConflictDialog *fcd)
 
 	g_free (size);
 	g_free (date);
+	g_free (type);
 	g_free (label_text);
-	
+
 	/* Add buttons */
 	gtk_dialog_add_buttons (dialog,
 				GTK_STOCK_CANCEL,
