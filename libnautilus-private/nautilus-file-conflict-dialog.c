@@ -59,6 +59,24 @@ G_DEFINE_TYPE (NautilusFileConflictDialog,
 	(G_TYPE_INSTANCE_GET_PRIVATE ((object), NAUTILUS_TYPE_FILE_CONFLICT_DIALOG, \
 				      NautilusFileConflictDialogDetails))
 
+static const gchar *
+get_str_for_mtimes (NautilusFile *src,
+		    NautilusFile *dest)
+{
+	time_t src_mtime, dest_mtime;
+
+	src_mtime = nautilus_file_get_mtime (src);
+	dest_mtime = nautilus_file_get_mtime (dest);
+
+	if (src_mtime > dest_mtime)
+		return _("An older");
+
+	if (src_mtime < dest_mtime)
+		return _("A newer");
+
+	return _("Another");
+}
+
 static void
 file_list_ready_cb (GList *files,
 		    gpointer user_data)
@@ -72,9 +90,11 @@ file_list_ready_cb (GList *files,
 	char *src_name, *dest_name, *dest_dir_name;
 	char *label_text;
 	char *size, *date, *type = NULL;
+	const gchar *time_str;
 	GdkPixbuf *pixbuf;
 	GtkWidget *image, *label, *button;
 	GString *str;
+	PangoFontDescription *desc;
 
 	dialog = GTK_DIALOG (fcd);
 	details = fcd->details;
@@ -96,38 +116,44 @@ file_list_ready_cb (GList *files,
 	g_free (type);
 	type = NULL;
 
+	time_str = get_str_for_mtimes (src, dest);
 	/* Set up the right labels */
 	if (dest_is_dir) {
 		if (source_is_dir) {
 			primary_text = g_strdup_printf
-				(_("A folder named \"%s\" already exists.  "
-				   "Do you want to merge the source folder?"),
+				(_("Merge folder \"%s\"?"),
 				 dest_name);
-			secondary_text = g_strdup_printf
-				(_("The source folder already exists in \"%s\".  "
-				   "Merging will ask for confirmation before "
-				   "replacing any files in the folder that "
-				   "conflict with the files being copied."),
-				 dest_dir_name);
+
+			/* Translators: the first string in this printf
+			 * is the "An older/A newer/Another" string defined some lines before.
+			 */
+			secondary_text = g_strdup_printf (
+				_("%s folder with the same name already exists in \"%s\".\n"
+				  "Merging will ask for confirmation before "
+				  "replacing any files in the folder that "
+				  "conflict with the files being copied."),
+				time_str,
+				dest_dir_name);
 		} else {
 			primary_text = g_strdup_printf
-				(_("A folder named \"%s\" already exists.  "
-				   "Do you want to replace it?"), 
-				 dest_name);
+				(_("Replace folder \"%s\"?"), dest_name);
 			secondary_text = g_strdup_printf
-				(_("The folder already exists in \"%s\".  "
+				(_("A folder with the same name already exists in \"%s\".\n"
 				   "Replacing it will remove all files in the folder."),
 				 dest_dir_name);
 		}
 	} else {
 		primary_text = g_strdup_printf
-			(_("A file named \"%s\" already exists.  "
-			   "Do you want to replace it?"),
-			 dest_name);
-		secondary_text = g_strdup_printf
-			(_("The file already exists in \"%s\".  "
-			   "Replacing it will overwrite its content."),
-			 dest_dir_name);
+			(_("Replace file \"%s\"?"), dest_name);
+
+		/* Translators: the first string in this printf
+		 * is the "An older/A newer/Another" string defined some lines before.
+		 */
+		secondary_text = g_strdup_printf (
+			_("%s file with the same name already exists in \"%s\".\n"
+			  "Replacing it will overwrite its content."),
+			time_str,
+			dest_dir_name);
 	}
 
 	label = gtk_label_new (NULL);
