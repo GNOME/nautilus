@@ -17,6 +17,9 @@ INCLUDES =						\
 
 libeel_2_la_LDFLAGS =				\
 	-no-undefined				\
+	$(NULL)
+
+libeel_2_la_LIBADD = 				\
 	$(CORE_LIBS)				\
 	$(RENDER_LIBS)				\
 	$(X_LIBS)				\
