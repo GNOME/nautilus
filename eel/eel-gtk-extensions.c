@@ -886,7 +886,7 @@ eel_gtk_label_expose_event (GtkLabel *label, GdkEventExpose *event, gpointer use
 	
 	gtk_paint_layout (widget->style,
 			  widget->window,
-			  GTK_WIDGET_STATE (widget),
+			  gtk_widget_get_state (widget),
 			  FALSE,
 			  &event->area,
 			  widget,

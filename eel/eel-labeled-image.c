@@ -540,13 +540,13 @@ eel_labeled_image_expose_event (GtkWidget *widget,
 
   	labeled_image = EEL_LABELED_IMAGE (widget);
 
-	if (GTK_WIDGET_STATE (widget) == GTK_STATE_SELECTED || 
-	    GTK_WIDGET_STATE (widget) == GTK_STATE_ACTIVE) {
+	if (gtk_widget_get_state (widget) == GTK_STATE_SELECTED || 
+	    gtk_widget_get_state (widget) == GTK_STATE_ACTIVE) {
 		label_bounds = eel_labeled_image_get_label_bounds (EEL_LABELED_IMAGE (widget));
 
 		gtk_paint_flat_box (widget->style,
 				    widget->window,
-				    GTK_WIDGET_STATE (widget),
+				    gtk_widget_get_state (widget),
 				    GTK_SHADOW_NONE,
 				    &event->area,
 				    widget,

@@ -1173,7 +1173,7 @@ eel_editable_label_style_set (GtkWidget *widget,
    */
   if (GTK_WIDGET_REALIZED (widget))
     {
-	gdk_window_set_background (widget->window, &widget->style->base[GTK_WIDGET_STATE (widget)]);
+	gdk_window_set_background (widget->window, &widget->style->base[gtk_widget_get_state (widget)]);
 
 	if (label->primary_cursor_gc != NULL) 
 	  {
@@ -1625,7 +1625,7 @@ eel_editable_label_expose (GtkWidget      *widget,
       
       gtk_paint_layout (widget->style,
                         widget->window,
-                        GTK_WIDGET_STATE (widget),
+                        gtk_widget_get_state (widget),
 			TRUE,
                         &event->area,
                         widget,
@@ -1689,7 +1689,7 @@ eel_editable_label_expose (GtkWidget      *widget,
 
       if (label->draw_outline)
 	gdk_draw_rectangle (widget->window,
-			    widget->style->text_gc [GTK_WIDGET_STATE (widget)],
+			    widget->style->text_gc [gtk_widget_get_state (widget)],
 			    FALSE,
 			    0, 0,
 			    widget->allocation.width - 1,
@@ -1740,7 +1740,7 @@ eel_editable_label_realize (GtkWidget *widget)
 
   widget->style = gtk_style_attach (widget->style, widget->window);
   
-  gdk_window_set_background (widget->window, &widget->style->base[GTK_WIDGET_STATE (widget)]);
+  gdk_window_set_background (widget->window, &widget->style->base[gtk_widget_get_state (widget)]);
 
   gtk_im_context_set_client_window (label->im_context, widget->window);
 
