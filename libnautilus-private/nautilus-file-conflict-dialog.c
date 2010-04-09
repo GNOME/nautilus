@@ -400,6 +400,7 @@ reset_button_clicked_cb (GtkButton *w,
 
 	gtk_entry_set_text (GTK_ENTRY (details->entry),
 			    details->conflict_name);
+	gtk_widget_grab_focus (details->entry);
 	eel_filename_get_rename_region (details->conflict_name,
 					&start_pos, &end_pos);
 	gtk_editable_select_region (GTK_EDITABLE (details->entry),
