@@ -112,7 +112,7 @@ file_list_ready_cb (GList *files,
 	dest_is_dir = nautilus_file_is_directory (dest);
 
 	type = nautilus_file_get_mime_type (dest);
-	should_show_type = nautilus_file_is_mime_type (src, type);
+	should_show_type = !nautilus_file_is_mime_type (src, type);
 
 	g_free (type);
 	type = NULL;
