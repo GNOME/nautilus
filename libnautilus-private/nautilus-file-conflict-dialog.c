@@ -335,9 +335,19 @@ entry_text_changed_cb (GtkEditable *entry,
 	     g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (entry)), details->conflict_name) != 0) {
 		gtk_widget_hide (details->replace_button);
 		gtk_widget_show (details->rename_button);
+
+		gtk_widget_set_sensitive (details->checkbox, FALSE);
+
+		gtk_dialog_set_default_response (GTK_DIALOG (dialog),
+						 CONFLICT_RESPONSE_RENAME);
 	} else {
 		gtk_widget_hide (details->rename_button);
 		gtk_widget_show (details->replace_button);
+
+		gtk_widget_set_sensitive (details->checkbox, TRUE);
+
+		gtk_dialog_set_default_response (GTK_DIALOG (dialog),
+						 CONFLICT_RESPONSE_REPLACE);
 	}
 }
 
@@ -351,10 +361,10 @@ expander_activated_cb (GtkExpander *w,
 	details = dialog->details;
 
 	if (!gtk_expander_get_expanded (w)) {
-		gtk_widget_grab_focus (details->entry);
-
 		if (g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (details->entry)),
 			       details->conflict_name) == 0) {
+			gtk_widget_grab_focus (details->entry);
+
 			eel_filename_get_rename_region (details->conflict_name,
 							&start_pos, &end_pos);
 			gtk_editable_select_region (GTK_EDITABLE (details->entry),
@@ -506,6 +516,7 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 		gtk_dialog_add_button (dialog,
 				       _("Replace"),
 				       CONFLICT_RESPONSE_REPLACE);
+	gtk_widget_grab_focus (details->replace_button);
 
 	/* Setup HIG properties */
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
