@@ -696,18 +696,6 @@ clicked_eject_button (NautilusPlacesSidebar *sidebar,
 }
 
 static void
-row_activated_callback (GtkTreeView *tree_view,
-			GtkTreePath *path,
-			GtkTreeViewColumn *column,
-			gpointer user_data)
-{
-	open_selected_bookmark (NAUTILUS_PLACES_SIDEBAR (user_data),
-				gtk_tree_view_get_model (tree_view),
-				path,
-				0);
-}
-
-static void
 desktop_location_changed_callback (gpointer user_data)
 {
 	NautilusPlacesSidebar *sidebar;
@@ -2339,6 +2327,39 @@ bookmarks_popup_menu_cb (GtkWidget *widget,
 	return TRUE;
 }
 
+static gboolean
+bookmarks_button_release_event_cb (GtkWidget *widget,
+				   GdkEventButton *event,
+				   NautilusPlacesSidebar *sidebar)
+{
+	GtkTreePath *path;
+	GtkTreeModel *model;
+	GtkTreeView *tree_view;
+
+	if (event->type != GDK_BUTTON_RELEASE) {
+		return TRUE;
+	}
+
+	tree_view = GTK_TREE_VIEW (widget);
+	model = gtk_tree_view_get_model (tree_view);
+
+	if (event->button == 1) {
+
+		if (event->window != gtk_tree_view_get_bin_window (tree_view)) {
+			return FALSE;
+		}
+
+		gtk_tree_view_get_path_at_pos (tree_view, (int) event->x, (int) event->y,
+					       &path, NULL, NULL, NULL);
+
+		open_selected_bookmark (sidebar, model, path, 0);
+
+		gtk_tree_path_free (path);
+	}
+
+	return FALSE;
+}
+
 /* Callback used when a button is pressed on the shortcuts list.  
  * We trap button 3 to bring up a popup menu, and button 2 to
  * open in a new tab.
@@ -2557,11 +2578,6 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 	selection = gtk_tree_view_get_selection (tree_view);
 	gtk_tree_selection_set_mode (selection, GTK_SELECTION_BROWSE);
 
-	g_signal_connect_object
-		(tree_view, "row_activated", 
-		 G_CALLBACK (row_activated_callback), sidebar, 0);
-
-
 	gtk_tree_view_enable_model_drag_source (GTK_TREE_VIEW (tree_view),
 						GDK_BUTTON1_MASK,
 						nautilus_shortcuts_source_targets,
@@ -2591,6 +2607,8 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 			  G_CALLBACK (bookmarks_popup_menu_cb), sidebar);
 	g_signal_connect (tree_view, "button-press-event",
 			  G_CALLBACK (bookmarks_button_press_event_cb), sidebar);
+	g_signal_connect (tree_view, "button-release-event",
+			  G_CALLBACK (bookmarks_button_release_event_cb), sidebar);
 
 	eel_gtk_tree_view_set_activate_on_single_click (sidebar->tree_view,
 							TRUE);
