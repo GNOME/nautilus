@@ -729,8 +729,6 @@ clicked_eject_button (NautilusPlacesSidebar *sidebar,
 		    button_event->x - total_width <= eject_button_size) {
 			return TRUE;
 		}
-	} else if (event->type == GDK_BUTTON_RELEASE) {
-		g_object_set_data (G_OBJECT (sidebar->tree_view), "myrect", NULL);
 	}
 
 	if (*path != NULL) {
@@ -879,7 +877,7 @@ get_drag_data (GtkTreeView *tree_view,
 	       unsigned int time)
 {
 	GdkAtom target;
-	
+
 	target = gtk_drag_dest_find_target (GTK_WIDGET (tree_view), 
 					    context, 
 					    NULL);
@@ -932,14 +930,6 @@ can_accept_items_as_bookmarks (const GList *items)
 	}
 	
 	return TRUE;
-}
-
-static void
-drag_data_delete_callback (GtkWidget             *widget,
-			   GdkDragContext        *context,
-			   NautilusPlacesSidebar *sidebar)
-{
-	g_signal_stop_emission_by_name (widget, "drag-data-delete");
 }
 
 static gboolean
@@ -1381,13 +1371,6 @@ check_visibility (GMount           *mount,
 		if (mount == NULL)
 			*show_mount = g_volume_can_mount (volume);
 	}
-
-#ifdef TODO_GIO
-		if (something &&
-		    g_find_program_in_path ("gfloppy")) {
-			*show_format = TRUE;
-		}
-#endif		
 }
 
 static void
@@ -2626,8 +2609,6 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 	g_signal_connect (tree_view, "key-press-event",
 			  G_CALLBACK (bookmarks_key_press_event_cb), sidebar);
 
-	g_signal_connect (tree_view, "drag-data-delete",
-			  G_CALLBACK (drag_data_delete_callback), sidebar);
 	g_signal_connect (tree_view, "drag-motion",
 			  G_CALLBACK (drag_motion_callback), sidebar);
 	g_signal_connect (tree_view, "drag-leave",
