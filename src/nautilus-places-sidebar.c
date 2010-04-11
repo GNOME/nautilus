@@ -1132,7 +1132,6 @@ reorder_bookmarks (NautilusPlacesSidebar *sidebar,
 		   int                   new_position)
 {
 	GtkTreeIter iter;
-	NautilusBookmark *bookmark;
 	PlaceType type; 
 	int old_position;
 
@@ -1152,17 +1151,8 @@ reorder_bookmarks (NautilusPlacesSidebar *sidebar,
 		return;
 	}
 
-	/* Remove the path from the old position and insert it in the new one */
-
-	if (old_position == new_position) {
-		return;
-	}
-	bookmark = nautilus_bookmark_list_item_at (sidebar->bookmarks, old_position);
-	nautilus_bookmark_list_insert_item (sidebar->bookmarks, bookmark, new_position);
-	if (old_position > new_position) {
-		old_position++;
-	}
-	nautilus_bookmark_list_delete_item_at (sidebar->bookmarks, old_position);
+	nautilus_bookmark_list_move_item (sidebar->bookmarks, old_position,
+					  new_position);
 }
 
 static void
