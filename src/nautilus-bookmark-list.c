@@ -317,6 +317,41 @@ nautilus_bookmark_list_delete_item_at (NautilusBookmarkList *bookmarks,
 }
 
 /**
+ * nautilus_bookmark_list_move_item:
+ *
+ * Move the item from the given position to the destination.
+ * @index: the index of the first bookmark.
+ * @destination: the index of the second bookmark.
+ **/
+void
+nautilus_bookmark_list_move_item (NautilusBookmarkList *bookmarks,
+				  guint index,
+				  guint destination)
+{
+	GList *bookmark_item;
+
+	if (index == destination) {
+		return;
+	}
+
+	bookmark_item = g_list_nth (bookmarks->list, index);
+	bookmarks->list = g_list_remove_link (bookmarks->list,
+					      bookmark_item);
+
+	if (index < destination) {
+		bookmarks->list = g_list_insert (bookmarks->list,
+						 bookmark_item->data,
+						 destination - 1);
+	} else {
+		bookmarks->list = g_list_insert (bookmarks->list,
+						 bookmark_item->data,
+						 destination);
+	}
+
+	nautilus_bookmark_list_contents_changed (bookmarks);
+}
+
+/**
  * nautilus_bookmark_list_delete_items_with_uri:
  * 
  * Delete all bookmarks with the given uri.
