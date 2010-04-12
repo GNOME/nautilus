@@ -2183,8 +2183,7 @@ bookmarks_key_press_event_cb (GtkWidget             *widget,
       return eject_or_unmount_selection (sidebar);
   }
 
-  if ((event->keyval == GDK_BackSpace
-      || event->keyval == GDK_Delete
+  if ((event->keyval == GDK_Delete
       || event->keyval == GDK_KP_Delete)
       && (event->state & modifiers) == 0) {
       remove_selected_bookmarks (sidebar);
