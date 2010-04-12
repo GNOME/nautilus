@@ -990,10 +990,11 @@ drag_motion_callback (GtkTreeView *tree_view,
 
 	if (action != 0) {
 		gdk_drag_status (context, action, time);
-		return TRUE;
 	} else {
-		return FALSE;
+		gdk_drag_status (context, 0, time);
 	}
+
+	return TRUE;
 }
 
 static void
