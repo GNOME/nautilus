@@ -62,9 +62,9 @@ struct NautilusBookmarkDetails
 static void	  nautilus_bookmark_connect_file	  (NautilusBookmark	 *file);
 static void	  nautilus_bookmark_disconnect_file	  (NautilusBookmark	 *file);
 
-G_DEFINE_TYPE (NautilusBookmark, nautilus_bookmark, GTK_TYPE_OBJECT);
+G_DEFINE_TYPE (NautilusBookmark, nautilus_bookmark, G_TYPE_OBJECT);
 
-/* GtkObject methods.  */
+/* GObject methods.  */
 
 static void
 nautilus_bookmark_finalize (GObject *object)

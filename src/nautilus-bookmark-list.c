@@ -47,11 +47,10 @@ static char *window_geometry;
 
 /* forward declarations */
 
-static void        destroy                              (GtkObject            *object);
 static void        nautilus_bookmark_list_load_file     (NautilusBookmarkList *bookmarks);
 static void        nautilus_bookmark_list_save_file     (NautilusBookmarkList *bookmarks);
 
-G_DEFINE_TYPE(NautilusBookmarkList, nautilus_bookmark_list, GTK_TYPE_OBJECT)
+G_DEFINE_TYPE(NautilusBookmarkList, nautilus_bookmark_list, G_TYPE_OBJECT)
 
 static NautilusBookmark *
 new_bookmark_from_uri (const char *uri, const char *label)
@@ -121,13 +120,62 @@ nautilus_bookmark_list_get_file (void)
 /* Initialization.  */
 
 static void
+bookmark_in_list_changed_callback (NautilusBookmark     *bookmark,
+				   NautilusBookmarkList *bookmarks)
+{
+	g_assert (NAUTILUS_IS_BOOKMARK (bookmark));
+	g_assert (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
+
+	/* Save changes so we'll have the good icon next time. */
+	nautilus_bookmark_list_save_file (bookmarks);
+}
+
+static void
+stop_monitoring_bookmark (NautilusBookmarkList *bookmarks,
+			  NautilusBookmark     *bookmark)
+{
+	g_signal_handlers_disconnect_by_func (bookmark,
+					      bookmark_in_list_changed_callback,
+					      bookmarks);
+}
+
+static void
+stop_monitoring_one (gpointer data, gpointer user_data)
+{
+	g_assert (NAUTILUS_IS_BOOKMARK (data));
+	g_assert (NAUTILUS_IS_BOOKMARK_LIST (user_data));
+
+	stop_monitoring_bookmark (NAUTILUS_BOOKMARK_LIST (user_data), 
+				  NAUTILUS_BOOKMARK (data));
+}
+
+static void
+clear (NautilusBookmarkList *bookmarks)
+{
+	g_list_foreach (bookmarks->list, stop_monitoring_one, bookmarks);
+	eel_g_object_list_free (bookmarks->list);
+	bookmarks->list = NULL;
+}
+
+static void
+do_finalize (GObject *object)
+{
+	if (NAUTILUS_BOOKMARK_LIST (object)->monitor != NULL) {
+		g_file_monitor_cancel (NAUTILUS_BOOKMARK_LIST (object)->monitor);
+		NAUTILUS_BOOKMARK_LIST (object)->monitor = NULL;
+	}
+
+	clear (NAUTILUS_BOOKMARK_LIST (object));
+
+	G_OBJECT_CLASS (nautilus_bookmark_list_parent_class)->finalize (object);
+}
+
+static void
 nautilus_bookmark_list_class_init (NautilusBookmarkListClass *class)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class = G_OBJECT_CLASS (class);
 
-	object_class = GTK_OBJECT_CLASS (class);
-
-	object_class->destroy = destroy;
+	object_class->finalize = do_finalize;
 
 	signals[CONTENTS_CHANGED] =
 		g_signal_new ("contents_changed",
@@ -170,55 +218,6 @@ nautilus_bookmark_list_init (NautilusBookmarkList *bookmarks)
 			  G_CALLBACK (bookmark_monitor_changed_cb), bookmarks);
 
 	g_object_unref (file);
-}
-
-static void
-bookmark_in_list_changed_callback (NautilusBookmark     *bookmark,
-				   NautilusBookmarkList *bookmarks)
-{
-	g_assert (NAUTILUS_IS_BOOKMARK (bookmark));
-	g_assert (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
-
-	/* Save changes so we'll have the good icon next time. */
-	nautilus_bookmark_list_contents_changed (bookmarks);
-}
-
-static void
-stop_monitoring_bookmark (NautilusBookmarkList *bookmarks,
-			  NautilusBookmark     *bookmark)
-{
-	g_signal_handlers_disconnect_by_func (bookmark,
-					      bookmark_in_list_changed_callback,
-					      bookmarks);
-}
-
-static void
-stop_monitoring_one (gpointer data, gpointer user_data)
-{
-	g_assert (NAUTILUS_IS_BOOKMARK (data));
-	g_assert (NAUTILUS_IS_BOOKMARK_LIST (user_data));
-
-	stop_monitoring_bookmark (NAUTILUS_BOOKMARK_LIST (user_data), 
-				  NAUTILUS_BOOKMARK (data));
-}
-
-static void
-clear (NautilusBookmarkList *bookmarks)
-{
-	g_list_foreach (bookmarks->list, stop_monitoring_one, bookmarks);
-	eel_g_object_list_free (bookmarks->list);
-	bookmarks->list = NULL;
-}
-
-static void
-destroy (GtkObject *object)
-{
-	if (NAUTILUS_BOOKMARK_LIST (object)->monitor != NULL) {
-		g_file_monitor_cancel (NAUTILUS_BOOKMARK_LIST (object)->monitor);
-		NAUTILUS_BOOKMARK_LIST (object)->monitor = NULL;
-	}
-
-	clear (NAUTILUS_BOOKMARK_LIST (object));
 }
 
 static void
