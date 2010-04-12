@@ -51,6 +51,7 @@ struct NautilusBookmarkList {
 
 	GList *list; 
 	GFileMonitor *monitor;
+	GQueue *pending_ops;
 };
 
 struct NautilusBookmarkListClass {
@@ -64,7 +65,6 @@ void                    nautilus_bookmark_list_append              (NautilusBook
 								    NautilusBookmark *bookmark);
 gboolean                nautilus_bookmark_list_contains            (NautilusBookmarkList   *bookmarks,
 								    NautilusBookmark *bookmark);
-void                    nautilus_bookmark_list_contents_changed    (NautilusBookmarkList   *bookmarks);
 void                    nautilus_bookmark_list_delete_item_at      (NautilusBookmarkList   *bookmarks,
 								    guint                   index);
 void                    nautilus_bookmark_list_delete_items_with_uri (NautilusBookmarkList *bookmarks,

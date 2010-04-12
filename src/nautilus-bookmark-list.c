@@ -36,6 +36,8 @@
 #include <gio/gio.h>
 
 #define MAX_BOOKMARK_LENGTH 80
+#define LOAD_JOB 1
+#define SAVE_JOB 2
 
 enum {
 	CONTENTS_CHANGED,
@@ -165,6 +167,8 @@ do_finalize (GObject *object)
 		NAUTILUS_BOOKMARK_LIST (object)->monitor = NULL;
 	}
 
+	g_queue_free (NAUTILUS_BOOKMARK_LIST (object)->pending_ops);
+
 	clear (NAUTILUS_BOOKMARK_LIST (object));
 
 	G_OBJECT_CLASS (nautilus_bookmark_list_parent_class)->finalize (object);
@@ -199,7 +203,6 @@ bookmark_monitor_changed_cb (GFileMonitor      *monitor,
 	    eflags == G_FILE_MONITOR_EVENT_CREATED) {
 		g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (NAUTILUS_BOOKMARK_LIST (user_data)));
 		nautilus_bookmark_list_load_file (NAUTILUS_BOOKMARK_LIST (user_data));
-		g_signal_emit (user_data, signals[CONTENTS_CHANGED], 0);
 	}
 }
 
@@ -207,6 +210,8 @@ static void
 nautilus_bookmark_list_init (NautilusBookmarkList *bookmarks)
 {
 	GFile *file;
+
+	bookmarks->pending_ops = g_queue_new ();
 
 	nautilus_bookmark_list_load_file (bookmarks);
 
@@ -249,7 +254,7 @@ nautilus_bookmark_list_append (NautilusBookmarkList *bookmarks,
 				  nautilus_bookmark_copy (bookmark), 
 				  -1);
 
-	nautilus_bookmark_list_contents_changed (bookmarks);
+	nautilus_bookmark_list_save_file (bookmarks);
 }
 
 /**
@@ -272,21 +277,6 @@ nautilus_bookmark_list_contains (NautilusBookmarkList *bookmarks,
 				   (gpointer)bookmark, 
 				   nautilus_bookmark_compare_with) 
 		!= NULL;
-}
-
-/**
- * nautilus_bookmark_list_contents_changed:
- * 
- * Save the bookmark list to disk, and emit the contents_changed signal.
- * @bookmarks: NautilusBookmarkList whose contents have been modified.
- **/ 
-void
-nautilus_bookmark_list_contents_changed (NautilusBookmarkList *bookmarks)
-{
-	g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
-
-	nautilus_bookmark_list_save_file (bookmarks);
-	g_signal_emit (bookmarks, signals[CONTENTS_CHANGED], 0);
 }
 
 /**
@@ -314,7 +304,7 @@ nautilus_bookmark_list_delete_item_at (NautilusBookmarkList *bookmarks,
 
 	g_list_free_1 (doomed);
 
-	nautilus_bookmark_list_contents_changed (bookmarks);
+	nautilus_bookmark_list_save_file (bookmarks);
 }
 
 /**
@@ -349,7 +339,7 @@ nautilus_bookmark_list_move_item (NautilusBookmarkList *bookmarks,
 						 destination);
 	}
 
-	nautilus_bookmark_list_contents_changed (bookmarks);
+	nautilus_bookmark_list_save_file (bookmarks);
 }
 
 /**
@@ -386,7 +376,7 @@ nautilus_bookmark_list_delete_items_with_uri (NautilusBookmarkList *bookmarks,
 	}
 
 	if (list_changed) {
-		nautilus_bookmark_list_contents_changed (bookmarks);
+		nautilus_bookmark_list_save_file (bookmarks);
 	}
 }
 
@@ -426,7 +416,7 @@ nautilus_bookmark_list_insert_item (NautilusBookmarkList *bookmarks,
 				  nautilus_bookmark_copy (new_bookmark), 
 				  index);
 
-	nautilus_bookmark_list_contents_changed (bookmarks);
+	nautilus_bookmark_list_save_file (bookmarks);
 }
 
 /**
@@ -463,25 +453,18 @@ nautilus_bookmark_list_length (NautilusBookmarkList *bookmarks)
 	return g_list_length (bookmarks->list);
 }
 
-/**
- * nautilus_bookmark_list_load_file:
- * 
- * Reads bookmarks from file, clobbering contents in memory.
- * @bookmarks: the list of bookmarks to fill with file contents.
- **/
 static void
-nautilus_bookmark_list_load_file (NautilusBookmarkList *bookmarks)
+load_file_finish (NautilusBookmarkList *bookmarks,
+		  GObject *source,
+		  GAsyncResult *res)
 {
-	GFile *file;
-	char *contents;
 	GError *error = NULL;
+	gchar *contents = NULL;
 
-	file = nautilus_bookmark_list_get_file ();
+	g_file_load_contents_finish (G_FILE (source),
+				     res, &contents, NULL, NULL, &error);
 
-	/* Wipe out old list. */
-	clear (bookmarks);
-
-	if (g_file_load_contents (file, NULL, &contents, NULL, NULL, &error)) {
+	if (error == NULL) {
         	char **lines;
       		int i;
 
@@ -508,13 +491,182 @@ nautilus_bookmark_list_load_file (NautilusBookmarkList *bookmarks)
 		}
       		g_free (contents);
        		g_strfreev (lines);
-	}
-	else if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
+
+		g_signal_emit (bookmarks, signals[CONTENTS_CHANGED], 0);
+	} else if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
 		g_warning ("Could not load bookmark file: %s\n", error->message);
 		g_error_free (error);
 	}
+}
+
+static void
+load_file_async (NautilusBookmarkList *self,
+		 GAsyncReadyCallback callback)
+{
+	GFile *file;
+
+	file = nautilus_bookmark_list_get_file ();
+
+	/* Wipe out old list. */
+	clear (self);
+
+	/* keep the bookmark list alive */
+	g_object_ref (self);
+	g_file_load_contents_async (file, NULL, callback, self);
 
 	g_object_unref (file);
+}
+
+static void
+save_file_finish (NautilusBookmarkList *bookmarks,
+		  GObject *source,
+		  GAsyncResult *res)
+{
+	GError *error = NULL;
+	GFile *file;
+
+	g_file_replace_contents_finish (G_FILE (source),
+					res, NULL, &error);
+
+	if (error != NULL) {
+		g_warning ("Unable to replace contents of the bookmarks file: %s",
+			   error->message);
+		g_error_free (error);
+	}
+
+	file = nautilus_bookmark_list_get_file ();
+
+	/* re-enable bookmark file monitoring */
+	bookmarks->monitor = g_file_monitor_file (file, 0, NULL, NULL);
+	g_file_monitor_set_rate_limit (bookmarks->monitor, 1000);
+	g_signal_connect (bookmarks->monitor, "changed",
+			  G_CALLBACK (bookmark_monitor_changed_cb), bookmarks);
+
+	g_object_unref (file);
+}
+
+static void
+save_file_async (NautilusBookmarkList *bookmarks,
+		 GAsyncReadyCallback callback)
+{
+	GFile *file;
+	GList *l;
+	GString *bookmark_string;
+
+	/* temporarily disable bookmark file monitoring when writing file */
+	if (bookmarks->monitor != NULL) {
+		g_file_monitor_cancel (bookmarks->monitor);
+		bookmarks->monitor = NULL;
+	}
+
+	file = nautilus_bookmark_list_get_file ();
+	bookmark_string = g_string_new (NULL);
+
+	for (l = bookmarks->list; l; l = l->next) {
+		NautilusBookmark *bookmark;
+
+		bookmark = NAUTILUS_BOOKMARK (l->data);
+
+		/* make sure we save label if it has one for compatibility with GTK 2.7 and 2.8 */
+		if (nautilus_bookmark_get_has_custom_name (bookmark)) {
+			char *label, *uri;
+			label = nautilus_bookmark_get_name (bookmark);
+			uri = nautilus_bookmark_get_uri (bookmark);
+			g_string_append_printf (bookmark_string,
+						"%s %s\n", uri, label);
+			g_free (uri);
+			g_free (label);
+		} else {
+			char *uri;
+			uri = nautilus_bookmark_get_uri (bookmark);
+			g_string_append_printf (bookmark_string, "%s\n", uri);
+			g_free (uri);
+		}
+	}
+
+	/* keep the bookmark list alive */
+	g_object_ref (bookmarks);
+	g_file_replace_contents_async (file, bookmark_string->str,
+				       bookmark_string->len, NULL,
+				       FALSE, 0, NULL, callback,
+				       bookmarks);
+
+	g_object_unref (file);
+}
+
+static void
+process_next_op (NautilusBookmarkList *bookmarks);
+
+static void
+op_processed_cb (GObject *source,
+		 GAsyncResult *res,
+		 gpointer user_data)
+{
+	NautilusBookmarkList *self = user_data;
+	int op;
+
+	op = GPOINTER_TO_INT (g_queue_pop_tail (self->pending_ops));
+
+	if (op == LOAD_JOB) {
+		load_file_finish (self, source, res);
+	} else {
+		save_file_finish (self, source, res);
+	}
+
+	if (!g_queue_is_empty (self->pending_ops)) {
+		process_next_op (self);
+	}
+
+	/* release the reference acquired during the _async method */
+	g_object_unref (self);
+}
+
+static void
+process_next_op (NautilusBookmarkList *bookmarks)
+{
+	gint op;
+
+	op = GPOINTER_TO_INT (g_queue_peek_tail (bookmarks->pending_ops));
+
+	if (op == LOAD_JOB) {
+		load_file_async (bookmarks, op_processed_cb);
+	} else {
+		save_file_async (bookmarks, op_processed_cb);
+	}
+}
+
+/**
+ * nautilus_bookmark_list_load_file:
+ * 
+ * Reads bookmarks from file, clobbering contents in memory.
+ * @bookmarks: the list of bookmarks to fill with file contents.
+ **/
+static void
+nautilus_bookmark_list_load_file (NautilusBookmarkList *bookmarks)
+{
+	g_queue_push_head (bookmarks->pending_ops, GINT_TO_POINTER (LOAD_JOB));
+
+	if (g_queue_get_length (bookmarks->pending_ops) == 1) {
+		process_next_op (bookmarks);
+	}
+}
+
+/**
+ * nautilus_bookmark_list_save_file:
+ * 
+ * Save bookmarks to disk.
+ * @bookmarks: the list of bookmarks to save.
+ **/
+static void
+nautilus_bookmark_list_save_file (NautilusBookmarkList *bookmarks)
+{
+	g_signal_emit (bookmarks, signals[CONTENTS_CHANGED], 0);
+
+	g_queue_push_head (bookmarks->pending_ops, GINT_TO_POINTER (SAVE_JOB));
+
+	if (g_queue_get_length (bookmarks->pending_ops) == 1) {
+		process_next_op (bookmarks);
+	}
 }
 
 /**
@@ -532,91 +684,6 @@ nautilus_bookmark_list_new (void)
 	list = NAUTILUS_BOOKMARK_LIST (g_object_new (NAUTILUS_TYPE_BOOKMARK_LIST, NULL));
 
 	return g_object_ref_sink (list);
-}
-
-/**
- * nautilus_bookmark_list_save_file:
- * 
- * Save bookmarks to disk.
- * @bookmarks: the list of bookmarks to save.
- **/
-static void
-nautilus_bookmark_list_save_file (NautilusBookmarkList *bookmarks)
-{
-	GFile *file;
-	GOutputStream *out;
-	GError *error = NULL;
-	GList *l;
-
-	/* temporarily disable bookmark file monitoring when writing file */
-	if (bookmarks->monitor != NULL) {
-		g_file_monitor_cancel (bookmarks->monitor);
-		bookmarks->monitor = NULL;
-	}
-
-	file = nautilus_bookmark_list_get_file ();
-
-	out = (GOutputStream *)g_file_replace (file, NULL, FALSE, 0, NULL, &error);
-	if (out == NULL) {
-		g_message ("Opening bookmark file failed: %s\n", error->message);
-		goto error;
-	}
-
-      	for (l = bookmarks->list; l; l = l->next) {
-		NautilusBookmark *bookmark;
-		char *bookmark_string;
-
-		bookmark = NAUTILUS_BOOKMARK (l->data);
-
-		/* make sure we save label if it has one for compatibility with GTK 2.7 and 2.8 */
-		if (nautilus_bookmark_get_has_custom_name (bookmark)) {
-			char *label, *uri;
-			label = nautilus_bookmark_get_name (bookmark);
-			uri = nautilus_bookmark_get_uri (bookmark);
-			bookmark_string = g_strconcat (uri, " ", label, "\n", NULL);
-			g_free (uri);
-			g_free (label);
-		} else {
-			char *uri;
-			uri = nautilus_bookmark_get_uri (bookmark);
-			bookmark_string = g_strconcat (uri, "\n", NULL);
-			g_free (uri);
-		}
-
-		if (!g_output_stream_write_all (out,
-						bookmark_string,
-						strlen (bookmark_string),
-						NULL, NULL,
-						&error)) {
-			g_warning ("writing %s to bookmark file failed: %s\n",
-				   bookmark_string, error->message); 
-			g_free (bookmark_string);
-    			goto error;
-		}
-
-		g_free (bookmark_string);
-	}
-
-	if (!g_output_stream_close (out, NULL, &error)) {
-		g_warning ("Closing bookmark file failed: %s\n", error->message);
-	}
-
-error:
-	if (error)
-		g_error_free (error);
-
-	if (out)
-		g_object_unref (out);
-
-	/* re-enable bookmark file monitoring */
-	bookmarks->monitor = g_file_monitor_file (file, 0, NULL, NULL);
-	g_file_monitor_set_rate_limit (bookmarks->monitor, 1000);
-	g_signal_connect (bookmarks->monitor, "changed",
-			  G_CALLBACK (bookmark_monitor_changed_cb), bookmarks);
-
-	if (out)
-		g_object_unref (out);
-	g_object_unref (file);
 }
 
 /**
