@@ -47,13 +47,14 @@ typedef struct NautilusBookmarkListClass NautilusBookmarkListClass;
   (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_BOOKMARK_LIST, NautilusBookmarkListClass))
 
 struct NautilusBookmarkList {
-	GtkObject object;
+	GObject object;
+
 	GList *list; 
 	GFileMonitor *monitor;
 };
 
 struct NautilusBookmarkListClass {
-	GtkObjectClass parent_class;
+	GObjectClass parent_class;
 	void (* contents_changed) (NautilusBookmarkList *bookmarks);
 };
 

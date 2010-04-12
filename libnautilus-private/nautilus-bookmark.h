@@ -44,12 +44,12 @@ typedef struct NautilusBookmark NautilusBookmark;
 typedef struct NautilusBookmarkDetails NautilusBookmarkDetails;
 
 struct NautilusBookmark {
-	GtkObject object;
+	GObject object;
 	NautilusBookmarkDetails *details;	
 };
 
 struct NautilusBookmarkClass {
-	GtkObjectClass parent_class;
+	GObjectClass parent_class;
 
 	/* Signals that clients can connect to. */
 
