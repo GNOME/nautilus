@@ -750,7 +750,7 @@ eel_background_set_up_widget (EelBackground *background, GtkWidget *widget)
 	GdkWindow *window;
 	gboolean in_fade;
 
-	if (!GTK_WIDGET_REALIZED (widget)) {
+	if (!gtk_widget_get_realized (widget)) {
 		return;
 	}
 
@@ -814,7 +814,7 @@ on_background_changed (EelBackground *background)
 static void
 init_fade (EelBackground *background, GtkWidget *widget)
 {
-	if (widget == NULL || !GTK_WIDGET_REALIZED (widget))
+	if (widget == NULL || !gtk_widget_get_realized (widget))
 		return;
 
 	if (!background->details->is_desktop) {
@@ -966,7 +966,7 @@ eel_background_set_desktop (EelBackground *background, GtkWidget *widget, gboole
 {
 	background->details->is_desktop = is_desktop;
 
-	if (GTK_WIDGET_REALIZED(widget) && background->details->is_desktop) {
+	if (gtk_widget_get_realized (widget) && background->details->is_desktop) {
 		widget_realized_setup (widget, background);
 	}
 	

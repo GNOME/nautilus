@@ -253,7 +253,7 @@ eel_gtk_window_set_initial_geometry (GtkWindow *window,
 	 * Someday we could make this move an already-showing window, but we don't
 	 * need that functionality yet. 
 	 */
-	g_return_if_fail (!GTK_WIDGET_VISIBLE (window));
+	g_return_if_fail (!gtk_widget_get_visible (GTK_WIDGET (window)));
 
 	if ((geometry_flags & EEL_GDK_X_VALUE) && (geometry_flags & EEL_GDK_Y_VALUE)) {
 		real_left = left;
@@ -321,7 +321,7 @@ eel_gtk_window_set_initial_geometry_from_string (GtkWindow *window,
 	 * Someday we could make this move an already-showing window, but we don't
 	 * need that functionality yet. 
 	 */
-	g_return_if_fail (!GTK_WIDGET_VISIBLE (window));
+	g_return_if_fail (!gtk_widget_get_visible (GTK_WIDGET (window)));
 
 	geometry_flags = eel_gdk_parse_geometry (geometry_string, &left, &top, &width, &height);
 
@@ -640,7 +640,7 @@ eel_gtk_signal_connect_while_realized (GtkObject *object,
 	g_return_if_fail (name[0] != '\0');
 	g_return_if_fail (callback != NULL);
 	g_return_if_fail (GTK_IS_WIDGET (realized_widget));
-	g_return_if_fail (GTK_WIDGET_REALIZED (realized_widget));
+	g_return_if_fail (gtk_widget_get_realized (realized_widget));
 
 	info = g_new0 (RealizeDisconnectInfo, 1);
 	
@@ -986,7 +986,7 @@ eel_gtk_widget_find_windowed_ancestor (GtkWidget *widget)
 {
 	g_return_val_if_fail (GTK_IS_WIDGET (widget), NULL);
 
-	while (widget && GTK_WIDGET_NO_WINDOW (widget)) {
+	while (widget && !gtk_widget_get_has_window (widget)) {
 		widget = widget->parent;
 	}
 
@@ -1109,7 +1109,7 @@ eel_gtk_viewport_get_visible_rect (GtkViewport  *viewport,
 	g_return_val_if_fail (GTK_IS_VIEWPORT (viewport), FALSE);
 	g_return_val_if_fail (rect != NULL, FALSE);
 	
-	if (GTK_WIDGET_REALIZED (viewport)) {
+	if (gtk_widget_get_realized (GTK_WIDGET (viewport))) {
 		viewport_rect.x = 0;
 		viewport_rect.y = 0;
 		gdk_drawable_get_size (viewport->view_window, 

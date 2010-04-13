@@ -347,7 +347,7 @@ eel_canvas_item_realize (EelCanvasItem *item)
 	if (item->parent && !(item->parent->object.flags & EEL_CANVAS_ITEM_REALIZED))
 		(* EEL_CANVAS_ITEM_GET_CLASS (item->parent)->realize) (item->parent);
 	
-	if (item->parent == NULL && !GTK_WIDGET_REALIZED (GTK_WIDGET (item->canvas)))
+	if (item->parent == NULL && !gtk_widget_get_realized (GTK_WIDGET (item->canvas)))
 		gtk_widget_realize (GTK_WIDGET (item->canvas));
 	
 	GTK_OBJECT_SET_FLAGS (item, EEL_CANVAS_ITEM_REALIZED);
@@ -779,7 +779,7 @@ eel_canvas_item_show (EelCanvasItem *item)
 				(* EEL_CANVAS_ITEM_GET_CLASS (item)->map) (item);
 		} else {
 			if (!(item->object.flags & EEL_CANVAS_ITEM_MAPPED) &&
-			    GTK_WIDGET_MAPPED (GTK_WIDGET (item->canvas)))
+			    gtk_widget_get_mapped (GTK_WIDGET (item->canvas)))
 				(* EEL_CANVAS_ITEM_GET_CLASS (item)->map) (item);
 		}
 
@@ -837,7 +837,8 @@ eel_canvas_item_grab (EelCanvasItem *item, guint event_mask, GdkCursor *cursor, 
 	int retval;
 
 	g_return_val_if_fail (EEL_IS_CANVAS_ITEM (item), GDK_GRAB_NOT_VIEWABLE);
-	g_return_val_if_fail (GTK_WIDGET_MAPPED (item->canvas), GDK_GRAB_NOT_VIEWABLE);
+	g_return_val_if_fail (gtk_widget_get_mapped (GTK_WIDGET (item->canvas)),
+			      GDK_GRAB_NOT_VIEWABLE);
 
 	if (item->canvas->grabbed_item)
 		return GDK_GRAB_ALREADY_GRABBED;
@@ -1009,7 +1010,7 @@ eel_canvas_item_grab_focus (EelCanvasItem *item)
 	GdkEvent ev;
 
 	g_return_if_fail (EEL_IS_CANVAS_ITEM (item));
-	g_return_if_fail (GTK_WIDGET_CAN_FOCUS (GTK_WIDGET (item->canvas)));
+	g_return_if_fail (gtk_widget_get_can_focus (GTK_WIDGET (item->canvas)));
 
 	focused_item = item->canvas->focused_item;
 
@@ -2424,7 +2425,7 @@ emit_event (EelCanvas *canvas, GdkEvent *event)
 	guint mask;
 
 	/* Could be an old pick event */
-	if (!GTK_WIDGET_REALIZED (canvas)) {
+	if (!gtk_widget_get_realized (GTK_WIDGET (canvas))) {
 		return FALSE;
 	}
 
@@ -2860,7 +2861,7 @@ eel_canvas_expose (GtkWidget *widget, GdkEventExpose *event)
 
 	canvas = EEL_CANVAS (widget);
 
-	if (!GTK_WIDGET_DRAWABLE (widget) || (event->window != canvas->layout.bin_window)) return FALSE;
+	if (!gtk_widget_is_drawable (widget) || (event->window != canvas->layout.bin_window)) return FALSE;
 
 #ifdef VERBOSE
 	g_print ("Expose\n");
@@ -3148,7 +3149,7 @@ eel_canvas_set_pixels_per_unit (EelCanvas *canvas, double n)
 	 * scrolling the window scroll causing exposes.
 	 */
 	window = NULL;
-	if (GTK_WIDGET_MAPPED (widget)) {
+	if (gtk_widget_get_mapped (widget)) {
 		attributes.window_type = GDK_WINDOW_CHILD;
 		attributes.x = widget->allocation.x;
 		attributes.y = widget->allocation.y;
@@ -3310,7 +3311,8 @@ eel_canvas_request_redraw (EelCanvas *canvas, int x1, int y1, int x2, int y2)
 
 	g_return_if_fail (EEL_IS_CANVAS (canvas));
 
-	if (!GTK_WIDGET_DRAWABLE (canvas) || (x1 >= x2) || (y1 >= y2)) return;
+	if (!gtk_widget_is_drawable (GTK_WIDGET (canvas))
+	    || (x1 >= x2) || (y1 >= y2)) return;
 
 	bbox.x = x1;
 	bbox.y = y1;
@@ -3754,7 +3756,7 @@ eel_canvas_item_accessible_grab_focus (AtkComponent *component)
 
         eel_canvas_item_grab_focus (item);
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (item->canvas));
-	if (GTK_WIDGET_TOPLEVEL (toplevel)) {
+	if (gtk_widget_is_toplevel (toplevel)) {
 		gtk_window_present (GTK_WINDOW (toplevel));
 	}
 
@@ -3821,7 +3823,7 @@ eel_canvas_item_accessible_ref_state_set (AtkObject *accessible)
   				atk_state_set_add_state (state_set, ATK_STATE_SHOWING);
        			}
 		}
-        	if (GTK_WIDGET_CAN_FOCUS (GTK_WIDGET (item->canvas))) {
+        	if (gtk_widget_get_can_focus (GTK_WIDGET (item->canvas))) {
 			atk_state_set_add_state (state_set, ATK_STATE_FOCUSABLE);
 
 			if (item->canvas->focused_item == item) {
