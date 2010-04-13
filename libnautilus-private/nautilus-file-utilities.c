@@ -42,7 +42,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-#define NAUTILUS_USER_DIRECTORY_NAME ".nautilus"
+#define NAUTILUS_USER_DIRECTORY_NAME "nautilus"
 #define DEFAULT_NAUTILUS_DIRECTORY_MODE (0755)
 
 #define DESKTOP_DIRECTORY_NAME "Desktop"
@@ -93,7 +93,7 @@ nautilus_get_user_directory (void)
 {
 	char *user_directory = NULL;
 
-	user_directory = g_build_filename (g_get_home_dir (),
+	user_directory = g_build_filename (g_get_user_config_dir (),
 					   NAUTILUS_USER_DIRECTORY_NAME,
 					   NULL);
 	
