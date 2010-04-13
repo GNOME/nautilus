@@ -56,6 +56,7 @@
 #include "nautilus-window-private.h"
 #include "nautilus-window-manage-views.h"
 #include <unistd.h>
+#include <errno.h>
 #include <libxml/xmlsave.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n.h>
@@ -627,8 +628,9 @@ static void
 do_upgrades_once (NautilusApplication *application,
 		  gboolean no_desktop)
 {
-	char *metafile_dir, *updated;
-	int fd;
+	char *metafile_dir, *updated, *nautilus_dir, *xdg_dir;
+	const gchar *message;
+	int fd, res;
 
 	if (!no_desktop) {
 		mark_desktop_files_trusted ();
@@ -648,6 +650,35 @@ do_upgrades_once (NautilusApplication *application,
 		g_free (updated);
 	}
 	g_free (metafile_dir);
+
+	nautilus_dir = g_build_filename (g_get_home_dir (),
+					 ".nautilus", NULL);
+	xdg_dir = nautilus_get_user_directory ();
+	if (g_file_test (nautilus_dir, G_FILE_TEST_IS_DIR)) {
+		/* test if we already attempted to migrate first */
+		updated = g_build_filename (nautilus_dir, "DEPRECATED-DIRECTORY", NULL);
+		message = _("Nautilus 2.32 deprecated this directory and tried migrating "
+			    "this configuration to ~/.config/nautilus");
+		if (!g_file_test (updated, G_FILE_TEST_EXISTS)) {
+			/* rename() works fine if the destination directory is
+			 * empty.
+			 */
+			res = g_rename (nautilus_dir, xdg_dir);
+
+			if (res == -1) {
+				fd = g_creat (updated, 0600);
+				if (fd != -1) {
+					write (fd, message, strlen (message));
+					close (fd);
+				}
+			}
+		}
+
+		g_free (updated);
+	}
+
+	g_free (nautilus_dir);
+	g_free (xdg_dir);
 }
 
 static void
