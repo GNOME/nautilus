@@ -320,7 +320,7 @@ eel_wrap_table_expose_event (GtkWidget *widget,
 	GList *iterator;
 	
 	g_assert (EEL_IS_WRAP_TABLE (widget));
-	g_assert (GTK_WIDGET_REALIZED (widget));
+	g_assert (gtk_widget_get_realized (widget));
 	g_assert (event != NULL);
 
   	wrap_table = EEL_WRAP_TABLE (widget);
@@ -352,7 +352,7 @@ eel_wrap_table_map (GtkWidget *widget)
 
 		item = iterator->data;
 
-		if (GTK_WIDGET_VISIBLE (item) && !GTK_WIDGET_MAPPED (item)) {
+		if (gtk_widget_get_visible (item) && !gtk_widget_get_mapped (item)) {
 			gtk_widget_map (item);
 		}
 	}
@@ -375,7 +375,7 @@ eel_wrap_table_unmap (GtkWidget *widget)
 
 		item = iterator->data;
 
-		if (GTK_WIDGET_VISIBLE (item) && GTK_WIDGET_MAPPED (item)) {
+		if (gtk_widget_get_visible (item) && gtk_widget_get_mapped (item)) {
 			gtk_widget_unmap (item);
 		}
 	}
@@ -397,23 +397,25 @@ eel_wrap_table_add (GtkContainer *container,
 			GtkWidget *child)
 {
 	EelWrapTable *wrap_table;
+	GtkWidget *widget;
 
 	g_assert (container != NULL);
 	g_assert (EEL_IS_WRAP_TABLE (container));
 	g_assert (GTK_IS_WIDGET (child));
 
+	widget = GTK_WIDGET (container);
 	wrap_table = EEL_WRAP_TABLE (container);
 
 	gtk_widget_set_parent (child, GTK_WIDGET (container));
 
 	wrap_table->details->children = g_list_append (wrap_table->details->children, child);
 
-	if (GTK_WIDGET_REALIZED (container)) {
+	if (gtk_widget_get_realized (widget)) {
 		gtk_widget_realize (child);
 	}
 
-	if (GTK_WIDGET_VISIBLE (container) && GTK_WIDGET_VISIBLE (child)) {
-		if (GTK_WIDGET_MAPPED (container)) {
+	if (gtk_widget_get_visible (widget) && gtk_widget_get_visible (child)) {
+		if (gtk_widget_get_mapped (widget)) {
 			gtk_widget_map (child);
 		}
 		
@@ -439,7 +441,7 @@ eel_wrap_table_remove (GtkContainer *container,
 	
 	wrap_table = EEL_WRAP_TABLE (container);;
 
-	child_was_visible = GTK_WIDGET_VISIBLE (child);
+	child_was_visible = gtk_widget_get_visible (child);
 	gtk_widget_unparent (child);
 	wrap_table->details->children = g_list_remove (wrap_table->details->children, child);
 
@@ -533,7 +535,7 @@ wrap_table_layout (EelWrapTable *wrap_table)
 
 		item = iterator->data;
 		
-		if (GTK_WIDGET_VISIBLE (item)) {
+		if (gtk_widget_get_visible (item)) {
 			GtkAllocation item_allocation;
 
 			if (wrap_table->details->homogeneous) {
@@ -630,7 +632,7 @@ wrap_table_get_max_child_dimensions (const EelWrapTable *wrap_table)
 		
 		child = iterator->data;
 		
-		if (GTK_WIDGET_VISIBLE (child)) {
+		if (gtk_widget_get_visible (child)) {
  			GtkRequisition child_requisition;
 			EelDimensions child_dimensions;
 
@@ -831,7 +833,7 @@ eel_wrap_table_find_child_at_event_point (const EelWrapTable *wrap_table,
 		
 		child = iterator->data;
 		
-		if (GTK_WIDGET_VISIBLE (child)) {
+		if (gtk_widget_get_visible (child)) {
 			EelIRect child_bounds;
 
 			child_bounds = eel_gtk_widget_get_bounds (child);

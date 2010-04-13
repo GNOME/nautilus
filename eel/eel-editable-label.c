@@ -1171,7 +1171,7 @@ eel_editable_label_style_set (GtkWidget *widget,
   /* Set the background, foreground and cursor colors based on 
    * the new theme selected.
    */
-  if (GTK_WIDGET_REALIZED (widget))
+  if (gtk_widget_get_realized (widget))
     {
 	gdk_window_set_background (widget->window, &widget->style->base[gtk_widget_get_state (widget)]);
 
@@ -1485,7 +1485,7 @@ _eel_draw_insertion_cursor (GtkWidget        *widget,
 static void
 eel_editable_label_draw_cursor (EelEditableLabel  *label, gint xoffset, gint yoffset)
 {
-  if (GTK_WIDGET_DRAWABLE (label))
+  if (gtk_widget_is_drawable (GTK_WIDGET (label)))
     {
       GtkWidget *widget = GTK_WIDGET (label);
 
@@ -1618,7 +1618,7 @@ eel_editable_label_expose (GtkWidget      *widget,
 
   eel_editable_label_ensure_layout (label, TRUE);
   
-  if (GTK_WIDGET_VISIBLE (widget) && GTK_WIDGET_MAPPED (widget) &&
+  if (gtk_widget_get_visible (widget) && gtk_widget_get_mapped (widget) &&
       label->text)
     {
       get_layout_location (label, &x, &y);
@@ -1671,7 +1671,7 @@ eel_editable_label_expose (GtkWidget      *widget,
 
 
 	  state = GTK_STATE_SELECTED;
-	  if (!GTK_WIDGET_HAS_FOCUS (widget))
+	  if (!gtk_widget_has_focus (widget))
 	    state = GTK_STATE_ACTIVE;
 	      
           gdk_draw_layout_with_colors (widget->window,
@@ -1684,7 +1684,7 @@ eel_editable_label_expose (GtkWidget      *widget,
           gdk_gc_set_clip_region (widget->style->black_gc, NULL);
           gdk_region_destroy (clip);
         }
-      else if (GTK_WIDGET_HAS_FOCUS (widget))
+      else if (gtk_widget_has_focus (widget))
 	eel_editable_label_draw_cursor (label, x, y);
 
       if (label->draw_outline)
@@ -1876,7 +1876,7 @@ eel_editable_label_button_press (GtkWidget      *widget,
 
   if (event->button == 1)
     {
-      if (!GTK_WIDGET_HAS_FOCUS (widget))
+      if (!gtk_widget_has_focus (widget))
 	gtk_widget_grab_focus (widget);
 
       if (event->type == GDK_3BUTTON_PRESS)
@@ -3110,7 +3110,7 @@ popup_position_func (GtkMenu   *menu,
   label = EEL_EDITABLE_LABEL (user_data);  
   widget = GTK_WIDGET (label);
 
-  g_assert (GTK_WIDGET_REALIZED (label));
+  g_assert (gtk_widget_get_realized (widget));
 
   gdk_window_get_origin (widget->window, x, y);      
 
@@ -3152,7 +3152,7 @@ popup_targets_received (GtkClipboard     *clipboard,
   info = user_data;
   label = info->label;
 
-  if (GTK_WIDGET_REALIZED (label))
+  if (gtk_widget_get_realized (GTK_WIDGET (label)))
     {
       if (label->popup_menu)
 	gtk_widget_destroy (label->popup_menu);

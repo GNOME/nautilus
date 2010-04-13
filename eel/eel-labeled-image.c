@@ -535,7 +535,7 @@ eel_labeled_image_expose_event (GtkWidget *widget,
 	EelIRect label_bounds;
 
 	g_assert (EEL_IS_LABELED_IMAGE (widget));
-	g_assert (GTK_WIDGET_REALIZED (widget));
+	g_assert (gtk_widget_get_realized (widget));
 	g_assert (event != NULL);
 
   	labeled_image = EEL_LABELED_IMAGE (widget);
@@ -568,7 +568,7 @@ eel_labeled_image_expose_event (GtkWidget *widget,
 						      event);
 	}
 
-	if (GTK_WIDGET_HAS_FOCUS (widget)) {
+	if (gtk_widget_has_focus (widget)) {
 		label_bounds = eel_labeled_image_get_image_bounds (EEL_LABELED_IMAGE (widget));
 		gtk_paint_focus (widget->style, widget->window,
 				 GTK_STATE_NORMAL,
@@ -1923,7 +1923,7 @@ button_leave_callback (GtkWidget *widget,
 {
 	g_assert (GTK_IS_WIDGET (widget));
 
-	if (GTK_WIDGET_DRAWABLE (widget)) {
+	if (gtk_widget_is_drawable (widget)) {
 		const int fudge = 4;
 		EelIRect bounds;
 

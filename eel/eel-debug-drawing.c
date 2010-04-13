@@ -148,7 +148,7 @@ debug_pixbuf_viewer_expose_event (GtkWidget *widget, GdkEventExpose *event)
 	g_assert (DEBUG_IS_PIXBUF_VIEWER (widget));
 	g_assert (event != NULL);
 	g_assert (event->window == widget->window);
-	g_assert (GTK_WIDGET_REALIZED (widget));
+	g_assert (gtk_widget_get_realized (widget));
 	
  	viewer = DEBUG_PIXBUF_VIEWER (widget);
 
