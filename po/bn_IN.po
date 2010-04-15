@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bn_IN\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2010-03-24 15:22+0000\n"
-"PO-Revision-Date: 2010-03-29 11:50+0530\n"
+"POT-Creation-Date: 2010-04-14 07:22+0000\n"
+"PO-Revision-Date: 2010-04-15 16:56+0530\n"
 "Last-Translator: Runa Bhattacharjee <runab@redhat.com>\n"
 "Language-Team: Bengali INDIA <anubad@lists.ankur.org.in>\n"
 "MIME-Version: 1.0\n"
@@ -266,7 +266,7 @@ msgstr "ম্যানিলা কাগজ"
 
 #: ../data/browser.xml.h:44
 msgid "Moss Ridge"
-msgstr "শ্যাওলা রেখা"
+msgstr "শ্যাওলা রংয়ের রেখা"
 
 #: ../data/browser.xml.h:45
 msgid "Mud"
@@ -343,7 +343,7 @@ msgstr "আগুনে"
 
 #: ../data/browser.xml.h:63
 msgid "Terracotta"
-msgstr "টেরাকোটা"
+msgstr "পোড়ামাটি"
 
 #: ../data/browser.xml.h:64
 msgid "Violet"
@@ -1579,7 +1579,7 @@ msgstr "নীচে স্থানান্তর (_n)"
 
 #: ../libnautilus-private/nautilus-column-chooser.c:346
 msgid "Use De_fault"
-msgstr "ডিফল্ট ব্যবহার করা হবে (_f)"
+msgstr "ডিফল্ট রূপে ব্যবহার করা হবে (_f)"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:273
@@ -3190,12 +3190,12 @@ msgstr[0] "এর ফলে %d-টি পৃথক উইন্ডো খোল�
 msgstr[1] "এর ফলে %d-টি পৃথক উইন্ডো খোলা হবে।"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1183
-#: ../src/nautilus-window-manage-views.c:1866
-#: ../src/nautilus-window-manage-views.c:1872
-#: ../src/nautilus-window-manage-views.c:1889
-#: ../src/nautilus-window-manage-views.c:1900
-#: ../src/nautilus-window-manage-views.c:1906
-#: ../src/nautilus-window-manage-views.c:1931
+#: ../src/nautilus-window-manage-views.c:1871
+#: ../src/nautilus-window-manage-views.c:1877
+#: ../src/nautilus-window-manage-views.c:1894
+#: ../src/nautilus-window-manage-views.c:1905
+#: ../src/nautilus-window-manage-views.c:1911
+#: ../src/nautilus-window-manage-views.c:1936
 #, c-format
 msgid "Could not display \"%s\"."
 msgstr "\"%s\" প্রদর্শন করতে ব্যর্থ।"
@@ -3210,7 +3210,6 @@ msgid "There is no application installed for %s files"
 msgstr "%s ফাইলের জন্য কোনো অ্যাপ্লিকেশন ইনস্টল করা হয়নি"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1282
-#| msgid "Select an Application"
 msgid "_Select Application"
 msgstr "একটি অ্যাপ্লিকেশন বেছে নিন (_S)"
 
@@ -3383,7 +3382,6 @@ msgstr "খুলুন (_O)"
 #. first %s is a filename and second %s is a file extension
 #: ../libnautilus-private/nautilus-open-with-dialog.c:962
 #, c-format
-#| msgid "Open %s and other files of type \"%s\" with:"
 msgid "Open %s and other %s document with:"
 msgstr "%s ও %s ধরনের অন্যান্য ফাইল খোলার জন্য ব্যবহার করা হবে:"
 
@@ -3392,20 +3390,17 @@ msgstr "%s ও %s ধরনের অন্যান্য ফাইল খো�
 #: ../libnautilus-private/nautilus-open-with-dialog.c:966
 #: ../libnautilus-private/nautilus-open-with-dialog.c:997
 #, c-format
-#| msgid "Open With"
 msgid "Open %s with:"
 msgstr "%s খোলার জন্য ব্যবহার করুন:"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:967
 #, c-format
-#| msgid "There is no application installed for %s files"
 msgid "_Remember this application for %s documents"
 msgstr "%s বিন্যাসের নথিপত্রের সাথে ব্যবহারের জন্য এই অ্যাপ্লিকেশনটি স্মরণে রাখা হবে (_R)"
 
 #. Only in add mode - the %s here is a file extension
 #: ../libnautilus-private/nautilus-open-with-dialog.c:976
 #, c-format
-#| msgid "Open all files of type \"%s\" with:"
 msgid "Open all %s documents with:"
 msgstr "%s ধরনের সকল ফাইল খোলার জন্য ব্যবহার করা হবে:"
 
@@ -3413,21 +3408,18 @@ msgstr "%s ধরনের সকল ফাইল খোলার জন্য �
 #. * of the type, eg "plain text document"
 #: ../libnautilus-private/nautilus-open-with-dialog.c:993
 #, c-format
-#| msgid "Open %s and other files of type \"%s\" with:"
 msgid "Open %s and other \"%s\" files with:"
 msgstr "%s ও \"%s\" ধরনের অন্যান্য ফাইল খোলার জন্য ব্যবহার করা হবে:"
 
 #. %s is a file type description
 #: ../libnautilus-private/nautilus-open-with-dialog.c:999
 #, c-format
-#| msgid "There is no application installed for %s files"
 msgid "_Remember this application for \"%s\" files"
 msgstr "\"%s\" বিন্যাসের ফাইলের সাথে ব্যবহারের জন্য এই অ্যাপ্লিকেশনটি স্মরণে রাখা হবে (_R)"
 
 #. Only in add mode
 #: ../libnautilus-private/nautilus-open-with-dialog.c:1008
 #, c-format
-#| msgid "Open all files of type \"%s\" with:"
 msgid "Open all \"%s\" files with:"
 msgstr "\"%s\" ধরনের সকল ফাইল খোলার জন্য ব্যবহার করা হবে:"
 
@@ -3839,25 +3831,6 @@ msgstr ""
 "সঞ্চালিত হবে।"
 
 #: ../src/file-manager/fm-directory-view.c:5694
-#| msgid ""
-#| "All executable files in this folder will appear in the Scripts menu. "
-#| "Choosing a script from the menu will run that script.\n"
-#| "\n"
-#| "When executed from a local folder, scripts will be passed the selected "
-#| "file names. When executed from a remote folder (e.g. a folder showing web "
-#| "or ftp content), scripts will be passed no parameters.\n"
-#| "\n"
-#| "In all cases, the following environment variables will be set by "
-#| "Nautilus, which the scripts may use:\n"
-#| "\n"
-#| "NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: newline-delimited paths for selected "
-#| "files (only if local)\n"
-#| "\n"
-#| "NAUTILUS_SCRIPT_SELECTED_URIS: newline-delimited URIs for selected files\n"
-#| "\n"
-#| "NAUTILUS_SCRIPT_CURRENT_URI: URI for current location\n"
-#| "\n"
-#| "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -3906,13 +3879,16 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_CURRENT_URI: বর্তমান অবস্থানের URI\n"
 "\n"
-"NAUTILUS_SCRIPT_WINDOW_GEOMETRY: বর্তমান উইন্ডোর মাপ ও অবস্থান "
+"NAUTILUS_SCRIPT_WINDOW_GEOMETRY: বর্তমান উইন্ডোর মাপ ও অবস্থান \n"
+"NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_FILE_PATHS: বিভাজিত-প্রদর্শনের উইন্ডোর "
+"নিষ্ক্রিয় পেইনের মধ্যে উপস্থিত ফাইলের পাথ, পৃথক পৃথক পংক্তি প্রয়োগ করে চিহ্নিত "
+"(শুধুমাত্র স্থানীয় ফাইলে ক্ষেত্রে প্রযোজ্য)\n"
 "\n"
-"NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_FILE_PATHS: বিভাজিত-প্রদর্শনের উইন্ডোর নিষ্ক্রিয় পেইনের মধ্যে উপস্থিত ফাইলের পাথ, পৃথক পৃথক পংক্তি প্রয়োগ করে চিহ্নিত (শুধুমাত্র স্থানীয় ফাইলে ক্ষেত্রে প্রযোজ্য)\n"
+"NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_URIS: বিভাজিত-প্রদর্শনের উইন্ডোর নিষ্ক্রিয় "
+"পেইনের মধ্যে নির্বাচিত ফাইলের URI, পৃথক পৃথক পংক্তি প্রয়োগ করে চিহ্নিত\n"
 "\n"
-"NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_URIS: বিভাজিত-প্রদর্শনের উইন্ডোর নিষ্ক্রিয় পেইনের মধ্যে নির্বাচিত ফাইলের URI, পৃথক পৃথক পংক্তি প্রয়োগ করে চিহ্নিত\n"
-"\n"
-"NAUTILUS_SCRIPT_NEXT_PANE_CURRENT_URI: বিভাজিত-প্রদর্শনের উইন্ডোর নিষ্ক্রিয় পেইনের মধ্যে প্রদর্শিত বর্তমান অবস্থানের URI"
+"NAUTILUS_SCRIPT_NEXT_PANE_CURRENT_URI: বিভাজিত-প্রদর্শনের উইন্ডোর নিষ্ক্রিয় "
+"পেইনের মধ্যে প্রদর্শিত বর্তমান অবস্থানের URI"
 
 #: ../src/file-manager/fm-directory-view.c:5869
 #: ../src/file-manager/fm-tree-view.c:961
@@ -4164,13 +4140,11 @@ msgstr ""
 
 #. name, stock id, label
 #: ../src/file-manager/fm-directory-view.c:7256
-#| msgid "Copyright"
 msgid "Copy to"
 msgstr "চিহ্নিত স্থানে কপি করুন"
 
 #. name, stock id, label
 #: ../src/file-manager/fm-directory-view.c:7257
-#| msgid "Move Dow_n"
 msgid "Move to"
 msgstr "চিহ্নিত অবস্থানে স্থানান্তর করুন"
 
@@ -4533,17 +4507,14 @@ msgstr "বর্তমান ফোল্ডারের বৈশিষ্ট�
 #. name, stock id, label
 #: ../src/file-manager/fm-directory-view.c:7455
 #: ../src/file-manager/fm-directory-view.c:7458
-#| msgid "Other Type..."
 msgid "_Other pane"
 msgstr "অন্যান্য পেইন (_O)"
 
 #: ../src/file-manager/fm-directory-view.c:7456
-#| msgid "Open the selected item in this window"
 msgid "Copy the current selection to the other pane in the window"
 msgstr "বর্তমানে নির্বাচিত বস্তুটি, উইন্ডোর অন্য পেইনে কপি করুন"
 
 #: ../src/file-manager/fm-directory-view.c:7459
-#| msgid "Open the selected item in this window"
 msgid "Move the current selection to the other pane in the window"
 msgstr "বর্তমানে নির্বাচিত বস্তুটি, উইন্ডোর অন্য পেইনে স্থানান্তর করুন"
 
@@ -4557,30 +4528,24 @@ msgid "_Home Folder"
 msgstr "ব্যক্তিগত ফোল্ডার (_H)"
 
 #: ../src/file-manager/fm-directory-view.c:7463
-#| msgid "Stop the volume associated with the open folder"
 msgid "Copy the current selection to the home folder"
 msgstr "বর্তমানে নির্বাচিত বস্তুটি, ব্যক্তিগত ফোল্ডারের মধ্যে কপি করুন"
 
 #: ../src/file-manager/fm-directory-view.c:7467
-#| msgid "Mount the volume associated with the open folder"
 msgid "Move the current selection to the home folder"
 msgstr "বর্তমানে নির্বাচিত বস্তুটি, ব্যক্তিগত ফোল্ডারের মধ্যে স্থানান্তর করুন"
 
 #. name, stock id, label
 #: ../src/file-manager/fm-directory-view.c:7470
 #: ../src/file-manager/fm-directory-view.c:7474
-#| msgid "Desktop"
 msgid "_Desktop"
 msgstr "ডেস্কটপ (_D)"
 
 #: ../src/file-manager/fm-directory-view.c:7471
-#| msgid "Computer icon visible on desktop"
 msgid "Copy the current selection to the desktop"
 msgstr "বর্তমানে নির্বাচিত বস্তুটি, ডেস্কটপের মধ্যে কপি করুন"
 
 #: ../src/file-manager/fm-directory-view.c:7475
-#| msgid "Move the selected file out of the trash"
-#| msgid_plural "Move the selected files out of the trash"
 msgid "Move the current selection to the desktop"
 msgstr "বর্তমানে নির্বাচিত বস্তুটি, ডেস্কটপের মধ্যে স্থানান্তর করুন"
 
@@ -4885,7 +4850,6 @@ msgstr "text.txt ড্রপ করা হয়েছে"
 #. * data to a directory, if the source didn't supply a name.
 #.
 #: ../src/file-manager/fm-directory-view.c:10694
-#| msgid "dropped text.txt"
 msgid "dropped data"
 msgstr "dropped data"
 
@@ -5457,7 +5421,7 @@ msgstr "ফাইল ব্যবহারের অধিকার:"
 #: ../src/file-manager/fm-properties-window.c:4227
 #: ../src/nautilus-file-management-properties.c:292
 msgid "None"
-msgstr "কোনটিই নয়"
+msgstr "শূণ্য"
 
 #: ../src/file-manager/fm-properties-window.c:4219
 msgid "List files only"
@@ -6023,7 +5987,7 @@ msgstr "বস্তুর সংখ্যা গণনা করা হবে: 
 
 #: ../src/nautilus-file-management-properties.ui.h:59
 msgid "D_efault zoom level:"
-msgstr "ডিফল্ট প্রদর্শনের মাত্রা: (_e)"
+msgstr "প্রদর্শনের ডিফল্ট মাত্রা: (_e)"
 
 #: ../src/nautilus-file-management-properties.ui.h:60
 msgid "Default _zoom level:"
@@ -6063,7 +6027,6 @@ msgid "Never"
 msgstr "কখনো না"
 
 #: ../src/nautilus-file-management-properties.ui.h:71
-#| msgid "Open this folder in a folder window"
 msgid "Open each _folder its own window"
 msgstr "প্রতিটি ফোল্ডার একটি পৃথক উইন্ডোর মধ্যে খোলা হবে (_f)"
 
@@ -6073,7 +6036,7 @@ msgstr "পূর্ব প্রদর্শন"
 
 #: ../src/nautilus-file-management-properties.ui.h:73
 msgid "Preview _sound files:"
-msgstr "শব্দের ফাইলের পূর্ব প্রদর্শন:(_s)"
+msgstr "শব্দের ফাইলের পূর্বদৃশ্য: (_s)"
 
 #: ../src/nautilus-file-management-properties.ui.h:74
 msgid "Show _only folders"
@@ -6097,7 +6060,7 @@ msgstr "ক্রমবিন্যাসে ফাইলের পূর্ব�
 
 #: ../src/nautilus-file-management-properties.ui.h:79
 msgid "View _new folders using:"
-msgstr "নতুন ফোল্ডার প্রদর্শনের জন্য ব্যবহার করা হবে: (_n)"
+msgstr "নতুন ফোল্ডার প্রদর্শনের ব্যবহার প্রণালী: (_n)"
 
 #: ../src/nautilus-file-management-properties.ui.h:80
 msgid "Views"
@@ -6117,7 +6080,7 @@ msgstr "ডিফল্ট প্রদর্শনের মাত্রা: (_
 
 #: ../src/nautilus-file-management-properties.ui.h:85
 msgid "_Double click to open items"
-msgstr "আরম্ভ করার জন্য দুইবার ক্লিক করুন (_D)"
+msgstr "আরম্ভ করার জন্য দুইবার ক্লিক করতে হবে (_D)"
 
 #: ../src/nautilus-file-management-properties.ui.h:86
 msgid "_Format:"
@@ -6145,7 +6108,7 @@ msgstr "এক্সিকিউটেবল টেক্সট ফাইলে 
 
 #: ../src/nautilus-file-management-properties.ui.h:92
 msgid "_Single click to open items"
-msgstr "সক্রিয় করা জন্য একবার ক্লিক করতে হবে (_S)"
+msgstr "সক্রিয় করার জন্য একবার ক্লিক করতে হবে (_S)"
 
 #: ../src/nautilus-file-management-properties.ui.h:93
 msgid "_Software:"
@@ -6247,8 +6210,6 @@ msgstr "ছবির ধরন:"
 
 #: ../src/nautilus-image-properties-page.c:380
 #, c-format
-#| msgid "<b>Width:</b> %d pixel\n"
-#| msgid_plural "<b>Width:</b> %d pixels\n"
 msgid "<b>Width:</b> %d pixel"
 msgid_plural "<b>Width:</b> %d pixels"
 msgstr[0] "<b>প্রস্থ:</b> %d পিক্সেল"
@@ -6256,8 +6217,6 @@ msgstr[1] "<b>প্রস্থ:</b> %d পিক্সেল"
 
 #: ../src/nautilus-image-properties-page.c:386
 #, c-format
-#| msgid "<b>Height:</b> %d pixel\n"
-#| msgid_plural "<b>Height:</b> %d pixels\n"
 msgid "<b>Height:</b> %d pixel"
 msgid_plural "<b>Height:</b> %d pixels"
 msgstr[0] "<b>উচ্চতা:</b> %d পিক্সেল"
@@ -6402,204 +6361,200 @@ msgid "The history location doesn't exist."
 msgstr "পূর্ববর্তী তথ্যের অবস্থান উপস্থিত নেই।"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:780
+#: ../src/nautilus-navigation-window-menus.c:783
 msgid "_Go"
 msgstr "গন্তব্য (_G)"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:781
+#: ../src/nautilus-navigation-window-menus.c:784
 msgid "_Bookmarks"
 msgstr "বুকমার্ক (_B)"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:782
+#: ../src/nautilus-navigation-window-menus.c:785
 msgid "_Tabs"
 msgstr "ট্যাব (_T)"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:783
+#: ../src/nautilus-navigation-window-menus.c:786
 msgid "New _Window"
 msgstr "নতুন উইন্ডো (_W)"
 
-#: ../src/nautilus-navigation-window-menus.c:784
+#: ../src/nautilus-navigation-window-menus.c:787
 msgid "Open another Nautilus window for the displayed location"
 msgstr "প্রদর্শিত অবস্থানের জন্য পৃথক Nautilus উইন্ডো খোলা হবে"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:786
+#: ../src/nautilus-navigation-window-menus.c:789
 msgid "New _Tab"
 msgstr "নতুন ট্যাব (_T)"
 
-#: ../src/nautilus-navigation-window-menus.c:787
+#: ../src/nautilus-navigation-window-menus.c:790
 msgid "Open another tab for the displayed location"
 msgstr "প্রদর্শিত অবস্থানের জন্য পৃথক ট্যাব খোলা হবে"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:789
+#: ../src/nautilus-navigation-window-menus.c:792
 msgid "Open Folder W_indow"
 msgstr "ফোল্ডার উইন্ডো খুলুন (_i)"
 
-#: ../src/nautilus-navigation-window-menus.c:790
+#: ../src/nautilus-navigation-window-menus.c:793
 msgid "Open a folder window for the displayed location"
 msgstr "প্রদর্শিত অবস্থানের জন্য একটি ফোল্ডার উইন্ডো খোলা হবে"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:792
+#: ../src/nautilus-navigation-window-menus.c:795
 msgid "Close _All Windows"
 msgstr "সব উইন্ডো বন্ধ করুন (_W)"
 
-#: ../src/nautilus-navigation-window-menus.c:793
+#: ../src/nautilus-navigation-window-menus.c:796
 msgid "Close all Navigation windows"
 msgstr "সব ন্যাভিগেশন উইন্ডো বন্ধ করুন"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:795
+#: ../src/nautilus-navigation-window-menus.c:798
 msgid "_Location..."
 msgstr "অবস্থান... (_L)"
 
-#: ../src/nautilus-navigation-window-menus.c:796
+#: ../src/nautilus-navigation-window-menus.c:799
 #: ../src/nautilus-spatial-window.c:928
 msgid "Specify a location to open"
 msgstr "খোলার উদ্দেশ্যে একটি অবস্থান নির্ধারণ করুন"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:798
+#: ../src/nautilus-navigation-window-menus.c:801
 msgid "Clea_r History"
 msgstr "পূর্ববর্তী তথ্য মুছে ফেলুন (_r)"
 
-#: ../src/nautilus-navigation-window-menus.c:799
+#: ../src/nautilus-navigation-window-menus.c:802
 msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "গন্তব্য মেনু এবং পূর্ববর্তী/পরবর্তী তালিকার সব লেখা মুছে ফেলুন"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:801
-#| msgid "Width of the side pane"
+#: ../src/nautilus-navigation-window-menus.c:804
 msgid "Switch to other pane"
 msgstr "অন্য পেইনে পরিবর্তন করুন"
 
-#: ../src/nautilus-navigation-window-menus.c:802
-#| msgid "The default width of the side pane in new windows."
+#: ../src/nautilus-navigation-window-menus.c:805
 msgid "Move focus to the other pane in a split view window"
 msgstr "বিভাজিত প্রদর্শনের উইন্ডোর অন্য পেইনের উপর ফোকাস করা হবে"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:804
-#| msgid "The location is not a folder."
+#: ../src/nautilus-navigation-window-menus.c:807
 msgid "Same location as other pane"
 msgstr "অন্য পেইনের মধ্যে উপস্থিত একই অবস্থান"
 
-#: ../src/nautilus-navigation-window-menus.c:805
+#: ../src/nautilus-navigation-window-menus.c:808
 msgid "Go to the same location as in the extra pane"
 msgstr "অতিরিক্ত পেইনের মধ্যে উপস্থিত একই অবস্থানে চলুন"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:807
+#: ../src/nautilus-navigation-window-menus.c:810
 #: ../src/nautilus-spatial-window.c:936
 msgid "_Add Bookmark"
 msgstr "বুকমার্ক যোগ করুন (_A)"
 
-#: ../src/nautilus-navigation-window-menus.c:808
+#: ../src/nautilus-navigation-window-menus.c:811
 #: ../src/nautilus-spatial-window.c:937
 msgid "Add a bookmark for the current location to this menu"
 msgstr "বর্তমান অবস্থান নির্দেশক একটি বুকমার্ক এই মেনুর মধ্যে যোগ করুন"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:810
+#: ../src/nautilus-navigation-window-menus.c:813
 #: ../src/nautilus-spatial-window.c:939
 msgid "_Edit Bookmarks..."
 msgstr "বুকমার্ক সম্পাদনা... (_E)"
 
-#: ../src/nautilus-navigation-window-menus.c:811
+#: ../src/nautilus-navigation-window-menus.c:814
 #: ../src/nautilus-spatial-window.c:940
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr ""
 "বর্তমান মেনুর মধ্যে উপস্থিত বুকমার্ক সম্পাদনার সুবিধা উপলব্ধকারী একটি উইন্ডো প্রদর্শন "
 "করা হয়"
 
-#: ../src/nautilus-navigation-window-menus.c:813
+#: ../src/nautilus-navigation-window-menus.c:816
 msgid "_Previous Tab"
 msgstr "পূর্ববর্তী ট্যাব (_P)"
 
-#: ../src/nautilus-navigation-window-menus.c:814
+#: ../src/nautilus-navigation-window-menus.c:817
 msgid "Activate previous tab"
 msgstr "পূর্ববর্তী ট্যাব সক্রিয় করুন"
 
-#: ../src/nautilus-navigation-window-menus.c:816
+#: ../src/nautilus-navigation-window-menus.c:819
 msgid "_Next Tab"
 msgstr "পরবর্তী ট্যাব (_N)"
 
-#: ../src/nautilus-navigation-window-menus.c:817
+#: ../src/nautilus-navigation-window-menus.c:820
 msgid "Activate next tab"
 msgstr "পরবর্তী ট্যাব সক্রিয় করুন"
 
-#: ../src/nautilus-navigation-window-menus.c:819
+#: ../src/nautilus-navigation-window-menus.c:822
 #: ../src/nautilus-navigation-window-pane.c:377
 msgid "Move Tab _Left"
 msgstr "ট্যাব বাঁদিকে সরিয়ে নিন (_L)"
 
-#: ../src/nautilus-navigation-window-menus.c:820
+#: ../src/nautilus-navigation-window-menus.c:823
 msgid "Move current tab to left"
 msgstr "বর্তমান ট্যাব বাঁদিকে সরিয়ে নিন"
 
-#: ../src/nautilus-navigation-window-menus.c:822
+#: ../src/nautilus-navigation-window-menus.c:825
 #: ../src/nautilus-navigation-window-pane.c:385
 msgid "Move Tab _Right"
 msgstr "ট্যাব ডানদিকে সরিয়ে নিন (_R)"
 
-#: ../src/nautilus-navigation-window-menus.c:823
+#: ../src/nautilus-navigation-window-menus.c:826
 msgid "Move current tab to right"
 msgstr "বর্তমান ট্যাব ডানদিকে সরিয়ে নিন"
 
-#: ../src/nautilus-navigation-window-menus.c:825
-#: ../src/nautilus-navigation-window-menus.c:826
-#| msgid "Search"
+#: ../src/nautilus-navigation-window-menus.c:828
+#: ../src/nautilus-navigation-window-menus.c:829
 msgid "Show search"
 msgstr "অনুসন্ধান প্রদর্শন করা হবে"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:832
+#: ../src/nautilus-navigation-window-menus.c:835
 msgid "_Main Toolbar"
 msgstr "প্রধান টুলবার (_M)"
 
 #. tooltip
-#: ../src/nautilus-navigation-window-menus.c:833
+#: ../src/nautilus-navigation-window-menus.c:836
 msgid "Change the visibility of this window's main toolbar"
 msgstr "বর্তমান উইন্ডোর প্রধান টুলবার প্রদর্শন অথবা আড়াল করুন"
 
 #. is_active
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:837
+#: ../src/nautilus-navigation-window-menus.c:840
 msgid "_Side Pane"
 msgstr "পার্শ্ববর্তী পেন (_S)"
 
 #. tooltip
-#: ../src/nautilus-navigation-window-menus.c:838
+#: ../src/nautilus-navigation-window-menus.c:841
 msgid "Change the visibility of this window's side pane"
 msgstr "বর্তমান উইন্ডোর পার্শ্ববর্তী বার প্রদর্শন অথবা আড়াল করুন"
 
 #. is_active
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:842
+#: ../src/nautilus-navigation-window-menus.c:845
 msgid "Location _Bar"
 msgstr "অবস্থানসূচক বার (_B)"
 
 #. tooltip
-#: ../src/nautilus-navigation-window-menus.c:843
+#: ../src/nautilus-navigation-window-menus.c:846
 msgid "Change the visibility of this window's location bar"
 msgstr "বর্তমান উইন্ডোর অবস্থানসূচক বার প্রদর্শন অথবা আড়াল করুন"
 
 #. is_active
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:847
+#: ../src/nautilus-navigation-window-menus.c:850
 msgid "St_atusbar"
 msgstr "অবস্থাচিহ্নকারী বার (_a)"
 
 #. tooltip
-#: ../src/nautilus-navigation-window-menus.c:848
+#: ../src/nautilus-navigation-window-menus.c:851
 msgid "Change the visibility of this window's statusbar"
 msgstr "বর্তমান উইন্ডোর অবস্থাসূচক বার প্রদর্শন অথবা আড়াল করুন"
 
@@ -6607,65 +6562,62 @@ msgstr "বর্তমান উইন্ডোর অবস্থাসূচ�
 #. name, stock id
 #. label, accelerator
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:852
+#: ../src/nautilus-navigation-window-menus.c:855
 #: ../src/nautilus-spatial-window.c:942
 msgid "_Search for Files..."
 msgstr "ফাইল অনুসন্ধান...(_S)"
 
 #. Accelerator is in ShowSearch
 #. tooltip
-#: ../src/nautilus-navigation-window-menus.c:854
-#| msgid "Locate documents and folders on this computer by name or content"
+#: ../src/nautilus-navigation-window-menus.c:857
 msgid "Search documents and folders by name"
 msgstr "নাম অনুযায়ী নথিপত্র অথবা ফোল্ডার অনুসন্ধান করুন"
 
 #. is_active
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:858
+#: ../src/nautilus-navigation-window-menus.c:861
 msgid "Extra Pane"
 msgstr "অতিরিক্ত পেইন"
 
 #. tooltip
-#: ../src/nautilus-navigation-window-menus.c:859
+#: ../src/nautilus-navigation-window-menus.c:862
 msgid "Open an extra folder view side-by-side"
 msgstr "ফোল্ডারের অতিরিক্ত প্রদর্শন পাশে আরম্ভ করুন"
 
-#: ../src/nautilus-navigation-window-menus.c:884
+#: ../src/nautilus-navigation-window-menus.c:887
 msgid "_Back"
 msgstr "পূর্ববর্তী (_B)"
 
-#: ../src/nautilus-navigation-window-menus.c:886
+#: ../src/nautilus-navigation-window-menus.c:889
 msgid "Go to the previous visited location"
 msgstr "পূর্ববর্তী প্রদর্শিত অবস্থানে চলুন"
 
-#: ../src/nautilus-navigation-window-menus.c:887
+#: ../src/nautilus-navigation-window-menus.c:890
 msgid "Back history"
 msgstr "পূরবর্তী দিশায় চলাচলের তথ্য"
 
-#: ../src/nautilus-navigation-window-menus.c:901
+#: ../src/nautilus-navigation-window-menus.c:904
 msgid "_Forward"
 msgstr "পরবর্তী (_F)"
 
-#: ../src/nautilus-navigation-window-menus.c:903
+#: ../src/nautilus-navigation-window-menus.c:906
 msgid "Go to the next visited location"
 msgstr "পরবর্তী প্রদর্শিত অবস্থানে চলুন"
 
-#: ../src/nautilus-navigation-window-menus.c:904
+#: ../src/nautilus-navigation-window-menus.c:907
 msgid "Forward history"
 msgstr "পরবর্তী দিশায় চলাচলের তথ্য"
 
-#: ../src/nautilus-navigation-window-menus.c:919
-#| msgid "Zoom"
+#: ../src/nautilus-navigation-window-menus.c:922
 msgid "_Zoom"
 msgstr "প্রদর্শনের মাপ (_Z)"
 
-#: ../src/nautilus-navigation-window-menus.c:929
-#| msgid "Views"
+#: ../src/nautilus-navigation-window-menus.c:932
 msgid "_View As"
 msgstr "প্রদর্শনের পদ্ধতি (_V)"
 
-#: ../src/nautilus-navigation-window-menus.c:963
+#: ../src/nautilus-navigation-window-menus.c:966
 msgid "_Search"
 msgstr "অনুসন্ধান (_S)"
 
@@ -6691,7 +6643,6 @@ msgid "Show Notes"
 msgstr "নোট প্রদর্শন করা হবে"
 
 #: ../src/nautilus-places-sidebar.c:320
-#| msgid "Open your personal folder"
 msgid "Open the contents of your desktop in a folder"
 msgstr "ডেস্কটপের মধ্যে উপস্থিত সামগ্রী ফোল্ডারের মধ্যে খোলা হবে"
 
@@ -6713,7 +6664,6 @@ msgid "Mount and open %s"
 msgstr "%s মাউন্ট করে খুলুন"
 
 #: ../src/nautilus-places-sidebar.c:510
-#| msgid "Open with %s"
 msgid "Open the trash"
 msgstr "আবর্জনার বাক্স খুলুন"
 
@@ -7099,47 +7049,47 @@ msgid "The location cannot be displayed with this viewer."
 msgstr "বর্তমান প্রদর্শন ব্যবস্থার সাহায্যে এই অবস্থান প্রদর্শন করা সম্ভব নয়।"
 
 # FIXME
-#: ../src/nautilus-window-manage-views.c:1236
+#: ../src/nautilus-window-manage-views.c:1241
 msgid "Content View"
 msgstr "অভ্যন্তরীণ বিষয়বস্তু প্রদর্শন"
 
-#: ../src/nautilus-window-manage-views.c:1237
+#: ../src/nautilus-window-manage-views.c:1242
 msgid "View of the current folder"
 msgstr "বর্তমান ফোল্ডারের প্রদর্শন ব্যবস্থা"
 
-#: ../src/nautilus-window-manage-views.c:1869
+#: ../src/nautilus-window-manage-views.c:1874
 msgid "Nautilus has no installed viewer capable of displaying the folder."
 msgstr "বর্তমান ফোল্ডার প্রদর্শন করার উদ্দেশ্যে প্রযোজ্য প্রদর্শন ব্যবস্থা Nautilus-এ উপস্থিত নেই।"
 
-#: ../src/nautilus-window-manage-views.c:1875
+#: ../src/nautilus-window-manage-views.c:1880
 msgid "The location is not a folder."
 msgstr "অবস্থানটি ফোল্ডার নয়।"
 
-#: ../src/nautilus-window-manage-views.c:1881
+#: ../src/nautilus-window-manage-views.c:1886
 #, c-format
 msgid "Could not find \"%s\"."
 msgstr "\"%s\" পাওয়া যায়নি।"
 
-#: ../src/nautilus-window-manage-views.c:1884
+#: ../src/nautilus-window-manage-views.c:1889
 msgid "Please check the spelling and try again."
 msgstr "অনুগ্রহ করে বানান পরীক্ষা করে পুনরায় প্রচেষ্টা করুন।"
 
 # FIXME
-#: ../src/nautilus-window-manage-views.c:1892
+#: ../src/nautilus-window-manage-views.c:1897
 #, c-format
 msgid "Nautilus cannot handle \"%s\" locations."
 msgstr "Nautilus দ্বারা \"%s\" অবস্থান পরিচালনা করা সম্ভব নয়।"
 
 # FIXME
-#: ../src/nautilus-window-manage-views.c:1895
+#: ../src/nautilus-window-manage-views.c:1900
 msgid "Nautilus cannot handle this kind of location."
 msgstr "Nautilus দ্বারা এই ধরনের অবস্থান পরিচালনা করা সম্ভব নয়।"
 
-#: ../src/nautilus-window-manage-views.c:1902
+#: ../src/nautilus-window-manage-views.c:1907
 msgid "Unable to mount the location."
 msgstr "চিহ্নিত অবস্থান মাউন্ট করতে ব্যর্থ।"
 
-#: ../src/nautilus-window-manage-views.c:1908
+#: ../src/nautilus-window-manage-views.c:1913
 msgid "Access was denied."
 msgstr "প্রবেশাধিকার প্রত্যাখ্যাত হয়েছে।"
 
@@ -7148,16 +7098,16 @@ msgstr "প্রবেশাধিকার প্রত্যাখ্যা�
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: ../src/nautilus-window-manage-views.c:1917
+#: ../src/nautilus-window-manage-views.c:1922
 #, c-format
 msgid "Could not display \"%s\", because the host could not be found."
 msgstr "হোস্ট না পাওয়া যাওয়ার ফলে \"%s\" প্রদর্শন করতে ব্যর্থ।"
 
-#: ../src/nautilus-window-manage-views.c:1919
+#: ../src/nautilus-window-manage-views.c:1924
 msgid "Check that the spelling is correct and that your proxy settings are correct."
 msgstr "বানান এবং প্রক্সির বৈশিষ্ট্যাবলী সঠিক কিনা তা পরীক্ষা করুন।"
 
-#: ../src/nautilus-window-manage-views.c:1933
+#: ../src/nautilus-window-manage-views.c:1938
 #, c-format
 msgid ""
 "Error: %s\n"
@@ -7246,7 +7196,7 @@ msgstr "প্রদর্শন (_V)"
 #. name, stock id, label
 #: ../src/nautilus-window-menus.c:787
 msgid "_Help"
-msgstr "সহায়তা (_H)"
+msgstr "সাহায্য (_H)"
 
 #. name, stock id
 #. label, accelerator
@@ -7315,7 +7265,7 @@ msgstr "বর্তমান অবস্থান পুনরায় লোড
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:818
 msgid "_Contents"
-msgstr "সূচী (_C)"
+msgstr "সূচিপত্র (_C)"
 
 #. tooltip
 #: ../src/nautilus-window-menus.c:819
