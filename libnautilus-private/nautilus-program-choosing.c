@@ -80,8 +80,8 @@ application_cannot_open_location (GAppInfo *application,
 			prompt = _("Open Failed, would you like to choose another application?");
 			message = g_strdup_printf (_("\"%s\" cannot open \"%s\" because \"%s\" cannot access files at \"%s\" "
 						     "locations."),
-						   g_app_info_get_name (application), file_name, 
-						   g_app_info_get_name (application), uri_scheme);
+						   g_app_info_get_display_name (application), file_name, 
+						   g_app_info_get_display_name (application), uri_scheme);
 		} else {
 			prompt = _("Open Failed, would you like to choose another action?");
 			message = g_strdup_printf (_("The default action cannot open \"%s\" because it cannot access files at \"%s\" "
@@ -110,8 +110,8 @@ application_cannot_open_location (GAppInfo *application,
 	} else {
 		if (application != NULL) {
 			prompt = g_strdup_printf (_("\"%s\" cannot open \"%s\" because \"%s\" cannot access files at \"%s\" "
-						    "locations."), g_app_info_get_name (application), file_name, 
-						    g_app_info_get_name (application), uri_scheme);
+						    "locations."), g_app_info_get_display_name (application), file_name, 
+						    g_app_info_get_display_name (application), uri_scheme);
 			message = _("No other applications are available to view this file.  "
 				    "If you copy this file onto your computer, you may be able to open "
 				    "it.");

@@ -619,7 +619,6 @@ nautilus_open_with_dialog_add_items_idle (NautilusOpenWithDialog *dialog)
 	GtkTreeModel      *sort;
 	GList             *all_applications;
 	GList             *l;
-	const char        *prev_name;
 
 	/* create list store */
 	dialog->details->program_list_store = gtk_list_store_new (NUM_COLUMNS,
@@ -632,7 +631,6 @@ nautilus_open_with_dialog_add_items_idle (NautilusOpenWithDialog *dialog)
 	sort = gtk_tree_model_sort_new_with_model (GTK_TREE_MODEL (dialog->details->program_list_store));
 	all_applications = g_app_info_get_all ();
 	
-	prev_name = NULL;
 	for (l = all_applications; l; l = l->next) {
 		GAppInfo *app = l->data;
 		GtkTreeIter     iter;
@@ -647,7 +645,7 @@ nautilus_open_with_dialog_add_items_idle (NautilusOpenWithDialog *dialog)
 				    COLUMN_APP_INFO,  app,
 				    COLUMN_ICON,      NULL,
 				    COLUMN_GICON,     g_app_info_get_icon (app),
-				    COLUMN_NAME,      g_app_info_get_name (app),
+				    COLUMN_NAME,      g_app_info_get_display_name (app),
 				    COLUMN_COMMENT,   g_app_info_get_description (app),
 				    COLUMN_EXEC,      g_app_info_get_executable,
 				    -1);

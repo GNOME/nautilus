@@ -564,7 +564,7 @@ nautilus_autorun_prepare_combo_box (GtkWidget *combo_box,
 			pixbuf = nautilus_icon_info_get_pixbuf_at_size (icon_info, icon_size);
 			g_object_unref (icon_info);
 			
-			open_string = g_strdup_printf (_("Open %s"), g_app_info_get_name (app_info));
+			open_string = g_strdup_printf (_("Open %s"), g_app_info_get_display_name (app_info));
 
 			gtk_list_store_append (list_store, &iter);
 			gtk_list_store_set (list_store, &iter, 
