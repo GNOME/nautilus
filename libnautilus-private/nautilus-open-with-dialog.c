@@ -29,6 +29,7 @@
 #include "nautilus-open-with-dialog.h"
 #include "nautilus-signaller.h"
 
+#include <eel/eel-glib-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 
 #include <string.h>
@@ -213,8 +214,9 @@ add_or_find_application (NautilusOpenWithDialog *dialog)
 	char *app_name;
 	const char *commandline;
 	GError *error;
-	gboolean success;
+	gboolean success, should_set_default;
 	char *message;
+	GList *applications;
 
 	error = NULL;
 	app = NULL;
@@ -242,33 +244,46 @@ add_or_find_application (NautilusOpenWithDialog *dialog)
 		return NULL;
 	}
 
+	should_set_default = (dialog->details->add_mode) ||
+		(!dialog->details->add_mode &&
+		 gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->details->checkbox)));
+	success = TRUE;
 
-	if (dialog->details->add_mode || 
-			(!dialog->details->add_mode &&
-			gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->details->checkbox)))) {
+	if (should_set_default) {
 		if (dialog->details->content_type) {
-			success = g_app_info_add_supports_type (app,
-								dialog->details->content_type,
-								&error);
+			success = g_app_info_set_as_default_for_type (app,
+								      dialog->details->content_type,
+								      &error);
 		} else {
 			success = g_app_info_set_as_default_for_extension (app,
 									   dialog->details->extension,
 									   &error);
 		}
-	
-		if (!success) {
-			message = g_strdup_printf (_("Could not set application as the default: %s"), error->message);
-			eel_show_error_dialog (_("Could not set as default application"),
-					       message,
-					       GTK_WINDOW (dialog));
-			g_free (message);
-			g_error_free (error);
+	} else {
+		applications = g_app_info_get_all_for_type (dialog->details->content_type);
+		if (dialog->details->content_type && applications != NULL) {
+			/* we don't care about reporting errors here */
+			g_app_info_add_supports_type (app,
+						      dialog->details->content_type,
+						      NULL);
 		}
 
-		g_signal_emit_by_name (nautilus_signaller_get_current (),
-				       "mime_data_changed");
+		if (applications != NULL) {
+			eel_g_object_list_free (applications);
+		}
 	}
 
+	if (!success && should_set_default) {
+		message = g_strdup_printf (_("Could not set application as the default: %s"), error->message);
+		eel_show_error_dialog (_("Could not set as default application"),
+				       message,
+				       GTK_WINDOW (dialog));
+		g_free (message);
+		g_error_free (error);
+	}
+
+	g_signal_emit_by_name (nautilus_signaller_get_current (),
+			       "mime_data_changed");
 	return app;
 }
 
