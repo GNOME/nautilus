@@ -118,7 +118,7 @@ nautilus_x_content_bar_set_x_content_type (NautilusXContentBar *bar, const char 
 			image = NULL;
 		}
 
-		name = g_app_info_get_name (default_app);
+		name = g_app_info_get_display_name (default_app);
 		button_text = g_strdup_printf (_("Open %s"), name);
 
 		gtk_button_set_image (GTK_BUTTON (bar->priv->button), image);

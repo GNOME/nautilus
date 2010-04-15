@@ -507,7 +507,7 @@ refresh_model (NautilusMimeApplicationChooser *chooser)
 		
 		is_default = default_app && g_app_info_equal (default_app, application);
 
-		escaped = g_markup_escape_text (g_app_info_get_name (application), -1);
+		escaped = g_markup_escape_text (g_app_info_get_display_name (application), -1);
 
 		icon = g_app_info_get_icon (application);
 

@@ -4373,7 +4373,7 @@ add_application_to_open_with_menu (FMDirectoryView *view,
 
 	launch_parameters = application_launch_parameters_new 
 		(application, files, view);
-	escaped_app = eel_str_double_underscores (g_app_info_get_name (application));
+	escaped_app = eel_str_double_underscores (g_app_info_get_display_name (application));
 	if (submenu)
 		label = g_strdup_printf ("%s", escaped_app);
 	else
@@ -8774,7 +8774,7 @@ real_update_menus (FMDirectoryView *view)
 	if (app != NULL) {
 		char *escaped_app;
 
-		escaped_app = eel_str_double_underscores (g_app_info_get_name (app));
+		escaped_app = eel_str_double_underscores (g_app_info_get_display_name (app));
 		label_with_underscore = g_strdup_printf (_("_Open with %s"),
 							 escaped_app);
 
