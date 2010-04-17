@@ -18,14 +18,14 @@
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2004, 2005, 2006.
 # Juanje Ojeda Croissier <jojeda@emergya.es>, 2009.
 # Jorge González <jorgegonz@svn.gnome.org>, 2007, 2008, 2010.
-#, fuzzy
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: eel.HEAD.es\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&component=Internationalization (i18n)\n"
 "POT-Creation-Date: 2010-02-06 12:22+0000\n"
-"PO-Revision-Date: 2010-02-06 13:30+0100\n"
+"PO-Revision-Date: 2010-04-17 18:46+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -220,7 +220,7 @@ msgstr "Verde envidia"
 #: ../data/browser.xml.h:28 ../src/nautilus-emblem-sidebar.c:928
 #: ../src/nautilus-property-browser.c:1819
 msgid "Erase"
-msgstr "Borrar"
+msgstr "Eliminar"
 
 #: ../data/browser.xml.h:29
 msgid "Fibers"
@@ -890,7 +890,7 @@ msgid ""
 "delete files, or empty the Trash."
 msgstr ""
 "Si se establece a cierto, entonces Nautilus solicitará una confirmación "
-"cuando intente borrar archivos o vaciar la papelera."
+"cuando intente eliminar archivos o vaciar la papelera."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
 msgid ""
@@ -940,7 +940,7 @@ msgid ""
 "feature can be dangerous, so use caution."
 msgstr ""
 "Si se establece a cierto, entonces Nautilus tendrá una opción que le "
-"permitirá borrar un archivo inmediatamente en lugar de moverlo a la "
+"permitirá eliminar un archivo inmediatamente en lugar de moverlo a la "
 "papelera. Esta característica puede ser peligrosa, así que úsela con cuidado."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
@@ -1488,8 +1488,8 @@ msgstr ""
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:146
 msgid "Whether to ask for confirmation when deleting files, or emptying Trash"
 msgstr ""
-"Indica si se debe solicitar una confirmación al borrar archivos o vaciar la "
-"papelera"
+"Indica si se debe solicitar una confirmación al eliminar archivos o vaciar "
+"la papelera"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:147
 msgid "Whether to automatically mount media"
@@ -1984,7 +1984,7 @@ msgstr "_Reintentar"
 # src/file-manager/fm-directory-view.c:2157 src/nautilus-window-menus.c:1153
 #: ../libnautilus-private/nautilus-file-operations.c:189
 msgid "Delete _All"
-msgstr "Borrar _todo"
+msgstr "Eliminar _todo"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/dfos-xfer.c:419 src/file-manager/dfos-xfer.c:430
@@ -2188,7 +2188,7 @@ msgstr " (%'d"
 # src/file-manager/fm-directory-view.c:1855
 #: ../libnautilus-private/nautilus-file-operations.c:1298
 msgid "Are you sure you want to permanently delete \"%B\" from the trash?"
-msgstr "¿Seguro que desea borrar permanentemente a «%B» de la papelera?"
+msgstr "¿Seguro que desea eliminar permanentemente a «%B» de la papelera?"
 
 # src/file-manager/fm-directory-view.c:1860
 #: ../libnautilus-private/nautilus-file-operations.c:1301
@@ -2200,10 +2200,10 @@ msgid_plural ""
 "Are you sure you want to permanently delete the %'d selected items from the "
 "trash?"
 msgstr[0] ""
-"¿Está seguro de que desea borrar permanentemente el elemento seleccionado de "
-"la papelera?"
+"¿Está seguro de que desea eliminar permanentemente el elemento seleccionado "
+"de la papelera?"
 msgstr[1] ""
-"¿Está seguro de que desea borrar permanentemente los %'d elementos "
+"¿Está seguro de que desea eliminar permanentemente los %'d elementos "
 "seleccionados de la papelera?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1311
@@ -2214,15 +2214,15 @@ msgstr "Si elimina un elemento, se perderá para siempre."
 # src/file-manager/fm-directory-view.c:2669
 #: ../libnautilus-private/nautilus-file-operations.c:1331
 msgid "Empty all of the items from the trash?"
-msgstr "¿Borrar todos los elementos en de la papelera?"
+msgstr "¿Eliminar todos los elementos en de la papelera?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1335
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
 msgstr ""
-"Si elige vaciar la papelera, todos los elementos en ella se borrarán "
-"permanentemente. Note que también puede borrarlos separadamente."
+"Si elige vaciar la papelera, todos los elementos en ella se eliminarán "
+"permanentemente. Note que también puede eliminarlos separadamente."
 
 # src/file-manager/fm-directory-view.c:2154
 #. Empty Trash menu item
@@ -2235,7 +2235,7 @@ msgstr "Vaciar la _papelera"
 # src/file-manager/fm-directory-view.c:1855
 #: ../libnautilus-private/nautilus-file-operations.c:1367
 msgid "Are you sure you want to permanently delete \"%B\"?"
-msgstr "¿Está seguro que desea borrar permanentemente «%B»?"
+msgstr "¿Está seguro que desea eliminar permanentemente «%B»?"
 
 # src/file-manager/fm-directory-view.c:1860
 #: ../libnautilus-private/nautilus-file-operations.c:1370
@@ -2244,9 +2244,9 @@ msgid "Are you sure you want to permanently delete the %'d selected item?"
 msgid_plural ""
 "Are you sure you want to permanently delete the %'d selected items?"
 msgstr[0] ""
-"¿Está seguro de que desea borrar permanentemente el elemento seleccionado?"
+"¿Está seguro de que desea eliminar permanentemente el elemento seleccionado?"
 msgstr[1] ""
-"¿Está seguro de que desea borrar permanentemente los %'d elementos "
+"¿Está seguro de que desea eliminar permanentemente los %'d elementos "
 "seleccionados?"
 
 # src/file-manager/fm-directory-view.c:1020
@@ -2254,8 +2254,8 @@ msgstr[1] ""
 #, c-format
 msgid "%'d file left to delete"
 msgid_plural "%'d files left to delete"
-msgstr[0] "queda %'d archivo por borrar"
-msgstr[1] "quedan %'d archivos por borrar"
+msgstr[0] "queda %'d archivo por eliminar"
+msgstr[1] "quedan %'d archivos por eliminar"
 
 # src/file-manager/dfos-xfer.c:1008 src/file-manager/dfos-xfer.c:1058
 #: ../libnautilus-private/nautilus-file-operations.c:1419
@@ -2278,15 +2278,15 @@ msgstr[1] "Qudedan %T"
 #: ../libnautilus-private/nautilus-file-operations.c:1650
 #: ../libnautilus-private/nautilus-file-operations.c:2410
 msgid "Error while deleting."
-msgstr "Error al borrar."
+msgstr "Error al eliminar."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1504
 msgid ""
 "Files in the folder \"%B\" cannot be deleted because you do not have "
 "permissions to see them."
 msgstr ""
-"Los archivos en la carpeta «%B» no se pueden borrar porque no tiene permisos "
-"para verlos."
+"Los archivos en la carpeta «%B» no se pueden eliminar porque no tiene "
+"permisos para verlos."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1507
 #: ../libnautilus-private/nautilus-file-operations.c:2469
@@ -2310,7 +2310,7 @@ msgid ""
 "The folder \"%B\" cannot be deleted because you do not have permissions to "
 "read it."
 msgstr ""
-"La carpeta «%B» no se puede borrar porque no tiene permisos para leerla."
+"La carpeta «%B» no se puede eliminar porque no tiene permisos para leerla."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1540
 #: ../libnautilus-private/nautilus-file-operations.c:2508
@@ -2325,7 +2325,7 @@ msgstr "No se pudo eliminar la carpeta %B."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1651
 msgid "There was an error deleting %B."
-msgstr "Hubo un error al borrar %B."
+msgstr "Hubo un error al eliminar %B."
 
 # src/file-manager/dfos-xfer.c:961
 #: ../libnautilus-private/nautilus-file-operations.c:1731
@@ -2343,7 +2343,7 @@ msgstr[1] "quedan %'d archivos por mover a la papelera"
 #: ../libnautilus-private/nautilus-file-operations.c:1783
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr ""
-"No puede mover el archivo a la papelera. ¿Quiere borrarlo inmediatamente?"
+"No puede mover el archivo a la papelera. ¿Quiere eliminarlo inmediatamente?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1784
 msgid "The file \"%B\" cannot be moved to the trash."
@@ -2409,8 +2409,8 @@ msgstr[1] "Preparándose para mover %'d archivos (%S)"
 #, c-format
 msgid "Preparing to delete %'d file (%S)"
 msgid_plural "Preparing to delete %'d files (%S)"
-msgstr[0] "Preparándose para borrar %'d archivo (%S)"
-msgstr[1] "Preparándose para borrar %'d archivos (%S)"
+msgstr[0] "Preparándose para eliminar %'d archivo (%S)"
+msgstr[1] "Preparándose para eliminar %'d archivos (%S)"
 
 # src/file-manager/dfos-xfer.c:1009
 #: ../libnautilus-private/nautilus-file-operations.c:2375
@@ -4646,7 +4646,7 @@ msgstr "Mover cada elemento seleccionado a la papelera"
 #: ../src/file-manager/fm-directory-view.c:8872
 #: ../src/file-manager/fm-tree-view.c:1296
 msgid "_Delete"
-msgstr "_Borrar"
+msgstr "_Eliminar"
 
 # src/file-manager/fm-directory-view.c:2669
 #. tooltip
@@ -4906,7 +4906,7 @@ msgstr "Mover esta carpeta a la papelera"
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7384
 msgid "Delete this folder, without moving to the Trash"
-msgstr "Borrar la carpeta, sin moverla a la papelera"
+msgstr "Eliminar la carpeta, sin moverla a la papelera"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7392
@@ -5220,7 +5220,7 @@ msgstr "Examinar en una _solapa nueva"
 #: ../src/file-manager/fm-directory-view.c:8526
 #: ../src/file-manager/fm-directory-view.c:8847
 msgid "_Delete Permanently"
-msgstr "_Borrar permanentemente"
+msgstr "_Eliminar permanentemente"
 
 # src/file-manager/fm-directory-view.c:2678
 #: ../src/file-manager/fm-directory-view.c:8527
@@ -5378,7 +5378,8 @@ msgstr ""
 #, c-format
 msgid ""
 "There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
-msgstr "No existe un «%s» en esta carpeta. ¿Quizás acaba de moverse o borrarse?"
+msgstr ""
+"No existe un «%s» en esta carpeta. ¿Quizás acaba de moverse o eliminarse?"
 
 # src/file-manager/fm-error-reporting.c:55
 #: ../src/file-manager/fm-error-reporting.c:119
@@ -5991,7 +5992,7 @@ msgstr "Acceder a archivos"
 # src/file-manager/dfos-xfer.c:713
 #: ../src/file-manager/fm-properties-window.c:4223
 msgid "Create and delete files"
-msgstr "Crear y borrar archivos"
+msgstr "Crear y eliminar archivos"
 
 #: ../src/file-manager/fm-properties-window.c:4230
 msgid "Read-only"
@@ -6569,7 +6570,7 @@ msgstr "Siempre"
 # src/file-manager/fm-directory-view.c:2669
 #: ../src/nautilus-file-management-properties.ui.h:45
 msgid "Ask before _emptying the Trash or deleting files"
-msgstr "Preguntar antes de vacia_r la papelera o borrar archivos"
+msgstr "Preguntar antes de vacia_r la papelera o eliminar archivos"
 
 #: ../src/nautilus-file-management-properties.ui.h:46
 msgid "B_rowse media when inserted"
@@ -6631,7 +6632,7 @@ msgstr "Preferencias de administración de archivos"
 
 #: ../src/nautilus-file-management-properties.ui.h:63
 msgid "I_nclude a Delete command that bypasses Trash"
-msgstr "_Incluir una orden «Borrar» que no utilice la papelera"
+msgstr "_Incluir una orden «Eliminar» que no utilice la papelera"
 
 #: ../src/nautilus-file-management-properties.ui.h:65
 msgid "Less common media formats can be configured here"
@@ -7429,20 +7430,20 @@ msgstr "Añadir nuevo…"
 #: ../src/nautilus-property-browser.c:931
 #, c-format
 msgid "Sorry, but pattern %s could not be deleted."
-msgstr "El patrón %s no se ha podido borrar."
+msgstr "El patrón %s no se ha podido eliminar."
 
 #: ../src/nautilus-property-browser.c:932
 msgid "Check that you have permission to delete the pattern."
-msgstr "Compruebe que tiene permiso para borrar el patrón."
+msgstr "Compruebe que tiene permiso para eliminar el patrón."
 
 #: ../src/nautilus-property-browser.c:947
 #, c-format
 msgid "Sorry, but emblem %s could not be deleted."
-msgstr "El emblema %s no se ha podido borrar."
+msgstr "El emblema %s no se ha podido eliminar."
 
 #: ../src/nautilus-property-browser.c:948
 msgid "Check that you have permission to delete the emblem."
-msgstr "Compruebe que tiene permiso para borrar el emblema."
+msgstr "Compruebe que tiene permiso para eliminar el emblema."
 
 # src/nautilus-property-browser.c:875
 #: ../src/nautilus-property-browser.c:1015
@@ -7487,7 +7488,7 @@ msgstr "No puede reemplazar la imagen de reinicio."
 
 #: ../src/nautilus-property-browser.c:1192
 msgid "Reset is a special image that cannot be deleted."
-msgstr "«Reiniciar» es una imagen especial que no se puede borrar."
+msgstr "«Reiniciar» es una imagen especial que no se puede eliminar."
 
 #: ../src/nautilus-property-browser.c:1220
 #, c-format
