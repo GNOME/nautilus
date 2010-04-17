@@ -99,6 +99,7 @@ typedef struct {
 	void   (* set_allow_up) (NautilusWindow *window, gboolean allow);
 	void   (* reload)              (NautilusWindow *window);
         void   (* prompt_for_location) (NautilusWindow *window, const char *initial);
+        void   (* get_min_size) (NautilusWindow *window, guint *default_width, guint *default_height);
         void   (* get_default_size) (NautilusWindow *window, guint *default_width, guint *default_height);
         void   (* close) (NautilusWindow *window);
 

@@ -496,14 +496,9 @@ nautilus_window_set_initial_window_geometry (NautilusWindow *window)
 	max_width_for_screen = get_max_forced_width (screen);
 	max_height_for_screen = get_max_forced_height (screen);
 
-	if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
-		min_width = NAUTILUS_SPATIAL_WINDOW_MIN_WIDTH;
-		min_height = NAUTILUS_SPATIAL_WINDOW_MIN_HEIGHT;
-	} else {
-		min_width = NAUTILUS_WINDOW_MIN_WIDTH;
-		min_height = NAUTILUS_WINDOW_MIN_HEIGHT;
-	}
-		
+	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+			 get_min_size, (window, &min_width, &min_height));
+
 	gtk_widget_set_size_request (GTK_WIDGET (window), 
 				     MIN (min_width, 
 					  max_width_for_screen),

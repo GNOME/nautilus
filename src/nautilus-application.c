@@ -1413,8 +1413,8 @@ nautilus_application_create_navigation_window (NautilusApplication *application,
 		eel_gtk_window_set_initial_geometry_from_string 
 			(GTK_WINDOW (window), 
 			 geometry_string,
-			 NAUTILUS_WINDOW_MIN_WIDTH, 
-			 NAUTILUS_WINDOW_MIN_HEIGHT,
+			 NAUTILUS_NAVIGATION_WINDOW_MIN_WIDTH,
+			 NAUTILUS_NAVIGATION_WINDOW_MIN_HEIGHT,
 			 another_navigation_window_already_showing (window));
 	}
 	g_free (geometry_string);
@@ -1971,8 +1971,8 @@ nautilus_application_load_session (NautilusApplication *application)
 						eel_gtk_window_set_initial_geometry_from_string 
 							(GTK_WINDOW (window), 
 							 geometry,
-							 NAUTILUS_WINDOW_MIN_WIDTH, 
-							 NAUTILUS_WINDOW_MIN_HEIGHT,
+							 NAUTILUS_NAVIGATION_WINDOW_MIN_WIDTH,
+							 NAUTILUS_NAVIGATION_WINDOW_MIN_HEIGHT,
 							 FALSE);
 					}
 					xmlFree (geometry);

@@ -1113,15 +1113,25 @@ nautilus_navigation_window_save_geometry (NautilusNavigationWindow *window)
 	}
 }
 
-
-
 static void
 real_window_close (NautilusWindow *window)
 {
 	nautilus_navigation_window_save_geometry (NAUTILUS_NAVIGATION_WINDOW (window));
 }
 
-static void 
+static void
+real_get_min_size (NautilusWindow *window,
+		   guint *min_width, guint *min_height)
+{
+	if (min_width) {
+		*min_width = NAUTILUS_NAVIGATION_WINDOW_MIN_WIDTH;
+	}
+	if (min_height) {
+		*min_height = NAUTILUS_NAVIGATION_WINDOW_MIN_HEIGHT;
+	}
+}
+
+static void
 real_get_default_size (NautilusWindow *window,
 		       guint *default_width, guint *default_height)
 {
@@ -1187,6 +1197,7 @@ nautilus_navigation_window_class_init (NautilusNavigationWindowClass *class)
 	NAUTILUS_WINDOW_CLASS (class)->prompt_for_location = real_prompt_for_location;
 	NAUTILUS_WINDOW_CLASS (class)->sync_title = real_sync_title;
 	NAUTILUS_WINDOW_CLASS (class)->get_icon = real_get_icon;
+	NAUTILUS_WINDOW_CLASS (class)->get_min_size = real_get_min_size;
 	NAUTILUS_WINDOW_CLASS (class)->get_default_size = real_get_default_size;
 	NAUTILUS_WINDOW_CLASS (class)->close = real_window_close;
 

@@ -142,20 +142,20 @@ struct _NautilusNavigationWindowDetails {
 #define NAUTILUS_COMMAND_ZOOM_NORMAL			"/commands/Zoom Normal"
 
 /* window geometry */
-/* These are very small, and a Nautilus window at this tiny size is *almost*
+/* Min values are very small, and a Nautilus window at this tiny size is *almost*
  * completely unusable. However, if all the extra bits (sidebar, location bar, etc)
  * are turned off, you can see an icon or two at this size. See bug 5946.
  */
-#define NAUTILUS_WINDOW_MIN_WIDTH			200
-#define NAUTILUS_WINDOW_MIN_HEIGHT			200
 
 #define NAUTILUS_SPATIAL_WINDOW_MIN_WIDTH			100
 #define NAUTILUS_SPATIAL_WINDOW_MIN_HEIGHT			100
 #define NAUTILUS_SPATIAL_WINDOW_DEFAULT_WIDTH			500
 #define NAUTILUS_SPATIAL_WINDOW_DEFAULT_HEIGHT			300
 
-#define NAUTILUS_NAVIGATION_WINDOW_DEFAULT_WIDTH        800
-#define NAUTILUS_NAVIGATION_WINDOW_DEFAULT_HEIGHT       550
+#define NAUTILUS_NAVIGATION_WINDOW_MIN_WIDTH			200
+#define NAUTILUS_NAVIGATION_WINDOW_MIN_HEIGHT			200
+#define NAUTILUS_NAVIGATION_WINDOW_DEFAULT_WIDTH		800
+#define NAUTILUS_NAVIGATION_WINDOW_DEFAULT_HEIGHT		550
 
 typedef void (*NautilusBookmarkFailedCallback) (NautilusWindow *window,
                                                 NautilusBookmark *bookmark);

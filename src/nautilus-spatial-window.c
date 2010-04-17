@@ -411,7 +411,19 @@ real_sync_title (NautilusWindow *window,
 	sync_window_title (window);
 }
 
-static void 
+static void
+real_get_min_size (NautilusWindow *window,
+		   guint *min_width, guint *min_height)
+{
+	if (min_width) {
+		*min_width = NAUTILUS_SPATIAL_WINDOW_MIN_WIDTH;
+	}
+	if (min_height) {
+		*min_height = NAUTILUS_SPATIAL_WINDOW_MIN_HEIGHT;
+	}
+}
+
+static void
 real_get_default_size (NautilusWindow *window,
 		       guint *default_width, guint *default_height)
 {
@@ -1099,6 +1111,7 @@ nautilus_spatial_window_class_init (NautilusSpatialWindowClass *class)
 		real_get_icon;
 	NAUTILUS_WINDOW_CLASS (class)->sync_title = 
 		real_sync_title;
+	NAUTILUS_WINDOW_CLASS(class)->get_min_size = real_get_min_size;
 	NAUTILUS_WINDOW_CLASS(class)->get_default_size = real_get_default_size;
 
 	NAUTILUS_WINDOW_CLASS(class)->sync_allow_stop =
