@@ -517,11 +517,11 @@ msgstr ""
 "масштабу не накладається обмежень. Типовий елементу формі \"Ціле\" без будь-"
 "якого вказаного рівня масштабу також допускається. Воно визначає максимальне "
 "число рядків для усіх інших масштабів. Наприклад: 0 - завжди відображаються "
-"довгі імена файлів; 3 - назви файлів скорочуються, якщо назва перевизує три "
+"довгі імена файлів; 3 - назви файлів скорочуються, якщо назва перевищує три "
 "рядки; smallest:5,smaller:4,0 - скоротити назви файлів, якщо вони "
 "перевищують п'ять рядків для масштабу \"smallest\". Скорочувати назви "
 "файлів, якщо вони перевищують чотири рядки для масштабу \"smaller\". Не "
-"скорочувати назви файлів для інщих масштабів. Доступні масштаби: smallest "
+"скорочувати назви файлів для інших масштабів. Доступні масштаби: smallest "
 "(33%), smaller (50%), small (66%), standard (100%), large (150%), larger "
 "(200%), largest (400%)"
 
@@ -606,7 +606,7 @@ msgstr "Назва файлу для типового тла бічної пан
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:22
 msgid "Default Thumbnail Icon Size"
-msgstr "Типовий масштаб значка мііатюри"
+msgstr "Типовий масштаб значка мініатюри"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:23
 msgid "Default column order in the list view"
@@ -2364,7 +2364,7 @@ msgid ""
 "create it in the destination."
 msgstr ""
 "Неможливо скопіювати теку «%B», оскільки ви не маєте прав на її створення "
-"замісцем призначення."
+"за місцем призначення."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3334
 msgid "There was an error creating the folder \"%B\"."
@@ -2605,7 +2605,7 @@ msgstr "Цей файл неможливо відключити"
 
 #: ../libnautilus-private/nautilus-file.c:1290
 msgid "This file cannot be ejected"
-msgstr "Цей файл неможливо виятгнути"
+msgstr "Цей файл неможливо витягнути"
 
 #: ../libnautilus-private/nautilus-file.c:1323
 #: ../libnautilus-private/nautilus-vfs-file.c:559
@@ -3167,7 +3167,7 @@ msgstr "Пере_містити у смітник"
 #: ../libnautilus-private/nautilus-mime-actions.c:778
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
-msgstr "Бажаєте виконати \"%s\", чи відобразити вміст?"
+msgstr "Бажаєте виконати \"%s\", чи показати вміст?"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:780
 #, c-format
@@ -3279,12 +3279,12 @@ msgstr "Вважати _перевіреним"
 #: ../libnautilus-private/nautilus-mime-actions.c:2197
 #: ../src/file-manager/fm-directory-view.c:6235
 msgid "Unable to mount location"
-msgstr "Не вдається приєднати місцерозташування"
+msgstr "Не вдається приєднати місце розташування"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:2275
 #: ../src/file-manager/fm-directory-view.c:6408
 msgid "Unable to start location"
-msgstr "Не вдається запустити місцерозташування"
+msgstr "Не вдається запустити місце розташування"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:2363
 #, c-format
@@ -4367,7 +4367,7 @@ msgstr "З_апустити"
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7330
 msgid "Start the selected volume"
-msgstr "Запустити обратий том"
+msgstr "Запустити обраний том"
 
 #. name, stock id
 #. label, accelerator
@@ -4402,7 +4402,7 @@ msgstr "Ви_явити носій"
 #: ../src/file-manager/fm-directory-view.c:7366
 #: ../src/file-manager/fm-directory-view.c:7447
 msgid "Detect media in the selected drive"
-msgstr "Визначити нявність носія у обраному пристрої."
+msgstr "Визначити наявність носія у обраному пристрої."
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7342
@@ -4941,7 +4941,7 @@ msgstr "Не вдалось показати весь вміст «%s»: %s"
 
 #: ../src/file-manager/fm-error-reporting.c:80
 msgid "The folder contents could not be displayed."
-msgstr "Вміст теки не може бути відображений."
+msgstr "Вміст теки не може бути показаний."
 
 #: ../src/file-manager/fm-error-reporting.c:109
 #, c-format
@@ -6070,7 +6070,7 @@ msgstr "_Ніколи"
 
 #: ../src/nautilus-file-management-properties.ui.h:71
 msgid "Open each _folder its own window"
-msgstr "Відкрити цю _теку у власному вікні"
+msgstr "Відкривати кожну _теку у власному вікні"
 
 #: ../src/nautilus-file-management-properties.ui.h:72
 msgid "Preview"
