@@ -1315,6 +1315,7 @@ nautilus_navigation_window_split_view_off (NautilusNavigationWindow *window)
 	}
 
 	nautilus_navigation_window_update_show_hide_menu_items (window);
+	nautilus_navigation_window_update_split_view_actions_sensitivity (window);
 }
 
 gboolean
