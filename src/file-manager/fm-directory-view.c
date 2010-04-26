@@ -1199,7 +1199,7 @@ select_pattern (FMDirectoryView *view)
 	example = gtk_label_new (NULL);
 	example_pattern = g_strdup_printf ("<b>%s</b><i>%s</i>", 
 					   _("Examples: "),
-					   _("*.png, file\?\?.txt, pict*.\?\?\?"));
+					   "*.png, file\?\?.txt, pict*.\?\?\?");
 	gtk_label_set_markup (GTK_LABEL (example), example_pattern);
 	g_free (example_pattern);
 	gtk_misc_set_alignment (GTK_MISC (example), 0.0, 0.5);
