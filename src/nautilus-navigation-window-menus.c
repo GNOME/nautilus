@@ -163,6 +163,9 @@ action_split_view_same_location_callback (GtkAction *action,
 	window = NAUTILUS_WINDOW (user_data);
 	next_pane = nautilus_window_get_next_pane (window);
 
+	if (!next_pane) {
+		return;
+	}
 	location = nautilus_window_slot_get_location (next_pane->active_slot);
 	if (location) {
 		nautilus_window_slot_go_to (window->details->active_pane->active_slot, location, FALSE);
