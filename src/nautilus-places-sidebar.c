@@ -299,7 +299,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 	GtkTreeSelection *selection;
 	GtkTreeIter iter, last_iter;
 	GtkTreePath *select_path;
-	GtkTreeModel *model = NULL;
+	GtkTreeModel *model;
 	GVolumeMonitor *volume_monitor;
 	GList *mounts, *l, *ll;
 	GMount *mount;
@@ -314,6 +314,10 @@ update_places (NautilusPlacesSidebar *sidebar)
 	NautilusWindowSlotInfo *slot;
 	char *tooltip;
 
+	model = NULL;
+	last_uri = NULL;
+	select_path = NULL;
+
 	selection = gtk_tree_view_get_selection (sidebar->tree_view);
 	if (gtk_tree_selection_get_selected (selection, &model, &last_iter)) {
 		gtk_tree_model_get (model,
@@ -321,7 +325,6 @@ update_places (NautilusPlacesSidebar *sidebar)
 				    PLACES_SIDEBAR_COLUMN_URI, &last_uri, -1);
 	}
 	gtk_list_store_clear (sidebar->store);
-	select_path = NULL;
 
 	slot = nautilus_window_info_get_active_slot (sidebar->window);
 	location = nautilus_window_slot_info_get_current_location (slot);
