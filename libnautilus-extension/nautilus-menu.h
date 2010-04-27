@@ -61,7 +61,7 @@ typedef struct _NautilusMenuItemClass   NautilusMenuItemClass;
 /* NautilusMenu structs */
 struct _NautilusMenu {
 	GObject parent;
-	NautilusMenuPrivate *private;
+	NautilusMenuPrivate *priv;
 };
 
 struct _NautilusMenuClass {
@@ -86,9 +86,9 @@ struct _NautilusMenuItemClass {
 GType		nautilus_menu_get_type	(void);
 NautilusMenu *	nautilus_menu_new	(void);
 
-void	nautilus_menu_append_item	(NautilusMenu      *this,
+void	nautilus_menu_append_item	(NautilusMenu      *menu,
 					 NautilusMenuItem  *item);
-GList*	nautilus_menu_get_items		(NautilusMenu *this);
+GList*	nautilus_menu_get_items		(NautilusMenu *menu);
 void	nautilus_menu_item_list_free	(GList *item_list);
 
 /* NautilusMenuItem methods */
