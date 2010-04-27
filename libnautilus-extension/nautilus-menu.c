@@ -35,22 +35,22 @@ struct _NautilusMenuPrivate {
 };
 
 void
-nautilus_menu_append_item (NautilusMenu *this, NautilusMenuItem *item)
+nautilus_menu_append_item (NautilusMenu *menu, NautilusMenuItem *item)
 {
-	g_return_if_fail (this != NULL);
+	g_return_if_fail (menu != NULL);
 	g_return_if_fail (item != NULL);
 	
-	this->private->item_list = g_list_append (this->private->item_list, g_object_ref (item));
+	menu->priv->item_list = g_list_append (menu->priv->item_list, g_object_ref (item));
 }
 
 GList *
-nautilus_menu_get_items (NautilusMenu *this)
+nautilus_menu_get_items (NautilusMenu *menu)
 {
 	GList *item_list;
 
-	g_return_val_if_fail (this != NULL, NULL);
+	g_return_val_if_fail (menu != NULL, NULL);
 	
-	item_list = g_list_copy (this->private->item_list);
+	item_list = g_list_copy (menu->priv->item_list);
 	g_list_foreach (item_list, (GFunc)g_object_ref, NULL);
 	
 	return item_list;
@@ -70,21 +70,21 @@ nautilus_menu_item_list_free (GList *item_list)
 static void
 nautilus_menu_finalize (GObject *object)
 {
-	NautilusMenu *this = NAUTILUS_MENU (object);
+	NautilusMenu *menu = NAUTILUS_MENU (object);
 
-	if (this->private->item_list) {
-		g_list_free (this->private->item_list);
+	if (menu->priv->item_list) {
+		g_list_free (menu->priv->item_list);
 	}
 
 	G_OBJECT_CLASS (nautilus_menu_parent_class)->finalize (object);
 }
 
 static void
-nautilus_menu_init (NautilusMenu *this)
+nautilus_menu_init (NautilusMenu *menu)
 {
-	this->private = NAUTILUS_MENU_GET_PRIVATE (this);
-	
-	this->private->item_list = NULL;
+	menu->priv = NAUTILUS_MENU_GET_PRIVATE (menu);
+
+	menu->priv->item_list = NULL;
 }
 
 static void
