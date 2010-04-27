@@ -1864,8 +1864,8 @@ real_map_pixbuf (NautilusIconCanvasItem *icon_item)
 					(audio_pixbuf,
 					 temp_pixbuf,
 					 0, 0,
-					 gdk_pixbuf_get_width (temp_pixbuf),
-					 gdk_pixbuf_get_height(temp_pixbuf),
+					 gdk_pixbuf_get_width (audio_pixbuf),
+					 gdk_pixbuf_get_height (audio_pixbuf),
 					 0, 0,
 					 1.0, 1.0,
 					 GDK_INTERP_BILINEAR, 0xFF);
