@@ -162,8 +162,10 @@ file_list_ready_cb (GList *files,
 			dest_dir_name);
 	}
 
-	label = gtk_label_new (NULL);
-	gtk_label_set_text (GTK_LABEL (label), primary_text);
+	label = gtk_label_new (primary_text);
+	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+	gtk_label_set_line_wrap_mode (GTK_LABEL (label), PANGO_WRAP_WORD_CHAR);
+	gtk_widget_set_size_request (label, 350, -1);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_box_pack_start (GTK_BOX (details->titles_vbox),
 			    label, FALSE, FALSE, 0);
@@ -177,9 +179,11 @@ file_list_ready_cb (GList *files,
 	gtk_widget_show (label);
 
 	label = gtk_label_new (secondary_text);
+	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+	gtk_widget_set_size_request (label, 350, -1);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_box_pack_start (GTK_BOX (details->titles_vbox),
-			    label, TRUE, TRUE, 0);
+			    label, FALSE, FALSE, 0);
 	gtk_widget_show (label);
 	g_free (primary_text);
 	g_free (secondary_text);
@@ -451,7 +455,7 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 	details->titles_vbox = widget;
 
 	/* Setup the hboxes to pack file infos into */
-	alignment = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
+	alignment = gtk_alignment_new (0.0, 0.0, 0.0, 0.0);
 	g_object_set (alignment, "left-padding", 12, NULL);
 	vbox2 = gtk_vbox_new (FALSE, 12);
 	gtk_container_add (GTK_CONTAINER (alignment), vbox2);
