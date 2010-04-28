@@ -668,7 +668,7 @@ do_upgrades_once (NautilusApplication *application,
 			if (res == -1) {
 				fd = g_creat (updated, 0600);
 				if (fd != -1) {
-					write (fd, message, strlen (message));
+					res = write (fd, message, strlen (message));
 					close (fd);
 				}
 			}
