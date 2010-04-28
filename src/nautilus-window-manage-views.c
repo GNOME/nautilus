@@ -1487,11 +1487,12 @@ nautilus_window_slot_show_x_content_bar (NautilusWindowSlot *slot, GMount *mount
 }
 
 static void
-nautilus_window_slot_show_trash_bar (NautilusWindowSlot *slot)
+nautilus_window_slot_show_trash_bar (NautilusWindowSlot *slot,
+				     NautilusWindow *window)
 {
 	GtkWidget *bar;
 
-	bar = nautilus_trash_bar_new ();
+	bar = nautilus_trash_bar_new (window);
 	gtk_widget_show (bar);
 
 	nautilus_window_slot_add_extra_location_widget (slot, bar);
@@ -1624,7 +1625,7 @@ update_for_new_location (NautilusWindowSlot *slot)
 		nautilus_window_slot_update_query_editor (slot);
 
 		if (nautilus_directory_is_in_trash (directory)) {
-			nautilus_window_slot_show_trash_bar (slot);
+			nautilus_window_slot_show_trash_bar (slot, window);
 		}
 
 		/* need the mount to determine if we should put up the x-content cluebar */
