@@ -26,6 +26,7 @@
 #define NAUTILUS_FILE_UTILITIES_H
 
 #include <gio/gio.h>
+#include <gtk/gtk.h>
 
 #define NAUTILUS_SAVED_SEARCH_EXTENSION ".savedSearch"
 #define NAUTILUS_SAVED_SEARCH_MIMETYPE "application/x-gnome-saved-search"
@@ -101,5 +102,10 @@ GFile *
 nautilus_find_file_insensitive (GFile *parent, const gchar *name);
 
 char * nautilus_get_accel_map_file (void);
+
+GHashTable * nautilus_trashed_files_get_original_directories (GList *files,
+							      GList **unhandled_files);
+void nautilus_restore_files_from_trash (GList *files,
+					GtkWindow *parent_window);
 
 #endif /* NAUTILUS_FILE_UTILITIES_H */

@@ -29,9 +29,11 @@
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-metadata.h"
 #include "nautilus-file.h"
+#include "nautilus-file-operations.h"
 #include "nautilus-search-directory.h"
 #include "nautilus-signaller.h"
 #include <eel/eel-glib-extensions.h>
+#include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-debug.h>
 #include <glib.h>
@@ -1159,6 +1161,125 @@ nautilus_is_in_system_dir (GFile *file)
 	return res;
 }
 
+GHashTable *
+nautilus_trashed_files_get_original_directories (GList *files,
+						 GList **unhandled_files)
+{
+	GHashTable *directories;
+	NautilusFile *file, *original_file, *original_dir;
+	GList *l, *m;
+
+	directories = NULL;
+
+	if (unhandled_files != NULL) {
+		*unhandled_files = NULL;
+	}
+
+	for (l = files; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+		original_file = nautilus_file_get_trash_original_file (file);
+
+		original_dir = NULL;
+		if (original_file != NULL) {
+			original_dir = nautilus_file_get_parent (original_file);
+		}
+
+		if (original_dir != NULL) {
+			if (directories == NULL) {
+				directories = g_hash_table_new_full (g_direct_hash, g_direct_equal,
+								     (GDestroyNotify) nautilus_file_unref,
+								     (GDestroyNotify) nautilus_file_list_unref);
+			}
+			nautilus_file_ref (original_dir);
+			m = g_hash_table_lookup (directories, original_dir);
+			if (m != NULL) {
+				g_hash_table_steal (directories, original_dir);
+				nautilus_file_unref (original_dir);
+			}
+			m = g_list_append (m, nautilus_file_ref (file));
+			g_hash_table_insert (directories, original_dir, m);
+		} else if (unhandled_files != NULL) {
+			*unhandled_files = g_list_append (*unhandled_files, nautilus_file_ref (file));
+		}
+
+		if (original_file != NULL) {
+			nautilus_file_unref (original_file);
+		}
+
+		if (original_dir != NULL) {
+			nautilus_file_unref (original_dir);
+		}
+	}
+
+	return directories;
+}
+
+static GList *
+locations_from_file_list (GList *file_list)
+{
+	NautilusFile *file;
+	GList *l, *ret;
+
+	ret = NULL;
+
+	for (l = file_list; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+		ret = g_list_prepend (ret, nautilus_file_get_location (file));
+	}
+
+	return g_list_reverse (ret);
+}
+
+void
+nautilus_restore_files_from_trash (GList *files,
+				   GtkWindow *parent_window)
+{
+	NautilusFile *file, *original_dir;
+	GHashTable *original_dirs_hash;
+	GList *original_dirs, *unhandled_files;
+	GFile *original_dir_location;
+	GList *locations, *l;
+	char *message, *file_name;
+
+	original_dirs_hash = nautilus_trashed_files_get_original_directories (files, &unhandled_files);
+
+	for (l = unhandled_files; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+		file_name = nautilus_file_get_display_name (file);
+		message = g_strdup_printf (_("Could not determine original location of \"%s\" "), file_name);
+		g_free (file_name);
+
+		eel_show_warning_dialog (message,
+					 _("The item cannot be restored from trash"),
+					 parent_window);
+		g_free (message);
+	}
+
+	if (original_dirs_hash != NULL) {
+		original_dirs = g_hash_table_get_keys (original_dirs_hash);
+		for (l = original_dirs; l != NULL; l = l->next) {
+			original_dir = NAUTILUS_FILE (l->data);
+			original_dir_location = nautilus_file_get_location (original_dir);
+
+			files = g_hash_table_lookup (original_dirs_hash, original_dir);
+			locations = locations_from_file_list (files);
+
+			nautilus_file_operations_move
+				(locations, NULL, 
+				 original_dir_location,
+				 parent_window,
+				 NULL, NULL);
+
+			eel_g_object_list_free (locations);
+			g_object_unref (original_dir_location);
+		}
+
+		g_list_free (original_dirs);
+		g_hash_table_destroy (original_dirs_hash);
+	}
+
+	nautilus_file_list_unref (unhandled_files);
+}
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
