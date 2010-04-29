@@ -449,7 +449,7 @@ nautilus_navigation_window_set_up_sidebar (NautilusNavigationWindow *window)
 
 	gtk_paned_pack1 (GTK_PANED (window->details->content_paned),
 			 GTK_WIDGET (window->sidebar),
-			 FALSE, TRUE);
+			 FALSE, FALSE);
 
 	setup_side_pane_width (window);
 	g_signal_connect (window->sidebar, 
