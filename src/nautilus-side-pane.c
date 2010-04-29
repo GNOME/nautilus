@@ -232,6 +232,17 @@ select_button_press_callback (GtkWidget *widget,
 	side_pane = NAUTILUS_SIDE_PANE (user_data);
 
 	if ((event->type == GDK_BUTTON_PRESS) && event->button == 1) {
+                GtkRequisition requisition;
+                GtkAllocation allocation;
+                gint width;
+
+                gtk_widget_get_allocation (widget, &allocation);
+                width = allocation.width;
+                gtk_widget_set_size_request (side_pane->details->menu, -1, -1);
+                gtk_widget_size_request (side_pane->details->menu, &requisition);
+                gtk_widget_set_size_request (side_pane->details->menu,
+                                             MAX (width, requisition.width), -1);
+
 		gtk_widget_grab_focus (widget);
 		
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), TRUE);
@@ -359,7 +370,7 @@ nautilus_side_pane_init (GObject *object)
 	gtk_box_pack_end (GTK_BOX (select_hbox), arrow, FALSE, FALSE, 0);
 	
 	gtk_container_add (GTK_CONTAINER (select_button), select_hbox);
-	gtk_box_pack_start (GTK_BOX (hbox), select_button, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), select_button, TRUE, TRUE, 0);
 
 	close_button = gtk_button_new ();
 	gtk_button_set_relief (GTK_BUTTON (close_button), GTK_RELIEF_NONE);
