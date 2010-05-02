@@ -566,6 +566,5 @@ eel_create_question_dialog (const char *primary_text,
 					GTK_BUTTONS_NONE,
 					parent);
 	gtk_dialog_add_buttons (dialog, answer_1, response_1, answer_2, response_2, NULL);
-	gtk_dialog_set_default_response (dialog, response_2);
 	return dialog;
 }
