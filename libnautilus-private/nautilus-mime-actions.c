@@ -718,7 +718,7 @@ report_broken_symbolic_link (GtkWindow *parent_window, NautilusFile *file)
 	dialog = eel_show_yes_no_dialog (prompt, detail, _("Mo_ve to Trash"), GTK_STOCK_CANCEL,
 					 parent_window);
 
-	gtk_dialog_set_default_response (dialog, GTK_RESPONSE_YES);
+	gtk_dialog_set_default_response (dialog, GTK_RESPONSE_CANCEL);
 
 	/* Make this modal to avoid problems with reffing the view & file
 	 * to keep them around in case the view changes, which would then
