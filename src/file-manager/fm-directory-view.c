@@ -4374,7 +4374,7 @@ add_application_to_open_with_menu (FMDirectoryView *view,
 	if (submenu)
 		label = g_strdup_printf ("%s", escaped_app);
 	else
-		label = g_strdup_printf (_("Open with %s"), escaped_app);
+		label = g_strdup_printf (_("Open With %s"), escaped_app);
 
 	tip = g_strdup_printf (ngettext ("Use \"%s\" to open the selected item",
 					 "Use \"%s\" to open the selected items",
@@ -7186,7 +7186,7 @@ static const GtkActionEntry directory_view_entries[] = {
   /* tooltip */                  N_("Choose another application with which to open the selected item"),
                                  G_CALLBACK (action_other_application_callback) },
   /* name, stock id */         { "OtherApplication2", NULL,
-  /* label, accelerator */       N_("Open with Other _Application..."), NULL,
+  /* label, accelerator */       N_("Open With Other _Application..."), NULL,
   /* tooltip */                  N_("Choose another application with which to open the selected item"),
                                  G_CALLBACK (action_other_application_callback) },
   /* name, stock id */         { "Open Scripts Folder", NULL,
@@ -8651,7 +8651,7 @@ real_update_menus (FMDirectoryView *view)
 		char *escaped_app;
 
 		escaped_app = eel_str_double_underscores (g_app_info_get_display_name (app));
-		label_with_underscore = g_strdup_printf (_("_Open with %s"),
+		label_with_underscore = g_strdup_printf (_("_Open With %s"),
 							 escaped_app);
 
 		app_icon = g_app_info_get_icon (app);
