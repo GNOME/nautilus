@@ -825,7 +825,7 @@ add_command_button (NautilusInformationPanel *information_panel, GAppInfo *appli
 	/* There's always at least the "Open with..." button */
 	information_panel->details->has_buttons = TRUE;
 
-	temp_str = g_strdup_printf (_("Open with %s"), g_app_info_get_display_name (application));
+	temp_str = g_strdup_printf (_("Open With %s"), g_app_info_get_display_name (application));
         temp_button = gtk_button_new_with_label (temp_str);
 	label = GTK_BIN (temp_button)->child;
 	gtk_label_set_ellipsize (GTK_LABEL (label), PANGO_ELLIPSIZE_START);
