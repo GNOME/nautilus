@@ -139,6 +139,11 @@ append_label (GtkWidget *vbox,
 	gtk_misc_set_alignment (GTK_MISC (label), 0, 0);
 	gtk_label_set_selectable (GTK_LABEL (label), TRUE);
 
+	/* setting can_focus to FALSE will allow to make the label
+	 * selectable but without the cursor showing.
+	 */
+	gtk_widget_set_can_focus (label, FALSE);
+
 	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
 	gtk_widget_show (label);
 
