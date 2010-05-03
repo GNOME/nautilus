@@ -381,7 +381,8 @@ real_get_icon (NautilusWindow *window,
 	       NautilusWindowSlot *slot)
 {
 	return nautilus_file_get_icon (slot->viewed_file, 48,
-				       NAUTILUS_FILE_ICON_FLAGS_IGNORE_VISITING);
+					NAUTILUS_FILE_ICON_FLAGS_IGNORE_VISITING |
+					NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON);
 }
 
 static void
