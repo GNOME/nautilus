@@ -24,19 +24,14 @@ msgstr ""
 "Project-Id-Version: eel.HEAD.es\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2010-05-03 15:32+0000\n"
-"PO-Revision-Date: 2010-05-03 19:00+0200\n"
+"POT-Creation-Date: 2010-05-03 17:02+0000\n"
+"PO-Revision-Date: 2010-05-03 19:22+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"#-#-#-#-#  es.po (nautilus.HEAD)  #-#-#-#-#\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: KBabel 1.11.4\n"
-"#-#-#-#-#  es.po (eel.HEAD.es)  #-#-#-#-#\n"
-"X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);"
 
 #: ../cut-n-paste-code/libegg/eggdesktopfile.c:165
 #, c-format
@@ -1757,7 +1752,7 @@ msgstr "El tipo de archivo."
 # src/file-manager/fm-list-view.c:1599
 # src/file-manager/fm-search-list-view.c:158
 #: ../libnautilus-private/nautilus-column-utilities.c:65
-#: ../src/nautilus-image-properties-page.c:270
+#: ../src/nautilus-image-properties-page.c:275
 msgid "Date Modified"
 msgstr "Fecha de modificación"
 
@@ -1837,7 +1832,7 @@ msgstr "El contexto SELinux de seguridad del archivo."
 #. TODO: Change after string freeze over
 #: ../libnautilus-private/nautilus-column-utilities.c:127
 #: ../libnautilus-private/nautilus-column-utilities.c:129
-#: ../src/nautilus-image-properties-page.c:346
+#: ../src/nautilus-image-properties-page.c:351
 #: ../src/nautilus-query-editor.c:117
 msgid "Location"
 msgstr "Lugar"
@@ -4117,7 +4112,8 @@ msgstr "Algunos archivos no se mostrarán."
 #: ../src/file-manager/fm-directory-view.c:4377
 #: ../src/nautilus-information-panel.c:828
 #, c-format
-msgid "Open with %s"
+#| msgid "Open with %s"
+msgid "Open With %s"
 msgstr "Abrir con %s"
 
 #: ../src/file-manager/fm-directory-view.c:4379
@@ -4427,7 +4423,8 @@ msgstr "Selecciona otra aplicación con la cual abrir el elemento seleccionado"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:7189
-msgid "Open with Other _Application..."
+#| msgid "Open with Other _Application..."
+msgid "Open With Other _Application..."
 msgstr "Abrir con _otra aplicación…"
 
 #. name, stock id
@@ -5169,7 +5166,8 @@ msgstr "Mover la carpeta abierta a la papelera"
 # src/nautilus-sidebar.c:1145
 #: ../src/file-manager/fm-directory-view.c:8654
 #, c-format
-msgid "_Open with %s"
+#| msgid "_Open with %s"
+msgid "_Open With %s"
 msgstr "_Abrir con %s"
 
 # src/file-manager/fm-directory-view.c:2126
@@ -5268,7 +5266,7 @@ msgstr "URL"
 
 #: ../src/file-manager/fm-ditem-page.c:417
 #: ../src/file-manager/fm-ditem-page.c:427
-#: ../src/nautilus-image-properties-page.c:347
+#: ../src/nautilus-image-properties-page.c:352
 msgid "Description"
 msgstr "Descripción"
 
@@ -5460,13 +5458,11 @@ msgstr "Organi_zar los elementos"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1497
-#| msgid "Stretc_h Icon..."
 msgid "Resize Icon..."
 msgstr "Redimensionar icono…"
 
 #. tooltip
 #: ../src/file-manager/fm-icon-view.c:1498
-#| msgid "Make the selected icon stretchable"
 msgid "Make the selected icon resizable"
 msgstr "Hacer que el icono seleccionado sea redimensionable"
 
@@ -6727,7 +6723,7 @@ msgstr "Mostrar histórico"
 # src/file-manager/fm-list-view.c:1581
 # src/file-manager/fm-search-list-view.c:140
 # src/nautilus-bookmarks-window.c:172
-#: ../src/nautilus-image-properties-page.c:262
+#: ../src/nautilus-image-properties-page.c:267
 msgid "Camera Brand"
 msgstr "Marca de la cámara"
 
@@ -6737,103 +6733,103 @@ msgstr "Marca de la cámara"
 # src/file-manager/fm-list-view.c:1581
 # src/file-manager/fm-search-list-view.c:140
 # src/nautilus-bookmarks-window.c:172
-#: ../src/nautilus-image-properties-page.c:263
+#: ../src/nautilus-image-properties-page.c:268
 msgid "Camera Model"
 msgstr "Modelo de la cámara"
 
 #. Choose which date to show in order of relevance
-#: ../src/nautilus-image-properties-page.c:266
+#: ../src/nautilus-image-properties-page.c:271
 msgid "Date Taken"
 msgstr "Fecha en que se tomó"
 
 # src/file-manager/fm-list-view.c:1599
 # src/file-manager/fm-search-list-view.c:158
-#: ../src/nautilus-image-properties-page.c:268
+#: ../src/nautilus-image-properties-page.c:273
 msgid "Date Digitized"
 msgstr "Fecha de digitalización"
 
-#: ../src/nautilus-image-properties-page.c:274
+#: ../src/nautilus-image-properties-page.c:279
 msgid "Exposure Time"
 msgstr "Tiempo de exposición"
 
-#: ../src/nautilus-image-properties-page.c:275
+#: ../src/nautilus-image-properties-page.c:280
 msgid "Aperture Value"
 msgstr "Valor de apertura"
 
-#: ../src/nautilus-image-properties-page.c:276
+#: ../src/nautilus-image-properties-page.c:281
 msgid "ISO Speed Rating"
 msgstr "Tasa de velocidad ISO"
 
-#: ../src/nautilus-image-properties-page.c:277
+#: ../src/nautilus-image-properties-page.c:282
 msgid "Flash Fired"
 msgstr "Con flash"
 
-#: ../src/nautilus-image-properties-page.c:278
+#: ../src/nautilus-image-properties-page.c:283
 msgid "Metering Mode"
 msgstr "Modo de medida"
 
 # libnautilus-private/nautilus-file.c:2965
-#: ../src/nautilus-image-properties-page.c:279
+#: ../src/nautilus-image-properties-page.c:284
 msgid "Exposure Program"
 msgstr "Programa de exposición"
 
-#: ../src/nautilus-image-properties-page.c:280
+#: ../src/nautilus-image-properties-page.c:285
 msgid "Focal Length"
 msgstr "Longitud focal"
 
-#: ../src/nautilus-image-properties-page.c:281
+#: ../src/nautilus-image-properties-page.c:286
 msgid "Software"
 msgstr "Software"
 
 # src/nautilus-property-browser.c:858
-#: ../src/nautilus-image-properties-page.c:348
+#: ../src/nautilus-image-properties-page.c:353
 msgid "Keywords"
 msgstr "Palabras clave"
 
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
-#: ../src/nautilus-image-properties-page.c:349
+#: ../src/nautilus-image-properties-page.c:354
 msgid "Creator"
 msgstr "Creador"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/dfos-xfer.c:725
-#: ../src/nautilus-image-properties-page.c:350
+#: ../src/nautilus-image-properties-page.c:355
 msgid "Copyright"
 msgstr "Copyright"
 
 # src/file-manager/fm-properties-window.c:844
-#: ../src/nautilus-image-properties-page.c:351
+#: ../src/nautilus-image-properties-page.c:356
 msgid "Rating"
 msgstr "Puntuación"
 
-#: ../src/nautilus-image-properties-page.c:377
+#: ../src/nautilus-image-properties-page.c:382
 msgid "Image Type:"
 msgstr "Tipo de imagen:"
 
-#: ../src/nautilus-image-properties-page.c:380
+#: ../src/nautilus-image-properties-page.c:385
 #, c-format
 msgid "<b>Width:</b> %d pixel"
 msgid_plural "<b>Width:</b> %d pixels"
 msgstr[0] "<b>Anchura:</b> %d píxel"
 msgstr[1] "<b>Anchura:</b> %d píxeles"
 
-#: ../src/nautilus-image-properties-page.c:386
+#: ../src/nautilus-image-properties-page.c:391
 #, c-format
 msgid "<b>Height:</b> %d pixel"
 msgid_plural "<b>Height:</b> %d pixels"
 msgstr[0] "<b>Altura:</b> %d píxel"
 msgstr[1] "<b>Altura:</b> %d píxeles"
 
-#: ../src/nautilus-image-properties-page.c:403
+#: ../src/nautilus-image-properties-page.c:408
 msgid "Failed to load image information"
 msgstr "Falló al cargar la información de la imagen"
 
-#: ../src/nautilus-image-properties-page.c:617
+#: ../src/nautilus-image-properties-page.c:622
 msgid "loading..."
 msgstr "cargando…"
 
-#: ../src/nautilus-image-properties-page.c:669
+#: ../src/nautilus-image-properties-page.c:674
 msgid "Image"
 msgstr "Imagen"
 
