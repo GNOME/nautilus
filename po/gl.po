@@ -22,8 +22,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-master-po-gl-54706\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-01 20:26+0200\n"
-"PO-Revision-Date: 2010-05-01 20:26+0200\n"
+"POT-Creation-Date: 2010-05-04 22:54+0200\n"
+"PO-Revision-Date: 2010-05-04 23:01+0200\n"
 "Last-Translator: Fran Diéguez <frandieguez@ubuntu.com>\n"
 "Language-Team: Galician <gnome@g11n.net>\n"
 "MIME-Version: 1.0\n"
@@ -1652,7 +1652,7 @@ msgid "The type of the file."
 msgstr "O tipo do ficheiro."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:65
-#: ../src/nautilus-image-properties-page.c:270
+#: ../src/nautilus-image-properties-page.c:275
 msgid "Date Modified"
 msgstr "Data de modificación"
 
@@ -1720,12 +1720,13 @@ msgstr "O contexto de seguranza SELinux do ficheiro."
 #. TODO: Change after string freeze over
 #: ../libnautilus-private/nautilus-column-utilities.c:127
 #: ../libnautilus-private/nautilus-column-utilities.c:129
-#: ../src/nautilus-image-properties-page.c:346
+#: ../src/nautilus-image-properties-page.c:351
 #: ../src/nautilus-query-editor.c:117
 msgid "Location"
 msgstr "Localización"
 
 #: ../libnautilus-private/nautilus-customization-data.c:405
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:520
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:428
 #: ../src/nautilus-property-browser.c:1863
 msgid "Reset"
@@ -1826,9 +1827,117 @@ msgstr "Non é posíbel gardar o emblema personalizado."
 msgid "Sorry, unable to save custom emblem name."
 msgstr "Non é posíbel gardar o nome do emblema personalizado."
 
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:83
+msgid "An older"
+msgstr "Un máis antigo"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:86
+msgid "A newer"
+msgstr "Un máis novo"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:88
+msgid "Another"
+msgstr "Outro"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:160
+#, c-format
+msgid "Merge folder \"%s\"?"
+msgstr "Combinar os cartafoles «%s»?"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:167
+#, c-format
+msgid ""
+"%s folder with the same name already exists in \"%s\".\n"
+"Merging will ask for confirmation before replacing any files in the folder "
+"that conflict with the files being copied."
+msgstr ""
+"Xa existe o cartafol %s co mesmo nome en «%s».\n"
+"A combinación pediralle a confirmación antes de eliminar calquera ficheiro "
+"no cartafol que estea en conflito cos ficheiros que se estean a copiar."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:175
+#, c-format
+msgid "Replace folder \"%s\"?"
+msgstr "Substituír o cartafol «%s»?"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:177
+#, c-format
+msgid ""
+"A folder with the same name already exists in \"%s\".\n"
+"Replacing it will remove all files in the folder."
+msgstr ""
+"Xa existe un cartafol co mesmo nome en «%s». \n"
+"Ao substituílo eliminaranse todos os ficheiros no cartafol."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:183
+#, c-format
+msgid "Replace file \"%s\"?"
+msgstr "Substituír por «%s»?"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:189
+#, c-format
+msgid ""
+"%s file with the same name already exists in \"%s\".\n"
+"Replacing it will overwrite its content."
+msgstr ""
+"Xa existe o ficheiro %s co mesmo nome en «%s». \n"
+"Ao substituílo sobrescribirase o seu contido."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:253
+msgid "Original file"
+msgstr "Ficheiro orixinal"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:254
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:285
+#: ../src/file-manager/fm-properties-window.c:3301
+msgid "Size:"
+msgstr "Tamaño:"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:257
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:288
+#: ../src/file-manager/fm-properties-window.c:3283
+msgid "Type:"
+msgstr "Tipo:"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:260
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:291
+msgid "Last modified:"
+msgstr "Última modificación:"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:284
+msgid "Replace with"
+msgstr "Substituír con"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:313
+msgid "Merge"
+msgstr "Combinar"
+
+#. Setup the expander for the rename action
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:506
+msgid "_Select a new name for the destination"
+msgstr "_Seleccionar un novo nome para o destino"
+
+#. Setup the checkbox to apply the action to all files
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:532
+msgid "Apply this action to all files"
+msgstr "Aplicar esta acción a todos os ficheiros"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:543
 #: ../libnautilus-private/nautilus-file-operations.c:187
 msgid "_Skip"
 msgstr "_Omitir"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:548
+msgid "Re_name"
+msgstr "Re_nomear"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:554
+msgid "Replace"
+msgstr "Substituír"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:627
+msgid "File conflict"
+msgstr "Conflito de ficheiro"
 
 #: ../libnautilus-private/nautilus-file-operations.c:188
 msgid "S_kip All"
@@ -3821,7 +3930,7 @@ msgstr "Algúns ficheiros non se mostrarán."
 #: ../src/file-manager/fm-directory-view.c:4377
 #: ../src/nautilus-information-panel.c:828
 #, c-format
-msgid "Open with %s"
+msgid "Open With %s"
 msgstr "Abrir con %s"
 
 #: ../src/file-manager/fm-directory-view.c:4379
@@ -4105,7 +4214,7 @@ msgstr "Seleccione outro aplicativo co que abrir o elemento seleccionado"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:7189
-msgid "Open with Other _Application..."
+msgid "Open With Other _Application..."
 msgstr "Abrir con outro _aplicativo..."
 
 #. name, stock id
@@ -4798,7 +4907,7 @@ msgstr "Mover o cartafol aberto ao lixo"
 
 #: ../src/file-manager/fm-directory-view.c:8654
 #, c-format
-msgid "_Open with %s"
+msgid "_Open With %s"
 msgstr "_Abrir con %s"
 
 #: ../src/file-manager/fm-directory-view.c:8704
@@ -4888,7 +4997,7 @@ msgstr "URL"
 
 #: ../src/file-manager/fm-ditem-page.c:417
 #: ../src/file-manager/fm-ditem-page.c:427
-#: ../src/nautilus-image-properties-page.c:347
+#: ../src/nautilus-image-properties-page.c:352
 msgid "Description"
 msgstr "Descrición"
 
@@ -5050,13 +5159,13 @@ msgstr "Or_ganizar elementos"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1497
-msgid "Stretc_h Icon..."
-msgstr "_Reducir icona..."
+msgid "Resize Icon..."
+msgstr "Redimensionar icona..."
 
 #. tooltip
 #: ../src/file-manager/fm-icon-view.c:1498
-msgid "Make the selected icon stretchable"
-msgstr "Facer a icona seleccionábel extensíbel"
+msgid "Make the selected icon resizable"
+msgstr "Facer que a icona seleccionada sexa redimensionábel"
 
 #. name, stock id
 #. label, accelerator
@@ -5341,17 +5450,9 @@ msgstr "Tipo de sistema de ficheiros:"
 msgid "Basic"
 msgstr "Básico"
 
-#: ../src/file-manager/fm-properties-window.c:3283
-msgid "Type:"
-msgstr "Tipo:"
-
 #: ../src/file-manager/fm-properties-window.c:3291
 msgid "Link target:"
 msgstr "Destino da ligazón:"
-
-#: ../src/file-manager/fm-properties-window.c:3301
-msgid "Size:"
-msgstr "Tamaño:"
 
 #: ../src/file-manager/fm-properties-window.c:3310
 #: ../src/nautilus-location-bar.c:56
@@ -6165,98 +6266,98 @@ msgstr "Historial"
 msgid "Show History"
 msgstr "Mostrar historial"
 
-#: ../src/nautilus-image-properties-page.c:262
+#: ../src/nautilus-image-properties-page.c:267
 msgid "Camera Brand"
 msgstr "Marca da cámara"
 
-#: ../src/nautilus-image-properties-page.c:263
+#: ../src/nautilus-image-properties-page.c:268
 msgid "Camera Model"
 msgstr "Modelo da cámara"
 
 #. Choose which date to show in order of relevance
-#: ../src/nautilus-image-properties-page.c:266
+#: ../src/nautilus-image-properties-page.c:271
 msgid "Date Taken"
 msgstr "Data na que foi tomada"
 
-#: ../src/nautilus-image-properties-page.c:268
+#: ../src/nautilus-image-properties-page.c:273
 msgid "Date Digitized"
 msgstr "Data de dixilitación"
 
-#: ../src/nautilus-image-properties-page.c:274
+#: ../src/nautilus-image-properties-page.c:279
 msgid "Exposure Time"
 msgstr "Tempo de exposición"
 
-#: ../src/nautilus-image-properties-page.c:275
+#: ../src/nautilus-image-properties-page.c:280
 msgid "Aperture Value"
 msgstr "Valor de apertura"
 
-#: ../src/nautilus-image-properties-page.c:276
+#: ../src/nautilus-image-properties-page.c:281
 msgid "ISO Speed Rating"
 msgstr "Taxa de velocidade ISO"
 
-#: ../src/nautilus-image-properties-page.c:277
+#: ../src/nautilus-image-properties-page.c:282
 msgid "Flash Fired"
 msgstr "Flash disparado"
 
-#: ../src/nautilus-image-properties-page.c:278
+#: ../src/nautilus-image-properties-page.c:283
 msgid "Metering Mode"
 msgstr "Modo de medición"
 
-#: ../src/nautilus-image-properties-page.c:279
+#: ../src/nautilus-image-properties-page.c:284
 msgid "Exposure Program"
 msgstr "Programa de exposición"
 
-#: ../src/nautilus-image-properties-page.c:280
+#: ../src/nautilus-image-properties-page.c:285
 msgid "Focal Length"
 msgstr "Lonxitude focal"
 
-#: ../src/nautilus-image-properties-page.c:281
+#: ../src/nautilus-image-properties-page.c:286
 msgid "Software"
 msgstr "Software"
 
-#: ../src/nautilus-image-properties-page.c:348
+#: ../src/nautilus-image-properties-page.c:353
 msgid "Keywords"
 msgstr "Palabras chave"
 
-#: ../src/nautilus-image-properties-page.c:349
+#: ../src/nautilus-image-properties-page.c:354
 msgid "Creator"
 msgstr "Creador"
 
-#: ../src/nautilus-image-properties-page.c:350
+#: ../src/nautilus-image-properties-page.c:355
 msgid "Copyright"
 msgstr "Copyright"
 
-#: ../src/nautilus-image-properties-page.c:351
+#: ../src/nautilus-image-properties-page.c:356
 msgid "Rating"
 msgstr "Puntuación"
 
-#: ../src/nautilus-image-properties-page.c:377
+#: ../src/nautilus-image-properties-page.c:382
 msgid "Image Type:"
 msgstr "Tipo de imaxe:"
 
-#: ../src/nautilus-image-properties-page.c:380
+#: ../src/nautilus-image-properties-page.c:385
 #, c-format
 msgid "<b>Width:</b> %d pixel"
 msgid_plural "<b>Width:</b> %d pixels"
 msgstr[0] "<b>Ancho:</b> %d píxel"
 msgstr[1] "<b>Ancho:</b> %d píxeis"
 
-#: ../src/nautilus-image-properties-page.c:386
+#: ../src/nautilus-image-properties-page.c:391
 #, c-format
 msgid "<b>Height:</b> %d pixel"
 msgid_plural "<b>Height:</b> %d pixels"
 msgstr[0] "<b>Altura:</b> %d píxel"
 msgstr[1] "<b>Altura:</b> %d píxeis"
 
-#: ../src/nautilus-image-properties-page.c:403
+#: ../src/nautilus-image-properties-page.c:408
 msgid "Failed to load image information"
 msgstr "Produciuse un fallo ao cargar a información da imaxe"
 
-#: ../src/nautilus-image-properties-page.c:617
+#: ../src/nautilus-image-properties-page.c:622
 msgid "loading..."
 msgstr "cargando..."
 
-#: ../src/nautilus-image-properties-page.c:669
+#: ../src/nautilus-image-properties-page.c:674
 msgid "Image"
 msgstr "Imaxe"
 
@@ -7486,34 +7587,11 @@ msgstr "Estabelecer o nivel de zoom da visualización actual"
 #~ msgstr ""
 #~ "Xa existe un cartafol co nome \"%B\". Quere combinar o cartafol de orixe?"
 
-#~ msgid ""
-#~ "The source folder already exists in \"%B\".  Merging will ask for "
-#~ "confirmation before replacing any files in the folder that conflict with "
-#~ "the files being copied."
-#~ msgstr ""
-#~ "O cartafol de orixe xa existe \"%B\".  A combinación pediralle a "
-#~ "confirmación antes de eliminar calquera ficheiro no cartafol que estea en "
-#~ "conflito cos ficheiros que se estean a copiar."
-
 #~ msgid "A folder named \"%B\" already exists.  Do you want to replace it?"
 #~ msgstr "Xa existe un cartafol co nome \"%B\". Quere substituílo?"
 
-#~ msgid ""
-#~ "The folder already exists in \"%F\".  Replacing it will remove all files "
-#~ "in the folder."
-#~ msgstr ""
-#~ "O cartafol xa existe en \"%F\". Ao substituílo eliminaranse todos os "
-#~ "ficheiros que contén."
-
 #~ msgid "A file named \"%B\" already exists.  Do you want to replace it?"
 #~ msgstr "Xa existe un ficheiro co nome \"%B\". Quere substituílo?"
-
-#~ msgid ""
-#~ "The file already exists in \"%F\".  Replacing it will overwrite its "
-#~ "content."
-#~ msgstr ""
-#~ "O ficheiro xa existe en \"%F\". Ao substituílo sobrescribirase o seu "
-#~ "contido."
 
 #~ msgid ""
 #~ "The source folder already exists in \"%B\".  Merging will ask for "
