@@ -24,14 +24,14 @@ msgstr ""
 "Project-Id-Version: eel.HEAD.es\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2010-05-03 17:02+0000\n"
-"PO-Revision-Date: 2010-05-03 19:22+0200\n"
+"POT-Creation-Date: 2010-05-03 23:38+0000\n"
+"PO-Revision-Date: 2010-05-04 19:16+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../cut-n-paste-code/libegg/eggdesktopfile.c:165
 #, c-format
@@ -1838,6 +1838,7 @@ msgid "Location"
 msgstr "Lugar"
 
 #: ../libnautilus-private/nautilus-customization-data.c:405
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:520
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:428
 #: ../src/nautilus-property-browser.c:1863
 msgid "Reset"
@@ -1948,12 +1949,164 @@ msgstr "Lo siento, no se puede guardar el emblema personalizado."
 msgid "Sorry, unable to save custom emblem name."
 msgstr "Lo siento, no se pudo guardar el nombre del emblema personalizado."
 
+# src/file-manager/fm-directory-view.c:2140
+# src/file-manager/fm-directory-view.c:2257
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:83
+#| msgid "Open Folder"
+msgid "An older"
+msgstr "Uno más antiguo"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:86
+msgid "A newer"
+msgstr "Uno más nuevo"
+
+# src/file-manager/fm-properties-window.c:1560
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:88
+#| msgid "Others"
+msgid "Another"
+msgstr "Otro"
+
+# libnautilus-private/nautilus-global-preferences.c:727
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:160
+#, c-format
+#| msgid "Search for \"%s\""
+msgid "Merge folder \"%s\"?"
+msgstr "¿Mezclar la carpeta «%s»?"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:167
+#, c-format
+#| msgid ""
+#| "The source folder already exists in \"%B\".  Merging will ask for "
+#| "confirmation before replacing any files in the folder that conflict with "
+#| "the files being copied."
+msgid ""
+"%s folder with the same name already exists in \"%s\".\n"
+"Merging will ask for confirmation before replacing any files in the folder "
+"that conflict with the files being copied."
+msgstr ""
+"Ya existe la carpeta %s con el mismo nombre en «%s».\n"
+"Al mezclarlas se pedirá confirmación antes de reemplazar cualquier archivo "
+"en la carpeta que esté en conflicto con los archivos que se están copiando."
+
+# libnautilus-private/nautilus-global-preferences.c:727
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:175
+#, c-format
+#| msgid "Search for \"%s\""
+msgid "Replace folder \"%s\"?"
+msgstr "¿Reemplazar la carpeta «%s»?"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:177
+#, c-format
+#| msgid ""
+#| "The folder already exists in \"%F\".  Replacing it will remove all files "
+#| "in the folder."
+msgid ""
+"A folder with the same name already exists in \"%s\".\n"
+"Replacing it will remove all files in the folder."
+msgstr ""
+"Ya existe una carpeta con el mismo nombre en «%s».\n"
+"Reemplazarla eliminará todos los archivos en la carpeta."
+
+# libnautilus-private/nautilus-global-preferences.c:727
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:183
+#, c-format
+#| msgid "Search for \"%s\""
+msgid "Replace file \"%s\"?"
+msgstr "¿Reemplazar el archivo «%s»?"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:189
+#, c-format
+#| msgid ""
+#| "The file already exists in \"%F\".  Replacing it will overwrite its "
+#| "content."
+msgid ""
+"%s file with the same name already exists in \"%s\".\n"
+"Replacing it will overwrite its content."
+msgstr ""
+"Ya existe el archivo %s con el mismo nombre en «%s».\n"
+"Reemplazarlo sobreescribirá su contenido."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:253
+msgid "Original file"
+msgstr "Tamaño original"
+
+# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
+# src/file-manager/fm-properties-window.c:1100
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:254
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:285
+#: ../src/file-manager/fm-properties-window.c:3301
+msgid "Size:"
+msgstr "Tamaño:"
+
+# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
+# src/file-manager/fm-properties-window.c:1094
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:257
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:288
+#: ../src/file-manager/fm-properties-window.c:3283
+msgid "Type:"
+msgstr "Tipo:"
+
+# src/file-manager/fm-list-view.c:1599
+# src/file-manager/fm-search-list-view.c:158
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:260
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:291
+#| msgid "Date Modified"
+msgid "Last modified:"
+msgstr "Última modificación:"
+
+# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
+# src/file-manager/dfos-xfer.c:419 src/file-manager/dfos-xfer.c:430
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:284
+#| msgid "_Replace"
+msgid "Replace with"
+msgstr "Reemplazar con"
+
+# libnautilus-private/nautilus-program-chooser.c:1344
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:313
+#| msgid "_Merge"
+msgid "Merge"
+msgstr "Mezclar"
+
+# src/nautilus-property-browser.c:875
+#. Setup the expander for the rename action
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:506
+#| msgid "Enter a new name for the displayed emblem:"
+msgid "_Select a new name for the destination"
+msgstr "_Seleccionar un nombre nuevo para el destino"
+
+# src/file-manager/fm-properties-window.c:1641
+#. Setup the checkbox to apply the action to all files
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:532
+#| msgid "Apply Permissions to Enclosed Files"
+msgid "Apply this action to all files"
+msgstr "Aplicar esta acción a todos los archivos"
+
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/dfos-xfer.c:352 src/file-manager/dfos-xfer.c:372
 # src/file-manager/dfos-xfer.c:419 src/file-manager/dfos-xfer.c:430
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:543
 #: ../libnautilus-private/nautilus-file-operations.c:187
 msgid "_Skip"
 msgstr "_Omitir"
+
+# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
+# libnautilus-private/nautilus-icon-text-item.c:1487
+# src/file-manager/fm-icon-view.c:1105
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:548
+#| msgid "Rename"
+msgid "Re_name"
+msgstr "Re_nombrar"
+
+# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
+# src/file-manager/dfos-xfer.c:419 src/file-manager/dfos-xfer.c:430
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:554
+#| msgid "_Replace"
+msgid "Replace"
+msgstr "Reemplazar"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:627
+msgid "File conflict"
+msgstr "Conflicto de archivo"
 
 #: ../libnautilus-private/nautilus-file-operations.c:188
 msgid "S_kip All"
@@ -4112,7 +4265,6 @@ msgstr "Algunos archivos no se mostrarán."
 #: ../src/file-manager/fm-directory-view.c:4377
 #: ../src/nautilus-information-panel.c:828
 #, c-format
-#| msgid "Open with %s"
 msgid "Open With %s"
 msgstr "Abrir con %s"
 
@@ -4423,7 +4575,6 @@ msgstr "Selecciona otra aplicación con la cual abrir el elemento seleccionado"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:7189
-#| msgid "Open with Other _Application..."
 msgid "Open With Other _Application..."
 msgstr "Abrir con _otra aplicación…"
 
@@ -5166,7 +5317,6 @@ msgstr "Mover la carpeta abierta a la papelera"
 # src/nautilus-sidebar.c:1145
 #: ../src/file-manager/fm-directory-view.c:8654
 #, c-format
-#| msgid "_Open with %s"
 msgid "_Open With %s"
 msgstr "_Abrir con %s"
 
@@ -5785,22 +5935,10 @@ msgstr "Tipo del sistema de archivos:"
 msgid "Basic"
 msgstr "Básico"
 
-# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
-# src/file-manager/fm-properties-window.c:1094
-#: ../src/file-manager/fm-properties-window.c:3283
-msgid "Type:"
-msgstr "Tipo:"
-
 # src/nautilus-link-set-window.c:185
 #: ../src/file-manager/fm-properties-window.c:3291
 msgid "Link target:"
 msgstr "Destino del enlace:"
-
-# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
-# src/file-manager/fm-properties-window.c:1100
-#: ../src/file-manager/fm-properties-window.c:3301
-msgid "Size:"
-msgstr "Tamaño:"
 
 # src/nautilus-location-bar.c:401
 #: ../src/file-manager/fm-properties-window.c:3310
@@ -8200,35 +8338,13 @@ msgstr "Establece el nivel de ampliación de la vista actual"
 #~ "Ya existe una carpeta llamada «%B» ya existe. ¿Desea mezclar la carpeta de "
 #~ "origen?"
 
-#~ msgid ""
-#~ "The source folder already exists in \"%B\".  Merging will ask for "
-#~ "confirmation before replacing any files in the folder that conflict with "
-#~ "the files being copied."
-#~ msgstr ""
-#~ "La carpeta ya existe en «%B». Al mezclarlas se pedirá confirmación antes "
-#~ "de reemplazar cualquier archivo en la carpeta que esté en conflicto con "
-#~ "los archivos que se están copiando."
-
 # src/file-manager/dfos-xfer.c:407
 #~ msgid "A folder named \"%B\" already exists.  Do you want to replace it?"
 #~ msgstr "Ya existe una carpeta llamada «%B» ya existe. ¿Desea reemplazarla?"
 
-#~ msgid ""
-#~ "The folder already exists in \"%F\".  Replacing it will remove all files "
-#~ "in the folder."
-#~ msgstr ""
-#~ "El archivo ya existe en «%F». Reemplazarlo eliminará todos los archivos en "
-#~ "la carpeta."
-
 # src/file-manager/dfos-xfer.c:407
 #~ msgid "A file named \"%B\" already exists.  Do you want to replace it?"
 #~ msgstr "Ya existe un archivo llamado «%B». ¿Desea reemplazarlo?"
-
-#~ msgid ""
-#~ "The file already exists in \"%F\".  Replacing it will overwrite its "
-#~ "content."
-#~ msgstr ""
-#~ "El archivo ya existe en «%F». Reemplazarlo sobreescribirá su contenido."
 
 #~ msgid ""
 #~ "The source folder already exists in \"%B\".  Merging will ask for "
