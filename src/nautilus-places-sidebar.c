@@ -1043,18 +1043,16 @@ bookmarks_drop_uris (NautilusPlacesSidebar *sidebar,
 		nautilus_file_unref (file);
 
 		name = nautilus_compute_title_for_location (location);
-
 		icon = g_themed_icon_new (NAUTILUS_ICON_FOLDER);
-		bookmark = nautilus_bookmark_new_with_icon (location, name,
-							    FALSE, icon);
-		g_object_unref (icon);
-		
+		bookmark = nautilus_bookmark_new (location, name, TRUE, icon);
+
 		if (!nautilus_bookmark_list_contains (sidebar->bookmarks, bookmark)) {
 			nautilus_bookmark_list_insert_item (sidebar->bookmarks, bookmark, position++);
 		}
 
 		g_object_unref (location);
 		g_object_unref (bookmark);
+		g_object_unref (icon);
 		g_free (name);
 		g_free (uri);
 	}
@@ -2456,7 +2454,6 @@ bookmarks_edited (GtkCellRenderer       *cell,
 	bookmark = nautilus_bookmark_list_item_at (sidebar->bookmarks, index);
 
 	if (bookmark != NULL) {
-		nautilus_bookmark_set_has_custom_name (bookmark, TRUE);
 		nautilus_bookmark_set_name (bookmark, new_text);
 	}
 }
@@ -2668,6 +2665,11 @@ nautilus_places_sidebar_dispose (GObject *object)
 		sidebar->volume_monitor = NULL;
 	}
 
+	if (sidebar->bookmarks != NULL) {
+		g_object_unref (sidebar->bookmarks);
+		sidebar->bookmarks = NULL;
+	}
+
 	eel_remove_weak_pointer (&(sidebar->go_to_after_mount_slot));
 
 	G_OBJECT_CLASS (nautilus_places_sidebar_parent_class)->dispose (object);
@@ -2732,7 +2734,7 @@ nautilus_places_sidebar_set_parent_window (NautilusPlacesSidebar *sidebar,
 
 	slot = nautilus_window_info_get_active_slot (window);
 
-	sidebar->bookmarks = nautilus_window_info_get_bookmark_list (window);
+	sidebar->bookmarks = nautilus_bookmark_list_new ();
 	sidebar->uri = nautilus_window_slot_info_get_current_location (slot);
 
 	g_signal_connect_object (sidebar->bookmarks, "contents_changed",
