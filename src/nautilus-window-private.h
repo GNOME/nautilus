@@ -54,8 +54,8 @@ struct NautilusWindowDetails
         GtkActionGroup *extensions_menu_action_group;
 
         GtkActionGroup *bookmarks_action_group;
-        guint refresh_bookmarks_menu_idle_id;
         guint bookmarks_merge_id;
+        NautilusBookmarkList *bookmark_list;
 
 	NautilusWindowShowHiddenFilesMode show_hidden_files_mode;
 
@@ -212,7 +212,6 @@ gboolean           nautilus_add_to_history_list_no_notify                (GFile 
 									  GIcon            *icon);
 GList *            nautilus_get_history_list                             (void);
 void               nautilus_window_bookmarks_preference_changed_callback (gpointer           user_data);
-void               nautilus_window_constructed                           (NautilusWindow    *window);
 
 
 /* sync window GUI with current slot. Used when changing slots,

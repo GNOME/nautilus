@@ -1236,8 +1236,6 @@ create_window (NautilusApplication *application,
 						  "app", application,
 						  "screen", screen,
 						  NULL));
-	/* Must be called after construction finished */
-	nautilus_window_constructed (window);
 
 	if (startup_id) {
 		gtk_window_set_startup_id (GTK_WINDOW (window), startup_id);
