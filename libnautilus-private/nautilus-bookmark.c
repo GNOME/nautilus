@@ -341,6 +341,11 @@ nautilus_bookmark_update_icon (NautilusBookmark *bookmark)
 		return FALSE;
 	}
 
+	if (!nautilus_file_is_local (bookmark->details->file)) {
+		/* never update icons for remote bookmarks */
+		return FALSE;
+	}
+
 	if (!nautilus_file_is_not_yet_confirmed (bookmark->details->file) &&
 	    nautilus_file_check_if_ready (bookmark->details->file,
 					  NAUTILUS_FILE_ATTRIBUTES_FOR_ICON)) {
