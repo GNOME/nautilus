@@ -33,6 +33,7 @@
 #include <gtk/gtk.h>
 #include "nautilus-location-entry.h"
 #include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-icon-names.h>
 
 /* TODO:
  * - dns-sd fill out servers
@@ -301,9 +302,12 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 		char *name;
 		NautilusBookmark *bookmark;
 		NautilusBookmarkList *list;
+		GIcon *icon;
 
 		name = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->name_entry), 0, -1);
-		bookmark = nautilus_bookmark_new (location, strlen (name) ? name : NULL);
+		icon = g_themed_icon_new (NAUTILUS_ICON_FOLDER_REMOTE);
+		bookmark = nautilus_bookmark_new (location, strlen (name) ? name : NULL,
+		                                  TRUE, icon);
 		list = nautilus_bookmark_list_new ();
 		if (!nautilus_bookmark_list_contains (list, bookmark)) {
 			nautilus_bookmark_list_append (list, bookmark);
@@ -311,6 +315,7 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 
 		g_object_unref (bookmark);
 		g_object_unref (list);
+		g_object_unref (icon);
 		g_free (name);
 	}
 
