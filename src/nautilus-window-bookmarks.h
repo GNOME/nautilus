@@ -29,11 +29,9 @@
 #include <nautilus-window.h>
 #include "nautilus-bookmark-list.h"
 
-NautilusBookmarkList *nautilus_get_bookmark_list                        (void);
 void                  nautilus_bookmarks_exiting                        (void);
 void                  nautilus_window_add_bookmark_for_current_location (NautilusWindow *window);
 void                  nautilus_window_edit_bookmarks                    (NautilusWindow *window);
 void                  nautilus_window_initialize_bookmarks_menu         (NautilusWindow *window);
-void                  nautilus_window_remove_bookmarks_menu_callback    (NautilusWindow *window);
 
 #endif

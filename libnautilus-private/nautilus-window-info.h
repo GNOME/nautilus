@@ -127,8 +127,6 @@ struct _NautilusWindowInfoIface
 					  const char *status);
 	char * (* get_title)             (NautilusWindowInfo *window);
 	GList *(* get_history)           (NautilusWindowInfo *window);
-	NautilusBookmarkList *  
-	       (* get_bookmark_list)     (NautilusWindowInfo *window);
 	NautilusWindowType
 	       (* get_window_type)       (NautilusWindowInfo *window);
 	NautilusWindowShowHiddenFilesMode
@@ -167,7 +165,6 @@ void                              nautilus_window_info_push_status              
 NautilusWindowType                nautilus_window_info_get_window_type          (NautilusWindowInfo                *window);
 char *                            nautilus_window_info_get_title                (NautilusWindowInfo                *window);
 GList *                           nautilus_window_info_get_history              (NautilusWindowInfo                *window);
-NautilusBookmarkList *		  nautilus_window_info_get_bookmark_list        (NautilusWindowInfo                *window);
 char *                            nautilus_window_info_get_current_location     (NautilusWindowInfo                *window);
 int                               nautilus_window_info_get_selection_count      (NautilusWindowInfo                *window);
 GList *                           nautilus_window_info_get_selection            (NautilusWindowInfo                *window);

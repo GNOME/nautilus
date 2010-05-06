@@ -43,39 +43,23 @@
 #define MENU_ITEM_MAX_WIDTH_CHARS 32
 
 static GtkWindow *bookmarks_window = NULL;
-static NautilusBookmarkList *bookmarks = NULL;
 
-static void schedule_refresh_bookmarks_menu (NautilusWindow *window);
-
-static void
-free_bookmark_list (void)
-{
-	g_object_unref (bookmarks);
-}
-
-NautilusBookmarkList *
-nautilus_get_bookmark_list (void)
-{
-        if (bookmarks == NULL) {
-                bookmarks = nautilus_bookmark_list_new ();
-                eel_debug_call_at_shutdown (free_bookmark_list);
-        }
-	
-        return bookmarks;
-}
-
+static void refresh_bookmarks_menu (NautilusWindow *window);
 
 static void
 remove_bookmarks_for_uri_if_yes (GtkDialog *dialog, int response, gpointer callback_data)
 {
 	const char *uri;
+	NautilusWindow *window;
 
 	g_assert (GTK_IS_DIALOG (dialog));
 	g_assert (callback_data != NULL);
 
+	window = callback_data;
+
 	if (response == GTK_RESPONSE_YES) {
-		uri = callback_data;
-		nautilus_bookmark_list_delete_items_with_uri (nautilus_get_bookmark_list (), uri);
+		uri = g_object_get_data (G_OBJECT (dialog), "uri");
+		nautilus_bookmark_list_delete_items_with_uri (window->details->bookmark_list, uri);
 	}
 
 	gtk_object_destroy (GTK_OBJECT (dialog));
@@ -103,12 +87,9 @@ show_bogus_bookmark_window (NautilusWindow *window,
 					 GTK_STOCK_CANCEL,
 					 GTK_WINDOW (window));
 
-	g_signal_connect_data (dialog,
-			       "response",
-			       G_CALLBACK (remove_bookmarks_for_uri_if_yes),
-			       g_file_get_uri (location),
-			       (GClosureNotify)g_free,
-			       0);
+	g_signal_connect (dialog, "response",
+	                  G_CALLBACK (remove_bookmarks_for_uri_if_yes), window);
+	g_object_set_data_full (G_OBJECT (dialog), "uri", g_file_get_uri (location), g_free);
 
 	gtk_dialog_set_default_response (dialog, GTK_RESPONSE_NO);
 
@@ -118,10 +99,15 @@ show_bogus_bookmark_window (NautilusWindow *window,
 }
 
 static GtkWindow *
-get_or_create_bookmarks_window (GObject *undo_manager_source)
+get_or_create_bookmarks_window (NautilusWindow *window)
 {
+	GObject *undo_manager_source;
+
+	undo_manager_source = G_OBJECT (window);
+
 	if (bookmarks_window == NULL) {
-		bookmarks_window = create_bookmarks_window (nautilus_get_bookmark_list(), undo_manager_source);
+		bookmarks_window = create_bookmarks_window (window->details->bookmark_list,
+		                                            undo_manager_source);
 	} else {
 		edit_bookmarks_dialog_set_signals (undo_manager_source);
 	}
@@ -155,14 +141,16 @@ nautilus_window_add_bookmark_for_current_location (NautilusWindow *window)
 {
 	NautilusBookmark *bookmark;
 	NautilusWindowSlot *slot;
+	NautilusBookmarkList *list;
 
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
 	slot = window->details->active_pane->active_slot;
 	bookmark = slot->current_location_bookmark;
+	list = window->details->bookmark_list;
 
-	if (!nautilus_bookmark_list_contains (nautilus_get_bookmark_list (), bookmark)) {
-		nautilus_bookmark_list_append (nautilus_get_bookmark_list (), bookmark); 
+	if (!nautilus_bookmark_list_contains (list, bookmark)) {
+		nautilus_bookmark_list_append (list, bookmark); 
 	}
 }
 
@@ -171,20 +159,11 @@ nautilus_window_edit_bookmarks (NautilusWindow *window)
 {
 	GtkWindow *dialog;
 
-	dialog = get_or_create_bookmarks_window (G_OBJECT (window));
+	dialog = get_or_create_bookmarks_window (window);
 
 	gtk_window_set_screen (
 		dialog, gtk_window_get_screen (GTK_WINDOW (window)));
         gtk_window_present (dialog);
-}
-
-void
-nautilus_window_remove_bookmarks_menu_callback (NautilusWindow *window)
-{
-        if (window->details->refresh_bookmarks_menu_idle_id != 0) {
-                g_source_remove (window->details->refresh_bookmarks_menu_idle_id);
-		window->details->refresh_bookmarks_menu_idle_id = 0;
-        }
 }
 
 static void
@@ -236,7 +215,11 @@ update_bookmarks (NautilusWindow *window)
 	g_assert (window->details->bookmarks_merge_id == 0);
 	g_assert (window->details->bookmarks_action_group == NULL);
 
-	bookmarks = nautilus_get_bookmark_list ();
+	if (window->details->bookmark_list == NULL) {
+		window->details->bookmark_list = nautilus_bookmark_list_new ();
+	}
+
+	bookmarks = window->details->bookmark_list;
 
 	ui_manager = nautilus_window_get_ui_manager (NAUTILUS_WINDOW (window));
 	
@@ -267,7 +250,7 @@ update_bookmarks (NautilusWindow *window)
 			 index,
 			 window->details->bookmarks_action_group,
 			 window->details->bookmarks_merge_id,
-			 G_CALLBACK (schedule_refresh_bookmarks_menu), 
+			 G_CALLBACK (refresh_bookmarks_menu), 
 			 show_bogus_bookmark_window);
 	}
 }
@@ -277,35 +260,8 @@ refresh_bookmarks_menu (NautilusWindow *window)
 {
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
-	/* Unregister any pending call to this function. */
-	nautilus_window_remove_bookmarks_menu_callback (window);
-
 	remove_bookmarks_menu_items (window);
 	update_bookmarks (window);
-}
-
-
-static gboolean
-refresh_bookmarks_menu_idle_callback (gpointer data)
-{
-	g_assert (NAUTILUS_IS_WINDOW (data));
-
-	refresh_bookmarks_menu (NAUTILUS_WINDOW (data));
-
-        /* Don't call this again (unless rescheduled) */
-        return FALSE;
-}
-
-static void
-schedule_refresh_bookmarks_menu (NautilusWindow *window)
-{
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
-	if (window->details->refresh_bookmarks_menu_idle_id == 0) {
-                window->details->refresh_bookmarks_menu_idle_id
-                        = g_idle_add (refresh_bookmarks_menu_idle_callback,
-				      window);
-	}	
 }
 
 /**
@@ -319,13 +275,10 @@ nautilus_window_initialize_bookmarks_menu (NautilusWindow *window)
 {
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
-	/* Construct the initial set of bookmarks. */
-	/* We do this in an idle, since this is called in the constructor
-	 * where we don't know the real type of the window */
-	schedule_refresh_bookmarks_menu (window);
+	refresh_bookmarks_menu (window);
 
 	/* Recreate dynamic part of menu if bookmark list changes */
-	g_signal_connect_object (nautilus_get_bookmark_list (), "contents_changed",
-				 G_CALLBACK (schedule_refresh_bookmarks_menu),
+	g_signal_connect_object (window->details->bookmark_list, "contents_changed",
+				 G_CALLBACK (refresh_bookmarks_menu),
 				 window, G_CONNECT_SWAPPED);
 }
