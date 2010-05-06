@@ -1669,7 +1669,7 @@ nautilus_remove_from_history_list_no_notify (GFile *location)
 {
 	NautilusBookmark *bookmark;
 
-	bookmark = nautilus_bookmark_new (location, "");
+	bookmark = nautilus_bookmark_new (location, "", FALSE, NULL);
 	remove_from_history_list (bookmark);
 	g_object_unref (bookmark);
 }
@@ -1683,7 +1683,7 @@ nautilus_add_to_history_list_no_notify (GFile *location,
 	NautilusBookmark *bookmark;
 	gboolean ret;
 
-	bookmark = nautilus_bookmark_new_with_icon (location, name, has_custom_name, icon);
+	bookmark = nautilus_bookmark_new (location, name, has_custom_name, icon);
 	ret = nautilus_add_bookmark_to_history_list (bookmark);
 	g_object_unref (bookmark);
 
