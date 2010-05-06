@@ -34,15 +34,13 @@
 #include <gtk/gtk.h>
 #include <gio/gio.h>
 #include <libnautilus-private/nautilus-file.h>
+#include <libnautilus-private/nautilus-icon-names.h>
 
 enum {
 	APPEARANCE_CHANGED,
 	CONTENTS_CHANGED,
 	LAST_SIGNAL
 };
-
-#define GENERIC_BOOKMARK_ICON_NAME	"gnome-fs-bookmark"
-#define MISSING_BOOKMARK_ICON_NAME	"gnome-fs-bookmark-missing"
 
 #define ELLIPSISED_MENU_ITEM_MIN_CHARS  32
 
@@ -187,7 +185,7 @@ nautilus_bookmark_copy (NautilusBookmark *bookmark)
 {
 	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK (bookmark), NULL);
 
-	return nautilus_bookmark_new_with_icon (
+	return nautilus_bookmark_new (
 			bookmark->details->location,
 			bookmark->details->name,
 			bookmark->details->has_custom_name,
@@ -298,6 +296,8 @@ nautilus_bookmark_set_name (NautilusBookmark *bookmark, const char *new_name)
 
 	if (strcmp (new_name, bookmark->details->name) == 0) {
 		return FALSE;
+	} else if (!bookmark->details->has_custom_name) {
+		bookmark->details->has_custom_name = TRUE;
 	}
 
 	g_free (bookmark->details->name);
@@ -305,13 +305,11 @@ nautilus_bookmark_set_name (NautilusBookmark *bookmark, const char *new_name)
 
 	g_signal_emit (bookmark, signals[APPEARANCE_CHANGED], 0);
 
-	return TRUE;
-}
+	if (bookmark->details->has_custom_name) {
+		g_signal_emit (bookmark, signals[CONTENTS_CHANGED], 0);
+	}
 
-void
-nautilus_bookmark_set_has_custom_name (NautilusBookmark *bookmark, gboolean has_custom_name)
-{
-	bookmark->details->has_custom_name = has_custom_name;
+	return TRUE;
 }
 
 static gboolean
@@ -438,40 +436,29 @@ bookmark_file_changed_callback (NautilusFile *file, NautilusBookmark *bookmark)
 static void
 nautilus_bookmark_set_icon_to_default (NautilusBookmark *bookmark)
 {
-	const char *icon_name;
-
+	GIcon *icon, *emblemed_icon, *folder;
+	GEmblem *emblem;
 
 	if (bookmark->details->icon) {
 		g_object_unref (bookmark->details->icon);
 	}
 
-	if (nautilus_bookmark_uri_known_not_to_exist (bookmark)) {
-		icon_name = MISSING_BOOKMARK_ICON_NAME;
-	} else {
-		icon_name = GENERIC_BOOKMARK_ICON_NAME;
-	}
-	
-	bookmark->details->icon = g_themed_icon_new (icon_name);
-}
+	folder = g_themed_icon_new (NAUTILUS_ICON_FOLDER);
 
-/**
- * nautilus_bookmark_new:
- *
- * Create a new NautilusBookmark from a text uri and a display name.
- * The initial icon for the bookmark will be based on the information 
- * already available without any explicit action on NautilusBookmark's
- * part.
- * 
- * @uri: Any uri, even a malformed or non-existent one.
- * @name: A string to display to the user as the bookmark's name.
- * 
- * Return value: A newly allocated NautilusBookmark.
- * 
- **/
-NautilusBookmark *
-nautilus_bookmark_new (GFile *location, const char *name)
-{
-	return nautilus_bookmark_new_with_icon (location, name, TRUE, NULL);
+	if (nautilus_bookmark_uri_known_not_to_exist (bookmark)) {
+		icon = g_themed_icon_new (GTK_STOCK_DIALOG_WARNING);
+		emblem = g_emblem_new (icon);
+
+		emblemed_icon = g_emblemed_icon_new (folder, emblem);
+
+		g_object_unref (emblem);
+		g_object_unref (icon);
+		g_object_unref (folder);
+
+		folder = emblemed_icon;
+	}
+
+	bookmark->details->icon = folder;
 }
 
 static void
@@ -535,8 +522,8 @@ nautilus_bookmark_connect_file (NautilusBookmark *bookmark)
 }
 
 NautilusBookmark *
-nautilus_bookmark_new_with_icon (GFile *location, const char *name, gboolean has_custom_name,
-				 GIcon *icon)
+nautilus_bookmark_new (GFile *location, const char *name, gboolean has_custom_name,
+                       GIcon *icon)
 {
 	NautilusBookmark *new_bookmark;
 
