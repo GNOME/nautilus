@@ -64,6 +64,7 @@ new_bookmark_from_uri (const char *uri, const char *label)
 	GIcon *icon;
 	gboolean has_label;
 	GFile *location;
+	gboolean native;
 
 	location = NULL;
 	if (uri) {
@@ -81,8 +82,9 @@ new_bookmark_from_uri (const char *uri, const char *label)
 	new_bookmark = NULL;
 	
 	if (uri) {
+		native = g_file_is_native (location);
 		file = nautilus_file_get (location);
-		
+
 		icon = NULL;
 		if (nautilus_file_check_if_ready (file,
 						  NAUTILUS_FILE_ATTRIBUTES_FOR_ICON)) {
@@ -91,10 +93,11 @@ new_bookmark_from_uri (const char *uri, const char *label)
 		nautilus_file_unref (file);
 		
 		if (icon == NULL) {
-			icon = g_themed_icon_new (NAUTILUS_ICON_FOLDER);
+			icon = native ? g_themed_icon_new (NAUTILUS_ICON_FOLDER) :
+				g_themed_icon_new (NAUTILUS_ICON_FOLDER_REMOTE);
 		}
 
-		new_bookmark = nautilus_bookmark_new_with_icon (location, name, has_label, icon);
+		new_bookmark = nautilus_bookmark_new (location, name, has_label, icon);
 
 		g_object_unref (icon);
 
