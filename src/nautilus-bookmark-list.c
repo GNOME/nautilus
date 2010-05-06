@@ -46,6 +46,7 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 static char *window_geometry;
+static NautilusBookmarkList *singleton = NULL;
 
 /* forward declarations */
 
@@ -174,12 +175,34 @@ do_finalize (GObject *object)
 	G_OBJECT_CLASS (nautilus_bookmark_list_parent_class)->finalize (object);
 }
 
+static GObject *
+do_constructor (GType type,
+                guint n_construct_params,
+                GObjectConstructParam *construct_params)
+{
+	GObject *retval;
+
+	if (singleton != NULL) {
+		return g_object_ref (singleton);
+	}
+
+	retval = G_OBJECT_CLASS (nautilus_bookmark_list_parent_class)->constructor
+		(type, n_construct_params, construct_params);
+
+	singleton = NAUTILUS_BOOKMARK_LIST (retval);
+	g_object_add_weak_pointer (retval, (gpointer) &singleton);
+
+	return retval;
+}
+
+
 static void
 nautilus_bookmark_list_class_init (NautilusBookmarkListClass *class)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (class);
 
 	object_class->finalize = do_finalize;
+	object_class->constructor = do_constructor;
 
 	signals[CONTENTS_CHANGED] =
 		g_signal_new ("contents_changed",
@@ -683,7 +706,7 @@ nautilus_bookmark_list_new (void)
 
 	list = NAUTILUS_BOOKMARK_LIST (g_object_new (NAUTILUS_TYPE_BOOKMARK_LIST, NULL));
 
-	return g_object_ref_sink (list);
+	return list;
 }
 
 /**
