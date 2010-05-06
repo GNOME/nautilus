@@ -821,8 +821,8 @@ update_bookmark_from_text (void)
 		location = g_file_parse_name 
 			(gtk_entry_get_text (GTK_ENTRY (uri_field)));
 		
-		bookmark = nautilus_bookmark_new_with_icon (location, gtk_entry_get_text (GTK_ENTRY (name_field)),
-							    name_text_changed, NULL);
+		bookmark = nautilus_bookmark_new (location, gtk_entry_get_text (GTK_ENTRY (name_field)),
+		                                  name_text_changed, NULL);
 		
 		g_object_unref (location);
 
