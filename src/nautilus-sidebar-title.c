@@ -312,7 +312,7 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 							sidebar_title->details->best_icon_size,
 							TRUE,
 							NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS |
-							NAUTILUS_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT);
+		                                        NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON_AS_EMBLEM);
 	} else if (sidebar_title->details->determined_icon) {
 		/* We used to know the icon for this file, but now the file says it isn't
 		 * ready. This means that some file info has been invalidated, which
