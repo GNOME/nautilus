@@ -78,7 +78,11 @@ typedef enum {
 	NAUTILUS_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT = (1<<3),
 	NAUTILUS_FILE_ICON_FLAGS_FOR_OPEN_FOLDER = (1<<4),
 	/* whether the thumbnail size must match the display icon size */
-	NAUTILUS_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE = (1<<5)
+	NAUTILUS_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE = (1<<5),
+	/* uses the icon of the mount if present */
+	NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON = (1<<6),
+	/* render the mount icon as an emblem over the regular one */
+	NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON_AS_EMBLEM = (1<<7)
 } NautilusFileIconFlags;	
 
 /* Emblems sometimes displayed for NautilusFiles. Do not localize. */ 
