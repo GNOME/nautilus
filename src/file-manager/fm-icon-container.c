@@ -95,7 +95,7 @@ fm_icon_container_get_icon_images (NautilusIconContainer *container,
 
 	*has_window_open = nautilus_file_has_open_window (file);
 
-	flags = 0;
+	flags = NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON_AS_EMBLEM;
 	if (!fm_icon_view_is_compact (icon_view) ||
 	    nautilus_icon_container_get_zoom_level (container) > NAUTILUS_ZOOM_LEVEL_STANDARD) {
 		flags |= NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS;
