@@ -4055,7 +4055,9 @@ nautilus_file_get_gicon (NautilusFile *file,
 	const char * const * names;
 	const char *name;
 	GPtrArray *prepend_array;
-	GIcon *icon;
+	GMount *mount;
+	GIcon *icon, *mount_icon = NULL, *emblemed_icon;
+	GEmblem *emblem;
 	int i;
 	gboolean is_folder = FALSE, is_preview = FALSE, is_inode_directory = FALSE;
 
@@ -4065,10 +4067,23 @@ nautilus_file_get_gicon (NautilusFile *file,
 
 	if (file->details->icon) {
 		icon = NULL;
-		
+
+		/* fetch the mount icon here, we'll use it later */
+		if (flags & NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON ||
+		    flags & NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON_AS_EMBLEM) {
+			mount = nautilus_file_get_mount (file);
+
+			if (mount != NULL) {
+				mount_icon = g_mount_get_icon (mount);
+				g_object_unref (mount);
+			}
+		}
+
 		if (((flags & NAUTILUS_FILE_ICON_FLAGS_EMBEDDING_TEXT) ||
 		     (flags & NAUTILUS_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT) ||
 		     (flags & NAUTILUS_FILE_ICON_FLAGS_FOR_OPEN_FOLDER) ||
+		     (flags & NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON) ||
+		     (flags & NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON_AS_EMBLEM) ||
 		     ((flags & NAUTILUS_FILE_ICON_FLAGS_IGNORE_VISITING) == 0 &&
 		      nautilus_file_has_open_window (file))) &&
 		    G_IS_THEMED_ICON (file->details->icon)) {
@@ -4120,13 +4135,32 @@ nautilus_file_get_gicon (NautilusFile *file,
 				g_ptr_array_foreach (prepend_array, (GFunc) prepend_icon_name, icon);
 			}
 
-			g_ptr_array_free (prepend_array, TRUE);			
+			g_ptr_array_free (prepend_array, TRUE);
 		}
 
 		if (icon == NULL) {
 			icon = g_object_ref (file->details->icon);
 		}
-		
+
+		if ((flags & NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON) &&
+		    mount_icon != NULL) {
+			g_object_unref (icon);
+			icon = mount_icon;
+		} else if ((flags & NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON_AS_EMBLEM) &&
+			     mount_icon != NULL) {
+
+			emblem = g_emblem_new (mount_icon);
+			emblemed_icon = g_emblemed_icon_new (icon, emblem);
+
+			g_object_unref (emblem);
+			g_object_unref (icon);
+			g_object_unref (mount_icon);
+
+			icon = emblemed_icon;
+		} else if (mount_icon != NULL) {
+			g_object_unref (mount_icon);
+		}
+
 		return icon;
 	}
 	
