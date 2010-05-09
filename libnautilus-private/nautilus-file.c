@@ -4147,7 +4147,7 @@ nautilus_file_get_gicon (NautilusFile *file,
 			g_object_unref (icon);
 			icon = mount_icon;
 		} else if ((flags & NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON_AS_EMBLEM) &&
-			     mount_icon != NULL) {
+			     mount_icon != NULL && !g_icon_equal (mount_icon, icon)) {
 
 			emblem = g_emblem_new (mount_icon);
 			emblemed_icon = g_emblemed_icon_new (icon, emblem);
