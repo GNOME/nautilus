@@ -26,8 +26,11 @@
 #define NAUTILUS_COLUMN_UTILITIES_H
 
 #include <libnautilus-extension/nautilus-column.h>
+#include <libnautilus-private/nautilus-file.h>
 
 GList *nautilus_get_all_columns       (void);
+GList *nautilus_get_common_columns    (void);
+GList *nautilus_get_columns_for_file (NautilusFile *file);
 GList *nautilus_column_list_copy      (GList       *columns);
 void   nautilus_column_list_free      (GList       *columns);
 

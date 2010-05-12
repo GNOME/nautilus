@@ -128,20 +128,6 @@ get_builtin_columns (void)
 					       /* TODO: Change after string freeze over */
 					       "description", _("Location"),
 					       NULL));
-	columns = g_list_append (columns,
-				 g_object_new (NAUTILUS_TYPE_COLUMN,
-					       "name", "trashed_on",
-					       "attribute", "trashed_on",
-					       "label", _("Trashed On"),
-					       "description", _("Date when file was moved to the Trash"),
-					       NULL));
-	columns = g_list_append (columns,
-				 g_object_new (NAUTILUS_TYPE_COLUMN,
-					       "name", "trash_orig_path",
-					       "attribute", "trash_orig_path",
-					       "label", _("Original Location"),
-					       "description", _("Original location of file before moved to the Trash"),
-					       NULL));
 
 	return columns;
 }
@@ -171,17 +157,68 @@ get_extension_columns (void)
 	return columns;
 }
 
-GList *
-nautilus_get_all_columns (void)
+static GList *
+get_trash_columns (void)
 {
 	static GList *columns = NULL;
-	
-	if (!columns) {
-		columns =  g_list_concat (get_builtin_columns (), 
-					  get_extension_columns ());
+
+	if (columns == NULL) {
+		columns = g_list_append (columns,
+					 g_object_new (NAUTILUS_TYPE_COLUMN,
+						       "name", "trashed_on",
+						       "attribute", "trashed_on",
+						       "label", _("Trashed On"),
+						       "description", _("Date when file was moved to the Trash"),
+						       NULL));
+		columns = g_list_append (columns,
+			                 g_object_new (NAUTILUS_TYPE_COLUMN,
+			                               "name", "trash_orig_path",
+			                               "attribute", "trash_orig_path",
+			                               "label", _("Original Location"),
+			                               "description", _("Original location of file before moved to the Trash"),
+			                               NULL));
 	}
 
 	return nautilus_column_list_copy (columns);
+}
+
+GList *
+nautilus_get_common_columns (void)
+{
+	static GList *columns = NULL;
+
+	if (!columns) {
+		columns = g_list_concat (get_builtin_columns (),
+		                         get_extension_columns ());
+	}
+
+	return nautilus_column_list_copy (columns);
+}
+
+GList *
+nautilus_get_all_columns (void)
+{
+	GList *columns = NULL;
+
+	columns = g_list_concat (nautilus_get_common_columns (),
+	                         get_trash_columns ());
+
+	return columns;
+}
+
+GList *
+nautilus_get_columns_for_file (NautilusFile *file)
+{
+	GList *columns;
+
+	columns = nautilus_get_common_columns ();
+
+	if (file != NULL && nautilus_file_is_in_trash (file)) {
+		columns = g_list_concat (columns,
+		                         get_trash_columns ());
+	}
+
+	return columns;
 }
 
 GList *
