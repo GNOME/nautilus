@@ -26,6 +26,7 @@
 #define NAUTILUS_COLUMN_CHOOSER_H
 
 #include <gtk/gtk.h>
+#include <libnautilus-private/nautilus-file.h>
 
 #define NAUTILUS_TYPE_COLUMN_CHOOSER nautilus_column_chooser_get_type()
 #define NAUTILUS_COLUMN_CHOOSER(obj) \
@@ -55,7 +56,7 @@ typedef struct {
 } NautilusColumnChooserClass;
 
 GType      nautilus_column_chooser_get_type            (void);
-GtkWidget *nautilus_column_chooser_new                 (void);
+GtkWidget *nautilus_column_chooser_new                 (NautilusFile *file);
 void       nautilus_column_chooser_set_settings    (NautilusColumnChooser   *chooser,
 						    char                   **visible_columns, 
 						    char                   **column_order);
