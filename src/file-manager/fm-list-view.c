@@ -155,6 +155,14 @@ G_DEFINE_TYPE_WITH_CODE (FMListView, fm_list_view, FM_TYPE_DIRECTORY_VIEW,
 			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_VIEW,
 						fm_list_view_iface_init));
 
+static const char * default_trash_visible_columns[] = {
+	"name", "size", "type", "trashed_on", "trash_orig_path", NULL
+};
+
+static const char * default_trash_columns_order[] = {
+	"name", "size", "type", "trashed_on", "trash_orig_path", NULL
+};
+
 /* for EEL_CALL_PARENT */
 #define parent_class fm_list_view_parent_class
 
@@ -1258,15 +1266,19 @@ apply_columns_settings (FMListView *list_view,
 			char **visible_columns)
 {
 	GList *all_columns;
+	NautilusFile *file;
 	GList *old_view_columns, *view_columns;
 	GHashTable *visible_columns_hash;
 	GtkTreeViewColumn *prev_view_column;
 	GList *l;
 	int i;
 
+	file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (list_view));
+
 	/* prepare ordered list of view columns using column_order and visible_columns */
 	view_columns = NULL;
-	all_columns = nautilus_get_all_columns ();
+
+	all_columns = nautilus_get_columns_for_file (file);
 	all_columns = nautilus_sort_columns (all_columns, column_order);
 
 	/* hash table to lookup if a given column should be visible */
@@ -1606,7 +1618,13 @@ get_visible_columns (FMListView *list_view)
 		g_list_free (visible_columns);
 	}
 
-	return ret ? ret : g_strdupv (default_visible_columns_auto_value);
+	if (ret != NULL) {
+		return ret;
+	}
+
+	return nautilus_file_is_in_trash (file) ?
+		g_strdupv ((gchar **) default_trash_visible_columns) :
+		g_strdupv (default_visible_columns_auto_value);
 }
 
 static char **
@@ -1638,7 +1656,13 @@ get_column_order (FMListView *list_view)
 		g_list_free (column_order);
 	}
 
-	return ret ? ret : g_strdupv (default_visible_columns_auto_value);
+	if (ret != NULL) {
+		return ret;
+	}
+
+	return nautilus_file_is_in_trash (file) ?
+		g_strdupv ((gchar **) default_trash_columns_order) :
+		g_strdupv (default_column_order_auto_value);
 }
 
 static void
@@ -2218,7 +2242,7 @@ create_column_editor (FMListView *view)
 	gtk_widget_show (alignment);
 	gtk_box_pack_start (GTK_BOX (box), alignment, TRUE, TRUE, 0);
 
-	column_chooser = nautilus_column_chooser_new ();
+	column_chooser = nautilus_column_chooser_new (file);
 	gtk_widget_show (column_chooser);
 	gtk_container_add (GTK_CONTAINER (alignment), column_chooser);
 
