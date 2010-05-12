@@ -426,7 +426,7 @@ nautilus_file_management_properties_dialog_setup_icon_caption_page (GtkBuilder *
 	
 	writable = eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS);
 
-	columns = nautilus_get_all_columns ();
+	columns = nautilus_get_common_columns ();
 	
 	for (i = 0; icon_captions_components[i] != NULL; i++) {
 		GtkWidget *combo_box;
@@ -506,7 +506,7 @@ nautilus_file_management_properties_dialog_setup_list_column_page (GtkBuilder *b
 	GtkWidget *chooser;
 	GtkWidget *box;
 	
-	chooser = nautilus_column_chooser_new ();
+	chooser = nautilus_column_chooser_new (NULL);
 	g_signal_connect (chooser, "changed", 
 			  G_CALLBACK (columns_changed_callback), chooser);
 	g_signal_connect (chooser, "use_default", 
