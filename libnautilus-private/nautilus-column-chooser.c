@@ -39,6 +39,8 @@ struct _NautilusColumnChooserDetails
 	GtkWidget *move_up_button;
 	GtkWidget *move_down_button;
 	GtkWidget *use_default_button;
+
+	NautilusFile *file;
 };
 
 enum {
@@ -46,6 +48,11 @@ enum {
 	COLUMN_LABEL,
 	COLUMN_NAME,
 	NUM_COLUMNS
+};
+
+enum {
+	PROP_FILE = 1,
+	NUM_PROPERTIES
 };
 
 enum {
@@ -58,9 +65,38 @@ static guint signals[LAST_SIGNAL];
 
 G_DEFINE_TYPE(NautilusColumnChooser, nautilus_column_chooser, GTK_TYPE_HBOX);
 
+static void nautilus_column_chooser_constructed (GObject *object);
+
+static void
+nautilus_column_chooser_set_property (GObject *object,
+				      guint param_id,
+				      const GValue *value,
+				      GParamSpec *pspec)
+{
+	NautilusColumnChooser *chooser;
+
+	chooser = NAUTILUS_COLUMN_CHOOSER (object);
+
+	switch (param_id) {
+		case PROP_FILE:
+			chooser->details->file = g_value_get_object (value);
+			break;
+		default:
+			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
+			break;
+	}
+}
+
 static void
 nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class)
 {
+	GObjectClass *oclass;
+
+	oclass = G_OBJECT_CLASS (chooser_class);
+
+	oclass->set_property = nautilus_column_chooser_set_property;
+	oclass->constructed = nautilus_column_chooser_constructed;
+
 	signals[CHANGED] = g_signal_new
 		("changed",
 		 G_TYPE_FROM_CLASS (chooser_class),
@@ -80,6 +116,15 @@ nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class)
 		 NULL, NULL,
 		 g_cclosure_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
+
+	g_object_class_install_property (oclass,
+	                                 PROP_FILE,
+	                                 g_param_spec_object ("file",
+	                                                      "File",
+	                                                      "The file this column chooser is for",
+	                                                      NAUTILUS_TYPE_FILE,
+	                                                      G_PARAM_CONSTRUCT_ONLY |
+	                                                      G_PARAM_WRITABLE));
 
 	g_type_class_add_private (chooser_class, sizeof (NautilusColumnChooserDetails));
 }
@@ -360,9 +405,9 @@ populate_tree (NautilusColumnChooser *chooser)
 {
 	GList *columns;
 	GList *l;
-	
-	columns = nautilus_get_all_columns ();
-	
+
+	columns = nautilus_get_columns_for_file (chooser->details->file);
+
 	for (l = columns; l != NULL; l = l->next) {
 		GtkTreeIter iter;
 		NautilusColumn *column;
@@ -390,6 +435,19 @@ populate_tree (NautilusColumnChooser *chooser)
 }
 
 static void
+nautilus_column_chooser_constructed (GObject *object)
+{
+	NautilusColumnChooser *chooser;
+
+	chooser = NAUTILUS_COLUMN_CHOOSER (object);
+
+	populate_tree (chooser);
+
+	g_signal_connect (chooser->details->store, "row_deleted", 
+			  G_CALLBACK (row_deleted_callback), chooser);
+}
+
+static void
 nautilus_column_chooser_init (NautilusColumnChooser *chooser)
 {	
 	chooser->details = G_TYPE_INSTANCE_GET_PRIVATE ((chooser), NAUTILUS_TYPE_COLUMN_CHOOSER, NautilusColumnChooserDetails);
@@ -401,11 +459,6 @@ nautilus_column_chooser_init (NautilusColumnChooser *chooser)
 
 	add_tree_view (chooser);
 	add_buttons (chooser);
-
-	populate_tree (chooser);
-
-	g_signal_connect (chooser->details->store, "row_deleted", 
-			  G_CALLBACK (row_deleted_callback), chooser);
 }
 
 static void 
@@ -517,8 +570,8 @@ set_column_order (NautilusColumnChooser *chooser,
 	GList *columns;
 	GList *l;
 	GtkTreePath *path;
-	
-	columns = nautilus_get_all_columns ();
+
+	columns = nautilus_get_columns_for_file (chooser->details->file);	
 	columns = nautilus_sort_columns (columns, column_order);
 
 	g_signal_handlers_block_by_func (chooser->details->store,
@@ -581,8 +634,8 @@ nautilus_column_chooser_get_settings (NautilusColumnChooser *chooser,
 }
 
 GtkWidget *
-nautilus_column_chooser_new (void)
+nautilus_column_chooser_new (NautilusFile *file)
 {
-	return g_object_new (NAUTILUS_TYPE_COLUMN_CHOOSER, NULL);
+	return g_object_new (NAUTILUS_TYPE_COLUMN_CHOOSER, "file", file, NULL);
 }
 
