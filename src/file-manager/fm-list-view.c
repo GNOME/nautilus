@@ -2152,27 +2152,37 @@ column_chooser_changed_callback (NautilusColumnChooser *chooser,
 }
 
 static void
+column_chooser_set_from_arrays (NautilusColumnChooser *chooser,
+                                FMListView *view,
+                                char **visible_columns,
+                                char **column_order)
+{
+	g_signal_handlers_block_by_func 
+		(chooser, G_CALLBACK (column_chooser_changed_callback), view);
+
+	nautilus_column_chooser_set_settings (chooser,
+					      visible_columns, 
+					      column_order);
+
+	g_signal_handlers_unblock_by_func 
+		(chooser, G_CALLBACK (column_chooser_changed_callback), view);
+}
+
+static void
 column_chooser_set_from_settings (NautilusColumnChooser *chooser,
 				  FMListView *view)
 {
 	char **visible_columns;
 	char **column_order;
 
-	g_signal_handlers_block_by_func 
-		(chooser, G_CALLBACK (column_chooser_changed_callback), view);
-
 	visible_columns = get_visible_columns (view);
 	column_order = get_column_order (view);
 
-	nautilus_column_chooser_set_settings (chooser,
-					      visible_columns, 
-					      column_order);
+	column_chooser_set_from_arrays (chooser, view,
+	                                visible_columns, column_order);
 
 	g_strfreev (visible_columns);
 	g_strfreev (column_order);
-
-	g_signal_handlers_unblock_by_func 
-		(chooser, G_CALLBACK (column_chooser_changed_callback), view);
 }
 
 static void
@@ -2180,6 +2190,8 @@ column_chooser_use_default_callback (NautilusColumnChooser *chooser,
 				     FMListView *view)
 {
 	NautilusFile *file;
+	char **default_columns;
+	char **default_order;
 
 	file = fm_directory_view_get_directory_as_file 
 		(FM_DIRECTORY_VIEW (view));
@@ -2187,8 +2199,23 @@ column_chooser_use_default_callback (NautilusColumnChooser *chooser,
 	nautilus_file_set_metadata_list (file, NAUTILUS_METADATA_KEY_LIST_VIEW_COLUMN_ORDER, NULL);
 	nautilus_file_set_metadata_list (file, NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS, NULL);
 
-	set_columns_settings_from_metadata_and_preferences (FM_LIST_VIEW (view));
-	column_chooser_set_from_settings (chooser, view);
+	/* set view values ourselves, as new metadata could not have been
+	 * updated yet.
+	 */
+	default_columns = nautilus_file_is_in_trash (file) ?
+		g_strdupv ((gchar **) default_trash_visible_columns) :
+		g_strdupv (default_visible_columns_auto_value);
+
+	default_order = nautilus_file_is_in_trash (file) ?
+		g_strdupv ((gchar **) default_trash_columns_order) :
+		g_strdupv (default_column_order_auto_value);
+
+	apply_columns_settings (view, default_order, default_columns);
+	column_chooser_set_from_arrays (chooser, view,
+	                                default_columns, default_order);
+
+	g_strfreev (default_columns);
+	g_strfreev (default_order);
 }
 
 static GtkWidget *
