@@ -624,12 +624,14 @@ update_layout_menus (FMIconView *view)
 	gboolean is_auto_layout;
 	GtkAction *action;
 	const char *action_name;
+	NautilusFile *file;
 
 	if (view->details->icon_action_group == NULL) {
 		return;
 	}
 
 	is_auto_layout = fm_icon_view_using_auto_layout (view);
+	file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (view));
 
 	if (fm_icon_view_supports_auto_layout (view)) {
 		/* Mark sort criterion. */
@@ -650,6 +652,15 @@ update_layout_menus (FMIconView *view)
 		gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
 					      view->details->sort_reversed);
 		gtk_action_set_sensitive (action, is_auto_layout);
+
+		action = gtk_action_group_get_action (view->details->icon_action_group,
+		                                      FM_ACTION_SORT_TRASH_TIME);
+
+		if (file != NULL && nautilus_file_is_in_trash (file)) {
+			gtk_action_set_visible (action, TRUE);
+		} else {
+			gtk_action_set_visible (action, FALSE);
+		}
 	}
 
 	action = gtk_action_group_get_action (view->details->icon_action_group,
