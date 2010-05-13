@@ -357,6 +357,11 @@ fi
 
 AM_GCONF_SOURCE_2
 
+##################################################
+# Check for introspection
+##################################################
+GOBJECT_INTROSPECTION_CHECK([0.6.4])
+
 dnl ==========================================================================
 
 AC_PATH_PROG(UPDATE_MIME_DATABASE, update-mime-database, no)
@@ -411,4 +416,5 @@ nautilus-$VERSION:
 
 	profiling support:      ${profiling_support}
 	nautilus-extension documentation: ${enable_gtk_doc}
+	nautilus-extension introspection: ${found_introspection}
 "

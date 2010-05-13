@@ -55,3 +55,37 @@ pkgconfig_DATA=libnautilus-extension.pc
 EXTRA_DIST = \
 	libnautilus-extension.pc.in \
 	$(NULL)
+
+if HAVE_INTROSPECTION
+
+BUILT_SOURCES = Nautilus-2.0.gir Nautilus-2.0.typelib
+
+girdir = $(datadir)/gir-1.0
+gir_DATA = Nautilus-2.0.gir
+
+typelibsdir = $(libdir)/girepository-1.0/
+typelibs_DATA = Nautilus-2.0.typelib
+
+Nautilus-2.0.gir: libnautilus-extension.la
+	$(INTROSPECTION_SCANNER) -v \
+	--namespace Nautilus --nsversion=2.0 \
+	--add-include-path=$(srcdir) \
+	--add-include-path=. \
+	--include=Gio-2.0 \
+	--include=GLib-2.0 \
+	--library=nautilus-extension \
+	--pkg gio-2.0 \
+	--pkg glib-2.0 \
+	--output $@ \
+	-I$(top_srcdir) \
+	$(libnautilus_extension_include_HEADERS) \
+	$(libnautilus_extension_la_SOURCES)
+
+Nautilus-2.0.typelib: Nautilus-2.0.gir
+	LD_LIBRARY_PATH=.libs$${LD_LIBRARY_PATH:+:$$LD_LIBRARY_PATH} \
+	$(INTROSPECTION_COMPILER) \
+	--includedir=$(srcdir) \
+	--includedir=. \
+	$(INTROSPECTION_COMPILER_OPTS) $< -o $(@F)
+
+endif
