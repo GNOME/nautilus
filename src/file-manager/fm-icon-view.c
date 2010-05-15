@@ -42,6 +42,7 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
+#include <libnautilus-private/nautilus-clipboard-monitor.h>
 #include <libnautilus-private/nautilus-directory-background.h>
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-dnd.h>
@@ -108,6 +109,8 @@ struct FMIconViewDetails
 	int num_screens;
 
 	gboolean compact;
+
+	gulong clipboard_handler_id;
 };
 
 
@@ -204,6 +207,12 @@ fm_icon_view_destroy (GtkObject *object)
                 g_source_remove (icon_view->details->react_to_icon_change_idle_id);
 		icon_view->details->react_to_icon_change_idle_id = 0;
         }
+
+	if (icon_view->details->clipboard_handler_id != 0) {
+		g_signal_handler_disconnect (nautilus_clipboard_monitor_get (),
+					     icon_view->details->clipboard_handler_id);
+		icon_view->details->clipboard_handler_id = 0;
+	}
 
 	/* kill any sound preview process that is ongoing */
 	preview_audio (icon_view, NULL, FALSE);
@@ -1213,16 +1222,39 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 }
 
 static void
+icon_view_notify_clipboard_info (NautilusClipboardMonitor *monitor,
+                                 NautilusClipboardInfo *info,
+                                 FMIconView *icon_view)
+{
+	GList *icon_data;
+
+	icon_data = NULL;
+	if (info && info->cut) {
+		icon_data = info->files;
+	}
+
+	nautilus_icon_container_set_highlighted_for_clipboard (
+		get_icon_container (icon_view), icon_data);
+}
+
+static void
 fm_icon_view_end_loading (FMDirectoryView *view,
 			  gboolean all_files_seen)
 {
 	FMIconView *icon_view;
 	GtkWidget *icon_container;
+	NautilusClipboardMonitor *monitor;
+	NautilusClipboardInfo *info;
 
 	icon_view = FM_ICON_VIEW (view);
 
 	icon_container = GTK_WIDGET (get_icon_container (icon_view));
 	nautilus_icon_container_end_loading (NAUTILUS_ICON_CONTAINER (icon_container), all_files_seen);
+
+	monitor = nautilus_clipboard_monitor_get ();
+	info = nautilus_clipboard_monitor_get_clipboard_info (monitor);
+
+	icon_view_notify_clipboard_info (monitor, info, icon_view);
 }
 
 static NautilusZoomLevel
@@ -3037,6 +3069,11 @@ fm_icon_view_init (FMIconView *icon_view)
 				 G_CALLBACK (icon_view_handle_text), icon_view, 0);
 	g_signal_connect_object (get_icon_container (icon_view), "handle_raw",
 				 G_CALLBACK (icon_view_handle_raw), icon_view, 0);
+
+	icon_view->details->clipboard_handler_id = 
+		g_signal_connect (nautilus_clipboard_monitor_get (),
+		                  "clipboard_info",
+		                  G_CALLBACK (icon_view_notify_clipboard_info), icon_view);
 }
 
 static NautilusView *
