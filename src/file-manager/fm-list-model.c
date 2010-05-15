@@ -75,6 +75,8 @@ struct FMListModelDetails {
 	int drag_begin_y;
 
 	GPtrArray *columns;
+
+	GList *highlight_files;
 };
 
 typedef struct {
@@ -246,6 +248,24 @@ fm_list_model_get_path (GtkTreeModel *tree_model, GtkTreeIter *iter)
 	return path;
 }
 
+static gint
+compare_files (gconstpointer a,
+               gconstpointer b)
+{
+	GFile *loc_a, *loc_b;
+	gboolean res;
+	
+	loc_a = nautilus_file_get_location (NAUTILUS_FILE (a));
+	loc_b = nautilus_file_get_location (NAUTILUS_FILE (b));
+
+	res = !g_file_equal (loc_a, loc_b);
+
+	g_object_unref (loc_a);
+	g_object_unref (loc_b);
+
+	return (gint) res;
+}
+
 static void
 fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column, GValue *value)
 {
@@ -253,7 +273,7 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 	FileEntry *file_entry;
 	NautilusFile *file;
 	char *str;
-	GdkPixbuf *icon;
+	GdkPixbuf *icon, *rendered_icon;
 	int icon_size;
 	guint emblem_size;
 	NautilusZoomLevel zoom_level;
@@ -317,7 +337,19 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 			}
 
 			icon = nautilus_file_get_icon_pixbuf (file, icon_size, TRUE, flags);
-  
+
+			if (model->details->highlight_files != NULL &&
+			    g_list_find_custom (model->details->highlight_files,
+			                        file, compare_files))
+			{
+				rendered_icon = eel_gdk_pixbuf_render (icon, 1, 255, 255, 0, 0);
+
+				if (rendered_icon != NULL) {
+					g_object_unref (icon);
+					icon = rendered_icon;
+				}
+			}
+
 			g_value_set_object (value, icon);
 			g_object_unref (icon);
 		}
@@ -1553,6 +1585,11 @@ fm_list_model_finalize (GObject *object)
 
 	model = FM_LIST_MODEL (object);
 
+	if (model->details->highlight_files != NULL) {
+		nautilus_file_list_free (model->details->highlight_files);
+		model->details->highlight_files = NULL;
+	}
+
 	g_free (model->details);
 
 	G_OBJECT_CLASS (fm_list_model_parent_class)->finalize (object);
@@ -1666,5 +1703,47 @@ fm_list_model_subdirectory_done_loading (FMListModel *model, NautilusDirectory *
 			gtk_tree_model_row_changed (GTK_TREE_MODEL (model), path, &iter);
 			gtk_tree_path_free (path);
 		}
+	}
+}
+
+static void
+refresh_row (gpointer data,
+             gpointer user_data)
+{
+	NautilusFile *file;
+	FMListModel *model;
+	GList *iters, *l;
+	GtkTreePath *path;
+
+	model = user_data;
+	file = data;
+
+	iters = fm_list_model_get_all_iters_for_file (model, file);
+	for (l = iters; l != NULL; l = l->next) {
+		path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), l->data);
+		gtk_tree_model_row_changed (GTK_TREE_MODEL (model), path, l->data);
+
+		gtk_tree_path_free (path);
+	}
+
+	eel_g_list_free_deep (iters);
+}
+
+void
+fm_list_model_set_highlight_for_files (FMListModel *model,
+                                       GList *files)
+{
+	if (model->details->highlight_files != NULL) {
+		g_list_foreach (model->details->highlight_files,
+		                refresh_row, model);
+		nautilus_file_list_free (model->details->highlight_files);
+		model->details->highlight_files = NULL;
+	}
+
+	if (files != NULL) {
+		model->details->highlight_files = nautilus_file_list_copy (files);
+		g_list_foreach (model->details->highlight_files,
+		                refresh_row, model);
+
 	}
 }

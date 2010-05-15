@@ -33,6 +33,7 @@
 #include "fm-list-model.h"
 #include <string.h>
 #include <eel/eel-vfs-extensions.h>
+#include <eel/eel-gdk-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <gdk/gdk.h>
@@ -42,6 +43,7 @@
 #include <glib/gi18n.h>
 #include <glib-object.h>
 #include <libnautilus-extension/nautilus-column-provider.h>
+#include <libnautilus-private/nautilus-clipboard-monitor.h>
 #include <libnautilus-private/nautilus-column-chooser.h>
 #include <libnautilus-private/nautilus-column-utilities.h>
 #include <libnautilus-private/nautilus-debug-log.h>
@@ -103,6 +105,8 @@ struct FMListViewDetails {
 	NautilusFile *renaming_file;
 	gboolean rename_done;
 	guint renaming_file_activate_timeout;
+
+	gulong clipboard_handler_id;
 
 	GQuark last_sort_attr;
 };
@@ -2757,6 +2761,12 @@ fm_list_view_dispose (GObject *object)
 		list_view->details->renaming_file_activate_timeout = 0;
 	}
 
+	if (list_view->details->clipboard_handler_id != 0) {
+		g_signal_handler_disconnect (nautilus_clipboard_monitor_get (),
+		                             list_view->details->clipboard_handler_id);
+		list_view->details->clipboard_handler_id = 0;
+	}
+
 	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
@@ -2880,6 +2890,31 @@ list_view_scroll_to_file (NautilusView *view,
 }
 
 static void
+list_view_notify_clipboard_info (NautilusClipboardMonitor *monitor,
+                                 NautilusClipboardInfo *info,
+                                 FMListView *view)
+{
+	if (info != NULL && info->cut) {
+		fm_list_model_set_highlight_for_files (view->details->model, info->files);
+	} else {
+		fm_list_model_set_highlight_for_files (view->details->model, NULL);
+	}
+}
+
+static void
+fm_list_view_end_loading (FMDirectoryView *view,
+                          gboolean all_files_seen)
+{
+	NautilusClipboardMonitor *monitor;
+	NautilusClipboardInfo *info;
+
+	monitor = nautilus_clipboard_monitor_get ();
+	info = nautilus_clipboard_monitor_get_clipboard_info (monitor);
+
+	list_view_notify_clipboard_info (monitor, info, FM_LIST_VIEW (view));
+}
+
+static void
 real_set_is_active (FMDirectoryView *view,
 		    gboolean is_active)
 {
@@ -2913,6 +2948,7 @@ fm_list_view_class_init (FMListViewClass *class)
 
 	fm_directory_view_class->add_file = fm_list_view_add_file;
 	fm_directory_view_class->begin_loading = fm_list_view_begin_loading;
+	fm_directory_view_class->end_loading = fm_list_view_end_loading;
 	fm_directory_view_class->bump_zoom_level = fm_list_view_bump_zoom_level;
 	fm_directory_view_class->can_zoom_in = fm_list_view_can_zoom_in;
 	fm_directory_view_class->can_zoom_out = fm_list_view_can_zoom_out;
@@ -3008,6 +3044,10 @@ fm_list_view_init (FMListView *list_view)
 	list_view->details->zoom_level = NAUTILUS_ZOOM_LEVEL_SMALLEST - 1;
 
 	list_view->details->hover_path = NULL;
+	list_view->details->clipboard_handler_id = 
+		g_signal_connect (nautilus_clipboard_monitor_get (),
+		                  "clipboard_info",
+		                  G_CALLBACK (list_view_notify_clipboard_info), list_view);
 }
 
 static NautilusView *
