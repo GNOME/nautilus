@@ -24,10 +24,10 @@
 
 #include <config.h>
 #include "nautilus-clipboard-monitor.h"
+#include "nautilus-file.h"
 
 #include <eel/eel-debug.h>
 #include <eel/eel-gtk-macros.h>
-#include <eel/eel-glib-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <gtk/gtk.h>
 
@@ -48,18 +48,17 @@
 
 enum {
 	CLIPBOARD_CHANGED,
+	CLIPBOARD_INFO,
 	LAST_SIGNAL
+};
+
+struct NautilusClipboardMonitorDetails {
+	NautilusClipboardInfo *info;
 };
 
 static guint signals[LAST_SIGNAL];
 
-static void nautilus_clipboard_monitor_init       (gpointer              object,
-						   gpointer              klass);
-static void nautilus_clipboard_monitor_class_init (gpointer              klass);
-
-EEL_CLASS_BOILERPLATE (NautilusClipboardMonitor,
-		       nautilus_clipboard_monitor,
-		       G_TYPE_OBJECT)
+G_DEFINE_TYPE (NautilusClipboardMonitor, nautilus_clipboard_monitor, G_TYPE_OBJECT);
 
 static NautilusClipboardMonitor *clipboard_monitor = NULL;
 
@@ -97,12 +96,48 @@ nautilus_clipboard_monitor_emit_changed (void)
 	g_signal_emit (monitor, signals[CLIPBOARD_CHANGED], 0);
 }
 
-static void
-nautilus_clipboard_monitor_init (gpointer object, gpointer klass)
+static NautilusClipboardInfo *
+nautilus_clipboard_info_new (GList *files,
+                             gboolean cut)
 {
-	NautilusClipboardMonitor *monitor;
+	NautilusClipboardInfo *info;
 
-	monitor = NAUTILUS_CLIPBOARD_MONITOR (object);
+	info = g_slice_new0 (NautilusClipboardInfo);
+	info->files = nautilus_file_list_copy (files);
+	info->cut = cut;
+
+	return info;
+}
+
+static NautilusClipboardInfo *
+nautilus_clipboard_info_copy (NautilusClipboardInfo *info)
+{
+	NautilusClipboardInfo *new_info;
+
+	new_info = NULL;
+
+	if (info != NULL) {
+		new_info = nautilus_clipboard_info_new (info->files,
+			                                info->cut);
+	}
+
+	return new_info;
+}
+
+static void
+nautilus_clipboard_info_free (NautilusClipboardInfo *info)
+{
+	nautilus_file_list_free (info->files);
+
+	g_slice_free (NautilusClipboardInfo, info);
+}
+
+static void
+nautilus_clipboard_monitor_init (NautilusClipboardMonitor *monitor)
+{
+	monitor->details = 
+		G_TYPE_INSTANCE_GET_PRIVATE (monitor, NAUTILUS_TYPE_CLIPBOARD_MONITOR,
+		                             NautilusClipboardMonitorDetails);
 }	
 
 static void
@@ -112,16 +147,20 @@ clipboard_monitor_finalize (GObject *object)
 
 	monitor = NAUTILUS_CLIPBOARD_MONITOR (object);
 
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+	if (monitor->details->info != NULL) {
+		nautilus_clipboard_info_free (monitor->details->info);
+		monitor->details->info = NULL;
+	}
+
+	G_OBJECT_CLASS (nautilus_clipboard_monitor_parent_class)->finalize (object);
 }
 
 static void
-nautilus_clipboard_monitor_class_init (gpointer klass)
+nautilus_clipboard_monitor_class_init (NautilusClipboardMonitorClass *klass)
 {
 	GObjectClass *object_class;
 
 	object_class = G_OBJECT_CLASS (klass);
-	
 	object_class->finalize = clipboard_monitor_finalize;
 
 	signals[CLIPBOARD_CHANGED] =
@@ -132,6 +171,37 @@ nautilus_clipboard_monitor_class_init (gpointer klass)
 		              NULL, NULL,
 		              g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
+	signals[CLIPBOARD_INFO] =
+		g_signal_new ("clipboard_info",
+		              G_TYPE_FROM_CLASS (klass),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusClipboardMonitorClass, clipboard_info),
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__POINTER,
+		              G_TYPE_NONE,
+		              1, G_TYPE_POINTER);
 
+	g_type_class_add_private (klass, sizeof (NautilusClipboardMonitorDetails));
 }
 
+void
+nautilus_clipboard_monitor_set_clipboard_info (NautilusClipboardMonitor *monitor,
+                                               NautilusClipboardInfo *info)
+{
+	if (monitor->details->info != NULL) {
+		nautilus_clipboard_info_free (monitor->details->info);
+		monitor->details->info = NULL;
+	}
+
+	monitor->details->info = nautilus_clipboard_info_copy (info);
+
+	g_signal_emit (monitor, signals[CLIPBOARD_INFO], 0, monitor->details->info);
+	
+	nautilus_clipboard_monitor_emit_changed ();
+}
+
+NautilusClipboardInfo *
+nautilus_clipboard_monitor_get_clipboard_info (NautilusClipboardMonitor *monitor)
+{
+	return monitor->details->info;
+}

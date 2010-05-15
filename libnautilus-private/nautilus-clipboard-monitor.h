@@ -40,20 +40,33 @@
   (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_CLIPBOARD_MONITOR, NautilusClipboardMonitorClass))
 
 typedef struct NautilusClipboardMonitorDetails NautilusClipboardMonitorDetails;
+typedef struct NautilusClipboardInfo NautilusClipboardInfo;
 
 typedef struct {
 	GObject parent_slot;
+
+	NautilusClipboardMonitorDetails *details;
 } NautilusClipboardMonitor;
 
 typedef struct {
 	GObjectClass parent_slot;
   
 	void (* clipboard_changed) (NautilusClipboardMonitor *monitor);
+	void (* clipboard_info) (NautilusClipboardMonitor *monitor,
+	                         NautilusClipboardInfo *info);
 } NautilusClipboardMonitorClass;
+
+struct NautilusClipboardInfo {
+	GList *files;
+	gboolean cut;
+};
 
 GType   nautilus_clipboard_monitor_get_type (void);
 
 NautilusClipboardMonitor *   nautilus_clipboard_monitor_get (void);
+void nautilus_clipboard_monitor_set_clipboard_info (NautilusClipboardMonitor *monitor,
+                                                    NautilusClipboardInfo *info);
+NautilusClipboardInfo * nautilus_clipboard_monitor_get_clipboard_info (NautilusClipboardMonitor *monitor);
 void nautilus_clipboard_monitor_emit_changed (void);
 
 #endif /* NAUTILUS_CLIPBOARD_MONITOR_H */
