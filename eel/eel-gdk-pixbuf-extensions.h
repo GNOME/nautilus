@@ -152,4 +152,11 @@ GdkPixbuf *          eel_gdk_pixbuf_scale_down                (GdkPixbuf *pixbuf
 							       int dest_width,
 							       int dest_height);
 
+GdkPixbuf *          eel_gdk_pixbuf_render                    (GdkPixbuf *pixbuf,
+                                                               guint render_mode,
+                                                               guint saturation,
+                                                               guint brightness,
+                                                               guint lighten_value,
+                                                               guint color);
+
 #endif /* EEL_GDK_PIXBUF_EXTENSIONS_H */
