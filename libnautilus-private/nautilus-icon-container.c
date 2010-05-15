@@ -8946,6 +8946,33 @@ nautilus_icon_container_set_all_columns_same_width (NautilusIconContainer *conta
 	}
 }
 
+/**
+ * nautilus_icon_container_set_highlighted_for_clipboard
+ * @container: An icon container widget.
+ * @data: Icon Data associated with all icons that should be highlighted.
+ *        Others will be unhighlighted.
+ **/
+void
+nautilus_icon_container_set_highlighted_for_clipboard (NautilusIconContainer *container,
+						       GList                 *clipboard_icon_data)
+{
+	GList *l;
+	NautilusIcon *icon;
+	gboolean highlighted_for_clipboard;
+
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+
+	for (l = container->details->icons; l != NULL; l = l->next) {
+		icon = l->data;
+		highlighted_for_clipboard = (g_list_find (clipboard_icon_data, icon->data) != NULL);
+
+		eel_canvas_item_set (EEL_CANVAS_ITEM (icon->item),
+				     "highlighted-for-clipboard", highlighted_for_clipboard,
+				     NULL);
+	}
+
+}
+
 /* NautilusIconContainerAccessible */
 
 static NautilusIconContainerAccessiblePrivate *

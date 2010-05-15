@@ -117,12 +117,14 @@ struct NautilusIconCanvasItemDetails {
    	guint is_highlighted_for_selection : 1;
 	guint is_highlighted_as_keyboard_focus: 1;
    	guint is_highlighted_for_drop : 1;
+	guint is_highlighted_for_clipboard : 1;
 	guint show_stretch_handles : 1;
 	guint is_prelit : 1;
 
 	guint rendered_is_active : 1;
 	guint rendered_is_highlighted_for_selection : 1;
 	guint rendered_is_highlighted_for_drop : 1;
+	guint rendered_is_highlighted_for_clipboard : 1;
 	guint rendered_is_prelit : 1;
 	guint rendered_is_focused : 1;
 	
@@ -160,7 +162,8 @@ enum {
 	PROP_ADDITIONAL_TEXT,
     	PROP_HIGHLIGHTED_FOR_SELECTION,
     	PROP_HIGHLIGHTED_AS_KEYBOARD_FOCUS,
-    	PROP_HIGHLIGHTED_FOR_DROP
+    	PROP_HIGHLIGHTED_FOR_DROP,
+	PROP_HIGHLIGHTED_FOR_CLIPBOARD
 };
 
 typedef enum {
@@ -446,7 +449,14 @@ nautilus_icon_canvas_item_set_property (GObject        *object,
 		}
 		details->is_highlighted_for_drop = g_value_get_boolean (value);
 		break;
-		
+
+	case PROP_HIGHLIGHTED_FOR_CLIPBOARD:
+		if (!details->is_highlighted_for_clipboard == !g_value_get_boolean (value)) {
+			return;
+		}
+		details->is_highlighted_for_clipboard = g_value_get_boolean (value);
+		break;
+
 	default:
 		g_warning ("nautilus_icons_view_item_item_set_arg on unknown argument");
 		return;
@@ -486,6 +496,10 @@ nautilus_icon_canvas_item_get_property (GObject        *object,
 		
         case PROP_HIGHLIGHTED_FOR_DROP:
 		g_value_set_boolean (value, details->is_highlighted_for_drop);
+                break;
+
+	case PROP_HIGHLIGHTED_FOR_CLIPBOARD:
+		g_value_set_boolean (value, details->is_highlighted_for_clipboard);
                 break;
 
         default:
@@ -1708,7 +1722,8 @@ real_map_pixbuf (NautilusIconCanvasItem *icon_item)
 
 	g_object_ref (temp_pixbuf);
 
-	if (icon_item->details->is_prelit) {
+	if (icon_item->details->is_prelit ||
+	    icon_item->details->is_highlighted_for_clipboard) {
 		old_pixbuf = temp_pixbuf;
 
 		gtk_widget_style_get (GTK_WIDGET (container),
@@ -1821,6 +1836,7 @@ map_pixbuf (NautilusIconCanvasItem *icon_item)
 	      && icon_item->details->rendered_is_prelit == icon_item->details->is_prelit
 	      && icon_item->details->rendered_is_highlighted_for_selection == icon_item->details->is_highlighted_for_selection
 	      && icon_item->details->rendered_is_highlighted_for_drop == icon_item->details->is_highlighted_for_drop
+	      && icon_item->details->rendered_is_highlighted_for_clipboard == icon_item->details->is_highlighted_for_clipboard
 	      && (icon_item->details->is_highlighted_for_selection && icon_item->details->rendered_is_focused == gtk_widget_has_focus (GTK_WIDGET (EEL_CANVAS_ITEM (icon_item)->canvas))))) {
 		if (icon_item->details->rendered_pixbuf != NULL) {
 			g_object_unref (icon_item->details->rendered_pixbuf);
@@ -1830,6 +1846,7 @@ map_pixbuf (NautilusIconCanvasItem *icon_item)
 		icon_item->details->rendered_is_prelit = icon_item->details->is_prelit;
 		icon_item->details->rendered_is_highlighted_for_selection = icon_item->details->is_highlighted_for_selection;
 		icon_item->details->rendered_is_highlighted_for_drop = icon_item->details->is_highlighted_for_drop;
+	        icon_item->details->rendered_is_highlighted_for_clipboard = icon_item->details->is_highlighted_for_clipboard;
 		icon_item->details->rendered_is_focused = gtk_widget_has_focus (GTK_WIDGET (EEL_CANVAS_ITEM (icon_item)->canvas));
 	}
 
@@ -3518,7 +3535,15 @@ nautilus_icon_canvas_item_class_init (NautilusIconCanvasItemClass *class)
 		g_param_spec_boolean ("highlighted_for_drop",
 				      "highlighted for drop",
 				      "whether we are highlighted for a D&D drop",
-				      FALSE, G_PARAM_READWRITE)); 
+				      FALSE, G_PARAM_READWRITE));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_HIGHLIGHTED_FOR_CLIPBOARD,
+		g_param_spec_boolean ("highlighted_for_clipboard",
+				      "highlighted for clipboard",
+				      "whether we are highlighted for a clipboard paste (after we have been cut)",
+ 				      FALSE, G_PARAM_READWRITE));
 
 	item_class->update = nautilus_icon_canvas_item_update;
 	item_class->draw = nautilus_icon_canvas_item_draw;

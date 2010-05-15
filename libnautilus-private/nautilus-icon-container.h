@@ -285,6 +285,8 @@ void              nautilus_icon_container_freeze_icon_positions         (Nautilu
 int               nautilus_icon_container_get_max_layout_lines           (NautilusIconContainer  *container);
 int               nautilus_icon_container_get_max_layout_lines_for_pango (NautilusIconContainer  *container);
 
+void              nautilus_icon_container_set_highlighted_for_clipboard (NautilusIconContainer  *container,
+									 GList                  *clipboard_icon_data);
 
 /* operations on all icons */
 void              nautilus_icon_container_unselect_all                  (NautilusIconContainer  *view);
