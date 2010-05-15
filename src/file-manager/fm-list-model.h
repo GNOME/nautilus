@@ -138,5 +138,8 @@ int               fm_list_model_get_column_number (FMListModel *model,
 						   
 void              fm_list_model_subdirectory_done_loading (FMListModel       *model,
 							   NautilusDirectory *directory);
+
+void              fm_list_model_set_highlight_for_files (FMListModel *model,
+                                                         GList *files);
 						   
 #endif /* FM_LIST_MODEL_H */
