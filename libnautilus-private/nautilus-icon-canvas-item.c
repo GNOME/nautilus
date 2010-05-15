@@ -243,7 +243,6 @@ static void      draw_embedded_text                  (NautilusIconCanvasItem    
 						      int                            x,
 						      int                            y);
 
-static GdkPixbuf *nautilus_icon_canvas_lighten_pixbuf (GdkPixbuf* src, guint lighten_value);
 static void       nautilus_icon_canvas_item_ensure_bounds_up_to_date (NautilusIconCanvasItem *icon_item);
 
 
@@ -1692,112 +1691,6 @@ draw_pixbuf (GdkPixbuf *pixbuf, GdkDrawable *drawable, int x, int y)
 			 GDK_RGB_DITHER_NORMAL, 0, 0);
 }
 
-/* should be moved to libeel! */
-static guchar
-nautilus_icon_canvas_lighten_pixbuf_component (guchar cur_value, guint lighten_value) {
-	int new_value = cur_value;
-	if (lighten_value > 0) {
-		new_value += lighten_value + (new_value >> 3);
-		if (new_value > 255) {
-			new_value = 255;
-		}
-	}
-	return (guchar) new_value;
-}
-
-/* should be moved to libeel! */
-static GdkPixbuf *
-nautilus_icon_canvas_lighten_pixbuf (GdkPixbuf* src, guint lighten_value) {
-	GdkPixbuf *dest;
-	int i, j;
-	int width, height, has_alpha, src_row_stride, dst_row_stride;
-	guchar *target_pixels, *original_pixels;
-	guchar *pixsrc, *pixdest;
-
-	g_assert (gdk_pixbuf_get_colorspace (src) == GDK_COLORSPACE_RGB);
-	g_assert ((!gdk_pixbuf_get_has_alpha (src)
-			       && gdk_pixbuf_get_n_channels (src) == 3)
-			      || (gdk_pixbuf_get_has_alpha (src)
-				  && gdk_pixbuf_get_n_channels (src) == 4));
-	g_assert (gdk_pixbuf_get_bits_per_sample (src) == 8);
-
-	dest = gdk_pixbuf_new (gdk_pixbuf_get_colorspace (src),
-			       gdk_pixbuf_get_has_alpha (src),
-			       gdk_pixbuf_get_bits_per_sample (src),
-			       gdk_pixbuf_get_width (src),
-			       gdk_pixbuf_get_height (src));
-	
-	has_alpha = gdk_pixbuf_get_has_alpha (src);
-	width = gdk_pixbuf_get_width (src);
-	height = gdk_pixbuf_get_height (src);
-	dst_row_stride = gdk_pixbuf_get_rowstride (dest);
-	src_row_stride = gdk_pixbuf_get_rowstride (src);
-	target_pixels = gdk_pixbuf_get_pixels (dest);
-	original_pixels = gdk_pixbuf_get_pixels (src);
-
-	for (i = 0; i < height; i++) {
-		pixdest = target_pixels + i * dst_row_stride;
-		pixsrc = original_pixels + i * src_row_stride;
-		for (j = 0; j < width; j++) {		
-			*pixdest++ = nautilus_icon_canvas_lighten_pixbuf_component (*pixsrc++, lighten_value);
-			*pixdest++ = nautilus_icon_canvas_lighten_pixbuf_component (*pixsrc++, lighten_value);
-			*pixdest++ = nautilus_icon_canvas_lighten_pixbuf_component (*pixsrc++, lighten_value);
-			if (has_alpha) {
-				*pixdest++ = *pixsrc++;
-			}
-		}
-	}
-	return dest;
-}
-
-
-
-static GdkPixbuf *
-render_icon (GdkPixbuf *pixbuf, guint render_mode, guint saturation, guint brightness, guint lighten_value, guint color)
-{
- 	GdkPixbuf *temp_pixbuf, *old_pixbuf;
-
-	if (render_mode == 1) {
-	/* lighten icon */
-		temp_pixbuf = eel_create_spotlight_pixbuf (pixbuf);
-	}
-	else if (render_mode == 2) {
-	/* colorize icon */
-		temp_pixbuf = eel_create_colorized_pixbuf (pixbuf,
-				   EEL_RGBA_COLOR_GET_R (color),
-				   EEL_RGBA_COLOR_GET_G (color),
-				   EEL_RGBA_COLOR_GET_B (color));
-	} else if (render_mode == 3) {
-	/* monochromely colorize icon */
-		old_pixbuf = eel_create_darkened_pixbuf (pixbuf, 0, 255);		
-		temp_pixbuf = eel_create_colorized_pixbuf (old_pixbuf,
-				   EEL_RGBA_COLOR_GET_R (color),
-				   EEL_RGBA_COLOR_GET_G (color),
-				   EEL_RGBA_COLOR_GET_B (color));
-		g_object_unref (old_pixbuf);
-	} else {
-		temp_pixbuf = NULL;
-	}
-
-	if (saturation < 255 || brightness < 255 || temp_pixbuf == NULL) { // temp_pixbuf == NULL just for safer code (return copy)
-		old_pixbuf = temp_pixbuf;
-		temp_pixbuf = eel_create_darkened_pixbuf (temp_pixbuf ? temp_pixbuf : pixbuf, saturation, brightness);
-		if (old_pixbuf) {
-			g_object_unref (old_pixbuf);
-		}
-	}
-
-	if (lighten_value > 0) {
-		old_pixbuf = temp_pixbuf;
-  		temp_pixbuf = nautilus_icon_canvas_lighten_pixbuf (temp_pixbuf ? temp_pixbuf : pixbuf, lighten_value);
-		if (old_pixbuf) {
-			g_object_unref (old_pixbuf);
-		}
-	}
-
-	return temp_pixbuf;
-}
-
 /* shared code to highlight or dim the passed-in pixbuf */
 static GdkPixbuf *
 real_map_pixbuf (NautilusIconCanvasItem *icon_item)
@@ -1826,12 +1719,12 @@ real_map_pixbuf (NautilusIconCanvasItem *icon_item)
 			      NULL);
 
 		if (render_mode > 0 || saturation < 255 || brightness < 255) {
-			temp_pixbuf = render_icon (temp_pixbuf,
-				render_mode,
-				saturation,
-				brightness,
-				lighten,
-				container->details->prelight_icon_color_rgba);
+			temp_pixbuf = eel_gdk_pixbuf_render (temp_pixbuf,
+					render_mode,
+					saturation,
+					brightness,
+					lighten,
+					container->details->prelight_icon_color_rgba);
 			g_object_unref (old_pixbuf);
        	}
 
@@ -1907,7 +1800,7 @@ real_map_pixbuf (NautilusIconCanvasItem *icon_item)
 			      NULL);
 		if (render_mode > 0 || saturation < 255 || brightness < 255) {
 			/* if theme requests colorization */
-			temp_pixbuf = render_icon (temp_pixbuf,
+			temp_pixbuf = eel_gdk_pixbuf_render (temp_pixbuf,
 					    render_mode,
 					    saturation,
 					    brightness,
