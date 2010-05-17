@@ -40,7 +40,6 @@
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <gio/gio.h>
-#include <dbus/dbus-glib.h>
 #include <unistd.h>
 #include <stdlib.h>
 
@@ -1004,48 +1003,13 @@ nautilus_is_file_roller_installed (void)
 
 #define GSM_NAME  "org.gnome.SessionManager"
 #define GSM_PATH "/org/gnome/SessionManager"
+#define GSM_INTERFACE "org.gnome.SessionManager"
 
 /* The following values come from
  * http://www.gnome.org/~mccann/gnome-session/docs/gnome-session.html#org.gnome.SessionManager.Inhibit 
  */
-#define INHIBIT_LOGOUT 1
-#define INHIBIT_SUSPEND 4
-
-static DBusGProxy *_gsm_proxy = NULL;
-
-static DBusGProxy *
-get_power_manager_proxy (void)
-{
-	if (!_gsm_proxy)
-	{
-		DBusGConnection *bus;
-		GError *error;
-
-		error = NULL;
-		bus = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
-		if (!bus)
-		{
-			g_warning ("Could not connect to session bus: %s",
-				   error->message);
-			g_error_free (error);
-			return NULL;
-		}
-
-		_gsm_proxy = dbus_g_proxy_new_for_name (bus,
-						        GSM_NAME,
-						        GSM_PATH,
-						        GSM_NAME);
-		dbus_g_connection_unref (bus);
-
-		if (!_gsm_proxy)
-		{
-			g_warning ("Creating DBus proxy failed.");
-			return NULL;
-		}
-	}
-
-	return _gsm_proxy;
-}
+#define INHIBIT_LOGOUT (1U)
+#define INHIBIT_SUSPEND (4U)
 
 /**
  * nautilus_inhibit_power_manager:
@@ -1062,31 +1026,44 @@ get_power_manager_proxy (void)
 int
 nautilus_inhibit_power_manager (const char *message)
 {
-	DBusGProxy *proxy;
-	GError *error;
+        GDBusConnection *connection;
+        GVariant *result;
+	GError *error = NULL;
 	int cookie;
 
-	proxy = get_power_manager_proxy ();
+        g_return_val_if_fail (message != NULL, -1);
 
-	g_return_val_if_fail (proxy != NULL, -1);
+        connection = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, &error);
+        if (connection == NULL) {
+                g_warning ("Could not connect to session bus: %s", error->message);
+                return -1;
+        }
 
-	error = NULL;
-	cookie = -1;
-	if (!dbus_g_proxy_call (proxy, "Inhibit", &error,
-				G_TYPE_STRING, "Nautilus",
-				G_TYPE_UINT, 0,
-				G_TYPE_STRING, message,
-				G_TYPE_UINT, INHIBIT_LOGOUT | INHIBIT_SUSPEND,
-				G_TYPE_INVALID,
-				G_TYPE_UINT, &cookie,
-				G_TYPE_INVALID))
-	{
+        result = g_dbus_connection_call_sync (connection,
+                                              GSM_NAME,
+                                              GSM_PATH,
+                                              GSM_INTERFACE,
+                                              "Inhibit",
+                                              g_variant_new ("(susu)",
+                                                             "Nautilus",
+                                                             (guint) 0,
+                                                             message,
+                                                             (guint) (INHIBIT_LOGOUT | INHIBIT_SUSPEND)),
+                                              G_DBUS_CALL_FLAGS_NO_AUTO_START,
+                                              -1 /* FIXME? */,
+                                              NULL,
+                                              &error);
+        g_object_unref (connection);
+        if (result == NULL) {
 		g_warning ("Could not inhibit power management: %s", error->message);
 		g_error_free (error);
 		return -1;
 	}
 
-	return cookie;
+        g_variant_get (result, "(u)", &cookie);
+        g_variant_unref (result);
+
+	return (int) cookie;
 }
 
 /**
@@ -1100,24 +1077,36 @@ nautilus_inhibit_power_manager (const char *message)
 void
 nautilus_uninhibit_power_manager (gint cookie)
 {
-	DBusGProxy *proxy;
-	GError *error;
+        GDBusConnection *connection;
+        GVariant *result;
+	GError *error = NULL;
+
 	g_return_if_fail (cookie > 0);
 
-	proxy = get_power_manager_proxy ();
+        connection = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, &error);
+        if (connection == NULL) {
+                g_warning ("Could not connect to session bus: %s", error->message);
+                return;
+        }
 
-	g_return_if_fail (proxy != NULL);
-
-	error = NULL;
-
-	if (!dbus_g_proxy_call (proxy, "Uninhibit", &error,
-                                G_TYPE_UINT, cookie,
-                                G_TYPE_INVALID,
-                                G_TYPE_INVALID))
-	{
+        result = g_dbus_connection_call_sync (connection,
+                                              GSM_NAME,
+                                              GSM_PATH,
+                                              GSM_INTERFACE,
+                                              "Uninhibit",
+                                              g_variant_new ("(u)", (guint) cookie),
+                                              G_DBUS_CALL_FLAGS_NO_AUTO_START,
+                                              -1 /* FIXME? */,
+                                              NULL,
+                                              &error);
+        g_object_unref (connection);
+        if (result == NULL) {
 		g_warning ("Could not uninhibit power management: %s", error->message);
 		g_error_free (error);
+		return;
 	}
+
+        g_variant_unref (result);
 }
 
 /* Returns TRUE if the file is in XDG_DATA_DIRS or

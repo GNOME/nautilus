@@ -32,7 +32,6 @@
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <string.h>
-#include <dbus/dbus-glib.h>
 #include <gdk/gdkx.h>
 
 #include "nautilus-file-attributes.h"
@@ -1140,6 +1139,7 @@ typedef struct {
 	char *activation_directory;
 	gboolean user_confirmation;
 	char *uri;
+        GDBusProxy *proxy; /* PackageKit proxy */
 } ActivateParametersInstall;
 
 static void
@@ -1155,6 +1155,8 @@ activate_parameters_install_free (ActivateParametersInstall *parameters_install)
 	nautilus_file_list_free (parameters_install->files);
 	g_free (parameters_install->activation_directory);
 	g_free (parameters_install->uri);
+        if (parameters_install->proxy)
+                g_object_unref (parameters_install->proxy);
 	g_free (parameters_install);
 }
 
@@ -1300,20 +1302,20 @@ show_unhandled_type_error (ActivateParametersInstall *parameters)
 }
 
 static void
-search_for_application_dbus_call_notify_cb (DBusGProxy *proxy, DBusGProxyCall *call, ActivateParametersInstall *parameters_install)
+search_for_application_dbus_call_notify_cb (GDBusProxy   *proxy,
+                                            GAsyncResult *result,
+                                            gpointer      user_data)
 {
-	gboolean ret;
+        ActivateParametersInstall *parameters_install = user_data;
+        GVariant *variant;
 	GError *error = NULL;
-	char *message;
-	const char *remote = NULL;
 
-	ret = dbus_g_proxy_end_call (proxy, call, &error, G_TYPE_INVALID);
-	if (!ret) {
-		if (error->domain == DBUS_GERROR && error->code == DBUS_GERROR_REMOTE_EXCEPTION) {
-			remote = dbus_g_error_get_name (error);
-		}
-		/* we already show an error in the installer if not found, just catch generic failure */
-		if (remote == NULL || strcmp (remote, "org.freedesktop.PackageKit.Modify.Failed") == 0) {
+        variant = g_dbus_proxy_call_finish (proxy, result, &error);
+	if (variant == NULL) {
+                if (!g_dbus_error_is_remote_error (error) ||
+                    g_strcmp0 (g_dbus_error_get_remote_error (error), "org.freedesktop.PackageKit.Modify.Failed") == 0) {
+                        char *message;
+
 			message = g_strdup_printf ("%s\n%s",
 						   _("There was an internal error trying to search for applications:"),
 						   error->message);
@@ -1321,10 +1323,13 @@ search_for_application_dbus_call_notify_cb (DBusGProxy *proxy, DBusGProxyCall *c
 					       parameters_install->parent_window);
 			g_free (message);
 		}
+
 		g_error_free (error);
+                activate_parameters_install_free (parameters_install);
 		return;
 	}
-	g_object_unref (proxy);
+
+        g_variant_unref (variant);
 
 	/* activate the file again */
 	nautilus_mime_activate_files (parameters_install->parent_window,
@@ -1335,36 +1340,17 @@ search_for_application_dbus_call_notify_cb (DBusGProxy *proxy, DBusGProxyCall *c
 				      parameters_install->flags,
 				      parameters_install->user_confirmation);
 
-	/* parameters_install freed by destroy notify */
+        activate_parameters_install_free (parameters_install);
 }
 
 static void
 search_for_application_mime_type (ActivateParametersInstall *parameters_install, const gchar *mime_type)
 {
-	DBusGConnection *connection;
-	DBusGProxy *proxy = NULL;
+        GdkWindow *window;
 	guint xid = 0;
-	GError *error = NULL;
-	DBusGProxyCall *call = NULL;
-	GtkWidget *dialog;
-	GdkWindow *window;
 	const char *mime_types[2];
 
-	/* get bus */
-	connection = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
-	if (connection == NULL) {
-		g_error_free (error);
-		goto out;
-	}
-
-	/* get proxy - native clients for for KDE and GNOME */
-	proxy = dbus_g_proxy_new_for_name (connection,
-					   "org.freedesktop.PackageKit",
-					   "/org/freedesktop/PackageKit",
-					   "org.freedesktop.PackageKit.Modify");
-	if (proxy == NULL) {
-		goto out;
-	}
+        g_assert (parameters_install->proxy != NULL);
 
 	/* get XID from parent window */
 	window = gtk_widget_get_window (GTK_WIDGET (parameters_install->parent_window));
@@ -1372,40 +1358,23 @@ search_for_application_mime_type (ActivateParametersInstall *parameters_install,
 		xid = GDK_WINDOW_XID (window);
 	}
 
-	/* don't timeout, as dbus-glib sets the timeout ~25 seconds */
-	dbus_g_proxy_set_default_timeout (proxy, INT_MAX);
-
-	/* invoke the method */
 	mime_types[0] = mime_type;
 	mime_types[1] = NULL;
-	call = dbus_g_proxy_begin_call (proxy, "InstallMimeTypes",
-					(DBusGProxyCallNotify) search_for_application_dbus_call_notify_cb,
-					parameters_install,
-					(GDestroyNotify) activate_parameters_install_free,
-				        G_TYPE_UINT, xid,
-				        G_TYPE_STRV, mime_types,
-				        G_TYPE_STRING, "hide-confirm-search",
-				        G_TYPE_INVALID);
-	if (call == NULL) {
-		dialog = gtk_message_dialog_new (NULL,
-						 GTK_DIALOG_MODAL,
-						 GTK_MESSAGE_ERROR,
-						 GTK_BUTTONS_OK,
-						 _("Could not use system package installer"));
-		g_signal_connect (G_OBJECT (dialog), "response",
-				  G_CALLBACK (gtk_widget_destroy), NULL);
-		gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
-		gtk_widget_show (dialog);
-		goto out;
-	}
+
+        g_dbus_proxy_call (parameters_install->proxy,
+                           "InstallMimeTypes",
+                           g_variant_new ("(u^ass)",
+                                           xid,
+                                           mime_types,
+                                           "hide-confirm-search"),
+                           G_DBUS_CALL_FLAGS_NONE,
+                           G_MAXINT /* no timeout */,
+                           NULL /* cancellable */,
+                           (GAsyncReadyCallback) search_for_application_dbus_call_notify_cb,
+                           parameters_install);
 
 	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
 			    "InstallMimeType method invoked for %s", mime_type);
-out:
-	if (call == NULL) {
-		/* dbus method was not called, so we're not going to get the async dbus callback */
-		activate_parameters_install_free (parameters_install);
-	}
 }
 
 static void
@@ -1425,29 +1394,33 @@ application_unhandled_file_install (GtkDialog *dialog, gint response_id, Activat
 	}
 }
 
-static void
-packagekit_present_dbus_call_notify_cb (DBusGProxy *proxy, DBusGProxyCall *call, ActivateParametersInstall *parameters_install)
+static gboolean
+delete_cb (GtkDialog *dialog)
 {
-	gboolean ret;
-	GError *error = NULL;
+        gtk_dialog_response (dialog, GTK_RESPONSE_DELETE_EVENT);
+        return TRUE;
+}
+
+static void
+pk_proxy_constructed_cb (GDBusConnection *connection,
+                         GAsyncResult    *result,
+                         gpointer         user_data)
+{
+        ActivateParametersInstall *parameters_install = user_data;
 	char *mime_type;
 	char *error_message;
-	gboolean present;
 	GtkWidget *dialog;
+	GError *error = NULL;
 
-
-	ret = dbus_g_proxy_end_call (proxy, call, &error, G_TYPE_BOOLEAN, &present, G_TYPE_INVALID);
-	if (!ret) {
+        parameters_install->proxy = g_dbus_proxy_new_finish (result, &error);
+        if (parameters_install->proxy == NULL) {
+                nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+                                    "Failed to construct PackageKit bus proxy: %s", error->message);
 		g_error_free (error);
+
 		show_unhandled_type_error (parameters_install);
 		activate_parameters_install_free (parameters_install);
-		present = FALSE;
-		goto out;
-	}
-	if (!present) {
-		show_unhandled_type_error (parameters_install);
-		activate_parameters_install_free (parameters_install);
-		goto out;
+		return;
 	}
 
 	mime_type = nautilus_file_get_mime_type (parameters_install->file);
@@ -1463,11 +1436,9 @@ packagekit_present_dbus_call_notify_cb (DBusGProxy *proxy, DBusGProxyCall *call,
 	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
 
 	g_signal_connect (dialog, "response", G_CALLBACK (application_unhandled_file_install), parameters_install);
+        g_signal_connect (dialog, "delete-event", G_CALLBACK (delete_cb), NULL);
 	gtk_widget_show_all (dialog);
 	g_free (mime_type);
-
-out:
-	g_object_unref (proxy);
 }
 
 static void
@@ -1477,9 +1448,7 @@ application_unhandled_uri (ActivateParameters *parameters, char *uri)
 	char *mime_type;
 	NautilusFile *file;
 	ActivateParametersInstall *parameters_install;
-	DBusGConnection *connection;
-	DBusGProxy *proxy;
-	DBusGProxyCall *call;
+	GDBusConnection *connection;
 	GError *error = NULL;
 
 	file = nautilus_file_get_by_uri (uri);
@@ -1495,7 +1464,7 @@ application_unhandled_uri (ActivateParameters *parameters, char *uri)
 		g_object_add_weak_pointer (G_OBJECT (parameters_install->parent_window), (gpointer *)&parameters_install->parent_window);
 	}
 	parameters_install->activation_directory = g_strdup (parameters->activation_directory);
-	parameters_install->file = nautilus_file_ref (file);
+	parameters_install->file = file;
 	parameters_install->files = get_file_list_for_launch_locations (parameters->locations);
 	parameters_install->mode = parameters->mode;
 	parameters_install->flags = parameters->flags;
@@ -1512,50 +1481,41 @@ application_unhandled_uri (ActivateParameters *parameters, char *uri)
 	/* There is no use trying to look for handlers of application/octet-stream */
 	if (g_content_type_is_unknown (mime_type)) {
 		show_install_mime = FALSE;
+                goto out;
 	}
 
-	if (!show_install_mime) {
-		goto out;
-	}
+        if (!show_install_mime) {
+                goto out;
+        }
 
-	/* Check whether PackageKit can be spawned */
-	connection = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
-	if (connection == NULL) {
-		g_error_free (error);
-		show_install_mime = FALSE;
-		goto out;
-	}
+        connection = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, &error);
+        if (connection == NULL) {
+                g_warning ("Could not connect to session bus: %s", error->message);
+                goto out;
+        }
 
-	proxy = dbus_g_proxy_new_for_name (connection,
-					   DBUS_SERVICE_DBUS,
-					   DBUS_PATH_DBUS,
-					   DBUS_INTERFACE_DBUS);
+        g_dbus_proxy_new (connection,
+                          G_TYPE_DBUS_PROXY,
+                          G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES |
+                          G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS,
+                          NULL,
+                          "org.freedesktop.PackageKit",
+                          "/org/freedesktop/PackageKit",
+                          "org.freedesktop.PackageKit.Modify",
+                          NULL /* cancellable */,
+                          (GAsyncReadyCallback) pk_proxy_constructed_cb,
+                          parameters_install);
 
-	if (proxy == NULL) {
-		show_install_mime = FALSE;
-		goto out;
-	}
-	call = dbus_g_proxy_begin_call (proxy, "NameHasOwner",
-					(DBusGProxyCallNotify) packagekit_present_dbus_call_notify_cb,
-					parameters_install,
-					NULL, /* Don't want to free user_data as we need to pass it on */
-				        G_TYPE_STRING, "org.freedesktop.PackageKit",
-				        G_TYPE_INVALID);
-	if (call == NULL) {
-		show_install_mime = FALSE;
-		goto out;
-	}
+        g_object_unref (connection);
+        return;
 
 out:
-	if (!show_install_mime) {
-		/* show an unhelpful dialog */
-		show_unhandled_type_error (parameters_install);
-		/* The callback wasn't started, so we have to free the parameters */
-		activate_parameters_install_free (parameters_install);
-	}
+        /* show an unhelpful dialog */
+        show_unhandled_type_error (parameters_install);
+        /* The callback wasn't started, so we have to free the parameters */
+        activate_parameters_install_free (parameters_install);
 
-	nautilus_file_unref (file);
-	g_free (mime_type);
+        g_free (mime_type);
 }
 
 typedef struct {

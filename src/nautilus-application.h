@@ -31,7 +31,6 @@
 #include <gio/gio.h>
 #include <unique/unique.h>
 #include <libegg/eggsmclient.h>
-#include <dbus/dbus-glib.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
 
 #define NAUTILUS_DESKTOP_ICON_VIEW_IID	"OAFIID:Nautilus_File_Manager_Desktop_Icon_View"
@@ -67,7 +66,8 @@ typedef struct {
 	NautilusUndoManager *undo_manager;
 	GVolumeMonitor *volume_monitor;
 	unsigned int automount_idle_id;
-	DBusGProxy *ck_session_proxy;
+	GDBusProxy *ck_session_proxy;
+        guint ck_session_watch_id;
 	gboolean session_is_active;
 } NautilusApplication;
 
