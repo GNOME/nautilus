@@ -3,6 +3,7 @@ NULL=
 INCLUDES =\
 	-I$(top_srcdir) \
 	$(CORE_CFLAGS) \
+	$(WARNING_CFLAGS) \
 	-DVERSION="\"$(VERSION)\"" \
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
 	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\

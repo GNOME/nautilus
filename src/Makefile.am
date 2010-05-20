@@ -18,6 +18,7 @@ INCLUDES =							\
 	-I$(top_srcdir)/cut-n-paste-code			\
 	-I$(top_builddir)/libnautilus-private 			\
 	$(CORE_CFLAGS) 						\
+	$(WARNING_CFLAGS)					\
 	$(EXIF_CFLAGS)						\
 	$(EXEMPI_CFLAGS)                                        \
 	-DDATADIR=\""$(datadir)"\" 				\
