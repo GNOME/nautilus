@@ -95,5 +95,7 @@ gboolean           fm_tree_model_file_get_iter             (FMTreeModel *model,
 GMount *         fm_tree_model_get_mount_for_root_node_file        
                                                            (FMTreeModel  *model, 
                                                             NautilusFile *file);
+void             fm_tree_model_set_highlight_for_files    (FMTreeModel *model,
+                                                            GList *files);
 
 #endif /* FM_TREE_MODEL_H */
