@@ -248,24 +248,6 @@ fm_list_model_get_path (GtkTreeModel *tree_model, GtkTreeIter *iter)
 	return path;
 }
 
-static gint
-compare_files (gconstpointer a,
-               gconstpointer b)
-{
-	GFile *loc_a, *loc_b;
-	gboolean res;
-	
-	loc_a = nautilus_file_get_location (NAUTILUS_FILE (a));
-	loc_b = nautilus_file_get_location (NAUTILUS_FILE (b));
-
-	res = !g_file_equal (loc_a, loc_b);
-
-	g_object_unref (loc_a);
-	g_object_unref (loc_b);
-
-	return (gint) res;
-}
-
 static void
 fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column, GValue *value)
 {
@@ -340,7 +322,7 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 
 			if (model->details->highlight_files != NULL &&
 			    g_list_find_custom (model->details->highlight_files,
-			                        file, compare_files))
+			                        file, (GCompareFunc) nautilus_file_compare_location))
 			{
 				rendered_icon = eel_gdk_pixbuf_render (icon, 1, 255, 255, 0, 0);
 
