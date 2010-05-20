@@ -69,5 +69,14 @@ void nautilus_clipboard_monitor_set_clipboard_info (NautilusClipboardMonitor *mo
 NautilusClipboardInfo * nautilus_clipboard_monitor_get_clipboard_info (NautilusClipboardMonitor *monitor);
 void nautilus_clipboard_monitor_emit_changed (void);
 
+void nautilus_clear_clipboard_callback (GtkClipboard *clipboard,
+                                        gpointer      user_data);
+void nautilus_get_clipboard_callback   (GtkClipboard     *clipboard,
+                                        GtkSelectionData *selection_data,
+                                        guint             info,
+                                        gpointer          user_data);
+
+
+
 #endif /* NAUTILUS_CLIPBOARD_MONITOR_H */
 
