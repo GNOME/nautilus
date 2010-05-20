@@ -6,6 +6,7 @@ INCLUDES = 					\
 	-I$(top_srcdir) 			\
 	-I$(top_srcdir)/cut-n-paste-code	\
 	$(CORE_CFLAGS)				\
+	$(WARNING_CFLAGS)			\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
 	-DDATADIR=\""$(datadir)"\"		\
 	$(DISABLE_DEPRECATED_CFLAGS)            \

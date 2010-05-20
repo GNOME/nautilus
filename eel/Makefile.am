@@ -6,6 +6,7 @@ INCLUDES =						\
 	-DG_LOG_DOMAIN=\"Eel\"				\
 	-I$(top_srcdir)					\
 	$(CORE_CFLAGS)					\
+	$(WARNING_CFLAGS)				\
 	-DDATADIR=\""$(datadir)"\"			\
 	-DSOURCE_DATADIR=\""$(top_srcdir)/data"\"	\
 	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\

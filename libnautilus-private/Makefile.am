@@ -7,6 +7,7 @@ INCLUDES = 						\
 	-I$(top_builddir) 				\
 	-I$(top_srcdir)/cut-n-paste-code		\
 	$(CORE_CFLAGS)					\
+	$(WARNING_CFLAGS)				\
 	$(DISABLE_DEPRECATED_CFLAGS)			\
 	$(TRACKER_CFLAGS)				\
 	$(BEAGLE_CFLAGS)				\

@@ -8,6 +8,7 @@ INCLUDES=\
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
 	$(LIBNAUTILUS_EXTENSION_CFLAGS) \
+	$(WARNING_CFLAGS) \
 	$(DISABLE_DEPRECATED_CFLAGS) \
 	-DDATADIR=\""$(datadir)"\" \
 	$(NULL)
@@ -69,7 +70,10 @@ introspection_files =					\
 	$(libnautilus_extension_la_SOURCES)
 Nautilus-2.0.gir: libnautilus-extension.la Makefile
 Nautilus_2_0_gir_INCLUDES = Gtk-2.0 Gio-2.0 GLib-2.0
-Nautilus_2_0_gir_CFLAGS = -I$(top_srcdir) -I$(top_builddir)
+Nautilus_2_0_gir_CFLAGS = \
+	-I$(top_srcdir) \
+	-I$(top_builddir) \
+	$(LIBNAUTILUS_EXTENSION_CFLAGS)
 Nautilus_2_0_gir_LIBS = libnautilus-extension.la
 Nautilus_2_0_gir_FILES = $(addprefix $(srcdir)/, $(introspection_files))
 INTROSPECTION_GIRS += Nautilus-2.0.gir
