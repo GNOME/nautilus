@@ -100,6 +100,8 @@ struct FMTreeModelDetails {
 	gboolean show_hidden_files;
 	gboolean show_backup_files;
 	gboolean show_only_directories;
+
+	GList *highlighted_files;
 };
 
 struct FMTreeModelRoot {
@@ -260,20 +262,37 @@ get_menu_icon (GIcon *icon)
 }
 
 static GdkPixbuf *
-get_menu_icon_for_file (NautilusFile *file,
+get_menu_icon_for_file (TreeNode *node,
+                        NautilusFile *file,
 			NautilusFileIconFlags flags)
 {
 	NautilusIconInfo *info;
-	GdkPixbuf *pixbuf;
+	GdkPixbuf *pixbuf, *retval;
+	gboolean highlight;
 	int size;
+	FMTreeModel *model;
 
 	size = nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU);
-	
+
 	info = nautilus_file_get_icon (file, size, flags);
-	pixbuf = nautilus_icon_info_get_pixbuf_nodefault_at_size (info, size);
+	retval = nautilus_icon_info_get_pixbuf_nodefault_at_size (info, size);
+	model = node->root->model;
+
+	highlight = (g_list_find_custom (model->details->highlighted_files,
+	                                 file, (GCompareFunc) nautilus_file_compare_location) != NULL);
+
+	if (highlight) {
+		pixbuf = eel_gdk_pixbuf_render (retval, 1, 255, 255, 0, 0);
+
+		if (pixbuf != NULL) {
+			g_object_unref (retval);
+			retval = pixbuf;
+		}
+	}
+
 	g_object_unref (info);
-	
-	return pixbuf;
+
+	return retval;
 }
 
 static GdkPixbuf *
@@ -283,7 +302,7 @@ tree_node_get_pixbuf (TreeNode *node,
 	if (node->parent == NULL) {
 		return get_menu_icon (node->icon);
 	}
-	return get_menu_icon_for_file (node->file, flags);
+	return get_menu_icon_for_file (node, node->file, flags);
 }
 
 static gboolean
@@ -1816,6 +1835,51 @@ fm_tree_model_file_get_iter (FMTreeModel *model,
 }
 
 static void
+do_update_node (NautilusFile *file,
+                  FMTreeModel *model)
+{
+	TreeNode *root, *node = NULL;
+
+	for (root = model->details->root_node; root != NULL; root = root->next) {
+		node = get_node_from_file (root->root, file);
+
+		if (node != NULL) {
+			break;
+		}
+	}
+
+	if (node == NULL) {
+		return;
+	}
+
+	update_node (model, node);
+}
+
+void
+fm_tree_model_set_highlight_for_files (FMTreeModel *model,
+                                       GList *files)
+{
+	GList *old_files;
+
+	if (model->details->highlighted_files != NULL) {
+		old_files = model->details->highlighted_files;
+		model->details->highlighted_files = NULL;
+
+		g_list_foreach (old_files,
+		                (GFunc) do_update_node, model);
+
+		nautilus_file_list_free (old_files);
+	}
+
+	if (files != NULL) {
+		model->details->highlighted_files = 
+			nautilus_file_list_copy (files);
+		g_list_foreach (model->details->highlighted_files,
+		                (GFunc) do_update_node, model);
+	}
+}
+
+static void
 fm_tree_model_init (FMTreeModel *model)
 {
 	model->details = g_new0 (FMTreeModelDetails, 1);
@@ -1844,6 +1908,10 @@ fm_tree_model_finalize (GObject *object)
 
 	if (model->details->monitoring_update_idle_id != 0) {
 		g_source_remove (model->details->monitoring_update_idle_id);
+	}
+
+	if (model->details->highlighted_files != NULL) {
+		nautilus_file_list_free (model->details->highlighted_files);
 	}
 
 	g_free (model->details);

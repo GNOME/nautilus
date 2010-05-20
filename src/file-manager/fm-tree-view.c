@@ -86,7 +86,8 @@ struct FMTreeViewDetails {
 	gboolean selecting;
 
 	guint show_selection_idle_id;
-	
+	gulong clipboard_handler_id;
+
 	GtkWidget *popup;
 	GtkWidget *popup_open;
 	GtkWidget *popup_open_in_new_window;
@@ -132,6 +133,19 @@ G_DEFINE_TYPE_WITH_CODE (FMTreeView, fm_tree_view, GTK_TYPE_SCROLLED_WINDOW,
 G_DEFINE_TYPE_WITH_CODE (FMTreeViewProvider, fm_tree_view_provider, G_TYPE_OBJECT,
 			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SIDEBAR_PROVIDER,
 						sidebar_provider_iface_init));
+
+static void
+notify_clipboard_info (NautilusClipboardMonitor *monitor,
+                       NautilusClipboardInfo *info,
+                       FMTreeView *view)
+{
+	if (info != NULL && info->cut) {
+		fm_tree_model_set_highlight_for_files (view->details->child_model, info->files);
+	} else {
+		fm_tree_model_set_highlight_for_files (view->details->child_model, NULL);
+	}
+}
+
 
 static gboolean
 show_iter_for_file (FMTreeView *view, NautilusFile *file, GtkTreeIter *iter)
@@ -188,6 +202,18 @@ show_iter_for_file (FMTreeView *view, NautilusFile *file, GtkTreeIter *iter)
 	return FALSE;
 }
 
+static void
+refresh_highlight (FMTreeView *view)
+{
+	NautilusClipboardMonitor *monitor;
+	NautilusClipboardInfo *info;
+
+	monitor = nautilus_clipboard_monitor_get ();
+	info = nautilus_clipboard_monitor_get_clipboard_info (monitor);
+
+	notify_clipboard_info (monitor, info, view);
+}
+
 static gboolean
 show_selection_idle_callback (gpointer callback_data)
 {
@@ -232,6 +258,7 @@ show_selection_idle_callback (gpointer callback_data)
 	gtk_tree_path_free (sort_path);
 
 	nautilus_file_unref (file);
+	refresh_highlight (view);	
 
 	return FALSE;
 }
@@ -858,88 +885,19 @@ fm_tree_view_create_folder_cb (GtkWidget *menu_item,
 	g_free (parent_uri);
 }
 
-typedef struct {
-        char *file_uri;
-	gboolean cut;
-} ClipboardInfo;
-
-static void
-get_clipboard_callback (GtkClipboard	 *clipboard,
-			GtkSelectionData *selection_data,
-			guint		  info_,
-			gpointer	  user_data)
-{
-	ClipboardInfo *info = user_data;
-
-
-        if (gtk_targets_include_uri (&selection_data->target, 1)) {
-                char *uris[2];
-
-                uris[0] = info->file_uri;
-                uris[1] = NULL;
-                gtk_selection_data_set_uris (selection_data, uris);
-        } else if (gtk_targets_include_text (&selection_data->target, 1)) {
-                GFile *file;
-                char *str;
-
-                file = g_file_new_for_uri (info->file_uri);
-                str = g_file_get_parse_name (file);
-                g_object_unref (file);
-
-                if (str) {
-                        gtk_selection_data_set_text (selection_data, str, strlen (str));
-                        g_free (str);
-                } else {
-                        gtk_selection_data_set_text (selection_data,
-                                                    info->file_uri, strlen (info->file_uri));
-                }
-        } else if (selection_data->target == copied_files_atom) {
-                char *str;
-
-                str = g_strdup_printf ("%s\n%s",
-                                       info->cut ? "cut" : "copy",
-                                       info->file_uri);
-                gtk_selection_data_set (selection_data, copied_files_atom,
-                                        8, str, strlen (str));
-                g_free (str);
-        }
-}
-
-static void
-clear_clipboard_callback (GtkClipboard *clipboard,
-			  gpointer	user_data)
-{
-	ClipboardInfo *info = user_data;
-
-        g_free (info->file_uri);
-	g_slice_free (ClipboardInfo, info);
-}
-
-static ClipboardInfo *
-convert_file_to_uri (NautilusFile *file,
-		     gboolean cut)
-{
-        ClipboardInfo *info;
-
-        info = g_slice_new (ClipboardInfo);
-        info->cut = cut;
-	info->file_uri = nautilus_file_get_uri (file);
-
-        return info;
-}
-
 static void
 copy_or_cut_files (FMTreeView *view,
 		   gboolean cut)
 {
 	char *status_string, *name;
-        ClipboardInfo *info;
+	NautilusClipboardInfo info;
         GtkTargetList *target_list;
         GtkTargetEntry *targets;
         int n_targets;
 
-	info = convert_file_to_uri (view->details->popup_file, cut);
-	
+	info.cut = cut;
+	info.files = g_list_prepend (NULL, view->details->popup_file);
+
         target_list = gtk_target_list_new (NULL, 0);
         gtk_target_list_add (target_list, copied_files_atom, 0, 0);
         gtk_target_list_add_uri_targets (target_list, 0);
@@ -950,12 +908,14 @@ copy_or_cut_files (FMTreeView *view,
 
 	gtk_clipboard_set_with_data (nautilus_clipboard_get (GTK_WIDGET (view->details->tree_widget)),
 				     targets, n_targets,
-				     get_clipboard_callback, clear_clipboard_callback,
-				     info);
+				     nautilus_get_clipboard_callback, nautilus_clear_clipboard_callback,
+				     NULL);
         gtk_target_table_free (targets, n_targets);
 
-	nautilus_clipboard_monitor_emit_changed ();
-	
+	nautilus_clipboard_monitor_set_clipboard_info (nautilus_clipboard_monitor_get (),
+	                                               &info);
+	g_list_free (info.files);
+
 	name = nautilus_file_get_display_name (view->details->popup_file);
 	if (cut) {
 		status_string = g_strdup_printf (_("\"%s\" will be moved "
@@ -1541,6 +1501,11 @@ fm_tree_view_init (FMTreeView *view)
 						  filtering_changed_callback, view, G_OBJECT (view));
 	
 	view->details->popup_file = NULL;
+
+	view->details->clipboard_handler_id = 
+		g_signal_connect (nautilus_clipboard_monitor_get (),
+		                  "clipboard_info",
+		                  G_CALLBACK (notify_clipboard_info), view);
 }
 
 static void
@@ -1563,6 +1528,12 @@ fm_tree_view_dispose (GObject *object)
 	if (view->details->show_selection_idle_id) {
 		g_source_remove (view->details->show_selection_idle_id);
 		view->details->show_selection_idle_id = 0;
+	}
+
+	if (view->details->clipboard_handler_id != 0) {
+		g_signal_handler_disconnect (nautilus_clipboard_monitor_get (),
+		                             view->details->clipboard_handler_id);
+		view->details->clipboard_handler_id = 0;
 	}
 
 	cancel_activation (view);
