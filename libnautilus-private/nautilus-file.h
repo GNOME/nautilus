@@ -409,6 +409,8 @@ gboolean                nautilus_file_is_date_sort_attribute_q          (GQuark 
 
 int                     nautilus_file_compare_display_name              (NautilusFile                   *file_1,
 									 const char                     *pattern);
+int                     nautilus_file_compare_location                  (NautilusFile                    *file_1,
+                                                                         NautilusFile                    *file_2);
 
 /* filtering functions for use by various directory views */
 gboolean                nautilus_file_is_hidden_file                    (NautilusFile                   *file);

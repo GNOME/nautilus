@@ -1987,6 +1987,24 @@ nautilus_file_matches_uri (NautilusFile *file, const char *match_uri)
 	return result;
 }
 
+int
+nautilus_file_compare_location (NautilusFile *file_1,
+                                NautilusFile *file_2)
+{
+	GFile *loc_a, *loc_b;
+	gboolean res;
+
+	loc_a = nautilus_file_get_location (file_1);
+	loc_b = nautilus_file_get_location (file_2);
+
+	res = !g_file_equal (loc_a, loc_b);
+
+	g_object_unref (loc_a);
+	g_object_unref (loc_b);
+
+	return (gint) res;
+}
+
 gboolean
 nautilus_file_is_local (NautilusFile *file)
 {
