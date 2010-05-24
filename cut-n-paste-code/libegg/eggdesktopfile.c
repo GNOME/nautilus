@@ -1072,7 +1072,7 @@ egg_desktop_file_launchv (EggDesktopFile *desktop_file,
 			  GError **error)
 {
   EggDesktopFileLaunchOption option;
-  GSList *translated_documents, *docs;
+  GSList *translated_documents = NULL, *docs;
   char *command, **argv;
   int argc, i, screen_num;
   gboolean success, current_success;
