@@ -352,18 +352,9 @@ nautilus_application_finalize (GObject *object)
 		application->automount_idle_id = 0;
 	}
 
-        if (application->ck_session_watch_id != 0) {
-                g_bus_unwatch_proxy (application->ck_session_watch_id);
-                application->ck_session_watch_id = 0;
-        }
-
-	if (application->ck_session_proxy != NULL) {
-                g_signal_handlers_disconnect_matched (application->ck_session_proxy,
-                                                      G_SIGNAL_MATCH_DATA,
-                                                      0, 0, NULL, NULL,
-                                                      application);
-		g_object_unref (application->ck_session_proxy);
-		application->ck_session_proxy = NULL;
+	if (application->ck_watch_id != 0) {
+		g_bus_unwatch_proxy (application->ck_watch_id);
+		application->ck_watch_id = 0;
 	}
 
         G_OBJECT_CLASS (nautilus_application_parent_class)->finalize (object);
@@ -534,18 +525,19 @@ mark_desktop_files_trusted (void)
 #define CK_NAME       "org.freedesktop.ConsoleKit"
 #define CK_PATH       "/org/freedesktop/ConsoleKit"
 #define CK_INTERFACE  "org.freedesktop.ConsoleKit"
+
 static void
 ck_session_proxy_signal_cb (GDBusProxy *proxy,
-                            const char *sender_name,
-                            const char *signal_name,
-                            GVariant   *parameters,
-                            gpointer    user_data)
+			    const char *sender_name,
+			    const char *signal_name,
+			    GVariant   *parameters,
+			    gpointer    user_data)
 {
 	NautilusApplication *application = user_data;
 
-        if (g_strcmp0 (signal_name, "ActiveChanged") == 0) {
-                g_variant_get (parameters, "(b)", &application->session_is_active);
-        }
+	if (g_strcmp0 (signal_name, "ActiveChanged") == 0) {
+		g_variant_get (parameters, "(b)", &application->session_is_active);
+	}
 }
 
 static void
@@ -554,107 +546,119 @@ ck_call_is_active_cb (GDBusProxy   *proxy,
 		      gpointer      user_data)
 {
 	NautilusApplication *application = user_data;
-        GVariant *variant;
+	GVariant *variant;
+	GError *error = NULL;
 
-        variant = g_dbus_proxy_call_finish (proxy, result, NULL);
-        if (variant == NULL) {
+	variant = g_dbus_proxy_call_finish (proxy, result, &error);
+
+	if (variant == NULL) {
+		g_warning ("Error when calling IsActive(): %s\n", error->message);
 		application->session_is_active = TRUE;
+
+		g_error_free (error);
 		return;
 	}
 
-        g_variant_get (variant, "(b)", &application->session_is_active);
-        g_variant_unref (variant);
+	g_variant_get (variant, "(b)", &application->session_is_active);
+
+	g_variant_unref (variant);
 }
 
 static void
-ck_session_proxy_constructed_cb (GDBusConnection *connection,
-                                 GAsyncResult    *result,
-                                 gpointer         user_data)
+session_proxy_vanished (GDBusConnection *connection,
+                        const gchar *name,
+                        gpointer user_data)
 {
 	NautilusApplication *application = user_data;
-        GError *error = NULL;
 
-        application->ck_session_proxy = g_dbus_proxy_new_finish (result, &error);
-        if (application->ck_session_proxy == NULL) {
-                application->session_is_active = TRUE;
-                g_object_unref (connection);
-                return;
-        }
+	application->session_is_active = TRUE;
+}
 
-        g_signal_connect (application->ck_session_proxy, "g-signal",
-                          G_CALLBACK (ck_session_proxy_signal_cb),
-                          application);
+static void
+session_proxy_appeared (GDBusConnection *connection,
+                        const gchar *name,
+                        const gchar *name_owner,
+                        GDBusProxy *proxy,
+                        gpointer user_data)
+{
+	NautilusApplication *application = user_data;
 
-        g_dbus_proxy_call (application->ck_session_proxy,
-                           "IsActive",
-                           g_variant_new ("()"),
-                           G_DBUS_CALL_FLAGS_NONE,
-                           -1,
-                           NULL,
-                           (GAsyncReadyCallback) ck_call_is_active_cb,
-                           application);
+	g_signal_connect (proxy, "g-signal",
+			  G_CALLBACK (ck_session_proxy_signal_cb),
+			  application);
 
-        g_object_unref (connection);
+	g_dbus_proxy_call (proxy,
+			   "IsActive",
+			   g_variant_new ("()"),
+			   G_DBUS_CALL_FLAGS_NONE,
+			   -1,
+			   NULL,
+			   (GAsyncReadyCallback) ck_call_is_active_cb,
+			   application);	
 }
 
 static void
 ck_get_current_session_cb (GDBusConnection *connection,
-                           GAsyncResult    *result,
+			   GAsyncResult    *result,
 			   gpointer         user_data)
 {
 	NautilusApplication *application = user_data;
-        GVariant *variant;
-	const char *session_path;
-        GError *error = NULL;
+	GVariant *variant;
+	const char *session_path = NULL;
+	GError *error = NULL;
 
-        variant = g_dbus_connection_call_finish (connection, result, &error);
-        if (variant == NULL) {
-                g_warning ("Failed to get the current session: %s", error->message);
-                g_error_free (error);
-                g_object_unref (connection);
+	variant = g_dbus_connection_call_finish (connection, result, &error);
+
+	if (variant == NULL) {
+		g_warning ("Failed to get the current CK session: %s", error->message);
+		g_error_free (error);
 
 		application->session_is_active = TRUE;
 		return;
 	}
 
-        g_variant_get (variant, "(&o)", session_path);
+	g_variant_get (variant, "(&o)", &session_path);
 
-        g_dbus_proxy_new (connection,
-                          G_TYPE_DBUS_PROXY,
-                          G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES,
-                          NULL,
-                          CK_NAME,
-                          session_path,
-                          CK_INTERFACE ".Session",
-                          NULL,
-                          (GAsyncReadyCallback) ck_session_proxy_constructed_cb,
-                          application);
+	application->ck_watch_id = g_bus_watch_proxy (G_BUS_TYPE_SYSTEM,
+						      CK_NAME,
+						      0, session_path,
+						      CK_INTERFACE ".Session",
+						      G_TYPE_DBUS_PROXY,
+						      G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES,
+						      session_proxy_appeared,
+						      session_proxy_vanished,
+						      application,
+						      NULL);
 
-        g_variant_unref (variant);
+	g_variant_unref (variant);
 }
 
 static void
 do_initialize_consolekit (NautilusApplication *application)
 {
-        GDBusConnection *connection;
+	GDBusConnection *connection;
 
-        connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, NULL);
-        if (connection == NULL) {
-                application->session_is_active = TRUE;
-                return;
-        }
+	connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, NULL);
 
-        g_dbus_connection_call (connection,
-                                CK_NAME,
-                                CK_PATH "/Manager",
-                                CK_INTERFACE ".Manager",
-                                "GetCurrentSession",
-                                g_variant_new ("()"),
-                                G_DBUS_CALL_FLAGS_NONE /* FIXME? */,
-                                -1,
-                                NULL /* FIXME? */,
-                                (GAsyncReadyCallback) ck_get_current_session_cb,
-                                application);
+	if (connection == NULL) {
+		application->session_is_active = TRUE;
+		return;
+	}
+
+	g_dbus_connection_call (connection,
+				CK_NAME,
+				CK_PATH "/Manager",
+				CK_INTERFACE ".Manager",
+				"GetCurrentSession",
+				g_variant_new ("()"),
+				G_VARIANT_TYPE_TUPLE,
+				G_DBUS_CALL_FLAGS_NONE,
+				-1,
+				NULL,
+				(GAsyncReadyCallback) ck_get_current_session_cb,
+				application);
+
+	g_object_unref (connection);
 }
 
 static void
