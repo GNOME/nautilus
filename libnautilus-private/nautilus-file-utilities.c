@@ -1011,6 +1011,25 @@ nautilus_is_file_roller_installed (void)
 #define INHIBIT_LOGOUT (1U)
 #define INHIBIT_SUSPEND (4U)
 
+static GDBusConnection *
+get_dbus_connection (void)
+{
+	static GDBusConnection *conn = NULL;
+
+	if (conn == NULL) {
+		GError *error = NULL;
+
+	        conn = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, &error);
+
+		if (conn == NULL) {
+	                g_warning ("Could not connect to session bus: %s", error->message);
+			g_error_free (error);
+		}
+	}
+
+	return conn;
+}
+
 /**
  * nautilus_inhibit_power_manager:
  * @message: a human readable message for the reason why power management
@@ -1026,42 +1045,43 @@ nautilus_is_file_roller_installed (void)
 int
 nautilus_inhibit_power_manager (const char *message)
 {
-        GDBusConnection *connection;
-        GVariant *result;
+	GDBusConnection *connection;
+	GVariant *result;
 	GError *error = NULL;
-	int cookie;
+	guint cookie = 0;
 
-        g_return_val_if_fail (message != NULL, -1);
+	g_return_val_if_fail (message != NULL, -1);
 
-        connection = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, &error);
+        connection = get_dbus_connection ();
+
         if (connection == NULL) {
-                g_warning ("Could not connect to session bus: %s", error->message);
                 return -1;
         }
 
-        result = g_dbus_connection_call_sync (connection,
-                                              GSM_NAME,
-                                              GSM_PATH,
-                                              GSM_INTERFACE,
-                                              "Inhibit",
-                                              g_variant_new ("(susu)",
-                                                             "Nautilus",
-                                                             (guint) 0,
-                                                             message,
-                                                             (guint) (INHIBIT_LOGOUT | INHIBIT_SUSPEND)),
-                                              G_DBUS_CALL_FLAGS_NO_AUTO_START,
-                                              -1 /* FIXME? */,
-                                              NULL,
-                                              &error);
-        g_object_unref (connection);
-        if (result == NULL) {
+	result = g_dbus_connection_call_sync (connection,
+					      GSM_NAME,
+					      GSM_PATH,
+					      GSM_INTERFACE,
+					      "Inhibit",
+					      g_variant_new ("(susu)",
+							     "Nautilus",
+							     (guint) 0,
+							     message,
+							     (guint) (INHIBIT_LOGOUT | INHIBIT_SUSPEND)),
+					      G_VARIANT_TYPE_TUPLE,
+					      G_DBUS_CALL_FLAGS_NO_AUTO_START,
+					      -1,
+					      NULL,
+					      &error);
+
+	if (error != NULL) {
 		g_warning ("Could not inhibit power management: %s", error->message);
 		g_error_free (error);
 		return -1;
 	}
 
-        g_variant_get (result, "(u)", &cookie);
-        g_variant_unref (result);
+	g_variant_get (result, "(u)", &cookie);
+	g_variant_unref (result);
 
 	return (int) cookie;
 }
@@ -1077,36 +1097,37 @@ nautilus_inhibit_power_manager (const char *message)
 void
 nautilus_uninhibit_power_manager (gint cookie)
 {
-        GDBusConnection *connection;
-        GVariant *result;
+	GDBusConnection *connection;
+	GVariant *result;
 	GError *error = NULL;
 
 	g_return_if_fail (cookie > 0);
 
-        connection = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, &error);
-        if (connection == NULL) {
-                g_warning ("Could not connect to session bus: %s", error->message);
-                return;
-        }
+	connection = get_dbus_connection ();
 
-        result = g_dbus_connection_call_sync (connection,
-                                              GSM_NAME,
-                                              GSM_PATH,
-                                              GSM_INTERFACE,
-                                              "Uninhibit",
-                                              g_variant_new ("(u)", (guint) cookie),
-                                              G_DBUS_CALL_FLAGS_NO_AUTO_START,
-                                              -1 /* FIXME? */,
-                                              NULL,
-                                              &error);
-        g_object_unref (connection);
-        if (result == NULL) {
+	if (connection == NULL) {
+		return;
+	}
+
+	result = g_dbus_connection_call_sync (connection,
+					      GSM_NAME,
+					      GSM_PATH,
+					      GSM_INTERFACE,
+					      "Uninhibit",
+					      g_variant_new ("(u)", (guint) cookie),
+					      NULL,
+					      G_DBUS_CALL_FLAGS_NO_AUTO_START,
+					      -1,
+					      NULL,
+					      &error);
+
+	if (result == NULL) {
 		g_warning ("Could not uninhibit power management: %s", error->message);
 		g_error_free (error);
 		return;
 	}
 
-        g_variant_unref (result);
+	g_variant_unref (result);
 }
 
 /* Returns TRUE if the file is in XDG_DATA_DIRS or
