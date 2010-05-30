@@ -651,7 +651,7 @@ do_initialize_consolekit (NautilusApplication *application)
 				CK_INTERFACE ".Manager",
 				"GetCurrentSession",
 				g_variant_new ("()"),
-				G_VARIANT_TYPE_TUPLE,
+				G_VARIANT_TYPE ("(o)"),
 				G_DBUS_CALL_FLAGS_NONE,
 				-1,
 				NULL,
