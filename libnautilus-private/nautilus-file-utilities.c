@@ -1068,7 +1068,7 @@ nautilus_inhibit_power_manager (const char *message)
 							     (guint) 0,
 							     message,
 							     (guint) (INHIBIT_LOGOUT | INHIBIT_SUSPEND)),
-					      G_VARIANT_TYPE_TUPLE,
+					      G_VARIANT_TYPE ("(u)"),
 					      G_DBUS_CALL_FLAGS_NO_AUTO_START,
 					      -1,
 					      NULL,
