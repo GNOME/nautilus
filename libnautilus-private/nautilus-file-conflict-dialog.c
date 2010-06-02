@@ -31,7 +31,6 @@
 #include <gio/gio.h>
 #include <glib/gi18n.h>
 #include <pango/pango.h>
-#include <gtk/gtk.h>
 #include <eel/eel-vfs-extensions.h>
 
 #include "nautilus-file.h"

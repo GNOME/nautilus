@@ -28,7 +28,7 @@
 
 #include <glib-object.h>
 #include <gio/gio.h>
-#include <gtk/gtkmessagedialog.h>
+#include <gtk/gtk.h>
 
 #define NAUTILUS_TYPE_FILE_CONFLICT_DIALOG \
 	(nautilus_file_conflict_dialog_get_type ())
