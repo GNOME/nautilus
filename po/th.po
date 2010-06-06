@@ -18,8 +18,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&component=Internationalization (i18n)\n"
 "POT-Creation-Date: 2010-06-02 12:37+0000\n"
-"PO-Revision-Date: 2010-06-06 17:58+0700\n"
-"Last-Translator: Sira Nokyoongtong <gumaraa@gmail.com>\n"
+"PO-Revision-Date: 2010-06-06 18:09+0700\n"
+"Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -508,7 +508,7 @@ msgstr ""
 msgid ""
 "A string containing the saved geometry and coordinates string for navigation "
 "windows."
-msgstr ""
+msgstr "ข้อความบรรยายค่าเรขาคณิตและพิกัดที่บันทึกไว้ของหน้าต่างท่องดูแฟ้ม"
 
 #. TRANSLATORS: don't translate the zoom levels between quotes
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:7
@@ -1216,10 +1216,8 @@ msgid ""
 msgstr "รูปแบบวันที่แฟ้ม  สามารถตั้งเป็น \"locale\" \"iso\" และ \"informal\""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:126
-#, fuzzy
-#| msgid "Open this folder in a navigation window"
 msgid "The geometry string for a navigation window."
-msgstr "เปิดโฟลเดอร์นี้ในหน้าต่างแบบท่องดู"
+msgstr "ข้อความบรรยายเรขาคณิตของหน้าต่างท่องดู"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:127
 msgid "The side pane view to show in newly opened windows."
@@ -1319,11 +1317,11 @@ msgstr "กำหนดว่ามีการกำหนดพื้นหล
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:146
 msgid "Whether the navigation window should be maximized by default."
-msgstr ""
+msgstr "กำหนดว่าหน้าต่างท่องดูควรขยายแผ่โดยปริยายหรือไม่"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:147
 msgid "Whether the navigation window should be maximized."
-msgstr ""
+msgstr "กำหนดว่าหน้าต่างท่องดูควรขยายแผ่หรือไม่"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:148
 msgid "Whether to ask for confirmation when deleting files, or emptying Trash"
@@ -1561,11 +1559,11 @@ msgstr "ขนาดของแฟ้ม"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:58
 msgid "Type"
-msgstr "ประเภท"
+msgstr "ชนิด"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:59
 msgid "The type of the file."
-msgstr "ประเภทของแฟ้ม"
+msgstr "ชนิดของแฟ้ม"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:65
 #: ../src/nautilus-image-properties-page.c:275
@@ -1642,16 +1640,12 @@ msgid "Location"
 msgstr "ตำแหน่ง"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:170
-#, fuzzy
-#| msgid "Trash"
 msgid "Trashed On"
-msgstr "ถังขยะ"
+msgstr "ทิ้งลงถังขยะเมื่อ"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:171
-#, fuzzy
-#| msgid "The file \"%B\" cannot be moved to the trash."
 msgid "Date when file was moved to the Trash"
-msgstr "ย้ายแฟ้ม \"%B\" ไปลงถังขยะไม่ได้"
+msgstr "วันที่ที่แฟ้มถูกย้ายมาลงถังขยะ"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:177
 msgid "Original Location"
@@ -2834,7 +2828,7 @@ msgstr "ชนิดที่ไม่รู้จัก"
 
 #: ../libnautilus-private/nautilus-file.c:6265
 msgid "unknown MIME type"
-msgstr "ประเภท MIME ที่ไม่รู้จัก"
+msgstr "ชนิด MIME ที่ไม่รู้จัก"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
@@ -3028,7 +3022,7 @@ msgstr "ตามขนาด"
 #: ../libnautilus-private/nautilus-global-preferences.c:152
 #: ../src/nautilus-file-management-properties.ui.h:52
 msgid "By Type"
-msgstr "ตามประเภท"
+msgstr "ตามชนิด"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:153
 #: ../src/nautilus-file-management-properties.ui.h:49
@@ -4928,12 +4922,12 @@ msgstr "เรียงไอคอนเป็นแถวตามขนาด
 
 #: ../src/file-manager/fm-icon-view.c:140
 msgid "by _Type"
-msgstr "ตาม_ประเภท"
+msgstr "ตามช_นิด"
 
 #: ../src/file-manager/fm-icon-view.c:141
 #: ../src/file-manager/fm-icon-view.c:1593
 msgid "Keep icons sorted by type in rows"
-msgstr "เรียงไอคอนเป็นแถวตามประเภท"
+msgstr "เรียงไอคอนเป็นแถวตามชนิด"
 
 #: ../src/file-manager/fm-icon-view.c:147
 msgid "by Modification _Date"
@@ -5518,6 +5512,7 @@ msgid ""
 "Nautilus 2.32 deprecated this directory and tried migrating this "
 "configuration to ~/.config/nautilus"
 msgstr ""
+"Nautilus 2.32 ได้เลิกใช้ไดเรกทอรีนี้แล้ว และได้ย้ายค่าตั้งนี้ไปที่ ~/.config/nautilus แล้ว"
 
 #: ../src/nautilus-application.c:1560 ../src/nautilus-places-sidebar.c:1818
 #: ../src/nautilus-places-sidebar.c:1847 ../src/nautilus-places-sidebar.c:1876
