@@ -281,28 +281,6 @@ label_button_pressed_callback (GtkWidget             *widget,
 	return FALSE;
 }
 
-static int
-get_editable_number_of_chars (GtkEditable *editable)
-{
-	char *text;
-	int length;
-
-	text = gtk_editable_get_chars (editable, 0, -1);
-	length = g_utf8_strlen (text, -1);
-	g_free (text);
-	return length;
-}
-
-static void
-set_position_and_selection_to_end (GtkEditable *editable)
-{
-	int end;
-
-	end = get_editable_number_of_chars (editable);
-	gtk_editable_select_region (editable, end, end);
-	gtk_editable_set_position (editable, end);
-}
-
 static void
 editable_activate_callback (GtkEntry *entry,
 			    gpointer user_data)
@@ -428,7 +406,7 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 	entry = nautilus_location_entry_new ();
 	
 	g_signal_connect_object (entry, "activate",
-				 G_CALLBACK (editable_activate_callback), bar, 0);
+				 G_CALLBACK (editable_activate_callback), bar, G_CONNECT_AFTER);
 	g_signal_connect_object (entry, "changed",
 				 G_CALLBACK (editable_changed_callback), bar, 0);
 
@@ -505,9 +483,8 @@ nautilus_location_bar_set_location (NautilusNavigationBar *navigation_bar,
 		file = g_file_new_for_uri (location);
 		formatted_location = g_file_get_parse_name (file);
 		g_object_unref (file);
-		nautilus_entry_set_text (NAUTILUS_ENTRY (bar->details->entry),
-					 formatted_location);
-		set_position_and_selection_to_end (GTK_EDITABLE (bar->details->entry));
+		nautilus_location_entry_update_current_location (NAUTILUS_LOCATION_ENTRY (bar->details->entry),
+								 formatted_location);
 		g_free (formatted_location);
 	}
 
