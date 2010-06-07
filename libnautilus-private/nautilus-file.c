@@ -7690,6 +7690,90 @@ nautilus_file_list_from_uris (GList *uri_list)
 	return g_list_reverse (file_list);
 }
 
+static gboolean
+get_attributes_for_default_sort_type (NautilusFile *file,
+				      gboolean *is_download,
+				      gboolean *is_trash)
+{
+	gboolean is_download_dir, is_desktop_dir, is_trash_dir, retval;
+
+	*is_download = FALSE;
+	*is_trash = FALSE;
+	retval = FALSE;
+
+	/* special handling for certain directories */
+	if (file && nautilus_file_is_directory (file)) {
+		is_download_dir =
+			nautilus_file_is_user_special_directory (file, G_USER_DIRECTORY_DOWNLOAD);
+		is_desktop_dir =
+			nautilus_file_is_user_special_directory (file, G_USER_DIRECTORY_DESKTOP);
+		is_trash_dir =
+			nautilus_file_is_in_trash (file);
+
+		if (is_download_dir && !is_desktop_dir) {
+			*is_download = TRUE;
+			retval = TRUE;
+		} else if (is_trash_dir) {
+			*is_trash = TRUE;
+			retval = TRUE;
+		}
+	}
+
+	return retval;
+}
+
+NautilusFileSortType
+nautilus_file_get_default_sort_type (NautilusFile *file,
+				     gboolean *reversed)
+{
+	NautilusFileSortType retval;
+	gboolean is_download, is_trash, res;
+
+	retval = NAUTILUS_FILE_SORT_NONE;
+	is_download = is_trash = FALSE;
+	res = get_attributes_for_default_sort_type (file, &is_download, &is_trash);
+
+	if (res) {
+		if (is_download) {
+			retval = NAUTILUS_FILE_SORT_BY_MTIME;
+		} else if (is_trash) {
+			retval = NAUTILUS_FILE_SORT_BY_TRASHED_TIME;
+		}
+
+		if (reversed != NULL) {
+			*reversed = res;
+		}
+	}
+
+	return retval;
+}
+
+const gchar *
+nautilus_file_get_default_sort_attribute (NautilusFile *file,
+					  gboolean *reversed)
+{
+	const gchar *retval;
+	gboolean is_download, is_trash, res;
+
+	retval = NULL;
+	is_download = is_trash = FALSE;
+	res = get_attributes_for_default_sort_type (file, &is_download, &is_trash);
+
+	if (res) {
+		if (is_download) {
+			retval = g_quark_to_string (attribute_date_modified_q);
+		} else if (is_trash) {
+			retval = g_quark_to_string (attribute_trashed_on_q);
+		}
+
+		if (reversed != NULL) {
+			*reversed = res;
+		}
+	}
+
+	return retval;
+}
+
 static int
 compare_by_display_name_cover (gconstpointer a, gconstpointer b)
 {
