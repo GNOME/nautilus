@@ -170,6 +170,21 @@ static const char * default_trash_columns_order[] = {
 /* for EEL_CALL_PARENT */
 #define parent_class fm_list_view_parent_class
 
+static const gchar*
+get_default_sort_order (NautilusFile *file, gboolean *reversed)
+{
+	const gchar *retval;
+
+	retval = nautilus_file_get_default_sort_attribute (file, reversed);
+
+	if (retval == NULL) {
+		retval = default_sort_order_auto_value;
+		*reversed = default_sort_reversed_auto_value;
+	}
+
+	return retval;
+}
+
 static void
 list_selection_changed_callback (GtkTreeSelection *selection, gpointer user_data)
 {
@@ -1076,6 +1091,7 @@ sort_column_changed_callback (GtkTreeSortable *sortable,
 	GtkSortType reversed;
 	GQuark sort_attr, default_sort_attr;
 	char *reversed_attr, *default_reversed_attr;
+	gboolean default_sort_reversed;
 
 	file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (view));
 
@@ -1083,12 +1099,12 @@ sort_column_changed_callback (GtkTreeSortable *sortable,
 	sort_attr = fm_list_model_get_attribute_from_sort_column_id (view->details->model, sort_column_id);
 
 	default_sort_column_id = fm_list_model_get_sort_column_id_from_attribute (view->details->model,
-										  g_quark_from_string (default_sort_order_auto_value));
+						g_quark_from_string (get_default_sort_order (file, &default_sort_reversed)));
 	default_sort_attr = fm_list_model_get_attribute_from_sort_column_id (view->details->model, default_sort_column_id);
 	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN,
 				    g_quark_to_string (default_sort_attr), g_quark_to_string (sort_attr));
 
-	default_reversed_attr = (default_sort_reversed_auto_value ? "true" : "false");
+	default_reversed_attr = (default_sort_reversed ? "true" : "false");
 
 	if (view->details->last_sort_attr != sort_attr &&
 	    sort_criterion_changes_due_to_user (view->details->tree_view)) {
@@ -1690,7 +1706,8 @@ set_sort_order_from_metadata_and_preferences (FMListView *list_view)
 	char *sort_attribute;
 	int sort_column_id;
 	NautilusFile *file;
-	gboolean sort_reversed;
+	gboolean sort_reversed, default_sort_reversed;
+	const gchar *default_sort_order;
 	
 	file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (list_view));
 	sort_attribute = nautilus_file_get_metadata (file,
@@ -1699,15 +1716,18 @@ set_sort_order_from_metadata_and_preferences (FMListView *list_view)
 	sort_column_id = fm_list_model_get_sort_column_id_from_attribute (list_view->details->model,
 									  g_quark_from_string (sort_attribute));
 	g_free (sort_attribute);
+
+	default_sort_order = get_default_sort_order (file, &default_sort_reversed);
+	
 	if (sort_column_id == -1) {
 		sort_column_id =
 			fm_list_model_get_sort_column_id_from_attribute (list_view->details->model,
-									 g_quark_from_string (default_sort_order_auto_value));
+									 g_quark_from_string (default_sort_order));
 	}
 
 	sort_reversed = nautilus_file_get_boolean_metadata (file,
 							    NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED,
-							    default_sort_reversed_auto_value);
+							    default_sort_reversed);
 
 	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (list_view->details->model),
 					      sort_column_id,
@@ -2383,6 +2403,8 @@ static void
 fm_list_view_reset_to_defaults (FMDirectoryView *view)
 {
 	NautilusFile *file;
+	const gchar *default_sort_order;
+	gboolean default_sort_reversed;
 
 	file = fm_directory_view_get_directory_as_file (view);
 
@@ -2392,11 +2414,13 @@ fm_list_view_reset_to_defaults (FMDirectoryView *view)
 	nautilus_file_set_metadata_list (file, NAUTILUS_METADATA_KEY_LIST_VIEW_COLUMN_ORDER, NULL);
 	nautilus_file_set_metadata_list (file, NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS, NULL);
 
+	default_sort_order = get_default_sort_order (file, &default_sort_reversed);
+
 	gtk_tree_sortable_set_sort_column_id
 		(GTK_TREE_SORTABLE (FM_LIST_VIEW (view)->details->model),
 		 fm_list_model_get_sort_column_id_from_attribute (FM_LIST_VIEW (view)->details->model,
-								  g_quark_from_string (default_sort_order_auto_value)),
-		 default_sort_reversed_auto_value ? GTK_SORT_DESCENDING : GTK_SORT_ASCENDING);
+								  g_quark_from_string (default_sort_order)),
+		 default_sort_reversed ? GTK_SORT_DESCENDING : GTK_SORT_ASCENDING);
 
 	fm_list_view_set_zoom_level (FM_LIST_VIEW (view), get_default_zoom_level (), FALSE);
 	set_columns_settings_from_metadata_and_preferences (FM_LIST_VIEW (view));
