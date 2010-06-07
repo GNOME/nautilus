@@ -6926,6 +6926,39 @@ nautilus_file_is_directory (NautilusFile *file)
 	return nautilus_file_get_file_type (file) == G_FILE_TYPE_DIRECTORY;
 }
 
+/**
+ * nautilus_file_is_user_special_directory
+ *
+ * Check if this file is a special platform directory.
+ * @file: NautilusFile representing the file in question.
+ * @special_directory: GUserDirectory representing the type to test for
+ * 
+ * Returns: TRUE if @file is a special directory of the given kind.
+ */
+gboolean
+nautilus_file_is_user_special_directory (NautilusFile *file,
+					 GUserDirectory special_directory)
+{
+	gboolean is_special_dir;
+	const gchar *special_dir;
+
+	special_dir = g_get_user_special_dir (special_directory);
+	is_special_dir = FALSE;
+
+	if (special_dir) {
+		GFile *loc;
+		GFile *special_gfile;
+
+		loc = nautilus_file_get_location (file);
+		special_gfile = g_file_new_for_path (special_dir);
+		is_special_dir = g_file_equal (loc, special_gfile);
+		g_object_unref (special_gfile);
+		g_object_unref (loc);
+	}
+
+	return is_special_dir;
+}
+
 gboolean
 nautilus_file_is_archive (NautilusFile *file)
 {
