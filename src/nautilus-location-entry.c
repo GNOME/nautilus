@@ -80,7 +80,7 @@ try_to_expand_path (gpointer callback_data)
 {
 	NautilusLocationEntry *entry;
 	GtkEditable *editable;
-	char *suffix, *user_location;
+	char *suffix, *user_location, *absolute_location;
 	int user_location_length, pos;
 
 	entry = NAUTILUS_LOCATION_ENTRY (callback_data);
@@ -88,10 +88,17 @@ try_to_expand_path (gpointer callback_data)
 	user_location = gtk_editable_get_chars (editable, 0, -1);
 	user_location_length = g_utf8_strlen (user_location, -1);
 	entry->details->idle_id = 0;
-	
-	suffix = g_filename_completer_get_completion_suffix (entry->details->completer,
+
+	if (!g_path_is_absolute (user_location)) {
+		absolute_location = g_build_filename (entry->details->current_directory, user_location, NULL);
+		suffix = g_filename_completer_get_completion_suffix (entry->details->completer,
+							     absolute_location);
+		g_free (absolute_location);
+	} else {
+		suffix = g_filename_completer_get_completion_suffix (entry->details->completer,
 							     user_location);
-	g_free (user_location);
+		g_free (user_location);
+	}
 
 	/* if we've got something, add it to the entry */
 	if (suffix != NULL) {
@@ -317,14 +324,36 @@ nautilus_location_entry_focus_in (GtkWidget     *widget,
 }
 
 static void
+nautilus_location_entry_activate (GtkEntry *entry)
+{
+	NautilusLocationEntry *loc_entry;
+	const gchar *entry_text;
+	gchar *full_path;
+
+	loc_entry = NAUTILUS_LOCATION_ENTRY (entry);
+	entry_text = gtk_entry_get_text (entry);
+
+	if (entry_text != NULL && *entry_text != '\0') {
+		if (!g_path_is_absolute (entry_text)) {
+			/* Fix non absolute paths */
+			full_path = g_build_filename (loc_entry->details->current_directory, entry_text, NULL);
+			gtk_entry_set_text (entry, full_path);
+			g_free (full_path);
+		}
+	}
+
+	EEL_CALL_PARENT (GTK_ENTRY_CLASS, activate, (entry));
+}
+
+static void
 nautilus_location_entry_class_init (NautilusLocationEntryClass *class)
 {
 	GtkWidgetClass *widget_class;
 	GObjectClass *gobject_class;
 	GtkObjectClass *object_class;
+	GtkEntryClass *entry_class;
 
 	widget_class = GTK_WIDGET_CLASS (class);
-
 	widget_class->focus_in_event = nautilus_location_entry_focus_in;
 
 	gobject_class = G_OBJECT_CLASS (class);
@@ -332,6 +361,20 @@ nautilus_location_entry_class_init (NautilusLocationEntryClass *class)
 	
 	object_class = GTK_OBJECT_CLASS (class);
 	object_class->destroy = destroy;
+
+	entry_class = GTK_ENTRY_CLASS (class);
+	entry_class->activate = nautilus_location_entry_activate;
+}
+
+void
+nautilus_location_entry_update_current_location (NautilusLocationEntry *entry,
+						 const char *location)
+{
+	g_free (entry->details->current_directory);
+	entry->details->current_directory = g_strdup (location);
+
+	nautilus_entry_set_text (NAUTILUS_ENTRY (entry), location);
+	set_position_and_selection_to_end (GTK_EDITABLE (entry));
 }
 
 void
