@@ -392,6 +392,11 @@ gboolean                nautilus_file_matches_uri                       (Nautilu
 gboolean                nautilus_file_is_local                          (NautilusFile                   *file);
 
 /* Comparing two file objects for sorting */
+NautilusFileSortType    nautilus_file_get_default_sort_type             (NautilusFile                   *file,
+									 gboolean                       *reversed);
+const gchar *           nautilus_file_get_default_sort_attribute        (NautilusFile                   *file,
+									 gboolean                       *reversed);
+
 int                     nautilus_file_compare_for_sort                  (NautilusFile                   *file_1,
 									 NautilusFile                   *file_2,
 									 NautilusFileSortType            sort_type,
