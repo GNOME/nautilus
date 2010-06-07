@@ -63,5 +63,7 @@ void       nautilus_location_entry_set_special_text     (NautilusLocationEntry *
 							 const char            *special_text);
 void       nautilus_location_entry_set_secondary_action (NautilusLocationEntry *entry,
 							 NautilusLocationEntryAction secondary_action);
+void       nautilus_location_entry_update_current_location (NautilusLocationEntry *entry,
+							    const char *path);
 
 #endif /* NAUTILUS_LOCATION_ENTRY_H */
