@@ -3106,7 +3106,7 @@ changes_timeout_callback (gpointer data)
 
 	if (time_delta < UPDATE_INTERVAL_RESET*1000) {
 		if (view->details->update_interval < UPDATE_INTERVAL_MAX &&
-			!view->details->loading) {
+			view->details->loading) {
 			/* Increase */
 			view->details->update_interval += UPDATE_INTERVAL_INC;
 		}
