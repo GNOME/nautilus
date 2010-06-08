@@ -727,12 +727,19 @@ real_sync_title (NautilusWindow *window,
 			 sync_title, (window, slot));
 
 	if (slot == window->details->active_pane->active_slot) {
-		full_title = g_strdup_printf (_("%s - File Browser"), slot->title);
+		/* if spatial mode is default, we keep "File Browser" in the window title
+		 * to recognize browser windows. Otherwise, we default to the directory name.
+		 */
+		if (!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
+			full_title = g_strdup_printf (_("%s - File Browser"), slot->title);
+			window_title = eel_str_middle_truncate (full_title, MAX_TITLE_LENGTH);
+			g_free (full_title);
+		} else {
+			window_title = eel_str_middle_truncate (slot->title, MAX_TITLE_LENGTH);
+		}
 
-		window_title = eel_str_middle_truncate (full_title, MAX_TITLE_LENGTH);
 		gtk_window_set_title (GTK_WINDOW (window), window_title);
 		g_free (window_title);
-		g_free (full_title);
 	}
 
 	pane = NAUTILUS_NAVIGATION_WINDOW_PANE (slot->pane);
