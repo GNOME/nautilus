@@ -132,7 +132,7 @@ nautilus_emblem_sidebar_drag_data_get_cb (GtkWidget *widget,
 
 	g_return_if_fail (keyword != NULL);
 
-	gtk_selection_data_set (data, data->target, 8,
+	gtk_selection_data_set (data, gtk_selection_data_get_target (data), 8,
 				keyword,
 				strlen (keyword));
 }
@@ -295,7 +295,7 @@ create_rename_emblem_dialog (NautilusEmblemSidebar *emblem_sidebar,
 
 	label = gtk_label_new (_("Enter a new name for the displayed emblem:"));
 	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), label,
+	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), label,
 			    FALSE, FALSE, 8);
 	
 	
@@ -313,7 +313,7 @@ create_rename_emblem_dialog (NautilusEmblemSidebar *emblem_sidebar,
 	gtk_widget_grab_focus (entry);
 	gtk_entry_set_text (GTK_ENTRY (entry), orig_name);
 
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), hbox,
+	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), hbox,
 			    TRUE, TRUE, 8);
 
 
@@ -544,7 +544,7 @@ create_add_emblems_dialog (NautilusEmblemSidebar *emblem_sidebar,
 	}
 	
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))),
 			    label, FALSE, FALSE, 8);
 	gtk_widget_show (label);
 	
@@ -584,7 +584,7 @@ create_add_emblems_dialog (NautilusEmblemSidebar *emblem_sidebar,
 	}
 
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), 8);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))),
 			    scroller, TRUE, TRUE, 8);
 	gtk_widget_show_all (scroller);
 
@@ -716,20 +716,25 @@ nautilus_emblem_sidebar_drag_received_cb (GtkWidget *widget,
 	GFile *f;
 	int i;
 	gboolean had_failure;
+	gint data_format, data_length;
+	const guchar *data_data;
 
 	had_failure = FALSE;
 	emblems = NULL;
+	data_format = gtk_selection_data_get_format (data);
+	data_length = gtk_selection_data_get_length (data);
+	data_data = gtk_selection_data_get_data (data);
 
 	switch (info) {
 	case TARGET_URI_LIST:
-		if (data->format != 8 ||
-		    data->length == 0) {
+		if (data_format != 8 ||
+		    data_length == 0) {
 			g_message ("URI list had wrong format (%d) or length (%d)\n",
-				   data->format, data->length);
+				   data_format, data_length);
 			return;
 		}
 
-		uris = g_uri_list_extract_uris (data->data);
+		uris = g_uri_list_extract_uris (data_data);
 		if (uris == NULL) {
 			break;
 		}
@@ -774,14 +779,14 @@ nautilus_emblem_sidebar_drag_received_cb (GtkWidget *widget,
 		break;
 	
 	case TARGET_URI:
-		if (data->format != 8 ||
-		    data->length == 0) {
+		if (data_format != 8 ||
+		    data_length == 0) {
 			g_warning ("URI had wrong format (%d) or length (%d)\n",
-				   data->format, data->length);
+				   data_format, data_length);
 			return;
 		}
 
-		uri = g_strndup (data->data, data->length);
+		uri = g_strndup (data_data, data_length);
 
 		f = g_file_new_for_uri (uri);
 		pixbuf = nautilus_emblem_load_pixbuf_for_emblem (f);
@@ -816,10 +821,10 @@ nautilus_emblem_sidebar_drag_received_cb (GtkWidget *widget,
 		break;	
 
 	case TARGET_NETSCAPE_URL:
-		if (data->format != 8 ||
-		    data->length == 0) {
+		if (data_format != 8 ||
+		    data_length == 0) {
 			g_message ("URI had wrong format (%d) or length (%d)\n",
-				   data->format, data->length);
+				   data_format, data_length);
 			return;
 		}
 
@@ -827,7 +832,7 @@ nautilus_emblem_sidebar_drag_received_cb (GtkWidget *widget,
 		 * of identical URIs?  Regardless, this seems to work...
 		 */
 
-		uris = g_uri_list_extract_uris (data->data);
+		uris = g_uri_list_extract_uris (data_data);
 		if (uris == NULL) {
 			break;
 		}
