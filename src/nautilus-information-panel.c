@@ -456,7 +456,7 @@ receive_dropped_uri_list (NautilusInformationPanel *information_panel,
 	gboolean exactly_one;
 	GtkWindow *window;
 
-	uris = g_uri_list_extract_uris ((gchar *) selection_data->data);
+	uris = g_uri_list_extract_uris ((gchar *) gtk_selection_data_get_data (selection_data));
 	exactly_one = uris[0] != NULL && (uris[1] == NULL || uris[1][0] == '\0');
 	window = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (information_panel)));
 	
@@ -538,12 +538,13 @@ receive_dropped_color (NautilusInformationPanel *information_panel,
 	guint16 *channels;
 	char color_spec[8];
 
-	if (selection_data->length != 8 || selection_data->format != 16) {
+	if (gtk_selection_data_get_length (selection_data) != 8 ||
+	    gtk_selection_data_get_format (selection_data) != 16) {
 		g_warning ("received invalid color data");
 		return;
 	}
 	
-	channels = (guint16 *) selection_data->data;
+	channels = (guint16 *) gtk_selection_data_get_data (selection_data);
 	g_snprintf (color_spec, sizeof (color_spec),
 		    "#%02X%02X%02X", channels[0] >> 8, channels[1] >> 8, channels[2] >> 8);
 
@@ -576,7 +577,8 @@ receive_dropped_keyword (NautilusInformationPanel *information_panel,
 			 int x, int y,
 			 GtkSelectionData *selection_data)
 {
-	nautilus_drag_file_receive_dropped_keyword (information_panel->details->file, selection_data->data);
+	nautilus_drag_file_receive_dropped_keyword (information_panel->details->file,
+						    gtk_selection_data_get_data (selection_data));
 	
 	/* regenerate the display */
 	nautilus_information_panel_update_appearance (information_panel);  	
@@ -598,14 +600,17 @@ nautilus_information_panel_drag_data_received (GtkWidget *widget, GdkDragContext
 	switch (info) {
 	case TARGET_GNOME_URI_LIST:
 	case TARGET_URI_LIST:
-		receive_dropped_uri_list (information_panel, context->action, x, y, selection_data);
+		receive_dropped_uri_list (information_panel,
+					  gdk_drag_context_get_selected_action (context), x, y, selection_data);
 		break;
 	case TARGET_COLOR:
-		receive_dropped_color (information_panel, context->action, x, y, selection_data);
+		receive_dropped_color (information_panel,
+				       gdk_drag_context_get_selected_action (context), x, y, selection_data);
 		break;
 	case TARGET_BGIMAGE:
 		if (hit_test (information_panel, x, y) == BACKGROUND_PART)
-			receive_dropped_uri_list (information_panel, context->action, x, y, selection_data);
+			receive_dropped_uri_list (information_panel,
+						  gdk_drag_context_get_selected_action (context), x, y, selection_data);
 		break;	
 	case TARGET_BACKGROUND_RESET:
 		background = eel_get_widget_background ( GTK_WIDGET (information_panel));
@@ -628,7 +633,7 @@ nautilus_information_panel_press_event (GtkWidget *widget, GdkEventButton *event
 	NautilusInformationPanel *information_panel;
 	GtkWidget *menu;
 		
-	if (widget->window != event->window) {
+	if (gtk_widget_get_window (widget) != event->window) {
 		return FALSE;
 	}
 
@@ -827,7 +832,7 @@ add_command_button (NautilusInformationPanel *information_panel, GAppInfo *appli
 
 	temp_str = g_strdup_printf (_("Open With %s"), g_app_info_get_display_name (application));
         temp_button = gtk_button_new_with_label (temp_str);
-	label = GTK_BIN (temp_button)->child;
+	label = gtk_bin_get_child (GTK_BIN (temp_button));
 	gtk_label_set_ellipsize (GTK_LABEL (label), PANGO_ELLIPSIZE_START);
 	g_free (temp_str);
 	gtk_box_pack_start (GTK_BOX (information_panel->details->button_box), 
