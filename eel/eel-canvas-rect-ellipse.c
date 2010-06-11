@@ -678,9 +678,9 @@ eel_canvas_re_realize (EelCanvasItem *item)
 	if (re_parent_class->realize)
 		(* re_parent_class->realize) (item);
 
-	re->fill_gc = gdk_gc_new (item->canvas->layout.bin_window);
+	re->fill_gc = gdk_gc_new (gtk_layout_get_bin_window (&item->canvas->layout));
 	re->fill_pixel = eel_canvas_get_color_pixel (item->canvas, re->fill_color);
-	re->outline_gc = gdk_gc_new (item->canvas->layout.bin_window);
+	re->outline_gc = gdk_gc_new (gtk_layout_get_bin_window (&item->canvas->layout));
 	re->outline_pixel = eel_canvas_get_color_pixel (item->canvas, re->outline_color);
 	set_colors_and_stipples (re);
 
@@ -840,7 +840,7 @@ eel_canvas_rect_realize  (EelCanvasItem *item)
 
 	priv = EEL_CANVAS_RECT (item)->priv;
 
-	dpy = gdk_x11_drawable_get_xdisplay (GTK_WIDGET (item->canvas)->window);
+	dpy = gdk_x11_drawable_get_xdisplay (gtk_widget_get_window (GTK_WIDGET (item->canvas)));
 	priv->use_render = XRenderQueryExtension (dpy, &event_base, &error_base);
 
 	if (priv->use_render) {
