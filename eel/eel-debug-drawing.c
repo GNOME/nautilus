@@ -100,8 +100,8 @@ debug_pixbuf_viewer_class_init (DebugPixbufViewerClass *pixbuf_viewer_class)
 static void
 debug_pixbuf_viewer_init (DebugPixbufViewer *viewer)
 {
-	GTK_WIDGET_UNSET_FLAGS (viewer, GTK_CAN_FOCUS);
-	GTK_WIDGET_SET_FLAGS (viewer, GTK_NO_WINDOW);
+	gtk_widget_set_can_focus (GTK_WIDGET (viewer), FALSE);
+	gtk_widget_set_has_window (GTK_WIDGET (viewer), FALSE);
 }
 
 static void
@@ -144,10 +144,11 @@ debug_pixbuf_viewer_expose_event (GtkWidget *widget, GdkEventExpose *event)
 	EelIRect clipped_dirty_area;
 	EelIRect dirty_area;
 	EelIRect bounds;
+	GtkAllocation allocation;
 
 	g_assert (DEBUG_IS_PIXBUF_VIEWER (widget));
 	g_assert (event != NULL);
-	g_assert (event->window == widget->window);
+	g_assert (event->window == gtk_widget_get_window (widget));
 	g_assert (gtk_widget_get_realized (widget));
 	
  	viewer = DEBUG_PIXBUF_VIEWER (widget);
@@ -155,9 +156,10 @@ debug_pixbuf_viewer_expose_event (GtkWidget *widget, GdkEventExpose *event)
 	if (viewer->pixbuf == NULL) {
 		return TRUE;
 	}
-	
-	bounds.x0 = widget->allocation.x + (widget->allocation.width - gdk_pixbuf_get_width (viewer->pixbuf)) / 2;
-	bounds.y0 = widget->allocation.y + (widget->allocation.height - gdk_pixbuf_get_height (viewer->pixbuf)) / 2;
+
+	gtk_widget_get_allocation (widget, &allocation);
+	bounds.x0 = allocation.x + (allocation.width - gdk_pixbuf_get_width (viewer->pixbuf)) / 2;
+	bounds.y0 = allocation.y + (allocation.height - gdk_pixbuf_get_height (viewer->pixbuf)) / 2;
 	bounds.x1 = bounds.x0 + gdk_pixbuf_get_width (viewer->pixbuf);
 	bounds.y1 = bounds.y0 + gdk_pixbuf_get_height (viewer->pixbuf);
 	
@@ -176,7 +178,7 @@ debug_pixbuf_viewer_expose_event (GtkWidget *widget, GdkEventExpose *event)
 			
 			eel_gdk_pixbuf_draw_to_drawable (viewer->pixbuf,
 							 event->window,
-							 widget->style->white_gc,
+							 gtk_widget_get_style (widget)->white_gc,
 							 clipped_bounds.x0 - bounds.x0,
 							 clipped_bounds.y0 - bounds.y0,
 							 clipped_bounds,
@@ -372,7 +374,7 @@ eel_debug_show_pixbuf (GdkPixbuf *pixbuf)
 	gtk_widget_show (debug_window);
 	debug_pixbuf_viewer_set_pixbuf (DEBUG_PIXBUF_VIEWER (debug_image), pixbuf);
 
-	gdk_window_clear_area_e (debug_window->window, 0, 0, -1, -1);
+	gdk_window_clear_area_e (gtk_widget_get_window (debug_window), 0, 0, -1, -1);
 }
 
 void
