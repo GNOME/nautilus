@@ -629,8 +629,6 @@ nautilus_sidebar_title_size_allocate (GtkWidget *widget,
 	guint best_icon_size;
 	GtkAllocation old_allocation, new_allocation;
 
-	g_print ("size allocate\n");
-
 	sidebar_title = NAUTILUS_SIDEBAR_TITLE (widget);
 
 	gtk_widget_get_allocation (widget, &old_allocation);
