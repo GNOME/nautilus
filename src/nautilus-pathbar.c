@@ -287,8 +287,8 @@ static void
 nautilus_path_bar_init (NautilusPathBar *path_bar)
 {
 	char *p;
-	
-        GTK_WIDGET_SET_FLAGS (path_bar, GTK_NO_WINDOW);
+
+	gtk_widget_set_has_window (GTK_WIDGET (path_bar), FALSE);
         gtk_widget_set_redraw_on_allocate (GTK_WIDGET (path_bar), FALSE);
 
         path_bar->spacing = 3;
@@ -466,6 +466,7 @@ nautilus_path_bar_size_request (GtkWidget      *widget,
         NautilusPathBar *path_bar;
         GtkRequisition child_requisition;
         GList *list;
+	guint border_width;
 
         path_bar = NAUTILUS_PATH_BAR (widget);
 
@@ -491,10 +492,12 @@ nautilus_path_bar_size_request (GtkWidget      *widget,
         gtk_widget_size_request (path_bar->up_slider_button, &child_requisition);
         gtk_widget_size_request (path_bar->down_slider_button, &child_requisition);
 
-        requisition->width += GTK_CONTAINER (widget)->border_width * 2;
-        requisition->height += GTK_CONTAINER (widget)->border_width * 2;
+	border_width = gtk_container_get_border_width (GTK_CONTAINER (widget));
+        requisition->width += border_width * 2;
+        requisition->height += border_width * 2;
 
-        widget->requisition = *requisition;
+	gtk_widget_set_size_request (widget, requisition->width,
+				     requisition->height);
 }
 
 static void
@@ -543,21 +546,22 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
         gboolean need_sliders;
         gint up_slider_offset;
         gint down_slider_offset;
+	GtkRequisition requisition;
+	GtkAllocation widget_allocation;
 
 	need_sliders = FALSE;
 	up_slider_offset = 0;
 	down_slider_offset = 0;
 	path_bar = NAUTILUS_PATH_BAR (widget);
 
-        widget->allocation = *allocation;
-
+	gtk_widget_set_allocation (widget, allocation);
 
         /* No path is set so we don't have to allocate anything. */
         if (path_bar->button_list == NULL) {
                 return;
 	}
         direction = gtk_widget_get_direction (widget);
-        border_width = (gint) GTK_CONTAINER (path_bar)->border_width;
+        border_width = (gint) gtk_container_get_border_width (GTK_CONTAINER (path_bar));
         allocation_width = allocation->width - 2 * border_width;
 
   	/* First, we check to see if we need the scrollbars. */
@@ -567,11 +571,13 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
 		width = 0;
 	}
 
-	width += BUTTON_DATA (path_bar->button_list->data)->button->requisition.width;
+	gtk_widget_get_requisition (BUTTON_DATA (path_bar->button_list->data)->button, &requisition);
+	width += requisition.width;
 
         for (list = path_bar->button_list->next; list; list = list->next) {
         	child = BUTTON_DATA (list->data)->button;
-                width += child->requisition.width + path_bar->spacing;
+		gtk_widget_get_requisition (child, &requisition);
+                width += requisition.width + path_bar->spacing;
 
 		if (list == path_bar->fake_root) {
 			break;
@@ -602,18 +608,20 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
        		* button, then count backwards.
        		*/
       		/* Count down the path chain towards the end. */
-                width = BUTTON_DATA (first_button->data)->button->requisition.width;
+		gtk_widget_get_requisition (BUTTON_DATA (first_button->data)->button, &requisition);
+                width = requisition.width;
                 list = first_button->prev;
                 while (list && !reached_end) {
 	  		child = BUTTON_DATA (list->data)->button;
+			gtk_widget_get_requisition (child, &requisition);
 
-	  		if (width + child->requisition.width + path_bar->spacing + slider_space > allocation_width) {
+	  		if (width + requisition.width + path_bar->spacing + slider_space > allocation_width) {
 	    			reached_end = TRUE;
 	  		} else {
 				if (list == path_bar->fake_root) {
 					break;
 				} else {
-	    				width += child->requisition.width + path_bar->spacing;
+	    				width += requisition.width + path_bar->spacing;
 				}
 			}
 
@@ -624,10 +632,12 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
 
                 while (first_button->next && ! reached_end) {
 	  		child = BUTTON_DATA (first_button->next->data)->button;
-	  		if (width + child->requisition.width + path_bar->spacing + slider_space > allocation_width) {
+			gtk_widget_get_requisition (child, &requisition);
+
+	  		if (width + requisition.width + path_bar->spacing + slider_space > allocation_width) {
 	      			reached_end = TRUE;
 	    		} else {
-	      			width += child->requisition.width + path_bar->spacing;
+	      			width += requisition.width + path_bar->spacing;
 				if (first_button == path_bar->fake_root) {
 					break;
 				}
@@ -656,19 +666,22 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
 
         for (list = first_button; list; list = list->prev) {
                 child = BUTTON_DATA (list->data)->button;
+		gtk_widget_get_requisition (child, &requisition);
 
-                child_allocation.width = child->requisition.width;
+		gtk_widget_get_allocation (widget, &widget_allocation);
+
+                child_allocation.width = requisition.width;
                 if (direction == GTK_TEXT_DIR_RTL) {
 			child_allocation.x -= child_allocation.width;
 		}
                 /* Check to see if we've don't have any more space to allocate buttons */
                 if (need_sliders && direction == GTK_TEXT_DIR_RTL) {
-	  		if (child_allocation.x - path_bar->spacing - path_bar->slider_width < widget->allocation.x + border_width) {
+	  		if (child_allocation.x - path_bar->spacing - path_bar->slider_width < widget_allocation.x + border_width) {
 			    break;
 			}
 		} else {
 			if (need_sliders && direction == GTK_TEXT_DIR_LTR) {
-	  			if (child_allocation.x + child_allocation.width + path_bar->spacing + path_bar->slider_width > widget->allocation.x + border_width + allocation_width) {
+	  			if (child_allocation.x + child_allocation.width + path_bar->spacing + path_bar->slider_width > widget_allocation.x + border_width + allocation_width) {
 	    				break;	
 				}	
 			}
@@ -679,10 +692,10 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
 
                 if (direction == GTK_TEXT_DIR_RTL) {
 			child_allocation.x -= path_bar->spacing;
-	  		down_slider_offset = child_allocation.x - widget->allocation.x - path_bar->slider_width;
+	  		down_slider_offset = child_allocation.x - widget_allocation.x - path_bar->slider_width;
 	  		down_slider_offset = border_width;
 		} else {
-			down_slider_offset = child_allocation.x - widget->allocation.x;
+			down_slider_offset = child_allocation.x - widget_allocation.x;
 	  		down_slider_offset = allocation->width - border_width - path_bar->slider_width;
 	  		child_allocation.x += child_allocation.width + path_bar->spacing;
 		}
@@ -859,6 +872,7 @@ nautilus_path_bar_scroll_down (NautilusPathBar *path_bar)
         gint space_needed;
         gint border_width;
         GtkTextDirection direction;
+	GtkAllocation allocation, button_allocation, slider_allocation;
 
 	down_button = NULL;
 	up_button = NULL;
@@ -870,7 +884,7 @@ nautilus_path_bar_scroll_down (NautilusPathBar *path_bar)
 
         gtk_widget_queue_resize (GTK_WIDGET (path_bar));
 
-        border_width = GTK_CONTAINER (path_bar)->border_width;
+        border_width = gtk_container_get_border_width (GTK_CONTAINER (path_bar));
         direction = gtk_widget_get_direction (GTK_WIDGET (path_bar));
   
         /* We find the button at the 'down' end that we have to make */
@@ -894,20 +908,25 @@ nautilus_path_bar_scroll_down (NautilusPathBar *path_bar)
 		}
         }
 
-        space_needed = BUTTON_DATA (down_button->data)->button->allocation.width + path_bar->spacing;
+	gtk_widget_get_allocation (BUTTON_DATA (down_button->data)->button, &button_allocation);
+	gtk_widget_get_allocation (GTK_WIDGET (path_bar), &allocation);
+	gtk_widget_get_allocation (path_bar->down_slider_button, &slider_allocation);
+
+        space_needed = button_allocation.width + path_bar->spacing;
         if (direction == GTK_TEXT_DIR_RTL) {
-                space_available = path_bar->down_slider_button->allocation.x - GTK_WIDGET (path_bar)->allocation.x;
+                space_available = slider_allocation.x - allocation.x;
 	} else {
-                space_available = (GTK_WIDGET (path_bar)->allocation.x + GTK_WIDGET (path_bar)->allocation.width - border_width) -
-                        (path_bar->down_slider_button->allocation.x + path_bar->down_slider_button->allocation.width);
+                space_available = (allocation.x + allocation.width - border_width) -
+                        (slider_allocation.x + slider_allocation.width);
 	}
 
   	/* We have space_available extra space that's not being used.  We
    	* need space_needed space to make the button fit.  So we walk down
    	* from the end, removing buttons until we get all the space we
    	* need. */
+	gtk_widget_get_allocation (BUTTON_DATA (up_button->data)->button, &button_allocation);
         while (space_available < space_needed) {
-                space_available += BUTTON_DATA (up_button->data)->button->allocation.width + path_bar->spacing;
+                space_available += button_allocation.width + path_bar->spacing;
                 up_button = up_button->prev;
                 path_bar->first_scrolled_button = up_button;
         }
@@ -1126,7 +1145,7 @@ button_clicked_cb (GtkWidget *button,
                 return;
 	}
 
-        path_bar = NAUTILUS_PATH_BAR (button->parent);
+        path_bar = NAUTILUS_PATH_BAR (gtk_widget_get_parent (button));
 
         button_list = g_list_find (path_bar->button_list, button_data);
         g_assert (button_list != NULL);
@@ -1447,7 +1466,7 @@ button_drag_data_get_cb (GtkWidget          *widget,
 
 	if (info == NAUTILUS_ICON_DND_GNOME_ICON_LIST) {
 		tmp = g_strdup_printf ("%s\r\n", uri_list[0]);
-		gtk_selection_data_set (selection_data, selection_data->target,
+		gtk_selection_data_set (selection_data, gtk_selection_data_get_target (selection_data),
 					8, tmp, strlen (tmp));
 		g_free (tmp);
 	} else if (info == NAUTILUS_ICON_DND_URI_LIST) {
