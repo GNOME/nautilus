@@ -270,8 +270,8 @@ nautilus_spatial_window_save_geometry (NautilusWindowSlot *slot)
 		return;
 	}
 	
-	if (GTK_WIDGET(window)->window &&
-	    !(gdk_window_get_state (GTK_WIDGET(window)->window) & GDK_WINDOW_STATE_MAXIMIZED)) {
+	if (gtk_widget_get_window (GTK_WIDGET (window)) &&
+	    !(gdk_window_get_state (gtk_widget_get_window (GTK_WIDGET(window))) & GDK_WINDOW_STATE_MAXIMIZED)) {
 		geometry_string = eel_gtk_window_get_geometry_string (GTK_WINDOW (window));
 		
 		nautilus_file_set_metadata (viewed_file,
@@ -635,15 +635,17 @@ menu_popup_pos (GtkMenu   *menu,
 {
 	GtkWidget *widget;
 	GtkRequisition menu_requisition, button_requisition;
+	GtkAllocation allocation;
 
 	widget = user_data;
 
 	gtk_widget_size_request (GTK_WIDGET (menu), &menu_requisition);
 	gtk_widget_size_request (widget, &button_requisition);
+	gtk_widget_get_allocation (widget, &allocation);
 
-	gdk_window_get_origin (widget->window, x, y);
-	*x += widget->allocation.x;
-	*y += widget->allocation.y;
+	gdk_window_get_origin (gtk_widget_get_window (widget), x, y);
+	*x += allocation.x;
+	*y += allocation.y;
 	
 	*y -= menu_requisition.height - button_requisition.height;
 
