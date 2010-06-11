@@ -1046,7 +1046,7 @@ get_desktop_manager_selection (GdkDisplay *display, int screen)
 	if (gtk_selection_owner_set_for_display (display,
 						 selection_widget,
 						 selection_atom,
-						 gdk_x11_get_server_time (selection_widget->window))) {
+						 gdk_x11_get_server_time (gtk_widget_get_window (selection_widget)))) {
 		
 		g_signal_connect (selection_widget, "selection_get",
 				  G_CALLBACK (selection_get_cb), NULL);
@@ -1860,22 +1860,26 @@ nautilus_application_get_session_data (void)
 		xmlNewProp (win_node, "type", NAUTILUS_IS_NAVIGATION_WINDOW (window) ? "navigation" : "spatial");
 
 		if (NAUTILUS_IS_NAVIGATION_WINDOW (window)) { /* spatial windows store their state as file metadata */
+			GdkWindow *gdk_window;
+
 			tmp = eel_gtk_window_get_geometry_string (GTK_WINDOW (window));
 			xmlNewProp (win_node, "geometry", tmp);
 			g_free (tmp);
 
-			if (GTK_WIDGET (window)->window &&
-			    gdk_window_get_state (GTK_WIDGET (window)->window) & GDK_WINDOW_STATE_MAXIMIZED) {
+			gdk_window = gtk_widget_get_window (GTK_WIDGET (window));
+
+			if (gdk_window &&
+			    gdk_window_get_state (gdk_window) & GDK_WINDOW_STATE_MAXIMIZED) {
 				xmlNewProp (win_node, "maximized", "TRUE");
 			}
 
-			if (GTK_WIDGET (window)->window &&
-			    gdk_window_get_state (GTK_WIDGET (window)->window) & GDK_WINDOW_STATE_STICKY) {
+			if (gdk_window &&
+			    gdk_window_get_state (gdk_window) & GDK_WINDOW_STATE_STICKY) {
 				xmlNewProp (win_node, "sticky", "TRUE");
 			}
 
-			if (GTK_WIDGET (window)->window &&
-			    gdk_window_get_state (GTK_WIDGET (window)->window) & GDK_WINDOW_STATE_ABOVE) {
+			if (gdk_window &&
+			    gdk_window_get_state (gdk_window) & GDK_WINDOW_STATE_ABOVE) {
 				xmlNewProp (win_node, "keep-above", "TRUE");
 			}
 		}
