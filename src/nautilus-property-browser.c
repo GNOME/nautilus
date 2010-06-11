@@ -343,7 +343,7 @@ nautilus_property_browser_init (GtkObject *object)
 	
   	/* create the "done" button */
  	temp_button = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
-	GTK_WIDGET_SET_FLAGS (temp_button, GTK_CAN_DEFAULT);
+	gtk_widget_set_can_default (temp_button, TRUE);
 
 	gtk_widget_show (temp_button);
 	gtk_box_pack_end (GTK_BOX (property_browser->details->bottom_box), temp_button, FALSE, FALSE, 0);
@@ -585,9 +585,12 @@ nautilus_property_browser_drag_data_get (GtkWidget *widget,
 	char  *image_file_name, *image_file_uri;
 	gboolean is_reset;
 	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER(widget);
+	GdkAtom target;
 	
 	g_return_if_fail (widget != NULL);
 	g_return_if_fail (context != NULL);
+
+	target = gtk_selection_data_get_target (selection_data);
 
 	switch (info) {
 	case PROPERTY_TYPE:
@@ -598,9 +601,9 @@ nautilus_property_browser_drag_data_get (GtkWidget *widget,
 		is_reset = FALSE;
 		if (strcmp (property_browser->details->drag_type,
 			    "property/keyword") == 0) {
-			char *keyword_str = eel_filename_strip_extension(property_browser->details->dragged_file);
-		        gtk_selection_data_set(selection_data, selection_data->target, 8, keyword_str, strlen(keyword_str));
-			g_free(keyword_str);
+			char *keyword_str = eel_filename_strip_extension (property_browser->details->dragged_file);
+		        gtk_selection_data_set (selection_data, target, 8, keyword_str, strlen (keyword_str));
+			g_free (keyword_str);
 			return;	
 		}
 		else if (strcmp (property_browser->details->drag_type,
@@ -618,7 +621,7 @@ nautilus_property_browser_drag_data_get (GtkWidget *widget,
 				colorArray[3] = 0xffff;
 
 				gtk_selection_data_set(selection_data,
-				selection_data->target, 16, (const char *) &colorArray[0], 8);
+				target, 16, (const char *) &colorArray[0], 8);
 				return;	
 			} else {
 				is_reset = TRUE;
@@ -645,7 +648,7 @@ nautilus_property_browser_drag_data_get (GtkWidget *widget,
 		}
 
 		image_file_uri = g_filename_to_uri (image_file_name, NULL, NULL);
-		gtk_selection_data_set (selection_data, selection_data->target, 8, image_file_uri, strlen (image_file_uri));
+		gtk_selection_data_set (selection_data, target, 8, image_file_uri, strlen (image_file_uri));
 		g_free (image_file_name);
 		g_free (image_file_uri);
 		
@@ -1066,10 +1069,10 @@ nautilus_emblem_dialog_new (NautilusPropertyBrowser *property_browser)
 
 	gtk_window_set_resizable (GTK_WINDOW (dialog), TRUE);
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
-	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 2);
+	gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), 2);
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), table, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), table, TRUE, TRUE, 0);
 	gtk_dialog_set_default_response (GTK_DIALOG(dialog), GTK_RESPONSE_OK);
 
 	/* make the keyword label and field */	
@@ -1133,7 +1136,7 @@ nautilus_color_selection_dialog_new (NautilusPropertyBrowser *property_browser)
 	/* install the table in the dialog */
 	
 	gtk_widget_show (table);	
-	gtk_box_pack_start (GTK_BOX(GTK_DIALOG(dialog)->vbox), table, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), table, TRUE, TRUE, 0);
 	gtk_dialog_set_default_response (GTK_DIALOG(dialog), GTK_RESPONSE_OK);
 
 	/* make the name label and field */	
@@ -1368,7 +1371,9 @@ show_color_selection_window (GtkWidget *widget, gpointer *data)
 	GdkColor color;
 	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER(data);
 
-	gtk_color_selection_get_current_color (GTK_COLOR_SELECTION (GTK_COLOR_SELECTION_DIALOG (property_browser->details->colors_dialog)->colorsel), &color);
+	gtk_color_selection_get_current_color (GTK_COLOR_SELECTION
+					       (gtk_color_selection_dialog_get_color_selection (GTK_COLOR_SELECTION_DIALOG (property_browser->details->colors_dialog))),
+					       &color);
 	gtk_widget_destroy (property_browser->details->colors_dialog);
 
 	/* allocate a new color selection dialog */
@@ -1397,17 +1402,22 @@ add_new_color (NautilusPropertyBrowser *property_browser)
 		gtk_window_present (GTK_WINDOW (property_browser->details->colors_dialog));
 	} else {
 		GtkColorSelectionDialog *color_dialog;
+		GtkWidget *ok_button, *cancel_button, *help_button;
 
 		property_browser->details->colors_dialog = gtk_color_selection_dialog_new (_("Select a Color to Add"));
 		color_dialog = GTK_COLOR_SELECTION_DIALOG (property_browser->details->colors_dialog);
 		
 		eel_add_weak_pointer (&property_browser->details->colors_dialog);
 
-		g_signal_connect_object (color_dialog->ok_button, "clicked",
+		g_object_get (color_dialog, "ok-button", &ok_button,
+			      "cancel-button", &cancel_button,
+			      "help-button", &help_button, NULL);
+
+		g_signal_connect_object (ok_button, "clicked",
 					 G_CALLBACK (show_color_selection_window), property_browser, 0);
-		g_signal_connect_object (color_dialog->cancel_button, "clicked",
+		g_signal_connect_object (cancel_button, "clicked",
 					 G_CALLBACK (gtk_widget_destroy), color_dialog, G_CONNECT_SWAPPED);
-		gtk_widget_hide(color_dialog->help_button);
+		gtk_widget_hide (help_button);
 
 		gtk_window_set_position (GTK_WINDOW (color_dialog), GTK_WIN_POS_MOUSE);
 		gtk_widget_show (GTK_WIDGET(color_dialog));
@@ -1986,7 +1996,7 @@ property_browser_category_button_new (const char *display_name,
 	gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (button), FALSE);
 
 	/* We also want all of the buttons to be the same height */
-	eel_labeled_image_set_fixed_image_height (EEL_LABELED_IMAGE (GTK_BIN (button)->child), STANDARD_BUTTON_IMAGE_HEIGHT);
+	eel_labeled_image_set_fixed_image_height (EEL_LABELED_IMAGE (gtk_bin_get_child (GTK_BIN (button))), STANDARD_BUTTON_IMAGE_HEIGHT);
 
 	g_free (file_name);
 
