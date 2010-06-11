@@ -1399,7 +1399,7 @@ location_has_really_changed (NautilusWindowSlot *slot)
 	if (slot->new_content_view != NULL) {
 		widget = nautilus_view_get_widget (slot->new_content_view);
 		/* Switch to the new content view. */
-		if (widget->parent == NULL) {
+		if (gtk_widget_get_parent (widget) == NULL) {
 			if (slot->content_view != NULL) {
 				nautilus_window_slot_disconnect_content_view (slot, slot->content_view);
 			}
