@@ -94,7 +94,7 @@ send_delete_event (GtkWindow *window)
 	widget = GTK_WIDGET (window);
 	
 	event.any.type = GDK_DELETE;
-	event.any.window = widget->window;
+	event.any.window = gtk_widget_get_window (widget);
 	event.any.send_event = TRUE;
 	
 	g_object_ref (event.any.window);
@@ -468,7 +468,7 @@ eel_point_in_allocation (const GtkAllocation *allocation,
 		&& y < allocation->y + allocation->height;
 }
 
-/* FIXME this function is dangerous, because widget->window coords (or
+/* FIXME this function is dangerous, because gtk_widget_get_window (widget) coords (or
  * other window-belonging-to-widget coords) do not need to be in the
  * same coordinate system as widget->allocation.
  * If you use this function, be aware of that. Someone should probably
@@ -478,11 +478,13 @@ gboolean
 eel_point_in_widget (GtkWidget *widget,
 			  int x, int y)
 {
+	GtkAllocation allocation;
 	if (widget == NULL) {
 		return FALSE;
 	}
 	g_return_val_if_fail (GTK_IS_WIDGET (widget), FALSE);
-	return eel_point_in_allocation (&widget->allocation, x, y);
+	gtk_widget_get_allocation (widget, &allocation);
+	return eel_point_in_allocation (&allocation, x, y);
 }
 
 /**
@@ -746,10 +748,12 @@ eel_gtk_adjustment_set_value (GtkAdjustment *adjustment,
 
 	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
 	
-	upper_page_start = MAX (adjustment->upper - adjustment->page_size, adjustment->lower);
-	clamped_value = CLAMP (value, adjustment->lower, upper_page_start);
-	if (clamped_value != adjustment->value) {
-		adjustment->value = clamped_value;
+	upper_page_start = MAX (gtk_adjustment_get_upper (adjustment) -
+				gtk_adjustment_get_page_size (adjustment),
+				gtk_adjustment_get_lower (adjustment));
+	clamped_value = CLAMP (value, gtk_adjustment_get_lower (adjustment), upper_page_start);
+	if (clamped_value != gtk_adjustment_get_value (adjustment)) {
+		gtk_adjustment_set_value (adjustment, clamped_value);
 		gtk_adjustment_value_changed (adjustment);
 	}
 }
@@ -760,7 +764,8 @@ eel_gtk_adjustment_clamp_value (GtkAdjustment *adjustment)
 {
 	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
 	
-	eel_gtk_adjustment_set_value (adjustment, adjustment->value);
+	eel_gtk_adjustment_set_value (adjustment,
+				      gtk_adjustment_get_value (adjustment));
 }
 
 /**
@@ -821,27 +826,31 @@ get_layout_location (GtkLabel  *label,
 {
   GtkMisc *misc;
   GtkWidget *widget;
-  float xalign;
-  int x, y;
+  float xalign, yalign;
+  int x, y, xpad, ypad;
   int shadow_offset;
+  GtkAllocation allocation;
+  GtkRequisition req;
   
   shadow_offset = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (label),
 						      "eel-label-shadow-offset"));
   
   misc = GTK_MISC (label);
   widget = GTK_WIDGET (label);
+  gtk_misc_get_alignment (misc, &xalign, &yalign);
+  gtk_misc_get_padding (misc, &xpad, &ypad);
   
-  if (gtk_widget_get_direction (widget) == GTK_TEXT_DIR_LTR)
-    xalign = misc->xalign;
-  else
-    xalign = 1.0 - misc->xalign;
-  
-  x = floor (widget->allocation.x + (int)misc->xpad
-             + ((widget->allocation.width - widget->requisition.width - shadow_offset) * xalign)
+  if (gtk_widget_get_direction (widget) != GTK_TEXT_DIR_LTR)
+    xalign = 1.0 - xalign;
+
+  gtk_widget_get_allocation (widget, &allocation);
+  gtk_widget_get_requisition (widget, &req);
+  x = floor (allocation.x + xpad
+             + ((allocation.width - req.width - shadow_offset) * xalign)
              + 0.5);
   
-  y = floor (widget->allocation.y + (int)misc->ypad 
-             + ((widget->allocation.height - widget->requisition.height - shadow_offset) * misc->yalign)
+  y = floor (allocation.y + ypad 
+             + ((allocation.height - req.height - shadow_offset) * yalign)
              + 0.5);
   
 
@@ -873,26 +882,26 @@ eel_gtk_label_expose_event (GtkLabel *label, GdkEventExpose *event, gpointer use
 
 	widget = GTK_WIDGET (label);
 	if (shadow_offset > 0) {
-		gc = gdk_gc_new (widget->window);
+		gc = gdk_gc_new (gtk_widget_get_window (widget));
 		gdk_gc_set_rgb_fg_color (gc, &color);
 		gdk_gc_set_clip_rectangle (gc, &event->area);
 		
-		gdk_draw_layout (widget->window,
+		gdk_draw_layout (gtk_widget_get_window (widget),
 				 gc,
 				 x + shadow_offset, y + shadow_offset,
-				 label->layout);
+				 gtk_label_get_layout (label));
 		g_object_unref (gc);
 	}
 	
-	gtk_paint_layout (widget->style,
-			  widget->window,
+	gtk_paint_layout (gtk_widget_get_style (widget),
+			  gtk_widget_get_window (widget),
 			  gtk_widget_get_state (widget),
 			  FALSE,
 			  &event->area,
 			  widget,
 			  "label",
 			  x, y,
-			  label->layout);
+			  gtk_label_get_layout (label));
 
 	return TRUE;
 }
@@ -987,7 +996,7 @@ eel_gtk_widget_find_windowed_ancestor (GtkWidget *widget)
 	g_return_val_if_fail (GTK_IS_WIDGET (widget), NULL);
 
 	while (widget && !gtk_widget_get_has_window (widget)) {
-		widget = widget->parent;
+		widget = gtk_widget_get_parent (widget);
 	}
 
 	return widget;
@@ -1011,7 +1020,7 @@ eel_gtk_get_system_font (void)
 	
 	gtk_widget_ensure_style (label);
 
-	font = pango_font_description_copy (label->style->font_desc);
+	font = pango_font_description_copy (gtk_widget_get_style (label)->font_desc);
 
 	g_object_ref_sink (label);
 	g_object_unref (label);
@@ -1026,16 +1035,18 @@ eel_gtk_widget_get_button_event_location (GtkWidget *widget,
 					  int *y)
 {
 	int window_x, window_y;
+	GtkAllocation allocation;
 
 	g_return_if_fail (GTK_IS_WIDGET (widget));
 	g_return_if_fail (event != NULL);
 
 	gdk_window_get_position (event->window, &window_x, &window_y);
+	gtk_widget_get_allocation (widget, &allocation);
 	if (x != NULL) {
-		*x = event->x + window_x - widget->allocation.x;
+		*x = event->x + window_x - allocation.x;
 	}
 	if (y != NULL) {
-		*y = event->y + window_y - widget->allocation.y;
+		*y = event->y + window_y - allocation.y;
 	}
 }
 
@@ -1112,14 +1123,14 @@ eel_gtk_viewport_get_visible_rect (GtkViewport  *viewport,
 	if (gtk_widget_get_realized (GTK_WIDGET (viewport))) {
 		viewport_rect.x = 0;
 		viewport_rect.y = 0;
-		gdk_drawable_get_size (viewport->view_window, 
+		gdk_drawable_get_size (gtk_viewport_get_view_window (viewport), 
 				       &viewport_rect.width, 
 				       &viewport_rect.height);
 		
-		gdk_window_get_position (viewport->bin_window,
+		gdk_window_get_position (gtk_viewport_get_bin_window (viewport),
 					 &child_rect.x,
 					 &child_rect.y);
-		gdk_drawable_get_size (viewport->bin_window,
+		gdk_drawable_get_size (gtk_viewport_get_bin_window (viewport),
 				       &child_rect.width,
 				       &child_rect.height);
 
