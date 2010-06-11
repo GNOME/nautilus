@@ -222,12 +222,12 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 			g_free (t);
 		}
 
-		if (dialog->details->port_entry->parent != NULL) {
+		if (gtk_widget_get_parent (dialog->details->port_entry) != NULL) {
 			free_port = TRUE;
 			port = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->port_entry), 0, -1);
 		}
 		folder = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->folder_entry), 0, -1);
-		if (dialog->details->user_entry->parent != NULL) {
+		if (gtk_widget_get_parent (dialog->details->user_entry) != NULL) {
 			free_user = TRUE;
 			
 			t = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->user_entry), 0, -1);
@@ -236,7 +236,7 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 
 			g_free (t);
 		}
-		if (dialog->details->domain_entry->parent != NULL) {
+		if (gtk_widget_get_parent (dialog->details->domain_entry) != NULL) {
 			free_domain = TRUE;
 
 			domain = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->domain_entry), 0, -1);
@@ -384,39 +384,39 @@ setup_for_type (NautilusConnectServerDialog *dialog)
 	g_assert (index < G_N_ELEMENTS (methods) && index >= 0);
 	meth = &(methods[index]);
 
-	if (dialog->details->uri_entry->parent != NULL) {
+	if (gtk_widget_get_parent (dialog->details->uri_entry) != NULL) {
 		gtk_container_remove (GTK_CONTAINER (dialog->details->table),
 				      dialog->details->uri_entry);
 	}
-	if (dialog->details->server_entry->parent != NULL) {
+	if (gtk_widget_get_parent (dialog->details->server_entry) != NULL) {
 		gtk_container_remove (GTK_CONTAINER (dialog->details->table),
 				      dialog->details->server_entry);
 	}
-	if (dialog->details->share_entry->parent != NULL) {
+	if (gtk_widget_get_parent (dialog->details->share_entry) != NULL) {
 		gtk_container_remove (GTK_CONTAINER (dialog->details->table),
 				      dialog->details->share_entry);
 	}
-	if (dialog->details->port_entry->parent != NULL) {
+	if (gtk_widget_get_parent (dialog->details->port_entry) != NULL) {
 		gtk_container_remove (GTK_CONTAINER (dialog->details->table),
 				      dialog->details->port_entry);
 	}
-	if (dialog->details->folder_entry->parent != NULL) {
+	if (gtk_widget_get_parent (dialog->details->folder_entry) != NULL) {
 		gtk_container_remove (GTK_CONTAINER (dialog->details->table),
 				      dialog->details->folder_entry);
 	}
-	if (dialog->details->user_entry->parent != NULL) {
+	if (gtk_widget_get_parent (dialog->details->user_entry) != NULL) {
 		gtk_container_remove (GTK_CONTAINER (dialog->details->table),
 				      dialog->details->user_entry);
 	}
-	if (dialog->details->domain_entry->parent != NULL) {
+	if (gtk_widget_get_parent (dialog->details->domain_entry) != NULL) {
 		gtk_container_remove (GTK_CONTAINER (dialog->details->table),
 				      dialog->details->domain_entry);
 	}
-	if (dialog->details->bookmark_check->parent != NULL) {
+	if (gtk_widget_get_parent (dialog->details->bookmark_check) != NULL) {
 		gtk_container_remove (GTK_CONTAINER (dialog->details->table),
 				      dialog->details->bookmark_check);
 	}
-	if (dialog->details->name_entry->parent != NULL) {
+	if (gtk_widget_get_parent (dialog->details->name_entry) != NULL) {
 		gtk_container_remove (GTK_CONTAINER (dialog->details->table),
 				      dialog->details->name_entry);
 	}
@@ -763,7 +763,7 @@ port_insert_text (GtkEditable *editable,
 		if (!g_ascii_isdigit (new_text[pos])) {
 			GtkWidget *toplevel = gtk_widget_get_toplevel (GTK_WIDGET (editable));
 			if (toplevel != NULL) {
-				gdk_window_beep (toplevel->window);
+				gdk_window_beep (gtk_widget_get_window (toplevel));
 			}
 		    g_signal_stop_emission_by_name (editable, "insert_text");
 		    return;
@@ -795,12 +795,12 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Connect to Server"));
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
-	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 2);
+	gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), 2);
 	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
 
 	vbox = gtk_vbox_new (FALSE, 6);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 5);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))),
 			    vbox, FALSE, TRUE, 0);
 	gtk_widget_show (vbox);
 			    
