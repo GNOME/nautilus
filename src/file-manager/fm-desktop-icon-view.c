@@ -115,9 +115,9 @@ static NautilusIconContainer *
 get_icon_container (FMDesktopIconView *icon_view)
 {
 	g_return_val_if_fail (FM_IS_DESKTOP_ICON_VIEW (icon_view), NULL);
-	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (GTK_BIN (icon_view)->child), NULL);
+	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (gtk_bin_get_child (GTK_BIN (icon_view))), NULL);
 
-	return NAUTILUS_ICON_CONTAINER (GTK_BIN (icon_view)->child);
+	return NAUTILUS_ICON_CONTAINER (gtk_bin_get_child (GTK_BIN (icon_view)));
 }
 
 static void
@@ -526,7 +526,7 @@ static void
 fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 {
 	NautilusIconContainer *icon_container;
-	GtkAllocation *allocation;
+	GtkAllocation allocation;
 	GtkAdjustment *hadj, *vadj;
 
 	if (desktop_directory == NULL) {
@@ -558,14 +558,14 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 	nautilus_icon_container_set_store_layout_timestamps (icon_container, TRUE);
 
 	/* Set allocation to be at 0, 0 */
-	allocation = &GTK_WIDGET (icon_container)->allocation;
-	allocation->x = 0;
-	allocation->y = 0;
+	allocation.x = 0;
+	allocation.y = 0;
+	gtk_widget_set_allocation (GTK_WIDGET (icon_container), &allocation);
 	
 	gtk_widget_queue_resize (GTK_WIDGET (icon_container));
 
-	hadj = GTK_LAYOUT (icon_container)->hadjustment;
-	vadj = GTK_LAYOUT (icon_container)->vadjustment;
+	hadj = gtk_layout_get_hadjustment (GTK_LAYOUT (icon_container));
+	vadj = gtk_layout_get_vadjustment (GTK_LAYOUT (icon_container));
 
 	eel_gtk_adjustment_set_value (hadj, 0);
 	eel_gtk_adjustment_set_value (vadj, 0);
