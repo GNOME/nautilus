@@ -156,7 +156,7 @@ map (GtkWidget *widget)
 {
 	/* Chain up to realize our children */
 	GTK_WIDGET_CLASS (nautilus_desktop_window_parent_class)->map (widget);
-	gdk_window_lower (widget->window);
+	gdk_window_lower (gtk_widget_get_window (widget));
 }
 
 
@@ -229,9 +229,9 @@ realize (GtkWidget *widget)
 	GTK_WIDGET_CLASS (nautilus_desktop_window_parent_class)->realize (widget);
 
 	/* This is the new way to set up the desktop window */
-	set_wmspec_desktop_hint (widget->window);
+	set_wmspec_desktop_hint (gtk_widget_get_window (widget));
 
-	set_desktop_window_id (window, widget->window);
+	set_desktop_window_id (window, gtk_widget_get_window (widget));
 
 	g_signal_connect (gtk_window_get_screen (GTK_WINDOW (window)), "size_changed",
 			  G_CALLBACK (nautilus_desktop_window_screen_size_changed), window);
