@@ -275,8 +275,10 @@ static guint
 get_best_icon_size (NautilusSidebarTitle *sidebar_title)
 {
 	gint width;
+	GtkAllocation allocation;
 
-	width = GTK_WIDGET (sidebar_title)->allocation.width - TITLE_PADDING;
+	gtk_widget_get_allocation (GTK_WIDGET (sidebar_title), &allocation);
+	width = allocation.width - TITLE_PADDING;
 
 	if (width < 0) {
 		/* use smallest available icon size */
@@ -343,13 +345,15 @@ update_title_font (NautilusSidebarTitle *sidebar_title)
 	int largest_fitting_font_size;
 	int max_style_font_size;
 	GtkStyle *style;
+	GtkAllocation allocation;
 
 	/* Make sure theres work to do */
 	if (eel_strlen (sidebar_title->details->title_text) < 1) {
 		return;
 	}
 
-	available_width = GTK_WIDGET (sidebar_title)->allocation.width - TITLE_PADDING;
+	gtk_widget_get_allocation (GTK_WIDGET (sidebar_title), &allocation);
+	available_width = allocation.width - TITLE_PADDING;
 
 	/* No work to do */
 	if (available_width <= 0) {
@@ -430,6 +434,7 @@ update_more_info (NautilusSidebarTitle *sidebar_title)
 	char *date_modified_str;
 	int sidebar_width;
 	PangoLayout *layout;
+	GtkAllocation allocation;
 	
 	file = sidebar_title->details->file;
 
@@ -454,8 +459,9 @@ update_more_info (NautilusSidebarTitle *sidebar_title)
 			append_and_eat (info_string, NULL,
 					nautilus_file_get_string_attribute (file, "size"));
 		}
-		
-		sidebar_width = GTK_WIDGET (sidebar_title)->allocation.width - 2 * SIDEBAR_INFO_MARGIN;
+
+		gtk_widget_get_allocation (GTK_WIDGET (sidebar_title), &allocation);
+		sidebar_width = allocation.width - 2 * SIDEBAR_INFO_MARGIN;
 		if (sidebar_width > MINIMUM_INFO_WIDTH) {
 			layout = pango_layout_copy (gtk_label_get_layout (GTK_LABEL (sidebar_title->details->more_info_label)));
 			pango_layout_set_width (layout, -1);
@@ -621,14 +627,20 @@ nautilus_sidebar_title_size_allocate (GtkWidget *widget,
 	NautilusSidebarTitle *sidebar_title;
 	guint16 old_width;
 	guint best_icon_size;
+	GtkAllocation old_allocation, new_allocation;
+
+	g_print ("size allocate\n");
 
 	sidebar_title = NAUTILUS_SIDEBAR_TITLE (widget);
 
-	old_width = widget->allocation.width;
+	gtk_widget_get_allocation (widget, &old_allocation);
+	old_width = old_allocation.width;
 
 	EEL_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
 
-	if (old_width != widget->allocation.width) {
+	gtk_widget_get_allocation (widget, &new_allocation);
+
+	if (old_width != new_allocation.width) {
 		best_icon_size = get_best_icon_size (sidebar_title);
 		if (best_icon_size != sidebar_title->details->best_icon_size) {
 			sidebar_title->details->best_icon_size = best_icon_size;
