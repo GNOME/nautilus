@@ -175,7 +175,7 @@ eel_wrap_table_class_init (EelWrapTableClass *wrap_table_class)
 static void
 eel_wrap_table_init (EelWrapTable *wrap_table)
 {
-	GTK_WIDGET_SET_FLAGS (wrap_table, GTK_NO_WINDOW);
+	gtk_widget_set_has_window (GTK_WIDGET (wrap_table), FALSE);
 
 	wrap_table->details = g_new0 (EelWrapTableDetails, 1);
 	wrap_table->details->x_justification = EEL_JUSTIFICATION_BEGINNING;
@@ -293,7 +293,7 @@ eel_wrap_table_size_request (GtkWidget *widget,
 
 	/* The -1 tells Satan to use as much space as is available */
 	requisition->width = -1;
-	requisition->height = content_dimensions.height + GTK_CONTAINER (widget)->border_width * 2;
+	requisition->height = content_dimensions.height + gtk_container_get_border_width (GTK_CONTAINER (widget)) * 2;
 }
 
 static void
@@ -307,7 +307,7 @@ eel_wrap_table_size_allocate (GtkWidget *widget,
 	
   	wrap_table = EEL_WRAP_TABLE (widget);
 	
-	widget->allocation = *allocation;
+	gtk_widget_set_allocation (widget, allocation);
 
 	wrap_table_layout (wrap_table);
 }
@@ -345,7 +345,7 @@ eel_wrap_table_map (GtkWidget *widget)
 	
 	wrap_table = EEL_WRAP_TABLE (widget);
 
- 	GTK_WIDGET_SET_FLAGS (widget, GTK_MAPPED);
+	gtk_widget_set_mapped (widget, TRUE);
 	
 	for (iterator = wrap_table->details->children; iterator; iterator = iterator->next) {
 		GtkWidget *item;
@@ -368,7 +368,7 @@ eel_wrap_table_unmap (GtkWidget *widget)
 	
 	wrap_table = EEL_WRAP_TABLE (widget);
 
-	GTK_WIDGET_UNSET_FLAGS (widget, GTK_MAPPED);
+	gtk_widget_set_mapped (widget, FALSE);
 
 	for (iterator = wrap_table->details->children; iterator; iterator = iterator->next) {
 		GtkWidget *item;
@@ -512,6 +512,7 @@ wrap_table_layout (EelWrapTable *wrap_table)
 	EelDimensions max_child_dimensions;
 	EelIRect content_bounds;
 	guint num_cols;
+	GtkAllocation allocation;
 
  	g_assert (EEL_IS_WRAP_TABLE (wrap_table));
 
@@ -520,8 +521,9 @@ wrap_table_layout (EelWrapTable *wrap_table)
 	pos.x = content_bounds.x0;
 	pos.y = content_bounds.y0;
 
-	num_cols = wrap_table_get_num_fitting (GTK_WIDGET (wrap_table)->allocation.width -
-					       GTK_CONTAINER (wrap_table)->border_width * 2,
+	gtk_widget_get_allocation (GTK_WIDGET (wrap_table), &allocation);
+	num_cols = wrap_table_get_num_fitting (allocation.width -
+					       gtk_container_get_border_width (GTK_CONTAINER (wrap_table)) * 2,
 					       wrap_table->details->x_spacing,
 					       max_child_dimensions.width);
 	if (num_cols != wrap_table->details->cols) {
@@ -673,7 +675,7 @@ wrap_table_get_content_dimensions (const EelWrapTable *wrap_table)
 		max_child_dimensions.height = MAX (max_child_dimensions.height, 1);
 
 		num_cols = wrap_table_get_num_fitting (dimensions.width -
-						       GTK_CONTAINER (wrap_table)->border_width * 2,
+						       gtk_container_get_border_width (GTK_CONTAINER (wrap_table)) * 2,
 						       wrap_table->details->x_spacing,
 						       max_child_dimensions.width);
 		num_rows = num_children / num_cols;
@@ -697,15 +699,17 @@ static EelIRect
 wrap_table_get_content_bounds (const EelWrapTable *wrap_table)
 {
 	EelIRect content_bounds;
+	guint border;
 
   	g_assert (EEL_IS_WRAP_TABLE (wrap_table));
 
 	content_bounds = eel_gtk_widget_get_bounds (GTK_WIDGET (wrap_table));
 
-	content_bounds.x0 += GTK_CONTAINER (wrap_table)->border_width;
-	content_bounds.y0 += GTK_CONTAINER (wrap_table)->border_width;
-	content_bounds.x1 -= GTK_CONTAINER (wrap_table)->border_width;
-	content_bounds.y1 -= GTK_CONTAINER (wrap_table)->border_width;
+	border = gtk_container_get_border_width (GTK_CONTAINER (wrap_table));
+	content_bounds.x0 += border;
+	content_bounds.y0 += border;
+	content_bounds.x1 -= border;
+	content_bounds.y1 -= border;
 
 	return content_bounds;
 }
@@ -715,11 +719,18 @@ wrap_table_child_focus_in (GtkWidget *widget,
 			   GdkEventFocus *event, 
 			   gpointer data)
 {
-	g_assert (widget->parent && widget->parent->parent);
-	g_assert (GTK_IS_VIEWPORT (widget->parent->parent));
+	GtkWidget *parent, *pparent;
+	GtkAllocation allocation;
 
-	eel_gtk_viewport_scroll_to_rect (GTK_VIEWPORT (widget->parent->parent), 
-					 &widget->allocation);
+	parent = gtk_widget_get_parent (widget);
+	if (parent)
+		pparent = gtk_widget_get_parent (parent);
+	g_assert (parent && pparent);
+	g_assert (GTK_IS_VIEWPORT (pparent));
+
+	gtk_widget_get_allocation (widget, &allocation);
+	eel_gtk_viewport_scroll_to_rect (GTK_VIEWPORT (pparent),
+					 &allocation);
 	
 	return FALSE;
 }
