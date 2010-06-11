@@ -165,7 +165,7 @@ fm_ditem_page_url_drag_data_received (GtkWidget *widget, GdkDragContext *context
 	gboolean exactly_one;
 	char *path;
 	
-	uris = g_strsplit (selection_data->data, "\r\n", 0);
+	uris = g_strsplit (gtk_selection_data_get_data (selection_data), "\r\n", 0);
         exactly_one = uris[0] != NULL && (uris[1] == NULL || uris[1][0] == '\0');
 
 	if (!exactly_one) {
@@ -197,7 +197,7 @@ fm_ditem_page_exec_drag_data_received (GtkWidget *widget, GdkDragContext *contex
 	GKeyFile *key_file;
 	char *uri, *type, *exec;
 	
-	uris = g_strsplit (selection_data->data, "\r\n", 0);
+	uris = g_strsplit (gtk_selection_data_get_data (selection_data), "\r\n", 0);
         exactly_one = uris[0] != NULL && (uris[1] == NULL || uris[1][0] == '\0');
 
 	if (!exactly_one) {
