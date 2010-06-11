@@ -2204,7 +2204,7 @@ prompt_empty_trash (GtkWindow *parent_window)
 	/* Make transient for the window group */
 	gtk_widget_realize (dialog);
 	if (screen != NULL) {
-		gdk_window_set_transient_for (GTK_WIDGET (dialog)->window,
+		gdk_window_set_transient_for (gtk_widget_get_window (GTK_WIDGET (dialog)),
 				      		gdk_screen_get_root_window (screen));
 	}
 	
