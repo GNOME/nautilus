@@ -83,7 +83,7 @@ nautilus_entry_new_with_max_length (guint16 max)
 	GtkWidget *widget;
 
 	widget = gtk_widget_new (NAUTILUS_TYPE_ENTRY, NULL);
-	GTK_ENTRY (widget)->text_max_length = max;
+	gtk_entry_set_max_length (GTK_ENTRY (widget), max);
 
 	return widget;
 }
@@ -352,7 +352,7 @@ nautilus_entry_selection_clear (GtkWidget *widget,
 {
 	g_assert (NAUTILUS_IS_ENTRY (widget));
 	
-	if (gdk_selection_owner_get (event->selection) == widget->window) {
+	if (gdk_selection_owner_get (event->selection) == gtk_widget_get_window (widget)) {
 		return FALSE;
 	}
 	
