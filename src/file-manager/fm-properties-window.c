@@ -499,7 +499,7 @@ fm_properties_window_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 		return;
 	}
 	
-	uris = g_strsplit (selection_data->data, "\r\n", 0);
+	uris = g_strsplit (gtk_selection_data_get_data (selection_data), "\r\n", 0);
 	exactly_one = uris[0] != NULL && (uris[1] == NULL || uris[1][0] == '\0');
 
 
@@ -2215,10 +2215,13 @@ static guint
 append_row (GtkTable *table)
 {
 	guint new_row_count;
+	gint nrows, ncols;
 
-	new_row_count = table->nrows + 1;
+	g_object_get (table, "n-rows", &nrows, "n-columns", &ncols, NULL);
 
-	gtk_table_resize (table, new_row_count, table->ncols);
+	new_row_count = nrows + 1;
+
+	gtk_table_resize (table, new_row_count, ncols);
 	gtk_table_set_row_spacing (table, new_row_count - 1, ROW_PAD);
 
 	return new_row_count - 1;
@@ -2756,13 +2759,16 @@ paint_used_legend (GtkWidget *widget, GdkEventExpose *eev, gpointer data)
 	FMPropertiesWindow *window;
 	cairo_t *cr;
 	gint width, height;
+	GtkAllocation allocation;
+
+	gtk_widget_get_allocation (widget, &allocation);
 	
-  	width  = widget->allocation.width;
-  	height = widget->allocation.height;
+  	width  = allocation.width;
+  	height = allocation.height;
   	
 	window = FM_PROPERTIES_WINDOW (data);
 	
-	cr = gdk_cairo_create (widget->window);
+	cr = gdk_cairo_create (gtk_widget_get_window (widget));
 	
 	cairo_rectangle  (cr,
 			  2,
@@ -2785,12 +2791,14 @@ paint_free_legend (GtkWidget *widget, GdkEventExpose *eev, gpointer data)
 	FMPropertiesWindow *window;
 	cairo_t *cr;
 	gint width, height;
-		
+	GtkAllocation allocation;
+
 	window = FM_PROPERTIES_WINDOW (data);
+	gtk_widget_get_allocation (widget, &allocation);
 	
-  	width  = widget->allocation.width;
-  	height = widget->allocation.height;
-  	cr = gdk_cairo_create (widget->window);
+  	width  = allocation.width;
+  	height = allocation.height;
+  	cr = gdk_cairo_create (gtk_widget_get_window (widget));
   
 	cairo_rectangle (cr,
 			 2,
@@ -2816,11 +2824,13 @@ paint_pie_chart (GtkWidget *widget, GdkEventExpose *eev, gpointer data)
 	gint width, height;
 	double free, used;
 	double angle1, angle2, split, xc, yc, radius;
+	GtkAllocation allocation;
 
-  	window = FM_PROPERTIES_WINDOW (data);
-	
-	width  = widget->allocation.width;
-  	height = widget->allocation.height;
+	window = FM_PROPERTIES_WINDOW (data);
+	gtk_widget_get_allocation (widget, &allocation);
+
+	width  = allocation.width;
+  	height = allocation.height;
 	
 		
 	free = (double)window->details->volume_free / (double)window->details->volume_capacity;
@@ -2832,7 +2842,7 @@ paint_pie_chart (GtkWidget *widget, GdkEventExpose *eev, gpointer data)
 	xc = width / 2;
 	yc = height / 2;
   
-  	cr = gdk_cairo_create (widget->window);
+  	cr = gdk_cairo_create (gtk_widget_get_window (widget));
 
 	if (width < height) {
 		radius = width / 2 - 8;
@@ -3475,8 +3485,8 @@ create_emblems_page (FMPropertiesWindow *window)
 		}
 		
 		button = eel_labeled_image_check_button_new (label, pixbuf);
-		eel_labeled_image_set_fixed_image_height (EEL_LABELED_IMAGE (GTK_BIN (button)->child), STANDARD_EMBLEM_HEIGHT);
-		eel_labeled_image_set_spacing (EEL_LABELED_IMAGE (GTK_BIN (button)->child), EMBLEM_LABEL_SPACING);
+		eel_labeled_image_set_fixed_image_height (EEL_LABELED_IMAGE (gtk_bin_get_child (GTK_BIN (button))), STANDARD_EMBLEM_HEIGHT);
+		eel_labeled_image_set_spacing (EEL_LABELED_IMAGE (gtk_bin_get_child (GTK_BIN (button))), EMBLEM_LABEL_SPACING);
 		
 		g_free (label);
 		g_object_unref (pixbuf);
@@ -3508,7 +3518,7 @@ start_long_operation (FMPropertiesWindow *window)
 		GdkCursor * cursor;
 		
 		cursor = gdk_cursor_new (GDK_WATCH);
-		gdk_window_set_cursor (GTK_WIDGET (window)->window, cursor);
+		gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (window)), cursor);
 		gdk_cursor_unref (cursor);
 	}
 	window->details->long_operation_underway ++;
@@ -3517,10 +3527,10 @@ start_long_operation (FMPropertiesWindow *window)
 static void
 end_long_operation (FMPropertiesWindow *window)
 {
-	if (GTK_WIDGET (window)->window != NULL &&
+	if (gtk_widget_get_window (GTK_WIDGET (window)) != NULL &&
 	    window->details->long_operation_underway == 1) {
 		/* finished !! */
-		gdk_window_set_cursor (GTK_WIDGET (window)->window, NULL);
+		gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (window)), NULL);
 	}
 	window->details->long_operation_underway--;
 }
@@ -4293,15 +4303,19 @@ append_special_execution_checkbox (FMPropertiesWindow *window,
 static void
 append_special_execution_flags (FMPropertiesWindow *window, GtkTable *table)
 {
+	gint nrows;
+
 	append_special_execution_checkbox 
 		(window, table, _("Set _user ID"), UNIX_PERM_SUID);
 
-	attach_title_field (table, table->nrows - 1, _("Special flags:"));
+	g_object_get (table, "n-rows", &nrows, NULL);
+	attach_title_field (table, nrows - 1, _("Special flags:"));
 
 	append_special_execution_checkbox (window, table, _("Set gro_up ID"), UNIX_PERM_SGID);
 	append_special_execution_checkbox (window, table, _("_Sticky"), UNIX_PERM_STICKY);
 
-	gtk_table_set_row_spacing (table, table->nrows - 1, 18);
+	g_object_get (table, "n-rows", &nrows, NULL);
+	gtk_table_set_row_spacing (table, nrows - 1, 18);
 }
 
 static gboolean
@@ -4372,6 +4386,7 @@ create_simple_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 	GtkComboBox *group_combo_box;
 	GtkComboBox *owner_combo_box;
 	guint last_row;
+	gint nrows;
 
 	last_row = 0;
 	
@@ -4404,7 +4419,8 @@ create_simple_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 					   PERMISSION_USER, FALSE, !has_directory);
 	}
 
-	gtk_table_set_row_spacing (page_table, page_table->nrows - 1, 18);
+	g_object_get (page_table, "n-rows", &nrows, NULL);
+	gtk_table_set_row_spacing (page_table, nrows - 1, 18);
 	
 	if (!is_multi_file_window (window) && nautilus_file_can_set_group (get_target_file (window))) {
 		last_row = append_title_field (page_table,
@@ -4439,7 +4455,8 @@ create_simple_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 					   !has_directory);
 	}
 
-	gtk_table_set_row_spacing (page_table, page_table->nrows - 1, 18);
+	g_object_get (page_table, "n-rows", &nrows, NULL);
+	gtk_table_set_row_spacing (page_table, nrows - 1, 18);
 	
 	append_title_field (page_table,
 			    _("Others"),
@@ -4456,7 +4473,8 @@ create_simple_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 					   !has_directory);
 	}
 
-	gtk_table_set_row_spacing (page_table, page_table->nrows - 1, 18);
+	g_object_get (page_table, "n-rows", &nrows, NULL);
+	gtk_table_set_row_spacing (page_table, nrows - 1, 18);
 	
 	last_row = append_title_field (page_table,
 				       _("Execute:"),
@@ -4578,9 +4596,10 @@ create_advanced_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 	GtkComboBox *group_combo_box;
 	GtkComboBox *owner_combo_box;
 	gboolean has_directory, has_file;
-	
+	gint nrows;
+
 	last_row = 0;
-	
+
 	if (!is_multi_file_window (window) && nautilus_file_can_set_owner (get_target_file (window))) {
 		
 		owner_label  = attach_title_field (page_table, last_row, _("_Owner:"));
@@ -4622,7 +4641,8 @@ create_advanced_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 				    FALSE); 
 	}
 
-	gtk_table_set_row_spacing (page_table, page_table->nrows - 1, 18);
+	g_object_get (page_table, "n-rows", &nrows, NULL);
+	gtk_table_set_row_spacing (page_table, nrows - 1, 18);
 
 	has_directory = files_has_directory (window);
 	has_file = files_has_file (window);
@@ -4634,7 +4654,8 @@ create_advanced_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 					    NULL);
 		}
 		create_permission_checkboxes (window, page_table, TRUE);
-		gtk_table_set_row_spacing (page_table, page_table->nrows - 1, 18);
+		g_object_get (page_table, "n-rows", &nrows, NULL);
+		gtk_table_set_row_spacing (page_table, nrows - 1, 18);
 
 	}
 
@@ -4646,7 +4667,8 @@ create_advanced_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 					    NULL);
 		}
 		create_permission_checkboxes (window, page_table, FALSE);
-		gtk_table_set_row_spacing (page_table, page_table->nrows - 1, 18);
+		g_object_get (page_table, "n-rows", &nrows, NULL);
+		gtk_table_set_row_spacing (page_table, nrows - 1, 18);
 	}
 	
 	append_special_execution_flags (window, page_table);
@@ -4784,6 +4806,7 @@ create_permissions_page (FMPropertiesWindow *window)
 	char *file_name, *prompt_text;
 	GList *file_list;
 	guint last_row;
+	gint nrows;
 
 	vbox = create_page_with_vbox (window->details->notebook,
 				      _("Permissions"));
@@ -4818,8 +4841,9 @@ create_permissions_page (FMPropertiesWindow *window)
 			window->details->advanced_permissions = FALSE;
 			create_simple_permissions (window, page_table);
 		}
-		
-		gtk_table_set_row_spacing (page_table, page_table->nrows - 1, 18);
+
+		g_object_get (page_table, "n-rows", &nrows, NULL);
+		gtk_table_set_row_spacing (page_table, nrows - 1, 18);
 	
 #ifdef HAVE_SELINUX
 		append_title_value_pair
@@ -5183,7 +5207,7 @@ create_properties_window (StartupData *startup_data)
 	/* Create the notebook tabs. */
 	window->details->notebook = GTK_NOTEBOOK (gtk_notebook_new ());
 	gtk_widget_show (GTK_WIDGET (window->details->notebook));
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox),
+	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (window))),
 			    GTK_WIDGET (window->details->notebook),
 			    TRUE, TRUE, 0);
 
@@ -5212,9 +5236,9 @@ create_properties_window (StartupData *startup_data)
 
 	/* FIXME - HIGificiation, should be done inside GTK+ */
 	gtk_widget_ensure_style (GTK_WIDGET (window));
-	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (window)->vbox), 12);
-	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (window)->action_area), 0);
-	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (window)->vbox), 12);
+	gtk_container_set_border_width (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (window))), 12);
+	gtk_container_set_border_width (GTK_CONTAINER (gtk_dialog_get_action_area (GTK_DIALOG (window))), 0);
+	gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (window))), 12);
 	gtk_dialog_set_has_separator (GTK_DIALOG (window), FALSE);
 
 	/* Update from initial state */
