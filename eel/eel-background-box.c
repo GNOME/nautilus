@@ -40,7 +40,7 @@ eel_background_box_expose_event (GtkWidget *widget,
 	eel_background_expose (widget, event);
 	
 	gtk_container_propagate_expose (GTK_CONTAINER (widget), 
-					GTK_BIN (widget)->child,
+					gtk_bin_get_child (GTK_BIN (widget)),
 					event);
 	
 	return TRUE;
