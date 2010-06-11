@@ -1101,9 +1101,9 @@ nautilus_navigation_window_save_geometry (NautilusNavigationWindow *window)
 
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
-	if (GTK_WIDGET(window)->window) {
+	if (gtk_widget_get_window (GTK_WIDGET (window))) {
 		geometry_string = eel_gtk_window_get_geometry_string (GTK_WINDOW (window));
-		is_maximized = gdk_window_get_state (GTK_WIDGET (window)->window)
+		is_maximized = gdk_window_get_state (gtk_widget_get_window (GTK_WIDGET (window)))
 				& GDK_WINDOW_STATE_MAXIMIZED;
 		
 		if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_SAVED_GEOMETRY) &&
