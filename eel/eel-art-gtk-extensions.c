@@ -139,12 +139,14 @@ eel_gdk_window_get_screen_relative_bounds (GdkWindow *gdk_window)
 EelIRect
 eel_gtk_widget_get_bounds (GtkWidget *gtk_widget)
 {
+	GtkAllocation allocation;
 	g_return_val_if_fail (GTK_IS_WIDGET (gtk_widget), eel_irect_empty);
-	
-	return eel_irect_assign (gtk_widget->allocation.x,
-				     gtk_widget->allocation.y,
-				     (int) gtk_widget->allocation.width,
-				     (int) gtk_widget->allocation.height);
+
+	gtk_widget_get_allocation (gtk_widget, &allocation);
+	return eel_irect_assign (allocation.x,
+				     allocation.y,
+				     (int) allocation.width,
+				     (int) allocation.height);
 }
 
 /**
@@ -158,11 +160,13 @@ EelDimensions
 eel_gtk_widget_get_dimensions (GtkWidget *gtk_widget)
 {
 	EelDimensions dimensions;
+	GtkAllocation allocation;
 	
 	g_return_val_if_fail (GTK_IS_WIDGET (gtk_widget), eel_dimensions_empty);
-	
-	dimensions.width = (int) gtk_widget->allocation.width;
-	dimensions.height = (int) gtk_widget->allocation.height;
+
+	gtk_widget_get_allocation (gtk_widget, &allocation);
+	dimensions.width = (int) allocation.width;
+	dimensions.height = (int) allocation.height;
 	
 	return dimensions;
 }
