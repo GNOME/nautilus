@@ -883,7 +883,7 @@ fm_list_model_multi_drag_data_get (EggTreeMultiDragSource *drag_source,
 	}
 
 	if (gtk_target_list_find (drag_target_list,
-				  selection_data->target,
+				  gtk_selection_data_get_target (selection_data),
 				  &target_info)) {
 		nautilus_drag_drag_data_get (NULL,
 					     NULL,
