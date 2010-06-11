@@ -292,7 +292,7 @@ eel_labeled_image_class_init (EelLabeledImageClass *labeled_image_class)
 static void
 eel_labeled_image_init (EelLabeledImage *labeled_image)
 {
-	GTK_WIDGET_SET_FLAGS (labeled_image, GTK_NO_WINDOW);
+	gtk_widget_set_has_window (GTK_WIDGET (labeled_image), FALSE);
 
 	labeled_image->details = g_new0 (EelLabeledImageDetails, 1);
 	labeled_image->details->show_label = TRUE;
@@ -514,7 +514,7 @@ eel_labeled_image_size_allocate (GtkWidget *widget,
 
   	labeled_image = EEL_LABELED_IMAGE (widget);
 
-	widget->allocation = *allocation;
+	gtk_widget_set_allocation (widget, allocation);
 	
  	label_bounds = eel_labeled_image_get_label_bounds (labeled_image);
 	eel_gtk_container_child_size_allocate (GTK_CONTAINER (widget),
@@ -533,6 +533,8 @@ eel_labeled_image_expose_event (GtkWidget *widget,
 {
 	EelLabeledImage *labeled_image;
 	EelIRect label_bounds;
+	GtkStyle *style;
+	GdkWindow *window;
 
 	g_assert (EEL_IS_LABELED_IMAGE (widget));
 	g_assert (gtk_widget_get_realized (widget));
@@ -540,12 +542,14 @@ eel_labeled_image_expose_event (GtkWidget *widget,
 
   	labeled_image = EEL_LABELED_IMAGE (widget);
 
+	style = gtk_widget_get_style (widget);
+	window = gtk_widget_get_window (widget);
 	if (gtk_widget_get_state (widget) == GTK_STATE_SELECTED || 
 	    gtk_widget_get_state (widget) == GTK_STATE_ACTIVE) {
 		label_bounds = eel_labeled_image_get_label_bounds (EEL_LABELED_IMAGE (widget));
 
-		gtk_paint_flat_box (widget->style,
-				    widget->window,
+		gtk_paint_flat_box (style,
+				    window,
 				    gtk_widget_get_state (widget),
 				    GTK_SHADOW_NONE,
 				    &event->area,
@@ -570,7 +574,7 @@ eel_labeled_image_expose_event (GtkWidget *widget,
 
 	if (gtk_widget_has_focus (widget)) {
 		label_bounds = eel_labeled_image_get_image_bounds (EEL_LABELED_IMAGE (widget));
-		gtk_paint_focus (widget->style, widget->window,
+		gtk_paint_focus (style, window,
 				 GTK_STATE_NORMAL,
 				 &event->area, widget,
 				 "eel-focusable-labeled-image",
@@ -591,7 +595,7 @@ eel_labeled_image_map (GtkWidget *widget)
 	
 	labeled_image = EEL_LABELED_IMAGE (widget);
 
- 	GTK_WIDGET_SET_FLAGS (widget, GTK_MAPPED);
+	gtk_widget_set_mapped (widget, TRUE);
 	
 	if (labeled_image_show_label (labeled_image)) {
 		eel_gtk_container_child_map (GTK_CONTAINER (widget), labeled_image->details->label);
@@ -611,7 +615,7 @@ eel_labeled_image_unmap (GtkWidget *widget)
 	
 	labeled_image = EEL_LABELED_IMAGE (widget);
 
-	GTK_WIDGET_UNSET_FLAGS (widget, GTK_MAPPED);
+	gtk_widget_set_mapped (widget, FALSE);
 	
 	eel_gtk_container_child_unmap (GTK_CONTAINER (widget), labeled_image->details->label);
 	eel_gtk_container_child_unmap (GTK_CONTAINER (widget), labeled_image->details->image);
@@ -1028,8 +1032,8 @@ labeled_image_update_alignments (EelLabeledImage *labeled_image)
 		float y_alignment;
 		
 		if (labeled_image->details->fill) {	
-			x_alignment = GTK_MISC (labeled_image->details->label)->xalign;
-			y_alignment = GTK_MISC (labeled_image->details->label)->yalign;
+			gtk_misc_get_alignment (GTK_MISC (labeled_image->details->label),
+						&x_alignment, &y_alignment);
 			
 			/* Only the label is shown */
 			if (!labeled_image_show_image (labeled_image)) {
@@ -1072,8 +1076,8 @@ labeled_image_update_alignments (EelLabeledImage *labeled_image)
 		float y_alignment;
 		
 		if (labeled_image->details->fill) {	
-			x_alignment = GTK_MISC (labeled_image->details->image)->xalign;
-			y_alignment = GTK_MISC (labeled_image->details->image)->yalign;
+			gtk_misc_get_alignment (GTK_MISC (labeled_image->details->image),
+						&x_alignment, &y_alignment);
 			
 			/* Only the image is shown */
 			if (!labeled_image_show_label (labeled_image)) {
@@ -1497,7 +1501,7 @@ eel_labeled_image_get_selected (EelLabeledImage *labeled_image)
 {
 	g_return_val_if_fail (EEL_IS_LABELED_IMAGE (labeled_image), FALSE);
 
-	return GTK_WIDGET (labeled_image)->state == GTK_STATE_SELECTED;
+	return gtk_widget_get_state (GTK_WIDGET (labeled_image)) == GTK_STATE_SELECTED;
 }
 
 /**
@@ -1934,7 +1938,7 @@ button_leave_callback (GtkWidget *widget,
 		bounds.x1 += fudge;
 		bounds.y1 += fudge;
 		
-		gtk_widget_queue_draw_area (widget->parent,
+		gtk_widget_queue_draw_area (gtk_widget_get_parent (widget),
 					    bounds.x0,
 					    bounds.y0,
 					    eel_irect_get_width (bounds),
@@ -2109,14 +2113,7 @@ void
 eel_labeled_image_set_can_focus (EelLabeledImage *labeled_image,
 				 gboolean         can_focus)
 {
-	if (can_focus) {
-		GTK_WIDGET_SET_FLAGS
-			(GTK_WIDGET (labeled_image), GTK_CAN_FOCUS);
-		
-	} else {
-		GTK_WIDGET_UNSET_FLAGS
-			(GTK_WIDGET (labeled_image), GTK_CAN_FOCUS);
-	}
+	gtk_widget_set_can_focus (GTK_WIDGET (labeled_image), can_focus);
 }
 
 static AtkObjectClass *a11y_parent_class = NULL;
@@ -2133,12 +2130,12 @@ get_image (gpointer object)
 {
 	GtkWidget *widget;
 
-	if (!(widget = GTK_ACCESSIBLE (object)->widget)) {
+	if (!(widget = gtk_accessible_get_widget (GTK_ACCESSIBLE (object)))) {
 		return NULL;
 	}
 	
 	if (GTK_IS_BUTTON (widget))
-		widget = GTK_BIN (widget)->child;
+		widget = gtk_bin_get_child (GTK_BIN (widget));
 
 	return EEL_LABELED_IMAGE (widget);
 }
@@ -2166,6 +2163,7 @@ eel_labeled_image_accessible_image_get_size (AtkImage *image,
 					     gint     *height)
 {
 	EelLabeledImage *labeled_image;
+	GtkAllocation allocation;
 
 	labeled_image = get_image (image);
 
@@ -2174,8 +2172,9 @@ eel_labeled_image_accessible_image_get_size (AtkImage *image,
 		return;
 	}
 
-	*width = labeled_image->details->image->allocation.width;
-	*height = labeled_image->details->image->allocation.height;
+	gtk_widget_get_allocation (labeled_image->details->image, &allocation);
+	*width = allocation.width;
+	*height = allocation.height;
 }
 
 static void
