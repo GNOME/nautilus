@@ -343,6 +343,7 @@ nautilus_cell_renderer_pixbuf_emblem_get_size (GtkCellRenderer *cell,
 	gint pixbuf_height = 0;
 	gint calc_width;
 	gint calc_height;
+	gint xpad, ypad;
 
 	if (!cellpixbuf->pixbuf && cellinfo->stock_id)
 		nautilus_cell_renderer_pixbuf_emblem_create_stock_pixbuf (cellpixbuf, widget);
@@ -359,24 +360,28 @@ nautilus_cell_renderer_pixbuf_emblem_get_size (GtkCellRenderer *cell,
 		pixbuf_width  = MAX (pixbuf_width, gdk_pixbuf_get_width (cellpixbuf->pixbuf_expander_closed));
 		pixbuf_height = MAX (pixbuf_height, gdk_pixbuf_get_height (cellpixbuf->pixbuf_expander_closed));
 	}
-  
-	calc_width  = (gint) cell->xpad * 2 + pixbuf_width;
-	calc_height = (gint) cell->ypad * 2 + pixbuf_height;
+
+	gtk_cell_renderer_get_padding (cell, &xpad, &ypad);
+	calc_width  = xpad * 2 + pixbuf_width;
+	calc_height = ypad * 2 + pixbuf_height;
   
 	if (x_offset) *x_offset = 0;
 	if (y_offset) *y_offset = 0;
 
 	if (cell_area && pixbuf_width > 0 && pixbuf_height > 0) {
+		gfloat xalign, yalign;
+
+		gtk_cell_renderer_get_alignment (cell, &xalign, &yalign);
 		if (x_offset) {
 			*x_offset = (((gtk_widget_get_direction (widget) == GTK_TEXT_DIR_RTL) ?
-				1.0 - cell->xalign : cell->xalign) * 
-				(cell_area->width - calc_width - 2 * cell->xpad));
-			*x_offset = MAX (*x_offset, 0) + cell->xpad;
+				1.0 - xalign : xalign) * 
+				(cell_area->width - calc_width - 2 * xpad));
+			*x_offset = MAX (*x_offset, 0) + xpad;
 		}
 		if (y_offset) {
-			*y_offset = (cell->yalign *
-				(cell_area->height - calc_height - 2 * cell->ypad));
-			*y_offset = MAX (*y_offset, 0) + cell->ypad;
+			*y_offset = (yalign *
+				(cell_area->height - calc_height - 2 * ypad));
+			*y_offset = MAX (*y_offset, 0) + ypad;
 		}
 	}
 
@@ -404,13 +409,19 @@ nautilus_cell_renderer_pixbuf_emblem_render (GtkCellRenderer      *cell,
 	GdkRectangle pix_emblem_rect;
 	GdkRectangle draw_rect;
 	gboolean stock_pixbuf = FALSE;
-	
+	gint xpad, ypad;
+	gboolean is_expander, is_expanded;
+
 	pixbuf = cellpixbuf->pixbuf;
-	if (cell->is_expander) {
-		if (cell->is_expanded &&
+	g_object_get (cell,
+		      "is-expander", &is_expander,
+		      "is-expanded", &is_expanded,
+		      NULL);
+	if (is_expander) {
+		if (is_expanded &&
 		    cellpixbuf->pixbuf_expander_open != NULL) {
 			pixbuf = cellpixbuf->pixbuf_expander_open;
-		} else if (!cell->is_expanded &&
+		} else if (!is_expanded &&
 			   cellpixbuf->pixbuf_expander_closed != NULL) {
 			pixbuf = cellpixbuf->pixbuf_expander_closed;
 		}
@@ -430,16 +441,17 @@ nautilus_cell_renderer_pixbuf_emblem_render (GtkCellRenderer      *cell,
 
 	if (stock_pixbuf)
 		pixbuf = cellpixbuf->pixbuf;
-  
+
+	gtk_cell_renderer_get_padding (cell, &xpad, &ypad);
 	pix_rect.x += cell_area->x;
 	pix_rect.y += cell_area->y;
-	pix_rect.width  -= cell->xpad * 2;
-	pix_rect.height -= cell->ypad * 2;
+	pix_rect.width  -= xpad * 2;
+	pix_rect.height -= ypad * 2;
 
 	if (gdk_rectangle_intersect (cell_area, &pix_rect, &draw_rect) &&
 	    gdk_rectangle_intersect (expose_area, &draw_rect, &draw_rect)) {
 		gdk_draw_pixbuf (window,
-			widget->style->black_gc,
+			gtk_widget_get_style (widget)->black_gc,
 			pixbuf,
 			/* pixbuf 0, 0 is at pix_rect.x, pix_rect.y */
 			draw_rect.x - pix_rect.x,
@@ -460,7 +472,7 @@ nautilus_cell_renderer_pixbuf_emblem_render (GtkCellRenderer      *cell,
 		if (gdk_rectangle_intersect (cell_area, &pix_emblem_rect, &draw_rect) &&
 		    gdk_rectangle_intersect (expose_area, &draw_rect, &draw_rect)) {
 			gdk_draw_pixbuf (window,
-				widget->style->black_gc,
+				gtk_widget_get_style (widget)->black_gc,
 				cellpixbuf->pixbuf_emblem,
 				/* pixbuf 0, 0 is at pix_emblem_rect.x, pix_emblem_rect.y */
 				draw_rect.x - pix_emblem_rect.x,
