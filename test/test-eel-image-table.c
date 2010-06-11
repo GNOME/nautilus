@@ -179,6 +179,7 @@ image_table_size_allocate (GtkWidget *image_table,
 			   gpointer callback_data)
 {
 	static int recursion_count = 0;
+	GtkAllocation w_allocation;
 
 	g_return_if_fail (EEL_IS_IMAGE_TABLE (image_table));
 	g_return_if_fail (allocation != NULL);
@@ -190,8 +191,9 @@ image_table_size_allocate (GtkWidget *image_table,
 
 	/*gtk_widget_queue_resize (GTK_WIDGET (callback_data));*/
 
+	gtk_widget_get_allocation (GTK_WIDGET (image_table), &w_allocation);
 	if (0) gtk_widget_size_allocate (GTK_WIDGET (image_table),
-					 &GTK_WIDGET (image_table)->allocation);
+					 &w_allocation);
 	
 	g_print ("%s(%d)\n", G_STRFUNC, recursion_count);
 
