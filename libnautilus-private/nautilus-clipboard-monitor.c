@@ -275,11 +275,14 @@ nautilus_get_clipboard_callback (GtkClipboard     *clipboard,
 	GList *l;
 	int i;
 	NautilusClipboardInfo *clipboard_info;
+	GdkAtom target;
 
 	clipboard_info =
 		nautilus_clipboard_monitor_get_clipboard_info (nautilus_clipboard_monitor_get ());
 
-        if (gtk_targets_include_uri (&selection_data->target, 1)) {
+	target = gtk_selection_data_get_target (selection_data);
+
+        if (gtk_targets_include_uri (&target, 1)) {
 		uris = g_malloc ((g_list_length (clipboard_info->files) + 1) * sizeof (char *));
 		i = 0;
 
@@ -293,14 +296,14 @@ nautilus_get_clipboard_callback (GtkClipboard     *clipboard,
 		gtk_selection_data_set_uris (selection_data, uris);
 
 		g_strfreev (uris);
-        } else if (gtk_targets_include_text (&selection_data->target, 1)) {
+        } else if (gtk_targets_include_text (&target, 1)) {
                 char *str;
                 gsize len;
 
                 str = convert_file_list_to_string (clipboard_info, TRUE, &len);
                 gtk_selection_data_set_text (selection_data, str, len);
                 g_free (str);
-        } else if (selection_data->target == copied_files_atom) {
+        } else if (target == copied_files_atom) {
                 char *str;
                 gsize len;
 
