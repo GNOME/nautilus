@@ -120,6 +120,9 @@ struct _EelCanvasItem {
 
 	/* Bounding box for this item (in canvas coordinates) */
 	double x1, y1, x2, y2;
+
+	/* Object flags */
+	guint flags;
 };
 
 struct _EelCanvasItemClass {

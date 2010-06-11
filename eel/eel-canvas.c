@@ -148,7 +148,7 @@ eel_canvas_item_get_type (void)
 static void
 eel_canvas_item_init (EelCanvasItem *item)
 {
-	item->object.flags |= EEL_CANVAS_ITEM_VISIBLE;
+	item->flags |= EEL_CANVAS_ITEM_VISIBLE;
 }
 
 /**
@@ -246,7 +246,7 @@ eel_canvas_item_get_property (GObject *gobject, guint param_id,
 
 	switch (param_id) {
 	case ITEM_PROP_VISIBLE:
-		g_value_set_boolean (value, item->object.flags & EEL_CANVAS_ITEM_VISIBLE);
+		g_value_set_boolean (value, item->flags & EEL_CANVAS_ITEM_VISIBLE);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (gobject, param_id, pspec);
@@ -282,7 +282,7 @@ eel_canvas_item_construct (EelCanvasItem *item, EelCanvasGroup *parent,
 static void
 redraw_and_repick_if_mapped (EelCanvasItem *item)
 {
-	if (item->object.flags & EEL_CANVAS_ITEM_MAPPED) {
+	if (item->flags & EEL_CANVAS_ITEM_MAPPED) {
 		eel_canvas_item_request_redraw (item);
 		item->canvas->need_repick = TRUE;
 	}
@@ -324,10 +324,10 @@ eel_canvas_item_dispose (GObject *object)
 
 		/* Normal destroy stuff */
 
-		if (item->object.flags & EEL_CANVAS_ITEM_MAPPED)
+		if (item->flags & EEL_CANVAS_ITEM_MAPPED)
 			(* EEL_CANVAS_ITEM_GET_CLASS (item)->unmap) (item);
 
-		if (item->object.flags & EEL_CANVAS_ITEM_REALIZED)
+		if (item->flags & EEL_CANVAS_ITEM_REALIZED)
 			(* EEL_CANVAS_ITEM_GET_CLASS (item)->unrealize) (item);
 
 		if (item->parent)
@@ -344,13 +344,13 @@ eel_canvas_item_dispose (GObject *object)
 static void
 eel_canvas_item_realize (EelCanvasItem *item)
 {
-	if (item->parent && !(item->parent->object.flags & EEL_CANVAS_ITEM_REALIZED))
+	if (item->parent && !(item->parent->flags & EEL_CANVAS_ITEM_REALIZED))
 		(* EEL_CANVAS_ITEM_GET_CLASS (item->parent)->realize) (item->parent);
 	
 	if (item->parent == NULL && !gtk_widget_get_realized (GTK_WIDGET (item->canvas)))
 		gtk_widget_realize (GTK_WIDGET (item->canvas));
-	
-	GTK_OBJECT_SET_FLAGS (item, EEL_CANVAS_ITEM_REALIZED);
+
+	item->flags |= EEL_CANVAS_ITEM_REALIZED;
 
 	eel_canvas_item_request_update (item);
 }
@@ -359,32 +359,32 @@ eel_canvas_item_realize (EelCanvasItem *item)
 static void
 eel_canvas_item_unrealize (EelCanvasItem *item)
 {
-	if (item->object.flags & EEL_CANVAS_ITEM_MAPPED)
+	if (item->flags & EEL_CANVAS_ITEM_MAPPED)
 		(* EEL_CANVAS_ITEM_GET_CLASS (item)->unmap) (item);
-	
-	GTK_OBJECT_UNSET_FLAGS (item, EEL_CANVAS_ITEM_REALIZED);
+
+	item->flags &= ~(EEL_CANVAS_ITEM_REALIZED);
 }
 
 /* Map handler for canvas items */
 static void
 eel_canvas_item_map (EelCanvasItem *item)
 {
-	GTK_OBJECT_SET_FLAGS (item, EEL_CANVAS_ITEM_MAPPED);
+	item->flags |= EEL_CANVAS_ITEM_MAPPED;
 }
 
 /* Unmap handler for canvas items */
 static void
 eel_canvas_item_unmap (EelCanvasItem *item)
 {
-	GTK_OBJECT_UNSET_FLAGS (item, EEL_CANVAS_ITEM_MAPPED);
+	item->flags &= ~(EEL_CANVAS_ITEM_MAPPED);
 }
 
 /* Update handler for canvas items */
 static void
 eel_canvas_item_update (EelCanvasItem *item, double i2w_dx, double i2w_dy, int flags)
 {
-	GTK_OBJECT_UNSET_FLAGS (item, EEL_CANVAS_ITEM_NEED_UPDATE);
-	GTK_OBJECT_UNSET_FLAGS (item, EEL_CANVAS_ITEM_NEED_DEEP_UPDATE);
+	item->flags &= ~(EEL_CANVAS_ITEM_NEED_UPDATE);
+	item->flags &= ~(EEL_CANVAS_ITEM_NEED_DEEP_UPDATE);
 }
 
 /*
@@ -413,10 +413,10 @@ eel_canvas_item_invoke_update (EelCanvasItem *item,
 	/* apply object flags to child flags */
 	child_flags &= ~EEL_CANVAS_UPDATE_REQUESTED;
 
-	if (item->object.flags & EEL_CANVAS_ITEM_NEED_UPDATE)
+	if (item->flags & EEL_CANVAS_ITEM_NEED_UPDATE)
 		child_flags |= EEL_CANVAS_UPDATE_REQUESTED;
 
-	if (item->object.flags & EEL_CANVAS_ITEM_NEED_DEEP_UPDATE)
+	if (item->flags & EEL_CANVAS_ITEM_NEED_DEEP_UPDATE)
 		child_flags |= EEL_CANVAS_UPDATE_DEEP;
 
 	if (child_flags & GCI_UPDATE_MASK) {
@@ -426,7 +426,7 @@ eel_canvas_item_invoke_update (EelCanvasItem *item,
  
 	/* If this fail you probably forgot to chain up to
 	 * EelCanvasItem::update from a derived class */
- 	g_return_if_fail (!(item->object.flags & EEL_CANVAS_ITEM_NEED_UPDATE));
+ 	g_return_if_fail (!(item->flags & EEL_CANVAS_ITEM_NEED_UPDATE));
 }
 
 /*
@@ -515,11 +515,11 @@ eel_canvas_item_move (EelCanvasItem *item, double dx, double dy)
 
         (* EEL_CANVAS_ITEM_GET_CLASS (item)->translate) (item, dx, dy);
 
-	if (item->object.flags & EEL_CANVAS_ITEM_MAPPED) 
+	if (item->flags & EEL_CANVAS_ITEM_MAPPED) 
 		item->canvas->need_repick = TRUE;
 
-	if (!(item->object.flags & EEL_CANVAS_ITEM_NEED_DEEP_UPDATE)) {
-		item->object.flags |= EEL_CANVAS_ITEM_NEED_DEEP_UPDATE;
+	if (!(item->flags & EEL_CANVAS_ITEM_NEED_DEEP_UPDATE)) {
+		item->flags |= EEL_CANVAS_ITEM_NEED_DEEP_UPDATE;
 		if (item->parent != NULL)
 			eel_canvas_item_request_update (item->parent);
 		else
@@ -767,18 +767,18 @@ eel_canvas_item_show (EelCanvasItem *item)
 {
 	g_return_if_fail (EEL_IS_CANVAS_ITEM (item));
 
-	if (!(item->object.flags & EEL_CANVAS_ITEM_VISIBLE)) {
-		item->object.flags |= EEL_CANVAS_ITEM_VISIBLE;
+	if (!(item->flags & EEL_CANVAS_ITEM_VISIBLE)) {
+		item->flags |= EEL_CANVAS_ITEM_VISIBLE;
 		
-		if (!(item->object.flags & EEL_CANVAS_ITEM_REALIZED))
+		if (!(item->flags & EEL_CANVAS_ITEM_REALIZED))
 			(* EEL_CANVAS_ITEM_GET_CLASS (item)->realize) (item);
 
 		if (item->parent != NULL) {
-			if (!(item->object.flags & EEL_CANVAS_ITEM_MAPPED) &&
-			    item->parent->object.flags & EEL_CANVAS_ITEM_MAPPED)
+			if (!(item->flags & EEL_CANVAS_ITEM_MAPPED) &&
+			    item->parent->flags & EEL_CANVAS_ITEM_MAPPED)
 				(* EEL_CANVAS_ITEM_GET_CLASS (item)->map) (item);
 		} else {
-			if (!(item->object.flags & EEL_CANVAS_ITEM_MAPPED) &&
+			if (!(item->flags & EEL_CANVAS_ITEM_MAPPED) &&
 			    gtk_widget_get_mapped (GTK_WIDGET (item->canvas)))
 				(* EEL_CANVAS_ITEM_GET_CLASS (item)->map) (item);
 		}
@@ -800,12 +800,12 @@ eel_canvas_item_hide (EelCanvasItem *item)
 {
 	g_return_if_fail (EEL_IS_CANVAS_ITEM (item));
 
-	if (item->object.flags & EEL_CANVAS_ITEM_VISIBLE) {
-		item->object.flags &= ~EEL_CANVAS_ITEM_VISIBLE;
+	if (item->flags & EEL_CANVAS_ITEM_VISIBLE) {
+		item->flags &= ~EEL_CANVAS_ITEM_VISIBLE;
 
 		redraw_and_repick_if_mapped (item);
 		
-		if (item->object.flags & EEL_CANVAS_ITEM_MAPPED)
+		if (item->flags & EEL_CANVAS_ITEM_MAPPED)
 			(* EEL_CANVAS_ITEM_GET_CLASS (item)->unmap) (item);
 
 		/* No need to unrealize when we just want to hide */
@@ -843,10 +843,10 @@ eel_canvas_item_grab (EelCanvasItem *item, guint event_mask, GdkCursor *cursor, 
 	if (item->canvas->grabbed_item)
 		return GDK_GRAB_ALREADY_GRABBED;
 
-	if (!(item->object.flags & EEL_CANVAS_ITEM_MAPPED))
+	if (!(item->flags & EEL_CANVAS_ITEM_MAPPED))
 		return GDK_GRAB_NOT_VIEWABLE;
 
-	retval = gdk_pointer_grab (item->canvas->layout.bin_window,
+	retval = gdk_pointer_grab (gtk_layout_get_bin_window (&item->canvas->layout),
 				   FALSE,
 				   event_mask,
 				   NULL,
@@ -1016,7 +1016,7 @@ eel_canvas_item_grab_focus (EelCanvasItem *item)
 
 	if (focused_item) {
 		ev.focus_change.type = GDK_FOCUS_CHANGE;
-		ev.focus_change.window = GTK_LAYOUT (item->canvas)->bin_window;
+		ev.focus_change.window = gtk_layout_get_bin_window (GTK_LAYOUT (item->canvas));
 		ev.focus_change.send_event = FALSE;
 		ev.focus_change.in = FALSE;
 
@@ -1028,7 +1028,7 @@ eel_canvas_item_grab_focus (EelCanvasItem *item)
 
 	if (focused_item) {                                                     
 		ev.focus_change.type = GDK_FOCUS_CHANGE;                        
-		ev.focus_change.window = GTK_LAYOUT (item->canvas)->bin_window;
+		ev.focus_change.window = gtk_layout_get_bin_window (GTK_LAYOUT (item->canvas));
 		ev.focus_change.send_event = FALSE;                             
 		ev.focus_change.in = TRUE;                                      
 
@@ -1093,10 +1093,10 @@ eel_canvas_item_request_update (EelCanvasItem *item)
 
 	g_return_if_fail (!item->canvas->doing_update);
 
-	if (item->object.flags & EEL_CANVAS_ITEM_NEED_UPDATE)
+	if (item->flags & EEL_CANVAS_ITEM_NEED_UPDATE)
 		return;
 
-	item->object.flags |= EEL_CANVAS_ITEM_NEED_UPDATE;
+	item->flags |= EEL_CANVAS_ITEM_NEED_UPDATE;
 
 	if (item->parent != NULL) {
 		/* Recurse up the tree */
@@ -1117,7 +1117,7 @@ eel_canvas_item_request_update (EelCanvasItem *item)
 void
 eel_canvas_item_request_redraw (EelCanvasItem *item)
 {
-	if (item->object.flags & EEL_CANVAS_ITEM_MAPPED)
+	if (item->flags & EEL_CANVAS_ITEM_MAPPED)
 		eel_canvas_request_redraw (item->canvas,
 					   item->x1, item->y1,
 					   item->x2 + 1, item->y2 + 1);
@@ -1294,7 +1294,7 @@ eel_canvas_group_set_property (GObject *gobject, guint param_id,
 	}
 
 	if (moved) {
-		item->object.flags |= EEL_CANVAS_ITEM_NEED_DEEP_UPDATE;
+		item->flags |= EEL_CANVAS_ITEM_NEED_DEEP_UPDATE;
 		if (item->parent != NULL)
 			eel_canvas_item_request_update (item->parent);
 		else
@@ -1408,13 +1408,13 @@ eel_canvas_group_unrealize (EelCanvasItem *item)
 	group = EEL_CANVAS_GROUP (item);
 
 	/* Unmap group before children to avoid flash */
-	if (item->object.flags & EEL_CANVAS_ITEM_MAPPED)
+	if (item->flags & EEL_CANVAS_ITEM_MAPPED)
 		(* EEL_CANVAS_ITEM_GET_CLASS (item)->unmap) (item);
 
 	for (list = group->item_list; list; list = list->next) {
 		i = list->data;
 
-		if (i->object.flags & EEL_CANVAS_ITEM_REALIZED)
+		if (i->flags & EEL_CANVAS_ITEM_REALIZED)
 			(* EEL_CANVAS_ITEM_GET_CLASS (i)->unrealize) (i);
 	}
 
@@ -1434,9 +1434,9 @@ eel_canvas_group_map (EelCanvasItem *item)
 	for (list = group->item_list; list; list = list->next) {
 		i = list->data;
 
-		if (i->object.flags & EEL_CANVAS_ITEM_VISIBLE &&
-		    !(i->object.flags & EEL_CANVAS_ITEM_MAPPED)) {
-			if (!(i->object.flags & EEL_CANVAS_ITEM_REALIZED))
+		if (i->flags & EEL_CANVAS_ITEM_VISIBLE &&
+		    !(i->flags & EEL_CANVAS_ITEM_MAPPED)) {
+			if (!(i->flags & EEL_CANVAS_ITEM_REALIZED))
 				(* EEL_CANVAS_ITEM_GET_CLASS (i)->realize) (i);
 				
 			(* EEL_CANVAS_ITEM_GET_CLASS (i)->map) (i);
@@ -1459,7 +1459,7 @@ eel_canvas_group_unmap (EelCanvasItem *item)
 	for (list = group->item_list; list; list = list->next) {
 		i = list->data;
 
-		if (i->object.flags & EEL_CANVAS_ITEM_MAPPED)
+		if (i->flags & EEL_CANVAS_ITEM_MAPPED)
 			(* EEL_CANVAS_ITEM_GET_CLASS (i)->unmap) (i);
 	}
 
@@ -1480,7 +1480,7 @@ eel_canvas_group_draw (EelCanvasItem *item, GdkDrawable *drawable,
 	for (list = group->item_list; list; list = list->next) {
 		child = list->data;
 
-		if ((child->object.flags & EEL_CANVAS_ITEM_MAPPED) &&
+		if ((child->flags & EEL_CANVAS_ITEM_MAPPED) &&
 		    (EEL_CANVAS_ITEM_GET_CLASS (child)->draw)) {
 			GdkRectangle child_rect;
 			
@@ -1531,7 +1531,7 @@ eel_canvas_group_point (EelCanvasItem *item, double x, double y, int cx, int cy,
 
 		point_item = NULL; /* cater for incomplete item implementations */
 
-		if ((child->object.flags & EEL_CANVAS_ITEM_MAPPED)
+		if ((child->flags & EEL_CANVAS_ITEM_MAPPED)
 		    && EEL_CANVAS_ITEM_GET_CLASS (child)->point) {
 			dist = eel_canvas_item_invoke_point (child, gx, gy, cx, cy, &point_item);
 			has_point = TRUE;
@@ -1583,7 +1583,7 @@ eel_canvas_group_bounds (EelCanvasItem *item, double *x1, double *y1, double *x2
 	for (list = group->item_list; list; list = list->next) {
 		child = list->data;
 
-		if (child->object.flags & EEL_CANVAS_ITEM_MAPPED) {
+		if (child->flags & EEL_CANVAS_ITEM_MAPPED) {
 			set = TRUE;
 			eel_canvas_item_get_bounds (child, &minx, &miny, &maxx, &maxy);
 			break;
@@ -1604,7 +1604,7 @@ eel_canvas_group_bounds (EelCanvasItem *item, double *x1, double *y1, double *x2
 	for (; list; list = list->next) {
 		child = list->data;
 
-		if (!(child->object.flags & EEL_CANVAS_ITEM_MAPPED))
+		if (!(child->flags & EEL_CANVAS_ITEM_MAPPED))
 			continue;
 
 		eel_canvas_item_get_bounds (child, &tx1, &ty1, &tx2, &ty2);
@@ -1654,12 +1654,12 @@ group_add (EelCanvasGroup *group, EelCanvasItem *item)
 	} else
 		group->item_list_end = g_list_append (group->item_list_end, item)->next;
 
-	if (item->object.flags & EEL_CANVAS_ITEM_VISIBLE &&
-	    group->item.object.flags & EEL_CANVAS_ITEM_MAPPED) {
-		if (!(item->object.flags & EEL_CANVAS_ITEM_REALIZED))
+	if (item->flags & EEL_CANVAS_ITEM_VISIBLE &&
+	    group->item.flags & EEL_CANVAS_ITEM_MAPPED) {
+		if (!(item->flags & EEL_CANVAS_ITEM_REALIZED))
 			(* EEL_CANVAS_ITEM_GET_CLASS (item)->realize) (item);
 		
-		if (!(item->object.flags & EEL_CANVAS_ITEM_MAPPED))
+		if (!(item->flags & EEL_CANVAS_ITEM_MAPPED))
 			(* EEL_CANVAS_ITEM_GET_CLASS (item)->map) (item);
 	}
 }
@@ -1675,10 +1675,10 @@ group_remove (EelCanvasGroup *group, EelCanvasItem *item)
 
 	for (children = group->item_list; children; children = children->next)
 		if (children->data == item) {
-			if (item->object.flags & EEL_CANVAS_ITEM_MAPPED)
+			if (item->flags & EEL_CANVAS_ITEM_MAPPED)
 				(* EEL_CANVAS_ITEM_GET_CLASS (item)->unmap) (item);
 
-			if (item->object.flags & EEL_CANVAS_ITEM_REALIZED)
+			if (item->flags & EEL_CANVAS_ITEM_REALIZED)
 				(* EEL_CANVAS_ITEM_GET_CLASS (item)->unrealize) (item);
 
 			/* Unparent the child */
@@ -1825,11 +1825,11 @@ eel_canvas_accessible_initialize (AtkObject *obj,
 		ATK_OBJECT_CLASS (accessible_parent_class)->initialize (obj, data);
 
 	canvas = EEL_CANVAS (data);
-	g_signal_connect (canvas->layout.hadjustment,
+	g_signal_connect (gtk_layout_get_hadjustment (&canvas->layout),
 			  "value_changed",
 			  G_CALLBACK (eel_canvas_accessible_adjustment_changed),
 			  obj);
-	g_signal_connect (canvas->layout.vadjustment,
+	g_signal_connect (gtk_layout_get_vadjustment (&canvas->layout),
 			  "value_changed",
 			  G_CALLBACK (eel_canvas_accessible_adjustment_changed),
 			  obj);
@@ -1846,7 +1846,7 @@ eel_canvas_accessible_get_n_children (AtkObject* obj)
 	EelCanvasGroup *root_group;
 
 	accessible = GTK_ACCESSIBLE (obj);
-	widget = accessible->widget;
+	widget = gtk_accessible_get_widget (accessible);
 	if (widget == NULL) {
 		/* State is defunct */
 		return 0;
@@ -1876,7 +1876,7 @@ eel_canvas_accessible_ref_child (AtkObject *obj,
 	}
 
 	accessible = GTK_ACCESSIBLE (obj);
-	widget = accessible->widget;
+	widget = gtk_accessible_get_widget (accessible);
 	if (widget == NULL) {
 		/* State is defunct */
 		return NULL;
@@ -2072,14 +2072,17 @@ panic_root_destroyed (GtkObject *object, gpointer data)
 static void
 eel_canvas_init (EelCanvas *canvas)
 {
-	GTK_WIDGET_SET_FLAGS (canvas, GTK_CAN_FOCUS);
+	guint width, height;
+	gtk_widget_set_can_focus (GTK_WIDGET (canvas), TRUE);
 
 	gtk_widget_set_redraw_on_allocate (GTK_WIDGET (canvas), FALSE);
 
 	canvas->scroll_x1 = 0.0;
 	canvas->scroll_y1 = 0.0;
-	canvas->scroll_x2 = canvas->layout.width;
-	canvas->scroll_y2 = canvas->layout.height;
+	gtk_layout_get_size (&canvas->layout,
+			     &width, &height);
+	canvas->scroll_x2 = width;
+	canvas->scroll_y2 = height;
 
 	canvas->pixels_per_unit = 1.0;
 
@@ -2205,8 +2208,8 @@ eel_canvas_map (GtkWidget *widget)
 
 	/* Map items */
 
-	if (canvas->root->object.flags & EEL_CANVAS_ITEM_VISIBLE &&
-	    !(canvas->root->object.flags & EEL_CANVAS_ITEM_MAPPED) &&
+	if (canvas->root->flags & EEL_CANVAS_ITEM_VISIBLE &&
+	    !(canvas->root->flags & EEL_CANVAS_ITEM_MAPPED) &&
 	    EEL_CANVAS_ITEM_GET_CLASS (canvas->root)->map)
 		(* EEL_CANVAS_ITEM_GET_CLASS (canvas->root)->map) (canvas->root);
 }
@@ -2249,8 +2252,8 @@ eel_canvas_realize (GtkWidget *widget)
 
 	canvas = EEL_CANVAS (widget);
 
-	gdk_window_set_events (canvas->layout.bin_window,
-			       (gdk_window_get_events (canvas->layout.bin_window)
+	gdk_window_set_events (gtk_layout_get_bin_window (&canvas->layout),
+			       (gdk_window_get_events (gtk_layout_get_bin_window (&canvas->layout))
 				 | GDK_EXPOSURE_MASK
 				 | GDK_BUTTON_PRESS_MASK
 				 | GDK_BUTTON_RELEASE_MASK
@@ -2263,7 +2266,7 @@ eel_canvas_realize (GtkWidget *widget)
 
 	/* Create our own temporary pixmap gc and realize all the items */
 
-	canvas->pixmap_gc = gdk_gc_new (canvas->layout.bin_window);
+	canvas->pixmap_gc = gdk_gc_new (gtk_layout_get_bin_window (&canvas->layout));
 
 	(* EEL_CANVAS_ITEM_GET_CLASS (canvas->root)->realize) (canvas->root);
 }
@@ -2302,9 +2305,13 @@ scroll_to (EelCanvas *canvas, int cx, int cy)
 	int old_zoom_xofs, old_zoom_yofs;
 	int changed_x = FALSE, changed_y = FALSE;
 	int canvas_width, canvas_height;
+	GtkAllocation allocation;
+	GtkAdjustment *vadjustment, *hadjustment;
+	guint width, height;
 
-	canvas_width = GTK_WIDGET (canvas)->allocation.width;
-	canvas_height = GTK_WIDGET (canvas)->allocation.height;
+	gtk_widget_get_allocation (GTK_WIDGET (canvas), &allocation);
+	canvas_width = allocation.width;
+	canvas_height = allocation.height;
 
 	scroll_width = floor ((canvas->scroll_x2 - canvas->scroll_x1) * canvas->pixels_per_unit + 0.5);
 	scroll_height = floor ((canvas->scroll_y2 - canvas->scroll_y1) * canvas->pixels_per_unit + 0.5);
@@ -2353,32 +2360,36 @@ scroll_to (EelCanvas *canvas, int cx, int cy)
 		/* This can only occur, if either canvas size or widget size changes */
 		/* So I think we can request full redraw here */
 		/* More stuff - we have to mark root as needing fresh affine (Lauris) */
-		if (!(canvas->root->object.flags & EEL_CANVAS_ITEM_NEED_DEEP_UPDATE)) {
-			canvas->root->object.flags |= EEL_CANVAS_ITEM_NEED_DEEP_UPDATE;
+		if (!(canvas->root->flags & EEL_CANVAS_ITEM_NEED_DEEP_UPDATE)) {
+			canvas->root->flags |= EEL_CANVAS_ITEM_NEED_DEEP_UPDATE;
 			eel_canvas_request_update (canvas);
 		}
 		gtk_widget_queue_draw (GTK_WIDGET (canvas));
 	}
 
-	if (((int) canvas->layout.hadjustment->value) != cx) {
-		canvas->layout.hadjustment->value = cx;
+	hadjustment = gtk_layout_get_hadjustment (&canvas->layout);
+	vadjustment = gtk_layout_get_vadjustment (&canvas->layout);
+
+	if (((int) gtk_adjustment_get_value (hadjustment)) != cx) {
+		gtk_adjustment_set_value (hadjustment, cx);
 		changed_x = TRUE;
 	}
 
-	if (((int) canvas->layout.vadjustment->value) != cy) {
-		canvas->layout.vadjustment->value = cy;
+	if (((int) gtk_adjustment_get_value (vadjustment)) != cy) {
+		gtk_adjustment_set_value (vadjustment, cy);
 		changed_y = TRUE;
 	}
 
-	if ((scroll_width != (int) canvas->layout.width) || (scroll_height != (int) canvas->layout.height)) {
+	gtk_layout_get_size (&canvas->layout, &width, &height);
+	if ((scroll_width != (int) width )|| (scroll_height != (int) height)) {
 		gtk_layout_set_size (GTK_LAYOUT (canvas), scroll_width, scroll_height);
 	}
 	
 	/* Signal GtkLayout that it should do a redraw. */
 	if (changed_x)
-		g_signal_emit_by_name (G_OBJECT (canvas->layout.hadjustment), "value_changed");
+		g_signal_emit_by_name (hadjustment, "value_changed");
 	if (changed_y)
-		g_signal_emit_by_name (G_OBJECT (canvas->layout.vadjustment), "value_changed");
+		g_signal_emit_by_name (vadjustment, "value_changed");
 }
 
 /* Size allocation handler for the canvas */
@@ -2386,6 +2397,7 @@ static void
 eel_canvas_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 {
 	EelCanvas *canvas;
+	GtkAdjustment *vadjustment, *hadjustment;
 
 	g_return_if_fail (EEL_IS_CANVAS (widget));
 	g_return_if_fail (allocation != NULL);
@@ -2397,18 +2409,21 @@ eel_canvas_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 
 	/* Recenter the view, if appropriate */
 
-	canvas->layout.hadjustment->page_size = allocation->width;
-	canvas->layout.hadjustment->page_increment = allocation->width / 2;
+	hadjustment = gtk_layout_get_hadjustment (&canvas->layout);
+	vadjustment = gtk_layout_get_vadjustment (&canvas->layout);
 
-	canvas->layout.vadjustment->page_size = allocation->height;
-	canvas->layout.vadjustment->page_increment = allocation->height / 2;
+	gtk_adjustment_set_page_size (hadjustment, allocation->width);
+	gtk_adjustment_set_page_increment (hadjustment, allocation->width / 2);
+
+	gtk_adjustment_set_page_size (vadjustment, allocation->height);
+	gtk_adjustment_set_page_increment (vadjustment, allocation->height / 2);
 
 	scroll_to (canvas,
-		   canvas->layout.hadjustment->value,
-		   canvas->layout.vadjustment->value);
+		   gtk_adjustment_get_value (hadjustment),
+		   gtk_adjustment_get_value (vadjustment));
 
-	g_signal_emit_by_name (G_OBJECT (canvas->layout.hadjustment), "changed");
-	g_signal_emit_by_name (G_OBJECT (canvas->layout.vadjustment), "changed");
+	g_signal_emit_by_name (hadjustment, "changed");
+	g_signal_emit_by_name (vadjustment, "changed");
 }
 
 /* Emits an event for an item in the canvas, be it the current item, grabbed
@@ -2634,7 +2649,7 @@ pick_current_item (EelCanvas *canvas, GdkEvent *event)
 		eel_canvas_c2w (canvas, cx, cy, &x, &y);
 
 		/* find the closest item */
-		if (canvas->root->object.flags & EEL_CANVAS_ITEM_MAPPED)
+		if (canvas->root->flags & EEL_CANVAS_ITEM_MAPPED)
 			eel_canvas_item_invoke_point (canvas->root, x, y, cx, cy,
 							&canvas->new_current_item);
 		else
@@ -2709,7 +2724,7 @@ eel_canvas_button (GtkWidget *widget, GdkEventButton *event)
 	 * dispatch normally regardless of the event's window if an item has
 	 * has a pointer grab in effect
 	 */
-	if (!canvas->grabbed_item && event->window != canvas->layout.bin_window)
+	if (!canvas->grabbed_item && event->window != gtk_layout_get_bin_window (&canvas->layout))
 		return retval;
 
 	switch (event->button) {
@@ -2775,7 +2790,7 @@ eel_canvas_motion (GtkWidget *widget, GdkEventMotion *event)
 
 	canvas = EEL_CANVAS (widget);
 
-	if (event->window != canvas->layout.bin_window)
+	if (event->window != gtk_layout_get_bin_window (&canvas->layout))
 		return FALSE;
 
 	canvas->state = event->state;
@@ -2814,7 +2829,7 @@ eel_canvas_crossing (GtkWidget *widget, GdkEventCrossing *event)
 
 	canvas = EEL_CANVAS (widget);
 
-	if (event->window != canvas->layout.bin_window)
+	if (event->window != gtk_layout_get_bin_window (&canvas->layout))
 		return FALSE;
 
 	canvas->state = event->state;
@@ -2826,8 +2841,6 @@ static gint
 eel_canvas_focus_in (GtkWidget *widget, GdkEventFocus *event)
 {
 	EelCanvas *canvas;
-
-	GTK_WIDGET_SET_FLAGS (widget, GTK_HAS_FOCUS);
 
 	canvas = EEL_CANVAS (widget);
 
@@ -2842,8 +2855,6 @@ static gint
 eel_canvas_focus_out (GtkWidget *widget, GdkEventFocus *event)
 {
 	EelCanvas *canvas;
-
-	GTK_WIDGET_UNSET_FLAGS (widget, GTK_HAS_FOCUS);
 
 	canvas = EEL_CANVAS (widget);
 
@@ -2861,7 +2872,7 @@ eel_canvas_expose (GtkWidget *widget, GdkEventExpose *event)
 
 	canvas = EEL_CANVAS (widget);
 
-	if (!gtk_widget_is_drawable (widget) || (event->window != canvas->layout.bin_window)) return FALSE;
+	if (!gtk_widget_is_drawable (widget) || (event->window != gtk_layout_get_bin_window (&canvas->layout))) return FALSE;
 
 #ifdef VERBOSE
 	g_print ("Expose\n");
@@ -2892,9 +2903,9 @@ eel_canvas_expose (GtkWidget *widget, GdkEventExpose *event)
 		       event->area.x, event->area.y,
 		       event->area.width, event->area.height);
 	
-	if (canvas->root->object.flags & EEL_CANVAS_ITEM_MAPPED)
+	if (canvas->root->flags & EEL_CANVAS_ITEM_MAPPED)
 		(* EEL_CANVAS_ITEM_GET_CLASS (canvas->root)->draw) (canvas->root,
-								      canvas->layout.bin_window,
+								      gtk_layout_get_bin_window (&canvas->layout),
 								      event);
 
 
@@ -2911,8 +2922,8 @@ eel_canvas_draw_background (EelCanvas *canvas,
 {
 	/* By default, we use the style background. */
 	gdk_gc_set_foreground (canvas->pixmap_gc,
-			       &GTK_WIDGET (canvas)->style->bg[GTK_STATE_NORMAL]);
-	gdk_draw_rectangle (canvas->layout.bin_window,
+			       &gtk_widget_get_style (GTK_WIDGET (canvas))->bg[GTK_STATE_NORMAL]);
+	gdk_draw_rectangle (gtk_layout_get_bin_window (&canvas->layout),
 			    canvas->pixmap_gc,
 			    TRUE,
 			    x, y,
@@ -3023,6 +3034,7 @@ eel_canvas_set_scroll_region (EelCanvas *canvas, double x1, double y1, double x2
 {
 	double wxofs, wyofs;
 	int xofs, yofs;
+	GtkAdjustment *vadjustment, *hadjustment;
 
 	g_return_if_fail (EEL_IS_CANVAS (canvas));
 
@@ -3035,10 +3047,12 @@ eel_canvas_set_scroll_region (EelCanvas *canvas, double x1, double y1, double x2
 	 * Set the new scrolling region.  If possible, do not move the visible contents of the
 	 * canvas.
 	 */
+	hadjustment = gtk_layout_get_hadjustment (GTK_LAYOUT (canvas));
+	vadjustment = gtk_layout_get_vadjustment (GTK_LAYOUT (canvas));
 
 	eel_canvas_c2w (canvas,
-			  GTK_LAYOUT (canvas)->hadjustment->value + canvas->zoom_xofs,
-			  GTK_LAYOUT (canvas)->vadjustment->value + canvas->zoom_yofs,
+			  gtk_adjustment_get_value (hadjustment) + canvas->zoom_xofs,
+			  gtk_adjustment_get_value (vadjustment) + canvas->zoom_yofs,
 			  /*canvas->zoom_xofs,
 			  canvas->zoom_yofs,*/
 			  &wxofs, &wyofs);
@@ -3054,8 +3068,8 @@ eel_canvas_set_scroll_region (EelCanvas *canvas, double x1, double y1, double x2
 
 	canvas->need_repick = TRUE;
 
-	if (!(canvas->root->object.flags & EEL_CANVAS_ITEM_NEED_DEEP_UPDATE)) {
-		canvas->root->object.flags |= EEL_CANVAS_ITEM_NEED_DEEP_UPDATE;
+	if (!(canvas->root->flags & EEL_CANVAS_ITEM_NEED_DEEP_UPDATE)) {
+		canvas->root->flags |= EEL_CANVAS_ITEM_NEED_DEEP_UPDATE;
 		eel_canvas_request_update (canvas);
 	}
 }
@@ -3093,13 +3107,18 @@ void
 eel_canvas_set_center_scroll_region (EelCanvas *canvas,
 				     gboolean center_scroll_region)
 {
+	GtkAdjustment *vadjustment, *hadjustment;
+
 	g_return_if_fail (EEL_IS_CANVAS (canvas));
 
 	canvas->center_scroll_region = center_scroll_region != 0;
 
+	hadjustment = gtk_layout_get_hadjustment (&canvas->layout);
+	vadjustment = gtk_layout_get_vadjustment (&canvas->layout);
+
 	scroll_to (canvas,
-		   canvas->layout.hadjustment->value,
-		   canvas->layout.vadjustment->value);
+		   gtk_adjustment_get_value (hadjustment),
+		   gtk_adjustment_get_value (vadjustment));
 }
 
 
@@ -3121,18 +3140,23 @@ eel_canvas_set_pixels_per_unit (EelCanvas *canvas, double n)
 	GdkWindow *window;
 	GdkWindowAttr attributes;
 	gint attributes_mask;
+	GtkAllocation allocation;
+	GtkAdjustment *vadjustment, *hadjustment;
 
 	g_return_if_fail (EEL_IS_CANVAS (canvas));
 	g_return_if_fail (n > EEL_CANVAS_EPSILON);
 
 	widget = GTK_WIDGET (canvas);
 
-	center_x = widget->allocation.width / 2;
-	center_y = widget->allocation.height / 2;
+	gtk_widget_get_allocation (widget, &allocation);
+	center_x = allocation.width / 2;
+	center_y = allocation.height / 2;
 
 	/* Find the coordinates of the screen center in units. */
-	cx = (canvas->layout.hadjustment->value + center_x) / canvas->pixels_per_unit + canvas->scroll_x1 + canvas->zoom_xofs;
-	cy = (canvas->layout.vadjustment->value + center_y) / canvas->pixels_per_unit + canvas->scroll_y1 + canvas->zoom_yofs;
+	hadjustment = gtk_layout_get_hadjustment (&canvas->layout);
+	vadjustment = gtk_layout_get_vadjustment (&canvas->layout);
+	cx = (gtk_adjustment_get_value (hadjustment) + center_x) / canvas->pixels_per_unit + canvas->scroll_x1 + canvas->zoom_xofs;
+	cy = (gtk_adjustment_get_value (vadjustment) + center_y) / canvas->pixels_per_unit + canvas->scroll_y1 + canvas->zoom_yofs;
 
 	/* Now calculate the new offset of the upper left corner. (round not truncate) */
 	x1 = ((cx - canvas->scroll_x1) * n) - center_x + .5;
@@ -3140,8 +3164,8 @@ eel_canvas_set_pixels_per_unit (EelCanvas *canvas, double n)
 
 	canvas->pixels_per_unit = n;
 
-	if (!(canvas->root->object.flags & EEL_CANVAS_ITEM_NEED_DEEP_UPDATE)) {
-		canvas->root->object.flags |= EEL_CANVAS_ITEM_NEED_DEEP_UPDATE;
+	if (!(canvas->root->flags & EEL_CANVAS_ITEM_NEED_DEEP_UPDATE)) {
+		canvas->root->flags |= EEL_CANVAS_ITEM_NEED_DEEP_UPDATE;
 		eel_canvas_request_update (canvas);
 	}
 
@@ -3150,11 +3174,13 @@ eel_canvas_set_pixels_per_unit (EelCanvas *canvas, double n)
 	 */
 	window = NULL;
 	if (gtk_widget_get_mapped (widget)) {
+		GtkAllocation allocation;
 		attributes.window_type = GDK_WINDOW_CHILD;
-		attributes.x = widget->allocation.x;
-		attributes.y = widget->allocation.y;
-		attributes.width = widget->allocation.width;
-		attributes.height = widget->allocation.height;
+		gtk_widget_get_allocation (widget, &allocation);
+		attributes.x = allocation.x;
+		attributes.y = allocation.y;
+		attributes.width = allocation.width;
+		attributes.height = allocation.height;
 		attributes.wclass = GDK_INPUT_OUTPUT;
 		attributes.visual = gtk_widget_get_visual (widget);
 		attributes.colormap = gtk_widget_get_colormap (widget);
@@ -3219,13 +3245,18 @@ eel_canvas_scroll_to (EelCanvas *canvas, int cx, int cy)
 void
 eel_canvas_get_scroll_offsets (EelCanvas *canvas, int *cx, int *cy)
 {
+	GtkAdjustment *vadjustment, *hadjustment;
+
 	g_return_if_fail (EEL_IS_CANVAS (canvas));
 
+	hadjustment = gtk_layout_get_hadjustment (&canvas->layout);
+	vadjustment = gtk_layout_get_vadjustment (&canvas->layout);
+
 	if (cx)
-		*cx = canvas->layout.hadjustment->value;
+		*cx = gtk_adjustment_get_value (hadjustment);
 
 	if (cy)
-		*cy = canvas->layout.vadjustment->value;
+		*cy = gtk_adjustment_get_value (vadjustment);
 }
 
 /**
@@ -3319,7 +3350,7 @@ eel_canvas_request_redraw (EelCanvas *canvas, int x1, int y1, int x2, int y2)
 	bbox.width = x2 - x1;
 	bbox.height = y2 - y1;
 
-	gdk_window_invalidate_rect (canvas->layout.bin_window,
+	gdk_window_invalidate_rect (gtk_layout_get_bin_window (&canvas->layout),
 				    &bbox, FALSE);
 }
 
@@ -3637,10 +3668,10 @@ eel_canvas_item_accessible_is_item_in_window (EelCanvasItem *item,
 	gboolean retval;
 
 	widget = GTK_WIDGET (item->canvas);
-	if (widget->window) {
+	if (gtk_widget_get_window (widget)) {
 		int window_width, window_height;
 
-		gdk_window_get_geometry (widget->window, NULL, NULL,
+		gdk_window_get_geometry (gtk_widget_get_window (widget), NULL, NULL,
                                          &window_width, &window_height, NULL);
 		/*
                  * Check whether rectangles intersect
@@ -3706,7 +3737,7 @@ eel_canvas_item_accessible_get_extents (AtkComponent *component,
 	*x = rect.x + window_x;
 	*y = rect.y + window_y;
 	if (coord_type == ATK_XY_WINDOW) {
-		window = gdk_window_get_toplevel (canvas->window);
+		window = gdk_window_get_toplevel (gtk_widget_get_window (canvas));
 		gdk_window_get_origin (window, &toplevel_x, &toplevel_y);
 		*x -= toplevel_x;
 		*y -= toplevel_y;
@@ -3816,7 +3847,7 @@ eel_canvas_item_accessible_ref_state_set (AtkObject *accessible)
 	if (item == NULL) {
 		atk_state_set_add_state (state_set, ATK_STATE_DEFUNCT);
 	} else {
-                if (item->object.flags & EEL_CANVAS_ITEM_VISIBLE) {
+                if (item->flags & EEL_CANVAS_ITEM_VISIBLE) {
 			atk_state_set_add_state (state_set, ATK_STATE_VISIBLE);
 			
 			if (eel_canvas_item_accessible_is_item_on_screen (item)) {
