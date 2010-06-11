@@ -153,7 +153,7 @@ nautilus_undo_get_undo_manager (GObject *start_object)
 
 	/* Check for undo manager up the parent chain. */
 	if (GTK_IS_WIDGET (start_object)) {
-		parent = GTK_WIDGET (start_object)->parent;
+		parent = gtk_widget_get_parent (GTK_WIDGET (start_object));
 		if (parent != NULL) {
 			manager = nautilus_undo_get_undo_manager (G_OBJECT (parent));
 			if (manager != NULL) {
@@ -163,7 +163,7 @@ nautilus_undo_get_undo_manager (GObject *start_object)
 
 		/* Check for undo manager in our window's parent. */
 		if (GTK_IS_WINDOW (start_object)) {
-			transient_parent = GTK_WINDOW (start_object)->transient_parent;
+			transient_parent = gtk_window_get_transient_for (GTK_WINDOW (start_object));
 			if (transient_parent != NULL) {
 				manager = nautilus_undo_get_undo_manager (G_OBJECT (transient_parent));
 				if (manager != NULL) {
