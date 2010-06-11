@@ -1189,7 +1189,7 @@ select_pattern (FMDirectoryView *view)
 					 GTK_RESPONSE_OK);
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
-	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 2);
+	gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), 2);
 
 	label = gtk_label_new_with_mnemonic (_("_Pattern:"));
 	example = gtk_label_new (NULL);
@@ -1224,7 +1224,7 @@ select_pattern (FMDirectoryView *view)
 
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry);
 	gtk_widget_show_all (table);
-	gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), table);
+	gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), table);
 	g_object_set_data (G_OBJECT (dialog), "entry", entry);
 	g_signal_connect (dialog, "response",
 			  G_CALLBACK (pattern_select_response_cb),
@@ -1325,14 +1325,14 @@ action_save_search_as_callback (GtkAction *action,
 		gtk_dialog_set_default_response (GTK_DIALOG (dialog),
 						 GTK_RESPONSE_OK);
 		gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
-		gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 2);
+		gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), 2);
 		gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
 
 		table = gtk_table_new (2, 2, FALSE);
 		gtk_container_set_border_width (GTK_CONTAINER (table), 5);
 		gtk_table_set_row_spacings (GTK_TABLE (table), 6);
 		gtk_table_set_col_spacings (GTK_TABLE (table), 12);
-		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), table, TRUE, TRUE, 0);
+		gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), table, TRUE, TRUE, 0);
 		gtk_widget_show (table);
 		
 		label = gtk_label_new_with_mnemonic (_("Search _name:"));
@@ -1788,7 +1788,7 @@ slot_inactive (NautilusWindowSlot *slot,
 	       FMDirectoryView *view)
 {
 	g_assert (view->details->active ||
-		  GTK_WIDGET (view)->parent == NULL);
+		  gtk_widget_get_parent (GTK_WIDGET (view)) == NULL);
 	view->details->active = FALSE;
 
 	fm_directory_view_unmerge_menus (view);
@@ -6775,11 +6775,11 @@ action_connect_to_server_link_callback (GtkAction *action,
 		g_object_set_data_full (G_OBJECT (dialog), "link-icon", g_strdup (icon_name), g_free);
 		
 		gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
-		gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 2);
+		gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), 2);
 
 		box = gtk_hbox_new (FALSE, 12);
 		gtk_widget_show (box);
-		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+		gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))),
 				    box, TRUE, TRUE, 0);
 		
 		label = gtk_label_new_with_mnemonic (_("Link _name:"));
@@ -7357,34 +7357,32 @@ pre_activate (FMDirectoryView *view,
 	      GtkActionGroup *action_group)
 {
 	GdkEvent *event;
-	GtkWidget *proxy, *shell;
-	gboolean unset_pos;
+	GtkWidget *proxy;
+	gboolean activated_from_popup;
 
 	/* check whether action was activated through a popup menu.
 	 * If not, unset the last stored context menu popup position */
-	unset_pos = TRUE;
+	activated_from_popup = FALSE;
 
 	event = gtk_get_current_event ();
 	proxy = gtk_get_event_widget (event);
 
-	if (proxy != NULL && GTK_IS_MENU_ITEM (proxy)) {
-		shell = proxy->parent;
+	if (proxy != NULL) {
+		GtkWidget *toplevel;
+		GdkWindowTypeHint hint;
 
-		unset_pos = FALSE;
+		toplevel = gtk_widget_get_toplevel (proxy);
 
-		do {
-			if (!GTK_IS_MENU (shell)) {
-				/* popup menus are GtkMenu-only menu shell hierarchies */
-				unset_pos = TRUE;
-				break;
+		if (GTK_IS_WINDOW (toplevel)) {
+			hint = gtk_window_get_type_hint (GTK_WINDOW (toplevel));
+
+			if (hint == GDK_WINDOW_TYPE_HINT_POPUP_MENU) {
+				activated_from_popup = TRUE;
 			}
-
-			shell = GTK_MENU_SHELL (shell)->parent_menu_shell;
-		} while (GTK_IS_MENU_SHELL (shell)
-			 && GTK_MENU_SHELL (shell)->parent_menu_shell != NULL);
+		}
 	}
 
-	if (unset_pos) {
+	if (!activated_from_popup) {
 		update_context_menu_position_from_event (view, NULL);
 	}
 }
