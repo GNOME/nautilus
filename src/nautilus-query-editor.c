@@ -560,7 +560,7 @@ type_combo_changed (GtkComboBox *combo_box, NautilusQueryEditorRow *row)
 						     GTK_SHADOW_IN);
 		
 		gtk_widget_show (scrolled);
-		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), scrolled, TRUE, TRUE, 6);
+		gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), scrolled, TRUE, TRUE, 6);
 
 		treeview = gtk_tree_view_new ();
 		gtk_tree_view_set_model (GTK_TREE_VIEW (treeview),
