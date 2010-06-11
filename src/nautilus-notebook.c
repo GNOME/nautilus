@@ -152,10 +152,11 @@ find_tab_num_at_pos (NautilusNotebook *notebook, gint abs_x, gint abs_y)
 	int page_num = 0;
 	GtkNotebook *nb = GTK_NOTEBOOK (notebook);
 	GtkWidget *page;
+	GtkAllocation allocation;
 
 	tab_pos = gtk_notebook_get_tab_pos (GTK_NOTEBOOK (notebook));
 
-	if (GTK_NOTEBOOK (notebook)->first_tab == NULL)
+	if (gtk_notebook_get_n_pages (nb) == 0)
 	{
 		return AFTER_ALL_TABS;
 	}
@@ -182,11 +183,12 @@ find_tab_num_at_pos (NautilusNotebook *notebook, gint abs_x, gint abs_y)
 			continue;
 		}
 
-		gdk_window_get_origin (GDK_WINDOW (tab->window),
+		gdk_window_get_origin (gtk_widget_get_window (tab),
 				       &x_root, &y_root);
+		gtk_widget_get_allocation (tab, &allocation);
 
-		max_x = x_root + tab->allocation.x + tab->allocation.width;
-		max_y = y_root + tab->allocation.y + tab->allocation.height;
+		max_x = x_root + allocation.x + allocation.width;
+		max_y = y_root + allocation.y + allocation.height;
 
 		if (((tab_pos == GTK_POS_TOP)
 		     || (tab_pos == GTK_POS_BOTTOM))
@@ -316,10 +318,10 @@ nautilus_notebook_sync_tab_label (NautilusNotebook *notebook,
 		 * so it covers all of the tab label.
 		 */
 		location_name = g_file_get_parse_name (slot->location);
-		gtk_widget_set_tooltip_text (label->parent, location_name);
+		gtk_widget_set_tooltip_text (gtk_widget_get_parent (label), location_name);
 		g_free (location_name);
 	} else {
-		gtk_widget_set_tooltip_text (label->parent, NULL);
+		gtk_widget_set_tooltip_text (gtk_widget_get_parent (label), NULL);
 	}
 }
 
