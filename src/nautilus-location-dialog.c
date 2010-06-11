@@ -168,7 +168,7 @@ nautilus_location_dialog_init (NautilusLocationDialog *dialog)
 	gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
-	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 2);
+	gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), 2);
 	
 	box = gtk_hbox_new (FALSE, 12);
 	gtk_container_set_border_width (GTK_CONTAINER (box), 5);
@@ -192,7 +192,7 @@ nautilus_location_dialog_init (NautilusLocationDialog *dialog)
 	gtk_box_pack_start (GTK_BOX (box), dialog->details->entry, 
 			    TRUE, TRUE, 0);
 	
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))),
 			    box, FALSE, TRUE, 0);
 
 	gtk_dialog_add_button (GTK_DIALOG (dialog),
