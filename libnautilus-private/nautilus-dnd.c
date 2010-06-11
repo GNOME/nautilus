@@ -198,8 +198,8 @@ nautilus_drag_build_selection_list (GtkSelectionData *data)
 	int size;
 
 	result = NULL;
-	oldp = data->data;
-	size = data->length;
+	oldp = gtk_selection_data_get_data (data);
+	size = gtk_selection_data_get_length (data);
 
 	while (size > 0) {
 		NautilusDragSelectionItem *item;
@@ -375,15 +375,15 @@ nautilus_drag_default_drop_action_for_netscape_url (GdkDragContext *context)
 {
 	/* Mozilla defaults to copy, but unless thats the
 	   only allowed thing (enforced by ctrl) we want to ASK */
-	if (context->suggested_action == GDK_ACTION_COPY &&
-	    context->actions != GDK_ACTION_COPY) {
+	if (gdk_drag_context_get_suggested_action (context) == GDK_ACTION_COPY &&
+	    gdk_drag_context_get_actions (context) != GDK_ACTION_COPY) {
 		return GDK_ACTION_ASK;
-	} else if (context->suggested_action == GDK_ACTION_MOVE) {
+	} else if (gdk_drag_context_get_suggested_action (context) == GDK_ACTION_MOVE) {
 		/* Don't support move */
 		return GDK_ACTION_COPY;
 	}
 	
-	return context->suggested_action;
+	return gdk_drag_context_get_suggested_action (context);
 }
 
 static gboolean
@@ -446,16 +446,16 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 		return;
 	}
 
-	actions = context->actions & (GDK_ACTION_MOVE | GDK_ACTION_COPY);
+	actions = gdk_drag_context_get_actions (context) & (GDK_ACTION_MOVE | GDK_ACTION_COPY);
 	if (actions == 0) {
 		 /* We can't use copy or move, just go with the suggested action. */
-		*action = context->suggested_action;
+		*action = gdk_drag_context_get_suggested_action (context);
 		return;
 	}
 
-	if (context->suggested_action == GDK_ACTION_ASK) {
+	if (gdk_drag_context_get_suggested_action (context) == GDK_ACTION_ASK) {
 		/* Don't override ask */
-		*action = context->suggested_action;
+		*action = gdk_drag_context_get_suggested_action (context);
 		return;
 	}
 	
@@ -536,13 +536,13 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 		if (actions & GDK_ACTION_MOVE) {
 			*action = GDK_ACTION_MOVE;
 		} else {
-			*action = context->suggested_action;
+			*action = gdk_drag_context_get_suggested_action (context);
 		}
 	} else {
 		if (actions & GDK_ACTION_COPY) {
 			*action = GDK_ACTION_COPY;
 		} else {
-			*action = context->suggested_action;
+			*action = gdk_drag_context_get_suggested_action (context);
 		}
 	}
 
@@ -555,11 +555,11 @@ GdkDragAction
 nautilus_drag_default_drop_action_for_uri_list (GdkDragContext *context,
 						const char *target_uri_string)
 {
-	if (eel_uri_is_trash (target_uri_string) && (context->actions & GDK_ACTION_MOVE)) {
+	if (eel_uri_is_trash (target_uri_string) && (gdk_drag_context_get_actions (context) & GDK_ACTION_MOVE)) {
 		/* Only move to Trash */
 		return GDK_ACTION_MOVE;
 	} else {
-		return context->suggested_action;
+		return gdk_drag_context_get_suggested_action (context);
 	}
 }
 
@@ -694,7 +694,7 @@ nautilus_drag_drag_data_get (GtkWidget *widget,
 	}
 	
 	gtk_selection_data_set (selection_data,
-				selection_data->target,
+				gtk_selection_data_get_target (selection_data),
 				8, result->str, result->len);
 	g_string_free (result, TRUE);
 
@@ -891,11 +891,12 @@ nautilus_drag_autoscroll_in_scroll_region (GtkWidget *widget)
 void
 nautilus_drag_autoscroll_calculate_delta (GtkWidget *widget, float *x_scroll_delta, float *y_scroll_delta)
 {
+	GtkAllocation allocation;
 	int x, y;
 
 	g_assert (GTK_IS_WIDGET (widget));
 
-	gdk_window_get_pointer (widget->window, &x, &y, NULL);
+	gdk_window_get_pointer (gtk_widget_get_window (widget), &x, &y, NULL);
 
 	/* Find out if we are anywhere close to the tree view edges
 	 * to see if we need to autoscroll.
@@ -907,7 +908,8 @@ nautilus_drag_autoscroll_calculate_delta (GtkWidget *widget, float *x_scroll_del
 		*x_scroll_delta = (float)(x - AUTO_SCROLL_MARGIN);
 	}
 
-	if (x > widget->allocation.width - AUTO_SCROLL_MARGIN) {
+	gtk_widget_get_allocation (widget, &allocation);
+	if (x > allocation.width - AUTO_SCROLL_MARGIN) {
 		if (*x_scroll_delta != 0) {
 			/* Already trying to scroll because of being too close to 
 			 * the top edge -- must be the window is really short,
@@ -915,14 +917,14 @@ nautilus_drag_autoscroll_calculate_delta (GtkWidget *widget, float *x_scroll_del
 			 */
 			return;
 		}
-		*x_scroll_delta = (float)(x - (widget->allocation.width - AUTO_SCROLL_MARGIN));
+		*x_scroll_delta = (float)(x - (allocation.width - AUTO_SCROLL_MARGIN));
 	}
 
 	if (y < AUTO_SCROLL_MARGIN) {
 		*y_scroll_delta = (float)(y - AUTO_SCROLL_MARGIN);
 	}
 
-	if (y > widget->allocation.height - AUTO_SCROLL_MARGIN) {
+	if (y > allocation.height - AUTO_SCROLL_MARGIN) {
 		if (*y_scroll_delta != 0) {
 			/* Already trying to scroll because of being too close to 
 			 * the top edge -- must be the window is really narrow,
@@ -930,7 +932,7 @@ nautilus_drag_autoscroll_calculate_delta (GtkWidget *widget, float *x_scroll_del
 			 */
 			return;
 		}
-		*y_scroll_delta = (float)(y - (widget->allocation.height - AUTO_SCROLL_MARGIN));
+		*y_scroll_delta = (float)(y - (allocation.height - AUTO_SCROLL_MARGIN));
 	}
 
 	if (*x_scroll_delta == 0 && *y_scroll_delta == 0) {
@@ -1195,18 +1197,18 @@ slot_proxy_handle_drop (GtkWidget                *widget,
 			nautilus_view_drop_proxy_received_uris (target_view,
 								uri_list,
 								target_uri,
-								context->action);
+								gdk_drag_context_get_selected_action (context));
 			eel_g_list_free_deep (uri_list);
 		} else if (drag_info->info == NAUTILUS_ICON_DND_URI_LIST) {
 			nautilus_view_drop_proxy_received_uris (target_view,
 								drag_info->data.uri_list,
 								target_uri,
-								context->action);
+								gdk_drag_context_get_selected_action (context));
 		} if (drag_info->info == NAUTILUS_ICON_DND_NETSCAPE_URL) {
 			nautilus_view_drop_proxy_received_netscape_url (target_view,
 									drag_info->data.netscape_url,
 									target_uri,
-									context->action);
+									gdk_drag_context_get_selected_action (context));
 		}
 
 
@@ -1244,7 +1246,7 @@ slot_proxy_drag_data_received (GtkWidget          *widget,
 	drag_info->have_data = TRUE;
 	drag_info->info = info;
 
-	if (data->length < 0) {
+	if (gtk_selection_data_get_length (data) < 0) {
 		drag_info->have_valid_data = FALSE;
 		return;
 	}
@@ -1260,7 +1262,7 @@ slot_proxy_drag_data_received (GtkWidget          *widget,
 
 		drag_info->have_valid_data = drag_info->data.uri_list != NULL;
 	} else if (info == NAUTILUS_ICON_DND_NETSCAPE_URL) {
-		drag_info->data.netscape_url = g_strdup ((char *) data->data);
+		drag_info->data.netscape_url = g_strdup ((char *) gtk_selection_data_get_data (data));
 
 		drag_info->have_valid_data = drag_info->data.netscape_url != NULL;
 	}
