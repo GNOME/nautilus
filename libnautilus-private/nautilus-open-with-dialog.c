@@ -783,7 +783,7 @@ nautilus_open_with_dialog_init (NautilusOpenWithDialog *dialog)
 	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
 	gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);
 
-	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 2);
+	gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), 2);
 
 	vbox = gtk_vbox_new (FALSE, 12);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 5);
@@ -835,7 +835,7 @@ nautilus_open_with_dialog_init (NautilusOpenWithDialog *dialog)
 						      dialog, NULL);
 
 	
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), vbox, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), vbox, TRUE, TRUE, 0);
 	gtk_widget_show_all (vbox);
 
 
@@ -903,7 +903,7 @@ nautilus_open_with_dialog_init (NautilusOpenWithDialog *dialog)
 	gtk_widget_show (align);
 
 	gtk_widget_show (dialog->details->button);
-	GTK_WIDGET_SET_FLAGS (dialog->details->button, GTK_CAN_DEFAULT);
+	gtk_widget_set_can_default (dialog->details->button, TRUE);
 
 
 	gtk_container_add (GTK_CONTAINER (align), hbox);
