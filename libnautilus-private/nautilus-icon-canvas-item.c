@@ -550,7 +550,7 @@ nautilus_icon_canvas_item_get_image (NautilusIconCanvasItem *item,
 	
 	pixmap = gdk_pixmap_new (gdk_screen_get_root_window (screen),
 				 width,	height,
-				 gdk_colormap_get_visual (colormap)->depth);
+				 gdk_visual_get_depth (gdk_colormap_get_visual (colormap)));
 	gdk_drawable_set_colormap (GDK_DRAWABLE (pixmap), colormap);
 
 	pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
@@ -1345,7 +1345,7 @@ draw_label_text (NautilusIconCanvasItem *item,
 		   (details->is_prelit ||
 		    details->is_highlighted_as_keyboard_focus)) {
 		/* clear the underlying icons, where the text or overlaps them. */
-		gdk_window_clear_area (EEL_CANVAS (container)->layout.bin_window,
+		gdk_window_clear_area (gtk_layout_get_bin_window (&EEL_CANVAS (container)->layout),
 				       text_rect.x0,
 				       text_rect.y0,
 				       text_rect.x1 - text_rect.x0,
@@ -1417,7 +1417,7 @@ draw_label_text (NautilusIconCanvasItem *item,
 	}
 
 	if (!create_mask && item->details->is_highlighted_as_keyboard_focus) {
-		gtk_paint_focus (GTK_WIDGET (EEL_CANVAS_ITEM (item)->canvas)->style,
+		gtk_paint_focus (gtk_widget_get_style (GTK_WIDGET (EEL_CANVAS_ITEM (item)->canvas)),
 				 drawable,
 				 needs_highlight ? GTK_STATE_SELECTED : GTK_STATE_NORMAL,
 				 NULL,
@@ -1501,12 +1501,14 @@ draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 	GdkPixbuf *knob_pixbuf;
 	GdkBitmap *stipple;
 	int knob_width, knob_height;
+	GtkStyle *style;
 	
 	if (!item->details->show_stretch_handles) {
 		return;
 	}
 
 	widget = GTK_WIDGET (EEL_CANVAS_ITEM (item)->canvas);
+	style = gtk_widget_get_style (widget);
 
 	gc = gdk_gc_new (drawable);
 	knob_pixbuf = get_knob_pixbuf ();
@@ -1517,7 +1519,7 @@ draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 			gdk_drawable_get_screen (GDK_DRAWABLE (drawable)));
 	
 	/* first draw the box */
-	gdk_gc_set_rgb_fg_color (gc, &widget->style->white);
+	gdk_gc_set_rgb_fg_color (gc, &style->white);
 	gdk_draw_rectangle
 		(drawable, gc, FALSE,
 			    rect->x0,
@@ -1525,7 +1527,7 @@ draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 			    rect->x1 - rect->x0 - 1,
 			    rect->y1 - rect->y0 - 1);
 
-	gdk_gc_set_rgb_fg_color (gc, &widget->style->black);
+	gdk_gc_set_rgb_fg_color (gc, &style->black);
 	gdk_gc_set_stipple (gc, stipple);
 	gdk_gc_set_fill (gc, GDK_STIPPLED);
 	gdk_draw_rectangle
@@ -2089,7 +2091,7 @@ draw_label_layout (NautilusIconCanvasItem *item,
 		/* draw a drop shadow */
 		eel_gdk_draw_layout_with_drop_shadow (drawable, gc,
 						      label_color,
-						      &GTK_WIDGET (EEL_CANVAS_ITEM (item)->canvas)->style->black,
+						      &gtk_widget_get_style (GTK_WIDGET (EEL_CANVAS_ITEM (item)->canvas))->black,
 						      x, y,
 						      layout);
 	} else {
