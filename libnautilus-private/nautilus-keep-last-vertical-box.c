@@ -72,14 +72,14 @@ nautilus_keep_last_vertical_box_new (gint spacing)
 
 	box = NAUTILUS_KEEP_LAST_VERTICAL_BOX (gtk_widget_new (nautilus_keep_last_vertical_box_get_type (), NULL));
 
-	GTK_BOX (box)->spacing = spacing;
+	gtk_box_set_spacing (GTK_BOX (box), spacing);
 
 	/* If homogeneous is TRUE and there are too many items to fit
 	 * naturally, they will be squashed together to fit in the space.
 	 * We want the ones that don't fit to be not shown at all, so
 	 * we set homogeneous to FALSE.
 	 */
-	GTK_BOX (box)->homogeneous = FALSE;
+	gtk_box_set_homogeneous (GTK_BOX (box), FALSE);
 
 	return GTK_WIDGET (box);
 }
