@@ -199,7 +199,7 @@ eel_alert_dialog_init (EelAlertDialog *dialog)
 			    FALSE, FALSE, 0);
 	
 
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), hbox, 
+	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), hbox, 
 	                    FALSE, FALSE, 0);
 
 	gtk_widget_show_all (hbox);
@@ -352,7 +352,7 @@ eel_alert_dialog_new (GtkWindow     *parent,
 	dialog = GTK_DIALOG (widget);
 	
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);		
-	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 14);
+	gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), 14);
 	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
 	gtk_dialog_set_has_separator (dialog, FALSE);
 
@@ -451,7 +451,7 @@ eel_alert_dialog_style_set (GtkWidget *widget,
 	
 	border_width = 0;
 
-	parent = GTK_WIDGET (EEL_ALERT_DIALOG (widget)->details->image->parent);
+	parent = GTK_WIDGET (gtk_widget_get_parent (EEL_ALERT_DIALOG (widget)->details->image));
 
 	if (parent != NULL) {
 		gtk_widget_style_get (widget, "alert_border",
