@@ -141,6 +141,7 @@ menu_position_under_widget (GtkMenu   *menu,
 	GdkRectangle monitor;
 	int monitor_num;
 	GdkScreen *screen;
+	GtkAllocation allocation;
 
 	widget = GTK_WIDGET (user_data);
 	g_assert (GTK_IS_WIDGET (widget));
@@ -150,32 +151,33 @@ menu_position_under_widget (GtkMenu   *menu,
 
 	gtk_widget_size_request (widget, &req);
 	gtk_widget_size_request (GTK_WIDGET (menu), &menu_req);
+	gtk_widget_get_allocation (widget, &allocation);
 
 	screen = gtk_widget_get_screen (GTK_WIDGET (menu));
-	monitor_num = gdk_screen_get_monitor_at_window (screen, widget->window);
+	monitor_num = gdk_screen_get_monitor_at_window (screen, gtk_widget_get_window (widget));
 	if (monitor_num < 0) {
 		monitor_num = 0;
 	}
 	gdk_screen_get_monitor_geometry (screen, monitor_num, &monitor);
 
-	gdk_window_get_origin (widget->window, x, y);
+	gdk_window_get_origin (gtk_widget_get_window (widget), x, y);
 	if (!gtk_widget_get_has_window (widget)) {
-		*x += widget->allocation.x;
-		*y += widget->allocation.y;
+		*x += allocation.x;
+		*y += allocation.y;
 	}
 
 	if (gtk_widget_get_direction (container) == GTK_TEXT_DIR_LTR) {
-		*x += widget->allocation.width - req.width;
+		*x += allocation.width - req.width;
 	} else {
 		*x += req.width - menu_req.width;
 	}
 
-	if ((*y + widget->allocation.height + menu_req.height) <= monitor.y + monitor.height) {
-		*y += widget->allocation.height;
+	if ((*y + allocation.height + menu_req.height) <= monitor.y + monitor.height) {
+		*y += allocation.height;
 	} else if ((*y - menu_req.height) >= monitor.y) {
 		*y -= menu_req.height;
-	} else if (monitor.y + monitor.height - (*y + widget->allocation.height) > *y) {
-		*y += widget->allocation.height;
+	} else if (monitor.y + monitor.height - (*y + allocation.height) > *y) {
+		*y += allocation.height;
 	} else {
 		*y -= menu_req.height;
 	}
@@ -727,7 +729,7 @@ nautilus_zoom_control_accessible_do_action (AtkAction *accessible, int i)
 	
 	g_assert (i >= 0 && i < NUM_ACTIONS);
 
-	widget = GTK_ACCESSIBLE (accessible)->widget;
+	widget = gtk_accessible_get_widget (GTK_ACCESSIBLE (accessible));
 	if (!widget) {
 		return FALSE;
 	}
@@ -781,7 +783,7 @@ nautilus_zoom_control_accessible_get_current_value (AtkValue *accessible,
 
 	g_value_init (value, G_TYPE_INT);
 	
-	control = NAUTILUS_ZOOM_CONTROL (GTK_ACCESSIBLE (accessible)->widget);
+	control = NAUTILUS_ZOOM_CONTROL (gtk_accessible_get_widget (GTK_ACCESSIBLE (accessible)));
 	if (!control) {
 		g_value_set_int (value, NAUTILUS_ZOOM_LEVEL_STANDARD);
 		return;
@@ -798,7 +800,7 @@ nautilus_zoom_control_accessible_get_maximum_value (AtkValue *accessible,
 
 	g_value_init (value, G_TYPE_INT);
 	
-	control = NAUTILUS_ZOOM_CONTROL (GTK_ACCESSIBLE (accessible)->widget);
+	control = NAUTILUS_ZOOM_CONTROL (gtk_accessible_get_widget (GTK_ACCESSIBLE (accessible)));
 	if (!control) {
 		g_value_set_int (value, NAUTILUS_ZOOM_LEVEL_STANDARD);
 		return;
@@ -815,7 +817,7 @@ nautilus_zoom_control_accessible_get_minimum_value (AtkValue *accessible,
 	
 	g_value_init (value, G_TYPE_INT);
 
-	control = NAUTILUS_ZOOM_CONTROL (GTK_ACCESSIBLE (accessible)->widget);
+	control = NAUTILUS_ZOOM_CONTROL (gtk_accessible_get_widget (GTK_ACCESSIBLE (accessible)));
 	if (!control) {
 		g_value_set_int (value, NAUTILUS_ZOOM_LEVEL_STANDARD);
 		return;
@@ -861,7 +863,7 @@ nautilus_zoom_control_accessible_set_current_value (AtkValue *accessible,
 	NautilusZoomControl *control;
 	NautilusZoomLevel zoom;
 
-	control = NAUTILUS_ZOOM_CONTROL (GTK_ACCESSIBLE (accessible)->widget);
+	control = NAUTILUS_ZOOM_CONTROL (gtk_accessible_get_widget (GTK_ACCESSIBLE (accessible)));
 	if (!control) {
 		return FALSE;
 	}
