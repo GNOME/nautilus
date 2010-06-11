@@ -428,7 +428,7 @@ handle_new_progress_info (NautilusProgressInfo *info)
 	window = get_progress_window ();
 	
 	progress = progress_widget_new (info);
-	gtk_box_pack_start (GTK_BOX (GTK_BIN (window)->child),
+	gtk_box_pack_start (GTK_BOX (gtk_bin_get_child (GTK_BIN (window))),
 			    progress,
 			    FALSE, FALSE, 6);
 
