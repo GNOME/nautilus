@@ -109,7 +109,7 @@ splitter_hide (NautilusHorizontalSplitter *splitter)
 
 	parent = GTK_PANED (splitter);
 
-	gtk_widget_hide (parent->child1);
+	gtk_widget_hide (gtk_paned_get_child1 (parent));
 }
 
 static void
@@ -119,7 +119,7 @@ splitter_show (NautilusHorizontalSplitter *splitter)
 
 	parent = GTK_PANED (splitter);
 
-	gtk_widget_show (parent->child1);
+	gtk_widget_show (gtk_paned_get_child1 (parent));
 }
 
 static gboolean
@@ -129,7 +129,7 @@ splitter_is_hidden (NautilusHorizontalSplitter *splitter)
 	
 	parent = GTK_PANED (splitter);
 
-	return gtk_widget_get_visible (parent->child1);
+	return gtk_widget_get_visible (gtk_paned_get_child1 (parent));
 }
 
 void
@@ -234,33 +234,33 @@ nautilus_horizontal_splitter_size_allocate (GtkWidget     *widget,
 	GtkRequisition child_requisition;
       
 	paned = GTK_PANED (widget);
-	border_width = GTK_CONTAINER (paned)->border_width;
+	border_width = gtk_container_get_border_width (GTK_CONTAINER (paned));
 
-	widget->allocation = *allocation;
+	gtk_widget_set_allocation (widget, allocation);
 
-	if (paned->child2 != NULL && gtk_widget_get_visible (paned->child2)) { 
+	if (gtk_paned_get_child2 (paned) != NULL && gtk_widget_get_visible (gtk_paned_get_child2 (paned))) { 
 		EEL_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate,
 				 (widget, allocation));
-	} else if (paned->child1 && gtk_widget_get_visible (paned->child1)) {
+	} else if (gtk_paned_get_child1 (paned) && gtk_widget_get_visible (gtk_paned_get_child1 (paned))) {
 
 		if (gtk_widget_get_realized (widget)) {
-			gdk_window_hide (paned->handle);
+			gdk_window_hide (gtk_paned_get_handle_window (paned));
 		}
 
-		gtk_widget_get_child_requisition (paned->child1,
+		gtk_widget_get_child_requisition (gtk_paned_get_child1 (paned),
 						  &child_requisition);
 		
-		child_allocation.x = widget->allocation.x + border_width;
-		child_allocation.y = widget->allocation.y + border_width;
+		child_allocation.x = allocation->x + border_width;
+		child_allocation.y = allocation->y + border_width;
 		child_allocation.width = MIN (child_requisition.width,
 					      allocation->width - 2 * border_width);
 		child_allocation.height = MIN (child_requisition.height,
 					       allocation->height - 2 * border_width);
 		
-		gtk_widget_size_allocate (paned->child1, &child_allocation);
+		gtk_widget_size_allocate (gtk_paned_get_child1 (paned), &child_allocation);
 	} else
 		if (gtk_widget_get_realized (widget)) {
-			gdk_window_hide (paned->handle);
+			gdk_window_hide (gtk_paned_get_handle_window (paned));
 		}
 
 }
