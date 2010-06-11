@@ -243,7 +243,7 @@ fm_icon_view_finalize (GObject *object)
 static NautilusIconContainer *
 get_icon_container (FMIconView *icon_view)
 {
-	return NAUTILUS_ICON_CONTAINER (GTK_BIN (icon_view)->child);
+	return NAUTILUS_ICON_CONTAINER (gtk_bin_get_child (GTK_BIN (icon_view)));
 }
 
 static gboolean
@@ -2767,7 +2767,7 @@ create_icon_container (FMIconView *icon_view)
 
 	icon_container = fm_icon_container_new (icon_view);
 
-	GTK_WIDGET_SET_FLAGS (icon_container, GTK_CAN_FOCUS);
+	gtk_widget_set_can_focus (GTK_WIDGET (icon_container), TRUE);
 	
 	g_signal_connect_object (icon_container, "focus_in_event",
 			 G_CALLBACK (focus_in_event_callback), icon_view, 0);
@@ -3046,7 +3046,7 @@ fm_icon_view_init (FMIconView *icon_view)
 	static gboolean setup_sound_preview = FALSE;
 	NautilusIconContainer *icon_container;
 
-        g_return_if_fail (GTK_BIN (icon_view)->child == NULL);
+        g_return_if_fail (gtk_bin_get_child (GTK_BIN (icon_view)) == NULL);
 
 	icon_view->details = g_new0 (FMIconViewDetails, 1);
 	icon_view->details->sort = &sort_criteria[0];
