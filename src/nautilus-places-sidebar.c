@@ -1171,9 +1171,9 @@ drag_data_received_callback (GtkWidget *widget,
 	tree_view = GTK_TREE_VIEW (widget);
 
 	if (!sidebar->drag_data_received) {
-		if (selection_data->target != GDK_NONE &&
+		if (gtk_selection_data_get_target (selection_data) != GDK_NONE &&
 		    info == TEXT_URI_LIST) {
-			sidebar->drag_list = build_selection_list (selection_data->data);
+			sidebar->drag_list = build_selection_list (gtk_selection_data_get_data (selection_data));
 		} else {
 			sidebar->drag_list = NULL;
 		}
@@ -1228,14 +1228,18 @@ drag_data_received_callback (GtkWidget *widget,
 			break;
 		}
 	} else {
+		GdkDragAction real_action;
+
 		/* file transfer requested */
-		if (context->action == GDK_ACTION_ASK) {
-			context->action =
+		real_action = gdk_drag_context_get_selected_action (context);
+
+		if (real_action == GDK_ACTION_ASK) {
+			real_action =
 				nautilus_drag_drop_action_ask (GTK_WIDGET (tree_view),
-							       context->actions);
+							       gdk_drag_context_get_actions (context));
 		}
 
-		if (context->action > 0) {
+		if (real_action > 0) {
 			model = gtk_tree_view_get_model (tree_view);
 
 			gtk_tree_model_get_iter (model, &iter, tree_path);
@@ -1245,10 +1249,10 @@ drag_data_received_callback (GtkWidget *widget,
 
 			switch (info) {
 			case TEXT_URI_LIST:
-				selection_list = build_selection_list (selection_data->data);
+				selection_list = build_selection_list (gtk_selection_data_get_data (selection_data));
 				uris = uri_list_from_selection (selection_list);
 				nautilus_file_operations_copy_move (uris, NULL, drop_uri,
-								    context->action, GTK_WIDGET (tree_view),
+								    real_action, GTK_WIDGET (tree_view),
 								    NULL, NULL);
 				nautilus_drag_destroy_selection_list (selection_list);
 				g_list_free (uris);
