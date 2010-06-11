@@ -225,7 +225,7 @@ get_simple_text (gpointer object)
 	EelAccessibleTextIface *aif;
 
 	if (GTK_IS_ACCESSIBLE (object)) {
-		gobject = G_OBJECT (GTK_ACCESSIBLE (object)->widget);
+		gobject = G_OBJECT (gtk_accessible_get_widget (GTK_ACCESSIBLE (object)));
 	} else {
 		gobject = eel_accessibility_get_gobject (object);
 	}
