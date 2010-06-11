@@ -469,19 +469,21 @@ eel_background_expose (GtkWidget                   *widget,
 	GdkGC *gc;
 	GdkGCValues gc_values;
 	GdkGCValuesMask value_mask;
+	GdkWindow *widget_window;
 
 	EelBackground *background;
-	
-	if (event->window != widget->window) {
+
+	widget_window = gtk_widget_get_window (widget);
+	if (event->window != widget_window) {
 		return;
 	}
 
 	background = eel_get_widget_background (widget);
 
-	drawable_get_adjusted_size (background, widget->window, &window_width, &window_height);
+	drawable_get_adjusted_size (background, widget_window, &window_width, &window_height);
 	
 	pixmap = eel_background_get_pixmap_and_color (background,
-						      widget->window,
+						      widget_window,
 						      &color);
 
 	if (pixmap) {
@@ -497,11 +499,11 @@ eel_background_expose (GtkWidget                   *widget,
 		value_mask = GDK_GC_FILL | GDK_GC_FOREGROUND;
 	}
 	
-	gc = gdk_gc_new_with_values (widget->window, &gc_values, value_mask);
+	gc = gdk_gc_new_with_values (widget_window, &gc_values, value_mask);
 	
 	gdk_gc_set_clip_rectangle (gc, &event->area);
 
-	gdk_draw_rectangle (widget->window, gc, TRUE, 0, 0, window_width, window_height);
+	gdk_draw_rectangle (widget_window, gc, TRUE, 0, 0, window_width, window_height);
 	
 	g_object_unref (gc);
 	
@@ -748,16 +750,18 @@ eel_background_set_up_widget (EelBackground *background, GtkWidget *widget)
 	int window_height;
 	
 	GdkWindow *window;
+	GdkWindow *widget_window;
 	gboolean in_fade;
 
 	if (!gtk_widget_get_realized (widget)) {
 		return;
 	}
 
-	drawable_get_adjusted_size (background, widget->window, &window_width, &window_height);
+	widget_window = gtk_widget_get_window (widget);
+	drawable_get_adjusted_size (background, widget_window, &window_width, &window_height);
 	
 	pixmap = eel_background_get_pixmap_and_color (background,
-						      widget->window,
+						      widget_window,
 						      &color);
 
 	style = gtk_widget_get_style (widget);
@@ -765,9 +769,9 @@ eel_background_set_up_widget (EelBackground *background, GtkWidget *widget)
 	gdk_rgb_find_color (style->colormap, &color);
 
 	if (EEL_IS_CANVAS (widget)) {
-		window = GTK_LAYOUT (widget)->bin_window;
+		window = gtk_layout_get_bin_window (GTK_LAYOUT (widget));
 	} else {
-		window = widget->window;
+		window = widget_window;
 	}
 
 	if (background->details->fade != NULL) {
@@ -822,13 +826,15 @@ init_fade (EelBackground *background, GtkWidget *widget)
 	}
 
 	if (background->details->fade == NULL) {
+		GdkWindow *window;
 		int old_width, old_height, width, height;
 
 		/* If this was the result of a screen size change,
 		 * we don't want to crossfade
 		 */
-		gdk_drawable_get_size (widget->window, &old_width, &old_height);
-		drawable_get_adjusted_size (background, widget->window,
+		window = gtk_widget_get_window (widget);
+		gdk_drawable_get_size (window, &old_width, &old_height);
+		drawable_get_adjusted_size (background, window,
 					    &width, &height);
 		if (old_width == width && old_height == height) {
 			background->details->fade = gnome_bg_crossfade_new (width, height);
@@ -1075,17 +1081,19 @@ eel_background_receive_dropped_color (EelBackground *background,
 	char *color_spec;
 	char *new_gradient_spec;
 	int left_border, right_border, top_border, bottom_border;
+	GtkAllocation allocation;
 
 	g_return_if_fail (EEL_IS_BACKGROUND (background));
 	g_return_if_fail (GTK_IS_WIDGET (widget));
 	g_return_if_fail (selection_data != NULL);
 
 	/* Convert the selection data into a color spec. */
-	if (selection_data->length != 8 || selection_data->format != 16) {
+	if (gtk_selection_data_get_length ((GtkSelectionData *) selection_data) != 8 ||
+	    gtk_selection_data_get_format ((GtkSelectionData *) selection_data) != 16) {
 		g_warning ("received invalid color data");
 		return;
 	}
-	channels = (guint16 *) selection_data->data;
+	channels = (guint16 *) gtk_selection_data_get_data ((GtkSelectionData *) selection_data);
 	color_spec = g_strdup_printf ("#%02X%02X%02X",
 				      channels[0] >> 8,
 				      channels[1] >> 8,
@@ -1095,10 +1103,11 @@ eel_background_receive_dropped_color (EelBackground *background,
 	   For the moment, this is hard-wired, but later the widget will have to have some
 	   say in where the borders are.
 	*/
+	gtk_widget_get_allocation (widget, &allocation);
 	left_border = 32;
-	right_border = widget->allocation.width - 32;
+	right_border = allocation.width - 32;
 	top_border = 32;
-	bottom_border = widget->allocation.height - 32;
+	bottom_border = allocation.height - 32;
 	if (drop_location_x < left_border && drop_location_x <= right_border) {
 		new_gradient_spec = eel_gradient_set_left_color_spec (background->details->color, color_spec);
 	} else if (drop_location_x >= left_border && drop_location_x > right_border) {
