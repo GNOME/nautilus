@@ -66,7 +66,7 @@ typedef struct {
 	NautilusUndoManager *undo_manager;
 	GVolumeMonitor *volume_monitor;
 	unsigned int automount_idle_id;
-	guint ck_watch_id;
+	GDBusProxy *proxy;
 	gboolean session_is_active;
 } NautilusApplication;
 

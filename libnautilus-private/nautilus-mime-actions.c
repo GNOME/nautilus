@@ -1139,7 +1139,6 @@ typedef struct {
 	char *activation_directory;
 	gboolean user_confirmation;
 	char *uri;
-	guint pk_watch_id;
 	GDBusProxy *proxy;
 	GtkWidget *dialog;
 } ActivateParametersInstall;
@@ -1157,9 +1156,7 @@ activate_parameters_install_free (ActivateParametersInstall *parameters_install)
 	nautilus_file_list_free (parameters_install->files);
 	g_free (parameters_install->activation_directory);
 	g_free (parameters_install->uri);
-	if (parameters_install->pk_watch_id != 0) {
-		g_bus_unwatch_proxy (parameters_install->pk_watch_id);
-	}
+        g_object_unref (parameters_install->proxy);
 	g_free (parameters_install);
 }
 
@@ -1408,16 +1405,31 @@ delete_cb (GtkDialog *dialog)
 }
 
 static void
-pk_proxy_appeared_cb (GDBusConnection *connection,
-		      const gchar *name,
-		      const gchar *name_owner,
-		      GDBusProxy *proxy,
+pk_proxy_appeared_cb (GObject *source,
+		      GAsyncResult *res,
 		      gpointer user_data)
 {
         ActivateParametersInstall *parameters_install = user_data;
 	char *mime_type;
 	char *error_message;
 	GtkWidget *dialog;
+        GDBusProxy *proxy;
+	GError *error = NULL;
+
+	proxy = g_dbus_proxy_new_for_bus_finish (res, &error);
+
+	if (error != NULL) {
+		g_warning ("Couldn't call Modify on the PackageKit interface: %s",
+			   error->message);
+		g_error_free (error);
+
+		/* show an unhelpful dialog */
+		show_unhandled_type_error (parameters_install);
+		/* The callback wasn't started, so we have to free the parameters */
+		activate_parameters_install_free (parameters_install);
+
+		return;
+	}
 
 	mime_type = nautilus_file_get_mime_type (parameters_install->file);
 	error_message = get_application_no_mime_type_handler_message (parameters_install->file,
@@ -1443,26 +1455,6 @@ pk_proxy_appeared_cb (GDBusConnection *connection,
 	                  G_CALLBACK (delete_cb), NULL);
 	gtk_widget_show_all (dialog);
 	g_free (mime_type);
-}
-
-static void
-pk_proxy_vanished_cb (GDBusConnection *connection,
-                      const gchar *name,
-                      gpointer user_data)
-{
-	ActivateParametersInstall *parameters_install = user_data;
-
-	parameters_install->proxy = NULL;
-	
-	if (parameters_install->dialog != NULL) {
-		gtk_widget_destroy (parameters_install->dialog);
-		parameters_install->dialog = NULL;
-	}
-
-        /* show an unhelpful dialog */
-        show_unhandled_type_error (parameters_install);
-        /* The callback wasn't started, so we have to free the parameters */
-        activate_parameters_install_free (parameters_install);
 }
 
 static void
@@ -1510,19 +1502,15 @@ application_unhandled_uri (ActivateParameters *parameters, char *uri)
 		goto out;
 	}
 
-	parameters_install->pk_watch_id = 
-		g_bus_watch_proxy (G_BUS_TYPE_SESSION,
-				   "org.freedesktop.PackageKit",
-				   G_BUS_NAME_WATCHER_FLAGS_AUTO_START,
-				   "/org/freedesktop/PackageKit",
-				   "org.freedesktop.PackageKit.Modify",
-				   G_TYPE_DBUS_PROXY,
-				   G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES |
-		                   G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS,
-		                   pk_proxy_appeared_cb,
-				   pk_proxy_vanished_cb,
-				   parameters_install,
-				   NULL);
+	g_dbus_proxy_new_for_bus (G_BUS_TYPE_SESSION,
+				  G_DBUS_PROXY_FLAGS_NONE,
+				  NULL,
+				  "org.freedesktop.PackageKit",
+				  "/org/freedesktop/PackageKit",
+				  "org.freedesktop.PackageKit.Modify",
+				  NULL,
+				  pk_proxy_appeared_cb,
+				  parameters_install);
 
 	return;
 
