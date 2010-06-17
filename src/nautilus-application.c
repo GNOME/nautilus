@@ -352,9 +352,9 @@ nautilus_application_finalize (GObject *object)
 		application->automount_idle_id = 0;
 	}
 
-	if (application->ck_watch_id != 0) {
-		g_bus_unwatch_proxy (application->ck_watch_id);
-		application->ck_watch_id = 0;
+	if (application->proxy != NULL) {
+		g_object_unref (application->proxy);
+		application->proxy = NULL;
 	}
 
         G_OBJECT_CLASS (nautilus_application_parent_class)->finalize (object);
@@ -565,23 +565,23 @@ ck_call_is_active_cb (GDBusProxy   *proxy,
 }
 
 static void
-session_proxy_vanished (GDBusConnection *connection,
-                        const gchar *name,
-                        gpointer user_data)
+session_proxy_appeared (GObject       *source,
+                        GAsyncResult *res,
+                        gpointer      user_data)
 {
 	NautilusApplication *application = user_data;
+        GDBusProxy *proxy;
+	GError *error = NULL;
 
-	application->session_is_active = TRUE;
-}
+        proxy = g_dbus_proxy_new_for_bus_finish (res, &error);
 
-static void
-session_proxy_appeared (GDBusConnection *connection,
-                        const gchar *name,
-                        const gchar *name_owner,
-                        GDBusProxy *proxy,
-                        gpointer user_data)
-{
-	NautilusApplication *application = user_data;
+	if (error != NULL) {
+		g_warning ("Failed to get the current CK session: %s", error->message);
+		g_error_free (error);
+
+		application->session_is_active = TRUE;
+		return;
+	}
 
 	g_signal_connect (proxy, "g-signal",
 			  G_CALLBACK (ck_session_proxy_signal_cb),
@@ -594,7 +594,9 @@ session_proxy_appeared (GDBusConnection *connection,
 			   -1,
 			   NULL,
 			   (GAsyncReadyCallback) ck_call_is_active_cb,
-			   application);	
+			   application);
+
+        application->proxy = proxy;
 }
 
 static void
@@ -619,16 +621,15 @@ ck_get_current_session_cb (GDBusConnection *connection,
 
 	g_variant_get (variant, "(&o)", &session_path);
 
-	application->ck_watch_id = g_bus_watch_proxy (G_BUS_TYPE_SYSTEM,
-						      CK_NAME,
-						      0, session_path,
-						      CK_INTERFACE ".Session",
-						      G_TYPE_DBUS_PROXY,
-						      G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES,
-						      session_proxy_appeared,
-						      session_proxy_vanished,
-						      application,
-						      NULL);
+	g_dbus_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
+				  G_DBUS_PROXY_FLAGS_NONE,
+				  NULL,
+				  CK_NAME,
+				  session_path,
+				  CK_INTERFACE ".Session",
+				  NULL,
+				  session_proxy_appeared,
+				  application);
 
 	g_variant_unref (variant);
 }
