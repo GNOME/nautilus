@@ -29,7 +29,6 @@
 
 #include <gdk/gdk.h>
 #include <gio/gio.h>
-#include <unique/unique.h>
 #include <libegg/eggsmclient.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
 
@@ -61,7 +60,7 @@ typedef struct NautilusShell NautilusShell;
 
 typedef struct {
 	GObject parent;
-	UniqueApp *unique_app;
+	GApplication *unique_app;
         EggSMClient *smclient;
 	NautilusUndoManager *undo_manager;
 	GVolumeMonitor *volume_monitor;
