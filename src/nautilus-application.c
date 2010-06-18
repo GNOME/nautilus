@@ -76,14 +76,10 @@
 #include <libnautilus-extension/nautilus-menu-provider.h>
 #include <libnautilus-private/nautilus-autorun.h>
 
-enum
-{
-  COMMAND_0, /* unused: 0 is an invalid command */
-
-  COMMAND_START_DESKTOP,
-  COMMAND_STOP_DESKTOP,
-  COMMAND_OPEN_BROWSER,
-};
+#define COMMAND_OPEN "open"
+#define COMMAND_START_DESKTOP "start_desktop"
+#define COMMAND_STOP_DESKTOP "stop_desktop"
+#define COMMAND_CLOSE "close"
 
 /* Keep window from shrinking down ridiculously small; numbers are somewhat arbitrary */
 #define APPLICATION_WINDOW_MIN_WIDTH	300
@@ -125,73 +121,6 @@ static void     nautilus_application_load_session     (NautilusApplication *appl
 static char *   nautilus_application_get_session_data (void);
 
 G_DEFINE_TYPE (NautilusApplication, nautilus_application, G_TYPE_OBJECT);
-
-static gboolean
-_unique_message_data_set_geometry_and_uris (UniqueMessageData  *message_data,
-					    const char *geometry,
-					    char **uris)
-{
-  GString *list;
-  gint i;
-  gchar *result;
-  gsize length;
-
-  list = g_string_new (NULL);
-  if (geometry != NULL) {
-	  g_string_append (list, geometry);
-  }
-  g_string_append (list, "\r\n");
-  
-  for (i = 0; uris != NULL && uris[i]; i++) {
-	  g_string_append (list, uris[i]);
-	  g_string_append (list, "\r\n");
-  }
-
-  result = g_convert (list->str, list->len,
-                      "ASCII", "UTF-8",
-                      NULL, &length, NULL);
-  g_string_free (list, TRUE);
-  
-  if (result) {
-	  unique_message_data_set (message_data, (guchar *) result, length);
-	  g_free (result);
-	  return TRUE;
-  }
-  
-  return FALSE;
-}
-
-static gchar **
-_unique_message_data_get_geometry_and_uris (UniqueMessageData *message_data,
-					    char **geometry)
-{
-  gchar **result = NULL;
-
-  *geometry = NULL;
-  
-  gchar *text, *newline, *uris;
-  text = unique_message_data_get_text (message_data);
-  if (text) {
-	  newline = strchr (text, '\n');
-	  if (newline) {
-		  *geometry = g_strndup (text, newline-text);
-		  uris = newline+1;
-	  } else {
-		  uris = text;
-	  }
-	  
-	  result = g_uri_list_extract_uris (uris);
-	  g_free (text);
-  }
-
-  /* if the string is empty, make it NULL */
-  if (*geometry && strlen (*geometry) == 0) {
-	  g_free (*geometry);
-	  *geometry = NULL;
-  }
-
-  return result;
-}
 
 GList *
 nautilus_application_get_window_list (void)
@@ -282,13 +211,6 @@ nautilus_application_init (NautilusApplication *application)
 	/* Create an undo manager */
 	application->undo_manager = nautilus_undo_manager_new ();
 
-	application->unique_app = unique_app_new_with_commands ("org.gnome.Nautilus", NULL,
-								"start_desktop", COMMAND_START_DESKTOP,
-								"stop_desktop", COMMAND_STOP_DESKTOP,
-								"open_browser", COMMAND_OPEN_BROWSER,
-								NULL);
-
-	
         application->smclient = egg_sm_client_get ();
         g_signal_connect (application->smclient, "save_state",
                           G_CALLBACK (smclient_save_state_cb),
@@ -809,53 +731,66 @@ open_windows (NautilusApplication *application,
 	}
 }
 
-static UniqueResponse
-message_received_cb (UniqueApp         *unique_app,
-                     UniqueCommand      command,
-                     UniqueMessageData *message,
-                     guint              time_,
-                     gpointer           user_data)
+static void
+message_received_cb (GApplication *unique_app,
+		     gchar *name,
+		     GVariant *platform_data,
+		     gpointer user_data)
 {
 	NautilusApplication *application;
-	UniqueResponse res;
-	char **uris;
-	char *geometry;
-	GdkScreen *screen;
-	
+	char **uris = NULL;
+	char *geometry = NULL;
+
 	application =  user_data;
-	res = UNIQUE_RESPONSE_OK;
-	
-	switch (command) {
-	case UNIQUE_CLOSE:
-		res = UNIQUE_RESPONSE_OK;
+
+	if (g_strcmp0 (name, COMMAND_CLOSE) == 0) {
 		nautilus_main_event_loop_quit (TRUE);
-		
-		break;
-	case UNIQUE_OPEN:
-	case COMMAND_OPEN_BROWSER:
-		uris = _unique_message_data_get_geometry_and_uris (message, &geometry);
-		screen = unique_message_data_get_screen (message);
-		open_windows (application,
-			      unique_message_data_get_startup_id (message),
-			      uris,
-			      screen,
-			      geometry,
-			      command == COMMAND_OPEN_BROWSER);
-		g_strfreev (uris);
-		g_free (geometry);
-		break;
-	case COMMAND_START_DESKTOP:
-		nautilus_application_open_desktop (application);
-		break;
-	case COMMAND_STOP_DESKTOP:
-		nautilus_application_close_desktop ();
-		break;
-	default:
-		res = UNIQUE_RESPONSE_PASSTHROUGH;
-		break;
+		return;
 	}
-	
-	return res;
+
+	if (g_strcmp0 (name, COMMAND_OPEN) == 0) {
+		GVariantIter iter;
+		gboolean use_browser;
+		gchar *key;
+		GVariant *value;
+		gchar *startup_id;
+
+		g_variant_iter_init (&iter, platform_data);
+
+		while (g_variant_iter_next (&iter, "{&sv}", &key, &value)) {
+			if (g_strcmp0 (key, "urls") == 0) {
+				g_variant_get (value, "^as", &uris);
+			} else if (g_strcmp0 (key, "geometry") == 0) {
+				g_variant_get (value, "&s", &geometry);
+			} else if (g_strcmp0 (key, "use_browser") == 0) {
+				g_variant_get (value, "b", &use_browser);
+			} else if (g_strcmp0 (key, "startup_id") == 0) {
+				g_variant_get (value, "&s", &startup_id);
+			}
+
+			g_variant_unref (value);
+		}
+
+		open_windows (application,
+			      startup_id,
+			      uris,
+			      gdk_screen_get_default (),
+			      geometry,
+			      use_browser);
+		g_strfreev (uris);
+
+		return;
+	}
+
+	if (g_strcmp0 (name, COMMAND_START_DESKTOP) == 0) {
+		nautilus_application_open_desktop (application);
+		return;
+	}
+
+	if (g_strcmp0 (name, COMMAND_STOP_DESKTOP) == 0) {
+		nautilus_application_close_desktop ();
+		return;
+	}
 }
 
 gboolean 
@@ -887,6 +822,34 @@ queue_accel_map_save_callback (GtkAccelMap *object, gchar *accel_path,
 	}
 }
 
+static GVariant *
+get_startup_id (void)
+{
+	gchar *id = NULL;
+	GVariant *retval;
+	GTimeVal timeval = { 0, };
+
+	id = g_strdup (gdk_x11_display_get_startup_notification_id (gdk_display_get_default ()));
+
+	if (id == NULL) {
+		id = g_strdup (g_getenv ("DESKTOP_STARTUP_ID"));
+	}
+
+	if (id == NULL) {
+		guint32 timestamp;
+
+		g_get_current_time (&timeval);
+
+		timestamp =  timeval.tv_sec;
+		id = g_strdup_printf ("_TIME%lu", (unsigned long) timestamp);
+        }
+
+	retval = g_variant_new ("s", id);
+	g_free (id);
+
+	return retval;
+}
+
 void
 nautilus_application_startup (NautilusApplication *application,
 			      gboolean kill_shell,
@@ -896,8 +859,9 @@ nautilus_application_startup (NautilusApplication *application,
 			      const char *geometry,
 			      char **urls)
 {
-	UniqueMessageData *message;
-	
+	gboolean is_remote;
+	GError *error = NULL;
+
 	/* Check the user's ~/.nautilus directories and post warnings
 	 * if there are problems.
 	 */
@@ -905,11 +869,31 @@ nautilus_application_startup (NautilusApplication *application,
 		return;
 	}
 
+	application->unique_app = g_initable_new (G_TYPE_APPLICATION,
+						  NULL,
+						  &error,
+						  "application-id", "org.gnome.Nautilus",
+						  "default-quit", FALSE,
+						  NULL);
+	g_assert (error == NULL);
+	is_remote = g_application_is_remote (application->unique_app);
+
+	if (!is_remote) {
+		/* set application properties */
+		g_application_add_action (application->unique_app,
+					  "open", "Open a nautilus window");
+		g_application_add_action (application->unique_app,
+					  "close", "Close the application");
+		g_application_add_action (application->unique_app,
+					  COMMAND_START_DESKTOP, "Starts the desktop");
+		g_application_add_action (application->unique_app,
+					  COMMAND_STOP_DESKTOP, "Stops the desktop");
+	}
+
 	if (kill_shell) {
-		if (unique_app_is_running (application->unique_app)) {
-			unique_app_send_message (application->unique_app,
-						 UNIQUE_CLOSE, NULL);
-			
+		if (is_remote) {
+			g_application_invoke_action (application->unique_app,
+						     COMMAND_CLOSE, NULL);
 		}
 	} else {
 		char *accel_map_filename;
@@ -920,19 +904,21 @@ nautilus_application_startup (NautilusApplication *application,
 		}
 			
 		if (!no_desktop) {
-			if (unique_app_is_running (application->unique_app)) {
-				unique_app_send_message (application->unique_app,
-							 COMMAND_START_DESKTOP, NULL);
+			if (is_remote) {
+				g_application_invoke_action (application->unique_app,
+							     COMMAND_START_DESKTOP, NULL);
 			} else {
 				nautilus_application_open_desktop (application);
 			}
 		}
 
-		if (!unique_app_is_running (application->unique_app)) {
+		if (!is_remote) {
 			finish_startup (application, no_desktop);
-			g_signal_connect (application->unique_app, "message-received", G_CALLBACK (message_received_cb), application);			
+			g_signal_connect (application->unique_app,
+					  "action-with-data",
+					  G_CALLBACK (message_received_cb), application);			
 		}
-		
+
 		/* Monitor the preference to show or hide the desktop */
 		eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_SHOW_DESKTOP,
 							  desktop_changed_callback,
@@ -948,17 +934,31 @@ nautilus_application_startup (NautilusApplication *application,
 
 	  	/* Create the other windows. */
 		if (urls != NULL || !no_default_window) {
-			if (unique_app_is_running (application->unique_app)) {
-				message = unique_message_data_new ();
-				_unique_message_data_set_geometry_and_uris (message, geometry, urls);
-				if (browser_window) {
-					unique_app_send_message (application->unique_app,
-								 COMMAND_OPEN_BROWSER, message);
-				} else {
-					unique_app_send_message (application->unique_app,
-								 UNIQUE_OPEN, message);
+			if (is_remote) {
+				GVariant *variant;
+				GVariantBuilder builder;
+
+				g_variant_builder_init (&builder, G_VARIANT_TYPE ("a{sv}"));
+
+				if (geometry != NULL) {
+					g_variant_builder_add (&builder, "{sv}",
+							       "geometry", g_variant_new ("s", geometry));
 				}
-				unique_message_data_free (message);				
+
+				if (urls != NULL) {
+					g_variant_builder_add (&builder, "{sv}",
+							       "urls", g_variant_new ("^as", urls));
+				}
+
+				g_variant_builder_add (&builder, "{sv}",
+						       "use_browser", g_variant_new ("b", browser_window));
+				g_variant_builder_add (&builder, "{sv}",
+						       "startup_id", get_startup_id ());
+				variant = g_variant_builder_end (&builder);
+
+				g_application_invoke_action (application->unique_app,
+							     COMMAND_OPEN, variant);
+				g_variant_unref (variant);
 			} else {
 				open_windows (application, NULL,
 					      urls,
