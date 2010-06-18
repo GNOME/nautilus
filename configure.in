@@ -5,7 +5,7 @@ dnl ===========================================================================
 m4_define(glib_minver,                 2.25.9)
 m4_define(gnome_desktop_minver,        2.29.91)
 m4_define(pango_minver,                1.1.2)
-m4_define(gtk_minver,                  2.21.2)
+m4_define(gtk_minver,                  2.90.3)
 m4_define(xml_minver,                  2.4.7)
 m4_define(exif_minver,                 0.5.12)
 m4_define(exempi_minver,               1.99.2)
@@ -60,15 +60,14 @@ AC_CHECK_LIB(m, floor)
 
 PKG_CHECK_MODULES(ALL, [
 	glib-2.0		>= glib_minver
-	gnome-desktop-2.0	>= gnome_desktop_minver
+	gnome-desktop-3.0	>= gnome_desktop_minver
 	gthread-2.0
 	gio-unix-2.0		
 	gio-2.0		
 	pango			>= pango_minver
-	gtk+-2.0		>= gtk_minver
+	gtk+-3.0		>= gtk_minver
 	libxml-2.0		>= xml_minver
 	gail			>= gail_minver
-	unique-1.0
 ])
 dnl ==========================================================================
 
@@ -322,21 +321,21 @@ AC_SUBST(RENDER_LIBS)
 dnl ==========================================================================
 	
 dnl libegg
-LIBEGG_MODULES="gtk+-2.0"
+LIBEGG_MODULES="gtk+-3.0"
 LIBEGG_CFLAGS="`$PKG_CONFIG --cflags $LIBEGG_MODULES`"
 AC_SUBST(LIBEGG_CFLAGS)
 LIBEGG_LIBS="`$PKG_CONFIG --libs $LIBEGG_MODULES`"
 AC_SUBST(LIBEGG_LIBS)
 
 dnl libnautilus-extension
-LIBNAUTILUS_EXTENSION_MODULES="glib-2.0 gtk+-2.0"
+LIBNAUTILUS_EXTENSION_MODULES="glib-2.0 gtk+-3.0"
 LIBNAUTILUS_EXTENSION_CFLAGS="`$PKG_CONFIG --cflags $LIBNAUTILUS_EXTENSION_MODULES`"
 AC_SUBST(LIBNAUTILUS_EXTENSION_CFLAGS)
 LIBNAUTILUS_EXTENSION_LIBS="`$PKG_CONFIG --libs $LIBNAUTILUS_EXTENSION_MODULES`"
 AC_SUBST(LIBNAUTILUS_EXTENSION_LIBS)
 
 dnl core nautilus
-CORE_MODULES="glib-2.0 gnome-desktop-2.0 gthread-2.0 gio-2.0 gio-unix-2.0 unique-1.0 gail gconf-2.0 libxml-2.0 $EXTRA_CORE_MODULES"
+CORE_MODULES="glib-2.0 gnome-desktop-3.0 gthread-2.0 gio-2.0 gio-unix-2.0 gail gconf-2.0 libxml-2.0 $EXTRA_CORE_MODULES"
 CORE_CFLAGS="`$PKG_CONFIG --cflags $CORE_MODULES` $x_cflags"
 AC_SUBST(CORE_CFLAGS)
 CORE_LIBS="`$PKG_CONFIG --libs $CORE_MODULES` $x_libs"
