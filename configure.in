@@ -10,7 +10,6 @@ m4_define(xml_minver,                  2.4.7)
 m4_define(exif_minver,                 0.5.12)
 m4_define(exempi_minver,               1.99.2)
 m4_define(exempi_minver_newapi,        1.99.5)
-m4_define(gail_minver,                 0.16)
 
 
 dnl 1. If the library code has changed at all since last release, then increment revision.
@@ -67,7 +66,7 @@ PKG_CHECK_MODULES(ALL, [
 	pango			>= pango_minver
 	gtk+-3.0		>= gtk_minver
 	libxml-2.0		>= xml_minver
-	gail			>= gail_minver
+	gail-3.0		>= gtk_minver
 ])
 dnl ==========================================================================
 
@@ -335,7 +334,7 @@ LIBNAUTILUS_EXTENSION_LIBS="`$PKG_CONFIG --libs $LIBNAUTILUS_EXTENSION_MODULES`"
 AC_SUBST(LIBNAUTILUS_EXTENSION_LIBS)
 
 dnl core nautilus
-CORE_MODULES="glib-2.0 gnome-desktop-3.0 gthread-2.0 gio-2.0 gio-unix-2.0 gail gconf-2.0 libxml-2.0 $EXTRA_CORE_MODULES"
+CORE_MODULES="glib-2.0 gnome-desktop-3.0 gthread-2.0 gio-2.0 gio-unix-2.0 gail-3.0 gconf-2.0 libxml-2.0 $EXTRA_CORE_MODULES"
 CORE_CFLAGS="`$PKG_CONFIG --cflags $CORE_MODULES` $x_cflags"
 AC_SUBST(CORE_CFLAGS)
 CORE_LIBS="`$PKG_CONFIG --libs $CORE_MODULES` $x_libs"
