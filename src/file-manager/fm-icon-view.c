@@ -1585,7 +1585,7 @@ static const GtkActionEntry icon_view_entries[] = {
   /* tooltip */                  N_("Restore each selected icon to its original size"),
                                  G_CALLBACK (action_unstretch_callback) },
   /* name, stock id */         { "Clean Up", NULL,
-  /* label, accelerator */       N_("Clean _Up by Name"), NULL,
+  /* label, accelerator */       N_("_Organize Desktop by Name"), NULL,
   /* tooltip */                  N_("Reposition icons to better fit in the window and avoid overlapping"),
                                  G_CALLBACK (action_clean_up_callback) },
 };
