@@ -4425,7 +4425,8 @@ clicked_within_double_click_interval (NautilusIconContainer *container)
 	/* Stash time for next compare */
 	last_click_time = current_time;
 
-	return (click_count > 0);
+	/* Only allow double click */
+	return (click_count == 1);
 }
 
 static void
