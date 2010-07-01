@@ -142,9 +142,9 @@ set_displayed_location (NautilusWindowSlot *slot, GFile *location)
 			g_object_unref (slot->last_location_bookmark);
                 }
 		slot->last_location_bookmark = slot->current_location_bookmark;
-		name = g_file_get_uri (location);
+		name = g_file_get_basename (location);
 		slot->current_location_bookmark = (location == NULL) ? NULL
-                        : nautilus_bookmark_new (location, name, TRUE, NULL);
+                        : nautilus_bookmark_new (location, name, FALSE, NULL);
 		g_free (name);
         }
 }
