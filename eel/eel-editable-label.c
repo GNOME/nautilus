@@ -1579,7 +1579,7 @@ eel_editable_label_draw_cursor (EelEditableLabel  *label, gint xoffset, gint yof
 	}
       else /* Block cursor */
 	{
-          GdkRegion *clip;
+          cairo_region_t *clip;
 
 	  gdk_draw_rectangle (gtk_widget_get_window (widget), label->primary_cursor_gc, TRUE,
 			      xoffset + PANGO_PIXELS (strong_pos.x),
@@ -1607,7 +1607,7 @@ eel_editable_label_draw_cursor (EelEditableLabel  *label, gint xoffset, gint yof
 					   NULL);
 
 	      gdk_gc_set_clip_region (label->primary_cursor_gc, NULL);
-	      gdk_region_destroy (clip);
+	      cairo_region_destroy (clip);
 	    }
 	}	  
     }
@@ -1649,7 +1649,7 @@ eel_editable_label_expose (GtkWidget      *widget,
         {
           gint range[2];
 	  const char *text;
-          GdkRegion *clip;
+          cairo_region_t *clip;
 	  GtkStateType state;
 	  
           range[0] = label->selection_anchor;
@@ -1694,7 +1694,7 @@ eel_editable_label_expose (GtkWidget      *widget,
                                        &style->base[state]);
 
           gdk_gc_set_clip_region (style->black_gc, NULL);
-          gdk_region_destroy (clip);
+          cairo_region_destroy (clip);
         }
       else if (gtk_widget_has_focus (widget))
 	eel_editable_label_draw_cursor (label, x, y);

@@ -984,9 +984,8 @@ eel_canvas_rect_draw (EelCanvasItem *item, GdkDrawable *drawable, GdkEventExpose
 	
 	if (re->fill_set) {
 		if ((re->fill_color & 0xff) != 255) {
-			GdkRectangle *rectangles;
 			gint i, n_rectangles;
-			GdkRectangle draw_rect;
+			GdkRectangle draw_rect, rect;
 			GdkRectangle part;
 
 			draw_rect.x = cx1;
@@ -996,12 +995,11 @@ eel_canvas_rect_draw (EelCanvasItem *item, GdkDrawable *drawable, GdkEventExpose
 			
 			/* For alpha mode, only render the parts of the region
 			   that are actually exposed */
-			gdk_region_get_rectangles (expose->region,
-						   &rectangles,
-						   &n_rectangles);
+			n_rectangles = cairo_region_num_rectangles (expose->region);
 
 			for (i = 0; i < n_rectangles; i++) {
-				if (gdk_rectangle_intersect (&rectangles[i],
+				cairo_region_get_rectangle (expose->region, i, &rect);
+				if (gdk_rectangle_intersect (&rect,
 							     &draw_rect,
 							     &part)) {
 					render_rect_alpha (EEL_CANVAS_RECT (item),
@@ -1011,8 +1009,6 @@ eel_canvas_rect_draw (EelCanvasItem *item, GdkDrawable *drawable, GdkEventExpose
 							   re->fill_color);
 				}
 			}
-			
-			g_free (rectangles);
 		} else {
 			if (re->fill_stipple)
 				eel_canvas_set_stipple_origin (item->canvas, re->fill_gc);

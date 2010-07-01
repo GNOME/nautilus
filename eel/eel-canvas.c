@@ -1483,13 +1483,13 @@ eel_canvas_group_draw (EelCanvasItem *item, GdkDrawable *drawable,
 		if ((child->flags & EEL_CANVAS_ITEM_MAPPED) &&
 		    (EEL_CANVAS_ITEM_GET_CLASS (child)->draw)) {
 			GdkRectangle child_rect;
-			
+
 			child_rect.x = child->x1;
 			child_rect.y = child->y1;
 			child_rect.width = child->x2 - child->x1 + 1;
 			child_rect.height = child->y2 - child->y1 + 1;
 
-			if (gdk_region_rect_in (expose->region, &child_rect) != GDK_OVERLAP_RECTANGLE_OUT)
+			if (cairo_region_contains_rectangle (expose->region, &child_rect) != CAIRO_REGION_OVERLAP_OUT)
 				(* EEL_CANVAS_ITEM_GET_CLASS (child)->draw) (child, drawable, expose);
 		}
 	}
