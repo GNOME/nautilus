@@ -389,16 +389,6 @@ nautilus_window_slot_update_icon (NautilusWindowSlot *slot)
 	}
 }
 
-static void
-title_changed_callback (NautilusView *view,
-			NautilusWindowSlot *slot)
-{
-        g_assert (NAUTILUS_IS_WINDOW (slot->pane->window));
-
-        nautilus_window_slot_update_title (slot);
-	nautilus_window_slot_update_icon (slot);
-}
-
 void
 nautilus_window_slot_is_in_active_pane (NautilusWindowSlot *slot,
 					gboolean is_active)
@@ -424,10 +414,6 @@ nautilus_window_slot_connect_content_view (NautilusWindowSlot *slot,
 {
 	NautilusWindow *window;
 
-	g_signal_connect (view, "title-changed",
-			  G_CALLBACK (title_changed_callback),
-			  slot);
-
 	window = slot->pane->window;
 	if (window != NULL && slot == nautilus_window_get_active_slot (window)) {
 		nautilus_window_connect_content_view (window, view);
@@ -439,8 +425,6 @@ nautilus_window_slot_disconnect_content_view (NautilusWindowSlot *slot,
 					      NautilusView *view)
 {
 	NautilusWindow *window;
-
-	g_signal_handlers_disconnect_by_func (view, G_CALLBACK (title_changed_callback), slot);
 
 	window = slot->pane->window;
 	if (window != NULL && window->details->active_pane && window->details->active_pane->active_slot == slot) {
