@@ -1925,6 +1925,7 @@ display_view_selection_failure (NautilusWindow *window, NautilusFile *file,
 			detail_message = g_strdup (_("Check that the spelling is correct and that your proxy settings are correct."));
 			break;
 		case G_IO_ERROR_CANCELLED:
+		case G_IO_ERROR_FAILED_HANDLED:
 			g_free (uri_for_display);
 			return;
 			
