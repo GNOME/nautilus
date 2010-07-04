@@ -526,7 +526,7 @@ nautilus_autorun_prepare_combo_box (GtkWidget *combo_box,
 
 		gtk_list_store_append (list_store, &iter);
 		pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
-						   "nautilus",
+						   "folder-open",
 						   icon_size,
 						   0,
 						   NULL);
