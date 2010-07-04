@@ -123,9 +123,6 @@
 #define MAX_MENU_LEVELS 5
 #define TEMPLATE_LIMIT 30
 
-/* Directory where user scripts are placed */
-#define NAUTILUS_SCRIPTS_DIR ".gnome2/nautilus-scripts"
-
 enum {
 	ADD_FILE,
 	BEGIN_FILE_CHANGES,
@@ -1642,14 +1639,24 @@ static void
 set_up_scripts_directory_global (void)
 {
 	char *scripts_directory_path;
+	const char *override;
 
 	if (scripts_directory_uri != NULL) {
 		return;
 	}
 
-	scripts_directory_path = g_build_filename (g_get_home_dir (),
-						   NAUTILUS_SCRIPTS_DIR,
-						   NULL);
+	override = g_getenv ("GNOME22_USER_DIR");
+
+	if (override) {
+		scripts_directory_path = g_build_filename (override,
+							   "nautilus-scripts",
+							   NULL);
+	} else {
+		scripts_directory_path = g_build_filename (g_get_home_dir (),
+							   ".gnome2",
+							   "nautilus-scripts",
+							   NULL);
+	}
 
 	if (g_mkdir_with_parents (scripts_directory_path, 0755) == 0) {
 		scripts_directory_uri = g_filename_to_uri (scripts_directory_path, NULL, NULL);
