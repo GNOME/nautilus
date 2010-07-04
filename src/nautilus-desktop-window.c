@@ -50,6 +50,7 @@ static void
 nautilus_desktop_window_init (NautilusDesktopWindow *window)
 {
 	GtkAction *action;
+	AtkObject *accessible;
 	
 	window->details = g_new0 (NautilusDesktopWindowDetails, 1);
 
@@ -71,6 +72,11 @@ nautilus_desktop_window_init (NautilusDesktopWindow *window)
 	action = gtk_action_group_get_action (NAUTILUS_WINDOW (window)->details->main_action_group,
 					      NAUTILUS_ACTION_CLOSE);
 	gtk_action_set_sensitive (action, FALSE);
+
+	/* Set the accessible name so that it doesn't inherit the cryptic desktop URI. */
+	accessible = gtk_widget_get_accessible (GTK_WIDGET (window));
+	if (accessible)
+		atk_object_set_name (accessible, _("Desktop"));
 }
 
 static gint
