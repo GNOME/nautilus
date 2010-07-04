@@ -123,14 +123,15 @@ nautilus_get_user_directory (void)
 char *
 nautilus_get_accel_map_file (void)
 {
-	const gchar *home;
+	const gchar *override;
 
-	home = g_get_home_dir();
-	if (home != NULL) {
-		return g_build_filename (home, ".gnome2/accels/nautilus", NULL);
+	override = g_getenv ("GNOME22_USER_DIR");
+
+	if (override) {
+		return g_build_filename (override, "accels/nautilus", NULL);
+	} else {
+		return g_build_filename (g_get_home_dir (), ".gnome2/accels/nautilus", NULL);
 	}
-
-	return NULL;
 }
 
 typedef struct {
