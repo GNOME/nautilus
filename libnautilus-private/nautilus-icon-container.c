@@ -5396,8 +5396,11 @@ key_press_event (GtkWidget *widget,
 			break;
 		case GDK_Left:
 		case GDK_KP_Left:
-			keyboard_left (container, event);
-			handled = TRUE;
+			/* Don't eat Alt-Left, as that is used for history browsing */
+			if ((event->state & GDK_MOD1_MASK) == 0) {
+				keyboard_left (container, event);
+				handled = TRUE;
+			}
 			break;
 		case GDK_Up:
 		case GDK_KP_Up:
@@ -5409,8 +5412,11 @@ key_press_event (GtkWidget *widget,
 			break;
 		case GDK_Right:
 		case GDK_KP_Right:
-			keyboard_right (container, event);
-			handled = TRUE;
+			/* Don't eat Alt-Right, as that is used for history browsing */
+			if ((event->state & GDK_MOD1_MASK) == 0) {
+				keyboard_right (container, event);
+				handled = TRUE;
+			}
 			break;
 		case GDK_Down:
 		case GDK_KP_Down:
