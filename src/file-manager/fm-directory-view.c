@@ -8593,7 +8593,10 @@ real_update_menus (FMDirectoryView *view)
 	
 	g_free (label_with_underscore);
 
-	show_open_alternate = file_list_all_are_folders (selection) && selection_count > 0;
+	show_open_alternate = file_list_all_are_folders (selection) &&
+				selection_count > 0 &&
+				!(nautilus_window_info_get_window_type (view->details->window) == NAUTILUS_WINDOW_DESKTOP &&
+					eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER));
 	show_open_folder_window = FALSE;
 	if (nautilus_window_info_get_window_type (view->details->window) == NAUTILUS_WINDOW_NAVIGATION) {
 		if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
