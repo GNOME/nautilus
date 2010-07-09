@@ -982,6 +982,10 @@ key_press_callback (GtkWidget *widget, GdkEventKey *event, gpointer callback_dat
 	FMDirectoryView *view;
 	GdkEventButton button_event = { 0 };
 	gboolean handled;
+	GtkTreeView *tree_view;
+	GtkTreePath *path;
+
+	tree_view = GTK_TREE_VIEW (widget);
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 	handled = FALSE;
@@ -992,6 +996,22 @@ key_press_callback (GtkWidget *widget, GdkEventKey *event, gpointer callback_dat
 			fm_directory_view_pop_up_background_context_menu (view, &button_event);
 			handled = TRUE;
 		}
+		break;
+	case GDK_Right:
+		gtk_tree_view_get_cursor (tree_view, &path, NULL);
+		if (path) {
+			gtk_tree_view_expand_row (tree_view, path, FALSE);
+			gtk_tree_path_free (path);
+		}
+		handled = TRUE;
+		break;
+	case GDK_Left:
+		gtk_tree_view_get_cursor (tree_view, &path, NULL);
+		if (path) {
+			gtk_tree_view_collapse_row (tree_view, path);
+			gtk_tree_path_free (path);
+		}
+		handled = TRUE;
 		break;
 	case GDK_space:
 		if (event->state & GDK_CONTROL_MASK) {
