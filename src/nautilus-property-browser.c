@@ -820,7 +820,7 @@ make_color_drag_image (NautilusPropertyBrowser *property_browser, const char *co
 /* this callback handles button presses on the category widget. It maintains the active state */
 
 static void
-category_clicked_callback (GtkWidget *widget, char *category_name)
+category_toggled_callback (GtkWidget *widget, char *category_name)
 {
 	NautilusPropertyBrowser *property_browser;
 	
@@ -2042,8 +2042,8 @@ make_category_link (NautilusPropertyBrowser *property_browser,
 	/* add a signal to handle clicks */
 	g_object_set_data (G_OBJECT(button), "user_data", property_browser);
 	g_signal_connect_data
-		(button, "clicked",
-		 G_CALLBACK (category_clicked_callback),
+		(button, "toggled",
+		 G_CALLBACK (category_toggled_callback),
 		 g_strdup (name), (GClosureNotify) g_free, 0);
 }
 
