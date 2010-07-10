@@ -5472,6 +5472,12 @@ key_press_event (GtkWidget *widget,
 							 "context_click_background");
 			}
 			break;
+		case GDK_v:
+			/* Eat Control + v to not enable type ahead */
+			if ((event->state & GDK_CONTROL_MASK) != 0) {
+				handled = TRUE;
+			}
+			break;
 		default:
 			break;
 		}
