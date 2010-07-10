@@ -686,7 +686,7 @@ background_settings_changed_callback (EelBackground *background, GdkDragAction a
 	color = eel_background_get_color (background);
 	image = eel_background_get_image_uri (background);
 
-	if (action != NAUTILUS_DND_ACTION_SET_AS_BACKGROUND) {
+	if (action != (GdkDragAction) NAUTILUS_DND_ACTION_SET_AS_BACKGROUND) {
 		nautilus_file_set_metadata (information_panel->details->file,
 					    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
 					    NULL,
