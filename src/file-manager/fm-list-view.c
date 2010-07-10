@@ -1018,6 +1018,12 @@ key_press_callback (GtkWidget *widget, GdkEventKey *event, gpointer callback_dat
 		}
 		handled = TRUE;
 		break;
+	case GDK_v:
+		/* Eat Control + v to not enable type ahead */
+		if ((event->state & GDK_CONTROL_MASK) != 0) {
+			handled = TRUE;
+		}
+		break;
 
 	default:
 		handled = FALSE;
