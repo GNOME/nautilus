@@ -70,12 +70,6 @@
 #include <math.h>
 #include <sys/time.h>
 
-/* FIXME bugzilla.gnome.org 41243: 
- * We should use inheritance instead of these special cases
- * for the desktop window.
- */
-#include "nautilus-desktop-window.h"
-
 #define MAX_HISTORY_ITEMS 50
 
 #define EXTRA_VIEW_WIDGETS_BACKGROUND "#a7c6e1"
