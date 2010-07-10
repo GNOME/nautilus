@@ -1229,7 +1229,7 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 			(GTK_WIDGET (container), action);
 	}
 	
-	if (real_action == NAUTILUS_DND_ACTION_SET_AS_BACKGROUND) {
+	if (real_action == (GdkDragAction) NAUTILUS_DND_ACTION_SET_AS_BACKGROUND) {
 		selected_item = container->details->dnd_info->drag_info.selection_list->data;
 		eel_background_receive_dropped_background_image
 			(eel_get_widget_background (GTK_WIDGET (container)),

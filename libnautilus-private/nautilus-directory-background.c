@@ -388,7 +388,8 @@ background_changed_callback (EelBackground *background,
                 g_signal_handlers_block_by_func (
                         file, G_CALLBACK (saved_settings_changed_callback), background);
 
-                if (action != NAUTILUS_DND_ACTION_SET_AS_FOLDER_BACKGROUND && action != NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND) {
+                if (action != (GdkDragAction) NAUTILUS_DND_ACTION_SET_AS_FOLDER_BACKGROUND &&
+                    action != (GdkDragAction) NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND) {
                         GdkDragAction default_drag_action;
 
                         default_drag_action = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (background), "default_drag_action"));
@@ -397,7 +398,7 @@ background_changed_callback (EelBackground *background,
                         action = default_drag_action;
                 }
         
-                if (action == NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND) {
+                if (action == (GdkDragAction) NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND) {
                         nautilus_file_set_metadata (file,
                                                     NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_COLOR,
                                                     NULL,
