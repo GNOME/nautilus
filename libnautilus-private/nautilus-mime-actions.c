@@ -93,6 +93,7 @@ typedef struct {
 #define RESPONSE_MARK_TRUSTED 1003
 
 #define SILENT_WINDOW_OPEN_LIMIT 5
+#define SILENT_OPEN_LIMIT 5
 
 /* This number controls a maximum character count for a URL that is
  * displayed as part of a dialog. It's fairly arbitrary -- big enough
@@ -1661,6 +1662,10 @@ activate_files (ActivateParameters *parameters)
 	ActivationAction action;
 	GdkScreen *screen;
 	LaunchLocation *location;
+	gint num_apps;
+	gint num_unhandled;
+	gint num_files;
+	gboolean open_files;
 	
 	screen = gtk_widget_get_screen (GTK_WIDGET (parameters->parent_window));
 
@@ -1827,20 +1832,53 @@ activate_files (ActivateParameters *parameters)
 			(open_in_app_uris, &unhandled_open_in_app_uris);
 	}
 
-	for (l = open_in_app_parameters; l != NULL; l = l->next) {
-		one_parameters = l->data;
+	num_apps = g_list_length (open_in_app_parameters);
+	num_unhandled = g_list_length (unhandled_open_in_app_uris);
+	num_files = g_list_length (open_in_app_uris);
+	open_files = TRUE;
 
-		nautilus_launch_application_by_uri (one_parameters->application,
-						    one_parameters->uris,
-						    parameters->parent_window);
-		application_launch_parameters_free (one_parameters);
+	if (!parameters->user_confirmation || num_files + num_unhandled > SILENT_OPEN_LIMIT) {
+		GtkDialog *dialog;
+		char *prompt;
+		char *detail;
+		int response;
+
+		pause_activation_timed_cancel (parameters);
+
+		prompt = _("Are you sure you want to open all files?");
+		detail = g_strdup_printf (ngettext ("This will open %d separate application.",
+						    "This will open %d separate applications.", num_apps), num_apps);
+		dialog = eel_show_yes_no_dialog (prompt, detail,
+						 GTK_STOCK_OK, GTK_STOCK_CANCEL,
+						 parameters->parent_window);
+		g_free (detail);
+
+		response = gtk_dialog_run (dialog);
+		gtk_widget_destroy (GTK_WIDGET (dialog));
+
+		unpause_activation_timed_cancel (parameters);
+
+		if (response != GTK_RESPONSE_YES) {
+			open_files = FALSE;
+		}
 	}
 
-	for (l = unhandled_open_in_app_uris; l != NULL; l = l->next) {
-		uri = l->data;
+	if (open_files) {
+		for (l = open_in_app_parameters; l != NULL; l = l->next) {
+			one_parameters = l->data;
 
-		/* this does not block */
-		application_unhandled_uri (parameters, uri);
+			nautilus_launch_application_by_uri (one_parameters->application,
+							    one_parameters->uris,
+							    parameters->parent_window);
+			application_launch_parameters_free (one_parameters);
+		}
+
+		for (l = unhandled_open_in_app_uris; l != NULL; l = l->next) {
+			uri = l->data;
+
+			/* this does not block */
+			application_unhandled_uri (parameters, uri);
+		}
 	}
 
 	window_info = NULL;
