@@ -1790,6 +1790,7 @@ nautilus_file_rename (NautilusFile *file,
 	NautilusFileOperation *op;
 	char *uri;
 	char *old_name;
+	char *new_file_name;
 	gboolean success, name_changed;
 	gboolean is_renameable_desktop_file;
 	GFile *location;
@@ -1902,21 +1903,29 @@ nautilus_file_rename (NautilusFile *file,
 		g_free (old_name);
 		g_free (uri);
 
-		if (success) {
-			if (name_changed) {
-				nautilus_file_invalidate_attributes (file,
-								     NAUTILUS_FILE_ATTRIBUTE_INFO |
-								     NAUTILUS_FILE_ATTRIBUTE_LINK_INFO);
-			}
-			(* callback) (file, NULL, NULL, callback_data);
-			return;
-		} else {
+		if (!success) {
 			error = g_error_new (G_IO_ERROR, G_IO_ERROR_FAILED,
 					     _("Unable to rename desktop file"));
 			(* callback) (file, NULL, error, callback_data);
 			g_error_free (error);
 			return;
 		}
+		new_file_name = g_strdup_printf ("%s.desktop", new_name);
+		new_file_name = g_strdelimit (new_file_name, "/", '-');
+
+		if (name_is (file, new_file_name)) {
+			if (name_changed) {
+				nautilus_file_invalidate_attributes (file,
+								     NAUTILUS_FILE_ATTRIBUTE_INFO |
+								     NAUTILUS_FILE_ATTRIBUTE_LINK_INFO);
+			}
+
+			(* callback) (file, NULL, NULL, callback_data);
+			g_free (new_file_name);
+			return;
+		}
+	} else {
+		new_file_name = g_strdup (new_name);
 	}
 
 	/* Set up a renaming operation. */
@@ -1927,11 +1936,12 @@ nautilus_file_rename (NautilusFile *file,
 
 	location = nautilus_file_get_location (file);
 	g_file_set_display_name_async (location,
-				       new_name,
+				       new_file_name,
 				       G_PRIORITY_DEFAULT,
 				       op->cancellable,
 				       rename_callback,
 				       op);
+	g_free (new_file_name);
 	g_object_unref (location);
 }
 
