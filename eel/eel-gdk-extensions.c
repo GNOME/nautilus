@@ -772,13 +772,6 @@ eel_self_check_gdk_extensions (void)
 	EEL_CHECK_INTEGER_RESULT (eel_interpolate_color (0.5, 0, 0xFFFFFF), 0x7F7F7F);
 	EEL_CHECK_INTEGER_RESULT (eel_interpolate_color (1.0, 0, 0xFFFFFF), 0xFFFFFF);
 
-	/* eel_fill_rectangle */
-	/* Make a GdkImage and fill it, maybe? */
-
-	/* eel_fill_rectangle_with_color */
-
-	/* eel_fill_rectangle_with_gradient */
-
 	/* eel_gradient_new */
 	EEL_CHECK_STRING_RESULT (eel_gradient_new ("", "", FALSE), "");
 	EEL_CHECK_STRING_RESULT (eel_gradient_new ("a", "b", FALSE), "a-b");
