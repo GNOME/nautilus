@@ -7,19 +7,19 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.ro\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=nautilus&component=Internationalization (i18n)\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautil"
+"us&component=Internationalization (i18n)\n"
 "POT-Creation-Date: 2010-07-11 20:04+0000\n"
-"PO-Revision-Date: 2010-02-13 16:53+0200\n"
-"Last-Translator: Adi Roiban <adi@roiban.ro>\n"
-"Language-Team: Romanian GNOME Team <gnomero-list@lists.sourceforge.net>\n"
+"PO-Revision-Date: 2010-07-15 01:06+0300\n"
+"Last-Translator: Lucian Adrian Grijincu <lucian.grijincu@gmail.com>\n"
+"Language-Team: Romanian Gnome Team <gnomero-list@lists.sourceforge.net>\n"
+"Language: ro\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ro\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2);;\n"
-"X-Generator: Virtaal 0.5.2\n"
+"X-Generator: Virtaal 0.6.1\n"
 
 #: ../cut-n-paste-code/libegg/eggdesktopfile.c:165
 #, c-format
@@ -1297,10 +1297,9 @@ msgstr ""
 "„informal”."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:126
-#, fuzzy
 #| msgid "Open this folder in a navigation window"
 msgid "The geometry string for a navigation window."
-msgstr "Deschide acest dosar într-o fereastră de navigare"
+msgstr "Șirul care descrie geometria unei ferestre de navigare."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:127
 msgid "The side pane view to show in newly opened windows."
@@ -1412,11 +1411,11 @@ msgstr "Dacă a fost definit un fundal implicit pentru panoul lateral."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:146
 msgid "Whether the navigation window should be maximized by default."
-msgstr ""
+msgstr "Dacă fereastra de navigare să fie implicit maximizată."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:147
 msgid "Whether the navigation window should be maximized."
-msgstr ""
+msgstr "Dacă fereastra de navigare să fie maximizată."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:148
 msgid "Whether to ask for confirmation when deleting files, or emptying Trash"
@@ -1747,14 +1746,13 @@ msgid "Date when file was moved to the Trash"
 msgstr "Data când fișierul a fost mutat la coșul de gunoi"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:177
-#, fuzzy
 #| msgid "Open Location"
 msgid "Original Location"
-msgstr "Deschide locația"
+msgstr "Locația originală"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:178
 msgid "Original location of file before moved to the Trash"
-msgstr ""
+msgstr "Locația originală a fișierului înainte de a fi mutat la coșul de gunoi"
 
 #: ../libnautilus-private/nautilus-customization-data.c:405
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:519
@@ -1860,29 +1858,27 @@ msgid "Sorry, unable to save custom emblem name."
 msgstr "Ne pare rău, nu s-a putut salva numele personalizat al emblemei."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:82
-#, fuzzy
 #| msgid "Open Folder"
 msgid "An older"
-msgstr "Deschide dosar"
+msgstr "Un mai vechi"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:85
 msgid "A newer"
-msgstr ""
+msgstr "Un mai nou"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:87
-#, fuzzy
 #| msgid "Others"
 msgid "Another"
-msgstr "Alții"
+msgstr "Un alt"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:159
-#, fuzzy, c-format
+#, c-format
 #| msgid "Search for \"%s\""
 msgid "Merge folder \"%s\"?"
-msgstr "Caută după „%s”"
+msgstr "Concatenați dosarul „%s”?"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:166
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "The source folder already exists in \"%B\".  Merging will ask for "
 #| "confirmation before replacing any files in the folder that conflict with "
@@ -1892,18 +1888,18 @@ msgid ""
 "Merging will ask for confirmation before replacing any files in the folder "
 "that conflict with the files being copied."
 msgstr ""
-"Dosarul sursă există deja în „%B”. Combinarea vă va întreba pentru "
-"confirmare înainte de înlocuirea oricărui fișier ce întră în conflict cu "
-"fișierele copiate."
+"%s dosar cu același nume există deja în „%s”.\n"
+"Veți fi întrebat pentru confirmare înainte de înlocuirea oricărui fișier ce "
+"intră în conflict cu fișierele copiate."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:174
-#, fuzzy, c-format
+#, c-format
 #| msgid "Search for \"%s\""
 msgid "Replace folder \"%s\"?"
-msgstr "Caută după „%s”"
+msgstr "Înlocuiți dosarul „%s”?"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:176
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "The folder already exists in \"%F\".  Replacing it will remove all files "
 #| "in the folder."
@@ -1911,16 +1907,17 @@ msgid ""
 "A folder with the same name already exists in \"%s\".\n"
 "Replacing it will remove all files in the folder."
 msgstr ""
-"Există deja dosarul în „%F”. Înlocuirea lui va șterge toare fișierele din el."
+"Un dosar cu același nume există deja în „%s”.\n"
+"Înlocuirea lui va șterge toate fișierele din el."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:182
-#, fuzzy, c-format
+#, c-format
 #| msgid "Search for \"%s\""
 msgid "Replace file \"%s\"?"
-msgstr "Caută după „%s”"
+msgstr "Înlocuiți fișierul „%s”?"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:188
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "The file already exists in \"%F\".  Replacing it will overwrite its "
 #| "content."
@@ -1928,11 +1925,12 @@ msgid ""
 "%s file with the same name already exists in \"%s\".\n"
 "Replacing it will overwrite its content."
 msgstr ""
-"Există deja fișierul în „%F”. Prin înlocuire conținutul va fi suprascris."
+"%s fișier cu același nume există deja în „%s”.\n"
+"Înlocuirea lui îi va suprascrie conținutul."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:252
 msgid "Original file"
-msgstr ""
+msgstr "Fișierul original"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:253
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:284
@@ -1948,36 +1946,31 @@ msgstr "Tip:"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:259
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:290
-#, fuzzy
 #| msgid "Date Modified"
 msgid "Last modified:"
-msgstr "Data modificării"
+msgstr "Data ultimei modificări:"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:283
-#, fuzzy
 #| msgid "_Replace"
 msgid "Replace with"
-msgstr "Î_nlocuiește"
+msgstr "Înlocuiește cu"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:312
-#, fuzzy
 #| msgid "_Merge"
 msgid "Merge"
-msgstr "Co_mbină"
+msgstr "Combină"
 
 #. Setup the expander for the rename action
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:505
-#, fuzzy
 #| msgid "Enter a new name for the displayed emblem:"
 msgid "_Select a new name for the destination"
-msgstr "Introduceți un nume pentru emblema afișată:"
+msgstr "Alegeți un nou nume pentru de_stinație"
 
 #. Setup the checkbox to apply the action to all files
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:531
-#, fuzzy
 #| msgid "Apply Permissions to Enclosed Files"
 msgid "Apply this action to all files"
-msgstr "Aplică permisiunile pentru fișierele conținute"
+msgstr "Aplică această acțiune tuturor fișierelor"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:542
 #: ../libnautilus-private/nautilus-file-operations.c:187
@@ -1985,20 +1978,18 @@ msgid "_Skip"
 msgstr "_Omite"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:547
-#, fuzzy
 #| msgid "Rename"
 msgid "Re_name"
-msgstr "Redenumește"
+msgstr "Rede_numește"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:553
-#, fuzzy
 #| msgid "_Replace"
 msgid "Replace"
-msgstr "Î_nlocuiește"
+msgstr "Înlocuiește"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:626
 msgid "File conflict"
-msgstr ""
+msgstr "Conflict de fișiere"
 
 #: ../libnautilus-private/nautilus-file-operations.c:188
 msgid "S_kip All"
@@ -3456,14 +3447,14 @@ msgid "Mark as _Trusted"
 msgstr "Marchează ca _De încredere"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1849
-#, fuzzy, c-format
+#, c-format
 #| msgid "This will open %d separate tab."
 #| msgid_plural "This will open %d separate tabs."
 msgid "This will open %d separate application."
 msgid_plural "This will open %d separate applications."
-msgstr[0] "Aceasta va deschide %d filă separată."
-msgstr[1] "Aceasta va deschide %d file separate."
-msgstr[2] "Aceasta va deschide %d de file separate."
+msgstr[0] "Aceasta va deschide %d aplicație separată."
+msgstr[1] "Aceasta va deschide %d aplicații separate."
+msgstr[2] "Aceasta va deschide %d de aplicații separate."
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1927
 #: ../libnautilus-private/nautilus-mime-actions.c:2201
@@ -3907,10 +3898,9 @@ msgid "_Pattern:"
 msgstr "_Model:"
 
 #: ../src/file-manager/fm-directory-view.c:1194
-#, fuzzy
 #| msgid "Emblems:"
 msgid "Examples: "
-msgstr "Embleme:"
+msgstr "Exemple: "
 
 #: ../src/file-manager/fm-directory-view.c:1315
 msgid "Save Search as"
@@ -4019,7 +4009,7 @@ msgstr "Unele fișiere nu vor fi afișate."
 
 #: ../src/file-manager/fm-directory-view.c:4382
 #: ../src/nautilus-information-panel.c:833
-#, fuzzy, c-format
+#, c-format
 #| msgid "Open with %s"
 msgid "Open With %s"
 msgstr "Deschide cu %s"
@@ -4311,7 +4301,6 @@ msgstr "Alegeți altă aplicație cu care să deschideți elementul selectat"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:7090
-#, fuzzy
 #| msgid "Open with Other _Application..."
 msgid "Open With Other _Application..."
 msgstr "Deschide cu altă _aplicație..."
@@ -4372,17 +4361,15 @@ msgstr ""
 
 #. name, stock id, label
 #: ../src/file-manager/fm-directory-view.c:7119
-#, fuzzy
 #| msgid "Copy to"
 msgid "Cop_y to"
-msgstr "Copiază în"
+msgstr "Copia_ză în"
 
 #. name, stock id, label
 #: ../src/file-manager/fm-directory-view.c:7120
-#, fuzzy
 #| msgid "Move to"
 msgid "M_ove to"
-msgstr "Mută în"
+msgstr "M_ută în"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7123
@@ -5016,7 +5003,7 @@ msgid "Move the open folder to the Trash"
 msgstr "Mută dosarul deschis la coșul de gunoi"
 
 #: ../src/file-manager/fm-directory-view.c:8553
-#, fuzzy, c-format
+#, c-format
 #| msgid "_Open with %s"
 msgid "_Open With %s"
 msgstr "_Deschide cu %s"
@@ -5266,17 +5253,17 @@ msgid "Keep icons sorted by emblems in rows"
 msgstr "Păstrează iconițele sortate după embleme"
 
 #: ../src/file-manager/fm-icon-view.c:161
-#, fuzzy
 #| msgid "by _Name"
 msgid "by T_rash Time"
-msgstr "după _nume"
+msgstr "după timpul t_rimiterii la coșul de gunoi"
 
 #: ../src/file-manager/fm-icon-view.c:162
 #: ../src/file-manager/fm-icon-view.c:1638
-#, fuzzy
 #| msgid "Keep icons sorted by name in rows"
 msgid "Keep icons sorted by trash time in rows"
-msgstr "Păstrează iconițele sortate după nume"
+msgstr ""
+"Păstrează iconițele sortate în rânduri după timpul trimiterii la coșul de "
+"gunoi"
 
 #. name, stock id, label
 #: ../src/file-manager/fm-icon-view.c:1578
@@ -5286,17 +5273,15 @@ msgstr "Aranjează _elementele"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1580
-#, fuzzy
 #| msgid "Stretc_h Icon..."
 msgid "Resize Icon..."
-msgstr "Întinde _iconița"
+msgstr "Redimensionează iconița..."
 
 #. tooltip
 #: ../src/file-manager/fm-icon-view.c:1581
-#, fuzzy
 #| msgid "Make the selected icon stretchable"
 msgid "Make the selected icon resizable"
-msgstr "Fă iconița selectată să poată fi întinsă"
+msgstr "Permite redimensionarea iconiței selectate"
 
 #. name, stock id
 #. label, accelerator
@@ -5314,7 +5299,7 @@ msgstr "Restaurează fiecare iconiță selectată la mărimea inițială"
 #. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1588
 msgid "_Organize Desktop by Name"
-msgstr ""
+msgstr "_Organizează desktopul după nume"
 
 #. tooltip
 #: ../src/file-manager/fm-icon-view.c:1589
@@ -5385,10 +5370,9 @@ msgid "By _Emblems"
 msgstr "după _embleme"
 
 #: ../src/file-manager/fm-icon-view.c:1637
-#, fuzzy
 #| msgid "By _Name"
 msgid "By T_rash Time"
-msgstr "după _nume"
+msgstr "După timpul t_rimiterii la coșul de gunoi"
 
 #: ../src/file-manager/fm-icon-view.c:1759
 msgid "Restore Icon's Original Si_ze"
@@ -5851,6 +5835,8 @@ msgid ""
 "Nautilus 2.32 deprecated this directory and tried migrating this "
 "configuration to ~/.config/nautilus"
 msgstr ""
+"Nautilus 2.32 consideră acest dosar învechit și a încercat să migreze "
+"configurațiile în ~/.config/nautilus"
 
 #: ../src/nautilus-application.c:1560 ../src/nautilus-places-sidebar.c:1822
 #: ../src/nautilus-places-sidebar.c:1851 ../src/nautilus-places-sidebar.c:1880
@@ -6295,7 +6281,6 @@ msgid "Never"
 msgstr "Niciodată"
 
 #: ../src/nautilus-file-management-properties.ui.h:71
-#, fuzzy
 #| msgid "Open each _folder its own window"
 msgid "Open each _folder in its own window"
 msgstr "Deschide fiecare dosar într-o _fereastră proprie"
@@ -6698,10 +6683,9 @@ msgstr "Șterge conținutul meniului „Navigare” și listelor Înainte/Înapo
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:813
-#, fuzzy
 #| msgid "Switch to other pane"
 msgid "S_witch to Other Pane"
-msgstr "Comută în celălalt panou"
+msgstr "Comu_tă în celălalt panou"
 
 #: ../src/nautilus-navigation-window-menus.c:814
 msgid "Move focus to the other pane in a split view window"
@@ -6710,10 +6694,9 @@ msgstr ""
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:816
-#, fuzzy
 #| msgid "Same location as other pane"
 msgid "Sa_me Location as Other Pane"
-msgstr "Aceeași locație ca în celălalt panou"
+msgstr "Aceeași locație ca în celălalt pa_nou"
 
 #: ../src/nautilus-navigation-window-menus.c:817
 msgid "Go to the same location as in the extra pane"
@@ -6776,10 +6759,9 @@ msgid "Move current tab to right"
 msgstr "Mută tabul curent în dreapta"
 
 #: ../src/nautilus-navigation-window-menus.c:837
-#, fuzzy
 #| msgid "Show search"
 msgid "S_how Search"
-msgstr "Afișează cautarea"
+msgstr "Afișează căuta_rea"
 
 #: ../src/nautilus-navigation-window-menus.c:838
 msgid "Show search"
@@ -6851,10 +6833,9 @@ msgstr "Caută documente și dosare după nume"
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-navigation-window-menus.c:870
-#, fuzzy
 #| msgid "Extra Pane"
 msgid "E_xtra Pane"
-msgstr "Panou adițional"
+msgstr "Panou a_dițional"
 
 #. tooltip
 #: ../src/nautilus-navigation-window-menus.c:871
@@ -7303,16 +7284,14 @@ msgstr ""
 "conținut"
 
 #: ../src/nautilus-trash-bar.c:204
-#, fuzzy
 #| msgid "Rename selected item"
 msgid "Restore Selected Items"
-msgstr "Redenumește elementul selectat"
+msgstr "Restaurează elementele selectate"
 
 #: ../src/nautilus-trash-bar.c:210
-#, fuzzy
 #| msgid "Restore each selected icon to its original size"
 msgid "Restore selected items to their original position"
-msgstr "Restaurează fiecare iconiță selectată la mărimea inițială"
+msgstr "Restaurează fiecare element selectat la poziția inițială"
 
 #: ../src/nautilus-window-bookmarks.c:81
 msgid ""
