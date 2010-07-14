@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: nautilus.HEAD.ro\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2010-07-11 19:56+0000\n"
+"POT-Creation-Date: 2010-07-11 20:04+0000\n"
 "PO-Revision-Date: 2010-02-13 16:53+0200\n"
 "Last-Translator: Adi Roiban <adi@roiban.ro>\n"
 "Language-Team: Romanian GNOME Team <gnomero-list@lists.sourceforge.net>\n"
@@ -845,9 +845,9 @@ msgid ""
 "If set to true, then Nautilus will automatically mount media such as user-"
 "visible hard disks and removable media on start-up and media insertion."
 msgstr ""
-"Dacă este stabilit la adevărat, atunci Nautilus va monta automat medii ca "
-"discuri fixe vizibile de utilizator și medii detașabile la pornire și la "
-"introducerea acestor medii."
+"Dacă este stabilit la adevărat, atunci Nautilus va monta automat medii de "
+"stocare ca discurile fixe vizibile utilizatorului și medii detașabile la "
+"pornire și la introducerea acestor medii."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
 msgid ""
@@ -857,9 +857,9 @@ msgid ""
 "configurable action will be taken instead."
 msgstr ""
 "Dacă opțiunea este activată, Nautilus va deschide o fereastră cu conținutul "
-"dosarului după montarea automată a unui dispozitiv.  Aceasta este acțiunea "
-"implicită pentru suporturile de date pentru care tipul x-content/* este "
-"necunoscut;  în cazul suporturilor de date al căror tip x-content este "
+"dosarului după montarea automată a unui mediu de stocare. Aceasta este "
+"acțiunea implicită pentru suporturile de date pentru care tipul x-content/* "
+"este necunoscut; în cazul suporturilor de date al căror tip x-content este "
 "recunoscut se execută acțiunea asociată, configurabilă de utilizator."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
@@ -876,7 +876,7 @@ msgstr ""
 "Dacă este activat, Nautilus va ieși atunci când toate ferestrele sunt "
 "închise. Aceasta este configurarea implicită. Dacă nu este activat, poate fi "
 "pornit fără nici o fereastră, în acest caz putând servi ca un serviciu de "
-"monitorizare a montării automate, sau sarcini  similare."
+"monitorizare a montării automate de medii de stocare sau sarcini similare."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
 msgid ""
@@ -1049,8 +1049,8 @@ msgid ""
 msgstr ""
 "Lista tipurilor x-content/* pentru care utilizatorul a ales „Nu fă nimic” în "
 "cappletul de preferințe. Nicio solicitare nu va fi afișată și nicio "
-"aplicație potrivită nu va fi rulată la introducerea unor medii de aceste "
-"tipuri."
+"aplicație potrivită nu va fi rulată la introducerea unor medii de stocare de "
+"aceste tipuri."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
 msgid ""
@@ -1060,7 +1060,7 @@ msgid ""
 msgstr ""
 "Lista tipurilor x-content/* pentru care utilizatorul a ales ”Deschide "
 "dosarul” în cappletul de preferințe. O fereastră dosar va fi deschisă la "
-"introducerea unor medii de aceste tipuri."
+"introducerea unor medii de stocare de aceste tipuri."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
 msgid ""
@@ -1070,8 +1070,8 @@ msgid ""
 msgstr ""
 "Lista tipurilor x-content/* pentru care utilizatorul a ales să ruleze o "
 "aplicație în cappletul de preferințe. Aplicația preferată pentru tipul "
-"fișierului respectiv va fi rulată la introducerea mediului care se "
-"potrivește acestor tipuri."
+"fișierului respectiv va fi rulată la introducerea mediului de stocare care "
+"se potrivește acestor tipuri."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
 msgid "List of x-content/* types set to \"Do Nothing\""
@@ -1133,7 +1133,8 @@ msgstr "Nume alternativ pentru iconița Servere"
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:97
 msgid "Never prompt or autorun/autostart programs when media are inserted"
 msgstr ""
-"Nu întreba și nu rula automat programe niciodată când sunt introduse medii"
+"Nu întreba și nu rula automat programe niciodată când sunt introduse medii "
+"de stocare"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:98
 msgid "Only show folders in the tree side pane"
@@ -1335,7 +1336,7 @@ msgid ""
 "desktop."
 msgstr ""
 "Acest nume poate fi definit dacă doriți un nume personalizat pentru iconița "
-"Gunoi de pe de desktop."
+"„Coș de gunoi” de pe de desktop."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:132
 msgid "Trash icon visible on desktop"
@@ -1425,11 +1426,12 @@ msgstr ""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:149
 msgid "Whether to automatically mount media"
-msgstr "Dacă mediile să fie montate automat"
+msgstr "Dacă mediile de stocare să fie montate automat"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:150
 msgid "Whether to automatically open a folder for automounted media"
-msgstr "Dacă să fie deschis automat dosarul pentru mediile montate automat"
+msgstr ""
+"Dacă să fie deschis automat dosarul pentru mediile de stocare montate automat"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:151
 msgid "Whether to enable immediate deletion"
@@ -1561,7 +1563,7 @@ msgid ""
 "for other media of type \"%s\"."
 msgstr ""
 "Alegeți cum să fie deschis „%s” și dacă această acțiune să fie efectuată în "
-"viitor pentru medii de tipul „%s”."
+"viitor pentru medii de stocare de tipul „%s”."
 
 #: ../libnautilus-private/nautilus-autorun.c:1002
 msgid "_Always perform this action"
@@ -1638,7 +1640,7 @@ msgstr "_Folosește valorile implicite"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:273
-#: ../src/file-manager/fm-list-view.c:1557
+#: ../src/file-manager/fm-list-view.c:1577
 msgid "Name"
 msgstr "Nume"
 
@@ -1737,16 +1739,12 @@ msgid "Location"
 msgstr "Locație"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:170
-#, fuzzy
-#| msgid "Trash"
 msgid "Trashed On"
-msgstr "Coș de gunoi"
+msgstr "Trimis la coșul de gunoi în data de"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:171
-#, fuzzy
-#| msgid "The file \"%B\" cannot be moved to the trash."
 msgid "Date when file was moved to the Trash"
-msgstr "Fișierul „%B” nu poate fi mutat la gunoi."
+msgstr "Data când fișierul a fost mutat la coșul de gunoi"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:177
 #, fuzzy
@@ -1773,7 +1771,7 @@ msgstr "pe desktop"
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:101
 #, c-format
 msgid "You cannot move the volume \"%s\" to the trash."
-msgstr "Nu puteți muta volumul „%s” la gunoi."
+msgstr "Nu puteți muta volumul „%s” la coșul de gunoi."
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:111
 msgid ""
@@ -2211,7 +2209,7 @@ msgstr " (%'d"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1299
 msgid "Are you sure you want to permanently delete \"%B\" from the trash?"
-msgstr "Doriți să ștergeți ireversibil „%B” de la gunoi?"
+msgstr "Doriți să ștergeți ireversibil „%B” din coșul de gunoi?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1302
 #, c-format
@@ -2221,10 +2219,12 @@ msgid ""
 msgid_plural ""
 "Are you sure you want to permanently delete the %'d selected items from the "
 "trash?"
-msgstr[0] "Doriți să ștergeți ireversibil %'d element selectat de la gunoi?"
-msgstr[1] "Doriți să ștergeți ireversibil %'d elemente selectate de la gunoi?"
+msgstr[0] ""
+"Doriți să ștergeți ireversibil %'d element selectat din coșul de gunoi?"
+msgstr[1] ""
+"Doriți să ștergeți ireversibil %'d elemente selectate din coșul de gunoi?"
 msgstr[2] ""
-"Doriți să ștergeți ireversibil %'d de elemente selectate de la gunoi?"
+"Doriți să ștergeți ireversibil %'d de elemente selectate din coșul de gunoi?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1312
 #: ../libnautilus-private/nautilus-file-operations.c:1380
@@ -2240,15 +2240,16 @@ msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
 msgstr ""
-"Dacă alegeți să goliți gunoiul, toate elementele din el vor fi pierdute "
-"permanent. Nu uitați faptul ca puteți să ștergeți aceste elemente și separat."
+"Dacă alegeți să goliți coșul de gunoi, toate elementele din el vor fi "
+"pierdute permanent. Nu uitați faptul ca puteți să ștergeți aceste elemente "
+"și separat."
 
 #. Empty Trash menu item
 #: ../libnautilus-private/nautilus-file-operations.c:1341
 #: ../libnautilus-private/nautilus-file-operations.c:2193
 #: ../src/nautilus-places-sidebar.c:2317 ../src/nautilus-trash-bar.c:190
 msgid "Empty _Trash"
-msgstr "Goleș_te Coșul de gunoi"
+msgstr "Goleș_te coșul de gunoi"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1368
 msgid "Are you sure you want to permanently delete \"%B\"?"
@@ -2339,27 +2340,28 @@ msgstr "S-a produs o eroare la ștergerea %B."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1732
 msgid "Moving files to trash"
-msgstr "Se mută fișiere la gunoi"
+msgstr "Se mută fișiere la coșul de gunoi"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1734
 #, c-format
 msgid "%'d file left to trash"
 msgid_plural "%'d files left to trash"
-msgstr[0] "%'d fișier rămas la gunoi"
-msgstr[1] "%'d fișiere rămase la gunoi"
-msgstr[2] "%'d de fișiere rămase la gunoi"
+msgstr[0] "%'d fișier rămas de trimis la coșul de gunoi"
+msgstr[1] "%'d fișiere rămase de trimis la coșul de gunoi"
+msgstr[2] "%'d de fișiere rămase de trimis la coșul de gunoi"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1784
 msgid "Cannot move file to trash, do you want to delete immediately?"
-msgstr "Fișierul nu poate fi mutat la gunoi. Doriți să-l ștergeți imediat?"
+msgstr ""
+"Fișierul nu poate fi mutat la coșul de gunoi. Doriți să-l ștergeți imediat?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1785
 msgid "The file \"%B\" cannot be moved to the trash."
-msgstr "Fișierul „%B” nu poate fi mutat la gunoi."
+msgstr "Fișierul „%B” nu poate fi mutat la coșul de gunoi."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1960
 msgid "Trashing Files"
-msgstr "Se mută fișiere la gunoi"
+msgstr "Se mută fișiere la coșul de gunoi"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1962
 msgid "Deleting Files"
@@ -2387,7 +2389,7 @@ msgstr ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:2191
 msgid "Do _not Empty Trash"
-msgstr "_Nu goli gunoiul"
+msgstr "_Nu goli coșul de gunoi"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2307
 #, c-format
@@ -2422,9 +2424,9 @@ msgstr[2] "Se pregătesc pentru ștergere %'d de fișiere (%S)"
 #, c-format
 msgid "Preparing to trash %'d file"
 msgid_plural "Preparing to trash %'d files"
-msgstr[0] "Se pregătește pentru mutare la gunoi %'d fișier"
-msgstr[1] "Se pregătesc pentru mutare la gunoi %'d fișiere"
-msgstr[2] "Se pregătesc pentru mutare la gunoi %'d de fișiere"
+msgstr[0] "Se pregătește pentru mutare la coșul de gunoi %'d fișier"
+msgstr[1] "Se pregătesc pentru mutare la coșul de gunoi %'d fișiere"
+msgstr[2] "Se pregătesc pentru mutare la coșul de gunoi %'d de fișiere"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2434
 #: ../libnautilus-private/nautilus-file-operations.c:3329
@@ -2441,7 +2443,7 @@ msgstr "Eroare la mutare."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2440
 msgid "Error while moving files to trash."
-msgstr "Eroare la mutarea fișierelor la gunoi."
+msgstr "Eroare la mutarea fișierelor la coșul de gunoi."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2494
 msgid ""
@@ -2754,7 +2756,7 @@ msgstr "S-a produs o eroare la crearea dosarului în %F."
 
 #: ../libnautilus-private/nautilus-file-operations.c:6179
 msgid "Emptying Trash"
-msgstr "Se golește gunoiul"
+msgstr "Se golește coșul de gunoi"
 
 #: ../libnautilus-private/nautilus-file-operations.c:6226
 #: ../libnautilus-private/nautilus-file-operations.c:6267
@@ -2770,7 +2772,7 @@ msgstr "Nu s-a putut determina locația originală pentru „%s” "
 
 #: ../libnautilus-private/nautilus-file-utilities.c:1264
 msgid "The item cannot be restored from trash"
-msgstr "Elementul nu a putut fi restaurat de la gunoi"
+msgstr "Elementul nu a putut fi restaurat din coșul de gunoi"
 
 #: ../libnautilus-private/nautilus-file.c:1214
 #: ../libnautilus-private/nautilus-vfs-file.c:390
@@ -3206,8 +3208,8 @@ msgstr "Mod afișare compact"
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:144
-#: ../src/file-manager/fm-list-view.c:1611
-#: ../src/file-manager/fm-list-view.c:3134
+#: ../src/file-manager/fm-list-view.c:1631
+#: ../src/file-manager/fm-list-view.c:3154
 #: ../src/nautilus-file-management-properties.ui.h:67
 msgid "List View"
 msgstr "Vizualizare listă"
@@ -3320,7 +3322,7 @@ msgstr "Legătura „%s” nu este validă."
 #: ../libnautilus-private/nautilus-mime-actions.c:700
 #, c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
-msgstr "Legătura „%s” nu este validă. Doriți să o mutați la Gunoi?"
+msgstr "Legătura „%s” nu este validă. Doriți să o mutați la coșul de gunoi?"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:706
 msgid "This link cannot be used, because it has no target."
@@ -3342,7 +3344,7 @@ msgstr ""
 #: ../src/file-manager/fm-directory-view.c:8697
 #: ../src/file-manager/fm-tree-view.c:1242
 msgid "Mo_ve to Trash"
-msgstr "Mută la _Gunoi"
+msgstr "Mută la coșul de _gunoi"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:778
 #, c-format
@@ -3826,7 +3828,7 @@ msgstr "Fundal"
 #: ../src/file-manager/fm-directory-view.c:7098
 #: ../src/file-manager/fm-directory-view.c:8763
 msgid "E_mpty Trash"
-msgstr "_Golește gunoiul"
+msgstr "_Golește coșul de gunoi"
 
 #. label, accelerator
 #. name, stock id
@@ -3856,14 +3858,14 @@ msgstr "Arată o fereastră care vă lasă să definiți fundalul desktopului"
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:736
 msgid "Empty Trash"
-msgstr "Golește gunoiul"
+msgstr "Golește coșul de gunoi"
 
 #. tooltip
 #: ../src/file-manager/fm-desktop-icon-view.c:738
 #: ../src/file-manager/fm-directory-view.c:7099
 #: ../src/nautilus-trash-bar.c:197
 msgid "Delete all items in the Trash"
-msgstr "Șterge toate elementele din gunoi"
+msgstr "Șterge toate elementele din coșul de gunoi"
 
 #: ../src/file-manager/fm-desktop-icon-view.c:829
 msgid "The desktop view encountered an error."
@@ -4451,7 +4453,7 @@ msgstr "Redenumește elementul selectat"
 #: ../src/file-manager/fm-directory-view.c:7151
 #: ../src/file-manager/fm-directory-view.c:8698
 msgid "Move each selected item to the Trash"
-msgstr "Mută elementele selectate la Gunoi"
+msgstr "Mută elementele selectate la coșul de gunoi"
 
 #. name, stock id
 #. label, accelerator
@@ -4465,7 +4467,7 @@ msgstr "Ș_terge"
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7155
 msgid "Delete each selected item, without moving to the Trash"
-msgstr "Șterge elementele selectate, fără a le muta la Gunoi"
+msgstr "Șterge elementele selectate, fără a le muta la coșul de gunoi"
 
 #. name, stock id
 #. label, accelerator
@@ -4589,14 +4591,14 @@ msgstr "Oprește volumul selectat"
 #: ../src/file-manager/fm-directory-view.c:7309
 #: ../src/nautilus-places-sidebar.c:2287
 msgid "_Detect Media"
-msgstr "_Detectează mediu"
+msgstr "_Detectează mediul de stocare"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7201
 #: ../src/file-manager/fm-directory-view.c:7229
 #: ../src/file-manager/fm-directory-view.c:7310
 msgid "Detect media in the selected drive"
-msgstr "Detectează mediul din dispozitivul selectat"
+msgstr "Detectează mediul de stocare din dispozitivul selectat"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7205
@@ -4697,12 +4699,12 @@ msgstr ""
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7274
 msgid "Move this folder to the Trash"
-msgstr "Mută acest dosar la Gunoi"
+msgstr "Mută acest dosar la coșul de gunoi"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7278
 msgid "Delete this folder, without moving to the Trash"
-msgstr "Șterge acest dosar, fără a-l muta la Gunoi"
+msgstr "Șterge acest dosar, fără a-l muta la coșul de gunoi"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7286
@@ -4798,55 +4800,55 @@ msgstr "_Scripturi"
 #: ../src/file-manager/fm-directory-view.c:7826
 #, c-format
 msgid "Move the open folder out of the trash to \"%s\""
-msgstr "Mută dosarul deschis afară din gunoi la „%s”"
+msgstr "Mută dosarul deschis afară din coșul de gunoi la „%s”"
 
 #: ../src/file-manager/fm-directory-view.c:7829
 #, c-format
 msgid "Move the selected folder out of the trash to \"%s\""
 msgid_plural "Move the selected folders out of the trash to \"%s\""
-msgstr[0] "Mută dosarul selectat afară din gunoi la „%s”"
-msgstr[1] "Mută dosarele selectate afară din gunoi la „%s”"
-msgstr[2] "Mută dosarele selectate afară din gunoi la „%s”"
+msgstr[0] "Mută dosarul selectat afară din coșul de gunoi la „%s”"
+msgstr[1] "Mută dosarele selectate afară din coșul de gunoi la „%s”"
+msgstr[2] "Mută dosarele selectate afară din coșul de gunoi la „%s”"
 
 #: ../src/file-manager/fm-directory-view.c:7833
 #, c-format
 msgid "Move the selected folder out of the trash"
 msgid_plural "Move the selected folders out of the trash"
-msgstr[0] "Mută dosarul selectat afară din gunoi"
-msgstr[1] "Mută dosarele selectate afară din gunoi"
-msgstr[2] "Mută dosarele selectate afară din gunoi"
+msgstr[0] "Mută dosarul selectat afară din coșul de gunoi"
+msgstr[1] "Mută dosarele selectate afară din coșul de gunoi"
+msgstr[2] "Mută dosarele selectate afară din coșul de gunoi"
 
 #: ../src/file-manager/fm-directory-view.c:7839
 #, c-format
 msgid "Move the selected file out of the trash to \"%s\""
 msgid_plural "Move the selected files out of the trash to \"%s\""
-msgstr[0] "Mută fișierul selectat afară din gunoi la „%s”"
-msgstr[1] "Mută fișierele selectate afară din gunoi la „%s”"
-msgstr[2] "Mută fișierele selectate afară din gunoi la „%s”"
+msgstr[0] "Mută fișierul selectat afară din coșul de gunoi la „%s”"
+msgstr[1] "Mută fișierele selectate afară din coșul de gunoi la „%s”"
+msgstr[2] "Mută fișierele selectate afară din coșul de gunoi la „%s”"
 
 #: ../src/file-manager/fm-directory-view.c:7843
 #, c-format
 msgid "Move the selected file out of the trash"
 msgid_plural "Move the selected files out of the trash"
-msgstr[0] "Mută fișierul selectat afară din gunoi"
-msgstr[1] "Mută fișierele selectate afară din gunoi"
-msgstr[2] "Mută fișierele selectate afară din gunoi"
+msgstr[0] "Mută fișierul selectat afară din coșul de gunoi"
+msgstr[1] "Mută fișierele selectate afară din coșul de gunoi"
+msgstr[2] "Mută fișierele selectate afară din coșul de gunoi"
 
 #: ../src/file-manager/fm-directory-view.c:7849
 #, c-format
 msgid "Move the selected item out of the trash to \"%s\""
 msgid_plural "Move the selected items out of the trash to \"%s\""
-msgstr[0] "Mută elementul selectat afară din gunoi la „%s”"
-msgstr[1] "Mută elementele selectate afară din gunoi la „%s”"
-msgstr[2] "Mută elementele selectate afară din gunoi la „%s”"
+msgstr[0] "Mută elementul selectat afară din coșul de gunoi la „%s”"
+msgstr[1] "Mută elementele selectate afară din coșul de gunoi la „%s”"
+msgstr[2] "Mută elementele selectate afară din coșul de gunoi la „%s”"
 
 #: ../src/file-manager/fm-directory-view.c:7853
 #, c-format
 msgid "Move the selected item out of the trash"
 msgid_plural "Move the selected items out of the trash"
-msgstr[0] "Mută elementul selectat afară din gunoi"
-msgstr[1] "Mută elementele selectate afară din gunoi"
-msgstr[2] "Mută elementele selectate afară din gunoi"
+msgstr[0] "Mută elementul selectat afară din coșul de gunoi"
+msgstr[1] "Mută elementele selectate afară din coșul de gunoi"
+msgstr[2] "Mută elementele selectate afară din coșul de gunoi"
 
 #: ../src/file-manager/fm-directory-view.c:7979
 #: ../src/file-manager/fm-directory-view.c:7983
@@ -5011,7 +5013,7 @@ msgstr "Șterge permanent dosarul deschis"
 
 #: ../src/file-manager/fm-directory-view.c:8374
 msgid "Move the open folder to the Trash"
-msgstr "Mută dosarul deschis la gunoi"
+msgstr "Mută dosarul deschis la coșul de gunoi"
 
 #: ../src/file-manager/fm-directory-view.c:8553
 #, fuzzy, c-format
@@ -5441,40 +5443,40 @@ msgstr "(Gol)"
 msgid "Loading..."
 msgstr "Se încarcă..."
 
-#: ../src/file-manager/fm-list-view.c:2270
+#: ../src/file-manager/fm-list-view.c:2290
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s coloane vizibile"
 
-#: ../src/file-manager/fm-list-view.c:2289
+#: ../src/file-manager/fm-list-view.c:2309
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Alegeți ordinea în care apare informația în acest dosar:"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:2343
+#: ../src/file-manager/fm-list-view.c:2363
 msgid "Visible _Columns..."
 msgstr "_Coloane vizibile..."
 
 #. tooltip
-#: ../src/file-manager/fm-list-view.c:2344
+#: ../src/file-manager/fm-list-view.c:2364
 msgid "Select the columns visible in this folder"
 msgstr "Selectați coloanele vizibile în acest dosar"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-list-view.c:3136
+#: ../src/file-manager/fm-list-view.c:3156
 msgid "_List"
 msgstr "_Listă"
 
-#: ../src/file-manager/fm-list-view.c:3137
+#: ../src/file-manager/fm-list-view.c:3157
 msgid "The list view encountered an error."
 msgstr "Vizualizarea ca listă a avut o eroare la pornire."
 
-#: ../src/file-manager/fm-list-view.c:3138
+#: ../src/file-manager/fm-list-view.c:3158
 msgid "The list view encountered an error while starting up."
 msgstr "Vizualizarea ca listă a avut o eroare la pornire."
 
-#: ../src/file-manager/fm-list-view.c:3139
+#: ../src/file-manager/fm-list-view.c:3159
 msgid "Display this location with the list view."
 msgstr "Afișează această locație cu vizualizare ca listă."
 
@@ -6174,11 +6176,11 @@ msgstr "<b>Valori implicite vizualizare listă</b>"
 
 #: ../src/nautilus-file-management-properties.ui.h:35
 msgid "<b>Media Handling</b>"
-msgstr "<b>Gestionare media</b>"
+msgstr "<b>Gestionare medii de stocare</b>"
 
 #: ../src/nautilus-file-management-properties.ui.h:36
 msgid "<b>Other Media</b>"
-msgstr "<b>Alte media</b>"
+msgstr "<b>Alte medii de stocare</b>"
 
 #: ../src/nautilus-file-management-properties.ui.h:37
 msgid "<b>Other Previewable Files</b>"
@@ -6194,7 +6196,7 @@ msgstr "<b>Fișiere text</b>"
 
 #: ../src/nautilus-file-management-properties.ui.h:40
 msgid "<b>Trash</b>"
-msgstr "<b>Gunoi</b>"
+msgstr "<b>Coș de gunoi</b>"
 
 #: ../src/nautilus-file-management-properties.ui.h:41
 msgid "<b>Tree View Defaults</b>"
@@ -6214,11 +6216,11 @@ msgstr "Întotdeauna"
 
 #: ../src/nautilus-file-management-properties.ui.h:45
 msgid "Ask before _emptying the Trash or deleting files"
-msgstr "Într_eabă înainte de a goli gunoiului sau de a șterge fișiere"
+msgstr "Într_eabă înainte de a goli coșul de gunoi sau de a șterge fișiere"
 
 #: ../src/nautilus-file-management-properties.ui.h:46
 msgid "B_rowse media when inserted"
-msgstr "_Răsfoiește mediu la introducere"
+msgstr "_Răsfoiește mediul de stocare la introducere"
 
 #: ../src/nautilus-file-management-properties.ui.h:47
 msgid "Behavior"
@@ -6269,11 +6271,12 @@ msgstr "Preferințe administrare fișiere"
 
 #: ../src/nautilus-file-management-properties.ui.h:63
 msgid "I_nclude a Delete command that bypasses Trash"
-msgstr "I_nclude o comandă Șterge care ignoră Gunoiul"
+msgstr "I_nclude o comandă Șterge care ignoră Coșul de gunoi"
 
 #: ../src/nautilus-file-management-properties.ui.h:65
 msgid "Less common media formats can be configured here"
-msgstr "Formatele media mai puțin populare pot fi configurate aici"
+msgstr ""
+"Formatele de medii de stocare mai puțin populare pot fi configurate aici"
 
 #: ../src/nautilus-file-management-properties.ui.h:66
 msgid "List Columns"
@@ -6285,7 +6288,7 @@ msgstr "Doar fișiere locale"
 
 #: ../src/nautilus-file-management-properties.ui.h:69
 msgid "Media"
-msgstr "Media"
+msgstr "Medii de stocare"
 
 #: ../src/nautilus-file-management-properties.ui.h:70
 msgid "Never"
@@ -6359,7 +6362,7 @@ msgstr "Player _muzică:"
 
 #: ../src/nautilus-file-management-properties.ui.h:88
 msgid "_Never prompt or start programs on media insertion"
-msgstr "_Nu solicita sau porni aplicații la introducerea mediilor"
+msgstr "_Nu solicita sau porni aplicații la introducerea mediilor de stocare"
 
 #: ../src/nautilus-file-management-properties.ui.h:89
 msgid "_Only for files smaller than:"
@@ -6938,7 +6941,7 @@ msgstr "Montează și deschide %s"
 
 #: ../src/nautilus-places-sidebar.c:548
 msgid "Open the trash"
-msgstr "Deschide dosarul cu gunoi"
+msgstr "Deschide coșul de gunoi"
 
 #. start() for type G_DRIVE_START_STOP_TYPE_SHUTDOWN is normally not used
 #: ../src/nautilus-places-sidebar.c:1450
@@ -6969,7 +6972,7 @@ msgstr "Nu s-a putut porni %s"
 #: ../src/nautilus-places-sidebar.c:2023
 #, c-format
 msgid "Unable to poll %s for media changes"
-msgstr "Nu s-a putut interoga %s pentru modificări"
+msgstr "Nu s-a putut interoga %s pentru modificări ale mediului de stocare"
 
 #: ../src/nautilus-places-sidebar.c:2131
 #, c-format
@@ -7654,12 +7657,12 @@ msgstr "Deschide dosarul cu șabloanele persoanale"
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:870
 msgid "_Trash"
-msgstr "_Gunoi"
+msgstr "Coșul de _gunoi"
 
 #. tooltip
 #: ../src/nautilus-window-menus.c:871
 msgid "Open your personal trash folder"
-msgstr "Deschide dosarul cu coșul de gunoi"
+msgstr "Deschide coșul de gunoi"
 
 #. name, stock id
 #. label, accelerator
@@ -7710,7 +7713,7 @@ msgstr "Aceste fișiere sunt pe CD cu poze."
 
 #: ../src/nautilus-x-content-bar.c:82
 msgid "The media contains digital photos."
-msgstr "Acest mediu conține fotografii digitale."
+msgstr "Acest mediu de stocare conține fotografii digitale."
 
 #: ../src/nautilus-x-content-bar.c:84
 msgid "These files are on a digital audio player."
@@ -7718,13 +7721,13 @@ msgstr "Aceste fișiere sunt pe un player audio digital."
 
 #: ../src/nautilus-x-content-bar.c:86
 msgid "The media contains software."
-msgstr "Acest mediu conține fotografii."
+msgstr "Acest mediu de stocare conține fotografii."
 
 #. fallback to generic greeting
 #: ../src/nautilus-x-content-bar.c:89
 #, c-format
 msgid "The media has been detected as \"%s\"."
-msgstr "Mediul a fost detectat ca „%s”."
+msgstr "Mediul de stocare a fost detectat ca „%s”."
 
 #: ../src/nautilus-zoom-control.c:79
 msgid "Zoom In"
@@ -7745,6 +7748,12 @@ msgstr "Scalare"
 #: ../src/nautilus-zoom-control.c:896
 msgid "Set the zoom level of the current view"
 msgstr "Definește nivelul de scalare al vizualizării curente"
+
+#~ msgid "Could not use system package installer"
+#~ msgstr "Nu s-a putut folosi instalatorul de pachete al sistemului"
+
+#~ msgid "Clean _Up by Name"
+#~ msgstr "Aranjează d_upă nume"
 
 #~ msgid ""
 #~ "If set to true, newly opened windows will have the extra pane visible."
@@ -7774,12 +7783,6 @@ msgstr "Definește nivelul de scalare al vizualizării curente"
 #~ msgstr ""
 #~ "Dosarul sursă există deja în „%B”. Combinarea va cere confirmare înainte "
 #~ "de înlocuirea fișierelor ce întră în conflict."
-
-#~ msgid "Could not use system package installer"
-#~ msgstr "Nu s-a putut folosi instalatorul de pachete al sistemului"
-
-#~ msgid "Clean _Up by Name"
-#~ msgstr "Aranjează d_upă nume"
 
 #~ msgid "throbber"
 #~ msgstr "throbber"
