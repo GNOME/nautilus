@@ -31,7 +31,6 @@ nautilus_recent_get_manager (void)
 
 	if (manager == NULL) {
 		manager = gtk_recent_manager_get_default ();
-		gtk_recent_manager_set_limit (manager, -1);
 	}
 
 	return manager;
