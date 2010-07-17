@@ -618,7 +618,7 @@ do_upgrades_once (NautilusApplication *application,
 	if (g_file_test (nautilus_dir, G_FILE_TEST_IS_DIR)) {
 		/* test if we already attempted to migrate first */
 		updated = g_build_filename (nautilus_dir, "DEPRECATED-DIRECTORY", NULL);
-		message = _("Nautilus 2.32 deprecated this directory and tried migrating "
+		message = _("Nautilus 3.0 deprecated this directory and tried migrating "
 			    "this configuration to ~/.config/nautilus");
 		if (!g_file_test (updated, G_FILE_TEST_EXISTS)) {
 			/* rename() works fine if the destination directory is
