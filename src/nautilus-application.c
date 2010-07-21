@@ -156,8 +156,8 @@ automount_all_volumes (NautilusApplication *application)
 	GList *volumes, *l;
 	GMount *mount;
 	GVolume *volume;
-		
-	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT)) {
+
+	if (g_settings_get_boolean (nautilus_media_preferences, NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT)) {
 		/* automount all mountable volumes at start-up */
 		volumes = g_volume_monitor_get_volumes (application->volume_monitor);
 		for (l = volumes; l != NULL; l = l->next) {
@@ -1533,7 +1533,7 @@ volume_added_callback (GVolumeMonitor *monitor,
 		       GVolume *volume,
 		       NautilusApplication *application)
 {
-	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT) &&
+	if (g_settings_get_boolean (nautilus_media_preferences, NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT) &&
 	    g_volume_should_automount (volume) &&
 	    g_volume_can_mount (volume)) {
 		nautilus_file_operations_mount_volume (NULL, volume, TRUE);

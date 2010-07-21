@@ -82,9 +82,9 @@ nautilus_autorun_get_preferences (const char *x_content_type,
 	*pref_start_app = FALSE;
 	*pref_ignore = FALSE;
 	*pref_open_folder = FALSE;
-	x_content_start_app = eel_preferences_get_string_array (NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_START_APP);
-	x_content_ignore = eel_preferences_get_string_array (NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_IGNORE);
-	x_content_open_folder = eel_preferences_get_string_array (NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_OPEN_FOLDER);
+	x_content_start_app = g_settings_get_strv (nautilus_media_preferences, NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_START_APP);
+	x_content_ignore = g_settings_get_strv (nautilus_media_preferences, NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_IGNORE);
+	x_content_open_folder = g_settings_get_strv (nautilus_media_preferences, NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_OPEN_FOLDER);
 	if (x_content_start_app != NULL) {
 		*pref_start_app = eel_g_strv_find (x_content_start_app, x_content_type) != -1;
 	}
@@ -148,27 +148,27 @@ nautilus_autorun_set_preferences (const char *x_content_type,
 
 	g_assert (x_content_type != NULL);
 
-	x_content_start_app = eel_preferences_get_string_array (NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_START_APP);
-	x_content_ignore = eel_preferences_get_string_array (NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_IGNORE);
-	x_content_open_folder = eel_preferences_get_string_array (NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_OPEN_FOLDER);
+	x_content_start_app = g_settings_get_strv (nautilus_media_preferences, NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_START_APP);
+	x_content_ignore = g_settings_get_strv (nautilus_media_preferences, NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_IGNORE);
+	x_content_open_folder = g_settings_get_strv (nautilus_media_preferences, NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_OPEN_FOLDER);
 
 	remove_elem_from_str_array (x_content_start_app, x_content_type);
 	if (pref_start_app) {
 		x_content_start_app = add_elem_to_str_array (x_content_start_app, x_content_type);
 	}
-	eel_preferences_set_string_array (NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_START_APP, x_content_start_app);
+	g_settings_set_strv (nautilus_media_preferences, NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_START_APP, (const gchar * const*) x_content_start_app);
 
 	remove_elem_from_str_array (x_content_ignore, x_content_type);
 	if (pref_ignore) {
 		x_content_ignore = add_elem_to_str_array (x_content_ignore, x_content_type);
 	}
-	eel_preferences_set_string_array (NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_IGNORE, x_content_ignore);
+	g_settings_set_strv (nautilus_media_preferences, NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_IGNORE, (const gchar * const*) x_content_ignore);
 
 	remove_elem_from_str_array (x_content_open_folder, x_content_type);
 	if (pref_open_folder) {
 		x_content_open_folder = add_elem_to_str_array (x_content_open_folder, x_content_type);
 	}
-	eel_preferences_set_string_array (NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_OPEN_FOLDER, x_content_open_folder);
+	g_settings_set_strv (nautilus_media_preferences, NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_OPEN_FOLDER, (const gchar * const*) x_content_open_folder);
 
 	g_strfreev (x_content_open_folder);
 	g_strfreev (x_content_ignore);
@@ -1088,8 +1088,9 @@ autorun_guessed_content_type_callback (GObject *source_object,
 			}
 			g_strfreev (guessed_content_type);
 		} else {
-			if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT_OPEN))
+			if (g_settings_get_boolean (nautilus_media_preferences, NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT_OPEN)) {
 				open_folder = TRUE;
+			}
 		}
 	}
 
@@ -1108,7 +1109,7 @@ nautilus_autorun (GMount *mount, NautilusAutorunOpenWindow open_window_func, gpo
 	AutorunData *data;
 
 	if (!should_autorun_mount (mount) ||
-	    eel_preferences_get_boolean (NAUTILUS_PREFERENCES_MEDIA_AUTORUN_NEVER)) {
+	    g_settings_get_boolean (nautilus_media_preferences, NAUTILUS_PREFERENCES_MEDIA_AUTORUN_NEVER)) {
 		return;
 	}
 

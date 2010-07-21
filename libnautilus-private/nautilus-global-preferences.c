@@ -511,30 +511,6 @@ static const PreferenceDefault preference_defaults[] = {
 	  default_network_link_name, g_free,
 	},
 
-	{ NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (TRUE)
-	},
-	{ NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT_OPEN,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (TRUE)
-	},
-	{ NAUTILUS_PREFERENCES_MEDIA_AUTORUN_NEVER,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (FALSE)
-	},
-	{ NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_START_APP,
-	  PREFERENCE_STRING_ARRAY,
-	  "", NULL, NULL, NULL
-	},
-	{ NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_IGNORE,
-	  PREFERENCE_STRING_ARRAY,
-	  "", NULL, NULL, NULL
-	},	
-	{ NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_OPEN_FOLDER,
-	  PREFERENCE_STRING_ARRAY,
-	  "", NULL, NULL, NULL
-	},	
 	{ NAUTILUS_PREFERENCES_DESKTOP_TEXT_ELLIPSIS_LIMIT,
 	  PREFERENCE_INTEGER,
 	  GINT_TO_POINTER (3)
@@ -820,6 +796,7 @@ nautilus_global_preferences_init (void)
 	}
 
 	nautilus_preferences = g_settings_new("org.gnome.nautilus.preferences");
+	nautilus_media_preferences = g_settings_new("org.gnome.media-handling");
 
 	/* Set up storage for values accessed in this file */
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT,

@@ -161,6 +161,8 @@ static const char * const icon_captions_components[] = {
 	NULL
 };
 
+static void nautilus_file_management_properties_dialog_update_media_sensitivity (GtkBuilder *builder);
+
 static void
 nautilus_file_management_properties_size_group_create (GtkBuilder *builder,
 						       char *prefix,
@@ -251,6 +253,9 @@ nautilus_file_management_properties_dialog_response_cb (GtkDialog *parent,
 		eel_gconf_monitor_remove ("/apps/nautilus/list_view");
 		eel_gconf_monitor_remove ("/apps/nautilus/preferences");
 		eel_gconf_monitor_remove ("/desktop/gnome/file_views");
+		g_signal_handlers_disconnect_by_func (nautilus_media_preferences,
+						      nautilus_file_management_properties_dialog_update_media_sensitivity,
+						      builder);
 	}
 }
 
@@ -523,8 +528,8 @@ nautilus_file_management_properties_dialog_setup_list_column_page (GtkBuilder *b
 static void
 nautilus_file_management_properties_dialog_update_media_sensitivity (GtkBuilder *builder)
 {
-	gtk_widget_set_sensitive (GTK_WIDGET (gtk_builder_get_object (builder, "media_handling_vbox")), 
-				  ! eel_preferences_get_boolean (NAUTILUS_PREFERENCES_MEDIA_AUTORUN_NEVER));
+	gtk_widget_set_sensitive (GTK_WIDGET (gtk_builder_get_object (builder, "media_handling_vbox")),
+				  ! g_settings_get_boolean (nautilus_media_preferences, NAUTILUS_PREFERENCES_MEDIA_AUTORUN_NEVER));
 }
 
 static void 
@@ -708,12 +713,16 @@ nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow
 						       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ALWAYS_USE_BROWSER_WIDGET,
 						       NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER);
 
-	eel_preferences_builder_connect_bool (builder,
-					      NAUTILUS_FILE_MANAGEMENT_PROPERTIES_MEDIA_AUTOMOUNT_OPEN,
-					      NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT_OPEN);
-	eel_preferences_builder_connect_bool (builder,
-					      NAUTILUS_FILE_MANAGEMENT_PROPERTIES_MEDIA_AUTORUN_NEVER,
-					      NAUTILUS_PREFERENCES_MEDIA_AUTORUN_NEVER);
+	g_settings_bind (nautilus_media_preferences,
+			 NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT_OPEN,
+			 gtk_builder_get_object (builder,
+						 NAUTILUS_FILE_MANAGEMENT_PROPERTIES_MEDIA_AUTOMOUNT_OPEN),
+			 "active", G_SETTINGS_BIND_DEFAULT);
+	g_settings_bind (nautilus_media_preferences,
+			 NAUTILUS_PREFERENCES_MEDIA_AUTORUN_NEVER,
+			 gtk_builder_get_object (builder,
+						 NAUTILUS_FILE_MANAGEMENT_PROPERTIES_MEDIA_AUTORUN_NEVER),
+			 "active", G_SETTINGS_BIND_DEFAULT);
 
 	eel_preferences_builder_connect_bool (builder,
 					      NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TRASH_CONFIRM_WIDGET,
@@ -794,11 +803,11 @@ nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow
 	nautilus_file_management_properties_dialog_setup_list_column_page (builder);
 	nautilus_file_management_properties_dialog_setup_media_page (builder);
 
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_MEDIA_AUTORUN_NEVER,
-				      (EelPreferencesCallback ) nautilus_file_management_properties_dialog_update_media_sensitivity,
-				      g_object_ref (builder));
+	g_signal_connect_swapped (nautilus_media_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_MEDIA_AUTORUN_NEVER,
+				  G_CALLBACK(nautilus_file_management_properties_dialog_update_media_sensitivity),
+				  builder);
 
-	
 	/* UI callbacks */
 	dialog = GTK_WIDGET (gtk_builder_get_object (builder, "file_management_dialog"));
 	g_signal_connect_data (G_OBJECT (dialog), "response",

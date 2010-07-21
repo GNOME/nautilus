@@ -48,14 +48,14 @@ G_BEGIN_DECLS
 #define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH			"sidebar-width"
 
 /* Automount options */
-#define NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT	                "preferences/media_automount"
-#define NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT_OPEN		"preferences/media_automount_open"
+#define NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT	                "automount"
+#define NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT_OPEN		"automount-open"
 
 /* Autorun options */
-#define NAUTILUS_PREFERENCES_MEDIA_AUTORUN_NEVER                "preferences/media_autorun_never"
-#define NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_START_APP  "preferences/media_autorun_x_content_start_app"
-#define NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_IGNORE     "preferences/media_autorun_x_content_ignore"
-#define NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_OPEN_FOLDER "preferences/media_autorun_x_content_open_folder"
+#define NAUTILUS_PREFERENCES_MEDIA_AUTORUN_NEVER                "autorun-never"
+#define NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_START_APP  "autorun-x-content-start-app"
+#define NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_IGNORE     "autorun-x-content-ignore"
+#define NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_OPEN_FOLDER "autorun-x-content-open-folder"
 
 /* Trash options */
 #define NAUTILUS_PREFERENCES_CONFIRM_TRASH			"preferences/confirm_trash"
@@ -232,6 +232,7 @@ void nautilus_global_preferences_init                      (void);
 char *nautilus_global_preferences_get_default_folder_viewer_preference_as_iid (void);
 
 GSettings *nautilus_preferences;
+GSettings *nautilus_media_preferences;
 
 G_END_DECLS
 
