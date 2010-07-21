@@ -35,9 +35,9 @@ G_BEGIN_DECLS
 #define NAUTILUS_PREFERENCES_EXIT_WITH_LAST_WINDOW				"preferences/exit_with_last_window"
 
 /* Desktop Background options */
-#define NAUTILUS_PREFERENCES_BACKGROUND_SET                     "preferences/background_set" 
-#define NAUTILUS_PREFERENCES_BACKGROUND_COLOR                   "preferences/background_color" 
-#define NAUTILUS_PREFERENCES_BACKGROUND_FILENAME                "preferences/background_filename" 
+#define NAUTILUS_PREFERENCES_BACKGROUND_SET                     "background-set"
+#define NAUTILUS_PREFERENCES_BACKGROUND_COLOR                   "background-color"
+#define NAUTILUS_PREFERENCES_BACKGROUND_URI                     "background-uri"
 
 /* Side Pane Background options */
 #define NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_SET                     "preferences/side_pane_background_set" 
