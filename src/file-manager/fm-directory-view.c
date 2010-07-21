@@ -151,8 +151,6 @@ static guint signals[LAST_SIGNAL];
 
 static GdkAtom copied_files_atom;
 
-static gboolean show_delete_command_auto_value;
-
 static char *scripts_directory_uri;
 static int scripts_directory_uri_length;
 
@@ -1933,16 +1931,9 @@ fm_directory_view_init_view_iface (NautilusViewIface *iface)
 static void
 fm_directory_view_init (FMDirectoryView *view)
 {
-	static gboolean setup_autos = FALSE;
 	NautilusDirectory *scripts_directory;
 	NautilusDirectory *templates_directory;
 	char *templates_uri;
-
-	if (!setup_autos) {
-		setup_autos = TRUE;
-		eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_ENABLE_DELETE,
-						  &show_delete_command_auto_value);
-	}
 
 	view->details = g_new0 (FMDirectoryViewDetails, 1);
 
@@ -8365,7 +8356,7 @@ real_update_location_menu (FMDirectoryView *view)
 	} else {
 		label = _("Mo_ve to Trash");
 		tip = _("Move the open folder to the Trash");
-		show_separate_delete_command = show_delete_command_auto_value;
+		show_separate_delete_command = g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ENABLE_DELETE);
 	}
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
@@ -8689,7 +8680,7 @@ real_update_menus (FMDirectoryView *view)
 	} else {
 		label = _("Mo_ve to Trash");
 		tip = _("Move each selected item to the Trash");
-		show_separate_delete_command = show_delete_command_auto_value;
+		show_separate_delete_command = g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ENABLE_DELETE);
 	}
 	
 	action = gtk_action_group_get_action (view->details->dir_action_group,

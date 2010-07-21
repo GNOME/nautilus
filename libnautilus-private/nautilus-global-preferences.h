@@ -59,7 +59,7 @@ G_BEGIN_DECLS
 
 /* Trash options */
 #define NAUTILUS_PREFERENCES_CONFIRM_TRASH			"confirm-trash"
-#define NAUTILUS_PREFERENCES_ENABLE_DELETE			"preferences/enable_delete"
+#define NAUTILUS_PREFERENCES_ENABLE_DELETE			"enable-delete"
 
 /* Desktop options */
 #define NAUTILUS_PREFERENCES_SHOW_DESKTOP			"preferences/show_desktop"

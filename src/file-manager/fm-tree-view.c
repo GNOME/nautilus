@@ -114,7 +114,6 @@ typedef struct {
 } PrependURIParameters;
 
 static GdkAtom copied_files_atom;
-static gboolean show_delete_command_auto_value;
 
 static void  fm_tree_view_iface_init        (NautilusSidebarIface         *iface);
 static void  sidebar_provider_iface_init    (NautilusSidebarProviderIface *iface);
@@ -744,7 +743,7 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
 		can_move_file_to_trash = nautilus_file_can_trash (view->details->popup_file);
 		gtk_widget_set_sensitive (view->details->popup_trash, can_move_file_to_trash);
 		
-		if (show_delete_command_auto_value) {
+		if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ENABLE_DELETE)) {
 			parent_file_is_writable = is_parent_writable (view->details->popup_file);
 			file_is_home_or_desktop = nautilus_file_is_home (view->details->popup_file)
 				|| nautilus_file_is_desktop_directory (view->details->popup_file);
@@ -1044,7 +1043,7 @@ fm_tree_view_delete_cb (GtkWidget *menu_item,
 {
 	GList *location_list;
 		
-	if (!show_delete_command_auto_value) {
+	if (!g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ENABLE_DELETE)) {
 		return;
 	}
 	
@@ -1585,11 +1584,8 @@ fm_tree_view_class_init (FMTreeViewClass *class)
 {
 	G_OBJECT_CLASS (class)->dispose = fm_tree_view_dispose;
 	G_OBJECT_CLASS (class)->finalize = fm_tree_view_finalize;
-	
-	copied_files_atom = gdk_atom_intern ("x-special/gnome-copied-files", FALSE);
 
-	eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_ENABLE_DELETE,
-					  &show_delete_command_auto_value);	
+	copied_files_atom = gdk_atom_intern ("x-special/gnome-copied-files", FALSE);
 }
 
 static const char *
