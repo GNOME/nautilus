@@ -153,7 +153,6 @@ static void     nautilus_property_browser_drag_data_get         (GtkWidget      
 								 GtkSelectionData              *selection_data,
 								 guint                          info,
 								 guint32                        time);
-static void     nautilus_property_browser_theme_changed         (gpointer                       user_data);
 static void     emit_emblems_changed_signal                     (void);
 static void     emblems_changed_callback                        (GObject                       *signaller,
 								 NautilusPropertyBrowser       *property_browser);
@@ -385,11 +384,6 @@ nautilus_property_browser_init (GtkObject *object)
 	/* the actual contents are created when necessary */	
   	property_browser->details->content_frame = NULL;
 
-	/* add a callback for when the theme changes */
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME, 
-				      nautilus_property_browser_theme_changed,
-				      property_browser);	
-	
 	g_signal_connect (property_browser, "delete_event",
 			  G_CALLBACK (nautilus_property_browser_delete_event_callback), NULL);
 	g_signal_connect (property_browser, "hide",
@@ -445,10 +439,6 @@ nautilus_property_browser_destroy (GtkObject *object)
 	
 	g_free (property_browser->details);
 	
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
-					 nautilus_property_browser_theme_changed,
-					 property_browser);
-		
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
@@ -1946,17 +1936,6 @@ make_properties_from_xml_node (NautilusPropertyBrowser *property_browser,
 		xmlFree (local);
 		xmlFree (deleted);
 	}
-}
-
-/* handle theme changes by updating the browser contents */
-
-static void
-nautilus_property_browser_theme_changed (gpointer user_data)
-{
-	NautilusPropertyBrowser *property_browser;
-	
-	property_browser = NAUTILUS_PROPERTY_BROWSER(user_data);
-	nautilus_property_browser_update_contents (property_browser);
 }
 
 /* make_category generates widgets corresponding all of the objects in the passed in directory */

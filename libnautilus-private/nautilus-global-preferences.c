@@ -289,10 +289,6 @@ static const PreferenceDefault preference_defaults[] = {
 	  PREFERENCE_BOOLEAN,
 	  GINT_TO_POINTER (TRUE)
 	},
-	{ NAUTILUS_PREFERENCES_THEME,
-	  PREFERENCE_STRING,
-	  "default"
-	},
 	{ NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
 	  PREFERENCE_STRING,
 	  "local_only",

@@ -573,9 +573,6 @@ background_destroyed_callback (EelBackground *background,
                 (file,
                  G_CALLBACK (saved_settings_changed_callback), background);
         nautilus_file_monitor_remove (file, background);
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
-                                         nautilus_file_background_theme_changed,
-                                         background);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_BACKGROUND_SET,
                                          nautilus_file_background_theme_changed,
                                          background);
@@ -621,9 +618,6 @@ nautilus_connect_background_to_file_metadata (GtkWidget    *widget,
                         (old_file,
                          G_CALLBACK (saved_settings_changed_callback), background);
 		nautilus_file_monitor_remove (old_file, background);
-		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
-                                                 nautilus_file_background_theme_changed,
-                                                 background);
 		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_BACKGROUND_SET,
                                                  nautilus_file_background_theme_changed,
                                                  background);
@@ -660,8 +654,6 @@ nautilus_connect_background_to_file_metadata (GtkWidget    *widget,
                                            NAUTILUS_FILE_ATTRIBUTE_INFO);
 
 		/* arrange for notification when the theme changes */
-		eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
-                                              nautilus_file_background_theme_changed, background);
 		eel_preferences_add_callback (NAUTILUS_PREFERENCES_BACKGROUND_SET,
                                               nautilus_file_background_theme_changed, background);
 		eel_preferences_add_callback (NAUTILUS_PREFERENCES_BACKGROUND_COLOR,

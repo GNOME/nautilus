@@ -4050,10 +4050,6 @@ finalize (GObject *object)
 
 	details = NAUTILUS_ICON_CONTAINER (object)->details;
 
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
-					 nautilus_icon_container_theme_changed,
-					 object);
-	
 	g_hash_table_destroy (details->icon_set);
 	details->icon_set = NULL;
 
@@ -4227,7 +4223,7 @@ style_set (GtkWidget *widget,
 
 	container->details->use_drop_shadows = container->details->drop_shadows_requested && !frame_text;
 
-	nautilus_icon_container_theme_changed (NAUTILUS_ICON_CONTAINER (widget));	
+	nautilus_icon_container_theme_changed (NAUTILUS_ICON_CONTAINER (widget));
 
 	if (gtk_widget_get_realized (widget)) {
 		invalidate_label_sizes (container);
@@ -6326,12 +6322,9 @@ nautilus_icon_container_init (NautilusIconContainer *container)
 			  G_CALLBACK (handle_focus_out_event), NULL);
 
 	eel_background_set_use_base (background, TRUE);
-	
+
 	/* read in theme-dependent data */
 	nautilus_icon_container_theme_changed (container);
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
-				      nautilus_icon_container_theme_changed,
-				      container);
 
 	if (!setup_prefs) {
 		eel_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ELLIPSIS_LIMIT,
