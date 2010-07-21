@@ -45,7 +45,7 @@ G_BEGIN_DECLS
 #define NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_URI           "side-pane-background-uri"
 
 /* How wide the sidebar is (or how wide it will be when expanded) */
-#define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH  			"preferences/sidebar_width"
+#define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH			"sidebar-width"
 
 /* Automount options */
 #define NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT	                "preferences/media_automount"
