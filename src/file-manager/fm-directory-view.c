@@ -152,7 +152,6 @@ static guint signals[LAST_SIGNAL];
 static GdkAtom copied_files_atom;
 
 static gboolean show_delete_command_auto_value;
-static gboolean confirm_trash_auto_value;
 
 static char *scripts_directory_uri;
 static int scripts_directory_uri_length;
@@ -1941,8 +1940,6 @@ fm_directory_view_init (FMDirectoryView *view)
 
 	if (!setup_autos) {
 		setup_autos = TRUE;
-		eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
-						  &confirm_trash_auto_value);
 		eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_ENABLE_DELETE,
 						  &show_delete_command_auto_value);
 	}
@@ -1998,8 +1995,6 @@ fm_directory_view_init (FMDirectoryView *view)
 	
 	gtk_widget_show (GTK_WIDGET (view));
 	
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
-				      schedule_update_menus_callback, view);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_ENABLE_DELETE,
 				      schedule_update_menus_callback, view);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
@@ -2114,8 +2109,6 @@ fm_directory_view_finalize (GObject *object)
 
 	view = FM_DIRECTORY_VIEW (object);
 
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
-					 schedule_update_menus_callback, view);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_ENABLE_DELETE,
 					 schedule_update_menus_callback, view);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,

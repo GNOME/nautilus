@@ -667,6 +667,17 @@ nautilus_file_management_properties_dialog_setup_media_page (GtkBuilder *builder
 	nautilus_file_management_properties_dialog_update_media_sensitivity (builder);
 }
 
+static void
+bind_builder_bool (GtkBuilder *builder,
+		   GSettings *settings,
+		   const char *widget_name,
+		   const char *prefs)
+{
+	g_settings_bind (settings, prefs,
+			 gtk_builder_get_object (builder, widget_name),
+			 "active", G_SETTINGS_BIND_DEFAULT);
+}
+
 static  void
 nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow *window)
 {
@@ -713,20 +724,16 @@ nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow
 						       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ALWAYS_USE_BROWSER_WIDGET,
 						       NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER);
 
-	g_settings_bind (nautilus_media_preferences,
-			 NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT_OPEN,
-			 gtk_builder_get_object (builder,
-						 NAUTILUS_FILE_MANAGEMENT_PROPERTIES_MEDIA_AUTOMOUNT_OPEN),
-			 "active", G_SETTINGS_BIND_DEFAULT);
-	g_settings_bind (nautilus_media_preferences,
-			 NAUTILUS_PREFERENCES_MEDIA_AUTORUN_NEVER,
-			 gtk_builder_get_object (builder,
-						 NAUTILUS_FILE_MANAGEMENT_PROPERTIES_MEDIA_AUTORUN_NEVER),
-			 "active", G_SETTINGS_BIND_DEFAULT);
+	bind_builder_bool (builder, nautilus_media_preferences,
+			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_MEDIA_AUTOMOUNT_OPEN,
+			   NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT_OPEN);
+	bind_builder_bool (builder, nautilus_media_preferences,
+			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_MEDIA_AUTORUN_NEVER,
+			   NAUTILUS_PREFERENCES_MEDIA_AUTORUN_NEVER);
 
-	eel_preferences_builder_connect_bool (builder,
-					      NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TRASH_CONFIRM_WIDGET,
-					      NAUTILUS_PREFERENCES_CONFIRM_TRASH);
+	bind_builder_bool (builder, nautilus_preferences,
+			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TRASH_CONFIRM_WIDGET,
+			   NAUTILUS_PREFERENCES_CONFIRM_TRASH);
 	eel_preferences_builder_connect_bool (builder,
 					      NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TRASH_DELETE_WIDGET,
 					      NAUTILUS_PREFERENCES_ENABLE_DELETE);

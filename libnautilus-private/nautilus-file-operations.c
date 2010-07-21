@@ -68,8 +68,6 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-file-conflict-dialog.h"
 
-static gboolean confirm_trash_auto_value;
-
 /* TODO: TESTING!!! */
 
 typedef struct {
@@ -1006,17 +1004,6 @@ should_skip_readdir_error (CommonJob *common,
 	return FALSE;
 }
 
-static void
-setup_autos (void)
-{
-	static gboolean setup_autos = FALSE;
-	if (!setup_autos) {
-		setup_autos = TRUE;
-		eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
-						  &confirm_trash_auto_value);
-	}
-}
-
 static gboolean
 can_delete_without_confirm (GFile *file)
 {
@@ -1279,6 +1266,19 @@ job_aborted (CommonJob *job)
 	return g_cancellable_is_cancelled (job->cancellable);
 }
 
+/* Since this happens on a thread we can't use the global prefs object */
+static gboolean
+should_confirm_trash (void)
+{
+	GSettings *prefs;
+	gboolean confirm_trash;
+
+	prefs = g_settings_new ("org.gnome.nautilus.preferences");
+	confirm_trash = g_settings_get_boolean (prefs, NAUTILUS_PREFERENCES_CONFIRM_TRASH);
+	g_object_unref (prefs);
+	return confirm_trash;
+}
+
 static gboolean
 confirm_delete_from_trash (CommonJob *job,
 			   GList *files)
@@ -1288,7 +1288,7 @@ confirm_delete_from_trash (CommonJob *job,
 	int response;
 
 	/* Just Say Yes if the preference says not to confirm. */
-	if (!confirm_trash_auto_value) {
+	if (!should_confirm_trash ()) {
 		return TRUE;
 	}
 
@@ -1325,7 +1325,7 @@ confirm_empty_trash (CommonJob *job)
 	int response;
 
 	/* Just Say Yes if the preference says not to confirm. */
-	if (!confirm_trash_auto_value) {
+	if (!should_confirm_trash ()) {
 		return TRUE;
 	}
 
@@ -1353,7 +1353,7 @@ confirm_delete_directly (CommonJob *job,
 	int response;
 
 	/* Just Say Yes if the preference says not to confirm. */
-	if (!confirm_trash_auto_value) {
+	if (!should_confirm_trash ()) {
 		return TRUE;
 	}
 
@@ -1944,8 +1944,6 @@ trash_or_delete_internal (GList                  *files,
 			  gpointer                done_callback_data)
 {
 	DeleteJob *job;
-
-	setup_autos ();
 
 	/* TODO: special case desktop icon link files ... */
 
@@ -6168,9 +6166,7 @@ nautilus_file_operations_empty_trash (GtkWidget *parent_view)
 	if (parent_view) {
 		parent_window = (GtkWindow *)gtk_widget_get_ancestor (parent_view, GTK_TYPE_WINDOW);
 	}
-	
-	setup_autos ();
-	
+
 	job = op_job_new (EmptyTrashJob, parent_window);
 	job->trash_dirs = g_list_prepend (job->trash_dirs,
 					  g_file_new_for_uri ("trash:"));

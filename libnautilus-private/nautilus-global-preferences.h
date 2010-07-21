@@ -58,7 +58,7 @@ G_BEGIN_DECLS
 #define NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_OPEN_FOLDER "autorun-x-content-open-folder"
 
 /* Trash options */
-#define NAUTILUS_PREFERENCES_CONFIRM_TRASH			"preferences/confirm_trash"
+#define NAUTILUS_PREFERENCES_CONFIRM_TRASH			"confirm-trash"
 #define NAUTILUS_PREFERENCES_ENABLE_DELETE			"preferences/enable_delete"
 
 /* Desktop options */
