@@ -477,13 +477,6 @@ main (int argc, char *argv[])
 	exit_with_last_window =
 		eel_preferences_get_boolean (NAUTILUS_PREFERENCES_EXIT_WITH_LAST_WINDOW);
 
-	if (no_desktop) {
-		eel_preferences_set_is_invisible
-			(NAUTILUS_PREFERENCES_SHOW_DESKTOP, TRUE);
-		eel_preferences_set_is_invisible
-			(NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR, TRUE);
-	}
-
 	application = NULL;
 
 	/* Do either the self-check or the real work. */

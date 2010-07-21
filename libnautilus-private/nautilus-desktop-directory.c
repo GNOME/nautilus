@@ -427,10 +427,10 @@ desktop_finalize (GObject *object)
 	g_hash_table_destroy (desktop->details->monitors);
 	g_free (desktop->details);
 
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
-					 desktop_directory_changed_callback,
-					 desktop);
-	
+	g_signal_handlers_disconnect_by_func (nautilus_preferences,
+					      desktop_directory_changed_callback,
+					      desktop);
+
 	G_OBJECT_CLASS (nautilus_desktop_directory_parent_class)->finalize (object);
 }
 
@@ -513,9 +513,9 @@ nautilus_desktop_directory_init (NautilusDesktopDirectory *desktop)
 
 	update_desktop_directory (NAUTILUS_DESKTOP_DIRECTORY (desktop));
 
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
-				      desktop_directory_changed_callback,
-				      desktop);
+	g_signal_connect_swapped (nautilus_preferences, "changed::" NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
+				  G_CALLBACK(desktop_directory_changed_callback),
+				  desktop);
 }
 
 static void

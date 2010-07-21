@@ -62,9 +62,9 @@ G_BEGIN_DECLS
 #define NAUTILUS_PREFERENCES_ENABLE_DELETE			"enable-delete"
 
 /* Desktop options */
-#define NAUTILUS_PREFERENCES_SHOW_DESKTOP			"preferences/show_desktop"
-#define NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR                "preferences/desktop_is_home_dir"
-#define NAUTILUS_PREFERENCES_DESKTOP_FONT			"preferences/desktop_font"
+#define NAUTILUS_PREFERENCES_SHOW_DESKTOP			"show-desktop"
+#define NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR                "desktop-is-home-dir"
+#define NAUTILUS_PREFERENCES_DESKTOP_FONT			"desktop-font"
 
 /* Display  */
 #define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES  		"/desktop/gnome/file_views/show_hidden_files"

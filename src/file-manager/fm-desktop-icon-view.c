@@ -297,7 +297,10 @@ fm_desktop_icon_view_finalize (GObject *object)
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE,
 					 lockdown_disable_command_line_changed_callback,
 					 icon_view);
-	
+
+	g_signal_handlers_disconnect_by_func (nautilus_preferences,
+					      desktop_directory_changed_callback,
+					      NULL);
 	g_free (icon_view->details);
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -511,11 +514,11 @@ fm_desktop_icon_view_update_icon_container_fonts (FMDesktopIconView *icon_view)
 {
 	NautilusIconContainer *icon_container;
 	char *font;
-	
+
 	icon_container = get_icon_container (icon_view);
 	g_assert (icon_container != NULL);
 
-	font = eel_preferences_get (NAUTILUS_PREFERENCES_DESKTOP_FONT);
+	font = g_settings_get_string (nautilus_preferences, NAUTILUS_PREFERENCES_DESKTOP_FONT);
 
 	nautilus_icon_container_set_font (icon_container, font);
 
@@ -530,9 +533,9 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 	GtkAdjustment *hadj, *vadj;
 
 	if (desktop_directory == NULL) {
-		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
-					      desktop_directory_changed_callback,
-					      NULL);
+		g_signal_connect_swapped (nautilus_preferences, "changed::" NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
+					  G_CALLBACK(desktop_directory_changed_callback),
+					  NULL);
 		desktop_directory_changed_callback (NULL);
 	}
 

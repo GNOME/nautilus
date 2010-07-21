@@ -433,7 +433,7 @@ nautilus_get_xdg_dir (const char *type)
 static char *
 get_desktop_path (void)
 {
-	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
+	if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
 		return g_strdup (g_get_home_dir());
 	} else {
 		return nautilus_get_xdg_dir ("DESKTOP");
@@ -455,7 +455,7 @@ nautilus_get_desktop_directory (void)
 	desktop_directory = get_desktop_path ();
 
 	/* Don't try to create a home directory */
-	if (!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
+	if (!g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
 		if (!g_file_test (desktop_directory, G_FILE_TEST_EXISTS)) {
 			g_mkdir (desktop_directory, DEFAULT_DESKTOP_DIRECTORY_MODE);
 			/* FIXME bugzilla.gnome.org 41286: 
@@ -676,9 +676,9 @@ nautilus_is_desktop_directory_file (GFile *dir,
 {
 
 	if (!desktop_dir_changed_callback_installed) {
-		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
-					      desktop_dir_changed_callback,
-					      NULL);
+		g_signal_connect_swapped (nautilus_preferences, "changed::" NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
+					  G_CALLBACK(desktop_dir_changed_callback),
+					  NULL);
 		desktop_dir_changed_callback_installed = TRUE;
 	}
 		

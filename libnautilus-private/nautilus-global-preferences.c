@@ -48,7 +48,6 @@ static const char *EXTRA_MONITOR_PATHS[] = { "/desktop/gnome/file_views",
 /* Forward declarations */
 static void     global_preferences_install_defaults      (void);
 static void     global_preferences_register_enumerations (void);
-static gpointer default_font_callback                    (void);
 static gpointer default_home_link_name                   (void);
 static gpointer default_computer_link_name               (void);
 static gpointer default_trash_link_name                  (void);
@@ -307,14 +306,6 @@ static const PreferenceDefault preference_defaults[] = {
 	  PREFERENCE_BOOLEAN,
 	  GINT_TO_POINTER (FALSE)
 	},
-	{ NAUTILUS_PREFERENCES_SHOW_DESKTOP,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (TRUE)
-	},
-	{ NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (FALSE)
-	},
 	{ NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
 	  PREFERENCE_STRING,
 	  "search_by_text",
@@ -380,10 +371,6 @@ static const PreferenceDefault preference_defaults[] = {
 	  GINT_TO_POINTER (NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW),
 	  NULL, NULL,
 	  "default_folder_viewer"
-	},
-	{ NAUTILUS_PREFERENCES_DESKTOP_FONT,
-	  PREFERENCE_STRING,
-	  NULL, default_font_callback, g_free
 	},
 
 	/* Icon View Default Preferences */
@@ -702,12 +689,6 @@ global_preferences_install_defaults (void)
 							preference_defaults[i].type,
 							&preference_defaults[i]);
 	}
-}
-
-static gpointer
-default_font_callback (void)
-{
-	return g_strdup ("sans 12");
 }
 
 /*

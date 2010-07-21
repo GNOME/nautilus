@@ -2631,10 +2631,9 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 	eel_gtk_tree_view_set_activate_on_single_click (sidebar->tree_view,
 							TRUE);
 
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
-						  desktop_location_changed_callback,
-						  sidebar,
-						  G_OBJECT (sidebar));
+	g_signal_connect_swapped (nautilus_preferences, "changed::" NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
+				  G_CALLBACK(desktop_location_changed_callback),
+				  sidebar);
 
 	g_signal_connect_object (nautilus_trash_monitor_get (),
 				 "trash_state_changed",
@@ -2673,6 +2672,10 @@ nautilus_places_sidebar_dispose (GObject *object)
 	}
 
 	eel_remove_weak_pointer (&(sidebar->go_to_after_mount_slot));
+
+	g_signal_handlers_disconnect_by_func (nautilus_preferences,
+					      desktop_location_changed_callback,
+					      sidebar);
 
 	G_OBJECT_CLASS (nautilus_places_sidebar_parent_class)->dispose (object);
 }

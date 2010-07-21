@@ -930,10 +930,10 @@ nautilus_application_startup (NautilusApplication *application,
 		char *accel_map_filename;
 
 		if (!no_desktop &&
-		    !eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP)) {
+		    !g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_SHOW_DESKTOP)) {
 			no_desktop = TRUE;
 		}
-			
+
 		if (!no_desktop) {
 			if (is_remote) {
 				g_application_invoke_action (application->unique_app,
@@ -951,19 +951,17 @@ nautilus_application_startup (NautilusApplication *application,
 		}
 
 		/* Monitor the preference to show or hide the desktop */
-		eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_SHOW_DESKTOP,
-							  desktop_changed_callback,
-							  application,
-							  G_OBJECT (application));
+		g_signal_connect_swapped (nautilus_preferences, "changed::" NAUTILUS_PREFERENCES_SHOW_DESKTOP,
+					  G_CALLBACK(desktop_changed_callback),
+					  G_OBJECT (application));
 
 		/* Monitor the preference to have the desktop */
 		/* point to the Unix home folder */
-		eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
-							  desktop_location_changed_callback,
-							  NULL,
-							  G_OBJECT (application));
+		g_signal_connect_swapped (nautilus_preferences, "changed::" NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
+					  G_CALLBACK(desktop_location_changed_callback),
+					  G_OBJECT (application));
 
-	  	/* Create the other windows. */
+		/* Create the other windows. */
 		if (urls != NULL || !no_default_window) {
 			if (is_remote) {
 				GVariant *variant;
@@ -1509,9 +1507,9 @@ static void
 desktop_changed_callback (gpointer user_data)
 {
 	NautilusApplication *application;
-	
+
 	application = NAUTILUS_APPLICATION (user_data);
-	if ( eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP)) {
+	if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_SHOW_DESKTOP)) {
 		nautilus_application_open_desktop (application);
 	} else {
 		nautilus_application_close_desktop ();

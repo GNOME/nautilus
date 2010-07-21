@@ -303,10 +303,9 @@ nautilus_path_bar_init (NautilusPathBar *path_bar)
 	path_bar->root_path = g_file_new_for_path ("/");
 	desktop_is_home = g_file_equal (path_bar->home_path, path_bar->desktop_path);
 
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
-						  desktop_location_changed_callback,
-						  path_bar,
-						  G_OBJECT (path_bar));
+	g_signal_connect_swapped (nautilus_preferences, "changed::" NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
+				  G_CALLBACK(desktop_location_changed_callback),
+				  path_bar);
 
         g_signal_connect_swapped (path_bar->up_slider_button, "clicked", G_CALLBACK (nautilus_path_bar_scroll_up), path_bar);
         g_signal_connect_swapped (path_bar->down_slider_button, "clicked", G_CALLBACK (nautilus_path_bar_scroll_down), path_bar);
@@ -426,6 +425,9 @@ nautilus_path_bar_finalize (GObject *object)
 
 	g_signal_handlers_disconnect_by_func (nautilus_trash_monitor_get (),
 					      trash_state_changed_cb, path_bar);
+	g_signal_handlers_disconnect_by_func (nautilus_preferences,
+					      desktop_location_changed_callback,
+					      path_bar);
 
         G_OBJECT_CLASS (nautilus_path_bar_parent_class)->finalize (object);
 }
