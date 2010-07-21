@@ -211,6 +211,13 @@ nautilus-marshal-guts.c: nautilus-marshal.list $(GLIB_GENMARSHAL)
 
 $(libnautilus_private_la_OBJECTS): $(marshal_sources)
 
+gsettingsschema_in_files = org.gnome.nautilus.gschema.xml.in org.gnome.media-handling.gschema.xml.in
+gsettings_SCHEMAS = $(gsettingsschema_in_files:.xml.in=.xml)
+.PRECIOUS: $(gsettings_SCHEMAS)
+
+@INTLTOOL_XML_NOMERGE_RULE@
+
+@GSETTINGS_RULES@
 
 schema_in_files =  apps_nautilus_preferences.schemas.in
 schemadir   = $(GCONF_SCHEMA_FILE_DIR)
@@ -230,6 +237,7 @@ endif
 
 EXTRA_DIST = 				\
 	nautilus-marshal.list		\
+	$(gsettingsschema_in_files)     \
 	$(schema_in_files)              \
 	$(BEAGLE_SOURCES)		\
 	$(TRACKER_SOURCES)		\
@@ -238,6 +246,7 @@ EXTRA_DIST = 				\
 CLEANFILES = \
 	$(marshal_sources)				\
 	$(schema_DATA)			                \
+	$(gsettings_SCHEMAS)				\
 	$(NULL)
 
 dist-hook:
