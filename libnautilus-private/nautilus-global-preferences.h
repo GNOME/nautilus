@@ -40,9 +40,9 @@ G_BEGIN_DECLS
 #define NAUTILUS_PREFERENCES_BACKGROUND_URI                     "background-uri"
 
 /* Side Pane Background options */
-#define NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_SET                     "preferences/side_pane_background_set" 
-#define NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_COLOR                   "preferences/side_pane_background_color" 
-#define NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_FILENAME                "preferences/side_pane_background_filename" 
+#define NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_SET           "side-pane-background-set"
+#define NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_COLOR         "side-pane-background-color"
+#define NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_URI           "side-pane-background-uri"
 
 /* How wide the sidebar is (or how wide it will be when expanded) */
 #define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH  			"preferences/sidebar_width"
