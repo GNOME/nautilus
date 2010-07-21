@@ -43,7 +43,7 @@
 #define FM_TREE_VIEW_GET_CLASS(obj) \
   (G_TYPE_INSTANCE_GET_CLASS ((obj), FM_TYPE_TREE_VIEW, FMTreeViewClass))
 
-#define TREE_SIDEBAR_ID "NautilusTreeSidebar"
+#define TREE_SIDEBAR_ID "tree"
 
 typedef struct FMTreeViewDetails FMTreeViewDetails;
 

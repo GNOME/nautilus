@@ -44,7 +44,7 @@
 
 typedef struct NautilusInformationPanelDetails NautilusInformationPanelDetails;
 
-#define NAUTILUS_INFORMATION_PANEL_ID "NautilusInformationPanel"
+#define NAUTILUS_INFORMATION_PANEL_ID "information"
 
 typedef struct {
 	EelBackgroundBox parent_slot;

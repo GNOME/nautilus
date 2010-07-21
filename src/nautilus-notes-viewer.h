@@ -30,7 +30,7 @@
 #include <libnautilus-private/nautilus-view.h>
 #include <libnautilus-private/nautilus-window-info.h>
 
-#define NAUTILUS_NOTES_SIDEBAR_ID    "NautilusNotesSidebar"
+#define NAUTILUS_NOTES_SIDEBAR_ID    "notes"
 
 #define NAUTILUS_TYPE_NOTES_VIEWER nautilus_notes_viewer_get_type()
 #define NAUTILUS_NOTES_VIEWER(obj) \

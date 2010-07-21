@@ -31,7 +31,7 @@
 #include <libnautilus-private/nautilus-view.h>
 #include <libnautilus-private/nautilus-window-info.h>
 
-#define NAUTILUS_HISTORY_SIDEBAR_ID    "NautilusHistorySidebar"
+#define NAUTILUS_HISTORY_SIDEBAR_ID    "history"
 
 #define NAUTILUS_TYPE_HISTORY_SIDEBAR nautilus_history_sidebar_get_type()
 #define NAUTILUS_HISTORY_SIDEBAR(obj) \

@@ -28,7 +28,7 @@
 #include <libnautilus-private/nautilus-window-info.h>
 #include <gtk/gtk.h>
 
-#define NAUTILUS_PLACES_SIDEBAR_ID    "NautilusPlacesSidebar"
+#define NAUTILUS_PLACES_SIDEBAR_ID    "places"
 
 #define NAUTILUS_TYPE_PLACES_SIDEBAR nautilus_places_sidebar_get_type()
 #define NAUTILUS_PLACES_SIDEBAR(obj) \

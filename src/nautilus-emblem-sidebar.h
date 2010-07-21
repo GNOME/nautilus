@@ -41,7 +41,7 @@
 #define NAUTILUS_EMBLEM_SIDEBAR_GET_CLASS(obj) \
   (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_EMBLEM_SIDEBAR, NautilusEmblemSidebarClass))
 
-#define NAUTILUS_EMBLEM_SIDEBAR_ID "NautilusEmblemSidebar"
+#define NAUTILUS_EMBLEM_SIDEBAR_ID "emblems"
 
 typedef struct NautilusEmblemSidebarDetails NautilusEmblemSidebarDetails;
 
