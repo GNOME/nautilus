@@ -31,10 +31,6 @@
 #define NAUTILUS_SAVED_SEARCH_EXTENSION ".savedSearch"
 #define NAUTILUS_SAVED_SEARCH_MIMETYPE "application/x-gnome-saved-search"
 
-/* Recognizing special file names. */
-gboolean nautilus_file_name_matches_hidden_pattern   (const char *name_or_relative_uri);
-gboolean nautilus_file_name_matches_backup_pattern   (const char *name_or_relative_uri);
-
 /* These functions all return something something that needs to be
  * freed with g_free, is not NULL, and is guaranteed to exist.
  */
