@@ -823,6 +823,8 @@ nautilus_global_preferences_init (void)
 		eel_preferences_monitor_directory (EXTRA_MONITOR_PATHS[i]);
 	}
 
+	nautilus_preferences = g_settings_new("org.gnome.nautilus.preferences");
+
 	/* Set up storage for values accessed in this file */
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT,
 				      default_icon_view_sort_order_or_manual_layout_changed_callback, 

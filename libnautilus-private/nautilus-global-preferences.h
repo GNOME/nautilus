@@ -27,6 +27,7 @@
 #define NAUTILUS_GLOBAL_PREFERENCES_H
 
 #include <eel/eel-preferences.h>
+#include <gio/gio.h>
 
 G_BEGIN_DECLS
 
@@ -229,6 +230,9 @@ typedef enum
 
 void nautilus_global_preferences_init                      (void);
 char *nautilus_global_preferences_get_default_folder_viewer_preference_as_iid (void);
+
+GSettings *nautilus_preferences;
+
 G_END_DECLS
 
 #endif /* NAUTILUS_GLOBAL_PREFERENCES_H */
