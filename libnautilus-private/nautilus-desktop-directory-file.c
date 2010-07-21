@@ -168,7 +168,7 @@ desktop_directory_file_monitor_add (NautilusFile *file,
 	/* Do the rest ourself */
 	nautilus_directory_monitor_add_internal
 		(file->details->directory, file,
-		 client, TRUE, TRUE,
+		 client, TRUE,
 		 monitor->non_delegated_attributes,
 		 NULL, NULL);
 }

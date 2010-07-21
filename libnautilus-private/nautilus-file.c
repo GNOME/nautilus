@@ -98,7 +98,6 @@
 
 typedef enum {
 	SHOW_HIDDEN = 1 << 0,
-	SHOW_BACKUP = 1 << 1
 } FilterOptions;
 
 typedef void (* ModifyListFunction) (GList **list, NautilusFile *file);
@@ -443,7 +442,6 @@ nautilus_file_clear_info (NautilusFile *file)
 	file->details->is_trusted_link = FALSE;
 	file->details->is_symlink = FALSE;
 	file->details->is_hidden = FALSE;
-	file->details->is_backup = FALSE;
 	file->details->is_mountpoint = FALSE;
 	file->details->uid = -1;
 	file->details->gid = -1;
@@ -2072,7 +2070,7 @@ update_info_internal (NautilusFile *file,
 {
 	GList *node;
 	gboolean changed;
-	gboolean is_symlink, is_hidden, is_backup, is_mountpoint;
+	gboolean is_symlink, is_hidden, is_mountpoint;
 	gboolean has_permissions;
 	guint32 permissions;
 	gboolean can_read, can_write, can_execute, can_delete, can_trash, can_rename, can_mount, can_unmount, can_eject;
@@ -2161,19 +2159,13 @@ update_info_internal (NautilusFile *file,
 		changed = TRUE;
 	}
 	file->details->is_symlink = is_symlink;
-		
-	is_hidden = g_file_info_get_is_hidden (info);
+
+	is_hidden = g_file_info_get_is_hidden (info) || g_file_info_get_is_backup (info);
 	if (file->details->is_hidden != is_hidden) {
 		changed = TRUE;
 	}
 	file->details->is_hidden = is_hidden;
-		
-	is_backup = g_file_info_get_is_backup (info);
-	if (file->details->is_backup != is_backup) {
-		changed = TRUE;
-	}
-	file->details->is_backup = is_backup;
-		
+
 	is_mountpoint = g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_UNIX_IS_MOUNTPOINT);
 	if (file->details->is_mountpoint != is_mountpoint) {
 		changed = TRUE;
@@ -3382,12 +3374,6 @@ nautilus_file_is_hidden_file (NautilusFile *file)
 	return file->details->is_hidden;
 }
 
-gboolean 
-nautilus_file_is_backup_file (NautilusFile *file)
-{
-	return file->details->is_backup;
-}
-
 static gboolean
 is_file_hidden (NautilusFile *file)
 {
@@ -3401,7 +3387,6 @@ is_file_hidden (NautilusFile *file)
  * nautilus_file_should_show:
  * @file: the file to check.
  * @show_hidden: whether we want to show hidden files or not.
- * @show_backup: whether we want to show backup files or not.
  * 
  * Determines if a #NautilusFile should be shown. Note that when browsing
  * a trash directory, this function will always return %TRUE. 
@@ -3411,7 +3396,6 @@ is_file_hidden (NautilusFile *file)
 gboolean 
 nautilus_file_should_show (NautilusFile *file, 
 			   gboolean show_hidden,
-			   gboolean show_backup,
 			   gboolean show_foreign)
 {
 	/* Never hide any files in trash. */
@@ -3419,7 +3403,6 @@ nautilus_file_should_show (NautilusFile *file,
 		return TRUE;
 	} else {
 		return (show_hidden || (!nautilus_file_is_hidden_file (file) && !is_file_hidden (file))) &&
-			(show_backup || !nautilus_file_is_backup_file (file)) &&
 			(show_foreign || !(nautilus_file_is_in_desktop (file) && nautilus_file_is_foreign_link (file)));
 	}
 }
@@ -3445,12 +3428,11 @@ nautilus_file_is_in_desktop (NautilusFile *file)
 		return nautilus_is_desktop_directory (file->details->directory->details->location);
 	}
 	return FALSE;
-	
 }
 
 static gboolean
-filter_hidden_and_backup_partition_callback (gpointer data,
-					     gpointer callback_data)
+filter_hidden_partition_callback (gpointer data,
+				  gpointer callback_data)
 {
 	NautilusFile *file;
 	FilterOptions options;
@@ -3458,29 +3440,26 @@ filter_hidden_and_backup_partition_callback (gpointer data,
 	file = NAUTILUS_FILE (data);
 	options = GPOINTER_TO_INT (callback_data);
 
-	return nautilus_file_should_show (file, 
+	return nautilus_file_should_show (file,
 					  options & SHOW_HIDDEN,
-					  options & SHOW_BACKUP,
 					  TRUE);
 }
 
 GList *
-nautilus_file_list_filter_hidden_and_backup (GList    *files,
-					     gboolean  show_hidden,
-					     gboolean  show_backup)
+nautilus_file_list_filter_hidden (GList    *files,
+				  gboolean  show_hidden)
 {
 	GList *filtered_files;
 	GList *removed_files;
 
-	/* FIXME bugzilla.gnome.org 40653: 
-	 * Eventually this should become a generic filtering thingy. 
+	/* FIXME bugzilla.gnome.org 40653:
+	 * Eventually this should become a generic filtering thingy.
 	 */
 
 	filtered_files = nautilus_file_list_copy (files);
-	filtered_files = eel_g_list_partition (filtered_files, 
-					       filter_hidden_and_backup_partition_callback,
-					       GINT_TO_POINTER ((show_hidden ? SHOW_HIDDEN : 0) |
-								(show_backup ? SHOW_BACKUP : 0)),
+	filtered_files = eel_g_list_partition (filtered_files,
+					       filter_hidden_partition_callback,
+					       GINT_TO_POINTER ((show_hidden ? SHOW_HIDDEN : 0)),
 					       &removed_files);
 	nautilus_file_list_free (removed_files);
 

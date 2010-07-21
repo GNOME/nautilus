@@ -165,7 +165,6 @@ void               nautilus_directory_monitor_add_internal            (NautilusD
 								       NautilusFile              *file,
 								       gconstpointer              client,
 								       gboolean                   monitor_hidden_files,
-								       gboolean                   monitor_backup_files,
 								       NautilusFileAttributes     attributes,
 								       NautilusDirectoryCallback  callback,
 								       gpointer                   callback_data);

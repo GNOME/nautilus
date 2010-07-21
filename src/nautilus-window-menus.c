@@ -424,7 +424,7 @@ show_hidden_files_preference_callback (gpointer callback_data)
 		/* update button */
 		g_signal_handlers_block_by_func (action, action_show_hidden_files_callback, window);
 		gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
-					      eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES));
+					      g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES));
 		g_signal_handlers_unblock_by_func (action, action_show_hidden_files_callback, window);
 
 		/* inform views */
@@ -913,13 +913,13 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 	action = gtk_action_group_get_action (action_group, NAUTILUS_ACTION_SHOW_HIDDEN_FILES);
 	g_signal_handlers_block_by_func (action, action_show_hidden_files_callback, window);
 	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
-				      eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES));
+				      g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES));
 	g_signal_handlers_unblock_by_func (action, action_show_hidden_files_callback, window);
 
 
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-						  show_hidden_files_preference_callback,
-						  window, G_OBJECT (window));
+	g_signal_connect_swapped (nautilus_preferences, "changed::" NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+				  G_CALLBACK(show_hidden_files_preference_callback),
+				  window);
 
 	window->details->ui_manager = gtk_ui_manager_new ();
 	ui_manager = window->details->ui_manager;

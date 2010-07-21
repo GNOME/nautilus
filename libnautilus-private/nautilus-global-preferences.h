@@ -67,8 +67,7 @@ G_BEGIN_DECLS
 #define NAUTILUS_PREFERENCES_DESKTOP_FONT			"desktop-font"
 
 /* Display  */
-#define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES  		"/desktop/gnome/file_views/show_hidden_files"
-#define NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES  		"/desktop/gnome/file_views/show_backup_files"
+#define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES			"show-hidden-files"
 #define NAUTILUS_PREFERENCES_SHOW_ADVANCED_PERMISSIONS		"preferences/show_advanced_permissions"
 #define NAUTILUS_PREFERENCES_DATE_FORMAT			"preferences/date_format"
 

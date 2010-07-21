@@ -48,7 +48,7 @@ vfs_file_monitor_add (NautilusFile *file,
 {
 	nautilus_directory_monitor_add_internal
 		(file->details->directory, file,
-		 client, TRUE, TRUE, attributes, NULL, NULL);
+		 client, TRUE, attributes, NULL, NULL);
 }   
 			   
 static void

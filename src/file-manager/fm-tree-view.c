@@ -1418,7 +1418,7 @@ static void
 update_filtering_from_preferences (FMTreeView *view)
 {
 	NautilusWindowShowHiddenFilesMode mode;
-	
+
 	if (view->details->child_model == NULL) {
 		return;
 	}
@@ -1428,7 +1428,7 @@ update_filtering_from_preferences (FMTreeView *view)
 	if (mode == NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT) {
 		fm_tree_model_set_show_hidden_files
 			(view->details->child_model,
-			 eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES));
+			 g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES));
 	} else {
 		fm_tree_model_set_show_hidden_files
 			(view->details->child_model,
@@ -1492,13 +1492,14 @@ fm_tree_view_init (FMTreeView *view)
 	
 	view->details->selecting = FALSE;
 
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-						  filtering_changed_callback, view, G_OBJECT (view));
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
-						  filtering_changed_callback, view, G_OBJECT (view));
+	g_signal_connect_swapped (nautilus_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+				  G_CALLBACK(filtering_changed_callback),
+				  view);
+
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
 						  filtering_changed_callback, view, G_OBJECT (view));
-	
+
 	view->details->popup_file = NULL;
 
 	view->details->clipboard_handler_id = 
@@ -1561,6 +1562,10 @@ fm_tree_view_dispose (GObject *object)
 		g_object_unref (view->details->volume_monitor);
 		view->details->volume_monitor = NULL;
 	}
+
+	g_signal_handlers_disconnect_by_func (nautilus_preferences,
+					      G_CALLBACK(filtering_changed_callback),
+					      view);
 
 	view->details->window = NULL;
 

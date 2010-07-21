@@ -730,23 +730,20 @@ nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow
 	bind_builder_bool (builder, nautilus_media_preferences,
 			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_MEDIA_AUTORUN_NEVER,
 			   NAUTILUS_PREFERENCES_MEDIA_AUTORUN_NEVER);
-
 	bind_builder_bool (builder, nautilus_preferences,
 			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TRASH_CONFIRM_WIDGET,
 			   NAUTILUS_PREFERENCES_CONFIRM_TRASH);
 	bind_builder_bool (builder, nautilus_preferences,
 			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TRASH_DELETE_WIDGET,
 			   NAUTILUS_PREFERENCES_ENABLE_DELETE);
-	eel_preferences_builder_connect_bool (builder,
-					      NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SHOW_HIDDEN_WIDGET,
-					      NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
-	eel_preferences_builder_connect_bool_slave (builder,
-						    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SHOW_HIDDEN_WIDGET,
-						    NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES);
+	bind_builder_bool (builder, nautilus_preferences,
+			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SHOW_HIDDEN_WIDGET,
+			   NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
+
 	eel_preferences_builder_connect_bool (builder,
 					      NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TREE_VIEW_FOLDERS_WIDGET,
 					      NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES);
-	
+
 	eel_preferences_builder_connect_string_enum_combo_box (builder,
 							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DEFAULT_VIEW_WIDGET,
 							       NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,

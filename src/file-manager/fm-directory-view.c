@@ -231,7 +231,6 @@ struct FMDirectoryViewDetails
 
 	gboolean show_foreign_files;
 	gboolean show_hidden_files;
-	gboolean show_backup_files;
 	gboolean ignore_hidden_file_preferences;
 
 	gboolean batching_selection_level;
@@ -1708,9 +1707,9 @@ add_directory_to_directory_list (FMDirectoryView *view,
 			NAUTILUS_FILE_ATTRIBUTES_FOR_ICON |
 			NAUTILUS_FILE_ATTRIBUTE_INFO |
 			NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT;
- 
+
 		nautilus_directory_file_monitor_add (directory, directory_list,
-						     FALSE, FALSE, attributes,
+						     FALSE, attributes,
 						     (NautilusDirectoryCallback)changed_callback, view);
 
 		g_signal_connect_object (directory, "files_added",
@@ -3267,7 +3266,6 @@ fm_directory_view_add_subdirectory (FMDirectoryView  *view,
 	nautilus_directory_file_monitor_add (directory,
 					     &view->details->model,
 					     view->details->show_hidden_files,
-					     view->details->show_backup_files,
 					     attributes,
 					     files_added_callback, view);
 	
@@ -5342,7 +5340,7 @@ update_directory_in_scripts_menu (FMDirectoryView *view, NautilusDirectory *dire
 	g_free (escaped_path);
 
 	file_list = nautilus_directory_get_file_list (directory);
-	filtered = nautilus_file_list_filter_hidden_and_backup (file_list, FALSE, FALSE);
+	filtered = nautilus_file_list_filter_hidden (file_list, FALSE);
 	nautilus_file_list_free (file_list);
 
 	file_list = nautilus_file_list_sort_by_display_name (filtered);
@@ -5596,7 +5594,7 @@ update_directory_in_templates_menu (FMDirectoryView *view,
 	g_free (escaped_path);
 
 	file_list = nautilus_directory_get_file_list (directory);
-	filtered = nautilus_file_list_filter_hidden_and_backup (file_list, FALSE, FALSE);
+	filtered = nautilus_file_list_filter_hidden (file_list, FALSE);
 	nautilus_file_list_free (file_list);
 
 	file_list = nautilus_file_list_sort_by_display_name (filtered);
@@ -6987,26 +6985,23 @@ fm_directory_view_init_show_hidden_files (FMDirectoryView *view)
 	if (view->details->ignore_hidden_file_preferences) {
 		return;
 	}
-	
+
 	show_hidden_changed = FALSE;
 	mode = nautilus_window_info_get_hidden_files_mode (view->details->window);
-	
+
 	if (mode == NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT) {
-		show_hidden_default_setting = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
+		show_hidden_default_setting = g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
 		if (show_hidden_default_setting != view->details->show_hidden_files) {
 			view->details->show_hidden_files = show_hidden_default_setting;
-			view->details->show_backup_files = show_hidden_default_setting;
 			show_hidden_changed = TRUE;
 		}
 	} else {
 		if (mode == NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_ENABLE) {
 			show_hidden_changed = !view->details->show_hidden_files;
 			view->details->show_hidden_files = TRUE;
-			view->details->show_backup_files = TRUE;
 		} else {
 			show_hidden_changed = view->details->show_hidden_files;
 			view->details->show_hidden_files = FALSE;
-			view->details->show_backup_files = FALSE;
 		}
 	}
 
@@ -9336,7 +9331,6 @@ finish_loading (FMDirectoryView *view)
 	nautilus_directory_file_monitor_add (view->details->model,
 					     &view->details->model,
 					     view->details->show_hidden_files,
-					     view->details->show_backup_files,
 					     attributes,
 					     files_added_callback, view);
 
@@ -9722,9 +9716,8 @@ fm_directory_view_accepts_dragged_files (FMDirectoryView *view)
 gboolean
 fm_directory_view_should_show_file (FMDirectoryView *view, NautilusFile *file)
 {
-	return nautilus_file_should_show (file, 
-					  view->details->show_hidden_files, 
-					  view->details->show_backup_files,
+	return nautilus_file_should_show (file,
+					  view->details->show_hidden_files,
 					  view->details->show_foreign_files);
 }
 
@@ -9837,7 +9830,6 @@ fm_directory_view_ignore_hidden_file_preferences (FMDirectoryView *view)
 	}
 
 	view->details->show_hidden_files = FALSE;
-	view->details->show_backup_files = FALSE;
 	view->details->ignore_hidden_file_preferences = TRUE;
 }
 

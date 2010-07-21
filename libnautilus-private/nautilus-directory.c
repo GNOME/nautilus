@@ -316,12 +316,11 @@ add_preferences_callbacks (void)
 {
 	nautilus_global_preferences_init ();
 
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-				      filtering_changed_callback,
-				      NULL);
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
-				      filtering_changed_callback,
-				      NULL);
+	g_signal_connect_swapped (nautilus_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+				  G_CALLBACK(filtering_changed_callback),
+				  NULL);
+
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
 				      async_data_preference_changed_callback,
 				      NULL);
@@ -1560,7 +1559,6 @@ void
 nautilus_directory_file_monitor_add (NautilusDirectory *directory,
 				     gconstpointer client,
 				     gboolean monitor_hidden_files,
-				     gboolean monitor_backup_files,
 				     NautilusFileAttributes file_attributes,
 				     NautilusDirectoryCallback callback,
 				     gpointer callback_data)
@@ -1572,7 +1570,6 @@ nautilus_directory_file_monitor_add (NautilusDirectory *directory,
 		(NAUTILUS_DIRECTORY_CLASS, directory,
 		 file_monitor_add, (directory, client,
 				    monitor_hidden_files,
-				    monitor_backup_files,
 				    file_attributes,
 				    callback, callback_data));
 }
@@ -1824,7 +1821,7 @@ nautilus_self_check_directory (void)
 
 	nautilus_directory_file_monitor_add
 		(directory, &data_dummy,
-		 TRUE, TRUE, 0, NULL, NULL);
+		 TRUE, 0, NULL, NULL);
 
 	/* FIXME: these need to be updated to the new metadata infrastructure
 	 *  as make check doesn't pass.
