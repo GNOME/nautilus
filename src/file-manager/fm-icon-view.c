@@ -3061,9 +3061,10 @@ fm_icon_view_init (FMIconView *icon_view)
 						 NAUTILUS_ICON_LAYOUT_L_R_T_B);
 
 	if (!setup_sound_preview) {
-		eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_PREVIEW_SOUND,
-					       &preview_sound_auto_value);
-		
+		eel_g_settings_add_auto_enum (nautilus_preferences,
+					      NAUTILUS_PREFERENCES_PREVIEW_SOUND,
+					      &preview_sound_auto_value);
+
 		setup_sound_preview = TRUE;
 	}
 

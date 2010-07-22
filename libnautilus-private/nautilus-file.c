@@ -4012,7 +4012,7 @@ get_custom_icon (NautilusFile *file)
 }
 
 
-static guint cached_thumbnail_limit;
+static guint64 cached_thumbnail_limit;
 int cached_thumbnail_size;
 static int show_image_thumbs;
 
@@ -8028,14 +8028,16 @@ nautilus_extract_top_left_text (const char *text,
 	}
  done:
 	g_free (text_copy);
- 
+
 	return g_string_free(buffer, FALSE);
 }
 
 static void
 thumbnail_limit_changed_callback (gpointer user_data)
 {
-	cached_thumbnail_limit = eel_preferences_get_uint (NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT);
+	g_settings_get (nautilus_preferences,
+			NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
+			"t", &cached_thumbnail_limit);
 
 	/* Tell the world that icons might have changed. We could invent a narrower-scope
 	 * signal to mean only "thumbnails might have changed" if this ends up being slow
@@ -8059,7 +8061,7 @@ thumbnail_size_changed_callback (gpointer user_data)
 static void
 show_thumbnails_changed_callback (gpointer user_data)
 {
-	show_image_thumbs = eel_preferences_get_enum (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS);
+	show_image_thumbs = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS);
 
 	/* Tell the world that icons might have changed. We could invent a narrower-scope
 	 * signal to mean only "thumbnails might have changed" if this ends up being slow
@@ -8068,7 +8070,7 @@ show_thumbnails_changed_callback (gpointer user_data)
 	emit_change_signals_for_all_files_in_all_directories ();
 }
 
-static void       
+static void
 mime_type_data_changed_callback (GObject *signaller, gpointer user_data)
 {
 	/* Tell the world that icons might have changed. We could invent a narrower-scope
@@ -8084,7 +8086,7 @@ icon_theme_changed_callback (GtkIconTheme *icon_theme,
 {
 	/* Clear all pixmap caches as the icon => pixmap lookup changed */
 	nautilus_icon_info_clear_caches ();
-	
+
 	/* Tell the world that icons might have changed. We could invent a narrower-scope
 	 * signal to mean only "thumbnails might have changed" if this ends up being slow
 	 * for some reason.
@@ -8157,17 +8159,19 @@ nautilus_file_class_init (NautilusFileClass *class)
 				      &date_format_pref);
 
 	thumbnail_limit_changed_callback (NULL);
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
-				      thumbnail_limit_changed_callback,
-				      NULL);
+	g_signal_connect_swapped (nautilus_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
+				  G_CALLBACK (thumbnail_limit_changed_callback),
+				  NULL);
 	thumbnail_size_changed_callback (NULL);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_THUMBNAIL_SIZE,
 				      thumbnail_size_changed_callback,
 				      NULL);
 	show_thumbnails_changed_callback (NULL);
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
-				      show_thumbnails_changed_callback,
-				      NULL);
+	g_signal_connect_swapped (nautilus_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
+				  G_CALLBACK (show_thumbnails_changed_callback),
+				  NULL);
 
 	icon_theme = gtk_icon_theme_get_default ();
 	g_signal_connect_object (icon_theme,

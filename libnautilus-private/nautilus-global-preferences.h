@@ -45,7 +45,7 @@ G_BEGIN_DECLS
 #define NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_URI           "side-pane-background-uri"
 
 /* Automount options */
-#define NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT	                "automount"
+#define NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT			"automount"
 #define NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT_OPEN		"automount-open"
 
 /* Autorun options */
@@ -200,9 +200,9 @@ typedef enum
 
 #define NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS		"show-icon-text"
 #define NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS "show-directory-item-counts"
-#define NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS	"preferences/show_image_thumbnails"
-#define NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT	"preferences/thumbnail_limit"
-#define NAUTILUS_PREFERENCES_PREVIEW_SOUND		"preferences/preview_sound"
+#define NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS	"show-image-thumbnails"
+#define NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT	"thumbnail-limit"
+#define NAUTILUS_PREFERENCES_PREVIEW_SOUND		"preview-sound"
 
 typedef enum
 {

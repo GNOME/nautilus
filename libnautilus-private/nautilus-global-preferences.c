@@ -63,13 +63,6 @@ typedef enum
 	PREFERENCE_STRING_ARRAY
 } PreferenceType;
 
-/* Enumerations used to qualify some INTEGER preferences */
-static EelEnumerationEntry speed_tradeoff_enum_entries[] = {
-	{ "always",	    N_("_Always"),		NAUTILUS_SPEED_TRADEOFF_ALWAYS },
-	{ "local_only",	    N_("_Local File Only"),	NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY },
-	{ "never",	    N_("_Never"),		NAUTILUS_SPEED_TRADEOFF_NEVER }
-};
-
 static EelEnumerationEntry default_zoom_level_enum_entries[] = {
 	/* xgettext:no-c-format */
 	{ "smallest",	    N_("25%"),		NAUTILUS_ZOOM_LEVEL_SMALLEST },
@@ -185,24 +178,6 @@ static const PreferenceDefault preference_defaults[] = {
 	 * for FTP. If we make this fast enough for FTP in particular,
 	 * we should change this default to ALWAYS.
 	 */
-	{ NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
-	  PREFERENCE_STRING,
-	  "local_only",
-	  NULL, NULL,
-	  "speed_tradeoff"
-	},
-	{ NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
-	  PREFERENCE_INTEGER,
-	  GINT_TO_POINTER(10485760),
-	  NULL, NULL,
-	  "file_size"
-	},
-	{ NAUTILUS_PREFERENCES_PREVIEW_SOUND,
-	  PREFERENCE_STRING,
-	  "local_only",
-	  NULL, NULL,
-	  "speed_tradeoff"
-	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
 	  PREFERENCE_STRING_ARRAY,
 	  "size,date_modified,type",
@@ -404,9 +379,6 @@ global_preferences_register_enumerations (void)
 	eel_enumeration_register ("file_size",
 				  file_size_enum_entries,
 				  G_N_ELEMENTS (file_size_enum_entries));
-	eel_enumeration_register ("speed_tradeoff",
-				  speed_tradeoff_enum_entries,
-				  G_N_ELEMENTS (speed_tradeoff_enum_entries));
 	eel_enumeration_register ("standard_font_size",
 				  standard_font_size_entries,
 				  G_N_ELEMENTS (standard_font_size_entries));
