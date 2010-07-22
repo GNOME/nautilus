@@ -111,21 +111,6 @@ static EelEnumerationEntry click_policy_enum_entries[] = {
 	}
 };
 
-static EelEnumerationEntry executable_text_activation_enum_entries[] = {
-	{ "launch",
-	  N_("E_xecute files when they are clicked"),
-	  NAUTILUS_EXECUTABLE_TEXT_LAUNCH
-	},
-	{ "display",
-	  N_("Display _files when they are clicked"),
-	  NAUTILUS_EXECUTABLE_TEXT_DISPLAY
-	},
-	{ "ask",
-	  N_("_Ask each time"),
-	  NAUTILUS_EXECUTABLE_TEXT_ASK
-	}
-};
-
 static EelEnumerationEntry search_bar_type_enum_entries[] = {
 	{ "search by text",
 	  N_("Search for files by file name only"),
@@ -255,12 +240,6 @@ static const PreferenceDefault preference_defaults[] = {
 	  "double",
 	  NULL, NULL,
 	  "click_policy"
-	},
-	{ NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
-	  PREFERENCE_STRING,
-	  "ask",
-	  NULL, NULL,
-	  "executable_text_activation"
 	},
 	{ NAUTILUS_PREFERENCES_INSTALL_MIME_ACTIVATION,
 	  PREFERENCE_BOOLEAN,
@@ -542,9 +521,6 @@ global_preferences_register_enumerations (void)
 	eel_enumeration_register ("default_zoom_level",
 				  default_zoom_level_enum_entries,
 				  G_N_ELEMENTS (default_zoom_level_enum_entries));
-	eel_enumeration_register ("executable_text_activation",
-				  executable_text_activation_enum_entries,
-				  G_N_ELEMENTS (executable_text_activation_enum_entries));
 	eel_enumeration_register ("file_size",
 				  file_size_enum_entries,
 				  G_N_ELEMENTS (file_size_enum_entries));

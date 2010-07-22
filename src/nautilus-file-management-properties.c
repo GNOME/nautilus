@@ -723,6 +723,84 @@ bind_builder_enum (GtkBuilder *builder,
 				      enum_values, NULL);
 }
 
+typedef struct {
+	GtkWidget *button;
+	const char *value;
+	const char *key;
+	GSettings *settings;
+} RadioBinding;
+
+static void
+radio_binding_setting_changed (GSettings   *settings,
+			       const gchar *key,
+			       gpointer     user_data)
+{
+	RadioBinding *binding = user_data;
+	char *value;
+
+	value = g_settings_get_string (settings, key);
+
+	if (strcmp (value, binding->value) == 0) {
+		/* This will unset the currently active, no need
+		   to do that manually */
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (binding->button), TRUE);
+	}
+	g_free (value);
+}
+
+static void
+radio_binding_button_toggled (GtkToggleButton *toggle_button,
+			      RadioBinding *binding)
+{
+	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (binding->button))) {
+		g_settings_set_string (binding->settings, binding->key, binding->value);
+	}
+}
+
+static void
+free_radio_binding (gpointer	 data,
+		    GClosure	*closure)
+{
+	RadioBinding *binding = data;
+
+	g_object_unref (binding->settings);
+	g_free (binding);
+}
+
+static void
+bind_builder_radio (GtkBuilder *builder,
+		    GSettings *settings,
+		    const char **widget_names,
+		    const char *prefs,
+		    const char **values)
+{
+	GtkWidget *button;
+	int i;
+	char *detailed_signal;
+	RadioBinding *binding;
+
+	detailed_signal = g_strdup_printf ("changed::%s", prefs);
+
+	for (i = 0; widget_names[i] != NULL; i++) {
+		button = GTK_WIDGET (gtk_builder_get_object (builder, widget_names[i]));
+
+		binding = g_new (RadioBinding, 1);
+		binding->button = button;
+		binding->value = values[i];
+		binding->key = prefs;
+		binding->settings = g_object_ref (settings);
+
+		g_signal_connect (settings, detailed_signal,
+				  G_CALLBACK(radio_binding_setting_changed),
+				  binding);
+
+		g_signal_connect_data (G_OBJECT (button), "toggled",
+				       G_CALLBACK (radio_binding_button_toggled),
+				       binding, free_radio_binding, 0);
+	}
+}
+
+
 static  void
 nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow *window)
 {
@@ -833,14 +911,15 @@ nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow
 			   NAUTILUS_PREFERENCES_DATE_FORMAT,
 			   (const char **) date_format_values);
 
+
 	eel_preferences_builder_connect_string_enum_radio_button (builder,
 								  (const char **) click_behavior_components,
 								  NAUTILUS_PREFERENCES_CLICK_POLICY,
 								  (const char **) click_behavior_values);
-	eel_preferences_builder_connect_string_enum_radio_button (builder,
-								  (const char **) executable_text_components,
-								  NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
-								  (const char **) executable_text_values);
+	bind_builder_radio (builder, nautilus_preferences,
+			    (const char **) executable_text_components,
+			    NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
+			    (const char **) executable_text_values);
 
 	eel_preferences_builder_connect_uint_enum (builder,
 						   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_THUMBNAIL_LIMIT_WIDGET,

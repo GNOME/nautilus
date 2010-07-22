@@ -757,8 +757,8 @@ get_executable_text_file_action (GtkWindow *parent_window, NautilusFile *file)
 
 	g_assert (nautilus_file_contains_text (file));
 
-	preferences_value = eel_preferences_get_enum 
-		(NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION);
+	preferences_value = g_settings_get_enum	(nautilus_preferences,
+						 NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION);
 	switch (preferences_value) {
 	case NAUTILUS_EXECUTABLE_TEXT_LAUNCH:
 		return ACTIVATION_ACTION_LAUNCH;
@@ -814,8 +814,8 @@ get_default_executable_text_file_action (void)
 {
 	int preferences_value;
 
-	preferences_value = eel_preferences_get_enum 
-		(NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION);
+	preferences_value = g_settings_get_enum	(nautilus_preferences,
+						 NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION);
 	switch (preferences_value) {
 	case NAUTILUS_EXECUTABLE_TEXT_LAUNCH:
 		return ACTIVATION_ACTION_LAUNCH;
