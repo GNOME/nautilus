@@ -214,10 +214,6 @@ static const PreferenceDefault preference_defaults[] = {
 	  NULL, NULL,
 	  "speed_tradeoff"
 	},
-	{ NAUTILUS_PREFERENCES_INSTALL_MIME_ACTIVATION,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (TRUE)
-	},
 	{ NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
 	  PREFERENCE_STRING,
 	  "local_only",

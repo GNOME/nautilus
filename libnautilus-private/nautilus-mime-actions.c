@@ -1488,7 +1488,7 @@ application_unhandled_uri (ActivateParameters *parameters, char *uri)
 
 #ifdef ENABLE_PACKAGEKIT
 	/* allow an admin to disable the PackageKit search functionality */
-	show_install_mime = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_INSTALL_MIME_ACTIVATION);
+	show_install_mime = g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_INSTALL_MIME_ACTIVATION);
 #else
 	/* we have no install functionality */
 	show_install_mime = FALSE;

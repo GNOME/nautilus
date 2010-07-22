@@ -99,7 +99,7 @@ typedef enum
 #define NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION		"executable-text-activation"
 
 /* Installing new packages when unknown mime type activated */
-#define NAUTILUS_PREFERENCES_INSTALL_MIME_ACTIVATION		"preferences/install_mime_activation"
+#define NAUTILUS_PREFERENCES_INSTALL_MIME_ACTIVATION		"install-mime-activation"
 
 /* Spatial or browser mode */
 #define NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER			"always-use-browser"
