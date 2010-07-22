@@ -28,6 +28,7 @@
 #define EEL_GLIB_EXTENSIONS_H
 
 #include <glib.h>
+#include <gio/gio.h>
 
 /* A gboolean variant for bit fields. */
 typedef guint eel_boolean_bit;
@@ -124,5 +125,8 @@ void        eel_remove_weak_pointer                     (gpointer               
 /* Get the filename encoding, returns TRUE if utf8 */
 gboolean    eel_get_filename_charset                    (const gchar **filename_charset);
 
+void        eel_g_settings_add_auto_enum                (GSettings *settings,
+							 const char *key,
+							 int *storage);
 
 #endif /* EEL_GLIB_EXTENSIONS_H */

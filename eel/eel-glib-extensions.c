@@ -969,6 +969,31 @@ eel_get_filename_charset (const gchar **filename_charset)
   return cache->is_utf8;
 }
 
+static void
+update_auto_enum (GSettings   *settings,
+		  const gchar *key,
+		  gpointer     user_data)
+{
+	int *storage = user_data;
+
+	*storage = g_settings_get_enum (settings, key);
+}
+
+void
+eel_g_settings_add_auto_enum (GSettings *settings,
+			      const char *key,
+			      int *storage)
+{
+	char *signal;
+
+	*storage = g_settings_get_enum (settings, key);
+	signal = g_strconcat ("changed::", key, NULL);
+	g_signal_connect (settings, signal,
+			  G_CALLBACK(update_auto_enum),
+			  storage);
+}
+
+
 #if !defined (EEL_OMIT_SELF_CHECK)
 
 static void 
