@@ -912,10 +912,10 @@ nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow
 			   (const char **) date_format_values);
 
 
-	eel_preferences_builder_connect_string_enum_radio_button (builder,
-								  (const char **) click_behavior_components,
-								  NAUTILUS_PREFERENCES_CLICK_POLICY,
-								  (const char **) click_behavior_values);
+	bind_builder_radio (builder, nautilus_preferences,
+			    (const char **) click_behavior_components,
+			    NAUTILUS_PREFERENCES_CLICK_POLICY,
+			    (const char **) click_behavior_values);
 	bind_builder_radio (builder, nautilus_preferences,
 			    (const char **) executable_text_components,
 			    NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,

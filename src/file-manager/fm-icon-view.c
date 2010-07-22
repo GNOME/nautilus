@@ -2487,8 +2487,8 @@ static void
 fm_icon_view_emblems_changed (FMDirectoryView *directory_view)
 {
 	g_assert (FM_IS_ICON_VIEW (directory_view));
-	
-	nautilus_icon_container_request_update_all (get_icon_container (FM_ICON_VIEW (directory_view)));	
+
+	nautilus_icon_container_request_update_all (get_icon_container (FM_ICON_VIEW (directory_view)));
 }
 
 static void
@@ -2685,7 +2685,7 @@ fm_icon_view_update_click_mode (FMIconView *icon_view)
 	icon_container = get_icon_container (icon_view);
 	g_assert (icon_container != NULL);
 
-	click_mode = eel_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY);
+	click_mode = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_CLICK_POLICY);
 
 	nautilus_icon_container_set_single_click_mode (icon_container,
 						       click_mode == NAUTILUS_CLICK_POLICY_SINGLE);

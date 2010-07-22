@@ -208,9 +208,9 @@ static void
 update_click_policy (NautilusHistorySidebar *sidebar)
 {
 	int policy;
-	
-	policy = eel_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY);
-	
+
+	policy = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_CLICK_POLICY);
+
 	eel_gtk_tree_view_set_activate_on_single_click
 		(sidebar->tree_view, policy == NAUTILUS_CLICK_POLICY_SINGLE);
 }
@@ -288,9 +288,10 @@ nautilus_history_sidebar_init (NautilusHistorySidebar *sidebar)
 	g_signal_connect (tree_view, "button-press-event", 
 			  G_CALLBACK (button_press_event_callback), sidebar);
 
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
-				      click_policy_changed_callback,
-				      sidebar);
+	g_signal_connect_swapped (nautilus_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_CLICK_POLICY,
+				  G_CALLBACK(click_policy_changed_callback),
+				  sidebar);
 	update_click_policy (sidebar);
 }
 
@@ -298,12 +299,11 @@ static void
 nautilus_history_sidebar_finalize (GObject *object)
 {
 	NautilusHistorySidebar *sidebar;
-	
+
 	sidebar = NAUTILUS_HISTORY_SIDEBAR (object);
 
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
-					 click_policy_changed_callback,
-					 sidebar);
+	g_signal_handlers_disconnect_by_func (nautilus_preferences,
+					      click_policy_changed_callback, sidebar);
 
 	G_OBJECT_CLASS (nautilus_history_sidebar_parent_class)->finalize (object);
 }

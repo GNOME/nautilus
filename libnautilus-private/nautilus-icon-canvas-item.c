@@ -273,8 +273,9 @@ nautilus_icon_canvas_item_init (NautilusIconCanvasItem *icon_item)
 	static gboolean setup_auto_enums = FALSE;
 
 	if (!setup_auto_enums) {
-		eel_preferences_add_auto_enum
-			(NAUTILUS_PREFERENCES_CLICK_POLICY,
+		eel_g_settings_add_auto_enum
+			(nautilus_preferences,
+			 NAUTILUS_PREFERENCES_CLICK_POLICY,
 			 &click_policy_auto_value);
 		setup_auto_enums = TRUE;
 	}

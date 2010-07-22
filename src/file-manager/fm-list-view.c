@@ -3045,8 +3045,9 @@ fm_list_view_class_init (FMListViewClass *class)
 	fm_directory_view_class->using_manual_layout = fm_list_view_using_manual_layout;
 	fm_directory_view_class->set_is_active = real_set_is_active;
 
-	eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
-				       &click_policy_auto_value);
+	eel_g_settings_add_auto_enum (nautilus_preferences,
+				      NAUTILUS_PREFERENCES_CLICK_POLICY,
+				      &click_policy_auto_value);
 	eel_preferences_add_auto_string (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
 					 (const char **) &default_sort_order_auto_value);
 	eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,

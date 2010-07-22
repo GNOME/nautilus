@@ -93,7 +93,7 @@ typedef enum
 #define NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES         "sidebar_panels/tree/show_only_directories"
 
 /* Single/Double click preference  */
-#define NAUTILUS_PREFERENCES_CLICK_POLICY			"preferences/click_policy"
+#define NAUTILUS_PREFERENCES_CLICK_POLICY			"click-policy"
 
 /* Activating executable text files */
 #define NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION		"executable-text-activation"
