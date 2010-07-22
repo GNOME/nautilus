@@ -4671,7 +4671,7 @@ show_text_in_icons_changed_callback (gpointer callback_data)
 static void
 show_directory_item_count_changed_callback (gpointer callback_data)
 {
-	show_directory_item_count = eel_preferences_get_enum (NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS);
+	show_directory_item_count = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS);
 }
 
 static gboolean
@@ -4723,9 +4723,10 @@ nautilus_file_should_show_directory_item_count (NautilusFile *file)
 	
 	/* Add the callback once for the life of our process */
 	if (!show_directory_item_count_callback_added) {
-		eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
-						   show_directory_item_count_changed_callback,
-						   NULL);
+		g_signal_connect_swapped (nautilus_preferences,
+					  "changed::" NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
+					  G_CALLBACK(show_directory_item_count_changed_callback),
+					  NULL);
 		show_directory_item_count_callback_added = TRUE;
 
 		/* Peek for the first time */

@@ -185,12 +185,6 @@ static const PreferenceDefault preference_defaults[] = {
 	 * for FTP. If we make this fast enough for FTP in particular,
 	 * we should change this default to ALWAYS.
 	 */
-	{ NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
-	  PREFERENCE_STRING,
-	  "local_only",
-	  NULL, NULL,
-	  "speed_tradeoff"
-	},
 	{ NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
 	  PREFERENCE_STRING,
 	  "local_only",

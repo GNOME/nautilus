@@ -163,10 +163,10 @@ nautilus_sidebar_title_init (NautilusSidebarTitle *sidebar_title)
 	/* initialize the label colors & fonts */
 	style_set (GTK_WIDGET (sidebar_title), NULL);
 
-	eel_preferences_add_callback_while_alive (
-		NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
-		(EelPreferencesCallback) update_more_info,
-		sidebar_title, G_OBJECT (sidebar_title));
+	g_signal_connect_swapped (nautilus_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
+				  G_CALLBACK(update_more_info),
+				  sidebar_title);
 }
 
 /* destroy by throwing away private storage */
@@ -200,6 +200,9 @@ nautilus_sidebar_title_destroy (GtkObject *object)
 		g_free (sidebar_title->details);
 		sidebar_title->details = NULL;
 	}
+
+	g_signal_handlers_disconnect_by_func (nautilus_preferences,
+					      update_more_info, sidebar_title);
 
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -435,7 +438,7 @@ update_more_info (NautilusSidebarTitle *sidebar_title)
 	int sidebar_width;
 	PangoLayout *layout;
 	GtkAllocation allocation;
-	
+
 	file = sidebar_title->details->file;
 
 	/* allow components to specify the info if they wish to */

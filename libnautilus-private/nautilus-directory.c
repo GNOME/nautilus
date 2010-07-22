@@ -324,9 +324,10 @@ add_preferences_callbacks (void)
 				  "changed::" NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
 				  G_CALLBACK (async_data_preference_changed_callback),
 				  NULL);
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
-				      async_data_preference_changed_callback,
-				      NULL);
+	g_signal_connect_swapped (nautilus_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
+				  G_CALLBACK (async_data_preference_changed_callback),
+				  NULL);
 	g_signal_connect_swapped (nautilus_preferences,
 				  "changed::" NAUTILUS_PREFERENCES_DATE_FORMAT,
 				  G_CALLBACK(async_data_preference_changed_callback),
