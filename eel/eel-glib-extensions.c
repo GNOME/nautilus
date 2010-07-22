@@ -956,7 +956,7 @@ eel_get_filename_charset (const gchar **filename_charset)
 	  cache->is_utf8 = g_get_charset (&new_charset);
 	  cache->filename_charset = g_strdup (new_charset);
 	}
-      else 
+      else
 	{
 	  cache->filename_charset = g_strdup ("UTF-8");
 	  cache->is_utf8 = TRUE;
@@ -967,6 +967,54 @@ eel_get_filename_charset (const gchar **filename_charset)
     *filename_charset = cache->filename_charset;
 
   return cache->is_utf8;
+}
+
+static void
+update_auto_boolean (GSettings   *settings,
+		     const gchar *key,
+		     gpointer     user_data)
+{
+	int *storage = user_data;
+
+	*storage = g_settings_get_boolean (settings, key);
+}
+
+void
+eel_g_settings_add_auto_boolean (GSettings *settings,
+				 const char *key,
+				 gboolean *storage)
+{
+	char *signal;
+
+	*storage = g_settings_get_boolean (settings, key);
+	signal = g_strconcat ("changed::", key, NULL);
+	g_signal_connect (settings, signal,
+			  G_CALLBACK(update_auto_boolean),
+			  storage);
+}
+
+static void
+update_auto_int (GSettings   *settings,
+		 const gchar *key,
+		 gpointer     user_data)
+{
+	int *storage = user_data;
+
+	*storage = g_settings_get_int (settings, key);
+}
+
+void
+eel_g_settings_add_auto_int (GSettings *settings,
+			     const char *key,
+			     int *storage)
+{
+	char *signal;
+
+	*storage = g_settings_get_int (settings, key);
+	signal = g_strconcat ("changed::", key, NULL);
+	g_signal_connect (settings, signal,
+			  G_CALLBACK(update_auto_int),
+			  storage);
 }
 
 static void
@@ -993,10 +1041,46 @@ eel_g_settings_add_auto_enum (GSettings *settings,
 			  storage);
 }
 
+static void
+update_auto_strv_as_quarks (GSettings   *settings,
+			    const gchar *key,
+			    gpointer     user_data)
+{
+	GQuark **storage = user_data;
+	int i = 0;
+	char **value;
+
+	value = g_settings_get_strv (settings, key);
+
+	g_free (*storage);
+	*storage = g_new (GQuark, g_strv_length (value) + 1);
+
+	for (i = 0; value[i] != NULL; ++i) {
+		(*storage)[i] = g_quark_from_string (value[i]);
+	}
+	(*storage)[i] = 0;
+
+	g_strfreev (value);
+}
+
+void
+eel_g_settings_add_auto_strv_as_quarks (GSettings *settings,
+					const char *key,
+					GQuark **storage)
+{
+	char *signal;
+
+	*storage = NULL;
+	update_auto_strv_as_quarks (settings, key, storage);
+	signal = g_strconcat ("changed::", key, NULL);
+	g_signal_connect (settings, signal,
+			  G_CALLBACK(update_auto_strv_as_quarks),
+			  storage);
+}
 
 #if !defined (EEL_OMIT_SELF_CHECK)
 
-static void 
+static void
 check_tm_to_g_date (time_t time)
 {
 	struct tm *before_conversion;

@@ -128,5 +128,14 @@ gboolean    eel_get_filename_charset                    (const gchar **filename_
 void        eel_g_settings_add_auto_enum                (GSettings *settings,
 							 const char *key,
 							 int *storage);
+void        eel_g_settings_add_auto_int                 (GSettings *settings,
+							 const char *key,
+							 int *storage);
+void        eel_g_settings_add_auto_boolean             (GSettings *settings,
+							 const char *key,
+							 gboolean *storage);
+void        eel_g_settings_add_auto_strv_as_quarks      (GSettings *settings,
+							 const char *key,
+							 GQuark **storage);
 
 #endif /* EEL_GLIB_EXTENSIONS_H */
