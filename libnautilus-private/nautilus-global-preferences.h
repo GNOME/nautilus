@@ -87,7 +87,7 @@ typedef enum
 } NautilusNewTabPosition;
 
 /* Sidebar panels  */
-#define NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES         "sidebar_panels/tree/show_only_directories"
+#define NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES         "show-only-directories"
 
 /* Single/Double click preference  */
 #define NAUTILUS_PREFERENCES_CLICK_POLICY			"click-policy"
@@ -229,6 +229,7 @@ char *nautilus_global_preferences_get_default_folder_viewer_preference_as_iid (v
 GSettings *nautilus_preferences;
 GSettings *nautilus_icon_view_preferences;
 GSettings *nautilus_desktop_preferences;
+GSettings *nautilus_tree_sidebar_preferences;
 GSettings *nautilus_media_preferences;
 GSettings *nautilus_window_state;
 

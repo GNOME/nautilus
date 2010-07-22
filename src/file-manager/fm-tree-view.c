@@ -1436,7 +1436,8 @@ update_filtering_from_preferences (FMTreeView *view)
 	}
 	fm_tree_model_set_show_only_directories
 		(view->details->child_model,
-		 eel_preferences_get_boolean (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES));
+		 g_settings_get_boolean (nautilus_tree_sidebar_preferences,
+					 NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES));
 }
 
 static void
@@ -1497,15 +1498,16 @@ fm_tree_view_init (FMTreeView *view)
 				  G_CALLBACK(filtering_changed_callback),
 				  view);
 
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
-						  filtering_changed_callback, view, G_OBJECT (view));
+	g_signal_connect_swapped (nautilus_tree_sidebar_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
+				  G_CALLBACK (filtering_changed_callback), view);
 
 	view->details->popup_file = NULL;
 
-	view->details->clipboard_handler_id = 
+	view->details->clipboard_handler_id =
 		g_signal_connect (nautilus_clipboard_monitor_get (),
-		                  "clipboard_info",
-		                  G_CALLBACK (notify_clipboard_info), view);
+				  "clipboard_info",
+				  G_CALLBACK (notify_clipboard_info), view);
 }
 
 static void
@@ -1564,6 +1566,9 @@ fm_tree_view_dispose (GObject *object)
 	}
 
 	g_signal_handlers_disconnect_by_func (nautilus_preferences,
+					      G_CALLBACK(filtering_changed_callback),
+					      view);
+	g_signal_handlers_disconnect_by_func (nautilus_tree_sidebar_preferences,
 					      G_CALLBACK(filtering_changed_callback),
 					      view);
 

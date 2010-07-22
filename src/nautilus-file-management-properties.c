@@ -957,9 +957,9 @@ nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow
 			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SHOW_HIDDEN_WIDGET,
 			   NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
 
-	eel_preferences_builder_connect_bool (builder,
-					      NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TREE_VIEW_FOLDERS_WIDGET,
-					      NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES);
+	bind_builder_bool (builder, nautilus_tree_sidebar_preferences,
+			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TREE_VIEW_FOLDERS_WIDGET,
+			   NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES);
 
 	bind_builder_enum (builder, nautilus_preferences,
 			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DEFAULT_VIEW_WIDGET,

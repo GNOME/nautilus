@@ -159,16 +159,6 @@ typedef struct
  * YOU SHOULD EDIT THE SCHEMAS FILE TO CHANGE DEFAULTS.
  */
 static const PreferenceDefault preference_defaults[] = {
-	/* Don't show remote directory item counts by default
-	 * because computing them can be annoyingly slow, especially
-	 * for FTP. If we make this fast enough for FTP in particular,
-	 * we should change this default to ALWAYS.
-	 */
-	{ NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (TRUE)
-	},
-
 	/* Icon View Default Preferences */
 	/* Compact Icon View Default Preferences */
 	{ NAUTILUS_PREFERENCES_COMPACT_VIEW_DEFAULT_ZOOM_LEVEL,
@@ -407,6 +397,7 @@ nautilus_global_preferences_init (void)
 	nautilus_window_state = g_settings_new("org.gnome.nautilus.window-state");
 	nautilus_icon_view_preferences = g_settings_new("org.gnome.nautilus.icon-view");
 	nautilus_desktop_preferences = g_settings_new("org.gnome.nautilus.desktop");
+	nautilus_tree_sidebar_preferences = g_settings_new("org.gnome.nautilus.sidebar-panels.tree");
 
 	/* Set up storage for values accessed in this file */
 	g_signal_connect_swapped (nautilus_icon_view_preferences,
