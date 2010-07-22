@@ -174,10 +174,6 @@ enum
 #define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS	        "list_view/default_visible_columns"
 #define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER	        "list_view/default_column_order"
 
-/* News panel */
-#define NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS				"news/max_items"
-#define NAUTILUS_PREFERENCES_NEWS_UPDATE_INTERVAL			"news/update_interval"
-
 enum
 {
 	NAUTILUS_CLICK_POLICY_SINGLE,
