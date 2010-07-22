@@ -237,9 +237,9 @@ always_use_browser_changed (gpointer callback_data)
 static void
 mouse_back_button_changed (gpointer callback_data)
 {
-	int new_back_button;	
+	int new_back_button;
 
-	new_back_button = eel_preferences_get_integer (NAUTILUS_PREFERENCES_MOUSE_BACK_BUTTON);
+	new_back_button = g_settings_get_int (nautilus_preferences, NAUTILUS_PREFERENCES_MOUSE_BACK_BUTTON);
 
 	/* Bounds checking */
 	if (new_back_button < 6 || new_back_button > UPPER_MOUSE_LIMIT)
@@ -251,9 +251,9 @@ mouse_back_button_changed (gpointer callback_data)
 static void
 mouse_forward_button_changed (gpointer callback_data)
 {
-	int new_forward_button;	
+	int new_forward_button;
 
-	new_forward_button = eel_preferences_get_integer (NAUTILUS_PREFERENCES_MOUSE_FORWARD_BUTTON);
+	new_forward_button = g_settings_get_int (nautilus_preferences, NAUTILUS_PREFERENCES_MOUSE_FORWARD_BUTTON);
 
 	/* Bounds checking */
 	if (new_forward_button < 6 || new_forward_button > UPPER_MOUSE_LIMIT)
@@ -265,7 +265,7 @@ mouse_forward_button_changed (gpointer callback_data)
 static void
 use_extra_mouse_buttons_changed (gpointer callback_data)
 {
-	mouse_extra_buttons = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_MOUSE_USE_EXTRA_BUTTONS);
+	mouse_extra_buttons = g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_MOUSE_USE_EXTRA_BUTTONS);
 }
 
 void
@@ -1205,18 +1205,20 @@ nautilus_navigation_window_class_init (NautilusNavigationWindowClass *class)
 
 	g_type_class_add_private (G_OBJECT_CLASS (class), sizeof (NautilusNavigationWindowDetails));
 
+	g_signal_connect_swapped (nautilus_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_MOUSE_BACK_BUTTON,
+				  G_CALLBACK(mouse_back_button_changed),
+				  NULL);
 
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_MOUSE_BACK_BUTTON, 
-				      mouse_back_button_changed, 
-				      NULL);
+	g_signal_connect_swapped (nautilus_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_MOUSE_FORWARD_BUTTON,
+				  G_CALLBACK(mouse_forward_button_changed),
+				  NULL);
 
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_MOUSE_FORWARD_BUTTON, 
-				      mouse_forward_button_changed, 
-				      NULL);
-
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_MOUSE_USE_EXTRA_BUTTONS,
-				      use_extra_mouse_buttons_changed,
-				      NULL);
+	g_signal_connect_swapped (nautilus_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_MOUSE_USE_EXTRA_BUTTONS,
+				  G_CALLBACK(use_extra_mouse_buttons_changed),
+				  NULL);
 }
 
 static NautilusWindowSlot *
