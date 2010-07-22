@@ -68,7 +68,7 @@ G_BEGIN_DECLS
 
 /* Display  */
 #define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES			"show-hidden-files"
-#define NAUTILUS_PREFERENCES_SHOW_ADVANCED_PERMISSIONS		"preferences/show_advanced_permissions"
+#define NAUTILUS_PREFERENCES_SHOW_ADVANCED_PERMISSIONS		"show-advanced-permissions"
 #define NAUTILUS_PREFERENCES_DATE_FORMAT			"preferences/date_format"
 
 /* Mouse */

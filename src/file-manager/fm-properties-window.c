@@ -4834,7 +4834,7 @@ create_permissions_page (FMPropertiesWindow *window)
 				    GTK_WIDGET (page_table), 
 				    TRUE, TRUE, 0);
 
-		if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_ADVANCED_PERMISSIONS)) {
+		if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_SHOW_ADVANCED_PERMISSIONS)) {
 			window->details->advanced_permissions = TRUE;
 			create_advanced_permissions (window, page_table);
 		} else {
