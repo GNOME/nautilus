@@ -110,7 +110,7 @@ static const char * const date_format_values[] = {
 
 static const char * const preview_values[] = {
 	"always",
-	"local_only",
+	"local-only",
 	"never",
 	NULL
 };
@@ -921,10 +921,10 @@ nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow
 	eel_preferences_builder_connect_string_enum_combo_box_slave (builder,
 								     NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_ORDER_WIDGET,
 								     NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER);
-	eel_preferences_builder_connect_string_enum_combo_box (builder,
-							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_TEXT_WIDGET,
-							       NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
-							       (const char **) preview_values);
+	bind_builder_enum (builder, nautilus_preferences,
+			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_TEXT_WIDGET,
+			   NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
+			   (const char **) preview_values);
 	eel_preferences_builder_connect_string_enum_combo_box (builder,
 							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_IMAGE_WIDGET,
 							       NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,

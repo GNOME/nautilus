@@ -180,12 +180,6 @@ typedef struct
  * YOU SHOULD EDIT THE SCHEMAS FILE TO CHANGE DEFAULTS.
  */
 static const PreferenceDefault preference_defaults[] = {
-	{ NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
-	  PREFERENCE_STRING,
-	  "local_only",
-	  NULL, NULL,
-	  "speed_tradeoff"
-	},
 	/* Don't show remote directory item counts by default
 	 * because computing them can be annoyingly slow, especially
 	 * for FTP. If we make this fast enough for FTP in particular,
