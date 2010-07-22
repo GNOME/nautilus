@@ -164,8 +164,8 @@ enum
 #define NAUTILUS_PREFERENCES_DESKTOP_TEXT_ELLIPSIS_LIMIT		"text-ellipsis-limit"
 
 /* Compact View */
-#define NAUTILUS_PREFERENCES_COMPACT_VIEW_DEFAULT_ZOOM_LEVEL		"compact_view/default_zoom_level"
-#define NAUTILUS_PREFERENCES_COMPACT_VIEW_ALL_COLUMNS_SAME_WIDTH	"compact_view/all_columns_have_same_width"
+#define NAUTILUS_PREFERENCES_COMPACT_VIEW_DEFAULT_ZOOM_LEVEL		"default-zoom-level"
+#define NAUTILUS_PREFERENCES_COMPACT_VIEW_ALL_COLUMNS_SAME_WIDTH	"all-columns-have-same-width"
 
 /* List View */
 #define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER	"list_view/default_sort_in_reverse_order"
@@ -228,6 +228,7 @@ char *nautilus_global_preferences_get_default_folder_viewer_preference_as_iid (v
 
 GSettings *nautilus_preferences;
 GSettings *nautilus_icon_view_preferences;
+GSettings *nautilus_compact_view_preferences;
 GSettings *nautilus_desktop_preferences;
 GSettings *nautilus_tree_sidebar_preferences;
 GSettings *nautilus_media_preferences;
