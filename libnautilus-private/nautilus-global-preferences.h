@@ -115,7 +115,7 @@ typedef enum
 #define NAUTILUS_WINDOW_STATE_SIDEBAR_WIDTH			"sidebar-width"
 
 /* Sorting order */
-#define NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST		"preferences/sort_directories_first"
+#define NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST		"sort-directories-first"
 
 /* The default folder viewer - one of the two enums below */
 #define NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER		"preferences/default_folder_viewer"

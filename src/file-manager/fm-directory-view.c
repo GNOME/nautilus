@@ -1611,8 +1611,8 @@ sort_directories_first_changed_callback (gpointer callback_data)
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	preference_value = 
-		eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
+	preference_value =
+		g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
 
 	if (preference_value != view->details->sort_directories_first) {
 		view->details->sort_directories_first = preference_value;
@@ -1969,8 +1969,8 @@ fm_directory_view_init (FMDirectoryView *view)
 				 G_CALLBACK (user_dirs_changed),
 				 view, G_CONNECT_SWAPPED);
 
-	view->details->sort_directories_first = 
-		eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
+	view->details->sort_directories_first =
+		g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
 
 	g_signal_connect_object (nautilus_trash_monitor_get (), "trash_state_changed",
 				 G_CALLBACK (fm_directory_view_trash_state_changed_callback), view, 0);
@@ -1997,8 +1997,9 @@ fm_directory_view_init (FMDirectoryView *view)
 				  view);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
 				      click_policy_changed_callback, view);
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST, 
-				      sort_directories_first_changed_callback, view);
+	g_signal_connect_swapped (nautilus_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST, 
+				  G_CALLBACK(sort_directories_first_changed_callback), view);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE,
 				      lockdown_disable_command_line_changed_callback, view);
 }
@@ -2011,7 +2012,7 @@ real_unmerge_menus (FMDirectoryView *view)
 	if (view->details->window == NULL) {
 		return;
 	}
-	
+
 	ui_manager = nautilus_window_info_get_ui_manager (view->details->window);
 
 	nautilus_ui_unmerge_ui (ui_manager,
@@ -2111,7 +2112,7 @@ fm_directory_view_finalize (GObject *object)
 					 image_display_policy_changed_callback, view);
 	g_signal_handlers_disconnect_by_func (nautilus_preferences,
 					      click_policy_changed_callback, view);
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
+	g_signal_handlers_disconnect_by_func (nautilus_preferences,
 					 sort_directories_first_changed_callback, view);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE,
 					 lockdown_disable_command_line_changed_callback, view);

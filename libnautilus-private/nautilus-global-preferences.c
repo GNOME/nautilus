@@ -232,10 +232,6 @@ static const PreferenceDefault preference_defaults[] = {
 	  NULL, NULL,
 	  "speed_tradeoff"
 	},
-	{ NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (FALSE)
-	},
 	{ NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
 	  PREFERENCE_STRING,
 	  "search_by_text",
