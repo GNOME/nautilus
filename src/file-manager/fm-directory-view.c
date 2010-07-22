@@ -1987,8 +1987,9 @@ fm_directory_view_init (FMDirectoryView *view)
 	
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_ENABLE_DELETE,
 				      schedule_update_menus_callback, view);
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
-				      text_attribute_names_changed_callback, view);
+	g_signal_connect_swapped (nautilus_icon_view_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
+				  G_CALLBACK(text_attribute_names_changed_callback), view);
 	g_signal_connect_swapped (nautilus_preferences,
 				  "changed::" NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
 				  G_CALLBACK (image_display_policy_changed_callback), view);
@@ -2107,14 +2108,15 @@ fm_directory_view_finalize (GObject *object)
 
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_ENABLE_DELETE,
 					 schedule_update_menus_callback, view);
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
-					 text_attribute_names_changed_callback, view);
+	g_signal_handlers_disconnect_by_func (nautilus_icon_view_preferences,
+					      text_attribute_names_changed_callback,
+					      view);
 	g_signal_handlers_disconnect_by_func (nautilus_preferences,
 					      image_display_policy_changed_callback, view);
 	g_signal_handlers_disconnect_by_func (nautilus_preferences,
 					      click_policy_changed_callback, view);
 	g_signal_handlers_disconnect_by_func (nautilus_preferences,
-					 sort_directories_first_changed_callback, view);
+					      sort_directories_first_changed_callback, view);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE,
 					 lockdown_disable_command_line_changed_callback, view);
 

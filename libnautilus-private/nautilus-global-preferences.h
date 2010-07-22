@@ -135,13 +135,13 @@ enum
 
 
 /* Icon View */
-#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER	"icon_view/default_sort_in_reverse_order"
-#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER		"icon_view/default_sort_order"
-#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT	"icon_view/default_use_tighter_layout"
-#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL		"icon_view/default_zoom_level"
-#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT	"icon_view/default_use_manual_layout"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER	"default-sort-in-reverse-order"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER		"default-sort-order"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT	"default-use-tighter-layout"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL		"default-zoom-level"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT	"default-use-manual-layout"
 
-#define NAUTILUS_PREFERENCES_ICON_VIEW_LABELS_BESIDE_ICONS      	"icon_view/labels_beside_icons"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_LABELS_BESIDE_ICONS		"labels-beside-icons"
 
 
 /* The icon view uses 2 variables to store the sort order and
@@ -149,18 +149,18 @@ enum
  * preferences presensts them as single option menu.  So we
  * use the following preference as a proxy for the other two.
  * In nautilus-global-preferences.c we install callbacks for
- * the proxy preference and update the other 2 when it changes 
+ * the proxy preference and update the other 2 when it changes
  */
-#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT "icon_view/default_sort_order_or_manual_layout"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT "default-sort-order-or-manual-layout"
 
 /* Which text attributes appear beneath icon names */
-#define NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS				"icon_view/captions"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS				"captions"
 
 /* The default size for thumbnail icons */
-#define NAUTILUS_PREFERENCES_ICON_VIEW_THUMBNAIL_SIZE			"icon_view/thumbnail_size"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_THUMBNAIL_SIZE			"thumbnail-size"
 
 /* ellipsization preferences */
-#define NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ELLIPSIS_LIMIT		"icon_view/text_ellipsis_limit"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ELLIPSIS_LIMIT		"text-ellipsis-limit"
 #define NAUTILUS_PREFERENCES_DESKTOP_TEXT_ELLIPSIS_LIMIT		"desktop/text_ellipsis_limit"
 
 /* Compact View */
@@ -227,6 +227,7 @@ void nautilus_global_preferences_init                      (void);
 char *nautilus_global_preferences_get_default_folder_viewer_preference_as_iid (void);
 
 GSettings *nautilus_preferences;
+GSettings *nautilus_icon_view_preferences;
 GSettings *nautilus_media_preferences;
 GSettings *nautilus_window_state;
 

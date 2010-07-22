@@ -4045,7 +4045,7 @@ nautilus_file_should_show_thumbnail (NautilusFile *file)
 	if (mime_type == NULL) {
 		mime_type = "application/octet-stream";
 	}
-	
+
 	/* If the thumbnail has already been created, don't care about the size
 	 * of the original file.
 	 */
@@ -8049,7 +8049,8 @@ thumbnail_limit_changed_callback (gpointer user_data)
 static void
 thumbnail_size_changed_callback (gpointer user_data)
 {
-	cached_thumbnail_size = eel_preferences_get_integer (NAUTILUS_PREFERENCES_ICON_VIEW_THUMBNAIL_SIZE);
+	cached_thumbnail_size = g_settings_get_int (nautilus_icon_view_preferences,
+						    NAUTILUS_PREFERENCES_ICON_VIEW_THUMBNAIL_SIZE);
 
 	/* Tell the world that icons might have changed. We could invent a narrower-scope
 	 * signal to mean only "thumbnails might have changed" if this ends up being slow
@@ -8164,9 +8165,10 @@ nautilus_file_class_init (NautilusFileClass *class)
 				  G_CALLBACK (thumbnail_limit_changed_callback),
 				  NULL);
 	thumbnail_size_changed_callback (NULL);
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_THUMBNAIL_SIZE,
-				      thumbnail_size_changed_callback,
-				      NULL);
+	g_signal_connect_swapped (nautilus_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_ICON_VIEW_THUMBNAIL_SIZE,
+				  G_CALLBACK (thumbnail_size_changed_callback),
+				  NULL);
 	show_thumbnails_changed_callback (NULL);
 	g_signal_connect_swapped (nautilus_preferences,
 				  "changed::" NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,

@@ -289,10 +289,10 @@ fm_desktop_icon_view_finalize (GObject *object)
 	FMDesktopIconView *icon_view;
 
 	icon_view = FM_DESKTOP_ICON_VIEW (object);
-	
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
-					 default_zoom_level_changed,
-					 icon_view);
+
+	g_signal_handlers_disconnect_by_func (nautilus_icon_view_preferences,
+					      default_zoom_level_changed,
+					      icon_view);
 
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE,
 					 lockdown_disable_command_line_changed_callback,
@@ -419,8 +419,9 @@ get_default_zoom_level (void)
 
 	if (!auto_storage_added) {
 		auto_storage_added = TRUE;
-		eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
-					       (int *) &default_zoom_level);
+		eel_g_settings_add_auto_enum (nautilus_icon_view_preferences,
+					      NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
+					      (int *) &default_zoom_level);
 	}
 
 	return CLAMP (default_zoom_level, NAUTILUS_ZOOM_LEVEL_SMALLEST, NAUTILUS_ZOOM_LEVEL_LARGEST);
@@ -594,11 +595,12 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 				 G_CALLBACK (realized_callback), desktop_icon_view, 0);
 	g_signal_connect_object (desktop_icon_view, "unrealize",
 				 G_CALLBACK (unrealized_callback), desktop_icon_view, 0);
-	
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
-				      default_zoom_level_changed,
-				      desktop_icon_view);
-	
+
+	g_signal_connect_swapped (nautilus_icon_view_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
+				  G_CALLBACK (default_zoom_level_changed),
+				  desktop_icon_view);
+
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DESKTOP_FONT,
 						  font_changed_callback, 
 						  desktop_icon_view, G_OBJECT (desktop_icon_view));

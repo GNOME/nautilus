@@ -425,8 +425,9 @@ get_pixbuf_from_data (const unsigned char *buffer,
 	GError *error;
 
 	if (thumbnail_icon_size == 0) {
-		eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_ICON_VIEW_THUMBNAIL_SIZE,
-						  &thumbnail_icon_size);
+		eel_g_settings_add_auto_int (nautilus_icon_view_preferences,
+					     NAUTILUS_PREFERENCES_ICON_VIEW_THUMBNAIL_SIZE,
+					     &thumbnail_icon_size);
 	}
 
 	loader = gdk_pixbuf_loader_new ();

@@ -178,58 +178,12 @@ static const PreferenceDefault preference_defaults[] = {
 	 * for FTP. If we make this fast enough for FTP in particular,
 	 * we should change this default to ALWAYS.
 	 */
-	{ NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
-	  PREFERENCE_STRING_ARRAY,
-	  "size,date_modified,type",
-	  NULL, NULL,
-	  NULL
-	},
 	{ NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
 	  PREFERENCE_BOOLEAN,
 	  GINT_TO_POINTER (TRUE)
 	},
 
 	/* Icon View Default Preferences */
-	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
-	  PREFERENCE_STRING,
-	  "name",
-	  NULL, NULL,
-	  "default_icon_view_sort_order"
-	},
-	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT,
-	  PREFERENCE_STRING,
-	  "name",
-	  NULL, NULL,
-	  "default_icon_view_sort_order"
-	},
-	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (FALSE)
-	},
-	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (FALSE)
-	},
-	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (FALSE)
-	},
-	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
-	  PREFERENCE_STRING,
-	  "standard",
-	  NULL, NULL,
-	  "default_zoom_level"
-	},
-	{ NAUTILUS_PREFERENCES_ICON_VIEW_THUMBNAIL_SIZE,
-	  PREFERENCE_INTEGER,
-	  GINT_TO_POINTER (96)
-	},
-	{ NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ELLIPSIS_LIMIT,
-	  PREFERENCE_STRING_ARRAY,
-	  "3",
-	  NULL,NULL,
-	  NULL,
-	},
 	/* Compact Icon View Default Preferences */
 	{ NAUTILUS_PREFERENCES_COMPACT_VIEW_DEFAULT_ZOOM_LEVEL,
 	  PREFERENCE_STRING,
@@ -502,19 +456,20 @@ nautilus_global_preferences_get_default_folder_viewer_preference_as_iid (void)
  * preferences presensts them as single option menu.  So we
  * use the following preference as a proxy for the other two.
  * In nautilus-global-preferences.c we install callbacks for
- * the proxy preference and update the other 2 when it changes 
+ * the proxy preference and update the other 2 when it changes
  */
 static void
 default_icon_view_sort_order_or_manual_layout_changed_callback (gpointer callback_data)
 {
- 	int default_sort_order_or_manual_layout;
- 	int default_sort_order;
+	int default_sort_order_or_manual_layout;
+	int default_sort_order;
 
- 	default_sort_order_or_manual_layout = 
- 		eel_preferences_get_enum (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT);
+	default_sort_order_or_manual_layout =
+		g_settings_get_enum (nautilus_icon_view_preferences,
+				     NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT);
 
-	eel_preferences_set_boolean (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT,
-				     default_sort_order_or_manual_layout == PREFERENCES_SORT_ORDER_MANUALLY);
+	g_settings_set_boolean (nautilus_icon_view_preferences, NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT,
+				default_sort_order_or_manual_layout == PREFERENCES_SORT_ORDER_MANUALLY);
 
 	if (default_sort_order_or_manual_layout != PREFERENCES_SORT_ORDER_MANUALLY) {
 		default_sort_order = default_sort_order_or_manual_layout;
@@ -522,8 +477,9 @@ default_icon_view_sort_order_or_manual_layout_changed_callback (gpointer callbac
 		g_return_if_fail (default_sort_order >= NAUTILUS_FILE_SORT_BY_DISPLAY_NAME);
 		g_return_if_fail (default_sort_order <= NAUTILUS_FILE_SORT_BY_EMBLEMS);
 
-		eel_preferences_set_enum (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
-					  default_sort_order);
+		g_settings_set_enum (nautilus_icon_view_preferences,
+				     NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
+				     default_sort_order);
 	}
 }
 
@@ -554,11 +510,13 @@ nautilus_global_preferences_init (void)
 	nautilus_preferences = g_settings_new("org.gnome.nautilus.preferences");
 	nautilus_media_preferences = g_settings_new("org.gnome.media-handling");
 	nautilus_window_state = g_settings_new("org.gnome.nautilus.window-state");
+	nautilus_icon_view_preferences = g_settings_new("org.gnome.nautilus.icon-view");
 
 	/* Set up storage for values accessed in this file */
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT,
-				      default_icon_view_sort_order_or_manual_layout_changed_callback, 
-				      NULL);
+	g_signal_connect_swapped (nautilus_icon_view_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT,
+				  G_CALLBACK (default_icon_view_sort_order_or_manual_layout_changed_callback), 
+				  NULL);
 
 	/* Preload everything in a big batch */
 	eel_gconf_preload_cache ("/apps/nautilus/preferences",

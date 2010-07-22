@@ -26,6 +26,7 @@
 #include <string.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
+#include <eel/eel-glib-extensions.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-thumbnails.h>
@@ -197,24 +198,25 @@ fm_icon_container_get_icon_text_attributes_from_preferences (void)
 	static GQuark *attributes = NULL;
 
 	if (attributes == NULL) {
-		eel_preferences_add_auto_string_array_as_quarks (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
-								 &attributes);
+		eel_g_settings_add_auto_strv_as_quarks (nautilus_icon_view_preferences,
+							NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
+							&attributes);
 	}
-	
+
 	/* We don't need to sanity check the attributes list even though it came
 	 * from preferences.
 	 *
 	 * There are 2 ways that the values in the list could be bad.
 	 *
-	 * 1) The user picks "bad" values.  "bad" values are those that result in 
+	 * 1) The user picks "bad" values.  "bad" values are those that result in
 	 *    there being duplicate attributes in the list.
 	 *
 	 * 2) Value stored in GConf are tampered with.  Its possible physically do
 	 *    this by pulling the rug underneath GConf and manually editing its
-	 *    config files.  Its also possible to use a third party GConf key 
+	 *    config files.  Its also possible to use a third party GConf key
 	 *    editor and store garbage for the keys in question.
 	 *
-	 * Thankfully, the Nautilus preferences machinery deals with both of 
+	 * Thankfully, the Nautilus preferences machinery deals with both of
 	 * these cases.
 	 *
 	 * In the first case, the preferences dialog widgetry prevents

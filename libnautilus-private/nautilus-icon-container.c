@@ -214,6 +214,7 @@ static void	     nautilus_icon_container_set_rtl_positions (NautilusIconContaine
 static double	     get_mirror_x_position                     (NautilusIconContainer *container,
 								NautilusIcon *icon,
 								double x);
+static void         text_ellipsis_limit_changed_container_callback  (gpointer callback_data);
 
 static int compare_icons_horizontal (NautilusIconContainer *container,
 				     NautilusIcon *icon_a,
@@ -4050,6 +4051,10 @@ finalize (GObject *object)
 
 	details = NAUTILUS_ICON_CONTAINER (object)->details;
 
+	g_signal_handlers_disconnect_by_func (nautilus_icon_view_preferences,
+					      text_ellipsis_limit_changed_container_callback,
+					      object);
+
 	g_hash_table_destroy (details->icon_set);
 	details->icon_set = NULL;
 
@@ -5652,9 +5657,10 @@ nautilus_icon_container_constructor (GType                  type,
 							  text_ellipsis_limit_changed_container_callback,
 							  container, G_OBJECT (container));
 	} else {
-		eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ELLIPSIS_LIMIT,
-							  text_ellipsis_limit_changed_container_callback,
-							  container, G_OBJECT (container));
+		g_signal_connect_swapped (nautilus_icon_view_preferences,
+					  "changed::" NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ELLIPSIS_LIMIT,
+					  G_CALLBACK (text_ellipsis_limit_changed_container_callback),
+					  container);
 	}
 
 	return object;
@@ -6256,7 +6262,8 @@ text_ellipsis_limit_changed_callback (gpointer callback_data)
 	const EelEnumeration *eenum;
 	const EelEnumerationEntry *entry;
 
-	pref = eel_preferences_get_string_array (NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ELLIPSIS_LIMIT);
+	pref = g_settings_get_strv (nautilus_icon_view_preferences,
+				    NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ELLIPSIS_LIMIT);
 
 	/* set default */
 	get_text_ellipsis_limit_for_zoom (pref, NULL, &one_limit);
@@ -6327,9 +6334,10 @@ nautilus_icon_container_init (NautilusIconContainer *container)
 	nautilus_icon_container_theme_changed (container);
 
 	if (!setup_prefs) {
-		eel_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ELLIPSIS_LIMIT,
-					      text_ellipsis_limit_changed_callback,
-					      NULL);
+		g_signal_connect_swapped (nautilus_icon_view_preferences,
+					  "changed::" NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ELLIPSIS_LIMIT,
+					  G_CALLBACK (text_ellipsis_limit_changed_callback),
+					  NULL);
 		text_ellipsis_limit_changed_callback (NULL);
 
 		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_TEXT_ELLIPSIS_LIMIT,
