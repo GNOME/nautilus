@@ -1796,7 +1796,7 @@ activate_files (ActivateParameters *parameters)
 				       (flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB) != 0))) {
 
 		if ((flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB) != 0 &&
-		    eel_preferences_get_enum (NAUTILUS_PREFERENCES_NEW_TAB_POSITION) ==
+		    g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_NEW_TAB_POSITION) ==
 		    NAUTILUS_NEW_TAB_POSITION_AFTER_CURRENT_TAB) {
 			/* When inserting N tabs after the current one,
 			 * we first open tab N, then tab N-1, ..., then tab 0.

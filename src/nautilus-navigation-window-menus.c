@@ -599,7 +599,7 @@ action_new_tab_callback (GtkAction *action,
 	if (location != NULL) {
 		flags = 0;
 
-		new_slot_position = eel_preferences_get_enum (NAUTILUS_PREFERENCES_NEW_TAB_POSITION);
+		new_slot_position = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_NEW_TAB_POSITION);
 		if (new_slot_position == NAUTILUS_NEW_TAB_POSITION_END) {
 			flags = NAUTILUS_WINDOW_OPEN_SLOT_APPEND;
 		}
