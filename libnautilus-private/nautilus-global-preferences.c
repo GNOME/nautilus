@@ -100,17 +100,6 @@ static EelEnumerationEntry file_size_enum_entries[] = {
  	{ "4294967295",     N_("4 GB"),         4294967295U }
 };
 
-static EelEnumerationEntry search_bar_type_enum_entries[] = {
-	{ "search by text",
-	  N_("Search for files by file name only"),
-	  NAUTILUS_SIMPLE_SEARCH_BAR
-	},
-	{ "search by text and properties",
-	  N_("Search for files by file name and file properties"),
-	  NAUTILUS_COMPLEX_SEARCH_BAR
-	}
-};
-
 static EelEnumerationEntry default_icon_view_sort_order_enum_entries[] = {
 	{ "manually",	       N_("Manually"),		    PREFERENCES_SORT_ORDER_MANUALLY },
 	{ "--------",             "--------" },
@@ -225,12 +214,6 @@ static const PreferenceDefault preference_defaults[] = {
 	  "local_only",
 	  NULL, NULL,
 	  "speed_tradeoff"
-	},
-	{ NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
-	  PREFERENCE_STRING,
-	  "search_by_text",
-	  NULL, NULL,
-	  "search_bar_type"
 	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
 	  PREFERENCE_STRING_ARRAY,
@@ -433,9 +416,6 @@ global_preferences_register_enumerations (void)
 	eel_enumeration_register ("file_size",
 				  file_size_enum_entries,
 				  G_N_ELEMENTS (file_size_enum_entries));
-	eel_enumeration_register ("search_bar_type",
-				  search_bar_type_enum_entries,
-				  G_N_ELEMENTS (search_bar_type_enum_entries));
 	eel_enumeration_register ("speed_tradeoff",
 				  speed_tradeoff_enum_entries,
 				  G_N_ELEMENTS (speed_tradeoff_enum_entries));

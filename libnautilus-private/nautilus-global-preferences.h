@@ -178,9 +178,6 @@ enum
 #define NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS				"news/max_items"
 #define NAUTILUS_PREFERENCES_NEWS_UPDATE_INTERVAL			"news/update_interval"
 
-/* File Indexing */
-#define NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE				"preferences/search_bar_type"
-
 enum
 {
 	NAUTILUS_CLICK_POLICY_SINGLE,
