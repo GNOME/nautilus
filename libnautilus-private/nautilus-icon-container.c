@@ -4054,6 +4054,9 @@ finalize (GObject *object)
 	g_signal_handlers_disconnect_by_func (nautilus_icon_view_preferences,
 					      text_ellipsis_limit_changed_container_callback,
 					      object);
+	g_signal_handlers_disconnect_by_func (nautilus_desktop_preferences,
+					      text_ellipsis_limit_changed_container_callback,
+					      object);
 
 	g_hash_table_destroy (details->icon_set);
 	details->icon_set = NULL;
@@ -5653,9 +5656,10 @@ nautilus_icon_container_constructor (GType                  type,
 
 	container = NAUTILUS_ICON_CONTAINER (object);
 	if (nautilus_icon_container_get_is_desktop (container)) {
-		eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DESKTOP_TEXT_ELLIPSIS_LIMIT,
-							  text_ellipsis_limit_changed_container_callback,
-							  container, G_OBJECT (container));
+		g_signal_connect_swapped (nautilus_desktop_preferences,
+					  "changed::" NAUTILUS_PREFERENCES_DESKTOP_TEXT_ELLIPSIS_LIMIT,
+					  G_CALLBACK (text_ellipsis_limit_changed_container_callback),
+					  container);
 	} else {
 		g_signal_connect_swapped (nautilus_icon_view_preferences,
 					  "changed::" NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ELLIPSIS_LIMIT,
@@ -6289,7 +6293,7 @@ desktop_text_ellipsis_limit_changed_callback (gpointer callback_data)
 {
 	int pref;
 
-	pref = eel_preferences_get_integer (NAUTILUS_PREFERENCES_DESKTOP_TEXT_ELLIPSIS_LIMIT);
+	pref = g_settings_get_int (nautilus_desktop_preferences, NAUTILUS_PREFERENCES_DESKTOP_TEXT_ELLIPSIS_LIMIT);
 	desktop_text_ellipsis_limit = pref;
 }
 
@@ -6299,27 +6303,27 @@ nautilus_icon_container_init (NautilusIconContainer *container)
 	NautilusIconContainerDetails *details;
 	EelBackground *background;
 	static gboolean setup_prefs = FALSE;
-	
+
 	details = g_new0 (NautilusIconContainerDetails, 1);
 
 	details->icon_set = g_hash_table_new (g_direct_hash, g_direct_equal);
 	details->layout_timestamp = UNDEFINED_TIME;
 
-        details->zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
+	details->zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
 
 	details->font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = -2 * PANGO_SCALE;
-        details->font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER] = -2 * PANGO_SCALE;
-        details->font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL] = -0 * PANGO_SCALE;
-        details->font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] = 0 * PANGO_SCALE;
-        details->font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE] = 0 * PANGO_SCALE;
-        details->font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER] = 0 * PANGO_SCALE;
-        details->font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST] = 0 * PANGO_SCALE;
+	details->font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER] = -2 * PANGO_SCALE;
+	details->font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL] = -0 * PANGO_SCALE;
+	details->font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] = 0 * PANGO_SCALE;
+	details->font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE] = 0 * PANGO_SCALE;
+	details->font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER] = 0 * PANGO_SCALE;
+	details->font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST] = 0 * PANGO_SCALE;
 
 	container->details = details;
 
 	/* when the background changes, we must set up the label text color */
 	background = eel_get_widget_background (GTK_WIDGET (container));
-	
+
 	g_signal_connect_object (background, "appearance_changed",
 				 G_CALLBACK (update_label_color), container, 0);
 
@@ -6340,9 +6344,10 @@ nautilus_icon_container_init (NautilusIconContainer *container)
 					  NULL);
 		text_ellipsis_limit_changed_callback (NULL);
 
-		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_TEXT_ELLIPSIS_LIMIT,
-					      desktop_text_ellipsis_limit_changed_callback,
-					      NULL);
+		g_signal_connect_swapped (nautilus_icon_view_preferences,
+					  "changed::" NAUTILUS_PREFERENCES_DESKTOP_TEXT_ELLIPSIS_LIMIT,
+					  G_CALLBACK (desktop_text_ellipsis_limit_changed_callback),
+					  NULL);
 		desktop_text_ellipsis_limit_changed_callback (NULL);
 
 		setup_prefs = TRUE;

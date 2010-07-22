@@ -215,7 +215,8 @@ create_mount_link (NautilusDesktopLinkMonitor *monitor,
 		return;
 
 	if ((!g_mount_is_shadowed (mount)) &&
-	    eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_VOLUMES_VISIBLE)) {
+	    g_settings_get_boolean (nautilus_desktop_preferences,
+				    NAUTILUS_PREFERENCES_DESKTOP_VOLUMES_VISIBLE)) {
 		link = nautilus_desktop_link_new_from_mount (mount);
 		monitor->details->mount_links = g_list_prepend (monitor->details->mount_links, link);
 	}
@@ -283,7 +284,7 @@ update_link_visibility (NautilusDesktopLinkMonitor *monitor,
 			NautilusDesktopLinkType     link_type,
 			const char                 *preference_key)
 {
-	if (eel_preferences_get_boolean (preference_key)) {
+	if (g_settings_get_boolean (nautilus_desktop_preferences, preference_key)) {
 		if (*link_ref == NULL) {
 			*link_ref = nautilus_desktop_link_new (link_type);
 		}
@@ -352,10 +353,11 @@ desktop_volumes_visible_changed (gpointer callback_data)
 {
 	NautilusDesktopLinkMonitor *monitor;
 	GList *l, *mounts;
-	
+
 	monitor = NAUTILUS_DESKTOP_LINK_MONITOR (callback_data);
 
-	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_VOLUMES_VISIBLE)) {
+	if (g_settings_get_boolean (nautilus_desktop_preferences,
+				    NAUTILUS_PREFERENCES_DESKTOP_VOLUMES_VISIBLE)) {
 		if (monitor->details->mount_links == NULL) {
 			mounts = g_volume_monitor_get_mounts (monitor->details->volume_monitor);
 			for (l = mounts; l != NULL; l = l->next) {
@@ -375,16 +377,21 @@ static void
 create_link_and_add_preference (NautilusDesktopLink   **link_ref,
 				NautilusDesktopLinkType link_type,
 				const char             *preference_key,
-				EelPreferencesCallback  callback,
+				GCallback               callback,
 				gpointer                callback_data)
 {
-	if (eel_preferences_get_boolean (preference_key)) {
+	char *detailed_signal;
+
+	if (g_settings_get_boolean (nautilus_desktop_preferences, preference_key)) {
 		*link_ref = nautilus_desktop_link_new (link_type);
 	}
 
-	eel_preferences_add_callback (preference_key, callback, callback_data);
+	detailed_signal = g_strconcat ("changed::", preference_key, NULL);
+	g_signal_connect_swapped (nautilus_desktop_preferences,
+				  detailed_signal,
+				  callback, callback_data);
 }
-	     
+
 static void
 nautilus_desktop_link_monitor_init (gpointer object, gpointer klass)
 {
@@ -395,7 +402,7 @@ nautilus_desktop_link_monitor_init (gpointer object, gpointer klass)
 	monitor = NAUTILUS_DESKTOP_LINK_MONITOR (object);
 
 	the_link_monitor = monitor;
-	
+
 	monitor->details = g_new0 (NautilusDesktopLinkMonitorDetails, 1);
 
 	monitor->details->volume_monitor = g_volume_monitor_get ();
@@ -408,25 +415,25 @@ nautilus_desktop_link_monitor_init (gpointer object, gpointer klass)
 	create_link_and_add_preference (&monitor->details->home_link,
 					NAUTILUS_DESKTOP_LINK_HOME,
 					NAUTILUS_PREFERENCES_DESKTOP_HOME_VISIBLE,
-					desktop_home_visible_changed,
+					G_CALLBACK (desktop_home_visible_changed),
 					monitor);
 
 	create_link_and_add_preference (&monitor->details->computer_link,
 					NAUTILUS_DESKTOP_LINK_COMPUTER,
 					NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_VISIBLE,
-					desktop_computer_visible_changed,
+					G_CALLBACK (desktop_computer_visible_changed),
 					monitor);
-	
+
 	create_link_and_add_preference (&monitor->details->trash_link,
 					NAUTILUS_DESKTOP_LINK_TRASH,
 					NAUTILUS_PREFERENCES_DESKTOP_TRASH_VISIBLE,
-					desktop_trash_visible_changed,
+					G_CALLBACK (desktop_trash_visible_changed),
 					monitor);
 
 	create_link_and_add_preference (&monitor->details->network_link,
 					NAUTILUS_DESKTOP_LINK_NETWORK,
 					NAUTILUS_PREFERENCES_DESKTOP_NETWORK_VISIBLE,
-					desktop_network_visible_changed,
+					G_CALLBACK (desktop_network_visible_changed),
 					monitor);
 
 	/* Mount links */
@@ -439,9 +446,10 @@ nautilus_desktop_link_monitor_init (gpointer object, gpointer klass)
 	}
 	g_list_free (mounts);
 
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_VOLUMES_VISIBLE,
-				      desktop_volumes_visible_changed,
-				      monitor);
+	g_signal_connect_swapped (nautilus_desktop_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_DESKTOP_VOLUMES_VISIBLE,
+				  G_CALLBACK (desktop_volumes_visible_changed),
+				  monitor);
 
 	monitor->details->mount_id =
 		g_signal_connect_object (monitor->details->volume_monitor, "mount_added",
@@ -466,7 +474,8 @@ remove_link_and_preference (NautilusDesktopLink   **link_ref,
 		*link_ref = NULL;
 	}
 
-	eel_preferences_remove_callback (preference_key, callback, callback_data);
+	g_signal_handlers_disconnect_by_func (nautilus_desktop_preferences,
+					      callback, callback_data);
 }
 
 static void
@@ -477,7 +486,7 @@ desktop_link_monitor_finalize (GObject *object)
 	monitor = NAUTILUS_DESKTOP_LINK_MONITOR (object);
 
 	g_object_unref (monitor->details->volume_monitor);
-	
+
 	/* Default links */
 
 	remove_link_and_preference (&monitor->details->home_link,
@@ -505,13 +514,13 @@ desktop_link_monitor_finalize (GObject *object)
 	g_list_foreach (monitor->details->mount_links, (GFunc)g_object_unref, NULL);
 	g_list_free (monitor->details->mount_links);
 	monitor->details->mount_links = NULL;
-		
+
 	nautilus_directory_unref (monitor->details->desktop_dir);
 	monitor->details->desktop_dir = NULL;
 
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_DESKTOP_VOLUMES_VISIBLE,
-					 desktop_volumes_visible_changed,
-					 monitor);
+	g_signal_handlers_disconnect_by_func (nautilus_desktop_preferences,
+					      desktop_volumes_visible_changed,
+					      monitor);
 
 	if (monitor->details->mount_id != 0) {
 		g_source_remove (monitor->details->mount_id);
@@ -522,7 +531,7 @@ desktop_link_monitor_finalize (GObject *object)
 	if (monitor->details->changed_id != 0) {
 		g_source_remove (monitor->details->changed_id);
 	}
-	
+
 	g_free (monitor->details);
 
 	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
@@ -534,7 +543,7 @@ nautilus_desktop_link_monitor_class_init (gpointer klass)
 	GObjectClass *object_class;
 
 	object_class = G_OBJECT_CLASS (klass);
-	
+
 	object_class->finalize = desktop_link_monitor_finalize;
 
 }

@@ -93,11 +93,15 @@ static const char * const zoom_values[] = {
 };
 
 static const char * const sort_order_values[] = {
+	"manually",
 	"name",
+	"directory",
 	"size",
 	"type",
-	"modification_date",
+	"mtime",
+	"atime",
 	"emblems",
+	"trash-time",
 	NULL
 };
 
@@ -977,6 +981,7 @@ nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow
 			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_ORDER_WIDGET,
 			   NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
 			   (const char **) sort_order_values);
+	if (0) // TODO
 	eel_preferences_builder_connect_string_enum_combo_box_slave (builder,
 								     NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_ORDER_WIDGET,
 								     NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER);

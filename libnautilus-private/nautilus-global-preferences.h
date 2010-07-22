@@ -161,7 +161,7 @@ enum
 
 /* ellipsization preferences */
 #define NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ELLIPSIS_LIMIT		"text-ellipsis-limit"
-#define NAUTILUS_PREFERENCES_DESKTOP_TEXT_ELLIPSIS_LIMIT		"desktop/text_ellipsis_limit"
+#define NAUTILUS_PREFERENCES_DESKTOP_TEXT_ELLIPSIS_LIMIT		"text-ellipsis-limit"
 
 /* Compact View */
 #define NAUTILUS_PREFERENCES_COMPACT_VIEW_DEFAULT_ZOOM_LEVEL		"compact_view/default_zoom_level"
@@ -210,15 +210,15 @@ typedef enum
 	NAUTILUS_SIMPLE_SEARCH_BAR
 } NautilusSearchBarMode;
 
-#define NAUTILUS_PREFERENCES_DESKTOP_HOME_VISIBLE          "desktop/home_icon_visible"
-#define NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME             "desktop/home_icon_name"
-#define NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_VISIBLE      "desktop/computer_icon_visible"
-#define NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_NAME         "desktop/computer_icon_name"
-#define NAUTILUS_PREFERENCES_DESKTOP_TRASH_VISIBLE         "desktop/trash_icon_visible"
-#define NAUTILUS_PREFERENCES_DESKTOP_TRASH_NAME            "desktop/trash_icon_name"
-#define NAUTILUS_PREFERENCES_DESKTOP_VOLUMES_VISIBLE	   "desktop/volumes_visible"
-#define NAUTILUS_PREFERENCES_DESKTOP_NETWORK_VISIBLE       "desktop/network_icon_visible"
-#define NAUTILUS_PREFERENCES_DESKTOP_NETWORK_NAME          "desktop/network_icon_name"
+#define NAUTILUS_PREFERENCES_DESKTOP_HOME_VISIBLE          "home-icon-visible"
+#define NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME             "home-icon-name"
+#define NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_VISIBLE      "computer-icon-visible"
+#define NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_NAME         "computer-icon-name"
+#define NAUTILUS_PREFERENCES_DESKTOP_TRASH_VISIBLE         "trash-icon-visible"
+#define NAUTILUS_PREFERENCES_DESKTOP_TRASH_NAME            "trash-icon-name"
+#define NAUTILUS_PREFERENCES_DESKTOP_VOLUMES_VISIBLE	   "volumes-visible"
+#define NAUTILUS_PREFERENCES_DESKTOP_NETWORK_VISIBLE       "network-icon-visible"
+#define NAUTILUS_PREFERENCES_DESKTOP_NETWORK_NAME          "network-icon-name"
 
 /* Lockdown */
 #define NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE         "/desktop/gnome/lockdown/disable_command_line"
@@ -228,6 +228,7 @@ char *nautilus_global_preferences_get_default_folder_viewer_preference_as_iid (v
 
 GSettings *nautilus_preferences;
 GSettings *nautilus_icon_view_preferences;
+GSettings *nautilus_desktop_preferences;
 GSettings *nautilus_media_preferences;
 GSettings *nautilus_window_state;
 

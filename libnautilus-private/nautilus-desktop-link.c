@@ -113,8 +113,21 @@ home_name_changed (gpointer callback_data)
 	g_assert (link->details->type == NAUTILUS_DESKTOP_LINK_HOME);
 
 	g_free (link->details->display_name);
-	link->details->display_name = eel_preferences_get (NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME);
-	
+	link->details->display_name = g_settings_get_string (nautilus_desktop_preferences,
+							     NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME);
+	if (link->details->display_name[0] == 0) {
+		g_free (link->details->display_name);
+		/* Note to translators: If it's hard to compose a good home
+		 * icon name from the user name, you can use a string without
+		 * an "%s" here, in which case the home icon name will not
+		 * include the user's name, which should be fine. To avoid a
+		 * warning, put "%.0s" somewhere in the string, which will
+		 * match the user name string passed by the C code, but not
+		 * put the user name in the final string.
+		 */
+		link->details->display_name = g_strdup_printf (_("%s's Home"), g_get_user_name ());
+	}
+
 	nautilus_desktop_link_changed (link);
 }
 
@@ -127,8 +140,9 @@ computer_name_changed (gpointer callback_data)
 	g_assert (link->details->type == NAUTILUS_DESKTOP_LINK_COMPUTER);
 
 	g_free (link->details->display_name);
-	link->details->display_name = eel_preferences_get (NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_NAME);
-	
+	link->details->display_name = g_settings_get_string (nautilus_desktop_preferences,
+							     NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_NAME);
+
 	nautilus_desktop_link_changed (link);
 }
 
@@ -141,7 +155,8 @@ trash_name_changed (gpointer callback_data)
 	g_assert (link->details->type == NAUTILUS_DESKTOP_LINK_TRASH);
 
 	g_free (link->details->display_name);
-	link->details->display_name = eel_preferences_get (NAUTILUS_PREFERENCES_DESKTOP_TRASH_NAME);
+	link->details->display_name = g_settings_get_string (nautilus_desktop_preferences,
+							     NAUTILUS_PREFERENCES_DESKTOP_TRASH_NAME);
 	nautilus_desktop_link_changed (link);
 }
 
@@ -154,7 +169,8 @@ network_name_changed (gpointer callback_data)
 	g_assert (link->details->type == NAUTILUS_DESKTOP_LINK_NETWORK);
 
 	g_free (link->details->display_name);
-	link->details->display_name = eel_preferences_get (NAUTILUS_PREFERENCES_DESKTOP_NETWORK_NAME);
+	link->details->display_name = g_settings_get_string (nautilus_desktop_preferences,
+							     NAUTILUS_PREFERENCES_DESKTOP_NETWORK_NAME);
 	nautilus_desktop_link_changed (link);
 }
 
@@ -169,53 +185,59 @@ nautilus_desktop_link_new (NautilusDesktopLinkType type)
 	switch (type) {
 	case NAUTILUS_DESKTOP_LINK_HOME:
 		link->details->filename = g_strdup ("home");
-		link->details->display_name = eel_preferences_get (NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME);
+		link->details->display_name = g_settings_get_string (nautilus_desktop_preferences,
+								     NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME);
 		link->details->activation_location = g_file_new_for_path (g_get_home_dir ());
 		link->details->icon = g_themed_icon_new (NAUTILUS_ICON_HOME);
 
-		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME,
-					      home_name_changed,
-					      link);
-		
+		g_signal_connect_swapped (nautilus_desktop_preferences,
+					  "changed::" NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME,
+					  G_CALLBACK (home_name_changed),
+					  link);
 		break;
-		
+
 	case NAUTILUS_DESKTOP_LINK_COMPUTER:
 		link->details->filename = g_strdup ("computer");
-		link->details->display_name = eel_preferences_get (NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_NAME);
+		link->details->display_name = g_settings_get_string (nautilus_desktop_preferences,
+								     NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_NAME);
 		link->details->activation_location = g_file_new_for_uri ("computer:///");
 		/* TODO: This might need a different icon: */
 		link->details->icon = g_themed_icon_new (NAUTILUS_ICON_COMPUTER);
 
-		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_NAME,
-					      computer_name_changed,
-					      link);
-		
+		g_signal_connect_swapped (nautilus_desktop_preferences,
+					  "changed::" NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_NAME,
+					  G_CALLBACK (computer_name_changed),
+					  link);
 		break;
-		
+
 	case NAUTILUS_DESKTOP_LINK_TRASH:
 		link->details->filename = g_strdup ("trash");
-		link->details->display_name = eel_preferences_get (NAUTILUS_PREFERENCES_DESKTOP_TRASH_NAME);
+		link->details->display_name = g_settings_get_string (nautilus_desktop_preferences,
+								     NAUTILUS_PREFERENCES_DESKTOP_TRASH_NAME);
 		link->details->activation_location = g_file_new_for_uri (EEL_TRASH_URI);
 		link->details->icon = nautilus_trash_monitor_get_icon ();
-		
-		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_TRASH_NAME,
-					      trash_name_changed,
-					      link);
+
+		g_signal_connect_swapped (nautilus_desktop_preferences,
+					  "changed::" NAUTILUS_PREFERENCES_DESKTOP_TRASH_NAME,
+					  G_CALLBACK (trash_name_changed),
+					  link);
 		link->details->signal_handler_obj = G_OBJECT (nautilus_trash_monitor_get ());
 		link->details->signal_handler =
 			g_signal_connect_object (nautilus_trash_monitor_get (), "trash_state_changed",
-						 G_CALLBACK (trash_state_changed_callback), link, 0);	
+						 G_CALLBACK (trash_state_changed_callback), link, 0);
 		break;
 
 	case NAUTILUS_DESKTOP_LINK_NETWORK:
 		link->details->filename = g_strdup ("network");
-		link->details->display_name = eel_preferences_get (NAUTILUS_PREFERENCES_DESKTOP_NETWORK_NAME);
+		link->details->display_name = g_settings_get_string (nautilus_desktop_preferences,
+								     NAUTILUS_PREFERENCES_DESKTOP_NETWORK_NAME);
 		link->details->activation_location = g_file_new_for_uri ("network:///");
 		link->details->icon = g_themed_icon_new (NAUTILUS_ICON_NETWORK);
 
-		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_NETWORK_NAME,
-					      network_name_changed,
-					      link);
+		g_signal_connect_swapped (nautilus_desktop_preferences,
+					  "changed::" NAUTILUS_PREFERENCES_DESKTOP_NETWORK_NAME,
+					  G_CALLBACK (network_name_changed),
+					  link);
 		break;
 
 	default:
@@ -236,7 +258,7 @@ nautilus_desktop_link_new_from_mount (GMount *mount)
 	char *name, *filename;
 
 	link = NAUTILUS_DESKTOP_LINK (g_object_new (NAUTILUS_TYPE_DESKTOP_LINK, NULL));
-	
+
 	link->details->type = NAUTILUS_DESKTOP_LINK_MOUNT;
 
 	link->details->mount = g_object_ref (mount);
@@ -352,20 +374,24 @@ nautilus_desktop_link_rename (NautilusDesktopLink     *link,
 {
 	switch (link->details->type) {
 	case NAUTILUS_DESKTOP_LINK_HOME:
-		eel_preferences_set (NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME,
-				     name);
+		g_settings_set_string (nautilus_desktop_preferences,
+				       NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME,
+				       name);
 		break;
 	case NAUTILUS_DESKTOP_LINK_COMPUTER:
-		eel_preferences_set (NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_NAME,
-				     name);
+		g_settings_set_string (nautilus_desktop_preferences,
+				       NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_NAME,
+				       name);
 		break;
 	case NAUTILUS_DESKTOP_LINK_TRASH:
-		eel_preferences_set (NAUTILUS_PREFERENCES_DESKTOP_TRASH_NAME,
-				     name);
+		g_settings_set_string (nautilus_desktop_preferences,
+				       NAUTILUS_PREFERENCES_DESKTOP_TRASH_NAME,
+				       name);
 		break;
 	case NAUTILUS_DESKTOP_LINK_NETWORK:
-		eel_preferences_set (NAUTILUS_PREFERENCES_DESKTOP_NETWORK_NAME,
-				     name);
+		g_settings_set_string (nautilus_desktop_preferences,
+				       NAUTILUS_PREFERENCES_DESKTOP_NETWORK_NAME,
+				       name);
 		break;
 	default:
 		g_assert_not_reached ();
@@ -373,7 +399,7 @@ nautilus_desktop_link_rename (NautilusDesktopLink     *link,
 		 * We didn't support that before. */
 		break;
 	}
-	
+
 	return TRUE;
 }
 
@@ -404,27 +430,27 @@ desktop_link_finalize (GObject *object)
 	}
 
 	if (link->details->type == NAUTILUS_DESKTOP_LINK_HOME) {
-		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME,
+		g_signal_handlers_disconnect_by_func (nautilus_desktop_preferences,
 						 home_name_changed,
 						 link);
 	}
-	
+
 	if (link->details->type == NAUTILUS_DESKTOP_LINK_COMPUTER) {
-		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_NAME,
-						 computer_name_changed,
-						 link);
+		g_signal_handlers_disconnect_by_func (nautilus_desktop_preferences,
+						      computer_name_changed,
+						      link);
 	}
-	
+
 	if (link->details->type == NAUTILUS_DESKTOP_LINK_TRASH) {
-		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_DESKTOP_TRASH_NAME,
-						 trash_name_changed,
-						 link);
+		g_signal_handlers_disconnect_by_func (nautilus_desktop_preferences,
+						      trash_name_changed,
+						      link);
 	}
 
 	if (link->details->type == NAUTILUS_DESKTOP_LINK_NETWORK) {
-		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_DESKTOP_NETWORK_NAME,
-						 network_name_changed,
-						 link);
+		g_signal_handlers_disconnect_by_func (nautilus_desktop_preferences,
+						      network_name_changed,
+						      link);
 	}
 
 	if (link->details->type == NAUTILUS_DESKTOP_LINK_MOUNT) {
