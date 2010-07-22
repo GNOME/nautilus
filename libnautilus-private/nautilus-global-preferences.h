@@ -102,7 +102,7 @@ typedef enum
 #define NAUTILUS_PREFERENCES_INSTALL_MIME_ACTIVATION		"preferences/install_mime_activation"
 
 /* Spatial or browser mode */
-#define NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER       		"preferences/always_use_browser"
+#define NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER			"always-use-browser"
 #define NAUTILUS_PREFERENCES_NEW_TAB_POSITION       		"preferences/tabs_open_position"
 
 /* Which views should be displayed for new windows */

@@ -321,7 +321,7 @@ nautilus_navigation_window_update_spatial_menu_item (NautilusNavigationWindow *w
 	action = gtk_action_group_get_action (window->details->navigation_action_group,
 					      NAUTILUS_ACTION_FOLDER_WINDOW);
 	gtk_action_set_visible (action,
-				!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER));
+				!g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER));
 }
 
 static void

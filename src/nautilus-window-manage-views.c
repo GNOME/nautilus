@@ -516,7 +516,7 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 	old_location = nautilus_window_slot_get_location (slot);
 	switch (mode) {
         case NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE :
-		if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
+		if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
 			target_window = window;
 			if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
 				if (!NAUTILUS_SPATIAL_WINDOW (window)->affect_spatial_window_on_next_location_change) {

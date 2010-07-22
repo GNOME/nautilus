@@ -262,10 +262,6 @@ static const PreferenceDefault preference_defaults[] = {
 	  NULL, NULL,
 	  NULL
 	},
-	{ NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (TRUE)
-	},
 	{ NAUTILUS_PREFERENCES_NEW_TAB_POSITION,
 	  PREFERENCE_STRING,
 	  "after_current_tab",

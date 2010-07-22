@@ -679,6 +679,37 @@ bind_builder_bool (GtkBuilder *builder,
 }
 
 static gboolean
+inverted_get_mapping (GValue             *value,
+		      GVariant           *variant,
+		      gpointer            user_data)
+{
+	g_value_set_boolean (value, !g_variant_get_boolean (variant));
+	return TRUE;
+}
+
+static GVariant *
+inverted_set_mapping (const GValue       *value,
+		      const GVariantType *expected_type,
+		      gpointer            user_data)
+{
+	return g_variant_new_boolean (!g_value_get_boolean (value));
+}
+
+static void
+bind_builder_bool_inverted (GtkBuilder *builder,
+			    GSettings *settings,
+			    const char *widget_name,
+			    const char *prefs)
+{
+	g_settings_bind_with_mapping (settings, prefs,
+				      gtk_builder_get_object (builder, widget_name),
+				      "active", G_SETTINGS_BIND_DEFAULT,
+				      inverted_get_mapping,
+				      inverted_set_mapping,
+				      NULL, NULL);
+}
+
+static gboolean
 enum_get_mapping (GValue             *value,
 		  GVariant           *variant,
 		  gpointer            user_data)
@@ -843,9 +874,9 @@ nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow
 	eel_preferences_builder_connect_bool (builder,
 					      NAUTILUS_FILE_MANAGEMENT_PROPERTIES_FOLDERS_FIRST_WIDGET,
 					      NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST); 
-	eel_preferences_builder_connect_inverted_bool (builder,
-						       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ALWAYS_USE_BROWSER_WIDGET,
-						       NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER);
+	bind_builder_bool_inverted (builder, nautilus_preferences,
+				    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ALWAYS_USE_BROWSER_WIDGET,
+				    NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER);
 
 	bind_builder_bool (builder, nautilus_media_preferences,
 			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_MEDIA_AUTOMOUNT_OPEN,

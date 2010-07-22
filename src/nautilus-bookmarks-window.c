@@ -571,13 +571,13 @@ open_selected_bookmark (gpointer user_data, GdkScreen *screen)
 								      location,
 								      screen);
 	} else { /* window that opened bookmarks window has been closed */
-		if (parent_is_browser_window || eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
-			window = nautilus_application_create_navigation_window (application, 
+		if (parent_is_browser_window || g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
+			window = nautilus_application_create_navigation_window (application,
 										NULL,
 										screen);
 			nautilus_window_go_to (window, location);
 		} else {
-			window = nautilus_application_present_spatial_window (application, 
+			window = nautilus_application_present_spatial_window (application,
 									      NULL,
 									      NULL,
 									      location,

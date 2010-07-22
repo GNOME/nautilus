@@ -702,7 +702,7 @@ open_window (NautilusApplication *application,
 	NautilusWindow *window;
 
 	if (browser_window ||
-	    eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
+	    g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
 		window = nautilus_application_create_navigation_window (application,
 									startup_id,
 									screen);
@@ -1600,11 +1600,11 @@ autorun_show_window (GMount *mount, gpointer user_data)
 {
 	GFile *location;
 	NautilusApplication *application = user_data;
-	
+
 	location = g_mount_get_root (mount);
-	
-	/* Ther should probably be an easier way to do this */
-	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
+
+	/* There should probably be an easier way to do this */
+	if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
 		NautilusWindow *window;
 		window = nautilus_application_create_navigation_window (application, 
 									NULL, 

@@ -38,7 +38,7 @@ nautilus_connect_server_dialog_present_uri (NautilusApplication *application,
 {
 	NautilusWindow *window;
 
-	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
+	if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
 		window = nautilus_application_create_navigation_window (application,
 									NULL,
 									gtk_widget_get_screen (widget));
