@@ -184,15 +184,16 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 
 	nautilus_navigation_window_initialize_toolbars (window);
 
-	/* Set initial sensitivity of some buttons & menu items 
+	/* Set initial sensitivity of some buttons & menu items
 	 * now that they're all created.
 	 */
 	nautilus_navigation_window_allow_back (window, FALSE);
 	nautilus_navigation_window_allow_forward (window, FALSE);
 
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY,
-						  always_use_location_entry_changed,
-						  window, G_OBJECT (window));
+	g_signal_connect_swapped (nautilus_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY,
+				  G_CALLBACK(always_use_location_entry_changed),
+				  window);
 
 	g_signal_connect_swapped (nautilus_preferences,
 				  "changed::" NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER,
@@ -209,7 +210,7 @@ always_use_location_entry_changed (gpointer callback_data)
 
 	window = NAUTILUS_NAVIGATION_WINDOW (callback_data);
 
-	use_entry = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY);
+	use_entry = g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY);
 
 	for (walk = NAUTILUS_WINDOW(window)->details->panes; walk; walk = walk->next) {
 		nautilus_navigation_window_pane_always_use_location_entry (walk->data, use_entry);
@@ -367,11 +368,9 @@ side_pane_size_allocate_callback (GtkWidget *widget,
 
 	if (allocation->width != window->details->side_pane_width) {
 		window->details->side_pane_width = allocation->width;
-		if (g_settings_is_writable (nautilus_preferences, NAUTILUS_PREFERENCES_SIDEBAR_WIDTH)) {
-			g_settings_set_int (nautilus_preferences,
-					    NAUTILUS_PREFERENCES_SIDEBAR_WIDTH,
-					    allocation->width <= 1 ? 0 : allocation->width);
-		}
+		g_settings_set_int (nautilus_window_state,
+				    NAUTILUS_WINDOW_STATE_SIDEBAR_WIDTH,
+				    allocation->width <= 1 ? 0 : allocation->width);
 	}
 }
 
@@ -381,8 +380,8 @@ setup_side_pane_width (NautilusNavigationWindow *window)
 	g_return_if_fail (window->sidebar != NULL);
 
 	window->details->side_pane_width =
-		g_settings_get_int (nautilus_preferences,
-				    NAUTILUS_PREFERENCES_SIDEBAR_WIDTH);
+		g_settings_get_int (nautilus_window_state,
+				    NAUTILUS_WINDOW_STATE_SIDEBAR_WIDTH);
 
 	gtk_paned_set_position (GTK_PANED (window->details->content_paned),
 				window->details->side_pane_width);
@@ -418,13 +417,11 @@ side_pane_switch_page_callback (NautilusSidePane *side_pane,
 	if (sidebar == NULL) {
 		return;
 	}
-		
+
 	set_current_side_panel (window, sidebar);
 
 	id = nautilus_sidebar_get_sidebar_id (sidebar);
-	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_SIDE_PANE_VIEW)) {
-		eel_preferences_set (NAUTILUS_PREFERENCES_SIDE_PANE_VIEW, id);
-	}
+	g_settings_set_string (nautilus_window_state, NAUTILUS_WINDOW_STATE_SIDE_PANE_VIEW, id);
 }
 
 static void
@@ -501,8 +498,8 @@ nautilus_navigation_window_state_event (GtkWidget *widget,
 					GdkEventWindowState *event)
 {
 	if (event->changed_mask & GDK_WINDOW_STATE_MAXIMIZED) {
-		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_MAXIMIZED,
-					     event->new_window_state & GDK_WINDOW_STATE_MAXIMIZED);
+		g_settings_set_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_MAXIMIZED,
+					event->new_window_state & GDK_WINDOW_STATE_MAXIMIZED);
 	}
 
 	if (GTK_WIDGET_CLASS (parent_class)->window_state_event != NULL) {
@@ -597,6 +594,9 @@ nautilus_navigation_window_finalize (GObject *object)
 	g_signal_handlers_disconnect_by_func (nautilus_preferences,
 					      always_use_browser_changed,
 					      window);
+	g_signal_handlers_disconnect_by_func (nautilus_preferences,
+					      always_use_location_entry_changed,
+					      window);
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -645,7 +645,7 @@ nautilus_navigation_window_add_sidebar_panel (NautilusNavigationWindow *window,
 
 	/* Show if default */
 	sidebar_id = nautilus_sidebar_get_sidebar_id (sidebar_panel);
-	default_id = eel_preferences_get (NAUTILUS_PREFERENCES_SIDE_PANE_VIEW);
+	default_id = g_settings_get_string (nautilus_window_state, NAUTILUS_WINDOW_STATE_SIDE_PANE_VIEW);
 	if (sidebar_id && default_id && !strcmp (sidebar_id, default_id)) {
 		nautilus_side_pane_show_panel (window->sidebar,
 					       GTK_WIDGET (sidebar_panel));
@@ -902,28 +902,22 @@ nautilus_navigation_window_toolbar_showing (NautilusNavigationWindow *window)
 	return TRUE;
 }
 
-void 
+void
 nautilus_navigation_window_hide_status_bar (NautilusNavigationWindow *window)
 {
 	gtk_widget_hide (NAUTILUS_WINDOW (window)->details->statusbar);
 
 	nautilus_navigation_window_update_show_hide_menu_items (window);
-	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR) &&
-	    eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR)) {
-		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR, FALSE);
-	}
+	g_settings_set_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_STATUS_BAR, FALSE);
 }
 
-void 
+void
 nautilus_navigation_window_show_status_bar (NautilusNavigationWindow *window)
 {
 	gtk_widget_show (NAUTILUS_WINDOW (window)->details->statusbar);
 
 	nautilus_navigation_window_update_show_hide_menu_items (window);
-	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR) &&
-	    !eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR)) {
-		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR, TRUE);
-	}
+	g_settings_set_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_STATUS_BAR, TRUE);
 }
 
 gboolean
@@ -937,29 +931,23 @@ nautilus_navigation_window_status_bar_showing (NautilusNavigationWindow *window)
 }
 
 
-void 
+void
 nautilus_navigation_window_hide_toolbar (NautilusNavigationWindow *window)
 {
 	gtk_widget_hide (window->details->toolbar);
 	nautilus_navigation_window_update_show_hide_menu_items (window);
-	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR) &&
-	    eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR)) {
-		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR, FALSE);
-	}
+	g_settings_set_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_TOOLBAR, FALSE);
 }
 
-void 
+void
 nautilus_navigation_window_show_toolbar (NautilusNavigationWindow *window)
 {
 	gtk_widget_show (window->details->toolbar);
 	nautilus_navigation_window_update_show_hide_menu_items (window);
-	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR) &&
-	    !eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR)) {
-		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR, TRUE);
-	}
+	g_settings_set_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_TOOLBAR, TRUE);
 }
 
-void 
+void
 nautilus_navigation_window_hide_sidebar (NautilusNavigationWindow *window)
 {
 	if (window->sidebar == NULL) {
@@ -969,13 +957,10 @@ nautilus_navigation_window_hide_sidebar (NautilusNavigationWindow *window)
 	nautilus_navigation_window_tear_down_sidebar (window);
 	nautilus_navigation_window_update_show_hide_menu_items (window);
 
-	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR) &&
-	    eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR)) {
-		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR, FALSE);
-	}
+	g_settings_set_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_SIDEBAR, FALSE);
 }
 
-void 
+void
 nautilus_navigation_window_show_sidebar (NautilusNavigationWindow *window)
 {
 	if (window->sidebar != NULL) {
@@ -984,10 +969,7 @@ nautilus_navigation_window_show_sidebar (NautilusNavigationWindow *window)
 
 	nautilus_navigation_window_set_up_sidebar (window);
 	nautilus_navigation_window_update_show_hide_menu_items (window);
-	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR) &&
-	    !eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR)) {
-		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR, TRUE);
-	}
+	g_settings_set_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_SIDEBAR, TRUE);
 }
 
 gboolean
@@ -1038,7 +1020,7 @@ nautilus_navigation_window_get_base_page_index (NautilusNavigationWindow *window
  */
 static void
 nautilus_navigation_window_show (GtkWidget *widget)
-{	
+{
 	NautilusNavigationWindow *window;
 	gboolean show_location_bar;
 	gboolean always_use_location_entry;
@@ -1047,17 +1029,17 @@ nautilus_navigation_window_show (GtkWidget *widget)
 	window = NAUTILUS_NAVIGATION_WINDOW (widget);
 
 	/* Initially show or hide views based on preferences; once the window is displayed
-	 * these can be controlled on a per-window basis from View menu items. 
+	 * these can be controlled on a per-window basis from View menu items.
 	 */
 
-	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR)) {
+	if (g_settings_get_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_TOOLBAR)) {
 		nautilus_navigation_window_show_toolbar (window);
 	} else {
 		nautilus_navigation_window_hide_toolbar (window);
 	}
 
-	show_location_bar = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR);
-	always_use_location_entry = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY);
+	show_location_bar = g_settings_get_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_LOCATION_BAR);
+	always_use_location_entry = g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY);
 	for (walk = NAUTILUS_WINDOW(window)->details->panes; walk; walk = walk->next) {
 		NautilusNavigationWindowPane *pane = walk->data;
 		if (show_location_bar) {
@@ -1072,14 +1054,14 @@ nautilus_navigation_window_show (GtkWidget *widget)
 			nautilus_navigation_window_pane_set_bar_mode (pane, NAUTILUS_BAR_PATH);
 		}
 	}
-	
-	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR)) {
+
+	if (g_settings_get_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_SIDEBAR)) {
 		nautilus_navigation_window_show_sidebar (window);
 	} else {
 		nautilus_navigation_window_hide_sidebar (window);
 	}
 
-	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR)) {
+	if (g_settings_get_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_STATUS_BAR)) {
 		nautilus_navigation_window_show_status_bar (window);
 	} else {
 		nautilus_navigation_window_hide_status_bar (window);
@@ -1100,20 +1082,17 @@ nautilus_navigation_window_save_geometry (NautilusNavigationWindow *window)
 		geometry_string = eel_gtk_window_get_geometry_string (GTK_WINDOW (window));
 		is_maximized = gdk_window_get_state (gtk_widget_get_window (GTK_WIDGET (window)))
 				& GDK_WINDOW_STATE_MAXIMIZED;
-		
-		if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_SAVED_GEOMETRY) &&
-		    !is_maximized) {
-			eel_preferences_set
-				(NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_SAVED_GEOMETRY, 
+
+		if (!is_maximized) {
+			g_settings_set_string
+				(nautilus_window_state, NAUTILUS_WINDOW_STATE_GEOMETRY,
 				 geometry_string);
 		}
 		g_free (geometry_string);
 
-		if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_MAXIMIZED)) {
-			eel_preferences_set_boolean
-				(NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_MAXIMIZED, 
-				 is_maximized);
-		}
+		g_settings_set_boolean
+			(nautilus_window_state, NAUTILUS_WINDOW_STATE_MAXIMIZED,
+			 is_maximized);
 	}
 }
 
@@ -1142,9 +1121,9 @@ real_get_default_size (NautilusWindow *window,
 	if (default_width) {
 		*default_width = NAUTILUS_NAVIGATION_WINDOW_DEFAULT_WIDTH;
 	}
-	
+
 	if (default_height) {
-		*default_height = NAUTILUS_NAVIGATION_WINDOW_DEFAULT_HEIGHT;	
+		*default_height = NAUTILUS_NAVIGATION_WINDOW_DEFAULT_HEIGHT;
 	}
 }
 

@@ -571,7 +571,7 @@ nautilus_navigation_window_pane_hide_temporary_bars (NautilusNavigationWindowPan
 		if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
 			nautilus_navigation_window_pane_set_bar_mode (pane, NAUTILUS_BAR_SEARCH);
 		} else {
-			if (!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY)) {
+			if (!g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY)) {
 				nautilus_navigation_window_pane_set_bar_mode (pane, NAUTILUS_BAR_PATH);
 			}
 		}
@@ -583,7 +583,7 @@ nautilus_navigation_window_pane_hide_temporary_bars (NautilusNavigationWindowPan
 	if (pane->temporary_search_bar) {
 		NautilusNavigationWindow *window;
 
-		if (!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY)) {
+		if (!g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY)) {
 			nautilus_navigation_window_pane_set_bar_mode (pane, NAUTILUS_BAR_PATH);
 		} else {
 			nautilus_navigation_window_pane_set_bar_mode (pane, NAUTILUS_BAR_NAVIGATION);
@@ -784,8 +784,8 @@ nautilus_navigation_window_pane_hide_location_bar (NautilusNavigationWindowPane 
 	gtk_widget_hide(pane->location_bar);
 	nautilus_navigation_window_update_show_hide_menu_items(
 			NAUTILUS_NAVIGATION_WINDOW (NAUTILUS_WINDOW_PANE (pane)->window));
-	if (save_preference && eel_preferences_key_is_writable(NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR)) {
-		eel_preferences_set_boolean(NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR, FALSE);
+	if (save_preference) {
+		g_settings_set_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_LOCATION_BAR, FALSE);
 	}
 }
 
@@ -794,8 +794,8 @@ nautilus_navigation_window_pane_show_location_bar (NautilusNavigationWindowPane 
 {
 	gtk_widget_show(pane->location_bar);
 	nautilus_navigation_window_update_show_hide_menu_items(NAUTILUS_NAVIGATION_WINDOW (NAUTILUS_WINDOW_PANE (pane)->window));
-	if (save_preference && eel_preferences_key_is_writable(NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR)) {
-		eel_preferences_set_boolean(NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR, TRUE);
+	if (save_preference) {
+		g_settings_set_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_LOCATION_BAR, TRUE);
 	}
 }
 

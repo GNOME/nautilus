@@ -44,9 +44,6 @@ G_BEGIN_DECLS
 #define NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_COLOR         "side-pane-background-color"
 #define NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_URI           "side-pane-background-uri"
 
-/* How wide the sidebar is (or how wide it will be when expanded) */
-#define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH			"sidebar-width"
-
 /* Automount options */
 #define NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT	                "automount"
 #define NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT_OPEN		"automount-open"
@@ -105,15 +102,17 @@ typedef enum
 #define NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER			"always-use-browser"
 #define NAUTILUS_PREFERENCES_NEW_TAB_POSITION			"tabs-open-position"
 
+#define NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY		"always-use-location-entry"
+
 /* Which views should be displayed for new windows */
-#define NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR		"preferences/start_with_location_bar"
-#define NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY		"preferences/always_use_location_entry"
-#define NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR		"preferences/start_with_status_bar"
-#define NAUTILUS_PREFERENCES_START_WITH_SIDEBAR		 	"preferences/start_with_sidebar"
-#define NAUTILUS_PREFERENCES_START_WITH_TOOLBAR			"preferences/start_with_toolbar"
-#define NAUTILUS_PREFERENCES_SIDE_PANE_VIEW                     "preferences/side_pane_view"
-#define NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_SAVED_GEOMETRY 	"preferences/navigation_window_saved_geometry"
-#define NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_MAXIMIZED        "preferences/navigation_window_saved_maximized"
+#define NAUTILUS_WINDOW_STATE_START_WITH_LOCATION_BAR		"start-with-location-bar"
+#define NAUTILUS_WINDOW_STATE_START_WITH_STATUS_BAR		"start-with-status-bar"
+#define NAUTILUS_WINDOW_STATE_START_WITH_SIDEBAR		"start-with-sidebar"
+#define NAUTILUS_WINDOW_STATE_START_WITH_TOOLBAR		"start-with-toolbar"
+#define NAUTILUS_WINDOW_STATE_SIDE_PANE_VIEW                    "side-pane-view"
+#define NAUTILUS_WINDOW_STATE_GEOMETRY				"geometry"
+#define NAUTILUS_WINDOW_STATE_MAXIMIZED				"maximized"
+#define NAUTILUS_WINDOW_STATE_SIDEBAR_WIDTH			"sidebar-width"
 
 /* Sorting order */
 #define NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST		"preferences/sort_directories_first"
@@ -232,6 +231,7 @@ char *nautilus_global_preferences_get_default_folder_viewer_preference_as_iid (v
 
 GSettings *nautilus_preferences;
 GSettings *nautilus_media_preferences;
+GSettings *nautilus_window_state;
 
 G_END_DECLS
 

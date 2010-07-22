@@ -1457,19 +1457,19 @@ nautilus_application_create_navigation_window (NautilusApplication *application,
 	gboolean maximized;
 
 	g_return_val_if_fail (NAUTILUS_IS_APPLICATION (application), NULL);
-	
+
 	window = create_window (application, NAUTILUS_TYPE_NAVIGATION_WINDOW, startup_id, screen);
 
-	maximized = eel_preferences_get_boolean
-			(NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_MAXIMIZED);
+	maximized = g_settings_get_boolean
+		(nautilus_window_state, NAUTILUS_WINDOW_STATE_MAXIMIZED);
 	if (maximized) {
 		gtk_window_maximize (GTK_WINDOW (window));
 	} else {
 		gtk_window_unmaximize (GTK_WINDOW (window));
 	}
 
-	geometry_string = eel_preferences_get
-			(NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_SAVED_GEOMETRY);
+	geometry_string = g_settings_get_string
+		(nautilus_window_state, NAUTILUS_WINDOW_STATE_GEOMETRY);
 	if (geometry_string != NULL &&
 	    geometry_string[0] != 0) {
 		/* Ignore saved window position if a window with the same

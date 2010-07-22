@@ -248,34 +248,6 @@ static const PreferenceDefault preference_defaults[] = {
 	  NULL, NULL,
 	  NULL
 	},
-	{ NAUTILUS_PREFERENCES_START_WITH_TOOLBAR,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (TRUE)
-	},
-	{ NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (TRUE)
-	},
-	{ NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (FALSE)
-	},
-	{ NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (TRUE)
-	},
-	{ NAUTILUS_PREFERENCES_START_WITH_SIDEBAR,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (TRUE)
-	},
-	{ NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_SAVED_GEOMETRY,
-	  PREFERENCE_STRING,
-	  ""
-	},
-	{ NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_MAXIMIZED,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (FALSE)
-	},
 	{ NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
 	  PREFERENCE_BOOLEAN,
 	  GINT_TO_POINTER (TRUE)
@@ -660,6 +632,7 @@ nautilus_global_preferences_init (void)
 
 	nautilus_preferences = g_settings_new("org.gnome.nautilus.preferences");
 	nautilus_media_preferences = g_settings_new("org.gnome.media-handling");
+	nautilus_window_state = g_settings_new("org.gnome.nautilus.window-state");
 
 	/* Set up storage for values accessed in this file */
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT,
