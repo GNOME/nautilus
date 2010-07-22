@@ -166,12 +166,6 @@ static EelEnumerationEntry standard_font_size_entries[] = {
 };
 
 /* These are not translated, because the text is not used in the ui */
-static EelEnumerationEntry date_format_entries[] = {
-	{ "locale",	   "Locale Default",	NAUTILUS_DATE_FORMAT_LOCALE },
-	{ "iso",	   "ISO Format",	NAUTILUS_DATE_FORMAT_ISO },
-	{ "informal",	   "Informal",		NAUTILUS_DATE_FORMAT_INFORMAL }
-};
-
 static EelEnumerationEntry new_tab_position_entries[] = {
 	{ "after_current_tab",  "After Current Tab",	NAUTILUS_NEW_TAB_POSITION_AFTER_CURRENT_TAB },
 	{ "end",		"End",			NAUTILUS_NEW_TAB_POSITION_END }
@@ -347,12 +341,6 @@ static const PreferenceDefault preference_defaults[] = {
 	{ NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
 	  PREFERENCE_BOOLEAN,
 	  GINT_TO_POINTER (TRUE)
-	},
-	{ NAUTILUS_PREFERENCES_DATE_FORMAT,
-	  PREFERENCE_STRING,
-	  "locale",
-	  NULL, NULL,
-	  "date_format"
 	},
 	{ NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
 	  PREFERENCE_INTEGER,
@@ -581,9 +569,6 @@ global_preferences_register_enumerations (void)
 	eel_enumeration_register ("standard_font_size",
 				  standard_font_size_entries,
 				  G_N_ELEMENTS (standard_font_size_entries));
-	eel_enumeration_register ("date_format",
-				  date_format_entries,
-				  G_N_ELEMENTS (date_format_entries));
 	eel_enumeration_register ("new_tab_position",
 				  new_tab_position_entries,
 				  G_N_ELEMENTS (new_tab_position_entries));

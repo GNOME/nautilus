@@ -8146,13 +8146,14 @@ nautilus_file_class_init (NautilusFileClass *class)
 		              NULL, NULL,
 			      g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
-	
+
 	g_type_class_add_private (class, sizeof (NautilusFileDetails));
 
 
-	eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_DATE_FORMAT,
-				       &date_format_pref);
-	
+	eel_g_settings_add_auto_enum (nautilus_preferences,
+				      NAUTILUS_PREFERENCES_DATE_FORMAT,
+				      &date_format_pref);
+
 	thumbnail_limit_changed_callback (NULL);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
 				      thumbnail_limit_changed_callback,

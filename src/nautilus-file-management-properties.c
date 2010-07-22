@@ -678,6 +678,51 @@ bind_builder_bool (GtkBuilder *builder,
 			 "active", G_SETTINGS_BIND_DEFAULT);
 }
 
+static gboolean
+enum_get_mapping (GValue             *value,
+		  GVariant           *variant,
+		  gpointer            user_data)
+{
+	const char **enum_values = user_data;
+	const char *str;
+	int i;
+
+	str = g_variant_get_string (variant, NULL);
+	for (i = 0; enum_values[i] != NULL; i++) {
+		if (strcmp (enum_values[i], str) == 0) {
+			g_value_set_int (value, i);
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
+static GVariant *
+enum_set_mapping (const GValue       *value,
+		  const GVariantType *expected_type,
+		  gpointer            user_data)
+{
+	const char **enum_values = user_data;
+
+	return g_variant_new_string (enum_values[g_value_get_int (value)]);
+}
+
+static void
+bind_builder_enum (GtkBuilder *builder,
+		   GSettings *settings,
+		   const char *widget_name,
+		   const char *prefs,
+		   const char **enum_values)
+{
+	g_settings_bind_with_mapping (settings, prefs,
+				      gtk_builder_get_object (builder, widget_name),
+				      "active", G_SETTINGS_BIND_DEFAULT,
+				      enum_get_mapping,
+				      enum_set_mapping,
+				      enum_values, NULL);
+}
+
 static  void
 nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow *window)
 {
@@ -783,11 +828,11 @@ nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow
 							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_FOLDER_WIDGET,
 							       NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
 							       (const char **) preview_values);
-	eel_preferences_builder_connect_string_enum_combo_box (builder,
-							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DATE_FORMAT_WIDGET,
-							       NAUTILUS_PREFERENCES_DATE_FORMAT,
-							       (const char **) date_format_values);
-	
+	bind_builder_enum (builder, nautilus_preferences,
+			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DATE_FORMAT_WIDGET,
+			   NAUTILUS_PREFERENCES_DATE_FORMAT,
+			   (const char **) date_format_values);
+
 	eel_preferences_builder_connect_string_enum_radio_button (builder,
 								  (const char **) click_behavior_components,
 								  NAUTILUS_PREFERENCES_CLICK_POLICY,
@@ -796,7 +841,7 @@ nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow
 								  (const char **) executable_text_components,
 								  NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
 								  (const char **) executable_text_values);
-	
+
 	eel_preferences_builder_connect_uint_enum (builder,
 						   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_THUMBNAIL_LIMIT_WIDGET,
 						   NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
