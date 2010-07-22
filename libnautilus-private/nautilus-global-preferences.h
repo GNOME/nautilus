@@ -32,7 +32,7 @@
 G_BEGIN_DECLS
 
 /* Whether exit when last window destroyed */
-#define NAUTILUS_PREFERENCES_EXIT_WITH_LAST_WINDOW				"preferences/exit_with_last_window"
+#define NAUTILUS_PREFERENCES_EXIT_WITH_LAST_WINDOW		"exit-with-last-window"
 
 /* Desktop Background options */
 #define NAUTILUS_PREFERENCES_BACKGROUND_SET                     "background-set"

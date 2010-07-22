@@ -467,15 +467,14 @@ main (int argc, char *argv[])
 	/* Initialize the services that we use. */
 	LIBXML_TEST_VERSION
 
-	/* Initialize preferences. This is needed so that proper 
-	 * defaults are available before any preference peeking 
-	 * happens.
+	/* Initialize preferences. This is needed to create the
+	 * global GSettings objects.
 	 */
 	nautilus_global_preferences_init ();
 
 	/* exit_with_last_window being FALSE, nautilus can run without window. */
 	exit_with_last_window =
-		eel_preferences_get_boolean (NAUTILUS_PREFERENCES_EXIT_WITH_LAST_WINDOW);
+		g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_EXIT_WITH_LAST_WINDOW);
 
 	application = NULL;
 
