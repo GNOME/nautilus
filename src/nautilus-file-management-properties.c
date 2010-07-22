@@ -75,9 +75,9 @@
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_THUMBNAIL_LIMIT_WIDGET "preview_image_size_combobox"
 
 static const char * const default_view_values[] = {
-	"icon_view",
-	"list_view",
-	"compact_view",
+	"icon-view",
+	"list-view",
+	"compact-view",
 	NULL
 };
 
@@ -898,12 +898,12 @@ nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow
 					      NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TREE_VIEW_FOLDERS_WIDGET,
 					      NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES);
 
+	bind_builder_enum (builder, nautilus_preferences,
+			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DEFAULT_VIEW_WIDGET,
+			   NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
+			   (const char **) default_view_values);
 	eel_preferences_builder_connect_string_enum_combo_box (builder,
-							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DEFAULT_VIEW_WIDGET,
-							       NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
-							       (const char **) default_view_values);
-	eel_preferences_builder_connect_string_enum_combo_box (builder,
-							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ICON_VIEW_ZOOM_WIDGET,						     
+							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ICON_VIEW_ZOOM_WIDGET,
 							       NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
 							       (const char **) zoom_values);
 	eel_preferences_builder_connect_string_enum_combo_box (builder,

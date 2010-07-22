@@ -111,12 +111,6 @@ static EelEnumerationEntry search_bar_type_enum_entries[] = {
 	}
 };
 
-static EelEnumerationEntry default_folder_viewer_enum_entries[] = {
-	{ "icon_view",	    N_("Icon View"),	NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW },
-	{ "compact_view",   N_("Compact View"),	NAUTILUS_DEFAULT_FOLDER_VIEWER_COMPACT_VIEW },
-	{ "list_view",	    N_("List View"),	NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW }
-};
-
 static EelEnumerationEntry default_icon_view_sort_order_enum_entries[] = {
 	{ "manually",	       N_("Manually"),		    PREFERENCES_SORT_ORDER_MANUALLY },
 	{ "--------",             "--------" },
@@ -247,12 +241,6 @@ static const PreferenceDefault preference_defaults[] = {
 	{ NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
 	  PREFERENCE_BOOLEAN,
 	  GINT_TO_POINTER (TRUE)
-	},
-	{ NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
-	  PREFERENCE_INTEGER,
-	  GINT_TO_POINTER (NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW),
-	  NULL, NULL,
-	  "default_folder_viewer"
 	},
 
 	/* Icon View Default Preferences */
@@ -436,9 +424,6 @@ global_preferences_register_enumerations (void)
 	 * populate widgets and route preferences changes between the
 	 * storage (GConf) and the displayed values.
 	 */
-	eel_enumeration_register ("default_folder_viewer",
-				  default_folder_viewer_enum_entries,
-				  G_N_ELEMENTS (default_folder_viewer_enum_entries));
 	eel_enumeration_register ("default_icon_view_sort_order",
 				  default_icon_view_sort_order_enum_entries,
 				  G_N_ELEMENTS (default_icon_view_sort_order_enum_entries));
@@ -558,8 +543,8 @@ nautilus_global_preferences_get_default_folder_viewer_preference_as_iid (void)
 	int preference_value;
 	const char *viewer_iid;
 
-	preference_value = 
-		eel_preferences_get_enum (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER);
+	preference_value =
+		g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER);
 
 	if (preference_value == NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW) {
 		viewer_iid = NAUTILUS_LIST_VIEW_IID;
