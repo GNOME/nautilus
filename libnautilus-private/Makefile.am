@@ -219,36 +219,17 @@ gsettings_SCHEMAS = $(gsettingsschema_in_files:.xml.in=.xml)
 
 @GSETTINGS_RULES@
 
-schema_in_files =  apps_nautilus_preferences.schemas.in
-schemadir   = $(GCONF_SCHEMA_FILE_DIR)
-schema_DATA = $(schema_in_files:.schemas.in=.schemas)
-
-@INTLTOOL_SCHEMAS_RULE@
-
-# don't do this if we are building in eg. rpm
-if GCONF_SCHEMAS_INSTALL
-install-data-local:
-	if test -z "$(DESTDIR)" ; then \
-		for p in $(schema_DATA) ; do \
-			GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $$p; \
-		done \
-	fi
-endif
-
-EXTRA_DIST = 				\
+EXTRA_DIST =				\
 	nautilus-marshal.list		\
 	$(gsettingsschema_in_files)     \
-	$(schema_in_files)              \
 	$(BEAGLE_SOURCES)		\
 	$(TRACKER_SOURCES)		\
 	$(NULL)
 
 CLEANFILES = \
 	$(marshal_sources)				\
-	$(schema_DATA)			                \
 	$(gsettings_SCHEMAS)				\
 	$(NULL)
 
 dist-hook:
 	cd $(distdir); rm -f $(CLEANFILES)
-
