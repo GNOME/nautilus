@@ -1042,6 +1042,32 @@ eel_g_settings_add_auto_enum (GSettings *settings,
 }
 
 static void
+update_auto_strv (GSettings   *settings,
+		  const gchar *key,
+		  gpointer     user_data)
+{
+	char ***storage = user_data;
+
+	g_free (*storage);
+	*storage = g_settings_get_strv (settings, key);
+}
+
+void
+eel_g_settings_add_auto_strv (GSettings *settings,
+			      const char *key,
+			      char ***storage)
+{
+	char *signal;
+
+	*storage = NULL;
+	update_auto_strv (settings, key, storage);
+	signal = g_strconcat ("changed::", key, NULL);
+	g_signal_connect (settings, signal,
+			  G_CALLBACK(update_auto_strv),
+			  storage);
+}
+
+static void
 update_auto_strv_as_quarks (GSettings   *settings,
 			    const gchar *key,
 			    gpointer     user_data)

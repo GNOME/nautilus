@@ -134,6 +134,9 @@ void        eel_g_settings_add_auto_int                 (GSettings *settings,
 void        eel_g_settings_add_auto_boolean             (GSettings *settings,
 							 const char *key,
 							 gboolean *storage);
+void        eel_g_settings_add_auto_strv		(GSettings *settings,
+							 const char *key,
+							 char ***storage);
 void        eel_g_settings_add_auto_strv_as_quarks      (GSettings *settings,
 							 const char *key,
 							 GQuark **storage);
