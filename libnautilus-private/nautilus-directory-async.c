@@ -2086,7 +2086,7 @@ more_files_callback (GObject *source_object,
 	}
 
 	directory = nautilus_directory_ref (state->directory);
-	
+
 	g_assert (directory->details->directory_load_in_progress != NULL);
 	g_assert (directory->details->directory_load_in_progress == state);
 
@@ -2100,8 +2100,7 @@ more_files_callback (GObject *source_object,
 		g_object_unref (info);
 	}
 
-	if (nautilus_directory_file_list_length_reached (directory) ||
-	    files == NULL) {
+	if (files == NULL) {
 		directory_load_done (directory, error);
 		directory_load_state_free (state);
 	} else {
@@ -2114,11 +2113,11 @@ more_files_callback (GObject *source_object,
 	}
 
 	nautilus_directory_unref (directory);
-	
+
 	if (error) {
 		g_error_free (error);
 	}
-	
+
 	g_list_free (files);
 }
 

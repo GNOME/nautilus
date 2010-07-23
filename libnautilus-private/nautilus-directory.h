@@ -222,7 +222,6 @@ gboolean           nautilus_directory_is_in_trash              (NautilusDirector
  * Only valid if directory is monitored. Used by the Trash monitor.
  */
 gboolean           nautilus_directory_is_not_empty             (NautilusDirectory         *directory);
-gboolean           nautilus_directory_file_list_length_reached (NautilusDirectory         *directory);
 
 /* Convenience functions for dealing with a list of NautilusDirectory objects that each have a ref.
  * These are just convenient names for functions that work on lists of GtkObject *.

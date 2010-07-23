@@ -245,15 +245,6 @@ struct FMDirectoryViewClass {
 	 */
 	char ** (* get_emblem_names_to_exclude)	(FMDirectoryView *view);
 
-	/* file_limit_reached is a function pointer that subclasses may
-	 * override to control what happens when a directory is loaded
-	 * that has more files than Nautilus can handle. The default
-	 * implmentation puts up a dialog box that is appropriate to
-	 * display when the user explicitly tried to visit a location that
-	 * they would think of as a normal directory.
-	 */
-	void (* file_limit_reached)		(FMDirectoryView *view);
-
 	/* supports_properties is a function pointer that subclasses may
 	 * override to control whether the "Show Properties" menu item
 	 * should be enabled for selected items. The default implementation 
