@@ -40,12 +40,10 @@ void eel_run_lib_self_checks (void);
 
 #define EEL_LIB_FOR_EACH_SELF_CHECK_FUNCTION(macro) \
 	macro (eel_self_check_background) \
-	macro (eel_self_check_enumeration) \
 	macro (eel_self_check_gdk_extensions) \
 	macro (eel_self_check_gdk_pixbuf_extensions) \
 	macro (eel_self_check_glib_extensions) \
-        macro (eel_self_check_pango_extensions) \
-	macro (eel_self_check_preferences) \
+	macro (eel_self_check_pango_extensions) \
 	macro (eel_self_check_string) \
 /* Add new self-check functions to the list above this line. */
 

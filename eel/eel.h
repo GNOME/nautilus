@@ -28,8 +28,6 @@
 #include <eel/eel-art-extensions.h>
 #include <eel/eel-art-gtk-extensions.h>
 #include <eel/eel-background.h>
-#include <eel/eel-enumeration.h>
-#include <eel/eel-gconf-extensions.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
@@ -41,7 +39,6 @@
 #include <eel/eel-image-table.h>
 #include <eel/eel-labeled-image.h>
 #include <eel/eel-pango-extensions.h>
-#include <eel/eel-preferences.h>
 #include <eel/eel-self-checks.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>

@@ -39,8 +39,6 @@ libeel_2_la_SOURCES =				\
 	eel-debug-drawing.c			\
 	eel-debug.c				\
 	eel-editable-label.c			\
-	eel-enumeration.c			\
-	eel-gconf-extensions.c			\
 	eel-gdk-extensions.c			\
 	eel-gdk-pixbuf-extensions.c		\
 	eel-glib-extensions.c			\
@@ -53,8 +51,6 @@ libeel_2_la_SOURCES =				\
 	eel-labeled-image.c			\
 	eel-lib-self-check-functions.c		\
 	eel-pango-extensions.c			\
-	eel-preferences-builder.c		\
-	eel-preferences.c			\
 	eel-self-checks.c			\
 	eel-stock-dialogs.c			\
 	eel-string.c				\
@@ -78,8 +74,6 @@ eel_headers =					\
 	eel-debug-drawing.h			\
 	eel-debug.h				\
 	eel-editable-label.h			\
-	eel-enumeration.h			\
-	eel-gconf-extensions.h			\
 	eel-gdk-extensions.h			\
 	eel-gdk-pixbuf-extensions.h		\
 	eel-glib-extensions.h			\
@@ -92,7 +86,6 @@ eel_headers =					\
 	eel-image-table.h			\
 	eel-labeled-image.h			\
 	eel-pango-extensions.h			\
-	eel-preferences.h			\
 	eel-self-checks.h			\
 	eel-stock-dialogs.h			\
 	eel-string.h				\
