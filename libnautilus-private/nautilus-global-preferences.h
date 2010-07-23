@@ -26,9 +26,9 @@
 #ifndef NAUTILUS_GLOBAL_PREFERENCES_H
 #define NAUTILUS_GLOBAL_PREFERENCES_H
 
-#include <eel/eel-preferences.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <gio/gio.h>
+#include <gconf/gconf-client.h>
 
 G_BEGIN_DECLS
 

@@ -43,7 +43,6 @@
 #include <gio/gio.h>
 #include <glib/gi18n.h>
 #include <eel/eel-gtk-extensions.h>
-#include <eel/eel-preferences.h>
 #include <libnautilus-extension/nautilus-menu-provider.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>

@@ -33,9 +33,7 @@
 
 #include <glib/gi18n.h>
 
-#include <eel/eel-gconf-extensions.h>
 #include <eel/eel-glib-extensions.h>
-#include <eel/eel-preferences.h>
 
 #include <libnautilus-private/nautilus-column-chooser.h>
 #include <libnautilus-private/nautilus-column-utilities.h>
@@ -252,11 +250,6 @@ nautilus_file_management_properties_dialog_response_cb (GtkDialog *parent,
 		}
 		preferences_show_help (GTK_WINDOW (parent), "user-guide", section);
 	} else if (response_id == GTK_RESPONSE_CLOSE) {
-		/* remove gconf monitors */
-		eel_gconf_monitor_remove ("/apps/nautilus/icon_view");
-		eel_gconf_monitor_remove ("/apps/nautilus/list_view");
-		eel_gconf_monitor_remove ("/apps/nautilus/preferences");
-		eel_gconf_monitor_remove ("/desktop/gnome/file_views");
 		g_signal_handlers_disconnect_by_func (nautilus_media_preferences,
 						      nautilus_file_management_properties_dialog_update_media_sensitivity,
 						      builder);
@@ -402,7 +395,7 @@ update_caption_combo_box (GtkBuilder *builder,
 }
 
 static void
-update_icon_captions_from_gconf (GtkBuilder *builder)
+update_icon_captions_from_settings (GtkBuilder *builder)
 {
 	char **captions;
 	int i, j;
@@ -459,7 +452,7 @@ nautilus_file_management_properties_dialog_setup_icon_caption_page (GtkBuilder *
 
 	nautilus_column_list_free (columns);
 
-	update_icon_captions_from_gconf (builder);
+	update_icon_captions_from_settings (builder);
 }
 
 static void
@@ -909,20 +902,8 @@ nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow
 {
 	GtkWidget *dialog;
 
-	/* setup gconf stuff */
-	eel_gconf_monitor_add ("/apps/nautilus/icon_view");
-	eel_gconf_preload_cache ("/apps/nautilus/icon_view", GCONF_CLIENT_PRELOAD_ONELEVEL);
-	eel_gconf_monitor_add ("/apps/nautilus/compact_view");
-	eel_gconf_preload_cache ("/apps/nautilus/compact_view", GCONF_CLIENT_PRELOAD_ONELEVEL);
-	eel_gconf_monitor_add ("/apps/nautilus/list_view");
-	eel_gconf_preload_cache ("/apps/nautilus/list_view", GCONF_CLIENT_PRELOAD_ONELEVEL);
-	eel_gconf_monitor_add ("/apps/nautilus/preferences");
-	eel_gconf_preload_cache ("/apps/nautilus/preferences", GCONF_CLIENT_PRELOAD_ONELEVEL);
-	eel_gconf_monitor_add ("/desktop/gnome/file_views");
-	eel_gconf_preload_cache ("/desktop/gnome/file_views", GCONF_CLIENT_PRELOAD_ONELEVEL);
-
 	/* setup UI */
-	nautilus_file_management_properties_size_group_create (builder, 
+	nautilus_file_management_properties_size_group_create (builder,
 							       "views_label",
 							       5);
 	nautilus_file_management_properties_size_group_create (builder,

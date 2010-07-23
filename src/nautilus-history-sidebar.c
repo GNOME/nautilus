@@ -30,7 +30,6 @@
 #include <eel/eel-debug.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-glib-extensions.h>
-#include <eel/eel-preferences.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <libnautilus-private/nautilus-bookmark.h>

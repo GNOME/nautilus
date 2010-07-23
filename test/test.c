@@ -2,8 +2,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include <eel/eel-preferences.h>
-
 void
 test_init (int *argc,
 	   char ***argv)

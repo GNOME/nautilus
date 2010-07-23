@@ -33,7 +33,6 @@
 
 #include <stdlib.h>
 
-#include <eel/eel-preferences.h>
 #include <eel/eel-stock-dialogs.h>
 
 #include <libnautilus-private/nautilus-icon-names.h>
@@ -197,7 +196,6 @@ main (int argc, char *argv[])
 	g_option_context_free (context);
 
 	nautilus_global_preferences_init ();
-	eel_preferences_init ("/apps/nautilus");
 
 	gtk_window_set_default_icon_name (NAUTILUS_ICON_FOLDER);
 

@@ -35,9 +35,6 @@
 #include <libnautilus-private/nautilus-view-factory.h>
 #include <libnautilus-private/nautilus-entry.h>
 
-#include <eel/eel-preferences.h>
-
-
 static void nautilus_navigation_window_pane_init       (NautilusNavigationWindowPane *pane);
 static void nautilus_navigation_window_pane_class_init (NautilusNavigationWindowPaneClass *class);
 static void nautilus_navigation_window_pane_dispose    (GObject *object);

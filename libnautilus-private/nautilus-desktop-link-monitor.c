@@ -466,7 +466,7 @@ nautilus_desktop_link_monitor_init (gpointer object, gpointer klass)
 static void
 remove_link_and_preference (NautilusDesktopLink   **link_ref,
 			    const char             *preference_key,
-			    EelPreferencesCallback  callback,
+			    GCallback               callback,
 			    gpointer                callback_data)
 {
 	if (*link_ref != NULL) {
@@ -491,22 +491,22 @@ desktop_link_monitor_finalize (GObject *object)
 
 	remove_link_and_preference (&monitor->details->home_link,
 				    NAUTILUS_PREFERENCES_DESKTOP_HOME_VISIBLE,
-				    desktop_home_visible_changed,
+				    G_CALLBACK (desktop_home_visible_changed),
 				    monitor);
 
 	remove_link_and_preference (&monitor->details->computer_link,
 				    NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_VISIBLE,
-				    desktop_computer_visible_changed,
+				    G_CALLBACK (desktop_computer_visible_changed),
 				    monitor);
 
 	remove_link_and_preference (&monitor->details->trash_link,
 				    NAUTILUS_PREFERENCES_DESKTOP_TRASH_VISIBLE,
-				    desktop_trash_visible_changed,
+				    G_CALLBACK (desktop_trash_visible_changed),
 				    monitor);
 
 	remove_link_and_preference (&monitor->details->network_link,
 				    NAUTILUS_PREFERENCES_DESKTOP_NETWORK_VISIBLE,
-				    desktop_network_visible_changed,
+				    G_CALLBACK (desktop_network_visible_changed),
 				    monitor);
 
 	/* Mounts */

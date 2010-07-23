@@ -72,7 +72,7 @@ nautilus_connect_desktop_background_to_file_metadata (NautilusIconContainer *ico
 	 */
 	nautilus_connect_background_to_file_metadata (GTK_WIDGET (icon_container), file, NAUTILUS_DND_ACTION_SET_AS_FOLDER_BACKGROUND);
 
-	nautilus_file_background_receive_gconf_changes (background); 
+	nautilus_file_background_receive_gconf_changes (background);
 }
 
 static void
@@ -294,13 +294,13 @@ call_settings_changed (EelBackground *background)
 static void
 desktop_background_destroyed_callback (EelBackground *background, void *georgeWBush)
 {
-	guint notification_id;
-	guint notification_timeout_id;
+        guint notification_id;
+        guint notification_timeout_id;
 
         notification_id = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (background), "desktop_gconf_notification"));
-	eel_gconf_notification_remove (notification_id);
+        gconf_client_notify_remove (nautilus_gconf_client, notification_id);
 
-	notification_timeout_id = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (background), "desktop_gconf_notification_timeout"));
+        notification_timeout_id = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (background), "desktop_gconf_notification_timeout"));
         if (notification_timeout_id != 0) {
                 g_source_remove (notification_timeout_id);
         }
@@ -309,22 +309,23 @@ desktop_background_destroyed_callback (EelBackground *background, void *georgeWB
 static void
 desktop_background_gconf_notify_cb (GConfClient *client, guint notification_id, GConfEntry *entry, gpointer data)
 {
-	EelBackground *background;
-	guint notification_timeout_id;
-	
-	background = EEL_BACKGROUND (data);
+        EelBackground *background;
+        guint notification_timeout_id;
 
-	notification_timeout_id = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (background), "desktop_gconf_notification_timeout"));
+        background = EEL_BACKGROUND (data);
+
+        notification_timeout_id = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (background), "desktop_gconf_notification_timeout"));
 
         if (strcmp (entry->key, "/desktop/gnome/background/stamp") == 0) {
-                if (notification_timeout_id != 0) 
+                if (notification_timeout_id != 0) {
                         g_source_remove (notification_timeout_id);
-                
+                }
+
                 call_settings_changed (background);
         }
         else if (notification_timeout_id == 0) {
                 notification_timeout_id = g_timeout_add (300, (GSourceFunc) call_settings_changed, background);
-                
+
                 g_object_set_data (G_OBJECT (background), "desktop_gconf_notification_timeout", GUINT_TO_POINTER (notification_timeout_id));
         }
 }
@@ -332,14 +333,15 @@ desktop_background_gconf_notify_cb (GConfClient *client, guint notification_id, 
 static void
 nautilus_file_background_receive_gconf_changes (EelBackground *background)
 {
-	guint notification_id;
+        guint notification_id;
 
-        eel_gconf_monitor_add ("/desktop/gnome/background");
-        notification_id = eel_gconf_notification_add ("/desktop/gnome/background", desktop_background_gconf_notify_cb, background);
+        notification_id = gconf_client_notify_add (nautilus_gconf_client,
+                                                   "/desktop/gnome/background", desktop_background_gconf_notify_cb, background,
+                                                   NULL, NULL);
 
-	g_object_set_data (G_OBJECT (background), "desktop_gconf_notification", GUINT_TO_POINTER (notification_id));
-			
-	g_signal_connect (background, "destroy",
+        g_object_set_data (G_OBJECT (background), "desktop_gconf_notification", GUINT_TO_POINTER (notification_id));
+
+        g_signal_connect (background, "destroy",
                           G_CALLBACK (desktop_background_destroyed_callback), NULL);
 }
 

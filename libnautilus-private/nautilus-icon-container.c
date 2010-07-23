@@ -45,8 +45,6 @@
 #include <eel/eel-editable-label.h>
 #include <eel/eel-marshal.h>
 #include <eel/eel-string.h>
-#include <eel/eel-preferences.h>
-#include <eel/eel-enumeration.h>
 #include <eel/eel-canvas-rect-ellipse.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
@@ -6257,14 +6255,22 @@ get_text_ellipsis_limit_for_zoom (char **strs,
 	return success;
 }
 
+static const char * zoom_level_names[] = {
+	"smallest",
+	"smaller",
+	"small",
+	"standard",
+	"large",
+	"larger",
+	"largest"
+};
+
 static void
 text_ellipsis_limit_changed_callback (gpointer callback_data)
 {
 	char **pref;
 	unsigned int i;
 	int one_limit;
-	const EelEnumeration *eenum;
-	const EelEnumerationEntry *entry;
 
 	pref = g_settings_get_strv (nautilus_icon_view_preferences,
 				    NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ELLIPSIS_LIMIT);
@@ -6276,12 +6282,11 @@ text_ellipsis_limit_changed_callback (gpointer callback_data)
 	}
 
 	/* override for each zoom level */
-	eenum = eel_enumeration_lookup ("default_zoom_level");
-	g_assert (eenum != NULL);
-	for (i = 0; i < eel_enumeration_get_length (eenum); i++) {
-		entry = eel_enumeration_get_nth_entry (eenum, i);
-		if (get_text_ellipsis_limit_for_zoom (pref, entry->name, &one_limit)) {
-			text_ellipsis_limits[entry->value] = one_limit;
+	for (i = 0; i < G_N_ELEMENTS(zoom_level_names); i++) {
+		if (get_text_ellipsis_limit_for_zoom (pref,
+						      zoom_level_names[i],
+						      &one_limit)) {
+			text_ellipsis_limits[i] = one_limit;
 		}
 	}
 

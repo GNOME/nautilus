@@ -30,8 +30,6 @@
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 
-#include <eel/eel-preferences.h>
-
 #include "nautilus-file-management-properties.h"
 
 static void
@@ -52,7 +50,6 @@ main (int argc, char *argv[])
 
 	gtk_init (&argc, &argv);
 
-	eel_preferences_init ("/apps/nautilus");
 	nautilus_global_preferences_init ();
 
 	nautilus_module_setup ();
