@@ -1979,14 +1979,15 @@ fm_directory_view_init (FMDirectoryView *view)
 	g_signal_connect_object (nautilus_clipboard_monitor_get (), "clipboard_changed",
 				 G_CALLBACK (clipboard_changed_callback), view, 0);
 
-        /* Register to menu provider extension signal managing menu updates */
-        g_signal_connect_object (nautilus_signaller_get_current (), "popup_menu_changed",
-                         G_CALLBACK (fm_directory_view_update_menus), view, G_CONNECT_SWAPPED);
-	
+	/* Register to menu provider extension signal managing menu updates */
+	g_signal_connect_object (nautilus_signaller_get_current (), "popup_menu_changed",
+				 G_CALLBACK (fm_directory_view_update_menus), view, G_CONNECT_SWAPPED);
+
 	gtk_widget_show (GTK_WIDGET (view));
-	
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_ENABLE_DELETE,
-				      schedule_update_menus_callback, view);
+
+	g_signal_connect_swapped (nautilus_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_ENABLE_DELETE,
+				  G_CALLBACK (schedule_update_menus_callback), view);
 	g_signal_connect_swapped (nautilus_icon_view_preferences,
 				  "changed::" NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
 				  G_CALLBACK(text_attribute_names_changed_callback), view);
@@ -1997,8 +1998,6 @@ fm_directory_view_init (FMDirectoryView *view)
 				  "changed::" NAUTILUS_PREFERENCES_CLICK_POLICY,
 				  G_CALLBACK(click_policy_changed_callback),
 				  view);
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
-				      click_policy_changed_callback, view);
 	g_signal_connect_swapped (nautilus_preferences,
 				  "changed::" NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST, 
 				  G_CALLBACK(sort_directories_first_changed_callback), view);
@@ -2106,8 +2105,8 @@ fm_directory_view_finalize (GObject *object)
 
 	view = FM_DIRECTORY_VIEW (object);
 
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_ENABLE_DELETE,
-					 schedule_update_menus_callback, view);
+	g_signal_handlers_disconnect_by_func (nautilus_preferences,
+					      schedule_update_menus_callback, view);
 	g_signal_handlers_disconnect_by_func (nautilus_icon_view_preferences,
 					      text_attribute_names_changed_callback,
 					      view);
