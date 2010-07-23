@@ -186,11 +186,6 @@
       <_summary>Nautilus handles drawing the desktop</_summary>
       <_description>If set to true, then Nautilus will draw the icons on the desktop.</_description>
     </key>
-    <key name="desktop-font" type="s">
-      <default l10n="messages" context="desktop-font">''</default>
-      <_summary>Desktop font</_summary>
-      <_description>The font _description used for the icons on the desktop.</_description>
-    </key>
     <key name="desktop-is-home-dir" type="b">
       <default>false</default>
       <_summary>Nautilus uses the users home folder as the desktop</_summary>
@@ -347,6 +342,11 @@
   </schema>
 
   <schema id="org.gnome.nautilus.desktop" path="/apps/nautilus/desktop/" gettext-domain="nautilus">
+    <key name="font" type="s">
+      <default l10n="messages" context="desktop-font">''</default>
+      <_summary>Desktop font</_summary>
+      <_description>The font _description used for the icons on the desktop.</_description>
+    </key>
     <key name="home-icon-visible" type="b">
       <default>true</default>
       <_summary>Home icon visible on desktop</_summary>

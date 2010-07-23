@@ -61,7 +61,6 @@ G_BEGIN_DECLS
 /* Desktop options */
 #define NAUTILUS_PREFERENCES_SHOW_DESKTOP			"show-desktop"
 #define NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR                "desktop-is-home-dir"
-#define NAUTILUS_PREFERENCES_DESKTOP_FONT			"desktop-font"
 
 /* Display  */
 #define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES			"show-hidden-files"
@@ -193,6 +192,7 @@ typedef enum
 	NAUTILUS_SIMPLE_SEARCH_BAR
 } NautilusSearchBarMode;
 
+#define NAUTILUS_PREFERENCES_DESKTOP_FONT		   "font"
 #define NAUTILUS_PREFERENCES_DESKTOP_HOME_VISIBLE          "home-icon-visible"
 #define NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME             "home-icon-name"
 #define NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_VISIBLE      "computer-icon-visible"
