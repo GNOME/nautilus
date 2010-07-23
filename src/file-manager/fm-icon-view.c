@@ -193,7 +193,6 @@ static NautilusFileSortType get_default_sort_order                    (NautilusF
 static void default_sort_order_changed_callback            (gpointer callback_data);
 static void default_sort_in_reverse_order_changed_callback (gpointer callback_data);
 static void default_use_tighter_layout_changed_callback    (gpointer callback_data);
-static void default_use_manual_layout_changed_callback     (gpointer callback_data);
 static void default_zoom_level_changed_callback            (gpointer callback_data);
 static void labels_beside_icons_changed_callback           (gpointer callback_data);
 static void all_columns_same_width_changed_callback	   (gpointer callback_data);
@@ -243,17 +242,14 @@ fm_icon_view_finalize (GObject *object)
 
 	g_free (icon_view->details);
 
-	g_signal_handlers_disconnect_by_func (nautilus_icon_view_preferences,
+	g_signal_handlers_disconnect_by_func (nautilus_preferences,
 					      default_sort_order_changed_callback,
 					      icon_view);
-	g_signal_handlers_disconnect_by_func (nautilus_icon_view_preferences,
+	g_signal_handlers_disconnect_by_func (nautilus_preferences,
 					      default_sort_in_reverse_order_changed_callback,
 					      icon_view);
 	g_signal_handlers_disconnect_by_func (nautilus_icon_view_preferences,
 					      default_use_tighter_layout_changed_callback,
-					      icon_view);
-	g_signal_handlers_disconnect_by_func (nautilus_icon_view_preferences,
-					      default_use_manual_layout_changed_callback,
 					      icon_view);
 	g_signal_handlers_disconnect_by_func (nautilus_icon_view_preferences,
 					      default_zoom_level_changed_callback,
@@ -772,11 +768,11 @@ get_default_sort_order (NautilusFile *file, gboolean *reversed)
 
 	if (auto_storaged_added == FALSE) {
 		auto_storaged_added = TRUE;
-		eel_g_settings_add_auto_enum (nautilus_icon_view_preferences,
-					      NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
+		eel_g_settings_add_auto_enum (nautilus_preferences,
+					      NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER,
 					      (int *) &default_sort_order);
-		eel_g_settings_add_auto_boolean (nautilus_icon_view_preferences,
-						 NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
+		eel_g_settings_add_auto_boolean (nautilus_preferences,
+						 NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER,
 						 &default_sort_in_reverse_order);
 
 	}
@@ -926,24 +922,6 @@ fm_icon_view_set_directory_keep_aligned (FMIconView *icon_view,
 		 keep_aligned);
 }
 
-/* maintainence of auto layout boolean */
-static gboolean default_directory_manual_layout = FALSE;
-
-static gboolean
-get_default_directory_manual_layout (void)
-{
-	static gboolean auto_storaged_added = FALSE;
-
-	if (auto_storaged_added == FALSE) {
-		auto_storaged_added = TRUE;
-		eel_g_settings_add_auto_boolean (nautilus_icon_view_preferences,
-						 NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT,
-						 &default_directory_manual_layout);
-	}
-
-	return default_directory_manual_layout;
-}
-
 static gboolean
 fm_icon_view_get_directory_auto_layout (FMIconView *icon_view,
 					NautilusFile *file)
@@ -965,10 +943,8 @@ static gboolean
 fm_icon_view_real_get_directory_auto_layout (FMIconView *icon_view,
 					     NautilusFile *file)
 {
-
-
 	return nautilus_file_get_boolean_metadata
-		(file, NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT, !get_default_directory_manual_layout ());
+		(file, NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT, TRUE);
 }
 
 static void
@@ -996,7 +972,7 @@ fm_icon_view_real_set_directory_auto_layout (FMIconView *icon_view,
 
 	nautilus_file_set_boolean_metadata
 		(file, NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT,
-		 !get_default_directory_manual_layout (),
+		 TRUE,
 		 auto_layout);
 }
 /* maintainence of tighter layout boolean */
@@ -1826,14 +1802,6 @@ fm_icon_view_reset_to_defaults (FMDirectoryView *view)
 
 	nautilus_icon_container_sort (icon_container);
 
-	/* Switch to manual layout of the default calls for it.
-	 * This needs to happen last for the sort order menus
-	 * to be in sync.
-	 */
- 	if (get_default_directory_manual_layout ()) {
- 		switch_to_manual_layout (icon_view);
- 	}
-
 	update_layout_menus (icon_view);
 
 	fm_icon_view_restore_default_zoom_level (view);
@@ -2595,28 +2563,6 @@ default_use_tighter_layout_changed_callback (gpointer callback_data)
 }
 
 static void
-default_use_manual_layout_changed_callback (gpointer callback_data)
-{
-	FMIconView *icon_view;
-	NautilusFile *file;
-	NautilusIconContainer *icon_container;
-
-	g_return_if_fail (FM_IS_ICON_VIEW (callback_data));
-
-	icon_view = FM_ICON_VIEW (callback_data);
-
-	file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (icon_view));
-	icon_container = get_icon_container (icon_view);
-	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (icon_container));
-
-	nautilus_icon_container_set_auto_layout (
-		icon_container,
-		fm_icon_view_get_directory_auto_layout (icon_view, file));
-
-	nautilus_icon_container_request_update_all (icon_container);
-}
-
-static void
 default_zoom_level_changed_callback (gpointer callback_data)
 {
 	FMIconView *icon_view;
@@ -3107,21 +3053,17 @@ fm_icon_view_init (FMIconView *icon_view)
 		setup_sound_preview = TRUE;
 	}
 
-	g_signal_connect_swapped (nautilus_icon_view_preferences,
-				  "changed::" NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
+	g_signal_connect_swapped (nautilus_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER,
 				  G_CALLBACK (default_sort_order_changed_callback),
 				  icon_view);
-	g_signal_connect_swapped (nautilus_icon_view_preferences,
-				  "changed::" NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
+	g_signal_connect_swapped (nautilus_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER,
 				  G_CALLBACK (default_sort_in_reverse_order_changed_callback),
 				  icon_view);
 	g_signal_connect_swapped (nautilus_icon_view_preferences,
 				  "changed::" NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT,
 				  G_CALLBACK (default_use_tighter_layout_changed_callback),
-				  icon_view);
-	g_signal_connect_swapped (nautilus_icon_view_preferences,
-				  "changed::" NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT,
-				  G_CALLBACK (default_use_manual_layout_changed_callback),
 				  icon_view);
 	g_signal_connect_swapped (nautilus_icon_view_preferences,
 				  "changed::" NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,

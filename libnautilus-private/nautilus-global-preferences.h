@@ -116,6 +116,8 @@ typedef enum
 
 /* Sorting order */
 #define NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST		"sort-directories-first"
+#define NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER			"default-sort-order"
+#define NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER	"default-sort-in-reverse-order"
 
 /* The default folder viewer - one of the two enums below */
 #define NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER		"default-folder-viewer"
@@ -135,23 +137,10 @@ enum
 
 
 /* Icon View */
-#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER	"default-sort-in-reverse-order"
-#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER		"default-sort-order"
 #define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT	"default-use-tighter-layout"
 #define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL		"default-zoom-level"
-#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT	"default-use-manual-layout"
 
 #define NAUTILUS_PREFERENCES_ICON_VIEW_LABELS_BESIDE_ICONS		"labels-beside-icons"
-
-
-/* The icon view uses 2 variables to store the sort order and
- * whether to use manual layout.  However, the UI for these
- * preferences presensts them as single option menu.  So we
- * use the following preference as a proxy for the other two.
- * In nautilus-global-preferences.c we install callbacks for
- * the proxy preference and update the other 2 when it changes
- */
-#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT "default-sort-order-or-manual-layout"
 
 /* Which text attributes appear beneath icon names */
 #define NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS				"captions"
@@ -168,11 +157,9 @@ enum
 #define NAUTILUS_PREFERENCES_COMPACT_VIEW_ALL_COLUMNS_SAME_WIDTH	"all-columns-have-same-width"
 
 /* List View */
-#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER	"list_view/default_sort_in_reverse_order"
-#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER		"list_view/default_sort_order"
-#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL		"list_view/default_zoom_level"
-#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS	        "list_view/default_visible_columns"
-#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER	        "list_view/default_column_order"
+#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL		"default-zoom-level"
+#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS		"default-visible-columns"
+#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER		"default-column-order"
 
 enum
 {
@@ -224,6 +211,7 @@ char *nautilus_global_preferences_get_default_folder_viewer_preference_as_iid (v
 
 GSettings *nautilus_preferences;
 GSettings *nautilus_icon_view_preferences;
+GSettings *nautilus_list_view_preferences;
 GSettings *nautilus_compact_view_preferences;
 GSettings *nautilus_desktop_preferences;
 GSettings *nautilus_tree_sidebar_preferences;

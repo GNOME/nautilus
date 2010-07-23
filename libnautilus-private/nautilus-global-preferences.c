@@ -160,24 +160,6 @@ typedef struct
  */
 static const PreferenceDefault preference_defaults[] = {
 
-	/* List View Default Preferences */
-	{ NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
-	  PREFERENCE_STRING,
-	  "name",
-	  NULL, NULL,
-	  NULL,
-	},
-	{ NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (FALSE)
-	},
-	{ NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
-	  PREFERENCE_STRING,
-	  "smaller",
-	  NULL, NULL,
-	  "default_zoom_level"
-	},
-
 	{ NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE,
 	  PREFERENCE_BOOLEAN,
 	  GINT_TO_POINTER (FALSE)
@@ -328,38 +310,6 @@ nautilus_global_preferences_get_default_folder_viewer_preference_as_iid (void)
 	return g_strdup (viewer_iid);
 }
 
-/* The icon view uses 2 variables to store the sort order and
- * whether to use manual layout.  However, the UI for these
- * preferences presensts them as single option menu.  So we
- * use the following preference as a proxy for the other two.
- * In nautilus-global-preferences.c we install callbacks for
- * the proxy preference and update the other 2 when it changes
- */
-static void
-default_icon_view_sort_order_or_manual_layout_changed_callback (gpointer callback_data)
-{
-	int default_sort_order_or_manual_layout;
-	int default_sort_order;
-
-	default_sort_order_or_manual_layout =
-		g_settings_get_enum (nautilus_icon_view_preferences,
-				     NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT);
-
-	g_settings_set_boolean (nautilus_icon_view_preferences, NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT,
-				default_sort_order_or_manual_layout == PREFERENCES_SORT_ORDER_MANUALLY);
-
-	if (default_sort_order_or_manual_layout != PREFERENCES_SORT_ORDER_MANUALLY) {
-		default_sort_order = default_sort_order_or_manual_layout;
-
-		g_return_if_fail (default_sort_order >= NAUTILUS_FILE_SORT_BY_DISPLAY_NAME);
-		g_return_if_fail (default_sort_order <= NAUTILUS_FILE_SORT_BY_EMBLEMS);
-
-		g_settings_set_enum (nautilus_icon_view_preferences,
-				     NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
-				     default_sort_order);
-	}
-}
-
 void
 nautilus_global_preferences_init (void)
 {
@@ -388,15 +338,10 @@ nautilus_global_preferences_init (void)
 	nautilus_media_preferences = g_settings_new("org.gnome.media-handling");
 	nautilus_window_state = g_settings_new("org.gnome.nautilus.window-state");
 	nautilus_icon_view_preferences = g_settings_new("org.gnome.nautilus.icon-view");
+	nautilus_list_view_preferences = g_settings_new("org.gnome.nautilus.list-view");
 	nautilus_compact_view_preferences = g_settings_new("org.gnome.nautilus.compact-view");
 	nautilus_desktop_preferences = g_settings_new("org.gnome.nautilus.desktop");
 	nautilus_tree_sidebar_preferences = g_settings_new("org.gnome.nautilus.sidebar-panels.tree");
-
-	/* Set up storage for values accessed in this file */
-	g_signal_connect_swapped (nautilus_icon_view_preferences,
-				  "changed::" NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT,
-				  G_CALLBACK (default_icon_view_sort_order_or_manual_layout_changed_callback), 
-				  NULL);
 
 	/* Preload everything in a big batch */
 	eel_gconf_preload_cache ("/apps/nautilus/preferences",

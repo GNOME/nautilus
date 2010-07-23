@@ -131,7 +131,7 @@ struct SelectionForeachData {
 #define WAIT_FOR_RENAME_ON_ACTIVATE 200
 
 static int                      click_policy_auto_value;
-static char *              	default_sort_order_auto_value;
+static NautilusFileSortType     default_sort_order_auto_value;
 static gboolean			default_sort_reversed_auto_value;
 static NautilusZoomLevel        default_zoom_level_auto_value;
 static char **                  default_visible_columns_auto_value;
@@ -171,15 +171,28 @@ static const char * default_trash_columns_order[] = {
 /* for EEL_CALL_PARENT */
 #define parent_class fm_list_view_parent_class
 
+
 static const gchar*
 get_default_sort_order (NautilusFile *file, gboolean *reversed)
 {
 	const gchar *retval;
+	const char *attributes[] = {
+		"name", /* is really "manually" which doesn't apply to lists */
+		"name",
+		"uri",
+		"size",
+		"type",
+		"date_modified",
+		"date_accessed",
+		"emblems",
+		"trashed_on",
+		NULL
+	};
 
 	retval = nautilus_file_get_default_sort_attribute (file, reversed);
 
 	if (retval == NULL) {
-		retval = default_sort_order_auto_value;
+		retval = attributes[default_sort_order_auto_value];
 		*reversed = default_sort_reversed_auto_value;
 	}
 
@@ -626,8 +639,8 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 		(FM_LIST_MODEL (gtk_tree_view_get_model (tree_view)),
 		 tree_view,
 		 event->x, event->y);
-	
-	g_object_get (G_OBJECT (gtk_widget_get_settings (widget)), 
+
+	g_object_get (G_OBJECT (gtk_widget_get_settings (widget)),
 		      "gtk-double-click-time", &double_click_time,
 		      NULL);
 
@@ -1140,7 +1153,8 @@ sort_column_changed_callback (GtkTreeSortable *sortable,
 		 * or if it makes sense for the attribute (i.e. date). */
 		if (sort_attr == default_sort_attr) {
 			/* use value from preferences */
-			reversed = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER);
+			reversed = g_settings_get_boolean (nautilus_preferences,
+							   NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER);
 		} else {
 			reversed = nautilus_file_is_date_sort_attribute_q (sort_attr);
 		}
@@ -1158,9 +1172,9 @@ sort_column_changed_callback (GtkTreeSortable *sortable,
 	reversed_attr = (reversed ? "true" : "false");
 	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED,
 				    default_reversed_attr, reversed_attr);
-				    
+
 	/* Make sure selected item(s) is visible after sort */
-	fm_list_view_reveal_selection (FM_DIRECTORY_VIEW (view));							      
+	fm_list_view_reveal_selection (FM_DIRECTORY_VIEW (view));
 
 	view->details->last_sort_attr = sort_attr;
 }
@@ -2868,6 +2882,19 @@ fm_list_view_finalize (GObject *object)
 
 	g_free (list_view->details);
 
+	g_signal_handlers_disconnect_by_func (nautilus_preferences,
+					      default_sort_order_changed_callback,
+					      list_view);
+	g_signal_handlers_disconnect_by_func (nautilus_list_view_preferences,
+					      default_zoom_level_changed_callback,
+					      list_view);
+	g_signal_handlers_disconnect_by_func (nautilus_list_view_preferences,
+					      default_visible_columns_changed_callback,
+					      list_view);
+	g_signal_handlers_disconnect_by_func (nautilus_list_view_preferences,
+					      default_column_order_changed_callback,
+					      list_view);
+
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
@@ -3048,16 +3075,21 @@ fm_list_view_class_init (FMListViewClass *class)
 	eel_g_settings_add_auto_enum (nautilus_preferences,
 				      NAUTILUS_PREFERENCES_CLICK_POLICY,
 				      &click_policy_auto_value);
-	eel_preferences_add_auto_string (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
-					 (const char **) &default_sort_order_auto_value);
-	eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
-					  &default_sort_reversed_auto_value);
-	eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
-				       (int *) &default_zoom_level_auto_value);
-	eel_preferences_add_auto_string_array (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS,
-					       &default_visible_columns_auto_value);
-	eel_preferences_add_auto_string_array (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER,
-					       &default_column_order_auto_value);
+	eel_g_settings_add_auto_enum (nautilus_preferences,
+				      NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER,
+				      (int *) &default_sort_order_auto_value);
+	eel_g_settings_add_auto_boolean (nautilus_preferences,
+					 NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER,
+					 &default_sort_reversed_auto_value);
+	eel_g_settings_add_auto_enum (nautilus_list_view_preferences,
+				      NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
+				      (int *) &default_zoom_level_auto_value);
+	eel_g_settings_add_auto_strv (nautilus_list_view_preferences,
+				      NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS,
+				      &default_visible_columns_auto_value);
+	eel_g_settings_add_auto_strv (nautilus_list_view_preferences,
+				      NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER,
+				      &default_column_order_auto_value);
 }
 
 static const char *
@@ -3071,7 +3103,7 @@ static void
 fm_list_view_iface_init (NautilusViewIface *iface)
 {
 	fm_directory_view_init_view_iface (iface);
-	
+
 	iface->get_view_id = fm_list_view_get_id;
 	iface->get_first_visible_file = fm_list_view_get_first_visible_file;
 	iface->scroll_to_file = list_view_scroll_to_file;
@@ -3086,31 +3118,36 @@ fm_list_view_init (FMListView *list_view)
 
 	create_and_set_up_tree_view (list_view);
 
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
-						  default_sort_order_changed_callback,
-						  list_view, G_OBJECT (list_view));
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
-						  default_sort_order_changed_callback,
-						  list_view, G_OBJECT (list_view));
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
-						  default_zoom_level_changed_callback,
-						  list_view, G_OBJECT (list_view));
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS,
-						  default_visible_columns_changed_callback,
-						  list_view, G_OBJECT (list_view));
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER,
-						  default_column_order_changed_callback,
-						  list_view, G_OBJECT (list_view));
+	g_signal_connect_swapped (nautilus_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER,
+				  G_CALLBACK (default_sort_order_changed_callback),
+				  list_view);
+	g_signal_connect_swapped (nautilus_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER,
+				  G_CALLBACK (default_sort_order_changed_callback),
+				  list_view);
+	g_signal_connect_swapped (nautilus_list_view_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
+				  G_CALLBACK (default_zoom_level_changed_callback),
+				  list_view);
+	g_signal_connect_swapped (nautilus_list_view_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS,
+				  G_CALLBACK (default_visible_columns_changed_callback),
+				  list_view);
+	g_signal_connect_swapped (nautilus_list_view_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER,
+				  G_CALLBACK (default_column_order_changed_callback),
+				  list_view);
 
 	fm_list_view_click_policy_changed (FM_DIRECTORY_VIEW (list_view));
-	
+
 	fm_list_view_sort_directories_first_changed (FM_DIRECTORY_VIEW (list_view));
-	
+
 	/* ensure that the zoom level is always set in begin_loading */
 	list_view->details->zoom_level = NAUTILUS_ZOOM_LEVEL_SMALLEST - 1;
 
 	list_view->details->hover_path = NULL;
-	list_view->details->clipboard_handler_id = 
+	list_view->details->clipboard_handler_id =
 		g_signal_connect (nautilus_clipboard_monitor_get (),
 		                  "clipboard_info",
 		                  G_CALLBACK (list_view_notify_clipboard_info), list_view);

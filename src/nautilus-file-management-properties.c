@@ -274,8 +274,12 @@ columns_changed_callback (NautilusColumnChooser *chooser,
 					      &visible_columns,
 					      &column_order);
 
-	eel_preferences_set_string_array (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS, visible_columns);
-	eel_preferences_set_string_array (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER, column_order);
+	g_settings_set_strv (nautilus_list_view_preferences,
+			     NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS,
+			     (const char * const *)visible_columns);
+	g_settings_set_strv (nautilus_list_view_preferences,
+			     NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER,
+			     (const char * const *)column_order);
 
 	g_strfreev (visible_columns);
 	g_strfreev (column_order);
@@ -465,7 +469,7 @@ create_date_format_menu (GtkBuilder *builder)
 	gchar *date_string;
 	time_t now_raw;
 	struct tm* now;
-	
+
 	combo_box = GTK_WIDGET (gtk_builder_get_object (builder,
 							NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DATE_FORMAT_WIDGET));
 
@@ -486,15 +490,17 @@ create_date_format_menu (GtkBuilder *builder)
 }
 
 static void
-set_columns_from_gconf (NautilusColumnChooser *chooser)
+set_columns_from_settings (NautilusColumnChooser *chooser)
 {
 	char **visible_columns;
 	char **column_order;
-	
-	visible_columns = eel_preferences_get_string_array (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS);
-	column_order = eel_preferences_get_string_array (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER);
 
-	nautilus_column_chooser_set_settings (NAUTILUS_COLUMN_CHOOSER (chooser), 
+	visible_columns = g_settings_get_strv (nautilus_list_view_preferences,
+					       NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS);
+	column_order = g_settings_get_strv (nautilus_list_view_preferences,
+					    NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER);
+
+	nautilus_column_chooser_set_settings (NAUTILUS_COLUMN_CHOOSER (chooser),
 					      visible_columns,
 					      column_order);
 
@@ -502,13 +508,15 @@ set_columns_from_gconf (NautilusColumnChooser *chooser)
 	g_strfreev (column_order);
 }
 
-static void 
-use_default_callback (NautilusColumnChooser *chooser, 
+static void
+use_default_callback (NautilusColumnChooser *chooser,
 		      gpointer user_data)
 {
-	eel_preferences_unset (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS);
-	eel_preferences_unset (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER);
-	set_columns_from_gconf (chooser);
+	g_settings_reset (nautilus_list_view_preferences,
+			  NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS);
+	g_settings_reset (nautilus_list_view_preferences,
+			  NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER);
+	set_columns_from_settings (chooser);
 }
 
 static void
@@ -516,18 +524,18 @@ nautilus_file_management_properties_dialog_setup_list_column_page (GtkBuilder *b
 {
 	GtkWidget *chooser;
 	GtkWidget *box;
-	
+
 	chooser = nautilus_column_chooser_new (NULL);
-	g_signal_connect (chooser, "changed", 
+	g_signal_connect (chooser, "changed",
 			  G_CALLBACK (columns_changed_callback), chooser);
-	g_signal_connect (chooser, "use_default", 
+	g_signal_connect (chooser, "use_default",
 			  G_CALLBACK (use_default_callback), chooser);
 
-	set_columns_from_gconf (NAUTILUS_COLUMN_CHOOSER (chooser));
+	set_columns_from_settings (NAUTILUS_COLUMN_CHOOSER (chooser));
 
 	gtk_widget_show (chooser);
 	box = GTK_WIDGET (gtk_builder_get_object (builder, "list_columns_vbox"));
-	
+
 	gtk_box_pack_start (GTK_BOX (box), chooser, TRUE, TRUE, 0);
 }
 
@@ -760,6 +768,7 @@ bind_builder_enum (GtkBuilder *builder,
 				      enum_values, NULL);
 }
 
+
 typedef struct {
 	const guint64 *values;
 	int n_values;
@@ -973,18 +982,14 @@ nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow
 			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_COMPACT_VIEW_ZOOM_WIDGET,
 			   NAUTILUS_PREFERENCES_COMPACT_VIEW_DEFAULT_ZOOM_LEVEL,
 			   (const char **) zoom_values);
-	eel_preferences_builder_connect_string_enum_combo_box (builder,
-							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_LIST_VIEW_ZOOM_WIDGET,
-							       NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
-							       (const char **) zoom_values);
-	bind_builder_enum (builder, nautilus_icon_view_preferences,
+	bind_builder_enum (builder, nautilus_list_view_preferences,
+			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_LIST_VIEW_ZOOM_WIDGET,
+			   NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
+			   (const char **) zoom_values);
+	bind_builder_enum (builder, nautilus_preferences,
 			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_ORDER_WIDGET,
-			   NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
+			   NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER,
 			   (const char **) sort_order_values);
-	if (0) // TODO
-	eel_preferences_builder_connect_string_enum_combo_box_slave (builder,
-								     NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_ORDER_WIDGET,
-								     NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER);
 	bind_builder_enum (builder, nautilus_preferences,
 			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_TEXT_WIDGET,
 			   NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
