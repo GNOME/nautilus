@@ -168,6 +168,19 @@
       <_summary>Show folders first in windows</_summary>
       <_description>If set to true, then Nautilus shows folders prior to showing files in the icon and list views.</_description>
     </key>
+    <key name="default-sort-order" enum="org.gnome.nautilus.SortOrder">
+      <aliases>
+	<alias value='modification_date' target='mtime'/>
+      </aliases>
+      <default>'name'</default>
+      <_summary>Default sort order</_summary>
+      <_description>The default sort-order for items in the icon view. Possible values are "name", "size", "type", "mtime", and "emblems".</_description>
+    </key>
+    <key name="default-sort-in-reverse-order" type="b">
+      <default>false</default>
+      <_summary>Reverse sort order in new windows</_summary>
+      <_description>If true, files in new windows will be sorted in reverse order. ie, if sorted by name, then instead of sorting the files from "a" to "z", they will be sorted from "z" to "a"; if sorted by size, instead of being incrementally they will be sorted decrementally.</_description>
+    </key>
     <key name="show-desktop" type="b">
       <default>true</default>
       <_summary>Nautilus handles drawing the desktop</_summary>
@@ -245,19 +258,6 @@
       "size", "type", "date_modified", "date_changed", "date_accessed", "owner",
       "group", "permissions", "octal_permissions" and "mime_type".</_description>
     </key>
-    <key name="default-sort-order" enum="org.gnome.nautilus.SortOrder">
-      <aliases>
-	<alias value='modification_date' target='mtime'/>
-      </aliases>
-      <default>'name'</default>
-      <_summary>Default sort order</_summary>
-      <_description>The default sort-order for items in the icon view. Possible values are "name", "size", "type", "mtime", and "emblems".</_description>
-    </key>
-    <key name="default-sort-in-reverse-order" type="b">
-      <default>false</default>
-      <_summary>Reverse sort order in new windows</_summary>
-      <_description>If true, files in new windows will be sorted in reverse order. ie, if sorted by name, then instead of sorting the files from "a" to "z", they will be sorted from "z" to "a"; if sorted by size, instead of being incrementally they will be sorted decrementally.</_description>
-    </key>
     <key name="default-use-tighter-layout" type="b">
       <default>false</default>
       <_summary>Use tighter layout in new windows</_summary>
@@ -267,11 +267,6 @@
       <default>false</default>
       <_summary>Put labels beside icons</_summary>
       <_description>If true, labels will be placed beside icons rather than underneath them.</_description>
-    </key>
-    <key name="default-use-manual-layout" type="b">
-      <default>false</default>
-      <_summary>Use manual layout in new windows</_summary>
-      <_description>If true, new windows will use manual layout by default.</_description>
     </key>
     <key name="default-zoom-level" enum="org.gnome.nautilus.ZoomLevel">
       <default>'standard'</default>
@@ -322,19 +317,6 @@
   </schema>
 
   <schema id="org.gnome.nautilus.list-view" path="/apps/nautilus/list-view/" gettext-domain="nautilus">
-    <key name="default-sort-order" enum="org.gnome.nautilus.SortOrder">
-      <aliases>
-	<alias value='modification_date' target='mtime'/>
-      </aliases>
-      <default>'name'</default>
-      <_summary>Default sort order</_summary>
-      <_description>The default sort-order for the items in the list view. Possible values are "name", "size", "type", and "mtime".</_description>
-    </key>
-    <key name="default-sort-in-reverse-order" type="b">
-      <default>false</default>
-      <_summary>Reverse sort order in new windows</_summary>
-      <_description>If true, files in new windows will be sorted in reverse order. ie, if sorted by name, then instead of sorting the files from "a" to "z", they will be sorted from "z" to "a".</_description>
-    </key>
     <key name="default-zoom-level" enum="org.gnome.nautilus.ZoomLevel">
       <default>'smaller'</default>
       <_summary>Default list zoom level</_summary>
