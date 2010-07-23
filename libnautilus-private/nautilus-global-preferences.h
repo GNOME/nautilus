@@ -27,6 +27,7 @@
 #define NAUTILUS_GLOBAL_PREFERENCES_H
 
 #include <eel/eel-preferences.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 #include <gio/gio.h>
 
 G_BEGIN_DECLS
@@ -204,7 +205,7 @@ typedef enum
 #define NAUTILUS_PREFERENCES_DESKTOP_NETWORK_NAME          "network-icon-name"
 
 /* Lockdown */
-#define NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE         "/desktop/gnome/lockdown/disable_command_line"
+#define NAUTILUS_GCONF_LOCKDOWN_COMMAND_LINE         "/desktop/gnome/lockdown/disable_command_line"
 
 void nautilus_global_preferences_init                      (void);
 char *nautilus_global_preferences_get_default_folder_viewer_preference_as_iid (void);
@@ -217,6 +218,8 @@ GSettings *nautilus_desktop_preferences;
 GSettings *nautilus_tree_sidebar_preferences;
 GSettings *nautilus_media_preferences;
 GSettings *nautilus_window_state;
+
+GConfClient *nautilus_gconf_client;
 
 G_END_DECLS
 

@@ -37,6 +37,7 @@
 #include <eel/eel-stock-dialogs.h>
 
 #include <libnautilus-private/nautilus-icon-names.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 
 #include "nautilus-window.h"
 #include "nautilus-connect-server-dialog.h"

@@ -40,15 +40,9 @@
 #define PREFERENCES_SORT_ORDER_MANUALLY 100
 
 /* Path for gnome-vfs preferences */
-static const char *EXTRA_MONITOR_PATHS[] = { "/desktop/gnome/file_views",
-					     "/desktop/gnome/background",
+static const char *EXTRA_MONITOR_PATHS[] = { "/desktop/gnome/background",
 					     "/desktop/gnome/lockdown",
 					     NULL };
-
-/* Forward declarations */
-static void     global_preferences_install_defaults      (void);
-static void     global_preferences_register_enumerations (void);
-
 
 /* An enumeration used for installing type specific preferences defaults. */
 typedef enum
@@ -58,48 +52,6 @@ typedef enum
 	PREFERENCE_STRING,
 	PREFERENCE_STRING_ARRAY
 } PreferenceType;
-
-static EelEnumerationEntry default_zoom_level_enum_entries[] = {
-	/* xgettext:no-c-format */
-	{ "smallest",	    N_("25%"),		NAUTILUS_ZOOM_LEVEL_SMALLEST },
-	/* xgettext:no-c-format */
-	{ "smaller",	    N_("50%"),		NAUTILUS_ZOOM_LEVEL_SMALLER },
-	/* xgettext:no-c-format */
-	{ "small",	    N_("75%"),		NAUTILUS_ZOOM_LEVEL_SMALL },
-	/* xgettext:no-c-format */
-	{ "standard",	    N_("100%"),		NAUTILUS_ZOOM_LEVEL_STANDARD },
-	/* xgettext:no-c-format */
-	{ "large",	    N_("150%"),		NAUTILUS_ZOOM_LEVEL_LARGE },
-	/* xgettext:no-c-format */
-	{ "larger",	    N_("200%"),		NAUTILUS_ZOOM_LEVEL_LARGER },
-	/* xgettext:no-c-format */
-	{ "largest",	    N_("400%"),		NAUTILUS_ZOOM_LEVEL_LARGEST }
-};
-
-static EelEnumerationEntry file_size_enum_entries[] = {
-	{ "102400",	    N_("100 K"),	102400 },
-	{ "512000",	    N_("500 K"),	512000 },
-	{ "1048576",	    N_("1 MB"),		1048576 },
-	{ "3145728",	    N_("3 MB"),		3145728 },
-	{ "5242880",	    N_("5 MB"),		5242880 },
-	{ "10485760",	    N_("10 MB"),	10485760 },
-	{ "104857600",	    N_("100 MB"),	104857600 },
-	{ "1073741824",     N_("1 GB"),         1073741824 },
-	{ "2147483648",     N_("2 GB"),         2147483648U },
-	{ "4294967295",     N_("4 GB"),         4294967295U }
-};
-
-static EelEnumerationEntry standard_font_size_entries[] = {
-	{ "8",		   N_("8"),	8 },
-	{ "10",		   N_("10"),	10 },
-	{ "12",		   N_("12"),	12 },
-	{ "14",		   N_("14"),	14 },
-	{ "16",		   N_("16"),	16 },
-	{ "18",		   N_("18"),	18 },
-	{ "20",		   N_("20"),	20 },
-	{ "22",		   N_("22"),	22 },
-	{ "24",		   N_("24"),	24 }
-};
 
 /*
  * A callback which can be used to fetch dynamic fallback values.
@@ -155,138 +107,6 @@ typedef struct
  *    what choices and descriptions of choices to present to the user.
  */
 
-/* NOTE THAT THE FALLBACKS HERE ARE NOT SUPPOSED TO BE USED -
- * YOU SHOULD EDIT THE SCHEMAS FILE TO CHANGE DEFAULTS.
- */
-static const PreferenceDefault preference_defaults[] = {
-
-	{ NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (FALSE)
-	},
-	{ NULL }
-};
-
-/**
- * global_preferences_register_enumerations
- *
- * Register enumerations for INTEGER preferences that need them.
- *
- * This function needs to be called before the preferences dialog
- * panes are populated, as they use the registered information to
- * create enumeration item widgets.
- */
-static void
-global_preferences_register_enumerations (void)
-{
-	guint i;
-
-	/* Register the enumerations.
-	 * These enumerations are used in the preferences dialog to 
-	 * populate widgets and route preferences changes between the
-	 * storage (GConf) and the displayed values.
-	 */
-	eel_enumeration_register ("default_zoom_level",
-				  default_zoom_level_enum_entries,
-				  G_N_ELEMENTS (default_zoom_level_enum_entries));
-	eel_enumeration_register ("file_size",
-				  file_size_enum_entries,
-				  G_N_ELEMENTS (file_size_enum_entries));
-	eel_enumeration_register ("standard_font_size",
-				  standard_font_size_entries,
-				  G_N_ELEMENTS (standard_font_size_entries));
-
-	/* Set the enumeration ids for preferences that need them */
-	for (i = 0; preference_defaults[i].name != NULL; i++) {
-		if (eel_strlen (preference_defaults[i].enumeration_id) > 0) {
-			g_assert (preference_defaults[i].type == PREFERENCE_STRING
-				  || preference_defaults[i].type == PREFERENCE_STRING_ARRAY
-				  || preference_defaults[i].type == PREFERENCE_INTEGER);
-			eel_preferences_set_enumeration_id (preference_defaults[i].name,
-							    preference_defaults[i].enumeration_id);
-		}
-	}
-}
-
-static void
-global_preferences_install_one_default (const char *preference_name,
-					PreferenceType preference_type,
-					const PreferenceDefault *preference_default)
-{
-	gpointer value = NULL;
-	char **string_array_value;
-
-	g_return_if_fail (preference_name != NULL);
-	g_return_if_fail (preference_type >= PREFERENCE_BOOLEAN);
-	g_return_if_fail (preference_type <= PREFERENCE_STRING_ARRAY);
-	g_return_if_fail (preference_default != NULL);
-
-	/* If a callback is given, use that to fetch the default value */
-	if (preference_default->fallback_callback != NULL) {
-		value = (* preference_default->fallback_callback) ();
-	} else {
-		value = preference_default->fallback_value;
-	}
-
-	switch (preference_type) {
-	case PREFERENCE_BOOLEAN:
-		eel_preferences_set_emergency_fallback_boolean (preference_name,
-								GPOINTER_TO_INT (value));
-		break;
-		
-	case PREFERENCE_INTEGER:
-		eel_preferences_set_emergency_fallback_integer (preference_name,
-								
-								GPOINTER_TO_INT (value));
-		break;
-		
-	case PREFERENCE_STRING:
-		eel_preferences_set_emergency_fallback_string (preference_name,
-							       value);
-		break;
-
-	case PREFERENCE_STRING_ARRAY:
-		string_array_value = g_strsplit (value,
-						 STRING_ARRAY_DEFAULT_TOKENS_DELIMETER,
-						 -1);
-		eel_preferences_set_emergency_fallback_string_array (preference_name,
-								     string_array_value);
-		g_strfreev (string_array_value);
-		break;
-		
-	default:
-		g_assert_not_reached ();
-	}
-
-	/* Free the dynamic default value if needed */
-	if (preference_default->fallback_callback != NULL
-	    && preference_default->fallback_callback_result_free_function != NULL) {
-		(* preference_default->fallback_callback_result_free_function) (value);
-	}
-}
-
-/**
- * global_preferences_install_defaults
- *
- * Install defaults and visibilities.
- *
- * Most of the defaults come from the preference_defaults table above.
- *
- * Many preferences require their defaults to be computed, and so there
- * are special functions to install those.
- */
-static void
-global_preferences_install_defaults (void)
-{
-	guint i;
-
-	for (i = 0; preference_defaults[i].name != NULL; i++) {
-		global_preferences_install_one_default (preference_defaults[i].name,
-							preference_defaults[i].type,
-							&preference_defaults[i]);
-	}
-}
-
 /*
  * Public functions
  */
@@ -324,16 +144,6 @@ nautilus_global_preferences_init (void)
 
 	eel_preferences_init ("/apps/nautilus");
 
-	/* Install defaults */
-	global_preferences_install_defaults ();
-
-	global_preferences_register_enumerations ();
-
-	/* Add monitors for any other GConf paths we have keys in */
-	for (i=0; EXTRA_MONITOR_PATHS[i] != NULL; i++) {
-		eel_preferences_monitor_directory (EXTRA_MONITOR_PATHS[i]);
-	}
-
 	nautilus_preferences = g_settings_new("org.gnome.nautilus.preferences");
 	nautilus_media_preferences = g_settings_new("org.gnome.media-handling");
 	nautilus_window_state = g_settings_new("org.gnome.nautilus.window-state");
@@ -342,6 +152,16 @@ nautilus_global_preferences_init (void)
 	nautilus_compact_view_preferences = g_settings_new("org.gnome.nautilus.compact-view");
 	nautilus_desktop_preferences = g_settings_new("org.gnome.nautilus.desktop");
 	nautilus_tree_sidebar_preferences = g_settings_new("org.gnome.nautilus.sidebar-panels.tree");
+
+	nautilus_gconf_client = gconf_client_get_default ();
+
+	/* Add monitors for any other GConf paths we have keys in */
+	for (i=0; EXTRA_MONITOR_PATHS[i] != NULL; i++) {
+		gconf_client_add_dir (nautilus_gconf_client,
+				      EXTRA_MONITOR_PATHS[i],
+				      GCONF_CLIENT_PRELOAD_ONELEVEL,
+				      NULL);
+	}
 
 	/* Preload everything in a big batch */
 	eel_gconf_preload_cache ("/apps/nautilus/preferences",

@@ -72,12 +72,14 @@ struct FMDesktopIconViewDetails
 	GdkWindow *root_window;
 	GtkActionGroup *desktop_action_group;
 	guint desktop_merge_id;
-	
+
 	/* For the desktop rescanning
 	 */
 	gulong delayed_init_signal;
 	guint reload_desktop_timeout;
 	gboolean pending_rescan;
+
+	guint lockdown_notification_id;
 };
 
 static void     fm_desktop_icon_view_init                   (FMDesktopIconView      *desktop_icon_view);
@@ -108,7 +110,10 @@ desktop_directory_changed_callback (gpointer callback_data)
 }
 
 static void
-lockdown_disable_command_line_changed_callback (gpointer callback_data)
+lockdown_disable_command_line_changed_callback (GConfClient* client,
+						guint cnxn_id,
+						GConfEntry *entry,
+						gpointer callback_data)
 {
 	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (callback_data));
 }
@@ -299,13 +304,13 @@ fm_desktop_icon_view_finalize (GObject *object)
 					      font_changed_callback,
 					      icon_view);
 
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE,
-					 lockdown_disable_command_line_changed_callback,
-					 icon_view);
-
 	g_signal_handlers_disconnect_by_func (nautilus_preferences,
 					      desktop_directory_changed_callback,
 					      NULL);
+
+	gconf_client_notify_remove (nautilus_gconf_client,
+				    icon_view->details->lockdown_notification_id);
+
 	g_free (icon_view->details);
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -615,10 +620,13 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 	default_zoom_level_changed (desktop_icon_view);
 	fm_desktop_icon_view_update_icon_container_fonts (desktop_icon_view);
 
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE,
-				      lockdown_disable_command_line_changed_callback,
-				      desktop_icon_view);
-
+	desktop_icon_view->details->lockdown_notification_id =
+		gconf_client_notify_add (nautilus_gconf_client,
+					 NAUTILUS_GCONF_LOCKDOWN_COMMAND_LINE,
+					 lockdown_disable_command_line_changed_callback,
+					 desktop_icon_view,
+					 NULL,
+					 NULL);
 }
 
 static void
@@ -698,7 +706,7 @@ real_update_menus (FMDirectoryView *view)
 	gboolean disable_command_line;
 	gboolean include_empty_trash;
 	GtkAction *action;
-	
+
 	g_assert (FM_IS_DESKTOP_ICON_VIEW (view));
 
 	EEL_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
@@ -706,7 +714,7 @@ real_update_menus (FMDirectoryView *view)
 	desktop_view = FM_DESKTOP_ICON_VIEW (view);
 
 	/* New Launcher */
-	disable_command_line = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE);
+	disable_command_line = gconf_client_get_bool (nautilus_gconf_client, NAUTILUS_GCONF_LOCKDOWN_COMMAND_LINE, NULL);
 	action = gtk_action_group_get_action (desktop_view->details->desktop_action_group,
 					      FM_ACTION_NEW_LAUNCHER_DESKTOP);
 	gtk_action_set_visible (action,
@@ -716,7 +724,7 @@ real_update_menus (FMDirectoryView *view)
 	include_empty_trash = trash_link_is_selection (view);
 	action = gtk_action_group_get_action (desktop_view->details->desktop_action_group,
 					      FM_ACTION_EMPTY_TRASH_CONDITIONAL);
-	gtk_action_set_visible (action, 
+	gtk_action_set_visible (action,
 				include_empty_trash);
 	if (include_empty_trash) {
 		label = g_strdup (_("E_mpty Trash"));

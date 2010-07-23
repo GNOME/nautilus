@@ -252,6 +252,7 @@ struct FMDirectoryViewDetails
 	gboolean allow_moves;
 
 	GdkPoint context_menu_position;
+	guint lockdown_notification_id;
 };
 
 typedef struct {
@@ -1623,7 +1624,10 @@ sort_directories_first_changed_callback (gpointer callback_data)
 }
 
 static void
-lockdown_disable_command_line_changed_callback (gpointer callback_data)
+lockdown_disable_command_line_changed_callback (GConfClient* client,
+						guint cnxn_id,
+						GConfEntry *entry,
+						gpointer callback_data)
 {
 	FMDirectoryView *view;
 
@@ -2001,8 +2005,13 @@ fm_directory_view_init (FMDirectoryView *view)
 	g_signal_connect_swapped (nautilus_preferences,
 				  "changed::" NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST, 
 				  G_CALLBACK(sort_directories_first_changed_callback), view);
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE,
-				      lockdown_disable_command_line_changed_callback, view);
+	view->details->lockdown_notification_id =
+		gconf_client_notify_add (nautilus_gconf_client,
+					 NAUTILUS_GCONF_LOCKDOWN_COMMAND_LINE,
+					 lockdown_disable_command_line_changed_callback,
+					 view,
+					 NULL,
+					 NULL);
 }
 
 static void
@@ -2116,8 +2125,9 @@ fm_directory_view_finalize (GObject *object)
 					      click_policy_changed_callback, view);
 	g_signal_handlers_disconnect_by_func (nautilus_preferences,
 					      sort_directories_first_changed_callback, view);
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE,
-					 lockdown_disable_command_line_changed_callback, view);
+
+	gconf_client_notify_remove (nautilus_gconf_client,
+				    view->details->lockdown_notification_id);
 
 	unschedule_pop_up_location_context_menu (view);
 	if (view->details->location_popup_event != NULL) {
@@ -2136,7 +2146,7 @@ fm_directory_view_finalize (GObject *object)
  *
  * Display information about the current selection, and notify the view frame of the changed selection.
  * @view: FMDirectoryView for which to display selection info.
- * 
+ *
  **/
 void
 fm_directory_view_display_selection_info (FMDirectoryView *view)
@@ -8736,7 +8746,7 @@ real_update_menus (FMDirectoryView *view)
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_SELECT_PATTERN);
 	gtk_action_set_sensitive (action, !fm_directory_view_is_empty (view));
-	
+
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_INVERT_SELECTION);
 	gtk_action_set_sensitive (action, !fm_directory_view_is_empty (view));
@@ -8751,7 +8761,7 @@ real_update_menus (FMDirectoryView *view)
 
 	real_update_paste_menu (view, selection, selection_count);
 
-	disable_command_line = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE);
+	disable_command_line = gconf_client_get_bool (nautilus_gconf_client, NAUTILUS_GCONF_LOCKDOWN_COMMAND_LINE, NULL);
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_NEW_LAUNCHER);
 	gtk_action_set_visible (action, vfolder_directory && !disable_command_line);
@@ -8768,7 +8778,7 @@ real_update_menus (FMDirectoryView *view)
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_NEW_DOCUMENTS);
 	gtk_action_set_sensitive (action, can_create_files);
-	
+
 	if (can_create_files && view->details->templates_invalid) {
 		update_templates_menu (view);
 	}
