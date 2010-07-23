@@ -195,6 +195,7 @@ main (int argc, char *argv[])
 
 	g_option_context_free (context);
 
+	nautilus_global_preferences_init ();
 	eel_preferences_init ("/apps/nautilus");
 
 	gtk_window_set_default_icon_name (NAUTILUS_ICON_FOLDER);
@@ -219,6 +220,6 @@ main (int argc, char *argv[])
 	gtk_widget_show (dialog);
 
 	gtk_main ();
-	
+
 	return 0;
 }
