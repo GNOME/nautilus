@@ -367,6 +367,10 @@ load_finished (NautilusImagePropertiesPage *page)
 
 	gtk_widget_destroy (page->details->loading_label);
 
+	if (page->details->loader != NULL) {
+		gdk_pixbuf_loader_close (page->details->loader, NULL);
+	}
+
 	if (page->details->got_size) {
 #ifdef HAVE_EXIF
                 ExifData *exif_data;
@@ -409,7 +413,6 @@ load_finished (NautilusImagePropertiesPage *page)
 	}
 
 	if (page->details->loader != NULL) {
-		gdk_pixbuf_loader_close (page->details->loader, NULL);
 		g_object_unref (page->details->loader);
 		page->details->loader = NULL;
 	}
