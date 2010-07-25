@@ -101,8 +101,6 @@ nautilus_SOURCES = \
 	nautilus-pathbar.h			\
 	nautilus-places-sidebar.c		\
 	nautilus-places-sidebar.h		\
-	nautilus-property-browser.c     	\
-	nautilus-property-browser.h		\
 	nautilus-query-editor.c			\
 	nautilus-query-editor.h			\
 	nautilus-search-bar.c			\

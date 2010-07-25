@@ -38,7 +38,6 @@
 #include "nautilus-bookmark-list.h"
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-file-management-properties.h"
-#include "nautilus-property-browser.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window-bookmarks.h"
