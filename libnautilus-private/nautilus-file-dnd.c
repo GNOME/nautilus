@@ -134,7 +134,6 @@ nautilus_drag_can_accept_info (NautilusFile *drop_target_item,
 		/* TODO return TRUE for folders as soon as drop handling is implemented */
 		case NAUTILUS_ICON_DND_COLOR:
 		case NAUTILUS_ICON_DND_BGIMAGE:
-		case NAUTILUS_ICON_DND_RESET_BACKGROUND:
 			return FALSE;
 
 		default:

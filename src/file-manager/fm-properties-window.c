@@ -178,13 +178,11 @@ typedef struct {
 enum {
 	TARGET_URI_LIST,
 	TARGET_GNOME_URI_LIST,
-	TARGET_RESET_BACKGROUND
 };
 
 static const GtkTargetEntry target_table[] = {
 	{ "text/uri-list",  0, TARGET_URI_LIST },
 	{ "x-special/gnome-icon-list",  0, TARGET_GNOME_URI_LIST },
-	{ "x-special/gnome-reset-background", 0, TARGET_RESET_BACKGROUND }
 };
 
 #define DIRECTORY_CONTENTS_UPDATE_INTERVAL	200 /* milliseconds */
@@ -490,12 +488,6 @@ fm_properties_window_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 	image = GTK_IMAGE (widget);
  	window = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (image)));
 
-	if (info == TARGET_RESET_BACKGROUND) {
-		reset_icon (FM_PROPERTIES_WINDOW (window));
-		
-		return;
-	}
-	
 	uris = g_strsplit (gtk_selection_data_get_data (selection_data), "\r\n", 0);
 	exactly_one = uris[0] != NULL && (uris[1] == NULL || uris[1][0] == '\0');
 
