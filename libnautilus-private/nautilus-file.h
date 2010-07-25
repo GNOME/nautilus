@@ -61,7 +61,6 @@ typedef enum {
 	NAUTILUS_FILE_SORT_BY_TYPE,
 	NAUTILUS_FILE_SORT_BY_MTIME,
         NAUTILUS_FILE_SORT_BY_ATIME,
-	NAUTILUS_FILE_SORT_BY_EMBLEMS,
 	NAUTILUS_FILE_SORT_BY_TRASHED_TIME
 } NautilusFileSortType;	
 
@@ -209,9 +208,6 @@ NautilusRequestStatus   nautilus_file_get_deep_counts                   (Nautilu
 gboolean                nautilus_file_should_show_thumbnail             (NautilusFile                   *file);
 gboolean                nautilus_file_should_show_directory_item_count  (NautilusFile                   *file);
 gboolean                nautilus_file_should_show_type                  (NautilusFile                   *file);
-GList *                 nautilus_file_get_keywords                      (NautilusFile                   *file);
-void                    nautilus_file_set_keywords                      (NautilusFile                   *file,
-									 GList                          *keywords);
 GList *                 nautilus_file_get_emblem_icons                  (NautilusFile                   *file,
 									 char                          **exclude);
 GList *                 nautilus_file_get_emblem_pixbufs                (NautilusFile                   *file,
