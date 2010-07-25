@@ -35,7 +35,6 @@
 #include <libnautilus-private/nautilus-bookmark.h>
 #include <libnautilus-private/nautilus-sidebar.h>
 #include "nautilus-application.h"
-#include "nautilus-information-panel.h"
 #include "nautilus-side-pane.h"
 #include "nautilus-window.h"
 

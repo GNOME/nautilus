@@ -33,7 +33,6 @@
 #include "nautilus-actions.h"
 #include "nautilus-application.h"
 #include "nautilus-bookmarks-window.h"
-#include "nautilus-information-panel.h"
 #include "nautilus-main.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-bookmarks.h"

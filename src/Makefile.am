@@ -70,8 +70,6 @@ nautilus_SOURCES = \
 	nautilus-history-sidebar.h		\
 	nautilus-image-properties-page.c	\
 	nautilus-image-properties-page.h	\
-	nautilus-information-panel.c            \
-	nautilus-information-panel.h            \
 	nautilus-location-bar.c         	\
 	nautilus-location-bar.h			\
 	nautilus-location-dialog.c              \
