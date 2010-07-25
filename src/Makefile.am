@@ -105,8 +105,6 @@ nautilus_SOURCES = \
 	nautilus-self-check-functions.h 	\
 	nautilus-side-pane.c                    \
 	nautilus-side-pane.h			\
-	nautilus-sidebar-title.c		\
-	nautilus-sidebar-title.h		\
 	nautilus-spatial-window.c               \
 	nautilus-spatial-window.h               \
 	nautilus-trash-bar.c			\
