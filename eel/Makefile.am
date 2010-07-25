@@ -53,7 +53,6 @@ libeel_2_la_SOURCES =				\
 	eel-string.c				\
 	eel-types.c				\
 	eel-vfs-extensions.c			\
-	eel-wrap-table.c			\
 	eel-xml-extensions.c			\
 	eel-lib-self-check-functions.h		\
 	$(NULL)
@@ -85,7 +84,6 @@ eel_headers =					\
 	eel-string.h				\
 	eel-types.h				\
 	eel-vfs-extensions.h			\
-	eel-wrap-table.h			\
 	eel-xml-extensions.h			\
 	eel.h					\
 	$(NULL)
