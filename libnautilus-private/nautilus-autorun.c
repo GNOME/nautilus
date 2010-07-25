@@ -30,6 +30,7 @@
 #include <gdk/gdkx.h>
 #include <gio/gdesktopappinfo.h>
 #include <X11/XKBlib.h>
+#include <gdk/gdkkeysyms.h>
 
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-stock-dialogs.h>
@@ -837,6 +838,15 @@ autorun_always_toggled (GtkToggleButton *togglebutton, AutorunDialogData *data)
 	data->remember = gtk_toggle_button_get_active (togglebutton);
 }
 
+static gboolean
+combo_box_enter_ok (GtkWidget *togglebutton, GdkEventKey *event, GtkDialog *dialog)
+{
+	if (event->keyval == GDK_KP_Enter || event->keyval == GDK_Return) {
+		gtk_dialog_response (dialog, GTK_RESPONSE_OK);
+		return TRUE;
+	}
+	return FALSE;
+}
 
 /* returns TRUE if a folder window should be opened */
 static gboolean
@@ -997,6 +1007,11 @@ show_dialog:
 
 	combo_box = gtk_combo_box_new ();
 	nautilus_autorun_prepare_combo_box (combo_box, x_content_type, FALSE, TRUE, FALSE, autorun_combo_changed, data);
+	g_signal_connect (G_OBJECT (combo_box),
+			  "key-press-event",
+			  G_CALLBACK (combo_box_enter_ok),
+			  dialog);
+
 	gtk_box_pack_start (GTK_BOX (vbox), combo_box, TRUE, TRUE, 0);
 
 	always_check_button = gtk_check_button_new_with_mnemonic (_("_Always perform this action"));
