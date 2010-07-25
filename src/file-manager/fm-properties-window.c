@@ -43,7 +43,6 @@
 #include <glib/gi18n.h>
 #include <libgnomeui/gnome-desktop-thumbnail.h>
 #include <libnautilus-extension/nautilus-property-page-provider.h>
-#include <libnautilus-private/nautilus-customization-data.h>
 #include <libnautilus-private/nautilus-entry.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-file-operations.h>
