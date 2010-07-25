@@ -46,7 +46,6 @@ libeel_2_la_SOURCES =				\
 	eel-gtk-container.c			\
 	eel-gtk-extensions.c			\
 	eel-i18n.c				\
-	eel-image-table.c			\
 	eel-labeled-image.c			\
 	eel-lib-self-check-functions.c		\
 	eel-pango-extensions.c			\
@@ -81,7 +80,6 @@ eel_headers =					\
 	eel-gtk-extensions.h			\
 	eel-gtk-macros.h			\
 	eel-i18n.h				\
-	eel-image-table.h			\
 	eel-labeled-image.h			\
 	eel-pango-extensions.h			\
 	eel-self-checks.h			\

@@ -36,7 +36,6 @@
 #include <eel/eel-gtk-container.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
-#include <eel/eel-image-table.h>
 #include <eel/eel-labeled-image.h>
 #include <eel/eel-pango-extensions.h>
 #include <eel/eel-self-checks.h>
