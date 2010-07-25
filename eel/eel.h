@@ -42,6 +42,5 @@
 #include <eel/eel-string.h>
 #include <eel/eel-types.h>
 #include <eel/eel-vfs-extensions.h>
-#include <eel/eel-xml-extensions.h>
 
 #endif /* EEL_H */
