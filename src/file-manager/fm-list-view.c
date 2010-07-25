@@ -184,7 +184,6 @@ get_default_sort_order (NautilusFile *file, gboolean *reversed)
 		"type",
 		"date_modified",
 		"date_accessed",
-		"emblems",
 		"trashed_on",
 		NULL
 	};
