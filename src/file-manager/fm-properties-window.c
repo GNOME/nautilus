@@ -3358,30 +3358,6 @@ create_basic_page (FMPropertiesWindow *window)
 	}
 }
 
-static GHashTable *
-get_initial_emblems (GList *files)
-{
-	GHashTable *ret;
-	GList *l;
-	
-	ret = g_hash_table_new_full (g_direct_hash, 
-				     g_direct_equal,
-				     NULL,
-				     (GDestroyNotify)eel_g_list_free_deep);
-
-	for (l = files; l != NULL; l = l->next) {
-		NautilusFile *file;
-		GList *keywords;
-		
-		file = NAUTILUS_FILE (l->data);
-
-		keywords = nautilus_file_get_keywords (file);
-		g_hash_table_insert (ret, file, keywords);
-	}
-
-	return ret;
-}
-
 static gboolean 
 files_has_directory (FMPropertiesWindow *window)
 {
@@ -3434,80 +3410,6 @@ files_has_file (FMPropertiesWindow *window)
 	}
 
 	return FALSE;
-}
-
-
-static void
-create_emblems_page (FMPropertiesWindow *window)
-{
-	GtkWidget *emblems_table, *button, *scroller;
-	char *emblem_name;
-	GdkPixbuf *pixbuf;
-	char *label;
-	GList *icons, *l;
-	NautilusIconInfo *info;
-
-	/* The emblems wrapped table */
-	scroller = eel_scrolled_wrap_table_new (TRUE, GTK_SHADOW_NONE, &emblems_table);
-
-	gtk_container_set_border_width (GTK_CONTAINER (emblems_table), 12);
-	
-	gtk_widget_show (scroller);
-
-	gtk_notebook_append_page (window->details->notebook, 
-				  scroller, gtk_label_new (_("Emblems")));
-
-	icons = nautilus_emblem_list_available ();
-
-	window->details->initial_emblems = get_initial_emblems (window->details->original_files);
-
-	l = icons;
-	while (l != NULL) {
-		emblem_name = l->data;
-		l = l->next;
-		
-		if (!nautilus_emblem_should_show_in_list (emblem_name)) {
-			continue;
-		}
-
-		info = nautilus_icon_info_lookup_from_name (emblem_name, NAUTILUS_ICON_SIZE_SMALL);
-		pixbuf = nautilus_icon_info_get_pixbuf_nodefault_at_size (info, NAUTILUS_ICON_SIZE_SMALL);
-
-		if (pixbuf == NULL) {
-			continue;
-		}
-		
-		label = g_strdup (nautilus_icon_info_get_display_name (info));
-		g_object_unref (info);
-		
-		if (label == NULL) {
-			label = nautilus_emblem_get_keyword_from_icon_name (emblem_name);
-		}
-		
-		button = eel_labeled_image_check_button_new (label, pixbuf);
-		eel_labeled_image_set_fixed_image_height (EEL_LABELED_IMAGE (gtk_bin_get_child (GTK_BIN (button))), STANDARD_EMBLEM_HEIGHT);
-		eel_labeled_image_set_spacing (EEL_LABELED_IMAGE (gtk_bin_get_child (GTK_BIN (button))), EMBLEM_LABEL_SPACING);
-		
-		g_free (label);
-		g_object_unref (pixbuf);
-
-		/* Attach parameters and signal handler. */
-		g_object_set_data_full (G_OBJECT (button), "nautilus_emblem_name",
-					nautilus_emblem_get_keyword_from_icon_name (emblem_name), g_free);
-				     
-		window->details->emblem_buttons = 
-			g_list_append (window->details->emblem_buttons,
-				       button);
-
-		g_signal_connect_object (button, "toggled",
-					 G_CALLBACK (emblem_button_toggled), 
-					 G_OBJECT (window),
-					 0);
-
-		gtk_container_add (GTK_CONTAINER (emblems_table), button);
-	}
-	eel_g_list_free_deep (icons);
-	gtk_widget_show_all (emblems_table);
 }
 
 static void
@@ -4936,22 +4838,6 @@ append_extension_pages (FMPropertiesWindow *window)
 }
 
 static gboolean
-should_show_emblems (FMPropertiesWindow *window) 
-{
-	/* FIXME bugzilla.gnome.org 45643:
-	 * Emblems aren't displayed on the the desktop Trash icon, so
-	 * we shouldn't pretend that they work by showing them here.
-	 * When bug 5643 is fixed we can remove this case.
-	 */
-	if (!is_multi_file_window (window) 
-	    && is_merged_trash_directory (get_target_file (window))) {
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-static gboolean
 should_show_permissions (FMPropertiesWindow *window) 
 {
 	NautilusFile *file;
@@ -5213,10 +5099,6 @@ create_properties_window (StartupData *startup_data)
 
 	/* Create the pages. */
 	create_basic_page (window);
-
-	if (should_show_emblems (window)) {
-		create_emblems_page (window);
-	}
 
 	if (should_show_permissions (window)) {
 		create_permissions_page (window);
