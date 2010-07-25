@@ -125,9 +125,6 @@ nautilus_drag_can_accept_info (NautilusFile *drop_target_item,
 		case NAUTILUS_ICON_DND_RAW:
 			return nautilus_drag_can_accept_files (drop_target_item); /* Check if we can accept files at this location */
 
-		case NAUTILUS_ICON_DND_KEYWORD:
-			return TRUE;
-
 		case NAUTILUS_ICON_DND_ROOTWINDOW_DROP:
 			return FALSE;
 
@@ -142,30 +139,3 @@ nautilus_drag_can_accept_info (NautilusFile *drop_target_item,
 	}
 }
 
-void
-nautilus_drag_file_receive_dropped_keyword (NautilusFile *file,
-					    const char *keyword)
-{
-	GList *keywords, *word;
-
-	g_return_if_fail (NAUTILUS_IS_FILE (file));
-	g_return_if_fail (keyword != NULL);
-
-	/* special case the erase emblem */
-	if (strcmp (keyword, NAUTILUS_FILE_DND_ERASE_KEYWORD) == 0) {
-		keywords = NULL;
-	} else {
-		keywords = nautilus_file_get_keywords (file);
-		word = g_list_find_custom (keywords, keyword, (GCompareFunc) strcmp);
-		if (word == NULL) {
-			keywords = g_list_prepend (keywords, g_strdup (keyword));
-		} else {
-			keywords = g_list_remove_link (keywords, word);
-			g_free (word->data);
-			g_list_free_1 (word);
-		}
-	}
-
-	nautilus_file_set_keywords (file, keywords);
-	eel_g_list_free_deep (keywords);
-}
