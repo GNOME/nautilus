@@ -108,9 +108,6 @@ struct FMPropertiesWindowDetails {
 	guint update_directory_contents_timeout_id;
 	guint update_files_timeout_id;
 
-	GList *emblem_buttons;
-	GHashTable *initial_emblems;
-
 	NautilusFile *group_change_file;
 	char         *group_change_group;
 	unsigned int  group_change_timeout;
@@ -187,8 +184,6 @@ static const GtkTargetEntry target_table[] = {
 
 #define DIRECTORY_CONTENTS_UPDATE_INTERVAL	200 /* milliseconds */
 #define FILES_UPDATE_INTERVAL			200 /* milliseconds */
-#define STANDARD_EMBLEM_HEIGHT			52
-#define EMBLEM_LABEL_SPACING			2
 
 /*
  * A timeout before changes through the user/group combo box will be applied.
@@ -927,7 +922,6 @@ remove_from_dialog (FMPropertiesWindow *window,
 	window->details->target_files = g_list_remove_link (window->details->target_files, target_link);
 	g_list_free (target_link);
 
-	g_hash_table_remove (window->details->initial_emblems, original_file);
 	g_hash_table_remove (window->details->initial_permissions, target_file);
 
 	g_signal_handlers_disconnect_by_func (original_file,
@@ -5226,14 +5220,6 @@ real_destroy (GtkObject *object)
 	window->details->changed_files = NULL;
  
 	window->details->name_field = NULL;
-
-	g_list_free (window->details->emblem_buttons);
-	window->details->emblem_buttons = NULL;
-
-	if (window->details->initial_emblems) {
-		g_hash_table_destroy (window->details->initial_emblems);
-		window->details->initial_emblems = NULL;
-	}
 
 	g_list_free (window->details->permission_buttons);
 	window->details->permission_buttons = NULL;
