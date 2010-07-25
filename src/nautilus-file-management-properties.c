@@ -98,7 +98,6 @@ static const char * const sort_order_values[] = {
 	"type",
 	"mtime",
 	"atime",
-	"emblems",
 	"trash-time",
 	NULL
 };
