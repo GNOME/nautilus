@@ -64,8 +64,6 @@ nautilus_SOURCES = \
 	nautilus-connect-server-dialog-nonmain.c	\
 	nautilus-desktop-window.c		\
 	nautilus-desktop-window.h		\
-	nautilus-emblem-sidebar.c		\
-	nautilus-emblem-sidebar.h		\
 	nautilus-file-management-properties.c	\
 	nautilus-file-management-properties.h	\
 	nautilus-history-sidebar.c		\
