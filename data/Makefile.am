@@ -39,7 +39,6 @@ CLEANFILES = $(xml_files)	\
 
 SUBDIRS = \
 	icons    \
-	patterns \
 	$(NULL)
 
 install-data-hook:
