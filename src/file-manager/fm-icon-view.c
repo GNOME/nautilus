@@ -148,13 +148,6 @@ static const SortCriterion sort_criteria[] = {
 		N_("Keep icons sorted by modification date in rows")
 	},
 	{
-		NAUTILUS_FILE_SORT_BY_EMBLEMS,
-		"emblems",
-		"Sort by Emblems",
-		N_("by _Emblems"),
-		N_("Keep icons sorted by emblems in rows")
-	},
-	{
 		NAUTILUS_FILE_SORT_BY_TRASHED_TIME,
 		"trashed",
 		"Sort by Trash Time",
@@ -786,7 +779,7 @@ get_default_sort_order (NautilusFile *file, gboolean *reversed)
 		}
 
 		retval = CLAMP (default_sort_order, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
-				NAUTILUS_FILE_SORT_BY_EMBLEMS);
+				NAUTILUS_FILE_SORT_BY_MTIME);
 	}
 
 	return retval;
@@ -1644,10 +1637,6 @@ static const GtkRadioActionEntry arrange_radio_entries[] = {
     N_("By Modification _Date"), NULL,
     N_("Keep icons sorted by modification date in rows"),
     NAUTILUS_FILE_SORT_BY_MTIME },
-  { "Sort by Emblems", NULL,
-    N_("By _Emblems"), NULL,
-    N_("Keep icons sorted by emblems in rows"),
-    NAUTILUS_FILE_SORT_BY_EMBLEMS },
   { "Sort by Trash Time", NULL,
     N_("By T_rash Time"), NULL,
     N_("Keep icons sorted by trash time in rows"),

@@ -3,6 +3,7 @@
 #include <eel/eel-gdk-pixbuf-extensions.h>
 
 #include <sys/time.h>
+#include <stdlib.h>
 
 
 #define N_SCALES 100

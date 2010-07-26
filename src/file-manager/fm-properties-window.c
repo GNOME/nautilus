@@ -35,23 +35,19 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>
-#include <eel/eel-labeled-image.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
-#include <eel/eel-wrap-table.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <glib/gi18n.h>
 #include <libgnomeui/gnome-desktop-thumbnail.h>
 #include <libnautilus-extension/nautilus-property-page-provider.h>
-#include <libnautilus-private/nautilus-customization-data.h>
 #include <libnautilus-private/nautilus-entry.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-desktop-icon-file.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-emblem-utils.h>
 #include <libnautilus-private/nautilus-link.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-module.h>
@@ -110,9 +106,6 @@ struct FMPropertiesWindowDetails {
 	GtkLabel *directory_contents_value_field;
 	guint update_directory_contents_timeout_id;
 	guint update_files_timeout_id;
-
-	GList *emblem_buttons;
-	GHashTable *initial_emblems;
 
 	NautilusFile *group_change_file;
 	char         *group_change_group;
@@ -181,19 +174,15 @@ typedef struct {
 enum {
 	TARGET_URI_LIST,
 	TARGET_GNOME_URI_LIST,
-	TARGET_RESET_BACKGROUND
 };
 
 static const GtkTargetEntry target_table[] = {
 	{ "text/uri-list",  0, TARGET_URI_LIST },
 	{ "x-special/gnome-icon-list",  0, TARGET_GNOME_URI_LIST },
-	{ "x-special/gnome-reset-background", 0, TARGET_RESET_BACKGROUND }
 };
 
 #define DIRECTORY_CONTENTS_UPDATE_INTERVAL	200 /* milliseconds */
 #define FILES_UPDATE_INTERVAL			200 /* milliseconds */
-#define STANDARD_EMBLEM_HEIGHT			52
-#define EMBLEM_LABEL_SPACING			2
 
 /*
  * A timeout before changes through the user/group combo box will be applied.
@@ -493,12 +482,6 @@ fm_properties_window_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 	image = GTK_IMAGE (widget);
  	window = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (image)));
 
-	if (info == TARGET_RESET_BACKGROUND) {
-		reset_icon (FM_PROPERTIES_WINDOW (window));
-		
-		return;
-	}
-	
 	uris = g_strsplit (gtk_selection_data_get_data (selection_data), "\r\n", 0);
 	exactly_one = uris[0] != NULL && (uris[1] == NULL || uris[1][0] == '\0');
 
@@ -852,167 +835,6 @@ name_field_activate (NautilusEntry *name_field, gpointer callback_data)
 	nautilus_entry_select_all_at_idle (name_field);
 }
 
-static gboolean
-file_has_keyword (NautilusFile *file, const char *keyword)
-{
-	GList *keywords, *word;
-
-	keywords = nautilus_file_get_keywords (file);
-	word = g_list_find_custom (keywords, keyword, (GCompareFunc) strcmp);
-	eel_g_list_free_deep (keywords);
-	
-	return (word != NULL);
-}
-
-static void
-get_initial_emblem_state (FMPropertiesWindow *window,
-			  const char *name,
-			  GList **on,
-			  GList **off)
-{
-	GList *l;
-	
-	*on = NULL;
-	*off = NULL;
-	
-	for (l = window->details->original_files; l != NULL; l = l->next) {
-		GList *initial_emblems;
-		
-		initial_emblems = g_hash_table_lookup (window->details->initial_emblems,
-						       l->data);
-		
-		if (g_list_find_custom (initial_emblems, name, (GCompareFunc) strcmp)) {
-			*on = g_list_prepend (*on, l->data);
-		} else {
-			*off = g_list_prepend (*off, l->data);
-		}
-	}
-}
-
-static void
-emblem_button_toggled (GtkToggleButton *button,
-		       FMPropertiesWindow *window)
-{
-	GList *l;
-	GList *keywords;
-	GList *word;
-	char *name;
-	GList *files_on;
-	GList *files_off;
-
-	name = g_object_get_data (G_OBJECT (button), "nautilus_emblem_name");
-
-	files_on = NULL;
-	files_off = NULL;
-	if (gtk_toggle_button_get_active (button)
-	    && !gtk_toggle_button_get_inconsistent (button)) {
-		/* Go to the initial state unless the initial state was 
-		   consistent */
-		get_initial_emblem_state (window, name, 
-					  &files_on, &files_off);
-		
-		if (!(files_on && files_off)) {
-			g_list_free (files_on);
-			g_list_free (files_off);
-			files_on = g_list_copy (window->details->original_files);
-			files_off = NULL;
-		}
-	} else if (gtk_toggle_button_get_inconsistent (button)
-		   && !gtk_toggle_button_get_active (button)) {
-		files_on = g_list_copy (window->details->original_files);
-		files_off = NULL;
-	} else {
-		files_off = g_list_copy (window->details->original_files);
-		files_on = NULL;
-	}
-	
-	g_signal_handlers_block_by_func (G_OBJECT (button), 
-					 G_CALLBACK (emblem_button_toggled),
-					 window);
-	
-	gtk_toggle_button_set_active (button, files_on != NULL);
-	gtk_toggle_button_set_inconsistent (button, files_on && files_off);
-
-	g_signal_handlers_unblock_by_func (G_OBJECT (button), 
-					   G_CALLBACK (emblem_button_toggled),
-					   window);
-
-	for (l = files_on; l != NULL; l = l->next) {
-		NautilusFile *file;
-		
-		file = NAUTILUS_FILE (l->data);
-		
-		keywords = nautilus_file_get_keywords (file);
-		
-		word = g_list_find_custom (keywords, name,  (GCompareFunc)strcmp);
-		if (!word) {
-			keywords = g_list_prepend (keywords, g_strdup (name));
-		}
-		nautilus_file_set_keywords (file, keywords);
-		eel_g_list_free_deep (keywords);
-	}
-	
-	for (l = files_off; l != NULL; l = l->next) {
-		NautilusFile *file;
-		
-		file = NAUTILUS_FILE (l->data);
-
-		keywords = nautilus_file_get_keywords (file);
-		
-		word = g_list_find_custom (keywords, name,  (GCompareFunc)strcmp);
-		if (word) {
-			keywords = g_list_remove_link (keywords, word);
-			eel_g_list_free_deep (word);
-		}
-		nautilus_file_set_keywords (file, keywords);
-		eel_g_list_free_deep (keywords);
-	}	
-
-	g_list_free (files_on);
-	g_list_free (files_off);	
-}
-
-static void
-emblem_button_update (FMPropertiesWindow *window,
-			GtkToggleButton *button)
-{
-	GList *l;
-	char *name;
-	gboolean all_set;
-	gboolean all_unset;
-
-	name = g_object_get_data (G_OBJECT (button), "nautilus_emblem_name");
-
-	all_set = TRUE;
-	all_unset = TRUE;
-	for (l = window->details->original_files; l != NULL; l = l->next) {
-		gboolean has_keyword;
-		NautilusFile *file;
-
-		file = NAUTILUS_FILE (l->data);
-		
-		has_keyword = file_has_keyword (file, name);
-
-		if (has_keyword) {
-			all_unset = FALSE;
-		} else {
-			all_set = FALSE;
-		}
-	}
-	
-	g_signal_handlers_block_by_func (G_OBJECT (button), 
-					 G_CALLBACK (emblem_button_toggled),
-					 window);
-
-	gtk_toggle_button_set_active (button, !all_unset);
-	gtk_toggle_button_set_inconsistent (button, !all_unset && !all_set);
-
-	g_signal_handlers_unblock_by_func (G_OBJECT (button), 
-					   G_CALLBACK (emblem_button_toggled),
-					   window);
-
-}
-
 static void
 update_properties_window_title (FMPropertiesWindow *window)
 {
@@ -1099,7 +921,6 @@ remove_from_dialog (FMPropertiesWindow *window,
 	window->details->target_files = g_list_remove_link (window->details->target_files, target_link);
 	g_list_free (target_link);
 
-	g_hash_table_remove (window->details->initial_emblems, original_file);
 	g_hash_table_remove (window->details->initial_permissions, target_file);
 
 	g_signal_handlers_disconnect_by_func (original_file,
@@ -1190,10 +1011,6 @@ properties_window_update (FMPropertiesWindow *window,
 
 		update_name_field (window);
 
-		for (l = window->details->emblem_buttons; l != NULL; l = l->next) {
-			emblem_button_update (window, GTK_TOGGLE_BUTTON (l->data));
-		}
-		
 		/* If any of the value fields start to depend on the original
 		 * value, value_field_updates should be added here */
 	}
@@ -3358,30 +3175,6 @@ create_basic_page (FMPropertiesWindow *window)
 	}
 }
 
-static GHashTable *
-get_initial_emblems (GList *files)
-{
-	GHashTable *ret;
-	GList *l;
-	
-	ret = g_hash_table_new_full (g_direct_hash, 
-				     g_direct_equal,
-				     NULL,
-				     (GDestroyNotify)eel_g_list_free_deep);
-
-	for (l = files; l != NULL; l = l->next) {
-		NautilusFile *file;
-		GList *keywords;
-		
-		file = NAUTILUS_FILE (l->data);
-
-		keywords = nautilus_file_get_keywords (file);
-		g_hash_table_insert (ret, file, keywords);
-	}
-
-	return ret;
-}
-
 static gboolean 
 files_has_directory (FMPropertiesWindow *window)
 {
@@ -3434,80 +3227,6 @@ files_has_file (FMPropertiesWindow *window)
 	}
 
 	return FALSE;
-}
-
-
-static void
-create_emblems_page (FMPropertiesWindow *window)
-{
-	GtkWidget *emblems_table, *button, *scroller;
-	char *emblem_name;
-	GdkPixbuf *pixbuf;
-	char *label;
-	GList *icons, *l;
-	NautilusIconInfo *info;
-
-	/* The emblems wrapped table */
-	scroller = eel_scrolled_wrap_table_new (TRUE, GTK_SHADOW_NONE, &emblems_table);
-
-	gtk_container_set_border_width (GTK_CONTAINER (emblems_table), 12);
-	
-	gtk_widget_show (scroller);
-
-	gtk_notebook_append_page (window->details->notebook, 
-				  scroller, gtk_label_new (_("Emblems")));
-
-	icons = nautilus_emblem_list_available ();
-
-	window->details->initial_emblems = get_initial_emblems (window->details->original_files);
-
-	l = icons;
-	while (l != NULL) {
-		emblem_name = l->data;
-		l = l->next;
-		
-		if (!nautilus_emblem_should_show_in_list (emblem_name)) {
-			continue;
-		}
-
-		info = nautilus_icon_info_lookup_from_name (emblem_name, NAUTILUS_ICON_SIZE_SMALL);
-		pixbuf = nautilus_icon_info_get_pixbuf_nodefault_at_size (info, NAUTILUS_ICON_SIZE_SMALL);
-
-		if (pixbuf == NULL) {
-			continue;
-		}
-		
-		label = g_strdup (nautilus_icon_info_get_display_name (info));
-		g_object_unref (info);
-		
-		if (label == NULL) {
-			label = nautilus_emblem_get_keyword_from_icon_name (emblem_name);
-		}
-		
-		button = eel_labeled_image_check_button_new (label, pixbuf);
-		eel_labeled_image_set_fixed_image_height (EEL_LABELED_IMAGE (gtk_bin_get_child (GTK_BIN (button))), STANDARD_EMBLEM_HEIGHT);
-		eel_labeled_image_set_spacing (EEL_LABELED_IMAGE (gtk_bin_get_child (GTK_BIN (button))), EMBLEM_LABEL_SPACING);
-		
-		g_free (label);
-		g_object_unref (pixbuf);
-
-		/* Attach parameters and signal handler. */
-		g_object_set_data_full (G_OBJECT (button), "nautilus_emblem_name",
-					nautilus_emblem_get_keyword_from_icon_name (emblem_name), g_free);
-				     
-		window->details->emblem_buttons = 
-			g_list_append (window->details->emblem_buttons,
-				       button);
-
-		g_signal_connect_object (button, "toggled",
-					 G_CALLBACK (emblem_button_toggled), 
-					 G_OBJECT (window),
-					 0);
-
-		gtk_container_add (GTK_CONTAINER (emblems_table), button);
-	}
-	eel_g_list_free_deep (icons);
-	gtk_widget_show_all (emblems_table);
 }
 
 static void
@@ -4936,22 +4655,6 @@ append_extension_pages (FMPropertiesWindow *window)
 }
 
 static gboolean
-should_show_emblems (FMPropertiesWindow *window) 
-{
-	/* FIXME bugzilla.gnome.org 45643:
-	 * Emblems aren't displayed on the the desktop Trash icon, so
-	 * we shouldn't pretend that they work by showing them here.
-	 * When bug 5643 is fixed we can remove this case.
-	 */
-	if (!is_multi_file_window (window) 
-	    && is_merged_trash_directory (get_target_file (window))) {
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-static gboolean
 should_show_permissions (FMPropertiesWindow *window) 
 {
 	NautilusFile *file;
@@ -5213,10 +4916,6 @@ create_properties_window (StartupData *startup_data)
 
 	/* Create the pages. */
 	create_basic_page (window);
-
-	if (should_show_emblems (window)) {
-		create_emblems_page (window);
-	}
 
 	if (should_show_permissions (window)) {
 		create_permissions_page (window);
@@ -5520,14 +5219,6 @@ real_destroy (GtkObject *object)
 	window->details->changed_files = NULL;
  
 	window->details->name_field = NULL;
-
-	g_list_free (window->details->emblem_buttons);
-	window->details->emblem_buttons = NULL;
-
-	if (window->details->initial_emblems) {
-		g_hash_table_destroy (window->details->initial_emblems);
-		window->details->initial_emblems = NULL;
-	}
 
 	g_list_free (window->details->permission_buttons);
 	window->details->permission_buttons = NULL;

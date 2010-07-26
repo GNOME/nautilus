@@ -33,7 +33,6 @@
 #include "nautilus-application.h"
 #include "nautilus-connect-server-dialog.h"
 #include "nautilus-file-management-properties.h"
-#include "nautilus-property-browser.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-bookmarks.h"
 #include "nautilus-window-private.h"
@@ -453,17 +452,6 @@ action_preferences_callback (GtkAction *action,
 }
 
 static void
-action_backgrounds_and_emblems_callback (GtkAction *action, 
-					 gpointer user_data)
-{
-	GtkWindow *window;
-
-	window = GTK_WINDOW (user_data);
-
-	nautilus_property_browser_show (gtk_window_get_screen (window));
-}
-
-static void
 action_about_nautilus_callback (GtkAction *action,
 				gpointer user_data)
 {
@@ -788,10 +776,6 @@ static const GtkActionEntry main_entries[] = {
   /* label, accelerator */       N_("_Close"), "<control>W",
   /* tooltip */                  N_("Close this folder"),
                                  G_CALLBACK (action_close_window_slot_callback) },
-                               { "Backgrounds and Emblems", NULL,
-                                 N_("_Backgrounds and Emblems..."),               
-                                 NULL, N_("Display patterns, colors, and emblems that can be used to customize appearance"),
-                                 G_CALLBACK (action_backgrounds_and_emblems_callback) },
                                { "Preferences", GTK_STOCK_PREFERENCES,
                                  N_("Prefere_nces"),               
                                  NULL, N_("Edit Nautilus preferences"),

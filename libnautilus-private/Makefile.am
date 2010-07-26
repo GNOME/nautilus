@@ -57,8 +57,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-column-chooser.h \
 	nautilus-column-utilities.c \
 	nautilus-column-utilities.h \
-	nautilus-customization-data.c \
-	nautilus-customization-data.h \
 	nautilus-debug-log.c \
 	nautilus-debug-log.h \
 	nautilus-default-file-icon.c \
@@ -82,8 +80,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-directory.h \
 	nautilus-dnd.c \
 	nautilus-dnd.h \
-	nautilus-emblem-utils.c \
-	nautilus-emblem-utils.h \
 	nautilus-entry.c \
 	nautilus-entry.h \
 	nautilus-file-attributes.h \

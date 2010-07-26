@@ -51,10 +51,6 @@ typedef enum {
 	UNKNOWN
 } Knowledge;
 
-typedef struct {
-	char emblem_keywords[1];
-} NautilusFileSortByEmblemCache;
-
 struct NautilusFileDetails
 {
 	NautilusDirectory *directory;
@@ -126,10 +122,6 @@ struct NautilusFileDetails
 	 * file objects small.
 	 */
 	GList *operations_in_progress;
-
-	/* We use this to cache automatic emblems and emblem keywords
-	   to speed up compare_by_emblems. */
-	NautilusFileSortByEmblemCache *compare_by_emblem_cache;
 
 	/* NautilusInfoProviders that need to be run for this file */
 	GList *pending_info_providers;
@@ -239,7 +231,6 @@ typedef struct {
 	gpointer data;
 	GDestroyNotify free_data;
 } NautilusFileOperation;
-
 
 NautilusFile *nautilus_file_new_from_info                  (NautilusDirectory      *directory,
 							    GFileInfo              *info);

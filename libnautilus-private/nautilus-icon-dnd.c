@@ -72,8 +72,6 @@ static const GtkTargetEntry drop_types [] = {
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
 	{ NAUTILUS_ICON_DND_COLOR_TYPE, 0, NAUTILUS_ICON_DND_COLOR },
 	{ NAUTILUS_ICON_DND_BGIMAGE_TYPE, 0, NAUTILUS_ICON_DND_BGIMAGE },
-	{ NAUTILUS_ICON_DND_KEYWORD_TYPE, 0, NAUTILUS_ICON_DND_KEYWORD },
-	{ NAUTILUS_ICON_DND_RESET_BACKGROUND_TYPE,  0, NAUTILUS_ICON_DND_RESET_BACKGROUND },
 	{ NAUTILUS_ICON_DND_XDNDDIRECTSAVE_TYPE, 0, NAUTILUS_ICON_DND_XDNDDIRECTSAVE }, /* XDS Protocol Type */
 	{ NAUTILUS_ICON_DND_RAW_TYPE, 0, NAUTILUS_ICON_DND_RAW },
 	/* Must be last: */
@@ -670,47 +668,6 @@ receive_dropped_tile_image (NautilusIconContainer *container, GdkDragAction acti
 			 action, 
 			 gtk_selection_data_get_data (data));
 	}
-}
-
-/* handle dropped keywords */
-static void
-receive_dropped_keyword (NautilusIconContainer *container, const char *keyword, int x, int y)
-{
-	char *uri;
-	double world_x, world_y;
-
-	NautilusIcon *drop_target_icon;
-	NautilusFile *file;
-	
-	g_assert (keyword != NULL);
-
-	/* find the item we hit with our drop, if any */
-	canvas_widget_to_world (EEL_CANVAS (container), x, y, &world_x, &world_y);
-	drop_target_icon = nautilus_icon_container_item_at (container, world_x, world_y);
-	if (drop_target_icon == NULL) {
-		return;
-	}
-
-	/* FIXME bugzilla.gnome.org 42485: 
-	 * This does not belong in the icon code.
-	 * It has to be in the file manager.
-	 * The icon code has no right to deal with the file directly.
-	 * But luckily there's no issue of not getting a file object,
-	 * so we don't have to worry about async. issues here.
-	 */
-	uri = nautilus_icon_container_get_icon_uri (container, drop_target_icon);
-
-	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-			    "dropped emblem '%s' on icon container URI: %s",
-			    keyword, uri);
-
-	file = nautilus_file_get_by_uri (uri);
-	g_free (uri);
-	
-	nautilus_drag_file_receive_dropped_keyword (file, keyword);
-
-	nautilus_file_unref (file);
-	nautilus_icon_container_update_icon (container, drop_target_icon);
 }
 
 /* handle dropped url */
@@ -1316,20 +1273,12 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 		g_free (drop_target);
 		break;
 
-	/* handle emblems by setting the action if we're over an object */
-	case NAUTILUS_ICON_DND_KEYWORD:
-		if (icon != NULL) {
-			*action = gdk_drag_context_get_suggested_action (context);
-		}
-		break;
-
 	case NAUTILUS_ICON_DND_NETSCAPE_URL:
 		*action = nautilus_drag_default_drop_action_for_netscape_url (context);
 		break;
 
 	case NAUTILUS_ICON_DND_COLOR:
 	case NAUTILUS_ICON_DND_BGIMAGE:
-	case NAUTILUS_ICON_DND_RESET_BACKGROUND:
 	case NAUTILUS_ICON_DND_ROOTWINDOW_DROP:
 		*action = gdk_drag_context_get_suggested_action (context);
 		break;
@@ -1386,7 +1335,7 @@ nautilus_icon_dnd_update_drop_target (NautilusIconContainer *container,
 	 */
 
 	/* Find if target icon accepts our drop. */
-	if (icon != NULL && (container->details->dnd_info->drag_info.data_type != NAUTILUS_ICON_DND_KEYWORD)) {
+	if (icon != NULL) {
 		    uri = nautilus_icon_container_get_icon_uri (container, icon);
 		    file = nautilus_file_get_by_uri (uri);
 		    g_free (uri);
@@ -1732,7 +1681,6 @@ drag_data_received_callback (GtkWidget *widget,
 			     gpointer user_data)
 {
     	NautilusDragInfo *drag_info;
-	EelBackground *background;
 	char *tmp;
 	const char *tmp_raw;
 	int length;
@@ -1749,10 +1697,8 @@ drag_data_received_callback (GtkWidget *widget,
 		break;
 	case NAUTILUS_ICON_DND_COLOR:
 	case NAUTILUS_ICON_DND_BGIMAGE:	
-	case NAUTILUS_ICON_DND_KEYWORD:
 	case NAUTILUS_ICON_DND_URI_LIST:
 	case NAUTILUS_ICON_DND_TEXT:
-	case NAUTILUS_ICON_DND_RESET_BACKGROUND:
 	case NAUTILUS_ICON_DND_XDNDDIRECTSAVE:
 	case NAUTILUS_ICON_DND_RAW:
 		/* Save the data so we can do the actual work on drop. */
@@ -1799,11 +1745,6 @@ drag_data_received_callback (GtkWidget *widget,
 				 gdk_drag_context_get_selected_action (context),
 				 data);
 			break;
-		case NAUTILUS_ICON_DND_KEYWORD:
-			receive_dropped_keyword
-				(NAUTILUS_ICON_CONTAINER (widget),
-				 (char *) gtk_selection_data_get_data (data), x, y);
-			break;
 		case NAUTILUS_ICON_DND_NETSCAPE_URL:
 			receive_dropped_netscape_url
 				(NAUTILUS_ICON_CONTAINER (widget),
@@ -1832,13 +1773,6 @@ drag_data_received_callback (GtkWidget *widget,
 				 tmp_raw, length, drag_info->direct_save_uri,
 				 context, x, y);
 			success = TRUE;
-			break;
-		case NAUTILUS_ICON_DND_RESET_BACKGROUND:
-			background = eel_get_widget_background (widget);
-			if (background != NULL) {
-				eel_background_reset (background);
-			}
-			gtk_drag_finish (context, FALSE, FALSE, time);			
 			break;
 		case NAUTILUS_ICON_DND_ROOTWINDOW_DROP:
 			/* Do nothing, everything is done by the sender */

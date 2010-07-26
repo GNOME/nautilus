@@ -64,16 +64,12 @@ nautilus_SOURCES = \
 	nautilus-connect-server-dialog-nonmain.c	\
 	nautilus-desktop-window.c		\
 	nautilus-desktop-window.h		\
-	nautilus-emblem-sidebar.c		\
-	nautilus-emblem-sidebar.h		\
 	nautilus-file-management-properties.c	\
 	nautilus-file-management-properties.h	\
 	nautilus-history-sidebar.c		\
 	nautilus-history-sidebar.h		\
 	nautilus-image-properties-page.c	\
 	nautilus-image-properties-page.h	\
-	nautilus-information-panel.c            \
-	nautilus-information-panel.h            \
 	nautilus-location-bar.c         	\
 	nautilus-location-bar.h			\
 	nautilus-location-dialog.c              \
@@ -101,8 +97,6 @@ nautilus_SOURCES = \
 	nautilus-pathbar.h			\
 	nautilus-places-sidebar.c		\
 	nautilus-places-sidebar.h		\
-	nautilus-property-browser.c     	\
-	nautilus-property-browser.h		\
 	nautilus-query-editor.c			\
 	nautilus-query-editor.h			\
 	nautilus-search-bar.c			\
@@ -111,8 +105,6 @@ nautilus_SOURCES = \
 	nautilus-self-check-functions.h 	\
 	nautilus-side-pane.c                    \
 	nautilus-side-pane.h			\
-	nautilus-sidebar-title.c		\
-	nautilus-sidebar-title.h		\
 	nautilus-spatial-window.c               \
 	nautilus-spatial-window.h               \
 	nautilus-trash-bar.c			\

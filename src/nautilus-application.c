@@ -35,11 +35,9 @@
 #if ENABLE_EMPTY_VIEW
 #include "file-manager/fm-empty-view.h"
 #endif /* ENABLE_EMPTY_VIEW */
-#include "nautilus-information-panel.h"
 #include "nautilus-history-sidebar.h"
 #include "nautilus-places-sidebar.h"
 #include "nautilus-notes-viewer.h"
-#include "nautilus-emblem-sidebar.h"
 #include "nautilus-image-properties-page.h"
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -232,11 +230,9 @@ nautilus_application_init (NautilusApplication *application)
 
 	/* register sidebars */
 	nautilus_places_sidebar_register ();
-	nautilus_information_panel_register ();
 	fm_tree_view_register ();
 	nautilus_history_sidebar_register ();
 	nautilus_notes_viewer_register (); /* also property page */
-	nautilus_emblem_sidebar_register ();
 
 	/* register property pages */
 	nautilus_image_properties_page_register ();

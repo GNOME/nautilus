@@ -15,11 +15,6 @@
 #define NAUTILUS_ICON_TRASH_FULL	"user-trash-full"
 #define NAUTILUS_ICON_DELETE		"edit-delete"
 
-/* Icons for emblems */
-#define NAUTILUS_ICON_EMBLEM_READONLY	"emblem-readonly"
-#define NAUTILUS_ICON_EMBLEM_UNREADABLE	"emblem-unreadable"
-#define NAUTILUS_ICON_EMBLEM_SYMLINK	"emblem-symbolic-link"
-
 /* Other icons */
 #define NAUTILUS_ICON_TEMPLATE		"text-x-generic-template"
 

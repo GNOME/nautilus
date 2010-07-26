@@ -22,7 +22,6 @@ mime_DATA = $(xml_files)
 nautilusdatadir = $(datadir)/nautilus
 
 nautilusdata_DATA = \
-	browser.xml 			\
 	nautilus-extras.placeholder 	\
 	nautilus-suggested.placeholder 	\
 	$(NULL)
@@ -40,7 +39,6 @@ CLEANFILES = $(xml_files)	\
 
 SUBDIRS = \
 	icons    \
-	patterns \
 	$(NULL)
 
 install-data-hook:

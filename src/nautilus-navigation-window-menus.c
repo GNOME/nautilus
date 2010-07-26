@@ -38,7 +38,6 @@
 #include "nautilus-bookmark-list.h"
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-file-management-properties.h"
-#include "nautilus-property-browser.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window-bookmarks.h"
@@ -47,7 +46,6 @@
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
-#include <eel/eel-xml-extensions.h>
 #include <libxml/parser.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>

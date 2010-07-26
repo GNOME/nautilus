@@ -36,15 +36,11 @@
 #include <eel/eel-gtk-container.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
-#include <eel/eel-image-table.h>
-#include <eel/eel-labeled-image.h>
 #include <eel/eel-pango-extensions.h>
 #include <eel/eel-self-checks.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-types.h>
 #include <eel/eel-vfs-extensions.h>
-#include <eel/eel-wrap-table.h>
-#include <eel/eel-xml-extensions.h>
 
 #endif /* EEL_H */

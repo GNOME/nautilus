@@ -32,7 +32,6 @@ libeel_2_la_SOURCES =				\
 	eel-art-extensions.c			\
 	eel-art-gtk-extensions.c		\
 	eel-background.c			\
-	eel-background-box.c                    \
 	eel-canvas.c				\
 	eel-canvas-util.c			\
 	eel-canvas-rect-ellipse.c		\
@@ -47,8 +46,6 @@ libeel_2_la_SOURCES =				\
 	eel-gtk-container.c			\
 	eel-gtk-extensions.c			\
 	eel-i18n.c				\
-	eel-image-table.c			\
-	eel-labeled-image.c			\
 	eel-lib-self-check-functions.c		\
 	eel-pango-extensions.c			\
 	eel-self-checks.c			\
@@ -56,8 +53,6 @@ libeel_2_la_SOURCES =				\
 	eel-string.c				\
 	eel-types.c				\
 	eel-vfs-extensions.c			\
-	eel-wrap-table.c			\
-	eel-xml-extensions.c			\
 	eel-lib-self-check-functions.h		\
 	$(NULL)
 
@@ -67,7 +62,6 @@ eel_headers =					\
 	eel-art-extensions.h			\
 	eel-art-gtk-extensions.h		\
 	eel-background.h			\
-	eel-background-box.h                    \
 	eel-canvas.h				\
 	eel-canvas-util.h			\
 	eel-canvas-rect-ellipse.h		\
@@ -83,16 +77,12 @@ eel_headers =					\
 	eel-gtk-extensions.h			\
 	eel-gtk-macros.h			\
 	eel-i18n.h				\
-	eel-image-table.h			\
-	eel-labeled-image.h			\
 	eel-pango-extensions.h			\
 	eel-self-checks.h			\
 	eel-stock-dialogs.h			\
 	eel-string.h				\
 	eel-types.h				\
 	eel-vfs-extensions.h			\
-	eel-wrap-table.h			\
-	eel-xml-extensions.h			\
 	eel.h					\
 	$(NULL)
 

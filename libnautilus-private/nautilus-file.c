@@ -121,7 +121,6 @@ static GQuark attribute_name_q,
 	attribute_date_modified_q,
 	attribute_accessed_date_q,
 	attribute_date_accessed_q,
-	attribute_emblems_q,
 	attribute_mime_type_q,
 	attribute_size_detail_q,
 	attribute_deep_size_q,
@@ -802,7 +801,6 @@ finalize (GObject *object)
 	g_free (file->details->top_left_text);
 	g_free (file->details->custom_icon);
 	g_free (file->details->activation_uri);
-	g_free (file->details->compare_by_emblem_cache);
 
 	if (file->details->thumbnail) {
 		g_object_unref (file->details->thumbnail);
@@ -2944,81 +2942,6 @@ prepend_automatic_keywords (NautilusFile *file,
 	return names;
 }
 
-static void
-fill_emblem_cache_if_needed (NautilusFile *file)
-{
-	GList *node, *keywords;
-	char *scanner;
-	size_t length;
-
-	if (file->details->compare_by_emblem_cache != NULL) {
-		/* Got a cache already. */
-		return;
-	}
-
-	keywords = nautilus_file_get_keywords (file);
-
-	/* Add up the keyword string lengths */
-	length = 1;
-	for (node = keywords; node != NULL; node = node->next) {
-		length += strlen ((const char *) node->data) + 1;
-	}
-
-	/* Now that we know how large the cache struct needs to be, allocate it. */
-	file->details->compare_by_emblem_cache = g_malloc (sizeof(NautilusFileSortByEmblemCache) + length);
-
-	/* Copy them into the cache. */
-	scanner = file->details->compare_by_emblem_cache->emblem_keywords;
-	for (node = keywords; node != NULL; node = node->next) {
-		length = strlen ((const char *) node->data) + 1;
-		memcpy (scanner, (const char *) node->data, length);
-		scanner += length;
-	}
-
-	/* Zero-terminate so we can tell where the list ends. */
-	*scanner = 0;
-
-	eel_g_list_free_deep (keywords);
-}
-
-static int
-compare_by_emblems (NautilusFile *file_1, NautilusFile *file_2)
-{
-	const char *keyword_cache_1, *keyword_cache_2;
-	size_t length;
-	int compare_result;
-
-	fill_emblem_cache_if_needed (file_1);
-	fill_emblem_cache_if_needed (file_2);
-
-	/* We ignore automatic emblems, and only sort by user-added keywords. */
-	compare_result = 0;
-	keyword_cache_1 = file_1->details->compare_by_emblem_cache->emblem_keywords;
-	keyword_cache_2 = file_2->details->compare_by_emblem_cache->emblem_keywords;
-	for (; *keyword_cache_1 != '\0' && *keyword_cache_2 != '\0';) {
-		compare_result = g_utf8_collate (keyword_cache_1, keyword_cache_2);
-		if (compare_result != 0) {
-			return compare_result;
-		}
-		
-		/* Advance to the next keyword */
-		length = strlen (keyword_cache_1);
-		keyword_cache_1 += length + 1;
-		keyword_cache_2 += length + 1;
-	}
-
-
-	/* One or both is now NULL. */
-	if (*keyword_cache_1 != '\0') {
-		g_assert (*keyword_cache_2 == '\0');
-		return -1;
-	} else if (*keyword_cache_2 != '\0') {
-		return +1;
-	}
-
-	return 0;	
-}
-
 static int
 compare_by_type (NautilusFile *file_1, NautilusFile *file_2)
 {
@@ -3228,16 +3151,6 @@ nautilus_file_compare_for_sort (NautilusFile *file_1,
 				result = compare_by_full_path (file_1, file_2);
 			}
 			break;
-		case NAUTILUS_FILE_SORT_BY_EMBLEMS:
-			/* GnomeVFS doesn't know squat about our emblems, so
-			 * we handle comparing them here, before falling back
-			 * to tie-breakers.
-			 */
-			result = compare_by_emblems (file_1, file_2);
-			if (result == 0) {
-				result = compare_by_full_path (file_1, file_2);
-			}
-			break;
 		default:
 			g_return_val_if_reached (0);
 		}
@@ -3296,13 +3209,8 @@ nautilus_file_compare_for_sort_by_attribute_q   (NautilusFile                   
 						       NAUTILUS_FILE_SORT_BY_TRASHED_TIME,
 						       directories_first,
 						       reversed);
-	} else if (attribute == attribute_emblems_q) {
-		return nautilus_file_compare_for_sort (file_1, file_2,
-						       NAUTILUS_FILE_SORT_BY_EMBLEMS,
-						       directories_first,
-						       reversed);
 	}
-	
+
 	/* it is a normal attribute, compare by strings */
 
 	result = nautilus_file_compare_for_sort_internal (file_1, file_2, directories_first, reversed);
@@ -6605,40 +6513,10 @@ nautilus_file_get_keywords (NautilusFile *file)
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-	/* Put all the keywords into a list. */
-	keywords = nautilus_file_get_metadata_list
-		(file, NAUTILUS_METADATA_KEY_EMBLEMS);
-
-	keywords = g_list_concat (keywords, eel_g_str_list_copy (file->details->extension_emblems));
+	keywords = eel_g_str_list_copy (file->details->extension_emblems);
 	keywords = g_list_concat (keywords, eel_g_str_list_copy (file->details->pending_extension_emblems));
 
 	return sort_keyword_list_and_remove_duplicates (keywords);
-}
-
-/**
- * nautilus_file_set_keywords
- * 
- * Change this file's keywords.
- * @file: NautilusFile representing the file in question.
- * @keywords: New set of keywords (a GList of strings).
- *
- **/
-void
-nautilus_file_set_keywords (NautilusFile *file, GList *keywords)
-{
-	GList *canonical_keywords;
-
-	/* Invalidate the emblem compare cache */
-	g_free (file->details->compare_by_emblem_cache);
-	file->details->compare_by_emblem_cache = NULL;
-	
-	g_return_if_fail (NAUTILUS_IS_FILE (file));
-
-	canonical_keywords = sort_keyword_list_and_remove_duplicates
-		(g_list_copy (keywords));
-	nautilus_file_set_metadata_list
-		(file, NAUTILUS_METADATA_KEY_EMBLEMS, canonical_keywords);
-	g_list_free (canonical_keywords);
 }
 
 /**
@@ -7241,14 +7119,6 @@ nautilus_file_emit_changed (NautilusFile *file)
 	GList *link_files, *p;
 
 	g_assert (NAUTILUS_IS_FILE (file));
-
-
-	/* Invalidate the emblem compare cache. -- This is not the cleanest
-	 * place to do it but it is the one guaranteed bottleneck through
-	 * which all change notifications pass.
-	 */
-	g_free (file->details->compare_by_emblem_cache);
-	file->details->compare_by_emblem_cache = NULL;
 
 	/* Send out a signal. */
 	g_signal_emit (file, signals[CHANGED], 0, file);
@@ -8109,7 +7979,6 @@ nautilus_file_class_init (NautilusFileClass *class)
 	attribute_date_modified_q = g_quark_from_static_string ("date_modified");
 	attribute_accessed_date_q = g_quark_from_static_string ("accessed_date");
 	attribute_date_accessed_q = g_quark_from_static_string ("date_accessed");
-	attribute_emblems_q = g_quark_from_static_string ("emblems");
 	attribute_mime_type_q = g_quark_from_static_string ("mime_type");
 	attribute_size_detail_q = g_quark_from_static_string ("size_detail");
 	attribute_deep_size_q = g_quark_from_static_string ("deep_size");

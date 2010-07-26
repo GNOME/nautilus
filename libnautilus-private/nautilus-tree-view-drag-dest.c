@@ -88,7 +88,6 @@ static const GtkTargetEntry drag_types [] = {
 	/* prefer "_NETSCAPE_URL" over "text/uri-list" to satisfy web browsers. */
 	{ NAUTILUS_ICON_DND_NETSCAPE_URL_TYPE, 0, NAUTILUS_ICON_DND_NETSCAPE_URL },
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
-	{ NAUTILUS_ICON_DND_KEYWORD_TYPE, 0, NAUTILUS_ICON_DND_KEYWORD },
 	{ NAUTILUS_ICON_DND_XDNDDIRECTSAVE_TYPE, 0, NAUTILUS_ICON_DND_XDNDDIRECTSAVE }, /* XDS Protocol Type */
 	{ NAUTILUS_ICON_DND_RAW_TYPE, 0, NAUTILUS_ICON_DND_RAW }
 };
@@ -437,13 +436,6 @@ get_drop_action (NautilusTreeViewDragDest *dest,
 	case NAUTILUS_ICON_DND_XDNDDIRECTSAVE:
 		return GDK_ACTION_COPY;
 
-	case NAUTILUS_ICON_DND_KEYWORD:
-
-		if (!path) {
-			return 0;
-		}
-
-		return GDK_ACTION_COPY;
 	}
 
 	return 0;
@@ -751,32 +743,6 @@ receive_dropped_netscape_url (NautilusTreeViewDragDest *dest,
 	g_free (drop_target);
 }
 
-static void
-receive_dropped_keyword (NautilusTreeViewDragDest *dest,
-			 GdkDragContext *context,
-			 int x, int y)
-{
-	char *drop_target_uri;
-	NautilusFile *drop_target_file;
-
-	if (!dest->details->drag_data) {
-		return;
-	}
-
-	drop_target_uri = get_drop_target_uri_at_pos (dest, x, y);
-	g_assert (drop_target_uri != NULL);
-
-	drop_target_file = nautilus_file_get_by_uri (drop_target_uri);
-
-	if (drop_target_file != NULL) {
-		nautilus_drag_file_receive_dropped_keyword (drop_target_file,
-							    (char *) gtk_selection_data_get_data (dest->details->drag_data));
-		nautilus_file_unref (drop_target_file);
-	}
-
-	g_free (drop_target_uri);
-}
-
 static gboolean
 receive_xds (NautilusTreeViewDragDest *dest,
 	     GtkWidget *widget,
@@ -868,10 +834,6 @@ drag_data_received_callback (GtkWidget *widget,
 			length = gtk_selection_data_get_length (selection_data);
 			tmp = gtk_selection_data_get_data (selection_data);
 			receive_dropped_raw (dest, tmp, length, context, x, y);
-			success = TRUE;
-			break;
-		case NAUTILUS_ICON_DND_KEYWORD:
-			receive_dropped_keyword (dest, context, x, y);
 			success = TRUE;
 			break;
 		case NAUTILUS_ICON_DND_XDNDDIRECTSAVE:

@@ -36,7 +36,6 @@
     <value nick="type" value="4"/>
     <value nick="mtime" value="5"/>
     <value nick="atime" value="6"/>
-    <value nick="emblems" value="7"/>
     <value nick="trash-time" value="8"/>
   </enum>
 
@@ -174,7 +173,7 @@
       </aliases>
       <default>'name'</default>
       <_summary>Default sort order</_summary>
-      <_description>The default sort-order for items in the icon view. Possible values are "name", "size", "type", "mtime", and "emblems".</_description>
+      <_description>The default sort-order for items in the icon view. Possible values are "name", "size", "type" and "mtime".</_description>
     </key>
     <key name="default-sort-in-reverse-order" type="b">
       <default>false</default>
@@ -450,17 +449,13 @@
     </key>
     <key name="side-pane-view" type="s">
       <choices>
-	<choice value='emblems'/>
 	<choice value='history'/>
-	<choice value='information'/>
 	<choice value='notes'/>
 	<choice value='places'/>
 	<choice value='tree'/>
       </choices>
       <aliases>
-	<alias value='NautilusEmblemSidebar' target='emblems'/>
 	<alias value='NautilusHistorySidebar' target='history'/>
-	<alias value='NautilusInformationPanel' target='information'/>
 	<alias value='NautilusNotesSidebar' target='notes'/>
 	<alias value='NautilusPlacesSidebar' target='places'/>
 	<alias value='NautilusTreeSidebar' target='tree'/>
