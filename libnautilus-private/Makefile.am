@@ -211,12 +211,16 @@ gsettingsschema_in_files = org.gnome.nautilus.gschema.xml.in org.gnome.media-han
 gsettings_SCHEMAS = $(gsettingsschema_in_files:.xml.in=.xml)
 .PRECIOUS: $(gsettings_SCHEMAS)
 
+convertdir = $(datadir)/GConf/gsettings
+convert_DATA = nautilus.convert
+
 @INTLTOOL_XML_NOMERGE_RULE@
 
 @GSETTINGS_RULES@
 
 EXTRA_DIST =				\
 	nautilus-marshal.list		\
+	nautilus.convert		\
 	$(gsettingsschema_in_files)     \
 	$(BEAGLE_SOURCES)		\
 	$(TRACKER_SOURCES)		\
