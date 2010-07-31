@@ -1147,6 +1147,17 @@ nautilus_application_close_all_navigation_windows (void)
 	GList *l;
 	
 	list_copy = g_list_copy (nautilus_application_window_list);
+	/* First hide all window to get the feeling of quick response */
+	for (l = list_copy; l != NULL; l = l->next) {
+		NautilusWindow *window;
+		
+		window = NAUTILUS_WINDOW (l->data);
+
+		if (NAUTILUS_IS_NAVIGATION_WINDOW (window)) {
+			gtk_widget_hide (GTK_WIDGET (window));
+		}
+	}
+
 	for (l = list_copy; l != NULL; l = l->next) {
 		NautilusWindow *window;
 		
@@ -1254,6 +1265,17 @@ nautilus_application_close_all_spatial_windows (void)
 	GList *l;
 	
 	list_copy = g_list_copy (nautilus_application_spatial_window_list);
+	/* First hide all window to get the feeling of quick response */
+	for (l = list_copy; l != NULL; l = l->next) {
+		NautilusWindow *window;
+		
+		window = NAUTILUS_WINDOW (l->data);
+		
+		if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
+			gtk_widget_hide (GTK_WIDGET (window));
+		}
+	}
+
 	for (l = list_copy; l != NULL; l = l->next) {
 		NautilusWindow *window;
 		
