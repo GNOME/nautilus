@@ -728,6 +728,10 @@ update_layout_menus (FMIconView *view)
 					      FM_ACTION_CLEAN_UP);
 	gtk_action_set_sensitive (action, !is_auto_layout);	
 
+	if (FM_IS_DESKTOP_ICON_VIEW (view)) {
+		gtk_action_set_label (action, _("_Organize Desktop by Name"));
+	}
+
 	action = gtk_action_group_get_action (view->details->icon_action_group,
 					      FM_ACTION_KEEP_ALIGNED);
 	gtk_action_set_visible (action,
@@ -1593,7 +1597,7 @@ static const GtkActionEntry icon_view_entries[] = {
   /* tooltip */                  N_("Restore each selected icon to its original size"),
                                  G_CALLBACK (action_unstretch_callback) },
   /* name, stock id */         { "Clean Up", NULL,
-  /* label, accelerator */       N_("_Organize Desktop by Name"), NULL,
+  /* label, accelerator */       N_("_Organize by Name"), NULL,
   /* tooltip */                  N_("Reposition icons to better fit in the window and avoid overlapping"),
                                  G_CALLBACK (action_clean_up_callback) },
 };
