@@ -285,6 +285,16 @@ path_bar_button_drag_begin_callback (GtkWidget *widget,
 }
 
 static void
+notebook_popup_menu_new_tab_cb (GtkMenuItem *menuitem,
+				gpointer user_data)
+{
+	NautilusWindowPane *pane;
+
+	pane = NAUTILUS_WINDOW_PANE (user_data);
+	nautilus_window_new_tab (pane->window);
+}
+
+static void
 path_bar_path_set_callback (GtkWidget *widget,
 			    GFile *location,
 			    NautilusNavigationWindowPane *pane)
@@ -370,6 +380,16 @@ notebook_popup_menu_show (NautilusNavigationWindowPane *pane,
 	can_move_right = nautilus_notebook_can_reorder_current_child_relative (notebook, 1);
 
 	popup = gtk_menu_new();
+
+	item = gtk_menu_item_new_with_mnemonic (_("_New Tab"));
+	g_signal_connect (item, "activate",
+			  G_CALLBACK (notebook_popup_menu_new_tab_cb),
+			  pane);
+	gtk_menu_shell_append (GTK_MENU_SHELL (popup),
+			       item);
+
+	gtk_menu_shell_append (GTK_MENU_SHELL (popup),
+			       gtk_separator_menu_item_new ());
 
 	item = gtk_menu_item_new_with_mnemonic (_("Move Tab _Left"));
 	g_signal_connect (item, "activate",
