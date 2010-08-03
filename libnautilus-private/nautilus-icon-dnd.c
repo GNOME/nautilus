@@ -70,7 +70,6 @@ static const GtkTargetEntry drop_types [] = {
 	/* prefer "_NETSCAPE_URL" over "text/uri-list" to satisfy web browsers. */
 	{ NAUTILUS_ICON_DND_NETSCAPE_URL_TYPE, 0, NAUTILUS_ICON_DND_NETSCAPE_URL },
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
-	{ NAUTILUS_ICON_DND_COLOR_TYPE, 0, NAUTILUS_ICON_DND_COLOR },
 	{ NAUTILUS_ICON_DND_BGIMAGE_TYPE, 0, NAUTILUS_ICON_DND_BGIMAGE },
 	{ NAUTILUS_ICON_DND_XDNDDIRECTSAVE_TYPE, 0, NAUTILUS_ICON_DND_XDNDDIRECTSAVE }, /* XDS Protocol Type */
 	{ NAUTILUS_ICON_DND_RAW_TYPE, 0, NAUTILUS_ICON_DND_RAW },
@@ -622,29 +621,6 @@ get_background_drag_action (NautilusIconContainer *container,
 	}
 
 	return action;
-}
-
-static void
-receive_dropped_color (NautilusIconContainer *container,
-		       int x, int y,
-		       GdkDragAction action,
-		       GtkSelectionData *data)
-{
-	action = get_background_drag_action (container, action);
-
-	if (action > 0) {
-		char *uri;
-
-		uri = get_container_uri (container);
-		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-				    "dropped color on icon container displaying %s", uri);
-		g_free (uri);
-
-		eel_background_receive_dropped_color
-			(eel_get_widget_background (GTK_WIDGET (container)),
-			 GTK_WIDGET (container), 
-			 action, x, y, data);
-	}
 }
 
 /* handle dropped tile images */
@@ -1277,7 +1253,6 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 		*action = nautilus_drag_default_drop_action_for_netscape_url (context);
 		break;
 
-	case NAUTILUS_ICON_DND_COLOR:
 	case NAUTILUS_ICON_DND_BGIMAGE:
 	case NAUTILUS_ICON_DND_ROOTWINDOW_DROP:
 		*action = gdk_drag_context_get_suggested_action (context);
@@ -1695,7 +1670,6 @@ drag_data_received_callback (GtkWidget *widget,
 	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
 		nautilus_icon_container_dropped_icon_feedback (widget, data, x, y);
 		break;
-	case NAUTILUS_ICON_DND_COLOR:
 	case NAUTILUS_ICON_DND_BGIMAGE:	
 	case NAUTILUS_ICON_DND_URI_LIST:
 	case NAUTILUS_ICON_DND_TEXT:
@@ -1731,13 +1705,6 @@ drag_data_received_callback (GtkWidget *widget,
 			nautilus_icon_container_receive_dropped_icons
 				(NAUTILUS_ICON_CONTAINER (widget),
 				 context, x, y);
-			break;
-		case NAUTILUS_ICON_DND_COLOR:
-			receive_dropped_color (NAUTILUS_ICON_CONTAINER (widget),
-					       x, y,
-					       gdk_drag_context_get_selected_action (context),
-					       data);
-			success = TRUE;
 			break;
 		case NAUTILUS_ICON_DND_BGIMAGE:
 			receive_dropped_tile_image
