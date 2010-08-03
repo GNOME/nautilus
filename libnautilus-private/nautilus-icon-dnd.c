@@ -1010,7 +1010,7 @@ handle_local_move (NautilusIconContainer *container,
 
 static void
 handle_nonlocal_move (NautilusIconContainer *container,
-		      GdkDragContext *context,
+		      GdkDragAction action,
 		      int x, int y,
 		      const char *target_uri,
 		      gboolean icon_hit)
@@ -1067,11 +1067,11 @@ handle_nonlocal_move (NautilusIconContainer *container,
 
 	/* start the copy */
 	g_signal_emit_by_name (container, "move_copy_items",
-				 source_uris,
-				 source_item_locations,
-				 target_uri,
-				 gdk_drag_context_get_selected_action (context),
-				 x, y);
+			       source_uris,
+			       source_item_locations,
+			       target_uri,
+			       action,
+			       x, y);
 
 	if (free_target_uri) {
 		g_free ((char *)target_uri);
@@ -1259,7 +1259,7 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 		if (local_move_only) {
 			handle_local_move (container, world_x, world_y);
 		} else {
-			handle_nonlocal_move (container, context, world_x, world_y, drop_target, icon_hit);
+			handle_nonlocal_move (container, real_action, world_x, world_y, drop_target, icon_hit);
 		}
 	}
 
