@@ -2135,6 +2135,8 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 	char *folder_count_str;
 	char *folder_item_count_str;
 	char *status_string;
+	char *free_space_str;
+	char *obj_selected_free_space_str;
 	NautilusFile *file;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
@@ -2151,6 +2153,8 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 	folder_count_str = NULL;
 	non_folder_str = NULL;
 	folder_item_count_str = NULL;
+	free_space_str = NULL;
+	obj_selected_free_space_str = NULL;
 	
 	for (p = selection; p != NULL; p = p->next) {
 		file = p->data;
@@ -2255,8 +2259,11 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 		}
 	}
 
+	free_space_str = nautilus_file_get_volume_free_space (view->details->directory_as_file);
+	if (free_space_str != NULL) {
+		obj_selected_free_space_str = g_strdup_printf (_("Free space: %s"), free_space_str);
+	}
 	if (folder_count == 0 && non_folder_count == 0)	{
-		char *free_space_str;
 		char *item_count_str;
 		guint item_count;
 
@@ -2264,39 +2271,78 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 		
 		item_count_str = g_strdup_printf (ngettext ("%'u item", "%'u items", item_count), item_count);
 
-		free_space_str = nautilus_file_get_volume_free_space (view->details->directory_as_file);
 		if (free_space_str != NULL) {
 			status_string = g_strdup_printf (_("%s, Free space: %s"), item_count_str, free_space_str);
-			g_free (free_space_str);
 			g_free (item_count_str);
 		} else {
 			status_string = item_count_str;
 		}
 
 	} else if (folder_count == 0) {
-		status_string = g_strdup (non_folder_str);
+		if (free_space_str == NULL) {
+			status_string = g_strdup (non_folder_str);
+		} else {
+			/* Marking this for translation, since you
+			 * might want to change "," to something else.
+			 * After the comma the amount of free space will
+			 * be shown.
+			 */
+			status_string = g_strdup_printf (_("%s, %s"),
+							 non_folder_str,
+							 obj_selected_free_space_str);
+		}
 	} else if (non_folder_count == 0) {
-		/* No use marking this for translation, since you
-		 * can't reorder the strings, which is the main thing
-		 * you'd want to do.
-		 */
-		status_string = g_strdup_printf ("%s%s",
-						 folder_count_str, 
-						 folder_item_count_str);
+		if (free_space_str == NULL) {
+		        /* No use marking this for translation, since you
+		         * can't reorder the strings, which is the main thing
+		         * you'd want to do.
+		         */
+			status_string = g_strdup_printf ("%s%s",
+							 folder_count_str,
+							 folder_item_count_str);
+		} else {
+			/* Marking this for translation, since you
+			 * might want to change "," to something else.
+			 * After the comma the amount of free space will
+			 * be shown.
+			 */
+			status_string = g_strdup_printf (_("%s%s, %s"),
+							 folder_count_str,
+							 folder_item_count_str,
+							 obj_selected_free_space_str);
+		}
 	} else {
-		/* This is marked for translation in case a localizer
-		 * needs to change ", " to something else. The comma
-		 * is between the message about the number of folders
-		 * and the number of items in those folders and the
-		 * message about the number of other items and the
-		 * total size of those items.
-		 */
-		status_string = g_strdup_printf (_("%s%s, %s"), 
-						 folder_count_str, 
-						 folder_item_count_str,
-						 non_folder_str);
+		if (obj_selected_free_space_str == NULL) {
+			/* This is marked for translation in case a localizer
+			 * needs to change ", " to something else. The comma
+			 * is between the message about the number of folders
+			 * and the number of items in those folders and the
+			 * message about the number of other items and the
+			 * total size of those items.
+			 */
+			status_string = g_strdup_printf (_("%s%s, %s"),
+							 folder_count_str,
+							 folder_item_count_str,
+							 non_folder_str);
+		} else {
+			/* This is marked for translation in case a localizer
+			 * needs to change ", " to something else. The first comma
+			 * is between the message about the number of folders
+			 * and the number of items in those folders and the
+			 * message about the number of other items and the
+			 * total size of those items. After the second comma
+			 * the free space is written.
+			 */
+			status_string = g_strdup_printf (_("%s%s, %s, %s"),
+							 folder_count_str,
+							 folder_item_count_str,
+							 non_folder_str,
+							 obj_selected_free_space_str);
+		}
 	}
 
+	g_free (free_space_str);
+	g_free (obj_selected_free_space_str);
 	g_free (first_item_name);
 	g_free (folder_count_str);
 	g_free (folder_item_count_str);
