@@ -1329,13 +1329,11 @@ confirm_empty_trash (CommonJob *job)
 		return TRUE;
 	}
 
-	prompt = f (_("Empty all of the items from the trash?"));
+	prompt = f (_("Empty all items from Trash?"));
 
 	response = run_warning (job,
 				prompt,
-				f(_("If you choose to empty the trash, all items "
-				    "in it will be permanently lost. Please note "
-				    "that you can also delete them separately.")),
+				f(_("All items in the Trash will be permanently deleted.")),
 				NULL,
 				FALSE,
 				GTK_STOCK_CANCEL, _("Empty _Trash"),
