@@ -398,19 +398,6 @@
     </key>
   </schema>
 
-  <schema id="org.gnome.nautilus.file-views" path="/desktop/gnome/file-views/" gettext-domain="nautilus">
-    <key name="show-hidden-files" type="b">
-      <default>false</default>
-      <_summary>Whether to show hidden files</_summary>
-      <_description>If set to true, then hidden files are shown in  the file manager.  Hidden files are either dotfiles or are listed in the folder's .hidden file.</_description>
-    </key>
-    <key name="show-backup-files" type="b">
-      <default>false</default>
-      <_summary>Whether to show backup files</_summary>
-      <_description>If set to true, then backup files such as those created by Emacs are displayed. Currently, only files ending in  a tilde (~) are considered backup files.</_description>
-    </key>
-  </schema>
-
   <schema id="org.gnome.nautilus.window-state" path="/apps/nautilus/window-state/" gettext-domain="nautilus">
     <key name="geometry" type="s">
       <default>''</default>
