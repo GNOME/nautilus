@@ -81,6 +81,7 @@ nautilus_global_preferences_init (void)
 	nautilus_compact_view_preferences = g_settings_new("org.gnome.nautilus.compact-view");
 	nautilus_desktop_preferences = g_settings_new("org.gnome.nautilus.desktop");
 	nautilus_tree_sidebar_preferences = g_settings_new("org.gnome.nautilus.sidebar-panels.tree");
+	gnome_lockdown_preferences = g_settings_new("org.gnome.desktop.lockdown");
 
 	nautilus_gconf_client = gconf_client_get_default ();
 

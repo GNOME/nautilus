@@ -205,7 +205,7 @@ typedef enum
 #define NAUTILUS_PREFERENCES_DESKTOP_NETWORK_NAME          "network-icon-name"
 
 /* Lockdown */
-#define NAUTILUS_GCONF_LOCKDOWN_COMMAND_LINE         "/desktop/gnome/lockdown/disable_command_line"
+#define NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE         "disable-command-line"
 
 void nautilus_global_preferences_init                      (void);
 char *nautilus_global_preferences_get_default_folder_viewer_preference_as_iid (void);
@@ -218,6 +218,7 @@ GSettings *nautilus_desktop_preferences;
 GSettings *nautilus_tree_sidebar_preferences;
 GSettings *nautilus_media_preferences;
 GSettings *nautilus_window_state;
+GSettings *gnome_lockdown_preferences;
 
 GConfClient *nautilus_gconf_client;
 
