@@ -36,7 +36,6 @@
 
 /* Path for gnome-vfs preferences */
 static const char *EXTRA_MONITOR_PATHS[] = { "/desktop/gnome/background",
-					     "/desktop/gnome/lockdown",
 					     NULL };
 /*
  * Public functions
