@@ -28,6 +28,7 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 #include <eel/eel-stock-dialogs.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
@@ -89,6 +90,8 @@ typedef struct {
 	gboolean mounting;
 	NautilusWindowSlotInfo *go_to_after_mount_slot;
 	NautilusWindowOpenFlags go_to_after_mount_flags;
+
+	GtkTreePath *eject_highlight_path;
 } NautilusPlacesSidebar;
 
 typedef struct {
@@ -117,6 +120,7 @@ enum {
 	PLACES_SIDEBAR_COLUMN_BOOKMARK,
 	PLACES_SIDEBAR_COLUMN_NO_BOOKMARK,
 	PLACES_SIDEBAR_COLUMN_TOOLTIP,
+	PLACES_SIDEBAR_COLUMN_EJECT_ICON,
 	
 	PLACES_SIDEBAR_COLUMN_COUNT
 };
@@ -200,6 +204,30 @@ G_DEFINE_TYPE_WITH_CODE (NautilusPlacesSidebarProvider, nautilus_places_sidebar_
 			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SIDEBAR_PROVIDER,
 						sidebar_provider_iface_init));
 
+static GdkPixbuf *
+get_eject_icon (gboolean highlighted)
+{
+	GdkPixbuf *eject;
+	GIcon *eject_icon;
+	NautilusIconInfo *eject_icon_info;
+	int icon_size;
+
+	icon_size = nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU);
+
+	eject_icon = g_icon_new_for_string ("media-eject", NULL);
+	eject_icon_info = nautilus_icon_info_lookup (eject_icon, icon_size);
+	g_object_unref (eject_icon_info);
+
+	eject = nautilus_icon_info_get_pixbuf_at_size (eject_icon_info, icon_size);
+	if (highlighted) {
+		GdkPixbuf *high;
+		high = eel_gdk_pixbuf_render (eject, 1, 255, 255, 0, 0);
+		g_object_unref (eject);
+		eject = high;
+	}
+	return eject;
+}
+
 static GtkTreeIter
 add_place (NautilusPlacesSidebar *sidebar,
 	   PlaceType place_type,
@@ -214,6 +242,7 @@ add_place (NautilusPlacesSidebar *sidebar,
 {
 	GdkPixbuf            *pixbuf;
 	GtkTreeIter           iter, child_iter;
+	GdkPixbuf	     *eject;
 	NautilusIconInfo *icon_info;
 	int icon_size;
 	gboolean show_eject, show_unmount;
@@ -237,6 +266,7 @@ add_place (NautilusPlacesSidebar *sidebar,
 		show_eject_button = (show_unmount || show_eject);
 	}
 
+	eject = get_eject_icon (FALSE);
 	gtk_list_store_append (sidebar->store, &iter);
 	gtk_list_store_set (sidebar->store, &iter,
 			    PLACES_SIDEBAR_COLUMN_ICON, pixbuf,
@@ -252,6 +282,7 @@ add_place (NautilusPlacesSidebar *sidebar,
 			    PLACES_SIDEBAR_COLUMN_BOOKMARK, place_type != PLACES_BOOKMARK,
 			    PLACES_SIDEBAR_COLUMN_NO_BOOKMARK, place_type == PLACES_BOOKMARK,
 			    PLACES_SIDEBAR_COLUMN_TOOLTIP, tooltip,
+			    PLACES_SIDEBAR_COLUMN_EJECT_ICON, eject,
 			    -1);
 
 	if (pixbuf != NULL) {
@@ -687,11 +718,11 @@ drive_changed_callback (GVolumeMonitor *volume_monitor,
 }
 
 static gboolean
-clicked_eject_button (NautilusPlacesSidebar *sidebar,
-		      GtkTreePath **path)
+over_eject_button (NautilusPlacesSidebar *sidebar,
+		   gint x,
+		   gint y,
+		   GtkTreePath **path)
 {
-	GdkEvent *event = gtk_get_current_event ();
-	GdkEventButton *button_event = (GdkEventButton *) event;
 	GtkTreeViewColumn *column;
 	GtkTextDirection direction;
 	int width, total_width;
@@ -699,9 +730,8 @@ clicked_eject_button (NautilusPlacesSidebar *sidebar,
 
 	*path = NULL;
 
-	if ((event->type == GDK_BUTTON_PRESS || event->type == GDK_BUTTON_RELEASE) &&
-	    gtk_tree_view_get_path_at_pos (sidebar->tree_view,
-					   button_event->x, button_event->y,
+	if (gtk_tree_view_get_path_at_pos (sidebar->tree_view,
+					   x, y,
 					   path, &column, NULL, NULL)) {
 		total_width = 0;
 
@@ -727,16 +757,28 @@ clicked_eject_button (NautilusPlacesSidebar *sidebar,
 
 		eject_button_size = nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU);
 
-		if (button_event->x - total_width >= 0 &&
-		    button_event->x - total_width <= eject_button_size) {
+		if (x - total_width >= 0 &&
+		    x - total_width <= eject_button_size) {
 			return TRUE;
 		}
 	}
 
-	if (*path != NULL) {
-		gtk_tree_path_free (*path);
-	}
+	return FALSE;
+}
 
+static gboolean
+clicked_eject_button (NautilusPlacesSidebar *sidebar,
+		      GtkTreePath **path)
+{
+	GdkEvent *event = gtk_get_current_event ();
+	GdkEventButton *button_event = (GdkEventButton *) event;
+
+	*path = NULL;
+
+	if ((event->type == GDK_BUTTON_PRESS || event->type == GDK_BUTTON_RELEASE) &&
+	     over_eject_button (sidebar, button_event->x, button_event->y, path)) {
+		return TRUE;
+	}
 	return FALSE;
 }
 
@@ -2389,6 +2431,80 @@ bookmarks_button_release_event_cb (GtkWidget *widget,
 	return FALSE;
 }
 
+static void
+update_eject_buttons (NautilusPlacesSidebar *sidebar,
+		      GtkTreePath 	    *path)
+{
+	GtkTreeIter iter;
+
+	if (!path && !sidebar->eject_highlight_path) {
+		/* Both are null - highlight up to date */
+		return;
+	}
+
+	if (path &&
+	    sidebar->eject_highlight_path &&
+	    gtk_tree_path_compare (sidebar->eject_highlight_path, path) == 0) {
+		/* Same path - highlight up to date */
+		return;
+	}
+
+	/* Reset last path */
+	if (sidebar->eject_highlight_path) {
+		gtk_tree_model_get_iter (GTK_TREE_MODEL (sidebar->store),
+					 &iter,
+					 sidebar->eject_highlight_path);
+
+		gtk_list_store_set (GTK_LIST_STORE (sidebar->store),
+				    &iter,
+				    PLACES_SIDEBAR_COLUMN_EJECT_ICON, get_eject_icon (FALSE),
+				    -1);
+
+		gtk_tree_path_free (sidebar->eject_highlight_path);
+	}
+	
+	/* Update current path */
+	if (path) {
+		gtk_tree_model_get_iter (GTK_TREE_MODEL (sidebar->store),
+					 &iter,
+					 path);
+
+		gtk_list_store_set (GTK_LIST_STORE (sidebar->store),
+				    &iter,
+				    PLACES_SIDEBAR_COLUMN_EJECT_ICON, get_eject_icon (TRUE),
+				    -1);
+	}
+
+	if (path) {
+		sidebar->eject_highlight_path = gtk_tree_path_copy (path);
+	} else {
+		sidebar->eject_highlight_path = NULL;
+	}
+}
+
+static gboolean
+bookmarks_motion_event_cb (GtkWidget             *widget,
+			   GdkEventMotion        *event,
+			   NautilusPlacesSidebar *sidebar)
+{
+	GtkTreePath *path;
+	GtkTreeModel *model;
+
+	model = GTK_TREE_MODEL (sidebar->filter_model);
+
+	if (over_eject_button (sidebar, event->x, event->y, &path)) {
+		update_eject_buttons (sidebar, path);
+	} else {
+		update_eject_buttons (sidebar, NULL);
+	}
+
+	if (path) {
+		gtk_tree_path_free (path);
+	}
+
+	return TRUE;
+}
+
 /* Callback used when a button is pressed on the shortcuts list.  
  * We trap button 3 to bring up a popup menu, and button 2 to
  * open in a new tab.
@@ -2528,13 +2644,13 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 	cell = gtk_cell_renderer_pixbuf_new ();
 	g_object_set (cell,
 		      "mode", GTK_CELL_RENDERER_MODE_ACTIVATABLE,
-		      "icon-name", "media-eject",
 		      "stock-size", GTK_ICON_SIZE_MENU,
 		      "xpad", EJECT_BUTTON_XPAD,
 		      NULL);
 	gtk_tree_view_column_pack_start (col, cell, FALSE);
 	gtk_tree_view_column_set_attributes (col, cell,
 					     "visible", PLACES_SIDEBAR_COLUMN_EJECT,
+					     "pixbuf", PLACES_SIDEBAR_COLUMN_EJECT_ICON,
 					     NULL);
 
 	cell = gtk_cell_renderer_text_new ();
@@ -2577,7 +2693,8 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 					     G_TYPE_BOOLEAN,
 					     G_TYPE_BOOLEAN,
 					     G_TYPE_BOOLEAN,
-					     G_TYPE_STRING
+					     G_TYPE_STRING,
+					     GDK_TYPE_PIXBUF
 					     );
 
 	gtk_tree_view_set_tooltip_column (tree_view, PLACES_SIDEBAR_COLUMN_TOOLTIP);
@@ -2624,6 +2741,8 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 			  G_CALLBACK (bookmarks_popup_menu_cb), sidebar);
 	g_signal_connect (tree_view, "button-press-event",
 			  G_CALLBACK (bookmarks_button_press_event_cb), sidebar);
+	g_signal_connect (tree_view, "motion-notify-event",
+			  G_CALLBACK (bookmarks_motion_event_cb), sidebar);
 	g_signal_connect (tree_view, "button-release-event",
 			  G_CALLBACK (bookmarks_button_release_event_cb), sidebar);
 
