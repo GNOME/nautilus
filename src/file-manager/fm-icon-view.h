@@ -100,6 +100,12 @@ struct FMIconViewClass {
 	 */
 	gboolean (* supports_manual_layout)	 (FMIconView *view);
 
+	/* supports_scaling is a function pointer that subclasses may
+	 * override to control whether or not the manual layout supports
+	 * scaling. The default implementation returns FALSE
+	 */
+	gboolean (* supports_scaling)	 (FMIconView *view);
+
 	/* supports_auto_layout is a function pointer that subclasses may
 	 * override to control whether snap-to-grid mode
 	 * should be enabled. The default implementation returns FALSE.

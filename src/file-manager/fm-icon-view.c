@@ -169,7 +169,8 @@ static void                 fm_icon_view_update_click_mode            (FMIconVie
 static void                 fm_icon_view_set_directory_tighter_layout (FMIconView           *icon_view,
 								       NautilusFile         *file,
 								       gboolean              tighter_layout);
-static gboolean              fm_icon_view_supports_manual_layout      (FMIconView           *icon_view);
+static gboolean             fm_icon_view_supports_manual_layout       (FMIconView           *icon_view);
+static gboolean             fm_icon_view_supports_scaling	      (FMIconView           *icon_view);
 static void                 fm_icon_view_reveal_selection             (FMDirectoryView      *view);
 static const SortCriterion *get_sort_criterion_by_sort_type           (NautilusFileSortType  sort_type);
 static void                 set_sort_criterion_by_sort_type           (FMIconView           *icon_view,
@@ -295,15 +296,20 @@ get_stored_icon_position_callback (NautilusIconContainer *container,
 
 	/* If it is the desktop directory, maybe the gnome-libs metadata has information about it */
 
-	/* Get the scale of the icon from the metadata. */
-	scale_string = nautilus_file_get_metadata
-		(file, NAUTILUS_METADATA_KEY_ICON_SCALE, "1");
-	position->scale = g_ascii_strtod (scale_string, NULL);
-	if (errno != 0) {
- 		position->scale = 1.0;
- 	}
+	/* Disable scaling if not on the desktop */
+	if (fm_icon_view_supports_scaling (icon_view)) {
+		/* Get the scale of the icon from the metadata. */
+		scale_string = nautilus_file_get_metadata
+			(file, NAUTILUS_METADATA_KEY_ICON_SCALE, "1");
+		position->scale = g_ascii_strtod (scale_string, NULL);
+		if (errno != 0) {
+			position->scale = 1.0;
+		}
 
-	g_free (scale_string);
+		g_free (scale_string);
+	} else {
+		position->scale = 1.0;
+	}
 	
 	return position_good;
 }
@@ -635,6 +641,16 @@ fm_icon_view_supports_auto_layout (FMIconView *view)
 	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_ICON_VIEW_CLASS, view,
 		 supports_auto_layout, (view));
+}
+
+static gboolean
+fm_icon_view_supports_scaling (FMIconView *view)
+{
+	g_return_val_if_fail (FM_IS_ICON_VIEW (view), FALSE);
+
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_ICON_VIEW_CLASS, view,
+		 supports_scaling, (view));
 }
 
 static gboolean
@@ -1044,6 +1060,14 @@ real_supports_auto_layout (FMIconView *view)
 	g_return_val_if_fail (FM_IS_ICON_VIEW (view), FALSE);
 
 	return TRUE;
+}
+
+static gboolean
+real_supports_scaling (FMIconView *view)
+{
+	g_return_val_if_fail (FM_IS_ICON_VIEW (view), FALSE);
+
+	return FALSE;
 }
 
 static gboolean
@@ -1696,7 +1720,7 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 		gtk_action_set_visible (action, FALSE);
 	}
 
-	if (FM_IS_DESKTOP_ICON_VIEW (icon_view)) {
+	if (fm_icon_view_supports_scaling (icon_view)) {
 		gtk_ui_manager_add_ui (ui_manager,
 				       icon_view->details->icon_merge_id,
 				       POPUP_PATH_ICON_APPEARANCE,
@@ -1759,6 +1783,9 @@ fm_icon_view_update_menus (FMDirectoryView *view)
 				  && icon_container != NULL
 				  && !nautilus_icon_container_has_stretch_handles (icon_container));
 
+	gtk_action_set_visible (action,
+				fm_icon_view_supports_scaling (icon_view));
+
 	action = gtk_action_group_get_action (icon_view->details->icon_action_group,
 					      FM_ACTION_UNSTRETCH);
 	g_object_set (action, "label",
@@ -1769,6 +1796,9 @@ fm_icon_view_update_menus (FMDirectoryView *view)
 	gtk_action_set_sensitive (action,
 				  icon_container != NULL
 				  && nautilus_icon_container_is_stretched (icon_container));
+
+	gtk_action_set_visible (action,
+				fm_icon_view_supports_scaling (icon_view));
 
 	nautilus_file_list_free (selection);
 
@@ -2970,6 +3000,7 @@ fm_icon_view_class_init (FMIconViewClass *klass)
 
 	klass->clean_up = fm_icon_view_real_clean_up;
 	klass->supports_auto_layout = real_supports_auto_layout;
+	klass->supports_scaling = real_supports_scaling;
 	klass->supports_manual_layout = real_supports_manual_layout;
 	klass->supports_keep_aligned = real_supports_keep_aligned;
 	klass->supports_labels_beside_icons = real_supports_labels_beside_icons;
