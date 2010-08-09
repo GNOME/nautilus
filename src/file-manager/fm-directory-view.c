@@ -1450,35 +1450,24 @@ action_properties_callback (GtkAction *action,
 {
         FMDirectoryView *view;
         GList *selection;
+	GList *files;
         
         g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
         view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
+	if (g_list_length (selection) == 0) {
+		if (view->details->directory_as_file != NULL) {
+			files = g_list_append (NULL, nautilus_file_ref (view->details->directory_as_file));
 
-	fm_properties_window_present (selection, GTK_WIDGET (view));
+			fm_properties_window_present (files, GTK_WIDGET (view));
 
-        nautilus_file_list_free (selection);
-}
-
-static void
-action_self_properties_callback (GtkAction *action,
-				 gpointer   callback_data)
-{
-	FMDirectoryView *view;
-	GList           *files;
-
-	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
-
-	view = FM_DIRECTORY_VIEW (callback_data);
-
-	if (view->details->directory_as_file != NULL) {
-		files = g_list_append (NULL, nautilus_file_ref (view->details->directory_as_file));
-
-		fm_properties_window_present (files, GTK_WIDGET (view));
-
-		nautilus_file_list_free (files);
+			nautilus_file_list_free (files);
+		}
+	} else {
+		fm_properties_window_present (selection, GTK_WIDGET (view));
 	}
+        nautilus_file_list_free (selection);
 }
 
 static void
@@ -6977,10 +6966,6 @@ static const GtkActionEntry directory_view_entries[] = {
   /* label, accelerator */       "PropertiesAccel", "<control>I",
   /* tooltip */                  NULL,
                                  G_CALLBACK (action_properties_callback) },
-  /* name, stock id */         { "SelfProperties", GTK_STOCK_PROPERTIES,
-  /* label, accelerator */       N_("_Properties"), NULL,
-  /* tooltip */                  N_("View or modify the properties of the open folder"),
-                                 G_CALLBACK (action_self_properties_callback) },
   /* name, stock id */         { "New Folder", "folder-new",
   /* label, accelerator */       N_("Create _Folder"), "<control><shift>N",
   /* tooltip */                  N_("Create a new empty folder inside this folder"),
@@ -8419,6 +8404,7 @@ real_update_menus (FMDirectoryView *view)
 	GIcon *app_icon;
 	GtkWidget *menuitem;
 	gboolean next_pane_is_writable;
+	gboolean show_properties;
 
 	selection = fm_directory_view_get_selection (view);
 	selection_count = g_list_length (selection);
@@ -8672,23 +8658,26 @@ real_update_menus (FMDirectoryView *view)
 				selection_count),
 		      NULL);
 	
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_PROPERTIES);
-	gtk_action_set_sensitive (action,
-				  selection_count != 0 &&
-				  fm_directory_view_supports_properties (view));
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_PROPERTIES_ACCEL);
-	gtk_action_set_sensitive (action,
-				  selection_count != 0 &&
-				  fm_directory_view_supports_properties (view));
+	show_properties = (!FM_IS_DESKTOP_ICON_VIEW (view) || selection_count > 0) &&
+			   fm_directory_view_supports_properties (view);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_SELF_PROPERTIES);
-	gtk_action_set_sensitive (action,
-				  fm_directory_view_supports_properties (view));
-	gtk_action_set_visible (action,
-				!FM_IS_DESKTOP_ICON_VIEW (view));
+					      FM_ACTION_PROPERTIES);
+
+	gtk_action_set_sensitive (action, show_properties);
+
+	if (selection_count == 0) {
+		gtk_action_set_tooltip (action, _("View or modify the properties of the open folder"));
+	} else {
+		gtk_action_set_tooltip (action, _("View or modify the properties of each selected item"));
+	}
+
+	gtk_action_set_visible (action, show_properties);
+
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_PROPERTIES_ACCEL);
+
+	gtk_action_set_sensitive (action, show_properties);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_EMPTY_TRASH);
