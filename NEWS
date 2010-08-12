@@ -1,3 +1,32 @@
+Major changes in 2.31.6 are:
+* This release is based on 2.30.1
+* A long list of fixes have been backported from the master branch,
+  including:
+  * Expand and collapse folders with +/- in list view
+  * Rename .desktop files also change their name on disk
+  * Support overriding .gnome2 directory
+  * Save passwords for the session by default
+  * Remove deleted folders from the pathbar
+  * Replace libunique with GApplication
+  * Don't show 'File Browser' anymore in the window title
+  * Port to GDBus
+  * Change the default order for files in special directories
+  * Support relative paths in the location entry/dialog.
+  * Use folder icons as window icons in browser and spatial mode
+  * Add 'Trashed On' and 'Original Location' columns in the trash
+  * Implement transparent icons for cut files
+  * Change default thumbnail size
+  * Fix a number of bugs related to bookmarks
+  * New dialog to handle conflicts within file copy/move operations
+  * New button in the trashbar to restore selected items
+  * Use async I/O to save .gtk-bookmarks
+  * Fix a number of issues related to DnD in the places sidebar
+  * New icon for audio preview
+  * Don't show Unmount when showing Eject/Safe Removal
+  * Bump libnautilus-extension API version
+  * Fix a number of UI glitches
+* Translation updates
+
 Major changes in 2.30.1 are:
 * Translation updates
 * Support for tracker 0.8.0
