@@ -67,6 +67,7 @@ PKG_CHECK_MODULES(ALL, [
 	gtk+-3.0		>= gtk_minver
 	libxml-2.0		>= xml_minver
 	gail-3.0		>= gtk_minver
+	gsettings-desktop-schemas
 ])
 dnl ==========================================================================
 
@@ -336,7 +337,7 @@ LIBNAUTILUS_EXTENSION_LIBS="`$PKG_CONFIG --libs $LIBNAUTILUS_EXTENSION_MODULES`"
 AC_SUBST(LIBNAUTILUS_EXTENSION_LIBS)
 
 dnl core nautilus
-CORE_MODULES="glib-2.0 gnome-desktop-3.0 gthread-2.0 gio-2.0 gio-unix-2.0 gail-3.0 gconf-2.0 libxml-2.0 gsettings-desktop-schemas $EXTRA_CORE_MODULES"
+CORE_MODULES="glib-2.0 gnome-desktop-3.0 gtk+-3.0 gthread-2.0 gio-2.0 gio-unix-2.0 gail-3.0 gconf-2.0 libxml-2.0 gsettings-desktop-schemas $EXTRA_CORE_MODULES"
 CORE_CFLAGS="`$PKG_CONFIG --cflags $CORE_MODULES` $x_cflags"
 AC_SUBST(CORE_CFLAGS)
 CORE_LIBS="`$PKG_CONFIG --libs $CORE_MODULES` $x_libs"
