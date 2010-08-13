@@ -370,8 +370,6 @@ eel_background_ensure_realized (EelBackground *background, GdkWindow *window)
 		} else {
 			background->details->default_color = style->bg[GTK_STATE_NORMAL];
 		}
-		
-		gdk_rgb_find_color (style->colormap, &(background->details->default_color));
 	}
 
 	/* If the window size is the same as last time, don't update */
@@ -466,10 +464,8 @@ eel_background_expose (GtkWidget                   *widget,
 	int window_width;
 	int window_height;
 	GdkPixmap *pixmap;
-	GdkGC *gc;
-	GdkGCValues gc_values;
-	GdkGCValuesMask value_mask;
 	GdkWindow *widget_window;
+	cairo_t *cr;
 
 	EelBackground *background;
 
@@ -485,28 +481,23 @@ eel_background_expose (GtkWidget                   *widget,
 	pixmap = eel_background_get_pixmap_and_color (background,
 						      widget_window,
 						      &color);
+	cr = gdk_cairo_create (widget_window);
 
 	if (pixmap) {
-		gc_values.tile = pixmap;
-		gc_values.ts_x_origin = 0;
-		gc_values.ts_y_origin = 0;
-		gc_values.fill = GDK_TILED;
-		value_mask = GDK_GC_FILL | GDK_GC_TILE | GDK_GC_TS_X_ORIGIN | GDK_GC_TS_Y_ORIGIN;
+		gdk_cairo_set_source_pixmap (cr, pixmap, 0, 0);
+		cairo_pattern_set_extend (cairo_get_source (cr), CAIRO_EXTEND_REPEAT);
 	} else {
-		gdk_rgb_find_color (gtk_widget_get_colormap (widget), &color);
-		gc_values.foreground = color;
-		gc_values.fill = GDK_SOLID;
-		value_mask = GDK_GC_FILL | GDK_GC_FOREGROUND;
+		gdk_cairo_set_source_color (cr, &color);
 	}
-	
-	gc = gdk_gc_new_with_values (widget_window, &gc_values, value_mask);
-	
-	gdk_gc_set_clip_rectangle (gc, &event->area);
 
-	gdk_draw_rectangle (widget_window, gc, TRUE, 0, 0, window_width, window_height);
-	
-	g_object_unref (gc);
-	
+	gdk_cairo_rectangle (cr, &event->area);
+	cairo_clip (cr);
+
+	cairo_rectangle (cr, 0, 0, window_width, window_height);
+	cairo_fill (cr);
+
+	cairo_destroy (cr);
+
 	if (pixmap) {
 		g_object_unref (pixmap);
 	}
@@ -766,8 +757,6 @@ eel_background_set_up_widget (EelBackground *background, GtkWidget *widget)
 
 	style = gtk_widget_get_style (widget);
 	
-	gdk_rgb_find_color (style->colormap, &color);
-
 	if (EEL_IS_CANVAS (widget)) {
 		window = gtk_layout_get_bin_window (GTK_LAYOUT (widget));
 	} else {
