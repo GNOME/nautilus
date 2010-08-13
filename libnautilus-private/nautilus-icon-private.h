@@ -212,7 +212,6 @@ struct NautilusIconContainerDetails {
 	guint32    normal_icon_color_rgba;
 
 	/* colors for text labels */
-	GdkGC   *label_gcs    [LAST_LABEL_COLOR];
 	GdkColor label_colors [LAST_LABEL_COLOR];
 	
 	/* State used so arrow keys don't wander if icons aren't lined up.
@@ -320,10 +319,10 @@ gboolean      nautilus_icon_container_scroll                      (NautilusIconC
 void          nautilus_icon_container_update_scroll_region        (NautilusIconContainer *container);
 
 /* label color for items */
-GdkGC        *nautilus_icon_container_get_label_color_and_gc      (NautilusIconContainer *container,
+void          nautilus_icon_container_get_label_color             (NautilusIconContainer *container,
 								   GdkColor             **color,
 								   gboolean               first_line,
 								   gboolean               needs_highlight,
-								   gboolean		     is_prelit);
+								   gboolean		  is_prelit);
 
 #endif /* NAUTILUS_ICON_CONTAINER_PRIVATE_H */
