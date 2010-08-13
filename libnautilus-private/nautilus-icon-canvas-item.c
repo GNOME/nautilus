@@ -1504,7 +1504,7 @@ draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 			 rect->y0 + 0.5,
 			 rect->x1 - rect->x0 - 1,
 			 rect->y1 - rect->y0 - 1);
-        cairo_stroke (cr);
+	cairo_stroke (cr);
 
 	cairo_set_source_rgb (cr, 0, 0, 0);
 	cairo_set_dash (cr, dash, G_N_ELEMENTS (dash), 0);
@@ -1515,15 +1515,15 @@ draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 			 rect->y1 - rect->y0 - 1);
 	cairo_stroke (cr);
 
-	/* draw the stretch handles themselves */
-	gdk_cairo_set_source_pixbuf (cr, knob_pixbuf, rect->x0, rect->y0);
-	cairo_pattern_set_extend (cairo_get_source (cr), CAIRO_EXTEND_REPEAT);
-	cairo_rectangle (cr,
-			 rect->x1 - knob_width, rect->y1 - knob_height,
-			 2 * knob_width, 2 * knob_height);
-	cairo_fill (cr);
-
 	cairo_destroy (cr);
+
+	/* draw the stretch handles themselves */
+	draw_pixbuf (knob_pixbuf, drawable, rect->x0, rect->y0);
+	draw_pixbuf (knob_pixbuf, drawable, rect->x0, rect->y1 - knob_height);
+	draw_pixbuf (knob_pixbuf, drawable, rect->x1 - knob_width, rect->y0);
+	draw_pixbuf (knob_pixbuf, drawable, rect->x1 - knob_width, rect->y1 - knob_height);
+
+	g_object_unref (knob_pixbuf);
 }
 
 static void
