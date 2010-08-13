@@ -178,13 +178,9 @@ debug_pixbuf_viewer_expose_event (GtkWidget *widget, GdkEventExpose *event)
 			
 			eel_gdk_pixbuf_draw_to_drawable (viewer->pixbuf,
 							 event->window,
-							 gtk_widget_get_style (widget)->white_gc,
 							 clipped_bounds.x0 - bounds.x0,
 							 clipped_bounds.y0 - bounds.y0,
-							 clipped_bounds,
-							 GDK_RGB_DITHER_NONE,
-							 GDK_PIXBUF_ALPHA_BILEVEL,
-							 EEL_STANDARD_ALPHA_THRESHHOLD);
+							 clipped_bounds);
 		}
 	}
 
@@ -222,7 +218,7 @@ eel_debug_draw_rectangle_and_cross (GdkDrawable *drawable,
 				    guint32 color,
 				    gboolean draw_cross)
 {
-	GdkGC *gc;
+	cairo_t *cr;
 	GdkColor color_gdk = { 0 };
 
 	int width;
@@ -234,42 +230,31 @@ eel_debug_draw_rectangle_and_cross (GdkDrawable *drawable,
 	width = rectangle.x1 - rectangle.x0;
 	height = rectangle.y1 - rectangle.y0;
 
- 	gc = gdk_gc_new (drawable);
- 	gdk_gc_set_function (gc, GDK_COPY);
-	
+	cr = gdk_cairo_create (drawable);
+
 	color_gdk.red   = ((color >> 16) & 0xff) << 8;
 	color_gdk.green = ((color >>  8) & 0xff) << 8;
 	color_gdk.blue  = ((color      ) & 0xff) << 8;
-	gdk_colormap_alloc_color (
-		gdk_drawable_get_colormap (drawable),
-		&color_gdk, FALSE, FALSE);
-	gdk_gc_set_rgb_fg_color (gc, &color_gdk);
+	gdk_cairo_set_source_color (cr, &color_gdk);
+	cairo_set_line_width (cr, 1.0);
 	
-	gdk_draw_rectangle (drawable,
-			    gc,
-			    FALSE,
-			    rectangle.x0,
-			    rectangle.y0,
-			    width - 1,
-			    height - 1);
+	cairo_rectangle (cr,
+			 rectangle.x0 + 0.5,
+			 rectangle.y0 + 0.5,
+			 width,
+			 height);
 
 	if (draw_cross) {
-		gdk_draw_line (drawable,
-			       gc,
-			       rectangle.x0,
-			       rectangle.y0,
-			       rectangle.x0 + width - 1,
-			       rectangle.y0 + height - 1);
-		
-		gdk_draw_line (drawable,
-			       gc,
-			       rectangle.x0 + width - 1,
-			       rectangle.y0,
-			       rectangle.x0,
-			       rectangle.y0 + height - 1);
+		cairo_move_to (cr, rectangle.x0, rectangle.y0);
+		cairo_line_to (cr, rectangle.x0 + width, rectangle.y0 + height);
+
+		cairo_move_to (cr, rectangle.x0 + width, rectangle.y0);
+		cairo_line_to (cr, rectangle.x0, rectangle.y0 + height);
 	}
 
-	g_object_unref (gc);
+	cairo_stroke (cr);
+
+	cairo_destroy (cr);
 }
 
 /**
