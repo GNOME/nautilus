@@ -119,10 +119,6 @@ char *              eel_gdk_rgb_to_color_spec              (guint32             
 
 gboolean            eel_gdk_color_is_dark                  (GdkColor            *color);
 
-/* A routine to get a 50% gray stippled bitmap for use in some types of highlighting. */
-GdkBitmap *         eel_stipple_bitmap_for_screen          (GdkScreen *screen);
-GdkBitmap *         eel_stipple_bitmap                     (void);
-
 
 /* Misc GdkRectangle helper functions */
 gboolean            eel_gdk_rectangle_contains_rectangle   (GdkRectangle         outer,
@@ -154,7 +150,6 @@ EelGdkGeometryFlags eel_gdk_parse_geometry                 (const char          
 							    guint               *width_return,
 							    guint               *height_return);
 void                eel_gdk_draw_layout_with_drop_shadow   (GdkDrawable         *drawable,
-							    GdkGC               *gc,
 							    GdkColor            *text_color,
 							    GdkColor            *shadow_color,
 							    int                  x,

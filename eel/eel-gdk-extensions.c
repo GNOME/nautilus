@@ -519,56 +519,6 @@ eel_gdk_color_is_dark (GdkColor *color)
 }
 
 /**
- * eel_stipple_bitmap_for_screen:
- * 
- * Get pointer to 50% stippled bitmap suitable for use
- * on @screen. This is a global object; do not free.
- */
-GdkBitmap *
-eel_stipple_bitmap_for_screen (GdkScreen *screen)
-{
-	static char       stipple_bits[] = { 0x02, 0x01 };
-	static GPtrArray *stipples = NULL;
-	int screen_num, n_screens, i;
-
-	if (stipples == NULL) {
-		n_screens = gdk_display_get_n_screens (
-					gdk_screen_get_display (screen));
-		stipples = g_ptr_array_sized_new (n_screens);
-
-		for (i = 0; i < n_screens; i++) {
-			g_ptr_array_index (stipples, i) = NULL;
-		}
-	}
-
-	screen_num = gdk_screen_get_number (screen);
-
-	if (g_ptr_array_index (stipples, screen_num) == NULL) {
-		g_ptr_array_index (stipples, screen_num) =
-			gdk_bitmap_create_from_data (
-				gdk_screen_get_root_window (screen),
-				stipple_bits, 2, 2);
-	}
-
-	return g_ptr_array_index (stipples, screen_num);
-}
-
-/**
- * eel_stipple_bitmap:
- *
- * Get pointer to 50% stippled bitmap suitable for use
- * on the default screen. This is a global object; do
- * not free.
- *
- * This method is not multiscreen safe. Do not use it.
- */
-GdkBitmap *
-eel_stipple_bitmap (void)
-{
-	return eel_stipple_bitmap_for_screen (gdk_screen_get_default ());
-}
-
-/**
  * eel_gdk_window_bring_to_front:
  * 
  * Raise window and give it focus.
@@ -652,28 +602,14 @@ eel_gdk_window_set_wm_hints_input (GdkWindow *window, gboolean status)
 void
 eel_gdk_window_set_invisible_cursor (GdkWindow *window)
 {
-	GdkBitmap *empty_bitmap;
 	GdkCursor *cursor;
-	GdkColor useless;
-	char invisible_cursor_bits[] = { 0x0 };	
 	
-	useless.red = useless.green = useless.blue = 0;
-	useless.pixel = 0;
-	
-	empty_bitmap = gdk_bitmap_create_from_data (window,
-						    invisible_cursor_bits,
-						    1, 1);
-	
-	cursor = gdk_cursor_new_from_pixmap (empty_bitmap,
-					     empty_bitmap,
-					     &useless,
-					     &useless, 0, 0);
+	cursor = gdk_cursor_new_for_display (gdk_drawable_get_display (window),
+					     GDK_BLANK_CURSOR);
 
 	gdk_window_set_cursor (window, cursor);
 
 	gdk_cursor_unref (cursor);
-
-	g_object_unref (empty_bitmap);
 }
 
 EelGdkGeometryFlags
@@ -717,22 +653,25 @@ eel_gdk_parse_geometry (const char *string, int *x_return, int *y_return,
 
 void
 eel_gdk_draw_layout_with_drop_shadow (GdkDrawable         *drawable,
-				      GdkGC               *gc,
 				      GdkColor            *text_color,
 				      GdkColor            *shadow_color,
 				      int                  x,
 				      int                  y,
 				      PangoLayout         *layout)
 {
-	gdk_draw_layout_with_colors (drawable, gc,
-				     x+1, y+1,
-				     layout,
-				     shadow_color, NULL);
+	cairo_t *cr;
+
+	cr = gdk_cairo_create (drawable);
+
+	gdk_cairo_set_source_color (cr, shadow_color);
+	cairo_move_to (cr, x+1, y+1);
+	pango_cairo_show_layout (cr, layout);
 	
-	gdk_draw_layout_with_colors (drawable, gc,
-				     x, y,
-				     layout,
-				     text_color, NULL);
+	gdk_cairo_set_source_color (cr, text_color);
+	cairo_move_to (cr, x, y);
+	pango_cairo_show_layout (cr, layout);
+	
+	cairo_destroy (cr);
 }
 
 #if ! defined (EEL_OMIT_SELF_CHECK)
