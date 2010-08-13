@@ -121,8 +121,6 @@ read_color (GConfClient *client, const char *key, GdkColor *color)
         else {
                 gdk_color_parse ("black", color);
         }
-
-        gdk_rgb_find_color (gdk_rgb_get_colormap (), color);
 }
 
 static void
