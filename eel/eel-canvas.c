@@ -2266,8 +2266,6 @@ eel_canvas_realize (GtkWidget *widget)
 
 	/* Create our own temporary pixmap gc and realize all the items */
 
-	canvas->pixmap_gc = gdk_gc_new (gtk_layout_get_bin_window (&canvas->layout));
-
 	(* EEL_CANVAS_ITEM_GET_CLASS (canvas->root)->realize) (canvas->root);
 }
 
@@ -2286,9 +2284,6 @@ eel_canvas_unrealize (GtkWidget *widget)
 	/* Unrealize items and parent widget */
 
 	(* EEL_CANVAS_ITEM_GET_CLASS (canvas->root)->unrealize) (canvas->root);
-
-	g_object_unref (canvas->pixmap_gc);
-	canvas->pixmap_gc = NULL;
 
 	if (GTK_WIDGET_CLASS (canvas_parent_class)->unrealize)
 		(* GTK_WIDGET_CLASS (canvas_parent_class)->unrealize) (widget);
@@ -2920,14 +2915,16 @@ static void
 eel_canvas_draw_background (EelCanvas *canvas,
 			    int x, int y, int width, int height)
 {
+	cairo_t *cr;
+
+	cr = gdk_cairo_create (gtk_layout_get_bin_window (&canvas->layout));
+
 	/* By default, we use the style background. */
-	gdk_gc_set_foreground (canvas->pixmap_gc,
-			       &gtk_widget_get_style (GTK_WIDGET (canvas))->bg[GTK_STATE_NORMAL]);
-	gdk_draw_rectangle (gtk_layout_get_bin_window (&canvas->layout),
-			    canvas->pixmap_gc,
-			    TRUE,
-			    x, y,
-			    width, height);
+	gdk_cairo_set_source_color (cr, &gtk_widget_get_style (GTK_WIDGET (canvas))->bg[GTK_STATE_NORMAL]);
+	cairo_rectangle (cr, x, y, width, height);
+	cairo_fill (cr);
+
+	cairo_destroy (cr);
 }
 
 static void
@@ -3529,8 +3526,6 @@ eel_canvas_world_to_window (EelCanvas *canvas, double worldx, double worldy,
 int
 eel_canvas_get_color (EelCanvas *canvas, const char *spec, GdkColor *color)
 {
-	GdkColormap *colormap;
-
 	g_return_val_if_fail (EEL_IS_CANVAS (canvas), FALSE);
 	g_return_val_if_fail (color != NULL, FALSE);
 
@@ -3544,61 +3539,7 @@ eel_canvas_get_color (EelCanvas *canvas, const char *spec, GdkColor *color)
 
 	gdk_color_parse (spec, color);
 
-	colormap = gtk_widget_get_colormap (GTK_WIDGET (canvas));
-
-	gdk_rgb_find_color (colormap, color);
-
 	return TRUE;
-}
-
-/**
- * eel_canvas_get_color_pixel:
- * @canvas: A canvas.
- * @rgba: RGBA color specification.
- *
- * Allocates a color from the RGBA value passed into this function.  The alpha
- * opacity value is discarded, since normal X colors do not support it.
- *
- * Return value: Allocated pixel value corresponding to the specified color.
- **/
-gulong
-eel_canvas_get_color_pixel (EelCanvas *canvas, guint rgba)
-{
-	GdkColormap *colormap;
-	GdkColor color;
-
-	g_return_val_if_fail (EEL_IS_CANVAS (canvas), 0);
-
-	color.red = ((rgba & 0xff000000) >> 16) + ((rgba & 0xff000000) >> 24);
-	color.green = ((rgba & 0x00ff0000) >> 8) + ((rgba & 0x00ff0000) >> 16);
-	color.blue = (rgba & 0x0000ff00) + ((rgba & 0x0000ff00) >> 8);
-	color.pixel = 0;
-
-	colormap = gtk_widget_get_colormap (GTK_WIDGET (canvas));
-
-	gdk_rgb_find_color (colormap, &color);
-
-	return color.pixel;
-}
-
-
-/* FIXME: This function is not useful anymore */
-/**
- * eel_canvas_set_stipple_origin:
- * @canvas: A canvas.
- * @gc: GC on which to set the stipple origin.
- *
- * Sets the stipple origin of the specified GC as is appropriate for the canvas,
- * so that it will be aligned with other stipple patterns used by canvas items.
- * This is typically only needed by item implementations.
- **/
-void
-eel_canvas_set_stipple_origin (EelCanvas *canvas, GdkGC *gc)
-{
-	g_return_if_fail (EEL_IS_CANVAS (canvas));
-	g_return_if_fail (GDK_IS_GC (gc));
-
-	gdk_gc_set_ts_origin (gc, 0, 0);
 }
 
 static gboolean
