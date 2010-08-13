@@ -59,6 +59,7 @@ enum {
 	PROP_OUTLINE_COLOR,
 	PROP_OUTLINE_COLOR_GDK,
 	PROP_OUTLINE_COLOR_RGBA,
+	PROP_OUTLINE_STIPPLING,
 	PROP_WIDTH_PIXELS,
 	PROP_WIDTH_UNITS
 };
@@ -200,6 +201,11 @@ eel_canvas_re_class_init (EelCanvasREClass *klass)
                  g_param_spec_uint ("outline-color-rgba", NULL, NULL,
 				    0, G_MAXUINT, 0,
 				    G_PARAM_READWRITE));
+	g_object_class_install_property
+		(gobject_class,
+		 PROP_OUTLINE_STIPPLING,
+		 g_param_spec_boolean ("outline-stippling", NULL, NULL,
+				       FALSE, G_PARAM_READWRITE));
         g_object_class_install_property
                 (gobject_class,
                  PROP_WIDTH_PIXELS,
@@ -430,6 +436,12 @@ eel_canvas_re_set_property (GObject              *object,
 		eel_canvas_item_request_redraw (item);		
 		break;
 
+	case PROP_OUTLINE_STIPPLING:
+		re->outline_stippling = g_value_get_boolean (value);
+
+		eel_canvas_item_request_redraw (item);
+		break;
+
 	case PROP_WIDTH_PIXELS:
 		re->width = g_value_get_uint (value);
 		re->width_pixels = TRUE;
@@ -512,6 +524,10 @@ eel_canvas_re_get_property (GObject              *object,
 
 	case PROP_OUTLINE_COLOR_RGBA:
 		g_value_set_uint (value,  re->outline_color);
+		break;
+
+	case PROP_OUTLINE_STIPPLING:
+		g_value_set_boolean (value, re->outline_stippling);
 		break;
 
 	default:
@@ -732,6 +748,8 @@ eel_canvas_set_source_color (cairo_t *cr,
 			       ((rgba >>  0) & 0xff) / 255.);
 }
 
+#define DASH_ON 0.8
+#define DASH_OFF 1.7
 static void
 eel_canvas_rect_draw (EelCanvasItem *item, GdkDrawable *drawable, GdkEventExpose *expose)
 {
@@ -779,6 +797,12 @@ eel_canvas_rect_draw (EelCanvasItem *item, GdkDrawable *drawable, GdkEventExpose
 			cairo_set_line_width (cr, (int) re->width);
 		} else {
 			cairo_set_line_width (cr, (int) (re->width * re->item.canvas->pixels_per_unit + 0.5));
+		}
+
+		if (re->outline_stippling) {
+			double dash[2] = { DASH_ON, DASH_OFF };
+
+			cairo_set_dash (cr, dash, G_N_ELEMENTS (dash), 0);
 		}
 
 		cairo_rectangle (cr,

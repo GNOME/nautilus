@@ -84,6 +84,8 @@ struct _EelCanvasRE {
 	guint fill_color;		/* Fill color, RGBA */
 	guint outline_color;		/* Outline color, RGBA */
 
+	gboolean outline_stippling;
+
 	/* Configuration flags */
 
 	unsigned int fill_set : 1;	/* Is fill color set? */
