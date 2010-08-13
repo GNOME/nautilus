@@ -79,9 +79,6 @@ struct _EelEditableLabel
   int preedit_length;	/* length of preedit string, in bytes */
   int preedit_cursor;	/* offset of cursor within preedit string, in chars */
 
-  GdkGC *primary_cursor_gc;
-  GdkGC *secondary_cursor_gc;
-  
   PangoFontDescription *font_desc;
 };
 

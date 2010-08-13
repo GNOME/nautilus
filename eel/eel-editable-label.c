@@ -174,10 +174,6 @@ static void     editable_real_set_position    (GtkEditable *editable,
 					       gint         position);
 static gint     editable_get_position         (GtkEditable *editable);
 
-static GdkGC *  make_cursor_gc                (GtkWidget   *widget,
-					       const gchar *property_name,
-					       GdkColor    *fallback);
-
 G_DEFINE_TYPE_WITH_CODE (EelEditableLabel, eel_editable_label, GTK_TYPE_MISC,
 			 G_IMPLEMENT_INTERFACE (GTK_TYPE_EDITABLE, eel_editable_label_editable_init));
 
@@ -1162,7 +1158,6 @@ eel_editable_label_style_set (GtkWidget *widget,
 			      GtkStyle  *previous_style)
 {
   EelEditableLabel *label;
-  static GdkColor gray = { 0, 0x8888, 0x8888, 0x8888 };
   
   g_assert (EEL_IS_EDITABLE_LABEL (widget));
   
@@ -1180,26 +1175,6 @@ eel_editable_label_style_set (GtkWidget *widget,
 
 	style = gtk_widget_get_style (widget);
 	gdk_window_set_background (gtk_widget_get_window (widget), &style->base[gtk_widget_get_state (widget)]);
-
-	if (label->primary_cursor_gc != NULL) 
-	  {
-		gtk_gc_release (label->primary_cursor_gc);
-		label->primary_cursor_gc = NULL;
-	  }
-
-	if (label->secondary_cursor_gc != NULL) 
-	  {
-		gtk_gc_release (label->secondary_cursor_gc);
-		label->secondary_cursor_gc = NULL;
-	  }
-
-	label->primary_cursor_gc = make_cursor_gc (widget,
-						   "cursor-color",
-						   &style->black);
-
-	label->secondary_cursor_gc = make_cursor_gc (widget,
-						     "secondary-cursor-color",
-						     &gray);
     }
 }
 
@@ -1402,96 +1377,6 @@ eel_editable_label_get_block_cursor_location (EelEditableLabel  *label,
 
 /* These functions are copies from gtk+, as they are not exported from gtk+ */
 
-static GdkGC *
-make_cursor_gc (GtkWidget   *widget,
-		const gchar *property_name,
-		GdkColor    *fallback)
-{
-  GdkGCValues gc_values;
-  GdkGCValuesMask gc_values_mask;
-  GdkColor *cursor_color;
-  GtkStyle *style;
-
-  style = gtk_widget_get_style (widget);
-  gtk_widget_style_get (widget, property_name, &cursor_color, NULL);
-  
-  gc_values_mask = GDK_GC_FOREGROUND;
-  if (cursor_color)
-    {
-      gc_values.foreground = *cursor_color;
-      gdk_color_free (cursor_color);
-    }
-  else
-    gc_values.foreground = *fallback;
-  
-  gdk_rgb_find_color (style->colormap, &gc_values.foreground);
-  return gtk_gc_get (style->depth, style->colormap, &gc_values, gc_values_mask);
-}
-
-static void
-_eel_draw_insertion_cursor (GtkWidget        *widget,
-			    GdkDrawable      *drawable,
-			    GdkGC            *gc,
-                            GdkRectangle     *location,
-                            GtkTextDirection  direction,
-                            gboolean          draw_arrow)
-{
-  gint stem_width;
-  gint arrow_width;
-  gint x, y;
-  gint i;
-  gfloat cursor_aspect_ratio;
-  gint offset;
-  
-  g_assert (direction != GTK_TEXT_DIR_NONE);
-  
-  gtk_widget_style_get (widget, "cursor-aspect-ratio", &cursor_aspect_ratio, NULL);
-  
-  stem_width = location->height * cursor_aspect_ratio + 1;
-  arrow_width = stem_width + 1;
-
-  /* put (stem_width % 2) on the proper side of the cursor */
-  if (direction == GTK_TEXT_DIR_LTR)
-    offset = stem_width / 2;
-  else
-    offset = stem_width - stem_width / 2;
-  
-  for (i = 0; i < stem_width; i++)
-    gdk_draw_line (drawable, gc,
-		   location->x + i - offset, location->y,
-		   location->x + i - offset, location->y + location->height - 1);
-
-  if (draw_arrow)
-    {
-      if (direction == GTK_TEXT_DIR_RTL)
-        {
-          x = location->x - offset - 1;
-          y = location->y + location->height - arrow_width * 2 - arrow_width + 1;
-  
-          for (i = 0; i < arrow_width; i++)
-            {
-              gdk_draw_line (drawable, gc,
-                             x, y + i + 1,
-                             x, y + 2 * arrow_width - i - 1);
-              x --;
-            }
-        }
-      else if (direction == GTK_TEXT_DIR_LTR)
-        {
-          x = location->x + stem_width - offset;
-          y = location->y + location->height - arrow_width * 2 - arrow_width + 1;
-  
-          for (i = 0; i < arrow_width; i++) 
-            {
-              gdk_draw_line (drawable, gc,
-                             x, y + i + 1,
-                             x, y + 2 * arrow_width - i - 1);
-              x++;
-            }
-        }
-    }
-}
-
 static void
 eel_editable_label_draw_cursor (EelEditableLabel  *label, gint xoffset, gint yoffset)
 {
@@ -1560,10 +1445,9 @@ eel_editable_label_draw_cursor (EelEditableLabel  *label, gint xoffset, gint yof
 	  cursor_location.width = 0;
 	  cursor_location.height = PANGO_PIXELS (cursor1->height);
 
-	  _eel_draw_insertion_cursor (widget, gtk_widget_get_window (widget),
-				      label->primary_cursor_gc,
-				      &cursor_location, dir1,
-				      dir2 != GTK_TEXT_DIR_NONE);
+	  gtk_draw_insertion_cursor (widget, gtk_widget_get_window (widget),
+				     NULL, &cursor_location,
+				     TRUE, dir1, dir2 != GTK_TEXT_DIR_NONE);
 
 	  if (dir2 != GTK_TEXT_DIR_NONE)
 	    {
@@ -1572,20 +1456,24 @@ eel_editable_label_draw_cursor (EelEditableLabel  *label, gint xoffset, gint yof
 	      cursor_location.width = 0;
 	      cursor_location.height = PANGO_PIXELS (cursor2->height);
 
-	      _eel_draw_insertion_cursor (widget, gtk_widget_get_window (widget),
-					  label->secondary_cursor_gc,
-					  &cursor_location, dir2, TRUE);
+	      gtk_draw_insertion_cursor (widget, gtk_widget_get_window (widget),
+					 NULL, &cursor_location,
+					 FALSE, dir1, TRUE);
 	    }
 	}
       else /* Block cursor */
 	{
-          cairo_region_t *clip;
+	  cairo_region_t *clip;
+	  cairo_t *cr;
 
-	  gdk_draw_rectangle (gtk_widget_get_window (widget), label->primary_cursor_gc, TRUE,
-			      xoffset + PANGO_PIXELS (strong_pos.x),
-			      yoffset + PANGO_PIXELS (strong_pos.y),
-			      PANGO_PIXELS (strong_pos.width),
-			      PANGO_PIXELS (strong_pos.height));
+	  cr = gdk_cairo_create (gtk_widget_get_window (widget));
+
+	  cairo_set_source_rgb (cr, 0, 0, 0);
+	  cairo_rectangle (cr,
+			   xoffset + PANGO_PIXELS (strong_pos.x),
+			   yoffset + PANGO_PIXELS (strong_pos.y),
+			   PANGO_PIXELS (strong_pos.width),
+			   PANGO_PIXELS (strong_pos.height));
 
 	  if (!block_at_line_end)
 	    {
@@ -1593,22 +1481,22 @@ eel_editable_label_draw_cursor (EelEditableLabel  *label, gint xoffset, gint yof
 						       xoffset, yoffset,
 						       range, 1);
 
+	      gdk_cairo_region (cr, clip);
+	      cairo_clip (cr);
+
 	      /* FIXME should use gtk_paint, but it can't use a clip
 	       * region
 	       */
 
-	      gdk_gc_set_clip_region (label->primary_cursor_gc, clip);
+	      gdk_cairo_set_source_color (cr, 
+					  &gtk_widget_get_style (widget)->base[GTK_STATE_NORMAL]);
+	      cairo_move_to (cr, xoffset, yoffset);
+	      pango_cairo_show_layout (cr, label->layout);
 
-	      gdk_draw_layout_with_colors (gtk_widget_get_window (widget),
-		                           label->primary_cursor_gc,
-					   xoffset, yoffset,
-					   label->layout,
-					   &gtk_widget_get_style (widget)->base[GTK_STATE_NORMAL],
-					   NULL);
-
-	      gdk_gc_set_clip_region (label->primary_cursor_gc, NULL);
 	      cairo_region_destroy (clip);
 	    }
+
+	  cairo_destroy (cr);
 	}	  
     }
 }
@@ -1651,6 +1539,7 @@ eel_editable_label_expose (GtkWidget      *widget,
 	  const char *text;
           cairo_region_t *clip;
 	  GtkStateType state;
+	  cairo_t *cr;
 	  
           range[0] = label->selection_anchor;
           range[1] = label->selection_end;
@@ -1670,44 +1559,45 @@ eel_editable_label_expose (GtkWidget      *widget,
               range[1] = tmp;
             }
 
+	  cr = gdk_cairo_create (gtk_widget_get_window (widget));
           clip = gdk_pango_layout_get_clip_region (label->layout,
                                                    x, y,
                                                    range,
                                                    1);
-
-          /* FIXME should use gtk_paint, but it can't use a clip
-           * region
-           */
-
-          gdk_gc_set_clip_region (style->black_gc, clip);
-
+	  gdk_cairo_region (cr, clip);
+	  cairo_clip (cr);
 
 	  state = GTK_STATE_SELECTED;
 	  if (!gtk_widget_has_focus (widget))
 	    state = GTK_STATE_ACTIVE;
 	      
-          gdk_draw_layout_with_colors (gtk_widget_get_window (widget),
-                                       style->black_gc,
-                                       x, y,
-                                       label->layout,
-                                       &style->text[state],
-                                       &style->base[state]);
+	  gdk_cairo_set_source_color (cr, &style->base[state]);
+	  cairo_paint (cr);
 
-          gdk_gc_set_clip_region (style->black_gc, NULL);
-          cairo_region_destroy (clip);
+	  gdk_cairo_set_source_color (cr, &style->text[state]);
+	  cairo_move_to (cr, x, y);
+	  pango_cairo_show_layout (cr, label->layout);
+
+	  cairo_destroy (cr);
+	  cairo_region_destroy (clip);
         }
       else if (gtk_widget_has_focus (widget))
 	eel_editable_label_draw_cursor (label, x, y);
 
       if (label->draw_outline) {
         GtkAllocation allocation;
+	cairo_t *cr;
+
         gtk_widget_get_allocation (widget, &allocation);
-	gdk_draw_rectangle (gtk_widget_get_window (widget),
-			    style->text_gc [gtk_widget_get_state (widget)],
-			    FALSE,
-			    0, 0,
-			    allocation.width - 1,
-			    allocation.height - 1);
+	cr = gdk_cairo_create (gtk_widget_get_window (widget));
+	gdk_cairo_set_source_color (cr, &style->text [gtk_widget_get_state (widget)]);
+	cairo_set_line_width (cr, 1.0);
+	cairo_rectangle (cr, 0.5, 0.5, 
+			 allocation.width - 1,
+			 allocation.height - 1);
+	cairo_stroke (cr);
+
+	cairo_destroy (cr);
       }
     }
 
@@ -1720,7 +1610,6 @@ eel_editable_label_realize (GtkWidget *widget)
   EelEditableLabel *label;
   GdkWindowAttr attributes;
   gint attributes_mask;
-  static GdkColor gray = { 0, 0x8888, 0x8888, 0x8888 };
   GtkAllocation allocation;
   GdkWindow *window;
   GtkStyle *style;
@@ -1764,14 +1653,6 @@ eel_editable_label_realize (GtkWidget *widget)
   gdk_window_set_background (gtk_widget_get_window (widget), &style->base[gtk_widget_get_state (widget)]);
 
   gtk_im_context_set_client_window (label->im_context, gtk_widget_get_window (widget));
-
-  label->primary_cursor_gc = make_cursor_gc (widget,
-					     "cursor-color",
-					     &style->black);
-      
-  label->secondary_cursor_gc = make_cursor_gc (widget,
-					       "secondary-cursor-color",
-					       &gray);
 }
 
 static void
@@ -1780,12 +1661,6 @@ eel_editable_label_unrealize (GtkWidget *widget)
   EelEditableLabel *label;
 
   label = EEL_EDITABLE_LABEL (widget);
-
-  gtk_gc_release (label->primary_cursor_gc);
-  label->primary_cursor_gc = NULL;
-  
-  gtk_gc_release (label->secondary_cursor_gc);
-  label->secondary_cursor_gc = NULL;
 
   /* Strange. Copied from GtkEntry, should be NULL? */
   gtk_im_context_set_client_window (label->im_context, NULL);
