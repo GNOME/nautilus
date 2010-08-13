@@ -151,6 +151,7 @@ create_selection_shadow (NautilusIconContainer *container,
 				 "x2", (double) x2,
 				 "y2", (double) y2,
 				 "outline_color", "black",
+				 "outline-stippling", TRUE,
 				 "width_pixels", 1,
 				 NULL);
 	}
