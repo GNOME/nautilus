@@ -407,10 +407,10 @@ nautilus_cell_renderer_pixbuf_emblem_render (GtkCellRenderer      *cell,
 	GdkPixbuf *pixbuf;
 	GdkRectangle pix_rect;
 	GdkRectangle pix_emblem_rect;
-	GdkRectangle draw_rect;
 	gboolean stock_pixbuf = FALSE;
 	gint xpad, ypad;
 	gboolean is_expander, is_expanded;
+	cairo_t *cr;
 
 	pixbuf = cellpixbuf->pixbuf;
 	g_object_get (cell,
@@ -448,41 +448,27 @@ nautilus_cell_renderer_pixbuf_emblem_render (GtkCellRenderer      *cell,
 	pix_rect.width  -= xpad * 2;
 	pix_rect.height -= ypad * 2;
 
-	if (gdk_rectangle_intersect (cell_area, &pix_rect, &draw_rect) &&
-	    gdk_rectangle_intersect (expose_area, &draw_rect, &draw_rect)) {
-		gdk_draw_pixbuf (window,
-			gtk_widget_get_style (widget)->black_gc,
-			pixbuf,
-			/* pixbuf 0, 0 is at pix_rect.x, pix_rect.y */
-			draw_rect.x - pix_rect.x,
-			draw_rect.y - pix_rect.y,
-			draw_rect.x,
-			draw_rect.y,
-			draw_rect.width,
-			draw_rect.height,
-			GDK_RGB_DITHER_NORMAL,
-			0, 0);
-	}
+	cr = gdk_cairo_create (window);
+	gdk_cairo_rectangle (cr, expose_area);
+	cairo_clip (cr);
+	gdk_cairo_rectangle (cr, cell_area);
+	cairo_clip (cr);
+
+	gdk_cairo_set_source_pixbuf (cr, pixbuf, pix_rect.x, pix_rect.y);
+	gdk_cairo_rectangle (cr, &pix_rect);
+	cairo_fill (cr);
 
 	if (cellpixbuf->pixbuf_emblem) {
 		pix_emblem_rect.width = gdk_pixbuf_get_width (cellpixbuf->pixbuf_emblem);
 		pix_emblem_rect.height = gdk_pixbuf_get_height (cellpixbuf->pixbuf_emblem);
 		pix_emblem_rect.x = pix_rect.x;
 		pix_emblem_rect.y = pix_rect.y + pix_rect.height - pix_emblem_rect.height;
-		if (gdk_rectangle_intersect (cell_area, &pix_emblem_rect, &draw_rect) &&
-		    gdk_rectangle_intersect (expose_area, &draw_rect, &draw_rect)) {
-			gdk_draw_pixbuf (window,
-				gtk_widget_get_style (widget)->black_gc,
-				cellpixbuf->pixbuf_emblem,
-				/* pixbuf 0, 0 is at pix_emblem_rect.x, pix_emblem_rect.y */
-				draw_rect.x - pix_emblem_rect.x,
-				draw_rect.y - pix_emblem_rect.y,
-				draw_rect.x,
-				draw_rect.y,
-				draw_rect.width,
-				draw_rect.height,
-				GDK_RGB_DITHER_NORMAL,
-				0, 0);
-		}
+
+		gdk_cairo_set_source_pixbuf (cr, cellpixbuf->pixbuf_emblem,
+					     pix_emblem_rect.x, pix_emblem_rect.y);
+		gdk_cairo_rectangle (cr, &pix_emblem_rect);
+		cairo_fill (cr);
 	}
+
+	cairo_destroy (cr);
 }
