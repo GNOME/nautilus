@@ -4155,7 +4155,6 @@ size_allocate (GtkWidget *widget,
 static void
 realize (GtkWidget *widget)
 {
-	GdkBitmap *stipple;
 	GtkAdjustment *vadj, *hadj;
 	NautilusIconContainer *container;
 
@@ -4170,14 +4169,9 @@ realize (GtkWidget *widget)
 	}
 
 	/* Set up DnD.  */
-	nautilus_icon_dnd_init (container, NULL);
+	nautilus_icon_dnd_init (container);
 
 	setup_label_gcs (container);
-
-	stipple = eel_stipple_bitmap_for_screen
-		(gdk_drawable_get_screen (GDK_DRAWABLE (gtk_widget_get_window (widget))));
-
-	nautilus_icon_dnd_set_stipple (container, stipple);
 
 	hadj = gtk_layout_get_hadjustment (GTK_LAYOUT (widget));
 	g_signal_connect (hadj, "value_changed",
@@ -4192,17 +4186,9 @@ realize (GtkWidget *widget)
 static void
 unrealize (GtkWidget *widget)
 {
-	int i;
 	NautilusIconContainer *container;
 
 	container = NAUTILUS_ICON_CONTAINER (widget);
-
-	for (i = 0; i < LAST_LABEL_COLOR; i++) {
-		if (container->details->label_gcs [i]) {
-			g_object_unref (container->details->label_gcs [i]);
-			container->details->label_gcs [i] = NULL;
-		}
-	}
 
 	nautilus_icon_dnd_fini (container);
 
@@ -8568,12 +8554,12 @@ nautilus_icon_container_set_single_click_mode (NautilusIconContainer *container,
 
 /* update the label color when the background changes */
 
-GdkGC *
-nautilus_icon_container_get_label_color_and_gc (NautilusIconContainer *container,
-						GdkColor             **color,
-						gboolean               is_name,
-						gboolean               is_highlight,
-						gboolean		  is_prelit)
+void
+nautilus_icon_container_get_label_color (NautilusIconContainer *container,
+					 GdkColor             **color,
+					 gboolean               is_name,
+					 gboolean               is_highlight,
+					 gboolean		  is_prelit)
 {
 	int idx;
 	
@@ -8606,27 +8592,12 @@ nautilus_icon_container_get_label_color_and_gc (NautilusIconContainer *container
 	if (color) {
 		*color = &container->details->label_colors [idx];
 	}
-
-	return container->details->label_gcs [idx];
 }
 
 static void
 setup_gc_with_fg (NautilusIconContainer *container, int idx, guint32 color)
 {
-	GdkGC *gc;
-	GdkColor gcolor;
-
-	gcolor = eel_gdk_rgb_to_color (color);
-	container->details->label_colors [idx] = gcolor;
-
-	gc = gdk_gc_new (gtk_layout_get_bin_window (GTK_LAYOUT (container)));
-	gdk_gc_set_rgb_fg_color (gc, &gcolor);
-
-	if (container->details->label_gcs [idx]) {
-		g_object_unref (container->details->label_gcs [idx]);
-	}
-
-	container->details->label_gcs [idx] = gc;
+	container->details->label_colors [idx] = eel_gdk_rgb_to_color (color);
 }
 
 static void
