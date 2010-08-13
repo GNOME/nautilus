@@ -1482,7 +1482,7 @@ draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 	GtkWidget *widget;
 	GdkPixbuf *knob_pixbuf;
 	int knob_width, knob_height;
-	double dash[2] = { 1.0, 1.0 };
+	double dash = { 2.0 };
 	cairo_t *cr;
 
 	if (!item->details->show_stretch_handles) {
@@ -1497,17 +1497,9 @@ draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 	knob_height = gdk_pixbuf_get_height (knob_pixbuf);
 
 	/* first draw the box */
-	cairo_set_source_rgb (cr, 1, 1, 1);
-	cairo_set_line_width (cr, 1.0);
-	cairo_rectangle (cr,
-			 rect->x0 + 0.5,
-			 rect->y0 + 0.5,
-			 rect->x1 - rect->x0 - 1,
-			 rect->y1 - rect->y0 - 1);
-	cairo_stroke (cr);
-
 	cairo_set_source_rgb (cr, 0, 0, 0);
-	cairo_set_dash (cr, dash, G_N_ELEMENTS (dash), 0);
+	cairo_set_dash (cr, &dash, 1, 0);
+	cairo_set_line_width (cr, 1.0);
 	cairo_rectangle (cr,
 			 rect->x0 + 0.5,
 			 rect->y0 + 0.5,
