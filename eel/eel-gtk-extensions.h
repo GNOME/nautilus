@@ -54,32 +54,10 @@ void                  eel_gtk_signal_connect_while_realized           (GtkObject
 /* GtkWidget */
 void                  eel_gtk_widget_set_shown                        (GtkWidget            *widget,
 								       gboolean              shown);
-gboolean              eel_point_in_allocation                         (const GtkAllocation  *allocation,
-								       int                   x,
-								       int                   y);
-gboolean              eel_point_in_widget                             (GtkWidget            *widget,
-								       int                   x,
-								       int                   y);
 void                  eel_gtk_widget_set_background_color             (GtkWidget            *widget,
 								       const char           *color_spec);
 void                  eel_gtk_widget_set_foreground_color             (GtkWidget            *widget,
 								       const char           *color_spec);
-GtkWidget *           eel_gtk_widget_find_windowed_ancestor           (GtkWidget            *widget);
-PangoFontDescription *eel_gtk_get_system_font                         (void);
-void                  eel_gtk_widget_get_button_event_location        (GtkWidget            *widget,
-								       const GdkEventButton *event,
-								       int                  *x,
-								       int                  *y);
-void                  eel_gtk_widget_get_motion_event_location        (GtkWidget            *widget,
-								       const GdkEventMotion *event,
-								       int                  *x,
-								       int                  *y);
-
-/* GtkContainer */
-GtkWidget *           eel_gtk_container_get_first_child               (GtkContainer         *container);
-void                  eel_gtk_container_foreach_deep                  (GtkContainer         *container,
-								       GtkCallback           callback,
-								       gpointer              callback_data);
 
 /* GtkWindow */
 void                  eel_gtk_window_set_initial_geometry             (GtkWindow            *window,
@@ -107,21 +85,13 @@ void                  eel_pop_up_context_menu                         (GtkMenu  
 GtkMenuItem *         eel_gtk_menu_append_separator                   (GtkMenu              *menu);
 GtkMenuItem *         eel_gtk_menu_insert_separator                   (GtkMenu              *menu,
 								       int                   index);
-void                  eel_gtk_menu_set_item_visibility                (GtkMenu              *menu,
-								       int                   index,
-								       gboolean              visible);
 
 /* GtkMenuToolButton */
 GtkWidget *           eel_gtk_menu_tool_button_get_button             (GtkMenuToolButton    *tool_button);
 
 /* GtkLabel */
 void                  eel_gtk_label_make_bold                         (GtkLabel             *label);
-void                  eel_gtk_label_set_scale                         (GtkLabel             *label,
-								       double                scale_factor);
-void                  eel_gtk_label_set_drop_shadow_color             (GtkLabel             *label,
-								       guint32               color);
-void                  eel_gtk_label_set_drop_shadow_offset            (GtkLabel             *label,
-								       gint                  offset); 
+
 /* GtkAdjustment */
 void                  eel_gtk_adjustment_set_value                    (GtkAdjustment        *adjustment,
 								       float                 value);
@@ -130,12 +100,5 @@ void                  eel_gtk_adjustment_clamp_value                  (GtkAdjust
 /* GtkTreeView */
 void                  eel_gtk_tree_view_set_activate_on_single_click  (GtkTreeView               *tree_view,
 								       gboolean                   should_activate);
-
-/* GtkViewport */
-gboolean              eel_gtk_viewport_get_visible_rect               (GtkViewport          *viewport, 
-								       GdkRectangle         *rect);
-
-void                  eel_gtk_viewport_scroll_to_rect                 (GtkViewport          *viewport,
-								       GdkRectangle         *rect);
 
 #endif /* EEL_GTK_EXTENSIONS_H */
