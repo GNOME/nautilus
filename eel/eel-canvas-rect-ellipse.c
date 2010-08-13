@@ -59,8 +59,6 @@ enum {
 	PROP_OUTLINE_COLOR,
 	PROP_OUTLINE_COLOR_GDK,
 	PROP_OUTLINE_COLOR_RGBA,
-	PROP_FILL_STIPPLE,
-	PROP_OUTLINE_STIPPLE,
 	PROP_WIDTH_PIXELS,
 	PROP_WIDTH_UNITS
 };
@@ -186,12 +184,6 @@ eel_canvas_re_class_init (EelCanvasREClass *klass)
 				    G_PARAM_READWRITE));
         g_object_class_install_property
                 (gobject_class,
-                 PROP_FILL_STIPPLE,
-                 g_param_spec_object ("fill-stipple", NULL, NULL,
-                                      GDK_TYPE_DRAWABLE,
-                                      G_PARAM_READWRITE));
-        g_object_class_install_property
-                (gobject_class,
                  PROP_OUTLINE_COLOR,
                  g_param_spec_string ("outline-color", NULL, NULL,
                                       NULL,
@@ -208,12 +200,6 @@ eel_canvas_re_class_init (EelCanvasREClass *klass)
                  g_param_spec_uint ("outline-color-rgba", NULL, NULL,
 				    0, G_MAXUINT, 0,
 				    G_PARAM_READWRITE));
-        g_object_class_install_property
-                (gobject_class,
-                 PROP_OUTLINE_STIPPLE,
-                 g_param_spec_object ("outline-stipple", NULL, NULL,
-                                      GDK_TYPE_DRAWABLE,
-                                      G_PARAM_READWRITE));
         g_object_class_install_property
                 (gobject_class,
                  PROP_WIDTH_PIXELS,
@@ -256,14 +242,6 @@ eel_canvas_re_destroy (GtkObject *object)
 	re = EEL_CANVAS_RE (object);
 
 	/* remember, destroy can be run multiple times! */
-
-	if (re->fill_stipple)
-		g_object_unref (re->fill_stipple);
-	re->fill_stipple = NULL;
-
-	if (re->outline_stipple)
-		g_object_unref (re->outline_stipple);
-	re->outline_stipple = NULL;
 
 	if (GTK_OBJECT_CLASS (re_parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (re_parent_class)->destroy) (object);
@@ -308,57 +286,6 @@ static void get_bounds (EelCanvasRE *re, double *px1, double *py1, double *px2, 
 	*py2 += 2;
 }
 
-/* Convenience function to set a GC's foreground color to the specified pixel value */
-static void
-set_gc_foreground (GdkGC *gc, gulong pixel)
-{
-	GdkColor c;
-
-	if (!gc)
-		return;
-
-	c.pixel = pixel;
-	gdk_gc_set_foreground (gc, &c);
-}
-
-/* Sets the stipple pattern for the specified gc */
-static void
-set_stipple (GdkGC *gc, GdkBitmap **internal_stipple, GdkBitmap *stipple, int reconfigure)
-{
-	if (*internal_stipple && !reconfigure)
-		g_object_unref (*internal_stipple);
-
-	*internal_stipple = stipple;
-	if (stipple && !reconfigure)
-		g_object_ref (stipple);
-
-	if (gc) {
-		if (stipple) {
-			gdk_gc_set_stipple (gc, stipple);
-			gdk_gc_set_fill (gc, GDK_STIPPLED);
-		} else
-			gdk_gc_set_fill (gc, GDK_SOLID);
-	}
-}
-
-/* Recalculate the outline width of the rectangle/ellipse and set it in its GC */
-static void
-set_outline_gc_width (EelCanvasRE *re)
-{
-	int width;
-
-	if (!re->outline_gc)
-		return;
-
-	if (re->width_pixels)
-		width = (int) re->width;
-	else
-		width = (int) (re->width * re->item.canvas->pixels_per_unit + 0.5);
-
-	gdk_gc_set_line_attributes (re->outline_gc, width,
-				    GDK_LINE_SOLID, GDK_CAP_PROJECTING, GDK_JOIN_MITER);
-}
-
 static void
 eel_canvas_re_set_fill (EelCanvasRE *re, gboolean fill_set)
 {
@@ -387,14 +314,12 @@ eel_canvas_re_set_property (GObject              *object,
 	EelCanvasRE *re;
 	GdkColor color = { 0, 0, 0, 0, };
 	GdkColor *pcolor;
-	int have_pixel;
 
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (EEL_IS_CANVAS_RE (object));
 
 	item = EEL_CANVAS_ITEM (object);
 	re = EEL_CANVAS_RE (object);
-	have_pixel = FALSE;
 
 	switch (param_id) {
 	case PROP_X1:
@@ -443,12 +368,7 @@ eel_canvas_re_set_property (GObject              *object,
 			eel_canvas_re_set_fill (re, pcolor != NULL);
 
 			if (pcolor) {
-				GdkColormap *colormap;
-
 				color = *pcolor;
-				colormap = gtk_widget_get_colormap (GTK_WIDGET (item->canvas));
-				gdk_rgb_find_color (colormap, &color);
-				have_pixel = TRUE;
 			}
 
 			re->fill_color = ((color.red & 0xff00) << 16 |
@@ -465,13 +385,6 @@ eel_canvas_re_set_property (GObject              *object,
 #ifdef VERBOSE
 		g_print ("re fill color = %08x\n", re->fill_color);
 #endif
-		if (have_pixel)
-			re->fill_pixel = color.pixel;
-		else
-			re->fill_pixel = eel_canvas_get_color_pixel (item->canvas, re->fill_color);
-
-		set_gc_foreground (re->fill_gc, re->fill_pixel);
-
 		eel_canvas_item_request_redraw (item);		
 		break;
 
@@ -497,13 +410,7 @@ eel_canvas_re_set_property (GObject              *object,
 			eel_canvas_re_set_outline (re, pcolor != NULL);
 
 			if (pcolor) {
-				GdkColormap *colormap;
-
 				color = *pcolor;
-				colormap = gtk_widget_get_colormap (GTK_WIDGET (item->canvas));
-				gdk_rgb_find_color (colormap, &color);
-
-				have_pixel = TRUE;
 			}
 
 			re->outline_color = ((color.red & 0xff00) << 16 |
@@ -520,30 +427,12 @@ eel_canvas_re_set_property (GObject              *object,
 #ifdef VERBOSE
 		g_print ("re outline color %x %x %x\n", color.red, color.green, color.blue);
 #endif
-		if (have_pixel)
-			re->outline_pixel = color.pixel;
-		else
-			re->outline_pixel = eel_canvas_get_color_pixel (item->canvas,
-									  re->outline_color);
-
-		set_gc_foreground (re->outline_gc, re->outline_pixel);
-
 		eel_canvas_item_request_redraw (item);		
-		break;
-
-	case PROP_FILL_STIPPLE:
-	        set_stipple (re->fill_gc, &re->fill_stipple, (GdkBitmap *) g_value_get_object (value), FALSE);
-
-		break;
-
-	case PROP_OUTLINE_STIPPLE:
-	        set_stipple (re->outline_gc, &re->outline_stipple, (GdkBitmap *) g_value_get_object (value), FALSE);
 		break;
 
 	case PROP_WIDTH_PIXELS:
 		re->width = g_value_get_uint (value);
 		re->width_pixels = TRUE;
-		set_outline_gc_width (re);
 
 		eel_canvas_item_request_update (item);
 		break;
@@ -551,7 +440,6 @@ eel_canvas_re_set_property (GObject              *object,
 	case PROP_WIDTH_UNITS:
 		re->width = fabs (g_value_get_double (value));
 		re->width_pixels = FALSE;
-		set_outline_gc_width (re);
 
 		eel_canvas_item_request_update (item);
 		break;
@@ -569,10 +457,14 @@ static void
 get_color_value (EelCanvasRE *re, gulong pixel, GValue *value)
 {
 	GdkColor color;
-	EelCanvasItem *item = (EelCanvasItem *) re;
-	GdkColormap *colormap = gtk_widget_get_colormap (GTK_WIDGET (item->canvas));
 
-	gdk_colormap_query_color (colormap, pixel, &color);
+	color.red   = (pixel >> 16) & 0xFF;
+	color.green = (pixel >>  8) & 0xFF;
+	color.blue  =  pixel        & 0xFF;
+	color.red   |= color.red   << 8;
+	color.green |= color.green << 8;
+	color.blue  |= color.blue  << 8;
+
 	g_value_set_boxed (value, &color);
 }
 
@@ -607,11 +499,11 @@ eel_canvas_re_get_property (GObject              *object,
 		break;
 
 	case PROP_FILL_COLOR_GDK:
-		get_color_value (re, re->fill_pixel, value);
+		get_color_value (re, re->fill_color, value);
 		break;
 
 	case PROP_OUTLINE_COLOR_GDK:
-		get_color_value (re, re->outline_pixel, value);
+		get_color_value (re, re->outline_color, value);
 		break;
 
 	case PROP_FILL_COLOR_RGBA:
@@ -622,28 +514,10 @@ eel_canvas_re_get_property (GObject              *object,
 		g_value_set_uint (value,  re->outline_color);
 		break;
 
-	case PROP_FILL_STIPPLE:
-		g_value_set_object (value,  (GObject *) re->fill_stipple);
-		break;
-
-	case PROP_OUTLINE_STIPPLE:
-		g_value_set_object (value,  (GObject *) re->outline_stipple);
-		break;
-
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
 		break;
 	}
-}
-
-static void
-set_colors_and_stipples (EelCanvasRE *re)
-{
-	set_gc_foreground (re->fill_gc, re->fill_pixel);
-	set_gc_foreground (re->outline_gc, re->outline_pixel);
-	set_stipple (re->fill_gc, &re->fill_stipple, re->fill_stipple, TRUE);
-	set_stipple (re->outline_gc, &re->outline_stipple, re->outline_stipple, TRUE);
-	set_outline_gc_width (re);
 }
 
 static void
@@ -658,8 +532,6 @@ eel_canvas_re_update_shared (EelCanvasItem *item, double i2w_dx, double i2w_dy, 
 
 	if (re_parent_class->update)
 		(* re_parent_class->update) (item, i2w_dx, i2w_dy, flags);
-
-	set_colors_and_stipples (re);
 
 #ifdef OLD_XFORM
 	recalc_bounds (re);
@@ -679,12 +551,6 @@ eel_canvas_re_realize (EelCanvasItem *item)
 	if (re_parent_class->realize)
 		(* re_parent_class->realize) (item);
 
-	re->fill_gc = gdk_gc_new (gtk_layout_get_bin_window (&item->canvas->layout));
-	re->fill_pixel = eel_canvas_get_color_pixel (item->canvas, re->fill_color);
-	re->outline_gc = gdk_gc_new (gtk_layout_get_bin_window (&item->canvas->layout));
-	re->outline_pixel = eel_canvas_get_color_pixel (item->canvas, re->outline_color);
-	set_colors_and_stipples (re);
-
 #ifdef OLD_XFORM
 	(* EEL_CANVAS_ITEM_CLASS (item->object.klass)->update) (item, NULL, NULL, 0);
 #endif
@@ -696,11 +562,6 @@ eel_canvas_re_unrealize (EelCanvasItem *item)
 	EelCanvasRE *re;
 
 	re = EEL_CANVAS_RE (item);
-
-	g_object_unref (re->fill_gc);
-	re->fill_gc = NULL;
-	g_object_unref (re->outline_gc);
-	re->outline_gc = NULL;
 
 	if (re_parent_class->unrealize)
 		(* re_parent_class->unrealize) (item);
@@ -860,110 +721,22 @@ eel_canvas_rect_realize  (EelCanvasItem *item)
 	}
 }
 
-
 static void
-render_rect_alpha (EelCanvasRect *rect,
-		   GdkDrawable *drawable,
-		   int x, int y,
-		   int width, int height,
-		   guint32 rgba)
+eel_canvas_set_source_color (cairo_t *cr,
+			     guint rgba)
 {
-	GdkPixbuf *pixbuf;
-	guchar *data;
-	int rowstride, i;
-	guchar r, g, b, a;
-	EelCanvasRectPrivate *priv;
-
-	if (width <= 0 || height <= 0 ) {
-		return;
-	}
-	
-	priv = rect->priv;
-
-	r = (rgba >> 24) & 0xff;
-	g = (rgba >> 16) & 0xff;
-	b = (rgba >> 8) & 0xff;
-	a = (rgba >> 0) & 0xff;
-
-#ifdef HAVE_RENDER
-	/* Every visual is not guaranteed to have a matching
-	 * XRenderPictFormat. So make sure that format is not null before
-	 * trying to render using Xrender calls.
-	 */
-	if (priv->use_render && (priv->format != NULL)) {
-		GdkDrawable *real_drawable;
-		int x_offset, y_offset;
-
-		Display *dpy;
-		Picture  pict;
-		XRenderPictureAttributes attributes;
-		XRenderColor color;
-
-		gdk_window_get_internal_paint_info (drawable, &real_drawable,
-						    &x_offset, &y_offset);
-
-		dpy = gdk_x11_drawable_get_xdisplay (real_drawable);
-
-		pict = XRenderCreatePicture (dpy,
-					     gdk_x11_drawable_get_xid (real_drawable),
-					     priv->format,
-					     0,
-					     &attributes);
-
-
-		/* Convert to premultiplied alpha: */
-		r = r * a / 255;
-		g = g * a / 255;
-		b = b * a / 255;
-		
-		color.red = (r << 8) + r;
-		color.green = (g << 8) + g;
-		color.blue = (b << 8) + b;
-		color.alpha = (a << 8) + a;
-		
-		XRenderFillRectangle (dpy,
-				      PictOpOver,
-				      pict,
-				      &color,
-				      x - x_offset, y - y_offset,
-				      width, height);
-		
-		XRenderFreePicture (dpy, pict);
-
-		return;
-	}
-#endif
-	pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, width, height);
-	data = gdk_pixbuf_get_pixels (pixbuf);
-	rowstride = gdk_pixbuf_get_rowstride (pixbuf);
-	
-	r = (rgba >> 24) & 0xff;
-	g = (rgba >> 16) & 0xff;
-	b = (rgba >> 8) & 0xff;
-	a = (rgba >> 0) & 0xff;
-	
-	for (i = 0; i < width*4; ) {
-		data[i++] = r;
-		data[i++] = g;
-		data[i++] = b;
-		data[i++] = a;
-	}
-	
-	for (i = 1; i < height; i++) {
-		memcpy (data + i*rowstride, data, width*4);
-	}
-	
-	gdk_draw_pixbuf (drawable, NULL, pixbuf,
-			 0, 0, x, y, width, height,
-			 GDK_RGB_DITHER_NONE, 0, 0);
-	g_object_unref (pixbuf);
+	cairo_set_source_rgba (cr,
+			       ((rgba >> 24) & 0xff) / 255.,
+			       ((rgba >> 16) & 0xff) / 255.,
+			       ((rgba >>  8) & 0xff) / 255.,
+			       ((rgba >>  0) & 0xff) / 255.);
 }
-
 
 static void
 eel_canvas_rect_draw (EelCanvasItem *item, GdkDrawable *drawable, GdkEventExpose *expose)
 {
 	EelCanvasRE *re;
+        cairo_t *cr;
 	double x1, y1, x2, y2;
 	int cx1, cy1, cx2, cy2;
 	double i2w_dx, i2w_dy;
@@ -983,58 +756,39 @@ eel_canvas_rect_draw (EelCanvasItem *item, GdkDrawable *drawable, GdkEventExpose
 	eel_canvas_w2c (item->canvas, x1, y1, &cx1, &cy1);
 	eel_canvas_w2c (item->canvas, x2, y2, &cx2, &cy2);
 	
+	if (cx2 <= cx1 || cy2 <= cy1 ) {
+		return;
+	}
+	
+	cr = gdk_cairo_create (drawable);
+	gdk_cairo_region (cr, expose->region);
+	cairo_clip (cr);
+
 	if (re->fill_set) {
-		if ((re->fill_color & 0xff) != 255) {
-			gint i, n_rectangles;
-			GdkRectangle draw_rect, rect;
-			GdkRectangle part;
-
-			draw_rect.x = cx1;
-			draw_rect.y = cy1;
-			draw_rect.width = cx2 - cx1 + 1;
-			draw_rect.height = cy2 - cy1 + 1;
-			
-			/* For alpha mode, only render the parts of the region
-			   that are actually exposed */
-			n_rectangles = cairo_region_num_rectangles (expose->region);
-
-			for (i = 0; i < n_rectangles; i++) {
-				cairo_region_get_rectangle (expose->region, i, &rect);
-				if (gdk_rectangle_intersect (&rect,
-							     &draw_rect,
-							     &part)) {
-					render_rect_alpha (EEL_CANVAS_RECT (item),
-							   drawable,
-							   part.x, part.y,
-							   part.width, part.height,
-							   re->fill_color);
-				}
-			}
-		} else {
-			if (re->fill_stipple)
-				eel_canvas_set_stipple_origin (item->canvas, re->fill_gc);
-
-			gdk_draw_rectangle (drawable,
-					    re->fill_gc,
-					    TRUE,
-					    cx1, cy1,
-					    cx2 - cx1 + 1,
-					    cy2 - cy1 + 1);
-		}
+		eel_canvas_set_source_color (cr, re->fill_color);
+		cairo_rectangle (cr,
+				 cx1, cy1,
+				 cx2 - cx1 + 1,
+				 cy2 - cy1 + 1);
+		cairo_fill (cr);
 	}
 
 	if (re->outline_set) {
-		if (re->outline_stipple)
-			eel_canvas_set_stipple_origin (item->canvas, re->outline_gc);
+		eel_canvas_set_source_color (cr, re->outline_color);
+		if (re->width_pixels) {
+			cairo_set_line_width (cr, (int) re->width);
+		} else {
+			cairo_set_line_width (cr, (int) (re->width * re->item.canvas->pixels_per_unit + 0.5));
+		}
 
-		gdk_draw_rectangle (drawable,
-				    re->outline_gc,
-				    FALSE,
-				    cx1,
-				    cy1,
-				    cx2 - cx1,
-				    cy2 - cy1);
+		cairo_rectangle (cr,
+				 cx1 + 0.5, cy1 + 0.5,
+				 cx2 - cx1,
+				 cy2 - cy1);
+		cairo_stroke (cr);
 	}
+
+	cairo_destroy (cr);
 }
 
 static double
@@ -1274,6 +1028,7 @@ eel_canvas_ellipse_draw (EelCanvasItem *item, GdkDrawable *drawable, GdkEventExp
 	EelCanvasRE *re;
 	int x1, y1, x2, y2;
 	double i2w_dx, i2w_dy;
+	cairo_t *cr;
 
 	re = EEL_CANVAS_RE (item);
 
@@ -1292,35 +1047,33 @@ eel_canvas_ellipse_draw (EelCanvasItem *item, GdkDrawable *drawable, GdkEventExp
 			  re->y2 + i2w_dy,
 			  &x2, &y2);
 
-	if (re->fill_set) {
-		if (re->fill_stipple)
-			eel_canvas_set_stipple_origin (item->canvas, re->fill_gc);
+	cr = gdk_cairo_create (drawable);
+	gdk_cairo_region (cr, expose->region);
+	cairo_clip (cr);
 
-		gdk_draw_arc (drawable,
-			      re->fill_gc,
-			      TRUE,
-			      x1,
-			      y1,
-			      x2 - x1,
-			      y2 - y1,
-			      0 * 64,
-			      360 * 64);
-	}
+	cairo_save (cr);
+	cairo_translate (cr, (x1 + x2) / 2., (y1 + y2) / 2.);
+	cairo_scale (cr, (x2 - x1), (y2 - y1));
+	cairo_arc (cr, 0, 0, 1, 0, 2 * G_PI);
+	cairo_restore (cr);
+
+	if (re->fill_set) {
+		eel_canvas_set_source_color (cr, re->fill_color);
+		cairo_fill_preserve (cr);
+        }
 
 	if (re->outline_set) {
-		if (re->outline_stipple)
-			eel_canvas_set_stipple_origin (item->canvas, re->outline_gc);
+		eel_canvas_set_source_color (cr, re->outline_color);
+		if (re->width_pixels) {
+			cairo_set_line_width (cr, (int) re->width);
+		} else {
+			cairo_set_line_width (cr, (int) (re->width * re->item.canvas->pixels_per_unit + 0.5));
+		}
 
-		gdk_draw_arc (drawable,
-			      re->outline_gc,
-			      FALSE,
-			      x1,
-			      y1,
-			      x2 - x1,
-			      y2 - y1,
-			      0 * 64,
-			      360 * 64);
-	}
+		cairo_stroke_preserve (cr);
+        }
+
+	cairo_destroy (cr);
 }
 
 static double
