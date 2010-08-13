@@ -236,8 +236,7 @@ static void     draw_label_layout                    (NautilusIconCanvasItem    
 						      gboolean                       highlight,
 						      GdkColor                      *label_color,
 						      int                            x,
-						      int                            y,
-						      GdkGC                         *gc);
+						      int                            y);
 static gboolean hit_test_stretch_handle              (NautilusIconCanvasItem        *item,
 						      EelIRect                       canvas_rect,
 						      GtkCornerType *corner);
@@ -517,7 +516,6 @@ nautilus_icon_canvas_item_get_image (NautilusIconCanvasItem *item,
 	GdkPixmap *pixmap;
 	EelCanvas *canvas;
 	GdkScreen *screen;
-	GdkGC *gc;
 	int width, height;
 	int item_offset_x, item_offset_y;
 	EelIRect icon_rect;
@@ -586,35 +584,22 @@ nautilus_icon_canvas_item_get_image (NautilusIconCanvasItem *item,
 				      GDK_INTERP_BILINEAR, 255);
 	}
 
-	/* clear the pixmap */
+	/* draw pixbuf to mask and pixmap */
 	cr = gdk_cairo_create (pixmap);
-	cairo_set_operator (cr, CAIRO_OPERATOR_CLEAR);
+	cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
+	gdk_cairo_set_source_pixbuf (cr, pixbuf, 0, 0);
 	cairo_paint (cr);
 	cairo_destroy (cr);
-	
-	gc = gdk_gc_new (pixmap);
-	gdk_draw_pixbuf (pixmap, gc, pixbuf, 
-			 0, 0, 0, 0,
-			 gdk_pixbuf_get_width (pixbuf), gdk_pixbuf_get_height (pixbuf),
-			 GDK_RGB_DITHER_NORMAL,
-			 0, 0);
-	g_object_unref (gc);
 
 	*mask = gdk_pixmap_new (gdk_screen_get_root_window (screen),
 				width, height,
 				1);
-	gc = gdk_gc_new (*mask);
-	gdk_draw_rectangle (*mask, gc,
-			    TRUE,
-			    0, 0,
-			    width, height);
-	g_object_unref (gc);
-	  
-	gdk_pixbuf_render_threshold_alpha (pixbuf, *mask,
-					   0, 0, 0, 0,
-					   gdk_pixbuf_get_width (pixbuf), gdk_pixbuf_get_height (pixbuf),
-					   128);
-	
+	cr = gdk_cairo_create (*mask);
+	cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
+	gdk_cairo_set_source_pixbuf (cr, pixbuf, 0, 0);
+	cairo_paint (cr);
+	cairo_destroy (cr);
+
 	draw_embedded_text (item, GDK_DRAWABLE (pixmap),
 			    item_offset_x, item_offset_y);
 
@@ -1293,7 +1278,6 @@ draw_label_text (NautilusIconCanvasItem *item,
 	PangoLayout *editable_layout;
 	PangoLayout *additional_layout;
 	GdkColor *label_color;
-	GdkGC *gc;
 	gboolean have_editable, have_additional;
 	gboolean needs_frame, needs_highlight, prelight_label, is_rtl_label_beside;
 	EelIRect text_rect;
@@ -1303,8 +1287,6 @@ draw_label_text (NautilusIconCanvasItem *item,
 #ifdef PERFORMANCE_TEST_DRAW_DISABLE
 	return;
 #endif
-
-	gc = NULL;
 
 	canvas_item = EEL_CANVAS_ITEM (item);
 	details = item->details;
@@ -1389,7 +1371,7 @@ draw_label_text (NautilusIconCanvasItem *item,
 			}
 		}
 		
-		gc = nautilus_icon_container_get_label_color_and_gc
+		nautilus_icon_container_get_label_color
 			(NAUTILUS_ICON_CONTAINER (canvas_item->canvas),
 			 &label_color, TRUE, needs_highlight,
 			 prelight_label & item->details->is_prelit);
@@ -1398,14 +1380,14 @@ draw_label_text (NautilusIconCanvasItem *item,
 				   editable_layout, needs_highlight,
 				   label_color,
 				   x,
-				   text_rect.y0 + TEXT_BACK_PADDING_Y, gc);
+				   text_rect.y0 + TEXT_BACK_PADDING_Y);
 	}
 
 	if (have_additional) {
 		additional_layout = get_label_layout (&item->details->additional_text_layout, item, item->details->additional_text);
 		prepare_pango_layout_for_draw (item, additional_layout);
 
-		gc = nautilus_icon_container_get_label_color_and_gc
+		nautilus_icon_container_get_label_color
 			(NAUTILUS_ICON_CONTAINER (canvas_item->canvas),
 			 &label_color, FALSE, needs_highlight,
 			 FALSE);
@@ -1414,7 +1396,7 @@ draw_label_text (NautilusIconCanvasItem *item,
 				   additional_layout, needs_highlight,
 				   label_color,
 				   x,
-				   text_rect.y0 + details->editable_text_height + LABEL_LINE_SPACING + TEXT_BACK_PADDING_Y, gc);
+				   text_rect.y0 + details->editable_text_height + LABEL_LINE_SPACING + TEXT_BACK_PADDING_Y);
 	}
 
 	if (!create_mask && item->details->is_highlighted_as_keyboard_focus) {
@@ -1498,55 +1480,50 @@ draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 		      const EelIRect *rect)
 {
 	GtkWidget *widget;
-	GdkGC *gc;
 	GdkPixbuf *knob_pixbuf;
-	GdkBitmap *stipple;
 	int knob_width, knob_height;
-	GtkStyle *style;
-	
+	double dash[2] = { 1.0, 1.0 };
+	cairo_t *cr;
+
 	if (!item->details->show_stretch_handles) {
 		return;
 	}
 
 	widget = GTK_WIDGET (EEL_CANVAS_ITEM (item)->canvas);
-	style = gtk_widget_get_style (widget);
 
-	gc = gdk_gc_new (drawable);
+	cr = gdk_cairo_create (drawable);
 	knob_pixbuf = get_knob_pixbuf ();
 	knob_width = gdk_pixbuf_get_width (knob_pixbuf);
 	knob_height = gdk_pixbuf_get_height (knob_pixbuf);
 
-	stipple = eel_stipple_bitmap_for_screen (
-			gdk_drawable_get_screen (GDK_DRAWABLE (drawable)));
-	
 	/* first draw the box */
-	gdk_gc_set_rgb_fg_color (gc, &style->white);
-	gdk_draw_rectangle
-		(drawable, gc, FALSE,
-			    rect->x0,
-			    rect->y0,
-			    rect->x1 - rect->x0 - 1,
-			    rect->y1 - rect->y0 - 1);
+	cairo_set_source_rgb (cr, 1, 1, 1);
+	cairo_set_line_width (cr, 1.0);
+	cairo_rectangle (cr,
+			 rect->x0 + 0.5,
+			 rect->y0 + 0.5,
+			 rect->x1 - rect->x0 - 1,
+			 rect->y1 - rect->y0 - 1);
+        cairo_stroke (cr);
 
-	gdk_gc_set_rgb_fg_color (gc, &style->black);
-	gdk_gc_set_stipple (gc, stipple);
-	gdk_gc_set_fill (gc, GDK_STIPPLED);
-	gdk_draw_rectangle
-		(drawable, gc, FALSE,
-		 rect->x0,
-		 rect->y0,
-		 rect->x1 - rect->x0 - 1,
-		 rect->y1 - rect->y0 - 1);
-	
+	cairo_set_source_rgb (cr, 0, 0, 0);
+	cairo_set_dash (cr, dash, G_N_ELEMENTS (dash), 0);
+	cairo_rectangle (cr,
+			 rect->x0 + 0.5,
+			 rect->y0 + 0.5,
+			 rect->x1 - rect->x0 - 1,
+			 rect->y1 - rect->y0 - 1);
+	cairo_stroke (cr);
+
 	/* draw the stretch handles themselves */
-	
-	draw_pixbuf (knob_pixbuf, drawable, rect->x0, rect->y0);
-	draw_pixbuf (knob_pixbuf, drawable, rect->x0, rect->y1 - knob_height);
-	draw_pixbuf (knob_pixbuf, drawable, rect->x1 - knob_width, rect->y0);
-	draw_pixbuf (knob_pixbuf, drawable, rect->x1 - knob_width, rect->y1 - knob_height);
-	g_object_unref (knob_pixbuf);	
+	gdk_cairo_set_source_pixbuf (cr, knob_pixbuf, rect->x0, rect->y0);
+	cairo_pattern_set_extend (cairo_get_source (cr), CAIRO_EXTEND_REPEAT);
+	cairo_rectangle (cr,
+			 rect->x1 - knob_width, rect->y1 - knob_height,
+			 2 * knob_width, 2 * knob_height);
+	cairo_fill (cr);
 
-	g_object_unref (gc);
+	cairo_destroy (cr);
 }
 
 static void
@@ -1699,13 +1676,12 @@ emblem_layout_next (EmblemLayout *layout,
 static void
 draw_pixbuf (GdkPixbuf *pixbuf, GdkDrawable *drawable, int x, int y)
 {
-	/* FIXME bugzilla.gnome.org 40703: 
-	 * Dither would be better if we passed dither values. 
-	 */
-	gdk_draw_pixbuf (drawable, NULL, pixbuf, 0, 0, x, y,
-			 gdk_pixbuf_get_width (pixbuf),
-			 gdk_pixbuf_get_height (pixbuf),
-			 GDK_RGB_DITHER_NORMAL, 0, 0);
+	cairo_t *cr = gdk_cairo_create (drawable);
+
+	gdk_cairo_set_source_pixbuf (cr, pixbuf, x, y);
+	cairo_paint (cr);
+
+	cairo_destroy (cr);
 }
 
 /* shared code to highlight or dim the passed-in pixbuf */
@@ -1863,11 +1839,10 @@ draw_embedded_text (NautilusIconCanvasItem *item,
 		    GdkDrawable *drawable,
 		    int x, int y)
 {
-	GdkGC *gc;
-	GdkRectangle clip_rect;
 	PangoLayout *layout;
 	PangoContext *context;
 	PangoFontDescription *desc;
+	cairo_t *cr;
 	
 	if (item->details->embedded_text == NULL ||
 	    item->details->embedded_text_rect.width == 0 ||
@@ -1891,22 +1866,22 @@ draw_embedded_text (NautilusIconCanvasItem *item,
 		}
 	}
 	
-	gc = gdk_gc_new (drawable);
+	cr = gdk_cairo_create (drawable);
 
-	clip_rect.x = x + item->details->embedded_text_rect.x;
-	clip_rect.y = y + item->details->embedded_text_rect.y;
-	clip_rect.width = item->details->embedded_text_rect.width;
-	clip_rect.height = item->details->embedded_text_rect.height;
-	
-	gdk_gc_set_clip_rectangle  (gc, &clip_rect);
-
-	gdk_draw_layout (drawable, gc,
+	cairo_rectangle (cr,
 			 x + item->details->embedded_text_rect.x,
 			 y + item->details->embedded_text_rect.y,
-			layout);
-	
-	g_object_unref (gc);
-	g_object_unref (layout);
+			 item->details->embedded_text_rect.width,
+			 item->details->embedded_text_rect.height);
+	cairo_clip (cr);
+
+	cairo_set_source_rgb (cr, 0, 0, 0);
+	cairo_move_to (cr, 
+		       x + item->details->embedded_text_rect.x,
+		       y + item->details->embedded_text_rect.y);
+	pango_cairo_show_layout (cr, layout);
+
+	cairo_destroy (cr);
 }
 
 /* Draw the icon item for non-anti-aliased mode. */
@@ -1919,8 +1894,9 @@ nautilus_icon_canvas_item_draw (EelCanvasItem *item, GdkDrawable *drawable,
 	EelIRect icon_rect, emblem_rect;
 	EmblemLayout emblem_layout;
 	GdkPixbuf *emblem_pixbuf, *temp_pixbuf;
-	GdkRectangle draw_rect, pixbuf_rect;
+	GdkRectangle pixbuf_rect;
 	gboolean is_rtl;
+	cairo_t *cr;
 			
 	icon_item = NAUTILUS_ICON_CANVAS_ITEM (item);
 	details = icon_item->details;
@@ -1939,19 +1915,14 @@ nautilus_icon_canvas_item_draw (EelCanvasItem *item, GdkDrawable *drawable,
 	pixbuf_rect.y = icon_rect.y0;
 	pixbuf_rect.width = gdk_pixbuf_get_width (temp_pixbuf);
 	pixbuf_rect.height = gdk_pixbuf_get_height (temp_pixbuf);
-	if (gdk_rectangle_intersect (&(expose->area), &pixbuf_rect, &draw_rect)) {
-		gdk_draw_pixbuf (drawable,
-				 NULL,
-				 temp_pixbuf,
-				 draw_rect.x - pixbuf_rect.x,
-				 draw_rect.y - pixbuf_rect.y,
-				 draw_rect.x,
-				 draw_rect.y,
-				 draw_rect.width,
-				 draw_rect.height,
-				 GDK_RGB_DITHER_NORMAL,
-				 0,0);
-	}
+
+	cr = gdk_cairo_create (drawable);
+	gdk_cairo_rectangle (cr, &expose->area);
+	cairo_clip (cr);
+	gdk_cairo_set_source_pixbuf (cr, temp_pixbuf, pixbuf_rect.x, pixbuf_rect.y);
+	gdk_cairo_rectangle (cr, &pixbuf_rect);
+	cairo_fill (cr);
+	cairo_destroy (cr);
 	g_object_unref (temp_pixbuf);
 
 	draw_embedded_text (icon_item, drawable,  icon_rect.x0, icon_rect.y0);
@@ -2077,8 +2048,7 @@ draw_label_layout (NautilusIconCanvasItem *item,
 		   gboolean highlight,
 		   GdkColor *label_color,
 		   int x,
-		   int y,
-		   GdkGC *gc)
+		   int y)
 {
 	if (drawable == NULL) {
 		return;
@@ -2090,15 +2060,18 @@ draw_label_layout (NautilusIconCanvasItem *item,
 
 	if (!highlight && (NAUTILUS_ICON_CONTAINER (EEL_CANVAS_ITEM (item)->canvas)->details->use_drop_shadows)) {
 		/* draw a drop shadow */
-		eel_gdk_draw_layout_with_drop_shadow (drawable, gc,
+		eel_gdk_draw_layout_with_drop_shadow (drawable,
 						      label_color,
 						      &gtk_widget_get_style (GTK_WIDGET (EEL_CANVAS_ITEM (item)->canvas))->black,
 						      x, y,
 						      layout);
 	} else {
-		gdk_draw_layout (drawable, gc,
-				 x, y,
-				 layout);
+		cairo_t *cr = gdk_cairo_create (drawable);
+
+		gdk_cairo_set_source_color (cr, label_color);
+		cairo_move_to (cr, x, y);
+		pango_cairo_show_layout (cr, layout);
+		cairo_destroy (cr);
 	}
 }
 
