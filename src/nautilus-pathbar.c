@@ -1570,11 +1570,19 @@ button_data_file_changed (NautilusFile *file,
 		}
 	} else if (nautilus_file_is_gone (file)) {
 		/* remove this and the following buttons */
-		g_assert (g_list_find (path_bar->button_list, button_data));
-		while ((temp_button_data = g_list_last (path_bar->button_list)->data) != button_data) {
+		GList *children;
+
+		children = g_list_find (path_bar->button_list, button_data);
+
+		while (children != NULL) {
+			temp_button_data = children->data;
+
+			/* children are in reverse order */
+			children = children->prev;
+
 			gtk_container_remove (GTK_CONTAINER (path_bar), temp_button_data->button);
 		}
-		gtk_container_remove (GTK_CONTAINER (path_bar), button_data->button);
+
 		g_object_unref (location);
 		return;
 	}
