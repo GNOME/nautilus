@@ -827,7 +827,7 @@ nautilus_path_bar_remove (GtkContainer *container,
                 if (widget == BUTTON_DATA (children->data)->button) {
 			nautilus_path_bar_remove_1 (container, widget);
 	  		path_bar->button_list = g_list_remove_link (path_bar->button_list, children);
-	  		g_list_free (children);
+	  		g_list_free_1 (children);
 	  		return;
 		}
                 children = children->next;
