@@ -90,7 +90,7 @@ side_panel_free (SidePanel *panel)
 
 static void
 switch_page_callback (GtkWidget *notebook,
-		      GtkNotebookPage *page,
+		      GtkWidget *page,
 		      guint page_num,
 		      gpointer user_data)
 {

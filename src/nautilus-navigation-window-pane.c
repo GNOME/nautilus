@@ -458,7 +458,7 @@ notebook_popup_menu_cb (GtkWidget *widget,
 
 static gboolean
 notebook_switch_page_cb (GtkNotebook *notebook,
-			 GtkNotebookPage *page,
+			 GtkWidget *page,
 			 unsigned int page_num,
 			 NautilusNavigationWindowPane *pane)
 {
