@@ -172,35 +172,26 @@ nautilus_window_slot_inactive (NautilusWindowSlot *slot)
 static void
 nautilus_window_slot_init (NautilusWindowSlot *slot)
 {
-	GtkWidget *content_box, *eventbox, *extras_vbox, *frame, *hsep;
+	GtkWidget *content_box, *eventbox, *extras_vbox;
 
 	content_box = gtk_vbox_new (FALSE, 0);
 	slot->content_box = content_box;
 	gtk_widget_show (content_box);
 
-	frame = gtk_frame_new (NULL);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_ETCHED_IN);
-	gtk_box_pack_start (GTK_BOX (content_box), frame, TRUE, TRUE, 0);
-	gtk_widget_show (frame);
-
-	slot->view_box = gtk_vbox_new (FALSE, 0);
-	gtk_container_add (GTK_CONTAINER (frame), slot->view_box);
-	gtk_widget_show (slot->view_box);
-
 	eventbox = gtk_event_box_new ();
 	slot->extra_location_event_box = eventbox;
 	gtk_widget_set_name (eventbox, "nautilus-extra-view-widget");
-	gtk_box_pack_start (GTK_BOX (slot->view_box), eventbox, FALSE, FALSE, 0);
-
+	gtk_box_pack_start (GTK_BOX (content_box), eventbox, FALSE, FALSE, 0);
+	
 	extras_vbox = gtk_vbox_new (FALSE, 6);
 	gtk_container_set_border_width (GTK_CONTAINER (extras_vbox), 6);
 	slot->extra_location_widgets = extras_vbox;
 	gtk_container_add (GTK_CONTAINER (eventbox), extras_vbox);
 	gtk_widget_show (extras_vbox);
 
-	hsep = gtk_hseparator_new ();
-	gtk_box_pack_start (GTK_BOX (slot->view_box), hsep, FALSE, FALSE, 0);
-	slot->extra_location_separator = hsep;
+	slot->view_box = gtk_vbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (content_box), slot->view_box, TRUE, TRUE, 0);
+	gtk_widget_show (slot->view_box);
 
 	slot->title = g_strdup (_("Loading..."));
 }
@@ -536,7 +527,6 @@ nautilus_window_slot_remove_extra_location_widgets (NautilusWindowSlot *slot)
 			       remove_all,
 			       slot->extra_location_widgets);
 	gtk_widget_hide (slot->extra_location_event_box);
-	gtk_widget_hide (slot->extra_location_separator);
 }
 
 void
@@ -546,7 +536,6 @@ nautilus_window_slot_add_extra_location_widget (NautilusWindowSlot *slot,
 	gtk_box_pack_start (GTK_BOX (slot->extra_location_widgets),
 			    widget, TRUE, TRUE, 0);
 	gtk_widget_show (slot->extra_location_event_box);
-	gtk_widget_show (slot->extra_location_separator);
 }
 
 void
