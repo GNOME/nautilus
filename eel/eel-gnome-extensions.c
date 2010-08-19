@@ -29,25 +29,9 @@
 #define GNOME_DESKTOP_USE_UNSTABLE_API
 
 #include "eel-gnome-extensions.h"
-#include "eel-art-extensions.h"
-#include "eel-gdk-extensions.h"
-#include "eel-glib-extensions.h"
-#include "eel-gtk-extensions.h"
-#include "eel-stock-dialogs.h"
-#include <X11/Xatom.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <gdk/gdkx.h>
+
 #include <gtk/gtk.h>
 #include <libgnome/gnome-desktop-utils.h>
-#include <limits.h>
-#include <signal.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <sys/wait.h>
-#include <unistd.h>
 
 /* Return a command string containing the path to a terminal on this system. */
 

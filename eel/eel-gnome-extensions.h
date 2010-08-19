@@ -29,10 +29,6 @@
 
 #include <gtk/gtk.h>
 
-/* icon selection callback function. */
-typedef void (* EelIconSelectionFunction) (const char *icon_path, gpointer callback_data);
-
-
 /* Return a command string containing the path to a terminal on this system. */
 char *        eel_gnome_make_terminal_command                         (const char               *command);
 
