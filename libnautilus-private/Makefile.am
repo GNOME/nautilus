@@ -45,8 +45,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-autorun.h \
 	nautilus-bookmark.c \
 	nautilus-bookmark.h \
-	nautilus-cell-renderer-pixbuf-emblem.c \
-	nautilus-cell-renderer-pixbuf-emblem.h \
 	nautilus-cell-renderer-text-ellipsized.c \
 	nautilus-cell-renderer-text-ellipsized.h \
 	nautilus-clipboard-monitor.c \
