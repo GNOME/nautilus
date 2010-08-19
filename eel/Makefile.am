@@ -44,7 +44,6 @@ libeel_2_la_SOURCES =				\
 	eel-gnome-extensions.c			\
 	eel-graphic-effects.c			\
 	eel-gtk-extensions.c			\
-	eel-i18n.c				\
 	eel-lib-self-check-functions.c		\
 	eel-pango-extensions.c			\
 	eel-self-checks.c			\
@@ -74,7 +73,6 @@ eel_headers =					\
 	eel-graphic-effects.h			\
 	eel-gtk-extensions.h			\
 	eel-gtk-macros.h			\
-	eel-i18n.h				\
 	eel-pango-extensions.h			\
 	eel-self-checks.h			\
 	eel-stock-dialogs.h			\
