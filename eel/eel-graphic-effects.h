@@ -59,8 +59,4 @@ GdkPixbuf *eel_embed_image_in_frame    (GdkPixbuf *source_image,
 					int        right_offset,
 					int        bottom_offset);
 
-/* return a semi-transparent pixbuf from the source pixbuf using a checkboard
-   stipple in the alpha channel (so it can be converted to an alpha-less pixmap) */
-GdkPixbuf *eel_make_semi_transparent   (GdkPixbuf *source_pixbuf);
-
 #endif /* EEL_GRAPHIC_EFFECTS_H */

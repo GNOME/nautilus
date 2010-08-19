@@ -47,22 +47,6 @@ create_new_pixbuf (GdkPixbuf *src)
 			       gdk_pixbuf_get_height (src));
 }
 
-static GdkPixbuf *
-create_new_pixbuf_with_alpha (GdkPixbuf *src)
-{
-	g_assert (gdk_pixbuf_get_colorspace (src) == GDK_COLORSPACE_RGB);
-	g_assert ((!gdk_pixbuf_get_has_alpha (src)
-			       && gdk_pixbuf_get_n_channels (src) == 3)
-			      || (gdk_pixbuf_get_has_alpha (src)
-				  && gdk_pixbuf_get_n_channels (src) == 4));
-
-	return gdk_pixbuf_new (gdk_pixbuf_get_colorspace (src),
-			       TRUE,
-			       gdk_pixbuf_get_bits_per_sample (src),
-			       gdk_pixbuf_get_width (src),
-			       gdk_pixbuf_get_height (src));
-}
-
 /* utility routine to bump the level of a color component with pinning */
 
 static guchar
@@ -333,67 +317,3 @@ eel_embed_image_in_frame (GdkPixbuf *source_image, GdkPixbuf *frame_image, int l
 
 	return result_pixbuf;
 }
-
-
-/* this routine takes the source pixbuf and returns a new one that's semi-transparent, by
-   clearing every other pixel's alpha value in a checkerboard grip.  We have to do the
-   checkerboard instead of reducing the alpha since it will be turned into an alpha-less
-   gdkpixmap and mask for the actual dragging */
-
-GdkPixbuf *
-eel_make_semi_transparent (GdkPixbuf *src)
-{
-	gint i, j, temp_alpha;
-	gint width, height, has_alpha, src_row_stride, dst_row_stride;
-	guchar *target_pixels, *original_pixels;
-	guchar *pixsrc, *pixdest;
-	guchar alpha_value;
-	GdkPixbuf *dest_pixbuf;
-	guchar start_alpha_value;
-	
-	g_return_val_if_fail (gdk_pixbuf_get_colorspace (src) == GDK_COLORSPACE_RGB, NULL);
-	g_return_val_if_fail ((!gdk_pixbuf_get_has_alpha (src)
-			       && gdk_pixbuf_get_n_channels (src) == 3)
-			      || (gdk_pixbuf_get_has_alpha (src)
-				  && gdk_pixbuf_get_n_channels (src) == 4), NULL);
-	g_return_val_if_fail (gdk_pixbuf_get_bits_per_sample (src) == 8, NULL);
-
-	dest_pixbuf = create_new_pixbuf_with_alpha (src);
-
-	has_alpha = gdk_pixbuf_get_has_alpha (src);
-	width = gdk_pixbuf_get_width (src);
-	height = gdk_pixbuf_get_height (src);
-	src_row_stride = gdk_pixbuf_get_rowstride (src);
-	dst_row_stride = gdk_pixbuf_get_rowstride (dest_pixbuf);
-	
-	/* set up pointers to the actual pixels */
-	target_pixels = gdk_pixbuf_get_pixels (dest_pixbuf);
-	original_pixels = gdk_pixbuf_get_pixels (src);
-
-	/* loop through the pixels to do the actual work, copying from the source to the destination */
-	start_alpha_value = ~0;
-	for (i = 0; i < height; i++) {
-		pixdest = target_pixels + i * dst_row_stride;
-		pixsrc = original_pixels + i * src_row_stride;
-		alpha_value = start_alpha_value;
-		for (j = 0; j < width; j++) {
-			*pixdest++ = *pixsrc++; /* red */
-			*pixdest++ = *pixsrc++; /* green */
-			*pixdest++ = *pixsrc++; /* blue */
-			
-			if (has_alpha) {
-				temp_alpha = *pixsrc++;
-			} else {
-				temp_alpha = ~0;
-			}
-			*pixdest++ = temp_alpha & alpha_value;
-			
-			alpha_value = ~alpha_value;
-		}
-		
-		start_alpha_value = ~start_alpha_value;
-	}
-	
-	return dest_pixbuf;
-}
-
