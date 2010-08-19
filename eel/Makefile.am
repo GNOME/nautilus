@@ -30,7 +30,6 @@ libeel_2_la_SOURCES =				\
 	eel-accessibility.c			\
 	eel-alert-dialog.c			\
 	eel-art-extensions.c			\
-	eel-art-gtk-extensions.c		\
 	eel-background.c			\
 	eel-canvas.c				\
 	eel-canvas-util.c			\
@@ -57,7 +56,6 @@ eel_headers =					\
 	eel-accessibility.h			\
 	eel-alert-dialog.h			\
 	eel-art-extensions.h			\
-	eel-art-gtk-extensions.h		\
 	eel-background.h			\
 	eel-canvas.h				\
 	eel-canvas-util.h			\
