@@ -26,8 +26,6 @@
 #include <config.h>
 #include "eel-gdk-pixbuf-extensions.h"
 
-#include "eel-art-gtk-extensions.h"
-#include "eel-debug-drawing.h"
 #include "eel-debug.h"
 #include "eel-gdk-extensions.h"
 #include "eel-glib-extensions.h"
