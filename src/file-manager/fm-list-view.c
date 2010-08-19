@@ -59,7 +59,6 @@
 #include <libnautilus-private/nautilus-tree-view-drag-dest.h>
 #include <libnautilus-private/nautilus-view-factory.h>
 #include <libnautilus-private/nautilus-clipboard.h>
-#include <libnautilus-private/nautilus-cell-renderer-pixbuf-emblem.h>
 #include <libnautilus-private/nautilus-cell-renderer-text-ellipsized.h>
 
 struct FMListViewDetails {
@@ -1573,7 +1572,7 @@ create_and_set_up_tree_view (FMListView *view)
 		 * has the icon in it.*/
 		if (!strcmp (name, "name")) {
 			/* Create the file name column */
-			cell = nautilus_cell_renderer_pixbuf_emblem_new ();
+			cell = gtk_cell_renderer_pixbuf_new ();
 			view->details->pixbuf_cell = (GtkCellRendererPixbuf *)cell;
 			
 			view->details->file_name_column = gtk_tree_view_column_new ();
@@ -1594,7 +1593,6 @@ create_and_set_up_tree_view (FMListView *view)
 			gtk_tree_view_column_set_attributes (view->details->file_name_column,
 							     cell,
 							     "pixbuf", FM_LIST_MODEL_SMALLEST_ICON_COLUMN,
-							     "pixbuf_emblem", FM_LIST_MODEL_SMALLEST_EMBLEM_COLUMN,
 							     NULL);
 			
 			cell = nautilus_cell_renderer_text_ellipsized_new ();
@@ -2510,7 +2508,7 @@ fm_list_view_set_zoom_level (FMListView *view,
 			     gboolean always_emit)
 {
 	int icon_size;
-	int column, emblem_column;
+	int column;
 
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
 	g_return_if_fail (new_level >= NAUTILUS_ZOOM_LEVEL_SMALLEST &&
@@ -2534,11 +2532,9 @@ fm_list_view_set_zoom_level (FMListView *view,
 
 	/* Select correctly scaled icons. */
 	column = fm_list_model_get_column_id_from_zoom_level (new_level);
-	emblem_column = fm_list_model_get_emblem_column_id_from_zoom_level (new_level);
 	gtk_tree_view_column_set_attributes (view->details->file_name_column,
 					     GTK_CELL_RENDERER (view->details->pixbuf_cell),
 					     "pixbuf", column,
-					     "pixbuf_emblem", emblem_column,
 					     NULL);
 
 	/* Scale text. */
