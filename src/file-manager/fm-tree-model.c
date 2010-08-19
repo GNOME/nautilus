@@ -65,7 +65,6 @@ struct TreeNode {
 	GMount *mount;
 	GdkPixbuf *closed_pixbuf;
 	GdkPixbuf *open_pixbuf;
-	GdkPixbuf *emblem_pixbuf;
 
 	FMTreeModelRoot *root;
 
@@ -210,7 +209,6 @@ tree_node_destroy (FMTreeModel *model, TreeNode *node)
 	object_unref_if_not_NULL (node->icon);
 	object_unref_if_not_NULL (node->closed_pixbuf);
 	object_unref_if_not_NULL (node->open_pixbuf);
-	object_unref_if_not_NULL (node->emblem_pixbuf);
 
 	g_assert (node->done_loading_id == 0);
 	g_assert (node->files_added_id == 0);
@@ -266,16 +264,62 @@ get_menu_icon_for_file (TreeNode *node,
 			NautilusFileIconFlags flags)
 {
 	NautilusIconInfo *info;
+	GIcon *gicon, *emblem_icon, *emblemed_icon;
+	GEmblem *emblem;
 	GdkPixbuf *pixbuf, *retval;
 	gboolean highlight;
 	int size;
 	FMTreeModel *model;
+	GList *emblem_icons, *l;
+	char *emblems_to_ignore[3];
+	int i;
 
 	size = nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU);
 
-	info = nautilus_file_get_icon (file, size, flags);
+	gicon = nautilus_file_get_gicon (file, flags);
+
+	i = 0;
+	emblems_to_ignore[i++] = NAUTILUS_FILE_EMBLEM_NAME_TRASH;
+
+	if (node->parent && node->parent->file) {
+		if (!nautilus_file_can_write (node->parent->file)) {
+			emblems_to_ignore[i++] = NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE;
+		}
+	}
+	
+	emblems_to_ignore[i++] = NULL;
+
+	emblem = NULL;
+	emblem_icons = nautilus_file_get_emblem_icons (node->file,
+						       emblems_to_ignore);
+
+	if (emblem_icons != NULL) {
+		emblem_icon = emblem_icons->data;
+		emblem = g_emblem_new (emblem_icon);
+		emblemed_icon = g_emblemed_icon_new (gicon, emblem);
+
+		g_object_unref (emblem);
+
+		for (l = emblem_icons->next; l != NULL; l = l->next) {
+			emblem_icon = l->data;
+			emblem = g_emblem_new (emblem_icon);
+			g_emblemed_icon_add_emblem
+				(G_EMBLEMED_ICON (emblemed_icon), emblem);
+
+			g_object_unref (emblem);
+		}
+
+		eel_g_object_list_free (emblem_icons);
+
+		g_object_unref (gicon);
+		gicon = emblemed_icon;
+	}
+
+	info = nautilus_icon_info_lookup (gicon, size);
 	retval = nautilus_icon_info_get_pixbuf_nodefault_at_size (info, size);
 	model = node->root->model;
+
+	g_object_unref (gicon);
 
 	highlight = (g_list_find_custom (model->details->highlighted_files,
 	                                 file, (GCompareFunc) nautilus_file_compare_location) != NULL);
@@ -336,60 +380,6 @@ tree_node_update_open_pixbuf (TreeNode *node)
 	return tree_node_update_pixbuf (node, &node->open_pixbuf, NAUTILUS_FILE_ICON_FLAGS_FOR_OPEN_FOLDER);
 }
 
-static GdkPixbuf *
-tree_node_get_emblem_pixbuf_internal (TreeNode *node)
-{
-	GdkPixbuf *pixbuf;
-	GList *emblem_pixbufs;
-	char *emblems_to_ignore[3];
-	int i;
-	
-	i = 0;
-	emblems_to_ignore[i++] = NAUTILUS_FILE_EMBLEM_NAME_TRASH;
-	
-	if (node->parent && node->parent->file) {
-		if (!nautilus_file_can_write (node->parent->file)) {
-			emblems_to_ignore[i++] = NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE;
-		}
-	}
-	
-	emblems_to_ignore[i++] = NULL;
-
-	emblem_pixbufs = nautilus_file_get_emblem_pixbufs (node->file,
-							   nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU),
-							   TRUE,
-							   emblems_to_ignore);
-	
-
-	if (emblem_pixbufs != NULL) {
-		pixbuf = g_object_ref (emblem_pixbufs->data);
-	} else {
-		pixbuf = NULL;
-	}
-
-	eel_gdk_pixbuf_list_free (emblem_pixbufs);
-
-	return pixbuf;
-}
-
-static gboolean
-tree_node_update_emblem_pixbuf (TreeNode *node)
-{
-	GdkPixbuf *pixbuf;
-
-	if (node->emblem_pixbuf == NULL) {
-		return FALSE;
-	}
-	pixbuf = tree_node_get_emblem_pixbuf_internal (node);
-	if (pixbuf == node->emblem_pixbuf) {
-		g_object_unref (pixbuf);
-		return FALSE;
-	}
-	g_object_unref (node->emblem_pixbuf);
-	node->emblem_pixbuf = pixbuf;
-	return TRUE;
-}
-
 static gboolean
 tree_node_update_display_name (TreeNode *node)
 {
@@ -428,15 +418,6 @@ tree_node_get_open_pixbuf (TreeNode *node)
 		node->open_pixbuf = tree_node_get_pixbuf (node, NAUTILUS_FILE_ICON_FLAGS_FOR_OPEN_FOLDER);
 	}
 	return node->open_pixbuf;
-}
-
-static GdkPixbuf *
-tree_node_get_emblem_pixbuf (TreeNode *node)
-{
-	if (node->emblem_pixbuf == NULL) {
-		node->emblem_pixbuf = tree_node_get_emblem_pixbuf_internal (node);
-	}
-	return node->emblem_pixbuf;
 }
 
 static const char *
@@ -857,7 +838,6 @@ update_node_without_reporting (FMTreeModel *model, TreeNode *node)
 	changed |= tree_node_update_display_name (node);
 	changed |= tree_node_update_closed_pixbuf (node);
 	changed |= tree_node_update_open_pixbuf (node);
-	changed |= tree_node_update_emblem_pixbuf (node);
 
 	return changed;
 }
@@ -1149,8 +1129,6 @@ fm_tree_model_get_column_type (GtkTreeModel *model, int index)
 		return GDK_TYPE_PIXBUF;
 	case FM_TREE_MODEL_OPEN_PIXBUF_COLUMN:
 		return GDK_TYPE_PIXBUF;
-	case FM_TREE_MODEL_EMBLEM_PIXBUF_COLUMN:
-		return GDK_TYPE_PIXBUF;
 	case FM_TREE_MODEL_FONT_STYLE_COLUMN:
 		return PANGO_TYPE_STYLE;
 	default:
@@ -1293,10 +1271,6 @@ fm_tree_model_get_value (GtkTreeModel *model, GtkTreeIter *iter, int column, GVa
 	case FM_TREE_MODEL_OPEN_PIXBUF_COLUMN:
 		g_value_init (value, GDK_TYPE_PIXBUF);
 		g_value_set_object (value, node == NULL ? NULL : tree_node_get_open_pixbuf (node));
-		break;
-	case FM_TREE_MODEL_EMBLEM_PIXBUF_COLUMN:
-		g_value_init (value, GDK_TYPE_PIXBUF);
-		g_value_set_object (value, node == NULL ? NULL : tree_node_get_emblem_pixbuf (node));
 		break;
 	case FM_TREE_MODEL_FONT_STYLE_COLUMN:
 		g_value_init (value, PANGO_TYPE_STYLE);
