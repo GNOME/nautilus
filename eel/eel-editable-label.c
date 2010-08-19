@@ -28,11 +28,11 @@
 #include <string.h>
 
 #include "eel-editable-label.h"
-#include "eel-i18n.h"
 #include "eel-marshal.h"
 #include "eel-accessibility.h"
 #include <libgail-util/gailmisc.h>
 
+#include <glib/gi18n-lib.h>
 #include <pango/pango.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>

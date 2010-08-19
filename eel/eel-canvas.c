@@ -68,8 +68,8 @@
 #include <stdio.h>
 #include <gdk/gdkprivate.h>
 #include <gtk/gtk.h>
+#include <glib/gi18n-lib.h>
 #include "eel-canvas.h"
-#include "eel-i18n.h"
 
 #include "eel-marshal.h"
 

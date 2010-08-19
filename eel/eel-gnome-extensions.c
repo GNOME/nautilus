@@ -34,7 +34,6 @@
 #include "eel-glib-extensions.h"
 #include "eel-gtk-extensions.h"
 #include "eel-stock-dialogs.h"
-#include "eel-i18n.h"
 #include <X11/Xatom.h>
 #include <errno.h>
 #include <fcntl.h>

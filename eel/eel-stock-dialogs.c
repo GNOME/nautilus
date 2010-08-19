@@ -29,7 +29,7 @@
 #include "eel-glib-extensions.h"
 #include "eel-gnome-extensions.h"
 #include "eel-string.h"
-#include "eel-i18n.h"
+#include <glib/gi18n-lib.h>
 #include <gtk/gtk.h>
 
 #define TIMED_WAIT_STANDARD_DURATION 2000

@@ -21,8 +21,9 @@
 #include <config.h>
 
 #include "eel-alert-dialog.h"
-#include "eel-i18n.h"
 #include "eel-gtk-macros.h"
+
+#include <glib/gi18n-lib.h>
 #include <gtk/gtk.h>
 #include <string.h>
 

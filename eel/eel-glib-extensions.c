@@ -30,7 +30,6 @@
 #include "eel-debug.h"
 #include "eel-lib-self-check-functions.h"
 #include "eel-string.h"
-#include "eel-i18n.h"
 #include <glib-object.h>
 #include <math.h>
 #include <stdlib.h>

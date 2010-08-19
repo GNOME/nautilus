@@ -27,11 +27,12 @@
 */
 
 #include <config.h>
-#include "eel-i18n.h"
 #include "eel-vfs-extensions.h"
 #include "eel-glib-extensions.h"
 #include "eel-lib-self-check-functions.h"
+
 #include <glib.h>
+#include <glib/gi18n-lib.h>
 #include <gio/gio.h>
 
 #include "eel-string.h"
