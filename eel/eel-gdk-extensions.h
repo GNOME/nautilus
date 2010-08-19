@@ -97,16 +97,8 @@ char *              eel_gradient_set_bottom_color_spec     (const char          
 /* A version of parse_color that substitutes a default color instead of returning
    a boolean to indicate it cannot be parsed.
 */
-void                eel_gdk_color_parse_with_default       (const char          *color_spec,
-							    const GdkColor      *default_color,
-							    GdkColor            *parsed_color);
 void                eel_gdk_color_parse_with_white_default (const char          *color_spec,
 							    GdkColor            *parsed_color);
-guint32             eel_parse_rgb_with_default             (const char          *color_spec,
-							    guint32              default_rgb);
-guint32             eel_parse_rgb_with_white_default       (const char          *color_spec);
-guint32             eel_rgb_shift_color                    (guint32              color,
-							    float                shift_by);
 guint32             eel_rgb16_to_rgb                       (gushort              r,
 							    gushort              g,
 							    gushort              b);
@@ -120,28 +112,9 @@ char *              eel_gdk_rgb_to_color_spec              (guint32             
 gboolean            eel_gdk_color_is_dark                  (GdkColor            *color);
 
 
-/* Misc GdkRectangle helper functions */
-gboolean            eel_gdk_rectangle_contains_rectangle   (GdkRectangle         outer,
-							    GdkRectangle         inner);
-
-
-/* A basic operation we use for drawing gradients is interpolating two colors.*/
-guint32             eel_interpolate_color                  (gdouble              ratio,
-							    guint32              start_rgb,
-							    guint32              end_rgb);
-
 /* Misc GdkWindow helper functions */
-void                eel_gdk_window_bring_to_front          (GdkWindow           *window);
-void                eel_gdk_window_set_invisible_cursor    (GdkWindow           *window);
 void                eel_gdk_window_focus                   (GdkWindow           *window,
 							    guint32              timestamp);
-void                eel_gdk_window_set_wm_protocols        (GdkWindow           *window,
-							    GdkAtom             *protocols,
-							    int                  nprotocols);
-
-
-void                eel_gdk_window_set_wm_hints_input      (GdkWindow           *w,
-							    gboolean             status);
 
 /* Wrapper for XParseGeometry */
 EelGdkGeometryFlags eel_gdk_parse_geometry                 (const char          *string,

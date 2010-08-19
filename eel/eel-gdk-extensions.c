@@ -40,48 +40,6 @@
 #define GRADIENT_BAND_SIZE 4
 
 /**
- * eel_gdk_rectangle_contains_rectangle:
- * @outer: Rectangle possibly containing another rectangle.
- * @inner: Rectangle that might be inside.
- *
- * Retun TRUE if inner rectangle is contained inside outer rectangle
- */
-gboolean
-eel_gdk_rectangle_contains_rectangle (GdkRectangle outer, GdkRectangle inner)
-{
-	return outer.x <= inner.x && outer.x + outer.width >= inner.x + inner.width
-		&& outer.y <= inner.y && outer.y + outer.height >= inner.y + inner.height;
-}
-
-/**
- * eel_interpolate_color:
- * @ratio: Place on line between colors to interpolate.
- * @start_color: Color for one end.
- * @end_color: Color for the other end
- * @interpolated_color: Result.
- *
- * Compute a color between @start_color and @end_color in color space.
- * Currently, the color space used is RGB, but a future version could
- * instead do the interpolation in the best color space for expressing
- * human perception.
- */
-guint32
-eel_interpolate_color (gdouble ratio,
-		       guint32 start_rgb,
-		       guint32 end_rgb)
-{
-	guchar red, green, blue;
-
-	g_return_val_if_fail (ratio >= 0.0, 0);
-	g_return_val_if_fail (ratio <= 1.0, 0);
-
-	red = ((start_rgb >> 16) & 0xFF) * (1.0 - ratio) + ((end_rgb >> 16) & 0xFF) * ratio;
-	green = ((start_rgb >> 8) & 0xFF) * (1.0 - ratio) + ((end_rgb >> 8) & 0xFF) * ratio;
-	blue = (start_rgb & 0xFF) * (1.0 - ratio) + (end_rgb & 0xFF) * ratio;
-	return (((red << 8) | green) << 8) | blue;
-}
-
-/**
  * eel_gradient_new
  * @start_color: Color for the top or left.
  * @end_color: Color for the bottom or right.
@@ -370,26 +328,6 @@ eel_gdk_color_parse_with_white_default (const char *color_spec,
 	}
 }
 
-/**
- * eel_parse_rgb_with_white_default
- * @color_spec: A color spec, or NULL.
- * Returns: An rgb value.
- *
- * The same as gdk_color_parse, except sets the color to white if
- * the spec. can't be parsed instead of returning a boolean flag
- * and returns a guint32 rgb value instead of a GdkColor.
- */
-guint32
-eel_parse_rgb_with_white_default (const char *color_spec)
-{
-	GdkColor color;
-
-	eel_gdk_color_parse_with_white_default (color_spec, &color);
-	return ((color.red << 8) & EEL_RGB_COLOR_RED)
-		| (color.green & EEL_RGB_COLOR_GREEN)
-		| ((color.blue >> 8) & EEL_RGB_COLOR_BLUE);
-}
-
 guint32
 eel_rgb16_to_rgb (gushort r, gushort g, gushort b)
 {
@@ -459,48 +397,6 @@ eel_gdk_rgb_to_color_spec (const guint32 color)
 	return g_strdup_printf ("#%06X", (guint) (color & 0xFFFFFF));
 }
 
-static guint32
-eel_shift_color_component (guchar component, float shift_by)
-{
-	guint32 result;
-	if (shift_by > 1.0) {
-		result = component * (2 - shift_by);
-	} else {
-		result = 0xff - shift_by * (0xff - component);
-	}
-
-	return result & 0xff;
-}
-
-/**
- * eel_rgb_shift_color
- * @color: A color.
- * @shift_by: darken or lighten factor.
- * Returns: An darkened or lightened rgb value.
- *
- * Darkens (@shift_by > 1) or lightens (@shift_by < 1)
- * @color.
- */
-guint32
-eel_rgb_shift_color (guint32 color, float shift_by)
-{
-	guint32 result;
-
-	/* shift red by shift_by */
-	result = eel_shift_color_component((color & 0x00ff0000) >> 16, shift_by);
-	result <<= 8;
-	/* shift green by shift_by */
-	result |=  eel_shift_color_component((color & 0x0000ff00) >> 8, shift_by);
-	result <<= 8;
-	/* shift blue by shift_by */
-	result |=  eel_shift_color_component((color & 0x000000ff), shift_by);
-
-	/* alpha doesn't change */
-	result |= (0xff000000 & color);
-
-	return result;
-}
-
 /**
  * eel_gdk_color_is_dark:
  * 
@@ -518,26 +414,6 @@ eel_gdk_color_is_dark (GdkColor *color)
 	return intensity < 128;
 }
 
-/**
- * eel_gdk_window_bring_to_front:
- * 
- * Raise window and give it focus.
- */
-void 
-eel_gdk_window_bring_to_front (GdkWindow *window)
-{
-	/* This takes care of un-iconifying the window and
-	 * raising it if needed.
-	 */
-	gdk_window_show (window);
-
-	/* If the window was already showing, it would not have
-	 * the focus at this point. Do a little X trickery to
-	 * ensure it is focused.
-	 */
-	eel_gdk_window_focus (window, GDK_CURRENT_TIME);
-}
-
 void
 eel_gdk_window_focus (GdkWindow *window, guint32 timestamp)
 {
@@ -548,68 +424,6 @@ eel_gdk_window_focus (GdkWindow *window, guint32 timestamp)
 			timestamp);
 	gdk_flush();
 	gdk_error_trap_pop ();
-}
-
-void
-eel_gdk_window_set_wm_protocols (GdkWindow *window,
-				 GdkAtom *protocols,
-				 int nprotocols)
-{
-	Atom *atoms;
-	int i;
-
-	atoms = g_new (Atom, nprotocols);
-	for (i = 0; i < nprotocols; i++) {
-		atoms[i] = gdk_x11_atom_to_xatom (protocols[i]);
-	}
-
-	XSetWMProtocols (GDK_WINDOW_XDISPLAY (window),
-			 GDK_WINDOW_XWINDOW (window),
-			 atoms, nprotocols);
-
-	g_free (atoms);
-}
-
-/**
- * eel_gdk_window_set_wm_hints_input:
- * 
- * Set the WM_HINTS.input flag to the passed in value
- */
-void
-eel_gdk_window_set_wm_hints_input (GdkWindow *window, gboolean status)
-{
-	Display *dpy;
-	Window id;
-	XWMHints *wm_hints;
-
-	g_return_if_fail (window != NULL);
-
-	dpy = GDK_WINDOW_XDISPLAY (window);
-	id = GDK_WINDOW_XWINDOW (window);
-
-	wm_hints = XGetWMHints (dpy, id);
-	if (wm_hints == 0) {
-		wm_hints = XAllocWMHints ();
-	}
-
-	wm_hints->flags |= InputHint;
-	wm_hints->input = (status == FALSE) ? False : True;
-
-	XSetWMHints (dpy, id, wm_hints);
-	XFree (wm_hints);
-}
-
-void
-eel_gdk_window_set_invisible_cursor (GdkWindow *window)
-{
-	GdkCursor *cursor;
-	
-	cursor = gdk_cursor_new_for_display (gdk_drawable_get_display (window),
-					     GDK_BLANK_CURSOR);
-
-	gdk_window_set_cursor (window, cursor);
-
-	gdk_cursor_unref (cursor);
 }
 
 EelGdkGeometryFlags
@@ -705,12 +519,6 @@ eel_self_check_gdk_rgb_to_color (guint32 color)
 void
 eel_self_check_gdk_extensions (void)
 {
-	/* eel_interpolate_color */
-	EEL_CHECK_INTEGER_RESULT (eel_interpolate_color (0.0, 0, 0), 0);
-	EEL_CHECK_INTEGER_RESULT (eel_interpolate_color (0.0, 0, 0xFFFFFF), 0);
-	EEL_CHECK_INTEGER_RESULT (eel_interpolate_color (0.5, 0, 0xFFFFFF), 0x7F7F7F);
-	EEL_CHECK_INTEGER_RESULT (eel_interpolate_color (1.0, 0, 0xFFFFFF), 0xFFFFFF);
-
 	/* eel_gradient_new */
 	EEL_CHECK_STRING_RESULT (eel_gradient_new ("", "", FALSE), "");
 	EEL_CHECK_STRING_RESULT (eel_gradient_new ("a", "b", FALSE), "a-b");
