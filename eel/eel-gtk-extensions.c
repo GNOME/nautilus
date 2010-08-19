@@ -32,7 +32,6 @@
 #include "eel-gdk-pixbuf-extensions.h"
 #include "eel-glib-extensions.h"
 #include "eel-gnome-extensions.h"
-#include "eel-pango-extensions.h"
 #include "eel-string.h"
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>

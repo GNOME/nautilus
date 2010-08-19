@@ -38,7 +38,6 @@
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-graphic-effects.h>
 #include <eel/eel-gtk-macros.h>
-#include <eel/eel-pango-extensions.h>
 #include <eel/eel-string.h>
 #include <eel/eel-accessibility.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
