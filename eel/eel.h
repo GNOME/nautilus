@@ -33,7 +33,6 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-graphic-effects.h>
-#include <eel/eel-gtk-container.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-pango-extensions.h>
