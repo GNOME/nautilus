@@ -35,7 +35,6 @@ libeel_2_la_SOURCES =				\
 	eel-canvas.c				\
 	eel-canvas-util.c			\
 	eel-canvas-rect-ellipse.c		\
-	eel-debug-drawing.c			\
 	eel-debug.c				\
 	eel-editable-label.c			\
 	eel-gdk-extensions.c			\
@@ -63,7 +62,6 @@ eel_headers =					\
 	eel-canvas.h				\
 	eel-canvas-util.h			\
 	eel-canvas-rect-ellipse.h		\
-	eel-debug-drawing.h			\
 	eel-debug.h				\
 	eel-editable-label.h			\
 	eel-gdk-extensions.h			\
