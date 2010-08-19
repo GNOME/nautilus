@@ -96,34 +96,6 @@ eel_make_valid_utf8 (const char *name)
 	return g_string_free (string, FALSE);
 }
 
-/**
- * eel_format_uri_for_display:
- *
- * Filter, modify, unescape and change URIs to make them appropriate
- * to display to users. The conversion is done such that the roundtrip
- * to UTf8 is reversible.
- * 
- * Rules:
- * 	file: URI's without fragments should appear as local paths
- * 	file: URI's with fragments should appear as file: URI's
- * 	All other URI's appear as expected
- *
- * @uri: a URI
- *
- * returns a g_malloc'd UTF8 string
- **/
-char *
-eel_format_uri_for_display (const char *uri) 
-{
-	GFile *file;
-	char *res;
-
-	file = g_file_new_for_uri (uri);
-	res = g_file_get_parse_name (file);
-	g_object_unref (file);
-	return res;
-}
-
 char *
 eel_filename_strip_extension (const char * filename_with_extension)
 {
