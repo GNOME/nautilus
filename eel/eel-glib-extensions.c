@@ -701,69 +701,6 @@ eel_round (double d)
 	return val;
 }
 
-GList *
-eel_g_list_from_g_slist (GSList *slist)
-{
-	GList *list;
-	GSList *node;
-
-	list = NULL;
-	for (node = slist; node != NULL; node = node->next) {
-		list = g_list_prepend (list, node->data);
-	}
-	return g_list_reverse (list);
-}
-
-GSList *
-eel_g_slist_from_g_list (GList *list)
-{
-	GSList *slist;
-	GList *node;
-
-	slist = NULL;
-	for (node = list; node != NULL; node = node->next) {
-		slist = g_slist_prepend (slist, node->data);
-	}
-	return g_slist_reverse (slist);
-}
-
-/* Return the operating system name: Linux, Solaris, etc. */
-char *
-eel_get_operating_system_name (void)
-{
-	struct utsname buffer;
-
-	if (uname (&buffer) != -1) {
-		/* Check for special sysnames for which there is 
-		 * more accepted names.
-		 */
-		if (eel_str_is_equal (buffer.sysname, "SunOS")) {
-			return g_strdup ("Solaris");
-		}
-
-		return g_strdup (buffer.sysname);
-	}
-
-	return g_strdup ("Unix");
-}
-
-int
-eel_compare_integer (gconstpointer a,
-			  gconstpointer b)
-{
-	int int_a;
-	int int_b;
-
-	int_a = GPOINTER_TO_INT (a);
-	int_b = GPOINTER_TO_INT (b);
-
-	if (int_a == int_b) {
-		return 0;
-	}
-
-	return int_a < int_b ? -1 : 1;
-}
-
 /**
  * eel_g_object_list_ref
  *
@@ -1284,27 +1221,6 @@ eel_self_check_glib_extensions (void)
 	setlocale (LC_TIME, "");
 
 	g_free (huge_string);
-
-	/* eel_shell_quote */
-	EEL_CHECK_STRING_RESULT (g_shell_quote (""), "''");
-	EEL_CHECK_STRING_RESULT (g_shell_quote ("a"), "'a'");
-	EEL_CHECK_STRING_RESULT (g_shell_quote ("("), "'('");
-	EEL_CHECK_STRING_RESULT (g_shell_quote ("'"), "''\\'''");
-	EEL_CHECK_STRING_RESULT (g_shell_quote ("'a"), "''\\''a'");
-	EEL_CHECK_STRING_RESULT (g_shell_quote ("a'"), "'a'\\'''");
-	EEL_CHECK_STRING_RESULT (g_shell_quote ("a'a"), "'a'\\''a'");
-
-	/* eel_compare_integer */
-	EEL_CHECK_INTEGER_RESULT (eel_compare_integer (GINT_TO_POINTER (0), GINT_TO_POINTER (0)), 0);
-	EEL_CHECK_INTEGER_RESULT (eel_compare_integer (GINT_TO_POINTER (0), GINT_TO_POINTER (1)), -1);
-	EEL_CHECK_INTEGER_RESULT (eel_compare_integer (GINT_TO_POINTER (1), GINT_TO_POINTER (0)), 1);
-	EEL_CHECK_INTEGER_RESULT (eel_compare_integer (GINT_TO_POINTER (-1), GINT_TO_POINTER (0)), -1);
-	EEL_CHECK_INTEGER_RESULT (eel_compare_integer (GINT_TO_POINTER (0), GINT_TO_POINTER (-1)), 1);
-	EEL_CHECK_INTEGER_RESULT (eel_compare_integer (GINT_TO_POINTER (-1), GINT_TO_POINTER (-1)), 0);
-
-#ifdef __linux__
-	EEL_CHECK_STRING_RESULT (eel_get_operating_system_name (), "Linux");
-#endif
 }
 
 #endif /* !EEL_OMIT_SELF_CHECK */

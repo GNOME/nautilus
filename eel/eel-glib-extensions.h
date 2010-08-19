@@ -33,13 +33,6 @@
 /* A gboolean variant for bit fields. */
 typedef guint eel_boolean_bit;
 
-/* Callback functions that have user data. */
-typedef int      (* EelCompareFunction)   (gconstpointer a,
-					   gconstpointer b,
-					   gpointer callback_data);
-typedef int      (* EelSearchFunction)    (gconstpointer item,
-					   gpointer callback_data);
-
 /* Predicate. */
 typedef gboolean (* EelPredicateFunction) (gpointer data,
 					   gpointer callback_data);
@@ -66,10 +59,6 @@ void        eel_g_list_free_deep                        (GList                 *
 void        eel_g_list_free_deep_custom                 (GList                 *list,
 							 GFunc                  element_free_func,
 							 gpointer               user_data);
-
-/* GSList functions. */
-GList *     eel_g_list_from_g_slist                     (GSList                *list);
-GSList *    eel_g_slist_from_g_list                     (GList                 *list);
 
 /* List functions for slists of g_free'able objects. */
 void        eel_g_slist_free_deep                       (GSList                *list);
@@ -110,13 +99,6 @@ gint64      eel_get_system_time                         (void);
 
 /* math */
 int         eel_round                                   (double                 d);
-
-/* A GCompareFunc for integers */
-int         eel_compare_integer                         (gconstpointer          a,
-							 gconstpointer          b);
-
-/* Return the operating system name: Linux, Solaris, etc. */
-char *      eel_get_operating_system_name               (void);
 
 /* Better weak pointer functions */
 void        eel_add_weak_pointer                        (gpointer               pointer_location);
