@@ -35,6 +35,7 @@
 
 #include "fm-actions.h"
 #include "fm-error-reporting.h"
+#include "fm-marshal.h"
 #include "fm-properties-window.h"
 #include "libnautilus-private/nautilus-open-with-dialog.h"
 
@@ -71,7 +72,6 @@
 #include <libnautilus-private/nautilus-file-private.h> /* for nautilus_file_get_existing_by_uri */
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-link.h>
-#include <libnautilus-private/nautilus-marshal.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-module.h>
@@ -10642,7 +10642,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, add_file),
 		              NULL, NULL,
-		              nautilus_marshal_VOID__OBJECT_OBJECT,
+		              fm_marshal_VOID__OBJECT_OBJECT,
 		              G_TYPE_NONE, 2, NAUTILUS_TYPE_FILE, NAUTILUS_TYPE_DIRECTORY);
 	signals[BEGIN_FILE_CHANGES] =
 		g_signal_new ("begin_file_changes",
@@ -10698,7 +10698,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, file_changed),
 		              NULL, NULL,
-		              nautilus_marshal_VOID__OBJECT_OBJECT,
+		              fm_marshal_VOID__OBJECT_OBJECT,
 		              G_TYPE_NONE, 2, NAUTILUS_TYPE_FILE, NAUTILUS_TYPE_DIRECTORY);
 	signals[LOAD_ERROR] =
 		g_signal_new ("load_error",
@@ -10714,7 +10714,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, remove_file),
 		              NULL, NULL,
-		              nautilus_marshal_VOID__OBJECT_OBJECT,
+		              fm_marshal_VOID__OBJECT_OBJECT,
 		              G_TYPE_NONE, 2, NAUTILUS_TYPE_FILE, NAUTILUS_TYPE_DIRECTORY);
 
 	klass->accepts_dragged_files = real_accepts_dragged_files;
@@ -10771,7 +10771,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 			      G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
 			      G_STRUCT_OFFSET (FMDirectoryViewClass, trash),
 			      g_signal_accumulator_true_handled, NULL,
-			      eel_marshal_BOOLEAN__VOID,
+			      fm_marshal_BOOLEAN__VOID,
 			      G_TYPE_BOOLEAN, 0);
 	signals[DELETE] =
 		g_signal_new ("delete",
@@ -10779,7 +10779,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 			      G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
 			      G_STRUCT_OFFSET (FMDirectoryViewClass, delete),
 			      g_signal_accumulator_true_handled, NULL,
-			      eel_marshal_BOOLEAN__VOID,
+			      fm_marshal_BOOLEAN__VOID,
 			      G_TYPE_BOOLEAN, 0);
 	
 	binding_set = gtk_binding_set_by_class (klass);
