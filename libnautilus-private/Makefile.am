@@ -17,6 +17,11 @@ INCLUDES = 						\
 	-DNAUTILUS_EXTENSIONDIR=\""$(libdir)/nautilus/extensions-2.0"\" \
 	$(NULL)
 
+BUILT_SOURCES = \
+	nautilus-marshal.c \
+	nautilus-marshal.h \
+	$(NULL)
+
 dependency_static_libs = \
 	$(top_builddir)/cut-n-paste-code/libegg/libegg.la \
         $(NULL)
@@ -33,11 +38,6 @@ libnautilus_private_la_LIBADD =		\
 	$(top_builddir)/eel/libeel-2.la \
 	$(top_builddir)/libnautilus-extension/libnautilus-extension.la \
 	$(CORE_LIBS)			\
-	$(NULL)
-
-marshal_sources = \
-	nautilus-marshal.h \
-	nautilus-marshal-guts.c \
 	$(NULL)
 
 libnautilus_private_la_SOURCES = \
@@ -118,8 +118,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-lib-self-check-functions.h \
 	nautilus-link.c \
 	nautilus-link.h \
-	nautilus-marshal.c \
-	nautilus-marshal.h \
 	nautilus-merged-directory.c \
 	nautilus-merged-directory.h \
 	nautilus-metadata.h \
@@ -195,14 +193,29 @@ libnautilus_private_la_SOURCES = \
 	nautilus-window-slot-info.h \
 	$(NULL)
 
+nodist_libnautilus_private_la_SOURCES =\
+	$(BUILT_SOURCES) \
+	$(NULL)
+
 $(lib_LTLIBRARIES): $(dependency_static_libs)
 
-nautilus-marshal.h: nautilus-marshal.list $(GLIB_GENMARSHAL)
-	$(AM_V_GEN)$(GLIB_GENMARSHAL) $< --header --prefix=nautilus_marshal > $@
-nautilus-marshal-guts.c: nautilus-marshal.list $(GLIB_GENMARSHAL)
-	$(AM_V_GEN)$(GLIB_GENMARSHAL) $< --body --prefix=nautilus_marshal > $@
+nautilus-marshal.list: $(libnautilus_private_la_SOURCES) Makefile.am
+	$(AM_V_GEN)( cd $(srcdir) && \
+	sed -n -e 's/.*nautilus_marshal_\([[:upper:][:digit:]]*__[[:upper:][:digit:]_]*\).*/\1/p' \
+	$(libnautilus_private_la_SOURCES) ) \
+	| sed -e 's/__/:/' -e 'y/_/,/' | sort -u > $@.tmp
+	@if cmp -s $@.tmp $@; then \
+		rm $@.tmp; \
+	else \
+		mv $@.tmp $@; \
+	fi
 
-$(libnautilus_private_la_OBJECTS): $(marshal_sources)
+%-marshal.h: %-marshal.list Makefile
+	$(AM_V_GEN)$(GLIB_GENMARSHAL) --header --prefix=$(subst -,_,$*)_marshal $< > $*-marshal.h
+
+%-marshal.c: %-marshal.list Makefile
+	$(AM_V_GEN)echo "#include \"nautilus-marshal.h\"" > $@ && \
+	$(GLIB_GENMARSHAL) --body --prefix=$(subst -,_,$*)_marshal $< >> $*-marshal.c
 
 gsettingsschema_in_files = org.gnome.nautilus.gschema.xml.in org.gnome.media-handling.gschema.xml.in
 gsettings_SCHEMAS = $(gsettingsschema_in_files:.xml.in=.xml)
@@ -224,8 +237,9 @@ EXTRA_DIST =				\
 	$(NULL)
 
 CLEANFILES = \
-	$(marshal_sources)				\
+	$(BUILT_SOURCES)				\
 	$(gsettings_SCHEMAS)				\
+	nautilus-marshal.list				\
 	$(NULL)
 
 dist-hook:
