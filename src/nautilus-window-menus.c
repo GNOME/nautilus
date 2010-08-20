@@ -459,8 +459,11 @@ action_about_nautilus_callback (GtkAction *action,
 		"Alexander Larsson",
 		"Ali Abdin",
 		"Anders Carlsson",
+		"Andrew Walton",
 		"Andy Hertzfeld",
 		"Arlo Rose",
+		"Christian Neumair",
+		"Cosimo Cecchi",
 		"Darin Adler",
 		"David Camp",
 		"Eli Goldberg",
@@ -520,7 +523,7 @@ action_about_nautilus_callback (GtkAction *action,
 			       "comments", _("Nautilus lets you organize "
 					     "files and folders, both on "
 					     "your computer and online."),
-			       "copyright", _("Copyright \xC2\xA9 1999-2009 "
+			       "copyright", _("Copyright \xC2\xA9 1999-2010 "
 					      "The Nautilus authors"),
 			       "license", license_trans,
 			       "wrap-license", TRUE,
