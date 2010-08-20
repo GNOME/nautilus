@@ -41,6 +41,7 @@
 #include "nautilus-zoom-control.h"
 #include "nautilus-search-bar.h"
 #include "nautilus-navigation-window-pane.h"
+#include "nautilus-src-marshal.h"
 #include <eel/eel-debug.h>
 #include <eel/eel-marshal.h>
 #include <eel/eel-gtk-macros.h>
@@ -58,7 +59,6 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-horizontal-splitter.h>
 #include <libnautilus-private/nautilus-metadata.h>
-#include <libnautilus-private/nautilus-marshal.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
 #include <libnautilus-private/nautilus-view-factory.h>
@@ -2010,7 +2010,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
 			      G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
 			      G_STRUCT_OFFSET (NautilusWindowClass, go_up),
 			      g_signal_accumulator_true_handled, NULL,
-			      eel_marshal_BOOLEAN__BOOLEAN,
+			      nautilus_src_marshal_BOOLEAN__BOOLEAN,
 			      G_TYPE_BOOLEAN, 1, G_TYPE_BOOLEAN);
 	signals[RELOAD] =
 		g_signal_new ("reload",
@@ -2034,7 +2034,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
 			      G_SIGNAL_RUN_LAST,
 			      0,
 			      NULL, NULL,
-			      nautilus_marshal_VOID__INT_BOOLEAN_BOOLEAN_BOOLEAN_BOOLEAN,
+			      nautilus_src_marshal_VOID__INT_BOOLEAN_BOOLEAN_BOOLEAN_BOOLEAN,
 			      G_TYPE_NONE, 5,
 			      G_TYPE_INT, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN,
 			      G_TYPE_BOOLEAN, G_TYPE_BOOLEAN);
