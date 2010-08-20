@@ -112,7 +112,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-icon-names.h \
 	nautilus-idle-queue.c \
 	nautilus-idle-queue.h \
-	nautilus-iso9660.h \
 	nautilus-keep-last-vertical-box.c \
 	nautilus-keep-last-vertical-box.h \
 	nautilus-lib-self-check-functions.c \
