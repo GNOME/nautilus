@@ -32,8 +32,6 @@
 #include "eel-lib-self-check-functions.h"
 #include "eel-string.h"
 #include "eel-marshal.h"
-#include "eel-types.h"
-#include "eel-type-builtins.h"
 #include <gtk/gtk.h>
 #include <eel/eel-canvas.h>
 #include <eel/eel-canvas-util.h>
@@ -109,8 +107,6 @@ eel_background_class_init (gpointer klass)
 	GObjectClass *object_class;
 
 	object_class = G_OBJECT_CLASS (klass);
-
-	eel_type_init ();
 
 	signals[APPEARANCE_CHANGED] =
 		g_signal_new ("appearance_changed",

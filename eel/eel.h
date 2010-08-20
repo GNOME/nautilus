@@ -37,7 +37,6 @@
 #include <eel/eel-self-checks.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
-#include <eel/eel-types.h>
 #include <eel/eel-vfs-extensions.h>
 
 #endif /* EEL_H */

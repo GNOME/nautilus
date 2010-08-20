@@ -16,6 +16,11 @@ INCLUDES =						\
 	-DGMENU_I_KNOW_THIS_IS_UNSTABLE			\
 	$(NULL)
 
+BUILT_SOURCES = \
+	eel-marshal.c \
+	eel-marshal.h \
+	$(NULL)
+
 libeel_2_la_LDFLAGS =				\
 	-no-undefined				\
 	$(NULL)
@@ -46,7 +51,6 @@ libeel_2_la_SOURCES =				\
 	eel-self-checks.c			\
 	eel-stock-dialogs.c			\
 	eel-string.c				\
-	eel-types.c				\
 	eel-vfs-extensions.c			\
 	eel-lib-self-check-functions.h		\
 	$(NULL)
@@ -71,55 +75,31 @@ eel_headers =					\
 	eel-self-checks.h			\
 	eel-stock-dialogs.h			\
 	eel-string.h				\
-	eel-types.h				\
 	eel-vfs-extensions.h			\
 	eel.h					\
 	$(NULL)
 
-marshal_sources = 				\
-	eel-marshal.h				\
-	eel-marshal.c				\
+nodist_libeel_2_la_SOURCES =			\
+	$(BUILT_SOURCES)			\
 	$(NULL)
 
-eel-marshal.h: eelmarshal.list $(GLIB_GENMARSHAL)
-	$(AM_V_GEN)$(GLIB_GENMARSHAL) $< --header --prefix=eel_marshal > $@
-eel-marshal.c: eelmarshal.list $(GLIB_GENMARSHAL)
-	$(AM_V_GEN)$(GLIB_GENMARSHAL) $< --body --prefix=eel_marshal > $@
+eel-marshal.list: $(libeel_2_la_SOURCES) Makefile.am
+	$(AM_V_GEN)( cd $(srcdir) && \
+	sed -n -e 's/.*eel_marshal_\([[:upper:][:digit:]]*__[[:upper:][:digit:]_]*\).*/\1/p' \
+	$(libeel_2_la_SOURCES) ) \
+	| sed -e 's/__/:/' -e 'y/_/,/' | sort -u > $@.tmp
+	@if cmp -s $@.tmp $@; then \
+		rm $@.tmp; \
+	else \
+		mv $@.tmp $@; \
+	fi
 
-stamp_sources =					\
-	eel-enums.defs				\
-	eel-type-builtins-evals.c		\
-	$(NULL)
+%-marshal.c: %-marshal.list Makefile
+	$(AM_V_GEN)echo "#include \"eel-marshal.h\"" > $@ && \
+	$(GLIB_GENMARSHAL) --body --prefix=$(subst -,_,$*)_marshal $< >> $*-marshal.c
 
-stamps =					\
-	eel-makeenums-stamp			\
-	eel-stamp				\
-	$(NULL)
-
-eel-makeenums-stamp: makeenums.pl $(eel_headers)
-	$(AM_V_GEN)$(PERL) $< defs $(filter-out $<,$^) > xgen-eed \
-	&& (cmp -s xgen-eed eel-enums.defs || mv -f xgen-eed eel-enums.defs) \
-	&& rm -f xgen-eed \
-	&& $(PERL) $< arrays $(filter-out $<,$^) > xgen-etbe \
-	&& (cmp -s xgen-etbe eel-type-builtins-evals.c || mv -f xgen-etbe eel-type-builtins-evals.c) \
-	&& rm -f xgen-etbe \
-	&& echo timestamp > $@
-
-maketypes_sources =				\
-	eel-type-builtins.h			\
-	eel-type-builtins-ids.c			\
-	eel-type-builtins-vars.c		\
-	$(NULL)
-
-eel-stamp: eel-makeenums-stamp $(maketypes_sources)
-	echo timestamp > $@
-
-eel-type-builtins.h: eel-enums.defs maketypes.awk eel-makeenums-stamp
-	LC_ALL=C $(AWK) -f $(srcdir)/maketypes.awk $< macros > $@
-eel-type-builtins-vars.c: eel-enums.defs maketypes.awk eel-makeenums-stamp
-	LC_ALL=C $(AWK) -f $(srcdir)/maketypes.awk $< variables > $@
-eel-type-builtins-ids.c: eel-enums.defs maketypes.awk eel-makeenums-stamp
-	LC_ALL=C $(AWK) -f $(srcdir)/maketypes.awk $< entries > $@
+%-marshal.h: %-marshal.list Makefile
+	$(AM_V_GEN)$(GLIB_GENMARSHAL) --header --prefix=$(subst -,_,$*)_marshal $< > $*-marshal.h
 
 noinst_PROGRAMS = check-program
 
@@ -132,28 +112,10 @@ TESTS = check-eel
 
 EXTRA_DIST =					\
 	$(eel_headers)				\
-	eel-type-builtins.h			\
-	eel-marshal.h				\
 	check-eel				\
-	eelmarshal.list				\
-	makeenums.pl				\
-	maketypes.awk				\
+	eel-marshal.list			\
 	$(NULL)
 
-$(libeel_2_la_OBJECTS): $(marshal_sources)
-
-# This trick causes the stamp file to be built first.
-Makefile: eel-stamp
-
-# This trick causes the generated files to be built the first time.
-$(stamp_sources): # never add any dependencies
-	test -f $@ || touch $@
-
-built_sources =	$(stamps) $(stamp_sources) $(maketypes_sources) $(marshal_sources)
-CLEANFILES = $(built_sources)
-DONT_DIST_FILES = $(built_sources)
-
-dist-hook:
-	for file in $(DONT_DIST_FILES) ; do \
-	    rm -f $(distdir)/$$file ; \
-	done
+CLEANFILES = \
+	$(BUILT_SOURCES) \
+	$(NULL)
