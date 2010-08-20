@@ -327,31 +327,25 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 			}
 			emblems_to_ignore[i++] = NULL;
 
-			emblem = NULL;
 			emblem_icons = nautilus_file_get_emblem_icons (file,
 								       emblems_to_ignore);
 
-			if (emblem_icons != NULL) {
-				emblem_icon = emblem_icons->data;
-				emblem = g_emblem_new (emblem_icon);
-				emblemed_icon = g_emblemed_icon_new (gicon, emblem);
-
-				g_object_unref (emblem);
-
-				for (l = emblem_icons->next; l != NULL; l = l->next) {
-					emblem_icon = l->data;
+			/* pick only the first emblem we can render for the list view */
+			for (l = emblem_icons; l != NULL; l = l->next) {
+				emblem_icon = l->data;
+				if (nautilus_icon_theme_can_render (G_THEMED_ICON (emblem_icon))) {
 					emblem = g_emblem_new (emblem_icon);
-					g_emblemed_icon_add_emblem
-						(G_EMBLEMED_ICON (emblemed_icon), emblem);
+					emblemed_icon = g_emblemed_icon_new (gicon, emblem);
 
+					g_object_unref (gicon);
 					g_object_unref (emblem);
+					gicon = emblemed_icon;
+
+					break;
 				}
-
-				eel_g_object_list_free (emblem_icons);
-
-				g_object_unref (gicon);
-				gicon = emblemed_icon;
 			}
+
+			eel_g_object_list_free (emblem_icons);
 
 			icon_info = nautilus_icon_info_lookup (gicon, icon_size);
 			icon = nautilus_icon_info_get_pixbuf_at_size (icon_info, icon_size);
