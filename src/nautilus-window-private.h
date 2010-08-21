@@ -177,9 +177,6 @@ void               nautilus_menus_append_bookmark_to_menu                (Nautil
                                                                           guint              merge_id,
                                                                           GCallback          refresh_callback,
                                                                           NautilusBookmarkFailedCallback failed_callback);
-#ifdef NEW_UI_COMPLETE
-void               nautilus_window_go_up                                 (NautilusWindow    *window);
-#endif
 void               nautilus_window_update_find_menu_item                 (NautilusWindow    *window);
 void               nautilus_window_zoom_in                               (NautilusWindow    *window);
 void               nautilus_window_zoom_out                              (NautilusWindow    *window);

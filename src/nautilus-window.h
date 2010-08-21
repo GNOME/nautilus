@@ -118,7 +118,6 @@ struct NautilusWindow {
         
         NautilusWindowDetails *details;
         
-        /** CORBA-related elements **/
         NautilusApplication *application;
 };
 
@@ -143,7 +142,6 @@ void             nautilus_window_go_up                (NautilusWindow    *window
 						       gboolean           new_tab);
 void             nautilus_window_prompt_for_location  (NautilusWindow    *window,
                                                        const char        *initial);
-void             nautilus_window_launch_cd_burner     (NautilusWindow    *window);
 void             nautilus_window_display_error        (NautilusWindow    *window,
                                                        const char        *error_msg);
 void		 nautilus_window_reload		      (NautilusWindow	 *window);
@@ -153,8 +151,6 @@ void             nautilus_window_allow_reload         (NautilusWindow    *window
 void             nautilus_window_allow_up             (NautilusWindow    *window, 
                                                        gboolean           allow);
 void             nautilus_window_allow_stop           (NautilusWindow    *window, 
-                                                       gboolean           allow);
-void             nautilus_window_allow_burn_cd        (NautilusWindow    *window,
                                                        gboolean           allow);
 GtkUIManager *   nautilus_window_get_ui_manager       (NautilusWindow    *window);
 
