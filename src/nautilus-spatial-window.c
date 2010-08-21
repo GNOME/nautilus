@@ -94,7 +94,8 @@ static const GtkTargetEntry location_button_drag_types[] = {
 G_DEFINE_TYPE(NautilusSpatialWindow, nautilus_spatial_window, NAUTILUS_TYPE_WINDOW)
 #define parent_class nautilus_spatial_window_parent_class
 
-static void nautilus_spatial_window_save_geometry (NautilusWindowSlot *slot);
+static void nautilus_spatial_window_save_geometry (NautilusSpatialWindow *window,
+						   NautilusFile *viewed_file);
 
 static gboolean
 save_window_geometry_timeout (gpointer callback_data)
@@ -106,7 +107,7 @@ save_window_geometry_timeout (gpointer callback_data)
 	slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (window));
 
 	if (slot != NULL) {
-		nautilus_spatial_window_save_geometry (slot);
+		nautilus_spatial_window_save_geometry (window, slot->viewed_file);
 	}
 
 	window->details->save_geometry_timeout_id = 0;
@@ -119,7 +120,6 @@ nautilus_spatial_window_configure_event (GtkWidget *widget,
 					GdkEventConfigure *event)
 {
 	NautilusSpatialWindow *window;
-	char *geometry_string;
 	
 	window = NAUTILUS_SPATIAL_WINDOW (widget);
 
@@ -131,32 +131,10 @@ nautilus_spatial_window_configure_event (GtkWidget *widget,
 	if (window->details->save_geometry_timeout_id != 0) {
 		g_source_remove (window->details->save_geometry_timeout_id);
 	}
-	if (gtk_widget_get_visible (GTK_WIDGET (window)) && !NAUTILUS_IS_DESKTOP_WINDOW (window)) {
-		geometry_string = eel_gtk_window_get_geometry_string (GTK_WINDOW (window));
-	
-		/* If the last geometry is NULL the window must have just
-		 * been shown. No need to save geometry to disk since it
-		 * must be the same.
-		 */
-		if (window->details->last_geometry == NULL) {
-			window->details->last_geometry = geometry_string;
-			return FALSE;
-		}
-	
-		/* Don't save geometry if it's the same as before. */
-		if (!strcmp (window->details->last_geometry, 
-			     geometry_string)) {
-			g_free (geometry_string);
-			return FALSE;
-		}
 
-		g_free (window->details->last_geometry);
-		window->details->last_geometry = geometry_string;
+	window->details->save_geometry_timeout_id =
+		g_timeout_add_seconds (1, save_window_geometry_timeout, window);
 
-		window->details->save_geometry_timeout_id = 
-			g_timeout_add_seconds (1, save_window_geometry_timeout, window);
-	}
-	
 	return FALSE;
 }
 
@@ -176,7 +154,7 @@ nautilus_spatial_window_unrealize (GtkWidget *widget)
 		window->details->save_geometry_timeout_id = 0;
 
 		if (slot != NULL) {
-			nautilus_spatial_window_save_geometry (slot);
+			nautilus_spatial_window_save_geometry (window, slot->viewed_file);
 		}
 	}
 }
@@ -229,73 +207,62 @@ nautilus_spatial_window_state_event (GtkWidget *widget,
 }
 
 static void
-nautilus_spatial_window_destroy (GtkObject *object)
-{
-	NautilusSpatialWindow *window;
-
-	window = NAUTILUS_SPATIAL_WINDOW (object);
-
-	window->details->content_box = NULL;
-
-	GTK_OBJECT_CLASS (nautilus_spatial_window_parent_class)->destroy (object);
-}
-
-static void
 nautilus_spatial_window_finalize (GObject *object)
 {
 	NautilusSpatialWindow *window;
 	
 	window = NAUTILUS_SPATIAL_WINDOW (object);
 
-	if (window->details->last_geometry != NULL) {
-		g_free (window->details->last_geometry);
-	}
+	g_free (window->details->last_geometry);
 
 	G_OBJECT_CLASS (nautilus_spatial_window_parent_class)->finalize (object);
 }
 
 static void
-nautilus_spatial_window_save_geometry (NautilusWindowSlot *slot)
+nautilus_spatial_window_save_geometry (NautilusSpatialWindow *window,
+				       NautilusFile *viewed_file)
 {
-	NautilusWindow *window;
-	NautilusFile *viewed_file;
 	char *geometry_string;
-
-	window = NAUTILUS_WINDOW (slot->pane->window);
-
-	viewed_file = slot->viewed_file;
 
 	if (viewed_file == NULL) {
 		/* We never showed a file */
 		return;
 	}
-	
+
 	if (gtk_widget_get_window (GTK_WIDGET (window)) &&
+    	    gtk_widget_get_visible (GTK_WIDGET (window)) &&
+	    !NAUTILUS_IS_DESKTOP_WINDOW (window) &&
 	    !(gdk_window_get_state (gtk_widget_get_window (GTK_WIDGET(window))) & GDK_WINDOW_STATE_MAXIMIZED)) {
+
 		geometry_string = eel_gtk_window_get_geometry_string (GTK_WINDOW (window));
-		
+
+		if (!g_strcmp0 (window->details->last_geometry, geometry_string)) {
+			/* Don't save geometry if it's the same as before. */
+			g_free (geometry_string);
+			return;
+		}
+
+		g_free (window->details->last_geometry);
+		window->details->last_geometry = geometry_string;
+
 		nautilus_file_set_metadata (viewed_file,
 					    NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY,
 					    NULL,
 					    geometry_string);
-		
-		g_free (geometry_string);
 	}
 }
 
 static void
-nautilus_spatial_window_save_scroll_position (NautilusWindowSlot *slot)
+nautilus_spatial_window_save_scroll_position (NautilusSpatialWindow *window,
+					      NautilusWindowSlot *slot)
 {
-	NautilusWindow *window;
 	char *scroll_string;
-
-	window = NAUTILUS_WINDOW (slot->pane->window);
 
 	if (slot->content_view == NULL ||
 	    slot->viewed_file == NULL) {
 		return;
 	}
-	
+
 	scroll_string = nautilus_view_get_first_visible_file (slot->content_view);
 	nautilus_file_set_metadata (slot->viewed_file,
 				    NAUTILUS_METADATA_KEY_WINDOW_SCROLL_POSITION,
@@ -305,30 +272,29 @@ nautilus_spatial_window_save_scroll_position (NautilusWindowSlot *slot)
 }
 
 static void
-nautilus_spatial_window_save_show_hidden_files_mode (NautilusWindowSlot *slot)
+nautilus_spatial_window_save_show_hidden_files_mode (NautilusSpatialWindow *window,
+						     NautilusFile *viewed_file)
 {
-	NautilusWindow *window;
 	char *show_hidden_file_setting;
 	NautilusWindowShowHiddenFilesMode mode;
 
-	if (slot->viewed_file == NULL) {
+	if (viewed_file == NULL) {
 		return;
 	}
-	
-	window = NAUTILUS_WINDOW (slot->pane->window);
 
 	mode = NAUTILUS_WINDOW (window)->details->show_hidden_files_mode;
+
 	if (mode != NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT) {
 		if (mode == NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_ENABLE) {
 			show_hidden_file_setting = "1";
 		} else {
 			show_hidden_file_setting = "0";
 		}
-		nautilus_file_set_metadata (slot->viewed_file,
+		nautilus_file_set_metadata (viewed_file,
 			 		    NAUTILUS_METADATA_KEY_WINDOW_SHOW_HIDDEN_FILES,
 				    	    NULL,
 				    	    show_hidden_file_setting);
-	} 
+	}
 }
 
 static void
@@ -479,46 +445,53 @@ real_open_slot (NautilusWindowPane *pane,
 }
 
 static void
-save_spatial_data (NautilusWindowSlot *slot)
+save_spatial_data (NautilusSpatialWindow *window,
+		   NautilusWindowSlot *slot)
 {
-	nautilus_spatial_window_save_geometry (slot);
-	nautilus_spatial_window_save_scroll_position (slot);
-	nautilus_spatial_window_save_show_hidden_files_mode (slot);
+	nautilus_spatial_window_save_geometry (window, slot->viewed_file);
+	nautilus_spatial_window_save_scroll_position (window, slot);
+	nautilus_spatial_window_save_show_hidden_files_mode (window, slot->viewed_file);
 }
 
 static void
 real_close_slot (NautilusWindowPane *pane,
 		 NautilusWindowSlot *slot)
 {
+	NautilusSpatialWindow *window;
+
+	window = NAUTILUS_SPATIAL_WINDOW (pane->window);
+
 	/* Save spatial data for close if we didn't already */
-	if (!NAUTILUS_SPATIAL_WINDOW (pane->window)->details->saved_data_on_close) {
-		save_spatial_data (slot);
+	if (!window->details->saved_data_on_close) {
+		save_spatial_data (window, slot);
 	}
 
-	EEL_CALL_PARENT (NAUTILUS_WINDOW_CLASS,
-			 close_slot, (pane, slot));
+	NAUTILUS_WINDOW_CLASS (nautilus_spatial_window_parent_class)->close_slot (pane, slot);
 }
 
 static void
 real_window_close (NautilusWindow *window)
 {
 	NautilusWindowSlot *slot;
+	NautilusSpatialWindow *self;
+
+	self = NAUTILUS_SPATIAL_WINDOW (window);
 
 	/* We're closing the window, save the geometry. */
 	/* Note that we do this in window close, not slot close, because slot
 	 * close is too late, by then the widgets have been unrealized.
 	 * This is for the close by WM case, if you're closing via Ctrl-W that
 	 * means we close the slots first and this is not an issue */
-	if (window->details->active_pane != NULL &&
-	    window->details->active_pane->active_slot != NULL) {
-		slot = window->details->active_pane->active_slot;
+	slot = nautilus_window_get_active_slot (window);
 
-		save_spatial_data (slot);
-		NAUTILUS_SPATIAL_WINDOW (window)->details->saved_data_on_close = TRUE;
+	if (slot != NULL) {
+		save_spatial_data (self, slot);
+		self->details->saved_data_on_close = TRUE;
 	}
 
-	EEL_CALL_PARENT (NAUTILUS_WINDOW_CLASS,
-			 close, (window));
+	if (NAUTILUS_WINDOW_CLASS (nautilus_spatial_window_parent_class)->close != NULL) {
+		NAUTILUS_WINDOW_CLASS (nautilus_spatial_window_parent_class)->close (window);
+	}
 }
 
 static void
@@ -526,18 +499,13 @@ location_menu_item_activated_callback (GtkWidget *menu_item,
 				       NautilusWindow *window)
 {
 	NautilusWindowSlot *slot;
-	char *location;
 	GFile *current;
 	GFile *dest;
 	GdkEvent *event;
 
-	slot = window->details->active_pane->active_slot;
-
-	location = nautilus_window_slot_get_location_uri (slot);
-	current = g_file_new_for_uri (location);
-	g_free (location);
-
-	dest = g_object_get_data (G_OBJECT (menu_item), "uri");
+	slot = nautilus_window_get_active_slot (window);
+	current = nautilus_window_slot_get_location (slot);
+	dest = g_object_get_data (G_OBJECT (menu_item), "location");
 
 	event = gtk_get_current_event();
 
@@ -550,7 +518,7 @@ location_menu_item_activated_callback (GtkWidget *menu_item,
 		close_behind = FALSE;
 		selection = NULL;
 
-		child = g_object_get_data (G_OBJECT(menu_item), "child_uri");
+		child = g_object_get_data (G_OBJECT(menu_item), "child_location");
 		if (child != NULL) {
 			selection = g_list_prepend (NULL, g_object_ref (child));
 		}
@@ -657,9 +625,11 @@ location_button_pressed_callback (GtkWidget      *widget,
 				  GdkEventButton *event,
 				  NautilusWindow *window)
 {
+	NautilusWindowSlot *slot;
 	NautilusView *view;
 
-	view = window->details->active_pane->active_slot->content_view;
+	slot = nautilus_window_get_active_slot (window);
+	view = slot->content_view;
 
 	if (event->button == 3 && view != NULL) {
 		nautilus_view_pop_up_location_context_menu (view, event, NULL);
@@ -674,28 +644,24 @@ location_button_clicked_callback (GtkWidget             *widget,
 {
 	NautilusWindowSlot *slot;
 	GtkWidget *popup, *menu_item, *first_item = NULL;
-	char *location;
-	GFile *uri;
-	GFile *child_uri;
+	GFile *location;
+	GFile *child_location;
 	GMainLoop *loop;
 
-	slot = NAUTILUS_WINDOW (window)->details->active_pane->active_slot;
+	slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (window));
 
 	popup = gtk_menu_new ();
 	first_item = NULL;
 
-	location = nautilus_window_slot_get_location_uri (slot);
+	location = nautilus_window_slot_get_location (slot);
 	g_return_if_fail (location != NULL);
 
-	uri = g_file_new_for_uri (location);
-	g_free (location);
-
-	child_uri = NULL;
-	while (uri != NULL) {
+	child_location = NULL;
+	while (location != NULL) {
 		NautilusFile *file;
 		char *name;
 
-		file = nautilus_file_get (uri);
+		file = nautilus_file_get (location);
 
 		name = nautilus_file_get_display_name (file);
 		menu_item = gtk_image_menu_item_new_with_label (name);
@@ -718,31 +684,31 @@ location_button_clicked_callback (GtkWidget             *widget,
 				  window);
 
 		g_object_set_data_full (G_OBJECT (menu_item),
-					"uri",
-					g_object_ref (uri),
+					"location",
+					g_object_ref (location),
 					(GDestroyNotify)g_object_unref);
 
-		if (child_uri) {
+		if (child_location) {
 			g_object_set_data_full (G_OBJECT (menu_item),
-						"child_uri",
-						g_object_ref (child_uri),
+						"child_location",
+						g_object_ref (child_location),
 						(GDestroyNotify)g_object_unref);
 		}
 
 		gtk_menu_shell_prepend (GTK_MENU_SHELL (popup), menu_item);
 
-		if (child_uri){
-			g_object_unref (child_uri);
+		if (child_location) {
+			g_object_unref (child_location);
 		}
-		child_uri = uri;
-		uri = g_file_get_parent (uri);
+		child_location = location;
+		location = g_file_get_parent (location);
 	}
 
-	if (child_uri){
-		g_object_unref (child_uri);
+	if (child_location) {
+		g_object_unref (child_location);
 	}
-	if (uri){
-		g_object_unref (uri);
+	if (location) {
+		g_object_unref (location);
 	}
 
 	gtk_menu_set_screen (GTK_MENU (popup), gtk_widget_get_screen (widget));
@@ -766,12 +732,12 @@ location_button_clicked_callback (GtkWidget             *widget,
 static int
 get_dnd_icon_size (NautilusSpatialWindow *window)
 {
-	NautilusWindow *parent;
+	NautilusWindowSlot *active_slot;
 	NautilusView *view;
 	NautilusZoomLevel zoom_level;
 
-	parent = NAUTILUS_WINDOW(window);
-	view = parent->details->active_pane->active_slot->content_view;
+	active_slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (window));
+	view = active_slot->content_view;
 
 	if (view == NULL) {
 		return NAUTILUS_ICON_SIZE_STANDARD;
@@ -779,7 +745,6 @@ get_dnd_icon_size (NautilusSpatialWindow *window)
 		zoom_level = nautilus_view_get_zoom_level (view);
 		return nautilus_get_icon_size_for_zoom_level (zoom_level);
 	}
-	
 }
 
 static void
@@ -1094,39 +1059,33 @@ nautilus_spatial_window_init (NautilusSpatialWindow *window)
 }
 
 static void
-nautilus_spatial_window_class_init (NautilusSpatialWindowClass *class)
+nautilus_spatial_window_class_init (NautilusSpatialWindowClass *klass)
 {
 	GtkBindingSet *binding_set;
+	NautilusWindowClass *nclass = NAUTILUS_WINDOW_CLASS (klass);
+	GtkWidgetClass *wclass = GTK_WIDGET_CLASS (klass);
 	
-	NAUTILUS_WINDOW_CLASS (class)->window_type = NAUTILUS_WINDOW_SPATIAL;
-	NAUTILUS_WINDOW_CLASS (class)->bookmarks_placeholder = MENU_PATH_SPATIAL_BOOKMARKS_PLACEHOLDER;
+	nclass->window_type = NAUTILUS_WINDOW_SPATIAL;
+	nclass->bookmarks_placeholder = MENU_PATH_SPATIAL_BOOKMARKS_PLACEHOLDER;
+	nclass->prompt_for_location = real_prompt_for_location;
+	nclass->get_icon = real_get_icon;
+	nclass->sync_title = real_sync_title;
+	nclass->get_min_size = real_get_min_size;
+	nclass->get_default_size = real_get_default_size;
+	nclass->sync_allow_stop = real_sync_allow_stop;
+	nclass->set_allow_up = real_set_allow_up;
+	nclass->open_slot = real_open_slot;
+	nclass->close = real_window_close;
+	nclass->close_slot = real_close_slot;
 
-	G_OBJECT_CLASS (class)->finalize = nautilus_spatial_window_finalize;
-	GTK_OBJECT_CLASS (class)->destroy = nautilus_spatial_window_destroy;
-	GTK_WIDGET_CLASS (class)->show = nautilus_spatial_window_show;
-	GTK_WIDGET_CLASS (class)->configure_event = nautilus_spatial_window_configure_event;
-	GTK_WIDGET_CLASS (class)->unrealize = nautilus_spatial_window_unrealize;
-	GTK_WIDGET_CLASS (class)->window_state_event = nautilus_spatial_window_state_event;
+	wclass->show = nautilus_spatial_window_show;
+	wclass->configure_event = nautilus_spatial_window_configure_event;
+	wclass->unrealize = nautilus_spatial_window_unrealize;
+	wclass->window_state_event = nautilus_spatial_window_state_event;
 
-	NAUTILUS_WINDOW_CLASS (class)->prompt_for_location = 
-		real_prompt_for_location;
-	NAUTILUS_WINDOW_CLASS (class)->get_icon =
-		real_get_icon;
-	NAUTILUS_WINDOW_CLASS (class)->sync_title = 
-		real_sync_title;
-	NAUTILUS_WINDOW_CLASS(class)->get_min_size = real_get_min_size;
-	NAUTILUS_WINDOW_CLASS(class)->get_default_size = real_get_default_size;
+	G_OBJECT_CLASS (klass)->finalize = nautilus_spatial_window_finalize;
 
-	NAUTILUS_WINDOW_CLASS(class)->sync_allow_stop =
-		real_sync_allow_stop;
-	NAUTILUS_WINDOW_CLASS(class)->set_allow_up =
-		real_set_allow_up;
-
-	NAUTILUS_WINDOW_CLASS (class)->open_slot = real_open_slot;
-	NAUTILUS_WINDOW_CLASS (class)->close = real_window_close;
-	NAUTILUS_WINDOW_CLASS (class)->close_slot = real_close_slot;
-
-	binding_set = gtk_binding_set_by_class (class);
+	binding_set = gtk_binding_set_by_class (klass);
 	gtk_binding_entry_add_signal (binding_set, GDK_BackSpace, GDK_SHIFT_MASK,
 				      "go_up", 1,
 				      G_TYPE_BOOLEAN, TRUE);
@@ -1134,5 +1093,5 @@ nautilus_spatial_window_class_init (NautilusSpatialWindowClass *class)
 				      "go_up", 1,
 				      G_TYPE_BOOLEAN, TRUE);
 
-	g_type_class_add_private (G_OBJECT_CLASS (class), sizeof(NautilusSpatialWindowDetails));
+	g_type_class_add_private (klass, sizeof(NautilusSpatialWindowDetails));
 }
