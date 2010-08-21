@@ -71,9 +71,6 @@ void                  eel_gtk_window_set_initial_geometry_from_string (GtkWindow
 								       guint                 minimum_width,
 								       guint                 minimum_height,
 								       gboolean		     ignore_position);
-void                  eel_gtk_window_set_up_close_accelerator         (GtkWindow            *window);
-gboolean              eel_gtk_window_event_is_close_accelerator       (GtkWindow            *window,
-								       GdkEventKey          *event);
 char *                eel_gtk_window_get_geometry_string              (GtkWindow            *window);
 
 
