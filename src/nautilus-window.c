@@ -2072,19 +2072,3 @@ nautilus_window_class_init (NautilusWindowClass *class)
 
 	g_type_class_add_private (G_OBJECT_CLASS (class), sizeof (NautilusWindowDetails));
 }
-
-/**
- * nautilus_window_has_menubar_and_statusbar:
- * @window: A #NautilusWindow
- * 
- * Queries whether the window should have a menubar and statusbar, based on the
- * window_type from its class structure.
- * 
- * Return value: TRUE if the window should have a menubar and statusbar; FALSE
- * otherwise.
- **/
-gboolean
-nautilus_window_has_menubar_and_statusbar (NautilusWindow *window)
-{
-	return (nautilus_window_get_window_type (window) != NAUTILUS_WINDOW_DESKTOP);
-}

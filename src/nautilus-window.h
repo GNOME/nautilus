@@ -157,6 +157,5 @@ void             nautilus_window_allow_stop           (NautilusWindow    *window
 void             nautilus_window_allow_burn_cd        (NautilusWindow    *window,
                                                        gboolean           allow);
 GtkUIManager *   nautilus_window_get_ui_manager       (NautilusWindow    *window);
-gboolean         nautilus_window_has_menubar_and_statusbar (NautilusWindow *window);
 
 #endif
