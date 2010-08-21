@@ -35,7 +35,6 @@
 #include "fm-tree-model.h"
 #include "fm-properties-window.h"
 #include <string.h>
-#include <eel/eel-alert-dialog.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-stock-dialogs.h>
