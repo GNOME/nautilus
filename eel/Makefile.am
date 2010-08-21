@@ -33,7 +33,6 @@ libeel_2_la_LIBADD = 				\
 
 libeel_2_la_SOURCES =				\
 	eel-accessibility.c			\
-	eel-alert-dialog.c			\
 	eel-art-extensions.c			\
 	eel-background.c			\
 	eel-canvas.c				\
@@ -57,7 +56,6 @@ libeel_2_la_SOURCES =				\
 
 eel_headers =					\
 	eel-accessibility.h			\
-	eel-alert-dialog.h			\
 	eel-art-extensions.h			\
 	eel-background.h			\
 	eel-canvas.h				\
