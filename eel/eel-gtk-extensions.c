@@ -32,16 +32,17 @@
 #include "eel-gdk-pixbuf-extensions.h"
 #include "eel-glib-extensions.h"
 #include "eel-gnome-extensions.h"
+#include "eel-marshal.h"
 #include "eel-string.h"
+
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkprivate.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
+#include <glib/gi18n-lib.h>
 #include <math.h>
-#include "eel-marshal.h"
-#include "eel-marshal.c"
 
 /* This number is fairly arbitrary. Long enough to show a pretty long
  * menu title, but not so long to make a menu grotesquely wide.
@@ -466,4 +467,26 @@ eel_gtk_tree_view_set_activate_on_single_click (GtkTreeView *tree_view,
 				   "eel-tree-view-activate", 
 				   GUINT_TO_POINTER (button_press_id));
 	}
+}
+
+void
+eel_gtk_message_dialog_set_details_label (GtkMessageDialog *dialog,
+				  const gchar *details_text)
+{
+	GtkWidget *content_area, *expander, *label;
+
+	content_area = gtk_message_dialog_get_message_area (dialog);
+	expander = gtk_expander_new_with_mnemonic (_("Show more _details"));
+	gtk_expander_set_spacing (GTK_EXPANDER (expander), 6);
+
+	label = gtk_label_new (details_text);
+	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+	gtk_label_set_selectable (GTK_LABEL (label), TRUE);
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+
+	gtk_container_add (GTK_CONTAINER (expander), label);
+	gtk_box_pack_start (GTK_BOX (content_area), expander, FALSE, FALSE, 0);
+
+	gtk_widget_show (label);
+	gtk_widget_show (expander);
 }

@@ -78,4 +78,8 @@ void                  eel_gtk_adjustment_clamp_value                  (GtkAdjust
 void                  eel_gtk_tree_view_set_activate_on_single_click  (GtkTreeView               *tree_view,
 								       gboolean                   should_activate);
 
+/* GtkMessageDialog */
+void                  eel_gtk_message_dialog_set_details_label        (GtkMessageDialog          *dialog,
+								       const gchar               *details_text);
+
 #endif /* EEL_GTK_EXTENSIONS_H */
