@@ -493,38 +493,6 @@ eel_gtk_label_make_bold (GtkLabel *label)
 	pango_font_description_free (font_desc);
 }
 
-void
-eel_gtk_widget_set_background_color (GtkWidget *widget,
-				     const char *color_spec)
-{
-	GdkColor color;
-
-	g_return_if_fail (GTK_IS_WIDGET (widget));
-
-	eel_gdk_color_parse_with_white_default (color_spec, &color);
-
-	gtk_widget_modify_bg (widget, GTK_STATE_NORMAL, &color);
-	gtk_widget_modify_base (widget, GTK_STATE_NORMAL, &color);
-	gtk_widget_modify_bg (widget, GTK_STATE_ACTIVE, &color);
-	gtk_widget_modify_base (widget, GTK_STATE_ACTIVE, &color);
-}
-
-void
-eel_gtk_widget_set_foreground_color (GtkWidget *widget,
-				     const char *color_spec)
-{
-	GdkColor color;
-
-	g_return_if_fail (GTK_IS_WIDGET (widget));
-
-	eel_gdk_color_parse_with_white_default (color_spec, &color);
-
-	gtk_widget_modify_fg (widget, GTK_STATE_NORMAL, &color);
-	gtk_widget_modify_text (widget, GTK_STATE_NORMAL, &color);
-	gtk_widget_modify_fg (widget, GTK_STATE_ACTIVE, &color);
-	gtk_widget_modify_text (widget, GTK_STATE_ACTIVE, &color);
-}
-
 static gboolean 
 tree_view_button_press_callback (GtkWidget *tree_view,
 				 GdkEventButton *event,

@@ -54,10 +54,6 @@ void                  eel_gtk_signal_connect_while_realized           (GtkObject
 /* GtkWidget */
 void                  eel_gtk_widget_set_shown                        (GtkWidget            *widget,
 								       gboolean              shown);
-void                  eel_gtk_widget_set_background_color             (GtkWidget            *widget,
-								       const char           *color_spec);
-void                  eel_gtk_widget_set_foreground_color             (GtkWidget            *widget,
-								       const char           *color_spec);
 
 /* GtkWindow */
 void                  eel_gtk_window_set_initial_geometry             (GtkWindow            *window,
