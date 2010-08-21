@@ -4486,7 +4486,7 @@ start_stretching (NautilusIconContainer *container)
 	/* Ensure the window itself is focused.. */
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (container));
 	if (toplevel != NULL && gtk_widget_get_realized (toplevel)) {
-		eel_gdk_window_focus (gtk_widget_get_window (toplevel), GDK_CURRENT_TIME);
+		gdk_window_focus (gtk_widget_get_window (toplevel), GDK_CURRENT_TIME);
 	}
 
 	return TRUE;
