@@ -52,9 +52,6 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 typedef struct {
-#ifdef UIH
-	BonoboUIHandler *handler;
-#endif /* UIH */
 	char *path;
 	char *no_undo_menu_item_label;
 	char *no_undo_menu_item_hint;
@@ -191,103 +188,6 @@ nautilus_undo_manager_attach (NautilusUndoManager *manager, GObject *target)
 
 	nautilus_undo_attach_undo_manager (G_OBJECT (target), manager);
 }
-
-#ifdef UIH
-static void
-update_undo_menu_item (NautilusUndoManager *manager,
-		       UndoMenuHandlerConnection *connection)
-{
-	CORBA_Environment ev;
-	Nautilus_Undo_MenuItem *menu_item;
-
-	g_assert (NAUTILUS_IS_UNDO_MANAGER (manager));
-	g_assert (connection != NULL);
-	g_assert (BONOBO_IS_UI_HANDLER (connection->handler));
-	g_assert (connection->path != NULL);
-	g_assert (connection->no_undo_menu_item_label != NULL);
-	g_assert (connection->no_undo_menu_item_hint != NULL);
-	
-	CORBA_exception_init (&ev);
-
-	if (CORBA_Object_is_nil (manager->details->transaction, &ev)) {
-		menu_item = NULL;
-	} else {
-		if (manager->details->current_transaction_is_redo) {
-			menu_item = Nautilus_Undo_Transaction__get_redo_menu_item
-				(manager->details->transaction, &ev);
-		} else {
-			menu_item = Nautilus_Undo_Transaction__get_undo_menu_item
-				(manager->details->transaction, &ev);
-		}
-	}
-
-	bonobo_ui_handler_menu_set_sensitivity
-		(connection->handler, connection->path,
-		 menu_item != NULL);
-	bonobo_ui_handler_menu_set_label
-		(connection->handler, connection->path,
-		 menu_item == NULL
-		 ? connection->no_undo_menu_item_label
-		 : menu_item->label);
-	bonobo_ui_handler_menu_set_hint
-		(connection->handler, connection->path,
-		 menu_item == NULL
-		 ? connection->no_undo_menu_item_hint
-		 : menu_item->hint);
-	
-	CORBA_free (menu_item);
-	
-	CORBA_exception_free (&ev);
-}
-
-static void
-undo_menu_handler_connection_free (UndoMenuHandlerConnection *connection)
-{
-	g_assert (connection != NULL);
-	g_assert (BONOBO_IS_UI_HANDLER (connection->handler));
-	g_assert (connection->path != NULL);
-	g_assert (connection->no_undo_menu_item_label != NULL);
-	g_assert (connection->no_undo_menu_item_hint != NULL);
-
-	g_free (connection->path);
-	g_free (connection->no_undo_menu_item_label);
-	g_free (connection->no_undo_menu_item_hint);
-	g_free (connection);
-}
-
-static void
-undo_menu_handler_connection_free_cover (gpointer data)
-{
-	undo_menu_handler_connection_free (data);
-}
-
-void
-nautilus_undo_manager_set_up_bonobo_ui_handler_undo_item (NautilusUndoManager *manager,
-							  BonoboUIHandler *handler,
-							  const char *path,
-							  const char *no_undo_menu_item_label,
-							  const char *no_undo_menu_item_hint)
-{
-	UndoMenuHandlerConnection *connection;
-
-	connection = g_new (UndoMenuHandlerConnection, 1);
-	connection->handler = handler;
-	connection->path = g_strdup (path);
-	connection->no_undo_menu_item_label = g_strdup (no_undo_menu_item_label);
-	connection->no_undo_menu_item_hint = g_strdup (no_undo_menu_item_hint);
-
-	/* Set initial state of menu item. */
-	update_undo_menu_item (manager, connection);
-
-	/* Update it again whenever the changed signal is emitted. */
-	eel_gtk_signal_connect_full_while_alive
-		(GTK_OBJECT (manager), "changed",
-		 G_CALLBACK (update_undo_menu_item), NULL,
-		 connection, undo_menu_handler_connection_free_cover,
-		 FALSE, FALSE,
-		 GTK_OBJECT (handler));
-}
-#endif /* UIH */
 
 static void
 nautilus_undo_manager_class_init (NautilusUndoManagerClass *class)
