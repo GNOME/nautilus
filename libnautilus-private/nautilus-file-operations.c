@@ -44,7 +44,6 @@
 
 #include "nautilus-progress-info.h"
 
-#include <eel/eel-alert-dialog.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-stock-dialogs.h>
@@ -1053,12 +1052,16 @@ do_run_simple_dialog (gpointer _data)
 	int response_id;
 
 	/* Create the dialog. */
-	dialog = eel_alert_dialog_new (*data->parent_window, 
-	                               0,
-	                               data->message_type,
-	                               GTK_BUTTONS_NONE,
-	                               data->primary_text,
-	                               data->secondary_text);
+	dialog = gtk_message_dialog_new (*data->parent_window,
+					 0,
+					 data->message_type,
+					 GTK_BUTTONS_NONE,
+					 NULL);
+
+	g_object_set (dialog,
+		      "text", data->primary_text,
+		      "secondary-text", data->secondary_text,
+		      NULL);
 
 	for (response_id = 0;
 	     data->button_titles[response_id] != NULL;
@@ -1073,8 +1076,8 @@ do_run_simple_dialog (gpointer _data)
 	}
 
 	if (data->details_text) {
-		eel_alert_dialog_set_details_label (EEL_ALERT_DIALOG (dialog),
-						    data->details_text);
+		eel_gtk_message_dialog_set_details_label (GTK_MESSAGE_DIALOG (dialog),
+							  data->details_text);
 	}
 	
 	/* Run it. */
@@ -1086,7 +1089,7 @@ do_run_simple_dialog (gpointer _data)
 		result = gtk_dialog_run (GTK_DIALOG (dialog));
 	}
 	
-	gtk_object_destroy (GTK_OBJECT (dialog));
+	gtk_widget_destroy (dialog);
 
 	data->result = result;
 	
