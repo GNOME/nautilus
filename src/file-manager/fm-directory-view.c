@@ -1930,7 +1930,7 @@ fm_directory_view_init (FMDirectoryView *view)
 					GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_hadjustment (GTK_SCROLLED_WINDOW (view), NULL);
 	gtk_scrolled_window_set_vadjustment (GTK_SCROLLED_WINDOW (view), NULL);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (view), GTK_SHADOW_IN);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (view), GTK_SHADOW_ETCHED_IN);
 
 	set_up_scripts_directory_global ();
 	scripts_directory = nautilus_directory_get_by_uri (scripts_directory_uri);
