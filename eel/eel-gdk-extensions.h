@@ -111,11 +111,6 @@ char *              eel_gdk_rgb_to_color_spec              (guint32             
 
 gboolean            eel_gdk_color_is_dark                  (GdkColor            *color);
 
-
-/* Misc GdkWindow helper functions */
-void                eel_gdk_window_focus                   (GdkWindow           *window,
-							    guint32              timestamp);
-
 /* Wrapper for XParseGeometry */
 EelGdkGeometryFlags eel_gdk_parse_geometry                 (const char          *string,
 							    int                 *x_return,

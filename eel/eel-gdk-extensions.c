@@ -414,18 +414,6 @@ eel_gdk_color_is_dark (GdkColor *color)
 	return intensity < 128;
 }
 
-void
-eel_gdk_window_focus (GdkWindow *window, guint32 timestamp)
-{
-	gdk_error_trap_push ();
-	XSetInputFocus (GDK_DISPLAY (),
-			GDK_WINDOW_XWINDOW (window),
-			RevertToParent,
-			timestamp);
-	gdk_flush();
-	gdk_error_trap_pop ();
-}
-
 EelGdkGeometryFlags
 eel_gdk_parse_geometry (const char *string, int *x_return, int *y_return,
 			     guint *width_return, guint *height_return)
