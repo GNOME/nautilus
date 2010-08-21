@@ -35,22 +35,6 @@
 #define EEL_DEFAULT_POPUP_MENU_DISPLACEMENT 	2
 #define EEL_STANDARD_CLOSE_WINDOW_CONTROL_KEY 	'w'
 
-/* signals */
-void                  eel_gtk_signal_connect_full_while_alive         (GtkObject            *object,
-								       const gchar          *name,
-								       GCallback             func,
-								       GtkCallbackMarshal    marshal,
-								       gpointer              data,
-								       GDestroyNotify        destroy_func,
-								       gboolean              object_signal,
-								       gboolean              after,
-								       GtkObject            *alive_object);
-void                  eel_gtk_signal_connect_while_realized           (GtkObject            *object,
-								       const char           *name,
-								       GCallback             callback,
-								       gpointer              callback_data,
-								       GtkWidget            *realized_widget);
-
 /* GtkWidget */
 void                  eel_gtk_widget_set_shown                        (GtkWidget            *widget,
 								       gboolean              shown);
