@@ -2442,6 +2442,9 @@ update_eject_buttons (NautilusPlacesSidebar *sidebar,
 		      GtkTreePath 	    *path)
 {
 	GtkTreeIter iter;
+	gboolean icon_visible;
+
+	icon_visible = TRUE;
 
 	if (!path && !sidebar->eject_highlight_path) {
 		/* Both are null - highlight up to date */
@@ -2455,37 +2458,50 @@ update_eject_buttons (NautilusPlacesSidebar *sidebar,
 		return;
 	}
 
-	/* Reset last path */
-	if (sidebar->eject_highlight_path) {
-		gtk_tree_model_get_iter (GTK_TREE_MODEL (sidebar->store),
-					 &iter,
-					 sidebar->eject_highlight_path);
-
-		gtk_list_store_set (GTK_LIST_STORE (sidebar->store),
-				    &iter,
-				    PLACES_SIDEBAR_COLUMN_EJECT_ICON, get_eject_icon (FALSE),
-				    -1);
-
-		gtk_tree_path_free (sidebar->eject_highlight_path);
-	}
-	
-	/* Update current path */
 	if (path) {
 		gtk_tree_model_get_iter (GTK_TREE_MODEL (sidebar->store),
 					 &iter,
 					 path);
 
-		gtk_list_store_set (GTK_LIST_STORE (sidebar->store),
+		gtk_tree_model_get (GTK_TREE_MODEL (sidebar->store),
 				    &iter,
-				    PLACES_SIDEBAR_COLUMN_EJECT_ICON, get_eject_icon (TRUE),
+				    PLACES_SIDEBAR_COLUMN_EJECT, &icon_visible,
 				    -1);
 	}
 
-	if (path) {
-		sidebar->eject_highlight_path = gtk_tree_path_copy (path);
-	} else {
-		sidebar->eject_highlight_path = NULL;
+	if (!icon_visible || !path) {
+		/* remove highlighting and reset the saved path, as we are leaving
+		 * an eject button area.
+		 */
+		if (sidebar->eject_highlight_path) {
+			gtk_tree_model_get_iter (GTK_TREE_MODEL (sidebar->store),
+						 &iter,
+						 sidebar->eject_highlight_path);
+
+			gtk_list_store_set (sidebar->store,
+					    &iter,
+					    PLACES_SIDEBAR_COLUMN_EJECT_ICON, get_eject_icon (FALSE),
+					    -1);
+
+			gtk_tree_path_free (sidebar->eject_highlight_path);
+			sidebar->eject_highlight_path = NULL;
+		}
+
+		return;
 	}
+
+	/* add highlighting to the selected path, as the icon is visible and
+	 * we're hovering it.
+	 */
+	gtk_tree_model_get_iter (GTK_TREE_MODEL (sidebar->store),
+				 &iter,
+				 path);
+
+	gtk_list_store_set (sidebar->store,
+			    &iter,
+			    PLACES_SIDEBAR_COLUMN_EJECT_ICON, get_eject_icon (TRUE),
+			    -1);
+	sidebar->eject_highlight_path = gtk_tree_path_copy (path);
 }
 
 static gboolean
