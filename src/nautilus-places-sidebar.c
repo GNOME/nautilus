@@ -208,23 +208,23 @@ static GdkPixbuf *
 get_eject_icon (gboolean highlighted)
 {
 	GdkPixbuf *eject;
-	GIcon *eject_icon;
 	NautilusIconInfo *eject_icon_info;
 	int icon_size;
 
 	icon_size = nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU);
 
-	eject_icon = g_icon_new_for_string ("media-eject", NULL);
-	eject_icon_info = nautilus_icon_info_lookup (eject_icon, icon_size);
-	g_object_unref (eject_icon_info);
-
+	eject_icon_info = nautilus_icon_info_lookup_from_name ("media-eject", icon_size);
 	eject = nautilus_icon_info_get_pixbuf_at_size (eject_icon_info, icon_size);
+
 	if (highlighted) {
 		GdkPixbuf *high;
 		high = eel_gdk_pixbuf_render (eject, 1, 255, 255, 0, 0);
 		g_object_unref (eject);
 		eject = high;
 	}
+
+	g_object_unref (eject_icon_info);
+
 	return eject;
 }
 
