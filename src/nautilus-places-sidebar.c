@@ -2794,6 +2794,11 @@ nautilus_places_sidebar_dispose (GObject *object)
 
 	free_drag_data (sidebar);
 
+	if (sidebar->eject_highlight_path != NULL) {
+		gtk_tree_path_free (sidebar->eject_highlight_path);
+		sidebar->eject_highlight_path = NULL;
+	}
+
 	if (sidebar->store != NULL) {
 		g_object_unref (sidebar->store);
 		sidebar->store = NULL;
