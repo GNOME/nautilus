@@ -763,6 +763,11 @@ over_eject_button (NautilusPlacesSidebar *sidebar,
 		}
 	}
 
+	if (*path != NULL) {
+		gtk_tree_path_free (*path);
+		*path = NULL;
+	}
+
 	return FALSE;
 }
 
@@ -773,12 +778,11 @@ clicked_eject_button (NautilusPlacesSidebar *sidebar,
 	GdkEvent *event = gtk_get_current_event ();
 	GdkEventButton *button_event = (GdkEventButton *) event;
 
-	*path = NULL;
-
 	if ((event->type == GDK_BUTTON_PRESS || event->type == GDK_BUTTON_RELEASE) &&
 	     over_eject_button (sidebar, button_event->x, button_event->y, path)) {
 		return TRUE;
 	}
+
 	return FALSE;
 }
 
@@ -2401,6 +2405,8 @@ bookmarks_button_release_event_cb (GtkWidget *widget,
 	GtkTreeView *tree_view;
 	gboolean ret;
 
+	path = NULL;
+
 	if (event->type != GDK_BUTTON_RELEASE) {
 		return TRUE;
 	}
@@ -2491,15 +2497,13 @@ bookmarks_motion_event_cb (GtkWidget             *widget,
 	GtkTreeModel *model;
 
 	model = GTK_TREE_MODEL (sidebar->filter_model);
+	path = NULL;
 
 	if (over_eject_button (sidebar, event->x, event->y, &path)) {
 		update_eject_buttons (sidebar, path);
+		gtk_tree_path_free (path);
 	} else {
 		update_eject_buttons (sidebar, NULL);
-	}
-
-	if (path) {
-		gtk_tree_path_free (path);
 	}
 
 	return TRUE;
