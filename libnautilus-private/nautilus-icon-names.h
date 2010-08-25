@@ -15,6 +15,15 @@
 #define NAUTILUS_ICON_TRASH_FULL	"user-trash-full"
 #define NAUTILUS_ICON_DELETE		"edit-delete"
 
+#define NAUTILUS_ICON_FOLDER_DESKTOP    "folder-documents"
+#define NAUTILUS_ICON_FOLDER_DOCUMENTS  "folder-documents"
+#define NAUTILUS_ICON_FOLDER_DOWNLOAD   "folder-download"
+#define NAUTILUS_ICON_FOLDER_MUSIC      "folder-music"
+#define NAUTILUS_ICON_FOLDER_PICTURES   "folder-pictures"
+#define NAUTILUS_ICON_FOLDER_PUBLIC_SHARE "folder-publicshare"
+#define NAUTILUS_ICON_FOLDER_TEMPLATES  "folder-templates"
+#define NAUTILUS_ICON_FOLDER_VIDEOS     "folder-videos"
+
 /* Other icons */
 #define NAUTILUS_ICON_TEMPLATE		"text-x-generic-template"
 
