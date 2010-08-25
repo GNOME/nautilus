@@ -2442,34 +2442,36 @@ update_eject_buttons (NautilusPlacesSidebar *sidebar,
 		      GtkTreePath 	    *path)
 {
 	GtkTreeIter iter;
-	gboolean icon_visible;
+	gboolean icon_visible, path_same;
 
 	icon_visible = TRUE;
 
-	if (!path && !sidebar->eject_highlight_path) {
+	if (path == NULL && sidebar->eject_highlight_path == NULL) {
 		/* Both are null - highlight up to date */
 		return;
 	}
 
-	if (path &&
-	    sidebar->eject_highlight_path &&
-	    gtk_tree_path_compare (sidebar->eject_highlight_path, path) == 0) {
+	path_same = (path != NULL) &&
+		(sidebar->eject_highlight_path != NULL) &&
+		(gtk_tree_path_compare (sidebar->eject_highlight_path, path) == 0);
+
+	if (path_same) {
 		/* Same path - highlight up to date */
 		return;
 	}
 
 	if (path) {
-		gtk_tree_model_get_iter (GTK_TREE_MODEL (sidebar->store),
+		gtk_tree_model_get_iter (GTK_TREE_MODEL (sidebar->filter_model),
 					 &iter,
 					 path);
 
-		gtk_tree_model_get (GTK_TREE_MODEL (sidebar->store),
+		gtk_tree_model_get (GTK_TREE_MODEL (sidebar->filter_model),
 				    &iter,
 				    PLACES_SIDEBAR_COLUMN_EJECT, &icon_visible,
 				    -1);
 	}
 
-	if (!icon_visible || !path) {
+	if (!icon_visible || path == NULL || !path_same) {
 		/* remove highlighting and reset the saved path, as we are leaving
 		 * an eject button area.
 		 */
@@ -2482,26 +2484,32 @@ update_eject_buttons (NautilusPlacesSidebar *sidebar,
 					    &iter,
 					    PLACES_SIDEBAR_COLUMN_EJECT_ICON, get_eject_icon (FALSE),
 					    -1);
+			gtk_tree_model_filter_refilter (GTK_TREE_MODEL_FILTER (sidebar->filter_model));
 
 			gtk_tree_path_free (sidebar->eject_highlight_path);
 			sidebar->eject_highlight_path = NULL;
 		}
 
-		return;
+		if (!icon_visible) {
+			return;
+		}
 	}
 
-	/* add highlighting to the selected path, as the icon is visible and
-	 * we're hovering it.
-	 */
-	gtk_tree_model_get_iter (GTK_TREE_MODEL (sidebar->store),
-				 &iter,
-				 path);
+	if (path != NULL) {
+		/* add highlighting to the selected path, as the icon is visible and
+		 * we're hovering it.
+		 */
+		gtk_tree_model_get_iter (GTK_TREE_MODEL (sidebar->store),
+					 &iter,
+					 path);
+		gtk_list_store_set (sidebar->store,
+				    &iter,
+				    PLACES_SIDEBAR_COLUMN_EJECT_ICON, get_eject_icon (TRUE),
+				    -1);
+		gtk_tree_model_filter_refilter (GTK_TREE_MODEL_FILTER (sidebar->filter_model));
 
-	gtk_list_store_set (sidebar->store,
-			    &iter,
-			    PLACES_SIDEBAR_COLUMN_EJECT_ICON, get_eject_icon (TRUE),
-			    -1);
-	sidebar->eject_highlight_path = gtk_tree_path_copy (path);
+		sidebar->eject_highlight_path = gtk_tree_path_copy (path);
+	}
 }
 
 static gboolean
@@ -2518,11 +2526,13 @@ bookmarks_motion_event_cb (GtkWidget             *widget,
 	if (over_eject_button (sidebar, event->x, event->y, &path)) {
 		update_eject_buttons (sidebar, path);
 		gtk_tree_path_free (path);
-	} else {
-		update_eject_buttons (sidebar, NULL);
+
+		return TRUE;
 	}
 
-	return TRUE;
+	update_eject_buttons (sidebar, NULL);
+
+	return FALSE;
 }
 
 /* Callback used when a button is pressed on the shortcuts list.  
