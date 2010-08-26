@@ -1905,7 +1905,7 @@ rename_selected_bookmark (NautilusPlacesSidebar *sidebar)
 		path = gtk_tree_model_get_path (GTK_TREE_MODEL (sidebar->filter_model), &iter);
 		column = gtk_tree_view_get_column (GTK_TREE_VIEW (sidebar->tree_view), 0);
 		renderers = gtk_cell_layout_get_cells (GTK_CELL_LAYOUT (column));
-		cell = g_list_nth_data (renderers, 3);
+		cell = g_list_nth_data (renderers, 6);
 		g_list_free (renderers);
 		g_object_set (cell, "editable", TRUE, NULL);
 		gtk_tree_view_set_cursor_on_cell (GTK_TREE_VIEW (sidebar->tree_view),
