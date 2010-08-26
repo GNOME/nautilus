@@ -17,7 +17,8 @@
  *  along with this library; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  Author : Mr Jamie McCracken (jamiemcc at blueyonder dot co dot uk)
+ *  Authors : Mr Jamie McCracken (jamiemcc at blueyonder dot co dot uk)
+ *            Cosimo Cecchi <cosimoc@gnome.org>
  *
  */
  
