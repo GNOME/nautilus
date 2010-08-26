@@ -25,9 +25,7 @@
 #include "nautilus-connect-server-dialog.h"
 
 #include <string.h>
-#include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
-#include <eel/eel-vfs-extensions.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 #include <gtk/gtk.h>
@@ -65,12 +63,9 @@ struct _NautilusConnectServerDialogDetails {
 	GtkWidget *name_entry;
 };
 
-static void  nautilus_connect_server_dialog_class_init       (NautilusConnectServerDialogClass *class);
-static void  nautilus_connect_server_dialog_init             (NautilusConnectServerDialog      *dialog);
+G_DEFINE_TYPE (NautilusConnectServerDialog, nautilus_connect_server_dialog,
+	       GTK_TYPE_DIALOG)
 
-EEL_CLASS_BOILERPLATE (NautilusConnectServerDialog,
-		       nautilus_connect_server_dialog,
-		       GTK_TYPE_DIALOG)
 enum {
 	RESPONSE_CONNECT
 };	
@@ -149,20 +144,8 @@ nautilus_connect_server_dialog_finalize (GObject *object)
 	g_object_unref (dialog->details->user_entry);
 	g_object_unref (dialog->details->bookmark_check);
 	g_object_unref (dialog->details->name_entry);
-	
-	g_free (dialog->details);
 
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
-}
-
-static void
-nautilus_connect_server_dialog_destroy (GtkObject *object)
-{
-	NautilusConnectServerDialog *dialog;
-
-	dialog = NAUTILUS_CONNECT_SERVER_DIALOG (object);
-	
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	G_OBJECT_CLASS (nautilus_connect_server_dialog_parent_class)->finalize (object);
 }
 
 static void
@@ -360,13 +343,11 @@ static void
 nautilus_connect_server_dialog_class_init (NautilusConnectServerDialogClass *class)
 {
 	GObjectClass *gobject_class;
-	GtkObjectClass *object_class;
+
+	g_type_class_add_private (class, sizeof (NautilusConnectServerDialogDetails));
 
 	gobject_class = G_OBJECT_CLASS (class);
 	gobject_class->finalize = nautilus_connect_server_dialog_finalize;
-	
-	object_class = GTK_OBJECT_CLASS (class);
-	object_class->destroy = nautilus_connect_server_dialog_destroy;
 }
 
 static void
@@ -790,7 +771,8 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	GtkCellRenderer *renderer;
 	int i;
 	
-	dialog->details = g_new0 (NautilusConnectServerDialogDetails, 1);
+	dialog->details = G_TYPE_INSTANCE_GET_PRIVATE (dialog, NAUTILUS_TYPE_CONNECT_SERVER_DIALOG,
+						       NautilusConnectServerDialogDetails);
 
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Connect to Server"));
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
