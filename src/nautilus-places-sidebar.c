@@ -695,6 +695,11 @@ update_places (NautilusPlacesSidebar *sidebar)
 		}
 
 		path = g_get_user_special_dir (index);
+
+		if (!path) {
+			continue;
+		}
+
 		root = g_file_new_for_path (path);
 		name = g_file_get_basename (root);
 		icon = nautilus_user_special_directory_get_gicon (index);
