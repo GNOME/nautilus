@@ -2807,6 +2807,28 @@ trash_state_changed_cb (NautilusTrashMonitor *trash_monitor,
 	bookmarks_check_popup_sensitivity (sidebar);
 }
 
+static gboolean
+tree_selection_func (GtkTreeSelection *selection,
+		     GtkTreeModel *model,
+		     GtkTreePath *path,
+		     gboolean path_currently_selected,
+		     gpointer user_data)
+{
+	GtkTreeIter iter;
+	PlaceType row_type;
+
+	gtk_tree_model_get_iter (model, &iter, path);
+	gtk_tree_model_get (model, &iter,
+			    PLACES_SIDEBAR_COLUMN_ROW_TYPE, &row_type,
+			    -1);
+
+	if (row_type == PLACES_HEADING) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
 static void
 icon_cell_renderer_func (GtkTreeViewColumn *column,
 			 GtkCellRenderer *cell,
@@ -3034,6 +3056,11 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 	gtk_tree_view_set_search_column (tree_view, PLACES_SIDEBAR_COLUMN_NAME);
 	selection = gtk_tree_view_get_selection (tree_view);
 	gtk_tree_selection_set_mode (selection, GTK_SELECTION_BROWSE);
+
+	gtk_tree_selection_set_select_function (selection,
+						tree_selection_func,
+						sidebar,
+						NULL);
 
 	gtk_tree_view_enable_model_drag_source (GTK_TREE_VIEW (tree_view),
 						GDK_BUTTON1_MASK,
