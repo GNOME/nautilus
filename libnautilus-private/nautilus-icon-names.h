@@ -15,7 +15,7 @@
 #define NAUTILUS_ICON_TRASH_FULL	"user-trash-full"
 #define NAUTILUS_ICON_DELETE		"edit-delete"
 
-#define NAUTILUS_ICON_FOLDER_DESKTOP    "folder-documents"
+#define NAUTILUS_ICON_FOLDER_DESKTOP    "user-desktop"
 #define NAUTILUS_ICON_FOLDER_DOCUMENTS  "folder-documents"
 #define NAUTILUS_ICON_FOLDER_DOWNLOAD   "folder-download"
 #define NAUTILUS_ICON_FOLDER_MUSIC      "folder-music"
