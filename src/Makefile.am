@@ -66,7 +66,9 @@ nautilus_SOURCES = \
 	nautilus-bookmarks-window.h		\
 	nautilus-connect-server-dialog.c	\
 	nautilus-connect-server-dialog.h	\
-	nautilus-connect-server-dialog-nonmain.c	\
+	nautilus-connect-server-dialog-nonmain.c \
+	nautilus-connect-server-operation.c	\
+	nautilus-connect-server-operation.h	\
 	nautilus-desktop-window.c		\
 	nautilus-desktop-window.h		\
 	nautilus-file-management-properties.c	\
@@ -175,8 +177,8 @@ nautilus_connect_server_SOURCES= \
 	nautilus-connect-server-dialog.c	\
 	nautilus-connect-server-dialog.h	\
 	nautilus-connect-server-dialog-main.c	\
-	nautilus-location-entry.c		\
-	nautilus-location-entry.h		\
+	nautilus-connect-server-operation.c     \
+	nautilus-connect-server-operation.h     \
 	$(NULL)
 
 nautilus_convert_metadata_SOURCES= \
