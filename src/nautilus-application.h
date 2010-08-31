@@ -86,17 +86,12 @@ GList *              nautilus_application_get_window_list           (void);
 GList *              nautilus_application_get_spatial_window_list    (void);
 unsigned int         nautilus_application_get_n_windows            (void);
 
-NautilusWindow *     nautilus_application_present_spatial_window     (NautilusApplication *application,
-								      NautilusWindow      *requesting_window,
-								      const char          *startup_id,
-								      GFile               *location,
-								      GdkScreen           *screen);
-NautilusWindow *     nautilus_application_present_spatial_window_with_selection (NautilusApplication *application,
-										 NautilusWindow      *requesting_window,
-										 const char          *startup_id,
-										 GFile               *location,
-										 GList		     *new_selection,
-										 GdkScreen           *screen);
+NautilusWindow *     nautilus_application_get_spatial_window     (NautilusApplication *application,
+								  NautilusWindow      *requesting_window,
+								  const char          *startup_id,
+								  GFile               *location,
+								  GdkScreen           *screen,
+								  gboolean            *existing);
 
 NautilusWindow *     nautilus_application_create_navigation_window     (NautilusApplication *application,
 									const char          *startup_id,
