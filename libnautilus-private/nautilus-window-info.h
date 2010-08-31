@@ -28,7 +28,6 @@
 #include <glib-object.h>
 #include <libnautilus-private/nautilus-view.h>
 #include <gtk/gtk.h>
-#include "../src/nautilus-bookmark-list.h"
 
 G_BEGIN_DECLS
 

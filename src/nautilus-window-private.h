@@ -33,6 +33,7 @@
 #include "nautilus-window-pane.h"
 #include "nautilus-spatial-window.h"
 #include "nautilus-navigation-window.h"
+#include "nautilus-bookmark-list.h"
 
 #include <libnautilus-private/nautilus-directory.h>
 
