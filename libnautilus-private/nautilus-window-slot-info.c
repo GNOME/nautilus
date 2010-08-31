@@ -104,11 +104,13 @@ nautilus_window_slot_info_make_hosting_pane_active (NautilusWindowSlotInfo *slot
 }
 
 void
-nautilus_window_slot_info_open_location (NautilusWindowSlotInfo  *slot,
-					 GFile                   *location,
-					 NautilusWindowOpenMode   mode,
-					 NautilusWindowOpenFlags  flags,
-					 GList                   *selection)
+nautilus_window_slot_info_open_location_full (NautilusWindowSlotInfo  *slot,
+					      GFile                   *location,
+					      NautilusWindowOpenMode   mode,
+					      NautilusWindowOpenFlags  flags,
+					      GList                   *selection,
+					      NautilusWindowGoToCallback callback,
+					      gpointer user_data)
 {
 	g_assert (NAUTILUS_IS_WINDOW_SLOT_INFO (slot));
 
@@ -116,7 +118,9 @@ nautilus_window_slot_info_open_location (NautilusWindowSlotInfo  *slot,
 								       location,
 								       mode,
 								       flags,
-								       selection);
+								       selection,
+								       callback,
+								       user_data);
 }
 
 char *

@@ -234,6 +234,17 @@ nautilus_window_go_to (NautilusWindow *window, GFile *location)
 }
 
 void
+nautilus_window_go_to_full (NautilusWindow *window,
+			    GFile          *location,
+			    NautilusWindowGoToCallback callback,
+			    gpointer        user_data)
+{
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+
+	nautilus_window_slot_go_to_full (window->details->active_pane->active_slot, location, FALSE, callback, user_data);
+}
+
+void
 nautilus_window_go_to_with_selection (NautilusWindow *window, GFile *location, GList *new_selection)
 {
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
@@ -318,7 +329,8 @@ nautilus_window_go_up (NautilusWindow *window, gboolean close_behind, gboolean n
 	nautilus_window_slot_open_location_full (slot, parent, 
 						 NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
 						 flags,
-						 selection);
+						 selection,
+						 NULL, NULL);
 	
 	g_object_unref (parent);
 	

@@ -656,7 +656,7 @@ nautilus_window_slot_open_location (NautilusWindowSlot *slot,
 	
 	nautilus_window_slot_open_location_full (slot, location,
 						 NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
-						 flags, NULL);
+						 flags, NULL, NULL, NULL);
 }
 
 void
@@ -673,7 +673,7 @@ nautilus_window_slot_open_location_with_selection (NautilusWindowSlot *slot,
 	}
 	nautilus_window_slot_open_location_full (slot, location,
 						 NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
-						 flags, selection);
+						 flags, selection, NULL, NULL);
 }
 
 
@@ -694,7 +694,7 @@ nautilus_window_slot_go_home (NautilusWindowSlot *slot, gboolean new_tab)
 	home = g_file_new_for_path (g_get_home_dir ());
 	nautilus_window_slot_open_location_full (slot, home, 
 						 NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE, 
-						 flags, NULL);
+						 flags, NULL, NULL, NULL);
 	g_object_unref (home);
 }
 
@@ -2057,7 +2057,7 @@ nautilus_navigation_window_back_or_forward (NautilusNavigationWindow *window,
 		nautilus_window_slot_open_location_full (slot, location,
 							 NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
 							 NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB,
-							 NULL);
+							 NULL, NULL, NULL);
 	} else {
         	char *scroll_pos;
 		

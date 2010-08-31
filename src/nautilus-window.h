@@ -132,6 +132,10 @@ void             nautilus_window_disconnect_content_view (NautilusWindow    *win
 
 void             nautilus_window_go_to                (NautilusWindow    *window,
                                                        GFile             *location);
+void             nautilus_window_go_to_full           (NautilusWindow    *window,
+                                                       GFile             *location,
+                                                       NautilusWindowGoToCallback callback,
+                                                       gpointer           user_data);
 void             nautilus_window_go_to_with_selection (NautilusWindow    *window,
                                                        GFile             *location,
                                                        GList             *new_selection);

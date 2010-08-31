@@ -136,7 +136,9 @@ void			nautilus_window_slot_open_location_full       (NautilusWindowSlot	*slot,
 								       GFile			*location,
 								       NautilusWindowOpenMode	 mode,
 								       NautilusWindowOpenFlags	 flags,
-								       GList			*new_selection);
+								       GList			*new_selection,
+								       NautilusWindowGoToCallback callback,
+								       gpointer                  user_data);
 void			nautilus_window_slot_stop_loading	      (NautilusWindowSlot	*slot);
 
 void			nautilus_window_slot_set_content_view	      (NautilusWindowSlot	*slot,
@@ -153,7 +155,12 @@ void                    nautilus_window_slot_disconnect_content_view  (NautilusW
 #define nautilus_window_slot_go_to(slot,location, new_tab) \
 	nautilus_window_slot_open_location_full(slot, location, NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE, \
 						(new_tab ? NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB : 0), \
-						NULL)
+						NULL, NULL, NULL)
+
+#define nautilus_window_slot_go_to_full(slot, location, new_tab, callback, user_data) \
+	nautilus_window_slot_open_location_full(slot, location, NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE, \
+						(new_tab ? NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB : 0), \
+						NULL, callback, user_data)
 
 #define nautilus_window_slot_go_to_with_selection(slot,location,new_selection) \
 	nautilus_window_slot_open_location_with_selection(slot, location, new_selection, FALSE)

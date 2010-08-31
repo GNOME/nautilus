@@ -82,6 +82,10 @@ typedef NautilusWindow                  NautilusWindowInfo;
 
 typedef struct _NautilusWindowInfoIface NautilusWindowInfoIface;
 
+typedef void (* NautilusWindowGoToCallback) (NautilusWindow *window,
+                                             GError *error,
+                                             gpointer user_data);
+
 struct _NautilusWindowInfoIface 
 {
 	GTypeInterface g_iface;

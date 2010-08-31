@@ -72,18 +72,27 @@ struct _NautilusWindowSlotInfoIface
 				       GFile *location,
 				       NautilusWindowOpenMode mode,
 				       NautilusWindowOpenFlags flags,
-				       GList *selection);
+				       GList *selection,
+				       NautilusWindowGoToCallback callback,
+				       gpointer user_data);
 	void   (* make_hosting_pane_active) (NautilusWindowSlotInfo *slot);
 };
 
 
 GType                             nautilus_window_slot_info_get_type            (void);
 NautilusWindowInfo *              nautilus_window_slot_info_get_window          (NautilusWindowSlotInfo            *slot);
-void                              nautilus_window_slot_info_open_location       (NautilusWindowSlotInfo            *slot,
+
+#define nautilus_window_slot_info_open_location(slot, location, mode, flags, selection) \
+	nautilus_window_slot_info_open_location_full(slot, location, mode, \
+						     flags, selection, NULL, NULL)
+
+void                              nautilus_window_slot_info_open_location_full  (NautilusWindowSlotInfo            *slot,
 										 GFile                             *location,
 										 NautilusWindowOpenMode             mode,
 										 NautilusWindowOpenFlags            flags,
-										 GList                             *selection);
+										 GList                             *selection,
+										 NautilusWindowGoToCallback         callback,
+										 gpointer                           user_data);
 void                              nautilus_window_slot_info_set_status          (NautilusWindowSlotInfo            *slot,
 										 const char *status);
 void                              nautilus_window_slot_info_make_hosting_pane_active (NautilusWindowSlotInfo       *slot);
