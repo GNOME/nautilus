@@ -568,27 +568,30 @@ open_selected_bookmark (gpointer user_data, GdkScreen *screen)
 	}
 
 	if (NAUTILUS_IS_NAVIGATION_WINDOW (user_data)) {
-		nautilus_window_go_to (NAUTILUS_WINDOW (user_data), location);
+		window = user_data;
 	} else if (NAUTILUS_IS_SPATIAL_WINDOW (user_data)) {
-		window = nautilus_application_present_spatial_window (application, 
-								      NULL,
-								      NULL,
-								      location,
-								      screen);
+		window = nautilus_application_get_spatial_window (application,
+								  NULL,
+								  NULL,
+								  location,
+								  screen,
+								  NULL);
 	} else { /* window that opened bookmarks window has been closed */
 		if (parent_is_browser_window || g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
 			window = nautilus_application_create_navigation_window (application,
 										NULL,
 										screen);
-			nautilus_window_go_to (window, location);
 		} else {
-			window = nautilus_application_present_spatial_window (application,
-									      NULL,
-									      NULL,
-									      location,
-									      screen);
+			window = nautilus_application_get_spatial_window (application,
+									  NULL,
+									  NULL,
+									  location,
+									  screen,
+									  NULL);
 		}
 	}
+
+	nautilus_window_go_to (window, location);
 
 	g_object_unref (location);
 }
