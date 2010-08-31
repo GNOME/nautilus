@@ -38,6 +38,8 @@
 
 struct NautilusDesktopWindowDetails {
 	gulong size_changed_id;
+
+	gboolean loaded;
 };
 
 G_DEFINE_TYPE (NautilusDesktopWindow, nautilus_desktop_window, 
@@ -93,9 +95,10 @@ nautilus_desktop_window_update_directory (NautilusDesktopWindow *window)
 	
 	g_assert (NAUTILUS_IS_DESKTOP_WINDOW (window));
 	
-	NAUTILUS_SPATIAL_WINDOW (window)->affect_spatial_window_on_next_location_change = TRUE;
 	location = g_file_new_for_uri (EEL_DESKTOP_URI);
 	nautilus_window_go_to (NAUTILUS_WINDOW (window), location);
+	window->details->loaded = TRUE;
+
 	g_object_unref (location);
 }
 
@@ -265,4 +268,10 @@ nautilus_desktop_window_class_init (NautilusDesktopWindowClass *klass)
 	nclass->get_icon = real_get_icon;
 
 	g_type_class_add_private (klass, sizeof (NautilusDesktopWindowDetails));
+}
+
+gboolean
+nautilus_desktop_window_loaded (NautilusDesktopWindow *window)
+{
+	return window->details->loaded;
 }
