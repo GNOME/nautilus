@@ -472,29 +472,33 @@ new_window_show_callback (GtkWidget *widget,
                                               user_data);
 }
 
-
 void
 nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 					 GFile *location,
 					 NautilusWindowOpenMode mode,
 					 NautilusWindowOpenFlags flags,
-					 GList *new_selection)
+					 GList *new_selection,
+					 NautilusWindowGoToCallback callback,
+					 gpointer user_data)
 {
 	NautilusWindow *window;
         NautilusWindow *target_window;
         NautilusWindowPane *pane;
         NautilusWindowSlot *target_slot;
 	NautilusWindowOpenFlags slot_flags;
-        gboolean do_load_location = TRUE;
+        gboolean existing = FALSE;
 	GFile *old_location;
 	char *old_uri, *new_uri;
 	int new_slot_position;
 	GList *l;
+	gboolean target_spatial, target_navigation, target_same;
+	gboolean is_desktop;
 
 	window = slot->pane->window;
 
         target_window = NULL;
 	target_slot = NULL;
+	target_spatial = target_navigation = target_same = FALSE;
 
 	old_uri = nautilus_window_slot_get_location_uri (slot);
 	if (old_uri == NULL) {
@@ -512,69 +516,82 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 	g_assert (!((flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) != 0 &&
 		    (flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB) != 0));
 
+	is_desktop = NAUTILUS_IS_DESKTOP_WINDOW (window);
+	target_same = is_desktop &&
+		!nautilus_desktop_window_loaded (NAUTILUS_DESKTOP_WINDOW (window));
 
 	old_location = nautilus_window_slot_get_location (slot);
+
 	switch (mode) {
         case NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE :
 		if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
-			target_window = window;
-			if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
-				if (!NAUTILUS_SPATIAL_WINDOW (window)->affect_spatial_window_on_next_location_change) {
-					target_window = nautilus_application_create_navigation_window 
-						(window->application,
-						 NULL,
-						 gtk_window_get_screen (GTK_WINDOW (window)));
-				} else {
-					NAUTILUS_SPATIAL_WINDOW (window)->affect_spatial_window_on_next_location_change = FALSE;
-				}
-			} else if ((flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) != 0) {
-				target_window = nautilus_application_create_navigation_window 
-					(window->application,
-					 NULL,
-					 gtk_window_get_screen (GTK_WINDOW (window)));
+			/* always use browser: if we're on the desktop the target is a new navigation window,
+			 * otherwise it's the same window.
+			 */
+			if (is_desktop) {
+				target_navigation = TRUE;
+			} else {
+				target_same = TRUE;
 			}
 		} else if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
-                        if (!NAUTILUS_SPATIAL_WINDOW (window)->affect_spatial_window_on_next_location_change) {
-                                target_window = nautilus_application_present_spatial_window_with_selection (
-                                        window->application,
-					window,
-					NULL,
-                                        location,
-					new_selection,
-                                        gtk_window_get_screen (GTK_WINDOW (window)));
-                                do_load_location = FALSE;
-                        } else {
-                                NAUTILUS_SPATIAL_WINDOW (window)->affect_spatial_window_on_next_location_change = FALSE;
-                                target_window = window;
-                        }
+			/* don't always use browser: if source is spatial, target is spatial */
+			target_spatial = TRUE;
 		} else if (flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) {
-			target_window = nautilus_application_create_navigation_window 
-				(window->application,
-				 NULL,
-				 gtk_window_get_screen (GTK_WINDOW (window)));
-		} else {
-                        target_window = window;
-                }       
+			/* if it's specified to open a new window, and we're not using spatial,
+			 * the target is a navigation.
+			 */
+			target_navigation = TRUE;
+		}
                 break;
         case NAUTILUS_WINDOW_OPEN_IN_SPATIAL :
-                target_window = nautilus_application_present_spatial_window (
-                        window->application,
-			window,
-			NULL,
-                        location,
-                        gtk_window_get_screen (GTK_WINDOW (window)));
-                break;
+		target_spatial = TRUE;
+		break;
         case NAUTILUS_WINDOW_OPEN_IN_NAVIGATION :
-                target_window = nautilus_application_create_navigation_window 
-                        (window->application,
-			 NULL,
-                         gtk_window_get_screen (GTK_WINDOW (window)));
+		target_navigation = TRUE;
                 break;
         default :
-                g_warning ("Unknown open location mode");
+                g_critical ("Unknown open location mode");
 		g_object_unref (old_location);
                 return;
         }
+
+	/* now get/create the window according to the mode */
+	if (target_same) {
+		target_window = window;
+	} else if (target_navigation) {
+		target_window = nautilus_application_create_navigation_window
+			(window->application,
+			 NULL,
+			 gtk_window_get_screen (GTK_WINDOW (window)));
+	} else {
+		target_window = nautilus_application_get_spatial_window
+			(window->application,
+			 window,
+			 NULL,
+			 location,
+			 gtk_window_get_screen (GTK_WINDOW (window)),
+			 &existing);
+	}
+
+	/* if the spatial window is already showing, present it and set the
+	 * new selection, if present.
+	 */
+	if (existing) {
+		target_slot = target_window->details->active_pane->active_slot;
+
+		gtk_window_present (GTK_WINDOW (target_window));
+
+		if (new_selection != NULL && slot->content_view != NULL) {
+			nautilus_view_set_selection (target_slot->content_view, new_selection);
+		}
+
+		/* call the callback successfully */
+		if (callback != NULL) {
+			callback (window, NULL, user_data);
+		}
+
+		return;
+	}
 
         g_assert (target_window != NULL);
 
@@ -614,12 +631,14 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 		}
 	}
 
-        if ((!do_load_location) ||
-	    (target_window == window && target_slot == slot &&
+        if ((target_window == window && target_slot == slot &&
 	     old_location && g_file_equal (old_location, location))) {
-		if (old_location) {
-			g_object_unref (old_location);
+
+		if (callback != NULL) {
+			callback (window, NULL, user_data);
 		}
+
+		g_object_unref (old_location);
                 return;
         }
 	
