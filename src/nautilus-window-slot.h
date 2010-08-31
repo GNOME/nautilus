@@ -106,6 +106,8 @@ struct NautilusWindowSlot {
 	GCancellable *mount_cancellable;
 	GError *mount_error;
 	gboolean tried_mount;
+	NautilusWindowGoToCallback open_callback;
+	gpointer open_callback_user_data;
 
 	GCancellable *find_mount_cancellable;
 

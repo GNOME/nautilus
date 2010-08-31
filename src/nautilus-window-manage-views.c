@@ -86,7 +86,9 @@ static void begin_location_change                     (NautilusWindowSlot       
 						       GList                      *new_selection,
 						       NautilusLocationChangeType  type,
 						       guint                       distance,
-						       const char                 *scroll_pos);
+						       const char                 *scroll_pos,
+						       NautilusWindowGoToCallback  callback,
+						       gpointer                    user_data);
 static void free_location_change                      (NautilusWindowSlot         *slot);
 static void end_location_change                       (NautilusWindowSlot         *slot);
 static void cancel_location_change                    (NautilusWindowSlot         *slot);
@@ -647,7 +649,7 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 	}
 
         begin_location_change (target_slot, location, new_selection,
-                               NAUTILUS_LOCATION_CHANGE_STANDARD, 0, NULL);
+			       NAUTILUS_LOCATION_CHANGE_STANDARD, 0, NULL, callback, user_data);
 
 	/* Additionally, load this in all slots that have no location, this means
 	   we load both panes in e.g. a newly opened dual pane window. */
@@ -656,7 +658,7 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 		slot = pane->active_slot;
 		if (slot->location == NULL && slot->pending_location == NULL) {
 			begin_location_change (slot, location, new_selection,
-					       NAUTILUS_LOCATION_CHANGE_STANDARD, 0, NULL);
+					       NAUTILUS_LOCATION_CHANGE_STANDARD, 0, NULL, NULL, NULL);
 		}
 	}
 }
@@ -803,6 +805,20 @@ nautilus_window_slot_content_view_matches_iid (NautilusWindowSlot *slot,
 	return eel_strcmp (nautilus_view_get_view_id (slot->content_view), iid) == 0;
 }
 
+static gboolean
+report_callback (NautilusWindowSlot *slot,
+		 GError *error)
+{
+	if (slot->open_callback != NULL) {
+		slot->open_callback (slot->pane->window, error, slot->open_callback_user_data);
+		slot->open_callback = NULL;
+		slot->open_callback_user_data = NULL;
+
+		return TRUE;
+	}
+
+	return FALSE;
+}
 
 /*
  * begin_location_change
@@ -815,6 +831,8 @@ nautilus_window_slot_content_view_matches_iid (NautilusWindowSlot *slot,
  * @distance: If type is back or forward, the index into the back or forward chain. If
  * type is standard or reload, this is ignored, and must be 0.
  * @scroll_pos: The file to scroll to when the location is loaded.
+ * @callback: function to be called when the location is changed.
+ * @user_data: data for @callback.
  *
  * This is the core function for changing the location of a window. Every change to the
  * location begins here.
@@ -825,7 +843,9 @@ begin_location_change (NautilusWindowSlot *slot,
 		       GList *new_selection,
                        NautilusLocationChangeType type,
                        guint distance,
-                       const char *scroll_pos)
+                       const char *scroll_pos,
+		       NautilusWindowGoToCallback callback,
+		       gpointer user_data)
 {
 	NautilusWindow *window;
         NautilusDirectory *directory;
@@ -858,7 +878,10 @@ begin_location_change (NautilusWindowSlot *slot,
 	slot->pending_selection = eel_g_object_list_copy (new_selection);
 
 	slot->pending_scroll_to = g_strdup (scroll_pos);
-        
+
+	slot->open_callback = callback;
+	slot->open_callback_user_data = user_data;
+
         directory = nautilus_directory_get (location);
 
 	/* The code to force a reload is here because if we do it
@@ -1146,9 +1169,13 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 		}
 		create_content_view (slot, view_id);
 		g_free (view_id);
+
+		report_callback (slot, NULL);
 	} else {
-		display_view_selection_failure (window, file,
-						location, error);
+		if (!report_callback (slot, error)) {
+			display_view_selection_failure (window, file,
+							location, error);
+		}
 
 		if (!gtk_widget_get_visible (GTK_WIDGET (window))) {
 			/* Destroy never-had-a-chance-to-be-seen window. This case
@@ -1158,10 +1185,6 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 			if (nautilus_application_get_n_windows () <= 1) {
 				g_assert (nautilus_application_get_n_windows () == 1);
 
-				/* Make sure we re-use this window */
-				if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
-					NAUTILUS_SPATIAL_WINDOW (window)->affect_spatial_window_on_next_location_change = TRUE;
-				}
 				/* the user could have typed in a home directory that doesn't exist,
 				   in which case going home would cause an infinite loop, so we
 				   better test for that */
@@ -1757,7 +1780,7 @@ free_location_change (NautilusWindowSlot *slot)
 
 	eel_g_object_list_free (slot->pending_selection);
 	slot->pending_selection = NULL;
-	
+
         /* Don't free pending_scroll_to, since thats needed until
          * the load_complete callback.
          */
@@ -1854,7 +1877,7 @@ nautilus_window_report_view_failed (NautilusWindow *window,
 	if (fallback_load_location != NULL) {
 		/* We loose the pending selection change here, but who cares... */
 		begin_location_change (slot, fallback_load_location, NULL,
-				       NAUTILUS_LOCATION_CHANGE_FALLBACK, 0, NULL);
+				       NAUTILUS_LOCATION_CHANGE_FALLBACK, 0, NULL, NULL, NULL);
 		g_object_unref (fallback_load_location);
 	}
 
@@ -2086,7 +2109,8 @@ nautilus_navigation_window_back_or_forward (NautilusNavigationWindow *window,
 			 location, NULL,
 			 back ? NAUTILUS_LOCATION_CHANGE_BACK : NAUTILUS_LOCATION_CHANGE_FORWARD,
 			 distance,
-			 scroll_pos);
+			 scroll_pos,
+			 NULL, NULL);
 
 		g_free (scroll_pos);
 	}
@@ -2120,7 +2144,8 @@ nautilus_window_slot_reload (NautilusWindowSlot *slot)
 	}
 	begin_location_change
 		(slot, location, selection,
-		 NAUTILUS_LOCATION_CHANGE_RELOAD, 0, current_pos);
+		 NAUTILUS_LOCATION_CHANGE_RELOAD, 0, current_pos,
+		 NULL, NULL);
         g_free (current_pos);
 	g_object_unref (location);
 	eel_g_object_list_free (selection);
