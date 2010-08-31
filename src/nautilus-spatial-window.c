@@ -966,8 +966,6 @@ nautilus_spatial_window_init (NautilusSpatialWindow *window)
 	pane = nautilus_window_pane_new (win);
 	win->details->panes = g_list_prepend (win->details->panes, pane);
 
-	window->affect_spatial_window_on_next_location_change = TRUE;
-
 	vbox = gtk_vbox_new (FALSE, 0);
 	gtk_table_attach (GTK_TABLE (NAUTILUS_WINDOW (window)->details->table),
 			  vbox,

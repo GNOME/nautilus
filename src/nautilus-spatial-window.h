@@ -52,8 +52,6 @@ typedef struct _NautilusSpatialWindowDetails NautilusSpatialWindowDetails;
 struct _NautilusSpatialWindow {
         NautilusWindow parent_object;
 
-        gboolean affect_spatial_window_on_next_location_change;
-        
         NautilusSpatialWindowDetails *details;
 };
 
