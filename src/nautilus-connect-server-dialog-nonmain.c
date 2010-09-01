@@ -31,26 +31,69 @@
  * nautilus-connect-server-dialog-main.c for the standalone version.
  */
 
+static GSimpleAsyncResult *display_location_res = NULL;
+
+static void
+window_go_to_cb (NautilusWindow *window,
+		 GError *error,
+		 gpointer user_data)
+{
+	NautilusConnectServerDialog *self;
+
+	self = user_data;
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (display_location_res, error);
+	}
+
+	g_simple_async_result_complete (display_location_res);
+
+	g_object_unref (display_location_res);
+	display_location_res = NULL;
+}
+
+gboolean
+nautilus_connect_server_dialog_display_location_finish (NautilusConnectServerDialog *self,
+							GAsyncResult *res,
+							GError **error)
+{
+	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (res), error)) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
 void
-nautilus_connect_server_dialog_present_uri (NautilusApplication *application,
-					    GFile *location,
-					    GtkWidget *widget)
+nautilus_connect_server_dialog_display_location_async (NautilusConnectServerDialog *self,
+						       NautilusApplication *application,
+						       GFile *location,
+						       GAsyncReadyCallback callback,
+						       gpointer user_data)
 {
 	NautilusWindow *window;
+	GtkWidget *widget;
+
+	widget = GTK_WIDGET (self);
+
+	display_location_res =
+		g_simple_async_result_new (G_OBJECT (self),
+					   callback, user_data,
+					   nautilus_connect_server_dialog_display_location_async);
 
 	if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
 		window = nautilus_application_create_navigation_window (application,
 									NULL,
 									gtk_widget_get_screen (widget));
-		nautilus_window_go_to (window, location);
 	} else {
-		nautilus_application_present_spatial_window (application,
-							     NULL,
-							     NULL,
-							     location,
-							     gtk_widget_get_screen (widget));
+		window = nautilus_application_get_spatial_window (application,
+								  NULL,
+								  NULL,
+								  location,
+								  gtk_widget_get_screen (widget),
+								  NULL);
 	}
 
-	gtk_widget_destroy (widget);
-	g_object_unref (location);
+	nautilus_window_go_to_full (window, location,
+				    window_go_to_cb, self);
 }

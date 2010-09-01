@@ -22,6 +22,7 @@
  *
  * Authors:
  *   Vincent Untz <vincent@vuntz.net>
+ *   Cosimo Cecchi <cosimoc@gnome.org>
  */
 
 #include <config.h>
@@ -38,10 +39,9 @@
 #include <libnautilus-private/nautilus-icon-names.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 
-#include "nautilus-window.h"
 #include "nautilus-connect-server-dialog.h"
 
-static int open_dialogs;
+static GSimpleAsyncResult *display_location_res = NULL;
 
 static void
 main_dialog_destroyed (GtkWidget *widget,
@@ -53,110 +53,55 @@ main_dialog_destroyed (GtkWidget *widget,
 	gtk_main_quit ();
 }
 
-static void
-error_dialog_destroyed (GtkWidget *widget,
-			GtkWidget *main_dialog)
+gboolean
+nautilus_connect_server_dialog_display_location_finish (NautilusConnectServerDialog *self,
+							GAsyncResult *res,
+							GError **error)
 {
-	if (--open_dialogs <= 0)
-		gtk_widget_destroy (main_dialog);
+	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (res), error)) {
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
-static void
-display_error_dialog (GError *error, 
-		      const char *uri,
-		      GtkWidget *parent)
+void
+nautilus_connect_server_dialog_display_location_async (NautilusConnectServerDialog *self,
+						       NautilusApplication *application,
+						       GFile *location,
+						       GAsyncReadyCallback callback,
+						       gpointer user_data)
 {
-	GtkDialog *error_dialog;
-	char *error_message;
-
-	error_message = g_strdup_printf (_("Cannot display location \"%s\""),
-					 uri);
-	error_dialog = eel_show_error_dialog (error_message,
-					      error->message,
-					      NULL);
-
-	open_dialogs++;
-
-	g_signal_connect (error_dialog, "destroy",
-			  G_CALLBACK (error_dialog_destroyed), parent);
-
-	gtk_window_set_screen (GTK_WINDOW (error_dialog),
-			       gtk_widget_get_screen (parent));
-
-	g_free (error_message);
-}
-
-static void
-show_uri (const char *uri,
-	  GtkWidget  *widget)
-{
-	GError    *error;
+	GError *error;
 	GdkAppLaunchContext *launch_context;
+	gchar *uri;
 
-	launch_context = gdk_app_launch_context_new ();
-	gdk_app_launch_context_set_screen (launch_context,
-					   gtk_widget_get_screen (widget));
+	display_location_res = g_simple_async_result_new (G_OBJECT (self),
+							  callback, user_data,
+							  nautilus_connect_server_dialog_display_location_async);
 
 	error = NULL;
+	uri = g_file_get_uri (location);
+	launch_context = gdk_app_launch_context_new ();
+	gdk_app_launch_context_set_screen (launch_context,
+					   gtk_widget_get_screen (GTK_WIDGET (self)));
+
 	g_app_info_launch_default_for_uri (uri,
 					   G_APP_LAUNCH_CONTEXT (launch_context),
 					   &error);
 
 	g_object_unref (launch_context);
 
-	if (error) {
-		display_error_dialog (error, uri, widget);
-		g_error_free (error);
-	} else {
-		/* everything is OK, destroy the main dialog and quit */
-		gtk_widget_destroy (widget);
-	}
-}
-
-static void
-mount_enclosing_ready_cb (GFile *location,
-			  GAsyncResult *res,
-			  GtkWidget *widget)
-{
-	char *uri;
-	gboolean success;
-	GError *error = NULL;
-
-	uri = g_file_get_uri (location);
-	success = g_file_mount_enclosing_volume_finish (location,
-							res, &error);
-
-	if (success ||
-	    g_error_matches (error, G_IO_ERROR, G_IO_ERROR_ALREADY_MOUNTED)) {
-		/* volume is mounted, show it */
-		show_uri (uri, widget);
-	} else {
-		display_error_dialog (error, uri, widget);
-	}
-
-	if (error) {
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (display_location_res, error);
 		g_error_free (error);
 	}
 
-	g_object_unref (location);
+	g_simple_async_result_complete_in_idle (display_location_res);
+
 	g_free (uri);
-}
-
-void
-nautilus_connect_server_dialog_present_uri (NautilusApplication *application,
-					    GFile *location,
-					    GtkWidget *widget)
-{
-	GMountOperation *op;
-
-	op = gtk_mount_operation_new (GTK_WINDOW (widget));
-	g_mount_operation_set_password_save (op, G_PASSWORD_SAVE_FOR_SESSION);
-	g_file_mount_enclosing_volume (location,
-				       0, op,
-				       NULL,
-				       (GAsyncReadyCallback) mount_enclosing_ready_cb,
-				       widget);
-	g_object_unref (op);
+	g_object_unref (display_location_res);
+	display_location_res = NULL;
 }
 
 int
@@ -174,8 +119,6 @@ main (int argc, char *argv[])
 	/* Translators: This is the --help description for the connect to server app,
 	   the initial newlines are between the command line arg and the description */
 	context = g_option_context_new (N_("\n\nAdd connect to server mount"));
-	g_option_context_add_main_entries (context, options, GETTEXT_PACKAGE);
-
 	g_option_context_set_translation_domain (context, GETTEXT_PACKAGE);
 	g_option_context_add_group (context, gtk_get_option_group (TRUE));
 
@@ -194,7 +137,6 @@ main (int argc, char *argv[])
 
 	dialog = nautilus_connect_server_dialog_new (NULL);
 
-	open_dialogs = 0;
 	g_signal_connect (dialog, "destroy",
 			  G_CALLBACK (main_dialog_destroyed), NULL);
 
