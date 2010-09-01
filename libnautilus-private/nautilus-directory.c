@@ -32,7 +32,6 @@
 #include "nautilus-search-directory.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-lib-self-check-functions.h"
-#include "nautilus-marshal.h"
 #include "nautilus-metadata.h"
 #include "nautilus-desktop-directory.h"
 #include "nautilus-vfs-directory.h"

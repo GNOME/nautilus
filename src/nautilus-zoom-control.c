@@ -40,7 +40,6 @@
 #include <gdk/gdkkeysyms.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-marshal.h>
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
