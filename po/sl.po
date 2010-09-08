@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2010-09-03 12:45+0000\n"
-"PO-Revision-Date: 2010-09-04 19:19+0100\n"
+"POT-Creation-Date: 2010-09-07 15:54+0000\n"
+"PO-Revision-Date: 2010-09-08 11:15+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -484,7 +484,7 @@ msgstr "Seznam oznak pod ikonami v prikazu ikon in na namizju. Dejansko število
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:4
 msgid "A string containing the saved geometry and coordinates string for navigation windows."
-msgstr ""
+msgstr "Niz s podatki geometrije in koordinat za okna krmarjenja."
 
 #. TRANSLATORS: don't translate the zoom levels between quotes
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:7
@@ -1038,8 +1038,9 @@ msgid "Whether a custom default side pane background has been set."
 msgstr "Ali je bilo nastavljeno po meri privzeto ozadje stranskega pladnja."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:146
+#, fuzzy
 msgid "Whether the navigation window should be maximized by default."
-msgstr ""
+msgstr "Ali naj"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:147
 #, fuzzy
@@ -1369,7 +1370,7 @@ msgstr "Mesto doseženo\n"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:178
 msgid "Original location of file before moved to the Trash"
-msgstr ""
+msgstr "Izvorno mesto datoteke pred premikanjem v smeti"
 
 #: ../libnautilus-private/nautilus-customization-data.c:405
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:519
@@ -1464,19 +1465,16 @@ msgid "Sorry, unable to save custom emblem name."
 msgstr "Imena značke po meri ni mogoče shraniti."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:82
-#, fuzzy
 msgid "An older"
-msgstr "_Mapa"
+msgstr "Starejše"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:85
-#, fuzzy
 msgid "A newer"
-msgstr "Izberi &novejše"
+msgstr "Novejše"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:87
-#, fuzzy
 msgid "Another"
-msgstr "(druga kopija)"
+msgstr "Drugo"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:159
 #, fuzzy, c-format
@@ -1517,9 +1515,8 @@ msgid ""
 msgstr "Datoteka že obstaja v \"%F\". V primeru zamenjave bo prepisana celotna njena vsebina."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:252
-#, fuzzy
 msgid "Original file"
-msgstr "Izvirno ime datoteke"
+msgstr "Izvirna datoteka"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:253
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:284
@@ -1535,12 +1532,10 @@ msgstr "Vrsta:"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:259
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:290
-#, fuzzy
 msgid "Last modified:"
 msgstr "Spremenjeno:"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:283
-#, fuzzy
 msgid "Replace with"
 msgstr "Zamenjaj z"
 
@@ -1550,15 +1545,13 @@ msgstr "Združi"
 
 #. Setup the expander for the rename action
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:505
-#, fuzzy
 msgid "_Select a new name for the destination"
-msgstr "_Vnos novega imena za skupino %s:"
+msgstr "_Izbor novega imena za cilj"
 
 #. Setup the checkbox to apply the action to all files
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:531
-#, fuzzy
 msgid "Apply this action to all files"
-msgstr "Uveljavi dovoljenja za priložene datoteke"
+msgstr "Uveljavi dejanje za vse datoteke"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:542
 #: ../libnautilus-private/nautilus-file-operations.c:187
@@ -1566,12 +1559,10 @@ msgid "_Skip"
 msgstr "Pre_skoči"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:547
-#, fuzzy
 msgid "Re_name"
 msgstr "_Preimenuj"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:553
-#, fuzzy
 msgid "Replace"
 msgstr "Zamenjaj"
 
@@ -3424,9 +3415,8 @@ msgid "_Pattern:"
 msgstr "_Vzorec:"
 
 #: ../src/file-manager/fm-directory-view.c:1194
-#, fuzzy
 msgid "Examples: "
-msgstr "Primeri"
+msgstr "Primeri:"
 
 #: ../src/file-manager/fm-directory-view.c:1315
 msgid "Save Search as"
@@ -3509,9 +3499,9 @@ msgid "%s (%s)"
 msgstr "%s (%s)"
 
 #: ../src/file-manager/fm-directory-view.c:2282
-#, fuzzy, c-format
+#, c-format
 msgid "Free space: %s"
-msgstr "Prosto: %s"
+msgstr "Razpoložljivi prostor: %s"
 
 #: ../src/file-manager/fm-directory-view.c:2293
 #, c-format
@@ -3524,7 +3514,7 @@ msgstr "%s, Neporabljen prostor: %s"
 #. * be shown.
 #.
 #: ../src/file-manager/fm-directory-view.c:2308
-#, fuzzy, c-format
+#, c-format
 msgid "%s, %s"
 msgstr "%s, %s"
 
@@ -3555,9 +3545,9 @@ msgstr "%s%s, %s"
 #. * the free space is written.
 #.
 #: ../src/file-manager/fm-directory-view.c:2354
-#, fuzzy, c-format
+#, c-format
 msgid "%s%s, %s, %s"
-msgstr "%s%s, %s"
+msgstr "%s%s, %s, %s"
 
 #. Note that the number of items actually displayed varies somewhat due
 #. * to the way files are collected in batches. So you can't assume that
@@ -3574,9 +3564,9 @@ msgstr "Nekatere datoteke ne bodo prikazane."
 
 #: ../src/file-manager/fm-directory-view.c:4418
 #: ../src/nautilus-information-panel.c:833
-#, fuzzy, c-format
+#, c-format
 msgid "Open With %s"
-msgstr "Odpri z:"
+msgstr "Odpri s programom %s"
 
 #: ../src/file-manager/fm-directory-view.c:4420
 #, c-format
@@ -3884,15 +3874,13 @@ msgstr "Premakni ali kopiraj datoteke, predhodno izbrane z ukazom Izreži ali Ko
 
 #. name, stock id, label
 #: ../src/file-manager/fm-directory-view.c:7151
-#, fuzzy
 msgid "Cop_y to"
-msgstr "Kopiraj v _koledar ..."
+msgstr "_Kopiraj v"
 
 #. name, stock id, label
 #: ../src/file-manager/fm-directory-view.c:7152
-#, fuzzy
 msgid "M_ove to"
-msgstr "Odgovori %s"
+msgstr "_Premakni v"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7155
@@ -4529,9 +4517,9 @@ msgid "Move the open folder to the Trash"
 msgstr "Premakne odprto mapo v Smeti"
 
 #: ../src/file-manager/fm-directory-view.c:8586
-#, fuzzy, c-format
+#, c-format
 msgid "_Open With %s"
-msgstr "Odpri z:"
+msgstr "_Odpri s programom %s"
 
 #: ../src/file-manager/fm-directory-view.c:8639
 #, c-format
@@ -4788,9 +4776,8 @@ msgid "Keep icons sorted by trash time in rows"
 msgstr "Ikone naj bodo urejene po datumu spremembe v vrsticah"
 
 #: ../src/file-manager/fm-icon-view.c:728
-#, fuzzy
 msgid "_Organize Desktop by Name"
-msgstr "/Razvrsti predmete/po _imenu"
+msgstr "Razvrsti predmete namizja po _imenu"
 
 #. name, stock id, label
 #: ../src/file-manager/fm-icon-view.c:1606
@@ -4825,7 +4812,6 @@ msgstr "Obnovi izvorne velikosti vseh izbranih ikon"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1616
-#, fuzzy
 msgid "_Organize by Name"
 msgstr "Razvrsti po _imenu"
 
