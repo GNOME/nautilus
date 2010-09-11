@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2010-09-07 15:54+0000\n"
-"PO-Revision-Date: 2010-09-08 11:27+0100\n"
+"POT-Creation-Date: 2010-09-11 15:43+0000\n"
+"PO-Revision-Date: 2010-09-11 20:10+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -1367,7 +1367,7 @@ msgid "Original location of file before moved to the Trash"
 msgstr "Izvorno mesto datoteke pred premikanjem v smeti"
 
 #: ../libnautilus-private/nautilus-customization-data.c:405
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:519
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:522
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:428
 #: ../src/nautilus-property-browser.c:1873
 msgid "Reset"
@@ -1458,113 +1458,152 @@ msgstr "Značke po meri ni mogoče shraniti."
 msgid "Sorry, unable to save custom emblem name."
 msgstr "Imena značke po meri ni mogoče shraniti."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:82
-msgid "An older"
-msgstr "Starejše"
-
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:85
-msgid "A newer"
-msgstr "Novejše"
-
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:87
-msgid "Another"
-msgstr "Drugo"
-
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:159
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:144
 #, c-format
 msgid "Merge folder \"%s\"?"
 msgstr "Ali naj se združi mapa \"%s\"?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:166
-#, c-format
-msgid ""
-"%s folder with the same name already exists in \"%s\".\n"
-"Merging will ask for confirmation before replacing any files in the folder that conflict with the files being copied."
-msgstr ""
-"Mapa %s z istim imenom že obstaja v \"%s\".\n"
-"Med združevanjem map bo program, pred zamenjavo datotek, ki so v sporu s kopiranimi datotekami, zahteval potrditev."
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:148
+#| msgid ""
+#| "The source folder already exists in \"%B\".  Merging will ask for "
+#| "confirmation before replacing any files in the folder that conflict with "
+#| "the files being moved."
+msgid "Merging will ask for confirmation before replacing any files in the folder that conflict with the files being copied."
+msgstr "Z združevanjem map bo program pred zamenjavo datotek, ki so v sporu s kopiranimi datotekami, zahteval potrditev."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:174
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:153
+#, c-format
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "An older folder with the same name already exists in \"%s\"."
+msgstr "Starejša mapa z istim imenom že obstaja v \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:157
+#, c-format
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "A newer folder with the same name already exists in \"%s\"."
+msgstr "Novejša mapa z istim imenom že obstaja v \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:161
+#, c-format
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "Another folder with the same name already exists in \"%s\"."
+msgstr "Druga mapa z istim imenom že obstaja v \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:166
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "Replacing it will remove all files in the folder."
+msgstr "Z zamenjavo bodo odstranjene vse datoteke v tej mapi."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:168
 #, c-format
 msgid "Replace folder \"%s\"?"
 msgstr "Ali naj se zamenja mapa \"%s\"?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:176
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:170
 #, c-format
-msgid ""
-"A folder with the same name already exists in \"%s\".\n"
-"Replacing it will remove all files in the folder."
-msgstr ""
-"Datoteka z istim imenom že obstaja v \"%s\".\n"
-"V primeru zamenjave bodo odstranjene vse datoteke v tej mapi."
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "A folder with the same name already exists in \"%s\"."
+msgstr "Mapa z istim imenom že obstaja v \"%s\"."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:182
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:175
 #, c-format
 msgid "Replace file \"%s\"?"
 msgstr "Ali naj se zamenja datoteka \"%s\"?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:188
-#, c-format
-msgid ""
-"%s file with the same name already exists in \"%s\".\n"
-"Replacing it will overwrite its content."
-msgstr ""
-"Datoteka %s že obstaja v \"%s\".\n"
-"V primeru zamenjave bo prepisana njena celotna vsebina."
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:177
+#| msgid ""
+#| "%s file with the same name already exists in \"%s\".\n"
+#| "Replacing it will overwrite its content."
+msgid "Replacing it will overwrite its content."
+msgstr "Z zamenjavo bo prepisana njena celotna vsebina."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:252
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:181
+#, c-format
+#| msgid ""
+#| "%s file with the same name already exists in \"%s\".\n"
+#| "Replacing it will overwrite its content."
+msgid "An older file with the same name already exists in \"%s\"."
+msgstr "Starejša datoteka z istim imenom že obstaja v \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:185
+#, c-format
+#| msgid ""
+#| "%s file with the same name already exists in \"%s\".\n"
+#| "Replacing it will overwrite its content."
+msgid "A newer file with the same name already exists in \"%s\"."
+msgstr "Novejša datoteka z istim imenom že obstaja v \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:189
+#, c-format
+#| msgid ""
+#| "%s file with the same name already exists in \"%s\".\n"
+#| "Replacing it will overwrite its content."
+msgid "Another file with the same name already exists in \"%s\"."
+msgstr "Datoteka z istim imenom že obstaja v \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:255
 msgid "Original file"
 msgstr "Izvirna datoteka"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:253
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:284
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:256
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:287
 #: ../src/file-manager/fm-properties-window.c:3311
 msgid "Size:"
 msgstr "Velikost:"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:256
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:287
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:259
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:290
 #: ../src/file-manager/fm-properties-window.c:3293
 msgid "Type:"
 msgstr "Vrsta:"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:259
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:290
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:262
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:293
 msgid "Last modified:"
 msgstr "Spremenjeno:"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:283
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:286
 msgid "Replace with"
 msgstr "Zamenjaj z"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:312
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:315
 msgid "Merge"
 msgstr "Združi"
 
 #. Setup the expander for the rename action
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:505
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:508
 msgid "_Select a new name for the destination"
 msgstr "_Izbor novega imena za cilj"
 
 #. Setup the checkbox to apply the action to all files
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:531
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:534
 msgid "Apply this action to all files"
 msgstr "Uveljavi dejanje za vse datoteke"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:542
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:545
 #: ../libnautilus-private/nautilus-file-operations.c:187
 msgid "_Skip"
 msgstr "Pre_skoči"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:547
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:550
 msgid "Re_name"
 msgstr "_Preimenuj"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:553
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:556
 msgid "Replace"
 msgstr "Zamenjaj"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:626
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:629
 msgid "File conflict"
 msgstr "Spor datotek"
 
@@ -4923,7 +4962,7 @@ msgstr "(prazno)"
 
 #: ../src/file-manager/fm-list-model.c:399
 #: ../src/file-manager/fm-tree-model.c:1287
-#: ../src/nautilus-window-slot.c:196
+#: ../src/nautilus-window-slot.c:201
 msgid "Loading..."
 msgstr "Nalaganje ..."
 
@@ -7148,6 +7187,20 @@ msgstr "Približaj"
 msgid "Set the zoom level of the current view"
 msgstr "Določitev približanja trenutnega pogleda"
 
+#~ msgid "An older"
+#~ msgstr "Starejše"
+#~ msgid "A newer"
+#~ msgstr "Novejše"
+#~ msgid "Another"
+#~ msgstr "Drugo"
+#~ msgid ""
+#~ "%s folder with the same name already exists in \"%s\".\n"
+#~ "Merging will ask for confirmation before replacing any files in the "
+#~ "folder that conflict with the files being copied."
+#~ msgstr ""
+#~ "Mapa %s z istim imenom že obstaja v \"%s\".\n"
+#~ "Med združevanjem map bo program, pred zamenjavo datotek, ki so v sporu s "
+#~ "kopiranimi datotekami, zahteval potrditev."
 #~ msgid ""
 #~ "If set to true, newly opened windows will have the extra pane visible."
 #~ msgstr ""
@@ -7168,14 +7221,6 @@ msgstr "Določitev približanja trenutnega pogleda"
 #~ msgstr "Mapa z imenom \"%B\" že obstaja. Ali jo želite zamenjati?"
 #~ msgid "A file named \"%B\" already exists.  Do you want to replace it?"
 #~ msgstr "Datoteka z imenom \"%B\" že obstaja. Ali jo želite zamenjati?"
-#~ msgid ""
-#~ "The source folder already exists in \"%B\".  Merging will ask for "
-#~ "confirmation before replacing any files in the folder that conflict with "
-#~ "the files being moved."
-#~ msgstr ""
-#~ "Izvorna mapa v \"%B\" že obstaja. Med združevanjem map bo program pred "
-#~ "zamenjavo datotek, ki so v sporu s premaknjenimi datotekami zahteval "
-#~ "potrditev."
 #~ msgid "Could not use system package installer"
 #~ msgstr "Ni mogoče uporabiti sistemskega namestilnika paketov"
 #~ msgid "Clean _Up by Name"
