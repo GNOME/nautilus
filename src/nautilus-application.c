@@ -738,6 +738,8 @@ message_received_cb (GApplication *unique_app,
 		     gpointer user_data)
 {
 	NautilusApplication *application;
+	char **uris = NULL;
+	char *geometry = NULL;
 
 	application =  user_data;
 
@@ -751,8 +753,7 @@ message_received_cb (GApplication *unique_app,
 		gboolean use_browser;
 		gchar *key;
 		GVariant *value;
-		gchar *startup_id = NULL, *geometry = NULL;
-		char **uris = NULL;
+		gchar *startup_id;
 
 		g_variant_iter_init (&iter, platform_data);
 
