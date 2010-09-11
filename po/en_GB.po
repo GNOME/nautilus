@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-31 16:14+0100\n"
-"PO-Revision-Date: 2010-08-31 16:20+0100\n"
+"POT-Creation-Date: 2010-09-11 18:04+0100\n"
+"PO-Revision-Date: 2010-09-11 18:10+0100\n"
 "Last-Translator: Bruce Cowan <bruce@bcowan.me.uk>\n"
 "Language-Team: British English <en@li.org>\n"
 "Language: en_GB\n"
@@ -1707,7 +1707,7 @@ msgid "Original location of file before moved to the Trash"
 msgstr "Original location of file before moved to the Wastebasket"
 
 #: ../libnautilus-private/nautilus-customization-data.c:405
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:519
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:522
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:428
 #: ../src/nautilus-property-browser.c:1873
 msgid "Reset"
@@ -1808,115 +1808,125 @@ msgstr "Sorry, unable to save custom emblem."
 msgid "Sorry, unable to save custom emblem name."
 msgstr "Sorry, unable to save custom emblem name."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:82
-msgid "An older"
-msgstr "An older"
-
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:85
-msgid "A newer"
-msgstr "A newer"
-
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:87
-msgid "Another"
-msgstr "Another"
-
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:159
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:144
 #, c-format
 msgid "Merge folder \"%s\"?"
 msgstr "Merge folder \"%s\"?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:166
-#, c-format
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:148
 msgid ""
-"%s folder with the same name already exists in \"%s\".\n"
 "Merging will ask for confirmation before replacing any files in the folder "
 "that conflict with the files being copied."
 msgstr ""
-"%s folder with the same name already exists in \"%s\".\n"
 "Merging will ask for confirmation before replacing any files in the folder "
 "that conflict with the files being copied."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:174
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:153
+#, c-format
+msgid "An older folder with the same name already exists in \"%s\"."
+msgstr "An older folder with the same name already exists in \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:157
+#, c-format
+msgid "A newer folder with the same name already exists in \"%s\"."
+msgstr "A newer folder with the same name already exists in \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:161
+#, c-format
+msgid "Another folder with the same name already exists in \"%s\"."
+msgstr "Another folder with the same name already exists in \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:166
+msgid "Replacing it will remove all files in the folder."
+msgstr "Replacing it will remove all files in the folder."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:168
 #, c-format
 msgid "Replace folder \"%s\"?"
 msgstr "Replace folder \"%s\"?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:176
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:170
 #, c-format
-msgid ""
-"A folder with the same name already exists in \"%s\".\n"
-"Replacing it will remove all files in the folder."
-msgstr ""
-"A folder with the same name already exists in \"%s\".\n"
-"Replacing it will remove all files in the folder."
+msgid "A folder with the same name already exists in \"%s\"."
+msgstr "A folder with the same name already exists in \"%s\"."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:182
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:175
 #, c-format
 msgid "Replace file \"%s\"?"
 msgstr "Replace file \"%s\"?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:188
-#, c-format
-msgid ""
-"%s file with the same name already exists in \"%s\".\n"
-"Replacing it will overwrite its content."
-msgstr ""
-"%s file with the same name already exists in \"%s\".\n"
-"Replacing it will overwrite its content."
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:177
+msgid "Replacing it will overwrite its content."
+msgstr "Replacing it will overwrite its content."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:252
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:181
+#, c-format
+msgid "An older file with the same name already exists in \"%s\"."
+msgstr "An older file with the same name already exists in \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:185
+#, c-format
+msgid "A newer file with the same name already exists in \"%s\"."
+msgstr "A newer file with the same name already exists in \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:189
+#, c-format
+msgid "Another file with the same name already exists in \"%s\"."
+msgstr "Another file with the same name already exists in \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:255
 msgid "Original file"
 msgstr "Original file"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:253
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:284
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:256
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:287
 #: ../src/file-manager/fm-properties-window.c:3311
 msgid "Size:"
 msgstr "Size:"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:256
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:287
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:259
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:290
 #: ../src/file-manager/fm-properties-window.c:3293
 msgid "Type:"
 msgstr "Type:"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:259
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:290
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:262
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:293
 msgid "Last modified:"
 msgstr "Last modified:"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:283
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:286
 msgid "Replace with"
 msgstr "Replace with"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:312
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:315
 msgid "Merge"
 msgstr "Merge"
 
 #. Setup the expander for the rename action
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:505
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:508
 msgid "_Select a new name for the destination"
 msgstr "_Select a new name for the destination"
 
 #. Setup the checkbox to apply the action to all files
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:531
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:534
 msgid "Apply this action to all files"
 msgstr "Apply this action to all files"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:542
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:545
 #: ../libnautilus-private/nautilus-file-operations.c:187
 msgid "_Skip"
 msgstr "_Skip"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:547
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:550
 msgid "Re_name"
 msgstr "Re_name"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:553
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:556
 msgid "Replace"
 msgstr "Replace"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:626
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:629
 msgid "File conflict"
 msgstr "File conflict"
 
@@ -2125,8 +2135,7 @@ msgstr " (%'d"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1299
 msgid "Are you sure you want to permanently delete \"%B\" from the trash?"
-msgstr ""
-"Are you sure you want to permanently delete \"%B\" from the wastebasket?"
+msgstr "Are you sure you want to permanently delete \"%B\" from the wastebasket?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1302
 #, c-format
@@ -2259,8 +2268,7 @@ msgstr[1] "%'d files left to move to the wastebasket"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1782
 msgid "Cannot move file to trash, do you want to delete immediately?"
-msgstr ""
-"Cannot move file to the wastebasket, do you want to delete immediately?"
+msgstr "Cannot move file to the wastebasket, do you want to delete immediately?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1783
 msgid "The file \"%B\" cannot be moved to the trash."
@@ -5136,7 +5144,7 @@ msgstr "by _Wastebasket Time"
 #: ../src/file-manager/fm-icon-view.c:162
 #: ../src/file-manager/fm-icon-view.c:1666
 msgid "Keep icons sorted by trash time in rows"
-msgstr "Keep icons sorted by trash time in rows"
+msgstr "Keep icons sorted by wastebasket time in rows"
 
 #: ../src/file-manager/fm-icon-view.c:728
 msgid "_Organize Desktop by Name"
@@ -5295,7 +5303,7 @@ msgid "(Empty)"
 msgstr "(Empty)"
 
 #: ../src/file-manager/fm-list-model.c:399
-#: ../src/file-manager/fm-tree-model.c:1287 ../src/nautilus-window-slot.c:196
+#: ../src/file-manager/fm-tree-model.c:1287 ../src/nautilus-window-slot.c:201
 msgid "Loading..."
 msgstr "Loading…"
 
@@ -6768,7 +6776,7 @@ msgstr "Mount and open %s"
 
 #: ../src/nautilus-places-sidebar.c:548
 msgid "Open the trash"
-msgstr "Open the trash"
+msgstr "Open the wastebasket"
 
 #. start() for type G_DRIVE_START_STOP_TYPE_SHUTDOWN is normally not used
 #: ../src/nautilus-places-sidebar.c:1450
@@ -7566,6 +7574,24 @@ msgstr "Zoom"
 msgid "Set the zoom level of the current view"
 msgstr "Set the zoom level of the current view"
 
+#~ msgid "An older"
+#~ msgstr "An older"
+
+#~ msgid "A newer"
+#~ msgstr "A newer"
+
+#~ msgid "Another"
+#~ msgstr "Another"
+
+#~ msgid ""
+#~ "%s folder with the same name already exists in \"%s\".\n"
+#~ "Merging will ask for confirmation before replacing any files in the "
+#~ "folder that conflict with the files being copied."
+#~ msgstr ""
+#~ "%s folder with the same name already exists in \"%s\".\n"
+#~ "Merging will ask for confirmation before replacing any files in the "
+#~ "folder that conflict with the files being copied."
+
 #~ msgid ""
 #~ "If you choose to empty the trash, all items in it will be permanently "
 #~ "lost. Please note that you can also delete them separately."
@@ -7599,15 +7625,6 @@ msgstr "Set the zoom level of the current view"
 
 #~ msgid "A file named \"%B\" already exists.  Do you want to replace it?"
 #~ msgstr "A file named \"%B\" already exists.  Do you want to replace it?"
-
-#~ msgid ""
-#~ "The source folder already exists in \"%B\".  Merging will ask for "
-#~ "confirmation before replacing any files in the folder that conflict with "
-#~ "the files being moved."
-#~ msgstr ""
-#~ "The source folder already exists in \"%B\".  Merging will ask for "
-#~ "confirmation before replacing any files in the folder that conflict with "
-#~ "the files being moved."
 
 #~ msgid "throbber"
 #~ msgstr "throbber"
