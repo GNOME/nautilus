@@ -811,7 +811,7 @@ open_windows (NautilusApplication *application,
 
 static UniqueResponse
 message_received_cb (UniqueApp         *unique_app,
-                     UniqueCommand      command,
+                     gint               command,
                      UniqueMessageData *message,
                      guint              time_,
                      gpointer           user_data)
