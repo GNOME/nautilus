@@ -535,7 +535,7 @@ main (int argc, char *argv[])
 			 uris);
 		g_strfreev (uris);
 
-		if (g_application_is_remote (application->unique_app) ||
+		if (unique_app_is_running (application->unique_app) ||
 		    kill_shell) {
 			exit_with_last_window = TRUE;
 		}
