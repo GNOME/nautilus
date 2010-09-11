@@ -221,17 +221,19 @@ static void
 iconize_entry (NautilusConnectServerDialog *dialog,
 	       GtkWidget *entry)
 {
-	dialog->details->iconized_entries =
-		g_list_prepend (dialog->details->iconized_entries, entry);
+	if (!g_list_find (dialog->details->iconized_entries, entry)) {
+		dialog->details->iconized_entries =
+			g_list_prepend (dialog->details->iconized_entries, entry);
 
-	gtk_entry_set_icon_from_stock (GTK_ENTRY (entry),
-				       GTK_ENTRY_ICON_SECONDARY,
-				       GTK_STOCK_DIALOG_WARNING);
+		gtk_entry_set_icon_from_stock (GTK_ENTRY (entry),
+					       GTK_ENTRY_ICON_SECONDARY,
+					       GTK_STOCK_DIALOG_WARNING);
 
-	gtk_widget_grab_focus (entry);
+		gtk_widget_grab_focus (entry);
 
-	g_signal_connect (entry, "changed",
-			  G_CALLBACK (iconized_entry_changed_cb), dialog);
+		g_signal_connect (entry, "changed",
+				  G_CALLBACK (iconized_entry_changed_cb), dialog);
+	}
 }
 
 static void
@@ -701,10 +703,10 @@ nautilus_connect_server_dialog_finalize (GObject *object)
 
 	abort_mount_operation (dialog);
 
-	g_list_foreach (dialog->details->iconized_entries,
-			(GFunc) iconized_entry_restore, dialog);
-	g_list_free (dialog->details->iconized_entries);
-	dialog->details->iconized_entries = NULL;
+	if (dialog->details->iconized_entries != NULL) {
+		g_list_free (dialog->details->iconized_entries);
+		dialog->details->iconized_entries = NULL;
+	}
 
 	G_OBJECT_CLASS (nautilus_connect_server_dialog_parent_class)->finalize (object);
 }
