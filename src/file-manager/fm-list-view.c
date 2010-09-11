@@ -1178,6 +1178,32 @@ sort_column_changed_callback (GtkTreeSortable *sortable,
 }
 
 static void
+cell_renderer_editing_started_cb (GtkCellRenderer *renderer,
+				  GtkCellEditable *editable,
+				  const gchar *path_str,
+				  FMListView *list_view)
+{
+	GtkEntry *entry;
+	gint start_offset, end_offset;
+
+	entry = GTK_ENTRY (editable);
+	list_view->details->editable_widget = editable;
+
+	/* Free a previously allocated original_name */
+	g_free (list_view->details->original_name);
+
+	list_view->details->original_name = g_strdup (gtk_entry_get_text (entry));
+	eel_filename_get_rename_region (list_view->details->original_name,
+					&start_offset, &end_offset);
+	gtk_editable_select_region (GTK_EDITABLE (entry), start_offset, end_offset);
+
+	nautilus_clipboard_set_up_editable
+		(GTK_EDITABLE (entry),
+		 fm_directory_view_get_ui_manager (FM_DIRECTORY_VIEW (list_view)),
+		 FALSE);
+}
+
+static void
 cell_renderer_editing_canceled (GtkCellRendererText *cell,
 				FMListView          *view)
 {
@@ -1599,7 +1625,8 @@ create_and_set_up_tree_view (FMListView *view)
 			view->details->file_name_cell = (GtkCellRendererText *)cell;
 			g_signal_connect (cell, "edited", G_CALLBACK (cell_renderer_edited), view);
 			g_signal_connect (cell, "editing-canceled", G_CALLBACK (cell_renderer_editing_canceled), view);
-			
+			g_signal_connect (cell, "editing-started", G_CALLBACK (cell_renderer_editing_started_cb), view);
+
 			gtk_tree_view_column_pack_start (view->details->file_name_column, cell, TRUE);
 			gtk_tree_view_column_set_cell_data_func (view->details->file_name_column, cell,
 								 (GtkTreeCellDataFunc) filename_cell_data_func,
@@ -2626,11 +2653,6 @@ fm_list_view_start_renaming_file (FMDirectoryView *view,
 	FMListView *list_view;
 	GtkTreeIter iter;
 	GtkTreePath *path;
-	GtkEntry *entry;
-	int start_offset, end_offset;
-	gchar *path_str;
-	GdkRectangle cell_area;
-	GdkRectangle background_area;
 	
 	list_view = FM_LIST_VIEW (view);
 	
@@ -2651,21 +2673,12 @@ fm_list_view_start_renaming_file (FMDirectoryView *view,
 	fm_directory_view_freeze_updates (FM_DIRECTORY_VIEW (view));
 
 	path = gtk_tree_model_get_path (GTK_TREE_MODEL (list_view->details->model), &iter);
-	path_str = gtk_tree_path_to_string (path);
-	gtk_tree_view_get_cell_area (list_view->details->tree_view, path,
-				     list_view->details->file_name_column, &cell_area);
-	gtk_tree_view_get_background_area (list_view->details->tree_view, path,
-					   list_view->details->file_name_column, &background_area);
 
 	/* Make filename-cells editable. */
 	g_object_set (G_OBJECT (list_view->details->file_name_cell),
 		      "editable", TRUE,
 		      NULL);
 
-	list_view->details->editable_widget =
-		gtk_cell_renderer_start_editing (GTK_CELL_RENDERER (list_view->details->file_name_cell),
-						 NULL, NULL, path_str, &background_area,
-						 &cell_area, 0);
 	gtk_tree_view_scroll_to_cell (list_view->details->tree_view,
 				      NULL,
 				      list_view->details->file_name_column,
@@ -2675,27 +2688,7 @@ fm_list_view_start_renaming_file (FMDirectoryView *view,
 				  list_view->details->file_name_column,
 				  TRUE);
 
-	entry = GTK_ENTRY (list_view->details->editable_widget);
-
-	/* Free a previously allocated original_name */
-	g_free (list_view->details->original_name);
-
-	list_view->details->original_name = g_strdup (gtk_entry_get_text (entry));
-	if (select_all) {
-		start_offset = 0;
-		end_offset = -1;
-	} else {
-		eel_filename_get_rename_region (list_view->details->original_name,
-						&start_offset, &end_offset);
-	}
-	gtk_editable_select_region (GTK_EDITABLE (entry), start_offset, end_offset);
-	
 	gtk_tree_path_free (path);
-
-	nautilus_clipboard_set_up_editable
-		(GTK_EDITABLE (entry),
-		 fm_directory_view_get_ui_manager (view),
-		 FALSE);
 }
 
 static void
