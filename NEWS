@@ -1,3 +1,11 @@
+Major changes in 2.31.92 are:
+* String fixes for the file conflict dialog
+* Add a border around infobars
+* Fix a regression when copy/pasting in list view
+* Re-use libunique instead of GApplication
+* Drop GDK_DISABLE_DEPRECATED cflag, as we don't want to cope with
+  recent GDK 2.22 deprecations for the 2.32 branch
+
 Major changes in 2.31.90 are:
 * Don't make pathbar buttons disappear when deleting a folder
 * Remove useless unique-1.0 dependency
