@@ -873,7 +873,6 @@ nautilus_application_startup (NautilusApplication *application,
 						  &error,
 						  "application-id", "org.gnome.Nautilus",
 						  "default-quit", FALSE,
-						  "argv", g_variant_new_bytestring_array (NULL, 0),
 						  NULL);
 	g_assert (error == NULL);
 	is_remote = g_application_is_remote (application->unique_app);
