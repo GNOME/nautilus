@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-05 23:41+0200\n"
-"PO-Revision-Date: 2010-09-06 00:42+0100\n"
+"POT-Creation-Date: 2010-09-12 20:28+0200\n"
+"PO-Revision-Date: 2010-09-12 20:40+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -1363,7 +1363,7 @@ msgid "Original location of file before moved to the Trash"
 msgstr "Ursprunglig plats för filen innan den flyttades till papperskorgen"
 
 #: ../libnautilus-private/nautilus-customization-data.c:405
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:519
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:522
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:428
 #: ../src/nautilus-property-browser.c:1873
 msgid "Reset"
@@ -1454,114 +1454,122 @@ msgstr "Tyvärr, kunde inte spara anpassat emblem."
 msgid "Sorry, unable to save custom emblem name."
 msgstr "Tyvärr, kunde inte spara anpassat emblemnamn."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:82
-msgid "An older"
-msgstr "En äldre"
-
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:85
-msgid "A newer"
-msgstr "En nyare"
-
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:87
-msgid "Another"
-msgstr "En annan"
-
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:159
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:144
 #, c-format
 msgid "Merge folder \"%s\"?"
 msgstr "Slå samman mappen \"%s\"?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:166
-#, c-format
-msgid ""
-"%s folder with the same name already exists in \"%s\".\n"
-"Merging will ask for confirmation before replacing any files in the folder that conflict with the files being copied."
-msgstr ""
-"%s mapp med samma namn finns redan i \"%s\".\n"
-"Sammanfogning kommer att fråga dig om bekräftelse innan några filer ersätts i mappen som är i konflikt med de filer som kopieras."
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:148
+msgid "Merging will ask for confirmation before replacing any files in the folder that conflict with the files being copied."
+msgstr "Sammanfogning kommer att fråga dig om bekräftelse innan några filer ersätts i mappen som är i konflikt med de filer som kopieras."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:174
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:153
+#, c-format
+msgid "An older folder with the same name already exists in \"%s\"."
+msgstr "En äldre mapp med samma namn finns redan i \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:157
+#, c-format
+msgid "A newer folder with the same name already exists in \"%s\"."
+msgstr "En nyare mapp med samma namn finns redan i \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:161
+#, c-format
+msgid "Another folder with the same name already exists in \"%s\"."
+msgstr "En annan mapp med samma namn finns redan i \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:166
+msgid "Replacing it will remove all files in the folder."
+msgstr "Ersätta den innebär att alla filer i mappen tas bort."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:168
 #, c-format
 msgid "Replace folder \"%s\"?"
 msgstr "Ersätt mappen \"%s\"?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:176
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:170
 #, c-format
-msgid ""
-"A folder with the same name already exists in \"%s\".\n"
-"Replacing it will remove all files in the folder."
-msgstr ""
-"En mapp med samma namn finns redan i \"%s\".\n"
-"Ersätta den innebär att alla filer i mappen tas bort."
+msgid "A folder with the same name already exists in \"%s\"."
+msgstr "En mapp med samma namn finns redan i \"%s\"."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:182
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:175
 #, c-format
 msgid "Replace file \"%s\"?"
 msgstr "Ersätt filen \"%s\"?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:188
-#, c-format
-msgid ""
-"%s file with the same name already exists in \"%s\".\n"
-"Replacing it will overwrite its content."
-msgstr ""
-"%s fil med samma namn finns redan i \"%s\".\n"
-"Ersätta den innebär att dess innehåll skrivs över."
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:177
+msgid "Replacing it will overwrite its content."
+msgstr "Ersätta den innebär att dess innehåll skrivs över."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:252
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:181
+#, c-format
+msgid "An older file with the same name already exists in \"%s\"."
+msgstr "En äldre fil med samma namn finns redan i \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:185
+#, c-format
+msgid "A newer file with the same name already exists in \"%s\"."
+msgstr "En nyare fil med samma namn finns redan i \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:189
+#, c-format
+msgid "Another file with the same name already exists in \"%s\"."
+msgstr "En annan fil med samma namn finns redan i \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:255
 msgid "Original file"
 msgstr "Ursprunglig fil"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:253
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:284
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:256
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:287
 #: ../src/file-manager/fm-properties-window.c:3311
 msgid "Size:"
 msgstr "Storlek:"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:256
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:287
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:259
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:290
 #: ../src/file-manager/fm-properties-window.c:3293
 msgid "Type:"
 msgstr "Typ:"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:259
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:290
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:262
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:293
 msgid "Last modified:"
 msgstr "Senast ändrad:"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:283
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:286
 msgid "Replace with"
 msgstr "Ersätt med"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:312
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:315
 msgid "Merge"
 msgstr "Sammanfoga"
 
 #. Setup the expander for the rename action
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:505
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:508
 msgid "_Select a new name for the destination"
 msgstr "_Välj ett nytt namn för målet"
 
 # Är enclose rätt ord?
 #. Setup the checkbox to apply the action to all files
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:531
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:534
 msgid "Apply this action to all files"
 msgstr "Verkställ denna åtgärd på alla filer"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:542
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:545
 #: ../libnautilus-private/nautilus-file-operations.c:187
 msgid "_Skip"
 msgstr "_Hoppa över"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:547
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:550
 msgid "Re_name"
 msgstr "Byt _namn"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:553
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:556
 msgid "Replace"
 msgstr "Ersätt"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:626
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:629
 msgid "File conflict"
 msgstr "Filkonflikt"
 
@@ -4822,7 +4830,7 @@ msgstr "(Tomt)"
 
 #: ../src/file-manager/fm-list-model.c:399
 #: ../src/file-manager/fm-tree-model.c:1287
-#: ../src/nautilus-window-slot.c:196
+#: ../src/nautilus-window-slot.c:201
 msgid "Loading..."
 msgstr "Läser in..."
 
@@ -7044,6 +7052,12 @@ msgstr "Zooma"
 msgid "Set the zoom level of the current view"
 msgstr "Ställ in zoomnivån på den aktuella vyn"
 
+#~ msgid "An older"
+#~ msgstr "En äldre"
+#~ msgid "A newer"
+#~ msgstr "En nyare"
+#~ msgid "Another"
+#~ msgstr "En annan"
 #~ msgid "This will open %d separate application."
 #~ msgid_plural "This will open %d separate applications."
 #~ msgstr[0] "Detta kommer att öppna %d separat program."
