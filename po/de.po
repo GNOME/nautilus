@@ -44,9 +44,9 @@ msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2010-09-11 13:09+0000\n"
-"PO-Revision-Date: 2010-09-04 22:17+0200\n"
-"Last-Translator: Christian Kirbach <Christian.Kirbach@googlemail.com>\n"
+"POT-Creation-Date: 2010-09-12 09:20+0000\n"
+"PO-Revision-Date: 2010-09-12 12:06+0100\n"
+"Last-Translator: Mario Blättermann <mariobl@gnome.org>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1916,58 +1916,32 @@ msgid "Merge folder \"%s\"?"
 msgstr "Ordner »%s« zusammenführen?"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:148
-#, fuzzy
-#| msgid ""
-#| "The source folder already exists in \"%B\".  Merging will ask for "
-#| "confirmation before replacing any files in the folder that conflict with "
-#| "the files being moved."
 msgid ""
 "Merging will ask for confirmation before replacing any files in the folder "
 "that conflict with the files being copied."
 msgstr ""
-"Der Zielordner existiert bereits in »%B«. Falls Sie die Ordner zusammenführen "
-"möchten und Dateien gleichen Namens bereits existieren, so werden Sie um "
-"Bestätigung gefragt, bevor Dateien im Ordner ersetzt werden."
+"Falls Sie die Ordner zusammenführen möchten und Dateien gleichen Namens "
+"bereits existieren, so werden Sie um Bestätigung gefragt, bevor Dateien im "
+"Ordner ersetzt werden."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:153
-#, fuzzy, c-format
-#| msgid ""
-#| "A folder with the same name already exists in \"%s\".\n"
-#| "Replacing it will remove all files in the folder."
+#, c-format
 msgid "An older folder with the same name already exists in \"%s\"."
-msgstr ""
-"Ein Ordner gleichen Namens existiert bereits in »%s«.\n"
-"Ersetzen wird alle Dateien in diesem Ordner entfernen."
+msgstr "Ein älterer Ordner gleichen Namens existiert bereits in »%s«."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:157
-#, fuzzy, c-format
-#| msgid ""
-#| "A folder with the same name already exists in \"%s\".\n"
-#| "Replacing it will remove all files in the folder."
+#, c-format
 msgid "A newer folder with the same name already exists in \"%s\"."
-msgstr ""
-"Ein Ordner gleichen Namens existiert bereits in »%s«.\n"
-"Ersetzen wird alle Dateien in diesem Ordner entfernen."
+msgstr "Ein neuerer Ordner gleichen Namens existiert bereits in »%s«."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:161
-#, fuzzy, c-format
-#| msgid ""
-#| "A folder with the same name already exists in \"%s\".\n"
-#| "Replacing it will remove all files in the folder."
+#, c-format
 msgid "Another folder with the same name already exists in \"%s\"."
-msgstr ""
-"Ein Ordner gleichen Namens existiert bereits in »%s«.\n"
-"Ersetzen wird alle Dateien in diesem Ordner entfernen."
+msgstr "Ein Ordner gleichen Namens existiert bereits in »%s«."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:166
-#, fuzzy
-#| msgid ""
-#| "A folder with the same name already exists in \"%s\".\n"
-#| "Replacing it will remove all files in the folder."
 msgid "Replacing it will remove all files in the folder."
-msgstr ""
-"Ein Ordner gleichen Namens existiert bereits in »%s«.\n"
-"Ersetzen wird alle Dateien in diesem Ordner entfernen."
+msgstr "Ersetzen wird alle Dateien in diesem Ordner entfernen."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:168
 #, c-format
@@ -1975,14 +1949,9 @@ msgid "Replace folder \"%s\"?"
 msgstr "Ordner »%s« ersetzen?"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:170
-#, fuzzy, c-format
-#| msgid ""
-#| "A folder with the same name already exists in \"%s\".\n"
-#| "Replacing it will remove all files in the folder."
+#, c-format
 msgid "A folder with the same name already exists in \"%s\"."
-msgstr ""
-"Ein Ordner gleichen Namens existiert bereits in »%s«.\n"
-"Ersetzen wird alle Dateien in diesem Ordner entfernen."
+msgstr "Ein Ordner gleichen Namens existiert bereits in »%s«."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:175
 #, c-format
@@ -1990,44 +1959,23 @@ msgid "Replace file \"%s\"?"
 msgstr "Datei »%s« ersetzen?"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:177
-#, fuzzy
-#| msgid ""
-#| "%s file with the same name already exists in \"%s\".\n"
-#| "Replacing it will overwrite its content."
 msgid "Replacing it will overwrite its content."
-msgstr ""
-"%s Datei gleichen Namens existiert bereits in »%s«. Falls Sie sie ersetzen, "
-"wird ihr Inhalt überschrieben."
+msgstr "Falls Sie sie ersetzen, wird ihr Inhalt überschrieben."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:181
-#, fuzzy, c-format
-#| msgid ""
-#| "%s file with the same name already exists in \"%s\".\n"
-#| "Replacing it will overwrite its content."
+#, c-format
 msgid "An older file with the same name already exists in \"%s\"."
-msgstr ""
-"%s Datei gleichen Namens existiert bereits in »%s«. Falls Sie sie ersetzen, "
-"wird ihr Inhalt überschrieben."
+msgstr "Eine ältere Datei gleichen Namens existiert bereits in »%s«."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:185
-#, fuzzy, c-format
-#| msgid ""
-#| "%s file with the same name already exists in \"%s\".\n"
-#| "Replacing it will overwrite its content."
+#, c-format
 msgid "A newer file with the same name already exists in \"%s\"."
-msgstr ""
-"%s Datei gleichen Namens existiert bereits in »%s«. Falls Sie sie ersetzen, "
-"wird ihr Inhalt überschrieben."
+msgstr "Eine neuere Datei gleichen Namens existiert bereits in »%s«."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:189
-#, fuzzy, c-format
-#| msgid ""
-#| "%s file with the same name already exists in \"%s\".\n"
-#| "Replacing it will overwrite its content."
+#, c-format
 msgid "Another file with the same name already exists in \"%s\"."
-msgstr ""
-"%s Datei gleichen Namens existiert bereits in »%s«. Falls Sie sie ersetzen, "
-"wird ihr Inhalt überschrieben."
+msgstr "Eine Datei gleichen Namens existiert bereits in »%s«."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:255
 msgid "Original file"
