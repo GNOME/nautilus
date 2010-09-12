@@ -24,8 +24,8 @@ msgstr ""
 "Project-Id-Version: nautilus.gnome-2-32.es\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2010-09-07 15:54+0000\n"
-"PO-Revision-Date: 2010-09-09 21:03+0200\n"
+"POT-Creation-Date: 2010-09-12 09:20+0000\n"
+"PO-Revision-Date: 2010-09-12 12:30+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1878,7 +1878,7 @@ msgid "Original location of file before moved to the Trash"
 msgstr "Ubicación original del archivo antes de moverlo a la papelera"
 
 #: ../libnautilus-private/nautilus-customization-data.c:405
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:519
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:522
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:428
 #: ../src/nautilus-property-browser.c:1873
 msgid "Reset"
@@ -1989,122 +1989,160 @@ msgstr "Lo siento, no se puede guardar el emblema personalizado."
 msgid "Sorry, unable to save custom emblem name."
 msgstr "Lo siento, no se pudo guardar el nombre del emblema personalizado."
 
-# src/file-manager/fm-directory-view.c:2140
-# src/file-manager/fm-directory-view.c:2257
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:82
-msgid "An older"
-msgstr "Uno más antiguo"
-
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:85
-msgid "A newer"
-msgstr "Uno más nuevo"
-
-# src/file-manager/fm-properties-window.c:1560
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:87
-msgid "Another"
-msgstr "Otro"
-
 # libnautilus-private/nautilus-global-preferences.c:727
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:159
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:144
 #, c-format
 msgid "Merge folder \"%s\"?"
 msgstr "¿Mezclar la carpeta «%s»?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:166
-#, c-format
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:148
+#| msgid ""
+#| "The source folder already exists in \"%B\".  Merging will ask for "
+#| "confirmation before replacing any files in the folder that conflict with "
+#| "the files being moved."
 msgid ""
-"%s folder with the same name already exists in \"%s\".\n"
 "Merging will ask for confirmation before replacing any files in the folder "
 "that conflict with the files being copied."
 msgstr ""
-"Ya existe la carpeta %s con el mismo nombre en «%s».\n"
-"Al mezclarlas se pedirá confirmación antes de reemplazar cualquier archivo "
-"en la carpeta que esté en conflicto con los archivos que se están copiando."
+"Al mezclar se pedirá confirmación antes de reemplazar cualquier archivo en "
+"la carpeta que esté en conflicto con los archivos que se están moviendo."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:153
+#, c-format
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "An older folder with the same name already exists in \"%s\"."
+msgstr "Existe una carpeta más antigua con el mismo nombre en «%s»."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:157
+#, c-format
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "A newer folder with the same name already exists in \"%s\"."
+msgstr "Existe una carpeta más nueva con el mismo nombre en «%s»."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:161
+#, c-format
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "Another folder with the same name already exists in \"%s\"."
+msgstr "Ya existe una carpeta con el mismo nombre en «%s»."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:166
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "Replacing it will remove all files in the folder."
+msgstr "Reemplazarla eliminará todos los archivos en la carpeta."
 
 # libnautilus-private/nautilus-global-preferences.c:727
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:174
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:168
 #, c-format
 msgid "Replace folder \"%s\"?"
 msgstr "¿Reemplazar la carpeta «%s»?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:176
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:170
 #, c-format
-msgid ""
-"A folder with the same name already exists in \"%s\".\n"
-"Replacing it will remove all files in the folder."
-msgstr ""
-"Ya existe una carpeta con el mismo nombre en «%s».\n"
-"Reemplazarla eliminará todos los archivos en la carpeta."
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "A folder with the same name already exists in \"%s\"."
+msgstr "Ya existe una carpeta con el mismo nombre en «%s»."
 
 # libnautilus-private/nautilus-global-preferences.c:727
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:182
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:175
 #, c-format
 msgid "Replace file \"%s\"?"
 msgstr "¿Reemplazar el archivo «%s»?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:188
-#, c-format
-msgid ""
-"%s file with the same name already exists in \"%s\".\n"
-"Replacing it will overwrite its content."
-msgstr ""
-"Ya existe el archivo %s con el mismo nombre en «%s».\n"
-"Reemplazarlo sobreescribirá su contenido."
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:177
+#| msgid ""
+#| "%s file with the same name already exists in \"%s\".\n"
+#| "Replacing it will overwrite its content."
+msgid "Replacing it will overwrite its content."
+msgstr "Reemplazarlo sobreescribirá su contenido."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:252
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:181
+#, c-format
+#| msgid ""
+#| "%s file with the same name already exists in \"%s\".\n"
+#| "Replacing it will overwrite its content."
+msgid "An older file with the same name already exists in \"%s\"."
+msgstr "Existe un archivo más antiguo con el mismo nombre en «%s»."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:185
+#, c-format
+#| msgid ""
+#| "%s file with the same name already exists in \"%s\".\n"
+#| "Replacing it will overwrite its content."
+msgid "A newer file with the same name already exists in \"%s\"."
+msgstr "Existe un archivo más nuevo con el mismo nombre en «%s»."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:189
+#, c-format
+#| msgid ""
+#| "%s file with the same name already exists in \"%s\".\n"
+#| "Replacing it will overwrite its content."
+msgid "Another file with the same name already exists in \"%s\"."
+msgstr "Ya existe otro archivo con el mismo nombre en «%s»."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:255
 msgid "Original file"
 msgstr "Tamaño original"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-properties-window.c:1100
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:253
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:284
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:256
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:287
 #: ../src/file-manager/fm-properties-window.c:3311
 msgid "Size:"
 msgstr "Tamaño:"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-properties-window.c:1094
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:256
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:287
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:259
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:290
 #: ../src/file-manager/fm-properties-window.c:3293
 msgid "Type:"
 msgstr "Tipo:"
 
 # src/file-manager/fm-list-view.c:1599
 # src/file-manager/fm-search-list-view.c:158
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:259
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:290
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:262
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:293
 msgid "Last modified:"
 msgstr "Última modificación:"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/dfos-xfer.c:419 src/file-manager/dfos-xfer.c:430
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:283
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:286
 msgid "Replace with"
 msgstr "Reemplazar con"
 
 # libnautilus-private/nautilus-program-chooser.c:1344
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:312
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:315
 msgid "Merge"
 msgstr "Mezclar"
 
 # src/nautilus-property-browser.c:875
 #. Setup the expander for the rename action
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:505
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:508
 msgid "_Select a new name for the destination"
 msgstr "_Seleccionar un nombre nuevo para el destino"
 
 # src/file-manager/fm-properties-window.c:1641
 #. Setup the checkbox to apply the action to all files
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:531
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:534
 msgid "Apply this action to all files"
 msgstr "Aplicar esta acción a todos los archivos"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/dfos-xfer.c:352 src/file-manager/dfos-xfer.c:372
 # src/file-manager/dfos-xfer.c:419 src/file-manager/dfos-xfer.c:430
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:542
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:545
 #: ../libnautilus-private/nautilus-file-operations.c:187
 msgid "_Skip"
 msgstr "_Omitir"
@@ -2112,17 +2150,17 @@ msgstr "_Omitir"
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # libnautilus-private/nautilus-icon-text-item.c:1487
 # src/file-manager/fm-icon-view.c:1105
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:547
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:550
 msgid "Re_name"
 msgstr "Re_nombrar"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/dfos-xfer.c:419 src/file-manager/dfos-xfer.c:430
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:553
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:556
 msgid "Replace"
 msgstr "Reemplazar"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:626
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:629
 msgid "File conflict"
 msgstr "Conflicto de archivo"
 
@@ -5833,7 +5871,7 @@ msgid "(Empty)"
 msgstr "(Vacío)"
 
 #: ../src/file-manager/fm-list-model.c:399
-#: ../src/file-manager/fm-tree-model.c:1287 ../src/nautilus-window-slot.c:196
+#: ../src/file-manager/fm-tree-model.c:1287 ../src/nautilus-window-slot.c:201
 msgid "Loading..."
 msgstr "Cargando…"
 
@@ -8383,6 +8421,28 @@ msgstr "Ampliación"
 msgid "Set the zoom level of the current view"
 msgstr "Establece el nivel de ampliación de la vista actual"
 
+# src/file-manager/fm-directory-view.c:2140
+# src/file-manager/fm-directory-view.c:2257
+#~ msgid "An older"
+#~ msgstr "Uno más antiguo"
+
+#~ msgid "A newer"
+#~ msgstr "Uno más nuevo"
+
+# src/file-manager/fm-properties-window.c:1560
+#~ msgid "Another"
+#~ msgstr "Otro"
+
+#~ msgid ""
+#~ "%s folder with the same name already exists in \"%s\".\n"
+#~ "Merging will ask for confirmation before replacing any files in the "
+#~ "folder that conflict with the files being copied."
+#~ msgstr ""
+#~ "Ya existe la carpeta %s con el mismo nombre en «%s».\n"
+#~ "Al mezclarlas se pedirá confirmación antes de reemplazar cualquier "
+#~ "archivo en la carpeta que esté en conflicto con los archivos que se están "
+#~ "copiando."
+
 #~ msgid ""
 #~ "If you choose to empty the trash, all items in it will be permanently "
 #~ "lost. Please note that you can also delete them separately."
@@ -8437,15 +8497,6 @@ msgstr "Establece el nivel de ampliación de la vista actual"
 # src/file-manager/dfos-xfer.c:407
 #~ msgid "A file named \"%B\" already exists.  Do you want to replace it?"
 #~ msgstr "Ya existe un archivo llamado «%B». ¿Desea reemplazarlo?"
-
-#~ msgid ""
-#~ "The source folder already exists in \"%B\".  Merging will ask for "
-#~ "confirmation before replacing any files in the folder that conflict with "
-#~ "the files being moved."
-#~ msgstr ""
-#~ "La carpeta de origen ya existe en «%B». Al mezclarlas se pedirá "
-#~ "confirmación antes de reemplazar cualquier archivo en la carpeta que esté "
-#~ "en conflicto con los archivos que se están moviendo."
 
 # src/file-manager/fm-properties-window.c:1560
 #~ msgid "throbber"
