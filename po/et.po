@@ -22,9 +22,9 @@ msgstr ""
 "Project-Id-Version: nautilus MASTER\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2010-08-29 22:55+0000\n"
-"PO-Revision-Date: 2010-08-30 23:00+0300\n"
-"Last-Translator: Mattias Põldaru <mahfiaz gmail com>\n"
+"POT-Creation-Date: 2010-09-11 12:57+0000\n"
+"PO-Revision-Date: 2010-09-13 16:21+0300\n"
+"Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1347,7 +1347,7 @@ msgid "Permissions"
 msgstr "Õigused"
 
 msgid "The permissions of the file."
-msgstr "Faili pääsuõigused"
+msgstr "Faili pääsuõigused."
 
 msgid "Octal Permissions"
 msgstr "Õigused kaheksandkujul"
@@ -1375,7 +1375,7 @@ msgid "Trashed On"
 msgstr "Kustutati"
 
 msgid "Date when file was moved to the Trash"
-msgstr "Kuupäev, mil fail visati prügikasti"
+msgstr "Faili prügikasti viskamise aeg"
 
 msgid "Original Location"
 msgstr "Algne asukoht"
@@ -1457,52 +1457,58 @@ msgstr "Vabandust, kohandatud embleemi pole võimalik salvestada."
 msgid "Sorry, unable to save custom emblem name."
 msgstr "Vabandust, kohandatud embleemi nime pole võimalik salvestada."
 
-msgid "An older"
-msgstr "Vanem"
-
-msgid "A newer"
-msgstr "Uuem"
-
-msgid "Another"
-msgstr "Muu"
-
 #, c-format
 msgid "Merge folder \"%s\"?"
 msgstr "Kas liita kataloog \"%s\"?"
 
-#, c-format
 msgid ""
-"%s folder with the same name already exists in \"%s\".\n"
 "Merging will ask for confirmation before replacing any files in the folder "
 "that conflict with the files being copied."
 msgstr ""
-"Samanimeline kataloog %s on juba olemas kaustas \"%s\".\n"
 "Liitmise korral küsitakse kinnitust enne konfliktsete failide asendamist "
 "kaustas kopeeritavatega."
+
+#, c-format
+msgid "An older folder with the same name already exists in \"%s\"."
+msgstr "Sama nimega kataloog on juba \"%s\" all olemas."
+
+#, c-format
+msgid "A newer folder with the same name already exists in \"%s\"."
+msgstr "Uuem sama nimega kataloog on juba \"%s\" all olemas."
+
+#, c-format
+msgid "Another folder with the same name already exists in \"%s\"."
+msgstr "Veel üks sama nimega kataloog on juba \"%s\" all olemas."
+
+msgid "Replacing it will remove all files in the folder."
+msgstr "Asendamine kustutab kõik selles kaustas olevad failid."
 
 #, c-format
 msgid "Replace folder \"%s\"?"
 msgstr "Kas asendada kataloog \"%s\"?"
 
 #, c-format
-msgid ""
-"A folder with the same name already exists in \"%s\".\n"
-"Replacing it will remove all files in the folder."
-msgstr ""
-"Samanimeline kataloog on juba \"%s\" all olemas.\n"
-"Asendamine kustutab kõik selles kaustas olevad failid."
+msgid "A folder with the same name already exists in \"%s\"."
+msgstr "Sama nimega kataloog on juba \"%s\" all olemas."
 
 #, c-format
 msgid "Replace file \"%s\"?"
 msgstr "Kas asendada fail \"%s\"?"
 
+msgid "Replacing it will overwrite its content."
+msgstr "Selle asendamisega kirjutatakse faili sisu üle."
+
 #, c-format
-msgid ""
-"%s file with the same name already exists in \"%s\".\n"
-"Replacing it will overwrite its content."
-msgstr ""
-"Samanimeline fail %s on juba \"%s\" all olemas.\n"
-"Selle asendamisega kirjutatakse faili sisu üle."
+msgid "An older file with the same name already exists in \"%s\"."
+msgstr "Vanem sama nimega fail on juba \"%s\" all olemas."
+
+#, c-format
+msgid "A newer file with the same name already exists in \"%s\"."
+msgstr "Uuem sama nimega fail on juba \"%s\" all olemas."
+
+#, c-format
+msgid "Another file with the same name already exists in \"%s\"."
+msgstr "Veel üks sama nimega fail on juba \"%s\" all olemas."
 
 msgid "Original file"
 msgstr "Algne fail"
@@ -2144,7 +2150,7 @@ msgstr "Faili ei leitud"
 
 #, c-format
 msgid "Toplevel files cannot be renamed"
-msgstr "Ülemise taseme failide nime pole võimalik muuta."
+msgstr "Ülemise taseme failide nime pole võimalik muuta"
 
 #, c-format
 msgid "Unable to rename desktop icon"
@@ -3922,7 +3928,7 @@ msgstr "Pääsuõigusi pole võimalik muuta."
 
 #, c-format
 msgid "Renaming \"%s\" to \"%s\"."
-msgstr "\"%s\" ümbernimetamine \"%s\"-ks"
+msgstr "\"%s\" ümbernimetamine \"%s\"-ks."
 
 msgid "by _Name"
 msgstr "_nime järgi"
@@ -4341,7 +4347,7 @@ msgid "The permissions of the selected file could not be determined."
 msgstr "Valitud faili pääsuõiguseid pole võimalik tuvastada."
 
 msgid "Creating Properties window."
-msgstr "Omaduste akna loomine"
+msgstr "Omaduste akna loomine."
 
 msgid "Select Custom Icon"
 msgstr "Kohandatud ikooni valimine"
@@ -4914,7 +4920,7 @@ msgid "Show the version of the program."
 msgstr "Programmi versiooni näitamine."
 
 msgid "Create the initial window with the given geometry."
-msgstr "Esimese akna loomine näidatud suuruse ja asukohaga"
+msgstr "Esimese akna loomine näidatud suuruse ja asukohaga."
 
 msgid "GEOMETRY"
 msgstr "GEOMETRY"
@@ -5491,7 +5497,7 @@ msgid "Bookmark for Nonexistent Location"
 msgstr "Järjehodja olematusse asukohta"
 
 msgid "You can choose another view or go to a different location."
-msgstr "Valida võib uue vaate või liikuda teise asukohta"
+msgstr "Valida võib uue vaate või liikuda teise asukohta."
 
 msgid "The location cannot be displayed with this viewer."
 msgstr "Asukohta ei ole võimalik selle vaatajaga kuvada."
@@ -5830,8 +5836,3 @@ msgstr "Suurendus"
 
 msgid "Set the zoom level of the current view"
 msgstr "Praeguse vaate suurendusastme seadmine"
-
-#~ msgid "This will open %d separate application."
-#~ msgid_plural "This will open %d separate applications."
-#~ msgstr[0] "See avab %d eraldi rakenduse."
-#~ msgstr[1] "See avab %d eraldi rakendust."
