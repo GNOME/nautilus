@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-07 17:55+0200\n"
-"PO-Revision-Date: 2010-09-07 17:55+0100\n"
-"Last-Translator: Tomasz Dominikowski <dominikowski@gmail.com>\n"
+"POT-Creation-Date: 2010-09-14 17:02+0200\n"
+"PO-Revision-Date: 2010-09-13 14:56+0200\n"
+"Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1617,7 +1617,7 @@ msgstr "Użyj do_myślnych"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:273
-#: ../src/file-manager/fm-list-view.c:1577
+#: ../src/file-manager/fm-list-view.c:1603
 msgid "Name"
 msgstr "Nazwa"
 
@@ -1732,7 +1732,7 @@ msgid "Original location of file before moved to the Trash"
 msgstr "Pierwotne położenie plików przed ich przeniesieniem do kosza"
 
 #: ../libnautilus-private/nautilus-customization-data.c:405
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:519
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:522
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:428
 #: ../src/nautilus-property-browser.c:1873
 msgid "Reset"
@@ -1832,115 +1832,125 @@ msgstr "Nie można zapisać dodatkowego symbolu."
 msgid "Sorry, unable to save custom emblem name."
 msgstr "Nie można zapisać nazwy dodatkowego symbolu."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:82
-msgid "An older"
-msgstr "Starszy"
-
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:85
-msgid "A newer"
-msgstr "Nowszy"
-
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:87
-msgid "Another"
-msgstr "Inny"
-
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:159
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:144
 #, c-format
 msgid "Merge folder \"%s\"?"
 msgstr "Połączyć katalog \"%s\"?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:166
-#, c-format
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:148
 msgid ""
-"%s folder with the same name already exists in \"%s\".\n"
 "Merging will ask for confirmation before replacing any files in the folder "
 "that conflict with the files being copied."
 msgstr ""
-"%s katalog o tej samej nazwie już istnieje w \"%s\".\n"
 "Połączenie będzie poprzedzone zapytaniem o potwierdzenie przed zamianą "
 "jakichkolwiek plików, które mogą być w konflikcie z kopiowanymi plikami."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:174
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:153
+#, c-format
+msgid "An older folder with the same name already exists in \"%s\"."
+msgstr "Starszy katalog o tej samej nazwie już istnieje w \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:157
+#, c-format
+msgid "A newer folder with the same name already exists in \"%s\"."
+msgstr "Nowszy katalog o tej samej nazwie już istnieje w \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:161
+#, c-format
+msgid "Another folder with the same name already exists in \"%s\"."
+msgstr "Inny katalog o tej samej nazwie już istnieje w \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:166
+msgid "Replacing it will remove all files in the folder."
+msgstr "Zamiana spowoduje usunięcie wszystkich plików w katalogu."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:168
 #, c-format
 msgid "Replace folder \"%s\"?"
 msgstr "Zastąpić katalog \"%s\"?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:176
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:170
 #, c-format
-msgid ""
-"A folder with the same name already exists in \"%s\".\n"
-"Replacing it will remove all files in the folder."
-msgstr ""
-"Katalog o tej samej nazwie już istnieje w \"%s\".\n"
-"Zamiana spowoduje usunięcie wszystkich plików w katalogu."
+msgid "A folder with the same name already exists in \"%s\"."
+msgstr "Katalog o tej samej nazwie już istnieje w \"%s\"."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:182
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:175
 #, c-format
 msgid "Replace file \"%s\"?"
 msgstr "Zastąpić plik \"%s\"?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:188
-#, c-format
-msgid ""
-"%s file with the same name already exists in \"%s\".\n"
-"Replacing it will overwrite its content."
-msgstr ""
-"%s plik o tej samej nazwie już istnieje w \"%s\".\n"
-"Zamiana spowoduje nadpisanie jego zawartości."
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:177
+msgid "Replacing it will overwrite its content."
+msgstr "Zamiana spowoduje nadpisanie jego zawartości."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:252
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:181
+#, c-format
+msgid "An older file with the same name already exists in \"%s\"."
+msgstr "Starszy plik o tej samej nazwie już istnieje w \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:185
+#, c-format
+msgid "A newer file with the same name already exists in \"%s\"."
+msgstr "Nowszy plik o tej samej nazwie już istnieje w \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:189
+#, c-format
+msgid "Another file with the same name already exists in \"%s\"."
+msgstr "Inny plik o tej samej nazwie już istnieje w \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:255
 msgid "Original file"
 msgstr "Pierwotny plik"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:253
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:284
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:256
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:287
 #: ../src/file-manager/fm-properties-window.c:3311
 msgid "Size:"
 msgstr "Rozmiar:"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:256
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:287
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:259
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:290
 #: ../src/file-manager/fm-properties-window.c:3293
 msgid "Type:"
 msgstr "Typ:"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:259
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:290
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:262
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:293
 msgid "Last modified:"
 msgstr "Ostatnia modyfikacja:"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:283
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:286
 msgid "Replace with"
 msgstr "Zastąp używając"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:312
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:315
 msgid "Merge"
 msgstr "Połącz"
 
 #. Setup the expander for the rename action
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:505
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:508
 msgid "_Select a new name for the destination"
 msgstr "_Wybór nowej nazwy dla pliku docelowego"
 
 #. Setup the checkbox to apply the action to all files
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:531
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:534
 msgid "Apply this action to all files"
 msgstr "Zastosowanie tej czynności dla wszystkich plików"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:542
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:545
 #: ../libnautilus-private/nautilus-file-operations.c:187
 msgid "_Skip"
 msgstr "_Pomiń"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:547
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:550
 msgid "Re_name"
 msgstr "Zmień _nazwę"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:553
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:556
 msgid "Replace"
 msgstr "Zastąp"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:626
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:629
 msgid "File conflict"
 msgstr "Konflikt plików"
 
@@ -3138,8 +3148,8 @@ msgstr "Widok zwarty"
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:144
-#: ../src/file-manager/fm-list-view.c:1631
-#: ../src/file-manager/fm-list-view.c:3154
+#: ../src/file-manager/fm-list-view.c:1658
+#: ../src/file-manager/fm-list-view.c:3147
 #: ../src/nautilus-file-management-properties.ui.h:67
 msgid "List View"
 msgstr "Widok listy"
@@ -5384,44 +5394,44 @@ msgid "(Empty)"
 msgstr "(Pusty)"
 
 #: ../src/file-manager/fm-list-model.c:399
-#: ../src/file-manager/fm-tree-model.c:1287 ../src/nautilus-window-slot.c:196
+#: ../src/file-manager/fm-tree-model.c:1287 ../src/nautilus-window-slot.c:201
 msgid "Loading..."
 msgstr "Wczytywanie..."
 
-#: ../src/file-manager/fm-list-view.c:2290
+#: ../src/file-manager/fm-list-view.c:2317
 #, c-format
 msgid "%s Visible Columns"
 msgstr "Widoczne kolumny: %s"
 
-#: ../src/file-manager/fm-list-view.c:2309
+#: ../src/file-manager/fm-list-view.c:2336
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Kolejność wyświetlania informacji w tym katalogu:"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:2363
+#: ../src/file-manager/fm-list-view.c:2390
 msgid "Visible _Columns..."
 msgstr "Wido_czne kolumny..."
 
 #. tooltip
-#: ../src/file-manager/fm-list-view.c:2364
+#: ../src/file-manager/fm-list-view.c:2391
 msgid "Select the columns visible in this folder"
 msgstr "Zaznacza kolumny widoczne w tym katalogu"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-list-view.c:3156
+#: ../src/file-manager/fm-list-view.c:3149
 msgid "_List"
 msgstr "_Lista"
 
-#: ../src/file-manager/fm-list-view.c:3157
+#: ../src/file-manager/fm-list-view.c:3150
 msgid "The list view encountered an error."
 msgstr "Wystąpił błąd w widoku listy."
 
-#: ../src/file-manager/fm-list-view.c:3158
+#: ../src/file-manager/fm-list-view.c:3151
 msgid "The list view encountered an error while starting up."
 msgstr "Wystąpił błąd podczas uruchamiania widoku listy."
 
-#: ../src/file-manager/fm-list-view.c:3159
+#: ../src/file-manager/fm-list-view.c:3152
 msgid "Display this location with the list view."
 msgstr "Wyświetla położenie za pomocą widoku listy."
 
@@ -5763,12 +5773,12 @@ msgstr "Drzewo"
 msgid "Show Tree"
 msgstr "Wyświetla drzewo"
 
-#: ../src/nautilus-application.c:328
+#: ../src/nautilus-application.c:406
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "Nie można utworzyć wymaganego katalogu \"%s\"."
 
-#: ../src/nautilus-application.c:330
+#: ../src/nautilus-application.c:408
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
@@ -5776,12 +5786,12 @@ msgstr ""
 "Przed uruchomieniem programu Nautilus należy utworzyć następujący katalog "
 "lub tak ustalić uprawnienia, aby możliwe było jego utworzenie."
 
-#: ../src/nautilus-application.c:333
+#: ../src/nautilus-application.c:411
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "Nie można utworzyć następujących wymaganych katalogów: %s."
 
-#: ../src/nautilus-application.c:335
+#: ../src/nautilus-application.c:413
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -7663,45 +7673,3 @@ msgstr "Powiększ"
 #: ../src/nautilus-zoom-control.c:896
 msgid "Set the zoom level of the current view"
 msgstr "Ustawia poziom powiększenia bieżącego widoku"
-
-#, fuzzy
-#~ msgid "This will open %d separate application."
-#~ msgid_plural "This will open %d separate applications."
-#~ msgstr[0] "Spowoduje to otwarcie %d oddzielnej karty."
-#~ msgstr[1] "Spowoduje to otwarcie %d oddzielnych kart."
-#~ msgstr[2] "Spowoduje to otwarcie %d oddzielnych kart."
-
-#, fuzzy
-#~ msgid ""
-#~ "Uri of the default folder background. Only used if background_set is true."
-#~ msgstr ""
-#~ "Kolor dla domyślnego tła katalogu. Opcja używana tylko, gdy zmienna "
-#~ "background_set jest ustawiona na \"true\"."
-
-#, fuzzy
-#~ msgid ""
-#~ "Uri of the default side pane background. Only used if "
-#~ "side_pane_background_set is true."
-#~ msgstr ""
-#~ "Nazwa pliku dla domyślnego tła panelu bocznego. Opcja używana tylko, gdy "
-#~ "zmienna side_pane_background_set ma wartość \"true\"."
-
-#, fuzzy
-#~ msgid "By Access Date"
-#~ msgstr "Dostęp do plików"
-
-#, fuzzy
-#~ msgid "By Trashed Date"
-#~ msgstr "Według czasu przeniesienia do _kosza"
-
-#, fuzzy
-#~ msgid "_New Tab"
-#~ msgstr "Nowa _karta"
-
-#, fuzzy
-#~ msgid "Bookmarks"
-#~ msgstr "_Zakładki"
-
-#, fuzzy
-#~ msgid "Browse Network"
-#~ msgstr "Sieć"
