@@ -41,8 +41,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-22 13:44+0200\n"
-"PO-Revision-Date: 2010-08-22 03:27+0200\n"
+"POT-Creation-Date: 2010-09-16 23:53+0200\n"
+"PO-Revision-Date: 2010-09-15 21:26+0200\n"
 "Last-Translator: Anders Jenbo <anders@jenbo.dk>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "MIME-Version: 1.0\n"
@@ -1632,7 +1632,7 @@ msgstr "_Benyt standard"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:273
-#: ../src/file-manager/fm-list-view.c:1577
+#: ../src/file-manager/fm-list-view.c:1603
 msgid "Name"
 msgstr "Navn"
 
@@ -1748,7 +1748,7 @@ msgid "Original location of file before moved to the Trash"
 msgstr "Oprindelig placering af filen før den blev flyttet til Papirkurven"
 
 #: ../libnautilus-private/nautilus-customization-data.c:405
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:519
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:522
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:428
 #: ../src/nautilus-property-browser.c:1873
 msgid "Reset"
@@ -1850,115 +1850,125 @@ msgstr "Desværre, kunne ikke gemme brugerdefineret emblem."
 msgid "Sorry, unable to save custom emblem name."
 msgstr "Desværre, kunne ikke gemme brugerdefineret emblemnavn."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:82
-msgid "An older"
-msgstr "En ældre"
-
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:85
-msgid "A newer"
-msgstr "En nyere"
-
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:87
-msgid "Another"
-msgstr "En anden"
-
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:159
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:144
 #, c-format
 msgid "Merge folder \"%s\"?"
 msgstr "Flet mappen \"%s\"?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:166
-#, c-format
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:148
 msgid ""
-"%s folder with the same name already exists in \"%s\".\n"
 "Merging will ask for confirmation before replacing any files in the folder "
 "that conflict with the files being copied."
 msgstr ""
-"%s mappe med det samme navn findes allerede i \"%s\".\n"
-"Ved sammenfletning vil der blive bedt om bekræftelse før der overskrives "
-"filer i mappen, som er i konflikt med dem, der kopieres."
+"Ved sammenføjning vil der blive bedt om bekræftelse før der overskrives "
+"filer i mappen, som er i konflikt med dem, der flyttes."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:174
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:153
+#, c-format
+msgid "An older folder with the same name already exists in \"%s\"."
+msgstr "En ældre mappe med det samme navn findes allerede i \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:157
+#, c-format
+msgid "A newer folder with the same name already exists in \"%s\"."
+msgstr "En nyere mappe med det samme navn findes allerede i \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:161
+#, c-format
+msgid "Another folder with the same name already exists in \"%s\"."
+msgstr "En anden mappe med det samme navn findes allerede i \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:166
+msgid "Replacing it will remove all files in the folder."
+msgstr "Ved erstatning vil alle filer i mappen blive fjernet."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:168
 #, c-format
 msgid "Replace folder \"%s\"?"
 msgstr "Erstat mappen \"%s\"?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:176
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:170
 #, c-format
-msgid ""
-"A folder with the same name already exists in \"%s\".\n"
-"Replacing it will remove all files in the folder."
-msgstr ""
-"Der findes allerede en mappe med samme navn i \"%s\".\n"
-"Hvis du erstatter den, vil alle filer i mappen blive fjernet."
+msgid "A folder with the same name already exists in \"%s\"."
+msgstr "En mappe med det samme navn findes allerede i \"%s\"."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:182
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:175
 #, c-format
 msgid "Replace file \"%s\"?"
 msgstr "Erstat filen \"%s\"?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:188
-#, c-format
-msgid ""
-"%s file with the same name already exists in \"%s\".\n"
-"Replacing it will overwrite its content."
-msgstr ""
-"%s fil med samme navn findes allerede i \"%s\".\n"
-"Hvis du erstatter den, bliver indholdet overskrevet."
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:177
+msgid "Replacing it will overwrite its content."
+msgstr "Ved erstatning vil dens indhold blive overskrevet."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:252
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:181
+#, c-format
+msgid "An older file with the same name already exists in \"%s\"."
+msgstr "En ældre fil med det samme navn findes allerede i \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:185
+#, c-format
+msgid "A newer file with the same name already exists in \"%s\"."
+msgstr "En nyere fil med det samme navn findes allerede i \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:189
+#, c-format
+msgid "Another file with the same name already exists in \"%s\"."
+msgstr "En anden fil med det samme navn findes allerede i \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:255
 msgid "Original file"
 msgstr "Oprindelig fil"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:253
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:284
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:256
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:287
 #: ../src/file-manager/fm-properties-window.c:3311
 msgid "Size:"
 msgstr "Størrelse:"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:256
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:287
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:259
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:290
 #: ../src/file-manager/fm-properties-window.c:3293
 msgid "Type:"
 msgstr "Type:"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:259
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:290
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:262
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:293
 msgid "Last modified:"
 msgstr "Sidst ændret:"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:283
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:286
 msgid "Replace with"
 msgstr "Erstat med"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:312
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:315
 msgid "Merge"
 msgstr "Sammenflet"
 
 #. Setup the expander for the rename action
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:505
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:508
 msgid "_Select a new name for the destination"
 msgstr "_Vælg et nyt navn til destinationen"
 
 #. Setup the checkbox to apply the action to all files
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:531
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:534
 msgid "Apply this action to all files"
 msgstr "Udfør denne handling på alle filer"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:542
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:545
 #: ../libnautilus-private/nautilus-file-operations.c:187
 msgid "_Skip"
 msgstr "_Spring over"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:547
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:550
 msgid "Re_name"
 msgstr "Om_døb"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:553
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:556
 msgid "Replace"
 msgstr "Erstat"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:626
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:629
 msgid "File conflict"
 msgstr "Filkonflikt"
 
@@ -3150,8 +3160,8 @@ msgstr "Kompakt visning"
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:144
-#: ../src/file-manager/fm-list-view.c:1631
-#: ../src/file-manager/fm-list-view.c:3154
+#: ../src/file-manager/fm-list-view.c:1658
+#: ../src/file-manager/fm-list-view.c:3147
 #: ../src/nautilus-file-management-properties.ui.h:67
 msgid "List View"
 msgstr "Listevisning"
@@ -5371,44 +5381,44 @@ msgid "(Empty)"
 msgstr "(tom)"
 
 #: ../src/file-manager/fm-list-model.c:399
-#: ../src/file-manager/fm-tree-model.c:1287 ../src/nautilus-window-slot.c:196
+#: ../src/file-manager/fm-tree-model.c:1287 ../src/nautilus-window-slot.c:201
 msgid "Loading..."
 msgstr "Indlæser..."
 
-#: ../src/file-manager/fm-list-view.c:2290
+#: ../src/file-manager/fm-list-view.c:2317
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s synlige kolonner"
 
-#: ../src/file-manager/fm-list-view.c:2309
+#: ../src/file-manager/fm-list-view.c:2336
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Vælg rækkefølgen af oplysninger der vises i denne mappe:"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:2363
+#: ../src/file-manager/fm-list-view.c:2390
 msgid "Visible _Columns..."
 msgstr "Synlige _kolonner..."
 
 #. tooltip
-#: ../src/file-manager/fm-list-view.c:2364
+#: ../src/file-manager/fm-list-view.c:2391
 msgid "Select the columns visible in this folder"
 msgstr "Vælg de kolonner som skal være synlige i denne mappe"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-list-view.c:3156
+#: ../src/file-manager/fm-list-view.c:3149
 msgid "_List"
 msgstr "_Liste"
 
-#: ../src/file-manager/fm-list-view.c:3157
+#: ../src/file-manager/fm-list-view.c:3150
 msgid "The list view encountered an error."
 msgstr "Listevisningen stødte på en fejl."
 
-#: ../src/file-manager/fm-list-view.c:3158
+#: ../src/file-manager/fm-list-view.c:3151
 msgid "The list view encountered an error while starting up."
 msgstr "Listevisningen stødte på en fejl ved start."
 
-#: ../src/file-manager/fm-list-view.c:3159
+#: ../src/file-manager/fm-list-view.c:3152
 msgid "Display this location with the list view."
 msgstr "Vis dette sted med listevisningen."
 
@@ -5757,12 +5767,12 @@ msgstr "Træ"
 msgid "Show Tree"
 msgstr "Vis træ"
 
-#: ../src/nautilus-application.c:328
+#: ../src/nautilus-application.c:406
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "Kunne ikke oprette den påkrævede mappe \"%s\"."
 
-#: ../src/nautilus-application.c:330
+#: ../src/nautilus-application.c:408
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
@@ -5770,12 +5780,12 @@ msgstr ""
 "Opret denne mappe eller ændr rettighederne sådan at Nautilus kan oprette "
 "den, før du kører programmet igen."
 
-#: ../src/nautilus-application.c:333
+#: ../src/nautilus-application.c:411
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "Nautilus kunne ikke oprette de følgende påkrævede mapper: %s."
 
-#: ../src/nautilus-application.c:335
+#: ../src/nautilus-application.c:413
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -7662,6 +7672,24 @@ msgstr "Zoom"
 msgid "Set the zoom level of the current view"
 msgstr "Angiv zoomniveauet for den aktuelle visning"
 
+#~ msgid "An older"
+#~ msgstr "En ældre"
+
+#~ msgid "A newer"
+#~ msgstr "En nyere"
+
+#~ msgid "Another"
+#~ msgstr "En anden"
+
+#~ msgid ""
+#~ "%s folder with the same name already exists in \"%s\".\n"
+#~ "Merging will ask for confirmation before replacing any files in the "
+#~ "folder that conflict with the files being copied."
+#~ msgstr ""
+#~ "%s mappe med det samme navn findes allerede i \"%s\".\n"
+#~ "Ved sammenfletning vil der blive bedt om bekræftelse før der overskrives "
+#~ "filer i mappen, som er i konflikt med dem, der kopieres."
+
 #~ msgid ""
 #~ "If you choose to empty the trash, all items in it will be permanently "
 #~ "lost. Please note that you can also delete them separately."
@@ -7682,15 +7710,6 @@ msgstr "Angiv zoomniveauet for den aktuelle visning"
 #~ msgid "A file named \"%B\" already exists.  Do you want to replace it?"
 #~ msgstr ""
 #~ "En fil med navnet \"%B\" findes allerede. Vil du gerne erstatte den?"
-
-#~ msgid ""
-#~ "The source folder already exists in \"%B\".  Merging will ask for "
-#~ "confirmation before replacing any files in the folder that conflict with "
-#~ "the files being moved."
-#~ msgstr ""
-#~ "Kildemappen findes allerede i \"%B\".  Ved sammenføjning vil der blive "
-#~ "bedt om bekræftelse før der overskrives filer i mappen, som er i konflikt "
-#~ "med dem, der flyttes."
 
 #~ msgid "Could not use system package installer"
 #~ msgstr "Kunne ikke bruge systemets pakkeinstallationsprogram"
