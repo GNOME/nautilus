@@ -609,7 +609,7 @@ static void eel_canvas_rect_init (EelCanvasRect *rect);
 static void eel_canvas_rect_finalize (GObject *object);
 static void eel_canvas_rect_realize  (EelCanvasItem *item);
 
-static void   eel_canvas_rect_draw   (EelCanvasItem *item, GdkDrawable *drawable, GdkEventExpose *expose);
+static void   eel_canvas_rect_draw   (EelCanvasItem *item, cairo_t *cr, cairo_region_t *region);
 static double eel_canvas_rect_point  (EelCanvasItem *item, double x, double y, int cx, int cy,
 				        EelCanvasItem **actual_item);
 
@@ -730,10 +730,9 @@ eel_canvas_set_source_color (cairo_t *cr,
 #define DASH_ON 0.8
 #define DASH_OFF 1.7
 static void
-eel_canvas_rect_draw (EelCanvasItem *item, GdkDrawable *drawable, GdkEventExpose *expose)
+eel_canvas_rect_draw (EelCanvasItem *item, cairo_t *cr, cairo_region_t *region)
 {
 	EelCanvasRE *re;
-        cairo_t *cr;
 	double x1, y1, x2, y2;
 	int cx1, cy1, cx2, cy2;
 	double i2w_dx, i2w_dy;
@@ -756,10 +755,8 @@ eel_canvas_rect_draw (EelCanvasItem *item, GdkDrawable *drawable, GdkEventExpose
 	if (cx2 <= cx1 || cy2 <= cy1 ) {
 		return;
 	}
-	
-	cr = gdk_cairo_create (drawable);
-	gdk_cairo_region (cr, expose->region);
-	cairo_clip (cr);
+
+	cairo_save (cr);
 
 	if (re->fill_set) {
 		eel_canvas_set_source_color (cr, re->fill_color);
@@ -791,7 +788,7 @@ eel_canvas_rect_draw (EelCanvasItem *item, GdkDrawable *drawable, GdkEventExpose
 		cairo_stroke (cr);
 	}
 
-	cairo_destroy (cr);
+	cairo_restore (cr);
 }
 
 static double
@@ -980,7 +977,7 @@ eel_canvas_rect_update (EelCanvasItem *item, double i2w_dx, double i2w_dy, gint 
 
 static void eel_canvas_ellipse_class_init (EelCanvasEllipseClass *klass);
 
-static void   eel_canvas_ellipse_draw   (EelCanvasItem *item, GdkDrawable *drawable, GdkEventExpose *expose);
+static void   eel_canvas_ellipse_draw   (EelCanvasItem *item, cairo_t *cr, cairo_region_t *region);
 static double eel_canvas_ellipse_point  (EelCanvasItem *item, double x, double y, int cx, int cy,
 					   EelCanvasItem **actual_item);
 
@@ -1026,12 +1023,11 @@ eel_canvas_ellipse_class_init (EelCanvasEllipseClass *klass)
 }
 
 static void
-eel_canvas_ellipse_draw (EelCanvasItem *item, GdkDrawable *drawable, GdkEventExpose *expose)
+eel_canvas_ellipse_draw (EelCanvasItem *item, cairo_t *cr, cairo_region_t *region)
 {
 	EelCanvasRE *re;
 	int x1, y1, x2, y2;
 	double i2w_dx, i2w_dy;
-	cairo_t *cr;
 
 	re = EEL_CANVAS_RE (item);
 
@@ -1050,9 +1046,7 @@ eel_canvas_ellipse_draw (EelCanvasItem *item, GdkDrawable *drawable, GdkEventExp
 			  re->y2 + i2w_dy,
 			  &x2, &y2);
 
-	cr = gdk_cairo_create (drawable);
-	gdk_cairo_region (cr, expose->region);
-	cairo_clip (cr);
+        cairo_save (cr);
 
 	cairo_save (cr);
 	cairo_translate (cr, (x1 + x2) / 2., (y1 + y2) / 2.);
@@ -1076,7 +1070,7 @@ eel_canvas_ellipse_draw (EelCanvasItem *item, GdkDrawable *drawable, GdkEventExp
 		cairo_stroke_preserve (cr);
         }
 
-	cairo_destroy (cr);
+	cairo_restore (cr);
 }
 
 static double

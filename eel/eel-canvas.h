@@ -153,7 +153,7 @@ struct _EelCanvasItemClass {
 	 * coordinates of the drawable, a temporary pixmap, where things get
 	 * drawn.  (width, height) are the dimensions of the drawable.
 	 */
-	void (* draw) (EelCanvasItem *item, GdkDrawable *drawable, GdkEventExpose *expose);
+	void (* draw) (EelCanvasItem *item, cairo_t *cr, cairo_region_t *region);
 
 	/* Calculate the distance from an item to the specified point.  It also
          * returns a canvas item which is the item itself in the case of the
@@ -424,7 +424,7 @@ struct _EelCanvasClass {
 	/* Draw the background for the area given.
 	 */
 	void (* draw_background) (EelCanvas *canvas,
-				  int x, int y, int width, int height);
+                                  cairo_t *cr);
 
 	/* Private Virtual methods for groping the canvas inside bonobo */
 	void (* request_update) (EelCanvas *canvas);
