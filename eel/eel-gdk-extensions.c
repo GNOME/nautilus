@@ -454,16 +454,14 @@ eel_gdk_parse_geometry (const char *string, int *x_return, int *y_return,
 }
 
 void
-eel_gdk_draw_layout_with_drop_shadow (GdkDrawable         *drawable,
+eel_cairo_draw_layout_with_drop_shadow (cairo_t             *cr,
 				      GdkColor            *text_color,
 				      GdkColor            *shadow_color,
 				      int                  x,
 				      int                  y,
 				      PangoLayout         *layout)
 {
-	cairo_t *cr;
-
-	cr = gdk_cairo_create (drawable);
+        cairo_save (cr);
 
 	gdk_cairo_set_source_color (cr, shadow_color);
 	cairo_move_to (cr, x+1, y+1);
@@ -473,7 +471,7 @@ eel_gdk_draw_layout_with_drop_shadow (GdkDrawable         *drawable,
 	cairo_move_to (cr, x, y);
 	pango_cairo_show_layout (cr, layout);
 	
-	cairo_destroy (cr);
+	cairo_restore (cr);
 }
 
 #if ! defined (EEL_OMIT_SELF_CHECK)

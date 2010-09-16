@@ -1,4 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+// /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /* eel-gdk-extensions.h: Graphics routines to augment what's in gdk.
 
@@ -117,7 +117,7 @@ EelGdkGeometryFlags eel_gdk_parse_geometry                 (const char          
 							    int                 *y_return,
 							    guint               *width_return,
 							    guint               *height_return);
-void                eel_gdk_draw_layout_with_drop_shadow   (GdkDrawable         *drawable,
+void                eel_cairo_draw_layout_with_drop_shadow (cairo_t             *cr,
 							    GdkColor            *text_color,
 							    GdkColor            *shadow_color,
 							    int                  x,
