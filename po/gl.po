@@ -16,21 +16,21 @@
 # Suso Baleato <suso.baleato@xunta.es>, 2009.
 # Antón Méixome <meixome@mancomun.org>, 2009, 2010.
 # Francisco Diéguez <frandieguez@ubuntu.com>, 2010.
-# Fran Diéguez <frandieguez@ubuntu.com>, 2009, 2010.
 # Fran Dieguez <frandieguez@ubuntu.com>, 2010.
+# Fran Diéguez <frandieguez@ubuntu.com>, 2009, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-master-po-gl-54706\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-11 17:36+0200\n"
-"PO-Revision-Date: 2010-09-11 17:42+0200\n"
-"Last-Translator: Fran Dieguez <frandieguez@ubuntu.com>\n"
-"Language-Team: Galician <gnome-gl-list@gnome.org>\n"
+"POT-Creation-Date: 2010-09-16 15:09+0200\n"
+"PO-Revision-Date: 2010-09-16 15:13+0200\n"
+"Last-Translator: Fran Diéguez <frandieguez@ubuntu.com>\n"
+"Language-Team: Galician <proxecto@trasno.net>\n"
+"Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: gl\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "X-Generator: KBabel 1.11.4\n"
 
@@ -1210,11 +1210,11 @@ msgid ""
 "local file systems. If set to \"never\" then it never previews sound."
 msgstr ""
 "Balance de velocidade na previsualización dun ficheiro de son ao colocar o "
-"rato sobre a icona de ficheiro. Se se define como «always» reprodúcese sempre "
-"o son, aínda que o ficheiro se encontre nun servidor remoto. Se se define "
-"como «local_only» a reprodución das previsualizacións só se realiza sobre "
-"sistemas de ficheiros locais. Se se define como «never», entón nunca se "
-"previsualiza o son."
+"rato sobre a icona de ficheiro. Se se define como «always» reprodúcese "
+"sempre o son, aínda que o ficheiro se encontre nun servidor remoto. Se se "
+"define como «local_only» a reprodución das previsualizacións só se realiza "
+"sobre sistemas de ficheiros locais. Se se define como «never», entón nunca "
+"se previsualiza o son."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:116
 msgid ""
@@ -1241,9 +1241,9 @@ msgid ""
 msgstr ""
 "Balance de velocidade ao mostrar ficheiros de imaxe como unha miniatura. Se "
 "se define como «always», crea sempre a miniatura, aínda que o cartafol se "
-"encontre nun servidor remoto. Se se define como «local_only», crea miniaturas "
-"só para os sistemas de ficheiros locais. Se se define como «never», nunca "
-"crea miniaturas; só se usa unha icona xenérica."
+"encontre nun servidor remoto. Se se define como «local_only», crea "
+"miniaturas só para os sistemas de ficheiros locais. Se se define como "
+"«never», nunca crea miniaturas; só se usa unha icona xenérica."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:118
 msgid ""
@@ -1649,7 +1649,7 @@ msgstr "Usar pre_determinado"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:273
-#: ../src/file-manager/fm-list-view.c:1577
+#: ../src/file-manager/fm-list-view.c:1603
 msgid "Name"
 msgstr "Nome"
 
@@ -3183,8 +3183,8 @@ msgstr "Visualización compacta"
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:144
-#: ../src/file-manager/fm-list-view.c:1631
-#: ../src/file-manager/fm-list-view.c:3154
+#: ../src/file-manager/fm-list-view.c:1658
+#: ../src/file-manager/fm-list-view.c:3147
 #: ../src/nautilus-file-management-properties.ui.h:67
 msgid "List View"
 msgstr "Visualización en lista"
@@ -3413,8 +3413,8 @@ msgid ""
 "The application launcher \"%s\" has not been marked as trusted. If you do "
 "not know the source of this file, launching it may be unsafe."
 msgstr ""
-"O lanzador do aplicativo «%s» non foi marcado como confiábel. Se non coñece o "
-"orixe deste ficheiro, lanzalo pode ser perigoso."
+"O lanzador do aplicativo «%s» non foi marcado como confiábel. Se non coñece "
+"o orixe deste ficheiro, lanzalo pode ser perigoso."
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1618
 msgid "_Launch Anyway"
@@ -5120,7 +5120,8 @@ msgid ""
 "The name \"%s\" is not valid because it contains the character \"/\". Please "
 "use a different name."
 msgstr ""
-"O nome «%s» é incorrecto xa que contén o carácter \"/\". Use un nome distinto."
+"O nome «%s» é incorrecto xa que contén o carácter \"/\". Use un nome "
+"distinto."
 
 #: ../src/file-manager/fm-error-reporting.c:128
 #, c-format
@@ -5393,40 +5394,40 @@ msgstr "(Baleiro)"
 msgid "Loading..."
 msgstr "Cargando..."
 
-#: ../src/file-manager/fm-list-view.c:2290
+#: ../src/file-manager/fm-list-view.c:2317
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s columnas visíbeis"
 
-#: ../src/file-manager/fm-list-view.c:2309
+#: ../src/file-manager/fm-list-view.c:2336
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Seleccione a orde de información que aparece neste cartafol:"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:2363
+#: ../src/file-manager/fm-list-view.c:2390
 msgid "Visible _Columns..."
 msgstr "_Columnas visíbeis..."
 
 #. tooltip
-#: ../src/file-manager/fm-list-view.c:2364
+#: ../src/file-manager/fm-list-view.c:2391
 msgid "Select the columns visible in this folder"
 msgstr "Seleccione as columnas visíbeis neste cartafol"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-list-view.c:3156
+#: ../src/file-manager/fm-list-view.c:3149
 msgid "_List"
 msgstr "_Lista"
 
-#: ../src/file-manager/fm-list-view.c:3157
+#: ../src/file-manager/fm-list-view.c:3150
 msgid "The list view encountered an error."
 msgstr "A visualización en lista atopou un erro."
 
-#: ../src/file-manager/fm-list-view.c:3158
+#: ../src/file-manager/fm-list-view.c:3151
 msgid "The list view encountered an error while starting up."
 msgstr "A visualización en lista atopou un erro ao iniciarse."
 
-#: ../src/file-manager/fm-list-view.c:3159
+#: ../src/file-manager/fm-list-view.c:3152
 msgid "Display this location with the list view."
 msgstr "Mostrar esta localización na visualización en lista."
 
@@ -5766,12 +5767,12 @@ msgstr "Árbore"
 msgid "Show Tree"
 msgstr "Mostrar o árbore"
 
-#: ../src/nautilus-application.c:328
+#: ../src/nautilus-application.c:406
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "Nautilus non puido creare o cartafol requirido «%s»."
 
-#: ../src/nautilus-application.c:330
+#: ../src/nautilus-application.c:408
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
@@ -5779,12 +5780,12 @@ msgstr ""
 "Antes de executar Nautilus, cree o seguinte cartafol, ou estabeleza os "
 "permisos polos que Nautilus pode crealo."
 
-#: ../src/nautilus-application.c:333
+#: ../src/nautilus-application.c:411
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "Nautilus non puido crear os seguintes cartafoles requiridos: %s."
 
-#: ../src/nautilus-application.c:335
+#: ../src/nautilus-application.c:413
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -7332,8 +7333,8 @@ msgid ""
 "Software Foundation; either version 2 of the License, or (at your option) "
 "any later version."
 msgstr ""
-"Nautilus é software libre podo que vostede pode redistribuilo e/ou "
-"modificalo baixo os termos da Licenza pública xeral de GNU publicada pola "
+"Nautilus é software libre polo que vostede pode redistribuílo e/ou "
+"modificalo baixo os termos da Licenza Pública Xeral de GNU publicada pola "
 "Free Software Foundation tanto na versión 2 da licenza como (baixo a súa "
 "elección) calquera versión posterior."
 
@@ -7346,7 +7347,7 @@ msgid ""
 msgstr ""
 "Nautilus distribúese coa esperanza de que lle sexa útil, pero SEN GARANTÍA "
 "ALGUNHA, incluso sen a garantía implícita de MERCANTIBILIDADE ou ADECUACIÓN "
-"A UN PROPÓSITO EN PARTICULAR. Olle a Licenza Pública xeral para obter máis "
+"A UN PROPÓSITO EN PARTICULAR. Olle a Licenza Pública Xeral para obter máis "
 "información."
 
 #: ../src/nautilus-window-menus.c:521
@@ -7355,7 +7356,7 @@ msgid ""
 "Nautilus; if not, write to the Free Software Foundation, Inc., 51 Franklin "
 "Street, Fifth Floor, Boston, MA 02110-1301 USA"
 msgstr ""
-"Debeu recibir unha copia da Licenza pública xeral de GNU con Nautilus, se "
+"Debeu recibir unha copia da Licenza Pública Xeral de GNU con Nautilus, se "
 "non é así, escriba á Free Software Foundation, Inc., 51 Franklin Street, "
 "Fifth Floor, Boston, MA 02110-1301 USA"
 
