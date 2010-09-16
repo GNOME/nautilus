@@ -4775,7 +4775,7 @@ nautilus_icon_container_search_position_func (NautilusIconContainer *container,
 
 
 	cont_window = gtk_widget_get_window (GTK_WIDGET (container));
-	screen = gdk_drawable_get_screen (cont_window);
+	screen = gdk_window_get_screen (cont_window);
 
 	monitor_num = gdk_screen_get_monitor_at_window (screen, cont_window);
 	gdk_screen_get_monitor_geometry (screen, monitor_num, &monitor);
@@ -4783,9 +4783,10 @@ nautilus_icon_container_search_position_func (NautilusIconContainer *container,
 	gtk_widget_realize (search_dialog);
 
 	gdk_window_get_origin (cont_window, &cont_x, &cont_y);
-	gdk_drawable_get_size (cont_window, &cont_width, &cont_height);
-	gtk_size_request_get_size (GTK_SIZE_REQUEST (search_dialog),
-				   &requisition, NULL);
+        cont_width = gdk_window_get_width (cont_window);
+        cont_height = gdk_window_get_height (cont_window);
+
+	gtk_widget_size_request (search_dialog, &requisition);
 
 	if (cont_x + cont_width - requisition.width > gdk_screen_get_width (screen)) {
 		x = gdk_screen_get_width (screen) - requisition.width;
@@ -5560,23 +5561,11 @@ popup_menu (GtkWidget *widget)
 
 static void
 draw_canvas_background (EelCanvas *canvas,
-			int x, int y, int width, int height)
+                        cairo_t   *cr)
 {
 	/* Don't chain up to the parent to avoid clearing and redrawing */
 }
 
-
-static gboolean
-expose_event (GtkWidget      *widget,
-	      GdkEventExpose *event)
-{
-/*	g_warning ("Expose Icon Container %p '%d,%d: %d,%d'",
-		   widget,
-		   event->area.x, event->area.y,
-		   event->area.width, event->area.height); */
-	
-	return GTK_WIDGET_CLASS (nautilus_icon_container_parent_class)->expose_event (widget, event);
-}
 
 static AtkObject *
 get_accessible (GtkWidget *widget)
@@ -6025,7 +6014,6 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 	widget_class->popup_menu = popup_menu;
 	widget_class->get_accessible = get_accessible;
 	widget_class->style_set = style_set;
-	widget_class->expose_event = expose_event;
 	widget_class->grab_notify = grab_notify_cb;
 
 	canvas_class = EEL_CANVAS_CLASS (class);

@@ -69,9 +69,7 @@ GType       nautilus_icon_canvas_item_get_type                 (void);
 /* attributes */
 void        nautilus_icon_canvas_item_set_image                (NautilusIconCanvasItem       *item,
 								GdkPixbuf                    *image);
-GdkPixmap * nautilus_icon_canvas_item_get_image                (NautilusIconCanvasItem       *item,
-								GdkBitmap                   **mask,
-								GdkColormap		     *colormap);
+cairo_surface_t* nautilus_icon_canvas_item_get_drag_surface    (NautilusIconCanvasItem       *item);
 void        nautilus_icon_canvas_item_set_emblems              (NautilusIconCanvasItem       *item,
 								GList                        *emblem_pixbufs);
 void        nautilus_icon_canvas_item_set_show_stretch_handles (NautilusIconCanvasItem       *item,

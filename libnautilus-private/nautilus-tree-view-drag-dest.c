@@ -172,29 +172,27 @@ remove_expand_timeout (NautilusTreeViewDragDest *dest)
 }
 
 static gboolean
-highlight_expose (GtkWidget *widget,
-		  GdkEventExpose *event,
-		  gpointer data)
+highlight_draw (GtkWidget *widget,
+		cairo_t   *cr,
+                gpointer data)
 {
 	GdkWindow *bin_window;
 	int width;
 	int height;
 
-	if (gtk_widget_is_drawable (widget)) {
-		bin_window = 
-			gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget));
-		
-		gdk_drawable_get_size (bin_window, &width, &height);
-		
-		gtk_paint_focus (gtk_widget_get_style (widget),
-				 bin_window,
-				 gtk_widget_get_state (widget),
-				 NULL,
-				 widget,
-				 "treeview-drop-indicator",
-				 0, 0, width, height);
-	}
-	
+        /* FIXMEchpe: is bin window right here??? */
+        bin_window = gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget));
+
+        width = gdk_window_get_width (bin_window);
+        height = gdk_window_get_height (bin_window);
+
+        gtk_paint_focus (gtk_widget_get_style (widget),
+                         cr,
+                         gtk_widget_get_state (widget),
+                         widget,
+                         "treeview-drop-indicator",
+                         0, 0, width, height);
+
 	return FALSE;
 }
 
@@ -211,8 +209,8 @@ set_widget_highlight (NautilusTreeViewDragDest *dest, gboolean highlight)
 	if (highlight && !dest->details->highlight_id) {
 		dest->details->highlight_id = 
 			g_signal_connect_object (dest->details->tree_view,
-						 "expose_event",
-						 G_CALLBACK (highlight_expose),
+						 "draw",
+						 G_CALLBACK (highlight_draw),
 						 dest, 0);
 		gtk_widget_queue_draw (GTK_WIDGET (dest->details->tree_view));
 	}

@@ -1281,38 +1281,19 @@ drag_begin_callback (GtkWidget      *widget,
 		     gpointer        data)
 {
 	NautilusIconContainer *container;
-	GdkScreen *screen;
-	GdkColormap *colormap;
-	GdkPixmap *pixmap;
-	GdkBitmap *mask;
+	cairo_surface_t *surface;
 	double x1, y1, x2, y2, winx, winy;
 	int x_offset, y_offset;
 	int start_x, start_y;
-	gboolean use_mask;
 
 	container = NAUTILUS_ICON_CONTAINER (widget);
-
-	screen = gtk_widget_get_screen (widget);
-	colormap = NULL;
-	if (gdk_screen_is_composited (screen)) {
-		colormap = gdk_screen_get_rgba_colormap (screen);
-		if (colormap != NULL) {
-			use_mask = FALSE;
-		}
-	}
-	
-	/* Fall back on using the same colormap as the widget */
-	if (colormap == NULL) {
-		colormap = gtk_widget_get_colormap (widget);		
-		use_mask = TRUE;
-	}
 
 	start_x = container->details->dnd_info->drag_info.start_x + gtk_adjustment_get_value (gtk_layout_get_hadjustment (GTK_LAYOUT (container)));
 	start_y = container->details->dnd_info->drag_info.start_y + gtk_adjustment_get_value (gtk_layout_get_vadjustment (GTK_LAYOUT (container)));
 
         /* create a pixmap and mask to drag with */
-        pixmap = nautilus_icon_canvas_item_get_image (container->details->drag_icon->item, &mask, colormap);
-    
+        surface = nautilus_icon_canvas_item_get_drag_surface (container->details->drag_icon->item);
+
     	/* we want to drag semi-transparent pixbufs, but X is too slow dealing with
 	   stippled masks, so we had to remove the code; this comment is left as a memorial
 	   to it, with the hope that we get it back someday as X Windows improves */
@@ -1325,6 +1306,11 @@ drag_begin_callback (GtkWidget      *widget,
         x_offset = start_x - winx;
         y_offset = start_y - winy;
 
+        cairo_surface_set_device_offset (surface, x_offset, y_offset);
+        gtk_drag_set_icon_surface (context, surface);
+        cairo_surface_destroy (surface);
+
+#if 0
 	if (!use_mask && pixmap != NULL) {
 		cairo_t *cr;
 
@@ -1340,6 +1326,7 @@ drag_begin_callback (GtkWidget      *widget,
 				  colormap,
 				  pixmap, (use_mask ? mask : NULL),
 				  x_offset, y_offset);
+#endif
 }
 
 void
@@ -1374,31 +1361,30 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 }
 
 static gboolean
-drag_highlight_expose (GtkWidget      *widget,
-		       GdkEventExpose *event,
-		       gpointer        data)
+drag_highlight_draw (GtkWidget *widget,
+                     cairo_t   *cr,
+                     gpointer   user_data)
 {
 	gint x, y, width, height;
 	GdkWindow *window;
-	cairo_t *cr;
 	
 	x = gtk_adjustment_get_value (gtk_layout_get_hadjustment (GTK_LAYOUT (widget)));
 	y = gtk_adjustment_get_value (gtk_layout_get_vadjustment (GTK_LAYOUT (widget)));
-	gdk_drawable_get_size (gtk_widget_get_window (widget), &width, &height);
 
-	window = gtk_layout_get_bin_window (GTK_LAYOUT (widget));
-	
-	gtk_paint_shadow (gtk_widget_get_style (widget), window,
+        window = gtk_widget_get_window (widget);
+        width = gdk_window_get_width (window);
+        height = gdk_window_get_height (window);
+
+	gtk_paint_shadow (gtk_widget_get_style (widget),
+                          cr,
 			  GTK_STATE_NORMAL, GTK_SHADOW_OUT,
-			  NULL, widget, "dnd",
+			  widget, "dnd",
 			  x, y, width, height);
-  
-	cr = gdk_cairo_create (window);
+
 	cairo_set_line_width (cr, 1.0);
 	cairo_set_source_rgb (cr, 0, 0, 0);
 	cairo_rectangle (cr, x + 0.5, y + 0.5, width - 1, height - 1);
 	cairo_stroke (cr);
-	cairo_destroy (cr);
 
 	return FALSE;
 }
@@ -1454,8 +1440,8 @@ start_dnd_highlight (GtkWidget *widget)
 
 	if (!dnd_info->highlighted) {
 		dnd_info->highlighted = TRUE;
-		g_signal_connect_after (widget, "expose_event",
-					G_CALLBACK (drag_highlight_expose),
+		g_signal_connect_after (widget, "draw",
+					G_CALLBACK (drag_highlight_draw),
 					NULL);
 		dnd_highlight_queue_redraw (widget);
 	}
@@ -1470,7 +1456,7 @@ stop_dnd_highlight (GtkWidget *widget)
 
 	if (dnd_info->highlighted) {
 		g_signal_handlers_disconnect_by_func (widget,
-						      drag_highlight_expose,
+						      drag_highlight_draw,
 						      NULL);
 		dnd_highlight_queue_redraw (widget);
 		dnd_info->highlighted = FALSE;
