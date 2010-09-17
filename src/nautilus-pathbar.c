@@ -1510,7 +1510,7 @@ button_data_file_changed (NautilusFile *file,
 			  ButtonData *button_data)
 {
 	GFile *location, *current_location, *parent, *button_parent;
-	ButtonData *current_button_data, *temp_button_data;
+	ButtonData *current_button_data;
 	char *display_name;
 	NautilusPathBar *path_bar;
 	gboolean renamed, child;
@@ -1570,18 +1570,17 @@ button_data_file_changed (NautilusFile *file,
 			return;
 		}
 	} else if (nautilus_file_is_gone (file)) {
+		gint idx, position;
+
 		/* remove this and the following buttons */
-		GList *children;
+		position = g_list_position (path_bar->button_list,
+					    g_list_find (path_bar->button_list, button_data));
 
-		children = g_list_find (path_bar->button_list, button_data);
-
-		while (children != NULL) {
-			temp_button_data = children->data;
-
-			/* children are in reverse order */
-			children = children->prev;
-
-			gtk_container_remove (GTK_CONTAINER (path_bar), temp_button_data->button);
+		if (position != -1) {
+			for (idx = 0; idx <= position; idx++) {
+				gtk_container_remove (GTK_CONTAINER (path_bar),
+						      BUTTON_DATA (path_bar->button_list->data)->button);
+			}
 		}
 
 		g_object_unref (location);
