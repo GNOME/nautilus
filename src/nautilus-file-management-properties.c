@@ -246,6 +246,10 @@ nautilus_file_management_properties_dialog_response_cb (GtkDialog *parent,
 			break;
 		case 4:
 			section = "gosnautilus-60";
+			break;
+		case 5:
+			section = "gosnautilus-61";
+			break;
 		}
 		preferences_show_help (GTK_WINDOW (parent), "user-guide", section);
 	} else if (response_id == GTK_RESPONSE_CLOSE) {
