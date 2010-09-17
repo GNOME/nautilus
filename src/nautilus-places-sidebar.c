@@ -697,13 +697,27 @@ clicked_eject_button (NautilusPlacesSidebar *sidebar,
 	GtkTextDirection direction;
 	int width, total_width;
 	int eject_button_size;
+	gboolean show_eject;
+	GtkTreeIter iter;
+	GtkTreeModel *model;
 
 	*path = NULL;
+	model = gtk_tree_view_get_model (sidebar->tree_view);
 
 	if ((event->type == GDK_BUTTON_PRESS || event->type == GDK_BUTTON_RELEASE) &&
 	    gtk_tree_view_get_path_at_pos (sidebar->tree_view,
 					   button_event->x, button_event->y,
 					   path, &column, NULL, NULL)) {
+
+		gtk_tree_model_get_iter (model, &iter, *path);
+		gtk_tree_model_get (model, &iter,
+				    PLACES_SIDEBAR_COLUMN_EJECT, &show_eject,
+				    -1);
+
+		if (!show_eject) {
+			goto out;
+		}
+
 		total_width = 0;
 
 		gtk_widget_style_get (GTK_WIDGET (sidebar->tree_view),
@@ -734,6 +748,7 @@ clicked_eject_button (NautilusPlacesSidebar *sidebar,
 		}
 	}
 
+ out:
 	if (*path != NULL) {
 		gtk_tree_path_free (*path);
 	}
