@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: eel.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
 "cgi?product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2010-08-12 12:17+0000\n"
-"PO-Revision-Date: 2010-08-16 07:45+0530\n"
+"POT-Creation-Date: 2010-09-16 21:53+0000\n"
+"PO-Revision-Date: 2010-09-18 08:45+0530\n"
 "Last-Translator: A S Alam <aalam@users.sf.net>\n"
 "Language-Team: Punjabi/Panjabi <punjabi-users@lists.sf.net>\n"
 "MIME-Version: 1.0\n"
@@ -1461,9 +1461,9 @@ msgstr "ਹਮੇਸ਼ਾ ਇਹ ਐਕਸ਼ਨ ਲਵੋ(_A)"
 #. label, accelerator
 #. add the "Eject" menu item
 #: ../libnautilus-private/nautilus-autorun.c:1033
-#: ../src/file-manager/fm-directory-view.c:7215
-#: ../src/file-manager/fm-directory-view.c:7243
-#: ../src/file-manager/fm-directory-view.c:7324
+#: ../src/file-manager/fm-directory-view.c:7216
+#: ../src/file-manager/fm-directory-view.c:7244
+#: ../src/file-manager/fm-directory-view.c:7325
 #: ../src/file-manager/fm-tree-view.c:1278
 #: ../src/nautilus-places-sidebar.c:2280
 msgid "_Eject"
@@ -1473,9 +1473,9 @@ msgstr "ਬਾਹਰ ਕੱਢੋ(_E)"
 #. label, accelerator
 #. add the "Unmount" menu item
 #: ../libnautilus-private/nautilus-autorun.c:1044
-#: ../src/file-manager/fm-directory-view.c:7211
-#: ../src/file-manager/fm-directory-view.c:7239
-#: ../src/file-manager/fm-directory-view.c:7320
+#: ../src/file-manager/fm-directory-view.c:7212
+#: ../src/file-manager/fm-directory-view.c:7240
+#: ../src/file-manager/fm-directory-view.c:7321
 #: ../src/file-manager/fm-tree-view.c:1269
 #: ../src/nautilus-places-sidebar.c:2273
 msgid "_Unmount"
@@ -1505,7 +1505,7 @@ msgstr "ਕਲਿੱਪਬੋਰਡ ਵਿੱਚ ਲੜੀਬੱਧ ਕੀਤਾ
 #. name, stock id
 #. label, accelerator
 #: ../libnautilus-private/nautilus-clipboard.c:448
-#: ../src/file-manager/fm-directory-view.c:7153
+#: ../src/file-manager/fm-directory-view.c:7154
 msgid "Select _All"
 msgstr "ਸਭ ਚੁਣੋ(_A)"
 
@@ -1529,7 +1529,7 @@ msgstr "ਡਿਫਾਲਟ ਵਰਤੋਂ(_f)"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:273
-#: ../src/file-manager/fm-list-view.c:1577
+#: ../src/file-manager/fm-list-view.c:1603
 msgid "Name"
 msgstr "ਨਾਂ"
 
@@ -1644,7 +1644,7 @@ msgid "Original location of file before moved to the Trash"
 msgstr "ਰੱਦੀ 'ਚ ਭੇਜਣ ਤੋਂ ਪਹਿਲਾਂ ਫਾਇਲਾਂ ਦਾ ਅਸਲ ਟਿਕਾਣਾ"
 
 #: ../libnautilus-private/nautilus-customization-data.c:405
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:519
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:522
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:428
 #: ../src/nautilus-property-browser.c:1873
 msgid "Reset"
@@ -1741,115 +1741,156 @@ msgstr "ਅਫਸੋਸ ਹੈ, ਪਰ ਸੋਧਿਆ ਨਿਸ਼ਾਨ ਸੰਭ
 msgid "Sorry, unable to save custom emblem name."
 msgstr "ਅਫਸੋਸ ਹੈ, ਪਰ ਸੋਧਿਆ ਨਿਸ਼ਾਨ ਨਾਂ ਸੰਭਾਲਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ।"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:82
-msgid "An older"
-msgstr "ਪੁਰਾਣੀ"
-
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:85
-msgid "A newer"
-msgstr "ਨਵੀਂ"
-
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:87
-msgid "Another"
-msgstr "ਹੋਰ"
-
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:159
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:144
 #, c-format
 msgid "Merge folder \"%s\"?"
 msgstr "ਫੋਲਡਰ \"%s\" ਮਿਲਾਉਣਾ ਹੈ?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:166
-#, c-format
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:148
+#| msgid ""
+#| "The source folder already exists in \"%B\".  Merging will ask for "
+#| "confirmation before replacing any files in the folder that conflict with "
+#| "the files being moved."
 msgid ""
-"%s folder with the same name already exists in \"%s\".\n"
 "Merging will ask for confirmation before replacing any files in the folder "
 "that conflict with the files being copied."
 msgstr ""
-"\"%2$s\" ਵਿੱਚ %1$s ਫੋਲਡਰ ਇਸੇ ਨਾਂ ਨਾਲ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ। \n"
 "ਮਿਲਾਉਣ ਨਾਲ ਫੋਲਡਰ ਵਿੱਚ ਕਿਸੇ ਵੀ ਫਾਇਲ ਨੂੰ ਬਦਲਣ ਤੋਂ ਪਹਿਲਾਂ ਪੁਸ਼ਟੀ ਕੀਤੀ ਜਾਵੇਗੀ, ਜਦੋਂ ਕਿ ਫਾਇਲਾਂ "
 "ਕਾਪੀ ਕਰਨ ਦੌਰਾਨ ਟਕਰਾ ਹੋਵੇਗਾ।"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:174
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:153
+#, c-format
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "An older folder with the same name already exists in \"%s\"."
+msgstr "\"%s\" ਵਿੱਚ ਇਸੇ ਨਾਂ ਨਾਲ ਪੁਰਾਣਾ ਫੋਲਡਰ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ।"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:157
+#, c-format
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "A newer folder with the same name already exists in \"%s\"."
+msgstr "\"%s\" ਵਿੱਚ ਇਸੇ ਨਾਂ ਨਾਲ ਨਵਾਂ ਫੋਲਡਰ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ।"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:161
+#, c-format
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "Another folder with the same name already exists in \"%s\"."
+msgstr "\"%s\" ਵਿੱਚ ਇਸੇ ਨਾਂ ਨਾਲ ਹੋਰ ਫੋਲਡਰ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ।"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:166
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "Replacing it will remove all files in the folder."
+msgstr "ਇਸ ਨੂੰ ਬਦਲਣ ਨਾਲ ਫੋਲਡਰ ਵਿਚਲੀਆਂ ਸਭ ਫਾਇਲਾਂ ਹਟਾਈਆਂ ਜਾਣਗੀਆਂ।"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:168
 #, c-format
 msgid "Replace folder \"%s\"?"
 msgstr "ਫੋਲਡਰ \"%s\" ਬਦਲਣਾ?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:176
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:170
 #, c-format
-msgid ""
-"A folder with the same name already exists in \"%s\".\n"
-"Replacing it will remove all files in the folder."
-msgstr ""
-"\"%s\" ਵਿੱਚ ਇਸੇ ਨਾਂ ਨਾਲ ਫੋਲਡਰ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ।\n"
-"ਇਸ ਨੂੰ ਬਦਲਣ ਨਾਲ ਫੋਲਡਰ ਵਿਚਲੀਆਂ ਸਭ ਫਾਇਲਾਂ ਹਟਾਈਆਂ ਜਾਣਗੀਆਂ।"
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "A folder with the same name already exists in \"%s\"."
+msgstr "\"%s\" ਵਿੱਚ ਇਸੇ ਨਾਂ ਨਾਲ ਫੋਲਡਰ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ।"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:182
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:175
 #, c-format
 msgid "Replace file \"%s\"?"
 msgstr "ਫਾਇਲ \"%s\" ਬਦਲਣੀ ਹੈ?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:188
-#, c-format
-msgid ""
-"%s file with the same name already exists in \"%s\".\n"
-"Replacing it will overwrite its content."
-msgstr ""
-"\"%s\" ਵਿੱਚ ਇਸੇ ਨਾਂ ਨਾਲ %s ਫਾਇਲ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ।\n"
-"ਇਸ ਨੂੰ ਬਦਲਣ ਨਾਲ ਇਸ ਦੀ ਸਮੱਗਰੀ ਖਤਮ ਹੋ ਜਾਵੇਗੀ।"
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:177
+#| msgid ""
+#| "%s file with the same name already exists in \"%s\".\n"
+#| "Replacing it will overwrite its content."
+msgid "Replacing it will overwrite its content."
+msgstr "ਇਸ ਨੂੰ ਬਦਲਣ ਨਾਲ ਇਸ ਦੀ ਸਮੱਗਰੀ ਖਤਮ ਹੋ ਜਾਵੇਗੀ।"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:252
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:181
+#, c-format
+#| msgid ""
+#| "%s file with the same name already exists in \"%s\".\n"
+#| "Replacing it will overwrite its content."
+msgid "An older file with the same name already exists in \"%s\"."
+msgstr "\"%s\" ਵਿੱਚ ਇਸੇ ਨਾਂ ਨਾਲ ਪੁਰਾਣੀ ਫਾਇਲ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ।"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:185
+#, c-format
+#| msgid ""
+#| "%s file with the same name already exists in \"%s\".\n"
+#| "Replacing it will overwrite its content."
+msgid "A newer file with the same name already exists in \"%s\"."
+msgstr "\"%s\" ਵਿੱਚ ਇਸੇ ਨਾਂ ਨਾਲ ਨਵੀਂ ਫਾਇਲ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ।"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:189
+#, c-format
+#| msgid ""
+#| "%s file with the same name already exists in \"%s\".\n"
+#| "Replacing it will overwrite its content."
+msgid "Another file with the same name already exists in \"%s\"."
+msgstr "\"%s\" ਵਿੱਚ ਇਸੇ ਨਾਂ ਨਾਲ ਹੋਰ ਫਾਇਲ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ।"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:255
 msgid "Original file"
 msgstr "ਅਸਲੀ ਫਾਇਲ"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:253
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:284
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:256
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:287
 #: ../src/file-manager/fm-properties-window.c:3311
 msgid "Size:"
 msgstr "ਆਕਾਰ:"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:256
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:287
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:259
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:290
 #: ../src/file-manager/fm-properties-window.c:3293
 msgid "Type:"
 msgstr "ਕਿਸਮ:"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:259
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:290
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:262
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:293
 msgid "Last modified:"
 msgstr "ਆਖਰੀ ਵਾਰ ਸੋਧੀ:"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:283
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:286
 msgid "Replace with"
 msgstr "ਇਸ ਨਾਲ ਬਦਲੋ"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:312
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:315
 msgid "Merge"
 msgstr "ਮਿਲਾਉ"
 
 #. Setup the expander for the rename action
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:505
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:508
 msgid "_Select a new name for the destination"
 msgstr "ਟਿਾਕਣੇ ਲਈ ਨਵਾਂ ਨਾਂ ਚੁਣੋ(_S)"
 
 #. Setup the checkbox to apply the action to all files
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:531
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:534
 msgid "Apply this action to all files"
 msgstr "ਇਹ ਕਾਰਵਾਈ ਸਭ ਫਾਇਲਾਂ ਉੱਤੇ ਲਾਗੂ ਕਰੋ"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:542
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:545
 #: ../libnautilus-private/nautilus-file-operations.c:187
 msgid "_Skip"
 msgstr "ਛੱਡੋ(_S)"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:547
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:550
 msgid "Re_name"
 msgstr "ਨਾਂ ਬਦਲੋ(_n)"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:553
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:556
 msgid "Replace"
 msgstr "ਬਦਲੋ"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:626
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:629
 msgid "File conflict"
 msgstr "ਫਾਇਲ ਟਕਰਾ"
 
@@ -1921,7 +1962,7 @@ msgstr[1] "ਲਗਭਗ %'d ਘੰਟੇ"
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:379
 #: ../libnautilus-private/nautilus-file.c:6365
-#: ../src/file-manager/fm-directory-view.c:10335
+#: ../src/file-manager/fm-directory-view.c:10336
 #, c-format
 msgid "Link to %s"
 msgstr "%s ਨਾਲ ਲਿੰਕ"
@@ -2077,13 +2118,10 @@ msgid "If you delete an item, it will be permanently lost."
 msgstr "ਜੇਕਰ ਤੁਸੀਂ ਇੱਕ ਆਈਟਮ ਹਟਾਈ ਤਾਂ ਇਹ ਹਮੇਸ਼ਾਂ ਲਈ ਖਤਮ ਹੋ ਜਾਵੇਗੀ।"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1332
-#| msgid "Empty all of the items from the trash?"
 msgid "Empty all items from Trash?"
 msgstr "ਰੱਦੀ 'ਚੋਂ ਸਭ ਆਈਟਮਾਂ ਹਟਾਉਣੀਆਂ ਹਨ?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1336
-#| msgid ""
-#| "If you clear the list of locations, they will be permanently deleted."
 msgid "All items in the Trash will be permanently deleted."
 msgstr "ਰੱਦੀ 'ਚੋਂ ਸਭ ਆਈਟਮਾਂ ਨੂੰ ਪੱਕੇ ਤੌਰ ਉੱਤੇ ਹਟਾਇਆ ਜਾਵੇਗਾ।"
 
@@ -2798,7 +2836,7 @@ msgid "Specified group '%s' doesn't exist"
 msgstr "ਦਿੱਤਾ ਗਰੁੱਪ '%s' ਮੌਜੂਦ ਨਹੀਂ"
 
 #: ../libnautilus-private/nautilus-file.c:5858
-#: ../src/file-manager/fm-directory-view.c:2289
+#: ../src/file-manager/fm-directory-view.c:2290
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
@@ -3017,8 +3055,8 @@ msgstr "ਸੰਖੇਪ ਝਲਕ"
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:144
-#: ../src/file-manager/fm-list-view.c:1631
-#: ../src/file-manager/fm-list-view.c:3154
+#: ../src/file-manager/fm-list-view.c:1658
+#: ../src/file-manager/fm-list-view.c:3147
 #: ../src/nautilus-file-management-properties.ui.h:67
 msgid "List View"
 msgstr "ਲਿਸਟ ਝਲਕ"
@@ -3145,10 +3183,10 @@ msgstr "ਇਹ ਲਿੰਕ ਵਰਤੋਂਯੋਗ ਨਹੀਂ, ਕਿਉਂ�
 #. name, stock id
 #. label, accelerator
 #: ../libnautilus-private/nautilus-mime-actions.c:717
-#: ../src/file-manager/fm-directory-view.c:7181
-#: ../src/file-manager/fm-directory-view.c:7304
-#: ../src/file-manager/fm-directory-view.c:8404
-#: ../src/file-manager/fm-directory-view.c:8729
+#: ../src/file-manager/fm-directory-view.c:7182
+#: ../src/file-manager/fm-directory-view.c:7305
+#: ../src/file-manager/fm-directory-view.c:8405
+#: ../src/file-manager/fm-directory-view.c:8730
 #: ../src/file-manager/fm-tree-view.c:1242
 msgid "Mo_ve to Trash"
 msgstr "ਰੱਦੀ ਵਿੱਚ ਭੇਜੋ(_v)"
@@ -3261,12 +3299,12 @@ msgstr "ਭਰੋਸੇਯੋਗ ਬਣਾਓ(_T)"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1893
 #: ../libnautilus-private/nautilus-mime-actions.c:2167
-#: ../src/file-manager/fm-directory-view.c:6198
+#: ../src/file-manager/fm-directory-view.c:6199
 msgid "Unable to mount location"
 msgstr "ਟਿਕਾਣਾ ਮਾਊਂਟ ਕਰਨ ਲਈ ਅਸਮਰੱਥ"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:2246
-#: ../src/file-manager/fm-directory-view.c:6372
+#: ../src/file-manager/fm-directory-view.c:6373
 msgid "Unable to start location"
 msgstr "ਟਿਕਾਣਾ ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਅਸਮਰੱਥ"
 
@@ -3377,8 +3415,8 @@ msgstr "ਝਲਕ(_B)..."
 #. name, stock id
 #. label, accelerator
 #: ../libnautilus-private/nautilus-open-with-dialog.c:895
-#: ../src/file-manager/fm-directory-view.c:7097
-#: ../src/file-manager/fm-directory-view.c:8598
+#: ../src/file-manager/fm-directory-view.c:7098
+#: ../src/file-manager/fm-directory-view.c:8599
 #: ../src/file-manager/fm-tree-view.c:1163
 #: ../src/nautilus-places-sidebar.c:2222
 msgid "_Open"
@@ -3465,9 +3503,6 @@ msgstr ""
 "ਜਾ ਸਕਦੀਆਂ ਹਨ।"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:115
-#| msgid ""
-#| "No other applications are available to view this file.  If you copy this "
-#| "file onto your computer, you may be able to open it."
 msgid ""
 "No other applications are available to view this file. If you copy this file "
 "onto your computer, you may be able to open it."
@@ -3476,15 +3511,12 @@ msgstr ""
 "ਖੋਲ੍ਹ ਸਕੋ।"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:121
-#| msgid ""
-#| "No other actions are available to view this file.  If you copy this file "
-#| "onto your computer, you may be able to open it."
 msgid ""
 "No other actions are available to view this file. If you copy this file onto "
 "your computer, you may be able to open it."
 msgstr ""
-"ਇਹ ਫਾਇਲ ਵੇਖਣ ਲਈ ਕੋਈ ਐਕਸ਼ਨ ਉਪਲੱਬਧ ਨਹੀਂ ਹੈ। ਜੇਕਰ ਆਪਣੇ ਕੰਪਿਊਟਰ ਉੱਤੇ ਕਾਪੀ ਬਣਾ ਲਵੋ ਤਾਂ ਸ਼ਾਇਦ ਖੋਲ੍ਹ "
-"ਸਕਦੇ ਹੋ।"
+"ਇਹ ਫਾਇਲ ਵੇਖਣ ਲਈ ਕੋਈ ਐਕਸ਼ਨ ਉਪਲੱਬਧ ਨਹੀਂ ਹੈ। ਜੇਕਰ ਆਪਣੇ ਕੰਪਿਊਟਰ ਉੱਤੇ ਕਾਪੀ ਬਣਾ ਲਵੋ ਤਾਂ ਸ਼ਾਇਦ "
+"ਖੋਲ੍ਹ ਸਕਦੇ ਹੋ।"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:372
 msgid "Sorry, but you cannot execute commands from a remote site."
@@ -3617,8 +3649,8 @@ msgstr "ਬੈਕ-ਗਰਾਊਂਡ"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:712
-#: ../src/file-manager/fm-directory-view.c:7129
-#: ../src/file-manager/fm-directory-view.c:8798
+#: ../src/file-manager/fm-directory-view.c:7130
+#: ../src/file-manager/fm-directory-view.c:8799
 msgid "E_mpty Trash"
 msgstr "ਰੱਦੀ ਖਾਲੀ ਕਰੋ(_m)"
 
@@ -3626,13 +3658,13 @@ msgstr "ਰੱਦੀ ਖਾਲੀ ਕਰੋ(_m)"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:724
-#: ../src/file-manager/fm-directory-view.c:7093
+#: ../src/file-manager/fm-directory-view.c:7094
 msgid "Create L_auncher..."
 msgstr "ਲਾਂਚਰ ਬਣਾਓ(_a)..."
 
 #. tooltip
 #: ../src/file-manager/fm-desktop-icon-view.c:726
-#: ../src/file-manager/fm-directory-view.c:7094
+#: ../src/file-manager/fm-directory-view.c:7095
 msgid "Create a new launcher"
 msgstr "ਇੱਕ ਨਵਾਂ ਲਾਂਚਰ ਬਣਾਓ"
 
@@ -3653,7 +3685,7 @@ msgstr "ਰੱਦੀ ਖਾਲੀ ਕਰੋ"
 
 #. tooltip
 #: ../src/file-manager/fm-desktop-icon-view.c:740
-#: ../src/file-manager/fm-directory-view.c:7130
+#: ../src/file-manager/fm-directory-view.c:7131
 #: ../src/nautilus-trash-bar.c:197
 msgid "Delete all items in the Trash"
 msgstr "ਰੱਦੀ 'ਚੋਂ ਸਭ ਆਈਟਮਾਂ ਹਟਾਓ"
@@ -3716,20 +3748,20 @@ msgstr "ਫੋਲਡਰ(_F):"
 msgid "Select Folder to Save Search In"
 msgstr "ਖੋਜ ਨੂੰ ਸੰਭਾਲਣ ਲਈ ਫੋਲਡਰ ਦੀ ਚੋਣ ਕਰੋ"
 
-#: ../src/file-manager/fm-directory-view.c:2206
-#: ../src/file-manager/fm-directory-view.c:2243
+#: ../src/file-manager/fm-directory-view.c:2207
+#: ../src/file-manager/fm-directory-view.c:2244
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" ਚੁਣਿਆ"
 
-#: ../src/file-manager/fm-directory-view.c:2208
+#: ../src/file-manager/fm-directory-view.c:2209
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "%'d ਫੋਲਡਰ ਚੁਣਿਆ"
 msgstr[1] "%'d ਫੋਲਡਰ ਚੁਣੇ"
 
-#: ../src/file-manager/fm-directory-view.c:2218
+#: ../src/file-manager/fm-directory-view.c:2219
 #, c-format
 msgid " (containing %'d item)"
 msgid_plural " (containing %'d items)"
@@ -3737,14 +3769,14 @@ msgstr[0] " (ਆਈਟਮ %'d ਰੱਖਦਾ ਹੈ)"
 msgstr[1] " (ਆਈਟਮਾਂ %'d ਰੱਖਦੇ ਹਨ)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: ../src/file-manager/fm-directory-view.c:2229
+#: ../src/file-manager/fm-directory-view.c:2230
 #, c-format
 msgid " (containing a total of %'d item)"
 msgid_plural " (containing a total of %'d items)"
 msgstr[0] " (ਕੁੱਲ %'d ਆਈਟਮ ਰੱਖਦਾ ਹੈ)"
 msgstr[1] " (ਕੁੱਲ %'d ਆਈਟਮਾਂ ਰੱਖਦੇ ਹਨ)"
 
-#: ../src/file-manager/fm-directory-view.c:2246
+#: ../src/file-manager/fm-directory-view.c:2247
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -3752,7 +3784,7 @@ msgstr[0] "%'d ਆਈਟਮ ਚੁਣੀ"
 msgstr[1] "%'d ਆਈਟਮਾਂ ਚੁਣੀਆਂ"
 
 #. Folders selected also, use "other" terminology
-#: ../src/file-manager/fm-directory-view.c:2253
+#: ../src/file-manager/fm-directory-view.c:2254
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -3764,19 +3796,18 @@ msgstr[1] "%'d ਹੋਰ ਚੁਣੀਆਂ ਆਈਟਮਾਂ"
 #. * first message gives the number of items selected;
 #. * the message in parentheses the size of those items.
 #.
-#: ../src/file-manager/fm-directory-view.c:2268
+#: ../src/file-manager/fm-directory-view.c:2269
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../src/file-manager/fm-directory-view.c:2281
+#: ../src/file-manager/fm-directory-view.c:2282
 #, c-format
-#| msgid "Free space:"
 msgid "Free space: %s"
 msgstr "ਖਾਲੀ ਥਾਂ: %s"
 
 #  Folders selected also, use "other" terminology
-#: ../src/file-manager/fm-directory-view.c:2292
+#: ../src/file-manager/fm-directory-view.c:2293
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s, ਖਾਲੀ ਥਾਂ: %s"
@@ -3786,9 +3817,8 @@ msgstr "%s, ਖਾਲੀ ਥਾਂ: %s"
 #. * After the comma the amount of free space will
 #. * be shown.
 #.
-#: ../src/file-manager/fm-directory-view.c:2307
+#: ../src/file-manager/fm-directory-view.c:2308
 #, c-format
-#| msgid "%s%s, %s"
 msgid "%s, %s"
 msgstr "%s, %s"
 
@@ -3804,8 +3834,8 @@ msgstr "%s, %s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: ../src/file-manager/fm-directory-view.c:2326
-#: ../src/file-manager/fm-directory-view.c:2340
+#: ../src/file-manager/fm-directory-view.c:2327
+#: ../src/file-manager/fm-directory-view.c:2341
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s %s, %s"
@@ -3818,9 +3848,8 @@ msgstr "%s %s, %s"
 #. * total size of those items. After the second comma
 #. * the free space is written.
 #.
-#: ../src/file-manager/fm-directory-view.c:2353
+#: ../src/file-manager/fm-directory-view.c:2354
 #, c-format
-#| msgid "%s%s, %s"
 msgid "%s%s, %s, %s"
 msgstr "%s%s, %s, %s"
 
@@ -3828,49 +3857,49 @@ msgstr "%s%s, %s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: ../src/file-manager/fm-directory-view.c:2439
+#: ../src/file-manager/fm-directory-view.c:2440
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr "ਫੋਲਡਰ \"%s\" ਨਟੀਲਸ ਵਲੋਂ ਸੰਭਾਲੀਆਂ ਜਾ ਸਕਣ ਤੋਂ ਵੱਧ ਫਾਇਲਾਂ ਰੱਖਦਾ ਹੈ।"
 
-#: ../src/file-manager/fm-directory-view.c:2445
+#: ../src/file-manager/fm-directory-view.c:2446
 msgid "Some files will not be displayed."
 msgstr "ਕੁਝ ਫਾਇਲਾਂ ਵੇਖਾਈਆਂ ਨਹੀਂ ਜਾ ਸਕਣਗੀਆਂ।"
 
-#: ../src/file-manager/fm-directory-view.c:4417
+#: ../src/file-manager/fm-directory-view.c:4418
 #: ../src/nautilus-information-panel.c:833
 #, c-format
 msgid "Open With %s"
 msgstr "%s ਨਾਲ ਖੋਲ੍ਹੋ"
 
-#: ../src/file-manager/fm-directory-view.c:4419
+#: ../src/file-manager/fm-directory-view.c:4420
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgid_plural "Use \"%s\" to open the selected items"
 msgstr[0] "ਚੁਣੀ ਆਈਟਮ ਨੂੰ ਖੋਲ੍ਹਣ ਲਈ \"%s\" ਵਰਤੋਂ"
 msgstr[1] "ਚੁਣੀਆਂ ਆਈਟਮਾਂ ਨੂੰ ਖੋਲ੍ਹਣ ਲਈ \"%s\" ਵਰਤੋਂ"
 
-#: ../src/file-manager/fm-directory-view.c:5259
+#: ../src/file-manager/fm-directory-view.c:5260
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "ਕਿਸੇ ਵੀ ਚੁਣੀ ਆਈਟਮ ਉੱਤੇ \"%s\" ਚਲਾਓ"
 
-#: ../src/file-manager/fm-directory-view.c:5510
+#: ../src/file-manager/fm-directory-view.c:5511
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "ਟੈਪਲੇਟ \"%s\" ਤੋਂ ਡੌਕੂਮੈਂਟ ਬਣਾਓ"
 
-#: ../src/file-manager/fm-directory-view.c:5760
+#: ../src/file-manager/fm-directory-view.c:5761
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "ਇਸ ਫੋਲਡਰ ਵਿਚਲੀਆਂ ਸਾਰੀਆਂ ਚਲਣਯੋਗ ਫਾਇਲਾਂ ਸਕ੍ਰਿਪਟ ਮੇਨੂ ਵਿੱਚ ਉਪਬਲੱਧ ਹਨ।"
 
-#: ../src/file-manager/fm-directory-view.c:5762
+#: ../src/file-manager/fm-directory-view.c:5763
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 msgstr "ਮੇਨੂ ਵਿੱਚੋਂ ਚੁਣੀ ਕੋਈ ਸਕ੍ਰਿਪਟ ਕਿਸੇ ਵੀ ਚੁਣੀ ਫਾਇਲ ਨੂੰ ਇੰਪੁੱਟ ਲੈ ਕੇ ਚੱਲ ਸਕੇਗੀ।"
 
-#: ../src/file-manager/fm-directory-view.c:5764
+#: ../src/file-manager/fm-directory-view.c:5765
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -3926,124 +3955,124 @@ msgstr ""
 "NAUTILUS_SCRIPT_NEXT_PANE_CURRENT_URI: ਵੰਡ-ਝਲਕ ਵਿੰਡੋ ਦੀ ਗ਼ੈਰ-ਐਕਟਿਵ ਬਾਹੀ ਵਿੱਚ ਮੌਜੂਦਾ "
 "ਟਿਕਾਣੇ ਦਾ URI"
 
-#: ../src/file-manager/fm-directory-view.c:5832
+#: ../src/file-manager/fm-directory-view.c:5833
 #: ../src/file-manager/fm-tree-view.c:921
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "ਜੇਕਰ ਤੁਸੀਂ ਚੇਪੋ ਕਮਾਂਡ ਚਲਾਈ ਤਾਂ ਇਹ \"%s\" ਨੂੰ ਭੇਜਿਆ ਜਾਵੇਗਾ"
 
-#: ../src/file-manager/fm-directory-view.c:5836
+#: ../src/file-manager/fm-directory-view.c:5837
 #: ../src/file-manager/fm-tree-view.c:925
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "ਜੇਕਰ ਤੁਸੀਂ ਚੇਪੋ ਕਮਾਂਡ ਚਲਾਈ ਤਾਂ \"%s\" ਨੂੰ ਕਾਪੀ ਕੀਤਾ ਜਾਵੇਗਾ"
 
-#: ../src/file-manager/fm-directory-view.c:5843
+#: ../src/file-manager/fm-directory-view.c:5844
 #, c-format
 msgid "The %'d selected item will be moved if you select the Paste command"
 msgid_plural "The %'d selected items will be moved if you select the Paste command"
 msgstr[0] "ਜੇਕਰ ਤੁਸੀਂ ਚੇਪੋ ਕਮਾਂਡ ਚੁਣੀ ਤਾਂ %'d ਚੁਣੀ ਆਈਟਮ ਭੇਜੀ ਜਾਵੇਗੀ"
 msgstr[1] "ਜੇਕਰ ਤੁਸੀਂ ਚੇਪੋ ਕਮਾਂਡ ਚੁਣੀ ਤਾਂ %'d ਚੁਣੀਆਂ ਆਈਟਮਾਂ ਭੇਜੀਆਂ ਜਾਣਗੀਆਂ"
 
-#: ../src/file-manager/fm-directory-view.c:5850
+#: ../src/file-manager/fm-directory-view.c:5851
 #, c-format
 msgid "The %'d selected item will be copied if you select the Paste command"
 msgid_plural "The %'d selected items will be copied if you select the Paste command"
 msgstr[0] "ਜੇਕਰ ਤੁਸੀਂ ਚੇਪੋ ਕਮਾਂਡ ਚੁਣੀ ਤਾਂ ਇਹ %'d ਚੁਣੀ ਆਈਟਮ ਦੀ ਕਾਪੀ ਕੀਤੀ ਜਾਵੇਗੀ"
 msgstr[1] "ਜੇਕਰ ਤੁਸੀਂ ਚੇਪੋ ਕਮਾਂਡ ਚੁਣੀ ਤਾਂ ਇਹ %'d ਚੁਣੀਆਂ ਆਈਟਮਾਂ ਦੀ ਕਾਪੀ ਕੀਤੀ ਜਾਵੇਗੀ"
 
-#: ../src/file-manager/fm-directory-view.c:6030
+#: ../src/file-manager/fm-directory-view.c:6031
 #: ../src/file-manager/fm-tree-view.c:964
 msgid "There is nothing on the clipboard to paste."
 msgstr "ਕਲਿੱਪਬੋਰਡ ਵਿੱਚ ਕੁਝ ਨਹੀਂ, ਜੋ ਰੱਖਿਆ ਜਾ ਸਕੇ।"
 
-#: ../src/file-manager/fm-directory-view.c:6219
+#: ../src/file-manager/fm-directory-view.c:6220
 msgid "Unable to unmount location"
 msgstr "ਟਿਕਾਣਾ ਅਣ-ਮਾਊਂਟ ਕਰਨ ਲਈ ਅਸਮਰੱਥ"
 
-#: ../src/file-manager/fm-directory-view.c:6240
+#: ../src/file-manager/fm-directory-view.c:6241
 msgid "Unable to eject location"
 msgstr "ਟਿਕਾਣਾ ਅੱਡ ਕਰਨ ਲਈ ਅਸਮਰੱਥ"
 
-#: ../src/file-manager/fm-directory-view.c:6255
+#: ../src/file-manager/fm-directory-view.c:6256
 msgid "Unable to stop drive"
 msgstr "ਡਰਾਇਵ ਰੋਕਣ ਲਈ ਅਸਮਰੱਥ"
 
-#: ../src/file-manager/fm-directory-view.c:6810
+#: ../src/file-manager/fm-directory-view.c:6811
 #, c-format
 msgid "Connect to Server %s"
 msgstr "%s ਸਰਵਰ ਨਾਲ ਕੁਨੈਕਟ ਕਰੋ"
 
-#: ../src/file-manager/fm-directory-view.c:6815
-#: ../src/file-manager/fm-directory-view.c:8017
-#: ../src/file-manager/fm-directory-view.c:8109
-#: ../src/file-manager/fm-directory-view.c:8219
+#: ../src/file-manager/fm-directory-view.c:6816
+#: ../src/file-manager/fm-directory-view.c:8018
+#: ../src/file-manager/fm-directory-view.c:8110
+#: ../src/file-manager/fm-directory-view.c:8220
 msgid "_Connect"
 msgstr "ਕੁਨੈਕਸ਼ਨ ਕਰੋ(_C)"
 
-#: ../src/file-manager/fm-directory-view.c:6829
+#: ../src/file-manager/fm-directory-view.c:6830
 msgid "Link _name:"
 msgstr "ਲਿੰਕ ਨਾਂ(_n):"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7071
+#: ../src/file-manager/fm-directory-view.c:7072
 msgid "Create _Document"
 msgstr "ਡੌਕੂਮੈਂਟ ਬਣਾਓ(_D)"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7072
+#: ../src/file-manager/fm-directory-view.c:7073
 msgid "Open Wit_h"
 msgstr "ਇਸ ਨਾਲ ਖੋਲ੍ਹੋ(_h)"
 
-#: ../src/file-manager/fm-directory-view.c:7073
+#: ../src/file-manager/fm-directory-view.c:7074
 msgid "Choose a program with which to open the selected item"
 msgstr "ਇੱਕ ਪਰੋਗਰਾਮ ਚੁਣੋ, ਜੋ ਚੁਣੀ ਆਈਟਮ ਨੂੰ ਖੋਲ੍ਹ ਸਕੇ"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7075
-#: ../src/file-manager/fm-directory-view.c:7345
+#: ../src/file-manager/fm-directory-view.c:7076
+#: ../src/file-manager/fm-directory-view.c:7346
 msgid "_Properties"
 msgstr "ਵਿਸ਼ੇਸ਼ਤਾ(_P)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7076
-#: ../src/file-manager/fm-directory-view.c:8785
+#: ../src/file-manager/fm-directory-view.c:7077
+#: ../src/file-manager/fm-directory-view.c:8786
 msgid "View or modify the properties of each selected item"
 msgstr "ਹਰੇਕ ਚੁਣੀ ਆਈਟਮ ਦੀ ਵਿਸ਼ੇਸ਼ਤਾ ਵੇਖੋ ਜਾਂ ਸੋਧੋ"
 
 #. name, stock id
 #. label, accelerator
 #. add the "create folder" menu item
-#: ../src/file-manager/fm-directory-view.c:7083
+#: ../src/file-manager/fm-directory-view.c:7084
 #: ../src/file-manager/fm-tree-view.c:1194
 msgid "Create _Folder"
 msgstr "ਫੋਲਡਰ ਬਣਾਓ(_F)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7084
+#: ../src/file-manager/fm-directory-view.c:7085
 msgid "Create a new empty folder inside this folder"
 msgstr "ਇਸ ਫੋਲਡਰ ਅੰਦਰ ਇਕ ਖਾਲੀ ਫੋਲਡਰ ਬਣਾਓ"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7086
+#: ../src/file-manager/fm-directory-view.c:7087
 msgid "No templates installed"
 msgstr "ਕੋਈ ਟੈਪਲੇਟ ਇੰਸਟਾਲ ਨਹੀਂ ਹੈ"
 
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7089
+#: ../src/file-manager/fm-directory-view.c:7090
 msgid "_Empty File"
 msgstr "ਖਾਲੀ ਫਾਇਲ(_E)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7090
+#: ../src/file-manager/fm-directory-view.c:7091
 msgid "Create a new empty file inside this folder"
 msgstr "ਇਸ ਫੋਲਡਰ ਵਿੱਚ ਇਕ ਖਾਲੀ ਫਾਇਲ ਬਣਾਓ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7098
+#: ../src/file-manager/fm-directory-view.c:7099
 msgid "Open the selected item in this window"
 msgstr "ਚੁਣੀ ਆਈਟਮ ਇਸ ਵਿੰਡੋ ਵਿੱਚ ਖੋਲ੍ਹੋ"
 
@@ -4052,92 +4081,92 @@ msgstr "ਚੁਣੀ ਆਈਟਮ ਇਸ ਵਿੰਡੋ ਵਿੱਚ ਖੋਲ�
 #. Location-specific actions
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7105
-#: ../src/file-manager/fm-directory-view.c:7277
+#: ../src/file-manager/fm-directory-view.c:7106
+#: ../src/file-manager/fm-directory-view.c:7278
 msgid "Open in Navigation Window"
 msgstr "ਨਵੀਂ ਨੈਵੀਗੇਸ਼ਨ ਵਿੰਡੋ 'ਚ ਖੋਲ੍ਹੋ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7106
+#: ../src/file-manager/fm-directory-view.c:7107
 msgid "Open each selected item in a navigation window"
 msgstr "ਹਰੇਕ ਚੁਣੀ ਆਈਟਮ ਨਵੀਂ ਨੈਵੀਗੇਸ਼ਨ ਵਿੰਡੋ ਵਿੱਚ ਖੋਲ੍ਹੋ"
 
 #. name, stock id
 #. label, accelerator
 #. add the "open in new tab" menu item
-#: ../src/file-manager/fm-directory-view.c:7109
-#: ../src/file-manager/fm-directory-view.c:7281
-#: ../src/file-manager/fm-directory-view.c:8349
-#: ../src/file-manager/fm-directory-view.c:8675
+#: ../src/file-manager/fm-directory-view.c:7110
+#: ../src/file-manager/fm-directory-view.c:7282
+#: ../src/file-manager/fm-directory-view.c:8350
+#: ../src/file-manager/fm-directory-view.c:8676
 #: ../src/file-manager/fm-tree-view.c:1174
 #: ../src/nautilus-places-sidebar.c:2230
 msgid "Open in New _Tab"
 msgstr "ਨਵੀਂ ਟੈਬ ਖੋਲ੍ਹੋ(_T)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7110
+#: ../src/file-manager/fm-directory-view.c:7111
 msgid "Open each selected item in a new tab"
 msgstr "ਹਰੇਕ ਚੁਣੀ ਆਈਟਮ ਨਵੀਂ ਟੈਬ ਵਿੱਚ ਖੋਲ੍ਹੋ"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7113
-#: ../src/file-manager/fm-directory-view.c:7286
+#: ../src/file-manager/fm-directory-view.c:7114
+#: ../src/file-manager/fm-directory-view.c:7287
 msgid "Open in _Folder Window"
 msgstr "ਫੋਲਡਰ ਵਿੰਡੋ 'ਚ ਖੋਲ੍ਹੋ(_F)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7114
+#: ../src/file-manager/fm-directory-view.c:7115
 msgid "Open each selected item in a folder window"
 msgstr "ਹਰੇਕ ਚੁਣੀ ਆਈਟਮ ਨਵੀਂ ਫੋਲਡਰ ਵਿੰਡੋ ਵਿੱਚ ਖੋਲ੍ਹੋ"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7117
+#: ../src/file-manager/fm-directory-view.c:7118
 msgid "Other _Application..."
 msgstr "ਹੋਰ ਐਪਲੀਕੇਸ਼ਨ(_A)..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7118
-#: ../src/file-manager/fm-directory-view.c:7122
+#: ../src/file-manager/fm-directory-view.c:7119
+#: ../src/file-manager/fm-directory-view.c:7123
 msgid "Choose another application with which to open the selected item"
 msgstr "ਹੋਰ ਐਪਲੀਕੇਸ਼ਨ ਚੁਣੋ, ਜਿਸ ਨਾਲ ਕਿ ਚੁਣੀ ਆਈਟਮ ਖੋਲ੍ਹੀ ਜਾ ਸਕੇ।"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7121
+#: ../src/file-manager/fm-directory-view.c:7122
 msgid "Open With Other _Application..."
 msgstr "ਹੋਰ ਐਪਲੀਕੇਸ਼ਨ ਨਾਲ ਖੋਲ੍ਹੋ(_A)..."
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7125
+#: ../src/file-manager/fm-directory-view.c:7126
 msgid "_Open Scripts Folder"
 msgstr "ਸਕ੍ਰਿਪਟ ਫੋਲਡਰ ਖੋਲ੍ਹੋ(_O)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7126
+#: ../src/file-manager/fm-directory-view.c:7127
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "ਉਹ ਫੋਲਡਰ ਵੇਖਾਓ, ਜੋ ਉਹ ਸਕ੍ਰਿਪਟਾਂ ਰੱਖਦਾ ਹੈ, ਜੋ ਕਿ ਇਸ ਮੇਨੂ ਲਈ ਲੋੜੀਦੀਆਂ ਹਨ"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7134
+#: ../src/file-manager/fm-directory-view.c:7135
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "ਚੁਣੀਆਂ ਫਾਇਲਾਂ ਚੇਪੋ ਕਮਾਂਡ ਨਾਲ ਭੇਜਣ ਲਈ ਕਰਨ ਤਿਆਰ ਕਰੋ"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7138
+#: ../src/file-manager/fm-directory-view.c:7139
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "ਚੁਣੀਆਂ ਫਾਇਲਾਂ ਚੇਪੋ ਕਮਾਂਡ ਨਾਲ ਕਾਪੀ ਕਰਨ ਤਿਆਰ ਕਰੋ"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7142
+#: ../src/file-manager/fm-directory-view.c:7143
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr "ਭੇਜੋ ਜਾਂ ਕਾਪੀ ਕਰੋ, ਜੋ ਪਹਿਲਾਂ ਨਕਲ ਜਾਂ ਕੱਟ ਦੀ ਕਮਾਂਡ ਨਾਲ ਚੁਣੀਆਂ ਸਨ"
 
@@ -4145,118 +4174,116 @@ msgstr "ਭੇਜੋ ਜਾਂ ਕਾਪੀ ਕਰੋ, ਜੋ ਪਹਿਲਾਂ
 #. accelerator for paste
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7147
-#: ../src/file-manager/fm-directory-view.c:7299
+#: ../src/file-manager/fm-directory-view.c:7148
+#: ../src/file-manager/fm-directory-view.c:7300
 #: ../src/file-manager/fm-tree-view.c:1226
 msgid "_Paste Into Folder"
 msgstr "ਫੋਲਡਰ ਵਿੱਚ ਚੇਪੋ(_P)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7148
+#: ../src/file-manager/fm-directory-view.c:7149
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
 msgstr "ਪਹਿਲਾਂ ਕੱਟ ਜਾਂ ਕਾਪੀ ਕਮਾਂਡ ਨਾਲ ਭੇਜੀਆਂ ਜਾਂ ਕਾਪੀ ਕੀਤੀਆਂ ਫਾਇਲਾਂ ਚੁਣੇ ਫੋਲਡਰ ਅੰਦਰ ਭੇਜੋ"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7150
-#| msgid "Copy to"
+#: ../src/file-manager/fm-directory-view.c:7151
 msgid "Cop_y to"
 msgstr "ਇੱਥੇ ਕਾਪੀ ਕਰੋ(_y)"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7151
-#| msgid "Move to"
+#: ../src/file-manager/fm-directory-view.c:7152
 msgid "M_ove to"
 msgstr "ਇੱਥੇ ਭੇਜੋ(_o)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7154
+#: ../src/file-manager/fm-directory-view.c:7155
 msgid "Select all items in this window"
 msgstr "ਇਸ ਵਿੰਡੋ ਵਿਚੋਂ ਸਭ ਆਈਟਮਾਂ ਚੁਣੋ"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7157
+#: ../src/file-manager/fm-directory-view.c:7158
 msgid "Select I_tems Matching..."
 msgstr "ਰਲਦੀਆਂ ਆਈਟਮਾਂ ਚੁਣੋ(_t)..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7158
+#: ../src/file-manager/fm-directory-view.c:7159
 msgid "Select items in this window matching a given pattern"
 msgstr "ਇਸ ਵਿੰਡੋ ਵਿੱਚ ਆਈਟਮਾਂ ਚੁਣੋ, ਜੋ ਦਿੱਤੇ ਪੈਟਰਨ ਮੁਤਾਬਕ ਹੋਵੇ"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7161
+#: ../src/file-manager/fm-directory-view.c:7162
 msgid "_Invert Selection"
 msgstr "ਉਲਟ ਚੋਣ(_I)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7162
+#: ../src/file-manager/fm-directory-view.c:7163
 msgid "Select all and only the items that are not currently selected"
 msgstr "ਸਭ ਅਤੇ ਉਹ ਆਈਟਮਾਂ ਭੇਜੋ, ਜੋ ਕਿ ਮੌਜੂਦਾ ਚੁਣੀਆਂ ਨਹੀਂ ਗਈਆਂ"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7165
+#: ../src/file-manager/fm-directory-view.c:7166
 msgid "D_uplicate"
 msgstr "ਡੁਪਲੀਕੇਟ(_u)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7166
+#: ../src/file-manager/fm-directory-view.c:7167
 msgid "Duplicate each selected item"
 msgstr "ਹਰੇਕ ਚੁਣੀ ਆਈਟਮ ਲਈ ਡੁਪਲੀਕੇਟ ਤਿਆਰ ਕਰੋ"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7169
-#: ../src/file-manager/fm-directory-view.c:8769
+#: ../src/file-manager/fm-directory-view.c:7170
+#: ../src/file-manager/fm-directory-view.c:8770
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "ਲਿੰਕ ਬਣਾਓ(_k)"
 msgstr[1] "ਲਿੰਕ ਬਣਾਓ(_k)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7170
+#: ../src/file-manager/fm-directory-view.c:7171
 msgid "Create a symbolic link for each selected item"
 msgstr "ਹਰੇਕ ਆਈਟਮ ਲਈ ਸਿੰਬਲਿਕ ਲਿੰਕ ਬਣਾਓ"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7173
+#: ../src/file-manager/fm-directory-view.c:7174
 msgid "_Rename..."
 msgstr "ਨਾਂ ਬਦਲੋ(_R)..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7174
+#: ../src/file-manager/fm-directory-view.c:7175
 msgid "Rename selected item"
 msgstr "ਚੁਣੀ ਆਈਟਮ ਦਾ ਨਾਂ ਬਦਲੋ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7182
-#: ../src/file-manager/fm-directory-view.c:8730
+#: ../src/file-manager/fm-directory-view.c:7183
+#: ../src/file-manager/fm-directory-view.c:8731
 msgid "Move each selected item to the Trash"
 msgstr "ਹਰੇਕ ਚੁਣੀ ਆਈਟਮ ਰੱਦੀ ਵਿੱਚ ਭੇਜੋ"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7185
-#: ../src/file-manager/fm-directory-view.c:7308
-#: ../src/file-manager/fm-directory-view.c:8750
+#: ../src/file-manager/fm-directory-view.c:7186
+#: ../src/file-manager/fm-directory-view.c:7309
+#: ../src/file-manager/fm-directory-view.c:8751
 #: ../src/file-manager/fm-tree-view.c:1256
 msgid "_Delete"
 msgstr "ਹਟਾਓ(_D)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7186
+#: ../src/file-manager/fm-directory-view.c:7187
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "ਹਰੇਕ ਚੁਣੀ ਫਾਇਲ ਨੂੰ ਰੱਦੀ ਵਿੱਚ ਭੇਜੇ ਬਿਨਾਂ ਹੀ ਖਤਮ ਕਰੋ"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7189
-#: ../src/file-manager/fm-directory-view.c:7312
+#: ../src/file-manager/fm-directory-view.c:7190
+#: ../src/file-manager/fm-directory-view.c:7313
 msgid "_Restore"
 msgstr "ਰੀਸਟੋਰ(_R)"
 
@@ -4268,607 +4295,607 @@ msgstr "ਰੀਸਟੋਰ(_R)"
 #.
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7199
+#: ../src/file-manager/fm-directory-view.c:7200
 msgid "Reset View to _Defaults"
 msgstr "ਝਲਕ ਡਿਫਾਲਟ ਹੀ ਸੈੱਟ ਕਰੋ(_D)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7200
+#: ../src/file-manager/fm-directory-view.c:7201
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr "ਇਸ ਝਲਕ ਦੀ ਪਸੰਦ ਲਈ ਕ੍ਰਮ ਅਤੇ ਜੂਮ ਸਾਈਜ਼ ਮੁੜ-ਦਿਓ"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7203
+#: ../src/file-manager/fm-directory-view.c:7204
 msgid "Connect To This Server"
 msgstr "ਇਸ ਸਰਵਰ ਨਾਲ ਕੁਨੈਕਟ ਕਰੋ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7204
+#: ../src/file-manager/fm-directory-view.c:7205
 msgid "Make a permanent connection to this server"
 msgstr "ਇਸ ਸਰਵਰ ਨਾਲ ਪੱਕਾ ਕੁਨੈਕਸ਼ਨ ਬਣਾਓ"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7207
-#: ../src/file-manager/fm-directory-view.c:7235
-#: ../src/file-manager/fm-directory-view.c:7316
+#: ../src/file-manager/fm-directory-view.c:7208
+#: ../src/file-manager/fm-directory-view.c:7236
+#: ../src/file-manager/fm-directory-view.c:7317
 #: ../src/nautilus-places-sidebar.c:2266
 msgid "_Mount"
 msgstr "ਮਾਊਂਟ(_M)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7208
+#: ../src/file-manager/fm-directory-view.c:7209
 msgid "Mount the selected volume"
 msgstr "ਚੁਣੇ ਵਾਲੀਅਮ ਨੂੰ ਮਾਊਂਟ ਕਰੋ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7212
+#: ../src/file-manager/fm-directory-view.c:7213
 msgid "Unmount the selected volume"
 msgstr "ਚੁਣੇ ਹਿੱਸੇ ਨੂੰ ਅਣ-ਮਾਊਂਟ ਕਰੋ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7216
+#: ../src/file-manager/fm-directory-view.c:7217
 msgid "Eject the selected volume"
 msgstr "ਚੁਣੇ ਵਾਲੀਅਮ ਨੂੰ ਬਾਹਰ ਕੱਢੋ"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7219
-#: ../src/file-manager/fm-directory-view.c:7247
-#: ../src/file-manager/fm-directory-view.c:7328
+#: ../src/file-manager/fm-directory-view.c:7220
+#: ../src/file-manager/fm-directory-view.c:7248
+#: ../src/file-manager/fm-directory-view.c:7329
 #: ../src/nautilus-places-sidebar.c:2294
 msgid "_Format"
 msgstr "ਫਾਰਮੈਟ(_F)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7220
+#: ../src/file-manager/fm-directory-view.c:7221
 msgid "Format the selected volume"
 msgstr "ਚੁਣੇ ਵਾਲੀਅਮ ਨੂੰ ਫਾਰਮੈਟ ਕਰੋ"
 
 #. name, stock id
 #. label, accelerator
 #. Adjust start/stop items to reflect the type of the drive
-#: ../src/file-manager/fm-directory-view.c:7223
-#: ../src/file-manager/fm-directory-view.c:7251
-#: ../src/file-manager/fm-directory-view.c:7332
-#: ../src/file-manager/fm-directory-view.c:8009
-#: ../src/file-manager/fm-directory-view.c:8013
-#: ../src/file-manager/fm-directory-view.c:8101
-#: ../src/file-manager/fm-directory-view.c:8105
-#: ../src/file-manager/fm-directory-view.c:8211
-#: ../src/file-manager/fm-directory-view.c:8215
+#: ../src/file-manager/fm-directory-view.c:7224
+#: ../src/file-manager/fm-directory-view.c:7252
+#: ../src/file-manager/fm-directory-view.c:7333
+#: ../src/file-manager/fm-directory-view.c:8010
+#: ../src/file-manager/fm-directory-view.c:8014
+#: ../src/file-manager/fm-directory-view.c:8102
+#: ../src/file-manager/fm-directory-view.c:8106
+#: ../src/file-manager/fm-directory-view.c:8212
+#: ../src/file-manager/fm-directory-view.c:8216
 #: ../src/nautilus-places-sidebar.c:1444 ../src/nautilus-places-sidebar.c:2301
 msgid "_Start"
 msgstr "ਸ਼ੁਰੂ(_S)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7224
+#: ../src/file-manager/fm-directory-view.c:7225
 msgid "Start the selected volume"
 msgstr "ਚੁਣੇ ਵਾਲੀਅਮ ਸ਼ੁਰੂ ਕਰੋ"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7227
-#: ../src/file-manager/fm-directory-view.c:7255
-#: ../src/file-manager/fm-directory-view.c:7336
-#: ../src/file-manager/fm-directory-view.c:8038
-#: ../src/file-manager/fm-directory-view.c:8130
-#: ../src/file-manager/fm-directory-view.c:8240
+#: ../src/file-manager/fm-directory-view.c:7228
+#: ../src/file-manager/fm-directory-view.c:7256
+#: ../src/file-manager/fm-directory-view.c:7337
+#: ../src/file-manager/fm-directory-view.c:8039
+#: ../src/file-manager/fm-directory-view.c:8131
+#: ../src/file-manager/fm-directory-view.c:8241
 #: ../src/nautilus-places-sidebar.c:1445 ../src/nautilus-places-sidebar.c:2308
 #: ../src/nautilus-window-menus.c:810
 msgid "_Stop"
 msgstr "ਰੋਕੋ(_S)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7228
-#: ../src/file-manager/fm-directory-view.c:8241
+#: ../src/file-manager/fm-directory-view.c:7229
+#: ../src/file-manager/fm-directory-view.c:8242
 msgid "Stop the selected volume"
 msgstr "ਚੁਣੇ ਵਾਲੀਅਮ ਨੂੰ ਰੋਕੋ"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7231
-#: ../src/file-manager/fm-directory-view.c:7259
-#: ../src/file-manager/fm-directory-view.c:7340
+#: ../src/file-manager/fm-directory-view.c:7232
+#: ../src/file-manager/fm-directory-view.c:7260
+#: ../src/file-manager/fm-directory-view.c:7341
 #: ../src/nautilus-places-sidebar.c:2287
 msgid "_Detect Media"
 msgstr "ਮੀਡਿਆ ਖੋਜਿਆ(_D)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7232
-#: ../src/file-manager/fm-directory-view.c:7260
-#: ../src/file-manager/fm-directory-view.c:7341
+#: ../src/file-manager/fm-directory-view.c:7233
+#: ../src/file-manager/fm-directory-view.c:7261
+#: ../src/file-manager/fm-directory-view.c:7342
 msgid "Detect media in the selected drive"
 msgstr "ਚੁਣੀ ਡਰਾਇਵ ਵਿੱਚ ਮੀਡਿਆ ਮਿਲਿਆ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7236
+#: ../src/file-manager/fm-directory-view.c:7237
 msgid "Mount the volume associated with the open folder"
 msgstr "ਖੁੱਲੇ ਫੋਲਡਰ ਨਾਲ ਸਬੰਧਿਤ ਵਾਲੀਅਮ ਮਾਊਂਟ ਕਰੋ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7240
+#: ../src/file-manager/fm-directory-view.c:7241
 msgid "Unmount the volume associated with the open folder"
 msgstr "ਖੁੱਲੇ ਫੋਲਡਰ ਨਾਲ ਸਬੰਧਿਤ ਵਾਲੀਅਮ ਅਣ-ਮਾਊਂਟ ਕਰੋ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7244
+#: ../src/file-manager/fm-directory-view.c:7245
 msgid "Eject the volume associated with the open folder"
 msgstr "ਖੁੱਲੇ ਫੋਲਡਰ ਨਾਲ ਸਬੰਧਿਤ ਵਾਲੀਅਮ ਬਾਹਰ ਕੱਢੋ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7248
+#: ../src/file-manager/fm-directory-view.c:7249
 msgid "Format the volume associated with the open folder"
 msgstr "ਖੁੱਲੇ ਫੋਲਡਰ ਨਾਲ ਸਬੰਧਿਤ ਵਾਲੀਅਮ ਫਾਰਮੈਟ ਕਰੋ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7252
+#: ../src/file-manager/fm-directory-view.c:7253
 msgid "Start the volume associated with the open folder"
 msgstr "ਖੁੱਲੇ ਫੋਲਡਰ ਨਾਲ ਸਬੰਧਿਤ ਵਾਲੀਅਮ ਸ਼ੁਰੂ ਕਰੋ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7256
+#: ../src/file-manager/fm-directory-view.c:7257
 msgid "Stop the volume associated with the open folder"
 msgstr "ਖੁੱਲੇ ਫੋਲਡਰ ਨਾਲ ਸਬੰਧਿਤ ਵਾਲੀਅਮ ਰੋਕੋ"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7263
+#: ../src/file-manager/fm-directory-view.c:7264
 msgid "Open File and Close window"
 msgstr "ਫਾਇਲ ਖੋਲ੍ਹੋ ਅਤੇ ਵਿੰਡੋ ਬੰਦ ਕਰੋ"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7267
+#: ../src/file-manager/fm-directory-view.c:7268
 msgid "Sa_ve Search"
 msgstr "ਖੋਜ ਸੰਭਾਲੋ(_v)"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7268
+#: ../src/file-manager/fm-directory-view.c:7269
 msgid "Save the edited search"
 msgstr "ਸੋਧੀ ਖੋਜ ਸੰਭਾਲੋ"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7271
+#: ../src/file-manager/fm-directory-view.c:7272
 msgid "Sa_ve Search As..."
 msgstr "ਖੋਜ ਇੰਜ ਸੰਭਾਲੋ(_v)..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7272
+#: ../src/file-manager/fm-directory-view.c:7273
 msgid "Save the current search as a file"
 msgstr "ਮੌਜੂਦਾ ਖੋਜ ਨੂੰ ਇੱਕ ਫਾਇਲ ਵਾਂਗ ਸੰਭਾਲੋ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7278
+#: ../src/file-manager/fm-directory-view.c:7279
 msgid "Open this folder in a navigation window"
 msgstr "ਇਸ ਫੋਲਡਰ ਨੂੰ ਇੱਕ ਨੇਵੀਗੇਸ਼ਨ ਵਿੰਡੋ 'ਚ ਖੋਲ੍ਹੋ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7282
+#: ../src/file-manager/fm-directory-view.c:7283
 msgid "Open this folder in a new tab"
 msgstr "ਇਸ ਫੋਲਡਰ ਨੂੰ ਇੱਕ ਨਵੀਂ ਟੈਬ 'ਚ ਖੋਲ੍ਹੋ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7287
+#: ../src/file-manager/fm-directory-view.c:7288
 msgid "Open this folder in a folder window"
 msgstr "ਇਸ ਫੋਲਡਰ ਨੂੰ ਇੱਕ ਫੋਲਡਰ ਵਿੰਡੋ 'ਚ ਖੋਲ੍ਹੋ"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7292
+#: ../src/file-manager/fm-directory-view.c:7293
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "ਇਸ ਫੋਲਡਰ ਨੂੰ ਚੇਪਣ ਕਮਾਂਡ ਨਾਲ ਭੇਜਣ ਲਈ ਤਿਆਰ ਕਰੋ"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7296
+#: ../src/file-manager/fm-directory-view.c:7297
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "ਇਸ ਫੋਲਡਰ ਨੂੰ ਚੇਪਣ ਕਮਾਂਡ ਨਾਲ ਕਾਪੀ ਕਰਨ ਲਈ ਤਿਆਰ ਕਰੋ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7300
+#: ../src/file-manager/fm-directory-view.c:7301
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into this "
 "folder"
 msgstr "ਪਹਿਲਾਂ ਕੱਟ ਜਾਂ ਨਕਲ ਕਮਾਂਡ ਨਾਲ ਭੇਜੀਆਂ ਜਾਂ ਕਾਪੀ ਕੀਤੀਆਂ ਫਾਇਲਾਂ ਚੁਣੇ ਫੋਲਡਰ ਅੰਦਰ ਭੇਜੋ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7305
+#: ../src/file-manager/fm-directory-view.c:7306
 msgid "Move this folder to the Trash"
 msgstr "ਇਸ ਫੋਲਡਰ ਨੂੰ ਰੱਦੀ 'ਚ ਭੇਜੋ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7309
+#: ../src/file-manager/fm-directory-view.c:7310
 msgid "Delete this folder, without moving to the Trash"
 msgstr "ਇਸ ਫੋਲਡਰ ਨੂੰ ਰੱਦੀ 'ਚ ਵਿੱਚ ਭੇਜੇ ਬਿਨਾਂ ਹਟਾਓ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7317
+#: ../src/file-manager/fm-directory-view.c:7318
 msgid "Mount the volume associated with this folder"
 msgstr "ਇਸ ਫੋਲਡਰ ਨਾਲ ਸਬੰਧਿਤ ਵਾਲੀਅਮ ਮਾਊਂਟ ਕਰੋ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7321
+#: ../src/file-manager/fm-directory-view.c:7322
 msgid "Unmount the volume associated with this folder"
 msgstr "ਇਸ ਫੋਲਡਰ ਨਾਲ ਸਬੰਧਿਤ ਵਾਲੀਅਮ ਅਣ-ਮਾਊਂਟ ਕਰੋ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7325
+#: ../src/file-manager/fm-directory-view.c:7326
 msgid "Eject the volume associated with this folder"
 msgstr "ਇਸ ਫੋਲਡਰ ਨਾਲ ਸਬੰਧਿਤ ਵਾਲੀਅਮ ਬਾਹਰ ਕੱਢੋ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7329
+#: ../src/file-manager/fm-directory-view.c:7330
 msgid "Format the volume associated with this folder"
 msgstr "ਇਸ ਫੋਲਡਰ ਨਾਲ ਸਬੰਧਿਤ ਵਾਲੀਅਮ ਫਾਰਮੈਟ ਕਰੋ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7333
+#: ../src/file-manager/fm-directory-view.c:7334
 msgid "Start the volume associated with this folder"
 msgstr "ਇਸ ਫੋਲਡਰ ਨਾਲ ਸਬੰਧਿਤ ਵਾਲੀਅਮ ਸ਼ੁਰੂ ਕਰੋ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7337
+#: ../src/file-manager/fm-directory-view.c:7338
 msgid "Stop the volume associated with this folder"
 msgstr "ਇਸ ਫੋਲਡਰ ਨਾਲ ਸਬੰਧਿਤ ਵਾਲੀਅਮ ਰੋਕੋ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7346
+#: ../src/file-manager/fm-directory-view.c:7347
 msgid "View or modify the properties of this folder"
 msgstr "ਇਸ ਫੋਲਡਰ ਦੀ ਵਿਸ਼ੇਸ਼ਤਾ ਵੇਖੋ ਜਾਂ ਸੋਧੋ"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7349
-#: ../src/file-manager/fm-directory-view.c:7352
+#: ../src/file-manager/fm-directory-view.c:7350
+#: ../src/file-manager/fm-directory-view.c:7353
 msgid "_Other pane"
 msgstr "ਹੋਰ ਬਾਹੀ(_O)"
 
-#: ../src/file-manager/fm-directory-view.c:7350
+#: ../src/file-manager/fm-directory-view.c:7351
 msgid "Copy the current selection to the other pane in the window"
 msgstr "ਮੌਜੂਦਾ ਚੋਣ ਨੂੰ ਵਿੰਡੋ ਦੀ ਹੋਰ ਬਾਹੀ ਵਿੱਚ ਕਾਪੀ ਕਰੋ"
 
-#: ../src/file-manager/fm-directory-view.c:7353
+#: ../src/file-manager/fm-directory-view.c:7354
 msgid "Move the current selection to the other pane in the window"
 msgstr "ਮੌਜੂਦਾ ਚੋਣ ਨੂੰ ਵਿੰਡੋ ਦੀ ਹੋਰ ਬਾਹੀ ਵਿੱਚ ਭੇਜੋ"
 
 #. name, stock id, label
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7356
-#: ../src/file-manager/fm-directory-view.c:7360
+#: ../src/file-manager/fm-directory-view.c:7357
+#: ../src/file-manager/fm-directory-view.c:7361
 #: ../src/nautilus-window-menus.c:854
 msgid "_Home Folder"
 msgstr "ਘਰ ਫੋਲਡਰ(_H)"
 
-#: ../src/file-manager/fm-directory-view.c:7357
+#: ../src/file-manager/fm-directory-view.c:7358
 msgid "Copy the current selection to the home folder"
 msgstr "ਮੌਜੂਦਾ ਚੋਣ ਨੂੰ ਘਰ ਫੋਲਡਰ ਵਿੱਚ ਕਾਪੀ ਕਰੋ"
 
-#: ../src/file-manager/fm-directory-view.c:7361
+#: ../src/file-manager/fm-directory-view.c:7362
 msgid "Move the current selection to the home folder"
 msgstr "ਮੌਜੂਦਾ ਚੋਣ ਨੂੰ ਘਰ ਫੋਲਡਰ ਵਿੱਚ ਭੇਜੋ"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7364
-#: ../src/file-manager/fm-directory-view.c:7368
+#: ../src/file-manager/fm-directory-view.c:7365
+#: ../src/file-manager/fm-directory-view.c:7369
 msgid "_Desktop"
 msgstr "ਡੈਸਕਟਾਪ(_D)"
 
-#: ../src/file-manager/fm-directory-view.c:7365
+#: ../src/file-manager/fm-directory-view.c:7366
 msgid "Copy the current selection to the desktop"
 msgstr "ਮੌਜੂਦਾ ਚੋਣ ਨੂੰ ਡੈਸਕਟਾਪ ਉੱਤੇ ਕਾਪੀ ਕਰੋ"
 
-#: ../src/file-manager/fm-directory-view.c:7369
+#: ../src/file-manager/fm-directory-view.c:7370
 msgid "Move the current selection to the desktop"
 msgstr "ਮੌਜੂਦਾ ਚੋਣ ਨੂੰ ਡੈਸਕਟਾਪ ਉੱਤੇ ਭੇਜੋ"
 
 #. Translators: %s is a directory
-#: ../src/file-manager/fm-directory-view.c:7449
+#: ../src/file-manager/fm-directory-view.c:7450
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "%s ਤੋਂ ਸਕਰਿਪਟਾਂ ਚਲਾਓ ਜਾਂ ਦੇਖਭਾਲ ਕਰੋ"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/file-manager/fm-directory-view.c:7451
+#: ../src/file-manager/fm-directory-view.c:7452
 msgid "_Scripts"
 msgstr "ਸਕ੍ਰਿਪਟਾਂ(_S)"
 
-#: ../src/file-manager/fm-directory-view.c:7857
+#: ../src/file-manager/fm-directory-view.c:7858
 #, c-format
 msgid "Move the open folder out of the trash to \"%s\""
 msgstr "ਖੁੱਲ੍ਹਾ ਫੋਲਡਰ ਰੱਦੀ ਤੋਂ \"%s\" 'ਚ ਭੇਜੋ"
 
-#: ../src/file-manager/fm-directory-view.c:7860
+#: ../src/file-manager/fm-directory-view.c:7861
 #, c-format
 msgid "Move the selected folder out of the trash to \"%s\""
 msgid_plural "Move the selected folders out of the trash to \"%s\""
 msgstr[0] "ਚੁਣਿਆ ਫੋਲਡਰ ਰੱਦੀ ਤੋਂ \"%s\" 'ਚ ਭੇਜੋ"
 msgstr[1] "ਚੁਣੇ ਫੋਲਡਰ ਰੱਦੀ ਤੋਂ \"%s\" ਵਿੱਚ ਭੇਜੋ"
 
-#: ../src/file-manager/fm-directory-view.c:7864
+#: ../src/file-manager/fm-directory-view.c:7865
 #, c-format
 msgid "Move the selected folder out of the trash"
 msgid_plural "Move the selected folders out of the trash"
 msgstr[0] "ਚੁਣਿਆ ਫੋਲਡਰ ਰੱਦੀ ਤੋਂ ਬਾਹਰ ਭੇਜੋ"
 msgstr[1] "ਚੁਣੇ ਫੋਲਡਰ ਰੱਦੀ ਤੋਂ ਬਾਹਰ ਭੇਜੋ"
 
-#: ../src/file-manager/fm-directory-view.c:7870
+#: ../src/file-manager/fm-directory-view.c:7871
 #, c-format
 msgid "Move the selected file out of the trash to \"%s\""
 msgid_plural "Move the selected files out of the trash to \"%s\""
 msgstr[0] "ਚੁਣੀ ਫਾਇਲ ਰੱਦੀ ਤੋਂ \"%s\" ਵਿੱਚ ਭੇਜੋ"
 msgstr[1] "ਚੁਣੀਆਂ ਫਾਇਲਾਂ ਰੱਦੀ ਤੋਂ \"%s\" ਵਿੱਚ ਭੇਜੋ"
 
-#: ../src/file-manager/fm-directory-view.c:7874
+#: ../src/file-manager/fm-directory-view.c:7875
 #, c-format
 msgid "Move the selected file out of the trash"
 msgid_plural "Move the selected files out of the trash"
 msgstr[0] "ਚੁਣੀ ਫਾਇਲ ਰੱਦੀ ਤੋਂ ਬਾਹਰ ਭੇਜੋ"
 msgstr[1] "ਚੁਣੀਆਂ ਫਾਇਲਾਂ ਰੱਦੀ ਤੋਂ ਬਾਹਰ ਭੇਜੋ"
 
-#: ../src/file-manager/fm-directory-view.c:7880
+#: ../src/file-manager/fm-directory-view.c:7881
 #, c-format
 msgid "Move the selected item out of the trash to \"%s\""
 msgid_plural "Move the selected items out of the trash to \"%s\""
 msgstr[0] "ਚੁਣੀ ਆਈਟਮ ਰੱਦੀ ਤੋਂ \"%s\" ਵਿੱਚ ਭੇਜੋ"
 msgstr[1] "ਚੁਣੀਆਂ ਆਈਟਮਾਂ ਰੱਦੀ ਤੋਂ \"%s\" ਵਿੱਚ ਭੇਜੋ"
 
-#: ../src/file-manager/fm-directory-view.c:7884
+#: ../src/file-manager/fm-directory-view.c:7885
 #, c-format
 msgid "Move the selected item out of the trash"
 msgid_plural "Move the selected items out of the trash"
 msgstr[0] "ਹਰੇਕ ਚੁਣੀ ਆਈਟਮ ਰੱਦੀ ਤੋਂ ਬਾਹਰ ਭੇਜੋ"
 msgstr[1] "ਹਰੇਕ ਚੁਣੀਆਂ ਆਈਟਮਾਂ ਰੱਦੀ ਤੋਂ ਬਾਹਰ ਭੇਜੋ"
 
-#: ../src/file-manager/fm-directory-view.c:8010
-#: ../src/file-manager/fm-directory-view.c:8014
-#: ../src/file-manager/fm-directory-view.c:8212
-#: ../src/file-manager/fm-directory-view.c:8216
+#: ../src/file-manager/fm-directory-view.c:8011
+#: ../src/file-manager/fm-directory-view.c:8015
+#: ../src/file-manager/fm-directory-view.c:8213
+#: ../src/file-manager/fm-directory-view.c:8217
 msgid "Start the selected drive"
 msgstr "ਚੁਣੀ ਡਰਾਇਵ ਰੋਕੋ"
 
-#: ../src/file-manager/fm-directory-view.c:8018
-#: ../src/file-manager/fm-directory-view.c:8220
+#: ../src/file-manager/fm-directory-view.c:8019
+#: ../src/file-manager/fm-directory-view.c:8221
 msgid "Connect to the selected drive"
 msgstr "ਚੁਣੀ ਡਰਾਇਵ ਨਾਲ ਕੁਨੈਕਟ ਕਰੋ"
 
-#: ../src/file-manager/fm-directory-view.c:8021
-#: ../src/file-manager/fm-directory-view.c:8113
-#: ../src/file-manager/fm-directory-view.c:8223
+#: ../src/file-manager/fm-directory-view.c:8022
+#: ../src/file-manager/fm-directory-view.c:8114
+#: ../src/file-manager/fm-directory-view.c:8224
 msgid "_Start Multi-disk Drive"
 msgstr "ਮਲਟੀਡਿਸਕ ਡਰਾਇਵ ਸ਼ੁਰੂ(_S)"
 
-#: ../src/file-manager/fm-directory-view.c:8022
-#: ../src/file-manager/fm-directory-view.c:8224
+#: ../src/file-manager/fm-directory-view.c:8023
+#: ../src/file-manager/fm-directory-view.c:8225
 msgid "Start the selected multi-disk drive"
 msgstr "ਚੁਣੀ ਮਲਟੀਡਿਸਕ ਡਰਾਇਵ ਸ਼ੁਰੂ ਕਰੋ"
 
-#: ../src/file-manager/fm-directory-view.c:8025
+#: ../src/file-manager/fm-directory-view.c:8026
 msgid "U_nlock Drive"
 msgstr "ਡਰਾਇਵ ਅਣ-ਲਾਕ(_n)"
 
-#: ../src/file-manager/fm-directory-view.c:8026
-#: ../src/file-manager/fm-directory-view.c:8228
+#: ../src/file-manager/fm-directory-view.c:8027
+#: ../src/file-manager/fm-directory-view.c:8229
 msgid "Unlock the selected drive"
 msgstr "ਚੁਣੀ ਡਰਾਇਵ ਅਣ-ਲਾਕ ਕਰੋ"
 
-#: ../src/file-manager/fm-directory-view.c:8039
+#: ../src/file-manager/fm-directory-view.c:8040
 msgid "Stop the selected drive"
 msgstr "ਚੁਣੀ ਡਰਾਇਵ ਰੋਕੋ"
 
-#: ../src/file-manager/fm-directory-view.c:8042
-#: ../src/file-manager/fm-directory-view.c:8134
-#: ../src/file-manager/fm-directory-view.c:8244
+#: ../src/file-manager/fm-directory-view.c:8043
+#: ../src/file-manager/fm-directory-view.c:8135
+#: ../src/file-manager/fm-directory-view.c:8245
 #: ../src/nautilus-places-sidebar.c:1451
 msgid "_Safely Remove Drive"
 msgstr "ਡਰਾਇਵ ਸੁਰੱਖਿਅਤ ਹਟਾਓ(_S)"
 
-#: ../src/file-manager/fm-directory-view.c:8043
-#: ../src/file-manager/fm-directory-view.c:8245
+#: ../src/file-manager/fm-directory-view.c:8044
+#: ../src/file-manager/fm-directory-view.c:8246
 msgid "Safely remove the selected drive"
 msgstr "ਚੁਣੀ ਡਰਾਇਵ ਸੁਰੱਖਿਅਤ ਢੰਗ ਨਾਲ ਹਟਾਓ"
 
-#: ../src/file-manager/fm-directory-view.c:8046
-#: ../src/file-manager/fm-directory-view.c:8138
-#: ../src/file-manager/fm-directory-view.c:8248
+#: ../src/file-manager/fm-directory-view.c:8047
+#: ../src/file-manager/fm-directory-view.c:8139
+#: ../src/file-manager/fm-directory-view.c:8249
 msgid "_Disconnect"
 msgstr "ਡਿਸ-ਕੁਨੈਕਟ ਕਰੋ(_D)"
 
-#: ../src/file-manager/fm-directory-view.c:8047
-#: ../src/file-manager/fm-directory-view.c:8249
+#: ../src/file-manager/fm-directory-view.c:8048
+#: ../src/file-manager/fm-directory-view.c:8250
 msgid "Disconnect the selected drive"
 msgstr "ਚੁਣੀ ਡਰਾਇਵ ਡਿਸ-ਕੁਨੈਕਟ ਕਰੋ"
 
-#: ../src/file-manager/fm-directory-view.c:8050
-#: ../src/file-manager/fm-directory-view.c:8142
-#: ../src/file-manager/fm-directory-view.c:8252
+#: ../src/file-manager/fm-directory-view.c:8051
+#: ../src/file-manager/fm-directory-view.c:8143
+#: ../src/file-manager/fm-directory-view.c:8253
 msgid "_Stop Multi-disk Drive"
 msgstr "ਮਲਟੀ-ਡਿਸਕ ਡਰਾਇਵ ਰੋਕੋ(_S)"
 
-#: ../src/file-manager/fm-directory-view.c:8051
-#: ../src/file-manager/fm-directory-view.c:8253
+#: ../src/file-manager/fm-directory-view.c:8052
+#: ../src/file-manager/fm-directory-view.c:8254
 msgid "Stop the selected multi-disk drive"
 msgstr "ਚੁਣੀ ਮਲਟੀ-ਡਿਸਕ ਡਰਾਇਵ ਰੋਕੋ"
 
-#: ../src/file-manager/fm-directory-view.c:8054
-#: ../src/file-manager/fm-directory-view.c:8146
-#: ../src/file-manager/fm-directory-view.c:8256
+#: ../src/file-manager/fm-directory-view.c:8055
+#: ../src/file-manager/fm-directory-view.c:8147
+#: ../src/file-manager/fm-directory-view.c:8257
 #: ../src/nautilus-places-sidebar.c:1464
 msgid "_Lock Drive"
 msgstr "ਡਰਾਇਵ ਲਾਕ ਕਰੋ(_L)"
 
-#: ../src/file-manager/fm-directory-view.c:8055
-#: ../src/file-manager/fm-directory-view.c:8257
+#: ../src/file-manager/fm-directory-view.c:8056
+#: ../src/file-manager/fm-directory-view.c:8258
 msgid "Lock the selected drive"
 msgstr "ਚੁਣੀ ਡਰਾਇਵ ਲਾਕ ਕਰੋ"
 
-#: ../src/file-manager/fm-directory-view.c:8102
-#: ../src/file-manager/fm-directory-view.c:8106
+#: ../src/file-manager/fm-directory-view.c:8103
+#: ../src/file-manager/fm-directory-view.c:8107
 msgid "Start the drive associated with the open folder"
 msgstr "ਖੁੱਲ੍ਹੇ ਫੋਲਡਰ ਨਾਲ ਸਬੰਧਿਤ ਡਰਾਇਵ ਸ਼ੁਰੂ ਕਰੋ"
 
-#: ../src/file-manager/fm-directory-view.c:8110
+#: ../src/file-manager/fm-directory-view.c:8111
 msgid "Connect to the drive associated with the open folder"
 msgstr "ਖੁੱਲ੍ਹੇ ਫੋਲਡਰ ਨਾਲ ਸਬੰਧਿਤ ਡਰਾਇਵ ਕੁਨੈਕਟ ਕਰੋ"
 
-#: ../src/file-manager/fm-directory-view.c:8114
+#: ../src/file-manager/fm-directory-view.c:8115
 msgid "Start the multi-disk drive associated with the open folder"
 msgstr "ਖੁੱਲ੍ਹੇ ਫੋਲਡਰ ਨਾਲ ਸਬੰਧਿਤ ਮਲਟੀ-ਡਿਸਕ ਡਰਾਇਵ ਸ਼ੁਰੂ ਕਰੋ"
 
 #. stop() for type G_DRIVE_START_STOP_TYPE_PASSWORD is normally not used
-#: ../src/file-manager/fm-directory-view.c:8117
-#: ../src/file-manager/fm-directory-view.c:8227
+#: ../src/file-manager/fm-directory-view.c:8118
+#: ../src/file-manager/fm-directory-view.c:8228
 #: ../src/nautilus-places-sidebar.c:1463
 msgid "_Unlock Drive"
 msgstr "ਡਰਾਇਵ ਅਣ-ਲਾਕ ਕਰੋ(_U)"
 
-#: ../src/file-manager/fm-directory-view.c:8118
+#: ../src/file-manager/fm-directory-view.c:8119
 msgid "Unlock the drive associated with the open folder"
 msgstr "ਖੁੱਲ੍ਹੇ ਫੋਲਡਰ ਨਾਲ ਸਬੰਧਿਤ ਡਰਾਇਵ ਅਣ-ਲਾਕ ਕਰੋ"
 
-#: ../src/file-manager/fm-directory-view.c:8131
+#: ../src/file-manager/fm-directory-view.c:8132
 msgid "_Stop the drive associated with the open folder"
 msgstr "ਖੁੱਲ੍ਹੇ ਫੋਲਡਰ ਨਾਲ ਸਬੰਧਿਤ ਡਰਾਇਵ ਰੋਕੋ(_S)"
 
-#: ../src/file-manager/fm-directory-view.c:8135
+#: ../src/file-manager/fm-directory-view.c:8136
 msgid "Safely remove the drive associated with the open folder"
 msgstr "ਖੁੱਲ੍ਹੇ ਫੋਲਡਰ ਨਾਲ ਸਬੰਧਿਤ ਡਰਾਇਵ ਸੁਰੱਖਿਅਤ ਢੰਗ ਨਾਲ ਹਟਾਓ"
 
-#: ../src/file-manager/fm-directory-view.c:8139
+#: ../src/file-manager/fm-directory-view.c:8140
 msgid "Disconnect the drive associated with the open folder"
 msgstr "ਖੁੱਲ੍ਹੇ ਫੋਲਡਰ ਨਾਲ ਸਬੰਧਿਤ ਡਰਾਇਵ ਡਿਸ-ਕੁਨਕੈਟ ਕਰੋ"
 
-#: ../src/file-manager/fm-directory-view.c:8143
+#: ../src/file-manager/fm-directory-view.c:8144
 msgid "Stop the multi-disk drive associated with the open folder"
 msgstr "ਖੁੱਲ੍ਹੇ ਫੋਲਡਰ ਨਾਲ ਸਬੰਧਿਤ ਮਲਟੀ-ਡਿਸਕ ਡਰਾਇਵ ਰੋਕੋ"
 
-#: ../src/file-manager/fm-directory-view.c:8147
+#: ../src/file-manager/fm-directory-view.c:8148
 msgid "Lock the drive associated with the open folder"
 msgstr "ਖੁੱਲ੍ਹੇ ਫੋਲਡਰ ਨਾਲ ਸਬੰਧਿਤ ਡਰਾਇਵ ਲਾਕ ਕਰੋ"
 
 #. add the "open in new window" menu item
-#: ../src/file-manager/fm-directory-view.c:8326
-#: ../src/file-manager/fm-directory-view.c:8636
+#: ../src/file-manager/fm-directory-view.c:8327
+#: ../src/file-manager/fm-directory-view.c:8637
 #: ../src/file-manager/fm-tree-view.c:1183
 #: ../src/nautilus-places-sidebar.c:2237
 msgid "Open in New _Window"
 msgstr "ਨਵੀਂ ਵਿੰਡੋ 'ਚ ਖੋਲ੍ਹੋ(_W)"
 
-#: ../src/file-manager/fm-directory-view.c:8328
-#: ../src/file-manager/fm-directory-view.c:8645
+#: ../src/file-manager/fm-directory-view.c:8329
+#: ../src/file-manager/fm-directory-view.c:8646
 msgid "Browse in New _Window"
 msgstr "ਨਵੀਂ ਵਿੰਡੋ 'ਚ ਝਲਕ(_W)"
 
-#: ../src/file-manager/fm-directory-view.c:8334
-#: ../src/file-manager/fm-directory-view.c:8655
+#: ../src/file-manager/fm-directory-view.c:8335
+#: ../src/file-manager/fm-directory-view.c:8656
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "ਫੋਲਡਰ ਝਲਕ(_B)"
 msgstr[1] "ਫੋਲਡਰ ਝਲਕ(_B)"
 
-#: ../src/file-manager/fm-directory-view.c:8351
-#: ../src/file-manager/fm-directory-view.c:8684
+#: ../src/file-manager/fm-directory-view.c:8352
+#: ../src/file-manager/fm-directory-view.c:8685
 msgid "Browse in New _Tab"
 msgstr "ਨਵੀਂ ਟੈਬ 'ਚ ਝਲਕ(_T)"
 
-#: ../src/file-manager/fm-directory-view.c:8400
-#: ../src/file-manager/fm-directory-view.c:8725
+#: ../src/file-manager/fm-directory-view.c:8401
+#: ../src/file-manager/fm-directory-view.c:8726
 msgid "_Delete Permanently"
 msgstr "ਪੱਕੇ ਤੌਰ ਉੱਤੇ ਹਟਾਓ(_D)"
 
-#: ../src/file-manager/fm-directory-view.c:8401
+#: ../src/file-manager/fm-directory-view.c:8402
 msgid "Delete the open folder permanently"
 msgstr "ਖੁੱਲ੍ਹੇ ਫੋਲਡਰ ਨੂੰ ਹਮੇਸ਼ਾ ਲਈ ਹਟਾਓ"
 
-#: ../src/file-manager/fm-directory-view.c:8405
+#: ../src/file-manager/fm-directory-view.c:8406
 msgid "Move the open folder to the Trash"
 msgstr "ਖੁੱਲ੍ਹਾ ਫੋਲਡਰ ਰੱਦੀ 'ਚ ਭੇਜੋ"
 
-#: ../src/file-manager/fm-directory-view.c:8585
+#: ../src/file-manager/fm-directory-view.c:8586
 #, c-format
 msgid "_Open With %s"
 msgstr "%s ਨਾਲ ਖੋਲ੍ਹੋ(_O)"
 
-#: ../src/file-manager/fm-directory-view.c:8638
+#: ../src/file-manager/fm-directory-view.c:8639
 #, c-format
 msgid "Open in %'d New _Window"
 msgid_plural "Open in %'d New _Windows"
 msgstr[0] "%'d ਨਵੀਂ ਵਿੰਡੋ ਵਿੱਚ ਖੋਲ੍ਹੋ(_W)"
 msgstr[1] "%'d ਨਵੀਆਂ ਵਿੰਡੋ ਵਿੱਚ ਖੋਲ੍ਹੋ(_W)"
 
-#: ../src/file-manager/fm-directory-view.c:8647
+#: ../src/file-manager/fm-directory-view.c:8648
 #, c-format
 msgid "Browse in %'d New _Window"
 msgid_plural "Browse in %'d New _Windows"
 msgstr[0] "%'d ਨਵੀਂ ਵਿੰਡੋ ਵਿੱਚ ਝਲਕ(_W)"
 msgstr[1] "%'d ਨਵੀਆਂ ਵਿੰਡੋ ਵਿੱਚ ਝਲਕ ਵੇਖੋ(_W)"
 
-#: ../src/file-manager/fm-directory-view.c:8677
+#: ../src/file-manager/fm-directory-view.c:8678
 #, c-format
 msgid "Open in %'d New _Tab"
 msgid_plural "Open in %'d New _Tabs"
 msgstr[0] "%'d ਨਵੀਂ ਟੈਬ ਵਿੱਚ ਖੋਲ੍ਹੋ(_T)"
 msgstr[1] "%'d ਨਵੀਆਂ ਟੈਬਾਂ ਵਿੱਚ ਖੋਲ੍ਹੋ(_T)"
 
-#: ../src/file-manager/fm-directory-view.c:8686
+#: ../src/file-manager/fm-directory-view.c:8687
 #, c-format
 msgid "Browse in %'d New _Tab"
 msgid_plural "Browse in %'d New _Tabs"
 msgstr[0] "%'d ਨਵੀਂ ਟੈਬ ਵਿੱਚ ਝਲਕ(_T)"
 msgstr[1] "%'d ਨਵੀਆਂ ਟੈਬਾਂ ਵਿੱਚ ਝਲਕ ਵੇਖੋ(_T)"
 
-#: ../src/file-manager/fm-directory-view.c:8726
+#: ../src/file-manager/fm-directory-view.c:8727
 msgid "Delete all selected items permanently"
 msgstr "ਸਭ ਆਈਟਮਾਂ ਪੱਕੇ ਤੌਰ ਉੱਤੇ ਹਟਾਓ"
 
-#: ../src/file-manager/fm-directory-view.c:8783
+#: ../src/file-manager/fm-directory-view.c:8784
 msgid "View or modify the properties of the open folder"
 msgstr "ਖੁੱਲ੍ਹੇ ਫੋਲਡਰ ਦੀ ਵਿਸ਼ੇਸ਼ਤਾ ਵੇਖੋ ਜਾਂ ਸੋਧੋ"
 
-#: ../src/file-manager/fm-directory-view.c:10087
+#: ../src/file-manager/fm-directory-view.c:10088
 msgid "Download location?"
 msgstr "ਕੀ ਟਿਕਾਣਾ ਡਾਊਨਲੋਡ ਕਰਨਾ ਹੈ?"
 
-#: ../src/file-manager/fm-directory-view.c:10090
+#: ../src/file-manager/fm-directory-view.c:10091
 msgid "You can download it or make a link to it."
 msgstr "ਤੁਸੀਂ ਇਸ ਨੂੰ ਡਾਊਨਲੋਡ ਕਰ ਸਕਦੇ ਹੋ ਜਾਂ ਇਸ ਨਾਲ ਲਿੰਕ ਬਣਾ ਸਕਦੇ ਹੋ।"
 
-#: ../src/file-manager/fm-directory-view.c:10093
+#: ../src/file-manager/fm-directory-view.c:10094
 msgid "Make a _Link"
 msgstr "ਇੱਕ ਲਿੰਕ ਬਣਾਓ(_L)"
 
-#: ../src/file-manager/fm-directory-view.c:10097
+#: ../src/file-manager/fm-directory-view.c:10098
 msgid "_Download"
 msgstr "ਡਾਊਨਲੋਡ(_D)"
 
-#: ../src/file-manager/fm-directory-view.c:10258
-#: ../src/file-manager/fm-directory-view.c:10316
-#: ../src/file-manager/fm-directory-view.c:10421
+#: ../src/file-manager/fm-directory-view.c:10259
+#: ../src/file-manager/fm-directory-view.c:10317
+#: ../src/file-manager/fm-directory-view.c:10422
 msgid "Drag and drop is not supported."
 msgstr "ਚੁੱਕਣ ਸੁੱਟਣ ਸਹਾਇਕ ਨਹੀਂ ਹੈ।"
 
-#: ../src/file-manager/fm-directory-view.c:10259
+#: ../src/file-manager/fm-directory-view.c:10260
 msgid "Drag and drop is only supported on local file systems."
 msgstr "ਚੁੱਕਣ ਸੁੱਟਣ ਕੇਵਲ ਲੋਕਲ ਫਾਇਲਾਂ ਲਈ ਹੈ।"
 
-#: ../src/file-manager/fm-directory-view.c:10317
-#: ../src/file-manager/fm-directory-view.c:10422
+#: ../src/file-manager/fm-directory-view.c:10318
+#: ../src/file-manager/fm-directory-view.c:10423
 msgid "An invalid drag type was used."
 msgstr "ਇਕ ਗਲਤ ਚੁੱਕਣ ਦੀ ਟਾਈਪ ਹੈ।"
 
 #. Translator: This is the filename used for when you dnd text to a directory
-#: ../src/file-manager/fm-directory-view.c:10499
+#: ../src/file-manager/fm-directory-view.c:10500
 msgid "dropped text.txt"
 msgstr "ਛੱਡਿਆ text.txt"
 
 #. Translator: This is the filename used for when you dnd raw
 #. * data to a directory, if the source didn't supply a name.
 #.
-#: ../src/file-manager/fm-directory-view.c:10544
+#: ../src/file-manager/fm-directory-view.c:10545
 msgid "dropped data"
 msgstr "ਛੱਡਿਆ ਡਾਟਾ"
 
@@ -5196,44 +5223,44 @@ msgid "(Empty)"
 msgstr "(ਖਾਲੀ)"
 
 #: ../src/file-manager/fm-list-model.c:399
-#: ../src/file-manager/fm-tree-model.c:1287 ../src/nautilus-window-slot.c:205
+#: ../src/file-manager/fm-tree-model.c:1287 ../src/nautilus-window-slot.c:201
 msgid "Loading..."
 msgstr "ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ ....."
 
-#: ../src/file-manager/fm-list-view.c:2290
+#: ../src/file-manager/fm-list-view.c:2317
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s ਵੇਖਣਯੋਗ ਕਾਲਮ"
 
-#: ../src/file-manager/fm-list-view.c:2309
+#: ../src/file-manager/fm-list-view.c:2336
 msgid "Choose the order of information to appear in this folder:"
 msgstr "ਕ੍ਰਮ ਦਿਓ, ਜਿਸ ਅਨੁਸਾਰ ਇਸ ਫੋਲਡਰ ਵਿੱਚ ਜਾਣਕਾਰੀ ਉਪਲਬੱਧ ਹੋਵੇ:"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:2363
+#: ../src/file-manager/fm-list-view.c:2390
 msgid "Visible _Columns..."
 msgstr "ਵੇਖਣਯੋਗ ਕਾਲਮ(_C)..."
 
 #. tooltip
-#: ../src/file-manager/fm-list-view.c:2364
+#: ../src/file-manager/fm-list-view.c:2391
 msgid "Select the columns visible in this folder"
 msgstr "ਇਸ ਫੋਲਡਰ ਵਿੱਚ ਉਪਲਬੱਧ ਕਾਲਮਾਂ ਦੀ ਚੋਣ ਕਰੋ"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-list-view.c:3156
+#: ../src/file-manager/fm-list-view.c:3149
 msgid "_List"
 msgstr "ਲਿਸਟ(_L)"
 
-#: ../src/file-manager/fm-list-view.c:3157
+#: ../src/file-manager/fm-list-view.c:3150
 msgid "The list view encountered an error."
 msgstr "ਲਿਸਟ ਝਲਕ ਲਈ ਇੱਕ ਸਮੱਸਿਆ ਆਈ ਹੈ।"
 
-#: ../src/file-manager/fm-list-view.c:3158
+#: ../src/file-manager/fm-list-view.c:3151
 msgid "The list view encountered an error while starting up."
 msgstr "ਲਿਸਟ ਝਲਕ ਸ਼ੁਰੂ ਕਰਨ ਦੌਰਾਨ ਇੱਕ ਸਮੱਸਿਆ ਆਈ ਹੈ।"
 
-#: ../src/file-manager/fm-list-view.c:3159
+#: ../src/file-manager/fm-list-view.c:3152
 msgid "Display this location with the list view."
 msgstr "ਲਿਸਟ ਝਲਕ ਵਿੱਚ ਇਹ ਟਿਕਾਣਾ ਵੇਖੋ।"
 
@@ -5573,23 +5600,23 @@ msgstr "ਟਰੀ"
 msgid "Show Tree"
 msgstr "ਟਰੀ ਵੇਖੋ"
 
-#: ../src/nautilus-application.c:328
+#: ../src/nautilus-application.c:406
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "ਨਟੀਲਸ ਲੋੜੀਦਾ \"%s\" ਫੋਲਡਰ ਬਣਾ ਨਹੀਂ ਸਕਿਆ ਹੈ।"
 
-#: ../src/nautilus-application.c:330
+#: ../src/nautilus-application.c:408
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
 msgstr "ਨਟੀਲਸ ਚਲਾਉਣ ਤੋਂ ਪਹਿਲਾਂ, ਇਹ ਫੋਲਡਰ ਬਣਾਓ ਜਾਂ ਅਧਿਕਾਰ ਬਦਲੋ ਤਾਂ ਕਿ ਨਟੀਲਸ ਇਸ ਨੂੰ ਬਣਾ ਸਕੇ।"
 
-#: ../src/nautilus-application.c:333
+#: ../src/nautilus-application.c:411
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "ਨਟੀਲਸ ਲੋੜੀਦਾ ਇਹ ਫੋਲਡਰ ਨਹੀਂ ਬਣਾ ਸਕਿਆ ਹੈ: %s।"
 
-#: ../src/nautilus-application.c:335
+#: ../src/nautilus-application.c:413
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -5774,7 +5801,7 @@ msgid "C_onnect"
 msgstr "ਕੁਨੈਕਟ ਕਰੋ(_o)"
 
 #: ../src/nautilus-desktop-window.c:79 ../src/nautilus-desktop-window.c:249
-#: ../src/nautilus-pathbar.c:1259 ../src/nautilus-places-sidebar.c:356
+#: ../src/nautilus-pathbar.c:1260 ../src/nautilus-places-sidebar.c:356
 msgid "Desktop"
 msgstr "ਡੈਸਕਟਾਪ"
 
@@ -6025,7 +6052,6 @@ msgid "Never"
 msgstr "ਕਦੇ ਨਹੀਂ"
 
 #: ../src/nautilus-file-management-properties.ui.h:71
-#| msgid "Open each _folder its own window"
 msgid "Open each _folder in its own window"
 msgstr "ਹਰੇਕ ਫੋਲਡਰ ਨੂੰ ਆਪਣੀ ਵਿੰਡੋ ਵਿੱਚ ਖੋਲ੍ਹੋ(_f)"
 
@@ -6423,7 +6449,6 @@ msgstr "ਜਾਓ ਮੇਨੂ ਅਤੇ ਪਿੱਛੇ/ਅੱਗੇ ਲਿਸ�
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:813
-#| msgid "Switch to other pane"
 msgid "S_witch to Other Pane"
 msgstr "ਹੋਰ ਬਾਹੀ ਵਿੱਚ ਜਾਓ(_w)"
 
@@ -6433,7 +6458,6 @@ msgstr "ਫੋਕਸ ਨੂੰ ਵੰਡ-ਝਲਕ ਵਿੰਡੋ ਦੀ ਦੂ
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:816
-#| msgid "Same location as other pane"
 msgid "Sa_me Location as Other Pane"
 msgstr "ਇਹੋ ਟਿਕਾਣਾ ਹੋਰ ਬਾਹੀ ਵਜੋਂ(_m)"
 
@@ -6498,7 +6522,6 @@ msgid "Move current tab to right"
 msgstr "ਮੌਜੂਦਾ ਟੈਬ ਸੱਜੇ ਭੇਜੋ"
 
 #: ../src/nautilus-navigation-window-menus.c:837
-#| msgid "Show search"
 msgid "S_how Search"
 msgstr "ਖੋਜ ਵੇਖੋ(_h)"
 
@@ -6572,7 +6595,6 @@ msgstr "ਨਾਂ ਨਾਲ ਡੌਕੂਮੈਂਟ ਅਤੇ ਫੋਲਡਰ �
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-navigation-window-menus.c:870
-#| msgid "Extra Pane"
 msgid "E_xtra Pane"
 msgstr "ਬਾਹਰੀ ਬਾਹੀ(_x)"
 
@@ -7451,6 +7473,24 @@ msgstr "ਜ਼ੂਮ"
 msgid "Set the zoom level of the current view"
 msgstr "ਮੌਜੂਦਾ ਝਲਕ ਲਈ ਜ਼ੂਮ ਲੈਵਲ ਸੈੱਟ ਕਰੋ"
 
+#~ msgid "An older"
+#~ msgstr "ਪੁਰਾਣੀ"
+
+#~ msgid "A newer"
+#~ msgstr "ਨਵੀਂ"
+
+#~ msgid "Another"
+#~ msgstr "ਹੋਰ"
+
+#~ msgid ""
+#~ "%s folder with the same name already exists in \"%s\".\n"
+#~ "Merging will ask for confirmation before replacing any files in the "
+#~ "folder that conflict with the files being copied."
+#~ msgstr ""
+#~ "\"%2$s\" ਵਿੱਚ %1$s ਫੋਲਡਰ ਇਸੇ ਨਾਂ ਨਾਲ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ। \n"
+#~ "ਮਿਲਾਉਣ ਨਾਲ ਫੋਲਡਰ ਵਿੱਚ ਕਿਸੇ ਵੀ ਫਾਇਲ ਨੂੰ ਬਦਲਣ ਤੋਂ ਪਹਿਲਾਂ ਪੁਸ਼ਟੀ ਕੀਤੀ ਜਾਵੇਗੀ, ਜਦੋਂ ਕਿ "
+#~ "ਫਾਇਲਾਂ ਕਾਪੀ ਕਰਨ ਦੌਰਾਨ ਟਕਰਾ ਹੋਵੇਗਾ।"
+
 #~ msgid ""
 #~ "If you choose to empty the trash, all items in it will be permanently "
 #~ "lost. Please note that you can also delete them separately."
@@ -7479,14 +7519,6 @@ msgstr "ਮੌਜੂਦਾ ਝਲਕ ਲਈ ਜ਼ੂਮ ਲੈਵਲ ਸੈੱ�
 
 #~ msgid "A file named \"%B\" already exists.  Do you want to replace it?"
 #~ msgstr "ਇੱਕ ਫਾਇਲ \"%B\" ਨਾਂ ਨਾਲ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ। ਕੀ ਤੁਸੀਂ ਇਸ ਨੂੰ ਬਦਲਣਾ ਚਾਹੁੰਦੇ ਹੋ?"
-
-#~ msgid ""
-#~ "The source folder already exists in \"%B\".  Merging will ask for "
-#~ "confirmation before replacing any files in the folder that conflict with "
-#~ "the files being moved."
-#~ msgstr ""
-#~ "\"%B\" ਵਿੱਚ ਸਰੋਤ ਫੋਲਡਰ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ। ਇਸ ਨੂੰ ਬਦਲਣ ਨਾਲ ਫੋਲਡਰ ਵਿੱਚ ਮੌਜੂਦਾ ਕਿਸੇ ਵੀ "
-#~ "ਫਾਇਲਾਂ ਨੂੰ ਅਣਡਿੱਠਾ ਕਰ ਦਿੱਤਾ ਜਾਵੇਗਾ, ਜੋ ਕਿ ਫਾਇਲ ਕਾਪੀ ਕਰਨ ਸਮੇਂ ਅਪਵਾਦ ਵੇਖਾਉਦੀਆਂ ਸਨ।"
 
 #~ msgid "Could not use system package installer"
 #~ msgstr "ਸਿਸਟਮ ਪੈਕੇਜ ਇੰਸਟਾਲਰ ਵਰਤਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ"
