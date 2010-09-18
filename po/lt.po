@@ -10,12 +10,12 @@
 # Aurimas Černius <aurisc4@gmail.com>, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: lt\n"
+"Project-Id-Version: nautilus gnome-2-32\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautil"
 "us&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2010-08-18 11:37+0000\n"
-"PO-Revision-Date: 2010-08-23 14:24+0300\n"
-"Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
+"POT-Creation-Date: 2010-09-11 12:57+0000\n"
+"PO-Revision-Date: 2010-09-18 23:47+0300\n"
+"Last-Translator: Žygimantas Beručka <zygis@gnome.org>\n"
 "Language-Team: Lithuanian <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
 "MIME-Version: 1.0\n"
@@ -1705,7 +1705,7 @@ msgid "Original location of file before moved to the Trash"
 msgstr "Pradinė vieta prieš perkeliant į šiukšlinę"
 
 #: ../libnautilus-private/nautilus-customization-data.c:405
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:519
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:522
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:428
 #: ../src/nautilus-property-browser.c:1873
 msgid "Reset"
@@ -1808,115 +1808,156 @@ msgstr "Nepavyko išsaugoti papildomos emblemos."
 msgid "Sorry, unable to save custom emblem name."
 msgstr "Nepavyko išsaugoti pasirinktinės emblemos pavadinimo."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:82
-msgid "An older"
-msgstr "Senesnis"
-
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:85
-msgid "A newer"
-msgstr "Naujesnis"
-
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:87
-msgid "Another"
-msgstr "Kitas"
-
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:159
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:144
 #, c-format
 msgid "Merge folder \"%s\"?"
 msgstr "Sujungti su aplanku „%s“?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:166
-#, c-format
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:148
+#| msgid ""
+#| "The source folder already exists in \"%B\".  Merging will ask for "
+#| "confirmation before replacing any files in the folder that conflict with "
+#| "the files being moved."
 msgid ""
-"%s folder with the same name already exists in \"%s\".\n"
 "Merging will ask for confirmation before replacing any files in the folder "
 "that conflict with the files being copied."
 msgstr ""
-"Tokį pat vardą turintis aplankas %s jau yra vietoje „%s“.\n"
-"Sujungiant bus prašoma patvirtinti prie pakeičiant bet kuriuos failus, kurie "
-"konfliktuoja su kopijuojamaisiais."
+"Suliejant bus prašoma patvirtinti, kad norite perrašyti tame aplanke "
+"esančius failus, kurie konfliktuoja su perkeltinais failais."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:174
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:153
+#, c-format
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "An older folder with the same name already exists in \"%s\"."
+msgstr "Senesnis aplankas tuo pačiu vardu jau yra vietoje „%s“."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:157
+#, c-format
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "A newer folder with the same name already exists in \"%s\"."
+msgstr "Naujesnis aplankas tuo pačiu vardu jau yra vietoje „%s“."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:161
+#, c-format
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "Another folder with the same name already exists in \"%s\"."
+msgstr "Kitas aplankas tuo pačiu vardu jau yra vietoje „%s“."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:166
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "Replacing it will remove all files in the folder."
+msgstr "Pakeitus jį, bus pašalinti visi tame aplanke esantys failai."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:168
 #, c-format
 msgid "Replace folder \"%s\"?"
 msgstr "Pakeisti aplanką „%s“?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:176
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:170
 #, c-format
-msgid ""
-"A folder with the same name already exists in \"%s\".\n"
-"Replacing it will remove all files in the folder."
-msgstr ""
-"Aplankas tuo pačiu pavadinimu jau yra vietoje „%s“.\n"
-"Perrašant bus pašalinti visi tame aplanke esantys failai."
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "A folder with the same name already exists in \"%s\"."
+msgstr "Aplankas tuo pačiu vardu jau yra vietoje „%s“."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:182
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:175
 #, c-format
 msgid "Replace file \"%s\"?"
 msgstr "Pakeisti failą „%s“?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:188
-#, c-format
-msgid ""
-"%s file with the same name already exists in \"%s\".\n"
-"Replacing it will overwrite its content."
-msgstr ""
-"Tokį pat vardą turintis failas %s jau yra vietoje „%s“.\n"
-"Pakeičiant bus perrašytas jo turinys."
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:177
+#| msgid ""
+#| "%s file with the same name already exists in \"%s\".\n"
+#| "Replacing it will overwrite its content."
+msgid "Replacing it will overwrite its content."
+msgstr "Pakeitus jį, bus perrašytas jo turinys."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:252
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:181
+#, c-format
+#| msgid ""
+#| "%s file with the same name already exists in \"%s\".\n"
+#| "Replacing it will overwrite its content."
+msgid "An older file with the same name already exists in \"%s\"."
+msgstr "Senesnis failas tuo pačiu vardu jau yra vietoje „%s“."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:185
+#, c-format
+#| msgid ""
+#| "%s file with the same name already exists in \"%s\".\n"
+#| "Replacing it will overwrite its content."
+msgid "A newer file with the same name already exists in \"%s\"."
+msgstr "Naujesnis failas tuo pačiu vardu jau yra vietoje „%s“."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:189
+#, c-format
+#| msgid ""
+#| "%s file with the same name already exists in \"%s\".\n"
+#| "Replacing it will overwrite its content."
+msgid "Another file with the same name already exists in \"%s\"."
+msgstr "Kitas failas tuo pačiu vardu jau yra vietoje „%s“."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:255
 msgid "Original file"
 msgstr "Originalus failas"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:253
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:284
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:256
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:287
 #: ../src/file-manager/fm-properties-window.c:3311
 msgid "Size:"
 msgstr "Dydis:"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:256
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:287
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:259
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:290
 #: ../src/file-manager/fm-properties-window.c:3293
 msgid "Type:"
 msgstr "Tipas:"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:259
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:290
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:262
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:293
 msgid "Last modified:"
 msgstr "Keitimo data:"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:283
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:286
 msgid "Replace with"
 msgstr "Kuo pakeisti"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:312
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:315
 msgid "Merge"
 msgstr "Sulieti"
 
 #. Setup the expander for the rename action
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:505
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:508
 msgid "_Select a new name for the destination"
 msgstr "_Pasirinkti naują paskirties elemento vardą"
 
 #. Setup the checkbox to apply the action to all files
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:531
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:534
 msgid "Apply this action to all files"
 msgstr "Pritaikyti šį veiksmą visiems failams"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:542
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:545
 #: ../libnautilus-private/nautilus-file-operations.c:187
 msgid "_Skip"
 msgstr "_Praleisti"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:547
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:550
 msgid "Re_name"
 msgstr "Per_vadinti"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:553
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:556
 msgid "Replace"
 msgstr "Pakeisti"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:626
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:629
 msgid "File conflict"
 msgstr "Failų konfliktas"
 
@@ -7683,6 +7724,24 @@ msgstr "Keisti mastelį"
 msgid "Set the zoom level of the current view"
 msgstr "Nustatyti esamo rodinio mastelį"
 
+#~ msgid "An older"
+#~ msgstr "Senesnis"
+
+#~ msgid "A newer"
+#~ msgstr "Naujesnis"
+
+#~ msgid "Another"
+#~ msgstr "Kitas"
+
+#~ msgid ""
+#~ "%s folder with the same name already exists in \"%s\".\n"
+#~ "Merging will ask for confirmation before replacing any files in the "
+#~ "folder that conflict with the files being copied."
+#~ msgstr ""
+#~ "Tokį pat vardą turintis aplankas %s jau yra vietoje „%s“.\n"
+#~ "Sujungiant bus prašoma patvirtinti prie pakeičiant bet kuriuos failus, "
+#~ "kurie konfliktuoja su kopijuojamaisiais."
+
 #~ msgid ""
 #~ "If set to true, newly opened windows will have the extra pane visible."
 #~ msgstr ""
@@ -7709,15 +7768,6 @@ msgstr "Nustatyti esamo rodinio mastelį"
 
 #~ msgid "A file named \"%B\" already exists.  Do you want to replace it?"
 #~ msgstr "Failas „%B“ jau egzistuoja. Ar norite jį perrašyti?"
-
-#~ msgid ""
-#~ "The source folder already exists in \"%B\".  Merging will ask for "
-#~ "confirmation before replacing any files in the folder that conflict with "
-#~ "the files being moved."
-#~ msgstr ""
-#~ "Šaltinio aplankas vietoje „%B“ jau egzistuoja. Suliejant bus paprašyta "
-#~ "patvirtinti, kad norite perrašyti tame aplanke esančius failus, kurie "
-#~ "konfliktuoja su perkeliamais failais."
 
 #~ msgid "Could not use system package installer"
 #~ msgstr "Nepavyko naudoti sistemos paketų diegyklės"
