@@ -59,7 +59,7 @@ enum {
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
-static void     eel_editable_label_editable_init           (GtkEditableClass      *iface);
+static void     eel_editable_label_editable_init           (GtkEditableInterface  *iface);
 static void     eel_editable_label_class_init              (EelEditableLabelClass *klass);
 static void     eel_editable_label_init                    (EelEditableLabel      *label);
 static void     eel_editable_label_set_property            (GObject               *object,
@@ -506,7 +506,7 @@ eel_editable_label_class_init (EelEditableLabelClass *class)
 }
 
 static void
-eel_editable_label_editable_init (GtkEditableClass *iface)
+eel_editable_label_editable_init (GtkEditableInterface *iface)
 {
   iface->do_insert_text = editable_insert_text_emit;
   iface->do_delete_text = editable_delete_text_emit;
