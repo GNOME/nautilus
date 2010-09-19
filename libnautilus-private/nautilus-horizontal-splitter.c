@@ -247,9 +247,10 @@ nautilus_horizontal_splitter_size_allocate (GtkWidget     *widget,
 			gdk_window_hide (gtk_paned_get_handle_window (paned));
 		}
 
-		gtk_widget_get_child_requisition (gtk_paned_get_child1 (paned),
-						  &child_requisition);
-		
+		gtk_size_request_get_size (GTK_SIZE_REQUEST (gtk_paned_get_child1 (paned)),
+					   &child_requisition,
+					   NULL);
+
 		child_allocation.x = allocation->x + border_width;
 		child_allocation.y = allocation->y + border_width;
 		child_allocation.width = MIN (child_requisition.width,

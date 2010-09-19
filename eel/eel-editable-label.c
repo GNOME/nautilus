@@ -1209,7 +1209,7 @@ get_layout_location (EelEditableLabel  *label,
   if (gtk_widget_get_direction (widget) != GTK_TEXT_DIR_LTR)
     xalign = 1.0 - xalign;
 
-  gtk_widget_get_child_requisition (widget, &req);
+  gtk_size_request_get_size (GTK_SIZE_REQUEST (widget), &req, NULL);
   gtk_misc_get_padding (misc, &xpad, &ypad);
 
   gtk_widget_get_allocation (widget, &allocation);

@@ -140,7 +140,8 @@ nautilus_side_pane_size_allocate (GtkWidget *widget,
 	frame = pane->details->title_frame;
 	hbox = pane->details->title_hbox;
 
-	gtk_widget_get_child_requisition (hbox, &child_requisition);
+	gtk_size_request_get_size (GTK_SIZE_REQUEST (hbox),
+				   &child_requisition, NULL);
 	width = child_requisition.width;
 
 	gtk_widget_get_allocation (frame, &frame_allocation);
@@ -242,7 +243,8 @@ select_button_press_callback (GtkWidget *widget,
                 gtk_widget_get_allocation (widget, &allocation);
                 width = allocation.width;
                 gtk_widget_set_size_request (side_pane->details->menu, -1, -1);
-                gtk_widget_size_request (side_pane->details->menu, &requisition);
+                gtk_size_request_get_size (GTK_SIZE_REQUEST (side_pane->details->menu),
+					   &requisition, NULL);
                 gtk_widget_set_size_request (side_pane->details->menu,
                                              MAX (width, requisition.width), -1);
 

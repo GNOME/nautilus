@@ -149,8 +149,10 @@ menu_position_under_widget (GtkMenu   *menu,
 	container = gtk_widget_get_ancestor (widget, GTK_TYPE_CONTAINER);
 	g_assert (container != NULL);
 
-	gtk_widget_size_request (widget, &req);
-	gtk_widget_size_request (GTK_WIDGET (menu), &menu_req);
+	gtk_size_request_get_size (GTK_SIZE_REQUEST (menu),
+				   &menu_req, NULL);
+	gtk_size_request_get_size (GTK_SIZE_REQUEST (widget),
+				   &req, NULL);
 	gtk_widget_get_allocation (widget, &allocation);
 
 	screen = gtk_widget_get_screen (GTK_WIDGET (menu));

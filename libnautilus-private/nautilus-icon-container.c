@@ -4787,7 +4787,8 @@ nautilus_icon_container_search_position_func (NautilusIconContainer *container,
 
 	gdk_window_get_origin (cont_window, &cont_x, &cont_y);
 	gdk_drawable_get_size (cont_window, &cont_width, &cont_height);
-	gtk_widget_size_request (search_dialog, &requisition);
+	gtk_size_request_get_size (GTK_SIZE_REQUEST (search_dialog),
+				   &requisition, NULL);
 
 	if (cont_x + cont_width - requisition.width > gdk_screen_get_width (screen)) {
 		x = gdk_screen_get_width (screen) - requisition.width;
