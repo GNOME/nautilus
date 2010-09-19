@@ -345,7 +345,7 @@ fm_desktop_icon_view_handle_middle_click (NautilusIconContainer *icon_container,
 	/* build an X event to represent the middle click. */
 	x_event.type = ButtonPress;
 	x_event.send_event = True;
-	x_event.display = GDK_DISPLAY ();
+	x_event.display = GDK_DISPLAY_XDISPLAY (gdk_display_get_default ());
 	x_event.window = GDK_ROOT_WINDOW ();
 	x_event.root = GDK_ROOT_WINDOW ();
 	x_event.subwindow = 0;
@@ -359,7 +359,7 @@ fm_desktop_icon_view_handle_middle_click (NautilusIconContainer *icon_container,
 	x_event.same_screen = True;
 	
 	/* Send it to the root window, the window manager will handle it. */
-	XSendEvent (GDK_DISPLAY (), GDK_ROOT_WINDOW (), True,
+	XSendEvent (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), GDK_ROOT_WINDOW (), True,
 		    ButtonPressMask, (XEvent *) &x_event);
 }
 

@@ -693,7 +693,8 @@ is_shift_pressed (void)
 	ret = FALSE;
 
         gdk_error_trap_push ();
-	status = XkbGetState (GDK_DISPLAY (), XkbUseCoreKbd, &state);
+	status = XkbGetState (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()),
+			      XkbUseCoreKbd, &state);
         gdk_error_trap_pop ();
 
 	if (status == Success) {
