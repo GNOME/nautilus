@@ -4558,17 +4558,17 @@ keyboard_stretching (NautilusIconContainer *container,
 	icon_get_size (container, icon, &size);
 
 	switch (event->keyval) {
-	case GDK_equal:
-	case GDK_plus:
-	case GDK_KP_Add:
+	case GDK_KEY_equal:
+	case GDK_KEY_plus:
+	case GDK_KEY_KP_Add:
 		icon_set_size (container, icon, size + 5, FALSE, FALSE);
 		break;
-	case GDK_minus:
-	case GDK_KP_Subtract:
+	case GDK_KEY_minus:
+	case GDK_KEY_KP_Subtract:
 		icon_set_size (container, icon, size - 5, FALSE, FALSE);
 		break;
-	case GDK_0:
-	case GDK_KP_0:
+	case GDK_KEY_0:
+	case GDK_KEY_KP_0:
 		nautilus_icon_container_move_icon (container, icon,
 						   icon->x, icon->y,
 						   1.0,
@@ -5128,13 +5128,13 @@ nautilus_icon_container_search_key_press_event (GtkWidget *widget,
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 
 	/* close window and cancel the search */
-	if (event->keyval == GDK_Escape || event->keyval == GDK_Tab) {
+	if (event->keyval == GDK_KEY_Escape || event->keyval == GDK_KEY_Tab) {
 		nautilus_icon_container_search_dialog_hide (widget, container);
 		return TRUE;
 	}
 
 	/* close window and activate alternate */
-	if (event->keyval == GDK_Return && event->state & GDK_SHIFT_MASK) {
+	if (event->keyval == GDK_KEY_Return && event->state & GDK_SHIFT_MASK) {
 		nautilus_icon_container_search_dialog_hide (widget,
 							    container);
 
@@ -5143,25 +5143,25 @@ nautilus_icon_container_search_key_press_event (GtkWidget *widget,
 	}
 
 	/* select previous matching iter */
-	if (event->keyval == GDK_Up || event->keyval == GDK_KP_Up) {
+	if (event->keyval == GDK_KEY_Up || event->keyval == GDK_KEY_KP_Up) {
 		nautilus_icon_container_search_move (widget, container, TRUE);
 		retval = TRUE;
 	}
 
 	if (((event->state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)) == (GDK_CONTROL_MASK | GDK_SHIFT_MASK))
-	    && (event->keyval == GDK_g || event->keyval == GDK_G)) {
+	    && (event->keyval == GDK_KEY_g || event->keyval == GDK_KEY_G)) {
 		nautilus_icon_container_search_move (widget, container, TRUE);
 		retval = TRUE;
 	}
 
 	/* select next matching iter */
-	if (event->keyval == GDK_Down || event->keyval == GDK_KP_Down) {
+	if (event->keyval == GDK_KEY_Down || event->keyval == GDK_KEY_KP_Down) {
 		nautilus_icon_container_search_move (widget, container, FALSE);
 		retval = TRUE;
 	}
 
 	if (((event->state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)) == GDK_CONTROL_MASK)
-	    && (event->keyval == GDK_g || event->keyval == GDK_G)) {
+	    && (event->keyval == GDK_KEY_g || event->keyval == GDK_KEY_G)) {
 		nautilus_icon_container_search_move (widget, container, FALSE);
 		retval = TRUE;
 	}
@@ -5359,12 +5359,12 @@ key_press_event (GtkWidget *widget,
 
 	if (is_renaming (container) || is_renaming_pending (container)) {
 		switch (event->keyval) {
-		case GDK_Return:
-		case GDK_KP_Enter:
+		case GDK_KEY_Return:
+		case GDK_KEY_KP_Enter:
 			end_renaming_mode (container, TRUE);	
 			handled = TRUE;
 			break;			
-		case GDK_Escape:
+		case GDK_KEY_Escape:
 			end_renaming_mode (container, FALSE);
 			handled = TRUE;
 			break;
@@ -5373,62 +5373,62 @@ key_press_event (GtkWidget *widget,
 		}
 	} else {
 		switch (event->keyval) {
-		case GDK_Home:
-		case GDK_KP_Home:
+		case GDK_KEY_Home:
+		case GDK_KEY_KP_Home:
 			keyboard_home (container, event);
 			handled = TRUE;
 			break;
-		case GDK_End:
-		case GDK_KP_End:
+		case GDK_KEY_End:
+		case GDK_KEY_KP_End:
 			keyboard_end (container, event);
 			handled = TRUE;
 			break;
-		case GDK_Left:
-		case GDK_KP_Left:
+		case GDK_KEY_Left:
+		case GDK_KEY_KP_Left:
 			/* Don't eat Alt-Left, as that is used for history browsing */
 			if ((event->state & GDK_MOD1_MASK) == 0) {
 				keyboard_left (container, event);
 				handled = TRUE;
 			}
 			break;
-		case GDK_Up:
-		case GDK_KP_Up:
+		case GDK_KEY_Up:
+		case GDK_KEY_KP_Up:
 			/* Don't eat Alt-Up, as that is used for alt-shift-Up */
 			if ((event->state & GDK_MOD1_MASK) == 0) {
 				keyboard_up (container, event);
 				handled = TRUE;
 			}
 			break;
-		case GDK_Right:
-		case GDK_KP_Right:
+		case GDK_KEY_Right:
+		case GDK_KEY_KP_Right:
 			/* Don't eat Alt-Right, as that is used for history browsing */
 			if ((event->state & GDK_MOD1_MASK) == 0) {
 				keyboard_right (container, event);
 				handled = TRUE;
 			}
 			break;
-		case GDK_Down:
-		case GDK_KP_Down:
+		case GDK_KEY_Down:
+		case GDK_KEY_KP_Down:
 			/* Don't eat Alt-Down, as that is used for Open */
 			if ((event->state & GDK_MOD1_MASK) == 0) {
 				keyboard_down (container, event);
 				handled = TRUE;
 			}
 			break;
-		case GDK_space:
+		case GDK_KEY_space:
 			keyboard_space (container, event);
 			handled = TRUE;
 			break;
 #ifndef TAB_NAVIGATION_DISABLED
-		case GDK_Tab:
-		case GDK_ISO_Left_Tab:
+		case GDK_KEY_Tab:
+		case GDK_KEY_ISO_Left_Tab:
 			select_previous_or_next_icon (container, 
 						      (event->state & GDK_SHIFT_MASK) == 0, event);
 			handled = TRUE;
 			break;
 #endif
-		case GDK_Return:
-		case GDK_KP_Enter:
+		case GDK_KEY_Return:
+		case GDK_KEY_KP_Enter:
 			if ((event->state & GDK_SHIFT_MASK) != 0) {
 				activate_selected_items_alternate (container, NULL);
 			} else {
@@ -5437,21 +5437,21 @@ key_press_event (GtkWidget *widget,
 			
 			handled = TRUE;
 			break;
- 		case GDK_Escape:
+ 		case GDK_KEY_Escape:
 			handled = undo_stretching (container);
 			break;
- 		case GDK_plus:
- 		case GDK_minus:
- 		case GDK_equal:
- 		case GDK_KP_Add:
- 		case GDK_KP_Subtract:
- 		case GDK_0:
- 		case GDK_KP_0:
+ 		case GDK_KEY_plus:
+ 		case GDK_KEY_minus:
+ 		case GDK_KEY_equal:
+ 		case GDK_KEY_KP_Add:
+ 		case GDK_KEY_KP_Subtract:
+ 		case GDK_KEY_0:
+ 		case GDK_KEY_KP_0:
 			if (event->state & GDK_CONTROL_MASK) {
 				handled = keyboard_stretching (container, event);
 			}
 			break;
-		case GDK_F10:
+		case GDK_KEY_F10:
 			/* handle Ctrl+F10 because we want to display the
 			 * background popup even if something is selected.
 			 * The other cases are handled by popup_menu().
@@ -5461,7 +5461,7 @@ key_press_event (GtkWidget *widget,
 							 "context_click_background");
 			}
 			break;
-		case GDK_v:
+		case GDK_KEY_v:
 			/* Eat Control + v to not enable type ahead */
 			if ((event->state & GDK_CONTROL_MASK) != 0) {
 				handled = TRUE;
@@ -5480,9 +5480,9 @@ key_press_event (GtkWidget *widget,
 	 * start the typeahead find capabilities.
 	 * Copied from NautilusIconContainer */
 	if (!handled &&
-	    event->keyval != GDK_slash /* don't steal slash key event, used for "go to" */ &&
-	    event->keyval != GDK_BackSpace &&
-	    event->keyval != GDK_Delete) {
+	    event->keyval != GDK_KEY_slash /* don't steal slash key event, used for "go to" */ &&
+	    event->keyval != GDK_KEY_BackSpace &&
+	    event->keyval != GDK_KEY_Delete) {
 		GdkEvent *new_event;
 		GdkWindow *window;
 		char *old_text;
@@ -6169,8 +6169,8 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 
 	binding_set = gtk_binding_set_by_class (class);
 
-	gtk_binding_entry_add_signal (binding_set, GDK_f, GDK_CONTROL_MASK, "start_interactive_search", 0);
-	gtk_binding_entry_add_signal (binding_set, GDK_F, GDK_CONTROL_MASK, "start_interactive_search", 0);
+	gtk_binding_entry_add_signal (binding_set, GDK_KEY_f, GDK_CONTROL_MASK, "start_interactive_search", 0);
+	gtk_binding_entry_add_signal (binding_set, GDK_KEY_F, GDK_CONTROL_MASK, "start_interactive_search", 0);
 }
 
 static void

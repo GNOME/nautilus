@@ -842,7 +842,7 @@ autorun_always_toggled (GtkToggleButton *togglebutton, AutorunDialogData *data)
 static gboolean
 combo_box_enter_ok (GtkWidget *togglebutton, GdkEventKey *event, GtkDialog *dialog)
 {
-	if (event->keyval == GDK_KP_Enter || event->keyval == GDK_Return) {
+	if (event->keyval == GDK_KEY_KP_Enter || event->keyval == GDK_KEY_Return) {
 		gtk_dialog_response (dialog, GTK_RESPONSE_OK);
 		return TRUE;
 	}
