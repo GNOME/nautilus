@@ -716,7 +716,7 @@ thumbnail_thread_notify_file_changed (gpointer image_uri)
 {
 	NautilusFile *file;
 
-	GDK_THREADS_ENTER ();
+	gdk_threads_enter ();
 
 	file = nautilus_file_get_by_uri ((char *) image_uri);
 #ifdef DEBUG_THUMBNAILS
@@ -732,7 +732,7 @@ thumbnail_thread_notify_file_changed (gpointer image_uri)
 	}
 	g_free (image_uri);
 
-	GDK_THREADS_LEAVE ();
+	gdk_threads_leave ();
 
 	return FALSE;
 }
