@@ -560,6 +560,7 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 	nautilus_icon_container_set_store_layout_timestamps (icon_container, TRUE);
 
 	/* Set allocation to be at 0, 0 */
+	gtk_widget_get_allocation (GTK_WIDGET (icon_container), &allocation);
 	allocation.x = 0;
 	allocation.y = 0;
 	gtk_widget_set_allocation (GTK_WIDGET (icon_container), &allocation);
