@@ -166,7 +166,6 @@ nautilus_location_dialog_init (NautilusLocationDialog *dialog)
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Open Location"));
 	gtk_window_set_default_size (GTK_WINDOW (dialog), 300, -1);
 	gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);
-	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
 	gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), 2);
 	

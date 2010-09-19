@@ -1180,7 +1180,6 @@ select_pattern (FMDirectoryView *view)
 			NULL);
 	gtk_dialog_set_default_response (GTK_DIALOG (dialog),
 					 GTK_RESPONSE_OK);
-	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
 	gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), 2);
 
@@ -1310,7 +1309,7 @@ action_save_search_as_callback (GtkAction *action,
 		
 		dialog = gtk_dialog_new_with_buttons (_("Save Search as"),
 						      fm_directory_view_get_containing_window (directory_view),
-						      GTK_DIALOG_NO_SEPARATOR,
+						      0,
 						      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 						      NULL);
 		save_button = gtk_dialog_add_button (GTK_DIALOG (dialog),
@@ -6747,7 +6746,7 @@ action_connect_to_server_link_callback (GtkAction *action,
 		title = g_strdup_printf (_("Connect to Server %s"), name);
 		dialog = gtk_dialog_new_with_buttons (title,
 						      fm_directory_view_get_containing_window (view),
-						      GTK_DIALOG_NO_SEPARATOR,
+						      0,
 						      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 						      _("_Connect"), GTK_RESPONSE_OK,
 						      NULL);

@@ -561,7 +561,6 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
 	gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (dialog)), 14);
 	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
-	gtk_dialog_set_has_separator (dialog, FALSE);
 
 	gtk_widget_show_all (dialog_area);
 }

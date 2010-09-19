@@ -920,7 +920,6 @@ show_dialog:
 
 	dialog = gtk_dialog_new ();
 
-	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 	hbox = gtk_hbox_new (FALSE, 12);
 	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), hbox, TRUE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox), 12);

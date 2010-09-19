@@ -778,7 +778,6 @@ nautilus_open_with_dialog_init (NautilusOpenWithDialog *dialog)
 	dialog->details = g_new0 (NautilusOpenWithDialogDetails, 1);
 
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Open With"));
-	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
 	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
 	gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);

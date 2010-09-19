@@ -547,7 +547,7 @@ type_combo_changed (GtkComboBox *combo_box, NautilusQueryEditorRow *row)
 		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (combo_box));
 		dialog = gtk_dialog_new_with_buttons (_("Select type"),
 						      GTK_WINDOW (toplevel),
-						      GTK_DIALOG_NO_SEPARATOR,
+						      0,
 						      GTK_STOCK_OK, GTK_RESPONSE_OK,
 						      NULL);
 		gtk_window_set_default_size (GTK_WINDOW (dialog), 400, 600);

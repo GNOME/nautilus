@@ -4938,7 +4938,6 @@ create_properties_window (StartupData *startup_data)
 	gtk_container_set_border_width (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (window))), 12);
 	gtk_container_set_border_width (GTK_CONTAINER (gtk_dialog_get_action_area (GTK_DIALOG (window))), 0);
 	gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (window))), 12);
-	gtk_dialog_set_has_separator (GTK_DIALOG (window), FALSE);
 
 	/* Update from initial state */
 	properties_window_update (window, NULL);
