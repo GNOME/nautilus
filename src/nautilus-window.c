@@ -1085,7 +1085,7 @@ add_view_as_menu_item (NautilusWindow *window,
 		g_snprintf (accel_path, sizeof (accel_path), "<Nautilus-Window>/%s", action_name);
 
 		accel_keyval = gdk_keyval_from_name (accel);
-		g_assert (accel_keyval != GDK_VoidSymbol);
+		g_assert (accel_keyval != GDK_KEY_VoidSymbol);
 
 		gtk_accel_map_add_entry (accel_path, accel_keyval, GDK_CONTROL_MASK);
 		gtk_action_set_accel_path (GTK_ACTION (action), accel_path);
@@ -2048,12 +2048,12 @@ nautilus_window_class_init (NautilusWindowClass *class)
 			      G_TYPE_NONE, 0);
 
 	binding_set = gtk_binding_set_by_class (class);
-	gtk_binding_entry_add_signal (binding_set, GDK_BackSpace, 0,
+	gtk_binding_entry_add_signal (binding_set, GDK_KEY_BackSpace, 0,
 				      "go_up", 1,
 				      G_TYPE_BOOLEAN, FALSE);
-	gtk_binding_entry_add_signal (binding_set, GDK_F5, 0,
+	gtk_binding_entry_add_signal (binding_set, GDK_KEY_F5, 0,
 				      "reload", 0);
-	gtk_binding_entry_add_signal (binding_set, GDK_slash, 0,
+	gtk_binding_entry_add_signal (binding_set, GDK_KEY_slash, 0,
 				      "prompt-for-location", 1,
 				      G_TYPE_STRING, "/");
 

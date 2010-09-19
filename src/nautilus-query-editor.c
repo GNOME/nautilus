@@ -200,7 +200,7 @@ nautilus_query_editor_class_init (NautilusQueryEditorClass *class)
 		              G_TYPE_NONE, 0);
 
 	binding_set = gtk_binding_set_by_class (class);
-	gtk_binding_entry_add_signal (binding_set, GDK_Escape, 0, "cancel", 0);
+	gtk_binding_entry_add_signal (binding_set, GDK_KEY_Escape, 0, "cancel", 0);
 }
 
 static void

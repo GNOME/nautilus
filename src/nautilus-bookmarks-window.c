@@ -723,7 +723,7 @@ on_key_pressed (GtkTreeView *view,
                 GdkEventKey *event,
                 gpointer user_data)
 {
-        if (event->keyval == GDK_Delete || event->keyval == GDK_KP_Delete) {
+        if (event->keyval == GDK_KEY_Delete || event->keyval == GDK_KEY_KP_Delete) {
                 bookmarks_delete_bookmark ();
                 return TRUE;
         }
@@ -1053,7 +1053,7 @@ handle_close_accelerator (GtkWindow *window,
 	g_assert (event != NULL);
 	g_assert (user_data == NULL);
 
-	if (event->state & GDK_CONTROL_MASK && event->keyval == GDK_w) {
+	if (event->state & GDK_CONTROL_MASK && event->keyval == GDK_KEY_w) {
 		gtk_widget_hide (GTK_WIDGET (window));
 		return TRUE;
 	}

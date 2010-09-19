@@ -92,7 +92,7 @@ nautilus_navigation_bar_class_init (NautilusNavigationBarClass *klass)
 	klass->cancel = NULL;
 
 	binding_set = gtk_binding_set_by_class (klass);
-	gtk_binding_entry_add_signal (binding_set, GDK_Escape, 0, "cancel", 0);
+	gtk_binding_entry_add_signal (binding_set, GDK_KEY_Escape, 0, "cancel", 0);
 
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_navigation_bar, get_location);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_navigation_bar, set_location);

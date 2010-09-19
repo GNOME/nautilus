@@ -123,19 +123,19 @@ static gboolean
 entry_would_have_inserted_characters (const GdkEventKey *event)
 {
 	switch (event->keyval) {
-	case GDK_BackSpace:
-	case GDK_Clear:
-	case GDK_Insert:
-	case GDK_Delete:
-	case GDK_Home:
-	case GDK_End:
-	case GDK_KP_Home:
-	case GDK_KP_End:
-	case GDK_Left:
-	case GDK_Right:
-	case GDK_KP_Left:
-	case GDK_KP_Right:
-	case GDK_Return:
+	case GDK_KEY_BackSpace:
+	case GDK_KEY_Clear:
+	case GDK_KEY_Insert:
+	case GDK_KEY_Delete:
+	case GDK_KEY_Home:
+	case GDK_KEY_End:
+	case GDK_KEY_KP_Home:
+	case GDK_KEY_KP_End:
+	case GDK_KEY_Left:
+	case GDK_KEY_Right:
+	case GDK_KEY_KP_Left:
+	case GDK_KEY_KP_Right:
+	case GDK_KEY_Return:
 		return FALSE;
 	default:
 		if (event->keyval >= 0x20 && event->keyval <= 0xFF) {
@@ -218,7 +218,7 @@ editable_event_after_callback (GtkEntry *entry,
 	 * likely an auto-completion. We ignore shift / control since
 	 * they can validly be used to extend the selection.
 	 */
-	if ((keyevent->keyval == GDK_Right || keyevent->keyval == GDK_End) &&
+	if ((keyevent->keyval == GDK_KEY_Right || keyevent->keyval == GDK_KEY_End) &&
 	    !(keyevent->state & (GDK_SHIFT_MASK | GDK_CONTROL_MASK)) && 
 	    gtk_editable_get_selection_bounds (editable, NULL, NULL)) {
 		set_position_and_selection_to_end (editable);

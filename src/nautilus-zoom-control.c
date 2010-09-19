@@ -691,32 +691,32 @@ nautilus_zoom_control_class_init (NautilusZoomControlClass *class)
 	binding_set = gtk_binding_set_by_class (class);	
 
 	gtk_binding_entry_add_signal (binding_set, 
-				      GDK_KP_Subtract, 0, 
+				      GDK_KEY_KP_Subtract, 0, 
 				      "change_value",
 				      1, GTK_TYPE_SCROLL_TYPE, 
 				      GTK_SCROLL_STEP_DOWN);
 	gtk_binding_entry_add_signal (binding_set, 
-				      GDK_minus, 0,
+				      GDK_KEY_minus, 0,
 				      "change_value",
 				      1, GTK_TYPE_SCROLL_TYPE, 
 				      GTK_SCROLL_STEP_DOWN);
 
 	gtk_binding_entry_add_signal (binding_set, 
-				      GDK_KP_Equal, 0, 
+				      GDK_KEY_KP_Equal, 0, 
 				      "zoom_to_default",
 				      0);
 	gtk_binding_entry_add_signal (binding_set, 
-				      GDK_KP_Equal, 0, 
+				      GDK_KEY_KP_Equal, 0, 
 				      "zoom_to_default",
 				      0);
 
 	gtk_binding_entry_add_signal (binding_set, 
-				      GDK_KP_Add, 0, 
+				      GDK_KEY_KP_Add, 0, 
 				      "change_value",
 				      1, GTK_TYPE_SCROLL_TYPE,
 				      GTK_SCROLL_STEP_UP);
 	gtk_binding_entry_add_signal (binding_set, 
-				      GDK_plus, 0, 
+				      GDK_KEY_plus, 0, 
 				      "change_value",
 				      1, GTK_TYPE_SCROLL_TYPE,
 				      GTK_SCROLL_STEP_UP);

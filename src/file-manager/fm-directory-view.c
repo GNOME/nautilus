@@ -10782,11 +10782,11 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 			      G_TYPE_BOOLEAN, 0);
 	
 	binding_set = gtk_binding_set_by_class (klass);
-	gtk_binding_entry_add_signal (binding_set, GDK_Delete, 0,
+	gtk_binding_entry_add_signal (binding_set, GDK_KEY_Delete, 0,
 				      "trash", 0);
-	gtk_binding_entry_add_signal (binding_set, GDK_KP_Delete, 0,
+	gtk_binding_entry_add_signal (binding_set, GDK_KEY_KP_Delete, 0,
 				      "trash", 0);
-	gtk_binding_entry_add_signal (binding_set, GDK_KP_Delete, GDK_SHIFT_MASK,
+	gtk_binding_entry_add_signal (binding_set, GDK_KEY_KP_Delete, GDK_SHIFT_MASK,
 				      "delete", 0);
 
 	klass->trash = real_trash;

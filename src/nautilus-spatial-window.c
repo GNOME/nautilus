@@ -1088,10 +1088,10 @@ nautilus_spatial_window_class_init (NautilusSpatialWindowClass *klass)
 	G_OBJECT_CLASS (klass)->finalize = nautilus_spatial_window_finalize;
 
 	binding_set = gtk_binding_set_by_class (klass);
-	gtk_binding_entry_add_signal (binding_set, GDK_BackSpace, GDK_SHIFT_MASK,
+	gtk_binding_entry_add_signal (binding_set, GDK_KEY_BackSpace, GDK_SHIFT_MASK,
 				      "go_up", 1,
 				      G_TYPE_BOOLEAN, TRUE);
-	gtk_binding_entry_add_signal (binding_set, GDK_Up, GDK_SHIFT_MASK | GDK_MOD1_MASK,
+	gtk_binding_entry_add_signal (binding_set, GDK_KEY_Up, GDK_SHIFT_MASK | GDK_MOD1_MASK,
 				      "go_up", 1,
 				      G_TYPE_BOOLEAN, TRUE);
 
