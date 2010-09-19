@@ -50,13 +50,13 @@ enum {
 };
 static guint signals[LAST_SIGNAL];
 
-static void nautilus_entry_editable_init (GtkEditableClass *iface);
+static void nautilus_entry_editable_init (GtkEditableInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusEntry, nautilus_entry, GTK_TYPE_ENTRY,
 			 G_IMPLEMENT_INTERFACE (GTK_TYPE_EDITABLE,
 						nautilus_entry_editable_init));
 
-static GtkEditableClass *parent_editable_interface = NULL;
+static GtkEditableInterface *parent_editable_interface = NULL;
 
 static void
 nautilus_entry_init (NautilusEntry *entry)
@@ -360,7 +360,7 @@ nautilus_entry_selection_clear (GtkWidget *widget,
 }
 
 static void
-nautilus_entry_editable_init (GtkEditableClass *iface)
+nautilus_entry_editable_init (GtkEditableInterface *iface)
 {
 	parent_editable_interface = g_type_interface_peek_parent (iface);
 
