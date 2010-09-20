@@ -2974,6 +2974,13 @@ list_view_notify_clipboard_info (NautilusClipboardMonitor *monitor,
                                  NautilusClipboardInfo *info,
                                  FMListView *view)
 {
+	/* this could be called as a result of _end_loading() being
+	 * called after _dispose(), where the model is cleared.
+	 */
+	if (view->details->model == NULL) {
+		return;
+	}
+
 	if (info != NULL && info->cut) {
 		fm_list_model_set_highlight_for_files (view->details->model, info->files);
 	} else {
