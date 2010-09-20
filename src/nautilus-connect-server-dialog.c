@@ -46,6 +46,7 @@
 struct _NautilusConnectServerDialogDetails {
 	NautilusApplication *application;
 
+	GtkWidget *primary_table;
 	GtkWidget *user_details;
 	GtkWidget *port_spinbutton;
 
@@ -187,6 +188,33 @@ dialog_set_connecting (NautilusConnectServerDialog *dialog)
 	gtk_widget_set_sensitive (dialog->details->connect_button, FALSE);
 }
 
+static void
+connect_dialog_gvfs_error (NautilusConnectServerDialog *dialog)
+{
+	GtkWidget *hbox, *image, *content_area, *label;
+
+	connect_dialog_restore_info_bar (dialog, GTK_MESSAGE_ERROR);
+
+	content_area = gtk_info_bar_get_content_area (GTK_INFO_BAR (dialog->details->info_bar));
+
+	hbox = gtk_hbox_new (FALSE, 6);
+	gtk_container_add (GTK_CONTAINER (content_area), hbox);
+	gtk_widget_show (hbox);
+
+	image = gtk_image_new_from_stock (GTK_STOCK_DIALOG_ERROR, GTK_ICON_SIZE_SMALL_TOOLBAR);
+	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 6);
+	gtk_widget_show (image);
+	
+	label = gtk_label_new (_("Can't load the supported server method list.\n"
+				 "Please check your GVfs installation."));
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 6);
+	gtk_widget_show (label);
+
+	gtk_widget_set_sensitive (dialog->details->connect_button, FALSE);
+	gtk_widget_set_sensitive (dialog->details->primary_table, FALSE);
+
+	gtk_widget_show (dialog->details->info_bar);
+}
 
 static void
 iconized_entry_restore (gpointer data,
@@ -732,7 +760,16 @@ setup_for_type (NautilusConnectServerDialog *dialog)
 	dialog_cleanup (dialog);
 
 	/* get our method info */
-	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (dialog->details->type_combo), &iter);
+	if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (dialog->details->type_combo),
+					    &iter)) {
+		/* there are no entries in the combo, something is wrong
+		 * with our GVfs installation.
+		 */
+		connect_dialog_gvfs_error (dialog);
+
+		return;
+	}
+
 	gtk_tree_model_get (gtk_combo_box_get_model (GTK_COMBO_BOX (dialog->details->type_combo)),
 			    &iter, 0, &index, -1);
 	g_assert (index < G_N_ELEMENTS (methods) && index >= 0);
@@ -843,6 +880,8 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	table = gtk_table_new (4, 2, FALSE);
 	gtk_container_add (GTK_CONTAINER (alignment), table);
 	gtk_widget_show (table);
+
+	dialog->details->primary_table = table;
 
 	/* first row: server entry + port spinbutton */
 	label = gtk_label_new_with_mnemonic (_("_Server:"));
