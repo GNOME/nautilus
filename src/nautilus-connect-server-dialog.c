@@ -1,5 +1,4 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-
 /*
  * Nautilus
  *
@@ -47,14 +46,15 @@
 
 struct _NautilusConnectServerDialogDetails {
 	NautilusApplication *application;
-	
+
+	GtkWidget *user_details;
+	GtkWidget *port_spinbutton;
+
 	GtkWidget *table;
 	
 	GtkWidget *type_combo;
-	GtkWidget *uri_entry;
 	GtkWidget *server_entry;
 	GtkWidget *share_entry;
-	GtkWidget *port_entry;
 	GtkWidget *folder_entry;
 	GtkWidget *domain_entry;
 	GtkWidget *user_entry;
@@ -73,41 +73,39 @@ enum {
 struct MethodInfo {
 	const char *scheme;
 	guint flags;
+	guint default_port;
 };
 
 /* A collection of flags for MethodInfo.flags */
 enum {
-	DEFAULT_METHOD = 0x00000001,
+	DEFAULT_METHOD = (1 << 0),
 	
 	/* Widgets to display in setup_for_type */
-	SHOW_SHARE     = 0x00000010,
-	SHOW_PORT      = 0x00000020,
-	SHOW_USER      = 0x00000040,
-	SHOW_DOMAIN    = 0x00000080,
+	SHOW_SHARE     = (1 << 1),
+	SHOW_PORT      = (1 << 2),
+	SHOW_USER      = (1 << 3),
+	SHOW_DOMAIN    = (1 << 4),
 	
-	IS_ANONYMOUS   = 0x00001000
+	IS_ANONYMOUS   = (1 << 5)
 };
 
 /* Remember to fill in descriptions below */
 static struct MethodInfo methods[] = {
 	/* FIXME: we need to alias ssh to sftp */
-	{ "sftp",  SHOW_PORT | SHOW_USER },
-	{ "ftp",  SHOW_PORT | SHOW_USER },
-	{ "ftp",  DEFAULT_METHOD | IS_ANONYMOUS | SHOW_PORT},
-	{ "smb",  SHOW_SHARE | SHOW_USER | SHOW_DOMAIN },
-	{ "dav",  SHOW_PORT | SHOW_USER },
+	{ "sftp",  SHOW_PORT | SHOW_USER, 22 },
+	{ "ftp",  SHOW_PORT | SHOW_USER, 21 },
+	{ "ftp",  DEFAULT_METHOD | IS_ANONYMOUS | SHOW_PORT, 21 },
+	{ "smb",  SHOW_SHARE | SHOW_USER | SHOW_DOMAIN, 0 },
+	{ "dav",  SHOW_PORT | SHOW_USER, 80 },
 	/* FIXME: hrm, shouldn't it work? */
-	{ "davs", SHOW_PORT | SHOW_USER },
-	{ NULL,   0 }, /* Custom URI method */
+	{ "davs", SHOW_PORT | SHOW_USER, 443 },
 };
 
 /* To get around non constant gettext strings */
 static const char*
 get_method_description (struct MethodInfo *meth)
 {
-	if (!meth->scheme) {
-		return _("Custom Location");
-	} else if (strcmp (meth->scheme, "sftp") == 0) {
+	if (strcmp (meth->scheme, "sftp") == 0) {
 		return _("SSH");
 	} else if (strcmp (meth->scheme, "ftp") == 0) {
 		if (meth->flags & IS_ANONYMOUS) {
@@ -121,7 +119,7 @@ get_method_description (struct MethodInfo *meth)
 		return _("WebDAV (HTTP)");
 	} else if (strcmp (meth->scheme, "davs") == 0) {
 		return _("Secure WebDAV (HTTPS)");
-	
+
 	/* No descriptive text */
 	} else {
 		return meth->scheme;
@@ -129,34 +127,16 @@ get_method_description (struct MethodInfo *meth)
 }
 
 static void
-nautilus_connect_server_dialog_finalize (GObject *object)
-{
-	NautilusConnectServerDialog *dialog;
-
-	dialog = NAUTILUS_CONNECT_SERVER_DIALOG (object);
-
-	g_object_unref (dialog->details->uri_entry);
-	g_object_unref (dialog->details->server_entry);
-	g_object_unref (dialog->details->share_entry);
-	g_object_unref (dialog->details->port_entry);
-	g_object_unref (dialog->details->folder_entry);
-	g_object_unref (dialog->details->domain_entry);
-	g_object_unref (dialog->details->user_entry);
-	g_object_unref (dialog->details->bookmark_check);
-	g_object_unref (dialog->details->name_entry);
-
-	G_OBJECT_CLASS (nautilus_connect_server_dialog_parent_class)->finalize (object);
-}
-
-static void
 connect_to_server (NautilusConnectServerDialog *dialog)
 {
 	struct MethodInfo *meth;
-	char *uri;
 	GFile *location;
 	int index;
 	GtkTreeIter iter;
-	
+	char *user, *initial_path, *server, *folder, *domain, *port_str;
+	char *t, *join, *uri;
+	double port;
+
 	/* Get our method info */
 	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (dialog->details->type_combo), &iter);
 	gtk_tree_model_get (gtk_combo_box_get_model (GTK_COMBO_BOX (dialog->details->type_combo)),
@@ -164,123 +144,94 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 	g_assert (index < G_N_ELEMENTS (methods) && index >= 0);
 	meth = &(methods[index]);
 
-	uri = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->server_entry), 0, -1);
-	if (strlen (uri) == 0) {
-		eel_show_error_dialog (_("Cannot Connect to Server. You must enter a name for the server."), 
-				       _("Please enter a name and try again."), 
-				       GTK_WINDOW (dialog));
-		g_free (uri);
-		return;
-	}
+	server = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->server_entry), 0, -1);
 
-	if (meth->scheme == NULL) {
-		uri = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->uri_entry), 0, -1);
-		/* FIXME: we should validate it in some way? */
-	} else {
-		char *user, *port, *initial_path, *server, *folder, *domain;
-		char *t, *join;
-		gboolean free_initial_path, free_user, free_domain, free_port;
-		
-		server = uri;
-		uri = NULL;
+	user = NULL;
+	initial_path = NULL;
+	domain = NULL;
+	folder = NULL;
 
-		user = "";
-		port = "";
-		initial_path = "";
-		domain = "";
-		free_initial_path = FALSE;
-		free_user = FALSE;
-		free_domain = FALSE;
-		free_port = FALSE;
-		
-		/* FTP special case */
-		if (meth->flags & IS_ANONYMOUS) {
-			user = "anonymous";
+	/* FTP special case */
+	if (meth->flags & IS_ANONYMOUS) {
+		user = g_strdup ("anonymous");
 		
 		/* SMB special case */
-		} else if (strcmp (meth->scheme, "smb") == 0) {
-			t = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->share_entry), 0, -1);
-			initial_path = g_strconcat ("/", t, NULL);
-			free_initial_path = TRUE;
-			g_free (t);
-		}
+	} else if (strcmp (meth->scheme, "smb") == 0) {
+		t = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->share_entry), 0, -1);
+		initial_path = g_strconcat ("/", t, NULL);
 
-		if (gtk_widget_get_parent (dialog->details->port_entry) != NULL) {
-			free_port = TRUE;
-			port = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->port_entry), 0, -1);
-		}
-		folder = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->folder_entry), 0, -1);
-		if (gtk_widget_get_parent (dialog->details->user_entry) != NULL) {
-			free_user = TRUE;
+		g_free (t);
+	}
+
+	/* port */
+	port = gtk_spin_button_get_value (GTK_SPIN_BUTTON (dialog->details->port_spinbutton));
+
+	/* username */
+	if (!user) {
+		t = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->user_entry), 0, -1);
+		user = g_uri_escape_string (t, G_URI_RESERVED_CHARS_ALLOWED_IN_USERINFO, FALSE);
+		g_free (t);
+	}
+
+	/* domain */
+	domain = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->domain_entry), 0, -1);
 			
-			t = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->user_entry), 0, -1);
+	if (strlen (domain) != 0) {
+		t = user;
 
-			user = g_uri_escape_string (t, G_URI_RESERVED_CHARS_ALLOWED_IN_USERINFO, FALSE);
+		user = g_strconcat (domain , ";" , t, NULL);
+		g_free (t);
+	}
 
-			g_free (t);
-		}
-		if (gtk_widget_get_parent (dialog->details->domain_entry) != NULL) {
-			free_domain = TRUE;
+	/* folder */
+	folder = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->folder_entry), 0, -1);
 
-			domain = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->domain_entry), 0, -1);
-			
-			if (strlen (domain) != 0) {
-				t = user;
+	if (folder[0] != 0 &&
+	    folder[0] != '/') {
+		join = "/";
+	} else {
+		join = "";
+	}
 
-				user = g_strconcat (domain , ";" , t, NULL);
-
-				if (free_user) {
-					g_free (t);
-				}
-
-				free_user = TRUE;
-			}
-		}
-
-		if (folder[0] != 0 &&
-		    folder[0] != '/') {
-			join = "/";
-		} else {
-			join = "";
-		}
-
+	if (initial_path != NULL) {
 		t = folder;
 		folder = g_strconcat (initial_path, join, t, NULL);
 		g_free (t);
-
-		t = folder;
-		folder = g_uri_escape_string (t, G_URI_RESERVED_CHARS_ALLOWED_IN_PATH, FALSE);
-		g_free (t);
-
-		uri = g_strdup_printf ("%s://%s%s%s%s%s%s",
-				       meth->scheme,
-				       user, (user[0] != 0) ? "@" : "",
-				       server,
-				       (port[0] != 0) ? ":" : "", port,
-				       folder);
-
-		if (free_initial_path) {
-			g_free (initial_path);
-		}
-		g_free (server);
-		if (free_port) {
-			g_free (port);
-		}
-		g_free (folder);
-		if (free_user) {
-			g_free (user);
-		}
-		if (free_domain) {
-			g_free (domain);
-		}
 	}
 
+	t = folder;
+	folder = g_uri_escape_string (t, G_URI_RESERVED_CHARS_ALLOWED_IN_PATH, FALSE);
+	g_free (t);
+
+	/* port */
+	if (port != 0 && port != meth->default_port) {
+		port_str = g_strdup_printf ("%d", (int) port);
+	} else {
+		port_str = NULL;
+	}
+
+	/* final uri */
+	uri = g_strdup_printf ("%s://%s%s%s%s%s%s",
+			       meth->scheme,
+			       (user != NULL) ? user : "",
+			       (user[0] != 0) ? "@" : "",
+			       server,
+			       (port_str != NULL) ? ":" : "",
+			       (port_str != NULL) ? port_str : "",
+			       (folder != NULL) ? folder : "");
+
+	g_free (initial_path);
+	g_free (server);
+	g_free (folder);
+	g_free (user);
+	g_free (domain);
+	g_free (port_str);
+
 	gtk_widget_hide (GTK_WIDGET (dialog));
-	
+
 	location = g_file_new_for_uri (uri);
 	g_free (uri);
 
-	/* FIXME: sensitivity */
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->details->bookmark_check))) {
 		char *name;
 		NautilusBookmark *bookmark;
@@ -342,20 +293,14 @@ response_callback (NautilusConnectServerDialog *dialog,
 static void
 nautilus_connect_server_dialog_class_init (NautilusConnectServerDialogClass *class)
 {
-	GObjectClass *gobject_class;
-
 	g_type_class_add_private (class, sizeof (NautilusConnectServerDialogDetails));
-
-	gobject_class = G_OBJECT_CLASS (class);
-	gobject_class->finalize = nautilus_connect_server_dialog_finalize;
 }
 
 static void
 setup_for_type (NautilusConnectServerDialog *dialog)
 {
 	struct MethodInfo *meth;
-	int index, i;
-	GtkWidget *label, *table;
+	int index;;
 	GtkTreeIter iter;
 	
 	/* Get our method info */
@@ -365,443 +310,155 @@ setup_for_type (NautilusConnectServerDialog *dialog)
 	g_assert (index < G_N_ELEMENTS (methods) && index >= 0);
 	meth = &(methods[index]);
 
-	if (gtk_widget_get_parent (dialog->details->uri_entry) != NULL) {
-		gtk_container_remove (GTK_CONTAINER (dialog->details->table),
-				      dialog->details->uri_entry);
-	}
-	if (gtk_widget_get_parent (dialog->details->server_entry) != NULL) {
-		gtk_container_remove (GTK_CONTAINER (dialog->details->table),
-				      dialog->details->server_entry);
-	}
-	if (gtk_widget_get_parent (dialog->details->share_entry) != NULL) {
-		gtk_container_remove (GTK_CONTAINER (dialog->details->table),
-				      dialog->details->share_entry);
-	}
-	if (gtk_widget_get_parent (dialog->details->port_entry) != NULL) {
-		gtk_container_remove (GTK_CONTAINER (dialog->details->table),
-				      dialog->details->port_entry);
-	}
-	if (gtk_widget_get_parent (dialog->details->folder_entry) != NULL) {
-		gtk_container_remove (GTK_CONTAINER (dialog->details->table),
-				      dialog->details->folder_entry);
-	}
-	if (gtk_widget_get_parent (dialog->details->user_entry) != NULL) {
-		gtk_container_remove (GTK_CONTAINER (dialog->details->table),
-				      dialog->details->user_entry);
-	}
-	if (gtk_widget_get_parent (dialog->details->domain_entry) != NULL) {
-		gtk_container_remove (GTK_CONTAINER (dialog->details->table),
-				      dialog->details->domain_entry);
-	}
-	if (gtk_widget_get_parent (dialog->details->bookmark_check) != NULL) {
-		gtk_container_remove (GTK_CONTAINER (dialog->details->table),
-				      dialog->details->bookmark_check);
-	}
-	if (gtk_widget_get_parent (dialog->details->name_entry) != NULL) {
-		gtk_container_remove (GTK_CONTAINER (dialog->details->table),
-				      dialog->details->name_entry);
-	}
-	/* Destroy all labels */
-	gtk_container_foreach (GTK_CONTAINER (dialog->details->table),
-			       (GtkCallback) gtk_widget_destroy, NULL);
+	g_object_set (dialog->details->share_entry,
+		      "visible",
+		      (meth->flags & SHOW_SHARE) != 0,
+		      NULL);
 
-	
-	i = 1;
-	table = dialog->details->table;
-	
-	if (meth->scheme == NULL) {
-		label = gtk_label_new_with_mnemonic (_("_Location (URI):"));
-		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-		gtk_widget_show (label);
-		gtk_table_attach (GTK_TABLE (table), label,
-				  0, 1,
-				  i, i+1,
-				  GTK_FILL, GTK_FILL,
-				  0, 0);
-		
-		gtk_label_set_mnemonic_widget (GTK_LABEL (label), dialog->details->uri_entry);
-		gtk_widget_show (dialog->details->uri_entry);
-		gtk_table_attach (GTK_TABLE (table), dialog->details->uri_entry,
-				  1, 2,
-				  i, i+1,
-				  GTK_FILL | GTK_EXPAND, GTK_FILL,
-				  0, 0);
+	g_object_set (dialog->details->port_spinbutton,
+		      "sensitive",
+		      (meth->flags & SHOW_PORT) != 0,
+		      "value", (gdouble) meth->default_port,
+		      NULL);
 
-		i++;
-		
-		goto connection_name;
-	}
-	
-	label = gtk_label_new_with_mnemonic (_("_Server:"));
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_widget_show (label);
-	gtk_table_attach (GTK_TABLE (table), label,
-			  0, 1,
-			  i, i+1,
-			  GTK_FILL, GTK_FILL,
-			  0, 0);
-	
-	gtk_label_set_mnemonic_widget (GTK_LABEL (label), dialog->details->server_entry);
-	gtk_widget_show (dialog->details->server_entry);
-	gtk_table_attach (GTK_TABLE (table), dialog->details->server_entry,
-			  1, 2,
-			  i, i+1,
-			  GTK_FILL | GTK_EXPAND, GTK_FILL,
-			  0, 0);
+	g_object_set (dialog->details->user_details,
+		      "visible",
+		      (meth->flags & SHOW_USER) != 0 ||
+		      (meth->flags & SHOW_DOMAIN) != 0,
+		      NULL);
 
-	i++;
+	g_object_set (dialog->details->user_entry,
+		      "visible",
+		      (meth->flags & SHOW_USER) != 0,
+		      NULL);
 
-	label = gtk_label_new (_("Optional information:"));
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_widget_show (label);
-	gtk_table_attach (GTK_TABLE (table), label,
-			  0, 2,
-			  i, i+1,
-			  GTK_FILL, GTK_FILL,
-			  0, 0);
-
-	i++;
-	
-	if (meth->flags & SHOW_SHARE) {
-		label = gtk_label_new_with_mnemonic (_("_Share:"));
-		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-		gtk_widget_show (label);
-		gtk_table_attach (GTK_TABLE (table), label,
-				  0, 1,
-				  i, i+1,
-				  GTK_FILL, GTK_FILL,
-				  0, 0);
-		
-		gtk_label_set_mnemonic_widget (GTK_LABEL (label), dialog->details->share_entry);
-		gtk_widget_show (dialog->details->share_entry);
-		gtk_table_attach (GTK_TABLE (table), dialog->details->share_entry,
-				  1, 2,
-				  i, i+1,
-				  GTK_FILL | GTK_EXPAND, GTK_FILL,
-				  0, 0);
-
-		i++;
-	}
-
-	if (meth->flags & SHOW_PORT) {
-		label = gtk_label_new_with_mnemonic (_("_Port:"));
-		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-		gtk_widget_show (label);
-		gtk_table_attach (GTK_TABLE (table), label,
-				  0, 1,
-				  i, i+1,
-				  GTK_FILL, GTK_FILL,
-				  0, 0);
-		
-		gtk_label_set_mnemonic_widget (GTK_LABEL (label), dialog->details->port_entry);
-		gtk_widget_show (dialog->details->port_entry);
-		gtk_table_attach (GTK_TABLE (table), dialog->details->port_entry,
-				  1, 2,
-				  i, i+1,
-				  GTK_FILL | GTK_EXPAND, GTK_FILL,
-				  0, 0);
-
-		i++;
-	}
-
-	label = gtk_label_new_with_mnemonic (_("_Folder:"));
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_widget_show (label);
-	gtk_table_attach (GTK_TABLE (table), label,
-			  0, 1,
-			  i, i+1,
-			  GTK_FILL, GTK_FILL,
-			  0, 0);
-	
-	gtk_label_set_mnemonic_widget (GTK_LABEL (label), dialog->details->folder_entry);
-	gtk_widget_show (dialog->details->folder_entry);
-	gtk_table_attach (GTK_TABLE (table), dialog->details->folder_entry,
-			  1, 2,
-			  i, i+1,
-			  GTK_FILL | GTK_EXPAND, GTK_FILL,
-			  0, 0);
-
-	i++;
-
-	if (meth->flags & SHOW_USER) {
-		label = gtk_label_new_with_mnemonic (_("_User Name:"));
-		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-		gtk_widget_show (label);
-		gtk_table_attach (GTK_TABLE (table), label,
-				  0, 1,
-				  i, i+1,
-				  GTK_FILL, GTK_FILL,
-				  0, 0);
-		
-		gtk_label_set_mnemonic_widget (GTK_LABEL (label), dialog->details->user_entry);
-		gtk_widget_show (dialog->details->user_entry);
-		gtk_table_attach (GTK_TABLE (table), dialog->details->user_entry,
-				  1, 2,
-				  i, i+1,
-				  GTK_FILL | GTK_EXPAND, GTK_FILL,
-				  0, 0);
-
-		i++;
-	}
-
-	if (meth->flags & SHOW_DOMAIN) {
-		label = gtk_label_new_with_mnemonic (_("_Domain Name:"));
-		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-		gtk_widget_show (label);
-		gtk_table_attach (GTK_TABLE (table), label,
-				  0, 1,
-				  i, i+1,
-				  GTK_FILL, GTK_FILL,
-				  0, 0);
-
-                gtk_label_set_mnemonic_widget (GTK_LABEL (label), dialog->details->domain_entry);
-                gtk_widget_show (dialog->details->domain_entry);
-                gtk_table_attach (GTK_TABLE (table), dialog->details->domain_entry,
-                                  1, 2,
-                                  i, i+1,
-                                  GTK_FILL | GTK_EXPAND, GTK_FILL,
-                                  0, 0);
-
-                i++;
-        }
-
-
-
- connection_name:
-	
-	gtk_widget_show (dialog->details->bookmark_check);
-	gtk_table_attach (GTK_TABLE (table), dialog->details->bookmark_check,
-			  0, 1,
-			  i, i+1,
-			  GTK_FILL, GTK_FILL,
-			  0, 0);
-	i++;
-
-	label = gtk_label_new_with_mnemonic (_("Bookmark _name:"));
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_widget_show (label);
-	gtk_table_attach (GTK_TABLE (table), label,
-			  0, 1,
-			  i, i+1,
-			  GTK_FILL, GTK_FILL,
-			  0, 0);
-	
-	gtk_label_set_mnemonic_widget (GTK_LABEL (label), dialog->details->name_entry);
-	gtk_widget_show (dialog->details->name_entry);
-	gtk_table_attach (GTK_TABLE (table), dialog->details->name_entry,
-			  1, 2,
-			  i, i+1,
-			  GTK_FILL | GTK_EXPAND, GTK_FILL,
-			  0, 0);
-	
-	i++;
-
+	g_object_set (dialog->details->domain_entry,
+		      "visible",
+		      (meth->flags & SHOW_DOMAIN) != 0,
+		      NULL);
 }
 
 static void
-display_server_location (NautilusConnectServerDialog *dialog, GFile *location)
+entry_changed_callback (GtkEditable *editable,
+			GtkWidget *connect_button)
 {
-#if 0 /*FIXME */
-	struct MethodInfo *meth = NULL;
-	char *scheme;
-	int i, index = 0;
-	char *folder;
-	const char *t;
+	guint length;
 
-	/* Find an appropriate method */
-	scheme = g_file_get_uri_scheme (location);
-	g_return_if_fail (scheme != NULL);
-	
-	for (i = 0; i < G_N_ELEMENTS (methods); i++) {
-		
-		/* The default is 'Custom URI' */
-		if (methods[i].scheme == NULL) {
-			meth = &(methods[i]);
-			index = i;
-			
-		} else if (strcmp (methods[i].scheme, scheme) == 0) {
-			
-			/* FTP Special case: If no user keep searching for public ftp */
-			if (strcmp (scheme, "ftp") == 0) {
-				t = gnome_vfs_uri_get_user_name (uri);
-				if ((!t || !t[0] || strcmp (t, "anonymous") == 0) && 
-				    (!(methods[i].flags & IS_ANONYMOUS))) {
-					continue;
-				}
-			}
-			
-			meth = &(methods[i]);
-			index = i;
-			break;
-		}
-	}
+	length = gtk_entry_get_text_length (GTK_ENTRY (editable));
 
-	g_free (scheme);
-	g_assert (meth);
-	
-	gtk_combo_box_set_active (GTK_COMBO_BOX (dialog->details->type_combo), index);
-	setup_for_type (dialog);
-	
-	/* Custom URI */
-	if (meth->scheme == NULL) {
-		gchar *uri;
-
-		/* FIXME: with gnome-vfs, we had GNOME_VFS_URI_HIDE_PASSWORD |
-		 * GNOME_VFS_URI_HIDE_FRAGMENT_IDENTIFIER */
-		uri = g_file_get_uri (location)
-		gtk_entry_set_text (GTK_ENTRY (dialog->details->uri_entry), uri);
-		g_free (uri);
-	
-	} else {
-		
-		folder = g_file_get_path (location);
-		if (!folder) {
-			folder = "";
-		} else if (folder[0] == '/') {
-			folder++;
-		}
-		
-		/* Server */
-		t = gnome_vfs_uri_get_host_name (uri);
-		gtk_entry_set_text (GTK_ENTRY (dialog->details->server_entry), 
-				    t ? t : "");
-		
-		/* Share */
-		if (meth->flags & SHOW_SHARE) {
-			t = strchr (folder, '/');
-			if (t) {
-				char *share = g_strndup (folder, t - folder);
-				gtk_entry_set_text (GTK_ENTRY (dialog->details->share_entry), share);
-				g_free (share);
-				folder = t + 1;
-			}
-			
-		}
-
-		/* Port */
-		if (meth->flags & SHOW_PORT) {
-			guint port = gnome_vfs_uri_get_host_port (uri);
-			if (port != 0) {
-				char sport[32];
-				g_snprintf (sport, sizeof (sport), "%d", port);
-				gtk_entry_set_text (GTK_ENTRY (dialog->details->port_entry), sport);
-			}
-		}
-
-		/* Folder */
-		gtk_entry_set_text (GTK_ENTRY (dialog->details->folder_entry), folder);
-		g_free (folder);
-
-		/* User */
-		if (meth->flags & SHOW_USER) {
-			const char *user = gnome_vfs_uri_get_user_name (uri);
-			if (user) {
-				t = strchr (user, ';');
-				if (t) {
-					user = t + 1;
-				}
-				gtk_entry_set_text (GTK_ENTRY (dialog->details->user_entry), user);
-			}
-		}
-
-		/* Domain */
-		if (meth->flags & SHOW_DOMAIN) {
-			const char *user = gnome_vfs_uri_get_user_name (uri);
-			if (user) {
-				t = strchr (user, ';');
-				if (t) {
-					char *domain = g_strndup (user, t - user);
-					gtk_entry_set_text (GTK_ENTRY (dialog->details->domain_entry), domain);
-					g_free (domain);
-				}
-			}
-		}
-	}
-#endif
+	gtk_widget_set_sensitive (connect_button,
+				  length > 0);
 }
 
 static void
-combo_changed_callback (GtkComboBox *combo_box,
-			NautilusConnectServerDialog *dialog)
+bind_visibility (NautilusConnectServerDialog *dialog,
+		 GtkWidget *source,
+		 GtkWidget *dest)
 {
-	setup_for_type (dialog);
-}
-
-static void
-port_insert_text (GtkEditable *editable,
-		  const gchar *new_text,
-		  gint         new_text_length,
-		  gint        *position)
-{
-	int pos;
-
-	if (new_text_length < 0) {
-		new_text_length = strlen (new_text);
-	}
-
-	/* Only allow digits to be inserted as port number */
-	for (pos = 0; pos < new_text_length; pos++) {
-		if (!g_ascii_isdigit (new_text[pos])) {
-			GtkWidget *toplevel = gtk_widget_get_toplevel (GTK_WIDGET (editable));
-			if (toplevel != NULL) {
-				gdk_window_beep (gtk_widget_get_window (toplevel));
-			}
-		    g_signal_stop_emission_by_name (editable, "insert_text");
-		    return;
-		}
-	}
-}
-
-static void
-bookmark_checkmark_toggled (GtkToggleButton *toggle, NautilusConnectServerDialog *dialog)
-{
-	gtk_widget_set_sensitive (GTK_WIDGET(dialog->details->name_entry),
-		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (toggle)));
+	g_object_bind_property (source,
+				"visible",
+				dest,
+				"visible",
+				G_BINDING_DEFAULT);
 }
 
 static void
 nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 {
 	GtkWidget *label;
-	GtkWidget *table;
-	GtkWidget *combo;
-	GtkWidget *hbox;
-	GtkWidget *vbox;
+	GtkWidget *alignment;
+	GtkWidget *content_area;
+	GtkWidget *combo ,* table;
+	GtkWidget *hbox, *connect_button;
 	GtkListStore *store;
 	GtkCellRenderer *renderer;
+	gchar *str;
 	int i;
 	
 	dialog->details = G_TYPE_INSTANCE_GET_PRIVATE (dialog, NAUTILUS_TYPE_CONNECT_SERVER_DIALOG,
 						       NautilusConnectServerDialogDetails);
 
+	content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+
+	/* set dialog properties */
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Connect to Server"));
-	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
-	gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), 2);
+	gtk_container_set_border_width (GTK_CONTAINER (dialog), 6);
+	gtk_box_set_spacing (GTK_BOX (content_area), 2);
 	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
 
-	vbox = gtk_vbox_new (FALSE, 6);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), 5);
-	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))),
-			    vbox, FALSE, TRUE, 0);
-	gtk_widget_show (vbox);
-			    
-	hbox = gtk_hbox_new (FALSE, 6);
-	gtk_box_pack_start (GTK_BOX (vbox),
-			    hbox, FALSE, TRUE, 0);
-	gtk_widget_show (hbox);
-	
-	label = gtk_label_new_with_mnemonic (_("Service _type:"));
+	/* server settings label */
+	label = gtk_label_new (NULL);
+	str = g_strdup_printf ("<b>%s</b>", _("Server Details"));
+	gtk_label_set_markup (GTK_LABEL (label), str);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_box_pack_start (GTK_BOX (content_area), label, FALSE, FALSE, 6);
 	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox),
-			    label, FALSE, FALSE, 0);
+
+	/* server settings alignment */
+	alignment = gtk_alignment_new (0, 0, 0, 0);
+	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment),
+				   0, 0, 12, 0);
+	gtk_box_pack_start (GTK_BOX (content_area), alignment, TRUE, TRUE, 0);
+	gtk_widget_show (alignment);
+
+	table = gtk_table_new (4, 2, FALSE);
+	gtk_container_add (GTK_CONTAINER (alignment), table);
+	gtk_widget_show (table);
+
+	/* first row: server entry + port spinbutton */
+	label = gtk_label_new_with_mnemonic (_("_Server:"));
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_table_attach (GTK_TABLE (table), label,
+			  0, 1,
+			  0, 1,
+			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_widget_show (label);
+
+	hbox = gtk_hbox_new (FALSE, 6);
+	gtk_widget_show (hbox);
+	gtk_table_attach (GTK_TABLE (table), hbox,
+			  1, 2,
+			  0, 1,
+			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+
+	dialog->details->server_entry = gtk_entry_new ();
+	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->server_entry), TRUE);
+	gtk_box_pack_start (GTK_BOX (hbox), dialog->details->server_entry, FALSE, FALSE, 0);
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), dialog->details->server_entry);
+	gtk_widget_show (dialog->details->server_entry);
+
+	/* port */
+	label = gtk_label_new_with_mnemonic (_("_Port:"));
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+
+	dialog->details->port_spinbutton =
+		gtk_spin_button_new_with_range (0.0, 65535.0, 1.0);
+	g_object_set (dialog->details->port_spinbutton,
+		      "digits", 0,
+		      "numeric", TRUE,
+		      "update-policy", GTK_UPDATE_IF_VALID,
+		      NULL);
+	gtk_box_pack_start (GTK_BOX (hbox), dialog->details->port_spinbutton,
+			    FALSE, FALSE, 0);
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), dialog->details->port_spinbutton);
+	gtk_widget_show (dialog->details->port_spinbutton);
+
+	/* second row: type combobox */
+	label = gtk_label_new (_("Type:"));
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_table_attach (GTK_TABLE (table), label,
+			  0, 1,
+			  1, 2,
+			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_widget_show (label);
 
 	dialog->details->type_combo = combo = gtk_combo_box_new ();
 
 	/* each row contains: method index, textual description */
 	store = gtk_list_store_new (2, G_TYPE_INT, G_TYPE_STRING);
 	gtk_combo_box_set_model (GTK_COMBO_BOX (combo), GTK_TREE_MODEL (store));
-	g_object_unref (G_OBJECT (store));
+	g_object_unref (store);
 
 	renderer = gtk_cell_renderer_text_new ();
 	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (combo), renderer, TRUE);
@@ -850,94 +507,151 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 
 	gtk_widget_show (combo);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), combo);
-	gtk_box_pack_start (GTK_BOX (hbox),
-			    combo, TRUE, TRUE, 0);
-	g_signal_connect (combo, "changed",
-			  G_CALLBACK (combo_changed_callback),
-			  dialog);
-	
+	gtk_table_attach (GTK_TABLE (table), combo,
+			  1, 2,
+			  1, 2,
+			  GTK_EXPAND | GTK_FILL, GTK_EXPAND, 6, 3);
+	g_signal_connect_swapped (combo, "changed",
+				  G_CALLBACK (setup_for_type),
+				  dialog);
 
-	hbox = gtk_hbox_new (FALSE, 6);
-	gtk_box_pack_start (GTK_BOX (vbox),
-			    hbox, FALSE, TRUE, 0);
-	gtk_widget_show (hbox);
+	/* third row: share entry */
+	label = gtk_label_new (_("Share:"));
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_table_attach (GTK_TABLE (table), label,
+			  0, 1,
+			  2, 3,
+			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
 
-	label = gtk_label_new_with_mnemonic ("    ");
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox),
-			    label, FALSE, FALSE, 0);
-	
-	
-	dialog->details->table = table = gtk_table_new (5, 2, FALSE);
-	gtk_table_set_row_spacings (GTK_TABLE (table), 6);
-	gtk_table_set_col_spacings (GTK_TABLE (table), 12);
-	gtk_widget_show (table);
-	gtk_box_pack_start (GTK_BOX (hbox),
-			    table, TRUE, TRUE, 0);
-
-	dialog->details->uri_entry = nautilus_location_entry_new ();
-	/* hide the clean icon, as it doesn't make sense here */
-	g_object_set (dialog->details->uri_entry, "secondary-icon-name", NULL, NULL);
-	dialog->details->server_entry = gtk_entry_new ();
 	dialog->details->share_entry = gtk_entry_new ();
-	dialog->details->port_entry = gtk_entry_new ();
-	g_signal_connect (dialog->details->port_entry, "insert_text", G_CALLBACK (port_insert_text),
-			  NULL);
-	dialog->details->folder_entry = gtk_entry_new ();
-	dialog->details->domain_entry = gtk_entry_new ();
-	dialog->details->user_entry = gtk_entry_new ();
-	dialog->details->bookmark_check = gtk_check_button_new_with_mnemonic (_("Add _bookmark"));
-	dialog->details->name_entry = gtk_entry_new ();
-
-	g_signal_connect (dialog->details->bookmark_check, "toggled", 
-			  G_CALLBACK (bookmark_checkmark_toggled), dialog);
-
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->details->bookmark_check), FALSE);
-	gtk_widget_set_sensitive (GTK_WIDGET(dialog->details->name_entry), FALSE);
-
-	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->uri_entry), TRUE);
-	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->server_entry), TRUE);
 	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->share_entry), TRUE);
-	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->port_entry), TRUE);
-	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->folder_entry), TRUE);
-	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->domain_entry), TRUE);
-	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->user_entry), TRUE);
-	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->name_entry), TRUE);
+	gtk_table_attach (GTK_TABLE (table), dialog->details->share_entry,
+			  1, 2,
+			  2, 3,
+			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
 
-	/* We need an extra ref so we can remove them from the table */
-	g_object_ref (dialog->details->uri_entry);
-	g_object_ref (dialog->details->server_entry);
-	g_object_ref (dialog->details->share_entry);
-	g_object_ref (dialog->details->port_entry);
-	g_object_ref (dialog->details->folder_entry);
-	g_object_ref (dialog->details->domain_entry);
-	g_object_ref (dialog->details->user_entry);
-	g_object_ref (dialog->details->bookmark_check);
-	g_object_ref (dialog->details->name_entry);
-	
+	bind_visibility (dialog, dialog->details->share_entry, label);
+
+	/* fourth row: folder entry */
+	label = gtk_label_new (_("Folder:"));
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_table_attach (GTK_TABLE (table), label,
+			  0, 1,
+			  3, 4,
+			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_widget_show (label);
+
+	dialog->details->folder_entry = gtk_entry_new ();
+	gtk_entry_set_text (GTK_ENTRY (dialog->details->folder_entry), "/");
+	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->folder_entry), TRUE);
+	gtk_table_attach (GTK_TABLE (table), dialog->details->folder_entry,
+			  1, 2,
+			  3, 4,
+			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_widget_show (dialog->details->folder_entry);
+
+	/* user details label */
+	label = gtk_label_new (NULL);
+	str = g_strdup_printf ("<b>%s</b>", _("User Details"));
+	gtk_label_set_markup (GTK_LABEL (label), str);
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_box_pack_start (GTK_BOX (content_area), label, FALSE, FALSE, 6);
+
+	/* user details alignment */
+	alignment = gtk_alignment_new (0, 0, 0, 0);
+	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment),
+				   0, 0, 12, 0);
+	gtk_box_pack_start (GTK_BOX (content_area), alignment, TRUE, TRUE, 0);
+
+	bind_visibility (dialog, alignment, label);
+	dialog->details->user_details = alignment;
+
+	table = gtk_table_new (2, 2, FALSE);
+	gtk_container_add (GTK_CONTAINER (alignment), table);
+	gtk_widget_show (table);
+
+	/* first row: domain entry */
+	label = gtk_label_new (_("Domain Name:"));
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_table_attach (GTK_TABLE (table), label,
+			  0, 1,
+			  0, 1,
+			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+
+	dialog->details->domain_entry = gtk_entry_new ();
+	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->domain_entry), TRUE);
+	gtk_table_attach (GTK_TABLE (table), dialog->details->domain_entry,
+			  1, 2,
+			  0, 1,
+			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+
+	bind_visibility (dialog, dialog->details->domain_entry, label);
+
+	/* second row: username entry */
+	label = gtk_label_new (_("User Name:"));
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_table_attach (GTK_TABLE (table), label,
+			  0, 1,
+			  1, 2,
+			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+
+	dialog->details->user_entry = gtk_entry_new ();
+	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->user_entry), TRUE);
+	gtk_table_attach (GTK_TABLE (table), dialog->details->user_entry,
+			  1, 2,
+			  1, 2,
+			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+
+	bind_visibility (dialog, dialog->details->user_entry, label);
+
+	/* add as bookmark */
+	dialog->details->bookmark_check = gtk_check_button_new_with_mnemonic (_("Add _bookmark"));
+	gtk_box_pack_start (GTK_BOX (content_area), dialog->details->bookmark_check, TRUE, TRUE, 0);
+	gtk_widget_show (dialog->details->bookmark_check);
+
+	hbox = gtk_hbox_new (FALSE, 12);
+	gtk_box_pack_start (GTK_BOX (content_area), hbox, TRUE, TRUE, 0);
+
+	label = gtk_label_new (_("Bookmark Name:"));
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
+
+	dialog->details->name_entry = gtk_entry_new ();
+	gtk_box_pack_start (GTK_BOX (hbox), dialog->details->name_entry, TRUE, TRUE, 0);
+
+	gtk_widget_show_all (hbox);
+
+	g_object_bind_property (dialog->details->bookmark_check, "active",
+				dialog->details->name_entry, "sensitive",
+				G_BINDING_DEFAULT |
+				G_BINDING_SYNC_CREATE);
 	setup_for_type (dialog);
-	
+
         gtk_dialog_add_button (GTK_DIALOG (dialog),
                                GTK_STOCK_HELP,
                                GTK_RESPONSE_HELP);
 	gtk_dialog_add_button (GTK_DIALOG (dialog),
 			       GTK_STOCK_CANCEL,
 			       GTK_RESPONSE_CANCEL);
-	gtk_dialog_add_button (GTK_DIALOG (dialog),
-			       _("C_onnect"),
-			       RESPONSE_CONNECT);
+	connect_button = gtk_dialog_add_button (GTK_DIALOG (dialog),
+						_("C_onnect"),
+						RESPONSE_CONNECT);
 	gtk_dialog_set_default_response (GTK_DIALOG (dialog),
 					 RESPONSE_CONNECT);
+
+	g_signal_connect (dialog->details->server_entry, "changed",
+			  G_CALLBACK (entry_changed_callback),
+			  connect_button);
+	entry_changed_callback (GTK_EDITABLE (dialog->details->server_entry),
+				connect_button);
 
 	g_signal_connect (dialog, "response",
 			  G_CALLBACK (response_callback),
 			  dialog);
-
-
 }
 
 GtkWidget *
-nautilus_connect_server_dialog_new (NautilusWindow *window, GFile *location)
+nautilus_connect_server_dialog_new (NautilusWindow *window)
 {
 	NautilusConnectServerDialog *conndlg;
 	GtkWidget *dialog;
@@ -949,13 +663,6 @@ nautilus_connect_server_dialog_new (NautilusWindow *window, GFile *location)
 		gtk_window_set_screen (GTK_WINDOW (dialog),
 				       gtk_window_get_screen (GTK_WINDOW (window)));
 		conndlg->details->application = window->application;
-	}
-
-	if (location) {
-		/* If it's a remote URI, then load as the default */
-		if (!g_file_is_native (location)) {
-			display_server_location (conndlg, location);
-		}
 	}
 
 	return dialog;

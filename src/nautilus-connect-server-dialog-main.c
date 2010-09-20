@@ -164,19 +164,12 @@ main (int argc, char *argv[])
 {
 	GtkWidget *dialog;
 	GOptionContext *context;
-	const char **args;
-	GFile *location;
 	GError *error;
-	const GOptionEntry options[] = {
-		{ G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, &args, NULL,  N_("[URI]") },
-		{ NULL }
-	};
 
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 
-	args = NULL;
 	error = NULL;
 	/* Translators: This is the --help description for the connect to server app,
 	   the initial newlines are between the command line arg and the description */
@@ -199,18 +192,7 @@ main (int argc, char *argv[])
 
 	gtk_window_set_default_icon_name (NAUTILUS_ICON_FOLDER);
 
-
-	/* command line arguments, null terminated array */
-	location = NULL;
-	if (args) {
-		location = g_file_new_for_commandline_arg (*args);
-	}
-
-	dialog = nautilus_connect_server_dialog_new (NULL, location);
-
-	if (location) {
-		g_object_unref (location);
-	}
+	dialog = nautilus_connect_server_dialog_new (NULL);
 
 	open_dialogs = 0;
 	g_signal_connect (dialog, "destroy",
