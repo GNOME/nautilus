@@ -237,16 +237,9 @@ action_connect_to_server_callback (GtkAction *action,
 				   gpointer user_data)
 {
 	NautilusWindow *window = NAUTILUS_WINDOW (user_data);
-	NautilusWindowSlot *slot;
 	GtkWidget *dialog;
-	GFile *location;
 
-	slot = nautilus_window_get_active_slot (window);
-	location = nautilus_window_slot_get_location (slot);
-	dialog = nautilus_connect_server_dialog_new (window, location);
-	if (location) {
-		g_object_unref (location);
-	}
+	dialog = nautilus_connect_server_dialog_new (window);
 
 	gtk_widget_show (dialog);
 }
