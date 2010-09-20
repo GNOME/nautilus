@@ -41,6 +41,7 @@
 
 /* TODO:
  * - name entry + pre-fill
+ * - NetworkManager integration
  */
 
 struct _NautilusConnectServerDialogDetails {
@@ -96,7 +97,7 @@ struct MethodInfo {
 enum {
 	DEFAULT_METHOD = (1 << 0),
 	
-	/* Widgets to display in setup_for_type */
+	/* Widgets to display in connect_dialog_setup_for_type */
 	SHOW_SHARE     = (1 << 1),
 	SHOW_PORT      = (1 << 2),
 	SHOW_USER      = (1 << 3),
@@ -143,8 +144,8 @@ get_method_description (struct MethodInfo *meth)
 }
 
 static void
-dialog_restore_info_bar (NautilusConnectServerDialog *dialog,
-			 GtkMessageType message_type)
+connect_dialog_restore_info_bar (NautilusConnectServerDialog *dialog,
+				 GtkMessageType message_type)
 {
 	if (dialog->details->info_bar_content != NULL) {
 		gtk_widget_destroy (dialog->details->info_bar_content);
@@ -156,14 +157,14 @@ dialog_restore_info_bar (NautilusConnectServerDialog *dialog,
 }
 
 static void
-dialog_set_connecting (NautilusConnectServerDialog *dialog)
+connect_dialog_set_connecting (NautilusConnectServerDialog *dialog)
 {
 	GtkWidget *hbox;
 	GtkWidget *widget;
 	GtkWidget *content_area;
 	gint width, height;
 
-	dialog_restore_info_bar (dialog, GTK_MESSAGE_INFO);
+	connect_dialog_restore_info_bar (dialog, GTK_MESSAGE_INFO);
 	gtk_widget_show (dialog->details->info_bar);	
 
 	content_area = gtk_info_bar_get_content_area (GTK_INFO_BAR (dialog->details->info_bar));
@@ -265,14 +266,14 @@ iconize_entry (NautilusConnectServerDialog *dialog,
 }
 
 static void
-set_info_bar_error (NautilusConnectServerDialog *dialog,
-		    GError *error)
+connect_dialog_set_info_bar_error (NautilusConnectServerDialog *dialog,
+				   GError *error)
 {
 	GtkWidget *content_area, *label, *entry, *hbox, *icon;
 	gchar *str;
 	const gchar *folder, *server;
 
-	dialog_restore_info_bar (dialog, GTK_MESSAGE_WARNING);
+	connect_dialog_restore_info_bar (dialog, GTK_MESSAGE_WARNING);
 
 	content_area = gtk_info_bar_get_content_area (GTK_INFO_BAR (dialog->details->info_bar));
 	entry = NULL;
@@ -333,7 +334,7 @@ set_info_bar_error (NautilusConnectServerDialog *dialog,
 }
 
 static void
-dialog_finish_fill (NautilusConnectServerDialog *dialog)
+connect_dialog_finish_fill (NautilusConnectServerDialog *dialog)
 {
 	GAskPasswordFlags flags;
 	GMountOperation *op;
@@ -358,7 +359,7 @@ dialog_finish_fill (NautilusConnectServerDialog *dialog)
 		g_mount_operation_set_password_save (op, G_PASSWORD_SAVE_PERMANENTLY);
 	}
 
-	dialog_set_connecting (dialog);
+	connect_dialog_set_connecting (dialog);
 
 	g_simple_async_result_set_op_res_gboolean (dialog->details->fill_details_res, TRUE);
 	g_simple_async_result_complete (dialog->details->fill_details_res);
@@ -371,16 +372,16 @@ dialog_finish_fill (NautilusConnectServerDialog *dialog)
 }
 
 static void
-dialog_request_additional_details (NautilusConnectServerDialog *self,
-				   GAskPasswordFlags flags,
-				   const gchar *default_user,
-				   const gchar *default_domain)
+connect_dialog_request_additional_details (NautilusConnectServerDialog *self,
+					   GAskPasswordFlags flags,
+					   const gchar *default_user,
+					   const gchar *default_domain)
 {
 	GtkWidget *content_area, *label, *entry, *hbox, *icon;
 
 	self->details->fill_details_flags = flags;
 
-	dialog_restore_info_bar (self, GTK_MESSAGE_WARNING);
+	connect_dialog_restore_info_bar (self, GTK_MESSAGE_WARNING);
 
 	content_area = gtk_info_bar_get_content_area (GTK_INFO_BAR (self->details->info_bar));
 	entry = NULL;
@@ -452,7 +453,7 @@ display_location_async_cb (GObject *source,
 								res, &error);
 
 	if (error != NULL) {
-		set_info_bar_error (dialog, error);
+		connect_dialog_set_info_bar_error (dialog, error);
 		g_error_free (error);
 	} else {
 		gtk_widget_destroy (GTK_WIDGET (dialog));
@@ -483,7 +484,7 @@ mount_enclosing_ready_cb (GObject *source,
 		if (dialog->details->should_destroy) {
 			gtk_widget_destroy (GTK_WIDGET (dialog));
 		} else {
-			set_info_bar_error (dialog, error);
+			connect_dialog_set_info_bar_error (dialog, error);
 		}
 	}
 
@@ -493,9 +494,9 @@ mount_enclosing_ready_cb (GObject *source,
 }
 
 static void
-dialog_present_uri_async (NautilusConnectServerDialog *self,
-			  NautilusApplication *application,
-			  GFile *location)
+connect_dialog_present_uri_async (NautilusConnectServerDialog *self,
+				  NautilusApplication *application,
+				  GFile *location)
 {
 	GMountOperation *op;
 
@@ -507,7 +508,7 @@ dialog_present_uri_async (NautilusConnectServerDialog *self,
 }
 
 static void
-connect_to_server (NautilusConnectServerDialog *dialog)
+connect_dialog_connect_to_server (NautilusConnectServerDialog *dialog)
 {
 	struct MethodInfo *meth;
 	GFile *location;
@@ -609,10 +610,10 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 	location = g_file_new_for_uri (uri);
 	g_free (uri);
 
-	dialog_set_connecting (dialog);
-	dialog_present_uri_async (dialog,
-				  dialog->details->application,
-				  location);
+	connect_dialog_set_connecting (dialog);
+	connect_dialog_present_uri_async (dialog,
+					  dialog->details->application,
+					  location);
 
 	g_object_unref (location);
 }
@@ -621,14 +622,14 @@ static void
 connect_to_server_or_finish_fill (NautilusConnectServerDialog *dialog)
 {
 	if (dialog->details->fill_details_res != NULL) {
-		dialog_finish_fill (dialog);
+		connect_dialog_finish_fill (dialog);
 	} else {
-		connect_to_server (dialog);
+		connect_dialog_connect_to_server (dialog);
 	}
 }
 
 static gboolean
-abort_mount_operation (NautilusConnectServerDialog *dialog)
+connect_dialog_abort_mount_operation (NautilusConnectServerDialog *dialog)
 {
 	if (dialog->details->fill_details_res != NULL) {
 		g_simple_async_result_set_op_res_gboolean (dialog->details->fill_details_res, FALSE);
@@ -649,9 +650,9 @@ abort_mount_operation (NautilusConnectServerDialog *dialog)
 }
 
 static void
-destroy_dialog (NautilusConnectServerDialog *dialog)
+connect_dialog_destroy (NautilusConnectServerDialog *dialog)
 {
-	if (abort_mount_operation (dialog)) {
+	if (connect_dialog_abort_mount_operation (dialog)) {
 		dialog->details->should_destroy = TRUE;
 	} else {
 		gtk_widget_destroy (GTK_WIDGET (dialog));
@@ -659,9 +660,9 @@ destroy_dialog (NautilusConnectServerDialog *dialog)
 }
 
 static void
-response_callback (NautilusConnectServerDialog *dialog,
-		   int response_id,
-		   gpointer data)
+connect_dialog_response_cb (NautilusConnectServerDialog *dialog,
+			    int response_id,
+			    gpointer data)
 {
 	GError *error;
 
@@ -672,7 +673,7 @@ response_callback (NautilusConnectServerDialog *dialog,
 	case GTK_RESPONSE_NONE:
 	case GTK_RESPONSE_DELETE_EVENT:
 	case GTK_RESPONSE_CANCEL:
-		destroy_dialog (dialog);
+		connect_dialog_destroy (dialog);
 		break;
 	case GTK_RESPONSE_HELP :
 		error = NULL;
@@ -691,7 +692,7 @@ response_callback (NautilusConnectServerDialog *dialog,
 }
 
 static void
-dialog_cleanup (NautilusConnectServerDialog *dialog)
+connect_dialog_cleanup (NautilusConnectServerDialog *dialog)
 {
 	/* hide the infobar */
 	gtk_widget_hide (dialog->details->info_bar);
@@ -701,7 +702,7 @@ dialog_cleanup (NautilusConnectServerDialog *dialog)
 			      _("C_onnect"));
 
 	/* if there was a pending mount operation, cancel it. */
-	abort_mount_operation (dialog);
+	connect_dialog_abort_mount_operation (dialog);
 
 	/* restore password checkbox sensitivity */
 	if (dialog->details->password_sensitive_id == 0) {
@@ -722,42 +723,15 @@ dialog_cleanup (NautilusConnectServerDialog *dialog)
 	dialog->details->last_password_set = FALSE;
 }
 
-static void
-nautilus_connect_server_dialog_finalize (GObject *object)
-{
-	NautilusConnectServerDialog *dialog;
-
-	dialog = NAUTILUS_CONNECT_SERVER_DIALOG (object);
-
-	abort_mount_operation (dialog);
-
-	if (dialog->details->iconized_entries != NULL) {
-		g_list_free (dialog->details->iconized_entries);
-		dialog->details->iconized_entries = NULL;
-	}
-
-	G_OBJECT_CLASS (nautilus_connect_server_dialog_parent_class)->finalize (object);
-}
 
 static void
-nautilus_connect_server_dialog_class_init (NautilusConnectServerDialogClass *class)
-{
-	GObjectClass *oclass;
-
-	oclass = G_OBJECT_CLASS (class);
-	oclass->finalize = nautilus_connect_server_dialog_finalize;
-
-	g_type_class_add_private (class, sizeof (NautilusConnectServerDialogDetails));
-}
-
-static void
-setup_for_type (NautilusConnectServerDialog *dialog)
+connect_dialog_setup_for_type (NautilusConnectServerDialog *dialog)
 {
 	struct MethodInfo *meth;
 	int index;;
 	GtkTreeIter iter;
 
-	dialog_cleanup (dialog);
+	connect_dialog_cleanup (dialog);
 
 	/* get our method info */
 	if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (dialog->details->type_combo),
@@ -990,7 +964,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 			  1, 2,
 			  GTK_EXPAND | GTK_FILL, GTK_EXPAND, 6, 3);
 	g_signal_connect_swapped (combo, "changed",
-				  G_CALLBACK (setup_for_type),
+				  G_CALLBACK (connect_dialog_setup_for_type),
 				  dialog);
 
 	/* third row: share entry */
@@ -1130,10 +1104,38 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 					  connect_button);
 
 	g_signal_connect (dialog, "response",
-			  G_CALLBACK (response_callback),
+			  G_CALLBACK (connect_dialog_response_cb),
 			  dialog);
 
-	setup_for_type (dialog);
+	connect_dialog_setup_for_type (dialog);
+}
+
+static void
+nautilus_connect_server_dialog_finalize (GObject *object)
+{
+	NautilusConnectServerDialog *dialog;
+
+	dialog = NAUTILUS_CONNECT_SERVER_DIALOG (object);
+
+	connect_dialog_abort_mount_operation (dialog);
+
+	if (dialog->details->iconized_entries != NULL) {
+		g_list_free (dialog->details->iconized_entries);
+		dialog->details->iconized_entries = NULL;
+	}
+
+	G_OBJECT_CLASS (nautilus_connect_server_dialog_parent_class)->finalize (object);
+}
+
+static void
+nautilus_connect_server_dialog_class_init (NautilusConnectServerDialogClass *class)
+{
+	GObjectClass *oclass;
+
+	oclass = G_OBJECT_CLASS (class);
+	oclass->finalize = nautilus_connect_server_dialog_finalize;
+
+	g_type_class_add_private (class, sizeof (NautilusConnectServerDialogDetails));
 }
 
 GtkWidget *
@@ -1223,7 +1225,7 @@ nautilus_connect_server_dialog_fill_details_async (NautilusConnectServerDialog *
 	if (set_flags != 0) {
 		set_flags |= (flags & G_ASK_PASSWORD_SAVING_SUPPORTED);
 		self->details->fill_operation = g_object_ref (operation);
-		dialog_request_additional_details (self, set_flags, default_user, default_domain);
+		connect_dialog_request_additional_details (self, set_flags, default_user, default_domain);
 	} else {
 		g_simple_async_result_set_op_res_gboolean (fill_details_res, TRUE);
 		g_simple_async_result_complete (fill_details_res);
