@@ -883,6 +883,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	label = gtk_label_new_with_mnemonic (_("_Port:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_widget_show (label);
 
 	dialog->details->port_spinbutton =
 		gtk_spin_button_new_with_range (0.0, 65535.0, 1.0);
