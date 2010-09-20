@@ -2812,6 +2812,12 @@ fm_list_view_dispose (GObject *object)
 
 	list_view = FM_LIST_VIEW (object);
 
+	if (list_view->details->model) {
+		stop_cell_editing (list_view);
+		g_object_unref (list_view->details->model);
+		list_view->details->model = NULL;
+	}
+
 	if (list_view->details->drag_dest) {
 		g_object_unref (list_view->details->drag_dest);
 		list_view->details->drag_dest = NULL;
@@ -2838,12 +2844,6 @@ fm_list_view_finalize (GObject *object)
 
 	list_view = FM_LIST_VIEW (object);
 
-	if (list_view->details->model) {
-		stop_cell_editing (list_view);
-		g_object_unref (list_view->details->model);
-		list_view->details->model = NULL;
-	}
-	
 	g_free (list_view->details->original_name);
 	list_view->details->original_name = NULL;
 	
