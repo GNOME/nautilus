@@ -11,11 +11,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus.master\n"
+"Project-Id-Version: nautilus gnome-2-32\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2010-09-09 19:04+0000\n"
-"PO-Revision-Date: 2010-09-11 15:09+0700\n"
+"POT-Creation-Date: 2010-09-20 12:50+0000\n"
+"PO-Revision-Date: 2010-09-22 15:42+0700\n"
 "Last-Translator: Andika Triwidada <andika@gmail.com>\n"
 "Language-Team: GNOME Indonesian Translation Team <gnome@i15n.org>\n"
 "MIME-Version: 1.0\n"
@@ -114,7 +114,6 @@ msgid "Blue Type"
 msgstr "Biru Type"
 
 #: ../data/browser.xml.h:7
-#, fuzzy
 msgid "Brushed Metal"
 msgstr "Logam Kasar"
 
@@ -151,7 +150,6 @@ msgid "Cork"
 msgstr "Gabus Sumbat Botol"
 
 #: ../data/browser.xml.h:16
-#, fuzzy
 msgid "Countertop"
 msgstr "Meja Dapur"
 
@@ -168,7 +166,6 @@ msgid "Dark GNOME"
 msgstr "GNOME Gelap"
 
 #: ../data/browser.xml.h:20
-#, fuzzy
 msgid "Deep Teal"
 msgstr "Hijau Lumut"
 
@@ -193,14 +190,12 @@ msgid "Eclipse"
 msgstr "Gerhana"
 
 #: ../data/browser.xml.h:26
-#, fuzzy
 msgid "Envy"
 msgstr "Hijau Tua"
 
 #. translators: this is the name of an emblem
 #: ../data/browser.xml.h:28 ../src/nautilus-emblem-sidebar.c:933
 #: ../src/nautilus-property-browser.c:1829
-#, fuzzy
 msgid "Erase"
 msgstr "Hapus"
 
@@ -313,7 +308,6 @@ msgid "Sea Foam"
 msgstr "Busa Laut"
 
 #: ../data/browser.xml.h:56
-#, fuzzy
 msgid "Shale"
 msgstr "Abu-abu Tua"
 
@@ -1577,7 +1571,7 @@ msgstr "Sel_alu lakukan aksi ini"
 #: ../src/file-manager/fm-directory-view.c:7244
 #: ../src/file-manager/fm-directory-view.c:7325
 #: ../src/file-manager/fm-tree-view.c:1278
-#: ../src/nautilus-places-sidebar.c:2280
+#: ../src/nautilus-places-sidebar.c:2295
 msgid "_Eject"
 msgstr "K_eluarkan Media"
 
@@ -1589,7 +1583,7 @@ msgstr "K_eluarkan Media"
 #: ../src/file-manager/fm-directory-view.c:7240
 #: ../src/file-manager/fm-directory-view.c:7321
 #: ../src/file-manager/fm-tree-view.c:1269
-#: ../src/nautilus-places-sidebar.c:2273
+#: ../src/nautilus-places-sidebar.c:2288
 msgid "_Unmount"
 msgstr "_Lepas Kaitan"
 
@@ -1640,7 +1634,7 @@ msgstr "Kon_figurasi Baku"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:273
-#: ../src/file-manager/fm-list-view.c:1577
+#: ../src/file-manager/fm-list-view.c:1603
 msgid "Name"
 msgstr "Nama"
 
@@ -1755,7 +1749,7 @@ msgid "Original location of file before moved to the Trash"
 msgstr "Lokasi awal berkas sebelum dipindahkan ke Tempat Sampah"
 
 #: ../libnautilus-private/nautilus-customization-data.c:405
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:519
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:522
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:428
 #: ../src/nautilus-property-browser.c:1873
 msgid "Reset"
@@ -1858,118 +1852,156 @@ msgstr "Maaf, tidak berhasil menyimpan emblem gubahan."
 msgid "Sorry, unable to save custom emblem name."
 msgstr "Maaf, tidak berhasil menyimpan nama emblem gubahan."
 
-# Dalam pesan terjemahannya, string ini muncul di tengah kalimat. Jadi, tidak diawali huruf besar.
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:82
-msgid "An older"
-msgstr "yang lebih lama"
-
-# Dalam pesan terjemahannya, string ini muncul di tengah kalimat. Jadi, tidak diawali huruf besar.
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:85
-msgid "A newer"
-msgstr "yang lebih baru"
-
-# Dalam pesan terjemahannya, string ini muncul di tengah kalimat. Jadi, tidak diawali huruf besar.
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:87
-msgid "Another"
-msgstr "lain"
-
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:159
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:144
 #, c-format
 msgid "Merge folder \"%s\"?"
 msgstr "Gabungkan folder \"%s\"?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:166
-#, c-format
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:148
+#| msgid ""
+#| "%s folder with the same name already exists in \"%s\".\n"
+#| "Merging will ask for confirmation before replacing any files in the "
+#| "folder that conflict with the files being copied."
 msgid ""
-"%s folder with the same name already exists in \"%s\".\n"
 "Merging will ask for confirmation before replacing any files in the folder "
 "that conflict with the files being copied."
 msgstr ""
-"Sudah ada folder %s dengan nama yang sama dalam \"%s\".\n"
-"Jika Anda memilih untuk menggabungkan folder tersebut, isi folder yang "
-"nantinya konflik akan ditanya terlebih dahulu sebelum ditimpa."
+"Penggabungan akan meminta konfirmasi sebelum menggantikan berkas di dalam "
+"folder yang konflik dengan berkas yang sedang disalin."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:174
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:153
+#, c-format
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "An older folder with the same name already exists in \"%s\"."
+msgstr "Sudah ada folder lebih tua dengan nama yang sama dalam \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:157
+#, c-format
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "A newer folder with the same name already exists in \"%s\"."
+msgstr "Sudah ada folder lebih baru dengan nama yang sama dalam \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:161
+#, c-format
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "Another folder with the same name already exists in \"%s\"."
+msgstr "Sudah ada folder lain dengan nama yang sama dalam \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:166
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "Replacing it will remove all files in the folder."
+msgstr "Menimpanya akan membuang semua berkas di dalam folder tersebut."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:168
 #, c-format
 msgid "Replace folder \"%s\"?"
 msgstr "Timpa folder \"%s\"?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:176
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:170
 #, c-format
-msgid ""
-"A folder with the same name already exists in \"%s\".\n"
-"Replacing it will remove all files in the folder."
-msgstr ""
-"Folder dengan nama yang sama sudah ada di dalam \"%s\".\n"
-"Menimpanya akan membuang semua berkas di dalam folder tersebut."
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "A folder with the same name already exists in \"%s\"."
+msgstr "Sudah ada folder dengan nama yang sama dalam \"%s\"."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:182
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:175
 #, c-format
 msgid "Replace file \"%s\"?"
 msgstr "Timpa berkas \"%s\"?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:188
-#, c-format
-msgid ""
-"%s file with the same name already exists in \"%s\".\n"
-"Replacing it will overwrite its content."
-msgstr ""
-"Sudah ada berkas %s dengan nama yang sama dalam \"%s\".\n"
-"Menimpanya akan mengganti seluruh isi berkas tersebut."
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:177
+#| msgid ""
+#| "%s file with the same name already exists in \"%s\".\n"
+#| "Replacing it will overwrite its content."
+msgid "Replacing it will overwrite its content."
+msgstr "Menimpanya akan mengganti isinya."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:252
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:181
+#, c-format
+#| msgid ""
+#| "%s file with the same name already exists in \"%s\".\n"
+#| "Replacing it will overwrite its content."
+msgid "An older file with the same name already exists in \"%s\"."
+msgstr "Sudah ada berkas lebih tua dengan nama yang sama dalam \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:185
+#, c-format
+#| msgid ""
+#| "%s file with the same name already exists in \"%s\".\n"
+#| "Replacing it will overwrite its content."
+msgid "A newer file with the same name already exists in \"%s\"."
+msgstr "Sudah ada berkas lebih baru dengan nama yang sama dalam \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:189
+#, c-format
+#| msgid ""
+#| "%s file with the same name already exists in \"%s\".\n"
+#| "Replacing it will overwrite its content."
+msgid "Another file with the same name already exists in \"%s\"."
+msgstr "Sudah ada berkas lain dengan nama yang sama dalam \"%s\"."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:255
 msgid "Original file"
 msgstr "Berkas asli"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:253
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:284
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:256
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:287
 #: ../src/file-manager/fm-properties-window.c:3311
 msgid "Size:"
 msgstr "Ukuran:"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:256
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:287
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:259
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:290
 #: ../src/file-manager/fm-properties-window.c:3293
 msgid "Type:"
 msgstr "Jenis:"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:259
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:290
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:262
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:293
 msgid "Last modified:"
 msgstr "Terakhir diubah:"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:283
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:286
 msgid "Replace with"
 msgstr "Timpa"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:312
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:315
 msgid "Merge"
 msgstr "Gabung"
 
 #. Setup the expander for the rename action
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:505
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:508
 msgid "_Select a new name for the destination"
 msgstr "_Pilih nama baru"
 
 #. Setup the checkbox to apply the action to all files
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:531
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:534
 msgid "Apply this action to all files"
 msgstr "Terapkan aksi ini untuk semua berkas"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:542
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:545
 #: ../libnautilus-private/nautilus-file-operations.c:187
 msgid "_Skip"
 msgstr "_Lewati"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:547
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:550
 msgid "Re_name"
 msgstr "Ubah _Nama"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:553
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:556
 msgid "Replace"
 msgstr "Timpa"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:626
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:629
 msgid "File conflict"
 msgstr "Konflik pada berkas"
 
@@ -2203,7 +2235,7 @@ msgstr "Semua isi Tempat Sampah akan dihapus permanen."
 #. Empty Trash menu item
 #: ../libnautilus-private/nautilus-file-operations.c:1339
 #: ../libnautilus-private/nautilus-file-operations.c:2191
-#: ../src/nautilus-places-sidebar.c:2317 ../src/nautilus-trash-bar.c:190
+#: ../src/nautilus-places-sidebar.c:2332 ../src/nautilus-trash-bar.c:190
 msgid "Empty _Trash"
 msgstr "Kosongkan _Tempat Sampah"
 
@@ -3123,8 +3155,8 @@ msgstr "Tampilan Kompak"
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:144
-#: ../src/file-manager/fm-list-view.c:1631
-#: ../src/file-manager/fm-list-view.c:3154
+#: ../src/file-manager/fm-list-view.c:1658
+#: ../src/file-manager/fm-list-view.c:3147
 #: ../src/nautilus-file-management-properties.ui.h:67
 msgid "List View"
 msgstr "Tampilan Tabel"
@@ -3481,7 +3513,7 @@ msgstr "_Telusur..."
 #: ../src/file-manager/fm-directory-view.c:7098
 #: ../src/file-manager/fm-directory-view.c:8599
 #: ../src/file-manager/fm-tree-view.c:1163
-#: ../src/nautilus-places-sidebar.c:2222
+#: ../src/nautilus-places-sidebar.c:2237
 msgid "_Open"
 msgstr "_Buka"
 
@@ -3710,13 +3742,13 @@ msgstr "Membuka folder pribadi Anda"
 msgid "File Manager"
 msgstr "Manajer Berkas"
 
-#: ../src/file-manager/fm-desktop-icon-view.c:639
+#: ../src/file-manager/fm-desktop-icon-view.c:640
 msgid "Background"
 msgstr "Latar Belakang"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-desktop-icon-view.c:712
+#: ../src/file-manager/fm-desktop-icon-view.c:713
 #: ../src/file-manager/fm-directory-view.c:7130
 #: ../src/file-manager/fm-directory-view.c:8799
 msgid "E_mpty Trash"
@@ -3725,45 +3757,45 @@ msgstr "Kosongkan Te_mpat Sampah"
 #. label, accelerator
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-desktop-icon-view.c:724
+#: ../src/file-manager/fm-desktop-icon-view.c:725
 #: ../src/file-manager/fm-directory-view.c:7094
 msgid "Create L_auncher..."
 msgstr "Bu_at Peluncur..."
 
 #. tooltip
-#: ../src/file-manager/fm-desktop-icon-view.c:726
+#: ../src/file-manager/fm-desktop-icon-view.c:727
 #: ../src/file-manager/fm-directory-view.c:7095
 msgid "Create a new launcher"
 msgstr "Membuat peluncur baru"
 
 #. label, accelerator
-#: ../src/file-manager/fm-desktop-icon-view.c:731
+#: ../src/file-manager/fm-desktop-icon-view.c:732
 msgid "Change Desktop _Background"
 msgstr "Ubah Latar _Belakang Desktop"
 
 #. tooltip
-#: ../src/file-manager/fm-desktop-icon-view.c:733
+#: ../src/file-manager/fm-desktop-icon-view.c:734
 msgid ""
 "Show a window that lets you set your desktop background's pattern or color"
 msgstr "Mengubah gambar atau warna latar berlakang desktop Anda"
 
 #. label, accelerator
-#: ../src/file-manager/fm-desktop-icon-view.c:738
+#: ../src/file-manager/fm-desktop-icon-view.c:739
 msgid "Empty Trash"
 msgstr "Kosongkan Tempat Sampah"
 
 #. tooltip
-#: ../src/file-manager/fm-desktop-icon-view.c:740
+#: ../src/file-manager/fm-desktop-icon-view.c:741
 #: ../src/file-manager/fm-directory-view.c:7131
 #: ../src/nautilus-trash-bar.c:197
 msgid "Delete all items in the Trash"
 msgstr "Menghapus semua objek di dalam Tempat Sampah"
 
-#: ../src/file-manager/fm-desktop-icon-view.c:837
+#: ../src/file-manager/fm-desktop-icon-view.c:838
 msgid "The desktop view encountered an error."
 msgstr "Tampilan desktop mengalami galat."
 
-#: ../src/file-manager/fm-desktop-icon-view.c:838
+#: ../src/file-manager/fm-desktop-icon-view.c:839
 msgid "The desktop view encountered an error while starting up."
 msgstr "Tampilan desktop mengalami galat sewaktu mulai dijalankan."
 
@@ -4174,7 +4206,7 @@ msgstr "Membuka objek yang dipilih pada jendela navigasi"
 #: ../src/file-manager/fm-directory-view.c:8350
 #: ../src/file-manager/fm-directory-view.c:8676
 #: ../src/file-manager/fm-tree-view.c:1174
-#: ../src/nautilus-places-sidebar.c:2230
+#: ../src/nautilus-places-sidebar.c:2245
 msgid "Open in New _Tab"
 msgstr "Buka di _Tab baru"
 
@@ -4401,7 +4433,7 @@ msgstr "Membuka koneksi permanen pada server ini"
 #: ../src/file-manager/fm-directory-view.c:7208
 #: ../src/file-manager/fm-directory-view.c:7236
 #: ../src/file-manager/fm-directory-view.c:7317
-#: ../src/nautilus-places-sidebar.c:2266
+#: ../src/nautilus-places-sidebar.c:2281
 msgid "_Mount"
 msgstr "_Kait"
 
@@ -4425,7 +4457,7 @@ msgstr "Mengeluarkan volume yang dipilih"
 #: ../src/file-manager/fm-directory-view.c:7220
 #: ../src/file-manager/fm-directory-view.c:7248
 #: ../src/file-manager/fm-directory-view.c:7329
-#: ../src/nautilus-places-sidebar.c:2294
+#: ../src/nautilus-places-sidebar.c:2309
 msgid "_Format"
 msgstr "_Format"
 
@@ -4446,7 +4478,7 @@ msgstr "Memformat volume yang dipilih"
 #: ../src/file-manager/fm-directory-view.c:8106
 #: ../src/file-manager/fm-directory-view.c:8212
 #: ../src/file-manager/fm-directory-view.c:8216
-#: ../src/nautilus-places-sidebar.c:1444 ../src/nautilus-places-sidebar.c:2301
+#: ../src/nautilus-places-sidebar.c:1459 ../src/nautilus-places-sidebar.c:2316
 msgid "_Start"
 msgstr "_Mulai"
 
@@ -4463,7 +4495,7 @@ msgstr "Memulai atau menjalankan volume yang dipilih"
 #: ../src/file-manager/fm-directory-view.c:8039
 #: ../src/file-manager/fm-directory-view.c:8131
 #: ../src/file-manager/fm-directory-view.c:8241
-#: ../src/nautilus-places-sidebar.c:1445 ../src/nautilus-places-sidebar.c:2308
+#: ../src/nautilus-places-sidebar.c:1460 ../src/nautilus-places-sidebar.c:2323
 #: ../src/nautilus-window-menus.c:810
 msgid "_Stop"
 msgstr "_Hentikan"
@@ -4479,7 +4511,7 @@ msgstr "Menghentikan volume yang dipilih"
 #: ../src/file-manager/fm-directory-view.c:7232
 #: ../src/file-manager/fm-directory-view.c:7260
 #: ../src/file-manager/fm-directory-view.c:7341
-#: ../src/nautilus-places-sidebar.c:2287
+#: ../src/nautilus-places-sidebar.c:2302
 msgid "_Detect Media"
 msgstr "_Deteksi Media"
 
@@ -4768,7 +4800,7 @@ msgstr "Menghentikan kandar yang dipilih"
 #: ../src/file-manager/fm-directory-view.c:8043
 #: ../src/file-manager/fm-directory-view.c:8135
 #: ../src/file-manager/fm-directory-view.c:8245
-#: ../src/nautilus-places-sidebar.c:1451
+#: ../src/nautilus-places-sidebar.c:1466
 msgid "_Safely Remove Drive"
 msgstr "Lepa_s Media dengan Aman"
 
@@ -4802,7 +4834,7 @@ msgstr "Menghentikan kandar multidiska yang dipilih"
 #: ../src/file-manager/fm-directory-view.c:8055
 #: ../src/file-manager/fm-directory-view.c:8147
 #: ../src/file-manager/fm-directory-view.c:8257
-#: ../src/nautilus-places-sidebar.c:1464
+#: ../src/nautilus-places-sidebar.c:1479
 msgid "_Lock Drive"
 msgstr "_Kunci Kandar"
 
@@ -4828,7 +4860,7 @@ msgstr ""
 #. stop() for type G_DRIVE_START_STOP_TYPE_PASSWORD is normally not used
 #: ../src/file-manager/fm-directory-view.c:8118
 #: ../src/file-manager/fm-directory-view.c:8228
-#: ../src/nautilus-places-sidebar.c:1463
+#: ../src/nautilus-places-sidebar.c:1478
 msgid "_Unlock Drive"
 msgstr "Buka K_unci Kandar"
 
@@ -4863,7 +4895,7 @@ msgstr "Mengunci kandar yang berhubungan dengan folder yang dibuka"
 #: ../src/file-manager/fm-directory-view.c:8327
 #: ../src/file-manager/fm-directory-view.c:8637
 #: ../src/file-manager/fm-tree-view.c:1183
-#: ../src/nautilus-places-sidebar.c:2237
+#: ../src/nautilus-places-sidebar.c:2252
 msgid "Open in New _Window"
 msgstr "Buka di _Jendela Baru"
 
@@ -5308,44 +5340,44 @@ msgid "(Empty)"
 msgstr "(Kosong)"
 
 #: ../src/file-manager/fm-list-model.c:399
-#: ../src/file-manager/fm-tree-model.c:1287 ../src/nautilus-window-slot.c:196
+#: ../src/file-manager/fm-tree-model.c:1287 ../src/nautilus-window-slot.c:201
 msgid "Loading..."
 msgstr "Sedang memuat..."
 
-#: ../src/file-manager/fm-list-view.c:2290
+#: ../src/file-manager/fm-list-view.c:2317
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s Kolom Terlihat"
 
-#: ../src/file-manager/fm-list-view.c:2309
+#: ../src/file-manager/fm-list-view.c:2336
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Pilih urutan informasi untuk ditampilkan pada folder ini:"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:2363
+#: ../src/file-manager/fm-list-view.c:2390
 msgid "Visible _Columns..."
 msgstr "_Kolom Terlihat..."
 
 #. tooltip
-#: ../src/file-manager/fm-list-view.c:2364
+#: ../src/file-manager/fm-list-view.c:2391
 msgid "Select the columns visible in this folder"
 msgstr "Memilih kolom yang bisa dilihat pada folder ini"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-list-view.c:3156
+#: ../src/file-manager/fm-list-view.c:3149
 msgid "_List"
 msgstr "Tabe_l"
 
-#: ../src/file-manager/fm-list-view.c:3157
+#: ../src/file-manager/fm-list-view.c:3150
 msgid "The list view encountered an error."
 msgstr "Tampilan tabel mengalami galat."
 
-#: ../src/file-manager/fm-list-view.c:3158
+#: ../src/file-manager/fm-list-view.c:3151
 msgid "The list view encountered an error while starting up."
 msgstr "Tampilan tabel mengalami galat sewaktu mulai dijalankan."
 
-#: ../src/file-manager/fm-list-view.c:3159
+#: ../src/file-manager/fm-list-view.c:3152
 msgid "Display this location with the list view."
 msgstr "Menampilkan lokasi ini dengan tampilan tabel."
 
@@ -5683,12 +5715,12 @@ msgstr "Pohon"
 msgid "Show Tree"
 msgstr "Menampilkan Pohon"
 
-#: ../src/nautilus-application.c:328
+#: ../src/nautilus-application.c:406
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "Nautilus tidak dapat membuat folder \"%s\" yang diperlukan."
 
-#: ../src/nautilus-application.c:330
+#: ../src/nautilus-application.c:408
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
@@ -5696,12 +5728,12 @@ msgstr ""
 "Sebelum menjalankan Nautilus, buatlah dulu folder berikut, atau setel hak "
 "aksesnya supaya Nautilus bisa membuatnya sendiri."
 
-#: ../src/nautilus-application.c:333
+#: ../src/nautilus-application.c:411
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "Nautilus tidak dapat membuat folder yang diperlukan berikut: %s."
 
-#: ../src/nautilus-application.c:335
+#: ../src/nautilus-application.c:413
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -5709,8 +5741,8 @@ msgstr ""
 "Sebelum menjalankan Nautilus, buatlah dulu folder berikut, atau setel hak "
 "aksesnya supaya Nautilus bisa membuatnya sendiri."
 
-#: ../src/nautilus-application.c:1552 ../src/nautilus-places-sidebar.c:1822
-#: ../src/nautilus-places-sidebar.c:1851 ../src/nautilus-places-sidebar.c:1880
+#: ../src/nautilus-application.c:1552 ../src/nautilus-places-sidebar.c:1837
+#: ../src/nautilus-places-sidebar.c:1866 ../src/nautilus-places-sidebar.c:1895
 #, c-format
 msgid "Unable to eject %s"
 msgstr "Tidak dapat mengeluarkan %s"
@@ -6785,54 +6817,54 @@ msgid "Open the trash"
 msgstr "Membuka tempat sampah"
 
 #. start() for type G_DRIVE_START_STOP_TYPE_SHUTDOWN is normally not used
-#: ../src/nautilus-places-sidebar.c:1450
+#: ../src/nautilus-places-sidebar.c:1465
 msgid "_Power On"
 msgstr "_Nyalakan"
 
-#: ../src/nautilus-places-sidebar.c:1454
+#: ../src/nautilus-places-sidebar.c:1469
 msgid "_Connect Drive"
 msgstr "Koneksikan _Kandar"
 
-#: ../src/nautilus-places-sidebar.c:1455
+#: ../src/nautilus-places-sidebar.c:1470
 msgid "_Disconnect Drive"
 msgstr "_Diskoneksikan Kandar"
 
-#: ../src/nautilus-places-sidebar.c:1458
+#: ../src/nautilus-places-sidebar.c:1473
 msgid "_Start Multi-disk Device"
 msgstr "Jalankan Perangkat Multidi_ska"
 
-#: ../src/nautilus-places-sidebar.c:1459
+#: ../src/nautilus-places-sidebar.c:1474
 msgid "_Stop Multi-disk Device"
 msgstr "_Hentikan Perangkat Multidiska"
 
-#: ../src/nautilus-places-sidebar.c:1539 ../src/nautilus-places-sidebar.c:2075
+#: ../src/nautilus-places-sidebar.c:1554 ../src/nautilus-places-sidebar.c:2090
 #, c-format
 msgid "Unable to start %s"
 msgstr "Tidak dapat menjalankan %s"
 
-#: ../src/nautilus-places-sidebar.c:2023
+#: ../src/nautilus-places-sidebar.c:2038
 #, c-format
 msgid "Unable to poll %s for media changes"
 msgstr "Tidak dapat mem-poll %s untuk perubahan media"
 
-#: ../src/nautilus-places-sidebar.c:2131
+#: ../src/nautilus-places-sidebar.c:2146
 #, c-format
 msgid "Unable to stop %s"
 msgstr "Tidak dapat menghentikan %s"
 
-#: ../src/nautilus-places-sidebar.c:2245
+#: ../src/nautilus-places-sidebar.c:2260
 msgid "Remove"
 msgstr "Hapus"
 
-#: ../src/nautilus-places-sidebar.c:2254
+#: ../src/nautilus-places-sidebar.c:2269
 msgid "Rename..."
 msgstr "Ubah Nama..."
 
-#: ../src/nautilus-places-sidebar.c:2697
+#: ../src/nautilus-places-sidebar.c:2712
 msgid "Places"
 msgstr "Lokasi"
 
-#: ../src/nautilus-places-sidebar.c:2703
+#: ../src/nautilus-places-sidebar.c:2718
 msgid "Show Places"
 msgstr "Menampilkan Lokasi"
 
