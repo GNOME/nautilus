@@ -14,19 +14,18 @@
 # Rodrigo Flores <rodrigomarquesflores@gmail.com>, 2007.
 # Vladimir Melo <vmelo@gnome.org>, 2008-2009.
 # Fabrício Godoy <skarllot@gmail.com>, 2008-2009.
-# Jonh Wendell <jwendell@gnome.org>, 2009.
 # André Gondim <andregondim@ubuntu.com>, 2009.
 # Krix Apolinário <krixapolinario@gmail.com>, 2009.
 # Henrique P. Machado <hpmachado@gnome.org>, 2010.
+# Jonh Wendell <jwendell@gnome.org>, 2009, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: eel.HEAD.pt_BR\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2010-09-13 09:09+0000\n"
-"PO-Revision-Date: 2010-09-10 14:37-0300\n"
-"Last-Translator: Henrique P. Machado <hpmachado@gnome.org>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-09-22 09:58-0300\n"
+"PO-Revision-Date: 2010-09-22 09:56-0300\n"
+"Last-Translator: Jonh Wendell <jwendell@gnome.org>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1568,7 +1567,7 @@ msgstr "_Sempre executar esta ação"
 #: ../src/file-manager/fm-directory-view.c:7244
 #: ../src/file-manager/fm-directory-view.c:7325
 #: ../src/file-manager/fm-tree-view.c:1278
-#: ../src/nautilus-places-sidebar.c:2280
+#: ../src/nautilus-places-sidebar.c:2295
 msgid "_Eject"
 msgstr "_Ejetar"
 
@@ -1580,7 +1579,7 @@ msgstr "_Ejetar"
 #: ../src/file-manager/fm-directory-view.c:7240
 #: ../src/file-manager/fm-directory-view.c:7321
 #: ../src/file-manager/fm-tree-view.c:1269
-#: ../src/nautilus-places-sidebar.c:2273
+#: ../src/nautilus-places-sidebar.c:2288
 msgid "_Unmount"
 msgstr "_Desmontar"
 
@@ -1856,58 +1855,31 @@ msgid "Merge folder \"%s\"?"
 msgstr "Mesclar pasta \"%s\"?"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:148
-#, fuzzy
-#| msgid ""
-#| "The source folder already exists in \"%B\".  Merging will ask for "
-#| "confirmation before replacing any files in the folder that conflict with "
-#| "the files being moved."
 msgid ""
 "Merging will ask for confirmation before replacing any files in the folder "
 "that conflict with the files being copied."
 msgstr ""
-"A pasta de origem já existe em \"%B\". A mesclagem vai solicitar confirmação "
-"antes de substituir qualquer arquivo na pasta que esteja em conflito com os "
-"arquivos a serem movidos."
+"A mesclagem vai solicitar uma confirmação antes de substituir qualquer "
+"arquivo na pasta que conflite com os arquivos copiados."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:153
-#, fuzzy, c-format
-#| msgid ""
-#| "A folder with the same name already exists in \"%s\".\n"
-#| "Replacing it will remove all files in the folder."
+#, c-format
 msgid "An older folder with the same name already exists in \"%s\"."
-msgstr ""
-"Uma pasta com o mesmo nome já existe em \"%s\".\n"
-"A substituição irá remover todos os arquivos na pasta."
+msgstr "Já existe uma pasta (mais antiga) com este mesmo nome em \"%s\"."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:157
-#, fuzzy, c-format
-#| msgid ""
-#| "A folder with the same name already exists in \"%s\".\n"
-#| "Replacing it will remove all files in the folder."
+#, c-format
 msgid "A newer folder with the same name already exists in \"%s\"."
-msgstr ""
-"Uma pasta com o mesmo nome já existe em \"%s\".\n"
-"A substituição irá remover todos os arquivos na pasta."
+msgstr "Já existe uma pasta (mais nova) com este mesmo nome em \"%s\"."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:161
-#, fuzzy, c-format
-#| msgid ""
-#| "A folder with the same name already exists in \"%s\".\n"
-#| "Replacing it will remove all files in the folder."
+#, c-format
 msgid "Another folder with the same name already exists in \"%s\"."
-msgstr ""
-"Uma pasta com o mesmo nome já existe em \"%s\".\n"
-"A substituição irá remover todos os arquivos na pasta."
+msgstr "Já existe outra pasta com este nome em \"%s\"."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:166
-#, fuzzy
-#| msgid ""
-#| "A folder with the same name already exists in \"%s\".\n"
-#| "Replacing it will remove all files in the folder."
 msgid "Replacing it will remove all files in the folder."
-msgstr ""
-"Uma pasta com o mesmo nome já existe em \"%s\".\n"
-"A substituição irá remover todos os arquivos na pasta."
+msgstr "A substituição removerá todos os arquivos na pasta."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:168
 #, c-format
@@ -1915,14 +1887,9 @@ msgid "Replace folder \"%s\"?"
 msgstr "Substituir pasta \"%s\"?"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:170
-#, fuzzy, c-format
-#| msgid ""
-#| "A folder with the same name already exists in \"%s\".\n"
-#| "Replacing it will remove all files in the folder."
+#, c-format
 msgid "A folder with the same name already exists in \"%s\"."
-msgstr ""
-"Uma pasta com o mesmo nome já existe em \"%s\".\n"
-"A substituição irá remover todos os arquivos na pasta."
+msgstr "Já existe uma pasta com este nome em \"%s\"."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:175
 #, c-format
@@ -1930,44 +1897,23 @@ msgid "Replace file \"%s\"?"
 msgstr "Substituir arquivo \"%s\"?"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:177
-#, fuzzy
-#| msgid ""
-#| "%s file with the same name already exists in \"%s\".\n"
-#| "Replacing it will overwrite its content."
 msgid "Replacing it will overwrite its content."
-msgstr ""
-"O arquivo %s com o mesmo nome já existe em \"%s\".\n"
-"A substituição irá sobrescrever seu conteúdo."
+msgstr "A substituição irá sobrescrever seu conteúdo."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:181
-#, fuzzy, c-format
-#| msgid ""
-#| "%s file with the same name already exists in \"%s\".\n"
-#| "Replacing it will overwrite its content."
+#, c-format
 msgid "An older file with the same name already exists in \"%s\"."
-msgstr ""
-"O arquivo %s com o mesmo nome já existe em \"%s\".\n"
-"A substituição irá sobrescrever seu conteúdo."
+msgstr "Já existe um arquivo (mais antigo) com o mesmo nome em \"%s\"."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:185
-#, fuzzy, c-format
-#| msgid ""
-#| "%s file with the same name already exists in \"%s\".\n"
-#| "Replacing it will overwrite its content."
+#, c-format
 msgid "A newer file with the same name already exists in \"%s\"."
-msgstr ""
-"O arquivo %s com o mesmo nome já existe em \"%s\".\n"
-"A substituição irá sobrescrever seu conteúdo."
+msgstr "Já existe um arquivo (mais novo) com o mesmo nome em \"%s\"."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:189
-#, fuzzy, c-format
-#| msgid ""
-#| "%s file with the same name already exists in \"%s\".\n"
-#| "Replacing it will overwrite its content."
+#, c-format
 msgid "Another file with the same name already exists in \"%s\"."
-msgstr ""
-"O arquivo %s com o mesmo nome já existe em \"%s\".\n"
-"A substituição irá sobrescrever seu conteúdo."
+msgstr "Já existe outro arquivo com o mesmo nome em \"%s\"."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:255
 msgid "Original file"
@@ -2263,7 +2209,7 @@ msgstr "Todos os itens na lixeira serão permanentemente excluídos."
 #. Empty Trash menu item
 #: ../libnautilus-private/nautilus-file-operations.c:1339
 #: ../libnautilus-private/nautilus-file-operations.c:2191
-#: ../src/nautilus-places-sidebar.c:2317 ../src/nautilus-trash-bar.c:190
+#: ../src/nautilus-places-sidebar.c:2332 ../src/nautilus-trash-bar.c:190
 msgid "Empty _Trash"
 msgstr "Esvaziar _lixeira"
 
@@ -3571,7 +3517,7 @@ msgstr "_Navegar..."
 #: ../src/file-manager/fm-directory-view.c:7098
 #: ../src/file-manager/fm-directory-view.c:8599
 #: ../src/file-manager/fm-tree-view.c:1163
-#: ../src/nautilus-places-sidebar.c:2222
+#: ../src/nautilus-places-sidebar.c:2237
 msgid "_Open"
 msgstr "_Abrir"
 
@@ -3802,13 +3748,13 @@ msgstr "Abra a sua pasta pessoal"
 msgid "File Manager"
 msgstr "Gerenciador de Arquivos"
 
-#: ../src/file-manager/fm-desktop-icon-view.c:639
+#: ../src/file-manager/fm-desktop-icon-view.c:640
 msgid "Background"
 msgstr "Plano de fundo"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-desktop-icon-view.c:712
+#: ../src/file-manager/fm-desktop-icon-view.c:713
 #: ../src/file-manager/fm-directory-view.c:7130
 #: ../src/file-manager/fm-directory-view.c:8799
 msgid "E_mpty Trash"
@@ -3817,24 +3763,24 @@ msgstr "Esvaziar _lixeira"
 #. label, accelerator
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-desktop-icon-view.c:724
+#: ../src/file-manager/fm-desktop-icon-view.c:725
 #: ../src/file-manager/fm-directory-view.c:7094
 msgid "Create L_auncher..."
 msgstr "Criar _lançador..."
 
 #. tooltip
-#: ../src/file-manager/fm-desktop-icon-view.c:726
+#: ../src/file-manager/fm-desktop-icon-view.c:727
 #: ../src/file-manager/fm-directory-view.c:7095
 msgid "Create a new launcher"
 msgstr "Cria um novo lançador"
 
 #. label, accelerator
-#: ../src/file-manager/fm-desktop-icon-view.c:731
+#: ../src/file-manager/fm-desktop-icon-view.c:732
 msgid "Change Desktop _Background"
 msgstr "Alterar plano de _fundo"
 
 #. tooltip
-#: ../src/file-manager/fm-desktop-icon-view.c:733
+#: ../src/file-manager/fm-desktop-icon-view.c:734
 msgid ""
 "Show a window that lets you set your desktop background's pattern or color"
 msgstr ""
@@ -3842,22 +3788,22 @@ msgstr ""
 "área de trabalho"
 
 #. label, accelerator
-#: ../src/file-manager/fm-desktop-icon-view.c:738
+#: ../src/file-manager/fm-desktop-icon-view.c:739
 msgid "Empty Trash"
 msgstr "Esvaziar lixeira"
 
 #. tooltip
-#: ../src/file-manager/fm-desktop-icon-view.c:740
+#: ../src/file-manager/fm-desktop-icon-view.c:741
 #: ../src/file-manager/fm-directory-view.c:7131
 #: ../src/nautilus-trash-bar.c:197
 msgid "Delete all items in the Trash"
 msgstr "Excluir todos os itens na lixeira"
 
-#: ../src/file-manager/fm-desktop-icon-view.c:837
+#: ../src/file-manager/fm-desktop-icon-view.c:838
 msgid "The desktop view encountered an error."
 msgstr "A visão de área de trabalho encontrou um erro."
 
-#: ../src/file-manager/fm-desktop-icon-view.c:838
+#: ../src/file-manager/fm-desktop-icon-view.c:839
 msgid "The desktop view encountered an error while starting up."
 msgstr "A visão de área de trabalho encontrou um erro ao iniciar."
 
@@ -4274,7 +4220,7 @@ msgstr "Abre cada item selecionado em uma janela de navegação"
 #: ../src/file-manager/fm-directory-view.c:8350
 #: ../src/file-manager/fm-directory-view.c:8676
 #: ../src/file-manager/fm-tree-view.c:1174
-#: ../src/nautilus-places-sidebar.c:2230
+#: ../src/nautilus-places-sidebar.c:2245
 msgid "Open in New _Tab"
 msgstr "Abrir em nova a_ba"
 
@@ -4504,7 +4450,7 @@ msgstr "Cria uma conexão permanente com este servidor"
 #: ../src/file-manager/fm-directory-view.c:7208
 #: ../src/file-manager/fm-directory-view.c:7236
 #: ../src/file-manager/fm-directory-view.c:7317
-#: ../src/nautilus-places-sidebar.c:2266
+#: ../src/nautilus-places-sidebar.c:2281
 msgid "_Mount"
 msgstr "_Montar"
 
@@ -4528,7 +4474,7 @@ msgstr "Ejeta o volume selecionado"
 #: ../src/file-manager/fm-directory-view.c:7220
 #: ../src/file-manager/fm-directory-view.c:7248
 #: ../src/file-manager/fm-directory-view.c:7329
-#: ../src/nautilus-places-sidebar.c:2294
+#: ../src/nautilus-places-sidebar.c:2309
 msgid "_Format"
 msgstr "_Formatar"
 
@@ -4549,7 +4495,7 @@ msgstr "Formata o volume selecionado"
 #: ../src/file-manager/fm-directory-view.c:8106
 #: ../src/file-manager/fm-directory-view.c:8212
 #: ../src/file-manager/fm-directory-view.c:8216
-#: ../src/nautilus-places-sidebar.c:1444 ../src/nautilus-places-sidebar.c:2301
+#: ../src/nautilus-places-sidebar.c:1459 ../src/nautilus-places-sidebar.c:2316
 msgid "_Start"
 msgstr "_Iniciar"
 
@@ -4566,7 +4512,7 @@ msgstr "Iniciar o volume selecionado"
 #: ../src/file-manager/fm-directory-view.c:8039
 #: ../src/file-manager/fm-directory-view.c:8131
 #: ../src/file-manager/fm-directory-view.c:8241
-#: ../src/nautilus-places-sidebar.c:1445 ../src/nautilus-places-sidebar.c:2308
+#: ../src/nautilus-places-sidebar.c:1460 ../src/nautilus-places-sidebar.c:2323
 #: ../src/nautilus-window-menus.c:810
 msgid "_Stop"
 msgstr "_Parar"
@@ -4582,7 +4528,7 @@ msgstr "Parar o volume selecionado"
 #: ../src/file-manager/fm-directory-view.c:7232
 #: ../src/file-manager/fm-directory-view.c:7260
 #: ../src/file-manager/fm-directory-view.c:7341
-#: ../src/nautilus-places-sidebar.c:2287
+#: ../src/nautilus-places-sidebar.c:2302
 msgid "_Detect Media"
 msgstr "_Detectar mídia"
 
@@ -4876,7 +4822,7 @@ msgstr "Parar unidade selecionada"
 #: ../src/file-manager/fm-directory-view.c:8043
 #: ../src/file-manager/fm-directory-view.c:8135
 #: ../src/file-manager/fm-directory-view.c:8245
-#: ../src/nautilus-places-sidebar.c:1451
+#: ../src/nautilus-places-sidebar.c:1466
 msgid "_Safely Remove Drive"
 msgstr "_Remover com segurança a unidade"
 
@@ -4910,7 +4856,7 @@ msgstr "Parar a unidade multi-disco selecionada"
 #: ../src/file-manager/fm-directory-view.c:8055
 #: ../src/file-manager/fm-directory-view.c:8147
 #: ../src/file-manager/fm-directory-view.c:8257
-#: ../src/nautilus-places-sidebar.c:1464
+#: ../src/nautilus-places-sidebar.c:1479
 msgid "_Lock Drive"
 msgstr "_Bloquear unidade"
 
@@ -4935,7 +4881,7 @@ msgstr "Iniciar a associação da unidade multi-disco à pasta aberta"
 #. stop() for type G_DRIVE_START_STOP_TYPE_PASSWORD is normally not used
 #: ../src/file-manager/fm-directory-view.c:8118
 #: ../src/file-manager/fm-directory-view.c:8228
-#: ../src/nautilus-places-sidebar.c:1463
+#: ../src/nautilus-places-sidebar.c:1478
 msgid "_Unlock Drive"
 msgstr "_Desbloquear unidade"
 
@@ -4967,7 +4913,7 @@ msgstr "Bloquear a associação da unidade à pasta aberta"
 #: ../src/file-manager/fm-directory-view.c:8327
 #: ../src/file-manager/fm-directory-view.c:8637
 #: ../src/file-manager/fm-tree-view.c:1183
-#: ../src/nautilus-places-sidebar.c:2237
+#: ../src/nautilus-places-sidebar.c:2252
 msgid "Open in New _Window"
 msgstr "Abrir em nova _janela"
 
@@ -5822,8 +5768,8 @@ msgstr ""
 "Antes de executar o Nautilus, por favor crie essas pastas ou configure as "
 "permissões de forma que o Nautilus possa criá-las."
 
-#: ../src/nautilus-application.c:1552 ../src/nautilus-places-sidebar.c:1822
-#: ../src/nautilus-places-sidebar.c:1851 ../src/nautilus-places-sidebar.c:1880
+#: ../src/nautilus-application.c:1552 ../src/nautilus-places-sidebar.c:1837
+#: ../src/nautilus-places-sidebar.c:1866 ../src/nautilus-places-sidebar.c:1895
 #, c-format
 msgid "Unable to eject %s"
 msgstr "Não foi possível ejetar %s"
@@ -6898,54 +6844,54 @@ msgid "Open the trash"
 msgstr "Abrir a lixeira"
 
 #. start() for type G_DRIVE_START_STOP_TYPE_SHUTDOWN is normally not used
-#: ../src/nautilus-places-sidebar.c:1450
+#: ../src/nautilus-places-sidebar.c:1465
 msgid "_Power On"
 msgstr "_Ligado"
 
-#: ../src/nautilus-places-sidebar.c:1454
+#: ../src/nautilus-places-sidebar.c:1469
 msgid "_Connect Drive"
 msgstr "_Conectar unidade"
 
-#: ../src/nautilus-places-sidebar.c:1455
+#: ../src/nautilus-places-sidebar.c:1470
 msgid "_Disconnect Drive"
 msgstr "_Desconectar unidade"
 
-#: ../src/nautilus-places-sidebar.c:1458
+#: ../src/nautilus-places-sidebar.c:1473
 msgid "_Start Multi-disk Device"
 msgstr "_Iniciar unidade multi-disco"
 
-#: ../src/nautilus-places-sidebar.c:1459
+#: ../src/nautilus-places-sidebar.c:1474
 msgid "_Stop Multi-disk Device"
 msgstr "_Parar unidade multi-disco"
 
-#: ../src/nautilus-places-sidebar.c:1539 ../src/nautilus-places-sidebar.c:2075
+#: ../src/nautilus-places-sidebar.c:1554 ../src/nautilus-places-sidebar.c:2090
 #, c-format
 msgid "Unable to start %s"
 msgstr "Não foi possível montar %s"
 
-#: ../src/nautilus-places-sidebar.c:2023
+#: ../src/nautilus-places-sidebar.c:2038
 #, c-format
 msgid "Unable to poll %s for media changes"
 msgstr "Não foi possível verificar %s para alterações de mídia"
 
-#: ../src/nautilus-places-sidebar.c:2131
+#: ../src/nautilus-places-sidebar.c:2146
 #, c-format
 msgid "Unable to stop %s"
 msgstr "Não foi possível montar %s"
 
-#: ../src/nautilus-places-sidebar.c:2245
+#: ../src/nautilus-places-sidebar.c:2260
 msgid "Remove"
 msgstr "Remover"
 
-#: ../src/nautilus-places-sidebar.c:2254
+#: ../src/nautilus-places-sidebar.c:2269
 msgid "Rename..."
 msgstr "Renomear..."
 
-#: ../src/nautilus-places-sidebar.c:2697
+#: ../src/nautilus-places-sidebar.c:2712
 msgid "Places"
 msgstr "Locais"
 
-#: ../src/nautilus-places-sidebar.c:2703
+#: ../src/nautilus-places-sidebar.c:2718
 msgid "Show Places"
 msgstr "Mostrar locais"
 
