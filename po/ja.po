@@ -15,10 +15,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus master\n"
+"Project-Id-Version: nautilus gnome-2-32\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2010-09-13 09:09+0000\n"
+"POT-Creation-Date: 2010-09-23 13:34+0000\n"
 "PO-Revision-Date: 2010-09-13 13:36+0900\n"
 "Last-Translator: Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -1534,7 +1534,7 @@ msgstr "常にこのアクションを適用する(_A)"
 #: ../src/file-manager/fm-directory-view.c:7244
 #: ../src/file-manager/fm-directory-view.c:7325
 #: ../src/file-manager/fm-tree-view.c:1278
-#: ../src/nautilus-places-sidebar.c:2280
+#: ../src/nautilus-places-sidebar.c:2295
 msgid "_Eject"
 msgstr "取り出す(_E)"
 
@@ -1546,7 +1546,7 @@ msgstr "取り出す(_E)"
 #: ../src/file-manager/fm-directory-view.c:7240
 #: ../src/file-manager/fm-directory-view.c:7321
 #: ../src/file-manager/fm-tree-view.c:1269
-#: ../src/nautilus-places-sidebar.c:2273
+#: ../src/nautilus-places-sidebar.c:2288
 msgid "_Unmount"
 msgstr "アンマウント(_U)"
 
@@ -2163,7 +2163,7 @@ msgstr "ここでアイテムを削除すると元に戻すことはできませ
 #. Empty Trash menu item
 #: ../libnautilus-private/nautilus-file-operations.c:1339
 #: ../libnautilus-private/nautilus-file-operations.c:2191
-#: ../src/nautilus-places-sidebar.c:2317 ../src/nautilus-trash-bar.c:190
+#: ../src/nautilus-places-sidebar.c:2332 ../src/nautilus-trash-bar.c:190
 msgid "Empty _Trash"
 msgstr "ゴミ箱を空にする(_T)"
 
@@ -2597,16 +2597,16 @@ msgstr "%B へリンクの生成中にエラーが発生しました。"
 
 #: ../libnautilus-private/nautilus-file-operations.c:5207
 msgid "Symbolic links only supported for local files"
-msgstr "シンボリック・リンクはローカルのファイルのみサポートしています。"
+msgstr "シンボリックリンクはローカルのファイルのみサポートしています。"
 
 #: ../libnautilus-private/nautilus-file-operations.c:5210
 msgid "The target doesn't support symbolic links."
-msgstr "リンクの作成先はシンボリック・リンクをサポートしていません。"
+msgstr "リンクの作成先はシンボリックリンクをサポートしていません。"
 
 #: ../libnautilus-private/nautilus-file-operations.c:5213
 #, c-format
 msgid "There was an error creating the symlink in %F."
-msgstr "%F でシンボリック・リンクを作成する際にエラーが発生しました。"
+msgstr "%F でシンボリックリンクを作成する際にエラーが発生しました。"
 
 #: ../libnautilus-private/nautilus-file-operations.c:5507
 msgid "Setting permissions"
@@ -3446,7 +3446,7 @@ msgstr "参照(_B)..."
 #: ../src/file-manager/fm-directory-view.c:7098
 #: ../src/file-manager/fm-directory-view.c:8599
 #: ../src/file-manager/fm-tree-view.c:1163
-#: ../src/nautilus-places-sidebar.c:2222
+#: ../src/nautilus-places-sidebar.c:2237
 msgid "_Open"
 msgstr "開く(_O)"
 
@@ -3674,13 +3674,13 @@ msgstr "ユーザ専用のフォルダを開きます"
 msgid "File Manager"
 msgstr "ファイルマネージャ"
 
-#: ../src/file-manager/fm-desktop-icon-view.c:639
+#: ../src/file-manager/fm-desktop-icon-view.c:640
 msgid "Background"
 msgstr "背景"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-desktop-icon-view.c:712
+#: ../src/file-manager/fm-desktop-icon-view.c:713
 #: ../src/file-manager/fm-directory-view.c:7130
 #: ../src/file-manager/fm-directory-view.c:8799
 msgid "E_mpty Trash"
@@ -3689,45 +3689,45 @@ msgstr "ゴミ箱を空にする(_M)"
 #. label, accelerator
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-desktop-icon-view.c:724
+#: ../src/file-manager/fm-desktop-icon-view.c:725
 #: ../src/file-manager/fm-directory-view.c:7094
 msgid "Create L_auncher..."
 msgstr "ランチャの生成(_A)..."
 
 #. tooltip
-#: ../src/file-manager/fm-desktop-icon-view.c:726
+#: ../src/file-manager/fm-desktop-icon-view.c:727
 #: ../src/file-manager/fm-directory-view.c:7095
 msgid "Create a new launcher"
 msgstr "新しいランチャを作成します"
 
 #. label, accelerator
-#: ../src/file-manager/fm-desktop-icon-view.c:731
+#: ../src/file-manager/fm-desktop-icon-view.c:732
 msgid "Change Desktop _Background"
 msgstr "背景の変更(_B)"
 
 #. tooltip
-#: ../src/file-manager/fm-desktop-icon-view.c:733
+#: ../src/file-manager/fm-desktop-icon-view.c:734
 msgid ""
 "Show a window that lets you set your desktop background's pattern or color"
 msgstr "デスクトップ背景のパターンや色を設定します"
 
 #. label, accelerator
-#: ../src/file-manager/fm-desktop-icon-view.c:738
+#: ../src/file-manager/fm-desktop-icon-view.c:739
 msgid "Empty Trash"
 msgstr "ゴミ箱を空にする"
 
 #. tooltip
-#: ../src/file-manager/fm-desktop-icon-view.c:740
+#: ../src/file-manager/fm-desktop-icon-view.c:741
 #: ../src/file-manager/fm-directory-view.c:7131
 #: ../src/nautilus-trash-bar.c:197
 msgid "Delete all items in the Trash"
 msgstr "ゴミ箱にあるすべてのアイテムを削除します"
 
-#: ../src/file-manager/fm-desktop-icon-view.c:837
+#: ../src/file-manager/fm-desktop-icon-view.c:838
 msgid "The desktop view encountered an error."
 msgstr "デスクトップ表示にする際にエラーが発生しました。"
 
-#: ../src/file-manager/fm-desktop-icon-view.c:838
+#: ../src/file-manager/fm-desktop-icon-view.c:839
 msgid "The desktop view encountered an error while starting up."
 msgstr "起動する際にデスクトップ表示でエラーが発生しました。"
 
@@ -4133,7 +4133,7 @@ msgstr "選択したアイテムをナビゲーションウィンドウの中に
 #: ../src/file-manager/fm-directory-view.c:8350
 #: ../src/file-manager/fm-directory-view.c:8676
 #: ../src/file-manager/fm-tree-view.c:1174
-#: ../src/nautilus-places-sidebar.c:2230
+#: ../src/nautilus-places-sidebar.c:2245
 msgid "Open in New _Tab"
 msgstr "新しいタブの中に開く(_T)"
 
@@ -4289,7 +4289,7 @@ msgstr[0] "リンクの作成(_K)"
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7171
 msgid "Create a symbolic link for each selected item"
-msgstr "選択した各アイテムのシンボリック・リンクを作成します"
+msgstr "選択した各アイテムのシンボリックリンクを作成します"
 
 #. name, stock id
 #. label, accelerator
@@ -4362,7 +4362,7 @@ msgstr "このサーバへ永続的に接続します"
 #: ../src/file-manager/fm-directory-view.c:7208
 #: ../src/file-manager/fm-directory-view.c:7236
 #: ../src/file-manager/fm-directory-view.c:7317
-#: ../src/nautilus-places-sidebar.c:2266
+#: ../src/nautilus-places-sidebar.c:2281
 msgid "_Mount"
 msgstr "マウント(_M)"
 
@@ -4386,7 +4386,7 @@ msgstr "選択したボリュームを取り出します"
 #: ../src/file-manager/fm-directory-view.c:7220
 #: ../src/file-manager/fm-directory-view.c:7248
 #: ../src/file-manager/fm-directory-view.c:7329
-#: ../src/nautilus-places-sidebar.c:2294
+#: ../src/nautilus-places-sidebar.c:2309
 msgid "_Format"
 msgstr "初期化(_F)"
 
@@ -4407,7 +4407,7 @@ msgstr "選択したボリュームをフォーマットします"
 #: ../src/file-manager/fm-directory-view.c:8106
 #: ../src/file-manager/fm-directory-view.c:8212
 #: ../src/file-manager/fm-directory-view.c:8216
-#: ../src/nautilus-places-sidebar.c:1444 ../src/nautilus-places-sidebar.c:2301
+#: ../src/nautilus-places-sidebar.c:1459 ../src/nautilus-places-sidebar.c:2316
 msgid "_Start"
 msgstr "開始(_S)"
 
@@ -4424,7 +4424,7 @@ msgstr "選択したボリュームを起動します"
 #: ../src/file-manager/fm-directory-view.c:8039
 #: ../src/file-manager/fm-directory-view.c:8131
 #: ../src/file-manager/fm-directory-view.c:8241
-#: ../src/nautilus-places-sidebar.c:1445 ../src/nautilus-places-sidebar.c:2308
+#: ../src/nautilus-places-sidebar.c:1460 ../src/nautilus-places-sidebar.c:2323
 #: ../src/nautilus-window-menus.c:810
 msgid "_Stop"
 msgstr "停止(_S)"
@@ -4440,7 +4440,7 @@ msgstr "選択したボリュームを停止します"
 #: ../src/file-manager/fm-directory-view.c:7232
 #: ../src/file-manager/fm-directory-view.c:7260
 #: ../src/file-manager/fm-directory-view.c:7341
-#: ../src/nautilus-places-sidebar.c:2287
+#: ../src/nautilus-places-sidebar.c:2302
 msgid "_Detect Media"
 msgstr "メディアを検出(_D)"
 
@@ -4728,7 +4728,7 @@ msgstr "選択したドライブを停止します"
 #: ../src/file-manager/fm-directory-view.c:8043
 #: ../src/file-manager/fm-directory-view.c:8135
 #: ../src/file-manager/fm-directory-view.c:8245
-#: ../src/nautilus-places-sidebar.c:1451
+#: ../src/nautilus-places-sidebar.c:1466
 msgid "_Safely Remove Drive"
 msgstr "ドライブの安全な取り出し(_S)"
 
@@ -4762,7 +4762,7 @@ msgstr "選択したマルチディスク・ドライブを停止します"
 #: ../src/file-manager/fm-directory-view.c:8055
 #: ../src/file-manager/fm-directory-view.c:8147
 #: ../src/file-manager/fm-directory-view.c:8257
-#: ../src/nautilus-places-sidebar.c:1464
+#: ../src/nautilus-places-sidebar.c:1479
 msgid "_Lock Drive"
 msgstr "ドライブのロック(_L)"
 
@@ -4788,7 +4788,7 @@ msgstr ""
 #. stop() for type G_DRIVE_START_STOP_TYPE_PASSWORD is normally not used
 #: ../src/file-manager/fm-directory-view.c:8118
 #: ../src/file-manager/fm-directory-view.c:8228
-#: ../src/nautilus-places-sidebar.c:1463
+#: ../src/nautilus-places-sidebar.c:1478
 msgid "_Unlock Drive"
 msgstr "ドライブのロック解除(_U)"
 
@@ -4822,7 +4822,7 @@ msgstr "オープンするフォルダに関連づけられているドライブ
 #: ../src/file-manager/fm-directory-view.c:8327
 #: ../src/file-manager/fm-directory-view.c:8637
 #: ../src/file-manager/fm-tree-view.c:1183
-#: ../src/nautilus-places-sidebar.c:2237
+#: ../src/nautilus-places-sidebar.c:2252
 msgid "Open in New _Window"
 msgstr "新しいウィンドウの中に開く(_W)"
 
@@ -5669,8 +5669,8 @@ msgstr ""
 "Nautilus を起動する前にこれらのフォルダを作成するか、Nautilus がそれらのフォ"
 "ルダを作成できるように適切なパーミッションを設定してください。"
 
-#: ../src/nautilus-application.c:1552 ../src/nautilus-places-sidebar.c:1822
-#: ../src/nautilus-places-sidebar.c:1851 ../src/nautilus-places-sidebar.c:1880
+#: ../src/nautilus-application.c:1552 ../src/nautilus-places-sidebar.c:1837
+#: ../src/nautilus-places-sidebar.c:1866 ../src/nautilus-places-sidebar.c:1895
 #, c-format
 msgid "Unable to eject %s"
 msgstr "%s を取り出せません"
@@ -6739,54 +6739,54 @@ msgid "Open the trash"
 msgstr "ゴミ箱を開く"
 
 #. start() for type G_DRIVE_START_STOP_TYPE_SHUTDOWN is normally not used
-#: ../src/nautilus-places-sidebar.c:1450
+#: ../src/nautilus-places-sidebar.c:1465
 msgid "_Power On"
 msgstr "電源オン(_P)"
 
-#: ../src/nautilus-places-sidebar.c:1454
+#: ../src/nautilus-places-sidebar.c:1469
 msgid "_Connect Drive"
 msgstr "ドライブに接続(_C)"
 
-#: ../src/nautilus-places-sidebar.c:1455
+#: ../src/nautilus-places-sidebar.c:1470
 msgid "_Disconnect Drive"
 msgstr "ドライブを切断(_D)"
 
-#: ../src/nautilus-places-sidebar.c:1458
+#: ../src/nautilus-places-sidebar.c:1473
 msgid "_Start Multi-disk Device"
 msgstr "マルチディスク・デバイスを起動(_S)"
 
-#: ../src/nautilus-places-sidebar.c:1459
+#: ../src/nautilus-places-sidebar.c:1474
 msgid "_Stop Multi-disk Device"
 msgstr "マルチディスク・デバイスを停止(_S)<"
 
-#: ../src/nautilus-places-sidebar.c:1539 ../src/nautilus-places-sidebar.c:2075
+#: ../src/nautilus-places-sidebar.c:1554 ../src/nautilus-places-sidebar.c:2090
 #, c-format
 msgid "Unable to start %s"
 msgstr "%s を起動できません"
 
-#: ../src/nautilus-places-sidebar.c:2023
+#: ../src/nautilus-places-sidebar.c:2038
 #, c-format
 msgid "Unable to poll %s for media changes"
 msgstr "メディアの変更で %s を監視できません"
 
-#: ../src/nautilus-places-sidebar.c:2131
+#: ../src/nautilus-places-sidebar.c:2146
 #, c-format
 msgid "Unable to stop %s"
 msgstr "%s を停止できません"
 
-#: ../src/nautilus-places-sidebar.c:2245
+#: ../src/nautilus-places-sidebar.c:2260
 msgid "Remove"
 msgstr "削除"
 
-#: ../src/nautilus-places-sidebar.c:2254
+#: ../src/nautilus-places-sidebar.c:2269
 msgid "Rename..."
 msgstr "名前の変更..."
 
-#: ../src/nautilus-places-sidebar.c:2697
+#: ../src/nautilus-places-sidebar.c:2712
 msgid "Places"
 msgstr "場所"
 
-#: ../src/nautilus-places-sidebar.c:2703
+#: ../src/nautilus-places-sidebar.c:2718
 msgid "Show Places"
 msgstr "場所の表示"
 
