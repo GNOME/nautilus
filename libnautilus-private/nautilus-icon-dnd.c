@@ -1081,7 +1081,7 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 					       GdkDragContext *context,
 					       int x, int y)
 {
-	char *drop_target;
+	char *drop_target, *container_uri;
 	gboolean local_move_only;
 	double world_x, world_y;
 	gboolean icon_hit;
@@ -1104,10 +1104,14 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 			action = GDK_ACTION_MOVE;
 		} else {
 			action = GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK;
+			container_uri = get_container_uri (container);
 			
-			if (selection_is_image_file (container->details->dnd_info->drag_info.selection_list)) {
+			if (eel_uri_is_desktop (container_uri) &&
+			    selection_is_image_file (container->details->dnd_info->drag_info.selection_list)) {
 				action |= NAUTILUS_DND_ACTION_SET_AS_BACKGROUND;
 			}
+
+			g_free (container_uri);
 		}
 		real_action = nautilus_drag_drop_action_ask
 			(GTK_WIDGET (container), action);
