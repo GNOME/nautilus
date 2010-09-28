@@ -1219,27 +1219,6 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	/* kill any sound preview process that is ongoing */
 	preview_audio (icon_view, NULL, FALSE);
 
-	/* FIXME bugzilla.gnome.org 45060: Should use methods instead
-	 * of hardcoding desktop knowledge in here.
-	 */
-	if (FM_IS_DESKTOP_ICON_VIEW (view)) {
-		nautilus_connect_desktop_background_to_file_metadata (NAUTILUS_ICON_CONTAINER (icon_container), file);
-	} else {
-		GdkDragAction default_action;
-		
-		if (nautilus_window_info_get_window_type (fm_directory_view_get_nautilus_window (view)) == NAUTILUS_WINDOW_NAVIGATION) {
-			default_action = NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND;
-		} else {
-			default_action = NAUTILUS_DND_ACTION_SET_AS_FOLDER_BACKGROUND;
-		}
-		
-		nautilus_connect_background_to_file_metadata 
-			(icon_container, 
-			 file, 
-			 default_action);
-	}
-
-	
 	/* Set up the zoom level from the metadata. */
 	if (fm_directory_view_supports_zooming (FM_DIRECTORY_VIEW (icon_view))) {
 		if (icon_view->details->compact) {
