@@ -70,7 +70,6 @@ static const GtkTargetEntry drop_types [] = {
 	/* prefer "_NETSCAPE_URL" over "text/uri-list" to satisfy web browsers. */
 	{ NAUTILUS_ICON_DND_NETSCAPE_URL_TYPE, 0, NAUTILUS_ICON_DND_NETSCAPE_URL },
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
-	{ NAUTILUS_ICON_DND_BGIMAGE_TYPE, 0, NAUTILUS_ICON_DND_BGIMAGE },
 	{ NAUTILUS_ICON_DND_XDNDDIRECTSAVE_TYPE, 0, NAUTILUS_ICON_DND_XDNDDIRECTSAVE }, /* XDS Protocol Type */
 	{ NAUTILUS_ICON_DND_RAW_TYPE, 0, NAUTILUS_ICON_DND_RAW },
 	/* Must be last: */
@@ -596,50 +595,6 @@ nautilus_icon_container_selection_items_local (NautilusIconContainer *container,
 	g_free (container_uri_string);
 	
 	return result;
-}
-
-static GdkDragAction 
-get_background_drag_action (NautilusIconContainer *container, 
-			    GdkDragAction action)
-{
-	/* FIXME: This function is very FMDirectoryView specific, and
-	 * should be moved out of nautilus-icon-dnd.c */
-	GdkDragAction valid_actions;
-
-	if (action == GDK_ACTION_ASK) {
-		valid_actions = NAUTILUS_DND_ACTION_SET_AS_FOLDER_BACKGROUND;
-		if (!eel_background_is_desktop (eel_get_widget_background (GTK_WIDGET (container)))) {
-			valid_actions |= NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND;
-		}
-
-		action = nautilus_drag_drop_background_ask 
-			(GTK_WIDGET (container), valid_actions);
-	}
-
-	return action;
-}
-
-/* handle dropped tile images */
-static void
-receive_dropped_tile_image (NautilusIconContainer *container, GdkDragAction action, GtkSelectionData *data)
-{
-	g_assert (data != NULL);
-
-	action = get_background_drag_action (container, action);
-
-	if (action > 0) {
-		char *uri;
-
-		uri = get_container_uri (container);
-		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-				    "dropped tile image on icon container displaying %s", uri);
-		g_free (uri);
-
-		eel_background_receive_dropped_background_image
-			(eel_get_widget_background (GTK_WIDGET (container)), 
-			 action, 
-			 gtk_selection_data_get_data (data));
-	}
 }
 
 /* handle dropped url */
@@ -1249,7 +1204,6 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 		*action = nautilus_drag_default_drop_action_for_netscape_url (context);
 		break;
 
-	case NAUTILUS_ICON_DND_BGIMAGE:
 	case NAUTILUS_ICON_DND_ROOTWINDOW_DROP:
 		*action = gdk_drag_context_get_suggested_action (context);
 		break;
@@ -1669,7 +1623,6 @@ drag_data_received_callback (GtkWidget *widget,
 	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
 		nautilus_icon_container_dropped_icon_feedback (widget, data, x, y);
 		break;
-	case NAUTILUS_ICON_DND_BGIMAGE:	
 	case NAUTILUS_ICON_DND_URI_LIST:
 	case NAUTILUS_ICON_DND_TEXT:
 	case NAUTILUS_ICON_DND_XDNDDIRECTSAVE:
@@ -1704,12 +1657,6 @@ drag_data_received_callback (GtkWidget *widget,
 			nautilus_icon_container_receive_dropped_icons
 				(NAUTILUS_ICON_CONTAINER (widget),
 				 context, x, y);
-			break;
-		case NAUTILUS_ICON_DND_BGIMAGE:
-			receive_dropped_tile_image
-				(NAUTILUS_ICON_CONTAINER (widget),
-				 gdk_drag_context_get_selected_action (context),
-				 data);
 			break;
 		case NAUTILUS_ICON_DND_NETSCAPE_URL:
 			receive_dropped_netscape_url

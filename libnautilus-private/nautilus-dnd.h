@@ -52,7 +52,6 @@ typedef enum {
 	NAUTILUS_ICON_DND_GNOME_ICON_LIST,
 	NAUTILUS_ICON_DND_URI_LIST,
 	NAUTILUS_ICON_DND_NETSCAPE_URL,
-	NAUTILUS_ICON_DND_BGIMAGE,
 	NAUTILUS_ICON_DND_TEXT,
 	NAUTILUS_ICON_DND_XDNDDIRECTSAVE,
 	NAUTILUS_ICON_DND_RAW,
@@ -166,8 +165,6 @@ int			    nautilus_drag_modifier_based_action		(int				       default_action,
 									 int				       non_default_action);
 
 GdkDragAction		    nautilus_drag_drop_action_ask		(GtkWidget			      *widget,
-									 GdkDragAction			       possible_actions);
-GdkDragAction		    nautilus_drag_drop_background_ask		(GtkWidget			      *widget,
 									 GdkDragAction			       possible_actions);
 
 gboolean		    nautilus_drag_autoscroll_in_scroll_region	(GtkWidget			      *widget);

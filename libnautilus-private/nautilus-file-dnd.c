@@ -30,7 +30,6 @@
 #include "nautilus-dnd.h"
 #include "nautilus-directory.h"
 #include "nautilus-file-utilities.h"
-#include <eel/eel-glib-extensions.h>
 #include <string.h>
 
 static gboolean
@@ -126,10 +125,6 @@ nautilus_drag_can_accept_info (NautilusFile *drop_target_item,
 			return nautilus_drag_can_accept_files (drop_target_item); /* Check if we can accept files at this location */
 
 		case NAUTILUS_ICON_DND_ROOTWINDOW_DROP:
-			return FALSE;
-
-		/* TODO return TRUE for folders as soon as drop handling is implemented */
-		case NAUTILUS_ICON_DND_BGIMAGE:
 			return FALSE;
 
 		default:
