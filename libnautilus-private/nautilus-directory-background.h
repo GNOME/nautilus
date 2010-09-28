@@ -24,13 +24,6 @@
    Author: Darin Adler <darin@bentspoon.com>
 */
 
-#include <eel/eel-background.h>
-#include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-icon-container.h>
 
-void     nautilus_connect_background_to_file_metadata         (GtkWidget             *widget,
-                                                               NautilusFile          *file,
-                                                               GdkDragAction          default_drag_action);
-void     nautilus_connect_desktop_background_to_file_metadata (NautilusIconContainer *icon_container,
-                                                               NautilusFile          *file);
-gboolean nautilus_file_background_is_set                      (EelBackground         *background);
+void     nautilus_connect_desktop_background_to_file_metadata (NautilusIconContainer *icon_container);

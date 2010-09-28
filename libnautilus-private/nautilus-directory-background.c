@@ -30,73 +30,11 @@
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-background.h>
-#include "nautilus-dnd.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-metadata.h"
-#include "nautilus-file-attributes.h"
 #include <gtk/gtk.h>
 #include <string.h>
 
-static void background_changed_callback     (EelBackground *background, 
-                                             GdkDragAction  action,
-                                             NautilusFile  *file);
-static void background_reset_callback       (EelBackground *background, 
-                                             NautilusFile       *file);
-
-static void saved_settings_changed_callback (NautilusFile       *file, 
-                                             EelBackground *background);
-                                         
-static void nautilus_file_background_receive_gconf_changes (EelBackground *background);
-
-static void nautilus_file_background_theme_changed (GSettings   *settings,
-                                                    const gchar *key,
-                                                    gpointer     user_data);
-
-void
-nautilus_connect_desktop_background_to_file_metadata (NautilusIconContainer *icon_container,
-                                                      NautilusFile *file)
-{
-	EelBackground *background;
-
-	background = eel_get_widget_background (GTK_WIDGET (icon_container));
-
-	eel_background_set_desktop (background, GTK_WIDGET (icon_container), TRUE);
-
-	/* Strictly speaking, we don't need to know about metadata changes, since
-	 * the desktop setting aren't stored there. But, hooking up to metadata
-	 * changes is actually a small part of what this fn does, and we do need
-	 * the other stuff (hooked up to background & theme changes, initialize
-	 * the background). Being notified of metadata changes on the file is a
-	 * waste, but won't hurt, so I don't think it's worth refactoring the fn
-	 * at this point.
-	 */
-	nautilus_connect_background_to_file_metadata (GTK_WIDGET (icon_container), file, NAUTILUS_DND_ACTION_SET_AS_FOLDER_BACKGROUND);
-
-	nautilus_file_background_receive_gconf_changes (background);
-}
-
-static void
-nautilus_file_background_get_default_settings (char **color,
-                                               char **image,
-                                               EelBackgroundImagePlacement *placement)
-{
-        gboolean background_set;
-
-        background_set = g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_BACKGROUND_SET);
-
-        if (background_set && color) {
-                *color = g_settings_get_string (nautilus_preferences, NAUTILUS_PREFERENCES_BACKGROUND_COLOR);
-        }
-
-        if (background_set && image) {
-                *image =  g_settings_get_string (nautilus_preferences, NAUTILUS_PREFERENCES_BACKGROUND_URI);
-        }
-
-        if (placement) {
-                *placement = EEL_BACKGROUND_TILED;
-        }
-}
-
+static void initialize_background_from_settings (EelBackground *background);
 
 #define BG_PREFERENCES_DRAW_BACKGROUND    "/desktop/gnome/background/draw_background"
 #define BG_PREFERENCES_PRIMARY_COLOR      "/desktop/gnome/background/primary_color"
@@ -280,12 +218,10 @@ nautilus_file_background_write_desktop_default_settings (void)
 static int
 call_settings_changed (EelBackground *background)
 {
-	NautilusFile *file;
-	file = g_object_get_data (G_OBJECT (background), "eel_background_file");
-	if (file) {
-		saved_settings_changed_callback (file, background);
-	}
+
+        initialize_background_from_settings (background);
 	g_object_set_data (G_OBJECT (background), "desktop_gconf_notification_timeout", GUINT_TO_POINTER (0));
+
 	return FALSE;
 }
 
@@ -343,134 +279,25 @@ nautilus_file_background_receive_gconf_changes (EelBackground *background)
                           G_CALLBACK (desktop_background_destroyed_callback), NULL);
 }
 
-/* return true if the background is not in the default state */
-gboolean
-nautilus_file_background_is_set (EelBackground *background)
-{
-	char *color;
-	char *image;
-	
-	gboolean is_set;
-	
-	color = eel_background_get_color (background);
-	image = eel_background_get_image_uri (background);
-
-        is_set = (color || image);
-        
-	g_free (color);
-	g_free (image);
-	
-	return is_set;
-}
-
 /* handle the background changed signal */
 static void
 background_changed_callback (EelBackground *background,
                              GdkDragAction  action,
-                             NautilusFile   *file)
+                             gpointer _user_data)
 {
-  	char *color;
-  	char *image;
-
-        g_assert (EEL_IS_BACKGROUND (background));
-        g_assert (NAUTILUS_IS_FILE (file));
-        g_assert (g_object_get_data (G_OBJECT (background), "eel_background_file") == file);
-        
-
-	color = eel_background_get_color (background);
-	image = eel_background_get_image_uri (background);
-
-	if (eel_background_is_desktop (background)) {
-                eel_background_save_to_gconf (background);
-	} else {
-	        /* Block the other handler while we are writing metadata so it doesn't
-	         * try to change the background.
-	         */
-                g_signal_handlers_block_by_func (
-                        file, G_CALLBACK (saved_settings_changed_callback), background);
-
-                if (action != (GdkDragAction) NAUTILUS_DND_ACTION_SET_AS_FOLDER_BACKGROUND &&
-                    action != (GdkDragAction) NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND) {
-                        GdkDragAction default_drag_action;
-
-                        default_drag_action = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (background), "default_drag_action"));
-        
-
-                        action = default_drag_action;
-                }
-        
-                if (action == (GdkDragAction) NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND) {
-                        nautilus_file_set_metadata (file,
-                                                    NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_COLOR,
-                                                    NULL,
-                                                    NULL);
-                        
-                        nautilus_file_set_metadata (file,
-                                                    NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_IMAGE,
-                                                    NULL,
-                                                    NULL);
-
-                        g_signal_handlers_block_by_func (nautilus_preferences, G_CALLBACK (nautilus_file_background_theme_changed), background);
-
-                        g_settings_set_string (nautilus_preferences,
-                                               NAUTILUS_PREFERENCES_BACKGROUND_COLOR, color ? color : "");
-                        g_settings_set_string (nautilus_preferences,
-                                              NAUTILUS_PREFERENCES_BACKGROUND_URI,
-                                               image ? image : "");
-                        g_settings_set_boolean (nautilus_preferences,
-                                                NAUTILUS_PREFERENCES_BACKGROUND_SET, TRUE);
-                        g_signal_handlers_unblock_by_func (nautilus_preferences, G_CALLBACK (nautilus_file_background_theme_changed), background);
-                } else {
-                        nautilus_file_set_metadata (file,
-                                                    NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_COLOR,
-                                                    NULL,
-                                                    color);
-                        
-                        nautilus_file_set_metadata (file,
-                                                    NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_IMAGE,
-                                                    NULL,
-                                                    image);
-                }
-                
-	        /* Unblock the handler. */
-                g_signal_handlers_unblock_by_func (
-                        file, G_CALLBACK (saved_settings_changed_callback), background);
-	}
-
-	g_free (color);
-	g_free (image);
+        eel_background_save_to_gconf (background);
 }
 
 static void
-initialize_background_from_settings (NautilusFile *file,
-				     EelBackground *background)
+initialize_background_from_settings (EelBackground *background)
 {
         char *color;
         char *image;
 	EelBackgroundImagePlacement placement;
-	
-        g_assert (NAUTILUS_IS_FILE (file));
+
         g_assert (EEL_IS_BACKGROUND (background));
-        g_assert (g_object_get_data (G_OBJECT (background), "eel_background_file")
-                  == file);
 
-	if (eel_background_is_desktop (background)) {
-                nautilus_file_background_read_desktop_settings (&color, &image, &placement);
-	} else {
-		color = nautilus_file_get_metadata (file,
-                                                    NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_COLOR,
-                                                    NULL);
-		image = nautilus_file_get_metadata (file,
-                                                    NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_IMAGE,
-                                                    NULL);
-	        placement = EEL_BACKGROUND_TILED; /* non-tiled only avail for desktop, at least for now */
-
-                /* if there's none, read the default from the theme */
-                if (color == NULL && image == NULL) {
-                        nautilus_file_background_get_default_settings
-                                (&color, &image, &placement);
-                }
-	}
+        nautilus_file_background_read_desktop_settings (&color, &image, &placement);
 
         /* Block the other handler while we are responding to changes
          * in the metadata so it doesn't try to change the metadata.
@@ -478,193 +305,46 @@ initialize_background_from_settings (NautilusFile *file,
         g_signal_handlers_block_by_func
                 (background,
                  G_CALLBACK (background_changed_callback),
-                 file);
+                 NULL);
 
         eel_background_set_color (background, color);
         eel_background_set_image_uri (background, image);
         eel_background_set_image_placement (background, placement);
-        
+
 	/* Unblock the handler. */
         g_signal_handlers_unblock_by_func
                 (background,
                  G_CALLBACK (background_changed_callback),
-                 file);
-	
+                 NULL);
+
 	g_free (color);
 	g_free (image);
-}
-
-/* handle the file changed signal */
-static void
-saved_settings_changed_callback (NautilusFile *file,
-                                 EelBackground *background)
-{
-	initialize_background_from_settings (file, background);
-}
-
-/* handle the theme changing */
-static void
-nautilus_file_background_theme_changed (GSettings   *settings,
-                                        const gchar *key,
-                                        gpointer     user_data)
-{
-	NautilusFile *file;
-	EelBackground *background;
-
-	background = EEL_BACKGROUND (user_data);
-	file = g_object_get_data (G_OBJECT (background), "eel_background_file");
-	if (file) {
-		saved_settings_changed_callback (file, background);
-	}
 }
 
 /* handle the background reset signal by setting values from the current theme */
 static void
 background_reset_callback (EelBackground *background,
-                           NautilusFile  *file)
+                           gpointer _user_data)
 {
-        char *color;
-        char *image;
-
-	if (eel_background_is_desktop (background)) {
-		nautilus_file_background_write_desktop_default_settings ();
-	} else {
-	        /* Block the other handler while we are writing metadata so it doesn't
-	         * try to change the background.
-	         */
-	        g_signal_handlers_block_by_func (
-                        file,
-                        G_CALLBACK (saved_settings_changed_callback),
-                        background);
-
-		color = nautilus_file_get_metadata (file,
-                                                    NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_COLOR,
-                                                    NULL);
-		image = nautilus_file_get_metadata (file,
-                                                    NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_IMAGE,
-                                                    NULL);
-                if (!color && !image) {
-                        g_signal_handlers_block_by_func (nautilus_preferences, G_CALLBACK (nautilus_file_background_theme_changed), background);
-                        g_settings_set_boolean (nautilus_preferences,
-                                                NAUTILUS_PREFERENCES_BACKGROUND_SET,
-                                                FALSE);
-                        g_signal_handlers_unblock_by_func (nautilus_preferences, G_CALLBACK (nautilus_file_background_theme_changed), background);
-                } else {
-                        /* reset the metadata */
-                        nautilus_file_set_metadata (file,
-                                                    NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_COLOR,
-                                                    NULL,
-                                                    NULL);
-                        
-                        nautilus_file_set_metadata (file,
-                                                    NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_IMAGE,
-                                                    NULL,
-                                                    NULL);
-                }
-                g_free (color);
-                g_free (image);
-                
-	        /* Unblock the handler. */
-	        g_signal_handlers_unblock_by_func (
-                        file,
-                        G_CALLBACK (saved_settings_changed_callback),
-                        background);
-	}
-
-	saved_settings_changed_callback (file, background);
+	nautilus_file_background_write_desktop_default_settings ();
+	initialize_background_from_settings (background);
 }
 
-/* handle the background destroyed signal */
-static void
-background_destroyed_callback (EelBackground *background,
-                               NautilusFile *file)
-{
-        g_signal_handlers_disconnect_by_func
-                (file,
-                 G_CALLBACK (saved_settings_changed_callback), background);
-        nautilus_file_monitor_remove (file, background);
-        g_signal_handlers_disconnect_by_func (nautilus_preferences,
-                                              nautilus_file_background_theme_changed,
-                                              background);
-}
-
-/* key routine that hooks up a background and location */
 void
-nautilus_connect_background_to_file_metadata (GtkWidget    *widget,
-                                              NautilusFile *file,
-                                              GdkDragAction default_drag_action)
+nautilus_connect_desktop_background_to_file_metadata (NautilusIconContainer *icon_container)
 {
 	EelBackground *background;
-	gpointer old_file;
 
-	/* Get at the background object we'll be connecting. */
-	background = eel_get_widget_background (widget);
-
-	/* Check if it is already connected. */
-	old_file = g_object_get_data (G_OBJECT (background), "eel_background_file");
-	if (old_file == file) {
-		return;
-	}
-
-	/* Disconnect old signal handlers. */
-	if (old_file != NULL) {
-		g_assert (NAUTILUS_IS_FILE (old_file));
-		g_signal_handlers_disconnect_by_func
-                        (background,
-                         G_CALLBACK (background_changed_callback), old_file);
-		g_signal_handlers_disconnect_by_func
-                        (background,
-                         G_CALLBACK (background_destroyed_callback), old_file);
-		g_signal_handlers_disconnect_by_func
-                        (background,
-                         G_CALLBACK (background_reset_callback), old_file);
-		g_signal_handlers_disconnect_by_func
-                        (old_file,
-                         G_CALLBACK (saved_settings_changed_callback), background);
-		nautilus_file_monitor_remove (old_file, background);
-                g_signal_handlers_disconnect_by_func (nautilus_preferences,
-                                                      nautilus_file_background_theme_changed,
-                                                      background);
-	}
-
-        /* Attach the new directory. */
-        nautilus_file_ref (file);
-        g_object_set_data_full (G_OBJECT (background), "eel_background_file",
-                                file, (GDestroyNotify) nautilus_file_unref);
-
-        g_object_set_data (G_OBJECT (background), "default_drag_action", GINT_TO_POINTER (default_drag_action));
+	background = eel_get_widget_background (GTK_WIDGET (icon_container));
+	eel_background_set_desktop (background, GTK_WIDGET (icon_container), TRUE);
 
         /* Connect new signal handlers. */
-        if (file != NULL) {
-                g_signal_connect_object (background, "settings_changed",
-                                         G_CALLBACK (background_changed_callback), file, 0);
-                g_signal_connect_object (background, "destroy",
-                                         G_CALLBACK (background_destroyed_callback), file, 0);
-                g_signal_connect_object (background, "reset",
-                                         G_CALLBACK (background_reset_callback), file, 0);
-		g_signal_connect_object (file, "changed",
-                                         G_CALLBACK (saved_settings_changed_callback), background, 0);
-        	
-		/* arrange to receive file metadata */
-		nautilus_file_monitor_add (file,
-                                           background,
-                                           NAUTILUS_FILE_ATTRIBUTE_INFO);
+        g_signal_connect_object (background, "settings_changed",
+                                 G_CALLBACK (background_changed_callback), NULL, 0);
+        g_signal_connect_object (background, "reset",
+                                 G_CALLBACK (background_reset_callback), NULL, 0);
 
-		/* arrange for notification when the theme changes */
-                g_signal_connect (nautilus_preferences,
-                                  "changed::" NAUTILUS_PREFERENCES_BACKGROUND_SET,
-                                  G_CALLBACK(nautilus_file_background_theme_changed),
-                                  background);
-                g_signal_connect (nautilus_preferences,
-                                  "changed::" NAUTILUS_PREFERENCES_BACKGROUND_COLOR,
-                                  G_CALLBACK(nautilus_file_background_theme_changed),
-                                  background);
-                g_signal_connect (nautilus_preferences,
-                                  "changed::" NAUTILUS_PREFERENCES_BACKGROUND_URI,
-                                  G_CALLBACK(nautilus_file_background_theme_changed),
-                                  background);
-	}
-
-        /* Update the background based on the file metadata. */
-        initialize_background_from_settings (file, background);
+        /* Update the background based on the settings */
+        initialize_background_from_settings (background);
+	nautilus_file_background_receive_gconf_changes (background);
 }
