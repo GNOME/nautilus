@@ -59,7 +59,7 @@ typedef struct {
 
 static GHashTable *timed_wait_hash_table;
 
-static void timed_wait_dialog_destroy_callback (GtkObject *object, gpointer callback_data);
+static void timed_wait_dialog_destroy_callback (GtkWidget *object, gpointer callback_data);
 
 static guint
 timed_wait_hash (gconstpointer value)
@@ -85,7 +85,7 @@ timed_wait_hash_equal (gconstpointer value1, gconstpointer value2)
 }
 
 static void
-timed_wait_delayed_close_destroy_dialog_callback (GtkObject *object, gpointer callback_data)
+timed_wait_delayed_close_destroy_dialog_callback (GtkWidget *object, gpointer callback_data)
 {
 	g_source_remove (GPOINTER_TO_UINT (callback_data));
 }
@@ -102,7 +102,7 @@ timed_wait_delayed_close_timeout_callback (gpointer callback_data)
 					      G_CALLBACK (timed_wait_delayed_close_destroy_dialog_callback),
 					      GUINT_TO_POINTER (handler_id));
 	
-	gtk_object_destroy (GTK_OBJECT (callback_data));
+	gtk_widget_destroy (GTK_WIDGET (callback_data));
 
 	return FALSE;
 }
@@ -146,7 +146,7 @@ timed_wait_free (TimedWait *wait)
 					    G_CALLBACK (timed_wait_delayed_close_destroy_dialog_callback),
 					    GUINT_TO_POINTER (delayed_close_handler_id));
 		} else {
-			gtk_object_destroy (GTK_OBJECT (wait->dialog));
+			gtk_widget_destroy (GTK_WIDGET (wait->dialog));
 		}
 	}
 
@@ -155,7 +155,7 @@ timed_wait_free (TimedWait *wait)
 }
 
 static void
-timed_wait_dialog_destroy_callback (GtkObject *object, gpointer callback_data)
+timed_wait_dialog_destroy_callback (GtkWidget *object, gpointer callback_data)
 {
 	TimedWait *wait;
 
@@ -409,7 +409,7 @@ show_message_dialog (const char *primary_text,
 	gtk_widget_show (GTK_WIDGET (dialog));
 
 	g_signal_connect (dialog, "response",
-			  G_CALLBACK (gtk_object_destroy), NULL);
+			  G_CALLBACK (gtk_widget_destroy), NULL);
 
 	return dialog;
 }
