@@ -324,7 +324,6 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 	gtk_widget_show (name_field);
 	gtk_box_pack_start (GTK_BOX (gtk_builder_get_object (builder, "bookmark_name_placeholder")),
 			    name_field, TRUE, TRUE, 0);
-	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (name_field), TRUE);
 	
 	gtk_label_set_mnemonic_widget (
 		GTK_LABEL (gtk_builder_get_object (builder, "bookmark_name_label")),
@@ -334,7 +333,6 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 	gtk_widget_show (uri_field);
 	gtk_box_pack_start (GTK_BOX (gtk_builder_get_object (builder, "bookmark_location_placeholder")),
 			    uri_field, TRUE, TRUE, 0);
-	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (uri_field), TRUE);
 
 	gtk_label_set_mnemonic_widget (
 		GTK_LABEL (gtk_builder_get_object (builder, "bookmark_location_label")),

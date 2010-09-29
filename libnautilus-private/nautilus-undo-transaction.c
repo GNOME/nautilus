@@ -41,51 +41,6 @@ static void undo_atom_list_undo_and_free         (GList                        *
 G_DEFINE_TYPE (NautilusUndoTransaction, nautilus_undo_transaction,
 	       G_TYPE_OBJECT);
 
-#ifdef UIH
-static Nautilus_Undo_MenuItem *
-impl_Nautilus_Undo_Transaction__get_undo_menu_item (PortableServer_Servant servant,
-						    CORBA_Environment *ev)
-{
-	NautilusUndoTransaction *transaction;
-	Nautilus_Undo_MenuItem *item;
-
-	transaction = NAUTILUS_UNDO_TRANSACTION (bonobo_object_from_servant (servant));
-	
-	item = Nautilus_Undo_MenuItem__alloc ();
-     	item->label = CORBA_string_dup (transaction->undo_menu_item_label);
-     	item->hint = CORBA_string_dup (transaction->undo_menu_item_hint);
-	
-	return item;
-}
-							 				
-static Nautilus_Undo_MenuItem *
-impl_Nautilus_Undo_Transaction__get_redo_menu_item (PortableServer_Servant servant,
-						    CORBA_Environment *ev)
-{
-	NautilusUndoTransaction *transaction;
-	Nautilus_Undo_MenuItem *item;
-
-	transaction = NAUTILUS_UNDO_TRANSACTION (bonobo_object_from_servant (servant));
-	
-	item = Nautilus_Undo_MenuItem__alloc ();
-     	item->label = CORBA_string_dup (transaction->redo_menu_item_label);
-     	item->hint = CORBA_string_dup (transaction->redo_menu_item_hint);
-	
-	return item;
-}
-
-static CORBA_char *
-impl_Nautilus_Undo_Transaction__get_operation_name (PortableServer_Servant servant,
-						    CORBA_Environment *ev)
-{
-	NautilusUndoTransaction *transaction;
-	
-	transaction = NAUTILUS_UNDO_TRANSACTION (bonobo_object_from_servant (servant));
-	return CORBA_string_dup (transaction->operation_name);
-}
-#endif
-
-
 NautilusUndoTransaction *
 nautilus_undo_transaction_new (const char *operation_name,
 			       const char *undo_menu_item_label,
