@@ -204,7 +204,6 @@ static void
 eel_editable_label_class_init (EelEditableLabelClass *class)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (class);
-  GtkObjectClass *object_class = GTK_OBJECT_CLASS (class);
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (class);
   GtkBindingSet *binding_set;
 
@@ -241,7 +240,7 @@ eel_editable_label_class_init (EelEditableLabelClass *class)
   
   signals[MOVE_CURSOR] = 
     g_signal_new ("move_cursor",
-		  G_TYPE_FROM_CLASS (object_class),
+		  G_TYPE_FROM_CLASS (class),
 		  G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
 		  G_STRUCT_OFFSET (EelEditableLabelClass, move_cursor),
 		  NULL, NULL,
@@ -250,7 +249,7 @@ eel_editable_label_class_init (EelEditableLabelClass *class)
   
   signals[COPY_CLIPBOARD] =
     g_signal_new ("copy_clipboard",
-		  G_TYPE_FROM_CLASS (object_class),
+		  G_TYPE_FROM_CLASS (class),
 		  G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
 		  G_STRUCT_OFFSET  (EelEditableLabelClass, copy_clipboard),
 		  NULL, NULL, 
@@ -259,7 +258,7 @@ eel_editable_label_class_init (EelEditableLabelClass *class)
   
   signals[POPULATE_POPUP] =
     g_signal_new ("populate_popup",
-		  G_TYPE_FROM_CLASS (object_class),
+		  G_TYPE_FROM_CLASS (class),
 		  G_SIGNAL_RUN_LAST,
 		  G_STRUCT_OFFSET (EelEditableLabelClass, populate_popup),
 		  NULL, NULL, 
@@ -268,7 +267,7 @@ eel_editable_label_class_init (EelEditableLabelClass *class)
 
   signals[DELETE_FROM_CURSOR] = 
     g_signal_new ("delete_from_cursor",
-		  G_TYPE_FROM_CLASS (object_class),
+		  G_TYPE_FROM_CLASS (class),
 		  G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
 		  G_STRUCT_OFFSET (EelEditableLabelClass, delete_from_cursor),
 		  NULL, NULL, 
@@ -277,7 +276,7 @@ eel_editable_label_class_init (EelEditableLabelClass *class)
   
   signals[CUT_CLIPBOARD] =
     g_signal_new ("cut_clipboard",
-		  G_TYPE_FROM_CLASS (object_class),
+		  G_TYPE_FROM_CLASS (class),
 		  G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
 		  G_STRUCT_OFFSET (EelEditableLabelClass, cut_clipboard),
 		  NULL, NULL, 
@@ -286,7 +285,7 @@ eel_editable_label_class_init (EelEditableLabelClass *class)
 
   signals[PASTE_CLIPBOARD] =
     g_signal_new ("paste_clipboard",
-		  G_TYPE_FROM_CLASS (object_class),
+		  G_TYPE_FROM_CLASS (class),
 		  G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
 		  G_STRUCT_OFFSET (EelEditableLabelClass, paste_clipboard),
 		  NULL, NULL, 
@@ -295,7 +294,7 @@ eel_editable_label_class_init (EelEditableLabelClass *class)
 
   signals[TOGGLE_OVERWRITE] =
     g_signal_new ("toggle_overwrite",
-		  G_TYPE_FROM_CLASS (object_class),
+		  G_TYPE_FROM_CLASS (class),
 		  G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
 		  G_STRUCT_OFFSET (EelEditableLabelClass, toggle_overwrite),
 		  NULL, NULL, 
@@ -303,7 +302,7 @@ eel_editable_label_class_init (EelEditableLabelClass *class)
 		  G_TYPE_NONE, 0);
 
   
-  g_object_class_install_property (G_OBJECT_CLASS(object_class),
+  g_object_class_install_property (gobject_class,
                                    PROP_TEXT,
                                    g_param_spec_string ("text",
                                                         _("Text"),
@@ -2960,7 +2959,7 @@ activate_cb (GtkWidget *menuitem,
 	     EelEditableLabel  *label)
 {
   const gchar *signal = g_object_get_data (G_OBJECT (menuitem), "gtk-signal");
-  g_signal_emit_by_name (GTK_OBJECT (label), signal);
+  g_signal_emit_by_name (label, signal);
 }
 
 static void
@@ -3094,7 +3093,7 @@ popup_targets_received (GtkClipboard     *clipboard,
       gtk_im_multicontext_append_menuitems (GTK_IM_MULTICONTEXT (label->im_context),
 					    GTK_MENU_SHELL (submenu));
 
-      g_signal_emit (GTK_OBJECT (label),
+      g_signal_emit (label,
 		     signals[POPULATE_POPUP], 0,
 		     label->popup_menu);
 
