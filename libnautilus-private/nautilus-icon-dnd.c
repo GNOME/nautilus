@@ -358,7 +358,7 @@ nautilus_icon_container_dropped_icon_feedback (GtkWidget *widget,
 	if (dnd_info->shadow != NULL) {
 		/* FIXME bugzilla.gnome.org 42484: 
 		 * Is a destroy really sufficient here? Who does the unref? */
-		gtk_object_destroy (GTK_OBJECT (dnd_info->shadow));
+		eel_canvas_item_destroy (dnd_info->shadow);
 	}
 
 	/* Build the selection list and the shadow. */
@@ -1240,7 +1240,7 @@ nautilus_icon_container_free_drag_data (NautilusIconContainer *container)
 	dnd_info->drag_info.got_drop_data_type = FALSE;
 
 	if (dnd_info->shadow != NULL) {
-		gtk_object_destroy (GTK_OBJECT (dnd_info->shadow));
+		eel_canvas_item_destroy (dnd_info->shadow);
 		dnd_info->shadow = NULL;
 	}
 
