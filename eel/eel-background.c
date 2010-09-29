@@ -30,6 +30,7 @@
 #include <gtk/gtk.h>
 #include <eel/eel-canvas.h>
 #include <eel/eel-canvas-util.h>
+#include <cairo-xlib.h>
 #include <gdk/gdkx.h>
 #include <gio/gio.h>
 #include <math.h>
@@ -37,9 +38,9 @@
 #define GNOME_DESKTOP_USE_UNSTABLE_API
 #include <libgnomeui/gnome-bg.h>
 
-static GdkPixmap *eel_background_get_pixmap_and_color      (EelBackground *background,
-							    GdkWindow     *window,
-							    GdkColor      *color);
+static cairo_surface_t *eel_background_get_surface_and_color  (EelBackground *background,
+							      GdkWindow     *window,
+							      GdkColor      *color);
 
 static void set_image_properties (EelBackground *background);
 
@@ -69,8 +70,8 @@ struct EelBackgroundDetails {
 	GtkWidget *widget;
 
 	/* Realized data: */
-	GdkPixmap *background_pixmap;
-	gboolean background_pixmap_is_unset_root_pixmap;
+	cairo_surface_t *background_surface;
+	gboolean background_surface_is_unset_root_surface;
 	GnomeBGCrossfade *fade;
 	int background_entire_width;
 	int background_entire_height;
@@ -84,8 +85,8 @@ struct EelBackgroundDetails {
 	gulong screen_size_handler;
 	/* Desktop monitors configuration watcher */
 	gulong screen_monitors_handler;
-	/* Can we use common pixmap for root window and desktop window */
-	gboolean use_common_pixmap;
+	/* Can we use common surface for root window and desktop window */
+	gboolean use_common_surface;
 	guint change_idle_id;
 
 	/* activity status */
@@ -153,24 +154,22 @@ free_fade (EelBackground *background)
 }
 
 static void
-free_background_pixmap (EelBackground *background)
+free_background_surface (EelBackground *background)
 {
-	GdkDisplay *display;
-	GdkPixmap *pixmap;
+	cairo_surface_t *surface;
 
-	pixmap = background->details->background_pixmap;
-	if (pixmap != NULL) {
-		/* If we created a root pixmap and didn't set it as background
+	surface = background->details->background_surface;
+	if (surface != NULL) {
+		/* If we created a root surface and didn't set it as background
 		   it will live forever, so we need to kill it manually.
 		   If set as root background it will be killed next time the
 		   background is changed. */
-		if (background->details->background_pixmap_is_unset_root_pixmap) {
-			display = gdk_drawable_get_display (GDK_DRAWABLE (pixmap));
-			XKillClient (GDK_DISPLAY_XDISPLAY (display),
-				     GDK_PIXMAP_XID (pixmap));
+		if (background->details->background_surface_is_unset_root_surface) {
+			XKillClient (cairo_xlib_surface_get_display (surface),
+				     cairo_xlib_surface_get_drawable (surface));
 		}
-		g_object_unref (pixmap);
-		background->details->background_pixmap = NULL;
+		cairo_surface_destroy (surface);
+		background->details->background_surface = NULL;
 	}
 }
 
@@ -246,7 +245,7 @@ eel_background_finalize (GObject *object)
 	g_free (background->details->color);
 	eel_background_remove_current_image (background);
 
-	free_background_pixmap (background);
+	free_background_surface (background);
 
 	free_fade (background);
 
@@ -305,7 +304,7 @@ eel_background_new (void)
 static void
 eel_background_unrealize (EelBackground *background)
 {
-	free_background_pixmap (background);
+	free_background_surface (background);
 	
 	background->details->background_entire_width = 0;
 	background->details->background_entire_height = 0;
@@ -316,19 +315,20 @@ eel_background_unrealize (EelBackground *background)
 
 static void
 drawable_get_adjusted_size (EelBackground *background,
-			    GdkDrawable   *drawable,
+			    GdkWindow     *window,
 			    int		  *width,
 			    int	          *height)
 {
 	GdkScreen *screen;
-	
+
 	/* 
 	 * Screen resolution change makes root drawable have incorrect size.
-	 */    
-	gdk_drawable_get_size (drawable, width, height);
+	 */
+	*width = gdk_window_get_width (window);
+	*height = gdk_window_get_height (window);
 
 	if (background->details->is_desktop) {
-		screen = gdk_drawable_get_screen (drawable);
+		screen = gdk_window_get_screen (window);
 		*width = gdk_screen_get_width (screen);
 		*height = gdk_screen_get_height (screen);
 	}
@@ -366,19 +366,19 @@ eel_background_ensure_realized (EelBackground *background, GdkWindow *window)
 		return FALSE;
 	}
 
-	free_background_pixmap (background);
+	free_background_surface (background);
 
 	changed = FALSE;
 
 	set_image_properties (background);
 
-	background->details->background_pixmap = gnome_bg_create_pixmap (background->details->bg,
-									 window,
-									 entire_width, entire_height,
-									 background->details->is_desktop);
-	background->details->background_pixmap_is_unset_root_pixmap = background->details->is_desktop;
+	background->details->background_surface = gnome_bg_create_surface (background->details->bg,
+									   window,
+									   entire_width, entire_height,
+									   background->details->is_desktop);
+	background->details->background_surface_is_unset_root_surface = background->details->is_desktop;
 		
-	/* We got the pixmap and everything, so we don't care about a change
+	/* We got the surface and everything, so we don't care about a change
 	   that is pending (unless things actually change after this time) */
 	g_object_set_data (G_OBJECT (background->details->bg),
 			   "ignore-pending-change", GINT_TO_POINTER (TRUE));
@@ -423,10 +423,10 @@ make_color_inactive (EelBackground *background, GdkColor *color)
 	}
 }
 
-static GdkPixmap *
-eel_background_get_pixmap_and_color (EelBackground *background,
-				     GdkWindow     *window,
-				     GdkColor      *color)
+static cairo_surface_t *
+eel_background_get_surface_and_color (EelBackground *background,
+				      GdkWindow     *window,
+				      GdkColor      *color)
 {
 	int entire_width;
 	int entire_height;
@@ -438,8 +438,8 @@ eel_background_get_pixmap_and_color (EelBackground *background,
 	*color = background->details->default_color;
 	make_color_inactive (background, color);
 
-	if (background->details->background_pixmap != NULL) {
-		return g_object_ref (background->details->background_pixmap);
+	if (background->details->background_surface != NULL) {
+		return cairo_surface_reference (background->details->background_surface);
 	} 
 	return NULL;
 }
@@ -618,52 +618,61 @@ eel_background_reset (EelBackground *background)
 }
 
 static void
-set_root_pixmap (EelBackground *background,
-                 GdkWindow     *window)
+set_root_surface (EelBackground *background,
+		  GdkWindow     *window)
 {
-	GdkPixmap *pixmap, *root_pixmap;
+	cairo_surface_t *surface, *root_surface;
 	GdkScreen *screen;
 	GdkColor color;
 
-	pixmap = eel_background_get_pixmap_and_color (background,
-						      window,
-						      &color);
-	screen = gdk_drawable_get_screen (window);
+	surface = eel_background_get_surface_and_color (background,
+							window,
+							&color);
+	screen = gdk_window_get_screen (window);
 
-	if (background->details->use_common_pixmap) {
-		background->details->background_pixmap_is_unset_root_pixmap = FALSE;
-		root_pixmap = g_object_ref (pixmap);
+	if (background->details->use_common_surface) {
+		background->details->background_surface_is_unset_root_surface = FALSE;
+		root_surface = cairo_surface_reference (surface);
 	} else {
-		root_pixmap = gnome_bg_create_pixmap (background->details->bg, window,
-						      gdk_screen_get_width (screen), gdk_screen_get_height (screen), TRUE);
+		root_surface = gnome_bg_create_surface (background->details->bg, window,
+							gdk_screen_get_width (screen), gdk_screen_get_height (screen), TRUE);
 	}
 
-	gnome_bg_set_pixmap_as_root (screen, pixmap);
+	gnome_bg_set_pixmap_as_root (screen, surface);
 
-	g_object_unref (pixmap);
-	g_object_unref (root_pixmap);
+	cairo_surface_destroy (surface);
+	cairo_surface_destroy (root_surface);
+}
+
+
+static void
+on_fade_finished (GnomeBGCrossfade *fade,
+		  GdkWindow *window,
+		  EelBackground *background)
+{
+	set_root_surface (background, window);
 }
 
 static gboolean
-fade_to_pixmap (EelBackground *background,
+fade_to_surface (EelBackground *background,
 		 GdkWindow     *window,
-		 GdkPixmap     *pixmap)
+		 cairo_surface_t *surface)
 {
 	if (background->details->fade == NULL) {
 		return FALSE;
 	}
 
 	if (!gnome_bg_crossfade_set_end_pixmap (background->details->fade,
-				                pixmap)) {
+				                surface)) {
 		return FALSE;
 	}
 
 	if (!gnome_bg_crossfade_is_started (background->details->fade)) {
 		gnome_bg_crossfade_start (background->details->fade, window);
 		if (background->details->is_desktop) {
-			g_signal_connect_swapped (background->details->fade,
-					          "finished",
-						  G_CALLBACK (set_root_pixmap), background);
+			g_signal_connect (background->details->fade,
+					  "finished",
+					  G_CALLBACK (on_fade_finished), background);
 		}
 	}
 
@@ -675,7 +684,7 @@ static void
 eel_background_set_up_widget (EelBackground *background, GtkWidget *widget)
 {
 	GtkStyle *style;
-	GdkPixmap *pixmap;
+	cairo_surface_t *surface;
 	GdkColor color;
 	
 	int window_width;
@@ -692,9 +701,9 @@ eel_background_set_up_widget (EelBackground *background, GtkWidget *widget)
 	widget_window = gtk_widget_get_window (widget);
 	drawable_get_adjusted_size (background, widget_window, &window_width, &window_height);
 	
-	pixmap = eel_background_get_pixmap_and_color (background,
-						      widget_window,
-						      &color);
+	surface = eel_background_get_surface_and_color (background,
+						       widget_window,
+						       &color);
 
 	style = gtk_widget_get_style (widget);
 	
@@ -705,26 +714,30 @@ eel_background_set_up_widget (EelBackground *background, GtkWidget *widget)
 	}
 
 	if (background->details->fade != NULL) {
-		in_fade = fade_to_pixmap (background, window, pixmap);
+		in_fade = fade_to_surface (background, window, surface);
 	} else {
 		in_fade = FALSE;
 	}
 
 	if (!in_fade) {
-		if (background->details->is_desktop) {
-			gdk_window_set_back_pixmap (window, pixmap, FALSE);
-		} else {
+		cairo_pattern_t *pattern;
+
+		pattern = cairo_pattern_create_for_surface (surface);
+		gdk_window_set_background_pattern (window, pattern);
+
+		if (!background->details->is_desktop) {
 			gdk_window_set_background (window, &color);
-			gdk_window_set_back_pixmap (window, pixmap, FALSE);
 		}
+
+		cairo_pattern_destroy (pattern);
 	}
 
 	if (background->details->is_desktop && !in_fade) {
-		set_root_pixmap (background, window);
+		set_root_surface (background, window);
 	}
 	
-	if (pixmap) {
-		g_object_unref (pixmap);
+	if (surface) {
+		cairo_surface_destroy (surface);
 	}
 }
 
@@ -763,7 +776,8 @@ init_fade (EelBackground *background, GtkWidget *widget)
 		 * we don't want to crossfade
 		 */
 		window = gtk_widget_get_window (widget);
-		gdk_drawable_get_size (window, &old_width, &old_height);
+		old_width = gdk_window_get_width (window);
+		old_height = gdk_window_get_height (window);
 		drawable_get_adjusted_size (background, window,
 					    &width, &height);
 		if (old_width == width && old_height == height) {
@@ -776,16 +790,16 @@ init_fade (EelBackground *background, GtkWidget *widget)
 	}
 
 	if (background->details->fade != NULL && !gnome_bg_crossfade_is_started (background->details->fade)) {
-		GdkPixmap *start_pixmap;
+		cairo_surface_t *start_surface;
 
-		if (background->details->background_pixmap == NULL) {
-			start_pixmap = gnome_bg_get_pixmap_from_root (gtk_widget_get_screen (widget));
+		if (background->details->background_surface == NULL) {
+			start_surface = gnome_bg_get_pixmap_from_root (gtk_widget_get_screen (widget));
 		} else {
-			start_pixmap = g_object_ref (background->details->background_pixmap);
+			start_surface = cairo_surface_reference (background->details->background_surface);
 		}
 		gnome_bg_crossfade_set_start_pixmap (background->details->fade,
-						     start_pixmap);
-                g_object_unref (start_pixmap);
+						     start_surface);
+                cairo_surface_destroy (start_surface);
 	}
 }
 
@@ -855,10 +869,10 @@ widget_realized_setup (GtkWidget *widget, gpointer data)
 
 		root_window = gdk_screen_get_root_window(screen);			
 		
-		if (gdk_drawable_get_visual (root_window) == gtk_widget_get_visual (widget)) {
-			background->details->use_common_pixmap = TRUE;
+		if (gdk_window_get_visual (root_window) == gtk_widget_get_visual (widget)) {
+			background->details->use_common_surface = TRUE;
 		} else {
-			background->details->use_common_pixmap = FALSE;
+			background->details->use_common_surface = FALSE;
 		}
 
 		init_fade (background, widget);
@@ -894,7 +908,7 @@ widget_unrealize_cb (GtkWidget *widget, gpointer data)
 				                     background->details->screen_monitors_handler);
 			background->details->screen_monitors_handler = 0;
 	}
-	background->details->use_common_pixmap = FALSE;
+	background->details->use_common_surface = FALSE;
 }
 
 void
