@@ -607,10 +607,10 @@ menu_popup_pos (GtkMenu   *menu,
 
 	widget = user_data;
 
-	gtk_size_request_get_size (GTK_SIZE_REQUEST (menu),
-				   &menu_requisition, NULL);
-	gtk_size_request_get_size (GTK_SIZE_REQUEST (widget),
-				   &button_requisition, NULL);
+	gtk_widget_get_preferred_size (GTK_WIDGET (menu),
+				       &menu_requisition, NULL);
+	gtk_widget_get_preferred_size (widget,
+				       &button_requisition, NULL);
 	gtk_widget_get_allocation (widget, &allocation);
 
 	gdk_window_get_origin (gtk_widget_get_window (widget), x, y);
