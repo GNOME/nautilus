@@ -31,7 +31,5 @@ void nautilus_undo_set_up_nautilus_entry_for_undo 	(NautilusEntry	*entry);
 void nautilus_undo_tear_down_nautilus_entry_for_undo 	(NautilusEntry	*entry);
 void nautilus_undo_set_up_editable_for_undo 		(GtkEditable 	*editable);
 void nautilus_undo_tear_down_editable_for_undo 		(GtkEditable 	*editable);
-void nautilus_undo_editable_set_undo_key 		(GtkEditable 	*editable, 
-							 gboolean 	value);
 
 #endif /* NAUTILUS_UNDO_SIGNAL_HANDLERS_H */
