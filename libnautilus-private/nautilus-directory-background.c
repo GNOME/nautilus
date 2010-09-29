@@ -226,15 +226,16 @@ call_settings_changed (EelBackground *background)
 }
 
 static void
-desktop_background_destroyed_callback (EelBackground *background, void *georgeWBush)
+desktop_background_weak_notify (gpointer data,
+                                GObject *object)
 {
         guint notification_id;
         guint notification_timeout_id;
 
-        notification_id = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (background), "desktop_gconf_notification"));
+        notification_id = GPOINTER_TO_UINT (g_object_get_data (object, "desktop_gconf_notification"));
         gconf_client_notify_remove (nautilus_gconf_client, notification_id);
 
-        notification_timeout_id = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (background), "desktop_gconf_notification_timeout"));
+        notification_timeout_id = GPOINTER_TO_UINT (g_object_get_data (object, "desktop_gconf_notification_timeout"));
         if (notification_timeout_id != 0) {
                 g_source_remove (notification_timeout_id);
         }
@@ -275,8 +276,8 @@ nautilus_file_background_receive_gconf_changes (EelBackground *background)
 
         g_object_set_data (G_OBJECT (background), "desktop_gconf_notification", GUINT_TO_POINTER (notification_id));
 
-        g_signal_connect (background, "destroy",
-                          G_CALLBACK (desktop_background_destroyed_callback), NULL);
+        g_object_weak_ref (G_OBJECT (background),
+                           desktop_background_weak_notify, NULL);
 }
 
 /* handle the background changed signal */
