@@ -211,7 +211,7 @@ net_workarea_changed (FMDesktopIconView *icon_view,
 		nautilus_icon_container_set_margins (icon_container,
 						     0, 0, 0, 0);
 	} else {
-		screen = gdk_drawable_get_screen (GDK_DRAWABLE (window));
+		screen = gdk_window_get_screen (window);
 
 		icon_container_set_workarea (
 			icon_container, screen, workareas, length_returned / sizeof (long));
