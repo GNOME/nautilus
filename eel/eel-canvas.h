@@ -110,7 +110,7 @@ enum {
 
 
 struct _EelCanvasItem {
-	GtkObject object;
+	GInitiallyUnowned object;
 
 	/* Parent canvas for this item */
 	EelCanvas *canvas;
@@ -126,7 +126,9 @@ struct _EelCanvasItem {
 };
 
 struct _EelCanvasItemClass {
-	GtkObjectClass parent_class;
+	GInitiallyUnownedClass parent_class;
+
+	void (* destroy) (EelCanvasItem *item);
 
 	/* Tell the item to update itself.  The flags are from the update flags
 	 * defined above.  The item should update its internal state from its
@@ -188,6 +190,8 @@ GType eel_canvas_item_get_type (void) G_GNUC_CONST;
  */
 EelCanvasItem *eel_canvas_item_new (EelCanvasGroup *parent, GType type,
 				    const gchar *first_arg_name, ...);
+
+void eel_canvas_item_destroy (EelCanvasItem *item);
 
 /* Constructors for use in derived classes and language wrappers */
 void eel_canvas_item_construct (EelCanvasItem *item, EelCanvasGroup *parent,

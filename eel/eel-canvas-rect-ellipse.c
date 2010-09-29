@@ -67,7 +67,6 @@ enum {
 
 static void eel_canvas_re_class_init (EelCanvasREClass *klass);
 static void eel_canvas_re_init       (EelCanvasRE      *re);
-static void eel_canvas_re_destroy    (GtkObject          *object);
 static void eel_canvas_re_set_property (GObject              *object,
 					  guint                 param_id,
 					  const GValue         *value,
@@ -129,11 +128,9 @@ static void
 eel_canvas_re_class_init (EelCanvasREClass *klass)
 {
 	GObjectClass *gobject_class;
-	GtkObjectClass *object_class;
 	EelCanvasItemClass *item_class;
 
 	gobject_class = (GObjectClass *) klass;
-	object_class = (GtkObjectClass *) klass;
 	item_class = (EelCanvasItemClass *) klass;
 
 	re_parent_class = g_type_class_peek_parent (klass);
@@ -219,8 +216,6 @@ eel_canvas_re_class_init (EelCanvasREClass *klass)
 				      0.0, G_MAXDOUBLE, 0.0,
 				      G_PARAM_READWRITE));
 
-	object_class->destroy = eel_canvas_re_destroy;
-
 	item_class->realize = eel_canvas_re_realize;
 	item_class->unrealize = eel_canvas_re_unrealize;
 	item_class->translate = eel_canvas_re_translate;
@@ -235,22 +230,6 @@ eel_canvas_re_init (EelCanvasRE *re)
 	re->x2 = 0.0;
 	re->y2 = 0.0;
 	re->width = 0.0;
-}
-
-static void
-eel_canvas_re_destroy (GtkObject *object)
-{
-	EelCanvasRE *re;
-
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (EEL_IS_CANVAS_RE (object));
-
-	re = EEL_CANVAS_RE (object);
-
-	/* remember, destroy can be run multiple times! */
-
-	if (GTK_OBJECT_CLASS (re_parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (re_parent_class)->destroy) (object);
 }
 
 static void get_bounds (EelCanvasRE *re, double *px1, double *py1, double *px2, double *py2)
