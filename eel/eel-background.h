@@ -115,13 +115,13 @@ typedef struct EelBackgroundDetails EelBackgroundDetails;
 
 struct EelBackground
 {
-	GtkObject object;
+	GObject object;
 	EelBackgroundDetails *details;
 };
 
 struct EelBackgroundClass
 {
-	GtkObjectClass parent_class;
+	GObjectClass parent_class;
 
 	/* This signal is emitted whenever the background settings are
 	 * changed.
