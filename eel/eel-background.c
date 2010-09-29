@@ -444,53 +444,6 @@ eel_background_get_pixmap_and_color (EelBackground *background,
 	return NULL;
 }
 
-void
-eel_background_expose (GtkWidget                   *widget,
-		       GdkEventExpose              *event)
-{
-	GdkColor color;
-	int window_width;
-	int window_height;
-	GdkPixmap *pixmap;
-	GdkWindow *widget_window;
-	cairo_t *cr;
-
-	EelBackground *background;
-
-	widget_window = gtk_widget_get_window (widget);
-	if (event->window != widget_window) {
-		return;
-	}
-
-	background = eel_get_widget_background (widget);
-
-	drawable_get_adjusted_size (background, widget_window, &window_width, &window_height);
-	
-	pixmap = eel_background_get_pixmap_and_color (background,
-						      widget_window,
-						      &color);
-	cr = gdk_cairo_create (widget_window);
-
-	if (pixmap) {
-		gdk_cairo_set_source_pixmap (cr, pixmap, 0, 0);
-		cairo_pattern_set_extend (cairo_get_source (cr), CAIRO_EXTEND_REPEAT);
-	} else {
-		gdk_cairo_set_source_color (cr, &color);
-	}
-
-	gdk_cairo_rectangle (cr, &event->area);
-	cairo_clip (cr);
-
-	cairo_rectangle (cr, 0, 0, window_width, window_height);
-	cairo_fill (cr);
-
-	cairo_destroy (cr);
-
-	if (pixmap) {
-		g_object_unref (pixmap);
-	}
-}
-
 static void
 set_image_properties (EelBackground *background)
 {
@@ -1042,66 +995,7 @@ eel_background_is_dark (EelBackground *background)
 	gdk_screen_get_monitor_geometry (screen, 0, &rect);
 
 	return gnome_bg_is_dark (background->details->bg, rect.width, rect.height);
-}
-   
-/* handle dropped colors */
-void
-eel_background_receive_dropped_color (EelBackground *background,
-				      GtkWidget *widget,
-				      GdkDragAction action,
-				      int drop_location_x,
-				      int drop_location_y,
-				      const GtkSelectionData *selection_data)
-{
-	guint16 *channels;
-	char *color_spec;
-	char *new_gradient_spec;
-	int left_border, right_border, top_border, bottom_border;
-	GtkAllocation allocation;
-
-	g_return_if_fail (EEL_IS_BACKGROUND (background));
-	g_return_if_fail (GTK_IS_WIDGET (widget));
-	g_return_if_fail (selection_data != NULL);
-
-	/* Convert the selection data into a color spec. */
-	if (gtk_selection_data_get_length ((GtkSelectionData *) selection_data) != 8 ||
-	    gtk_selection_data_get_format ((GtkSelectionData *) selection_data) != 16) {
-		g_warning ("received invalid color data");
-		return;
-	}
-	channels = (guint16 *) gtk_selection_data_get_data ((GtkSelectionData *) selection_data);
-	color_spec = g_strdup_printf ("#%02X%02X%02X",
-				      channels[0] >> 8,
-				      channels[1] >> 8,
-				      channels[2] >> 8);
-
-	/* Figure out if the color was dropped close enough to an edge to create a gradient.
-	   For the moment, this is hard-wired, but later the widget will have to have some
-	   say in where the borders are.
-	*/
-	gtk_widget_get_allocation (widget, &allocation);
-	left_border = 32;
-	right_border = allocation.width - 32;
-	top_border = 32;
-	bottom_border = allocation.height - 32;
-	if (drop_location_x < left_border && drop_location_x <= right_border) {
-		new_gradient_spec = eel_gradient_set_left_color_spec (background->details->color, color_spec);
-	} else if (drop_location_x >= left_border && drop_location_x > right_border) {
-		new_gradient_spec = eel_gradient_set_right_color_spec (background->details->color, color_spec);
-	} else if (drop_location_y < top_border && drop_location_y <= bottom_border) {
-		new_gradient_spec = eel_gradient_set_top_color_spec (background->details->color, color_spec);
-	} else if (drop_location_y >= top_border && drop_location_y > bottom_border) {
-		new_gradient_spec = eel_gradient_set_bottom_color_spec (background->details->color, color_spec);
-	} else {
-		new_gradient_spec = g_strdup (color_spec);
-	}
-	
-	g_free (color_spec);
-
-	eel_background_set_image_uri_and_color (background, action, NULL, new_gradient_spec);
-
-	g_free (new_gradient_spec);
-}
+}   
 
 void
 eel_background_save_to_gconf (EelBackground *background)
