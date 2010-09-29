@@ -638,7 +638,7 @@ set_root_surface (EelBackground *background,
 							gdk_screen_get_width (screen), gdk_screen_get_height (screen), TRUE);
 	}
 
-	gnome_bg_set_pixmap_as_root (screen, surface);
+	gnome_bg_set_surface_as_root (screen, surface);
 
 	cairo_surface_destroy (surface);
 	cairo_surface_destroy (root_surface);
@@ -662,8 +662,8 @@ fade_to_surface (EelBackground *background,
 		return FALSE;
 	}
 
-	if (!gnome_bg_crossfade_set_end_pixmap (background->details->fade,
-				                surface)) {
+	if (!gnome_bg_crossfade_set_end_surface (background->details->fade,
+				                 surface)) {
 		return FALSE;
 	}
 
@@ -793,12 +793,12 @@ init_fade (EelBackground *background, GtkWidget *widget)
 		cairo_surface_t *start_surface;
 
 		if (background->details->background_surface == NULL) {
-			start_surface = gnome_bg_get_pixmap_from_root (gtk_widget_get_screen (widget));
+			start_surface = gnome_bg_get_surface_from_root (gtk_widget_get_screen (widget));
 		} else {
 			start_surface = cairo_surface_reference (background->details->background_surface);
 		}
-		gnome_bg_crossfade_set_start_pixmap (background->details->fade,
-						     start_surface);
+		gnome_bg_crossfade_set_start_surface (background->details->fade,
+						      start_surface);
                 cairo_surface_destroy (start_surface);
 	}
 }
