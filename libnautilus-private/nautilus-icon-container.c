@@ -3985,10 +3985,8 @@ select_previous_or_next_icon (NautilusIconContainer *container,
 }
 #endif
 
-/* GtkObject methods.  */
-
 static void
-destroy (GtkObject *object)
+destroy (GtkWidget *object)
 {
 	NautilusIconContainer *container;
 
@@ -4038,7 +4036,7 @@ destroy (GtkObject *object)
 	}
 
 
-	GTK_OBJECT_CLASS (nautilus_icon_container_parent_class)->destroy (object);
+	GTK_WIDGET_CLASS (nautilus_icon_container_parent_class)->destroy (object);
 }
 
 static void
@@ -5665,7 +5663,6 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 
 	G_OBJECT_CLASS (class)->constructor = nautilus_icon_container_constructor;
 	G_OBJECT_CLASS (class)->finalize = finalize;
-	GTK_OBJECT_CLASS (class)->destroy = destroy;
 
 	/* Signals.  */
 
@@ -6016,6 +6013,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 	/* GtkWidget class.  */
 
 	widget_class = GTK_WIDGET_CLASS (class);
+	widget_class->destroy = destroy;
 	widget_class->size_request = size_request;
 	widget_class->size_allocate = size_allocate;
 	widget_class->realize = realize;

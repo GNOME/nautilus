@@ -259,7 +259,7 @@ dialog_response_cb (GtkDialog *dialog,
 }
 
 static void
-dialog_destroy_cb (GtkObject *object,
+dialog_destroy_cb (GtkWidget *object,
                    NautilusAutorunComboBoxData *data)
 {
 	handle_dialog_closure (data);

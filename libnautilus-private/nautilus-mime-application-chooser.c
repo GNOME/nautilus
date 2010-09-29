@@ -105,22 +105,12 @@ nautilus_mime_application_chooser_finalize (GObject *object)
 }
 
 static void
-nautilus_mime_application_chooser_destroy (GtkObject *object)
-{
-	GTK_OBJECT_CLASS (nautilus_mime_application_chooser_parent_class)->destroy (object);
-}
-
-static void
 nautilus_mime_application_chooser_class_init (NautilusMimeApplicationChooserClass *class)
 {
 	GObjectClass *gobject_class;
-	GtkObjectClass *object_class;
 
 	gobject_class = G_OBJECT_CLASS (class);
 	gobject_class->finalize = nautilus_mime_application_chooser_finalize;
-	
-	object_class = GTK_OBJECT_CLASS (class);
-	object_class->destroy = nautilus_mime_application_chooser_destroy;
 }
 
 static void

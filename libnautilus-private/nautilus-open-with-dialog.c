@@ -113,12 +113,6 @@ nautilus_open_with_dialog_finalize (GObject *object)
 	G_OBJECT_CLASS (nautilus_open_with_dialog_parent_class)->finalize (object);
 }
 
-static void
-nautilus_open_with_dialog_destroy (GtkObject *object)
-{
-	GTK_OBJECT_CLASS (nautilus_open_with_dialog_parent_class)->destroy (object);
-}
-
 /* An application is valid if:
  *
  * 1) The file exists
@@ -359,17 +353,13 @@ static void
 nautilus_open_with_dialog_class_init (NautilusOpenWithDialogClass *class)
 {
 	GObjectClass *gobject_class;
-	GtkObjectClass *object_class;
 
 	gobject_class = G_OBJECT_CLASS (class);
 	gobject_class->finalize = nautilus_open_with_dialog_finalize;
 
-	object_class = GTK_OBJECT_CLASS (class);
-	object_class->destroy = nautilus_open_with_dialog_destroy;
-
 	signals[APPLICATION_SELECTED] =
 		g_signal_new ("application_selected",
-			      G_TYPE_FROM_CLASS (object_class),
+			      G_TYPE_FROM_CLASS (class),
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (NautilusOpenWithDialogClass,
 					       application_selected),

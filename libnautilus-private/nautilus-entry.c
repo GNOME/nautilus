@@ -378,12 +378,10 @@ static void
 nautilus_entry_class_init (NautilusEntryClass *class)
 {
 	GtkWidgetClass *widget_class;
-	GtkObjectClass *object_class;
 	GObjectClass *gobject_class;
 
 	widget_class = GTK_WIDGET_CLASS (class);
 	gobject_class = G_OBJECT_CLASS (class);
-	object_class = GTK_OBJECT_CLASS (class);
 		
 	widget_class->button_press_event = nautilus_entry_button_press;
 	widget_class->button_release_event = nautilus_entry_button_release;
@@ -396,19 +394,17 @@ nautilus_entry_class_init (NautilusEntryClass *class)
 	/* Set up signals */
 	signals[USER_CHANGED] = g_signal_new
 		("user_changed",
-		 G_TYPE_FROM_CLASS (object_class),
+		 G_TYPE_FROM_CLASS (class),
 		 G_SIGNAL_RUN_LAST,
-		 G_STRUCT_OFFSET (NautilusEntryClass,
-				    user_changed),
+		 G_STRUCT_OFFSET (NautilusEntryClass, user_changed),
 		 NULL, NULL,
 		 g_cclosure_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
 	signals[SELECTION_CHANGED] = g_signal_new
 		("selection_changed",
-		 G_TYPE_FROM_CLASS (object_class),
+		 G_TYPE_FROM_CLASS (class),
 		 G_SIGNAL_RUN_LAST,
-		 G_STRUCT_OFFSET (NautilusEntryClass,
-				    selection_changed),
+		 G_STRUCT_OFFSET (NautilusEntryClass, selection_changed),
 		 NULL, NULL,
 		 g_cclosure_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);

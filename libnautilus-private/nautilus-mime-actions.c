@@ -729,7 +729,7 @@ report_broken_symbolic_link (GtkWindow *parent_window, NautilusFile *file)
 	 */
 
 	response = gtk_dialog_run (dialog);
-	gtk_object_destroy (GTK_OBJECT (dialog));
+	gtk_widget_destroy (GTK_WIDGET (dialog));
 
 	if (response == GTK_RESPONSE_YES) {
 		file_as_list.data = file;
@@ -794,7 +794,7 @@ get_executable_text_file_action (GtkWindow *parent_window, NautilusFile *file)
 	g_free (detail);
 
 	response = gtk_dialog_run (dialog);
-	gtk_object_destroy (GTK_OBJECT (dialog));
+	gtk_widget_destroy (GTK_WIDGET (dialog));
 	
 	switch (response) {
 	case RESPONSE_RUN:
@@ -1124,7 +1124,7 @@ confirm_multiple_windows (GtkWindow *parent_window,
 	g_free (detail);
 
 	response = gtk_dialog_run (dialog);
-	gtk_object_destroy (GTK_OBJECT (dialog));
+	gtk_widget_destroy (GTK_WIDGET (dialog));
 
 	return response == GTK_RESPONSE_YES;
 }

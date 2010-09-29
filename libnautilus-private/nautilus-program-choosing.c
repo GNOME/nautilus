@@ -94,7 +94,7 @@ application_cannot_open_location (GAppInfo *application,
 							 GTK_STOCK_CANCEL,
 							 parent_window);
 		response = gtk_dialog_run (message_dialog);
-		gtk_object_destroy (GTK_OBJECT (message_dialog));
+		gtk_widget_destroy (GTK_WIDGET (message_dialog));
 		
 		if (response == GTK_RESPONSE_YES) {
 			launch_parameters = launch_parameters_new (file, parent_window);

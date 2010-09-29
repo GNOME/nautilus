@@ -171,7 +171,7 @@ nautilus_undo_transaction_add_atom (NautilusUndoTransaction *transaction,
 	
 	g_return_if_fail (NAUTILUS_IS_UNDO_TRANSACTION (transaction));
 	g_return_if_fail (atom != NULL);
-	g_return_if_fail (GTK_IS_OBJECT (atom->target));
+	g_return_if_fail (G_IS_OBJECT (atom->target));
 
 	/* Add the atom to the atom list in the transaction. */
 	transaction->atom_list = g_list_append
