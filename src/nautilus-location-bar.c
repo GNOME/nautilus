@@ -343,7 +343,7 @@ finalize (GObject *object)
 }
 
 static void
-destroy (GtkObject *object)
+destroy (GtkWidget *object)
 {
 	NautilusLocationBar *bar;
 
@@ -358,21 +358,21 @@ destroy (GtkObject *object)
 	g_free (bar->details->last_location);
 	bar->details->last_location = NULL;
 	
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_WIDGET_CLASS, destroy, (object));
 }
 
 static void
 nautilus_location_bar_class_init (NautilusLocationBarClass *class)
 {
 	GObjectClass *gobject_class;
-	GtkObjectClass *object_class;
+	GtkWidgetClass *widget_class;
 	NautilusNavigationBarClass *navigation_bar_class;
 
 	gobject_class = G_OBJECT_CLASS (class);
 	gobject_class->finalize = finalize;
-	
-	object_class = GTK_OBJECT_CLASS (class);
-	object_class->destroy = destroy;
+
+	widget_class = GTK_WIDGET_CLASS (class);
+	widget_class->destroy = destroy;
 	
 	navigation_bar_class = NAUTILUS_NAVIGATION_BAR_CLASS (class);
 

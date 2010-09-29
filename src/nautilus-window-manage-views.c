@@ -1201,11 +1201,11 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 						g_object_unref (root);
 					}
 				} else {
-					gtk_object_destroy (GTK_OBJECT (window));
+					gtk_widget_destroy (GTK_WIDGET (window));
 				}
 			} else {
 				/* Since this is a window, destroying it will also unref it. */
-				gtk_object_destroy (GTK_OBJECT (window));
+				gtk_widget_destroy (GTK_WIDGET (window));
 			}
 		} else {
 			/* Clean up state of already-showing window */

@@ -187,10 +187,10 @@ nautilus_window_init (NautilusWindow *window)
 	g_signal_connect_object (nautilus_signaller_get_current (), "popup_menu_changed",
 			 G_CALLBACK (nautilus_window_load_extension_menus), window, G_CONNECT_SWAPPED);
 
-	gtk_quit_add_destroy (1, GTK_OBJECT (window));
+	gtk_quit_add_destroy (1, GTK_WIDGET (window));
 
 	/* Keep the main event loop alive as long as the window exists */
-	nautilus_main_event_loop_register (GTK_OBJECT (window));
+	nautilus_main_event_loop_register (GTK_WIDGET (window));
 }
 
 /* Unconditionally synchronize the GtkUIManager of WINDOW. */
@@ -608,7 +608,7 @@ free_stored_viewers (NautilusWindow *window)
 }
 
 static void
-nautilus_window_destroy (GtkObject *object)
+nautilus_window_destroy (GtkWidget *object)
 {
 	NautilusWindow *window;
 	GList *panes_copy;
@@ -624,7 +624,7 @@ nautilus_window_destroy (GtkObject *object)
 	g_assert (window->details->panes == NULL);
 	g_assert (window->details->active_pane == NULL);
 
-	GTK_OBJECT_CLASS (nautilus_window_parent_class)->destroy (object);
+	GTK_WIDGET_CLASS (nautilus_window_parent_class)->destroy (object);
 }
 
 static void
@@ -1997,7 +1997,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
 	G_OBJECT_CLASS (class)->constructed = nautilus_window_constructed;
 	G_OBJECT_CLASS (class)->get_property = nautilus_window_get_property;
 	G_OBJECT_CLASS (class)->set_property = nautilus_window_set_property;
-	GTK_OBJECT_CLASS (class)->destroy = nautilus_window_destroy;
+	GTK_WIDGET_CLASS (class)->destroy = nautilus_window_destroy;
 	GTK_WIDGET_CLASS (class)->show = nautilus_window_show;
 	GTK_WIDGET_CLASS (class)->size_request = nautilus_window_size_request;
 	GTK_WIDGET_CLASS (class)->realize = nautilus_window_realize;

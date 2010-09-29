@@ -223,9 +223,9 @@ static void
 edit_bookmarks_dialog_reset_signals (gpointer data,
 				     GObject *obj)
 {
-	g_signal_handler_disconnect (GTK_OBJECT (jump_button),
+	g_signal_handler_disconnect (jump_button,
 				     jump_button_signal_id);
-	g_signal_handler_disconnect (GTK_OBJECT (bookmark_list_widget),
+	g_signal_handler_disconnect (bookmark_list_widget,
 				     row_activated_signal_id);
 	jump_button_signal_id =
 		g_signal_connect (jump_button, "clicked",
@@ -408,9 +408,9 @@ void
 edit_bookmarks_dialog_set_signals (GObject *undo_manager_source)
 {
 
-	g_signal_handler_disconnect (GTK_OBJECT (jump_button), 
+	g_signal_handler_disconnect (jump_button,
 				     jump_button_signal_id);
-	g_signal_handler_disconnect (GTK_OBJECT (bookmark_list_widget),
+	g_signal_handler_disconnect (bookmark_list_widget,
 				     row_activated_signal_id);
 
 	jump_button_signal_id =

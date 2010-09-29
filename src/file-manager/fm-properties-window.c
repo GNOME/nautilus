@@ -5070,13 +5070,6 @@ is_directory_ready_callback (NautilusFile *file,
 		
 		remove_pending (startup_data, FALSE, TRUE, TRUE);
 		
-/* FIXME bugzilla.gnome.org 42151:
- * See comment elsewhere in this file about bug 2151.
- */
-#ifdef UNDO_ENABLED
-		nautilus_undo_share_undo_manager (GTK_OBJECT (new_window),
-						  GTK_OBJECT (callback_data));
-#endif	
 		gtk_window_present (GTK_WINDOW (new_window));
 	}
 }
@@ -5193,7 +5186,7 @@ real_response (GtkDialog *dialog,
 }
 
 static void
-real_destroy (GtkObject *object)
+real_destroy (GtkWidget *object)
 {
 	FMPropertiesWindow *window;
 	GList *l;
@@ -5243,7 +5236,7 @@ real_destroy (GtkObject *object)
 		window->details->update_files_timeout_id = 0;
 	}
 
-	GTK_OBJECT_CLASS (parent_class)->destroy (object);
+	GTK_WIDGET_CLASS (parent_class)->destroy (object);
 }
 
 static void
@@ -5498,7 +5491,7 @@ fm_properties_window_class_init (FMPropertiesWindowClass *class)
 	GtkBindingSet *binding_set;
 
 	G_OBJECT_CLASS (class)->finalize = real_finalize;
-	GTK_OBJECT_CLASS (class)->destroy = real_destroy;
+	GTK_WIDGET_CLASS (class)->destroy = real_destroy;
 	GTK_DIALOG_CLASS (class)->response = real_response;
 
 	binding_set = gtk_binding_set_by_class (class);

@@ -563,7 +563,7 @@ nautilus_navigation_window_button_press_event (GtkWidget *widget,
 }
 
 static void
-nautilus_navigation_window_destroy (GtkObject *object)
+nautilus_navigation_window_destroy (GtkWidget *object)
 {
 	NautilusNavigationWindow *window;
 	
@@ -579,7 +579,7 @@ nautilus_navigation_window_destroy (GtkObject *object)
 	window->details->content_paned = NULL;
 	window->details->split_view_hpane = NULL;
 
-	GTK_OBJECT_CLASS (parent_class)->destroy (object);
+	GTK_WIDGET_CLASS (parent_class)->destroy (object);
 }
 
 static void
@@ -1170,7 +1170,7 @@ nautilus_navigation_window_class_init (NautilusNavigationWindowClass *class)
 	NAUTILUS_WINDOW_CLASS (class)->bookmarks_placeholder = MENU_PATH_BOOKMARKS_PLACEHOLDER;
 	
 	G_OBJECT_CLASS (class)->finalize = nautilus_navigation_window_finalize;
-	GTK_OBJECT_CLASS (class)->destroy = nautilus_navigation_window_destroy;
+	GTK_WIDGET_CLASS (class)->destroy = nautilus_navigation_window_destroy;
 	GTK_WIDGET_CLASS (class)->show = nautilus_navigation_window_show;
 	GTK_WIDGET_CLASS (class)->unrealize = nautilus_navigation_window_unrealize;
 	GTK_WIDGET_CLASS (class)->window_state_event = nautilus_navigation_window_state_event;

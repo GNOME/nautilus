@@ -62,7 +62,7 @@ remove_bookmarks_for_uri_if_yes (GtkDialog *dialog, int response, gpointer callb
 		nautilus_bookmark_list_delete_items_with_uri (window->details->bookmark_list, uri);
 	}
 
-	gtk_object_destroy (GTK_OBJECT (dialog));
+	gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
 static void

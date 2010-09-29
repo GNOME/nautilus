@@ -198,7 +198,7 @@ G_DEFINE_TYPE_WITH_CODE (FMIconView, fm_icon_view, FM_TYPE_DIRECTORY_VIEW,
 						fm_icon_view_iface_init));
 
 static void
-fm_icon_view_destroy (GtkObject *object)
+fm_icon_view_destroy (GtkWidget *object)
 {
 	FMIconView *icon_view;
 
@@ -223,7 +223,7 @@ fm_icon_view_destroy (GtkObject *object)
 		icon_view->details->icons_not_positioned = NULL;
 	}
 
-	GTK_OBJECT_CLASS (fm_icon_view_parent_class)->destroy (object);
+	GTK_WIDGET_CLASS (fm_icon_view_parent_class)->destroy (object);
 }
 
 
@@ -2629,8 +2629,6 @@ fm_icon_view_sort_directories_first_changed (FMDirectoryView *directory_view)
 	}
 }
 
-/* GtkObject methods. */
-
 static gboolean
 icon_view_can_accept_item (NautilusIconContainer *container,
 			   NautilusFile *target_item,
@@ -2933,8 +2931,7 @@ fm_icon_view_class_init (FMIconViewClass *klass)
 	G_OBJECT_CLASS (klass)->set_property = fm_icon_view_set_property;
 	G_OBJECT_CLASS (klass)->finalize = fm_icon_view_finalize;
 
-	GTK_OBJECT_CLASS (klass)->destroy = fm_icon_view_destroy;
-	
+	GTK_WIDGET_CLASS (klass)->destroy = fm_icon_view_destroy;
 	GTK_WIDGET_CLASS (klass)->screen_changed = fm_icon_view_screen_changed;
 	GTK_WIDGET_CLASS (klass)->scroll_event = fm_icon_view_scroll_event;
 	

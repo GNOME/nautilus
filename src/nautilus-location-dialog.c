@@ -60,16 +60,6 @@ nautilus_location_dialog_finalize (GObject *object)
 }
 
 static void
-nautilus_location_dialog_destroy (GtkObject *object)
-{
-	NautilusLocationDialog *dialog;
-
-	dialog = NAUTILUS_LOCATION_DIALOG (object);
-	
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
-}
-
-static void
 open_current_location (NautilusLocationDialog *dialog)
 {
 	GFile *location;
@@ -132,13 +122,9 @@ static void
 nautilus_location_dialog_class_init (NautilusLocationDialogClass *class)
 {
 	GObjectClass *gobject_class;
-	GtkObjectClass *object_class;
 
 	gobject_class = G_OBJECT_CLASS (class);
-	gobject_class->finalize = nautilus_location_dialog_finalize;
-	
-	object_class = GTK_OBJECT_CLASS (class);
-	object_class->destroy = nautilus_location_dialog_destroy;
+	gobject_class->finalize = nautilus_location_dialog_finalize;	
 }
 
 static void

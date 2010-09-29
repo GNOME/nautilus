@@ -106,7 +106,7 @@ eel_gtk_main_quit_all (void)
 }
 
 static void
-event_loop_unregister (GtkObject *object)
+event_loop_unregister (GtkWidget *object)
 {
 	event_loop_registrants = g_slist_remove (event_loop_registrants, object);
 	if (!is_event_loop_needed ()) {
@@ -115,14 +115,14 @@ event_loop_unregister (GtkObject *object)
 }
 
 void
-nautilus_main_event_loop_register (GtkObject *object)
+nautilus_main_event_loop_register (GtkWidget *object)
 {
 	g_signal_connect (object, "destroy", G_CALLBACK (event_loop_unregister), NULL);
 	event_loop_registrants = g_slist_prepend (event_loop_registrants, object);
 }
 
 gboolean
-nautilus_main_is_event_loop_mainstay (GtkObject *object)
+nautilus_main_is_event_loop_mainstay (GtkWidget *object)
 {
 	return g_slist_length (event_loop_registrants) == 1
 		&& event_loop_registrants->data == object;
@@ -151,7 +151,7 @@ nautilus_main_event_loop_quit (gboolean explicit)
 		   that now since gnome-session doesn't restart apps except on startup. */
 	}
 	while (event_loop_registrants != NULL) {
-		gtk_object_destroy (event_loop_registrants->data);
+		gtk_widget_destroy (event_loop_registrants->data);
 	}
 }
 

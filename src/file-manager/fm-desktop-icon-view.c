@@ -463,7 +463,8 @@ do_desktop_rescan (gpointer data)
 }
 
 static void
-done_loading (GtkObject *DirectoryView, FMDesktopIconView *desktop_icon_view)
+done_loading (NautilusDirectory *model,
+	      FMDesktopIconView *desktop_icon_view)
 {
 	struct stat buf;
 

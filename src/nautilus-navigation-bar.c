@@ -53,14 +53,11 @@ EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_navigation_bar, set_location)
 static void
 nautilus_navigation_bar_class_init (NautilusNavigationBarClass *klass)
 {
-	GtkObjectClass *object_class;
 	GtkBindingSet *binding_set;
 
-	object_class = GTK_OBJECT_CLASS (klass);
-	
 	signals[ACTIVATE] = g_signal_new
 		("activate",
-		 G_TYPE_FROM_CLASS (object_class),
+		 G_TYPE_FROM_CLASS (klass),
 		 G_SIGNAL_RUN_LAST,
 		 G_STRUCT_OFFSET (NautilusNavigationBarClass,
 				    activate),
@@ -70,7 +67,7 @@ nautilus_navigation_bar_class_init (NautilusNavigationBarClass *klass)
 
 	signals[CANCEL] = g_signal_new
 		("cancel",
-		 G_TYPE_FROM_CLASS (object_class),
+		 G_TYPE_FROM_CLASS (klass),
 		 G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
 		 G_STRUCT_OFFSET (NautilusNavigationBarClass,
 				    cancel),
@@ -80,7 +77,7 @@ nautilus_navigation_bar_class_init (NautilusNavigationBarClass *klass)
 
 	signals[LOCATION_CHANGED] = g_signal_new
 		("location_changed",
-		 G_TYPE_FROM_CLASS (object_class),
+		 G_TYPE_FROM_CLASS (klass),
 		 G_SIGNAL_RUN_LAST,
 		 G_STRUCT_OFFSET (NautilusNavigationBarClass,
 				    location_changed),

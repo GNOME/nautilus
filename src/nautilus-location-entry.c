@@ -261,7 +261,7 @@ finalize (GObject *object)
 }
 
 static void
-destroy (GtkObject *object)
+destroy (GtkWidget *object)
 {
 	NautilusLocationEntry *entry;
 
@@ -276,7 +276,7 @@ destroy (GtkObject *object)
 	g_free (entry->details->current_directory);
 	entry->details->current_directory = NULL;
 	
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_WIDGET_CLASS, destroy, (object));
 }
 
 static void
@@ -354,17 +354,14 @@ nautilus_location_entry_class_init (NautilusLocationEntryClass *class)
 {
 	GtkWidgetClass *widget_class;
 	GObjectClass *gobject_class;
-	GtkObjectClass *object_class;
 	GtkEntryClass *entry_class;
 
 	widget_class = GTK_WIDGET_CLASS (class);
 	widget_class->focus_in_event = nautilus_location_entry_focus_in;
+	widget_class->destroy = destroy;
 
 	gobject_class = G_OBJECT_CLASS (class);
 	gobject_class->finalize = finalize;
-	
-	object_class = GTK_OBJECT_CLASS (class);
-	object_class->destroy = destroy;
 
 	entry_class = GTK_ENTRY_CLASS (class);
 	entry_class->activate = nautilus_location_entry_activate;

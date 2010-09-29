@@ -113,7 +113,7 @@ forget_history_if_yes (GtkDialog *dialog, int response, gpointer callback_data)
 	if (response == RESPONSE_FORGET) {
 		nautilus_forget_history ();
 	}
-	gtk_object_destroy (GTK_OBJECT (dialog));
+	gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
 static void

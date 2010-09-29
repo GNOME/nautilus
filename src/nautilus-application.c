@@ -335,7 +335,7 @@ check_required_directories (NautilusApplication *application)
 
 		dialog = eel_show_error_dialog (error_string, detail_string, NULL);
 		/* We need the main event loop so the user has a chance to see the dialog. */
-		nautilus_main_event_loop_register (GTK_OBJECT (dialog));
+		nautilus_main_event_loop_register (GTK_WIDGET (dialog));
 
 		g_string_free (directories_as_string, TRUE);
 		g_free (error_string);
@@ -1295,7 +1295,7 @@ nautilus_application_close_all_spatial_windows (void)
 }
 
 static void
-nautilus_application_destroyed_window (GtkObject *object, NautilusApplication *application)
+nautilus_application_destroyed_window (GtkWidget *object, NautilusApplication *application)
 {
 	nautilus_application_window_list = g_list_remove (nautilus_application_window_list, object);
 }
