@@ -777,54 +777,6 @@ stop_auto_scroll (NautilusIconContainer *container)
 	nautilus_drag_autoscroll_stop (&container->details->dnd_info->drag_info);
 }
 
-static gboolean
-confirm_switch_to_manual_layout (NautilusIconContainer *container)
-{
-#if 0
-	const char *message;
-	const char *detail;
-	GtkDialog *dialog;
-	int response;
-
-	/* FIXME bugzilla.gnome.org 40915: Use of the word "directory"
-	 * makes this FMIconView specific. Move these messages into
-	 * FMIconView so NautilusIconContainer can be used for things
-	 * that are not directories?
-	 */
-	if (nautilus_icon_container_has_stored_icon_positions (container)) {
-		if (eel_g_list_exactly_one_item (container->details->dnd_info->drag_info.selection_list)) {
-			message = no_translate("Do you want to switch to manual layout and leave this item where you dropped it? "
-			"This will clobber the stored manual layout.");
-			detail = no_translate("This folder uses automatic layout.");
-		} else {
-			message = no_translate("Do you want to switch to manual layout and leave these items where you dropped them? "
-			"This will clobber the stored manual layout.");
-			detail = no_translate("This folder uses automatic layout.");
-		}
-	} else {
-		if (eel_g_list_exactly_one_item (container->details->dnd_info->drag_info.selection_list)) {
-			message = no_translate("Do you want to switch to manual layout and leave this item where you dropped it?");
-			detail = no_translate("This folder uses automatic layout.");
-		} else {
-			message = no_translate("Do you want to switch to manual layout and leave these items where you dropped them?");
-			detail = no_translate("This folder uses automatic layout.");
-
-		}
-	}
-
-	dialog = eel_show_yes_no_dialog (message, detail, _("Switch to Manual Layout?"),
-					 GTK_STOCK_CANCEL,
-					 GTK_WINDOW (gtk_widget_get_toplevel(GTK_WIDGET(container))));
-
-	response = gtk_dialog_run (dialog);
-	gtk_object_destroy (GTK_OBJECT (dialog));
-
-	return response == GTK_RESPONSE_YES;
-#else
-	return FALSE;
-#endif
-}
-
 static void
 handle_local_move (NautilusIconContainer *container,
 		   double world_x, double world_y)
@@ -838,10 +790,7 @@ handle_local_move (NautilusIconContainer *container,
 	time_t now;
 
 	if (container->details->auto_layout) {
-		if (!confirm_switch_to_manual_layout (container)) {
-			return;
-		}
-		nautilus_icon_container_freeze_icon_positions (container);
+		return;
 	}
 
 	time (&now);
