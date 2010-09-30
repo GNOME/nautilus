@@ -1324,8 +1324,7 @@ draw_label_text (NautilusIconCanvasItem *item,
 		    details->is_highlighted_as_keyboard_focus)) {
 		/* clear the underlying icons, where the text or overlaps them. */
                 cairo_save (cr);
-                /* FIMXEchpe draw the background here? */
-                cairo_set_source_rgb (cr, 1., 1., 1.);
+                cairo_set_source_rgba (cr, 0, 0, 0, 0);
                 cairo_rectangle (cr,
                                  text_rect.x0,
                                  text_rect.y0,
@@ -1333,13 +1332,6 @@ draw_label_text (NautilusIconCanvasItem *item,
                                  text_rect.y1 - text_rect.y0);
                 cairo_fill (cr);
                 cairo_restore (cr);
-        #if 0
-		gdk_window_clear_area (gtk_layout_get_bin_window (&EEL_CANVAS (container)->layout),
-				       text_rect.x0,
-				       text_rect.y0,
-				       text_rect.x1 - text_rect.x0,
-				       text_rect.y1 - text_rect.y0);
-        #endif
 	}
 
 	if (container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
