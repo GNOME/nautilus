@@ -1294,10 +1294,6 @@ drag_begin_callback (GtkWidget      *widget,
         /* create a pixmap and mask to drag with */
         surface = nautilus_icon_canvas_item_get_drag_surface (container->details->drag_icon->item);
 
-    	/* we want to drag semi-transparent pixbufs, but X is too slow dealing with
-	   stippled masks, so we had to remove the code; this comment is left as a memorial
-	   to it, with the hope that we get it back someday as X Windows improves */
-	
         /* compute the image's offset */
 	eel_canvas_item_get_bounds (EEL_CANVAS_ITEM (container->details->drag_icon->item),
 				    &x1, &y1, &x2, &y2);
@@ -1309,24 +1305,6 @@ drag_begin_callback (GtkWidget      *widget,
         cairo_surface_set_device_offset (surface, -x_offset, -y_offset);
         gtk_drag_set_icon_surface (context, surface);
         cairo_surface_destroy (surface);
-
-#if 0
-	if (!use_mask && pixmap != NULL) {
-		cairo_t *cr;
-
-		/* If composite works, make the icons partially transparent */
-		cr = gdk_cairo_create (pixmap);
-		cairo_set_operator (cr, CAIRO_OPERATOR_DEST_OUT);
-		cairo_set_source_rgba(cr, 1,0,0,0.35);
-		cairo_paint (cr);
-		cairo_destroy (cr);
-	}
-	
-	gtk_drag_set_icon_pixmap (context,
-				  colormap,
-				  pixmap, (use_mask ? mask : NULL),
-				  x_offset, y_offset);
-#endif
 }
 
 void
