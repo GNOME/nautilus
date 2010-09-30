@@ -1306,7 +1306,7 @@ drag_begin_callback (GtkWidget      *widget,
         x_offset = start_x - winx;
         y_offset = start_y - winy;
 
-        cairo_surface_set_device_offset (surface, x_offset, y_offset);
+        cairo_surface_set_device_offset (surface, -x_offset, -y_offset);
         gtk_drag_set_icon_surface (context, surface);
         cairo_surface_destroy (surface);
 
