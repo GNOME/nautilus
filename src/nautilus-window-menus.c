@@ -489,7 +489,7 @@ action_about_nautilus_callback (GtkAction *action,
 	};
 	const gchar *documenters[] = {
 		"GNOME Documentation Team",
-		"Sun Microsystem",
+		"Sun Microsystems",
 		NULL
 	};
 	const gchar *license[] = {
