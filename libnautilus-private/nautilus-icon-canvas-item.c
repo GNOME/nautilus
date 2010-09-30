@@ -517,7 +517,6 @@ nautilus_icon_canvas_item_get_drag_surface (NautilusIconCanvasItem *item)
 	int item_offset_x, item_offset_y;
 	EelIRect icon_rect;
 	EelIRect emblem_rect;
-	GdkPixbuf *pixbuf;
 	GdkPixbuf *emblem_pixbuf;
 	EmblemLayout emblem_layout;
 	double item_x, item_y;
@@ -548,63 +547,34 @@ nautilus_icon_canvas_item_get_drag_surface (NautilusIconCanvasItem *item)
                                                      CAIRO_CONTENT_COLOR_ALPHA,
                                                      width, height);
 
-	pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
-				 TRUE,
-				 gdk_pixbuf_get_bits_per_sample (item->details->pixbuf),
-				 width, height);
-	gdk_pixbuf_fill (pixbuf, 0x00000000);
-
-	gdk_pixbuf_composite (item->details->pixbuf, pixbuf,
-			      item_offset_x, item_offset_y,
-			      gdk_pixbuf_get_width (item->details->pixbuf),
-			      gdk_pixbuf_get_height (item->details->pixbuf),
-			      item_offset_x, item_offset_y, 1.0, 1.0,
-			      GDK_INTERP_BILINEAR, 255);
+	cr = cairo_create (surface);
+	gdk_cairo_set_source_pixbuf (cr, item->details->pixbuf,
+				     item_offset_x, item_offset_y);
+	cairo_rectangle (cr, item_offset_x, item_offset_y,
+			 gdk_pixbuf_get_width (item->details->pixbuf),
+			 gdk_pixbuf_get_height (item->details->pixbuf));
+	cairo_fill (cr);
 
 	icon_rect.x0 = item_offset_x;
 	icon_rect.y0 = item_offset_y;
 	icon_rect.x1 = item_offset_x + gdk_pixbuf_get_width (item->details->pixbuf);
 	icon_rect.y1 = item_offset_y + gdk_pixbuf_get_height (item->details->pixbuf);
 
-
 	is_rtl = nautilus_icon_container_is_layout_rtl (NAUTILUS_ICON_CONTAINER (canvas));
 
 	emblem_layout_reset (&emblem_layout, item, icon_rect, is_rtl);
 	while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect, is_rtl)) {
-		gdk_pixbuf_composite (emblem_pixbuf, pixbuf,
-				      emblem_rect.x0, emblem_rect.y0,
-				      gdk_pixbuf_get_width (emblem_pixbuf),
-				      gdk_pixbuf_get_height (emblem_pixbuf),
-				      emblem_rect.x0, emblem_rect.y0,
-				      1.0, 1.0,
-				      GDK_INTERP_BILINEAR, 255);
+		gdk_cairo_set_source_pixbuf (cr, emblem_pixbuf, emblem_rect.x0, emblem_rect.y0);
+		cairo_rectangle (cr, emblem_rect.x0, emblem_rect.y0,
+				 gdk_pixbuf_get_width (emblem_pixbuf),
+				 gdk_pixbuf_get_height (emblem_pixbuf));
+		cairo_fill (cr);
 	}
 
-	/* draw pixbuf to mask and pixmap */
-        cr = cairo_create (surface);
-	cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
-	gdk_cairo_set_source_pixbuf (cr, pixbuf, 0, 0);
-	cairo_paint (cr);
-
-        draw_embedded_text (item, cr,
-                            item_offset_x, item_offset_y);
-        draw_label_text (item, cr, FALSE, icon_rect);
+	draw_embedded_text (item, cr,
+			    item_offset_x, item_offset_y);
+	draw_label_text (item, cr, FALSE, icon_rect);
 	cairo_destroy (cr);
-
-#if 0
-	*mask = gdk_window_create_similar_surface (gdk_screen_get_root_window (screen),
-                                                   CAIRO_CONTENT_ALPHA, width, height);
-	cr = cairo_create (*mask);
-	cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
-	gdk_cairo_set_source_pixbuf (cr, pixbuf, 0, 0);
-	cairo_paint (cr);
-
-	draw_label_text (item, cr, TRUE, icon_rect);
-
-        cairo_destroy (cr);
-#endif
-
-	g_object_unref (pixbuf);
 
 	return surface;
 }
