@@ -199,6 +199,7 @@ ui_DATA = 					\
 	$(NULL)
 
 CLEANFILES = \
+	nautilus-src-marshal.list		\
 	$(BUILT_SOURCES)			\
 	$(desktop_files)			\
 	$(server_DATA)				\

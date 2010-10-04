@@ -113,5 +113,6 @@ EXTRA_DIST =					\
 	$(NULL)
 
 CLEANFILES = \
+	eel-marshal.list \
 	$(BUILT_SOURCES) \
 	$(NULL)
