@@ -2592,10 +2592,16 @@ paint_used_legend (GtkWidget *widget,
 			  width - 4,
 			  height - 4);
                       
-	cairo_set_source_rgb (cr, (double) window->details->used_color.red / 65535, (double) window->details->used_color.green / 65535, (double) window->details->used_color.blue / 65535);
+	cairo_set_source_rgb (cr,
+			      (double) window->details->used_color.red / 65535,
+			      (double) window->details->used_color.green / 65535,
+			      (double) window->details->used_color.blue / 65535);
 	cairo_fill_preserve (cr);
 
-	cairo_set_source_rgb (cr, (double) window->details->used_stroke_color.red / 65535, (double) window->details->used_stroke_color.green / 65535, (double) window->details->used_stroke_color.blue / 65535);
+	cairo_set_source_rgb (cr,
+			      (double) window->details->used_stroke_color.red / 65535,
+			      (double) window->details->used_stroke_color.green / 65535,
+			      (double) window->details->used_stroke_color.blue / 65535);
 	cairo_stroke (cr);
 }
 
@@ -2619,10 +2625,16 @@ paint_free_legend (GtkWidget *widget,
 			 width - 4,
 			 height - 4);
 
-	cairo_set_source_rgb (cr, (double) window->details->free_color.red / 65535, (double) window->details->free_color.green / 65535, (double) window->details->free_color.blue / 65535);
+	cairo_set_source_rgb (cr,
+			      (double) window->details->free_color.red / 65535,
+			      (double) window->details->free_color.green / 65535,
+			      (double) window->details->free_color.blue / 65535);
 	cairo_fill_preserve(cr);
 
-	cairo_set_source_rgb (cr, (double) window->details->free_stroke_color.red / 65535, (double) window->details->free_stroke_color.green / 65535, (double) window->details->free_stroke_color.blue / 65535);
+	cairo_set_source_rgb (cr,
+			      (double) window->details->free_stroke_color.red / 65535,
+			      (double) window->details->free_stroke_color.green / 65535,
+			      (double) window->details->free_stroke_color.blue / 65535);
 	cairo_stroke (cr);
 }
 
@@ -2679,10 +2691,16 @@ paint_pie_chart (GtkWidget *widget,
 			cairo_line_to (cr,xc,yc);
 		}
 		
-		cairo_set_source_rgb (cr, (double) window->details->used_color.red / 65535, (double) window->details->used_color.green / 65535, (double) window->details->used_color.blue / 65535);
+		cairo_set_source_rgb (cr,
+				      (double) window->details->used_color.red / 65535,
+				      (double) window->details->used_color.green / 65535,
+				      (double) window->details->used_color.blue / 65535);
 		cairo_fill_preserve (cr);
 		
-		cairo_set_source_rgb (cr, (double) window->details->used_stroke_color.red / 65535, (double) window->details->used_stroke_color.green / 65535, (double) window->details->used_stroke_color.blue / 65535);
+		cairo_set_source_rgb (cr,
+				      (double) window->details->used_stroke_color.red / 65535,
+				      (double) window->details->used_stroke_color.green / 65535,
+				      (double) window->details->used_stroke_color.blue / 65535);
 		cairo_stroke (cr);
 	}
 	
@@ -2697,10 +2715,16 @@ paint_pie_chart (GtkWidget *widget,
 			cairo_line_to (cr,xc,yc);
 		}
 		
-		cairo_set_source_rgb (cr, (double) window->details->free_color.red / 65535, (double) window->details->free_color.green / 65535,(double) window->details->free_color.blue / 65535);
+		cairo_set_source_rgb (cr,
+				      (double) window->details->free_color.red / 65535,
+				      (double) window->details->free_color.green / 65535,
+				      (double) window->details->free_color.blue / 65535);
 		cairo_fill_preserve(cr);
 		
-		cairo_set_source_rgb (cr, (double) window->details->free_stroke_color.red / 65535, (double) window->details->free_stroke_color.green / 65535, (double) window->details->free_stroke_color.blue / 65535);
+		cairo_set_source_rgb (cr,
+				      (double) window->details->free_stroke_color.red / 65535,
+				      (double) window->details->free_stroke_color.green / 65535,
+				      (double) window->details->free_stroke_color.blue / 65535);
 		cairo_stroke (cr);
 	}
 }
