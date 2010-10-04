@@ -66,8 +66,10 @@ nautilus_navigation_window_set_spinner_active (NautilusNavigationWindow *window,
 	window->details->spinner_active = allow;
 	if (allow) {
 		gtk_spinner_start (GTK_SPINNER (window->details->spinner));
+		gtk_widget_show (window->details->spinner);
 	} else {
 		gtk_spinner_stop (GTK_SPINNER (window->details->spinner));
+		gtk_widget_hide (window->details->spinner);
 	}
 }
 
