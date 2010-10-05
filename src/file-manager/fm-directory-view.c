@@ -1873,6 +1873,25 @@ fm_directory_view_set_selection_locations (NautilusView *nautilus_view,
 	}
 }
 
+static char *
+get_bulk_rename_tool ()
+{
+	char *bulk_rename_tool;
+	g_settings_get (nautilus_preferences, NAUTILUS_PREFERENCES_BULK_RENAME_TOOL, "^ay", &bulk_rename_tool);
+	return g_strstrip (bulk_rename_tool);
+}
+
+static gboolean
+have_bulk_rename_tool ()
+{
+	char *bulk_rename_tool;
+	gboolean have_tool;
+
+	bulk_rename_tool = get_bulk_rename_tool ();
+	have_tool = ((bulk_rename_tool != NULL) && (*bulk_rename_tool != '\0'));
+	g_free (bulk_rename_tool);
+	return have_tool;
+}
 
 void
 fm_directory_view_init_view_iface (NautilusViewIface *iface)
@@ -6053,6 +6072,41 @@ action_paste_files_into_callback (GtkAction *action,
 }
 
 static void
+invoke_external_bulk_rename_utility (FMDirectoryView *view,
+				     GList *selection)
+{
+	GString *cmd;
+	char *parameter;
+	char *quoted_parameter;
+	char *bulk_rename_tool;
+	GList *walk;
+	NautilusFile *file;
+	GError *error = NULL;
+
+	/* assemble command line */
+	bulk_rename_tool = get_bulk_rename_tool ();
+	cmd = g_string_new (bulk_rename_tool);
+	g_free (bulk_rename_tool);
+	for (walk = selection; walk; walk = walk->next) {
+		file = walk->data;
+		parameter = nautilus_file_get_uri (file);
+		quoted_parameter = g_shell_quote (parameter);
+		g_free (parameter);
+		cmd = g_string_append (cmd, " ");
+		cmd = g_string_append (cmd, quoted_parameter);
+		g_free (quoted_parameter);
+	}
+
+	/* spawning and error handling */
+	gdk_spawn_command_line_on_screen (gtk_widget_get_screen (GTK_WIDGET (view)), cmd->str, &error);
+	g_string_free (cmd, TRUE);
+	if (error != NULL) {
+		eel_show_error_dialog (_("Could not invoke bulk rename utility"), error->message, NULL);
+		g_error_free (error);
+	}
+}
+
+static void
 real_action_rename (FMDirectoryView *view,
 		    gboolean select_all)
 {
@@ -6064,13 +6118,20 @@ real_action_rename (FMDirectoryView *view,
 	selection = fm_directory_view_get_selection (view);
 
 	if (selection_not_empty_in_menu_callback (view, selection)) {
-		file = NAUTILUS_FILE (selection->data);
-		if (!select_all) {
-			/* directories don't have a file extension, so
-			 * they are always pre-selected as a whole */
-			select_all = nautilus_file_is_directory (file);
+		/* If there is more than one file selected, invoke a batch renamer */
+		if (selection->next != NULL) {
+			if (have_bulk_rename_tool ()) {
+				invoke_external_bulk_rename_utility (view, selection);
+			}
+		} else {
+			file = NAUTILUS_FILE (selection->data);
+			if (!select_all) {
+				/* directories don't have a file extension, so
+				 * they are always pre-selected as a whole */
+				select_all = nautilus_file_is_directory (file);
+			}
+			EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view, start_renaming_file, (view, file, select_all));
 		}
-		EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view, start_renaming_file, (view, file, select_all));
 	}
 
 	nautilus_file_list_free (selection);
@@ -8441,9 +8502,15 @@ real_update_menus (FMDirectoryView *view)
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_RENAME);
-	gtk_action_set_sensitive (action,
-				  selection_count == 1 &&
-				  fm_directory_view_can_rename_file (view, selection->data));
+	/* rename sensitivity depending on selection */
+	if (selection_count > 1) {
+		/* If multiple files are selected, sensitivity depends on whether a bulk renamer is registered. */
+		gtk_action_set_sensitive (action, have_bulk_rename_tool ());
+	} else {
+		gtk_action_set_sensitive (action,
+					  selection_count == 1 &&
+					  fm_directory_view_can_rename_file (view, selection->data));
+	}
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_NEW_FOLDER);

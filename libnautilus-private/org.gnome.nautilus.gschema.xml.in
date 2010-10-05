@@ -205,6 +205,11 @@
       <_summary>Whether to show hidden files</_summary>
       <_description>If set to true, then hidden files are shown by default in the file manager.  Hidden files are either dotfiles, listed in the folder's .hidden file or backup files ending with a tilde (~).</_description>
     </key>
+    <key name="bulk-rename-tool" type="ay">
+      <default>[]</default>
+      <_summary>Bulk rename utility</_summary>
+      <_description>If set, Nautilus will append URIs of selected files and treat the result as a command line for bulk renaming. Bulk rename applications can register themselves in this key by setting the key to a space-separated string of their executable name and any command line options. If the executable name is not set to a full path, it will be searched for in the search path.</_description>
+    </key>
   </schema>
 
   <schema id="org.gnome.nautilus.icon-view" path="/apps/nautilus/icon-view/" gettext-domain="nautilus">

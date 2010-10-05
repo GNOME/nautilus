@@ -194,6 +194,9 @@ typedef enum
 #define NAUTILUS_PREFERENCES_DESKTOP_NETWORK_NAME          "network-icon-name"
 #define NAUTILUS_PREFERENCES_DESKTOP_BACKGROUND_FADE       "background-fade"
 
+/* bulk rename utility */
+#define NAUTILUS_PREFERENCES_BULK_RENAME_TOOL              "bulk-rename-tool"
+
 /* Lockdown */
 #define NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE         "disable-command-line"
 
