@@ -1458,12 +1458,14 @@ eel_editable_label_draw_cursor (EelEditableLabel  *label, cairo_t *cr, gint xoff
 
 	      gtk_draw_insertion_cursor (widget, cr,
 					 &cursor_location,
-					 FALSE, dir1, TRUE);
+					 FALSE, dir2, TRUE);
 	    }
 	}
       else /* Block cursor */
 	{
 	  cairo_region_t *clip;
+
+	  cairo_save (cr);
 
 	  cairo_set_source_rgb (cr, 0, 0, 0);
 	  cairo_rectangle (cr,
@@ -1471,6 +1473,7 @@ eel_editable_label_draw_cursor (EelEditableLabel  *label, cairo_t *cr, gint xoff
 			   yoffset + PANGO_PIXELS (strong_pos.y),
 			   PANGO_PIXELS (strong_pos.width),
 			   PANGO_PIXELS (strong_pos.height));
+	  cairo_fill (cr);
 
 	  if (!block_at_line_end)
 	    {
@@ -1480,11 +1483,6 @@ eel_editable_label_draw_cursor (EelEditableLabel  *label, cairo_t *cr, gint xoff
 
 	      gdk_cairo_region (cr, clip);
 	      cairo_clip (cr);
-
-	      /* FIXME should use gtk_paint, but it can't use a clip
-	       * region
-	       */
-
 	      gdk_cairo_set_source_color (cr, 
 					  &gtk_widget_get_style (widget)->base[GTK_STATE_NORMAL]);
 	      cairo_move_to (cr, xoffset, yoffset);
@@ -1492,6 +1490,8 @@ eel_editable_label_draw_cursor (EelEditableLabel  *label, cairo_t *cr, gint xoff
 
 	      cairo_region_destroy (clip);
 	    }
+
+	  cairo_restore (cr);
 	}
     }
 }
@@ -1555,6 +1555,8 @@ eel_editable_label_draw (GtkWidget *widget,
                                                    x, y,
                                                    range,
                                                    1);
+	  cairo_save (cr);
+
 	  gdk_cairo_region (cr, clip);
 	  cairo_clip (cr);
 
@@ -1569,6 +1571,7 @@ eel_editable_label_draw (GtkWidget *widget,
 	  cairo_move_to (cr, x, y);
 	  pango_cairo_show_layout (cr, label->layout);
 
+	  cairo_restore (cr);
 	  cairo_region_destroy (clip);
         }
       else if (gtk_widget_has_focus (widget))
