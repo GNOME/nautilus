@@ -123,4 +123,6 @@ void                eel_cairo_draw_layout_with_drop_shadow (cairo_t             
 							    int                  x,
 							    int                  y,
 							    PangoLayout         *layout);
+void                eel_make_color_inactive                (GdkColor            *color);
+
 #endif /* EEL_GDK_EXTENSIONS_H */
