@@ -36,14 +36,11 @@
 #include "nautilus-marshal.h"
 #include <atk/atkaction.h>
 #include <eel/eel-accessibility.h>
-#include <eel/eel-background.h>
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
-#include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-art-extensions.h>
 #include <eel/eel-editable-label.h>
-#include <eel/eel-string.h>
 #include <eel/eel-canvas-rect-ellipse.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
@@ -179,8 +176,6 @@ static void          end_renaming_mode                              (NautilusIco
 								     gboolean               commit);
 static NautilusIcon *get_icon_being_renamed                         (NautilusIconContainer *container);
 static void          finish_adding_new_icons                        (NautilusIconContainer *container);
-static void          update_label_color                             (EelBackground         *background,
-								     NautilusIconContainer *icon_container);
 static inline void   icon_get_bounding_box                          (NautilusIcon          *icon,
 								     int                   *x1_return,
 								     int                   *y1_return,
@@ -4150,6 +4145,26 @@ size_allocate (GtkWidget *widget,
 }
 
 static void
+setup_background (NautilusIconContainer *container)
+{
+	GdkWindow *window;
+	GdkColor color;
+	GtkStyle *style;
+
+	style = gtk_widget_get_style (GTK_WIDGET (container));
+
+	color = style->base[GTK_STATE_NORMAL];
+	if (!container->details->active_background) {
+		eel_make_color_inactive (&color);
+	}
+
+	window = gtk_layout_get_bin_window (GTK_LAYOUT (container));
+	gdk_window_set_background (window, &color);
+	gtk_widget_modify_bg (GTK_WIDGET (container), GTK_STATE_NORMAL,
+			      &color);
+}
+
+static void
 realize (GtkWidget *widget)
 {
 	GtkAdjustment *vadj, *hadj;
@@ -4168,6 +4183,7 @@ realize (GtkWidget *widget)
 	/* Set up DnD.  */
 	nautilus_icon_dnd_init (container);
 
+	setup_background (container);
 	setup_label_gcs (container);
 
 	hadj = gtk_layout_get_hadjustment (GTK_LAYOUT (widget));
@@ -6278,14 +6294,13 @@ static void
 nautilus_icon_container_init (NautilusIconContainer *container)
 {
 	NautilusIconContainerDetails *details;
-	EelBackground *background;
 	static gboolean setup_prefs = FALSE;
 
 	details = g_new0 (NautilusIconContainerDetails, 1);
 
 	details->icon_set = g_hash_table_new (g_direct_hash, g_direct_equal);
 	details->layout_timestamp = UNDEFINED_TIME;
-
+	details->active_background = TRUE;
 	details->zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
 
 	details->font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = -2 * PANGO_SCALE;
@@ -6298,18 +6313,10 @@ nautilus_icon_container_init (NautilusIconContainer *container)
 
 	container->details = details;
 
-	/* when the background changes, we must set up the label text color */
-	background = eel_get_widget_background (GTK_WIDGET (container));
-
-	g_signal_connect_object (background, "appearance_changed",
-				 G_CALLBACK (update_label_color), container, 0);
-
 	g_signal_connect (container, "focus-in-event",
 			  G_CALLBACK (handle_focus_in_event), NULL);
 	g_signal_connect (container, "focus-out-event",
 			  G_CALLBACK (handle_focus_out_event), NULL);
-
-	eel_background_set_use_base (background, TRUE);
 
 	/* read in theme-dependent data */
 	nautilus_icon_container_theme_changed (container);
@@ -7097,8 +7104,8 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	 * happened to be typing at that moment.
 	 */
 	if (icon == get_icon_being_renamed (container) &&
-	    eel_strcmp (editable_text, 
-			nautilus_icon_canvas_item_get_editable_text (icon->item)) != 0) {
+	    g_strcmp0 (editable_text,
+		       nautilus_icon_canvas_item_get_editable_text (icon->item)) != 0) {
 		end_renaming_mode (container, FALSE);
 	}
 
@@ -8589,7 +8596,6 @@ setup_gc_with_fg (NautilusIconContainer *container, int idx, guint32 color)
 static void
 setup_label_gcs (NautilusIconContainer *container)
 {
-	EelBackground *background;
 	GtkWidget *widget;
 	GdkColor *light_info_color, *dark_info_color;
 	guint light_info_value, dark_info_value;
@@ -8602,8 +8608,6 @@ setup_label_gcs (NautilusIconContainer *container)
 	widget = GTK_WIDGET (container);
 
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
-
-	background = eel_get_widget_background (GTK_WIDGET (container));
 
 	/* read the info colors from the current theme; use a reasonable default if undefined */
 	gtk_widget_style_get (GTK_WIDGET (container),
@@ -8643,36 +8647,19 @@ setup_label_gcs (NautilusIconContainer *container)
 			      "frame_text", &frame_text,
 			      NULL);
 
-	if (frame_text || !eel_background_is_set(background)) {
+	if (frame_text || !nautilus_icon_container_get_is_desktop (container)) {
 		setup_gc_with_fg (container, LABEL_COLOR, 
 				  eel_gdk_color_to_rgb (&style->text[GTK_STATE_NORMAL]));
 		setup_gc_with_fg (container, 
 				  LABEL_INFO_COLOR, 
 				  eel_gdk_color_is_dark (&style->base[GTK_STATE_NORMAL]) ? light_info_value : dark_info_value);
 	} else {
-		if (container->details->use_drop_shadows || eel_background_is_dark (background)) {
-			setup_gc_with_fg (container, LABEL_COLOR, 0xEFEFEF);
-			setup_gc_with_fg (container, 
-					  LABEL_INFO_COLOR, 
-					  light_info_value);
-		} else { /* converse */
-			setup_gc_with_fg (container, LABEL_COLOR, 0x000000);
-			setup_gc_with_fg (container, 
-					  LABEL_INFO_COLOR, 
-					  dark_info_value);
-		}
+		setup_gc_with_fg (container, LABEL_COLOR, 0xEFEFEF);
+		setup_gc_with_fg (container, 
+				  LABEL_INFO_COLOR, 
+				  light_info_value);
 	}
 }
-
-static void
-update_label_color (EelBackground         *background,
-		    NautilusIconContainer *container)
-{
-	g_assert (EEL_IS_BACKGROUND (background));
-
-	setup_label_gcs (container);
-}
-
 
 /* Return if the icon container is a fixed size */
 gboolean
@@ -8850,7 +8837,7 @@ nautilus_icon_container_set_font (NautilusIconContainer *container,
 {
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 
-	if (eel_strcmp (container->details->font, font) == 0) {
+	if (g_strcmp0 (container->details->font, font) == 0) {
 		return;
 	}
 
@@ -8978,6 +8965,17 @@ nautilus_icon_container_set_highlighted_for_clipboard (NautilusIconContainer *co
 				     NULL);
 	}
 
+}
+
+void
+nautilus_icon_container_set_active (NautilusIconContainer *container,
+				    gboolean active)
+{
+	container->details->active_background = active;
+
+	if (gtk_widget_get_realized (GTK_WIDGET (container))) {
+		setup_background (container);
+	}
 }
 
 /* NautilusIconContainerAccessible */
