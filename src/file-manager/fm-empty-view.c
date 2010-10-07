@@ -89,12 +89,6 @@ fm_empty_view_file_changed (FMDirectoryView *view, NautilusFile *file, NautilusD
 {
 }
 
-static GtkWidget *
-fm_empty_view_get_background_widget (FMDirectoryView *view)
-{
-	return GTK_WIDGET (view);
-}
-
 static GList *
 fm_empty_view_get_selection (FMDirectoryView *view)
 {
@@ -295,7 +289,6 @@ fm_empty_view_class_init (FMEmptyViewClass *class)
         fm_directory_view_class->click_policy_changed = fm_empty_view_click_policy_changed;
 	fm_directory_view_class->clear = fm_empty_view_clear;
 	fm_directory_view_class->file_changed = fm_empty_view_file_changed;
-	fm_directory_view_class->get_background_widget = fm_empty_view_get_background_widget;
 	fm_directory_view_class->get_selection = fm_empty_view_get_selection;
 	fm_directory_view_class->get_selection_for_file_transfer = fm_empty_view_get_selection_for_file_transfer;
 	fm_directory_view_class->get_item_count = fm_empty_view_get_item_count;

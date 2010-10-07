@@ -1945,12 +1945,6 @@ fm_list_view_file_changed (FMDirectoryView *view, NautilusFile *file, NautilusDi
 	}
 }
 
-static GtkWidget *
-fm_list_view_get_background_widget (FMDirectoryView *view)
-{
-	return GTK_WIDGET (view);
-}
-
 static void
 fm_list_view_get_selection_foreach_func (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, gpointer data)
 {
@@ -3005,22 +2999,20 @@ static void
 real_set_is_active (FMDirectoryView *view,
 		    gboolean is_active)
 {
-	GtkWidget *tree_view;
-	GtkStyle *style;
+	GtkWidget *widget;
 	GdkColor color;
+	GtkStyle *style;
 
-	tree_view = GTK_WIDGET (fm_list_view_get_tree_view (FM_LIST_VIEW (view)));
+	widget = GTK_WIDGET (fm_list_view_get_tree_view (FM_LIST_VIEW (view)));
+	style = gtk_widget_get_style (widget);
 
-	if (is_active) {
-		gtk_widget_modify_base (tree_view, GTK_STATE_NORMAL, NULL);
+	if (!is_active) {
+		color = style->base[GTK_STATE_NORMAL];
+		eel_make_color_inactive (&color);
+		gtk_widget_modify_base (widget, GTK_STATE_NORMAL, &color);
 	} else {
-		style = gtk_widget_get_style (tree_view);
-		color = style->base[GTK_STATE_INSENSITIVE];
-		gtk_widget_modify_base (tree_view, GTK_STATE_NORMAL, &color);
+		gtk_widget_modify_base (widget, GTK_STATE_NORMAL, NULL);
 	}
-
-	EEL_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS,
-			 set_is_active, (view, is_active));
 }
 
 static void
@@ -3042,7 +3034,6 @@ fm_list_view_class_init (FMListViewClass *class)
         fm_directory_view_class->click_policy_changed = fm_list_view_click_policy_changed;
 	fm_directory_view_class->clear = fm_list_view_clear;
 	fm_directory_view_class->file_changed = fm_list_view_file_changed;
-	fm_directory_view_class->get_background_widget = fm_list_view_get_background_widget;
 	fm_directory_view_class->get_selection = fm_list_view_get_selection;
 	fm_directory_view_class->get_selection_for_file_transfer = fm_list_view_get_selection_for_file_transfer;
 	fm_directory_view_class->get_item_count = fm_list_view_get_item_count;
