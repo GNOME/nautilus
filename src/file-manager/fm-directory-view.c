@@ -39,7 +39,6 @@
 #include "fm-properties-window.h"
 #include "libnautilus-private/nautilus-open-with-dialog.h"
 
-#include <eel/eel-background.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>
@@ -389,7 +388,6 @@ EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, can_zoom_in)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, can_zoom_out)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, clear)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, file_changed)
-EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_background_widget)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_selection)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_selection_for_file_transfer)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_item_count)
@@ -3493,32 +3491,6 @@ fm_directory_view_can_zoom_out (FMDirectoryView *view)
 	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 can_zoom_out, (view));
-}
-
-GtkWidget *
-fm_directory_view_get_background_widget (FMDirectoryView *view)
-{
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
-
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 get_background_widget, (view));
-}
-
-EelBackground *
-fm_directory_view_get_background (FMDirectoryView *view)
-{
-	return eel_get_widget_background (fm_directory_view_get_background_widget (view));
-}
-
-static void
-real_set_is_active (FMDirectoryView *view,
-		    gboolean is_active)
-{
-	EelBackground *bg;
-
-	bg = fm_directory_view_get_background (view);
-	eel_background_set_active (bg, is_active);
 }
 
 static void
@@ -7401,9 +7373,6 @@ real_merge_menus (FMDirectoryView *view)
 
 	ui = nautilus_ui_string_get ("nautilus-directory-view-ui.xml");
 	view->details->dir_merge_id = gtk_ui_manager_add_ui_from_string (ui_manager, ui, -1, NULL);
-	g_signal_connect_object (fm_directory_view_get_background (view), "settings_changed",
-				 G_CALLBACK (schedule_update_menus), G_OBJECT (view),
-				 G_CONNECT_SWAPPED);
 	
 	view->details->scripts_invalid = TRUE;
 	view->details->templates_invalid = TRUE;
@@ -10729,7 +10698,6 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
         klass->merge_menus = real_merge_menus;
         klass->unmerge_menus = real_unmerge_menus;
         klass->update_menus = real_update_menus;
-	klass->set_is_active = real_set_is_active;
 
 	/* Function pointers that subclasses must override */
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, add_file);
@@ -10738,7 +10706,6 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, can_zoom_out);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, clear);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, file_changed);
-	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_background_widget);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_selection);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_selection_for_file_transfer);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_item_count);

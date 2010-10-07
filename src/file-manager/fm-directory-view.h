@@ -417,7 +417,6 @@ char **             fm_directory_view_get_emblem_names_to_exclude      (FMDirect
 NautilusDirectory  *fm_directory_view_get_model                        (FMDirectoryView  *view);
 GtkWindow	   *fm_directory_view_get_containing_window	       (FMDirectoryView  *view);
 NautilusFile       *fm_directory_view_get_directory_as_file            (FMDirectoryView  *view);
-EelBackground *     fm_directory_view_get_background                   (FMDirectoryView  *view);
 gboolean            fm_directory_view_get_allow_moves                  (FMDirectoryView  *view);
 void                fm_directory_view_pop_up_background_context_menu   (FMDirectoryView  *view,
 									GdkEventButton   *event);
