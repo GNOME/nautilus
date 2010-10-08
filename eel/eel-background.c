@@ -38,30 +38,14 @@
 #define GNOME_DESKTOP_USE_UNSTABLE_API
 #include <libgnomeui/gnome-bg.h>
 
-static cairo_surface_t *eel_background_get_surface_and_color  (EelBackground *background,
-							      GdkWindow     *window,
-							      GdkColor      *color);
-
 static void set_image_properties (EelBackground *background);
 
-static void init_fade (EelBackground *background, GtkWidget *widget);
+static void init_fade (EelBackground *background);
 static void free_fade (EelBackground *background);
 
+static void eel_widget_queue_background_change (GtkWidget *widget);
+
 G_DEFINE_TYPE (EelBackground, eel_background, G_TYPE_OBJECT);
-
-enum {
-	APPEARANCE_CHANGED,
-	SETTINGS_CHANGED,
-	RESET,
-	LAST_SIGNAL
-};
-
-/* This is the size of the GdkRGB dither matrix, in order to avoid
- * bad dithering when tiling the gradient
- */
-#define GRADIENT_PIXMAP_TILE_SIZE 128
-
-static guint signals[LAST_SIGNAL];
 
 struct EelBackgroundDetails {
 	char *color;
@@ -71,42 +55,30 @@ struct EelBackgroundDetails {
 
 	/* Realized data: */
 	cairo_surface_t *background_surface;
-	gboolean background_surface_is_unset_root_surface;
 	GnomeBGCrossfade *fade;
 	int background_entire_width;
 	int background_entire_height;
 	GdkColor default_color;
 
-	gboolean use_base;
-	
-	/* Is this background attached to desktop window */
-	gboolean is_desktop;
 	/* Desktop screen size watcher */
 	gulong screen_size_handler;
 	/* Desktop monitors configuration watcher */
 	gulong screen_monitors_handler;
-	/* Can we use common surface for root window and desktop window */
-	gboolean use_common_surface;
 	guint change_idle_id;
-
-	/* activity status */
-	gboolean is_active;
 };
 
 static void
 on_bg_changed (GnomeBG *bg, EelBackground *background)
 {
-	init_fade (background, background->details->widget);
-	g_signal_emit (G_OBJECT (background),
-		       signals[APPEARANCE_CHANGED], 0);
+	init_fade (background);
+	eel_widget_queue_background_change (background->details->widget);
 }
 
 static void
 on_bg_transitioned (GnomeBG *bg, EelBackground *background)
 {
 	free_fade (background);
-	g_signal_emit (G_OBJECT (background),
-		       signals[APPEARANCE_CHANGED], 0);
+	eel_widget_queue_background_change (background->details->widget);
 }
 
 static void
@@ -121,7 +93,6 @@ eel_background_init (EelBackground *background)
 	background->details->default_color.green = 0xffff;
 	background->details->default_color.blue = 0xffff;
 	background->details->bg = gnome_bg_new ();
-	background->details->is_active = TRUE;
 
 	g_signal_connect (background->details->bg, "changed",
 			  G_CALLBACK (on_bg_changed), background);
@@ -160,14 +131,6 @@ free_background_surface (EelBackground *background)
 
 	surface = background->details->background_surface;
 	if (surface != NULL) {
-		/* If we created a root surface and didn't set it as background
-		   it will live forever, so we need to kill it manually.
-		   If set as root background it will be killed next time the
-		   background is changed. */
-		if (background->details->background_surface_is_unset_root_surface) {
-			XKillClient (cairo_xlib_surface_get_display (surface),
-				     cairo_xlib_surface_get_drawable (surface));
-		}
 		cairo_surface_destroy (surface);
 		background->details->background_surface = NULL;
 	}
@@ -258,38 +221,6 @@ eel_background_class_init (EelBackgroundClass *klass)
 	GObjectClass *object_class;
 
 	object_class = G_OBJECT_CLASS (klass);
-
-	signals[APPEARANCE_CHANGED] =
-		g_signal_new ("appearance_changed",
-			      G_TYPE_FROM_CLASS (object_class),
-			      G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
-			      G_STRUCT_OFFSET (EelBackgroundClass,
-					       appearance_changed),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__VOID,
-			      G_TYPE_NONE,
-			      0);
-	signals[SETTINGS_CHANGED] =
-		g_signal_new ("settings_changed",
-			      G_TYPE_FROM_CLASS (object_class),
-			      G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
-			      G_STRUCT_OFFSET (EelBackgroundClass,
-					       settings_changed),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__INT,
-			      G_TYPE_NONE,
-			      1, G_TYPE_INT);
-	signals[RESET] =
-		g_signal_new ("reset",
-			      G_TYPE_FROM_CLASS (object_class),
-			      G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
-			      G_STRUCT_OFFSET (EelBackgroundClass,
-					       reset),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__VOID,
-			      G_TYPE_NONE,
-			      0);
-
 	object_class->finalize = eel_background_finalize;
 
 	g_type_class_add_private (klass, sizeof (EelBackgroundDetails));
@@ -313,52 +244,24 @@ eel_background_unrealize (EelBackground *background)
 	background->details->default_color.blue = 0xffff;
 }
 
-static void
-drawable_get_adjusted_size (EelBackground *background,
-			    GdkWindow     *window,
-			    int		  *width,
-			    int	          *height)
-{
-	GdkScreen *screen;
-
-	/* 
-	 * Screen resolution change makes root drawable have incorrect size.
-	 */
-	*width = gdk_window_get_width (window);
-	*height = gdk_window_get_height (window);
-
-	if (background->details->is_desktop) {
-		screen = gdk_window_get_screen (window);
-		*width = gdk_screen_get_width (screen);
-		*height = gdk_screen_get_height (screen);
-	}
-}
-
 static gboolean
-eel_background_ensure_realized (EelBackground *background, GdkWindow *window)
+eel_background_ensure_realized (EelBackground *background)
 {
-	gpointer data;
-	GtkWidget *widget;
 	GtkStyle *style;
-	gboolean changed;
 	int entire_width;
 	int entire_height;
-	
-	drawable_get_adjusted_size (background, window, &entire_width, &entire_height);
-	
+	GdkScreen *screen;
+	GdkWindow *window;
+
+	screen = gtk_widget_get_screen (background->details->widget);
+	entire_height = gdk_screen_get_height (screen);
+	entire_width = gdk_screen_get_width (screen);
+
 	/* Set the default color */
 	
 	/* Get the widget to which the window belongs and its style as well */
-	gdk_window_get_user_data (window, &data);
-	widget = GTK_WIDGET (data);
-	if (widget != NULL) {
-		style = gtk_widget_get_style (widget);
-		if (background->details->use_base) {
-			background->details->default_color = style->base[GTK_STATE_NORMAL];
-		} else {
-			background->details->default_color = style->bg[GTK_STATE_NORMAL];
-		}
-	}
+	style = gtk_widget_get_style (background->details->widget);
+	background->details->default_color = style->base[GTK_STATE_NORMAL];
 
 	/* If the window size is the same as last time, don't update */
 	if (entire_width == background->details->background_entire_width &&
@@ -368,80 +271,23 @@ eel_background_ensure_realized (EelBackground *background, GdkWindow *window)
 
 	free_background_surface (background);
 
-	changed = FALSE;
-
 	set_image_properties (background);
 
+	window = gtk_widget_get_window (background->details->widget);
 	background->details->background_surface = gnome_bg_create_surface (background->details->bg,
 									   window,
 									   entire_width, entire_height,
-									   background->details->is_desktop);
-	background->details->background_surface_is_unset_root_surface = background->details->is_desktop;
-		
+									   TRUE);
+
 	/* We got the surface and everything, so we don't care about a change
 	   that is pending (unless things actually change after this time) */
 	g_object_set_data (G_OBJECT (background->details->bg),
 			   "ignore-pending-change", GINT_TO_POINTER (TRUE));
-	changed = TRUE;
-	
 	
 	background->details->background_entire_width = entire_width;
 	background->details->background_entire_height = entire_height;
-	
-	return changed;
-}
 
-#define CLAMP_COLOR(v) (t = (v), CLAMP (t, 0, G_MAXUSHORT))
-#define SATURATE(v) ((1.0 - saturation) * intensity + saturation * (v))
-
-static void
-make_color_inactive (EelBackground *background, GdkColor *color)
-{
-	double intensity, saturation;
-	gushort t;
-
-	if (!background->details->is_active) {
-		saturation = 0.7;
-		intensity = color->red * 0.30 + color->green * 0.59 + color->blue * 0.11;
-		color->red = SATURATE (color->red);
-		color->green = SATURATE (color->green);
-		color->blue = SATURATE (color->blue);
-
-		if (intensity > G_MAXUSHORT / 2) {
-			color->red *= 0.9;
-			color->green *= 0.9;
-			color->blue *= 0.9;
-		} else {
-			color->red *= 1.25;
-			color->green *= 1.25;
-			color->blue *= 1.25;
-		}
-
-		color->red = CLAMP_COLOR (color->red);
-		color->green = CLAMP_COLOR (color->green);
-		color->blue = CLAMP_COLOR (color->blue);
-	}
-}
-
-static cairo_surface_t *
-eel_background_get_surface_and_color (EelBackground *background,
-				      GdkWindow     *window,
-				      GdkColor      *color)
-{
-	int entire_width;
-	int entire_height;
-
-	drawable_get_adjusted_size (background, window, &entire_width, &entire_height);
-
-	eel_background_ensure_realized (background, window);
-
-	*color = background->details->default_color;
-	make_color_inactive (background, color);
-
-	if (background->details->background_surface != NULL) {
-		return cairo_surface_reference (background->details->background_surface);
-	} 
-	return NULL;
+	return TRUE;
 }
 
 static void
@@ -450,12 +296,10 @@ set_image_properties (EelBackground *background)
 	GdkColor c;
 	if (!background->details->color) {
 		c = background->details->default_color;
-		make_color_inactive (background, &c);
 		gnome_bg_set_color (background->details->bg, GNOME_BG_COLOR_SOLID,
 				    &c, NULL);
 	} else if (!eel_gradient_is_gradient (background->details->color)) {
 		eel_gdk_color_parse_with_white_default (background->details->color, &c);
-		make_color_inactive (background, &c);
 		gnome_bg_set_color (background->details->bg, GNOME_BG_COLOR_SOLID, &c, NULL);
 	} else {
 		GdkColor c1;
@@ -464,12 +308,10 @@ set_image_properties (EelBackground *background)
 
 		spec = eel_gradient_get_start_color_spec (background->details->color);
 		eel_gdk_color_parse_with_white_default (spec, &c1);
-		make_color_inactive (background, &c1);
 		g_free (spec);
 
 		spec = eel_gradient_get_end_color_spec (background->details->color);
 		eel_gdk_color_parse_with_white_default (spec, &c2);
-		make_color_inactive (background, &c2);
 		g_free (spec);
 
 		if (eel_gradient_is_horizontal (background->details->color))
@@ -502,14 +344,6 @@ eel_background_get_image_uri (EelBackground *background)
 	return NULL;
 }
 
-/* Use style->base as the default color instead of bg */
-void
-eel_background_set_use_base (EelBackground *background,
-			     gboolean use_base)
-{
-	background->details->use_base = use_base;
-}
-
 void
 eel_background_set_color (EelBackground *background,
 			  const char *color)
@@ -522,10 +356,9 @@ eel_background_set_color (EelBackground *background,
 	}
 }
 
-static gboolean
-eel_background_set_image_uri_helper (EelBackground *background,
-				     const char *image_uri,
-				     gboolean emit_signal)
+void
+eel_background_set_image_uri (EelBackground *background,
+			      const char *image_uri)
 {
 	char *filename;
 
@@ -537,111 +370,33 @@ eel_background_set_image_uri_helper (EelBackground *background,
 	}
 	
 	gnome_bg_set_filename (background->details->bg, filename);
-
-	if (emit_signal) {
-		g_signal_emit (background, signals[SETTINGS_CHANGED], 0, GDK_ACTION_COPY);
-	}
-
 	set_image_properties (background);
 	
 	g_free (filename);
-	
-	return TRUE;
-}
-
-void
-eel_background_set_image_uri (EelBackground *background, const char *image_uri)
-{
-	
-	
-	eel_background_set_image_uri_helper (background, image_uri, TRUE);
-}
-
-/* Use this fn to set both the image and color and avoid flash. The color isn't
- * changed till after the image is done loading, that way if an update occurs
- * before then, it will use the old color and image.
- */
-static void
-eel_background_set_image_uri_and_color (EelBackground *background, GdkDragAction action,
-					const char *image_uri, const char *color)
-{
-	eel_background_set_image_uri_helper (background, image_uri, FALSE);
-	eel_background_set_color (background, color);
-
-	/* We always emit, even if the color didn't change, because the image change
-	 * relies on us doing it here.
-	 */
-
-	g_signal_emit (background, signals[SETTINGS_CHANGED], 0, action);
 }
 
 void
 eel_background_receive_dropped_background_image (EelBackground *background,
-						 GdkDragAction action,
 						 const char *image_uri)
 {
+	GConfClient *client;
+
 	/* Currently, we only support tiled images. So we set the placement.
-	 * We rely on eel_background_set_image_uri_and_color to emit
-	 * the SETTINGS_CHANGED & APPEARANCE_CHANGE signals.
 	 */
-	eel_background_set_image_placement (background, EEL_BACKGROUND_TILED);
-	
-	eel_background_set_image_uri_and_color (background, action, image_uri, NULL);
-}
+	eel_background_set_image_placement (background, EEL_BACKGROUND_TILED);	
+	eel_background_set_image_uri (background, image_uri);
 
-/**
- * eel_background_is_set:
- * 
- * Check whether the background's color or image has been set.
- */
-gboolean
-eel_background_is_set (EelBackground *background)
-{
-	g_assert (EEL_IS_BACKGROUND (background));
+	client = gconf_client_get_default ();
+	gnome_bg_save_to_preferences (background->details->bg, client);
 
-	return background->details->color != NULL
-		|| gnome_bg_get_filename (background->details->bg) != NULL;
-}
-
-/**
- * eel_background_reset:
- *
- * Emit the reset signal to forget any color or image that has been
- * set previously.
- */
-void
-eel_background_reset (EelBackground *background)
-{
-	g_return_if_fail (EEL_IS_BACKGROUND (background));
-
-	g_signal_emit (background, signals[RESET], 0);
+	g_object_unref (client);
 }
 
 static void
 set_root_surface (EelBackground *background,
-		  GdkWindow     *window)
+		  GdkScreen     *screen)
 {
-	cairo_surface_t *surface, *root_surface;
-	GdkScreen *screen;
-	GdkColor color;
-
-	surface = eel_background_get_surface_and_color (background,
-							window,
-							&color);
-	screen = gdk_window_get_screen (window);
-
-	if (background->details->use_common_surface) {
-		background->details->background_surface_is_unset_root_surface = FALSE;
-		root_surface = cairo_surface_reference (surface);
-	} else {
-		root_surface = gnome_bg_create_surface (background->details->bg, window,
-							gdk_screen_get_width (screen), gdk_screen_get_height (screen), TRUE);
-	}
-
-	gnome_bg_set_surface_as_root (screen, surface);
-
-	cairo_surface_destroy (surface);
-	cairo_surface_destroy (root_surface);
+	gnome_bg_set_surface_as_root (screen, background->details->background_surface);
 }
 
 
@@ -650,7 +405,8 @@ on_fade_finished (GnomeBGCrossfade *fade,
 		  GdkWindow *window,
 		  EelBackground *background)
 {
-	set_root_surface (background, window);
+	eel_background_ensure_realized (background);
+	set_root_surface (background, gdk_window_get_screen (window));
 }
 
 static gboolean
@@ -669,11 +425,9 @@ fade_to_surface (EelBackground *background,
 
 	if (!gnome_bg_crossfade_is_started (background->details->fade)) {
 		gnome_bg_crossfade_start (background->details->fade, window);
-		if (background->details->is_desktop) {
-			g_signal_connect (background->details->fade,
-					  "finished",
-					  G_CALLBACK (on_fade_finished), background);
-		}
+		g_signal_connect (background->details->fade,
+				  "finished",
+				  G_CALLBACK (on_fade_finished), background);
 	}
 
 	return gnome_bg_crossfade_is_started (background->details->fade);
@@ -684,60 +438,36 @@ static void
 eel_background_set_up_widget (EelBackground *background, GtkWidget *widget)
 {
 	GtkStyle *style;
-	cairo_surface_t *surface;
-	GdkColor color;
-	
-	int window_width;
-	int window_height;
-	
 	GdkWindow *window;
 	GdkWindow *widget_window;
-	gboolean in_fade;
+	gboolean in_fade = FALSE;
 
 	if (!gtk_widget_get_realized (widget)) {
 		return;
 	}
 
 	widget_window = gtk_widget_get_window (widget);
-	drawable_get_adjusted_size (background, widget_window, &window_width, &window_height);
-	
-	surface = eel_background_get_surface_and_color (background,
-						       widget_window,
-						       &color);
-
+	eel_background_ensure_realized (background);
 	style = gtk_widget_get_style (widget);
-	
+
 	if (EEL_IS_CANVAS (widget)) {
 		window = gtk_layout_get_bin_window (GTK_LAYOUT (widget));
 	} else {
 		window = widget_window;
 	}
 
-	if (background->details->fade != NULL) {
-		in_fade = fade_to_surface (background, window, surface);
-	} else {
-		in_fade = FALSE;
-	}
+	in_fade = fade_to_surface (background, window,
+				   background->details->background_surface);
 
 	if (!in_fade) {
 		cairo_pattern_t *pattern;
 
-		pattern = cairo_pattern_create_for_surface (surface);
+		pattern = cairo_pattern_create_for_surface (background->details->background_surface);
 		gdk_window_set_background_pattern (window, pattern);
-
-		if (!background->details->is_desktop) {
-			gdk_window_set_background (window, &color);
-		}
-
 		cairo_pattern_destroy (pattern);
-	}
 
-	if (background->details->is_desktop && !in_fade) {
-		set_root_surface (background, window);
-	}
-	
-	if (surface) {
-		cairo_surface_destroy (surface);
+		set_root_surface (background,
+				  gtk_widget_get_screen (widget));
 	}
 }
 
@@ -759,17 +489,18 @@ on_background_changed (EelBackground *background)
 }
 
 static void
-init_fade (EelBackground *background, GtkWidget *widget)
+init_fade (EelBackground *background)
 {
+	GtkWidget *widget;
+
+	widget = background->details->widget;
+
 	if (widget == NULL || !gtk_widget_get_realized (widget))
 		return;
 
-	if (!background->details->is_desktop) {
-		return;
-	}
-
 	if (background->details->fade == NULL) {
 		GdkWindow *window;
+		GdkScreen *screen;
 		int old_width, old_height, width, height;
 
 		/* If this was the result of a screen size change,
@@ -778,8 +509,11 @@ init_fade (EelBackground *background, GtkWidget *widget)
 		window = gtk_widget_get_window (widget);
 		old_width = gdk_window_get_width (window);
 		old_height = gdk_window_get_height (window);
-		drawable_get_adjusted_size (background, window,
-					    &width, &height);
+
+		screen = gtk_widget_get_screen (widget);
+		width = gdk_screen_get_width (screen);
+		height = gdk_screen_get_height (screen);
+
 		if (old_width == width && old_height == height) {
 			background->details->fade = gnome_bg_crossfade_new (width, height);
 			g_signal_connect_swapped (background->details->fade,
@@ -824,7 +558,7 @@ static void
 widget_style_set_cb (GtkWidget *widget, GtkStyle *previous_style, gpointer data)
 {
 	EelBackground *background;
-	
+
 	background = EEL_BACKGROUND (data);
 
 	if (previous_style != NULL) {
@@ -835,55 +569,43 @@ widget_style_set_cb (GtkWidget *widget, GtkStyle *previous_style, gpointer data)
 static void
 screen_size_changed (GdkScreen *screen, EelBackground *background)
 {
-	g_signal_emit (background, signals[APPEARANCE_CHANGED], 0);
+	eel_widget_queue_background_change (background->details->widget);
 }
 
 static void
 widget_realized_setup (GtkWidget *widget, gpointer data)
 {
 	EelBackground *background;
-	
+	GdkScreen *screen;
+
 	background = EEL_BACKGROUND (data);
 	
-        if (background->details->is_desktop) {
-		GdkWindow *root_window;	
-		GdkScreen *screen;
-		
-		screen = gtk_widget_get_screen (widget);
+	screen = gtk_widget_get_screen (widget);
 
-		if (background->details->screen_size_handler > 0) {
-		        g_signal_handler_disconnect (screen,
-				                     background->details->screen_size_handler);
-		}
-	
-		background->details->screen_size_handler = 
-			g_signal_connect (screen, "size_changed",
-            				  G_CALLBACK (screen_size_changed), background);
-		if (background->details->screen_monitors_handler > 0) {
-		        g_signal_handler_disconnect (screen,
-				                     background->details->screen_monitors_handler);
-		}
-		background->details->screen_monitors_handler =
-			g_signal_connect (screen, "monitors-changed",
-					  G_CALLBACK (screen_size_changed), background);
-
-		root_window = gdk_screen_get_root_window(screen);			
-		
-		if (gdk_window_get_visual (root_window) == gtk_widget_get_visual (widget)) {
-			background->details->use_common_surface = TRUE;
-		} else {
-			background->details->use_common_surface = FALSE;
-		}
-
-		init_fade (background, widget);
+	if (background->details->screen_size_handler > 0) {
+		g_signal_handler_disconnect (screen,
+					     background->details->screen_size_handler);
 	}
+	
+	background->details->screen_size_handler = 
+		g_signal_connect (screen, "size_changed",
+				  G_CALLBACK (screen_size_changed), background);
+	if (background->details->screen_monitors_handler > 0) {
+		g_signal_handler_disconnect (screen,
+					     background->details->screen_monitors_handler);
+	}
+	background->details->screen_monitors_handler =
+		g_signal_connect (screen, "monitors-changed",
+				  G_CALLBACK (screen_size_changed), background);
+
+	init_fade (background);
 }
 
 static void
 widget_realize_cb (GtkWidget *widget, gpointer data)
 {
 	EelBackground *background;
-	
+
 	background = EEL_BACKGROUND (data);
 
 	widget_realized_setup (widget, data);
@@ -895,7 +617,7 @@ static void
 widget_unrealize_cb (GtkWidget *widget, gpointer data)
 {
 	EelBackground *background;
-	
+
 	background = EEL_BACKGROUND (data);
 
 	if (background->details->screen_size_handler > 0) {
@@ -908,24 +630,6 @@ widget_unrealize_cb (GtkWidget *widget, gpointer data)
 				                     background->details->screen_monitors_handler);
 			background->details->screen_monitors_handler = 0;
 	}
-	background->details->use_common_surface = FALSE;
-}
-
-void
-eel_background_set_desktop (EelBackground *background, GtkWidget *widget, gboolean is_desktop)
-{
-	background->details->is_desktop = is_desktop;
-
-	if (gtk_widget_get_realized (widget) && background->details->is_desktop) {
-		widget_realized_setup (widget, background);
-	}
-	
-}
-
-gboolean
-eel_background_is_desktop (EelBackground *background)
-{
-	return background->details->is_desktop;
 }
 
 static void
@@ -944,10 +648,6 @@ on_widget_destroyed (GtkWidget *widget, EelBackground *background)
    If the widget doesn't already have a EelBackground object,
    this will create one. To change the widget's background, you can
    just call eel_background methods on the widget.
-
-   If the widget is a canvas, nothing more needs to be done.  For
-   normal widgets, you need to call eel_background_expose() from your
-   expose handler to draw the background.
 
    Later, we might want a call to find out if we already have a background,
    or a way to share the same background among multiple widgets; both would
@@ -975,9 +675,6 @@ eel_get_widget_background (GtkWidget *widget)
 	background->details->widget = widget;
  	g_signal_connect_object (widget, "destroy", G_CALLBACK (on_widget_destroyed), background, 0);
 
-	/* Arrange to get the signal whenever the background changes. */
-	g_signal_connect_object (background, "appearance_changed",
-				 G_CALLBACK (eel_widget_queue_background_change), widget, G_CONNECT_SWAPPED);
 	eel_widget_queue_background_change (widget);
 
 	g_signal_connect_object (widget, "style_set",
@@ -994,40 +691,6 @@ eel_get_widget_background (GtkWidget *widget)
 				 0);
 
 	return background;
-}
-
-/* determine if a background is darker or lighter than average, to help clients know what
-   colors to draw on top with */
-gboolean
-eel_background_is_dark (EelBackground *background)
-{
-	GdkScreen *screen;
-	GdkRectangle rect;
-
-	/* only check for the background on the 0th monitor */
-	screen = gdk_screen_get_default ();
-	gdk_screen_get_monitor_geometry (screen, 0, &rect);
-
-	return gnome_bg_is_dark (background->details->bg, rect.width, rect.height);
-}   
-
-void
-eel_background_save_to_gconf (EelBackground *background)
-{
-	GConfClient *client = gconf_client_get_default ();
-
-	if (background->details->bg)
-		gnome_bg_save_to_preferences (background->details->bg, client);
-}
-
-void
-eel_background_set_active (EelBackground *background,
-			   gboolean is_active)
-{
-	if (background->details->is_active != is_active) {
-		background->details->is_active = is_active;
-		set_image_properties (background);
-	}
 }
 
 /* self check code */
