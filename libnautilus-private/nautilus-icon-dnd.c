@@ -1070,7 +1070,6 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 		selected_item = container->details->dnd_info->drag_info.selection_list->data;
 		eel_background_receive_dropped_background_image
 			(eel_get_widget_background (GTK_WIDGET (container)),
-			 real_action,
 			 selected_item->uri);
 		return;
 	}
