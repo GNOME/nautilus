@@ -183,38 +183,6 @@ nautilus_file_background_read_desktop_settings (char **color,
 	g_free (end_color);
 }
 
-static void
-nautilus_file_background_write_desktop_default_settings (void)
-{
-	/* We just unset all the gconf keys so they go back to
-	 * defaults
-	 */
-	GConfClient *client;
-	GConfChangeSet *set;
-
-	client = gconf_client_get_default ();
-	set = gconf_change_set_new ();
-
-	/* the list of keys here has to be kept in sync with libgnome
-	 * schemas, which isn't the most maintainable thing ever.
-	 */
- 	gconf_change_set_unset (set, "/desktop/gnome/background/picture_options");
-	gconf_change_set_unset (set, "/desktop/gnome/background/picture_filename");
-	gconf_change_set_unset (set, "/desktop/gnome/background/picture_opacity");
-	gconf_change_set_unset (set, "/desktop/gnome/background/primary_color");
-	gconf_change_set_unset (set, "/desktop/gnome/background/secondary_color");
-	gconf_change_set_unset (set, "/desktop/gnome/background/color_shading_type");
-
-	/* this isn't atomic yet so it'll be a bit inefficient, but
-	 * someday it might be atomic.
-	 */
- 	gconf_client_commit_change_set (client, set, FALSE, NULL);
-
-	gconf_change_set_unref (set);
-	
-	g_object_unref (G_OBJECT (client));
-}
-
 static int
 call_settings_changed (EelBackground *background)
 {
@@ -280,15 +248,6 @@ nautilus_file_background_receive_gconf_changes (EelBackground *background)
                            desktop_background_weak_notify, NULL);
 }
 
-/* handle the background changed signal */
-static void
-background_changed_callback (EelBackground *background,
-                             GdkDragAction  action,
-                             gpointer _user_data)
-{
-        eel_background_save_to_gconf (background);
-}
-
 static void
 initialize_background_from_settings (EelBackground *background)
 {
@@ -300,35 +259,12 @@ initialize_background_from_settings (EelBackground *background)
 
         nautilus_file_background_read_desktop_settings (&color, &image, &placement);
 
-        /* Block the other handler while we are responding to changes
-         * in the metadata so it doesn't try to change the metadata.
-         */
-        g_signal_handlers_block_by_func
-                (background,
-                 G_CALLBACK (background_changed_callback),
-                 NULL);
-
         eel_background_set_color (background, color);
         eel_background_set_image_uri (background, image);
         eel_background_set_image_placement (background, placement);
 
-	/* Unblock the handler. */
-        g_signal_handlers_unblock_by_func
-                (background,
-                 G_CALLBACK (background_changed_callback),
-                 NULL);
-
 	g_free (color);
 	g_free (image);
-}
-
-/* handle the background reset signal by setting values from the current theme */
-static void
-background_reset_callback (EelBackground *background,
-                           gpointer _user_data)
-{
-	nautilus_file_background_write_desktop_default_settings ();
-	initialize_background_from_settings (background);
 }
 
 void
@@ -337,13 +273,6 @@ nautilus_connect_desktop_background_to_file_metadata (NautilusIconContainer *ico
 	EelBackground *background;
 
 	background = eel_get_widget_background (GTK_WIDGET (icon_container));
-	eel_background_set_desktop (background, GTK_WIDGET (icon_container), TRUE);
-
-        /* Connect new signal handlers. */
-        g_signal_connect_object (background, "settings_changed",
-                                 G_CALLBACK (background_changed_callback), NULL, 0);
-        g_signal_connect_object (background, "reset",
-                                 G_CALLBACK (background_reset_callback), NULL, 0);
 
         /* Update the background based on the settings */
         initialize_background_from_settings (background);
