@@ -37,8 +37,8 @@
 #include <fcntl.h>
 #include <gdk/gdkx.h>
 #include <glib/gi18n.h>
+#include <libnautilus-private/nautilus-desktop-background.h>
 #include <libnautilus-private/nautilus-desktop-icon-file.h>
-#include <libnautilus-private/nautilus-directory-background.h>
 #include <libnautilus-private/nautilus-directory-notify.h>
 #include <libnautilus-private/nautilus-file-changes-queue.h>
 #include <libnautilus-private/nautilus-file-operations.h>
@@ -73,6 +73,8 @@ struct FMDesktopIconViewDetails
 	gulong delayed_init_signal;
 	guint reload_desktop_timeout;
 	gboolean pending_rescan;
+
+	NautilusDesktopBackground *background;
 };
 
 static void     default_zoom_level_changed                        (gpointer                user_data);
@@ -255,7 +257,9 @@ real_begin_loading (FMDirectoryView *object)
 	view = FM_DESKTOP_ICON_VIEW (object);
 
 	icon_container = get_icon_container (view);
-	nautilus_connect_desktop_background_to_file_metadata (icon_container);
+	if (view->details->background == NULL) {
+		view->details->background = nautilus_desktop_background_new (GTK_WIDGET (icon_container));
+	}
 
 	FM_DIRECTORY_VIEW_CLASS (fm_desktop_icon_view_parent_class)->begin_loading (object);
 }
@@ -295,6 +299,8 @@ fm_desktop_icon_view_dispose (GObject *object)
 	g_signal_handlers_disconnect_by_func (gnome_lockdown_preferences,
 					      fm_directory_view_update_menus,
 					      icon_view);
+
+	g_object_unref (icon_view->details->background);
 
 	G_OBJECT_CLASS (fm_desktop_icon_view_parent_class)->dispose (object);
 }

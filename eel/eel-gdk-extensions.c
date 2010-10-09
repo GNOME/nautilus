@@ -474,6 +474,36 @@ eel_cairo_draw_layout_with_drop_shadow (cairo_t             *cr,
 	cairo_restore (cr);
 }
 
+#define CLAMP_COLOR(v) (t = (v), CLAMP (t, 0, G_MAXUSHORT))
+#define SATURATE(v) ((1.0 - saturation) * intensity + saturation * (v))
+
+void
+eel_make_color_inactive (GdkColor *color)
+{
+	double intensity, saturation;
+	gushort t;
+
+	saturation = 0.7;
+	intensity = color->red * 0.30 + color->green * 0.59 + color->blue * 0.11;
+	color->red = SATURATE (color->red);
+	color->green = SATURATE (color->green);
+	color->blue = SATURATE (color->blue);
+
+	if (intensity > G_MAXUSHORT / 2) {
+		color->red *= 0.9;
+		color->green *= 0.9;
+		color->blue *= 0.9;
+	} else {
+		color->red *= 1.25;
+		color->green *= 1.25;
+		color->blue *= 1.25;
+	}
+
+	color->red = CLAMP_COLOR (color->red);
+	color->green = CLAMP_COLOR (color->green);
+	color->blue = CLAMP_COLOR (color->blue);
+}
+
 #if ! defined (EEL_OMIT_SELF_CHECK)
 
 static char *

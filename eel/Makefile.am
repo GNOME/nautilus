@@ -32,7 +32,6 @@ libeel_2_la_LIBADD = 				\
 eel_headers =					\
 	eel-accessibility.h			\
 	eel-art-extensions.h			\
-	eel-background.h			\
 	eel-canvas.h				\
 	eel-canvas-util.h			\
 	eel-canvas-rect-ellipse.h		\
@@ -55,7 +54,6 @@ eel_headers =					\
 libeel_2_la_SOURCES =				\
 	eel-accessibility.c			\
 	eel-art-extensions.c			\
-	eel-background.c			\
 	eel-canvas.c				\
 	eel-canvas-util.c			\
 	eel-canvas-rect-ellipse.c		\

@@ -29,7 +29,6 @@
 #define FM_DIRECTORY_VIEW_H
 
 #include <gtk/gtk.h>
-#include <eel/eel-background.h>
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-icon-container.h>
@@ -417,7 +416,6 @@ char **             fm_directory_view_get_emblem_names_to_exclude      (FMDirect
 NautilusDirectory  *fm_directory_view_get_model                        (FMDirectoryView  *view);
 GtkWindow	   *fm_directory_view_get_containing_window	       (FMDirectoryView  *view);
 NautilusFile       *fm_directory_view_get_directory_as_file            (FMDirectoryView  *view);
-EelBackground *     fm_directory_view_get_background                   (FMDirectoryView  *view);
 gboolean            fm_directory_view_get_allow_moves                  (FMDirectoryView  *view);
 void                fm_directory_view_pop_up_background_context_menu   (FMDirectoryView  *view,
 									GdkEventButton   *event);

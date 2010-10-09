@@ -30,7 +30,6 @@
 #include "fm-desktop-icon-view.h"
 #include "fm-error-reporting.h"
 #include <stdlib.h>
-#include <eel/eel-background.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
@@ -43,7 +42,6 @@
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 #include <libnautilus-private/nautilus-clipboard-monitor.h>
-#include <libnautilus-private/nautilus-directory-background.h>
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-dnd.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
@@ -1414,14 +1412,6 @@ fm_icon_view_can_zoom_out (FMDirectoryView *view)
 		> NAUTILUS_ZOOM_LEVEL_SMALLEST;
 }
 
-static GtkWidget * 
-fm_icon_view_get_background_widget (FMDirectoryView *view) 
-{
-	g_return_val_if_fail (FM_IS_ICON_VIEW (view), NULL);
-
-	return GTK_WIDGET (get_icon_container (FM_ICON_VIEW (view)));
-}
-
 static gboolean
 fm_icon_view_is_empty (FMDirectoryView *view)
 {
@@ -1873,6 +1863,14 @@ fm_icon_view_using_manual_layout (FMDirectoryView *view)
 	g_return_val_if_fail (FM_IS_ICON_VIEW (view), FALSE);
 
 	return !fm_icon_view_using_auto_layout (FM_ICON_VIEW (view));
+}
+
+static void
+fm_icon_view_set_is_active (FMDirectoryView *view,
+			    gboolean is_active)
+{
+	nautilus_icon_container_set_active (get_icon_container (FM_ICON_VIEW (view)),
+					    is_active);
 }
 
 static void
@@ -2945,7 +2943,6 @@ fm_icon_view_class_init (FMIconViewClass *klass)
 	fm_directory_view_class->clear = fm_icon_view_clear;
 	fm_directory_view_class->end_loading = fm_icon_view_end_loading;
 	fm_directory_view_class->file_changed = fm_icon_view_file_changed;
-	fm_directory_view_class->get_background_widget = fm_icon_view_get_background_widget;
 	fm_directory_view_class->get_selected_icon_locations = fm_icon_view_get_selected_icon_locations;
 	fm_directory_view_class->get_selection = fm_icon_view_get_selection;
 	fm_directory_view_class->get_selection_for_file_transfer = fm_icon_view_get_selection;
@@ -2956,6 +2953,7 @@ fm_icon_view_class_init (FMIconViewClass *klass)
 	fm_directory_view_class->restore_default_zoom_level = fm_icon_view_restore_default_zoom_level;
 	fm_directory_view_class->reveal_selection = fm_icon_view_reveal_selection;
 	fm_directory_view_class->select_all = fm_icon_view_select_all;
+	fm_directory_view_class->set_is_active = fm_icon_view_set_is_active;
 	fm_directory_view_class->set_selection = fm_icon_view_set_selection;
 	fm_directory_view_class->invert_selection = fm_icon_view_invert_selection;
 	fm_directory_view_class->compare_files = compare_files;
