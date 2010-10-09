@@ -48,39 +48,6 @@ test_window_new (const char *title, guint border_width)
 	return window;
 }
 
-void
-test_gtk_widget_set_background_image (GtkWidget *widget,
-				      const char *image_name)
-{
-	EelBackground *background;
-	char *uri;
-
-	g_return_if_fail (GTK_IS_WIDGET (widget));
-	g_return_if_fail (image_name != NULL);
-
-	background = eel_get_widget_background (widget);
-	
-	uri = g_strdup_printf ("file://%s/%s", NAUTILUS_DATADIR, image_name);
-
-	eel_background_set_image_uri (background, uri);
-
-	g_free (uri);
-}
-
-void
-test_gtk_widget_set_background_color (GtkWidget *widget,
-				      const char *color_spec)
-{
-	EelBackground *background;
-
-	g_return_if_fail (GTK_IS_WIDGET (widget));
-	g_return_if_fail (color_spec != NULL);
-
-	background = eel_get_widget_background (widget);
-	
-	eel_background_set_color (background, color_spec);
-}
-
 GdkPixbuf *
 test_pixbuf_new_named (const char *name, float scale)
 {

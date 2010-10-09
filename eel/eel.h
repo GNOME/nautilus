@@ -26,7 +26,6 @@
 #define EEL_H
 
 #include <eel/eel-art-extensions.h>
-#include <eel/eel-background.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>

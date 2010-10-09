@@ -47,7 +47,6 @@
 #include <libnautilus-private/nautilus-column-chooser.h>
 #include <libnautilus-private/nautilus-column-utilities.h>
 #include <libnautilus-private/nautilus-debug-log.h>
-#include <libnautilus-private/nautilus-directory-background.h>
 #include <libnautilus-private/nautilus-dnd.h>
 #include <libnautilus-private/nautilus-file-dnd.h>
 #include <libnautilus-private/nautilus-file-utilities.h>

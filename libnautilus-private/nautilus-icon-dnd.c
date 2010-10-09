@@ -40,7 +40,6 @@
 #include "nautilus-icon-private.h"
 #include "nautilus-link.h"
 #include "nautilus-metadata.h"
-#include <eel/eel-background.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
@@ -55,6 +54,7 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <eel/eel-canvas-rect-ellipse.h>
+#include <libnautilus-private/nautilus-desktop-background.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file-changes-queue.h>
 #include <stdio.h>
@@ -1068,9 +1068,8 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 	
 	if (real_action == (GdkDragAction) NAUTILUS_DND_ACTION_SET_AS_BACKGROUND) {
 		selected_item = container->details->dnd_info->drag_info.selection_list->data;
-		eel_background_receive_dropped_background_image
-			(eel_get_widget_background (GTK_WIDGET (container)),
-			 selected_item->uri);
+		nautilus_desktop_background_receive_dropped_background_image (container,
+									      selected_item->uri);
 		return;
 	}
 		

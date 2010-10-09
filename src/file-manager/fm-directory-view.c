@@ -59,7 +59,6 @@
 #include <libnautilus-private/nautilus-desktop-icon-file.h>
 #include <libnautilus-private/nautilus-desktop-directory.h>
 #include <libnautilus-private/nautilus-search-directory.h>
-#include <libnautilus-private/nautilus-directory-background.h>
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-dnd.h>
 #include <libnautilus-private/nautilus-file-attributes.h>

@@ -41,7 +41,6 @@
 #define NAUTILUS_AUTORUN_H
 
 #include <gtk/gtk.h>
-#include <eel/eel-background.h>
 #include <libnautilus-private/nautilus-file.h>
 
 typedef void (*NautilusAutorunComboBoxChanged) (gboolean selected_ask,
