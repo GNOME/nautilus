@@ -258,7 +258,7 @@ real_begin_loading (FMDirectoryView *object)
 
 	icon_container = get_icon_container (view);
 	if (view->details->background == NULL) {
-		view->details->background = nautilus_desktop_background_new (GTK_WIDGET (icon_container));
+		view->details->background = nautilus_desktop_background_new (icon_container);
 	}
 
 	FM_DIRECTORY_VIEW_CLASS (fm_desktop_icon_view_parent_class)->begin_loading (object);

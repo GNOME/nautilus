@@ -30,9 +30,9 @@
 
 #include "nautilus-desktop-background.h"
 
-#include <eel/eel-canvas.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gtk-extensions.h>
+
 #include "nautilus-global-preferences.h"
 
 #define GNOME_DESKTOP_USE_UNSTABLE_API
@@ -279,9 +279,7 @@ fade_to_surface (NautilusDesktopBackground *self,
 static void
 nautilus_desktop_background_set_up_widget (NautilusDesktopBackground *self)
 {
-	GtkStyle *style;
 	GdkWindow *window;
-	GdkWindow *widget_window;
 	gboolean in_fade = FALSE;
         GtkWidget *widget;
 
@@ -291,15 +289,8 @@ nautilus_desktop_background_set_up_widget (NautilusDesktopBackground *self)
 		return;
 	}
 
-	widget_window = gtk_widget_get_window (widget);
 	nautilus_desktop_background_ensure_realized (self);
-	style = gtk_widget_get_style (widget);
-
-	if (EEL_IS_CANVAS (widget)) {
-		window = gtk_layout_get_bin_window (GTK_LAYOUT (widget));
-	} else {
-		window = widget_window;
-	}
+        window = gtk_layout_get_bin_window (GTK_LAYOUT (widget));
 
 	in_fade = fade_to_surface (self, window,
 				   self->details->background_surface);
@@ -550,7 +541,7 @@ nautilus_desktop_background_class_init (NautilusDesktopBackgroundClass *klass)
 
         pspec = g_param_spec_object ("widget", "The widget for this background",
                                      "The widget that gets its background set",
-                                     GTK_TYPE_WIDGET,
+                                     NAUTILUS_TYPE_ICON_CONTAINER,
                                      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
         g_object_class_install_property (object_class, PROP_WIDGET, pspec);
 
@@ -590,9 +581,9 @@ nautilus_desktop_background_receive_dropped_background_image (NautilusDesktopBac
 }
 
 NautilusDesktopBackground *
-nautilus_desktop_background_new (GtkWidget *widget)
+nautilus_desktop_background_new (NautilusIconContainer *container)
 {
         return g_object_new (NAUTILUS_TYPE_DESKTOP_BACKGROUND,
-                             "widget", widget,
+                             "widget", container,
                              NULL);
 }

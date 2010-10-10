@@ -1069,7 +1069,7 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 	if (real_action == (GdkDragAction) NAUTILUS_DND_ACTION_SET_AS_BACKGROUND) {
 		NautilusDesktopBackground *background;
 
-		background = nautilus_desktop_background_new (GTK_WIDGET (container));
+		background = nautilus_desktop_background_new (container);
 		selected_item = container->details->dnd_info->drag_info.selection_list->data;
 
 		nautilus_desktop_background_receive_dropped_background_image (background,
