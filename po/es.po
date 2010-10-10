@@ -25,7 +25,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&component=Internationalization (i18n)\n"
 "POT-Creation-Date: 2010-10-06 20:35+0000\n"
-"PO-Revision-Date: 2010-10-09 15:39+0200\n"
+"PO-Revision-Date: 2010-10-10 14:14+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -2476,7 +2476,6 @@ msgstr ""
 "automontados"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:1
-#, fuzzy
 #| msgid ""
 #| "A list of captions below an icon in the icon view and the desktop. The "
 #| "actual number of captions shown depends on the zoom level. Possible "
@@ -2850,7 +2849,6 @@ msgstr ""
 "versión 2.6, y alguna gente prefiere este comportamiento."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:55
-#, fuzzy
 #| msgid ""
 #| "If set to true, then hidden files are shown in the file manager. Hidden "
 #| "files are either dotfiles or are listed in the folder's .hidden file."
@@ -2859,9 +2857,9 @@ msgid ""
 "Hidden files are either dotfiles, listed in the folder's .hidden file or "
 "backup files ending with a tilde (~)."
 msgstr ""
-"Si se establece a cierto, los archivos ocultos se mostrarán en el "
+"Si se establece a cierto, se mostrarán los archivos ocultos en el "
 "administrador de archivos. Los archivos ocultos son archivos que comienzan "
-"con un punto o que están listados en el archivo «.hidden» de la carpeta."
+"con un punto o que están finalizan con una tilde (~)."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:56
 msgid ""
@@ -3047,7 +3045,6 @@ msgid "Side pane view"
 msgstr "Vista del panel lateral"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:88
-#, fuzzy
 #| msgid ""
 #| "Speed tradeoff for when to preview a sound file when mousing over a files "
 #| "icon. If set to \"always\" then always plays the sound, even if the file "
@@ -3061,14 +3058,13 @@ msgid ""
 msgstr ""
 "Compensación de velocidad para cuando se hace una reproducción previa de un "
 "archivo de sonido al colocar el ratón sobre los iconos de los archivos. Si "
-"está definido como \"always\" (siempre) entonces se reproducirá el sonido, "
-"aún si el archivo se encuentra en un servidor remoto. Si se establece a "
-"\"local_only\" (sólo local) entonces la reproducción previa sólo se "
-"realizará sobre archivos locales. Si se establece a \"never\" (nunca) "
-"entonces nunca de reproducirá previamente el sonido."
+"se establece a «always» (siempre) entonces se reproducirá el sonido, aún si "
+"el archivo se encuentra en un servidor remoto. Si se establece a "
+"«local_only» (sólo local) entonces la reproducción previa sólo se realizará "
+"sobre archivos locales. Si se establece a «never» (nunca) entonces nunca de "
+"reproducirá previamente el sonido."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:89
-#, fuzzy
 #| msgid ""
 #| "Speed tradeoff for when to show a preview of text file contents in the "
 #| "file's icon. If set to \"always\" then always show previews, even if the "
@@ -3083,15 +3079,14 @@ msgid ""
 "read preview data."
 msgstr ""
 "Compensación de velocidad para cuando se muestran previamente los contenidos "
-"de un archivo de texto en el icono del archivo. Si se establece a \"always"
-"\" (siempre) entonces siempre se mostrará una vista previa, aún si la "
-"carpeta se encuentra en un servidor remoto. Si se establece a \"local_only"
-"\" (sólo local) entonces sólo se previsualizará en los sistemas de archivos "
-"locales. Si se establece a \"never\" (siempre) entonces nunca se leerán "
-"datos para la vista previa."
+"de un archivo de texto en el icono del archivo. Si se establece a "
+"«always» (siempre) entonces siempre se mostrará una vista previa, aún si la "
+"carpeta se encuentra en un servidor remoto. Si se establece a "
+"«local_only» (sólo local) entonces sólo se previsualizará en los sistemas de "
+"archivos locales. Si se establece a «never» (siempre) entonces nunca se "
+"leerán datos para la vista previa."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:90
-#, fuzzy
 #| msgid ""
 #| "Speed tradeoff for when to show an image file as a thumbnail. If set to "
 #| "\"always\" then always thumbnail, even if the folder is on a remote "
@@ -3106,15 +3101,14 @@ msgid ""
 "generic icon."
 msgstr ""
 "Compensación de velocidad para cuando se muestran archivos de imágenes como "
-"una miniatura. Si se establece a \"always\" (siempre) entonces siempre se "
+"una miniatura. Si se establece a «always» (siempre) entonces siempre se "
 "mostrarán miniaturas, aún cuando la carpeta se encuentre en un servidor "
-"remoto. Si está definido como \"local_only\" (sólo local) entonces sólo se "
+"remoto. Si está definido como «local_only» (sólo local) entonces sólo se "
 "mostrarán miniaturas en los sistemas de archivos locales. Si se establece a "
-"\"never\" (nunca) entonces no se mostrarán miniaturas de las imágenes, sino "
-"que se mostrará un icono genérico."
+"«never» (nunca) entonces no se mostrarán miniaturas de las imágenes, sino que "
+"se mostrará un icono genérico."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:91
-#, fuzzy
 #| msgid ""
 #| "Speed tradeoff for when to show the number of items in a folder. If set "
 #| "to \"always\" then always show item counts, even if the folder is on a "
@@ -3128,11 +3122,11 @@ msgid ""
 "systems. If set to \"never\" then never bother to compute item counts."
 msgstr ""
 "Compensación de velocidad para cuando se muestre el número de elementos en "
-"una carpeta. Si se establece a \"always\" (siempre) entonces siempre se "
-"contará el número de elementos, aún si la carpeta se encuentra en un "
-"servidor remoto. Si se establece a \"local_only\" (sólo local) entonces sólo "
-"se mostrará el número en los sistemas de archivos locales. Si se establece a "
-"\"never\" (nunca) entonces nunca se contará el número de elementos."
+"una carpeta. Si se establece a «always» (siempre) entonces siempre se contará "
+"el número de elementos, aún si la carpeta se encuentra en un servidor "
+"remoto. Si se establece a «local_only» (sólo local) entonces sólo se mostrará "
+"el número en los sistemas de archivos locales. Si se establece a "
+"«never» (nunca) entonces nunca se contará el número de elementos."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:92
 msgid "Text Ellipsis Limit"
@@ -3145,7 +3139,6 @@ msgstr ""
 "iconos."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:94
-#, fuzzy
 #| msgid ""
 #| "The default sort-order for the items in the list view. Possible values "
 #| "are \"name\", \"size\", \"type\", and \"modification_date\"."
@@ -3154,8 +3147,8 @@ msgid ""
 "\", \"size\", \"type\" and \"mtime\"."
 msgstr ""
 "El criterio de ordenación de los elementos en la vista de lista. Los valores "
-"posibles son \"name\" (nombre), \"size\" (tamaño), \"type\" (tipo)  y "
-"\"modification_date\" (fecha de modificación)."
+"posibles son «name» (nombre), «size» (tamaño), «type» (tipo) y "
+"«modification_date» (fecha de modificación)."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:95
 msgid "The default width of the side pane in new windows."
@@ -3226,7 +3219,6 @@ msgid "Type of click used to launch/open files"
 msgstr "El tipo de pulsación utilizado para ejecutar/abrir los archivos"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:106
-#, fuzzy
 #| msgid ""
 #| "Color for the default folder background. Only used if background_set is "
 #| "true."
@@ -3234,10 +3226,9 @@ msgid ""
 "Uri of the default folder background. Only used if background_set is true."
 msgstr ""
 "El color para el fondo predeterminado de la carpeta. Sólo se usa si "
-"«background_set» es «true»."
+"«background_set» es cierto."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:107
-#, fuzzy
 #| msgid ""
 #| "Filename for the default side pane background. Only used if "
 #| "side_pane_background_set is true."
@@ -3246,7 +3237,7 @@ msgid ""
 "side_pane_background_set is true."
 msgstr ""
 "El nombre del archivo para el fondo predeterminado del panel lateral. Sólo "
-"se utiliza si «side_pane_background_set» es «true»."
+"se utiliza si «side_pane_background_set» es cierto."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:108
 msgid "Use extra mouse button events in Nautilus' browser window"
@@ -3276,7 +3267,6 @@ msgstr ""
 "«display» para mostrarlos como archivos de texto."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:112
-#, fuzzy
 #| msgid ""
 #| "When a folder is visited this viewer is used unless you have selected "
 #| "another view for that particular folder. Possible values are \"list_view"
