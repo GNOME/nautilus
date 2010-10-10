@@ -45,6 +45,8 @@ static void init_fade (NautilusDesktopBackground *self);
 static void free_fade (NautilusDesktopBackground *self);
 static void queue_background_change (NautilusDesktopBackground *self);
 
+static NautilusDesktopBackground *singleton = NULL;
+
 G_DEFINE_TYPE (NautilusDesktopBackground, nautilus_desktop_background, G_TYPE_OBJECT);
 
 enum {
@@ -481,11 +483,6 @@ nautilus_desktop_background_constructed (GObject *obj)
 
         g_assert (widget != NULL);
 
-        /* FIXME: this is ugly, but it's the only way of handling background DnD on
-         * the desktop without refactoring half nautilus.
-         */
-        g_object_set_data (G_OBJECT (widget), "desktop-background", self);
-
  	g_signal_connect_object (widget, "destroy",
                                  G_CALLBACK (on_widget_destroyed), self, 0);
 	g_signal_connect_object (widget, "realize",
@@ -519,6 +516,26 @@ nautilus_desktop_background_set_property (GObject *object,
         }
 }
 
+static GObject *
+nautilus_desktop_background_constructor (GType type,
+                                         guint n_construct_params,
+                                         GObjectConstructParam *construct_params)
+{
+        GObject *retval;
+
+        if (singleton != NULL) {
+                return g_object_ref (singleton);
+        }
+
+        retval = G_OBJECT_CLASS (nautilus_desktop_background_parent_class)->constructor
+                (type, n_construct_params, construct_params);
+
+        singleton = NAUTILUS_DESKTOP_BACKGROUND (retval);
+        g_object_add_weak_pointer (retval, (gpointer) &singleton);
+
+        return retval;
+}
+
 static void
 nautilus_desktop_background_class_init (NautilusDesktopBackgroundClass *klass)
 {
@@ -528,6 +545,7 @@ nautilus_desktop_background_class_init (NautilusDesktopBackgroundClass *klass)
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->finalize = nautilus_desktop_background_finalize;
         object_class->set_property = nautilus_desktop_background_set_property;
+        object_class->constructor = nautilus_desktop_background_constructor;
         object_class->constructed = nautilus_desktop_background_constructed;
 
         pspec = g_param_spec_object ("widget", "The widget for this background",
@@ -559,15 +577,9 @@ nautilus_desktop_background_init (NautilusDesktopBackground *self)
 }
 
 void
-nautilus_desktop_background_receive_dropped_background_image (NautilusIconContainer *container,
+nautilus_desktop_background_receive_dropped_background_image (NautilusDesktopBackground *self,
                                                               const char *image_uri)
 {
-        NautilusDesktopBackground *self;
-
-        self = g_object_get_data (G_OBJECT (container), "desktop-background");
-
-        g_assert (self != NULL);
-
 	/* Currently, we only support tiled images. So we set the placement.
 	 */
 	gnome_bg_set_placement (self->details->bg,
