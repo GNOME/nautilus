@@ -22,10 +22,11 @@ msgstr ""
 "Project-Id-Version: nautilus MASTER\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2010-09-11 13:01+0000\n"
-"PO-Revision-Date: 2010-09-22 15:54+0300\n"
+"POT-Creation-Date: 2010-10-09 17:39+0000\n"
+"PO-Revision-Date: 2010-10-10 01:13+0300\n"
 "Last-Translator: Mattias Põldaru <mahfiaz gmail com>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
+"Language: et\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -402,12 +403,6 @@ msgstr "Säti _taustapildiks"
 msgid "Cancel"
 msgstr "Loobu"
 
-msgid "Set as background for _all folders"
-msgstr "Säti taustapildiks _kõikidele kataloogidele"
-
-msgid "Set as background for _this folder"
-msgstr "Säti taustapildiks _sellele kataloogile"
-
 #, c-format
 msgid "Merge folder \"%s\"?"
 msgstr "Kas liita kataloog \"%s\"?"
@@ -467,6 +462,7 @@ msgstr "Algne fail"
 msgid "Size:"
 msgstr "Suurus:"
 
+#. second row: type combobox
 msgid "Type:"
 msgstr "Liik:"
 
@@ -1299,9 +1295,6 @@ msgstr "link (katkenud)"
 msgid "The selection rectangle"
 msgstr "Valiku ristkülik"
 
-msgid "Switch to Manual Layout?"
-msgstr "Kas lülitada käsitsi paigutusele?"
-
 #, c-format
 msgid "The Link \"%s\" is Broken."
 msgstr "Viit \"%s\" on katki."
@@ -1715,12 +1708,6 @@ msgstr ""
 "mitte"
 
 #, fuzzy
-#| msgid ""
-#| "A list of captions below an icon in the icon view and the desktop. The "
-#| "actual number of captions shown depends on the zoom level. Possible "
-#| "values are: \"size\", \"type\", \"date_modified\", \"date_changed\", "
-#| "\"date_accessed\", \"owner\", \"group\", \"permissions\", "
-#| "\"octal_permissions\" and \"mime_type\"."
 msgid ""
 "A list of captions below an icon in the icon view and the desktop. The "
 "actual number of captions shown depends on the zoom level. Some possible "
@@ -1910,11 +1897,6 @@ msgstr ""
 msgid "Home icon visible on desktop"
 msgstr "Kodukataloogi ikoon on töölaual nähtav"
 
-#, fuzzy
-#| msgid ""
-#| "If set to \"after_current_tab\", then new tabs are inserted after the "
-#| "current tab. If set to \"end\", then new tabs are appended to the end of "
-#| "the tab list."
 msgid ""
 "If set to \"after-current-tab\", then new tabs are inserted after the "
 "current tab. If set to \"end\", then new tabs are appended to the end of the "
@@ -2012,17 +1994,14 @@ msgstr ""
 "Kui märgitud, näitab Nautilus kõiki aknaid sirvijana. Nii toimis Nautilus "
 "enne versiooni 2.6 ning osa kasutajaid eelistab seda võimalust."
 
-#, fuzzy
-#| msgid ""
-#| "If set to true, then hidden files are shown in the file manager. Hidden "
-#| "files are either dotfiles or are listed in the folder's .hidden file."
 msgid ""
 "If set to true, then hidden files are shown by default in the file manager. "
 "Hidden files are either dotfiles, listed in the folder's .hidden file or "
 "backup files ending with a tilde (~)."
 msgstr ""
-"Kui tõene, näitab failihaldur peidetud faile. Peidetud failid algavad "
-"punktiga või on loetletud kataloogi failis nimega .hidden"
+"Kui tõene, siis vaikimisi näitab failihaldur peidetud faile. Peidetud failid "
+"algavad punktiga või on loetletud kataloogi failis nimega .hidden või on "
+"varundusfailid, mis lõppevad tildega (~)."
 
 msgid ""
 "If this is set to true, an icon linking to the Network Servers view will be "
@@ -2156,11 +2135,6 @@ msgid "Side pane view"
 msgstr "Külgpaanivaade"
 
 #, fuzzy
-#| msgid ""
-#| "Speed tradeoff for when to preview a sound file when mousing over a files "
-#| "icon. If set to \"always\" then always plays the sound, even if the file "
-#| "is on a remote server. If set to \"local_only\" then only plays previews "
-#| "on local file systems. If set to \"never\" then it never previews sound."
 msgid ""
 "Speed tradeoff for when to preview a sound file when mousing over a files "
 "icon. If set to \"always\" then always plays the sound, even if the file is "
@@ -2174,12 +2148,6 @@ msgstr ""
 "siis heli ei esitata."
 
 #, fuzzy
-#| msgid ""
-#| "Speed tradeoff for when to show a preview of text file contents in the "
-#| "file's icon. If set to \"always\" then always show previews, even if the "
-#| "folder is on a remote server. If set to \"local_only\" then only show "
-#| "previews for local file systems. If set to \"never\" then never bother to "
-#| "read preview data."
 msgid ""
 "Speed tradeoff for when to show a preview of text file contents in the "
 "file's icon. If set to \"always\" then always show previews, even if the "
@@ -2194,12 +2162,6 @@ msgstr ""
 "\"never\", siis eelvaadet ei näidata."
 
 #, fuzzy
-#| msgid ""
-#| "Speed tradeoff for when to show an image file as a thumbnail. If set to "
-#| "\"always\" then always thumbnail, even if the folder is on a remote "
-#| "server. If set to \"local_only\" then only show thumbnails for local file "
-#| "systems. If set to \"never\" then never bother to thumbnail images, just "
-#| "use a generic icon."
 msgid ""
 "Speed tradeoff for when to show an image file as a thumbnail. If set to "
 "\"always\" then always thumbnail, even if the folder is on a remote server. "
@@ -2214,12 +2176,6 @@ msgstr ""
 "\"never\", siis pisipilti ei näidata."
 
 #, fuzzy
-#| msgid ""
-#| "Speed tradeoff for when to show the number of items in a folder. If set "
-#| "to \"always\" then always show item counts, even if the folder is on a "
-#| "remote server. If set to \"local_only\" then only show counts for local "
-#| "file systems. If set to \"never\" then never bother to compute item "
-#| "counts."
 msgid ""
 "Speed tradeoff for when to show the number of items in a folder. If set to "
 "\"always\" then always show item counts, even if the folder is on a remote "
@@ -2239,9 +2195,6 @@ msgid "The default size of an icon for a thumbnail in the icon view."
 msgstr "Ikoonivaates oleva pisipildi ikooni vaikimisi suurus."
 
 #, fuzzy
-#| msgid ""
-#| "The default sort-order for the items in the list view. Possible values "
-#| "are \"name\", \"size\", \"type\", and \"modification_date\"."
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\" and \"mtime\"."
@@ -2254,7 +2207,6 @@ msgid "The default width of the side pane in new windows."
 msgstr "Külgpaani vaikimisi laius uutes akendes."
 
 #, fuzzy
-#| msgid "The font description used for the icons on the desktop."
 msgid "The font _description used for the icons on the desktop."
 msgstr "Töölaua ikoonidel kasutatava kirjastiili kirjeldus."
 
@@ -2306,9 +2258,6 @@ msgid "Type of click used to launch/open files"
 msgstr "Hiireklõpsu liik, millega faile avatakse"
 
 #, fuzzy
-#| msgid ""
-#| "Color for the default folder background. Only used if background_set is "
-#| "true."
 msgid ""
 "Uri of the default folder background. Only used if background_set is true."
 msgstr ""
@@ -2316,9 +2265,6 @@ msgstr ""
 "background_set on märgitud."
 
 #, fuzzy
-#| msgid ""
-#| "Filename for the default side pane background. Only used if "
-#| "side_pane_background_set is true."
 msgid ""
 "Uri of the default side pane background. Only used if "
 "side_pane_background_set is true."
@@ -3947,6 +3893,8 @@ msgid ""
 "Nautilus 3.0 deprecated this directory and tried migrating this "
 "configuration to ~/.config/nautilus"
 msgstr ""
+"Nautilusega 3.0 muutus see kataloog aegunuks ning seadistused püüti "
+"kohandada kausta ~/.config/nautilus"
 
 #, c-format
 msgid "Unable to eject %s"
@@ -4005,13 +3953,6 @@ msgstr "<b>_Nimi</b>"
 msgid "Edit Bookmarks"
 msgstr "Järjehoidjate redaktor"
 
-#, c-format
-msgid "Cannot display location \"%s\""
-msgstr "Asukohta \"%s\" pole võimalik kuvada"
-
-msgid "[URI]"
-msgstr "[URI]"
-
 #. Translators: This is the --help description for the connect to server app,
 #. the initial newlines are between the command line arg and the description
 msgid ""
@@ -4022,9 +3963,6 @@ msgstr ""
 "\n"
 "\n"
 "Ühenduse lisamine serveri jagatud kataloogile"
-
-msgid "Custom Location"
-msgstr "Kohandatud asukoht"
 
 msgid "SSH"
 msgstr "SSH"
@@ -4044,47 +3982,78 @@ msgstr "WebDAV (HTTP)"
 msgid "Secure WebDAV (HTTPS)"
 msgstr "Turvaline WebDAV (HTTPS)"
 
-msgid "Cannot Connect to Server. You must enter a name for the server."
-msgstr "Serveriga pole võimalik ühenduda. Sa pead sisestama serveri nime."
+msgid "Connecting..."
+msgstr "Ühendumine..."
 
-msgid "Please enter a name and try again."
-msgstr "Palun sisesta nimi ja proovi uuesti."
+msgid ""
+"Can't load the supported server method list.\n"
+"Please check your GVfs installation."
+msgstr ""
+"Toetatud serverimeetodite loendit pole võimalik laadida.\n"
+"Palun kontrolli enda GVfs paigaldust."
 
-msgid "_Location (URI):"
-msgstr "_Asukoht (URI):"
+#, c-format
+msgid "The folder \"%s\" cannot be opened on \"%s\"."
+msgstr "Kausta \"%s\" kohas \"%s\" pole võimalik avada."
 
-msgid "_Server:"
-msgstr "_Server:"
+#, c-format
+msgid "The server at \"%s\" cannot be found."
+msgstr "Serverit asukohas \"%s\" ei leitud."
 
-msgid "Optional information:"
-msgstr "Valikulised andmed:"
+msgid "Try Again"
+msgstr "Proovi uuesti"
 
-msgid "_Share:"
-msgstr "_Maardla:"
+msgid "Please verify your user details."
+msgstr "Palun kontrolli oma kasutajakonto andmeid."
 
-msgid "_Port:"
-msgstr "_Port:"
-
-msgid "_User Name:"
-msgstr "_Kasutajanimi:"
-
-msgid "_Domain Name:"
-msgstr "_Domeeninimi:"
-
-msgid "Bookmark _name:"
-msgstr "Järjehoidja _nimi:"
-
-msgid "Connect to Server"
-msgstr "Ühendumine serverisse"
-
-msgid "Service _type:"
-msgstr "_Teenuse liik:"
-
-msgid "Add _bookmark"
-msgstr "_Lisa järjehoidja"
+msgid "Continue"
+msgstr "Jätka"
 
 msgid "C_onnect"
 msgstr "Ü_hendu"
+
+#. set dialog properties
+msgid "Connect to Server"
+msgstr "Ühendumine serverisse"
+
+msgid "Server Details"
+msgstr "Serveri üksikasjad"
+
+#. first row: server entry + port spinbutton
+msgid "_Server:"
+msgstr "_Server:"
+
+#. port
+msgid "_Port:"
+msgstr "_Port:"
+
+#. third row: share entry
+#, fuzzy
+msgid "Share:"
+msgstr "_Maardla:"
+
+#. fourth row: folder entry
+msgid "Folder:"
+msgstr "Kaust:"
+
+msgid "User Details"
+msgstr "Kasutaja üksikasjad"
+
+#. first row: domain entry
+msgid "Domain Name:"
+msgstr "Domeeninimi:"
+
+#. second row: username entry
+msgid "User Name:"
+msgstr "Kasutajanimi:"
+
+#. third row: password entry
+msgid "Password:"
+msgstr "Parool:"
+
+#. fourth row: remember checkbox
+msgid "Remember this password"
+msgstr "Parool hoitakse meeles"
 
 msgid "Desktop"
 msgstr "Töölaud"
@@ -5271,641 +5240,3 @@ msgstr "Suurendus"
 
 msgid "Set the zoom level of the current view"
 msgstr "Praeguse vaate suurendusastme seadmine"
-
-#~ msgid "Apparition"
-#~ msgstr "Kummitus"
-
-#~ msgid "Azul"
-#~ msgstr "Elektrisinine"
-
-#~ msgid "Black"
-#~ msgstr "Must"
-
-#~ msgid "Blue Ridge"
-#~ msgstr "Sinine viirutus"
-
-#~ msgid "Blue Rough"
-#~ msgstr "Kare sinine"
-
-#~ msgid "Blue Type"
-#~ msgstr "Sinakad kirjad"
-
-#~ msgid "Brushed Metal"
-#~ msgstr "Harjatud metall"
-
-#~ msgid "Bubble Gum"
-#~ msgstr "Närimiskummi"
-
-#~ msgid "Burlap"
-#~ msgstr "Kotiriie"
-
-#~ msgid "C_olors"
-#~ msgstr "_Värvused"
-
-#~ msgid "Camouflage"
-#~ msgstr "Maskeering"
-
-#~ msgid "Chalk"
-#~ msgstr "Kriit"
-
-#~ msgid "Charcoal"
-#~ msgstr "Puusüsi"
-
-#~ msgid "Concrete"
-#~ msgstr "Betoon"
-
-#~ msgid "Cork"
-#~ msgstr "Kork"
-
-#~ msgid "Countertop"
-#~ msgstr "Köögilaud"
-
-#~ msgid "Danube"
-#~ msgstr "Doonau"
-
-#~ msgid "Dark Cork"
-#~ msgstr "Tume kork"
-
-#~ msgid "Dark GNOME"
-#~ msgstr "Sünge GNOME"
-
-#~ msgid "Deep Teal"
-#~ msgstr "Sinakasroheline"
-
-#~ msgid "Dots"
-#~ msgstr "Täpid"
-
-#~ msgid "Drag a color to an object to change it to that color"
-#~ msgstr "Objekti värvuse muutmiseks lohista värv objektile"
-
-#~ msgid "Drag a pattern tile to an object to change it"
-#~ msgstr "Objekti mustri muutmiseks lohista muster objektile"
-
-#~ msgid "Drag an emblem to an object to add it to the object"
-#~ msgstr "Objektile embleemi lisamiseks lohista see objektile"
-
-#~ msgid "Eclipse"
-#~ msgstr "Varjutus"
-
-#~ msgid "Envy"
-#~ msgstr "Tumeroheline"
-
-#~ msgid "Erase"
-#~ msgstr "Kustutada"
-
-#~ msgid "Fibers"
-#~ msgstr "Kiud"
-
-#~ msgid "Fire Engine"
-#~ msgstr "Tuletõrje"
-
-#~ msgid "Fleur De Lis"
-#~ msgstr "Võhumõõk"
-
-#~ msgid "Floral"
-#~ msgstr "Lilled"
-
-#~ msgid "Fossil"
-#~ msgstr "Kivistis"
-
-#~ msgid "GNOME"
-#~ msgstr "GNOME"
-
-#~ msgid "Granite"
-#~ msgstr "Graniit"
-
-#~ msgid "Grapefruit"
-#~ msgstr "Greipfruut"
-
-#~ msgid "Green Weave"
-#~ msgstr "Roheline punutis"
-
-#~ msgid "Ice"
-#~ msgstr "Jää"
-
-#~ msgid "Indigo"
-#~ msgstr "Indigo"
-
-#~ msgid "Leaf"
-#~ msgstr "Puuleht"
-
-#~ msgid "Lemon"
-#~ msgstr "Sidrun"
-
-#~ msgid "Mango"
-#~ msgstr "Mango"
-
-#~ msgid "Manila Paper"
-#~ msgstr "Manilapaber"
-
-#~ msgid "Moss Ridge"
-#~ msgstr "Samblaseljak"
-
-#~ msgid "Mud"
-#~ msgstr "Pori"
-
-#~ msgid "Numbers"
-#~ msgstr "Numbrid"
-
-#~ msgid "Ocean Strips"
-#~ msgstr "Ookeanitriibud"
-
-#~ msgid "Onyx"
-#~ msgstr "Oonüks"
-
-#~ msgid "Orange"
-#~ msgstr "Oranž"
-
-#~ msgid "Pale Blue"
-#~ msgstr "Kahvatusinine"
-
-#~ msgid "Purple Marble"
-#~ msgstr "Purpurne marmor"
-
-#~ msgid "Ridged Paper"
-#~ msgstr "Sooniline paber"
-
-#~ msgid "Rough Paper"
-#~ msgstr "Poorne paber"
-
-#~ msgid "Ruby"
-#~ msgstr "Rubiin"
-
-#~ msgid "Sea Foam"
-#~ msgstr "Merevaht"
-
-#~ msgid "Shale"
-#~ msgstr "Savi"
-
-#~ msgid "Silver"
-#~ msgstr "Hõbe"
-
-#~ msgid "Sky"
-#~ msgstr "Taevas"
-
-#~ msgid "Sky Ridge"
-#~ msgstr "Suusarajad"
-
-#~ msgid "Snow Ridge"
-#~ msgstr "Lume vaod"
-
-#~ msgid "Stucco"
-#~ msgstr "Krohv"
-
-#~ msgid "Tangerine"
-#~ msgstr "Mandariin"
-
-#~ msgid "Terracotta"
-#~ msgstr "Terrakota"
-
-#~ msgid "Violet"
-#~ msgstr "Violett"
-
-#~ msgid "Wavy White"
-#~ msgstr "Laineline valge"
-
-#~ msgid "White"
-#~ msgstr "Valge"
-
-#~ msgid "White Ribs"
-#~ msgstr "Valged ribid"
-
-#~ msgid "_Emblems"
-#~ msgstr "_Embleemid"
-
-#~ msgid "_Patterns"
-#~ msgstr "_Mustrid"
-
-#~ msgid "Image/label border"
-#~ msgstr "Pildi/sildi ääris"
-
-#~ msgid "Width of border around the label and image in the alert dialog"
-#~ msgstr "Äärisjoone laius, mis ümbritseb hoiatusdialoogi silti ja pilti."
-
-#~ msgid "Alert Type"
-#~ msgstr "Hoiatuse liik"
-
-#~ msgid "The type of alert"
-#~ msgstr "Hoiatuse liik"
-
-#~ msgid "Alert Buttons"
-#~ msgstr "Hoiatuse nupud"
-
-#~ msgid "The buttons shown in the alert dialog"
-#~ msgstr "Hoiatusdialoogi nupud"
-
-#~ msgid ""
-#~ "GConf error:\n"
-#~ "  %s"
-#~ msgstr ""
-#~ "GConf'i viga:\n"
-#~ "  %s"
-
-#~ msgid "GConf error: %s"
-#~ msgstr "GConf'i viga: %s"
-
-#~ msgid "All further errors shown only on terminal."
-#~ msgstr "Edasised vead väljastatakse ainult terminali."
-
-#~ msgid "Criteria for search bar searching"
-#~ msgstr "Otsingu tingimused otsinguribal"
-
-#~ msgid ""
-#~ "Criteria when matching files searched for in the search bar. If set to "
-#~ "\"search_by_text\", then Nautilus will Search for files by file name "
-#~ "only. If set to \"search_by_text_and_properties\", then Nautilus will "
-#~ "search for files by file name and file properties."
-#~ msgstr ""
-#~ "Otsingutulemuste filtreerimiskriteerium. Kui väärtuseks on määratud "
-#~ "\"search_by_text\", siis otsib Nautilus faile ainult failinime alusel. "
-#~ "Kui väärtuseks on määratud \"search_by_text_and_properties\", siis otsib "
-#~ "Nautilus faile failinime ja faili omaduste alusel."
-
-#~ msgid "Current Nautilus theme (deprecated)"
-#~ msgstr "Praegune Nautiluse teema (aegunud)"
-
-#~ msgid ""
-#~ "Filename for the default folder background. Only used if background_set "
-#~ "is true."
-#~ msgstr ""
-#~ "Kataloogi vaikimisi tausta failinimi. Kasutatakse ainult siis, kui võti "
-#~ "background_set on märgitud."
-
-#~ msgid ""
-#~ "Folders over this size will be truncated to around this size. The purpose "
-#~ "of this is to avoid unintentionally blowing the heap and killing Nautilus "
-#~ "on massive folders. A negative value denotes no limit. The limit is "
-#~ "approximate due to the reading of folders chunk-wise."
-#~ msgstr ""
-#~ "Sellest väärtusest suurema mahuga kataloogid kärbitakse sellele suurusele "
-#~ "lähedasele suurusele. Kärpimise eesmärk on vältida olukorda, kus Nautilus "
-#~ "massiivsete kataloogide töötlemisele liiga palju aega ja ressurssi "
-#~ "kulutab. Negatiivne väärtus tähendab, et piirangut pole. Väärtus on "
-#~ "ligikaudne kuna katalooge loetakse tükkhaaval."
-
-#~ msgid ""
-#~ "If set to true, then backup files such as those created by Emacs are "
-#~ "displayed. Currently, only files ending in a tilde (~) are considered "
-#~ "backup files."
-#~ msgstr ""
-#~ "Kui märgitud, siis kuvatakse ka varufaile (näiteks Emacs'i poolt looduid. "
-#~ "Hetkel liigitatakse varufailide alla failid, mille nimi lõpeb \"~\" "
-#~ "märgiga."
-
-#~ msgid ""
-#~ "If true, files in new windows will be sorted in reverse order. ie, if "
-#~ "sorted by name, then instead of sorting the files from \"a\" to \"z\", "
-#~ "they will be sorted from \"z\" to \"a\"."
-#~ msgstr ""
-#~ "Kui märgitud, siis uutes akendes sorditakse failid pööratud järjestuses. "
-#~ "See tähendab, et kui failid on sorditud näiteks nime alusel, siis "
-#~ "tavapärase \"a\"-st kuni \"ü\"-ni sortimise asemel sorditakse järjestuses "
-#~ "\"ü\"-st kuni \"a\"-ni."
-
-#~ msgid "If true, new windows will use manual layout by default."
-#~ msgstr ""
-#~ "Kui märgitud, siis kasutavad uued aknad vaikimisi käsitsi ikoonipaigutust."
-
-#~ msgid "Maximum handled files in a folder"
-#~ msgstr "Suurim käidetavate failide arv kataloogi kohta"
-
-#~ msgid ""
-#~ "Name of the Nautilus theme to use. This has been deprecated as of "
-#~ "Nautilus 2.2. Please use the icon theme instead."
-#~ msgstr ""
-#~ "Nautiluse teema, mida kasutada. See on alates Nautiluse versioonist 2.2 "
-#~ "aegunud, palun kasuta selle asemel ikooniteemat."
-
-#~ msgid "Sans 10"
-#~ msgstr "Sans 10"
-
-#~ msgid ""
-#~ "The default sort-order for items in the icon view. Possible values are "
-#~ "\"name\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
-#~ msgstr ""
-#~ "Ikoonivaate kirjete vaikimisi sortimisjärjekord. Võimalikud väärtused on "
-#~ "\"name\" (nimi), \"size\" (suurus), \"type\" (liik), \"modification_date"
-#~ "\" (muutmisaeg), ja \"emblems\" (embleemid)."
-
-#~ msgid "Use manual layout in new windows"
-#~ msgstr "Käsitsipaigutuse kasutamine uutes akendes"
-
-#~ msgid "Whether to show backup files"
-#~ msgstr "Kas varufaile näidatakse või mitte"
-
-#~ msgid "The emblem cannot be installed."
-#~ msgstr "Embleemi pole võimalik paigaldada."
-
-#~ msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
-#~ msgstr "Vabandust, kuid uuele embleemile tuleb lisada võtmesõna."
-
-#~ msgid ""
-#~ "Sorry, but emblem keywords can only contain letters, spaces and numbers."
-#~ msgstr ""
-#~ "Vabandust, embleemi võtmesõna võib sisaldada ainult tähti, numbreid ja "
-#~ "tühikuid."
-
-#~ msgid "Sorry, but there is already an emblem named \"%s\"."
-#~ msgstr "Vabandust, kuid embleem nimega \"%s\" on juba olemas."
-
-#~ msgid "Please choose a different emblem name."
-#~ msgstr "Palun vali embleemile mõni teine nimi."
-
-#~ msgid "Sorry, unable to save custom emblem."
-#~ msgstr "Vabandust, kohandatud embleemi pole võimalik salvestada."
-
-#~ msgid "Sorry, unable to save custom emblem name."
-#~ msgstr "Vabandust, kohandatud embleemi nime pole võimalik salvestada."
-
-#~ msgid "_Always"
-#~ msgstr "_Alati"
-
-#~ msgid "_Local File Only"
-#~ msgstr "Ainult _kohalik fail"
-
-#~ msgid "_Never"
-#~ msgstr "_Mitte kunagi"
-
-#~ msgid "25%"
-#~ msgstr "25%"
-
-#~ msgid "75%"
-#~ msgstr "75%"
-
-#~ msgid "100 K"
-#~ msgstr "100 K"
-
-#~ msgid "500 K"
-#~ msgstr "500 K"
-
-#~ msgid "Activate items with a _single click"
-#~ msgstr "Aktiveeri asjad ühe _klõpsuga"
-
-#~ msgid "Activate items with a _double click"
-#~ msgstr "Aktiveeri asjad _topeltklõpsuga"
-
-#~ msgid "E_xecute files when they are clicked"
-#~ msgstr "K_äivita failid, kui neile klõpsatakse"
-
-#~ msgid "Display _files when they are clicked"
-#~ msgstr "Kuva failide _sisu, kui neile klõpsatakse"
-
-#~ msgid "Search for files by file name only"
-#~ msgstr "Otsi faile ainult failinime järgi"
-
-#~ msgid "Search for files by file name and file properties"
-#~ msgstr "Otsi faile failinime ja failiomaduste järgi"
-
-#~ msgid "Manually"
-#~ msgstr "Käsitsi"
-
-#~ msgid "By Emblems"
-#~ msgstr "Embleemide järgi"
-
-#~ msgid "8"
-#~ msgstr "8"
-
-#~ msgid "10"
-#~ msgstr "10"
-
-#~ msgid "12"
-#~ msgstr "12"
-
-#~ msgid "14"
-#~ msgstr "14"
-
-#~ msgid "16"
-#~ msgstr "16"
-
-#~ msgid "18"
-#~ msgstr "18"
-
-#~ msgid "20"
-#~ msgstr "20"
-
-#~ msgid "22"
-#~ msgstr "22"
-
-#~ msgid "24"
-#~ msgstr "24"
-
-#~ msgid "Network Servers"
-#~ msgstr "Võrguserverid"
-
-#~ msgid "The folder \"%s\" contains more files than Nautilus can handle."
-#~ msgstr ""
-#~ "Kataloog \"%s\" sisaldab rohkem faile, kui Nautilus suudab käsitleda."
-
-#~ msgid "Some files will not be displayed."
-#~ msgstr "Mõningaid faile ei kuvata."
-
-#~ msgid "by _Emblems"
-#~ msgstr "_embleemi järgi"
-
-#~ msgid "Keep icons sorted by emblems in rows"
-#~ msgstr "Ikooniridade sortimine embleemi järgi"
-
-#~ msgid "By _Emblems"
-#~ msgstr "_Embleemi järgi"
-
-#~ msgid "Emblems"
-#~ msgstr "Embleemid"
-
-#~ msgid "Could not remove emblem with name '%s'."
-#~ msgstr "Embleemi nimega '%s' pole võimalik eemaldada."
-
-#~ msgid ""
-#~ "This is probably because the emblem is a permanent one, and not one that "
-#~ "you added yourself."
-#~ msgstr ""
-#~ "Tõenäoliselt on see tingitud sellest, et embleem on püsiv, ja pole sinu "
-#~ "poolt lisatud."
-
-#~ msgid "Could not rename emblem with name '%s'."
-#~ msgstr "Embleemi nimega '%s' pole võimalik ümber nimetada."
-
-#~ msgid "Rename Emblem"
-#~ msgstr "Muuda embleemi nime"
-
-#~ msgid "Enter a new name for the displayed emblem:"
-#~ msgstr "Sisesta embleemi uus nimi:"
-
-#~ msgid "Rename"
-#~ msgstr "Muuda nime"
-
-#~ msgid "Add Emblems..."
-#~ msgstr "Lisa embleemid..."
-
-#~ msgid ""
-#~ "Enter a descriptive name next to each emblem.  This name will be used in "
-#~ "other places to identify the emblem."
-#~ msgstr ""
-#~ "Sisesta iga embleemi järele kirjeldav nimi. Seda kasutatakse edaspidi "
-#~ "teistes kohtades embleemi nimena"
-
-#~ msgid ""
-#~ "Enter a descriptive name next to the emblem.  This name will be used in "
-#~ "other places to identify the emblem."
-#~ msgstr ""
-#~ "Sisesta embleemi järele kirjeldav nimi. Seda kasutatakse edaspidi teistes "
-#~ "kohtades embleemi nimena"
-
-#~ msgid "Some of the files could not be added as emblems."
-#~ msgstr "Mõningaid faile pole võimalik lisada embleemidena."
-
-#~ msgid "The emblems do not appear to be valid images."
-#~ msgstr "Embleemid ei paista olevat korrektsed pildifailid."
-
-#~ msgid "None of the files could be added as emblems."
-#~ msgstr "Ühtegi faili pole võimalik embleemina lisada."
-
-#~ msgid "The file '%s' does not appear to be a valid image."
-#~ msgstr "Fail '%s' ei ole korrektne pildifail."
-
-#~ msgid "The dragged file does not appear to be a valid image."
-#~ msgstr "Lohistatud fail ei ole sobilik pildi fail."
-
-#~ msgid "The emblem cannot be added."
-#~ msgstr "Embleemi pole võimalik lisada"
-
-#~ msgid "Show Emblems"
-#~ msgstr "Näita embleeme"
-
-#~ msgid "Information"
-#~ msgstr "Teave"
-
-#~ msgid "Show Information"
-#~ msgstr "Andmete näitamine"
-
-#~ msgid "Use _Default Background"
-#~ msgstr "Kasuta _vaikimisi tausta"
-
-#~ msgid "You cannot assign more than one custom icon at a time."
-#~ msgstr "Korraga pole võimalik rohkem kui üht kohandatud ikooni lisada."
-
-#~ msgid "You can only use images as custom icons."
-#~ msgstr "Pilte saab kasutada ainult kohandatud ikoonidena."
-
-#~ msgid "Backgrounds and Emblems"
-#~ msgstr "Taustad ja embleemid"
-
-#~ msgid "_Remove..."
-#~ msgstr "_Eemalda..."
-
-#~ msgid "Add new..."
-#~ msgstr "Lisa uus..."
-
-#~ msgid "Sorry, but pattern %s could not be deleted."
-#~ msgstr "Vabandust, kuid mustrit %s pole võimalik kustutada."
-
-#~ msgid "Check that you have permission to delete the pattern."
-#~ msgstr "Kontrolli, kas sul on õigused mustri kustutamiseks."
-
-#~ msgid "Sorry, but emblem %s could not be deleted."
-#~ msgstr "Vabandust, kuid embleemi %s pole võimalik kustutada."
-
-#~ msgid "Check that you have permission to delete the emblem."
-#~ msgstr "Kontrolli, kas sul on õigused embleemi kustutamiseks."
-
-#~ msgid "Select an Image File for the New Emblem"
-#~ msgstr "Uue embleemi jaoks pildifaili valimine"
-
-#~ msgid "Create a New Emblem"
-#~ msgstr "Uue embleemi loomine"
-
-#~ msgid "_Keyword:"
-#~ msgstr "_Võtmesõna:"
-
-#~ msgid "_Image:"
-#~ msgstr "_Pilt:"
-
-#~ msgid "Create a New Color:"
-#~ msgstr "Loo uus värv:"
-
-#~ msgid "Color _name:"
-#~ msgstr "Värvi _nimi:"
-
-#~ msgid "Color _value:"
-#~ msgstr "Värvi _väärtus:"
-
-#~ msgid "Sorry, but you cannot replace the reset image."
-#~ msgstr "Vabandust, kuid lähtestamispilti pole võimalik asendada."
-
-#~ msgid "Reset is a special image that cannot be deleted."
-#~ msgstr ""
-#~ "Lähtestamissümbol on spetsiaalne pilt, mida pole võimalik kustutada."
-
-#~ msgid "Sorry, but the pattern %s could not be installed."
-#~ msgstr "Vabandust, kuid mustrit %s pole võimalik paigaldada."
-
-#~ msgid "Select an Image File to Add as a Pattern"
-#~ msgstr "Mustriks lisatava pildifaili valimine"
-
-#~ msgid "The color cannot be installed."
-#~ msgstr "Värvi pole võimalik paigaldada."
-
-#~ msgid "Sorry, but you must specify an unused color name for the new color."
-#~ msgstr ""
-#~ "Vabandust, kuid uuele värvile tuleb määrata nimi, mis ei ole kasutuses."
-
-#~ msgid "Sorry, but you must specify a non-blank name for the new color."
-#~ msgstr "Vabandust, kuid uuele värvile tuleb määrata nimi, mis ei ole tühi."
-
-#~ msgid "Select a Color to Add"
-#~ msgstr "Lisatava värvuse valimine"
-
-#~ msgid "Sorry, but \"%s\" is not a usable image file."
-#~ msgstr "Vabandust, kuid \"%s\" ei ole kasutatav pildifail."
-
-#~ msgid "The file is not an image."
-#~ msgstr "See fail ei ole pilt."
-
-#~ msgid "Select a Category:"
-#~ msgstr "Vali kategooria:"
-
-#~ msgid "C_ancel Remove"
-#~ msgstr "T_ühista eemaldamine"
-
-#~ msgid "_Add a New Pattern..."
-#~ msgstr "_Lisa uus muster..."
-
-#~ msgid "_Add a New Color..."
-#~ msgstr "_Lisa uus värvus..."
-
-#~ msgid "_Add a New Emblem..."
-#~ msgstr "_Lisa uus embleem..."
-
-#~ msgid "Click on a pattern to remove it"
-#~ msgstr "Mustri eemaldamiseks klõpsa sellel"
-
-#~ msgid "Click on a color to remove it"
-#~ msgstr "Värvuse eemaldamiseks klõpsa sellel"
-
-#~ msgid "Click on an emblem to remove it"
-#~ msgstr "Embleemi eemaldamiseks klõpsa sellel"
-
-#~ msgid "Patterns:"
-#~ msgstr "Mustrid:"
-
-#~ msgid "Colors:"
-#~ msgstr "Värvused:"
-
-#~ msgid "Emblems:"
-#~ msgstr "Embleemid:"
-
-#~ msgid "_Remove a Pattern..."
-#~ msgstr "_Eemalda muster..."
-
-#~ msgid "_Remove a Color..."
-#~ msgstr "_Eemalda värvus..."
-
-#~ msgid "_Remove an Emblem..."
-#~ msgstr "_Eemalda embleem..."
-
-#~ msgid "_Backgrounds and Emblems..."
-#~ msgstr "_Taustad ja embleemid..."
-
-#~ msgid ""
-#~ "Display patterns, colors, and emblems that can be used to customize "
-#~ "appearance"
-#~ msgstr "Kuvab mustrid, värvid ja embleemid, millega kohandada välimust."
