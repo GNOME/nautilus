@@ -98,8 +98,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-file.h \
 	nautilus-global-preferences.c \
 	nautilus-global-preferences.h \
-	nautilus-horizontal-splitter.c \
-	nautilus-horizontal-splitter.h \
 	nautilus-icon-canvas-item.c \
 	nautilus-icon-canvas-item.h \
 	nautilus-icon-container.c \

@@ -55,7 +55,6 @@
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-horizontal-splitter.h>
 #include <libnautilus-private/nautilus-icon-info.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
@@ -137,7 +136,7 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 	window->details->header_size_group = gtk_size_group_new (GTK_SIZE_GROUP_VERTICAL);
 	gtk_size_group_set_ignore_hidden (window->details->header_size_group, FALSE);
 
-	window->details->content_paned = nautilus_horizontal_splitter_new ();
+	window->details->content_paned = gtk_hpaned_new ();
 	gtk_table_attach (GTK_TABLE (NAUTILUS_WINDOW (window)->details->table),
 			  window->details->content_paned,
 			  /* X direction */                   /* Y direction */
@@ -147,7 +146,8 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 	gtk_widget_show (window->details->content_paned);
 
 	vbox = gtk_vbox_new (FALSE, 0);
-	nautilus_horizontal_splitter_pack2 (NAUTILUS_HORIZONTAL_SPLITTER (window->details->content_paned), vbox);
+	gtk_paned_pack2 (GTK_PANED (window->details->content_paned), vbox,
+			 TRUE, FALSE);
 	gtk_widget_show (vbox);
 
 	hpaned = gtk_hpaned_new ();
@@ -978,7 +978,7 @@ nautilus_navigation_window_sidebar_showing (NautilusNavigationWindow *window)
 	g_return_val_if_fail (NAUTILUS_IS_NAVIGATION_WINDOW (window), FALSE);
 
 	return (window->sidebar != NULL)
-		&& nautilus_horizontal_splitter_is_hidden (NAUTILUS_HORIZONTAL_SPLITTER (window->details->content_paned));
+		&& gtk_widget_get_visible (gtk_paned_get_child1 (GTK_PANED (window->details->content_paned)));
 }
 
 /**
