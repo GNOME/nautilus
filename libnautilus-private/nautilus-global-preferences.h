@@ -35,16 +35,6 @@ G_BEGIN_DECLS
 /* Whether exit when last window destroyed */
 #define NAUTILUS_PREFERENCES_EXIT_WITH_LAST_WINDOW		"exit-with-last-window"
 
-/* Desktop Background options */
-#define NAUTILUS_PREFERENCES_BACKGROUND_SET                     "background-set"
-#define NAUTILUS_PREFERENCES_BACKGROUND_COLOR                   "background-color"
-#define NAUTILUS_PREFERENCES_BACKGROUND_URI                     "background-uri"
-
-/* Side Pane Background options */
-#define NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_SET           "side-pane-background-set"
-#define NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_COLOR         "side-pane-background-color"
-#define NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_URI           "side-pane-background-uri"
-
 /* Automount options */
 #define NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT			"automount"
 #define NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT_OPEN		"automount-open"
