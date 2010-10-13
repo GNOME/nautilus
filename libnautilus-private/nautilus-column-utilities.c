@@ -127,8 +127,7 @@ get_builtin_columns (void)
 					       "name", "where",
 					       "attribute", "where",
 					       "label", _("Location"),
-					       /* TODO: Change after string freeze over */
-					       "description", _("Location"),
+					       "description", _("The location of the file."),
 					       NULL));
 
 	return columns;
