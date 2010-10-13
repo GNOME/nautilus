@@ -9,15 +9,15 @@ msgstr ""
 "Project-Id-Version: eel.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
 "cgi?product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2010-09-16 21:53+0000\n"
-"PO-Revision-Date: 2010-09-18 08:45+0530\n"
+"POT-Creation-Date: 2010-10-09 13:45+0000\n"
+"PO-Revision-Date: 2010-10-13 07:33+0530\n"
 "Last-Translator: A S Alam <aalam@users.sf.net>\n"
 "Language-Team: Punjabi/Panjabi <punjabi-users@lists.sf.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "#-#-#-#-#  pa.po (nautilus.HEAD)  #-#-#-#-#\n"
-"X-Generator: Lokalize 1.0\n"
+"X-Generator: Lokalize 1.1\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "\n"
 
@@ -1465,7 +1465,7 @@ msgstr "ਹਮੇਸ਼ਾ ਇਹ ਐਕਸ਼ਨ ਲਵੋ(_A)"
 #: ../src/file-manager/fm-directory-view.c:7244
 #: ../src/file-manager/fm-directory-view.c:7325
 #: ../src/file-manager/fm-tree-view.c:1278
-#: ../src/nautilus-places-sidebar.c:2280
+#: ../src/nautilus-places-sidebar.c:2295
 msgid "_Eject"
 msgstr "ਬਾਹਰ ਕੱਢੋ(_E)"
 
@@ -1477,7 +1477,7 @@ msgstr "ਬਾਹਰ ਕੱਢੋ(_E)"
 #: ../src/file-manager/fm-directory-view.c:7240
 #: ../src/file-manager/fm-directory-view.c:7321
 #: ../src/file-manager/fm-tree-view.c:1269
-#: ../src/nautilus-places-sidebar.c:2273
+#: ../src/nautilus-places-sidebar.c:2288
 msgid "_Unmount"
 msgstr "ਅਣ-ਮਾਊਂਟ(_U)"
 
@@ -1747,10 +1747,6 @@ msgid "Merge folder \"%s\"?"
 msgstr "ਫੋਲਡਰ \"%s\" ਮਿਲਾਉਣਾ ਹੈ?"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:148
-#| msgid ""
-#| "The source folder already exists in \"%B\".  Merging will ask for "
-#| "confirmation before replacing any files in the folder that conflict with "
-#| "the files being moved."
 msgid ""
 "Merging will ask for confirmation before replacing any files in the folder "
 "that conflict with the files being copied."
@@ -1760,32 +1756,20 @@ msgstr ""
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:153
 #, c-format
-#| msgid ""
-#| "A folder with the same name already exists in \"%s\".\n"
-#| "Replacing it will remove all files in the folder."
 msgid "An older folder with the same name already exists in \"%s\"."
 msgstr "\"%s\" ਵਿੱਚ ਇਸੇ ਨਾਂ ਨਾਲ ਪੁਰਾਣਾ ਫੋਲਡਰ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ।"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:157
 #, c-format
-#| msgid ""
-#| "A folder with the same name already exists in \"%s\".\n"
-#| "Replacing it will remove all files in the folder."
 msgid "A newer folder with the same name already exists in \"%s\"."
 msgstr "\"%s\" ਵਿੱਚ ਇਸੇ ਨਾਂ ਨਾਲ ਨਵਾਂ ਫੋਲਡਰ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ।"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:161
 #, c-format
-#| msgid ""
-#| "A folder with the same name already exists in \"%s\".\n"
-#| "Replacing it will remove all files in the folder."
 msgid "Another folder with the same name already exists in \"%s\"."
 msgstr "\"%s\" ਵਿੱਚ ਇਸੇ ਨਾਂ ਨਾਲ ਹੋਰ ਫੋਲਡਰ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ।"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:166
-#| msgid ""
-#| "A folder with the same name already exists in \"%s\".\n"
-#| "Replacing it will remove all files in the folder."
 msgid "Replacing it will remove all files in the folder."
 msgstr "ਇਸ ਨੂੰ ਬਦਲਣ ਨਾਲ ਫੋਲਡਰ ਵਿਚਲੀਆਂ ਸਭ ਫਾਇਲਾਂ ਹਟਾਈਆਂ ਜਾਣਗੀਆਂ।"
 
@@ -1796,9 +1780,6 @@ msgstr "ਫੋਲਡਰ \"%s\" ਬਦਲਣਾ?"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:170
 #, c-format
-#| msgid ""
-#| "A folder with the same name already exists in \"%s\".\n"
-#| "Replacing it will remove all files in the folder."
 msgid "A folder with the same name already exists in \"%s\"."
 msgstr "\"%s\" ਵਿੱਚ ਇਸੇ ਨਾਂ ਨਾਲ ਫੋਲਡਰ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ।"
 
@@ -1808,33 +1789,21 @@ msgid "Replace file \"%s\"?"
 msgstr "ਫਾਇਲ \"%s\" ਬਦਲਣੀ ਹੈ?"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:177
-#| msgid ""
-#| "%s file with the same name already exists in \"%s\".\n"
-#| "Replacing it will overwrite its content."
 msgid "Replacing it will overwrite its content."
 msgstr "ਇਸ ਨੂੰ ਬਦਲਣ ਨਾਲ ਇਸ ਦੀ ਸਮੱਗਰੀ ਖਤਮ ਹੋ ਜਾਵੇਗੀ।"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:181
 #, c-format
-#| msgid ""
-#| "%s file with the same name already exists in \"%s\".\n"
-#| "Replacing it will overwrite its content."
 msgid "An older file with the same name already exists in \"%s\"."
 msgstr "\"%s\" ਵਿੱਚ ਇਸੇ ਨਾਂ ਨਾਲ ਪੁਰਾਣੀ ਫਾਇਲ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ।"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:185
 #, c-format
-#| msgid ""
-#| "%s file with the same name already exists in \"%s\".\n"
-#| "Replacing it will overwrite its content."
 msgid "A newer file with the same name already exists in \"%s\"."
 msgstr "\"%s\" ਵਿੱਚ ਇਸੇ ਨਾਂ ਨਾਲ ਨਵੀਂ ਫਾਇਲ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ।"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:189
 #, c-format
-#| msgid ""
-#| "%s file with the same name already exists in \"%s\".\n"
-#| "Replacing it will overwrite its content."
 msgid "Another file with the same name already exists in \"%s\"."
 msgstr "\"%s\" ਵਿੱਚ ਇਸੇ ਨਾਂ ਨਾਲ ਹੋਰ ਫਾਇਲ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ।"
 
@@ -1870,7 +1839,7 @@ msgstr "ਮਿਲਾਉ"
 #. Setup the expander for the rename action
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:508
 msgid "_Select a new name for the destination"
-msgstr "ਟਿਾਕਣੇ ਲਈ ਨਵਾਂ ਨਾਂ ਚੁਣੋ(_S)"
+msgstr "ਟਿਕਾਣੇ ਲਈ ਨਵਾਂ ਨਾਂ ਚੁਣੋ(_S)"
 
 #. Setup the checkbox to apply the action to all files
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:534
@@ -2128,7 +2097,7 @@ msgstr "ਰੱਦੀ 'ਚੋਂ ਸਭ ਆਈਟਮਾਂ ਨੂੰ ਪੱਕੇ
 #. Empty Trash menu item
 #: ../libnautilus-private/nautilus-file-operations.c:1339
 #: ../libnautilus-private/nautilus-file-operations.c:2191
-#: ../src/nautilus-places-sidebar.c:2317 ../src/nautilus-trash-bar.c:190
+#: ../src/nautilus-places-sidebar.c:2332 ../src/nautilus-trash-bar.c:190
 msgid "Empty _Trash"
 msgstr "ਰੱਦੀ ਖਾਲੀ ਕਰੋ(_T)"
 
@@ -3056,7 +3025,7 @@ msgstr "ਸੰਖੇਪ ਝਲਕ"
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:144
 #: ../src/file-manager/fm-list-view.c:1658
-#: ../src/file-manager/fm-list-view.c:3147
+#: ../src/file-manager/fm-list-view.c:3154
 #: ../src/nautilus-file-management-properties.ui.h:67
 msgid "List View"
 msgstr "ਲਿਸਟ ਝਲਕ"
@@ -3418,7 +3387,7 @@ msgstr "ਝਲਕ(_B)..."
 #: ../src/file-manager/fm-directory-view.c:7098
 #: ../src/file-manager/fm-directory-view.c:8599
 #: ../src/file-manager/fm-tree-view.c:1163
-#: ../src/nautilus-places-sidebar.c:2222
+#: ../src/nautilus-places-sidebar.c:2237
 msgid "_Open"
 msgstr "ਖੋਲ੍ਹੋ(_O)"
 
@@ -3642,13 +3611,13 @@ msgstr "ਆਪਣਾ ਨਿੱਜੀ ਫੋਲਡਰ ਖੋਲ੍ਹੋ"
 msgid "File Manager"
 msgstr "ਫਾਇਲ ਮੈਨੇਜਰ"
 
-#: ../src/file-manager/fm-desktop-icon-view.c:639
+#: ../src/file-manager/fm-desktop-icon-view.c:640
 msgid "Background"
 msgstr "ਬੈਕ-ਗਰਾਊਂਡ"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-desktop-icon-view.c:712
+#: ../src/file-manager/fm-desktop-icon-view.c:713
 #: ../src/file-manager/fm-directory-view.c:7130
 #: ../src/file-manager/fm-directory-view.c:8799
 msgid "E_mpty Trash"
@@ -3657,44 +3626,44 @@ msgstr "ਰੱਦੀ ਖਾਲੀ ਕਰੋ(_m)"
 #. label, accelerator
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-desktop-icon-view.c:724
+#: ../src/file-manager/fm-desktop-icon-view.c:725
 #: ../src/file-manager/fm-directory-view.c:7094
 msgid "Create L_auncher..."
 msgstr "ਲਾਂਚਰ ਬਣਾਓ(_a)..."
 
 #. tooltip
-#: ../src/file-manager/fm-desktop-icon-view.c:726
+#: ../src/file-manager/fm-desktop-icon-view.c:727
 #: ../src/file-manager/fm-directory-view.c:7095
 msgid "Create a new launcher"
 msgstr "ਇੱਕ ਨਵਾਂ ਲਾਂਚਰ ਬਣਾਓ"
 
 #. label, accelerator
-#: ../src/file-manager/fm-desktop-icon-view.c:731
+#: ../src/file-manager/fm-desktop-icon-view.c:732
 msgid "Change Desktop _Background"
 msgstr "ਡੈਸਕਟਾਪ ਬੈਕਗਰਾਊਂਡ ਬਦਲੋ(_B)"
 
 #. tooltip
-#: ../src/file-manager/fm-desktop-icon-view.c:733
+#: ../src/file-manager/fm-desktop-icon-view.c:734
 msgid "Show a window that lets you set your desktop background's pattern or color"
 msgstr "ਉਹ ਵਿੰਡੋ ਖੋਲ੍ਹੋ, ਜੋ ਡੈਸਕਟਾਪ ਬੈਕ-ਗਰਾਊਂਡ ਦਾ ਪੈਟਰਨ ਜਾਂ ਰੰਗ ਬਦਲ ਸਕੇ"
 
 #. label, accelerator
-#: ../src/file-manager/fm-desktop-icon-view.c:738
+#: ../src/file-manager/fm-desktop-icon-view.c:739
 msgid "Empty Trash"
 msgstr "ਰੱਦੀ ਖਾਲੀ ਕਰੋ"
 
 #. tooltip
-#: ../src/file-manager/fm-desktop-icon-view.c:740
+#: ../src/file-manager/fm-desktop-icon-view.c:741
 #: ../src/file-manager/fm-directory-view.c:7131
 #: ../src/nautilus-trash-bar.c:197
 msgid "Delete all items in the Trash"
 msgstr "ਰੱਦੀ 'ਚੋਂ ਸਭ ਆਈਟਮਾਂ ਹਟਾਓ"
 
-#: ../src/file-manager/fm-desktop-icon-view.c:837
+#: ../src/file-manager/fm-desktop-icon-view.c:838
 msgid "The desktop view encountered an error."
 msgstr "ਡੈਸਕਟਾਪ ਝਲਕ 'ਚ ਇੱਕ ਸਮੱਸਿਆ ਆਈ ਹੈ।"
 
-#: ../src/file-manager/fm-desktop-icon-view.c:838
+#: ../src/file-manager/fm-desktop-icon-view.c:839
 msgid "The desktop view encountered an error while starting up."
 msgstr "ਡੈਸਕਟਾਪ ਝਲਕ ਸ਼ੁਰੂ ਕਰਨ ਸਮੇਂ ਸਮੱਸਿਆ ਆਈ ਹੈ।"
 
@@ -4099,7 +4068,7 @@ msgstr "ਹਰੇਕ ਚੁਣੀ ਆਈਟਮ ਨਵੀਂ ਨੈਵੀਗੇ�
 #: ../src/file-manager/fm-directory-view.c:8350
 #: ../src/file-manager/fm-directory-view.c:8676
 #: ../src/file-manager/fm-tree-view.c:1174
-#: ../src/nautilus-places-sidebar.c:2230
+#: ../src/nautilus-places-sidebar.c:2245
 msgid "Open in New _Tab"
 msgstr "ਨਵੀਂ ਟੈਬ ਖੋਲ੍ਹੋ(_T)"
 
@@ -4320,7 +4289,7 @@ msgstr "ਇਸ ਸਰਵਰ ਨਾਲ ਪੱਕਾ ਕੁਨੈਕਸ਼ਨ ਬਣ�
 #: ../src/file-manager/fm-directory-view.c:7208
 #: ../src/file-manager/fm-directory-view.c:7236
 #: ../src/file-manager/fm-directory-view.c:7317
-#: ../src/nautilus-places-sidebar.c:2266
+#: ../src/nautilus-places-sidebar.c:2281
 msgid "_Mount"
 msgstr "ਮਾਊਂਟ(_M)"
 
@@ -4344,7 +4313,7 @@ msgstr "ਚੁਣੇ ਵਾਲੀਅਮ ਨੂੰ ਬਾਹਰ ਕੱਢੋ"
 #: ../src/file-manager/fm-directory-view.c:7220
 #: ../src/file-manager/fm-directory-view.c:7248
 #: ../src/file-manager/fm-directory-view.c:7329
-#: ../src/nautilus-places-sidebar.c:2294
+#: ../src/nautilus-places-sidebar.c:2309
 msgid "_Format"
 msgstr "ਫਾਰਮੈਟ(_F)"
 
@@ -4365,7 +4334,7 @@ msgstr "ਚੁਣੇ ਵਾਲੀਅਮ ਨੂੰ ਫਾਰਮੈਟ ਕਰੋ"
 #: ../src/file-manager/fm-directory-view.c:8106
 #: ../src/file-manager/fm-directory-view.c:8212
 #: ../src/file-manager/fm-directory-view.c:8216
-#: ../src/nautilus-places-sidebar.c:1444 ../src/nautilus-places-sidebar.c:2301
+#: ../src/nautilus-places-sidebar.c:1459 ../src/nautilus-places-sidebar.c:2316
 msgid "_Start"
 msgstr "ਸ਼ੁਰੂ(_S)"
 
@@ -4382,7 +4351,7 @@ msgstr "ਚੁਣੇ ਵਾਲੀਅਮ ਸ਼ੁਰੂ ਕਰੋ"
 #: ../src/file-manager/fm-directory-view.c:8039
 #: ../src/file-manager/fm-directory-view.c:8131
 #: ../src/file-manager/fm-directory-view.c:8241
-#: ../src/nautilus-places-sidebar.c:1445 ../src/nautilus-places-sidebar.c:2308
+#: ../src/nautilus-places-sidebar.c:1460 ../src/nautilus-places-sidebar.c:2323
 #: ../src/nautilus-window-menus.c:810
 msgid "_Stop"
 msgstr "ਰੋਕੋ(_S)"
@@ -4398,7 +4367,7 @@ msgstr "ਚੁਣੇ ਵਾਲੀਅਮ ਨੂੰ ਰੋਕੋ"
 #: ../src/file-manager/fm-directory-view.c:7232
 #: ../src/file-manager/fm-directory-view.c:7260
 #: ../src/file-manager/fm-directory-view.c:7341
-#: ../src/nautilus-places-sidebar.c:2287
+#: ../src/nautilus-places-sidebar.c:2302
 msgid "_Detect Media"
 msgstr "ਮੀਡਿਆ ਖੋਜਿਆ(_D)"
 
@@ -4690,7 +4659,7 @@ msgstr "ਚੁਣੀ ਡਰਾਇਵ ਰੋਕੋ"
 #: ../src/file-manager/fm-directory-view.c:8043
 #: ../src/file-manager/fm-directory-view.c:8135
 #: ../src/file-manager/fm-directory-view.c:8245
-#: ../src/nautilus-places-sidebar.c:1451
+#: ../src/nautilus-places-sidebar.c:1466
 msgid "_Safely Remove Drive"
 msgstr "ਡਰਾਇਵ ਸੁਰੱਖਿਅਤ ਹਟਾਓ(_S)"
 
@@ -4724,7 +4693,7 @@ msgstr "ਚੁਣੀ ਮਲਟੀ-ਡਿਸਕ ਡਰਾਇਵ ਰੋਕੋ"
 #: ../src/file-manager/fm-directory-view.c:8055
 #: ../src/file-manager/fm-directory-view.c:8147
 #: ../src/file-manager/fm-directory-view.c:8257
-#: ../src/nautilus-places-sidebar.c:1464
+#: ../src/nautilus-places-sidebar.c:1479
 msgid "_Lock Drive"
 msgstr "ਡਰਾਇਵ ਲਾਕ ਕਰੋ(_L)"
 
@@ -4749,7 +4718,7 @@ msgstr "ਖੁੱਲ੍ਹੇ ਫੋਲਡਰ ਨਾਲ ਸਬੰਧਿਤ ਮ�
 #. stop() for type G_DRIVE_START_STOP_TYPE_PASSWORD is normally not used
 #: ../src/file-manager/fm-directory-view.c:8118
 #: ../src/file-manager/fm-directory-view.c:8228
-#: ../src/nautilus-places-sidebar.c:1463
+#: ../src/nautilus-places-sidebar.c:1478
 msgid "_Unlock Drive"
 msgstr "ਡਰਾਇਵ ਅਣ-ਲਾਕ ਕਰੋ(_U)"
 
@@ -4781,7 +4750,7 @@ msgstr "ਖੁੱਲ੍ਹੇ ਫੋਲਡਰ ਨਾਲ ਸਬੰਧਿਤ ਡ�
 #: ../src/file-manager/fm-directory-view.c:8327
 #: ../src/file-manager/fm-directory-view.c:8637
 #: ../src/file-manager/fm-tree-view.c:1183
-#: ../src/nautilus-places-sidebar.c:2237
+#: ../src/nautilus-places-sidebar.c:2252
 msgid "Open in New _Window"
 msgstr "ਨਵੀਂ ਵਿੰਡੋ 'ਚ ਖੋਲ੍ਹੋ(_W)"
 
@@ -5248,19 +5217,19 @@ msgid "Select the columns visible in this folder"
 msgstr "ਇਸ ਫੋਲਡਰ ਵਿੱਚ ਉਪਲਬੱਧ ਕਾਲਮਾਂ ਦੀ ਚੋਣ ਕਰੋ"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-list-view.c:3149
+#: ../src/file-manager/fm-list-view.c:3156
 msgid "_List"
 msgstr "ਲਿਸਟ(_L)"
 
-#: ../src/file-manager/fm-list-view.c:3150
+#: ../src/file-manager/fm-list-view.c:3157
 msgid "The list view encountered an error."
 msgstr "ਲਿਸਟ ਝਲਕ ਲਈ ਇੱਕ ਸਮੱਸਿਆ ਆਈ ਹੈ।"
 
-#: ../src/file-manager/fm-list-view.c:3151
+#: ../src/file-manager/fm-list-view.c:3158
 msgid "The list view encountered an error while starting up."
 msgstr "ਲਿਸਟ ਝਲਕ ਸ਼ੁਰੂ ਕਰਨ ਦੌਰਾਨ ਇੱਕ ਸਮੱਸਿਆ ਆਈ ਹੈ।"
 
-#: ../src/file-manager/fm-list-view.c:3152
+#: ../src/file-manager/fm-list-view.c:3159
 msgid "Display this location with the list view."
 msgstr "ਲਿਸਟ ਝਲਕ ਵਿੱਚ ਇਹ ਟਿਕਾਣਾ ਵੇਖੋ।"
 
@@ -5622,8 +5591,8 @@ msgid ""
 "such that Nautilus can create them."
 msgstr "ਨਟੀਲਸ ਚਲਾਉਣ ਤੋਂ ਪਹਿਲਾਂ, ਇਹ ਫੋਲਡਰ ਬਣਾਓ ਜਾਂ ਅਧਿਕਾਰ ਬਦਲੋ ਤਾਂ ਕਿ ਨਟੀਲਸ ਇਸ ਨੂੰ ਬਣਾ ਸਕੋ।"
 
-#: ../src/nautilus-application.c:1552 ../src/nautilus-places-sidebar.c:1822
-#: ../src/nautilus-places-sidebar.c:1851 ../src/nautilus-places-sidebar.c:1880
+#: ../src/nautilus-application.c:1552 ../src/nautilus-places-sidebar.c:1837
+#: ../src/nautilus-places-sidebar.c:1866 ../src/nautilus-places-sidebar.c:1895
 #, c-format
 msgid "Unable to eject %s"
 msgstr "%s ਬਾਹਰ ਕੱਢਣ ਲਈ ਅਸਮਰੱਥ"
@@ -6686,54 +6655,54 @@ msgid "Open the trash"
 msgstr "ਰੱਦੀ ਖੋਲ੍ਹੋ"
 
 #. start() for type G_DRIVE_START_STOP_TYPE_SHUTDOWN is normally not used
-#: ../src/nautilus-places-sidebar.c:1450
+#: ../src/nautilus-places-sidebar.c:1465
 msgid "_Power On"
 msgstr "ਚਾਲੂ ਕਰੋ(_P)"
 
-#: ../src/nautilus-places-sidebar.c:1454
+#: ../src/nautilus-places-sidebar.c:1469
 msgid "_Connect Drive"
 msgstr "ਡਰਾਇਵ ਕੁਨੈਕਟ ਕਰੋ(_C)"
 
-#: ../src/nautilus-places-sidebar.c:1455
+#: ../src/nautilus-places-sidebar.c:1470
 msgid "_Disconnect Drive"
 msgstr "ਡਰਾਇਵ ਡਿਸਕੁਨੈਕਟ ਕਰੋ(_D)"
 
-#: ../src/nautilus-places-sidebar.c:1458
+#: ../src/nautilus-places-sidebar.c:1473
 msgid "_Start Multi-disk Device"
 msgstr "ਮਲਟੀ-ਡਿਸਕ ਜੰਤਰ ਸ਼ੁਰੂ ਕਰੋ(_S)"
 
-#: ../src/nautilus-places-sidebar.c:1459
+#: ../src/nautilus-places-sidebar.c:1474
 msgid "_Stop Multi-disk Device"
 msgstr "ਮਲਟੀ-ਡਿਸਕ ਜੰਤਰ ਰੋਕੋ(_S)"
 
-#: ../src/nautilus-places-sidebar.c:1539 ../src/nautilus-places-sidebar.c:2075
+#: ../src/nautilus-places-sidebar.c:1554 ../src/nautilus-places-sidebar.c:2090
 #, c-format
 msgid "Unable to start %s"
 msgstr "%s ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਅਸਮਰੱਥ"
 
-#: ../src/nautilus-places-sidebar.c:2023
+#: ../src/nautilus-places-sidebar.c:2038
 #, c-format
 msgid "Unable to poll %s for media changes"
 msgstr "ਮੀਡਿਆ ਬਦਲਾਅ ਲਈ %s ਪੋਲ ਕਰਨ ਲਈ ਅਸਮਰੱਥ"
 
-#: ../src/nautilus-places-sidebar.c:2131
+#: ../src/nautilus-places-sidebar.c:2146
 #, c-format
 msgid "Unable to stop %s"
 msgstr "%s ਰੋਕਣ ਲਈ ਅਸਮਰੱਥ"
 
-#: ../src/nautilus-places-sidebar.c:2245
+#: ../src/nautilus-places-sidebar.c:2260
 msgid "Remove"
 msgstr "ਹਟਾਓ"
 
-#: ../src/nautilus-places-sidebar.c:2254
+#: ../src/nautilus-places-sidebar.c:2269
 msgid "Rename..."
 msgstr "ਨਾਂ ਬਦਲੋ..."
 
-#: ../src/nautilus-places-sidebar.c:2697
+#: ../src/nautilus-places-sidebar.c:2712
 msgid "Places"
 msgstr "ਥਾਵਾਂ"
 
-#: ../src/nautilus-places-sidebar.c:2703
+#: ../src/nautilus-places-sidebar.c:2718
 msgid "Show Places"
 msgstr "ਥਾਵਾਂ ਵੇਖੋ"
 
