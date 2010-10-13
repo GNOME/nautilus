@@ -193,6 +193,7 @@ typedef enum
 #define NAUTILUS_PREFERENCES_DESKTOP_VOLUMES_VISIBLE	   "volumes-visible"
 #define NAUTILUS_PREFERENCES_DESKTOP_NETWORK_VISIBLE       "network-icon-visible"
 #define NAUTILUS_PREFERENCES_DESKTOP_NETWORK_NAME          "network-icon-name"
+#define NAUTILUS_PREFERENCES_DESKTOP_BACKGROUND_FADE       "background-fade"
 
 /* Lockdown */
 #define NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE         "disable-command-line"

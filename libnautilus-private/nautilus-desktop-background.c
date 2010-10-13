@@ -151,11 +151,19 @@ static void
 init_fade (NautilusDesktopBackground *self)
 {
 	GtkWidget *widget;
+	gboolean do_fade;
 
 	widget = self->details->widget;
 
 	if (widget == NULL || !gtk_widget_get_realized (widget))
 		return;
+
+	do_fade = g_settings_get_boolean (nautilus_desktop_preferences,
+					  NAUTILUS_PREFERENCES_DESKTOP_BACKGROUND_FADE);
+
+	if (!do_fade) {
+		return;
+	}
 
 	if (self->details->fade == NULL) {
 		GdkWindow *window;
