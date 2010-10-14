@@ -4917,6 +4917,7 @@ nautilus_icon_container_search_entry_flush_timeout (NautilusIconContainer *conta
  */
 static void
 nautilus_icon_container_search_preedit_changed (GtkEntry *entry,
+						gchar *preedit,
 						NautilusIconContainer *container)
 {
 	container->details->imcontext_changed = 1;
