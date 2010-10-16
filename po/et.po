@@ -22,8 +22,8 @@ msgstr ""
 "Project-Id-Version: nautilus MASTER\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2010-10-09 17:39+0000\n"
-"PO-Revision-Date: 2010-10-10 01:13+0300\n"
+"POT-Creation-Date: 2010-10-14 13:57+0000\n"
+"PO-Revision-Date: 2010-10-16 11:17+0300\n"
 "Last-Translator: Mattias Põldaru <mahfiaz gmail com>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "Language: et\n"
@@ -339,9 +339,11 @@ msgstr "SELinuxi kontekst"
 msgid "The SELinux security context of the file."
 msgstr "Faili SELinuxi turvakontekst."
 
-#. TODO: Change after string freeze over
 msgid "Location"
 msgstr "Asukoht"
+
+msgid "The location of the file."
+msgstr "Faili asukoht."
 
 msgid "Trashed On"
 msgstr "Kustutati"
@@ -1707,7 +1709,6 @@ msgstr ""
 "Kas automaatselt külge haagitud meediumi kataloog avatakse automaatselt või "
 "mitte"
 
-#, fuzzy
 msgid ""
 "A list of captions below an icon in the icon view and the desktop. The "
 "actual number of captions shown depends on the zoom level. Some possible "
@@ -1716,8 +1717,8 @@ msgid ""
 "\" and \"mime_type\"."
 msgstr ""
 "Ikoonivaates olevate ikoonipealkirjade loetelu. Tegelik võimaluste arv "
-"sõltub suurendusastmest. Võimalikud väärtused on \"size\" (suurus), \"type"
-"\" (tüüp), \"date_modified\" (viimase muutmise aeg), \"date_changed"
+"sõltub suurendusastmest. Mõned võimalikud väärtused on \"size\" (suurus), "
+"\"type\" (tüüp), \"date_modified\" (viimase muutmise aeg), \"date_changed"
 "\" (omaduste viimase muutmise aeg), \"date_accessed\" (viimase kasutamise "
 "aeg), \"owner\" (omanik), \"group\" (omanikgrupp), \"permissions"
 "\" (pääsuõigused), \"octal_permissions\" (pääsuõigused kaheksandsüsteemis) "
@@ -1777,35 +1778,11 @@ msgstr ""
 "suurem, siis ei lasta failinimel ületada seda arvu ridu. Kui number on null "
 "või väiksem, siis failinime kuvamisel piirangut ei rakendata."
 
-msgid ""
-"Color for the default folder background. Only used if background_set is true."
-msgstr ""
-"Kataloogi vaikimisi tausta värvus. Kasutatakse ainult siis, kui võti "
-"background_set on märgitud."
-
 msgid "Computer icon visible on desktop"
 msgstr "Arvutiikoon on töölaual nähtav"
 
-msgid "Custom Background"
-msgstr "Kohandatud taust"
-
-msgid "Custom Side Pane Background Set"
-msgstr "Külgpaani kohaldatud taustapilt"
-
 msgid "Date Format"
 msgstr "Kuupäeva vorming"
-
-msgid "Default Background Color"
-msgstr "Vaikimisi taustavärv"
-
-msgid "Default Background Filename"
-msgstr "Vaikimisi tausta failinimi"
-
-msgid "Default Side Pane Background Color"
-msgstr "Külgpaani vaikimisi taustavärv"
-
-msgid "Default Side Pane Background Filename"
-msgstr "Külgpaani vaikimisi tausta failinimi"
 
 msgid "Default Thumbnail Icon Size"
 msgstr "Vaikimisi pisipildi ikooni suurus"
@@ -1861,12 +1838,8 @@ msgstr "Prügikastiikooni nimi töölaual"
 msgid "Enables the classic Nautilus behavior, where all windows are browsers"
 msgstr "Nautiluse klassikalise käitumise lubamine, kus kõik aknad on sirvijad"
 
-msgid ""
-"Filename for the default side pane background. Only used if "
-"side_pane_background_set is true."
-msgstr ""
-"Külgpaani vaikimisi tausta failinimi. Kasutatakse ainult siis, kui võti "
-"side_pane_background_set on märgitud."
+msgid "Fade the background on change"
+msgstr "Tausta sujuv vahetamine"
 
 msgid ""
 "For users with mice that have \"Forward\" and \"Back\" buttons, this key "
@@ -1978,6 +1951,11 @@ msgstr ""
 "Kui märgitud, siis lubab Nautilus faile kustutada ilma neid prügikasti "
 "viskamata. See omadus võib olla ohtlik ja seda tuleks kasutada "
 "ettevaatlikult."
+
+msgid ""
+"If set to true, then Nautilus will use a fade effect to change the desktop "
+"background."
+msgstr "Kui märgitud, vahetab Nautilus töölaua tausta sujuva üleminekuga."
 
 msgid ""
 "If set to true, then Nautilus will use the user's home folder as the "
@@ -2134,7 +2112,6 @@ msgstr "Uutes akendes tööriistariba näitamine"
 msgid "Side pane view"
 msgstr "Külgpaanivaade"
 
-#, fuzzy
 msgid ""
 "Speed tradeoff for when to preview a sound file when mousing over a files "
 "icon. If set to \"always\" then always plays the sound, even if the file is "
@@ -2147,7 +2124,6 @@ msgstr ""
 "esitatakse heli ainult kohalike failide korral. Kui väärtuseks on \"never\", "
 "siis heli ei esitata."
 
-#, fuzzy
 msgid ""
 "Speed tradeoff for when to show a preview of text file contents in the "
 "file's icon. If set to \"always\" then always show previews, even if the "
@@ -2161,7 +2137,6 @@ msgstr ""
 "näidatakse eelvaadet ainult kohalike failide korral. Kui väärtuseks on "
 "\"never\", siis eelvaadet ei näidata."
 
-#, fuzzy
 msgid ""
 "Speed tradeoff for when to show an image file as a thumbnail. If set to "
 "\"always\" then always thumbnail, even if the folder is on a remote server. "
@@ -2173,9 +2148,8 @@ msgstr ""
 "väärtuseks on \"always\", siis näidatakse pildist tehtud pisipilti alati (ka "
 "siis, kui fail asub kaugserveris). Kui väärtuseks on \"local_only\", siis "
 "näidatakse pisipilti ainult kohalike failide korral. Kui väärtuseks on "
-"\"never\", siis pisipilti ei näidata."
+"\"never\", siis ei näidata pisipilti vaid tavalist ikooni."
 
-#, fuzzy
 msgid ""
 "Speed tradeoff for when to show the number of items in a folder. If set to "
 "\"always\" then always show item counts, even if the folder is on a remote "
@@ -2194,21 +2168,19 @@ msgstr "Teksti väljajätmise piirang"
 msgid "The default size of an icon for a thumbnail in the icon view."
 msgstr "Ikoonivaates oleva pisipildi ikooni vaikimisi suurus."
 
-#, fuzzy
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\" and \"mtime\"."
 msgstr ""
-"Loendivaate kirjete vaikimisi sortimisjärjekord. Võimalikud väärtused on "
+"Ikoonivaate kirjete vaikimisi sortimisjärjekord. Võimalikud väärtused on "
 "\"name\" (nime järgi), \"size\" (suuruse järgi), \"type\" (liigi järgi) ja "
-"\"modification_date\" (muutmisaja järgi)."
+"\"mtime\" (muutmisaja järgi)."
 
 msgid "The default width of the side pane in new windows."
 msgstr "Külgpaani vaikimisi laius uutes akendes."
 
-#, fuzzy
 msgid "The font _description used for the icons on the desktop."
-msgstr "Töölaua ikoonidel kasutatava kirjastiili kirjeldus."
+msgstr "Töölaua ikoonidel kasutatava kirjastiili _kirjeldus."
 
 msgid ""
 "The format of file dates. Possible values are \"locale\", \"iso\", and "
@@ -2257,21 +2229,6 @@ msgstr "Prügikastiikoon on töölaual nähtav"
 msgid "Type of click used to launch/open files"
 msgstr "Hiireklõpsu liik, millega faile avatakse"
 
-#, fuzzy
-msgid ""
-"Uri of the default folder background. Only used if background_set is true."
-msgstr ""
-"Kataloogi vaikimisi tausta värvus. Kasutatakse ainult siis, kui võti "
-"background_set on märgitud."
-
-#, fuzzy
-msgid ""
-"Uri of the default side pane background. Only used if "
-"side_pane_background_set is true."
-msgstr ""
-"Külgpaani vaikimisi tausta failinimi. Kasutatakse ainult siis, kui võti "
-"side_pane_background_set on märgitud."
-
 msgid "Use extra mouse button events in Nautilus' browser window"
 msgstr "Nautiluse aknas kasutatakse hiire lisanuppe"
 
@@ -2313,12 +2270,6 @@ msgstr "Kas pildifailidel näidatakse pisipilte või mitte"
 
 msgid "Where to position newly open tabs in browser windows."
 msgstr "Kuhu paigutatakse sirvija akendes avatavad uued kaardid."
-
-msgid "Whether a custom default folder background has been set."
-msgstr "Kas kataloogi vaikimisi taust on seatud või mitte."
-
-msgid "Whether a custom default side pane background has been set."
-msgstr "Kas külgpaani vaikimisi taust on seatud või mitte."
 
 msgid "Whether the navigation window should be maximized by default."
 msgstr "Kas navigatsiooniaken peaks vaikimisi olema maksimeeritud."
@@ -4028,9 +3979,8 @@ msgid "_Port:"
 msgstr "_Port:"
 
 #. third row: share entry
-#, fuzzy
 msgid "Share:"
-msgstr "_Maardla:"
+msgstr "Maardla:"
 
 #. fourth row: folder entry
 msgid "Folder:"
@@ -4795,7 +4745,7 @@ msgid "Select folder to search in"
 msgstr "Kataloogi valimine, millest otsida"
 
 msgid "Documents"
-msgstr "Dokumendid"
+msgstr "Dokument"
 
 msgid "Music"
 msgstr "Muusika"
@@ -4810,7 +4760,7 @@ msgid "Illustration"
 msgstr "Illustratsioon"
 
 msgid "Spreadsheet"
-msgstr "Tabelarvutus"
+msgstr "Arvutustabel"
 
 msgid "Presentation"
 msgstr "Esitlus"
@@ -5240,3 +5190,54 @@ msgstr "Suurendus"
 
 msgid "Set the zoom level of the current view"
 msgstr "Praeguse vaate suurendusastme seadmine"
+
+#~ msgid ""
+#~ "Color for the default folder background. Only used if background_set is "
+#~ "true."
+#~ msgstr ""
+#~ "Kataloogi vaikimisi tausta värvus. Kasutatakse ainult siis, kui võti "
+#~ "background_set on märgitud."
+
+#~ msgid "Custom Background"
+#~ msgstr "Kohandatud taust"
+
+#~ msgid "Custom Side Pane Background Set"
+#~ msgstr "Külgpaani kohaldatud taustapilt"
+
+#~ msgid "Default Background Color"
+#~ msgstr "Vaikimisi taustavärv"
+
+#~ msgid "Default Background Filename"
+#~ msgstr "Vaikimisi tausta failinimi"
+
+#~ msgid "Default Side Pane Background Color"
+#~ msgstr "Külgpaani vaikimisi taustavärv"
+
+#~ msgid "Default Side Pane Background Filename"
+#~ msgstr "Külgpaani vaikimisi tausta failinimi"
+
+#~ msgid ""
+#~ "Filename for the default side pane background. Only used if "
+#~ "side_pane_background_set is true."
+#~ msgstr ""
+#~ "Külgpaani vaikimisi tausta failinimi. Kasutatakse ainult siis, kui võti "
+#~ "side_pane_background_set on märgitud."
+
+#~ msgid ""
+#~ "Uri of the default folder background. Only used if background_set is true."
+#~ msgstr ""
+#~ "Kataloogi tausta vaikimisi värvus. Kasutatakse ainult siis, kui võti "
+#~ "background_set on märgitud."
+
+#~ msgid ""
+#~ "Uri of the default side pane background. Only used if "
+#~ "side_pane_background_set is true."
+#~ msgstr ""
+#~ "Külgpaani vaikimisi tausta failinimi. Kasutatakse ainult siis, kui võti "
+#~ "side_pane_background_set on märgitud."
+
+#~ msgid "Whether a custom default folder background has been set."
+#~ msgstr "Kas kataloogi vaikimisi taust on seatud või mitte."
+
+#~ msgid "Whether a custom default side pane background has been set."
+#~ msgstr "Kas külgpaani vaikimisi taust on seatud või mitte."
