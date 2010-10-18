@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2010-08-12 12:17+0000\n"
-"PO-Revision-Date: 2010-08-16 11:47+0200\n"
+"POT-Creation-Date: 2010-09-11 12:57+0000\n"
+"PO-Revision-Date: 2010-10-18 17:01+0200\n"
 "Last-Translator: Miloš Popović <gpopac@gmail.com>\n"
 "Language-Team: Serbian <gnom@prevod.org>\n"
 "MIME-Version: 1.0\n"
@@ -1272,7 +1272,6 @@ msgstr ""
 "Oblik datuma datoteka. Dopuštene vrednosti su „locale“, „iso“ i „informal“."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:126
-#| msgid "Open this folder in a navigation window"
 msgid "The geometry string for a navigation window."
 msgstr "Niska sa veličinom upravljačkog prozora."
 
@@ -1542,9 +1541,9 @@ msgstr "_Uvek izvrši ovu radnju"
 #. label, accelerator
 #. add the "Eject" menu item
 #: ../libnautilus-private/nautilus-autorun.c:1033
-#: ../src/file-manager/fm-directory-view.c:7215
-#: ../src/file-manager/fm-directory-view.c:7243
-#: ../src/file-manager/fm-directory-view.c:7324
+#: ../src/file-manager/fm-directory-view.c:7216
+#: ../src/file-manager/fm-directory-view.c:7244
+#: ../src/file-manager/fm-directory-view.c:7325
 #: ../src/file-manager/fm-tree-view.c:1278
 #: ../src/nautilus-places-sidebar.c:2280
 msgid "_Eject"
@@ -1554,9 +1553,9 @@ msgstr "I_zbaci"
 #. label, accelerator
 #. add the "Unmount" menu item
 #: ../libnautilus-private/nautilus-autorun.c:1044
-#: ../src/file-manager/fm-directory-view.c:7211
-#: ../src/file-manager/fm-directory-view.c:7239
-#: ../src/file-manager/fm-directory-view.c:7320
+#: ../src/file-manager/fm-directory-view.c:7212
+#: ../src/file-manager/fm-directory-view.c:7240
+#: ../src/file-manager/fm-directory-view.c:7321
 #: ../src/file-manager/fm-tree-view.c:1269
 #: ../src/nautilus-places-sidebar.c:2273
 msgid "_Unmount"
@@ -1586,7 +1585,7 @@ msgstr "Ubacuje tekst iz spiska isečaka"
 #. name, stock id
 #. label, accelerator
 #: ../libnautilus-private/nautilus-clipboard.c:448
-#: ../src/file-manager/fm-directory-view.c:7153
+#: ../src/file-manager/fm-directory-view.c:7154
 msgid "Select _All"
 msgstr "Izaberi _sve"
 
@@ -1708,17 +1707,14 @@ msgid "Location"
 msgstr "Mesto"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:170
-#| msgid "Trash"
 msgid "Trashed On"
 msgstr "Smeće je izbačeno"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:171
-#| msgid "The file \"%B\" cannot be moved to the trash."
 msgid "Date when file was moved to the Trash"
 msgstr "Datum premeštanja datoteke u Smeće."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:177
-#| msgid "Open Location"
 msgid "Original Location"
 msgstr "Prvobitna putanja"
 
@@ -1727,7 +1723,7 @@ msgid "Original location of file before moved to the Trash"
 msgstr "Prvobitna putanja do datoteke pre nego što je premeštena u Smeće."
 
 #: ../libnautilus-private/nautilus-customization-data.c:405
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:519
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:522
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:428
 #: ../src/nautilus-property-browser.c:1873
 msgid "Reset"
@@ -1827,137 +1823,156 @@ msgstr "Ne mogu da sačuvam prilagođeno obeležje."
 msgid "Sorry, unable to save custom emblem name."
 msgstr "Ne moge da sačuvam ime prilagođenog obeležja."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:82
-#| msgid "Open Folder"
-msgid "An older"
-msgstr "Stariji"
-
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:85
-msgid "A newer"
-msgstr "Noviji"
-
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:87
-#| msgid "Others"
-msgid "Another"
-msgstr "Ostali"
-
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:159
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:144
 #, c-format
-#| msgid "Search for \"%s\""
 msgid "Merge folder \"%s\"?"
 msgstr "Da li da spojim fasciklu „%s“?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:166
-#, c-format
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:148
 #| msgid ""
 #| "The source folder already exists in \"%B\".  Merging will ask for "
 #| "confirmation before replacing any files in the folder that conflict with "
-#| "the files being copied."
+#| "the files being moved."
 msgid ""
-"%s folder with the same name already exists in \"%s\".\n"
 "Merging will ask for confirmation before replacing any files in the folder "
 "that conflict with the files being copied."
 msgstr ""
-"Već postoji %s fascikla sa ovim imenom u „%s“.\n"
-"Moraćete da dozvolite zamenu postojećih datoteka i fascikli koje se "
+"Spajanje će tražiti dozvolu za zamenu postojećih datoteka i fascikla koje se "
 "podudaraju sa novim."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:174
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:153
 #, c-format
-#| msgid "Search for \"%s\""
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "An older folder with the same name already exists in \"%s\"."
+msgstr "Starija fascikla sa ovim imenom već postoji u „%s“."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:157
+#, c-format
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "A newer folder with the same name already exists in \"%s\"."
+msgstr "Novija fascikla sa ovim imenom već postoji u „%s“."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:161
+#, c-format
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "Another folder with the same name already exists in \"%s\"."
+msgstr "Druga fascikla sa ovim imenom već postoji u „%s“."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:166
+#| msgid ""
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "Replacing it will remove all files in the folder."
+msgstr "Njena zamena će ukloniti sve datoteke u fascikli."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:168
+#, c-format
 msgid "Replace folder \"%s\"?"
 msgstr "Da li da zamenim fasciklu „%s“?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:176
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:170
 #, c-format
 #| msgid ""
-#| "The folder already exists in \"%F\".  Replacing it will remove all files "
-#| "in the folder."
-msgid ""
-"A folder with the same name already exists in \"%s\".\n"
-"Replacing it will remove all files in the folder."
-msgstr ""
-"Fascikla sa ovim imenom već postoji u „%s“.\n"
-"Njena zamena će ukloniti sve datoteke u fascikli."
+#| "A folder with the same name already exists in \"%s\".\n"
+#| "Replacing it will remove all files in the folder."
+msgid "A folder with the same name already exists in \"%s\"."
+msgstr "Fascikla sa ovim imenom već postoji u „%s“."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:182
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:175
 #, c-format
-#| msgid "Search for \"%s\""
 msgid "Replace file \"%s\"?"
 msgstr "Da li da zamenim datoteku „%s“?"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:188
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:177
+#| msgid ""
+#| "%s file with the same name already exists in \"%s\".\n"
+#| "Replacing it will overwrite its content."
+msgid "Replacing it will overwrite its content."
+msgstr "Njena zamena će prepisati postojeći sadržaj."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:181
 #, c-format
 #| msgid ""
-#| "The file already exists in \"%F\".  Replacing it will overwrite its "
-#| "content."
-msgid ""
-"%s file with the same name already exists in \"%s\".\n"
-"Replacing it will overwrite its content."
-msgstr ""
-"Već postoji %s datoteka sa ovim imenom u „%s“.\n"
-"Njena zamena će prepisati postojeći sadržaj."
+#| "%s file with the same name already exists in \"%s\".\n"
+#| "Replacing it will overwrite its content."
+msgid "An older file with the same name already exists in \"%s\"."
+msgstr "Starija datoteka sa ovim imenom već postoji u „%s“."
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:252
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:185
+#, c-format
+#| msgid ""
+#| "%s file with the same name already exists in \"%s\".\n"
+#| "Replacing it will overwrite its content."
+msgid "A newer file with the same name already exists in \"%s\"."
+msgstr "Novija datoteka sa ovim imenom već postoji u „%s“."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:189
+#, c-format
+#| msgid ""
+#| "%s file with the same name already exists in \"%s\".\n"
+#| "Replacing it will overwrite its content."
+msgid "Another file with the same name already exists in \"%s\"."
+msgstr "Druga datoteka sa ovim imenom već postoji u „%s“."
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:255
 msgid "Original file"
 msgstr "Izvorna datoteka"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:253
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:284
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:256
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:287
 #: ../src/file-manager/fm-properties-window.c:3311
 msgid "Size:"
 msgstr "Veličina:"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:256
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:287
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:259
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:290
 #: ../src/file-manager/fm-properties-window.c:3293
 msgid "Type:"
 msgstr "Vrsta:"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:259
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:290
-#| msgid "Date Modified"
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:262
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:293
 msgid "Last modified:"
 msgstr "Datum izmene:"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:283
-#| msgid "_Replace"
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:286
 msgid "Replace with"
 msgstr "Zameni sa"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:312
-#| msgid "_Merge"
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:315
 msgid "Merge"
 msgstr "Spoji"
 
 #. Setup the expander for the rename action
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:505
-#| msgid "Enter a new name for the displayed emblem:"
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:508
 msgid "_Select a new name for the destination"
 msgstr "Izaberite _novo ime za odredište"
 
 #. Setup the checkbox to apply the action to all files
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:531
-#| msgid "Apply Permissions to Enclosed Files"
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:534
 msgid "Apply this action to all files"
 msgstr "Primeni ovu radnju za sve datoteke"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:542
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:545
 #: ../libnautilus-private/nautilus-file-operations.c:187
 msgid "_Skip"
 msgstr "Pre_skoči"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:547
-#| msgid "Rename"
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:550
 msgid "Re_name"
 msgstr "P_reimenuj"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:553
-#| msgid "_Replace"
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:556
 msgid "Replace"
 msgstr "Zameni"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:626
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:629
 msgid "File conflict"
 msgstr "Sadržaj datoteke"
 
@@ -2038,7 +2053,7 @@ msgstr[3] "približno %'d sat"
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:379
 #: ../libnautilus-private/nautilus-file.c:6365
-#: ../src/file-manager/fm-directory-view.c:10335
+#: ../src/file-manager/fm-directory-view.c:10336
 #, c-format
 msgid "Link to %s"
 msgstr "Veza na %s"
@@ -2196,12 +2211,10 @@ msgid "If you delete an item, it will be permanently lost."
 msgstr "Ukoliko obrišete stavku, ona će biti trajno uklonjena."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1332
-#| msgid "Empty all of the items from the trash?"
 msgid "Empty all items from Trash?"
 msgstr "Da li da izbacim sve stavke iz smeća?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1336
-#| msgid "If you delete an item, it will be permanently lost."
 msgid "All items in the Trash will be permanently deleted."
 msgstr "Sve stavke iz smeća će biti trajno uklonjene."
 
@@ -2960,7 +2973,7 @@ msgid "Specified group '%s' doesn't exist"
 msgstr "Izabrana grupa „%s“ ne postoji"
 
 #: ../libnautilus-private/nautilus-file.c:5858
-#: ../src/file-manager/fm-directory-view.c:2289
+#: ../src/file-manager/fm-directory-view.c:2290
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
@@ -3315,10 +3328,10 @@ msgstr "Ne možete koristiti vezu zato što njeno odredište „%s“ ne postoji
 #. name, stock id
 #. label, accelerator
 #: ../libnautilus-private/nautilus-mime-actions.c:717
-#: ../src/file-manager/fm-directory-view.c:7181
-#: ../src/file-manager/fm-directory-view.c:7304
-#: ../src/file-manager/fm-directory-view.c:8404
-#: ../src/file-manager/fm-directory-view.c:8729
+#: ../src/file-manager/fm-directory-view.c:7182
+#: ../src/file-manager/fm-directory-view.c:7305
+#: ../src/file-manager/fm-directory-view.c:8405
+#: ../src/file-manager/fm-directory-view.c:8730
 #: ../src/file-manager/fm-tree-view.c:1242
 msgid "Mo_ve to Trash"
 msgstr "Pre_mesti u smeće"
@@ -3434,12 +3447,12 @@ msgstr "_Označi kao poverljivo"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1893
 #: ../libnautilus-private/nautilus-mime-actions.c:2167
-#: ../src/file-manager/fm-directory-view.c:6198
+#: ../src/file-manager/fm-directory-view.c:6199
 msgid "Unable to mount location"
 msgstr "Me mogu da montiram putanju"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:2246
-#: ../src/file-manager/fm-directory-view.c:6372
+#: ../src/file-manager/fm-directory-view.c:6373
 msgid "Unable to start location"
 msgstr "Me mogu da pokrenem putanju"
 
@@ -3550,8 +3563,8 @@ msgstr "_Razgledaj..."
 #. name, stock id
 #. label, accelerator
 #: ../libnautilus-private/nautilus-open-with-dialog.c:895
-#: ../src/file-manager/fm-directory-view.c:7097
-#: ../src/file-manager/fm-directory-view.c:8598
+#: ../src/file-manager/fm-directory-view.c:7098
+#: ../src/file-manager/fm-directory-view.c:8599
 #: ../src/file-manager/fm-tree-view.c:1163
 #: ../src/nautilus-places-sidebar.c:2222
 msgid "_Open"
@@ -3638,9 +3651,6 @@ msgstr ""
 "datotekama u „%s“ putanjama."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:115
-#| msgid ""
-#| "No other applications are available to view this file.  If you copy this "
-#| "file onto your computer, you may be able to open it."
 msgid ""
 "No other applications are available to view this file. If you copy this file "
 "onto your computer, you may be able to open it."
@@ -3649,9 +3659,6 @@ msgstr ""
 "prebacite na vaš računar, možda ćete moći da je otvorite."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:121
-#| msgid ""
-#| "No other actions are available to view this file.  If you copy this file "
-#| "onto your computer, you may be able to open it."
 msgid ""
 "No other actions are available to view this file. If you copy this file onto "
 "your computer, you may be able to open it."
@@ -3797,8 +3804,8 @@ msgstr "Pozadina"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:712
-#: ../src/file-manager/fm-directory-view.c:7129
-#: ../src/file-manager/fm-directory-view.c:8798
+#: ../src/file-manager/fm-directory-view.c:7130
+#: ../src/file-manager/fm-directory-view.c:8799
 msgid "E_mpty Trash"
 msgstr "Iz_baci smeće"
 
@@ -3806,13 +3813,13 @@ msgstr "Iz_baci smeće"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:724
-#: ../src/file-manager/fm-directory-view.c:7093
+#: ../src/file-manager/fm-directory-view.c:7094
 msgid "Create L_auncher..."
 msgstr "Novi _pokretač..."
 
 #. tooltip
 #: ../src/file-manager/fm-desktop-icon-view.c:726
-#: ../src/file-manager/fm-directory-view.c:7094
+#: ../src/file-manager/fm-directory-view.c:7095
 msgid "Create a new launcher"
 msgstr "Pravi novi pokretač"
 
@@ -3836,7 +3843,7 @@ msgstr "Isprazni Smeće"
 
 #. tooltip
 #: ../src/file-manager/fm-desktop-icon-view.c:740
-#: ../src/file-manager/fm-directory-view.c:7130
+#: ../src/file-manager/fm-directory-view.c:7131
 #: ../src/nautilus-trash-bar.c:197
 msgid "Delete all items in the Trash"
 msgstr "Izbacuje sve stavke iz smeća"
@@ -3883,7 +3890,6 @@ msgid "_Pattern:"
 msgstr "Ob_rasci:"
 
 #: ../src/file-manager/fm-directory-view.c:1194
-#| msgid "Emblems:"
 msgid "Examples: "
 msgstr "Primeri:"
 
@@ -3904,13 +3910,13 @@ msgstr "_Fascikla:"
 msgid "Select Folder to Save Search In"
 msgstr "Izaberite fasciklu za čuvanje pretrage"
 
-#: ../src/file-manager/fm-directory-view.c:2206
-#: ../src/file-manager/fm-directory-view.c:2243
+#: ../src/file-manager/fm-directory-view.c:2207
+#: ../src/file-manager/fm-directory-view.c:2244
 #, c-format
 msgid "\"%s\" selected"
 msgstr "„%s“ izabran"
 
-#: ../src/file-manager/fm-directory-view.c:2208
+#: ../src/file-manager/fm-directory-view.c:2209
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
@@ -3919,7 +3925,7 @@ msgstr[1] "Izabrane su %'d fascikle"
 msgstr[2] "Izabrano je %'d fascikli"
 msgstr[3] "Izabrana je %'d fascikla"
 
-#: ../src/file-manager/fm-directory-view.c:2218
+#: ../src/file-manager/fm-directory-view.c:2219
 #, c-format
 msgid " (containing %'d item)"
 msgid_plural " (containing %'d items)"
@@ -3929,7 +3935,7 @@ msgstr[2] " (sadrži %'d stavki)"
 msgstr[3] " (sadrži jednu %0d stavku)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: ../src/file-manager/fm-directory-view.c:2229
+#: ../src/file-manager/fm-directory-view.c:2230
 #, c-format
 msgid " (containing a total of %'d item)"
 msgid_plural " (containing a total of %'d items)"
@@ -3938,7 +3944,7 @@ msgstr[1] " (sadrže ukupno %'d stavke)"
 msgstr[2] " (sadrže ukupno %'d stavki)"
 msgstr[3] " (sadrže ukupno %'d stavku)"
 
-#: ../src/file-manager/fm-directory-view.c:2246
+#: ../src/file-manager/fm-directory-view.c:2247
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -3948,7 +3954,7 @@ msgstr[2] "Izabrano je %'d stavki"
 msgstr[3] "Izabrana je %'d stavka"
 
 #. Folders selected also, use "other" terminology
-#: ../src/file-manager/fm-directory-view.c:2253
+#: ../src/file-manager/fm-directory-view.c:2254
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -3962,18 +3968,17 @@ msgstr[3] "Izabrana je %'d druga stavka"
 #. * first message gives the number of items selected;
 #. * the message in parentheses the size of those items.
 #.
-#: ../src/file-manager/fm-directory-view.c:2268
+#: ../src/file-manager/fm-directory-view.c:2269
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../src/file-manager/fm-directory-view.c:2281
+#: ../src/file-manager/fm-directory-view.c:2282
 #, c-format
-#| msgid "Free space:"
 msgid "Free space: %s"
 msgstr "Slobodan prostor: %s"
 
-#: ../src/file-manager/fm-directory-view.c:2292
+#: ../src/file-manager/fm-directory-view.c:2293
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s, slobodan prostor: %s"
@@ -3983,9 +3988,8 @@ msgstr "%s, slobodan prostor: %s"
 #. * After the comma the amount of free space will
 #. * be shown.
 #.
-#: ../src/file-manager/fm-directory-view.c:2307
+#: ../src/file-manager/fm-directory-view.c:2308
 #, c-format
-#| msgid "%s%s, %s"
 msgid "%s, %s"
 msgstr "%s, %s"
 
@@ -4001,8 +4005,8 @@ msgstr "%s, %s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: ../src/file-manager/fm-directory-view.c:2326
-#: ../src/file-manager/fm-directory-view.c:2340
+#: ../src/file-manager/fm-directory-view.c:2327
+#: ../src/file-manager/fm-directory-view.c:2341
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -4015,9 +4019,8 @@ msgstr "%s%s, %s"
 #. * total size of those items. After the second comma
 #. * the free space is written.
 #.
-#: ../src/file-manager/fm-directory-view.c:2353
+#: ../src/file-manager/fm-directory-view.c:2354
 #, c-format
-#| msgid "%s%s, %s"
 msgid "%s%s, %s, %s"
 msgstr "%s%s, %s, %s"
 
@@ -4025,23 +4028,22 @@ msgstr "%s%s, %s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: ../src/file-manager/fm-directory-view.c:2439
+#: ../src/file-manager/fm-directory-view.c:2440
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr "Fascikla „%s“ sadrži više datoteka nego što Nautilus može da otvori."
 
-#: ../src/file-manager/fm-directory-view.c:2445
+#: ../src/file-manager/fm-directory-view.c:2446
 msgid "Some files will not be displayed."
 msgstr "Neke datoteke neće biti prikazane."
 
-#: ../src/file-manager/fm-directory-view.c:4417
+#: ../src/file-manager/fm-directory-view.c:4418
 #: ../src/nautilus-information-panel.c:833
 #, c-format
-#| msgid "Open with %s"
 msgid "Open With %s"
 msgstr "Otvori pomoću %s"
 
-#: ../src/file-manager/fm-directory-view.c:4419
+#: ../src/file-manager/fm-directory-view.c:4420
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgid_plural "Use \"%s\" to open the selected items"
@@ -4050,22 +4052,22 @@ msgstr[1] "Koristi „%s“ za otvaranje izabrane stavke"
 msgstr[2] "Koristi „%s“ za otvaranje izabranih stavki"
 msgstr[3] "Koristi „%s“ za otvaranje izabrane stavke"
 
-#: ../src/file-manager/fm-directory-view.c:5259
+#: ../src/file-manager/fm-directory-view.c:5260
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Pokreni „%s“ na svakoj izabranoj stavci"
 
-#: ../src/file-manager/fm-directory-view.c:5510
+#: ../src/file-manager/fm-directory-view.c:5511
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "Napravi dokument prema šablonu „%s“"
 
-#: ../src/file-manager/fm-directory-view.c:5760
+#: ../src/file-manager/fm-directory-view.c:5761
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
 "Sve izvršne datoteke u ovoj fascikli će se pojaviti u meniju „Skripte“."
 
-#: ../src/file-manager/fm-directory-view.c:5762
+#: ../src/file-manager/fm-directory-view.c:5763
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -4073,7 +4075,7 @@ msgstr ""
 "Izborom skripte iz menija se ona pokreće, a sve izabrane stavke će joj biti "
 "ulaz."
 
-#: ../src/file-manager/fm-directory-view.c:5764
+#: ../src/file-manager/fm-directory-view.c:5765
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4133,19 +4135,19 @@ msgstr ""
 "NAUTILUS_SCRIPT_NEXT_PANE_CURRENT_URI: adresa trenutne putanje u neaktivnoj "
 "površi podeljenog prozora"
 
-#: ../src/file-manager/fm-directory-view.c:5832
+#: ../src/file-manager/fm-directory-view.c:5833
 #: ../src/file-manager/fm-tree-view.c:921
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "„%s“ će biti premešten ukoliko izaberete naredbu Ubaci"
 
-#: ../src/file-manager/fm-directory-view.c:5836
+#: ../src/file-manager/fm-directory-view.c:5837
 #: ../src/file-manager/fm-tree-view.c:925
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "„%s“ će biti umnožen ukoliko izaberete naredbu Ubaci"
 
-#: ../src/file-manager/fm-directory-view.c:5843
+#: ../src/file-manager/fm-directory-view.c:5844
 #, c-format
 msgid "The %'d selected item will be moved if you select the Paste command"
 msgid_plural ""
@@ -4159,7 +4161,7 @@ msgstr[2] ""
 msgstr[3] ""
 "%'d izabrana stavka će biti premeštena ukoliko izaberete naredbu Ubaci"
 
-#: ../src/file-manager/fm-directory-view.c:5850
+#: ../src/file-manager/fm-directory-view.c:5851
 #, c-format
 msgid "The %'d selected item will be copied if you select the Paste command"
 msgid_plural ""
@@ -4173,98 +4175,98 @@ msgstr[2] ""
 msgstr[3] ""
 "%'d izabrana stavka će biti umnožena ukoliko izaberete naredbu Ubaci"
 
-#: ../src/file-manager/fm-directory-view.c:6030
+#: ../src/file-manager/fm-directory-view.c:6031
 #: ../src/file-manager/fm-tree-view.c:964
 msgid "There is nothing on the clipboard to paste."
 msgstr "Nema ništa u spisku isečaka za ubacivanje."
 
-#: ../src/file-manager/fm-directory-view.c:6219
+#: ../src/file-manager/fm-directory-view.c:6220
 msgid "Unable to unmount location"
 msgstr "Me mogu da demontiram putanju"
 
-#: ../src/file-manager/fm-directory-view.c:6240
+#: ../src/file-manager/fm-directory-view.c:6241
 msgid "Unable to eject location"
 msgstr "Me mogu da izbacim putanju"
 
-#: ../src/file-manager/fm-directory-view.c:6255
+#: ../src/file-manager/fm-directory-view.c:6256
 msgid "Unable to stop drive"
 msgstr "Ne mogu da zaustavim uređaj"
 
-#: ../src/file-manager/fm-directory-view.c:6810
+#: ../src/file-manager/fm-directory-view.c:6811
 #, c-format
 msgid "Connect to Server %s"
 msgstr "Poveži se na server %s"
 
-#: ../src/file-manager/fm-directory-view.c:6815
-#: ../src/file-manager/fm-directory-view.c:8017
-#: ../src/file-manager/fm-directory-view.c:8109
-#: ../src/file-manager/fm-directory-view.c:8219
+#: ../src/file-manager/fm-directory-view.c:6816
+#: ../src/file-manager/fm-directory-view.c:8018
+#: ../src/file-manager/fm-directory-view.c:8110
+#: ../src/file-manager/fm-directory-view.c:8220
 msgid "_Connect"
 msgstr "_Poveži se"
 
-#: ../src/file-manager/fm-directory-view.c:6829
+#: ../src/file-manager/fm-directory-view.c:6830
 msgid "Link _name:"
 msgstr "_Ime veze:"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7071
+#: ../src/file-manager/fm-directory-view.c:7072
 msgid "Create _Document"
 msgstr "Napravi do_kument"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7072
+#: ../src/file-manager/fm-directory-view.c:7073
 msgid "Open Wit_h"
 msgstr "Otvori po_moću"
 
-#: ../src/file-manager/fm-directory-view.c:7073
+#: ../src/file-manager/fm-directory-view.c:7074
 msgid "Choose a program with which to open the selected item"
 msgstr "Izaberi program kojim da otvorim izabranu stavku"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7075
-#: ../src/file-manager/fm-directory-view.c:7345
+#: ../src/file-manager/fm-directory-view.c:7076
+#: ../src/file-manager/fm-directory-view.c:7346
 msgid "_Properties"
 msgstr "_Osobine"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7076
-#: ../src/file-manager/fm-directory-view.c:8785
+#: ../src/file-manager/fm-directory-view.c:7077
+#: ../src/file-manager/fm-directory-view.c:8786
 msgid "View or modify the properties of each selected item"
 msgstr "Pogledajte ili izmenite osobine svake izabrane stavke"
 
 #. name, stock id
 #. label, accelerator
 #. add the "create folder" menu item
-#: ../src/file-manager/fm-directory-view.c:7083
+#: ../src/file-manager/fm-directory-view.c:7084
 #: ../src/file-manager/fm-tree-view.c:1194
 msgid "Create _Folder"
 msgstr "Napravi _fasciklu"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7084
+#: ../src/file-manager/fm-directory-view.c:7085
 msgid "Create a new empty folder inside this folder"
 msgstr "Obrazuje praznu fasciklu unutar tekuće fascikle"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7086
+#: ../src/file-manager/fm-directory-view.c:7087
 msgid "No templates installed"
 msgstr "Nisu instalirani šabloni"
 
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7089
+#: ../src/file-manager/fm-directory-view.c:7090
 msgid "_Empty File"
 msgstr "Pr_azna datoteka"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7090
+#: ../src/file-manager/fm-directory-view.c:7091
 msgid "Create a new empty file inside this folder"
 msgstr "Obrazuje novu praznu datoteku unutar tekuće fascikle"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7098
+#: ../src/file-manager/fm-directory-view.c:7099
 msgid "Open the selected item in this window"
 msgstr "Otvara izabranu stavku u ovom prozoru"
 
@@ -4273,93 +4275,92 @@ msgstr "Otvara izabranu stavku u ovom prozoru"
 #. Location-specific actions
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7105
-#: ../src/file-manager/fm-directory-view.c:7277
+#: ../src/file-manager/fm-directory-view.c:7106
+#: ../src/file-manager/fm-directory-view.c:7278
 msgid "Open in Navigation Window"
 msgstr "Otvori u upravljačkom prozoru"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7106
+#: ../src/file-manager/fm-directory-view.c:7107
 msgid "Open each selected item in a navigation window"
 msgstr "Otvara svaku izabranu stavku u upravljačkom prozoru"
 
 #. name, stock id
 #. label, accelerator
 #. add the "open in new tab" menu item
-#: ../src/file-manager/fm-directory-view.c:7109
-#: ../src/file-manager/fm-directory-view.c:7281
-#: ../src/file-manager/fm-directory-view.c:8349
-#: ../src/file-manager/fm-directory-view.c:8675
+#: ../src/file-manager/fm-directory-view.c:7110
+#: ../src/file-manager/fm-directory-view.c:7282
+#: ../src/file-manager/fm-directory-view.c:8350
+#: ../src/file-manager/fm-directory-view.c:8676
 #: ../src/file-manager/fm-tree-view.c:1174
 #: ../src/nautilus-places-sidebar.c:2230
 msgid "Open in New _Tab"
 msgstr "Otvori u novom _listu"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7110
+#: ../src/file-manager/fm-directory-view.c:7111
 msgid "Open each selected item in a new tab"
 msgstr "Otvara svaku izabranu stavku u novom listu"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7113
-#: ../src/file-manager/fm-directory-view.c:7286
+#: ../src/file-manager/fm-directory-view.c:7114
+#: ../src/file-manager/fm-directory-view.c:7287
 msgid "Open in _Folder Window"
 msgstr "Otvori u _novom prozoru"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7114
+#: ../src/file-manager/fm-directory-view.c:7115
 msgid "Open each selected item in a folder window"
 msgstr "Otvara svaku izabranu stavku u novom prozoru"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7117
+#: ../src/file-manager/fm-directory-view.c:7118
 msgid "Other _Application..."
 msgstr "Otvori drugim _programom..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7118
-#: ../src/file-manager/fm-directory-view.c:7122
+#: ../src/file-manager/fm-directory-view.c:7119
+#: ../src/file-manager/fm-directory-view.c:7123
 msgid "Choose another application with which to open the selected item"
 msgstr "Omogućava izbor nekog drugog programa za otvaranje izabrane stavke"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7121
-#| msgid "Open with Other _Application..."
+#: ../src/file-manager/fm-directory-view.c:7122
 msgid "Open With Other _Application..."
 msgstr "Otvori nekim drugim _programom..."
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7125
+#: ../src/file-manager/fm-directory-view.c:7126
 msgid "_Open Scripts Folder"
 msgstr "_Otvori fasciklu sa skriptama"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7126
+#: ../src/file-manager/fm-directory-view.c:7127
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Prikazuje fasciklu koji sadrži skripte iz ovog menija"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7134
+#: ../src/file-manager/fm-directory-view.c:7135
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "Priprema izabrane datoteke za premeštanje pomoću naredbe Ubaci"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7138
+#: ../src/file-manager/fm-directory-view.c:7139
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "Priprema izabrane datoteke za umnožavanje pomoću naredbe Ubaci"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7142
+#: ../src/file-manager/fm-directory-view.c:7143
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr "Premešta ili umnožava datoteke izabrane naredbom Iseci ili Umnoži"
 
@@ -4367,14 +4368,14 @@ msgstr "Premešta ili umnožava datoteke izabrane naredbom Iseci ili Umnoži"
 #. accelerator for paste
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7147
-#: ../src/file-manager/fm-directory-view.c:7299
+#: ../src/file-manager/fm-directory-view.c:7148
+#: ../src/file-manager/fm-directory-view.c:7300
 #: ../src/file-manager/fm-tree-view.c:1226
 msgid "_Paste Into Folder"
 msgstr "U_baci datoteke u fasciklu"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7148
+#: ../src/file-manager/fm-directory-view.c:7149
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
@@ -4383,59 +4384,57 @@ msgstr ""
 "fasciklu"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7150
-#| msgid "Copy to"
+#: ../src/file-manager/fm-directory-view.c:7151
 msgid "Cop_y to"
 msgstr "Umno_ži u"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7151
-#| msgid "Move to"
+#: ../src/file-manager/fm-directory-view.c:7152
 msgid "M_ove to"
 msgstr "Preme_sti u"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7154
+#: ../src/file-manager/fm-directory-view.c:7155
 msgid "Select all items in this window"
 msgstr "Bira sve stavke u ovom prozoru"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7157
+#: ../src/file-manager/fm-directory-view.c:7158
 msgid "Select I_tems Matching..."
 msgstr "Označi s_tavke po uslovu..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7158
+#: ../src/file-manager/fm-directory-view.c:7159
 msgid "Select items in this window matching a given pattern"
 msgstr "Pravi izbor od stavki koje odgovaraju datom obrascu u tekućem prozoru"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7161
+#: ../src/file-manager/fm-directory-view.c:7162
 msgid "_Invert Selection"
 msgstr "O_brni izbor"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7162
+#: ../src/file-manager/fm-directory-view.c:7163
 msgid "Select all and only the items that are not currently selected"
 msgstr "Pravi izbor od svih stavki osim onih koje su trenutno izabrane"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7165
+#: ../src/file-manager/fm-directory-view.c:7166
 msgid "D_uplicate"
 msgstr "U_dvostruči"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7166
+#: ../src/file-manager/fm-directory-view.c:7167
 msgid "Duplicate each selected item"
 msgstr "Udvostručava svaku izabranu stavku"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7169
-#: ../src/file-manager/fm-directory-view.c:8769
+#: ../src/file-manager/fm-directory-view.c:7170
+#: ../src/file-manager/fm-directory-view.c:8770
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "Napravi _vezu"
@@ -4444,45 +4443,45 @@ msgstr[2] "Napravi _veze"
 msgstr[3] "Napravi _vezu"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7170
+#: ../src/file-manager/fm-directory-view.c:7171
 msgid "Create a symbolic link for each selected item"
 msgstr "Obrazuje simboličku vezu za svaku izabranu stavku"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7173
+#: ../src/file-manager/fm-directory-view.c:7174
 msgid "_Rename..."
 msgstr "P_reimenuj..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7174
+#: ../src/file-manager/fm-directory-view.c:7175
 msgid "Rename selected item"
 msgstr "Menja naziv izabrane stavke"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7182
-#: ../src/file-manager/fm-directory-view.c:8730
+#: ../src/file-manager/fm-directory-view.c:7183
+#: ../src/file-manager/fm-directory-view.c:8731
 msgid "Move each selected item to the Trash"
 msgstr "Premešta svaku izabranu stavku u smeće"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7185
-#: ../src/file-manager/fm-directory-view.c:7308
-#: ../src/file-manager/fm-directory-view.c:8750
+#: ../src/file-manager/fm-directory-view.c:7186
+#: ../src/file-manager/fm-directory-view.c:7309
+#: ../src/file-manager/fm-directory-view.c:8751
 #: ../src/file-manager/fm-tree-view.c:1256
 msgid "_Delete"
 msgstr "_Obriši"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7186
+#: ../src/file-manager/fm-directory-view.c:7187
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "Uklanja izabranu stavku, bez premeštanja u smeće"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7189
-#: ../src/file-manager/fm-directory-view.c:7312
+#: ../src/file-manager/fm-directory-view.c:7190
+#: ../src/file-manager/fm-directory-view.c:7313
 msgid "_Restore"
 msgstr "_Vrati"
 
@@ -4494,209 +4493,209 @@ msgstr "_Vrati"
 #.
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7199
+#: ../src/file-manager/fm-directory-view.c:7200
 msgid "Reset View to _Defaults"
 msgstr "Postavi pregle_d na podrazumevano"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7200
+#: ../src/file-manager/fm-directory-view.c:7201
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr "Vraća poredak i uvećanje prema postavkama za ovaj pregled"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7203
+#: ../src/file-manager/fm-directory-view.c:7204
 msgid "Connect To This Server"
 msgstr "Poveži se na ovaj server"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7204
+#: ../src/file-manager/fm-directory-view.c:7205
 msgid "Make a permanent connection to this server"
 msgstr "Pravi trajnu vezu sa ovim serverom"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7207
-#: ../src/file-manager/fm-directory-view.c:7235
-#: ../src/file-manager/fm-directory-view.c:7316
+#: ../src/file-manager/fm-directory-view.c:7208
+#: ../src/file-manager/fm-directory-view.c:7236
+#: ../src/file-manager/fm-directory-view.c:7317
 #: ../src/nautilus-places-sidebar.c:2266
 msgid "_Mount"
 msgstr "_Montiraj"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7208
+#: ../src/file-manager/fm-directory-view.c:7209
 msgid "Mount the selected volume"
 msgstr "Montira izabrani disk"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7212
+#: ../src/file-manager/fm-directory-view.c:7213
 msgid "Unmount the selected volume"
 msgstr "Demontira izabrani disk"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7216
+#: ../src/file-manager/fm-directory-view.c:7217
 msgid "Eject the selected volume"
 msgstr "Izbacuje izabrani disk"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7219
-#: ../src/file-manager/fm-directory-view.c:7247
-#: ../src/file-manager/fm-directory-view.c:7328
+#: ../src/file-manager/fm-directory-view.c:7220
+#: ../src/file-manager/fm-directory-view.c:7248
+#: ../src/file-manager/fm-directory-view.c:7329
 #: ../src/nautilus-places-sidebar.c:2294
 msgid "_Format"
 msgstr "_Formatiraj"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7220
+#: ../src/file-manager/fm-directory-view.c:7221
 msgid "Format the selected volume"
 msgstr "Formatira izabrani disk"
 
 #. name, stock id
 #. label, accelerator
 #. Adjust start/stop items to reflect the type of the drive
-#: ../src/file-manager/fm-directory-view.c:7223
-#: ../src/file-manager/fm-directory-view.c:7251
-#: ../src/file-manager/fm-directory-view.c:7332
-#: ../src/file-manager/fm-directory-view.c:8009
-#: ../src/file-manager/fm-directory-view.c:8013
-#: ../src/file-manager/fm-directory-view.c:8101
-#: ../src/file-manager/fm-directory-view.c:8105
-#: ../src/file-manager/fm-directory-view.c:8211
-#: ../src/file-manager/fm-directory-view.c:8215
+#: ../src/file-manager/fm-directory-view.c:7224
+#: ../src/file-manager/fm-directory-view.c:7252
+#: ../src/file-manager/fm-directory-view.c:7333
+#: ../src/file-manager/fm-directory-view.c:8010
+#: ../src/file-manager/fm-directory-view.c:8014
+#: ../src/file-manager/fm-directory-view.c:8102
+#: ../src/file-manager/fm-directory-view.c:8106
+#: ../src/file-manager/fm-directory-view.c:8212
+#: ../src/file-manager/fm-directory-view.c:8216
 #: ../src/nautilus-places-sidebar.c:1444 ../src/nautilus-places-sidebar.c:2301
 msgid "_Start"
 msgstr "_Pokreni"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7224
+#: ../src/file-manager/fm-directory-view.c:7225
 msgid "Start the selected volume"
 msgstr "Pokreće izabrani disk"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7227
-#: ../src/file-manager/fm-directory-view.c:7255
-#: ../src/file-manager/fm-directory-view.c:7336
-#: ../src/file-manager/fm-directory-view.c:8038
-#: ../src/file-manager/fm-directory-view.c:8130
-#: ../src/file-manager/fm-directory-view.c:8240
+#: ../src/file-manager/fm-directory-view.c:7228
+#: ../src/file-manager/fm-directory-view.c:7256
+#: ../src/file-manager/fm-directory-view.c:7337
+#: ../src/file-manager/fm-directory-view.c:8039
+#: ../src/file-manager/fm-directory-view.c:8131
+#: ../src/file-manager/fm-directory-view.c:8241
 #: ../src/nautilus-places-sidebar.c:1445 ../src/nautilus-places-sidebar.c:2308
 #: ../src/nautilus-window-menus.c:810
 msgid "_Stop"
 msgstr "_Zaustavi"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7228
-#: ../src/file-manager/fm-directory-view.c:8241
+#: ../src/file-manager/fm-directory-view.c:7229
+#: ../src/file-manager/fm-directory-view.c:8242
 msgid "Stop the selected volume"
 msgstr "Zaustavlja izabrani disk"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7231
-#: ../src/file-manager/fm-directory-view.c:7259
-#: ../src/file-manager/fm-directory-view.c:7340
+#: ../src/file-manager/fm-directory-view.c:7232
+#: ../src/file-manager/fm-directory-view.c:7260
+#: ../src/file-manager/fm-directory-view.c:7341
 #: ../src/nautilus-places-sidebar.c:2287
 msgid "_Detect Media"
 msgstr "Pro_nađi medijum"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7232
-#: ../src/file-manager/fm-directory-view.c:7260
-#: ../src/file-manager/fm-directory-view.c:7341
+#: ../src/file-manager/fm-directory-view.c:7233
+#: ../src/file-manager/fm-directory-view.c:7261
+#: ../src/file-manager/fm-directory-view.c:7342
 msgid "Detect media in the selected drive"
 msgstr "Pronalazi medijume izabranog uređaja"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7236
+#: ../src/file-manager/fm-directory-view.c:7237
 msgid "Mount the volume associated with the open folder"
 msgstr "Montira disk koji je pridružen otvorenoj fascikli"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7240
+#: ../src/file-manager/fm-directory-view.c:7241
 msgid "Unmount the volume associated with the open folder"
 msgstr "Demontira disk koji je pridružen otvorenoj fascikli"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7244
+#: ../src/file-manager/fm-directory-view.c:7245
 msgid "Eject the volume associated with the open folder"
 msgstr "Izbacuje disk koji je pridružen otvorenoj fascikli"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7248
+#: ../src/file-manager/fm-directory-view.c:7249
 msgid "Format the volume associated with the open folder"
 msgstr "Formatira disk koji je pridružen otvorenoj fascikli"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7252
+#: ../src/file-manager/fm-directory-view.c:7253
 msgid "Start the volume associated with the open folder"
 msgstr "Pokreće disk koji je pridružen otvorenoj fascikli"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7256
+#: ../src/file-manager/fm-directory-view.c:7257
 msgid "Stop the volume associated with the open folder"
 msgstr "Zaustavlja disk koji je pridružen otvorenoj fascikli"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7263
+#: ../src/file-manager/fm-directory-view.c:7264
 msgid "Open File and Close window"
 msgstr "Otvori datoteku i zatvori prozor"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7267
+#: ../src/file-manager/fm-directory-view.c:7268
 msgid "Sa_ve Search"
 msgstr "_Sačuvaj pretragu"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7268
+#: ../src/file-manager/fm-directory-view.c:7269
 msgid "Save the edited search"
 msgstr "Čuva izmenjenu pretragu"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7271
+#: ../src/file-manager/fm-directory-view.c:7272
 msgid "Sa_ve Search As..."
 msgstr "_Sačuvaj pretragu kao..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7272
+#: ../src/file-manager/fm-directory-view.c:7273
 msgid "Save the current search as a file"
 msgstr "Čuva tekuću pretragu kao datoteku"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7278
+#: ../src/file-manager/fm-directory-view.c:7279
 msgid "Open this folder in a navigation window"
 msgstr "Otvara ovu fasciklu u upravljačkom prozoru"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7282
+#: ../src/file-manager/fm-directory-view.c:7283
 msgid "Open this folder in a new tab"
 msgstr "Otvara fasciklu u novom listu"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7287
+#: ../src/file-manager/fm-directory-view.c:7288
 msgid "Open this folder in a folder window"
 msgstr "Otvara fasciklu u novom prozoru"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7292
+#: ../src/file-manager/fm-directory-view.c:7293
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "Priprema ovu fasciklu za premeštanje pomoću naredbe Ubaci"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7296
+#: ../src/file-manager/fm-directory-view.c:7297
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "Priprema ovu fasciklu za umnožavanje pomoću naredbe Ubaci"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7300
+#: ../src/file-manager/fm-directory-view.c:7301
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into this "
 "folder"
@@ -4705,112 +4704,112 @@ msgstr ""
 "ovu fasciklu"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7305
+#: ../src/file-manager/fm-directory-view.c:7306
 msgid "Move this folder to the Trash"
 msgstr "Premešta ovu fasciklu u Smeće"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7309
+#: ../src/file-manager/fm-directory-view.c:7310
 msgid "Delete this folder, without moving to the Trash"
 msgstr "Briše ovu fasciklu, bez premeštanja u smeće"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7317
+#: ../src/file-manager/fm-directory-view.c:7318
 msgid "Mount the volume associated with this folder"
 msgstr "Montira disk koji je pridružen ovoj fascikli"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7321
+#: ../src/file-manager/fm-directory-view.c:7322
 msgid "Unmount the volume associated with this folder"
 msgstr "Demontira disk koji je pridružen ovoj fascikli"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7325
+#: ../src/file-manager/fm-directory-view.c:7326
 msgid "Eject the volume associated with this folder"
 msgstr "Izbacuje disk koji je pridružen ovoj fascikli"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7329
+#: ../src/file-manager/fm-directory-view.c:7330
 msgid "Format the volume associated with this folder"
 msgstr "Formatira disk koji je pridružen ovoj fascikli"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7333
+#: ../src/file-manager/fm-directory-view.c:7334
 msgid "Start the volume associated with this folder"
 msgstr "Pokreće disk koji je pridružen ovoj fascikli"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7337
+#: ../src/file-manager/fm-directory-view.c:7338
 msgid "Stop the volume associated with this folder"
 msgstr "Zaustavlja disk koji je pridružen ovoj fascikli"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7346
+#: ../src/file-manager/fm-directory-view.c:7347
 msgid "View or modify the properties of this folder"
 msgstr "Prikazuje ili menja osobine ove fascikle"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7349
-#: ../src/file-manager/fm-directory-view.c:7352
+#: ../src/file-manager/fm-directory-view.c:7350
+#: ../src/file-manager/fm-directory-view.c:7353
 msgid "_Other pane"
 msgstr "_Druga površ"
 
-#: ../src/file-manager/fm-directory-view.c:7350
+#: ../src/file-manager/fm-directory-view.c:7351
 msgid "Copy the current selection to the other pane in the window"
 msgstr "Umnožava izabrano u drugu površ prozora"
 
-#: ../src/file-manager/fm-directory-view.c:7353
+#: ../src/file-manager/fm-directory-view.c:7354
 msgid "Move the current selection to the other pane in the window"
 msgstr "Premešta izabrano u drugu površ prozora"
 
 #. name, stock id, label
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7356
-#: ../src/file-manager/fm-directory-view.c:7360
+#: ../src/file-manager/fm-directory-view.c:7357
+#: ../src/file-manager/fm-directory-view.c:7361
 #: ../src/nautilus-window-menus.c:854
 msgid "_Home Folder"
 msgstr "_Lična fascikla"
 
-#: ../src/file-manager/fm-directory-view.c:7357
+#: ../src/file-manager/fm-directory-view.c:7358
 msgid "Copy the current selection to the home folder"
 msgstr "Umnožava izabrano u ličnu fasciklu"
 
-#: ../src/file-manager/fm-directory-view.c:7361
+#: ../src/file-manager/fm-directory-view.c:7362
 msgid "Move the current selection to the home folder"
 msgstr "Premešta izabrano u ličnu fasciklu"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7364
-#: ../src/file-manager/fm-directory-view.c:7368
+#: ../src/file-manager/fm-directory-view.c:7365
+#: ../src/file-manager/fm-directory-view.c:7369
 msgid "_Desktop"
 msgstr "_Radna površ"
 
-#: ../src/file-manager/fm-directory-view.c:7365
+#: ../src/file-manager/fm-directory-view.c:7366
 msgid "Copy the current selection to the desktop"
 msgstr "Umnožava izabrano na radnu površinu"
 
-#: ../src/file-manager/fm-directory-view.c:7369
+#: ../src/file-manager/fm-directory-view.c:7370
 msgid "Move the current selection to the desktop"
 msgstr "Premešta izabrano na radnu površinu"
 
 #. Translators: %s is a directory
-#: ../src/file-manager/fm-directory-view.c:7449
+#: ../src/file-manager/fm-directory-view.c:7450
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "Pokreni ili upravljaj skriptama iz %s"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/file-manager/fm-directory-view.c:7451
+#: ../src/file-manager/fm-directory-view.c:7452
 msgid "_Scripts"
 msgstr "_Skripte"
 
-#: ../src/file-manager/fm-directory-view.c:7857
+#: ../src/file-manager/fm-directory-view.c:7858
 #, c-format
 msgid "Move the open folder out of the trash to \"%s\""
 msgstr "Premesti otvorenu fasciklu iz smeća u „%s“"
 
-#: ../src/file-manager/fm-directory-view.c:7860
+#: ../src/file-manager/fm-directory-view.c:7861
 #, c-format
 msgid "Move the selected folder out of the trash to \"%s\""
 msgid_plural "Move the selected folders out of the trash to \"%s\""
@@ -4819,7 +4818,7 @@ msgstr[1] "Premesti izabrane fascikle iz smeća u „%s“"
 msgstr[2] "Premesti izabrane fascikle iz smeća u „%s“"
 msgstr[3] "Premesti izabranu fasciklu iz smeća u „%s“"
 
-#: ../src/file-manager/fm-directory-view.c:7864
+#: ../src/file-manager/fm-directory-view.c:7865
 #, c-format
 msgid "Move the selected folder out of the trash"
 msgid_plural "Move the selected folders out of the trash"
@@ -4828,7 +4827,7 @@ msgstr[1] "Premesti izabrane fascikle iz smeća"
 msgstr[2] "Premesti izabrane fascikle iz smeća"
 msgstr[3] "Premesti izabranu fasciklu iz smeća"
 
-#: ../src/file-manager/fm-directory-view.c:7870
+#: ../src/file-manager/fm-directory-view.c:7871
 #, c-format
 msgid "Move the selected file out of the trash to \"%s\""
 msgid_plural "Move the selected files out of the trash to \"%s\""
@@ -4837,7 +4836,7 @@ msgstr[1] "Premesti izabrane datoteke iz smeća u „%s“"
 msgstr[2] "Premesti izabrane datoteke iz smeća u „%s“"
 msgstr[3] "Premesti izabranu datoteku iz smeća u „%s“"
 
-#: ../src/file-manager/fm-directory-view.c:7874
+#: ../src/file-manager/fm-directory-view.c:7875
 #, c-format
 msgid "Move the selected file out of the trash"
 msgid_plural "Move the selected files out of the trash"
@@ -4846,7 +4845,7 @@ msgstr[1] "Premesti izabrane datoteke iz smeća"
 msgstr[2] "Premesti izabrane datoteke iz smeća"
 msgstr[3] "Premesti izabranu datoteku iz smeća"
 
-#: ../src/file-manager/fm-directory-view.c:7880
+#: ../src/file-manager/fm-directory-view.c:7881
 #, c-format
 msgid "Move the selected item out of the trash to \"%s\""
 msgid_plural "Move the selected items out of the trash to \"%s\""
@@ -4855,7 +4854,7 @@ msgstr[1] "Premesti izabrane stavke iz smeća u „%s“"
 msgstr[2] "Premesti izabrane stavke iz smeća u „%s“"
 msgstr[3] "Premesti izabranu stavku iz smeća u „%s“"
 
-#: ../src/file-manager/fm-directory-view.c:7884
+#: ../src/file-manager/fm-directory-view.c:7885
 #, c-format
 msgid "Move the selected item out of the trash"
 msgid_plural "Move the selected items out of the trash"
@@ -4864,147 +4863,147 @@ msgstr[1] "Premesti izabrane stavke iz smeća"
 msgstr[2] "Premesti izabrane stavke iz smeća"
 msgstr[3] "Premesti izabranu stavku iz smeća"
 
-#: ../src/file-manager/fm-directory-view.c:8010
-#: ../src/file-manager/fm-directory-view.c:8014
-#: ../src/file-manager/fm-directory-view.c:8212
-#: ../src/file-manager/fm-directory-view.c:8216
+#: ../src/file-manager/fm-directory-view.c:8011
+#: ../src/file-manager/fm-directory-view.c:8015
+#: ../src/file-manager/fm-directory-view.c:8213
+#: ../src/file-manager/fm-directory-view.c:8217
 msgid "Start the selected drive"
 msgstr "Pokreni izabrani uređaj"
 
-#: ../src/file-manager/fm-directory-view.c:8018
-#: ../src/file-manager/fm-directory-view.c:8220
+#: ../src/file-manager/fm-directory-view.c:8019
+#: ../src/file-manager/fm-directory-view.c:8221
 msgid "Connect to the selected drive"
 msgstr "Povezuje se na izabrani uređaj"
 
-#: ../src/file-manager/fm-directory-view.c:8021
-#: ../src/file-manager/fm-directory-view.c:8113
-#: ../src/file-manager/fm-directory-view.c:8223
+#: ../src/file-manager/fm-directory-view.c:8022
+#: ../src/file-manager/fm-directory-view.c:8114
+#: ../src/file-manager/fm-directory-view.c:8224
 msgid "_Start Multi-disk Drive"
 msgstr "_Pokreni uređaj sa više diskova"
 
-#: ../src/file-manager/fm-directory-view.c:8022
-#: ../src/file-manager/fm-directory-view.c:8224
+#: ../src/file-manager/fm-directory-view.c:8023
+#: ../src/file-manager/fm-directory-view.c:8225
 msgid "Start the selected multi-disk drive"
 msgstr "Pokreće izabrani uređaj sa više diskova"
 
-#: ../src/file-manager/fm-directory-view.c:8025
+#: ../src/file-manager/fm-directory-view.c:8026
 msgid "U_nlock Drive"
 msgstr "_Otključaj uređaj"
 
-#: ../src/file-manager/fm-directory-view.c:8026
-#: ../src/file-manager/fm-directory-view.c:8228
+#: ../src/file-manager/fm-directory-view.c:8027
+#: ../src/file-manager/fm-directory-view.c:8229
 msgid "Unlock the selected drive"
 msgstr "Otključava izabrani uređaj"
 
-#: ../src/file-manager/fm-directory-view.c:8039
+#: ../src/file-manager/fm-directory-view.c:8040
 msgid "Stop the selected drive"
 msgstr "Zaustavlja izabrani uređaj"
 
-#: ../src/file-manager/fm-directory-view.c:8042
-#: ../src/file-manager/fm-directory-view.c:8134
-#: ../src/file-manager/fm-directory-view.c:8244
+#: ../src/file-manager/fm-directory-view.c:8043
+#: ../src/file-manager/fm-directory-view.c:8135
+#: ../src/file-manager/fm-directory-view.c:8245
 #: ../src/nautilus-places-sidebar.c:1451
 msgid "_Safely Remove Drive"
 msgstr "_Bezbedno ukloni uređaj"
 
-#: ../src/file-manager/fm-directory-view.c:8043
-#: ../src/file-manager/fm-directory-view.c:8245
+#: ../src/file-manager/fm-directory-view.c:8044
+#: ../src/file-manager/fm-directory-view.c:8246
 msgid "Safely remove the selected drive"
 msgstr "Bezbedno uklanja izabrani uređaj"
 
-#: ../src/file-manager/fm-directory-view.c:8046
-#: ../src/file-manager/fm-directory-view.c:8138
-#: ../src/file-manager/fm-directory-view.c:8248
+#: ../src/file-manager/fm-directory-view.c:8047
+#: ../src/file-manager/fm-directory-view.c:8139
+#: ../src/file-manager/fm-directory-view.c:8249
 msgid "_Disconnect"
 msgstr "_Otkači"
 
-#: ../src/file-manager/fm-directory-view.c:8047
-#: ../src/file-manager/fm-directory-view.c:8249
+#: ../src/file-manager/fm-directory-view.c:8048
+#: ../src/file-manager/fm-directory-view.c:8250
 msgid "Disconnect the selected drive"
 msgstr "Prekida vezu sa izabranim uređajem"
 
-#: ../src/file-manager/fm-directory-view.c:8050
-#: ../src/file-manager/fm-directory-view.c:8142
-#: ../src/file-manager/fm-directory-view.c:8252
+#: ../src/file-manager/fm-directory-view.c:8051
+#: ../src/file-manager/fm-directory-view.c:8143
+#: ../src/file-manager/fm-directory-view.c:8253
 msgid "_Stop Multi-disk Drive"
 msgstr "Zaustavi uređaj sa više diska"
 
-#: ../src/file-manager/fm-directory-view.c:8051
-#: ../src/file-manager/fm-directory-view.c:8253
+#: ../src/file-manager/fm-directory-view.c:8052
+#: ../src/file-manager/fm-directory-view.c:8254
 msgid "Stop the selected multi-disk drive"
 msgstr "Zaustavlja izabrani uređaj sa više diska"
 
-#: ../src/file-manager/fm-directory-view.c:8054
-#: ../src/file-manager/fm-directory-view.c:8146
-#: ../src/file-manager/fm-directory-view.c:8256
+#: ../src/file-manager/fm-directory-view.c:8055
+#: ../src/file-manager/fm-directory-view.c:8147
+#: ../src/file-manager/fm-directory-view.c:8257
 #: ../src/nautilus-places-sidebar.c:1464
 msgid "_Lock Drive"
 msgstr "_Zaključaj uređaj"
 
-#: ../src/file-manager/fm-directory-view.c:8055
-#: ../src/file-manager/fm-directory-view.c:8257
+#: ../src/file-manager/fm-directory-view.c:8056
+#: ../src/file-manager/fm-directory-view.c:8258
 msgid "Lock the selected drive"
 msgstr "Zaključava izabrani uređaj"
 
-#: ../src/file-manager/fm-directory-view.c:8102
-#: ../src/file-manager/fm-directory-view.c:8106
+#: ../src/file-manager/fm-directory-view.c:8103
+#: ../src/file-manager/fm-directory-view.c:8107
 msgid "Start the drive associated with the open folder"
 msgstr "Pokreće uređaj koji je pridružen otvorenoj fascikli"
 
-#: ../src/file-manager/fm-directory-view.c:8110
+#: ../src/file-manager/fm-directory-view.c:8111
 msgid "Connect to the drive associated with the open folder"
 msgstr "Povezuje uređaj koji je pridružen otvorenoj fascikli"
 
-#: ../src/file-manager/fm-directory-view.c:8114
+#: ../src/file-manager/fm-directory-view.c:8115
 msgid "Start the multi-disk drive associated with the open folder"
 msgstr "Pokreće uređaj sa više diskova koji je pridružen otvorenoj fascikli"
 
 #. stop() for type G_DRIVE_START_STOP_TYPE_PASSWORD is normally not used
-#: ../src/file-manager/fm-directory-view.c:8117
-#: ../src/file-manager/fm-directory-view.c:8227
+#: ../src/file-manager/fm-directory-view.c:8118
+#: ../src/file-manager/fm-directory-view.c:8228
 #: ../src/nautilus-places-sidebar.c:1463
 msgid "_Unlock Drive"
 msgstr "O_tključaj uređaj"
 
-#: ../src/file-manager/fm-directory-view.c:8118
+#: ../src/file-manager/fm-directory-view.c:8119
 msgid "Unlock the drive associated with the open folder"
 msgstr "Otključava uređaj koji je pridružen otvorenoj fascikli"
 
-#: ../src/file-manager/fm-directory-view.c:8131
+#: ../src/file-manager/fm-directory-view.c:8132
 msgid "_Stop the drive associated with the open folder"
 msgstr "Zaustavlja uređaj koji je pridružen otvorenoj fascikli"
 
-#: ../src/file-manager/fm-directory-view.c:8135
+#: ../src/file-manager/fm-directory-view.c:8136
 msgid "Safely remove the drive associated with the open folder"
 msgstr "Bezbedno uklanja uređaj koji je pridružen otvorenoj fascikli"
 
-#: ../src/file-manager/fm-directory-view.c:8139
+#: ../src/file-manager/fm-directory-view.c:8140
 msgid "Disconnect the drive associated with the open folder"
 msgstr "Prekida vezu sa uređajem koji je pridružen otvorenoj fascikli"
 
-#: ../src/file-manager/fm-directory-view.c:8143
+#: ../src/file-manager/fm-directory-view.c:8144
 msgid "Stop the multi-disk drive associated with the open folder"
 msgstr "Zaustavlja uređaj sa više diskova koji je pridružen otvorenoj fascikli"
 
-#: ../src/file-manager/fm-directory-view.c:8147
+#: ../src/file-manager/fm-directory-view.c:8148
 msgid "Lock the drive associated with the open folder"
 msgstr "Zaključava uređaj koji je pridružen otvorenoj fascikli"
 
 #. add the "open in new window" menu item
-#: ../src/file-manager/fm-directory-view.c:8326
-#: ../src/file-manager/fm-directory-view.c:8636
+#: ../src/file-manager/fm-directory-view.c:8327
+#: ../src/file-manager/fm-directory-view.c:8637
 #: ../src/file-manager/fm-tree-view.c:1183
 #: ../src/nautilus-places-sidebar.c:2237
 msgid "Open in New _Window"
 msgstr "Otvori u _novom prozoru"
 
-#: ../src/file-manager/fm-directory-view.c:8328
-#: ../src/file-manager/fm-directory-view.c:8645
+#: ../src/file-manager/fm-directory-view.c:8329
+#: ../src/file-manager/fm-directory-view.c:8646
 msgid "Browse in New _Window"
 msgstr "_Razgledaj u novom prozoru"
 
-#: ../src/file-manager/fm-directory-view.c:8334
-#: ../src/file-manager/fm-directory-view.c:8655
+#: ../src/file-manager/fm-directory-view.c:8335
+#: ../src/file-manager/fm-directory-view.c:8656
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "Raz_gledaj fascikle"
@@ -5012,31 +5011,30 @@ msgstr[1] "Raz_gledaj fascikle"
 msgstr[2] "Raz_gledaj fascikle"
 msgstr[3] "Raz_gledaj fasciklu"
 
-#: ../src/file-manager/fm-directory-view.c:8351
-#: ../src/file-manager/fm-directory-view.c:8684
+#: ../src/file-manager/fm-directory-view.c:8352
+#: ../src/file-manager/fm-directory-view.c:8685
 msgid "Browse in New _Tab"
 msgstr "Razgledaj u novom _listu"
 
-#: ../src/file-manager/fm-directory-view.c:8400
-#: ../src/file-manager/fm-directory-view.c:8725
+#: ../src/file-manager/fm-directory-view.c:8401
+#: ../src/file-manager/fm-directory-view.c:8726
 msgid "_Delete Permanently"
 msgstr "_Trajno obriši"
 
-#: ../src/file-manager/fm-directory-view.c:8401
+#: ../src/file-manager/fm-directory-view.c:8402
 msgid "Delete the open folder permanently"
 msgstr "Trajno briše otvorenu fasciklu"
 
-#: ../src/file-manager/fm-directory-view.c:8405
+#: ../src/file-manager/fm-directory-view.c:8406
 msgid "Move the open folder to the Trash"
 msgstr "Premešta otvorenu fasciklu u Smeće"
 
-#: ../src/file-manager/fm-directory-view.c:8585
+#: ../src/file-manager/fm-directory-view.c:8586
 #, c-format
-#| msgid "_Open with %s"
 msgid "_Open With %s"
 msgstr "O_tvori pomoću %s"
 
-#: ../src/file-manager/fm-directory-view.c:8638
+#: ../src/file-manager/fm-directory-view.c:8639
 #, c-format
 msgid "Open in %'d New _Window"
 msgid_plural "Open in %'d New _Windows"
@@ -5045,7 +5043,7 @@ msgstr[1] "Otvori u %'d nova prozora"
 msgstr[2] "Otvori u %'d novih prozora"
 msgstr[3] "Otvori u %0d novom prozoru"
 
-#: ../src/file-manager/fm-directory-view.c:8647
+#: ../src/file-manager/fm-directory-view.c:8648
 #, c-format
 msgid "Browse in %'d New _Window"
 msgid_plural "Browse in %'d New _Windows"
@@ -5054,7 +5052,7 @@ msgstr[1] "Razgledaj u %'d nova prozora"
 msgstr[2] "Razgledaj u %'d novih prozora"
 msgstr[3] "Razgledaj u %0d novom prozoru"
 
-#: ../src/file-manager/fm-directory-view.c:8677
+#: ../src/file-manager/fm-directory-view.c:8678
 #, c-format
 msgid "Open in %'d New _Tab"
 msgid_plural "Open in %'d New _Tabs"
@@ -5063,7 +5061,7 @@ msgstr[1] "Otvori u %'d nova lista"
 msgstr[2] "Otvori u %'d novih lista"
 msgstr[3] "Otvori u %0d novom listu"
 
-#: ../src/file-manager/fm-directory-view.c:8686
+#: ../src/file-manager/fm-directory-view.c:8687
 #, c-format
 msgid "Browse in %'d New _Tab"
 msgid_plural "Browse in %'d New _Tabs"
@@ -5072,54 +5070,54 @@ msgstr[1] "Razgledaj u %'d nova lista"
 msgstr[2] "Razgledaj u %'d novih lista"
 msgstr[3] "Razgledaj u %0d novom listu"
 
-#: ../src/file-manager/fm-directory-view.c:8726
+#: ../src/file-manager/fm-directory-view.c:8727
 msgid "Delete all selected items permanently"
 msgstr "Trajno obriši sve izabrane stavke"
 
-#: ../src/file-manager/fm-directory-view.c:8783
+#: ../src/file-manager/fm-directory-view.c:8784
 msgid "View or modify the properties of the open folder"
 msgstr "Pogledajte ili izmenite osobine otvorene fascikle"
 
-#: ../src/file-manager/fm-directory-view.c:10087
+#: ../src/file-manager/fm-directory-view.c:10088
 msgid "Download location?"
 msgstr "Putanja za preuzeto?"
 
-#: ../src/file-manager/fm-directory-view.c:10090
+#: ../src/file-manager/fm-directory-view.c:10091
 msgid "You can download it or make a link to it."
 msgstr "Možete ga preuzeti ili napraviti vezu do njega."
 
-#: ../src/file-manager/fm-directory-view.c:10093
+#: ../src/file-manager/fm-directory-view.c:10094
 msgid "Make a _Link"
 msgstr "Napravi _vezu"
 
-#: ../src/file-manager/fm-directory-view.c:10097
+#: ../src/file-manager/fm-directory-view.c:10098
 msgid "_Download"
 msgstr "_Preuzmi"
 
-#: ../src/file-manager/fm-directory-view.c:10258
-#: ../src/file-manager/fm-directory-view.c:10316
-#: ../src/file-manager/fm-directory-view.c:10421
+#: ../src/file-manager/fm-directory-view.c:10259
+#: ../src/file-manager/fm-directory-view.c:10317
+#: ../src/file-manager/fm-directory-view.c:10422
 msgid "Drag and drop is not supported."
 msgstr "Prevlačenje i puštanje nije podržano."
 
-#: ../src/file-manager/fm-directory-view.c:10259
+#: ../src/file-manager/fm-directory-view.c:10260
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Prevlačenje i puštanje je podržano samo za lokalne sisteme datoteka."
 
-#: ../src/file-manager/fm-directory-view.c:10317
-#: ../src/file-manager/fm-directory-view.c:10422
+#: ../src/file-manager/fm-directory-view.c:10318
+#: ../src/file-manager/fm-directory-view.c:10423
 msgid "An invalid drag type was used."
 msgstr "Upotrebljena je neispravna vrsta prevlačenja."
 
 #. Translator: This is the filename used for when you dnd text to a directory
-#: ../src/file-manager/fm-directory-view.c:10499
+#: ../src/file-manager/fm-directory-view.c:10500
 msgid "dropped text.txt"
 msgstr "Prevučeno.txt"
 
 #. Translator: This is the filename used for when you dnd raw
 #. * data to a directory, if the source didn't supply a name.
 #.
-#: ../src/file-manager/fm-directory-view.c:10544
+#: ../src/file-manager/fm-directory-view.c:10545
 msgid "dropped data"
 msgstr "Prevučeni podaci"
 
@@ -5288,13 +5286,11 @@ msgid "Keep icons sorted by emblems in rows"
 msgstr "Ikonice uređene prema obeležjima u redovima"
 
 #: ../src/file-manager/fm-icon-view.c:161
-#| msgid "by _Name"
 msgid "by T_rash Time"
 msgstr "prema _datumu brisanja"
 
 #: ../src/file-manager/fm-icon-view.c:162
 #: ../src/file-manager/fm-icon-view.c:1666
-#| msgid "Keep icons sorted by name in rows"
 msgid "Keep icons sorted by trash time in rows"
 msgstr "Ikonice uređene prema datumu brisanja u redovima"
 
@@ -5310,13 +5306,11 @@ msgstr "Po_ređaj stavke"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1608
-#| msgid "Stretc_h Icon..."
 msgid "Resize Icon..."
 msgstr "Rastegni ikonicu..."
 
 #. tooltip
 #: ../src/file-manager/fm-icon-view.c:1609
-#| msgid "Make the selected icon stretchable"
 msgid "Make the selected icon resizable"
 msgstr "Omogućava promenu veličine izabrane ikonice"
 
@@ -5405,7 +5399,6 @@ msgid "By _Emblems"
 msgstr "Prema _obeležjima"
 
 #: ../src/file-manager/fm-icon-view.c:1665
-#| msgid "By _Name"
 msgid "By T_rash Time"
 msgstr "Prema datumu _brisanja"
 
@@ -5458,7 +5451,7 @@ msgid "(Empty)"
 msgstr "(Prazno)"
 
 #: ../src/file-manager/fm-list-model.c:399
-#: ../src/file-manager/fm-tree-model.c:1287 ../src/nautilus-window-slot.c:205
+#: ../src/file-manager/fm-tree-model.c:1287 ../src/nautilus-window-slot.c:196
 msgid "Loading..."
 msgstr "Učitava.."
 
@@ -6045,7 +6038,7 @@ msgid "C_onnect"
 msgstr "Po_veži se"
 
 #: ../src/nautilus-desktop-window.c:79 ../src/nautilus-desktop-window.c:249
-#: ../src/nautilus-pathbar.c:1259 ../src/nautilus-places-sidebar.c:356
+#: ../src/nautilus-pathbar.c:1260 ../src/nautilus-places-sidebar.c:356
 msgid "Desktop"
 msgstr "Radna površ"
 
@@ -6307,7 +6300,6 @@ msgid "Never"
 msgstr "Nikad"
 
 #: ../src/nautilus-file-management-properties.ui.h:71
-#| msgid "Open each _folder its own window"
 msgid "Open each _folder in its own window"
 msgstr "Otvaraj _fascikle u zasebnim prozorima"
 
@@ -6714,7 +6706,6 @@ msgstr "Čisti sadržaj Idi menija i spiska za Napred/Nazad"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:813
-#| msgid "Switch to other pane"
 msgid "S_witch to Other Pane"
 msgstr "Preba_ci se na drugu površ"
 
@@ -6724,7 +6715,6 @@ msgstr "Aktivira drugu površ podeljenog prozora"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:816
-#| msgid "Same location as other pane"
 msgid "Sa_me Location as Other Pane"
 msgstr "Puta_nja iz drugog prozora"
 
@@ -6789,7 +6779,6 @@ msgid "Move current tab to right"
 msgstr "Pomera tekući list udesno"
 
 #: ../src/nautilus-navigation-window-menus.c:837
-#| msgid "Show search"
 msgid "S_how Search"
 msgstr "Prika_ži pretragu"
 
@@ -6863,7 +6852,6 @@ msgstr "Traži dokumente i fascikle na osnovu imena"
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-navigation-window-menus.c:870
-#| msgid "Extra Pane"
 msgid "E_xtra Pane"
 msgstr "_Dodatna površ"
 
@@ -7310,12 +7298,10 @@ msgid "Locate documents and folders on this computer by name or content"
 msgstr "Pronalazi dokumente i fascikle na ovom računaru po imenu ili sadržaju"
 
 #: ../src/nautilus-trash-bar.c:204
-#| msgid "Rename selected item"
 msgid "Restore Selected Items"
 msgstr "Vrati izabrane stavke"
 
 #: ../src/nautilus-trash-bar.c:210
-#| msgid "Restore each selected icon to its original size"
 msgid "Restore selected items to their original position"
 msgstr "Vraća sve izabrane ikonice na njihovo prvobitno mesto"
 
@@ -7750,6 +7736,30 @@ msgstr "Uvećaj"
 msgid "Set the zoom level of the current view"
 msgstr "Postavi nivo uvećanja tekućeg pregleda"
 
+#~| msgid "Open Folder"
+#~ msgid "An older"
+#~ msgstr "Stariji"
+
+#~ msgid "A newer"
+#~ msgstr "Noviji"
+
+#~| msgid "Others"
+#~ msgid "Another"
+#~ msgstr "Ostali"
+
+#~| msgid ""
+#~| "The source folder already exists in \"%B\".  Merging will ask for "
+#~| "confirmation before replacing any files in the folder that conflict with "
+#~| "the files being copied."
+#~ msgid ""
+#~ "%s folder with the same name already exists in \"%s\".\n"
+#~ "Merging will ask for confirmation before replacing any files in the "
+#~ "folder that conflict with the files being copied."
+#~ msgstr ""
+#~ "Već postoji %s fascikla sa ovim imenom u „%s“.\n"
+#~ "Moraćete da dozvolite zamenu postojećih datoteka i fascikli koje se "
+#~ "podudaraju sa novim."
+
 #~ msgid ""
 #~ "If you choose to empty the trash, all items in it will be permanently "
 #~ "lost. Please note that you can also delete them separately."
@@ -7768,14 +7778,6 @@ msgstr "Postavi nivo uvećanja tekućeg pregleda"
 
 #~ msgid "A file named \"%B\" already exists.  Do you want to replace it?"
 #~ msgstr "Već postoji datoteka „%B“.  Želite li da je zamenite?"
-
-#~ msgid ""
-#~ "The source folder already exists in \"%B\".  Merging will ask for "
-#~ "confirmation before replacing any files in the folder that conflict with "
-#~ "the files being moved."
-#~ msgstr ""
-#~ "Već postoji fascikla „%B“.  Spajanje će tražiti dozvolu za zamenu "
-#~ "postojećih datoteka i fascikla koje se podudaraju sa novim."
 
 #~ msgid "Could not use system package installer"
 #~ msgstr "Ne mogu da upotrebim sistemski upravnik paketima"
