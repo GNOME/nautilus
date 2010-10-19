@@ -50,7 +50,6 @@ G_BEGIN_DECLS
 #define NAUTILUS_PREFERENCES_ENABLE_DELETE			"enable-delete"
 
 /* Desktop options */
-#define NAUTILUS_PREFERENCES_SHOW_DESKTOP			"show-desktop"
 #define NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR                "desktop-is-home-dir"
 
 /* Display  */
@@ -198,6 +197,10 @@ typedef enum
 /* Lockdown */
 #define NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE         "disable-command-line"
 
+/* Desktop background */
+#define NAUTILUS_PREFERENCES_SHOW_DESKTOP		   "show-desktop-icons"
+
+
 void nautilus_global_preferences_init                      (void);
 char *nautilus_global_preferences_get_default_folder_viewer_preference_as_iid (void);
 
@@ -210,6 +213,7 @@ GSettings *nautilus_tree_sidebar_preferences;
 GSettings *nautilus_media_preferences;
 GSettings *nautilus_window_state;
 GSettings *gnome_lockdown_preferences;
+GSettings *gnome_background_preferences;
 
 GConfClient *nautilus_gconf_client;
 

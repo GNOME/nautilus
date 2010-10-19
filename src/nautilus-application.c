@@ -926,7 +926,7 @@ nautilus_application_startup (NautilusApplication *application,
 		char *accel_map_filename;
 
 		if (!no_desktop &&
-		    !g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_SHOW_DESKTOP)) {
+		    !g_settings_get_boolean (gnome_background_preferences, NAUTILUS_PREFERENCES_SHOW_DESKTOP)) {
 			no_desktop = TRUE;
 		}
 
@@ -947,7 +947,7 @@ nautilus_application_startup (NautilusApplication *application,
 		}
 
 		/* Monitor the preference to show or hide the desktop */
-		g_signal_connect_swapped (nautilus_preferences, "changed::" NAUTILUS_PREFERENCES_SHOW_DESKTOP,
+		g_signal_connect_swapped (gnome_background_preferences, "changed::" NAUTILUS_PREFERENCES_SHOW_DESKTOP,
 					  G_CALLBACK(desktop_changed_callback),
 					  G_OBJECT (application));
 
@@ -1500,7 +1500,7 @@ desktop_changed_callback (gpointer user_data)
 	NautilusApplication *application;
 
 	application = NAUTILUS_APPLICATION (user_data);
-	if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_SHOW_DESKTOP)) {
+	if (g_settings_get_boolean (gnome_background_preferences, NAUTILUS_PREFERENCES_SHOW_DESKTOP)) {
 		nautilus_application_open_desktop (application);
 	} else {
 		nautilus_application_close_desktop ();
