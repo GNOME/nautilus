@@ -289,7 +289,7 @@ free_column_names_array (GPtrArray *column_names)
 }
 
 static void
-create_icon_caption_combo_box_items (GtkComboBox *combo_box,
+create_icon_caption_combo_box_items (GtkComboBoxText *combo_box,
 			             GList *columns)
 {
 	GList *l;
@@ -298,7 +298,7 @@ create_icon_caption_combo_box_items (GtkComboBox *combo_box,
 	column_names = g_ptr_array_new ();
 
 	/* Translators: this is referred to captions under icons. */
-	gtk_combo_box_append_text (combo_box, _("None"));
+	gtk_combo_box_text_append_text (combo_box, _("None"));
 	g_ptr_array_add (column_names, g_strdup ("none"));
 
 	for (l = columns; l != NULL; l = l->next) {
@@ -319,7 +319,7 @@ create_icon_caption_combo_box_items (GtkComboBox *combo_box,
 			continue;
 		}
 
-		gtk_combo_box_append_text (combo_box, label);
+		gtk_combo_box_text_append_text (combo_box, label);
 		g_ptr_array_add (column_names, name);
 
 		g_free (label);
@@ -445,7 +445,7 @@ nautilus_file_management_properties_dialog_setup_icon_caption_page (GtkBuilder *
 		combo_box = GTK_WIDGET (gtk_builder_get_object (builder,
 								icon_captions_components[i]));
 
-		create_icon_caption_combo_box_items (GTK_COMBO_BOX (combo_box), columns);
+		create_icon_caption_combo_box_items (GTK_COMBO_BOX_TEXT (combo_box), columns);
 		gtk_widget_set_sensitive (combo_box, writable);
 
 		g_signal_connect (combo_box, "changed",
@@ -461,27 +461,28 @@ nautilus_file_management_properties_dialog_setup_icon_caption_page (GtkBuilder *
 static void
 create_date_format_menu (GtkBuilder *builder)
 {
-	GtkWidget *combo_box;
+	GtkComboBoxText *combo_box;
 	gchar *date_string;
 	time_t now_raw;
 	struct tm* now;
 
-	combo_box = GTK_WIDGET (gtk_builder_get_object (builder,
-							NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DATE_FORMAT_WIDGET));
+	combo_box = GTK_COMBO_BOX_TEXT
+		(gtk_builder_get_object (builder,
+					 NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DATE_FORMAT_WIDGET));
 
 	now_raw = time (NULL);
 	now = localtime (&now_raw);
 
 	date_string = eel_strdup_strftime ("%c", now);
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo_box), date_string);
+	gtk_combo_box_text_append_text (combo_box, date_string);
 	g_free (date_string);
 
 	date_string = eel_strdup_strftime ("%Y-%m-%d %H:%M:%S", now);
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo_box), date_string);
+	gtk_combo_box_text_append_text (combo_box, date_string);
 	g_free (date_string);
 
 	date_string = eel_strdup_strftime (_("today at %-I:%M:%S %p"), now);
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo_box), date_string);
+	gtk_combo_box_text_append_text (combo_box, date_string);
 	g_free (date_string);
 }
 
