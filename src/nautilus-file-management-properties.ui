@@ -230,32 +230,6 @@
       </row>
     </data>
   </object>
-  <object class="GtkListStore" id="model11">
-    <columns>
-      <column type="gchararray"/>
-    </columns>
-    <data>
-    </data>
-  </object>
-  <object class="GtkListStore" id="model12">
-    <columns>
-      <column type="gchararray"/>
-    </columns>
-    <data>
-    </data>
-  </object>
-  <object class="GtkListStore" id="model13">
-    <columns>
-      <column type="gchararray"/>
-    </columns>
-    <data>
-    </data>
-  </object>
-  <object class="GtkListStore" id="model14">
-    <columns>
-      <column type="gchararray"/>
-    </columns>
-  </object>
   <object class="GtkDialog" id="file_management_dialog">
     <property name="border_width">5</property>
     <property name="title" translatable="yes">File Management Preferences</property>
@@ -1535,17 +1509,11 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkComboBox" id="captions_0_combobox">
+                                  <object class="GtkComboBoxText" id="captions_0_combobox">
                                     <property name="visible">True</property>
                                     <property name="add_tearoffs">False</property>
                                     <property name="focus_on_click">True</property>
-                                    <property name="model">model11</property>
-                                    <child>
-                                      <object class="GtkCellRendererText" id="renderer"/>
-                                      <attributes>
-                                        <attribute name="text">0</attribute>
-                                      </attributes>
-                                    </child>
+				    <property name="entry-text-column">0</property>
                                   </object>
                                   <packing>
                                     <property name="padding">0</property>
@@ -1590,17 +1558,11 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkComboBox" id="captions_1_combobox">
+                                  <object class="GtkComboBoxText" id="captions_1_combobox">
                                     <property name="visible">True</property>
                                     <property name="add_tearoffs">False</property>
                                     <property name="focus_on_click">True</property>
-                                    <property name="model">model12</property>
-                                    <child>
-                                      <object class="GtkCellRendererText" id="renderer12"/>
-                                      <attributes>
-                                        <attribute name="text">0</attribute>
-                                      </attributes>
-                                    </child>
+				    <property name="entry-text-column">0</property>
                                   </object>
                                   <packing>
                                     <property name="padding">0</property>
@@ -1757,17 +1719,11 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkComboBox" id="date_format_combobox">
+                              <object class="GtkComboBoxText" id="date_format_combobox">
                                 <property name="visible">True</property>
                                 <property name="add_tearoffs">False</property>
                                 <property name="focus_on_click">True</property>
-                                <property name="model">model14</property>
-                                <child>
-                                  <object class="GtkCellRendererText" id="renderer14"/>
-                                  <attributes>
-                                    <attribute name="text">0</attribute>
-                                  </attributes>
-                                </child>
+				<property name="entry-text-column">0</property>
                               </object>
                               <packing>
                                 <property name="padding">0</property>
