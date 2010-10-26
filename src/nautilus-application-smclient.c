@@ -32,24 +32,6 @@
 #include <libxml/xmlsave.h>
 
 static char *
-icon_to_string (GIcon *icon)
-{
-	const char * const *names;
-	GFile *file;
-	
-	if (icon == NULL) {
-		return NULL;
-	} else if (G_IS_THEMED_ICON (icon)) {
-		names = g_themed_icon_get_names (G_THEMED_ICON (icon));
-		return g_strjoinv (":", (char **)names);		
-	} else if (G_IS_FILE_ICON (icon)) {
-		file = g_file_icon_get_file (G_FILE_ICON (icon));
-		return g_file_get_path (file);
-	}
-	return NULL;
-}
-
-static char *
 nautilus_application_get_session_data (NautilusApplication *self)
 {
 	xmlDocPtr doc;
@@ -83,7 +65,7 @@ nautilus_application_get_session_data (NautilusApplication *self)
 		g_free (tmp);
 
 		icon = nautilus_bookmark_get_icon (bookmark);
-		tmp = icon_to_string (icon);
+		tmp = g_icon_to_string (icon);
 		g_object_unref (icon);
 		if (tmp) {
 			xmlNewProp (bookmark_node, "icon", tmp);
@@ -186,27 +168,6 @@ nautilus_application_get_session_data (NautilusApplication *self)
 	return data;
 }
 
-static GIcon *
-icon_from_string (const char *string)
-{
-	GFile *file;
-	GIcon *icon;
-	gchar **names;
-	
-	if (g_path_is_absolute (string)) {
-		file = g_file_new_for_path (string);
-		icon = g_file_icon_new (file);
-		g_object_unref (file);
-		return icon;
-	} else {
-		names = g_strsplit (string, ":", 0);
-		icon = g_themed_icon_new_from_names (names, -1);
-		g_strfreev (names);
-		return icon;
-	}
-	return NULL;
-}
-
 void
 nautilus_application_smclient_load (NautilusApplication *application)
 {
@@ -266,7 +227,7 @@ nautilus_application_smclient_load (NautilusApplication *application)
 						icon_str = xmlGetProp (bookmark_node, "icon");
 						icon = NULL;
 						if (icon_str) {
-							icon = icon_from_string (icon_str);
+							icon = g_icon_new_for_string (icon_str, NULL);
 						}
 						location = g_file_new_for_uri (uri);
 						
