@@ -26,6 +26,7 @@
  */
 
 #include <config.h>
+
 #include "nautilus-application.h"
 
 #include "file-manager/fm-desktop-icon-view.h"
@@ -35,27 +36,34 @@
 #if ENABLE_EMPTY_VIEW
 #include "file-manager/fm-empty-view.h"
 #endif /* ENABLE_EMPTY_VIEW */
+
 #include "nautilus-history-sidebar.h"
 #include "nautilus-places-sidebar.h"
 #include "nautilus-notes-viewer.h"
 #include "nautilus-image-properties-page.h"
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <string.h>
+#include "nautilus-application-smclient.h"
 #include "nautilus-desktop-window.h"
-#include "nautilus-main.h"
 #include "nautilus-spatial-window.h"
+#include "nautilus-main.h"
 #include "nautilus-navigation-window.h"
 #include "nautilus-window-slot.h"
 #include "nautilus-navigation-window-slot.h"
 #include "nautilus-window-bookmarks.h"
-#include "libnautilus-private/nautilus-file-operations.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window-manage-views.h"
-#include <unistd.h>
-#include <errno.h>
-#include <libxml/xmlsave.h>
+
+#include <libnautilus-private/nautilus-autorun.h>
+#include <libnautilus-private/nautilus-debug-log.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-file-operations.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-module.h>
+#include <libnautilus-private/nautilus-undo-manager.h>
+#include <libnautilus-private/nautilus-desktop-link-monitor.h>
+#include <libnautilus-private/nautilus-directory-private.h>
+#include <libnautilus-private/nautilus-signaller.h>
+#include <libnautilus-extension/nautilus-menu-provider.h>
+
 #include <glib/gstdio.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
@@ -64,16 +72,6 @@
 #include <eel/eel-stock-dialogs.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
-#include <libnautilus-private/nautilus-debug-log.h>
-#include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-module.h>
-#include <libnautilus-private/nautilus-undo-manager.h>
-#include <libnautilus-private/nautilus-desktop-link-monitor.h>
-#include <libnautilus-private/nautilus-directory-private.h>
-#include <libnautilus-private/nautilus-signaller.h>
-#include <libnautilus-extension/nautilus-menu-provider.h>
-#include <libnautilus-private/nautilus-autorun.h>
 
 enum
 {
@@ -120,8 +118,6 @@ static void     drive_connected_callback           (GVolumeMonitor           *mo
 						    NautilusApplication      *application);
 static void     drive_listen_for_eject_button      (GDrive *drive, 
 						    NautilusApplication *application);
-static void     nautilus_application_load_session     (NautilusApplication *application); 
-static char *   nautilus_application_get_session_data (void);
 
 G_DEFINE_TYPE (NautilusApplication, nautilus_application, G_TYPE_OBJECT);
 
@@ -249,112 +245,6 @@ automount_all_volumes (NautilusApplication *application)
 		eel_g_object_list_free (volumes);
 	}
 	
-}
-
-static void
-smclient_save_state_cb (EggSMClient   *client,
-			GKeyFile      *state_file,
-			NautilusApplication *application)
-{
-	char *data;
-
-	data = nautilus_application_get_session_data ();
-	if (data) {
-		g_key_file_set_string (state_file,
-				       "Nautilus",
-				       "documents", 
-				       data);
-	}
-	g_free (data);
-}
-
-static void
-smclient_quit_cb (EggSMClient   *client,
-		  NautilusApplication *application)
-{
-	nautilus_main_event_loop_quit (TRUE);
-}
-
-static void
-nautilus_application_init (NautilusApplication *application)
-{
-	/* Create an undo manager */
-	application->undo_manager = nautilus_undo_manager_new ();
-
-	application->unique_app = unique_app_new_with_commands ("org.gnome.Nautilus", NULL,
-								"start_desktop", COMMAND_START_DESKTOP,
-								"stop_desktop", COMMAND_STOP_DESKTOP,
-								"open_browser", COMMAND_OPEN_BROWSER,
-								NULL);
-
-	
-        application->smclient = egg_sm_client_get ();
-        g_signal_connect (application->smclient, "save_state",
-                          G_CALLBACK (smclient_save_state_cb),
-                          application);
-	g_signal_connect (application->smclient, "quit",
-			  G_CALLBACK (smclient_quit_cb),
-			  application);
-	/* TODO: Should connect to quit_requested and block logout on active transfer? */
-	
-	/* register views */
-	fm_icon_view_register ();
-	fm_desktop_icon_view_register ();
-	fm_list_view_register ();
-	fm_compact_view_register ();
-#if ENABLE_EMPTY_VIEW
-	fm_empty_view_register ();
-#endif /* ENABLE_EMPTY_VIEW */
-
-	/* register sidebars */
-	nautilus_places_sidebar_register ();
-	fm_tree_view_register ();
-	nautilus_history_sidebar_register ();
-	nautilus_notes_viewer_register (); /* also property page */
-
-	/* register property pages */
-	nautilus_image_properties_page_register ();
-
-	/* initialize search path for custom icons */
-	gtk_icon_theme_append_search_path (gtk_icon_theme_get_default (),
-					   NAUTILUS_DATADIR G_DIR_SEPARATOR_S "icons");
-}
-
-NautilusApplication *
-nautilus_application_new (void)
-{
-	return g_object_new (NAUTILUS_TYPE_APPLICATION, NULL);
-}
-
-static void
-nautilus_application_finalize (GObject *object)
-{
-	NautilusApplication *application;
-
-	application = NAUTILUS_APPLICATION (object);
-
-	nautilus_bookmarks_exiting ();
-	
-	g_object_unref (application->undo_manager);
-
-	if (application->volume_monitor) {
-		g_object_unref (application->volume_monitor);
-		application->volume_monitor = NULL;
-	}
-
-	g_object_unref (application->unique_app);
-
-	if (application->automount_idle_id != 0) {
-		g_source_remove (application->automount_idle_id);
-		application->automount_idle_id = 0;
-	}
-
-	if (application->proxy != NULL) {
-		g_object_unref (application->proxy);
-		application->proxy = NULL;
-	}
-
-        G_OBJECT_CLASS (nautilus_application_parent_class)->finalize (object);
 }
 
 static gboolean
@@ -994,7 +884,7 @@ nautilus_application_startup (NautilusApplication *application,
 		}
 
 		/* Load session info if availible */
-		nautilus_application_load_session (application);
+		nautilus_application_smclient_load (application);
 		
 		/* load accelerator map, and register save callback */
 		accel_map_filename = nautilus_get_accel_map_file ();
@@ -1747,383 +1637,73 @@ mount_removed_callback (GVolumeMonitor *monitor,
 	g_list_free (close_list);
 }
 
-static char *
-icon_to_string (GIcon *icon)
+static void
+nautilus_application_init (NautilusApplication *application)
 {
-	const char * const *names;
-	GFile *file;
-	
-	if (icon == NULL) {
-		return NULL;
-	} else if (G_IS_THEMED_ICON (icon)) {
-		names = g_themed_icon_get_names (G_THEMED_ICON (icon));
-		return g_strjoinv (":", (char **)names);		
-	} else if (G_IS_FILE_ICON (icon)) {
-		file = g_file_icon_get_file (G_FILE_ICON (icon));
-		return g_file_get_path (file);
-	}
-	return NULL;
+	/* Create an undo manager */
+	application->undo_manager = nautilus_undo_manager_new ();
+
+	application->unique_app = unique_app_new_with_commands ("org.gnome.Nautilus", NULL,
+								"start_desktop", COMMAND_START_DESKTOP,
+								"stop_desktop", COMMAND_STOP_DESKTOP,
+								"open_browser", COMMAND_OPEN_BROWSER,
+								NULL);
+
+	/* initialize the session manager client */
+	nautilus_application_smclient_init (application);
+
+	/* register views */
+	fm_icon_view_register ();
+	fm_desktop_icon_view_register ();
+	fm_list_view_register ();
+	fm_compact_view_register ();
+#if ENABLE_EMPTY_VIEW
+	fm_empty_view_register ();
+#endif /* ENABLE_EMPTY_VIEW */
+
+	/* register sidebars */
+	nautilus_places_sidebar_register ();
+	fm_tree_view_register ();
+	nautilus_history_sidebar_register ();
+	nautilus_notes_viewer_register (); /* also property page */
+
+	/* register property pages */
+	nautilus_image_properties_page_register ();
+
+	/* initialize search path for custom icons */
+	gtk_icon_theme_append_search_path (gtk_icon_theme_get_default (),
+					   NAUTILUS_DATADIR G_DIR_SEPARATOR_S "icons");
 }
 
-static GIcon *
-icon_from_string (const char *string)
+static void
+nautilus_application_finalize (GObject *object)
 {
-	GFile *file;
-	GIcon *icon;
-	gchar **names;
+	NautilusApplication *application;
+
+	application = NAUTILUS_APPLICATION (object);
+
+	nautilus_bookmarks_exiting ();
 	
-	if (g_path_is_absolute (string)) {
-		file = g_file_new_for_path (string);
-		icon = g_file_icon_new (file);
-		g_object_unref (file);
-		return icon;
-	} else {
-		names = g_strsplit (string, ":", 0);
-		icon = g_themed_icon_new_from_names (names, -1);
-		g_strfreev (names);
-		return icon;
-	}
-	return NULL;
-}
+	g_object_unref (application->undo_manager);
 
-static char *
-nautilus_application_get_session_data (void)
-{
-	xmlDocPtr doc;
-	xmlNodePtr root_node, history_node;
-	GList *l;
-	char *data;
-	unsigned n_processed;
-	xmlSaveCtxtPtr ctx;
-	xmlBufferPtr buffer;
-
-	doc = xmlNewDoc ("1.0");
-
-	root_node = xmlNewNode (NULL, "session");
-	xmlDocSetRootElement (doc, root_node);
-
-	history_node = xmlNewChild (root_node, NULL, "history", NULL);
-
-	n_processed = 0;
-	for (l = nautilus_get_history_list (); l != NULL; l = l->next) {
-		NautilusBookmark *bookmark;
-		xmlNodePtr bookmark_node;
-		GIcon *icon;
-		char *tmp;
-
-		bookmark = l->data;
-
-		bookmark_node = xmlNewChild (history_node, NULL, "bookmark", NULL);
-
-		tmp = nautilus_bookmark_get_name (bookmark);
-		xmlNewProp (bookmark_node, "name", tmp);
-		g_free (tmp);
-
-		icon = nautilus_bookmark_get_icon (bookmark);
-		tmp = icon_to_string (icon);
-		g_object_unref (icon);
-		if (tmp) {
-			xmlNewProp (bookmark_node, "icon", tmp);
-			g_free (tmp);
-		}
-
-		tmp = nautilus_bookmark_get_uri (bookmark);
-		xmlNewProp (bookmark_node, "uri", tmp);
-		g_free (tmp);
-
-		if (nautilus_bookmark_get_has_custom_name (bookmark)) {
-			xmlNewProp (bookmark_node, "has_custom_name", "TRUE");
-		}
-
-		if (++n_processed > 50) { /* prevent history list from growing arbitrarily large. */
-			break;
-		}
+	if (application->volume_monitor) {
+		g_object_unref (application->volume_monitor);
+		application->volume_monitor = NULL;
 	}
 
-	for (l = nautilus_application_window_list; l != NULL; l = l->next) {
-		xmlNodePtr win_node, slot_node;
-		NautilusWindow *window;
-		NautilusWindowSlot *slot, *active_slot;
-		GList *slots, *m;
-		char *tmp;
+	g_object_unref (application->unique_app);
 
-		window = l->data;
-
-		win_node = xmlNewChild (root_node, NULL, "window", NULL);
-
-		xmlNewProp (win_node, "type", NAUTILUS_IS_NAVIGATION_WINDOW (window) ? "navigation" : "spatial");
-
-		if (NAUTILUS_IS_NAVIGATION_WINDOW (window)) { /* spatial windows store their state as file metadata */
-			GdkWindow *gdk_window;
-
-			tmp = eel_gtk_window_get_geometry_string (GTK_WINDOW (window));
-			xmlNewProp (win_node, "geometry", tmp);
-			g_free (tmp);
-
-			gdk_window = gtk_widget_get_window (GTK_WIDGET (window));
-
-			if (gdk_window &&
-			    gdk_window_get_state (gdk_window) & GDK_WINDOW_STATE_MAXIMIZED) {
-				xmlNewProp (win_node, "maximized", "TRUE");
-			}
-
-			if (gdk_window &&
-			    gdk_window_get_state (gdk_window) & GDK_WINDOW_STATE_STICKY) {
-				xmlNewProp (win_node, "sticky", "TRUE");
-			}
-
-			if (gdk_window &&
-			    gdk_window_get_state (gdk_window) & GDK_WINDOW_STATE_ABOVE) {
-				xmlNewProp (win_node, "keep-above", "TRUE");
-			}
-		}
-
-		slots = nautilus_window_get_slots (window);
-		active_slot = nautilus_window_get_active_slot (window);
-
-		/* store one slot as window location. Otherwise
-		 * older Nautilus versions will bail when reading the file. */
-		tmp = nautilus_window_slot_get_location_uri (active_slot);
-		xmlNewProp (win_node, "location", tmp);
-		g_free (tmp);
-
-		for (m = slots; m != NULL; m = m->next) {
-			slot = NAUTILUS_WINDOW_SLOT (m->data);
-
-			slot_node = xmlNewChild (win_node, NULL, "slot", NULL);
-
-			tmp = nautilus_window_slot_get_location_uri (slot);
-			xmlNewProp (slot_node, "location", tmp);
-			g_free (tmp);
-
-			if (slot == active_slot) {
-				xmlNewProp (slot_node, "active", "TRUE");
-			}
-		}
-
-		g_list_free (slots);
+	if (application->automount_idle_id != 0) {
+		g_source_remove (application->automount_idle_id);
+		application->automount_idle_id = 0;
 	}
 
-	buffer = xmlBufferCreate ();
-	xmlIndentTreeOutput = 1;
-	ctx = xmlSaveToBuffer (buffer, "UTF-8", XML_SAVE_FORMAT);
-	if (xmlSaveDoc (ctx, doc) < 0 ||
-	    xmlSaveFlush (ctx) < 0) {
-		g_message ("failed to save session");
-	}
-	
-	xmlSaveClose(ctx);
-	data = g_strndup (buffer->content, buffer->use);
-	xmlBufferFree (buffer);
-
-	xmlFreeDoc (doc);
-
-	return data;
-}
-
-void
-nautilus_application_load_session (NautilusApplication *application)
-{
-	xmlDocPtr doc;
-	gboolean bail;
-	xmlNodePtr root_node;
-	GKeyFile *state_file;
-	char *data;
-
-	if (!egg_sm_client_is_resumed (application->smclient)) {
-		return;
+	if (application->proxy != NULL) {
+		g_object_unref (application->proxy);
+		application->proxy = NULL;
 	}
 
-	state_file = egg_sm_client_get_state_file (application->smclient);
-	if (!state_file) {
-		return;
-	}
-
-	data = g_key_file_get_string (state_file,
-				      "Nautilus",
-				      "documents",
-				      NULL);
-	if (data == NULL) {
-		return;
-	}
-	
-	bail = TRUE;
-
-	doc = xmlReadMemory (data, strlen (data), NULL, "UTF-8", 0);
-	if (doc != NULL && (root_node = xmlDocGetRootElement (doc)) != NULL) {
-		xmlNodePtr node;
-		
-		bail = FALSE;
-		
-		for (node = root_node->children; node != NULL; node = node->next) {
-			
-			if (!strcmp (node->name, "text")) {
-				continue;
-			} else if (!strcmp (node->name, "history")) {
-				xmlNodePtr bookmark_node;
-				gboolean emit_change;
-				
-				emit_change = FALSE;
-				
-				for (bookmark_node = node->children; bookmark_node != NULL; bookmark_node = bookmark_node->next) {
-					if (!strcmp (bookmark_node->name, "text")) {
-						continue;
-					} else if (!strcmp (bookmark_node->name, "bookmark")) {
-						xmlChar *name, *icon_str, *uri;
-						gboolean has_custom_name;
-						GIcon *icon;
-						GFile *location;
-						
-						uri = xmlGetProp (bookmark_node, "uri");
-						name = xmlGetProp (bookmark_node, "name");
-						has_custom_name = xmlHasProp (bookmark_node, "has_custom_name") ? TRUE : FALSE;
-						icon_str = xmlGetProp (bookmark_node, "icon");
-						icon = NULL;
-						if (icon_str) {
-							icon = icon_from_string (icon_str);
-						}
-						location = g_file_new_for_uri (uri);
-						
-						emit_change |= nautilus_add_to_history_list_no_notify (location, name, has_custom_name, icon);
-						
-						g_object_unref (location);
-						
-						if (icon) {
-							g_object_unref (icon);
-						}
-						xmlFree (name);
-						xmlFree (uri);
-						xmlFree (icon_str);
-					} else {
-						g_message ("unexpected bookmark node %s while parsing session data", bookmark_node->name);
-						bail = TRUE;
-						continue;
-					}
-				}
-				
-				if (emit_change) {
-					nautilus_send_history_list_changed ();
-				}
-			} else if (!strcmp (node->name, "window")) {
-				NautilusWindow *window;
-				xmlChar *type, *location_uri, *slot_uri;
-				xmlNodePtr slot_node;
-				GFile *location;
-				int i;
-				
-				type = xmlGetProp (node, "type");
-				if (type == NULL) {
-					g_message ("empty type node while parsing session data");
-					bail = TRUE;
-					continue;
-				}
-				
-				location_uri = xmlGetProp (node, "location");
-				if (location_uri == NULL) {
-					g_message ("empty location node while parsing session data");
-					bail = TRUE;
-					xmlFree (type);
-					continue;
-				}
-				
-				if (!strcmp (type, "navigation")) {
-					xmlChar *geometry;
-					
-					window = nautilus_application_create_navigation_window (application, NULL, gdk_screen_get_default ());
-					
-					geometry = xmlGetProp (node, "geometry");
-					if (geometry != NULL) {
-						eel_gtk_window_set_initial_geometry_from_string 
-							(GTK_WINDOW (window), 
-							 geometry,
-							 NAUTILUS_NAVIGATION_WINDOW_MIN_WIDTH,
-							 NAUTILUS_NAVIGATION_WINDOW_MIN_HEIGHT,
-							 FALSE);
-					}
-					xmlFree (geometry);
-					
-					if (xmlHasProp (node, "maximized")) {
-						gtk_window_maximize (GTK_WINDOW (window));
-					} else {
-						gtk_window_unmaximize (GTK_WINDOW (window));
-					}
-					
-					if (xmlHasProp (node, "sticky")) {
-						gtk_window_stick (GTK_WINDOW (window));
-					} else {
-						gtk_window_unstick (GTK_WINDOW (window));
-					}
-					
-					if (xmlHasProp (node, "keep-above")) {
-						gtk_window_set_keep_above (GTK_WINDOW (window), TRUE);
-					} else {
-						gtk_window_set_keep_above (GTK_WINDOW (window), FALSE);
-					}
-					
-					for (i = 0, slot_node = node->children; slot_node != NULL; slot_node = slot_node->next) {
-						if (!strcmp (slot_node->name, "slot")) {
-							slot_uri = xmlGetProp (slot_node, "location");
-							if (slot_uri != NULL) {
-								NautilusWindowSlot *slot;
-								
-								if (i == 0) {
-									slot = window->details->active_pane->active_slot;
-								} else {
-									slot = nautilus_window_open_slot (window->details->active_pane, NAUTILUS_WINDOW_OPEN_SLOT_APPEND);
-								}
-								
-								location = g_file_new_for_uri (slot_uri);
-								nautilus_window_slot_open_location (slot, location, FALSE);
-								
-								if (xmlHasProp (slot_node, "active")) {
-									nautilus_window_set_active_slot (slot->pane->window, slot);
-								}
-								
-								i++;
-							}
-							xmlFree (slot_uri);
-						}
-					}
-					
-					if (i == 0) {
-						/* This may be an old session file */
-						location = g_file_new_for_uri (location_uri);
-						nautilus_window_slot_open_location (window->details->active_pane->active_slot, location, FALSE);
-						g_object_unref (location);
-					}
-				} else if (!strcmp (type, "spatial")) {
-					location = g_file_new_for_uri (location_uri);
-					window = nautilus_application_get_spatial_window (application, NULL, NULL,
-											  location, gdk_screen_get_default (),
-											  NULL);
-
-					nautilus_window_go_to (window, location);
-
-					g_object_unref (location);
-				} else {
-					g_message ("unknown window type \"%s\" while parsing session data", type);
-					bail = TRUE;
-				}
-				
-				xmlFree (type);
-				xmlFree (location_uri);
-			} else {
-				g_message ("unexpected node %s while parsing session data", node->name);
-				bail = TRUE;
-				continue;
-			}
-		}
-	}
-	
-	if (doc != NULL) {
-		xmlFreeDoc (doc);
-	}
-
-	g_free (data);
-
-	if (bail) {
-		g_message ("failed to load session");
-	} 
+        G_OBJECT_CLASS (nautilus_application_parent_class)->finalize (object);
 }
 
 static void
@@ -2133,4 +1713,10 @@ nautilus_application_class_init (NautilusApplicationClass *class)
 
         object_class = G_OBJECT_CLASS (class);
         object_class->finalize = nautilus_application_finalize;
+}
+
+NautilusApplication *
+nautilus_application_new (void)
+{
+	return g_object_new (NAUTILUS_TYPE_APPLICATION, NULL);
 }
