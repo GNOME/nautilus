@@ -1181,9 +1181,12 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 			 * happens when a new window cannot display its initial URI. 
 			 */
 			/* if this is the only window, we don't want to quit, so we redirect it to home */
-			if (nautilus_application_get_n_windows () <= 1) {
-				g_assert (nautilus_application_get_n_windows () == 1);
 
+			NautilusApplication *app;
+
+			app = nautilus_application_dup_singleton ();
+			
+			if (nautilus_application_get_n_windows (app) == 1) {
 				/* the user could have typed in a home directory that doesn't exist,
 				   in which case going home would cause an infinite loop, so we
 				   better test for that */
@@ -1206,6 +1209,8 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 				/* Since this is a window, destroying it will also unref it. */
 				gtk_widget_destroy (GTK_WIDGET (window));
 			}
+
+			g_object_unref (app);
 		} else {
 			/* Clean up state of already-showing window */
 			end_location_change (slot);

@@ -84,7 +84,7 @@ nautilus_application_get_session_data (NautilusApplication *self)
 		}
 	}
 
-	window_list = nautilus_application_get_window_list ();
+	window_list = gtk_application_get_windows (GTK_APPLICATION (self));
 
 	for (l = window_list; l != NULL; l = l->next) {
 		xmlNodePtr win_node, slot_node;
@@ -395,7 +395,7 @@ static void
 smclient_quit_cb (EggSMClient   *client,
 		  NautilusApplication *application)
 {
-	nautilus_main_event_loop_quit (TRUE);
+	g_application_release (G_APPLICATION (application));
 }
 
 void

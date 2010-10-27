@@ -184,11 +184,6 @@ nautilus_window_init (NautilusWindow *window)
 	/* Register to menu provider extension signal managing menu updates */
 	g_signal_connect_object (nautilus_signaller_get_current (), "popup_menu_changed",
 			 G_CALLBACK (nautilus_window_load_extension_menus), window, G_CONNECT_SWAPPED);
-
-	gtk_quit_add_destroy (1, GTK_WIDGET (window));
-
-	/* Keep the main event loop alive as long as the window exists */
-	nautilus_main_event_loop_register (GTK_WIDGET (window));
 }
 
 /* Unconditionally synchronize the GtkUIManager of WINDOW. */
@@ -1755,12 +1750,15 @@ nautilus_forget_history (void)
 	NautilusWindowSlot *slot;
 	NautilusNavigationWindowSlot *navigation_slot;
 	GList *window_node, *l, *walk;
+	NautilusApplication *app;
+
+	app = nautilus_application_dup_singleton ();
 
 	/* Clear out each window's back & forward lists. Also, remove 
 	 * each window's current location bookmark from history list 
 	 * so it doesn't get clobbered.
 	 */
-	for (window_node = nautilus_application_get_window_list ();
+	for (window_node = gtk_application_get_windows (GTK_APPLICATION (app));
 	     window_node != NULL;
 	     window_node = window_node->next) {
 
@@ -1797,7 +1795,7 @@ nautilus_forget_history (void)
 	free_history_list ();
 
 	/* Re-add each window's current location to history list. */
-	for (window_node = nautilus_application_get_window_list ();
+	for (window_node = gtk_application_get_windows (GTK_APPLICATION (app));
 	     window_node != NULL;
 	     window_node = window_node->next) {
 		NautilusWindow *window;
@@ -1813,6 +1811,8 @@ nautilus_forget_history (void)
 			}
 		}
 	}
+
+	g_object_unref (app);
 }
 
 GList *

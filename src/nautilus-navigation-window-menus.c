@@ -67,7 +67,12 @@ static void
 action_close_all_windows_callback (GtkAction *action, 
 				   gpointer user_data)
 {
-	nautilus_application_close_all_navigation_windows ();
+	NautilusApplication *app;
+
+	app = nautilus_application_dup_singleton ();
+	nautilus_application_close_all_navigation_windows (app);
+
+	g_object_unref (app);
 }
 
 static gboolean
