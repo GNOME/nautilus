@@ -184,20 +184,15 @@ static void
 exif_content_callback (ExifContent *content, gpointer data)
 {
 	struct ExifAttribute *attribute;
-#ifndef HAVE_OLD_EXIF
 	char b[1024];
-#endif
 
 	attribute = (struct ExifAttribute *)data;
 	if (attribute->found) {
 		return;
 	}
 
-#ifdef HAVE_OLD_EXIF
-        attribute->value = g_strdup (exif_content_get_value (content, attribute->tag));
-#else
         attribute->value = g_strdup (exif_content_get_value (content, attribute->tag, b, sizeof(b)));
-#endif
+
 	if (attribute->value != NULL) {
 		attribute->found = TRUE;
 	}
@@ -300,11 +295,7 @@ append_xmp_value_pair (NautilusImagePropertiesPage *page,
 	XmpStringPtr value;
 
 	value = xmp_string_new();
-#ifdef HAVE_EXEMPI_NEW_API
 	if (xmp_get_property (xmp, ns, propname, value, &options)) {
-#else
-	if (xmp_get_property_and_bits (xmp, ns, propname, value, &options)) {
-#endif
 		if (XMP_IS_PROP_SIMPLE (options)) {
 			append_label_take_str
 				(page->details->vbox,
