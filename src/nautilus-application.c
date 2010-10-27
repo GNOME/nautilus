@@ -741,9 +741,14 @@ nautilus_application_create_desktop_windows (NautilusApplication *application)
 	NautilusDesktopWindow *window;
 	GtkWidget *selection_widget;
 	int screens, i;
+	gboolean exit_with_last_window;
 
 	display = gdk_display_get_default ();
 	screens = gdk_display_get_n_screens (display);
+
+	exit_with_last_window =
+		g_settings_get_boolean (nautilus_preferences,
+					NAUTILUS_PREFERENCES_EXIT_WITH_LAST_WINDOW);
 
 	for (i = 0; i < screens; i++) {
 		selection_widget = get_desktop_manager_selection (display, i);
@@ -766,8 +771,13 @@ nautilus_application_create_desktop_windows (NautilusApplication *application)
 			nautilus_application_desktop_windows =
 				g_list_prepend (nautilus_application_desktop_windows, window);
 
-			gtk_application_add_window (GTK_APPLICATION (application),
-						    GTK_WINDOW (window));
+			/* don't add the desktop windows to the GtkApplication hold toplevels
+			 * if we should exit when the last window is closed.
+			 */
+			if (!exit_with_last_window) {
+				gtk_application_add_window (GTK_APPLICATION (application),
+							    GTK_WINDOW (window));
+			}
 		}
 	}
 }
