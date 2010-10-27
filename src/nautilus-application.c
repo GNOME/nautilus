@@ -119,13 +119,6 @@ nautilus_application_get_spatial_window_list (void)
 	return nautilus_application_spatial_window_list;
 }
 
-guint
-nautilus_application_get_n_windows (NautilusApplication *self)
-{
-	return g_list_length (gtk_application_get_windows (GTK_APPLICATION (self))) +
-	       g_list_length (nautilus_application_desktop_windows);
-}
-
 static void
 startup_volume_mount_cb (GObject *source_object,
 			 GAsyncResult *res,

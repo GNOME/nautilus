@@ -74,7 +74,6 @@ GType nautilus_application_get_type (void);
 
 NautilusApplication *nautilus_application_dup_singleton (void);
 
-guint nautilus_application_get_n_windows (NautilusApplication *self);
 NautilusWindow *     nautilus_application_get_spatial_window     (NautilusApplication *application,
 								  NautilusWindow      *requesting_window,
 								  const char          *startup_id,
