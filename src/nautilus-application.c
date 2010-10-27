@@ -1,27 +1,28 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-
 /*
- *  Nautilus
+ * nautilus-application: main Nautilus application class.
  *
- *  Copyright (C) 1999, 2000 Red Hat, Inc.
- *  Copyright (C) 2000, 2001 Eazel, Inc.
+ * Copyright (C) 1999, 2000 Red Hat, Inc.
+ * Copyright (C) 2000, 2001 Eazel, Inc.
+ * Copyright (C) 2010, Cosimo Cecchi <cosimoc@gnome.org>
  *
- *  Nautilus is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License as
- *  published by the Free Software Foundation; either version 2 of the
- *  License, or (at your option) any later version.
+ * Nautilus is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
  *
- *  Nautilus is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  General Public License for more details.
+ * Nautilus is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  Authors: Elliot Lee <sopwith@redhat.com>,
- *           Darin Adler <darin@bentspoon.com>
+ * Authors: Elliot Lee <sopwith@redhat.com>,
+ *          Darin Adler <darin@bentspoon.com>
+ *          Cosimo Cecchi <cosimoc@gnome.org>
  *
  */
 
@@ -37,33 +38,36 @@
 #include "file-manager/fm-empty-view.h"
 #endif /* ENABLE_EMPTY_VIEW */
 
-#include "nautilus-history-sidebar.h"
-#include "nautilus-places-sidebar.h"
-#include "nautilus-notes-viewer.h"
-#include "nautilus-image-properties-page.h"
 #include "nautilus-application-smclient.h"
 #include "nautilus-desktop-window.h"
-#include "nautilus-spatial-window.h"
+#include "nautilus-history-sidebar.h"
+#include "nautilus-image-properties-page.h"
 #include "nautilus-main.h"
 #include "nautilus-navigation-window.h"
-#include "nautilus-window-slot.h"
 #include "nautilus-navigation-window-slot.h"
+#include "nautilus-notes-viewer.h"
+#include "nautilus-places-sidebar.h"
+#include "nautilus-spatial-window.h"
 #include "nautilus-window-bookmarks.h"
-#include "nautilus-window-private.h"
 #include "nautilus-window-manage-views.h"
+#include "nautilus-window-private.h"
+#include "nautilus-window-slot.h"
 
 #include <libnautilus-private/nautilus-autorun.h>
 #include <libnautilus-private/nautilus-debug-log.h>
+#include <libnautilus-private/nautilus-desktop-link-monitor.h>
+#include <libnautilus-private/nautilus-directory-private.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-module.h>
-#include <libnautilus-private/nautilus-undo-manager.h>
-#include <libnautilus-private/nautilus-desktop-link-monitor.h>
-#include <libnautilus-private/nautilus-directory-private.h>
 #include <libnautilus-private/nautilus-signaller.h>
+#include <libnautilus-private/nautilus-undo-manager.h>
 #include <libnautilus-extension/nautilus-menu-provider.h>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
@@ -73,15 +77,6 @@
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 
-enum
-{
-  COMMAND_0, /* unused: 0 is an invalid command */
-
-  COMMAND_START_DESKTOP,
-  COMMAND_STOP_DESKTOP,
-  COMMAND_OPEN_BROWSER,
-};
-
 /* Keep window from shrinking down ridiculously small; numbers are somewhat arbitrary */
 #define APPLICATION_WINDOW_MIN_WIDTH	300
 #define APPLICATION_WINDOW_MIN_HEIGHT	100
@@ -90,11 +85,10 @@ enum
 
 #define NAUTILUS_ACCEL_MAP_SAVE_DELAY 30
 
+static NautilusApplication *singleton = NULL;
+
 /* Keeps track of all the desktop windows. */
 static GList *nautilus_application_desktop_windows;
-
-/* Keeps track of all the nautilus windows. */
-static GList *nautilus_application_window_list;
 
 /* Keeps track of all the object windows */
 static GList *nautilus_application_spatial_window_list;
@@ -103,7 +97,6 @@ static GList *nautilus_application_spatial_window_list;
 static gboolean save_of_accel_map_requested = FALSE;
 
 static void     desktop_changed_callback          (gpointer                  user_data);
-static void     desktop_location_changed_callback (gpointer                  user_data);
 static void     mount_removed_callback            (GVolumeMonitor            *monitor,
 						   GMount                    *mount,
 						   NautilusApplication       *application);
@@ -119,91 +112,18 @@ static void     drive_connected_callback           (GVolumeMonitor           *mo
 static void     drive_listen_for_eject_button      (GDrive *drive, 
 						    NautilusApplication *application);
 
-G_DEFINE_TYPE (NautilusApplication, nautilus_application, G_TYPE_OBJECT);
+G_DEFINE_TYPE (NautilusApplication, nautilus_application, GTK_TYPE_APPLICATION);
 
-static gboolean
-_unique_message_data_set_geometry_and_uris (UniqueMessageData  *message_data,
-					    const char *geometry,
-					    char **uris)
-{
-  GString *list;
-  gint i;
-  gchar *result;
-  gsize length;
-
-  list = g_string_new (NULL);
-  if (geometry != NULL) {
-	  g_string_append (list, geometry);
-  }
-  g_string_append (list, "\r\n");
-  
-  for (i = 0; uris != NULL && uris[i]; i++) {
-	  g_string_append (list, uris[i]);
-	  g_string_append (list, "\r\n");
-  }
-
-  result = g_convert (list->str, list->len,
-                      "ASCII", "UTF-8",
-                      NULL, &length, NULL);
-  g_string_free (list, TRUE);
-  
-  if (result) {
-	  unique_message_data_set (message_data, (guchar *) result, length);
-	  g_free (result);
-	  return TRUE;
-  }
-  
-  return FALSE;
-}
-
-static gchar **
-_unique_message_data_get_geometry_and_uris (UniqueMessageData *message_data,
-					    char **geometry)
-{
-  gchar **result = NULL;
-
-  *geometry = NULL;
-  
-  gchar *text, *newline, *uris;
-  text = unique_message_data_get_text (message_data);
-  if (text) {
-	  newline = strchr (text, '\n');
-	  if (newline) {
-		  *geometry = g_strndup (text, newline-text);
-		  uris = newline+1;
-	  } else {
-		  uris = text;
-	  }
-	  
-	  result = g_uri_list_extract_uris (uris);
-	  g_free (text);
-  }
-
-  /* if the string is empty, make it NULL */
-  if (*geometry && strlen (*geometry) == 0) {
-	  g_free (*geometry);
-	  *geometry = NULL;
-  }
-
-  return result;
-}
-
-GList *
-nautilus_application_get_window_list (void)
-{
-	return nautilus_application_window_list;
-}
-
-GList *
+static GList *
 nautilus_application_get_spatial_window_list (void)
 {
 	return nautilus_application_spatial_window_list;
 }
 
-unsigned int
-nautilus_application_get_n_windows (void)
+guint
+nautilus_application_get_n_windows (NautilusApplication *self)
 {
-	return g_list_length (nautilus_application_window_list) +
+	return g_list_length (gtk_application_get_windows (GTK_APPLICATION (self))) +
 	       g_list_length (nautilus_application_desktop_windows);
 }
 
@@ -303,7 +223,8 @@ check_required_directories (NautilusApplication *application)
 
 		dialog = eel_show_error_dialog (error_string, detail_string, NULL);
 		/* We need the main event loop so the user has a chance to see the dialog. */
-		nautilus_main_event_loop_register (GTK_WIDGET (dialog));
+		gtk_application_add_window (GTK_APPLICATION (application),
+					    GTK_WINDOW (dialog));
 
 		g_string_free (directories_as_string, TRUE);
 		g_free (error_string);
@@ -726,55 +647,6 @@ open_windows (NautilusApplication *application,
 	}
 }
 
-static UniqueResponse
-message_received_cb (UniqueApp         *unique_app,
-                     guint              command,
-                     UniqueMessageData *message,
-                     guint              time_,
-                     gpointer           user_data)
-{
-	NautilusApplication *application;
-	UniqueResponse res;
-	char **uris;
-	char *geometry;
-	GdkScreen *screen;
-	
-	application =  user_data;
-	res = UNIQUE_RESPONSE_OK;
-	
-	switch (command) {
-	case UNIQUE_CLOSE:
-		res = UNIQUE_RESPONSE_OK;
-		nautilus_main_event_loop_quit (TRUE);
-		
-		break;
-	case UNIQUE_OPEN:
-	case COMMAND_OPEN_BROWSER:
-		uris = _unique_message_data_get_geometry_and_uris (message, &geometry);
-		screen = unique_message_data_get_screen (message);
-		open_windows (application,
-			      unique_message_data_get_startup_id (message),
-			      uris,
-			      screen,
-			      geometry,
-			      command == COMMAND_OPEN_BROWSER);
-		g_strfreev (uris);
-		g_free (geometry);
-		break;
-	case COMMAND_START_DESKTOP:
-		nautilus_application_open_desktop (application);
-		break;
-	case COMMAND_STOP_DESKTOP:
-		nautilus_application_close_desktop ();
-		break;
-	default:
-		res = UNIQUE_RESPONSE_PASSTHROUGH;
-		break;
-	}
-	
-	return res;
-}
-
 gboolean 
 nautilus_application_save_accel_map (gpointer data)
 {
@@ -803,99 +675,6 @@ queue_accel_map_save_callback (GtkAccelMap *object, gchar *accel_path,
 				nautilus_application_save_accel_map, NULL);
 	}
 }
-
-void
-nautilus_application_startup (NautilusApplication *application,
-			      gboolean kill_shell,
-			      gboolean no_default_window,
-			      gboolean no_desktop,
-			      gboolean browser_window,
-			      const char *geometry,
-			      char **urls)
-{
-	UniqueMessageData *message;
-	
-	/* Check the user's ~/.nautilus directories and post warnings
-	 * if there are problems.
-	 */
-	if (!kill_shell && !check_required_directories (application)) {
-		return;
-	}
-
-	if (kill_shell) {
-		if (unique_app_is_running (application->unique_app)) {
-			unique_app_send_message (application->unique_app,
-						 UNIQUE_CLOSE, NULL);
-			
-		}
-	} else {
-		char *accel_map_filename;
-
-		if (!no_desktop &&
-		    !g_settings_get_boolean (gnome_background_preferences, NAUTILUS_PREFERENCES_SHOW_DESKTOP)) {
-			no_desktop = TRUE;
-		}
-
-		if (!no_desktop) {
-			if (unique_app_is_running (application->unique_app)) {
-				unique_app_send_message (application->unique_app,
-							 COMMAND_START_DESKTOP, NULL);
-			} else {
-				nautilus_application_open_desktop (application);
-			}
-		}
-
-		if (!unique_app_is_running (application->unique_app)) {
-			finish_startup (application, no_desktop);
-			g_signal_connect (application->unique_app, "message-received", G_CALLBACK (message_received_cb), application);			
-		}
-		
-		/* Monitor the preference to show or hide the desktop */
-		g_signal_connect_swapped (gnome_background_preferences, "changed::" NAUTILUS_PREFERENCES_SHOW_DESKTOP,
-					  G_CALLBACK(desktop_changed_callback),
-					  G_OBJECT (application));
-
-		/* Monitor the preference to have the desktop */
-		/* point to the Unix home folder */
-		g_signal_connect_swapped (nautilus_preferences, "changed::" NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
-					  G_CALLBACK(desktop_location_changed_callback),
-					  G_OBJECT (application));
-
-		/* Create the other windows. */
-		if (urls != NULL || !no_default_window) {
-			if (unique_app_is_running (application->unique_app)) {
-				message = unique_message_data_new ();
-				_unique_message_data_set_geometry_and_uris (message, geometry, urls);
-				if (browser_window) {
-					unique_app_send_message (application->unique_app,
-								 COMMAND_OPEN_BROWSER, message);
-				} else {
-					unique_app_send_message (application->unique_app,
-								 UNIQUE_OPEN, message);
-				}
-				unique_message_data_free (message);				
-			} else {
-				open_windows (application, NULL,
-					      urls,
-					      gdk_screen_get_default (),
-					      geometry,
-					      browser_window);
-			}
-		}
-
-		/* Load session info if availible */
-		nautilus_application_smclient_load (application);
-		
-		/* load accelerator map, and register save callback */
-		accel_map_filename = nautilus_get_accel_map_file ();
-		if (accel_map_filename) {
-			gtk_accel_map_load (accel_map_filename);
-			g_free (accel_map_filename);
-		}
-		g_signal_connect (gtk_accel_map_get (), "changed", G_CALLBACK (queue_accel_map_save_callback), NULL);
-	}
-}
-
 
 static void 
 selection_get_cb (GtkWidget          *widget,
@@ -966,7 +745,6 @@ selection_clear_event_cb (GtkWidget	        *widget,
 static void
 nautilus_application_create_desktop_windows (NautilusApplication *application)
 {
-	static gboolean create_in_progress = FALSE;
 	GdkDisplay *display;
 	NautilusDesktopWindow *window;
 	GtkWidget *selection_widget;
@@ -974,12 +752,6 @@ nautilus_application_create_desktop_windows (NautilusApplication *application)
 
 	g_return_if_fail (nautilus_application_desktop_windows == NULL);
 	g_return_if_fail (NAUTILUS_IS_APPLICATION (application));
-
-	if (create_in_progress) {
-		return;
-	}
-
-	create_in_progress = TRUE;
 
 	display = gdk_display_get_default ();
 	screens = gdk_display_get_n_screens (display);
@@ -1007,8 +779,6 @@ nautilus_application_create_desktop_windows (NautilusApplication *application)
 				g_list_prepend (nautilus_application_desktop_windows, window);
 		}
 	}
-
-	create_in_progress = FALSE;
 }
 
 void
@@ -1031,12 +801,12 @@ nautilus_application_close_desktop (void)
 }
 
 void
-nautilus_application_close_all_navigation_windows (void)
+nautilus_application_close_all_navigation_windows (NautilusApplication *self)
 {
 	GList *list_copy;
 	GList *l;
 	
-	list_copy = g_list_copy (nautilus_application_window_list);
+	list_copy = g_list_copy (gtk_application_get_windows (GTK_APPLICATION (self)));
 	/* First hide all window to get the feeling of quick response */
 	for (l = list_copy; l != NULL; l = l->next) {
 		NautilusWindow *window;
@@ -1184,12 +954,6 @@ nautilus_application_close_all_spatial_windows (void)
 	g_list_free (list_copy);
 }
 
-static void
-nautilus_application_destroyed_window (GtkWidget *object, NautilusApplication *application)
-{
-	nautilus_application_window_list = g_list_remove (nautilus_application_window_list, object);
-}
-
 static gboolean
 nautilus_window_delete_event_callback (GtkWidget *widget,
 				       GdkEvent *event,
@@ -1227,10 +991,8 @@ create_window (NautilusApplication *application,
 			       G_CALLBACK (nautilus_window_delete_event_callback), NULL, NULL,
 			       G_CONNECT_AFTER);
 
-	g_signal_connect_object (window, "destroy",
-				 G_CALLBACK (nautilus_application_destroyed_window), application, 0);
-
-	nautilus_application_window_list = g_list_prepend (nautilus_application_window_list, window);
+	gtk_application_add_window (GTK_APPLICATION (application),
+				    GTK_WINDOW (window));
 
 	/* Do not yet show the window. It will be shown later on if it can
 	 * successfully display its initial URI. Otherwise it will be destroyed
@@ -1313,11 +1075,12 @@ nautilus_application_get_spatial_window (NautilusApplication *application,
 }
 
 static gboolean
-another_navigation_window_already_showing (NautilusWindow *the_window)
+another_navigation_window_already_showing (NautilusApplication *application,
+					   NautilusWindow *the_window)
 {
 	GList *list, *item;
 	
-	list = nautilus_application_get_window_list ();
+	list = gtk_application_get_windows (GTK_APPLICATION (application));
 	for (item = list; item != NULL; item = item->next) {
 		if (item->data != the_window &&
 		    NAUTILUS_IS_NAVIGATION_WINDOW (item->data)) {
@@ -1362,7 +1125,7 @@ nautilus_application_create_navigation_window (NautilusApplication *application,
 			 geometry_string,
 			 NAUTILUS_NAVIGATION_WINDOW_MIN_WIDTH,
 			 NAUTILUS_NAVIGATION_WINDOW_MIN_HEIGHT,
-			 another_navigation_window_already_showing (window));
+			 another_navigation_window_already_showing (application, window));
 	}
 	g_free (geometry_string);
 
@@ -1371,16 +1134,6 @@ nautilus_application_create_navigation_window (NautilusApplication *application,
 			    window);
 
 	return window;
-}
-
-/* callback for changing the directory the desktop points to */
-static void
-desktop_location_changed_callback (gpointer user_data)
-{
-	if (nautilus_application_desktop_windows != NULL) {
-		g_list_foreach (nautilus_application_desktop_windows,
-				(GFunc) nautilus_desktop_window_update_directory, NULL);
-	}
 }
 
 /* callback for showing or hiding the desktop based on the user's preference */
@@ -1580,7 +1333,7 @@ mount_removed_callback (GVolumeMonitor *monitor,
 	unclosed_slot = FALSE;
 
 	/* Check and see if any of the open windows are displaying contents from the unmounted mount */
-	window_list = nautilus_application_get_window_list ();
+	window_list = gtk_application_get_windows (GTK_APPLICATION (application));
 
 	root = g_mount_get_root (mount);
 	/* Construct a list of windows to be closed. Do not add the non-closable windows to the list. */
@@ -1637,20 +1390,239 @@ mount_removed_callback (GVolumeMonitor *monitor,
 	g_list_free (close_list);
 }
 
+static GObject *
+nautilus_application_constructor (GType type,
+				  guint n_construct_params,
+				  GObjectConstructParam *construct_params)
+{
+        GObject *retval;
+
+        if (singleton != NULL) {
+                return g_object_ref (singleton);
+        }
+
+        retval = G_OBJECT_CLASS (nautilus_application_parent_class)->constructor
+                (type, n_construct_params, construct_params);
+
+        singleton = NAUTILUS_APPLICATION (retval);
+        g_object_add_weak_pointer (retval, (gpointer) &singleton);
+
+        return retval;
+}
+
 static void
 nautilus_application_init (NautilusApplication *application)
 {
-	/* Create an undo manager */
-	application->undo_manager = nautilus_undo_manager_new ();
+	/* do nothing */
+}
 
-	application->unique_app = unique_app_new_with_commands ("org.gnome.Nautilus", NULL,
-								"start_desktop", COMMAND_START_DESKTOP,
-								"stop_desktop", COMMAND_STOP_DESKTOP,
-								"open_browser", COMMAND_OPEN_BROWSER,
-								NULL);
+static void
+nautilus_application_finalize (GObject *object)
+{
+	NautilusApplication *application;
+
+	application = NAUTILUS_APPLICATION (object);
+
+	nautilus_bookmarks_exiting ();
+	
+	g_object_unref (application->undo_manager);
+
+	if (application->volume_monitor) {
+		g_object_unref (application->volume_monitor);
+		application->volume_monitor = NULL;
+	}
+
+	if (application->automount_idle_id != 0) {
+		g_source_remove (application->automount_idle_id);
+		application->automount_idle_id = 0;
+	}
+
+	if (application->proxy != NULL) {
+		g_object_unref (application->proxy);
+		application->proxy = NULL;
+	}
+
+        G_OBJECT_CLASS (nautilus_application_parent_class)->finalize (object);
+}
+
+static gint
+nautilus_application_command_line (GApplication *app,
+				   GApplicationCommandLine *command_line)
+{
+	gboolean perform_self_check = FALSE;
+	gboolean version = FALSE;
+	gboolean no_default_window = FALSE;
+	gboolean no_desktop = FALSE;
+	gboolean browser_window = FALSE;
+	gboolean kill_shell = FALSE;
+	gchar *geometry = NULL;
+	gchar **remaining = NULL;
+	const GOptionEntry options[] = {
+#ifndef NAUTILUS_OMIT_SELF_CHECK
+		{ "check", 'c', 0, G_OPTION_ARG_NONE, &perform_self_check, 
+		  N_("Perform a quick set of self-check tests."), NULL },
+#endif
+		{ "version", '\0', 0, G_OPTION_ARG_NONE, &version,
+		  N_("Show the version of the program."), NULL },
+		{ "geometry", 'g', 0, G_OPTION_ARG_STRING, &geometry,
+		  N_("Create the initial window with the given geometry."), N_("GEOMETRY") },
+		{ "no-default-window", 'n', 0, G_OPTION_ARG_NONE, &no_default_window,
+		  N_("Only create windows for explicitly specified URIs."), NULL },
+		{ "no-desktop", '\0', 0, G_OPTION_ARG_NONE, &no_desktop,
+		  N_("Do not manage the desktop (ignore the preference set in the preferences dialog)."), NULL },
+		{ "browser", '\0', 0, G_OPTION_ARG_NONE, &browser_window, 
+		  N_("Open a browser window."), NULL },
+		{ "quit", 'q', 0, G_OPTION_ARG_NONE, &kill_shell, 
+		  N_("Quit Nautilus."), NULL },
+		{ G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, &remaining, NULL,  N_("[URI...]") },
+
+		{ NULL }
+	};
+	GOptionContext *context;
+	GError *error = NULL;
+	NautilusApplication *self = NAUTILUS_APPLICATION (app);
+	gint argc = 0;
+	gchar **argv = NULL, **uris = NULL;
+	gint retval = EXIT_SUCCESS;
+
+	context = g_option_context_new (_("\n\nBrowse the file system with the file manager"));
+	g_option_context_add_main_entries (context, options, NULL);
+	g_option_context_add_group (context, gtk_get_option_group (TRUE));
+	g_option_context_add_group (context, egg_sm_client_get_option_group ());
+
+	argv = g_application_command_line_get_arguments (command_line, &argc);
+
+	if (!g_option_context_parse (context, &argc, &argv, &error)) {
+		g_printerr ("Could not parse arguments: %s\n", error->message);
+		g_error_free (error);
+
+		retval = EXIT_FAILURE;
+		goto out;
+	}
+
+	if (version) {
+		g_application_command_line_print (command_line, "GNOME nautilus " PACKAGE_VERSION);
+		goto out;
+	}
+	if (perform_self_check && (remaining != NULL || kill_shell)) {
+		g_application_command_line_printerr (command_line,
+						     _("--check cannot be used with other options."));
+		retval = EXIT_FAILURE;
+		goto out;
+	}
+	if (kill_shell && remaining != NULL) {
+		g_application_command_line_printerr (command_line,
+						     _("-- quit cannot be used with URIs."));
+		retval = EXIT_FAILURE;
+		goto out;
+	}
+	if (geometry != NULL &&
+	    remaining != NULL && remaining[0] != NULL && remaining[1] != NULL) {
+		g_application_command_line_printerr (command_line,
+						     _("--geometry cannot be used with more than one URI."));
+		retval = EXIT_FAILURE;
+		goto out;
+	}
+
+	/* Check the user's ~/.nautilus directories and post warnings
+	 * if there are problems.
+	 */
+	if (!kill_shell && !check_required_directories (self)) {
+		retval = EXIT_FAILURE;
+		goto out;
+	}
+
+	if (kill_shell) {
+		g_application_release (app);
+	} else {
+		char *accel_map_filename;
+
+		if (egg_sm_client_is_resumed (self->smclient)) {
+			no_default_window = TRUE;
+		}
+
+		if (!no_desktop &&
+		    !g_settings_get_boolean (gnome_background_preferences,
+					     NAUTILUS_PREFERENCES_SHOW_DESKTOP)) {
+			no_desktop = TRUE;
+		}
+
+		if (!no_desktop) {
+			nautilus_application_open_desktop (self);
+		}
+
+		finish_startup (self, no_desktop);
+
+		/* Monitor the preference to show or hide the desktop */
+		g_signal_connect_swapped (gnome_background_preferences, "changed::" NAUTILUS_PREFERENCES_SHOW_DESKTOP,
+					  G_CALLBACK (desktop_changed_callback),
+					  self);
+
+		/* Convert args to URIs */
+		if (remaining != NULL) {
+			GFile *file;
+			GPtrArray *uris_array;
+			gint i;
+			gchar *uri;
+
+			uris_array = g_ptr_array_new ();
+
+			for (i = 0; remaining[i] != NULL; i++) {
+				file = g_file_new_for_commandline_arg (remaining[i]);
+				if (file != NULL) {
+					uri = g_file_get_uri (file);
+					g_object_unref (file);
+					if (uri) {
+						g_ptr_array_add (uris_array, uri);
+					}
+				}
+			}
+
+			g_ptr_array_add (uris_array, NULL);
+			uris = (char **) g_ptr_array_free (uris_array, FALSE);
+			g_strfreev (remaining);
+		}
+
+		/* Create the other windows. */
+		if (uris != NULL || !no_default_window) {
+			open_windows (self, NULL,
+				      uris,
+				      gdk_screen_get_default (),
+				      geometry,
+				      browser_window);
+		}
+
+		/* Load session info if availible */
+		nautilus_application_smclient_load (self);
+
+		/* load accelerator map, and register save callback */
+		accel_map_filename = nautilus_get_accel_map_file ();
+		if (accel_map_filename) {
+			gtk_accel_map_load (accel_map_filename);
+			g_free (accel_map_filename);
+		}
+
+		g_signal_connect (gtk_accel_map_get (), "changed",
+				  G_CALLBACK (queue_accel_map_save_callback), NULL);
+	}
+
+ out:
+	g_option_context_free (context);
+	g_strfreev (argv);
+
+	return retval;
+}
+
+static void
+nautilus_application_startup (GApplication *app)
+{
+	NautilusApplication *self = NAUTILUS_APPLICATION (app);
+
+	/* create an undo manager */
+	self->undo_manager = nautilus_undo_manager_new ();
 
 	/* initialize the session manager client */
-	nautilus_application_smclient_init (application);
+	nautilus_application_smclient_init (self);
 
 	/* register views */
 	fm_icon_view_register ();
@@ -1676,47 +1648,25 @@ nautilus_application_init (NautilusApplication *application)
 }
 
 static void
-nautilus_application_finalize (GObject *object)
-{
-	NautilusApplication *application;
-
-	application = NAUTILUS_APPLICATION (object);
-
-	nautilus_bookmarks_exiting ();
-	
-	g_object_unref (application->undo_manager);
-
-	if (application->volume_monitor) {
-		g_object_unref (application->volume_monitor);
-		application->volume_monitor = NULL;
-	}
-
-	g_object_unref (application->unique_app);
-
-	if (application->automount_idle_id != 0) {
-		g_source_remove (application->automount_idle_id);
-		application->automount_idle_id = 0;
-	}
-
-	if (application->proxy != NULL) {
-		g_object_unref (application->proxy);
-		application->proxy = NULL;
-	}
-
-        G_OBJECT_CLASS (nautilus_application_parent_class)->finalize (object);
-}
-
-static void
 nautilus_application_class_init (NautilusApplicationClass *class)
 {
         GObjectClass *object_class;
+	GApplicationClass *application_class;
 
         object_class = G_OBJECT_CLASS (class);
+	object_class->constructor = nautilus_application_constructor;
         object_class->finalize = nautilus_application_finalize;
+
+	application_class = G_APPLICATION_CLASS (class);
+	application_class->startup = nautilus_application_startup;
+	application_class->command_line = nautilus_application_command_line;
 }
 
 NautilusApplication *
-nautilus_application_new (void)
+nautilus_application_dup_singleton (void)
 {
-	return g_object_new (NAUTILUS_TYPE_APPLICATION, NULL);
+	return g_object_new (NAUTILUS_TYPE_APPLICATION,
+			     "application-id", "org.gnome.Nautilus",
+			     "flags", G_APPLICATION_HANDLES_COMMAND_LINE,
+			     NULL);
 }

@@ -1,9 +1,9 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-
 /*
- * Nautilus
+ * nautilus-application: main Nautilus application class.
  *
  * Copyright (C) 2000 Red Hat, Inc.
+ * Copyright (C) 2010 Cosimo Cecchi <cosimoc@gnome.org>
  *
  * Nautilus is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -21,15 +21,13 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/* nautilus-application.h
- */
-
-#ifndef NAUTILUS_APPLICATION_H
-#define NAUTILUS_APPLICATION_H
+#ifndef __NAUTILUS_APPLICATION_H__
+#define __NAUTILUS_APPLICATION_H__
 
 #include <gdk/gdk.h>
 #include <gio/gio.h>
-#include <unique/unique.h>
+#include <gtk/gtk.h>
+
 #include <libegg/eggsmclient.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
 
@@ -57,11 +55,9 @@ typedef struct NautilusWindow NautilusWindow;
 typedef struct _NautilusSpatialWindow NautilusSpatialWindow;
 #endif
 
-typedef struct NautilusShell NautilusShell;
-
 typedef struct {
-	GObject parent;
-	UniqueApp *unique_app;
+	GtkApplication parent;
+
         EggSMClient *smclient;
 	NautilusUndoManager *undo_manager;
 	GVolumeMonitor *volume_monitor;
@@ -71,22 +67,14 @@ typedef struct {
 } NautilusApplication;
 
 typedef struct {
-	GObjectClass parent_class;
+	GtkApplicationClass parent_class;
 } NautilusApplicationClass;
 
-GType                nautilus_application_get_type          (void);
-NautilusApplication *nautilus_application_new               (void);
-void                 nautilus_application_startup           (NautilusApplication *application,
-							     gboolean             kill_shell,
-							     gboolean             no_default_window,
-							     gboolean             no_desktop,
-							     gboolean             browser_window,
-							     const char          *default_geometry,
-							     char               **urls);
-GList *              nautilus_application_get_window_list           (void);
-GList *              nautilus_application_get_spatial_window_list    (void);
-unsigned int         nautilus_application_get_n_windows            (void);
+GType nautilus_application_get_type (void);
 
+NautilusApplication *nautilus_application_dup_singleton (void);
+
+guint nautilus_application_get_n_windows (NautilusApplication *self);
 NautilusWindow *     nautilus_application_get_spatial_window     (NautilusApplication *application,
 								  NautilusWindow      *requesting_window,
 								  const char          *startup_id,
@@ -98,12 +86,11 @@ NautilusWindow *     nautilus_application_create_navigation_window     (Nautilus
 									const char          *startup_id,
 									GdkScreen           *screen);
 
-void                 nautilus_application_close_all_navigation_windows (void);
+void nautilus_application_close_all_navigation_windows (NautilusApplication *self);
 void                 nautilus_application_close_parent_windows     (NautilusSpatialWindow *window);
 void                 nautilus_application_close_all_spatial_windows  (void);
 void                 nautilus_application_open_desktop      (NautilusApplication *application);
 void                 nautilus_application_close_desktop     (void);
 gboolean             nautilus_application_save_accel_map    (gpointer data);
 
-
-#endif /* NAUTILUS_APPLICATION_H */
+#endif /* __NAUTILUS_APPLICATION_H__ */
