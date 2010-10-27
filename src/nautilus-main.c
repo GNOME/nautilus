@@ -224,11 +224,7 @@ setup_debug_log (void)
 int
 main (int argc, char *argv[])
 {
-	gboolean no_default_window;
-	gboolean no_desktop;
-	gboolean autostart_mode;
 	gint retval;
-	const char *autostart_id;
 	NautilusApplication *application;
 	
 #if defined (HAVE_MALLOPT) && defined(M_MMAP_THRESHOLD)
@@ -259,21 +255,6 @@ main (int argc, char *argv[])
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
-
-	autostart_mode = FALSE;
-
-	autostart_id = g_getenv ("DESKTOP_AUTOSTART_ID");
-	if (autostart_id != NULL && *autostart_id != '\0') {
-		autostart_mode = TRUE;
-        }
-
-	/* If in autostart mode (aka started by gnome-session), we need to ensure 
-         * nautilus starts with the correct options.
-         */
-	if (autostart_mode) {
-		no_default_window = TRUE;
-		no_desktop = FALSE;
-	}
 
 	g_set_prgname ("nautilus");
 
