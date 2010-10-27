@@ -37,7 +37,6 @@
 #include "nautilus-desktop-window.h"
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-location-dialog.h"
-#include "nautilus-main.h"
 #include "nautilus-query-editor.h"
 #include "nautilus-search-bar.h"
 #include "nautilus-window-manage-views.h"

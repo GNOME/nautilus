@@ -33,7 +33,6 @@
 #include "nautilus-location-bar.h"
 #include "nautilus-search-bar.h"
 #include "nautilus-pathbar.h"
-#include "nautilus-main.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window-slot.h"
 #include "nautilus-navigation-window-slot.h"

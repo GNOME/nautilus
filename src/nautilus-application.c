@@ -42,7 +42,6 @@
 #include "nautilus-desktop-window.h"
 #include "nautilus-history-sidebar.h"
 #include "nautilus-image-properties-page.h"
-#include "nautilus-main.h"
 #include "nautilus-navigation-window.h"
 #include "nautilus-navigation-window-slot.h"
 #include "nautilus-notes-viewer.h"

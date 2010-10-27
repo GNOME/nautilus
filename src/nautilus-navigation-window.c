@@ -34,7 +34,6 @@
 #include "nautilus-actions.h"
 #include "nautilus-application.h"
 #include "nautilus-bookmarks-window.h"
-#include "nautilus-main.h"
 #include "nautilus-location-bar.h"
 #include "nautilus-query-editor.h"
 #include "nautilus-search-bar.h"

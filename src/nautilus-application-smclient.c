@@ -23,7 +23,6 @@
 
 #include "nautilus-application-smclient.h"
 
-#include "nautilus-main.h"
 #include "nautilus-navigation-window.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window-slot.h"
