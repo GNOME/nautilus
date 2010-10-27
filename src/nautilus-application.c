@@ -766,9 +766,11 @@ nautilus_application_create_desktop_windows (NautilusApplication *application)
 			gtk_widget_realize (GTK_WIDGET (window));
 			gdk_flush ();
 
-			
 			nautilus_application_desktop_windows =
 				g_list_prepend (nautilus_application_desktop_windows, window);
+
+			gtk_application_add_window (GTK_APPLICATION (application),
+						    GTK_WINDOW (window));
 		}
 	}
 }
