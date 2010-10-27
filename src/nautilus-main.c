@@ -31,7 +31,6 @@
 #include <config.h>
 
 #include "nautilus-application.h"
-#include "nautilus-self-check-functions.h"
 #include "nautilus-window.h"
 #include <dlfcn.h>
 #include <signal.h>
@@ -46,7 +45,6 @@
 #include <gio/gdesktopappinfo.h>
 #include <libnautilus-private/nautilus-debug-log.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-lib-self-check-functions.h>
 #include <libnautilus-private/nautilus-icon-names.h>
 #include <libxml/parser.h>
 #ifdef HAVE_LOCALE_H
@@ -231,7 +229,6 @@ main (int argc, char *argv[])
 	gboolean autostart_mode;
 	gint retval;
 	const char *autostart_id;
-	gboolean perform_self_check = FALSE;
 	NautilusApplication *application;
 	
 #if defined (HAVE_MALLOPT) && defined(M_MMAP_THRESHOLD)
@@ -293,30 +290,13 @@ main (int argc, char *argv[])
 	/* Initialize the services that we use. */
 	LIBXML_TEST_VERSION
 
-	/* Do either the self-check or the real work. */
-	if (perform_self_check) {
-#ifndef NAUTILUS_OMIT_SELF_CHECK
-		/* Run the checks (each twice) for nautilus and libnautilus-private. */
+	/* Run the nautilus application. */
+	application = nautilus_application_dup_singleton ();
 
-		nautilus_run_self_checks ();
-		nautilus_run_lib_self_checks ();
-		eel_exit_if_self_checks_failed ();
+	retval = g_application_run (G_APPLICATION (application),
+				    argc, argv);
 
-		nautilus_run_self_checks ();
-		nautilus_run_lib_self_checks ();
-		eel_exit_if_self_checks_failed ();
-
-		retval = EXIT_SUCCESS;
-#endif
-	} else {
-		/* Run the nautilus application. */
-		application = nautilus_application_dup_singleton ();
-
-		retval = g_application_run (G_APPLICATION (application),
-					    argc, argv);
-
-		g_object_unref (application);
-	}
+	g_object_unref (application);
 
  	eel_debug_shut_down ();
 

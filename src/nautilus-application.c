@@ -46,6 +46,7 @@
 #include "nautilus-navigation-window-slot.h"
 #include "nautilus-notes-viewer.h"
 #include "nautilus-places-sidebar.h"
+#include "nautilus-self-check-functions.h"
 #include "nautilus-spatial-window.h"
 #include "nautilus-window-bookmarks.h"
 #include "nautilus-window-manage-views.h"
@@ -59,6 +60,7 @@
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-lib-self-check-functions.h>
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-signaller.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
@@ -1526,6 +1528,24 @@ nautilus_application_command_line (GApplication *app,
 						     _("--geometry cannot be used with more than one URI."));
 		retval = EXIT_FAILURE;
 		goto out;
+	}
+
+	/* Do either the self-check or the real work. */
+	if (perform_self_check) {
+#ifndef NAUTILUS_OMIT_SELF_CHECK
+		/* Run the checks (each twice) for nautilus and libnautilus-private. */
+
+		nautilus_run_self_checks ();
+		nautilus_run_lib_self_checks ();
+		eel_exit_if_self_checks_failed ();
+
+		nautilus_run_self_checks ();
+		nautilus_run_lib_self_checks ();
+		eel_exit_if_self_checks_failed ();
+
+		retval = EXIT_SUCCESS;
+		goto out;
+#endif
 	}
 
 	/* Check the user's ~/.nautilus directories and post warnings
