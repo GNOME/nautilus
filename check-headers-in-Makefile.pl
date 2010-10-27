@@ -95,7 +95,6 @@ while (@directories)
 
     if ($directory eq ".")
       {
-	$headers{"acconfig.h"} = "acconfig.h";
 	$headers{"config.h"} = "config.h";
       }
 

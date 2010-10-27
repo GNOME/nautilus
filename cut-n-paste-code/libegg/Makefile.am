@@ -2,7 +2,7 @@ NULL=
 
 noinst_LTLIBRARIES = libegg.la
 
-INCLUDES = $(LIBEGG_CFLAGS)
+INCLUDES = $(BASE_CFLAGS)
 
 EGG_TREE_DND_FILES = 		\
 	eggtreemultidnd.c	\
@@ -26,7 +26,7 @@ libegg_la_SOURCES = 		\
 libegg_la_CFLAGS =				\
 	-DEGG_SM_CLIENT_BACKEND_XSMP		\
 	-DG_LOG_DOMAIN=\""EggSMClient"\"	\
-	$(LIBEGG_CFLAGS)			\
+	$(BASE_CFLAGS)			\
 	$(WARNING_CFLAGS)			\
 	$(DISABLE_DEPRECATED)
 

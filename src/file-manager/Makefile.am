@@ -5,7 +5,9 @@ noinst_LTLIBRARIES=libnautilus-file-manager.la
 INCLUDES = 					\
 	-I$(top_srcdir) 			\
 	-I$(top_srcdir)/cut-n-paste-code	\
-	$(CORE_CFLAGS)				\
+	$(BASE_CFLAGS)				\
+	$(COMMON_CFLAGS)			\
+	$(NAUTILUS_CFLAGS)			\
 	$(WARNING_CFLAGS)			\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
 	-DDATADIR=\""$(datadir)"\"		\

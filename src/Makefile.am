@@ -17,7 +17,9 @@ INCLUDES =							\
 	-I$(top_srcdir) 					\
 	-I$(top_srcdir)/cut-n-paste-code			\
 	-I$(top_builddir)/libnautilus-private 			\
-	$(CORE_CFLAGS) 						\
+	$(BASE_CFLAGS) 						\
+	$(COMMON_CFLAGS)					\
+	$(NAUTILUS_CFLAGS)					\
 	$(WARNING_CFLAGS)					\
 	$(EXIF_CFLAGS)						\
 	$(EXEMPI_CFLAGS)                                        \
@@ -36,6 +38,9 @@ INCLUDES =							\
 LDADD =\
 	$(top_builddir)/src/file-manager/libnautilus-file-manager.la \
 	$(top_builddir)/libnautilus-private/libnautilus-private.la  \
+	$(BASE_LIBS) \
+	$(COMMON_LIBS) \
+	$(NAUTILUS_LIBS) \
 	$(CORE_LIBS) \
 	$(EXIF_LIBS) \
 	$(EXEMPI_LIBS) \

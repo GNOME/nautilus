@@ -6,7 +6,8 @@ INCLUDES =						\
 	-DG_LOG_DOMAIN=\"Eel\"				\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
-	$(CORE_CFLAGS)					\
+	$(BASE_CFLAGS)					\
+	$(COMMON_CFLAGS)				\
 	$(WARNING_CFLAGS)				\
 	$(DISABLE_DEPRECATED_CFLAGS)			\
 	-DDATADIR=\""$(datadir)"\"			\
@@ -24,7 +25,8 @@ libeel_2_la_LDFLAGS =				\
 	$(NULL)
 
 libeel_2_la_LIBADD = 				\
-	$(CORE_LIBS)				\
+	$(BASE_LIBS)				\
+	$(COMMON_LIBS)				\
 	$(RENDER_LIBS)				\
 	$(X_LIBS)				\
 	$(NULL)

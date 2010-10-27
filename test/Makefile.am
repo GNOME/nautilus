@@ -2,7 +2,9 @@ NULL=
 
 INCLUDES =\
 	-I$(top_srcdir) \
-	$(CORE_CFLAGS) \
+	$(BASE_CFLAGS) \
+	$(COMMON_CFLAGS) \
+	$(NAUTILUS_CFLAGS) \
 	$(WARNING_CFLAGS) \
 	-DVERSION="\"$(VERSION)\"" \
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
@@ -11,7 +13,9 @@ INCLUDES =\
 
 LDADD =\
 	$(top_builddir)/libnautilus-private/libnautilus-private.la \
-	$(CORE_LIBS) \
+	$(BASE_LIBS) \
+	$(COMMON_LIBS) \
+	$(NAUTILUS_LIBS) \
 	$(NULL)
 
 noinst_PROGRAMS =\

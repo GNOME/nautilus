@@ -68,12 +68,12 @@ GTKDOC_CFLAGS = \
 	-I$(top_srcdir)/libnautilus-extension      \
 	-I$(top_builddir)                          \
 	-I$(top_builddir)/libnautilus-extension    \
-	$(LIBNAUTILUS_EXTENSION_CFLAGS)            \
+	$(BASE_CFLAGS)            \
 	$(NULL)
 
 GTKDOC_LIBS = \
 	$(top_builddir)/libnautilus-extension/libnautilus-extension.la       \
-	$(LIBNAUTILUS_EXTENSION_LIBS)                                        \
+	$(BASE_LIBS)                                        \
 	$(NULL)
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
