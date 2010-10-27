@@ -1617,6 +1617,11 @@ nautilus_application_startup (GApplication *app)
 {
 	NautilusApplication *self = NAUTILUS_APPLICATION (app);
 
+	/* chain up to the GTK+ implementation early, so gtk_init()
+	 * is called for us.
+	 */
+	G_APPLICATION_CLASS (nautilus_application_parent_class)->startup (app);
+
 	/* create an undo manager */
 	self->undo_manager = nautilus_undo_manager_new ();
 
