@@ -293,18 +293,6 @@ main (int argc, char *argv[])
 	/* Initialize the services that we use. */
 	LIBXML_TEST_VERSION
 
-	/* Initialize preferences. This is needed to create the
-	 * global GSettings objects.
-	 */
-	nautilus_global_preferences_init ();
-
-#if 0
-	/* exit_with_last_window being FALSE, nautilus can run without window. */
-	exit_with_last_window =
-		g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_EXIT_WITH_LAST_WINDOW);
-#endif
-	application = NULL;
-
 	/* Do either the self-check or the real work. */
 	if (perform_self_check) {
 #ifndef NAUTILUS_OMIT_SELF_CHECK
@@ -326,13 +314,11 @@ main (int argc, char *argv[])
 
 		retval = g_application_run (G_APPLICATION (application),
 					    argc, argv);
+
+		g_object_unref (application);
 	}
 
-	nautilus_icon_info_clear_caches ();	
-	g_object_unref (application);
  	eel_debug_shut_down ();
 
- 	nautilus_application_save_accel_map (NULL);
-	
 	return EXIT_SUCCESS;
 }

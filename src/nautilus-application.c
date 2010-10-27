@@ -646,7 +646,7 @@ open_windows (NautilusApplication *application,
 	}
 }
 
-gboolean 
+static gboolean 
 nautilus_application_save_accel_map (gpointer data)
 {
 	if (save_of_accel_map_requested) {
@@ -780,7 +780,7 @@ nautilus_application_create_desktop_windows (NautilusApplication *application)
 	}
 }
 
-void
+static void
 nautilus_application_open_desktop (NautilusApplication *application)
 {
 	if (nautilus_application_desktop_windows == NULL) {
@@ -788,7 +788,7 @@ nautilus_application_open_desktop (NautilusApplication *application)
 	}
 }
 
-void
+static void
 nautilus_application_close_desktop (void)
 {
 	if (nautilus_application_desktop_windows != NULL) {
@@ -1628,6 +1628,11 @@ nautilus_application_startup (GApplication *app)
 	/* initialize the session manager client */
 	nautilus_application_smclient_init (self);
 
+	/* Initialize preferences. This is needed to create the
+	 * global GSettings objects.
+	 */
+	nautilus_global_preferences_init ();
+
 	/* register views */
 	fm_icon_view_register ();
 	fm_desktop_icon_view_register ();
@@ -1652,6 +1657,15 @@ nautilus_application_startup (GApplication *app)
 }
 
 static void
+nautilus_application_quit_mainloop (GApplication *app)
+{
+	nautilus_icon_info_clear_caches ();
+ 	nautilus_application_save_accel_map (NULL);
+
+	G_APPLICATION_CLASS (nautilus_application_parent_class)->quit_mainloop (app);
+}
+
+static void
 nautilus_application_class_init (NautilusApplicationClass *class)
 {
         GObjectClass *object_class;
@@ -1664,6 +1678,7 @@ nautilus_application_class_init (NautilusApplicationClass *class)
 	application_class = G_APPLICATION_CLASS (class);
 	application_class->startup = nautilus_application_startup;
 	application_class->command_line = nautilus_application_command_line;
+	application_class->quit_mainloop = nautilus_application_quit_mainloop;
 }
 
 NautilusApplication *

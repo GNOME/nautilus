@@ -89,8 +89,5 @@ NautilusWindow *     nautilus_application_create_navigation_window     (Nautilus
 void nautilus_application_close_all_navigation_windows (NautilusApplication *self);
 void                 nautilus_application_close_parent_windows     (NautilusSpatialWindow *window);
 void                 nautilus_application_close_all_spatial_windows  (void);
-void                 nautilus_application_open_desktop      (NautilusApplication *application);
-void                 nautilus_application_close_desktop     (void);
-gboolean             nautilus_application_save_accel_map    (gpointer data);
 
 #endif /* __NAUTILUS_APPLICATION_H__ */
