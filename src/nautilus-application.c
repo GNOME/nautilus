@@ -1418,8 +1418,11 @@ nautilus_application_finalize (GObject *object)
 	application = NAUTILUS_APPLICATION (object);
 
 	nautilus_bookmarks_exiting ();
-	
-	g_object_unref (application->undo_manager);
+
+	if (application->undo_manager != NULL) {
+		g_object_unref (application->undo_manager);
+		application->undo_manager = NULL;
+	}
 
 	if (application->volume_monitor) {
 		g_object_unref (application->volume_monitor);
