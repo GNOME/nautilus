@@ -742,9 +742,6 @@ nautilus_application_create_desktop_windows (NautilusApplication *application)
 	GtkWidget *selection_widget;
 	int screens, i;
 
-	g_return_if_fail (nautilus_application_desktop_windows == NULL);
-	g_return_if_fail (NAUTILUS_IS_APPLICATION (application));
-
 	display = gdk_display_get_default ();
 	screens = gdk_display_get_n_screens (display);
 
