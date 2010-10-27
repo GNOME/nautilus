@@ -30,11 +30,13 @@
 #include <X11/Xatom.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
+#include <gio/gio.h>
+#include <glib/gi18n.h>
+
 #include <eel/eel-vfs-extensions.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-icon-names.h>
-#include <gio/gio.h>
-#include <glib/gi18n.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 
 struct NautilusDesktopWindowDetails {
 	gulong size_changed_id;
@@ -79,6 +81,12 @@ nautilus_desktop_window_init (NautilusDesktopWindow *window)
 	if (accessible) {
 		atk_object_set_name (accessible, _("Desktop"));
 	}
+
+	/* Monitor the preference to have the desktop */
+	/* point to the Unix home folder */
+	g_signal_connect_swapped (nautilus_preferences, "changed::" NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
+				  G_CALLBACK (nautilus_desktop_window_update_directory),
+				  window);
 }
 
 static gint
