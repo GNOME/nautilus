@@ -504,38 +504,13 @@ static void
 nautilus_window_set_initial_window_geometry (NautilusWindow *window)
 {
 	GdkScreen *screen;
-	guint max_width_for_screen, max_height_for_screen, min_width, min_height;
+	guint max_width_for_screen, max_height_for_screen;
 	guint default_width, default_height;
-	
+
 	screen = gtk_window_get_screen (GTK_WINDOW (window));
 	
-	/* Don't let GTK determine the minimum size
-	 * automatically. It will insist that the window be
-	 * really wide based on some misguided notion about
-	 * the content view area. Also, it might start the
-	 * window wider (or taller) than the screen, which
-	 * is evil. So we choose semi-arbitrary initial and
-	 * minimum widths instead of letting GTK decide.
-	 */
-	/* FIXME - the above comment suggests that the size request
-	 * of the content view area is wrong, probably because of
-	 * another stupid set_usize someplace. If someone gets the
-	 * content view area's size request right then we can
-	 * probably remove this broken set_size_request() here.
-	 * - hp@redhat.com
-	 */
-
 	max_width_for_screen = get_max_forced_width (screen);
 	max_height_for_screen = get_max_forced_height (screen);
-
-	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
-			 get_min_size, (window, &min_width, &min_height));
-
-	gtk_widget_set_size_request (GTK_WIDGET (window), 
-				     MIN (min_width, 
-					  max_width_for_screen),
-				     MIN (min_height, 
-					  max_height_for_screen));
 
 	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
 			 get_default_size, (window, &default_width, &default_height));
@@ -946,43 +921,45 @@ nautilus_window_slot_close (NautilusWindowSlot *slot)
 }
 
 static void
-nautilus_window_size_request (GtkWidget		*widget,
-			      GtkRequisition	*requisition)
+nautilus_window_get_preferred_width (GtkWidget *widget,
+				     gint *minimal_width,
+				     gint *natural_width)
 {
 	GdkScreen *screen;
-	guint max_width;
-	guint max_height;
+	gint max_w, min_w, min_h, default_w, default_h;
+	NautilusWindow *window = NAUTILUS_WINDOW (widget);
 
-	g_assert (NAUTILUS_IS_WINDOW (widget));
-	g_assert (requisition != NULL);
+	screen = gtk_window_get_screen (GTK_WINDOW (widget));	
 
-	GTK_WIDGET_CLASS (nautilus_window_parent_class)->size_request (widget, requisition);
+	max_w = get_max_forced_width (screen);
+	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+			 get_min_size, (window, &min_w, &min_h));
+	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+			 get_default_size, (window, &default_w, &default_h));
 
-	screen = gtk_window_get_screen (GTK_WINDOW (widget));
+	*minimal_width = MIN (min_w, max_w);
+	*natural_width = MIN (default_w, max_w);
+}
 
-	/* Limit the requisition to be within 90% of the available screen 
-	 * real state.
-	 *
-	 * This way the user will have a fighting chance of getting
-	 * control of their window back if for whatever reason one of the
-	 * window's descendants decide they want to be 4000 pixels wide.
-	 *
-	 * Note that the user can still make the window really huge by hand.
-	 *
-	 * Bugs in components or other widgets that cause such huge geometries
-	 * to be requested, should still be fixed.  This code is here only to 
-	 * prevent the extremely frustrating consequence of such bugs.
-	 */
-	max_width = get_max_forced_width (screen);
-	max_height = get_max_forced_height (screen);
+static void
+nautilus_window_get_preferred_height (GtkWidget *widget,
+				      gint *minimal_height,
+				      gint *natural_height)
+{
+	GdkScreen *screen;
+	gint max_h, min_w, min_h, default_w, default_h;
+	NautilusWindow *window = NAUTILUS_WINDOW (widget);
 
-	if (requisition->width > (int) max_width) {
-		requisition->width = max_width;
-	}
-	
-	if (requisition->height > (int) max_height) {
-		requisition->height = max_height;
-	}
+	screen = gtk_window_get_screen (GTK_WINDOW (widget));	
+
+	max_h = get_max_forced_height (screen);
+	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+			 get_min_size, (window, &min_w, &min_h));
+	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+			 get_default_size, (window, &default_w, &default_h));
+
+	*minimal_height = MIN (min_h, max_h);
+	*natural_height = MIN (default_h, max_h);
 }
 
 static void
@@ -1997,7 +1974,8 @@ nautilus_window_class_init (NautilusWindowClass *class)
 	G_OBJECT_CLASS (class)->set_property = nautilus_window_set_property;
 	GTK_WIDGET_CLASS (class)->destroy = nautilus_window_destroy;
 	GTK_WIDGET_CLASS (class)->show = nautilus_window_show;
-	GTK_WIDGET_CLASS (class)->size_request = nautilus_window_size_request;
+	GTK_WIDGET_CLASS (class)->get_preferred_width = nautilus_window_get_preferred_width;
+	GTK_WIDGET_CLASS (class)->get_preferred_height = nautilus_window_get_preferred_height;
 	GTK_WIDGET_CLASS (class)->realize = nautilus_window_realize;
 	GTK_WIDGET_CLASS (class)->key_press_event = nautilus_window_key_press_event;
 	class->get_title = real_get_title;
