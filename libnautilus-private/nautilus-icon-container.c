@@ -4070,15 +4070,6 @@ finalize (GObject *object)
 
 /* GtkWidget methods.  */
 
-static void
-size_request (GtkWidget *widget,
-	      GtkRequisition *requisition)
-{
-	GTK_WIDGET_CLASS (nautilus_icon_container_parent_class)->size_request (widget, requisition);
-	requisition->width = 1;
-	requisition->height = 1;
-}
-
 static gboolean
 clear_size_allocation_count (gpointer data)
 {
@@ -6020,7 +6011,6 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 
 	widget_class = GTK_WIDGET_CLASS (class);
 	widget_class->destroy = destroy;
-	widget_class->size_request = size_request;
 	widget_class->size_allocate = size_allocate;
 	widget_class->realize = realize;
 	widget_class->unrealize = unrealize;
