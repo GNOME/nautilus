@@ -71,8 +71,12 @@ static void     eel_editable_label_get_property            (GObject             
 							    GValue                *value,
 							    GParamSpec            *pspec);
 static void     eel_editable_label_finalize                (GObject               *object);
-static void     eel_editable_label_size_request            (GtkWidget             *widget,
-							    GtkRequisition        *requisition);
+static void     eel_editable_label_get_preferred_width     (GtkWidget             *widget,
+                                                            gint                  *minimum,
+                                                            gint                  *natural);
+static void     eel_editable_label_get_preferred_height    (GtkWidget             *widget,
+                                                            gint                  *minimum,
+                                                            gint                  *natural);
 static void     eel_editable_label_size_allocate           (GtkWidget             *widget,
 							    GtkAllocation         *allocation);
 static void     eel_editable_label_state_changed           (GtkWidget             *widget,
@@ -211,7 +215,8 @@ eel_editable_label_class_init (EelEditableLabelClass *class)
   gobject_class->get_property = eel_editable_label_get_property;
   gobject_class->finalize = eel_editable_label_finalize;
 
-  widget_class->size_request = eel_editable_label_size_request;
+  widget_class->get_preferred_width = eel_editable_label_get_preferred_width;
+  widget_class->get_preferred_height = eel_editable_label_get_preferred_height;
   widget_class->size_allocate = eel_editable_label_size_allocate;
   widget_class->state_changed = eel_editable_label_state_changed;
   widget_class->style_set = eel_editable_label_style_set;
@@ -1129,6 +1134,30 @@ eel_editable_label_size_request (GtkWidget      *widget,
 
   requisition->width = width;
   requisition->height = height;
+}
+
+static void
+eel_editable_label_get_preferred_width (GtkWidget *widget,
+                                        gint      *minimum,
+                                        gint      *natural)
+{
+  GtkRequisition requisition;
+
+  eel_editable_label_size_request (widget, &requisition);
+
+  *minimum = *natural = requisition.width;
+}
+
+static void
+eel_editable_label_get_preferred_height (GtkWidget *widget,
+                                         gint      *minimum,
+                                         gint      *natural)
+{
+  GtkRequisition requisition;
+
+  eel_editable_label_size_request (widget, &requisition);
+
+  *minimum = *natural = requisition.height;
 }
 
 static void
