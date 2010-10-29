@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.shared
 
-SUBDIRS =			\
+DIRS =				\
 	eel			\
 	libnautilus-extension	\
 	cut-n-paste-code 	\
@@ -12,6 +12,13 @@ SUBDIRS =			\
 	icons 			\
 	docs			\
 	$(NULL)
+
+DIST_SUBDIRS = $(DIRS) nautilus-sendto-extension
+
+SUBDIRS = $(DIRS)
+if ENABLE_NST_EXTENSION
+SUBDIRS += nautilus-sendto-extension
+endif
 
 EXTRA_DIST=					\
 	COPYING.LIB				\

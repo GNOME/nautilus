@@ -90,6 +90,18 @@ dnl ==========================================================================
 AC_CHECK_PROGS(PERL, perl5 perl)
 AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
 
+
+dnl ==========================================================================
+dnl Check whether to build the nautilus-sendto extension
+
+AC_ARG_ENABLE(nst_extension,
+	AC_HELP_STRING([--disable-nst-extension],
+			[build without nautilus-sendto extension]))
+if test "x$enable_nst_extension" != "xno"; then
+	AM_CONDITIONAL(ENABLE_NST_EXTENSION, true)
+	enable_nst_extension=yes
+fi
+
 dnl ==========================================================================
 
 AC_CHECK_HEADERS(sys/mount.h sys/vfs.h sys/param.h malloc.h)
@@ -371,6 +383,7 @@ libnautilus-extension/libnautilus-extension-uninstalled.pc
 po/Makefile.in
 src/Makefile
 src/file-manager/Makefile
+nautilus-sendto-extension/Makefile
 test/Makefile
 ])
 
@@ -386,6 +399,7 @@ nautilus-$VERSION:
 	libexif support:	$msg_libexif
 	libexempi support:	$msg_xmp
 	PackageKit support:     $msg_packagekit
+	nautilus-sendto ext:	$enable_nst_extension
 
 	profiling support:      ${profiling_support}
 	nautilus-extension documentation: ${enable_gtk_doc}
