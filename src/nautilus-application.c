@@ -1509,24 +1509,24 @@ nautilus_application_command_line (GApplication *app,
 	}
 
 	if (version) {
-		g_application_command_line_print (command_line, "GNOME nautilus " PACKAGE_VERSION);
+		g_application_command_line_print (command_line, "GNOME nautilus " PACKAGE_VERSION "\n");
 		goto out;
 	}
 	if (perform_self_check && (remaining != NULL || kill_shell)) {
-		g_application_command_line_printerr (command_line,
+		g_application_command_line_printerr (command_line, "%s\n",
 						     _("--check cannot be used with other options."));
 		retval = EXIT_FAILURE;
 		goto out;
 	}
 	if (kill_shell && remaining != NULL) {
-		g_application_command_line_printerr (command_line,
+		g_application_command_line_printerr (command_line, "%s\n",
 						     _("-- quit cannot be used with URIs."));
 		retval = EXIT_FAILURE;
 		goto out;
 	}
 	if (geometry != NULL &&
 	    remaining != NULL && remaining[0] != NULL && remaining[1] != NULL) {
-		g_application_command_line_printerr (command_line,
+		g_application_command_line_printerr (command_line, "%s\n",
 						     _("--geometry cannot be used with more than one URI."));
 		retval = EXIT_FAILURE;
 		goto out;
