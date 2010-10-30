@@ -403,6 +403,9 @@ nautilus_application_smclient_init (NautilusApplication *self)
 {
 	g_assert (self->smclient == NULL);
 
+	egg_sm_client_set_mode (EGG_SM_CLIENT_MODE_NORMAL);
+
+	/* TODO: Should connect to quit_requested and block logout on active transfer? */
         self->smclient = egg_sm_client_get ();
         g_signal_connect (self->smclient, "save_state",
                           G_CALLBACK (smclient_save_state_cb),

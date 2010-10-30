@@ -64,6 +64,8 @@ typedef struct {
 	unsigned int automount_idle_id;
 	GDBusProxy *proxy;
 	gboolean session_is_active;
+
+	gboolean sm_initialized;
 } NautilusApplication;
 
 typedef struct {

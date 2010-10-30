@@ -1577,8 +1577,12 @@ nautilus_application_command_line (GApplication *app,
 	} else {
 		char *accel_map_filename;
 
-		if (egg_sm_client_is_resumed (self->smclient)) {
-			no_default_window = TRUE;
+		if (!self->sm_initialized) {
+			nautilus_application_smclient_init (self);
+
+			if (egg_sm_client_is_resumed (self->smclient)) {
+				no_default_window = TRUE;
+			}
 		}
 
 		if (!no_desktop &&
@@ -1636,8 +1640,11 @@ nautilus_application_command_line (GApplication *app,
 				      browser_window);
 		}
 
-		/* Load session info if availible */
-		nautilus_application_smclient_load (self);
+		if (!self->sm_initialized) {
+			/* Load session info if availible */
+			nautilus_application_smclient_load (self);
+			self->sm_initialized = TRUE;
+		}
 
 		/* load accelerator map, and register save callback */
 		accel_map_filename = nautilus_get_accel_map_file ();
@@ -1671,7 +1678,7 @@ nautilus_application_startup (GApplication *app)
 	self->undo_manager = nautilus_undo_manager_new ();
 
 	/* initialize the session manager client */
-	nautilus_application_smclient_init (self);
+	egg_sm_client_set_mode (EGG_SM_CLIENT_MODE_DISABLED);
 
 	/* Initialize preferences. This is needed to create the
 	 * global GSettings objects.
