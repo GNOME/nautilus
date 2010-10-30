@@ -300,7 +300,10 @@ fm_desktop_icon_view_dispose (GObject *object)
 					      fm_directory_view_update_menus,
 					      icon_view);
 
-	g_object_unref (icon_view->details->background);
+	if (icon_view->details->background != NULL) {
+		g_object_unref (icon_view->details->background);
+		icon_view->details->background = NULL;
+	}
 
 	G_OBJECT_CLASS (fm_desktop_icon_view_parent_class)->dispose (object);
 }
