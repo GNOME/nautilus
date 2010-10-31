@@ -27,7 +27,6 @@
 #include <string.h>
 #include <time.h>
 #include <sys/time.h>
-#include <eel/eel-glib-extensions.h>
 #include "nautilus-debug-log.h"
 #include "nautilus-file.h"
 
@@ -294,7 +293,7 @@ nautilus_debug_log_with_file_list (gboolean is_milestone, const char *domain, GL
 	nautilus_debug_logv (is_milestone, domain, uris, format, args);
 	va_end (args);
 
-	eel_g_list_free_deep (uris);
+	g_list_free_full (uris, g_free);
 }
 
 gboolean

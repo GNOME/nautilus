@@ -171,7 +171,7 @@ nautilus_directory_finalize (GObject *object)
 
 	if (directory->details->monitor_list != NULL) {
 		g_warning ("destroying a NautilusDirectory while it's being monitored");
-		eel_g_list_free_deep (directory->details->monitor_list);
+		g_list_free_full (directory->details->monitor_list, g_free);
 	}
 
 	if (directory->details->monitor != NULL) {
@@ -203,7 +203,7 @@ nautilus_directory_finalize (GObject *object)
 	g_assert (directory->details->directory_load_in_progress == NULL);
 	g_assert (directory->details->count_in_progress == NULL);
 	g_assert (directory->details->dequeue_pending_idle_id == 0);
-	eel_g_object_list_free (directory->details->pending_file_info);
+	g_list_free_full (directory->details->pending_file_info, g_object_unref);
 
 	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
@@ -1030,7 +1030,7 @@ nautilus_directory_notify_files_added_by_uri (GList *uris)
 
 	files = nautilus_file_list_from_uris (uris);
 	nautilus_directory_notify_files_added (files);
-	eel_g_object_list_free (files);
+	g_list_free_full (files, g_object_unref);
 }
 
 void
@@ -1077,7 +1077,7 @@ nautilus_directory_notify_files_changed_by_uri (GList *uris)
 
 	files = nautilus_file_list_from_uris (uris);
 	nautilus_directory_notify_files_changed (files);
-	eel_g_object_list_free (files);
+	g_list_free_full (files, g_object_unref);
 }
 
 void
@@ -1135,7 +1135,7 @@ nautilus_directory_notify_files_removed_by_uri (GList *uris)
 
 	files = nautilus_file_list_from_uris (uris);
 	nautilus_directory_notify_files_changed (files);
-	eel_g_object_list_free (files);
+	g_list_free_full (files, g_object_unref);
 }
 
 static void

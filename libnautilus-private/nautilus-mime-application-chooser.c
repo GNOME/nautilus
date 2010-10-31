@@ -32,8 +32,6 @@
 #include "nautilus-signaller.h"
 #include "nautilus-file.h"
 #include <eel/eel-stock-dialogs.h>
-#include <eel/eel-glib-extensions.h>
-#include <eel/eel-string.h>
 
 #include <string.h>
 #include <glib/gi18n-lib.h>
@@ -538,8 +536,8 @@ refresh_model (NautilusMimeApplicationChooser *chooser)
 	if (default_app) {
 		g_object_unref (default_app);
 	}
-	
-	eel_g_object_list_free (applications);
+
+	g_list_free_full (applications, g_object_unref);
 }
 
 static void
@@ -642,7 +640,7 @@ set_uri_and_type_for_multiple_files (NautilusMimeApplicationChooser *chooser,
 		char *extension_current;
 
 		extension_current = get_extension_from_file (NAUTILUS_FILE (iter->data));
-		if (eel_strcmp (first_extension, extension_current)) {
+		if (g_strcmp0 (first_extension, extension_current)) {
 			same_extension = FALSE;
 			g_free (extension_current);
 			break;

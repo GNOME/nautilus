@@ -1281,7 +1281,7 @@ nautilus_restore_files_from_trash (GList *files,
 				 parent_window,
 				 NULL, NULL);
 
-			eel_g_object_list_free (locations);
+			g_list_free_full (locations, g_object_unref);
 			g_object_unref (original_dir_location);
 		}
 

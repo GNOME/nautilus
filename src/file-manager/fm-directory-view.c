@@ -997,8 +997,8 @@ delete_selected_files (FMDirectoryView *view)
 	locations = g_list_reverse (locations);
 
 	nautilus_file_operations_delete (locations, fm_directory_view_get_containing_window (view), NULL, NULL);
-	
-	eel_g_object_list_free (locations);
+
+	g_list_free_full (locations, g_object_unref);
         nautilus_file_list_free (selection);
 }
 
@@ -1867,7 +1867,7 @@ fm_directory_view_set_selection_locations (NautilusView *nautilus_view,
 		/* If we are still loading, set the list of pending URIs instead.
 		 * done_loading() will eventually select the pending URIs and reveal them.
 		 */
-		eel_g_object_list_free (view->details->pending_locations_selected);
+		g_list_free_full (view->details->pending_locations_selected, g_object_unref);
 		view->details->pending_locations_selected =
 			eel_g_object_list_copy (selection_locations);
 	}
@@ -2452,7 +2452,7 @@ done_loading (FMDirectoryView *view,
 				fm_directory_view_reveal_selection (view);
 			}
 		}
-		eel_g_object_list_free (locations_selected);
+		g_list_free_full (locations_selected, g_object_unref);
 		fm_directory_view_display_selection_info (view);
 	}
 
@@ -3650,7 +3650,7 @@ fm_directory_view_create_links_for_files (FMDirectoryView *view, GList *files,
 	nautilus_file_operations_copy_move (uris, relative_item_points, dir_uri, GDK_ACTION_LINK, 
 					    GTK_WIDGET (view), copy_move_done_callback, copy_move_done_data);
 	g_free (dir_uri);
-	eel_g_list_free_deep (uris);
+	g_list_free_full (uris, g_free);
 }
 
 static void
@@ -3682,7 +3682,7 @@ fm_directory_view_duplicate_selection (FMDirectoryView *view, GList *files,
         copy_move_done_data = pre_copy_move (view);
 	nautilus_file_operations_copy_move (uris, relative_item_points, NULL, GDK_ACTION_COPY,
 		GTK_WIDGET (view), copy_move_done_callback, copy_move_done_data);
-	eel_g_list_free_deep (uris);
+	g_list_free_full (uris, g_free);
 }
 
 /* special_link_in_selection
@@ -3786,7 +3786,7 @@ trash_or_delete_files (GtkWindow *parent_window,
 						  parent_window,
 						  (NautilusDeleteCallback) trash_or_delete_done_cb,
 						  view);
-	eel_g_object_list_free (locations);
+	g_list_free_full (locations, g_object_unref);
 }
 
 static gboolean
@@ -4535,7 +4535,7 @@ reset_open_with_menu (FMDirectoryView *view, GList *selection)
 						   index, 
 						   menu_path, popup_path, submenu_visible);
 	}
-	eel_g_object_list_free (applications);
+	g_list_free_full (applications, g_object_unref);
 	if (default_app != NULL) {
 		g_object_unref (default_app);
 	}
@@ -5805,7 +5805,7 @@ move_copy_selection_to_location (FMDirectoryView *view,
 					   0, 0,
 					   view);
 
-	eel_g_list_free_deep (uris);
+	g_list_free_full (uris, g_free);
 	nautilus_file_list_free (selection);
 }
 
@@ -5945,7 +5945,7 @@ paste_clipboard_data (FMDirectoryView *view,
 			gtk_clipboard_clear (nautilus_clipboard_get (GTK_WIDGET (view)));
 		}
 
-		eel_g_list_free_deep (item_uris);
+		g_list_free_full (item_uris, g_free);
 	}
 }
 
@@ -6913,7 +6913,7 @@ action_location_delete_callback (GtkAction *action,
 	nautilus_file_operations_delete (files, fm_directory_view_get_containing_window (view),
 					 NULL, NULL);
 
-	eel_g_object_list_free (files);
+	g_list_free_full (files, g_object_unref);
 }
 
 static void
@@ -9574,7 +9574,7 @@ fm_directory_view_stop (FMDirectoryView *view)
 	view->details->old_added_files = NULL;
 	file_and_directory_list_free (view->details->old_changed_files);
 	view->details->old_changed_files = NULL;
-	eel_g_object_list_free (view->details->pending_locations_selected);
+	g_list_free_full (view->details->pending_locations_selected, g_object_unref);
 	view->details->pending_locations_selected = NULL;
 
 	if (view->details->model != NULL) {
@@ -10352,7 +10352,7 @@ fm_directory_view_handle_uri_list_drop (FMDirectoryView  *view,
 					   target_uri != NULL ? target_uri : container_uri,
 					   action, x, y, view);
 
-	eel_g_list_free_deep (real_uri_list);
+	g_list_free_full (real_uri_list, g_free);
 
 	if (points != NULL)
 		g_array_free (points, TRUE);

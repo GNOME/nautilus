@@ -33,7 +33,6 @@
 
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <eel/eel-glib-extensions.h>
 #include <string.h>
 
 typedef struct _TargetCallbackData TargetCallbackData;
@@ -644,6 +643,6 @@ nautilus_clipboard_clear_if_colliding_uris (GtkWidget *widget,
 	}
 	
 	if (clipboard_item_uris) {
-		eel_g_list_free_deep (clipboard_item_uris);
+		g_list_free_full (clipboard_item_uris, g_free);
 	}
 }

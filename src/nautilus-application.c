@@ -156,7 +156,7 @@ automount_all_volumes (NautilusApplication *application)
 			/* pass NULL as GMountOperation to avoid user interaction */
 			g_volume_mount (volume, 0, NULL, NULL, startup_volume_mount_cb, NULL);
 		}
-		eel_g_object_list_free (volumes);
+		g_list_free_full (volumes, g_object_unref);
 	}
 	
 }

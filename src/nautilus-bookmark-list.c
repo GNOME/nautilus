@@ -31,9 +31,9 @@
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-icon-names.h>
-#include <eel/eel-glib-extensions.h>
-#include <eel/eel-string.h>
+
 #include <gio/gio.h>
+#include <string.h>
 
 #define MAX_BOOKMARK_LENGTH 80
 #define LOAD_JOB 1
@@ -159,7 +159,7 @@ static void
 clear (NautilusBookmarkList *bookmarks)
 {
 	g_list_foreach (bookmarks->list, stop_monitoring_one, bookmarks);
-	eel_g_object_list_free (bookmarks->list);
+	g_list_free_full (bookmarks->list, g_object_unref);
 	bookmarks->list = NULL;
 }
 
@@ -391,7 +391,7 @@ nautilus_bookmark_list_delete_items_with_uri (NautilusBookmarkList *bookmarks,
 		next = node->next;
 
 		bookmark_uri = nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (node->data));
-		if (eel_strcmp (bookmark_uri, uri) == 0) {
+		if (g_strcmp0 (bookmark_uri, uri) == 0) {
 			bookmarks->list = g_list_remove_link (bookmarks->list, node);
 			stop_monitoring_bookmark (bookmarks, NAUTILUS_BOOKMARK (node->data));
 			g_object_unref (node->data);

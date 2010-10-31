@@ -25,7 +25,6 @@
 #include "nautilus-search-engine-beagle.h"
 
 #include <eel/eel-gtk-macros.h>
-#include <eel/eel-glib-extensions.h>
 #include <gmodule.h>
 
 typedef struct _BeagleHit BeagleHit;
@@ -329,7 +328,7 @@ nautilus_search_engine_beagle_start (NautilusSearchEngine *engine)
 
 	/* These must live during the lifetime of the query */
 	g_free (text);
-	eel_g_list_free_deep (mimetypes);
+	g_list_free_full (mimetypes, g_free);
 }
 
 static void

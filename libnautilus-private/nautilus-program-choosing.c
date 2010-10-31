@@ -31,10 +31,8 @@
 #include "nautilus-icon-info.h"
 #include "nautilus-recent.h"
 #include "nautilus-desktop-icon-file.h"
-#include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-stock-dialogs.h>
-#include <eel/eel-string.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
@@ -154,7 +152,7 @@ nautilus_launch_application (GAppInfo *application,
 	uris = g_list_reverse (uris);
 	nautilus_launch_application_by_uri (application, uris,
 					    parent_window);
-	eel_g_list_free_deep (uris);
+	g_list_free_full (uris, g_free);
 }
 
 void
@@ -250,7 +248,7 @@ nautilus_launch_application_by_uri (GAppInfo *application,
 		}
 	}
 
-	eel_g_object_list_free (locations);
+	g_list_free_full (locations, g_object_unref);
 }
 
 /**
@@ -410,8 +408,8 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 				 _("To open non-local files copy them to a local folder and then"
 				   " drop them again."),
 				 parent_window);
-			
-			eel_g_object_list_free (files);
+
+			g_list_free_full (files, g_object_unref);
 			g_object_unref (app_info);
 			return;
 		} else if (count != total) {
@@ -456,8 +454,8 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 		g_error_free (error);
 		g_free (message);
 	}
-	
-	eel_g_object_list_free (files);
+
+	g_list_free_full (files, g_object_unref);
 	g_object_unref (context);
 	g_object_unref (app_info);
 }

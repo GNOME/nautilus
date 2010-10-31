@@ -35,9 +35,6 @@
 
 /* Convenience functions for lists of GdkPixbuf objects. */
 void                 eel_gdk_pixbuf_list_ref                  (GList                 *pixbuf_list);
-void                 eel_gdk_pixbuf_list_unref                (GList                 *pixbuf_list);
-void                 eel_gdk_pixbuf_list_free                 (GList                 *pixbuf_list);
-
 
 /* Loading a GdkPixbuf with a URI. */
 GdkPixbuf *          eel_gdk_pixbuf_load_from_stream_at_size  (GInputStream          *stream,

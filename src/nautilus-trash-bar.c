@@ -68,7 +68,7 @@ restore_button_clicked_cb (GtkWidget *button,
 	nautilus_restore_files_from_trash (files, GTK_WINDOW (gtk_widget_get_toplevel (button)));
 
 	nautilus_file_list_free (files);
-	eel_g_object_list_free (locations);
+	g_list_free_full (locations, g_object_unref);
 }
 
 static void

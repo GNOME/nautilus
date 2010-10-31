@@ -27,9 +27,7 @@
  
 #include <config.h>
 
-#include <eel/eel-debug.h>
 #include <eel/eel-gtk-extensions.h>
-#include <eel/eel-glib-extensions.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <libnautilus-private/nautilus-bookmark.h>
@@ -117,7 +115,7 @@ update_history (NautilusHistorySidebar *sidebar)
 		}
 		g_free (name);
 	}
-	eel_g_object_list_free (history);
+	g_list_free_full (history, g_object_unref);
 
 	selection = GTK_TREE_SELECTION (gtk_tree_view_get_selection (sidebar->tree_view));
 

@@ -41,9 +41,7 @@
 #include "nautilus-search-bar.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-zoom-control.h"
-#include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
-#include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk/gdkkeysyms.h>
@@ -531,7 +529,7 @@ location_menu_item_activated_callback (GtkWidget *menu_item,
 		nautilus_window_slot_open_location_with_selection
 			(slot, dest, selection, close_behind);
 
-		eel_g_object_list_free (selection);
+		g_list_free_full (selection, g_object_unref);
 	}
 
 	if (event != NULL) {

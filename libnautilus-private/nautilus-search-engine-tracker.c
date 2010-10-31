@@ -24,7 +24,6 @@
 #include <config.h>
 #include "nautilus-search-engine-tracker.h"
 #include <eel/eel-gtk-macros.h>
-#include <eel/eel-glib-extensions.h>
 #include <gmodule.h>
 #include <string.h>
 
@@ -415,7 +414,7 @@ nautilus_search_engine_tracker_start (NautilusSearchEngine *engine)
 
 	tracker->details->query_pending = TRUE;
 	g_free (search_text);
-	eel_g_list_free_deep (mimetypes);
+	g_list_free_full (mimetypes, g_free);
 }
 
 static void

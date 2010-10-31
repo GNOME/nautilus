@@ -54,18 +54,6 @@ GList *     eel_g_list_partition                        (GList                 *
 							 gpointer               user_data,
 							 GList                **removed);
 
-/* List functions for lists of g_free'able objects. */
-void        eel_g_list_free_deep                        (GList                 *list);
-void        eel_g_list_free_deep_custom                 (GList                 *list,
-							 GFunc                  element_free_func,
-							 gpointer               user_data);
-
-/* List functions for slists of g_free'able objects. */
-void        eel_g_slist_free_deep                       (GSList                *list);
-void        eel_g_slist_free_deep_custom                (GSList                *list,
-							 GFunc                  element_free_func,
-							 gpointer               user_data);
-
 /* List functions for lists of C strings. */
 gboolean    eel_g_str_list_equal                        (GList                 *str_list_a,
 							 GList                 *str_list_b);
@@ -76,8 +64,6 @@ int         eel_g_str_list_index                        (GList                 *
 
 /* List functions for lists of objects */
 GList *     eel_g_object_list_ref                       (GList                 *list);
-void        eel_g_object_list_unref                     (GList                 *list);
-void        eel_g_object_list_free                      (GList                 *list);
 GList *     eel_g_object_list_copy                      (GList                 *list);
 
 /* GHashTable functions */

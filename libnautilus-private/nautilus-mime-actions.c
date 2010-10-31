@@ -223,7 +223,7 @@ static void
 application_launch_parameters_free (ApplicationLaunchParameters *parameters)
 {
 	g_object_unref (parameters->application);
-	eel_g_list_free_deep (parameters->uris);
+	g_list_free_full (parameters->uris, g_free);
 
 	g_free (parameters);
 }			      
@@ -481,7 +481,7 @@ nautilus_mime_has_any_applications_for_file (NautilusFile *file)
 		
 	if (apps) {
 		result = TRUE;
-		eel_g_object_list_free (apps);
+		g_list_free_full (apps, g_object_unref);
 	} else {
 		result = FALSE;
 	}
@@ -676,7 +676,7 @@ trash_or_delete_files (GtkWindow *parent_window,
 	nautilus_file_operations_trash_or_delete (locations,
 						  parent_window,
 						  NULL, NULL);
-	eel_g_object_list_free (locations);
+	g_list_free_full (locations, g_object_unref);
 }
 
 static void

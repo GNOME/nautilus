@@ -85,7 +85,7 @@ nautilus_navigation_window_slot_clear_forward_list (NautilusNavigationWindowSlot
 {
 	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW_SLOT (slot));
 
-	eel_g_object_list_free (slot->forward_list);
+	g_list_free_full (slot->forward_list, g_object_unref);
 	slot->forward_list = NULL;
 }
 
@@ -94,7 +94,7 @@ nautilus_navigation_window_slot_clear_back_list (NautilusNavigationWindowSlot *s
 {
 	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW_SLOT (slot));
 
-	eel_g_object_list_free (slot->back_list);
+	g_list_free_full (slot->back_list, g_object_unref);
 	slot->back_list = NULL;
 }
 

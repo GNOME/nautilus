@@ -811,12 +811,11 @@ finalize (GObject *object)
 	}
 
 	eel_ref_str_unref (file->details->filesystem_id);
-	
-	eel_g_list_free_deep (file->details->mime_list);
 
-	eel_g_list_free_deep (file->details->pending_extension_emblems);
-	eel_g_list_free_deep (file->details->extension_emblems);	
-	eel_g_object_list_free (file->details->pending_info_providers);
+	g_list_free_full (file->details->mime_list, g_free);
+	g_list_free_full (file->details->pending_extension_emblems, g_free);
+	g_list_free_full (file->details->extension_emblems, g_free);
+	g_list_free_full (file->details->pending_info_providers, g_object_unref);
 
 	if (file->details->pending_extension_attributes) {
 		g_hash_table_destroy (file->details->pending_extension_attributes);
@@ -6423,8 +6422,8 @@ nautilus_file_get_emblem_icons (NautilusFile *file,
 
 		icons = g_list_prepend (icons, icon);
 	}
-	
-	eel_g_list_free_deep (keywords);
+
+	g_list_free_full (keywords, g_free);
 	
 	return icons;
 }
@@ -6483,7 +6482,7 @@ sort_keyword_list_and_remove_duplicates (GList *keywords)
 			if (strcmp ((const char *) p->data, (const char *) p->next->data) == 0) {
 				duplicate_link = p->next;
 				keywords = g_list_remove_link (keywords, duplicate_link);
-				eel_g_list_free_deep (duplicate_link);
+				g_list_free_full (duplicate_link, g_free);
 			} else {
 				p = p->next;
 			}
@@ -7288,7 +7287,7 @@ void
 nautilus_file_invalidate_extension_info_internal (NautilusFile *file)
 {
 	if (file->details->pending_info_providers)
-		eel_g_object_list_free (file->details->pending_info_providers);
+		g_list_free_full (file->details->pending_info_providers, g_object_unref);
 
 	file->details->pending_info_providers =
 		nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_INFO_PROVIDER);
@@ -8111,7 +8110,7 @@ nautilus_file_invalidate_extension_info (NautilusFile *file)
 void
 nautilus_file_info_providers_done (NautilusFile *file)
 {
-	eel_g_list_free_deep (file->details->extension_emblems);
+	g_list_free_full (file->details->extension_emblems, g_free);
 	file->details->extension_emblems = file->details->pending_extension_emblems;
 	file->details->pending_extension_emblems = NULL;
 

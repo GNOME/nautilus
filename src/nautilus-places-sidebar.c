@@ -401,7 +401,7 @@ compare_for_selection (NautilusPlacesSidebar *sidebar,
 {
 	int res;
 
-	res = eel_strcmp (added_uri, last_uri);
+	res = g_strcmp0 (added_uri, last_uri);
 
 	if (res == 0) {
 		/* last_uri always comes first */
@@ -410,7 +410,7 @@ compare_for_selection (NautilusPlacesSidebar *sidebar,
 		}
 		*path = gtk_tree_model_get_path (sidebar->filter_model,
 						 iter);
-	} else if (eel_strcmp (location, added_uri) == 0) {
+	} else if (g_strcmp0 (location, added_uri) == 0) {
 		if (*path == NULL) {
 			*path = gtk_tree_model_get_path (sidebar->filter_model,
 							 iter);
@@ -803,7 +803,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 		g_free (tooltip);
 	}
 
-	eel_g_object_list_free (network_mounts);
+	g_list_free_full (network_mounts, g_object_unref);
 
 	/* network:// */
  	mount_uri = "network:///"; /* No need to strdup */

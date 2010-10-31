@@ -117,7 +117,7 @@ nautilus_query_get_mime_types (NautilusQuery *query)
 void
 nautilus_query_set_mime_types (NautilusQuery *query, GList *mime_types)
 {
-	eel_g_list_free_deep (query->details->mime_types);
+	g_list_free_full (query->details->mime_types, g_free);
 	query->details->mime_types = eel_g_str_list_copy (mime_types);
 }
 

@@ -54,18 +54,6 @@ eel_gdk_pixbuf_list_ref (GList *pixbuf_list)
 	g_list_foreach (pixbuf_list, (GFunc) g_object_ref, NULL);
 }
 
-/**
- * eel_gdk_pixbuf_list_free
- * @pixbuf_list: A list of GdkPixbuf objects.
- *
- * Unrefs all the pixbufs, then frees the list.
- **/
-void
-eel_gdk_pixbuf_list_free (GList *pixbuf_list)
-{
-	eel_g_list_free_deep_custom (pixbuf_list, (GFunc) g_object_unref, NULL);
-}
-
 static void
 pixbuf_loader_size_prepared (GdkPixbufLoader *loader,
 			     int              width,

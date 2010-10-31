@@ -1836,8 +1836,8 @@ delete_job_done (gpointer user_data)
 	GHashTable *debuting_uris;
 
 	job = user_data;
-	
-	eel_g_object_list_free (job->files);
+
+	g_list_free_full (job->files, g_object_unref);
 
 	if (job->done_callback) {
 		debuting_uris = g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal, g_object_unref, NULL);
@@ -2157,7 +2157,7 @@ has_trash_files (GMount *mount)
 		}
 	}
 
-	eel_g_object_list_free (dirs);
+	g_list_free_full (dirs, g_object_unref);
 	
 	return res;
 }
@@ -4421,7 +4421,7 @@ copy_job_done (gpointer user_data)
 		job->done_callback (job->debuting_files, job->done_callback_data);
 	}
 
-	eel_g_object_list_free (job->files);
+	g_list_free_full (job->files, g_object_unref);
 	if (job->destination) {
 		g_object_unref (job->destination);
 	}
@@ -4934,7 +4934,7 @@ move_job_done (gpointer user_data)
 		job->done_callback (job->debuting_files, job->done_callback_data);
 	}
 
-	eel_g_object_list_free (job->files);
+	g_list_free_full (job->files, g_object_unref);
 	g_object_unref (job->destination);
 	g_hash_table_unref (job->debuting_files);
 	g_free (job->icon_positions);
@@ -5014,7 +5014,7 @@ move_job (GIOSchedulerJob *io_job,
 		    &source_info, &transfer_info);
 
  aborted:
-	eel_g_list_free_deep (fallbacks);
+	g_list_free_full (fallbacks, g_free);
 
 	g_free (dest_fs_id);
 	g_free (dest_fs_type);
@@ -5251,7 +5251,7 @@ link_job_done (gpointer user_data)
 		job->done_callback (job->debuting_files, job->done_callback_data);
 	}
 
-	eel_g_object_list_free (job->files);
+	g_list_free_full (job->files, g_object_unref);
 	g_object_unref (job->destination);
 	g_hash_table_unref (job->debuting_files);
 	g_free (job->icon_positions);
@@ -5671,7 +5671,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 					       done_callback, done_callback_data);
 	}
 	
-	eel_g_object_list_free (locations);
+	g_list_free_full (locations, g_object_unref);
 	if (dest) {
 		g_object_unref (dest);
 	}
@@ -6110,7 +6110,7 @@ empty_trash_job_done (gpointer user_data)
 
 	job = user_data;
 	
-	eel_g_object_list_free (job->trash_dirs);
+	g_list_free_full (job->trash_dirs, g_object_unref);
 
 	if (job->done_callback) {
 		job->done_callback (job->done_callback_data);

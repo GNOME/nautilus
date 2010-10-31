@@ -801,7 +801,7 @@ nautilus_window_slot_content_view_matches_iid (NautilusWindowSlot *slot,
 	if (slot->content_view == NULL) {
 		return FALSE;
 	}
-	return eel_strcmp (nautilus_view_get_view_id (slot->content_view), iid) == 0;
+	return g_strcmp0 (nautilus_view_get_view_id (slot->content_view), iid) == 0;
 }
 
 static gboolean
@@ -1274,7 +1274,7 @@ create_content_view (NautilusWindowSlot *slot,
 	} 
         
         if (slot->content_view != NULL &&
-	    eel_strcmp (nautilus_view_get_view_id (slot->content_view),
+	    g_strcmp0 (nautilus_view_get_view_id (slot->content_view),
 			view_id) == 0) {
                 /* reuse existing content view */
                 view = slot->content_view;
@@ -1301,7 +1301,7 @@ create_content_view (NautilusWindowSlot *slot,
 				   FALSE,
 				   TRUE);
 
-		eel_g_object_list_free (slot->pending_selection);
+		g_list_free_full (slot->pending_selection, g_object_unref);
 		slot->pending_selection = NULL;
 	} else if (slot->location != NULL) {
 		selection = nautilus_view_get_selection (slot->content_view);
@@ -1310,7 +1310,7 @@ create_content_view (NautilusWindowSlot *slot,
 				   selection,
 				   FALSE,
 				   TRUE);
-		eel_g_object_list_free (selection);
+		g_list_free_full (selection, g_object_unref);
 	} else {
 		/* Something is busted, there was no location to load.
 		   Just load the homedir. */
@@ -1362,8 +1362,8 @@ load_new_location (NautilusWindowSlot *slot,
 		   report_load_underway was called from load_location */
 		nautilus_view_set_selection (view, selection_copy);
 	}
-	
-        eel_g_object_list_free (selection_copy);
+
+	g_list_free_full (selection_copy, g_object_unref);
 }
 
 /* A view started to load the location its viewing, either due to
@@ -1782,7 +1782,7 @@ free_location_change (NautilusWindowSlot *slot)
 	}
         slot->pending_location = NULL;
 
-	eel_g_object_list_free (slot->pending_selection);
+	g_list_free_full (slot->pending_selection, g_object_unref);
 	slot->pending_selection = NULL;
 
         /* Don't free pending_scroll_to, since thats needed until
@@ -1832,7 +1832,7 @@ cancel_location_change (NautilusWindowSlot *slot)
 				   selection,
 				   TRUE,
 				   FALSE);
-		eel_g_object_list_free (selection);
+		g_list_free_full (selection, g_object_unref);
         }
 
         end_location_change (slot);
@@ -2152,7 +2152,7 @@ nautilus_window_slot_reload (NautilusWindowSlot *slot)
 		 NULL, NULL);
         g_free (current_pos);
 	g_object_unref (location);
-	eel_g_object_list_free (selection);
+	g_list_free_full (selection, g_object_unref);
 }
 
 void

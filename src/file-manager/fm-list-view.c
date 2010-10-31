@@ -2136,7 +2136,7 @@ fm_list_view_set_selection (FMDirectoryView *view, GList *selection)
 			gtk_tree_selection_select_iter (tree_selection,
 							(GtkTreeIter *)l->data);
 		}
-		eel_g_list_free_deep (iters);
+		g_list_free_full (iters, g_free);
 	}
 
 	g_signal_handlers_unblock_by_func (tree_selection, list_selection_changed_callback, view);
@@ -2171,7 +2171,7 @@ fm_list_view_invert_selection (FMDirectoryView *view)
 			gtk_tree_selection_unselect_iter (tree_selection,
 							(GtkTreeIter *)l->data);
 		}
-		eel_g_list_free_deep (iters);
+		g_list_free_full (iters, g_free);
 	}
 
 	g_list_free (selection);

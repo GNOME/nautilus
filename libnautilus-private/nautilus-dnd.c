@@ -128,7 +128,7 @@ nautilus_drag_uri_array_from_selection_list (const GList *selection_list)
 
 	uri_list = nautilus_drag_uri_list_from_selection_list (selection_list);
 	uris = nautilus_drag_uri_array_from_list (uri_list);
-	eel_g_list_free_deep (uri_list);
+	g_list_free_full (uri_list, g_free);
 
 	return uris;
 }
@@ -1144,7 +1144,7 @@ slot_proxy_handle_drop (GtkWidget                *widget,
 								uri_list,
 								target_uri,
 								gdk_drag_context_get_selected_action (context));
-			eel_g_list_free_deep (uri_list);
+			g_list_free_full (uri_list, g_free);
 		} else if (drag_info->info == NAUTILUS_ICON_DND_URI_LIST) {
 			nautilus_view_drop_proxy_received_uris (target_view,
 								drag_info->data.uri_list,

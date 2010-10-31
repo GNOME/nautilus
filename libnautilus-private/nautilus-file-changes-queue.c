@@ -24,7 +24,6 @@
 #include "nautilus-file-changes-queue.h"
 
 #include "nautilus-directory-notify.h"
-#include <eel/eel-glib-extensions.h>
 
 #ifdef G_THREADS_ENABLED
 #define MUTEX_LOCK(a)	if ((a) != NULL) g_mutex_lock (a)
@@ -276,7 +275,7 @@ pairs_list_free (GList *pairs)
 	}
 
 	/* delete the list and the now empty pair structs */
-	eel_g_list_free_deep (pairs);
+	g_list_free_full (pairs, g_free);
 }
 
 static void
@@ -290,7 +289,7 @@ position_set_list_free (GList *list)
 		g_object_unref (item->location);
 	}
 	/* delete the list and the now empty structs */
-	eel_g_list_free_deep (list);
+	g_list_free_full (list, g_free);
 }
 
 /* go through changes in the change queue, send ones with the same kind
@@ -366,7 +365,7 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 			if (deletions != NULL) {
 				deletions = g_list_reverse (deletions);
 				nautilus_directory_notify_files_removed (deletions);
-				eel_g_object_list_free (deletions);
+				g_list_free_full (deletions, g_object_unref);
 				deletions = NULL;
 			}
 			if (moves != NULL) {
@@ -378,13 +377,13 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 			if (additions != NULL) {
 				additions = g_list_reverse (additions);
 				nautilus_directory_notify_files_added (additions);
-				eel_g_object_list_free (additions);
+				g_list_free_full (additions, g_object_unref);
 				additions = NULL;
 			}
 			if (changes != NULL) {
 				changes = g_list_reverse (changes);
 				nautilus_directory_notify_files_changed (changes);
-				eel_g_object_list_free (changes);
+				g_list_free_full (changes, g_object_unref);
 				changes = NULL;
 			}
 			if (position_set_requests != NULL) {

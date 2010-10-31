@@ -299,7 +299,7 @@ nautilus_icon_canvas_item_finalize (GObject *object)
 		g_object_unref (details->text_util);
 	}
 
-	eel_gdk_pixbuf_list_free (details->emblem_pixbufs);
+	g_list_free_full (details->emblem_pixbufs, g_object_unref);
 	g_free (details->editable_text);
 	g_free (details->additional_text);
 	g_free (details->attach_points);
@@ -634,7 +634,7 @@ nautilus_icon_canvas_item_set_emblems (NautilusIconCanvasItem *item,
 	
 	/* Take in the new list of emblems. */
 	eel_gdk_pixbuf_list_ref (emblem_pixbufs);
-	eel_gdk_pixbuf_list_free (item->details->emblem_pixbufs);
+	g_list_free_full (item->details->emblem_pixbufs, g_object_unref);
 	item->details->emblem_pixbufs = g_list_copy (emblem_pixbufs);
 
 	nautilus_icon_canvas_item_invalidate_bounds_cache (item);

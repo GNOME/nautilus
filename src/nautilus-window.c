@@ -326,8 +326,8 @@ nautilus_window_go_up (NautilusWindow *window, gboolean close_behind, gboolean n
 						 NULL, NULL);
 	
 	g_object_unref (parent);
-	
-	eel_g_object_list_free (selection);
+
+	g_list_free_full (selection, g_object_unref);
 }
 
 static void
@@ -567,9 +567,7 @@ nautilus_window_get_property (GObject *object,
 static void
 free_stored_viewers (NautilusWindow *window)
 {
-	eel_g_list_free_deep_custom (window->details->short_list_viewers, 
-				     (GFunc) g_free, 
-				     NULL);
+	g_list_free_full (window->details->short_list_viewers, g_free);
 	window->details->short_list_viewers = NULL;
 	g_free (window->details->extra_viewer);
 	window->details->extra_viewer = NULL;
@@ -1601,7 +1599,7 @@ nautilus_send_history_list_changed (void)
 static void
 free_history_list (void)
 {
-	eel_g_object_list_free (history_list);
+	g_list_free_full (history_list, g_object_unref);
 	history_list = NULL;
 }
 

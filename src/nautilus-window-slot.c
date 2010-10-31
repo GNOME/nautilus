@@ -622,7 +622,7 @@ nautilus_window_slot_dispose (GObject *object)
 		g_object_ref (slot->location);
 	}
 
-	eel_g_list_free_deep (slot->pending_selection);
+	g_list_free_full (slot->pending_selection, g_free);
 	slot->pending_selection = NULL;
 
 	if (slot->current_location_bookmark != NULL) {

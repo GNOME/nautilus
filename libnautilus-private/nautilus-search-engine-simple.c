@@ -27,7 +27,6 @@
 #include <string.h>
 #include <glib.h>
 #include <eel/eel-gtk-macros.h>
-#include <eel/eel-glib-extensions.h>
 #include <gio/gio.h>
 
 #define BATCH_SIZE 500
@@ -132,8 +131,8 @@ search_thread_data_free (SearchThreadData *data)
 	g_hash_table_destroy (data->visited);
 	g_object_unref (data->cancellable);
 	g_strfreev (data->words);	
-	eel_g_list_free_deep (data->mime_types);
-	eel_g_list_free_deep (data->uri_hits);
+	g_list_free_full (data->mime_types, g_free);
+	g_list_free_full (data->uri_hits, g_free);
 	g_free (data);
 }
 
@@ -171,8 +170,8 @@ search_thread_add_hits_idle (gpointer user_data)
 		nautilus_search_engine_hits_added (NAUTILUS_SEARCH_ENGINE (hits->thread_data->engine),
 						   hits->uris);
 	}
-	
-	eel_g_list_free_deep (hits->uris);
+
+	g_list_free_full (hits->uris, g_free);
 	g_free (hits);
 	
 	return FALSE;

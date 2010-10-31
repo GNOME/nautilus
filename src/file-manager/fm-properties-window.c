@@ -1037,8 +1037,8 @@ properties_window_update (FMPropertiesWindow *window,
 		if (!mime_list_equal (window->details->mime_list, mime_list)) {
 			refresh_extension_pages (window);			
 		}
-		
-		eel_g_list_free_deep (window->details->mime_list);
+
+		g_list_free_full (window->details->mime_list, g_free);
 		window->details->mime_list = mime_list;
 	}
 }
@@ -1647,7 +1647,7 @@ synch_groups_combo_box (GtkComboBox *combo_box, NautilusFile *file)
 	gtk_combo_box_set_active (combo_box, current_group_index);
 
 	g_free (current_group_name);
-	eel_g_list_free_deep (groups);
+	g_list_free_full (groups, g_free);
 }
 
 static gboolean
@@ -2002,7 +2002,7 @@ synch_user_menu (GtkComboBox *combo_box, NautilusFile *file)
 	gtk_combo_box_set_active (combo_box, owner_index);
 
 	g_free (owner_name);
-	eel_g_list_free_deep (users);
+	g_list_free_full (users, g_free);
 }	
 
 static GtkComboBox*
@@ -4711,7 +4711,7 @@ get_pending_key (GList *file_list)
 		g_string_append (key, ";");
 	}
 
-	eel_g_list_free_deep (uris);
+	g_list_free_full (uris, g_free);
 
 	ret = key->str;
 	g_string_free (key, FALSE);
@@ -5264,7 +5264,7 @@ real_finalize (GObject *object)
 
 	window = FM_PROPERTIES_WINDOW (object);
 
-	eel_g_list_free_deep (window->details->mime_list);
+	g_list_free_full (window->details->mime_list, g_free);
 
 	g_free (window->details->pending_name);
 	g_free (window->details);

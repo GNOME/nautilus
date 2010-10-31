@@ -803,9 +803,8 @@ type_add_rows_from_query (NautilusQueryEditor    *editor,
 		gtk_combo_box_set_active_iter  (GTK_COMBO_BOX (row->type_widget),
 						&iter);
 	}
-	
-	eel_g_list_free_deep (mime_types);
 
+	g_list_free_full (mime_types, g_free);
 }
 
 /* End of row types */

@@ -29,7 +29,6 @@
 #include <config.h>
 #include "fm-tree-model.h"
 
-#include <eel/eel-glib-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <glib/gi18n.h>
 #include <libnautilus-private/nautilus-directory.h>
@@ -308,7 +307,7 @@ get_menu_icon_for_file (TreeNode *node,
 		}
 	}
 
-	eel_g_object_list_free (emblem_icons);
+	g_list_free_full (emblem_icons, g_object_unref);
 
 	info = nautilus_icon_info_lookup (gicon, size);
 	retval = nautilus_icon_info_get_pixbuf_nodefault_at_size (info, size);

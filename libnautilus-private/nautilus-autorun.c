@@ -33,7 +33,6 @@
 #include <gdk/gdkkeysyms.h>
 
 #include <eel/eel-glib-extensions.h>
-#include <eel/eel-stock-dialogs.h>
 
 #include "nautilus-icon-info.h"
 #include "nautilus-global-preferences.h"
@@ -615,7 +614,7 @@ nautilus_autorun_prepare_combo_box (GtkWidget *combo_box,
 	if (default_app_info != NULL) {
 		g_object_unref (default_app_info);
 	}
-	eel_g_object_list_free (app_info_list);
+	g_list_free_full (app_info_list, g_object_unref);
 
 	gtk_combo_box_set_model (GTK_COMBO_BOX (combo_box), GTK_TREE_MODEL (list_store));
 	g_object_unref (G_OBJECT (list_store));

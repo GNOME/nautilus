@@ -7114,7 +7114,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 
 	/* Let the pixbufs go. */
 	g_object_unref (pixbuf);
-	eel_gdk_pixbuf_list_free (emblem_pixbufs);
+	g_list_free_full (emblem_pixbufs, g_object_unref);
 
 	g_free (editable_text);
 	g_free (additional_text);

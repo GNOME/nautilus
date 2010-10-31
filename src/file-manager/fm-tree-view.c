@@ -35,9 +35,7 @@
 #include "fm-tree-model.h"
 #include "fm-properties-window.h"
 #include <string.h>
-#include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
-#include <eel/eel-stock-dialogs.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
@@ -969,8 +967,8 @@ paste_clipboard_data (FMTreeView *view,
 		if (cut) {
 			gtk_clipboard_clear (nautilus_clipboard_get (GTK_WIDGET (view)));
 		}
-		
-		eel_g_list_free_deep (item_uris);
+
+		g_list_free_full (item_uris, g_free);
 	}
 }
 
@@ -1031,7 +1029,7 @@ fm_tree_view_trash_cb (GtkWidget *menu_item,
 	nautilus_file_operations_trash_or_delete (list, 
 						  fm_tree_view_get_containing_window (view),
 						  NULL, NULL);
-	eel_g_object_list_free (list);
+	g_list_free_full (list, g_free);
 }
 
 static void
@@ -1048,7 +1046,7 @@ fm_tree_view_delete_cb (GtkWidget *menu_item,
 					nautilus_file_get_location (view->details->popup_file));
 	
 	nautilus_file_operations_delete (location_list, fm_tree_view_get_containing_window (view), NULL, NULL);
-	eel_g_object_list_free (location_list);
+	g_list_free_full (location_list, g_object_unref);
 }
 
 static void

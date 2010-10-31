@@ -29,7 +29,6 @@
 #include "nautilus-open-with-dialog.h"
 #include "nautilus-signaller.h"
 
-#include <eel/eel-glib-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 
 #include <string.h>
@@ -263,7 +262,7 @@ add_or_find_application (NautilusOpenWithDialog *dialog)
 		}
 
 		if (applications != NULL) {
-			eel_g_object_list_free (applications);
+			g_list_free_full (applications, g_object_unref);
 		}
 	}
 
