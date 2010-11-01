@@ -579,8 +579,8 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 	hadj = gtk_scrollable_get_hadjustment (GTK_SCROLLABLE (icon_container));
 	vadj = gtk_scrollable_get_vadjustment (GTK_SCROLLABLE (icon_container));
 
-	eel_gtk_adjustment_set_value (hadj, 0);
-	eel_gtk_adjustment_set_value (vadj, 0);
+	gtk_adjustment_set_value (hadj, 0);
+	gtk_adjustment_set_value (vadj, 0);
 
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (desktop_icon_view),
 					     GTK_SHADOW_NONE);
