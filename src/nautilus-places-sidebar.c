@@ -1673,17 +1673,17 @@ bookmarks_check_popup_sensitivity (NautilusPlacesSidebar *sidebar)
 
 	show_empty_trash = (uri != NULL) &&
 			   (!strcmp (uri, "trash:///"));
-	
-	eel_gtk_widget_set_shown (sidebar->popup_menu_separator_item, 
-			show_mount || show_unmount || show_eject || show_format || show_empty_trash);
-	eel_gtk_widget_set_shown (sidebar->popup_menu_mount_item, show_mount);
-	eel_gtk_widget_set_shown (sidebar->popup_menu_unmount_item, show_unmount);
-	eel_gtk_widget_set_shown (sidebar->popup_menu_eject_item, show_eject);
-	eel_gtk_widget_set_shown (sidebar->popup_menu_rescan_item, show_rescan);
-	eel_gtk_widget_set_shown (sidebar->popup_menu_format_item, show_format);
-	eel_gtk_widget_set_shown (sidebar->popup_menu_start_item, show_start);
-	eel_gtk_widget_set_shown (sidebar->popup_menu_stop_item, show_stop);
-	eel_gtk_widget_set_shown (sidebar->popup_menu_empty_trash_item, show_empty_trash);
+
+	gtk_widget_set_visible (sidebar->popup_menu_separator_item,
+		      show_mount || show_unmount || show_eject || show_format || show_empty_trash);
+	gtk_widget_set_visible (sidebar->popup_menu_mount_item, show_mount);
+	gtk_widget_set_visible (sidebar->popup_menu_unmount_item, show_unmount);
+	gtk_widget_set_visible (sidebar->popup_menu_eject_item, show_eject);
+	gtk_widget_set_visible (sidebar->popup_menu_rescan_item, show_rescan);
+	gtk_widget_set_visible (sidebar->popup_menu_format_item, show_format);
+	gtk_widget_set_visible (sidebar->popup_menu_start_item, show_start);
+	gtk_widget_set_visible (sidebar->popup_menu_stop_item, show_stop);
+	gtk_widget_set_visible (sidebar->popup_menu_empty_trash_item, show_empty_trash);
 
 	/* Adjust start/stop items to reflect the type of the drive */
 	gtk_menu_item_set_label (GTK_MENU_ITEM (sidebar->popup_menu_start_item), _("_Start"));
