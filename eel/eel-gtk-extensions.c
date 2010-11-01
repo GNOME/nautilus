@@ -343,37 +343,6 @@ eel_gtk_menu_tool_button_get_button (GtkMenuToolButton *tool_button)
 	return button;
 }
 
-/* The standard gtk_adjustment_set_value ignores page size, which
- * disagrees with the logic used by scroll bars, for example.
- */
-void
-eel_gtk_adjustment_set_value (GtkAdjustment *adjustment,
-				   float value)
-{
-	float upper_page_start, clamped_value;
-
-	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
-	
-	upper_page_start = MAX (gtk_adjustment_get_upper (adjustment) -
-				gtk_adjustment_get_page_size (adjustment),
-				gtk_adjustment_get_lower (adjustment));
-	clamped_value = CLAMP (value, gtk_adjustment_get_lower (adjustment), upper_page_start);
-	if (clamped_value != gtk_adjustment_get_value (adjustment)) {
-		gtk_adjustment_set_value (adjustment, clamped_value);
-		gtk_adjustment_value_changed (adjustment);
-	}
-}
-
-/* Clamp a value if the minimum or maximum has changed. */
-void
-eel_gtk_adjustment_clamp_value (GtkAdjustment *adjustment)
-{
-	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
-	
-	eel_gtk_adjustment_set_value (adjustment,
-				      gtk_adjustment_get_value (adjustment));
-}
-
 /**
  * eel_gtk_label_make_bold.
  *
