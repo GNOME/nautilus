@@ -42,18 +42,6 @@
 
 #define LOAD_BUFFER_SIZE 65536
 
-/**
- * eel_gdk_pixbuf_list_ref
- * @pixbuf_list: A list of GdkPixbuf objects.
- *
- * Refs all the pixbufs.
- **/
-void
-eel_gdk_pixbuf_list_ref (GList *pixbuf_list)
-{
-	g_list_foreach (pixbuf_list, (GFunc) g_object_ref, NULL);
-}
-
 static void
 pixbuf_loader_size_prepared (GdkPixbufLoader *loader,
 			     int              width,

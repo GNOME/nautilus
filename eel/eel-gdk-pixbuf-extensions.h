@@ -25,16 +25,12 @@
 #ifndef EEL_GDK_PIXBUF_EXTENSIONS_H
 #define EEL_GDK_PIXBUF_EXTENSIONS_H
 
-#include <eel/eel-art-extensions.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk/gdk.h>
 #include <gio/gio.h>
 
 #define EEL_OPACITY_FULLY_TRANSPARENT 0
 #define EEL_OPACITY_FULLY_OPAQUE      255
-
-/* Convenience functions for lists of GdkPixbuf objects. */
-void                 eel_gdk_pixbuf_list_ref                  (GList                 *pixbuf_list);
 
 /* Loading a GdkPixbuf with a URI. */
 GdkPixbuf *          eel_gdk_pixbuf_load_from_stream_at_size  (GInputStream          *stream,
