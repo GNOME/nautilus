@@ -135,7 +135,7 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 	window->details->header_size_group = gtk_size_group_new (GTK_SIZE_GROUP_VERTICAL);
 	gtk_size_group_set_ignore_hidden (window->details->header_size_group, FALSE);
 
-	window->details->content_paned = gtk_hpaned_new ();
+	window->details->content_paned = gtk_paned_new (GTK_ORIENTATION_HORIZONTAL);
 	gtk_table_attach (GTK_TABLE (NAUTILUS_WINDOW (window)->details->table),
 			  window->details->content_paned,
 			  /* X direction */                   /* Y direction */
@@ -149,7 +149,7 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 			 TRUE, FALSE);
 	gtk_widget_show (vbox);
 
-	hpaned = gtk_hpaned_new ();
+	hpaned = gtk_paned_new (GTK_ORIENTATION_HORIZONTAL);
 	gtk_box_pack_start (GTK_BOX (vbox), hpaned, TRUE, TRUE, 0);
 	gtk_widget_show (hpaned);
 	window->details->split_view_hpane = hpaned;
