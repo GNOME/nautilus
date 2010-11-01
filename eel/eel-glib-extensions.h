@@ -90,9 +90,6 @@ int         eel_round                                   (double                 
 void        eel_add_weak_pointer                        (gpointer               pointer_location);
 void        eel_remove_weak_pointer                     (gpointer               pointer_location);
 
-/* Get the filename encoding, returns TRUE if utf8 */
-gboolean    eel_get_filename_charset                    (const gchar **filename_charset);
-
 void        eel_g_settings_add_auto_enum                (GSettings *settings,
 							 const char *key,
 							 int *storage);
