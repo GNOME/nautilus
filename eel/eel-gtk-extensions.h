@@ -35,10 +35,6 @@
 #define EEL_DEFAULT_POPUP_MENU_DISPLACEMENT 	2
 #define EEL_STANDARD_CLOSE_WINDOW_CONTROL_KEY 	'w'
 
-/* GtkWidget */
-void                  eel_gtk_widget_set_shown                        (GtkWidget            *widget,
-								       gboolean              shown);
-
 /* GtkWindow */
 void                  eel_gtk_window_set_initial_geometry             (GtkWindow            *window,
 								       EelGdkGeometryFlags   geometry_flags,

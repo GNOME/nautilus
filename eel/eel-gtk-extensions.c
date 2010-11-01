@@ -343,25 +343,6 @@ eel_gtk_menu_tool_button_get_button (GtkMenuToolButton *tool_button)
 	return button;
 }
 
-/**
- * eel_gtk_widget_set_shown
- *
- * Show or hide a widget.
- * @widget: The widget.
- * @shown: Boolean value indicating whether the widget should be shown or hidden.
- **/
-void
-eel_gtk_widget_set_shown (GtkWidget *widget, gboolean shown)
-{
-	g_return_if_fail (GTK_IS_WIDGET (widget));
-
-	if (shown) {
-		gtk_widget_show (widget);
-	} else {
-		gtk_widget_hide (widget);
-	}
-}
-
 /* The standard gtk_adjustment_set_value ignores page size, which
  * disagrees with the logic used by scroll bars, for example.
  */
