@@ -1571,14 +1571,19 @@ button_data_file_changed (NautilusFile *file,
 	} else if (nautilus_file_is_gone (file)) {
 		gint idx, position;
 
-		/* remove this and the following buttons */
-		position = g_list_position (path_bar->button_list,
-					    g_list_find (path_bar->button_list, button_data));
+		/* if the current location is gone, don't do anything, as the view
+		 * will get the event too and call us back.
+		 */
+		if (nautilus_file_compare_location (file, current_button_data->file) != 0) {
+			/* remove this and the following buttons */
+			position = g_list_position (path_bar->button_list,
+						    g_list_find (path_bar->button_list, button_data));
 
-		if (position != -1) {
-			for (idx = 0; idx <= position; idx++) {
-				gtk_container_remove (GTK_CONTAINER (path_bar),
-						      BUTTON_DATA (path_bar->button_list->data)->button);
+			if (position != -1) {
+				for (idx = 0; idx <= position; idx++) {
+					gtk_container_remove (GTK_CONTAINER (path_bar),
+							      BUTTON_DATA (path_bar->button_list->data)->button);
+				}
 			}
 		}
 
