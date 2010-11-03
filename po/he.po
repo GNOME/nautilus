@@ -19,8 +19,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eel.HEAD.he\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-11-01 07:45+0200\n"
-"PO-Revision-Date: 2010-11-01 07:46+0200\n"
+"POT-Creation-Date: 2010-11-03 09:08+0200\n"
+"PO-Revision-Date: 2010-11-03 09:10+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -96,11 +96,11 @@ msgstr "Show session management options"
 msgid "Saved search"
 msgstr "חיפוש שמור"
 
-#: ../eel/eel-canvas.c:1241 ../eel/eel-canvas.c:1242
+#: ../eel/eel-canvas.c:1236 ../eel/eel-canvas.c:1237
 msgid "X"
 msgstr "X"
 
-#: ../eel/eel-canvas.c:1248 ../eel/eel-canvas.c:1249
+#: ../eel/eel-canvas.c:1243 ../eel/eel-canvas.c:1244
 msgid "Y"
 msgstr "Y"
 
@@ -158,7 +158,7 @@ msgstr "בחירת הכול"
 msgid "Input Methods"
 msgstr "שיטות קלט"
 
-#: ../eel/eel-gtk-extensions.c:460
+#: ../eel/eel-gtk-extensions.c:429
 msgid "Show more _details"
 msgstr "הצגת _פרטים נוספים"
 
@@ -281,9 +281,9 @@ msgstr "_תמיד לבצע את פעולה זו"
 #. label, accelerator
 #. add the "Eject" menu item
 #: ../libnautilus-private/nautilus-autorun.c:1032
-#: ../src/file-manager/fm-directory-view.c:7118
-#: ../src/file-manager/fm-directory-view.c:7146
-#: ../src/file-manager/fm-directory-view.c:7227
+#: ../src/file-manager/fm-directory-view.c:7179
+#: ../src/file-manager/fm-directory-view.c:7207
+#: ../src/file-manager/fm-directory-view.c:7288
 #: ../src/file-manager/fm-tree-view.c:1272
 #: ../src/nautilus-places-sidebar.c:2525
 msgid "_Eject"
@@ -293,9 +293,9 @@ msgstr "_שליפה"
 #. label, accelerator
 #. add the "Unmount" menu item
 #: ../libnautilus-private/nautilus-autorun.c:1043
-#: ../src/file-manager/fm-directory-view.c:7114
-#: ../src/file-manager/fm-directory-view.c:7142
-#: ../src/file-manager/fm-directory-view.c:7223
+#: ../src/file-manager/fm-directory-view.c:7175
+#: ../src/file-manager/fm-directory-view.c:7203
+#: ../src/file-manager/fm-directory-view.c:7284
 #: ../src/file-manager/fm-tree-view.c:1263
 #: ../src/nautilus-places-sidebar.c:2518
 msgid "_Unmount"
@@ -325,7 +325,7 @@ msgstr "הדבקת הטקסט השמור בלוח הגזירים"
 #. name, stock id
 #. label, accelerator
 #: ../libnautilus-private/nautilus-clipboard.c:447
-#: ../src/file-manager/fm-directory-view.c:7056
+#: ../src/file-manager/fm-directory-view.c:7117
 msgid "Select _All"
 msgstr "בחירת _הכול"
 
@@ -717,7 +717,7 @@ msgstr[1] "בסביבות %'d שעות"
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:375
 #: ../libnautilus-private/nautilus-file.c:6253
-#: ../src/file-manager/fm-directory-view.c:10232
+#: ../src/file-manager/fm-directory-view.c:10299
 #, c-format
 msgid "Link to %s"
 msgstr "קישור ל־%s"
@@ -1595,7 +1595,7 @@ msgid "Specified group '%s' doesn't exist"
 msgstr "הקבוצה '%s' שצוינה לא קיימת"
 
 #: ../libnautilus-private/nautilus-file.c:5746
-#: ../src/file-manager/fm-directory-view.c:2268
+#: ../src/file-manager/fm-directory-view.c:2287
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
@@ -1665,7 +1665,7 @@ msgstr "קישור"
 msgid "link (broken)"
 msgstr "קישור (שבור)"
 
-#: ../libnautilus-private/nautilus-icon-container.c:2705
+#: ../libnautilus-private/nautilus-icon-container.c:2699
 msgid "The selection rectangle"
 msgstr "ריבוע הבחירה"
 
@@ -1691,10 +1691,10 @@ msgstr "לא ניתן להשתמש בקישור זה, כיוון שיעדו \"%s
 #. name, stock id
 #. label, accelerator
 #: ../libnautilus-private/nautilus-mime-actions.c:717
-#: ../src/file-manager/fm-directory-view.c:7084
-#: ../src/file-manager/fm-directory-view.c:7207
-#: ../src/file-manager/fm-directory-view.c:8304
-#: ../src/file-manager/fm-directory-view.c:8629
+#: ../src/file-manager/fm-directory-view.c:7145
+#: ../src/file-manager/fm-directory-view.c:7268
+#: ../src/file-manager/fm-directory-view.c:8365
+#: ../src/file-manager/fm-directory-view.c:8696
 #: ../src/file-manager/fm-tree-view.c:1236
 msgid "Mo_ve to Trash"
 msgstr "ה_עברה לאשפה"
@@ -1814,12 +1814,12 @@ msgstr[1] "פעולה זו תפתח %d יישומים נפרדים."
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1941
 #: ../libnautilus-private/nautilus-mime-actions.c:2215
-#: ../src/file-manager/fm-directory-view.c:6104
+#: ../src/file-manager/fm-directory-view.c:6165
 msgid "Unable to mount location"
 msgstr "לא ניתן לעגן את המיקום"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:2294
-#: ../src/file-manager/fm-directory-view.c:6278
+#: ../src/file-manager/fm-directory-view.c:6339
 msgid "Unable to start location"
 msgstr "לא ניתן להתחיל את המיקום"
 
@@ -1928,8 +1928,8 @@ msgstr "_עיון..."
 #. name, stock id
 #. label, accelerator
 #: ../libnautilus-private/nautilus-open-with-dialog.c:883
-#: ../src/file-manager/fm-directory-view.c:7000
-#: ../src/file-manager/fm-directory-view.c:8498
+#: ../src/file-manager/fm-directory-view.c:7061
+#: ../src/file-manager/fm-directory-view.c:8565
 #: ../src/file-manager/fm-tree-view.c:1157
 #: ../src/nautilus-places-sidebar.c:2467
 msgid "_Open"
@@ -2276,112 +2276,116 @@ msgstr ""
 "limit is imposed on the number of displayed lines."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:8
+msgid "Bulk rename utility"
+msgstr "Bulk rename utility"
+
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:9
 msgid "Computer icon visible on desktop"
 msgstr "Computer icon visible on desktop"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:9
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:10
 msgid "Date Format"
 msgstr "Date Format"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:10
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:11
 msgid "Default Thumbnail Icon Size"
 msgstr "Default Thumbnail Icon Size"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:11
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:12
 msgid "Default column order in the list view"
 msgstr "Default column order in the list view"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:12
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:13
 msgid "Default column order in the list view."
 msgstr "Default column order in the list view."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:13
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:14
 msgid "Default compact view zoom level"
 msgstr "Default compact view zoom level"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:14
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:15
 msgid "Default folder viewer"
 msgstr "Default folder viewer"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:15
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:16
 msgid "Default icon zoom level"
 msgstr "Default icon zoom level"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:16
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:17
 msgid "Default list of columns visible in the list view"
 msgstr "Default list of columns visible in the list view"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:17
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:18
 msgid "Default list of columns visible in the list view."
 msgstr "Default list of columns visible in the list view."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:18
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:19
 msgid "Default list zoom level"
 msgstr "Default list zoom level"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:19
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:20
 msgid "Default sort order"
 msgstr "Default sort order"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:20
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:21
 msgid "Default zoom level used by the compact view."
 msgstr "Default zoom level used by the compact view."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:21
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:22
 msgid "Default zoom level used by the icon view."
 msgstr "Default zoom level used by the icon view."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:22
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:23
 msgid "Default zoom level used by the list view."
 msgstr "Default zoom level used by the list view."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:23
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:24
 msgid "Desktop computer icon name"
 msgstr "Desktop computer icon name"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:24
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:25
 msgid "Desktop font"
 msgstr "Desktop font"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:25
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:26
 msgid "Desktop home icon name"
 msgstr "Desktop home icon name"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:26
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:27
 msgid "Desktop trash icon name"
 msgstr "Desktop trash icon name"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:27
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:28
 msgid "Enables the classic Nautilus behavior, where all windows are browsers"
 msgstr "Enables the classic Nautilus behavior, where all windows are browsers"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:28
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:29
 msgid "Fade the background on change"
 msgstr "Fade the background on change"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:29
-msgid ""
-"For users with mice that have \"Forward\" and \"Back\" buttons, this key "
-"will determine if any action is taken inside of Nautilus when either is "
-"pressed."
-msgstr ""
-"For users with mice that have \"Forward\" and \"Back\" buttons, this key "
-"will determine if any action is taken inside of Nautilus when either is "
-"pressed."
-
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:30
 msgid ""
-"For users with mice that have buttons for \"Forward\" and \"Back\", this key "
-"will set which button activates the \"Back\" command in a browser window. "
-"Possible values range between 6 and 14."
+"For users with mice that have \"Forward\" and \"Back\" buttons, this key "
+"will determine if any action is taken inside of Nautilus when either is "
+"pressed."
 msgstr ""
-"For users with mice that have buttons for \"Forward\" and \"Back\", this key "
-"will set which button activates the \"Back\" command in a browser window. "
-"Possible values range between 6 and 14."
+"For users with mice that have \"Forward\" and \"Back\" buttons, this key "
+"will determine if any action is taken inside of Nautilus when either is "
+"pressed."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:31
 msgid ""
 "For users with mice that have buttons for \"Forward\" and \"Back\", this key "
+"will set which button activates the \"Back\" command in a browser window. "
+"Possible values range between 6 and 14."
+msgstr ""
+"For users with mice that have buttons for \"Forward\" and \"Back\", this key "
+"will set which button activates the \"Back\" command in a browser window. "
+"Possible values range between 6 and 14."
+
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:32
+msgid ""
+"For users with mice that have buttons for \"Forward\" and \"Back\", this key "
 "will set which button activates the \"Forward\" command in a browser window. "
 "Possible values range between 6 and 14."
 msgstr ""
@@ -2389,207 +2393,221 @@ msgstr ""
 "will set which button activates the \"Forward\" command in a browser window. "
 "Possible values range between 6 and 14."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:32
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:33
 msgid "Home icon visible on desktop"
 msgstr "Home icon visible on desktop"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:33
-msgid ""
-"If set to \"after-current-tab\", then new tabs are inserted after the "
-"current tab. If set to \"end\", then new tabs are appended to the end of the "
-"tab list."
-msgstr ""
-"If set to \"after-current-tab\", then new tabs are inserted after the "
-"current tab. If set to \"end\", then new tabs are appended to the end of the "
-"tab list."
-
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:34
 msgid ""
-"If set to true, Nautilus will only show folders in the tree side pane. "
-"Otherwise it will show both folders and files."
+"If set to \"after-current-tab\", then new tabs are inserted after the "
+"current tab. If set to \"end\", then new tabs are appended to the end of the "
+"tab list."
 msgstr ""
-"If set to true, Nautilus will only show folders in the tree side pane. "
-"Otherwise it will show both folders and files."
+"If set to \"after-current-tab\", then new tabs are inserted after the "
+"current tab. If set to \"end\", then new tabs are appended to the end of the "
+"tab list."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:35
 msgid ""
+"If set to true, Nautilus will only show folders in the tree side pane. "
+"Otherwise it will show both folders and files."
+msgstr ""
+"If set to true, Nautilus will only show folders in the tree side pane. "
+"Otherwise it will show both folders and files."
+
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:36
+msgid ""
 "If set to true, newly opened windows will have the location bar visible."
 msgstr ""
 "If set to true, newly opened windows will have the location bar visible."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:36
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:37
 msgid "If set to true, newly opened windows will have the side pane visible."
 msgstr "If set to true, newly opened windows will have the side pane visible."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:37
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:38
 msgid "If set to true, newly opened windows will have the status bar visible."
 msgstr "If set to true, newly opened windows will have the status bar visible."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:38
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:39
 msgid "If set to true, newly opened windows will have toolbars visible."
 msgstr "If set to true, newly opened windows will have toolbars visible."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:39
-msgid ""
-"If set to true, then Nautilus browser windows will always use a textual "
-"input entry for the location toolbar, instead of the pathbar."
-msgstr ""
-"If set to true, then Nautilus browser windows will always use a textual "
-"input entry for the location toolbar, instead of the pathbar."
-
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:40
 msgid ""
-"If set to true, then Nautilus lets you edit and display file permissions in "
-"a more unix-like way, accessing some more esoteric options."
+"If set to true, then Nautilus browser windows will always use a textual "
+"input entry for the location toolbar, instead of the pathbar."
 msgstr ""
-"If set to true, then Nautilus lets you edit and display file permissions in "
-"a more unix-like way, accessing some more esoteric options."
+"If set to true, then Nautilus browser windows will always use a textual "
+"input entry for the location toolbar, instead of the pathbar."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:41
 msgid ""
-"If set to true, then Nautilus shows folders prior to showing files in the "
-"icon and list views."
+"If set to true, then Nautilus lets you edit and display file permissions in "
+"a more unix-like way, accessing some more esoteric options."
 msgstr ""
-"If set to true, then Nautilus shows folders prior to showing files in the "
-"icon and list views."
+"If set to true, then Nautilus lets you edit and display file permissions in "
+"a more unix-like way, accessing some more esoteric options."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:42
 msgid ""
-"If set to true, then Nautilus will ask for confirmation when you attempt to "
-"delete files, or empty the Trash."
+"If set to true, then Nautilus shows folders prior to showing files in the "
+"icon and list views."
 msgstr ""
-"If set to true, then Nautilus will ask for confirmation when you attempt to "
-"delete files, or empty the Trash."
+"If set to true, then Nautilus shows folders prior to showing files in the "
+"icon and list views."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:43
 msgid ""
-"If set to true, then Nautilus will exit when all windows are destroyed. This "
-"is the default setting. If set to false, it can be started without any "
-"window, so nautilus can serve as a daemon to monitor media automount, or "
-"similar tasks."
+"If set to true, then Nautilus will ask for confirmation when you attempt to "
+"delete files, or empty the Trash."
 msgstr ""
-"If set to true, then Nautilus will exit when all windows are destroyed. This "
-"is the default setting. If set to false, it can be started without any "
-"window, so nautilus can serve as a daemon to monitor media automount, or "
-"similar tasks."
+"If set to true, then Nautilus will ask for confirmation when you attempt to "
+"delete files, or empty the Trash."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:44
 msgid ""
-"If set to true, then Nautilus will have a feature allowing you to delete a "
-"file immediately and in-place, instead of moving it to the trash. This "
-"feature can be dangerous, so use caution."
+"If set to true, then Nautilus will exit when all windows are destroyed. This "
+"is the default setting. If set to false, it can be started without any "
+"window, so nautilus can serve as a daemon to monitor media automount, or "
+"similar tasks."
 msgstr ""
-"If set to true, then Nautilus will have a feature allowing you to delete a "
-"file immediately and in-place, instead of moving it to the trash. This "
-"feature can be dangerous, so use caution."
+"If set to true, then Nautilus will exit when all windows are destroyed. This "
+"is the default setting. If set to false, it can be started without any "
+"window, so nautilus can serve as a daemon to monitor media automount, or "
+"similar tasks."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:45
 msgid ""
-"If set to true, then Nautilus will use a fade effect to change the desktop "
-"background."
+"If set to true, then Nautilus will have a feature allowing you to delete a "
+"file immediately and in-place, instead of moving it to the trash. This "
+"feature can be dangerous, so use caution."
 msgstr ""
-"If set to true, then Nautilus will use a fade effect to change the desktop "
-"background."
+"If set to true, then Nautilus will have a feature allowing you to delete a "
+"file immediately and in-place, instead of moving it to the trash. This "
+"feature can be dangerous, so use caution."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:46
 msgid ""
-"If set to true, then Nautilus will use the user's home folder as the "
-"desktop. If it is false, then it will use ~/Desktop as the desktop."
+"If set to true, then Nautilus will use a fade effect to change the desktop "
+"background."
 msgstr ""
-"If set to true, then Nautilus will use the user's home folder as the "
-"desktop. If it is false, then it will use ~/Desktop as the desktop."
+"If set to true, then Nautilus will use a fade effect to change the desktop "
+"background."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:47
 msgid ""
-"If set to true, then all Nautilus windows will be browser windows. This is "
-"how Nautilus used to behave before version 2.6, and some people prefer this "
-"behavior."
+"If set to true, then Nautilus will use the user's home folder as the "
+"desktop. If it is false, then it will use ~/Desktop as the desktop."
 msgstr ""
-"If set to true, then all Nautilus windows will be browser windows. This is "
-"how Nautilus used to behave before version 2.6, and some people prefer this "
-"behavior."
+"If set to true, then Nautilus will use the user's home folder as the "
+"desktop. If it is false, then it will use ~/Desktop as the desktop."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:48
 msgid ""
-"If set to true, then hidden files are shown by default in the file manager. "
-"Hidden files are either dotfiles, listed in the folder's .hidden file or "
-"backup files ending with a tilde (~)."
+"If set to true, then all Nautilus windows will be browser windows. This is "
+"how Nautilus used to behave before version 2.6, and some people prefer this "
+"behavior."
 msgstr ""
-"If set to true, then hidden files are shown by default in the file manager. "
-"Hidden files are either dotfiles, listed in the folder's .hidden file or "
-"backup files ending with a tilde (~)."
+"If set to true, then all Nautilus windows will be browser windows. This is "
+"how Nautilus used to behave before version 2.6, and some people prefer this "
+"behavior."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:49
 msgid ""
-"If this is set to true, an icon linking to the Network Servers view will be "
-"put on the desktop."
+"If set to true, then hidden files are shown by default in the file manager. "
+"Hidden files are either dotfiles, listed in the folder's .hidden file or "
+"backup files ending with a tilde (~)."
 msgstr ""
-"If this is set to true, an icon linking to the Network Servers view will be "
-"put on the desktop."
+"If set to true, then hidden files are shown by default in the file manager. "
+"Hidden files are either dotfiles, listed in the folder's .hidden file or "
+"backup files ending with a tilde (~)."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:50
 msgid ""
-"If this is set to true, an icon linking to the computer location will be put "
-"on the desktop."
+"If set, Nautilus will append URIs of selected files and treat the result as "
+"a command line for bulk renaming. Bulk rename applications can register "
+"themselves in this key by setting the key to a space-separated string of "
+"their executable name and any command line options. If the executable name "
+"is not set to a full path, it will be searched for in the search path."
 msgstr ""
-"If this is set to true, an icon linking to the computer location will be put "
-"on the desktop."
+"If set, Nautilus will append URIs of selected files and treat the result as "
+"a command line for bulk renaming. Bulk rename applications can register "
+"themselves in this key by setting the key to a space-separated string of "
+"their executable name and any command line options. If the executable name "
+"is not set to a full path, it will be searched for in the search path."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:51
 msgid ""
-"If this is set to true, an icon linking to the home folder will be put on "
-"the desktop."
+"If this is set to true, an icon linking to the Network Servers view will be "
+"put on the desktop."
 msgstr ""
-"If this is set to true, an icon linking to the home folder will be put on "
-"the desktop."
+"If this is set to true, an icon linking to the Network Servers view will be "
+"put on the desktop."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:52
 msgid ""
-"If this is set to true, an icon linking to the trash will be put on the "
-"desktop."
+"If this is set to true, an icon linking to the computer location will be put "
+"on the desktop."
 msgstr ""
-"If this is set to true, an icon linking to the trash will be put on the "
-"desktop."
+"If this is set to true, an icon linking to the computer location will be put "
+"on the desktop."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:53
 msgid ""
-"If this is set to true, icons linking to mounted volumes will be put on the "
-"desktop."
+"If this is set to true, an icon linking to the home folder will be put on "
+"the desktop."
 msgstr ""
-"If this is set to true, icons linking to mounted volumes will be put on the "
-"desktop."
+"If this is set to true, an icon linking to the home folder will be put on "
+"the desktop."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:54
 msgid ""
-"If this preference is set, all columns in the compact view have the same "
-"width. Otherwise, the width of each column is determined seperately."
+"If this is set to true, an icon linking to the trash will be put on the "
+"desktop."
 msgstr ""
-"If this preference is set, all columns in the compact view have the same "
-"width. Otherwise, the width of each column is determined seperately."
+"If this is set to true, an icon linking to the trash will be put on the "
+"desktop."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:55
 msgid ""
-"If true, files in new windows will be sorted in reverse order. ie, if sorted "
-"by name, then instead of sorting the files from \"a\" to \"z\", they will be "
-"sorted from \"z\" to \"a\"; if sorted by size, instead of being "
-"incrementally they will be sorted decrementally."
+"If this is set to true, icons linking to mounted volumes will be put on the "
+"desktop."
 msgstr ""
-"If true, files in new windows will be sorted in reverse order. ie, if sorted "
-"by name, then instead of sorting the files from \"a\" to \"z\", they will be "
-"sorted from \"z\" to \"a\"; if sorted by size, instead of being "
-"incrementally they will be sorted decrementally."
+"If this is set to true, icons linking to mounted volumes will be put on the "
+"desktop."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:56
-msgid "If true, icons will be laid out tighter by default in new windows."
-msgstr "If true, icons will be laid out tighter by default in new windows."
+msgid ""
+"If this preference is set, all columns in the compact view have the same "
+"width. Otherwise, the width of each column is determined seperately."
+msgstr ""
+"If this preference is set, all columns in the compact view have the same "
+"width. Otherwise, the width of each column is determined seperately."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:57
 msgid ""
+"If true, files in new windows will be sorted in reverse order. ie, if sorted "
+"by name, then instead of sorting the files from \"a\" to \"z\", they will be "
+"sorted from \"z\" to \"a\"; if sorted by size, instead of being "
+"incrementally they will be sorted decrementally."
+msgstr ""
+"If true, files in new windows will be sorted in reverse order. ie, if sorted "
+"by name, then instead of sorting the files from \"a\" to \"z\", they will be "
+"sorted from \"z\" to \"a\"; if sorted by size, instead of being "
+"incrementally they will be sorted decrementally."
+
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:58
+msgid "If true, icons will be laid out tighter by default in new windows."
+msgstr "If true, icons will be laid out tighter by default in new windows."
+
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:59
+msgid ""
 "If true, labels will be placed beside icons rather than underneath them."
 msgstr ""
 "If true, labels will be placed beside icons rather than underneath them."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:58
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:60
 msgid ""
 "Images over this size (in bytes) won't be thumbnailed. The purpose of this "
 "setting is to avoid thumbnailing large images that may take a long time to "
@@ -2599,43 +2617,43 @@ msgstr ""
 "setting is to avoid thumbnailing large images that may take a long time to "
 "load or use lots of memory."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:59
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:61
 msgid "List of possible captions on icons"
 msgstr "List of possible captions on icons"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:60
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:62
 msgid "Maximum image size for thumbnailing"
 msgstr "Maximum image size for thumbnailing"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:61
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:63
 msgid "Mouse button to activate the \"Back\" command in browser window"
 msgstr "Mouse button to activate the \"Back\" command in browser window"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:62
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:64
 msgid "Mouse button to activate the \"Forward\" command in browser window"
 msgstr "Mouse button to activate the \"Forward\" command in browser window"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:63
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:65
 msgid "Nautilus uses the users home folder as the desktop"
 msgstr "Nautilus uses the users home folder as the desktop"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:64
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:66
 msgid "Nautilus will exit when last window destroyed."
 msgstr "Nautilus will exit when last window destroyed."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:65
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:67
 msgid "Network Servers icon visible on the desktop"
 msgstr "Network Servers icon visible on the desktop"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:66
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:68
 msgid "Network servers icon name"
 msgstr "Network servers icon name"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:67
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:69
 msgid "Only show folders in the tree side pane"
 msgstr "Only show folders in the tree side pane"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:68
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:70
 msgid ""
 "Possible values are \"single\" to launch files on a single click, or \"double"
 "\" to launch them on a double click."
@@ -2643,92 +2661,92 @@ msgstr ""
 "Possible values are \"single\" to launch files on a single click, or \"double"
 "\" to launch them on a double click."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:69
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:71
 msgid "Put labels beside icons"
 msgstr "Put labels beside icons"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:70
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:72
 msgid "Reverse sort order in new windows"
 msgstr "Reverse sort order in new windows"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:71
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:73
 msgid "Show advanced permissions in the file property dialog"
 msgstr "Show advanced permissions in the file property dialog"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:72
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:74
 msgid "Show folders first in windows"
 msgstr "Show folders first in windows"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:73
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:75
 msgid "Show location bar in new windows"
 msgstr "Show location bar in new windows"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:74
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:76
 msgid "Show mounted volumes on the desktop"
 msgstr "Show mounted volumes on the desktop"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:75
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:77
 msgid "Show side pane in new windows"
 msgstr "Show side pane in new windows"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:76
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:78
 msgid "Show status bar in new windows"
 msgstr "Show status bar in new windows"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:77
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:79
 msgid "Show the package installer for unknown mime types"
 msgstr "Show the package installer for unknown mime types"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:78
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:80
 msgid "Show toolbar in new windows"
 msgstr "Show toolbar in new windows"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:79
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:81
 msgid "Side pane view"
 msgstr "Side pane view"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:80
-msgid ""
-"Speed tradeoff for when to preview a sound file when mousing over a files "
-"icon. If set to \"always\" then always plays the sound, even if the file is "
-"on a remote server. If set to \"local-only\" then only plays previews on "
-"local file systems. If set to \"never\" then it never previews sound."
-msgstr ""
-"Speed tradeoff for when to preview a sound file when mousing over a files "
-"icon. If set to \"always\" then always plays the sound, even if the file is "
-"on a remote server. If set to \"local-only\" then only plays previews on "
-"local file systems. If set to \"never\" then it never previews sound."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:81
-msgid ""
-"Speed tradeoff for when to show a preview of text file contents in the "
-"file's icon. If set to \"always\" then always show previews, even if the "
-"folder is on a remote server. If set to \"local-only\" then only show "
-"previews for local file systems. If set to \"never\" then never bother to "
-"read preview data."
-msgstr ""
-"Speed tradeoff for when to show a preview of text file contents in the "
-"file's icon. If set to \"always\" then always show previews, even if the "
-"folder is on a remote server. If set to \"local-only\" then only show "
-"previews for local file systems. If set to \"never\" then never bother to "
-"read preview data."
-
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:82
 msgid ""
-"Speed tradeoff for when to show an image file as a thumbnail. If set to "
-"\"always\" then always thumbnail, even if the folder is on a remote server. "
-"If set to \"local-only\" then only show thumbnails for local file systems. "
-"If set to \"never\" then never bother to thumbnail images, just use a "
-"generic icon."
+"Speed tradeoff for when to preview a sound file when mousing over a files "
+"icon. If set to \"always\" then always plays the sound, even if the file is "
+"on a remote server. If set to \"local-only\" then only plays previews on "
+"local file systems. If set to \"never\" then it never previews sound."
 msgstr ""
-"Speed tradeoff for when to show an image file as a thumbnail. If set to "
-"\"always\" then always thumbnail, even if the folder is on a remote server. "
-"If set to \"local-only\" then only show thumbnails for local file systems. "
-"If set to \"never\" then never bother to thumbnail images, just use a "
-"generic icon."
+"Speed tradeoff for when to preview a sound file when mousing over a files "
+"icon. If set to \"always\" then always plays the sound, even if the file is "
+"on a remote server. If set to \"local-only\" then only plays previews on "
+"local file systems. If set to \"never\" then it never previews sound."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:83
 msgid ""
+"Speed tradeoff for when to show a preview of text file contents in the "
+"file's icon. If set to \"always\" then always show previews, even if the "
+"folder is on a remote server. If set to \"local-only\" then only show "
+"previews for local file systems. If set to \"never\" then never bother to "
+"read preview data."
+msgstr ""
+"Speed tradeoff for when to show a preview of text file contents in the "
+"file's icon. If set to \"always\" then always show previews, even if the "
+"folder is on a remote server. If set to \"local-only\" then only show "
+"previews for local file systems. If set to \"never\" then never bother to "
+"read preview data."
+
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:84
+msgid ""
+"Speed tradeoff for when to show an image file as a thumbnail. If set to "
+"\"always\" then always thumbnail, even if the folder is on a remote server. "
+"If set to \"local-only\" then only show thumbnails for local file systems. "
+"If set to \"never\" then never bother to thumbnail images, just use a "
+"generic icon."
+msgstr ""
+"Speed tradeoff for when to show an image file as a thumbnail. If set to "
+"\"always\" then always thumbnail, even if the folder is on a remote server. "
+"If set to \"local-only\" then only show thumbnails for local file systems. "
+"If set to \"never\" then never bother to thumbnail images, just use a "
+"generic icon."
+
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:85
+msgid ""
 "Speed tradeoff for when to show the number of items in a folder. If set to "
 "\"always\" then always show item counts, even if the folder is on a remote "
 "server. If set to \"local-only\" then only show counts for local file "
@@ -2739,15 +2757,15 @@ msgstr ""
 "server. If set to \"local-only\" then only show counts for local file "
 "systems. If set to \"never\" then never bother to compute item counts."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:84
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:86
 msgid "Text Ellipsis Limit"
 msgstr "Text Ellipsis Limit"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:85
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:87
 msgid "The default size of an icon for a thumbnail in the icon view."
 msgstr "The default size of an icon for a thumbnail in the icon view."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:86
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:88
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\" and \"mtime\"."
@@ -2755,15 +2773,15 @@ msgstr ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\" and \"mtime\"."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:87
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:89
 msgid "The default width of the side pane in new windows."
 msgstr "The default width of the side pane in new windows."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:88
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:90
 msgid "The font _description used for the icons on the desktop."
 msgstr "The font _description used for the icons on the desktop."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:89
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:91
 msgid ""
 "The format of file dates. Possible values are \"locale\", \"iso\", and "
 "\"informal\"."
@@ -2771,129 +2789,129 @@ msgstr ""
 "The format of file dates. Possible values are \"locale\", \"iso\", and "
 "\"informal\"."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:90
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:92
 msgid "The geometry string for a navigation window."
 msgstr "The geometry string for a navigation window."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:91
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:93
 msgid "The side pane view to show in newly opened windows."
 msgstr "The side pane view to show in newly opened windows."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:92
-msgid ""
-"This name can be set if you want a custom name for the computer icon on the "
-"desktop."
-msgstr ""
-"This name can be set if you want a custom name for the computer icon on the "
-"desktop."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:93
-msgid ""
-"This name can be set if you want a custom name for the home icon on the "
-"desktop."
-msgstr ""
-"This name can be set if you want a custom name for the home icon on the "
-"desktop."
-
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:94
 msgid ""
-"This name can be set if you want a custom name for the network servers icon "
-"on the desktop."
+"This name can be set if you want a custom name for the computer icon on the "
+"desktop."
 msgstr ""
-"This name can be set if you want a custom name for the network servers icon "
-"on the desktop."
+"This name can be set if you want a custom name for the computer icon on the "
+"desktop."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:95
 msgid ""
-"This name can be set if you want a custom name for the trash icon on the "
+"This name can be set if you want a custom name for the home icon on the "
 "desktop."
 msgstr ""
-"This name can be set if you want a custom name for the trash icon on the "
+"This name can be set if you want a custom name for the home icon on the "
 "desktop."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:96
+msgid ""
+"This name can be set if you want a custom name for the network servers icon "
+"on the desktop."
+msgstr ""
+"This name can be set if you want a custom name for the network servers icon "
+"on the desktop."
+
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:97
+msgid ""
+"This name can be set if you want a custom name for the trash icon on the "
+"desktop."
+msgstr ""
+"This name can be set if you want a custom name for the trash icon on the "
+"desktop."
+
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:98
 msgid "Trash icon visible on desktop"
 msgstr "Trash icon visible on desktop"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:97
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:99
 msgid "Type of click used to launch/open files"
 msgstr "Type of click used to launch/open files"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:98
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:100
 msgid "Use extra mouse button events in Nautilus' browser window"
 msgstr "Use extra mouse button events in Nautilus' browser window"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:99
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:101
 msgid "Use tighter layout in new windows"
 msgstr "Use tighter layout in new windows"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:100
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:102
 msgid "What to do with executable text files when activated"
 msgstr "What to do with executable text files when activated"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:101
-msgid ""
-"What to do with executable text files when they are activated (single or "
-"double clicked). Possible values are \"launch\" to launch them as programs, "
-"\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
-"text files."
-msgstr ""
-"What to do with executable text files when they are activated (single or "
-"double clicked). Possible values are \"launch\" to launch them as programs, "
-"\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
-"text files."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:102
-msgid ""
-"When a folder is visited this viewer is used unless you have selected "
-"another view for that particular folder. Possible values are \"list-view\", "
-"\"icon-view\" and \"compact-view\"."
-msgstr ""
-"When a folder is visited this viewer is used unless you have selected "
-"another view for that particular folder. Possible values are \"list-view\", "
-"\"icon-view\" and \"compact-view\"."
-
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:103
+msgid ""
+"What to do with executable text files when they are activated (single or "
+"double clicked). Possible values are \"launch\" to launch them as programs, "
+"\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
+"text files."
+msgstr ""
+"What to do with executable text files when they are activated (single or "
+"double clicked). Possible values are \"launch\" to launch them as programs, "
+"\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
+"text files."
+
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:104
+msgid ""
+"When a folder is visited this viewer is used unless you have selected "
+"another view for that particular folder. Possible values are \"list-view\", "
+"\"icon-view\" and \"compact-view\"."
+msgstr ""
+"When a folder is visited this viewer is used unless you have selected "
+"another view for that particular folder. Possible values are \"list-view\", "
+"\"icon-view\" and \"compact-view\"."
+
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:105
 msgid "When to show number of items in a folder"
 msgstr "When to show number of items in a folder"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:104
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:106
 msgid "When to show preview text in icons"
 msgstr "When to show preview text in icons"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:105
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:107
 msgid "When to show thumbnails of image files"
 msgstr "When to show thumbnails of image files"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:106
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:108
 msgid "Where to position newly open tabs in browser windows."
 msgstr "Where to position newly open tabs in browser windows."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:107
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:109
 msgid "Whether the navigation window should be maximized by default."
 msgstr "Whether the navigation window should be maximized by default."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:108
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:110
 msgid "Whether the navigation window should be maximized."
 msgstr "Whether the navigation window should be maximized."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:109
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:111
 msgid "Whether to ask for confirmation when deleting files, or emptying Trash"
 msgstr "Whether to ask for confirmation when deleting files, or emptying Trash"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:110
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:112
 msgid "Whether to enable immediate deletion"
 msgstr "Whether to enable immediate deletion"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:111
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:113
 msgid "Whether to preview sounds when mousing over an icon"
 msgstr "Whether to preview sounds when mousing over an icon"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:112
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:114
 msgid "Whether to show hidden files"
 msgstr "Whether to show hidden files"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:113
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:115
 msgid ""
 "Whether to show the user a package installer dialog in case an unknown mime "
 "type is opened, in order to search for an application to handle it."
@@ -2901,7 +2919,7 @@ msgstr ""
 "Whether to show the user a package installer dialog in case an unknown mime "
 "type is opened, in order to search for an application to handle it."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:114
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:116
 msgid "Width of the side pane"
 msgstr "Width of the side pane"
 
@@ -2959,8 +2977,8 @@ msgstr "רקע"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:724
-#: ../src/file-manager/fm-directory-view.c:7032
-#: ../src/file-manager/fm-directory-view.c:8698
+#: ../src/file-manager/fm-directory-view.c:7093
+#: ../src/file-manager/fm-directory-view.c:8765
 msgid "E_mpty Trash"
 msgstr "_ריקון אשפה"
 
@@ -2968,13 +2986,13 @@ msgstr "_ריקון אשפה"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:736
-#: ../src/file-manager/fm-directory-view.c:6996
+#: ../src/file-manager/fm-directory-view.c:7057
 msgid "Create L_auncher..."
 msgstr "יצירת מ_שגר"
 
 #. tooltip
 #: ../src/file-manager/fm-desktop-icon-view.c:738
-#: ../src/file-manager/fm-directory-view.c:6997
+#: ../src/file-manager/fm-directory-view.c:7058
 msgid "Create a new launcher"
 msgstr "יצירת משגר חדש"
 
@@ -2996,7 +3014,7 @@ msgstr "ריקון האשפה"
 
 #. tooltip
 #: ../src/file-manager/fm-desktop-icon-view.c:752
-#: ../src/file-manager/fm-directory-view.c:7033
+#: ../src/file-manager/fm-directory-view.c:7094
 #: ../src/nautilus-trash-bar.c:197
 msgid "Delete all items in the Trash"
 msgstr "מחיקת כל הפריטים מהאשפה"
@@ -3058,20 +3076,20 @@ msgstr "_תיקייה:"
 msgid "Select Folder to Save Search In"
 msgstr "בחירת תיקייה בה החיפוש יישמר"
 
-#: ../src/file-manager/fm-directory-view.c:2185
-#: ../src/file-manager/fm-directory-view.c:2222
+#: ../src/file-manager/fm-directory-view.c:2204
+#: ../src/file-manager/fm-directory-view.c:2241
 #, c-format
 msgid "\"%s\" selected"
 msgstr "הפריט \"%s\" נבחר"
 
-#: ../src/file-manager/fm-directory-view.c:2187
+#: ../src/file-manager/fm-directory-view.c:2206
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "תיקייה אחת נבחרה"
 msgstr[1] "%'d תיקיות נבחרו"
 
-#: ../src/file-manager/fm-directory-view.c:2197
+#: ../src/file-manager/fm-directory-view.c:2216
 #, c-format
 msgid " (containing %'d item)"
 msgid_plural " (containing %'d items)"
@@ -3079,14 +3097,14 @@ msgstr[0] " (מכיל פריט אחד)"
 msgstr[1] " (מכיל %'d פריטים)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: ../src/file-manager/fm-directory-view.c:2208
+#: ../src/file-manager/fm-directory-view.c:2227
 #, c-format
 msgid " (containing a total of %'d item)"
 msgid_plural " (containing a total of %'d items)"
 msgstr[0] " (מכיל סך־הכול פריט אחד)"
 msgstr[1] " (מכיל סך־הכול %'d פריטים)"
 
-#: ../src/file-manager/fm-directory-view.c:2225
+#: ../src/file-manager/fm-directory-view.c:2244
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -3094,7 +3112,7 @@ msgstr[0] "פריט אחד נבחר"
 msgstr[1] "%'d פריטים נבחרו"
 
 #. Folders selected also, use "other" terminology
-#: ../src/file-manager/fm-directory-view.c:2232
+#: ../src/file-manager/fm-directory-view.c:2251
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -3106,17 +3124,17 @@ msgstr[1] "%'d פריטים אחרים נבחרו"
 #. * first message gives the number of items selected;
 #. * the message in parentheses the size of those items.
 #.
-#: ../src/file-manager/fm-directory-view.c:2247
+#: ../src/file-manager/fm-directory-view.c:2266
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../src/file-manager/fm-directory-view.c:2260
+#: ../src/file-manager/fm-directory-view.c:2279
 #, c-format
 msgid "Free space: %s"
 msgstr "מקום פנוי: %s"
 
-#: ../src/file-manager/fm-directory-view.c:2271
+#: ../src/file-manager/fm-directory-view.c:2290
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s, מקום פנוי: %s"
@@ -3126,7 +3144,7 @@ msgstr "%s, מקום פנוי: %s"
 #. * After the comma the amount of free space will
 #. * be shown.
 #.
-#: ../src/file-manager/fm-directory-view.c:2286
+#: ../src/file-manager/fm-directory-view.c:2305
 #, c-format
 msgid "%s, %s"
 msgstr "%s, %s"
@@ -3143,8 +3161,8 @@ msgstr "%s, %s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: ../src/file-manager/fm-directory-view.c:2305
-#: ../src/file-manager/fm-directory-view.c:2319
+#: ../src/file-manager/fm-directory-view.c:2324
+#: ../src/file-manager/fm-directory-view.c:2338
 #, c-format
 msgid "%s%s, %s"
 msgstr "‏%s%s, %s"
@@ -3157,44 +3175,44 @@ msgstr "‏%s%s, %s"
 #. * total size of those items. After the second comma
 #. * the free space is written.
 #.
-#: ../src/file-manager/fm-directory-view.c:2332
+#: ../src/file-manager/fm-directory-view.c:2351
 #, c-format
 msgid "%s%s, %s, %s"
 msgstr "%s%s, %s, %s"
 
-#: ../src/file-manager/fm-directory-view.c:4323
+#: ../src/file-manager/fm-directory-view.c:4342
 #, c-format
 msgid "Open With %s"
 msgstr "פתיחה באמצעות %s"
 
-#: ../src/file-manager/fm-directory-view.c:4325
+#: ../src/file-manager/fm-directory-view.c:4344
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgid_plural "Use \"%s\" to open the selected items"
 msgstr[0] "שימוש ב־\"%s\" לפתיחת הפריט הנבחר"
 msgstr[1] "שימוש ב־\"%s\" לפתיחת הפריטים הנבחרים"
 
-#: ../src/file-manager/fm-directory-view.c:5165
+#: ../src/file-manager/fm-directory-view.c:5184
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "הפעלת \"%s\" על כל הפריטים שנבחרו"
 
-#: ../src/file-manager/fm-directory-view.c:5416
+#: ../src/file-manager/fm-directory-view.c:5435
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "יצירת מסמך מהתבנית \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:5666
+#: ../src/file-manager/fm-directory-view.c:5685
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "כל קובצי ההפעלה בתיקייה זו יופיעו בתפריט הסקריפטים."
 
-#: ../src/file-manager/fm-directory-view.c:5668
+#: ../src/file-manager/fm-directory-view.c:5687
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 msgstr "בחירת סקריפט מהתפריט תפעיל את הסקריפט עם כל קובץ נבחר כקלט."
 
-#: ../src/file-manager/fm-directory-view.c:5670
+#: ../src/file-manager/fm-directory-view.c:5689
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -3252,19 +3270,19 @@ msgstr ""
 "NAUTILUS_SCRIPT_NEXT_PANE_CURRENT_URI: כתובת המיקום הנוכחי של החלונית שאינה "
 "פעילה בחלון בתצוגה מפוצל"
 
-#: ../src/file-manager/fm-directory-view.c:5738
+#: ../src/file-manager/fm-directory-view.c:5757
 #: ../src/file-manager/fm-tree-view.c:915
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "הפריט \"%s\" יועבר אם פקודת ההדבקה תיבחר"
 
-#: ../src/file-manager/fm-directory-view.c:5742
+#: ../src/file-manager/fm-directory-view.c:5761
 #: ../src/file-manager/fm-tree-view.c:919
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "הפריט \"%s\" יועתק אם פקודת ההדבקה תיבחר"
 
-#: ../src/file-manager/fm-directory-view.c:5749
+#: ../src/file-manager/fm-directory-view.c:5768
 #, c-format
 msgid "The %'d selected item will be moved if you select the Paste command"
 msgid_plural ""
@@ -3272,7 +3290,7 @@ msgid_plural ""
 msgstr[0] "הפריט הנבחר יועבר אם הפקודה \"הדבקה\" תיבחר"
 msgstr[1] "‏%'d הפריטים הנבחרים יועברו אם הפקודה \"הדבקה\" תיבחר"
 
-#: ../src/file-manager/fm-directory-view.c:5756
+#: ../src/file-manager/fm-directory-view.c:5775
 #, c-format
 msgid "The %'d selected item will be copied if you select the Paste command"
 msgid_plural ""
@@ -3280,98 +3298,102 @@ msgid_plural ""
 msgstr[0] "הפריט הנבחר יועתק אם הפקודה \"הדבקה\" תיבחר"
 msgstr[1] "‏%'d הפריטים הנבחרים יועתקו אם הפקודה \"הדבקה\" תיבחר"
 
-#: ../src/file-manager/fm-directory-view.c:5936
+#: ../src/file-manager/fm-directory-view.c:5955
 #: ../src/file-manager/fm-tree-view.c:958
 msgid "There is nothing on the clipboard to paste."
 msgstr "אין שום דבר בלוח הגזירים להדבקה."
 
-#: ../src/file-manager/fm-directory-view.c:6125
+#: ../src/file-manager/fm-directory-view.c:6104
+msgid "Could not invoke bulk rename utility"
+msgstr "לא ניתן להפעיל את כלי שינוי השם הקבוצתי"
+
+#: ../src/file-manager/fm-directory-view.c:6186
 msgid "Unable to unmount location"
 msgstr "לא ניתן לנתק את המיקום"
 
-#: ../src/file-manager/fm-directory-view.c:6146
+#: ../src/file-manager/fm-directory-view.c:6207
 msgid "Unable to eject location"
 msgstr "לא ניתן לשלוף את המיקום"
 
-#: ../src/file-manager/fm-directory-view.c:6161
+#: ../src/file-manager/fm-directory-view.c:6222
 msgid "Unable to stop drive"
 msgstr "לא ניתן לעצור את הכונן"
 
-#: ../src/file-manager/fm-directory-view.c:6716
+#: ../src/file-manager/fm-directory-view.c:6777
 #, c-format
 msgid "Connect to Server %s"
 msgstr "התחברות לשרת %s"
 
-#: ../src/file-manager/fm-directory-view.c:6721
-#: ../src/file-manager/fm-directory-view.c:7917
-#: ../src/file-manager/fm-directory-view.c:8009
-#: ../src/file-manager/fm-directory-view.c:8119
+#: ../src/file-manager/fm-directory-view.c:6782
+#: ../src/file-manager/fm-directory-view.c:7978
+#: ../src/file-manager/fm-directory-view.c:8070
+#: ../src/file-manager/fm-directory-view.c:8180
 msgid "_Connect"
 msgstr "ה_תחברות"
 
-#: ../src/file-manager/fm-directory-view.c:6735
+#: ../src/file-manager/fm-directory-view.c:6796
 msgid "Link _name:"
 msgstr "_שם הקישור:"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6974
+#: ../src/file-manager/fm-directory-view.c:7035
 msgid "Create _Document"
 msgstr "יצירת _מסמך"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6975
+#: ../src/file-manager/fm-directory-view.c:7036
 msgid "Open Wit_h"
 msgstr "פתיחה ב_אמצעות"
 
-#: ../src/file-manager/fm-directory-view.c:6976
+#: ../src/file-manager/fm-directory-view.c:7037
 msgid "Choose a program with which to open the selected item"
 msgstr "בחירת תכנית לפתיחת הפריט הנבחר"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6978
-#: ../src/file-manager/fm-directory-view.c:7248
+#: ../src/file-manager/fm-directory-view.c:7039
+#: ../src/file-manager/fm-directory-view.c:7309
 msgid "_Properties"
 msgstr "_מאפיינים"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6979
-#: ../src/file-manager/fm-directory-view.c:8685
+#: ../src/file-manager/fm-directory-view.c:7040
+#: ../src/file-manager/fm-directory-view.c:8752
 msgid "View or modify the properties of each selected item"
 msgstr "הצגה או עריכה של המאפיינים לכול פריט נבחר"
 
 #. name, stock id
 #. label, accelerator
 #. add the "create folder" menu item
-#: ../src/file-manager/fm-directory-view.c:6986
+#: ../src/file-manager/fm-directory-view.c:7047
 #: ../src/file-manager/fm-tree-view.c:1188
 msgid "Create _Folder"
 msgstr "יצירת _תיקייה"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6987
+#: ../src/file-manager/fm-directory-view.c:7048
 msgid "Create a new empty folder inside this folder"
 msgstr "יצירת תיקייה חדשה וריקה בתוך תיקייה זו"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6989
+#: ../src/file-manager/fm-directory-view.c:7050
 msgid "No templates installed"
 msgstr "לא מותקנות תבניות"
 
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6992
+#: ../src/file-manager/fm-directory-view.c:7053
 msgid "_Empty File"
 msgstr "קובץ _ריק"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6993
+#: ../src/file-manager/fm-directory-view.c:7054
 msgid "Create a new empty file inside this folder"
 msgstr "יצירת קובץ חדש וריק בתוך תיקייה זו"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7001
+#: ../src/file-manager/fm-directory-view.c:7062
 msgid "Open the selected item in this window"
 msgstr "פתיחת הפריט הנבחר בחלון זה"
 
@@ -3380,92 +3402,92 @@ msgstr "פתיחת הפריט הנבחר בחלון זה"
 #. Location-specific actions
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7008
-#: ../src/file-manager/fm-directory-view.c:7180
+#: ../src/file-manager/fm-directory-view.c:7069
+#: ../src/file-manager/fm-directory-view.c:7241
 msgid "Open in Navigation Window"
 msgstr "פתיחה בחלון ניווט"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7009
+#: ../src/file-manager/fm-directory-view.c:7070
 msgid "Open each selected item in a navigation window"
 msgstr "פתיחת כל אחד מהפריטים שנבחרו בחלון ניווט"
 
 #. name, stock id
 #. label, accelerator
 #. add the "open in new tab" menu item
-#: ../src/file-manager/fm-directory-view.c:7012
-#: ../src/file-manager/fm-directory-view.c:7184
-#: ../src/file-manager/fm-directory-view.c:8249
-#: ../src/file-manager/fm-directory-view.c:8575
+#: ../src/file-manager/fm-directory-view.c:7073
+#: ../src/file-manager/fm-directory-view.c:7245
+#: ../src/file-manager/fm-directory-view.c:8310
+#: ../src/file-manager/fm-directory-view.c:8642
 #: ../src/file-manager/fm-tree-view.c:1168
 #: ../src/nautilus-places-sidebar.c:2475
 msgid "Open in New _Tab"
 msgstr "פתיחה ב_לשונית חדשה"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7013
+#: ../src/file-manager/fm-directory-view.c:7074
 msgid "Open each selected item in a new tab"
 msgstr "פתיחת כל פריט נבחר בלשונית חדשה"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7016
-#: ../src/file-manager/fm-directory-view.c:7189
+#: ../src/file-manager/fm-directory-view.c:7077
+#: ../src/file-manager/fm-directory-view.c:7250
 msgid "Open in _Folder Window"
 msgstr "פתיחה בחלון _תיקייה"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7017
+#: ../src/file-manager/fm-directory-view.c:7078
 msgid "Open each selected item in a folder window"
 msgstr "פתיחת כל פריט נבחר בחלון תיקייה"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7020
+#: ../src/file-manager/fm-directory-view.c:7081
 msgid "Other _Application..."
 msgstr "_יישום אחר..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7021
-#: ../src/file-manager/fm-directory-view.c:7025
+#: ../src/file-manager/fm-directory-view.c:7082
+#: ../src/file-manager/fm-directory-view.c:7086
 msgid "Choose another application with which to open the selected item"
 msgstr "בחירת יישום אחר אתו יש להציג את הפריט הנבחר"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7024
+#: ../src/file-manager/fm-directory-view.c:7085
 msgid "Open With Other _Application..."
 msgstr "פתיחה באמצעות _יישום אחר..."
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7028
+#: ../src/file-manager/fm-directory-view.c:7089
 msgid "_Open Scripts Folder"
 msgstr "_פתיחת תיקיית הסקריפטים"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7029
+#: ../src/file-manager/fm-directory-view.c:7090
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "הצגת התיקייה שמכילה את הסקריפטים שמופיעים בתפריט זה"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7037
+#: ../src/file-manager/fm-directory-view.c:7098
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "הכנת הקבצים שנבחרו להעברה עם פקודת הדבקה"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7041
+#: ../src/file-manager/fm-directory-view.c:7102
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "הכנת הקבצים שנבחרו להעתקה עם פקודת הדבקה"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7045
+#: ../src/file-manager/fm-directory-view.c:7106
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr "העברה או העתקה של קבצים שנבחרו מוקדם יותר על־ידי פקודת גזירה או העתקה"
 
@@ -3473,14 +3495,14 @@ msgstr "העברה או העתקה של קבצים שנבחרו מוקדם יו�
 #. accelerator for paste
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7050
-#: ../src/file-manager/fm-directory-view.c:7202
+#: ../src/file-manager/fm-directory-view.c:7111
+#: ../src/file-manager/fm-directory-view.c:7263
 #: ../src/file-manager/fm-tree-view.c:1220
 msgid "_Paste Into Folder"
 msgstr "ה_דבקה לתוך התיקייה"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7051
+#: ../src/file-manager/fm-directory-view.c:7112
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
@@ -3489,102 +3511,102 @@ msgstr ""
 "התיקייה"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7053
+#: ../src/file-manager/fm-directory-view.c:7114
 msgid "Cop_y to"
 msgstr "ה_עתקה אל"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7054
+#: ../src/file-manager/fm-directory-view.c:7115
 msgid "M_ove to"
 msgstr "הע_ברה אל"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7057
+#: ../src/file-manager/fm-directory-view.c:7118
 msgid "Select all items in this window"
 msgstr "בחירת כל הקבצים בחלון זה"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7060
+#: ../src/file-manager/fm-directory-view.c:7121
 msgid "Select I_tems Matching..."
 msgstr "בחירת _פריטים התואמים..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7061
+#: ../src/file-manager/fm-directory-view.c:7122
 msgid "Select items in this window matching a given pattern"
 msgstr "בחירת קבצים בחלון זה המתאימים לתבנית הנתונה"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7064
+#: ../src/file-manager/fm-directory-view.c:7125
 msgid "_Invert Selection"
 msgstr "הי_פוך הבחירה"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7065
+#: ../src/file-manager/fm-directory-view.c:7126
 msgid "Select all and only the items that are not currently selected"
 msgstr "בחירת כל הפריטים שלא נבחרו בלבד"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7068
+#: ../src/file-manager/fm-directory-view.c:7129
 msgid "D_uplicate"
 msgstr "שכ_פול"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7069
+#: ../src/file-manager/fm-directory-view.c:7130
 msgid "Duplicate each selected item"
 msgstr "שכפול כל פריט שנבחר"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7072
-#: ../src/file-manager/fm-directory-view.c:8669
+#: ../src/file-manager/fm-directory-view.c:7133
+#: ../src/file-manager/fm-directory-view.c:8736
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "י_צירת קישור"
 msgstr[1] "י_צירת קישורים"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7073
+#: ../src/file-manager/fm-directory-view.c:7134
 msgid "Create a symbolic link for each selected item"
 msgstr "יצירת קישור סימבולי לכול פריט שנבחר"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7076
+#: ../src/file-manager/fm-directory-view.c:7137
 msgid "_Rename..."
 msgstr "_שינוי שם..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7077
+#: ../src/file-manager/fm-directory-view.c:7138
 msgid "Rename selected item"
 msgstr "שינוי שם הפריט הנבחר"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7085
-#: ../src/file-manager/fm-directory-view.c:8630
+#: ../src/file-manager/fm-directory-view.c:7146
+#: ../src/file-manager/fm-directory-view.c:8697
 msgid "Move each selected item to the Trash"
 msgstr "זריקת כל אחד מהפריטים הנבחרים לאשפה"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7088
-#: ../src/file-manager/fm-directory-view.c:7211
-#: ../src/file-manager/fm-directory-view.c:8650
+#: ../src/file-manager/fm-directory-view.c:7149
+#: ../src/file-manager/fm-directory-view.c:7272
+#: ../src/file-manager/fm-directory-view.c:8717
 #: ../src/file-manager/fm-tree-view.c:1250
 msgid "_Delete"
 msgstr "_מחיקה"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7089
+#: ../src/file-manager/fm-directory-view.c:7150
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "מחיקת כל פריט נבחר, מבלי לזרוק אותו לאשפה"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7092
-#: ../src/file-manager/fm-directory-view.c:7215
+#: ../src/file-manager/fm-directory-view.c:7153
+#: ../src/file-manager/fm-directory-view.c:7276
 msgid "_Restore"
 msgstr "_שחזור"
 
@@ -3596,209 +3618,209 @@ msgstr "_שחזור"
 #.
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7102
+#: ../src/file-manager/fm-directory-view.c:7163
 msgid "Reset View to _Defaults"
 msgstr "החזרת התצוגה _לבררת המחדל"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7103
+#: ../src/file-manager/fm-directory-view.c:7164
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr "איפוס סדר המיון ורמת התקריב כך שיתאימו להעדפות תצוגה זו"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7106
+#: ../src/file-manager/fm-directory-view.c:7167
 msgid "Connect To This Server"
 msgstr "התחברות לשרת זה"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7107
+#: ../src/file-manager/fm-directory-view.c:7168
 msgid "Make a permanent connection to this server"
 msgstr "יצירת חיבור קבוע לשרת זה"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7110
-#: ../src/file-manager/fm-directory-view.c:7138
-#: ../src/file-manager/fm-directory-view.c:7219
+#: ../src/file-manager/fm-directory-view.c:7171
+#: ../src/file-manager/fm-directory-view.c:7199
+#: ../src/file-manager/fm-directory-view.c:7280
 #: ../src/nautilus-places-sidebar.c:2511
 msgid "_Mount"
 msgstr "_עיגון"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7111
+#: ../src/file-manager/fm-directory-view.c:7172
 msgid "Mount the selected volume"
 msgstr "עיגון הכרך הנבחר"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7115
+#: ../src/file-manager/fm-directory-view.c:7176
 msgid "Unmount the selected volume"
 msgstr "ניתוק הכרך הנבחר"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7119
+#: ../src/file-manager/fm-directory-view.c:7180
 msgid "Eject the selected volume"
 msgstr "שליפת הכרך הנבחר"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7122
-#: ../src/file-manager/fm-directory-view.c:7150
-#: ../src/file-manager/fm-directory-view.c:7231
+#: ../src/file-manager/fm-directory-view.c:7183
+#: ../src/file-manager/fm-directory-view.c:7211
+#: ../src/file-manager/fm-directory-view.c:7292
 #: ../src/nautilus-places-sidebar.c:2539
 msgid "_Format"
 msgstr "_פרמוט"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7123
+#: ../src/file-manager/fm-directory-view.c:7184
 msgid "Format the selected volume"
 msgstr "פרמוט הכרך הנבחר"
 
 #. name, stock id
 #. label, accelerator
 #. Adjust start/stop items to reflect the type of the drive
-#: ../src/file-manager/fm-directory-view.c:7126
-#: ../src/file-manager/fm-directory-view.c:7154
-#: ../src/file-manager/fm-directory-view.c:7235
-#: ../src/file-manager/fm-directory-view.c:7909
-#: ../src/file-manager/fm-directory-view.c:7913
-#: ../src/file-manager/fm-directory-view.c:8001
-#: ../src/file-manager/fm-directory-view.c:8005
-#: ../src/file-manager/fm-directory-view.c:8111
-#: ../src/file-manager/fm-directory-view.c:8115
+#: ../src/file-manager/fm-directory-view.c:7187
+#: ../src/file-manager/fm-directory-view.c:7215
+#: ../src/file-manager/fm-directory-view.c:7296
+#: ../src/file-manager/fm-directory-view.c:7970
+#: ../src/file-manager/fm-directory-view.c:7974
+#: ../src/file-manager/fm-directory-view.c:8062
+#: ../src/file-manager/fm-directory-view.c:8066
+#: ../src/file-manager/fm-directory-view.c:8172
+#: ../src/file-manager/fm-directory-view.c:8176
 #: ../src/nautilus-places-sidebar.c:1689 ../src/nautilus-places-sidebar.c:2546
 msgid "_Start"
 msgstr "ה_תחלה"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7127
+#: ../src/file-manager/fm-directory-view.c:7188
 msgid "Start the selected volume"
 msgstr "התחלת הכרך הנבחר"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7130
-#: ../src/file-manager/fm-directory-view.c:7158
-#: ../src/file-manager/fm-directory-view.c:7239
-#: ../src/file-manager/fm-directory-view.c:7938
-#: ../src/file-manager/fm-directory-view.c:8030
-#: ../src/file-manager/fm-directory-view.c:8140
+#: ../src/file-manager/fm-directory-view.c:7191
+#: ../src/file-manager/fm-directory-view.c:7219
+#: ../src/file-manager/fm-directory-view.c:7300
+#: ../src/file-manager/fm-directory-view.c:7999
+#: ../src/file-manager/fm-directory-view.c:8091
+#: ../src/file-manager/fm-directory-view.c:8201
 #: ../src/nautilus-places-sidebar.c:1690 ../src/nautilus-places-sidebar.c:2553
 #: ../src/nautilus-window-menus.c:789
 msgid "_Stop"
 msgstr "_עצירה"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7131
-#: ../src/file-manager/fm-directory-view.c:8141
+#: ../src/file-manager/fm-directory-view.c:7192
+#: ../src/file-manager/fm-directory-view.c:8202
 msgid "Stop the selected volume"
 msgstr "עצירת הכרך הנבחר"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7134
-#: ../src/file-manager/fm-directory-view.c:7162
-#: ../src/file-manager/fm-directory-view.c:7243
+#: ../src/file-manager/fm-directory-view.c:7195
+#: ../src/file-manager/fm-directory-view.c:7223
+#: ../src/file-manager/fm-directory-view.c:7304
 #: ../src/nautilus-places-sidebar.c:2532
 msgid "_Detect Media"
 msgstr "_זיהוי מדיה"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7135
-#: ../src/file-manager/fm-directory-view.c:7163
-#: ../src/file-manager/fm-directory-view.c:7244
+#: ../src/file-manager/fm-directory-view.c:7196
+#: ../src/file-manager/fm-directory-view.c:7224
+#: ../src/file-manager/fm-directory-view.c:7305
 msgid "Detect media in the selected drive"
 msgstr "איתור המדיה בכונן הנבחר"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7139
+#: ../src/file-manager/fm-directory-view.c:7200
 msgid "Mount the volume associated with the open folder"
 msgstr "עיגון הכרך המשויך לתיקייה הפתוחה"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7143
+#: ../src/file-manager/fm-directory-view.c:7204
 msgid "Unmount the volume associated with the open folder"
 msgstr "ניתוק הכרך המשויך לתיקייה הפתוחה"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7147
+#: ../src/file-manager/fm-directory-view.c:7208
 msgid "Eject the volume associated with the open folder"
 msgstr "שליפת הכרך המשויך לתיקייה הפתוחה"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7151
+#: ../src/file-manager/fm-directory-view.c:7212
 msgid "Format the volume associated with the open folder"
 msgstr "פרמוט הכרך המשויך לתיקייה הפתוחה"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7155
+#: ../src/file-manager/fm-directory-view.c:7216
 msgid "Start the volume associated with the open folder"
 msgstr "התחלת הכרך המשויך לתיקייה הפתוחה"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7159
+#: ../src/file-manager/fm-directory-view.c:7220
 msgid "Stop the volume associated with the open folder"
 msgstr "עצירת הכרך המשויך לתיקייה הפתוחה"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7166
+#: ../src/file-manager/fm-directory-view.c:7227
 msgid "Open File and Close window"
 msgstr "פתיחת קובץ וסגירת החלון"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7170
+#: ../src/file-manager/fm-directory-view.c:7231
 msgid "Sa_ve Search"
 msgstr "ש_מירת החיפוש"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7171
+#: ../src/file-manager/fm-directory-view.c:7232
 msgid "Save the edited search"
 msgstr "שמירת החיפוש שנערך"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7174
+#: ../src/file-manager/fm-directory-view.c:7235
 msgid "Sa_ve Search As..."
 msgstr "שמ_ירת החיפוש בשם..."
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7175
+#: ../src/file-manager/fm-directory-view.c:7236
 msgid "Save the current search as a file"
 msgstr "שמירת החיפוש הנוכחי כקובץ"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7181
+#: ../src/file-manager/fm-directory-view.c:7242
 msgid "Open this folder in a navigation window"
 msgstr "פתיחת תיקייה זו בחלון ניווט"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7185
+#: ../src/file-manager/fm-directory-view.c:7246
 msgid "Open this folder in a new tab"
 msgstr "פתיחת תיקייה זו בלשונית חדשה"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7190
+#: ../src/file-manager/fm-directory-view.c:7251
 msgid "Open this folder in a folder window"
 msgstr "פתיחת תיקייה זו בחלון תיקייה"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7195
+#: ../src/file-manager/fm-directory-view.c:7256
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "הכנת התיקייה להעברה עם פקודת הדבקה"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7199
+#: ../src/file-manager/fm-directory-view.c:7260
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "הכנת התיקייה להעתקה עם פקודת הדבקה"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7203
+#: ../src/file-manager/fm-directory-view.c:7264
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into this "
 "folder"
@@ -3807,398 +3829,398 @@ msgstr ""
 "תיקייה זאת"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7208
+#: ../src/file-manager/fm-directory-view.c:7269
 msgid "Move this folder to the Trash"
 msgstr "העברת התיקייה לאשפה"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7212
+#: ../src/file-manager/fm-directory-view.c:7273
 msgid "Delete this folder, without moving to the Trash"
 msgstr "מחיקת התיקייה, מבלי להעביר אותה לאשפה"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7220
+#: ../src/file-manager/fm-directory-view.c:7281
 msgid "Mount the volume associated with this folder"
 msgstr "חיבור הכרך המשויך לתיקייה זאת"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7224
+#: ../src/file-manager/fm-directory-view.c:7285
 msgid "Unmount the volume associated with this folder"
 msgstr "ניתוק הכרך המשויך לתיקייה זאת"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7228
+#: ../src/file-manager/fm-directory-view.c:7289
 msgid "Eject the volume associated with this folder"
 msgstr "שליפת הכרך המשויך לתיקייה זאת"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7232
+#: ../src/file-manager/fm-directory-view.c:7293
 msgid "Format the volume associated with this folder"
 msgstr "פרמוט הכרך המשויך לתיקייה זאת"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7236
+#: ../src/file-manager/fm-directory-view.c:7297
 msgid "Start the volume associated with this folder"
 msgstr "התחלת הכרך המשויך לתיקייה זאת"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7240
+#: ../src/file-manager/fm-directory-view.c:7301
 msgid "Stop the volume associated with this folder"
 msgstr "עצירת הכרך המשויך לתיקייה זאת"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:7249
+#: ../src/file-manager/fm-directory-view.c:7310
 msgid "View or modify the properties of this folder"
 msgstr "הצגה או שינוי של המאפיינים של תיקייה זאת"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7252
-#: ../src/file-manager/fm-directory-view.c:7255
+#: ../src/file-manager/fm-directory-view.c:7313
+#: ../src/file-manager/fm-directory-view.c:7316
 msgid "_Other pane"
 msgstr "חלונית _אחרת"
 
-#: ../src/file-manager/fm-directory-view.c:7253
+#: ../src/file-manager/fm-directory-view.c:7314
 msgid "Copy the current selection to the other pane in the window"
 msgstr "העתקת הבחירה הנוכחית אל החלונית השנייה שבחלון"
 
-#: ../src/file-manager/fm-directory-view.c:7256
+#: ../src/file-manager/fm-directory-view.c:7317
 msgid "Move the current selection to the other pane in the window"
 msgstr "העברת הבחירה הנוכחית אל חלונית אחרת בחלון"
 
 #. name, stock id, label
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7259
-#: ../src/file-manager/fm-directory-view.c:7263
+#: ../src/file-manager/fm-directory-view.c:7320
+#: ../src/file-manager/fm-directory-view.c:7324
 #: ../src/nautilus-window-menus.c:833
 msgid "_Home Folder"
 msgstr "תיקיית ה_בית"
 
-#: ../src/file-manager/fm-directory-view.c:7260
+#: ../src/file-manager/fm-directory-view.c:7321
 msgid "Copy the current selection to the home folder"
 msgstr "העתקת הבחירה הנוכחית אל תיקיית הבית"
 
-#: ../src/file-manager/fm-directory-view.c:7264
+#: ../src/file-manager/fm-directory-view.c:7325
 msgid "Move the current selection to the home folder"
 msgstr "העברת הבחירה הנוכחית אל תיקיית הבית"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:7267
-#: ../src/file-manager/fm-directory-view.c:7271
+#: ../src/file-manager/fm-directory-view.c:7328
+#: ../src/file-manager/fm-directory-view.c:7332
 msgid "_Desktop"
 msgstr "_שולחן עבודה"
 
-#: ../src/file-manager/fm-directory-view.c:7268
+#: ../src/file-manager/fm-directory-view.c:7329
 msgid "Copy the current selection to the desktop"
 msgstr "העתקת הבחירה הנוכחית אל שולחן העבודה"
 
-#: ../src/file-manager/fm-directory-view.c:7272
+#: ../src/file-manager/fm-directory-view.c:7333
 msgid "Move the current selection to the desktop"
 msgstr "העברת הבחירה הנוכחית אל שולחן העבודה"
 
 #. Translators: %s is a directory
-#: ../src/file-manager/fm-directory-view.c:7352
+#: ../src/file-manager/fm-directory-view.c:7413
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "הפעלה או ניהול של סקריפטים מ־%s"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/file-manager/fm-directory-view.c:7354
+#: ../src/file-manager/fm-directory-view.c:7415
 msgid "_Scripts"
 msgstr "_סקריפטים"
 
-#: ../src/file-manager/fm-directory-view.c:7757
+#: ../src/file-manager/fm-directory-view.c:7818
 #, c-format
 msgid "Move the open folder out of the trash to \"%s\""
 msgstr "העברת התיקייה הפתוחה מהאשפה ל־\"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:7760
+#: ../src/file-manager/fm-directory-view.c:7821
 #, c-format
 msgid "Move the selected folder out of the trash to \"%s\""
 msgid_plural "Move the selected folders out of the trash to \"%s\""
 msgstr[0] "העברת התיקייה הנבחרת מהאשפה ל־\"%s\""
 msgstr[1] "העברת התיקיות הנבחרות מהאשפה ל־\"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:7764
+#: ../src/file-manager/fm-directory-view.c:7825
 #, c-format
 msgid "Move the selected folder out of the trash"
 msgid_plural "Move the selected folders out of the trash"
 msgstr[0] "העברת התיקייה הנבחרת מהאשפה"
 msgstr[1] "העברת התיקיות הנבחרות מהאשפה"
 
-#: ../src/file-manager/fm-directory-view.c:7770
+#: ../src/file-manager/fm-directory-view.c:7831
 #, c-format
 msgid "Move the selected file out of the trash to \"%s\""
 msgid_plural "Move the selected files out of the trash to \"%s\""
 msgstr[0] "העברת הקובץ הנבחר מהאשפה ל־\"%s\""
 msgstr[1] "העברת הקבצים הנבחרים מהאשפה ל־\"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:7774
+#: ../src/file-manager/fm-directory-view.c:7835
 #, c-format
 msgid "Move the selected file out of the trash"
 msgid_plural "Move the selected files out of the trash"
 msgstr[0] "העברת הקובץ הנבחר מהאשפה"
 msgstr[1] "העברת הקבצים הנבחרים מהאשפה"
 
-#: ../src/file-manager/fm-directory-view.c:7780
+#: ../src/file-manager/fm-directory-view.c:7841
 #, c-format
 msgid "Move the selected item out of the trash to \"%s\""
 msgid_plural "Move the selected items out of the trash to \"%s\""
 msgstr[0] "העברת הפריט הנבחר מהאשפה ל־\"%s\""
 msgstr[1] "העברת הפריטים הנבחרים מהאשפה ל־\"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:7784
+#: ../src/file-manager/fm-directory-view.c:7845
 #, c-format
 msgid "Move the selected item out of the trash"
 msgid_plural "Move the selected items out of the trash"
 msgstr[0] "העברת הפריט הנבחר מהאשפה"
 msgstr[1] "העברת הפריטים הנבחרים מהאשפה"
 
-#: ../src/file-manager/fm-directory-view.c:7910
-#: ../src/file-manager/fm-directory-view.c:7914
-#: ../src/file-manager/fm-directory-view.c:8112
-#: ../src/file-manager/fm-directory-view.c:8116
+#: ../src/file-manager/fm-directory-view.c:7971
+#: ../src/file-manager/fm-directory-view.c:7975
+#: ../src/file-manager/fm-directory-view.c:8173
+#: ../src/file-manager/fm-directory-view.c:8177
 msgid "Start the selected drive"
 msgstr "התחלת הכונן הנבחר"
 
-#: ../src/file-manager/fm-directory-view.c:7918
-#: ../src/file-manager/fm-directory-view.c:8120
+#: ../src/file-manager/fm-directory-view.c:7979
+#: ../src/file-manager/fm-directory-view.c:8181
 msgid "Connect to the selected drive"
 msgstr "התחברות אל הכונן הנבחר"
 
-#: ../src/file-manager/fm-directory-view.c:7921
-#: ../src/file-manager/fm-directory-view.c:8013
-#: ../src/file-manager/fm-directory-view.c:8123
+#: ../src/file-manager/fm-directory-view.c:7982
+#: ../src/file-manager/fm-directory-view.c:8074
+#: ../src/file-manager/fm-directory-view.c:8184
 msgid "_Start Multi-disk Drive"
 msgstr "ה_תחלת כונן מרובה דיסקים"
 
-#: ../src/file-manager/fm-directory-view.c:7922
-#: ../src/file-manager/fm-directory-view.c:8124
+#: ../src/file-manager/fm-directory-view.c:7983
+#: ../src/file-manager/fm-directory-view.c:8185
 msgid "Start the selected multi-disk drive"
 msgstr "התחלת הכונן מרובה הדיסקים הנבחר"
 
-#: ../src/file-manager/fm-directory-view.c:7925
+#: ../src/file-manager/fm-directory-view.c:7986
 msgid "U_nlock Drive"
 msgstr "ש_חרור כונן"
 
-#: ../src/file-manager/fm-directory-view.c:7926
-#: ../src/file-manager/fm-directory-view.c:8128
+#: ../src/file-manager/fm-directory-view.c:7987
+#: ../src/file-manager/fm-directory-view.c:8189
 msgid "Unlock the selected drive"
 msgstr "שחרור הכונן הנבחר"
 
-#: ../src/file-manager/fm-directory-view.c:7939
+#: ../src/file-manager/fm-directory-view.c:8000
 msgid "Stop the selected drive"
 msgstr "עצירת הכונן הנבחר"
 
-#: ../src/file-manager/fm-directory-view.c:7942
-#: ../src/file-manager/fm-directory-view.c:8034
-#: ../src/file-manager/fm-directory-view.c:8144
+#: ../src/file-manager/fm-directory-view.c:8003
+#: ../src/file-manager/fm-directory-view.c:8095
+#: ../src/file-manager/fm-directory-view.c:8205
 #: ../src/nautilus-places-sidebar.c:1696
 msgid "_Safely Remove Drive"
 msgstr "הסרת הכונן _בבטחה"
 
-#: ../src/file-manager/fm-directory-view.c:7943
-#: ../src/file-manager/fm-directory-view.c:8145
+#: ../src/file-manager/fm-directory-view.c:8004
+#: ../src/file-manager/fm-directory-view.c:8206
 msgid "Safely remove the selected drive"
 msgstr "הסרת הכונן הנבחר בבטחה"
 
-#: ../src/file-manager/fm-directory-view.c:7946
-#: ../src/file-manager/fm-directory-view.c:8038
-#: ../src/file-manager/fm-directory-view.c:8148
+#: ../src/file-manager/fm-directory-view.c:8007
+#: ../src/file-manager/fm-directory-view.c:8099
+#: ../src/file-manager/fm-directory-view.c:8209
 msgid "_Disconnect"
 msgstr "_ניתוק"
 
-#: ../src/file-manager/fm-directory-view.c:7947
-#: ../src/file-manager/fm-directory-view.c:8149
+#: ../src/file-manager/fm-directory-view.c:8008
+#: ../src/file-manager/fm-directory-view.c:8210
 msgid "Disconnect the selected drive"
 msgstr "ניתוק הכונן הנבחר"
 
-#: ../src/file-manager/fm-directory-view.c:7950
-#: ../src/file-manager/fm-directory-view.c:8042
-#: ../src/file-manager/fm-directory-view.c:8152
+#: ../src/file-manager/fm-directory-view.c:8011
+#: ../src/file-manager/fm-directory-view.c:8103
+#: ../src/file-manager/fm-directory-view.c:8213
 msgid "_Stop Multi-disk Drive"
 msgstr "_עצירה כונן מרובה דיסקים"
 
-#: ../src/file-manager/fm-directory-view.c:7951
-#: ../src/file-manager/fm-directory-view.c:8153
+#: ../src/file-manager/fm-directory-view.c:8012
+#: ../src/file-manager/fm-directory-view.c:8214
 msgid "Stop the selected multi-disk drive"
 msgstr "עצירת כונן מרובה הדיסקים הנבחר"
 
-#: ../src/file-manager/fm-directory-view.c:7954
-#: ../src/file-manager/fm-directory-view.c:8046
-#: ../src/file-manager/fm-directory-view.c:8156
+#: ../src/file-manager/fm-directory-view.c:8015
+#: ../src/file-manager/fm-directory-view.c:8107
+#: ../src/file-manager/fm-directory-view.c:8217
 #: ../src/nautilus-places-sidebar.c:1709
 msgid "_Lock Drive"
 msgstr "_נעילת כונן"
 
-#: ../src/file-manager/fm-directory-view.c:7955
-#: ../src/file-manager/fm-directory-view.c:8157
+#: ../src/file-manager/fm-directory-view.c:8016
+#: ../src/file-manager/fm-directory-view.c:8218
 msgid "Lock the selected drive"
 msgstr "נעילת הכונן הנבחר"
 
-#: ../src/file-manager/fm-directory-view.c:8002
-#: ../src/file-manager/fm-directory-view.c:8006
+#: ../src/file-manager/fm-directory-view.c:8063
+#: ../src/file-manager/fm-directory-view.c:8067
 msgid "Start the drive associated with the open folder"
 msgstr "התחלת הכונן המשויך לתיקייה הפתוחה"
 
-#: ../src/file-manager/fm-directory-view.c:8010
+#: ../src/file-manager/fm-directory-view.c:8071
 msgid "Connect to the drive associated with the open folder"
 msgstr "התחברות אל הכונן המשויך לתיקייה הפתוחה"
 
-#: ../src/file-manager/fm-directory-view.c:8014
+#: ../src/file-manager/fm-directory-view.c:8075
 msgid "Start the multi-disk drive associated with the open folder"
 msgstr "התחלת הכונן מרובה הדיסקים עם התיקייה הפתוחה"
 
 #. stop() for type G_DRIVE_START_STOP_TYPE_PASSWORD is normally not used
-#: ../src/file-manager/fm-directory-view.c:8017
-#: ../src/file-manager/fm-directory-view.c:8127
+#: ../src/file-manager/fm-directory-view.c:8078
+#: ../src/file-manager/fm-directory-view.c:8188
 #: ../src/nautilus-places-sidebar.c:1708
 msgid "_Unlock Drive"
 msgstr "_שחרור כונן"
 
-#: ../src/file-manager/fm-directory-view.c:8018
+#: ../src/file-manager/fm-directory-view.c:8079
 msgid "Unlock the drive associated with the open folder"
 msgstr "שחרור הכונן המשויך לתיקייה הפתוחה"
 
-#: ../src/file-manager/fm-directory-view.c:8031
+#: ../src/file-manager/fm-directory-view.c:8092
 msgid "_Stop the drive associated with the open folder"
 msgstr "_עצירת הכונן המשויך לתיקייה הפתוחה"
 
-#: ../src/file-manager/fm-directory-view.c:8035
+#: ../src/file-manager/fm-directory-view.c:8096
 msgid "Safely remove the drive associated with the open folder"
 msgstr "הסרת הכונן המשויך לתיקייה הפתוחה בבטחה"
 
-#: ../src/file-manager/fm-directory-view.c:8039
+#: ../src/file-manager/fm-directory-view.c:8100
 msgid "Disconnect the drive associated with the open folder"
 msgstr "ניתוק הכונן המשויך לתיקייה הפתוחה"
 
-#: ../src/file-manager/fm-directory-view.c:8043
+#: ../src/file-manager/fm-directory-view.c:8104
 msgid "Stop the multi-disk drive associated with the open folder"
 msgstr "עצירת הכונן מרובה הדיסקים המשויך לתיקייה הפתוחה"
 
-#: ../src/file-manager/fm-directory-view.c:8047
+#: ../src/file-manager/fm-directory-view.c:8108
 msgid "Lock the drive associated with the open folder"
 msgstr "נעילת הכונן המשויך לתיקייה הפתוחה"
 
 #. add the "open in new window" menu item
-#: ../src/file-manager/fm-directory-view.c:8226
-#: ../src/file-manager/fm-directory-view.c:8536
+#: ../src/file-manager/fm-directory-view.c:8287
+#: ../src/file-manager/fm-directory-view.c:8603
 #: ../src/file-manager/fm-tree-view.c:1177
 #: ../src/nautilus-places-sidebar.c:2482
 msgid "Open in New _Window"
 msgstr "פתיחה ב_חלון חדש"
 
-#: ../src/file-manager/fm-directory-view.c:8228
-#: ../src/file-manager/fm-directory-view.c:8545
+#: ../src/file-manager/fm-directory-view.c:8289
+#: ../src/file-manager/fm-directory-view.c:8612
 msgid "Browse in New _Window"
 msgstr "עיון ב_חלון חדש"
 
-#: ../src/file-manager/fm-directory-view.c:8234
-#: ../src/file-manager/fm-directory-view.c:8555
+#: ../src/file-manager/fm-directory-view.c:8295
+#: ../src/file-manager/fm-directory-view.c:8622
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "_דפדוף בתיקייה"
 msgstr[1] "ד_פדוף בתיקיות"
 
-#: ../src/file-manager/fm-directory-view.c:8251
-#: ../src/file-manager/fm-directory-view.c:8584
+#: ../src/file-manager/fm-directory-view.c:8312
+#: ../src/file-manager/fm-directory-view.c:8651
 msgid "Browse in New _Tab"
 msgstr "עיון ב_לשונית חדשה"
 
-#: ../src/file-manager/fm-directory-view.c:8300
-#: ../src/file-manager/fm-directory-view.c:8625
+#: ../src/file-manager/fm-directory-view.c:8361
+#: ../src/file-manager/fm-directory-view.c:8692
 msgid "_Delete Permanently"
 msgstr "מחיקה _לצמיתות"
 
-#: ../src/file-manager/fm-directory-view.c:8301
+#: ../src/file-manager/fm-directory-view.c:8362
 msgid "Delete the open folder permanently"
 msgstr "מחיקת התיקייה הפתוחה לצמיתות"
 
-#: ../src/file-manager/fm-directory-view.c:8305
+#: ../src/file-manager/fm-directory-view.c:8366
 msgid "Move the open folder to the Trash"
 msgstr "העברת התיקייה הפתוחה לאשפה"
 
-#: ../src/file-manager/fm-directory-view.c:8485
+#: ../src/file-manager/fm-directory-view.c:8552
 #, c-format
 msgid "_Open With %s"
 msgstr "_פתיחה באמצעות %s"
 
-#: ../src/file-manager/fm-directory-view.c:8538
+#: ../src/file-manager/fm-directory-view.c:8605
 #, c-format
 msgid "Open in %'d New _Window"
 msgid_plural "Open in %'d New _Windows"
 msgstr[0] "פתיחה ב_חלון חדש"
 msgstr[1] "פתיחה ב־%'d _חלונות חדשים"
 
-#: ../src/file-manager/fm-directory-view.c:8547
+#: ../src/file-manager/fm-directory-view.c:8614
 #, c-format
 msgid "Browse in %'d New _Window"
 msgid_plural "Browse in %'d New _Windows"
 msgstr[0] "עיון _בחלון חדש"
 msgstr[1] "עיון ב־%'d _חלונות חדשים"
 
-#: ../src/file-manager/fm-directory-view.c:8577
+#: ../src/file-manager/fm-directory-view.c:8644
 #, c-format
 msgid "Open in %'d New _Tab"
 msgid_plural "Open in %'d New _Tabs"
 msgstr[0] "פתיחה ב_לשונית חדשה"
 msgstr[1] "פתיחה ב־%'d _לשוניות חדשות"
 
-#: ../src/file-manager/fm-directory-view.c:8586
+#: ../src/file-manager/fm-directory-view.c:8653
 #, c-format
 msgid "Browse in %'d New _Tab"
 msgid_plural "Browse in %'d New _Tabs"
 msgstr[0] "עיון ב_לשונית חדשה"
 msgstr[1] "עיון ב־%'d _לשוניות חדשות"
 
-#: ../src/file-manager/fm-directory-view.c:8626
+#: ../src/file-manager/fm-directory-view.c:8693
 msgid "Delete all selected items permanently"
 msgstr "מחיקת כל הפריטים הנבחרים לצמיתות"
 
-#: ../src/file-manager/fm-directory-view.c:8683
+#: ../src/file-manager/fm-directory-view.c:8750
 msgid "View or modify the properties of the open folder"
 msgstr "הצגה או עריכה של המאפיינים של התיקייה הפתוחה"
 
-#: ../src/file-manager/fm-directory-view.c:9984
+#: ../src/file-manager/fm-directory-view.c:10051
 msgid "Download location?"
 msgstr "להוריד מיקום?"
 
-#: ../src/file-manager/fm-directory-view.c:9987
+#: ../src/file-manager/fm-directory-view.c:10054
 msgid "You can download it or make a link to it."
 msgstr "ניתן להוריד אותו או לקשר אליו."
 
-#: ../src/file-manager/fm-directory-view.c:9990
+#: ../src/file-manager/fm-directory-view.c:10057
 msgid "Make a _Link"
 msgstr "יצירת _קישור"
 
-#: ../src/file-manager/fm-directory-view.c:9994
+#: ../src/file-manager/fm-directory-view.c:10061
 msgid "_Download"
 msgstr "הור_דה"
 
-#: ../src/file-manager/fm-directory-view.c:10155
-#: ../src/file-manager/fm-directory-view.c:10213
-#: ../src/file-manager/fm-directory-view.c:10318
+#: ../src/file-manager/fm-directory-view.c:10222
+#: ../src/file-manager/fm-directory-view.c:10280
+#: ../src/file-manager/fm-directory-view.c:10385
 msgid "Drag and drop is not supported."
 msgstr "גרירה והשלכה אינן נתמכות."
 
-#: ../src/file-manager/fm-directory-view.c:10156
+#: ../src/file-manager/fm-directory-view.c:10223
 msgid "Drag and drop is only supported on local file systems."
 msgstr "גרירה והשלכה נתמכות רק במערכות קבצים מקומיות."
 
-#: ../src/file-manager/fm-directory-view.c:10214
-#: ../src/file-manager/fm-directory-view.c:10319
+#: ../src/file-manager/fm-directory-view.c:10281
+#: ../src/file-manager/fm-directory-view.c:10386
 msgid "An invalid drag type was used."
 msgstr "שימוש בסוג גרירה לא תקני."
 
 #. Translator: This is the filename used for when you dnd text to a directory
-#: ../src/file-manager/fm-directory-view.c:10396
+#: ../src/file-manager/fm-directory-view.c:10463
 msgid "dropped text.txt"
 msgstr "טקסט שנגרר.txt"
 
 #. Translator: This is the filename used for when you dnd raw
 #. * data to a directory, if the source didn't supply a name.
 #.
-#: ../src/file-manager/fm-directory-view.c:10441
+#: ../src/file-manager/fm-directory-view.c:10508
 msgid "dropped data"
 msgstr "נתונים שנשמטו"
 
@@ -6656,6 +6678,19 @@ msgstr "תקריב"
 msgid "Set the zoom level of the current view"
 msgstr "הגדרת רמת התקריב של התצוגה הנוכחית"
 
+#: ../nautilus-sendto-extension/nautilus-nste.c:83
+#: ../nautilus-sendto-extension/nautilus-nste.c:88
+msgid "Send To..."
+msgstr "שליחה אל..."
+
+#: ../nautilus-sendto-extension/nautilus-nste.c:84
+msgid "Send file by mail, instant message..."
+msgstr "שליחת קובץ בדוא״ל, הודעות מידיות..."
+
+#: ../nautilus-sendto-extension/nautilus-nste.c:89
+msgid "Send files by mail, instant message..."
+msgstr "שליחת קבצים בדוא״ל, הודעות מידיות..."
+
 #~ msgid "If set to true, then Nautilus will draw the icons on the desktop."
 #~ msgstr "If set to true, then Nautilus will draw the icons on the desktop."
 
@@ -7349,9 +7384,6 @@ msgstr "הגדרת רמת התקריב של התצוגה הנוכחית"
 
 #~ msgid "Sorry, but \"%s\" is not a usable image file."
 #~ msgstr "מצטער, אך \"%s\" אינו קובץ תמונה שימושי."
-
-#~ msgid "The file is not an image."
-#~ msgstr "הקובץ איננו תמונה."
 
 #~ msgid "Select a Category:"
 #~ msgstr "בחר קטגוריה:"
