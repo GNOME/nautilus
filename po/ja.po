@@ -18,8 +18,8 @@ msgstr ""
 "Project-Id-Version: nautilus gnome-2-32\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2010-09-23 13:34+0000\n"
-"PO-Revision-Date: 2010-09-13 13:36+0900\n"
+"POT-Creation-Date: 2010-10-29 20:42+0000\n"
+"PO-Revision-Date: 2010-11-01 22:10+0900\n"
 "Last-Translator: Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -530,7 +530,7 @@ msgstr ""
 "ズームレベルに応じ、ファイル名の一部を省略記号 (...) で置き換えるべき長さを指"
 "定したリストです (すなわち、n 行に収まらないファイル名を省略文字で置き換えて"
 "表示するか、それともそのまま複数行にまたがって表示するかを、ズームレベル毎に"
-"指定します)。リストの各要素は \"ズームレベル:整数値\" という形式にして下さ"
+"指定します)。リストの各要素は \"ズームレベル:整数値\" という形式にしてくださ"
 "い。それぞれ指定したズームレベルに対して整数値が 0 より大きい場合、ファイル名"
 "は指定した行数を超えて表示されることはありません。整数値が 0 以下の場合、その"
 "ズームレベルでは無制限で表示されることになります。ズームレベルを指定せずに "
@@ -754,7 +754,7 @@ msgid ""
 msgstr ""
 "「進む」「戻る」ボタンのあるボタンを使う場合、ブラウザウィンドウで「進む」コ"
 "マンドをどのボタンで実行するかを、このキーで設定します。可能な値は6と14の間で"
-"す。<"
+"す。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
 msgid "Home icon visible on desktop"
@@ -1442,7 +1442,7 @@ msgstr "\"%s\" を開く"
 
 #: ../libnautilus-private/nautilus-autorun.c:607
 msgid "Open with other Application..."
-msgstr "別のアプリケーションで開きます..."
+msgstr "別のアプリケーションで開く..."
 
 #: ../libnautilus-private/nautilus-autorun.c:950
 msgid "You have just inserted an Audio CD."
@@ -3084,7 +3084,7 @@ msgstr "コンパクト表示"
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:144
 #: ../src/file-manager/fm-list-view.c:1658
-#: ../src/file-manager/fm-list-view.c:3147
+#: ../src/file-manager/fm-list-view.c:3154
 #: ../src/nautilus-file-management-properties.ui.h:67
 msgid "List View"
 msgstr "一覧表示"
@@ -5000,8 +5000,8 @@ msgid ""
 "The name \"%s\" is not valid because it contains the character \"/\". Please "
 "use a different name."
 msgstr ""
-"名前 \"%s\" の中に \"/\" 文字があるので適切ではありません。別の名前を使って下"
-"さい。"
+"名前 \"%s\" の中に \"/\" 文字があるので適切ではありません。別の名前を使ってく"
+"ださい。"
 
 #: ../src/file-manager/fm-error-reporting.c:128
 #, c-format
@@ -5293,19 +5293,19 @@ msgid "Select the columns visible in this folder"
 msgstr "このフォルダで表示する項目を選択してください"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-list-view.c:3149
+#: ../src/file-manager/fm-list-view.c:3156
 msgid "_List"
 msgstr "一覧(_L)"
 
-#: ../src/file-manager/fm-list-view.c:3150
+#: ../src/file-manager/fm-list-view.c:3157
 msgid "The list view encountered an error."
 msgstr "一覧表示でエラーが発生しました。"
 
-#: ../src/file-manager/fm-list-view.c:3151
+#: ../src/file-manager/fm-list-view.c:3158
 msgid "The list view encountered an error while starting up."
 msgstr "起動する際に一覧表示でエラーが発生しました。"
 
-#: ../src/file-manager/fm-list-view.c:3152
+#: ../src/file-manager/fm-list-view.c:3159
 msgid "Display this location with the list view."
 msgstr "この場所を一覧表示で表示します"
 
@@ -6007,7 +6007,7 @@ msgstr "<b>サウンドファイル</b>"
 
 #: ../src/nautilus-file-management-properties.ui.h:39
 msgid "<b>Text Files</b>"
-msgstr "<b>通常のファイル</b>"
+msgstr "<b>テキストファイル</b>"
 
 #: ../src/nautilus-file-management-properties.ui.h:40
 msgid "<b>Trash</b>"
@@ -6186,7 +6186,7 @@ msgstr "写真(_P):"
 
 #: ../src/nautilus-file-management-properties.ui.h:91
 msgid "_Run executable text files when they are opened"
-msgstr "クリックしたら実行する(_R)"
+msgstr "開いたら実行可能なテキストファイルを実行する(_R)"
 
 #: ../src/nautilus-file-management-properties.ui.h:92
 msgid "_Single click to open items"
@@ -6210,7 +6210,7 @@ msgstr "コンパクトな配置にする(_U)"
 
 #: ../src/nautilus-file-management-properties.ui.h:97
 msgid "_View executable text files when they are opened"
-msgstr "クリックしたら中身を表示する(_V)"
+msgstr "開いたら実行可能なテキストファイルの中身を表示する(_V)"
 
 #: ../src/nautilus-history-sidebar.c:328
 msgid "History"
@@ -6757,7 +6757,7 @@ msgstr "マルチディスク・デバイスを起動(_S)"
 
 #: ../src/nautilus-places-sidebar.c:1474
 msgid "_Stop Multi-disk Device"
-msgstr "マルチディスク・デバイスを停止(_S)<"
+msgstr "マルチディスク・デバイスを停止(_S)"
 
 #: ../src/nautilus-places-sidebar.c:1554 ../src/nautilus-places-sidebar.c:2090
 #, c-format
