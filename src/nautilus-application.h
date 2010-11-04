@@ -65,7 +65,7 @@ typedef struct {
 	GDBusProxy *proxy;
 	gboolean session_is_active;
 
-	gboolean sm_initialized;
+	gboolean initialized;
 } NautilusApplication;
 
 typedef struct {
