@@ -7023,13 +7023,15 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	int n_attach_points;
 	gboolean has_embedded_text_rect;
 	GdkPixbuf *pixbuf;
-	GList *emblem_pixbufs;
+	GList *emblem_pixbufs, *l;
 	char *editable_text, *additional_text;
 	char *embedded_text;
 	GdkRectangle embedded_text_rect;
 	gboolean large_embedded_text;
 	gboolean embedded_text_needs_loading;
 	gboolean has_open_window;
+	GIcon *emblemed_icon;
+	GEmblem *emblem;
 	
 	if (icon == NULL) {
 		return;
@@ -7063,14 +7065,41 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 							     large_embedded_text, &embedded_text_needs_loading,
 							     &has_open_window);
 
-
-	if (container->details->forced_icon_size > 0)
+	if (container->details->forced_icon_size > 0) {
 		pixbuf = nautilus_icon_info_get_pixbuf_at_size (icon_info, icon_size);
-	else
+	} else {
 		pixbuf = nautilus_icon_info_get_pixbuf (icon_info);
+	}
+
 	nautilus_icon_info_get_attach_points (icon_info, &attach_points, &n_attach_points);
 	has_embedded_text_rect = nautilus_icon_info_get_embedded_rect (icon_info,
 								       &embedded_text_rect);
+
+	/* apply emblems */
+	if (emblem_pixbufs != NULL) {
+		l = emblem_pixbufs;
+
+		emblem = g_emblem_new (l->data);
+		emblemed_icon = g_emblemed_icon_new (G_ICON (pixbuf), emblem);
+		g_object_unref (emblem);
+
+		for (l = l->next; l != NULL; l = l->next) {
+			emblem = g_emblem_new (l->data);
+			g_emblemed_icon_add_emblem (G_EMBLEMED_ICON (emblemed_icon),
+						    emblem);
+			g_object_unref (emblem);
+		}
+
+		g_object_unref (icon_info);
+		g_object_unref (pixbuf);
+
+		icon_info = nautilus_icon_info_lookup (emblemed_icon, icon_size);
+		pixbuf = nautilus_icon_info_get_pixbuf_at_size (icon_info, icon_size);
+
+		g_object_unref (emblemed_icon);
+	}
+
+	g_object_unref (icon_info);
  
 	if (has_embedded_text_rect && embedded_text_needs_loading) {
 		icon->is_monitored = TRUE;
@@ -7112,8 +7141,6 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 
 	g_free (editable_text);
 	g_free (additional_text);
-
-	g_object_unref (icon_info);
 }
 
 static gboolean
