@@ -7131,7 +7131,6 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 
 	nautilus_icon_canvas_item_set_image (icon->item, pixbuf);
 	nautilus_icon_canvas_item_set_attach_points (icon->item, attach_points, n_attach_points);
-	nautilus_icon_canvas_item_set_emblems (icon->item, emblem_pixbufs);
 	nautilus_icon_canvas_item_set_embedded_text_rect (icon->item, &embedded_text_rect);
 	nautilus_icon_canvas_item_set_embedded_text (icon->item, embedded_text);
 
