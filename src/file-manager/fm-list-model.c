@@ -311,7 +311,7 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 				}
 			}
 
-			gicon = nautilus_file_get_gicon (file, flags);
+			gicon = G_ICON (nautilus_file_get_icon_pixbuf (file, icon_size, TRUE, flags));
 
 			/* render emblems with GEmblemedIcon */
 			parent_file = nautilus_file_get_parent (file);
