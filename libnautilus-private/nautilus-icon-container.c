@@ -6852,7 +6852,7 @@ static NautilusIconInfo *
 nautilus_icon_container_get_icon_images (NautilusIconContainer *container,
 					 NautilusIconData      *data,
 					 int                    size,
-					 GList                **emblem_pixbufs,
+					 GList                **emblem_icons,
 					 char                 **embedded_text,
 					 gboolean               for_drag_accept,
 					 gboolean               need_large_embeddded_text,
@@ -6864,7 +6864,7 @@ nautilus_icon_container_get_icon_images (NautilusIconContainer *container,
 	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (container);
 	g_assert (klass->get_icon_images != NULL);
 
-	return klass->get_icon_images (container, data, size, emblem_pixbufs, embedded_text, for_drag_accept, need_large_embeddded_text, embedded_text_needs_loading, has_open_window);
+	return klass->get_icon_images (container, data, size, emblem_icons, embedded_text, for_drag_accept, need_large_embeddded_text, embedded_text_needs_loading, has_open_window);
 }
 
 static void
@@ -7023,7 +7023,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	int n_attach_points;
 	gboolean has_embedded_text_rect;
 	GdkPixbuf *pixbuf;
-	GList *emblem_pixbufs, *l;
+	GList *emblem_icons, *l;
 	char *editable_text, *additional_text;
 	char *embedded_text;
 	GdkRectangle embedded_text_rect;
@@ -7055,11 +7055,11 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	icon_size = MIN (icon_size, max_image_size);
 
 	/* Get the icons. */
-	emblem_pixbufs = NULL;
+	emblem_icons = NULL;
 	embedded_text = NULL;
 	large_embedded_text = icon_size > ICON_SIZE_FOR_LARGE_EMBEDDED_TEXT;
 	icon_info = nautilus_icon_container_get_icon_images (container, icon->data, icon_size,
-							     &emblem_pixbufs,
+							     &emblem_icons,
 							     &embedded_text,
 							     icon == details->drop_target,							     
 							     large_embedded_text, &embedded_text_needs_loading,
@@ -7076,8 +7076,8 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 								       &embedded_text_rect);
 
 	/* apply emblems */
-	if (emblem_pixbufs != NULL) {
-		l = emblem_pixbufs;
+	if (emblem_icons != NULL) {
+		l = emblem_icons;
 
 		emblem = g_emblem_new (l->data);
 		emblemed_icon = g_emblemed_icon_new (G_ICON (pixbuf), emblem);
@@ -7136,7 +7136,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 
 	/* Let the pixbufs go. */
 	g_object_unref (pixbuf);
-	g_list_free_full (emblem_pixbufs, g_object_unref);
+	g_list_free_full (emblem_icons, g_object_unref);
 
 	g_free (editable_text);
 	g_free (additional_text);

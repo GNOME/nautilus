@@ -141,7 +141,7 @@ typedef struct {
 	NautilusIconInfo *(* get_icon_images)     (NautilusIconContainer *container,
 						   NautilusIconData *data,
 						   int icon_size,
-						   GList **emblem_pixbufs,
+						   GList **emblem_icons,
 						   char **embedded_text,
 						   gboolean for_drag_accept,
 						   gboolean need_large_embeddded_text,
