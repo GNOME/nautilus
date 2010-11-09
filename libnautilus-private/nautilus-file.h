@@ -209,10 +209,6 @@ gboolean                nautilus_file_should_show_type                  (Nautilu
 GList *                 nautilus_file_get_keywords                      (NautilusFile                   *file);
 GList *                 nautilus_file_get_emblem_icons                  (NautilusFile                   *file,
 									 char                          **exclude);
-GList *                 nautilus_file_get_emblem_pixbufs                (NautilusFile                   *file,
-									 int                             size,
-									 gboolean                        force_size,
-									 char                          **exclude);
 char *                  nautilus_file_get_top_left_text                 (NautilusFile                   *file);
 char *                  nautilus_file_peek_top_left_text                (NautilusFile                   *file,
 									 gboolean                        need_large_text,

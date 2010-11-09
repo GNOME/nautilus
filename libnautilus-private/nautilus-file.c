@@ -6428,46 +6428,6 @@ nautilus_file_get_emblem_icons (NautilusFile *file,
 	return icons;
 }
 
-GList *
-nautilus_file_get_emblem_pixbufs (NautilusFile *file,
-				  int size,
-				  gboolean force_size,
-				  char **exclude)
-{
-	GList *icons, *l;
-	GList *pixbufs;
-	GIcon *icon;
-	GdkPixbuf *pixbuf;
-	NautilusIconInfo *icon_info;
-
-	icons = nautilus_file_get_emblem_icons (file, exclude);
-	pixbufs = NULL;
-
-	for (l = icons; l != NULL; l = l->next) {
-		icon = l->data;
-
-		icon_info = nautilus_icon_info_lookup (icon, size);
-		if (force_size) {
-			pixbuf = nautilus_icon_info_get_pixbuf_nodefault_at_size (icon_info, size);
-		} else {
-			pixbuf = nautilus_icon_info_get_pixbuf_nodefault (icon_info);
-		}
-		
-		if (pixbuf) {
-			pixbufs = g_list_prepend (pixbufs, pixbuf);
-		}
-		
-		
-		g_object_unref (icon_info);
-		g_object_unref (icon);
-	}
-	g_list_free (icons);
-
-	return g_list_reverse (pixbufs);
-
-	
-}
-
 static GList *
 sort_keyword_list_and_remove_duplicates (GList *keywords)
 {
