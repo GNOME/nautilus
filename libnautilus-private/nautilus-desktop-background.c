@@ -37,6 +37,7 @@
 
 #define GNOME_DESKTOP_USE_UNSTABLE_API
 #include <libgnomeui/gnome-bg.h>
+#include <gdesktop-enums.h>
 
 #include <gtk/gtk.h>
 #include <string.h>
@@ -71,10 +72,15 @@ struct NautilusDesktopBackgroundDetails {
 	/* Desktop monitors configuration watcher */
 	gulong screen_monitors_handler;
 	guint change_idle_id;
-
-        guint gconf_notify_id;
-        guint gconf_timeout_id;
 };
+
+
+static gboolean
+background_settings_change_event_cb (GSettings *settings,
+                                     gpointer   keys,
+                                     gint       n_keys,
+                                     gpointer   user_data);
+
 
 static void
 free_fade (NautilusDesktopBackground *self)
@@ -104,12 +110,9 @@ nautilus_desktop_background_finalize (GObject *object)
 
 	self = NAUTILUS_DESKTOP_BACKGROUND (object);
 
-        gconf_client_notify_remove (nautilus_gconf_client,
-                                    self->details->gconf_notify_id);
-        if (self->details->gconf_timeout_id != 0) {
-                g_source_remove (self->details->gconf_timeout_id);
-                self->details->gconf_timeout_id = 0;
-        }
+	g_signal_handlers_disconnect_by_func (gnome_background_preferences,
+					      background_settings_change_event_cb,
+					      self);
 
 	free_background_surface (self);
 	free_fade (self);
@@ -423,47 +426,26 @@ on_widget_destroyed (GtkWidget *widget,
 }
 
 static gboolean
-call_settings_changed (NautilusDesktopBackground *self)
+background_change_event_idle_cb (NautilusDesktopBackground *self)
 {
-        self->details->gconf_timeout_id = 0;
-        gnome_bg_load_from_preferences (self->details->bg, nautilus_gconf_client);
+	gnome_bg_load_from_preferences (self->details->bg,
+					gnome_background_preferences);
 
 	return FALSE;
 }
 
-static void
-desktop_background_gconf_notify_cb (GConfClient *client,
-                                    guint notification_id,
-                                    GConfEntry *entry,
-                                    gpointer user_data)
+static gboolean
+background_settings_change_event_cb (GSettings *settings,
+                                     gpointer   keys,
+                                     gint       n_keys,
+                                     gpointer   user_data)
 {
-        NautilusDesktopBackground *self = user_data;
-        gboolean is_stamp;
+	/* Need to defer signal processing otherwise
+	 * we would make the dconf backend deadlock.
+	 */
+	g_idle_add ((GSourceFunc) background_change_event_idle_cb, user_data);
 
-        is_stamp = (g_strcmp0 (entry->key, "/desktop/gnome/background/stamp") == 0);
-
-        if (is_stamp) {
-                if (self->details->gconf_timeout_id != 0) {
-                        g_source_remove (self->details->gconf_timeout_id);
-                        self->details->gconf_timeout_id = 0;
-                }
-
-                call_settings_changed (self);
-        } else if (self->details->gconf_timeout_id == 0) {
-                self->details->gconf_timeout_id =
-                        g_timeout_add (300,
-                                       (GSourceFunc) call_settings_changed, self);
-        }
-}
-
-static void
-nautilus_desktop_background_initialize_gconf (NautilusDesktopBackground *self)
-{
-        self->details->gconf_notify_id =
-                gconf_client_notify_add (nautilus_gconf_client,
-                                         "/desktop/gnome/background",
-                                         desktop_background_gconf_notify_cb,
-                                         self, NULL, NULL);
+	return FALSE;
 }
 
 static void
@@ -489,8 +471,14 @@ nautilus_desktop_background_constructed (GObject *obj)
 	g_signal_connect_object (widget, "unrealize",
 				 G_CALLBACK (widget_unrealize_cb), self, 0);
 
-        gnome_bg_load_from_preferences (self->details->bg, nautilus_gconf_client);
-        nautilus_desktop_background_initialize_gconf (self);
+        gnome_bg_load_from_preferences (self->details->bg,
+                                        gnome_background_preferences);
+
+        /* Let's receive batch change events instead of every single one */
+        g_signal_connect (gnome_background_preferences,
+                          "change-event",
+                          G_CALLBACK (background_settings_change_event_cb),
+                          self);
 
 	queue_background_change (self);
 }
@@ -582,10 +570,12 @@ nautilus_desktop_background_receive_dropped_background_image (NautilusDesktopBac
 	/* Currently, we only support tiled images. So we set the placement.
 	 */
 	gnome_bg_set_placement (self->details->bg,
-				GNOME_BG_PLACEMENT_TILED);
+				G_DESKTOP_BACKGROUND_STYLE_WALLPAPER);
+	gnome_bg_set_draw_background (self->details->bg, TRUE);
 	nautilus_desktop_background_set_image_uri (self, image_uri);
 
-	gnome_bg_save_to_preferences (self->details->bg, nautilus_gconf_client);
+	gnome_bg_save_to_preferences (self->details->bg,
+				      gnome_background_preferences);
 }
 
 NautilusDesktopBackground *
