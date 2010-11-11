@@ -36,7 +36,7 @@
 #include "nautilus-global-preferences.h"
 
 #define GNOME_DESKTOP_USE_UNSTABLE_API
-#include <libgnomeui/gnome-bg.h>
+#include <libgnome-desktop/gnome-bg.h>
 #include <gdesktop-enums.h>
 
 #include <gtk/gtk.h>
