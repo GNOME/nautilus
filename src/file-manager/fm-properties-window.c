@@ -353,7 +353,7 @@ add_prompt_and_separator (GtkVBox *vbox, const char *prompt_text)
 
 	add_prompt (vbox, prompt_text, FALSE);
 
- 	separator_line = gtk_hseparator_new ();
+	separator_line = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
   	gtk_widget_show (separator_line);
   	gtk_box_pack_end (GTK_BOX (vbox), separator_line, TRUE, TRUE, 2*ROW_PAD);
 }

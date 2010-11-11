@@ -384,7 +384,7 @@ add_buttons (NautilusColumnChooser *chooser)
 	gtk_box_pack_start (GTK_BOX (box), chooser->details->move_down_button,
 			    FALSE, FALSE, 0);
 
-	separator = gtk_hseparator_new ();
+	separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
 	gtk_widget_show (separator);
 	gtk_box_pack_start (GTK_BOX (box), separator, FALSE, FALSE, 0);	
 
