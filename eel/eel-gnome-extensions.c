@@ -31,7 +31,7 @@
 #include "eel-gnome-extensions.h"
 
 #include <gtk/gtk.h>
-#include <libgnome/gnome-desktop-utils.h>
+#include <libgnome-desktop/gnome-desktop-utils.h>
 
 /* Return a command string containing the path to a terminal on this system. */
 
