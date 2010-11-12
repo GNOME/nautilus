@@ -26,7 +26,8 @@
 
 #include "nautilus-application.h"
 
-void nautilus_application_smclient_init (NautilusApplication *self);
-void nautilus_application_smclient_load (NautilusApplication *self);
+void nautilus_application_smclient_startup (NautilusApplication *self);
+void nautilus_application_smclient_load (NautilusApplication *self,
+					 gboolean *no_default_window);
 
 #endif /* __NAUTILUS_APPLICATION_SMCLIENT_H__ */

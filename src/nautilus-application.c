@@ -1451,6 +1451,24 @@ nautilus_application_finalize (GObject *object)
         G_OBJECT_CLASS (nautilus_application_parent_class)->finalize (object);
 }
 
+void
+nautilus_application_quit (NautilusApplication *self)
+{
+	GApplication *app = G_APPLICATION (self);
+	gboolean exit_with_last_window;
+
+	exit_with_last_window =
+		g_settings_get_boolean (nautilus_preferences,
+					NAUTILUS_PREFERENCES_EXIT_WITH_LAST_WINDOW);
+
+	nautilus_application_close_desktop ();
+	g_application_release (app);
+
+	if (!exit_with_last_window) {
+		g_application_release (app);
+	}
+}
+
 static gint
 nautilus_application_command_line (GApplication *app,
 				   GApplicationCommandLine *command_line)
@@ -1583,21 +1601,10 @@ nautilus_application_command_line (GApplication *app,
 					NAUTILUS_PREFERENCES_EXIT_WITH_LAST_WINDOW);
 
 	if (kill_shell) {
-		nautilus_application_close_desktop ();
-		g_application_release (app);
-
-		if (!exit_with_last_window) {
-			g_application_release (app);
-		}
+		nautilus_application_quit (self);
 	} else {
 		if (!self->initialized) {
 			char *accel_map_filename;
-
-			nautilus_application_smclient_init (self);
-
-			if (egg_sm_client_is_resumed (self->smclient)) {
-				no_default_window = TRUE;
-			}
 
 			if (!no_desktop &&
 			    !g_settings_get_boolean (gnome_background_preferences,
@@ -1630,8 +1637,8 @@ nautilus_application_command_line (GApplication *app,
 			g_signal_connect (gtk_accel_map_get (), "changed",
 					  G_CALLBACK (queue_accel_map_save_callback), NULL);
 
-			/* Load session info if availible */
-			nautilus_application_smclient_load (self);
+			/* Initialize SMClient and load session info if availible */
+			nautilus_application_smclient_load (self, &no_default_window);
 
 			self->initialized = TRUE;
 		}
@@ -1692,7 +1699,7 @@ nautilus_application_startup (GApplication *app)
 	self->undo_manager = nautilus_undo_manager_new ();
 
 	/* initialize the session manager client */
-	egg_sm_client_set_mode (EGG_SM_CLIENT_MODE_DISABLED);
+	nautilus_application_smclient_startup (self);
 
 	/* Initialize preferences. This is needed to create the
 	 * global GSettings objects.

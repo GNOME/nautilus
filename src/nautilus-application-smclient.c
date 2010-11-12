@@ -28,6 +28,7 @@
 #include "nautilus-window-slot.h"
 
 #include <eel/eel-gtk-extensions.h>
+#include <eel/eel-vfs-extensions.h>
 #include <libxml/xmlsave.h>
 
 static char *
@@ -95,8 +96,24 @@ nautilus_application_get_session_data (NautilusApplication *self)
 
 		window = l->data;
 
-		win_node = xmlNewChild (root_node, NULL, "window", NULL);
+		slots = nautilus_window_get_slots (window);
+		active_slot = nautilus_window_get_active_slot (window);
 
+		/* store one slot as window location. Otherwise
+		 * older Nautilus versions will bail when reading the file. */
+		tmp = nautilus_window_slot_get_location_uri (active_slot);
+
+		if (eel_uri_is_desktop (tmp)) {
+			g_list_free (slots);
+			g_free (tmp);
+			continue;
+		}
+
+		win_node = xmlNewChild (root_node, NULL, "window", NULL);
+		
+		xmlNewProp (win_node, "location", tmp);
+		g_free (tmp);
+		
 		xmlNewProp (win_node, "type", NAUTILUS_IS_NAVIGATION_WINDOW (window) ? "navigation" : "spatial");
 
 		if (NAUTILUS_IS_NAVIGATION_WINDOW (window)) { /* spatial windows store their state as file metadata */
@@ -123,15 +140,6 @@ nautilus_application_get_session_data (NautilusApplication *self)
 				xmlNewProp (win_node, "keep-above", "TRUE");
 			}
 		}
-
-		slots = nautilus_window_get_slots (window);
-		active_slot = nautilus_window_get_active_slot (window);
-
-		/* store one slot as window location. Otherwise
-		 * older Nautilus versions will bail when reading the file. */
-		tmp = nautilus_window_slot_get_location_uri (active_slot);
-		xmlNewProp (win_node, "location", tmp);
-		g_free (tmp);
 
 		for (m = slots; m != NULL; m = m->next) {
 			slot = NAUTILUS_WINDOW_SLOT (m->data);
@@ -167,14 +175,58 @@ nautilus_application_get_session_data (NautilusApplication *self)
 	return data;
 }
 
+static void
+smclient_save_state_cb (EggSMClient *client,
+			GKeyFile *state_file,
+			NautilusApplication *application)
+{
+	char *data;
+
+	data = nautilus_application_get_session_data (application);
+
+	if (data != NULL) {
+		g_key_file_set_string (state_file,
+				       "Nautilus",
+				       "documents", 
+				       data);
+	}
+
+	g_free (data);
+}
+
+static void
+smclient_quit_cb (EggSMClient   *client,
+		  NautilusApplication *application)
+{
+	nautilus_application_quit (application);
+}
+
+static void
+nautilus_application_smclient_initialize (NautilusApplication *self)
+{
+	egg_sm_client_set_mode (EGG_SM_CLIENT_MODE_NORMAL);
+
+	g_signal_connect (self->smclient, "save_state",
+                          G_CALLBACK (smclient_save_state_cb),
+                          self);
+	g_signal_connect (self->smclient, "quit",
+			  G_CALLBACK (smclient_quit_cb),
+			  self);
+
+	/* TODO: Should connect to quit_requested and block logout on active transfer? */
+}
+
 void
-nautilus_application_smclient_load (NautilusApplication *application)
+nautilus_application_smclient_load (NautilusApplication *application,
+				    gboolean *no_default_window)
 {
 	xmlDocPtr doc;
 	gboolean bail;
 	xmlNodePtr root_node;
 	GKeyFile *state_file;
 	char *data;
+
+	nautilus_application_smclient_initialize (application);
 
 	if (!egg_sm_client_is_resumed (application->smclient)) {
 		return;
@@ -192,7 +244,8 @@ nautilus_application_smclient_load (NautilusApplication *application)
 	if (data == NULL) {
 		return;
 	}
-	
+
+	*no_default_window = TRUE;
 	bail = TRUE;
 
 	doc = xmlReadMemory (data, strlen (data), NULL, "UTF-8", 0);
@@ -372,46 +425,11 @@ nautilus_application_smclient_load (NautilusApplication *application)
 	} 
 }
 
-static void
-smclient_save_state_cb (EggSMClient *client,
-			GKeyFile *state_file,
-			NautilusApplication *application)
-{
-	char *data;
-
-	data = nautilus_application_get_session_data (application);
-
-	if (data != NULL) {
-		g_key_file_set_string (state_file,
-				       "Nautilus",
-				       "documents", 
-				       data);
-	}
-
-	g_free (data);
-}
-
-static void
-smclient_quit_cb (EggSMClient   *client,
-		  NautilusApplication *application)
-{
-	g_application_release (G_APPLICATION (application));
-}
-
 void
-nautilus_application_smclient_init (NautilusApplication *self)
+nautilus_application_smclient_startup (NautilusApplication *self)
 {
 	g_assert (self->smclient == NULL);
 
-	egg_sm_client_set_mode (EGG_SM_CLIENT_MODE_NORMAL);
-
-	/* TODO: Should connect to quit_requested and block logout on active transfer? */
-        self->smclient = egg_sm_client_get ();
-        g_signal_connect (self->smclient, "save_state",
-                          G_CALLBACK (smclient_save_state_cb),
-                          self);
-	g_signal_connect (self->smclient, "quit",
-			  G_CALLBACK (smclient_quit_cb),
-			  self);
-	/* TODO: Should connect to quit_requested and block logout on active transfer? */
+	egg_sm_client_set_mode (EGG_SM_CLIENT_MODE_DISABLED);
+	self->smclient = egg_sm_client_get ();
 }
