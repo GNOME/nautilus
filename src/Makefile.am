@@ -4,7 +4,6 @@ SUBDIRS=file-manager
 
 bin_PROGRAMS=					\
 	nautilus				\
-	nautilus-file-management-properties	\
 	nautilus-autorun-software		\
 	nautilus-connect-server			\
 	$(NULL)
@@ -166,12 +165,6 @@ nautilus-src-marshal.list: $(nautilus_SOURCES) Makefile.am
 
 %-marshal.h: %-marshal.list Makefile
 	$(AM_V_GEN)$(GLIB_GENMARSHAL) --header --prefix=$(subst -,_,$*)_marshal $< > $*-marshal.h
-
-nautilus_file_management_properties_SOURCES= \
-	nautilus-file-management-properties.c		\
-	nautilus-file-management-properties.h		\
-	nautilus-file-management-properties-main.c	\
-	$(NULL)
 
 nautilus_autorun_software_SOURCES= 			\
 	nautilus-autorun-software.c			\

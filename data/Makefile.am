@@ -11,7 +11,6 @@ desktop_in_files = 					\
 	nautilus-home.desktop.in			\
 	nautilus-computer.desktop.in			\
 	nautilus-folder-handler.desktop.in		\
-	nautilus-file-management-properties.desktop.in  \
 	nautilus-browser.desktop.in                     \
 	nautilus-autorun-software.desktop.in
 @INTLTOOL_DESKTOP_RULE@
