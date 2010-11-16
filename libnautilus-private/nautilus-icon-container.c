@@ -4536,7 +4536,7 @@ continue_stretching (NautilusIconContainer *container,
 	container->details->world_y = world_y;
 
 	if (container->details->stretch_idle_id == 0) {		
-		container->details->stretch_idle_id = g_idle_add ((GtkFunction) update_stretch_at_idle, container);
+		container->details->stretch_idle_id = g_idle_add ((GSourceFunc) update_stretch_at_idle, container);
 	}
 }
 

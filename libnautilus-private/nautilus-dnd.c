@@ -910,7 +910,7 @@ nautilus_drag_autoscroll_calculate_delta (GtkWidget *widget, float *x_scroll_del
 void
 nautilus_drag_autoscroll_start (NautilusDragInfo *drag_info,
 				GtkWidget        *widget,
-				GtkFunction       callback,
+				GSourceFunc       callback,
 				gpointer          user_data)
 {
 	if (nautilus_drag_autoscroll_in_scroll_region (widget)) {
