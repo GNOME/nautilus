@@ -689,35 +689,15 @@ bind_builder_bool (GtkBuilder *builder,
 			 "active", G_SETTINGS_BIND_DEFAULT);
 }
 
-static gboolean
-inverted_get_mapping (GValue             *value,
-		      GVariant           *variant,
-		      gpointer            user_data)
-{
-	g_value_set_boolean (value, !g_variant_get_boolean (variant));
-	return TRUE;
-}
-
-static GVariant *
-inverted_set_mapping (const GValue       *value,
-		      const GVariantType *expected_type,
-		      gpointer            user_data)
-{
-	return g_variant_new_boolean (!g_value_get_boolean (value));
-}
-
 static void
 bind_builder_bool_inverted (GtkBuilder *builder,
 			    GSettings *settings,
 			    const char *widget_name,
 			    const char *prefs)
 {
-	g_settings_bind_with_mapping (settings, prefs,
-				      gtk_builder_get_object (builder, widget_name),
-				      "active", G_SETTINGS_BIND_DEFAULT,
-				      inverted_get_mapping,
-				      inverted_set_mapping,
-				      NULL, NULL);
+	g_settings_bind (settings, prefs,
+			 gtk_builder_get_object (builder, widget_name),
+			 "active", G_SETTINGS_BIND_INVERT_BOOLEAN);
 }
 
 static gboolean
