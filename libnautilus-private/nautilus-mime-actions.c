@@ -40,6 +40,7 @@
 #include "nautilus-program-choosing.h"
 #include "nautilus-desktop-icon-file.h"
 #include "nautilus-global-preferences.h"
+#include "nautilus-signaller.h"
 #include "nautilus-debug-log.h"
 
 typedef enum {
@@ -1191,31 +1192,50 @@ get_application_no_mime_type_handler_message (NautilusFile *file, char *uri)
 }
 
 static void
-application_selected_cb (NautilusOpenWithDialog *dialog,
-			 GAppInfo *app,
-			 gpointer user_data)
+open_with_response_cb (GtkDialog *dialog,
+		       gint response_id,
+		       gpointer user_data)
 {
 	GtkWindow *parent_window;
 	NautilusFile *file;
 	GList files;
-
-	parent_window = GTK_WINDOW (user_data);
+	GAppInfo *info;
+	gchar *content_type;
+	ActivateParametersInstall *parameters = user_data;
 	
+	if (response_id != GTK_RESPONSE_OK) {
+		gtk_widget_destroy (GTK_WIDGET (dialog));
+		return;
+	}
+
+	parent_window = parameters->parent_window;
 	file = g_object_get_data (G_OBJECT (dialog), "mime-action:file");
+	info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (dialog));
+
+	/* add support for this content type */
+	content_type = nautilus_file_get_mime_type (file);
+	g_app_info_add_supports_type (info, content_type, NULL);
+
+	gtk_widget_destroy (GTK_WIDGET (dialog));
+
+	g_signal_emit_by_name (nautilus_signaller_get_current (), "mime_data_changed");
 
 	files.next = NULL;
 	files.prev = NULL;
 	files.data = file;
-	nautilus_launch_application (app, &files, parent_window);
+	nautilus_launch_application (info, &files, parent_window);
+
+	g_free (content_type);
+	g_object_unref (info);
 }
 
 static void
 choose_program (GtkDialog *message_dialog, int response, gpointer callback_data)
 {
 	GtkWidget *dialog;
-	char *uri;
-	char *mime_type;
 	NautilusFile *file;
+	GFile *location;
+	ActivateParametersInstall *parameters = callback_data;
 
 	if (response != GTK_RESPONSE_ACCEPT){
 		gtk_widget_destroy (GTK_WIDGET (message_dialog));
@@ -1226,18 +1246,15 @@ choose_program (GtkDialog *message_dialog, int response, gpointer callback_data)
 
 	g_assert (NAUTILUS_IS_FILE (file));
 
+	location = nautilus_file_get_location (file);
 	nautilus_file_ref (file);
-	uri = nautilus_file_get_uri (file);
-	mime_type = nautilus_file_get_mime_type (file);
 
-	dialog = nautilus_open_with_dialog_new (uri, mime_type, NULL);
+	dialog = gtk_app_chooser_dialog_new (parameters->parent_window,
+					     0, location);
 	g_object_set_data_full (G_OBJECT (dialog), 
 				"mime-action:file",
 				nautilus_file_ref (file),
 				(GDestroyNotify)nautilus_file_unref);
-	
-	gtk_window_set_screen (GTK_WINDOW (dialog), 
-			       gtk_widget_get_screen (GTK_WIDGET (callback_data)));
 
 	/* Destroy the message dialog after ref:ing the file */
 	gtk_widget_destroy (GTK_WIDGET (message_dialog));
@@ -1245,13 +1262,12 @@ choose_program (GtkDialog *message_dialog, int response, gpointer callback_data)
 	gtk_widget_show (dialog);
 
 	g_signal_connect_object (dialog, 
-				 "application_selected", 
-				 G_CALLBACK (application_selected_cb),
-				 callback_data,
+				 "response", 
+				 G_CALLBACK (open_with_response_cb),
+				 parameters,
 				 0);
-			  
- 	g_free (uri);
-	g_free (mime_type);
+
+	g_object_unref (location);
 	nautilus_file_unref (file);	
 }
 
@@ -1303,7 +1319,7 @@ show_unhandled_type_error (ActivateParametersInstall *parameters)
 	gtk_widget_show (GTK_WIDGET (dialog));
 	
 	g_signal_connect (dialog, "response",
-			  G_CALLBACK (choose_program), parameters->parent_window);
+			  G_CALLBACK (choose_program), parameters);
 
 	g_free (error_message);
 	g_free (mime_type);
