@@ -128,8 +128,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-module.h \
 	nautilus-monitor.c \
 	nautilus-monitor.h \
-	nautilus-open-with-dialog.c \
-	nautilus-open-with-dialog.h \
 	nautilus-progress-info.c \
 	nautilus-progress-info.h \
 	nautilus-program-choosing.c \
