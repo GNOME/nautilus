@@ -36,8 +36,7 @@
 #ifndef NAUTILUS_AUTORUN_H
 #define NAUTILUS_AUTORUN_H
 
-#include <gtk/gtk.h>
-#include <libnautilus-private/nautilus-file.h>
+#include <gio/gio.h>
 
 typedef void (*NautilusAutorunGetContent) (char **content, gpointer user_data);
 

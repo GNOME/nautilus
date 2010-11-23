@@ -27,21 +27,9 @@
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 #include <gtk/gtk.h>
-#include <gdk/gdkx.h>
-#include <gio/gdesktopappinfo.h>
-#include <X11/XKBlib.h>
-#include <gdk/gdkkeysyms.h>
 
-#include <eel/eel-glib-extensions.h>
-
-#include "nautilus-icon-info.h"
-#include "nautilus-global-preferences.h"
-#include "nautilus-file-operations.h"
 #include "nautilus-autorun.h"
 #include "nautilus-program-choosing.h"
-#include "nautilus-open-with-dialog.h"
-#include "nautilus-desktop-icon-file.h"
-#include "nautilus-file-utilities.h"
 
 
 void
