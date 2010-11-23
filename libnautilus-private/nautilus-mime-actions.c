@@ -35,7 +35,6 @@
 
 #include "nautilus-file-attributes.h"
 #include "nautilus-file.h"
-#include "nautilus-autorun.h"
 #include "nautilus-file-operations.h"
 #include "nautilus-metadata.h"
 #include "nautilus-program-choosing.h"

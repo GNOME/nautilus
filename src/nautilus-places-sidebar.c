@@ -44,7 +44,6 @@
 #include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
 #include <libnautilus-private/nautilus-icon-names.h>
-#include <libnautilus-private/nautilus-autorun.h>
 #include <libnautilus-private/nautilus-window-info.h>
 #include <libnautilus-private/nautilus-window-slot-info.h>
 #include <gio/gio.h>

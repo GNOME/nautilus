@@ -29,7 +29,6 @@
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-file-private.h"
-#include "nautilus-autorun.h"
 #include <eel/eel-gtk-macros.h>
 #include <glib/gi18n.h>
 
