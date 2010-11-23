@@ -35,16 +35,6 @@ G_BEGIN_DECLS
 /* Whether exit when last window destroyed */
 #define NAUTILUS_PREFERENCES_EXIT_WITH_LAST_WINDOW		"exit-with-last-window"
 
-/* Automount options */
-#define NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT			"automount"
-#define NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT_OPEN		"automount-open"
-
-/* Autorun options */
-#define NAUTILUS_PREFERENCES_MEDIA_AUTORUN_NEVER                "autorun-never"
-#define NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_START_APP  "autorun-x-content-start-app"
-#define NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_IGNORE     "autorun-x-content-ignore"
-#define NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_OPEN_FOLDER "autorun-x-content-open-folder"
-
 /* Trash options */
 #define NAUTILUS_PREFERENCES_CONFIRM_TRASH			"confirm-trash"
 #define NAUTILUS_PREFERENCES_ENABLE_DELETE			"enable-delete"
@@ -213,7 +203,6 @@ GSettings *nautilus_list_view_preferences;
 GSettings *nautilus_compact_view_preferences;
 GSettings *nautilus_desktop_preferences;
 GSettings *nautilus_tree_sidebar_preferences;
-GSettings *nautilus_media_preferences;
 GSettings *nautilus_window_state;
 GSettings *gnome_lockdown_preferences;
 GSettings *gnome_background_preferences;

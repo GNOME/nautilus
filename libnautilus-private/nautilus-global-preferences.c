@@ -73,7 +73,6 @@ nautilus_global_preferences_init (void)
 	initialized = TRUE;
 
 	nautilus_preferences = g_settings_new("org.gnome.nautilus.preferences");
-	nautilus_media_preferences = g_settings_new("org.gnome.media-handling");
 	nautilus_window_state = g_settings_new("org.gnome.nautilus.window-state");
 	nautilus_icon_view_preferences = g_settings_new("org.gnome.nautilus.icon-view");
 	nautilus_list_view_preferences = g_settings_new("org.gnome.nautilus.list-view");
