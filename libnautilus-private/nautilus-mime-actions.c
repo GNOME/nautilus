@@ -41,7 +41,6 @@
 #include "nautilus-desktop-icon-file.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-debug-log.h"
-#include "nautilus-open-with-dialog.h"
 
 typedef enum {
 	ACTIVATION_ACTION_LAUNCH_DESKTOP_FILE,

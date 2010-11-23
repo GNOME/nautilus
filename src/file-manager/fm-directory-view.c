@@ -37,7 +37,6 @@
 #include "fm-error-reporting.h"
 #include "fm-marshal.h"
 #include "fm-properties-window.h"
-#include "libnautilus-private/nautilus-open-with-dialog.h"
 
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
@@ -856,22 +855,40 @@ open_location (FMDirectoryView *directory_view,
 }
 
 static void
-application_selected_cb (NautilusOpenWithDialog *dialog,
-			 GAppInfo *app,
-			 gpointer user_data)
+app_chooser_dialog_response_cb (GtkDialog *dialog,
+				gint response_id,
+				gpointer user_data)
 {
 	GtkWindow *parent_window;
 	NautilusFile *file;
+	GAppInfo *info;
+	gchar *content_type;
 	GList files;
 
-	parent_window = GTK_WINDOW (user_data);
-	
+	parent_window = user_data;
+
+	if (response_id != GTK_RESPONSE_OK) {
+		gtk_widget_destroy (GTK_WIDGET (dialog));
+		return;
+	}
+
+	info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (dialog));
 	file = g_object_get_data (G_OBJECT (dialog), "directory-view:file");
+
+	/* add support for this content type */
+	content_type = nautilus_file_get_mime_type (file);
+	g_app_info_add_supports_type (info, content_type, NULL);
+
+	g_signal_emit_by_name (nautilus_signaller_get_current (), "mime_data_changed");
 
 	files.next = NULL;
 	files.prev = NULL;
 	files.data = file;
-	nautilus_launch_application (app, &files, parent_window);
+	nautilus_launch_application (info, &files, parent_window);
+
+	gtk_widget_destroy (GTK_WIDGET (dialog));
+	g_object_unref (info);
+	g_free (content_type);
 }
 
 static void
@@ -879,34 +896,29 @@ choose_program (FMDirectoryView *view,
 		NautilusFile *file)
 {
 	GtkWidget *dialog;
-	char *uri;
-	char *mime_type;
+	GFile *location;
+	GtkWindow *parent_window;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	g_assert (NAUTILUS_IS_FILE (file));
 
 	nautilus_file_ref (file);
-	uri = nautilus_file_get_uri (file);
-	mime_type = nautilus_file_get_mime_type (file);
+	location = nautilus_file_get_location (file);
+	parent_window = fm_directory_view_get_containing_window (view);
 
-	dialog = nautilus_open_with_dialog_new (uri, mime_type, NULL);
+	dialog = gtk_app_chooser_dialog_new (parent_window, 0,
+					     location);
 	g_object_set_data_full (G_OBJECT (dialog), 
 				"directory-view:file",
 				g_object_ref (file),
 				(GDestroyNotify)g_object_unref);
-	
-	gtk_window_set_screen (GTK_WINDOW (dialog), 
-			       gtk_widget_get_screen (GTK_WIDGET (view)));
 	gtk_widget_show (dialog);
 
-	g_signal_connect_object (dialog, 
-				 "application_selected", 
-				 G_CALLBACK (application_selected_cb),
-				 fm_directory_view_get_containing_window (view),
-				 0);
-			  
- 	g_free (uri);
-	g_free (mime_type);
+	g_signal_connect_object (dialog, "response", 
+				 G_CALLBACK (app_chooser_dialog_response_cb),
+				 parent_window, 0);
+
+	g_object_unref (location);
 	nautilus_file_unref (file);	
 }
 
