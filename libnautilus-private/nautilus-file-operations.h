@@ -101,11 +101,9 @@ void nautilus_file_operations_unmount_mount_full (GtkWindow                 *par
 						  NautilusUnmountCallback    callback,
 						  gpointer                   callback_data);
 void nautilus_file_operations_mount_volume  (GtkWindow                      *parent_window,
-					     GVolume                        *volume,
-					     gboolean                        allow_autorun);
+					     GVolume                        *volume);
 void nautilus_file_operations_mount_volume_full (GtkWindow                      *parent_window,
 						 GVolume                        *volume,
-						 gboolean                        allow_autorun,
 						 NautilusMountCallback           mount_callback,
 						 GObject                        *mount_callback_data_object);
 

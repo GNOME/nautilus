@@ -1856,7 +1856,7 @@ open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 
 			sidebar->go_to_after_mount_flags = flags;
 
-			nautilus_file_operations_mount_volume_full (NULL, volume, FALSE,
+			nautilus_file_operations_mount_volume_full (NULL, volume,
 								    volume_mounted_cb,
 								    G_OBJECT (sidebar));
 		} else if (volume == NULL && drive != NULL &&
@@ -1991,7 +1991,7 @@ mount_shortcut_cb (GtkMenuItem           *item,
 			    -1);
 
 	if (volume != NULL) {
-		nautilus_file_operations_mount_volume (NULL, volume, FALSE);
+		nautilus_file_operations_mount_volume (NULL, volume);
 		g_object_unref (volume);
 	}
 }
