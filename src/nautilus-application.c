@@ -53,7 +53,6 @@
 #include "nautilus-window-private.h"
 #include "nautilus-window-slot.h"
 
-#include <libnautilus-private/nautilus-autorun.h>
 #include <libnautilus-private/nautilus-debug-log.h>
 #include <libnautilus-private/nautilus-desktop-link-monitor.h>
 #include <libnautilus-private/nautilus-directory-private.h>
@@ -104,9 +103,6 @@ static void     mount_removed_callback            (GVolumeMonitor            *mo
 static void     mount_added_callback              (GVolumeMonitor            *monitor,
 						   GMount                    *mount,
 						   NautilusApplication       *application);
-static void     volume_added_callback              (GVolumeMonitor           *monitor,
-						    GVolume                  *volume,
-						    NautilusApplication      *application);
 static void     drive_connected_callback           (GVolumeMonitor           *monitor,
 						    GDrive                   *drive,
 						    NautilusApplication      *application);
@@ -503,8 +499,6 @@ finish_startup (NautilusApplication *application,
 				 G_CALLBACK (mount_removed_callback), application, 0);
 	g_signal_connect_object (application->volume_monitor, "mount_added",
 				 G_CALLBACK (mount_added_callback), application, 0);
-	g_signal_connect_object (application->volume_monitor, "volume_added",
-				 G_CALLBACK (volume_added_callback), application, 0);
 	g_signal_connect_object (application->volume_monitor, "drive_connected",
 				 G_CALLBACK (drive_connected_callback), application, 0);
 
@@ -1108,24 +1102,6 @@ window_can_be_closed (NautilusWindow *window)
 }
 
 static void
-volume_added_callback (GVolumeMonitor *monitor,
-		       GVolume *volume,
-		       NautilusApplication *application)
-{
-	if (g_settings_get_boolean (nautilus_media_preferences, NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT) &&
-	    g_volume_should_automount (volume) &&
-	    g_volume_can_mount (volume)) {
-		nautilus_file_operations_mount_volume (NULL, volume, TRUE);
-	} else {
-		/* Allow nautilus_autorun() to run. When the mount is later
-		 * added programmatically (i.e. for a blank CD),
-		 * nautilus_autorun() will be called by mount_added_callback(). */
-		nautilus_allow_autorun_for_volume (volume);
-		nautilus_allow_autorun_for_volume_finish (volume);
-	}
-}
-
-static void
 drive_eject_cb (GObject *source_object,
 		GAsyncResult *res,
 		gpointer user_data)
@@ -1177,36 +1153,6 @@ drive_connected_callback (GVolumeMonitor *monitor,
 }
 
 static void
-autorun_show_window (GMount *mount, gpointer user_data)
-{
-	GFile *location;
-	NautilusApplication *application = user_data;
-	NautilusWindow *window;
-	gboolean existing;
-
-	location = g_mount_get_root (mount);
-	existing = FALSE;
-
-	/* There should probably be an easier way to do this */
-	if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
-		window = nautilus_application_create_navigation_window (application, 
-									NULL, 
-									gdk_screen_get_default ());
-	} else {
-		window = nautilus_application_get_spatial_window (application,
-								  NULL,
-								  NULL,
-								  location,
-								  gdk_screen_get_default (),
-								  NULL);
-	}
-
-	nautilus_window_go_to (window, location);
-
-	g_object_unref (location);
-}
-
-static void
 mount_added_callback (GVolumeMonitor *monitor,
 		      GMount *mount,
 		      NautilusApplication *application)
@@ -1225,8 +1171,6 @@ mount_added_callback (GVolumeMonitor *monitor,
 		nautilus_directory_force_reload (directory);
 		nautilus_directory_unref (directory);
 	}
-
-	nautilus_autorun (mount, autorun_show_window, application);
 }
 
 static NautilusWindowSlot *
