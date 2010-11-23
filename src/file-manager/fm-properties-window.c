@@ -4822,28 +4822,25 @@ create_open_with_page (FMPropertiesWindow *window)
 {
 	GtkWidget *vbox;
 	char *mime_type;
-	char *uri;
+	char *uri = NULL;
+	GList *uris = NULL;
 
 	mime_type = nautilus_file_get_mime_type (get_target_file (window));
-	
+
 	if (!is_multi_file_window (window)) {
 		uri = nautilus_file_get_uri (get_target_file (window));
 		if (uri == NULL) {
 			return;
 		}
-		vbox = nautilus_mime_application_chooser_new (uri, mime_type);
-
-		g_free (uri);
 	} else {
-		GList *uris;
-		
 		uris = window->details->original_files;
 		if (uris == NULL) {
 			return;
 		}
-		vbox = nautilus_mime_application_chooser_new_for_multiple_files (uris, mime_type);
 	}
-	
+
+	vbox = nautilus_mime_application_chooser_new (uri, uris, mime_type);
+
 	gtk_widget_show (vbox);
 	g_free (mime_type);
 
