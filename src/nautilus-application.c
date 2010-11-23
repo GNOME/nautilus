@@ -103,11 +103,6 @@ static void     mount_removed_callback            (GVolumeMonitor            *mo
 static void     mount_added_callback              (GVolumeMonitor            *monitor,
 						   GMount                    *mount,
 						   NautilusApplication       *application);
-static void     drive_connected_callback           (GVolumeMonitor           *monitor,
-						    GDrive                   *drive,
-						    NautilusApplication      *application);
-static void     drive_listen_for_eject_button      (GDrive *drive, 
-						    NautilusApplication *application);
 
 G_DEFINE_TYPE (NautilusApplication, nautilus_application, GTK_TYPE_APPLICATION);
 
@@ -470,8 +465,6 @@ static void
 finish_startup (NautilusApplication *application,
 		gboolean no_desktop)
 {
-	GList *drives;
-
 	do_upgrades_once (application, no_desktop);
 	
 	/* initialize nautilus modules */
@@ -499,14 +492,6 @@ finish_startup (NautilusApplication *application,
 				 G_CALLBACK (mount_removed_callback), application, 0);
 	g_signal_connect_object (application->volume_monitor, "mount_added",
 				 G_CALLBACK (mount_added_callback), application, 0);
-	g_signal_connect_object (application->volume_monitor, "drive_connected",
-				 G_CALLBACK (drive_connected_callback), application, 0);
-
-	/* listen for eject button presses */
-	drives = g_volume_monitor_get_connected_drives (application->volume_monitor);
-	g_list_foreach (drives, (GFunc) drive_listen_for_eject_button, application);
-	g_list_foreach (drives, (GFunc) g_object_unref, NULL);
-	g_list_free (drives);
 }
 
 static void
@@ -1099,57 +1084,6 @@ window_can_be_closed (NautilusWindow *window)
 	}
 	
 	return FALSE;
-}
-
-static void
-drive_eject_cb (GObject *source_object,
-		GAsyncResult *res,
-		gpointer user_data)
-{
-	GError *error;
-	char *primary;
-	char *name;
-	error = NULL;
-	if (!g_drive_eject_with_operation_finish (G_DRIVE (source_object), res, &error)) {
-		if (error->code != G_IO_ERROR_FAILED_HANDLED) {
-			name = g_drive_get_name (G_DRIVE (source_object));
-			primary = g_strdup_printf (_("Unable to eject %s"), name);
-			g_free (name);
-			eel_show_error_dialog (primary,
-					       error->message,
-				       NULL);
-			g_free (primary);
-		}
-		g_error_free (error);
-	}
-}
-
-static void
-drive_eject_button_pressed (GDrive *drive,
-			    NautilusApplication *application)
-{
-	GMountOperation *mount_op;
-
-	mount_op = gtk_mount_operation_new (NULL);
-	g_drive_eject_with_operation (drive, 0, mount_op, NULL, drive_eject_cb, NULL);
-	g_object_unref (mount_op);
-}
-
-static void
-drive_listen_for_eject_button (GDrive *drive, NautilusApplication *application)
-{
-	g_signal_connect (drive,
-			  "eject-button",
-			  G_CALLBACK (drive_eject_button_pressed),
-			  application);
-}
-
-static void
-drive_connected_callback (GVolumeMonitor *monitor,
-			  GDrive *drive,
-			  NautilusApplication *application)
-{
-	drive_listen_for_eject_button (drive, application);
 }
 
 static void
