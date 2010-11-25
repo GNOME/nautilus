@@ -45,8 +45,6 @@ libnautilus_private_la_LIBADD =		\
 	$(NULL)
 
 libnautilus_private_la_SOURCES = \
-	nautilus-autorun.c \
-	nautilus-autorun.h \
 	nautilus-bookmark.c \
 	nautilus-bookmark.h \
 	nautilus-cell-renderer-text-ellipsized.c \
