@@ -29,26 +29,7 @@
 #include <gtk/gtk.h>
 
 #include "nautilus-autorun.h"
-#include "nautilus-program-choosing.h"
 
-
-void
-nautilus_autorun_launch_for_mount (GMount *mount, GAppInfo *app_info)
-{
-	GFile *root;
-	NautilusFile *file;
-	GList *files;
-	
-	root = g_mount_get_root (mount);
-	file = nautilus_file_get (root);
-	g_object_unref (root);
-	files = g_list_append (NULL, file);
-	nautilus_launch_application (app_info,
-				     files,
-				     NULL); /* TODO: what to set here? */
-	g_object_unref (file);
-	g_list_free (files);
-}
 
 typedef struct {
 	NautilusAutorunGetContent callback;

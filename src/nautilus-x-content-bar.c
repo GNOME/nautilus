@@ -29,8 +29,8 @@
 #include <string.h>
 
 #include "nautilus-x-content-bar.h"
-#include <libnautilus-private/nautilus-autorun.h>
 #include <libnautilus-private/nautilus-icon-info.h>
+#include <libnautilus-private/nautilus-program-choosing.h>
 
 #define NAUTILUS_X_CONTENT_BAR_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), NAUTILUS_TYPE_X_CONTENT_BAR, NautilusXContentBarPrivate))
 
@@ -256,7 +256,8 @@ button_clicked_callback (GtkWidget *button, NautilusXContentBar *bar)
 
  	default_app = g_app_info_get_default_for_type (bar->priv->x_content_type, FALSE);
 	if (default_app != NULL) {
-		nautilus_autorun_launch_for_mount (bar->priv->mount, default_app);
+		nautilus_launch_application_for_mount (default_app, bar->priv->mount,
+						       GTK_WINDOW (gtk_widget_get_toplevel (button)));
 		g_object_unref (default_app);
 	}
 }
