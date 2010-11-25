@@ -76,7 +76,6 @@
 #include <libnautilus-private/nautilus-trash-monitor.h>
 #include <libnautilus-private/nautilus-ui-utilities.h>
 #include <libnautilus-private/nautilus-signaller.h>
-#include <libnautilus-private/nautilus-autorun.h>
 #include <libnautilus-private/nautilus-icon-names.h>
 
 /* Minimum starting update inverval */
@@ -4409,7 +4408,7 @@ add_application_to_open_with_menu (FMDirectoryView *view,
 }
 
 static void
-get_x_content_async_callback (char **content,
+get_x_content_async_callback (const char **content,
 			      gpointer user_data)
 {
 	FMDirectoryView *view;
@@ -4437,7 +4436,7 @@ add_x_content_apps (FMDirectoryView *view, NautilusFile *file, GList **applicati
 		return;
 	}
 	
-	x_content_types = nautilus_autorun_get_cached_x_content_types_for_mount (mount);
+	x_content_types = nautilus_get_cached_x_content_types_for_mount (mount);
 	if (x_content_types != NULL) {
 		for (n = 0; x_content_types[n] != NULL; n++) {
 			char *x_content_type = x_content_types[n];
@@ -4448,10 +4447,10 @@ add_x_content_apps (FMDirectoryView *view, NautilusFile *file, GList **applicati
 		}
 		g_strfreev (x_content_types);
 	} else {
-		nautilus_autorun_get_x_content_types_for_mount_async (mount,
-								      get_x_content_async_callback,
-								      NULL,
-								      g_object_ref (view));
+		nautilus_get_x_content_types_for_mount_async (mount,
+							      get_x_content_async_callback,
+							      NULL,
+							      g_object_ref (view));
 		
 	}
 

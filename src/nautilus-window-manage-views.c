@@ -65,7 +65,6 @@
 #include <libnautilus-private/nautilus-view-factory.h>
 #include <libnautilus-private/nautilus-window-info.h>
 #include <libnautilus-private/nautilus-window-slot-info.h>
-#include <libnautilus-private/nautilus-autorun.h>
 
 /* FIXME bugzilla.gnome.org 41243: 
  * We should use inheritance instead of these special cases
@@ -1552,9 +1551,11 @@ typedef struct {
 } FindMountData;
 
 static void
-found_content_type_cb (const char **x_content_types, FindMountData *data)
+found_content_type_cb (const char **x_content_types,
+		       gpointer user_data)
 {
 	NautilusWindowSlot *slot;
+	FindMountData *data = user_data;
 	
 	if (g_cancellable_is_cancelled (data->cancellable)) {
 		goto out;
@@ -1594,10 +1595,10 @@ found_mount_cb (GObject *source_object,
 						    NULL);
 	if (mount != NULL) {
 		data->mount = mount;
-		nautilus_autorun_get_x_content_types_for_mount_async (mount,
-								      (NautilusAutorunGetContent)found_content_type_cb,
-								      data->cancellable,
-								      data);
+		nautilus_get_x_content_types_for_mount_async (mount,
+							      found_content_type_cb,
+							      data->cancellable,
+							      data);
 		return;
 	}
 	

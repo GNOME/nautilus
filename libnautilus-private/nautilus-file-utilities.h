@@ -104,4 +104,12 @@ GHashTable * nautilus_trashed_files_get_original_directories (GList *files,
 void nautilus_restore_files_from_trash (GList *files,
 					GtkWindow *parent_window);
 
+typedef void (*NautilusMountGetContent) (const char **content, gpointer user_data);
+
+char ** nautilus_get_cached_x_content_types_for_mount (GMount *mount);
+void nautilus_get_x_content_types_for_mount_async (GMount *mount,
+						   NautilusMountGetContent callback,
+						   GCancellable *cancellable,
+						   gpointer user_data);
+
 #endif /* NAUTILUS_FILE_UTILITIES_H */

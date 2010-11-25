@@ -1292,6 +1292,86 @@ nautilus_restore_files_from_trash (GList *files,
 	nautilus_file_list_unref (unhandled_files);
 }
 
+typedef struct {
+	NautilusMountGetContent callback;
+	gpointer user_data;
+} GetContentTypesData;
+
+static void
+get_types_cb (GObject *source_object,
+	      GAsyncResult *res,
+	      gpointer user_data)
+{
+	GetContentTypesData *data;
+	char **types;
+
+	data = user_data;
+	types = g_mount_guess_content_type_finish (G_MOUNT (source_object), res, NULL);
+
+	g_object_set_data_full (source_object,
+				"nautilus-content-type-cache",
+				g_strdupv (types),
+				(GDestroyNotify)g_strfreev);
+
+	if (data->callback) {
+		data->callback ((const char **) types, data->user_data);
+	}
+	g_strfreev (types);
+	g_slice_free (GetContentTypesData, data);
+}
+
+void
+nautilus_get_x_content_types_for_mount_async (GMount *mount,
+					      NautilusMountGetContent callback,
+					      GCancellable *cancellable,
+					      gpointer user_data)
+{
+	char **cached;
+	GetContentTypesData *data;
+
+	if (mount == NULL) {
+		if (callback) {
+			callback (NULL, user_data);
+		}
+		return;
+	}
+
+	cached = g_object_get_data (G_OBJECT (mount), "nautilus-content-type-cache");
+	if (cached != NULL) {
+		if (callback) {
+			callback ((const char **) cached, user_data);
+		}
+		return;
+	}
+
+	data = g_slice_new0 (GetContentTypesData);
+	data->callback = callback;
+	data->user_data = user_data;
+
+	g_mount_guess_content_type (mount,
+				    FALSE,
+				    cancellable,
+				    get_types_cb,
+				    data);
+}
+
+char **
+nautilus_get_cached_x_content_types_for_mount (GMount *mount)
+{
+	char **cached;
+
+	if (mount == NULL) {
+		return NULL;
+	}
+
+	cached = g_object_get_data (G_OBJECT (mount), "nautilus-content-type-cache");
+	if (cached != NULL) {
+		return g_strdupv (cached);
+	}
+
+	return NULL;
+}
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 void
