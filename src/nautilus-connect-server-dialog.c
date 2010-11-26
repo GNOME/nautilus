@@ -207,7 +207,7 @@ connect_dialog_gvfs_error (NautilusConnectServerDialog *dialog)
 	gtk_widget_show (image);
 	
 	label = gtk_label_new (_("Can't load the supported server method list.\n"
-				 "Please check your GVfs installation."));
+				 "Please check your gvfs installation."));
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 6);
 	gtk_widget_show (label);
 
