@@ -371,6 +371,7 @@ struct {
 	},
 	{ N_("Music"),
 	  { "application/ogg",
+	    "audio/x-vorbis+ogg",
 	    "audio/ac3",
 	    "audio/basic",
 	    "audio/midi",
