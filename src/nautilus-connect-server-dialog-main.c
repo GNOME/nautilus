@@ -42,6 +42,7 @@
 #include "nautilus-connect-server-dialog.h"
 
 static GSimpleAsyncResult *display_location_res = NULL;
+static gboolean just_print_uri = FALSE;
 
 static void
 main_dialog_destroyed (GtkWidget *widget,
@@ -82,15 +83,21 @@ nautilus_connect_server_dialog_display_location_async (NautilusConnectServerDial
 
 	error = NULL;
 	uri = g_file_get_uri (location);
-	launch_context = gdk_app_launch_context_new ();
-	gdk_app_launch_context_set_screen (launch_context,
-					   gtk_widget_get_screen (GTK_WIDGET (self)));
 
-	g_app_info_launch_default_for_uri (uri,
-					   G_APP_LAUNCH_CONTEXT (launch_context),
-					   &error);
+	if (just_print_uri) {
+		g_print ("%s\n", uri);
+	}
+	else {
+		launch_context = gdk_app_launch_context_new ();
+		gdk_app_launch_context_set_screen (launch_context,
+						   gtk_widget_get_screen (GTK_WIDGET (self)));
 
-	g_object_unref (launch_context);
+		g_app_info_launch_default_for_uri (uri,
+						   G_APP_LAUNCH_CONTEXT (launch_context),
+						   &error);
+
+		g_object_unref (launch_context);
+	}
 
 	if (error != NULL) {
 		g_simple_async_result_set_from_error (display_location_res, error);
@@ -110,6 +117,10 @@ main (int argc, char *argv[])
 	GtkWidget *dialog;
 	GOptionContext *context;
 	GError *error;
+	const GOptionEntry options[] = {
+		{ "print-uri", 0, 0, G_OPTION_ARG_NONE, &just_print_uri, N_("Print but do not open the URI"), NULL },
+		{ NULL }
+	};
 
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -120,6 +131,7 @@ main (int argc, char *argv[])
 	   the initial newlines are between the command line arg and the description */
 	context = g_option_context_new (N_("\n\nAdd connect to server mount"));
 	g_option_context_set_translation_domain (context, GETTEXT_PACKAGE);
+	g_option_context_add_main_entries (context, options, GETTEXT_PACKAGE);
 	g_option_context_add_group (context, gtk_get_option_group (TRUE));
 
 	if (!g_option_context_parse (context, &argc, &argv, &error)) {
