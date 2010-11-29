@@ -1,3 +1,12 @@
+Major changes in 2.91.3 are:
+* Remove autorun and automount machinery, it moved to gnome-settings-daemon
+* Don't install the 'File Management Properties' binary; there's now
+  a capplet in gnome-control-center for the autorun system settings.
+* Fix interaction with the session manager
+* Don't use gtk_[h|v]_separator_new
+* Identify OGG Vorbis files as music in the search UI
+* Require new gnome-desktop
+
 Major changes in 2.91.2 are:
 * Use GSettings for desktop background
 * Cleanups of the emblem-related code
