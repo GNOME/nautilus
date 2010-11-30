@@ -28,7 +28,6 @@ libeel_2_la_LIBADD = 				\
 	$(BASE_LIBS)				\
 	$(COMMON_LIBS)				\
 	$(RENDER_LIBS)				\
-	$(X_LIBS)				\
 	$(NULL)
 
 eel_headers =					\
