@@ -47,7 +47,6 @@ struct _NautilusMimeApplicationChooserDetails {
 
 	GtkWidget *label;
 	GtkWidget *entry;
-	GtkWidget *remove_button;
 	GtkWidget *set_as_default_button;
 	GtkWidget *open_with_widget;
 };
@@ -132,15 +131,13 @@ add_clicked_cb (GtkButton *button,
 }
 
 static void
-remove_clicked_cb (GtkButton *button, 
+remove_clicked_cb (GtkMenuItem *item, 
 		   gpointer user_data)
 {
-	NautilusMimeApplicationChooser *chooser;
+	NautilusMimeApplicationChooser *chooser = user_data;
 	GError *error;
 	GAppInfo *info;
-	
-	chooser = NAUTILUS_MIME_APPLICATION_CHOOSER (user_data);
-	
+
 	info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (chooser->details->open_with_widget));
 
 	if (info) {
@@ -148,7 +145,7 @@ remove_clicked_cb (GtkButton *button,
 		if (!g_app_info_remove_supports_type (info,
 						      chooser->details->content_type,
 						      &error)) {
-			eel_show_error_dialog (_("Could not remove application"),
+			eel_show_error_dialog (_("Could not forget association"),
 					       error->message,
 					       GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (chooser))));
 			g_error_free (error);
@@ -160,6 +157,25 @@ remove_clicked_cb (GtkButton *button,
 	}
 
 	g_signal_emit_by_name (nautilus_signaller_get_current (), "mime_data_changed");
+}
+
+static void
+populate_popup_cb (GtkAppChooserWidget *widget,
+		   GtkMenu *menu,
+		   GAppInfo *app,
+		   gpointer user_data)
+{
+	GtkWidget *item;
+	NautilusMimeApplicationChooser *chooser = user_data;
+
+	if (g_app_info_can_remove_supports_type (app)) {
+		item = gtk_menu_item_new_with_label (_("Forget association"));
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+		gtk_widget_show (item);
+		
+		g_signal_connect (item, "activate",
+				  G_CALLBACK (remove_clicked_cb), chooser);
+	}
 }
 
 static void
@@ -217,9 +233,6 @@ application_selected_cb (GtkAppChooserWidget *widget,
 				  !g_app_info_equal (info, default_app));
 
 	g_object_unref (default_app);
-
-	gtk_widget_set_sensitive (chooser->details->remove_button,
-				  g_app_info_can_remove_supports_type (info));
 }
 
 static char *
@@ -333,6 +346,9 @@ nautilus_mime_application_chooser_build_ui (NautilusMimeApplicationChooser *choo
 	g_signal_connect (chooser->details->open_with_widget, "application-selected",
 			  G_CALLBACK (application_selected_cb),
 			  chooser);
+	g_signal_connect (chooser->details->open_with_widget, "populate-popup",
+			  G_CALLBACK (populate_popup_cb),
+			  chooser);
 
 	box = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
 	gtk_box_set_spacing (GTK_BOX (box), 6);
@@ -347,15 +363,6 @@ nautilus_mime_application_chooser_build_ui (NautilusMimeApplicationChooser *choo
 
 	gtk_widget_show (button);
 	gtk_box_pack_start (GTK_BOX (box), button, FALSE, FALSE, 0);
-
-	button = gtk_button_new_from_stock (GTK_STOCK_REMOVE);
-	g_signal_connect (button, "clicked", 
-			  G_CALLBACK (remove_clicked_cb),
-			  chooser);
-	
-	gtk_widget_show (button);
-	gtk_box_pack_start (GTK_BOX (box), button, FALSE, FALSE, 0);	
-	chooser->details->remove_button = button;
 
 	button = gtk_button_new_with_label (_("Reset"));
 	g_signal_connect (button, "clicked", 
