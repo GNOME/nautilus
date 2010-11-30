@@ -340,7 +340,7 @@ nautilus_mime_application_chooser_build_ui (NautilusMimeApplicationChooser *choo
 	gtk_app_chooser_widget_set_show_fallback (GTK_APP_CHOOSER_WIDGET (chooser->details->open_with_widget),
 						  TRUE);
 	gtk_box_pack_start (GTK_BOX (chooser), chooser->details->open_with_widget,
-			    TRUE, TRUE, 6);
+			    FALSE, FALSE, 6);
 	gtk_widget_show (chooser->details->open_with_widget);
 
 	g_signal_connect (chooser->details->open_with_widget, "application-selected",
@@ -356,19 +356,18 @@ nautilus_mime_application_chooser_build_ui (NautilusMimeApplicationChooser *choo
 	gtk_box_pack_start (GTK_BOX (chooser), box, FALSE, FALSE, 6);
 	gtk_widget_show (box);
 
+	button = gtk_button_new_with_label (_("Reset changes"));
+	g_signal_connect (button, "clicked", 
+			  G_CALLBACK (reset_clicked_cb),
+			  chooser);
+	gtk_widget_show (button);
+	gtk_box_pack_start (GTK_BOX (box), button, FALSE, FALSE, 0);
+	gtk_button_box_set_child_secondary (GTK_BUTTON_BOX (box), button, TRUE);
+
 	button = gtk_button_new_from_stock (GTK_STOCK_ADD);
 	g_signal_connect (button, "clicked", 
 			  G_CALLBACK (add_clicked_cb),
 			  chooser);
-
-	gtk_widget_show (button);
-	gtk_box_pack_start (GTK_BOX (box), button, FALSE, FALSE, 0);
-
-	button = gtk_button_new_with_label (_("Reset"));
-	g_signal_connect (button, "clicked", 
-			  G_CALLBACK (reset_clicked_cb),
-			  chooser);
-
 	gtk_widget_show (button);
 	gtk_box_pack_start (GTK_BOX (box), button, FALSE, FALSE, 0);
 
