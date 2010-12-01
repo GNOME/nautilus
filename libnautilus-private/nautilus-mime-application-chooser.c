@@ -213,6 +213,9 @@ app_info_can_add (GAppInfo *info,
 	retval = TRUE;
 
  out:
+	g_list_free_full (recommended, g_object_unref);
+	g_list_free_full (fallback, g_object_unref);
+
 	return retval;
 }
 
