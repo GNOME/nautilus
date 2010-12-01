@@ -697,7 +697,7 @@ eel_canvas_rect_realize  (EelCanvasItem *item)
 
 	priv = EEL_CANVAS_RECT (item)->priv;
 
-	dpy = gdk_x11_drawable_get_xdisplay (gtk_widget_get_window (GTK_WIDGET (item->canvas)));
+	dpy = GDK_WINDOW_XDISPLAY (gtk_widget_get_window (GTK_WIDGET (item->canvas)));
 	priv->use_render = XRenderQueryExtension (dpy, &event_base, &error_base);
 
 	if (priv->use_render) {
