@@ -57,6 +57,8 @@ libnautilus_private_la_SOURCES = \
 	nautilus-column-chooser.h \
 	nautilus-column-utilities.c \
 	nautilus-column-utilities.h \
+	nautilus-dbus-manager.c \
+	nautilus-dbus-manager.h \
 	nautilus-debug-log.c \
 	nautilus-debug-log.h \
 	nautilus-default-file-icon.c \

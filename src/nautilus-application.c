@@ -53,6 +53,7 @@
 #include "nautilus-window-private.h"
 #include "nautilus-window-slot.h"
 
+#include <libnautilus-private/nautilus-dbus-manager.h>
 #include <libnautilus-private/nautilus-debug-log.h>
 #include <libnautilus-private/nautilus-desktop-link-monitor.h>
 #include <libnautilus-private/nautilus-directory-private.h>
@@ -1266,6 +1267,8 @@ nautilus_application_finalize (GObject *object)
 		application->proxy = NULL;
 	}
 
+	nautilus_dbus_manager_stop ();
+
         G_OBJECT_CLASS (nautilus_application_parent_class)->finalize (object);
 }
 
@@ -1545,6 +1548,8 @@ nautilus_application_startup (GApplication *app)
 	/* initialize search path for custom icons */
 	gtk_icon_theme_append_search_path (gtk_icon_theme_get_default (),
 					   NAUTILUS_DATADIR G_DIR_SEPARATOR_S "icons");
+
+	nautilus_dbus_manager_start ();
 }
 
 static void
