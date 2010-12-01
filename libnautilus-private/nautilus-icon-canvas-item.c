@@ -1368,12 +1368,14 @@ draw_stretch_handles (NautilusIconCanvasItem *item,
 	GdkPixbuf *knob_pixbuf;
 	int knob_width, knob_height;
 	double dash = { 2.0 };
+	GtkStyle *style;
 
 	if (!item->details->show_stretch_handles) {
 		return;
 	}
 
 	widget = GTK_WIDGET (EEL_CANVAS_ITEM (item)->canvas);
+	style = gtk_widget_get_style (widget);
 
         cairo_save (cr);
 	knob_pixbuf = get_knob_pixbuf ();
@@ -1381,7 +1383,7 @@ draw_stretch_handles (NautilusIconCanvasItem *item,
 	knob_height = gdk_pixbuf_get_height (knob_pixbuf);
 
 	/* first draw the box */
-	cairo_set_source_rgb (cr, 0, 0, 0);
+	gdk_cairo_set_source_color (cr, &style->fg[3]);
 	cairo_set_dash (cr, &dash, 1, 0);
 	cairo_set_line_width (cr, 1.0);
 	cairo_rectangle (cr,
