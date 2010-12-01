@@ -42,92 +42,6 @@
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 
-/**
- * application_cannot_open_location
- * 
- * Handle the case where an application has been selected to be launched,
- * and it cannot handle the current uri scheme.  This can happen
- * because the default application for a file type may not be able
- * to handle some kinds of locations.   We want to tell users that their
- * default application doesn't work here, rather than switching off to
- * a different one without them noticing.
- * 
- * @application: The application that was to be launched.
- * @file: The file whose location was passed as a parameter to the application
- * @parent_window: A window to use as the parent for any error dialogs.
- *  */
-static void
-application_cannot_open_location (GAppInfo *application,
-				  NautilusFile *file,
-				  const char *uri_scheme,
-				  GtkWindow *parent_window)
-{
-#ifdef NEW_MIME_COMPLETE
-	GtkDialog *message_dialog;
-	LaunchParameters *launch_parameters;
-	char *prompt;
-	char *message;
-	char *file_name;
-	int response;
-
-	file_name = nautilus_file_get_display_name (file);
-
-	if (nautilus_mime_has_any_applications_for_file (file)) {
-		if (application != NULL) {
-			prompt = _("Open Failed, would you like to choose another application?");
-			message = g_strdup_printf (_("\"%s\" cannot open \"%s\" because \"%s\" cannot access files at \"%s\" "
-						     "locations."),
-						   g_app_info_get_display_name (application), file_name, 
-						   g_app_info_get_display_name (application), uri_scheme);
-		} else {
-			prompt = _("Open Failed, would you like to choose another action?");
-			message = g_strdup_printf (_("The default action cannot open \"%s\" because it cannot access files at \"%s\" "
-						     "locations."),
-						   file_name, uri_scheme);
-		}
-		
-		message_dialog = eel_show_yes_no_dialog (prompt, 
-		                                         message,
-							 GTK_STOCK_OK,
-							 GTK_STOCK_CANCEL,
-							 parent_window);
-		response = gtk_dialog_run (message_dialog);
-		gtk_widget_destroy (GTK_WIDGET (message_dialog));
-		
-		if (response == GTK_RESPONSE_YES) {
-			launch_parameters = launch_parameters_new (file, parent_window);
-			nautilus_choose_application_for_file 
-				(file,
-				 parent_window,
-				 launch_application_callback,
-				 launch_parameters);
-				 
-		}
-		g_free (message);
-	} else {
-		if (application != NULL) {
-			prompt = g_strdup_printf (_("\"%s\" cannot open \"%s\" because \"%s\" cannot access files at \"%s\" "
-						    "locations."), g_app_info_get_display_name (application), file_name, 
-						    g_app_info_get_display_name (application), uri_scheme);
-			message = _("No other applications are available to view this file. "
-				    "If you copy this file onto your computer, you may be able to open "
-				    "it.");
-		} else {
-			prompt = g_strdup_printf (_("The default action cannot open \"%s\" because it cannot access files at \"%s\" "
-						    "locations."), file_name, uri_scheme);
-     			message = _("No other actions are available to view this file. "
-				    "If you copy this file onto your computer, you may be able to open "
-				    "it.");
-		}
-				
-		eel_show_info_dialog (prompt, message, parent_window);
-		g_free (prompt);
-	}	
-
-	g_free (file_name);
-#endif
-}
-
 void
 nautilus_launch_application_for_mount (GAppInfo *app_info,
 				       GMount *mount,
@@ -181,7 +95,7 @@ nautilus_launch_application_by_uri (GAppInfo *application,
 				    GList *uris,
 				    GtkWindow *parent_window)
 {
-	char            *uri, *uri_scheme;
+	char            *uri;
 	GList           *locations, *l;
 	GFile *location;
 	NautilusFile    *file;
@@ -242,26 +156,8 @@ nautilus_launch_application_by_uri (GAppInfo *application,
 	}
 
 	g_object_unref (launch_context);
-	
-	if (!result) {
-		if (error->domain == G_IO_ERROR &&
-		    error->code == G_IO_ERROR_NOT_SUPPORTED) {
-			uri_scheme = g_uri_parse_scheme (uris->data);
-			application_cannot_open_location (application,
-							  file,
-							  uri_scheme,
-							  parent_window);
-			g_free (uri_scheme);
-		} else {
-#ifdef NEW_MIME_COMPLETE
-			nautilus_program_chooser_show_invalid_message
-				(GNOME_VFS_MIME_ACTION_TYPE_APPLICATION, file, parent_window);
-#else
-			g_warning ("Cannot open app: %s\n", error->message);
-#endif
-		}
-		g_error_free (error);
-	} else {
+
+	if (result) {
 		for (l = uris; l != NULL; l = l->next) {
 			file = nautilus_file_get_by_uri (l->data);
 			nautilus_recent_add_file (file, application);
