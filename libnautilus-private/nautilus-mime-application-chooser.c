@@ -49,6 +49,7 @@ struct _NautilusMimeApplicationChooserDetails {
 	GtkWidget *entry;
 	GtkWidget *set_as_default_button;
 	GtkWidget *open_with_widget;
+	GtkWidget *add_button;
 };
 
 enum {
@@ -63,25 +64,20 @@ static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 G_DEFINE_TYPE (NautilusMimeApplicationChooser, nautilus_mime_application_chooser, GTK_TYPE_BOX);
 
 static void
-add_app_dialog_response_cb (GtkDialog *dialog,
-			    gint response_id,
-			    gpointer user_data)
+add_clicked_cb (GtkButton *button,
+		gpointer user_data)
 {
 	NautilusMimeApplicationChooser *chooser = user_data;
 	GAppInfo *info;
-	gchar *message = NULL;
+	gchar *message;
 	GError *error = NULL;
 
-	if (response_id != GTK_RESPONSE_OK) {
-		gtk_widget_destroy (GTK_WIDGET (dialog));
+	info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (chooser->details->open_with_widget));
+
+	if (info == NULL)
 		return;
-	}
 
-	info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (dialog));
-	gtk_widget_destroy (GTK_WIDGET (dialog));
-
-	g_app_info_add_supports_type (info, chooser->details->content_type,
-				      &error);
+	g_app_info_add_supports_type (info, chooser->details->content_type, &error);
 
 	if (error != NULL) {
 		message = g_strdup_printf (_("Error while adding \"%s\": %s"),
@@ -90,44 +86,13 @@ add_app_dialog_response_cb (GtkDialog *dialog,
 				       message,
 				       GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (chooser))));
 		g_error_free (error);
+		g_free (message);
+	} else {		
+		gtk_app_chooser_refresh (GTK_APP_CHOOSER (chooser->details->open_with_widget));
+		g_signal_emit_by_name (nautilus_signaller_get_current (), "mime_data_changed");
 	}
 
 	g_object_unref (info);
-	g_free (message);
-
-	gtk_app_chooser_refresh (GTK_APP_CHOOSER (chooser->details->open_with_widget));
-
-	g_signal_emit_by_name (nautilus_signaller_get_current (), "mime_data_changed");
-}
-
-static void
-add_clicked_cb (GtkButton *button,
-		gpointer user_data)
-{
-	NautilusMimeApplicationChooser *chooser = user_data;
-	GtkWidget *dialog, *widget;
-
-	if (chooser->details->files != NULL) {
-		dialog = gtk_app_chooser_dialog_new_for_content_type (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (chooser))),
-								      0, chooser->details->content_type);
-	} else {
-		GFile *file;
-
-		file = g_file_new_for_uri (chooser->details->uri);
-		dialog = gtk_app_chooser_dialog_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (chooser))),
-						     0, file);
-
-		g_object_unref (file);
-	}
-
-	/* set the dialog in SHOW_ALL mode, as we already list recommended applications here */
-	widget = gtk_app_chooser_dialog_get_widget (GTK_APP_CHOOSER_DIALOG (dialog));
-	gtk_app_chooser_widget_set_show_all (GTK_APP_CHOOSER_WIDGET (widget), TRUE);
-
-	gtk_widget_show (dialog);
-
-	g_signal_connect (dialog, "response",
-			  G_CALLBACK (add_app_dialog_response_cb), chooser);
 }
 
 static void
@@ -220,6 +185,37 @@ set_as_default_clicked_cb (GtkButton *button,
 	g_signal_emit_by_name (nautilus_signaller_get_current (), "mime_data_changed");
 }
 
+static gint
+app_compare (gconstpointer a,
+	     gconstpointer b)
+{
+	return !g_app_info_equal (G_APP_INFO (a), G_APP_INFO (b));
+}
+
+static gboolean
+app_info_can_add (GAppInfo *info,
+		  const gchar *content_type)
+{
+	GList *recommended, *fallback;
+	gboolean retval = FALSE;
+
+	recommended = g_app_info_get_recommended_for_type (content_type);
+	fallback = g_app_info_get_fallback_for_type (content_type);
+
+	if (g_list_find_custom (recommended, info, app_compare)) {
+		goto out;
+	}
+
+	if (g_list_find_custom (fallback, info, app_compare)) {
+		goto out;
+	}
+
+	retval = TRUE;
+
+ out:
+	return retval;
+}
+
 static void
 application_selected_cb (GtkAppChooserWidget *widget,
 			 GAppInfo *info,
@@ -231,6 +227,9 @@ application_selected_cb (GtkAppChooserWidget *widget,
 	default_app = g_app_info_get_default_for_type (chooser->details->content_type, FALSE);
 	gtk_widget_set_sensitive (chooser->details->set_as_default_button,
 				  !g_app_info_equal (info, default_app));
+
+	gtk_widget_set_sensitive (chooser->details->add_button,
+				  app_info_can_add (info, chooser->details->content_type));
 
 	g_object_unref (default_app);
 }
@@ -315,6 +314,17 @@ nautilus_mime_application_chooser_apply_labels (NautilusMimeApplicationChooser *
 }
 
 static void
+show_more_clicked_cb (GtkWidget *button,
+		      gpointer user_data)
+{
+	NautilusMimeApplicationChooser *chooser = user_data;
+
+	gtk_app_chooser_widget_set_show_other (GTK_APP_CHOOSER_WIDGET (chooser->details->open_with_widget),
+					       TRUE);
+	gtk_widget_hide (button);
+}
+
+static void
 nautilus_mime_application_chooser_build_ui (NautilusMimeApplicationChooser *chooser)
 {
 	GtkWidget *box, *button;
@@ -340,7 +350,7 @@ nautilus_mime_application_chooser_build_ui (NautilusMimeApplicationChooser *choo
 	gtk_app_chooser_widget_set_show_fallback (GTK_APP_CHOOSER_WIDGET (chooser->details->open_with_widget),
 						  TRUE);
 	gtk_box_pack_start (GTK_BOX (chooser), chooser->details->open_with_widget,
-			    FALSE, FALSE, 6);
+			    TRUE, TRUE, 6);
 	gtk_widget_show (chooser->details->open_with_widget);
 
 	g_signal_connect (chooser->details->open_with_widget, "application-selected",
@@ -350,13 +360,20 @@ nautilus_mime_application_chooser_build_ui (NautilusMimeApplicationChooser *choo
 			  G_CALLBACK (populate_popup_cb),
 			  chooser);
 
+	button = gtk_button_new_with_label (_("Show other applications"));
+	gtk_box_pack_start (GTK_BOX (chooser->details->open_with_widget), button, FALSE, FALSE, 6);
+	gtk_widget_show_all (button);
+
+	g_signal_connect (button, "clicked",
+			  G_CALLBACK (show_more_clicked_cb), chooser);
+
 	box = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
 	gtk_box_set_spacing (GTK_BOX (box), 6);
 	gtk_button_box_set_layout (GTK_BUTTON_BOX (box), GTK_BUTTONBOX_END);
 	gtk_box_pack_start (GTK_BOX (chooser), box, FALSE, FALSE, 6);
 	gtk_widget_show (box);
 
-	button = gtk_button_new_with_label (_("Reset changes"));
+	button = gtk_button_new_with_label (_("Reset"));
 	g_signal_connect (button, "clicked", 
 			  G_CALLBACK (reset_clicked_cb),
 			  chooser);
@@ -370,6 +387,7 @@ nautilus_mime_application_chooser_build_ui (NautilusMimeApplicationChooser *choo
 			  chooser);
 	gtk_widget_show (button);
 	gtk_box_pack_start (GTK_BOX (box), button, FALSE, FALSE, 0);
+	chooser->details->add_button = button;
 
 	button = gtk_button_new_with_label (_("Set as default"));
 	g_signal_connect (button, "clicked",
