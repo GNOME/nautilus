@@ -450,46 +450,6 @@ nautilus_mime_get_applications_for_file (NautilusFile *file)
 	return filter_nautilus_handler (result);
 }
 
-gboolean
-nautilus_mime_has_any_applications_for_file (NautilusFile *file)
-{
-	GList *apps;
-	char *mime_type;
-	gboolean result;
-	char *uri_scheme;
-	GAppInfo *uri_handler;
-
-	mime_type = nautilus_file_get_mime_type (file);
-	
-	apps = g_app_info_get_all_for_type (mime_type);
-
-	uri_scheme = nautilus_file_get_uri_scheme (file);
-	if (uri_scheme != NULL) {
-		uri_handler = g_app_info_get_default_for_uri_scheme (uri_scheme);
-		if (uri_handler) {
-			apps = g_list_prepend (apps, uri_handler);
-		}
-		g_free (uri_scheme);
-	}
-	
-	if (!file_has_local_path (file)) {
-		/* Filter out non-uri supporting apps */
-		apps = filter_non_uri_apps (apps);
-	}
-	apps = filter_nautilus_handler (apps);
-		
-	if (apps) {
-		result = TRUE;
-		g_list_free_full (apps, g_object_unref);
-	} else {
-		result = FALSE;
-	}
-	
-	g_free (mime_type);
-
-	return result;
-}
-
 GAppInfo *
 nautilus_mime_get_default_application_for_files (GList *files)
 {
@@ -621,40 +581,6 @@ nautilus_mime_get_applications_for_files (GList *files)
 	
 	return ret;
 }
-
-gboolean
-nautilus_mime_has_any_applications_for_files (GList *files)
-{
-	GList *l, *sorted_files;
-	NautilusFile *file;
-	gboolean ret;
-
-	g_assert (files != NULL);
-
-	sorted_files = g_list_sort (g_list_copy (files), (GCompareFunc) file_compare_by_mime_type);
-
-	ret = TRUE;
-	for (l = sorted_files; l != NULL; l = l->next) {
-		file = NAUTILUS_FILE (l->data);
-
-		if (l->prev &&
-		    file_compare_by_mime_type (file, l->prev->data) == 0 &&
-		    file_compare_by_parent_uri (file, l->prev->data) == 0) {
-			continue;
-		}
-
-		if (!nautilus_mime_has_any_applications_for_file (file)) {
-			ret = FALSE;
-			break;
-		}
-	}
-
-	g_list_free (sorted_files);
-
-	return ret;
-}
-
-
 
 static void
 trash_or_delete_files (GtkWindow *parent_window,
