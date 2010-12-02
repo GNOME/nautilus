@@ -4164,7 +4164,7 @@ realize (GtkWidget *widget)
 	/* Ensure that the desktop window is native so the background
 	   set on it is drawn by X. */
 	if (container->details->is_desktop) {
-		gdk_x11_drawable_get_xid (gtk_layout_get_bin_window (GTK_LAYOUT (widget)));
+		gdk_x11_window_get_xid (gtk_layout_get_bin_window (GTK_LAYOUT (widget)));
 	}
 
 	/* Set up DnD.  */

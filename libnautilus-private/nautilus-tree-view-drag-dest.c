@@ -913,7 +913,7 @@ set_direct_save_uri (NautilusTreeViewDragDest *dest,
 			g_object_unref (child);
 
 			/* Change the property */
-			gdk_property_change (GDK_DRAWABLE (gdk_drag_context_get_source_window (context)),
+			gdk_property_change (gdk_drag_context_get_source_window (context),
 					     gdk_atom_intern (NAUTILUS_ICON_DND_XDNDDIRECTSAVE_TYPE, FALSE),
 					     gdk_atom_intern ("text/plain", FALSE), 8,
 					     GDK_PROP_MODE_REPLACE, (const guchar *) uri,

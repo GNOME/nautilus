@@ -214,7 +214,7 @@ set_desktop_window_id (NautilusDesktopWindow *window,
 	root_window = gdk_screen_get_root_window (
 				gtk_window_get_screen (GTK_WINDOW (window)));
 
-	window_xid = GDK_WINDOW_XWINDOW (gdkwindow);
+	window_xid = GDK_WINDOW_XID (gdkwindow);
 
 	gdk_property_change (root_window,
 			     gdk_atom_intern ("NAUTILUS_DESKTOP_WINDOW_ID", FALSE),
