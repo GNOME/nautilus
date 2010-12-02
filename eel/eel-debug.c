@@ -40,7 +40,7 @@ static GList *shutdown_functions;
  * When not running under the debugger, we don't want to stop,
  * so we ignore the signal for just the moment that we raise it.
  */
-void
+static void
 eel_stop_in_debugger (void)
 {
 	void (* saved_handler) (int);
@@ -70,31 +70,6 @@ void
 eel_make_warnings_and_criticals_stop_in_debugger (void)
 {
 	g_log_set_default_handler (log_handler, NULL);
-}
-
-int 
-eel_get_available_file_descriptor_count (void)
-{
-	int count;
-	GList *list;
-	GList *p;
-	FILE *file;
-
-	list = NULL;
-	for (count = 0; ; count++) {
-		file = fopen ("/dev/null", "r");
-		if (file == NULL) {
-			break;
-		}
-		list = g_list_prepend (list, file);
-	}
-
-	for (p = list; p != NULL; p = p->next) {
-		fclose (p->data);
-	}
-	g_list_free (list);
-
-	return count;
 }
 
 void

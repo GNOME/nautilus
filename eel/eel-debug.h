@@ -31,9 +31,7 @@ G_BEGIN_DECLS
 
 typedef void (* EelFunction) (void);
 
-void eel_stop_in_debugger                             (void);
 void eel_make_warnings_and_criticals_stop_in_debugger (void);
-int  eel_get_available_file_descriptor_count          (void);
 
 /* A way to do cleanup at exit for compatibility with shutdown tools
  * like the ones in Bonobo.
