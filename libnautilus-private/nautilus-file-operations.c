@@ -38,7 +38,6 @@
 
 #include "nautilus-file-operations.h"
 
-#include "nautilus-debug-log.h"
 #include "nautilus-file-changes-queue.h"
 #include "nautilus-lib-self-check-functions.h"
 

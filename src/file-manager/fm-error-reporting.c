@@ -28,10 +28,12 @@
 
 #include <string.h>
 #include <glib/gi18n.h>
-#include <libnautilus-private/nautilus-debug-log.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <eel/eel-string.h>
 #include <eel/eel-stock-dialogs.h>
+
+#define DEBUG_FLAG NAUTILUS_DEBUG_DIRECTORY_VIEW
+#include <libnautilus-private/nautilus-debug.h>
 
 #define NEW_NAME_TAG "Nautilus: new name"
 #define MAXIMUM_DISPLAYED_FILE_NAME_LENGTH	50
@@ -346,9 +348,7 @@ fm_rename_file (NautilusFile *file,
 	g_free (wait_message);
 
 	uri = nautilus_file_get_uri (file);
-	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-			    "rename file old=\"%s\", new=\"%s\"",
-			    uri, new_name);
+	DEBUG ("Renaming file %s to %s", uri, new_name);
 	g_free (uri);
 
 	/* Start the rename. */

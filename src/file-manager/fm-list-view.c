@@ -46,7 +46,6 @@
 #include <libnautilus-private/nautilus-clipboard-monitor.h>
 #include <libnautilus-private/nautilus-column-chooser.h>
 #include <libnautilus-private/nautilus-column-utilities.h>
-#include <libnautilus-private/nautilus-debug-log.h>
 #include <libnautilus-private/nautilus-dnd.h>
 #include <libnautilus-private/nautilus-file-dnd.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
@@ -59,6 +58,9 @@
 #include <libnautilus-private/nautilus-view-factory.h>
 #include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-cell-renderer-text-ellipsized.h>
+
+#define DEBUG_FLAG NAUTILUS_DEBUG_LIST_VIEW
+#include <libnautilus-private/nautilus-debug.h>
 
 struct FMListViewDetails {
 	GtkTreeView *tree_view;
@@ -856,10 +858,7 @@ row_expanded_callback (GtkTreeView *treeview, GtkTreeIter *iter, GtkTreePath *pa
 		char *uri;
 
 		uri = nautilus_directory_get_uri (directory);
-		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-				    "list view row expanded window=%p: %s",
-				    fm_directory_view_get_containing_window (FM_DIRECTORY_VIEW (view)),
-				    uri);
+		DEBUG ("Row expaded callback for uri %s", uri);
 		g_free (uri);
 
 		fm_directory_view_add_subdirectory (FM_DIRECTORY_VIEW (view), directory);
@@ -943,10 +942,7 @@ row_collapsed_callback (GtkTreeView *treeview, GtkTreeIter *iter, GtkTreePath *p
 	
 
 	uri = nautilus_file_get_uri (file);
-	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-			    "list view row collapsed window=%p: %s",
-			    fm_directory_view_get_containing_window (FM_DIRECTORY_VIEW (view)),
-			    uri);
+	DEBUG ("Row collapsed callback for uri %s", uri);
 	g_free (uri);
 
 	unload_data = g_new (struct UnloadDelayData, 1);

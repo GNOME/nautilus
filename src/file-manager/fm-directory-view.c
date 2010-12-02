@@ -54,7 +54,6 @@
 #include <libnautilus-extension/nautilus-menu-provider.h>
 #include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-clipboard-monitor.h>
-#include <libnautilus-private/nautilus-debug-log.h>
 #include <libnautilus-private/nautilus-desktop-icon-file.h>
 #include <libnautilus-private/nautilus-desktop-directory.h>
 #include <libnautilus-private/nautilus-search-directory.h>
@@ -76,6 +75,9 @@
 #include <libnautilus-private/nautilus-ui-utilities.h>
 #include <libnautilus-private/nautilus-signaller.h>
 #include <libnautilus-private/nautilus-icon-names.h>
+
+#define DEBUG_FLAG NAUTILUS_DEBUG_DIRECTORY_VIEW
+#include <libnautilus-private/nautilus-debug.h>
 
 /* Minimum starting update inverval */
 #define UPDATE_INTERVAL_MIN 100
@@ -846,8 +848,7 @@ open_location (FMDirectoryView *directory_view,
 	g_assert (new_uri != NULL);
 
 	window = fm_directory_view_get_containing_window (directory_view);
-	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-			    "directory view open_location window=%p: %s", window, new_uri);
+	DEBUG ("open_location window=%p: %s", window, new_uri);
 	location = g_file_new_for_uri (new_uri);
 	nautilus_window_slot_info_open_location (directory_view->details->slot,
 						 location, mode, flags, NULL);
@@ -1439,8 +1440,7 @@ action_new_launcher_callback (GtkAction *action,
 	parent_uri = fm_directory_view_get_backing_uri (view);
 
 	window = fm_directory_view_get_containing_window (view);
-	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-			    "directory view create new launcher in window=%p: %s", window, parent_uri);
+	DEBUG ("Create new launcher in window=%p: %s", window, parent_uri);
 	nautilus_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (view)),
 						  "gnome-desktop-item-edit", 
 						  "gnome-desktop-item-edit",
@@ -3156,10 +3156,8 @@ files_added_callback (NautilusDirectory *directory,
 
 	window = fm_directory_view_get_containing_window (view);
 	uri = fm_directory_view_get_uri (view);
-	nautilus_debug_log_with_file_list (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_ASYNC, files,
-					   "files added in window %p: %s",
-					   window,
-					   uri ? uri : "(no directory)");
+	DEBUG_FILES (files, "Files added in window %p: %s",
+		     window, uri ? uri : "(no directory)");
 	g_free (uri);
 
 	schedule_changes (view);
@@ -3183,10 +3181,8 @@ files_changed_callback (NautilusDirectory *directory,
 
 	window = fm_directory_view_get_containing_window (view);
 	uri = fm_directory_view_get_uri (view);
-	nautilus_debug_log_with_file_list (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_ASYNC, files,
-					   "files changed in window %p: %s",
-					   window,
-					   uri ? uri : "(no directory)");
+	DEBUG_FILES (files, "Files changed in window %p: %s",
+		     window, uri ? uri : "(no directory)");
 	g_free (uri);
 
 	schedule_changes (view);
@@ -5158,9 +5154,10 @@ run_script_callback (GtkAction *action, gpointer callback_data)
 	name = nautilus_file_get_name (launch_parameters->file);
 	/* FIXME: handle errors with dialog? Or leave up to each script? */
 	window = fm_directory_view_get_containing_window (launch_parameters->directory_view);
-	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-			    "directory view run_script_callback, window=%p, name=\"%s\", script_path=\"%s\" (omitting script parameters)",
-			    window, name, local_file_path);
+
+	DEBUG ("run_script_callback, name=\"%s\", script_path=\"%s\" (omitting script parameters)",
+	       name, local_file_path);
+
 	nautilus_launch_application_from_command_array (screen, name, quoted_path, FALSE,
 							(const char * const *) parameters);
 	g_free (name);
@@ -9166,20 +9163,15 @@ schedule_update_status (FMDirectoryView *view)
 void
 fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 {
-	GList *selection;
 	GtkWindow *window;
+	GList *selection;
 	
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
-	if (nautilus_debug_log_is_domain_enabled (NAUTILUS_DEBUG_LOG_DOMAIN_USER)) {
-		selection = fm_directory_view_get_selection (view);
-
-		window = fm_directory_view_get_containing_window (view);
-		nautilus_debug_log_with_file_list (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER, selection,
-						   "selection changed in window %p",
-						   window);
-		nautilus_file_list_free (selection);
-	}
+	selection = fm_directory_view_get_selection (view);
+	window = fm_directory_view_get_containing_window (view);
+	DEBUG_FILES (selection, "Selection changed in window %p", window);
+	nautilus_file_list_free (selection);
 
 	view->details->selection_was_removed = FALSE;
 

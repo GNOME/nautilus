@@ -35,7 +35,6 @@
 #include <math.h>
 #include "nautilus-icon-dnd.h"
 
-#include "nautilus-debug-log.h"
 #include "nautilus-file-dnd.h"
 #include "nautilus-icon-private.h"
 #include "nautilus-link.h"
@@ -59,6 +58,9 @@
 #include <libnautilus-private/nautilus-file-changes-queue.h>
 #include <stdio.h>
 #include <string.h>
+
+#define DEBUG_FLAG NAUTILUS_DEBUG_ICON_CONTAINER
+#include "nautilus-debug.h"
 
 static const GtkTargetEntry drag_types [] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
@@ -390,8 +392,7 @@ get_direct_save_filename (GdkDragContext *context)
 	/* Verify that the file name provided by the source is valid */
 	if (*prop_text == '\0' ||
 	    strchr ((const gchar *) prop_text, G_DIR_SEPARATOR) != NULL) {
-		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-				    "Invalid filename provided by XDS drag site");
+		DEBUG ("Invalid filename provided by XDS drag site");
 		g_free (prop_text);
 		return NULL;
 	}

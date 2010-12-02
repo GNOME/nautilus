@@ -41,7 +41,9 @@
 #include "nautilus-desktop-icon-file.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-signaller.h"
-#include "nautilus-debug-log.h"
+
+#define DEBUG_FLAG NAUTILUS_DEBUG_MIME
+#include "nautilus-debug.h"
 
 typedef enum {
 	ACTIVATION_ACTION_LAUNCH_DESKTOP_FILE,
@@ -1323,8 +1325,7 @@ search_for_application_mime_type (ActivateParametersInstall *parameters_install,
 			   (GAsyncReadyCallback) search_for_application_dbus_call_notify_cb,
 			   parameters_install);
 
-	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-	                    "InstallMimeType method invoked for %s", mime_type);
+	DEBUG ("InstallMimeType method invoked for %s", mime_type);
 }
 
 static void
@@ -1501,9 +1502,7 @@ untrusted_launcher_response_callback (GtkDialog *dialog,
 	case RESPONSE_RUN:
 		screen = gtk_widget_get_screen (GTK_WIDGET (parameters->parent_window));
 		uri = nautilus_file_get_uri (parameters->file);
-		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-				    "directory view activate_callback launch_desktop_file window=%p: %s",
-				    parameters->parent_window, uri);
+		DEBUG ("Launching untrusted launcher %s", uri);
 		nautilus_launch_desktop_file (screen, uri, NULL,
 					      parameters->parent_window);
 		g_free (uri);
@@ -1584,9 +1583,7 @@ activate_desktop_file (ActivateParameters *parameters,
 	}
 	
 	uri = nautilus_file_get_uri (file);
-	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-			    "directory view activate_callback launch_desktop_file window=%p: %s",
-			    parameters->parent_window, uri);
+	DEBUG ("Launching trusted launcher %s", uri);
 	nautilus_launch_desktop_file (screen, uri, NULL,
 				      parameters->parent_window);
 	g_free (uri);
@@ -1693,9 +1690,7 @@ activate_files (ActivateParameters *parameters)
 		quoted_path = g_shell_quote (executable_path);
 		name = nautilus_file_get_name (file);
 
-		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-				    "directory view activate_callback launch_file window=%p: %s",
-				    parameters->parent_window, quoted_path);
+		DEBUG ("Launching file name %s, path %s", name, quoted_path);
 
 		nautilus_launch_application_from_command (screen, name, quoted_path, FALSE, NULL);
 		g_free (name);
@@ -1714,9 +1709,7 @@ activate_files (ActivateParameters *parameters)
 		quoted_path = g_shell_quote (executable_path);
 		name = nautilus_file_get_name (file);
 
-		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-				    "directory view activate_callback launch_in_terminal window=%p: %s",
-				    parameters->parent_window, quoted_path);
+		DEBUG ("Launching in terminal file name %s, quoted path %s", name, quoted_path);
 
 		nautilus_launch_application_from_command (screen, name, quoted_path, TRUE, NULL);
 		g_free (name);
@@ -2298,9 +2291,7 @@ nautilus_mime_activate_files (GtkWindow *parent_window,
 		return;
 	}
 
-	nautilus_debug_log_with_file_list (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER, files,
-					   "nautilus_mime_activate_files window=%p",
-					   parent_window);
+	DEBUG_FILES (files, "Calling activate_files() with files:");
 
 	parameters = g_new0 (ActivateParameters, 1);
 	parameters->slot_info = slot_info;

@@ -54,7 +54,6 @@
 #include "nautilus-window-slot.h"
 
 #include <libnautilus-private/nautilus-dbus-manager.h>
-#include <libnautilus-private/nautilus-debug-log.h>
 #include <libnautilus-private/nautilus-desktop-link-monitor.h>
 #include <libnautilus-private/nautilus-directory-private.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
@@ -65,6 +64,9 @@
 #include <libnautilus-private/nautilus-signaller.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
 #include <libnautilus-extension/nautilus-menu-provider.h>
+
+#define DEBUG_FLAG NAUTILUS_DEBUG_APPLICATION
+#include <libnautilus-private/nautilus-debug.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -280,6 +282,7 @@ ck_session_proxy_signal_cb (GDBusProxy *proxy,
 
 	if (g_strcmp0 (signal_name, "ActiveChanged") == 0) {
 		g_variant_get (parameters, "(b)", &application->session_is_active);
+		DEBUG ("ConsoleKit session is active %d", application->session_is_active);
 	}
 }
 
@@ -303,6 +306,7 @@ ck_call_is_active_cb (GDBusProxy   *proxy,
 	}
 
 	g_variant_get (variant, "(b)", &application->session_is_active);
+	DEBUG ("ConsoleKit session is active %d", application->session_is_active);
 
 	g_variant_unref (variant);
 }
@@ -363,6 +367,8 @@ ck_get_current_session_cb (GDBusConnection *connection,
 	}
 
 	g_variant_get (variant, "(&o)", &session_path);
+
+	DEBUG ("Found ConsoleKit session at path %s", session_path);
 
 	g_dbus_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
 				  G_DBUS_PROXY_FLAGS_NONE,
@@ -503,7 +509,7 @@ open_window (NautilusApplication *application,
 {
 	GFile *location;
 	NautilusWindow *window;
-	gboolean existing;
+	gboolean existing, open_in_browser;
 
 	if (uri == NULL) {
 		location = g_file_new_for_path (g_get_home_dir ());
@@ -511,10 +517,14 @@ open_window (NautilusApplication *application,
 		location = g_file_new_for_uri (uri);
 	}
 
+	open_in_browser = browser_window ||
+		g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER);
+
+	DEBUG ("Opening new window at uri %s, browser %d", uri, open_in_browser);
+
 	existing = FALSE;
 
-	if (browser_window ||
-	    g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
+	if (open_in_browser) {
 		window = nautilus_application_create_navigation_window (application,
 									startup_id,
 									screen);
@@ -677,6 +687,9 @@ nautilus_application_create_desktop_windows (NautilusApplication *application)
 					NAUTILUS_PREFERENCES_EXIT_WITH_LAST_WINDOW);
 
 	for (i = 0; i < screens; i++) {
+
+		DEBUG ("Creating a desktop window for screen %d", i);
+		
 		selection_widget = get_desktop_manager_selection (display, i);
 		if (selection_widget != NULL) {
 			window = nautilus_desktop_window_new (application,
@@ -932,8 +945,8 @@ create_window (NautilusApplication *application,
 static void
 spatial_window_destroyed_callback (void *user_data, GObject *window)
 {
-	nautilus_application_spatial_window_list = g_list_remove (nautilus_application_spatial_window_list, window);
-		
+	nautilus_application_spatial_window_list =
+		g_list_remove (nautilus_application_spatial_window_list, window);
 }
 
 NautilusWindow *
@@ -945,7 +958,6 @@ nautilus_application_get_spatial_window (NautilusApplication *application,
 					 gboolean            *existing)
 {
 	NautilusWindow *window;
-	gchar *uri;
 
 	g_return_val_if_fail (NAUTILUS_IS_APPLICATION (application), NULL);
 
@@ -956,6 +968,8 @@ nautilus_application_get_spatial_window (NautilusApplication *application,
 		if (existing != NULL) {
 			*existing = TRUE;
 		}
+
+		DEBUG ("returning existing spatial window");
 
 		return window;
 	}
@@ -992,12 +1006,8 @@ nautilus_application_get_spatial_window (NautilusApplication *application,
 	g_object_weak_ref (G_OBJECT (window), 
 			   spatial_window_destroyed_callback, NULL);
 
-	uri = g_file_get_uri (location);
-	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-			    "present NEW spatial window=%p: %s",
-			    window, uri);
-	g_free (uri);
-	
+	DEBUG ("Creating new spatial window");
+
 	return window;
 }
 
@@ -1056,10 +1066,8 @@ nautilus_application_create_navigation_window (NautilusApplication *application,
 	}
 	g_free (geometry_string);
 
-	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-			    "create new navigation window=%p",
-			    window);
-
+	DEBUG ("Creating a new navigation window");
+	
 	return window;
 }
 
@@ -1094,12 +1102,18 @@ mount_added_callback (GVolumeMonitor *monitor,
 {
 	NautilusDirectory *directory;
 	GFile *root;
+	gchar *uri;
 
 	if (!application->session_is_active) {
 		return;
 	}
 		
 	root = g_mount_get_root (mount);
+	uri = g_file_get_uri (root);
+
+	DEBUG ("Added mount at uri %s", uri);
+	g_free (uri);
+	
 	directory = nautilus_directory_get_existing (root);
 	g_object_unref (root);
 	if (directory != NULL) {
@@ -1153,6 +1167,7 @@ mount_removed_callback (GVolumeMonitor *monitor,
 	NautilusWindowSlot *force_no_close_slot;
 	GFile *root, *computer;
 	gboolean unclosed_slot;
+	gchar *uri;
 
 	close_list = NULL;
 	force_no_close_slot = NULL;
@@ -1162,6 +1177,11 @@ mount_removed_callback (GVolumeMonitor *monitor,
 	window_list = gtk_application_get_windows (GTK_APPLICATION (application));
 
 	root = g_mount_get_root (mount);
+	uri = g_file_get_uri (root);
+
+	DEBUG ("Removed mount at uri %s", uri);
+	g_free (uri);
+
 	/* Construct a list of windows to be closed. Do not add the non-closable windows to the list. */
 	for (node = window_list; node != NULL; node = node->next) {
 		window = NAUTILUS_WINDOW (node->data);
@@ -1417,6 +1437,10 @@ nautilus_application_command_line (GApplication *app,
 		no_desktop = FALSE;
 	}
 
+	DEBUG ("Parsing command line, no_default_window %d browser %d, quit %d, "
+	       "self checks %d, no_desktop %d",
+	       no_default_window, browser_window, kill_shell, perform_self_check, no_desktop);
+
 	exit_with_last_window =
 		g_settings_get_boolean (nautilus_preferences,
 					NAUTILUS_PREFERENCES_EXIT_WITH_LAST_WINDOW);
@@ -1516,6 +1540,8 @@ nautilus_application_startup (GApplication *app)
 	 */
 	G_APPLICATION_CLASS (nautilus_application_parent_class)->startup (app);
 
+	DEBUG ("Application startup");
+
 	/* create an undo manager */
 	self->undo_manager = nautilus_undo_manager_new ();
 
@@ -1555,6 +1581,8 @@ nautilus_application_startup (GApplication *app)
 static void
 nautilus_application_quit_mainloop (GApplication *app)
 {
+	DEBUG ("Quitting mainloop");
+
 	nautilus_icon_info_clear_caches ();
  	nautilus_application_save_accel_map (NULL);
 

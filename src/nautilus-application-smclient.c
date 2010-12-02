@@ -31,6 +31,9 @@
 #include <eel/eel-vfs-extensions.h>
 #include <libxml/xmlsave.h>
 
+#define DEBUG_FLAG NAUTILUS_DEBUG_SMCLIENT
+#include <libnautilus-private/nautilus-debug.h>
+
 static char *
 nautilus_application_get_session_data (NautilusApplication *self)
 {
@@ -74,6 +77,9 @@ nautilus_application_get_session_data (NautilusApplication *self)
 
 		tmp = nautilus_bookmark_get_uri (bookmark);
 		xmlNewProp (bookmark_node, "uri", tmp);
+
+		DEBUG ("Saving history information for uri %s", tmp);
+		
 		g_free (tmp);
 
 		if (nautilus_bookmark_get_has_custom_name (bookmark)) {
@@ -109,6 +115,7 @@ nautilus_application_get_session_data (NautilusApplication *self)
 			continue;
 		}
 
+		DEBUG ("Saving opened window for uri %s", tmp);
 		win_node = xmlNewChild (root_node, NULL, "window", NULL);
 		
 		xmlNewProp (win_node, "location", tmp);
@@ -163,9 +170,9 @@ nautilus_application_get_session_data (NautilusApplication *self)
 	ctx = xmlSaveToBuffer (buffer, "UTF-8", XML_SAVE_FORMAT);
 	if (xmlSaveDoc (ctx, doc) < 0 ||
 	    xmlSaveFlush (ctx) < 0) {
-		g_message ("failed to save session");
+		DEBUG ("Failed to save session");
 	}
-	
+
 	xmlSaveClose(ctx);
 	data = g_strndup (buffer->content, buffer->use);
 	xmlBufferFree (buffer);
@@ -181,6 +188,8 @@ smclient_save_state_cb (EggSMClient *client,
 			NautilusApplication *application)
 {
 	char *data;
+
+	DEBUG ("Received SaveState signal from the SMClient");
 
 	data = nautilus_application_get_session_data (application);
 
@@ -198,6 +207,8 @@ static void
 smclient_quit_cb (EggSMClient   *client,
 		  NautilusApplication *application)
 {
+	DEBUG ("Received Quit signal from the SMClient");
+
 	nautilus_application_quit (application);
 }
 
@@ -226,14 +237,18 @@ nautilus_application_smclient_load (NautilusApplication *application,
 	GKeyFile *state_file;
 	char *data;
 
+	DEBUG ("Loading session data");
+
 	nautilus_application_smclient_initialize (application);
 
 	if (!egg_sm_client_is_resumed (application->smclient)) {
+		DEBUG ("SMClient not resumed");
 		return;
 	}
 
 	state_file = egg_sm_client_get_state_file (application->smclient);
 	if (!state_file) {
+		DEBUG ("No SMClient state file");
 		return;
 	}
 
@@ -242,6 +257,7 @@ nautilus_application_smclient_load (NautilusApplication *application,
 				      "documents",
 				      NULL);
 	if (data == NULL) {
+		DEBUG ("No SMClient session data");
 		return;
 	}
 
@@ -282,6 +298,8 @@ nautilus_application_smclient_load (NautilusApplication *application,
 							icon = g_icon_new_for_string (icon_str, NULL);
 						}
 						location = g_file_new_for_uri (uri);
+
+						DEBUG ("Adding %s to the history list", name);
 						
 						emit_change |= nautilus_add_to_history_list_no_notify (location, name, has_custom_name, icon);
 						
@@ -294,7 +312,7 @@ nautilus_application_smclient_load (NautilusApplication *application,
 						xmlFree (uri);
 						xmlFree (icon_str);
 					} else {
-						g_message ("unexpected bookmark node %s while parsing session data", bookmark_node->name);
+						DEBUG ("Unexpected bookmark node %s while parsing session data", bookmark_node->name);
 						bail = TRUE;
 						continue;
 					}
@@ -312,14 +330,14 @@ nautilus_application_smclient_load (NautilusApplication *application,
 				
 				type = xmlGetProp (node, "type");
 				if (type == NULL) {
-					g_message ("empty type node while parsing session data");
+					DEBUG ("Empty type node while parsing session data");
 					bail = TRUE;
 					continue;
 				}
 				
 				location_uri = xmlGetProp (node, "location");
 				if (location_uri == NULL) {
-					g_message ("empty location node while parsing session data");
+					DEBUG ("Empty location node while parsing session data");
 					bail = TRUE;
 					xmlFree (type);
 					continue;
@@ -370,6 +388,8 @@ nautilus_application_smclient_load (NautilusApplication *application,
 								} else {
 									slot = nautilus_window_open_slot (window->details->active_pane, NAUTILUS_WINDOW_OPEN_SLOT_APPEND);
 								}
+
+								DEBUG ("Resuming navigation window slot for uri %s", slot_uri);
 								
 								location = g_file_new_for_uri (slot_uri);
 								nautilus_window_slot_open_location (slot, location, FALSE);
@@ -391,6 +411,8 @@ nautilus_application_smclient_load (NautilusApplication *application,
 						g_object_unref (location);
 					}
 				} else if (!strcmp (type, "spatial")) {
+					DEBUG ("Resuming spatial window for uri %s", location_uri);
+
 					location = g_file_new_for_uri (location_uri);
 					window = nautilus_application_get_spatial_window (application, NULL, NULL,
 											  location, gdk_screen_get_default (),
@@ -400,14 +422,14 @@ nautilus_application_smclient_load (NautilusApplication *application,
 
 					g_object_unref (location);
 				} else {
-					g_message ("unknown window type \"%s\" while parsing session data", type);
+					DEBUG ("Unknown window type \"%s\" while parsing session data", type);
 					bail = TRUE;
 				}
 				
 				xmlFree (type);
 				xmlFree (location_uri);
 			} else {
-				g_message ("unexpected node %s while parsing session data", node->name);
+				DEBUG ("Unexpected node %s while parsing session data", node->name);
 				bail = TRUE;
 				continue;
 			}
@@ -421,7 +443,7 @@ nautilus_application_smclient_load (NautilusApplication *application,
 	g_free (data);
 
 	if (bail) {
-		g_message ("failed to load session");
+		DEBUG ("Failed to load session");
 	} 
 }
 
@@ -429,6 +451,8 @@ void
 nautilus_application_smclient_startup (NautilusApplication *self)
 {
 	g_assert (self->smclient == NULL);
+
+	DEBUG ("Starting up SMClient");
 
 	egg_sm_client_set_mode (EGG_SM_CLIENT_MODE_DISABLED);
 	self->smclient = egg_sm_client_get ();

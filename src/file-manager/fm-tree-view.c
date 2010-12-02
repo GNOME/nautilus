@@ -42,7 +42,6 @@
 #include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-clipboard-monitor.h>
 #include <libnautilus-private/nautilus-desktop-icon-file.h>
-#include <libnautilus-private/nautilus-debug-log.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
@@ -54,6 +53,9 @@
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-window-info.h>
 #include <libnautilus-private/nautilus-window-slot-info.h>
+
+#define DEBUG_FLAG NAUTILUS_DEBUG_LIST_VIEW
+#include <libnautilus-private/nautilus-debug.h>
 
 typedef struct {
         GObject parent;
@@ -360,9 +362,7 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
 	uri = nautilus_file_get_activation_uri (file);
 	if (nautilus_file_is_launcher (file)) {
 		file_uri = nautilus_file_get_uri (file);
-		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-				    "tree view launch_desktop_file window=%p: %s",
-				    view->details->window, file_uri);
+		DEBUG ("Tree sidebar, launching %s", file_uri);
 		nautilus_launch_desktop_file (screen, file_uri, NULL, NULL);
 		g_free (file_uri);
 	} else if (uri != NULL
@@ -374,9 +374,8 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
 
 		/* Non-local executables don't get launched. They act like non-executables. */
 		if (file_uri == NULL) {
-			nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-					    "tree view window_info_open_location window=%p: %s",
-					    view->details->window, uri);
+			DEBUG ("Tree sidebar, opening location %s", uri);
+
 			location = g_file_new_for_uri (uri);
 			nautilus_window_slot_info_open_location
 				(slot,
@@ -386,9 +385,7 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
 				 NULL);
 			g_object_unref (location);
 		} else {
-			nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-					    "tree view launch_application_from_command window=%p: %s",
-					    view->details->window, file_uri);
+			DEBUG ("Tree sidebar, launching application for %s", file_uri);
 			nautilus_launch_application_from_command (screen, NULL, file_uri, FALSE, NULL);
 			g_free (file_uri);
 		}
@@ -404,9 +401,8 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
 				view->details->selection_location = g_strdup (uri);
 			}
 
-			nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-					    "tree view window_info_open_location window=%p: %s",
-					    view->details->window, uri);
+			DEBUG ("Tree sidebar, opening location %s", uri);
+
 			location = g_file_new_for_uri (uri);
 			nautilus_window_slot_info_open_location
 				(slot,

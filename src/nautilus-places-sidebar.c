@@ -33,7 +33,6 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
-#include <libnautilus-private/nautilus-debug-log.h>
 #include <libnautilus-private/nautilus-dnd.h>
 #include <libnautilus-private/nautilus-bookmark.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
@@ -51,6 +50,9 @@
 #include "nautilus-bookmark-list.h"
 #include "nautilus-places-sidebar.h"
 #include "nautilus-window.h"
+
+#define DEBUG_FLAG NAUTILUS_DEBUG_PLACES
+#include <libnautilus-private/nautilus-debug.h>
 
 #define EJECT_BUTTON_XPAD 6
 #define ICON_CELL_XPAD 6
@@ -1813,9 +1815,8 @@ open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 	gtk_tree_model_get (model, &iter, PLACES_SIDEBAR_COLUMN_URI, &uri, -1);
 
 	if (uri != NULL) {
-		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-				    "activate from places sidebar window=%p: %s",
-				    sidebar->window, uri);
+		DEBUG ("Activating bookmark %s", uri);
+
 		location = g_file_new_for_uri (uri);
 		/* Navigate to the clicked location */
 		if ((flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) == 0) {

@@ -52,7 +52,6 @@
 #include <gdk/gdkx.h>
 #include <glib/gi18n.h>
 #include <libnautilus-extension/nautilus-location-widget-provider.h>
-#include <libnautilus-private/nautilus-debug-log.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file.h>
@@ -65,6 +64,9 @@
 #include <libnautilus-private/nautilus-view-factory.h>
 #include <libnautilus-private/nautilus-window-info.h>
 #include <libnautilus-private/nautilus-window-slot-info.h>
+
+#define DEBUG_FLAG NAUTILUS_DEBUG_WINDOW
+#include <libnautilus-private/nautilus-debug.h>
 
 /* FIXME bugzilla.gnome.org 41243: 
  * We should use inheritance instead of these special cases
@@ -505,11 +507,9 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 		old_uri = g_strdup ("(none)");
 	}
 	new_uri = g_file_get_uri (location);
-	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-			    "window %p open location: old=\"%s\", new=\"%s\"",
-			    window,
-			    old_uri,
-			    new_uri);
+
+	DEBUG ("Opening location, old: %s, new: %s", old_uri, new_uri);
+
 	g_free (old_uri);
 	g_free (new_uri);
 
@@ -1754,8 +1754,7 @@ end_location_change (NautilusWindowSlot *slot)
 
 	uri = nautilus_window_slot_get_location_uri (slot);
 	if (uri) {
-		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-				    "finished loading window %p: %s", window, uri);
+		DEBUG ("Finished loading window for uri %s", uri);
 		g_free (uri);
 	}
 
@@ -2031,9 +2030,7 @@ nautilus_window_slot_set_content_view (NautilusWindowSlot *slot,
 	g_assert (NAUTILUS_IS_WINDOW (window));
   
 	uri = nautilus_window_slot_get_location_uri (slot);
-	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-			    "change view of window %p: \"%s\" to \"%s\"",
-			    window, uri, id);
+	DEBUG ("Change view of window %s to %s", uri, id);
 	g_free (uri);
 
 	if (nautilus_window_slot_content_view_matches_iid (slot, id)) {

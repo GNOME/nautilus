@@ -29,18 +29,23 @@
  */
 
 #include <config.h>
+
 #include "nautilus-tree-view-drag-dest.h"
 
-#include <eel/eel-gtk-macros.h>
-#include <gtk/gtk.h>
 #include "nautilus-file-dnd.h"
 #include "nautilus-file-changes-queue.h"
 #include "nautilus-icon-dnd.h"
 #include "nautilus-link.h"
 #include "nautilus-marshal.h"
-#include "nautilus-debug-log.h"
+
+#include <eel/eel-gtk-macros.h>
+#include <gtk/gtk.h>
+
 #include <stdio.h>
 #include <string.h>
+
+#define DEBUG_FLAG NAUTILUS_DEBUG_LIST_VIEW
+#include "nautilus-debug.h"
 
 #define AUTO_SCROLL_MARGIN 20
 
@@ -874,8 +879,7 @@ get_direct_save_filename (GdkDragContext *context)
 	/* Verify that the file name provided by the source is valid */
 	if (*prop_text == '\0' ||
 	    strchr ((const gchar *) prop_text, G_DIR_SEPARATOR) != NULL) {
-		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-				    "Invalid filename provided by XDS drag site");
+		DEBUG ("Invalid filename provided by XDS drag site");
 		g_free (prop_text);
 		return NULL;
 	}
@@ -917,12 +921,10 @@ set_direct_save_uri (NautilusTreeViewDragDest *dest,
 
 			dest->details->direct_save_uri = uri;
 		} else {
-			nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-					    "Invalid filename provided by XDS drag site");
+			DEBUG ("Invalid filename provided by XDS drag site");
 		}
 	} else {
-		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-				    "Could not retrieve XDS drop destination");
+		DEBUG ("Could not retrieve XDS drop destination");
 	}
 
 	return uri != NULL;
