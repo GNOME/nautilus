@@ -36,6 +36,8 @@ static const gchar introspection_xml[] =
   "      <arg type='as' name='URIList' direction='in'/>"
   "      <arg type='s' name='Destination' direction='in'/>"
   "    </method>"
+  "    <method name='EmptyTrash'>"
+  "    </method>"
   "  </interface>"
   "</node>";
 
@@ -119,6 +121,12 @@ trigger_copy_file_operation (const gchar **sources,
 }
 
 static void
+trigger_empty_trash_operation (void)
+{
+  nautilus_file_operations_empty_trash (NULL);
+}
+
+static void
 handle_method_call (GDBusConnection *connection,
                     const gchar *sender,
                     const gchar *object_path,
@@ -138,8 +146,18 @@ handle_method_call (GDBusConnection *connection,
       trigger_copy_file_operation (uris, destination_uri);
 
       g_debug ("Called CopyURIs with dest %s and uri %s\n", destination_uri, uris[0]);
+
+      goto out;
     }
 
+  if (g_strcmp0 (method_name, "EmptyTrash") == 0)
+    {
+      trigger_empty_trash_operation ();
+
+      g_debug ("Called EmptyTrash");
+    }
+
+ out:
   g_dbus_method_invocation_return_value (invocation, NULL);
 }
 
