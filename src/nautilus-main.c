@@ -31,22 +31,17 @@
 #include <config.h>
 
 #include "nautilus-application.h"
-#include "nautilus-window.h"
-#include <dlfcn.h>
-#include <signal.h>
+
+#include <libnautilus-private/nautilus-debug.h>
 #include <eel/eel-debug.h>
-#include <eel/eel-glib-extensions.h>
-#include <eel/eel-self-checks.h>
-#include <libegg/eggsmclient.h>
 #include <libegg/eggdesktopfile.h>
-#include <gdk/gdkx.h>
-#include <gtk/gtk.h>
+
 #include <glib/gi18n.h>
+#include <gtk/gtk.h>
 #include <gio/gdesktopappinfo.h>
-#include <libnautilus-private/nautilus-debug-log.h>
-#include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-icon-names.h>
+
 #include <libxml/parser.h>
+
 #ifdef HAVE_LOCALE_H
 #include <locale.h>
 #endif
@@ -60,166 +55,6 @@
 #ifdef HAVE_EXEMPI
 #include <exempi/xmp.h>
 #endif
-
-static void
-dump_debug_log (void)
-{
-	char *filename;
-
-	filename = g_build_filename (g_get_home_dir (), "nautilus-debug-log.txt", NULL);
-	nautilus_debug_log_dump (filename, NULL); /* NULL GError */
-	g_free (filename);
-}
-
-static int debug_log_pipes[2];
-
-static gboolean
-debug_log_io_cb (GIOChannel *io, GIOCondition condition, gpointer data)
-{
-	char a;
-
-	while (read (debug_log_pipes[0], &a, 1) != 1)
-		;
-
-	nautilus_debug_log (TRUE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-			    "user requested dump of debug log");
-
-	dump_debug_log ();
-	return FALSE;
-}
-
-static void
-sigusr1_handler (int sig)
-{
-	while (write (debug_log_pipes[1], "a", 1) != 1)
-		;
-}
-
-/* This is totally broken as we're using non-signal safe
- * calls in sigfatal_handler. Disable by default. */
-#ifdef USE_SEGV_HANDLER
-
-/* sigaction structures for the old handlers of these signals */
-static struct sigaction old_segv_sa;
-static struct sigaction old_abrt_sa;
-static struct sigaction old_trap_sa;
-static struct sigaction old_fpe_sa;
-static struct sigaction old_bus_sa;
-
-static void
-sigfatal_handler (int sig)
-{
-	void (* func) (int);
-
-	/* FIXME: is this totally busted?  We do malloc() inside these functions,
-	 * and yet we are inside a signal handler...
-	 */
-	nautilus_debug_log (TRUE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-			    "debug log dumped due to signal %d", sig);
-	dump_debug_log ();
-
-	switch (sig) {
-	case SIGSEGV:
-		func = old_segv_sa.sa_handler;
-		break;
-
-	case SIGABRT:
-		func = old_abrt_sa.sa_handler;
-		break;
-
-	case SIGTRAP:
-		func = old_trap_sa.sa_handler;
-		break;
-
-	case SIGFPE:
-		func = old_fpe_sa.sa_handler;
-		break;
-
-	case SIGBUS:
-		func = old_bus_sa.sa_handler;
-		break;
-
-	default:
-		func = NULL;
-		break;
-	}
-
-	/* this scares me */
-	if (func != NULL && func != SIG_IGN && func != SIG_DFL)
-		(* func) (sig);
-}
-#endif
-
-static void
-setup_debug_log_signals (void)
-{
-	struct sigaction sa;
-	GIOChannel *io;
-
-	if (pipe (debug_log_pipes) == -1)
-		g_error ("Could not create pipe() for debug log");
-
-	io = g_io_channel_unix_new (debug_log_pipes[0]);
-	g_io_add_watch (io, G_IO_IN, debug_log_io_cb, NULL);
-
-	sa.sa_handler = sigusr1_handler;
-	sigemptyset (&sa.sa_mask);
-	sa.sa_flags = 0;
-	sigaction (SIGUSR1, &sa, NULL);
-
-	/* This is totally broken as we're using non-signal safe
-	 * calls in sigfatal_handler. Disable by default. */
-#ifdef USE_SEGV_HANDLER
-	sa.sa_handler = sigfatal_handler;
-	sigemptyset (&sa.sa_mask);
-	sa.sa_flags = 0;
-
-	sigaction(SIGSEGV, &sa, &old_segv_sa);
-	sigaction(SIGABRT, &sa, &old_abrt_sa);
-	sigaction(SIGTRAP, &sa, &old_trap_sa);
-	sigaction(SIGFPE,  &sa, &old_fpe_sa);
-	sigaction(SIGBUS,  &sa, &old_bus_sa);
-#endif
-}
-
-static GLogFunc default_log_handler;
-
-static void
-log_override_cb (const gchar   *log_domain,
-		 GLogLevelFlags log_level,
-		 const gchar   *message,
-		 gpointer       user_data)
-{
-	gboolean is_debug;
-	gboolean is_milestone;
-
-	is_debug = ((log_level & G_LOG_LEVEL_DEBUG) != 0);
-	is_milestone = !is_debug;
-
-	nautilus_debug_log (is_milestone, NAUTILUS_DEBUG_LOG_DOMAIN_GLOG, "%s", message);
-
-	if (!is_debug)
-		(* default_log_handler) (log_domain, log_level, message, user_data);
-}
-
-static void
-setup_debug_log_glog (void)
-{
-	default_log_handler = g_log_set_default_handler (log_override_cb, NULL);
-}
-
-static void
-setup_debug_log (void)
-{
-	char *config_filename;
-
-	config_filename = g_build_filename (g_get_home_dir (), "nautilus-debug-log.conf", NULL);
-	nautilus_debug_log_load_configuration (config_filename, NULL); /* NULL GError */
-	g_free (config_filename);
-
-	setup_debug_log_signals ();
-	setup_debug_log_glog ();
-}
 
 int
 main (int argc, char *argv[])
@@ -266,7 +101,7 @@ main (int argc, char *argv[])
 	xmp_init();
 #endif
 
-	setup_debug_log ();
+	nautilus_debug_set_flags_from_env ();
 
 	/* Initialize the services that we use. */
 	LIBXML_TEST_VERSION
