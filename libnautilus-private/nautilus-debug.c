@@ -151,7 +151,7 @@ nautilus_debug_files (DebugFlags flag,
   va_list args;
 
   va_start (args, format);
-  nautilus_debug_files_valist (flags, files, format, args);
+  nautilus_debug_files_valist (flag, files, format, args);
   va_end (args);
 }
 
