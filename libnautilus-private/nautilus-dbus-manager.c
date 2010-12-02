@@ -27,6 +27,9 @@
 
 #include "nautilus-file-operations.h"
 
+#define DEBUG_FLAG NAUTILUS_DEBUG_DBUS
+#include "nautilus-debug.h"
+
 #include <gio/gio.h>
 
 static const gchar introspection_xml[] =
@@ -102,7 +105,7 @@ trigger_copy_file_operation (const gchar **sources,
 
   if (sources == NULL || sources[0] == NULL || destination == NULL)
     {
-      g_debug ("Called 'CopyURIs' with NULL arguments, discarding");
+      DEBUG ("Called 'CopyURIs' with NULL arguments, discarding");
       return;
     }
 
@@ -139,13 +142,16 @@ handle_method_call (GDBusConnection *connection,
   const gchar **uris = NULL;
   const gchar *destination_uri = NULL;
 
+  DEBUG ("Handle method, sender %s, object_path %s, interface %s, method %s",
+         sender, object_path, interface_name, method_name);
+
   if (g_strcmp0 (method_name, "CopyURIs") == 0)
     {
       g_variant_get (parameters, "(^a&s&s)", &uris, &destination_uri);
 
       trigger_copy_file_operation (uris, destination_uri);
 
-      g_debug ("Called CopyURIs with dest %s and uri %s\n", destination_uri, uris[0]);
+      DEBUG ("Called CopyURIs with dest %s and uri %s\n", destination_uri, uris[0]);
 
       goto out;
     }
@@ -154,7 +160,7 @@ handle_method_call (GDBusConnection *connection,
     {
       trigger_empty_trash_operation ();
 
-      g_debug ("Called EmptyTrash");
+      DEBUG ("Called EmptyTrash");
     }
 
  out:
@@ -176,6 +182,8 @@ bus_acquired_handler_cb (GDBusConnection *conn,
   NautilusDBusManager *self = user_data;
   GDBusNodeInfo *introspection_data;
   GError *error = NULL;
+
+  DEBUG ("Bus acquired at %s", name);
 
   self->connection = g_object_ref (conn);
   introspection_data = g_dbus_node_info_new_for_xml (introspection_xml, &error);
