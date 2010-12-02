@@ -112,6 +112,9 @@ nautilus_debug_files_valist (DebugFlags flag,
   if (G_UNLIKELY (!initialized))
     nautilus_debug_set_flags_from_env ();
 
+  if (!(flag & flags))
+    return;
+
   msg = g_strdup_vprintf (format, args);
 
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, "%s:", msg);
