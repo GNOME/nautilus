@@ -39,8 +39,12 @@
 #include "nautilus-search-bar.h"
 #include "nautilus-navigation-window-slot.h"
 #include "nautilus-notebook.h"
+#include "nautilus-places-sidebar.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-navigation-window-pane.h"
+
+#include "file-manager/fm-tree-view.h"
+
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
@@ -58,17 +62,17 @@
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
-#include <libnautilus-private/nautilus-sidebar.h>
 #include <libnautilus-private/nautilus-view-factory.h>
 #include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-undo.h>
 #include <libnautilus-private/nautilus-module.h>
-#include <libnautilus-private/nautilus-sidebar-provider.h>
 #include <libnautilus-private/nautilus-search-directory.h>
 #include <libnautilus-private/nautilus-signaller.h>
 #include <math.h>
 #include <sys/time.h>
 
+#define DEBUG_FLAG NAUTILUS_DEBUG_WINDOW
+#include <libnautilus-private/nautilus-debug.h>
 
 /* FIXME bugzilla.gnome.org 41243: 
  * We should use inheritance instead of these special cases
@@ -91,11 +95,6 @@ static gboolean mouse_extra_buttons = TRUE;
 static int mouse_forward_button = 9;
 static int mouse_back_button = 8;
 
-static void add_sidebar_panels                       (NautilusNavigationWindow *window);
-static void side_panel_image_changed_callback        (NautilusSidebar          *side_panel,
-						      gpointer                  callback_data);
-static void always_use_location_entry_changed        (gpointer                  callback_data);
-static void always_use_browser_changed               (gpointer                  callback_data);
 static void mouse_back_button_changed		     (gpointer                  callback_data);
 static void mouse_forward_button_changed	     (gpointer                  callback_data);
 static void use_extra_mouse_buttons_changed          (gpointer                  callback_data);
@@ -114,91 +113,6 @@ static const struct {
 	{ XF86XK_Forward,	NAUTILUS_ACTION_FORWARD }
 #endif
 };
-
-static void
-nautilus_navigation_window_init (NautilusNavigationWindow *window)
-{
-	GtkUIManager *ui_manager;
-	GtkWidget *toolbar;
-	NautilusWindow *win;
-	NautilusNavigationWindowPane *pane;
-	GtkWidget *hpaned;
-	GtkWidget *vbox;
-
-	win = NAUTILUS_WINDOW (window);
-
-	window->details = G_TYPE_INSTANCE_GET_PRIVATE (window, NAUTILUS_TYPE_NAVIGATION_WINDOW, NautilusNavigationWindowDetails);
-
-	pane = nautilus_navigation_window_pane_new (win);
-	win->details->panes = g_list_prepend (win->details->panes, pane);
-
-	window->details->header_size_group = gtk_size_group_new (GTK_SIZE_GROUP_VERTICAL);
-	gtk_size_group_set_ignore_hidden (window->details->header_size_group, FALSE);
-
-	window->details->content_paned = gtk_paned_new (GTK_ORIENTATION_HORIZONTAL);
-	gtk_table_attach (GTK_TABLE (NAUTILUS_WINDOW (window)->details->table),
-			  window->details->content_paned,
-			  /* X direction */                   /* Y direction */
-			  0, 1,                               3, 4,
-			  GTK_EXPAND | GTK_FILL | GTK_SHRINK, GTK_EXPAND | GTK_FILL | GTK_SHRINK,
-			  0,                                  0);
-	gtk_widget_show (window->details->content_paned);
-
-	vbox = gtk_vbox_new (FALSE, 0);
-	gtk_paned_pack2 (GTK_PANED (window->details->content_paned), vbox,
-			 TRUE, FALSE);
-	gtk_widget_show (vbox);
-
-	hpaned = gtk_paned_new (GTK_ORIENTATION_HORIZONTAL);
-	gtk_box_pack_start (GTK_BOX (vbox), hpaned, TRUE, TRUE, 0);
-	gtk_widget_show (hpaned);
-	window->details->split_view_hpane = hpaned;
-
-	gtk_box_pack_start (GTK_BOX (vbox), win->details->statusbar, FALSE, FALSE, 0);
-	gtk_widget_show (win->details->statusbar);
-
-	nautilus_navigation_window_pane_setup (pane);
-
-	gtk_paned_pack1 (GTK_PANED(hpaned), pane->widget, TRUE, FALSE);
-	gtk_widget_show (pane->widget);
-
-	/* this has to be done after the location bar has been set up,
-	 * but before menu stuff is being called */
-	nautilus_window_set_active_pane (win, NAUTILUS_WINDOW_PANE (pane));
-
-	nautilus_navigation_window_initialize_actions (window);
-
-	nautilus_navigation_window_initialize_menus (window);
-
-	ui_manager = nautilus_window_get_ui_manager (NAUTILUS_WINDOW (window));
-	toolbar = gtk_ui_manager_get_widget (ui_manager, "/Toolbar");
-	window->details->toolbar = toolbar;
-	gtk_table_attach (GTK_TABLE (NAUTILUS_WINDOW (window)->details->table),
-			  toolbar,
-			  /* X direction */                   /* Y direction */
-			  0, 1,                               1, 2,
-			  GTK_EXPAND | GTK_FILL | GTK_SHRINK, 0,
-			  0,                                  0);
-	gtk_widget_show (toolbar);
-
-	nautilus_navigation_window_initialize_toolbars (window);
-
-	/* Set initial sensitivity of some buttons & menu items
-	 * now that they're all created.
-	 */
-	nautilus_navigation_window_allow_back (window, FALSE);
-	nautilus_navigation_window_allow_forward (window, FALSE);
-
-	g_signal_connect_swapped (nautilus_preferences,
-				  "changed::" NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY,
-				  G_CALLBACK(always_use_location_entry_changed),
-				  window);
-
-	g_signal_connect_swapped (nautilus_preferences,
-				  "changed::" NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER,
-				  G_CALLBACK(always_use_browser_changed),
-				  window);
-}
 
 static void
 always_use_location_entry_changed (gpointer callback_data)
@@ -346,143 +260,6 @@ nautilus_navigation_window_restore_focus_widget (NautilusNavigationWindow *windo
 }
 
 static void
-side_pane_close_requested_callback (GtkWidget *widget,
-				    gpointer user_data)
-{
-	NautilusNavigationWindow *window;
-	
-	window = NAUTILUS_NAVIGATION_WINDOW (user_data);
-
-	nautilus_navigation_window_hide_sidebar (window);
-}
-
-static void
-side_pane_size_allocate_callback (GtkWidget *widget,
-				  GtkAllocation *allocation,
-				  gpointer user_data)
-{
-	NautilusNavigationWindow *window;
-
-	window = NAUTILUS_NAVIGATION_WINDOW (user_data);
-
-	if (allocation->width != window->details->side_pane_width) {
-		window->details->side_pane_width = allocation->width;
-		g_settings_set_int (nautilus_window_state,
-				    NAUTILUS_WINDOW_STATE_SIDEBAR_WIDTH,
-				    allocation->width <= 1 ? 0 : allocation->width);
-	}
-}
-
-static void
-setup_side_pane_width (NautilusNavigationWindow *window)
-{
-	g_return_if_fail (window->sidebar != NULL);
-
-	window->details->side_pane_width =
-		g_settings_get_int (nautilus_window_state,
-				    NAUTILUS_WINDOW_STATE_SIDEBAR_WIDTH);
-
-	gtk_paned_set_position (GTK_PANED (window->details->content_paned),
-				window->details->side_pane_width);
-}
-
-static void
-set_current_side_panel (NautilusNavigationWindow *window,
-			NautilusSidebar *panel)
-{
-	if (window->details->current_side_panel) {
-		nautilus_sidebar_is_visible_changed (window->details->current_side_panel,
-						     FALSE);
-		eel_remove_weak_pointer (&window->details->current_side_panel);
-	}
-
-	if (panel != NULL) {
-		nautilus_sidebar_is_visible_changed (panel, TRUE);
-	}
-	window->details->current_side_panel = panel;
-	eel_add_weak_pointer (&window->details->current_side_panel);
-}
-
-static void
-side_pane_switch_page_callback (NautilusSidePane *side_pane,
-				GtkWidget *widget,
-				NautilusNavigationWindow *window)
-{
-	const char *id;
-	NautilusSidebar *sidebar;
-
-	sidebar = NAUTILUS_SIDEBAR (widget);
-
-	if (sidebar == NULL) {
-		return;
-	}
-
-	set_current_side_panel (window, sidebar);
-
-	id = nautilus_sidebar_get_sidebar_id (sidebar);
-	g_settings_set_string (nautilus_window_state, NAUTILUS_WINDOW_STATE_SIDE_PANE_VIEW, id);
-}
-
-static void
-nautilus_navigation_window_set_up_sidebar (NautilusNavigationWindow *window)
-{
-	GtkWidget *title;
-
-	window->sidebar = nautilus_side_pane_new ();
-
-	title = nautilus_side_pane_get_title (window->sidebar);
-	gtk_size_group_add_widget (window->details->header_size_group,
-				   title);
-
-	gtk_paned_pack1 (GTK_PANED (window->details->content_paned),
-			 GTK_WIDGET (window->sidebar),
-			 FALSE, FALSE);
-
-	setup_side_pane_width (window);
-	g_signal_connect (window->sidebar, 
-			  "size_allocate",
-			  G_CALLBACK (side_pane_size_allocate_callback),
-			  window);
-	
-	add_sidebar_panels (window);
-
-	g_signal_connect (window->sidebar,
-			  "close_requested",
-			  G_CALLBACK (side_pane_close_requested_callback),
-			  window);
-
-	g_signal_connect (window->sidebar,
-			  "switch_page",
-			  G_CALLBACK (side_pane_switch_page_callback),
-			  window);
-	
-	gtk_widget_show (GTK_WIDGET (window->sidebar));
-}
-
-static void
-nautilus_navigation_window_tear_down_sidebar (NautilusNavigationWindow *window)
-{
-	GList *node, *next;
-	NautilusSidebar *sidebar_panel;
-
-	g_signal_handlers_disconnect_by_func (window->sidebar,
-					      side_pane_switch_page_callback,
-					      window);
-
-	for (node = window->sidebar_panels; node != NULL; node = next) {
-		next = node->next;
-
-		sidebar_panel = NAUTILUS_SIDEBAR (node->data);
-		
-		nautilus_navigation_window_remove_sidebar_panel (window,
-								 sidebar_panel);
-        }
-
-	gtk_widget_destroy (GTK_WIDGET (window->sidebar));
-	window->sidebar = NULL;
-}
-
-static void
 nautilus_navigation_window_unrealize (GtkWidget *widget)
 {
 	NautilusNavigationWindow *window;
@@ -570,11 +347,6 @@ nautilus_navigation_window_destroy (GtkWidget *object)
 
 	nautilus_navigation_window_unset_focus_widget (window);
 
-	window->sidebar = NULL;
-	g_list_foreach (window->sidebar_panels, (GFunc)g_object_unref, NULL);
-	g_list_free (window->sidebar_panels);
-	window->sidebar_panels = NULL;
-
 	window->details->content_paned = NULL;
 	window->details->split_view_hpane = NULL;
 
@@ -603,73 +375,6 @@ nautilus_navigation_window_finalize (GObject *object)
 /*
  * Main API
  */
-
-void
-nautilus_navigation_window_add_sidebar_panel (NautilusNavigationWindow *window,
-					      NautilusSidebar *sidebar_panel)
-{
-	const char *sidebar_id;
-	char *label;
-	char *tooltip;
-	char *default_id;
-	GdkPixbuf *icon;
-
-	g_return_if_fail (NAUTILUS_IS_NAVIGATION_WINDOW (window));
-	g_return_if_fail (NAUTILUS_IS_SIDEBAR (sidebar_panel));
-	g_return_if_fail (NAUTILUS_IS_SIDE_PANE (window->sidebar));
-	g_return_if_fail (g_list_find (window->sidebar_panels, sidebar_panel) == NULL);	
-
-	label = nautilus_sidebar_get_tab_label (sidebar_panel);
-	tooltip = nautilus_sidebar_get_tab_tooltip (sidebar_panel);
-	nautilus_side_pane_add_panel (window->sidebar, 
-				      GTK_WIDGET (sidebar_panel), 
-				      label,
-				      tooltip);
-	g_free (tooltip);
-	g_free (label);
-
-	icon = nautilus_sidebar_get_tab_icon (sidebar_panel);
-	nautilus_side_pane_set_panel_image (NAUTILUS_NAVIGATION_WINDOW (window)->sidebar,
-					    GTK_WIDGET (sidebar_panel),
-					    icon);
-	if (icon) {
-		g_object_unref (icon);
-	}
-
-	g_signal_connect (sidebar_panel, "tab_icon_changed",
-			  (GCallback)side_panel_image_changed_callback, window);
-
-	window->sidebar_panels = g_list_prepend (window->sidebar_panels,
-						 g_object_ref (sidebar_panel));
-
-	/* Show if default */
-	sidebar_id = nautilus_sidebar_get_sidebar_id (sidebar_panel);
-	default_id = g_settings_get_string (nautilus_window_state, NAUTILUS_WINDOW_STATE_SIDE_PANE_VIEW);
-	if (sidebar_id && default_id && !strcmp (sidebar_id, default_id)) {
-		nautilus_side_pane_show_panel (window->sidebar,
-					       GTK_WIDGET (sidebar_panel));
-	}	
-	g_free (default_id);
-}
-
-void
-nautilus_navigation_window_remove_sidebar_panel (NautilusNavigationWindow *window,
-						 NautilusSidebar *sidebar_panel)
-{
-	g_return_if_fail (NAUTILUS_IS_NAVIGATION_WINDOW (window));
-	g_return_if_fail (NAUTILUS_IS_SIDEBAR (sidebar_panel));
-
-	if (g_list_find (window->sidebar_panels, sidebar_panel) == NULL) {
-		return;
-	}
-
-	g_signal_handlers_disconnect_by_func (sidebar_panel, side_panel_image_changed_callback, window);
-	
-	nautilus_side_pane_remove_panel (window->sidebar, 
-					 GTK_WIDGET (sidebar_panel));
-	window->sidebar_panels = g_list_remove (window->sidebar_panels, sidebar_panel);
-	g_object_unref (sidebar_panel);
-}
 
 void
 nautilus_navigation_window_go_back (NautilusNavigationWindow *window)
@@ -829,68 +534,6 @@ nautilus_navigation_window_set_search_button (NautilusNavigationWindow *window,
 	g_object_set_data (G_OBJECT (action), "blocked", NULL);
 }
 
-static void
-side_panel_image_changed_callback (NautilusSidebar *side_panel,
-                                   gpointer callback_data)
-{
-        NautilusWindow *window;
-	GdkPixbuf *icon;
-
-        window = NAUTILUS_WINDOW (callback_data);
-
-	icon = nautilus_sidebar_get_tab_icon (side_panel);
-        nautilus_side_pane_set_panel_image (NAUTILUS_NAVIGATION_WINDOW (window)->sidebar,
-                                            GTK_WIDGET (side_panel),
-                                            icon);
-	if (icon != NULL) {
-		g_object_unref (icon);
-	}
-}
-
-/**
- * add_sidebar_panels:
- * @window:	A NautilusNavigationWindow
- *
- * Adds all sidebars available
- *
- */
-static void
-add_sidebar_panels (NautilusNavigationWindow *window)
-{
-	GtkWidget *current;
-	GList *providers;
-	GList *p;
-	NautilusSidebar *sidebar_panel;
-
-	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
-
-	if (window->sidebar == NULL) {
-		return;
-	}
-
- 	providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_SIDEBAR_PROVIDER);
-	
-	for (p = providers; p != NULL; p = p->next) {
-		NautilusSidebarProvider *provider;
-
-		provider = NAUTILUS_SIDEBAR_PROVIDER (p->data);
-		
-		sidebar_panel = nautilus_sidebar_provider_create (provider,
-								  NAUTILUS_WINDOW_INFO (window));
-		nautilus_navigation_window_add_sidebar_panel (window,
-							      sidebar_panel);
-		
-		g_object_unref (sidebar_panel);
-	}
-
-	nautilus_module_extension_list_free (providers);
-
-	current = nautilus_side_pane_get_current_panel (window->sidebar);
-	set_current_side_panel
-		(window, 
-		 NAUTILUS_SIDEBAR (current));
-}
-
 gboolean
 nautilus_navigation_window_toolbar_showing (NautilusNavigationWindow *window)
 {
@@ -944,40 +587,6 @@ nautilus_navigation_window_show_toolbar (NautilusNavigationWindow *window)
 	gtk_widget_show (window->details->toolbar);
 	nautilus_navigation_window_update_show_hide_menu_items (window);
 	g_settings_set_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_TOOLBAR, TRUE);
-}
-
-void
-nautilus_navigation_window_hide_sidebar (NautilusNavigationWindow *window)
-{
-	if (window->sidebar == NULL) {
-		return;
-	}
-
-	nautilus_navigation_window_tear_down_sidebar (window);
-	nautilus_navigation_window_update_show_hide_menu_items (window);
-
-	g_settings_set_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_SIDEBAR, FALSE);
-}
-
-void
-nautilus_navigation_window_show_sidebar (NautilusNavigationWindow *window)
-{
-	if (window->sidebar != NULL) {
-		return;
-	}
-
-	nautilus_navigation_window_set_up_sidebar (window);
-	nautilus_navigation_window_update_show_hide_menu_items (window);
-	g_settings_set_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_SIDEBAR, TRUE);
-}
-
-gboolean
-nautilus_navigation_window_sidebar_showing (NautilusNavigationWindow *window)
-{
-	g_return_val_if_fail (NAUTILUS_IS_NAVIGATION_WINDOW (window), FALSE);
-
-	return (window->sidebar != NULL)
-		&& gtk_widget_get_visible (gtk_paned_get_child1 (GTK_PANED (window->details->content_paned)));
 }
 
 /**
@@ -1160,6 +769,249 @@ real_close_slot (NautilusWindowPane *pane,
 
 	EEL_CALL_PARENT (NAUTILUS_WINDOW_CLASS,
 			 close_slot, (pane, slot));
+}
+
+/* side pane helpers */
+
+static void
+side_pane_size_allocate_callback (GtkWidget *widget,
+				  GtkAllocation *allocation,
+				  gpointer user_data)
+{
+	NautilusNavigationWindow *window;
+
+	window = NAUTILUS_NAVIGATION_WINDOW (user_data);
+
+	if (allocation->width != window->details->side_pane_width) {
+		window->details->side_pane_width = allocation->width;
+
+		DEBUG ("Saving sidebar width: %d", allocation->width);
+		
+		g_settings_set_int (nautilus_window_state,
+				    NAUTILUS_WINDOW_STATE_SIDEBAR_WIDTH,
+				    allocation->width <= 1 ? 0 : allocation->width);
+	}
+}
+
+static void
+setup_side_pane_width (NautilusNavigationWindow *window)
+{
+	g_return_if_fail (window->details->sidebar != NULL);
+
+	window->details->side_pane_width =
+		g_settings_get_int (nautilus_window_state,
+				    NAUTILUS_WINDOW_STATE_SIDEBAR_WIDTH);
+
+	gtk_paned_set_position (GTK_PANED (window->details->content_paned),
+				window->details->side_pane_width);
+}
+
+static gboolean
+sidebar_id_is_valid (const gchar *sidebar_id)
+{
+	return (g_strcmp0 (sidebar_id, NAUTILUS_NAVIGATION_WINDOW_SIDEBAR_PLACES) == 0 ||
+		g_strcmp0 (sidebar_id, NAUTILUS_NAVIGATION_WINDOW_SIDEBAR_TREE) == 0);
+}
+
+static void
+nautilus_navigation_window_set_up_sidebar (NautilusNavigationWindow *window)
+{
+	GtkWidget *sidebar;
+
+	DEBUG ("Setting up sidebar id %s", window->details->sidebar_id);
+
+	window->details->sidebar = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
+
+	gtk_paned_pack1 (GTK_PANED (window->details->content_paned),
+			 GTK_WIDGET (window->details->sidebar),
+			 FALSE, FALSE);
+
+	setup_side_pane_width (window);
+	g_signal_connect (window->details->sidebar, 
+			  "size_allocate",
+			  G_CALLBACK (side_pane_size_allocate_callback),
+			  window);
+
+	if (g_strcmp0 (window->details->sidebar_id, NAUTILUS_NAVIGATION_WINDOW_SIDEBAR_PLACES) == 0) {
+		sidebar = nautilus_places_sidebar_new (NAUTILUS_WINDOW_INFO (window));
+	} else if (g_strcmp0 (window->details->sidebar_id, NAUTILUS_NAVIGATION_WINDOW_SIDEBAR_TREE) == 0) {
+		sidebar = nautilus_tree_sidebar_new (NAUTILUS_WINDOW_INFO (window));
+	} else {
+		g_assert_not_reached ();
+	}
+
+	gtk_box_pack_start (GTK_BOX (window->details->sidebar), sidebar, TRUE, TRUE, 0);
+	gtk_widget_show (sidebar);
+	gtk_widget_show (GTK_WIDGET (window->details->sidebar));
+}
+
+static void
+nautilus_navigation_window_tear_down_sidebar (NautilusNavigationWindow *window)
+{
+	DEBUG ("Destroying sidebar");
+
+	gtk_widget_destroy (GTK_WIDGET (window->details->sidebar));
+	window->details->sidebar = NULL;
+}
+
+void
+nautilus_navigation_window_hide_sidebar (NautilusNavigationWindow *window)
+{
+	DEBUG ("Called hide_sidebar()");
+
+	if (window->details->sidebar == NULL) {
+		return;
+	}
+
+	nautilus_navigation_window_tear_down_sidebar (window);
+	nautilus_navigation_window_update_show_hide_menu_items (window);
+
+	g_settings_set_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_SIDEBAR, FALSE);
+}
+
+void
+nautilus_navigation_window_show_sidebar (NautilusNavigationWindow *window)
+{
+	DEBUG ("Called show_sidebar()");
+
+	if (window->details->sidebar != NULL) {
+		return;
+	}
+
+	nautilus_navigation_window_set_up_sidebar (window);
+	nautilus_navigation_window_update_show_hide_menu_items (window);
+	g_settings_set_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_SIDEBAR, TRUE);
+}
+
+gboolean
+nautilus_navigation_window_sidebar_showing (NautilusNavigationWindow *window)
+{
+	g_return_val_if_fail (NAUTILUS_IS_NAVIGATION_WINDOW (window), FALSE);
+
+	return (window->details->sidebar != NULL)
+		&& gtk_widget_get_visible (gtk_paned_get_child1 (GTK_PANED (window->details->content_paned)));
+}
+
+static void
+side_pane_id_changed (NautilusNavigationWindow *window)
+{
+	gchar *sidebar_id;
+
+	sidebar_id = g_settings_get_string (nautilus_window_state,
+					    NAUTILUS_WINDOW_STATE_SIDE_PANE_VIEW);
+
+	DEBUG ("Sidebar id changed to %s", sidebar_id);
+
+	if (g_strcmp0 (sidebar_id, window->details->sidebar_id) == 0) {
+		g_free (sidebar_id);
+		return;
+	}
+
+	if (!sidebar_id_is_valid (sidebar_id)) {
+		g_free (sidebar_id);
+		return;
+	}
+
+	g_free (window->details->sidebar_id);
+	window->details->sidebar_id = sidebar_id;
+
+	if (window->details->sidebar != NULL) {
+		/* refresh the sidebar setting */
+		nautilus_navigation_window_tear_down_sidebar (window);
+		nautilus_navigation_window_set_up_sidebar (window);
+	}
+}
+
+static void
+nautilus_navigation_window_init (NautilusNavigationWindow *window)
+{
+	GtkUIManager *ui_manager;
+	GtkWidget *toolbar;
+	NautilusWindow *win;
+	NautilusNavigationWindowPane *pane;
+	GtkWidget *hpaned;
+	GtkWidget *vbox;
+
+	win = NAUTILUS_WINDOW (window);
+
+	window->details = G_TYPE_INSTANCE_GET_PRIVATE (window, NAUTILUS_TYPE_NAVIGATION_WINDOW, NautilusNavigationWindowDetails);
+
+	pane = nautilus_navigation_window_pane_new (win);
+	win->details->panes = g_list_prepend (win->details->panes, pane);
+
+	window->details->header_size_group = gtk_size_group_new (GTK_SIZE_GROUP_VERTICAL);
+	gtk_size_group_set_ignore_hidden (window->details->header_size_group, FALSE);
+
+	window->details->content_paned = gtk_paned_new (GTK_ORIENTATION_HORIZONTAL);
+	gtk_table_attach (GTK_TABLE (NAUTILUS_WINDOW (window)->details->table),
+			  window->details->content_paned,
+			  /* X direction */                   /* Y direction */
+			  0, 1,                               3, 4,
+			  GTK_EXPAND | GTK_FILL | GTK_SHRINK, GTK_EXPAND | GTK_FILL | GTK_SHRINK,
+			  0,                                  0);
+	gtk_widget_show (window->details->content_paned);
+
+	vbox = gtk_vbox_new (FALSE, 0);
+	gtk_paned_pack2 (GTK_PANED (window->details->content_paned), vbox,
+			 TRUE, FALSE);
+	gtk_widget_show (vbox);
+
+	hpaned = gtk_paned_new (GTK_ORIENTATION_HORIZONTAL);
+	gtk_box_pack_start (GTK_BOX (vbox), hpaned, TRUE, TRUE, 0);
+	gtk_widget_show (hpaned);
+	window->details->split_view_hpane = hpaned;
+
+	gtk_box_pack_start (GTK_BOX (vbox), win->details->statusbar, FALSE, FALSE, 0);
+	gtk_widget_show (win->details->statusbar);
+
+	nautilus_navigation_window_pane_setup (pane);
+
+	gtk_paned_pack1 (GTK_PANED(hpaned), pane->widget, TRUE, FALSE);
+	gtk_widget_show (pane->widget);
+
+	/* this has to be done after the location bar has been set up,
+	 * but before menu stuff is being called */
+	nautilus_window_set_active_pane (win, NAUTILUS_WINDOW_PANE (pane));
+
+	nautilus_navigation_window_initialize_actions (window);
+
+	nautilus_navigation_window_initialize_menus (window);
+
+	ui_manager = nautilus_window_get_ui_manager (NAUTILUS_WINDOW (window));
+	toolbar = gtk_ui_manager_get_widget (ui_manager, "/Toolbar");
+	window->details->toolbar = toolbar;
+	gtk_table_attach (GTK_TABLE (NAUTILUS_WINDOW (window)->details->table),
+			  toolbar,
+			  /* X direction */                   /* Y direction */
+			  0, 1,                               1, 2,
+			  GTK_EXPAND | GTK_FILL | GTK_SHRINK, 0,
+			  0,                                  0);
+	gtk_widget_show (toolbar);
+
+	nautilus_navigation_window_initialize_toolbars (window);
+
+	/* Set initial sensitivity of some buttons & menu items
+	 * now that they're all created.
+	 */
+	nautilus_navigation_window_allow_back (window, FALSE);
+	nautilus_navigation_window_allow_forward (window, FALSE);
+
+	g_signal_connect_swapped (nautilus_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY,
+				  G_CALLBACK(always_use_location_entry_changed),
+				  window);
+
+	g_signal_connect_swapped (nautilus_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER,
+				  G_CALLBACK(always_use_browser_changed),
+				  window);
+
+	g_signal_connect_swapped (nautilus_window_state,
+				  "changed::" NAUTILUS_WINDOW_STATE_SIDE_PANE_VIEW,
+				  G_CALLBACK (side_pane_id_changed),
+				  window);
+
+	side_pane_id_changed (window);
 }
 
 static void

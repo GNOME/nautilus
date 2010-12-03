@@ -98,7 +98,8 @@ struct _NautilusNavigationWindowDetails {
         
         /* Side Pane */
         int side_pane_width;
-        NautilusSidebar *current_side_panel;
+        GtkWidget *sidebar;
+        gchar *sidebar_id;
 
 	/* Menus */
         GtkActionGroup *go_menu_action_group;

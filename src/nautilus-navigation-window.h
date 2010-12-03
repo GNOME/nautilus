@@ -33,9 +33,8 @@
 #include <gtk/gtk.h>
 #include <eel/eel-glib-extensions.h>
 #include <libnautilus-private/nautilus-bookmark.h>
-#include <libnautilus-private/nautilus-sidebar.h>
+
 #include "nautilus-application.h"
-#include "nautilus-side-pane.h"
 #include "nautilus-window.h"
 
 #define NAUTILUS_TYPE_NAVIGATION_WINDOW nautilus_navigation_window_get_type()
@@ -54,19 +53,14 @@ typedef struct _NautilusNavigationWindow        NautilusNavigationWindow;
 typedef struct _NautilusNavigationWindowClass   NautilusNavigationWindowClass;
 typedef struct _NautilusNavigationWindowDetails NautilusNavigationWindowDetails; 
 
+#define NAUTILUS_NAVIGATION_WINDOW_SIDEBAR_PLACES "places"
+#define NAUTILUS_NAVIGATION_WINDOW_SIDEBAR_TREE "tree"
 
 struct _NautilusNavigationWindow {
         NautilusWindow parent_object;
         
         NautilusNavigationWindowDetails *details;
-        
-        /** UI stuff **/
-        NautilusSidePane *sidebar;
-
-        /* Current views stuff */
-        GList *sidebar_panels;
 };
-
 
 struct _NautilusNavigationWindowClass {
         NautilusWindowClass parent_spot;
@@ -87,10 +81,6 @@ gboolean nautilus_navigation_window_toolbar_showing      (NautilusNavigationWind
 void     nautilus_navigation_window_hide_sidebar         (NautilusNavigationWindow *window);
 void     nautilus_navigation_window_show_sidebar         (NautilusNavigationWindow *window);
 gboolean nautilus_navigation_window_sidebar_showing      (NautilusNavigationWindow *window);
-void     nautilus_navigation_window_add_sidebar_panel    (NautilusNavigationWindow *window,
-                                                          NautilusSidebar          *sidebar_panel);
-void     nautilus_navigation_window_remove_sidebar_panel (NautilusNavigationWindow *window,
-                                                          NautilusSidebar          *sidebar_panel);
 void     nautilus_navigation_window_hide_status_bar      (NautilusNavigationWindow *window);
 void     nautilus_navigation_window_show_status_bar      (NautilusNavigationWindow *window);
 gboolean nautilus_navigation_window_status_bar_showing   (NautilusNavigationWindow *window);

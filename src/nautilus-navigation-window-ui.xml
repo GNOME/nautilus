@@ -20,8 +20,13 @@
 	</menu>
 	<menu action="View">
 		<placeholder name="Show Hide Placeholder">
+                        <menu action="Sidebar List">
+                          <menuitem name="Sidebar Places" action="Sidebar Places"/>
+                          <menuitem name="Sidebar Tree" action="Sidebar Tree"/>
+                          <separator/>
+                          <menuitem name="Show Hide Sidebar" action="Show Hide Sidebar"/>
+                        </menu>
 			<menuitem name="Show Hide Toolbar" action="Show Hide Toolbar"/>
-			<menuitem name="Show Hide Sidebar" action="Show Hide Sidebar"/>
 			<menuitem name="Show Hide Location Bar" action="Show Hide Location Bar"/>
 			<menuitem name="Show Hide Statusbar" action="Show Hide Statusbar"/>
 			<menuitem name="Show Hide Extra Pane" action="Show Hide Extra Pane"/>

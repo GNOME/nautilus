@@ -27,8 +27,6 @@
  */
 #include <config.h>
 
-#include <locale.h> 
-
 #include "nautilus-actions.h"
 #include "nautilus-notebook.h"
 #include "nautilus-navigation-action.h"
@@ -42,18 +40,15 @@
 #include "nautilus-window-private.h"
 #include "nautilus-window-bookmarks.h"
 #include "nautilus-navigation-window-pane.h"
-#include <eel/eel-glib-extensions.h>
-#include <eel/eel-gnome-extensions.h>
+
 #include <eel/eel-stock-dialogs.h>
-#include <eel/eel-string.h>
-#include <libxml/parser.h>
+
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
+
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-ui-utilities.h>
-#include <libnautilus-private/nautilus-undo-manager.h>
-#include <libnautilus-private/nautilus-search-engine.h>
 #include <libnautilus-private/nautilus-signaller.h>
 
 #define MENU_PATH_HISTORY_PLACEHOLDER			"/MenuBar/Other Menus/Go/History Placeholder"
@@ -62,6 +57,11 @@
 #define MENU_ITEM_MAX_WIDTH_CHARS 32
 
 static void                  schedule_refresh_go_menu                      (NautilusNavigationWindow   *window);
+
+enum {
+	SIDEBAR_PLACES,
+	SIDEBAR_TREE
+};
 
 static void
 action_close_all_windows_callback (GtkAction *action, 
@@ -281,10 +281,24 @@ action_split_view_callback (GtkAction *action,
 	}
 }
 
+
+/* TODO: bind all of this with g_settings_bind and GBinding */
+static guint
+sidebar_id_to_value (const gchar *sidebar_id)
+{
+	guint retval = SIDEBAR_PLACES;
+
+	if (g_strcmp0 (sidebar_id, NAUTILUS_NAVIGATION_WINDOW_SIDEBAR_TREE) == 0)
+		retval = SIDEBAR_TREE;
+
+	return retval;
+}
+
 void
 nautilus_navigation_window_update_show_hide_menu_items (NautilusNavigationWindow *window) 
 {
 	GtkAction *action;
+	guint current_value;
 
 	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
 
@@ -312,6 +326,11 @@ nautilus_navigation_window_update_show_hide_menu_items (NautilusNavigationWindow
 					      NAUTILUS_ACTION_SHOW_HIDE_EXTRA_PANE);
 	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
 				      nautilus_navigation_window_split_view_showing (window));
+
+	action = gtk_action_group_get_action (window->details->navigation_action_group,
+					      "Sidebar Places");
+	current_value = sidebar_id_to_value (window->details->sidebar_id);
+	gtk_radio_action_set_current_value (GTK_RADIO_ACTION (action), current_value);
 }
 
 void
@@ -767,6 +786,26 @@ action_tab_change_action_activate_callback (GtkAction *action, gpointer user_dat
 	}
 }
 
+static void
+sidebar_radio_entry_changed_cb (GtkAction *action,
+				GtkRadioAction *current,
+				gpointer user_data)
+{
+	gint current_value;
+
+	current_value = gtk_radio_action_get_current_value (current);
+
+	if (current_value == SIDEBAR_PLACES) {
+		g_settings_set_string (nautilus_window_state,
+				       NAUTILUS_WINDOW_STATE_SIDE_PANE_VIEW,
+				       NAUTILUS_NAVIGATION_WINDOW_SIDEBAR_PLACES);
+	} else if (current_value == SIDEBAR_TREE) {
+		g_settings_set_string (nautilus_window_state,
+				       NAUTILUS_WINDOW_STATE_SIDE_PANE_VIEW,
+				       NAUTILUS_NAVIGATION_WINDOW_SIDEBAR_TREE);
+	}
+}
+
 static const GtkActionEntry navigation_entries[] = {
   /* name, stock id, label */  { "Go", NULL, N_("_Go") },
   /* name, stock id, label */  { "Bookmarks", NULL, N_("_Bookmarks") },
@@ -801,21 +840,22 @@ static const GtkActionEntry navigation_entries[] = {
   /* name, stock id, label */  { "Edit Bookmarks", NULL, N_("_Edit Bookmarks..."),
                                  "<control>b", N_("Display a window that allows editing the bookmarks in this menu"),
                                  G_CALLBACK (action_edit_bookmarks_callback) },
-	{ "TabsPrevious", NULL, N_("_Previous Tab"), "<control>Page_Up",
-	  N_("Activate previous tab"),
-	  G_CALLBACK (action_tabs_previous_callback) },
-	{ "TabsNext", NULL, N_("_Next Tab"), "<control>Page_Down",
-	  N_("Activate next tab"),
-	  G_CALLBACK (action_tabs_next_callback) },
-	{ "TabsMoveLeft", NULL, N_("Move Tab _Left"), "<shift><control>Page_Up",
-	  N_("Move current tab to left"),
-	  G_CALLBACK (action_tabs_move_left_callback) },
-	{ "TabsMoveRight", NULL, N_("Move Tab _Right"), "<shift><control>Page_Down",
-	  N_("Move current tab to right"),
-	  G_CALLBACK (action_tabs_move_right_callback) },
-	{ "ShowSearch", NULL, N_("S_how Search"), "<control>f",
-	  N_("Show search"),
-	  G_CALLBACK (action_show_search_callback) }
+  { "TabsPrevious", NULL, N_("_Previous Tab"), "<control>Page_Up",
+    N_("Activate previous tab"),
+    G_CALLBACK (action_tabs_previous_callback) },
+  { "TabsNext", NULL, N_("_Next Tab"), "<control>Page_Down",
+    N_("Activate next tab"),
+    G_CALLBACK (action_tabs_next_callback) },
+  { "TabsMoveLeft", NULL, N_("Move Tab _Left"), "<shift><control>Page_Up",
+    N_("Move current tab to left"),
+    G_CALLBACK (action_tabs_move_left_callback) },
+  { "TabsMoveRight", NULL, N_("Move Tab _Right"), "<shift><control>Page_Down",
+    N_("Move current tab to right"),
+    G_CALLBACK (action_tabs_move_right_callback) },
+  { "ShowSearch", NULL, N_("S_how Search"), "<control>f",
+    N_("Show search"),
+    G_CALLBACK (action_show_search_callback) },
+  { "Sidebar List", NULL, N_("Sidebar") }
 };
 
 static const GtkToggleActionEntry navigation_toggle_entries[] = {
@@ -825,7 +865,7 @@ static const GtkToggleActionEntry navigation_toggle_entries[] = {
                              G_CALLBACK (action_show_hide_toolbar_callback),
   /* is_active */            TRUE }, 
   /* name, stock id */     { "Show Hide Sidebar", NULL,
-  /* label, accelerator */   N_("_Side Pane"), "F9",
+  /* label, accelerator */   N_("_Show Sidebar"), "F9",
   /* tooltip */              N_("Change the visibility of this window's side pane"),
                              G_CALLBACK (action_show_hide_sidebar_callback),
   /* is_active */            TRUE }, 
@@ -852,6 +892,15 @@ static const GtkToggleActionEntry navigation_toggle_entries[] = {
   /* is_active */            FALSE },
 };
 
+static const GtkRadioActionEntry navigation_radio_entries[] = {
+	{ "Sidebar Places", NULL,
+	  N_("Places"), NULL, N_("Select Places as the default sidebar"),
+	  SIDEBAR_PLACES },
+	{ "Sidebar Tree", NULL,
+	  N_("Tree"), NULL, N_("Select Tree as the default sidebar"),
+	  SIDEBAR_TREE }
+};
+
 void 
 nautilus_navigation_window_initialize_actions (NautilusNavigationWindow *window)
 {
@@ -869,6 +918,10 @@ nautilus_navigation_window_initialize_actions (NautilusNavigationWindow *window)
 	gtk_action_group_add_toggle_actions (action_group, 
 					     navigation_toggle_entries, G_N_ELEMENTS (navigation_toggle_entries),
 					     window);
+	gtk_action_group_add_radio_actions (action_group,
+					    navigation_radio_entries, G_N_ELEMENTS (navigation_radio_entries),
+					    0, G_CALLBACK (sidebar_radio_entry_changed_cb),
+					    window);
 
 	action = g_object_new (NAUTILUS_TYPE_NAVIGATION_ACTION,
 			       "name", "Back",
