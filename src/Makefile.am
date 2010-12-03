@@ -79,8 +79,6 @@ nautilus_SOURCES = \
 	nautilus-desktop-window.h		\
 	nautilus-file-management-properties.c	\
 	nautilus-file-management-properties.h	\
-	nautilus-history-sidebar.c		\
-	nautilus-history-sidebar.h		\
 	nautilus-image-properties-page.c	\
 	nautilus-image-properties-page.h	\
 	nautilus-location-bar.c         	\

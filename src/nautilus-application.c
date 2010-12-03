@@ -40,7 +40,6 @@
 
 #include "nautilus-application-smclient.h"
 #include "nautilus-desktop-window.h"
-#include "nautilus-history-sidebar.h"
 #include "nautilus-image-properties-page.h"
 #include "nautilus-navigation-window.h"
 #include "nautilus-navigation-window-slot.h"
@@ -1565,7 +1564,6 @@ nautilus_application_startup (GApplication *app)
 	/* register sidebars */
 	nautilus_places_sidebar_register ();
 	fm_tree_view_register ();
-	nautilus_history_sidebar_register ();
 	nautilus_notes_viewer_register (); /* also property page */
 
 	/* register property pages */
