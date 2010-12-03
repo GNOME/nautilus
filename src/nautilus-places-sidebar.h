@@ -44,6 +44,7 @@
 
 
 GType nautilus_places_sidebar_get_type (void);
-void nautilus_places_sidebar_register (void);
+GtkWidget * nautilus_places_sidebar_new (NautilusWindowInfo *window);
+
 
 #endif
