@@ -9,7 +9,7 @@ INCLUDES=\
 	-DDATADIR=\""$(datadir)"\" \
 	$(NULL)
 
-nautilus_extensiondir = $(libdir)/nautilus/extensions-2.0
+nautilus_extensiondir = $(libdir)/nautilus/extensions-3.0
 nautilus_extension_LTLIBRARIES = libnautilus-sendto.la
 libnautilus_sendto_la_SOURCES =		\
 	nautilus-nste.c			\
