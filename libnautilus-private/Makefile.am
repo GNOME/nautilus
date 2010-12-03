@@ -146,10 +146,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-search-engine-simple.h \
 	nautilus-search-engine-tracker.c \
 	nautilus-search-engine-tracker.h \
-	nautilus-sidebar-provider.c \
-	nautilus-sidebar-provider.h \
-	nautilus-sidebar.c \
-	nautilus-sidebar.h \
 	nautilus-signaller.h \
 	nautilus-signaller.c \
 	nautilus-query.c \
