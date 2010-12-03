@@ -12,7 +12,6 @@ INCLUDES = 						\
 	$(WARNING_CFLAGS)				\
 	$(DISABLE_DEPRECATED_CFLAGS)			\
 	$(TRACKER_CFLAGS)				\
-	$(BEAGLE_CFLAGS)				\
 	-DDATADIR=\""$(datadir)"\" 			\
 	-DSYSCONFDIR=\""$(sysconfdir)"\" 			\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 	\
@@ -35,7 +34,6 @@ libnautilus_private_la_LDFLAGS =	\
 libnautilus_private_la_LIBADD =		\
 	$(dependency_static_libs)	\
 	$(SELINUX_LIBS)			\
-	$(BEAGLE_LIBS)			\
 	$(TRACKER_LIBS)			\
 	$(top_builddir)/eel/libeel-2.la \
 	$(top_builddir)/libnautilus-extension/libnautilus-extension.la \
@@ -146,8 +144,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-search-engine.h \
 	nautilus-search-engine-simple.c \
 	nautilus-search-engine-simple.h \
-	nautilus-search-engine-beagle.c \
-	nautilus-search-engine-beagle.h \
 	nautilus-search-engine-tracker.c \
 	nautilus-search-engine-tracker.h \
 	nautilus-sidebar-provider.c \
@@ -230,7 +226,6 @@ EXTRA_DIST =				\
 	nautilus-marshal.list		\
 	nautilus.convert		\
 	$(gsettingsschema_in_files)     \
-	$(BEAGLE_SOURCES)		\
 	$(TRACKER_SOURCES)		\
 	$(NULL)
 

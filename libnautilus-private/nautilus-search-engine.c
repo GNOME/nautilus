@@ -23,7 +23,6 @@
 
 #include <config.h>
 #include "nautilus-search-engine.h"
-#include "nautilus-search-engine-beagle.h"
 #include "nautilus-search-engine-simple.h"
 #include "nautilus-search-engine-tracker.h"
 
@@ -127,11 +126,6 @@ nautilus_search_engine_new (void)
 	NautilusSearchEngine *engine;
 	
 	engine = nautilus_search_engine_tracker_new ();
-	if (engine) {
-		return engine;
-	}
-	
-	engine = nautilus_search_engine_beagle_new ();
 	if (engine) {
 		return engine;
 	}
