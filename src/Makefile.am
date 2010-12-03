@@ -113,8 +113,6 @@ nautilus_SOURCES = \
 	nautilus-search-bar.h			\
 	nautilus-self-check-functions.c 	\
 	nautilus-self-check-functions.h 	\
-	nautilus-side-pane.c                    \
-	nautilus-side-pane.h			\
 	nautilus-spatial-window.c               \
 	nautilus-spatial-window.h               \
 	nautilus-trash-bar.c			\
