@@ -35,7 +35,6 @@
 #include <libnautilus-private/nautilus-window-info.h>
 #include <libnautilus-private/nautilus-search-directory.h>
 #include "nautilus-application.h"
-#include "nautilus-side-pane.h"
 
 #define NAUTILUS_TYPE_WINDOW nautilus_window_get_type()
 #define NAUTILUS_WINDOW(obj) \

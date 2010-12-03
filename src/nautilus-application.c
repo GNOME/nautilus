@@ -33,19 +33,15 @@
 #include "file-manager/fm-desktop-icon-view.h"
 #include "file-manager/fm-icon-view.h"
 #include "file-manager/fm-list-view.h"
-#include "file-manager/fm-tree-view.h"
 #if ENABLE_EMPTY_VIEW
 #include "file-manager/fm-empty-view.h"
 #endif /* ENABLE_EMPTY_VIEW */
 
 #include "nautilus-application-smclient.h"
 #include "nautilus-desktop-window.h"
-#include "nautilus-history-sidebar.h"
 #include "nautilus-image-properties-page.h"
 #include "nautilus-navigation-window.h"
 #include "nautilus-navigation-window-slot.h"
-#include "nautilus-notes-viewer.h"
-#include "nautilus-places-sidebar.h"
 #include "nautilus-self-check-functions.h"
 #include "nautilus-spatial-window.h"
 #include "nautilus-window-bookmarks.h"
@@ -1561,12 +1557,6 @@ nautilus_application_startup (GApplication *app)
 #if ENABLE_EMPTY_VIEW
 	fm_empty_view_register ();
 #endif /* ENABLE_EMPTY_VIEW */
-
-	/* register sidebars */
-	nautilus_places_sidebar_register ();
-	fm_tree_view_register ();
-	nautilus_history_sidebar_register ();
-	nautilus_notes_viewer_register (); /* also property page */
 
 	/* register property pages */
 	nautilus_image_properties_page_register ();

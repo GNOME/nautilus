@@ -79,8 +79,6 @@ nautilus_SOURCES = \
 	nautilus-desktop-window.h		\
 	nautilus-file-management-properties.c	\
 	nautilus-file-management-properties.h	\
-	nautilus-history-sidebar.c		\
-	nautilus-history-sidebar.h		\
 	nautilus-image-properties-page.c	\
 	nautilus-image-properties-page.h	\
 	nautilus-location-bar.c         	\
@@ -103,8 +101,6 @@ nautilus_SOURCES = \
 	nautilus-navigation-window-slot.h	\
 	nautilus-notebook.c			\
 	nautilus-notebook.h			\
-	nautilus-notes-viewer.c			\
-	nautilus-notes-viewer.h			\
 	nautilus-pathbar.c			\
 	nautilus-pathbar.h			\
 	nautilus-places-sidebar.c		\
@@ -115,10 +111,12 @@ nautilus_SOURCES = \
 	nautilus-search-bar.h			\
 	nautilus-self-check-functions.c 	\
 	nautilus-self-check-functions.h 	\
-	nautilus-side-pane.c                    \
-	nautilus-side-pane.h			\
 	nautilus-spatial-window.c               \
 	nautilus-spatial-window.h               \
+	nautilus-tree-sidebar.c			\
+	nautilus-tree-sidebar.h			\
+	nautilus-tree-sidebar-model.c		\
+	nautilus-tree-sidebar-model.h		\
 	nautilus-trash-bar.c			\
 	nautilus-trash-bar.h			\
 	nautilus-view-as-action.c		\

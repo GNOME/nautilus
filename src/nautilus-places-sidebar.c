@@ -24,19 +24,14 @@
  
 #include <config.h>
 
-#include <eel/eel-debug.h>
-#include <eel/eel-gtk-extensions.h>
-#include <eel/eel-glib-extensions.h>
-#include <eel/eel-string.h>
-#include <eel/eel-stock-dialogs.h>
-#include <eel/eel-gdk-pixbuf-extensions.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
+#include <gio/gio.h>
+
 #include <libnautilus-private/nautilus-dnd.h>
 #include <libnautilus-private/nautilus-bookmark.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-sidebar-provider.h>
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
@@ -45,7 +40,13 @@
 #include <libnautilus-private/nautilus-icon-names.h>
 #include <libnautilus-private/nautilus-window-info.h>
 #include <libnautilus-private/nautilus-window-slot-info.h>
-#include <gio/gio.h>
+
+#include <eel/eel-debug.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-string.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
 
 #include "nautilus-bookmark-list.h"
 #include "nautilus-places-sidebar.h"
@@ -148,9 +149,6 @@ typedef enum {
 	SECTION_NETWORK,
 } SectionType;
 
-static void  nautilus_places_sidebar_iface_init        (NautilusSidebarIface         *iface);
-static void  sidebar_provider_iface_init               (NautilusSidebarProviderIface *iface);
-static GType nautilus_places_sidebar_provider_get_type (void);
 static void  open_selected_bookmark                    (NautilusPlacesSidebar        *sidebar,
 							GtkTreeModel                 *model,
 							GtkTreePath                  *path,
@@ -212,13 +210,7 @@ static GtkTreeModel *nautilus_shortcuts_model_filter_new (NautilusPlacesSidebar 
 							  GtkTreeModel          *child_model,
 							  GtkTreePath           *root);
 
-G_DEFINE_TYPE_WITH_CODE (NautilusPlacesSidebar, nautilus_places_sidebar, GTK_TYPE_SCROLLED_WINDOW,
-			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SIDEBAR,
-						nautilus_places_sidebar_iface_init));
-
-G_DEFINE_TYPE_WITH_CODE (NautilusPlacesSidebarProvider, nautilus_places_sidebar_provider, G_TYPE_OBJECT,
-			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SIDEBAR_PROVIDER,
-						sidebar_provider_iface_init));
+G_DEFINE_TYPE (NautilusPlacesSidebar, nautilus_places_sidebar, GTK_TYPE_SCROLLED_WINDOW);
 
 static GdkPixbuf *
 get_eject_icon (gboolean highlighted)
@@ -3180,47 +3172,6 @@ nautilus_places_sidebar_class_init (NautilusPlacesSidebarClass *class)
 	GTK_WIDGET_CLASS (class)->style_set = nautilus_places_sidebar_style_set;
 }
 
-static const char *
-nautilus_places_sidebar_get_sidebar_id (NautilusSidebar *sidebar)
-{
-	return NAUTILUS_PLACES_SIDEBAR_ID;
-}
-
-static char *
-nautilus_places_sidebar_get_tab_label (NautilusSidebar *sidebar)
-{
-	return g_strdup (_("Places"));
-}
-
-static char *
-nautilus_places_sidebar_get_tab_tooltip (NautilusSidebar *sidebar)
-{
-	return g_strdup (_("Show Places"));
-}
-
-static GdkPixbuf *
-nautilus_places_sidebar_get_tab_icon (NautilusSidebar *sidebar)
-{
-	return NULL;
-}
-
-static void
-nautilus_places_sidebar_is_visible_changed (NautilusSidebar *sidebar,
-					     gboolean         is_visible)
-{
-	/* Do nothing */
-}
-
-static void
-nautilus_places_sidebar_iface_init (NautilusSidebarIface *iface)
-{
-	iface->get_sidebar_id = nautilus_places_sidebar_get_sidebar_id;
-	iface->get_tab_label = nautilus_places_sidebar_get_tab_label;
-	iface->get_tab_tooltip = nautilus_places_sidebar_get_tab_tooltip;
-	iface->get_tab_icon = nautilus_places_sidebar_get_tab_icon;
-	iface->is_visible_changed = nautilus_places_sidebar_is_visible_changed;
-}
-
 static void
 nautilus_places_sidebar_set_parent_window (NautilusPlacesSidebar *sidebar,
 					   NautilusWindowInfo *window)
@@ -3275,9 +3226,8 @@ nautilus_places_sidebar_style_set (GtkWidget *widget,
 	update_places (sidebar);
 }
 
-static NautilusSidebar *
-nautilus_places_sidebar_create (NautilusSidebarProvider *provider,
-				NautilusWindowInfo *window)
+GtkWidget *
+nautilus_places_sidebar_new (NautilusWindowInfo *window)
 {
 	NautilusPlacesSidebar *sidebar;
 	
@@ -3285,30 +3235,9 @@ nautilus_places_sidebar_create (NautilusSidebarProvider *provider,
 	nautilus_places_sidebar_set_parent_window (sidebar, window);
 	g_object_ref_sink (sidebar);
 
-	return NAUTILUS_SIDEBAR (sidebar);
+	return GTK_WIDGET (sidebar);
 }
 
-static void 
-sidebar_provider_iface_init (NautilusSidebarProviderIface *iface)
-{
-	iface->create = nautilus_places_sidebar_create;
-}
-
-static void
-nautilus_places_sidebar_provider_init (NautilusPlacesSidebarProvider *sidebar)
-{
-}
-
-static void
-nautilus_places_sidebar_provider_class_init (NautilusPlacesSidebarProviderClass *class)
-{
-}
-
-void
-nautilus_places_sidebar_register (void)
-{
-        nautilus_module_add_type (nautilus_places_sidebar_provider_get_type ());
-}
 
 /* Drag and drop interfaces */
 

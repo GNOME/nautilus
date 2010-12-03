@@ -27,13 +27,16 @@
 /* fm-tree-model.c - model for the tree view */
 
 #include <config.h>
-#include "fm-tree-model.h"
+
+#include "nautilus-tree-sidebar-model.h"
 
 #include <eel/eel-gdk-pixbuf-extensions.h>
-#include <glib/gi18n.h>
+
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-file.h>
+
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <string.h>
 

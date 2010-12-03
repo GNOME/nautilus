@@ -30,15 +30,12 @@
  */
 
 #include <config.h>
-#include "fm-tree-view.h"
 
-#include "fm-tree-model.h"
-#include "fm-properties-window.h"
-#include <string.h>
-#include <eel/eel-gtk-extensions.h>
-#include <gtk/gtk.h>
-#include <glib/gi18n.h>
-#include <gio/gio.h>
+#include "nautilus-tree-sidebar.h"
+
+#include "nautilus-tree-sidebar-model.h"
+#include "file-manager/fm-properties-window.h"
+
 #include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-clipboard-monitor.h>
 #include <libnautilus-private/nautilus-desktop-icon-file.h>
@@ -49,10 +46,15 @@
 #include <libnautilus-private/nautilus-icon-names.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
 #include <libnautilus-private/nautilus-tree-view-drag-dest.h>
-#include <libnautilus-private/nautilus-sidebar-provider.h>
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-window-info.h>
 #include <libnautilus-private/nautilus-window-slot-info.h>
+
+#include <string.h>
+#include <eel/eel-gtk-extensions.h>
+#include <gtk/gtk.h>
+#include <glib/gi18n.h>
+#include <gio/gio.h>
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_LIST_VIEW
 #include <libnautilus-private/nautilus-debug.h>
@@ -112,23 +114,14 @@ typedef struct {
 
 static GdkAtom copied_files_atom;
 
-static void  fm_tree_view_iface_init        (NautilusSidebarIface         *iface);
-static void  sidebar_provider_iface_init    (NautilusSidebarProviderIface *iface);
 static void  fm_tree_view_activate_file     (FMTreeView *view, 
 			    		     NautilusFile *file,
 					     NautilusWindowOpenFlags flags);
-static GType fm_tree_view_provider_get_type (void);
 
 static void create_popup_menu (FMTreeView *view);
 
-G_DEFINE_TYPE_WITH_CODE (FMTreeView, fm_tree_view, GTK_TYPE_SCROLLED_WINDOW,
-			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SIDEBAR,
-						fm_tree_view_iface_init));
+G_DEFINE_TYPE (FMTreeView, fm_tree_view, GTK_TYPE_SCROLLED_WINDOW)
 #define parent_class fm_tree_view_parent_class
-
-G_DEFINE_TYPE_WITH_CODE (FMTreeViewProvider, fm_tree_view_provider, G_TYPE_OBJECT,
-			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SIDEBAR_PROVIDER,
-						sidebar_provider_iface_init));
 
 static void
 notify_clipboard_info (NautilusClipboardMonitor *monitor,
@@ -1587,53 +1580,11 @@ fm_tree_view_class_init (FMTreeViewClass *class)
 
 	copied_files_atom = gdk_atom_intern ("x-special/gnome-copied-files", FALSE);
 }
-
-static const char *
-fm_tree_view_get_sidebar_id (NautilusSidebar *sidebar)
-{
-	return TREE_SIDEBAR_ID;
-}
-
-static char *
-fm_tree_view_get_tab_label (NautilusSidebar *sidebar)
-{
-	return g_strdup (_("Tree"));
-}
-
-static char *
-fm_tree_view_get_tab_tooltip (NautilusSidebar *sidebar)
-{
-	return g_strdup (_("Show Tree"));
-}
-
-static GdkPixbuf *
-fm_tree_view_get_tab_icon (NautilusSidebar *sidebar)
-{
-	return NULL;
-}
-
-static void
-fm_tree_view_is_visible_changed (NautilusSidebar *sidebar,
-				 gboolean         is_visible)
-{
-	/* Do nothing */
-}
-
 static void 
 hidden_files_mode_changed_callback (NautilusWindowInfo *window,
 				    FMTreeView *view)
 {
 	update_filtering_from_preferences (view);
-}
-
-static void
-fm_tree_view_iface_init (NautilusSidebarIface *iface)
-{
-	iface->get_sidebar_id = fm_tree_view_get_sidebar_id;
-	iface->get_tab_label = fm_tree_view_get_tab_label;
-	iface->get_tab_tooltip = fm_tree_view_get_tab_tooltip;
-	iface->get_tab_icon = fm_tree_view_get_tab_icon;
-	iface->is_visible_changed = fm_tree_view_is_visible_changed;
 }
 
 static void
@@ -1658,9 +1609,8 @@ fm_tree_view_set_parent_window (FMTreeView *sidebar,
 
 }
 
-static NautilusSidebar *
-fm_tree_view_create (NautilusSidebarProvider *provider,
-		     NautilusWindowInfo *window)
+GtkWidget *
+nautilus_tree_sidebar_new (NautilusWindowInfo *window)
 {
 	FMTreeView *sidebar;
 	
@@ -1668,27 +1618,6 @@ fm_tree_view_create (NautilusSidebarProvider *provider,
 	fm_tree_view_set_parent_window (sidebar, window);
 	g_object_ref_sink (sidebar);
 
-	return NAUTILUS_SIDEBAR (sidebar);
+	return GTK_WIDGET (sidebar);
 }
 
-static void 
-sidebar_provider_iface_init (NautilusSidebarProviderIface *iface)
-{
-	iface->create = fm_tree_view_create;
-}
-
-static void
-fm_tree_view_provider_init (FMTreeViewProvider *sidebar)
-{
-}
-
-static void
-fm_tree_view_provider_class_init (FMTreeViewProviderClass *class)
-{
-}
-
-void
-fm_tree_view_register (void)
-{
-        nautilus_module_add_type (fm_tree_view_provider_get_type ());
-}

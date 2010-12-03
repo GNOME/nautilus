@@ -40,10 +40,6 @@ libnautilus_file_manager_la_SOURCES=	\
 	fm-list-view.h 			\
 	fm-properties-window.c		\
 	fm-properties-window.h 		\
-	fm-tree-model.c			\
-	fm-tree-model.h			\
-	fm-tree-view.c			\
-	fm-tree-view.h			\
 	nautilus-audio-mime-types.h	\
 	$(NULL)
 
