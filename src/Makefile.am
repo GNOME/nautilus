@@ -101,8 +101,6 @@ nautilus_SOURCES = \
 	nautilus-navigation-window-slot.h	\
 	nautilus-notebook.c			\
 	nautilus-notebook.h			\
-	nautilus-notes-viewer.c			\
-	nautilus-notes-viewer.h			\
 	nautilus-pathbar.c			\
 	nautilus-pathbar.h			\
 	nautilus-places-sidebar.c		\
