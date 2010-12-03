@@ -40,10 +40,9 @@
 #include "nautilus-navigation-window-slot.h"
 #include "nautilus-notebook.h"
 #include "nautilus-places-sidebar.h"
+#include "nautilus-tree-sidebar.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-navigation-window-pane.h"
-
-#include "file-manager/fm-tree-view.h"
 
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>

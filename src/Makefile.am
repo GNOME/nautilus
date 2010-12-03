@@ -113,6 +113,10 @@ nautilus_SOURCES = \
 	nautilus-self-check-functions.h 	\
 	nautilus-spatial-window.c               \
 	nautilus-spatial-window.h               \
+	nautilus-tree-sidebar.c			\
+	nautilus-tree-sidebar.h			\
+	nautilus-tree-sidebar-model.c		\
+	nautilus-tree-sidebar-model.h		\
 	nautilus-trash-bar.c			\
 	nautilus-trash-bar.h			\
 	nautilus-view-as-action.c		\

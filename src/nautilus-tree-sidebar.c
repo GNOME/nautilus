@@ -30,15 +30,12 @@
  */
 
 #include <config.h>
-#include "fm-tree-view.h"
 
-#include "fm-tree-model.h"
-#include "fm-properties-window.h"
-#include <string.h>
-#include <eel/eel-gtk-extensions.h>
-#include <gtk/gtk.h>
-#include <glib/gi18n.h>
-#include <gio/gio.h>
+#include "nautilus-tree-sidebar.h"
+
+#include "nautilus-tree-sidebar-model.h"
+#include "file-manager/fm-properties-window.h"
+
 #include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-clipboard-monitor.h>
 #include <libnautilus-private/nautilus-desktop-icon-file.h>
@@ -52,6 +49,12 @@
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-window-info.h>
 #include <libnautilus-private/nautilus-window-slot-info.h>
+
+#include <string.h>
+#include <eel/eel-gtk-extensions.h>
+#include <gtk/gtk.h>
+#include <glib/gi18n.h>
+#include <gio/gio.h>
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_LIST_VIEW
 #include <libnautilus-private/nautilus-debug.h>
