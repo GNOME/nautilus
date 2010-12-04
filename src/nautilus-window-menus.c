@@ -425,15 +425,6 @@ show_hidden_files_preference_callback (gpointer callback_data)
 }
 
 static void
-preferences_respond_callback (GtkDialog *dialog,
-			      gint response_id)
-{
-	if (response_id == GTK_RESPONSE_CLOSE) {
-		gtk_widget_destroy (GTK_WIDGET (dialog));
-	}
-}
-
-static void
 action_preferences_callback (GtkAction *action, 
 			     gpointer user_data)
 {
@@ -441,7 +432,7 @@ action_preferences_callback (GtkAction *action,
 
 	window = GTK_WINDOW (user_data);
 
-	nautilus_file_management_properties_dialog_show (G_CALLBACK (preferences_respond_callback), window);
+	nautilus_file_management_properties_dialog_show (window);
 }
 
 static void

@@ -158,6 +158,8 @@ static const char * const icon_captions_components[] = {
 	NULL
 };
 
+static GtkWidget *preferences_dialog = NULL;
+
 static void
 nautilus_file_management_properties_size_group_create (GtkBuilder *builder,
 						       char *prefix,
@@ -246,6 +248,8 @@ nautilus_file_management_properties_dialog_response_cb (GtkDialog *parent,
 			break;
 		}
 		preferences_show_help (GTK_WINDOW (parent), "user-guide", section);
+	} else if (response_id == GTK_RESPONSE_CLOSE) {
+		gtk_widget_destroy (GTK_WIDGET (parent));
 	}
 }
 
@@ -839,11 +843,13 @@ nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow
 
 	/* UI callbacks */
 	dialog = GTK_WIDGET (gtk_builder_get_object (builder, "file_management_dialog"));
-	g_signal_connect_data (G_OBJECT (dialog), "response",
+	g_signal_connect_data (dialog, "response",
 			       G_CALLBACK (nautilus_file_management_properties_dialog_response_cb),
 			       g_object_ref (builder),
 			       (GClosureNotify)g_object_unref,
 			       0);
+	g_signal_connect (dialog, "delete-event",
+			  G_CALLBACK (gtk_widget_destroy), NULL);
 
 	gtk_window_set_icon_name (GTK_WINDOW (dialog), "system-file-manager");
 
@@ -851,39 +857,26 @@ nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow
 		gtk_window_set_screen (GTK_WINDOW (dialog), gtk_window_get_screen(window));
 	}
 
+	preferences_dialog = dialog;
+	g_object_add_weak_pointer (G_OBJECT (dialog), (gpointer *) &preferences_dialog);
 	gtk_widget_show (dialog);
 }
 
-static gboolean
-delete_event_callback (GtkWidget       *widget,
-		       GdkEventAny     *event,
-		       gpointer         data)
-{
-	void (*response_callback) (GtkDialog *dialog,
-				   gint response_id);
-
-	response_callback = data;
-
-	response_callback (GTK_DIALOG (widget), GTK_RESPONSE_CLOSE);
-	
-	return TRUE;
-}
-
 void
-nautilus_file_management_properties_dialog_show (GCallback close_callback, GtkWindow *window)
+nautilus_file_management_properties_dialog_show (GtkWindow *window)
 {
 	GtkBuilder *builder;
+
+	if (preferences_dialog != NULL) {
+		gtk_window_present (GTK_WINDOW (preferences_dialog));
+		return;
+	}
 
 	builder = gtk_builder_new ();
 
 	gtk_builder_add_from_file (builder,
 				   UIDIR "/nautilus-file-management-properties.ui",
 				   NULL);
-	
-	g_signal_connect (G_OBJECT (gtk_builder_get_object (builder, "file_management_dialog")),
-			  "response", close_callback, NULL);
-	g_signal_connect (G_OBJECT (gtk_builder_get_object (builder, "file_management_dialog")),
-			  "delete_event", G_CALLBACK (delete_event_callback), close_callback);
 
 	nautilus_file_management_properties_dialog_setup (builder, window);
 

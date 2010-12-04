@@ -30,7 +30,7 @@
 
 G_BEGIN_DECLS
 
-void nautilus_file_management_properties_dialog_show (GCallback close_callback, GtkWindow *window);
+void nautilus_file_management_properties_dialog_show (GtkWindow *window);
 
 G_END_DECLS
 
