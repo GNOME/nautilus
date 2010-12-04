@@ -52,7 +52,6 @@ static NautilusIconInfo *
 fm_icon_container_get_icon_images (NautilusIconContainer *container,
 				   NautilusIconData      *data,
 				   int                    size,
-				   GList                **emblem_icons,
 				   char                 **embedded_text,
 				   gboolean               for_drag_accept,
 				   gboolean               need_large_embeddded_text,
@@ -64,6 +63,11 @@ fm_icon_container_get_icon_images (NautilusIconContainer *container,
 	NautilusFile *file;
 	gboolean use_embedding;
 	NautilusFileIconFlags flags;
+	NautilusIconInfo *icon_info;
+	GdkPixbuf *pixbuf;
+	GIcon *emblemed_icon;
+	GEmblem *emblem;
+	GList *emblem_icons, *l;
 
 	file = (NautilusFile *) data;
 
@@ -77,14 +81,6 @@ fm_icon_container_get_icon_images (NautilusIconContainer *container,
 		use_embedding = *embedded_text != NULL;
 	}
 	
-	if (emblem_icons != NULL) {
-		emblems_to_ignore = fm_directory_view_get_emblem_names_to_exclude 
-			(FM_DIRECTORY_VIEW (icon_view));
-		*emblem_icons = nautilus_file_get_emblem_icons (file,
-								emblems_to_ignore);
-		g_strfreev (emblems_to_ignore);
-	}
-
 	*has_window_open = nautilus_file_has_open_window (file);
 
 	flags = NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON_AS_EMBLEM;
@@ -102,8 +98,43 @@ fm_icon_container_get_icon_images (NautilusIconContainer *container,
 	if (for_drag_accept) {
 		flags |= NAUTILUS_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT;
 	}
-	
-	return nautilus_file_get_icon (file, size, flags);
+
+	emblems_to_ignore = fm_directory_view_get_emblem_names_to_exclude 
+		(FM_DIRECTORY_VIEW (icon_view));
+	emblem_icons = nautilus_file_get_emblem_icons (file,
+						       emblems_to_ignore);
+	g_strfreev (emblems_to_ignore);
+
+	icon_info = nautilus_file_get_icon (file, size, flags);
+	pixbuf = nautilus_icon_info_get_pixbuf (icon_info);
+
+	/* apply emblems */
+	if (emblem_icons != NULL) {
+		l = emblem_icons;
+
+		emblem = g_emblem_new (l->data);
+		emblemed_icon = g_emblemed_icon_new (G_ICON (pixbuf), emblem);
+		g_object_unref (emblem);
+
+		for (l = l->next; l != NULL; l = l->next) {
+			emblem = g_emblem_new (l->data);
+			g_emblemed_icon_add_emblem (G_EMBLEMED_ICON (emblemed_icon),
+						    emblem);
+			g_object_unref (emblem);
+		}
+
+		g_clear_object (&icon_info);
+		icon_info = nautilus_icon_info_lookup (emblemed_icon, size);
+
+		g_object_unref (pixbuf);
+		g_object_unref (emblemed_icon);
+	}
+
+	if (emblem_icons != NULL) {
+		g_list_free_full (emblem_icons, g_object_unref);
+	}
+
+	return icon_info;
 }
 
 static char *
