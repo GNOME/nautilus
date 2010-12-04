@@ -39,6 +39,7 @@ static GDebugKey keys[] = {
   { "Application", NAUTILUS_DEBUG_APPLICATION },
   { "DBus", NAUTILUS_DEBUG_DBUS },
   { "DirectoryView", NAUTILUS_DEBUG_DIRECTORY_VIEW },
+  { "File", NAUTILUS_DEBUG_FILE },
   { "IconContainer", NAUTILUS_DEBUG_ICON_CONTAINER },
   { "ListView", NAUTILUS_DEBUG_LIST_VIEW },
   { "Mime", NAUTILUS_DEBUG_MIME },
