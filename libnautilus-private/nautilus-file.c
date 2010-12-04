@@ -72,6 +72,9 @@
 #include <selinux/selinux.h>
 #endif
 
+#define DEBUG_FLAG NAUTILUS_DEBUG_FILE
+#include <libnautilus-private/nautilus-debug.h>
+
 /* Time in seconds to cache getpwuid results */
 #define GETPWUID_CACHE_TIME (5*60)
 
@@ -4150,11 +4153,17 @@ nautilus_file_get_icon (NautilusFile *file,
 		return icon;
 	}
 
+	DEBUG ("Called file_get_icon(), at size %d, force thumbnail %d", size,
+	       flags & NAUTILUS_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE);
+	
 	if (flags & NAUTILUS_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE) {
 		modified_size = size;
 	} else {
-		modified_size = size * cached_thumbnail_size / NAUTILUS_ICON_SIZE_STANDARD; 
+		modified_size = size * cached_thumbnail_size / NAUTILUS_ICON_SIZE_STANDARD;
+		DEBUG ("Modifying icon size to %d, as our cached thumbnail size is %d",
+		       modified_size, cached_thumbnail_size);
 	}
+
 	if (flags & NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS &&
 	    nautilus_file_should_show_thumbnail (file)) {
 		if (file->details->thumbnail) {
@@ -4166,7 +4175,7 @@ nautilus_file_get_icon (NautilusFile *file,
 			w = gdk_pixbuf_get_width (raw_pixbuf);
 			h = gdk_pixbuf_get_height (raw_pixbuf);
 			
-			s = MAX (w, h);
+			s = MAX (w, h);			
 			/* Don't scale up small thumbnails in the standard view */
 			if (s <= cached_thumbnail_size) {
 				scale = (double)size / NAUTILUS_ICON_SIZE_STANDARD;
@@ -4200,6 +4209,9 @@ nautilus_file_get_icon (NautilusFile *file,
 				file->details->thumbnail_wants_original = TRUE;
 				nautilus_file_invalidate_attributes (file, NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL);
 			}
+
+			DEBUG ("Returning thumbnailed image, at size %d %d",
+			       (int) (w * scale), (int) (h * scale));
 			
 			icon = nautilus_icon_info_new_for_pixbuf (scaled_pixbuf);
 			g_object_unref (scaled_pixbuf);
