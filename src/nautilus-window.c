@@ -160,6 +160,8 @@ nautilus_window_init (NautilusWindow *window)
 						GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 	}
 
+	g_object_unref (provider);
+
 	window->details = G_TYPE_INSTANCE_GET_PRIVATE (window, NAUTILUS_TYPE_WINDOW, NautilusWindowDetails);
 
 	window->details->panes = NULL;
