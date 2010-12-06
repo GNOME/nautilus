@@ -109,8 +109,8 @@
 #define DEFAULT_HIGHLIGHT_ALPHA 0xff
 #define DEFAULT_NORMAL_ALPHA 0xff
 #define DEFAULT_PRELIGHT_ALPHA 0xff
-#define DEFAULT_LIGHT_INFO_COLOR 0xAAAAFD
-#define DEFAULT_DARK_INFO_COLOR  0x33337F
+#define DEFAULT_LIGHT_INFO_COLOR "AAAAFD"
+#define DEFAULT_DARK_INFO_COLOR  "33337F"
 
 #define DEFAULT_NORMAL_ICON_RENDER_MODE 0
 #define DEFAULT_PRELIGHT_ICON_RENDER_MODE 1
@@ -2644,12 +2644,10 @@ start_rubberbanding (NautilusIconContainer *container,
 	AtkObject *accessible;
 	NautilusIconContainerDetails *details;
 	NautilusIconRubberbandInfo *band_info;
-	guint fill_color, outline_color;
-	GdkColor *fill_color_gdk;
-	guchar fill_color_alpha;
+	GdkRGBA *fill_color_gdk;
 	GList *p;
 	NautilusIcon *icon;
-	GtkStyle *style;
+	GtkStyleContext *style;
 
 	details = container->details;
 	band_info = &details->rubberband_info;
@@ -2666,22 +2664,21 @@ start_rubberbanding (NautilusIconContainer *container,
 		(EEL_CANVAS (container), event->x, event->y,
 		 &band_info->start_x, &band_info->start_y);
 
-	gtk_widget_style_get (GTK_WIDGET (container),
-			      "selection_box_color", &fill_color_gdk,
-			      "selection_box_alpha", &fill_color_alpha,
-			      NULL);
+	style = gtk_widget_get_style_context (GTK_WIDGET (container));
+	gtk_style_context_get_style (style,
+				     "selection_box_rgba", &fill_color_gdk,
+				     NULL);
 
 	if (!fill_color_gdk) {
-		style = gtk_widget_get_style (GTK_WIDGET (container));
-		fill_color_gdk = gdk_color_copy (&style->base[GTK_STATE_SELECTED]);
+		fill_color_gdk = g_malloc0 (sizeof (GdkRGBA));
+		gtk_style_context_get_background_color (style, GTK_STATE_FLAG_SELECTED,
+							fill_color_gdk);
 	}
-	
-	fill_color = eel_gdk_color_to_rgb (fill_color_gdk) << 8 | fill_color_alpha;
 
-	gdk_color_free (fill_color_gdk);
-	
-	outline_color = fill_color | 255;
-	
+	if (fill_color_gdk->alpha == 1) {
+		fill_color_gdk->alpha = 0.25;
+	}
+
 	band_info->selection_rectangle = eel_canvas_item_new
 		(eel_canvas_root
 		 (EEL_CANVAS (container)),
@@ -2690,10 +2687,12 @@ start_rubberbanding (NautilusIconContainer *container,
 		 "y1", band_info->start_y,
 		 "x2", band_info->start_x,
 		 "y2", band_info->start_y,
-		 "fill_color_rgba", fill_color,
-		 "outline_color_rgba", outline_color,
+		 "fill_color_rgba", fill_color_gdk,
+		 "outline_color_rgba", fill_color_gdk,
 		 "width_pixels", 1,
 		 NULL);
+
+	gdk_rgba_free (fill_color_gdk);
 
 	accessible = atk_gobject_accessible_for_object
 		(G_OBJECT (band_info->selection_rectangle));
@@ -4135,20 +4134,33 @@ static void
 setup_background (NautilusIconContainer *container)
 {
 	GdkWindow *window;
-	GdkColor color;
-	GtkStyle *style;
+	GdkRGBA color;
+	GtkStyleContext *style;
 
-	style = gtk_widget_get_style (GTK_WIDGET (container));
+	style = gtk_widget_get_style_context (GTK_WIDGET (container));
 
-	color = style->base[GTK_STATE_NORMAL];
-	if (!container->details->active_background) {
-		eel_make_color_inactive (&color);
-	}
+	DEBUG ("Container %p: setting up background, is_active %d", container,
+	       container->details->active_background);
 
 	window = gtk_layout_get_bin_window (GTK_LAYOUT (container));
-	gdk_window_set_background (window, &color);
-	gtk_widget_modify_bg (GTK_WIDGET (container), GTK_STATE_NORMAL,
-			      &color);
+
+	if (!container->details->active_background) {
+		gtk_style_context_get_background_color (style, GTK_STATE_FLAG_FOCUSED, &color);
+
+		DEBUG ("Container %p, making color inactive", container);
+		eel_make_color_inactive (&color);
+
+		gdk_window_set_background_rgba (window, &color);
+		gtk_widget_override_background_color (GTK_WIDGET (container), GTK_STATE_FLAG_FOCUSED,
+						      &color);
+	} else {
+		DEBUG ("Container %p, removing color override", container);
+		gtk_widget_override_background_color (GTK_WIDGET (container), GTK_STATE_FLAG_FOCUSED,
+						      NULL);
+		gtk_style_context_get_background_color (style, GTK_STATE_FLAG_FOCUSED, &color);
+
+		gdk_window_set_background_rgba (window, &color);
+	}
 }
 
 static void
@@ -4209,9 +4221,9 @@ style_set (GtkWidget *widget,
 	
 	container = NAUTILUS_ICON_CONTAINER (widget);
 
-	gtk_widget_style_get (GTK_WIDGET (container),
-			      "frame_text", &frame_text,
-			      NULL);
+	gtk_style_context_get_style (gtk_widget_get_style_context (GTK_WIDGET (container)),
+				     "frame_text", &frame_text,
+				     NULL);
 
 	container->details->use_drop_shadows = container->details->drop_shadows_requested && !frame_text;
 
@@ -6030,51 +6042,23 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 								       G_PARAM_READABLE));
 
 	gtk_widget_class_install_style_property (widget_class,
-						 g_param_spec_boxed ("selection_box_color",
-								     "Selection Box Color",
+						 g_param_spec_boxed ("selection_box_rgba",
+								     "Selection Box RGBA",
 								     "Color of the selection box",
-								     GDK_TYPE_COLOR,
-								     G_PARAM_READABLE));
-	gtk_widget_class_install_style_property (widget_class,
-						 g_param_spec_uchar ("selection_box_alpha",
-								     "Selection Box Alpha",
-								     "Opacity of the selection box",
-								     0, 0xff,
-								     DEFAULT_SELECTION_BOX_ALPHA,
+								     GDK_TYPE_RGBA,
 								     G_PARAM_READABLE));
 
 	gtk_widget_class_install_style_property (widget_class,
-						 g_param_spec_uchar ("highlight_alpha",
-								     "Highlight Alpha",
-								     "Opacity of the highlight for selected icons",
-								     0, 0xff,
-								     DEFAULT_HIGHLIGHT_ALPHA,
-								     G_PARAM_READABLE));
-	gtk_widget_class_install_style_property (widget_class,
-						 g_param_spec_uchar ("normal_alpha",
-								     "Normal Alpha",
-								     "Opacity of the normal icons if frame_text is set",
-								     0, 0xff,
-								     DEFAULT_NORMAL_ALPHA,
-								     G_PARAM_READABLE));
-	gtk_widget_class_install_style_property (widget_class,
-						 g_param_spec_uchar ("prelight_alpha",
-								     "Prelight Alpha",
-								     "Opacity of the prelight icons if frame_text is set",
-								     0, 0xff,
-								     DEFAULT_PRELIGHT_ALPHA,
-								     G_PARAM_READABLE));
-	gtk_widget_class_install_style_property (widget_class,
-						 g_param_spec_boxed ("light_info_color",
-								     "Light Info Color",
+						 g_param_spec_boxed ("light_info_rgba",
+								     "Light Info RGBA",
 								     "Color used for information text against a dark background",
-								     GDK_TYPE_COLOR,
+								     GDK_TYPE_RGBA,
 								     G_PARAM_READABLE));
 	gtk_widget_class_install_style_property (widget_class,
-						 g_param_spec_boxed ("dark_info_color",
-								     "Dark Info Color",
+						 g_param_spec_boxed ("dark_info_rgba",
+								     "Dark Info RGBA",
 								     "Color used for information text against a light background",
-								     GDK_TYPE_COLOR,
+								     GDK_TYPE_RGBA,
 								     G_PARAM_READABLE));
 
 	gtk_widget_class_install_style_property (widget_class,
@@ -6092,16 +6076,16 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 								     DEFAULT_PRELIGHT_ICON_RENDER_MODE,
 								     G_PARAM_READABLE));
 	gtk_widget_class_install_style_property (widget_class,
-						 g_param_spec_boxed ("normal_icon_color",
-								     "Icon Normal Color",
+						 g_param_spec_boxed ("normal_icon_rgba",
+								     "Icon Normal RGBA",
 								     "Color used for colorizing icons in normal state (default base[NORMAL])",
-								     GDK_TYPE_COLOR,
+								     GDK_TYPE_RGBA,
 								     G_PARAM_READABLE));
 	gtk_widget_class_install_style_property (widget_class,
-						 g_param_spec_boxed ("prelight_icon_color",
-								     "Icon Prelight Color",
+						 g_param_spec_boxed ("prelight_icon_rgba",
+								     "Icon Prelight RGBA",
 								     "Color used for colorizing prelighted icons (default base[PRELIGHT])",
-								     GDK_TYPE_COLOR,
+								     GDK_TYPE_RGBA,
 								     G_PARAM_READABLE));
 	gtk_widget_class_install_style_property (widget_class,
 						 g_param_spec_uint ("normal_icon_saturation",
@@ -8531,10 +8515,10 @@ nautilus_icon_container_set_single_click_mode (NautilusIconContainer *container,
 
 void
 nautilus_icon_container_get_label_color (NautilusIconContainer *container,
-					 GdkColor             **color,
+					 GdkRGBA               *color,
 					 gboolean               is_name,
 					 gboolean               is_highlight,
-					 gboolean		  is_prelit)
+					 gboolean		is_prelit)
 {
 	int idx;
 	
@@ -8565,24 +8549,24 @@ nautilus_icon_container_get_label_color (NautilusIconContainer *container,
 	}
 
 	if (color) {
-		*color = &container->details->label_colors [idx];
+		*color = container->details->label_colors[idx];
 	}
 }
 
 static void
-setup_gc_with_fg (NautilusIconContainer *container, int idx, guint32 color)
+setup_gc_with_fg (NautilusIconContainer *container, int idx, GdkRGBA *color)
 {
-	container->details->label_colors [idx] = eel_gdk_rgb_to_color (color);
+	container->details->label_colors[idx] = *color;
 }
 
 static void
 setup_label_gcs (NautilusIconContainer *container)
 {
 	GtkWidget *widget;
-	GdkColor *light_info_color, *dark_info_color;
-	guint light_info_value, dark_info_value;
+	GdkRGBA *light_info_color, *dark_info_color;
 	gboolean frame_text;
-	GtkStyle *style;
+	GtkStyleContext *style;
+	GdkRGBA color;
 	
 	if (!gtk_widget_get_realized (GTK_WIDGET (container)))
 		return;
@@ -8592,55 +8576,66 @@ setup_label_gcs (NautilusIconContainer *container)
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 
 	/* read the info colors from the current theme; use a reasonable default if undefined */
-	gtk_widget_style_get (GTK_WIDGET (container),
-			      "light_info_color", &light_info_color,
-			      "dark_info_color", &dark_info_color,
-			      NULL);
-	style = gtk_widget_get_style (widget);
+	style = gtk_widget_get_style_context (widget);
+	gtk_style_context_get_style (style,
+				     "light_info_rgba", &light_info_color,
+				     "dark_info_rgba", &dark_info_color,
+				     NULL);
 
-	if (light_info_color) {
-		light_info_value = eel_gdk_color_to_rgb (light_info_color);
-		gdk_color_free (light_info_color);
-	} else {
-		light_info_value = DEFAULT_LIGHT_INFO_COLOR;
+	if (!light_info_color) {
+		light_info_color = g_malloc (sizeof (GdkRGBA));
+		gdk_rgba_parse (light_info_color, DEFAULT_LIGHT_INFO_COLOR);
 	}
 
-	if (dark_info_color) {
-		dark_info_value = eel_gdk_color_to_rgb (dark_info_color);
-		gdk_color_free (dark_info_color);
-	} else {
-		dark_info_value = DEFAULT_DARK_INFO_COLOR;
+	if (!dark_info_color) {
+		light_info_color = g_malloc (sizeof (GdkRGBA));
+		gdk_rgba_parse (dark_info_color, DEFAULT_DARK_INFO_COLOR);
 	}
 
-	setup_gc_with_fg (container, LABEL_COLOR_HIGHLIGHT, eel_gdk_color_to_rgb (&style->text[GTK_STATE_SELECTED]));
-	setup_gc_with_fg (container, LABEL_COLOR_ACTIVE, eel_gdk_color_to_rgb (&style->text[GTK_STATE_ACTIVE]));
-	setup_gc_with_fg (container, LABEL_COLOR_PRELIGHT, eel_gdk_color_to_rgb (&style->text[GTK_STATE_PRELIGHT]));
+	gtk_style_context_get_color (style, GTK_STATE_FLAG_SELECTED, &color);
+	setup_gc_with_fg (container, LABEL_COLOR_HIGHLIGHT, &color);
+
+	gtk_style_context_get_color (style, GTK_STATE_FLAG_ACTIVE, &color);
+	setup_gc_with_fg (container, LABEL_COLOR_ACTIVE, &color);
+
+	gtk_style_context_get_color (style, GTK_STATE_FLAG_PRELIGHT, &color);
+	setup_gc_with_fg (container, LABEL_COLOR_PRELIGHT, &color);
+
+	gtk_style_context_get_background_color (style, GTK_STATE_FLAG_SELECTED, &color);
 	setup_gc_with_fg (container, 
 			  LABEL_INFO_COLOR_HIGHLIGHT, 
-			  eel_gdk_color_is_dark (&style->base[GTK_STATE_SELECTED]) ? light_info_value : dark_info_value);
-	setup_gc_with_fg (container, 
-			  LABEL_INFO_COLOR_ACTIVE, 
-			  eel_gdk_color_is_dark (&style->base[GTK_STATE_ACTIVE]) ? light_info_value : dark_info_value);
+			  eel_gdk_rgba_is_dark (&color) ? light_info_color : dark_info_color);
+
+	gtk_style_context_get_background_color (style, GTK_STATE_FLAG_ACTIVE, &color);
+	setup_gc_with_fg (container,
+			  LABEL_INFO_COLOR_ACTIVE,
+			  eel_gdk_rgba_is_dark (&color) ? light_info_color : dark_info_color);
 		
 	/* If NautilusIconContainer::frame_text is set, we can safely
 	 * use the foreground color from the theme, because it will
 	 * always be displayed against the gtk background */
-	gtk_widget_style_get (widget,
-			      "frame_text", &frame_text,
-			      NULL);
+	gtk_style_context_get_style (gtk_widget_get_style_context (GTK_WIDGET (container)),
+				     "frame_text", &frame_text,
+				     NULL);
 
 	if (frame_text || !nautilus_icon_container_get_is_desktop (container)) {
-		setup_gc_with_fg (container, LABEL_COLOR, 
-				  eel_gdk_color_to_rgb (&style->text[GTK_STATE_NORMAL]));
-		setup_gc_with_fg (container, 
-				  LABEL_INFO_COLOR, 
-				  eel_gdk_color_is_dark (&style->base[GTK_STATE_NORMAL]) ? light_info_value : dark_info_value);
+		gtk_style_context_get_color (style, GTK_STATE_FLAG_ACTIVE, &color);
+		setup_gc_with_fg (container, LABEL_COLOR, &color);
+
+		gtk_style_context_get_background_color (style, GTK_STATE_FLAG_ACTIVE, &color);
+		setup_gc_with_fg (container, LABEL_INFO_COLOR, 
+				  eel_gdk_rgba_is_dark (&color) ?
+				  light_info_color : dark_info_color);
 	} else {
-		setup_gc_with_fg (container, LABEL_COLOR, 0xEFEFEF);
-		setup_gc_with_fg (container, 
-				  LABEL_INFO_COLOR, 
-				  light_info_value);
+		GdkRGBA tmp;
+
+		gdk_rgba_parse (&tmp, "EFEFEF");
+		setup_gc_with_fg (container, LABEL_COLOR, &tmp);
+		setup_gc_with_fg (container, LABEL_INFO_COLOR, light_info_color);
 	}
+
+	gdk_rgba_free (dark_info_color);
+	gdk_rgba_free (light_info_color);
 }
 
 /* Return if the icon container is a fixed size */
@@ -8703,9 +8698,9 @@ nautilus_icon_container_set_use_drop_shadows (NautilusIconContainer  *container,
 {
 	gboolean frame_text;
 	
-	gtk_widget_style_get (GTK_WIDGET (container),
-			      "frame_text", &frame_text,
-			      NULL);
+	gtk_style_context_get_style (gtk_widget_get_style_context (GTK_WIDGET (container)),
+				     "frame_text", &frame_text,
+				     NULL);
 
 	if (container->details->drop_shadows_requested == use_drop_shadows) {
 		return;
@@ -8722,93 +8717,43 @@ static void
 nautilus_icon_container_theme_changed (gpointer user_data)
 {
 	NautilusIconContainer *container;
-	GtkStyle *style;
-	GdkColor *prelight_icon_color, *normal_icon_color;
-	guchar highlight_alpha, normal_alpha, prelight_alpha;
+	GtkStyleContext *style;
+	GdkRGBA *prelight_icon_color, *normal_icon_color, color;
 
 	container = NAUTILUS_ICON_CONTAINER (user_data);
-	
-	/* load the highlight color */
-	gtk_widget_style_get (GTK_WIDGET (container),
-			      "highlight_alpha", &highlight_alpha,
-			      NULL);
-	
-	style = gtk_widget_get_style (GTK_WIDGET (container));
+	style = gtk_widget_get_style_context (GTK_WIDGET (container));
 
-	container->details->highlight_color_rgba = 
-		EEL_RGBA_COLOR_PACK (style->base[GTK_STATE_SELECTED].red >> 8, 
-				     style->base[GTK_STATE_SELECTED].green >> 8, 
-				     style->base[GTK_STATE_SELECTED].blue >> 8,
-				     highlight_alpha);
-	container->details->active_color_rgba = 
-		EEL_RGBA_COLOR_PACK (style->base[GTK_STATE_ACTIVE].red >> 8, 
-				     style->base[GTK_STATE_ACTIVE].green >> 8, 
-				     style->base[GTK_STATE_ACTIVE].blue >> 8,
-				     highlight_alpha);
+	gtk_style_context_get_background_color (style, GTK_STATE_FLAG_SELECTED, &color);
+	container->details->highlight_color_rgba = color;
+
+	gtk_style_context_get_background_color (style, GTK_STATE_FLAG_ACTIVE, &color);	
+	container->details->active_color_rgba = color;
 
 	/* load the prelight icon color */
-	gtk_widget_style_get (GTK_WIDGET (container),
-			      "prelight_icon_color", &prelight_icon_color,
-			      NULL);
+	gtk_style_context_get_style (style,
+				     "prelight_icon_rgba", &prelight_icon_color,
+				     NULL);
+	gtk_style_context_get_background_color (style, GTK_STATE_FLAG_PRELIGHT, &color);
 
-	if (prelight_icon_color) {
-		container->details->prelight_icon_color_rgba = 
-			EEL_RGBA_COLOR_PACK (prelight_icon_color->red >> 8, 
-					     prelight_icon_color->green >> 8, 
-					     prelight_icon_color->blue >> 8,
-					     255);
-	} else { /* if not defined by rc, set to default value */
-		container->details->prelight_icon_color_rgba = 
-			EEL_RGBA_COLOR_PACK (style->base[GTK_STATE_PRELIGHT].red >> 8,
-					     style->base[GTK_STATE_PRELIGHT].green >> 8,
-					     style->base[GTK_STATE_PRELIGHT].blue >> 8,
-					     255);
+	if (!prelight_icon_color) {
+		prelight_icon_color = gdk_rgba_copy (&color);
 	}
-  
+
+	container->details->prelight_icon_color_rgba = *prelight_icon_color;
+	container->details->prelight_color_rgba = color;
   
 	/* load the normal icon color */
-	gtk_widget_style_get (GTK_WIDGET (container),
-			      "normal_icon_color", &normal_icon_color,
-			      NULL);
+	gtk_style_context_get_style (style,
+				     "normal_icon_rgba", &normal_icon_color,
+				     NULL);
+	gtk_style_context_get_background_color (style, GTK_STATE_FLAG_ACTIVE, &color);
 
-	if (normal_icon_color) {
-		container->details->normal_icon_color_rgba = 
-			EEL_RGBA_COLOR_PACK (normal_icon_color->red >> 8, 
-					     normal_icon_color->green >> 8, 
-					     normal_icon_color->blue >> 8,
-					     255);
-	} else { /* if not defined by rc, set to default value */
-		container->details->normal_icon_color_rgba = 
-			EEL_RGBA_COLOR_PACK (style->base[GTK_STATE_NORMAL].red >> 8, 
-					     style->base[GTK_STATE_NORMAL].green >> 8, 
-					     style->base[GTK_STATE_NORMAL].blue >> 8,
-					     255);
+	if (!normal_icon_color) {
+		normal_icon_color = gdk_rgba_copy (&color);
 	}
 
-
-	/* load the normal color */
-	gtk_widget_style_get (GTK_WIDGET (container),
-			      "normal_alpha", &normal_alpha,
-			      NULL);
-
-	container->details->normal_color_rgba = 
-		EEL_RGBA_COLOR_PACK (style->base[GTK_STATE_NORMAL].red >> 8, 
-				     style->base[GTK_STATE_NORMAL].green >> 8, 
-				     style->base[GTK_STATE_NORMAL].blue >> 8,
-				     normal_alpha);
-
-
-	/* load the prelight color */
-	gtk_widget_style_get (GTK_WIDGET (container),
-			      "prelight_alpha", &prelight_alpha,
-			      NULL);
-
-	container->details->prelight_color_rgba = 
-		EEL_RGBA_COLOR_PACK (style->base[GTK_STATE_PRELIGHT].red >> 8, 
-				     style->base[GTK_STATE_PRELIGHT].green >> 8, 
-				     style->base[GTK_STATE_PRELIGHT].blue >> 8,
-				     prelight_alpha);
-
+	container->details->normal_icon_color_rgba = *normal_icon_color;
+	container->details->normal_color_rgba = color;
 
 	setup_label_gcs (container);
 }
