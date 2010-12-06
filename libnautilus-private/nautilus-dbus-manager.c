@@ -36,10 +36,16 @@ static const gchar introspection_xml[] =
   "<node>"
   "  <interface name='org.gnome.Nautilus.FileOperations'>"
   "    <method name='CopyURIs'>"
-  "      <arg type='as' name='URIList' direction='in'/>"
-  "      <arg type='s' name='Destination' direction='in'/>"
+  "      <arg type='as' name='SourceFilesURIList' direction='in'/>"
+  "      <arg type='s' name='DestinationDirectoryURI' direction='in'/>"
   "    </method>"
   "    <method name='EmptyTrash'>"
+  "    </method>"
+  "    <method name='CopyFile'>"
+  "      <arg type='s' name='SourceFileURI' direction='in'/>"
+  "      <arg type='s' name='SourceDisplayName' direction='in'/>"
+  "      <arg type='s' name='DestinationDirectoryURI' direction='in'/>"
+  "      <arg type='s' name='DestinationDisplayName' direction='in'/>"
   "    </method>"
   "  </interface>"
   "</node>";
@@ -96,7 +102,39 @@ nautilus_dbus_manager_class_init (NautilusDBusManagerClass *klass)
 }
 
 static void
-trigger_copy_file_operation (const gchar **sources,
+trigger_copy_file_operation (const gchar *source_uri,
+                             const gchar *source_display_name,
+                             const gchar *dest_dir_uri,
+                             const gchar *dest_name)
+{
+  GFile *source_file, *target_dir;
+  const gchar *target_name = NULL, *source_name = NULL;
+
+  if (source_uri == NULL || source_uri[0] == '\0' ||
+      dest_dir_uri == NULL || dest_dir_uri[0] == '\0')
+    {
+      DEBUG ("Called 'CopyFile' with invalid arguments, discarding");
+      return;
+    }
+
+  source_file = g_file_new_for_uri (source_uri);
+  target_dir = g_file_new_for_uri (dest_dir_uri);
+
+  if (dest_name != NULL && dest_name[0] != '\0')
+    target_name = dest_name;
+
+  if (source_display_name != NULL && source_display_name[0] != '\0')
+    source_name = source_display_name;
+
+  nautilus_file_operations_copy_file (source_file, target_dir, source_name, target_name,
+                                      NULL, NULL, NULL);
+
+  g_object_unref (source_file);
+  g_object_unref (target_dir);
+}
+
+static void
+trigger_copy_uris_operation (const gchar **sources,
                              const gchar *destination)
 {
   GList *source_files = NULL;
@@ -139,17 +177,16 @@ handle_method_call (GDBusConnection *connection,
                     GDBusMethodInvocation *invocation,
                     gpointer user_data)
 {
-  const gchar **uris = NULL;
-  const gchar *destination_uri = NULL;
-
   DEBUG ("Handle method, sender %s, object_path %s, interface %s, method %s",
          sender, object_path, interface_name, method_name);
 
   if (g_strcmp0 (method_name, "CopyURIs") == 0)
     {
-      g_variant_get (parameters, "(^a&s&s)", &uris, &destination_uri);
+      const gchar **uris = NULL;
+      const gchar *destination_uri = NULL;
 
-      trigger_copy_file_operation (uris, destination_uri);
+      g_variant_get (parameters, "(^a&s&s)", &uris, &destination_uri);
+      trigger_copy_uris_operation (uris, destination_uri);
 
       DEBUG ("Called CopyURIs with dest %s and uri %s\n", destination_uri, uris[0]);
 
@@ -161,6 +198,25 @@ handle_method_call (GDBusConnection *connection,
       trigger_empty_trash_operation ();
 
       DEBUG ("Called EmptyTrash");
+
+      goto out;
+    }
+
+  if (g_strcmp0 (method_name, "CopyFile") == 0)
+    {
+      const gchar *source_uri;
+      const gchar *source_display_name;
+      const gchar *destination_dir;
+      const gchar *destination_name;
+
+      g_variant_get (parameters, "(&s&s&s&s)", &source_uri, &source_display_name,
+                     &destination_dir, &destination_name);
+      trigger_copy_file_operation (source_uri, source_display_name, destination_dir, destination_name);
+
+      DEBUG ("Called CopyFile with source %s, dest dir %s and dest name %s", source_uri, destination_dir,
+             destination_name);
+
+      goto out;
     }
 
  out:
