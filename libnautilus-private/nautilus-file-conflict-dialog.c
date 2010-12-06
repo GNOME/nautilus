@@ -110,8 +110,7 @@ file_list_ready_cb (GList *files,
 	GdkPixbuf *pixbuf;
 	GtkWidget *label;
 	GString *str;
-	PangoFontDescription *desc, *old_desc;
-	GtkStyleContext *style;
+	PangoAttrList *attr_list;
 
 	dialog = GTK_DIALOG (fcd);
 	details = fcd->details;
@@ -203,19 +202,14 @@ file_list_ready_cb (GList *files,
 	gtk_box_pack_start (GTK_BOX (details->titles_vbox),
 			    label, FALSE, FALSE, 0);
 
-	style = gtk_widget_get_style_context (label);
-	gtk_style_context_get_style (style,
-				     GTK_STYLE_PROPERTY_FONT, &old_desc,
-				     NULL);
+	attr_list = pango_attr_list_new ();
+	pango_attr_list_insert (attr_list, pango_attr_weight_new (PANGO_WEIGHT_BOLD));
+	pango_attr_list_insert (attr_list, pango_attr_scale_new (PANGO_SCALE_LARGE));
+	g_object_set (label,
+		      "attributes", attr_list,
+		      NULL);
 
-	desc = pango_font_description_new ();
-	pango_font_description_set_weight (desc, PANGO_WEIGHT_BOLD);
-	pango_font_description_set_size (desc,
-		pango_font_description_get_size (old_desc) * PANGO_SCALE_LARGE);
-	gtk_widget_override_font (label, desc);
-	pango_font_description_free (desc);
-	pango_font_description_free (old_desc);
-	gtk_widget_show (label);
+	pango_attr_list_unref (attr_list);
 
 	label = gtk_label_new (secondary_text);
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
