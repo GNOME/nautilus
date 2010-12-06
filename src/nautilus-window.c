@@ -139,20 +139,33 @@ nautilus_window_init (NautilusWindow *window)
 	GtkWidget *menu;
 	GtkWidget *statusbar;
 
+	static const gchar css_custom[] =
+	  "#statusbar-no-border {"
+	  "  -GtkStatusbar-shadow-type: none;"
+	  "}"
+	  "#nautilus-extra-view-widget {"
+	  "  background-color: " EXTRA_VIEW_WIDGETS_BACKGROUND ";"
+	  "}";
+
+	GError *error = NULL;
+	GtkCssProvider *provider = gtk_css_provider_new ();
+	gtk_css_provider_load_from_data (provider, css_custom, -1, &error);
+
+	if (error != NULL) {
+		g_warning ("Can't parse NautilusWindow's CSS custom description: %s\n", error->message);
+		g_error_free (error);
+	} else {
+		gtk_style_context_add_provider (gtk_widget_get_style_context (GTK_WIDGET (window)),
+						GTK_STYLE_PROVIDER (provider),
+						GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+	}
+
 	window->details = G_TYPE_INSTANCE_GET_PRIVATE (window, NAUTILUS_TYPE_WINDOW, NautilusWindowDetails);
 
 	window->details->panes = NULL;
 	window->details->active_pane = NULL;
 
 	window->details->show_hidden_files_mode = NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT;
-	
-	/* Remove Top border on GtkStatusBar */
-	gtk_rc_parse_string (
-		"style \"statusbar-no-border\"\n"
-		"{\n"
-		"   GtkStatusbar::shadow_type = GTK_SHADOW_NONE\n"
-		"}\n"
-		"widget \"*.statusbar-noborder\" style \"statusbar-no-border\"");
 
 	/* Set initial window title */
 	gtk_window_set_title (GTK_WINDOW (window), _("Nautilus"));
@@ -2044,16 +2057,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
 
 	class->reload = nautilus_window_reload;
 	class->go_up = nautilus_window_go_up_signal;
-
-	/* Allow to set the colors of the extra view widgets */
-	gtk_rc_parse_string ("\n"
-			     "   style \"nautilus-extra-view-widgets-style-internal\"\n"
-			     "   {\n"
-			     "      bg[NORMAL] = \"" EXTRA_VIEW_WIDGETS_BACKGROUND "\"\n"
-			     "   }\n"
-			     "\n"
-			     "    widget \"*.nautilus-extra-view-widget\" style:rc \"nautilus-extra-view-widgets-style-internal\" \n"
-			     "\n");
 
 	g_type_class_add_private (G_OBJECT_CLASS (class), sizeof (NautilusWindowDetails));
 }
