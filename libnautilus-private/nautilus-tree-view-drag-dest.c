@@ -191,12 +191,9 @@ highlight_draw (GtkWidget *widget,
         width = gdk_window_get_width (bin_window);
         height = gdk_window_get_height (bin_window);
 
-        gtk_paint_focus (gtk_widget_get_style (widget),
-                         cr,
-                         gtk_widget_get_state (widget),
-                         widget,
-                         "treeview-drop-indicator",
-                         0, 0, width, height);
+        gtk_render_focus (gtk_widget_get_style_context (widget),
+			  cr,
+			  0, 0, width, height);
 
 	return FALSE;
 }
