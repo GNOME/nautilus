@@ -89,9 +89,11 @@ typedef struct {
 	GList *files;
 	GFile *destination;
 	GFile *desktop_location;
+	GFile *fake_display_source;
 	GdkPoint *icon_positions;
 	int n_icon_positions;
 	GHashTable *debuting_files;
+	gchar *target_name;
 	NautilusCopyCallback  done_callback;
 	gpointer done_callback_data;
 } CopyMoveJob;
@@ -2868,6 +2870,8 @@ report_copy_progress (CopyMoveJob *copy_job,
 								    f (is_move ?
 								       _("Moving \"%B\" to \"%B\""):
 								       _("Copying \"%B\" to \"%B\""),
+								       copy_job->fake_display_source != NULL ?
+								       copy_job->fake_display_source :
 								       (GFile *)copy_job->files->data,
 								       copy_job->destination));
 			} else {
@@ -3164,10 +3168,11 @@ get_target_file_for_link (GFile *src,
 }
 
 static GFile *
-get_target_file (GFile *src,
-		 GFile *dest_dir,
-		 const char *dest_fs_type,
-		 gboolean same_fs)
+get_target_file_with_custom_name (GFile *src,
+				  GFile *dest_dir,
+				  const char *dest_fs_type,
+				  gboolean same_fs,
+				  const gchar *custom_name)
 {
 	char *basename;
 	GFile *dest;
@@ -3175,7 +3180,16 @@ get_target_file (GFile *src,
 	char *copyname;
 
 	dest = NULL;
-	if (!same_fs) {
+
+	if (custom_name != NULL) {
+		copyname = g_strdup (custom_name);
+		make_file_name_valid_for_dest_fs (copyname, dest_fs_type);
+		dest = g_file_get_child_for_display_name (dest_dir, copyname, NULL);
+
+		g_free (copyname);
+	}
+
+	if (dest == NULL && !same_fs) {
 		info = g_file_query_info (src,
 					  G_FILE_ATTRIBUTE_STANDARD_COPY_NAME,
 					  0, NULL, NULL);
@@ -3201,6 +3215,15 @@ get_target_file (GFile *src,
 	}
 	
 	return dest;
+}
+
+static GFile *
+get_target_file (GFile *src,
+		 GFile *dest_dir,
+		 const char *dest_fs_type,
+		 gboolean same_fs)
+{
+	return get_target_file_with_custom_name (src, dest_dir, dest_fs_type, same_fs, NULL);
 }
 
 static gboolean
@@ -3910,10 +3933,10 @@ conflict_response_data_free (ConflictResponseData *data)
 
 static GFile *
 get_target_file_for_display_name (GFile *dir,
-				  char *name)
+				  const gchar *name)
 {
 	GFile *dest;
-	
+
 	dest = NULL;
 	dest = g_file_get_child_for_display_name (dir, name, NULL);
 
@@ -3968,10 +3991,12 @@ copy_move_file (CopyMoveJob *copy_job,
 
 	if (unique_names) {
 		dest = get_unique_target_file (src, dest_dir, same_fs, *dest_fs_type, unique_name_nr++);
+	} else if (copy_job->target_name != NULL) {
+		dest = get_target_file_with_custom_name (src, dest_dir, *dest_fs_type, same_fs,
+							 copy_job->target_name);
 	} else {
 		dest = get_target_file (src, dest_dir, *dest_fs_type, same_fs);
 	}
-
 
 	/* Don't allow recursive move/copy into itself.  
 	 * (We would get a file system error if we proceeded but it is nicer to 
@@ -4423,6 +4448,9 @@ copy_job_done (gpointer user_data)
 	}
 	g_hash_table_unref (job->debuting_files);
 	g_free (job->icon_positions);
+	g_free (job->target_name);
+
+	g_clear_object (&job->fake_display_source);
 	
 	finalize_common ((CommonJob *)job);
 
@@ -4493,6 +4521,43 @@ copy_job (GIOSchedulerJob *io_job,
 						   NULL);
 
 	return FALSE;
+}
+
+void
+nautilus_file_operations_copy_file (GFile *source_file,
+				    GFile *target_dir,
+				    const gchar *source_display_name,
+				    const gchar *new_name,
+				    GtkWindow *parent_window,
+				    NautilusCopyCallback done_callback,
+				    gpointer done_callback_data)
+{
+	CopyMoveJob *job;
+
+	job = op_job_new (CopyMoveJob, parent_window);
+	job->done_callback = done_callback;
+	job->done_callback_data = done_callback_data;
+	job->files = g_list_append (NULL, g_object_ref (source_file));
+	job->destination = g_object_ref (target_dir);
+	job->target_name = g_strdup (new_name);
+	job->debuting_files = g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal, g_object_unref, NULL);
+
+	if (source_display_name != NULL) {
+		gchar *path;
+
+		path = g_build_filename ("/", source_display_name, NULL);
+		job->fake_display_source = g_file_new_for_path (path);
+
+		g_free (path);
+	}
+
+	inhibit_power_manager ((CommonJob *)job, _("Copying Files"));
+
+	g_io_scheduler_push_job (copy_job,
+			   job,
+			   NULL, /* destroy notify */
+			   0,
+			   job->common.cancellable);
 }
 
 void

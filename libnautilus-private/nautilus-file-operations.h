@@ -51,6 +51,13 @@ void nautilus_file_operations_copy_move   (const GList               *item_uris,
 					   GtkWidget                 *parent_view,
 					   NautilusCopyCallback       done_callback,
 					   gpointer                   done_callback_data);
+void nautilus_file_operations_copy_file (GFile *source_file,
+					 GFile *target_dir,
+					 const gchar *source_display_name,
+					 const gchar *new_name,
+					 GtkWindow *parent_window,
+					 NautilusCopyCallback done_callback,
+					 gpointer done_callback_data);
 void nautilus_file_operations_empty_trash (GtkWidget                 *parent_view);
 void nautilus_file_operations_new_folder  (GtkWidget                 *parent_view,
 					   GdkPoint                  *target_point,
