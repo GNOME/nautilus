@@ -1837,8 +1837,8 @@ eel_editable_label_draw (GtkWidget *widget,
 	gdk_cairo_set_source_rgba (cr, &color);
 	cairo_set_line_width (cr, 1.0);
 	cairo_rectangle (cr, 0.5, 0.5, 
-			 allocation.width - 1,
-			 allocation.height - 1);
+			 allocation.width - 2,
+			 allocation.height - 2);
 	cairo_stroke (cr);
       }
     }
