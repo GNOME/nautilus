@@ -28,35 +28,6 @@
 
 #include <gdk/gdk.h>
 
-#define EEL_RGB_COLOR_RED	0xFF0000
-#define EEL_RGB_COLOR_GREEN	0x00FF00
-#define EEL_RGB_COLOR_BLUE	0x0000FF
-#define EEL_RGB_COLOR_WHITE	0xFFFFFF
-#define EEL_RGB_COLOR_BLACK	0x000000
-
-#define EEL_RGBA_COLOR_OPAQUE_RED	0xFFFF0000
-#define EEL_RGBA_COLOR_OPAQUE_GREEN	0xFF00FF00
-#define EEL_RGBA_COLOR_OPAQUE_BLUE	0xFF0000FF
-#define EEL_RGBA_COLOR_OPAQUE_WHITE	0xFFFFFFFF
-#define EEL_RGBA_COLOR_OPAQUE_BLACK	0xFF000000
-
-/* Pack RGBA values into 32 bits */
-#define EEL_RGBA_COLOR_PACK(r, g, b, a)		\
-( (((guint32)a) << 24) |			\
-  (((guint32)r) << 16) |			\
-  (((guint32)g) <<  8) |			\
-  (((guint32)b) <<  0) )
-
-/* Pack opaque RGBA values into 32 bits */
-#define EEL_RGB_COLOR_PACK(r, g, b)		\
-EEL_RGBA_COLOR_PACK((r), (g), (b), 0xFF)
-
-/* Access the individual RGBA components */
-#define EEL_RGBA_COLOR_GET_R(color) (((color) >> 16) & 0xff)
-#define EEL_RGBA_COLOR_GET_G(color) (((color) >> 8) & 0xff)
-#define EEL_RGBA_COLOR_GET_B(color) (((color) >> 0) & 0xff)
-#define EEL_RGBA_COLOR_GET_A(color) (((color) >> 24) & 0xff)
-
 /* Bits returned by eel_gdk_parse_geometry */
 typedef enum {
 	EEL_GDK_NO_VALUE     = 0x00,
@@ -69,22 +40,7 @@ typedef enum {
 	EEL_GDK_Y_NEGATIVE   = 0x20
 } EelGdkGeometryFlags;
 
-/* A version of parse_color that substitutes a default color instead of returning
-   a boolean to indicate it cannot be parsed.
-*/
-void                eel_gdk_color_parse_with_white_default (const char          *color_spec,
-							    GdkColor            *parsed_color);
-guint32             eel_rgb16_to_rgb                       (gushort              r,
-							    gushort              g,
-							    gushort              b);
-guint32             eel_rgb8_to_rgb                        (guchar               r,
-							    guchar               g,
-							    guchar               b);
-guint32             eel_gdk_color_to_rgb                   (const GdkColor      *color);
-GdkColor            eel_gdk_rgb_to_color                   (guint32              color);
-char *              eel_gdk_rgb_to_color_spec              (guint32              color);
-
-gboolean            eel_gdk_color_is_dark                  (GdkColor            *color);
+gboolean            eel_gdk_rgba_is_dark                   (const GdkRGBA       *color);
 
 /* Wrapper for XParseGeometry */
 EelGdkGeometryFlags eel_gdk_parse_geometry                 (const char          *string,
