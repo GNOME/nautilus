@@ -3618,7 +3618,7 @@ eel_canvas_item_accessible_is_item_in_window (EelCanvasItem *item,
 		int window_width, window_height;
 
 		gdk_window_get_geometry (gtk_widget_get_window (widget), NULL, NULL,
-                                         &window_width, &window_height, NULL);
+                                         &window_width, &window_height);
 		/*
                  * Check whether rectangles intersect
 		 */
