@@ -211,7 +211,7 @@ static void     draw_label_layout                    (NautilusIconCanvasItem    
 						      cairo_t                       *cr,
 						      PangoLayout                   *layout,
 						      gboolean                       highlight,
-						      GdkColor                      *label_color,
+						      GdkRGBA                       *label_color,
 						      int                            x,
 						      int                            y);
 static gboolean hit_test_stretch_handle              (NautilusIconCanvasItem        *item,
@@ -838,7 +838,7 @@ make_round_rect (cairo_t *cr,
 static void
 draw_frame (NautilusIconCanvasItem *item,
 	    cairo_t *cr,
-	    guint color,
+	    GdkRGBA *color,
 	    gboolean create_mask,
 	    int x, 
 	    int y,
@@ -863,11 +863,7 @@ draw_frame (NautilusIconCanvasItem *item,
 		 */
 	}
 
-	cairo_set_source_rgba (cr,
-			       EEL_RGBA_COLOR_GET_R (color) / 255.0,
-			       EEL_RGBA_COLOR_GET_G (color) / 255.0,
-			       EEL_RGBA_COLOR_GET_B (color) / 255.0,
-			       EEL_RGBA_COLOR_GET_A (color) / 255.0);
+	gdk_cairo_set_source_rgba (cr, color);
 	
 	/* Paint into drawable now that we have set up the color and opacity */	
 	cairo_fill (cr);
@@ -1158,7 +1154,7 @@ draw_label_text (NautilusIconCanvasItem *item,
 	NautilusIconContainer *container;
 	PangoLayout *editable_layout;
 	PangoLayout *additional_layout;
-	GdkColor *label_color;
+	GdkRGBA label_color;
 	gboolean have_editable, have_additional;
 	gboolean needs_frame, needs_highlight, prelight_label, is_rtl_label_beside;
 	EelIRect text_rect;
@@ -1199,7 +1195,7 @@ draw_label_text (NautilusIconCanvasItem *item,
 	if (needs_highlight && !details->is_renaming) {
 		draw_frame (item,
                             cr,
-			    gtk_widget_has_focus (GTK_WIDGET (container)) ? container->details->highlight_color_rgba : container->details->active_color_rgba,
+			    gtk_widget_has_focus (GTK_WIDGET (container)) ? &container->details->highlight_color_rgba : &container->details->active_color_rgba,
 			    create_mask,
 			    is_rtl_label_beside ? text_rect.x0 + item->details->text_dx : text_rect.x0,
 			    text_rect.y0,
@@ -1238,7 +1234,7 @@ draw_label_text (NautilusIconCanvasItem *item,
 			if (!(prelight_label && item->details->is_prelit)) {
 				draw_frame (item, 
 					    cr,
-					    container->details->normal_color_rgba,
+					    &container->details->normal_color_rgba,
 					    create_mask,
 					    text_rect.x0,
 					    text_rect.y0,
@@ -1247,7 +1243,7 @@ draw_label_text (NautilusIconCanvasItem *item,
 			} else {
 				draw_frame (item, 
 					    cr,
-					    container->details->prelight_color_rgba,
+					    &container->details->prelight_color_rgba,
 					    create_mask,
 					    text_rect.x0,
 					    text_rect.y0,
@@ -1263,7 +1259,7 @@ draw_label_text (NautilusIconCanvasItem *item,
 
 		draw_label_layout (item, cr,
 				   editable_layout, needs_highlight,
-				   label_color,
+				   &label_color,
 				   x,
 				   text_rect.y0 + TEXT_BACK_PADDING_Y);
 	}
@@ -1279,21 +1275,18 @@ draw_label_text (NautilusIconCanvasItem *item,
 		
 		draw_label_layout (item, cr,
 				   additional_layout, needs_highlight,
-				   label_color,
+				   &label_color,
 				   x,
 				   text_rect.y0 + details->editable_text_height + LABEL_LINE_SPACING + TEXT_BACK_PADDING_Y);
 	}
 
 	if (!create_mask && item->details->is_highlighted_as_keyboard_focus) {
-		gtk_paint_focus (gtk_widget_get_style (GTK_WIDGET (EEL_CANVAS_ITEM (item)->canvas)),
-				 cr,
-				 needs_highlight ? GTK_STATE_SELECTED : GTK_STATE_NORMAL,
-				 GTK_WIDGET (EEL_CANVAS_ITEM (item)->canvas),
-				 "icon-container",
-				 text_rect.x0,
-				 text_rect.y0,
-				 text_rect.x1 - text_rect.x0,
-				 text_rect.y1 - text_rect.y0);
+		gtk_render_focus (gtk_widget_get_style_context (GTK_WIDGET (EEL_CANVAS_ITEM (item)->canvas)),
+				  cr,
+				  text_rect.x0,
+				  text_rect.y0,
+				  text_rect.x1 - text_rect.x0,
+				  text_rect.y1 - text_rect.y0);
 	}
 
 	if (editable_layout != NULL) {
@@ -1368,14 +1361,15 @@ draw_stretch_handles (NautilusIconCanvasItem *item,
 	GdkPixbuf *knob_pixbuf;
 	int knob_width, knob_height;
 	double dash = { 2.0 };
-	GtkStyle *style;
+	GtkStyleContext *style;
+	GdkRGBA color;
 
 	if (!item->details->show_stretch_handles) {
 		return;
 	}
 
 	widget = GTK_WIDGET (EEL_CANVAS_ITEM (item)->canvas);
-	style = gtk_widget_get_style (widget);
+	style = gtk_widget_get_style_context (widget);
 
         cairo_save (cr);
 	knob_pixbuf = get_knob_pixbuf ();
@@ -1383,7 +1377,8 @@ draw_stretch_handles (NautilusIconCanvasItem *item,
 	knob_height = gdk_pixbuf_get_height (knob_pixbuf);
 
 	/* first draw the box */
-	gdk_cairo_set_source_color (cr, &style->fg[3]);
+	gtk_style_context_get_color (style, GTK_STATE_FLAG_SELECTED, &color);
+	gdk_cairo_set_source_rgba (cr, &color);
 	cairo_set_dash (cr, &dash, 1, 0);
 	cairo_set_line_width (cr, 1.0);
 	cairo_rectangle (cr,
@@ -1449,7 +1444,7 @@ real_map_pixbuf (NautilusIconCanvasItem *icon_item)
 					saturation,
 					brightness,
 					lighten,
-					container->details->prelight_icon_color_rgba);
+					&container->details->prelight_icon_color_rgba);
 			g_object_unref (old_pixbuf);
        	}
 
@@ -1497,19 +1492,18 @@ real_map_pixbuf (NautilusIconCanvasItem *icon_item)
 
 	if (icon_item->details->is_highlighted_for_selection
 	    || icon_item->details->is_highlighted_for_drop) {
-		guint color;
+		GdkRGBA *color;
 
 		old_pixbuf = temp_pixbuf;
 
-		color =  gtk_widget_has_focus (GTK_WIDGET (canvas)) ? NAUTILUS_ICON_CONTAINER (canvas)->details->highlight_color_rgba : NAUTILUS_ICON_CONTAINER (canvas)->details->active_color_rgba;
+		color =  gtk_widget_has_focus (GTK_WIDGET (canvas)) ?
+			&NAUTILUS_ICON_CONTAINER (canvas)->details->highlight_color_rgba :
+			&NAUTILUS_ICON_CONTAINER (canvas)->details->active_color_rgba;
 
-		temp_pixbuf = eel_create_colorized_pixbuf (temp_pixbuf,
-							   EEL_RGBA_COLOR_GET_R (color),
-							   EEL_RGBA_COLOR_GET_G (color),
-							   EEL_RGBA_COLOR_GET_B (color));
-							   
+		temp_pixbuf = eel_create_colorized_pixbuf (temp_pixbuf, color);
+
 		g_object_unref (old_pixbuf);
-	} 
+	}
 
 	if (!icon_item->details->is_active
 			&& !icon_item->details->is_prelit
@@ -1530,7 +1524,7 @@ real_map_pixbuf (NautilusIconCanvasItem *icon_item)
 					    saturation,
 					    brightness,
 					    lighten,
-					    container->details->normal_icon_color_rgba);
+					    &container->details->normal_icon_color_rgba);
 			g_object_unref (old_pixbuf);
 		}
 	}
@@ -1764,10 +1758,12 @@ draw_label_layout (NautilusIconCanvasItem *item,
 		   cairo_t *cr,
 		   PangoLayout *layout,
 		   gboolean highlight,
-		   GdkColor *label_color,
+		   GdkRGBA *label_color,
 		   int x,
 		   int y)
 {
+	GdkRGBA black = { 0, 0, 0, 0 };
+
 	if (item->details->is_renaming) {
 		return;
 	}
@@ -1775,13 +1771,13 @@ draw_label_layout (NautilusIconCanvasItem *item,
 	if (!highlight && (NAUTILUS_ICON_CONTAINER (EEL_CANVAS_ITEM (item)->canvas)->details->use_drop_shadows)) {
 		/* draw a drop shadow */
 		eel_cairo_draw_layout_with_drop_shadow (cr,
-						      label_color,
-						      &gtk_widget_get_style (GTK_WIDGET (EEL_CANVAS_ITEM (item)->canvas))->black,
-						      x, y,
-						      layout);
+							label_color,
+							&black,
+							x, y,
+							layout);
 	} else {
                 cairo_save (cr);
-		gdk_cairo_set_source_color (cr, label_color);
+		gdk_cairo_set_source_rgba (cr, label_color);
 		cairo_move_to (cr, x, y);
 		pango_cairo_show_layout (cr, layout);
 		cairo_restore (cr);
