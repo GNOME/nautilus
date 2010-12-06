@@ -4814,12 +4814,6 @@ move_file_prepare (CopyMoveJob *move_job,
 			g_object_unref (dest);
 			dest = get_target_file_for_display_name (dest_dir,
 								 response->new_name);
-			conflict_response_data_free (response);
-			goto retry;
-		} else if (response->id == CONFLICT_RESPONSE_RENAME) {
-			g_object_unref (dest);
-			dest = get_target_file_for_display_name (dest_dir,
-								 response->new_name);
 			renamed = TRUE;
 			conflict_response_data_free (response);
 			goto retry;
