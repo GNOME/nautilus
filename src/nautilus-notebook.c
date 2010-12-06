@@ -81,15 +81,6 @@ nautilus_notebook_class_init (NautilusNotebookClass *klass)
 	container_class->remove = nautilus_notebook_remove;
 
 	notebook_class->insert_page = nautilus_notebook_insert_page;
-	
-	gtk_rc_parse_string ("style \"nautilus-tab-close-button-style\"\n"
-			     "{\n"
-			       "GtkWidget::focus-padding = 0\n"
-			       "GtkWidget::focus-line-width = 0\n"
-			       "xthickness = 0\n"
-			       "ythickness = 0\n"
-			     "}\n"
-			     "widget \"*.nautilus-tab-close-button\" style \"nautilus-tab-close-button-style\"");
 
 	signals[TAB_CLOSE_REQUEST] =
 		g_signal_new ("tab-close-request",
@@ -239,6 +230,29 @@ button_press_cb (NautilusNotebook *notebook,
 static void
 nautilus_notebook_init (NautilusNotebook *notebook)
 {
+	static const gchar css_custom[] =
+	  "#nautilus-tab-close-button {"
+	  "  -GtkWidget-focus-padding : 0;"
+	  "  -GtkWidget-focus-line-width: 0;"
+	  "  xthickness: 0;"
+	  "  ythickness: 0;"
+	  "}";
+
+	GError *error = NULL;
+	GtkCssProvider *provider = gtk_css_provider_new ();
+	gtk_css_provider_load_from_data (provider, css_custom, -1, &error);
+
+	if (error != NULL) {
+		g_warning ("Can't parse NautilusNotebook's CSS custom description: %s\n", error->message);
+		g_error_free (error);
+	} else {
+		gtk_style_context_add_provider (gtk_widget_get_style_context (GTK_WIDGET (notebook)),
+						GTK_STYLE_PROVIDER (provider),
+						GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+	}
+
+	g_object_unref (provider);
+
 	gtk_notebook_set_scrollable (GTK_NOTEBOOK (notebook), TRUE);
 	gtk_notebook_set_show_border (GTK_NOTEBOOK (notebook), FALSE);
 	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (notebook), FALSE);
