@@ -142,13 +142,13 @@ eel_gdk_rgb_to_color_spec (const guint32 color)
  * Return true if the given color is `dark'
  */
 gboolean
-eel_gdk_color_is_dark (GdkColor *color)
+eel_gdk_rgba_is_dark (const GdkRGBA *color)
 {
 	int intensity;
 
-	intensity = (((color->red >> 8) * 77)
-		     + ((color->green >> 8) * 150)
-		     + ((color->blue >> 8) * 28)) >> 8;
+	intensity = ((((int) (color->red) >> 8) * 77)
+		     + (((int) (color->green) >> 8) * 150)
+		     + (((int) (color->blue) >> 8) * 28)) >> 8;
 
 	return intensity < 128;
 }
@@ -193,34 +193,34 @@ eel_gdk_parse_geometry (const char *string, int *x_return, int *y_return,
 }
 
 void
-eel_cairo_draw_layout_with_drop_shadow (cairo_t             *cr,
-				      GdkColor            *text_color,
-				      GdkColor            *shadow_color,
-				      int                  x,
-				      int                  y,
-				      PangoLayout         *layout)
+eel_cairo_draw_layout_with_drop_shadow (cairo_t     *cr,
+					GdkRGBA     *text_color,
+					GdkRGBA     *shadow_color,
+					int          x,
+					int          y,
+					PangoLayout *layout)
 {
         cairo_save (cr);
 
-	gdk_cairo_set_source_color (cr, shadow_color);
+	gdk_cairo_set_source_rgba (cr, shadow_color);
 	cairo_move_to (cr, x+1, y+1);
 	pango_cairo_show_layout (cr, layout);
 	
-	gdk_cairo_set_source_color (cr, text_color);
+	gdk_cairo_set_source_rgba (cr, text_color);
 	cairo_move_to (cr, x, y);
 	pango_cairo_show_layout (cr, layout);
 	
 	cairo_restore (cr);
 }
 
-#define CLAMP_COLOR(v) (t = (v), CLAMP (t, 0, G_MAXUSHORT))
+#define CLAMP_COLOR(v) (t = (v), CLAMP (t, 0, 1))
 #define SATURATE(v) ((1.0 - saturation) * intensity + saturation * (v))
 
 void
-eel_make_color_inactive (GdkColor *color)
+eel_make_color_inactive (GdkRGBA *color)
 {
 	double intensity, saturation;
-	gushort t;
+	gdouble t;
 
 	saturation = 0.7;
 	intensity = color->red * 0.30 + color->green * 0.59 + color->blue * 0.11;
@@ -228,7 +228,7 @@ eel_make_color_inactive (GdkColor *color)
 	color->green = SATURATE (color->green);
 	color->blue = SATURATE (color->blue);
 
-	if (intensity > G_MAXUSHORT / 2) {
+	if (intensity > 0.5) {
 		color->red *= 0.9;
 		color->green *= 0.9;
 		color->blue *= 0.9;
