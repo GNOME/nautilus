@@ -109,8 +109,8 @@
 #define DEFAULT_HIGHLIGHT_ALPHA 0xff
 #define DEFAULT_NORMAL_ALPHA 0xff
 #define DEFAULT_PRELIGHT_ALPHA 0xff
-#define DEFAULT_LIGHT_INFO_COLOR "AAAAFD"
-#define DEFAULT_DARK_INFO_COLOR  "33337F"
+#define DEFAULT_LIGHT_INFO_COLOR "#AAAAFD"
+#define DEFAULT_DARK_INFO_COLOR  "#33337F"
 
 #define DEFAULT_NORMAL_ICON_RENDER_MODE 0
 #define DEFAULT_PRELIGHT_ICON_RENDER_MODE 1
@@ -2644,7 +2644,7 @@ start_rubberbanding (NautilusIconContainer *container,
 	AtkObject *accessible;
 	NautilusIconContainerDetails *details;
 	NautilusIconRubberbandInfo *band_info;
-	GdkRGBA *fill_color_gdk;
+	GdkRGBA *fill_color_gdk, outline;
 	GList *p;
 	NautilusIcon *icon;
 	GtkStyleContext *style;
@@ -2679,6 +2679,9 @@ start_rubberbanding (NautilusIconContainer *container,
 		fill_color_gdk->alpha = 0.25;
 	}
 
+	outline = *fill_color_gdk;
+	eel_make_color_inactive (&outline);
+
 	band_info->selection_rectangle = eel_canvas_item_new
 		(eel_canvas_root
 		 (EEL_CANVAS (container)),
@@ -2688,7 +2691,7 @@ start_rubberbanding (NautilusIconContainer *container,
 		 "x2", band_info->start_x,
 		 "y2", band_info->start_y,
 		 "fill_color_rgba", fill_color_gdk,
-		 "outline_color_rgba", fill_color_gdk,
+		 "outline_color_rgba", &outline,
 		 "width_pixels", 1,
 		 NULL);
 
@@ -8584,12 +8587,12 @@ setup_label_gcs (NautilusIconContainer *container)
 
 	if (!light_info_color) {
 		light_info_color = g_malloc (sizeof (GdkRGBA));
-		gdk_rgba_parse (light_info_color, DEFAULT_LIGHT_INFO_COLOR);
+		g_assert (gdk_rgba_parse (light_info_color, DEFAULT_LIGHT_INFO_COLOR));
 	}
 
 	if (!dark_info_color) {
-		light_info_color = g_malloc (sizeof (GdkRGBA));
-		gdk_rgba_parse (dark_info_color, DEFAULT_DARK_INFO_COLOR);
+		dark_info_color = g_malloc (sizeof (GdkRGBA));
+		g_assert (gdk_rgba_parse (dark_info_color, DEFAULT_DARK_INFO_COLOR));
 	}
 
 	gtk_style_context_get_color (style, GTK_STATE_FLAG_SELECTED, &color);
@@ -8629,7 +8632,7 @@ setup_label_gcs (NautilusIconContainer *container)
 	} else {
 		GdkRGBA tmp;
 
-		gdk_rgba_parse (&tmp, "EFEFEF");
+		gdk_rgba_parse (&tmp, "#EFEFEF");
 		setup_gc_with_fg (container, LABEL_COLOR, &tmp);
 		setup_gc_with_fg (container, LABEL_INFO_COLOR, light_info_color);
 	}

@@ -1762,7 +1762,7 @@ draw_label_layout (NautilusIconCanvasItem *item,
 		   int x,
 		   int y)
 {
-	GdkRGBA black = { 0, 0, 0, 0 };
+	GdkRGBA black = { 0, 0, 0, 1 };
 
 	if (item->details->is_renaming) {
 		return;
