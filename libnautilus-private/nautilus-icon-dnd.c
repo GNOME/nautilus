@@ -1364,10 +1364,8 @@ drag_highlight_draw (GtkWidget *widget,
         width = gdk_window_get_width (window);
         height = gdk_window_get_height (window);
 
-	gtk_paint_shadow (gtk_widget_get_style (widget),
+	gtk_render_frame (gtk_widget_get_style_context (widget),
                           cr,
-			  GTK_STATE_NORMAL, GTK_SHADOW_OUT,
-			  widget, "dnd",
 			  0, 0, width, height);
 
 	cairo_set_line_width (cr, 1.0);

@@ -81,8 +81,8 @@ struct _EelCanvasRE {
 	double x1, y1, x2, y2;		/* Corners of item */
 	double width;			/* Outline width */
 
-	guint fill_color;		/* Fill color, RGBA */
-	guint outline_color;		/* Outline color, RGBA */
+        GdkRGBA fill_color;
+        GdkRGBA outline_color;
 
 	gboolean outline_stippling;
 

@@ -933,7 +933,6 @@ static const char* icon_entries[] = {
 static void
 nautilus_spatial_window_init (NautilusSpatialWindow *window)
 {
-	GtkRcStyle *rc_style;
 	GtkWidget *arrow;
 	GtkWidget *hbox, *vbox;
 	GtkActionGroup *action_group;
@@ -979,11 +978,6 @@ nautilus_spatial_window_init (NautilusSpatialWindow *window)
 			  window);
 	gtk_button_set_relief (GTK_BUTTON (window->details->location_button),
 			       GTK_RELIEF_NORMAL);
-	rc_style = gtk_widget_get_modifier_style (window->details->location_button);
-	rc_style->xthickness = 0;
-	rc_style->ythickness = 0;
-	gtk_widget_modify_style (window->details->location_button, 
-				 rc_style);
 
 	gtk_widget_show (window->details->location_button);
 	hbox = gtk_hbox_new (FALSE, 3);

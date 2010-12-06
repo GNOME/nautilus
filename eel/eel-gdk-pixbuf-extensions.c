@@ -185,7 +185,7 @@ eel_gdk_pixbuf_render (GdkPixbuf *pixbuf,
                        guint saturation,
                        guint brightness,
                        guint lighten_value,
-                       guint color)
+                       GdkRGBA *color)
 {
  	GdkPixbuf *temp_pixbuf, *old_pixbuf;
 
@@ -195,17 +195,11 @@ eel_gdk_pixbuf_render (GdkPixbuf *pixbuf,
 	}
 	else if (render_mode == 2) {
 	/* colorize icon */
-		temp_pixbuf = eel_create_colorized_pixbuf (pixbuf,
-				   EEL_RGBA_COLOR_GET_R (color),
-				   EEL_RGBA_COLOR_GET_G (color),
-				   EEL_RGBA_COLOR_GET_B (color));
+		temp_pixbuf = eel_create_colorized_pixbuf (pixbuf, color);
 	} else if (render_mode == 3) {
 	/* monochromely colorize icon */
 		old_pixbuf = eel_create_darkened_pixbuf (pixbuf, 0, 255);		
-		temp_pixbuf = eel_create_colorized_pixbuf (old_pixbuf,
-				   EEL_RGBA_COLOR_GET_R (color),
-				   EEL_RGBA_COLOR_GET_G (color),
-				   EEL_RGBA_COLOR_GET_B (color));
+		temp_pixbuf = eel_create_colorized_pixbuf (old_pixbuf, color);
 		g_object_unref (old_pixbuf);
 	} else {
 		temp_pixbuf = NULL;

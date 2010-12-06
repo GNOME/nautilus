@@ -2953,13 +2953,17 @@ eel_canvas_draw_background (EelCanvas *canvas,
                             cairo_t   *cr)
 {
         cairo_rectangle_int_t rect;
+	GtkStyleContext *style_context;
+	GdkRGBA color;
 
         if (!gdk_cairo_get_clip_rectangle (cr, &rect))
               return;
 
         cairo_save (cr);
 	/* By default, we use the style background. */
-	gdk_cairo_set_source_color (cr, &gtk_widget_get_style (GTK_WIDGET (canvas))->bg[GTK_STATE_NORMAL]);
+	style_context = gtk_widget_get_style_context (GTK_WIDGET (canvas));
+	gtk_style_context_get_background_color (style_context, GTK_STATE_FLAG_ACTIVE, &color);
+	gdk_cairo_set_source_rgba (cr, &color);
 	gdk_cairo_rectangle (cr, &rect);
 	cairo_fill (cr);
         cairo_restore (cr);
@@ -3543,41 +3547,6 @@ eel_canvas_world_to_window (EelCanvas *canvas, double worldx, double worldy,
 		*winy = (canvas->pixels_per_unit)*(worldy - canvas->scroll_y1) + canvas->zoom_yofs;
 }
 
-
-
-/**
- * eel_canvas_get_color:
- * @canvas: A canvas.
- * @spec: X color specification, or NULL for "transparent".
- * @color: Returns the allocated color.
- *
- * Allocates a color based on the specified X color specification.  As a
- * convenience to item implementations, it returns TRUE if the color was
- * allocated, or FALSE if the specification was NULL.  A NULL color
- * specification is considered as "transparent" by the canvas.
- *
- * Return value: TRUE if @spec is non-NULL and the color is allocated.  If @spec
- * is NULL, then returns FALSE.
- **/
-int
-eel_canvas_get_color (EelCanvas *canvas, const char *spec, GdkColor *color)
-{
-	g_return_val_if_fail (EEL_IS_CANVAS (canvas), FALSE);
-	g_return_val_if_fail (color != NULL, FALSE);
-
-	if (!spec) {
-		color->pixel = 0;
-		color->red = 0;
-		color->green = 0;
-		color->blue = 0;
-		return FALSE;
-	}
-
-	gdk_color_parse (spec, color);
-
-	return TRUE;
-}
-
 static gboolean
 boolean_handled_accumulator (GSignalInvocationHint *ihint,
 			     GValue                *return_accu,
@@ -3649,7 +3618,7 @@ eel_canvas_item_accessible_is_item_in_window (EelCanvasItem *item,
 		int window_width, window_height;
 
 		gdk_window_get_geometry (gtk_widget_get_window (widget), NULL, NULL,
-                                         &window_width, &window_height, NULL);
+                                         &window_width, &window_height);
 		/*
                  * Check whether rectangles intersect
 		 */

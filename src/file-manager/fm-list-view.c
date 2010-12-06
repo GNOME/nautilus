@@ -91,12 +91,10 @@ struct FMListViewDetails {
 	int drag_y;
 
 	gboolean drag_started;
-
 	gboolean ignore_button_release;
-
 	gboolean row_selected_on_button_down;
-
 	gboolean menus_ready;
+	gboolean active;
 	
 	GHashTable *columns;
 	GtkWidget *column_editor;
@@ -1465,6 +1463,48 @@ filename_cell_data_func (GtkTreeViewColumn *column,
 	g_free (text);
 }
 
+static void
+setup_background (FMListView *view)
+{
+	GtkWidget *widget;
+	GdkRGBA color;
+	GtkStyleContext *style;
+	GdkWindow *window;
+	gboolean is_active = view->details->active;
+
+	widget = GTK_WIDGET (fm_list_view_get_tree_view (FM_LIST_VIEW (view)));
+
+	if (!gtk_widget_get_realized (widget)) {
+		return;
+	}
+
+	DEBUG ("Setting up background; is active %d", is_active);
+
+	style = gtk_widget_get_style_context (widget);
+	window = gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget));
+
+	if (!is_active) {
+		gtk_style_context_get_background_color (style, GTK_STATE_FLAG_ACTIVE,
+							&color);
+		eel_make_color_inactive (&color);
+
+		gtk_widget_override_background_color (widget, GTK_STATE_FLAG_ACTIVE, &color);
+		gtk_style_context_set_background (style, window);
+	} else {
+		gtk_widget_override_background_color (widget, GTK_STATE_FLAG_ACTIVE, NULL);
+		gtk_style_context_set_background (style, window);
+	}
+}
+
+static void
+realize_event_callback (GtkWidget *tree_view,
+			gpointer user_data)
+{
+	FMListView *view = user_data;
+
+	setup_background (view);
+}
+
 static gboolean
 focus_in_event_callback (GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
 {
@@ -1554,6 +1594,8 @@ create_and_set_up_tree_view (FMListView *view)
 	
     	g_signal_connect_object (view->details->tree_view, "focus_in_event",
 				 G_CALLBACK(focus_in_event_callback), view, 0);
+	g_signal_connect (view->details->tree_view, "realize",
+			  G_CALLBACK (realize_event_callback), view);
     
 	view->details->model = g_object_new (FM_TYPE_LIST_MODEL, NULL);
 	gtk_tree_view_set_model (view->details->tree_view, GTK_TREE_MODEL (view->details->model));
@@ -2994,20 +3036,9 @@ static void
 real_set_is_active (FMDirectoryView *view,
 		    gboolean is_active)
 {
-	GtkWidget *widget;
-	GdkColor color;
-	GtkStyle *style;
+	FM_LIST_VIEW (view)->details->active = is_active;
 
-	widget = GTK_WIDGET (fm_list_view_get_tree_view (FM_LIST_VIEW (view)));
-	style = gtk_widget_get_style (widget);
-
-	if (!is_active) {
-		color = style->base[GTK_STATE_NORMAL];
-		eel_make_color_inactive (&color);
-		gtk_widget_modify_base (widget, GTK_STATE_NORMAL, &color);
-	} else {
-		gtk_widget_modify_base (widget, GTK_STATE_NORMAL, NULL);
-	}
+	setup_background (FM_LIST_VIEW (view));
 }
 
 static void

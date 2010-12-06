@@ -53,11 +53,7 @@ enum {
 	PROP_Y1,
 	PROP_X2,
 	PROP_Y2,
-	PROP_FILL_COLOR,
-	PROP_FILL_COLOR_GDK,
 	PROP_FILL_COLOR_RGBA,
-	PROP_OUTLINE_COLOR,
-	PROP_OUTLINE_COLOR_GDK,
 	PROP_OUTLINE_COLOR_RGBA,
 	PROP_OUTLINE_STIPPLING,
 	PROP_WIDTH_PIXELS,
@@ -164,40 +160,16 @@ eel_canvas_re_class_init (EelCanvasREClass *klass)
 				      G_PARAM_READWRITE));
         g_object_class_install_property
                 (gobject_class,
-                 PROP_FILL_COLOR,
-                 g_param_spec_string ("fill-color", NULL, NULL,
-                                      NULL,
-                                      G_PARAM_READWRITE));
-        g_object_class_install_property
-                (gobject_class,
-                 PROP_FILL_COLOR_GDK,
-                 g_param_spec_boxed ("fill-color-gdk", NULL, NULL,
-				     GDK_TYPE_COLOR,
-				     G_PARAM_READWRITE));
-        g_object_class_install_property
-                (gobject_class,
                  PROP_FILL_COLOR_RGBA,
-                 g_param_spec_uint ("fill-color-rgba", NULL, NULL,
-				    0, G_MAXUINT, 0,
-				    G_PARAM_READWRITE));
-        g_object_class_install_property
-                (gobject_class,
-                 PROP_OUTLINE_COLOR,
-                 g_param_spec_string ("outline-color", NULL, NULL,
-                                      NULL,
-                                      G_PARAM_READWRITE));
-        g_object_class_install_property
-                (gobject_class,
-                 PROP_OUTLINE_COLOR_GDK,
-                 g_param_spec_boxed ("outline-color-gdk", NULL, NULL,
-				     GDK_TYPE_COLOR,
+                 g_param_spec_boxed ("fill-color-rgba", NULL, NULL,
+				     GDK_TYPE_RGBA,
 				     G_PARAM_READWRITE));
         g_object_class_install_property
                 (gobject_class,
                  PROP_OUTLINE_COLOR_RGBA,
-                 g_param_spec_uint ("outline-color-rgba", NULL, NULL,
-				    0, G_MAXUINT, 0,
-				    G_PARAM_READWRITE));
+                 g_param_spec_boxed ("outline-color-rgba", NULL, NULL,
+				     GDK_TYPE_RGBA,
+				     G_PARAM_READWRITE));
 	g_object_class_install_property
 		(gobject_class,
 		 PROP_OUTLINE_STIPPLING,
@@ -297,8 +269,6 @@ eel_canvas_re_set_property (GObject              *object,
 {
 	EelCanvasItem *item;
 	EelCanvasRE *re;
-	GdkColor color = { 0, 0, 0, 0, };
-	GdkColor *pcolor;
 
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (EEL_IS_CANVAS_RE (object));
@@ -331,89 +301,35 @@ eel_canvas_re_set_property (GObject              *object,
 		eel_canvas_item_request_update (item);
 		break;
 
-	case PROP_FILL_COLOR:
-	case PROP_FILL_COLOR_GDK:
-	case PROP_FILL_COLOR_RGBA:
-		switch (param_id) {
-		case PROP_FILL_COLOR:
-			if (g_value_get_string (value) &&
-			    gdk_color_parse (g_value_get_string (value), &color))
-				eel_canvas_re_set_fill (re, TRUE);
-			else
-				eel_canvas_re_set_fill (re, FALSE);
+	case PROP_FILL_COLOR_RGBA: {
+		GdkRGBA *color;
 
-			re->fill_color = ((color.red & 0xff00) << 16 |
-					  (color.green & 0xff00) << 8 |
-					  (color.blue & 0xff00) |
-					  0xff);
-			break;
+		color = g_value_get_boxed (value);
 
-		case PROP_FILL_COLOR_GDK:
-			pcolor = g_value_get_boxed (value);
-			eel_canvas_re_set_fill (re, pcolor != NULL);
+		eel_canvas_re_set_fill (re, color != NULL);
 
-			if (pcolor) {
-				color = *pcolor;
-			}
-
-			re->fill_color = ((color.red & 0xff00) << 16 |
-					  (color.green & 0xff00) << 8 |
-					  (color.blue & 0xff00) |
-					  0xff);
-			break;
-
-		case PROP_FILL_COLOR_RGBA:
-			eel_canvas_re_set_fill (re, TRUE);
-			re->fill_color = g_value_get_uint (value);
-			break;
+		if (color != NULL) {
+			re->fill_color = *color;
 		}
-#ifdef VERBOSE
-		g_print ("re fill color = %08x\n", re->fill_color);
-#endif
+
 		eel_canvas_item_request_redraw (item);		
 		break;
+	}
 
-	case PROP_OUTLINE_COLOR:
-	case PROP_OUTLINE_COLOR_GDK:
-	case PROP_OUTLINE_COLOR_RGBA:
-		switch (param_id) {
-		case PROP_OUTLINE_COLOR:
-			if (g_value_get_string (value) &&
-			    gdk_color_parse (g_value_get_string (value), &color))
-				eel_canvas_re_set_outline (re, TRUE);
-			else
-				eel_canvas_re_set_outline (re, FALSE);
+	case PROP_OUTLINE_COLOR_RGBA: {
+		GdkRGBA *color;
 
-			re->outline_color = ((color.red & 0xff00) << 16 |
-					     (color.green & 0xff00) << 8 |
-					     (color.blue & 0xff00) |
-					     0xff);
-			break;
+		color = g_value_get_boxed (value);
 
-		case PROP_OUTLINE_COLOR_GDK:
-			pcolor = g_value_get_boxed (value);
-			eel_canvas_re_set_outline (re, pcolor != NULL);
+		eel_canvas_re_set_outline (re, color != NULL);
 
-			if (pcolor) {
-				color = *pcolor;
-			}
-
-			re->outline_color = ((color.red & 0xff00) << 16 |
-					     (color.green & 0xff00) << 8 |
-					     (color.blue & 0xff00) |
-					     0xff);
-			break;
-
-		case PROP_OUTLINE_COLOR_RGBA:
-			eel_canvas_re_set_outline (re, TRUE);
-			re->outline_color = g_value_get_uint (value);
-			break;
+		if (color != NULL) {
+			re->outline_color = *color;
 		}
-#ifdef VERBOSE
-		g_print ("re outline color %x %x %x\n", color.red, color.green, color.blue);
-#endif
+
 		eel_canvas_item_request_redraw (item);		
 		break;
+	}
 
 	case PROP_OUTLINE_STIPPLING:
 		re->outline_stippling = g_value_get_boolean (value);
@@ -439,24 +355,6 @@ eel_canvas_re_set_property (GObject              *object,
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
 		break;
 	}
-}
-
-/* Allocates a GdkColor structure filled with the specified pixel, and puts it into the specified
- * value for returning it in the get_property method.
- */
-static void
-get_color_value (EelCanvasRE *re, gulong pixel, GValue *value)
-{
-	GdkColor color;
-
-	color.red   = (pixel >> 16) & 0xFF;
-	color.green = (pixel >>  8) & 0xFF;
-	color.blue  =  pixel        & 0xFF;
-	color.red   |= color.red   << 8;
-	color.green |= color.green << 8;
-	color.blue  |= color.blue  << 8;
-
-	g_value_set_boxed (value, &color);
 }
 
 static void
@@ -489,20 +387,12 @@ eel_canvas_re_get_property (GObject              *object,
 		g_value_set_double (value,  re->y2);
 		break;
 
-	case PROP_FILL_COLOR_GDK:
-		get_color_value (re, re->fill_color, value);
-		break;
-
-	case PROP_OUTLINE_COLOR_GDK:
-		get_color_value (re, re->outline_color, value);
-		break;
-
 	case PROP_FILL_COLOR_RGBA:
-		g_value_set_uint (value,  re->fill_color);
+		g_value_set_boxed (value,  &re->fill_color);
 		break;
 
 	case PROP_OUTLINE_COLOR_RGBA:
-		g_value_set_uint (value,  re->outline_color);
+		g_value_set_boxed (value,  &re->outline_color);
 		break;
 
 	case PROP_OUTLINE_STIPPLING:
@@ -718,13 +608,9 @@ eel_canvas_rect_realize  (EelCanvasItem *item)
 
 static void
 eel_canvas_set_source_color (cairo_t *cr,
-			     guint rgba)
+			     GdkRGBA *rgba)
 {
-	cairo_set_source_rgba (cr,
-			       ((rgba >> 24) & 0xff) / 255.,
-			       ((rgba >> 16) & 0xff) / 255.,
-			       ((rgba >>  8) & 0xff) / 255.,
-			       ((rgba >>  0) & 0xff) / 255.);
+	gdk_cairo_set_source_rgba (cr, rgba);
 }
 
 #define DASH_ON 0.8
@@ -759,7 +645,7 @@ eel_canvas_rect_draw (EelCanvasItem *item, cairo_t *cr, cairo_region_t *region)
 	cairo_save (cr);
 
 	if (re->fill_set) {
-		eel_canvas_set_source_color (cr, re->fill_color);
+		eel_canvas_set_source_color (cr, &re->fill_color);
 		cairo_rectangle (cr,
 				 cx1, cy1,
 				 cx2 - cx1 + 1,
@@ -768,7 +654,7 @@ eel_canvas_rect_draw (EelCanvasItem *item, cairo_t *cr, cairo_region_t *region)
 	}
 
 	if (re->outline_set) {
-		eel_canvas_set_source_color (cr, re->outline_color);
+		eel_canvas_set_source_color (cr, &re->outline_color);
 		if (re->width_pixels) {
 			cairo_set_line_width (cr, (int) re->width);
 		} else {
@@ -1055,12 +941,12 @@ eel_canvas_ellipse_draw (EelCanvasItem *item, cairo_t *cr, cairo_region_t *regio
 	cairo_restore (cr);
 
 	if (re->fill_set) {
-		eel_canvas_set_source_color (cr, re->fill_color);
+		eel_canvas_set_source_color (cr, &re->fill_color);
 		cairo_fill_preserve (cr);
         }
 
 	if (re->outline_set) {
-		eel_canvas_set_source_color (cr, re->outline_color);
+		eel_canvas_set_source_color (cr, &re->outline_color);
 		if (re->width_pixels) {
 			cairo_set_line_width (cr, (int) re->width);
 		} else {
