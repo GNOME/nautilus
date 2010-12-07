@@ -427,7 +427,13 @@ nautilus_icon_info_lookup (GIcon *icon,
                         pixbuf = NULL;
                 }
 
-                return nautilus_icon_info_new_for_pixbuf (pixbuf);
+		icon_info = nautilus_icon_info_new_for_pixbuf (pixbuf);
+
+		if (pixbuf != NULL) {
+			g_object_unref (pixbuf);
+		}
+
+		return icon_info;
         }
 }
 
