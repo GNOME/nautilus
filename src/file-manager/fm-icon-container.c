@@ -106,13 +106,13 @@ fm_icon_container_get_icon_images (NautilusIconContainer *container,
 	g_strfreev (emblems_to_ignore);
 
 	icon_info = nautilus_file_get_icon (file, size, flags);
-	pixbuf = nautilus_icon_info_get_pixbuf (icon_info);
 
 	/* apply emblems */
 	if (emblem_icons != NULL) {
 		l = emblem_icons;
 
 		emblem = g_emblem_new (l->data);
+		pixbuf = nautilus_icon_info_get_pixbuf (icon_info);
 		emblemed_icon = g_emblemed_icon_new (G_ICON (pixbuf), emblem);
 		g_object_unref (emblem);
 
