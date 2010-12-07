@@ -262,6 +262,8 @@ bus_acquired_handler_cb (GDBusConnection *conn,
                                                              self,
                                                              NULL, &error);
 
+  g_dbus_node_info_unref (introspection_data);
+
   if (error != NULL)
     {
       g_warning ("Error registering the FileOperations proxy on the bus: %s", error->message);
