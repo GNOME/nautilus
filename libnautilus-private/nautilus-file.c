@@ -2776,7 +2776,7 @@ compare_files_by_size (NautilusFile *file_1, NautilusFile *file_2)
 	 */
 
 	Knowledge size_known_1, size_known_2;
-	goffset size_1, size_2;
+	goffset size_1 = 0, size_2 = 0;
 
 	size_known_1 = get_size (file_1, &size_1);
 	size_known_2 = get_size (file_2, &size_2);
