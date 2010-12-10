@@ -24,7 +24,7 @@ msgstr ""
 "Project-Id-Version: nautilus-master-po-gl-54706\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-12-10 20:49+0100\n"
-"PO-Revision-Date: 2010-12-10 20:49+0100\n"
+"PO-Revision-Date: 2010-12-11 00:49+0100\n"
 "Last-Translator: Fran Diéguez <frandieguez@ubuntu.com>\n"
 "Language-Team: Galician <gnome-gl-list@gnome.org>\n"
 "Language: gl\n"
@@ -467,7 +467,7 @@ msgstr "Xa existe o ficheiro co mesmo nome en «%s». "
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:256
 msgid "Original file"
-msgstr "Ficheiro orixinal"
+msgstr "Ficheiro existente"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:257
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:288
@@ -490,7 +490,7 @@ msgstr "Última modificación:"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:287
 msgid "Replace with"
-msgstr "Substituír con"
+msgstr "Substituír por"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:316
 msgid "Merge"
@@ -499,7 +499,7 @@ msgstr "Combinar"
 #. Setup the expander for the rename action
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:509
 msgid "_Select a new name for the destination"
-msgstr "_Seleccionar un novo nome para o destino"
+msgstr "_Seleccionar un nome distinto para o destino"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:523
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:379
@@ -1425,7 +1425,7 @@ msgstr "Mércores, 00 de setembro de 0000 ás 00:00:00"
 
 #: ../libnautilus-private/nautilus-file.c:4385
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
-msgstr "%A, %B de %-d %Y ás %-I:%M:%S %p"
+msgstr "%A, %-d de %B de  %Y at %-I:%M:%S %p"
 
 #: ../libnautilus-private/nautilus-file.c:4387
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
@@ -1434,7 +1434,7 @@ msgstr "Lun, 00 de out de 0000 ás 00:00:00"
 # (pofilter) variables: do not translate: %p
 #: ../libnautilus-private/nautilus-file.c:4388
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
-msgstr "%a, %-d de %b de %Y ás %-H:%M:%S"
+msgstr "%a,  %-d de %b de %Y ás %-I:%M:%S %p"
 
 #: ../libnautilus-private/nautilus-file.c:4390
 msgid "Mon, Oct 00 0000 at 00:00 PM"
@@ -1452,7 +1452,7 @@ msgstr "00 de out de 0000 ás 00:00"
 # (pofilter) variables: do not translate: %p
 #: ../libnautilus-private/nautilus-file.c:4394
 msgid "%b %-d %Y at %-I:%M %p"
-msgstr "%-d de %b %Y ás %-H:%M"
+msgstr "%-d de %b de %Y ás %-I:%M %p"
 
 #: ../libnautilus-private/nautilus-file.c:4396
 msgid "Oct 00 0000, 00:00 PM"
@@ -1461,7 +1461,7 @@ msgstr "00 de out de 0000, 00:00"
 # (pofilter) variables: do not translate: %p
 #: ../libnautilus-private/nautilus-file.c:4397
 msgid "%b %-d %Y, %-I:%M %p"
-msgstr "%-d de %b %Y, %-H:%M"
+msgstr "%-d de %b de %Y, %-I:%M %p"
 
 #: ../libnautilus-private/nautilus-file.c:4399
 msgid "00/00/00, 00:00 PM"
@@ -1930,7 +1930,7 @@ msgstr ""
 "especificado de zoom, se o enteiro indicado é maior que 0, o nome do "
 "ficheiro non excederá o número de liñas indicado. Se o enteiro é 0 ou menor, "
 "non se impón ningún límite ao nivel de zoom especificado. Tamén se permite "
-"unha entrada predefinida coa forma \"Integer\" e sen ningún nivel de zoom "
+"unha entrada predeterminada coa forma \"Integer\" e sen ningún nivel de zoom "
 "especificado. Isto define o número máximo de liñas para todos os outros "
 "niveis de zoom. Exemplos: 0 - mostrar sempre os nomes de ficheiro longos; 3 "
 "- acurtar os nomes de ficheiro se exceden as tres liñas; máis pequeno:5, moi "
@@ -1975,15 +1975,15 @@ msgstr "Formato da data"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:11
 msgid "Default Thumbnail Icon Size"
-msgstr "Tamaño predefinido da icona"
+msgstr "Tamaño predeterminado da icona"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:12
 msgid "Default column order in the list view"
-msgstr "Orde predefinida das columnas na visualización de lista"
+msgstr "Orde predeterminada das columnas na visualización de lista"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:13
 msgid "Default column order in the list view."
-msgstr "Orde predefinida das columnas na visualización de lista."
+msgstr "Orde predeterminada das columnas na visualización de lista."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:14
 msgid "Default compact view zoom level"
@@ -1991,39 +1991,39 @@ msgstr "Nivel de zoom predetefinido da visualización compacta"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:15
 msgid "Default folder viewer"
-msgstr "Visualizador de cartafoles predefinido"
+msgstr "Visualizador de cartafoles predeterminado"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:16
 msgid "Default icon zoom level"
-msgstr "Nivel de zoom predefinido da icona"
+msgstr "Nivel de zoom predeterminado da icona"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:17
 msgid "Default list of columns visible in the list view"
-msgstr "Lista de columnas visíbeis predefinidas na visualización de lista"
+msgstr "Lista de columnas visíbeis predeterminadas na visualización de lista"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:18
 msgid "Default list of columns visible in the list view."
-msgstr "Lista de columnas visíbeis predefinidas na visualización de lista."
+msgstr "Lista de columnas visíbeis predeterminadas na visualización de lista."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:19
 msgid "Default list zoom level"
-msgstr "Nivel de zoom predefinido da lista"
+msgstr "Nivel de zoom predeterminado da lista"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:20
 msgid "Default sort order"
-msgstr "Orde de clasificación predefinida"
+msgstr "Orde de clasificación predeterminada"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:21
 msgid "Default zoom level used by the compact view."
-msgstr "Nivel de zoom predefinido usado pola visualización compacta."
+msgstr "Nivel de zoom predeterminado usado pola visualización compacta."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:22
 msgid "Default zoom level used by the icon view."
-msgstr "Nivel de zoom predefinido usado na visualización de iconas."
+msgstr "Nivel de zoom predeterminado usado na visualización de iconas."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:23
 msgid "Default zoom level used by the list view."
-msgstr "Nivel de zoom predefinido usado na visualización de lista."
+msgstr "Nivel de zoom predeterminado usado na visualización de lista."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:24
 msgid "Desktop computer icon name"
@@ -2473,7 +2473,7 @@ msgstr "Límite de elisión de texto"
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:87
 msgid "The default size of an icon for a thumbnail in the icon view."
 msgstr ""
-"O tamaño predefinido dunha icona para unha miniatura na visualización de "
+"O tamaño predeterminado dunha icona para unha miniatura na visualización de "
 "iconas."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:88
@@ -2481,12 +2481,12 @@ msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\" and \"mtime\"."
 msgstr ""
-"A ordenación predefinida dos elementos na visualización de lista. Os valores "
-"posíbeis son \"name\", \"size\", \"type\" e \"mtime\"."
+"A ordenación predeterminada dos elementos na visualización de lista. Os "
+"valores posíbeis son \"name\", \"size\", \"type\" e \"mtime\"."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:89
 msgid "The default width of the side pane in new windows."
-msgstr "A largura predefinida do panel lateral nas xanelas novas."
+msgstr "A largura predeterminada do panel lateral nas xanelas novas."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:90
 msgid "The font _description used for the icons on the desktop."
@@ -2606,7 +2606,7 @@ msgstr ""
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:109
 msgid "Whether the navigation window should be maximized by default."
 msgstr ""
-"Indica se a xanela de navegación debería maximizarse de forma predefinida."
+"Indica se a xanela de navegación debería maximizarse de forma predeterminada."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:110
 msgid "Whether the navigation window should be maximized."
@@ -3358,7 +3358,7 @@ msgstr "_Restaurar"
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:7171
 msgid "Reset View to _Defaults"
-msgstr "Reiniciar visualización ao _predefinido"
+msgstr "Reiniciar visualización ao _predeterminado"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:7172
@@ -5063,7 +5063,7 @@ msgstr "<b>Comportamento</b>"
 
 #: ../src/nautilus-file-management-properties.ui.h:26
 msgid "<b>Compact View Defaults</b>"
-msgstr "<b>Configuracións predefinidas da visualización compacta</b>"
+msgstr "<b>Configuracións predeterminadas da visualización compacta</b>"
 
 #: ../src/nautilus-file-management-properties.ui.h:27
 msgid "<b>Date</b>"
@@ -5071,7 +5071,7 @@ msgstr "<b>Data</b>"
 
 #: ../src/nautilus-file-management-properties.ui.h:28
 msgid "<b>Default View</b>"
-msgstr "<b>Visualización predefinida</b>"
+msgstr "<b>Visualización predeterminada</b>"
 
 #: ../src/nautilus-file-management-properties.ui.h:29
 msgid "<b>Executable Text Files</b>"
@@ -5087,7 +5087,7 @@ msgstr "<b>Lendas de iconas</b>"
 
 #: ../src/nautilus-file-management-properties.ui.h:32
 msgid "<b>Icon View Defaults</b>"
-msgstr "<b>Configuracións predefinidas de visualización de iconas</b>"
+msgstr "<b>Configuracións predeterminadas de visualización de iconas</b>"
 
 #: ../src/nautilus-file-management-properties.ui.h:33
 msgid "<b>List Columns</b>"
@@ -5095,7 +5095,7 @@ msgstr "<b>Columnas da lista</b>"
 
 #: ../src/nautilus-file-management-properties.ui.h:34
 msgid "<b>List View Defaults</b>"
-msgstr "<b>Configuracións predefinidas da visualización en lista</b>"
+msgstr "<b>Configuracións predeterminadas da visualización en lista</b>"
 
 #: ../src/nautilus-file-management-properties.ui.h:35
 msgid "<b>Other Previewable Files</b>"
@@ -5115,7 +5115,7 @@ msgstr "<b>Lixo</b>"
 
 #: ../src/nautilus-file-management-properties.ui.h:39
 msgid "<b>Tree View Defaults</b>"
-msgstr "<b>Configuracións predefinidas da visualización en árbore</b>"
+msgstr "<b>Configuracións predeterminadas da visualización en árbore</b>"
 
 #: ../src/nautilus-file-management-properties.ui.h:40
 msgid "A_ll columns have the same width"
@@ -5184,7 +5184,7 @@ msgstr "Nivel de zoom pred_efinido:"
 
 #: ../src/nautilus-file-management-properties.ui.h:56
 msgid "Default _zoom level:"
-msgstr "Nivel de _zoom predefinido:"
+msgstr "Nivel de _zoom predeterminado:"
 
 #: ../src/nautilus-file-management-properties.ui.h:57
 msgid "Display"
@@ -5260,7 +5260,7 @@ msgstr "_Preguntarme cada vez"
 
 #: ../src/nautilus-file-management-properties.ui.h:77
 msgid "_Default zoom level:"
-msgstr "Nivel de zoom _predefinido:"
+msgstr "Nivel de zoom _predeterminado:"
 
 #: ../src/nautilus-file-management-properties.ui.h:78
 msgid "_Double click to open items"
@@ -6382,7 +6382,7 @@ msgstr "Afastar"
 
 #: ../src/nautilus-zoom-control.c:80
 msgid "Zoom to Default"
-msgstr "Zoor predefinido"
+msgstr "Zoom até o predeterminado"
 
 #: ../src/nautilus-zoom-control.c:891
 msgid "Zoom"
