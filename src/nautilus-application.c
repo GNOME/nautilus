@@ -1292,18 +1292,10 @@ void
 nautilus_application_quit (NautilusApplication *self)
 {
 	GApplication *app = G_APPLICATION (self);
-	gboolean exit_with_last_window;
+	GList *windows;
 
-	exit_with_last_window =
-		g_settings_get_boolean (nautilus_preferences,
-					NAUTILUS_PREFERENCES_EXIT_WITH_LAST_WINDOW);
-
-	nautilus_application_close_desktop ();
-	g_application_release (app);
-
-	if (!exit_with_last_window) {
-		g_application_release (app);
-	}
+	windows = gtk_application_get_windows (GTK_APPLICATION (app));
+	g_list_foreach (windows, (GFunc) gtk_widget_destroy, NULL);
 }
 
 static gint
