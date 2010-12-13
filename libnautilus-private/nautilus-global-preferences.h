@@ -32,9 +32,6 @@
 
 G_BEGIN_DECLS
 
-/* Whether exit when last window destroyed */
-#define NAUTILUS_PREFERENCES_EXIT_WITH_LAST_WINDOW		"exit-with-last-window"
-
 /* Trash options */
 #define NAUTILUS_PREFERENCES_CONFIRM_TRASH			"confirm-trash"
 #define NAUTILUS_PREFERENCES_ENABLE_DELETE			"enable-delete"
