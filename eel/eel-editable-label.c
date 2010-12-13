@@ -1121,12 +1121,12 @@ get_label_wrap_width (EelEditableLabel *label)
 			      wrap_width, label_wrap_width_free);
     }
 
-  gtk_style_context_get_style (style,
-                               GTK_STYLE_PROPERTY_FONT, &desc,
-                               NULL);
+  gtk_style_context_get (style, gtk_widget_get_state_flags (GTK_WIDGET (label)),
+                         GTK_STYLE_PROPERTY_FONT, &desc,
+                         NULL);
 
   if (wrap_width->font_desc && pango_font_description_equal (wrap_width->font_desc, desc))
-    return wrap_width->width;
+    goto out;
 
   if (wrap_width->font_desc)
     pango_font_description_free (wrap_width->font_desc);
@@ -1137,6 +1137,8 @@ get_label_wrap_width (EelEditableLabel *label)
 					   "This long string gives a good enough length for any line to have.");
   pango_layout_get_size (layout, &wrap_width->width, NULL);
   g_object_unref (layout);
+
+ out:
   pango_font_description_free (desc);
 
   return wrap_width->width;
