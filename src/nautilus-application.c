@@ -673,14 +673,9 @@ nautilus_application_create_desktop_windows (NautilusApplication *application)
 	NautilusDesktopWindow *window;
 	GtkWidget *selection_widget;
 	int screens, i;
-	gboolean exit_with_last_window;
 
 	display = gdk_display_get_default ();
 	screens = gdk_display_get_n_screens (display);
-
-	exit_with_last_window =
-		g_settings_get_boolean (nautilus_preferences,
-					NAUTILUS_PREFERENCES_EXIT_WITH_LAST_WINDOW);
 
 	for (i = 0; i < screens; i++) {
 
@@ -706,13 +701,8 @@ nautilus_application_create_desktop_windows (NautilusApplication *application)
 			nautilus_application_desktop_windows =
 				g_list_prepend (nautilus_application_desktop_windows, window);
 
-			/* don't add the desktop windows to the GtkApplication hold toplevels
-			 * if we should exit when the last window is closed.
-			 */
-			if (!exit_with_last_window) {
-				gtk_application_add_window (GTK_APPLICATION (application),
-							    GTK_WINDOW (window));
-			}
+			gtk_application_add_window (GTK_APPLICATION (application),
+						    GTK_WINDOW (window));
 		}
 	}
 }
@@ -1339,7 +1329,6 @@ nautilus_application_command_line (GApplication *app,
 	gint argc = 0;
 	gchar **argv = NULL, **uris = NULL;
 	gint retval = EXIT_SUCCESS;
-	gboolean exit_with_last_window;
 
 	context = g_option_context_new (_("\n\nBrowse the file system with the file manager"));
 	g_option_context_add_main_entries (context, options, NULL);
@@ -1429,10 +1418,6 @@ nautilus_application_command_line (GApplication *app,
 	       "self checks %d, no_desktop %d",
 	       no_default_window, browser_window, kill_shell, perform_self_check, no_desktop);
 
-	exit_with_last_window =
-		g_settings_get_boolean (nautilus_preferences,
-					NAUTILUS_PREFERENCES_EXIT_WITH_LAST_WINDOW);
-
 	if (kill_shell) {
 		nautilus_application_quit (self);
 	} else {
@@ -1447,10 +1432,6 @@ nautilus_application_command_line (GApplication *app,
 
 			if (!no_desktop) {
 				nautilus_application_open_desktop (self);
-			}
-
-			if (!exit_with_last_window) {
-				g_application_hold (app);
 			}
 
 			finish_startup (self, no_desktop);
