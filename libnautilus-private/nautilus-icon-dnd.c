@@ -131,6 +131,7 @@ create_selection_shadow (NautilusIconContainer *container,
 	for (p = list; p != NULL; p = p->next) {
 		NautilusDragSelectionItem *item;
 		int x1, y1, x2, y2;
+		GdkRGBA black = { 0, 0, 0, 1 };
 
 		item = p->data;
 
@@ -151,7 +152,7 @@ create_selection_shadow (NautilusIconContainer *container,
 				 "y1", (double) y1,
 				 "x2", (double) x2,
 				 "y2", (double) y2,
-				 "outline_color", "black",
+				 "outline-color-rgba", &black,
 				 "outline-stippling", TRUE,
 				 "width_pixels", 1,
 				 NULL);
@@ -1359,14 +1360,23 @@ drag_highlight_draw (GtkWidget *widget,
 {
 	gint width, height;
 	GdkWindow *window;
+	GtkStyleContext *style;
 	
         window = gtk_widget_get_window (widget);
         width = gdk_window_get_width (window);
         height = gdk_window_get_height (window);
 
-	gtk_render_frame (gtk_widget_get_style_context (widget),
-                          cr,
+	style = gtk_widget_get_style_context (widget);
+
+	gtk_style_context_save (style);
+	gtk_style_context_add_class (style, "dnd");
+	gtk_style_context_set_state (style, GTK_STATE_FLAG_FOCUSED);
+
+	gtk_render_frame (style,
+			  cr,
 			  0, 0, width, height);
+
+	gtk_style_context_restore (style);
 
 	cairo_set_line_width (cr, 1.0);
 	cairo_set_source_rgb (cr, 0, 0, 0);
