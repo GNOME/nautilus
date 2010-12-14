@@ -135,15 +135,13 @@ nautilus_spatial_window_configure_event (GtkWidget *widget,
 }
 
 static void
-nautilus_spatial_window_unrealize (GtkWidget *widget)
+nautilus_spatial_window_destroy (GtkWidget *widget)
 {
 	NautilusSpatialWindow *window;
 	NautilusWindowSlot *slot;
-	
+
 	window = NAUTILUS_SPATIAL_WINDOW (widget);
 	slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (window));
-
-	GTK_WIDGET_CLASS (nautilus_spatial_window_parent_class)->unrealize (widget);
 
 	if (window->details->save_geometry_timeout_id != 0) {
 		g_source_remove (window->details->save_geometry_timeout_id);
@@ -1046,6 +1044,9 @@ nautilus_spatial_window_init (NautilusSpatialWindow *window)
 		gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (menuitem), TRUE);
 	}
 	nautilus_window_set_active_pane (win, pane);
+
+	g_signal_connect (window, "destroy",
+			  G_CALLBACK (nautilus_spatial_window_destroy), window);
 }
 
 static void
@@ -1070,7 +1071,6 @@ nautilus_spatial_window_class_init (NautilusSpatialWindowClass *klass)
 
 	wclass->show = nautilus_spatial_window_show;
 	wclass->configure_event = nautilus_spatial_window_configure_event;
-	wclass->unrealize = nautilus_spatial_window_unrealize;
 	wclass->window_state_event = nautilus_spatial_window_state_event;
 
 	G_OBJECT_CLASS (klass)->finalize = nautilus_spatial_window_finalize;
