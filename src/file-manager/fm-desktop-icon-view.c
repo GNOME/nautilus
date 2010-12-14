@@ -649,9 +649,9 @@ action_change_background_callback (GtkAction *action,
 
 	nautilus_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (data)),
 						  _("Background"),
-						  "gnome-appearance-properties",
+						  "gnome-control-center",
 						  FALSE,
-						  "--show-page=background", NULL);
+						  "background", NULL);
 }
 
 static void
