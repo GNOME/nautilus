@@ -1281,12 +1281,24 @@ draw_label_text (NautilusIconCanvasItem *item,
 	}
 
 	if (!create_mask && item->details->is_highlighted_as_keyboard_focus) {
-		gtk_render_focus (gtk_widget_get_style_context (GTK_WIDGET (EEL_CANVAS_ITEM (item)->canvas)),
+		GtkStyleContext *style;
+
+		style = gtk_widget_get_style_context (GTK_WIDGET (EEL_CANVAS_ITEM (item)->canvas));
+
+		gtk_style_context_save (style);
+		gtk_style_context_add_class (style, "icon-container");
+		gtk_style_context_set_state (style,
+					     needs_highlight ?
+					     GTK_STATE_FLAG_SELECTED : GTK_STATE_FLAG_ACTIVE);
+					     
+		gtk_render_focus (style,
 				  cr,
 				  text_rect.x0,
 				  text_rect.y0,
 				  text_rect.x1 - text_rect.x0,
 				  text_rect.y1 - text_rect.y0);
+
+		gtk_style_context_restore (style);
 	}
 
 	if (editable_layout != NULL) {
