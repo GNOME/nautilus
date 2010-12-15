@@ -1500,6 +1500,28 @@ nautilus_application_command_line (GApplication *app,
 }
 
 static void
+init_css (void)
+{
+	GtkCssProvider *provider;
+	GError *error = NULL;
+
+	provider = gtk_css_provider_new ();
+	gtk_css_provider_load_from_path (provider,
+					 NAUTILUS_DATADIR G_DIR_SEPARATOR_S "nautilus.css", &error);
+
+	if (error != NULL) {
+		g_warning ("Can't parse NautilusPlacesSidebar's CSS custom description: %s\n", error->message);
+		g_error_free (error);
+	} else {
+		gtk_style_context_add_provider_for_screen (gdk_screen_get_default (),
+							   GTK_STYLE_PROVIDER (provider),
+							   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+	}
+
+	g_object_unref (provider);
+}
+
+static void
 nautilus_application_startup (GApplication *app)
 {
 	NautilusApplication *self = NAUTILUS_APPLICATION (app);
@@ -1533,6 +1555,9 @@ nautilus_application_startup (GApplication *app)
 
 	/* register property pages */
 	nautilus_image_properties_page_register ();
+
+	/* initialize CSS theming */
+	init_css ();
 
 	/* initialize search path for custom icons */
 	gtk_icon_theme_append_search_path (gtk_icon_theme_get_default (),
