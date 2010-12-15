@@ -1368,7 +1368,7 @@ nautilus_application_command_line (GApplication *app,
 	}
 	if (kill_shell && remaining != NULL) {
 		g_application_command_line_printerr (command_line, "%s\n",
-						     _("-- quit cannot be used with URIs."));
+						     _("--quit cannot be used with URIs."));
 		retval = EXIT_FAILURE;
 		goto out;
 	}
