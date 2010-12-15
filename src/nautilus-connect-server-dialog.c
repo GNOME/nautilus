@@ -64,6 +64,9 @@ struct _NautilusConnectServerDialogDetails {
 	GtkWidget *remember_checkbox;
 	GtkWidget *connect_button;
 
+	GtkSizeGroup *labels_size_group;
+	GtkSizeGroup *contents_size_group;
+
 	GList *iconized_entries;
 
 	GSimpleAsyncResult *fill_details_res;
@@ -829,6 +832,10 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	gtk_box_set_spacing (GTK_BOX (content_area), 2);
 	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
 
+	/* create the size group */
+	dialog->details->labels_size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
+	dialog->details->contents_size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
+
 	/* infobar */
 	dialog->details->info_bar = gtk_info_bar_new ();
 	gtk_info_bar_set_message_type (GTK_INFO_BAR (dialog->details->info_bar),
@@ -842,6 +849,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	gtk_label_set_markup (GTK_LABEL (label), str);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_box_pack_start (GTK_BOX (content_area), label, FALSE, FALSE, 6);
+	gtk_size_group_add_widget (dialog->details->labels_size_group, label);
 	gtk_widget_show (label);
 
 	/* server settings alignment */
@@ -864,6 +872,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 			  0, 1,
 			  0, 1,
 			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_size_group_add_widget (dialog->details->labels_size_group, label);
 	gtk_widget_show (label);
 
 	hbox = gtk_hbox_new (FALSE, 6);
@@ -872,6 +881,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 			  1, 2,
 			  0, 1,
 			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_size_group_add_widget (dialog->details->contents_size_group, hbox);
 
 	dialog->details->server_entry = gtk_entry_new ();
 	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->server_entry), TRUE);
@@ -904,9 +914,11 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 			  0, 1,
 			  1, 2,
 			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_size_group_add_widget (dialog->details->labels_size_group, label);
 	gtk_widget_show (label);
 
 	dialog->details->type_combo = combo = gtk_combo_box_new ();
+	gtk_size_group_add_widget (dialog->details->contents_size_group, dialog->details->type_combo);
 
 	/* each row contains: method index, textual description */
 	store = gtk_list_store_new (2, G_TYPE_INT, G_TYPE_STRING);
@@ -975,6 +987,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 			  0, 1,
 			  2, 3,
 			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_size_group_add_widget (dialog->details->labels_size_group, label);
 
 	dialog->details->share_entry = gtk_entry_new ();
 	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->share_entry), TRUE);
@@ -982,6 +995,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 			  1, 2,
 			  2, 3,
 			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_size_group_add_widget (dialog->details->contents_size_group, dialog->details->share_entry);
 
 	bind_visibility (dialog, dialog->details->share_entry, label);
 
@@ -992,6 +1006,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 			  0, 1,
 			  3, 4,
 			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_size_group_add_widget (dialog->details->labels_size_group, label);
 	gtk_widget_show (label);
 
 	dialog->details->folder_entry = gtk_entry_new ();
@@ -1001,6 +1016,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 			  1, 2,
 			  3, 4,
 			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_size_group_add_widget (dialog->details->contents_size_group, dialog->details->folder_entry);
 	gtk_widget_show (dialog->details->folder_entry);
 
 	/* user details label */
@@ -1008,6 +1024,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	str = g_strdup_printf ("<b>%s</b>", _("User Details"));
 	gtk_label_set_markup (GTK_LABEL (label), str);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_size_group_add_widget (dialog->details->labels_size_group, label);
 	gtk_box_pack_start (GTK_BOX (content_area), label, FALSE, FALSE, 6);
 
 	/* user details alignment */
@@ -1033,10 +1050,12 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 
 	dialog->details->domain_entry = gtk_entry_new ();
 	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->domain_entry), TRUE);
+	gtk_size_group_add_widget (dialog->details->labels_size_group, label);
 	gtk_table_attach (GTK_TABLE (table), dialog->details->domain_entry,
 			  1, 2,
 			  0, 1,
 			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_size_group_add_widget (dialog->details->contents_size_group, dialog->details->domain_entry);
 
 	bind_visibility (dialog, dialog->details->domain_entry, label);
 
@@ -1047,6 +1066,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 			  0, 1,
 			  1, 2,
 			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_size_group_add_widget (dialog->details->labels_size_group, label);
 
 	dialog->details->user_entry = gtk_entry_new ();
 	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->user_entry), TRUE);
@@ -1054,6 +1074,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 			  1, 2,
 			  1, 2,
 			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_size_group_add_widget (dialog->details->contents_size_group, dialog->details->user_entry);
 
 	bind_visibility (dialog, dialog->details->user_entry, label);
 
@@ -1064,6 +1085,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 			  0, 1,
 			  2, 3,
 			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_size_group_add_widget (dialog->details->labels_size_group, label);
 
 	dialog->details->password_entry = gtk_entry_new ();
 	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->password_entry), TRUE);
@@ -1072,6 +1094,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 			  1, 2,
 			  2, 3,
 			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_size_group_add_widget (dialog->details->contents_size_group, dialog->details->password_entry);
 
 	bind_visibility (dialog, dialog->details->password_entry, label);
 
