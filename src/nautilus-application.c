@@ -1510,7 +1510,7 @@ init_css (void)
 					 NAUTILUS_DATADIR G_DIR_SEPARATOR_S "nautilus.css", &error);
 
 	if (error != NULL) {
-		g_warning ("Can't parse NautilusPlacesSidebar's CSS custom description: %s\n", error->message);
+		g_warning ("Can't parse Nautilus' CSS custom description: %s\n", error->message);
 		g_error_free (error);
 	} else {
 		gtk_style_context_add_provider_for_screen (gdk_screen_get_default (),
