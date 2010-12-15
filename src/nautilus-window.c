@@ -68,8 +68,6 @@
 
 #define MAX_HISTORY_ITEMS 50
 
-#define EXTRA_VIEW_WIDGETS_BACKGROUND "#a7c6e1"
-
 #define SIDE_PANE_MINIMUM_WIDTH 1
 #define SIDE_PANE_MINIMUM_HEIGHT 400
 
@@ -138,29 +136,6 @@ nautilus_window_init (NautilusWindow *window)
 	GtkWidget *table;
 	GtkWidget *menu;
 	GtkWidget *statusbar;
-
-	static const gchar css_custom[] =
-	  "#statusbar-no-border {"
-	  "  -GtkStatusbar-shadow-type: none;"
-	  "}"
-	  "#nautilus-extra-view-widget {"
-	  "  background-color: " EXTRA_VIEW_WIDGETS_BACKGROUND ";"
-	  "}";
-
-	GError *error = NULL;
-	GtkCssProvider *provider = gtk_css_provider_new ();
-	gtk_css_provider_load_from_data (provider, css_custom, -1, &error);
-
-	if (error != NULL) {
-		g_warning ("Can't parse NautilusWindow's CSS custom description: %s\n", error->message);
-		g_error_free (error);
-	} else {
-		gtk_style_context_add_provider (gtk_widget_get_style_context (GTK_WIDGET (window)),
-						GTK_STYLE_PROVIDER (provider),
-						GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-	}
-
-	g_object_unref (provider);
 
 	window->details = G_TYPE_INSTANCE_GET_PRIVATE (window, NAUTILUS_TYPE_WINDOW, NautilusWindowDetails);
 
