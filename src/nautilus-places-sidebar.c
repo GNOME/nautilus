@@ -2927,6 +2927,7 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 	GtkTreeViewColumn *col;
 	GtkCellRenderer   *cell;
 	GtkTreeSelection  *selection;
+	GtkStyleContext   *style;
 
 	sidebar->volume_monitor = g_volume_monitor_get ();
 	
@@ -2940,6 +2941,9 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
   	/* tree view */
 	tree_view = GTK_TREE_VIEW (gtk_tree_view_new ());
 	gtk_tree_view_set_headers_visible (tree_view, FALSE);
+
+	style = gtk_widget_get_style_context (GTK_WIDGET (tree_view));
+	gtk_style_context_add_class (style, "NautilusSidebar");
 
 	col = GTK_TREE_VIEW_COLUMN (gtk_tree_view_column_new ());
 
