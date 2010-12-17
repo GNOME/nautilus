@@ -167,26 +167,10 @@ typedef enum {
 	TOP_SIDE
 } RectangleSide;
 
-enum {
-	ACTION_OPEN,
-	ACTION_MENU,
-	LAST_ACTION
-};
-
-typedef struct {
-        char *action_descriptions[LAST_ACTION];
-	char *image_description;
-	char *description;
-} NautilusIconCanvasItemAccessiblePrivate;
-
-typedef struct {
-	NautilusIconCanvasItem *item;
-	gint action_number;
-} NautilusIconCanvasItemAccessibleActionContext;
-
 static int click_policy_auto_value;
 
 static void nautilus_icon_canvas_item_text_interface_init (EelAccessibleTextIface *iface);
+static GType nautilus_icon_canvas_item_accessible_factory_get_type (void);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusIconCanvasItem, nautilus_icon_canvas_item, EEL_TYPE_CANVAS_ITEM,
 			 G_IMPLEMENT_INTERFACE (EEL_TYPE_ACCESSIBLE_TEXT,
@@ -223,24 +207,6 @@ static void      draw_embedded_text                  (NautilusIconCanvasItem    
 						      int                            y);
 
 static void       nautilus_icon_canvas_item_ensure_bounds_up_to_date (NautilusIconCanvasItem *icon_item);
-
-
-static gpointer accessible_parent_class = NULL;
-
-static GQuark accessible_private_data_quark = 0;
-
-static const char *nautilus_icon_canvas_item_accessible_action_names[] = {
-        "open",
-        "menu",
-        NULL
-};
-
-static const char *nautilus_icon_canvas_item_accessible_action_descriptions[] = {
-        "Open item",
-        "Popup context menu",
-        NULL
-};
-
 
 /* Object initialization function for the icon item. */
 static void
@@ -372,7 +338,7 @@ nautilus_icon_canvas_item_set_property (GObject        *object,
 
 			gail_text_util_text_setup (details->text_util,
 						   details->editable_text);
-			accessible = eel_accessibility_get_atk_object (item); 
+			accessible = atk_gobject_accessible_for_object (G_OBJECT (item));
 			g_object_notify (G_OBJECT(accessible), "accessible-name");
 		}
 		
@@ -414,7 +380,7 @@ nautilus_icon_canvas_item_set_property (GObject        *object,
 		details->is_highlighted_as_keyboard_focus = g_value_get_boolean (value);
 
 		if (details->is_highlighted_as_keyboard_focus) {
-			AtkObject *atk_object = eel_accessibility_for_object (object);
+			AtkObject *atk_object = atk_gobject_accessible_for_object (object);
 			atk_focus_tracker_notify (atk_object);
 		}
 		break;
@@ -2330,21 +2296,146 @@ nautilus_icon_canvas_item_get_max_text_width (NautilusIconCanvasItem *item)
 
 }
 
-/* NautilusIconCanvasItemAccessible */
-
-static NautilusIconCanvasItemAccessiblePrivate *
-accessible_get_priv (AtkObject *accessible)
+void
+nautilus_icon_canvas_item_set_entire_text (NautilusIconCanvasItem       *item,
+					   gboolean                      entire_text)
 {
-        NautilusIconCanvasItemAccessiblePrivate *priv;
+	if (item->details->entire_text != entire_text) {
+		item->details->entire_text = entire_text;
 
-        priv = g_object_get_qdata (G_OBJECT (accessible),
-                                   accessible_private_data_quark);
-
-        return priv;
+		nautilus_icon_canvas_item_invalidate_label_size (item);
+		eel_canvas_item_request_update (EEL_CANVAS_ITEM (item));
+	}
 }
 
-/* AtkAction interface */
+/* Class initialization function for the icon canvas item. */
+static void
+nautilus_icon_canvas_item_class_init (NautilusIconCanvasItemClass *class)
+{
+	GObjectClass *object_class;
+	EelCanvasItemClass *item_class;
 
+	object_class = G_OBJECT_CLASS (class);
+	item_class = EEL_CANVAS_ITEM_CLASS (class);
+
+	object_class->finalize = nautilus_icon_canvas_item_finalize;
+	object_class->set_property = nautilus_icon_canvas_item_set_property;
+	object_class->get_property = nautilus_icon_canvas_item_get_property;
+
+        g_object_class_install_property (
+		object_class,
+		PROP_EDITABLE_TEXT,
+		g_param_spec_string ("editable_text",
+				     "editable text",
+				     "the editable label",
+				     "", G_PARAM_READWRITE));
+
+        g_object_class_install_property (
+		object_class,
+		PROP_ADDITIONAL_TEXT,
+		g_param_spec_string ("additional_text",
+				     "additional text",
+				     "some more text",
+				     "", G_PARAM_READWRITE));
+
+        g_object_class_install_property (
+		object_class,
+		PROP_HIGHLIGHTED_FOR_SELECTION,
+		g_param_spec_boolean ("highlighted_for_selection",
+				      "highlighted for selection",
+				      "whether we are highlighted for a selection",
+				      FALSE, G_PARAM_READWRITE)); 
+
+        g_object_class_install_property (
+		object_class,
+		PROP_HIGHLIGHTED_AS_KEYBOARD_FOCUS,
+		g_param_spec_boolean ("highlighted_as_keyboard_focus",
+				      "highlighted as keyboard focus",
+				      "whether we are highlighted to render keyboard focus",
+				      FALSE, G_PARAM_READWRITE)); 
+
+
+        g_object_class_install_property (
+		object_class,
+		PROP_HIGHLIGHTED_FOR_DROP,
+		g_param_spec_boolean ("highlighted_for_drop",
+				      "highlighted for drop",
+				      "whether we are highlighted for a D&D drop",
+				      FALSE, G_PARAM_READWRITE));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_HIGHLIGHTED_FOR_CLIPBOARD,
+		g_param_spec_boolean ("highlighted_for_clipboard",
+				      "highlighted for clipboard",
+				      "whether we are highlighted for a clipboard paste (after we have been cut)",
+ 				      FALSE, G_PARAM_READWRITE));
+
+	item_class->update = nautilus_icon_canvas_item_update;
+	item_class->draw = nautilus_icon_canvas_item_draw;
+	item_class->point = nautilus_icon_canvas_item_point;
+	item_class->translate = nautilus_icon_canvas_item_translate;
+	item_class->bounds = nautilus_icon_canvas_item_bounds;
+	item_class->event = nautilus_icon_canvas_item_event;
+
+	atk_registry_set_factory_type (atk_get_default_registry (),
+				       NAUTILUS_TYPE_ICON_CANVAS_ITEM,
+				       nautilus_icon_canvas_item_accessible_factory_get_type ());
+
+	g_type_class_add_private (class, sizeof (NautilusIconCanvasItemDetails));
+}
+
+static GailTextUtil *
+nautilus_icon_canvas_item_get_text (GObject *text)
+{
+	return NAUTILUS_ICON_CANVAS_ITEM (text)->details->text_util;
+}
+
+static void
+nautilus_icon_canvas_item_text_interface_init (EelAccessibleTextIface *iface)
+{
+	iface->get_text = nautilus_icon_canvas_item_get_text;
+}
+
+/* ============================= a11y interfaces =========================== */
+
+static const char *nautilus_icon_canvas_item_accessible_action_names[] = {
+        "open",
+        "menu",
+        NULL
+};
+
+static const char *nautilus_icon_canvas_item_accessible_action_descriptions[] = {
+        "Open item",
+        "Popup context menu",
+        NULL
+};
+
+enum {
+	ACTION_OPEN,
+	ACTION_MENU,
+	LAST_ACTION
+};
+
+typedef struct {
+        char *action_descriptions[LAST_ACTION];
+	char *image_description;
+	char *description;
+} NautilusIconCanvasItemAccessiblePrivate;
+
+typedef struct {
+	NautilusIconCanvasItem *item;
+	gint action_number;
+} NautilusIconCanvasItemAccessibleActionContext;
+
+static GType nautilus_icon_canvas_item_accessible_get_type (void);
+
+#define GET_PRIV(o) \
+	G_TYPE_INSTANCE_GET_PRIVATE(o,\
+				    nautilus_icon_canvas_item_accessible_get_type (),\
+				    NautilusIconCanvasItemAccessiblePrivate);
+
+/* accessible AtkAction interface */
 static gboolean
 nautilus_icon_canvas_item_accessible_idle_do_action (gpointer data)
 {
@@ -2393,7 +2484,8 @@ nautilus_icon_canvas_item_accessible_idle_do_action (gpointer data)
 }
 
 static gboolean
-nautilus_icon_canvas_item_accessible_do_action (AtkAction *accessible, int i)
+nautilus_icon_canvas_item_accessible_do_action (AtkAction *accessible,
+						int i)
 {
 	NautilusIconCanvasItem *item;
 	NautilusIconCanvasItemAccessibleActionContext *ctx;
@@ -2402,7 +2494,7 @@ nautilus_icon_canvas_item_accessible_do_action (AtkAction *accessible, int i)
 
 	g_assert (i < LAST_ACTION);
 
-	item = eel_accessibility_get_gobject (ATK_OBJECT (accessible));
+	item = NAUTILUS_ICON_CANVAS_ITEM (atk_gobject_accessible_get_object (ATK_GOBJECT_ACCESSIBLE (accessible)));
 	if (!item) {
 		return FALSE;
 	}
@@ -2444,7 +2536,8 @@ nautilus_icon_canvas_item_accessible_action_get_description (AtkAction *accessib
 
 	g_assert (i < LAST_ACTION);
 
-	priv = accessible_get_priv (ATK_OBJECT (accessible));
+	priv = GET_PRIV (accessible);
+
 	if (priv->action_descriptions[i]) {
 		return priv->action_descriptions[i];
 	} else {
@@ -2462,7 +2555,7 @@ nautilus_icon_canvas_item_accessible_action_get_name (AtkAction *accessible, int
 
 static const char *
 nautilus_icon_canvas_item_accessible_action_get_keybinding (AtkAction *accessible,
-                                                          int i)
+							    int i)
 {
 	g_assert (i < LAST_ACTION);
 
@@ -2471,14 +2564,14 @@ nautilus_icon_canvas_item_accessible_action_get_keybinding (AtkAction *accessibl
 
 static gboolean
 nautilus_icon_canvas_item_accessible_action_set_description (AtkAction *accessible,
-                                                           int i,
-                                                           const char *description)
+							     int i,
+							     const char *description)
 {
 	NautilusIconCanvasItemAccessiblePrivate *priv;
 
 	g_assert (i < LAST_ACTION);
 
-	priv = accessible_get_priv (ATK_OBJECT (accessible));
+	priv = GET_PRIV (accessible);
 
 	if (priv->action_descriptions[i]) {
 		g_free (priv->action_descriptions[i]);
@@ -2508,7 +2601,7 @@ nautilus_icon_canvas_item_accessible_get_name (AtkObject *accessible)
 		return accessible->name;
 	}
 
-	item = eel_accessibility_get_gobject (accessible);
+	item = NAUTILUS_ICON_CANVAS_ITEM (atk_gobject_accessible_get_object (ATK_GOBJECT_ACCESSIBLE (accessible)));
 	if (!item) {
 		return NULL;
 	}
@@ -2520,7 +2613,7 @@ nautilus_icon_canvas_item_accessible_get_description (AtkObject *accessible)
 {
 	NautilusIconCanvasItem *item;
 
-	item = eel_accessibility_get_gobject (accessible);
+	item = NAUTILUS_ICON_CANVAS_ITEM (atk_gobject_accessible_get_object (ATK_GOBJECT_ACCESSIBLE (accessible)));
 	if (!item) {
 		return NULL;
 	}
@@ -2533,7 +2626,7 @@ nautilus_icon_canvas_item_accessible_get_parent (AtkObject *accessible)
 {
 	NautilusIconCanvasItem *item;
 	
-	item = eel_accessibility_get_gobject (accessible);
+	item = NAUTILUS_ICON_CANVAS_ITEM (atk_gobject_accessible_get_object (ATK_GOBJECT_ACCESSIBLE (accessible)));
 	if (!item) {
 		return NULL;
 	}
@@ -2550,7 +2643,7 @@ nautilus_icon_canvas_item_accessible_get_index_in_parent (AtkObject *accessible)
 	NautilusIcon *icon;
 	int i;
 
-	item = eel_accessibility_get_gobject (accessible);
+	item = NAUTILUS_ICON_CANVAS_ITEM (atk_gobject_accessible_get_object (ATK_GOBJECT_ACCESSIBLE (accessible)));
 	if (!item) {
 		return -1;
 	}
@@ -2573,112 +2666,8 @@ nautilus_icon_canvas_item_accessible_get_index_in_parent (AtkObject *accessible)
 	return -1;
 }
 
-static AtkStateSet*
-nautilus_icon_canvas_item_accessible_ref_state_set (AtkObject *accessible)
-{
-	AtkStateSet *state_set;
-	NautilusIconCanvasItem *item;
-	NautilusIconContainer *container;
-	NautilusIcon *icon;
-	GList *l;
-	gboolean one_item_selected;
-
-	state_set = ATK_OBJECT_CLASS (accessible_parent_class)->ref_state_set (accessible);
-
-	item = eel_accessibility_get_gobject (accessible);
-	if (!item) {
-		atk_state_set_add_state (state_set, ATK_STATE_DEFUNCT);
-		return state_set;
-	}
-	container = NAUTILUS_ICON_CONTAINER (EEL_CANVAS_ITEM (item)->canvas);
-	if (item->details->is_highlighted_as_keyboard_focus) {
-		atk_state_set_add_state (state_set, ATK_STATE_FOCUSED);
-	} else if (!container->details->keyboard_focus) {
-
-		one_item_selected = FALSE;
-		l = container->details->icons;
-		while (l) {
-			icon = l->data;
-		
-			if (icon->item == item) {
-				if (icon->is_selected) {
-					one_item_selected = TRUE;
-				} else {
-					break;
-				}
-			} else if (icon->is_selected) {
-				one_item_selected = FALSE;
-				break;
-			}
-
-			l = l->next;
-		}
-
-		if (one_item_selected) {
-			atk_state_set_add_state (state_set, ATK_STATE_FOCUSED);
-		}
-	}
-
-	return state_set;
-}
-
-static void
-nautilus_icon_canvas_item_accessible_initialize (AtkObject *accessible,
-                                                 gpointer data)
-{
-        NautilusIconCanvasItemAccessiblePrivate *priv;
-
-        if (ATK_OBJECT_CLASS (accessible_parent_class)->initialize) {
-                ATK_OBJECT_CLASS (accessible_parent_class)->initialize (accessible, data);
-        }
-
-        priv = g_new0 (NautilusIconCanvasItemAccessiblePrivate, 1);
-        g_object_set_qdata (G_OBJECT (accessible),
-                            accessible_private_data_quark,
-                            priv);
-}
-
-static void
-nautilus_icon_canvas_item_accessible_finalize (GObject *object)
-{
-	NautilusIconCanvasItemAccessiblePrivate *priv;
-	int i;
-
-	priv = accessible_get_priv (ATK_OBJECT (object));
-
-	for (i = 0; i < LAST_ACTION; i++) {
-		g_free (priv->action_descriptions[i]);
-	}
-	g_free (priv->image_description);
-	g_free (priv->description);
-
-        g_free (priv);
-
-        G_OBJECT_CLASS (accessible_parent_class)->finalize (object);
-}
-
-static void
-nautilus_icon_canvas_item_accessible_class_init (AtkObjectClass *klass)
-{
-	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-	accessible_parent_class = g_type_class_peek_parent (klass);
-
-	gobject_class->finalize = nautilus_icon_canvas_item_accessible_finalize;
-
-	klass->get_name = nautilus_icon_canvas_item_accessible_get_name;
-	klass->get_description = nautilus_icon_canvas_item_accessible_get_description;
-	klass->get_parent = nautilus_icon_canvas_item_accessible_get_parent;
-	klass->get_index_in_parent = nautilus_icon_canvas_item_accessible_get_index_in_parent;
-	klass->ref_state_set = nautilus_icon_canvas_item_accessible_ref_state_set;
-	klass->initialize = nautilus_icon_canvas_item_accessible_initialize;
-	accessible_private_data_quark = g_quark_from_static_string ("icon-canvas-item-accessible-private-data");
-}
-
-
 static G_CONST_RETURN gchar * 
-nautilus_icon_canvas_item_accessible_get_image_description
-	(AtkImage *image)
+nautilus_icon_canvas_item_accessible_get_image_description (AtkImage *image)
 {
 	NautilusIconCanvasItemAccessiblePrivate *priv;
 	NautilusIconCanvasItem *item;
@@ -2686,11 +2675,12 @@ nautilus_icon_canvas_item_accessible_get_image_description
 	NautilusIconContainer *container;
 	char *description;
 
-	priv = accessible_get_priv (ATK_OBJECT (image));
+	priv = GET_PRIV (image);
+
 	if (priv->image_description) {
 		return priv->image_description;
 	} else {
-		item = eel_accessibility_get_gobject (ATK_OBJECT (image));
+		item = NAUTILUS_ICON_CANVAS_ITEM (atk_gobject_accessible_get_object (ATK_GOBJECT_ACCESSIBLE (image)));
 		if (item == NULL) {
 			return NULL;
 		}
@@ -2711,7 +2701,7 @@ nautilus_icon_canvas_item_accessible_get_image_size
 {
 	NautilusIconCanvasItem *item;
 
-	item = eel_accessibility_get_gobject (ATK_OBJECT (image));
+	item = NAUTILUS_ICON_CANVAS_ITEM (atk_gobject_accessible_get_object (ATK_GOBJECT_ACCESSIBLE (image)));
 
 	if (!item || !item->details->pixbuf) {
 		*width = *height = 0;
@@ -2731,7 +2721,7 @@ nautilus_icon_canvas_item_accessible_get_image_position
 	NautilusIconCanvasItem *item;
 	gint x_offset, y_offset, itmp;
 
-	item = eel_accessibility_get_gobject (ATK_OBJECT (image));
+	item = NAUTILUS_ICON_CANVAS_ITEM (atk_gobject_accessible_get_object (ATK_GOBJECT_ACCESSIBLE (image)));
 	if (!item) {
 		return;
 	}
@@ -2759,13 +2749,12 @@ nautilus_icon_canvas_item_accessible_get_image_position
 }
 
 static gboolean
-nautilus_icon_canvas_item_accessible_set_image_description
-	(AtkImage    *image,
-	 const gchar *description)
+nautilus_icon_canvas_item_accessible_set_image_description (AtkImage    *image,
+							    const gchar *description)
 {
 	NautilusIconCanvasItemAccessiblePrivate *priv;
 
-	priv = accessible_get_priv (ATK_OBJECT (image));
+	priv = GET_PRIV (image);
 
 	g_free (priv->image_description);
 	priv->image_description = g_strdup (description);
@@ -2782,6 +2771,7 @@ nautilus_icon_canvas_item_accessible_image_interface_init (AtkImageIface *iface)
 	iface->get_image_position    = nautilus_icon_canvas_item_accessible_get_image_position;
 }
 
+/* accessible text interface */
 static gint
 nautilus_icon_canvas_item_accessible_get_offset_at_point (AtkText	 *text,
                                                           gint           x,
@@ -2806,7 +2796,7 @@ nautilus_icon_canvas_item_accessible_get_offset_at_point (AtkText	 *text,
 	x -= real_x;
 	y -= real_y; 
 
-	item = eel_accessibility_get_gobject (ATK_OBJECT (text));
+	item = NAUTILUS_ICON_CANVAS_ITEM (atk_gobject_accessible_get_object (ATK_GOBJECT_ACCESSIBLE (text)));
 
 	if (item->details->pixbuf) {
 		y -= gdk_pixbuf_get_height (item->details->pixbuf);
@@ -2908,7 +2898,7 @@ nautilus_icon_canvas_item_accessible_get_character_extents (AtkText	   *text,
 	gint text_offset;
 
 	atk_component_get_position (ATK_COMPONENT (text), &pos_x, &pos_y, coords);
-	item = eel_accessibility_get_gobject (ATK_OBJECT (text));
+	item = NAUTILUS_ICON_CANVAS_ITEM (atk_gobject_accessible_get_object (ATK_GOBJECT_ACCESSIBLE (text)));
 
 	if (item->details->pixbuf) {
 		pos_y += gdk_pixbuf_get_height (item->details->pixbuf);
@@ -2978,70 +2968,139 @@ nautilus_icon_canvas_item_accessible_text_interface_init (AtkTextIface *iface)
 	iface->get_offset_at_point     = nautilus_icon_canvas_item_accessible_get_offset_at_point;
 }
 
-static GType
-nautilus_icon_canvas_item_accessible_get_type (void)
+typedef struct {
+	AtkGObjectAccessible parent;
+} NautilusIconCanvasItemAccessible;
+
+typedef struct {
+	AtkGObjectAccessibleClass parent_class;
+} NautilusIconCanvasItemAccessibleClass;
+
+G_DEFINE_TYPE_WITH_CODE (NautilusIconCanvasItemAccessible,
+			 nautilus_icon_canvas_item_accessible,
+			 ATK_TYPE_GOBJECT_ACCESSIBLE,
+			 G_IMPLEMENT_INTERFACE (ATK_TYPE_IMAGE,
+						nautilus_icon_canvas_item_accessible_image_interface_init)
+			 G_IMPLEMENT_INTERFACE (ATK_TYPE_TEXT,
+						nautilus_icon_canvas_item_accessible_text_interface_init)
+			 G_IMPLEMENT_INTERFACE (ATK_TYPE_ACTION,
+						nautilus_icon_canvas_item_accessible_action_interface_init));
+
+static AtkStateSet*
+nautilus_icon_canvas_item_accessible_ref_state_set (AtkObject *accessible)
 {
-	static GType type = 0;
+	AtkStateSet *state_set;
+	NautilusIconCanvasItem *item;
+	NautilusIconContainer *container;
+	NautilusIcon *icon;
+	GList *l;
+	gboolean one_item_selected;
 
-	if (!type) {
-		const GInterfaceInfo atk_image_info = {
-			(GInterfaceInitFunc)
-			nautilus_icon_canvas_item_accessible_image_interface_init,
-			(GInterfaceFinalizeFunc) NULL,
-			NULL
-		};
+	state_set = ATK_OBJECT_CLASS (nautilus_icon_canvas_item_accessible_parent_class)->ref_state_set (accessible);
 
-		const GInterfaceInfo atk_text_info = {
-			(GInterfaceInitFunc)
-			nautilus_icon_canvas_item_accessible_text_interface_init,
-			(GInterfaceFinalizeFunc) NULL,
-			NULL
-		};
+	item = NAUTILUS_ICON_CANVAS_ITEM (atk_gobject_accessible_get_object (ATK_GOBJECT_ACCESSIBLE (accessible)));
+	if (!item) {
+		atk_state_set_add_state (state_set, ATK_STATE_DEFUNCT);
+		return state_set;
+	}
+	container = NAUTILUS_ICON_CONTAINER (EEL_CANVAS_ITEM (item)->canvas);
+	if (item->details->is_highlighted_as_keyboard_focus) {
+		atk_state_set_add_state (state_set, ATK_STATE_FOCUSED);
+	} else if (!container->details->keyboard_focus) {
 
-		const GInterfaceInfo atk_action_info = {
-			(GInterfaceInitFunc)
-			nautilus_icon_canvas_item_accessible_action_interface_init,
-			(GInterfaceFinalizeFunc) NULL,
-			NULL
-		};
+		one_item_selected = FALSE;
+		l = container->details->icons;
+		while (l) {
+			icon = l->data;
+		
+			if (icon->item == item) {
+				if (icon->is_selected) {
+					one_item_selected = TRUE;
+				} else {
+					break;
+				}
+			} else if (icon->is_selected) {
+				one_item_selected = FALSE;
+				break;
+			}
 
-		type = eel_accessibility_create_derived_type (
-			"NautilusIconCanvasItemAccessibility",
-			EEL_TYPE_CANVAS_ITEM,
-			nautilus_icon_canvas_item_accessible_class_init);
+			l = l->next;
+		}
 
-		if (type != G_TYPE_INVALID) {
-			g_type_add_interface_static (
-				type, ATK_TYPE_IMAGE, &atk_image_info);
-
-			g_type_add_interface_static (
-				type, ATK_TYPE_TEXT, &atk_text_info);
-
-			g_type_add_interface_static (
-				type, ATK_TYPE_ACTION, &atk_action_info);
-
+		if (one_item_selected) {
+			atk_state_set_add_state (state_set, ATK_STATE_FOCUSED);
 		}
 	}
 
-	return type;
+	return state_set;
 }
 
-static AtkObject *
-nautilus_icon_canvas_item_accessible_create (GObject *for_object)
+static void
+nautilus_icon_canvas_item_accessible_finalize (GObject *object)
 {
-	GType type;
+	NautilusIconCanvasItemAccessiblePrivate *priv;
+	int i;
+
+	priv = GET_PRIV (object);
+
+	for (i = 0; i < LAST_ACTION; i++) {
+		g_free (priv->action_descriptions[i]);
+	}
+	g_free (priv->image_description);
+	g_free (priv->description);
+
+        G_OBJECT_CLASS (nautilus_icon_canvas_item_accessible_parent_class)->finalize (object);
+}
+
+static void
+nautilus_icon_canvas_item_accessible_initialize (AtkObject *accessible,
+						 gpointer widget)
+{
+	ATK_OBJECT_CLASS (nautilus_icon_canvas_item_accessible_parent_class)->initialize (accessible, widget);
+
+	atk_object_set_role (accessible, ATK_ROLE_ICON);
+}
+
+static void
+nautilus_icon_canvas_item_accessible_class_init (NautilusIconCanvasItemAccessibleClass *klass)
+{
+	AtkObjectClass *aclass = ATK_OBJECT_CLASS (klass);
+	GObjectClass *oclass = G_OBJECT_CLASS (klass);
+
+	oclass->finalize = nautilus_icon_canvas_item_accessible_finalize;
+
+	aclass->initialize = nautilus_icon_canvas_item_accessible_initialize;
+
+	aclass->get_name = nautilus_icon_canvas_item_accessible_get_name;
+	aclass->get_description = nautilus_icon_canvas_item_accessible_get_description;
+	aclass->get_parent = nautilus_icon_canvas_item_accessible_get_parent;
+	aclass->get_index_in_parent = nautilus_icon_canvas_item_accessible_get_index_in_parent;
+	aclass->ref_state_set = nautilus_icon_canvas_item_accessible_ref_state_set;
+
+	g_type_class_add_private (klass, sizeof (NautilusIconCanvasItemAccessiblePrivate));
+}
+
+static void
+nautilus_icon_canvas_item_accessible_init (NautilusIconCanvasItemAccessible *self)
+{
+}
+
+/* dummy typedef */
+typedef AtkObjectFactory      NautilusIconCanvasItemAccessibleFactory;
+typedef AtkObjectFactoryClass NautilusIconCanvasItemAccessibleFactoryClass;
+
+G_DEFINE_TYPE (NautilusIconCanvasItemAccessibleFactory, nautilus_icon_canvas_item_accessible_factory,
+	       ATK_TYPE_OBJECT_FACTORY);
+
+static AtkObject *
+nautilus_icon_canvas_item_accessible_factory_create_accessible (GObject *for_object)
+{
 	AtkObject *accessible;
 	NautilusIconCanvasItem *item;
 	GString *item_text;
 
 	item = NAUTILUS_ICON_CANVAS_ITEM (for_object);
 	g_assert (item != NULL);
-
-	type = nautilus_icon_canvas_item_accessible_get_type ();
-
-	if (type == G_TYPE_INVALID) {
-		return atk_no_op_object_new (for_object);
-	}
 
 	item_text = g_string_new (NULL);
 	if (item->details->editable_text) {
@@ -3050,123 +3109,32 @@ nautilus_icon_canvas_item_accessible_create (GObject *for_object)
 	if (item->details->additional_text) {
         	g_string_append (item_text, item->details->additional_text);
 	}
+
 	item->details->text_util = gail_text_util_new ();
 	gail_text_util_text_setup (item->details->text_util,
 				   item_text->str);
 	g_string_free (item_text, TRUE);
 
-	accessible = g_object_new (type, NULL);
-	accessible = eel_accessibility_set_atk_object_return
-		(for_object, accessible);
-	atk_object_set_role (accessible, ATK_ROLE_ICON);
+	accessible = g_object_new (nautilus_icon_canvas_item_accessible_get_type (), NULL);
+	atk_object_initialize (accessible, for_object);
+
 	return accessible;
 }
 
-EEL_ACCESSIBLE_FACTORY (nautilus_icon_canvas_item_accessible_get_type (),
-			"NautilusIconCanvasItemAccessibilityFactory",
-			nautilus_icon_canvas_item_accessible,
-			nautilus_icon_canvas_item_accessible_create)
-
-
-static GailTextUtil *
-nautilus_icon_canvas_item_get_text (GObject *text)
+static GType
+nautilus_icon_canvas_item_accessible_factory_get_accessible_type (void)
 {
-	return NAUTILUS_ICON_CANVAS_ITEM (text)->details->text_util;
+	return nautilus_icon_canvas_item_accessible_get_type ();
 }
 
 static void
-nautilus_icon_canvas_item_text_interface_init (EelAccessibleTextIface *iface)
+nautilus_icon_canvas_item_accessible_factory_init (NautilusIconCanvasItemAccessibleFactory *self)
 {
-	iface->get_text = nautilus_icon_canvas_item_get_text;
 }
 
-void
-nautilus_icon_canvas_item_set_entire_text (NautilusIconCanvasItem       *item,
-					   gboolean                      entire_text)
-{
-	if (item->details->entire_text != entire_text) {
-		item->details->entire_text = entire_text;
-
-		nautilus_icon_canvas_item_invalidate_label_size (item);
-		eel_canvas_item_request_update (EEL_CANVAS_ITEM (item));
-	}
-}
-
-
-/* Class initialization function for the icon canvas item. */
 static void
-nautilus_icon_canvas_item_class_init (NautilusIconCanvasItemClass *class)
+nautilus_icon_canvas_item_accessible_factory_class_init (NautilusIconCanvasItemAccessibleFactoryClass *klass)
 {
-	GObjectClass *object_class;
-	EelCanvasItemClass *item_class;
-
-	object_class = G_OBJECT_CLASS (class);
-	item_class = EEL_CANVAS_ITEM_CLASS (class);
-
-	object_class->finalize = nautilus_icon_canvas_item_finalize;
-	object_class->set_property = nautilus_icon_canvas_item_set_property;
-	object_class->get_property = nautilus_icon_canvas_item_get_property;
-
-        g_object_class_install_property (
-		object_class,
-		PROP_EDITABLE_TEXT,
-		g_param_spec_string ("editable_text",
-				     "editable text",
-				     "the editable label",
-				     "", G_PARAM_READWRITE));
-
-        g_object_class_install_property (
-		object_class,
-		PROP_ADDITIONAL_TEXT,
-		g_param_spec_string ("additional_text",
-				     "additional text",
-				     "some more text",
-				     "", G_PARAM_READWRITE));
-
-        g_object_class_install_property (
-		object_class,
-		PROP_HIGHLIGHTED_FOR_SELECTION,
-		g_param_spec_boolean ("highlighted_for_selection",
-				      "highlighted for selection",
-				      "whether we are highlighted for a selection",
-				      FALSE, G_PARAM_READWRITE)); 
-
-        g_object_class_install_property (
-		object_class,
-		PROP_HIGHLIGHTED_AS_KEYBOARD_FOCUS,
-		g_param_spec_boolean ("highlighted_as_keyboard_focus",
-				      "highlighted as keyboard focus",
-				      "whether we are highlighted to render keyboard focus",
-				      FALSE, G_PARAM_READWRITE)); 
-
-
-        g_object_class_install_property (
-		object_class,
-		PROP_HIGHLIGHTED_FOR_DROP,
-		g_param_spec_boolean ("highlighted_for_drop",
-				      "highlighted for drop",
-				      "whether we are highlighted for a D&D drop",
-				      FALSE, G_PARAM_READWRITE));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_HIGHLIGHTED_FOR_CLIPBOARD,
-		g_param_spec_boolean ("highlighted_for_clipboard",
-				      "highlighted for clipboard",
-				      "whether we are highlighted for a clipboard paste (after we have been cut)",
- 				      FALSE, G_PARAM_READWRITE));
-
-	item_class->update = nautilus_icon_canvas_item_update;
-	item_class->draw = nautilus_icon_canvas_item_draw;
-	item_class->point = nautilus_icon_canvas_item_point;
-	item_class->translate = nautilus_icon_canvas_item_translate;
-	item_class->bounds = nautilus_icon_canvas_item_bounds;
-	item_class->event = nautilus_icon_canvas_item_event;	
-
-	EEL_OBJECT_SET_FACTORY (NAUTILUS_TYPE_ICON_CANVAS_ITEM,
-				nautilus_icon_canvas_item_accessible);
-
-	g_type_class_add_private (class, sizeof (NautilusIconCanvasItemDetails));
+	klass->create_accessible = nautilus_icon_canvas_item_accessible_factory_create_accessible;
+	klass->get_accessible_type = nautilus_icon_canvas_item_accessible_factory_get_accessible_type;
 }
-
-

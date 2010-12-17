@@ -821,7 +821,7 @@ clear_keyboard_focus (NautilusIconContainer *container)
 static void inline
 emit_atk_focus_tracker_notify (NautilusIcon *icon)
 {
-	AtkObject *atk_object = eel_accessibility_for_object (icon->item);
+	AtkObject *atk_object = atk_gobject_accessible_for_object (G_OBJECT (icon->item));
 	atk_focus_tracker_notify (atk_object);
 }
 
