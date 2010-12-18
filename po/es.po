@@ -24,8 +24,8 @@ msgstr ""
 "Project-Id-Version: nautilus.master.es\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2010-12-15 14:17+0000\n"
-"PO-Revision-Date: 2010-12-15 21:40+0100\n"
+"POT-Creation-Date: 2010-12-18 02:03+0000\n"
+"PO-Revision-Date: 2010-12-18 14:18+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -529,7 +529,7 @@ msgstr "Tamaño:"
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:260
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:291
 #: ../src/file-manager/fm-properties-window.c:3107
-#: ../src/nautilus-connect-server-dialog.c:901
+#: ../src/nautilus-connect-server-dialog.c:911
 msgid "Type:"
 msgstr "Tipo:"
 
@@ -1725,7 +1725,7 @@ msgstr "enlace"
 msgid "link (broken)"
 msgstr "enlace (roto)"
 
-#: ../libnautilus-private/nautilus-icon-container.c:2703
+#: ../libnautilus-private/nautilus-icon-container.c:2701
 msgid "The selection rectangle"
 msgstr "El rectángulo de selección"
 
@@ -2857,7 +2857,7 @@ msgstr "Abrir carpeta"
 
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
-#: ../data/nautilus-home.desktop.in.in.h:1 ../src/nautilus-tree-sidebar.c:1313
+#: ../data/nautilus-home.desktop.in.in.h:1 ../src/nautilus-tree-sidebar.c:1316
 msgid "Home Folder"
 msgstr "Carpeta personal"
 
@@ -2954,7 +2954,7 @@ msgstr[1] "Esto abrirá %'d ventanas separadas."
 
 #: ../src/file-manager/fm-directory-view.c:1157
 #: ../src/file-manager/fm-properties-window.c:5163
-#: ../src/nautilus-connect-server-dialog.c:684
+#: ../src/nautilus-connect-server-dialog.c:687
 #: ../src/nautilus-location-dialog.c:98
 msgid "There was an error displaying help."
 msgstr "Hubo un error al mostrar la ayuda."
@@ -4337,8 +4337,7 @@ msgstr "El contenido de la carpeta no se pudo mostrar."
 msgid ""
 "The name \"%s\" is already used in this folder. Please use a different name."
 msgstr ""
-"El nombre «%s» ya se está usando en esta carpeta. Por favor use un nombre "
-"distinto."
+"El nombre «%s» ya se está usando en esta carpeta. Use un nombre distinto."
 
 #: ../src/file-manager/fm-error-reporting.c:116
 #, c-format
@@ -4360,29 +4359,36 @@ msgid ""
 "The name \"%s\" is not valid because it contains the character \"/\". Please "
 "use a different name."
 msgstr ""
-"El nombre «%s» no es válido porque contiene el carácter «/». Por favor use "
-"un nombre distinto."
+"El nombre «%s» no es válido porque contiene el carácter «/». Use un nombre "
+"distinto."
 
 # src/file-manager/fm-error-reporting.c:50
 #: ../src/file-manager/fm-error-reporting.c:130
 #, c-format
 msgid "The name \"%s\" is not valid. Please use a different name."
-msgstr "El nombre «%s» no es válido. Por favor use un nombre distinto."
+msgstr "El nombre «%s» no es válido. Use un nombre distinto."
+
+# src/file-manager/fm-error-reporting.c:50
+#: ../src/file-manager/fm-error-reporting.c:136
+#, c-format
+#| msgid "The name \"%s\" is not valid. Please use a different name."
+msgid "The name \"%s\" is too long. Please use a different name."
+msgstr "El nombre «%s» es demasiado largo. Use un nombre distinto."
 
 # src/file-manager/fm-error-reporting.c:64
 #. fall through
-#: ../src/file-manager/fm-error-reporting.c:145
+#: ../src/file-manager/fm-error-reporting.c:150
 #, c-format
 msgid "Sorry, could not rename \"%s\" to \"%s\": %s"
 msgstr "No se ha podido renombrar «%s» a «%s»: %s"
 
 # src/file-manager/fm-properties-window.c:1641
-#: ../src/file-manager/fm-error-reporting.c:153
+#: ../src/file-manager/fm-error-reporting.c:158
 msgid "The item could not be renamed."
 msgstr "El elemento no se pudo renombrar."
 
 # src/file-manager/fm-error-reporting.c:85
-#: ../src/file-manager/fm-error-reporting.c:175
+#: ../src/file-manager/fm-error-reporting.c:180
 #, c-format
 msgid ""
 "You do not have the permissions necessary to change the group of \"%s\"."
@@ -4390,40 +4396,40 @@ msgstr "No tiene los permisos suficientes para cambiar el grupo de «%s»."
 
 # src/file-manager/fm-error-reporting.c:93
 #. fall through
-#: ../src/file-manager/fm-error-reporting.c:188
+#: ../src/file-manager/fm-error-reporting.c:193
 #, c-format
 msgid "Sorry, could not change the group of \"%s\": %s"
 msgstr "No se pudo cambiar el grupo de «%s»: %s"
 
 # src/file-manager/fm-properties-window.c:1641
-#: ../src/file-manager/fm-error-reporting.c:193
+#: ../src/file-manager/fm-error-reporting.c:198
 msgid "The group could not be changed."
 msgstr "El grupo no pudo cambiarse."
 
 # src/file-manager/fm-error-reporting.c:115
-#: ../src/file-manager/fm-error-reporting.c:213
+#: ../src/file-manager/fm-error-reporting.c:218
 #, c-format
 msgid "Sorry, could not change the owner of \"%s\": %s"
 msgstr "No se pudo cambiar el propietario de «%s»: %s"
 
 # src/file-manager/fm-properties-window.c:1641
-#: ../src/file-manager/fm-error-reporting.c:215
+#: ../src/file-manager/fm-error-reporting.c:220
 msgid "The owner could not be changed."
 msgstr "No se pudo cambiar el propietario."
 
 # src/file-manager/fm-error-reporting.c:137
-#: ../src/file-manager/fm-error-reporting.c:235
+#: ../src/file-manager/fm-error-reporting.c:240
 #, c-format
 msgid "Sorry, could not change the permissions of \"%s\": %s"
 msgstr "No se pudieron cambiar los permisos de «%s»: %s"
 
 # src/file-manager/fm-properties-window.c:1641
-#: ../src/file-manager/fm-error-reporting.c:237
+#: ../src/file-manager/fm-error-reporting.c:242
 msgid "The permissions could not be changed."
 msgstr "Los permisos no pudieron cambiarse."
 
 # src/file-manager/fm-error-reporting.c:214
-#: ../src/file-manager/fm-error-reporting.c:342
+#: ../src/file-manager/fm-error-reporting.c:347
 #, c-format
 msgid "Renaming \"%s\" to \"%s\"."
 msgstr "Renombrando  «%s» a «%s»."
@@ -5200,7 +5206,6 @@ msgstr "--check no se puede usar con otras opciones."
 
 # src/nautilus-main.c:117
 #: ../src/nautilus-application.c:1371
-#| msgid "-- quit cannot be used with URIs."
 msgid "--quit cannot be used with URIs."
 msgstr "--quit no se puede usar con URI."
 
@@ -5296,35 +5301,35 @@ msgstr ""
 "\n"
 "Añadir conexión a montaje de servidor"
 
-#: ../src/nautilus-connect-server-dialog.c:126
+#: ../src/nautilus-connect-server-dialog.c:129
 msgid "SSH"
 msgstr "SSH"
 
-#: ../src/nautilus-connect-server-dialog.c:129
+#: ../src/nautilus-connect-server-dialog.c:132
 msgid "Public FTP"
 msgstr "FTP público"
 
-#: ../src/nautilus-connect-server-dialog.c:131
+#: ../src/nautilus-connect-server-dialog.c:134
 msgid "FTP (with login)"
 msgstr "FTP (con login)"
 
-#: ../src/nautilus-connect-server-dialog.c:134
+#: ../src/nautilus-connect-server-dialog.c:137
 msgid "Windows share"
 msgstr "Compartido por Windows"
 
-#: ../src/nautilus-connect-server-dialog.c:136
+#: ../src/nautilus-connect-server-dialog.c:139
 msgid "WebDAV (HTTP)"
 msgstr "WebDAV (HTTP)"
 
-#: ../src/nautilus-connect-server-dialog.c:138
+#: ../src/nautilus-connect-server-dialog.c:141
 msgid "Secure WebDAV (HTTPS)"
 msgstr "WebDAV seguro (HTTPS)"
 
-#: ../src/nautilus-connect-server-dialog.c:185
+#: ../src/nautilus-connect-server-dialog.c:188
 msgid "Connecting..."
 msgstr "Conectando…"
 
-#: ../src/nautilus-connect-server-dialog.c:209
+#: ../src/nautilus-connect-server-dialog.c:212
 msgid ""
 "Can't load the supported server method list.\n"
 "Please check your gvfs installation."
@@ -5332,68 +5337,68 @@ msgstr ""
 "No se puede cargar la lista de métodos soportada por el servidor.\n"
 "Compruebe su instalación de gvfs."
 
-#: ../src/nautilus-connect-server-dialog.c:287
+#: ../src/nautilus-connect-server-dialog.c:290
 #, c-format
 msgid "The folder \"%s\" cannot be opened on \"%s\"."
 msgstr "No se puede abrir la carpeta «%s» en «%s»."
 
-#: ../src/nautilus-connect-server-dialog.c:297
+#: ../src/nautilus-connect-server-dialog.c:300
 #, c-format
 msgid "The server at \"%s\" cannot be found."
 msgstr "No se puede encontrar el servidor en «%s»."
 
-#: ../src/nautilus-connect-server-dialog.c:332
+#: ../src/nautilus-connect-server-dialog.c:335
 msgid "Try Again"
 msgstr "Intentarlo de nuevo"
 
-#: ../src/nautilus-connect-server-dialog.c:398
+#: ../src/nautilus-connect-server-dialog.c:401
 msgid "Please verify your user details."
 msgstr "Verificar sus detalles de usuario."
 
-#: ../src/nautilus-connect-server-dialog.c:428
+#: ../src/nautilus-connect-server-dialog.c:431
 msgid "Continue"
 msgstr "Continuar"
 
-#: ../src/nautilus-connect-server-dialog.c:702
-#: ../src/nautilus-connect-server-dialog.c:1095
+#: ../src/nautilus-connect-server-dialog.c:705
+#: ../src/nautilus-connect-server-dialog.c:1118
 msgid "C_onnect"
 msgstr "C_onectar"
 
 # libnautilus-private/nautilus-global-preferences.c:592
 #. set dialog properties
-#: ../src/nautilus-connect-server-dialog.c:827
+#: ../src/nautilus-connect-server-dialog.c:830
 msgid "Connect to Server"
 msgstr "Conectar con el servidor"
 
-#: ../src/nautilus-connect-server-dialog.c:841
+#: ../src/nautilus-connect-server-dialog.c:848
 msgid "Server Details"
 msgstr "Detalles del servidor"
 
 # libnautilus-private/nautilus-global-preferences.c:592
 #. first row: server entry + port spinbutton
-#: ../src/nautilus-connect-server-dialog.c:861
+#: ../src/nautilus-connect-server-dialog.c:869
 msgid "_Server:"
 msgstr "_Servidor:"
 
 #. port
-#: ../src/nautilus-connect-server-dialog.c:883
+#: ../src/nautilus-connect-server-dialog.c:893
 msgid "_Port:"
 msgstr "_Puerto:"
 
 #. third row: share entry
-#: ../src/nautilus-connect-server-dialog.c:972
+#: ../src/nautilus-connect-server-dialog.c:984
 msgid "Share:"
 msgstr "Compartir:"
 
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
 #. fourth row: folder entry
-#: ../src/nautilus-connect-server-dialog.c:989
+#: ../src/nautilus-connect-server-dialog.c:1003
 msgid "Folder:"
 msgstr "Carpeta:"
 
 # src/nautilus-sidebar.c:424
-#: ../src/nautilus-connect-server-dialog.c:1008
+#: ../src/nautilus-connect-server-dialog.c:1024
 msgid "User Details"
 msgstr "Detalles del usuario"
 
@@ -5403,7 +5408,7 @@ msgstr "Detalles del usuario"
 # src/file-manager/fm-search-list-view.c:140
 # src/nautilus-bookmarks-window.c:172
 #. first row: domain entry
-#: ../src/nautilus-connect-server-dialog.c:1027
+#: ../src/nautilus-connect-server-dialog.c:1044
 msgid "Domain Name:"
 msgstr "Nombre del dominio:"
 
@@ -5413,17 +5418,17 @@ msgstr "Nombre del dominio:"
 # src/file-manager/fm-search-list-view.c:140
 # src/nautilus-bookmarks-window.c:172
 #. second row: username entry
-#: ../src/nautilus-connect-server-dialog.c:1044
+#: ../src/nautilus-connect-server-dialog.c:1063
 msgid "User Name:"
 msgstr "Nombre de usuario:"
 
 #. third row: password entry
-#: ../src/nautilus-connect-server-dialog.c:1061
+#: ../src/nautilus-connect-server-dialog.c:1082
 msgid "Password:"
 msgstr "Contraseña:"
 
 #. fourth row: remember checkbox
-#: ../src/nautilus-connect-server-dialog.c:1079
+#: ../src/nautilus-connect-server-dialog.c:1102
 msgid "Remember this password"
 msgstr "Recordar esta contraseña"
 
@@ -6239,7 +6244,7 @@ msgstr "_Cerrar solapa"
 msgid "%s - File Browser"
 msgstr "%s - Navegador de archivos"
 
-#: ../src/nautilus-notebook.c:393
+#: ../src/nautilus-notebook.c:370
 msgid "Close tab"
 msgstr "Cerrar solapa"
 
@@ -6262,7 +6267,7 @@ msgstr "Montar y abrir %s"
 msgid "Open the contents of your desktop in a folder"
 msgstr "Abrir el contenido de su escritorio en una carpeta"
 
-#: ../src/nautilus-places-sidebar.c:672 ../src/nautilus-tree-sidebar.c:1317
+#: ../src/nautilus-places-sidebar.c:672 ../src/nautilus-tree-sidebar.c:1320
 msgid "File System"
 msgstr "Sistema de archivos"
 
@@ -6455,7 +6460,7 @@ msgstr "Buscar:"
 # src/nautilus-window-manage-views.c:218 src/nautilus-window-menus.c:437
 #. Set initial window title
 #: ../src/nautilus-spatial-window.c:356 ../src/nautilus-window-menus.c:505
-#: ../src/nautilus-window.c:173
+#: ../src/nautilus-window.c:148
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -6502,7 +6507,7 @@ msgstr "Restaurar los elementos seleccionados"
 msgid "Restore selected items to their original position"
 msgstr "Restaurar los elementos seleccionados a su ubicación original"
 
-#: ../src/nautilus-tree-sidebar.c:1321
+#: ../src/nautilus-tree-sidebar.c:1324
 msgid "Network Neighbourhood"
 msgstr "Entorno de red"
 
