@@ -77,7 +77,7 @@ add_clicked_cb (GtkButton *button,
 	if (info == NULL)
 		return;
 
-	g_app_info_add_supports_type (info, chooser->details->content_type, &error);
+	g_app_info_set_as_last_used_for_type (info, chooser->details->content_type, &error);
 
 	if (error != NULL) {
 		message = g_strdup_printf (_("Error while adding \"%s\": %s"),
