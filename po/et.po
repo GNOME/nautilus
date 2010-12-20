@@ -22,14 +22,14 @@ msgstr ""
 "Project-Id-Version: nautilus MASTER\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2010-11-03 00:11+0000\n"
+"POT-Creation-Date: 2010-12-19 07:08+0000\n"
 "PO-Revision-Date: 2010-11-03 13:47+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
+"Language: et\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: et\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #, c-format
@@ -141,101 +141,6 @@ msgstr "Seda tegevust saab peatada vajutades nupule \"Loobu\"."
 
 msgid " (invalid Unicode)"
 msgstr " (vigane Unicode)"
-
-msgid "No applications found"
-msgstr "Ühtegi rakendust ei leitud"
-
-msgid "Ask what to do"
-msgstr "Küsitakse, mida teha"
-
-msgid "Do Nothing"
-msgstr "Ei tehta midagi"
-
-msgid "Open Folder"
-msgstr "Avatakse kataloog"
-
-#, c-format
-msgid "Open %s"
-msgstr "Avatakse: %s"
-
-msgid "Open with other Application..."
-msgstr "Avatakse mõne muu rakendusega..."
-
-msgid "You have just inserted an Audio CD."
-msgstr "Sa sisestasid audio-CD."
-
-msgid "You have just inserted an Audio DVD."
-msgstr "Sa sisestasid audio-DVD."
-
-msgid "You have just inserted a Video DVD."
-msgstr "Sa sisestasid video-DVD."
-
-msgid "You have just inserted a Video CD."
-msgstr "Sa sisestasid video-CD."
-
-msgid "You have just inserted a Super Video CD."
-msgstr "Sa sisestasid Super Video CD."
-
-msgid "You have just inserted a blank CD."
-msgstr "Sa sisestasid tühja CD."
-
-msgid "You have just inserted a blank DVD."
-msgstr "Sa sisestasid tühja DVD."
-
-msgid "You have just inserted a blank Blu-Ray disc."
-msgstr "Sa sisestasid tühja Blu-Ray plaadi."
-
-msgid "You have just inserted a blank HD DVD."
-msgstr "Sa sisestasid tühja HD DVD-plaadi."
-
-msgid "You have just inserted a Photo CD."
-msgstr "Sa sisestasid tühja foto-CD."
-
-msgid "You have just inserted a Picture CD."
-msgstr "Sa sisestasid tühja pildi-CD."
-
-msgid "You have just inserted a medium with digital photos."
-msgstr "Sa sisestasid digifotosid sisaldava meediumi."
-
-msgid "You have just inserted a digital audio player."
-msgstr "Sa sisestasid digitaalse audioesitaja."
-
-msgid ""
-"You have just inserted a medium with software intended to be automatically "
-"started."
-msgstr ""
-"Sa sisestasid meediumi, millel olev tarkvara on märgitud automaatseks "
-"käivitamiseks."
-
-#. fallback to generic greeting
-msgid "You have just inserted a medium."
-msgstr "Sa sisestasid meediumi."
-
-msgid "Choose what application to launch."
-msgstr "Vali käivitatav rakendus."
-
-#, c-format
-msgid ""
-"Select how to open \"%s\" and whether to perform this action in the future "
-"for other media of type \"%s\"."
-msgstr ""
-"Vali, mismoodi tuleb \"%s\" käivitada ning kas ka tulevikus tuleb \"%s\"-"
-"liigilise meediumi korral sedasama teha."
-
-msgid "_Always perform this action"
-msgstr "_Tulevikus tehakse seda ilma küsimata"
-
-#. name, stock id
-#. label, accelerator
-#. add the "Eject" menu item
-msgid "_Eject"
-msgstr "_Väljasta"
-
-#. name, stock id
-#. label, accelerator
-#. add the "Unmount" menu item
-msgid "_Unmount"
-msgstr "_Ühenda lahti"
 
 #. name, stock id
 #. label, accelerator
@@ -1417,156 +1322,48 @@ msgid_plural "Opening %d items."
 msgstr[0] "Avatakse %d kirje."
 msgstr[1] "Avatakse %d kirjet."
 
-#, c-format
-msgid "Could not set application as the default: %s"
-msgstr "Rakendust pole võimalik vaikimisi rakenduseks määrata: %s"
+#, fuzzy, c-format
+msgid "Error while adding \"%s\": %s"
+msgstr "Viga \"%B\" ümbertõstmisel."
 
-msgid "Could not set as default application"
+msgid "Could not add application"
+msgstr "Rakendust pole võimalik lisada"
+
+#, fuzzy
+msgid "Could not forget association"
+msgstr "Rakendust pole võimalik käivitada"
+
+msgid "Forget association"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "Error while setting \"%s\" as default application: %s"
 msgstr "Pole võimalik vaikimisi rakenduseks määrata"
 
-msgid "Default"
-msgstr "Vaikimisi"
+#, fuzzy
+msgid "Could not set as default"
+msgstr "Pole võimalik vaikimisi rakenduseks määrata"
 
-msgid "Icon"
-msgstr "Ikoon"
-
-msgid "Could not remove application"
-msgstr "Rakendust pole võimalik eemaldada"
-
-msgid "No applications selected"
-msgstr "Ühtegi rakendust pole valitud"
-
+#. the %s here is a file extension
 #, c-format
 msgid "%s document"
 msgstr "%s dokument"
 
-msgid "Unknown"
-msgstr "Tundmatu"
+#, fuzzy, c-format
+msgid "Open all files of type \"%s\" with"
+msgstr "Kõik \"%s\" liigi alla kuuluvad failid avatakse rakendusega:"
 
 #, c-format
 msgid "Select an application to open %s and other files of type \"%s\""
 msgstr "Vali rakendus, millega faili %s ja teisi \"%s\"-liigilisi faile avada"
 
-#, c-format
-msgid "Open all files of type \"%s\" with:"
-msgstr "Kõik \"%s\" liigi alla kuuluvad failid avatakse rakendusega:"
-
-msgid "Could not run application"
+#, fuzzy
+msgid "Show other applications"
 msgstr "Rakendust pole võimalik käivitada"
 
-#, c-format
-msgid "Could not find '%s'"
-msgstr "'%s' pole võimalik leida"
-
-msgid "Could not find application"
-msgstr "Rakendust pole võimalik leida"
-
-#, c-format
-msgid "Could not add application to the application database: %s"
-msgstr "Rakendust pole rakenduste andmebaasi võimalik lisadsa: %s"
-
-msgid "Could not add application"
-msgstr "Rakendust pole võimalik lisada"
-
-msgid "Select an Application"
-msgstr "Rakenduse valimine"
-
-msgid "Open With"
-msgstr "Avamine rakendusega"
-
-msgid "Select an application to view its description."
-msgstr "Rakenduse kirjelduse vaatamiseks klõpsa selle nime peal."
-
-msgid "_Use a custom command"
-msgstr "_Kasutatakse kohandatud käsku"
-
-msgid "_Browse..."
-msgstr "_Sirvi..."
-
-#. name, stock id
-#. label, accelerator
-msgid "_Open"
-msgstr "_Ava"
-
-#. first %s is a filename and second %s is a file extension
-#, c-format
-msgid "Open %s and other %s document with:"
-msgstr "Faili %s ja teisi \"%s\" dokumente tuleb avada rakendusega:"
-
-#. the %s here is a file name
-#. %s is a filename
-#, c-format
-msgid "Open %s with:"
-msgstr "Faili %s avamine rakendusega:"
-
-#, c-format
-msgid "_Remember this application for %s documents"
-msgstr "_Pea meeles seda rakendust %s dokumentide jaoks"
-
-#. Only in add mode - the %s here is a file extension
-#, c-format
-msgid "Open all %s documents with:"
-msgstr "Kõiki %s-dokumente avatakse rakendusega:"
-
-#. First %s is a filename, second is a description
-#. * of the type, eg "plain text document"
-#, c-format
-msgid "Open %s and other \"%s\" files with:"
-msgstr "Faili %s ja teisi \"%s\" faile tuleb avada rakendusega:"
-
-#. %s is a file type description
-#, c-format
-msgid "_Remember this application for \"%s\" files"
-msgstr "_Pea meeles seda rakendust \"%s\" failide jaoks"
-
-#. Only in add mode
-#, c-format
-msgid "Open all \"%s\" files with:"
-msgstr "Kõik \"%s\" failid avatakse rakendusega:"
-
-msgid "_Add"
-msgstr "L_isa"
-
-msgid "Add Application"
-msgstr "Rakenduse lisamine"
-
-msgid "Open Failed, would you like to choose another application?"
-msgstr "Tõrge avamisel, kas soovid valida mõne teise rakenduse?"
-
-#, c-format
-msgid ""
-"\"%s\" cannot open \"%s\" because \"%s\" cannot access files at \"%s\" "
-"locations."
-msgstr ""
-"\"%s\" ei saa faili \"%s\" avada, kuna \"%s\" ei pääse asukohas \"%s\" "
-"olevatele failidele ligi."
-
-# #: ../libnautilus-private/nautilus-program-choosing.c:82
-# #: ../libnautilus-private/nautilus-program-choosing.c:113
-msgid "Open Failed, would you like to choose another action?"
-msgstr "Tõrge avamisel. Kas soovid valida mõne teise käsu?"
-
-#, c-format
-msgid ""
-"The default action cannot open \"%s\" because it cannot access files at \"%s"
-"\" locations."
-msgstr ""
-"Vaikimisi käsuga pole võimalik faili \"%s\" avada, kuna asukohas \"%s\" "
-"olevatele failidele pole võimalik ligi pääseda."
-
-msgid ""
-"No other applications are available to view this file. If you copy this file "
-"onto your computer, you may be able to open it."
-msgstr ""
-"Selle faili vaatamiseks pole ühtegi muud rakendust saadaval.  Selle avamine "
-"võib võimalik olla siis, kui kopeerid faili oma arvutisse."
-
-msgid ""
-"No other actions are available to view this file. If you copy this file onto "
-"your computer, you may be able to open it."
-msgstr ""
-"Selle faili vaatamiseks pole ühtegi teist käsku saadaval. Selle avamine võib "
-"olla võimalik siis, kui kopeerid selle oma arvutisse."
+#, fuzzy
+msgid "Set as default"
+msgstr "Kasuta _vaikimisi"
 
 msgid "Sorry, but you cannot execute commands from a remote site."
 msgstr "Vabandust, kuid kaugsaitides pole võimalik käske käivitada."
@@ -1627,87 +1424,6 @@ msgstr "Tagasta redigeeritud"
 
 msgid "Redo the edit"
 msgstr "Tagasta redigeeritud"
-
-msgid ""
-"If set to true, then Nautilus will automatically mount media such as user-"
-"visible hard disks and removable media on start-up and media insertion."
-msgstr ""
-"Kui märgitud, siis haagib Nautilus käivitumisel või meediumi sisestamisel "
-"automaatselt külge kõik külgehaagitavad meediumid (näiteks kasutajale "
-"nähtavad kõvakettad või irdmeediumid)."
-
-msgid ""
-"If set to true, then Nautilus will automatically open a folder when media is "
-"automounted. This only applies to media where no known x-content/* type was "
-"detected; for media where a known x-content type is detected, the user "
-"configurable action will be taken instead."
-msgstr ""
-"Kui märgitud, siis avab Nautilus meediumi automaatsel haakimisel kataloogi. "
-"See rakendub ainult meediumile, mille kohta pole x-content/* tüüpi "
-"tuvastatud. Tuvastatud x-content tüübiga meediumi korral rakendatakse aga "
-"kasutaja poolt määratud tegevus."
-
-msgid ""
-"If set to true, then Nautilus will never prompt nor autorun/autostart "
-"programs when a medium is inserted."
-msgstr ""
-"Kui märgitud, siis ei küsi Nautilus meediumi sisestamise korral automaatselt "
-"käivitatavate programmide käivitamisel kasutajalt kunagi kinnitust."
-
-msgid ""
-"List of x-content/* types for which the user have chosen \"Do Nothing\" in "
-"the preference capplet. No prompt will be shown nor will any matching "
-"application be started on insertion of media matching these types."
-msgstr ""
-"Nimekiri x-content/* liikidest, millede kohta kasutaja on eelistuste "
-"rakendist valinud \"Ei tehta midagi\". Nendele liikidele vastava meediumi "
-"sisestamisel ei küsita kasutajalt mingit kinnitust ega käivitata ühtegi "
-"rakendust."
-
-msgid ""
-"List of x-content/* types for which the user have chosen \"Open Folder\" in "
-"the preferences capplet. A folder window will be opened on insertion of "
-"media matching these types."
-msgstr ""
-"Nimekiri x-content/* liikidest, millede kohta kasutaja on eelistuste "
-"rakendist valinud \"Avatakse kataloog\". Nendele liikidele vastava meediumi "
-"sisestamisel avatakse kataloogiaken."
-
-msgid ""
-"List of x-content/* types for which the user have chosen to start an "
-"application in the preference capplet. The preferred application for the "
-"given type will be started on insertion on media matching these types."
-msgstr ""
-"Nimekiri x-content/* liikidest, millede kohta kasutaja on eelistuste "
-"rakendist valinud käivitatava rakenduse. Nendele liikidele vastava meediumi "
-"sisestamisel käivitatakse eelistatud rakendus."
-
-msgid "List of x-content/* types set to \"Do Nothing\""
-msgstr ""
-"Nimekiri x-content/* liikidest, millele on määratud \"Ei tehta midagi\""
-
-msgid "List of x-content/* types set to \"Open Folder\""
-msgstr ""
-"Nimekiri x-content/* liikidest, millele on määratud \"Avatakse kataloog\""
-
-msgid ""
-"List of x-content/* types where the preferred application will be launched"
-msgstr ""
-"Nimekiri x-content/* liikidest, mille puhul tuleb käivitada eelistatav "
-"rakendus"
-
-msgid "Never prompt or autorun/autostart programs when media are inserted"
-msgstr ""
-"Automaatkäivitusega programmide käivitamise kohta ei küsita meediumi "
-"sisestamisel kinnitust"
-
-msgid "Whether to automatically mount media"
-msgstr "Kas ühendatav meedium haagitakse automaatselt külge või mitte"
-
-msgid "Whether to automatically open a folder for automounted media"
-msgstr ""
-"Kas automaatselt külge haagitud meediumi kataloog avatakse automaatselt või "
-"mitte"
 
 msgid ""
 "A list of captions below an icon in the icon view and the desktop. The "
@@ -1930,17 +1646,6 @@ msgstr ""
 "Kui märgitud, siis Nautilus küsib enne failide kustutamist või prügikasti "
 "tühjendamist kinnitust."
 
-msgid ""
-"If set to true, then Nautilus will exit when all windows are destroyed. This "
-"is the default setting. If set to false, it can be started without any "
-"window, so nautilus can serve as a daemon to monitor media automount, or "
-"similar tasks."
-msgstr ""
-"Kui tõene, lõpetab Nautilus töö, kui kõik aknad suletakse. See on vaikimisi "
-"säte. Kui väär, saab Nautilust käivitada ilma akendeta, nii võib Nautilust "
-"kasutada teenusprotsessina, mis monitoorib meediumide isehaakimist või "
-"täidab sarnaseid ülesandeid."
-
 # "Kui tõene, väljub Nautilus, kui kõik aknad suletakse. See on vaikimisi säte. "
 # "Kui see pole tõene, "
 msgid ""
@@ -2064,9 +1769,6 @@ msgstr "Hiirenupp, millega aktiveeritakse brauseriaknas käsk \"Edasi\""
 
 msgid "Nautilus uses the users home folder as the desktop"
 msgstr "Nautilus kasutab kodukataloogi kui töölauda"
-
-msgid "Nautilus will exit when last window destroyed."
-msgstr "Nautilus sulgub, kui viimane aken suletakse."
 
 msgid "Network Servers icon visible on the desktop"
 msgstr "Võrguserverite ikoon on töölaual nähtav"
@@ -2323,11 +2025,8 @@ msgstr "Kõikide kohalike ja kaugkataloogide ning ketaste sirvimine"
 msgid "Computer"
 msgstr "Arvuti"
 
-msgid "Change the behaviour and appearance of file manager windows"
-msgstr "Failihalduri akende käitumise ja välimuse muutmine"
-
-msgid "File Management"
-msgstr "Failihaldus"
+msgid "Open Folder"
+msgstr "Avatakse kataloog"
 
 msgid "Home Folder"
 msgstr "Kodukataloog"
@@ -2684,6 +2383,11 @@ msgstr "_Tühi fail"
 msgid "Create a new empty file inside this folder"
 msgstr "Selle kataloogi sisse uue tühja faili loomine"
 
+#. name, stock id
+#. label, accelerator
+msgid "_Open"
+msgstr "_Ava"
+
 #. tooltip
 msgid "Open the selected item in this window"
 msgstr "Valitud kirjete avamine praeguses aknas"
@@ -2890,9 +2594,21 @@ msgstr "Ü_henda"
 msgid "Mount the selected volume"
 msgstr "Valitud kettaseadme haakimine"
 
+#. name, stock id
+#. label, accelerator
+#. add the "Unmount" menu item
+msgid "_Unmount"
+msgstr "_Ühenda lahti"
+
 #. tooltip
 msgid "Unmount the selected volume"
 msgstr "Valitud kettaseadme lahtihaakimine"
+
+#. name, stock id
+#. label, accelerator
+#. add the "Eject" menu item
+msgid "_Eject"
+msgstr "_Väljasta"
 
 #. tooltip
 msgid "Eject the selected volume"
@@ -3348,6 +3064,10 @@ msgstr "Nimi \"%s\" ei sobi, sest sisaldab märki \"/\". Palun vali teine nimi."
 
 #, c-format
 msgid "The name \"%s\" is not valid. Please use a different name."
+msgstr "Nimi \"%s\" ei sobi. Palun vali teine nimi."
+
+#, fuzzy, c-format
+msgid "The name \"%s\" is too long. Please use a different name."
 msgstr "Nimi \"%s\" ei sobi. Palun vali teine nimi."
 
 #. fall through
@@ -3808,23 +3528,14 @@ msgstr "\"%s\" pääsuõiguseid pole võimalik tuvastada."
 msgid "The permissions of the selected file could not be determined."
 msgstr "Valitud faili pääsuõiguseid pole võimalik tuvastada."
 
+msgid "Open With"
+msgstr "Avamine rakendusega"
+
 msgid "Creating Properties window."
 msgstr "Omaduste akna loomine."
 
 msgid "Select Custom Icon"
 msgstr "Kohandatud ikooni valimine"
-
-msgid "File System"
-msgstr "Failisüsteem"
-
-msgid "Network Neighbourhood"
-msgstr "Võrgunaabrus"
-
-msgid "Tree"
-msgstr "Puu"
-
-msgid "Show Tree"
-msgstr "Näita kataloogipuud"
 
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
@@ -3854,10 +3565,6 @@ msgid ""
 msgstr ""
 "Nautilusega 3.0 muutus see kataloog aegunuks ning seadistused püüti "
 "kohandada kausta ~/.config/nautilus"
-
-#, c-format
-msgid "Unable to eject %s"
-msgstr "%s väljastamine pole võimalik"
 
 msgid "Perform a quick set of self-check tests."
 msgstr "Kiirete enesetestide läbiviimine."
@@ -3899,9 +3606,6 @@ msgstr ""
 
 msgid "--check cannot be used with other options."
 msgstr "--check võtit pole võimalik kasutada koos teiste võtmetega."
-
-msgid "-- quit cannot be used with URIs."
-msgstr "--quit võtit pole võimalik koos URI-dega kasutada."
 
 msgid "--quit cannot be used with URIs."
 msgstr "--quit võtit pole võimalik koos URI-dega kasutada."
@@ -3962,6 +3666,9 @@ msgstr "<b>_Nimi</b>"
 msgid "Edit Bookmarks"
 msgstr "Järjehoidjate redaktor"
 
+msgid "Print but do not open the URI"
+msgstr ""
+
 #. Translators: This is the --help description for the connect to server app,
 #. the initial newlines are between the command line arg and the description
 msgid ""
@@ -3994,9 +3701,10 @@ msgstr "Turvaline WebDAV (HTTPS)"
 msgid "Connecting..."
 msgstr "Ühendumine..."
 
+#, fuzzy
 msgid ""
 "Can't load the supported server method list.\n"
-"Please check your GVfs installation."
+"Please check your gvfs installation."
 msgstr ""
 "Toetatud serverimeetodite loendit pole võimalik laadida.\n"
 "Palun kontrolli enda GVfs paigaldust."
@@ -4154,12 +3862,6 @@ msgstr "<b>Nimekirja veerud</b>"
 msgid "<b>List View Defaults</b>"
 msgstr "<b>Nimekirjavaate vaikeväärtused</b>"
 
-msgid "<b>Media Handling</b>"
-msgstr "<b>Meediakäsitlemine</b>"
-
-msgid "<b>Other Media</b>"
-msgstr "<b>Muu meedium</b>"
-
 msgid "<b>Other Previewable Files</b>"
 msgstr "<b>Muud eelvaadeldavad failid</b>"
 
@@ -4178,17 +3880,11 @@ msgstr "<b>Puuvaate vaikeväärtused</b>"
 msgid "A_ll columns have the same width"
 msgstr "Kõigile _veergudele sama laius"
 
-msgid "Acti_on:"
-msgstr "T_egevus:"
-
 msgid "Always"
 msgstr "Alati"
 
 msgid "Ask before _emptying the Trash or deleting files"
 msgstr "_Prügikasti tühjendamisel ja failide kustutamisel küsitakse luba"
-
-msgid "B_rowse media when inserted"
-msgstr "Meediumi si_rvimine pärast sisestamist"
 
 msgid "Behavior"
 msgstr "Käitumine"
@@ -4214,9 +3910,6 @@ msgstr "Kustutamise aja järgi"
 msgid "By Type"
 msgstr "Tüübi järgi"
 
-msgid "CD _Audio:"
-msgstr "_CD-audio:"
-
 msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
@@ -4226,11 +3919,6 @@ msgstr ""
 
 msgid "Choose the order of information to appear in the list view."
 msgstr "Nimekirjavaates ilmuvate andmete järjekorra valimine."
-
-msgid ""
-"Choose what happens when inserting media or connecting devices to the system"
-msgstr ""
-"Vali, mida tuleb seadmete ühendamisel või meediumi sisestamisel ette võtta"
 
 msgid "Count _number of items:"
 msgstr "_Kirjete arvu loendatakse:"
@@ -4252,17 +3940,11 @@ msgstr "Failihalduse eelistused"
 msgid "I_nclude a Delete command that bypasses Trash"
 msgstr "Menüüs on käsk kustutamiseks _ilma prügikasti viskamata"
 
-msgid "Less common media formats can be configured here"
-msgstr "Siin on võimalik seadistada vähemtuntud meediumivorminguid"
-
 msgid "List Columns"
 msgstr "Nimekirja veerud"
 
 msgid "Local Files Only"
 msgstr "Ainult kohalikel failide korral"
-
-msgid "Media"
-msgstr "Meedium"
 
 msgid "Never"
 msgstr "Mitte kunagi"
@@ -4304,9 +3986,6 @@ msgstr "Kir_jed järjestatakse:"
 msgid "_Ask each time"
 msgstr "_Küsitakse iga kord"
 
-msgid "_DVD Video:"
-msgstr "_DVD-Video:"
-
 msgid "_Default zoom level:"
 msgstr "Vaikimisi suu_rendus:"
 
@@ -4316,17 +3995,8 @@ msgstr "Kirjed avatakse _topeltklõpsuga"
 msgid "_Format:"
 msgstr "_Vorming:"
 
-msgid "_Music Player:"
-msgstr "_Muusikaesitaja:"
-
-msgid "_Never prompt or start programs on media insertion"
-msgstr "Meediumi sisestamisel ei käivitata _programme ega küsita"
-
 msgid "_Only for files smaller than:"
 msgstr "Ainult _failidele, mis on väiksemad kui:"
-
-msgid "_Photos:"
-msgstr "_Fotod:"
 
 msgid "_Run executable text files when they are opened"
 msgstr "Käivitatavade teksti_failide avamisel need käivitatakse"
@@ -4334,26 +4004,14 @@ msgstr "Käivitatavade teksti_failide avamisel need käivitatakse"
 msgid "_Single click to open items"
 msgstr "Kirjed avatakse ü_he klõpsuga"
 
-msgid "_Software:"
-msgstr "_Tarkvara:"
-
 msgid "_Text beside icons"
 msgstr "_Tekst ikoonide kõrval"
-
-msgid "_Type:"
-msgstr "_Liik:"
 
 msgid "_Use compact layout"
 msgstr "Kasutatakse kom_paktset paigutust"
 
 msgid "_View executable text files when they are opened"
 msgstr "Käi_vitatavate tekstifailide avamisel näidatakse nende sisu"
-
-msgid "History"
-msgstr "Ajalugu"
-
-msgid "Show History"
-msgstr "Näita ajalugu"
 
 msgid "Camera Brand"
 msgstr "Kaamera tootjafirma"
@@ -4565,6 +4223,9 @@ msgstr "_Otsingu kuvamine"
 msgid "Show search"
 msgstr "Otsingu kuvamine"
 
+msgid "Sidebar"
+msgstr ""
+
 #. name, stock id
 #. label, accelerator
 msgid "_Main Toolbar"
@@ -4577,8 +4238,9 @@ msgstr "Selle akna põhitööriba näitamine või peitmine"
 #. is_active
 #. name, stock id
 #. label, accelerator
-msgid "_Side Pane"
-msgstr "_Külgpaan"
+#, fuzzy
+msgid "_Show Sidebar"
+msgstr "_Otsingu kuvamine"
 
 #. tooltip
 msgid "Change the visibility of this window's side pane"
@@ -4626,6 +4288,18 @@ msgstr "_Lisapaan"
 msgid "Open an extra folder view side-by-side"
 msgstr "Kataloogi lisavaate avamine eelmise kõrvale"
 
+msgid "Places"
+msgstr "Asukohad"
+
+msgid "Select Places as the default sidebar"
+msgstr ""
+
+msgid "Tree"
+msgstr "Puu"
+
+msgid "Select Tree as the default sidebar"
+msgstr ""
+
 msgid "_Back"
 msgstr "_Tagasi"
 
@@ -4666,12 +4340,6 @@ msgstr "%s - Failisirvija"
 msgid "Close tab"
 msgstr "Sulge kaart"
 
-msgid "Notes"
-msgstr "Märkmed"
-
-msgid "Show Notes"
-msgstr "Näita märkmeid"
-
 msgid "Devices"
 msgstr "Seadmed"
 
@@ -4684,6 +4352,9 @@ msgstr "Haagi ja ava %s"
 
 msgid "Open the contents of your desktop in a folder"
 msgstr "Töölaua avamine kaustana"
+
+msgid "File System"
+msgstr "Failisüsteem"
 
 msgid "Open the contents of the File System"
 msgstr "Failisüsteemi sisukorra avamine"
@@ -4724,6 +4395,10 @@ msgid "Unable to start %s"
 msgstr "%s käivitamine pole võimalik"
 
 #, c-format
+msgid "Unable to eject %s"
+msgstr "%s väljastamine pole võimalik"
+
+#, c-format
 msgid "Unable to poll %s for media changes"
 msgstr "%s meediumimuutuste pollimine pole võimalik"
 
@@ -4736,12 +4411,6 @@ msgstr "Eemalda"
 
 msgid "Rename..."
 msgstr "Muuda nime..."
-
-msgid "Places"
-msgstr "Asukohad"
-
-msgid "Show Places"
-msgstr "Näita asukohti"
 
 msgid "File Type"
 msgstr "Faili liik"
@@ -4815,9 +4484,6 @@ msgstr "Otsingutulemused"
 msgid "Search:"
 msgstr "Otsing:"
 
-msgid "Close the side pane"
-msgstr "Sulge külgpaan"
-
 #. Set initial window title
 msgid "Nautilus"
 msgstr "Nautilus"
@@ -4853,6 +4519,9 @@ msgstr "Taasta valitud kirjed"
 
 msgid "Restore selected items to their original position"
 msgstr "Kõigi valitud kirjete taastamine nende algsele asukohale"
+
+msgid "Network Neighbourhood"
+msgstr "Võrgunaabrus"
 
 msgid ""
 "Do you want to remove any bookmarks with the non-existing location from your "
@@ -5182,6 +4851,10 @@ msgstr "Meedium sisaldab tarkvara."
 msgid "The media has been detected as \"%s\"."
 msgstr "Meedium tuvastati kui \"%s\"."
 
+#, c-format
+msgid "Open %s"
+msgstr "Avatakse: %s"
+
 msgid "Zoom In"
 msgstr "Suurenda"
 
@@ -5205,3 +4878,353 @@ msgstr ""
 
 msgid "Send files by mail, instant message..."
 msgstr ""
+
+#~ msgid "No applications found"
+#~ msgstr "Ühtegi rakendust ei leitud"
+
+#~ msgid "Ask what to do"
+#~ msgstr "Küsitakse, mida teha"
+
+#~ msgid "Do Nothing"
+#~ msgstr "Ei tehta midagi"
+
+#~ msgid "Open with other Application..."
+#~ msgstr "Avatakse mõne muu rakendusega..."
+
+#~ msgid "You have just inserted an Audio CD."
+#~ msgstr "Sa sisestasid audio-CD."
+
+#~ msgid "You have just inserted an Audio DVD."
+#~ msgstr "Sa sisestasid audio-DVD."
+
+#~ msgid "You have just inserted a Video DVD."
+#~ msgstr "Sa sisestasid video-DVD."
+
+#~ msgid "You have just inserted a Video CD."
+#~ msgstr "Sa sisestasid video-CD."
+
+#~ msgid "You have just inserted a Super Video CD."
+#~ msgstr "Sa sisestasid Super Video CD."
+
+#~ msgid "You have just inserted a blank CD."
+#~ msgstr "Sa sisestasid tühja CD."
+
+#~ msgid "You have just inserted a blank DVD."
+#~ msgstr "Sa sisestasid tühja DVD."
+
+#~ msgid "You have just inserted a blank Blu-Ray disc."
+#~ msgstr "Sa sisestasid tühja Blu-Ray plaadi."
+
+#~ msgid "You have just inserted a blank HD DVD."
+#~ msgstr "Sa sisestasid tühja HD DVD-plaadi."
+
+#~ msgid "You have just inserted a Photo CD."
+#~ msgstr "Sa sisestasid tühja foto-CD."
+
+#~ msgid "You have just inserted a Picture CD."
+#~ msgstr "Sa sisestasid tühja pildi-CD."
+
+#~ msgid "You have just inserted a medium with digital photos."
+#~ msgstr "Sa sisestasid digifotosid sisaldava meediumi."
+
+#~ msgid "You have just inserted a digital audio player."
+#~ msgstr "Sa sisestasid digitaalse audioesitaja."
+
+#~ msgid ""
+#~ "You have just inserted a medium with software intended to be "
+#~ "automatically started."
+#~ msgstr ""
+#~ "Sa sisestasid meediumi, millel olev tarkvara on märgitud automaatseks "
+#~ "käivitamiseks."
+
+#~ msgid "You have just inserted a medium."
+#~ msgstr "Sa sisestasid meediumi."
+
+#~ msgid "Choose what application to launch."
+#~ msgstr "Vali käivitatav rakendus."
+
+#~ msgid ""
+#~ "Select how to open \"%s\" and whether to perform this action in the "
+#~ "future for other media of type \"%s\"."
+#~ msgstr ""
+#~ "Vali, mismoodi tuleb \"%s\" käivitada ning kas ka tulevikus tuleb \"%s\"-"
+#~ "liigilise meediumi korral sedasama teha."
+
+#~ msgid "_Always perform this action"
+#~ msgstr "_Tulevikus tehakse seda ilma küsimata"
+
+#~ msgid "Could not set application as the default: %s"
+#~ msgstr "Rakendust pole võimalik vaikimisi rakenduseks määrata: %s"
+
+#~ msgid "Default"
+#~ msgstr "Vaikimisi"
+
+#~ msgid "Icon"
+#~ msgstr "Ikoon"
+
+#~ msgid "Could not remove application"
+#~ msgstr "Rakendust pole võimalik eemaldada"
+
+#~ msgid "No applications selected"
+#~ msgstr "Ühtegi rakendust pole valitud"
+
+#~ msgid "Unknown"
+#~ msgstr "Tundmatu"
+
+#~ msgid "Could not find '%s'"
+#~ msgstr "'%s' pole võimalik leida"
+
+#~ msgid "Could not find application"
+#~ msgstr "Rakendust pole võimalik leida"
+
+#~ msgid "Could not add application to the application database: %s"
+#~ msgstr "Rakendust pole rakenduste andmebaasi võimalik lisadsa: %s"
+
+#~ msgid "Select an Application"
+#~ msgstr "Rakenduse valimine"
+
+#~ msgid "Select an application to view its description."
+#~ msgstr "Rakenduse kirjelduse vaatamiseks klõpsa selle nime peal."
+
+#~ msgid "_Use a custom command"
+#~ msgstr "_Kasutatakse kohandatud käsku"
+
+#~ msgid "_Browse..."
+#~ msgstr "_Sirvi..."
+
+#~ msgid "Open %s and other %s document with:"
+#~ msgstr "Faili %s ja teisi \"%s\" dokumente tuleb avada rakendusega:"
+
+#~ msgid "Open %s with:"
+#~ msgstr "Faili %s avamine rakendusega:"
+
+#~ msgid "_Remember this application for %s documents"
+#~ msgstr "_Pea meeles seda rakendust %s dokumentide jaoks"
+
+#~ msgid "Open all %s documents with:"
+#~ msgstr "Kõiki %s-dokumente avatakse rakendusega:"
+
+#~ msgid "Open %s and other \"%s\" files with:"
+#~ msgstr "Faili %s ja teisi \"%s\" faile tuleb avada rakendusega:"
+
+#~ msgid "_Remember this application for \"%s\" files"
+#~ msgstr "_Pea meeles seda rakendust \"%s\" failide jaoks"
+
+#~ msgid "Open all \"%s\" files with:"
+#~ msgstr "Kõik \"%s\" failid avatakse rakendusega:"
+
+#~ msgid "_Add"
+#~ msgstr "L_isa"
+
+#~ msgid "Add Application"
+#~ msgstr "Rakenduse lisamine"
+
+#~ msgid "Open Failed, would you like to choose another application?"
+#~ msgstr "Tõrge avamisel, kas soovid valida mõne teise rakenduse?"
+
+#~ msgid ""
+#~ "\"%s\" cannot open \"%s\" because \"%s\" cannot access files at \"%s\" "
+#~ "locations."
+#~ msgstr ""
+#~ "\"%s\" ei saa faili \"%s\" avada, kuna \"%s\" ei pääse asukohas \"%s\" "
+#~ "olevatele failidele ligi."
+
+# #: ../libnautilus-private/nautilus-program-choosing.c:82
+# #: ../libnautilus-private/nautilus-program-choosing.c:113
+#~ msgid "Open Failed, would you like to choose another action?"
+#~ msgstr "Tõrge avamisel. Kas soovid valida mõne teise käsu?"
+
+#~ msgid ""
+#~ "The default action cannot open \"%s\" because it cannot access files at "
+#~ "\"%s\" locations."
+#~ msgstr ""
+#~ "Vaikimisi käsuga pole võimalik faili \"%s\" avada, kuna asukohas \"%s\" "
+#~ "olevatele failidele pole võimalik ligi pääseda."
+
+#~ msgid ""
+#~ "No other applications are available to view this file. If you copy this "
+#~ "file onto your computer, you may be able to open it."
+#~ msgstr ""
+#~ "Selle faili vaatamiseks pole ühtegi muud rakendust saadaval.  Selle "
+#~ "avamine võib võimalik olla siis, kui kopeerid faili oma arvutisse."
+
+#~ msgid ""
+#~ "No other actions are available to view this file. If you copy this file "
+#~ "onto your computer, you may be able to open it."
+#~ msgstr ""
+#~ "Selle faili vaatamiseks pole ühtegi teist käsku saadaval. Selle avamine "
+#~ "võib olla võimalik siis, kui kopeerid selle oma arvutisse."
+
+#~ msgid ""
+#~ "If set to true, then Nautilus will automatically mount media such as user-"
+#~ "visible hard disks and removable media on start-up and media insertion."
+#~ msgstr ""
+#~ "Kui märgitud, siis haagib Nautilus käivitumisel või meediumi sisestamisel "
+#~ "automaatselt külge kõik külgehaagitavad meediumid (näiteks kasutajale "
+#~ "nähtavad kõvakettad või irdmeediumid)."
+
+#~ msgid ""
+#~ "If set to true, then Nautilus will automatically open a folder when media "
+#~ "is automounted. This only applies to media where no known x-content/* "
+#~ "type was detected; for media where a known x-content type is detected, "
+#~ "the user configurable action will be taken instead."
+#~ msgstr ""
+#~ "Kui märgitud, siis avab Nautilus meediumi automaatsel haakimisel "
+#~ "kataloogi. See rakendub ainult meediumile, mille kohta pole x-content/* "
+#~ "tüüpi tuvastatud. Tuvastatud x-content tüübiga meediumi korral "
+#~ "rakendatakse aga kasutaja poolt määratud tegevus."
+
+#~ msgid ""
+#~ "If set to true, then Nautilus will never prompt nor autorun/autostart "
+#~ "programs when a medium is inserted."
+#~ msgstr ""
+#~ "Kui märgitud, siis ei küsi Nautilus meediumi sisestamise korral "
+#~ "automaatselt käivitatavate programmide käivitamisel kasutajalt kunagi "
+#~ "kinnitust."
+
+#~ msgid ""
+#~ "List of x-content/* types for which the user have chosen \"Do Nothing\" "
+#~ "in the preference capplet. No prompt will be shown nor will any matching "
+#~ "application be started on insertion of media matching these types."
+#~ msgstr ""
+#~ "Nimekiri x-content/* liikidest, millede kohta kasutaja on eelistuste "
+#~ "rakendist valinud \"Ei tehta midagi\". Nendele liikidele vastava meediumi "
+#~ "sisestamisel ei küsita kasutajalt mingit kinnitust ega käivitata ühtegi "
+#~ "rakendust."
+
+#~ msgid ""
+#~ "List of x-content/* types for which the user have chosen \"Open Folder\" "
+#~ "in the preferences capplet. A folder window will be opened on insertion "
+#~ "of media matching these types."
+#~ msgstr ""
+#~ "Nimekiri x-content/* liikidest, millede kohta kasutaja on eelistuste "
+#~ "rakendist valinud \"Avatakse kataloog\". Nendele liikidele vastava "
+#~ "meediumi sisestamisel avatakse kataloogiaken."
+
+#~ msgid ""
+#~ "List of x-content/* types for which the user have chosen to start an "
+#~ "application in the preference capplet. The preferred application for the "
+#~ "given type will be started on insertion on media matching these types."
+#~ msgstr ""
+#~ "Nimekiri x-content/* liikidest, millede kohta kasutaja on eelistuste "
+#~ "rakendist valinud käivitatava rakenduse. Nendele liikidele vastava "
+#~ "meediumi sisestamisel käivitatakse eelistatud rakendus."
+
+#~ msgid "List of x-content/* types set to \"Do Nothing\""
+#~ msgstr ""
+#~ "Nimekiri x-content/* liikidest, millele on määratud \"Ei tehta midagi\""
+
+#~ msgid "List of x-content/* types set to \"Open Folder\""
+#~ msgstr ""
+#~ "Nimekiri x-content/* liikidest, millele on määratud \"Avatakse kataloog\""
+
+#~ msgid ""
+#~ "List of x-content/* types where the preferred application will be launched"
+#~ msgstr ""
+#~ "Nimekiri x-content/* liikidest, mille puhul tuleb käivitada eelistatav "
+#~ "rakendus"
+
+#~ msgid "Never prompt or autorun/autostart programs when media are inserted"
+#~ msgstr ""
+#~ "Automaatkäivitusega programmide käivitamise kohta ei küsita meediumi "
+#~ "sisestamisel kinnitust"
+
+#~ msgid "Whether to automatically mount media"
+#~ msgstr "Kas ühendatav meedium haagitakse automaatselt külge või mitte"
+
+#~ msgid "Whether to automatically open a folder for automounted media"
+#~ msgstr ""
+#~ "Kas automaatselt külge haagitud meediumi kataloog avatakse automaatselt "
+#~ "või mitte"
+
+#~ msgid ""
+#~ "If set to true, then Nautilus will exit when all windows are destroyed. "
+#~ "This is the default setting. If set to false, it can be started without "
+#~ "any window, so nautilus can serve as a daemon to monitor media automount, "
+#~ "or similar tasks."
+#~ msgstr ""
+#~ "Kui tõene, lõpetab Nautilus töö, kui kõik aknad suletakse. See on "
+#~ "vaikimisi säte. Kui väär, saab Nautilust käivitada ilma akendeta, nii "
+#~ "võib Nautilust kasutada teenusprotsessina, mis monitoorib meediumide "
+#~ "isehaakimist või täidab sarnaseid ülesandeid."
+
+#~ msgid "Nautilus will exit when last window destroyed."
+#~ msgstr "Nautilus sulgub, kui viimane aken suletakse."
+
+#~ msgid "Change the behaviour and appearance of file manager windows"
+#~ msgstr "Failihalduri akende käitumise ja välimuse muutmine"
+
+#~ msgid "File Management"
+#~ msgstr "Failihaldus"
+
+#~ msgid "Show Tree"
+#~ msgstr "Näita kataloogipuud"
+
+#~ msgid "-- quit cannot be used with URIs."
+#~ msgstr "--quit võtit pole võimalik koos URI-dega kasutada."
+
+#~ msgid "<b>Media Handling</b>"
+#~ msgstr "<b>Meediakäsitlemine</b>"
+
+#~ msgid "<b>Other Media</b>"
+#~ msgstr "<b>Muu meedium</b>"
+
+#~ msgid "Acti_on:"
+#~ msgstr "T_egevus:"
+
+#~ msgid "B_rowse media when inserted"
+#~ msgstr "Meediumi si_rvimine pärast sisestamist"
+
+#~ msgid "CD _Audio:"
+#~ msgstr "_CD-audio:"
+
+#~ msgid ""
+#~ "Choose what happens when inserting media or connecting devices to the "
+#~ "system"
+#~ msgstr ""
+#~ "Vali, mida tuleb seadmete ühendamisel või meediumi sisestamisel ette võtta"
+
+#~ msgid "Less common media formats can be configured here"
+#~ msgstr "Siin on võimalik seadistada vähemtuntud meediumivorminguid"
+
+#~ msgid "Media"
+#~ msgstr "Meedium"
+
+#~ msgid "_DVD Video:"
+#~ msgstr "_DVD-Video:"
+
+#~ msgid "_Music Player:"
+#~ msgstr "_Muusikaesitaja:"
+
+#~ msgid "_Never prompt or start programs on media insertion"
+#~ msgstr "Meediumi sisestamisel ei käivitata _programme ega küsita"
+
+#~ msgid "_Photos:"
+#~ msgstr "_Fotod:"
+
+#~ msgid "_Software:"
+#~ msgstr "_Tarkvara:"
+
+#~ msgid "_Type:"
+#~ msgstr "_Liik:"
+
+#~ msgid "History"
+#~ msgstr "Ajalugu"
+
+#~ msgid "Show History"
+#~ msgstr "Näita ajalugu"
+
+#~ msgid "_Side Pane"
+#~ msgstr "_Külgpaan"
+
+#~ msgid "Notes"
+#~ msgstr "Märkmed"
+
+#~ msgid "Show Notes"
+#~ msgstr "Näita märkmeid"
+
+#~ msgid "Show Places"
+#~ msgstr "Näita asukohti"
+
+#~ msgid "Close the side pane"
+#~ msgstr "Sulge külgpaan"
