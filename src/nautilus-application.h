@@ -28,7 +28,6 @@
 #include <gio/gio.h>
 #include <gtk/gtk.h>
 
-#include <libegg/eggsmclient.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
 
 #define NAUTILUS_DESKTOP_ICON_VIEW_IID	"OAFIID:Nautilus_File_Manager_Desktop_Icon_View"
@@ -58,7 +57,6 @@ typedef struct _NautilusSpatialWindow NautilusSpatialWindow;
 typedef struct {
 	GtkApplication parent;
 
-        EggSMClient *smclient;
 	NautilusUndoManager *undo_manager;
 	GVolumeMonitor *volume_monitor;
 	GDBusProxy *proxy;

@@ -64,8 +64,6 @@ nautilus_SOURCES = \
 	nautilus-actions.h			\
 	nautilus-application.c			\
 	nautilus-application.h			\
-	nautilus-application-smclient.c		\
-	nautilus-application-smclient.h		\
 	nautilus-bookmark-list.c		\
 	nautilus-bookmark-list.h		\
 	nautilus-bookmarks-window.c		\

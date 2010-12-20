@@ -34,7 +34,6 @@
 
 #include <libnautilus-private/nautilus-debug.h>
 #include <eel/eel-debug.h>
-#include <libegg/eggdesktopfile.h>
 
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
@@ -93,10 +92,6 @@ main (int argc, char *argv[])
 
 	g_set_prgname ("nautilus");
 
-	if (g_file_test (DATADIR "/applications/nautilus.desktop", G_FILE_TEST_EXISTS)) {
-		egg_set_desktop_file (DATADIR "/applications/nautilus.desktop");
-	}
-	
 #ifdef HAVE_EXEMPI
 	xmp_init();
 #endif

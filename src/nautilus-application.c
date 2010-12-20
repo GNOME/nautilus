@@ -37,7 +37,6 @@
 #include "file-manager/fm-empty-view.h"
 #endif /* ENABLE_EMPTY_VIEW */
 
-#include "nautilus-application-smclient.h"
 #include "nautilus-desktop-window.h"
 #include "nautilus-image-properties-page.h"
 #include "nautilus-navigation-window.h"
@@ -1334,15 +1333,8 @@ nautilus_application_command_line (GApplication *app,
 	g_option_context_add_main_entries (context, options, NULL);
 	g_option_context_add_group (context, gtk_get_option_group (TRUE));
 
-	if (!self->initialized) {
-		g_option_context_add_group (context, egg_sm_client_get_option_group ());
-	}
-
 	argv = g_application_command_line_get_arguments (command_line, &argc);
 
-	/* we need to do this here, as parsing the EggSMClient option context,
-	 * unsets this variable.
-	 */
 	autostart_id = g_getenv ("DESKTOP_AUTOSTART_ID");
 	if (autostart_id != NULL && *autostart_id != '\0') {
 		autostart_mode = TRUE;
@@ -1451,9 +1443,6 @@ nautilus_application_command_line (GApplication *app,
 			g_signal_connect (gtk_accel_map_get (), "changed",
 					  G_CALLBACK (queue_accel_map_save_callback), NULL);
 
-			/* Initialize SMClient and load session info if availible */
-			nautilus_application_smclient_load (self, &no_default_window);
-
 			self->initialized = TRUE;
 		}
 
@@ -1535,9 +1524,6 @@ nautilus_application_startup (GApplication *app)
 
 	/* create an undo manager */
 	self->undo_manager = nautilus_undo_manager_new ();
-
-	/* initialize the session manager client */
-	nautilus_application_smclient_startup (self);
 
 	/* Initialize preferences. This is needed to create the
 	 * global GSettings objects.
