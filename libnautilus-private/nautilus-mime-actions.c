@@ -1128,7 +1128,6 @@ open_with_response_cb (GtkDialog *dialog,
 	NautilusFile *file;
 	GList files;
 	GAppInfo *info;
-	gchar *content_type;
 	ActivateParametersInstall *parameters = user_data;
 	
 	if (response_id != GTK_RESPONSE_OK) {
@@ -1140,10 +1139,6 @@ open_with_response_cb (GtkDialog *dialog,
 	file = g_object_get_data (G_OBJECT (dialog), "mime-action:file");
 	info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (dialog));
 
-	/* add support for this content type */
-	content_type = nautilus_file_get_mime_type (file);
-	g_app_info_add_supports_type (info, content_type, NULL);
-
 	gtk_widget_destroy (GTK_WIDGET (dialog));
 
 	g_signal_emit_by_name (nautilus_signaller_get_current (), "mime_data_changed");
@@ -1153,7 +1148,6 @@ open_with_response_cb (GtkDialog *dialog,
 	files.data = file;
 	nautilus_launch_application (info, &files, parent_window);
 
-	g_free (content_type);
 	g_object_unref (info);
 }
 

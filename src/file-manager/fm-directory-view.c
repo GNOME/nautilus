@@ -863,7 +863,6 @@ app_chooser_dialog_response_cb (GtkDialog *dialog,
 	GtkWindow *parent_window;
 	NautilusFile *file;
 	GAppInfo *info;
-	gchar *content_type;
 	GList files;
 
 	parent_window = user_data;
@@ -876,10 +875,6 @@ app_chooser_dialog_response_cb (GtkDialog *dialog,
 	info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (dialog));
 	file = g_object_get_data (G_OBJECT (dialog), "directory-view:file");
 
-	/* add support for this content type */
-	content_type = nautilus_file_get_mime_type (file);
-	g_app_info_add_supports_type (info, content_type, NULL);
-
 	g_signal_emit_by_name (nautilus_signaller_get_current (), "mime_data_changed");
 
 	files.next = NULL;
@@ -889,7 +884,6 @@ app_chooser_dialog_response_cb (GtkDialog *dialog,
 
 	gtk_widget_destroy (GTK_WIDGET (dialog));
 	g_object_unref (info);
-	g_free (content_type);
 }
 
 static void
