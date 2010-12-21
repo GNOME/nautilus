@@ -163,8 +163,6 @@ gboolean		nautilus_window_slot_content_view_matches_iid (NautilusWindowSlot	*slo
 
 void    nautilus_window_slot_go_home			   (NautilusWindowSlot *slot,
 							    gboolean            new_tab);
-void    nautilus_window_slot_go_up			   (NautilusWindowSlot *slot,
-							    gboolean           close_behind);
 
 void    nautilus_window_slot_set_content_view_widget	   (NautilusWindowSlot *slot,
 							    NautilusView       *content_view);

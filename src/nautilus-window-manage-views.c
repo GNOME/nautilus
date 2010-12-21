@@ -261,36 +261,6 @@ handle_go_forward (NautilusNavigationWindowSlot *navigation_slot,
 	g_list_free_1 (link);
 }
 
-static void
-handle_go_elsewhere (NautilusWindowSlot *slot, GFile *location)
-{
-#if !NEW_UI_COMPLETE
-	NautilusNavigationWindowSlot *navigation_slot;
-
-	if (NAUTILUS_IS_NAVIGATION_WINDOW_SLOT (slot)) {
-		navigation_slot = NAUTILUS_NAVIGATION_WINDOW_SLOT (slot);
-
-		/* Clobber the entire forward list, and move displayed location to back list */
-		nautilus_navigation_window_slot_clear_forward_list (navigation_slot);
-		
-		if (slot->location != NULL) {
-			/* If we're returning to the same uri somehow, don't put this uri on back list. 
-			 * This also avoids a problem where set_displayed_location
-			 * didn't update last_location_bookmark since the uri didn't change.
-			 */
-			if (!g_file_equal (slot->location, location)) {
-				/* Store bookmark for current location in back list, unless there is no current location */
-				check_last_bookmark_location_matches_slot (slot);
-				/* Use the first bookmark in the history list rather than creating a new one. */
-				navigation_slot->back_list = g_list_prepend (navigation_slot->back_list,
-									     slot->last_location_bookmark);
-				g_object_ref (navigation_slot->back_list->data);
-			}
-		}
-	}
-#endif
-}
-
 void
 nautilus_window_update_up_button (NautilusWindow *window)
 {
@@ -422,7 +392,6 @@ update_history (NautilusWindowSlot *slot,
         case NAUTILUS_LOCATION_CHANGE_STANDARD:
         case NAUTILUS_LOCATION_CHANGE_FALLBACK:
                 nautilus_window_slot_add_current_location_to_history_list (slot);
-                handle_go_elsewhere (slot, new_location);
                 return;
         case NAUTILUS_LOCATION_CHANGE_RELOAD:
                 /* for reload there is no work to do */
@@ -683,18 +652,6 @@ nautilus_window_slot_go_home (NautilusWindowSlot *slot, gboolean new_tab)
 						 flags, NULL, NULL, NULL);
 	g_object_unref (home);
 }
-
-#if 0
-static char *
-nautilus_window_slot_get_view_label (NautilusWindowSlot *slot)
-{
-	const NautilusViewInfo *info;
-
-	info = nautilus_view_factory_lookup (nautilus_window_slot_get_content_view_id (slot));
-
-	return g_strdup (info->label);
-}
-#endif
 
 static char *
 nautilus_window_slot_get_view_error_label (NautilusWindowSlot *slot)
