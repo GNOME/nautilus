@@ -28,19 +28,22 @@
 /* nautilus-window.c: Implementation of the main window object */
 
 #include <config.h>
+
 #include "nautilus-window-private.h"
 
 #include "nautilus-actions.h"
 #include "nautilus-application.h"
 #include "nautilus-bookmarks-window.h"
+#include "nautilus-mime-actions.h"
+#include "nautilus-navigation-window-pane.h"
+#include "nautilus-navigation-window-slot.h"
+#include "nautilus-search-bar.h"
+#include "nautilus-src-marshal.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-bookmarks.h"
 #include "nautilus-window-slot.h"
-#include "nautilus-navigation-window-slot.h"
 #include "nautilus-zoom-control.h"
-#include "nautilus-search-bar.h"
-#include "nautilus-navigation-window-pane.h"
-#include "nautilus-src-marshal.h"
+
 #include <eel/eel-debug.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
@@ -56,7 +59,6 @@
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-metadata.h>
-#include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
 #include <libnautilus-private/nautilus-view-factory.h>
 #include <libnautilus-private/nautilus-clipboard.h>

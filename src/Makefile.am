@@ -86,6 +86,8 @@ nautilus_SOURCES = \
 	nautilus-location-entry.c               \
 	nautilus-location-entry.h               \
 	nautilus-main.c 			\
+	nautilus-mime-actions.c 		\
+	nautilus-mime-actions.h 		\
 	nautilus-navigation-action.c		\
 	nautilus-navigation-action.h		\
 	nautilus-navigation-bar.c         	\

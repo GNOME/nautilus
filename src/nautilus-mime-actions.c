@@ -33,17 +33,17 @@
 #include <string.h>
 #include <gdk/gdkx.h>
 
-#include "nautilus-file-attributes.h"
-#include "nautilus-file.h"
-#include "nautilus-file-operations.h"
-#include "nautilus-metadata.h"
-#include "nautilus-program-choosing.h"
-#include "nautilus-desktop-icon-file.h"
-#include "nautilus-global-preferences.h"
-#include "nautilus-signaller.h"
+#include <libnautilus-private/nautilus-file-attributes.h>
+#include <libnautilus-private/nautilus-file.h>
+#include <libnautilus-private/nautilus-file-operations.h>
+#include <libnautilus-private/nautilus-metadata.h>
+#include <libnautilus-private/nautilus-program-choosing.h>
+#include <libnautilus-private/nautilus-desktop-icon-file.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-signaller.h>
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_MIME
-#include "nautilus-debug.h"
+#include <libnautilus-private/nautilus-debug.h>
 
 typedef enum {
 	ACTIVATION_ACTION_LAUNCH_DESKTOP_FILE,

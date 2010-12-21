@@ -23,13 +23,23 @@
 */
 
 #include <config.h>
+
 #include "fm-properties-window.h"
+
 #include "fm-ditem-page.h"
+#include "fm-error-reporting.h"
+#include "nautilus-mime-actions.h"
+
+#include <gtk/gtk.h>
+#include <gdk/gdkkeysyms.h>
+#include <glib/gi18n.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <cairo.h>
 
 #define GNOME_DESKTOP_USE_UNSTABLE_API
+#include <libgnome-desktop/gnome-desktop-thumbnail.h>
 
-#include "fm-error-reporting.h"
-#include "libnautilus-private/nautilus-mime-application-chooser.h"
 #include <eel/eel-accessibility.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
@@ -38,10 +48,7 @@
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
-#include <gtk/gtk.h>
-#include <gdk/gdkkeysyms.h>
-#include <glib/gi18n.h>
-#include <libgnome-desktop/gnome-desktop-thumbnail.h>
+
 #include <libnautilus-extension/nautilus-property-page-provider.h>
 #include <libnautilus-private/nautilus-entry.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
@@ -50,13 +57,10 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-link.h>
 #include <libnautilus-private/nautilus-metadata.h>
+#include <libnautilus-private/nautilus-mime-application-chooser.h>
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-undo-signal-handlers.h>
-#include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-undo.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <cairo.h>
 
 #if HAVE_SYS_VFS_H
 #include <sys/vfs.h>

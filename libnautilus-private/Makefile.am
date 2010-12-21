@@ -120,8 +120,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-merged-directory.h \
 	nautilus-metadata.h \
 	nautilus-metadata.c \
-	nautilus-mime-actions.c \
-	nautilus-mime-actions.h \
 	nautilus-mime-application-chooser.c \
 	nautilus-mime-application-chooser.h \
 	nautilus-module.c \

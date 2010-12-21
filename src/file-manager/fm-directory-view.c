@@ -28,15 +28,23 @@
  */
 
 #include <config.h>
-#include <math.h>
+
 #include "fm-directory-view.h"
+
 #include "fm-list-view.h"
 #include "fm-desktop-icon-view.h"
-
 #include "fm-actions.h"
 #include "fm-error-reporting.h"
 #include "fm-marshal.h"
 #include "fm-properties-window.h"
+#include "nautilus-mime-actions.h"
+
+#include <gdk/gdkkeysyms.h>
+#include <gtk/gtk.h>
+#include <glib/gi18n.h>
+#include <glib/gstdio.h>
+#include <gio/gio.h>
+#include <math.h>
 
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
@@ -45,12 +53,7 @@
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
-#include <gdk/gdkkeysyms.h>
-#include <gtk/gtk.h>
-#include <glib/gi18n.h>
-#include <glib/gstdio.h>
-#include <gio/gio.h>
-#include <libnautilus-private/nautilus-recent.h>
+
 #include <libnautilus-extension/nautilus-menu-provider.h>
 #include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-clipboard-monitor.h>
@@ -64,11 +67,11 @@
 #include <libnautilus-private/nautilus-file-dnd.h>
 #include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-file-private.h> /* for nautilus_file_get_existing_by_uri */
+#include <libnautilus-private/nautilus-file-private.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-link.h>
 #include <libnautilus-private/nautilus-metadata.h>
-#include <libnautilus-private/nautilus-mime-actions.h>
+#include <libnautilus-private/nautilus-recent.h>
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
