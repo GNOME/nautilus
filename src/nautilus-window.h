@@ -159,7 +159,6 @@ void             nautilus_window_go_to_full           (NautilusWindow    *window
 void             nautilus_window_go_to_with_selection (NautilusWindow    *window,
                                                        GFile             *location,
                                                        GList             *new_selection);
-void             nautilus_window_go_home              (NautilusWindow    *window);
 void             nautilus_window_new_tab              (NautilusWindow    *window);
 void             nautilus_window_go_up                (NautilusWindow    *window,
                                                        gboolean           close_behind,

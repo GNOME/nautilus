@@ -408,14 +408,6 @@ nautilus_window_allow_reload (NautilusWindow *window, gboolean allow)
 }
 
 void
-nautilus_window_go_home (NautilusWindow *window)
-{
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-
-	nautilus_window_slot_go_home (window->details->active_pane->active_slot, FALSE);
-}
-
-void
 nautilus_window_prompt_for_location (NautilusWindow *window,
 				     const char     *initial)
 {

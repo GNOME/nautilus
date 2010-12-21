@@ -601,7 +601,7 @@ action_new_window_callback (GtkAction *action,
 				application,
 				NULL,
 				gtk_window_get_screen (GTK_WINDOW (current_window)));
-	nautilus_window_go_home (new_window);
+	nautilus_window_slot_go_home (nautilus_window_get_active_slot (new_window), FALSE);
 
 	g_object_unref (application);
 }
