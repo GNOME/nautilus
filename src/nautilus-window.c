@@ -244,7 +244,9 @@ nautilus_window_go_to_with_selection (NautilusWindow *window,
 static gboolean
 nautilus_window_go_up_signal (NautilusWindow *window, gboolean close_behind)
 {
-	nautilus_window_go_up (window, close_behind, FALSE);
+	nautilus_window_slot_go_up (nautilus_window_get_active_slot (window),
+				    close_behind, FALSE);
+
 	return TRUE;
 }
 
@@ -281,48 +283,6 @@ nautilus_window_new_tab (NautilusWindow *window)
 		nautilus_window_slot_go_to (new_slot, location, FALSE);
 		g_object_unref (location);
 	}
-}
-
-void
-nautilus_window_go_up (NautilusWindow *window, gboolean close_behind, gboolean new_tab)
-{
-	NautilusWindowSlot *slot;
-	GFile *parent;
-	GList *selection;
-	NautilusWindowOpenFlags flags;
-
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
-	slot = window->details->active_pane->active_slot;
-
-	if (slot->location == NULL) {
-		return;
-	}
-	
-	parent = g_file_get_parent (slot->location);
-
-	if (parent == NULL) {
-		return;
-	}
-	
-	selection = g_list_prepend (NULL, g_object_ref (slot->location));
-	
-	flags = 0;
-	if (close_behind) {
-		flags |= NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND;
-	}
-	if (new_tab) {
-		flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
-	}
-
-	nautilus_window_slot_open_location (slot, parent, 
-					    NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
-					    flags,
-					    selection);
-	
-	g_object_unref (parent);
-
-	g_list_free_full (selection, g_object_unref);
 }
 
 static void

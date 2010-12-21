@@ -160,9 +160,6 @@ void             nautilus_window_go_to_with_selection (NautilusWindow    *window
                                                        GFile             *location,
                                                        GList             *new_selection);
 void             nautilus_window_new_tab              (NautilusWindow    *window);
-void             nautilus_window_go_up                (NautilusWindow    *window,
-                                                       gboolean           close_behind,
-						       gboolean           new_tab);
 void             nautilus_window_prompt_for_location  (NautilusWindow    *window,
                                                        const char        *initial);
 void             nautilus_window_display_error        (NautilusWindow    *window,

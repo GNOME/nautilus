@@ -536,7 +536,11 @@ static void
 action_up_callback (GtkAction *action, 
 		     gpointer user_data) 
 {
-	nautilus_window_go_up (NAUTILUS_WINDOW (user_data), FALSE, should_open_in_new_tab ());
+	NautilusWindow *window = user_data;
+	NautilusWindowSlot *slot;
+
+	slot = nautilus_window_get_active_slot (window);
+	nautilus_window_slot_go_up (slot, FALSE, should_open_in_new_tab ());
 }
 
 static void
