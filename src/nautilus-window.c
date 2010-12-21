@@ -856,7 +856,7 @@ nautilus_window_set_active_slot (NautilusWindow *window, NautilusWindowSlot *new
 	if (old_slot != NULL) {
 		/* inform window */
 		if (old_slot->content_view != NULL) {
-			nautilus_window_slot_disconnect_content_view (old_slot, old_slot->content_view);
+			nautilus_window_disconnect_content_view (window, old_slot->content_view);
 		}
 
 		/* inform slot & view */
@@ -884,7 +884,7 @@ nautilus_window_set_active_slot (NautilusWindow *window, NautilusWindowSlot *new
 
 		if (new_slot->content_view != NULL) {
                         /* inform window */
-                        nautilus_window_slot_connect_content_view (new_slot, new_slot->content_view);
+                        nautilus_window_connect_content_view (window, new_slot->content_view);
                 }
 
 		/* inform slot & view */
@@ -1434,7 +1434,10 @@ nautilus_window_connect_content_view (NautilusWindow *window,
 	g_assert (NAUTILUS_IS_VIEW (view));
 
 	slot = nautilus_window_get_slot_for_view (window, view);
-	g_assert (slot == nautilus_window_get_active_slot (window));
+
+	if (slot != nautilus_window_get_active_slot (window)) {
+		return;
+	}
 
 	g_signal_connect (view, "zoom-level-changed",
 			  G_CALLBACK (zoom_level_changed_callback),
@@ -1462,7 +1465,10 @@ nautilus_window_disconnect_content_view (NautilusWindow *window,
 	g_assert (NAUTILUS_IS_VIEW (view));
 
 	slot = nautilus_window_get_slot_for_view (window, view);
-	g_assert (slot == nautilus_window_get_active_slot (window));
+
+	if (slot != nautilus_window_get_active_slot (window)) {
+		return;
+	}
 
 	g_signal_handlers_disconnect_by_func (view, G_CALLBACK (zoom_level_changed_callback), window);
 }

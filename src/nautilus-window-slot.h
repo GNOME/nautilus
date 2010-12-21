@@ -161,13 +161,6 @@ const char	       *nautilus_window_slot_get_content_view_id      (NautilusWindow
 gboolean		nautilus_window_slot_content_view_matches_iid (NautilusWindowSlot	*slot,
 								       const char		*iid);
 
-void                    nautilus_window_slot_connect_content_view     (NautilusWindowSlot       *slot,
-								       NautilusView             *view);
-void                    nautilus_window_slot_disconnect_content_view  (NautilusWindowSlot       *slot,
-								       NautilusView             *view);
-
-
-
 void    nautilus_window_slot_go_home			   (NautilusWindowSlot *slot,
 							    gboolean            new_tab);
 void    nautilus_window_slot_go_up			   (NautilusWindowSlot *slot,

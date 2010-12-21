@@ -1254,7 +1254,7 @@ create_content_view (NautilusWindowSlot *slot,
                 eel_accessibility_set_description (view, _("View of the current folder"));
 
                 slot->new_content_view = view;
-		nautilus_window_slot_connect_content_view (slot, slot->new_content_view);
+		nautilus_window_connect_content_view (window, slot->new_content_view);
         }
 
 	/* Actually load the pending location and selection: */
@@ -1413,7 +1413,7 @@ location_has_really_changed (NautilusWindowSlot *slot)
 		/* Switch to the new content view. */
 		if (gtk_widget_get_parent (widget) == NULL) {
 			if (slot->content_view != NULL) {
-				nautilus_window_slot_disconnect_content_view (slot, slot->content_view);
+				nautilus_window_disconnect_content_view (window, slot->content_view);
 			}
 			nautilus_window_slot_set_content_view_widget (slot, slot->new_content_view);
 		}
@@ -1772,7 +1772,7 @@ free_location_change (NautilusWindowSlot *slot)
 		nautilus_view_stop_loading (slot->new_content_view);
 		window->details->temporarily_ignore_view_signals = FALSE;
 
-		nautilus_window_slot_disconnect_content_view (slot, slot->new_content_view);
+		nautilus_window_disconnect_content_view (window, slot->new_content_view);
         	g_object_unref (slot->new_content_view);
                 slot->new_content_view = NULL;
         }
@@ -1825,7 +1825,7 @@ nautilus_window_report_view_failed (NautilusWindow *window,
 	fallback_load_location = NULL;
 	
 	if (view == slot->content_view) {
-		nautilus_window_slot_disconnect_content_view (slot, view);
+		nautilus_window_disconnect_content_view (window, view);
                 nautilus_window_slot_set_content_view_widget (slot, NULL);
 
                 report_current_content_view_failure_to_user (slot);
@@ -2027,7 +2027,7 @@ nautilus_window_manage_views_close_slot (NautilusWindowPane *pane,
 					 NautilusWindowSlot *slot)
 {
 	if (slot->content_view != NULL) {
-		nautilus_window_slot_disconnect_content_view (slot, slot->content_view);
+		nautilus_window_disconnect_content_view (slot->pane->window, slot->content_view);
 	}
 
 	free_location_change (slot);

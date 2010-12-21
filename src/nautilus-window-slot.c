@@ -375,30 +375,6 @@ nautilus_window_slot_is_in_active_pane (NautilusWindowSlot *slot,
 }
 
 void
-nautilus_window_slot_connect_content_view (NautilusWindowSlot *slot,
-					   NautilusView *view)
-{
-	NautilusWindow *window;
-
-	window = slot->pane->window;
-	if (window != NULL && slot == nautilus_window_get_active_slot (window)) {
-		nautilus_window_connect_content_view (window, view);
-	}
-}
-
-void
-nautilus_window_slot_disconnect_content_view (NautilusWindowSlot *slot,
-					      NautilusView *view)
-{
-	NautilusWindow *window;
-
-	window = slot->pane->window;
-	if (window != NULL && window->details->active_pane && window->details->active_pane->active_slot == slot) {
-		nautilus_window_disconnect_content_view (window, view);
-	}
-}
-
-void
 nautilus_window_slot_set_content_view_widget (NautilusWindowSlot *slot,
 					      NautilusView *new_view)
 {
@@ -410,7 +386,7 @@ nautilus_window_slot_set_content_view_widget (NautilusWindowSlot *slot,
 
 	if (slot->content_view != NULL) {
 		/* disconnect old view */
-		nautilus_window_slot_disconnect_content_view (slot, slot->content_view);
+		nautilus_window_disconnect_content_view (window, slot->content_view);
 
 		widget = nautilus_view_get_widget (slot->content_view);
 		gtk_widget_destroy (widget);
@@ -429,7 +405,7 @@ nautilus_window_slot_set_content_view_widget (NautilusWindowSlot *slot,
 		g_object_ref (slot->content_view);
 
 		/* connect new view */
-		nautilus_window_slot_connect_content_view (slot, new_view);
+		nautilus_window_connect_content_view (window, new_view);
 	}
 }
 
