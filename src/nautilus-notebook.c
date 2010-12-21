@@ -27,12 +27,13 @@
 #include "config.h"
 
 #include "nautilus-notebook.h"
+
 #include "nautilus-navigation-window.h"
+#include "nautilus-navigation-window-pane.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window-slot.h"
-#include "nautilus-navigation-window-pane.h"
-#include <libnautilus-private/nautilus-dnd.h>
+#include "nautilus-window-slot-dnd.h"
 
 #include <glib/gi18n.h>
 #include <gio/gio.h>
@@ -331,7 +332,6 @@ close_button_clicked_cb (GtkWidget *widget,
 static GtkWidget *
 build_tab_label (NautilusNotebook *nb, NautilusWindowSlot *slot)
 {
-	NautilusDragSlotProxyInfo *drag_info;
 	GtkWidget *hbox, *label, *close_button, *image, *spinner, *icon;
 
 	/* set hbox spacing and label padding (see below) so that there's an
@@ -377,12 +377,7 @@ build_tab_label (NautilusNotebook *nb, NautilusWindowSlot *slot)
 	gtk_box_pack_start (GTK_BOX (hbox), close_button, FALSE, FALSE, 0);
 	gtk_widget_show (close_button);
 
-	drag_info = g_new0 (NautilusDragSlotProxyInfo, 1);
-	drag_info->target_slot = slot;
-	g_object_set_data_full (G_OBJECT (hbox), "proxy-drag-info",
-				drag_info, (GDestroyNotify) g_free);
-
-	nautilus_drag_slot_proxy_init (hbox, drag_info);
+	nautilus_drag_slot_proxy_init (hbox, NULL, slot);
 
 	g_object_set_data (G_OBJECT (hbox), "label", label);
 	g_object_set_data (G_OBJECT (hbox), "spinner", spinner);

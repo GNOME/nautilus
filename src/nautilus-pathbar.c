@@ -18,22 +18,26 @@
  * Boston, MA 02111-1307, USA.
  */
 
+
 #include <config.h>
 #include <string.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
+
+#include "nautilus-pathbar.h"
+
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-icon-names.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
-#include <libnautilus-private/nautilus-dnd.h>
 #include <libnautilus-private/nautilus-icon-dnd.h>
-#include "nautilus-pathbar.h"
+
 #include "nautilus-window.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window-slot.h"
+#include "nautilus-window-slot-dnd.h"
 
 enum {
         PATH_CLICKED,
@@ -83,8 +87,6 @@ struct _ButtonData
         guint ignore_changes : 1;
         guint file_is_hidden : 1;
         guint fake_root : 1;
-
-	NautilusDragSlotProxyInfo drag_info;
 };
 
 G_DEFINE_TYPE (NautilusPathBar,
@@ -1276,9 +1278,6 @@ button_data_free (ButtonData *button_data)
 		nautilus_file_unref (button_data->file);
 	}
 
-	g_object_unref (button_data->drag_info.target_location);
-	button_data->drag_info.target_location = NULL;
-
         g_free (button_data);
 }
 
@@ -1664,8 +1663,6 @@ make_directory_button (NautilusPathBar  *path_bar,
 	gtk_button_set_focus_on_click (GTK_BUTTON (button_data->button), FALSE);
 	/* TODO update button type when xdg directories change */
 
-	button_data->drag_info.target_location = g_object_ref (path);
-
 	button_data->image = gtk_image_new ();
 
         switch (button_data->type) {
@@ -1733,8 +1730,7 @@ make_directory_button (NautilusPathBar  *path_bar,
 
 	setup_button_drag_source (button_data);
 
-	nautilus_drag_slot_proxy_init (button_data->button,
-				       &(button_data->drag_info));
+	nautilus_drag_slot_proxy_init (button_data->button, path, NULL);
 
 	g_object_unref (path);
 
