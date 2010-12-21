@@ -28,8 +28,8 @@
 #include <gio/gio.h>
 
 #include <libnautilus-private/nautilus-file.h>
-#include <libnautilus-private/nautilus-window-info.h>
-#include <libnautilus-private/nautilus-window-slot-info.h>
+
+#include "nautilus-window.h"
 
 NautilusFileAttributes nautilus_mime_actions_get_required_file_attributes (void);
 
@@ -42,14 +42,14 @@ GList *                nautilus_mime_get_applications_for_files           (GList
 gboolean               nautilus_mime_file_opens_in_view                   (NautilusFile            *file);
 gboolean               nautilus_mime_file_opens_in_external_app           (NautilusFile            *file);
 void                   nautilus_mime_activate_files                       (GtkWindow               *parent_window,
-									   NautilusWindowSlotInfo  *slot_info,
+									   NautilusWindowSlot      *slot,
 									   GList                   *files,
 									   const char              *launch_directory,
 									   NautilusWindowOpenMode   mode,
 									   NautilusWindowOpenFlags  flags,
 									   gboolean                 user_confirmation);
 void                   nautilus_mime_activate_file                        (GtkWindow               *parent_window,
-									   NautilusWindowSlotInfo  *slot_info,
+									   NautilusWindowSlot      *slot_info,
 									   NautilusFile            *file,
 									   const char              *launch_directory,
 									   NautilusWindowOpenMode   mode,

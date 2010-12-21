@@ -68,7 +68,6 @@ nautilus_connect_server_dialog_display_location_finish (NautilusConnectServerDia
 
 void
 nautilus_connect_server_dialog_display_location_async (NautilusConnectServerDialog *self,
-						       NautilusApplication *application,
 						       GFile *location,
 						       GAsyncReadyCallback callback,
 						       gpointer user_data)

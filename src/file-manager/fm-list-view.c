@@ -31,6 +31,8 @@
 #include <string.h>
 #include "fm-error-reporting.h"
 #include "fm-list-model.h"
+#include "nautilus-view-factory.h"
+
 #include <string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-gdk-extensions.h>
@@ -55,7 +57,6 @@
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-tree-view-drag-dest.h>
-#include <libnautilus-private/nautilus-view-factory.h>
 #include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-cell-renderer-text-ellipsized.h>
 
@@ -1508,12 +1509,12 @@ realize_event_callback (GtkWidget *tree_view,
 static gboolean
 focus_in_event_callback (GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
 {
-	NautilusWindowSlotInfo *slot_info;
+	NautilusWindowSlot *slot;
 	FMListView *list_view = FM_LIST_VIEW (user_data);
 
 	/* make the corresponding slot (and the pane that contains it) active */
-	slot_info = fm_directory_view_get_nautilus_window_slot (FM_DIRECTORY_VIEW (list_view));
-	nautilus_window_slot_info_make_hosting_pane_active (slot_info);
+	slot = fm_directory_view_get_nautilus_window_slot (FM_DIRECTORY_VIEW (list_view));
+	nautilus_window_slot_make_hosting_pane_active (slot);
 
 	return FALSE;
 }
@@ -3163,7 +3164,7 @@ fm_list_view_init (FMListView *list_view)
 }
 
 static NautilusView *
-fm_list_view_create (NautilusWindowSlotInfo *slot)
+fm_list_view_create (NautilusWindowSlot *slot)
 {
 	FMListView *view;
 

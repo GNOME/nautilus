@@ -28,8 +28,9 @@
 #include <string.h>
 
 #include <libnautilus-private/nautilus-view.h>
-#include <libnautilus-private/nautilus-window-slot-info.h>
 #include <gio/gio.h>
+
+#include "nautilus-window-slot.h"
 
 G_BEGIN_DECLS
 
@@ -42,7 +43,7 @@ struct _NautilusViewInfo {
 	char *error_label;                 /* The foo view encountered an error. */
 	char *startup_error_label;         /* The foo view encountered an error while starting up. */
 	char *display_location_label;      /* Display this location with the foo view. */
-	NautilusView * (*create) (NautilusWindowSlotInfo *slot);
+	NautilusView * (*create) (NautilusWindowSlot *slot);
 	/* BONOBOTODO: More args here */
 	gboolean (*supports_uri) (const char *uri,
 				  GFileType file_type,
@@ -53,7 +54,7 @@ struct _NautilusViewInfo {
 void                    nautilus_view_factory_register          (NautilusViewInfo   *view_info);
 const NautilusViewInfo *nautilus_view_factory_lookup            (const char         *id);
 NautilusView *          nautilus_view_factory_create            (const char         *id,
-								 NautilusWindowSlotInfo *slot);
+								 NautilusWindowSlot *slot);
 gboolean                nautilus_view_factory_view_supports_uri (const char         *id,
 								 GFile              *location,
 								 GFileType          file_type,

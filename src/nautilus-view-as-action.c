@@ -26,12 +26,14 @@
 #include <config.h>
 
 #include "nautilus-view-as-action.h"
+
 #include "nautilus-navigation-window.h"
-#include "nautilus-window-private.h"
 #include "nautilus-navigation-window-slot.h"
+#include "nautilus-view-factory.h"
+#include "nautilus-window-private.h"
+
 #include <gtk/gtk.h>
 #include <eel/eel-gtk-extensions.h>
-#include <libnautilus-private/nautilus-view-factory.h>
 
 G_DEFINE_TYPE (NautilusViewAsAction, nautilus_view_as_action, GTK_TYPE_ACTION)
 

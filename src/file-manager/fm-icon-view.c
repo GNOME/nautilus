@@ -29,6 +29,8 @@
 #include "fm-icon-container.h"
 #include "fm-desktop-icon-view.h"
 #include "fm-error-reporting.h"
+#include "nautilus-view-factory.h"
+
 #include <stdlib.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
@@ -51,7 +53,6 @@
 #include <libnautilus-private/nautilus-icon-dnd.h>
 #include <libnautilus-private/nautilus-link.h>
 #include <libnautilus-private/nautilus-metadata.h>
-#include <libnautilus-private/nautilus-view-factory.h>
 #include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-desktop-icon-file.h>
 #include <locale.h>
@@ -1906,7 +1907,7 @@ icon_container_activate_alternate_callback (NautilusIconContainer *container,
 	GdkEventButton *button_event;
 	GdkEventKey *key_event;
 	gboolean open_in_tab;
-	NautilusWindowInfo *window_info;
+	NautilusWindow *window;
 	NautilusWindowOpenFlags flags;
 
 	g_assert (FM_IS_ICON_VIEW (icon_view));
@@ -1914,9 +1915,9 @@ icon_container_activate_alternate_callback (NautilusIconContainer *container,
 
 	open_in_tab = FALSE;
 
-	window_info = fm_directory_view_get_nautilus_window (FM_DIRECTORY_VIEW (icon_view));
+	window = fm_directory_view_get_nautilus_window (FM_DIRECTORY_VIEW (icon_view));
 
-	if (nautilus_window_info_get_window_type (window_info) == NAUTILUS_WINDOW_NAVIGATION) {
+	if (nautilus_window_get_window_type (window) == NAUTILUS_WINDOW_NAVIGATION) {
 		event = gtk_get_current_event ();
 		if (event->type == GDK_BUTTON_PRESS ||
 		    event->type == GDK_BUTTON_RELEASE ||
@@ -2202,7 +2203,7 @@ icon_container_preview_callback (NautilusIconContainer *container,
 			file_name = nautilus_file_get_display_name (file);
 			message = g_strdup_printf (_("pointing at \"%s\""), file_name);
 			g_free (file_name);
-			nautilus_window_slot_info_set_status
+			nautilus_window_slot_set_status
 				(fm_directory_view_get_nautilus_window_slot (FM_DIRECTORY_VIEW (icon_view)),
 				 message);
 			g_free (message);
@@ -2749,12 +2750,12 @@ store_layout_timestamp (NautilusIconContainer *container,
 static gboolean
 focus_in_event_callback (GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
 {
-	NautilusWindowSlotInfo *slot_info;
+	NautilusWindowSlot *slot;
 	FMIconView *icon_view = FM_ICON_VIEW (user_data);
 	
 	/* make the corresponding slot (and the pane that contains it) active */
-	slot_info = fm_directory_view_get_nautilus_window_slot (FM_DIRECTORY_VIEW (icon_view));
-	nautilus_window_slot_info_make_hosting_pane_active (slot_info);
+	slot = fm_directory_view_get_nautilus_window_slot (FM_DIRECTORY_VIEW (icon_view));
+	nautilus_window_slot_make_hosting_pane_active (slot);
 
 	return FALSE; 
 }
@@ -3113,7 +3114,7 @@ fm_icon_view_init (FMIconView *icon_view)
 }
 
 static NautilusView *
-fm_icon_view_create (NautilusWindowSlotInfo *slot)
+fm_icon_view_create (NautilusWindowSlot *slot)
 {
 	FMIconView *view;
 
@@ -3125,7 +3126,7 @@ fm_icon_view_create (NautilusWindowSlotInfo *slot)
 }
 
 static NautilusView *
-fm_compact_view_create (NautilusWindowSlotInfo *slot)
+fm_compact_view_create (NautilusWindowSlot *slot)
 {
 	FMIconView *view;
 

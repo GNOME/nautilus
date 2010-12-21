@@ -58,7 +58,7 @@ restore_button_clicked_cb (GtkWidget *button,
 {
 	GList *locations, *files, *l;
 
-	locations = nautilus_window_info_get_selection (NAUTILUS_WINDOW_INFO  (bar->priv->window));
+	locations = nautilus_window_get_selection (bar->priv->window);
 	files = NULL;
 
 	for (l = locations; l != NULL; l = l->next) {
@@ -77,7 +77,7 @@ selection_changed_cb (NautilusWindow *window,
 {
 	int count;
 
-	count = nautilus_window_info_get_selection_count (NAUTILUS_WINDOW_INFO (window));
+	count = nautilus_window_get_selection_count (window);
 
 	gtk_widget_set_sensitive (bar->priv->restore_button, (count > 0));
 }

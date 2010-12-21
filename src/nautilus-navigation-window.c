@@ -60,7 +60,6 @@
 #include <libnautilus-private/nautilus-icon-info.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
-#include <libnautilus-private/nautilus-view-factory.h>
 #include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-undo.h>
 #include <libnautilus-private/nautilus-module.h>
@@ -421,9 +420,6 @@ real_sync_title (NautilusWindow *window,
 	char *window_title;
 
 	navigation_window = NAUTILUS_NAVIGATION_WINDOW (window);
-
-	EEL_CALL_PARENT (NAUTILUS_WINDOW_CLASS,
-			 sync_title, (window, slot));
 
 	if (slot == window->details->active_pane->active_slot) {
 		/* if spatial mode is default, we keep "File Browser" in the window title
@@ -833,9 +829,9 @@ nautilus_navigation_window_set_up_sidebar (NautilusNavigationWindow *window)
 			  window);
 
 	if (g_strcmp0 (window->details->sidebar_id, NAUTILUS_NAVIGATION_WINDOW_SIDEBAR_PLACES) == 0) {
-		sidebar = nautilus_places_sidebar_new (NAUTILUS_WINDOW_INFO (window));
+		sidebar = nautilus_places_sidebar_new (NAUTILUS_WINDOW (window));
 	} else if (g_strcmp0 (window->details->sidebar_id, NAUTILUS_NAVIGATION_WINDOW_SIDEBAR_TREE) == 0) {
-		sidebar = nautilus_tree_sidebar_new (NAUTILUS_WINDOW_INFO (window));
+		sidebar = nautilus_tree_sidebar_new (NAUTILUS_WINDOW (window));
 	} else {
 		g_assert_not_reached ();
 	}

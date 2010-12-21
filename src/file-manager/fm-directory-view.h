@@ -29,14 +29,16 @@
 #define FM_DIRECTORY_VIEW_H
 
 #include <gtk/gtk.h>
+#include <gio/gio.h>
+
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-icon-container.h>
 #include <libnautilus-private/nautilus-link.h>
 #include <libnautilus-private/nautilus-view.h>
-#include <libnautilus-private/nautilus-window-info.h>
-#include <libnautilus-private/nautilus-window-slot-info.h>
-#include <gio/gio.h>
+
+#include "nautilus-window.h"
+#include "nautilus-window-slot.h"
 
 typedef struct FMDirectoryView FMDirectoryView;
 typedef struct FMDirectoryViewClass FMDirectoryViewClass;
@@ -338,8 +340,8 @@ struct FMDirectoryViewClass {
 GType               fm_directory_view_get_type                         (void);
 
 /* Functions callable from the user interface and elsewhere. */
-NautilusWindowInfo *fm_directory_view_get_nautilus_window              (FMDirectoryView  *view);
-NautilusWindowSlotInfo *fm_directory_view_get_nautilus_window_slot     (FMDirectoryView  *view);
+NautilusWindow     *fm_directory_view_get_nautilus_window              (FMDirectoryView  *view);
+NautilusWindowSlot *fm_directory_view_get_nautilus_window_slot     (FMDirectoryView  *view);
 char *              fm_directory_view_get_uri                          (FMDirectoryView  *view);
 char *              fm_directory_view_get_backing_uri                  (FMDirectoryView  *view);
 gboolean            fm_directory_view_can_accept_item                  (NautilusFile     *target_item,

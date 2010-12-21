@@ -37,6 +37,7 @@
 #include "nautilus-window-slot.h"
 #include "nautilus-navigation-window-slot.h"
 #include "nautilus-trash-bar.h"
+#include "nautilus-view-factory.h"
 #include "nautilus-x-content-bar.h"
 #include "nautilus-zoom-control.h"
 #include "nautilus-navigation-window-pane.h"
@@ -60,9 +61,6 @@
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-monitor.h>
 #include <libnautilus-private/nautilus-search-directory.h>
-#include <libnautilus-private/nautilus-view-factory.h>
-#include <libnautilus-private/nautilus-window-info.h>
-#include <libnautilus-private/nautilus-window-slot-info.h>
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_WINDOW
 #include <libnautilus-private/nautilus-debug.h>
@@ -108,7 +106,7 @@ static void location_has_really_changed               (NautilusWindowSlot       
 static void update_for_new_location                   (NautilusWindowSlot         *slot);
 
 void
-nautilus_window_report_selection_changed (NautilusWindowInfo *window)
+nautilus_window_report_selection_changed (NautilusWindow *window)
 {
 	if (window->details->temporarily_ignore_view_signals) {
 		return;
@@ -494,6 +492,7 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 	GList *l;
 	gboolean target_spatial, target_navigation, target_same;
 	gboolean is_desktop;
+	NautilusApplication *app;
 
 	window = slot->pane->window;
 
@@ -554,23 +553,27 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
                 return;
         }
 
+	app = nautilus_application_dup_singleton ();
+
 	/* now get/create the window according to the mode */
 	if (target_same) {
 		target_window = window;
 	} else if (target_navigation) {
 		target_window = nautilus_application_create_navigation_window
-			(window->application,
+			(app,
 			 NULL,
 			 gtk_window_get_screen (GTK_WINDOW (window)));
 	} else {
 		target_window = nautilus_application_get_spatial_window
-			(window->application,
+			(app,
 			 window,
 			 NULL,
 			 location,
 			 gtk_window_get_screen (GTK_WINDOW (window)),
 			 &existing);
 	}
+
+	g_object_unref (app);
 
 	/* if the spatial window is already showing, present it and set the
 	 * new selection, if present.
@@ -1280,8 +1283,7 @@ create_content_view (NautilusWindowSlot *slot,
         	g_object_ref (view);
         } else {
                 /* create a new content view */
-		view = nautilus_view_factory_create (view_id,
-						     NAUTILUS_WINDOW_SLOT_INFO (slot));
+		view = nautilus_view_factory_create (view_id, slot);
 
                 eel_accessibility_set_name (view, _("Content View"));
                 eel_accessibility_set_description (view, _("View of the current folder"));

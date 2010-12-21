@@ -262,8 +262,12 @@ static void
 action_undo_callback (GtkAction *action, 
 		      gpointer user_data) 
 {
-	nautilus_undo_manager_undo
-		(NAUTILUS_WINDOW (user_data)->application->undo_manager);
+	NautilusApplication *app;
+
+	app = nautilus_application_dup_singleton ();
+	nautilus_undo_manager_undo (app->undo_manager);
+
+	g_object_unref (app);
 }
 
 static void
@@ -398,7 +402,7 @@ action_show_hidden_files_callback (GtkAction *action,
 		mode = NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DISABLE;
 	}
 
-	nautilus_window_info_set_hidden_files_mode (window, mode);
+	nautilus_window_set_hidden_files_mode (window, mode);
 }
 
 static void
@@ -420,7 +424,7 @@ show_hidden_files_preference_callback (gpointer callback_data)
 		g_signal_handlers_unblock_by_func (action, action_show_hidden_files_callback, window);
 
 		/* inform views */
-		nautilus_window_info_set_hidden_files_mode (window, NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT);
+		nautilus_window_set_hidden_files_mode (window, NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT);
 
 	}
 }

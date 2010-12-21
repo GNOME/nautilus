@@ -345,12 +345,9 @@ real_get_icon (NautilusWindow *window,
 }
 
 static void
-sync_window_title (NautilusWindow *window)
+real_sync_title (NautilusWindow *window,
+		 NautilusWindowSlot *slot)
 {
-	NautilusWindowSlot *slot;
-
-	slot = nautilus_window_get_active_slot (window);
-
 	if (slot->title == NULL || slot->title[0] == '\0') {
 		gtk_window_set_title (GTK_WINDOW (window), _("Nautilus"));
 	} else {
@@ -360,15 +357,6 @@ sync_window_title (NautilusWindow *window)
 		gtk_window_set_title (GTK_WINDOW (window), window_title);
 		g_free (window_title);
 	}
-}
-
-static void
-real_sync_title (NautilusWindow *window,
-		 NautilusWindowSlot *slot)
-{
-	g_assert (slot == nautilus_window_get_active_slot (window));
-
-	sync_window_title (window);
 }
 
 static void

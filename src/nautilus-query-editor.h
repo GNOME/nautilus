@@ -25,9 +25,10 @@
 #define NAUTILUS_QUERY_EDITOR_H
 
 #include <gtk/gtk.h>
+
 #include <libnautilus-private/nautilus-query.h>
-#include <libnautilus-private/nautilus-window-info.h>
-#include <nautilus-search-bar.h>
+
+#include "nautilus-search-bar.h"
 
 #define NAUTILUS_TYPE_QUERY_EDITOR nautilus_query_editor_get_type()
 #define NAUTILUS_QUERY_EDITOR(obj) \
@@ -56,6 +57,8 @@ typedef struct {
 			  gboolean              reload);
 	void (* cancel)   (NautilusQueryEditor *editor);
 } NautilusQueryEditorClass;
+
+#include "nautilus-window-slot.h"
 
 GType      nautilus_query_editor_get_type     	   (void);
 GtkWidget* nautilus_query_editor_new          	   (gboolean start_hidden,

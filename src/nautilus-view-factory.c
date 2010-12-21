@@ -57,7 +57,7 @@ nautilus_view_factory_lookup (const char *id)
 
 NautilusView *
 nautilus_view_factory_create (const char *id,
-			      NautilusWindowSlotInfo *slot)
+			      NautilusWindowSlot *slot)
 {
 	const NautilusViewInfo *view_info;
 	NautilusView *view;

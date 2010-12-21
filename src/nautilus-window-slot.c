@@ -29,7 +29,6 @@
 #include "nautilus-window-manage-views.h"
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-window-slot-info.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
 
@@ -37,14 +36,16 @@ static void nautilus_window_slot_init       (NautilusWindowSlot *slot);
 static void nautilus_window_slot_class_init (NautilusWindowSlotClass *class);
 static void nautilus_window_slot_dispose    (GObject *object);
 
-static void nautilus_window_slot_info_iface_init (NautilusWindowSlotInfoIface *iface);
-
-G_DEFINE_TYPE_WITH_CODE (NautilusWindowSlot,
-			 nautilus_window_slot,
-			 G_TYPE_OBJECT,
-			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_WINDOW_SLOT_INFO,
-						nautilus_window_slot_info_iface_init))
+G_DEFINE_TYPE (NautilusWindowSlot, nautilus_window_slot, G_TYPE_OBJECT);
 #define parent_class nautilus_window_slot_parent_class
+
+enum {
+	ACTIVE,
+	INACTIVE,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL] = { 0 };
 
 static void
 query_editor_changed_callback (NautilusSearchBar *bar,
@@ -125,23 +126,6 @@ real_active (NautilusWindowSlot *slot)
 }
 
 static void
-nautilus_window_slot_active (NautilusWindowSlot *slot)
-{
-	NautilusWindow *window;
-	NautilusWindowPane *pane;
-
-	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
-
-	pane = NAUTILUS_WINDOW_PANE (slot->pane);
-	window = NAUTILUS_WINDOW (slot->pane->window);
-	g_assert (g_list_find (pane->slots, slot) != NULL);
-	g_assert (slot == window->details->active_pane->active_slot);
-
-	EEL_CALL_METHOD (NAUTILUS_WINDOW_SLOT_CLASS, slot,
-			 active, (slot));
-}
-
-static void
 real_inactive (NautilusWindowSlot *slot)
 {
 	NautilusWindow *window;
@@ -149,25 +133,6 @@ real_inactive (NautilusWindowSlot *slot)
 	window = NAUTILUS_WINDOW (slot->pane->window);
 	g_assert (slot == window->details->active_pane->active_slot);
 }
-
-static void
-nautilus_window_slot_inactive (NautilusWindowSlot *slot)
-{
-	NautilusWindow *window;
-	NautilusWindowPane *pane;
-
-	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
-
-	pane = NAUTILUS_WINDOW_PANE (slot->pane);
-	window = NAUTILUS_WINDOW (pane->window);
-
-	g_assert (g_list_find (pane->slots, slot) != NULL);
-	g_assert (slot == window->details->active_pane->active_slot);
-
-	EEL_CALL_METHOD (NAUTILUS_WINDOW_SLOT_CLASS, slot,
-			 inactive, (slot));
-}
-
 
 static void
 nautilus_window_slot_init (NautilusWindowSlot *slot)
@@ -206,20 +171,27 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *class)
 {
 	class->active = real_active;
 	class->inactive = real_inactive;
-	class->update_query_editor = real_update_query_editor; 
+	class->update_query_editor = real_update_query_editor;
+
+	signals[ACTIVE] =
+		g_signal_new ("active",
+			      G_TYPE_FROM_CLASS (class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (NautilusWindowSlotClass, active),
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE, 0);
+
+	signals[INACTIVE] =
+		g_signal_new ("inactive",
+			      G_TYPE_FROM_CLASS (class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (NautilusWindowSlotClass, inactive),
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE, 0);
 
 	G_OBJECT_CLASS (class)->dispose = nautilus_window_slot_dispose;
-}
-
-static int
-nautilus_window_slot_get_selection_count (NautilusWindowSlot *slot)
-{
-	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
-
-	if (slot->content_view != NULL) {
-		return nautilus_view_get_selection_count (slot->content_view);
-	}
-	return 0;
 }
 
 GFile *
@@ -235,7 +207,7 @@ nautilus_window_slot_get_location (NautilusWindowSlot *slot)
 }
 
 char *
-nautilus_window_slot_get_location_uri (NautilusWindowSlotInfo *slot)
+nautilus_window_slot_get_location_uri (NautilusWindowSlot *slot)
 {
 	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
 
@@ -245,7 +217,7 @@ nautilus_window_slot_get_location_uri (NautilusWindowSlotInfo *slot)
 	return NULL;
 }
 
-static void
+void
 nautilus_window_slot_make_hosting_pane_active (NautilusWindowSlot *slot)
 {
 	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
@@ -275,7 +247,7 @@ nautilus_window_slot_get_title (NautilusWindowSlot *slot)
 	return title;
 }
 
-static NautilusWindow *
+NautilusWindow *
 nautilus_window_slot_get_window (NautilusWindowSlot *slot)
 {
 	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
@@ -552,13 +524,9 @@ nautilus_window_slot_add_current_location_to_history_list (NautilusWindowSlot *s
 }
 
 /* returns either the pending or the actual current location - used by side panes. */
-static char *
-real_slot_info_get_current_location (NautilusWindowSlotInfo *info)
+char *
+nautilus_window_slot_get_current_location (NautilusWindowSlot *slot)
 {
-	NautilusWindowSlot *slot;
-
-	slot = NAUTILUS_WINDOW_SLOT (info);
-
 	if (slot->pending_location != NULL) {
 		return g_file_get_uri (slot->pending_location);
 	}
@@ -571,13 +539,9 @@ real_slot_info_get_current_location (NautilusWindowSlotInfo *info)
 	return NULL;
 }
 
-static NautilusView *
-real_slot_info_get_current_view (NautilusWindowSlotInfo *info)
+NautilusView *
+nautilus_window_slot_get_current_view (NautilusWindowSlot *slot)
 {
-	NautilusWindowSlot *slot;
-
-	slot = NAUTILUS_WINDOW_SLOT (info);
-
 	if (slot->content_view != NULL) {
 		return g_object_ref (slot->content_view);
 	} else if (slot->new_content_view) {
@@ -647,19 +611,3 @@ nautilus_window_slot_dispose (GObject *object)
 
 	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
-
-static void
-nautilus_window_slot_info_iface_init (NautilusWindowSlotInfoIface *iface)
-{
-	iface->active = nautilus_window_slot_active;
-	iface->inactive = nautilus_window_slot_inactive;
-	iface->get_window = nautilus_window_slot_get_window;
-	iface->get_selection_count = nautilus_window_slot_get_selection_count;
-	iface->get_current_location = real_slot_info_get_current_location;
-	iface->get_current_view = real_slot_info_get_current_view;
-	iface->set_status = nautilus_window_slot_set_status;
-	iface->get_title = nautilus_window_slot_get_title;
-	iface->open_location = nautilus_window_slot_open_location_full;
-	iface->make_hosting_pane_active = nautilus_window_slot_make_hosting_pane_active; 
-}
-

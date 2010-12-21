@@ -171,14 +171,8 @@ libnautilus_private_la_SOURCES = \
 	nautilus-vfs-directory.h \
 	nautilus-vfs-file.c \
 	nautilus-vfs-file.h \
-	nautilus-view-factory.c \
-	nautilus-view-factory.h \
 	nautilus-view.c \
 	nautilus-view.h \
-	nautilus-window-info.c \
-	nautilus-window-info.h \
-	nautilus-window-slot-info.c \
-	nautilus-window-slot-info.h \
 	$(NULL)
 
 nodist_libnautilus_private_la_SOURCES =\

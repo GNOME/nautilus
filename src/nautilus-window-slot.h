@@ -189,4 +189,9 @@ void    nautilus_window_slot_add_current_location_to_history_list (NautilusWindo
 
 void    nautilus_window_slot_is_in_active_pane (NautilusWindowSlot *slot, gboolean is_active);
 
+NautilusView * nautilus_window_slot_get_current_view     (NautilusWindowSlot *slot);
+char         * nautilus_window_slot_get_current_location (NautilusWindowSlot *slot);
+NautilusWindow * nautilus_window_slot_get_window         (NautilusWindowSlot *slot);
+void           nautilus_window_slot_make_hosting_pane_active (NautilusWindowSlot *slot);
+
 #endif /* NAUTILUS_WINDOW_SLOT_H */

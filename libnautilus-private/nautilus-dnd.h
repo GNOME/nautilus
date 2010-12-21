@@ -28,7 +28,6 @@
 #define NAUTILUS_DND_H
 
 #include <gtk/gtk.h>
-#include <libnautilus-private/nautilus-window-slot-info.h>
 
 /* Drag & Drop target names. */
 #define NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE	"x-special/gnome-icon-list"

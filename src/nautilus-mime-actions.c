@@ -23,7 +23,10 @@
 */
 
 #include <config.h>
+
 #include "nautilus-mime-actions.h"
+
+#include "nautilus-window-slot.h"
 
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-stock-dialogs.h>
@@ -66,8 +69,8 @@ typedef struct {
 } ApplicationLaunchParameters;
 
 typedef struct {
-	NautilusWindowSlotInfo *slot_info;
-	gpointer window_info;
+	NautilusWindowSlot *slot;
+	gpointer window;
 	GtkWindow *parent_window;
 	GCancellable *cancellable;
 	GList *locations;
@@ -944,8 +947,8 @@ activation_parameters_free (ActivateParameters *parameters)
 		eel_timed_wait_stop (cancel_activate_callback, parameters);
 	}
 	
-	if (parameters->slot_info) {
-		g_object_remove_weak_pointer (G_OBJECT (parameters->slot_info), (gpointer *)&parameters->slot_info);
+	if (parameters->slot) {
+		g_object_remove_weak_pointer (G_OBJECT (parameters->slot), (gpointer *)&parameters->slot);
 	}
 	if (parameters->parent_window) {
 		g_object_remove_weak_pointer (G_OBJECT (parameters->parent_window), (gpointer *)&parameters->parent_window);
@@ -1057,7 +1060,7 @@ confirm_multiple_windows (GtkWindow *parent_window,
 }
 
 typedef struct {
-	NautilusWindowSlotInfo *slot_info;
+	NautilusWindowSlot *slot;
 	GtkWindow *parent_window;
 	NautilusFile *file;
 	GList *files;
@@ -1073,8 +1076,8 @@ typedef struct {
 static void
 activate_parameters_install_free (ActivateParametersInstall *parameters_install)
 {
-	if (parameters_install->slot_info) {
-		g_object_remove_weak_pointer (G_OBJECT (parameters_install->slot_info), (gpointer *)&parameters_install->slot_info);
+	if (parameters_install->slot) {
+		g_object_remove_weak_pointer (G_OBJECT (parameters_install->slot), (gpointer *)&parameters_install->slot);
 	}
 	if (parameters_install->parent_window) {
 		g_object_remove_weak_pointer (G_OBJECT (parameters_install->parent_window), (gpointer *)&parameters_install->parent_window);
@@ -1279,7 +1282,7 @@ search_for_application_dbus_call_notify_cb (GDBusProxy   *proxy,
 
 	/* activate the file again */
 	nautilus_mime_activate_files (parameters_install->parent_window,
-	                              parameters_install->slot_info,
+	                              parameters_install->slot,
 	                              parameters_install->files,
 	                              parameters_install->activation_directory,
 	                              parameters_install->mode,
@@ -1416,8 +1419,8 @@ application_unhandled_uri (ActivateParameters *parameters, char *uri)
 
 	/* copy the parts of parameters we are interested in as the orignal will be unref'd */
 	parameters_install = g_new0 (ActivateParametersInstall, 1);
-	parameters_install->slot_info = parameters->slot_info;
-	g_object_add_weak_pointer (G_OBJECT (parameters_install->slot_info), (gpointer *)&parameters_install->slot_info);
+	parameters_install->slot = parameters->slot;
+	g_object_add_weak_pointer (G_OBJECT (parameters_install->slot), (gpointer *)&parameters_install->slot);
 	if (parameters->parent_window) {
 		parameters_install->parent_window = parameters->parent_window;
 		g_object_add_weak_pointer (G_OBJECT (parameters_install->parent_window), (gpointer *)&parameters_install->parent_window);
@@ -1586,7 +1589,7 @@ activate_desktop_file (ActivateParameters *parameters,
 static void
 activate_files (ActivateParameters *parameters)
 {
-	NautilusWindowInfo *window_info;
+	NautilusWindow *window;
 	NautilusWindowOpenFlags flags;
 	NautilusFile *file;
 	GList *launch_desktop_files;
@@ -1726,7 +1729,7 @@ activate_files (ActivateParameters *parameters)
 		}
 	}
 
-	if (parameters->slot_info != NULL &&
+	if (parameters->slot != NULL &&
 	    (!parameters->user_confirmation ||
 	     confirm_multiple_windows (parameters->parent_window, count,
 				       (flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB) != 0))) {
@@ -1751,8 +1754,8 @@ activate_files (ActivateParameters *parameters)
 
 			uri = nautilus_file_get_activation_uri (file);
 			f = g_file_new_for_uri (uri);
-			nautilus_window_slot_info_open_location (parameters->slot_info,
-								 f, parameters->mode, flags, NULL);
+			nautilus_window_slot_open_location_full (parameters->slot,
+								 f, parameters->mode, flags, NULL, NULL, NULL);
 			g_object_unref (f);
 			g_free (uri);
 		}
@@ -1819,17 +1822,17 @@ activate_files (ActivateParameters *parameters)
 		}
 	}
 
-	window_info = NULL;
-	if (parameters->slot_info != NULL) {
-		window_info = nautilus_window_slot_info_get_window (parameters->slot_info);
+	window = NULL;
+	if (parameters->slot != NULL) {
+		window = nautilus_window_slot_get_window (parameters->slot);
 	}
 
 	if (open_in_app_parameters != NULL ||
 	    unhandled_open_in_app_uris != NULL) {
 		if ((parameters->flags & NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND) != 0 &&
-		    window_info != NULL && 
-		     nautilus_window_info_get_window_type (window_info) == NAUTILUS_WINDOW_SPATIAL) {
-			nautilus_window_info_close (window_info);
+		    window != NULL && 
+		     nautilus_window_get_window_type (window) == NAUTILUS_WINDOW_SPATIAL) {
+			nautilus_window_close (window);
 		}
 	}
 
@@ -2264,7 +2267,7 @@ activation_start_mountables (ActivateParameters *parameters)
  **/
 void
 nautilus_mime_activate_files (GtkWindow *parent_window,
-			      NautilusWindowSlotInfo *slot_info,
+			      NautilusWindowSlot *slot,
 			      GList *files,
 			      const char *launch_directory,
 			      NautilusWindowOpenMode mode,
@@ -2285,8 +2288,8 @@ nautilus_mime_activate_files (GtkWindow *parent_window,
 	DEBUG_FILES (files, "Calling activate_files() with files:");
 
 	parameters = g_new0 (ActivateParameters, 1);
-	parameters->slot_info = slot_info;
-	g_object_add_weak_pointer (G_OBJECT (parameters->slot_info), (gpointer *)&parameters->slot_info);
+	parameters->slot = slot;
+	g_object_add_weak_pointer (G_OBJECT (parameters->slot), (gpointer *)&parameters->slot);
 	if (parent_window) {
 		parameters->parent_window = parent_window;
 		g_object_add_weak_pointer (G_OBJECT (parameters->parent_window), (gpointer *)&parameters->parent_window);
@@ -2349,7 +2352,7 @@ nautilus_mime_activate_files (GtkWindow *parent_window,
 
 void
 nautilus_mime_activate_file (GtkWindow *parent_window,
-			     NautilusWindowSlotInfo *slot_info,
+			     NautilusWindowSlot *slot,
 			     NautilusFile *file,
 			     const char *launch_directory,
 			     NautilusWindowOpenMode mode,
@@ -2360,6 +2363,6 @@ nautilus_mime_activate_file (GtkWindow *parent_window,
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
 	files = g_list_prepend (NULL, file);
-	nautilus_mime_activate_files (parent_window, slot_info, files, launch_directory, mode, flags, FALSE);
+	nautilus_mime_activate_files (parent_window, slot, files, launch_directory, mode, flags, FALSE);
 	g_list_free (files);
 }

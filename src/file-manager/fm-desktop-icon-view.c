@@ -25,9 +25,11 @@
 */
 
 #include <config.h>
+
 #include "fm-icon-container.h"
 #include "fm-desktop-icon-view.h"
 #include "fm-actions.h"
+#include "nautilus-view-factory.h"
 
 #include <X11/Xatom.h>
 #include <gtk/gtk.h>
@@ -45,7 +47,6 @@
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-ui-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-view-factory.h>
 #include <libnautilus-private/nautilus-link.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-monitor.h>
@@ -849,7 +850,7 @@ real_supports_zooming (FMDirectoryView *view)
 }
 
 static NautilusView *
-fm_desktop_icon_view_create (NautilusWindowSlotInfo *slot)
+fm_desktop_icon_view_create (NautilusWindowSlot *slot)
 {
 	FMIconView *view;
 

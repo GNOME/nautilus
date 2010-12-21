@@ -121,6 +121,8 @@ nautilus_SOURCES = \
 	nautilus-trash-bar.h			\
 	nautilus-view-as-action.c		\
 	nautilus-view-as-action.h		\
+	nautilus-view-factory.c 		\
+	nautilus-view-factory.h 		\
 	nautilus-window-bookmarks.c		\
 	nautilus-window-bookmarks.h		\
 	nautilus-window-manage-views.c		\

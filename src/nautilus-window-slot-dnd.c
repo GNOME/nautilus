@@ -42,7 +42,7 @@ typedef struct {
   } data;
 
   GFile *target_location;
-  NautilusWindowSlotInfo *target_slot;
+  NautilusWindowSlot *target_slot;
 } NautilusDragSlotProxyInfo;
 
 static gboolean
@@ -54,7 +54,7 @@ slot_proxy_drag_motion (GtkWidget          *widget,
 			gpointer            user_data)
 {
   NautilusDragSlotProxyInfo *drag_info;
-  NautilusWindowSlotInfo *target_slot;
+  NautilusWindowSlot *target_slot;
   GtkWidget *window;
   GdkAtom target;
   int action;
@@ -69,7 +69,7 @@ slot_proxy_drag_motion (GtkWidget          *widget,
   }
 
   window = gtk_widget_get_toplevel (widget);
-  g_assert (NAUTILUS_IS_WINDOW_INFO (window));
+  g_assert (NAUTILUS_IS_WINDOW (window));
 
   if (!drag_info->have_data) {
     target = gtk_drag_dest_find_target (widget, context, NULL);
@@ -88,11 +88,11 @@ slot_proxy_drag_motion (GtkWidget          *widget,
     if (drag_info->target_slot != NULL) {
       target_slot = drag_info->target_slot;
     } else {
-      target_slot = nautilus_window_info_get_active_slot (NAUTILUS_WINDOW_INFO (window));
+      target_slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (window));
     }
 
     if (target_slot != NULL) {
-      target_uri = nautilus_window_slot_info_get_current_location (target_slot);
+      target_uri = nautilus_window_slot_get_current_location (target_slot);
     }
   }
 
@@ -200,7 +200,7 @@ slot_proxy_handle_drop (GtkWidget                *widget,
 			NautilusDragSlotProxyInfo *drag_info)
 {
   GtkWidget *window;
-  NautilusWindowSlotInfo *target_slot;
+  NautilusWindowSlot *target_slot;
   NautilusView *target_view;
   char *target_uri;
   GList *uri_list;
@@ -213,24 +213,24 @@ slot_proxy_handle_drop (GtkWidget                *widget,
   }
 
   window = gtk_widget_get_toplevel (widget);
-  g_assert (NAUTILUS_IS_WINDOW_INFO (window));
+  g_assert (NAUTILUS_IS_WINDOW (window));
 
   if (drag_info->target_slot != NULL) {
     target_slot = drag_info->target_slot;
   } else {
-    target_slot = nautilus_window_info_get_active_slot (NAUTILUS_WINDOW_INFO (window));
+    target_slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (window));
   }
 
   target_uri = NULL;
   if (drag_info->target_location != NULL) {
     target_uri = g_file_get_uri (drag_info->target_location);
   } else if (target_slot != NULL) {
-    target_uri = nautilus_window_slot_info_get_current_location (target_slot);
+    target_uri = nautilus_window_slot_get_current_location (target_slot);
   }
 
   target_view = NULL;
   if (target_slot != NULL) {
-    target_view = nautilus_window_slot_info_get_current_view (target_slot);
+    target_view = nautilus_window_slot_get_current_view (target_slot);
   }
 
   if (target_slot != NULL && target_view != NULL) {

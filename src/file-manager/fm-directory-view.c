@@ -156,8 +156,8 @@ static int scripts_directory_uri_length;
 
 struct FMDirectoryViewDetails
 {
-	NautilusWindowInfo *window;
-	NautilusWindowSlotInfo *slot;
+	NautilusWindow *window;
+	NautilusWindowSlot *slot;
 	NautilusDirectory *model;
 	NautilusFile *directory_as_file;
 	NautilusFile *location_popup_directory_as_file;
@@ -572,7 +572,7 @@ create_templates_parameters_free (CreateTemplateParameters *parameters)
 	g_free (parameters);
 }			      
 
-NautilusWindowInfo *
+NautilusWindow *
 fm_directory_view_get_nautilus_window (FMDirectoryView  *view)
 {
 	g_assert (view->details->window != NULL);
@@ -580,7 +580,7 @@ fm_directory_view_get_nautilus_window (FMDirectoryView  *view)
 	return view->details->window;
 }
 
-NautilusWindowSlotInfo *
+NautilusWindowSlot *
 fm_directory_view_get_nautilus_window_slot (FMDirectoryView  *view)
 {
 	g_assert (view->details->slot != NULL);
@@ -853,8 +853,8 @@ open_location (FMDirectoryView *directory_view,
 	window = fm_directory_view_get_containing_window (directory_view);
 	DEBUG ("open_location window=%p: %s", window, new_uri);
 	location = g_file_new_for_uri (new_uri);
-	nautilus_window_slot_info_open_location (directory_view->details->slot,
-						 location, mode, flags, NULL);
+	nautilus_window_slot_open_location_full (directory_view->details->slot,
+						 location, mode, flags, NULL, NULL, NULL);
 	g_object_unref (location);
 }
 
@@ -2017,7 +2017,7 @@ real_unmerge_menus (FMDirectoryView *view)
 		return;
 	}
 
-	ui_manager = nautilus_window_info_get_ui_manager (view->details->window);
+	ui_manager = nautilus_window_get_ui_manager (view->details->window);
 
 	nautilus_ui_unmerge_ui (ui_manager,
 				&view->details->dir_merge_id,
@@ -2370,7 +2370,7 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 	g_free (folder_item_count_str);
 	g_free (non_folder_str);
 
-	nautilus_window_slot_info_set_status (view->details->slot,
+	nautilus_window_slot_set_status (view->details->slot,
 					      status_string);
 	g_free (status_string);
 }
@@ -2378,7 +2378,7 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 void
 fm_directory_view_send_selection_change (FMDirectoryView *view)
 {
-	nautilus_window_info_report_selection_changed (view->details->window);
+	nautilus_window_report_selection_changed (view->details->window);
 
 	view->details->send_selection_change_to_shell = FALSE;
 }
@@ -2439,11 +2439,11 @@ done_loading (FMDirectoryView *view,
 	}
 
 	/* This can be called during destruction, in which case there
-	 * is no NautilusWindowInfo any more.
+	 * is no NautilusWindow any more.
 	 */
 	if (view->details->window != NULL) {
 		if (all_files_seen) {
-			nautilus_window_info_report_load_complete (view->details->window, NAUTILUS_VIEW (view));
+			nautilus_window_report_load_complete (view->details->window, NAUTILUS_VIEW (view));
 		}
 
 		schedule_update_menus (view);
@@ -3582,7 +3582,7 @@ fm_directory_view_get_ui_manager (FMDirectoryView  *view)
 	if (view->details->window == NULL) {
 		return NULL;
 	}
-	return nautilus_window_info_get_ui_manager (view->details->window);	
+	return nautilus_window_get_ui_manager (view->details->window);	
 }
 
 /**
@@ -4376,7 +4376,7 @@ add_application_to_open_with_menu (FMDirectoryView *view,
 				     action);
 	g_object_unref (action);
 	
-	gtk_ui_manager_add_ui (nautilus_window_info_get_ui_manager (view->details->window),
+	gtk_ui_manager_add_ui (nautilus_window_get_ui_manager (view->details->window),
 			       view->details->open_with_merge_id,
 			       menu_placeholder,
 			       action_name,
@@ -4386,12 +4386,12 @@ add_application_to_open_with_menu (FMDirectoryView *view,
 
 	path = g_strdup_printf ("%s/%s", menu_placeholder, action_name);
 	menuitem = gtk_ui_manager_get_widget (
-			nautilus_window_info_get_ui_manager (view->details->window),
+			nautilus_window_get_ui_manager (view->details->window),
 			path);
 	gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (menuitem), TRUE);
 	g_free (path);
 
-	gtk_ui_manager_add_ui (nautilus_window_info_get_ui_manager (view->details->window),
+	gtk_ui_manager_add_ui (nautilus_window_get_ui_manager (view->details->window),
 			       view->details->open_with_merge_id,
 			       popup_placeholder,
 			       action_name,
@@ -4401,7 +4401,7 @@ add_application_to_open_with_menu (FMDirectoryView *view,
 
 	path = g_strdup_printf ("%s/%s", popup_placeholder, action_name);
 	menuitem = gtk_ui_manager_get_widget (
-			nautilus_window_info_get_ui_manager (view->details->window),
+			nautilus_window_get_ui_manager (view->details->window),
 			path);
 	gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (menuitem), TRUE);
 
@@ -4477,7 +4477,7 @@ reset_open_with_menu (FMDirectoryView *view, GList *selection)
 
 	/* Clear any previous inserted items in the applications and viewers placeholders */
 
-	ui_manager = nautilus_window_info_get_ui_manager (view->details->window);
+	ui_manager = nautilus_window_get_ui_manager (view->details->window);
 	nautilus_ui_unmerge_ui (ui_manager,
 				&view->details->open_with_merge_id,
 				&view->details->open_with_action_group);
@@ -4543,7 +4543,7 @@ reset_open_with_menu (FMDirectoryView *view, GList *selection)
 			popup_path = FM_DIRECTORY_VIEW_POPUP_PATH_APPLICATIONS_PLACEHOLDER;
 		}
 
-		gtk_ui_manager_add_ui (nautilus_window_info_get_ui_manager (view->details->window),
+		gtk_ui_manager_add_ui (nautilus_window_get_ui_manager (view->details->window),
 				       view->details->open_with_merge_id,
 				       menu_path,
 				       "separator",
@@ -4796,7 +4796,7 @@ add_extension_menu_items (FMDirectoryView *view,
 	GtkUIManager *ui_manager;
 	GList *l;
 
-	ui_manager = nautilus_window_info_get_ui_manager (view->details->window);
+	ui_manager = nautilus_window_get_ui_manager (view->details->window);
 	
 	for (l = menu_items; l; l = l->next) {
 		NautilusMenuItem *item;
@@ -4856,7 +4856,7 @@ reset_extension_actions_menu (FMDirectoryView *view, GList *selection)
 	GtkUIManager *ui_manager;
 	
 	/* Clear any previous inserted items in the extension actions placeholder */
-	ui_manager = nautilus_window_info_get_ui_manager (view->details->window);
+	ui_manager = nautilus_window_get_ui_manager (view->details->window);
 
 	nautilus_ui_unmerge_ui (ui_manager,
 				&view->details->extensions_menu_merge_id,
@@ -5032,12 +5032,12 @@ get_strings_for_environment_variables (FMDirectoryView *view, GList *selected_fi
 static FMDirectoryView *
 get_directory_view_of_extra_pane (FMDirectoryView *view)
 {
-	NautilusWindowSlotInfo *slot;
+	NautilusWindowSlot *slot;
 	NautilusView *next_view;
 
-	slot = nautilus_window_info_get_extra_slot (fm_directory_view_get_nautilus_window (view));
+	slot = nautilus_window_get_extra_slot (fm_directory_view_get_nautilus_window (view));
 	if (slot != NULL) {
-		next_view = nautilus_window_slot_info_get_current_view (slot);
+		next_view = nautilus_window_slot_get_current_view (slot);
 
 		if (FM_IS_DIRECTORY_VIEW (next_view)) {
 			return FM_DIRECTORY_VIEW (next_view);
@@ -5211,7 +5211,7 @@ add_script_to_scripts_menus (FMDirectoryView *directory_view,
 						action, NULL);
 	g_object_unref (action);
 
-	ui_manager = nautilus_window_info_get_ui_manager (directory_view->details->window);
+	ui_manager = nautilus_window_get_ui_manager (directory_view->details->window);
 
 	gtk_ui_manager_add_ui (ui_manager,
 			       directory_view->details->scripts_merge_id,
@@ -5256,7 +5256,7 @@ add_submenu_to_directory_menus (FMDirectoryView *directory_view,
 	char *uri;
 	GtkUIManager *ui_manager;
 
-	ui_manager = nautilus_window_info_get_ui_manager (directory_view->details->window);
+	ui_manager = nautilus_window_get_ui_manager (directory_view->details->window);
 	uri = nautilus_file_get_uri (file);
 	name = nautilus_file_get_display_name (file);
 	pixbuf = get_menu_icon_for_file (file);
@@ -5374,7 +5374,7 @@ update_scripts_menu (FMDirectoryView *view)
 	   occur before we finish. */
 	view->details->scripts_invalid = FALSE;
 
-	ui_manager = nautilus_window_info_get_ui_manager (view->details->window);
+	ui_manager = nautilus_window_get_ui_manager (view->details->window);
 	nautilus_ui_unmerge_ui (ui_manager,
 				&view->details->scripts_merge_id,
 				&view->details->scripts_action_group);
@@ -5462,7 +5462,7 @@ add_template_to_templates_menus (FMDirectoryView *directory_view,
 				     action);
 	g_object_unref (action);
 
-	ui_manager = nautilus_window_info_get_ui_manager (directory_view->details->window);
+	ui_manager = nautilus_window_get_ui_manager (directory_view->details->window);
 
 	gtk_ui_manager_add_ui (ui_manager,
 			       directory_view->details->templates_merge_id,
@@ -5637,7 +5637,7 @@ update_templates_menu (FMDirectoryView *view)
 	   occur before we finish. */
 	view->details->templates_invalid = FALSE;
 
-	ui_manager = nautilus_window_info_get_ui_manager (view->details->window);
+	ui_manager = nautilus_window_get_ui_manager (view->details->window);
 	nautilus_ui_unmerge_ui (ui_manager,
 				&view->details->templates_merge_id,
 				&view->details->templates_action_group);
@@ -5712,7 +5712,7 @@ create_popup_menu (FMDirectoryView *view, const char *popup_path)
 {
 	GtkWidget *menu;
 	
-	menu = gtk_ui_manager_get_widget (nautilus_window_info_get_ui_manager (view->details->window),
+	menu = gtk_ui_manager_get_widget (nautilus_window_get_ui_manager (view->details->window),
 					  popup_path);
 	gtk_menu_set_screen (GTK_MENU (menu),
 			     gtk_widget_get_screen (GTK_WIDGET (view)));
@@ -5783,7 +5783,7 @@ copy_or_cut_files (FMDirectoryView *view,
 		}
 	}
 
-	nautilus_window_slot_info_set_status (view->details->slot,
+	nautilus_window_slot_set_status (view->details->slot,
 					      status_string);
 	g_free (status_string);
 }
@@ -5834,13 +5834,13 @@ static void
 move_copy_selection_to_next_pane (FMDirectoryView *view,
 				  int copy_action)
 {
-	NautilusWindowSlotInfo *slot;
+	NautilusWindowSlot *slot;
 	char *dest_location;
 
-	slot = nautilus_window_info_get_extra_slot (fm_directory_view_get_nautilus_window (view));
+	slot = nautilus_window_get_extra_slot (fm_directory_view_get_nautilus_window (view));
 	g_return_if_fail (slot != NULL);
 
-	dest_location = nautilus_window_slot_info_get_current_location (slot);
+	dest_location = nautilus_window_slot_get_current_location (slot);
 	g_return_if_fail (dest_location != NULL);
 
 	move_copy_selection_to_location (view, copy_action, dest_location);
@@ -5859,16 +5859,16 @@ action_copy_to_next_pane_callback (GtkAction *action, gpointer callback_data)
 static void
 action_move_to_next_pane_callback (GtkAction *action, gpointer callback_data)
 {
-	NautilusWindowSlotInfo *slot;
+	NautilusWindowSlot *slot;
 	char *dest_location;
 	FMDirectoryView *view;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	slot = nautilus_window_info_get_extra_slot (fm_directory_view_get_nautilus_window (view));
+	slot = nautilus_window_get_extra_slot (fm_directory_view_get_nautilus_window (view));
 	g_return_if_fail (slot != NULL);
 
-	dest_location = nautilus_window_slot_info_get_current_location (slot);
+	dest_location = nautilus_window_slot_get_current_location (slot);
 	g_return_if_fail (dest_location != NULL);
 
 	move_copy_selection_to_location (view, GDK_ACTION_MOVE, dest_location);
@@ -5953,7 +5953,7 @@ paste_clipboard_data (FMDirectoryView *view,
 									 copied_files_atom);
 
 	if (item_uris == NULL|| destination_uri == NULL) {
-		nautilus_window_slot_info_set_status (view->details->slot,
+		nautilus_window_slot_set_status (view->details->slot,
 						      _("There is nothing on the clipboard to paste."));
 	} else {
 		fm_directory_view_move_copy_items (item_uris, NULL, destination_uri,
@@ -7005,7 +7005,7 @@ fm_directory_view_init_show_hidden_files (FMDirectoryView *view)
 	}
 
 	show_hidden_changed = FALSE;
-	mode = nautilus_window_info_get_hidden_files_mode (view->details->window);
+	mode = nautilus_window_get_hidden_files_mode (view->details->window);
 
 	if (mode == NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT) {
 		show_hidden_default_setting = g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
@@ -7398,7 +7398,7 @@ real_merge_menus (FMDirectoryView *view)
 	const char *ui;
 	char *tooltip;
 
-	ui_manager = nautilus_window_info_get_ui_manager (view->details->window);
+	ui_manager = nautilus_window_get_ui_manager (view->details->window);
 
 	action_group = gtk_action_group_new ("DirViewActions");
 	gtk_action_group_set_translation_domain (action_group, GETTEXT_PACKAGE);
@@ -7545,7 +7545,7 @@ showing_trash_directory (FMDirectoryView *view)
 static gboolean
 should_show_empty_trash (FMDirectoryView *view)
 {
-	return (showing_trash_directory (view) || nautilus_window_info_get_window_type (view->details->window) == NAUTILUS_WINDOW_NAVIGATION);
+	return (showing_trash_directory (view) || nautilus_window_get_window_type (view->details->window) == NAUTILUS_WINDOW_NAVIGATION);
 }
 
 static gboolean
@@ -8280,7 +8280,7 @@ real_update_location_menu (FMDirectoryView *view)
 	show_open_folder_window = FALSE;
 	show_open_in_new_tab = FALSE;
 
-	if (nautilus_window_info_get_window_type (view->details->window) == NAUTILUS_WINDOW_NAVIGATION) {
+	if (nautilus_window_get_window_type (view->details->window) == NAUTILUS_WINDOW_NAVIGATION) {
 		if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
 			label = _("Open in New _Window");
 		} else {
@@ -8564,7 +8564,7 @@ real_update_menus (FMDirectoryView *view)
 		      NULL);
 
 	menuitem = gtk_ui_manager_get_widget (
-			nautilus_window_info_get_ui_manager (view->details->window),
+			nautilus_window_get_ui_manager (view->details->window),
 			FM_DIRECTORY_VIEW_MENU_PATH_OPEN);
 
 	/* Only force displaying the icon if it is an application icon */
@@ -8572,7 +8572,7 @@ real_update_menus (FMDirectoryView *view)
 		GTK_IMAGE_MENU_ITEM (menuitem), app_icon != NULL);
 
 	menuitem = gtk_ui_manager_get_widget (
-			nautilus_window_info_get_ui_manager (view->details->window),
+			nautilus_window_get_ui_manager (view->details->window),
 			FM_DIRECTORY_VIEW_POPUP_PATH_OPEN);
 
 	/* Only force displaying the icon if it is an application icon */
@@ -8592,10 +8592,10 @@ real_update_menus (FMDirectoryView *view)
 
 	show_open_alternate = file_list_all_are_folders (selection) &&
 				selection_count > 0 &&
-				!(nautilus_window_info_get_window_type (view->details->window) == NAUTILUS_WINDOW_DESKTOP &&
+				!(nautilus_window_get_window_type (view->details->window) == NAUTILUS_WINDOW_DESKTOP &&
 					g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER));
 	show_open_folder_window = FALSE;
-	if (nautilus_window_info_get_window_type (view->details->window) == NAUTILUS_WINDOW_NAVIGATION) {
+	if (nautilus_window_get_window_type (view->details->window) == NAUTILUS_WINDOW_NAVIGATION) {
 		if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
 			if (selection_count == 0 || selection_count == 1) {
 				label_with_underscore = g_strdup (_("Open in New _Window"));
@@ -8633,7 +8633,7 @@ real_update_menus (FMDirectoryView *view)
 	gtk_action_set_visible (action, show_open_alternate);
 
 	/* Open in New Tab action */
-	if (nautilus_window_info_get_window_type (view->details->window) == NAUTILUS_WINDOW_NAVIGATION) {
+	if (nautilus_window_get_window_type (view->details->window) == NAUTILUS_WINDOW_NAVIGATION) {
 
 		if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
 			if (selection_count == 0 || selection_count == 1) {
@@ -8669,7 +8669,7 @@ real_update_menus (FMDirectoryView *view)
 	}
 
 	/* next pane actions, only in navigation mode */
-	if (nautilus_window_info_get_window_type (view->details->window) != NAUTILUS_WINDOW_NAVIGATION) {
+	if (nautilus_window_get_window_type (view->details->window) != NAUTILUS_WINDOW_NAVIGATION) {
 		action = gtk_action_group_get_action (view->details->dir_action_group,
 						      FM_ACTION_COPY_TO_NEXT_PANE);
 		gtk_action_set_visible (action, FALSE);
@@ -9301,7 +9301,7 @@ finish_loading (FMDirectoryView *view)
 {
 	NautilusFileAttributes attributes;
 
-	nautilus_window_info_report_load_underway (view->details->window,
+	nautilus_window_report_load_underway (view->details->window,
 						   NAUTILUS_VIEW (view));
 
 	/* Tell interested parties that we've begun loading this directory now.
@@ -9310,7 +9310,7 @@ finish_loading (FMDirectoryView *view)
 	fm_directory_view_begin_loading (view);
 
 	/* Assume we have now all information to show window */
-	nautilus_window_info_view_visible  (view->details->window, NAUTILUS_VIEW (view));
+	nautilus_window_view_visible  (view->details->window, NAUTILUS_VIEW (view));
 
 	if (nautilus_directory_are_all_files_seen (view->details->model)) {
 		/* Unschedule a pending update and schedule a new one with the minimal
@@ -9520,9 +9520,9 @@ fm_directory_view_reset_to_defaults (FMDirectoryView *view)
 	EEL_CALL_METHOD
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 reset_to_defaults, (view));
-	mode = nautilus_window_info_get_hidden_files_mode (view->details->window);
+	mode = nautilus_window_get_hidden_files_mode (view->details->window);
 	if (mode != NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT) {
-		nautilus_window_info_set_hidden_files_mode (view->details->window,
+		nautilus_window_set_hidden_files_mode (view->details->window,
 							    NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT);
 	}
 }
@@ -9682,7 +9682,7 @@ fm_directory_view_set_initiated_unmount (FMDirectoryView *view,
 					 gboolean initiated_unmount)
 {
 	if (view->details->window != NULL) {
-		nautilus_window_info_set_initiated_unmount(view->details->window,
+		nautilus_window_set_initiated_unmount(view->details->window,
 							   initiated_unmount);
 	}
 }
@@ -10530,8 +10530,8 @@ fm_directory_view_set_property (GObject         *object,
 				GParamSpec      *pspec)
 {
   FMDirectoryView *directory_view;
-  NautilusWindowSlotInfo *slot;
-  NautilusWindowInfo *window;
+  NautilusWindowSlot *slot;
+  NautilusWindow *window;
   
   directory_view = FM_DIRECTORY_VIEW (object);
 
@@ -10539,8 +10539,8 @@ fm_directory_view_set_property (GObject         *object,
   case PROP_WINDOW_SLOT:
 	  g_assert (directory_view->details->slot == NULL);
 
-	  slot = NAUTILUS_WINDOW_SLOT_INFO (g_value_get_object (value));
-          window = nautilus_window_slot_info_get_window (slot);
+	  slot = NAUTILUS_WINDOW_SLOT (g_value_get_object (value));
+          window = nautilus_window_slot_get_window (slot);
 
 	  directory_view->details->slot = slot;
 	  directory_view->details->window = window;
@@ -10628,7 +10628,7 @@ fm_directory_view_parent_set (GtkWidget *widget,
 		g_assert (old_parent == NULL);
 
 		if (view->details->slot == 
-		    nautilus_window_info_get_active_slot (view->details->window)) {
+		    nautilus_window_get_active_slot (view->details->window)) {
 			view->details->active = TRUE;
 
 			fm_directory_view_merge_menus (view);
@@ -10785,7 +10785,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 					 g_param_spec_object ("window-slot",
 							      "Window Slot",
 							      "The parent window slot reference",
-							      NAUTILUS_TYPE_WINDOW_SLOT_INFO,
+							      NAUTILUS_TYPE_WINDOW_SLOT,
 							      G_PARAM_WRITABLE |
 							      G_PARAM_CONSTRUCT_ONLY));
 
