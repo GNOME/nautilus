@@ -839,26 +839,6 @@ action_open_folder_window_callback (GtkAction *action,
 }
 
 static void
-open_location (FMDirectoryView *directory_view, 
-	       const char *new_uri, 
-	       NautilusWindowOpenMode mode,
-	       NautilusWindowOpenFlags flags)
-{
-	GtkWindow *window;
-	GFile *location;
-
-	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
-	g_assert (new_uri != NULL);
-
-	window = fm_directory_view_get_containing_window (directory_view);
-	DEBUG ("open_location window=%p: %s", window, new_uri);
-	location = g_file_new_for_uri (new_uri);
-	nautilus_window_slot_open_location_full (directory_view->details->slot,
-						 location, mode, flags, NULL, NULL, NULL);
-	g_object_unref (location);
-}
-
-static void
 app_chooser_dialog_response_cb (GtkDialog *dialog,
 				gint response_id,
 				gpointer user_data)
@@ -5678,11 +5658,15 @@ action_open_scripts_folder_callback (GtkAction *action,
 				     gpointer callback_data)
 {      
 	FMDirectoryView *view;
+	static GFile *location = NULL;
+
+	if (location == NULL) {
+		location = g_file_new_for_uri (scripts_directory_uri);
+	}
 
 	view = FM_DIRECTORY_VIEW (callback_data);
+	nautilus_window_slot_go_to (view->details->slot, location, FALSE);
 
-	open_location (view, scripts_directory_uri, NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE, 0);
-	
 	eel_show_info_dialog_with_details 
 		(_("All executable files in this folder will appear in the "
 		   "Scripts menu."),

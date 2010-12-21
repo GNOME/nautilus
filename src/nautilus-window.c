@@ -230,11 +230,15 @@ nautilus_window_go_to_full (NautilusWindow *window,
 }
 
 void
-nautilus_window_go_to_with_selection (NautilusWindow *window, GFile *location, GList *new_selection)
+nautilus_window_go_to_with_selection (NautilusWindow *window,
+				      GFile *location,
+				      GList *new_selection)
 {
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
-	nautilus_window_slot_go_to_with_selection (window->details->active_pane->active_slot, location, new_selection);
+	nautilus_window_slot_go_to_with_selection (window->details->active_pane->active_slot,
+						   location,
+						   new_selection);
 }
 
 static gboolean
@@ -311,11 +315,10 @@ nautilus_window_go_up (NautilusWindow *window, gboolean close_behind, gboolean n
 		flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
 	}
 
-	nautilus_window_slot_open_location_full (slot, parent, 
-						 NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
-						 flags,
-						 selection,
-						 NULL, NULL);
+	nautilus_window_slot_open_location (slot, parent, 
+					    NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
+					    flags,
+					    selection);
 	
 	g_object_unref (parent);
 

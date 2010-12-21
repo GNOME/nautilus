@@ -511,8 +511,10 @@ location_menu_item_activated_callback (GtkWidget *menu_item,
 			close_behind = TRUE;
 		}
 
-		nautilus_window_slot_open_location_with_selection
-			(slot, dest, selection, close_behind);
+		nautilus_window_slot_open_location (slot, dest,
+						    NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
+						    NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND,
+						    selection);
 
 		g_list_free_full (selection, g_object_unref);
 	}

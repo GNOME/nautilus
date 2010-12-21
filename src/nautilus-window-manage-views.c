@@ -664,24 +664,6 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 }
 
 void
-nautilus_window_slot_open_location_with_selection (NautilusWindowSlot *slot,
-						   GFile *location,
-						   GList *selection,
-						   gboolean close_behind)
-{
-	NautilusWindowOpenFlags flags;
-
-	flags = 0;
-	if (close_behind) {
-		flags = NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND;
-	}
-	nautilus_window_slot_open_location_full (slot, location,
-						 NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
-						 flags, selection, NULL, NULL);
-}
-
-
-void
 nautilus_window_slot_go_home (NautilusWindowSlot *slot, gboolean new_tab)
 {			      
 	GFile *home;

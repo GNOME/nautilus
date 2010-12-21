@@ -127,17 +127,32 @@ char *  nautilus_window_slot_get_location_uri		   (NautilusWindowSlot *slot);
 void    nautilus_window_slot_close			   (NautilusWindowSlot *slot);
 void    nautilus_window_slot_reload			   (NautilusWindowSlot *slot);
 
-void			nautilus_window_slot_open_location_with_selection (NautilusWindowSlot	    *slot,
-									   GFile		    *location,
-									   GList		    *selection,
-									   gboolean		     close_behind);
-void			nautilus_window_slot_open_location_full       (NautilusWindowSlot	*slot,
-								       GFile			*location,
-								       NautilusWindowOpenMode	 mode,
-								       NautilusWindowOpenFlags	 flags,
-								       GList			*new_selection,
-								       NautilusWindowGoToCallback callback,
-								       gpointer                  user_data);
+void nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
+					      GFile *location,
+					      NautilusWindowOpenMode mode,
+					      NautilusWindowOpenFlags flags,
+					      GList *new_selection,
+					      NautilusWindowGoToCallback callback,
+					      gpointer user_data);
+
+/* convenience wrapper without callback/user_data */
+#define nautilus_window_slot_open_location(slot, location, mode, flags, new_selection)\
+	nautilus_window_slot_open_location_full(slot, location, mode, flags, new_selection, NULL, NULL)
+
+/* these are wrappers that always open according to current mode */
+#define nautilus_window_slot_go_to(slot, location, new_tab) \
+	nautilus_window_slot_open_location(slot, location, NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE, \
+					   (new_tab ? NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB : 0), \
+					   NULL)
+#define nautilus_window_slot_go_to_full(slot, location, new_tab, callback, user_data) \
+	nautilus_window_slot_open_location_full(slot, location, NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE, \
+						(new_tab ? NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB : 0), \
+						NULL, callback, user_data)
+#define nautilus_window_slot_go_to_with_selection(slot, location, new_selection) \
+	nautilus_window_slot_open_location(slot, location,\
+					   NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE, 0,\
+					   new_selection)
+
 void			nautilus_window_slot_stop_loading	      (NautilusWindowSlot	*slot);
 
 void			nautilus_window_slot_set_content_view	      (NautilusWindowSlot	*slot,
@@ -151,18 +166,7 @@ void                    nautilus_window_slot_connect_content_view     (NautilusW
 void                    nautilus_window_slot_disconnect_content_view  (NautilusWindowSlot       *slot,
 								       NautilusView             *view);
 
-#define nautilus_window_slot_go_to(slot,location, new_tab) \
-	nautilus_window_slot_open_location_full(slot, location, NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE, \
-						(new_tab ? NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB : 0), \
-						NULL, NULL, NULL)
 
-#define nautilus_window_slot_go_to_full(slot, location, new_tab, callback, user_data) \
-	nautilus_window_slot_open_location_full(slot, location, NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE, \
-						(new_tab ? NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB : 0), \
-						NULL, callback, user_data)
-
-#define nautilus_window_slot_go_to_with_selection(slot,location,new_selection) \
-	nautilus_window_slot_open_location_with_selection(slot, location, new_selection, FALSE)
 
 void    nautilus_window_slot_go_home			   (NautilusWindowSlot *slot,
 							    gboolean            new_tab);
