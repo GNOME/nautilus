@@ -127,9 +127,6 @@ char *  nautilus_window_slot_get_location_uri		   (NautilusWindowSlot *slot);
 void    nautilus_window_slot_close			   (NautilusWindowSlot *slot);
 void    nautilus_window_slot_reload			   (NautilusWindowSlot *slot);
 
-void			nautilus_window_slot_open_location	      (NautilusWindowSlot	*slot,
-								       GFile			*location,
-								       gboolean			 close_behind);
 void			nautilus_window_slot_open_location_with_selection (NautilusWindowSlot	    *slot,
 									   GFile		    *location,
 									   GList		    *selection,
