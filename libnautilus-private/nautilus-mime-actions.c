@@ -1600,7 +1600,7 @@ activate_files (ActivateParameters *parameters)
 	GList *l;
 	int count;
 	char *uri;
-	char *executable_path, *quoted_path, *name;
+	char *executable_path, *quoted_path;
 	char *old_working_dir;
 	ActivationAction action;
 	GdkScreen *screen;
@@ -1682,12 +1682,10 @@ activate_files (ActivateParameters *parameters)
 		uri = nautilus_file_get_activation_uri (file);
 		executable_path = g_filename_from_uri (uri, NULL, NULL);
 		quoted_path = g_shell_quote (executable_path);
-		name = nautilus_file_get_name (file);
 
-		DEBUG ("Launching file name %s, path %s", name, quoted_path);
+		DEBUG ("Launching file path %s", quoted_path);
 
-		nautilus_launch_application_from_command (screen, name, quoted_path, FALSE, NULL);
-		g_free (name);
+		nautilus_launch_application_from_command (screen, quoted_path, FALSE, NULL);
 		g_free (quoted_path);
 		g_free (executable_path);
 		g_free (uri);
@@ -1701,12 +1699,11 @@ activate_files (ActivateParameters *parameters)
 		uri = nautilus_file_get_activation_uri (file);
 		executable_path = g_filename_from_uri (uri, NULL, NULL);
 		quoted_path = g_shell_quote (executable_path);
-		name = nautilus_file_get_name (file);
 
-		DEBUG ("Launching in terminal file name %s, quoted path %s", name, quoted_path);
+		DEBUG ("Launching in terminal file quoted path %s", quoted_path);
 
-		nautilus_launch_application_from_command (screen, name, quoted_path, TRUE, NULL);
-		g_free (name);
+		nautilus_launch_application_from_command (screen, quoted_path, TRUE, NULL);
+
 		g_free (quoted_path);
 		g_free (executable_path);
 		g_free (uri);

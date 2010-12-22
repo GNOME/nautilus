@@ -49,6 +49,7 @@
 #include <libnautilus-private/nautilus-ui-utilities.h>
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
+#include <libnautilus-private/nautilus-program-choosing.h>
 #include <libnautilus-private/nautilus-search-directory.h>
 #include <libnautilus-private/nautilus-search-engine.h>
 #include <libnautilus-private/nautilus-signaller.h>
@@ -546,9 +547,7 @@ action_nautilus_manual_callback (GtkAction *action,
 	window = NAUTILUS_WINDOW (user_data);
 
 	if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
-		gdk_spawn_command_line_on_screen (
-			gtk_window_get_screen (GTK_WINDOW (window)),
-			"gnome-help", &error);
+		nautilus_launch_application_from_command (gtk_window_get_screen (GTK_WINDOW (window)), "gnome-help", FALSE, NULL);
 	} else {
 		gtk_show_uri (gtk_window_get_screen (GTK_WINDOW (window)),
 			      "ghelp:user-guide#gosnautilus-1",

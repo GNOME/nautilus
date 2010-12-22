@@ -379,7 +379,7 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
 			g_object_unref (location);
 		} else {
 			DEBUG ("Tree sidebar, launching application for %s", file_uri);
-			nautilus_launch_application_from_command (screen, NULL, file_uri, FALSE, NULL);
+			nautilus_launch_application_from_command (screen, file_uri, FALSE, NULL);
 			g_free (file_uri);
 		}
 		   

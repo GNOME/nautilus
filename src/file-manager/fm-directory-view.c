@@ -1436,7 +1436,6 @@ action_new_launcher_callback (GtkAction *action,
 	window = fm_directory_view_get_containing_window (view);
 	DEBUG ("Create new launcher in window=%p: %s", window, parent_uri);
 	nautilus_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (view)),
-						  "gnome-desktop-item-edit", 
 						  "gnome-desktop-item-edit",
 						  FALSE,
 						  "--create-new", parent_uri, NULL);
@@ -5122,7 +5121,7 @@ run_script_callback (GtkAction *action, gpointer callback_data)
 	char *local_file_path;
 	char *quoted_path;
 	char *old_working_dir;
-	char **parameters, *name;
+	char **parameters;
 	GtkWindow *window;
 	
 	launch_parameters = (ScriptLaunchParameters *) callback_data;
@@ -5145,16 +5144,14 @@ run_script_callback (GtkAction *action, gpointer callback_data)
 
 	screen = gtk_widget_get_screen (GTK_WIDGET (launch_parameters->directory_view));
 
-	name = nautilus_file_get_name (launch_parameters->file);
 	/* FIXME: handle errors with dialog? Or leave up to each script? */
 	window = fm_directory_view_get_containing_window (launch_parameters->directory_view);
 
-	DEBUG ("run_script_callback, name=\"%s\", script_path=\"%s\" (omitting script parameters)",
-	       name, local_file_path);
+	DEBUG ("run_script_callback, script_path=\"%s\" (omitting script parameters)",
+	       local_file_path);
 
-	nautilus_launch_application_from_command_array (screen, name, quoted_path, FALSE,
+	nautilus_launch_application_from_command_array (screen, quoted_path, FALSE,
 							(const char * const *) parameters);
-	g_free (name);
 	g_strfreev (parameters);
 
 	nautilus_file_list_free (selected_files);
@@ -6083,7 +6080,6 @@ invoke_external_bulk_rename_utility (FMDirectoryView *view,
 	char *bulk_rename_tool;
 	GList *walk;
 	NautilusFile *file;
-	GError *error = NULL;
 
 	/* assemble command line */
 	bulk_rename_tool = get_bulk_rename_tool ();
@@ -6100,12 +6096,9 @@ invoke_external_bulk_rename_utility (FMDirectoryView *view,
 	}
 
 	/* spawning and error handling */
-	gdk_spawn_command_line_on_screen (gtk_widget_get_screen (GTK_WIDGET (view)), cmd->str, &error);
+	nautilus_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (view)),
+						  cmd->str, FALSE, NULL);
 	g_string_free (cmd, TRUE);
-	if (error != NULL) {
-		eel_show_error_dialog (_("Could not invoke bulk rename utility"), error->message, NULL);
-		g_error_free (error);
-	}
 }
 
 static void
@@ -9954,7 +9947,8 @@ fm_directory_view_move_copy_items (const GList *item_uris,
 		if (screen == NULL) {
 			screen = gdk_screen_get_default ();
 		}
-		gdk_spawn_command_line_on_screen (screen, command, NULL);
+
+		nautilus_launch_application_from_command (screen, command, FALSE, NULL);
 		g_free (command);
 
 		return;
