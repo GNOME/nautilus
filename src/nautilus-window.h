@@ -166,8 +166,6 @@ void             nautilus_window_display_error        (NautilusWindow    *window
                                                        const char        *error_msg);
 void		 nautilus_window_reload		      (NautilusWindow	 *window);
 
-void             nautilus_window_allow_reload         (NautilusWindow    *window,
-                                                       gboolean           allow);
 void             nautilus_window_allow_up             (NautilusWindow    *window, 
                                                        gboolean           allow);
 void             nautilus_window_allow_stop           (NautilusWindow    *window, 

@@ -356,18 +356,6 @@ nautilus_window_sync_allow_stop (NautilusWindow *window,
 }
 
 void
-nautilus_window_allow_reload (NautilusWindow *window, gboolean allow)
-{
-	GtkAction *action;
-	
-        g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-
-	action = gtk_action_group_get_action (window->details->main_action_group,
-					      NAUTILUS_ACTION_RELOAD);
-	gtk_action_set_sensitive (action, allow);
-}
-
-void
 nautilus_window_prompt_for_location (NautilusWindow *window,
 				     const char     *initial)
 {
