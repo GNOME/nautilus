@@ -1786,7 +1786,7 @@ nautilus_icon_canvas_item_event (EelCanvasItem *item, GdkEvent *event)
 				cursor = gdk_cursor_new_for_display (gdk_display_get_default(),
 								     GDK_HAND2);
 				gdk_window_set_cursor (((GdkEventAny *)event)->window, cursor);
-				gdk_cursor_unref (cursor);
+				g_object_unref (cursor);
 			}
 
 			/* FIXME bugzilla.gnome.org 42473: 

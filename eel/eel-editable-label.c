@@ -1888,7 +1888,7 @@ eel_editable_label_realize (GtkWidget *widget)
   gtk_widget_set_window (widget, window);
   gdk_window_set_user_data (window, widget);
 
-  gdk_cursor_unref (attributes.cursor);
+  g_object_unref (attributes.cursor);
 
   style = gtk_widget_get_style_context (widget);
   gtk_style_context_set_background (style, gtk_widget_get_window (widget));

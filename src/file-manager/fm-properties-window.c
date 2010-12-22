@@ -3235,7 +3235,7 @@ start_long_operation (FMPropertiesWindow *window)
 		
 		cursor = gdk_cursor_new (GDK_WATCH);
 		gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (window)), cursor);
-		gdk_cursor_unref (cursor);
+		g_object_unref (cursor);
 	}
 	window->details->long_operation_underway ++;
 }

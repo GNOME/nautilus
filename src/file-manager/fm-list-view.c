@@ -2757,10 +2757,7 @@ fm_list_view_click_policy_changed (FMDirectoryView *directory_view)
 			}
 		}
 
-		if (hand_cursor != NULL) {
-			gdk_cursor_unref (hand_cursor);
-			hand_cursor = NULL;
-		}
+		g_clear_object (&hand_cursor);
 	} else if (click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE) {
 		if (hand_cursor == NULL) {
 			hand_cursor = gdk_cursor_new(GDK_HAND2);
