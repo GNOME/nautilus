@@ -180,7 +180,6 @@ nautilus_launch_application_by_uri (GAppInfo *application,
  */
 void
 nautilus_launch_application_from_command (GdkScreen  *screen,
-					  const char *name,
 					  const char *command_string, 
 					  gboolean use_terminal,
 					  ...)
@@ -189,6 +188,8 @@ nautilus_launch_application_from_command (GdkScreen  *screen,
 	char *quoted_parameter; 
 	char *parameter;
 	va_list ap;
+	GAppInfo *app;
+	GdkAppLaunchContext *ctx;
 
 	full_command = g_strdup (command_string);
 
@@ -209,7 +210,17 @@ nautilus_launch_application_from_command (GdkScreen  *screen,
 	if (use_terminal) {
 		eel_gnome_open_terminal_on_screen (full_command, screen);
 	} else {
-	    	gdk_spawn_command_line_on_screen (screen, full_command, NULL);
+		app = g_app_info_create_from_commandline (full_command, NULL, 0, NULL);
+
+		if (app != NULL) {
+			ctx = gdk_app_launch_context_new ();
+			gdk_app_launch_context_set_screen (ctx, screen);
+
+			g_app_info_launch (app, NULL, G_APP_LAUNCH_CONTEXT (ctx), NULL);
+
+			g_object_unref (app);
+			g_object_unref (ctx);
+		}
 	}
 
 	g_free (full_command);
@@ -227,7 +238,6 @@ nautilus_launch_application_from_command (GdkScreen  *screen,
  */
 void
 nautilus_launch_application_from_command_array (GdkScreen  *screen,
-						const char *name,
 						const char *command_string,
 						gboolean use_terminal,
 						const char * const * parameters)
@@ -235,6 +245,8 @@ nautilus_launch_application_from_command_array (GdkScreen  *screen,
 	char *full_command, *tmp;
 	char *quoted_parameter; 
 	const char * const *p;
+	GAppInfo *app;
+	GdkAppLaunchContext *ctx;
 
 	full_command = g_strdup (command_string);
 
@@ -252,7 +264,17 @@ nautilus_launch_application_from_command_array (GdkScreen  *screen,
 	if (use_terminal) {
 		eel_gnome_open_terminal_on_screen (full_command, screen);
 	} else {
-	    	gdk_spawn_command_line_on_screen (screen, full_command, NULL);
+		app = g_app_info_create_from_commandline (full_command, NULL, 0, NULL);
+
+		if (app != NULL) {
+			ctx = gdk_app_launch_context_new ();
+			gdk_app_launch_context_set_screen (ctx, screen);
+
+			g_app_info_launch (app, NULL, G_APP_LAUNCH_CONTEXT (ctx), NULL);
+
+			g_object_unref (app);
+			g_object_unref (ctx);
+		}
 	}
 
 	g_free (full_command);
