@@ -168,8 +168,6 @@ void		 nautilus_window_reload		      (NautilusWindow	 *window);
 
 void             nautilus_window_allow_up             (NautilusWindow    *window, 
                                                        gboolean           allow);
-void             nautilus_window_allow_stop           (NautilusWindow    *window, 
-                                                       gboolean           allow);
 GtkUIManager *   nautilus_window_get_ui_manager       (NautilusWindow    *window);
 
 
