@@ -1409,9 +1409,6 @@ location_has_really_changed (NautilusWindowSlot *slot)
 		widget = nautilus_view_get_widget (slot->new_content_view);
 		/* Switch to the new content view. */
 		if (gtk_widget_get_parent (widget) == NULL) {
-			if (slot->content_view != NULL) {
-				nautilus_window_disconnect_content_view (window, slot->content_view);
-			}
 			nautilus_window_slot_set_content_view_widget (slot, slot->new_content_view);
 		}
 		g_object_unref (slot->new_content_view);
@@ -1822,7 +1819,6 @@ nautilus_window_report_view_failed (NautilusWindow *window,
 	fallback_load_location = NULL;
 	
 	if (view == slot->content_view) {
-		nautilus_window_disconnect_content_view (window, view);
                 nautilus_window_slot_set_content_view_widget (slot, NULL);
 
                 report_current_content_view_failure_to_user (slot);
