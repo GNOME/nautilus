@@ -30,17 +30,14 @@
 #include <config.h>
 
 #include "nautilus-navigation-action.h"
+
 #include "nautilus-navigation-window.h"
-#include "nautilus-window-private.h"
 #include "nautilus-navigation-window-slot.h"
+
 #include <gtk/gtk.h>
 #include <eel/eel-gtk-extensions.h>
 
-static void nautilus_navigation_action_init       (NautilusNavigationAction *action);
-static void nautilus_navigation_action_class_init (NautilusNavigationActionClass *class);
-
-static GObjectClass *parent_class = NULL;
-
+G_DEFINE_TYPE (NautilusNavigationAction, nautilus_navigation_action, GTK_TYPE_ACTION);
 #define NAUTILUS_NAVIGATION_ACTION_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), NAUTILUS_TYPE_NAVIGATION_ACTION, NautilusNavigationActionPrivate))
 
 struct NautilusNavigationActionPrivate
@@ -57,32 +54,6 @@ enum
 	PROP_DIRECTION,
 	PROP_WINDOW
 };
-
-GType
-nautilus_navigation_action_get_type (void)
-{
-	static GType type = 0;
-
-	if (type == 0) {
-		const GTypeInfo type_info = {
-			sizeof (NautilusNavigationActionClass),
-			(GBaseInitFunc) NULL,
-			(GBaseFinalizeFunc) NULL,
-			(GClassInitFunc) nautilus_navigation_action_class_init,
-			(GClassFinalizeFunc) NULL,
-			NULL,
-			sizeof (NautilusNavigationAction),
-			0, /* n_preallocs */
-			(GInstanceInitFunc) nautilus_navigation_action_init,
-		};
-		
-		type = g_type_register_static (GTK_TYPE_ACTION,
-					       "NautilusNavigationAction",
-					       &type_info, 0);
-	}
-
-	return type;
-}
 
 static gboolean
 should_open_in_new_tab (void)
@@ -139,7 +110,7 @@ fill_menu (NautilusNavigationWindow *window,
 
 	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
 
-	slot = NAUTILUS_NAVIGATION_WINDOW_SLOT (NAUTILUS_WINDOW (window)->details->active_pane->active_slot);
+	slot = NAUTILUS_NAVIGATION_WINDOW_SLOT (nautilus_window_get_active_slot (NAUTILUS_WINDOW (window)));
 	
 	list = back ? slot->back_list : slot->forward_list;
 	index = 0;
@@ -243,7 +214,7 @@ connect_proxy (GtkAction *action, GtkWidget *proxy)
 		g_signal_connect (child, "button-release-event", G_CALLBACK (proxy_button_release_event_cb), NULL);
 	}
 
-	(* GTK_ACTION_CLASS (parent_class)->connect_proxy) (action, proxy);
+	(* GTK_ACTION_CLASS (nautilus_navigation_action_parent_class)->connect_proxy) (action, proxy);
 }
 
 static void
@@ -259,7 +230,7 @@ disconnect_proxy (GtkAction *action, GtkWidget *proxy)
 		g_signal_handlers_disconnect_by_func (child, G_CALLBACK (proxy_button_release_event_cb), NULL);
 	}
 
-	(* GTK_ACTION_CLASS (parent_class)->disconnect_proxy) (action, proxy);
+	(* GTK_ACTION_CLASS (nautilus_navigation_action_parent_class)->disconnect_proxy) (action, proxy);
 }
 
 static void
@@ -269,7 +240,7 @@ nautilus_navigation_action_finalize (GObject *object)
 
 	g_free (action->priv->arrow_tooltip);
 
-	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
+	(* G_OBJECT_CLASS (nautilus_navigation_action_parent_class)->finalize) (object);
 }
 
 static void
@@ -331,8 +302,6 @@ nautilus_navigation_action_class_init (NautilusNavigationActionClass *class)
 	object_class->set_property = nautilus_navigation_action_set_property;
 	object_class->get_property = nautilus_navigation_action_get_property;
 
-	parent_class = g_type_class_peek_parent (class);
-
 	action_class->toolbar_item_type = GTK_TYPE_MENU_TOOL_BUTTON;
 	action_class->connect_proxy = connect_proxy;
 	action_class->disconnect_proxy = disconnect_proxy;
@@ -358,7 +327,7 @@ nautilus_navigation_action_class_init (NautilusNavigationActionClass *class)
                                          g_param_spec_object ("window",
                                                               "Window",
                                                               "The navigation window",
-                                                              G_TYPE_OBJECT,
+                                                              NAUTILUS_TYPE_NAVIGATION_WINDOW,
                                                               G_PARAM_READWRITE));
 
 	g_type_class_add_private (object_class, sizeof(NautilusNavigationActionPrivate));
