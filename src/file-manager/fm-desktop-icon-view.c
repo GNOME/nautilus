@@ -332,13 +332,44 @@ fm_desktop_icon_view_handle_middle_click (NautilusIconContainer *icon_container,
 					  FMDesktopIconView *desktop_icon_view)
 {
 	XButtonEvent x_event;
-	
+	GdkDevice *keyboard = NULL, *pointer = NULL, *cur;
+	GdkDeviceManager *manager;
+	GList *list, *l;
+
+	manager = gdk_display_get_device_manager (gtk_widget_get_display (GTK_WIDGET (icon_container)));
+	list = gdk_device_manager_list_devices (manager, GDK_DEVICE_TYPE_MASTER);
+
+	for (l = list; l != NULL; l = l->next) {
+		cur = l->data;
+
+		if (pointer == NULL && (gdk_device_get_source (cur) == GDK_SOURCE_MOUSE)) {
+			pointer = cur;
+		}
+
+		if (keyboard == NULL && (gdk_device_get_source (cur) == GDK_SOURCE_KEYBOARD)) {
+			keyboard = cur;
+		}
+
+		if (pointer != NULL && keyboard != NULL) {
+			break;
+		}
+	}
+
+	g_list_free (list);
+
 	/* During a mouse click we have the pointer and keyboard grab.
 	 * We will send a fake event to the root window which will cause it
 	 * to try to get the grab so we need to let go ourselves.
 	 */
-	gdk_pointer_ungrab (GDK_CURRENT_TIME);
-	gdk_keyboard_ungrab (GDK_CURRENT_TIME);
+
+	if (pointer != NULL) {
+		gdk_device_ungrab (pointer, GDK_CURRENT_TIME);
+	}
+
+	
+	if (keyboard != NULL) {
+		gdk_device_ungrab (keyboard, GDK_CURRENT_TIME);
+	}
 
 	/* Stop the event because we don't want anyone else dealing with it. */	
 	gdk_flush ();
