@@ -29,11 +29,7 @@
 
 #include <gtk/gtk.h>
 
-/* Return a command string containing the path to a terminal on this system. */
-char *        eel_gnome_make_terminal_command                         (const char               *command);
-
 /* Open up a new terminal, optionally passing in a command to execute */
-void          eel_gnome_open_terminal                                 (const char               *command);
 void          eel_gnome_open_terminal_on_screen                       (const char               *command,
 								       GdkScreen                *screen);
 								 

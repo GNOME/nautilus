@@ -88,7 +88,7 @@ nautilus_connect_server_dialog_display_location_async (NautilusConnectServerDial
 		g_print ("%s\n", uri);
 	}
 	else {
-		launch_context = gdk_app_launch_context_new ();
+		launch_context = gdk_display_get_app_launch_context (gtk_widget_get_display (GTK_WIDGET (self)));
 		gdk_app_launch_context_set_screen (launch_context,
 						   gtk_widget_get_screen (GTK_WIDGET (self)));
 

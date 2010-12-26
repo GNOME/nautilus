@@ -95,12 +95,13 @@ nautilus_launch_application_by_uri (GAppInfo *application,
 				    GList *uris,
 				    GtkWindow *parent_window)
 {
-	char            *uri;
-	GList           *locations, *l;
+	char *uri;
+	GList *locations, *l;
 	GFile *location;
-	NautilusFile    *file;
-	gboolean        result;
+	NautilusFile *file;
+	gboolean result;
 	GError *error;
+	GdkDisplay *display;
 	GdkAppLaunchContext *launch_context;
 	NautilusIconInfo *icon;
 	int count, total;
@@ -122,10 +123,18 @@ nautilus_launch_application_by_uri (GAppInfo *application,
 	}
 	locations = g_list_reverse (locations);
 
-	launch_context = gdk_app_launch_context_new ();
-	if (parent_window)
+	if (parent_window != NULL) {
+		display = gtk_widget_get_display (GTK_WIDGET (parent_window));
+	} else {
+		display = gdk_display_get_default ();
+	}
+
+	launch_context = gdk_display_get_app_launch_context (display);
+
+	if (parent_window != NULL) {
 		gdk_app_launch_context_set_screen (launch_context,
 						   gtk_window_get_screen (parent_window));
+	}
 
 	file = nautilus_file_get_by_uri (uris->data);
 	icon = nautilus_file_get_icon (file, 48, 0);
@@ -168,6 +177,33 @@ nautilus_launch_application_by_uri (GAppInfo *application,
 	g_list_free_full (locations, g_object_unref);
 }
 
+static void
+launch_application_from_command_internal (const gchar *full_command,
+					  GdkScreen *screen,
+					  gboolean use_terminal)
+{
+	GAppInfo *app;
+	GdkAppLaunchContext *ctx;
+	GdkDisplay *display;
+
+	if (use_terminal) {
+		eel_gnome_open_terminal_on_screen (full_command, screen);
+	} else {
+		app = g_app_info_create_from_commandline (full_command, NULL, 0, NULL);
+
+		if (app != NULL) {
+			display = gdk_screen_get_display (screen);
+			ctx = gdk_display_get_app_launch_context (display);
+			gdk_app_launch_context_set_screen (ctx, screen);
+
+			g_app_info_launch (app, NULL, G_APP_LAUNCH_CONTEXT (ctx), NULL);
+
+			g_object_unref (app);
+			g_object_unref (ctx);
+		}
+	}
+}					  
+
 /**
  * nautilus_launch_application_from_command:
  * 
@@ -188,8 +224,6 @@ nautilus_launch_application_from_command (GdkScreen  *screen,
 	char *quoted_parameter; 
 	char *parameter;
 	va_list ap;
-	GAppInfo *app;
-	GdkAppLaunchContext *ctx;
 
 	full_command = g_strdup (command_string);
 
@@ -207,22 +241,8 @@ nautilus_launch_application_from_command (GdkScreen  *screen,
 
 	va_end (ap);
 
-	if (use_terminal) {
-		eel_gnome_open_terminal_on_screen (full_command, screen);
-	} else {
-		app = g_app_info_create_from_commandline (full_command, NULL, 0, NULL);
-
-		if (app != NULL) {
-			ctx = gdk_app_launch_context_new ();
-			gdk_app_launch_context_set_screen (ctx, screen);
-
-			g_app_info_launch (app, NULL, G_APP_LAUNCH_CONTEXT (ctx), NULL);
-
-			g_object_unref (app);
-			g_object_unref (ctx);
-		}
-	}
-
+	launch_application_from_command_internal (full_command, screen, use_terminal);
+	
 	g_free (full_command);
 }
 
@@ -245,8 +265,6 @@ nautilus_launch_application_from_command_array (GdkScreen  *screen,
 	char *full_command, *tmp;
 	char *quoted_parameter; 
 	const char * const *p;
-	GAppInfo *app;
-	GdkAppLaunchContext *ctx;
 
 	full_command = g_strdup (command_string);
 
@@ -261,21 +279,7 @@ nautilus_launch_application_from_command_array (GdkScreen  *screen,
 		}
 	}
 
-	if (use_terminal) {
-		eel_gnome_open_terminal_on_screen (full_command, screen);
-	} else {
-		app = g_app_info_create_from_commandline (full_command, NULL, 0, NULL);
-
-		if (app != NULL) {
-			ctx = gdk_app_launch_context_new ();
-			gdk_app_launch_context_set_screen (ctx, screen);
-
-			g_app_info_launch (app, NULL, G_APP_LAUNCH_CONTEXT (ctx), NULL);
-
-			g_object_unref (app);
-			g_object_unref (ctx);
-		}
-	}
+	launch_application_from_command_internal (full_command, screen, use_terminal);
 
 	g_free (full_command);
 }
@@ -362,7 +366,7 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 	}
 
 	error = NULL;
-	context = gdk_app_launch_context_new ();
+	context = gdk_display_get_app_launch_context (gtk_widget_get_display (GTK_WIDGET (parent_window)));
 	/* TODO: Ideally we should accept a timestamp here instead of using GDK_CURRENT_TIME */
 	gdk_app_launch_context_set_timestamp (context, GDK_CURRENT_TIME);
 	gdk_app_launch_context_set_screen (context,
