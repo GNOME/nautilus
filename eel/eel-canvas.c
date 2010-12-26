@@ -315,11 +315,7 @@ eel_canvas_item_dispose (GObject *object)
 			item->canvas->need_repick = TRUE;
 		}
 
-		if (item == item->canvas->grabbed_item) {
-			GdkDisplay *display = gtk_widget_get_display (GTK_WIDGET (item->canvas));
-			item->canvas->grabbed_item = NULL;
-			gdk_display_pointer_ungrab (display, GDK_CURRENT_TIME);
-		}
+		eel_canvas_item_ungrab (item, GDK_CURRENT_TIME);
 
 		if (item == item->canvas->focused_item)
 			item->canvas->focused_item = NULL;
@@ -840,10 +836,16 @@ eel_canvas_item_hide (EelCanvasItem *item)
  * returns %GDK_GRAB_NOT_VIEWABLE.  Else, it returns the result of calling
  * gdk_pointer_grab().
  **/
-int
-eel_canvas_item_grab (EelCanvasItem *item, guint event_mask, GdkCursor *cursor, guint32 etime)
+GdkGrabStatus
+eel_canvas_item_grab (EelCanvasItem *item,
+		      GdkEventMask event_mask,
+		      GdkCursor *cursor,
+		      guint32 timestamp)
 {
-	int retval;
+	GdkGrabStatus retval;
+	GdkDisplay *display;
+	GdkDeviceManager *manager;
+	GdkDevice *device;
 
 	g_return_val_if_fail (EEL_IS_CANVAS_ITEM (item), GDK_GRAB_NOT_VIEWABLE);
 	g_return_val_if_fail (gtk_widget_get_mapped (GTK_WIDGET (item->canvas)),
@@ -855,12 +857,17 @@ eel_canvas_item_grab (EelCanvasItem *item, guint event_mask, GdkCursor *cursor, 
 	if (!(item->flags & EEL_CANVAS_ITEM_MAPPED))
 		return GDK_GRAB_NOT_VIEWABLE;
 
-	retval = gdk_pointer_grab (gtk_layout_get_bin_window (&item->canvas->layout),
-				   FALSE,
-				   event_mask,
-				   NULL,
-				   cursor,
-				   etime);
+	display = gtk_widget_get_display (GTK_WIDGET (item->canvas));
+	manager = gdk_display_get_device_manager (display);
+	device = gdk_device_manager_get_client_pointer (manager);
+
+	retval = gdk_device_grab (device,
+				  gtk_layout_get_bin_window (GTK_LAYOUT (item->canvas)),
+				  GDK_OWNERSHIP_NONE,
+				  FALSE,
+				  event_mask,
+				  cursor,
+				  timestamp);
 
 	if (retval != GDK_GRAB_SUCCESS)
 		return retval;
@@ -885,6 +892,8 @@ void
 eel_canvas_item_ungrab (EelCanvasItem *item, guint32 etime)
 {
 	GdkDisplay *display;
+	GdkDeviceManager *manager;
+	GdkDevice *device;
 
 	g_return_if_fail (EEL_IS_CANVAS_ITEM (item));
 
@@ -892,10 +901,12 @@ eel_canvas_item_ungrab (EelCanvasItem *item, guint32 etime)
 		return;
 
 	display = gtk_widget_get_display (GTK_WIDGET (item->canvas));
-	item->canvas->grabbed_item = NULL;
-	gdk_display_pointer_ungrab (display, etime);
-}
+	manager = gdk_display_get_device_manager (display);
+	device = gdk_device_manager_get_client_pointer (manager);
 
+	item->canvas->grabbed_item = NULL;
+	gdk_device_ungrab (device, etime);
+}
 
 /**
  * eel_canvas_item_w2i:
@@ -2129,9 +2140,7 @@ shutdown_transients (EelCanvas *canvas)
 	}
 
 	if (canvas->grabbed_item) {
-		GdkDisplay *display = gtk_widget_get_display (GTK_WIDGET (canvas));
-		canvas->grabbed_item = NULL;
-		gdk_display_pointer_ungrab (display, GDK_CURRENT_TIME);
+		eel_canvas_item_ungrab (canvas->grabbed_item, GDK_CURRENT_TIME);
 	}
 
 	remove_idle (canvas);

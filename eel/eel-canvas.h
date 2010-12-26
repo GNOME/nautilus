@@ -245,8 +245,10 @@ void eel_canvas_item_hide (EelCanvasItem *item);
  * grab.  Time is a proper X event time parameter.  Returns the same values as
  * XGrabPointer().
  */
-int eel_canvas_item_grab (EelCanvasItem *item, unsigned int event_mask,
-			  GdkCursor *cursor, guint32 etime);
+GdkGrabStatus eel_canvas_item_grab (EelCanvasItem *item,
+				    GdkEventMask event_mask,
+				    GdkCursor *cursor,
+				    guint32 etime);
 
 /* Ungrabs the mouse -- the specified item must be the same that was passed to
  * eel_canvas_item_grab().  Time is a proper X event time parameter.
