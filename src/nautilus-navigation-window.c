@@ -71,21 +71,9 @@
 #define DEBUG_FLAG NAUTILUS_DEBUG_WINDOW
 #include <libnautilus-private/nautilus-debug.h>
 
-/* FIXME bugzilla.gnome.org 41243: 
- * We should use inheritance instead of these special cases
- * for the desktop window.
- */
-#include "nautilus-desktop-window.h"
-
 #define MAX_TITLE_LENGTH 180
 
 #define MENU_PATH_BOOKMARKS_PLACEHOLDER			"/MenuBar/Other Menus/Bookmarks/Bookmarks Placeholder"
-
-enum {
-	ARG_0,
-	ARG_APP_ID,
-	ARG_APP
-};
 
 /* Forward and back buttons on the mouse */
 static gboolean mouse_extra_buttons = TRUE;
