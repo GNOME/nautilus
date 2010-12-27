@@ -118,7 +118,6 @@ typedef struct {
         void   (* sync_allow_stop) (NautilusWindow *window,
 				    NautilusWindowSlot *slot);
 	void   (* set_allow_up) (NautilusWindow *window, gboolean allow);
-	void   (* reload)              (NautilusWindow *window);
         void   (* prompt_for_location) (NautilusWindow *window, const char *initial);
         void   (* get_min_size) (NautilusWindow *window, guint *default_width, guint *default_height);
         void   (* get_default_size) (NautilusWindow *window, guint *default_width, guint *default_height);
@@ -132,7 +131,9 @@ typedef struct {
 						  NautilusWindowSlot *slot);
 
         /* Signals used only for keybindings */
-        gboolean (* go_up) (NautilusWindow *window, gboolean close);
+        gboolean (* go_up)  (NautilusWindow *window,
+                             gboolean close);
+	void     (* reload) (NautilusWindow *window);
 } NautilusWindowClass;
 
 struct NautilusWindow {
@@ -164,7 +165,6 @@ void             nautilus_window_prompt_for_location  (NautilusWindow    *window
                                                        const char        *initial);
 void             nautilus_window_display_error        (NautilusWindow    *window,
                                                        const char        *error_msg);
-void		 nautilus_window_reload		      (NautilusWindow	 *window);
 
 void             nautilus_window_allow_up             (NautilusWindow    *window, 
                                                        gboolean           allow);

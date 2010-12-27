@@ -1793,6 +1793,15 @@ nautilus_window_get_slots (NautilusWindow *window)
 }
 
 static void
+nautilus_window_reload (NautilusWindow *window)
+{
+	NautilusWindowSlot *active_slot;
+
+	active_slot = nautilus_window_get_active_slot (window);
+	nautilus_window_slot_reload (active_slot);
+}
+
+static void
 nautilus_window_class_init (NautilusWindowClass *class)
 {
 	GtkBindingSet *binding_set;

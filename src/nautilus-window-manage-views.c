@@ -2111,12 +2111,3 @@ nautilus_window_slot_reload (NautilusWindowSlot *slot)
 	g_object_unref (location);
 	g_list_free_full (selection, g_object_unref);
 }
-
-void
-nautilus_window_reload (NautilusWindow *window)
-{
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
-	nautilus_window_slot_reload (window->details->active_pane->active_slot);
-}
-
