@@ -1601,10 +1601,12 @@ button_data_file_changed (NautilusFile *file,
 	} else if (nautilus_file_is_gone (file)) {
 		gint idx, position;
 
-		/* if the current location is gone, don't do anything, as the view
+		/* if the current or a parent location are gone, don't do anything, as the view
 		 * will get the event too and call us back.
 		 */
-		if (nautilus_file_compare_location (file, current_button_data->file) != 0) {
+		current_location = nautilus_file_get_location (current_button_data->file);
+
+		if (g_file_has_prefix (location, current_location)) {
 			/* remove this and the following buttons */
 			position = g_list_position (path_bar->button_list,
 						    g_list_find (path_bar->button_list, button_data));
@@ -1617,6 +1619,7 @@ button_data_file_changed (NautilusFile *file,
 			}
 		}
 
+		g_object_unref (current_location);
 		g_object_unref (location);
 		return;
 	}
