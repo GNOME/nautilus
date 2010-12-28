@@ -32,10 +32,6 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
 
-static void nautilus_window_slot_init       (NautilusWindowSlot *slot);
-static void nautilus_window_slot_class_init (NautilusWindowSlotClass *class);
-static void nautilus_window_slot_dispose    (GObject *object);
-
 G_DEFINE_TYPE (NautilusWindowSlot, nautilus_window_slot, G_TYPE_OBJECT);
 #define parent_class nautilus_window_slot_parent_class
 
@@ -164,6 +160,61 @@ nautilus_window_slot_init (NautilusWindowSlot *slot)
 	gtk_widget_show (slot->view_box);
 
 	slot->title = g_strdup (_("Loading..."));
+}
+
+static void
+nautilus_window_slot_dispose (GObject *object)
+{
+	NautilusWindowSlot *slot;
+	GtkWidget *widget;
+
+	slot = NAUTILUS_WINDOW_SLOT (object);
+
+	if (slot->content_view) {
+		widget = nautilus_view_get_widget (slot->content_view);
+		gtk_widget_destroy (widget);
+		g_object_unref (slot->content_view);
+		slot->content_view = NULL;
+	}
+
+	if (slot->new_content_view) {
+		widget = nautilus_view_get_widget (slot->new_content_view);
+		gtk_widget_destroy (widget);
+		g_object_unref (slot->new_content_view);
+		slot->new_content_view = NULL;
+	}
+
+	nautilus_window_slot_set_viewed_file (slot, NULL);
+	/* TODO? why do we unref here? the file is NULL.
+	 * It was already here before the slot move, though */
+	nautilus_file_unref (slot->viewed_file);
+
+	if (slot->location) {
+		/* TODO? why do we ref here, instead of unreffing?
+		 * It was already here before the slot migration, though */
+		g_object_ref (slot->location);
+	}
+
+	g_list_free_full (slot->pending_selection, g_free);
+	slot->pending_selection = NULL;
+
+	g_clear_object (&slot->current_location_bookmark);
+	g_clear_object (&slot->last_location_bookmark);
+
+	if (slot->find_mount_cancellable != NULL) {
+		g_cancellable_cancel (slot->find_mount_cancellable);
+		slot->find_mount_cancellable = NULL;
+	}
+
+	slot->pane = NULL;
+
+	g_free (slot->title);
+	slot->title = NULL;
+
+	g_free (slot->status_text);
+	slot->status_text = NULL;
+
+	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 static void
@@ -527,63 +578,62 @@ nautilus_window_slot_get_current_view (NautilusWindowSlot *slot)
 	return NULL;
 }
 
-static void
-nautilus_window_slot_dispose (GObject *object)
+void
+nautilus_window_slot_go_home (NautilusWindowSlot *slot,
+			      gboolean new_tab)
+{			      
+	GFile *home;
+	NautilusWindowOpenFlags flags;
+
+	g_return_if_fail (NAUTILUS_IS_WINDOW_SLOT (slot));
+
+	if (new_tab) {
+		flags = NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
+	} else {
+		flags = 0;
+	}
+
+	home = g_file_new_for_path (g_get_home_dir ());
+	nautilus_window_slot_open_location_full (slot, home, 
+						 NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE, 
+						 flags, NULL, NULL, NULL);
+	g_object_unref (home);
+}
+
+void
+nautilus_window_slot_go_up (NautilusWindowSlot *slot,
+			    gboolean close_behind,
+			    gboolean new_tab)
 {
-	NautilusWindowSlot *slot;
-	GtkWidget *widget;
+	GFile *parent;
+	GList *selection;
+	NautilusWindowOpenFlags flags;
 
-	slot = NAUTILUS_WINDOW_SLOT (object);
+	if (slot->location == NULL) {
+		return;
+	}
+	
+	parent = g_file_get_parent (slot->location);
 
-	if (slot->content_view) {
-		widget = nautilus_view_get_widget (slot->content_view);
-		gtk_widget_destroy (widget);
-		g_object_unref (slot->content_view);
-		slot->content_view = NULL;
+	if (parent == NULL) {
+		return;
+	}
+	
+	selection = g_list_prepend (NULL, g_object_ref (slot->location));
+	
+	flags = 0;
+	if (close_behind) {
+		flags |= NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND;
+	}
+	if (new_tab) {
+		flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
 	}
 
-	if (slot->new_content_view) {
-		widget = nautilus_view_get_widget (slot->new_content_view);
-		gtk_widget_destroy (widget);
-		g_object_unref (slot->new_content_view);
-		slot->new_content_view = NULL;
-	}
+	nautilus_window_slot_open_location (slot, parent, 
+					    NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
+					    flags,
+					    selection);
 
-	nautilus_window_slot_set_viewed_file (slot, NULL);
-	/* TODO? why do we unref here? the file is NULL.
-	 * It was already here before the slot move, though */
-	nautilus_file_unref (slot->viewed_file);
-
-	if (slot->location) {
-		/* TODO? why do we ref here, instead of unreffing?
-		 * It was already here before the slot migration, though */
-		g_object_ref (slot->location);
-	}
-
-	g_list_free_full (slot->pending_selection, g_free);
-	slot->pending_selection = NULL;
-
-	if (slot->current_location_bookmark != NULL) {
-		g_object_unref (slot->current_location_bookmark);
-		slot->current_location_bookmark = NULL;
-	}
-	if (slot->last_location_bookmark != NULL) {
-		g_object_unref (slot->last_location_bookmark);
-		slot->last_location_bookmark = NULL;
-	}
-
-	if (slot->find_mount_cancellable != NULL) {
-		g_cancellable_cancel (slot->find_mount_cancellable);
-		slot->find_mount_cancellable = NULL;
-	}
-
-	slot->pane = NULL;
-
-	g_free (slot->title);
-	slot->title = NULL;
-
-	g_free (slot->status_text);
-	slot->status_text = NULL;
-
-	G_OBJECT_CLASS (parent_class)->dispose (object);
+	g_object_unref (parent);
+	g_list_free_full (selection, g_object_unref);
 }

@@ -632,67 +632,6 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 	}
 }
 
-void
-nautilus_window_slot_go_home (NautilusWindowSlot *slot,
-			      gboolean new_tab)
-{			      
-	GFile *home;
-	NautilusWindowOpenFlags flags;
-
-	g_return_if_fail (NAUTILUS_IS_WINDOW_SLOT (slot));
-
-	if (new_tab) {
-		flags = NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
-	} else {
-		flags = 0;
-	}
-
-	home = g_file_new_for_path (g_get_home_dir ());
-	nautilus_window_slot_open_location_full (slot, home, 
-						 NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE, 
-						 flags, NULL, NULL, NULL);
-	g_object_unref (home);
-}
-
-void
-nautilus_window_slot_go_up (NautilusWindowSlot *slot,
-			    gboolean close_behind,
-			    gboolean new_tab)
-{
-	GFile *parent;
-	GList *selection;
-	NautilusWindowOpenFlags flags;
-
-	if (slot->location == NULL) {
-		return;
-	}
-	
-	parent = g_file_get_parent (slot->location);
-
-	if (parent == NULL) {
-		return;
-	}
-	
-	selection = g_list_prepend (NULL, g_object_ref (slot->location));
-	
-	flags = 0;
-	if (close_behind) {
-		flags |= NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND;
-	}
-	if (new_tab) {
-		flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
-	}
-
-	nautilus_window_slot_open_location (slot, parent, 
-					    NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
-					    flags,
-					    selection);
-	
-	g_object_unref (parent);
-
-	g_list_free_full (selection, g_object_unref);
-}
-
 static char *
 nautilus_window_slot_get_view_error_label (NautilusWindowSlot *slot)
 {
