@@ -96,9 +96,6 @@ main (int argc, char *argv[])
 	xmp_init();
 #endif
 
-	/* Initialize the services that we use. */
-	LIBXML_TEST_VERSION
-
 	/* Run the nautilus application. */
 	application = nautilus_application_dup_singleton ();
 
