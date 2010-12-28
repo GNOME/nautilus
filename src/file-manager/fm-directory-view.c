@@ -5824,7 +5824,7 @@ move_copy_selection_to_next_pane (FMDirectoryView *view,
 	slot = nautilus_window_get_extra_slot (fm_directory_view_get_nautilus_window (view));
 	g_return_if_fail (slot != NULL);
 
-	dest_location = nautilus_window_slot_get_current_location (slot);
+	dest_location = nautilus_window_slot_get_current_uri (slot);
 	g_return_if_fail (dest_location != NULL);
 
 	move_copy_selection_to_location (view, copy_action, dest_location);
@@ -5852,7 +5852,7 @@ action_move_to_next_pane_callback (GtkAction *action, gpointer callback_data)
 	slot = nautilus_window_get_extra_slot (fm_directory_view_get_nautilus_window (view));
 	g_return_if_fail (slot != NULL);
 
-	dest_location = nautilus_window_slot_get_current_location (slot);
+	dest_location = nautilus_window_slot_get_current_uri (slot);
 	g_return_if_fail (dest_location != NULL);
 
 	move_copy_selection_to_location (view, GDK_ACTION_MOVE, dest_location);

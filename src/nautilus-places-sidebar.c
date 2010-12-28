@@ -456,7 +456,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 	sidebar->bookmarks_header_added = FALSE;
 
 	slot = nautilus_window_get_active_slot (sidebar->window);
-	location = nautilus_window_slot_get_current_location (slot);
+	location = nautilus_window_slot_get_current_uri (slot);
 
 	volume_monitor = sidebar->volume_monitor;
 
@@ -3195,7 +3195,7 @@ nautilus_places_sidebar_set_parent_window (NautilusPlacesSidebar *sidebar,
 	slot = nautilus_window_get_active_slot (window);
 
 	sidebar->bookmarks = nautilus_bookmark_list_new ();
-	sidebar->uri = nautilus_window_slot_get_current_location (slot);
+	sidebar->uri = nautilus_window_slot_get_current_uri (slot);
 
 	g_signal_connect_object (sidebar->bookmarks, "contents_changed",
 				 G_CALLBACK (update_places),

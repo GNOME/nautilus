@@ -499,9 +499,9 @@ nautilus_window_slot_add_current_location_to_history_list (NautilusWindowSlot *s
 	}
 }
 
-/* returns either the pending or the actual current location - used by side panes. */
+/* returns either the pending or the actual current uri */
 char *
-nautilus_window_slot_get_current_location (NautilusWindowSlot *slot)
+nautilus_window_slot_get_current_uri (NautilusWindowSlot *slot)
 {
 	if (slot->pending_location != NULL) {
 		return g_file_get_uri (slot->pending_location);

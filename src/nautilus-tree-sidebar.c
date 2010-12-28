@@ -1394,7 +1394,7 @@ create_tree (FMTreeView *view)
 			  view);
 
 	slot = nautilus_window_get_active_slot (view->details->window);
-	location = nautilus_window_slot_get_current_location (slot);
+	location = nautilus_window_slot_get_current_uri (slot);
 	schedule_select_and_show_location (view, location);
 	g_free (location);
 }
@@ -1602,7 +1602,7 @@ fm_tree_view_set_parent_window (FMTreeView *sidebar,
 
 	g_signal_connect_object (window, "loading_uri",
 				 G_CALLBACK (loading_uri_callback), sidebar, 0);
-	location = nautilus_window_slot_get_current_location (slot);
+	location = nautilus_window_slot_get_current_uri (slot);
 	loading_uri_callback (window, location, sidebar);
 	g_free (location);
 

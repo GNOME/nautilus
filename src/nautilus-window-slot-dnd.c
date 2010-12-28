@@ -92,7 +92,7 @@ slot_proxy_drag_motion (GtkWidget          *widget,
     }
 
     if (target_slot != NULL) {
-      target_uri = nautilus_window_slot_get_current_location (target_slot);
+      target_uri = nautilus_window_slot_get_current_uri (target_slot);
     }
   }
 
@@ -225,7 +225,7 @@ slot_proxy_handle_drop (GtkWidget                *widget,
   if (drag_info->target_location != NULL) {
     target_uri = g_file_get_uri (drag_info->target_location);
   } else if (target_slot != NULL) {
-    target_uri = nautilus_window_slot_get_current_location (target_slot);
+    target_uri = nautilus_window_slot_get_current_uri (target_slot);
   }
 
   target_view = NULL;
