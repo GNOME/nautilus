@@ -105,16 +105,6 @@ static void load_new_location                         (NautilusWindowSlot       
 static void location_has_really_changed               (NautilusWindowSlot         *slot);
 static void update_for_new_location                   (NautilusWindowSlot         *slot);
 
-void
-nautilus_window_report_selection_changed (NautilusWindow *window)
-{
-	if (window->details->temporarily_ignore_view_signals) {
-		return;
-	}
-
-	g_signal_emit_by_name (window, "selection_changed");
-}
-
 /* set_displayed_location:
  */
 static void
@@ -1425,12 +1415,13 @@ nautilus_window_slot_show_x_content_bar (NautilusWindowSlot *slot, GMount *mount
 }
 
 static void
-nautilus_window_slot_show_trash_bar (NautilusWindowSlot *slot,
-				     NautilusWindow *window)
+nautilus_window_slot_show_trash_bar (NautilusWindowSlot *slot)
 {
 	GtkWidget *bar;
+	NautilusView *view;
 
-	bar = nautilus_trash_bar_new (window);
+	view = nautilus_window_slot_get_current_view (slot);
+	bar = nautilus_trash_bar_new (view);
 	gtk_widget_show (bar);
 
 	nautilus_window_slot_add_extra_location_widget (slot, bar);
@@ -1565,7 +1556,7 @@ update_for_new_location (NautilusWindowSlot *slot)
 		nautilus_window_slot_update_query_editor (slot);
 
 		if (nautilus_directory_is_in_trash (directory)) {
-			nautilus_window_slot_show_trash_bar (slot, window);
+			nautilus_window_slot_show_trash_bar (slot);
 		}
 
 		/* need the mount to determine if we should put up the x-content cluebar */

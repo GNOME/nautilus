@@ -137,6 +137,7 @@ enum {
 	MOVE_COPY_ITEMS,
 	REMOVE_FILE,
 	ZOOM_LEVEL_CHANGED,
+	SELECTION_CHANGED,
 	TRASH,
 	DELETE,
 	LAST_SIGNAL
@@ -2313,7 +2314,7 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 void
 fm_directory_view_send_selection_change (FMDirectoryView *view)
 {
-	nautilus_window_report_selection_changed (view->details->window);
+	g_signal_emit (view, signals[SELECTION_CHANGED], 0);
 
 	view->details->send_selection_change_to_shell = FALSE;
 }
@@ -10705,6 +10706,14 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 			      G_TYPE_FROM_CLASS (klass),
 			      G_SIGNAL_RUN_LAST,
 			      0, NULL, NULL,
+			      g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE, 0);
+	signals[SELECTION_CHANGED] =
+		g_signal_new ("selection-changed",
+			      G_TYPE_FROM_CLASS (klass),
+			      G_SIGNAL_RUN_LAST,
+			      0,
+			      NULL, NULL,
 			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
 

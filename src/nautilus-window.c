@@ -91,7 +91,6 @@ enum {
 	ZOOM_CHANGED,
 	VIEW_AS_CHANGED,
 	LOADING_URI,
-	SELECTION_CHANGED,
 	HIDDEN_FILES_MODE_CHANGED,
 	LAST_SIGNAL
 };
@@ -1686,37 +1685,6 @@ nautilus_window_get_window_type (NautilusWindow *window)
 	return NAUTILUS_WINDOW_GET_CLASS (window)->window_type;
 }
 
-int
-nautilus_window_get_selection_count (NautilusWindow *window)
-{
-	NautilusWindowSlot *slot;
- 
-	g_assert (NAUTILUS_IS_WINDOW (window));
- 
-	slot = window->details->active_pane->active_slot;
- 
-	if (slot->content_view != NULL) {
-		return nautilus_view_get_selection_count (slot->content_view);
-	}
-
-	return 0;
-}
-
-GList *
-nautilus_window_get_selection (NautilusWindow *window)
-{
-	NautilusWindowSlot *slot;
-
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
-	slot = window->details->active_pane->active_slot;
-
-	if (slot->content_view != NULL) {
-		return nautilus_view_get_selection (slot->content_view);
-	}
-	return NULL;
-}
-
 NautilusWindowShowHiddenFilesMode
 nautilus_window_get_hidden_files_mode (NautilusWindow *window)
 {
@@ -1890,15 +1858,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
 			      g_cclosure_marshal_VOID__STRING,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_STRING);
-
-	signals[SELECTION_CHANGED] =
-		g_signal_new ("selection_changed",
-			      G_TYPE_FROM_CLASS (class),
-			      G_SIGNAL_RUN_LAST,
-			      0,
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__VOID,
-			      G_TYPE_NONE, 0);
 
 	binding_set = gtk_binding_set_by_class (class);
 	gtk_binding_entry_add_signal (binding_set, GDK_KEY_BackSpace, 0,

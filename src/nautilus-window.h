@@ -148,7 +148,6 @@ void             nautilus_window_allow_up             (NautilusWindow    *window
 GtkUIManager *   nautilus_window_get_ui_manager       (NautilusWindow    *window);
 
 
-void                 nautilus_window_report_selection_changed (NautilusWindow *window);
 void                 nautilus_window_report_load_complete     (NautilusWindow *window,
                                                                NautilusView *view);
 
@@ -167,7 +166,5 @@ void                 nautilus_window_set_initiated_unmount (NautilusWindow *wind
 NautilusWindowSlot * nautilus_window_get_active_slot       (NautilusWindow *window);
 void                 nautilus_window_push_status           (NautilusWindow *window,
                                                             const char *text);
-int                  nautilus_window_get_selection_count   (NautilusWindow *window);
-GList *              nautilus_window_get_selection         (NautilusWindow *window);
 
 #endif

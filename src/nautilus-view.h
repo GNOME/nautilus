@@ -56,6 +56,7 @@ typedef FMDirectoryView NautilusView;
 #define FM_DIRECTORY_VIEW_GET_CLASS(obj) \
   (G_TYPE_INSTANCE_GET_CLASS ((obj), FM_TYPE_DIRECTORY_VIEW, FMDirectoryViewClass))
 
+#define NAUTILUS_TYPE_VIEW FM_TYPE_DIRECTORY_VIEW
 #define NAUTILUS_VIEW(obj) FM_DIRECTORY_VIEW(obj)
 #define NAUTILUS_IS_VIEW(obj) FM_IS_DIRECTORY_VIEW(obj)
 

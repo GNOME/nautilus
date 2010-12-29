@@ -27,7 +27,7 @@
 
 #include "nautilus-trash-bar.h"
 
-#include "nautilus-window.h"
+#include "nautilus-view.h"
 #include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file.h>
@@ -37,7 +37,7 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE ((o), NAUTILUS_TYPE_TRASH_BAR, NautilusTrashBarPrivate))
 
 enum {
-	PROP_WINDOW = 1,
+	PROP_VIEW = 1,
 	NUM_PROPERTIES
 };
 
@@ -46,7 +46,7 @@ struct NautilusTrashBarPrivate
 	GtkWidget *empty_button;
 	GtkWidget *restore_button;
 
-	NautilusWindow *window;
+	NautilusView *view;
 	gulong selection_handler_id;
 };
 
@@ -58,7 +58,7 @@ restore_button_clicked_cb (GtkWidget *button,
 {
 	GList *locations, *files, *l;
 
-	locations = nautilus_window_get_selection (bar->priv->window);
+	locations = nautilus_view_get_selection (bar->priv->view);
 	files = NULL;
 
 	for (l = locations; l != NULL; l = l->next) {
@@ -72,24 +72,24 @@ restore_button_clicked_cb (GtkWidget *button,
 }
 
 static void
-selection_changed_cb (NautilusWindow *window,
+selection_changed_cb (NautilusView *view,
 		      NautilusTrashBar *bar)
 {
 	int count;
 
-	count = nautilus_window_get_selection_count (window);
+	count = nautilus_view_get_selection_count (view);
 
 	gtk_widget_set_sensitive (bar->priv->restore_button, (count > 0));
 }
 
 static void
-connect_window_and_update_button (NautilusTrashBar *bar)
+connect_view_and_update_button (NautilusTrashBar *bar)
 {
 	bar->priv->selection_handler_id =
-		g_signal_connect (bar->priv->window, "selection_changed",
+		g_signal_connect (bar->priv->view, "selection-changed",
 				  G_CALLBACK (selection_changed_cb), bar);
 
-	selection_changed_cb (bar->priv->window, bar);
+	selection_changed_cb (bar->priv->view, bar);
 }
 
 static void
@@ -103,9 +103,9 @@ nautilus_trash_bar_set_property (GObject      *object,
 	bar = NAUTILUS_TRASH_BAR (object);
 
 	switch (prop_id) {
-	case PROP_WINDOW:
-		bar->priv->window = g_value_get_object (value);
-		connect_window_and_update_button (bar);
+	case PROP_VIEW:
+		bar->priv->view = g_value_get_object (value);
+		connect_view_and_update_button (bar);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -121,7 +121,7 @@ nautilus_trash_bar_finalize (GObject *obj)
 	bar = NAUTILUS_TRASH_BAR (obj);
 
 	if (bar->priv->selection_handler_id) {
-		g_signal_handler_disconnect (bar->priv->window, bar->priv->selection_handler_id);
+		g_signal_handler_disconnect (bar->priv->view, bar->priv->selection_handler_id);
 	}
 
 	G_OBJECT_CLASS (nautilus_trash_bar_parent_class)->finalize (obj);
@@ -151,11 +151,11 @@ nautilus_trash_bar_class_init (NautilusTrashBarClass *klass)
 	object_class->finalize = nautilus_trash_bar_finalize;
 
 	g_object_class_install_property (object_class,
-					 PROP_WINDOW,
-					 g_param_spec_object ("window",
-							      "window",
-							      "the NautilusWindow",
-							      NAUTILUS_TYPE_WINDOW,
+					 PROP_VIEW,
+					 g_param_spec_object ("view",
+							      "view",
+							      "the NautilusView",
+							      NAUTILUS_TYPE_VIEW,
 							      G_PARAM_WRITABLE |
 							      G_PARAM_CONSTRUCT_ONLY |
 							      G_PARAM_STATIC_STRINGS));
@@ -222,11 +222,11 @@ nautilus_trash_bar_init (NautilusTrashBar *bar)
 }
 
 GtkWidget *
-nautilus_trash_bar_new (NautilusWindow *window)
+nautilus_trash_bar_new (NautilusView *view)
 {
 	GObject *bar;
 
-	bar = g_object_new (NAUTILUS_TYPE_TRASH_BAR, "window", window, NULL);
+	bar = g_object_new (NAUTILUS_TYPE_TRASH_BAR, "view", view, NULL);
 
 	return GTK_WIDGET (bar);
 }
