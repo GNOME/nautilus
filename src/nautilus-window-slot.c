@@ -284,16 +284,7 @@ nautilus_window_slot_get_title (NautilusWindowSlot *slot)
 
 	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
 
-	title = NULL;
-	if (slot->new_content_view != NULL) {
-		title = nautilus_view_get_title (slot->new_content_view);
-	} else if (slot->content_view != NULL) {
-		title = nautilus_view_get_title (slot->content_view);
-	}
-
-	if (title == NULL) {
-		title = nautilus_compute_title_for_location (slot->location);
-	}
+	title = nautilus_compute_title_for_location (slot->location);
 
 	return title;
 }
@@ -555,6 +546,7 @@ char *
 nautilus_window_slot_get_current_uri (NautilusWindowSlot *slot)
 {
 	if (slot->pending_location != NULL) {
+		g_print ("returning pending\n");
 		return g_file_get_uri (slot->pending_location);
 	}
 

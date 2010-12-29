@@ -35,13 +35,14 @@
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-icon-container.h>
 #include <libnautilus-private/nautilus-link.h>
-#include <libnautilus-private/nautilus-view.h>
-
-#include "nautilus-window.h"
-#include "nautilus-window-slot.h"
 
 typedef struct FMDirectoryView FMDirectoryView;
 typedef struct FMDirectoryViewClass FMDirectoryViewClass;
+
+typedef FMDirectoryView NautilusView;
+
+#include "nautilus-window.h"
+#include "nautilus-window-slot.h"
 
 #define FM_TYPE_DIRECTORY_VIEW fm_directory_view_get_type()
 #define FM_DIRECTORY_VIEW(obj) \
@@ -54,6 +55,9 @@ typedef struct FMDirectoryViewClass FMDirectoryViewClass;
   (G_TYPE_CHECK_CLASS_TYPE ((klass), FM_TYPE_DIRECTORY_VIEW))
 #define FM_DIRECTORY_VIEW_GET_CLASS(obj) \
   (G_TYPE_INSTANCE_GET_CLASS ((obj), FM_TYPE_DIRECTORY_VIEW, FMDirectoryViewClass))
+
+#define NAUTILUS_VIEW(obj) FM_DIRECTORY_VIEW(obj)
+#define NAUTILUS_IS_VIEW(obj) FM_IS_DIRECTORY_VIEW(obj)
 
 typedef struct FMDirectoryViewDetails FMDirectoryViewDetails;
 
@@ -212,11 +216,6 @@ struct FMDirectoryViewClass {
          */
         void     (* reveal_selection)	 	(FMDirectoryView *view);
 
-        /* get_background is a function pointer that subclasses must
-         * override to return the EelBackground for this view.
-         */
-        GtkWidget * (* get_background_widget)	(FMDirectoryView *view);
-
         /* merge_menus is a function pointer that subclasses can override to
          * add their own menu items to the window's menu bar.
          * If overridden, subclasses must call parent class's function.
@@ -331,6 +330,16 @@ struct FMDirectoryViewClass {
 	void    (* set_is_active)                  (FMDirectoryView *view,
 						    gboolean         is_active);
 
+	/* Get the id string for this view. Its a constant string, not memory managed */
+	const char *   (* get_view_id)            (NautilusView          *view);
+
+	/* Return the uri of the first visible file */	
+	char *         (* get_first_visible_file) (NautilusView          *view);
+	/* Scroll the view so that the file specified by the uri is at the top
+	   of the view */
+	void           (* scroll_to_file)	  (NautilusView          *view,
+						   const char            *uri);
+
         /* Signals used only for keybindings */
         gboolean (* trash)                         (FMDirectoryView *view);
         gboolean (* delete)                        (FMDirectoryView *view);
@@ -351,17 +360,7 @@ void                fm_directory_view_display_selection_info           (FMDirect
 GList *             fm_directory_view_get_selection                    (FMDirectoryView  *view);
 GList *             fm_directory_view_get_selection_for_file_transfer  (FMDirectoryView  *view);
 void                fm_directory_view_invert_selection                 (FMDirectoryView  *view);
-void                fm_directory_view_stop                             (FMDirectoryView  *view);
 guint               fm_directory_view_get_item_count                   (FMDirectoryView  *view);
-gboolean            fm_directory_view_can_zoom_in                      (FMDirectoryView  *view);
-gboolean            fm_directory_view_can_zoom_out                     (FMDirectoryView  *view);
-GtkWidget *         fm_directory_view_get_background_widget            (FMDirectoryView  *view);
-void                fm_directory_view_bump_zoom_level                  (FMDirectoryView  *view,
-									int               zoom_increment);
-void                fm_directory_view_zoom_to_level                    (FMDirectoryView  *view,
-									NautilusZoomLevel zoom_level);
-NautilusZoomLevel   fm_directory_view_get_zoom_level                   (FMDirectoryView  *view);
-void                fm_directory_view_restore_default_zoom_level       (FMDirectoryView  *view);
 void                fm_directory_view_reset_to_defaults                (FMDirectoryView  *view);
 void                fm_directory_view_select_all                       (FMDirectoryView  *view);
 void                fm_directory_view_set_selection                    (FMDirectoryView  *view,
@@ -373,7 +372,6 @@ gboolean            fm_directory_view_is_read_only                     (FMDirect
 gboolean            fm_directory_view_supports_creating_files          (FMDirectoryView  *view);
 gboolean            fm_directory_view_accepts_dragged_files            (FMDirectoryView  *view);
 gboolean            fm_directory_view_supports_properties              (FMDirectoryView  *view);
-gboolean            fm_directory_view_supports_zooming                 (FMDirectoryView  *view);
 gboolean            fm_directory_view_using_manual_layout              (FMDirectoryView  *view);
 void                fm_directory_view_move_copy_items                  (const GList      *item_uris,
 									GArray           *relative_item_points,
@@ -423,14 +421,10 @@ void                fm_directory_view_pop_up_background_context_menu   (FMDirect
 									GdkEventButton   *event);
 void                fm_directory_view_pop_up_selection_context_menu    (FMDirectoryView  *view,
 									GdkEventButton   *event); 
-void                fm_directory_view_pop_up_location_context_menu     (FMDirectoryView  *view,
-									GdkEventButton   *event,
-									const char       *location); 
 void                fm_directory_view_send_selection_change            (FMDirectoryView *view);
 gboolean            fm_directory_view_should_show_file                 (FMDirectoryView  *view,
 									NautilusFile     *file);
 gboolean	    fm_directory_view_should_sort_directories_first    (FMDirectoryView  *view);
-void                fm_directory_view_update_menus                     (FMDirectoryView  *view);
 void                fm_directory_view_new_folder                       (FMDirectoryView  *view);
 void                fm_directory_view_new_file                         (FMDirectoryView  *view,
 									const char       *parent_uri,
@@ -438,7 +432,6 @@ void                fm_directory_view_new_file                         (FMDirect
 void                fm_directory_view_ignore_hidden_file_preferences   (FMDirectoryView  *view);
 void                fm_directory_view_set_show_foreign                 (FMDirectoryView  *view,
 		                                                        gboolean          show_foreign);
-void                fm_directory_view_init_view_iface                  (NautilusViewIface *iface);
 gboolean            fm_directory_view_handle_scroll_event              (FMDirectoryView  *view,
 									GdkEventScroll   *event);
 void                fm_directory_view_handle_netscape_url_drop         (FMDirectoryView  *view,
@@ -480,5 +473,47 @@ void		    fm_directory_view_set_initiated_unmount	      (FMDirectoryView *view,
 
 /* operations affecting two directory views */
 void                fm_directory_view_move_copy_items_between_views   (FMDirectoryView *source, FMDirectoryView *target, gboolean copy);
+
+
+/* NautilusView methods */
+const char *      nautilus_view_get_view_id                (NautilusView      *view);
+GtkWidget *       nautilus_view_get_widget                 (NautilusView      *view);
+void              nautilus_view_load_location              (NautilusView      *view,
+							    const char        *location_uri);
+void              nautilus_view_stop_loading               (NautilusView      *view);
+int               nautilus_view_get_selection_count        (NautilusView      *view);
+GList *           nautilus_view_get_selection              (NautilusView      *view);
+void              nautilus_view_set_selection              (NautilusView      *view,
+							    GList             *list);
+void              nautilus_view_invert_selection           (NautilusView      *view);
+char *            nautilus_view_get_first_visible_file     (NautilusView      *view);
+void              nautilus_view_scroll_to_file             (NautilusView      *view,
+							    const char        *uri);
+char *            nautilus_view_get_title                  (NautilusView      *view);
+gboolean          nautilus_view_supports_zooming           (NautilusView      *view);
+void              nautilus_view_bump_zoom_level            (NautilusView      *view,
+							    int                zoom_increment);
+void              nautilus_view_zoom_to_level              (NautilusView      *view,
+							    NautilusZoomLevel  level);
+void              nautilus_view_restore_default_zoom_level (NautilusView      *view);
+gboolean          nautilus_view_can_zoom_in                (NautilusView      *view);
+gboolean          nautilus_view_can_zoom_out               (NautilusView      *view);
+NautilusZoomLevel nautilus_view_get_zoom_level             (NautilusView      *view);
+void              nautilus_view_pop_up_location_context_menu (NautilusView    *view,
+							      GdkEventButton  *event,
+							      const char      *location);
+void              nautilus_view_grab_focus                 (NautilusView      *view);
+void              nautilus_view_update_menus               (NautilusView      *view);
+void              nautilus_view_drop_proxy_received_uris   (NautilusView         *view,
+							    const GList          *uris,
+							    const char           *target_location,
+							    GdkDragAction         action);
+void              nautilus_view_drop_proxy_received_netscape_url (NautilusView         *view,
+								  const char           *source_url,
+								  const char           *target_location,
+								  GdkDragAction         action);
+void              nautilus_view_set_is_active              (NautilusView      *view,
+							    gboolean           is_active);
+
 
 #endif /* FM_DIRECTORY_VIEW_H */

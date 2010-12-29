@@ -29,7 +29,6 @@
 
 #include "nautilus-program-choosing.h"
 #include "nautilus-link.h"
-#include "nautilus-view.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-string.h>

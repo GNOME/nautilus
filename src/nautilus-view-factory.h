@@ -27,9 +27,9 @@
 
 #include <string.h>
 
-#include <libnautilus-private/nautilus-view.h>
 #include <gio/gio.h>
 
+#include "nautilus-view.h"
 #include "nautilus-window-slot.h"
 
 G_BEGIN_DECLS

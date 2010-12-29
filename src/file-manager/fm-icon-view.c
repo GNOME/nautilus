@@ -190,11 +190,7 @@ static void default_zoom_level_changed_callback            (gpointer callback_da
 static void labels_beside_icons_changed_callback           (gpointer callback_data);
 static void all_columns_same_width_changed_callback	   (gpointer callback_data);
 
-static void fm_icon_view_iface_init (NautilusViewIface *iface);
-
-G_DEFINE_TYPE_WITH_CODE (FMIconView, fm_icon_view, FM_TYPE_DIRECTORY_VIEW, 
-			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_VIEW,
-						fm_icon_view_iface_init));
+G_DEFINE_TYPE (FMIconView, fm_icon_view, FM_TYPE_DIRECTORY_VIEW);
 
 static void
 fm_icon_view_destroy (GtkWidget *object)
@@ -1219,7 +1215,7 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	preview_audio (icon_view, NULL, FALSE);
 
 	/* Set up the zoom level from the metadata. */
-	if (fm_directory_view_supports_zooming (FM_DIRECTORY_VIEW (icon_view))) {
+	if (nautilus_view_supports_zooming (NAUTILUS_VIEW (icon_view))) {
 		if (icon_view->details->compact) {
 			level = nautilus_file_get_integer_metadata
 				(file, 
@@ -1350,7 +1346,7 @@ fm_icon_view_set_zoom_level (FMIconView *view,
 	g_signal_emit_by_name (view, "zoom_level_changed");
 	
 	if (fm_directory_view_get_active (FM_DIRECTORY_VIEW (view))) {
-		fm_directory_view_update_menus (FM_DIRECTORY_VIEW (view));
+		nautilus_view_update_menus (NAUTILUS_VIEW (view));
 	}
 }
 
@@ -1367,7 +1363,7 @@ fm_icon_view_bump_zoom_level (FMDirectoryView *view, int zoom_increment)
 
 	if (new_level >= NAUTILUS_ZOOM_LEVEL_SMALLEST &&
 	    new_level <= NAUTILUS_ZOOM_LEVEL_LARGEST) {
-		fm_directory_view_zoom_to_level (view, new_level);
+		nautilus_view_zoom_to_level (view, new_level);
 	}
 }
 
@@ -1391,7 +1387,7 @@ fm_icon_view_restore_default_zoom_level (FMDirectoryView *view)
 	g_return_if_fail (FM_IS_ICON_VIEW (view));
 
 	icon_view = FM_ICON_VIEW (view);
-	fm_directory_view_zoom_to_level
+	nautilus_view_zoom_to_level
 		(view, get_default_zoom_level (icon_view));
 }
 
@@ -2381,7 +2377,7 @@ fm_icon_view_react_to_icon_change_idle_callback (gpointer data)
 	/* Rebuild the menus since some of them (e.g. Restore Stretched Icons)
 	 * may be different now.
 	 */
-	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (icon_view));
+	nautilus_view_update_menus (FM_DIRECTORY_VIEW (icon_view));
 
         /* Don't call this again (unless rescheduled) */
         return FALSE;
@@ -2590,7 +2586,7 @@ default_zoom_level_changed_callback (gpointer callback_data)
 
 	icon_view = FM_ICON_VIEW (callback_data);
 
-	if (fm_directory_view_supports_zooming (FM_DIRECTORY_VIEW (icon_view))) {
+	if (nautilus_view_supports_zooming (FM_DIRECTORY_VIEW (icon_view))) {
 		file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (icon_view));
 
 		if (fm_icon_view_is_compact (icon_view)) {
@@ -2602,7 +2598,7 @@ default_zoom_level_changed_callback (gpointer callback_data)
 								    NAUTILUS_METADATA_KEY_ICON_VIEW_ZOOM_LEVEL, 
 								    get_default_zoom_level (icon_view));
 		}
-		fm_directory_view_zoom_to_level (FM_DIRECTORY_VIEW (icon_view), level);
+		nautilus_view_zoom_to_level (FM_DIRECTORY_VIEW (icon_view), level);
 	}
 }
 
@@ -2809,10 +2805,10 @@ create_icon_container (FMIconView *icon_view)
 	g_signal_connect_object (icon_container, "renaming_icon",
 				 G_CALLBACK (renaming_icon_callback), icon_view, 0);
 	g_signal_connect_object (icon_container, "icon_stretch_started",
-				 G_CALLBACK (fm_directory_view_update_menus), icon_view,
+				 G_CALLBACK (nautilus_view_update_menus), icon_view,
 				 G_CONNECT_SWAPPED);
 	g_signal_connect_object (icon_container, "icon_stretch_ended",
-				 G_CALLBACK (fm_directory_view_update_menus), icon_view,
+				 G_CALLBACK (nautilus_view_update_menus), icon_view,
 				 G_CONNECT_SWAPPED);
 
 	g_signal_connect_object (icon_container, "get_stored_layout_timestamp",
@@ -2905,6 +2901,20 @@ icon_view_scroll_to_file (NautilusView *view,
 	}
 }
 
+static const char *
+fm_icon_view_get_id (NautilusView *view)
+{
+	if (FM_IS_DESKTOP_ICON_VIEW (view)) {
+		return FM_DESKTOP_ICON_VIEW_ID;
+	}
+
+	if (fm_icon_view_is_compact (FM_ICON_VIEW (view))) {
+		return FM_COMPACT_VIEW_ID;
+	}
+
+	return FM_ICON_VIEW_ID;
+}
+
 static void
 fm_icon_view_set_property (GObject         *object,
 			   guint            prop_id,
@@ -2988,6 +2998,9 @@ fm_icon_view_class_init (FMIconViewClass *klass)
         fm_directory_view_class->update_menus = fm_icon_view_update_menus;
 	fm_directory_view_class->using_manual_layout = fm_icon_view_using_manual_layout;
 	fm_directory_view_class->widget_to_file_operation_position = fm_icon_view_widget_to_file_operation_position;
+	fm_directory_view_class->get_view_id = fm_icon_view_get_id;
+	fm_directory_view_class->get_first_visible_file = icon_view_get_first_visible_file;
+	fm_directory_view_class->scroll_to_file = icon_view_scroll_to_file;
 
 	klass->clean_up = fm_icon_view_real_clean_up;
 	klass->supports_auto_layout = real_supports_auto_layout;
@@ -3013,31 +3026,6 @@ fm_icon_view_class_init (FMIconViewClass *klass)
 							       G_PARAM_WRITABLE |
 							       G_PARAM_CONSTRUCT_ONLY));
 
-}
-
-static const char *
-fm_icon_view_get_id (NautilusView *view)
-{
-	if (FM_IS_DESKTOP_ICON_VIEW (view)) {
-		return FM_DESKTOP_ICON_VIEW_ID;
-	}
-
-	if (fm_icon_view_is_compact (FM_ICON_VIEW (view))) {
-		return FM_COMPACT_VIEW_ID;
-	}
-
-	return FM_ICON_VIEW_ID;
-}
-
-static void
-fm_icon_view_iface_init (NautilusViewIface *iface)
-{
-	fm_directory_view_init_view_iface (iface);
-
-	iface->get_view_id = fm_icon_view_get_id;
-	iface->get_first_visible_file = icon_view_get_first_visible_file;
-	iface->scroll_to_file = icon_view_scroll_to_file;
-	iface->get_title = NULL;
 }
 
 static void

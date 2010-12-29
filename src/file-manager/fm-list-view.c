@@ -148,16 +148,13 @@ static void   fm_list_view_scale_font_size                 (FMListView        *v
 							    NautilusZoomLevel  new_level);
 static void   fm_list_view_scroll_to_file                  (FMListView        *view,
 							    NautilusFile      *file);
-static void   fm_list_view_iface_init                      (NautilusViewIface *iface);
 static void   fm_list_view_rename_callback                 (NautilusFile      *file,
 							    GFile             *result_location,
 							    GError            *error,
 							    gpointer           callback_data);
 
 
-G_DEFINE_TYPE_WITH_CODE (FMListView, fm_list_view, FM_TYPE_DIRECTORY_VIEW, 
-			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_VIEW,
-						fm_list_view_iface_init));
+G_DEFINE_TYPE (FMListView, fm_list_view, FM_TYPE_DIRECTORY_VIEW);
 
 static const char * default_trash_visible_columns[] = {
 	"name", "size", "type", "trashed_on", "trash_orig_path", NULL
@@ -1871,7 +1868,7 @@ set_zoom_level_from_metadata_and_preferences (FMListView *list_view)
 	NautilusFile *file;
 	int level;
 
-	if (fm_directory_view_supports_zooming (FM_DIRECTORY_VIEW (list_view))) {
+	if (nautilus_view_supports_zooming (FM_DIRECTORY_VIEW (list_view))) {
 		file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (list_view));
 		level = nautilus_file_get_integer_metadata (file,
 							    NAUTILUS_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL, 
@@ -2604,7 +2601,7 @@ fm_list_view_set_zoom_level (FMListView *view,
 	gtk_cell_renderer_set_fixed_size (GTK_CELL_RENDERER (view->details->pixbuf_cell),
 					  -1, icon_size);
 
-	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (view));
+	nautilus_view_update_menus (FM_DIRECTORY_VIEW (view));
 }
 
 static void
@@ -3039,6 +3036,12 @@ real_set_is_active (FMDirectoryView *view,
 	setup_background (FM_LIST_VIEW (view));
 }
 
+static const char *
+fm_list_view_get_id (NautilusView *view)
+{
+	return FM_LIST_VIEW_ID;
+}
+
 static void
 fm_list_view_class_init (FMListViewClass *class)
 {
@@ -3081,6 +3084,9 @@ fm_list_view_class_init (FMListViewClass *class)
 	fm_directory_view_class->end_file_changes = fm_list_view_end_file_changes;
 	fm_directory_view_class->using_manual_layout = fm_list_view_using_manual_layout;
 	fm_directory_view_class->set_is_active = real_set_is_active;
+	fm_directory_view_class->get_view_id = fm_list_view_get_id;
+	fm_directory_view_class->get_first_visible_file = fm_list_view_get_first_visible_file;
+	fm_directory_view_class->scroll_to_file = list_view_scroll_to_file;
 
 	eel_g_settings_add_auto_enum (nautilus_preferences,
 				      NAUTILUS_PREFERENCES_CLICK_POLICY,
@@ -3101,25 +3107,6 @@ fm_list_view_class_init (FMListViewClass *class)
 				      NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER,
 				      &default_column_order_auto_value);
 }
-
-static const char *
-fm_list_view_get_id (NautilusView *view)
-{
-	return FM_LIST_VIEW_ID;
-}
-
-
-static void
-fm_list_view_iface_init (NautilusViewIface *iface)
-{
-	fm_directory_view_init_view_iface (iface);
-
-	iface->get_view_id = fm_list_view_get_id;
-	iface->get_first_visible_file = fm_list_view_get_first_visible_file;
-	iface->scroll_to_file = list_view_scroll_to_file;
-	iface->get_title = NULL;
-}
-
 
 static void
 fm_list_view_init (FMListView *list_view)

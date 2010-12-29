@@ -27,7 +27,7 @@
 #ifndef FM_LIST_VIEW_H
 #define FM_LIST_VIEW_H
 
-#include "fm-directory-view.h"
+#include "nautilus-view.h"
 
 #define FM_TYPE_LIST_VIEW fm_list_view_get_type()
 #define FM_LIST_VIEW(obj) \

@@ -25,7 +25,10 @@
 #ifndef NAUTILUS_WINDOW_PANE_H
 #define NAUTILUS_WINDOW_PANE_H
 
-#include "nautilus-window.h"
+#include <glib-object.h>
+
+#include <libnautilus-private/nautilus-icon-info.h>
+#include "nautilus-window-types.h"
 
 #define NAUTILUS_TYPE_WINDOW_PANE	 (nautilus_window_pane_get_type())
 #define NAUTILUS_WINDOW_PANE_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), NAUTILUS_TYPE_WINDOW_PANE, NautilusWindowPaneClass))
@@ -33,8 +36,6 @@
 #define NAUTILUS_IS_WINDOW_PANE(obj)      (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_WINDOW_PANE))
 #define NAUTILUS_IS_WINDOW_PANE_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), NAUTILUS_TYPE_WINDOW_PANE))
 #define NAUTILUS_WINDOW_PANE_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), NAUTILUS_TYPE_WINDOW_PANE, NautilusWindowPaneClass))
-
-typedef struct _NautilusWindowPaneClass NautilusWindowPaneClass;
 
 struct _NautilusWindowPaneClass {
 	GObjectClass parent_class;

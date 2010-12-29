@@ -121,6 +121,8 @@ nautilus_SOURCES = \
 	nautilus-trash-bar.h			\
 	nautilus-view-as-action.c		\
 	nautilus-view-as-action.h		\
+	nautilus-view.c				\
+	nautilus-view.h				\
 	nautilus-view-factory.c 		\
 	nautilus-view-factory.h 		\
 	nautilus-window-bookmarks.c		\
@@ -138,6 +140,7 @@ nautilus_SOURCES = \
 	nautilus-window-toolbars.c              \
 	nautilus-window.c			\
 	nautilus-window.h			\
+	nautilus-window-types.h			\
 	nautilus-x-content-bar.c		\
 	nautilus-x-content-bar.h		\
 	nautilus-zoom-action.c			\

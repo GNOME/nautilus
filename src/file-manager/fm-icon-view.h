@@ -25,7 +25,7 @@
 #ifndef FM_ICON_VIEW_H
 #define FM_ICON_VIEW_H
 
-#include "fm-directory-view.h"
+#include "nautilus-view.h"
 
 typedef struct FMIconView FMIconView;
 typedef struct FMIconViewClass FMIconViewClass;

@@ -30,6 +30,7 @@
 #include "fm-desktop-icon-view.h"
 #include "fm-actions.h"
 #include "nautilus-view-factory.h"
+#include "nautilus-view.h"
 
 #include <X11/Xatom.h>
 #include <gtk/gtk.h>
@@ -298,7 +299,7 @@ fm_desktop_icon_view_dispose (GObject *object)
 					      NULL);
 
 	g_signal_handlers_disconnect_by_func (gnome_lockdown_preferences,
-					      fm_directory_view_update_menus,
+					      nautilus_view_update_menus,
 					      icon_view);
 
 	if (icon_view->details->background != NULL) {
@@ -651,7 +652,7 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 
 	g_signal_connect_swapped (gnome_lockdown_preferences,
 				  "changed::" NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE,
-				  G_CALLBACK (fm_directory_view_update_menus),
+				  G_CALLBACK (nautilus_view_update_menus),
 				  desktop_icon_view);
 }
 

@@ -33,7 +33,9 @@
 #include <eel/eel-glib-extensions.h>
 #include <libnautilus-private/nautilus-bookmark.h>
 #include <libnautilus-private/nautilus-search-directory.h>
-#include <libnautilus-private/nautilus-view.h>
+
+#include "nautilus-view.h"
+#include "nautilus-window-types.h"
 
 #define NAUTILUS_TYPE_WINDOW nautilus_window_get_type()
 #define NAUTILUS_WINDOW(obj) \
@@ -53,32 +55,11 @@ typedef enum {
         NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DISABLE
 } NautilusWindowShowHiddenFilesMode;
 
-
-typedef enum {
-        NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
-        NAUTILUS_WINDOW_OPEN_IN_SPATIAL,
-        NAUTILUS_WINDOW_OPEN_IN_NAVIGATION
-} NautilusWindowOpenMode;
-
-typedef enum {
-        /* used in spatial mode */
-        NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND = 1<<0,
-        /* used in navigation mode */
-        NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW = 1<<1,
-        NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB = 1<<2
-} NautilusWindowOpenFlags;
-
 typedef enum {
         NAUTILUS_WINDOW_SPATIAL,
         NAUTILUS_WINDOW_NAVIGATION,
         NAUTILUS_WINDOW_DESKTOP
 } NautilusWindowType;
-
-typedef struct NautilusWindow NautilusWindow;
-typedef struct NautilusWindowSlot NautilusWindowSlot;
-typedef struct _NautilusWindowPane      NautilusWindowPane;
-
-typedef struct NautilusWindowSlotClass NautilusWindowSlotClass;
 
 GType          nautilus_window_slot_get_type (void);
 
@@ -94,10 +75,6 @@ typedef enum {
 	NAUTILUS_WINDOW_OPEN_SLOT_NONE = 0,
 	NAUTILUS_WINDOW_OPEN_SLOT_APPEND = 1
 }  NautilusWindowOpenSlotFlags;
-
-typedef void (* NautilusWindowGoToCallback) (NautilusWindow *window,
-                                             GError *error,
-                                             gpointer user_data);
 
 typedef struct NautilusWindowDetails NautilusWindowDetails;
 

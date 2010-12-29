@@ -25,7 +25,8 @@
 #ifndef NAUTILUS_WINDOW_SLOT_H
 #define NAUTILUS_WINDOW_SLOT_H
 
-#include "nautilus-window-pane.h"
+#include "nautilus-view.h"
+#include "nautilus-window-types.h"
 #include "nautilus-query-editor.h"
 #include <glib/gi18n.h>
 

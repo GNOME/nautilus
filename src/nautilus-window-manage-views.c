@@ -724,7 +724,7 @@ report_callback (NautilusWindowSlot *slot,
 /*
  * begin_location_change
  * 
- * Change a window's location.
+ * Change a window slot's location.
  * @window: The NautilusWindow whose location should be changed.
  * @location: A url specifying the location to load
  * @new_selection: The initial selection to present after loading the location
@@ -748,7 +748,6 @@ begin_location_change (NautilusWindowSlot *slot,
 		       NautilusWindowGoToCallback callback,
 		       gpointer user_data)
 {
-	NautilusWindow *window;
         NautilusDirectory *directory;
         NautilusFile *file;
 	gboolean force_reload;
@@ -759,10 +758,6 @@ begin_location_change (NautilusWindowSlot *slot,
         g_assert (type == NAUTILUS_LOCATION_CHANGE_BACK
                   || type == NAUTILUS_LOCATION_CHANGE_FORWARD
                   || distance == 0);
-
-	window = slot->pane->window;
-        g_assert (NAUTILUS_IS_WINDOW (window));
-        g_object_ref (window);
 
 	end_location_change (slot);
 
@@ -828,8 +823,6 @@ begin_location_change (NautilusWindowSlot *slot,
 				       NAUTILUS_FILE_ATTRIBUTE_MOUNT,
                                        got_file_info_for_view_selection_callback,
 				       slot);
-
-        g_object_unref (window);
 }
 
 static void
