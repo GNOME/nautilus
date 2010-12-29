@@ -429,7 +429,7 @@ void              nautilus_view_set_selection              (NautilusView      *v
 
 
 void              nautilus_view_load_location              (NautilusView      *view,
-							    const char        *location_uri);
+							    GFile             *location);
 void              nautilus_view_stop_loading               (NautilusView      *view);
 
 char *            nautilus_view_get_first_visible_file     (NautilusView      *view);

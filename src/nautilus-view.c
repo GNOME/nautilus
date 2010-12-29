@@ -3002,20 +3002,24 @@ fm_directory_view_get_allow_moves (FMDirectoryView *view)
 
 void
 nautilus_view_load_location (NautilusView *nautilus_view,
-			     const char *location)
+			     GFile        *location)
 {
 	NautilusDirectory *directory;
 	FMDirectoryView *directory_view;
+	gchar *uri;
 
 	directory_view = FM_DIRECTORY_VIEW (nautilus_view);
+	uri = g_file_get_uri (location);
 
-	if (eel_uri_is_search (location)) {
+	if (eel_uri_is_search (uri)) {
 		directory_view->details->allow_moves = FALSE;
 	} else {
 		directory_view->details->allow_moves = TRUE;
 	}
 
-	directory = nautilus_directory_get_by_uri (location);
+	g_free (uri);
+
+	directory = nautilus_directory_get (location);
 	load_directory (directory_view, directory);
 	nautilus_directory_unref (directory);
 }

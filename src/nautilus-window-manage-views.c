@@ -1213,7 +1213,6 @@ load_new_location (NautilusWindowSlot *slot,
 	NautilusWindow *window;
 	GList *selection_copy;
 	NautilusView *view;
-	char *uri;
 
 	g_assert (slot != NULL);
 	g_assert (location != NULL);
@@ -1228,18 +1227,14 @@ load_new_location (NautilusWindowSlot *slot,
 	/* Note, these may recurse into report_load_underway */
         if (slot->content_view != NULL && tell_current_content_view) {
 		view = slot->content_view;
-		uri = g_file_get_uri (location);
-		nautilus_view_load_location (slot->content_view, uri);
-		g_free (uri);
+		nautilus_view_load_location (slot->content_view, location);
         }
 	
         if (slot->new_content_view != NULL && tell_new_content_view &&
 	    (!tell_current_content_view ||
 	     slot->new_content_view != slot->content_view) ) {
 		view = slot->new_content_view;
-		uri = g_file_get_uri (location);
-		nautilus_view_load_location (slot->new_content_view, uri);
-		g_free (uri);
+		nautilus_view_load_location (slot->new_content_view, location);
         }
 	if (view != NULL) {
 		/* slot->new_content_view might have changed here if
