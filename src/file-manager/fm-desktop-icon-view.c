@@ -703,7 +703,7 @@ trash_link_is_selection (FMDirectoryView *view)
 
 	result = FALSE;
 	
-	selection = fm_directory_view_get_selection (view);
+	selection = nautilus_view_get_selection (view);
 
 	if (eel_g_list_exactly_one_item (selection) &&
 	    NAUTILUS_IS_DESKTOP_ICON_FILE (selection->data)) {

@@ -195,7 +195,7 @@ nautilus_window_slot_dispose (GObject *object)
 		g_object_ref (slot->location);
 	}
 
-	g_list_free_full (slot->pending_selection, g_free);
+	g_list_free_full (slot->pending_selection, g_object_unref);
 	slot->pending_selection = NULL;
 
 	g_clear_object (&slot->current_location_bookmark);
@@ -611,8 +611,8 @@ nautilus_window_slot_go_up (NautilusWindowSlot *slot,
 		return;
 	}
 	
-	selection = g_list_prepend (NULL, g_object_ref (slot->location));
-	
+	selection = g_list_prepend (NULL, nautilus_file_get (slot->location));
+
 	flags = 0;
 	if (close_behind) {
 		flags |= NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND;

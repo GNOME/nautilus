@@ -56,19 +56,12 @@ static void
 restore_button_clicked_cb (GtkWidget *button,
 			   NautilusTrashBar *bar)
 {
-	GList *locations, *files, *l;
+	GList *files;
 
-	locations = nautilus_view_get_selection (bar->priv->view);
-	files = NULL;
-
-	for (l = locations; l != NULL; l = l->next) {
-		files = g_list_prepend (files, nautilus_file_get (l->data));
-	}
-
+	files = nautilus_view_get_selection (bar->priv->view);
 	nautilus_restore_files_from_trash (files, GTK_WINDOW (gtk_widget_get_toplevel (button)));
 
 	nautilus_file_list_free (files);
-	g_list_free_full (locations, g_object_unref);
 }
 
 static void

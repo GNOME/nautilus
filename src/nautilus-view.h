@@ -60,7 +60,7 @@ typedef FMDirectoryViewClass NautilusViewClass;
 #define NAUTILUS_TYPE_VIEW FM_TYPE_DIRECTORY_VIEW
 #define NAUTILUS_VIEW(obj) FM_DIRECTORY_VIEW(obj)
 #define NAUTILUS_IS_VIEW(obj) FM_IS_DIRECTORY_VIEW(obj)
-#define NAUTILUS_VIEW_CLASS(klass) FM_IS_DIRECTORY_VIEW_CLASS(klass)
+#define NAUTILUS_VIEW_CLASS(klass) FM_DIRECTORY_VIEW_CLASS(klass)
 #define NAUTILUS_VIEW_GET_CLASS(obj) FM_DIRECTORY_VIEW_GET_CLASS(obj)
 
 typedef struct FMDirectoryViewDetails FMDirectoryViewDetails;
@@ -352,7 +352,6 @@ NautilusWindowSlot *fm_directory_view_get_nautilus_window_slot     (FMDirectoryV
 char *              fm_directory_view_get_uri                          (FMDirectoryView  *view);
 
 void                fm_directory_view_display_selection_info           (FMDirectoryView  *view);
-GList *             fm_directory_view_get_selection                    (FMDirectoryView  *view);
 
 GdkAtom	            fm_directory_view_get_copied_files_atom            (FMDirectoryView  *view);
 gboolean            fm_directory_view_get_active                       (FMDirectoryView  *view);
@@ -414,20 +413,24 @@ void              nautilus_view_move_copy_items            (NautilusView      *v
 							    int                copy_action,
 							    int                x,
 							    int                y);
-void nautilus_view_new_file_with_initial_contents (NautilusView *view,
-						   const char *parent_uri,
-						   const char *filename,
-						   const char *initial_contents,
-						   int length,
-						   GdkPoint *pos);
+void              nautilus_view_new_file_with_initial_contents
+                                                           (NautilusView *view,
+						            const char *parent_uri,
+							    const char *filename,
+							    const char *initial_contents,
+						            int length,
+						            GdkPoint *pos);
+
+/* selection handling */
+int               nautilus_view_get_selection_count        (NautilusView      *view);
+GList *           nautilus_view_get_selection              (NautilusView      *view);
+void              nautilus_view_set_selection              (NautilusView      *view,
+							    GList             *selection);
+
 
 void              nautilus_view_load_location              (NautilusView      *view,
 							    const char        *location_uri);
 void              nautilus_view_stop_loading               (NautilusView      *view);
-int               nautilus_view_get_selection_count        (NautilusView      *view);
-GList *           nautilus_view_get_selection              (NautilusView      *view);
-void              nautilus_view_set_selection              (NautilusView      *view,
-							    GList             *list);
 
 char *            nautilus_view_get_first_visible_file     (NautilusView      *view);
 void              nautilus_view_scroll_to_file             (NautilusView      *view,

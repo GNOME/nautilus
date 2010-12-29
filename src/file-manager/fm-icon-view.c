@@ -1730,7 +1730,6 @@ static void
 fm_icon_view_update_menus (FMDirectoryView *view)
 {
 	FMIconView *icon_view;
-        GList *selection;
         int selection_count;
 	GtkAction *action;
         NautilusIconContainer *icon_container;
@@ -1740,8 +1739,7 @@ fm_icon_view_update_menus (FMDirectoryView *view)
 
 	FM_DIRECTORY_VIEW_CLASS (fm_icon_view_parent_class)->update_menus(view);
 
-        selection = fm_directory_view_get_selection (view);
-        selection_count = g_list_length (selection);
+        selection_count = nautilus_view_get_selection_count (view);
         icon_container = get_icon_container (icon_view);
 
 	action = gtk_action_group_get_action (icon_view->details->icon_action_group,
@@ -1757,7 +1755,7 @@ fm_icon_view_update_menus (FMDirectoryView *view)
 	action = gtk_action_group_get_action (icon_view->details->icon_action_group,
 					      FM_ACTION_UNSTRETCH);
 	g_object_set (action, "label",
-		      eel_g_list_more_than_one_item (selection)
+		      (selection_count > 1)
 		      ? _("Restore Icons' Original Si_zes")
 		      : _("Restore Icon's Original Si_ze"),
 		      NULL);
@@ -1767,8 +1765,6 @@ fm_icon_view_update_menus (FMDirectoryView *view)
 
 	gtk_action_set_visible (action,
 				fm_icon_view_supports_scaling (icon_view));
-
-	nautilus_file_list_free (selection);
 
 	editable = fm_directory_view_is_editable (view);
 	action = gtk_action_group_get_action (icon_view->details->icon_action_group,
@@ -1816,7 +1812,7 @@ fm_icon_view_reveal_selection (FMDirectoryView *view)
 
 	g_return_if_fail (FM_IS_ICON_VIEW (view));
 
-        selection = fm_directory_view_get_selection (view);
+        selection = nautilus_view_get_selection (view);
 
 	/* Make sure at least one of the selected items is scrolled into view */
 	if (selection != NULL) {

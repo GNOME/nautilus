@@ -1062,7 +1062,7 @@ fm_list_view_reveal_selection (FMDirectoryView *view)
 
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
 
-        selection = fm_directory_view_get_selection (view);
+        selection = nautilus_view_get_selection (view);
 
 	/* Make sure at least one of the selected items is scrolled into view */
 	if (selection != NULL) {

@@ -895,7 +895,7 @@ setup_new_spatial_window (NautilusWindowSlot *slot, NautilusFile *file)
 		} else {
 			/* If there is a pending selection, we want to scroll to an item in
 			 * the pending selection list. */
-			scroll_string = g_file_get_uri (slot->pending_selection->data);
+			scroll_string = nautilus_file_get_uri (slot->pending_selection->data);
 		}
 
 		/* scroll_string might be NULL if there was no saved scroll position. */

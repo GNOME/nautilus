@@ -501,7 +501,7 @@ location_menu_item_activated_callback (GtkWidget *menu_item,
 
 		child = g_object_get_data (G_OBJECT(menu_item), "child_location");
 		if (child != NULL) {
-			selection = g_list_prepend (NULL, g_object_ref (child));
+			selection = g_list_prepend (NULL, nautilus_file_get (child));
 		}
 
 		if (event != NULL && ((GdkEventAny *) event)->type == GDK_BUTTON_RELEASE &&
@@ -513,7 +513,7 @@ location_menu_item_activated_callback (GtkWidget *menu_item,
 
 		nautilus_window_slot_open_location (slot, dest,
 						    NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
-						    NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND,
+						    close_behind ? NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND : 0,
 						    selection);
 
 		g_list_free_full (selection, g_object_unref);

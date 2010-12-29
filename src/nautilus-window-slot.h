@@ -132,7 +132,7 @@ void nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 					      GFile *location,
 					      NautilusWindowOpenMode mode,
 					      NautilusWindowOpenFlags flags,
-					      GList *new_selection,
+					      GList *new_selection, /* NautilusFile list */
 					      NautilusWindowGoToCallback callback,
 					      gpointer user_data);
 

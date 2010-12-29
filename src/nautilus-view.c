@@ -206,7 +206,7 @@ struct FMDirectoryViewDetails
 	GList *old_added_files;
 	GList *old_changed_files;
 
-	GList *pending_locations_selected;
+	GList *pending_selection;
 
 	/* whether we are in the active slot */
 	gboolean active;
@@ -725,7 +725,7 @@ nautilus_view_set_is_active (FMDirectoryView *view,
 }
 
 /**
- * fm_directory_view_get_selection:
+ * nautilus_view_get_selection:
  *
  * Get a list of NautilusFile pointers that represents the
  * currently-selected items in this view. Subclasses must override
@@ -737,12 +737,12 @@ nautilus_view_set_is_active (FMDirectoryView *view,
  * 
  **/
 GList *
-fm_directory_view_get_selection (FMDirectoryView *view)
+nautilus_view_get_selection (NautilusView *view)
 {
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
+	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NULL);
 
 	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(FM_DIRECTORY_VIEW_CLASS, view,
+		(NAUTILUS_VIEW_CLASS, view,
 		 get_selection, (view));
 }
 
@@ -1114,7 +1114,7 @@ action_open_callback (GtkAction *action,
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	selection = fm_directory_view_get_selection (view);
+	selection = nautilus_view_get_selection (view);
 	fm_directory_view_activate_files (view,
 					  selection,
 					  NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
@@ -1132,7 +1132,7 @@ action_open_close_parent_callback (GtkAction *action,
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	selection = fm_directory_view_get_selection (view);
+	selection = nautilus_view_get_selection (view);
 	fm_directory_view_activate_files (view,
 					  selection,
 					  NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
@@ -1151,7 +1151,7 @@ action_open_alternate_callback (GtkAction *action,
 	GtkWindow *window;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
-	selection = fm_directory_view_get_selection (view);
+	selection = nautilus_view_get_selection (view);
 
 	window = fm_directory_view_get_containing_window (view);
 
@@ -1171,7 +1171,7 @@ action_open_new_tab_callback (GtkAction *action,
 	GtkWindow *window;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
-	selection = fm_directory_view_get_selection (view);
+	selection = nautilus_view_get_selection (view);
 
 	window = fm_directory_view_get_containing_window (view);
 
@@ -1195,7 +1195,7 @@ action_open_folder_window_callback (GtkAction *action,
 	GtkWindow *window;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
-	selection = fm_directory_view_get_selection (view);
+	selection = nautilus_view_get_selection (view);
 
 	window = fm_directory_view_get_containing_window (view);
 
@@ -1275,7 +1275,7 @@ open_with_other_program (FMDirectoryView *view)
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
-       	selection = fm_directory_view_get_selection (view);
+       	selection = nautilus_view_get_selection (view);
 
 	if (selection_contains_one_item_in_menu_callback (view, selection)) {
 		choose_program (view, NAUTILUS_FILE (selection->data));
@@ -1462,7 +1462,7 @@ action_create_link_callback (GtkAction *action,
         g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
         view = FM_DIRECTORY_VIEW (callback_data);
-	selection = fm_directory_view_get_selection (view);
+	selection = nautilus_view_get_selection (view);
 	if (selection_not_empty_in_menu_callback (view, selection)) {
 		selected_item_locations = fm_directory_view_get_selected_icon_locations (view);
 	        fm_directory_view_create_links_for_files (view, selection, selected_item_locations);
@@ -2139,7 +2139,7 @@ action_properties_callback (GtkAction *action,
         g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
         view = FM_DIRECTORY_VIEW (callback_data);
-	selection = fm_directory_view_get_selection (view);
+	selection = nautilus_view_get_selection (view);
 	if (g_list_length (selection) == 0) {
 		if (view->details->directory_as_file != NULL) {
 			files = g_list_append (NULL, nautilus_file_ref (view->details->directory_as_file));
@@ -2200,7 +2200,7 @@ all_selected_items_in_trash (FMDirectoryView *view)
 	 * check that parent directory. Otherwise we have to inspect
 	 * each selected item.
 	 */
-	selection = fm_directory_view_get_selection (view);
+	selection = nautilus_view_get_selection (view);
 	result = (selection == NULL) ? FALSE : all_files_in_trash (selection);
 	nautilus_file_list_free (selection);
 
@@ -2486,52 +2486,17 @@ nautilus_view_get_selection_count (NautilusView *view)
 	GList *files;
 	int len;
 
-	files = fm_directory_view_get_selection (FM_DIRECTORY_VIEW (view));
+	files = nautilus_view_get_selection (FM_DIRECTORY_VIEW (view));
 	len = g_list_length (files);
 	nautilus_file_list_free (files);
 	
 	return len;
 }
 
-GList *
-nautilus_view_get_selection (NautilusView *view)
-{
-	GList *files;
-	GList *locations;
-	GFile *location;
-	GList *l;
-
-	files = fm_directory_view_get_selection (FM_DIRECTORY_VIEW (view));
-	locations = NULL;
-	for (l = files; l != NULL; l = l->next) {
-		location = nautilus_file_get_location (NAUTILUS_FILE (l->data));
-		locations = g_list_prepend (locations, location);
-	}
-	nautilus_file_list_free (files);
-	
-	return g_list_reverse (locations);
-}
-
-static GList *
-file_list_from_location_list (const GList *uri_list)
-{
-	GList *file_list;
-	const GList *node;
-
-	file_list = NULL;
-	for (node = uri_list; node != NULL; node = node->next) {
-		file_list = g_list_prepend
-			(file_list,
-			 nautilus_file_get (node->data));
-	}
-	return g_list_reverse (file_list);
-}
-
 void
 nautilus_view_set_selection (NautilusView *nautilus_view,
-			     GList *selection_locations)
+			     GList *selection)
 {
-	GList *selection;
 	FMDirectoryView *view;
 
 	view = FM_DIRECTORY_VIEW (nautilus_view);
@@ -2540,19 +2505,17 @@ nautilus_view_set_selection (NautilusView *nautilus_view,
 		/* If we aren't still loading, set the selection right now,
 		 * and reveal the new selection.
 		 */
-		selection = file_list_from_location_list (selection_locations);
 		view->details->selection_change_is_due_to_shell = TRUE;
 		fm_directory_view_set_selection (view, selection);
 		view->details->selection_change_is_due_to_shell = FALSE;
 		fm_directory_view_reveal_selection (view);
-		nautilus_file_list_free (selection);
 	} else {
 		/* If we are still loading, set the list of pending URIs instead.
 		 * done_loading() will eventually select the pending URIs and reveal them.
 		 */
-		g_list_free_full (view->details->pending_locations_selected, g_object_unref);
-		view->details->pending_locations_selected =
-			eel_g_object_list_copy (selection_locations);
+		g_list_free_full (view->details->pending_selection, g_object_unref);
+		view->details->pending_selection =
+			eel_g_object_list_copy (selection);
 	}
 }
 
@@ -2811,7 +2774,7 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
-	selection = fm_directory_view_get_selection (view);
+	selection = nautilus_view_get_selection (view);
 	
 	folder_item_count_known = TRUE;
 	folder_count = 0;
@@ -3074,7 +3037,7 @@ static void
 done_loading (FMDirectoryView *view,
 	      gboolean all_files_seen)
 {
-	GList *locations_selected, *selection;
+	GList *selection;
 
 	if (!view->details->loading) {
 		return;
@@ -3092,16 +3055,13 @@ done_loading (FMDirectoryView *view,
 		schedule_update_status (view);
 		reset_update_interval (view);
 
-		locations_selected = view->details->pending_locations_selected;
-		if (locations_selected != NULL && all_files_seen) {
-			view->details->pending_locations_selected = NULL;
-
-			selection = file_list_from_location_list (locations_selected);
+		selection = view->details->pending_selection;
+		if (selection != NULL && all_files_seen) {
+			view->details->pending_selection = NULL;
 
 			view->details->selection_change_is_due_to_shell = TRUE;
 			fm_directory_view_set_selection (view, selection);
 			view->details->selection_change_is_due_to_shell = FALSE;
-			nautilus_file_list_free (selection);
 
 			if (FM_IS_LIST_VIEW (view)) {
 				/* HACK: We should be able to directly call reveal_selection here,
@@ -3120,7 +3080,7 @@ done_loading (FMDirectoryView *view,
 				fm_directory_view_reveal_selection (view);
 			}
 		}
-		g_list_free_full (locations_selected, g_object_unref);
+		g_list_free_full (selection, g_object_unref);
 		fm_directory_view_display_selection_info (view);
 	}
 
@@ -3500,7 +3460,7 @@ process_old_files (FMDirectoryView *view)
 		g_signal_emit (view, signals[END_FILE_CHANGES], 0);
 
 		if (files_changed != NULL) {
-			selection = fm_directory_view_get_selection (view);
+			selection = nautilus_view_get_selection (view);
 			files = file_and_directory_list_to_files (files_changed);
 			send_selection_change = eel_g_lists_sort_and_check_for_intersection
 				(&files, &selection);
@@ -4114,7 +4074,7 @@ special_link_in_selection (FMDirectoryView *view)
 
 	saw_link = FALSE;
 
-	selection = fm_directory_view_get_selection (FM_DIRECTORY_VIEW (view));
+	selection = nautilus_view_get_selection (FM_DIRECTORY_VIEW (view));
 
 	for (node = selection; node != NULL; node = node->next) {
 		file = NAUTILUS_FILE (node->data);
@@ -4147,7 +4107,7 @@ desktop_or_home_dir_in_selection (FMDirectoryView *view)
 
 	saw_desktop_or_home_dir = FALSE;
 
-	selection = fm_directory_view_get_selection (FM_DIRECTORY_VIEW (view));
+	selection = nautilus_view_get_selection (FM_DIRECTORY_VIEW (view));
 
 	for (node = selection; node != NULL; node = node->next) {
 		file = NAUTILUS_FILE (node->data);
@@ -5162,7 +5122,7 @@ set_script_environment_variables (FMDirectoryView *view, GList *selected_files)
 	next_view = get_directory_view_of_extra_pane (view);
 	if (next_view) {
 		GList *next_pane_selected_files;
-		next_pane_selected_files = fm_directory_view_get_selection (next_view);
+		next_pane_selected_files = nautilus_view_get_selection (next_view);
 
 		get_strings_for_environment_variables (next_view, next_pane_selected_files,
 						       &file_paths, &uris, &uri);
@@ -5221,7 +5181,7 @@ run_script_callback (GtkAction *action, gpointer callback_data)
 
 	old_working_dir = change_to_view_directory (launch_parameters->directory_view);
 
-	selected_files = fm_directory_view_get_selection (launch_parameters->directory_view);
+	selected_files = nautilus_view_get_selection (launch_parameters->directory_view);
 	set_script_environment_variables (launch_parameters->directory_view, selected_files);
 	 
 	parameters = get_file_names_as_parameter_array (selected_files,
@@ -6149,7 +6109,7 @@ action_paste_files_into_callback (GtkAction *action,
 	GList *selection;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
-	selection = fm_directory_view_get_selection (view);
+	selection = nautilus_view_get_selection (view);
 	if (selection != NULL) {
 		paste_into (view, NAUTILUS_FILE (selection->data));
 		nautilus_file_list_free (selection);
@@ -6197,7 +6157,7 @@ real_action_rename (FMDirectoryView *view,
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
-	selection = fm_directory_view_get_selection (view);
+	selection = nautilus_view_get_selection (view);
 
 	if (selection_not_empty_in_menu_callback (view, selection)) {
 		/* If there is more than one file selected, invoke a batch renamer */
@@ -6327,7 +6287,7 @@ action_mount_volume_callback (GtkAction *action,
 
         view = FM_DIRECTORY_VIEW (data);
 	
-	selection = fm_directory_view_get_selection (view);
+	selection = nautilus_view_get_selection (view);
 	for (l = selection; l != NULL; l = l->next) {
 		file = NAUTILUS_FILE (l->data);
 		
@@ -6352,7 +6312,7 @@ action_unmount_volume_callback (GtkAction *action,
 
         view = FM_DIRECTORY_VIEW (data);
 	
-	selection = fm_directory_view_get_selection (view);
+	selection = nautilus_view_get_selection (view);
 
 	for (l = selection; l != NULL; l = l->next) {
 		file = NAUTILUS_FILE (l->data);
@@ -6379,7 +6339,7 @@ action_format_volume_callback (GtkAction *action,
 
         view = FM_DIRECTORY_VIEW (data);
 	
-	selection = fm_directory_view_get_selection (view);
+	selection = nautilus_view_get_selection (view);
 	for (l = selection; l != NULL; l = l->next) {
 		file = NAUTILUS_FILE (l->data);
 
@@ -6401,7 +6361,7 @@ action_eject_volume_callback (GtkAction *action,
 
         view = FM_DIRECTORY_VIEW (data);
 	
-	selection = fm_directory_view_get_selection (view);
+	selection = nautilus_view_get_selection (view);
 	for (l = selection; l != NULL; l = l->next) {
 		file = NAUTILUS_FILE (l->data);
 		
@@ -6444,7 +6404,7 @@ action_start_volume_callback (GtkAction *action,
 
         view = FM_DIRECTORY_VIEW (data);
 
-	selection = fm_directory_view_get_selection (view);
+	selection = nautilus_view_get_selection (view);
 	for (l = selection; l != NULL; l = l->next) {
 		file = NAUTILUS_FILE (l->data);
 
@@ -6468,7 +6428,7 @@ action_stop_volume_callback (GtkAction *action,
 
         view = FM_DIRECTORY_VIEW (data);
 
-	selection = fm_directory_view_get_selection (view);
+	selection = nautilus_view_get_selection (view);
 	for (l = selection; l != NULL; l = l->next) {
 		file = NAUTILUS_FILE (l->data);
 
@@ -6493,7 +6453,7 @@ action_detect_media_callback (GtkAction *action,
 
         view = FM_DIRECTORY_VIEW (data);
 
-	selection = fm_directory_view_get_selection (view);
+	selection = nautilus_view_get_selection (view);
 	for (l = selection; l != NULL; l = l->next) {
 		file = NAUTILUS_FILE (l->data);
 
@@ -6851,7 +6811,7 @@ action_connect_to_server_link_callback (GtkAction *action,
 
         view = FM_DIRECTORY_VIEW (data);
 	
-	selection = fm_directory_view_get_selection (view);
+	selection = nautilus_view_get_selection (view);
 
 	if (!eel_g_list_exactly_one_item (selection)) {
 		nautilus_file_list_free (selection);
@@ -7594,7 +7554,7 @@ clipboard_targets_received (GtkClipboard     *clipboard,
 	}
 	
 	
-	selection = fm_directory_view_get_selection (view);
+	selection = nautilus_view_get_selection (view);
 	count = g_list_length (selection);
 	
 	action = gtk_action_group_get_action (view->details->dir_action_group,
@@ -8505,7 +8465,7 @@ clipboard_changed_callback (NautilusClipboardMonitor *monitor, FMDirectoryView *
 		return;
 	}
 
-	selection = fm_directory_view_get_selection (view);
+	selection = nautilus_view_get_selection (view);
 	selection_count = g_list_length (selection);
 
 	real_update_paste_menu (view, selection, selection_count);
@@ -8572,7 +8532,7 @@ real_update_menus (FMDirectoryView *view)
 	gboolean next_pane_is_writable;
 	gboolean show_properties;
 
-	selection = fm_directory_view_get_selection (view);
+	selection = nautilus_view_get_selection (view);
 	selection_count = g_list_length (selection);
 
 	selection_contains_special_link = special_link_in_selection (view);
@@ -9206,7 +9166,7 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 	
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
-	selection = fm_directory_view_get_selection (view);
+	selection = nautilus_view_get_selection (view);
 	window = fm_directory_view_get_containing_window (view);
 	DEBUG_FILES (selection, "Selection changed in window %p", window);
 	nautilus_file_list_free (selection);
@@ -9551,15 +9511,20 @@ nautilus_view_stop_loading (FMDirectoryView *view)
 	/* Free extra undisplayed files */
 	file_and_directory_list_free (view->details->new_added_files);
 	view->details->new_added_files = NULL;
+
 	file_and_directory_list_free (view->details->new_changed_files);
 	view->details->new_changed_files = NULL;
+
 	g_hash_table_foreach_remove (view->details->non_ready_files, remove_all, NULL);
+
 	file_and_directory_list_free (view->details->old_added_files);
 	view->details->old_added_files = NULL;
+
 	file_and_directory_list_free (view->details->old_changed_files);
 	view->details->old_changed_files = NULL;
-	g_list_free_full (view->details->pending_locations_selected, g_object_unref);
-	view->details->pending_locations_selected = NULL;
+
+	g_list_free_full (view->details->pending_selection, g_object_unref);
+	view->details->pending_selection = NULL;
 
 	if (view->details->model != NULL) {
 		nautilus_directory_file_monitor_remove (view->details->model, view);
