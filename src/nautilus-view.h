@@ -288,12 +288,6 @@ struct FMDirectoryViewClass {
 	 */
 	gboolean (* supports_creating_files)	(FMDirectoryView *view);
 
-	/* accepts_dragged_files is a function pointer that subclasses may
-	 * override to control whether or not files can be dropped in this
-	 * location. The default implementation returns TRUE.
-	 */
-	gboolean (* accepts_dragged_files)	(FMDirectoryView *view);
-
 	gboolean (* can_rename_file)            (FMDirectoryView *view,
 						 NautilusFile *file);
 	/* select_all specifies whether the whole filename should be selected
@@ -353,34 +347,10 @@ GType               fm_directory_view_get_type                         (void);
 NautilusWindow     *fm_directory_view_get_nautilus_window              (FMDirectoryView  *view);
 NautilusWindowSlot *fm_directory_view_get_nautilus_window_slot     (FMDirectoryView  *view);
 char *              fm_directory_view_get_uri                          (FMDirectoryView  *view);
-char *              fm_directory_view_get_backing_uri                  (FMDirectoryView  *view);
-gboolean            fm_directory_view_can_accept_item                  (NautilusFile     *target_item,
-									const char       *item_uri,
-									FMDirectoryView  *view);
+
 void                fm_directory_view_display_selection_info           (FMDirectoryView  *view);
 GList *             fm_directory_view_get_selection                    (FMDirectoryView  *view);
-GList *             fm_directory_view_get_selection_for_file_transfer  (FMDirectoryView  *view);
-void                fm_directory_view_invert_selection                 (FMDirectoryView  *view);
-guint               fm_directory_view_get_item_count                   (FMDirectoryView  *view);
-void                fm_directory_view_reset_to_defaults                (FMDirectoryView  *view);
-void                fm_directory_view_select_all                       (FMDirectoryView  *view);
-void                fm_directory_view_set_selection                    (FMDirectoryView  *view,
-									GList            *selection);
-GArray *            fm_directory_view_get_selected_icon_locations      (FMDirectoryView  *view);
-void                fm_directory_view_reveal_selection                 (FMDirectoryView  *view);
-gboolean            fm_directory_view_is_empty                         (FMDirectoryView  *view);
-gboolean            fm_directory_view_is_read_only                     (FMDirectoryView  *view);
-gboolean            fm_directory_view_supports_creating_files          (FMDirectoryView  *view);
-gboolean            fm_directory_view_accepts_dragged_files            (FMDirectoryView  *view);
-gboolean            fm_directory_view_supports_properties              (FMDirectoryView  *view);
-gboolean            fm_directory_view_using_manual_layout              (FMDirectoryView  *view);
-void                fm_directory_view_move_copy_items                  (const GList      *item_uris,
-									GArray           *relative_item_points,
-									const char       *target_uri,
-									int               copy_action,
-									int               x,
-									int               y,
-									FMDirectoryView  *view);
+
 GdkAtom	            fm_directory_view_get_copied_files_atom            (FMDirectoryView  *view);
 gboolean            fm_directory_view_get_active                       (FMDirectoryView  *view);
 
@@ -388,11 +358,6 @@ gboolean            fm_directory_view_get_active                       (FMDirect
  * only by FMDirectoryView itself. They have corresponding signals
  * that observers might want to connect with.
  */
-void                fm_directory_view_clear                            (FMDirectoryView  *view);
-void                fm_directory_view_begin_loading                    (FMDirectoryView  *view);
-void                fm_directory_view_end_loading                      (FMDirectoryView  *view,
-									gboolean          all_files_seen);
-
 gboolean            fm_directory_view_get_loading                      (FMDirectoryView  *view);
 
 /* Hooks for subclasses to call. These are normally called only by 
@@ -403,33 +368,21 @@ void                fm_directory_view_activate_files                   (FMDirect
 									NautilusWindowOpenMode  mode,
 									NautilusWindowOpenFlags flags,
 									gboolean                confirm_multiple);
-void                fm_directory_view_activate_file                    (FMDirectoryView        *view,
-									NautilusFile           *file,
-									NautilusWindowOpenMode  mode,
-									NautilusWindowOpenFlags flags);
 void                fm_directory_view_start_batching_selection_changes (FMDirectoryView  *view);
 void                fm_directory_view_stop_batching_selection_changes  (FMDirectoryView  *view);
-void                fm_directory_view_queue_file_change                (FMDirectoryView  *view,
-									NautilusFile     *file);
 void                fm_directory_view_notify_selection_changed         (FMDirectoryView  *view);
 GtkUIManager *      fm_directory_view_get_ui_manager                   (FMDirectoryView  *view);
 char **             fm_directory_view_get_emblem_names_to_exclude      (FMDirectoryView  *view);
 NautilusDirectory  *fm_directory_view_get_model                        (FMDirectoryView  *view);
-GtkWindow	   *fm_directory_view_get_containing_window	       (FMDirectoryView  *view);
 NautilusFile       *fm_directory_view_get_directory_as_file            (FMDirectoryView  *view);
 gboolean            fm_directory_view_get_allow_moves                  (FMDirectoryView  *view);
 void                fm_directory_view_pop_up_background_context_menu   (FMDirectoryView  *view,
 									GdkEventButton   *event);
 void                fm_directory_view_pop_up_selection_context_menu    (FMDirectoryView  *view,
 									GdkEventButton   *event); 
-void                fm_directory_view_send_selection_change            (FMDirectoryView *view);
 gboolean            fm_directory_view_should_show_file                 (FMDirectoryView  *view,
 									NautilusFile     *file);
 gboolean	    fm_directory_view_should_sort_directories_first    (FMDirectoryView  *view);
-void                fm_directory_view_new_folder                       (FMDirectoryView  *view);
-void                fm_directory_view_new_file                         (FMDirectoryView  *view,
-									const char       *parent_uri,
-									NautilusFile     *source);
 void                fm_directory_view_ignore_hidden_file_preferences   (FMDirectoryView  *view);
 void                fm_directory_view_set_show_foreign                 (FMDirectoryView  *view,
 		                                                        gboolean          show_foreign);
@@ -469,16 +422,27 @@ void                fm_directory_view_remove_subdirectory             (FMDirecto
 									NautilusDirectory*directory);
 
 gboolean            fm_directory_view_is_editable                     (FMDirectoryView *view);
-void		    fm_directory_view_set_initiated_unmount	      (FMDirectoryView *view,
-									gboolean inititated_unmount);
-
-/* operations affecting two directory views */
-void                fm_directory_view_move_copy_items_between_views   (FMDirectoryView *source, FMDirectoryView *target, gboolean copy);
-
 
 /* NautilusView methods */
 const char *      nautilus_view_get_view_id                (NautilusView      *view);
 GtkWidget *       nautilus_view_get_widget                 (NautilusView      *view);
+
+/* file operations */
+char *            nautilus_view_get_backing_uri            (NautilusView      *view);
+void              nautilus_view_move_copy_items            (NautilusView      *view,
+							    const GList       *item_uris,
+							    GArray            *relative_item_points,
+							    const char        *target_uri,
+							    int                copy_action,
+							    int                x,
+							    int                y);
+void nautilus_view_new_file_with_initial_contents (NautilusView *view,
+						   const char *parent_uri,
+						   const char *filename,
+						   const char *initial_contents,
+						   int length,
+						   GdkPoint *pos);
+
 void              nautilus_view_load_location              (NautilusView      *view,
 							    const char        *location_uri);
 void              nautilus_view_stop_loading               (NautilusView      *view);
@@ -486,7 +450,7 @@ int               nautilus_view_get_selection_count        (NautilusView      *v
 GList *           nautilus_view_get_selection              (NautilusView      *view);
 void              nautilus_view_set_selection              (NautilusView      *view,
 							    GList             *list);
-void              nautilus_view_invert_selection           (NautilusView      *view);
+
 char *            nautilus_view_get_first_visible_file     (NautilusView      *view);
 void              nautilus_view_scroll_to_file             (NautilusView      *view,
 							    const char        *uri);

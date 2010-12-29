@@ -265,8 +265,6 @@ typedef struct {
 /* forward declarations */
 
 static gboolean display_selection_info_idle_callback           (gpointer              data);
-static void     fm_directory_view_class_init                   (FMDirectoryViewClass *klass);
-static void     fm_directory_view_init                         (FMDirectoryView      *view);
 static void     fm_directory_view_duplicate_selection          (FMDirectoryView      *view,
 								GList                *files,
 								GArray               *item_locations);
@@ -314,57 +312,6 @@ static void     user_dirs_changed                              (FMDirectoryView 
 
 static gboolean file_list_all_are_folders                      (GList *file_list);
 
-static void action_open_scripts_folder_callback    (GtkAction *action,
-						    gpointer   callback_data);
-static void action_cut_files_callback              (GtkAction *action,
-						    gpointer   callback_data);
-static void action_copy_files_callback             (GtkAction *action,
-						    gpointer   callback_data);
-static void action_paste_files_callback            (GtkAction *action,
-						    gpointer   callback_data);
-static void action_copy_to_next_pane_callback      (GtkAction *action,
-						    gpointer   callback_data);
-static void action_move_to_next_pane_callback      (GtkAction *action,
-						    gpointer   callback_data);
-static void action_rename_callback                 (GtkAction *action,
-						    gpointer   callback_data);
-static void action_rename_select_all_callback      (GtkAction *action,
-						    gpointer   callback_data);
-static void action_paste_files_into_callback       (GtkAction *action,
-						    gpointer   callback_data);
-static void action_connect_to_server_link_callback (GtkAction *action,
-						    gpointer   data);
-static void action_mount_volume_callback           (GtkAction *action,
-						    gpointer   data);
-static void action_unmount_volume_callback         (GtkAction *action,
-						    gpointer   data);
-static void action_format_volume_callback          (GtkAction *action,
-						    gpointer   data);
-static void action_start_volume_callback           (GtkAction *action,
-						    gpointer   data);
-static void action_stop_volume_callback            (GtkAction *action,
-						    gpointer   data);
-static void action_detect_media_callback           (GtkAction *action,
-						    gpointer   data);
-
-/* location popup-related actions */
-
-static void action_location_open_alternate_callback (GtkAction *action,
-						     gpointer   callback_data);
-static void action_location_open_folder_window_callback (GtkAction *action,
-							 gpointer   callback_data);
-
-static void action_location_cut_callback            (GtkAction *action,
-						     gpointer   callback_data);
-static void action_location_copy_callback           (GtkAction *action,
-						     gpointer   callback_data);
-static void action_location_trash_callback          (GtkAction *action,
-						     gpointer   callback_data);
-static void action_location_delete_callback         (GtkAction *action,
-						     gpointer   callback_data);
-static void action_location_properties_callback     (GtkAction *action,
-						     gpointer   callback_data);
-
 static void unschedule_pop_up_location_context_menu (FMDirectoryView *view);
 
 static inline void fm_directory_view_widget_to_file_operation_position (FMDirectoryView *view,
@@ -372,7 +319,8 @@ static inline void fm_directory_view_widget_to_file_operation_position (FMDirect
 static void        fm_directory_view_widget_to_file_operation_position_xy (FMDirectoryView *view,
 									   int *x, int *y);
 
-EEL_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
+G_DEFINE_TYPE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW);
+#define parent_class fm_directory_view_parent_class
 
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, add_file)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, bump_zoom_level)
@@ -391,6 +339,442 @@ EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, set_selection)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, zoom_to_level)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_zoom_level)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, invert_selection)
+
+/* virtual methods (public and non-public) */
+
+/**
+ * fm_directory_view_merge_menus:
+ * 
+ * Add this view's menus to the window's menu bar.
+ * @view: FMDirectoryView in question.
+ */
+static void
+fm_directory_view_merge_menus (FMDirectoryView *view)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	EEL_CALL_METHOD
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 merge_menus, (view));
+}
+
+static void
+fm_directory_view_unmerge_menus (FMDirectoryView *view)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	EEL_CALL_METHOD
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 unmerge_menus, (view));
+}
+
+/**
+ * fm_directory_view_select_all:
+ *
+ * select all the items in the view
+ * 
+ **/
+static void
+fm_directory_view_select_all (FMDirectoryView *view)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	EEL_CALL_METHOD
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 select_all, (view));
+}
+
+/**
+ * fm_directory_view_set_selection:
+ *
+ * set the selection to the items identified in @selection. @selection
+ * should be a list of NautilusFiles
+ * 
+ **/
+static void
+fm_directory_view_set_selection (FMDirectoryView *view, GList *selection)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	EEL_CALL_METHOD
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 set_selection, (view, selection));
+}
+
+static GList *
+fm_directory_view_get_selection_for_file_transfer (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
+
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 get_selection_for_file_transfer, (view));
+}
+
+/**
+ * fm_directory_view_get_selected_icon_locations:
+ *
+ * return an array of locations of selected icons if available
+ * Return value: GArray of GdkPoints
+ * 
+ **/
+static GArray *
+fm_directory_view_get_selected_icon_locations (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
+
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 get_selected_icon_locations, (view));
+}
+
+static void
+fm_directory_view_invert_selection (FMDirectoryView *view)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	EEL_CALL_METHOD
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 invert_selection, (view));
+}
+
+/**
+ * fm_directory_view_reveal_selection:
+ *
+ * Scroll as necessary to reveal the selected items.
+ **/
+static void
+fm_directory_view_reveal_selection (FMDirectoryView *view)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	EEL_CALL_METHOD
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 reveal_selection, (view));
+}
+
+/**
+ * fm_directory_view_reset_to_defaults:
+ *
+ * set sorting order, zoom level, etc. to match defaults
+ * 
+ **/
+static void
+fm_directory_view_reset_to_defaults (FMDirectoryView *view)
+{
+	NautilusWindowShowHiddenFilesMode mode;
+
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+	
+	EEL_CALL_METHOD
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 reset_to_defaults, (view));
+	mode = nautilus_window_get_hidden_files_mode (view->details->window);
+	if (mode != NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT) {
+		nautilus_window_set_hidden_files_mode (view->details->window,
+							    NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT);
+	}
+}
+
+static gboolean
+fm_directory_view_using_manual_layout (FMDirectoryView  *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
+
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 using_manual_layout, (view));
+}
+
+static guint
+fm_directory_view_get_item_count (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), 0);
+
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 get_item_count, (view));
+}
+
+/**
+ * fm_directory_view_can_rename_file
+ *
+ * Determine whether a file can be renamed.
+ * @file: A NautilusFile
+ * 
+ * Return value: TRUE if @file can be renamed, FALSE otherwise.
+ * 
+ **/
+static gboolean
+fm_directory_view_can_rename_file (FMDirectoryView *view, NautilusFile *file)
+{
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 can_rename_file, (view, file));
+}
+
+static gboolean
+fm_directory_view_is_read_only (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
+
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 is_read_only, (view));
+}
+
+static gboolean
+fm_directory_view_supports_creating_files (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
+
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 supports_creating_files, (view));
+}
+
+static gboolean
+fm_directory_view_supports_properties (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
+
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 supports_properties, (view));
+}
+
+static gboolean
+fm_directory_view_is_empty (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
+
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 is_empty, (view));
+}
+
+/**
+ * nautilus_view_bump_zoom_level:
+ *
+ * bump the current zoom level by invoking the relevant subclass through the slot
+ * 
+ **/
+void
+nautilus_view_bump_zoom_level (NautilusView *view,
+			       int zoom_increment)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	if (!nautilus_view_supports_zooming (view)) {
+		return;
+	}
+
+	EEL_CALL_METHOD
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 bump_zoom_level, (view, zoom_increment));
+}
+
+/**
+ * nautilus_view_zoom_to_level:
+ *
+ * Set the current zoom level by invoking the relevant subclass through the slot
+ * 
+ **/
+void
+nautilus_view_zoom_to_level (NautilusView *view,
+			     NautilusZoomLevel zoom_level)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	if (!nautilus_view_supports_zooming (view)) {
+		return;
+	}
+
+	EEL_CALL_METHOD
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 zoom_to_level, (view, zoom_level));
+}
+
+NautilusZoomLevel
+nautilus_view_get_zoom_level (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NAUTILUS_ZOOM_LEVEL_STANDARD);
+
+	if (!nautilus_view_supports_zooming (view)) {
+		return NAUTILUS_ZOOM_LEVEL_STANDARD;
+	}
+
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 get_zoom_level, (view));
+}
+
+/**
+ * nautilus_view_can_zoom_in:
+ *
+ * Determine whether the view can be zoomed any closer.
+ * @view: The zoomable FMDirectoryView.
+ * 
+ * Return value: TRUE if @view can be zoomed any closer, FALSE otherwise.
+ * 
+ **/
+gboolean
+nautilus_view_can_zoom_in (NautilusView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
+
+	if (!nautilus_view_supports_zooming (view)) {
+		return FALSE;
+	}
+
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 can_zoom_in, (view));
+}
+
+/**
+ * nautilus_view_can_zoom_out:
+ *
+ * Determine whether the view can be zoomed any further away.
+ * @view: The zoomable FMDirectoryView.
+ * 
+ * Return value: TRUE if @view can be zoomed any further away, FALSE otherwise.
+ * 
+ **/
+gboolean
+nautilus_view_can_zoom_out (NautilusView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
+
+	if (!nautilus_view_supports_zooming (view)) {
+		return FALSE;
+	}
+
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 can_zoom_out, (view));
+}
+
+gboolean
+nautilus_view_supports_zooming (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
+
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 supports_zooming, (view));
+}
+
+/**
+ * nautilus_view_restore_default_zoom_level:
+ *
+ * restore to the default zoom level by invoking the relevant subclass through the slot
+ * 
+ **/
+void
+nautilus_view_restore_default_zoom_level (NautilusView *view)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	if (!nautilus_view_supports_zooming (view)) {
+		return;
+	}
+
+	EEL_CALL_METHOD
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 restore_default_zoom_level, (view));
+}
+
+const char *
+nautilus_view_get_view_id (NautilusView *view)
+{
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 get_view_id, (view));
+}
+
+char *
+nautilus_view_get_first_visible_file (NautilusView *view)
+{
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 get_first_visible_file, (view));
+}
+
+void
+nautilus_view_scroll_to_file (NautilusView *view,
+			      const char *uri)
+{
+	EEL_CALL_METHOD
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 scroll_to_file, (view, uri));
+}
+
+char **
+fm_directory_view_get_emblem_names_to_exclude (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
+
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 get_emblem_names_to_exclude, (view));
+}
+
+void
+nautilus_view_set_is_active (FMDirectoryView *view,
+			     gboolean is_active)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view,
+			 set_is_active, (view, is_active));
+}
+
+/**
+ * fm_directory_view_get_selection:
+ *
+ * Get a list of NautilusFile pointers that represents the
+ * currently-selected items in this view. Subclasses must override
+ * the signal handler for the 'get_selection' signal. Callers are
+ * responsible for g_free-ing the list (but not its data).
+ * @view: FMDirectoryView whose selected items are of interest.
+ * 
+ * Return value: GList of NautilusFile pointers representing the selection.
+ * 
+ **/
+GList *
+fm_directory_view_get_selection (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
+
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 get_selection, (view));
+}
+
+
+/**
+ * nautilus_view_update_menus:
+ * 
+ * Update the sensitivity and wording of dynamic menu items.
+ * @view: FMDirectoryView in question.
+ */
+void
+nautilus_view_update_menus (NautilusView *view)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	if (!view->details->active) {
+		return;
+	}
+
+
+	EEL_CALL_METHOD
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 update_menus, (view));
+
+	view->details->menu_states_untrustworthy = FALSE;
+}
 
 typedef struct {
 	GAppInfo *application;
@@ -582,7 +966,7 @@ fm_directory_view_get_nautilus_window_slot (FMDirectoryView  *view)
  * if at the moment this directory view is not in a GtkWindow or the
  * GtkWindow cannot be determined. Primarily used for parenting dialogs.
  */
-GtkWindow *
+static GtkWindow *
 fm_directory_view_get_containing_window (FMDirectoryView *view)
 {
 	GtkWidget *window;
@@ -708,7 +1092,7 @@ fm_directory_view_activate_files (FMDirectoryView *view,
 	g_free (path);
 }
 
-void
+static void
 fm_directory_view_activate_file (FMDirectoryView *view,
 				 NautilusFile *file,
 				 NautilusWindowOpenMode mode,
@@ -915,6 +1299,34 @@ action_other_application_callback (GtkAction *action,
 	open_with_other_program (FM_DIRECTORY_VIEW (callback_data));
 }
 
+/* Get the real directory where files will be stored and created */
+char *
+nautilus_view_get_backing_uri (NautilusView *view)
+{
+	NautilusDirectory *directory;
+	char *uri;
+	
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
+
+	if (view->details->model == NULL) {
+		return NULL;
+	}
+	
+	directory = view->details->model;
+	
+	if (NAUTILUS_IS_DESKTOP_DIRECTORY (directory)) {
+		directory = nautilus_desktop_directory_get_real_directory (NAUTILUS_DESKTOP_DIRECTORY (directory));
+	} else {
+		nautilus_directory_ref (directory);
+	}
+	
+	uri = nautilus_directory_get_uri (directory);
+
+	nautilus_directory_unref (directory);
+
+	return uri;
+}
+
 static void
 trash_or_delete_selected_files (FMDirectoryView *view)
 {
@@ -1083,7 +1495,6 @@ action_invert_selection_callback (GtkAction *action,
 
 	fm_directory_view_invert_selection (callback_data);
 }
-
 
 static void
 pattern_select_response_cb (GtkWidget *dialog, int response, gpointer user_data)
@@ -1374,6 +1785,313 @@ action_empty_trash_callback (GtkAction *action,
 	nautilus_file_operations_empty_trash (GTK_WIDGET (callback_data));
 }
 
+typedef struct {
+	FMDirectoryView *view;
+	NautilusFile *new_file;
+} RenameData;
+
+static gboolean
+delayed_rename_file_hack_callback (RenameData *data)
+{
+	FMDirectoryView *view;
+	NautilusFile *new_file;
+
+	view = data->view;
+	new_file = data->new_file;
+
+	if (view->details->window != NULL &&
+	    view->details->active) {
+		EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view, start_renaming_file, (view, new_file, FALSE));
+		fm_directory_view_reveal_selection (view);
+	}
+
+	return FALSE;
+}
+
+static void
+delayed_rename_file_hack_removed (RenameData *data)
+{
+	g_object_unref (data->view);
+	nautilus_file_unref (data->new_file);
+	g_free (data);
+}
+
+
+static void
+rename_file (FMDirectoryView *view, NautilusFile *new_file)
+{
+	RenameData *data;
+
+	/* HACK!!!!
+	   This is a work around bug in listview. After the rename is
+	   enabled we will get file changes due to info about the new
+	   file being read, which will cause the model to change. When
+	   the model changes GtkTreeView clears the editing. This hack just
+	   delays editing for some time to try to avoid this problem.
+	   A major problem is that the selection of the row causes us
+	   to load the slow mimetype for the file, which leads to a
+	   file_changed. So, before we delay we select the row.
+	*/
+	if (FM_IS_LIST_VIEW (view)) {
+		fm_directory_view_select_file (view, new_file);
+		
+		data = g_new (RenameData, 1);
+		data->view = g_object_ref (view);
+		data->new_file = nautilus_file_ref (new_file);
+		if (view->details->delayed_rename_file_id != 0) {
+			g_source_remove (view->details->delayed_rename_file_id);
+		}
+		view->details->delayed_rename_file_id = 
+			g_timeout_add_full (G_PRIORITY_DEFAULT,
+					    100, (GSourceFunc)delayed_rename_file_hack_callback,
+					    data, (GDestroyNotify) delayed_rename_file_hack_removed);
+		
+		return;
+	}
+
+	/* no need to select because start_renaming_file selects
+	 * fm_directory_view_select_file (view, new_file);
+	 */
+	EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view, start_renaming_file, (view, new_file, FALSE));
+	fm_directory_view_reveal_selection (view);
+}
+
+static void
+reveal_newly_added_folder (FMDirectoryView *view, NautilusFile *new_file,
+			   NautilusDirectory *directory, GFile *target_location)
+{
+	GFile *location;
+
+	location = nautilus_file_get_location (new_file);
+	if (g_file_equal (location, target_location)) {
+		g_signal_handlers_disconnect_by_func (view,
+						      G_CALLBACK (reveal_newly_added_folder),
+						      (void *) target_location);
+		rename_file (view, new_file);
+	}
+	g_object_unref (location);
+}
+
+typedef struct {
+	FMDirectoryView *directory_view;
+	GHashTable *added_locations;
+} NewFolderData;
+
+
+static void
+track_newly_added_locations (FMDirectoryView *view, NautilusFile *new_file,
+			     NautilusDirectory *directory, gpointer user_data)
+{
+	NewFolderData *data;
+
+	data = user_data;
+
+	g_hash_table_insert (data->added_locations, nautilus_file_get_location (new_file), NULL);
+}
+
+static void
+new_folder_done (GFile *new_folder, gpointer user_data)
+{
+	FMDirectoryView *directory_view;
+	NautilusFile *file;
+	char screen_string[32];
+	GdkScreen *screen;
+	NewFolderData *data;
+
+	data = (NewFolderData *)user_data;
+
+	directory_view = data->directory_view;
+
+	if (directory_view == NULL) {
+		goto fail;
+	}
+
+	g_signal_handlers_disconnect_by_func (directory_view,
+					      G_CALLBACK (track_newly_added_locations),
+					      (void *) data);
+
+	if (new_folder == NULL) {
+		goto fail;
+	}
+	
+	screen = gtk_widget_get_screen (GTK_WIDGET (directory_view));
+	g_snprintf (screen_string, sizeof (screen_string), "%d", gdk_screen_get_number (screen));
+
+	
+	file = nautilus_file_get (new_folder);
+	nautilus_file_set_metadata
+		(file, NAUTILUS_METADATA_KEY_SCREEN,
+		 NULL,
+		 screen_string);
+
+	if (g_hash_table_lookup_extended (data->added_locations, new_folder, NULL, NULL)) {
+		/* The file was already added */
+		rename_file (directory_view, file);
+	} else {
+		/* We need to run after the default handler adds the folder we want to
+		 * operate on. The ADD_FILE signal is registered as G_SIGNAL_RUN_LAST, so we
+		 * must use connect_after.
+		 */
+		g_signal_connect_data (directory_view,
+				       "add_file",
+				       G_CALLBACK (reveal_newly_added_folder),
+				       g_object_ref (new_folder),
+				       (GClosureNotify)g_object_unref,
+				       G_CONNECT_AFTER);
+	}
+	nautilus_file_unref (file);
+
+ fail:
+	g_hash_table_destroy (data->added_locations);
+	eel_remove_weak_pointer (&data->directory_view);
+	g_free (data);
+}
+
+
+static NewFolderData *
+new_folder_data_new (FMDirectoryView *directory_view)
+{
+	NewFolderData *data;
+
+	data = g_new (NewFolderData, 1);
+	data->directory_view = directory_view;
+	data->added_locations = g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal,
+						       g_object_unref, NULL);
+	eel_add_weak_pointer (&data->directory_view);
+
+	return data;
+}
+
+static GdkPoint *
+context_menu_to_file_operation_position (FMDirectoryView *directory_view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (directory_view), NULL);
+
+	if (fm_directory_view_using_manual_layout (directory_view)
+	    && directory_view->details->context_menu_position.x >= 0
+	    && directory_view->details->context_menu_position.y >= 0) {
+		EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, directory_view,
+				 widget_to_file_operation_position,
+				 (directory_view, &directory_view->details->context_menu_position));
+		return &directory_view->details->context_menu_position;
+	} else {
+		return NULL;
+	}
+}
+
+static void
+fm_directory_view_new_folder (FMDirectoryView *directory_view)
+{
+	char *parent_uri;
+	NewFolderData *data;
+	GdkPoint *pos;
+
+	data = new_folder_data_new (directory_view);
+
+	g_signal_connect_data (directory_view,
+			       "add_file",
+			       G_CALLBACK (track_newly_added_locations),
+			       data,
+			       (GClosureNotify)NULL,
+			       G_CONNECT_AFTER);
+
+	pos = context_menu_to_file_operation_position (directory_view);
+
+	parent_uri = nautilus_view_get_backing_uri (directory_view);
+	nautilus_file_operations_new_folder (GTK_WIDGET (directory_view),
+					     pos, parent_uri,
+					     new_folder_done, data);
+
+	g_free (parent_uri);
+}
+
+static NewFolderData *
+setup_new_folder_data (FMDirectoryView *directory_view)
+{
+	NewFolderData *data;
+
+	data = new_folder_data_new (directory_view);
+
+	g_signal_connect_data (directory_view,
+			       "add_file",
+			       G_CALLBACK (track_newly_added_locations),
+			       data,
+			       (GClosureNotify)NULL,
+			       G_CONNECT_AFTER);
+
+	return data;
+}
+
+void
+nautilus_view_new_file_with_initial_contents (NautilusView *view,
+					      const char *parent_uri,
+					      const char *filename,
+					      const char *initial_contents,
+					      int length,
+					      GdkPoint *pos)
+{
+	NewFolderData *data;
+
+	g_assert (parent_uri != NULL);
+
+	data = setup_new_folder_data (view);
+
+	if (pos == NULL) {
+		pos = context_menu_to_file_operation_position (view);
+	}
+
+	nautilus_file_operations_new_file (GTK_WIDGET (view),
+					   pos, parent_uri, filename,
+					   initial_contents, length,
+					   new_folder_done, data);
+}
+
+static void
+fm_directory_view_new_file (FMDirectoryView *directory_view,
+			    const char *parent_uri,
+			    NautilusFile *source)
+{
+	GdkPoint *pos;
+	NewFolderData *data;
+	char *source_uri;
+	char *container_uri;
+
+	container_uri = NULL;
+	if (parent_uri == NULL) {
+		container_uri = nautilus_view_get_backing_uri (directory_view);
+		g_assert (container_uri != NULL);
+	}
+
+	if (source == NULL) {
+		nautilus_view_new_file_with_initial_contents (directory_view,
+							      parent_uri != NULL ? parent_uri : container_uri,
+							      NULL,
+							      NULL,
+							      0,
+							      NULL);
+		g_free (container_uri);
+		return;
+	}
+
+	g_return_if_fail (nautilus_file_is_local (source));
+
+	pos = context_menu_to_file_operation_position (directory_view);
+
+	data = setup_new_folder_data (directory_view);
+
+	source_uri = nautilus_file_get_uri (source);
+
+	nautilus_file_operations_new_file_from_template (GTK_WIDGET (directory_view),
+							 pos,
+							 parent_uri != NULL ? parent_uri : container_uri,
+							 NULL,
+							 source_uri,
+							 new_folder_done, data);
+
+	g_free (source_uri);
+	g_free (container_uri);
+}
+
 static void
 action_new_folder_callback (GtkAction *action,
 			    gpointer callback_data)
@@ -1404,7 +2122,7 @@ action_new_launcher_callback (GtkAction *action,
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	parent_uri = fm_directory_view_get_backing_uri (view);
+	parent_uri = nautilus_view_get_backing_uri (view);
 
 	window = fm_directory_view_get_containing_window (view);
 	DEBUG ("Create new launcher in window=%p: %s", window, parent_uri);
@@ -1989,7 +2707,7 @@ fm_directory_view_destroy (GtkWidget *object)
 	view->details->window = NULL;
 	
 	nautilus_view_stop_loading (view);
-	fm_directory_view_clear (view);
+	g_signal_emit (view, signals[CLEAR], 0);
 
 	for (node = view->details->scripts_directory_list; node != NULL; node = next) {
 		next = node->next;
@@ -2311,7 +3029,7 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 	g_free (status_string);
 }
 
-void
+static void
 fm_directory_view_send_selection_change (FMDirectoryView *view)
 {
 	g_signal_emit (view, signals[SELECTION_CHANGED], 0);
@@ -2412,7 +3130,7 @@ done_loading (FMDirectoryView *view,
 		fm_directory_view_display_selection_info (view);
 	}
 
-	fm_directory_view_end_loading (view, all_files_seen);
+	g_signal_emit (view, signals[END_LOADING], 0, all_files_seen);
 
 	view->details->loading = FALSE;
 }
@@ -3239,58 +3957,6 @@ fm_directory_view_remove_subdirectory (FMDirectoryView  *view,
 }
 
 /**
- * fm_directory_view_clear:
- *
- * Emit the signal to clear the contents of the view. Subclasses must
- * override the signal handler for this signal. This is normally called
- * only by FMDirectoryView.
- * @view: FMDirectoryView to empty.
- * 
- **/
-void
-fm_directory_view_clear (FMDirectoryView *view)
-{
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-
-	g_signal_emit (view, signals[CLEAR], 0);
-}
-
-/**
- * fm_directory_view_begin_loading:
- *
- * Emit the signal to prepare for loading the contents of a new location. 
- * Subclasses might want to override the signal handler for this signal. 
- * This is normally called only by FMDirectoryView.
- * @view: FMDirectoryView that is switching to view a new location.
- * 
- **/
-void
-fm_directory_view_begin_loading (FMDirectoryView *view)
-{
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-
-	g_signal_emit (view, signals[BEGIN_LOADING], 0);
-}
-
-/**
- * fm_directory_view_end_loading:
- *
- * Emit the signal after loading the contents of a new location. 
- * Subclasses might want to override the signal handler for this signal. 
- * This is normally called only by FMDirectoryView.
- * @view: FMDirectoryView that is switching to view a new location.
- * 
- **/
-void
-fm_directory_view_end_loading (FMDirectoryView *view,
-			       gboolean all_files_seen)
-{
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-
-	g_signal_emit (view, signals[END_LOADING], 0, all_files_seen);
-}
-
-/**
  * fm_directory_view_get_loading:
  * @view: an #FMDirectoryView.
  *
@@ -3303,232 +3969,6 @@ fm_directory_view_get_loading (FMDirectoryView *view)
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
 	return view->details->loading;
-}
-
-/**
- * nautilus_view_bump_zoom_level:
- *
- * bump the current zoom level by invoking the relevant subclass through the slot
- * 
- **/
-void
-nautilus_view_bump_zoom_level (NautilusView *view,
-			       int zoom_increment)
-{
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-
-	if (!nautilus_view_supports_zooming (view)) {
-		return;
-	}
-
-	EEL_CALL_METHOD
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 bump_zoom_level, (view, zoom_increment));
-}
-
-/**
- * nautilus_view_zoom_to_level:
- *
- * Set the current zoom level by invoking the relevant subclass through the slot
- * 
- **/
-void
-nautilus_view_zoom_to_level (NautilusView *view,
-			     NautilusZoomLevel zoom_level)
-{
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-
-	if (!nautilus_view_supports_zooming (view)) {
-		return;
-	}
-
-	EEL_CALL_METHOD
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 zoom_to_level, (view, zoom_level));
-}
-
-NautilusZoomLevel
-nautilus_view_get_zoom_level (FMDirectoryView *view)
-{
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NAUTILUS_ZOOM_LEVEL_STANDARD);
-
-	if (!nautilus_view_supports_zooming (view)) {
-		return NAUTILUS_ZOOM_LEVEL_STANDARD;
-	}
-
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 get_zoom_level, (view));
-}
-
-/**
- * nautilus_view_restore_default_zoom_level:
- *
- * restore to the default zoom level by invoking the relevant subclass through the slot
- * 
- **/
-void
-nautilus_view_restore_default_zoom_level (NautilusView *view)
-{
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-
-	if (!nautilus_view_supports_zooming (view)) {
-		return;
-	}
-
-	EEL_CALL_METHOD
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 restore_default_zoom_level, (view));
-}
-
-const char *
-nautilus_view_get_view_id (NautilusView *view)
-{
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 get_view_id, (view));
-}
-
-char *
-nautilus_view_get_first_visible_file (NautilusView *view)
-{
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 get_first_visible_file, (view));
-}
-
-void
-nautilus_view_scroll_to_file (NautilusView *view,
-			      const char *uri)
-{
-	EEL_CALL_METHOD
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 scroll_to_file, (view, uri));
-}
-
-/**
- * nautilus_view_can_zoom_in:
- *
- * Determine whether the view can be zoomed any closer.
- * @view: The zoomable FMDirectoryView.
- * 
- * Return value: TRUE if @view can be zoomed any closer, FALSE otherwise.
- * 
- **/
-gboolean
-nautilus_view_can_zoom_in (NautilusView *view)
-{
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
-
-	if (!nautilus_view_supports_zooming (view)) {
-		return FALSE;
-	}
-
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 can_zoom_in, (view));
-}
-
-/**
- * fm_directory_view_can_rename_file
- *
- * Determine whether a file can be renamed.
- * @file: A NautilusFile
- * 
- * Return value: TRUE if @file can be renamed, FALSE otherwise.
- * 
- **/
-static gboolean
-fm_directory_view_can_rename_file (FMDirectoryView *view, NautilusFile *file)
-{
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 can_rename_file, (view, file));
-}
-
-/**
- * nautilus_view_can_zoom_out:
- *
- * Determine whether the view can be zoomed any further away.
- * @view: The zoomable FMDirectoryView.
- * 
- * Return value: TRUE if @view can be zoomed any further away, FALSE otherwise.
- * 
- **/
-gboolean
-nautilus_view_can_zoom_out (NautilusView *view)
-{
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
-
-	if (!nautilus_view_supports_zooming (view)) {
-		return FALSE;
-	}
-
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 can_zoom_out, (view));
-}
-
-void
-nautilus_view_set_is_active (FMDirectoryView *view,
-			     gboolean is_active)
-{
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-
-	EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view,
-			 set_is_active, (view, is_active));
-}
-
-/**
- * fm_directory_view_get_selection:
- *
- * Get a list of NautilusFile pointers that represents the
- * currently-selected items in this view. Subclasses must override
- * the signal handler for the 'get_selection' signal. Callers are
- * responsible for g_free-ing the list (but not its data).
- * @view: FMDirectoryView whose selected items are of interest.
- * 
- * Return value: GList of NautilusFile pointers representing the selection.
- * 
- **/
-GList *
-fm_directory_view_get_selection (FMDirectoryView *view)
-{
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
-
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 get_selection, (view));
-}
-
-void
-fm_directory_view_invert_selection (FMDirectoryView *view)
-{
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-
-	EEL_CALL_METHOD
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 invert_selection, (view));
-}
-
-GList *
-fm_directory_view_get_selection_for_file_transfer (FMDirectoryView *view)
-{
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
-
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 get_selection_for_file_transfer, (view));
-}
-
-guint
-fm_directory_view_get_item_count (FMDirectoryView *view)
-{
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), 0);
-
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 get_item_count, (view));
 }
 
 GtkUIManager *
@@ -3623,7 +4063,7 @@ fm_directory_view_create_links_for_files (FMDirectoryView *view, GList *files,
 			    DUPLICATE_VERTICAL_ICON_OFFSET);
 
         copy_move_done_data = pre_copy_move (view);
-	dir_uri = fm_directory_view_get_backing_uri (view);
+	dir_uri = nautilus_view_get_backing_uri (view);
 	nautilus_file_operations_copy_move (uris, relative_item_points, dir_uri, GDK_ACTION_LINK, 
 					    GTK_WIDGET (view), copy_move_done_callback, copy_move_done_data);
 	g_free (dir_uri);
@@ -3782,200 +4222,6 @@ start_renaming_file (FMDirectoryView *view,
 	}
 }
 
-typedef struct {
-	FMDirectoryView *view;
-	NautilusFile *new_file;
-} RenameData;
-
-static gboolean
-delayed_rename_file_hack_callback (RenameData *data)
-{
-	FMDirectoryView *view;
-	NautilusFile *new_file;
-
-	view = data->view;
-	new_file = data->new_file;
-
-	if (view->details->window != NULL &&
-	    view->details->active) {
-		EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view, start_renaming_file, (view, new_file, FALSE));
-		fm_directory_view_reveal_selection (view);
-	}
-
-	return FALSE;
-}
-
-static void
-delayed_rename_file_hack_removed (RenameData *data)
-{
-	g_object_unref (data->view);
-	nautilus_file_unref (data->new_file);
-	g_free (data);
-}
-
-
-static void
-rename_file (FMDirectoryView *view, NautilusFile *new_file)
-{
-	RenameData *data;
-
-	/* HACK!!!!
-	   This is a work around bug in listview. After the rename is
-	   enabled we will get file changes due to info about the new
-	   file being read, which will cause the model to change. When
-	   the model changes GtkTreeView clears the editing. This hack just
-	   delays editing for some time to try to avoid this problem.
-	   A major problem is that the selection of the row causes us
-	   to load the slow mimetype for the file, which leads to a
-	   file_changed. So, before we delay we select the row.
-	*/
-	if (FM_IS_LIST_VIEW (view)) {
-		fm_directory_view_select_file (view, new_file);
-		
-		data = g_new (RenameData, 1);
-		data->view = g_object_ref (view);
-		data->new_file = nautilus_file_ref (new_file);
-		if (view->details->delayed_rename_file_id != 0) {
-			g_source_remove (view->details->delayed_rename_file_id);
-		}
-		view->details->delayed_rename_file_id = 
-			g_timeout_add_full (G_PRIORITY_DEFAULT,
-					    100, (GSourceFunc)delayed_rename_file_hack_callback,
-					    data, (GDestroyNotify) delayed_rename_file_hack_removed);
-		
-		return;
-	}
-
-	/* no need to select because start_renaming_file selects
-	 * fm_directory_view_select_file (view, new_file);
-	 */
-	EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view, start_renaming_file, (view, new_file, FALSE));
-	fm_directory_view_reveal_selection (view);
-}
-
-static void
-reveal_newly_added_folder (FMDirectoryView *view, NautilusFile *new_file,
-			   NautilusDirectory *directory, GFile *target_location)
-{
-	GFile *location;
-
-	location = nautilus_file_get_location (new_file);
-	if (g_file_equal (location, target_location)) {
-		g_signal_handlers_disconnect_by_func (view,
-						      G_CALLBACK (reveal_newly_added_folder),
-						      (void *) target_location);
-		rename_file (view, new_file);
-	}
-	g_object_unref (location);
-}
-
-typedef struct {
-	FMDirectoryView *directory_view;
-	GHashTable *added_locations;
-} NewFolderData;
-
-
-static void
-track_newly_added_locations (FMDirectoryView *view, NautilusFile *new_file,
-			     NautilusDirectory *directory, gpointer user_data)
-{
-	NewFolderData *data;
-
-	data = user_data;
-
-	g_hash_table_insert (data->added_locations, nautilus_file_get_location (new_file), NULL);
-}
-
-static void
-new_folder_done (GFile *new_folder, gpointer user_data)
-{
-	FMDirectoryView *directory_view;
-	NautilusFile *file;
-	char screen_string[32];
-	GdkScreen *screen;
-	NewFolderData *data;
-
-	data = (NewFolderData *)user_data;
-
-	directory_view = data->directory_view;
-
-	if (directory_view == NULL) {
-		goto fail;
-	}
-
-	g_signal_handlers_disconnect_by_func (directory_view,
-					      G_CALLBACK (track_newly_added_locations),
-					      (void *) data);
-
-	if (new_folder == NULL) {
-		goto fail;
-	}
-	
-	screen = gtk_widget_get_screen (GTK_WIDGET (directory_view));
-	g_snprintf (screen_string, sizeof (screen_string), "%d", gdk_screen_get_number (screen));
-
-	
-	file = nautilus_file_get (new_folder);
-	nautilus_file_set_metadata
-		(file, NAUTILUS_METADATA_KEY_SCREEN,
-		 NULL,
-		 screen_string);
-
-	if (g_hash_table_lookup_extended (data->added_locations, new_folder, NULL, NULL)) {
-		/* The file was already added */
-		rename_file (directory_view, file);
-	} else {
-		/* We need to run after the default handler adds the folder we want to
-		 * operate on. The ADD_FILE signal is registered as G_SIGNAL_RUN_LAST, so we
-		 * must use connect_after.
-		 */
-		g_signal_connect_data (directory_view,
-				       "add_file",
-				       G_CALLBACK (reveal_newly_added_folder),
-				       g_object_ref (new_folder),
-				       (GClosureNotify)g_object_unref,
-				       G_CONNECT_AFTER);
-	}
-	nautilus_file_unref (file);
-
- fail:
-	g_hash_table_destroy (data->added_locations);
-	eel_remove_weak_pointer (&data->directory_view);
-	g_free (data);
-}
-
-
-static NewFolderData *
-new_folder_data_new (FMDirectoryView *directory_view)
-{
-	NewFolderData *data;
-
-	data = g_new (NewFolderData, 1);
-	data->directory_view = directory_view;
-	data->added_locations = g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal,
-						       g_object_unref, NULL);
-	eel_add_weak_pointer (&data->directory_view);
-
-	return data;
-}
-
-static GdkPoint *
-context_menu_to_file_operation_position (FMDirectoryView *directory_view)
-{
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (directory_view), NULL);
-
-	if (fm_directory_view_using_manual_layout (directory_view)
-	    && directory_view->details->context_menu_position.x >= 0
-	    && directory_view->details->context_menu_position.y >= 0) {
-		EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, directory_view,
-				 widget_to_file_operation_position,
-				 (directory_view, &directory_view->details->context_menu_position));
-		return &directory_view->details->context_menu_position;
-	} else {
-		return NULL;
-	}
-}
-
 static void
 update_context_menu_position_from_event (FMDirectoryView *view,
 					 GdkEventButton  *event)
@@ -3989,119 +4235,6 @@ update_context_menu_position_from_event (FMDirectoryView *view,
 		view->details->context_menu_position.x = -1;
 		view->details->context_menu_position.y = -1;
 	}
-}
-
-void
-fm_directory_view_new_folder (FMDirectoryView *directory_view)
-{
-	char *parent_uri;
-	NewFolderData *data;
-	GdkPoint *pos;
-
-	data = new_folder_data_new (directory_view);
-
-	g_signal_connect_data (directory_view,
-			       "add_file",
-			       G_CALLBACK (track_newly_added_locations),
-			       data,
-			       (GClosureNotify)NULL,
-			       G_CONNECT_AFTER);
-
-	pos = context_menu_to_file_operation_position (directory_view);
-
-	parent_uri = fm_directory_view_get_backing_uri (directory_view);
-	nautilus_file_operations_new_folder (GTK_WIDGET (directory_view),
-					     pos, parent_uri,
-					     new_folder_done, data);
-
-	g_free (parent_uri);
-}
-
-static NewFolderData *
-setup_new_folder_data (FMDirectoryView *directory_view)
-{
-	NewFolderData *data;
-
-	data = new_folder_data_new (directory_view);
-
-	g_signal_connect_data (directory_view,
-			       "add_file",
-			       G_CALLBACK (track_newly_added_locations),
-			       data,
-			       (GClosureNotify)NULL,
-			       G_CONNECT_AFTER);
-
-	return data;
-}
-
-static void
-fm_directory_view_new_file_with_initial_contents (FMDirectoryView *directory_view,
-						  const char *parent_uri,
-						  const char *filename,
-						  const char *initial_contents,
-						  int length,
-						  GdkPoint *pos)
-{
-	NewFolderData *data;
-
-	g_assert (parent_uri != NULL);
-
-	data = setup_new_folder_data (directory_view);
-
-	if (pos == NULL) {
-		pos = context_menu_to_file_operation_position (directory_view);
-	}
-
-	nautilus_file_operations_new_file (GTK_WIDGET (directory_view),
-					   pos, parent_uri, filename,
-					   initial_contents, length,
-					   new_folder_done, data);
-}
-
-void
-fm_directory_view_new_file (FMDirectoryView *directory_view,
-			    const char *parent_uri,
-			    NautilusFile *source)
-{
-	GdkPoint *pos;
-	NewFolderData *data;
-	char *source_uri;
-	char *container_uri;
-
-	container_uri = NULL;
-	if (parent_uri == NULL) {
-		container_uri = fm_directory_view_get_backing_uri (directory_view);
-		g_assert (container_uri != NULL);
-	}
-
-	if (source == NULL) {
-		fm_directory_view_new_file_with_initial_contents (directory_view,
-								  parent_uri != NULL ? parent_uri : container_uri,
-								  NULL,
-								  NULL,
-								  0,
-								  NULL);
-		g_free (container_uri);
-		return;
-	}
-
-	g_return_if_fail (nautilus_file_is_local (source));
-
-	pos = context_menu_to_file_operation_position (directory_view);
-
-	data = setup_new_folder_data (directory_view);
-
-	source_uri = nautilus_file_get_uri (source);
-
-	nautilus_file_operations_new_file_from_template (GTK_WIDGET (directory_view),
-							 pos,
-							 parent_uri != NULL ? parent_uri : container_uri,
-							 NULL,
-							 source_uri,
-							 new_folder_done, data);
-
-	g_free (source_uri);
-	g_free (container_uri);
 }
 
 /* handle the open command */
@@ -5780,10 +5913,9 @@ move_copy_selection_to_location (FMDirectoryView *view,
 	}
 	uris = g_list_reverse (uris);
 
-	fm_directory_view_move_copy_items (uris, NULL, target_uri,
-					   copy_action,
-					   0, 0,
-					   view);
+	nautilus_view_move_copy_items (view, uris, NULL, target_uri,
+				       copy_action,
+				       0, 0);
 
 	g_list_free_full (uris, g_free);
 	nautilus_file_list_free (selection);
@@ -5915,10 +6047,9 @@ paste_clipboard_data (FMDirectoryView *view,
 		nautilus_window_slot_set_status (view->details->slot,
 						      _("There is nothing on the clipboard to paste."));
 	} else {
-		fm_directory_view_move_copy_items (item_uris, NULL, destination_uri,
-						   cut ? GDK_ACTION_MOVE : GDK_ACTION_COPY,
-						   0, 0,
-						   view);
+		nautilus_view_move_copy_items (view, item_uris, NULL, destination_uri,
+					       cut ? GDK_ACTION_MOVE : GDK_ACTION_COPY,
+					       0, 0);
 
 		/* If items are cut then remove from clipboard */
 		if (cut) {
@@ -5939,7 +6070,7 @@ paste_clipboard_received_callback (GtkClipboard     *clipboard,
 
 	view = FM_DIRECTORY_VIEW (data);
 
-	view_uri = fm_directory_view_get_backing_uri (view);
+	view_uri = nautilus_view_get_backing_uri (view);
 
 	if (view->details->window != NULL) {
 		paste_clipboard_data (view, selection_data, view_uri);
@@ -6121,6 +6252,16 @@ file_mount_callback (NautilusFile  *file,
 	      error->code != G_IO_ERROR_ALREADY_MOUNTED))) {
 		eel_show_error_dialog (_("Unable to mount location"),
 				       error->message, NULL);
+	}
+}
+
+static void
+fm_directory_view_set_initiated_unmount (FMDirectoryView *view,
+					 gboolean initiated_unmount)
+{
+	if (view->details->window != NULL) {
+		nautilus_window_set_initiated_unmount(view->details->window,
+							   initiated_unmount);
 	}
 }
 
@@ -9001,7 +9142,7 @@ nautilus_view_drop_proxy_received_uris (NautilusView *view,
 
 	container_uri = NULL;
 	if (target_uri == NULL) {
-		container_uri = fm_directory_view_get_backing_uri (view);
+		container_uri = nautilus_view_get_backing_uri (view);
 		g_assert (container_uri != NULL);
 	}
 
@@ -9018,9 +9159,9 @@ nautilus_view_drop_proxy_received_uris (NautilusView *view,
 						    source_uri_list,
 						    fm_directory_view_get_copied_files_atom (view));
 
-	fm_directory_view_move_copy_items (source_uri_list, NULL,
-					   target_uri != NULL ? target_uri : container_uri,
-					   action, 0, 0, view);
+	nautilus_view_move_copy_items (view, source_uri_list, NULL,
+				       target_uri != NULL ? target_uri : container_uri,
+				       action, 0, 0);
 
 	g_free (container_uri);
 }
@@ -9191,7 +9332,7 @@ load_directory (FMDirectoryView *view,
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
 	nautilus_view_stop_loading (view);
-	fm_directory_view_clear (view);
+	g_signal_emit (view, signals[CLEAR], 0);
 
 	view->details->loading = TRUE;
 
@@ -9266,7 +9407,7 @@ finish_loading (FMDirectoryView *view)
 	/* Tell interested parties that we've begun loading this directory now.
 	 * Subclasses use this to know that the new metadata is now available.
 	 */
-	fm_directory_view_begin_loading (view);
+	g_signal_emit (view, signals[BEGIN_LOADING], 0);
 
 	/* Assume we have now all information to show window */
 	nautilus_window_view_visible  (view->details->window, NAUTILUS_VIEW (view));
@@ -9361,16 +9502,6 @@ metadata_for_files_in_directory_ready_callback (NautilusDirectory *directory,
 	finish_loading_if_all_metadata_loaded (view);
 }
 
-char **
-fm_directory_view_get_emblem_names_to_exclude (FMDirectoryView *view)
-{
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
-
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 get_emblem_names_to_exclude, (view));
-}
-
 static char **
 real_get_emblem_names_to_exclude (FMDirectoryView *view)
 {
@@ -9391,32 +9522,6 @@ real_get_emblem_names_to_exclude (FMDirectoryView *view)
 	excludes[i++] = NULL;
 
 	return excludes;
-}
-
-/**
- * fm_directory_view_merge_menus:
- * 
- * Add this view's menus to the window's menu bar.
- * @view: FMDirectoryView in question.
- */
-static void
-fm_directory_view_merge_menus (FMDirectoryView *view)
-{
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-
-	EEL_CALL_METHOD
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 merge_menus, (view));
-}
-
-static void
-fm_directory_view_unmerge_menus (FMDirectoryView *view)
-{
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-
-	EEL_CALL_METHOD
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 unmerge_menus, (view));
 }
 
 static void
@@ -9463,62 +9568,6 @@ disconnect_model_handlers (FMDirectoryView *view)
 				      &view->details->directory_as_file);
 }
 
-/**
- * fm_directory_view_reset_to_defaults:
- *
- * set sorting order, zoom level, etc. to match defaults
- * 
- **/
-void
-fm_directory_view_reset_to_defaults (FMDirectoryView *view)
-{
-	NautilusWindowShowHiddenFilesMode mode;
-
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-	
-	EEL_CALL_METHOD
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 reset_to_defaults, (view));
-	mode = nautilus_window_get_hidden_files_mode (view->details->window);
-	if (mode != NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT) {
-		nautilus_window_set_hidden_files_mode (view->details->window,
-							    NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT);
-	}
-}
-
-/**
- * fm_directory_view_select_all:
- *
- * select all the items in the view
- * 
- **/
-void
-fm_directory_view_select_all (FMDirectoryView *view)
-{
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-
-	EEL_CALL_METHOD
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 select_all, (view));
-}
-
-/**
- * fm_directory_view_set_selection:
- *
- * set the selection to the items identified in @selection. @selection
- * should be a list of NautilusFiles
- * 
- **/
-void
-fm_directory_view_set_selection (FMDirectoryView *view, GList *selection)
-{
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-
-	EEL_CALL_METHOD
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 set_selection, (view, selection));
-}
-
 static void
 fm_directory_view_select_file (FMDirectoryView *view, NautilusFile *file)
 {
@@ -9528,38 +9577,6 @@ fm_directory_view_select_file (FMDirectoryView *view, NautilusFile *file)
 	file_list.next = NULL;
 	file_list.prev = NULL;
 	fm_directory_view_set_selection (view, &file_list);
-}
-
-/**
- * fm_directory_view_get_selected_icon_locations:
- *
- * return an array of locations of selected icons if available
- * Return value: GArray of GdkPoints
- * 
- **/
-GArray *
-fm_directory_view_get_selected_icon_locations (FMDirectoryView *view)
-{
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
-
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 get_selected_icon_locations, (view));
-}
-
-/**
- * fm_directory_view_reveal_selection:
- *
- * Scroll as necessary to reveal the selected items.
- **/
-void
-fm_directory_view_reveal_selection (FMDirectoryView *view)
-{
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-
-	EEL_CALL_METHOD
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 reveal_selection, (view));
 }
 
 static gboolean
@@ -9603,26 +9620,6 @@ nautilus_view_stop_loading (FMDirectoryView *view)
 }
 
 gboolean
-fm_directory_view_is_read_only (FMDirectoryView *view)
-{
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
-
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 is_read_only, (view));
-}
-
-gboolean
-fm_directory_view_is_empty (FMDirectoryView *view)
-{
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
-
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 is_empty, (view));
-}
-
-gboolean
 fm_directory_view_is_editable (FMDirectoryView *view)
 {
 	NautilusDirectory *directory;
@@ -9634,16 +9631,6 @@ fm_directory_view_is_editable (FMDirectoryView *view)
 	}
 
 	return TRUE;
-}
-
-void
-fm_directory_view_set_initiated_unmount (FMDirectoryView *view,
-					 gboolean initiated_unmount)
-{
-	if (view->details->window != NULL) {
-		nautilus_window_set_initiated_unmount(view->details->window,
-							   initiated_unmount);
-	}
 }
 
 static gboolean
@@ -9660,26 +9647,6 @@ real_is_read_only (FMDirectoryView *view)
 		return !nautilus_file_can_write (file);
 	}
 	return FALSE;
-}
-
-gboolean
-fm_directory_view_supports_creating_files (FMDirectoryView *view)
-{
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
-
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 supports_creating_files, (view));
-}
-
-gboolean
-fm_directory_view_accepts_dragged_files (FMDirectoryView *view)
-{
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
-
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 accepts_dragged_files, (view));
 }
 
 /**
@@ -9705,39 +9672,11 @@ real_supports_creating_files (FMDirectoryView *view)
 }
 
 static gboolean
-real_accepts_dragged_files (FMDirectoryView *view)
-{
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
-
-	return !fm_directory_view_is_read_only (view);
-}
-
-gboolean
-fm_directory_view_supports_properties (FMDirectoryView *view)
-{
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
-
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 supports_properties, (view));
-}
-
-static gboolean
 real_supports_properties (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
 	return TRUE;
-}
-
-gboolean
-nautilus_view_supports_zooming (FMDirectoryView *view)
-{
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
-
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 supports_zooming, (view));
 }
 
 static gboolean
@@ -9748,45 +9687,12 @@ real_supports_zooming (FMDirectoryView *view)
 	return TRUE;
 }
 
-gboolean
-fm_directory_view_using_manual_layout (FMDirectoryView  *view)
-{
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
-
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 using_manual_layout, (view));
-}
-
 static gboolean
 real_using_manual_layout (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
 	return FALSE;
-}
-
-/**
- * nautilus_view_update_menus:
- * 
- * Update the sensitivity and wording of dynamic menu items.
- * @view: FMDirectoryView in question.
- */
-void
-nautilus_view_update_menus (NautilusView *view)
-{
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-
-	if (!view->details->active) {
-		return;
-	}
-
-
-	EEL_CALL_METHOD
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 update_menus, (view));
-
-	view->details->menu_states_untrustworthy = FALSE;
 }
 
 static void
@@ -9825,41 +9731,13 @@ fm_directory_view_get_uri (FMDirectoryView *view)
 	return nautilus_directory_get_uri (view->details->model);
 }
 
-/* Get the real directory where files will be stored and created */
-char *
-fm_directory_view_get_backing_uri (FMDirectoryView *view)
-{
-	NautilusDirectory *directory;
-	char *uri;
-	
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
-
-	if (view->details->model == NULL) {
-		return NULL;
-	}
-	
-	directory = view->details->model;
-	
-	if (NAUTILUS_IS_DESKTOP_DIRECTORY (directory)) {
-		directory = nautilus_desktop_directory_get_real_directory (NAUTILUS_DESKTOP_DIRECTORY (directory));
-	} else {
-		nautilus_directory_ref (directory);
-	}
-	
-	uri = nautilus_directory_get_uri (directory);
-
-	nautilus_directory_unref (directory);
-
-	return uri;
-}
-
 void
-fm_directory_view_move_copy_items (const GList *item_uris,
-				   GArray *relative_item_points,
-				   const char *target_uri,
-				   int copy_action,
-				   int x, int y,
-				   FMDirectoryView *view)
+nautilus_view_move_copy_items (NautilusView *view,
+			       const GList *item_uris,
+			       GArray *relative_item_points,
+			       const char *target_uri,
+			       int copy_action,
+			       int x, int y)
 {
 	NautilusFile *target_file;
 	
@@ -9921,18 +9799,6 @@ fm_directory_view_move_copy_items (const GList *item_uris,
 		(item_uris, relative_item_points, 
 		 target_uri, copy_action, GTK_WIDGET (view),
 		 copy_move_done_callback, pre_copy_move (view));
-}
-
-gboolean
-fm_directory_view_can_accept_item (NautilusFile *target_item,
-				   const char *item_uri,
-				   FMDirectoryView *view)
-{
-	g_return_val_if_fail (NAUTILUS_IS_FILE (target_item), FALSE);
-	g_return_val_if_fail (item_uri != NULL, FALSE);
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
-
-	return nautilus_drag_can_accept_item (target_item, item_uri);
 }
 
 static void
@@ -10717,7 +10583,6 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
 
-	klass->accepts_dragged_files = real_accepts_dragged_files;
 	klass->file_still_belongs = real_file_still_belongs;
 	klass->get_emblem_names_to_exclude = real_get_emblem_names_to_exclude;
 	klass->get_selected_icon_locations = real_get_selected_icon_locations;

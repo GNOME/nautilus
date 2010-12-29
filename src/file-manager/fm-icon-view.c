@@ -46,6 +46,7 @@
 #include <libnautilus-private/nautilus-clipboard-monitor.h>
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-dnd.h>
+#include <libnautilus-private/nautilus-file-dnd.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-ui-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
@@ -2646,7 +2647,7 @@ icon_view_can_accept_item (NautilusIconContainer *container,
 			   const char *item_uri,
 			   FMDirectoryView *view)
 {
-	return fm_directory_view_can_accept_item (target_item, item_uri, view);
+	return nautilus_drag_can_accept_item (target_item, item_uri);
 }
 
 static char *
