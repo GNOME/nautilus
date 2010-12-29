@@ -709,7 +709,6 @@ location_button_clicked_callback (GtkWidget             *widget,
 	gtk_menu_shell_select_item (GTK_MENU_SHELL (popup), first_item);
 	g_main_loop_run (loop);
 	gtk_grab_remove (popup);
-	g_main_loop_unref (loop);
 	g_object_ref_sink (popup);
 	g_object_unref (popup);
 }
