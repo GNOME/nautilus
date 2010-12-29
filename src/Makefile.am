@@ -123,6 +123,8 @@ nautilus_SOURCES = \
 	nautilus-view-as-action.h		\
 	nautilus-view.c				\
 	nautilus-view.h				\
+	nautilus-view-dnd.c			\
+	nautilus-view-dnd.h			\
 	nautilus-view-factory.c 		\
 	nautilus-view-factory.h 		\
 	nautilus-window-bookmarks.c		\

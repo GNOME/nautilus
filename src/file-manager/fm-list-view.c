@@ -31,6 +31,7 @@
 #include <string.h>
 #include "fm-error-reporting.h"
 #include "fm-list-model.h"
+#include "nautilus-view-dnd.h"
 #include "nautilus-view-factory.h"
 
 #include <string.h>
@@ -1285,8 +1286,8 @@ static void
 list_view_handle_netscape_url (NautilusTreeViewDragDest *dest, const char *encoded_url,
 			       const char *target_uri, GdkDragAction action, int x, int y, FMListView *view)
 {
-	fm_directory_view_handle_netscape_url_drop (FM_DIRECTORY_VIEW (view),
-						    encoded_url, target_uri, action, x, y);
+	nautilus_view_handle_netscape_url_drop (NAUTILUS_VIEW (view),
+						encoded_url, target_uri, action, x, y);
 }
 
 static void
@@ -1294,8 +1295,8 @@ list_view_handle_uri_list (NautilusTreeViewDragDest *dest, const char *item_uris
 			   const char *target_uri,
 			   GdkDragAction action, int x, int y, FMListView *view)
 {
-	fm_directory_view_handle_uri_list_drop (FM_DIRECTORY_VIEW (view),
-						item_uris, target_uri, action, x, y);
+	nautilus_view_handle_uri_list_drop (NAUTILUS_VIEW (view),
+					    item_uris, target_uri, action, x, y);
 }
 
 static void
@@ -1303,8 +1304,8 @@ list_view_handle_text (NautilusTreeViewDragDest *dest, const char *text,
 		       const char *target_uri,
 		       GdkDragAction action, int x, int y, FMListView *view)
 {
-	fm_directory_view_handle_text_drop (FM_DIRECTORY_VIEW (view),
-					    text, target_uri, action, x, y);
+	nautilus_view_handle_text_drop (NAUTILUS_VIEW (view),
+					text, target_uri, action, x, y);
 }
 
 static void
@@ -1312,9 +1313,9 @@ list_view_handle_raw (NautilusTreeViewDragDest *dest, const char *raw_data,
 		       int length, const char *target_uri, const char *direct_save_uri,
 		       GdkDragAction action, int x, int y, FMListView *view)
 {
-	fm_directory_view_handle_raw_drop (FM_DIRECTORY_VIEW (view),
-					    raw_data, length, target_uri, direct_save_uri,
-					    action, x, y);
+	nautilus_view_handle_raw_drop (NAUTILUS_VIEW (view),
+				       raw_data, length, target_uri, direct_save_uri,
+				       action, x, y);
 }
 
 static void
@@ -1327,17 +1328,17 @@ move_copy_items_callback (NautilusTreeViewDragDest *dest,
 			  gpointer user_data)
 
 {
-	FMDirectoryView *view = user_data;
+	NautilusView *view = user_data;
 
 	nautilus_clipboard_clear_if_colliding_uris (GTK_WIDGET (view),
 						    item_uris,
 						    fm_directory_view_get_copied_files_atom (view));
-	fm_directory_view_move_copy_items (item_uris,
-					   NULL,
-					   target_uri,
-					   action,
-					   x, y,
-					   view);
+	nautilus_view_move_copy_items (view,
+				       item_uris,
+				       NULL,
+				       target_uri,
+				       action,
+				       x, y);
 }
 
 static void

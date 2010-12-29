@@ -40,6 +40,7 @@ typedef struct FMDirectoryView FMDirectoryView;
 typedef struct FMDirectoryViewClass FMDirectoryViewClass;
 
 typedef FMDirectoryView NautilusView;
+typedef FMDirectoryViewClass NautilusViewClass;
 
 #include "nautilus-window.h"
 #include "nautilus-window-slot.h"
@@ -59,6 +60,8 @@ typedef FMDirectoryView NautilusView;
 #define NAUTILUS_TYPE_VIEW FM_TYPE_DIRECTORY_VIEW
 #define NAUTILUS_VIEW(obj) FM_DIRECTORY_VIEW(obj)
 #define NAUTILUS_IS_VIEW(obj) FM_IS_DIRECTORY_VIEW(obj)
+#define NAUTILUS_VIEW_CLASS(klass) FM_IS_DIRECTORY_VIEW_CLASS(klass)
+#define NAUTILUS_VIEW_GET_CLASS(obj) FM_DIRECTORY_VIEW_GET_CLASS(obj)
 
 typedef struct FMDirectoryViewDetails FMDirectoryViewDetails;
 
@@ -307,8 +310,8 @@ struct FMDirectoryViewClass {
 	 * This is used by the the icon view, which converts the screen position to a zoom
 	 * level-independent coordinate system.
 	 */
-	void (* widget_to_file_operation_position) (FMDirectoryView *view,
-						    GdkPoint        *position);
+	void (* widget_to_file_operation_position) (NautilusView *view,
+						    GdkPoint     *position);
 
 	/* Preference change callbacks, overriden by icon and list views. 
 	 * Icon and list views respond by synchronizing to the new preference
@@ -388,32 +391,7 @@ void                fm_directory_view_set_show_foreign                 (FMDirect
 		                                                        gboolean          show_foreign);
 gboolean            fm_directory_view_handle_scroll_event              (FMDirectoryView  *view,
 									GdkEventScroll   *event);
-void                fm_directory_view_handle_netscape_url_drop         (FMDirectoryView  *view,
-									const char       *encoded_url,
-									const char       *target_uri,
-									GdkDragAction     action,
-									int               x,
-									int               y);
-void                fm_directory_view_handle_uri_list_drop             (FMDirectoryView  *view,
-									const char       *item_uris,
-									const char       *target_uri,
-									GdkDragAction     action,
-									int               x,
-									int               y);
-void                fm_directory_view_handle_text_drop                 (FMDirectoryView  *view,
-									const char       *text,
-									const char       *target_uri,
-									GdkDragAction     action,
-									int               x,
-									int               y);
-void                fm_directory_view_handle_raw_drop                 (FMDirectoryView  *view,
-									const char       *raw_data,
-									int               length,
-									const char       *target_uri,
-									const char       *direct_save_uri,
-									GdkDragAction     action,
-									int               x,
-									int               y);
+
 void                fm_directory_view_freeze_updates                   (FMDirectoryView  *view);
 void                fm_directory_view_unfreeze_updates                 (FMDirectoryView  *view);
 void                fm_directory_view_add_subdirectory                (FMDirectoryView  *view,
@@ -469,14 +447,6 @@ void              nautilus_view_pop_up_location_context_menu (NautilusView    *v
 							      const char      *location);
 void              nautilus_view_grab_focus                 (NautilusView      *view);
 void              nautilus_view_update_menus               (NautilusView      *view);
-void              nautilus_view_drop_proxy_received_uris   (NautilusView         *view,
-							    const GList          *uris,
-							    const char           *target_location,
-							    GdkDragAction         action);
-void              nautilus_view_drop_proxy_received_netscape_url (NautilusView         *view,
-								  const char           *source_url,
-								  const char           *target_location,
-								  GdkDragAction         action);
 void              nautilus_view_set_is_active              (NautilusView      *view,
 							    gboolean           is_active);
 

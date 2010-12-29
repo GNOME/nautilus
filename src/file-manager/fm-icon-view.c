@@ -29,6 +29,7 @@
 #include "fm-icon-container.h"
 #include "fm-desktop-icon-view.h"
 #include "fm-error-reporting.h"
+#include "nautilus-view-dnd.h"
 #include "nautilus-view-factory.h"
 
 #include <stdlib.h>
@@ -2664,13 +2665,13 @@ icon_view_move_copy_items (NautilusIconContainer *container,
 			   const char *target_dir,
 			   int copy_action,
 			   int x, int y,
-			   FMDirectoryView *view)
+			   NautilusView *view)
 {
 	nautilus_clipboard_clear_if_colliding_uris (GTK_WIDGET (view),
 						    item_uris,
 						    fm_directory_view_get_copied_files_atom (view));
-	fm_directory_view_move_copy_items (item_uris, relative_item_points, target_dir,
-		copy_action, x, y, view);
+	nautilus_view_move_copy_items (view, item_uris, relative_item_points, target_dir,
+		copy_action, x, y);
 }
 
 static void
@@ -2833,8 +2834,8 @@ icon_view_handle_netscape_url (NautilusIconContainer *container, const char *enc
 			       const char *target_uri,
 			       GdkDragAction action, int x, int y, FMIconView *view)
 {
-	fm_directory_view_handle_netscape_url_drop (FM_DIRECTORY_VIEW (view),
-						    encoded_url, target_uri, action, x, y);
+	nautilus_view_handle_netscape_url_drop (NAUTILUS_VIEW (view),
+						encoded_url, target_uri, action, x, y);
 }
 
 static void
@@ -2842,8 +2843,8 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 			   const char *target_uri,
 			   GdkDragAction action, int x, int y, FMIconView *view)
 {
-	fm_directory_view_handle_uri_list_drop (FM_DIRECTORY_VIEW (view),
-						item_uris, target_uri, action, x, y);
+	nautilus_view_handle_uri_list_drop (NAUTILUS_VIEW (view),
+					    item_uris, target_uri, action, x, y);
 }
 
 static void
@@ -2851,8 +2852,8 @@ icon_view_handle_text (NautilusIconContainer *container, const char *text,
 		       const char *target_uri,
 		       GdkDragAction action, int x, int y, FMIconView *view)
 {
-	fm_directory_view_handle_text_drop (FM_DIRECTORY_VIEW (view),
-					    text, target_uri, action, x, y);
+	nautilus_view_handle_text_drop (NAUTILUS_VIEW (view),
+					text, target_uri, action, x, y);
 }
 
 static void
@@ -2860,8 +2861,8 @@ icon_view_handle_raw (NautilusIconContainer *container, const char *raw_data,
 		       int length, const char *target_uri, const char *direct_save_uri,
 		       GdkDragAction action, int x, int y, FMIconView *view)
 {
-	fm_directory_view_handle_raw_drop (FM_DIRECTORY_VIEW (view),
-					    raw_data, length, target_uri, direct_save_uri, action, x, y);
+	nautilus_view_handle_raw_drop (NAUTILUS_VIEW (view),
+				       raw_data, length, target_uri, direct_save_uri, action, x, y);
 }
 
 static char *

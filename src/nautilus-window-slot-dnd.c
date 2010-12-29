@@ -26,6 +26,7 @@
 
 #include <config.h>
 
+#include "nautilus-view-dnd.h"
 #include "nautilus-window-slot-dnd.h"
 
 typedef struct {
@@ -249,10 +250,11 @@ slot_proxy_handle_drop (GtkWidget                *widget,
                                               target_uri,
                                               gdk_drag_context_get_selected_action (context));
     } if (drag_info->info == NAUTILUS_ICON_DND_NETSCAPE_URL) {
-      nautilus_view_drop_proxy_received_netscape_url (target_view,
-                                                      drag_info->data.netscape_url,
-                                                      target_uri,
-                                                      gdk_drag_context_get_selected_action (context));
+      nautilus_view_handle_netscape_url_drop (target_view,
+                                              drag_info->data.netscape_url,
+                                              target_uri,
+                                              gdk_drag_context_get_selected_action (context),
+                                              0, 0);
     }
 
 
