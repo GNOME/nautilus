@@ -134,9 +134,6 @@ void             nautilus_window_go_to_full           (NautilusWindow    *window
                                                        GFile             *location,
                                                        NautilusWindowGoToCallback callback,
                                                        gpointer           user_data);
-void             nautilus_window_go_to_with_selection (NautilusWindow    *window,
-                                                       GFile             *location,
-                                                       GList             *new_selection);
 void             nautilus_window_new_tab              (NautilusWindow    *window);
 void             nautilus_window_prompt_for_location  (NautilusWindow    *window,
                                                        const char        *initial);

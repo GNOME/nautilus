@@ -149,10 +149,6 @@ void nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 	nautilus_window_slot_open_location_full(slot, location, NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE, \
 						(new_tab ? NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB : 0), \
 						NULL, callback, user_data)
-#define nautilus_window_slot_go_to_with_selection(slot, location, new_selection) \
-	nautilus_window_slot_open_location(slot, location,\
-					   NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE, 0,\
-					   new_selection)
 
 void			nautilus_window_slot_stop_loading	      (NautilusWindowSlot	*slot);
 

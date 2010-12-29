@@ -228,18 +228,6 @@ nautilus_window_go_to_full (NautilusWindow *window,
 	nautilus_window_slot_go_to_full (window->details->active_pane->active_slot, location, FALSE, callback, user_data);
 }
 
-void
-nautilus_window_go_to_with_selection (NautilusWindow *window,
-				      GFile *location,
-				      GList *new_selection)
-{
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-
-	nautilus_window_slot_go_to_with_selection (window->details->active_pane->active_slot,
-						   location,
-						   new_selection);
-}
-
 static gboolean
 nautilus_window_go_up_signal (NautilusWindow *window, gboolean close_behind)
 {
