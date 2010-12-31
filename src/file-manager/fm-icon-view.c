@@ -1200,18 +1200,21 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	GtkWidget *icon_container;
 	NautilusFile *file;
 	int level;
-	char *sort_name;
+	char *sort_name, *uri;
 
 	g_return_if_fail (FM_IS_ICON_VIEW (view));
 
 	icon_view = FM_ICON_VIEW (view);
 	file = fm_directory_view_get_directory_as_file (view);
+	uri = nautilus_file_get_uri (file);
 	icon_container = GTK_WIDGET (get_icon_container (icon_view));
 
 	nautilus_icon_container_begin_loading (NAUTILUS_ICON_CONTAINER (icon_container));
 
 	nautilus_icon_container_set_allow_moves (NAUTILUS_ICON_CONTAINER (icon_container),
-						 fm_directory_view_get_allow_moves (view));
+						 !eel_uri_is_search (uri));
+
+	g_free (uri);
 
 	/* kill any sound preview process that is ongoing */
 	preview_audio (icon_view, NULL, FALSE);

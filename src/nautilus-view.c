@@ -252,8 +252,6 @@ struct FMDirectoryViewDetails
 
 	GList *subdirectory_list;
 
-	gboolean allow_moves;
-
 	GdkPoint context_menu_position;
 };
 
@@ -2994,30 +2992,14 @@ fm_directory_view_send_selection_change (FMDirectoryView *view)
 	view->details->send_selection_change_to_shell = FALSE;
 }
 
-gboolean
-fm_directory_view_get_allow_moves (FMDirectoryView *view)
-{
-	return view->details->allow_moves;
-}
-
 void
 nautilus_view_load_location (NautilusView *nautilus_view,
 			     GFile        *location)
 {
 	NautilusDirectory *directory;
 	FMDirectoryView *directory_view;
-	gchar *uri;
 
 	directory_view = FM_DIRECTORY_VIEW (nautilus_view);
-	uri = g_file_get_uri (location);
-
-	if (eel_uri_is_search (uri)) {
-		directory_view->details->allow_moves = FALSE;
-	} else {
-		directory_view->details->allow_moves = TRUE;
-	}
-
-	g_free (uri);
 
 	directory = nautilus_directory_get (location);
 	load_directory (directory_view, directory);
