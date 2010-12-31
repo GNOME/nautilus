@@ -90,7 +90,6 @@ typedef struct {
 	GtkWidget *popup_menu_unmount_item;
 	GtkWidget *popup_menu_eject_item;
 	GtkWidget *popup_menu_rescan_item;
-	GtkWidget *popup_menu_format_item;
 	GtkWidget *popup_menu_empty_trash_item;
 	GtkWidget *popup_menu_start_item;
 	GtkWidget *popup_menu_stop_item;
@@ -1549,7 +1548,6 @@ bookmarks_popup_menu_detach_cb (GtkWidget *attach_widget,
 	sidebar->popup_menu_unmount_item = NULL;
 	sidebar->popup_menu_eject_item = NULL;
 	sidebar->popup_menu_rescan_item = NULL;
-	sidebar->popup_menu_format_item = NULL;
 	sidebar->popup_menu_start_item = NULL;
 	sidebar->popup_menu_stop_item = NULL;
 	sidebar->popup_menu_empty_trash_item = NULL;
@@ -1586,12 +1584,10 @@ check_visibility (GMount           *mount,
 		  gboolean         *show_unmount,
 		  gboolean         *show_eject,
 		  gboolean         *show_rescan,
-		  gboolean         *show_format,
 		  gboolean         *show_start,
 		  gboolean         *show_stop)
 {
 	*show_mount = FALSE;
-	*show_format = FALSE;
 	*show_rescan = FALSE;
 	*show_start = FALSE;
 	*show_stop = FALSE;
@@ -1629,7 +1625,6 @@ bookmarks_check_popup_sensitivity (NautilusPlacesSidebar *sidebar)
 	gboolean show_unmount;
 	gboolean show_eject;
 	gboolean show_rescan;
-	gboolean show_format;
 	gboolean show_start;
 	gboolean show_stop;
 	gboolean show_empty_trash;
@@ -1658,7 +1653,7 @@ bookmarks_check_popup_sensitivity (NautilusPlacesSidebar *sidebar)
 	gtk_widget_set_sensitive (sidebar->popup_menu_empty_trash_item, !nautilus_trash_monitor_is_empty ());
 
  	check_visibility (mount, volume, drive,
- 			  &show_mount, &show_unmount, &show_eject, &show_rescan, &show_format, &show_start, &show_stop);
+ 			  &show_mount, &show_unmount, &show_eject, &show_rescan, &show_start, &show_stop);
 
 	/* We actually want both eject and unmount since eject will unmount all volumes. 
 	 * TODO: hide unmount if the drive only has a single mountable volume 
@@ -1668,12 +1663,11 @@ bookmarks_check_popup_sensitivity (NautilusPlacesSidebar *sidebar)
 			   (!strcmp (uri, "trash:///"));
 
 	gtk_widget_set_visible (sidebar->popup_menu_separator_item,
-		      show_mount || show_unmount || show_eject || show_format || show_empty_trash);
+		      show_mount || show_unmount || show_eject || show_empty_trash);
 	gtk_widget_set_visible (sidebar->popup_menu_mount_item, show_mount);
 	gtk_widget_set_visible (sidebar->popup_menu_unmount_item, show_unmount);
 	gtk_widget_set_visible (sidebar->popup_menu_eject_item, show_eject);
 	gtk_widget_set_visible (sidebar->popup_menu_rescan_item, show_rescan);
-	gtk_widget_set_visible (sidebar->popup_menu_format_item, show_format);
 	gtk_widget_set_visible (sidebar->popup_menu_start_item, show_start);
 	gtk_widget_set_visible (sidebar->popup_menu_stop_item, show_stop);
 	gtk_widget_set_visible (sidebar->popup_menu_empty_trash_item, show_empty_trash);
@@ -2298,13 +2292,6 @@ rescan_shortcut_cb (GtkMenuItem           *item,
 }
 
 static void
-format_shortcut_cb (GtkMenuItem           *item,
-		    NautilusPlacesSidebar *sidebar)
-{
-	g_spawn_command_line_async ("gfloppy", NULL);
-}
-
-static void
 drive_start_cb (GObject      *source_object,
 		GAsyncResult *res,
 		gpointer      user_data)
@@ -2533,13 +2520,6 @@ bookmarks_build_popup_menu (NautilusPlacesSidebar *sidebar)
 	sidebar->popup_menu_rescan_item = item;
 	g_signal_connect (item, "activate",
 		    G_CALLBACK (rescan_shortcut_cb), sidebar);
-	gtk_widget_show (item);
-	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
-
-	item = gtk_menu_item_new_with_mnemonic (_("_Format"));
-	sidebar->popup_menu_format_item = item;
-	g_signal_connect (item, "activate",
-		    G_CALLBACK (format_shortcut_cb), sidebar);
 	gtk_widget_show (item);
 	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
 
