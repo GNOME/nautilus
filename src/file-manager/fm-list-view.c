@@ -2913,16 +2913,6 @@ fm_list_view_finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-static void
-fm_list_view_emblems_changed (FMDirectoryView *directory_view)
-{
-	g_assert (FM_IS_LIST_VIEW (directory_view));
-
-	/* FIXME: This needs to update the emblems of the icons, since
-	 * relative emblems may have changed.
-	 */
-}
-
 static char *
 fm_list_view_get_first_visible_file (NautilusView *view)
 {
@@ -3081,7 +3071,6 @@ fm_list_view_class_init (FMListViewClass *class)
 	fm_directory_view_class->start_renaming_file = fm_list_view_start_renaming_file;
 	fm_directory_view_class->get_zoom_level = fm_list_view_get_zoom_level;
 	fm_directory_view_class->zoom_to_level = fm_list_view_zoom_to_level;
-        fm_directory_view_class->emblems_changed = fm_list_view_emblems_changed;
 	fm_directory_view_class->end_file_changes = fm_list_view_end_file_changes;
 	fm_directory_view_class->using_manual_layout = fm_list_view_using_manual_layout;
 	fm_directory_view_class->set_is_active = real_set_is_active;

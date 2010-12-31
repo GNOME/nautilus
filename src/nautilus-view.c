@@ -9077,16 +9077,6 @@ file_changed_callback (NautilusFile *file, gpointer callback_data)
 
 	schedule_update_menus (view);
 	schedule_update_status (view);
-
-	/* We might have different capabilities, so we need to update
-	 * relative icon emblems . (Writeable etc).
-	 * Don't do this for trash, as it never changes writability
-	 * but does change a lot for the file count attribute.
-	 */
-	if (!nautilus_file_is_in_trash (file)) {
-		EEL_CALL_METHOD
-			(FM_DIRECTORY_VIEW_CLASS, view, emblems_changed, (view));
-	}
 }
 
 /**

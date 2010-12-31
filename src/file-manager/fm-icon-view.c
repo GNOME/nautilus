@@ -2499,14 +2499,6 @@ fm_icon_view_click_policy_changed (FMDirectoryView *directory_view)
 }
 
 static void
-fm_icon_view_emblems_changed (FMDirectoryView *directory_view)
-{
-	g_assert (FM_IS_ICON_VIEW (directory_view));
-
-	nautilus_icon_container_request_update_all (get_icon_container (FM_ICON_VIEW (directory_view)));
-}
-
-static void
 default_sort_order_changed_callback (gpointer callback_data)
 {
 	FMIconView *icon_view;
@@ -2982,7 +2974,6 @@ fm_icon_view_class_init (FMIconViewClass *klass)
 	fm_directory_view_class->get_zoom_level = fm_icon_view_get_zoom_level;
         fm_directory_view_class->click_policy_changed = fm_icon_view_click_policy_changed;
         fm_directory_view_class->embedded_text_policy_changed = fm_icon_view_embedded_text_policy_changed;
-        fm_directory_view_class->emblems_changed = fm_icon_view_emblems_changed;
         fm_directory_view_class->image_display_policy_changed = fm_icon_view_image_display_policy_changed;
         fm_directory_view_class->merge_menus = fm_icon_view_merge_menus;
         fm_directory_view_class->unmerge_menus = fm_icon_view_unmerge_menus;

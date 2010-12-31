@@ -303,8 +303,6 @@ struct FMDirectoryViewClass {
 	void	(* click_policy_changed)	   (FMDirectoryView *view);
 	void	(* sort_directories_first_changed) (FMDirectoryView *view);
 
-	void	(* emblems_changed)                (FMDirectoryView *view);
-
 	void    (* set_is_active)                  (FMDirectoryView *view,
 						    gboolean         is_active);
 
