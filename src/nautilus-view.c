@@ -130,7 +130,6 @@ enum {
 	BEGIN_LOADING,
 	CLEAR,
 	END_FILE_CHANGES,
-	FLUSH_ADDED_FILES,
 	END_LOADING,
 	FILE_CHANGED,
 	LOAD_ERROR,
@@ -9924,14 +9923,6 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_TYPE_FROM_CLASS (klass),
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, end_file_changes),
-		              NULL, NULL,
-		              g_cclosure_marshal_VOID__VOID,
-		              G_TYPE_NONE, 0);
-	signals[FLUSH_ADDED_FILES] =
-		g_signal_new ("flush_added_files",
-		              G_TYPE_FROM_CLASS (klass),
-		              G_SIGNAL_RUN_LAST,
-		              G_STRUCT_OFFSET (FMDirectoryViewClass, flush_added_files),
 		              NULL, NULL,
 		              g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);

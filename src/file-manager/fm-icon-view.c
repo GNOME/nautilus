@@ -598,12 +598,6 @@ fm_icon_view_add_file (FMDirectoryView *view, NautilusFile *file, NautilusDirect
 }
 
 static void
-fm_icon_view_flush_added_files (FMDirectoryView *view)
-{
-	nautilus_icon_container_layout_now (get_icon_container (FM_ICON_VIEW (view)));
-}
-
-static void
 fm_icon_view_file_changed (FMDirectoryView *view, NautilusFile *file, NautilusDirectory *directory)
 {
 	FMIconView *icon_view;
@@ -2962,7 +2956,6 @@ fm_icon_view_class_init (FMIconViewClass *klass)
 	GTK_WIDGET_CLASS (klass)->scroll_event = fm_icon_view_scroll_event;
 	
 	fm_directory_view_class->add_file = fm_icon_view_add_file;
-	fm_directory_view_class->flush_added_files = fm_icon_view_flush_added_files;
 	fm_directory_view_class->begin_loading = fm_icon_view_begin_loading;
 	fm_directory_view_class->bump_zoom_level = fm_icon_view_bump_zoom_level;
 	fm_directory_view_class->can_rename_file = fm_icon_view_can_rename_file;
