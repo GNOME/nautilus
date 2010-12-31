@@ -6313,29 +6313,6 @@ action_unmount_volume_callback (GtkAction *action,
 	nautilus_file_list_free (selection);
 }
 
-static void 
-action_format_volume_callback (GtkAction *action,
-			       gpointer   data)
-{
-#ifdef TODO_GIO		
-	NautilusFile *file;
-	GList *selection, *l;
-	FMDirectoryView *view;
-
-        view = FM_DIRECTORY_VIEW (data);
-	
-	selection = nautilus_view_get_selection (view);
-	for (l = selection; l != NULL; l = l->next) {
-		file = NAUTILUS_FILE (l->data);
-
-		if (something) {
-			g_spawn_command_line_async ("gfloppy", NULL);
-		}
-	}	
-	nautilus_file_list_free (selection);
-#endif
-}
-
 static void
 action_eject_volume_callback (GtkAction *action,
 			      gpointer data)
@@ -6512,27 +6489,6 @@ action_self_eject_volume_callback (GtkAction *action,
 	g_object_unref (mount_op);
 }
 
-static void 
-action_self_format_volume_callback (GtkAction *action,
-				    gpointer   data)
-{
-	NautilusFile *file;
-	FMDirectoryView *view;
-
-	view = FM_DIRECTORY_VIEW (data);
-
-	file = fm_directory_view_get_directory_as_file (view);
-	if (file == NULL) {
-		return;
-	}
-
-#ifdef TODO_GIO
-	if (something) {
-		g_spawn_command_line_async ("gfloppy", NULL);
-	}
-#endif
-}
-
 static void
 action_self_start_volume_callback (GtkAction *action,
 				   gpointer   data)
@@ -6654,27 +6610,6 @@ action_location_eject_volume_callback (GtkAction *action,
 	nautilus_file_eject (file, mount_op, NULL,
 			     file_eject_callback, g_object_ref (view));
 	g_object_unref (mount_op);
-}
-
-static void 
-action_location_format_volume_callback (GtkAction *action,
-					gpointer   data)
-{
-	NautilusFile *file;
-	FMDirectoryView *view;
-
-	view = FM_DIRECTORY_VIEW (data);
-
-	file = view->details->location_popup_directory_as_file;
-	if (file == NULL) {
-		return;
-	}
-
-#ifdef TODO_GIO
-	if (something) {
-		g_spawn_command_line_async ("gfloppy", NULL);
-	}
-#endif
 }
 
 static void
@@ -7216,10 +7151,6 @@ static const GtkActionEntry directory_view_entries[] = {
   /* label, accelerator */       N_("_Eject"), NULL,
   /* tooltip */                  N_("Eject the selected volume"),
                                  G_CALLBACK (action_eject_volume_callback) },
-  /* name, stock id */         { "Format Volume", NULL,
-  /* label, accelerator */       N_("_Format"), NULL,
-  /* tooltip */                  N_("Format the selected volume"),
-                                 G_CALLBACK (action_format_volume_callback) },
   /* name, stock id */         { "Start Volume", NULL,
   /* label, accelerator */       N_("_Start"), NULL,
   /* tooltip */                  N_("Start the selected volume"),
@@ -7244,10 +7175,6 @@ static const GtkActionEntry directory_view_entries[] = {
   /* label, accelerator */       N_("_Eject"), NULL,
   /* tooltip */                  N_("Eject the volume associated with the open folder"),
                                  G_CALLBACK (action_self_eject_volume_callback) },
-  /* name, stock id */         { "Self Format Volume", NULL,
-  /* label, accelerator */       N_("_Format"), NULL,
-  /* tooltip */                  N_("Format the volume associated with the open folder"),
-                                 G_CALLBACK (action_self_format_volume_callback) },
   /* name, stock id */         { "Self Start Volume", NULL,
   /* label, accelerator */       N_("_Start"), NULL,
   /* tooltip */                  N_("Start the volume associated with the open folder"),
@@ -7325,10 +7252,6 @@ static const GtkActionEntry directory_view_entries[] = {
   /* label, accelerator */       N_("_Eject"), NULL,
   /* tooltip */                  N_("Eject the volume associated with this folder"),
                                  G_CALLBACK (action_location_eject_volume_callback) },
-  /* name, stock id */         { "Location Format Volume", NULL,
-  /* label, accelerator */       N_("_Format"), NULL,
-  /* tooltip */                  N_("Format the volume associated with this folder"),
-                                 G_CALLBACK (action_location_format_volume_callback) },
   /* name, stock id */         { "Location Start Volume", NULL,
   /* label, accelerator */       N_("_Start"), NULL,
   /* tooltip */                  N_("Start the volume associated with this folder"),
@@ -7644,7 +7567,6 @@ file_should_show_foreach (NautilusFile        *file,
 			  gboolean            *show_unmount,
 			  gboolean            *show_eject,
 			  gboolean            *show_connect,
-			  gboolean            *show_format,
 			  gboolean            *show_start,
 			  gboolean            *show_stop,
 			  gboolean            *show_poll,
@@ -7656,7 +7578,6 @@ file_should_show_foreach (NautilusFile        *file,
 	*show_unmount = FALSE;
 	*show_eject = FALSE;
 	*show_connect = FALSE;
-	*show_format = FALSE;
 	*show_start = FALSE;
 	*show_stop = FALSE;
 	*show_poll = FALSE;
@@ -7667,13 +7588,6 @@ file_should_show_foreach (NautilusFile        *file,
 
 	if (nautilus_file_can_mount (file)) {
 		*show_mount = TRUE;
-
-#ifdef TODO_GIO
-		if (something &&
-		    g_find_program_in_path ("gfloppy")) {
-			*show_format = TRUE;
-		}
-#endif
 	}
 
 	if (nautilus_file_can_start (file) || nautilus_file_can_start_degraded (file)) {
@@ -7715,7 +7629,6 @@ file_should_show_self (NautilusFile        *file,
 		       gboolean            *show_mount,
 		       gboolean            *show_unmount,
 		       gboolean            *show_eject,
-		       gboolean            *show_format,
 		       gboolean            *show_start,
 		       gboolean            *show_stop,
 		       gboolean            *show_poll,
@@ -7724,7 +7637,6 @@ file_should_show_self (NautilusFile        *file,
 	*show_mount = FALSE;
 	*show_unmount = FALSE;
 	*show_eject = FALSE;
-	*show_format = FALSE;
 	*show_start = FALSE;
 	*show_stop = FALSE;
 	*show_poll = FALSE;
@@ -7740,12 +7652,6 @@ file_should_show_self (NautilusFile        *file,
 	if (nautilus_file_can_mount (file)) {
 		*show_mount = TRUE;
 	}
-
-#ifdef TODO_GIO
-	if (something && g_find_program_in_path ("gfloppy")) {
-		*show_format = TRUE;
-	}
-#endif
 
 	if (nautilus_file_can_start (file) || nautilus_file_can_start_degraded (file)) {
 		*show_start = TRUE;
@@ -7915,7 +7821,6 @@ real_update_menus_volumes (FMDirectoryView *view,
 	gboolean show_unmount;
 	gboolean show_eject;
 	gboolean show_connect;
-	gboolean show_format;
 	gboolean show_start;
 	gboolean show_stop;
 	gboolean show_poll;
@@ -7923,7 +7828,6 @@ real_update_menus_volumes (FMDirectoryView *view,
 	gboolean show_self_mount;
 	gboolean show_self_unmount;
 	gboolean show_self_eject;
-	gboolean show_self_format;
 	gboolean show_self_start;
 	gboolean show_self_stop;
 	gboolean show_self_poll;
@@ -7934,7 +7838,6 @@ real_update_menus_volumes (FMDirectoryView *view,
 	show_unmount = (selection != NULL);
 	show_eject = (selection != NULL);
 	show_connect = (selection != NULL && selection_count == 1);
-	show_format = (selection != NULL && selection_count == 1);
 	show_start = (selection != NULL && selection_count == 1);
 	show_stop = (selection != NULL && selection_count == 1);
 	show_poll = (selection != NULL && selection_count == 1);
@@ -7943,14 +7846,13 @@ real_update_menus_volumes (FMDirectoryView *view,
 
 	for (l = selection; l != NULL && (show_mount || show_unmount
 					  || show_eject || show_connect
-                                          || show_format || show_start
-					  || show_stop || show_poll);
+                                          || show_start || show_stop
+					  || show_poll);
 	     l = l->next) {
 		gboolean show_mount_one;
 		gboolean show_unmount_one;
 		gboolean show_eject_one;
 		gboolean show_connect_one;
-		gboolean show_format_one;
 		gboolean show_start_one;
 		gboolean show_stop_one;
 		gboolean show_poll_one;
@@ -7961,7 +7863,6 @@ real_update_menus_volumes (FMDirectoryView *view,
 					  &show_unmount_one,
 					  &show_eject_one,
 					  &show_connect_one,
-                                          &show_format_one,
                                           &show_start_one,
                                           &show_stop_one,
 					  &show_poll_one,
@@ -7971,7 +7872,6 @@ real_update_menus_volumes (FMDirectoryView *view,
 		show_unmount &= show_unmount_one;
 		show_eject &= show_eject_one;
 		show_connect &= show_connect_one;
-		show_format &= show_format_one;
 		show_start &= show_start_one;
 		show_stop &= show_stop_one;
 		show_poll &= show_poll_one;
@@ -7993,10 +7893,6 @@ real_update_menus_volumes (FMDirectoryView *view,
 					      FM_ACTION_EJECT_VOLUME);
 	gtk_action_set_visible (action, show_eject);
 	
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_FORMAT_VOLUME);
-	gtk_action_set_visible (action, show_format);
-
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_START_VOLUME);
 	gtk_action_set_visible (action, show_start);
@@ -8060,14 +7956,13 @@ real_update_menus_volumes (FMDirectoryView *view,
 	gtk_action_set_visible (action, show_poll);
 
 	show_self_mount = show_self_unmount = show_self_eject =
-		show_self_format = show_self_start = show_self_stop = show_self_poll = FALSE;
+		show_self_start = show_self_stop = show_self_poll = FALSE;
 
 	file = fm_directory_view_get_directory_as_file (view);
 	file_should_show_self (file,
 			       &show_self_mount,
 			       &show_self_unmount,
 			       &show_self_eject,
-			       &show_self_format,
 			       &show_self_start,
 			       &show_self_stop,
 			       &show_self_poll,
@@ -8084,10 +7979,6 @@ real_update_menus_volumes (FMDirectoryView *view,
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_SELF_EJECT_VOLUME);
 	gtk_action_set_visible (action, show_self_eject);
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_SELF_FORMAT_VOLUME);
-	gtk_action_set_visible (action, show_self_format);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_SELF_START_VOLUME);
@@ -8162,7 +8053,6 @@ real_update_location_menu_volumes (FMDirectoryView *view)
 	gboolean show_unmount;
 	gboolean show_eject;
 	gboolean show_connect;
-	gboolean show_format;
 	gboolean show_start;
 	gboolean show_stop;
 	gboolean show_poll;
@@ -8177,7 +8067,6 @@ real_update_location_menu_volumes (FMDirectoryView *view)
 				  &show_unmount,
 				  &show_eject,
 				  &show_connect,
-				  &show_format,
 				  &show_start,
 				  &show_stop,
 				  &show_poll,
@@ -8194,10 +8083,6 @@ real_update_location_menu_volumes (FMDirectoryView *view)
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_LOCATION_EJECT_VOLUME);
 	gtk_action_set_visible (action, show_eject);
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_LOCATION_FORMAT_VOLUME);
-	gtk_action_set_visible (action, show_format);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_LOCATION_START_VOLUME);
