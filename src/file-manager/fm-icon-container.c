@@ -99,7 +99,7 @@ fm_icon_container_get_icon_images (NautilusIconContainer *container,
 		flags |= NAUTILUS_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT;
 	}
 
-	emblems_to_ignore = fm_directory_view_get_emblem_names_to_exclude 
+	emblems_to_ignore = nautilus_view_get_emblem_names_to_exclude 
 		(FM_DIRECTORY_VIEW (icon_view));
 	emblem_icons = nautilus_file_get_emblem_icons (file,
 						       emblems_to_ignore);

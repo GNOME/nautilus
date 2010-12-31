@@ -240,20 +240,6 @@ struct FMDirectoryViewClass {
 						NautilusFile    *a,
 						NautilusFile    *b);
 
-	/* get_emblem_names_to_exclude is a function pointer that subclasses
-	 * may override to specify a set of emblem names that should not
-	 * be displayed with each file. By default, all emblems returned by
-	 * NautilusFile are displayed.
-	 */
-	char ** (* get_emblem_names_to_exclude)	(FMDirectoryView *view);
-
-	/* supports_properties is a function pointer that subclasses may
-	 * override to control whether the "Show Properties" menu item
-	 * should be enabled for selected items. The default implementation 
-	 * returns TRUE.
-	 */
-	gboolean (* supports_properties)	(FMDirectoryView *view);
-
 	/* supports_zooming is a function pointer that subclasses may
 	 * override to control whether or not the zooming control and
 	 * menu items should be enabled. The default implementation
@@ -297,10 +283,6 @@ struct FMDirectoryViewClass {
 	void	 (* start_renaming_file)        (FMDirectoryView *view,
 					  	 NautilusFile *file,
 						 gboolean select_all);
-
-	gboolean (* file_still_belongs)		(FMDirectoryView *view,
-						 NautilusFile	 *file,
-						 NautilusDirectory *directory);
 
 	/* convert *point from widget's coordinate system to a coordinate
 	 * system used for specifying file operation positions, which is view-specific.
@@ -372,7 +354,6 @@ void                fm_directory_view_start_batching_selection_changes (FMDirect
 void                fm_directory_view_stop_batching_selection_changes  (FMDirectoryView  *view);
 void                fm_directory_view_notify_selection_changed         (FMDirectoryView  *view);
 GtkUIManager *      fm_directory_view_get_ui_manager                   (FMDirectoryView  *view);
-char **             fm_directory_view_get_emblem_names_to_exclude      (FMDirectoryView  *view);
 NautilusDirectory  *fm_directory_view_get_model                        (FMDirectoryView  *view);
 NautilusFile       *fm_directory_view_get_directory_as_file            (FMDirectoryView  *view);
 void                fm_directory_view_pop_up_background_context_menu   (FMDirectoryView  *view,
@@ -429,6 +410,7 @@ void              nautilus_view_load_location              (NautilusView      *v
 							    GFile             *location);
 void              nautilus_view_stop_loading               (NautilusView      *view);
 
+char **           nautilus_view_get_emblem_names_to_exclude (NautilusView     *view);
 char *            nautilus_view_get_first_visible_file     (NautilusView      *view);
 void              nautilus_view_scroll_to_file             (NautilusView      *view,
 							    const char        *uri);

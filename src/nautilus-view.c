@@ -525,16 +525,6 @@ fm_directory_view_supports_creating_files (FMDirectoryView *view)
 }
 
 static gboolean
-fm_directory_view_supports_properties (FMDirectoryView *view)
-{
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
-
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 supports_properties, (view));
-}
-
-static gboolean
 fm_directory_view_is_empty (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
@@ -702,13 +692,25 @@ nautilus_view_scroll_to_file (NautilusView *view,
 }
 
 char **
-fm_directory_view_get_emblem_names_to_exclude (FMDirectoryView *view)
+nautilus_view_get_emblem_names_to_exclude (NautilusView *view)
 {
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
+	char **excludes;
+	int i;
+	
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 get_emblem_names_to_exclude, (view));
+	excludes = g_new (char *, 3);
+	
+	i = 0;
+	excludes[i++] = g_strdup (NAUTILUS_FILE_EMBLEM_NAME_TRASH);
+
+	if (!nautilus_file_can_write (view->details->directory_as_file)) {
+		excludes[i++] = g_strdup (NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE);
+	}
+
+	excludes[i++] = NULL;
+
+	return excludes;
 }
 
 void
@@ -3276,7 +3278,9 @@ copy_move_done_callback (GHashTable *debuting_files, gpointer data)
 }
 
 static gboolean
-real_file_still_belongs (FMDirectoryView *view, NautilusFile *file, NautilusDirectory *directory)
+view_file_still_belongs (FMDirectoryView *view,
+			 NautilusFile *file,
+			 NautilusDirectory *directory)
 {
 	if (view->details->model != directory &&
 	    g_list_find (view->details->subdirectory_list, directory) == NULL) {
@@ -3289,8 +3293,8 @@ real_file_still_belongs (FMDirectoryView *view, NautilusFile *file, NautilusDire
 static gboolean
 still_should_show_file (FMDirectoryView *view, NautilusFile *file, NautilusDirectory *directory)
 {
-	return fm_directory_view_should_show_file (view, file)
-		&& EEL_INVOKE_METHOD (FM_DIRECTORY_VIEW_CLASS, view, file_still_belongs, (view, file, directory));
+	return fm_directory_view_should_show_file (view, file) &&
+		view_file_still_belongs (view, file, directory);
 }
 
 static gboolean
@@ -8320,9 +8324,6 @@ real_update_location_menu (FMDirectoryView *view)
 	update_restore_from_trash_action (action, &l, TRUE);
 
 	real_update_location_menu_volumes (view);
-
-	/* we silently assume that fm_directory_view_supports_properties always returns the same value.
-	 * Therefore, we don't update the sensitivity of FM_ACTION_LOCATION_PROPERTIES */
 }
 
 static void
@@ -8660,8 +8661,7 @@ real_update_menus (FMDirectoryView *view)
 				selection_count),
 		      NULL);
 	
-	show_properties = (!FM_IS_DESKTOP_ICON_VIEW (view) || selection_count > 0) &&
-			   fm_directory_view_supports_properties (view);
+	show_properties = (!FM_IS_DESKTOP_ICON_VIEW (view) || selection_count > 0);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_PROPERTIES);
@@ -9280,28 +9280,6 @@ metadata_for_files_in_directory_ready_callback (NautilusDirectory *directory,
 	finish_loading_if_all_metadata_loaded (view);
 }
 
-static char **
-real_get_emblem_names_to_exclude (FMDirectoryView *view)
-{
-	char **excludes;
-	int i;
-	
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
-
-	excludes = g_new (char *, 3);
-	
-	i = 0;
-	excludes[i++] = g_strdup (NAUTILUS_FILE_EMBLEM_NAME_TRASH);
-
-	if (!nautilus_file_can_write (view->details->directory_as_file)) {
-		excludes[i++] = g_strdup (NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE);
-	}
-
-	excludes[i++] = NULL;
-
-	return excludes;
-}
-
 static void
 disconnect_handler (GObject *object, int *id)
 {
@@ -9452,14 +9430,6 @@ real_supports_creating_files (FMDirectoryView *view)
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
 	return !fm_directory_view_is_read_only (view) && !showing_trash_directory (view);
-}
-
-static gboolean
-real_supports_properties (FMDirectoryView *view)
-{
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
-
-	return TRUE;
 }
 
 static gboolean
@@ -9859,15 +9829,12 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
 
-	klass->file_still_belongs = real_file_still_belongs;
-	klass->get_emblem_names_to_exclude = real_get_emblem_names_to_exclude;
 	klass->get_selected_icon_locations = real_get_selected_icon_locations;
 	klass->is_read_only = real_is_read_only;
 	klass->load_error = real_load_error;
 	klass->can_rename_file = can_rename_file;
 	klass->start_renaming_file = start_renaming_file;
 	klass->supports_creating_files = real_supports_creating_files;
-	klass->supports_properties = real_supports_properties;
 	klass->supports_zooming = real_supports_zooming;
 	klass->using_manual_layout = real_using_manual_layout;
         klass->merge_menus = real_merge_menus;
