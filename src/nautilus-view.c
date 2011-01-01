@@ -515,13 +515,23 @@ fm_directory_view_is_read_only (FMDirectoryView *view)
 }
 
 static gboolean
+showing_trash_directory (FMDirectoryView *view)
+{
+	NautilusFile *file;
+
+	file = fm_directory_view_get_directory_as_file (view);
+	if (file != NULL) {
+		return nautilus_file_is_in_trash (file);
+	}
+	return FALSE;
+}
+
+static gboolean
 fm_directory_view_supports_creating_files (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 supports_creating_files, (view));
+	return !fm_directory_view_is_read_only (view) && !showing_trash_directory (view);
 }
 
 static gboolean
@@ -7461,18 +7471,6 @@ clipboard_targets_received (GtkClipboard     *clipboard,
 }
 
 static gboolean
-showing_trash_directory (FMDirectoryView *view)
-{
-	NautilusFile *file;
-
-	file = fm_directory_view_get_directory_as_file (view);
-	if (file != NULL) {
-		return nautilus_file_is_in_trash (file);
-	}
-	return FALSE;
-}
-
-static gboolean
 should_show_empty_trash (FMDirectoryView *view)
 {
 	return (showing_trash_directory (view) || nautilus_window_get_window_type (view->details->window) == NAUTILUS_WINDOW_NAVIGATION);
@@ -9379,14 +9377,6 @@ fm_directory_view_should_show_file (FMDirectoryView *view, NautilusFile *file)
 }
 
 static gboolean
-real_supports_creating_files (FMDirectoryView *view)
-{
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
-
-	return !fm_directory_view_is_read_only (view) && !showing_trash_directory (view);
-}
-
-static gboolean
 real_supports_zooming (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
@@ -9788,7 +9778,6 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 	klass->load_error = real_load_error;
 	klass->can_rename_file = can_rename_file;
 	klass->start_renaming_file = start_renaming_file;
-	klass->supports_creating_files = real_supports_creating_files;
 	klass->supports_zooming = real_supports_zooming;
 	klass->using_manual_layout = real_using_manual_layout;
         klass->merge_menus = real_merge_menus;

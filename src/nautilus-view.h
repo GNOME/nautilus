@@ -267,14 +267,6 @@ struct FMDirectoryViewClass {
 	 */
 	gboolean (* is_empty)                   (FMDirectoryView *view);
 
-	/* supports_creating_files is a function pointer that subclasses may
-	 * override to control whether or not new items can be created.
-	 * be accepted. The default implementation checks whether the
-	 * user has write permissions for the viewed directory, and whether
-	 * the viewed directory is in the trash.
-	 */
-	gboolean (* supports_creating_files)	(FMDirectoryView *view);
-
 	gboolean (* can_rename_file)            (FMDirectoryView *view,
 						 NautilusFile *file);
 	/* select_all specifies whether the whole filename should be selected
