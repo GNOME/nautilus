@@ -297,9 +297,6 @@ struct FMDirectoryViewClass {
 	 * Icon and list views respond by synchronizing to the new preference
 	 * values and forcing an update if appropriate.
 	 */
-	void	(* text_attribute_names_changed)   (FMDirectoryView *view);
-	void	(* embedded_text_policy_changed)   (FMDirectoryView *view);
-	void	(* image_display_policy_changed)   (FMDirectoryView *view);
 	void	(* click_policy_changed)	   (FMDirectoryView *view);
 	void	(* sort_directories_first_changed) (FMDirectoryView *view);
 

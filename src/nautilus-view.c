@@ -2232,31 +2232,6 @@ we_are_in_vfolder_desktop_dir (FMDirectoryView *view)
 	}
 }
 
-/* Preferences changed callbacks */
-static void
-text_attribute_names_changed_callback (gpointer callback_data)
-{
-	FMDirectoryView *view;
-
-	view = FM_DIRECTORY_VIEW (callback_data);
-
-	EEL_CALL_METHOD
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 text_attribute_names_changed, (view));
-}
-
-static void
-image_display_policy_changed_callback (gpointer callback_data)
-{
-	FMDirectoryView *view;
-
-	view = FM_DIRECTORY_VIEW (callback_data);
-
-	EEL_CALL_METHOD
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 image_display_policy_changed, (view));
-}
-
 static void
 click_policy_changed_callback (gpointer callback_data)
 {
@@ -2600,12 +2575,6 @@ fm_directory_view_init (FMDirectoryView *view)
 	g_signal_connect_swapped (nautilus_preferences,
 				  "changed::" NAUTILUS_PREFERENCES_ENABLE_DELETE,
 				  G_CALLBACK (schedule_update_menus_callback), view);
-	g_signal_connect_swapped (nautilus_icon_view_preferences,
-				  "changed::" NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
-				  G_CALLBACK(text_attribute_names_changed_callback), view);
-	g_signal_connect_swapped (nautilus_preferences,
-				  "changed::" NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
-				  G_CALLBACK (image_display_policy_changed_callback), view);
 	g_signal_connect_swapped (nautilus_preferences,
 				  "changed::" NAUTILUS_PREFERENCES_CLICK_POLICY,
 				  G_CALLBACK(click_policy_changed_callback),
@@ -2720,11 +2689,6 @@ fm_directory_view_finalize (GObject *object)
 
 	g_signal_handlers_disconnect_by_func (nautilus_preferences,
 					      schedule_update_menus_callback, view);
-	g_signal_handlers_disconnect_by_func (nautilus_icon_view_preferences,
-					      text_attribute_names_changed_callback,
-					      view);
-	g_signal_handlers_disconnect_by_func (nautilus_preferences,
-					      image_display_policy_changed_callback, view);
 	g_signal_handlers_disconnect_by_func (nautilus_preferences,
 					      click_policy_changed_callback, view);
 	g_signal_handlers_disconnect_by_func (nautilus_preferences,
