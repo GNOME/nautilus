@@ -1,18 +1,18 @@
 # Nautiluse eesti tõlge.
 # Estonian translation of Nautilus.
 #
-# Copyright (C) 2002-2006 Free Software Foundation, Inc.
-# Copyright (C) 2007-2010 The GNOME Project.
+# Copyright (C) 2002–2006 Free Software Foundation, Inc.
+# Copyright (C) 2007–2011 The GNOME Project.
 # This file is distributed under the same license as the nautilus package.
 #
 # Lauri Kasvandik <lauri.kasvandik mail ee>, 2002.
 # Ilmar Kerm <ikerm hot ee>, 2002.
 # Tõivo Leedjärv <toivo linux ee>, 2003.
 # Allan Sims <allsi eau ee>, 2003.
-# Priit Laes <plaes+gi18n plaes org>, 2004-2008.
-# Ivar Smolin <okul linux ee>, 2005-2010.
+# Priit Laes <plaes+gi18n plaes org>, 2004–2008.
+# Ivar Smolin <okul linux ee>, 2005–2011.
 # Sven Sapelson <sven.sapelson gmail com>, 2005.
-# Mattias Põldaru <mahfiaz gmail com>, 2009-2010.
+# Mattias Põldaru <mahfiaz gmail com>, 2009–2010.
 #
 # FIXME - selles tõlkes tuleks kontrollida, et failirekvisiitide "modified" ja
 # "changed" poleks omavahel sassi aetud.
@@ -23,7 +23,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&component=Internationalization (i18n)\n"
 "POT-Creation-Date: 2010-12-19 07:08+0000\n"
-"PO-Revision-Date: 2010-11-03 13:47+0200\n"
+"PO-Revision-Date: 2011-01-02 19:00+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "Language: et\n"
@@ -1322,48 +1322,44 @@ msgid_plural "Opening %d items."
 msgstr[0] "Avatakse %d kirje."
 msgstr[1] "Avatakse %d kirjet."
 
-#, fuzzy, c-format
+#, c-format
 msgid "Error while adding \"%s\": %s"
-msgstr "Viga \"%B\" ümbertõstmisel."
+msgstr "Viga \"%s\" lisamisel: %s"
 
 msgid "Could not add application"
 msgstr "Rakendust pole võimalik lisada"
 
-#, fuzzy
 msgid "Could not forget association"
-msgstr "Rakendust pole võimalik käivitada"
+msgstr "Seost pole võimalik unustada"
 
 msgid "Forget association"
-msgstr ""
+msgstr "Unusta seos"
 
-#, fuzzy, c-format
+#, c-format
 msgid "Error while setting \"%s\" as default application: %s"
-msgstr "Pole võimalik vaikimisi rakenduseks määrata"
+msgstr "Viga \"%s\" määramisel vaikimisi rakenduseks: %s"
 
-#, fuzzy
 msgid "Could not set as default"
-msgstr "Pole võimalik vaikimisi rakenduseks määrata"
+msgstr "Pole võimalik vaikimisi väärtuseks määrata"
 
 #. the %s here is a file extension
 #, c-format
 msgid "%s document"
 msgstr "%s dokument"
 
-#, fuzzy, c-format
+#, c-format
 msgid "Open all files of type \"%s\" with"
-msgstr "Kõik \"%s\" liigi alla kuuluvad failid avatakse rakendusega:"
+msgstr "Kõik liigi \"%s\" alla kuuluvad failid avatakse rakendusega:"
 
 #, c-format
 msgid "Select an application to open %s and other files of type \"%s\""
 msgstr "Vali rakendus, millega faili %s ja teisi \"%s\"-liigilisi faile avada"
 
-#, fuzzy
 msgid "Show other applications"
-msgstr "Rakendust pole võimalik käivitada"
+msgstr "Näita teisi rakendusi"
 
-#, fuzzy
 msgid "Set as default"
-msgstr "Kasuta _vaikimisi"
+msgstr "Määra vaikimisi"
 
 msgid "Sorry, but you cannot execute commands from a remote site."
 msgstr "Vabandust, kuid kaugsaitides pole võimalik käske käivitada."
@@ -3066,9 +3062,9 @@ msgstr "Nimi \"%s\" ei sobi, sest sisaldab märki \"/\". Palun vali teine nimi."
 msgid "The name \"%s\" is not valid. Please use a different name."
 msgstr "Nimi \"%s\" ei sobi. Palun vali teine nimi."
 
-#, fuzzy, c-format
+#, c-format
 msgid "The name \"%s\" is too long. Please use a different name."
-msgstr "Nimi \"%s\" ei sobi. Palun vali teine nimi."
+msgstr "Nimi \"%s\" on liiga pikk. Palun vali teine nimi."
 
 #. fall through
 #, c-format
@@ -3701,13 +3697,12 @@ msgstr "Turvaline WebDAV (HTTPS)"
 msgid "Connecting..."
 msgstr "Ühendumine..."
 
-#, fuzzy
 msgid ""
 "Can't load the supported server method list.\n"
 "Please check your gvfs installation."
 msgstr ""
-"Toetatud serverimeetodite loendit pole võimalik laadida.\n"
-"Palun kontrolli enda GVfs paigaldust."
+"Toetatud serverimeetodite nimekirja pole võimalik laadida.\n"
+"Palun kontrolli enda gvfs-i paigaldust."
 
 #, c-format
 msgid "The folder \"%s\" cannot be opened on \"%s\"."
@@ -4224,7 +4219,7 @@ msgid "Show search"
 msgstr "Otsingu kuvamine"
 
 msgid "Sidebar"
-msgstr ""
+msgstr "Külgriba"
 
 #. name, stock id
 #. label, accelerator
@@ -4238,9 +4233,8 @@ msgstr "Selle akna põhitööriba näitamine või peitmine"
 #. is_active
 #. name, stock id
 #. label, accelerator
-#, fuzzy
 msgid "_Show Sidebar"
-msgstr "_Otsingu kuvamine"
+msgstr "_Näita külgriba"
 
 #. tooltip
 msgid "Change the visibility of this window's side pane"
@@ -4292,13 +4286,13 @@ msgid "Places"
 msgstr "Asukohad"
 
 msgid "Select Places as the default sidebar"
-msgstr ""
+msgstr "Asukohtade riba määramine vaikimisi külgribaks"
 
 msgid "Tree"
 msgstr "Puu"
 
 msgid "Select Tree as the default sidebar"
-msgstr ""
+msgstr "Puuvaate riba määramine vaikimisi külgribaks"
 
 msgid "_Back"
 msgstr "_Tagasi"
@@ -4639,6 +4633,9 @@ msgstr ""
 msgid "Copyright © 1999-2010 The Nautilus authors"
 msgstr "Autoriõigused © 1999–2010 Nautiluse autorid"
 
+msgid "Copyright © 1999-2011 The Nautilus authors"
+msgstr "Autoriõigused © 1999–2011 Nautiluse autorid"
+
 #. Translators should localize the following string
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
@@ -4650,9 +4647,9 @@ msgstr ""
 "Tõivo Leedjärv <toivo linux ee>, 2003.\n"
 "Allan Sims <allsi eau ee>, 2003.\n"
 "Sven Sapelson <sven.sapelson gmail com>,2005.\n"
-"Priit Laes <plaes+gi18n plaes org>, 2004-2008.\n"
-"Ivar Smolin <okul linux ee>, 2005-2010.\n"
-"Mattias Põldaru <mahfiaz gmail com>, 2009-2010."
+"Priit Laes <plaes+gi18n plaes org>, 2004–2008.\n"
+"Ivar Smolin <okul linux ee>, 2005–2011.\n"
+"Mattias Põldaru <mahfiaz gmail com>, 2009–2010."
 
 msgid "Nautilus Web Site"
 msgstr "Nautiluse veebisait"
@@ -4871,13 +4868,13 @@ msgid "Set the zoom level of the current view"
 msgstr "Praeguse vaate suurendusastme seadmine"
 
 msgid "Send To..."
-msgstr ""
+msgstr "Saada..."
 
 msgid "Send file by mail, instant message..."
-msgstr ""
+msgstr "Faili saatmine e-postiga, välksõnumiga..."
 
 msgid "Send files by mail, instant message..."
-msgstr ""
+msgstr "Failide saatmine e-postiga, välksõnumiga..."
 
 #~ msgid "No applications found"
 #~ msgstr "Ühtegi rakendust ei leitud"
