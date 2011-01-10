@@ -22,65 +22,15 @@ msgstr ""
 "Project-Id-Version: nautilus MASTER\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2010-12-19 07:08+0000\n"
-"PO-Revision-Date: 2011-01-06 13:10+0200\n"
+"POT-Creation-Date: 2011-01-10 09:19+0000\n"
+"PO-Revision-Date: 2011-01-10 13:15+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
-"Language: et\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: et\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-#, c-format
-msgid "File is not a valid .desktop file"
-msgstr "Fail pole korrektne .desktop fail"
-
-#, c-format
-msgid "Unrecognized desktop file Version '%s'"
-msgstr "Tundmatu töölauafaili versioon '%s'"
-
-#, c-format
-msgid "Starting %s"
-msgstr "Käivitamine: %s"
-
-#, c-format
-msgid "Application does not accept documents on command line"
-msgstr "Rakendusele ei saa avamiseks anda käsureal faile"
-
-#, c-format
-msgid "Unrecognized launch option: %d"
-msgstr "Tundmatu käivitusvalik: %d"
-
-#, c-format
-msgid "Can't pass document URIs to a 'Type=Link' desktop entry"
-msgstr ""
-"Dokumendi URI-sid pole võimalik 'Liik=Viit' tüüpi töölauakirjetele edastada"
-
-#, c-format
-msgid "Not a launchable item"
-msgstr "See pole käivitatav kirje"
-
-msgid "Disable connection to session manager"
-msgstr "Seansihalduriga ühendumise keelamine"
-
-msgid "Specify file containing saved configuration"
-msgstr "Määra salvestatud seadistuse fail"
-
-msgid "FILE"
-msgstr "FAIL"
-
-msgid "Specify session management ID"
-msgstr "Määra seansihalduse ID"
-
-msgid "ID"
-msgstr "ID"
-
-msgid "Session management options:"
-msgstr "Seansihalduse valikud:"
-
-msgid "Show session management options"
-msgstr "Seansihalduse valikute näitamine"
 
 msgid "Saved search"
 msgstr "Salvestatud otsing"
@@ -283,17 +233,8 @@ msgstr ""
 "Kui soovid kettaseadet lahti haakida, vali paremklõpsuga avanevast menüüst "
 "\"Haagi ketas lahti\"'."
 
-#. Note to translators: If it's hard to compose a good home
-#. * icon name from the user name, you can use a string without
-#. * an "%s" here, in which case the home icon name will not
-#. * include the user's name, which should be fine. To avoid a
-#. * warning, put "%.0s" somewhere in the string, which will
-#. * match the user name string passed by the C code, but not
-#. * put the user name in the final string.
-#.
-#, c-format
-msgid "%s's Home"
-msgstr "%.0s Kodukataloog"
+msgid "Home"
+msgstr "Kodukataloog"
 
 msgid "_Move Here"
 msgstr "_Tõsta siia"
@@ -2040,9 +1981,6 @@ msgstr "Isikliku kataloogi avamine"
 msgid "File Manager"
 msgstr "Failihaldur"
 
-msgid "Background"
-msgstr "Taust"
-
 #. name, stock id
 #. label, accelerator
 msgid "E_mpty Trash"
@@ -2318,9 +2256,6 @@ msgstr[1] "%'d valitud kirjet kopeeritakse, kui valid käsu \"Aseta\""
 
 msgid "There is nothing on the clipboard to paste."
 msgstr "Lõikelaualt ei ole midagi asetada."
-
-msgid "Could not invoke bulk rename utility"
-msgstr "Nimede hulgimuutmise utiliiti pole võimalik käivitada"
 
 msgid "Unable to unmount location"
 msgstr "Asukohta pole võimalik lahti haakida"
@@ -2781,8 +2716,8 @@ msgstr "Valiku ümbertõstmine sama akna kõrvalpaanile"
 #. name, stock id, label
 #. name, stock id
 #. label, accelerator
-msgid "_Home Folder"
-msgstr "_Kodukataloogi"
+msgid "_Home"
+msgstr "_Kodukataloog"
 
 msgid "Copy the current selection to the home folder"
 msgstr "Valiku kopeerimine kodukataloogi"
@@ -4639,9 +4574,6 @@ msgstr ""
 msgid "Copyright © 1999-2010 The Nautilus authors"
 msgstr "Autoriõigused © 1999–2010 Nautiluse autorid"
 
-msgid "Copyright © 1999-2011 The Nautilus authors"
-msgstr "Autoriõigused © 1999–2011 Nautiluse autorid"
-
 #. Translators should localize the following string
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
@@ -4816,9 +4748,6 @@ msgstr "Peidetud failide näitamise käesolevas aknas sisse- ja väljalülitamin
 msgid "_Up"
 msgstr "_Üles"
 
-msgid "_Home"
-msgstr "_Kodukataloog"
-
 msgid "These files are on an Audio CD."
 msgstr "Need failid on audio-CD peal."
 
@@ -4882,6 +4811,59 @@ msgstr "Faili saatmine e-postiga, välksõnumiga..."
 msgid "Send files by mail, instant message..."
 msgstr "Failide saatmine e-postiga, välksõnumiga..."
 
+#~ msgid "File is not a valid .desktop file"
+#~ msgstr "Fail pole korrektne .desktop fail"
+
+#~ msgid "Unrecognized desktop file Version '%s'"
+#~ msgstr "Tundmatu töölauafaili versioon '%s'"
+
+#~ msgid "Starting %s"
+#~ msgstr "Käivitamine: %s"
+
+#~ msgid "Application does not accept documents on command line"
+#~ msgstr "Rakendusele ei saa avamiseks anda käsureal faile"
+
+#~ msgid "Unrecognized launch option: %d"
+#~ msgstr "Tundmatu käivitusvalik: %d"
+
+#~ msgid "Can't pass document URIs to a 'Type=Link' desktop entry"
+#~ msgstr ""
+#~ "Dokumendi URI-sid pole võimalik 'Liik=Viit' tüüpi töölauakirjetele "
+#~ "edastada"
+
+#~ msgid "Not a launchable item"
+#~ msgstr "See pole käivitatav kirje"
+
+#~ msgid "Disable connection to session manager"
+#~ msgstr "Seansihalduriga ühendumise keelamine"
+
+#~ msgid "Specify file containing saved configuration"
+#~ msgstr "Määra salvestatud seadistuse fail"
+
+#~ msgid "FILE"
+#~ msgstr "FAIL"
+
+#~ msgid "Session management options:"
+#~ msgstr "Seansihalduse valikud:"
+
+#~ msgid "Show session management options"
+#~ msgstr "Seansihalduse valikute näitamine"
+
+#~ msgid "%s's Home"
+#~ msgstr "%.0s Kodukataloog"
+
+#~ msgid "Background"
+#~ msgstr "Taust"
+
+#~ msgid "Could not invoke bulk rename utility"
+#~ msgstr "Nimede hulgimuutmise utiliiti pole võimalik käivitada"
+
+#~ msgid "_Home Folder"
+#~ msgstr "_Kodukataloogi"
+
+#~ msgid "Copyright © 1999-2011 The Nautilus authors"
+#~ msgstr "Autoriõigused © 1999–2011 Nautiluse autorid"
+
 #~ msgid "No applications found"
 #~ msgstr "Ühtegi rakendust ei leitud"
 
@@ -4893,45 +4875,6 @@ msgstr "Failide saatmine e-postiga, välksõnumiga..."
 
 #~ msgid "Open with other Application..."
 #~ msgstr "Avatakse mõne muu rakendusega..."
-
-#~ msgid "You have just inserted an Audio CD."
-#~ msgstr "Sa sisestasid audio-CD."
-
-#~ msgid "You have just inserted an Audio DVD."
-#~ msgstr "Sa sisestasid audio-DVD."
-
-#~ msgid "You have just inserted a Video DVD."
-#~ msgstr "Sa sisestasid video-DVD."
-
-#~ msgid "You have just inserted a Video CD."
-#~ msgstr "Sa sisestasid video-CD."
-
-#~ msgid "You have just inserted a Super Video CD."
-#~ msgstr "Sa sisestasid Super Video CD."
-
-#~ msgid "You have just inserted a blank CD."
-#~ msgstr "Sa sisestasid tühja CD."
-
-#~ msgid "You have just inserted a blank DVD."
-#~ msgstr "Sa sisestasid tühja DVD."
-
-#~ msgid "You have just inserted a blank Blu-Ray disc."
-#~ msgstr "Sa sisestasid tühja Blu-Ray plaadi."
-
-#~ msgid "You have just inserted a blank HD DVD."
-#~ msgstr "Sa sisestasid tühja HD DVD-plaadi."
-
-#~ msgid "You have just inserted a Photo CD."
-#~ msgstr "Sa sisestasid tühja foto-CD."
-
-#~ msgid "You have just inserted a Picture CD."
-#~ msgstr "Sa sisestasid tühja pildi-CD."
-
-#~ msgid "You have just inserted a medium with digital photos."
-#~ msgstr "Sa sisestasid digifotosid sisaldava meediumi."
-
-#~ msgid "You have just inserted a digital audio player."
-#~ msgstr "Sa sisestasid digitaalse audioesitaja."
 
 #~ msgid ""
 #~ "You have just inserted a medium with software intended to be "
@@ -4958,30 +4901,6 @@ msgstr "Failide saatmine e-postiga, välksõnumiga..."
 
 #~ msgid "Could not set application as the default: %s"
 #~ msgstr "Rakendust pole võimalik vaikimisi rakenduseks määrata: %s"
-
-#~ msgid "Default"
-#~ msgstr "Vaikimisi"
-
-#~ msgid "Icon"
-#~ msgstr "Ikoon"
-
-#~ msgid "Could not remove application"
-#~ msgstr "Rakendust pole võimalik eemaldada"
-
-#~ msgid "No applications selected"
-#~ msgstr "Ühtegi rakendust pole valitud"
-
-#~ msgid "Unknown"
-#~ msgstr "Tundmatu"
-
-#~ msgid "Could not find '%s'"
-#~ msgstr "'%s' pole võimalik leida"
-
-#~ msgid "Could not find application"
-#~ msgstr "Rakendust pole võimalik leida"
-
-#~ msgid "Could not add application to the application database: %s"
-#~ msgstr "Rakendust pole rakenduste andmebaasi võimalik lisadsa: %s"
 
 #~ msgid "Select an Application"
 #~ msgstr "Rakenduse valimine"
@@ -5031,11 +4950,6 @@ msgstr "Failide saatmine e-postiga, välksõnumiga..."
 #~ msgstr ""
 #~ "\"%s\" ei saa faili \"%s\" avada, kuna \"%s\" ei pääse asukohas \"%s\" "
 #~ "olevatele failidele ligi."
-
-# #: ../libnautilus-private/nautilus-program-choosing.c:82
-# #: ../libnautilus-private/nautilus-program-choosing.c:113
-#~ msgid "Open Failed, would you like to choose another action?"
-#~ msgstr "Tõrge avamisel. Kas soovid valida mõne teise käsu?"
 
 #~ msgid ""
 #~ "The default action cannot open \"%s\" because it cannot access files at "
@@ -5162,9 +5076,6 @@ msgstr "Failide saatmine e-postiga, välksõnumiga..."
 
 #~ msgid "Show Tree"
 #~ msgstr "Näita kataloogipuud"
-
-#~ msgid "-- quit cannot be used with URIs."
-#~ msgstr "--quit võtit pole võimalik koos URI-dega kasutada."
 
 #~ msgid "<b>Media Handling</b>"
 #~ msgstr "<b>Meediakäsitlemine</b>"
