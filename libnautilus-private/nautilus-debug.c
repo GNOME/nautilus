@@ -49,7 +49,7 @@ static GDebugKey keys[] = {
   { 0, }
 };
 
-void
+static void
 nautilus_debug_set_flags_from_env ()
 {
   guint nkeys;

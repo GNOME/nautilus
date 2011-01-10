@@ -96,8 +96,6 @@ main (int argc, char *argv[])
 	xmp_init();
 #endif
 
-	nautilus_debug_set_flags_from_env ();
-
 	/* Initialize the services that we use. */
 	LIBXML_TEST_VERSION
 

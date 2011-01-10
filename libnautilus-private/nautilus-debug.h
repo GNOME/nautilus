@@ -45,7 +45,6 @@ typedef enum {
   NAUTILUS_DEBUG_WINDOW = 1 << 10,
 } DebugFlags;
 
-void nautilus_debug_set_flags_from_env (void);
 void nautilus_debug_set_flags (DebugFlags flags);
 gboolean nautilus_debug_flag_is_set (DebugFlags flag);
 
@@ -77,6 +76,9 @@ void nautilus_debug_files (DebugFlags flag, GList *files,
 #ifdef DEBUG_FLAG
 
 #define DEBUG(format, ...) \
+  G_STMT_START { } G_STMT_END
+
+#define DEBUG_FILES(files, format, ...) \
   G_STMT_START { } G_STMT_END
 
 #define DEBUGGING 0
