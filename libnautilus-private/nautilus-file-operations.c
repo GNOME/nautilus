@@ -5764,7 +5764,9 @@ create_job (GIOSchedulerJob *io_job,
 	CommonJob *common;
 	int count;
 	GFile *dest;
+	char *basename;
 	char *filename, *filename2, *new_filename;
+	char *filename_base, *suffix;
 	char *dest_fs_type;
 	GError *error;
 	gboolean res;
@@ -5775,7 +5777,7 @@ create_job (GIOSchedulerJob *io_job,
 	int length;
 	GFileOutputStream *out;
 	gboolean handled_invalid_filename;
-	int max_length;
+	int max_length, offset;
 
 	job = user_data;
 	common = &job->common;
@@ -5806,19 +5808,23 @@ create_job (GIOSchedulerJob *io_job,
 	if (filename == NULL) {
 		if (job->make_dir) {
 			/* localizers: the initial name of a new folder  */
-			filename = g_strdup (_("untitled folder"));
+			filename = g_strdup (_("Untitled Folder"));
 			filename_is_utf8 = TRUE; /* Pass in utf8 */
 		} else {
 			if (job->src != NULL) {
-				filename = g_file_get_basename (job->src);
+				basename = g_file_get_basename (job->src);
+				/* localizers: the initial name of a new template document */
+				filename = g_strdup_printf (_("Untitled %s"), basename);
+
+				g_free (basename);
 			}
 			if (filename == NULL) {
-				/* localizers: the initial name of a new empty file */
-				filename = g_strdup (_("new file"));
+				/* localizers: the initial name of a new empty document */
+				filename = g_strdup (_("Untitled Document"));
 				filename_is_utf8 = TRUE; /* Pass in utf8 */
 			}
 		}
-	} 
+	}
 
 	make_file_name_valid_for_dest_fs (filename, dest_fs_type);
 	if (filename_is_utf8) {
@@ -5898,8 +5904,12 @@ create_job (GIOSchedulerJob *io_job,
 
 			if (count == 1) {
 				new_filename = g_strdup (filename);
-			} else if (job->make_dir) {
-				filename2 = g_strdup_printf ("%s %d", filename, count);
+			} else {
+				filename_base = eel_filename_strip_extension (filename);
+				offset = g_utf8_strlen (filename_base, -1);
+				suffix = g_strdup (filename + offset);
+
+				filename2 = g_strdup_printf ("%s %d%s", filename_base, count, suffix);
 
 				new_filename = NULL;
 				if (max_length > 0 && strlen (filename2) > max_length) {
@@ -5911,8 +5921,7 @@ create_job (GIOSchedulerJob *io_job,
 				}
 
 				g_free (filename2);
-			} else {
-				new_filename = get_duplicate_name (filename, count, max_length);
+				g_free (suffix);
 			}
 
 			if (make_file_name_valid_for_dest_fs (new_filename, dest_fs_type)) {
@@ -5933,18 +5942,20 @@ create_job (GIOSchedulerJob *io_job,
 		} else if (IS_IO_ERROR (error, EXISTS)) {
 			g_object_unref (dest);
 			dest = NULL;
-			if (job->make_dir) {
-				filename2 = g_strdup_printf ("%s %d", filename, ++count);
-				if (max_length > 0 && strlen (filename2) > max_length) {
-					new_filename = shorten_utf8_string (filename2, strlen (filename2) - max_length);
-					if (new_filename != NULL) {
-						g_free (filename2);
-						filename2 = new_filename;
-					}
+			filename_base = eel_filename_strip_extension (filename);
+			offset = g_utf8_strlen (filename_base, -1);
+			suffix = g_strdup (filename + offset);
+
+			filename2 = g_strdup_printf ("%s %d%s", filename_base, ++count, suffix);
+
+			if (max_length > 0 && strlen (filename2) > max_length) {
+				new_filename = shorten_utf8_string (filename2, strlen (filename2) - max_length);
+				if (new_filename != NULL) {
+					g_free (filename2);
+					filename2 = new_filename;
 				}
-			} else {
-				filename2 = get_duplicate_name (filename, count++, max_length);
 			}
+
 			make_file_name_valid_for_dest_fs (filename2, dest_fs_type);
 			if (filename_is_utf8) {
 				dest = g_file_get_child_for_display_name (job->dest_dir, filename2, NULL);
@@ -5953,6 +5964,7 @@ create_job (GIOSchedulerJob *io_job,
 				dest = g_file_get_child (job->dest_dir, filename2);
 			}
 			g_free (filename2);
+			g_free (suffix);
 			g_error_free (error);
 			goto retry;
 		}
