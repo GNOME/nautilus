@@ -23,8 +23,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-master-po-gl-54706\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-09 17:18+0100\n"
-"PO-Revision-Date: 2011-01-09 17:18+0100\n"
+"POT-Creation-Date: 2011-01-10 12:19+0100\n"
+"PO-Revision-Date: 2011-01-10 12:21+0100\n"
 "Last-Translator: Fran Diéguez <frandieguez@ubuntu.com>\n"
 "Language-Team: Galician <gnome-gl-list@gnome.org>\n"
 "Language: gl\n"
@@ -301,18 +301,10 @@ msgstr ""
 "Se quere desmontar o volume, utilice \"Desmontar volume\" no menú emerxente "
 "do volume."
 
-#. Note to translators: If it's hard to compose a good home
-#. * icon name from the user name, you can use a string without
-#. * an "%s" here, in which case the home icon name will not
-#. * include the user's name, which should be fine. To avoid a
-#. * warning, put "%.0s" somewhere in the string, which will
-#. * match the user name string passed by the C code, but not
-#. * put the user name in the final string.
-#.
-#: ../libnautilus-private/nautilus-desktop-link.c:128
-#, c-format
-msgid "%s's Home"
-msgstr "Cartafol persoal de %s"
+#: ../libnautilus-private/nautilus-desktop-link.c:120
+#: ../src/nautilus-places-sidebar.c:642 ../src/nautilus-tree-sidebar.c:1316
+msgid "Home"
+msgstr "Cartafol persoal"
 
 #: ../libnautilus-private/nautilus-dnd.c:776
 msgid "_Move Here"
@@ -328,7 +320,7 @@ msgstr "_Ligar para aquí"
 
 #: ../libnautilus-private/nautilus-dnd.c:791
 msgid "Set as _Background"
-msgstr "Configurar como _fondo"
+msgstr "Estabelecer como _fondo de pantalla"
 
 #: ../libnautilus-private/nautilus-dnd.c:798
 msgid "Cancel"
@@ -337,7 +329,7 @@ msgstr "Cancelar"
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:144
 #, c-format
 msgid "Merge folder \"%s\"?"
-msgstr "Combinar os cartafoles «%s»?"
+msgstr "Desexa combinar os cartafoles «%s»?"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:148
 msgid ""
@@ -2582,7 +2574,7 @@ msgstr ""
 "este computador"
 
 #: ../data/nautilus-computer.desktop.in.in.h:2
-#: ../src/nautilus-places-sidebar.c:627
+#: ../src/nautilus-places-sidebar.c:631
 msgid "Computer"
 msgstr "Computador"
 
@@ -2590,13 +2582,13 @@ msgstr "Computador"
 msgid "Open Folder"
 msgstr "Abrir cartafol"
 
-#: ../data/nautilus-home.desktop.in.in.h:1 ../src/nautilus-tree-sidebar.c:1316
+#: ../data/nautilus-home.desktop.in.in.h:1
 msgid "Home Folder"
 msgstr "Cartafol persoal"
 
 #. tooltip
 #: ../data/nautilus-home.desktop.in.in.h:2
-#: ../src/nautilus-places-sidebar.c:643 ../src/nautilus-window-menus.c:824
+#: ../src/nautilus-places-sidebar.c:644 ../src/nautilus-window-menus.c:824
 msgid "Open your personal folder"
 msgstr "Abre o seu cartafol persoal"
 
@@ -3563,9 +3555,9 @@ msgstr "Mover a selección actual a outro panel na xanlea"
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:7315
 #: ../src/file-manager/fm-directory-view.c:7319
-#: ../src/nautilus-window-menus.c:823
-msgid "_Home Folder"
-msgstr "Cartafol _persoal"
+#: ../src/nautilus-window-menus.c:823 ../src/nautilus-window-menus.c:880
+msgid "_Home"
+msgstr "_Inicio"
 
 #: ../src/file-manager/fm-directory-view.c:7316
 msgid "Copy the current selection to the home folder"
@@ -5637,15 +5629,15 @@ msgstr "%s - Explorador de ficheiros"
 msgid "Close tab"
 msgstr "Pechar o separador"
 
-#: ../src/nautilus-places-sidebar.c:293
+#: ../src/nautilus-places-sidebar.c:297
 msgid "Devices"
 msgstr "Dispositivos"
 
-#: ../src/nautilus-places-sidebar.c:301
+#: ../src/nautilus-places-sidebar.c:305
 msgid "Bookmarks"
 msgstr "Marcadores"
 
-#: ../src/nautilus-places-sidebar.c:502 ../src/nautilus-places-sidebar.c:527
+#: ../src/nautilus-places-sidebar.c:506 ../src/nautilus-places-sidebar.c:531
 #, c-format
 msgid "Mount and open %s"
 msgstr "Montar e abrir %s"
@@ -6233,10 +6225,6 @@ msgstr "Activar/desactivar a mostra de ficheiros ocultos na xanela actual"
 msgid "_Up"
 msgstr "_Arriba"
 
-#: ../src/nautilus-window-menus.c:880
-msgid "_Home"
-msgstr "_Inicio"
-
 #: ../src/nautilus-x-content-bar.c:68
 msgid "These files are on an Audio CD."
 msgstr "Estes ficheiros están nun CD de audio."
@@ -6320,6 +6308,12 @@ msgstr "Enviar un ficheiro por correo, por mensaxaría instantánea..."
 #: ../nautilus-sendto-extension/nautilus-nste.c:89
 msgid "Send files by mail, instant message..."
 msgstr "Enviar ficheiros por correo, mensaxaría instantánea..."
+
+#~ msgid "%s's Home"
+#~ msgstr "Cartafol persoal de %s"
+
+#~ msgid "_Home Folder"
+#~ msgstr "Cartafol _persoal"
 
 #~ msgid "File is not a valid .desktop file"
 #~ msgstr "O ficheiro non é un ficheiro .desktop correcto"
