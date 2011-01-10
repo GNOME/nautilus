@@ -31,8 +31,9 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
-#include <gtk/gtk.h>
 #include <gio/gio.h>
+#include <glib/gi18n.h>
+#include <gtk/gtk.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-icon-names.h>
 
@@ -195,7 +196,7 @@ nautilus_bookmark_copy (NautilusBookmark *bookmark)
 char *
 nautilus_bookmark_get_name (NautilusBookmark *bookmark)
 {
-	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK (bookmark), NULL);
+	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK (bookmark), NULL);
 
 	return g_strdup (bookmark->details->name);
 }
@@ -413,9 +414,15 @@ bookmark_file_changed_callback (NautilusFile *file, NautilusBookmark *bookmark)
 
 	if (!bookmark->details->has_custom_name) {
 		display_name = nautilus_file_get_display_name (file);
-
-		if (strcmp (bookmark->details->name, display_name) != 0) {
+		
+		if (nautilus_file_is_home (file)) {
 			g_free (bookmark->details->name);
+			g_free (display_name);
+
+			bookmark->details->name = g_strdup (_("Home"));
+		} else if (strcmp (bookmark->details->name, display_name) != 0) {
+			g_free (bookmark->details->name);
+
 			bookmark->details->name = display_name;
 			should_emit_appearance_changed_signal = TRUE;
 		} else {
@@ -516,13 +523,20 @@ nautilus_bookmark_connect_file (NautilusBookmark *bookmark)
 	if (!bookmark->details->has_custom_name &&
 	    bookmark->details->file && 
 	    nautilus_file_check_if_ready (bookmark->details->file, NAUTILUS_FILE_ATTRIBUTE_INFO)) {
-		    display_name = nautilus_file_get_display_name (bookmark->details->file);
-		    if (strcmp (bookmark->details->name, display_name) != 0) {
-			    g_free (bookmark->details->name);
-			    bookmark->details->name = display_name;
-		    } else {
-			    g_free (display_name);
-		    }
+		display_name = nautilus_file_get_display_name (bookmark->details->file);
+		
+		if (nautilus_file_is_home (bookmark->details->file)) {
+			g_free (bookmark->details->name);
+			g_free (display_name);
+
+			bookmark->details->name = g_strdup (_("Home"));
+		} else if (strcmp (bookmark->details->name, display_name) != 0) {
+			g_free (bookmark->details->name);
+
+			bookmark->details->name = display_name;
+		} else {
+			g_free (display_name);
+		}
 	}
 }
 
@@ -577,8 +591,10 @@ nautilus_bookmark_menu_item_new (NautilusBookmark *bookmark)
 	GtkWidget *menu_item;
 	GtkWidget *image_widget;
 	GtkLabel *label;
-	
-	menu_item = gtk_image_menu_item_new_with_label (bookmark->details->name);
+	char *name;
+
+	name = nautilus_bookmark_get_name (bookmark);
+	menu_item = gtk_image_menu_item_new_with_label (name);
 	label = GTK_LABEL (gtk_bin_get_child (GTK_BIN (menu_item)));
 	gtk_label_set_use_underline (label, FALSE);
 	gtk_label_set_ellipsize (label, PANGO_ELLIPSIZE_END);
@@ -590,6 +606,8 @@ nautilus_bookmark_menu_item_new (NautilusBookmark *bookmark)
 		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menu_item),
 					       image_widget);
 	}
+
+	g_free (name);
 
 	return menu_item;
 }

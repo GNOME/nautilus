@@ -117,15 +117,7 @@ home_name_changed (gpointer callback_data)
 							     NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME);
 	if (link->details->display_name[0] == 0) {
 		g_free (link->details->display_name);
-		/* Note to translators: If it's hard to compose a good home
-		 * icon name from the user name, you can use a string without
-		 * an "%s" here, in which case the home icon name will not
-		 * include the user's name, which should be fine. To avoid a
-		 * warning, put "%.0s" somewhere in the string, which will
-		 * match the user name string passed by the C code, but not
-		 * put the user name in the final string.
-		 */
-		link->details->display_name = g_strdup_printf (_("%s's Home"), g_get_user_name ());
+		link->details->display_name = g_strdup (_("Home"));
 	}
 
 	nautilus_desktop_link_changed (link);

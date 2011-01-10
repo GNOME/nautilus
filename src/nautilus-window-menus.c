@@ -820,7 +820,7 @@ static const GtkActionEntry main_entries[] = {
   /* tooltip */                  N_("Connect to a remote computer or shared disk"),
                                  G_CALLBACK (action_connect_to_server_callback) },
   /* name, stock id */         { "Home", NAUTILUS_ICON_HOME,
-  /* label, accelerator */       N_("_Home Folder"), "<alt>Home",
+  /* label, accelerator */       N_("_Home"), "<alt>Home",
   /* tooltip */                  N_("Open your personal folder"),
                                  G_CALLBACK (action_home_callback) },
   /* name, stock id */         { "Go to Computer", NAUTILUS_ICON_COMPUTER,
