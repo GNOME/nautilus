@@ -142,13 +142,13 @@ nautilus_bookmark_compare_with (gconstpointer a, gconstpointer b)
 	bookmark_a = NAUTILUS_BOOKMARK (a);
 	bookmark_b = NAUTILUS_BOOKMARK (b);
 
-	if (eel_strcmp (bookmark_a->details->name,
-			bookmark_b->details->name) != 0) {
-		return 1;
-	}
-
 	if (!g_file_equal (bookmark_a->details->location,
 			   bookmark_b->details->location)) {
+		return 1;
+	}
+	
+	if (eel_strcmp (bookmark_a->details->name,
+			bookmark_b->details->name) != 0) {
 		return 1;
 	}
 	
