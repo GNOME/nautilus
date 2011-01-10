@@ -1636,10 +1636,6 @@ nautilus_add_bookmark_to_history_list (NautilusBookmark *bookmark)
 		free_history_list_is_set_up = TRUE;
 	}
 
-/*	g_warning ("Add to history list '%s' '%s'",
-		   nautilus_bookmark_get_name (bookmark),
-		   nautilus_bookmark_get_uri (bookmark)); */
-
 	if (!history_list ||
 	    nautilus_bookmark_compare_uris (history_list->data, bookmark)) {
 		g_object_ref (bookmark);
@@ -1659,32 +1655,6 @@ nautilus_add_bookmark_to_history_list (NautilusBookmark *bookmark)
 	}
 
 	return FALSE;
-}
-
-void
-nautilus_remove_from_history_list_no_notify (GFile *location)
-{
-	NautilusBookmark *bookmark;
-
-	bookmark = nautilus_bookmark_new (location, "", FALSE, NULL);
-	remove_from_history_list (bookmark);
-	g_object_unref (bookmark);
-}
-
-gboolean
-nautilus_add_to_history_list_no_notify (GFile *location,
-					const char *name,
-					gboolean has_custom_name,
-					GIcon *icon)
-{
-	NautilusBookmark *bookmark;
-	gboolean ret;
-
-	bookmark = nautilus_bookmark_new (location, name, has_custom_name, icon);
-	ret = nautilus_add_bookmark_to_history_list (bookmark);
-	g_object_unref (bookmark);
-
-	return ret;
 }
 
 NautilusWindowSlot *
