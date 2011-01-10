@@ -94,7 +94,7 @@
 #define FM_ACTION_LOCATION_POLL "Location Poll"
 #define FM_ACTION_SCRIPTS "Scripts"
 #define FM_ACTION_NEW_DOCUMENTS "New Documents"
-#define FM_ACTION_NEW_EMPTY_FILE "New Empty File"
+#define FM_ACTION_NEW_EMPTY_DOCUMENT "New Empty Document"
 #define FM_ACTION_EMPTY_TRASH_CONDITIONAL "Empty Trash Conditional"
 #define FM_ACTION_MANUAL_LAYOUT "Manual Layout"
 #define FM_ACTION_TIGHTER_LAYOUT "Tighter Layout"

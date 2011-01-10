@@ -5431,7 +5431,7 @@ add_template_to_templates_menus (FMDirectoryView *directory_view,
 	g_free (tmp);
 
 	uri = nautilus_file_get_uri (file);
-	tip = g_strdup_printf (_("Create Document from template \"%s\""), name);
+	tip = g_strdup_printf (_("Create a new document from template \"%s\""), name);
 
 	action_name = escape_action_name (uri, "template_");
 	escaped_label = eel_str_double_underscores (name);
@@ -7027,7 +7027,7 @@ fm_directory_view_init_show_hidden_files (FMDirectoryView *view)
 }
 
 static const GtkActionEntry directory_view_entries[] = {
-  /* name, stock id, label */  { "New Documents", "document-new", N_("Create _Document") },
+  /* name, stock id, label */  { "New Documents", "document-new", N_("Create New _Document") },
   /* name, stock id, label */  { "Open With", NULL, N_("Open Wit_h"),
                                  NULL, N_("Choose a program with which to open the selected item") },
   /* name, stock id */         { "Properties", GTK_STOCK_PROPERTIES,
@@ -7039,14 +7039,14 @@ static const GtkActionEntry directory_view_entries[] = {
   /* tooltip */                  NULL,
                                  G_CALLBACK (action_properties_callback) },
   /* name, stock id */         { "New Folder", "folder-new",
-  /* label, accelerator */       N_("Create _Folder"), "<control><shift>N",
+  /* label, accelerator */       N_("Create New _Folder"), "<control><shift>N",
   /* tooltip */                  N_("Create a new empty folder inside this folder"),
                                  G_CALLBACK (action_new_folder_callback) },
   /* name, stock id, label */  { "No Templates", NULL, N_("No templates installed") },
-  /* name, stock id */         { "New Empty File", NULL,
-    /* translators: this is used to indicate that a file doesn't contain anything */
-  /* label, accelerator */       N_("_Empty File"), NULL,
-  /* tooltip */                  N_("Create a new empty file inside this folder"),
+  /* name, stock id */         { "New Empty Document", NULL,
+    /* translators: this is used to indicate that a document doesn't contain anything */
+  /* label, accelerator */       N_("_Empty Document"), NULL,
+  /* tooltip */                  N_("Create a new empty document inside this folder"),
                                  G_CALLBACK (action_new_empty_file_callback) },
   /* name, stock id */         { "New Launcher", NULL,
   /* label, accelerator */       N_("Create L_auncher..."), NULL,
@@ -7338,7 +7338,7 @@ connect_proxy (FMDirectoryView *view,
 	GdkPixbuf *pixbuf;
 	GtkWidget *image;
 
-	if (strcmp (gtk_action_get_name (action), FM_ACTION_NEW_EMPTY_FILE) == 0 &&
+	if (strcmp (gtk_action_get_name (action), FM_ACTION_NEW_EMPTY_DOCUMENT) == 0 &&
 	    GTK_IS_IMAGE_MENU_ITEM (proxy)) {
 		pixbuf = get_menu_icon ("text-x-generic");
 		if (pixbuf != NULL) {
