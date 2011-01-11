@@ -22,8 +22,8 @@ msgstr ""
 "Project-Id-Version: nautilus MASTER\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2011-01-10 09:19+0000\n"
-"PO-Revision-Date: 2011-01-10 13:15+0200\n"
+"POT-Creation-Date: 2011-01-10 17:27+0000\n"
+"PO-Revision-Date: 2011-01-10 20:18+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -91,6 +91,9 @@ msgstr "Seda tegevust saab peatada vajutades nupule \"Loobu\"."
 
 msgid " (invalid Unicode)"
 msgstr " (vigane Unicode)"
+
+msgid "Home"
+msgstr "Kodukataloog"
 
 #. name, stock id
 #. label, accelerator
@@ -232,9 +235,6 @@ msgid ""
 msgstr ""
 "Kui soovid kettaseadet lahti haakida, vali paremklõpsuga avanevast menüüst "
 "\"Haagi ketas lahti\"'."
-
-msgid "Home"
-msgstr "Kodukataloog"
 
 msgid "_Move Here"
 msgstr "_Tõsta siia"
@@ -892,12 +892,17 @@ msgid "Setting permissions"
 msgstr "Õiguste seadmine"
 
 #. localizers: the initial name of a new folder
-msgid "untitled folder"
-msgstr "nimetu kataloog"
+msgid "Untitled Folder"
+msgstr "Nimetu kataloog"
 
-#. localizers: the initial name of a new empty file
-msgid "new file"
-msgstr "uus fail"
+#. localizers: the initial name of a new template document
+#, c-format
+msgid "Untitled %s"
+msgstr "Nimetu %s"
+
+#. localizers: the initial name of a new empty document
+msgid "Untitled Document"
+msgstr "Nimetu dokument"
 
 msgid "Error while creating directory %B."
 msgstr "Viga kataloogi %B loomisel."
@@ -2160,8 +2165,8 @@ msgid "Run \"%s\" on any selected items"
 msgstr "Käivita \"%s\" mõnel valitud kirjel"
 
 #, c-format
-msgid "Create Document from template \"%s\""
-msgstr "Dokumendi loomine mallist \"%s\""
+msgid "Create a new document from template \"%s\""
+msgstr "Uue dokumendi loomine mallist \"%s\""
 
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "Kõik käivitatavad failid selles kataloogis ilmuvad Skriptide menüüsse."
@@ -2277,8 +2282,8 @@ msgid "Link _name:"
 msgstr "_Viida nimi:"
 
 #. name, stock id, label
-msgid "Create _Document"
-msgstr "Loo _dokument"
+msgid "Create New _Document"
+msgstr "Loo uus _dokument"
 
 #. name, stock id, label
 msgid "Open Wit_h"
@@ -2298,9 +2303,9 @@ msgstr "Valitud kirje omaduste vaatamine või muutmine"
 
 #. name, stock id
 #. label, accelerator
-#. add the "create folder" menu item
-msgid "Create _Folder"
-msgstr "Loo _kataloog"
+#. add the "create new folder" menu item
+msgid "Create New _Folder"
+msgstr "Loo uus _kataloog"
 
 #. tooltip
 msgid "Create a new empty folder inside this folder"
@@ -2311,14 +2316,14 @@ msgid "No templates installed"
 msgstr "Malle ei ole paigaldatud"
 
 #. name, stock id
-#. translators: this is used to indicate that a file doesn't contain anything
+#. translators: this is used to indicate that a document doesn't contain anything
 #. label, accelerator
-msgid "_Empty File"
-msgstr "_Tühi fail"
+msgid "_Empty Document"
+msgstr "_Tühi Dokument"
 
 #. tooltip
-msgid "Create a new empty file inside this folder"
-msgstr "Selle kataloogi sisse uue tühja faili loomine"
+msgid "Create a new empty document inside this folder"
+msgstr "Selle kataloogi sisse uue tühja dokumendi loomine"
 
 #. name, stock id
 #. label, accelerator
@@ -4810,6 +4815,15 @@ msgstr "Faili saatmine e-postiga, välksõnumiga..."
 
 msgid "Send files by mail, instant message..."
 msgstr "Failide saatmine e-postiga, välksõnumiga..."
+
+#~ msgid "new file"
+#~ msgstr "uus fail"
+
+#~ msgid "_Empty File"
+#~ msgstr "_Tühi fail"
+
+#~ msgid "Create a new empty file inside this folder"
+#~ msgstr "Selle kataloogi sisse uue tühja faili loomine"
 
 #~ msgid "File is not a valid .desktop file"
 #~ msgstr "Fail pole korrektne .desktop fail"
