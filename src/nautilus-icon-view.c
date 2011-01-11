@@ -23,12 +23,13 @@
 */
 
 #include <config.h>
-#include "fm-icon-view.h"
 
-#include "fm-actions.h"
-#include "fm-icon-container.h"
-#include "fm-desktop-icon-view.h"
-#include "fm-error-reporting.h"
+#include "nautilus-icon-view.h"
+
+#include "nautilus-actions.h"
+#include "nautilus-icon-view-container.h"
+#include "nautilus-desktop-icon-view.h"
+#include "nautilus-error-reporting.h"
 #include "nautilus-view-dnd.h"
 #include "nautilus-view-factory.h"
 

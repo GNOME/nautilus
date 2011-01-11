@@ -30,14 +30,14 @@
 
 #include "nautilus-application.h"
 
-#include "file-manager/fm-desktop-icon-view.h"
-#include "file-manager/fm-icon-view.h"
 #include "file-manager/fm-list-view.h"
 #if ENABLE_EMPTY_VIEW
 #include "file-manager/fm-empty-view.h"
 #endif /* ENABLE_EMPTY_VIEW */
 
+#include "nautilus-desktop-icon-view.h"
 #include "nautilus-desktop-window.h"
+#include "nautilus-icon-view.h"
 #include "nautilus-image-properties-page.h"
 #include "nautilus-navigation-window.h"
 #include "nautilus-navigation-window-slot.h"

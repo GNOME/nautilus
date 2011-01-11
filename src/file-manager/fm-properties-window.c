@@ -27,7 +27,7 @@
 #include "fm-properties-window.h"
 
 #include "fm-ditem-page.h"
-#include "fm-error-reporting.h"
+#include "nautilus-error-reporting.h"
 #include "nautilus-mime-actions.h"
 
 #include <gtk/gtk.h>

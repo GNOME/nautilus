@@ -25,7 +25,7 @@
 #ifndef FM_DESKTOP_ICON_VIEW_H
 #define FM_DESKTOP_ICON_VIEW_H
 
-#include "fm-icon-view.h"
+#include "nautilus-icon-view.h"
 
 #define FM_TYPE_DESKTOP_ICON_VIEW fm_desktop_icon_view_get_type()
 #define FM_DESKTOP_ICON_VIEW(obj) \

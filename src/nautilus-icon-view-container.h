@@ -25,8 +25,9 @@
 #ifndef FM_ICON_CONTAINER_H
 #define FM_ICON_CONTAINER_H
 
+#include "nautilus-icon-view.h"
+
 #include <libnautilus-private/nautilus-icon-container.h>
-#include "fm-icon-view.h"
 
 typedef struct FMIconContainer FMIconContainer;
 typedef struct FMIconContainerClass FMIconContainerClass;

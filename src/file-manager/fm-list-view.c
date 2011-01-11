@@ -29,8 +29,8 @@
 #include "fm-list-view.h"
 
 #include <string.h>
-#include "fm-error-reporting.h"
 #include "fm-list-model.h"
+#include "nautilus-error-reporting.h"
 #include "nautilus-view-dnd.h"
 #include "nautilus-view-factory.h"
 

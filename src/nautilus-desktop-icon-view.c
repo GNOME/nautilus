@@ -26,9 +26,10 @@
 
 #include <config.h>
 
-#include "fm-icon-container.h"
-#include "fm-desktop-icon-view.h"
-#include "fm-actions.h"
+#include "nautilus-desktop-icon-view.h"
+
+#include "nautilus-actions.h"
+#include "nautilus-icon-view-container.h"
 #include "nautilus-view-factory.h"
 #include "nautilus-view.h"
 

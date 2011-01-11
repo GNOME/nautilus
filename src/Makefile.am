@@ -64,6 +64,7 @@ nautilus_SOURCES = \
 	nautilus-actions.h			\
 	nautilus-application.c			\
 	nautilus-application.h			\
+	nautilus-audio-mime-types.h		\
 	nautilus-bookmark-list.c		\
 	nautilus-bookmark-list.h		\
 	nautilus-bookmarks-window.c		\
@@ -73,10 +74,18 @@ nautilus_SOURCES = \
 	nautilus-connect-server-dialog-nonmain.c \
 	nautilus-connect-server-operation.c	\
 	nautilus-connect-server-operation.h	\
+	nautilus-desktop-icon-view.c		\
+	nautilus-desktop-icon-view.h		\
 	nautilus-desktop-window.c		\
 	nautilus-desktop-window.h		\
+	nautilus-error-reporting.c		\
+	nautilus-error-reporting.h		\
 	nautilus-file-management-properties.c	\
 	nautilus-file-management-properties.h	\
+	nautilus-icon-view.c			\
+	nautilus-icon-view.h			\
+	nautilus-icon-view-container.c		\
+	nautilus-icon-view-container.h		\
 	nautilus-image-properties-page.c	\
 	nautilus-image-properties-page.h	\
 	nautilus-location-bar.c         	\

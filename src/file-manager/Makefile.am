@@ -16,17 +16,8 @@ INCLUDES = 					\
 	$(NULL)	
 
 libnautilus_file_manager_la_SOURCES=	\
-	fm-actions.h			\
-	fm-desktop-icon-view.c		\
-	fm-desktop-icon-view.h 		\
 	fm-ditem-page.c			\
 	fm-ditem-page.h			\
-	fm-error-reporting.c		\
-	fm-error-reporting.h 		\
-	fm-icon-container.c		\
-	fm-icon-container.h		\
-	fm-icon-view.c			\
-	fm-icon-view.h 			\
 	fm-list-model.c			\
 	fm-list-model.h			\
 	fm-list-view-private.h 		\
@@ -34,7 +25,6 @@ libnautilus_file_manager_la_SOURCES=	\
 	fm-list-view.h 			\
 	fm-properties-window.c		\
 	fm-properties-window.h 		\
-	nautilus-audio-mime-types.h	\
 	$(NULL)
 
 EMPTY_VIEW_SOURCES = \

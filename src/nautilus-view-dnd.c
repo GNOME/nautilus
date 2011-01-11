@@ -30,9 +30,9 @@
 #include <config.h>
 
 #include "nautilus-view-dnd.h"
-#include "nautilus-view.h"
 
-#include "file-manager/fm-desktop-icon-view.h"
+#include "nautilus-desktop-icon-view.h"
+#include "nautilus-view.h"
 
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>

@@ -32,11 +32,11 @@
 #include "nautilus-view.h"
 
 #include "file-manager/fm-list-view.h"
-#include "file-manager/fm-desktop-icon-view.h"
-#include "file-manager/fm-actions.h"
-#include "file-manager/fm-error-reporting.h"
 #include "file-manager/fm-properties-window.h"
 
+#include "nautilus-actions.h"
+#include "nautilus-desktop-icon-view.h"
+#include "nautilus-error-reporting.h"
 #include "nautilus-mime-actions.h"
 #include "nautilus-src-marshal.h"
 

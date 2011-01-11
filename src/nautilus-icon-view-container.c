@@ -23,6 +23,8 @@
 */
 #include <config.h>
 
+#include "nautilus-icon-view-container.h"
+
 #include <string.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
@@ -31,8 +33,6 @@
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-thumbnails.h>
 #include <libnautilus-private/nautilus-desktop-icon-file.h>
-
-#include "fm-icon-container.h"
 
 #define ICON_TEXT_ATTRIBUTES_NUM_ITEMS		3
 #define ICON_TEXT_ATTRIBUTES_DEFAULT_TOKENS	"size,date_modified,type"

@@ -24,7 +24,8 @@
 */
 
 #include <config.h>
-#include "fm-error-reporting.h"
+
+#include "nautilus-error-reporting.h"
 
 #include <string.h>
 #include <glib/gi18n.h>
