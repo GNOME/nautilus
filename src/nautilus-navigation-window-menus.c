@@ -591,15 +591,19 @@ static void
 action_new_window_callback (GtkAction *action,
 			    gpointer user_data)
 {
-	NautilusWindow *current_window;
-	NautilusWindow *new_window;
+	NautilusApplication *application;
+	NautilusWindow *current_window, *new_window;
 
 	current_window = NAUTILUS_WINDOW (user_data);
+	application = nautilus_application_dup_singleton ();
+
 	new_window = nautilus_application_create_navigation_window (
-				current_window->application,
+				application,
 				NULL,
 				gtk_window_get_screen (GTK_WINDOW (current_window)));
-	nautilus_window_go_home (new_window);
+	nautilus_window_slot_go_home (nautilus_window_get_active_slot (new_window), FALSE);
+
+	g_object_unref (application);
 }
 
 static void
@@ -616,15 +620,18 @@ static void
 action_folder_window_callback (GtkAction *action,
 			       gpointer user_data)
 {
+	NautilusApplication *application;
 	NautilusWindow *current_window, *window;
 	NautilusWindowSlot *slot;
 	GFile *current_location;
 
 	current_window = NAUTILUS_WINDOW (user_data);
+	application = nautilus_application_dup_singleton ();
 	slot = current_window->details->active_pane->active_slot;
 	current_location = nautilus_window_slot_get_location (slot);
+
 	window = nautilus_application_get_spatial_window
-		(current_window->application,
+		(application,
 		 current_window,
 		 NULL,
 		 current_location,
@@ -633,9 +640,8 @@ action_folder_window_callback (GtkAction *action,
 
 	nautilus_window_go_to (window, current_location);
 
-	if (current_location != NULL) {
-		g_object_unref (current_location);
-	}
+	g_clear_object (&current_location);
+	g_object_unref (application);
 }
 
 static void

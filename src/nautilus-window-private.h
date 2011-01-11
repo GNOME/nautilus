@@ -87,6 +87,8 @@ struct NautilusWindowDetails
 	 * an unmount operation.
 	 */
 	gboolean initiated_unmount;
+
+        NautilusApplication *application;
 };
 
 struct _NautilusNavigationWindowDetails {

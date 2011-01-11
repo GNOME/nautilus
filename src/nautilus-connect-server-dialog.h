@@ -27,6 +27,7 @@
 #include <gio/gio.h>
 #include <gtk/gtk.h>
 
+#include "nautilus-application.h"
 #include "nautilus-window.h"
 
 #define NAUTILUS_TYPE_CONNECT_SERVER_DIALOG\
@@ -58,7 +59,6 @@ GType nautilus_connect_server_dialog_get_type (void);
 GtkWidget* nautilus_connect_server_dialog_new (NautilusWindow *window);
 
 void nautilus_connect_server_dialog_display_location_async (NautilusConnectServerDialog *self,
-							    NautilusApplication *application,
 							    GFile *location,
 							    GAsyncReadyCallback callback,
 							    gpointer user_data);

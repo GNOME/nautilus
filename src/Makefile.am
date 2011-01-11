@@ -1,7 +1,5 @@
 include $(top_srcdir)/Makefile.shared
 
-SUBDIRS=file-manager
-
 bin_PROGRAMS=					\
 	nautilus				\
 	nautilus-autorun-software		\
@@ -35,7 +33,6 @@ INCLUDES =							\
 	$(NULL)
 
 LDADD =\
-	$(top_builddir)/src/file-manager/libnautilus-file-manager.la \
 	$(top_builddir)/libnautilus-private/libnautilus-private.la  \
 	$(BASE_LIBS) \
 	$(COMMON_LIBS) \
@@ -64,6 +61,7 @@ nautilus_SOURCES = \
 	nautilus-actions.h			\
 	nautilus-application.c			\
 	nautilus-application.h			\
+	nautilus-audio-mime-types.h		\
 	nautilus-bookmark-list.c		\
 	nautilus-bookmark-list.h		\
 	nautilus-bookmarks-window.c		\
@@ -73,12 +71,27 @@ nautilus_SOURCES = \
 	nautilus-connect-server-dialog-nonmain.c \
 	nautilus-connect-server-operation.c	\
 	nautilus-connect-server-operation.h	\
+	nautilus-desktop-icon-view.c		\
+	nautilus-desktop-icon-view.h		\
+	nautilus-desktop-item-properties.c	\
+	nautilus-desktop-item-properties.h	\
 	nautilus-desktop-window.c		\
 	nautilus-desktop-window.h		\
+	nautilus-error-reporting.c		\
+	nautilus-error-reporting.h		\
 	nautilus-file-management-properties.c	\
 	nautilus-file-management-properties.h	\
+	nautilus-icon-view.c			\
+	nautilus-icon-view.h			\
+	nautilus-icon-view-container.c		\
+	nautilus-icon-view-container.h		\
 	nautilus-image-properties-page.c	\
 	nautilus-image-properties-page.h	\
+	nautilus-list-model.c			\
+	nautilus-list-model.h			\
+	nautilus-list-view-private.h 		\
+	nautilus-list-view.c			\
+	nautilus-list-view.h 			\
 	nautilus-location-bar.c         	\
 	nautilus-location-bar.h			\
 	nautilus-location-dialog.c              \
@@ -86,6 +99,8 @@ nautilus_SOURCES = \
 	nautilus-location-entry.c               \
 	nautilus-location-entry.h               \
 	nautilus-main.c 			\
+	nautilus-mime-actions.c 		\
+	nautilus-mime-actions.h 		\
 	nautilus-navigation-action.c		\
 	nautilus-navigation-action.h		\
 	nautilus-navigation-bar.c         	\
@@ -103,6 +118,8 @@ nautilus_SOURCES = \
 	nautilus-pathbar.h			\
 	nautilus-places-sidebar.c		\
 	nautilus-places-sidebar.h		\
+	nautilus-properties-window.c		\
+	nautilus-properties-window.h		\
 	nautilus-query-editor.c			\
 	nautilus-query-editor.h			\
 	nautilus-search-bar.c			\
@@ -119,6 +136,12 @@ nautilus_SOURCES = \
 	nautilus-trash-bar.h			\
 	nautilus-view-as-action.c		\
 	nautilus-view-as-action.h		\
+	nautilus-view.c				\
+	nautilus-view.h				\
+	nautilus-view-dnd.c			\
+	nautilus-view-dnd.h			\
+	nautilus-view-factory.c 		\
+	nautilus-view-factory.h 		\
 	nautilus-window-bookmarks.c		\
 	nautilus-window-bookmarks.h		\
 	nautilus-window-manage-views.c		\
@@ -129,9 +152,12 @@ nautilus_SOURCES = \
 	nautilus-window-private.h		\
 	nautilus-window-slot.c			\
 	nautilus-window-slot.h			\
+	nautilus-window-slot-dnd.c		\
+	nautilus-window-slot-dnd.h		\
 	nautilus-window-toolbars.c              \
 	nautilus-window.c			\
 	nautilus-window.h			\
+	nautilus-window-types.h			\
 	nautilus-x-content-bar.c		\
 	nautilus-x-content-bar.h		\
 	nautilus-zoom-action.c			\
@@ -139,6 +165,14 @@ nautilus_SOURCES = \
 	nautilus-zoom-control.c			\
 	nautilus-zoom-control.h			\
 	$(NULL)
+
+EMPTY_VIEW_SOURCES = \
+	nautilus-empty-view.c 			\
+	nautilus-empty-view.h
+
+if ENABLE_EMPTY_VIEW
+nautilus_SOURCES += $(EMPTY_VIEW_SOURCES)
+endif
 
 nodist_nautilus_SOURCES = \
 	$(BUILT_SOURCES) \
@@ -191,6 +225,10 @@ ui_DATA = 					\
 	nautilus-spatial-window-ui.xml          \
 	nautilus-file-management-properties.ui	\
 	nautilus-bookmarks-window.ui		\
+	nautilus-desktop-icon-view-ui.xml	\
+	nautilus-directory-view-ui.xml		\
+	nautilus-icon-view-ui.xml		\
+	nautilus-list-view-ui.xml		\
 	$(NULL)
 
 CLEANFILES = \

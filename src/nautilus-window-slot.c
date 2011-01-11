@@ -29,22 +29,19 @@
 #include "nautilus-window-manage-views.h"
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-window-slot-info.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
 
-static void nautilus_window_slot_init       (NautilusWindowSlot *slot);
-static void nautilus_window_slot_class_init (NautilusWindowSlotClass *class);
-static void nautilus_window_slot_dispose    (GObject *object);
-
-static void nautilus_window_slot_info_iface_init (NautilusWindowSlotInfoIface *iface);
-
-G_DEFINE_TYPE_WITH_CODE (NautilusWindowSlot,
-			 nautilus_window_slot,
-			 G_TYPE_OBJECT,
-			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_WINDOW_SLOT_INFO,
-						nautilus_window_slot_info_iface_init))
+G_DEFINE_TYPE (NautilusWindowSlot, nautilus_window_slot, G_TYPE_OBJECT);
 #define parent_class nautilus_window_slot_parent_class
+
+enum {
+	ACTIVE,
+	INACTIVE,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL] = { 0 };
 
 static void
 query_editor_changed_callback (NautilusSearchBar *bar,
@@ -125,23 +122,6 @@ real_active (NautilusWindowSlot *slot)
 }
 
 static void
-nautilus_window_slot_active (NautilusWindowSlot *slot)
-{
-	NautilusWindow *window;
-	NautilusWindowPane *pane;
-
-	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
-
-	pane = NAUTILUS_WINDOW_PANE (slot->pane);
-	window = NAUTILUS_WINDOW (slot->pane->window);
-	g_assert (g_list_find (pane->slots, slot) != NULL);
-	g_assert (slot == window->details->active_pane->active_slot);
-
-	EEL_CALL_METHOD (NAUTILUS_WINDOW_SLOT_CLASS, slot,
-			 active, (slot));
-}
-
-static void
 real_inactive (NautilusWindowSlot *slot)
 {
 	NautilusWindow *window;
@@ -149,25 +129,6 @@ real_inactive (NautilusWindowSlot *slot)
 	window = NAUTILUS_WINDOW (slot->pane->window);
 	g_assert (slot == window->details->active_pane->active_slot);
 }
-
-static void
-nautilus_window_slot_inactive (NautilusWindowSlot *slot)
-{
-	NautilusWindow *window;
-	NautilusWindowPane *pane;
-
-	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
-
-	pane = NAUTILUS_WINDOW_PANE (slot->pane);
-	window = NAUTILUS_WINDOW (pane->window);
-
-	g_assert (g_list_find (pane->slots, slot) != NULL);
-	g_assert (slot == window->details->active_pane->active_slot);
-
-	EEL_CALL_METHOD (NAUTILUS_WINDOW_SLOT_CLASS, slot,
-			 inactive, (slot));
-}
-
 
 static void
 nautilus_window_slot_init (NautilusWindowSlot *slot)
@@ -202,24 +163,86 @@ nautilus_window_slot_init (NautilusWindowSlot *slot)
 }
 
 static void
+nautilus_window_slot_dispose (GObject *object)
+{
+	NautilusWindowSlot *slot;
+	GtkWidget *widget;
+
+	slot = NAUTILUS_WINDOW_SLOT (object);
+
+	if (slot->content_view) {
+		widget = nautilus_view_get_widget (slot->content_view);
+		gtk_widget_destroy (widget);
+		g_object_unref (slot->content_view);
+		slot->content_view = NULL;
+	}
+
+	if (slot->new_content_view) {
+		widget = nautilus_view_get_widget (slot->new_content_view);
+		gtk_widget_destroy (widget);
+		g_object_unref (slot->new_content_view);
+		slot->new_content_view = NULL;
+	}
+
+	nautilus_window_slot_set_viewed_file (slot, NULL);
+	/* TODO? why do we unref here? the file is NULL.
+	 * It was already here before the slot move, though */
+	nautilus_file_unref (slot->viewed_file);
+
+	if (slot->location) {
+		/* TODO? why do we ref here, instead of unreffing?
+		 * It was already here before the slot migration, though */
+		g_object_ref (slot->location);
+	}
+
+	g_list_free_full (slot->pending_selection, g_object_unref);
+	slot->pending_selection = NULL;
+
+	g_clear_object (&slot->current_location_bookmark);
+	g_clear_object (&slot->last_location_bookmark);
+
+	if (slot->find_mount_cancellable != NULL) {
+		g_cancellable_cancel (slot->find_mount_cancellable);
+		slot->find_mount_cancellable = NULL;
+	}
+
+	slot->pane = NULL;
+
+	g_free (slot->title);
+	slot->title = NULL;
+
+	g_free (slot->status_text);
+	slot->status_text = NULL;
+
+	G_OBJECT_CLASS (parent_class)->dispose (object);
+}
+
+static void
 nautilus_window_slot_class_init (NautilusWindowSlotClass *class)
 {
 	class->active = real_active;
 	class->inactive = real_inactive;
-	class->update_query_editor = real_update_query_editor; 
+	class->update_query_editor = real_update_query_editor;
+
+	signals[ACTIVE] =
+		g_signal_new ("active",
+			      G_TYPE_FROM_CLASS (class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (NautilusWindowSlotClass, active),
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE, 0);
+
+	signals[INACTIVE] =
+		g_signal_new ("inactive",
+			      G_TYPE_FROM_CLASS (class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (NautilusWindowSlotClass, inactive),
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE, 0);
 
 	G_OBJECT_CLASS (class)->dispose = nautilus_window_slot_dispose;
-}
-
-static int
-nautilus_window_slot_get_selection_count (NautilusWindowSlot *slot)
-{
-	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
-
-	if (slot->content_view != NULL) {
-		return nautilus_view_get_selection_count (slot->content_view);
-	}
-	return 0;
 }
 
 GFile *
@@ -235,7 +258,7 @@ nautilus_window_slot_get_location (NautilusWindowSlot *slot)
 }
 
 char *
-nautilus_window_slot_get_location_uri (NautilusWindowSlotInfo *slot)
+nautilus_window_slot_get_location_uri (NautilusWindowSlot *slot)
 {
 	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
 
@@ -245,7 +268,7 @@ nautilus_window_slot_get_location_uri (NautilusWindowSlotInfo *slot)
 	return NULL;
 }
 
-static void
+void
 nautilus_window_slot_make_hosting_pane_active (NautilusWindowSlot *slot)
 {
 	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
@@ -261,21 +284,12 @@ nautilus_window_slot_get_title (NautilusWindowSlot *slot)
 
 	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
 
-	title = NULL;
-	if (slot->new_content_view != NULL) {
-		title = nautilus_view_get_title (slot->new_content_view);
-	} else if (slot->content_view != NULL) {
-		title = nautilus_view_get_title (slot->content_view);
-	}
-
-	if (title == NULL) {
-		title = nautilus_compute_title_for_location (slot->location);
-	}
+	title = nautilus_compute_title_for_location (slot->location);
 
 	return title;
 }
 
-static NautilusWindow *
+NautilusWindow *
 nautilus_window_slot_get_window (NautilusWindowSlot *slot)
 {
 	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
@@ -403,30 +417,6 @@ nautilus_window_slot_is_in_active_pane (NautilusWindowSlot *slot,
 }
 
 void
-nautilus_window_slot_connect_content_view (NautilusWindowSlot *slot,
-					   NautilusView *view)
-{
-	NautilusWindow *window;
-
-	window = slot->pane->window;
-	if (window != NULL && slot == nautilus_window_get_active_slot (window)) {
-		nautilus_window_connect_content_view (window, view);
-	}
-}
-
-void
-nautilus_window_slot_disconnect_content_view (NautilusWindowSlot *slot,
-					      NautilusView *view)
-{
-	NautilusWindow *window;
-
-	window = slot->pane->window;
-	if (window != NULL && window->details->active_pane && window->details->active_pane->active_slot == slot) {
-		nautilus_window_disconnect_content_view (window, view);
-	}
-}
-
-void
 nautilus_window_slot_set_content_view_widget (NautilusWindowSlot *slot,
 					      NautilusView *new_view)
 {
@@ -438,7 +428,7 @@ nautilus_window_slot_set_content_view_widget (NautilusWindowSlot *slot,
 
 	if (slot->content_view != NULL) {
 		/* disconnect old view */
-		nautilus_window_slot_disconnect_content_view (slot, slot->content_view);
+		nautilus_window_disconnect_content_view (window, slot->content_view);
 
 		widget = nautilus_view_get_widget (slot->content_view);
 		gtk_widget_destroy (widget);
@@ -457,7 +447,7 @@ nautilus_window_slot_set_content_view_widget (NautilusWindowSlot *slot,
 		g_object_ref (slot->content_view);
 
 		/* connect new view */
-		nautilus_window_slot_connect_content_view (slot, new_view);
+		nautilus_window_connect_content_view (window, new_view);
 	}
 }
 
@@ -551,15 +541,12 @@ nautilus_window_slot_add_current_location_to_history_list (NautilusWindowSlot *s
 	}
 }
 
-/* returns either the pending or the actual current location - used by side panes. */
-static char *
-real_slot_info_get_current_location (NautilusWindowSlotInfo *info)
+/* returns either the pending or the actual current uri */
+char *
+nautilus_window_slot_get_current_uri (NautilusWindowSlot *slot)
 {
-	NautilusWindowSlot *slot;
-
-	slot = NAUTILUS_WINDOW_SLOT (info);
-
 	if (slot->pending_location != NULL) {
+		g_print ("returning pending\n");
 		return g_file_get_uri (slot->pending_location);
 	}
 
@@ -571,13 +558,9 @@ real_slot_info_get_current_location (NautilusWindowSlotInfo *info)
 	return NULL;
 }
 
-static NautilusView *
-real_slot_info_get_current_view (NautilusWindowSlotInfo *info)
+NautilusView *
+nautilus_window_slot_get_current_view (NautilusWindowSlot *slot)
 {
-	NautilusWindowSlot *slot;
-
-	slot = NAUTILUS_WINDOW_SLOT (info);
-
 	if (slot->content_view != NULL) {
 		return g_object_ref (slot->content_view);
 	} else if (slot->new_content_view) {
@@ -587,79 +570,62 @@ real_slot_info_get_current_view (NautilusWindowSlotInfo *info)
 	return NULL;
 }
 
-static void
-nautilus_window_slot_dispose (GObject *object)
-{
-	NautilusWindowSlot *slot;
-	GtkWidget *widget;
+void
+nautilus_window_slot_go_home (NautilusWindowSlot *slot,
+			      gboolean new_tab)
+{			      
+	GFile *home;
+	NautilusWindowOpenFlags flags;
 
-	slot = NAUTILUS_WINDOW_SLOT (object);
+	g_return_if_fail (NAUTILUS_IS_WINDOW_SLOT (slot));
 
-	if (slot->content_view) {
-		widget = nautilus_view_get_widget (slot->content_view);
-		gtk_widget_destroy (widget);
-		g_object_unref (slot->content_view);
-		slot->content_view = NULL;
+	if (new_tab) {
+		flags = NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
+	} else {
+		flags = 0;
 	}
 
-	if (slot->new_content_view) {
-		widget = nautilus_view_get_widget (slot->new_content_view);
-		gtk_widget_destroy (widget);
-		g_object_unref (slot->new_content_view);
-		slot->new_content_view = NULL;
-	}
-
-	nautilus_window_slot_set_viewed_file (slot, NULL);
-	/* TODO? why do we unref here? the file is NULL.
-	 * It was already here before the slot move, though */
-	nautilus_file_unref (slot->viewed_file);
-
-	if (slot->location) {
-		/* TODO? why do we ref here, instead of unreffing?
-		 * It was already here before the slot migration, though */
-		g_object_ref (slot->location);
-	}
-
-	g_list_free_full (slot->pending_selection, g_free);
-	slot->pending_selection = NULL;
-
-	if (slot->current_location_bookmark != NULL) {
-		g_object_unref (slot->current_location_bookmark);
-		slot->current_location_bookmark = NULL;
-	}
-	if (slot->last_location_bookmark != NULL) {
-		g_object_unref (slot->last_location_bookmark);
-		slot->last_location_bookmark = NULL;
-	}
-
-	if (slot->find_mount_cancellable != NULL) {
-		g_cancellable_cancel (slot->find_mount_cancellable);
-		slot->find_mount_cancellable = NULL;
-	}
-
-	slot->pane = NULL;
-
-	g_free (slot->title);
-	slot->title = NULL;
-
-	g_free (slot->status_text);
-	slot->status_text = NULL;
-
-	G_OBJECT_CLASS (parent_class)->dispose (object);
+	home = g_file_new_for_path (g_get_home_dir ());
+	nautilus_window_slot_open_location_full (slot, home, 
+						 NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE, 
+						 flags, NULL, NULL, NULL);
+	g_object_unref (home);
 }
 
-static void
-nautilus_window_slot_info_iface_init (NautilusWindowSlotInfoIface *iface)
+void
+nautilus_window_slot_go_up (NautilusWindowSlot *slot,
+			    gboolean close_behind,
+			    gboolean new_tab)
 {
-	iface->active = nautilus_window_slot_active;
-	iface->inactive = nautilus_window_slot_inactive;
-	iface->get_window = nautilus_window_slot_get_window;
-	iface->get_selection_count = nautilus_window_slot_get_selection_count;
-	iface->get_current_location = real_slot_info_get_current_location;
-	iface->get_current_view = real_slot_info_get_current_view;
-	iface->set_status = nautilus_window_slot_set_status;
-	iface->get_title = nautilus_window_slot_get_title;
-	iface->open_location = nautilus_window_slot_open_location_full;
-	iface->make_hosting_pane_active = nautilus_window_slot_make_hosting_pane_active; 
-}
+	GFile *parent;
+	GList *selection;
+	NautilusWindowOpenFlags flags;
 
+	if (slot->location == NULL) {
+		return;
+	}
+	
+	parent = g_file_get_parent (slot->location);
+
+	if (parent == NULL) {
+		return;
+	}
+	
+	selection = g_list_prepend (NULL, nautilus_file_get (slot->location));
+
+	flags = 0;
+	if (close_behind) {
+		flags |= NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND;
+	}
+	if (new_tab) {
+		flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
+	}
+
+	nautilus_window_slot_open_location (slot, parent, 
+					    NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
+					    flags,
+					    selection);
+
+	g_object_unref (parent);
+	g_list_free_full (selection, g_object_unref);
+}

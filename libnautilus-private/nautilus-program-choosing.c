@@ -26,7 +26,6 @@
 #include <config.h>
 #include "nautilus-program-choosing.h"
 
-#include "nautilus-mime-actions.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
 #include "nautilus-recent.h"

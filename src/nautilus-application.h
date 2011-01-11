@@ -30,6 +30,8 @@
 
 #include <libnautilus-private/nautilus-undo-manager.h>
 
+#include "nautilus-window.h"
+
 #define NAUTILUS_DESKTOP_ICON_VIEW_IID	"OAFIID:Nautilus_File_Manager_Desktop_Icon_View"
 
 #define NAUTILUS_TYPE_APPLICATION nautilus_application_get_type()
@@ -43,11 +45,6 @@
   (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_APPLICATION))
 #define NAUTILUS_APPLICATION_GET_CLASS(obj) \
   (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_APPLICATION, NautilusApplicationClass))
-
-#ifndef NAUTILUS_WINDOW_DEFINED
-#define NAUTILUS_WINDOW_DEFINED
-typedef struct NautilusWindow NautilusWindow;
-#endif
 
 #ifndef NAUTILUS_SPATIAL_WINDOW_DEFINED
 #define NAUTILUS_SPATIAL_WINDOW_DEFINED

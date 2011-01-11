@@ -31,7 +31,7 @@
 
 #include <gtk/gtk.h>
 
-#include <libnautilus-private/nautilus-window-info.h>
+#include "nautilus-window.h"
 
 #define FM_TYPE_TREE_VIEW fm_tree_view_get_type()
 #define FM_TREE_VIEW(obj) \
@@ -61,6 +61,6 @@ typedef struct {
 
 GType fm_tree_view_get_type (void);
 
-GtkWidget *nautilus_tree_sidebar_new (NautilusWindowInfo *window);
+GtkWidget *nautilus_tree_sidebar_new (NautilusWindow *window);
 
 #endif /* FM_TREE_VIEW_H */

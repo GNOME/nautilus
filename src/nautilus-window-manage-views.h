@@ -36,12 +36,7 @@ void nautilus_window_manage_views_close_slot (NautilusWindowPane *pane,
 
 
 /* NautilusWindowInfo implementation: */
-void nautilus_window_report_load_underway     (NautilusWindow     *window,
-                                               NautilusView       *view);
-void nautilus_window_report_selection_changed (NautilusWindowInfo *window);
 void nautilus_window_report_view_failed       (NautilusWindow     *window,
-                                               NautilusView       *view);
-void nautilus_window_report_load_complete     (NautilusWindow     *window,
                                                NautilusView       *view);
 void nautilus_window_report_location_change   (NautilusWindow     *window);
 void nautilus_window_update_up_button         (NautilusWindow     *window);

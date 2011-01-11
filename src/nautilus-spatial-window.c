@@ -54,7 +54,6 @@
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-metadata.h>
-#include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
 #include <libnautilus-private/nautilus-undo.h>
 #include <libnautilus-private/nautilus-search-directory.h>
@@ -346,12 +345,9 @@ real_get_icon (NautilusWindow *window,
 }
 
 static void
-sync_window_title (NautilusWindow *window)
+real_sync_title (NautilusWindow *window,
+		 NautilusWindowSlot *slot)
 {
-	NautilusWindowSlot *slot;
-
-	slot = nautilus_window_get_active_slot (window);
-
 	if (slot->title == NULL || slot->title[0] == '\0') {
 		gtk_window_set_title (GTK_WINDOW (window), _("Nautilus"));
 	} else {
@@ -361,15 +357,6 @@ sync_window_title (NautilusWindow *window)
 		gtk_window_set_title (GTK_WINDOW (window), window_title);
 		g_free (window_title);
 	}
-}
-
-static void
-real_sync_title (NautilusWindow *window,
-		 NautilusWindowSlot *slot)
-{
-	g_assert (slot == nautilus_window_get_active_slot (window));
-
-	sync_window_title (window);
 }
 
 static void
@@ -514,7 +501,7 @@ location_menu_item_activated_callback (GtkWidget *menu_item,
 
 		child = g_object_get_data (G_OBJECT(menu_item), "child_location");
 		if (child != NULL) {
-			selection = g_list_prepend (NULL, g_object_ref (child));
+			selection = g_list_prepend (NULL, nautilus_file_get (child));
 		}
 
 		if (event != NULL && ((GdkEventAny *) event)->type == GDK_BUTTON_RELEASE &&
@@ -524,8 +511,10 @@ location_menu_item_activated_callback (GtkWidget *menu_item,
 			close_behind = TRUE;
 		}
 
-		nautilus_window_slot_open_location_with_selection
-			(slot, dest, selection, close_behind);
+		nautilus_window_slot_open_location (slot, dest,
+						    NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
+						    close_behind ? NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND : 0,
+						    selection);
 
 		g_list_free_full (selection, g_object_unref);
 	}
@@ -720,7 +709,6 @@ location_button_clicked_callback (GtkWidget             *widget,
 	gtk_menu_shell_select_item (GTK_MENU_SHELL (popup), first_item);
 	g_main_loop_run (loop);
 	gtk_grab_remove (popup);
-	g_main_loop_unref (loop);
 	g_object_ref_sink (popup);
 	g_object_unref (popup);
 }

@@ -24,8 +24,8 @@
 #ifndef _NAUTILUS_PLACES_SIDEBAR_H
 #define _NAUTILUS_PLACES_SIDEBAR_H
 
-#include <libnautilus-private/nautilus-view.h>
-#include <libnautilus-private/nautilus-window-info.h>
+#include "nautilus-window.h"
+
 #include <gtk/gtk.h>
 
 #define NAUTILUS_PLACES_SIDEBAR_ID    "places"
@@ -44,7 +44,7 @@
 
 
 GType nautilus_places_sidebar_get_type (void);
-GtkWidget * nautilus_places_sidebar_new (NautilusWindowInfo *window);
+GtkWidget * nautilus_places_sidebar_new (NautilusWindow *window);
 
 
 #endif

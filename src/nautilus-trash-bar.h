@@ -23,7 +23,7 @@
 #ifndef __NAUTILUS_TRASH_BAR_H
 #define __NAUTILUS_TRASH_BAR_H
 
-#include "nautilus-window.h"
+#include "nautilus-view.h"
 
 #include <gtk/gtk.h>
 
@@ -52,7 +52,7 @@ typedef struct
 
 GType		 nautilus_trash_bar_get_type	(void) G_GNUC_CONST;
 
-GtkWidget       *nautilus_trash_bar_new         (NautilusWindow *window);
+GtkWidget       *nautilus_trash_bar_new         (NautilusView *view);
 
 
 G_END_DECLS

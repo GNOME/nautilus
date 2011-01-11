@@ -31,8 +31,6 @@
 #include "nautilus-notebook.h"
 
 #include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-window-slot-info.h>
-#include <libnautilus-private/nautilus-view-factory.h>
 #include <libnautilus-private/nautilus-entry.h>
 
 static void nautilus_navigation_window_pane_init       (NautilusNavigationWindowPane *pane);
@@ -262,9 +260,9 @@ path_bar_button_released_callback (GtkWidget *widget,
 
 		if (flags != 0) {
 			slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW_PANE (pane)->window);
-			nautilus_window_slot_info_open_location (slot, location,
-								 NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
-								 flags, NULL);
+			nautilus_window_slot_open_location (slot, location,
+							    NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
+							    flags, NULL);
 			g_object_unref (location);
 			return TRUE;
 		}

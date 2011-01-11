@@ -265,7 +265,7 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 	remove_button = (GtkWidget *)gtk_builder_get_object (builder, "bookmark_delete_button");
 	jump_button = (GtkWidget *)gtk_builder_get_object (builder, "bookmark_jump_button");
 
-	application = NAUTILUS_WINDOW (undo_manager_source)->application;
+	application = nautilus_application_dup_singleton ();
 
 	if (NAUTILUS_IS_NAVIGATION_WINDOW (undo_manager_source)) {
 		parent_is_browser_window = TRUE;
@@ -942,6 +942,7 @@ on_window_destroy_event (GtkWidget *widget,
 {
 	g_object_unref (bookmark_list_store);
 	g_object_unref (bookmark_empty_list_store);
+	g_object_unref (application);
 	g_source_remove_by_user_data (widget);
 }
 

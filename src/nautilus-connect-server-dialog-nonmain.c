@@ -66,13 +66,13 @@ nautilus_connect_server_dialog_display_location_finish (NautilusConnectServerDia
 
 void
 nautilus_connect_server_dialog_display_location_async (NautilusConnectServerDialog *self,
-						       NautilusApplication *application,
 						       GFile *location,
 						       GAsyncReadyCallback callback,
 						       gpointer user_data)
 {
 	NautilusWindow *window;
 	GtkWidget *widget;
+	NautilusApplication *application;
 
 	widget = GTK_WIDGET (self);
 
@@ -80,6 +80,8 @@ nautilus_connect_server_dialog_display_location_async (NautilusConnectServerDial
 		g_simple_async_result_new (G_OBJECT (self),
 					   callback, user_data,
 					   nautilus_connect_server_dialog_display_location_async);
+
+	application = nautilus_application_dup_singleton ();
 
 	if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
 		window = nautilus_application_create_navigation_window (application,
@@ -96,4 +98,6 @@ nautilus_connect_server_dialog_display_location_async (NautilusConnectServerDial
 
 	nautilus_window_go_to_full (window, location,
 				    window_go_to_cb, self);
+
+	g_object_unref (application);
 }

@@ -27,7 +27,6 @@
 #include "nautilus-window-private.h"
 #include "nautilus-search-bar.h"
 #include "nautilus-navigation-window-pane.h"
-#include <libnautilus-private/nautilus-window-slot-info.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <eel/eel-gtk-macros.h>
 

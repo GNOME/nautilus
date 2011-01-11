@@ -28,7 +28,6 @@
 #define NAUTILUS_DND_H
 
 #include <gtk/gtk.h>
-#include <libnautilus-private/nautilus-window-slot-info.h>
 
 /* Drag & Drop target names. */
 #define NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE	"x-special/gnome-icon-list"
@@ -96,29 +95,6 @@ typedef struct {
 
 } NautilusDragInfo;
 
-typedef struct {
-	/* NB: the following elements are managed by us */
-	gboolean have_data;
-	gboolean have_valid_data;
-
-	gboolean drop_occured;
-
-	unsigned int info;
-	union {
-		GList *selection_list;
-		GList *uri_list;
-		char *netscape_url;
-	} data;
-
-	/* NB: the following elements are managed by the caller of
-	 *   nautilus_drag_slot_proxy_init() */
-
-	/* a fixed location, or NULL to use slot's location */
-	GFile *target_location;
-	/* a fixed slot, or NULL to use the window's active slot */
-	NautilusWindowSlotInfo *target_slot;
-} NautilusDragSlotProxyInfo;
-
 typedef void		(* NautilusDragEachSelectedItemDataGet)	(const char *url, 
 								 int x, int y, int w, int h, 
 								 gpointer data);
@@ -178,8 +154,5 @@ void			    nautilus_drag_autoscroll_start		(NautilusDragInfo		      *drag_info,
 void			    nautilus_drag_autoscroll_stop		(NautilusDragInfo		      *drag_info);
 
 gboolean		    nautilus_drag_selection_includes_special_link (GList			      *selection_list);
-
-void                        nautilus_drag_slot_proxy_init               (GtkWidget *widget,
-									 NautilusDragSlotProxyInfo *drag_info);
 
 #endif

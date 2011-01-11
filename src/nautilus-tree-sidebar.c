@@ -34,7 +34,8 @@
 #include "nautilus-tree-sidebar.h"
 
 #include "nautilus-tree-sidebar-model.h"
-#include "file-manager/fm-properties-window.h"
+#include "nautilus-properties-window.h"
+#include "nautilus-window-slot.h"
 
 #include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-clipboard-monitor.h>
@@ -47,8 +48,6 @@
 #include <libnautilus-private/nautilus-program-choosing.h>
 #include <libnautilus-private/nautilus-tree-view-drag-dest.h>
 #include <libnautilus-private/nautilus-module.h>
-#include <libnautilus-private/nautilus-window-info.h>
-#include <libnautilus-private/nautilus-window-slot-info.h>
 
 #include <string.h>
 #include <eel/eel-gtk-extensions.h>
@@ -69,7 +68,7 @@ typedef struct {
 
 
 struct FMTreeViewDetails {
-	NautilusWindowInfo *window;
+	NautilusWindow *window;
 	GtkTreeView *tree_widget;
 	GtkTreeModelSort *sort_model;
 	FMTreeModel *child_model;
@@ -336,7 +335,7 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
         FMTreeView *view;
 	GdkScreen *screen;
 	GFile *location;
-	NautilusWindowSlotInfo *slot;
+	NautilusWindowSlot *slot;
 	gboolean open_in_same_slot;
 	
         view = FM_TREE_VIEW (callback_data);
@@ -350,7 +349,7 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
 		 (NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW |
 		  NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB)) == 0;
 
-	slot = nautilus_window_info_get_active_slot (view->details->window);
+	slot = nautilus_window_get_active_slot (view->details->window);
 
 	uri = nautilus_file_get_activation_uri (file);
 	if (nautilus_file_is_launcher (file)) {
@@ -370,7 +369,7 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
 			DEBUG ("Tree sidebar, opening location %s", uri);
 
 			location = g_file_new_for_uri (uri);
-			nautilus_window_slot_info_open_location
+			nautilus_window_slot_open_location
 				(slot,
 				 location, 
 				 NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
@@ -397,7 +396,7 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
 			DEBUG ("Tree sidebar, opening location %s", uri);
 
 			location = g_file_new_for_uri (uri);
-			nautilus_window_slot_info_open_location
+			nautilus_window_slot_open_location
 				(slot,
 				 location,
 				 NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
@@ -848,7 +847,7 @@ new_folder_done (GFile *new_folder, gpointer data)
 	 */
 	list = g_list_prepend (NULL, nautilus_file_get (new_folder));
 
-	fm_properties_window_present (list, GTK_WIDGET (data));
+	nautilus_properties_window_present (list, GTK_WIDGET (data));
 
         nautilus_file_list_free (list);
 }
@@ -911,7 +910,7 @@ copy_or_cut_files (FMTreeView *view,
 	}
 	g_free (name);
 	
-	nautilus_window_info_push_status (view->details->window,
+	nautilus_window_push_status (view->details->window,
 					  status_string);
 	g_free (status_string);
 }
@@ -943,7 +942,7 @@ paste_clipboard_data (FMTreeView *view,
 									 copied_files_atom);
 
 	if (item_uris == NULL|| destination_uri == NULL) {
-		nautilus_window_info_push_status (view->details->window,
+		nautilus_window_push_status (view->details->window,
 						  _("There is nothing on the clipboard to paste."));
 	} else {
 		nautilus_file_operations_copy_move
@@ -1046,7 +1045,7 @@ fm_tree_view_properties_cb (GtkWidget *menu_item,
         
 	list = g_list_prepend (NULL, nautilus_file_ref (view->details->popup_file));
 
-	fm_properties_window_present (list, GTK_WIDGET (view->details->tree_widget));
+	nautilus_properties_window_present (list, GTK_WIDGET (view->details->tree_widget));
 
         nautilus_file_list_free (list);
 }
@@ -1292,7 +1291,7 @@ create_tree (FMTreeView *view)
 	GList *mounts, *l;
 	char *location;
 	GIcon *icon;
-	NautilusWindowSlotInfo *slot;
+	NautilusWindowSlot *slot;
 	
 	view->details->child_model = fm_tree_model_new ();
 	view->details->sort_model = GTK_TREE_MODEL_SORT
@@ -1394,8 +1393,8 @@ create_tree (FMTreeView *view)
 			  "button_press_event", G_CALLBACK (button_pressed_callback),
 			  view);
 
-	slot = nautilus_window_info_get_active_slot (view->details->window);
-	location = nautilus_window_slot_info_get_current_location (slot);
+	slot = nautilus_window_get_active_slot (view->details->window);
+	location = nautilus_window_slot_get_current_uri (slot);
 	schedule_select_and_show_location (view, location);
 	g_free (location);
 }
@@ -1409,7 +1408,7 @@ update_filtering_from_preferences (FMTreeView *view)
 		return;
 	}
 
-	mode = nautilus_window_info_get_hidden_files_mode (view->details->window);
+	mode = nautilus_window_get_hidden_files_mode (view->details->window);
 
 	if (mode == NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT) {
 		fm_tree_model_set_show_hidden_files
@@ -1448,7 +1447,7 @@ filtering_changed_callback (gpointer callback_data)
 }
 
 static void
-loading_uri_callback (NautilusWindowInfo *window,
+loading_uri_callback (NautilusWindow *window,
 		      char *location,
 		      gpointer callback_data)
 {
@@ -1584,7 +1583,7 @@ fm_tree_view_class_init (FMTreeViewClass *class)
 	copied_files_atom = gdk_atom_intern ("x-special/gnome-copied-files", FALSE);
 }
 static void 
-hidden_files_mode_changed_callback (NautilusWindowInfo *window,
+hidden_files_mode_changed_callback (NautilusWindow *window,
 				    FMTreeView *view)
 {
 	update_filtering_from_preferences (view);
@@ -1592,18 +1591,18 @@ hidden_files_mode_changed_callback (NautilusWindowInfo *window,
 
 static void
 fm_tree_view_set_parent_window (FMTreeView *sidebar,
-				NautilusWindowInfo *window)
+				NautilusWindow *window)
 {
 	char *location;
-	NautilusWindowSlotInfo *slot;
+	NautilusWindowSlot *slot;
 	
 	sidebar->details->window = window;
 
-	slot = nautilus_window_info_get_active_slot (window);
+	slot = nautilus_window_get_active_slot (window);
 
 	g_signal_connect_object (window, "loading_uri",
 				 G_CALLBACK (loading_uri_callback), sidebar, 0);
-	location = nautilus_window_slot_info_get_current_location (slot);
+	location = nautilus_window_slot_get_current_uri (slot);
 	loading_uri_callback (window, location, sidebar);
 	g_free (location);
 
@@ -1613,7 +1612,7 @@ fm_tree_view_set_parent_window (FMTreeView *sidebar,
 }
 
 GtkWidget *
-nautilus_tree_sidebar_new (NautilusWindowInfo *window)
+nautilus_tree_sidebar_new (NautilusWindow *window)
 {
 	FMTreeView *sidebar;
 	

@@ -38,8 +38,6 @@
 #include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
 #include <libnautilus-private/nautilus-icon-names.h>
-#include <libnautilus-private/nautilus-window-info.h>
-#include <libnautilus-private/nautilus-window-slot-info.h>
 
 #include <eel/eel-debug.h>
 #include <eel/eel-gtk-extensions.h>
@@ -48,9 +46,11 @@
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 
+#include "nautilus-application.h"
 #include "nautilus-bookmark-list.h"
 #include "nautilus-places-sidebar.h"
 #include "nautilus-window.h"
+#include "nautilus-window-slot.h"
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_PLACES
 #include <libnautilus-private/nautilus-debug.h>
@@ -68,7 +68,7 @@ typedef struct {
 	char 	           *uri;
 	GtkListStore       *store;
 	GtkTreeModel       *filter_model;
-	NautilusWindowInfo *window;
+	NautilusWindow *window;
 	NautilusBookmarkList *bookmarks;
 	GVolumeMonitor *volume_monitor;
 
@@ -90,14 +90,13 @@ typedef struct {
 	GtkWidget *popup_menu_unmount_item;
 	GtkWidget *popup_menu_eject_item;
 	GtkWidget *popup_menu_rescan_item;
-	GtkWidget *popup_menu_format_item;
 	GtkWidget *popup_menu_empty_trash_item;
 	GtkWidget *popup_menu_start_item;
 	GtkWidget *popup_menu_stop_item;
 
 	/* volume mounting - delayed open process */
 	gboolean mounting;
-	NautilusWindowSlotInfo *go_to_after_mount_slot;
+	NautilusWindowSlot *go_to_after_mount_slot;
 	NautilusWindowOpenFlags go_to_after_mount_flags;
 
 	GtkTreePath *eject_highlight_path;
@@ -435,7 +434,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 	const gchar *path;
 	GIcon *icon;
 	GFile *root;
-	NautilusWindowSlotInfo *slot;
+	NautilusWindowSlot *slot;
 	char *tooltip;
 	GList *network_mounts;
 	NautilusFile *file;
@@ -455,8 +454,8 @@ update_places (NautilusPlacesSidebar *sidebar)
 	sidebar->devices_header_added = FALSE;
 	sidebar->bookmarks_header_added = FALSE;
 
-	slot = nautilus_window_info_get_active_slot (sidebar->window);
-	location = nautilus_window_slot_info_get_current_location (slot);
+	slot = nautilus_window_get_active_slot (sidebar->window);
+	location = nautilus_window_slot_get_current_uri (slot);
 
 	volume_monitor = sidebar->volume_monitor;
 
@@ -1001,7 +1000,7 @@ desktop_location_changed_callback (gpointer user_data)
 }
 
 static void
-loading_uri_callback (NautilusWindowInfo *window,
+loading_uri_callback (NautilusWindow *window,
 		      char *location,
 		      NautilusPlacesSidebar *sidebar)
 {
@@ -1549,7 +1548,6 @@ bookmarks_popup_menu_detach_cb (GtkWidget *attach_widget,
 	sidebar->popup_menu_unmount_item = NULL;
 	sidebar->popup_menu_eject_item = NULL;
 	sidebar->popup_menu_rescan_item = NULL;
-	sidebar->popup_menu_format_item = NULL;
 	sidebar->popup_menu_start_item = NULL;
 	sidebar->popup_menu_stop_item = NULL;
 	sidebar->popup_menu_empty_trash_item = NULL;
@@ -1586,12 +1584,10 @@ check_visibility (GMount           *mount,
 		  gboolean         *show_unmount,
 		  gboolean         *show_eject,
 		  gboolean         *show_rescan,
-		  gboolean         *show_format,
 		  gboolean         *show_start,
 		  gboolean         *show_stop)
 {
 	*show_mount = FALSE;
-	*show_format = FALSE;
 	*show_rescan = FALSE;
 	*show_start = FALSE;
 	*show_stop = FALSE;
@@ -1629,7 +1625,6 @@ bookmarks_check_popup_sensitivity (NautilusPlacesSidebar *sidebar)
 	gboolean show_unmount;
 	gboolean show_eject;
 	gboolean show_rescan;
-	gboolean show_format;
 	gboolean show_start;
 	gboolean show_stop;
 	gboolean show_empty_trash;
@@ -1658,7 +1653,7 @@ bookmarks_check_popup_sensitivity (NautilusPlacesSidebar *sidebar)
 	gtk_widget_set_sensitive (sidebar->popup_menu_empty_trash_item, !nautilus_trash_monitor_is_empty ());
 
  	check_visibility (mount, volume, drive,
- 			  &show_mount, &show_unmount, &show_eject, &show_rescan, &show_format, &show_start, &show_stop);
+ 			  &show_mount, &show_unmount, &show_eject, &show_rescan, &show_start, &show_stop);
 
 	/* We actually want both eject and unmount since eject will unmount all volumes. 
 	 * TODO: hide unmount if the drive only has a single mountable volume 
@@ -1668,12 +1663,11 @@ bookmarks_check_popup_sensitivity (NautilusPlacesSidebar *sidebar)
 			   (!strcmp (uri, "trash:///"));
 
 	gtk_widget_set_visible (sidebar->popup_menu_separator_item,
-		      show_mount || show_unmount || show_eject || show_format || show_empty_trash);
+		      show_mount || show_unmount || show_eject || show_empty_trash);
 	gtk_widget_set_visible (sidebar->popup_menu_mount_item, show_mount);
 	gtk_widget_set_visible (sidebar->popup_menu_unmount_item, show_unmount);
 	gtk_widget_set_visible (sidebar->popup_menu_eject_item, show_eject);
 	gtk_widget_set_visible (sidebar->popup_menu_rescan_item, show_rescan);
-	gtk_widget_set_visible (sidebar->popup_menu_format_item, show_format);
 	gtk_widget_set_visible (sidebar->popup_menu_start_item, show_start);
 	gtk_widget_set_visible (sidebar->popup_menu_stop_item, show_stop);
 	gtk_widget_set_visible (sidebar->popup_menu_empty_trash_item, show_empty_trash);
@@ -1739,17 +1733,21 @@ volume_mounted_cb (GVolume *volume,
 
 		if (sidebar->go_to_after_mount_slot != NULL) {
 			if ((sidebar->go_to_after_mount_flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) == 0) {
-				nautilus_window_slot_info_open_location (sidebar->go_to_after_mount_slot, location,
-									 NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
-									 sidebar->go_to_after_mount_flags, NULL);
+				nautilus_window_slot_open_location (sidebar->go_to_after_mount_slot, location,
+								    NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
+								    sidebar->go_to_after_mount_flags, NULL);
 			} else {
-				NautilusWindow *cur, *new;
-				
+				NautilusApplication *app;
+				NautilusWindow *new, *cur;
+
 				cur = NAUTILUS_WINDOW (sidebar->window);
-				new = nautilus_application_create_navigation_window (cur->application,
+				app = nautilus_application_dup_singleton ();
+				new = nautilus_application_create_navigation_window (app,
 										     NULL,
 										     gtk_window_get_screen (GTK_WINDOW (cur)));
 				nautilus_window_go_to (new, location);
+
+				g_object_unref (app);
 			}
 		}
 
@@ -1791,7 +1789,7 @@ open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 			GtkTreePath	      *path,
 			NautilusWindowOpenFlags	      flags)
 {
-	NautilusWindowSlotInfo *slot;
+	NautilusWindowSlot *slot;
 	GtkTreeIter iter;
 	GFile *location;
 	char *uri;
@@ -1812,18 +1810,22 @@ open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 		location = g_file_new_for_uri (uri);
 		/* Navigate to the clicked location */
 		if ((flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) == 0) {
-			slot = nautilus_window_info_get_active_slot (sidebar->window);
-			nautilus_window_slot_info_open_location (slot, location,
-								 NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
-								 flags, NULL);
+			slot = nautilus_window_get_active_slot (sidebar->window);
+			nautilus_window_slot_open_location (slot, location,
+							    NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
+							    flags, NULL);
 		} else {
 			NautilusWindow *cur, *new;
+			NautilusApplication *app;
 			
 			cur = NAUTILUS_WINDOW (sidebar->window);
-			new = nautilus_application_create_navigation_window (cur->application,
+			app = nautilus_application_dup_singleton ();
+			new = nautilus_application_create_navigation_window (app,
 									     NULL,
 									     gtk_window_get_screen (GTK_WINDOW (cur)));
 			nautilus_window_go_to (new, location);
+
+			g_object_unref (app);
 		}
 		g_object_unref (location);
 		g_free (uri);
@@ -1843,7 +1845,7 @@ open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 
 			g_assert (sidebar->go_to_after_mount_slot == NULL);
 
-			slot = nautilus_window_info_get_active_slot (sidebar->window);
+			slot = nautilus_window_get_active_slot (sidebar->window);
 			sidebar->go_to_after_mount_slot = slot;
 			eel_add_weak_pointer (&(sidebar->go_to_after_mount_slot));
 
@@ -1995,7 +1997,7 @@ unmount_done (gpointer data)
 	NautilusWindow *window;
 
 	window = data;
-	nautilus_window_info_set_initiated_unmount (window, FALSE);
+	nautilus_window_set_initiated_unmount (window, FALSE);
 	g_object_unref (window);
 }
 
@@ -2004,7 +2006,7 @@ do_unmount (GMount *mount,
 	    NautilusPlacesSidebar *sidebar)
 {
 	if (mount != NULL) {
-		nautilus_window_info_set_initiated_unmount (sidebar->window, TRUE);
+		nautilus_window_set_initiated_unmount (sidebar->window, TRUE);
 		nautilus_file_operations_unmount_mount_full (NULL, mount, FALSE, TRUE,
 							     unmount_done,
 							     g_object_ref (sidebar->window));
@@ -2049,7 +2051,7 @@ drive_eject_cb (GObject *source_object,
 	char *name;
 
 	window = user_data;
-	nautilus_window_info_set_initiated_unmount (window, FALSE);
+	nautilus_window_set_initiated_unmount (window, FALSE);
 	g_object_unref (window);
 
 	error = NULL;
@@ -2078,7 +2080,7 @@ volume_eject_cb (GObject *source_object,
 	char *name;
 
 	window = user_data;
-	nautilus_window_info_set_initiated_unmount (window, FALSE);
+	nautilus_window_set_initiated_unmount (window, FALSE);
 	g_object_unref (window);
 
 	error = NULL;
@@ -2107,7 +2109,7 @@ mount_eject_cb (GObject *source_object,
 	char *name;
 
 	window = user_data;
-	nautilus_window_info_set_initiated_unmount (window, FALSE);
+	nautilus_window_set_initiated_unmount (window, FALSE);
 	g_object_unref (window);
 
 	error = NULL;
@@ -2135,15 +2137,15 @@ do_eject (GMount *mount,
 
 	mount_op = gtk_mount_operation_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (sidebar))));
 	if (mount != NULL) {
-		nautilus_window_info_set_initiated_unmount (sidebar->window, TRUE);
+		nautilus_window_set_initiated_unmount (sidebar->window, TRUE);
 		g_mount_eject_with_operation (mount, 0, mount_op, NULL, mount_eject_cb,
 					      g_object_ref (sidebar->window));
 	} else if (volume != NULL) {
-		nautilus_window_info_set_initiated_unmount (sidebar->window, TRUE);
+		nautilus_window_set_initiated_unmount (sidebar->window, TRUE);
 		g_volume_eject_with_operation (volume, 0, mount_op, NULL, volume_eject_cb,
 					      g_object_ref (sidebar->window));
 	} else if (drive != NULL) {
-		nautilus_window_info_set_initiated_unmount (sidebar->window, TRUE);
+		nautilus_window_set_initiated_unmount (sidebar->window, TRUE);
 		g_drive_eject_with_operation (drive, 0, mount_op, NULL, drive_eject_cb,
 					      g_object_ref (sidebar->window));
 	}
@@ -2290,13 +2292,6 @@ rescan_shortcut_cb (GtkMenuItem           *item,
 }
 
 static void
-format_shortcut_cb (GtkMenuItem           *item,
-		    NautilusPlacesSidebar *sidebar)
-{
-	g_spawn_command_line_async ("gfloppy", NULL);
-}
-
-static void
 drive_start_cb (GObject      *source_object,
 		GAsyncResult *res,
 		gpointer      user_data)
@@ -2358,7 +2353,7 @@ drive_stop_cb (GObject *source_object,
 	char *name;
 
 	window = user_data;
-	nautilus_window_info_set_initiated_unmount (window, FALSE);
+	nautilus_window_set_initiated_unmount (window, FALSE);
 	g_object_unref (window);
 
 	error = NULL;
@@ -2395,7 +2390,7 @@ stop_shortcut_cb (GtkMenuItem           *item,
 		GMountOperation *mount_op;
 
 		mount_op = gtk_mount_operation_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (sidebar))));
-		nautilus_window_info_set_initiated_unmount (sidebar->window, TRUE);
+		nautilus_window_set_initiated_unmount (sidebar->window, TRUE);
 		g_drive_stop (drive, G_MOUNT_UNMOUNT_NONE, mount_op, NULL, drive_stop_cb,
 			      g_object_ref (sidebar->window));
 		g_object_unref (mount_op);
@@ -2525,13 +2520,6 @@ bookmarks_build_popup_menu (NautilusPlacesSidebar *sidebar)
 	sidebar->popup_menu_rescan_item = item;
 	g_signal_connect (item, "activate",
 		    G_CALLBACK (rescan_shortcut_cb), sidebar);
-	gtk_widget_show (item);
-	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
-
-	item = gtk_menu_item_new_with_mnemonic (_("_Format"));
-	sidebar->popup_menu_format_item = item;
-	g_signal_connect (item, "activate",
-		    G_CALLBACK (format_shortcut_cb), sidebar);
 	gtk_widget_show (item);
 	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
 
@@ -3178,16 +3166,16 @@ nautilus_places_sidebar_class_init (NautilusPlacesSidebarClass *class)
 
 static void
 nautilus_places_sidebar_set_parent_window (NautilusPlacesSidebar *sidebar,
-					   NautilusWindowInfo *window)
+					   NautilusWindow *window)
 {
-	NautilusWindowSlotInfo *slot;
+	NautilusWindowSlot *slot;
 
 	sidebar->window = window;
 
-	slot = nautilus_window_info_get_active_slot (window);
+	slot = nautilus_window_get_active_slot (window);
 
 	sidebar->bookmarks = nautilus_bookmark_list_new ();
-	sidebar->uri = nautilus_window_slot_info_get_current_location (slot);
+	sidebar->uri = nautilus_window_slot_get_current_uri (slot);
 
 	g_signal_connect_object (sidebar->bookmarks, "contents_changed",
 				 G_CALLBACK (update_places),
@@ -3231,7 +3219,7 @@ nautilus_places_sidebar_style_set (GtkWidget *widget,
 }
 
 GtkWidget *
-nautilus_places_sidebar_new (NautilusWindowInfo *window)
+nautilus_places_sidebar_new (NautilusWindow *window)
 {
 	NautilusPlacesSidebar *sidebar;
 	

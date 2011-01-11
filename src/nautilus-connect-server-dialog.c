@@ -31,7 +31,6 @@
 #include <gio/gio.h>
 #include <gtk/gtk.h>
 
-#include "nautilus-application.h"
 #include "nautilus-bookmark-list.h"
 #include "nautilus-connect-server-operation.h"
 #include "nautilus-window.h"
@@ -45,8 +44,6 @@
  */
 
 struct _NautilusConnectServerDialogDetails {
-	NautilusApplication *application;
-
 	GtkWidget *primary_table;
 	GtkWidget *user_details;
 	GtkWidget *port_spinbutton;
@@ -480,8 +477,7 @@ mount_enclosing_ready_cb (GObject *source,
 
 	if (!error || g_error_matches (error, G_IO_ERROR, G_IO_ERROR_ALREADY_MOUNTED)) {
 		/* volume is mounted, show it */
-		nautilus_connect_server_dialog_display_location_async (dialog,
-								       dialog->details->application, location,
+		nautilus_connect_server_dialog_display_location_async (dialog, location,
 								       display_location_async_cb, NULL);
 	} else {
 		if (dialog->details->should_destroy) {
@@ -498,7 +494,6 @@ mount_enclosing_ready_cb (GObject *source,
 
 static void
 connect_dialog_present_uri_async (NautilusConnectServerDialog *self,
-				  NautilusApplication *application,
 				  GFile *location)
 {
 	GMountOperation *op;
@@ -615,7 +610,6 @@ connect_dialog_connect_to_server (NautilusConnectServerDialog *dialog)
 
 	connect_dialog_set_connecting (dialog);
 	connect_dialog_present_uri_async (dialog,
-					  dialog->details->application,
 					  location);
 
 	g_object_unref (location);
@@ -1174,7 +1168,6 @@ nautilus_connect_server_dialog_new (NautilusWindow *window)
 	if (window) {
 		gtk_window_set_screen (GTK_WINDOW (dialog),
 				       gtk_window_get_screen (GTK_WINDOW (window)));
-		conndlg->details->application = window->application;
 	}
 
 	return dialog;
