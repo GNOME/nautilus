@@ -247,7 +247,7 @@ filter_nautilus_handler (GList *apps)
 		id = g_app_info_get_id (application);
 		if (id != NULL &&
 		    strcmp (id,
-			    "nautilus-folder-handler.desktop") == 0) {
+			    "nautilus.desktop") == 0) {
 			g_object_unref (application);
 			apps = g_list_delete_link (apps, l); 
 		}
