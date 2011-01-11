@@ -18,11 +18,6 @@ INCLUDES = 					\
 libnautilus_file_manager_la_SOURCES=	\
 	fm-ditem-page.c			\
 	fm-ditem-page.h			\
-	fm-list-model.c			\
-	fm-list-model.h			\
-	fm-list-view-private.h 		\
-	fm-list-view.c			\
-	fm-list-view.h 			\
 	fm-properties-window.c		\
 	fm-properties-window.h 		\
 	$(NULL)

@@ -24,38 +24,38 @@
             Anders Carlsson <andersca@gnu.org>
 */
 
-#ifndef FM_LIST_VIEW_H
-#define FM_LIST_VIEW_H
+#ifndef NAUTILUS_LIST_VIEW_H
+#define NAUTILUS_LIST_VIEW_H
 
 #include "nautilus-view.h"
 
-#define FM_TYPE_LIST_VIEW fm_list_view_get_type()
-#define FM_LIST_VIEW(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST ((obj), FM_TYPE_LIST_VIEW, FMListView))
-#define FM_LIST_VIEW_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST ((klass), FM_TYPE_LIST_VIEW, FMListViewClass))
-#define FM_IS_LIST_VIEW(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), FM_TYPE_LIST_VIEW))
-#define FM_IS_LIST_VIEW_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE ((klass), FM_TYPE_LIST_VIEW))
-#define FM_LIST_VIEW_GET_CLASS(obj) \
-  (G_TYPE_INSTANCE_GET_CLASS ((obj), FM_TYPE_LIST_VIEW, FMListViewClass))
+#define NAUTILUS_TYPE_LIST_VIEW nautilus_list_view_get_type()
+#define NAUTILUS_LIST_VIEW(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_LIST_VIEW, NautilusListView))
+#define NAUTILUS_LIST_VIEW_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_LIST_VIEW, NautilusListViewClass))
+#define NAUTILUS_IS_LIST_VIEW(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_LIST_VIEW))
+#define NAUTILUS_IS_LIST_VIEW_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_LIST_VIEW))
+#define NAUTILUS_LIST_VIEW_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_LIST_VIEW, NautilusListViewClass))
 
-#define FM_LIST_VIEW_ID "OAFIID:Nautilus_File_Manager_List_View"
+#define NAUTILUS_LIST_VIEW_ID "OAFIID:Nautilus_File_Manager_List_View"
 
-typedef struct FMListViewDetails FMListViewDetails;
+typedef struct NautilusListViewDetails NautilusListViewDetails;
 
 typedef struct {
 	NautilusView parent_instance;
-	FMListViewDetails *details;
-} FMListView;
+	NautilusListViewDetails *details;
+} NautilusListView;
 
 typedef struct {
 	NautilusViewClass parent_class;
-} FMListViewClass;
+} NautilusListViewClass;
 
-GType fm_list_view_get_type (void);
-void  fm_list_view_register (void);
-GtkTreeView* fm_list_view_get_tree_view (FMListView *list_view);
+GType nautilus_list_view_get_type (void);
+void  nautilus_list_view_register (void);
+GtkTreeView* nautilus_list_view_get_tree_view (NautilusListView *list_view);
 
-#endif /* FM_LIST_VIEW_H */
+#endif /* NAUTILUS_LIST_VIEW_H */

@@ -88,6 +88,11 @@ nautilus_SOURCES = \
 	nautilus-icon-view-container.h		\
 	nautilus-image-properties-page.c	\
 	nautilus-image-properties-page.h	\
+	nautilus-list-model.c			\
+	nautilus-list-model.h			\
+	nautilus-list-view-private.h 		\
+	nautilus-list-view.c			\
+	nautilus-list-view.h 			\
 	nautilus-location-bar.c         	\
 	nautilus-location-bar.h			\
 	nautilus-location-dialog.c              \

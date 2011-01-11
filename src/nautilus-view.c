@@ -31,12 +31,12 @@
 
 #include "nautilus-view.h"
 
-#include "file-manager/fm-list-view.h"
 #include "file-manager/fm-properties-window.h"
 
 #include "nautilus-actions.h"
 #include "nautilus-desktop-icon-view.h"
 #include "nautilus-error-reporting.h"
+#include "nautilus-list-view.h"
 #include "nautilus-mime-actions.h"
 #include "nautilus-src-marshal.h"
 
@@ -1827,7 +1827,7 @@ rename_file (NautilusView *view, NautilusFile *new_file)
 	   to load the slow mimetype for the file, which leads to a
 	   file_changed. So, before we delay we select the row.
 	*/
-	if (FM_IS_LIST_VIEW (view)) {
+	if (NAUTILUS_IS_LIST_VIEW (view)) {
 		nautilus_view_select_file (view, new_file);
 		
 		data = g_new (RenameData, 1);
@@ -3016,7 +3016,7 @@ done_loading (NautilusView *view,
 			nautilus_view_call_set_selection (view, selection);
 			view->details->selection_change_is_due_to_shell = FALSE;
 
-			if (FM_IS_LIST_VIEW (view)) {
+			if (NAUTILUS_IS_LIST_VIEW (view)) {
 				/* HACK: We should be able to directly call reveal_selection here,
 				 * but at this point the GtkTreeView hasn't allocated the new nodes
 				 * yet, and it has a bug in the scroll calculation dealing with this
