@@ -1267,14 +1267,6 @@ nautilus_window_display_error (NautilusWindow *window, const char *error_msg)
 	gtk_widget_show (dialog);
 }
 
-static char *
-real_get_title (NautilusWindow *window)
-{
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
-	return nautilus_window_slot_get_title (window->details->active_pane->active_slot);
-}
-
 void
 nautilus_window_sync_title (NautilusWindow *window,
 			    NautilusWindowSlot *slot)
@@ -1773,7 +1765,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
 	GTK_WIDGET_CLASS (class)->get_preferred_height = nautilus_window_get_preferred_height;
 	GTK_WIDGET_CLASS (class)->realize = nautilus_window_realize;
 	GTK_WIDGET_CLASS (class)->key_press_event = nautilus_window_key_press_event;
-	class->get_title = real_get_title;
 	class->set_allow_up = real_set_allow_up;
 	class->close_slot = real_close_slot;
 

@@ -277,18 +277,6 @@ nautilus_window_slot_make_hosting_pane_active (NautilusWindowSlot *slot)
 	nautilus_window_set_active_slot (slot->pane->window, slot);
 }
 
-char *
-nautilus_window_slot_get_title (NautilusWindowSlot *slot)
-{
-	char *title;
-
-	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
-
-	title = nautilus_compute_title_for_location (slot->location);
-
-	return title;
-}
-
 NautilusWindow *
 nautilus_window_slot_get_window (NautilusWindowSlot *slot)
 {
@@ -347,8 +335,9 @@ nautilus_window_slot_update_title (NautilusWindowSlot *slot)
 {
 	char *title;
 
-	title = nautilus_window_slot_get_title (slot);
+	title = nautilus_compute_title_for_location (slot->location);
 	nautilus_window_slot_set_title (slot, title);
+
 	g_free (title);
 }
 

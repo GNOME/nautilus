@@ -86,7 +86,6 @@ typedef struct {
 
 	/* Function pointers for overriding, without corresponding signals */
 
-        char * (* get_title) (NautilusWindow *window);
         void   (* sync_title) (NautilusWindow *window,
 			       NautilusWindowSlot *slot);
         NautilusIconInfo * (* get_icon) (NautilusWindow *window,
