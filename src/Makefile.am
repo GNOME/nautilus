@@ -1,7 +1,5 @@
 include $(top_srcdir)/Makefile.shared
 
-SUBDIRS=file-manager
-
 bin_PROGRAMS=					\
 	nautilus				\
 	nautilus-autorun-software		\
@@ -169,6 +167,14 @@ nautilus_SOURCES = \
 	nautilus-zoom-control.h			\
 	$(NULL)
 
+EMPTY_VIEW_SOURCES = \
+	nautilus-empty-view.c \
+	nautilus-empty-view.h
+
+if ENABLE_EMPTY_VIEW
+nautilus_SOURCES += $(EMPTY_VIEW_SOURCES)
+endif
+
 nodist_nautilus_SOURCES = \
 	$(BUILT_SOURCES) \
 	$(NULL)
@@ -220,6 +226,10 @@ ui_DATA = 					\
 	nautilus-spatial-window-ui.xml          \
 	nautilus-file-management-properties.ui	\
 	nautilus-bookmarks-window.ui		\
+	nautilus-desktop-icon-view-ui.xml	\
+	nautilus-directory-view-ui.xml		\
+	nautilus-icon-view-ui.xml		\
+	nautilus-list-view-ui.xml		\
 	$(NULL)
 
 CLEANFILES = \
