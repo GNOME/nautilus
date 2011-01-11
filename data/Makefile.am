@@ -8,10 +8,6 @@ desktopdir       = $(datadir)/applications
 desktop_DATA     = $(desktop_in_files:.desktop.in=.desktop)
 desktop_in_files = 					\
 	nautilus.desktop.in				\
-	nautilus-home.desktop.in			\
-	nautilus-computer.desktop.in			\
-	nautilus-folder-handler.desktop.in		\
-	nautilus-browser.desktop.in                     \
 	nautilus-autorun-software.desktop.in
 @INTLTOOL_DESKTOP_RULE@
 

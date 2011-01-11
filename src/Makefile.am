@@ -43,15 +43,6 @@ LDADD =\
 	$(POPT_LIBS) \
 	$(NULL)
 
-@INTLTOOL_DESKTOP_RULE@
-
-desktop_in_files=network-scheme.desktop.in
-desktop_files=$(desktop_in_files:.desktop.in=.desktop)
-desktopdir = $(datadir)/gnome/network/
-
-schemedir = $(datadir)/applications
-scheme_DATA = network-scheme.desktop
-
 BUILT_SOURCES = \
 	nautilus-src-marshal.c \
 	nautilus-src-marshal.h \
@@ -234,7 +225,6 @@ ui_DATA = 					\
 CLEANFILES = \
 	nautilus-src-marshal.list		\
 	$(BUILT_SOURCES)			\
-	$(desktop_files)			\
 	$(server_DATA)				\
 	$(NULL)
 
@@ -243,7 +233,6 @@ EXTRA_DIST =					\
 	$(server_in_files)			\
 	$(ui_DATA)				\
 	check-nautilus				\
-	$(desktop_in_files)			\
 	$(NULL)
 
 dist-hook:
