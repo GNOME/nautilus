@@ -1532,7 +1532,7 @@ nautilus_application_startup (GApplication *app)
 
 	/* register views */
 	nautilus_icon_view_register ();
-	fm_desktop_icon_view_register ();
+	nautilus_desktop_icon_view_register ();
 	fm_list_view_register ();
 	nautilus_icon_view_compact_register ();
 #if ENABLE_EMPTY_VIEW

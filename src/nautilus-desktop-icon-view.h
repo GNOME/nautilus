@@ -22,37 +22,37 @@
    Authors: Mike Engber <engber@eazel.com>
 */
 
-#ifndef FM_DESKTOP_ICON_VIEW_H
-#define FM_DESKTOP_ICON_VIEW_H
+#ifndef NAUTILUS_DESKTOP_ICON_VIEW_H
+#define NAUTILUS_DESKTOP_ICON_VIEW_H
 
 #include "nautilus-icon-view.h"
 
-#define FM_TYPE_DESKTOP_ICON_VIEW fm_desktop_icon_view_get_type()
-#define FM_DESKTOP_ICON_VIEW(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST ((obj), FM_TYPE_DESKTOP_ICON_VIEW, FMDesktopIconView))
-#define FM_DESKTOP_ICON_VIEW_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST ((klass), FM_TYPE_DESKTOP_ICON_VIEW, FMDesktopIconViewClass))
-#define FM_IS_DESKTOP_ICON_VIEW(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), FM_TYPE_DESKTOP_ICON_VIEW))
-#define FM_IS_DESKTOP_ICON_VIEW_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE ((klass), FM_TYPE_DESKTOP_ICON_VIEW))
-#define FM_DESKTOP_ICON_VIEW_GET_CLASS(obj) \
-  (G_TYPE_INSTANCE_GET_CLASS ((obj), FM_TYPE_DESKTOP_ICON_VIEW, FMDesktopIconViewClass))
+#define NAUTILUS_TYPE_DESKTOP_ICON_VIEW nautilus_desktop_icon_view_get_type()
+#define NAUTILUS_DESKTOP_ICON_VIEW(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_DESKTOP_ICON_VIEW, NautilusDesktopIconView))
+#define NAUTILUS_DESKTOP_ICON_VIEW_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_DESKTOP_ICON_VIEW, NautilusDesktopIconViewClass))
+#define NAUTILUS_IS_DESKTOP_ICON_VIEW(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_DESKTOP_ICON_VIEW))
+#define NAUTILUS_IS_DESKTOP_ICON_VIEW_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_DESKTOP_ICON_VIEW))
+#define NAUTILUS_DESKTOP_ICON_VIEW_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_DESKTOP_ICON_VIEW, NautilusDesktopIconViewClass))
 
-#define FM_DESKTOP_ICON_VIEW_ID "OAFIID:Nautilus_File_Manager_Desktop_Icon_View"
+#define NAUTILUS_DESKTOP_ICON_VIEW_ID "OAFIID:Nautilus_File_Manager_Desktop_Icon_View"
 
-typedef struct FMDesktopIconViewDetails FMDesktopIconViewDetails;
+typedef struct NautilusDesktopIconViewDetails NautilusDesktopIconViewDetails;
 typedef struct {
 	NautilusIconView parent;
-	FMDesktopIconViewDetails *details;
-} FMDesktopIconView;
+	NautilusDesktopIconViewDetails *details;
+} NautilusDesktopIconView;
 
 typedef struct {
 	NautilusIconViewClass parent_class;
-} FMDesktopIconViewClass;
+} NautilusDesktopIconViewClass;
 
 /* GObject support */
-GType   fm_desktop_icon_view_get_type (void);
-void fm_desktop_icon_view_register (void);
+GType   nautilus_desktop_icon_view_get_type (void);
+void nautilus_desktop_icon_view_register (void);
 
-#endif /* FM_DESKTOP_ICON_VIEW_H */
+#endif /* NAUTILUS_DESKTOP_ICON_VIEW_H */

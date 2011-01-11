@@ -695,7 +695,7 @@ update_layout_menus (NautilusIconView *view)
 					      FM_ACTION_CLEAN_UP);
 	gtk_action_set_sensitive (action, !is_auto_layout);	
 
-	if (FM_IS_DESKTOP_ICON_VIEW (view)) {
+	if (NAUTILUS_IS_DESKTOP_ICON_VIEW (view)) {
 		gtk_action_set_label (action, _("_Organize Desktop by Name"));
 	}
 
@@ -2846,8 +2846,8 @@ icon_view_scroll_to_file (NautilusView *view,
 static const char *
 nautilus_icon_view_get_id (NautilusView *view)
 {
-	if (FM_IS_DESKTOP_ICON_VIEW (view)) {
-		return FM_DESKTOP_ICON_VIEW_ID;
+	if (NAUTILUS_IS_DESKTOP_ICON_VIEW (view)) {
+		return NAUTILUS_DESKTOP_ICON_VIEW_ID;
 	}
 
 	if (nautilus_icon_view_is_compact (NAUTILUS_ICON_VIEW (view))) {

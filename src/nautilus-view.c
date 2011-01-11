@@ -8615,7 +8615,7 @@ real_update_menus (NautilusView *view)
 				selection_count),
 		      NULL);
 	
-	show_properties = (!FM_IS_DESKTOP_ICON_VIEW (view) || selection_count > 0);
+	show_properties = (!NAUTILUS_IS_DESKTOP_ICON_VIEW (view) || selection_count > 0);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_PROPERTIES);

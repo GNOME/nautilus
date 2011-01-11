@@ -90,7 +90,7 @@ ask_link_action (NautilusView *view)
 
 	/* Don't use desktop window as parent, since that means
 	   we show up an all desktops etc */
-	if (! FM_IS_DESKTOP_ICON_VIEW (view)) {
+	if (! NAUTILUS_IS_DESKTOP_ICON_VIEW (view)) {
 		parent_window = GTK_WINDOW (GET_ANCESTOR (view));
 	}
 

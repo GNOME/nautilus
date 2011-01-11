@@ -65,7 +65,7 @@
 /* Timeout to check the desktop directory for updates */
 #define RESCAN_TIMEOUT 4
 
-struct FMDesktopIconViewDetails
+struct NautilusDesktopIconViewDetails
 {
 	GdkWindow *root_window;
 	GtkActionGroup *desktop_action_group;
@@ -88,10 +88,10 @@ static gboolean real_supports_labels_beside_icons                 (NautilusIconV
 static void     real_merge_menus                                  (NautilusView        *view);
 static void     real_update_menus                                 (NautilusView        *view);
 static gboolean real_supports_zooming                             (NautilusView        *view);
-static void     fm_desktop_icon_view_update_icon_container_fonts  (FMDesktopIconView      *view);
+static void     nautilus_desktop_icon_view_update_icon_container_fonts  (NautilusDesktopIconView      *view);
 static void     font_changed_callback                             (gpointer                callback_data);
 
-G_DEFINE_TYPE (FMDesktopIconView, fm_desktop_icon_view, NAUTILUS_TYPE_ICON_VIEW)
+G_DEFINE_TYPE (NautilusDesktopIconView, nautilus_desktop_icon_view, NAUTILUS_TYPE_ICON_VIEW)
 
 static char *desktop_directory;
 static time_t desktop_dir_modify_time;
@@ -104,9 +104,9 @@ desktop_directory_changed_callback (gpointer callback_data)
 }
 
 static NautilusIconContainer *
-get_icon_container (FMDesktopIconView *icon_view)
+get_icon_container (NautilusDesktopIconView *icon_view)
 {
-	g_return_val_if_fail (FM_IS_DESKTOP_ICON_VIEW (icon_view), NULL);
+	g_return_val_if_fail (NAUTILUS_IS_DESKTOP_ICON_VIEW (icon_view), NULL);
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (gtk_bin_get_child (GTK_BIN (icon_view))), NULL);
 
 	return NAUTILUS_ICON_CONTAINER (gtk_bin_get_child (GTK_BIN (icon_view)));
@@ -147,7 +147,7 @@ icon_container_set_workarea (NautilusIconContainer *icon_container,
 }
 
 static void
-net_workarea_changed (FMDesktopIconView *icon_view,
+net_workarea_changed (NautilusDesktopIconView *icon_view,
 		      GdkWindow         *window)
 {
 	long *nworkareas = NULL;
@@ -158,7 +158,7 @@ net_workarea_changed (FMDesktopIconView *icon_view,
 	NautilusIconContainer *icon_container;
 	GdkScreen *screen;
 
-	g_return_if_fail (FM_IS_DESKTOP_ICON_VIEW (icon_view));
+	g_return_if_fail (NAUTILUS_IS_DESKTOP_ICON_VIEW (icon_view));
 
 	icon_container = get_icon_container (icon_view);
 
@@ -235,9 +235,9 @@ desktop_icon_view_property_filter (GdkXEvent *gdk_xevent,
 				   gpointer data)
 {
 	XEvent *xevent = gdk_xevent;
-	FMDesktopIconView *icon_view;
+	NautilusDesktopIconView *icon_view;
 
-	icon_view = FM_DESKTOP_ICON_VIEW (data);
+	icon_view = NAUTILUS_DESKTOP_ICON_VIEW (data);
   
 	switch (xevent->type) {
 	case PropertyNotify:
@@ -255,25 +255,25 @@ static void
 real_begin_loading (NautilusView *object)
 {
 	NautilusIconContainer *icon_container;
-	FMDesktopIconView *view;
+	NautilusDesktopIconView *view;
 
-	view = FM_DESKTOP_ICON_VIEW (object);
+	view = NAUTILUS_DESKTOP_ICON_VIEW (object);
 
 	icon_container = get_icon_container (view);
 	if (view->details->background == NULL) {
 		view->details->background = nautilus_desktop_background_new (icon_container);
 	}
 
-	NAUTILUS_VIEW_CLASS (fm_desktop_icon_view_parent_class)->begin_loading (object);
+	NAUTILUS_VIEW_CLASS (nautilus_desktop_icon_view_parent_class)->begin_loading (object);
 }
 
 static void
-fm_desktop_icon_view_dispose (GObject *object)
+nautilus_desktop_icon_view_dispose (GObject *object)
 {
-	FMDesktopIconView *icon_view;
+	NautilusDesktopIconView *icon_view;
 	GtkUIManager *ui_manager;
 
-	icon_view = FM_DESKTOP_ICON_VIEW (object);
+	icon_view = NAUTILUS_DESKTOP_ICON_VIEW (object);
 
 	/* Remove desktop rescan timeout. */
 	if (icon_view->details->reload_desktop_timeout != 0) {
@@ -308,13 +308,13 @@ fm_desktop_icon_view_dispose (GObject *object)
 		icon_view->details->background = NULL;
 	}
 
-	G_OBJECT_CLASS (fm_desktop_icon_view_parent_class)->dispose (object);
+	G_OBJECT_CLASS (nautilus_desktop_icon_view_parent_class)->dispose (object);
 }
 
 static void
-fm_desktop_icon_view_class_init (FMDesktopIconViewClass *class)
+nautilus_desktop_icon_view_class_init (NautilusDesktopIconViewClass *class)
 {
-	G_OBJECT_CLASS (class)->dispose = fm_desktop_icon_view_dispose;
+	G_OBJECT_CLASS (class)->dispose = nautilus_desktop_icon_view_dispose;
 
 	NAUTILUS_VIEW_CLASS (class)->begin_loading = real_begin_loading;
 	NAUTILUS_VIEW_CLASS (class)->merge_menus = real_merge_menus;
@@ -326,13 +326,13 @@ fm_desktop_icon_view_class_init (FMDesktopIconViewClass *class)
 	NAUTILUS_ICON_VIEW_CLASS (class)->supports_keep_aligned = real_supports_keep_aligned;
 	NAUTILUS_ICON_VIEW_CLASS (class)->supports_labels_beside_icons = real_supports_labels_beside_icons;
 
-	g_type_class_add_private (class, sizeof (FMDesktopIconViewDetails));
+	g_type_class_add_private (class, sizeof (NautilusDesktopIconViewDetails));
 }
 
 static void
-fm_desktop_icon_view_handle_middle_click (NautilusIconContainer *icon_container,
-					  GdkEventButton *event,
-					  FMDesktopIconView *desktop_icon_view)
+nautilus_desktop_icon_view_handle_middle_click (NautilusIconContainer *icon_container,
+						GdkEventButton *event,
+						NautilusDesktopIconView *desktop_icon_view)
 {
 	XButtonEvent x_event;
 	GdkDevice *keyboard = NULL, *pointer = NULL, *cur;
@@ -400,7 +400,7 @@ fm_desktop_icon_view_handle_middle_click (NautilusIconContainer *icon_container,
 }
 
 static void
-unrealized_callback (GtkWidget *widget, FMDesktopIconView *desktop_icon_view)
+unrealized_callback (GtkWidget *widget, NautilusDesktopIconView *desktop_icon_view)
 {
 	g_return_if_fail (desktop_icon_view->details->root_window != NULL);
 
@@ -412,7 +412,7 @@ unrealized_callback (GtkWidget *widget, FMDesktopIconView *desktop_icon_view)
 }
 
 static void
-realized_callback (GtkWidget *widget, FMDesktopIconView *desktop_icon_view)
+realized_callback (GtkWidget *widget, NautilusDesktopIconView *desktop_icon_view)
 {
 	GdkWindow *root_window;
 	GdkScreen *screen;
@@ -469,9 +469,9 @@ static void
 default_zoom_level_changed (gpointer user_data)
 {
 	NautilusZoomLevel new_level;
-	FMDesktopIconView *desktop_icon_view;
+	NautilusDesktopIconView *desktop_icon_view;
 
-	desktop_icon_view = FM_DESKTOP_ICON_VIEW (user_data);
+	desktop_icon_view = NAUTILUS_DESKTOP_ICON_VIEW (user_data);
 	new_level = get_default_zoom_level ();
 
 	nautilus_icon_container_set_zoom_level (get_icon_container (desktop_icon_view),
@@ -481,10 +481,10 @@ default_zoom_level_changed (gpointer user_data)
 static gboolean
 do_desktop_rescan (gpointer data)
 {
-	FMDesktopIconView *desktop_icon_view;
+	NautilusDesktopIconView *desktop_icon_view;
 	struct stat buf;
 
-	desktop_icon_view = FM_DESKTOP_ICON_VIEW (data);
+	desktop_icon_view = NAUTILUS_DESKTOP_ICON_VIEW (data);
 	if (desktop_icon_view->details->pending_rescan) {
 		return TRUE;
 	}
@@ -507,7 +507,7 @@ do_desktop_rescan (gpointer data)
 
 static void
 done_loading (NautilusDirectory *model,
-	      FMDesktopIconView *desktop_icon_view)
+	      NautilusDesktopIconView *desktop_icon_view)
 {
 	struct stat buf;
 
@@ -524,7 +524,7 @@ done_loading (NautilusDirectory *model,
  * instantiated.
  */
 static void
-delayed_init (FMDesktopIconView *desktop_icon_view)
+delayed_init (NautilusDesktopIconView *desktop_icon_view)
 {
 	/* Keep track of the load time. */
 	g_signal_connect_object (nautilus_view_get_model (NAUTILUS_VIEW (desktop_icon_view)),
@@ -544,13 +544,13 @@ delayed_init (FMDesktopIconView *desktop_icon_view)
 static void
 font_changed_callback (gpointer callback_data)
 {
- 	g_return_if_fail (FM_IS_DESKTOP_ICON_VIEW (callback_data));
+ 	g_return_if_fail (NAUTILUS_IS_DESKTOP_ICON_VIEW (callback_data));
 	
-	fm_desktop_icon_view_update_icon_container_fonts (FM_DESKTOP_ICON_VIEW (callback_data));
+	nautilus_desktop_icon_view_update_icon_container_fonts (NAUTILUS_DESKTOP_ICON_VIEW (callback_data));
 }
 
 static void
-fm_desktop_icon_view_update_icon_container_fonts (FMDesktopIconView *icon_view)
+nautilus_desktop_icon_view_update_icon_container_fonts (NautilusDesktopIconView *icon_view)
 {
 	NautilusIconContainer *icon_container;
 	char *font;
@@ -567,15 +567,15 @@ fm_desktop_icon_view_update_icon_container_fonts (FMDesktopIconView *icon_view)
 }
 
 static void
-fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
+nautilus_desktop_icon_view_init (NautilusDesktopIconView *desktop_icon_view)
 {
 	NautilusIconContainer *icon_container;
 	GtkAllocation allocation;
 	GtkAdjustment *hadj, *vadj;
 
 	desktop_icon_view->details = G_TYPE_INSTANCE_GET_PRIVATE (desktop_icon_view,
-								  FM_TYPE_DESKTOP_ICON_VIEW,
-								  FMDesktopIconViewDetails);
+								  NAUTILUS_TYPE_DESKTOP_ICON_VIEW,
+								  NautilusDesktopIconViewDetails);
 
 	if (desktop_directory == NULL) {
 		g_signal_connect_swapped (nautilus_preferences, "changed::" NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
@@ -632,7 +632,7 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 						 NAUTILUS_ICON_LAYOUT_T_B_L_R);
 
 	g_signal_connect_object (icon_container, "middle_click",
-				 G_CALLBACK (fm_desktop_icon_view_handle_middle_click), desktop_icon_view, 0);
+				 G_CALLBACK (nautilus_desktop_icon_view_handle_middle_click), desktop_icon_view, 0);
 	g_signal_connect_object (desktop_icon_view, "realize",
 				 G_CALLBACK (realized_callback), desktop_icon_view, 0);
 	g_signal_connect_object (desktop_icon_view, "unrealize",
@@ -649,7 +649,7 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 				  desktop_icon_view);
 
 	default_zoom_level_changed (desktop_icon_view);
-	fm_desktop_icon_view_update_icon_container_fonts (desktop_icon_view);
+	nautilus_desktop_icon_view_update_icon_container_fonts (desktop_icon_view);
 
 	g_signal_connect_swapped (gnome_lockdown_preferences,
 				  "changed::" NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE,
@@ -727,17 +727,17 @@ trash_link_is_selection (NautilusView *view)
 static void
 real_update_menus (NautilusView *view)
 {
-	FMDesktopIconView *desktop_view;
+	NautilusDesktopIconView *desktop_view;
 	char *label;
 	gboolean disable_command_line;
 	gboolean include_empty_trash;
 	GtkAction *action;
 
-	g_assert (FM_IS_DESKTOP_ICON_VIEW (view));
+	g_assert (NAUTILUS_IS_DESKTOP_ICON_VIEW (view));
 
-	NAUTILUS_VIEW_CLASS (fm_desktop_icon_view_parent_class)->update_menus (view);
+	NAUTILUS_VIEW_CLASS (nautilus_desktop_icon_view_parent_class)->update_menus (view);
 
-	desktop_view = FM_DESKTOP_ICON_VIEW (view);
+	desktop_view = NAUTILUS_DESKTOP_ICON_VIEW (view);
 
 	/* New Launcher */
 	disable_command_line = g_settings_get_boolean (gnome_lockdown_preferences, NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE);
@@ -788,14 +788,14 @@ static const GtkActionEntry desktop_view_entries[] = {
 static void
 real_merge_menus (NautilusView *view)
 {
-	FMDesktopIconView *desktop_view;
+	NautilusDesktopIconView *desktop_view;
 	GtkUIManager *ui_manager;
 	GtkActionGroup *action_group;
 	const char *ui;
 
-	NAUTILUS_VIEW_CLASS (fm_desktop_icon_view_parent_class)->merge_menus (view);
+	NAUTILUS_VIEW_CLASS (nautilus_desktop_icon_view_parent_class)->merge_menus (view);
 
-	desktop_view = FM_DESKTOP_ICON_VIEW (view);
+	desktop_view = NAUTILUS_DESKTOP_ICON_VIEW (view);
 
 	ui_manager = nautilus_view_get_ui_manager (view);
 
@@ -852,18 +852,18 @@ real_supports_zooming (NautilusView *view)
 }
 
 static NautilusView *
-fm_desktop_icon_view_create (NautilusWindowSlot *slot)
+nautilus_desktop_icon_view_create (NautilusWindowSlot *slot)
 {
 	NautilusIconView *view;
 
-	view = g_object_new (FM_TYPE_DESKTOP_ICON_VIEW,
+	view = g_object_new (NAUTILUS_TYPE_DESKTOP_ICON_VIEW,
 			     "window-slot", slot,
 			     NULL);
 	return NAUTILUS_VIEW (view);
 }
 
 static gboolean
-fm_desktop_icon_view_supports_uri (const char *uri,
+nautilus_desktop_icon_view_supports_uri (const char *uri,
 				   GFileType file_type,
 				   const char *mime_type)
 {
@@ -874,22 +874,22 @@ fm_desktop_icon_view_supports_uri (const char *uri,
 	return FALSE;
 }
 
-static NautilusViewInfo fm_desktop_icon_view = {
-	FM_DESKTOP_ICON_VIEW_ID,
+static NautilusViewInfo nautilus_desktop_icon_view = {
+	NAUTILUS_DESKTOP_ICON_VIEW_ID,
 	"Desktop View",
 	"_Desktop",
 	N_("The desktop view encountered an error."),
 	N_("The desktop view encountered an error while starting up."),
 	"Display this location with the desktop view.",
-	fm_desktop_icon_view_create,
-	fm_desktop_icon_view_supports_uri
+	nautilus_desktop_icon_view_create,
+	nautilus_desktop_icon_view_supports_uri
 };
 
 void
-fm_desktop_icon_view_register (void)
+nautilus_desktop_icon_view_register (void)
 {
-	fm_desktop_icon_view.error_label = _(fm_desktop_icon_view.error_label);
-	fm_desktop_icon_view.startup_error_label = _(fm_desktop_icon_view.startup_error_label);
+	nautilus_desktop_icon_view.error_label = _(nautilus_desktop_icon_view.error_label);
+	nautilus_desktop_icon_view.startup_error_label = _(nautilus_desktop_icon_view.startup_error_label);
 	
-	nautilus_view_factory_register (&fm_desktop_icon_view);
+	nautilus_view_factory_register (&nautilus_desktop_icon_view);
 }
