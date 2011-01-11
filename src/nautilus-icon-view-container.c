@@ -37,7 +37,7 @@
 #define ICON_TEXT_ATTRIBUTES_NUM_ITEMS		3
 #define ICON_TEXT_ATTRIBUTES_DEFAULT_TOKENS	"size,date_modified,type"
 
-G_DEFINE_TYPE (FMIconContainer, fm_icon_container, NAUTILUS_TYPE_ICON_CONTAINER);
+G_DEFINE_TYPE (NautilusIconViewContainer, nautilus_icon_view_container, NAUTILUS_TYPE_ICON_CONTAINER);
 
 static GQuark attribute_none_q;
 
@@ -45,18 +45,18 @@ static NautilusIconView *
 get_icon_view (NautilusIconContainer *container)
 {
 	/* Type unsafe comparison for performance */
-	return ((FMIconContainer *)container)->view;
+	return ((NautilusIconViewContainer *)container)->view;
 }
 
 static NautilusIconInfo *
-fm_icon_container_get_icon_images (NautilusIconContainer *container,
-				   NautilusIconData      *data,
-				   int                    size,
-				   char                 **embedded_text,
-				   gboolean               for_drag_accept,
-				   gboolean               need_large_embeddded_text,
-				   gboolean              *embedded_text_needs_loading,
-				   gboolean              *has_window_open)
+nautilus_icon_view_container_get_icon_images (NautilusIconContainer *container,
+					      NautilusIconData      *data,
+					      int                    size,
+					      char                 **embedded_text,
+					      gboolean               for_drag_accept,
+					      gboolean               need_large_embeddded_text,
+					      gboolean              *embedded_text_needs_loading,
+					      gboolean              *has_window_open)
 {
 	NautilusIconView *icon_view;
 	char **emblems_to_ignore;
@@ -138,8 +138,8 @@ fm_icon_container_get_icon_images (NautilusIconContainer *container,
 }
 
 static char *
-fm_icon_container_get_icon_description (NautilusIconContainer *container,
-				        NautilusIconData      *data)
+nautilus_icon_view_container_get_icon_description (NautilusIconContainer *container,
+						   NautilusIconData      *data)
 {
 	NautilusFile *file;
 	char *mime_type;
@@ -159,10 +159,10 @@ fm_icon_container_get_icon_description (NautilusIconContainer *container,
 }
 
 static void
-fm_icon_container_start_monitor_top_left (NautilusIconContainer *container,
-					  NautilusIconData      *data,
-					  gconstpointer          client,
-					  gboolean               large_text)
+nautilus_icon_view_container_start_monitor_top_left (NautilusIconContainer *container,
+						     NautilusIconData      *data,
+						     gconstpointer          client,
+						     gboolean               large_text)
 {
 	NautilusFile *file;
 	NautilusFileAttributes attributes;
@@ -179,9 +179,9 @@ fm_icon_container_start_monitor_top_left (NautilusIconContainer *container,
 }
 
 static void
-fm_icon_container_stop_monitor_top_left (NautilusIconContainer *container,
-					 NautilusIconData      *data,
-					 gconstpointer          client)
+nautilus_icon_view_container_stop_monitor_top_left (NautilusIconContainer *container,
+						    NautilusIconData      *data,
+						    gconstpointer          client)
 {
 	NautilusFile *file;
 
@@ -193,8 +193,8 @@ fm_icon_container_stop_monitor_top_left (NautilusIconContainer *container,
 }
 
 static void
-fm_icon_container_prioritize_thumbnailing (NautilusIconContainer *container,
-					   NautilusIconData      *data)
+nautilus_icon_view_container_prioritize_thumbnailing (NautilusIconContainer *container,
+						      NautilusIconData      *data)
 {
 	NautilusFile *file;
 	char *uri;
@@ -215,7 +215,7 @@ fm_icon_container_prioritize_thumbnailing (NautilusIconContainer *container,
  * beneath icons.
  */
 static GQuark *
-fm_icon_container_get_icon_text_attributes_from_preferences (void)
+nautilus_icon_view_container_get_icon_text_attributes_from_preferences (void)
 {
 	static GQuark *attributes = NULL;
 
@@ -275,8 +275,8 @@ quarkv_length (GQuark *attributes)
  * 
  **/
 static GQuark *
-fm_icon_container_get_icon_text_attribute_names (NautilusIconContainer *container,
-						 int *len)
+nautilus_icon_view_container_get_icon_text_attribute_names (NautilusIconContainer *container,
+							    int *len)
 {
 	GQuark *attributes;
 	int piece_count;
@@ -293,7 +293,7 @@ fm_icon_container_get_icon_text_attribute_names (NautilusIconContainer *containe
 
 	piece_count = pieces_by_level[nautilus_icon_container_get_zoom_level (container)];
 
-	attributes = fm_icon_container_get_icon_text_attributes_from_preferences ();
+	attributes = nautilus_icon_view_container_get_icon_text_attributes_from_preferences ();
 
 	*len = MIN (piece_count, quarkv_length (attributes));
 
@@ -304,11 +304,11 @@ fm_icon_container_get_icon_text_attribute_names (NautilusIconContainer *containe
  * part below that is not editable.
  */
 static void
-fm_icon_container_get_icon_text (NautilusIconContainer *container,
-				 NautilusIconData      *data,
-				 char                 **editable_text,
-				 char                 **additional_text,
-				 gboolean               include_invisible)
+nautilus_icon_view_container_get_icon_text (NautilusIconContainer *container,
+					    NautilusIconData      *data,
+					    char                 **editable_text,
+					    char                 **additional_text,
+					    gboolean               include_invisible)
 {
 	char *actual_uri;
 	gchar *description;
@@ -371,7 +371,7 @@ fm_icon_container_get_icon_text (NautilusIconContainer *container,
 	}
 
 	/* Find out what attributes go below each icon. */
-	attributes = fm_icon_container_get_icon_text_attribute_names (container,
+	attributes = nautilus_icon_view_container_get_icon_text_attribute_names (container,
 									   &num_attributes);
 
 	/* Get the attributes. */
@@ -469,7 +469,7 @@ fm_desktop_icon_container_icons_compare (NautilusIconContainer *container,
 	file_a = (NautilusFile *) data_a;
 	file_b = (NautilusFile *) data_b;
 
-	directory_view = NAUTILUS_VIEW (FM_ICON_CONTAINER (container)->view);
+	directory_view = NAUTILUS_VIEW (NAUTILUS_ICON_VIEW_CONTAINER (container)->view);
 	g_return_val_if_fail (directory_view != NULL, 0);
 	
 	category_a = get_sort_category (file_a);
@@ -490,16 +490,16 @@ fm_desktop_icon_container_icons_compare (NautilusIconContainer *container,
 }
 
 static int
-fm_icon_container_compare_icons (NautilusIconContainer *container,
-				 NautilusIconData      *icon_a,
-				 NautilusIconData      *icon_b)
+nautilus_icon_view_container_compare_icons (NautilusIconContainer *container,
+					    NautilusIconData      *icon_a,
+					    NautilusIconData      *icon_b)
 {
 	NautilusIconView *icon_view;
 
 	icon_view = get_icon_view (container);
 	g_return_val_if_fail (icon_view != NULL, 0);
 
-	if (FM_ICON_CONTAINER (container)->sort_for_desktop) {
+	if (NAUTILUS_ICON_VIEW_CONTAINER (container)->sort_for_desktop) {
 		return fm_desktop_icon_container_icons_compare
 			(container, icon_a, icon_b);
 	}
@@ -511,9 +511,9 @@ fm_icon_container_compare_icons (NautilusIconContainer *container,
 }
 
 static int
-fm_icon_container_compare_icons_by_name (NautilusIconContainer *container,
-					 NautilusIconData      *icon_a,
-					 NautilusIconData      *icon_b)
+nautilus_icon_view_container_compare_icons_by_name (NautilusIconContainer *container,
+						    NautilusIconData      *icon_a,
+						    NautilusIconData      *icon_b)
 {
 	return nautilus_file_compare_for_sort
 		(NAUTILUS_FILE (icon_a),
@@ -523,7 +523,7 @@ fm_icon_container_compare_icons_by_name (NautilusIconContainer *container,
 }
 
 static void
-fm_icon_container_freeze_updates (NautilusIconContainer *container)
+nautilus_icon_view_container_freeze_updates (NautilusIconContainer *container)
 {
 	NautilusIconView *icon_view;
 	icon_view = get_icon_view (container);
@@ -532,7 +532,7 @@ fm_icon_container_freeze_updates (NautilusIconContainer *container)
 }
 
 static void
-fm_icon_container_unfreeze_updates (NautilusIconContainer *container)
+nautilus_icon_view_container_unfreeze_updates (NautilusIconContainer *container)
 {
 	NautilusIconView *icon_view;
 	icon_view = get_icon_view (container);
@@ -541,19 +541,19 @@ fm_icon_container_unfreeze_updates (NautilusIconContainer *container)
 }
 
 static void
-fm_icon_container_dispose (GObject *object)
+nautilus_icon_view_container_dispose (GObject *object)
 {
-	FMIconContainer *icon_container;
+	NautilusIconViewContainer *icon_container;
 
-	icon_container = FM_ICON_CONTAINER (object);
+	icon_container = NAUTILUS_ICON_VIEW_CONTAINER (object);
 
 	icon_container->view = NULL;
 
-	G_OBJECT_CLASS (fm_icon_container_parent_class)->dispose (object);
+	G_OBJECT_CLASS (nautilus_icon_view_container_parent_class)->dispose (object);
 }
 
 static void
-fm_icon_container_class_init (FMIconContainerClass *klass)
+nautilus_icon_view_container_class_init (NautilusIconViewContainerClass *klass)
 {
 	NautilusIconContainerClass *ic_class;
 
@@ -561,28 +561,28 @@ fm_icon_container_class_init (FMIconContainerClass *klass)
 
 	attribute_none_q = g_quark_from_static_string ("none");
 	
-	ic_class->get_icon_text = fm_icon_container_get_icon_text;
-	ic_class->get_icon_images = fm_icon_container_get_icon_images;
-	ic_class->get_icon_description = fm_icon_container_get_icon_description;
-	ic_class->start_monitor_top_left = fm_icon_container_start_monitor_top_left;
-	ic_class->stop_monitor_top_left = fm_icon_container_stop_monitor_top_left;
-	ic_class->prioritize_thumbnailing = fm_icon_container_prioritize_thumbnailing;
+	ic_class->get_icon_text = nautilus_icon_view_container_get_icon_text;
+	ic_class->get_icon_images = nautilus_icon_view_container_get_icon_images;
+	ic_class->get_icon_description = nautilus_icon_view_container_get_icon_description;
+	ic_class->start_monitor_top_left = nautilus_icon_view_container_start_monitor_top_left;
+	ic_class->stop_monitor_top_left = nautilus_icon_view_container_stop_monitor_top_left;
+	ic_class->prioritize_thumbnailing = nautilus_icon_view_container_prioritize_thumbnailing;
 
-	ic_class->compare_icons = fm_icon_container_compare_icons;
-	ic_class->compare_icons_by_name = fm_icon_container_compare_icons_by_name;
-	ic_class->freeze_updates = fm_icon_container_freeze_updates;
-	ic_class->unfreeze_updates = fm_icon_container_unfreeze_updates;
+	ic_class->compare_icons = nautilus_icon_view_container_compare_icons;
+	ic_class->compare_icons_by_name = nautilus_icon_view_container_compare_icons_by_name;
+	ic_class->freeze_updates = nautilus_icon_view_container_freeze_updates;
+	ic_class->unfreeze_updates = nautilus_icon_view_container_unfreeze_updates;
 
-	G_OBJECT_CLASS (klass)->dispose = fm_icon_container_dispose;
+	G_OBJECT_CLASS (klass)->dispose = nautilus_icon_view_container_dispose;
 }
 
 static void
-fm_icon_container_init (FMIconContainer *icon_container)
+nautilus_icon_view_container_init (NautilusIconViewContainer *icon_container)
 {
 }
 
 NautilusIconContainer *
-fm_icon_container_construct (FMIconContainer *icon_container, NautilusIconView *view)
+nautilus_icon_view_container_construct (NautilusIconViewContainer *icon_container, NautilusIconView *view)
 {
 	AtkObject *atk_obj;
 
@@ -596,16 +596,16 @@ fm_icon_container_construct (FMIconContainer *icon_container, NautilusIconView *
 }
 
 NautilusIconContainer *
-fm_icon_container_new (NautilusIconView *view)
+nautilus_icon_view_container_new (NautilusIconView *view)
 {
-	return fm_icon_container_construct
-		(g_object_new (FM_TYPE_ICON_CONTAINER, NULL),
+	return nautilus_icon_view_container_construct
+		(g_object_new (NAUTILUS_TYPE_ICON_VIEW_CONTAINER, NULL),
 		 view);
 }
 
 void
-fm_icon_container_set_sort_desktop (FMIconContainer *container,
-				    gboolean         desktop)
+nautilus_icon_view_container_set_sort_desktop (NautilusIconViewContainer *container,
+					       gboolean         desktop)
 {
 	container->sort_for_desktop = desktop;
 }

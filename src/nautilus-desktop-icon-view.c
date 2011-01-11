@@ -587,7 +587,7 @@ nautilus_desktop_icon_view_init (NautilusDesktopIconView *desktop_icon_view)
 	nautilus_icon_view_filter_by_screen (NAUTILUS_ICON_VIEW (desktop_icon_view), TRUE);
 	icon_container = get_icon_container (desktop_icon_view);
 	nautilus_icon_container_set_use_drop_shadows (icon_container, TRUE);
-	fm_icon_container_set_sort_desktop (FM_ICON_CONTAINER (icon_container), TRUE);
+	nautilus_icon_view_container_set_sort_desktop (NAUTILUS_ICON_VIEW_CONTAINER (icon_container), TRUE);
 
 	/* Do a reload on the desktop if we don't have FAM, a smarter
 	 * way to keep track of the items on the desktop.

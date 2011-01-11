@@ -2703,7 +2703,7 @@ create_icon_container (NautilusIconView *icon_view)
 {
 	NautilusIconContainer *icon_container;
 
-	icon_container = fm_icon_container_new (icon_view);
+	icon_container = nautilus_icon_view_container_new (icon_view);
 
 	gtk_widget_set_can_focus (GTK_WIDGET (icon_container), TRUE);
 	

@@ -22,46 +22,46 @@
    Author: Michael Meeks <michael@ximian.com>
 */
 
-#ifndef FM_ICON_CONTAINER_H
-#define FM_ICON_CONTAINER_H
+#ifndef NAUTILUS_ICON_VIEW_CONTAINER_H
+#define NAUTILUS_ICON_VIEW_CONTAINER_H
 
 #include "nautilus-icon-view.h"
 
 #include <libnautilus-private/nautilus-icon-container.h>
 
-typedef struct FMIconContainer FMIconContainer;
-typedef struct FMIconContainerClass FMIconContainerClass;
+typedef struct NautilusIconViewContainer NautilusIconViewContainer;
+typedef struct NautilusIconViewContainerClass NautilusIconViewContainerClass;
 
-#define FM_TYPE_ICON_CONTAINER fm_icon_container_get_type()
-#define FM_ICON_CONTAINER(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST ((obj), FM_TYPE_ICON_CONTAINER, FMIconContainer))
-#define FM_ICON_CONTAINER_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST ((klass), FM_TYPE_ICON_CONTAINER, FMIconContainerClass))
-#define FM_IS_ICON_CONTAINER(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), FM_TYPE_ICON_CONTAINER))
-#define FM_IS_ICON_CONTAINER_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE ((klass), FM_TYPE_ICON_CONTAINER))
-#define FM_ICON_CONTAINER_GET_CLASS(obj) \
-  (G_TYPE_INSTANCE_GET_CLASS ((obj), FM_TYPE_ICON_CONTAINER, FMIconContainerClass))
+#define NAUTILUS_TYPE_ICON_VIEW_CONTAINER nautilus_icon_view_container_get_type()
+#define NAUTILUS_ICON_VIEW_CONTAINER(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_ICON_VIEW_CONTAINER, NautilusIconViewContainer))
+#define NAUTILUS_ICON_VIEW_CONTAINER_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_ICON_VIEW_CONTAINER, NautilusIconViewContainerClass))
+#define NAUTILUS_IS_ICON_VIEW_CONTAINER(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_ICON_VIEW_CONTAINER))
+#define NAUTILUS_IS_ICON_VIEW_CONTAINER_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_ICON_VIEW_CONTAINER))
+#define NAUTILUS_ICON_VIEW_CONTAINER_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_ICON_VIEW_CONTAINER, NautilusIconViewContainerClass))
 
-typedef struct FMIconContainerDetails FMIconContainerDetails;
+typedef struct NautilusIconViewContainerDetails NautilusIconViewContainerDetails;
 
-struct FMIconContainer {
+struct NautilusIconViewContainer {
 	NautilusIconContainer parent;
 
 	NautilusIconView *view;
 	gboolean    sort_for_desktop;
 };
 
-struct FMIconContainerClass {
+struct NautilusIconViewContainerClass {
 	NautilusIconContainerClass parent_class;
 };
 
-GType                  fm_icon_container_get_type         (void);
-NautilusIconContainer *fm_icon_container_construct        (FMIconContainer *icon_container,
-							   NautilusIconView      *view);
-NautilusIconContainer *fm_icon_container_new              (NautilusIconView      *view);
-void                   fm_icon_container_set_sort_desktop (FMIconContainer *container,
-							   gboolean         desktop);
+GType                  nautilus_icon_view_container_get_type         (void);
+NautilusIconContainer *nautilus_icon_view_container_construct        (NautilusIconViewContainer *icon_container,
+								      NautilusIconView      *view);
+NautilusIconContainer *nautilus_icon_view_container_new              (NautilusIconView      *view);
+void                   nautilus_icon_view_container_set_sort_desktop (NautilusIconViewContainer *container,
+								      gboolean         desktop);
 
-#endif /* FM_ICON_CONTAINER_H */
+#endif /* NAUTILUS_ICON_VIEW_CONTAINER_H */
