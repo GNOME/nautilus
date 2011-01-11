@@ -23,39 +23,38 @@
 */
 
 #include <config.h>
-#include "fm-empty-view.h"
+
+#include "nautilus-empty-view.h"
+
+#include "nautilus-view.h"
+#include "nautilus-view-factory.h"
 
 #include <string.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-view.h>
-#include <libnautilus-private/nautilus-view-factory.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-vfs-extensions.h>
 
-struct FMEmptyViewDetails {
+struct NautilusEmptyViewDetails {
 	int number_of_files;
 };
 
-static GList *fm_empty_view_get_selection                   (FMDirectoryView   *view);
-static GList *fm_empty_view_get_selection_for_file_transfer (FMDirectoryView   *view);
-static void   fm_empty_view_scroll_to_file                  (NautilusView      *view,
-							     const char        *uri);
-static void   fm_empty_view_iface_init                      (NautilusViewIface *iface);
+static GList *nautilus_empty_view_get_selection                   (NautilusView   *view);
+static GList *nautilus_empty_view_get_selection_for_file_transfer (NautilusView   *view);
+static void   nautilus_empty_view_scroll_to_file                  (NautilusView      *view,
+								   const char        *uri);
 
-G_DEFINE_TYPE_WITH_CODE (FMEmptyView, fm_empty_view, FM_TYPE_DIRECTORY_VIEW, 
-			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_VIEW,
-						fm_empty_view_iface_init));
+G_DEFINE_TYPE (NautilusEmptyView, nautilus_empty_view, NAUTILUS_TYPE_VIEW)
 
 /* for EEL_CALL_PARENT */
-#define parent_class fm_empty_view_parent_class
+#define parent_class nautilus_empty_view_parent_class
 
 static void
-fm_empty_view_add_file (FMDirectoryView *view, NautilusFile *file, NautilusDirectory *directory)
+nautilus_empty_view_add_file (NautilusView *view, NautilusFile *file, NautilusDirectory *directory)
 {
 	static GTimer *timer = NULL;
 	static gdouble cumu = 0, elaps;
-	FM_EMPTY_VIEW (view)->details->number_of_files++;
+	NAUTILUS_EMPTY_VIEW (view)->details->number_of_files++;
 	GdkPixbuf *icon;
 
 	if (!timer) timer = g_timer_new ();
@@ -74,141 +73,141 @@ fm_empty_view_add_file (FMDirectoryView *view, NautilusFile *file, NautilusDirec
 
 
 static void
-fm_empty_view_begin_loading (FMDirectoryView *view)
+nautilus_empty_view_begin_loading (NautilusView *view)
 {
 }
 
 static void
-fm_empty_view_clear (FMDirectoryView *view)
+nautilus_empty_view_clear (NautilusView *view)
 {
 }
 
 
 static void
-fm_empty_view_file_changed (FMDirectoryView *view, NautilusFile *file, NautilusDirectory *directory)
+nautilus_empty_view_file_changed (NautilusView *view, NautilusFile *file, NautilusDirectory *directory)
 {
 }
 
 static GList *
-fm_empty_view_get_selection (FMDirectoryView *view)
+nautilus_empty_view_get_selection (NautilusView *view)
 {
 	return NULL;
 }
 
 
 static GList *
-fm_empty_view_get_selection_for_file_transfer (FMDirectoryView *view)
+nautilus_empty_view_get_selection_for_file_transfer (NautilusView *view)
 {
 	return NULL;
 }
 
 static guint
-fm_empty_view_get_item_count (FMDirectoryView *view)
+nautilus_empty_view_get_item_count (NautilusView *view)
 {
-	return FM_EMPTY_VIEW (view)->details->number_of_files;
+	return NAUTILUS_EMPTY_VIEW (view)->details->number_of_files;
 }
 
 static gboolean
-fm_empty_view_is_empty (FMDirectoryView *view)
+nautilus_empty_view_is_empty (NautilusView *view)
 {
-	return FM_EMPTY_VIEW (view)->details->number_of_files == 0;
+	return NAUTILUS_EMPTY_VIEW (view)->details->number_of_files == 0;
 }
 
 static void
-fm_empty_view_end_file_changes (FMDirectoryView *view)
-{
-}
-
-static void
-fm_empty_view_remove_file (FMDirectoryView *view, NautilusFile *file, NautilusDirectory *directory)
-{
-	FM_EMPTY_VIEW (view)->details->number_of_files--;
-	g_assert (FM_EMPTY_VIEW (view)->details->number_of_files >= 0);
-}
-
-static void
-fm_empty_view_set_selection (FMDirectoryView *view, GList *selection)
-{
-	fm_directory_view_notify_selection_changed (view);
-}
-
-static void
-fm_empty_view_select_all (FMDirectoryView *view)
+nautilus_empty_view_end_file_changes (NautilusView *view)
 {
 }
 
 static void
-fm_empty_view_reveal_selection (FMDirectoryView *view)
+nautilus_empty_view_remove_file (NautilusView *view, NautilusFile *file, NautilusDirectory *directory)
+{
+	NAUTILUS_EMPTY_VIEW (view)->details->number_of_files--;
+	g_assert (NAUTILUS_EMPTY_VIEW (view)->details->number_of_files >= 0);
+}
+
+static void
+nautilus_empty_view_set_selection (NautilusView *view, GList *selection)
+{
+	nautilus_view_notify_selection_changed (view);
+}
+
+static void
+nautilus_empty_view_select_all (NautilusView *view)
 {
 }
 
 static void
-fm_empty_view_merge_menus (FMDirectoryView *view)
+nautilus_empty_view_reveal_selection (NautilusView *view)
 {
-	EEL_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, merge_menus, (view));
 }
 
 static void
-fm_empty_view_update_menus (FMDirectoryView *view)
+nautilus_empty_view_merge_menus (NautilusView *view)
 {
-	EEL_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
+	EEL_CALL_PARENT (NAUTILUS_VIEW_CLASS, merge_menus, (view));
+}
+
+static void
+nautilus_empty_view_update_menus (NautilusView *view)
+{
+	EEL_CALL_PARENT (NAUTILUS_VIEW_CLASS, update_menus, (view));
 }
 
 /* Reset sort criteria and zoom level to match defaults */
 static void
-fm_empty_view_reset_to_defaults (FMDirectoryView *view)
+nautilus_empty_view_reset_to_defaults (NautilusView *view)
 {
 }
 
 static void
-fm_empty_view_bump_zoom_level (FMDirectoryView *view, int zoom_increment)
+nautilus_empty_view_bump_zoom_level (NautilusView *view, int zoom_increment)
 {
 }
 
 static NautilusZoomLevel
-fm_empty_view_get_zoom_level (FMDirectoryView *view)
+nautilus_empty_view_get_zoom_level (NautilusView *view)
 {
 	return NAUTILUS_ZOOM_LEVEL_STANDARD;
 }
 
 static void
-fm_empty_view_zoom_to_level (FMDirectoryView *view,
+nautilus_empty_view_zoom_to_level (NautilusView *view,
 			    NautilusZoomLevel zoom_level)
 {
 }
 
 static void
-fm_empty_view_restore_default_zoom_level (FMDirectoryView *view)
+nautilus_empty_view_restore_default_zoom_level (NautilusView *view)
 {
 }
 
 static gboolean 
-fm_empty_view_can_zoom_in (FMDirectoryView *view) 
+nautilus_empty_view_can_zoom_in (NautilusView *view) 
 {
 	return FALSE;
 }
 
 static gboolean 
-fm_empty_view_can_zoom_out (FMDirectoryView *view) 
+nautilus_empty_view_can_zoom_out (NautilusView *view) 
 {
 	return FALSE;
 }
 
 static void
-fm_empty_view_start_renaming_file (FMDirectoryView *view,
+nautilus_empty_view_start_renaming_file (NautilusView *view,
 				  NautilusFile *file,
 				  gboolean select_all)
 {
 }
 
 static void
-fm_empty_view_click_policy_changed (FMDirectoryView *directory_view)
+nautilus_empty_view_click_policy_changed (NautilusView *directory_view)
 {
 }
 
 
 static int
-fm_empty_view_compare_files (FMDirectoryView *view, NautilusFile *file1, NautilusFile *file2)
+nautilus_empty_view_compare_files (NautilusView *view, NautilusFile *file1, NautilusFile *file2)
 {
 	if (file1 < file2) {
 		return -1;
@@ -222,130 +221,107 @@ fm_empty_view_compare_files (FMDirectoryView *view, NautilusFile *file1, Nautilu
 }
 
 static gboolean
-fm_empty_view_using_manual_layout (FMDirectoryView *view)
+nautilus_empty_view_using_manual_layout (NautilusView *view)
 {
 	return FALSE;
 }
 
 static void
-fm_empty_view_end_loading (FMDirectoryView *view,
+nautilus_empty_view_end_loading (NautilusView *view,
 			   gboolean all_files_seen)
 {
 }
 
 static void
-fm_empty_view_finalize (GObject *object)
+nautilus_empty_view_finalize (GObject *object)
 {
-	FMEmptyView *empty_view;
+	NautilusEmptyView *empty_view;
 
-	empty_view = FM_EMPTY_VIEW (object);
+	empty_view = NAUTILUS_EMPTY_VIEW (object);
 	g_free (empty_view->details);
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-static void
-fm_empty_view_emblems_changed (FMDirectoryView *directory_view)
-{
-}
-
 static char *
-fm_empty_view_get_first_visible_file (NautilusView *view)
+nautilus_empty_view_get_first_visible_file (NautilusView *view)
 {
 	return NULL;
 }
 
 static void
-fm_empty_view_scroll_to_file (NautilusView *view,
+nautilus_empty_view_scroll_to_file (NautilusView *view,
 			      const char *uri)
 {
 }
 
 static void
-fm_empty_view_grab_focus (NautilusView *view)
+nautilus_empty_view_sort_directories_first_changed (NautilusView *view)
 {
-	gtk_widget_grab_focus (GTK_WIDGET (view));
-}
-
-static void
-fm_empty_view_sort_directories_first_changed (FMDirectoryView *view)
-{
-}
-
-static void
-fm_empty_view_class_init (FMEmptyViewClass *class)
-{
-	FMDirectoryViewClass *fm_directory_view_class;
-
-	fm_directory_view_class = FM_DIRECTORY_VIEW_CLASS (class);
-
-	G_OBJECT_CLASS (class)->finalize = fm_empty_view_finalize;
-
-	fm_directory_view_class->add_file = fm_empty_view_add_file;
-	fm_directory_view_class->begin_loading = fm_empty_view_begin_loading;
-	fm_directory_view_class->bump_zoom_level = fm_empty_view_bump_zoom_level;
-	fm_directory_view_class->can_zoom_in = fm_empty_view_can_zoom_in;
-	fm_directory_view_class->can_zoom_out = fm_empty_view_can_zoom_out;
-        fm_directory_view_class->click_policy_changed = fm_empty_view_click_policy_changed;
-	fm_directory_view_class->clear = fm_empty_view_clear;
-	fm_directory_view_class->file_changed = fm_empty_view_file_changed;
-	fm_directory_view_class->get_selection = fm_empty_view_get_selection;
-	fm_directory_view_class->get_selection_for_file_transfer = fm_empty_view_get_selection_for_file_transfer;
-	fm_directory_view_class->get_item_count = fm_empty_view_get_item_count;
-	fm_directory_view_class->is_empty = fm_empty_view_is_empty;
-	fm_directory_view_class->remove_file = fm_empty_view_remove_file;
-	fm_directory_view_class->merge_menus = fm_empty_view_merge_menus;
-	fm_directory_view_class->update_menus = fm_empty_view_update_menus;
-	fm_directory_view_class->reset_to_defaults = fm_empty_view_reset_to_defaults;
-	fm_directory_view_class->restore_default_zoom_level = fm_empty_view_restore_default_zoom_level;
-	fm_directory_view_class->reveal_selection = fm_empty_view_reveal_selection;
-	fm_directory_view_class->select_all = fm_empty_view_select_all;
-	fm_directory_view_class->set_selection = fm_empty_view_set_selection;
-	fm_directory_view_class->compare_files = fm_empty_view_compare_files;
-	fm_directory_view_class->sort_directories_first_changed = fm_empty_view_sort_directories_first_changed;
-	fm_directory_view_class->start_renaming_file = fm_empty_view_start_renaming_file;
-	fm_directory_view_class->get_zoom_level = fm_empty_view_get_zoom_level;
-	fm_directory_view_class->zoom_to_level = fm_empty_view_zoom_to_level;
-        fm_directory_view_class->emblems_changed = fm_empty_view_emblems_changed;
-	fm_directory_view_class->end_file_changes = fm_empty_view_end_file_changes;
-	fm_directory_view_class->using_manual_layout = fm_empty_view_using_manual_layout;
-	fm_directory_view_class->end_loading = fm_empty_view_end_loading;
 }
 
 static const char *
-fm_empty_view_get_id (NautilusView *view)
+nautilus_empty_view_get_id (NautilusView *view)
 {
-	return FM_EMPTY_VIEW_ID;
+	return NAUTILUS_EMPTY_VIEW_ID;
 }
 
-
 static void
-fm_empty_view_iface_init (NautilusViewIface *iface)
+nautilus_empty_view_class_init (NautilusEmptyViewClass *class)
 {
-	fm_directory_view_init_view_iface (iface);
-	
-	iface->get_view_id = fm_empty_view_get_id;
-	iface->get_first_visible_file = fm_empty_view_get_first_visible_file;
-	iface->scroll_to_file = fm_empty_view_scroll_to_file;
-	iface->get_title = NULL;
-	iface->grab_focus = fm_empty_view_grab_focus;
+	NautilusViewClass *nautilus_view_class;
+
+	nautilus_view_class = NAUTILUS_VIEW_CLASS (class);
+
+	G_OBJECT_CLASS (class)->finalize = nautilus_empty_view_finalize;
+
+	nautilus_view_class->add_file = nautilus_empty_view_add_file;
+	nautilus_view_class->begin_loading = nautilus_empty_view_begin_loading;
+	nautilus_view_class->bump_zoom_level = nautilus_empty_view_bump_zoom_level;
+	nautilus_view_class->can_zoom_in = nautilus_empty_view_can_zoom_in;
+	nautilus_view_class->can_zoom_out = nautilus_empty_view_can_zoom_out;
+        nautilus_view_class->click_policy_changed = nautilus_empty_view_click_policy_changed;
+	nautilus_view_class->clear = nautilus_empty_view_clear;
+	nautilus_view_class->file_changed = nautilus_empty_view_file_changed;
+	nautilus_view_class->get_selection = nautilus_empty_view_get_selection;
+	nautilus_view_class->get_selection_for_file_transfer = nautilus_empty_view_get_selection_for_file_transfer;
+	nautilus_view_class->get_item_count = nautilus_empty_view_get_item_count;
+	nautilus_view_class->is_empty = nautilus_empty_view_is_empty;
+	nautilus_view_class->remove_file = nautilus_empty_view_remove_file;
+	nautilus_view_class->merge_menus = nautilus_empty_view_merge_menus;
+	nautilus_view_class->update_menus = nautilus_empty_view_update_menus;
+	nautilus_view_class->reset_to_defaults = nautilus_empty_view_reset_to_defaults;
+	nautilus_view_class->restore_default_zoom_level = nautilus_empty_view_restore_default_zoom_level;
+	nautilus_view_class->reveal_selection = nautilus_empty_view_reveal_selection;
+	nautilus_view_class->select_all = nautilus_empty_view_select_all;
+	nautilus_view_class->set_selection = nautilus_empty_view_set_selection;
+	nautilus_view_class->compare_files = nautilus_empty_view_compare_files;
+	nautilus_view_class->sort_directories_first_changed = nautilus_empty_view_sort_directories_first_changed;
+	nautilus_view_class->start_renaming_file = nautilus_empty_view_start_renaming_file;
+	nautilus_view_class->get_zoom_level = nautilus_empty_view_get_zoom_level;
+	nautilus_view_class->zoom_to_level = nautilus_empty_view_zoom_to_level;
+	nautilus_view_class->end_file_changes = nautilus_empty_view_end_file_changes;
+	nautilus_view_class->using_manual_layout = nautilus_empty_view_using_manual_layout;
+	nautilus_view_class->end_loading = nautilus_empty_view_end_loading;
+	nautilus_view_class->get_view_id = nautilus_empty_view_get_id;
+	nautilus_view_class->get_first_visible_file = nautilus_empty_view_get_first_visible_file;
+	nautilus_view_class->scroll_to_file = nautilus_empty_view_scroll_to_file;
 }
 
-
 static void
-fm_empty_view_init (FMEmptyView *empty_view)
+nautilus_empty_view_init (NautilusEmptyView *empty_view)
 {
-	empty_view->details = g_new0 (FMEmptyViewDetails, 1);
+	empty_view->details = g_new0 (NautilusEmptyViewDetails, 1);
 }
 
 static NautilusView *
-fm_empty_view_create (NautilusWindowSlotInfo *slot)
+nautilus_empty_view_create (NautilusWindowSlot *slot)
 {
-	FMEmptyView *view;
+	NautilusEmptyView *view;
 
-	g_assert (NAUTILUS_IS_WINDOW_SLOT_INFO (slot));
+	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
 
-	view = g_object_new (FM_TYPE_EMPTY_VIEW,
+	view = g_object_new (NAUTILUS_TYPE_EMPTY_VIEW,
 			     "window-slot", slot,
 			     NULL);
 
@@ -353,9 +329,9 @@ fm_empty_view_create (NautilusWindowSlotInfo *slot)
 }
 
 static gboolean
-fm_empty_view_supports_uri (const char *uri,
-			   GFileType file_type,
-			   const char *mime_type)
+nautilus_empty_view_supports_uri (const char *uri,
+				  GFileType file_type,
+				  const char *mime_type)
 {
 	if (file_type == G_FILE_TYPE_DIRECTORY) {
 		return TRUE;
@@ -373,25 +349,25 @@ fm_empty_view_supports_uri (const char *uri,
 	return FALSE;
 }
 
-static NautilusViewInfo fm_empty_view = {
-	FM_EMPTY_VIEW_ID,
+static NautilusViewInfo nautilus_empty_view = {
+	NAUTILUS_EMPTY_VIEW_ID,
 	"Empty",
 	"Empty View",
 	"_Empty View",
 	"The empty view encountered an error.",
 	"Display this location with the empty view.",
-	fm_empty_view_create,
-	fm_empty_view_supports_uri
+	nautilus_empty_view_create,
+	nautilus_empty_view_supports_uri
 };
 
 void
-fm_empty_view_register (void)
+nautilus_empty_view_register (void)
 {
-	fm_empty_view.id = fm_empty_view.id;
-	fm_empty_view.view_combo_label = fm_empty_view.view_combo_label;
-	fm_empty_view.view_menu_label_with_mnemonic = fm_empty_view.view_menu_label_with_mnemonic;
-	fm_empty_view.error_label = fm_empty_view.error_label;
-	fm_empty_view.display_location_label = fm_empty_view.display_location_label;
+	nautilus_empty_view.id = nautilus_empty_view.id;
+	nautilus_empty_view.view_combo_label = nautilus_empty_view.view_combo_label;
+	nautilus_empty_view.view_menu_label_with_mnemonic = nautilus_empty_view.view_menu_label_with_mnemonic;
+	nautilus_empty_view.error_label = nautilus_empty_view.error_label;
+	nautilus_empty_view.display_location_label = nautilus_empty_view.display_location_label;
 
-	nautilus_view_factory_register (&fm_empty_view);
+	nautilus_view_factory_register (&nautilus_empty_view);
 }

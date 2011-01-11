@@ -31,7 +31,7 @@
 #include "nautilus-application.h"
 
 #if ENABLE_EMPTY_VIEW
-#include "file-manager/fm-empty-view.h"
+#include "nautilus-empty-view.h"
 #endif /* ENABLE_EMPTY_VIEW */
 
 #include "nautilus-desktop-icon-view.h"
@@ -1536,7 +1536,7 @@ nautilus_application_startup (GApplication *app)
 	nautilus_list_view_register ();
 	nautilus_icon_view_compact_register ();
 #if ENABLE_EMPTY_VIEW
-	fm_empty_view_register ();
+	nautilus_empty_view_register ();
 #endif /* ENABLE_EMPTY_VIEW */
 
 	/* register property pages */

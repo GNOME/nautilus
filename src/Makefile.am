@@ -33,7 +33,6 @@ INCLUDES =							\
 	$(NULL)
 
 LDADD =\
-	$(top_builddir)/src/file-manager/libnautilus-file-manager.la \
 	$(top_builddir)/libnautilus-private/libnautilus-private.la  \
 	$(BASE_LIBS) \
 	$(COMMON_LIBS) \
@@ -168,7 +167,7 @@ nautilus_SOURCES = \
 	$(NULL)
 
 EMPTY_VIEW_SOURCES = \
-	nautilus-empty-view.c \
+	nautilus-empty-view.c 			\
 	nautilus-empty-view.h
 
 if ENABLE_EMPTY_VIEW

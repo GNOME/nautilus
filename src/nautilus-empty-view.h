@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* fm-empty-view.h - interface for empty view of directory.
+/* nautilus-empty-view.h - interface for empty view of directory.
 
    Copyright (C) 2006 Free Software Foundation, Inc.
    
@@ -22,37 +22,37 @@
    Authors: Christian Neumair <chris@gnome-de.org>
 */
 
-#ifndef FM_EMPTY_VIEW_H
-#define FM_EMPTY_VIEW_H
+#ifndef NAUTILUS_EMPTY_VIEW_H
+#define NAUTILUS_EMPTY_VIEW_H
 
-#include "fm-directory-view.h"
+#include "nautilus-view.h"
 
-#define FM_TYPE_EMPTY_VIEW fm_empty_view_get_type()
-#define FM_EMPTY_VIEW(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST ((obj), FM_TYPE_EMPTY_VIEW, FMEmptyView))
-#define FM_EMPTY_VIEW_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST ((klass), FM_TYPE_EMPTY_VIEW, FMEmptyViewClass))
-#define FM_IS_EMPTY_VIEW(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), FM_TYPE_EMPTY_VIEW))
-#define FM_IS_EMPTY_VIEW_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE ((klass), FM_TYPE_EMPTY_VIEW))
-#define FM_EMPTY_VIEW_GET_CLASS(obj) \
-  (G_TYPE_INSTANCE_GET_CLASS ((obj), FM_TYPE_EMPTY_VIEW, FMEmptyViewClass))
+#define NAUTILUS_TYPE_EMPTY_VIEW nautilus_empty_view_get_type()
+#define NAUTILUS_EMPTY_VIEW(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_EMPTY_VIEW, NautilusEmptyView))
+#define NAUTILUS_EMPTY_VIEW_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_EMPTY_VIEW, NautilusEmptyViewClass))
+#define NAUTILUS_IS_EMPTY_VIEW(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_EMPTY_VIEW))
+#define NAUTILUS_IS_EMPTY_VIEW_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_EMPTY_VIEW))
+#define NAUTILUS_EMPTY_VIEW_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_EMPTY_VIEW, NautilusEmptyViewClass))
 
-#define FM_EMPTY_VIEW_ID "OAFIID:Nautilus_File_Manager_Empty_View"
+#define NAUTILUS_EMPTY_VIEW_ID "OAFIID:Nautilus_File_Manager_Empty_View"
 
-typedef struct FMEmptyViewDetails FMEmptyViewDetails;
-
-typedef struct {
-	FMDirectoryView parent_instance;
-	FMEmptyViewDetails *details;
-} FMEmptyView;
+typedef struct NautilusEmptyViewDetails NautilusEmptyViewDetails;
 
 typedef struct {
-	FMDirectoryViewClass parent_class;
-} FMEmptyViewClass;
+	NautilusView parent_instance;
+	NautilusEmptyViewDetails *details;
+} NautilusEmptyView;
 
-GType fm_empty_view_get_type (void);
-void  fm_empty_view_register (void);
+typedef struct {
+	NautilusViewClass parent_class;
+} NautilusEmptyViewClass;
 
-#endif /* FM_EMPTY_VIEW_H */
+GType nautilus_empty_view_get_type (void);
+void  nautilus_empty_view_register (void);
+
+#endif /* NAUTILUS_EMPTY_VIEW_H */
