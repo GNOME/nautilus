@@ -81,17 +81,17 @@ struct FMDesktopIconViewDetails
 };
 
 static void     default_zoom_level_changed                        (gpointer                user_data);
-static gboolean real_supports_auto_layout                         (FMIconView             *view);
-static gboolean real_supports_scaling	                          (FMIconView             *view);
-static gboolean real_supports_keep_aligned                        (FMIconView             *view);
-static gboolean real_supports_labels_beside_icons                 (FMIconView             *view);
+static gboolean real_supports_auto_layout                         (NautilusIconView             *view);
+static gboolean real_supports_scaling	                          (NautilusIconView             *view);
+static gboolean real_supports_keep_aligned                        (NautilusIconView             *view);
+static gboolean real_supports_labels_beside_icons                 (NautilusIconView             *view);
 static void     real_merge_menus                                  (NautilusView        *view);
 static void     real_update_menus                                 (NautilusView        *view);
 static gboolean real_supports_zooming                             (NautilusView        *view);
 static void     fm_desktop_icon_view_update_icon_container_fonts  (FMDesktopIconView      *view);
 static void     font_changed_callback                             (gpointer                callback_data);
 
-G_DEFINE_TYPE (FMDesktopIconView, fm_desktop_icon_view, FM_TYPE_ICON_VIEW)
+G_DEFINE_TYPE (FMDesktopIconView, fm_desktop_icon_view, NAUTILUS_TYPE_ICON_VIEW)
 
 static char *desktop_directory;
 static time_t desktop_dir_modify_time;
@@ -321,10 +321,10 @@ fm_desktop_icon_view_class_init (FMDesktopIconViewClass *class)
 	NAUTILUS_VIEW_CLASS (class)->update_menus = real_update_menus;
 	NAUTILUS_VIEW_CLASS (class)->supports_zooming = real_supports_zooming;
 
-	FM_ICON_VIEW_CLASS (class)->supports_auto_layout = real_supports_auto_layout;
-	FM_ICON_VIEW_CLASS (class)->supports_scaling = real_supports_scaling;
-	FM_ICON_VIEW_CLASS (class)->supports_keep_aligned = real_supports_keep_aligned;
-	FM_ICON_VIEW_CLASS (class)->supports_labels_beside_icons = real_supports_labels_beside_icons;
+	NAUTILUS_ICON_VIEW_CLASS (class)->supports_auto_layout = real_supports_auto_layout;
+	NAUTILUS_ICON_VIEW_CLASS (class)->supports_scaling = real_supports_scaling;
+	NAUTILUS_ICON_VIEW_CLASS (class)->supports_keep_aligned = real_supports_keep_aligned;
+	NAUTILUS_ICON_VIEW_CLASS (class)->supports_labels_beside_icons = real_supports_labels_beside_icons;
 
 	g_type_class_add_private (class, sizeof (FMDesktopIconViewDetails));
 }
@@ -584,7 +584,7 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 		desktop_directory_changed_callback (NULL);
 	}
 
-	fm_icon_view_filter_by_screen (FM_ICON_VIEW (desktop_icon_view), TRUE);
+	nautilus_icon_view_filter_by_screen (NAUTILUS_ICON_VIEW (desktop_icon_view), TRUE);
 	icon_container = get_icon_container (desktop_icon_view);
 	nautilus_icon_container_set_use_drop_shadows (icon_container, TRUE);
 	fm_icon_container_set_sort_desktop (FM_ICON_CONTAINER (icon_container), TRUE);
@@ -815,7 +815,7 @@ real_merge_menus (NautilusView *view)
 }
 
 static gboolean
-real_supports_auto_layout (FMIconView *view)
+real_supports_auto_layout (NautilusIconView *view)
 {
 	/* Can't use auto-layout on the desktop, because doing so
 	 * would cause all sorts of complications involving the
@@ -825,19 +825,19 @@ real_supports_auto_layout (FMIconView *view)
 }
 
 static gboolean
-real_supports_scaling (FMIconView *view)
+real_supports_scaling (NautilusIconView *view)
 {
 	return TRUE;
 }
 
 static gboolean
-real_supports_keep_aligned (FMIconView *view)
+real_supports_keep_aligned (NautilusIconView *view)
 {
 	return TRUE;
 }
 
 static gboolean
-real_supports_labels_beside_icons (FMIconView *view)
+real_supports_labels_beside_icons (NautilusIconView *view)
 {
 	return FALSE;
 }
@@ -854,7 +854,7 @@ real_supports_zooming (NautilusView *view)
 static NautilusView *
 fm_desktop_icon_view_create (NautilusWindowSlot *slot)
 {
-	FMIconView *view;
+	NautilusIconView *view;
 
 	view = g_object_new (FM_TYPE_DESKTOP_ICON_VIEW,
 			     "window-slot", slot,

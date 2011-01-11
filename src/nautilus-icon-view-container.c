@@ -41,7 +41,7 @@ G_DEFINE_TYPE (FMIconContainer, fm_icon_container, NAUTILUS_TYPE_ICON_CONTAINER)
 
 static GQuark attribute_none_q;
 
-static FMIconView *
+static NautilusIconView *
 get_icon_view (NautilusIconContainer *container)
 {
 	/* Type unsafe comparison for performance */
@@ -58,7 +58,7 @@ fm_icon_container_get_icon_images (NautilusIconContainer *container,
 				   gboolean              *embedded_text_needs_loading,
 				   gboolean              *has_window_open)
 {
-	FMIconView *icon_view;
+	NautilusIconView *icon_view;
 	char **emblems_to_ignore;
 	NautilusFile *file;
 	gboolean use_embedding;
@@ -84,10 +84,10 @@ fm_icon_container_get_icon_images (NautilusIconContainer *container,
 	*has_window_open = nautilus_file_has_open_window (file);
 
 	flags = NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON_AS_EMBLEM;
-	if (!fm_icon_view_is_compact (icon_view) ||
+	if (!nautilus_icon_view_is_compact (icon_view) ||
 	    nautilus_icon_container_get_zoom_level (container) > NAUTILUS_ZOOM_LEVEL_STANDARD) {
 		flags |= NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS;
-		if (fm_icon_view_is_compact (icon_view)) {
+		if (nautilus_icon_view_is_compact (icon_view)) {
 			flags |= NAUTILUS_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE;
 		}
 	}
@@ -266,12 +266,12 @@ quarkv_length (GQuark *attributes)
 }
 
 /**
- * fm_icon_view_get_icon_text_attribute_names:
+ * nautilus_icon_view_get_icon_text_attribute_names:
  *
  * Get a list representing which text attributes should be displayed
  * beneath an icon. The result is dependent on zoom level and possibly
  * user configuration. Don't free the result.
- * @view: FMIconView to query.
+ * @view: NautilusIconView to query.
  * 
  **/
 static GQuark *
@@ -315,7 +315,7 @@ fm_icon_container_get_icon_text (NautilusIconContainer *container,
 	GQuark *attributes;
 	char *text_array[4];
 	int i, j, num_attributes;
-	FMIconView *icon_view;
+	NautilusIconView *icon_view;
 	NautilusFile *file;
 	gboolean use_additional;
 
@@ -341,7 +341,7 @@ fm_icon_container_get_icon_text (NautilusIconContainer *container,
 		return;
 	}
 
-	if (fm_icon_view_is_compact (icon_view)) {
+	if (nautilus_icon_view_is_compact (icon_view)) {
 		*additional_text = NULL;
 		return;
 	}
@@ -494,7 +494,7 @@ fm_icon_container_compare_icons (NautilusIconContainer *container,
 				 NautilusIconData      *icon_a,
 				 NautilusIconData      *icon_b)
 {
-	FMIconView *icon_view;
+	NautilusIconView *icon_view;
 
 	icon_view = get_icon_view (container);
 	g_return_val_if_fail (icon_view != NULL, 0);
@@ -505,7 +505,7 @@ fm_icon_container_compare_icons (NautilusIconContainer *container,
 	}
 
 	/* Type unsafe comparisons for performance */
-	return fm_icon_view_compare_files (icon_view,
+	return nautilus_icon_view_compare_files (icon_view,
 					   (NautilusFile *)icon_a,
 					   (NautilusFile *)icon_b);
 }
@@ -525,7 +525,7 @@ fm_icon_container_compare_icons_by_name (NautilusIconContainer *container,
 static void
 fm_icon_container_freeze_updates (NautilusIconContainer *container)
 {
-	FMIconView *icon_view;
+	NautilusIconView *icon_view;
 	icon_view = get_icon_view (container);
 	g_return_if_fail (icon_view != NULL);
 	nautilus_view_freeze_updates (NAUTILUS_VIEW (icon_view));
@@ -534,7 +534,7 @@ fm_icon_container_freeze_updates (NautilusIconContainer *container)
 static void
 fm_icon_container_unfreeze_updates (NautilusIconContainer *container)
 {
-	FMIconView *icon_view;
+	NautilusIconView *icon_view;
 	icon_view = get_icon_view (container);
 	g_return_if_fail (icon_view != NULL);
 	nautilus_view_unfreeze_updates (NAUTILUS_VIEW (icon_view));
@@ -582,11 +582,11 @@ fm_icon_container_init (FMIconContainer *icon_container)
 }
 
 NautilusIconContainer *
-fm_icon_container_construct (FMIconContainer *icon_container, FMIconView *view)
+fm_icon_container_construct (FMIconContainer *icon_container, NautilusIconView *view)
 {
 	AtkObject *atk_obj;
 
-	g_return_val_if_fail (FM_IS_ICON_VIEW (view), NULL);
+	g_return_val_if_fail (NAUTILUS_IS_ICON_VIEW (view), NULL);
 
 	icon_container->view = view;
 	atk_obj = gtk_widget_get_accessible (GTK_WIDGET (icon_container));
@@ -596,7 +596,7 @@ fm_icon_container_construct (FMIconContainer *icon_container, FMIconView *view)
 }
 
 NautilusIconContainer *
-fm_icon_container_new (FMIconView *view)
+fm_icon_container_new (NautilusIconView *view)
 {
 	return fm_icon_container_construct
 		(g_object_new (FM_TYPE_ICON_CONTAINER, NULL),

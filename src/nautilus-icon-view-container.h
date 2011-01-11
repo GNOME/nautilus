@@ -49,7 +49,7 @@ typedef struct FMIconContainerDetails FMIconContainerDetails;
 struct FMIconContainer {
 	NautilusIconContainer parent;
 
-	FMIconView *view;
+	NautilusIconView *view;
 	gboolean    sort_for_desktop;
 };
 
@@ -59,8 +59,8 @@ struct FMIconContainerClass {
 
 GType                  fm_icon_container_get_type         (void);
 NautilusIconContainer *fm_icon_container_construct        (FMIconContainer *icon_container,
-							   FMIconView      *view);
-NautilusIconContainer *fm_icon_container_new              (FMIconView      *view);
+							   NautilusIconView      *view);
+NautilusIconContainer *fm_icon_container_new              (NautilusIconView      *view);
 void                   fm_icon_container_set_sort_desktop (FMIconContainer *container,
 							   gboolean         desktop);
 

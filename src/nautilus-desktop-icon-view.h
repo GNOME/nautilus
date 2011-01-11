@@ -43,12 +43,12 @@
 
 typedef struct FMDesktopIconViewDetails FMDesktopIconViewDetails;
 typedef struct {
-	FMIconView parent;
+	NautilusIconView parent;
 	FMDesktopIconViewDetails *details;
 } FMDesktopIconView;
 
 typedef struct {
-	FMIconViewClass parent_class;
+	NautilusIconViewClass parent_class;
 } FMDesktopIconViewClass;
 
 /* GObject support */

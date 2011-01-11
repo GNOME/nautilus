@@ -1531,10 +1531,10 @@ nautilus_application_startup (GApplication *app)
 	nautilus_global_preferences_init ();
 
 	/* register views */
-	fm_icon_view_register ();
+	nautilus_icon_view_register ();
 	fm_desktop_icon_view_register ();
 	fm_list_view_register ();
-	fm_compact_view_register ();
+	nautilus_icon_view_compact_register ();
 #if ENABLE_EMPTY_VIEW
 	fm_empty_view_register ();
 #endif /* ENABLE_EMPTY_VIEW */
