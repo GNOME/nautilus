@@ -69,7 +69,7 @@ view_widget_to_file_operation_position_xy (NautilusView *view,
 
 
 typedef struct {
-	FMDirectoryView  *view;
+	NautilusView  *view;
 	GCancellable *cancellable;
 	char *encoded_url;
 	char *target_uri;
@@ -569,7 +569,7 @@ nautilus_view_drop_proxy_received_uris (NautilusView *view,
 
 	nautilus_clipboard_clear_if_colliding_uris (GTK_WIDGET (view),
 						    source_uri_list,
-						    fm_directory_view_get_copied_files_atom (view));
+						    nautilus_view_get_copied_files_atom (view));
 
 	nautilus_view_move_copy_items (view, source_uri_list, NULL,
 				       target_uri != NULL ? target_uri : container_uri,

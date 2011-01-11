@@ -48,12 +48,12 @@ typedef struct FMIconViewClass FMIconViewClass;
 typedef struct FMIconViewDetails FMIconViewDetails;
 
 struct FMIconView {
-	FMDirectoryView parent;
+	NautilusView parent;
 	FMIconViewDetails *details;
 };
 
 struct FMIconViewClass {
-	FMDirectoryViewClass parent_class;
+	NautilusViewClass parent_class;
 
 	/* Methods that can be overriden for settings you don't want to come from metadata.
 	 */

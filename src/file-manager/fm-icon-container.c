@@ -100,7 +100,7 @@ fm_icon_container_get_icon_images (NautilusIconContainer *container,
 	}
 
 	emblems_to_ignore = nautilus_view_get_emblem_names_to_exclude 
-		(FM_DIRECTORY_VIEW (icon_view));
+		(NAUTILUS_VIEW (icon_view));
 	emblem_icons = nautilus_file_get_emblem_icons (file,
 						       emblems_to_ignore);
 	g_strfreev (emblems_to_ignore);
@@ -463,13 +463,13 @@ fm_desktop_icon_container_icons_compare (NautilusIconContainer *container,
 {
 	NautilusFile *file_a;
 	NautilusFile *file_b;
-	FMDirectoryView *directory_view;
+	NautilusView *directory_view;
 	SortCategory category_a, category_b;
 
 	file_a = (NautilusFile *) data_a;
 	file_b = (NautilusFile *) data_b;
 
-	directory_view = FM_DIRECTORY_VIEW (FM_ICON_CONTAINER (container)->view);
+	directory_view = NAUTILUS_VIEW (FM_ICON_CONTAINER (container)->view);
 	g_return_val_if_fail (directory_view != NULL, 0);
 	
 	category_a = get_sort_category (file_a);
@@ -478,7 +478,7 @@ fm_desktop_icon_container_icons_compare (NautilusIconContainer *container,
 	if (category_a == category_b) {
 		return nautilus_file_compare_for_sort 
 			(file_a, file_b, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME, 
-			 fm_directory_view_should_sort_directories_first (directory_view),
+			 nautilus_view_should_sort_directories_first (directory_view),
 			 FALSE);
 	}
 
@@ -528,7 +528,7 @@ fm_icon_container_freeze_updates (NautilusIconContainer *container)
 	FMIconView *icon_view;
 	icon_view = get_icon_view (container);
 	g_return_if_fail (icon_view != NULL);
-	fm_directory_view_freeze_updates (FM_DIRECTORY_VIEW (icon_view));
+	nautilus_view_freeze_updates (NAUTILUS_VIEW (icon_view));
 }
 
 static void
@@ -537,7 +537,7 @@ fm_icon_container_unfreeze_updates (NautilusIconContainer *container)
 	FMIconView *icon_view;
 	icon_view = get_icon_view (container);
 	g_return_if_fail (icon_view != NULL);
-	fm_directory_view_unfreeze_updates (FM_DIRECTORY_VIEW (icon_view));
+	nautilus_view_unfreeze_updates (NAUTILUS_VIEW (icon_view));
 }
 
 static void

@@ -46,12 +46,12 @@
 typedef struct FMListViewDetails FMListViewDetails;
 
 typedef struct {
-	FMDirectoryView parent_instance;
+	NautilusView parent_instance;
 	FMListViewDetails *details;
 } FMListView;
 
 typedef struct {
-	FMDirectoryViewClass parent_class;
+	NautilusViewClass parent_class;
 } FMListViewClass;
 
 GType fm_list_view_get_type (void);
