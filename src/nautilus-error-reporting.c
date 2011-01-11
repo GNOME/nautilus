@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* fm-error-reporting.h - implementation of file manager functions that report
- 			  errors to the user.
+/* nautilus-error-reporting.h - implementation of file manager functions that report
+ 	                        errors to the user.
 
    Copyright (C) 2000 Eazel, Inc.
 
@@ -42,9 +42,9 @@
 static void finish_rename (NautilusFile *file, gboolean stop_timer, GError *error);
 
 void
-fm_report_error_loading_directory (NautilusFile *file,
-				   GError *error,
-			           GtkWindow *parent_window)
+nautilus_report_error_loading_directory (NautilusFile *file,
+					 GError *error,
+					 GtkWindow *parent_window)
 {
 	char *file_name;
 	char *message;
@@ -84,13 +84,105 @@ fm_report_error_loading_directory (NautilusFile *file,
 
 	g_free (file_name);
 	g_free (message);
+}
+
+void
+nautilus_report_error_setting_group (NautilusFile *file,
+				     GError *error,
+				     GtkWindow *parent_window)
+{
+	char *file_name;
+	char *message;
+
+	if (error == NULL) {
+		return;
+	}
+
+	file_name = nautilus_file_get_display_name (file);
+
+	message = NULL;
+	if (error->domain == G_IO_ERROR) {
+		switch (error->code) {
+		case G_IO_ERROR_PERMISSION_DENIED:
+			message = g_strdup_printf (_("You do not have the permissions necessary to change the group of \"%s\"."),
+						   file_name);
+			break;
+		default:
+			break;
+		}
+	}
+			
+	if (message == NULL) {
+		/* We should invent decent error messages for every case we actually experience. */
+		g_warning ("Hit unhandled case %s:%d in nautilus_report_error_setting_group", 
+			   g_quark_to_string (error->domain), error->code);
+		/* fall through */
+		message = g_strdup_printf (_("Sorry, could not change the group of \"%s\": %s"), file_name,
+					   error->message);
+	}
+	
+	
+	eel_show_error_dialog (_("The group could not be changed."), message, parent_window);
+	
+	g_free (file_name);
+	g_free (message);
+}
+
+void
+nautilus_report_error_setting_owner (NautilusFile *file,
+				     GError *error,
+				     GtkWindow *parent_window)
+{
+	char *file_name;
+	char *message;
+
+	if (error == NULL) {
+		return;
+	}
+
+	file_name = nautilus_file_get_display_name (file);
+
+	message = g_strdup_printf (_("Sorry, could not change the owner of \"%s\": %s"), file_name, error->message);
+
+	eel_show_error_dialog (_("The owner could not be changed."), message, parent_window);
+
+	g_free (file_name);
+	g_free (message);
 }		
 
 void
-fm_report_error_renaming_file (NautilusFile *file,
-			       const char *new_name,
-			       GError *error,
-			       GtkWindow *parent_window)
+nautilus_report_error_setting_permissions (NautilusFile *file,
+					   GError *error,
+					   GtkWindow *parent_window)
+{
+	char *file_name;
+	char *message;
+
+	if (error == NULL) {
+		return;
+	}
+
+	file_name = nautilus_file_get_display_name (file);
+
+	message = g_strdup_printf (_("Sorry, could not change the permissions of \"%s\": %s"), file_name, error->message);
+
+	eel_show_error_dialog (_("The permissions could not be changed."), message, parent_window);
+
+	g_free (file_name);
+	g_free (message);
+}		
+
+typedef struct _NautilusRenameData {
+	char *name;
+	NautilusFileOperationCallback callback;
+	gpointer callback_data;
+} NautilusRenameData;
+
+void
+nautilus_report_error_renaming_file (NautilusFile *file,
+				     const char *new_name,
+				     GError *error,
+				     GtkWindow *parent_window)
 {
 	char *original_name, *original_name_truncated;
 	char *new_name_truncated;
@@ -145,7 +237,7 @@ fm_report_error_renaming_file (NautilusFile *file,
 	
 	if (message == NULL) {
 		/* We should invent decent error messages for every case we actually experience. */
-		g_warning ("Hit unhandled case %s:%d in fm_report_error_renaming_file", 
+		g_warning ("Hit unhandled case %s:%d in nautilus_report_error_renaming_file", 
 			   g_quark_to_string (error->domain), error->code);
 		/* fall through */
 		message = g_strdup_printf (_("Sorry, could not rename \"%s\" to \"%s\": %s"), 
@@ -160,100 +252,8 @@ fm_report_error_renaming_file (NautilusFile *file,
 	g_free (message);
 }
 
-void
-fm_report_error_setting_group (NautilusFile *file,
-			       GError *error,
-			       GtkWindow *parent_window)
-{
-	char *file_name;
-	char *message;
-
-	if (error == NULL) {
-		return;
-	}
-
-	file_name = nautilus_file_get_display_name (file);
-
-	message = NULL;
-	if (error->domain == G_IO_ERROR) {
-		switch (error->code) {
-		case G_IO_ERROR_PERMISSION_DENIED:
-			message = g_strdup_printf (_("You do not have the permissions necessary to change the group of \"%s\"."),
-						   file_name);
-			break;
-		default:
-			break;
-		}
-	}
-			
-	if (message == NULL) {
-		/* We should invent decent error messages for every case we actually experience. */
-		g_warning ("Hit unhandled case %s:%d in fm_report_error_setting_group", 
-			   g_quark_to_string (error->domain), error->code);
-		/* fall through */
-		message = g_strdup_printf (_("Sorry, could not change the group of \"%s\": %s"), file_name,
-					   error->message);
-	}
-	
-	
-	eel_show_error_dialog (_("The group could not be changed."), message, parent_window);
-	
-	g_free (file_name);
-	g_free (message);
-}
-
-void
-fm_report_error_setting_owner (NautilusFile *file,
-			       GError *error,
-			       GtkWindow *parent_window)
-{
-	char *file_name;
-	char *message;
-
-	if (error == NULL) {
-		return;
-	}
-
-	file_name = nautilus_file_get_display_name (file);
-
-	message = g_strdup_printf (_("Sorry, could not change the owner of \"%s\": %s"), file_name, error->message);
-
-	eel_show_error_dialog (_("The owner could not be changed."), message, parent_window);
-
-	g_free (file_name);
-	g_free (message);
-}		
-
-void
-fm_report_error_setting_permissions (NautilusFile *file,
-			       	     GError *error,
-			       	     GtkWindow *parent_window)
-{
-	char *file_name;
-	char *message;
-
-	if (error == NULL) {
-		return;
-	}
-
-	file_name = nautilus_file_get_display_name (file);
-
-	message = g_strdup_printf (_("Sorry, could not change the permissions of \"%s\": %s"), file_name, error->message);
-
-	eel_show_error_dialog (_("The permissions could not be changed."), message, parent_window);
-
-	g_free (file_name);
-	g_free (message);
-}		
-
-typedef struct _FMRenameData {
-	char *name;
-	NautilusFileOperationCallback callback;
-	gpointer callback_data;
-} FMRenameData;
-
 static void
-fm_rename_data_free (FMRenameData *data)
+nautilus_rename_data_free (NautilusRenameData *data)
 {
 	g_free (data->name);
 	g_free (data);
@@ -263,7 +263,7 @@ static void
 rename_callback (NautilusFile *file, GFile *result_location,
 		 GError *error, gpointer callback_data)
 {
-	FMRenameData *data;
+	NautilusRenameData *data;
 
 	g_assert (NAUTILUS_IS_FILE (file));
 	g_assert (callback_data == NULL);
@@ -274,7 +274,7 @@ rename_callback (NautilusFile *file, GFile *result_location,
 	if (error &&
 	    !(error->domain == G_IO_ERROR && error->code == G_IO_ERROR_CANCELLED)) {
 		/* If rename failed, notify the user. */
-		fm_report_error_renaming_file (file, data->name, error, NULL);
+		nautilus_report_error_renaming_file (file, data->name, error, NULL);
 	}
 
 	finish_rename (file, TRUE, error);
@@ -293,7 +293,7 @@ cancel_rename_callback (gpointer callback_data)
 static void
 finish_rename (NautilusFile *file, gboolean stop_timer, GError *error)
 {
-	FMRenameData *data;
+	NautilusRenameData *data;
 
 	data = g_object_get_data (G_OBJECT (file), NEW_NAME_TAG);
 	if (data == NULL) {
@@ -315,13 +315,13 @@ finish_rename (NautilusFile *file, gboolean stop_timer, GError *error)
 }
 
 void
-fm_rename_file (NautilusFile *file,
-		const char *new_name,
-		NautilusFileOperationCallback callback,
-		gpointer callback_data)
+nautilus_rename_file (NautilusFile *file,
+		      const char *new_name,
+		      NautilusFileOperationCallback callback,
+		      gpointer callback_data)
 {
 	char *old_name, *wait_message;
-	FMRenameData *data;
+	NautilusRenameData *data;
 	char *uri;
 	GError *error;
 
@@ -333,7 +333,7 @@ fm_rename_file (NautilusFile *file,
 	finish_rename (file, TRUE, error);
 	g_error_free (error);
 
-	data = g_new0 (FMRenameData, 1);
+	data = g_new0 (NautilusRenameData, 1);
 	data->name = g_strdup (new_name);
 	data->callback = callback;
 	data->callback_data = callback_data;
@@ -341,7 +341,7 @@ fm_rename_file (NautilusFile *file,
 	/* Attach the new name to the file. */
 	g_object_set_data_full (G_OBJECT (file),
 				NEW_NAME_TAG,
-				data, (GDestroyNotify)fm_rename_data_free);
+				data, (GDestroyNotify)nautilus_rename_data_free);
 
 	/* Start the timed wait to cancel the rename. */
 	old_name = nautilus_file_get_display_name (file);

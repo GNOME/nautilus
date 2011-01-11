@@ -21,8 +21,8 @@
  * 
  */
 
-#ifndef FM_DITEM_PAGE_H
-#define FM_DITEM_PAGE_H
+#ifndef NAUTILUS_DESKTOP_ITEM_PROPERTIES_H
+#define NAUTILUS_DESKTOP_ITEM_PROPERTIES_H
 
 #include <glib.h>
 #include <glib-object.h>
@@ -38,10 +38,10 @@ G_BEGIN_DECLS
  * routines are left.
  */
 
-GtkWidget *fm_ditem_page_make_box (GtkSizeGroup *label_size_group,
-				   GList *files);
-gboolean   fm_ditem_page_should_show (GList *files);
+GtkWidget *nautilus_desktop_item_properties_make_box (GtkSizeGroup *label_size_group,
+                                                      GList *files);
+gboolean   nautilus_desktop_item_properties_should_show (GList *files);
 
 G_END_DECLS
 
-#endif
+#endif /* NAUTILUS_DESKTOP_ITEM_PROPERTIES_H */

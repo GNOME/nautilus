@@ -156,11 +156,11 @@ item_entry_free (ItemEntry *entry)
 }
 
 static void
-fm_ditem_page_url_drag_data_received (GtkWidget *widget, GdkDragContext *context,
-				      int x, int y,
-				      GtkSelectionData *selection_data,
-				      guint info, guint time,
-				      GtkEntry *entry)
+nautilus_desktop_item_properties_url_drag_data_received (GtkWidget *widget, GdkDragContext *context,
+                                                         int x, int y,
+                                                         GtkSelectionData *selection_data,
+                                                         guint info, guint time,
+                                                         GtkEntry *entry)
 {
 	char **uris;
 	gboolean exactly_one;
@@ -186,11 +186,11 @@ fm_ditem_page_url_drag_data_received (GtkWidget *widget, GdkDragContext *context
 }
 
 static void
-fm_ditem_page_exec_drag_data_received (GtkWidget *widget, GdkDragContext *context,
-				       int x, int y,
-				       GtkSelectionData *selection_data,
-				       guint info, guint time,
-				       GtkEntry *entry)
+nautilus_desktop_item_properties_exec_drag_data_received (GtkWidget *widget, GdkDragContext *context,
+                                                          int x, int y,
+                                                          GtkSelectionData *selection_data,
+                                                          guint info, guint time,
+                                                          GtkEntry *entry)
 {
 	char **uris;
 	gboolean exactly_one;
@@ -366,7 +366,7 @@ build_table (GtkWidget *container,
 					   GDK_ACTION_COPY | GDK_ACTION_MOVE);
 			
 			g_signal_connect (entry, "drag_data_received",
-					  G_CALLBACK (fm_ditem_page_url_drag_data_received),
+					  G_CALLBACK (nautilus_desktop_item_properties_url_drag_data_received),
 					  entry);
 		} else if (strcmp (item_entry->field, "Exec") == 0) {
 			gtk_drag_dest_set (GTK_WIDGET (entry),
@@ -375,7 +375,7 @@ build_table (GtkWidget *container,
 					   GDK_ACTION_COPY | GDK_ACTION_MOVE);
 			
 			g_signal_connect (entry, "drag_data_received",
-					  G_CALLBACK (fm_ditem_page_exec_drag_data_received),
+					  G_CALLBACK (nautilus_desktop_item_properties_exec_drag_data_received),
 					  entry);
 		}
 		
@@ -473,8 +473,8 @@ ditem_read_cb (GObject *source_object,
 }
 
 static void
-fm_ditem_page_create_begin (const char *uri,
-			    GtkWidget *box)
+nautilus_desktop_item_properties_create_begin (const char *uri,
+                                               GtkWidget *box)
 {
 	GFile *location;
 
@@ -485,14 +485,14 @@ fm_ditem_page_create_begin (const char *uri,
 }
 
 GtkWidget *
-fm_ditem_page_make_box (GtkSizeGroup *label_size_group,
-			GList *files)
+nautilus_desktop_item_properties_make_box (GtkSizeGroup *label_size_group,
+                                           GList *files)
 {
 	NautilusFileInfo *info;
 	char *uri;
 	GtkWidget *box;
 
-	g_assert (fm_ditem_page_should_show (files));
+	g_assert (nautilus_desktop_item_properties_should_show (files));
 
 	box = gtk_vbox_new (FALSE, 6);
 	g_object_set_data_full (G_OBJECT (box), "label-size-group",
@@ -501,14 +501,14 @@ fm_ditem_page_make_box (GtkSizeGroup *label_size_group,
 	info = NAUTILUS_FILE_INFO (files->data);
 
 	uri = nautilus_file_info_get_uri (info);
-	fm_ditem_page_create_begin (uri, box);
+	nautilus_desktop_item_properties_create_begin (uri, box);
 	g_free (uri);
 
 	return box;
 }
 
 gboolean
-fm_ditem_page_should_show (GList *files)
+nautilus_desktop_item_properties_should_show (GList *files)
 {
 	NautilusFileInfo *info;
 

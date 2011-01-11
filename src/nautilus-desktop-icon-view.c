@@ -742,14 +742,14 @@ real_update_menus (NautilusView *view)
 	/* New Launcher */
 	disable_command_line = g_settings_get_boolean (gnome_lockdown_preferences, NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE);
 	action = gtk_action_group_get_action (desktop_view->details->desktop_action_group,
-					      FM_ACTION_NEW_LAUNCHER_DESKTOP);
+					      NAUTILUS_ACTION_NEW_LAUNCHER_DESKTOP);
 	gtk_action_set_visible (action,
 				!disable_command_line);
 
 	/* Empty Trash */
 	include_empty_trash = trash_link_is_selection (view);
 	action = gtk_action_group_get_action (desktop_view->details->desktop_action_group,
-					      FM_ACTION_EMPTY_TRASH_CONDITIONAL);
+					      NAUTILUS_ACTION_EMPTY_TRASH_CONDITIONAL);
 	gtk_action_set_visible (action,
 				include_empty_trash);
 	if (include_empty_trash) {

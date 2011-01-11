@@ -1241,7 +1241,7 @@ cell_renderer_edited (GtkCellRendererText *cell,
 	if (strcmp (new_text, view->details->original_name) != 0) {
 		view->details->renaming_file = nautilus_file_ref (file);
 		view->details->rename_done = FALSE;
-		fm_rename_file (file, new_text, nautilus_list_view_rename_callback, g_object_ref (view));
+		nautilus_rename_file (file, new_text, nautilus_list_view_rename_callback, g_object_ref (view));
 		g_free (view->details->original_name);
 		view->details->original_name = g_strdup (new_text);
 	}

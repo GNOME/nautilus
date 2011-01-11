@@ -749,10 +749,10 @@ rename_callback (NautilusFile *file, GFile *res_loc, GError *error, gpointer cal
 	/* Complain to user if rename failed. */
 	if (error != NULL) {
 		new_name = window->details->pending_name;
-		fm_report_error_renaming_file (file, 
-					       window->details->pending_name, 
-					       error,
-					       GTK_WINDOW (window));
+		nautilus_report_error_renaming_file (file, 
+						     window->details->pending_name, 
+						     error,
+						     GTK_WINDOW (window));
 		if (window->details->name_field != NULL) {
 			name_field_restore_original_name (NAUTILUS_ENTRY (window->details->name_field));
 		}
@@ -1346,7 +1346,7 @@ group_change_callback (NautilusFile *file,
 
 	/* Report the error if it's an error. */
 	eel_timed_wait_stop ((EelCancelCallback) cancel_group_change_callback, window);
-	fm_report_error_setting_group (file, error, GTK_WINDOW (window));
+	nautilus_report_error_setting_group (file, error, GTK_WINDOW (window));
 
 	nautilus_file_unref (file);
 	g_free (group);
@@ -1764,7 +1764,7 @@ owner_change_callback (NautilusFile *file,
 
 	/* Report the error if it's an error. */
 	eel_timed_wait_stop ((EelCancelCallback) cancel_owner_change_callback, window);
-	fm_report_error_setting_owner (file, error, GTK_WINDOW (window));
+	nautilus_report_error_setting_owner (file, error, GTK_WINDOW (window));
 
 	nautilus_file_unref (file);
 	g_free (owner);
@@ -3087,7 +3087,7 @@ create_basic_page (NautilusPropertiesWindow *window)
 		gtk_widget_grab_focus (GTK_WIDGET (window->details->name_field));
 	}
 
-	if (fm_ditem_page_should_show (window->details->target_files)) {
+	if (nautilus_desktop_item_properties_should_show (window->details->target_files)) {
 		GtkSizeGroup *label_size_group;
 		GtkWidget *box;
 
@@ -3096,8 +3096,8 @@ create_basic_page (NautilusPropertiesWindow *window)
 		label_size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 		gtk_size_group_add_widget (label_size_group,
 					   GTK_WIDGET (window->details->name_label));
-		box = fm_ditem_page_make_box (label_size_group,
-					      window->details->target_files);
+		box = nautilus_desktop_item_properties_make_box (label_size_group,
+								 window->details->target_files);
 
 		gtk_table_attach (window->details->basic_table, box,
 				  TITLE_COLUMN, VALUE_COLUMN + 1,
@@ -3268,7 +3268,7 @@ permission_change_callback (NautilusFile *file,
 	end_long_operation (window);
 	
 	/* Report the error if it's an error. */
-	fm_report_error_setting_permissions (file, error, NULL);
+	nautilus_report_error_setting_permissions (file, error, NULL);
 
 	g_object_unref (window);
 }

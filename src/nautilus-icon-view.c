@@ -657,26 +657,26 @@ update_layout_menus (NautilusIconView *view)
 
 	if (nautilus_icon_view_supports_auto_layout (view)) {
 		/* Mark sort criterion. */
-		action_name = is_auto_layout ? view->details->sort->action : FM_ACTION_MANUAL_LAYOUT;
+		action_name = is_auto_layout ? view->details->sort->action : NAUTILUS_ACTION_MANUAL_LAYOUT;
 		action = gtk_action_group_get_action (view->details->icon_action_group,
 						      action_name);
 		gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), TRUE);
 
 		action = gtk_action_group_get_action (view->details->icon_action_group,
-						      FM_ACTION_TIGHTER_LAYOUT);
+						      NAUTILUS_ACTION_TIGHTER_LAYOUT);
 		gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
 					      nautilus_icon_view_using_tighter_layout (view));
 		gtk_action_set_sensitive (action, nautilus_icon_view_supports_tighter_layout (view));
 		gtk_action_set_visible (action, nautilus_icon_view_supports_tighter_layout (view));
 
 		action = gtk_action_group_get_action (view->details->icon_action_group,
-						      FM_ACTION_REVERSED_ORDER);
+						      NAUTILUS_ACTION_REVERSED_ORDER);
 		gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
 					      view->details->sort_reversed);
 		gtk_action_set_sensitive (action, is_auto_layout);
 
 		action = gtk_action_group_get_action (view->details->icon_action_group,
-		                                      FM_ACTION_SORT_TRASH_TIME);
+		                                      NAUTILUS_ACTION_SORT_TRASH_TIME);
 
 		if (file != NULL && nautilus_file_is_in_trash (file)) {
 			gtk_action_set_visible (action, TRUE);
@@ -686,13 +686,13 @@ update_layout_menus (NautilusIconView *view)
 	}
 
 	action = gtk_action_group_get_action (view->details->icon_action_group,
-					      FM_ACTION_MANUAL_LAYOUT);
+					      NAUTILUS_ACTION_MANUAL_LAYOUT);
 	gtk_action_set_visible (action,
 				nautilus_icon_view_supports_manual_layout (view));
 
 	/* Clean Up is only relevant for manual layout */
 	action = gtk_action_group_get_action (view->details->icon_action_group,
-					      FM_ACTION_CLEAN_UP);
+					      NAUTILUS_ACTION_CLEAN_UP);
 	gtk_action_set_sensitive (action, !is_auto_layout);	
 
 	if (NAUTILUS_IS_DESKTOP_ICON_VIEW (view)) {
@@ -700,7 +700,7 @@ update_layout_menus (NautilusIconView *view)
 	}
 
 	action = gtk_action_group_get_action (view->details->icon_action_group,
-					      FM_ACTION_KEEP_ALIGNED);
+					      NAUTILUS_ACTION_KEEP_ALIGNED);
 	gtk_action_set_visible (action,
 				nautilus_icon_view_supports_keep_aligned (view));
 	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
@@ -1641,7 +1641,7 @@ nautilus_icon_view_merge_menus (NautilusView *view)
 	 */
 	if (!nautilus_icon_view_supports_auto_layout (icon_view)) {
 		action = gtk_action_group_get_action (action_group,
-						      FM_ACTION_ARRANGE_ITEMS);
+						      NAUTILUS_ACTION_ARRANGE_ITEMS);
 		gtk_action_set_visible (action, FALSE);
 	}
 
@@ -1649,15 +1649,15 @@ nautilus_icon_view_merge_menus (NautilusView *view)
 		gtk_ui_manager_add_ui (ui_manager,
 				       icon_view->details->icon_merge_id,
 				       POPUP_PATH_ICON_APPEARANCE,
-				       FM_ACTION_STRETCH,
-				       FM_ACTION_STRETCH,
+				       NAUTILUS_ACTION_STRETCH,
+				       NAUTILUS_ACTION_STRETCH,
 				       GTK_UI_MANAGER_MENUITEM,
 				       FALSE);
 		gtk_ui_manager_add_ui (ui_manager,
 				       icon_view->details->icon_merge_id,
 				       POPUP_PATH_ICON_APPEARANCE,
-				       FM_ACTION_UNSTRETCH,
-				       FM_ACTION_UNSTRETCH,
+				       NAUTILUS_ACTION_UNSTRETCH,
+				       NAUTILUS_ACTION_UNSTRETCH,
 				       GTK_UI_MANAGER_MENUITEM,
 				       FALSE);
 	}
@@ -1700,7 +1700,7 @@ nautilus_icon_view_update_menus (NautilusView *view)
         icon_container = get_icon_container (icon_view);
 
 	action = gtk_action_group_get_action (icon_view->details->icon_action_group,
-					      FM_ACTION_STRETCH);
+					      NAUTILUS_ACTION_STRETCH);
 	gtk_action_set_sensitive (action,
 				  selection_count == 1
 				  && icon_container != NULL
@@ -1710,7 +1710,7 @@ nautilus_icon_view_update_menus (NautilusView *view)
 				nautilus_icon_view_supports_scaling (icon_view));
 
 	action = gtk_action_group_get_action (icon_view->details->icon_action_group,
-					      FM_ACTION_UNSTRETCH);
+					      NAUTILUS_ACTION_UNSTRETCH);
 	g_object_set (action, "label",
 		      (selection_count > 1)
 		      ? _("Restore Icons' Original Si_zes")
@@ -1725,7 +1725,7 @@ nautilus_icon_view_update_menus (NautilusView *view)
 
 	editable = nautilus_view_is_editable (view);
 	action = gtk_action_group_get_action (icon_view->details->icon_action_group,
-					      FM_ACTION_MANUAL_LAYOUT);
+					      NAUTILUS_ACTION_MANUAL_LAYOUT);
 	gtk_action_set_sensitive (action, editable);
 }
 
@@ -2398,7 +2398,7 @@ nautilus_icon_view_icon_text_changed_callback (NautilusIconContainer *container,
 	if (new_name[0] == '\0') {
 		return;
 	}
-	fm_rename_file (file, new_name, NULL, NULL);
+	nautilus_rename_file (file, new_name, NULL, NULL);
 }
 
 static char *

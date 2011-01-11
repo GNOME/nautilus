@@ -1346,7 +1346,7 @@ real_trash (NautilusView *view)
 	GtkAction *action;
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_TRASH);
+					      NAUTILUS_ACTION_TRASH);
 	if (gtk_action_get_sensitive (action) &&
 	    gtk_action_get_visible (action)) {
 		trash_or_delete_selected_files (view);
@@ -1417,7 +1417,7 @@ real_delete (NautilusView *view)
 	GtkAction *action;
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_DELETE);
+					      NAUTILUS_ACTION_DELETE);
 	if (gtk_action_get_sensitive (action) &&
 	    gtk_action_get_visible (action)) {
 		delete_selected_files (view);
@@ -3800,7 +3800,7 @@ real_load_error (NautilusView *view, GError *error)
 	 * directory.
 	 */
 	if (!view->details->reported_load_error) {
-		fm_report_error_loading_directory 
+		nautilus_report_error_loading_directory 
 			(nautilus_view_get_directory_as_file (view),
 			 error,
 			 nautilus_view_get_containing_window (view));
@@ -4563,17 +4563,17 @@ reset_open_with_menu (NautilusView *view, GList *selection)
 
 	if (submenu_visible) {
 		action = gtk_action_group_get_action (view->details->dir_action_group,
-						      FM_ACTION_OTHER_APPLICATION1);
+						      NAUTILUS_ACTION_OTHER_APPLICATION1);
 		gtk_action_set_visible (action, open_with_chooser_visible);
 		action = gtk_action_group_get_action (view->details->dir_action_group,
-						      FM_ACTION_OTHER_APPLICATION2);
+						      NAUTILUS_ACTION_OTHER_APPLICATION2);
 		gtk_action_set_visible (action, FALSE);
 	} else {
 		action = gtk_action_group_get_action (view->details->dir_action_group,
-						      FM_ACTION_OTHER_APPLICATION1);
+						      NAUTILUS_ACTION_OTHER_APPLICATION1);
 		gtk_action_set_visible (action, FALSE);
 		action = gtk_action_group_get_action (view->details->dir_action_group,
-						      FM_ACTION_OTHER_APPLICATION2);
+						      NAUTILUS_ACTION_OTHER_APPLICATION2);
 		gtk_action_set_visible (action, open_with_chooser_visible);
 	}
 }
@@ -5397,7 +5397,7 @@ update_scripts_menu (NautilusView *view)
 	}
 	nautilus_directory_list_free (sorted_copy);
 
-	action = gtk_action_group_get_action (view->details->dir_action_group, FM_ACTION_SCRIPTS);
+	action = gtk_action_group_get_action (view->details->dir_action_group, NAUTILUS_ACTION_SCRIPTS);
 	gtk_action_set_visible (action, any_scripts);
 }
 
@@ -5662,7 +5662,7 @@ update_templates_menu (NautilusView *view)
 	}
 	nautilus_directory_list_free (sorted_copy);
 
-	action = gtk_action_group_get_action (view->details->dir_action_group, FM_ACTION_NO_TEMPLATES);
+	action = gtk_action_group_get_action (view->details->dir_action_group, NAUTILUS_ACTION_NO_TEMPLATES);
 	gtk_action_set_visible (action, !any_templates);
 
 	g_free (templates_directory_uri);
@@ -7170,42 +7170,42 @@ static const GtkActionEntry directory_view_entries[] = {
 				 G_CALLBACK (action_save_search_as_callback) },
 
   /* Location-specific actions */
-  /* name, stock id */         { FM_ACTION_LOCATION_OPEN_ALTERNATE, NULL,
+  /* name, stock id */         { NAUTILUS_ACTION_LOCATION_OPEN_ALTERNATE, NULL,
   /* label, accelerator */       N_("Open in Navigation Window"), "",
   /* tooltip */                  N_("Open this folder in a navigation window"),
 				 G_CALLBACK (action_location_open_alternate_callback) },
-  /* name, stock id */         { FM_ACTION_LOCATION_OPEN_IN_NEW_TAB, NULL,
+  /* name, stock id */         { NAUTILUS_ACTION_LOCATION_OPEN_IN_NEW_TAB, NULL,
   /* label, accelerator */       N_("Open in New _Tab"), "",
   /* tooltip */                  N_("Open this folder in a new tab"),
 				 G_CALLBACK (action_location_open_in_new_tab_callback) },
 
-  /* name, stock id */         { FM_ACTION_LOCATION_OPEN_FOLDER_WINDOW, NULL,
+  /* name, stock id */         { NAUTILUS_ACTION_LOCATION_OPEN_FOLDER_WINDOW, NULL,
   /* label, accelerator */       N_("Open in _Folder Window"), "",
   /* tooltip */                  N_("Open this folder in a folder window"),
 				 G_CALLBACK (action_location_open_folder_window_callback) },
 
-  /* name, stock id */         { FM_ACTION_LOCATION_CUT, GTK_STOCK_CUT,
+  /* name, stock id */         { NAUTILUS_ACTION_LOCATION_CUT, GTK_STOCK_CUT,
   /* label, accelerator */       NULL, "",
   /* tooltip */                  N_("Prepare this folder to be moved with a Paste command"),
 				 G_CALLBACK (action_location_cut_callback) },
-  /* name, stock id */         { FM_ACTION_LOCATION_COPY, GTK_STOCK_COPY,
+  /* name, stock id */         { NAUTILUS_ACTION_LOCATION_COPY, GTK_STOCK_COPY,
   /* label, accelerator */       NULL, "",
   /* tooltip */                  N_("Prepare this folder to be copied with a Paste command"),
 				 G_CALLBACK (action_location_copy_callback) },
-  /* name, stock id */         { FM_ACTION_LOCATION_PASTE_FILES_INTO, GTK_STOCK_PASTE,
+  /* name, stock id */         { NAUTILUS_ACTION_LOCATION_PASTE_FILES_INTO, GTK_STOCK_PASTE,
   /* label, accelerator */       N_("_Paste Into Folder"), "",
   /* tooltip */                  N_("Move or copy files previously selected by a Cut or Copy command into this folder"),
 				 G_CALLBACK (action_location_paste_files_into_callback) },
 
-  /* name, stock id */         { FM_ACTION_LOCATION_TRASH, NULL,
+  /* name, stock id */         { NAUTILUS_ACTION_LOCATION_TRASH, NULL,
   /* label, accelerator */       N_("Mo_ve to Trash"), "",
   /* tooltip */                  N_("Move this folder to the Trash"),
 				 G_CALLBACK (action_location_trash_callback) },
-  /* name, stock id */         { FM_ACTION_LOCATION_DELETE, NAUTILUS_ICON_DELETE,
+  /* name, stock id */         { NAUTILUS_ACTION_LOCATION_DELETE, NAUTILUS_ICON_DELETE,
   /* label, accelerator */       N_("_Delete"), "",
   /* tooltip */                  N_("Delete this folder, without moving to the Trash"),
 				 G_CALLBACK (action_location_delete_callback) },
-  /* name, stock id */         { FM_ACTION_LOCATION_RESTORE_FROM_TRASH, NULL,
+  /* name, stock id */         { NAUTILUS_ACTION_LOCATION_RESTORE_FROM_TRASH, NULL,
   /* label, accelerator */       N_("_Restore"), NULL, NULL,
 				 G_CALLBACK (action_location_restore_from_trash_callback) },
 
@@ -7239,25 +7239,25 @@ static const GtkActionEntry directory_view_entries[] = {
   /* tooltip */                  N_("View or modify the properties of this folder"),
 				 G_CALLBACK (action_location_properties_callback) },
 
-  /* name, stock id, label */  {FM_ACTION_COPY_TO_NEXT_PANE, NULL, N_("_Other pane"),
+  /* name, stock id, label */  {NAUTILUS_ACTION_COPY_TO_NEXT_PANE, NULL, N_("_Other pane"),
 				NULL, N_("Copy the current selection to the other pane in the window"),
 				G_CALLBACK (action_copy_to_next_pane_callback) },
-  /* name, stock id, label */  {FM_ACTION_MOVE_TO_NEXT_PANE, NULL, N_("_Other pane"),
+  /* name, stock id, label */  {NAUTILUS_ACTION_MOVE_TO_NEXT_PANE, NULL, N_("_Other pane"),
 				NULL, N_("Move the current selection to the other pane in the window"),
 				G_CALLBACK (action_move_to_next_pane_callback) },
-  /* name, stock id, label */  {FM_ACTION_COPY_TO_HOME, NAUTILUS_ICON_HOME,
+  /* name, stock id, label */  {NAUTILUS_ACTION_COPY_TO_HOME, NAUTILUS_ICON_HOME,
 				N_("_Home"), NULL,
 				N_("Copy the current selection to the home folder"),
 				G_CALLBACK (action_copy_to_home_callback) },
-  /* name, stock id, label */  {FM_ACTION_MOVE_TO_HOME, NAUTILUS_ICON_HOME,
+  /* name, stock id, label */  {NAUTILUS_ACTION_MOVE_TO_HOME, NAUTILUS_ICON_HOME,
 				N_("_Home"), NULL,
 				N_("Move the current selection to the home folder"),
 				G_CALLBACK (action_move_to_home_callback) },
-  /* name, stock id, label */  {FM_ACTION_COPY_TO_DESKTOP, NAUTILUS_ICON_DESKTOP,
+  /* name, stock id, label */  {NAUTILUS_ACTION_COPY_TO_DESKTOP, NAUTILUS_ICON_DESKTOP,
 				N_("_Desktop"), NULL,
 				N_("Copy the current selection to the desktop"),
 				G_CALLBACK (action_copy_to_desktop_callback) },
-  /* name, stock id, label */  {FM_ACTION_MOVE_TO_DESKTOP, NAUTILUS_ICON_DESKTOP,
+  /* name, stock id, label */  {NAUTILUS_ACTION_MOVE_TO_DESKTOP, NAUTILUS_ICON_DESKTOP,
 				N_("_Desktop"), NULL,
 				N_("Move the current selection to the desktop"),
 				G_CALLBACK (action_move_to_desktop_callback) },
@@ -7272,7 +7272,7 @@ connect_proxy (NautilusView *view,
 	GdkPixbuf *pixbuf;
 	GtkWidget *image;
 
-	if (strcmp (gtk_action_get_name (action), FM_ACTION_NEW_EMPTY_DOCUMENT) == 0 &&
+	if (strcmp (gtk_action_get_name (action), NAUTILUS_ACTION_NEW_EMPTY_DOCUMENT) == 0 &&
 	    GTK_IS_IMAGE_MENU_ITEM (proxy)) {
 		pixbuf = get_menu_icon ("text-x-generic");
 		if (pixbuf != NULL) {
@@ -7346,7 +7346,7 @@ real_merge_menus (NautilusView *view)
 	g_object_unref (action);
 	g_free (tooltip);
 
-	action = gtk_action_group_get_action (action_group, FM_ACTION_NO_TEMPLATES);
+	action = gtk_action_group_get_action (action_group, NAUTILUS_ACTION_NO_TEMPLATES);
 	gtk_action_set_sensitive (action, FALSE);
 
 	g_signal_connect_object (action_group, "connect-proxy",
@@ -7435,18 +7435,18 @@ clipboard_targets_received (GtkClipboard     *clipboard,
 	count = g_list_length (selection);
 	
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_PASTE);
+					      NAUTILUS_ACTION_PASTE);
 	gtk_action_set_sensitive (action,
 				  can_paste && !nautilus_view_is_read_only (view));
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_PASTE_FILES_INTO);
+					      NAUTILUS_ACTION_PASTE_FILES_INTO);
 	gtk_action_set_sensitive (action,
 	                          can_paste && count == 1 &&
 	                          can_paste_into_file (NAUTILUS_FILE (selection->data)));
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_LOCATION_PASTE_FILES_INTO);
+					      NAUTILUS_ACTION_LOCATION_PASTE_FILES_INTO);
 	g_object_set_data (G_OBJECT (action),
 			   "can-paste-according-to-clipboard",
 			   GINT_TO_POINTER (can_paste));
@@ -7835,23 +7835,23 @@ real_update_menus_volumes (NautilusView *view,
 	}
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_CONNECT_TO_SERVER_LINK);
+					      NAUTILUS_ACTION_CONNECT_TO_SERVER_LINK);
 	gtk_action_set_visible (action, show_connect);
 	
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_MOUNT_VOLUME);
+					      NAUTILUS_ACTION_MOUNT_VOLUME);
 	gtk_action_set_visible (action, show_mount);
 	
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_UNMOUNT_VOLUME);
+					      NAUTILUS_ACTION_UNMOUNT_VOLUME);
 	gtk_action_set_visible (action, show_unmount);
 	
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_EJECT_VOLUME);
+					      NAUTILUS_ACTION_EJECT_VOLUME);
 	gtk_action_set_visible (action, show_eject);
 	
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_START_VOLUME);
+					      NAUTILUS_ACTION_START_VOLUME);
 	gtk_action_set_visible (action, show_start);
 	if (show_start) {
 		switch (start_stop_type) {
@@ -7880,7 +7880,7 @@ real_update_menus_volumes (NautilusView *view,
 	}
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_STOP_VOLUME);
+					      NAUTILUS_ACTION_STOP_VOLUME);
 	gtk_action_set_visible (action, show_stop);
 	if (show_stop) {
 		switch (start_stop_type) {
@@ -7909,7 +7909,7 @@ real_update_menus_volumes (NautilusView *view,
 	}
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_POLL);
+					      NAUTILUS_ACTION_POLL);
 	gtk_action_set_visible (action, show_poll);
 
 	show_self_mount = show_self_unmount = show_self_eject =
@@ -7926,19 +7926,19 @@ real_update_menus_volumes (NautilusView *view,
 			       &self_start_stop_type);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_SELF_MOUNT_VOLUME);
+					      NAUTILUS_ACTION_SELF_MOUNT_VOLUME);
 	gtk_action_set_visible (action, show_self_mount);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_SELF_UNMOUNT_VOLUME);
+					      NAUTILUS_ACTION_SELF_UNMOUNT_VOLUME);
 	gtk_action_set_visible (action, show_self_unmount);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_SELF_EJECT_VOLUME);
+					      NAUTILUS_ACTION_SELF_EJECT_VOLUME);
 	gtk_action_set_visible (action, show_self_eject);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_SELF_START_VOLUME);
+					      NAUTILUS_ACTION_SELF_START_VOLUME);
 	gtk_action_set_visible (action, show_self_start);
 	if (show_self_start) {
 		switch (self_start_stop_type) {
@@ -7967,7 +7967,7 @@ real_update_menus_volumes (NautilusView *view,
 	}
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_SELF_STOP_VOLUME);
+					      NAUTILUS_ACTION_SELF_STOP_VOLUME);
 	gtk_action_set_visible (action, show_self_stop);
 	if (show_self_stop) {
 		switch (self_start_stop_type) {
@@ -7996,7 +7996,7 @@ real_update_menus_volumes (NautilusView *view,
 	}
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_SELF_POLL);
+					      NAUTILUS_ACTION_SELF_POLL);
 	gtk_action_set_visible (action, show_self_poll);
 
 }
@@ -8030,19 +8030,19 @@ real_update_location_menu_volumes (NautilusView *view)
 				  &start_stop_type);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_LOCATION_MOUNT_VOLUME);
+					      NAUTILUS_ACTION_LOCATION_MOUNT_VOLUME);
 	gtk_action_set_visible (action, show_mount);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_LOCATION_UNMOUNT_VOLUME);
+					      NAUTILUS_ACTION_LOCATION_UNMOUNT_VOLUME);
 	gtk_action_set_visible (action, show_unmount);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_LOCATION_EJECT_VOLUME);
+					      NAUTILUS_ACTION_LOCATION_EJECT_VOLUME);
 	gtk_action_set_visible (action, show_eject);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_LOCATION_START_VOLUME);
+					      NAUTILUS_ACTION_LOCATION_START_VOLUME);
 	gtk_action_set_visible (action, show_start);
 	if (show_start) {
 		switch (start_stop_type) {
@@ -8071,7 +8071,7 @@ real_update_location_menu_volumes (NautilusView *view)
 	}
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_LOCATION_STOP_VOLUME);
+					      NAUTILUS_ACTION_LOCATION_STOP_VOLUME);
 	gtk_action_set_visible (action, show_stop);
 	if (show_stop) {
 		switch (start_stop_type) {
@@ -8100,7 +8100,7 @@ real_update_location_menu_volumes (NautilusView *view)
 	}
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_LOCATION_POLL);
+					      NAUTILUS_ACTION_LOCATION_POLL);
 	gtk_action_set_visible (action, show_poll);
 }
 
@@ -8128,11 +8128,11 @@ real_update_paste_menu (NautilusView *view,
 	                        can_paste_into_file (NAUTILUS_FILE (selection->data)));
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_PASTE);
+					      NAUTILUS_ACTION_PASTE);
 	gtk_action_set_sensitive (action, !is_read_only);
 	
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_PASTE_FILES_INTO);
+					      NAUTILUS_ACTION_PASTE_FILES_INTO);
 	gtk_action_set_visible (action, can_paste_files_into);
 	gtk_action_set_sensitive (action, !selection_is_read_only);
 
@@ -8175,13 +8175,13 @@ real_update_location_menu (NautilusView *view)
 					    "_Browse Folders", 1));
 	}
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_LOCATION_OPEN_ALTERNATE);
+					      NAUTILUS_ACTION_LOCATION_OPEN_ALTERNATE);
 	g_object_set (action,
 		      "label", label,
 		      NULL);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_LOCATION_OPEN_IN_NEW_TAB);
+					      NAUTILUS_ACTION_LOCATION_OPEN_IN_NEW_TAB);
 	gtk_action_set_visible (action, show_open_in_new_tab);
 
 	if (show_open_in_new_tab) {
@@ -8196,7 +8196,7 @@ real_update_location_menu (NautilusView *view)
 	}
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_LOCATION_OPEN_FOLDER_WINDOW);
+					      NAUTILUS_ACTION_LOCATION_OPEN_FOLDER_WINDOW);
 	gtk_action_set_visible (action, show_open_folder_window);
 
 	file = view->details->location_popup_directory_as_file;
@@ -8215,11 +8215,11 @@ real_update_location_menu (NautilusView *view)
 		!is_desktop_or_home_dir;
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_LOCATION_CUT);
+					      NAUTILUS_ACTION_LOCATION_CUT);
 	gtk_action_set_sensitive (action, can_delete_file);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_LOCATION_PASTE_FILES_INTO);
+					      NAUTILUS_ACTION_LOCATION_PASTE_FILES_INTO);
 	g_object_set_data (G_OBJECT (action),
 			   "can-paste-according-to-destination",
 			   GINT_TO_POINTER (can_paste_into_file (file)));
@@ -8247,7 +8247,7 @@ real_update_location_menu (NautilusView *view)
 	}
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_LOCATION_TRASH);
+					      NAUTILUS_ACTION_LOCATION_TRASH);
 	g_object_set (action,
 		      "label", label,
 		      "tooltip", tip,
@@ -8259,7 +8259,7 @@ real_update_location_menu (NautilusView *view)
 	gtk_action_set_visible (action, show_delete);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_LOCATION_DELETE);
+					      NAUTILUS_ACTION_LOCATION_DELETE);
 	gtk_action_set_visible (action, show_separate_delete_command);
 	if (show_separate_delete_command) {
 		gtk_action_set_sensitive (action, can_delete_file);
@@ -8270,7 +8270,7 @@ real_update_location_menu (NautilusView *view)
 	}
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_LOCATION_RESTORE_FROM_TRASH);
+					      NAUTILUS_ACTION_LOCATION_RESTORE_FROM_TRASH);
 	l.prev = NULL;
 	l.next = NULL;
 	l.data = file;
@@ -8377,7 +8377,7 @@ real_update_menus (NautilusView *view)
 	vfolder_directory = we_are_in_vfolder_desktop_dir (view);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_RENAME);
+					      NAUTILUS_ACTION_RENAME);
 	/* rename sensitivity depending on selection */
 	if (selection_count > 1) {
 		/* If multiple files are selected, sensitivity depends on whether a bulk renamer is registered. */
@@ -8389,11 +8389,11 @@ real_update_menus (NautilusView *view)
 	}
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_NEW_FOLDER);
+					      NAUTILUS_ACTION_NEW_FOLDER);
 	gtk_action_set_sensitive (action, can_create_files);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_OPEN);
+					      NAUTILUS_ACTION_OPEN);
 	gtk_action_set_sensitive (action, selection_count != 0);
 	
 	can_open = show_app = selection_count != 0;
@@ -8501,7 +8501,7 @@ real_update_menus (NautilusView *view)
 	}
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_OPEN_ALTERNATE);
+					      NAUTILUS_ACTION_OPEN_ALTERNATE);
 	g_object_set (action, "label", 
 		      label_with_underscore,
 		      NULL);
@@ -8533,7 +8533,7 @@ real_update_menus (NautilusView *view)
 			}
 		}
 		action = gtk_action_group_get_action (view->details->dir_action_group,
-						      FM_ACTION_OPEN_IN_NEW_TAB);
+						      NAUTILUS_ACTION_OPEN_IN_NEW_TAB);
 		gtk_action_set_sensitive (action, selection_count != 0);
 		gtk_action_set_visible (action, show_open_alternate);
 		g_object_set (action, "label", 
@@ -8542,22 +8542,22 @@ real_update_menus (NautilusView *view)
 		g_free (label_with_underscore);
 	} else {
 		action = gtk_action_group_get_action (view->details->dir_action_group,
-						      FM_ACTION_OPEN_IN_NEW_TAB);
+						      NAUTILUS_ACTION_OPEN_IN_NEW_TAB);
 		gtk_action_set_visible (action, FALSE);
 	}
 
 	/* next pane actions, only in navigation mode */
 	if (nautilus_window_get_window_type (view->details->window) != NAUTILUS_WINDOW_NAVIGATION) {
 		action = gtk_action_group_get_action (view->details->dir_action_group,
-						      FM_ACTION_COPY_TO_NEXT_PANE);
+						      NAUTILUS_ACTION_COPY_TO_NEXT_PANE);
 		gtk_action_set_visible (action, FALSE);
 		action = gtk_action_group_get_action (view->details->dir_action_group,
-						      FM_ACTION_MOVE_TO_NEXT_PANE);
+						      NAUTILUS_ACTION_MOVE_TO_NEXT_PANE);
 		gtk_action_set_visible (action, FALSE);
 	}
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_OPEN_FOLDER_WINDOW);
+					      NAUTILUS_ACTION_OPEN_FOLDER_WINDOW);
 	gtk_action_set_visible (action, show_open_folder_window);
 
 	/* Broken into its own function just for convenience */
@@ -8575,7 +8575,7 @@ real_update_menus (NautilusView *view)
 	}
 	
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_TRASH);
+					      NAUTILUS_ACTION_TRASH);
 	g_object_set (action,
 		      "label", label,
 		      "tooltip", tip,
@@ -8585,7 +8585,7 @@ real_update_menus (NautilusView *view)
 	gtk_action_set_sensitive (action, can_delete_files);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_DELETE);
+					      NAUTILUS_ACTION_DELETE);
 	gtk_action_set_visible (action, show_separate_delete_command);
 	
 	if (show_separate_delete_command) {
@@ -8598,15 +8598,15 @@ real_update_menus (NautilusView *view)
 
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_RESTORE_FROM_TRASH);
+					      NAUTILUS_ACTION_RESTORE_FROM_TRASH);
 	update_restore_from_trash_action (action, selection, FALSE);
 	
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_DUPLICATE);
+					      NAUTILUS_ACTION_DUPLICATE);
 	gtk_action_set_sensitive (action, can_duplicate_files);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_CREATE_LINK);
+					      NAUTILUS_ACTION_CREATE_LINK);
 	gtk_action_set_sensitive (action, can_link_files);
 	g_object_set (action, "label",
 		      ngettext ("Ma_ke Link",
@@ -8617,7 +8617,7 @@ real_update_menus (NautilusView *view)
 	show_properties = (!NAUTILUS_IS_DESKTOP_ICON_VIEW (view) || selection_count > 0);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_PROPERTIES);
+					      NAUTILUS_ACTION_PROPERTIES);
 
 	gtk_action_set_sensitive (action, show_properties);
 
@@ -8630,12 +8630,12 @@ real_update_menus (NautilusView *view)
 	gtk_action_set_visible (action, show_properties);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_PROPERTIES_ACCEL);
+					      NAUTILUS_ACTION_PROPERTIES_ACCEL);
 
 	gtk_action_set_sensitive (action, show_properties);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_EMPTY_TRASH);
+					      NAUTILUS_ACTION_EMPTY_TRASH);
 	g_object_set (action,
 		      "label", _("E_mpty Trash"),
 		      NULL);
@@ -8658,39 +8658,39 @@ real_update_menus (NautilusView *view)
 		}
 	} 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_SAVE_SEARCH);
+					      NAUTILUS_ACTION_SAVE_SEARCH);
 	gtk_action_set_visible (action, show_save_search);
 	gtk_action_set_sensitive (action, save_search_sensitive);
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_SAVE_SEARCH_AS);
+					      NAUTILUS_ACTION_SAVE_SEARCH_AS);
 	gtk_action_set_visible (action, show_save_search_as);
 
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_SELECT_ALL);
+					      NAUTILUS_ACTION_SELECT_ALL);
 	gtk_action_set_sensitive (action, !nautilus_view_is_empty (view));
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_SELECT_PATTERN);
+					      NAUTILUS_ACTION_SELECT_PATTERN);
 	gtk_action_set_sensitive (action, !nautilus_view_is_empty (view));
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_INVERT_SELECTION);
+					      NAUTILUS_ACTION_INVERT_SELECTION);
 	gtk_action_set_sensitive (action, !nautilus_view_is_empty (view));
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_CUT);
+					      NAUTILUS_ACTION_CUT);
 	gtk_action_set_sensitive (action, can_delete_files);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_COPY);
+					      NAUTILUS_ACTION_COPY);
 	gtk_action_set_sensitive (action, can_copy_files);
 
 	real_update_paste_menu (view, selection, selection_count);
 
 	disable_command_line = g_settings_get_boolean (gnome_lockdown_preferences, NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE);
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_NEW_LAUNCHER);
+					      NAUTILUS_ACTION_NEW_LAUNCHER);
 	gtk_action_set_visible (action, vfolder_directory && !disable_command_line);
 	gtk_action_set_sensitive (action, can_create_files);
 
@@ -8703,7 +8703,7 @@ real_update_menus (NautilusView *view)
 	}
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_NEW_DOCUMENTS);
+					      NAUTILUS_ACTION_NEW_DOCUMENTS);
 	gtk_action_set_sensitive (action, can_create_files);
 
 	if (can_create_files && view->details->templates_invalid) {
@@ -8714,27 +8714,27 @@ real_update_menus (NautilusView *view)
 
 	/* next pane: works if file is copyable, and next pane is writable */
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_COPY_TO_NEXT_PANE);
+					      NAUTILUS_ACTION_COPY_TO_NEXT_PANE);
 	gtk_action_set_sensitive (action, can_copy_files && next_pane_is_writable);
 
 	/* move to next pane: works if file is cuttable, and next pane is writable */
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_MOVE_TO_NEXT_PANE);
+					      NAUTILUS_ACTION_MOVE_TO_NEXT_PANE);
 	gtk_action_set_sensitive (action, can_delete_files && next_pane_is_writable);
 
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_COPY_TO_HOME);
+					      NAUTILUS_ACTION_COPY_TO_HOME);
 	gtk_action_set_sensitive (action, can_copy_files);
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_COPY_TO_DESKTOP);
+					      NAUTILUS_ACTION_COPY_TO_DESKTOP);
 	gtk_action_set_sensitive (action, can_copy_files);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_MOVE_TO_HOME);
+					      NAUTILUS_ACTION_MOVE_TO_HOME);
 	gtk_action_set_sensitive (action, can_delete_files);
 	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      FM_ACTION_MOVE_TO_DESKTOP);
+					      NAUTILUS_ACTION_MOVE_TO_DESKTOP);
 	gtk_action_set_sensitive (action, can_delete_files);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
