@@ -34,7 +34,7 @@
 #include "nautilus-tree-sidebar.h"
 
 #include "nautilus-tree-sidebar-model.h"
-#include "file-manager/fm-properties-window.h"
+#include "nautilus-properties-window.h"
 #include "nautilus-window-slot.h"
 
 #include <libnautilus-private/nautilus-clipboard.h>
@@ -847,7 +847,7 @@ new_folder_done (GFile *new_folder, gpointer data)
 	 */
 	list = g_list_prepend (NULL, nautilus_file_get (new_folder));
 
-	fm_properties_window_present (list, GTK_WIDGET (data));
+	nautilus_properties_window_present (list, GTK_WIDGET (data));
 
         nautilus_file_list_free (list);
 }
@@ -1045,7 +1045,7 @@ fm_tree_view_properties_cb (GtkWidget *menu_item,
         
 	list = g_list_prepend (NULL, nautilus_file_ref (view->details->popup_file));
 
-	fm_properties_window_present (list, GTK_WIDGET (view->details->tree_widget));
+	nautilus_properties_window_present (list, GTK_WIDGET (view->details->tree_widget));
 
         nautilus_file_list_free (list);
 }

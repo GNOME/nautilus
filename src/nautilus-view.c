@@ -31,13 +31,12 @@
 
 #include "nautilus-view.h"
 
-#include "file-manager/fm-properties-window.h"
-
 #include "nautilus-actions.h"
 #include "nautilus-desktop-icon-view.h"
 #include "nautilus-error-reporting.h"
 #include "nautilus-list-view.h"
 #include "nautilus-mime-actions.h"
+#include "nautilus-properties-window.h"
 #include "nautilus-src-marshal.h"
 
 #include <gdk/gdkkeysyms.h>
@@ -2145,12 +2144,12 @@ action_properties_callback (GtkAction *action,
 		if (view->details->directory_as_file != NULL) {
 			files = g_list_append (NULL, nautilus_file_ref (view->details->directory_as_file));
 
-			fm_properties_window_present (files, GTK_WIDGET (view));
+			nautilus_properties_window_present (files, GTK_WIDGET (view));
 
 			nautilus_file_list_free (files);
 		}
 	} else {
-		fm_properties_window_present (selection, GTK_WIDGET (view));
+		nautilus_properties_window_present (selection, GTK_WIDGET (view));
 	}
         nautilus_file_list_free (selection);
 }
@@ -2169,7 +2168,7 @@ action_location_properties_callback (GtkAction *action,
 
 	files = g_list_append (NULL, nautilus_file_ref (view->details->location_popup_directory_as_file));
 
-	fm_properties_window_present (files, GTK_WIDGET (view));
+	nautilus_properties_window_present (files, GTK_WIDGET (view));
 
 	nautilus_file_list_free (files);
 }

@@ -15,12 +15,7 @@ INCLUDES = 					\
 	$(DISABLE_DEPRECATED_CFLAGS)            \
 	$(NULL)	
 
-libnautilus_file_manager_la_SOURCES=	\
-	fm-ditem-page.c			\
-	fm-ditem-page.h			\
-	fm-properties-window.c		\
-	fm-properties-window.h 		\
-	$(NULL)
+libnautilus_file_manager_la_SOURCES = $(NULL)
 
 EMPTY_VIEW_SOURCES = \
 	fm-empty-view.c \

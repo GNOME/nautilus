@@ -22,7 +22,8 @@
  */
 
 #include <config.h>
-#include "fm-ditem-page.h"
+
+#include "nautilus-desktop-item-properties.h"
 
 #include <string.h>
 

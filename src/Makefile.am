@@ -76,6 +76,8 @@ nautilus_SOURCES = \
 	nautilus-connect-server-operation.h	\
 	nautilus-desktop-icon-view.c		\
 	nautilus-desktop-icon-view.h		\
+	nautilus-desktop-item-properties.c	\
+	nautilus-desktop-item-properties.h	\
 	nautilus-desktop-window.c		\
 	nautilus-desktop-window.h		\
 	nautilus-error-reporting.c		\
@@ -119,6 +121,8 @@ nautilus_SOURCES = \
 	nautilus-pathbar.h			\
 	nautilus-places-sidebar.c		\
 	nautilus-places-sidebar.h		\
+	nautilus-properties-window.c		\
+	nautilus-properties-window.h		\
 	nautilus-query-editor.c			\
 	nautilus-query-editor.h			\
 	nautilus-search-bar.c			\
