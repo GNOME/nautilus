@@ -248,17 +248,19 @@ realize (GtkWidget *widget)
 				  G_CALLBACK (nautilus_desktop_window_screen_size_changed), window);
 }
 
-static char *
-real_get_title (NautilusWindow *window)
-{
-	return g_strdup (_("Desktop"));
-}
-
 static NautilusIconInfo *
 real_get_icon (NautilusWindow *window,
 	       NautilusWindowSlot *slot)
 {
 	return nautilus_icon_info_lookup_from_name (NAUTILUS_ICON_DESKTOP, 48);
+}
+
+static void
+real_sync_title (NautilusWindow *window,
+		 NautilusWindowSlot *slot)
+{
+	/* hardcode "Desktop" */
+	gtk_window_set_title (GTK_WINDOW (window), _("Desktop"));
 }
 
 static void
@@ -272,7 +274,7 @@ nautilus_desktop_window_class_init (NautilusDesktopWindowClass *klass)
 	wclass->map = map;
 
 	nclass->window_type = NAUTILUS_WINDOW_DESKTOP;
-	nclass->get_title = real_get_title;
+	nclass->sync_title = real_sync_title;
 	nclass->get_icon = real_get_icon;
 
 	g_type_class_add_private (klass, sizeof (NautilusDesktopWindowDetails));
