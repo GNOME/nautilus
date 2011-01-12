@@ -339,7 +339,7 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 		uri_field);
 
 	bookmark_list_changed_signal_id =
-		g_signal_connect (bookmarks, "contents_changed",
+		g_signal_connect (bookmarks, "changed",
 				  G_CALLBACK (on_bookmark_list_changed), NULL);
 	row_changed_signal_id =
 		g_signal_connect (bookmark_list_store, "row_changed",
@@ -766,7 +766,8 @@ on_selection_changed (GtkTreeSelection *treeselection,
 		      gpointer user_data)
 {
 	NautilusBookmark *selected;
-	char *name = NULL, *entry_text = NULL;
+	const char *name = NULL;
+	char *entry_text = NULL;
 	GFile *location;
 
 	g_assert (GTK_IS_ENTRY (name_field));
@@ -801,7 +802,6 @@ on_selection_changed (GtkTreeSelection *treeselection,
 	text_changed = FALSE;
 	name_text_changed = FALSE;
 
-	g_free (name);
 	g_free (entry_text);
 }
 
@@ -827,8 +827,9 @@ update_bookmark_from_text (void)
 		location = g_file_parse_name 
 			(gtk_entry_get_text (GTK_ENTRY (uri_field)));
 		
-		bookmark = nautilus_bookmark_new (location, gtk_entry_get_text (GTK_ENTRY (name_field)),
-		                                  name_text_changed, NULL);
+		bookmark = nautilus_bookmark_new (location,
+						  name_text_changed ? gtk_entry_get_text (GTK_ENTRY (name_field)) : NULL,
+						  NULL);
 		
 		g_object_unref (location);
 

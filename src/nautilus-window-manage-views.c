@@ -113,7 +113,6 @@ set_displayed_location (NautilusWindowSlot *slot, GFile *location)
 	NautilusWindow *window;
         GFile *bookmark_location;
         gboolean recreate;
-	char *name;
 
 	window = slot->pane->window;
         
@@ -131,10 +130,8 @@ set_displayed_location (NautilusWindowSlot *slot, GFile *location)
 			g_object_unref (slot->last_location_bookmark);
                 }
 		slot->last_location_bookmark = slot->current_location_bookmark;
-		name = g_file_get_basename (location);
 		slot->current_location_bookmark = (location == NULL) ? NULL
-                        : nautilus_bookmark_new (location, name, FALSE, NULL);
-		g_free (name);
+                        : nautilus_bookmark_new (location, NULL, NULL);
         }
 }
 

@@ -278,7 +278,7 @@ nautilus_window_initialize_bookmarks_menu (NautilusWindow *window)
 	refresh_bookmarks_menu (window);
 
 	/* Recreate dynamic part of menu if bookmark list changes */
-	g_signal_connect_object (window->details->bookmark_list, "contents_changed",
+	g_signal_connect_object (window->details->bookmark_list, "changed",
 				 G_CALLBACK (refresh_bookmarks_menu),
 				 window, G_CONNECT_SWAPPED);
 }

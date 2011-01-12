@@ -431,7 +431,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 	GVolume *volume;
 	int bookmark_count, index;
 	char *location, *mount_uri, *name, *desktop_path, *last_uri;
-	const gchar *path;
+	const gchar *path, *bookmark_name;
 	GIcon *icon;
 	GFile *root;
 	NautilusWindowSlot *slot;
@@ -606,20 +606,20 @@ update_places (NautilusPlacesSidebar *sidebar)
 			continue;
 		}
 
-		name = nautilus_bookmark_get_name (bookmark);
+		bookmark_name = nautilus_bookmark_get_name (bookmark);
 		icon = nautilus_bookmark_get_icon (bookmark);
 		mount_uri = nautilus_bookmark_get_uri (bookmark);
 		tooltip = g_file_get_parse_name (root);
 
 		last_iter = add_place (sidebar, PLACES_BOOKMARK,
 				       SECTION_BOOKMARKS,
-				       name, icon, mount_uri,
+				       bookmark_name, icon, mount_uri,
 				       NULL, NULL, NULL, index,
 				       tooltip);
 		compare_for_selection (sidebar,
 				       location, mount_uri, last_uri,
 				       &last_iter, &select_path);
-		g_free (name);
+
 		g_object_unref (root);
 		g_object_unref (icon);
 		g_free (mount_uri);
@@ -1264,7 +1264,6 @@ bookmarks_drop_uris (NautilusPlacesSidebar *sidebar,
 	char **uris;
 	int i;
 	GFile *location;
-	GIcon *icon;
 	
 	uris = gtk_selection_data_get_uris (selection_data);
 	if (!uris)
@@ -1283,9 +1282,7 @@ bookmarks_drop_uris (NautilusPlacesSidebar *sidebar,
 		location = g_file_new_for_uri (uri);
 		nautilus_file_unref (file);
 
-		name = nautilus_compute_title_for_location (location);
-		icon = g_themed_icon_new (NAUTILUS_ICON_FOLDER);
-		bookmark = nautilus_bookmark_new (location, name, TRUE, icon);
+		bookmark = nautilus_bookmark_new (location, NULL, NULL);
 
 		if (!nautilus_bookmark_list_contains (sidebar->bookmarks, bookmark)) {
 			nautilus_bookmark_list_insert_item (sidebar->bookmarks, bookmark, position++);
@@ -1293,7 +1290,6 @@ bookmarks_drop_uris (NautilusPlacesSidebar *sidebar,
 
 		g_object_unref (location);
 		g_object_unref (bookmark);
-		g_object_unref (icon);
 		g_free (name);
 		g_free (uri);
 	}
@@ -2781,7 +2777,7 @@ bookmarks_edited (GtkCellRenderer       *cell,
 	bookmark = nautilus_bookmark_list_item_at (sidebar->bookmarks, index);
 
 	if (bookmark != NULL) {
-		nautilus_bookmark_set_name (bookmark, new_text);
+		nautilus_bookmark_set_custom_name (bookmark, new_text);
 	}
 }
 
@@ -3177,7 +3173,7 @@ nautilus_places_sidebar_set_parent_window (NautilusPlacesSidebar *sidebar,
 	sidebar->bookmarks = nautilus_bookmark_list_new ();
 	sidebar->uri = nautilus_window_slot_get_current_uri (slot);
 
-	g_signal_connect_object (sidebar->bookmarks, "contents_changed",
+	g_signal_connect_object (sidebar->bookmarks, "changed",
 				 G_CALLBACK (update_places),
 				 sidebar, G_CONNECT_SWAPPED);
 

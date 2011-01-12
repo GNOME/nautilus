@@ -40,7 +40,7 @@
 #define SAVE_JOB 2
 
 enum {
-	CONTENTS_CHANGED,
+	CHANGED,
 	LAST_SIGNAL
 };
 
@@ -60,9 +60,7 @@ new_bookmark_from_uri (const char *uri, const char *label)
 {
 	NautilusBookmark *new_bookmark;
 	NautilusFile *file;
-	char *name;
 	GIcon *icon;
-	gboolean has_label;
 	GFile *location;
 	gboolean native;
 
@@ -71,14 +69,6 @@ new_bookmark_from_uri (const char *uri, const char *label)
 		location = g_file_new_for_uri (uri);
 	}
 	
-	has_label = FALSE;
-	if (!label) { 
-		name = nautilus_compute_title_for_location (location);
-	} else {
-		name = g_strdup (label);
-		has_label = TRUE;
-	}
-
 	new_bookmark = NULL;
 	
 	if (uri) {
@@ -91,18 +81,18 @@ new_bookmark_from_uri (const char *uri, const char *label)
 			icon = nautilus_file_get_gicon (file, 0);
 		}
 		nautilus_file_unref (file);
-		
+
 		if (icon == NULL) {
 			icon = native ? g_themed_icon_new (NAUTILUS_ICON_FOLDER) :
 				g_themed_icon_new (NAUTILUS_ICON_FOLDER_REMOTE);
 		}
 
-		new_bookmark = nautilus_bookmark_new (location, name, has_label, icon);
+		new_bookmark = nautilus_bookmark_new (location, label, icon);
 
 		g_object_unref (icon);
 
 	}
-	g_free (name);
+
 	g_object_unref (location);
 	return new_bookmark;
 }
@@ -132,8 +122,17 @@ bookmark_in_list_changed_callback (NautilusBookmark     *bookmark,
 	g_assert (NAUTILUS_IS_BOOKMARK (bookmark));
 	g_assert (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
 
-	/* Save changes so we'll have the good icon next time. */
+	/* save changes to the list */
 	nautilus_bookmark_list_save_file (bookmarks);
+}
+
+static void
+bookmark_in_list_notify (GObject *object,
+			      GParamSpec *pspec,
+			      NautilusBookmarkList *bookmarks)
+{
+	/* emit the changed signal without saving, as only appearance properties changed */
+	g_signal_emit (bookmarks, signals[CHANGED], 0);
 }
 
 static void
@@ -207,12 +206,12 @@ nautilus_bookmark_list_class_init (NautilusBookmarkListClass *class)
 	object_class->finalize = do_finalize;
 	object_class->constructor = do_constructor;
 
-	signals[CONTENTS_CHANGED] =
-		g_signal_new ("contents_changed",
+	signals[CHANGED] =
+		g_signal_new ("changed",
 		              G_TYPE_FROM_CLASS (object_class),
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusBookmarkListClass, 
-						   contents_changed),
+					       changed),
 		              NULL, NULL,
 		              g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
@@ -258,8 +257,12 @@ insert_bookmark_internal (NautilusBookmarkList *bookmarks,
 {
 	bookmarks->list = g_list_insert (bookmarks->list, bookmark, index);
 
-	g_signal_connect_object (bookmark, "contents_changed",
+	g_signal_connect_object (bookmark, "contents-changed",
 				 G_CALLBACK (bookmark_in_list_changed_callback), bookmarks, 0);
+	g_signal_connect_object (bookmark, "notify::icon",
+				 G_CALLBACK (bookmark_in_list_notify), bookmarks, 0);
+	g_signal_connect_object (bookmark, "notify::name",
+				 G_CALLBACK (bookmark_in_list_notify), bookmarks, 0);
 }
 
 /**
@@ -518,7 +521,7 @@ load_file_finish (NautilusBookmarkList *bookmarks,
       		g_free (contents);
        		g_strfreev (lines);
 
-		g_signal_emit (bookmarks, signals[CONTENTS_CHANGED], 0);
+		g_signal_emit (bookmarks, signals[CHANGED], 0);
 	} else if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
 		g_warning ("Could not load bookmark file: %s\n", error->message);
 		g_error_free (error);
@@ -595,13 +598,13 @@ save_file_async (NautilusBookmarkList *bookmarks,
 
 		/* make sure we save label if it has one for compatibility with GTK 2.7 and 2.8 */
 		if (nautilus_bookmark_get_has_custom_name (bookmark)) {
-			char *label, *uri;
+			const char *label;
+			char *uri;
 			label = nautilus_bookmark_get_name (bookmark);
 			uri = nautilus_bookmark_get_uri (bookmark);
 			g_string_append_printf (bookmark_string,
 						"%s %s\n", uri, label);
 			g_free (uri);
-			g_free (label);
 		} else {
 			char *uri;
 			uri = nautilus_bookmark_get_uri (bookmark);
@@ -686,7 +689,7 @@ nautilus_bookmark_list_load_file (NautilusBookmarkList *bookmarks)
 static void
 nautilus_bookmark_list_save_file (NautilusBookmarkList *bookmarks)
 {
-	g_signal_emit (bookmarks, signals[CONTENTS_CHANGED], 0);
+	g_signal_emit (bookmarks, signals[CHANGED], 0);
 
 	g_queue_push_head (bookmarks->pending_ops, GINT_TO_POINTER (SAVE_JOB));
 

@@ -67,7 +67,7 @@
 typedef struct {
         NautilusBookmark *bookmark;
         NautilusWindow *window;
-        guint changed_handler_id;
+	GCallback refresh_callback;
 	NautilusBookmarkFailedCallback failed_callback;
 } BookmarkHolder;
 
@@ -83,14 +83,17 @@ bookmark_holder_new (NautilusBookmark *bookmark,
 	new_bookmark_holder->window = window;
 	new_bookmark_holder->bookmark = bookmark;
 	new_bookmark_holder->failed_callback = failed_callback;
+	new_bookmark_holder->refresh_callback = refresh_callback;
 	/* Ref the bookmark because it might be unreffed away while 
 	 * we're holding onto it (not an issue for window).
 	 */
 	g_object_ref (bookmark);
-	new_bookmark_holder->changed_handler_id = 
-		g_signal_connect_object (bookmark, "appearance_changed",
-					 refresh_callback,
-					 window, G_CONNECT_SWAPPED);
+	g_signal_connect_object (bookmark, "notify::icon",
+				 refresh_callback,
+				 window, G_CONNECT_SWAPPED);
+	g_signal_connect_object (bookmark, "notify::name",
+				 refresh_callback,
+				 window, G_CONNECT_SWAPPED);
 
 	return new_bookmark_holder;
 }
@@ -98,8 +101,8 @@ bookmark_holder_new (NautilusBookmark *bookmark,
 static void
 bookmark_holder_free (BookmarkHolder *bookmark_holder)
 {
-	g_signal_handler_disconnect (bookmark_holder->bookmark,
-				     bookmark_holder->changed_handler_id);
+	g_signal_handlers_disconnect_by_func (bookmark_holder->bookmark,
+					      bookmark_holder->refresh_callback, bookmark_holder->window);
 	g_object_unref (bookmark_holder->bookmark);
 	g_free (bookmark_holder);
 }
@@ -165,7 +168,7 @@ nautilus_menus_append_bookmark_to_menu (NautilusWindow *window,
 {
 	BookmarkHolder *bookmark_holder;
 	char action_name[128];
-	char *name;
+	const char *name;
 	char *path;
 	GIcon *icon;
 	GtkAction *action;
@@ -216,7 +219,6 @@ nautilus_menus_append_bookmark_to_menu (NautilusWindow *window,
 						   TRUE);
 
 	g_free (path);
-	g_free (name);
 }
 
 static void

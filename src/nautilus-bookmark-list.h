@@ -56,7 +56,7 @@ struct NautilusBookmarkList {
 
 struct NautilusBookmarkListClass {
 	GObjectClass parent_class;
-	void (* contents_changed) (NautilusBookmarkList *bookmarks);
+	void (* changed) (NautilusBookmarkList *bookmarks);
 };
 
 GType                   nautilus_bookmark_list_get_type            (void);

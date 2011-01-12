@@ -535,7 +535,6 @@ char *
 nautilus_window_slot_get_current_uri (NautilusWindowSlot *slot)
 {
 	if (slot->pending_location != NULL) {
-		g_print ("returning pending\n");
 		return g_file_get_uri (slot->pending_location);
 	}
 
