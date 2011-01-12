@@ -75,7 +75,7 @@ nautilus_compute_title_for_location (GFile *location)
 	}
 
 	if (title == NULL) {
-		title = g_strdup ("");
+		title = g_file_get_basename (location);
 	}
 	
 	return title;
