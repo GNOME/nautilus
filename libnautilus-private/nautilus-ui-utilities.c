@@ -128,30 +128,13 @@ extension_action_sensitive_callback (NautilusMenuItem *item,
 	gtk_action_set_sensitive (GTK_ACTION (user_data), value);
 }
 
-static GdkPixbuf *
-get_action_icon (const char *icon_name, int size)
-{
-	NautilusIconInfo *info;
-	GdkPixbuf *pixbuf;
-
-	if (g_path_is_absolute (icon_name)) {
-		info = nautilus_icon_info_lookup_from_path (icon_name, size);
-	} else {
-		info = nautilus_icon_info_lookup_from_name (icon_name, size);
-	}
-	pixbuf = nautilus_icon_info_get_pixbuf_nodefault_at_size (info, size);
-	g_object_unref (info);
-
-	return pixbuf;
-}
-
 GtkAction *
 nautilus_action_from_menu_item (NautilusMenuItem *item)
 {
 	char *name, *label, *tip, *icon_name;
 	gboolean sensitive, priority;
 	GtkAction *action;
-	GdkPixbuf *pixbuf;
+	GIcon *icon;
 
 	g_object_get (G_OBJECT (item),
 		      "name", &name, "label", &label,
@@ -166,13 +149,10 @@ nautilus_action_from_menu_item (NautilusMenuItem *item)
 				 icon_name);
 
 	if (icon_name != NULL) {
-		pixbuf = get_action_icon (icon_name,
-								nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU));
-		if (pixbuf != NULL) {
-			g_object_set_data_full (G_OBJECT (action), "menu-icon",
-						pixbuf,
-						g_object_unref);
-		}
+		icon = g_themed_icon_new_with_default_fallbacks (icon_name);
+		g_object_set_data_full (G_OBJECT (action), "menu-icon",
+					icon,
+					g_object_unref);
 	}
 
 	gtk_action_set_sensitive (action, sensitive);
@@ -197,7 +177,7 @@ nautilus_toolbar_action_from_menu_item (NautilusMenuItem *item)
 	char *name, *label, *tip, *icon_name;
 	gboolean sensitive, priority;
 	GtkAction *action;
-	GdkPixbuf *pixbuf;
+	GIcon *icon;
 
 	g_object_get (G_OBJECT (item),
 		      "name", &name, "label", &label,
@@ -212,13 +192,10 @@ nautilus_toolbar_action_from_menu_item (NautilusMenuItem *item)
 				 icon_name);
 
 	if (icon_name != NULL) {
-		pixbuf = get_action_icon (icon_name,
-								nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_LARGE_TOOLBAR));
-		if (pixbuf != NULL) {
-			g_object_set_data_full (G_OBJECT (action), "toolbar-icon",
-						pixbuf,
-						g_object_unref);
-		}
+		icon = g_themed_icon_new_with_default_fallbacks (icon_name);
+		g_object_set_data_full (G_OBJECT (action), "toolbar-icon",
+					icon,
+					g_object_unref);
 	}
 
 	gtk_action_set_sensitive (action, sensitive);

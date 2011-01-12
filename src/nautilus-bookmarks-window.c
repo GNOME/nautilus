@@ -174,7 +174,7 @@ static GtkListStore *
 create_bookmark_store (void)
 {
 	return gtk_list_store_new (BOOKMARK_LIST_COLUMN_COUNT,
-				   GDK_TYPE_PIXBUF,
+				   G_TYPE_ICON,
 				   G_TYPE_STRING,
 				   G_TYPE_OBJECT,
 				   PANGO_TYPE_STYLE);
@@ -287,14 +287,14 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 	rend = gtk_cell_renderer_pixbuf_new ();
 	col = gtk_tree_view_column_new_with_attributes ("Icon", 
 							rend,
-							"pixbuf", 
+							"gicon", 
 							BOOKMARK_LIST_COLUMN_ICON,
 							NULL);
 	gtk_tree_view_append_column (bookmark_list_widget,
 				     GTK_TREE_VIEW_COLUMN (col));
 	gtk_tree_view_column_set_fixed_width (GTK_TREE_VIEW_COLUMN (col),
 					      NAUTILUS_ICON_SIZE_SMALLER);
-	
+
 	rend = gtk_cell_renderer_text_new ();
 	g_object_set (rend,
 		      "ellipsize", PANGO_ELLIPSIZE_END,
@@ -811,8 +811,8 @@ update_bookmark_from_text (void)
 {
 	if (text_changed) {
 		NautilusBookmark *bookmark, *bookmark_in_list;
-		char *name;
-		GdkPixbuf *pixbuf;
+		const char *name;
+		GIcon *icon;
 		guint selected_row;
 		GtkTreeIter iter;
 		GFile *location;
@@ -856,19 +856,17 @@ update_bookmark_from_text (void)
 								   selected_row);
 
 		name = nautilus_bookmark_get_name (bookmark_in_list);
-
-		pixbuf = nautilus_bookmark_get_pixbuf (bookmark_in_list, GTK_ICON_SIZE_MENU);
+		icon = nautilus_bookmark_get_icon (bookmark_in_list);
 
 		gtk_list_store_set (bookmark_list_store, &iter,
 				    BOOKMARK_LIST_COLUMN_BOOKMARK, bookmark_in_list,
 				    BOOKMARK_LIST_COLUMN_NAME, name,
-				    BOOKMARK_LIST_COLUMN_ICON, pixbuf,
+				    BOOKMARK_LIST_COLUMN_ICON, icon,
 				    -1);
 		g_signal_handler_unblock (bookmark_list_store,
 					  row_changed_signal_id);
 
-		g_object_unref (pixbuf);
-		g_free (name);
+		g_object_unref (icon);
 	}
 }
 
@@ -993,17 +991,17 @@ repopulate (void)
 
 	for (index = 0; index < nautilus_bookmark_list_length (bookmarks); ++index) {
 		NautilusBookmark *bookmark;
-		char             *bookmark_name;
-		GdkPixbuf        *bookmark_pixbuf;
+		const char       *bookmark_name;
+		GIcon            *bookmark_icon;
 		GtkTreeIter       iter;
 
 		bookmark = nautilus_bookmark_list_item_at (bookmarks, index);
 		bookmark_name = nautilus_bookmark_get_name (bookmark);
-		bookmark_pixbuf = nautilus_bookmark_get_pixbuf (bookmark, GTK_ICON_SIZE_MENU);
-		
+		bookmark_icon = nautilus_bookmark_get_icon (bookmark);
+
 		gtk_list_store_append (store, &iter);
 		gtk_list_store_set (store, &iter, 
-				    BOOKMARK_LIST_COLUMN_ICON, bookmark_pixbuf,
+				    BOOKMARK_LIST_COLUMN_ICON, bookmark_icon,
 				    BOOKMARK_LIST_COLUMN_NAME, bookmark_name,
 				    BOOKMARK_LIST_COLUMN_BOOKMARK, bookmark,
 				    BOOKMARK_LIST_COLUMN_STYLE, PANGO_STYLE_NORMAL,
@@ -1018,10 +1016,9 @@ repopulate (void)
 			gtk_tree_path_free (path);
 		}
 
-		g_free (bookmark_name);
-		g_object_unref (bookmark_pixbuf);
-		
+		g_object_unref (bookmark_icon);
 	}
+
 	g_signal_handler_unblock (store, row_changed_signal_id);
 
 	if (reference != NULL) {

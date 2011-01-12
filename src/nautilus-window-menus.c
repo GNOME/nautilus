@@ -167,7 +167,7 @@ nautilus_menus_append_bookmark_to_menu (NautilusWindow *window,
 	char action_name[128];
 	char *name;
 	char *path;
-	GdkPixbuf *pixbuf;
+	GIcon *icon;
 	GtkAction *action;
 	GtkWidget *menuitem;
 
@@ -178,7 +178,7 @@ nautilus_menus_append_bookmark_to_menu (NautilusWindow *window,
 	name = nautilus_bookmark_get_name (bookmark);
 
 	/* Create menu item with pixbuf */
-	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, GTK_ICON_SIZE_MENU);
+	icon = nautilus_bookmark_get_icon (bookmark);
 
 	g_snprintf (action_name, sizeof (action_name), "%s%d", parent_id, index_in_parent);
 
@@ -188,7 +188,7 @@ nautilus_menus_append_bookmark_to_menu (NautilusWindow *window,
 				 NULL);
 	
 	g_object_set_data_full (G_OBJECT (action), "menu-icon",
-				g_object_ref (pixbuf),
+				icon,
 				g_object_unref);
 
 	g_signal_connect_data (action, "activate",
@@ -215,7 +215,6 @@ nautilus_menus_append_bookmark_to_menu (NautilusWindow *window,
 	gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (menuitem),
 						   TRUE);
 
-	g_object_unref (pixbuf);
 	g_free (path);
 	g_free (name);
 }
@@ -693,7 +692,7 @@ connect_proxy_cb (GtkUIManager *manager,
 		  GtkWidget *proxy,
 		  NautilusWindow *window)
 {
-	GdkPixbuf *icon;
+	GIcon *icon;
 	GtkWidget *widget;
 	
 	if (GTK_IS_MENU_ITEM (proxy)) {
@@ -707,19 +706,19 @@ connect_proxy_cb (GtkUIManager *manager,
 		icon = g_object_get_data (G_OBJECT (action), "menu-icon");
 		if (icon != NULL) {
 			gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (proxy),
-						       gtk_image_new_from_pixbuf (icon));
+						       gtk_image_new_from_gicon (icon, GTK_ICON_SIZE_MENU));
 		}
 	}
 	if (GTK_IS_TOOL_BUTTON (proxy)) {
 		icon = g_object_get_data (G_OBJECT (action), "toolbar-icon");
 		if (icon != NULL) {
-			widget = gtk_image_new_from_pixbuf (icon);
+			widget = gtk_image_new_from_gicon (icon, GTK_ICON_SIZE_LARGE_TOOLBAR);
 			gtk_widget_show (widget);
 			gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (proxy),
 							 widget);
 		}
 	}
-	
+
 	widget = get_event_widget (proxy);
 	if (widget) {
 		g_signal_connect (widget, "button-press-event",
