@@ -4013,6 +4013,12 @@ nautilus_file_get_gicon (NautilusFile *file,
 		return NULL;
 	}
 
+	icon = get_custom_icon (file);
+
+	if (icon != NULL) {
+		return icon;
+	}
+
 	if (file->details->icon) {
 		icon = NULL;
 
