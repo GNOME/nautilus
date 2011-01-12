@@ -431,10 +431,6 @@ GFile *                 nautilus_file_get_activation_location           (Nautilu
 
 char *                  nautilus_file_get_drop_target_uri               (NautilusFile                   *file);
 
-/* Get custom icon (if specified by metadata or link contents) */
-char *                  nautilus_file_get_custom_icon                   (NautilusFile                   *file);
-
-
 GIcon *                 nautilus_file_get_gicon                         (NautilusFile                   *file,
 									 NautilusFileIconFlags           flags);
 NautilusIconInfo *      nautilus_file_get_icon                          (NautilusFile                   *file,

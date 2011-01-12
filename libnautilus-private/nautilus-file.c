@@ -4271,26 +4271,6 @@ nautilus_file_get_icon_pixbuf (NautilusFile *file,
 	return pixbuf;
 }
 
-char *
-nautilus_file_get_custom_icon (NautilusFile *file)
-{
-	char *custom_icon;
-
-	if (file == NULL) {
-		return NULL;
-	}
-
-	/* Metadata takes precedence */
-	custom_icon = get_custom_icon_metadata_uri (file);
- 
-	if (custom_icon == NULL && file->details->got_link_info) {
-		custom_icon = g_strdup (file->details->custom_icon);
- 	}
- 
-	return custom_icon;
-}
-
-
 gboolean
 nautilus_file_get_date (NautilusFile *file,
 			NautilusDateType date_type,
