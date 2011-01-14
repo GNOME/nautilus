@@ -94,6 +94,10 @@ nautilus_bookmark_update_icon (NautilusBookmark *bookmark)
 {
 	GIcon *new_icon;
 
+	if (bookmark->details->file == NULL) {
+		return;
+	}
+
 	if (!nautilus_file_is_local (bookmark->details->file)) {
 		/* never update icons for remote bookmarks */
 		return;
@@ -179,6 +183,7 @@ bookmark_file_changed_callback (NautilusFile *file,
 		nautilus_bookmark_disconnect_file (bookmark);
 	} else {
 		nautilus_bookmark_update_icon (bookmark);
+		bookmark_set_name_from_ready_file (bookmark, file);
 	}
 }
 
@@ -258,7 +263,8 @@ nautilus_bookmark_connect_file (NautilusBookmark *bookmark)
 		nautilus_bookmark_set_icon_to_default (bookmark);
 	}
 
-	if (nautilus_file_check_if_ready (bookmark->details->file, NAUTILUS_FILE_ATTRIBUTE_INFO)) {
+	if (bookmark->details->file != NULL &&
+	    nautilus_file_check_if_ready (bookmark->details->file, NAUTILUS_FILE_ATTRIBUTE_INFO)) {
 		bookmark_set_name_from_ready_file (bookmark, bookmark->details->file);
 	}
 
