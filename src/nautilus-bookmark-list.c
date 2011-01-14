@@ -59,10 +59,7 @@ static NautilusBookmark *
 new_bookmark_from_uri (const char *uri, const char *label)
 {
 	NautilusBookmark *new_bookmark;
-	NautilusFile *file;
-	GIcon *icon;
 	GFile *location;
-	gboolean native;
 
 	location = NULL;
 	if (uri) {
@@ -70,30 +67,12 @@ new_bookmark_from_uri (const char *uri, const char *label)
 	}
 	
 	new_bookmark = NULL;
-	
-	if (uri) {
-		native = g_file_is_native (location);
-		file = nautilus_file_get (location);
 
-		icon = NULL;
-		if (nautilus_file_check_if_ready (file,
-						  NAUTILUS_FILE_ATTRIBUTES_FOR_ICON)) {
-			icon = nautilus_file_get_gicon (file, 0);
-		}
-		nautilus_file_unref (file);
-
-		if (icon == NULL) {
-			icon = native ? g_themed_icon_new (NAUTILUS_ICON_FOLDER) :
-				g_themed_icon_new (NAUTILUS_ICON_FOLDER_REMOTE);
-		}
-
-		new_bookmark = nautilus_bookmark_new (location, label, icon);
-
-		g_object_unref (icon);
-
+	if (location) {
+		new_bookmark = nautilus_bookmark_new (location, label, NULL);
+		g_object_unref (location);
 	}
 
-	g_object_unref (location);
 	return new_bookmark;
 }
 
@@ -128,8 +107,8 @@ bookmark_in_list_changed_callback (NautilusBookmark     *bookmark,
 
 static void
 bookmark_in_list_notify (GObject *object,
-			      GParamSpec *pspec,
-			      NautilusBookmarkList *bookmarks)
+			 GParamSpec *pspec,
+			 NautilusBookmarkList *bookmarks)
 {
 	/* emit the changed signal without saving, as only appearance properties changed */
 	g_signal_emit (bookmarks, signals[CHANGED], 0);
