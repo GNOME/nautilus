@@ -57,6 +57,7 @@
 #include <libnautilus-private/nautilus-lib-self-check-functions.h>
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-signaller.h>
+#include <libnautilus-private/nautilus-ui-utilities.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
 #include <libnautilus-extension/nautilus-menu-provider.h>
 
@@ -1245,7 +1246,8 @@ nautilus_application_constructor (GType type,
 static void
 nautilus_application_init (NautilusApplication *application)
 {
-	/* do nothing */
+	/* FIXME: make this available to libnautilus-private in another way */
+	nautilus_store_application (GTK_APPLICATION (application));
 }
 
 static void

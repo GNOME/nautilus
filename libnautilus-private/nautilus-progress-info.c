@@ -29,6 +29,7 @@
 #include <eel/eel-string.h>
 #include <eel/eel-glib-extensions.h>
 #include "nautilus-progress-info.h"
+#include "nautilus-ui-utilities.h"
 
 enum {
   CHANGED,
@@ -227,6 +228,9 @@ get_progress_window (void)
 				 GTK_WIN_POS_CENTER);
 	gtk_window_set_icon_name (GTK_WINDOW (progress_window),
 				"system-file-manager");
+
+	gtk_application_add_window (nautilus_get_application (),
+				    GTK_WINDOW (progress_window));
 	
 	vbox = gtk_vbox_new (FALSE, 0);
 	gtk_box_set_spacing (GTK_BOX (vbox), 5);
