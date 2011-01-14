@@ -25,9 +25,9 @@
  */
 
 #include <config.h>
+
 #include "nautilus-bookmark.h"
 
-#include "nautilus-file.h"
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
@@ -36,9 +36,13 @@
 #include <gio/gio.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
+
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-icon-names.h>
+
+#define DEBUG_FLAG NAUTILUS_DEBUG_BOOKMARKS
+#include <libnautilus-private/nautilus-debug.h>
 
 enum {
 	CONTENTS_CHANGED,
@@ -98,6 +102,8 @@ nautilus_bookmark_update_icon (NautilusBookmark *bookmark)
 	if (!nautilus_file_is_not_yet_confirmed (bookmark->details->file) &&
 	    nautilus_file_check_if_ready (bookmark->details->file,
 					  NAUTILUS_FILE_ATTRIBUTES_FOR_ICON)) {
+		DEBUG ("%s: set new icon", nautilus_bookmark_get_name (bookmark));
+
 		new_icon = nautilus_file_get_gicon (bookmark->details->file, 0);
 		g_object_set (bookmark,
 			      "icon", new_icon,
@@ -123,6 +129,7 @@ bookmark_set_name_from_ready_file (NautilusBookmark *self,
 		nautilus_bookmark_set_name_internal (self, _("Home"));
 	} else if (g_strcmp0 (self->details->name, display_name) != 0) {
 		nautilus_bookmark_set_name_internal (self, display_name);
+		DEBUG ("%s: name changed to %s", nautilus_bookmark_get_name (self), display_name);
 	}
 
 	g_free (display_name);
@@ -136,10 +143,14 @@ bookmark_file_changed_callback (NautilusFile *file,
 
 	g_assert (file == bookmark->details->file);
 
+	DEBUG ("%s: file changed", nautilus_bookmark_get_name (bookmark));
+
 	location = nautilus_file_get_location (file);
 
 	if (!g_file_equal (bookmark->details->location, location) &&
 	    !nautilus_file_is_in_trash (file)) {
+		DEBUG ("%s: file got moved", nautilus_bookmark_get_name (bookmark));
+
 		g_object_unref (bookmark->details->location);
 		bookmark->details->location = g_object_ref (location);
 
@@ -164,6 +175,7 @@ bookmark_file_changed_callback (NautilusFile *file,
 		 * we don't want to change the icon or anything about the
 		 * bookmark just because its not there anymore.
 		 */
+		DEBUG ("%s: trashed", nautilus_bookmark_get_name (bookmark));
 		nautilus_bookmark_disconnect_file (bookmark);
 	} else {
 		nautilus_bookmark_update_icon (bookmark);
@@ -176,9 +188,15 @@ nautilus_bookmark_set_icon_to_default (NautilusBookmark *bookmark)
 	GIcon *icon, *emblemed_icon, *folder;
 	GEmblem *emblem;
 
-	folder = g_themed_icon_new (NAUTILUS_ICON_FOLDER);
+	if (g_file_is_native (bookmark->details->location)) {
+		folder = g_themed_icon_new (NAUTILUS_ICON_FOLDER);
+	} else {
+		folder = g_themed_icon_new (NAUTILUS_ICON_FOLDER_REMOTE);
+	}
 
 	if (nautilus_bookmark_uri_known_not_to_exist (bookmark)) {
+		DEBUG ("%s: file does not exist, add emblem", nautilus_bookmark_get_name (bookmark));
+
 		icon = g_themed_icon_new (GTK_STOCK_DIALOG_WARNING);
 		emblem = g_emblem_new (icon);
 
@@ -191,6 +209,8 @@ nautilus_bookmark_set_icon_to_default (NautilusBookmark *bookmark)
 		folder = emblemed_icon;
 	}
 
+	DEBUG ("%s: setting icon to default", nautilus_bookmark_get_name (bookmark));
+
 	g_object_set (bookmark,
 		      "icon", folder,
 		      NULL);
@@ -200,21 +220,30 @@ nautilus_bookmark_set_icon_to_default (NautilusBookmark *bookmark)
 
 static void
 nautilus_bookmark_disconnect_file (NautilusBookmark *bookmark)
-{	
-	g_signal_handlers_disconnect_by_func (bookmark->details->file,
-					      G_CALLBACK (bookmark_file_changed_callback),
-					      bookmark);
-	g_clear_object (&bookmark->details->file);
+{
+	if (bookmark->details->file != NULL) {
+		DEBUG ("%s: disconnecting file",
+		       nautilus_bookmark_get_name (bookmark));
+
+		g_signal_handlers_disconnect_by_func (bookmark->details->file,
+						      G_CALLBACK (bookmark_file_changed_callback),
+						      bookmark);
+		g_clear_object (&bookmark->details->file);
+	}
 }
 
 static void
 nautilus_bookmark_connect_file (NautilusBookmark *bookmark)
 {
 	if (bookmark->details->file != NULL) {
+		DEBUG ("%s: file already connected, returning",
+		       nautilus_bookmark_get_name (bookmark));
 		return;
 	}
 
 	if (!nautilus_bookmark_uri_known_not_to_exist (bookmark)) {
+		DEBUG ("%s: creating file", nautilus_bookmark_get_name (bookmark));
+
 		bookmark->details->file = nautilus_file_get (bookmark->details->location);
 		g_assert (!nautilus_file_is_gone (bookmark->details->file));
 
