@@ -1260,7 +1260,7 @@ bookmarks_drop_uris (NautilusPlacesSidebar *sidebar,
 {
 	NautilusBookmark *bookmark;
 	NautilusFile *file;
-	char *uri, *name;
+	char *uri;
 	char **uris;
 	int i;
 	GFile *location;
@@ -1290,7 +1290,6 @@ bookmarks_drop_uris (NautilusPlacesSidebar *sidebar,
 
 		g_object_unref (location);
 		g_object_unref (bookmark);
-		g_free (name);
 		g_free (uri);
 	}
 
