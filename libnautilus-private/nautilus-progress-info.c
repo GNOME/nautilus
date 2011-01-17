@@ -229,9 +229,6 @@ get_progress_window (void)
 	gtk_window_set_icon_name (GTK_WINDOW (progress_window),
 				"system-file-manager");
 
-	gtk_application_add_window (nautilus_get_application (),
-				    GTK_WINDOW (progress_window));
-	
 	vbox = gtk_vbox_new (FALSE, 0);
 	gtk_box_set_spacing (GTK_BOX (vbox), 5);
 		
@@ -442,6 +439,13 @@ handle_new_progress_info (NautilusProgressInfo *info)
 	update_status_icon_and_window ();	
 }
 
+static void
+new_op_finished (NautilusProgressInfo *info)
+{
+	/* release the hold we added in new_op_started() */
+	g_application_release (G_APPLICATION (nautilus_get_application ()));
+}
+
 static gboolean
 new_op_started_timeout (NautilusProgressInfo *info)
 {
@@ -462,6 +466,11 @@ new_op_started (NautilusProgressInfo *info)
 	g_timeout_add_seconds (2,
 			       (GSourceFunc)new_op_started_timeout,
 			       g_object_ref (info));
+
+	/* hold the application, so that it doesn't quit while this operation is
+	 * in progress.
+	 */
+	g_application_hold (G_APPLICATION (nautilus_get_application ()));
 }
 
 static void
@@ -474,6 +483,7 @@ nautilus_progress_info_init (NautilusProgressInfo *info)
 	G_UNLOCK (progress_info);
 
 	g_signal_connect (info, "started", (GCallback)new_op_started, NULL);
+	g_signal_connect (info, "finished", (GCallback)new_op_finished, NULL);
 }
 
 NautilusProgressInfo *
