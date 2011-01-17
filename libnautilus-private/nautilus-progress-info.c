@@ -210,6 +210,7 @@ get_progress_window (void)
 {
 	static GtkWidget *progress_window = NULL;
 	GtkWidget *vbox;
+	GIcon *icon;
 	
 	if (progress_window != NULL) {
 		return progress_window;
@@ -241,13 +242,15 @@ get_progress_window (void)
 			  "delete_event",
 			  (GCallback)delete_event, NULL);
 
-	status_icon = gtk_status_icon_new_from_icon_name ("system-file-manager");
+	icon = g_themed_icon_new_with_default_fallbacks ("system-file-manager-symbolic");
+	status_icon = gtk_status_icon_new_from_gicon (icon);
 	g_signal_connect (status_icon, "activate",
 			  (GCallback)status_icon_activate_cb,
 			  progress_window);
 
 	gtk_status_icon_set_visible (status_icon, FALSE);
-	
+	g_object_unref (icon);
+
 	return progress_window;
 }
 
