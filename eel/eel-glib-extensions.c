@@ -748,6 +748,8 @@ eel_g_settings_add_auto_boolean (GSettings *settings,
 	g_signal_connect (settings, signal,
 			  G_CALLBACK(update_auto_boolean),
 			  storage);
+
+	g_free (signal);
 }
 
 static void
@@ -772,6 +774,8 @@ eel_g_settings_add_auto_int (GSettings *settings,
 	g_signal_connect (settings, signal,
 			  G_CALLBACK(update_auto_int),
 			  storage);
+
+	g_free (signal);
 }
 
 static void
@@ -796,6 +800,8 @@ eel_g_settings_add_auto_enum (GSettings *settings,
 	g_signal_connect (settings, signal,
 			  G_CALLBACK(update_auto_enum),
 			  storage);
+
+	g_free (signal);
 }
 
 static void
@@ -822,6 +828,8 @@ eel_g_settings_add_auto_strv (GSettings *settings,
 	g_signal_connect (settings, signal,
 			  G_CALLBACK(update_auto_strv),
 			  storage);
+
+	g_free (signal);
 }
 
 static void
@@ -859,6 +867,8 @@ eel_g_settings_add_auto_strv_as_quarks (GSettings *settings,
 	g_signal_connect (settings, signal,
 			  G_CALLBACK(update_auto_strv_as_quarks),
 			  storage);
+
+	g_free (signal);
 }
 
 #if !defined (EEL_OMIT_SELF_CHECK)
