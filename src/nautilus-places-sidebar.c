@@ -3127,20 +3127,10 @@ nautilus_places_sidebar_dispose (GObject *object)
 		sidebar->eject_highlight_path = NULL;
 	}
 
-	if (sidebar->store != NULL) {
-		g_object_unref (sidebar->store);
-		sidebar->store = NULL;
-	}
-
-	if (sidebar->volume_monitor != NULL) {
-		g_object_unref (sidebar->volume_monitor);
-		sidebar->volume_monitor = NULL;
-	}
-
-	if (sidebar->bookmarks != NULL) {
-		g_object_unref (sidebar->bookmarks);
-		sidebar->bookmarks = NULL;
-	}
+	g_clear_object (&sidebar->store);
+	g_clear_object (&sidebar->volume_monitor);
+	g_clear_object (&sidebar->bookmarks);
+	g_clear_object (&sidebar->filter_model);
 
 	eel_remove_weak_pointer (&(sidebar->go_to_after_mount_slot));
 
