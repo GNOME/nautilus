@@ -1009,7 +1009,15 @@ key_press_callback (GtkWidget *widget, GdkEventKey *event, gpointer callback_dat
 	case GDK_KEY_Left:
 		gtk_tree_view_get_cursor (tree_view, &path, NULL);
 		if (path) {
-			gtk_tree_view_collapse_row (tree_view, path);
+			if (!gtk_tree_view_collapse_row (tree_view, path)) {
+				/* if the row is already collapsed or doesn't have any children,
+				 * jump to the parent row instead.
+				 */
+				if ((gtk_tree_path_get_depth (path) > 1) && gtk_tree_path_up (path)) {
+					gtk_tree_view_set_cursor (tree_view, path, NULL, FALSE);
+				}
+			}
+
 			gtk_tree_path_free (path);
 		}
 		handled = TRUE;
