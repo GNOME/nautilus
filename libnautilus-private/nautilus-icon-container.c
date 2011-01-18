@@ -8757,6 +8757,9 @@ nautilus_icon_container_theme_changed (gpointer user_data)
 	container->details->normal_color_rgba = color;
 
 	setup_label_gcs (container);
+
+	gdk_rgba_free (prelight_icon_color);
+	gdk_rgba_free (normal_icon_color);
 }
 
 void
