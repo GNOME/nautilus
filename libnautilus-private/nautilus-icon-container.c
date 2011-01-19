@@ -4146,19 +4146,19 @@ setup_background (NautilusIconContainer *container)
 	window = gtk_layout_get_bin_window (GTK_LAYOUT (container));
 
 	if (!container->details->active_background) {
-		gtk_style_context_get_background_color (style, GTK_STATE_FLAG_FOCUSED, &color);
+		gtk_style_context_get_background_color (style, GTK_STATE_FLAG_NORMAL, &color);
 
 		DEBUG ("Container %p, making color inactive", container);
 		eel_make_color_inactive (&color);
 
 		gdk_window_set_background_rgba (window, &color);
-		gtk_widget_override_background_color (GTK_WIDGET (container), GTK_STATE_FLAG_FOCUSED,
+		gtk_widget_override_background_color (GTK_WIDGET (container), GTK_STATE_FLAG_NORMAL,
 						      &color);
 	} else {
 		DEBUG ("Container %p, removing color override", container);
-		gtk_widget_override_background_color (GTK_WIDGET (container), GTK_STATE_FLAG_FOCUSED,
+		gtk_widget_override_background_color (GTK_WIDGET (container), GTK_STATE_FLAG_NORMAL,
 						      NULL);
-		gtk_style_context_get_background_color (style, GTK_STATE_FLAG_FOCUSED, &color);
+		gtk_style_context_get_background_color (style, GTK_STATE_FLAG_NORMAL, &color);
 
 		gdk_window_set_background_rgba (window, &color);
 	}

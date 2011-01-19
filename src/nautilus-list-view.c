@@ -1489,14 +1489,14 @@ setup_background (NautilusListView *view)
 	window = gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget));
 
 	if (!is_active) {
-		gtk_style_context_get_background_color (style, GTK_STATE_FLAG_ACTIVE,
+		gtk_style_context_get_background_color (style, GTK_STATE_FLAG_NORMAL,
 							&color);
 		eel_make_color_inactive (&color);
 
-		gtk_widget_override_background_color (widget, GTK_STATE_FLAG_ACTIVE, &color);
+		gtk_widget_override_background_color (widget, GTK_STATE_FLAG_NORMAL, &color);
 		gtk_style_context_set_background (style, window);
 	} else {
-		gtk_widget_override_background_color (widget, GTK_STATE_FLAG_ACTIVE, NULL);
+		gtk_widget_override_background_color (widget, GTK_STATE_FLAG_NORMAL, NULL);
 		gtk_style_context_set_background (style, window);
 	}
 }
