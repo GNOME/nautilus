@@ -1122,7 +1122,7 @@ draw_label_text (NautilusIconCanvasItem *item,
 	PangoLayout *additional_layout;
 	GdkRGBA label_color;
 	gboolean have_editable, have_additional;
-	gboolean needs_frame, needs_highlight, prelight_label, is_rtl_label_beside;
+	gboolean needs_highlight, prelight_label, is_rtl_label_beside;
 	EelIRect text_rect;
 	int x;
 	int max_text_width;
@@ -1193,10 +1193,9 @@ draw_label_text (NautilusIconCanvasItem *item,
 		prepare_pango_layout_for_draw (item, editable_layout);
 
 		gtk_widget_style_get (GTK_WIDGET (container),
-				      "frame_text", &needs_frame,
 				      "activate_prelight_icon_label", &prelight_label,
 				      NULL);
-		if (needs_frame && !needs_highlight && details->text_width > 0 && details->text_height > 0) {
+		if (!needs_highlight && details->text_width > 0 && details->text_height > 0) {
 			if (!(prelight_label && item->details->is_prelit)) {
 				draw_frame (item, 
 					    cr,
@@ -1481,30 +1480,6 @@ real_map_pixbuf (NautilusIconCanvasItem *icon_item)
 		temp_pixbuf = eel_create_colorized_pixbuf (temp_pixbuf, color);
 
 		g_object_unref (old_pixbuf);
-	}
-
-	if (!icon_item->details->is_active
-			&& !icon_item->details->is_prelit
-			&& !icon_item->details->is_highlighted_for_selection
-			&& !icon_item->details->is_highlighted_for_drop) {
-		old_pixbuf = temp_pixbuf;
-
-		gtk_widget_style_get (GTK_WIDGET (container),
-			      "normal_icon_render_mode", &render_mode,
-			      "normal_icon_saturation", &saturation,
-			      "normal_icon_brightness", &brightness,
-			      "normal_icon_lighten", &lighten,
-			      NULL);
-		if (render_mode > 0 || saturation < 255 || brightness < 255) {
-			/* if theme requests colorization */
-			temp_pixbuf = eel_gdk_pixbuf_render (temp_pixbuf,
-					    render_mode,
-					    saturation,
-					    brightness,
-					    lighten,
-					    &container->details->normal_icon_color_rgba);
-			g_object_unref (old_pixbuf);
-		}
 	}
 	
 	return temp_pixbuf;

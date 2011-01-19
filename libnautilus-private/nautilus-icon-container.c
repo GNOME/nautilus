@@ -4151,16 +4151,14 @@ setup_background (NautilusIconContainer *container)
 		DEBUG ("Container %p, making color inactive", container);
 		eel_make_color_inactive (&color);
 
-		gdk_window_set_background_rgba (window, &color);
 		gtk_widget_override_background_color (GTK_WIDGET (container), GTK_STATE_FLAG_NORMAL,
 						      &color);
+		gtk_style_context_set_background (style, window);
 	} else {
 		DEBUG ("Container %p, removing color override", container);
 		gtk_widget_override_background_color (GTK_WIDGET (container), GTK_STATE_FLAG_NORMAL,
 						      NULL);
-		gtk_style_context_get_background_color (style, GTK_STATE_FLAG_NORMAL, &color);
-
-		gdk_window_set_background_rgba (window, &color);
+		gtk_style_context_set_background (style, window);
 	}
 }
 
@@ -4215,18 +4213,12 @@ unrealize (GtkWidget *widget)
 
 static void
 style_set (GtkWidget *widget,
-	   GtkStyle  *previous_style)
+	   GtkStyle *previous_style)
 {
 	NautilusIconContainer *container;
-	gboolean frame_text;
 	
 	container = NAUTILUS_ICON_CONTAINER (widget);
-
-	gtk_style_context_get_style (gtk_widget_get_style_context (GTK_WIDGET (container)),
-				     "frame_text", &frame_text,
-				     NULL);
-
-	container->details->use_drop_shadows = container->details->drop_shadows_requested && !frame_text;
+	container->details->use_drop_shadows = container->details->drop_shadows_requested;
 
 	nautilus_icon_container_theme_changed (NAUTILUS_ICON_CONTAINER (widget));
 
@@ -6034,13 +6026,6 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 	canvas_class->draw_background = draw_canvas_background;
 
 	class->start_interactive_search = nautilus_icon_container_start_interactive_search;
-	
-	gtk_widget_class_install_style_property (widget_class,
-						 g_param_spec_boolean ("frame_text",
-								       "Frame Text",
-								       "Draw a frame around unselected text",
-								       FALSE,
-								       G_PARAM_READABLE));
 
 	gtk_widget_class_install_style_property (widget_class,
 						 g_param_spec_boxed ("selection_box_rgba",
@@ -6060,14 +6045,6 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 								     "Dark Info RGBA",
 								     "Color used for information text against a light background",
 								     GDK_TYPE_RGBA,
-								     G_PARAM_READABLE));
-
-	gtk_widget_class_install_style_property (widget_class,
-						 g_param_spec_uint ("normal_icon_render_mode",
-								     "Normal Icon Render Mode",
-								     "Mode of normal icons being rendered (0=normal, 1=spotlight, 2=colorize, 3=colorize-monochromely)",
-								     0, 3,
-								     DEFAULT_NORMAL_ICON_RENDER_MODE,
 								     G_PARAM_READABLE));
 	gtk_widget_class_install_style_property (widget_class,
 						 g_param_spec_uint ("prelight_icon_render_mode",
@@ -6089,13 +6066,6 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 								     GDK_TYPE_RGBA,
 								     G_PARAM_READABLE));
 	gtk_widget_class_install_style_property (widget_class,
-						 g_param_spec_uint ("normal_icon_saturation",
-								     "Normal Icon Saturation",
-								     "Saturation of icons in normal state",
-								     0, 255,
-								     DEFAULT_NORMAL_ICON_SATURATION,
-								     G_PARAM_READABLE));
-	gtk_widget_class_install_style_property (widget_class,
 						 g_param_spec_uint ("prelight_icon_saturation",
 								     "Prelight Icon Saturation",
 								     "Saturation of icons in prelight state",
@@ -6103,25 +6073,11 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 								     DEFAULT_PRELIGHT_ICON_SATURATION,
 								     G_PARAM_READABLE));
 	gtk_widget_class_install_style_property (widget_class,
-						 g_param_spec_uint ("normal_icon_brightness",
-								     "Normal Icon Brightness",
-								     "Brightness of icons in normal state",
-								     0, 255,
-								     DEFAULT_NORMAL_ICON_BRIGHTNESS,
-								     G_PARAM_READABLE));
-	gtk_widget_class_install_style_property (widget_class,
 						 g_param_spec_uint ("prelight_icon_brightness",
 								     "Prelight Icon Brightness",
 								     "Brightness of icons in prelight state",
 								     0, 255,
 								     DEFAULT_PRELIGHT_ICON_BRIGHTNESS,
-								     G_PARAM_READABLE));
-	gtk_widget_class_install_style_property (widget_class,
-						 g_param_spec_uint ("normal_icon_lighten",
-								     "Normal Icon Lighten",
-								     "Lighten icons in normal state",
-								     0, 255,
-								     DEFAULT_NORMAL_ICON_LIGHTEN,
 								     G_PARAM_READABLE));
 	gtk_widget_class_install_style_property (widget_class,
 						 g_param_spec_uint ("prelight_icon_lighten",
@@ -8565,7 +8521,6 @@ setup_label_gcs (NautilusIconContainer *container)
 {
 	GtkWidget *widget;
 	GdkRGBA *light_info_color, *dark_info_color;
-	gboolean frame_text;
 	GtkStyleContext *style;
 	GdkRGBA color;
 	
@@ -8612,14 +8567,7 @@ setup_label_gcs (NautilusIconContainer *container)
 			  LABEL_INFO_COLOR_ACTIVE,
 			  eel_gdk_rgba_is_dark (&color) ? light_info_color : dark_info_color);
 		
-	/* If NautilusIconContainer::frame_text is set, we can safely
-	 * use the foreground color from the theme, because it will
-	 * always be displayed against the gtk background */
-	gtk_style_context_get_style (gtk_widget_get_style_context (GTK_WIDGET (container)),
-				     "frame_text", &frame_text,
-				     NULL);
-
-	if (frame_text || !nautilus_icon_container_get_is_desktop (container)) {
+	if (!nautilus_icon_container_get_is_desktop (container)) {
 		gtk_style_context_get_color (style, GTK_STATE_FLAG_ACTIVE, &color);
 		setup_gc_with_fg (container, LABEL_COLOR, &color);
 
@@ -8697,18 +8645,12 @@ void
 nautilus_icon_container_set_use_drop_shadows (NautilusIconContainer  *container,
 					      gboolean                use_drop_shadows)
 {
-	gboolean frame_text;
-	
-	gtk_style_context_get_style (gtk_widget_get_style_context (GTK_WIDGET (container)),
-				     "frame_text", &frame_text,
-				     NULL);
-
 	if (container->details->drop_shadows_requested == use_drop_shadows) {
 		return;
 	}
 
 	container->details->drop_shadows_requested = use_drop_shadows;
-	container->details->use_drop_shadows = use_drop_shadows && !frame_text;
+	container->details->use_drop_shadows = use_drop_shadows;
 	gtk_widget_queue_draw (GTK_WIDGET (container));
 }
 
