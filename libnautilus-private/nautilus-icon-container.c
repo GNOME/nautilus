@@ -4203,10 +4203,11 @@ unrealize (GtkWidget *widget)
 }
 
 static void
-style_set (GtkWidget *widget,
-	   GtkStyle *previous_style)
+style_updated (GtkWidget *widget)
 {
 	NautilusIconContainer *container;
+
+	GTK_WIDGET_CLASS (nautilus_icon_container_parent_class)->style_updated (widget);
 	
 	container = NAUTILUS_ICON_CONTAINER (widget);
 	container->details->use_drop_shadows = container->details->drop_shadows_requested;
@@ -6010,7 +6011,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 	widget_class->key_press_event = key_press_event;
 	widget_class->popup_menu = popup_menu;
 	widget_class->get_accessible = get_accessible;
-	widget_class->style_set = style_set;
+	widget_class->style_updated = style_updated;
 	widget_class->grab_notify = grab_notify_cb;
 
 	canvas_class = EEL_CANVAS_CLASS (class);
