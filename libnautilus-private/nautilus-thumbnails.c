@@ -32,7 +32,6 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-file-utilities.h"
 #include <math.h>
-#include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-graphic-effects.h>
 #include <eel/eel-string.h>
 #include <eel/eel-debug.h>

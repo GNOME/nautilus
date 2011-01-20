@@ -29,7 +29,6 @@
 #include <config.h>
 #include "eel-gtk-extensions.h"
 
-#include "eel-gdk-pixbuf-extensions.h"
 #include "eel-glib-extensions.h"
 #include "eel-gnome-extensions.h"
 #include "eel-marshal.h"

@@ -41,7 +41,6 @@
 #include <libgnome-desktop/gnome-desktop-thumbnail.h>
 
 #include <eel/eel-accessibility.h>
-#include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>

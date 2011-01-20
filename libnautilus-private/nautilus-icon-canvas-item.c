@@ -33,7 +33,6 @@
 #include "nautilus-icon-private.h"
 #include <eel/eel-art-extensions.h>
 #include <eel/eel-gdk-extensions.h>
-#include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-graphic-effects.h>
 #include <eel/eel-gtk-macros.h>

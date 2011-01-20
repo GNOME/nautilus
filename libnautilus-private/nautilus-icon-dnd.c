@@ -39,7 +39,6 @@
 #include "nautilus-icon-private.h"
 #include "nautilus-link.h"
 #include "nautilus-metadata.h"
-#include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-graphic-effects.h>
