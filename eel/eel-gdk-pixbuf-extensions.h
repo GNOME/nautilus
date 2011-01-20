@@ -29,18 +29,8 @@
 #include <gdk/gdk.h>
 #include <gio/gio.h>
 
-#define EEL_OPACITY_FULLY_TRANSPARENT 0
-#define EEL_OPACITY_FULLY_OPAQUE      255
-
 /* Loading a GdkPixbuf with a URI. */
 GdkPixbuf *          eel_gdk_pixbuf_load_from_stream_at_size  (GInputStream          *stream,
 							       int                    size);
-
-GdkPixbuf *          eel_gdk_pixbuf_render                    (GdkPixbuf *pixbuf,
-                                                               guint render_mode,
-                                                               guint saturation,
-                                                               guint brightness,
-                                                               guint lighten_value,
-                                                               GdkRGBA *color);
 
 #endif /* EEL_GDK_PIXBUF_EXTENSIONS_H */
