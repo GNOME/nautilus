@@ -1,3 +1,8 @@
+* {
+    -NautilusIconContainer-selection-box-rgba: @selected_bg_color;
+    -NautilusIconContainer-dark-info-rgba: shade (@selected_bg_color, 0.6);
+    -NautilusIconContainer-light-info-rgba: shade (@selected_fg_color, 0.6);
+}
 
 GtkTreeView.NautilusSidebar {
     background-color: #f6f6f4;
