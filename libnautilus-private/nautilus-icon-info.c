@@ -25,7 +25,6 @@
 #include "nautilus-default-file-icon.h"
 #include <gtk/gtk.h>
 #include <gio/gio.h>
-#include <eel/eel-gdk-pixbuf-extensions.h>
 
 struct _NautilusIconInfo
 {
@@ -358,7 +357,10 @@ nautilus_icon_info_lookup (GIcon *icon,
 					       size,
 					       NULL, NULL, NULL);
 		if (stream) {
-			pixbuf = eel_gdk_pixbuf_load_from_stream_at_size (stream, size);
+			pixbuf = gdk_pixbuf_new_from_stream_at_scale (stream,
+								      size, size, TRUE,
+								      NULL, NULL);
+			g_input_stream_close (stream, NULL, NULL);
 			g_object_unref (stream);
 		}
 
