@@ -1167,19 +1167,6 @@ draw_label_text (NautilusIconCanvasItem *item,
 			    text_rect.y0,
 			    is_rtl_label_beside ? text_rect.x1 - text_rect.x0 - item->details->text_dx : text_rect.x1 - text_rect.x0,
 			    text_rect.y1 - text_rect.y0);
-	} else if (!needs_highlight && !details->is_renaming &&
-		   (details->is_prelit ||
-		    details->is_highlighted_as_keyboard_focus)) {
-		/* clear the underlying icons, where the text or overlaps them. */
-                cairo_save (cr);
-                cairo_set_source_rgba (cr, 0, 0, 0, 0);
-                cairo_rectangle (cr,
-                                 text_rect.x0,
-                                 text_rect.y0,
-                                 text_rect.x1 - text_rect.x0,
-                                 text_rect.y1 - text_rect.y0);
-                cairo_fill (cr);
-                cairo_restore (cr);
 	}
 
 	if (container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
