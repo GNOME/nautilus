@@ -1396,7 +1396,6 @@ real_map_pixbuf (NautilusIconCanvasItem *icon_item)
 	NautilusIconContainer *container;
 	GdkPixbuf *temp_pixbuf, *old_pixbuf, *audio_pixbuf;
 	int emblem_size;
-	guint render_mode, saturation, brightness, lighten;
 	
 	temp_pixbuf = icon_item->details->pixbuf;
 	canvas = EEL_CANVAS_ITEM(icon_item)->canvas;
@@ -1408,24 +1407,8 @@ real_map_pixbuf (NautilusIconCanvasItem *icon_item)
 	    icon_item->details->is_highlighted_for_clipboard) {
 		old_pixbuf = temp_pixbuf;
 
-		gtk_widget_style_get (GTK_WIDGET (container),
-			      "prelight_icon_render_mode", &render_mode,
-			      "prelight_icon_saturation", &saturation,
-			      "prelight_icon_brightness", &brightness,
-			      "prelight_icon_lighten", &lighten,
-			      NULL);
-
-		if (render_mode > 0 || saturation < 255 || brightness < 255) {
-			temp_pixbuf = eel_gdk_pixbuf_render (temp_pixbuf,
-					render_mode,
-					saturation,
-					brightness,
-					lighten,
-					&container->details->prelight_icon_color_rgba);
-			g_object_unref (old_pixbuf);
-       	}
-
-
+		temp_pixbuf = eel_create_spotlight_pixbuf (temp_pixbuf);
+		g_object_unref (old_pixbuf);
 
 		/* FIXME bugzilla.gnome.org 42471: This hard-wired image is inappropriate to
 		 * this level of code, which shouldn't know that the
