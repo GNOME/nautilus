@@ -30,7 +30,7 @@
 
 #include "nautilus-tree-sidebar-model.h"
 
-#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-graphic-effects.h>
 
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
@@ -321,7 +321,7 @@ get_menu_icon_for_file (TreeNode *node,
 	                                 file, (GCompareFunc) nautilus_file_compare_location) != NULL);
 
 	if (highlight) {
-		pixbuf = eel_gdk_pixbuf_render (retval, 1, 255, 255, 0, 0);
+		pixbuf = eel_create_spotlight_pixbuf (retval);
 
 		if (pixbuf != NULL) {
 			g_object_unref (retval);

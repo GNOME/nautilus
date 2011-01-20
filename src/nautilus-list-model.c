@@ -34,7 +34,7 @@
 #include <gtk/gtk.h>
 
 #include <libegg/eggtreemultidnd.h>
-#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-graphic-effects.h>
 #include <libnautilus-private/nautilus-dnd.h>
 
 enum {
@@ -357,7 +357,7 @@ nautilus_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int 
 			    g_list_find_custom (model->details->highlight_files,
 			                        file, (GCompareFunc) nautilus_file_compare_location))
 			{
-				rendered_icon = eel_gdk_pixbuf_render (icon, 1, 255, 255, 0, 0);
+				rendered_icon = eel_create_spotlight_pixbuf (icon);
 
 				if (rendered_icon != NULL) {
 					g_object_unref (icon);

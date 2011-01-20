@@ -42,9 +42,9 @@
 #include <eel/eel-debug.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-glib-extensions.h>
+#include <eel/eel-graphic-effects.h>
 #include <eel/eel-string.h>
 #include <eel/eel-stock-dialogs.h>
-#include <eel/eel-gdk-pixbuf-extensions.h>
 
 #include "nautilus-application.h"
 #include "nautilus-bookmark-list.h"
@@ -225,7 +225,7 @@ get_eject_icon (gboolean highlighted)
 
 	if (highlighted) {
 		GdkPixbuf *high;
-		high = eel_gdk_pixbuf_render (eject, 1, 255, 255, 0, 0);
+		high = eel_create_spotlight_pixbuf (eject);
 		g_object_unref (eject);
 		eject = high;
 	}
