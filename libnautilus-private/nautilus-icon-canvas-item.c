@@ -179,7 +179,6 @@ G_DEFINE_TYPE_WITH_CODE (NautilusIconCanvasItem, nautilus_icon_canvas_item, EEL_
 /* private */
 static void     draw_label_text                      (NautilusIconCanvasItem        *item,
 						      cairo_t                       *cr,
-						      gboolean                       create_mask,
 						      EelIRect                       icon_rect);
 static void     measure_label_text                   (NautilusIconCanvasItem        *item);
 static void     get_icon_canvas_rectangle            (NautilusIconCanvasItem        *item,
@@ -501,7 +500,7 @@ nautilus_icon_canvas_item_get_drag_surface (NautilusIconCanvasItem *item)
 
 	draw_embedded_text (item, cr,
 			    item_offset_x, item_offset_y);
-	draw_label_text (item, cr, FALSE, icon_rect);
+	draw_label_text (item, cr, icon_rect);
 	cairo_destroy (cr);
 
 	return surface;
@@ -805,7 +804,6 @@ static void
 draw_frame (NautilusIconCanvasItem *item,
 	    cairo_t *cr,
 	    GdkRGBA *color,
-	    gboolean create_mask,
 	    int x, 
 	    int y,
 	    int width,
@@ -821,17 +819,7 @@ draw_frame (NautilusIconCanvasItem *item,
 	 * from old code. 
 	 */
 	make_round_rect (cr, x, y, width, height, 5);
-	
-	if (create_mask) {
-		/* Dunno how to do this with cairo...
-		 * It used to threshold the rendering so that the
-		 * bitmask didn't show white where alpha < 0.5
-		 */
-	}
-
 	gdk_cairo_set_source_rgba (cr, color);
-	
-	/* Paint into drawable now that we have set up the color and opacity */	
 	cairo_fill (cr);
 
         cairo_restore (cr);
@@ -1112,7 +1100,6 @@ measure_label_text (NautilusIconCanvasItem *item)
 static void
 draw_label_text (NautilusIconCanvasItem *item,
                  cairo_t *cr,
-		 gboolean create_mask,
 		 EelIRect icon_rect)
 {
 	EelCanvasItem *canvas_item;
@@ -1162,7 +1149,6 @@ draw_label_text (NautilusIconCanvasItem *item,
 		draw_frame (item,
                             cr,
 			    gtk_widget_has_focus (GTK_WIDGET (container)) ? &container->details->highlight_color_rgba : &container->details->active_color_rgba,
-			    create_mask,
 			    is_rtl_label_beside ? text_rect.x0 + item->details->text_dx : text_rect.x0,
 			    text_rect.y0,
 			    is_rtl_label_beside ? text_rect.x1 - text_rect.x0 - item->details->text_dx : text_rect.x1 - text_rect.x0,
@@ -1187,7 +1173,6 @@ draw_label_text (NautilusIconCanvasItem *item,
 				draw_frame (item, 
 					    cr,
 					    &container->details->normal_color_rgba,
-					    create_mask,
 					    text_rect.x0,
 					    text_rect.y0,
 					    text_rect.x1 - text_rect.x0,
@@ -1196,7 +1181,6 @@ draw_label_text (NautilusIconCanvasItem *item,
 				draw_frame (item, 
 					    cr,
 					    &container->details->prelight_color_rgba,
-					    create_mask,
 					    text_rect.x0,
 					    text_rect.y0,
 					    text_rect.x1 - text_rect.x0,
@@ -1232,7 +1216,7 @@ draw_label_text (NautilusIconCanvasItem *item,
 				   text_rect.y0 + details->editable_text_height + LABEL_LINE_SPACING + TEXT_BACK_PADDING_Y);
 	}
 
-	if (!create_mask && item->details->is_highlighted_as_keyboard_focus) {
+	if (item->details->is_highlighted_as_keyboard_focus) {
 		GtkStyleContext *style;
 
 		style = gtk_widget_get_style_context (GTK_WIDGET (EEL_CANVAS_ITEM (item)->canvas));
@@ -1574,7 +1558,7 @@ nautilus_icon_canvas_item_draw (EelCanvasItem *item,
 	draw_stretch_handles (icon_item, cr, &icon_rect);
 	
 	/* Draw the label text. */
-	draw_label_text (icon_item, cr, FALSE, icon_rect);
+	draw_label_text (icon_item, cr, icon_rect);
 }
 
 #define ZERO_WIDTH_SPACE "\xE2\x80\x8B"
