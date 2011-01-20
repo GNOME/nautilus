@@ -39,7 +39,6 @@ eel_headers =					\
 	eel-debug.h				\
 	eel-editable-label.h			\
 	eel-gdk-extensions.h			\
-	eel-gdk-pixbuf-extensions.h		\
 	eel-glib-extensions.h			\
 	eel-gnome-extensions.h			\
 	eel-graphic-effects.h			\
@@ -61,7 +60,6 @@ libeel_2_la_SOURCES =				\
 	eel-debug.c				\
 	eel-editable-label.c			\
 	eel-gdk-extensions.c			\
-	eel-gdk-pixbuf-extensions.c		\
 	eel-glib-extensions.c			\
 	eel-gnome-extensions.c			\
 	eel-graphic-effects.c			\
