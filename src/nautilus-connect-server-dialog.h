@@ -39,7 +39,7 @@
 	(G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_CONNECT_SERVER_DIALOG,\
 				  NautilusConnectServerDialogClass))
 #define NAUTILUS_IS_CONNECT_SERVER_DIALOG(obj)\
-	(G_TYPE_INSTANCE_CHECK_TYPE ((obj), NAUTILUS_TYPE_CONNECT_SERVER_DIALOG)
+	(G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_CONNECT_SERVER_DIALOG)
 
 typedef struct _NautilusConnectServerDialog NautilusConnectServerDialog;
 typedef struct _NautilusConnectServerDialogClass NautilusConnectServerDialogClass;

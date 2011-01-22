@@ -40,7 +40,7 @@
   (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_CONNECT_SERVER_OPERATION,\
 			    NautilusConnectServerOperationClass))
 #define NAUTILUS_IS_CONNECT_SERVER_OPERATION(obj)\
-  (G_TYPE_INSTANCE_CHECK_TYPE ((obj), NAUTILUS_TYPE_CONNECT_SERVER_OPERATION)
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_CONNECT_SERVER_OPERATION)
 
 typedef struct _NautilusConnectServerOperationDetails
   NautilusConnectServerOperationDetails;

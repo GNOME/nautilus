@@ -30,7 +30,7 @@
 #define NAUTILUS_TYPE_LOCATION_DIALOG         (nautilus_location_dialog_get_type ())
 #define NAUTILUS_LOCATION_DIALOG(obj)         (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_LOCATION_DIALOG, NautilusLocationDialog))
 #define NAUTILUS_LOCATION_DIALOG_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_LOCATION_DIALOG, NautilusLocationDialogClass))
-#define NAUTILUS_IS_LOCATION_DIALOG(obj)      (G_TYPE_INSTANCE_CHECK_TYPE ((obj), NAUTILUS_TYPE_LOCATION_DIALOG)
+#define NAUTILUS_IS_LOCATION_DIALOG(obj)      (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_LOCATION_DIALOG)
 
 typedef struct _NautilusLocationDialog        NautilusLocationDialog;
 typedef struct _NautilusLocationDialogClass   NautilusLocationDialogClass;

@@ -31,7 +31,7 @@
 #define NAUTILUS_TYPE_MIME_APPLICATION_CHOOSER         (nautilus_mime_application_chooser_get_type ())
 #define NAUTILUS_MIME_APPLICATION_CHOOSER(obj)         (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_MIME_APPLICATION_CHOOSER, NautilusMimeApplicationChooser))
 #define NAUTILUS_MIME_APPLICATION_CHOOSER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_MIME_APPLICATION_CHOOSER, NautilusMimeApplicationChooserClass))
-#define NAUTILUS_IS_MIME_APPLICATION_CHOOSER(obj)      (G_TYPE_INSTANCE_CHECK_TYPE ((obj), NAUTILUS_TYPE_MIME_APPLICATION_CHOOSER)
+#define NAUTILUS_IS_MIME_APPLICATION_CHOOSER(obj)      (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_MIME_APPLICATION_CHOOSER)
 
 typedef struct _NautilusMimeApplicationChooser        NautilusMimeApplicationChooser;
 typedef struct _NautilusMimeApplicationChooserClass   NautilusMimeApplicationChooserClass;
