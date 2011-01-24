@@ -543,10 +543,6 @@ static char *
 get_root_uri_callback (NautilusTreeViewDragDest *dest,
 		       gpointer user_data)
 {
-	FMTreeView *view;
-	
-	view = FM_TREE_VIEW (user_data);
-
 	/* Don't allow drops on background */
 	return NULL;
 }

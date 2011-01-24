@@ -254,9 +254,7 @@ collect_all_directories (gpointer key, gpointer value, gpointer callback_data)
 {
 	NautilusDirectory *directory;
 	GList **dirs;
-	GFile *location;
 
-	location = (GFile *) key;
 	directory = NAUTILUS_DIRECTORY (value);
 	dirs = callback_data;
 

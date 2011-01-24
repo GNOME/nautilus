@@ -38,10 +38,6 @@ window_go_to_cb (NautilusWindow *window,
 		 GError *error,
 		 gpointer user_data)
 {
-	NautilusConnectServerDialog *self;
-
-	self = user_data;
-
 	if (error != NULL) {
 		g_simple_async_result_set_from_error (display_location_res, error);
 	}

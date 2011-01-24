@@ -377,14 +377,13 @@ connect_dialog_request_additional_details (NautilusConnectServerDialog *self,
 					   const gchar *default_user,
 					   const gchar *default_domain)
 {
-	GtkWidget *content_area, *label, *entry, *hbox, *icon;
+	GtkWidget *content_area, *label, *hbox, *icon;
 
 	self->details->fill_details_flags = flags;
 
 	connect_dialog_restore_info_bar (self, GTK_MESSAGE_WARNING);
 
 	content_area = gtk_info_bar_get_content_area (GTK_INFO_BAR (self->details->info_bar));
-	entry = NULL;
 
 	hbox = gtk_hbox_new (FALSE, 6);
 	gtk_box_pack_start (GTK_BOX (content_area), hbox, FALSE, FALSE, 6);
@@ -1159,11 +1158,9 @@ nautilus_connect_server_dialog_class_init (NautilusConnectServerDialogClass *cla
 GtkWidget *
 nautilus_connect_server_dialog_new (NautilusWindow *window)
 {
-	NautilusConnectServerDialog *conndlg;
 	GtkWidget *dialog;
 
 	dialog = gtk_widget_new (NAUTILUS_TYPE_CONNECT_SERVER_DIALOG, NULL);
-	conndlg = NAUTILUS_CONNECT_SERVER_DIALOG (dialog);
 
 	if (window) {
 		gtk_window_set_screen (GTK_WINDOW (dialog),

@@ -729,12 +729,9 @@ remove_group_types_from_list (char **group_types, GList *mime_types)
 	GList *l, *next;
 	char **group_type;
 	char *mime_type;
-	gboolean found;
 
 	group_type = group_types;
 	while (*group_type != NULL) {
-		found = FALSE;
-
 		for (l = mime_types; l != NULL; l = next) {
 			mime_type = l->data;
 			next = l->next;

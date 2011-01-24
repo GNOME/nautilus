@@ -32,9 +32,6 @@ G_DEFINE_TYPE(NautilusSavedSearchFile, nautilus_saved_search_file, NAUTILUS_TYPE
 static void
 nautilus_saved_search_file_init (NautilusSavedSearchFile *search_file)
 {
-	NautilusFile *file;
-
-	file = NAUTILUS_FILE (search_file);
 }
 
 static void

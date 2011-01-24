@@ -1170,7 +1170,6 @@ button_clicked_cb (GtkWidget *button,
         ButtonData *button_data;
         NautilusPathBar *path_bar;
         GList *button_list;
-        gboolean child_is_hidden;
 
         button_data = BUTTON_DATA (data);
         if (button_data->ignore_changes) {
@@ -1184,14 +1183,6 @@ button_clicked_cb (GtkWidget *button,
 
         gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
 
-        if (button_list->prev) {
-                ButtonData *child_data;
-
-                child_data = BUTTON_DATA (button_list->prev->data);
-                child_is_hidden = child_data->file_is_hidden;
-        } else {
-                child_is_hidden = FALSE;
-	}
         g_signal_emit (path_bar, path_bar_signals [PATH_CLICKED], 0, button_data->path);
 }
 

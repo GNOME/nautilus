@@ -408,46 +408,26 @@ eel_canvas_re_get_property (GObject              *object,
 static void
 eel_canvas_re_update_shared (EelCanvasItem *item, double i2w_dx, double i2w_dy, int flags)
 {
-	EelCanvasRE *re;
-
 #ifdef VERBOSE
 	g_print ("eel_canvas_re_update_shared\n");
 #endif
-	re = EEL_CANVAS_RE (item);
-
 	if (re_parent_class->update)
 		(* re_parent_class->update) (item, i2w_dx, i2w_dy, flags);
-
-#ifdef OLD_XFORM
-	recalc_bounds (re);
-#endif
 }
 
 static void
 eel_canvas_re_realize (EelCanvasItem *item)
 {
-	EelCanvasRE *re;
-
 #ifdef VERBOSE
 	g_print ("eel_canvas_re_realize\n");
 #endif
-	re = EEL_CANVAS_RE (item);
-
 	if (re_parent_class->realize)
 		(* re_parent_class->realize) (item);
-
-#ifdef OLD_XFORM
-	(* EEL_CANVAS_ITEM_CLASS (item->object.klass)->update) (item, NULL, NULL, 0);
-#endif
 }
 
 static void
 eel_canvas_re_unrealize (EelCanvasItem *item)
 {
-	EelCanvasRE *re;
-
-	re = EEL_CANVAS_RE (item);
-
 	if (re_parent_class->unrealize)
 		(* re_parent_class->unrealize) (item);
 }

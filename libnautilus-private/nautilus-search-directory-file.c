@@ -97,12 +97,9 @@ search_directory_file_get_item_count (NautilusFile *file,
 				      guint *count,
 				      gboolean *count_unreadable)
 {
-	NautilusSearchDirectory *search_dir;
 	GList *file_list;
 
 	if (count) {
-		search_dir = NAUTILUS_SEARCH_DIRECTORY (file->details->directory);
-
 		file_list = nautilus_directory_get_file_list (file->details->directory);
 
 		*count = g_list_length (file_list);
@@ -120,14 +117,11 @@ search_directory_file_get_deep_counts (NautilusFile *file,
 				       guint *unreadable_directory_count,
 				       goffset *total_size)
 {
-	NautilusSearchDirectory *search_dir;
 	NautilusFile *dir_file;
 	GList *file_list, *l;
 	guint dirs, files;
 	GFileType type;
 
-	search_dir = NAUTILUS_SEARCH_DIRECTORY (file->details->directory);
-	
 	file_list = nautilus_directory_get_file_list (file->details->directory);
 
 	dirs = files = 0;
@@ -227,10 +221,8 @@ nautilus_search_directory_file_init (NautilusSearchDirectoryFile *search_file)
 static void
 nautilus_search_directory_file_class_init (NautilusSearchDirectoryFileClass *klass)
 {
-	GObjectClass *object_class;
 	NautilusFileClass *file_class;
 
-	object_class = G_OBJECT_CLASS (klass);
 	file_class = NAUTILUS_FILE_CLASS (klass);
 
 	file_class->default_file_type = G_FILE_TYPE_DIRECTORY;

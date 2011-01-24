@@ -61,9 +61,6 @@ static GtkEditableInterface *parent_editable_interface = NULL;
 static void
 nautilus_entry_init (NautilusEntry *entry)
 {
-	GtkWidget *widget;
-
-	widget = GTK_WIDGET (entry);
 	entry->details = g_new0 (NautilusEntryDetails, 1);
 	
 	entry->details->user_edit = TRUE;
@@ -163,10 +160,8 @@ nautilus_entry_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 	int result;
 	gboolean old_had, new_had;
 	int old_start, old_end, new_start, new_end;
-	NautilusEntry *entry;
 	GtkEditable *editable;
 
-	entry = NAUTILUS_ENTRY (widget);
 	editable = GTK_EDITABLE (widget);
 
 	old_had = gtk_editable_get_selection_bounds (editable, &old_start, &old_end);

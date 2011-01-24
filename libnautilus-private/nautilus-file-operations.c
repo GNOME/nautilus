@@ -4668,7 +4668,7 @@ move_file_prepare (CopyMoveJob *move_job,
 	GFile *dest, *new_dest;
 	GError *error;
 	CommonJob *job;
-	gboolean overwrite, renamed;
+	gboolean overwrite;
 	char *primary, *secondary, *details;
 	int response;
 	GFileCopyFlags flags;
@@ -4676,7 +4676,6 @@ move_file_prepare (CopyMoveJob *move_job,
 	gboolean handled_invalid_filename;
 
 	overwrite = FALSE;
-	renamed = FALSE;
 	handled_invalid_filename = *dest_fs_type != NULL;
 
 	job = (CommonJob *)move_job;
@@ -4814,7 +4813,6 @@ move_file_prepare (CopyMoveJob *move_job,
 			g_object_unref (dest);
 			dest = get_target_file_for_display_name (dest_dir,
 								 response->new_name);
-			renamed = TRUE;
 			conflict_response_data_free (response);
 			goto retry;
 		} else {
@@ -5321,8 +5319,6 @@ link_job (GIOSchedulerJob *io_job,
 {
 	CopyMoveJob *job;
 	CommonJob *common;
-	GList *copy_files;
-	GArray *copy_positions;
 	GFile *src;
 	GdkPoint *point;
 	char *dest_fs_type;
@@ -5333,9 +5329,6 @@ link_job (GIOSchedulerJob *io_job,
 	job = user_data;
 	common = &job->common;
 	common->io_job = io_job;
-
-	copy_files = NULL;
-	copy_positions = NULL;
 
 	dest_fs_type = NULL;
 	

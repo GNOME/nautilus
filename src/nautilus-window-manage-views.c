@@ -110,12 +110,9 @@ static void update_for_new_location                   (NautilusWindowSlot       
 static void
 set_displayed_location (NautilusWindowSlot *slot, GFile *location)
 {
-	NautilusWindow *window;
         GFile *bookmark_location;
         gboolean recreate;
 
-	window = slot->pane->window;
-        
         if (slot->current_location_bookmark == NULL || location == NULL) {
                 recreate = TRUE;
         } else {
@@ -476,7 +473,7 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 	char *old_uri, *new_uri;
 	int new_slot_position;
 	GList *l;
-	gboolean target_spatial, target_navigation, target_same;
+	gboolean target_navigation, target_same;
 	gboolean is_desktop;
 	NautilusApplication *app;
 
@@ -484,7 +481,6 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 
         target_window = NULL;
 	target_slot = NULL;
-	target_spatial = target_navigation = target_same = FALSE;
 
 	old_uri = nautilus_window_slot_get_location_uri (slot);
 	if (old_uri == NULL) {
@@ -517,9 +513,6 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 			} else {
 				target_same = TRUE;
 			}
-		} else if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
-			/* don't always use browser: if source is spatial, target is spatial */
-			target_spatial = TRUE;
 		} else if (flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) {
 			/* if it's specified to open a new window, and we're not using spatial,
 			 * the target is a navigation.
@@ -527,9 +520,6 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 			target_navigation = TRUE;
 		}
                 break;
-        case NAUTILUS_WINDOW_OPEN_IN_SPATIAL :
-		target_spatial = TRUE;
-		break;
         case NAUTILUS_WINDOW_OPEN_IN_NAVIGATION :
 		target_navigation = TRUE;
                 break;
@@ -943,14 +933,12 @@ mount_not_mounted_callback (GObject *source_object,
 			    gpointer user_data)
 {
 	MountNotMountedData *data;
-	NautilusWindow *window;
 	NautilusWindowSlot *slot;
 	GError *error;
 	GCancellable *cancellable;
 
 	data = user_data;
 	slot = data->slot;
-	window = slot->pane->window;
 	cancellable = data->cancellable;
 	g_free (data);
 
@@ -1487,14 +1475,11 @@ found_mount_cb (GObject *source_object,
 {
 	FindMountData *data = user_data;
 	GMount *mount;
-	NautilusWindowSlot *slot;
 
 	if (g_cancellable_is_cancelled (data->cancellable)) {
 		goto out;
 	}
 
-	slot = data->slot;
-	
 	mount = g_file_find_enclosing_mount_finish (G_FILE (source_object),
 						    res,
 						    NULL);
@@ -1652,10 +1637,7 @@ nautilus_window_report_load_complete (NautilusWindow *window,
 static void
 end_location_change (NautilusWindowSlot *slot)
 {
-	NautilusWindow *window;
 	char *uri;
-
-	window = slot->pane->window;
 
 	uri = nautilus_window_slot_get_location_uri (slot);
 	if (uri) {
@@ -1803,7 +1785,6 @@ display_view_selection_failure (NautilusWindow *window, NautilusFile *file,
 	char *error_message;
 	char *detail_message;
 	char *scheme_string;
-	GtkDialog *dialog;
 
 	/* Some sort of failure occurred. How 'bout we tell the user? */
 	full_uri_for_display = g_file_get_parse_name (location);
@@ -1891,8 +1872,8 @@ display_view_selection_failure (NautilusWindow *window, NautilusFile *file,
 		detail_message = g_strdup_printf (_("Error: %s\nPlease select another viewer and try again."), error->message);
 	}
 	
-	dialog = eel_show_error_dialog (error_message, detail_message, NULL);
-	
+	eel_show_error_dialog (error_message, detail_message, NULL);
+
 	g_free (uri_for_display);
 	g_free (error_message);
 	g_free (detail_message);

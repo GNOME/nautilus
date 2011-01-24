@@ -126,11 +126,9 @@ nautilus_navigation_window_slot_update_query_editor (NautilusWindowSlot *slot)
 	NautilusDirectory *directory;
 	NautilusSearchDirectory *search_directory;
 	NautilusQuery *query;
-	NautilusNavigationWindow *navigation_window;
 	GtkWidget *query_editor;
 
 	g_assert (slot->pane->window != NULL);
-	navigation_window = NAUTILUS_NAVIGATION_WINDOW (slot->pane->window);
 
 	query_editor = NULL;
 
@@ -177,11 +175,9 @@ static void
 nautilus_navigation_window_slot_active (NautilusWindowSlot *slot)
 {
 	NautilusNavigationWindow *window;
-	NautilusNavigationWindowSlot *navigation_slot;
 	NautilusNavigationWindowPane *pane;
 	int page_num;
 
-	navigation_slot = NAUTILUS_NAVIGATION_WINDOW_SLOT (slot);
 	pane = NAUTILUS_NAVIGATION_WINDOW_PANE (slot->pane);
 	window = NAUTILUS_NAVIGATION_WINDOW (slot->pane->window);
 

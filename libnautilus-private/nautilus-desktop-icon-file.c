@@ -349,9 +349,6 @@ nautilus_desktop_icon_file_set_metadata (NautilusFile           *file,
 					 const char             *key,
 					 const char             *value)
 {
-	NautilusDesktopIconFile *desktop_file;
-	
-	desktop_file = NAUTILUS_DESKTOP_ICON_FILE (file);
 	nautilus_desktop_set_metadata_string (file, file->details->name, key, value);
 }
 
@@ -360,9 +357,6 @@ nautilus_desktop_icon_file_set_metadata_as_list (NautilusFile           *file,
 						 const char             *key,
 						 char                  **value)
 {
-	NautilusDesktopIconFile *desktop_file;
-	
-	desktop_file = NAUTILUS_DESKTOP_ICON_FILE (file);
 	nautilus_desktop_set_metadata_stringv (file, file->details->name, key, value);
 }
 

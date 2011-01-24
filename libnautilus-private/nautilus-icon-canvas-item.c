@@ -808,12 +808,8 @@ draw_frame (NautilusIconCanvasItem *item,
 	    int width,
 	    int height)
 {
-	NautilusIconContainer *container;
+	cairo_save (cr);
 
-	container = NAUTILUS_ICON_CONTAINER (EEL_CANVAS_ITEM (item)->canvas);
-
-        cairo_save (cr);
-	
 	/* Set the rounded rect clip region. Magic rounding value taken
 	 * from old code. 
 	 */
@@ -821,7 +817,7 @@ draw_frame (NautilusIconCanvasItem *item,
 	gdk_cairo_set_source_rgba (cr, color);
 	cairo_fill (cr);
 
-        cairo_restore (cr);
+	cairo_restore (cr);
 }
 
 /* Keep these for a bit while we work on performance of draw_or_measure_label_text. */
@@ -970,11 +966,9 @@ measure_label_text (NautilusIconCanvasItem *item)
 	NautilusIconContainer *container;
 	gint editable_height, editable_height_for_layout, editable_height_for_entire_text, editable_width, editable_dx;
 	gint additional_height, additional_width, additional_dx;
-	EelCanvasItem *canvas_item;
 	PangoLayout *editable_layout;
 	PangoLayout *additional_layout;
-	gboolean have_editable, have_additional, needs_highlight;
-	int max_text_width;
+	gboolean have_editable, have_additional;
 
 	/* check to see if the cached values are still valid; if so, there's
 	 * no work necessary
@@ -985,7 +979,6 @@ measure_label_text (NautilusIconCanvasItem *item)
 	}
 
 	details = item->details;
-	needs_highlight = details->is_highlighted_for_selection || details->is_highlighted_for_drop;
 
 	have_editable = details->editable_text != NULL && details->editable_text[0] != '\0';
 	have_additional = details->additional_text != NULL && details->additional_text[0] != '\0';
@@ -1008,8 +1001,6 @@ measure_label_text (NautilusIconCanvasItem *item)
 	return;
 #endif
 
-	canvas_item = EEL_CANVAS_ITEM (item);
-
 	editable_width = 0;
 	editable_height = 0;
 	editable_height_for_layout = 0;
@@ -1018,8 +1009,6 @@ measure_label_text (NautilusIconCanvasItem *item)
 	additional_width = 0;
 	additional_height = 0;
 	additional_dx = 0;
-
-	max_text_width = floor (nautilus_icon_canvas_item_get_max_text_width (item));
 
 	container = NAUTILUS_ICON_CONTAINER (EEL_CANVAS_ITEM (item)->canvas);	
 	editable_layout = NULL;
@@ -1363,13 +1352,11 @@ real_map_pixbuf (NautilusIconCanvasItem *icon_item)
 {
 	EelCanvas *canvas;
 	char *audio_filename;
-	NautilusIconContainer *container;
 	GdkPixbuf *temp_pixbuf, *old_pixbuf, *audio_pixbuf;
 	int emblem_size;
 	
 	temp_pixbuf = icon_item->details->pixbuf;
 	canvas = EEL_CANVAS_ITEM(icon_item)->canvas;
-	container = NAUTILUS_ICON_CONTAINER (canvas);
 
 	g_object_ref (temp_pixbuf);
 
@@ -1933,7 +1920,6 @@ nautilus_icon_canvas_item_ensure_bounds_up_to_date (NautilusIconCanvasItem *icon
 	EelIRect total_rect, total_rect_for_layout, total_rect_for_entire_text;
 	EelCanvasItem *item;
 	double pixels_per_unit;
-	gboolean is_rtl;
 	
 	details = icon_item->details;
 	item = EEL_CANVAS_ITEM (icon_item);
@@ -1964,8 +1950,6 @@ nautilus_icon_canvas_item_ensure_bounds_up_to_date (NautilusIconCanvasItem *icon
 		text_rect = compute_text_rectangle (icon_item, icon_rect, FALSE, BOUNDS_USAGE_FOR_DISPLAY);
 		text_rect_for_layout = compute_text_rectangle (icon_item, icon_rect, FALSE, BOUNDS_USAGE_FOR_LAYOUT);
 		text_rect_for_entire_text = compute_text_rectangle (icon_item, icon_rect, FALSE, BOUNDS_USAGE_FOR_ENTIRE_ITEM);
-		
-		is_rtl = nautilus_icon_container_is_layout_rtl (NAUTILUS_ICON_CONTAINER (item->canvas));
 
 		/* Compute total rectangle */
 		eel_irect_union (&total_rect, &icon_rect, &text_rect);
@@ -2417,7 +2401,6 @@ nautilus_icon_canvas_item_accessible_do_action (AtkAction *accessible,
 {
 	NautilusIconCanvasItem *item;
 	NautilusIconCanvasItemAccessibleActionContext *ctx;
-	NautilusIcon *icon;
 	NautilusIconContainer *container;
 
 	g_assert (i < LAST_ACTION);
@@ -2426,7 +2409,7 @@ nautilus_icon_canvas_item_accessible_do_action (AtkAction *accessible,
 	if (!item) {
 		return FALSE;
 	}
-	icon = item->user_data;
+
 	container = NAUTILUS_ICON_CONTAINER (EEL_CANVAS_ITEM (item)->canvas);
 	switch (i) {
 	case ACTION_OPEN:

@@ -99,12 +99,11 @@ file_list_ready_cb (GList *files,
 	NautilusFileConflictDialog *fcd = user_data;
 	NautilusFile *src, *dest, *dest_dir;
 	time_t src_mtime, dest_mtime;
-	GtkDialog *dialog;
 	gboolean source_is_dir,	dest_is_dir, should_show_type;
 	NautilusFileConflictDialogDetails *details;
 	char *primary_text, *message, *secondary_text;
 	const gchar *message_extra;
-	char *src_name, *dest_name, *dest_dir_name, *edit_name;
+	char *dest_name, *dest_dir_name, *edit_name;
 	char *label_text;
 	char *size, *date, *type = NULL;
 	GdkPixbuf *pixbuf;
@@ -112,7 +111,6 @@ file_list_ready_cb (GList *files,
 	GString *str;
 	PangoAttrList *attr_list;
 
-	dialog = GTK_DIALOG (fcd);
 	details = fcd->details;
 
 	details->handle = NULL;
@@ -124,7 +122,6 @@ file_list_ready_cb (GList *files,
 	src_mtime = nautilus_file_get_mtime (src);
 	dest_mtime = nautilus_file_get_mtime (dest);
 
-	src_name = nautilus_file_get_display_name (src);
 	dest_name = nautilus_file_get_display_name (dest);
 	dest_dir_name = nautilus_file_get_display_name (dest_dir);
 

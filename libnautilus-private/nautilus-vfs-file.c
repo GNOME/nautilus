@@ -690,10 +690,6 @@ vfs_file_poll_for_media (NautilusFile *file)
 static void
 nautilus_vfs_file_init (gpointer object, gpointer klass)
 {
-	NautilusVFSFile *file;
-
-	file = NAUTILUS_VFS_FILE (object);
-
 }
 
 static void

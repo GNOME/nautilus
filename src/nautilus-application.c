@@ -192,12 +192,10 @@ menu_provider_items_updated_handler (NautilusMenuProvider *provider, GtkWidget* 
 static void
 menu_provider_init_callback (void)
 {
-        GList *items;
         GList *providers;
         GList *l;
 
         providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_MENU_PROVIDER);
-        items = NULL;
 
         for (l = providers; l != NULL; l = l->next) {
                 NautilusMenuProvider *provider = NAUTILUS_MENU_PROVIDER (l->data);
@@ -505,7 +503,7 @@ open_window (NautilusApplication *application,
 {
 	GFile *location;
 	NautilusWindow *window;
-	gboolean existing, open_in_browser;
+	gboolean open_in_browser;
 
 	if (uri == NULL) {
 		location = g_file_new_for_path (g_get_home_dir ());
@@ -517,8 +515,6 @@ open_window (NautilusApplication *application,
 		g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER);
 
 	DEBUG ("Opening new window at uri %s, browser %d", uri, open_in_browser);
-
-	existing = FALSE;
 
 	if (open_in_browser) {
 		window = nautilus_application_create_navigation_window (application,

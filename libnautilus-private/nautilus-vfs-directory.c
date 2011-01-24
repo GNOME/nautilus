@@ -41,9 +41,6 @@ EEL_CLASS_BOILERPLATE (NautilusVFSDirectory,
 static void
 nautilus_vfs_directory_init (gpointer object, gpointer klass)
 {
-	NautilusVFSDirectory *directory;
-
-	directory = NAUTILUS_VFS_DIRECTORY (object);
 }
 
 static gboolean
@@ -151,10 +148,8 @@ vfs_is_not_empty (NautilusDirectory *directory)
 static void
 nautilus_vfs_directory_class_init (gpointer klass)
 {
-	GObjectClass *object_class;
 	NautilusDirectoryClass *directory_class;
 
-	object_class = G_OBJECT_CLASS (klass);
 	directory_class = NAUTILUS_DIRECTORY_CLASS (klass);
 	
 	directory_class->contains_file = vfs_contains_file;

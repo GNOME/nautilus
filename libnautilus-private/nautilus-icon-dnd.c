@@ -1123,7 +1123,6 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 {
 	char *drop_target;
 	gboolean icon_hit;
-	NautilusIcon *icon;
 	double world_x, world_y;
 
 	icon_hit = FALSE;
@@ -1134,9 +1133,6 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 
 	/* find out if we're over an icon */
 	canvas_widget_to_world (EEL_CANVAS (container), x, y, &world_x, &world_y);
-	
-	icon = nautilus_icon_container_item_at (container, world_x, world_y);
-
 	*action = 0;
 
 	/* case out on the type of object being dragged */
@@ -1328,7 +1324,6 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 			      int                    start_y)
 {
 	NautilusIconDndInfo *dnd_info;
-	GdkDragContext *context;
 	
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_return_if_fail (event != NULL);
@@ -1345,11 +1340,11 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 		gtk_adjustment_get_value (gtk_scrollable_get_vadjustment (GTK_SCROLLABLE (container)));	
 
 	/* start the drag */
-	context = gtk_drag_begin (GTK_WIDGET (container),
-				  dnd_info->drag_info.target_list,
-				  actions,
-				  button,
-				  (GdkEvent *) event);
+	gtk_drag_begin (GTK_WIDGET (container),
+			dnd_info->drag_info.target_list,
+			actions,
+			button,
+			(GdkEvent *) event);
 }
 
 static gboolean

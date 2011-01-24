@@ -2693,9 +2693,7 @@ bookmarks_motion_event_cb (GtkWidget             *widget,
 			   NautilusPlacesSidebar *sidebar)
 {
 	GtkTreePath *path;
-	GtkTreeModel *model;
 
-	model = GTK_TREE_MODEL (sidebar->filter_model);
 	path = NULL;
 
 	if (over_eject_button (sidebar, event->x, event->y, &path)) {
@@ -2831,10 +2829,7 @@ icon_cell_renderer_func (GtkTreeViewColumn *column,
 			 GtkTreeIter *iter,
 			 gpointer user_data)
 {
-	NautilusPlacesSidebar *sidebar;
 	PlaceType type;
-
-	sidebar = user_data;
 
 	gtk_tree_model_get (model, iter,
 			    PLACES_SIDEBAR_COLUMN_ROW_TYPE, &type,

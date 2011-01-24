@@ -1544,10 +1544,8 @@ select_pattern (NautilusView *view)
 	GtkWidget *example;
 	GtkWidget *table;
 	GtkWidget *entry;
-	GList *ret;
 	char *example_pattern;
 
-	ret = NULL;
 	dialog = gtk_dialog_new_with_buttons (_("Select Items Matching"),
 					      nautilus_view_get_containing_window (view),
 					      GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -1673,7 +1671,6 @@ action_save_search_as_callback (GtkAction *action,
 {
 	NautilusView	*directory_view;
 	NautilusSearchDirectory *search;
-	NautilusQuery *query;
 	GtkWidget *dialog, *table, *label, *entry, *chooser, *save_button;
 	const char *entry_text;
 	char *filename, *filename_utf8, *dirname, *path, *uri;
@@ -1684,8 +1681,6 @@ action_save_search_as_callback (GtkAction *action,
 	if (directory_view->details->model &&
 	    NAUTILUS_IS_SEARCH_DIRECTORY (directory_view->details->model)) {
 		search = NAUTILUS_SEARCH_DIRECTORY (directory_view->details->model);
-
-		query = nautilus_search_directory_get_query (search);
 		
 		dialog = gtk_dialog_new_with_buttons (_("Save Search as"),
 						      nautilus_view_get_containing_window (directory_view),
@@ -5121,7 +5116,6 @@ run_script_callback (GtkAction *action, gpointer callback_data)
 	char *quoted_path;
 	char *old_working_dir;
 	char **parameters;
-	GtkWindow *window;
 	
 	launch_parameters = (ScriptLaunchParameters *) callback_data;
 
@@ -5142,9 +5136,6 @@ run_script_callback (GtkAction *action, gpointer callback_data)
 						        launch_parameters->directory_view->details->model);
 
 	screen = gtk_widget_get_screen (GTK_WIDGET (launch_parameters->directory_view));
-
-	/* FIXME: handle errors with dialog? Or leave up to each script? */
-	window = nautilus_view_get_containing_window (launch_parameters->directory_view);
 
 	DEBUG ("run_script_callback, script_path=\"%s\" (omitting script parameters)",
 	       local_file_path);
@@ -6644,6 +6635,7 @@ connect_to_server_response_callback (GtkDialog *dialog,
 				     int response_id,
 				     gpointer data)
 {
+#ifdef GIO_CONVERSION_DONE
 	GtkEntry *entry;
 	char *uri;
 	const char *name;
@@ -6656,9 +6648,7 @@ connect_to_server_response_callback (GtkDialog *dialog,
 		uri = g_object_get_data (G_OBJECT (dialog), "link-uri");
 		icon = g_object_get_data (G_OBJECT (dialog), "link-icon");
 		name = gtk_entry_get_text (entry);
-#ifdef GIO_CONVERSION_DONE
 		gnome_vfs_connect_to_server (uri, (char *)name, icon);
-#endif
 		gtk_widget_destroy (GTK_WIDGET (dialog));
 		break;
 	case GTK_RESPONSE_NONE:
@@ -6669,6 +6659,9 @@ connect_to_server_response_callback (GtkDialog *dialog,
 	default :
 		g_assert_not_reached ();
 	}
+#endif
+	/* FIXME: the above code should make a server connection permanent */
+	gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
 static void

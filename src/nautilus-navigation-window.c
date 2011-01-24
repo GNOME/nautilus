@@ -244,16 +244,6 @@ nautilus_navigation_window_restore_focus_widget (NautilusNavigationWindow *windo
 	}
 }
 
-static void
-nautilus_navigation_window_unrealize (GtkWidget *widget)
-{
-	NautilusNavigationWindow *window;
-	
-	window = NAUTILUS_NAVIGATION_WINDOW (widget);
-
-	GTK_WIDGET_CLASS (parent_class)->unrealize (widget);
-}
-
 static gboolean
 nautilus_navigation_window_state_event (GtkWidget *widget,
 					GdkEventWindowState *event)
@@ -401,13 +391,10 @@ static void
 real_sync_title (NautilusWindow *window,
 		 NautilusWindowSlot *slot)
 {
-	NautilusNavigationWindow *navigation_window;
 	NautilusNavigationWindowPane *pane;
 	NautilusNotebook *notebook;
 	char *full_title;
 	char *window_title;
-
-	navigation_window = NAUTILUS_NAVIGATION_WINDOW (window);
 
 	if (slot == window->details->active_pane->active_slot) {
 		/* if spatial mode is default, we keep "File Browser" in the window title
@@ -1007,7 +994,6 @@ nautilus_navigation_window_class_init (NautilusNavigationWindowClass *class)
 	G_OBJECT_CLASS (class)->finalize = nautilus_navigation_window_finalize;
 	GTK_WIDGET_CLASS (class)->destroy = nautilus_navigation_window_destroy;
 	GTK_WIDGET_CLASS (class)->show = nautilus_navigation_window_show;
-	GTK_WIDGET_CLASS (class)->unrealize = nautilus_navigation_window_unrealize;
 	GTK_WIDGET_CLASS (class)->window_state_event = nautilus_navigation_window_state_event;
 	GTK_WIDGET_CLASS (class)->key_press_event = nautilus_navigation_window_key_press_event;
 	GTK_WIDGET_CLASS (class)->button_press_event = nautilus_navigation_window_button_press_event;

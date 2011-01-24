@@ -1312,12 +1312,10 @@ nautilus_icon_view_set_zoom_level (NautilusIconView *view,
 static void
 nautilus_icon_view_bump_zoom_level (NautilusView *view, int zoom_increment)
 {
-	NautilusIconView *icon_view;
 	NautilusZoomLevel new_level;
 
 	g_return_if_fail (NAUTILUS_IS_ICON_VIEW (view));
 
-	icon_view = NAUTILUS_ICON_VIEW (view);
 	new_level = nautilus_icon_view_get_zoom_level (view) + zoom_increment;
 
 	if (new_level >= NAUTILUS_ZOOM_LEVEL_SMALLEST &&

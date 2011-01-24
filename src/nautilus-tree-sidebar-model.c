@@ -714,15 +714,11 @@ report_dummy_row_contents_changed (FMTreeModel *model, TreeNode *parent)
 static void
 stop_monitoring_directory (FMTreeModel *model, TreeNode *node)
 {
-	NautilusDirectory *directory;
-
 	if (node->done_loading_id == 0) {
 		g_assert (node->files_added_id == 0);
 		g_assert (node->files_changed_id == 0);
 		return;
 	}
-
-	directory = node->directory;
 
 	g_signal_handler_disconnect (node->directory, node->done_loading_id);
 	g_signal_handler_disconnect (node->directory, node->files_added_id);
@@ -1241,12 +1237,10 @@ static void
 fm_tree_model_get_value (GtkTreeModel *model, GtkTreeIter *iter, int column, GValue *value)
 {
 	TreeNode *node, *parent;
-	FMTreeModel *fm_model;
 
 	g_return_if_fail (FM_IS_TREE_MODEL (model));
 	g_return_if_fail (iter_is_valid (FM_TREE_MODEL (model), iter));
-	
-	fm_model = FM_TREE_MODEL (model);
+
 	node = iter->user_data;
 
 	switch (column) {
@@ -1363,15 +1357,12 @@ fm_tree_model_iter_has_child (GtkTreeModel *model, GtkTreeIter *iter)
 static int
 fm_tree_model_iter_n_children (GtkTreeModel *model, GtkTreeIter *iter)
 {
-	FMTreeModel *tree_model;
 	TreeNode *parent, *node;
 	int n;
 	
 	g_return_val_if_fail (FM_IS_TREE_MODEL (model), FALSE);
 	g_return_val_if_fail (iter == NULL || iter_is_valid (FM_TREE_MODEL (model), iter), FALSE);
 	
-	tree_model = FM_TREE_MODEL (model);
-
 	if (iter == NULL) {
 		return 1;
 	}

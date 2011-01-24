@@ -1157,13 +1157,10 @@ refresh_stored_viewers (NautilusWindow *window)
 static void
 load_view_as_menu (NautilusWindow *window)
 {
-	NautilusWindowSlot *slot;
 	GList *node;
 	int index;
 	guint merge_id;
 
-	slot = window->details->active_pane->active_slot;
-	
 	if (window->details->short_list_merge_id != 0) {
 		gtk_ui_manager_remove_ui (window->details->ui_manager,
 					  window->details->short_list_merge_id);

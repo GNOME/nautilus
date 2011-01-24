@@ -106,5 +106,5 @@ main (int argc, char *argv[])
 
  	eel_debug_shut_down ();
 
-	return EXIT_SUCCESS;
+	return retval;
 }
