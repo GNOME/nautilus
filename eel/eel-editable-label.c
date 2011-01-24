@@ -37,215 +37,6 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
-
-/* copy-paste from gtk/gtkpango.c */
-#define EEL_TYPE_FILL_LAYOUT_RENDERER            (_eel_fill_layout_renderer_get_type())
-#define EEL_FILL_LAYOUT_RENDERER(object)         (G_TYPE_CHECK_INSTANCE_CAST ((object), EEL_TYPE_FILL_LAYOUT_RENDERER, EelFillLayoutRenderer))
-#define EEL_IS_FILL_LAYOUT_RENDERER(object)      (G_TYPE_CHECK_INSTANCE_TYPE ((object), EEL_TYPE_FILL_LAYOUT_RENDERER))
-#define EEL_FILL_LAYOUT_RENDERER_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), EEL_TYPE_FILL_LAYOUT_RENDERER, EelFillLayoutRendererClass))
-#define EEL_IS_FILL_LAYOUT_RENDERER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), EEL_TYPE_FILL_LAYOUT_RENDERER))
-#define EEL_FILL_LAYOUT_RENDERER_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), EEL_TYPE_FILL_LAYOUT_RENDERER, EelFillLayoutRendererClass))
-
-typedef struct _EelFillLayoutRenderer      EelFillLayoutRenderer;
-typedef struct _EelFillLayoutRendererClass EelFillLayoutRendererClass;
-
-struct _EelFillLayoutRenderer
-{
-  PangoRenderer parent_instance;
-
-  cairo_t *cr;
-};
-
-struct _EelFillLayoutRendererClass
-{
-  PangoRendererClass parent_class;
-};
-
-static GType _eel_fill_layout_renderer_get_type (void);
-G_DEFINE_TYPE (EelFillLayoutRenderer, _eel_fill_layout_renderer, PANGO_TYPE_RENDERER)
-
-static void
-eel_fill_layout_renderer_draw_glyphs (PangoRenderer     *renderer,
-                                      PangoFont         *font,
-                                      PangoGlyphString  *glyphs,
-                                      int                x,
-                                      int                y)
-{
-  EelFillLayoutRenderer *text_renderer = EEL_FILL_LAYOUT_RENDERER (renderer);
-
-  cairo_move_to (text_renderer->cr, (double)x / PANGO_SCALE, (double)y / PANGO_SCALE);
-  pango_cairo_show_glyph_string (text_renderer->cr, font, glyphs);
-}
-
-static void
-eel_fill_layout_renderer_draw_glyph_item (PangoRenderer     *renderer,
-                                          const char        *text,
-                                          PangoGlyphItem    *glyph_item,
-                                          int                x,
-                                          int                y)
-{
-  EelFillLayoutRenderer *text_renderer = EEL_FILL_LAYOUT_RENDERER (renderer);
-
-  cairo_move_to (text_renderer->cr, (double)x / PANGO_SCALE, (double)y / PANGO_SCALE);
-  pango_cairo_show_glyph_item (text_renderer->cr, text, glyph_item);
-}
-
-static void
-eel_fill_layout_renderer_draw_rectangle (PangoRenderer     *renderer,
-                                         PangoRenderPart    part,
-                                         int                x,
-                                         int                y,
-                                         int                width,
-                                         int                height)
-{
-  EelFillLayoutRenderer *text_renderer = EEL_FILL_LAYOUT_RENDERER (renderer);
-
-  if (part == PANGO_RENDER_PART_BACKGROUND)
-    return;
-
-  cairo_rectangle (text_renderer->cr,
-                   (double)x / PANGO_SCALE, (double)y / PANGO_SCALE,
-		   (double)width / PANGO_SCALE, (double)height / PANGO_SCALE);
-  cairo_fill (text_renderer->cr);
-}
-
-static void
-eel_fill_layout_renderer_draw_trapezoid (PangoRenderer     *renderer,
-                                         PangoRenderPart    part,
-                                         double             y1_,
-                                         double             x11,
-                                         double             x21,
-                                         double             y2,
-                                         double             x12,
-                                         double             x22)
-{
-  EelFillLayoutRenderer *text_renderer = EEL_FILL_LAYOUT_RENDERER (renderer);
-  cairo_matrix_t matrix;
-  cairo_t *cr;
-
-  cr = text_renderer->cr;
-
-  cairo_save (cr);
-
-  /* use identity scale, but keep translation */
-  cairo_get_matrix (cr, &matrix);
-  matrix.xx = matrix.yy = 1;
-  matrix.xy = matrix.yx = 0;
-  cairo_set_matrix (cr, &matrix);
-
-  cairo_move_to (cr, x11, y1_);
-  cairo_line_to (cr, x21, y1_);
-  cairo_line_to (cr, x22, y2);
-  cairo_line_to (cr, x12, y2);
-  cairo_close_path (cr);
-
-  cairo_fill (cr);
-
-  cairo_restore (cr);
-}
-
-static void
-eel_fill_layout_renderer_draw_error_underline (PangoRenderer *renderer,
-                                               int            x,
-                                               int            y,
-                                               int            width,
-                                               int            height)
-{
-  EelFillLayoutRenderer *text_renderer = EEL_FILL_LAYOUT_RENDERER (renderer);
-
-  pango_cairo_show_error_underline (text_renderer->cr,
-                                    (double)x / PANGO_SCALE, (double)y / PANGO_SCALE,
-                                    (double)width / PANGO_SCALE, (double)height / PANGO_SCALE);
-}
-
-static void
-eel_fill_layout_renderer_draw_shape (PangoRenderer   *renderer,
-                                     PangoAttrShape  *attr,
-                                     int              x,
-                                     int              y)
-{
-  EelFillLayoutRenderer *text_renderer = EEL_FILL_LAYOUT_RENDERER (renderer);
-  cairo_t *cr = text_renderer->cr;
-  PangoLayout *layout;
-  PangoCairoShapeRendererFunc shape_renderer;
-  gpointer                    shape_renderer_data;
-
-  layout = pango_renderer_get_layout (renderer);
-
-  if (!layout)
-  	return;
-
-  shape_renderer = pango_cairo_context_get_shape_renderer (pango_layout_get_context (layout),
-							   &shape_renderer_data);
-
-  if (!shape_renderer)
-    return;
-
-  cairo_save (cr);
-
-  cairo_move_to (cr, (double)x / PANGO_SCALE, (double)y / PANGO_SCALE);
-
-  shape_renderer (cr, attr, FALSE, shape_renderer_data);
-
-  cairo_restore (cr);
-}
-
-static void
-eel_fill_layout_renderer_finalize (GObject *object)
-{
-  G_OBJECT_CLASS (_eel_fill_layout_renderer_parent_class)->finalize (object);
-}
-
-static void
-_eel_fill_layout_renderer_init (EelFillLayoutRenderer *renderer)
-{
-}
-
-static void
-_eel_fill_layout_renderer_class_init (EelFillLayoutRendererClass *klass)
-{
-  GObjectClass *object_class = G_OBJECT_CLASS (klass);
-  
-  PangoRendererClass *renderer_class = PANGO_RENDERER_CLASS (klass);
-  
-  renderer_class->draw_glyphs = eel_fill_layout_renderer_draw_glyphs;
-  renderer_class->draw_glyph_item = eel_fill_layout_renderer_draw_glyph_item;
-  renderer_class->draw_rectangle = eel_fill_layout_renderer_draw_rectangle;
-  renderer_class->draw_trapezoid = eel_fill_layout_renderer_draw_trapezoid;
-  renderer_class->draw_error_underline = eel_fill_layout_renderer_draw_error_underline;
-  renderer_class->draw_shape = eel_fill_layout_renderer_draw_shape;
-
-  object_class->finalize = eel_fill_layout_renderer_finalize;
-}
-
-static void
-_eel_pango_fill_layout (cairo_t     *cr,
-                        PangoLayout *layout)
-{
-  static EelFillLayoutRenderer *renderer = NULL;
-  gboolean has_current_point;
-  double current_x, current_y;
-
-  has_current_point = cairo_has_current_point (cr);
-  cairo_get_current_point (cr, &current_x, &current_y);
-
-  if (renderer == NULL)
-    renderer = g_object_new (EEL_TYPE_FILL_LAYOUT_RENDERER, NULL);
-
-  cairo_save (cr);
-  cairo_translate (cr, current_x, current_y);
-
-  renderer->cr = cr;
-  pango_renderer_draw_layout (PANGO_RENDERER (renderer), layout, 0, 0);
-
-  cairo_restore (cr);
-
-  if (has_current_point)
-    cairo_move_to (cr, current_x, current_y);
-}
-
-/* end copy-paste from gtkpango.c */
-
 enum {
   MOVE_CURSOR,
   POPULATE_POPUP,
@@ -1780,7 +1571,7 @@ eel_editable_label_draw (GtkWidget *widget,
 	  const char *text;
           cairo_region_t *clip;
 	  GtkStateType state;
-          GdkRGBA color, background_color;
+          GdkRGBA background_color;
 
           range[0] = label->selection_anchor;
           range[1] = label->selection_end;
@@ -1814,15 +1605,17 @@ eel_editable_label_draw (GtkWidget *widget,
 	  if (!gtk_widget_has_focus (widget))
 	    state = GTK_STATE_FLAG_ACTIVE;
 
-          gtk_style_context_get_color (style, state, &color);
           gtk_style_context_get_background_color (style, state, &background_color);
 	  gdk_cairo_set_source_rgba (cr, &background_color);
 	  cairo_paint (cr);
 
-          cairo_save (cr);
-          gdk_cairo_set_source_rgba (cr, &color);
-          _eel_pango_fill_layout (cr, label->layout);
+          gtk_style_context_save (style);
+          gtk_style_context_set_state (style, state);
 
+          gtk_render_layout (style, cr,
+                             x, y, label->layout);
+
+          gtk_style_context_restore (style);
           cairo_restore (cr);
 
           cairo_region_destroy (clip);
@@ -1839,8 +1632,8 @@ eel_editable_label_draw (GtkWidget *widget,
 	gdk_cairo_set_source_rgba (cr, &color);
 	cairo_set_line_width (cr, 1.0);
 	cairo_rectangle (cr, 0.5, 0.5, 
-			 allocation.width - 2,
-			 allocation.height - 2);
+			 allocation.width - 1,
+			 allocation.height - 1);
 	cairo_stroke (cr);
       }
     }
