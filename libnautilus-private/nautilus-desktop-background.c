@@ -431,6 +431,8 @@ background_change_event_idle_cb (NautilusDesktopBackground *self)
 	gnome_bg_load_from_preferences (self->details->bg,
 					gnome_background_preferences);
 
+	g_object_unref (self);
+
 	return FALSE;
 }
 
@@ -440,10 +442,13 @@ background_settings_change_event_cb (GSettings *settings,
                                      gint       n_keys,
                                      gpointer   user_data)
 {
+	NautilusDesktopBackground *self = user_data;
+
 	/* Need to defer signal processing otherwise
 	 * we would make the dconf backend deadlock.
 	 */
-	g_idle_add ((GSourceFunc) background_change_event_idle_cb, user_data);
+	g_idle_add ((GSourceFunc) background_change_event_idle_cb,
+		    g_object_ref (self));
 
 	return FALSE;
 }
