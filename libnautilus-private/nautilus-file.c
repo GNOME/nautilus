@@ -3669,6 +3669,9 @@ nautilus_file_peek_display_name (NautilusFile *file)
 	const char *name;
 	char *escaped_name;
 
+	if (file == NULL || nautilus_file_is_gone (file))
+		return "";
+
 	/* Default to display name based on filename if its not set yet */
 	
 	if (file->details->display_name == NULL) {
