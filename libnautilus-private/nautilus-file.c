@@ -3669,6 +3669,10 @@ nautilus_file_peek_display_name (NautilusFile *file)
 	const char *name;
 	char *escaped_name;
 
+	/* FIXME: for some reason we can get a NautilusFile instance which is
+	 *        no longer valid or could be freed somewhere else in the same time.
+	 *        There's race condition somewhere. See bug 602500.
+	 */
 	if (file == NULL || nautilus_file_is_gone (file))
 		return "";
 
