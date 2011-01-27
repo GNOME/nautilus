@@ -2410,6 +2410,30 @@ bookmarks_key_press_event_cb (GtkWidget             *widget,
 
   modifiers = gtk_accelerator_get_default_mod_mask ();
 
+  if ((event->keyval == GDK_KEY_Return ||
+       event->keyval == GDK_KEY_KP_Enter ||
+       event->keyval == GDK_KEY_ISO_Enter ||
+       event->keyval == GDK_KEY_space)) {
+
+      GtkTreeModel *model;
+      GtkTreePath *path;
+      NautilusWindowOpenFlags flags = 0;
+
+      if ((event->state & modifiers) == GDK_SHIFT_MASK) {
+          flags = NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
+      } else if ((event->state & modifiers) == GDK_CONTROL_MASK) {
+          flags = NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
+      }
+
+      model = gtk_tree_view_get_model (sidebar->tree_view);
+      gtk_tree_view_get_cursor (sidebar->tree_view, &path, NULL);
+
+      open_selected_bookmark (sidebar, model, path, flags);
+
+      gtk_tree_path_free (path);
+      return TRUE;
+  }
+
   if (event->keyval == GDK_KEY_Down &&
       (event->state & modifiers) == GDK_MOD1_MASK) {
       return eject_or_unmount_selection (sidebar);
