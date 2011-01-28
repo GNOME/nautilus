@@ -489,8 +489,6 @@ finish_startup (NautilusApplication *application,
 	application->volume_monitor = g_volume_monitor_get ();
 	g_signal_connect_object (application->volume_monitor, "mount_removed",
 				 G_CALLBACK (mount_removed_callback), application, 0);
-	g_signal_connect_object (application->volume_monitor, "mount_pre_unmount",
-				 G_CALLBACK (mount_removed_callback), application, 0);
 	g_signal_connect_object (application->volume_monitor, "mount_added",
 				 G_CALLBACK (mount_added_callback), application, 0);
 }
@@ -1135,8 +1133,6 @@ should_close_slot_with_mount (NautilusWindow *window,
  * any windows open displaying contents on the mount. If there are,
  * close them.  It would also be cool to save open window and position
  * info.
- *
- * This is also called on pre_unmount.
  */
 static void
 mount_removed_callback (GVolumeMonitor *monitor,
