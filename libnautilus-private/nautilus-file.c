@@ -111,8 +111,6 @@ enum {
 	LAST_SIGNAL
 };
 
-static int date_format_pref;
-
 static guint signals[LAST_SIGNAL];
 
 static GHashTable *symbolic_links;
@@ -4416,13 +4414,15 @@ nautilus_file_fit_date_as_string (NautilusFile *file,
 	GDate *today;
 	GDate *file_date;
 	guint32 file_date_age;
-	int i;
+	int i, date_format_pref;
 
 	if (!nautilus_file_get_date (file, date_type, &file_time_raw)) {
 		return NULL;
 	}
 
 	file_time = localtime (&file_time_raw);
+	date_format_pref = g_settings_get_enum (nautilus_preferences,
+						NAUTILUS_PREFERENCES_DATE_FORMAT);
 
 	if (date_format_pref == NAUTILUS_DATE_FORMAT_LOCALE) {
 		return eel_strdup_strftime ("%c", file_time);
@@ -7986,11 +7986,6 @@ nautilus_file_class_init (NautilusFileClass *class)
 		              G_TYPE_NONE, 0);
 
 	g_type_class_add_private (class, sizeof (NautilusFileDetails));
-
-
-	eel_g_settings_add_auto_enum (nautilus_preferences,
-				      NAUTILUS_PREFERENCES_DATE_FORMAT,
-				      &date_format_pref);
 
 	thumbnail_limit_changed_callback (NULL);
 	g_signal_connect_swapped (nautilus_preferences,

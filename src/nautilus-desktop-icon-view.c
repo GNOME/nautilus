@@ -465,15 +465,10 @@ realized_callback (GtkWidget *widget, NautilusDesktopIconView *desktop_icon_view
 static NautilusZoomLevel
 get_default_zoom_level (void)
 {
-	static gboolean auto_storage_added = FALSE;
-	static NautilusZoomLevel default_zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
+	NautilusZoomLevel default_zoom_level;
 
-	if (!auto_storage_added) {
-		auto_storage_added = TRUE;
-		eel_g_settings_add_auto_enum (nautilus_icon_view_preferences,
-					      NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
-					      (int *) &default_zoom_level);
-	}
+	default_zoom_level = g_settings_get_enum (nautilus_icon_view_preferences,
+						  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL);
 
 	return CLAMP (default_zoom_level, NAUTILUS_ZOOM_LEVEL_SMALLEST, NAUTILUS_ZOOM_LEVEL_LARGEST);
 }

@@ -166,8 +166,6 @@ typedef enum {
 	TOP_SIDE
 } RectangleSide;
 
-static int click_policy_auto_value;
-
 static void nautilus_icon_canvas_item_text_interface_init (EelAccessibleTextIface *iface);
 static GType nautilus_icon_canvas_item_accessible_factory_get_type (void);
 
@@ -210,16 +208,6 @@ static void       nautilus_icon_canvas_item_ensure_bounds_up_to_date (NautilusIc
 static void
 nautilus_icon_canvas_item_init (NautilusIconCanvasItem *icon_item)
 {
-	static gboolean setup_auto_enums = FALSE;
-
-	if (!setup_auto_enums) {
-		eel_g_settings_add_auto_enum
-			(nautilus_preferences,
-			 NAUTILUS_PREFERENCES_CLICK_POLICY,
-			 &click_policy_auto_value);
-		setup_auto_enums = TRUE;
-	}
-
 	icon_item->details = G_TYPE_INSTANCE_GET_PRIVATE ((icon_item), NAUTILUS_TYPE_ICON_CANVAS_ITEM, NautilusIconCanvasItemDetails);
 	nautilus_icon_canvas_item_invalidate_label_size (icon_item);
 }
@@ -754,7 +742,12 @@ nautilus_icon_canvas_item_update (EelCanvasItem *item,
 static gboolean
 in_single_click_mode (void)
 {
-	return click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE;
+	int click_policy;
+
+	click_policy = g_settings_get_enum (nautilus_preferences,
+					    NAUTILUS_PREFERENCES_CLICK_POLICY);
+
+	return click_policy == NAUTILUS_CLICK_POLICY_SINGLE;
 }
 
 

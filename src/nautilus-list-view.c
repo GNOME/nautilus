@@ -129,12 +129,6 @@ struct SelectionForeachData {
 /* Wait for the rename to end when activating a file being renamed */
 #define WAIT_FOR_RENAME_ON_ACTIVATE 200
 
-static int                      click_policy_auto_value;
-static NautilusFileSortType     default_sort_order_auto_value;
-static gboolean			default_sort_reversed_auto_value;
-static NautilusZoomLevel        default_zoom_level_auto_value;
-static char **                  default_visible_columns_auto_value;
-static char **                  default_column_order_auto_value;
 static GdkCursor *              hand_cursor = NULL;
 
 static GtkTargetList *          source_target_list = NULL;
@@ -171,6 +165,8 @@ static const char * default_trash_columns_order[] = {
 static const gchar*
 get_default_sort_order (NautilusFile *file, gboolean *reversed)
 {
+	NautilusFileSortType default_sort_order;
+	gboolean default_sort_reversed;
 	const gchar *retval;
 	const char *attributes[] = {
 		"name", /* is really "manually" which doesn't apply to lists */
@@ -187,8 +183,13 @@ get_default_sort_order (NautilusFile *file, gboolean *reversed)
 	retval = nautilus_file_get_default_sort_attribute (file, reversed);
 
 	if (retval == NULL) {
-		retval = attributes[default_sort_order_auto_value];
-		*reversed = default_sort_reversed_auto_value;
+		default_sort_order = g_settings_get_enum (nautilus_preferences,
+							  NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER);
+		default_sort_reversed = g_settings_get_boolean (nautilus_preferences,
+								NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER);
+
+		retval = attributes[default_sort_order];
+		*reversed = default_sort_reversed;
 	}
 
 	return retval;
@@ -302,6 +303,13 @@ button_event_modifies_selection (GdkEventButton *event)
 	return (event->state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)) != 0;
 }
 
+static int
+get_click_policy (void)
+{
+	return g_settings_get_enum (nautilus_preferences,
+				    NAUTILUS_PREFERENCES_CLICK_POLICY);
+}
+
 static void
 nautilus_list_view_did_not_drag (NautilusListView *view,
 				 GdkEventButton *event)
@@ -327,7 +335,7 @@ nautilus_list_view_did_not_drag (NautilusListView *view,
 			}
 		}
 
-		if ((click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE)
+		if ((get_click_policy () == NAUTILUS_CLICK_POLICY_SINGLE)
 		    && !button_event_modifies_selection(event)) {
 			if (event->button == 1) {
 				activate_selected_items (view);
@@ -502,7 +510,7 @@ motion_notify_callback (GtkWidget *widget,
 		return FALSE;
 	}
 
-	if (click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE) {
+	if (get_click_policy () == NAUTILUS_CLICK_POLICY_SINGLE) {
 		GtkTreePath *old_hover_path;
 
 		old_hover_path = view->details->hover_path;
@@ -556,7 +564,7 @@ leave_notify_callback (GtkWidget *widget,
 
 	view = NAUTILUS_LIST_VIEW (callback_data);
 
-	if (click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE &&
+	if (get_click_policy () == NAUTILUS_CLICK_POLICY_SINGLE &&
 	    view->details->hover_path != NULL) {
 		gtk_tree_path_free (view->details->hover_path);
 		view->details->hover_path = NULL;
@@ -574,7 +582,7 @@ enter_notify_callback (GtkWidget *widget,
 
 	view = NAUTILUS_LIST_VIEW (callback_data);
 
-	if (click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE) {
+	if (get_click_policy () == NAUTILUS_CLICK_POLICY_SINGLE) {
 		if (view->details->hover_path != NULL) {
 			gtk_tree_path_free (view->details->hover_path);
 		}
@@ -648,7 +656,7 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 	last_click_time = current_time;
 
 	/* Ignore double click if we are in single click mode */
-	if (click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE && click_count >= 2) {
+	if (get_click_policy () == NAUTILUS_CLICK_POLICY_SINGLE && click_count >= 2) {
 		return TRUE;
 	}
 
@@ -1440,7 +1448,7 @@ filename_cell_data_func (GtkTreeViewColumn *column,
 			    view->details->file_name_column_num, &text,
 			    -1);
 
-	if (click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE) {
+	if (get_click_policy () == NAUTILUS_CLICK_POLICY_SINGLE) {
 		path = gtk_tree_model_get_path (model, iter);
 
 		if (view->details->hover_path == NULL ||
@@ -1526,6 +1534,7 @@ create_and_set_up_tree_view (NautilusListView *view)
 	AtkObject *atk_obj;
 	GList *nautilus_columns;
 	GList *l;
+	gchar **default_column_order, **default_visible_columns;
 	
 	view->details->tree_view = GTK_TREE_VIEW (gtk_tree_view_new ());
 	view->details->columns = g_hash_table_new_full (g_str_hash, 
@@ -1690,12 +1699,17 @@ create_and_set_up_tree_view (NautilusListView *view)
 	}
 	nautilus_column_list_free (nautilus_columns);
 
+	default_visible_columns = g_settings_get_strv (nautilus_list_view_preferences,
+						       NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS);
+	default_column_order = g_settings_get_strv (nautilus_list_view_preferences,
+						    NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER);
+
 	/* Apply the default column order and visible columns, to get it
 	 * right most of the time. The metadata will be checked when a 
 	 * folder is loaded */
 	apply_columns_settings (view,
-				default_column_order_auto_value,
-				default_visible_columns_auto_value);
+				default_column_order,
+				default_visible_columns);
 
 	gtk_widget_show (GTK_WIDGET (view->details->tree_view));
 	gtk_container_add (GTK_CONTAINER (view), GTK_WIDGET (view->details->tree_view));
@@ -1703,6 +1717,9 @@ create_and_set_up_tree_view (NautilusListView *view)
 
         atk_obj = gtk_widget_get_accessible (GTK_WIDGET (view->details->tree_view));
         atk_object_set_name (atk_obj, _("List View"));
+
+	g_strfreev (default_visible_columns);
+	g_strfreev (default_column_order);
 }
 
 static void
@@ -1749,7 +1766,8 @@ get_visible_columns (NautilusListView *list_view)
 
 	return nautilus_file_is_in_trash (file) ?
 		g_strdupv ((gchar **) default_trash_visible_columns) :
-		g_strdupv (default_visible_columns_auto_value);
+		g_settings_get_strv (nautilus_list_view_preferences,
+				     NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS);
 }
 
 static char **
@@ -1787,7 +1805,8 @@ get_column_order (NautilusListView *list_view)
 
 	return nautilus_file_is_in_trash (file) ?
 		g_strdupv ((gchar **) default_trash_columns_order) :
-		g_strdupv (default_column_order_auto_value);
+		g_settings_get_strv (nautilus_list_view_preferences,
+				     NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER);
 }
 
 static void
@@ -1853,7 +1872,8 @@ static NautilusZoomLevel
 get_default_zoom_level (void) {
 	NautilusZoomLevel default_zoom_level;
 
-	default_zoom_level = default_zoom_level_auto_value;
+	default_zoom_level = g_settings_get_enum (nautilus_list_view_preferences,
+						  NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL);
 
 	if (default_zoom_level <  NAUTILUS_ZOOM_LEVEL_SMALLEST
 	    || NAUTILUS_ZOOM_LEVEL_LARGEST < default_zoom_level) {
@@ -2326,11 +2346,13 @@ column_chooser_use_default_callback (NautilusColumnChooser *chooser,
 	 */
 	default_columns = nautilus_file_is_in_trash (file) ?
 		g_strdupv ((gchar **) default_trash_visible_columns) :
-		g_strdupv (default_visible_columns_auto_value);
+		g_settings_get_strv (nautilus_list_view_preferences,
+				     NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS);
 
 	default_order = nautilus_file_is_in_trash (file) ?
 		g_strdupv ((gchar **) default_trash_columns_order) :
-		g_strdupv (default_column_order_auto_value);
+		g_settings_get_strv (nautilus_list_view_preferences,
+				     NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER);
 
 	apply_columns_settings (view, default_order, default_columns);
 	column_chooser_set_from_arrays (chooser, view,
@@ -2732,7 +2754,7 @@ nautilus_list_view_click_policy_changed (NautilusView *directory_view)
 	view = NAUTILUS_LIST_VIEW (directory_view);
 
 	/* ensure that we unset the hand cursor and refresh underlined rows */
-	if (click_policy_auto_value == NAUTILUS_CLICK_POLICY_DOUBLE) {
+	if (get_click_policy () == NAUTILUS_CLICK_POLICY_DOUBLE) {
 		if (view->details->hover_path != NULL) {
 			if (gtk_tree_model_get_iter (GTK_TREE_MODEL (view->details->model),
 						     &iter, view->details->hover_path)) {
@@ -2756,7 +2778,7 @@ nautilus_list_view_click_policy_changed (NautilusView *directory_view)
 		}
 
 		g_clear_object (&hand_cursor);
-	} else if (click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE) {
+	} else if (get_click_policy () == NAUTILUS_CLICK_POLICY_SINGLE) {
 		if (hand_cursor == NULL) {
 			hand_cursor = gdk_cursor_new(GDK_HAND2);
 		}
@@ -3076,25 +3098,6 @@ nautilus_list_view_class_init (NautilusListViewClass *class)
 	nautilus_view_class->get_view_id = nautilus_list_view_get_id;
 	nautilus_view_class->get_first_visible_file = nautilus_list_view_get_first_visible_file;
 	nautilus_view_class->scroll_to_file = list_view_scroll_to_file;
-
-	eel_g_settings_add_auto_enum (nautilus_preferences,
-				      NAUTILUS_PREFERENCES_CLICK_POLICY,
-				      &click_policy_auto_value);
-	eel_g_settings_add_auto_enum (nautilus_preferences,
-				      NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER,
-				      (int *) &default_sort_order_auto_value);
-	eel_g_settings_add_auto_boolean (nautilus_preferences,
-					 NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER,
-					 &default_sort_reversed_auto_value);
-	eel_g_settings_add_auto_enum (nautilus_list_view_preferences,
-				      NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
-				      (int *) &default_zoom_level_auto_value);
-	eel_g_settings_add_auto_strv (nautilus_list_view_preferences,
-				      NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS,
-				      &default_visible_columns_auto_value);
-	eel_g_settings_add_auto_strv (nautilus_list_view_preferences,
-				      NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER,
-				      &default_column_order_auto_value);
 }
 
 static void

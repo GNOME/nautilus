@@ -115,8 +115,6 @@ static NautilusThumbnailInfo *currently_thumbnailing = NULL;
 
 static GnomeDesktopThumbnailFactory *thumbnail_factory = NULL;
 
-static int thumbnail_icon_size = 0;
-
 static gboolean
 get_file_mtime (const char *file_uri, time_t* mtime)
 {
@@ -356,9 +354,13 @@ thumbnail_loader_size_prepared (GdkPixbufLoader *loader,
 				ThumbnailLoadArgs *args)
 {
 	int size = MAX (width, height);
+	int thumbnail_icon_size;
 
 	args->original_width = width;
 	args->original_height = height;
+
+	thumbnail_icon_size = g_settings_get_int (nautilus_icon_view_preferences,
+						  NAUTILUS_PREFERENCES_ICON_VIEW_THUMBNAIL_SIZE);
 
 	if (args->force_nominal) {
 		args->base_size = size;                        
@@ -422,12 +424,6 @@ get_pixbuf_from_data (const unsigned char *buffer,
 	GdkPixbuf *pixbuf;
 	ThumbnailLoadArgs args;
 	GError *error;
-
-	if (thumbnail_icon_size == 0) {
-		eel_g_settings_add_auto_int (nautilus_icon_view_preferences,
-					     NAUTILUS_PREFERENCES_ICON_VIEW_THUMBNAIL_SIZE,
-					     &thumbnail_icon_size);
-	}
 
 	loader = gdk_pixbuf_loader_new ();
 	g_signal_connect (loader, "size-prepared",

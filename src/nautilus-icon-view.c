@@ -158,9 +158,6 @@ static const SortCriterion sort_criteria[] = {
 	}
 };
 
-static gboolean default_sort_in_reverse_order = FALSE;
-static int preview_sound_auto_value;
-
 static void                 nautilus_icon_view_set_directory_sort_by        (NautilusIconView           *icon_view,
 									     NautilusFile         *file,
 									     const char           *sort_by);
@@ -722,24 +719,16 @@ nautilus_icon_view_get_directory_sort_by (NautilusIconView *icon_view,
 		 get_directory_sort_by, (icon_view, file));
 }
 
-static NautilusFileSortType default_sort_order = NAUTILUS_FILE_SORT_BY_DISPLAY_NAME;
-
 static NautilusFileSortType
 get_default_sort_order (NautilusFile *file, gboolean *reversed)
 {
-	static gboolean auto_storaged_added = FALSE;
-	NautilusFileSortType retval;
+	NautilusFileSortType retval, default_sort_order;
+	gboolean default_sort_in_reverse_order;
 
-	if (auto_storaged_added == FALSE) {
-		auto_storaged_added = TRUE;
-		eel_g_settings_add_auto_enum (nautilus_preferences,
-					      NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER,
-					      (int *) &default_sort_order);
-		eel_g_settings_add_auto_boolean (nautilus_preferences,
-						 NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER,
-						 &default_sort_in_reverse_order);
-
-	}
+	default_sort_order = g_settings_get_enum (nautilus_preferences,
+						  NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER);
+	default_sort_in_reverse_order = g_settings_get_boolean (nautilus_preferences,
+								NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER);
 
 	retval = nautilus_file_get_default_sort_type (file, reversed);
 
@@ -950,21 +939,11 @@ nautilus_icon_view_get_directory_tighter_layout (NautilusIconView *icon_view,
 		 get_directory_tighter_layout, (icon_view, file));
 }
 
-static gboolean default_directory_tighter_layout = FALSE;
-
 static gboolean
 get_default_directory_tighter_layout (void)
 {
-	static gboolean auto_storaged_added = FALSE;
-
-	if (auto_storaged_added == FALSE) {
-		auto_storaged_added = TRUE;
-		eel_g_settings_add_auto_boolean (nautilus_icon_view_preferences,
-						 NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT,
-						 &default_directory_tighter_layout);
-	}
-
-	return default_directory_tighter_layout;
+	return g_settings_get_boolean (nautilus_icon_view_preferences,
+				       NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT);
 }
 
 static gboolean
@@ -1088,27 +1067,20 @@ get_sort_criterion_by_sort_type (NautilusFileSortType sort_type)
 		}
 	}
 
-	return NULL;
+	return &sort_criteria[0];
 }
 
-static NautilusZoomLevel default_zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
-static NautilusZoomLevel default_compact_zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
 #define DEFAULT_ZOOM_LEVEL(icon_view) icon_view->details->compact ? default_compact_zoom_level : default_zoom_level
 
 static NautilusZoomLevel
 get_default_zoom_level (NautilusIconView *icon_view)
 {
-	static gboolean auto_storage_added = FALSE;
+	NautilusZoomLevel default_zoom_level, default_compact_zoom_level;
 
-	if (!auto_storage_added) {
-		auto_storage_added = TRUE;
-		eel_g_settings_add_auto_enum (nautilus_icon_view_preferences,
-					      NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
-					      (int *) &default_zoom_level);
-		eel_g_settings_add_auto_enum (nautilus_compact_view_preferences,
-					      NAUTILUS_PREFERENCES_COMPACT_VIEW_DEFAULT_ZOOM_LEVEL,
-					      (int *) &default_compact_zoom_level);
-	}
+	default_zoom_level = g_settings_get_enum (nautilus_icon_view_preferences,
+						  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL);
+	default_compact_zoom_level = g_settings_get_enum (nautilus_icon_view_preferences,
+							  NAUTILUS_PREFERENCES_COMPACT_VIEW_DEFAULT_ZOOM_LEVEL);
 
 	return CLAMP (DEFAULT_ZOOM_LEVEL(icon_view), NAUTILUS_ZOOM_LEVEL_SMALLEST, NAUTILUS_ZOOM_LEVEL_LARGEST);
 }
@@ -2089,8 +2061,11 @@ should_preview_sound (NautilusFile *file)
 {
 	GFile *location;
 	GFilesystemPreviewType use_preview;
+	int preview_sound_pref;
 
 	use_preview = nautilus_file_get_filesystem_use_preview (file);
+	preview_sound_pref = g_settings_get_enum (nautilus_preferences,
+						  NAUTILUS_PREFERENCES_PREVIEW_SOUND);
 
 	location = nautilus_file_get_location (file);
 	if (g_file_has_uri_scheme (location, "burn")) {
@@ -2100,11 +2075,11 @@ should_preview_sound (NautilusFile *file)
 	g_object_unref (location);
 
 	/* Check user performance preference */	
-	if (preview_sound_auto_value == NAUTILUS_SPEED_TRADEOFF_NEVER) {
+	if (preview_sound_pref == NAUTILUS_SPEED_TRADEOFF_NEVER) {
 		return FALSE;
 	}
 		
-	if (preview_sound_auto_value == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
+	if (preview_sound_pref == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
 		if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_NEVER) {
 			return FALSE;
 		} else {
@@ -3002,7 +2977,6 @@ nautilus_icon_view_class_init (NautilusIconViewClass *klass)
 static void
 nautilus_icon_view_init (NautilusIconView *icon_view)
 {
-	static gboolean setup_sound_preview = FALSE;
 	NautilusIconContainer *icon_container;
 
         g_return_if_fail (gtk_bin_get_child (GTK_BIN (icon_view)) == NULL);
@@ -3018,14 +2992,6 @@ nautilus_icon_view_init (NautilusIconView *icon_view)
 						 gtk_widget_get_direction (GTK_WIDGET(icon_container)) == GTK_TEXT_DIR_RTL ?
 						 NAUTILUS_ICON_LAYOUT_R_L_T_B :
 						 NAUTILUS_ICON_LAYOUT_L_R_T_B);
-
-	if (!setup_sound_preview) {
-		eel_g_settings_add_auto_enum (nautilus_preferences,
-					      NAUTILUS_PREFERENCES_PREVIEW_SOUND,
-					      &preview_sound_auto_value);
-
-		setup_sound_preview = TRUE;
-	}
 
 	g_signal_connect_swapped (nautilus_preferences,
 				  "changed::" NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER,
