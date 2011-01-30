@@ -267,6 +267,12 @@ real_begin_loading (NautilusView *object)
 	NAUTILUS_VIEW_CLASS (nautilus_desktop_icon_view_parent_class)->begin_loading (object);
 }
 
+static const char *
+real_get_id (NautilusView *view)
+{
+	return NAUTILUS_DESKTOP_ICON_VIEW_ID;
+}
+
 static void
 nautilus_desktop_icon_view_dispose (GObject *object)
 {
@@ -314,17 +320,24 @@ nautilus_desktop_icon_view_dispose (GObject *object)
 static void
 nautilus_desktop_icon_view_class_init (NautilusDesktopIconViewClass *class)
 {
+	NautilusViewClass *vclass;
+	NautilusIconViewClass *iclass;
+
+	vclass = NAUTILUS_VIEW_CLASS (class);
+	iclass = NAUTILUS_ICON_VIEW_CLASS (class);
+
 	G_OBJECT_CLASS (class)->dispose = nautilus_desktop_icon_view_dispose;
 
-	NAUTILUS_VIEW_CLASS (class)->begin_loading = real_begin_loading;
-	NAUTILUS_VIEW_CLASS (class)->merge_menus = real_merge_menus;
-	NAUTILUS_VIEW_CLASS (class)->update_menus = real_update_menus;
-	NAUTILUS_VIEW_CLASS (class)->supports_zooming = real_supports_zooming;
+	vclass->begin_loading = real_begin_loading;
+	vclass->merge_menus = real_merge_menus;
+	vclass->update_menus = real_update_menus;
+	vclass->supports_zooming = real_supports_zooming;
+	vclass->get_view_id = real_get_id;
 
-	NAUTILUS_ICON_VIEW_CLASS (class)->supports_auto_layout = real_supports_auto_layout;
-	NAUTILUS_ICON_VIEW_CLASS (class)->supports_scaling = real_supports_scaling;
-	NAUTILUS_ICON_VIEW_CLASS (class)->supports_keep_aligned = real_supports_keep_aligned;
-	NAUTILUS_ICON_VIEW_CLASS (class)->supports_labels_beside_icons = real_supports_labels_beside_icons;
+	iclass->supports_auto_layout = real_supports_auto_layout;
+	iclass->supports_scaling = real_supports_scaling;
+	iclass->supports_keep_aligned = real_supports_keep_aligned;
+	iclass->supports_labels_beside_icons = real_supports_labels_beside_icons;
 
 	g_type_class_add_private (class, sizeof (NautilusDesktopIconViewDetails));
 }

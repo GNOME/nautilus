@@ -2844,10 +2844,6 @@ icon_view_scroll_to_file (NautilusView *view,
 static const char *
 nautilus_icon_view_get_id (NautilusView *view)
 {
-	if (NAUTILUS_IS_DESKTOP_ICON_VIEW (view)) {
-		return NAUTILUS_DESKTOP_ICON_VIEW_ID;
-	}
-
 	if (nautilus_icon_view_is_compact (NAUTILUS_ICON_VIEW (view))) {
 		return FM_COMPACT_VIEW_ID;
 	}
