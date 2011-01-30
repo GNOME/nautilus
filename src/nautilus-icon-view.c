@@ -175,7 +175,8 @@ static const SortCriterion *get_sort_criterion_by_sort_type           (NautilusF
 static void                 set_sort_criterion_by_sort_type           (NautilusIconView           *icon_view,
 								       NautilusFileSortType  sort_type);
 static gboolean             set_sort_reversed                         (NautilusIconView     *icon_view,
-								       gboolean              new_value);
+								       gboolean              new_value,
+								       gboolean              set_metadata);
 static void                 switch_to_manual_layout                   (NautilusIconView     *view);
 static void                 preview_audio                             (NautilusIconView     *icon_view,
 								       NautilusFile         *file,
@@ -271,7 +272,8 @@ get_stored_icon_position_callback (NautilusIconContainer *container,
 static void
 real_set_sort_criterion (NautilusIconView *icon_view,
                          const SortCriterion *sort,
-                         gboolean clear)
+                         gboolean clear,
+			 gboolean set_metadata)
 {
 	NautilusFile *file;
 
@@ -285,7 +287,7 @@ real_set_sort_criterion (NautilusIconView *icon_view,
 		icon_view->details->sort =
 			get_sort_criterion_by_sort_type	(get_default_sort_order
 							 (file, &icon_view->details->sort_reversed));
-	} else {
+	} else if (set_metadata) {
 		/* Store the new sort setting. */
 		nautilus_icon_view_set_directory_sort_by (icon_view,
 						    file,
@@ -297,7 +299,9 @@ real_set_sort_criterion (NautilusIconView *icon_view,
 }
 
 static void
-set_sort_criterion (NautilusIconView *icon_view, const SortCriterion *sort)
+set_sort_criterion (NautilusIconView *icon_view,
+		    const SortCriterion *sort,
+		    gboolean set_metadata)
 {
 	if (sort == NULL ||
 	    icon_view->details->sort == sort) {
@@ -306,13 +310,13 @@ set_sort_criterion (NautilusIconView *icon_view, const SortCriterion *sort)
 
 	icon_view->details->sort = sort;
 
-        real_set_sort_criterion (icon_view, sort, FALSE);
+        real_set_sort_criterion (icon_view, sort, FALSE, set_metadata);
 }
 
 static void
 clear_sort_criterion (NautilusIconView *icon_view)
 {
-	real_set_sort_criterion (icon_view, NULL, TRUE);
+	real_set_sort_criterion (icon_view, NULL, TRUE, TRUE);
 }
 
 static void
@@ -352,13 +356,13 @@ nautilus_icon_view_real_clean_up (NautilusIconView *icon_view)
 	/* Hardwire Clean Up to always be by name, in forward order */
 	saved_sort_reversed = icon_view->details->sort_reversed;
 	
-	set_sort_reversed (icon_view, FALSE);
-	set_sort_criterion (icon_view, &sort_criteria[0]);
+	set_sort_reversed (icon_view, FALSE, FALSE);
+	set_sort_criterion (icon_view, &sort_criteria[0], FALSE);
 
 	nautilus_icon_container_sort (icon_container);
 	nautilus_icon_container_freeze_icon_positions (icon_container);
 
-	set_sort_reversed (icon_view, saved_sort_reversed);
+	set_sort_reversed (icon_view, saved_sort_reversed, FALSE);
 }
 
 static void
@@ -1025,15 +1029,19 @@ real_supports_labels_beside_icons (NautilusIconView *view)
 }
 
 static gboolean
-set_sort_reversed (NautilusIconView *icon_view, gboolean new_value)
+set_sort_reversed (NautilusIconView *icon_view,
+		   gboolean new_value,
+		   gboolean set_metadata)
 {
 	if (icon_view->details->sort_reversed == new_value) {
 		return FALSE;
 	}
 	icon_view->details->sort_reversed = new_value;
-	
-	/* Store the new sort setting. */
-	nautilus_icon_view_set_directory_sort_reversed (icon_view, nautilus_view_get_directory_as_file (NAUTILUS_VIEW (icon_view)), new_value);
+
+	if (set_metadata) {
+		/* Store the new sort setting. */
+		nautilus_icon_view_set_directory_sort_reversed (icon_view, nautilus_view_get_directory_as_file (NAUTILUS_VIEW (icon_view)), new_value);
+	}
 	
 	/* Update the layout menus to match the new sort-order setting. */
 	update_layout_menus (icon_view);
@@ -1167,11 +1175,11 @@ nautilus_icon_view_begin_loading (NautilusView *view)
 	 * container doesn't have any icons at this point.
 	 */
 	sort_name = nautilus_icon_view_get_directory_sort_by (icon_view, file);
-	set_sort_criterion (icon_view, get_sort_criterion_by_metadata_text (sort_name));
+	set_sort_criterion (icon_view, get_sort_criterion_by_metadata_text (sort_name), FALSE);
 	g_free (sort_name);
 
 	/* Set the sort direction from the metadata. */
-	set_sort_reversed (icon_view, nautilus_icon_view_get_directory_sort_reversed (icon_view, file));
+	set_sort_reversed (icon_view, nautilus_icon_view_get_directory_sort_reversed (icon_view, file), FALSE);
 
 	nautilus_icon_container_set_keep_aligned
 		(get_icon_container (icon_view), 
@@ -1402,7 +1410,7 @@ set_sort_criterion_by_sort_type (NautilusIconView *icon_view,
 		return;
 	}
 
-	set_sort_criterion (icon_view, sort);
+	set_sort_criterion (icon_view, sort, TRUE);
 	nautilus_icon_container_sort (get_icon_container (icon_view));
 	nautilus_icon_view_reveal_selection (NAUTILUS_VIEW (icon_view));
 }
@@ -1417,7 +1425,8 @@ action_reversed_order_callback (GtkAction *action,
 	icon_view = NAUTILUS_ICON_VIEW (user_data);
 
 	if (set_sort_reversed (icon_view,
-			       gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action)))) {
+			       gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action)),
+			       TRUE)) {
 		nautilus_icon_container_sort (get_icon_container (icon_view));
 		nautilus_icon_view_reveal_selection (NAUTILUS_VIEW (icon_view));
 	}
@@ -2441,7 +2450,7 @@ default_sort_order_changed_callback (gpointer callback_data)
 
 	file = nautilus_view_get_directory_as_file (NAUTILUS_VIEW (icon_view));
 	sort_name = nautilus_icon_view_get_directory_sort_by (icon_view, file);
-	set_sort_criterion (icon_view, get_sort_criterion_by_metadata_text (sort_name));
+	set_sort_criterion (icon_view, get_sort_criterion_by_metadata_text (sort_name), FALSE);
 	g_free (sort_name);
 
 	icon_container = get_icon_container (icon_view);
@@ -2462,7 +2471,7 @@ default_sort_in_reverse_order_changed_callback (gpointer callback_data)
 	icon_view = NAUTILUS_ICON_VIEW (callback_data);
 
 	file = nautilus_view_get_directory_as_file (NAUTILUS_VIEW (icon_view));
-	set_sort_reversed (icon_view, nautilus_icon_view_get_directory_sort_reversed (icon_view, file));
+	set_sort_reversed (icon_view, nautilus_icon_view_get_directory_sort_reversed (icon_view, file), FALSE);
 	icon_container = get_icon_container (icon_view);
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (icon_container));
 
