@@ -3112,9 +3112,6 @@ nautilus_file_compare_for_sort (NautilusFile *file_1,
 				result = compare_by_directory_name (file_1, file_2);
 			}
 			break;
-		case NAUTILUS_FILE_SORT_BY_DIRECTORY:
-			result = compare_by_full_path (file_1, file_2);
-			break;
 		case NAUTILUS_FILE_SORT_BY_SIZE:
 			/* Compare directory sizes ourselves, then if necessary
 			 * use GnomeVFS to compare file sizes.
