@@ -34,9 +34,6 @@
 #include <eel/eel-string.h>
 #include <glib/gi18n.h>
 
-/* Path for gnome-vfs preferences */
-static const char *EXTRA_MONITOR_PATHS[] = { "/desktop/gnome/background",
-					     NULL };
 /*
  * Public functions
  */
@@ -64,7 +61,6 @@ void
 nautilus_global_preferences_init (void)
 {
 	static gboolean initialized = FALSE;
-	int i;
 
 	if (initialized) {
 		return;
@@ -81,14 +77,4 @@ nautilus_global_preferences_init (void)
 	nautilus_tree_sidebar_preferences = g_settings_new("org.gnome.nautilus.sidebar-panels.tree");
 	gnome_lockdown_preferences = g_settings_new("org.gnome.desktop.lockdown");
 	gnome_background_preferences = g_settings_new("org.gnome.desktop.background");
-
-	nautilus_gconf_client = gconf_client_get_default ();
-
-	/* Add monitors for any other GConf paths we have keys in */
-	for (i=0; EXTRA_MONITOR_PATHS[i] != NULL; i++) {
-		gconf_client_add_dir (nautilus_gconf_client,
-				      EXTRA_MONITOR_PATHS[i],
-				      GCONF_CLIENT_PRELOAD_ONELEVEL,
-				      NULL);
-	}
 }

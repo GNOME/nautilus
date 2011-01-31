@@ -28,7 +28,6 @@
 
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <gio/gio.h>
-#include <gconf/gconf-client.h>
 
 G_BEGIN_DECLS
 
@@ -203,8 +202,6 @@ GSettings *nautilus_tree_sidebar_preferences;
 GSettings *nautilus_window_state;
 GSettings *gnome_lockdown_preferences;
 GSettings *gnome_background_preferences;
-
-GConfClient *nautilus_gconf_client;
 
 G_END_DECLS
 
