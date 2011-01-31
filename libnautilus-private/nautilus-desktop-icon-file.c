@@ -26,6 +26,7 @@
 #include <config.h>
 #include "nautilus-desktop-icon-file.h"
 
+#include "nautilus-desktop-metadata.h"
 #include "nautilus-desktop-directory-file.h"
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
@@ -283,7 +284,7 @@ nautilus_desktop_icon_file_new (NautilusDesktopLink *link)
 
 	update_info_from_link (icon_file);
 
-	nautilus_desktop_update_metadata_from_gconf (file, file->details->name);
+	nautilus_desktop_update_metadata_from_keyfile (file, file->details->name);
 
 	nautilus_directory_add_file (directory, file);
 
@@ -357,7 +358,7 @@ nautilus_desktop_icon_file_set_metadata_as_list (NautilusFile           *file,
 						 const char             *key,
 						 char                  **value)
 {
-	nautilus_desktop_set_metadata_stringv (file, file->details->name, key, value);
+	nautilus_desktop_set_metadata_stringv (file, file->details->name, key, (const gchar **) value);
 }
 
 static void

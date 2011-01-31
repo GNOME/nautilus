@@ -26,14 +26,13 @@
 #include <config.h>
 #include "nautilus-desktop-directory-file.h"
 
+#include "nautilus-desktop-metadata.h"
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-file-private.h"
 #include "nautilus-file-utilities.h"
 #include <eel/eel-glib-extensions.h>
-#include <gconf/gconf-client.h>
-#include <gconf/gconf-value.h>
 #include "nautilus-desktop-directory.h"
 #include "nautilus-metadata.h"
 #include <gtk/gtk.h>
@@ -444,144 +443,6 @@ monitor_destroy (gpointer data)
 	g_free (monitor);
 }
 
-static char *
-get_metadata_gconf_path (const char *name,
-			 const char *key)
-{
-	char *res, *escaped_name;
-
-	escaped_name = gconf_escape_key (name, -1);
-	res = g_build_filename (NAUTILUS_DESKTOP_METADATA_GCONF_PATH, escaped_name, key, NULL);
-	g_free (escaped_name);
-
-	return res;
-}
-
-void
-nautilus_desktop_set_metadata_string (NautilusFile *file,
-				      const char *name,
-				      const char *key,
-				      const char *string)
-{
-	GConfClient *client;
-	char *gconf_key;
-
-	client = gconf_client_get_default ();
-	gconf_key = get_metadata_gconf_path (name, key);
-
-	if (string) {
-		gconf_client_set_string (client, gconf_key, string, NULL);
-	} else {
-		gconf_client_unset (client, gconf_key, NULL);
-	}
-
-	g_free (gconf_key);
-	g_object_unref (client);
-
-	if (nautilus_desktop_update_metadata_from_gconf (file, name)) {
-		nautilus_file_changed (file);
-	}
-}
-
-void
-nautilus_desktop_set_metadata_stringv (NautilusFile *file,
-				       const char *name,
-				       const char *key,
-				       char **stringv)
-{
-	GConfClient *client;
-	char *gconf_key;
-	GSList *list;
-	int i;
-
-	client = gconf_client_get_default ();
-	gconf_key = get_metadata_gconf_path (name, key);
-
-	list = NULL;
-	for (i = 0; stringv[i] != NULL; i++) {
-		list = g_slist_prepend (list, stringv[i]);
-	}
-	list = g_slist_reverse (list);
-
-	gconf_client_set_list (client, gconf_key,
-			       GCONF_VALUE_STRING,
-			       list, NULL);
-
-	g_slist_free (list);
-	g_free (gconf_key);
-	g_object_unref (client);
-
-	if (nautilus_desktop_update_metadata_from_gconf (file, name)) {
-		nautilus_file_changed (file);
-	}
-}
-
-gboolean
-nautilus_desktop_update_metadata_from_gconf (NautilusFile *file,
-					     const char *name)
-{
-	GConfClient *client;
-	GSList *entries, *l;
-	char *dir;
-	const char *key;
-	GConfEntry *entry;
-	GConfValue *value;
-	GFileInfo *info;
-	gboolean changed;
-	char *gio_key;
-	GSList *value_list;
-	char **strv;
-	int i;
-
-	client = gconf_client_get_default ();
-
-	dir = get_metadata_gconf_path (name, NULL);
-	entries = gconf_client_all_entries (client, dir, NULL);
-	g_free (dir);
-
-	info = g_file_info_new ();
-
-	for (l = entries; l != NULL; l = l->next) {
-		entry = l->data;
-
-		key = gconf_entry_get_key (entry);
-		value = gconf_entry_get_value (entry);
-
-                if (value == NULL) {
-			continue;
-		}
-		key = strrchr (key, '/') + 1;
-
-		gio_key = g_strconcat ("metadata::", key, NULL);
-		if (value->type == GCONF_VALUE_STRING) {
-			g_file_info_set_attribute_string (info, gio_key,
-							  gconf_value_get_string (value));
-		} else if (value->type == GCONF_VALUE_LIST &&
-			   gconf_value_get_list_type (value) == GCONF_VALUE_STRING) {
-			value_list = gconf_value_get_list (value);
-			strv = g_new (char *, g_slist_length (value_list) + 1);
-			for (i = 0; value_list != NULL; i++, value_list = value_list->next) {
-				strv[i] = l->data;
-			}
-			strv[i] = NULL;
-			g_file_info_set_attribute_stringv (info, gio_key, strv);
-			g_free (strv);
-		}
-
-		g_free (gio_key);
-
-		gconf_entry_unref (entry);
-	}
-	g_slist_free (entries);
-
-	changed = nautilus_file_update_metadata_from_info (file, info);
-
-	g_object_unref (info);
-	g_object_unref (client);
-
-	return changed;
-}
-
 static void
 nautilus_desktop_directory_file_set_metadata (NautilusFile           *file,
 					      const char             *key,
@@ -595,7 +456,7 @@ nautilus_desktop_directory_file_set_metadata_as_list (NautilusFile           *fi
 						      const char             *key,
 						      char                  **value)
 {
-	nautilus_desktop_set_metadata_stringv (file, "directory", key, value);
+	nautilus_desktop_set_metadata_stringv (file, "directory", key, (const gchar **) value);
 }
 
 static void
@@ -623,7 +484,7 @@ nautilus_desktop_directory_file_init (NautilusDesktopDirectoryFile *desktop_file
 	
 	desktop_file->details->real_dir_file = real_dir_file;
 
-	nautilus_desktop_update_metadata_from_gconf (NAUTILUS_FILE (desktop_file), "directory");
+	nautilus_desktop_update_metadata_from_keyfile (NAUTILUS_FILE (desktop_file), "directory");
 
 	g_signal_connect_object (real_dir_file, "changed",
 				 G_CALLBACK (real_file_changed_callback), desktop_file, 0);

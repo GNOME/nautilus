@@ -73,6 +73,8 @@ libnautilus_private_la_SOURCES = \
 	nautilus-desktop-link-monitor.h \
 	nautilus-desktop-link.c \
 	nautilus-desktop-link.h \
+	nautilus-desktop-metadata.c \
+	nautilus-desktop-metadata.h \
 	nautilus-directory-async.c \
 	nautilus-directory-notify.h \
 	nautilus-directory-private.h \
