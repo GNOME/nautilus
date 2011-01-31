@@ -32,7 +32,6 @@
 #include "nautilus-file-private.h"
 #include "nautilus-file-utilities.h"
 #include <eel/eel-glib-extensions.h>
-#include <eel/eel-gtk-macros.h>
 #include <gconf/gconf-client.h>
 #include <gconf/gconf-value.h>
 #include "nautilus-desktop-directory.h"
@@ -70,14 +69,8 @@ typedef struct {
 	NautilusFileAttributes non_delegated_attributes;
 } DesktopMonitor;
 
-
-static void nautilus_desktop_directory_file_init       (gpointer   object,
-							gpointer   klass);
-static void nautilus_desktop_directory_file_class_init (gpointer   klass);
-
-EEL_CLASS_BOILERPLATE (NautilusDesktopDirectoryFile,
-		       nautilus_desktop_directory_file,
-		       NAUTILUS_TYPE_FILE)
+G_DEFINE_TYPE (NautilusDesktopDirectoryFile, nautilus_desktop_directory_file,
+	       NAUTILUS_TYPE_FILE);
 
 static guint
 desktop_callback_hash (gconstpointer desktop_callback_as_pointer)
@@ -606,18 +599,17 @@ nautilus_desktop_directory_file_set_metadata_as_list (NautilusFile           *fi
 }
 
 static void
-nautilus_desktop_directory_file_init (gpointer object, gpointer klass)
+nautilus_desktop_directory_file_init (NautilusDesktopDirectoryFile *desktop_file)
 {
-	NautilusDesktopDirectoryFile *desktop_file;
 	NautilusDesktopDirectory *desktop_directory;
 	NautilusDirectory *real_dir;
 	NautilusFile *real_dir_file;
 
-	desktop_file = NAUTILUS_DESKTOP_DIRECTORY_FILE (object);
+	desktop_file->details = G_TYPE_INSTANCE_GET_PRIVATE (desktop_file,
+							     NAUTILUS_TYPE_DESKTOP_DIRECTORY_FILE,
+							     NautilusDesktopDirectoryFileDetails);
 
 	desktop_directory = NAUTILUS_DESKTOP_DIRECTORY (nautilus_directory_get_by_uri (EEL_DESKTOP_URI));
-
-	desktop_file->details = g_new0 (NautilusDesktopDirectoryFileDetails, 1);
 	desktop_file->details->desktop_directory = desktop_directory;
 
 	desktop_file->details->callbacks = g_hash_table_new
@@ -671,16 +663,13 @@ desktop_finalize (GObject *object)
 	g_hash_table_destroy (desktop_file->details->monitors);
 
 	nautilus_file_unref (desktop_file->details->real_dir_file);
-
-	g_free (desktop_file->details);
-
 	nautilus_directory_unref (NAUTILUS_DIRECTORY (desktop_directory));
 
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+	G_OBJECT_CLASS (nautilus_desktop_directory_file_parent_class)->finalize (object);
 }
 
 static void
-nautilus_desktop_directory_file_class_init (gpointer klass)
+nautilus_desktop_directory_file_class_init (NautilusDesktopDirectoryFileClass *klass)
 {
 	GObjectClass *object_class;
 	NautilusFileClass *file_class;
@@ -703,4 +692,6 @@ nautilus_desktop_directory_file_class_init (gpointer klass)
 	file_class->get_where_string = desktop_directory_file_get_where_string;
 	file_class->set_metadata = nautilus_desktop_directory_file_set_metadata;
 	file_class->set_metadata_as_list = nautilus_desktop_directory_file_set_metadata_as_list;
+
+	g_type_class_add_private (klass, sizeof (NautilusDesktopDirectoryFileDetails));
 }
