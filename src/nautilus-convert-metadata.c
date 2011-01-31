@@ -30,92 +30,10 @@
 #include <glib/gi18n.h>
 #include <string.h>
 #include <libxml/tree.h>
-#include <gconf/gconf-client.h>
 
 #include <libnautilus-private/nautilus-metadata.h>
 
-#define NAUTILUS_DESKTOP_METADATA_GCONF_PATH "/apps/nautilus/desktop-metadata"
-
 static gboolean quiet = FALSE;
-static char *
-get_metadata_gconf_path (const char *name,
-			 const char *key)
-{
-	char *res, *escaped_name;
-
-	escaped_name = gconf_escape_key (name, -1);
-	res = g_build_filename (NAUTILUS_DESKTOP_METADATA_GCONF_PATH, escaped_name, key + strlen ("metadata::"), NULL);
-	g_free (escaped_name);
-
-	return res;
-}
-
-static void
-desktop_set_metadata_string (GFile *file,
-			     const char *key,
-			     const char *string)
-{
-	GConfClient *client;
-	char *gconf_key;
-	GFile *parent;
-	char *name;
-
-	parent = g_file_get_parent (file);
-	if (parent == NULL) {
-		name = g_strdup ("directory");
-	} else {
-		g_object_unref (parent);
-		name = g_file_get_basename (file);
-	}
-
-	client = gconf_client_get_default ();
-	gconf_key = get_metadata_gconf_path (name, key);
-
-	gconf_client_set_string (client, gconf_key, string, NULL);
-
-	g_free (gconf_key);
-	g_free (name);
-	g_object_unref (client);
-}
-
-static void
-desktop_set_metadata_stringv (GFile *file,
-			      const char *key,
-			      char **stringv)
-{
-	GConfClient *client;
-	char *gconf_key;
-	GSList *list;
-	int i;
-	GFile *parent;
-	char *name;
-
-	parent = g_file_get_parent (file);
-	if (parent == NULL) {
-		name = g_strdup ("directory");
-	} else {
-		g_object_unref (parent);
-		name = g_file_get_basename (file);
-	}
-
-	client = gconf_client_get_default ();
-	gconf_key = get_metadata_gconf_path (name, key);
-
-	list = NULL;
-	for (i = 0; stringv[i] != NULL; i++) {
-		list = g_slist_prepend (list, stringv[i]);
-	}
-	list = g_slist_reverse (list);
-
-	gconf_client_set_list (client, gconf_key,
-			       GCONF_VALUE_STRING,
-			       list, NULL);
-
-	g_slist_free (list);
-	g_free (gconf_key);
-	g_free (name);
-	g_object_unref (client);
-}
 
 static xmlNodePtr
 xml_get_children (xmlNodePtr parent)
@@ -235,10 +153,7 @@ parse_xml_node (GFile *file,
 	char **strv;
 	GError *error;
 
-	info = NULL;
-	if (!g_file_has_uri_scheme (file, "x-nautilus-desktop")) {
-		info = g_file_info_new ();
-	}
+	info = g_file_info_new ();
 
 	for (attr = filenode->properties; attr != NULL; attr = attr->next) {
 		if (strcmp ((char *)attr->name, "name") == 0 ||
@@ -250,13 +165,9 @@ parse_xml_node (GFile *file,
 		if (new_key) {
 			property = xmlGetProp (filenode, attr->name);
 			if (property) {
-				if (info) {
-					g_file_info_set_attribute_string (info,
-									  new_key,
-									  property);
-				} else {
-					desktop_set_metadata_string (file, new_key, property);
-				}
+				g_file_info_set_attribute_string (info,
+								  new_key,
+								  property);
 				xmlFree (property);
 			}
 		}
@@ -284,13 +195,9 @@ parse_xml_node (GFile *file,
 		for (l = keys, i = 0; l != NULL; l = l->next, i++) {
 			strv[i] = l->data;
 		}
-		if (info) {
-			g_file_info_set_attribute_stringv (info,
-							   new_key,
-							   strv);
-		} else {
-			desktop_set_metadata_stringv (file, new_key, strv);
-		}
+		g_file_info_set_attribute_stringv (info,
+						   new_key,
+						   strv);
 		g_free (strv);
 		g_list_foreach (keys, (GFunc)xmlFree, NULL);
 		g_list_free (keys);
