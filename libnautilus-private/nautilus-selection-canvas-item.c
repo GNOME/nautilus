@@ -2,7 +2,7 @@
 
 /* Nautilus - Canvas item for floating selection.
  *
- * Copyright (C) 2000 Eazel, Inc.
+ * Copyright (C) 1997, 1998, 1999, 2000 Free Software Foundation
  * Copyright (C) 2011 Red Hat Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,7 +20,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- * Authors: Andy Hertzfeld <andy@eazel.com>
+ * Authors: Federico Mena <federico@nuclecu.unam.mx>
  *          Cosimo Cecchi <cosimoc@redhat.com>
  */
 
