@@ -34,7 +34,6 @@ eel_headers =					\
 	eel-accessibility.h			\
 	eel-art-extensions.h			\
 	eel-canvas.h				\
-	eel-canvas-util.h			\
 	eel-debug.h				\
 	eel-editable-label.h			\
 	eel-gdk-extensions.h			\
@@ -54,7 +53,6 @@ libeel_2_la_SOURCES =				\
 	eel-accessibility.c			\
 	eel-art-extensions.c			\
 	eel-canvas.c				\
-	eel-canvas-util.c			\
 	eel-debug.c				\
 	eel-editable-label.c			\
 	eel-gdk-extensions.c			\
