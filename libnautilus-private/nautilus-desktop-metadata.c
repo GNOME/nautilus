@@ -152,6 +152,8 @@ nautilus_desktop_set_metadata_string (NautilusFile *file,
 	}	
 }
 
+#define STRV_TERMINATOR "@x-nautilus-desktop-metadata-term@"
+
 void
 nautilus_desktop_set_metadata_stringv (NautilusFile *file,
                                        const char *name,
@@ -159,21 +161,44 @@ nautilus_desktop_set_metadata_stringv (NautilusFile *file,
                                        const char * const *stringv)
 {
 	GKeyFile *keyfile;
-
-	g_print ("setting desktop metadata\n");
+	guint length;
+	gchar **actual_stringv = NULL;
+	gboolean free_strv;
 
 	keyfile = get_keyfile ();
+
+	/* if we would be setting a single-length strv, append a fake
+	 * terminator to the array, to be able to differentiate it later from
+	 * the single string case
+	 */
+	length = g_strv_length ((gchar **) stringv);
+
+	if (length == 1) {
+		actual_stringv = g_malloc0 (3 * sizeof (gchar *));
+		actual_stringv[0] = (gchar *) stringv[0];
+		actual_stringv[1] = STRV_TERMINATOR;
+		actual_stringv[2] = NULL;
+
+		length = 2;
+		free_strv = TRUE;
+	} else {
+		actual_stringv = (gchar **) stringv;
+	}
 
 	g_key_file_set_string_list (keyfile,
 				    name,
 				    key,
-				    stringv,
-				    g_strv_length ((gchar **) stringv));
+				    (const gchar **) actual_stringv,
+				    length);
 
 	save_in_idle (keyfile);
 
 	if (nautilus_desktop_update_metadata_from_keyfile (file, name)) {
 		nautilus_file_changed (file);
+	}
+
+	if (free_strv) {
+		g_free (actual_stringv);
 	}
 }
 
@@ -182,7 +207,8 @@ nautilus_desktop_update_metadata_from_keyfile (NautilusFile *file,
 					       const gchar *name)
 {
 	gchar **keys, **values;
-	const gchar *key;
+	const gchar *actual_values[2];
+	const gchar *key, *value;
 	gchar *gio_key;
 	gsize length, values_length;
 	GKeyFile *keyfile;
@@ -219,6 +245,27 @@ nautilus_desktop_update_metadata_from_keyfile (NautilusFile *file,
 			g_file_info_set_attribute_string (info,
 							  gio_key,
 							  values[0]);
+		} else if (values_length == 2) {
+			/* deal with the fact that single-length strv are stored
+			 * with an additional terminator in the keyfile string, to differentiate
+			 * them from the regular string case.
+			 */
+			value = values[1];
+
+			if (g_strcmp0 (value, STRV_TERMINATOR) == 0) {
+				/* if the 2nd value is the terminator, remove it */
+				actual_values[0] = values[0];
+				actual_values[1] = NULL;
+
+				g_file_info_set_attribute_stringv (info,
+								   gio_key,
+								   (gchar **) actual_values);
+			} else {
+				/* otherwise, set it as a regular strv */
+				g_file_info_set_attribute_stringv (info,
+								   gio_key,
+								   values);
+			}
 		} else {
 			g_file_info_set_attribute_stringv (info,
 							   gio_key,
