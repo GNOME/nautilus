@@ -32,6 +32,7 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-private.h"
 #include "nautilus-lib-self-check-functions.h"
+#include "nautilus-selection-canvas-item.h"
 #include "nautilus-marshal.h"
 #include <atk/atkaction.h>
 #include <eel/eel-accessibility.h>
@@ -39,7 +40,7 @@
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-art-extensions.h>
 #include <eel/eel-editable-label.h>
-#include <eel/eel-canvas-rect-ellipse.h>
+
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
@@ -2515,8 +2516,6 @@ rubberband_timeout_callback (gpointer data)
 	band_info = &container->details->rubberband_info;
 
 	g_assert (band_info->timer_id != 0);
-	g_assert (EEL_IS_CANVAS_RECT (band_info->selection_rectangle) ||
-		  EEL_IS_CANVAS_RECT (band_info->selection_rectangle));
 
 	adj_changed = FALSE;
 	gtk_widget_get_allocation (widget, &allocation);
@@ -2663,7 +2662,7 @@ start_rubberbanding (NautilusIconContainer *container,
 	band_info->selection_rectangle = eel_canvas_item_new
 		(eel_canvas_root
 		 (EEL_CANVAS (container)),
-		 EEL_TYPE_CANVAS_RECT,
+		 NAUTILUS_TYPE_SELECTION_CANVAS_ITEM,
 		 "x1", band_info->start_x,
 		 "y1", band_info->start_y,
 		 "x2", band_info->start_x,

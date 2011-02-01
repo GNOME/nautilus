@@ -146,6 +146,8 @@ libnautilus_private_la_SOURCES = \
 	nautilus-search-engine-simple.h \
 	nautilus-search-engine-tracker.c \
 	nautilus-search-engine-tracker.h \
+	nautilus-selection-canvas-item.c \
+	nautilus-selection-canvas-item.h \
 	nautilus-signaller.h \
 	nautilus-signaller.c \
 	nautilus-query.c \

@@ -39,6 +39,7 @@
 #include "nautilus-icon-private.h"
 #include "nautilus-link.h"
 #include "nautilus-metadata.h"
+#include "nautilus-selection-canvas-item.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-graphic-effects.h>
@@ -51,7 +52,7 @@
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
-#include <eel/eel-canvas-rect-ellipse.h>
+
 #include <libnautilus-private/nautilus-desktop-background.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file-changes-queue.h>
@@ -146,7 +147,7 @@ create_selection_shadow (NautilusIconContainer *container,
 		if (x2 >= min_x && x1 <= max_x && y2 >= min_y && y1 <= max_y)
 			eel_canvas_item_new
 				(group,
-				 eel_canvas_rect_get_type (),
+				 NAUTILUS_TYPE_SELECTION_CANVAS_ITEM,
 				 "x1", (double) x1,
 				 "y1", (double) y1,
 				 "x2", (double) x2,
