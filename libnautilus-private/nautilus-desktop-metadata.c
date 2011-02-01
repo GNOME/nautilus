@@ -36,6 +36,8 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+static guint save_in_idle_source_id = 0;
+
 static gchar *
 get_keyfile_path (void)
 {
@@ -56,6 +58,8 @@ save_in_idle_cb (gpointer data)
 	gchar *contents, *filename;
 	gsize length;
 	GError *error = NULL;
+
+	save_in_idle_source_id = 0;
 
 	contents = g_key_file_to_data (keyfile, &length, NULL);
 	filename = get_keyfile_path ();
@@ -78,7 +82,11 @@ save_in_idle_cb (gpointer data)
 static void
 save_in_idle (GKeyFile *keyfile)
 {
-	g_idle_add (save_in_idle_cb, keyfile);
+	if (save_in_idle_source_id != 0) {
+		g_source_remove (save_in_idle_source_id);
+	}
+
+	save_in_idle_source_id = g_idle_add (save_in_idle_cb, keyfile);
 }
 
 static GKeyFile *
