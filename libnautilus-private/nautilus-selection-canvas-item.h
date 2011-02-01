@@ -1,10 +1,9 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* Nautilus - Canvas item for rubberband selection.
+/* Nautilus - Canvas item for floating selection.
  *
  * Copyright (C) 2000 Eazel, Inc.
- *
- * Author: Andy Hertzfeld <andy@eazel.com>
+ * Copyright (C) 2011 Red Hat Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -20,6 +19,9 @@
  * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
+ *
+ * Authors: Andy Hertzfeld <andy@eazel.com>
+ *          Cosimo Cecchi <cosimoc@redhat.com>
  */
 
 #ifndef __NAUTILUS_SELECTION_CANVAS_ITEM_H__

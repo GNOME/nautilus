@@ -1,10 +1,9 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* Nautilus - Canvas item for rubberband selection.
+/* Nautilus - Canvas item for floating selection.
  *
  * Copyright (C) 2000 Eazel, Inc.
- *
- * Author: Andy Hertzfeld <andy@eazel.com>
+ * Copyright (C) 2011 Red Hat Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -20,6 +19,9 @@
  * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
+ *
+ * Authors: Andy Hertzfeld <andy@eazel.com>
+ *          Cosimo Cecchi <cosimoc@redhat.com>
  */
 
 #include <config.h>
@@ -34,8 +36,7 @@
 #endif
 
 enum {
-	PROP_0,
-	PROP_X1,
+	PROP_X1 = 1,
 	PROP_Y1,
 	PROP_X2,
 	PROP_Y2,
@@ -43,8 +44,10 @@ enum {
 	PROP_OUTLINE_COLOR_RGBA,
 	PROP_OUTLINE_STIPPLING,
 	PROP_WIDTH_PIXELS,
-	PROP_WIDTH_UNITS
+	NUM_PROPERTIES
 };
+
+static GParamSpec *properties[NUM_PROPERTIES] = { NULL };
 
 typedef struct {
   /*< public >*/
@@ -563,13 +566,6 @@ nautilus_selection_canvas_item_set_property (GObject *object,
 		eel_canvas_item_request_update (item);
 		break;
 
-	case PROP_WIDTH_UNITS:
-		self->priv->width = fabs (g_value_get_double (value));
-		self->priv->width_pixels = FALSE;
-
-		eel_canvas_item_request_update (item);
-		break;
-
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
 		break;
@@ -640,60 +636,39 @@ nautilus_selection_canvas_item_class_init (NautilusSelectionCanvasItemClass *kla
 	item_class->bounds = nautilus_selection_canvas_item_bounds;
 	item_class->translate = nautilus_selection_canvas_item_translate;
 
-        g_object_class_install_property
-                (gobject_class,
-                 PROP_X1,
+	properties[PROP_X1] = 
                  g_param_spec_double ("x1", NULL, NULL,
 				      -G_MAXDOUBLE, G_MAXDOUBLE, 0,
-				      G_PARAM_READWRITE));
-        g_object_class_install_property
-                (gobject_class,
-                 PROP_Y1,
+				      G_PARAM_READWRITE);
+	properties[PROP_Y1] =
                  g_param_spec_double ("y1", NULL, NULL,
 				      -G_MAXDOUBLE, G_MAXDOUBLE, 0,
-				      G_PARAM_READWRITE));
-        g_object_class_install_property
-                (gobject_class,
-                 PROP_X2,
-                 g_param_spec_double ("x2", NULL, NULL,
+				      G_PARAM_READWRITE);
+	properties[PROP_X2] =
+		g_param_spec_double ("x2", NULL, NULL,
 				      -G_MAXDOUBLE, G_MAXDOUBLE, 0,
-				      G_PARAM_READWRITE));
-        g_object_class_install_property
-                (gobject_class,
-                 PROP_Y2,
-                 g_param_spec_double ("y2", NULL, NULL,
+				      G_PARAM_READWRITE);
+	properties[PROP_Y2] =
+		g_param_spec_double ("y2", NULL, NULL,
 				      -G_MAXDOUBLE, G_MAXDOUBLE, 0,
-				      G_PARAM_READWRITE));
-        g_object_class_install_property
-                (gobject_class,
-                 PROP_FILL_COLOR_RGBA,
+				      G_PARAM_READWRITE);
+	properties[PROP_FILL_COLOR_RGBA] = 
                  g_param_spec_boxed ("fill-color-rgba", NULL, NULL,
 				     GDK_TYPE_RGBA,
-				     G_PARAM_READWRITE));
-        g_object_class_install_property
-                (gobject_class,
-                 PROP_OUTLINE_COLOR_RGBA,
-                 g_param_spec_boxed ("outline-color-rgba", NULL, NULL,
+				     G_PARAM_READWRITE);
+	properties[PROP_OUTLINE_COLOR_RGBA] =
+		g_param_spec_boxed ("outline-color-rgba", NULL, NULL,
 				     GDK_TYPE_RGBA,
-				     G_PARAM_READWRITE));
-	g_object_class_install_property
-		(gobject_class,
-		 PROP_OUTLINE_STIPPLING,
+				     G_PARAM_READWRITE);
+	properties[PROP_OUTLINE_STIPPLING] =
 		 g_param_spec_boolean ("outline-stippling", NULL, NULL,
-				       FALSE, G_PARAM_READWRITE));
-        g_object_class_install_property
-                (gobject_class,
-                 PROP_WIDTH_PIXELS,
+				       FALSE, G_PARAM_READWRITE);
+	properties[PROP_WIDTH_PIXELS] =
                  g_param_spec_uint ("width-pixels", NULL, NULL,
 				    0, G_MAXUINT, 0,
-				    G_PARAM_READWRITE));
-        g_object_class_install_property
-                (gobject_class,
-                 PROP_WIDTH_UNITS,
-                 g_param_spec_double ("width-units", NULL, NULL,
-				      0.0, G_MAXDOUBLE, 0.0,
-				      G_PARAM_READWRITE));
+				    G_PARAM_READWRITE);
 
+	g_object_class_install_properties (gobject_class, NUM_PROPERTIES, properties);
 	g_type_class_add_private (klass, sizeof (NautilusSelectionCanvasItemDetails));
 }
 
