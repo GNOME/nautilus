@@ -60,6 +60,8 @@ struct _NautilusSelectionCanvasItemClass {
 /* GObject */
 GType       nautilus_selection_canvas_item_get_type                 (void);
 
+void nautilus_selection_canvas_item_fade_out (NautilusSelectionCanvasItem *self);
+
 G_END_DECLS
 
 #endif /* __NAUTILUS_SELECTION_CANVAS_ITEM_H__ */

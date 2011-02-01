@@ -76,7 +76,14 @@ struct _NautilusSelectionCanvasItemDetails {
 
 	unsigned int fill_set : 1;	/* Is fill color set? */
 	unsigned int outline_set : 1;	/* Is outline color set? */
-	unsigned int width_pixels : 1;	/* Is outline width specified in pixels or units? */
+
+	double fade_out_fill_alpha;
+	double fade_out_outline_alpha;
+
+	double fade_out_fill_delta;
+	double fade_out_outline_delta;	
+
+	guint fade_out_handler_id;
 };
 
 G_DEFINE_TYPE (NautilusSelectionCanvasItem, nautilus_selection_canvas_item, EEL_TYPE_CANVAS_ITEM);
@@ -115,7 +122,15 @@ nautilus_selection_canvas_item_draw (EelCanvasItem *item,
 	cairo_save (cr);
 
 	if (self->priv->fill_set) {
-		gdk_cairo_set_source_rgba (cr, &self->priv->fill_color);
+		GdkRGBA actual_fill;
+
+		actual_fill = self->priv->fill_color;
+
+		if (self->priv->fade_out_handler_id != 0) {
+			actual_fill.alpha = self->priv->fade_out_fill_alpha;
+		}
+
+		gdk_cairo_set_source_rgba (cr, &actual_fill);
 		cairo_rectangle (cr,
 				 cx1, cy1,
 				 cx2 - cx1 + 1,
@@ -124,12 +139,16 @@ nautilus_selection_canvas_item_draw (EelCanvasItem *item,
 	}
 
 	if (self->priv->outline_set) {
-		gdk_cairo_set_source_rgba (cr, &self->priv->outline_color);
-		if (self->priv->width_pixels) {
-			cairo_set_line_width (cr, (int) self->priv->width);
-		} else {
-			cairo_set_line_width (cr, (int) (self->priv->width * item->canvas->pixels_per_unit + 0.5));
+		GdkRGBA actual_outline;
+
+		actual_outline = self->priv->outline_color;
+
+		if (self->priv->fade_out_handler_id != 0) {
+			actual_outline.alpha = self->priv->fade_out_outline_alpha;
 		}
+
+		gdk_cairo_set_source_rgba (cr, &actual_outline);
+		cairo_set_line_width (cr, (int) self->priv->width);
 
 		if (self->priv->outline_stippling) {
 			double dash[2] = { DASH_ON, DASH_OFF };
@@ -172,10 +191,7 @@ nautilus_selection_canvas_item_point (EelCanvasItem *item,
 	y2 = self->priv->y2;
 
 	if (self->priv->outline_set) {
-		if (self->priv->width_pixels)
-			hwidth = (self->priv->width / item->canvas->pixels_per_unit) / 2.0;
-		else
-			hwidth = self->priv->width / 2.0;
+		hwidth = (self->priv->width / item->canvas->pixels_per_unit) / 2.0;
 
 		x1 -= hwidth;
 		y1 -= hwidth;
@@ -366,11 +382,7 @@ nautilus_selection_canvas_item_update (EelCanvasItem *item,
 
 	if (priv->outline_set) {
 		/* Outline and bounding box */
-		if (priv->width_pixels)
-			width_pixels = (int) priv->width;
-		else
-			width_pixels = (int) floor (priv->width * item->canvas->pixels_per_unit + 0.5);
-
+		width_pixels = (int) priv->width;
 		width_lt = width_pixels / 2;
 		width_rb = (width_pixels + 1) / 2;
 		
@@ -455,15 +467,62 @@ nautilus_selection_canvas_item_bounds (EelCanvasItem *item,
 
 	self = NAUTILUS_SELECTION_CANVAS_ITEM (item);
 
-	if (self->priv->width_pixels)
-		hwidth = (self->priv->width / item->canvas->pixels_per_unit) / 2.0;
-	else
-		hwidth = self->priv->width / 2.0;
+	hwidth = (self->priv->width / item->canvas->pixels_per_unit) / 2.0;
 
 	*x1 = self->priv->x1 - hwidth;
 	*y1 = self->priv->y1 - hwidth;
 	*x2 = self->priv->x2 + hwidth;
 	*y2 = self->priv->y2 + hwidth;
+}
+
+#define FADE_OUT_STEPS 5
+#define FADE_OUT_SPEED 30
+
+static gboolean
+fade_and_request_redraw (gpointer user_data)
+{
+	NautilusSelectionCanvasItem *self = user_data;
+
+	if (self->priv->fade_out_fill_alpha == 0 ||
+	    self->priv->fade_out_outline_alpha == 0) {
+		self->priv->fade_out_handler_id = 0;
+		eel_canvas_item_destroy (EEL_CANVAS_ITEM (self));
+
+		return FALSE;
+	}
+
+	self->priv->fade_out_fill_alpha -= self->priv->fade_out_fill_delta;
+	self->priv->fade_out_outline_alpha -= self->priv->fade_out_outline_delta;
+
+	eel_canvas_item_request_redraw (EEL_CANVAS_ITEM (self));
+
+	return TRUE;
+}
+
+void
+nautilus_selection_canvas_item_fade_out (NautilusSelectionCanvasItem *self)
+{
+	self->priv->fade_out_fill_alpha = self->priv->fill_color.alpha;
+	self->priv->fade_out_outline_alpha = self->priv->outline_color.alpha;
+
+	self->priv->fade_out_fill_delta = self->priv->fade_out_fill_alpha / FADE_OUT_STEPS;
+	self->priv->fade_out_outline_delta = self->priv->fade_out_outline_alpha / FADE_OUT_STEPS;
+
+	self->priv->fade_out_handler_id =
+		g_timeout_add (FADE_OUT_SPEED, fade_and_request_redraw, self);
+}
+
+static void
+nautilus_selection_canvas_item_dispose (GObject *obj)
+{
+	NautilusSelectionCanvasItem *self = NAUTILUS_SELECTION_CANVAS_ITEM (obj);
+
+	if (self->priv->fade_out_handler_id != 0) {
+		g_source_remove (self->priv->fade_out_handler_id);
+		self->priv->fade_out_handler_id = 0;
+	}
+
+	G_OBJECT_CLASS (nautilus_selection_canvas_item_parent_class)->dispose (obj);
 }
 
 static void
@@ -561,7 +620,6 @@ nautilus_selection_canvas_item_set_property (GObject *object,
 
 	case PROP_WIDTH_PIXELS:
 		self->priv->width = g_value_get_uint (value);
-		self->priv->width_pixels = TRUE;
 
 		eel_canvas_item_request_update (item);
 		break;
@@ -628,6 +686,7 @@ nautilus_selection_canvas_item_class_init (NautilusSelectionCanvasItemClass *kla
 
 	gobject_class->set_property = nautilus_selection_canvas_item_set_property;
 	gobject_class->get_property = nautilus_selection_canvas_item_get_property;
+	gobject_class->dispose = nautilus_selection_canvas_item_dispose;
 
 	item_class->draw = nautilus_selection_canvas_item_draw;
 	item_class->point = nautilus_selection_canvas_item_point;
