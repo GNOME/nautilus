@@ -163,7 +163,7 @@ nautilus_desktop_set_metadata_stringv (NautilusFile *file,
 	GKeyFile *keyfile;
 	guint length;
 	gchar **actual_stringv = NULL;
-	gboolean free_strv;
+	gboolean free_strv = FALSE;
 
 	keyfile = get_keyfile ();
 
