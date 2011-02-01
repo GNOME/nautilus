@@ -2,6 +2,7 @@
 
 #include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-progress-info.h>
+#include <libnautilus-private/nautilus-progress-info-manager.h>
 
 static void
 copy_done (GHashTable *debuting_uris, gpointer data)
@@ -43,6 +44,7 @@ main (int argc, char* argv[])
 	GFile *source;
 	int i;
 	GList *infos;
+        NautilusProgressInfoManager *manager;
 	NautilusProgressInfo *progress_info;
 	
 	g_thread_init (NULL);
@@ -67,15 +69,18 @@ main (int argc, char* argv[])
 	
 	gtk_widget_show (window);
 
+        manager = nautilus_progress_info_manager_new ();
+
 	nautilus_file_operations_copy (sources,
 				       NULL /* GArray *relative_item_points */,
 				       dest,
 				       GTK_WINDOW (window),
 				       copy_done, NULL);
-
-	infos = nautilus_get_all_progress_info ();
+        
+	infos = nautilus_progress_info_manager_get_all_infos (manager);
 
 	if (infos == NULL) {
+		g_object_unref (manager);
 		return 0;
 	}
 
@@ -86,6 +91,8 @@ main (int argc, char* argv[])
 	g_signal_connect (progress_info, "finished", (GCallback)finished_cb, NULL);
 	
 	gtk_main ();
+
+        g_object_unref (manager);
 	
 	return 0;
 }

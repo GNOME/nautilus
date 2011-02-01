@@ -51,15 +51,14 @@
 typedef struct _NautilusSpatialWindow NautilusSpatialWindow;
 #endif
 
+typedef struct _NautilusApplicationPriv NautilusApplicationPriv;
+
 typedef struct {
 	GtkApplication parent;
 
 	NautilusUndoManager *undo_manager;
-	GVolumeMonitor *volume_monitor;
-	GDBusProxy *proxy;
-	gboolean session_is_active;
 
-	gboolean initialized;
+	NautilusApplicationPriv *priv;
 } NautilusApplication;
 
 typedef struct {

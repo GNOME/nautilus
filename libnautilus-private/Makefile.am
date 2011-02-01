@@ -130,6 +130,8 @@ libnautilus_private_la_SOURCES = \
 	nautilus-monitor.h \
 	nautilus-progress-info.c \
 	nautilus-progress-info.h \
+	nautilus-progress-info-manager.c \
+	nautilus-progress-info-manager.h \
 	nautilus-program-choosing.c \
 	nautilus-program-choosing.h \
 	nautilus-recent.c \

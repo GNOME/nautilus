@@ -30,29 +30,6 @@
 #include <gtk/gtk.h>
 #include <eel/eel-debug.h>
 
-/* FIXME: this is needed only because we need to access the application
- * object from inside libnautilus-private and that's in src instead.
- */
-static GtkApplication *app = NULL;
-
-GtkApplication *
-nautilus_get_application (void)
-{
-	g_assert (app != NULL);
-
-	return app;
-}
-
-void
-nautilus_store_application (GtkApplication *application)
-{
-	if (app != NULL) {
-		return;
-	}
-
-	app = application; 
-}
-
 void
 nautilus_ui_unmerge_ui (GtkUIManager *ui_manager,
 			guint *merge_id,

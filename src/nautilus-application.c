@@ -41,6 +41,7 @@
 #include "nautilus-list-view.h"
 #include "nautilus-navigation-window.h"
 #include "nautilus-navigation-window-slot.h"
+#include "nautilus-progress-info-manager.h"
 #include "nautilus-self-check-functions.h"
 #include "nautilus-spatial-window.h"
 #include "nautilus-window-bookmarks.h"
@@ -104,6 +105,15 @@ static void     mount_added_callback              (GVolumeMonitor            *mo
 						   NautilusApplication       *application);
 
 G_DEFINE_TYPE (NautilusApplication, nautilus_application, GTK_TYPE_APPLICATION);
+
+struct _NautilusApplicationPriv {
+	GVolumeMonitor *volume_monitor;
+	GDBusProxy *ck_proxy;
+	gboolean session_is_active;
+	NautilusProgressInfoManager *progress_manager;
+
+	gboolean initialized;
+};
 
 static GList *
 nautilus_application_get_spatial_window_list (void)
@@ -275,8 +285,8 @@ ck_session_proxy_signal_cb (GDBusProxy *proxy,
 	NautilusApplication *application = user_data;
 
 	if (g_strcmp0 (signal_name, "ActiveChanged") == 0) {
-		g_variant_get (parameters, "(b)", &application->session_is_active);
-		DEBUG ("ConsoleKit session is active %d", application->session_is_active);
+		g_variant_get (parameters, "(b)", &application->priv->session_is_active);
+		DEBUG ("ConsoleKit session is active %d", application->priv->session_is_active);
 	}
 }
 
@@ -293,14 +303,14 @@ ck_call_is_active_cb (GDBusProxy   *proxy,
 
 	if (variant == NULL) {
 		g_warning ("Error when calling IsActive(): %s\n", error->message);
-		application->session_is_active = TRUE;
+		application->priv->session_is_active = TRUE;
 
 		g_error_free (error);
 		return;
 	}
 
-	g_variant_get (variant, "(b)", &application->session_is_active);
-	DEBUG ("ConsoleKit session is active %d", application->session_is_active);
+	g_variant_get (variant, "(b)", &application->priv->session_is_active);
+	DEBUG ("ConsoleKit session is active %d", application->priv->session_is_active);
 
 	g_variant_unref (variant);
 }
@@ -320,7 +330,7 @@ session_proxy_appeared (GObject       *source,
 		g_warning ("Failed to get the current CK session: %s", error->message);
 		g_error_free (error);
 
-		application->session_is_active = TRUE;
+		application->priv->session_is_active = TRUE;
 		return;
 	}
 
@@ -337,7 +347,7 @@ session_proxy_appeared (GObject       *source,
 			   (GAsyncReadyCallback) ck_call_is_active_cb,
 			   application);
 
-        application->proxy = proxy;
+        application->priv->ck_proxy = proxy;
 }
 
 static void
@@ -356,7 +366,7 @@ ck_get_current_session_cb (GDBusConnection *connection,
 		g_warning ("Failed to get the current CK session: %s", error->message);
 		g_error_free (error);
 
-		application->session_is_active = TRUE;
+		application->priv->session_is_active = TRUE;
 		return;
 	}
 
@@ -385,7 +395,7 @@ do_initialize_consolekit (NautilusApplication *application)
 	connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, NULL);
 
 	if (connection == NULL) {
-		application->session_is_active = TRUE;
+		application->priv->session_is_active = TRUE;
 		return;
 	}
 
@@ -463,6 +473,18 @@ do_upgrades_once (NautilusApplication *application,
 }
 
 static void
+new_progress_info_cb (NautilusProgressInfoManager *manager,
+		      NautilusProgressInfo *info,
+		      NautilusApplication *self)
+{
+	/* hold/release application while there are file operations in progress */
+	g_signal_connect_swapped (info, "started",
+				  G_CALLBACK (g_application_hold), self);
+	g_signal_connect_swapped (info, "finished",
+				  G_CALLBACK (g_application_release), self);
+}
+
+static void
 finish_startup (NautilusApplication *application,
 		gboolean no_desktop)
 {
@@ -480,16 +502,16 @@ finish_startup (NautilusApplication *application,
 	/* Initialize the ConsoleKit listener for active session */
 	do_initialize_consolekit (application);
 
-	/* Watch for mounts so we can restore open windows This used
-	 * to be for showing new window on mount, but is not used
-	 * anymore */
+	application->priv->progress_manager = nautilus_progress_info_manager_new ();
+	g_signal_connect (application->priv->progress_manager, "new-progress-info",
+			  G_CALLBACK (new_progress_info_cb), application);
 
 	/* Watch for unmounts so we can close open windows */
 	/* TODO-gio: This should be using the UNMOUNTED feature of GFileMonitor instead */
-	application->volume_monitor = g_volume_monitor_get ();
-	g_signal_connect_object (application->volume_monitor, "mount_removed",
+	application->priv->volume_monitor = g_volume_monitor_get ();
+	g_signal_connect_object (application->priv->volume_monitor, "mount_removed",
 				 G_CALLBACK (mount_removed_callback), application, 0);
-	g_signal_connect_object (application->volume_monitor, "mount_added",
+	g_signal_connect_object (application->priv->volume_monitor, "mount_added",
 				 G_CALLBACK (mount_added_callback), application, 0);
 }
 
@@ -1084,7 +1106,7 @@ mount_added_callback (GVolumeMonitor *monitor,
 	GFile *root;
 	gchar *uri;
 
-	if (!application->session_is_active) {
+	if (!application->priv->session_is_active) {
 		return;
 	}
 		
@@ -1238,8 +1260,9 @@ nautilus_application_constructor (GType type,
 static void
 nautilus_application_init (NautilusApplication *application)
 {
-	/* FIXME: make this available to libnautilus-private in another way */
-	nautilus_store_application (GTK_APPLICATION (application));
+	application->priv =
+		G_TYPE_INSTANCE_GET_PRIVATE (application, NAUTILUS_TYPE_APPLICATION,
+					     NautilusApplicationPriv);
 }
 
 static void
@@ -1256,15 +1279,9 @@ nautilus_application_finalize (GObject *object)
 		application->undo_manager = NULL;
 	}
 
-	if (application->volume_monitor) {
-		g_object_unref (application->volume_monitor);
-		application->volume_monitor = NULL;
-	}
-
-	if (application->proxy != NULL) {
-		g_object_unref (application->proxy);
-		application->proxy = NULL;
-	}
+	g_clear_object (&application->priv->volume_monitor);
+	g_clear_object (&application->priv->ck_proxy);
+	g_clear_object (&application->priv->progress_manager);
 
 	nautilus_dbus_manager_stop ();
 
@@ -1407,7 +1424,7 @@ nautilus_application_command_line (GApplication *app,
 	if (kill_shell) {
 		nautilus_application_quit (self);
 	} else {
-		if (!self->initialized) {
+		if (!self->priv->initialized) {
 			char *accel_map_filename;
 
 			if (!no_desktop &&
@@ -1437,7 +1454,7 @@ nautilus_application_command_line (GApplication *app,
 			g_signal_connect (gtk_accel_map_get (), "changed",
 					  G_CALLBACK (queue_accel_map_save_callback), NULL);
 
-			self->initialized = TRUE;
+			self->priv->initialized = TRUE;
 		}
 
 		/* Convert args to URIs */
@@ -1571,6 +1588,8 @@ nautilus_application_class_init (NautilusApplicationClass *class)
 	application_class->startup = nautilus_application_startup;
 	application_class->command_line = nautilus_application_command_line;
 	application_class->quit_mainloop = nautilus_application_quit_mainloop;
+
+	g_type_class_add_private (class, sizeof (NautilusApplication));
 }
 
 NautilusApplication *

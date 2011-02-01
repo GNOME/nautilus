@@ -40,7 +40,4 @@ GtkAction * nautilus_action_from_menu_item         (NautilusMenuItem  *item);
 GtkAction * nautilus_toolbar_action_from_menu_item (NautilusMenuItem  *item);
 const char *nautilus_ui_string_get                 (const char        *filename);
 
-GtkApplication *nautilus_get_application (void);
-void nautilus_store_application (GtkApplication *application);
-
 #endif /* NAUTILUS_UI_UTILITIES_H */

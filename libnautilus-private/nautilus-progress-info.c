@@ -29,7 +29,8 @@
 #include <eel/eel-string.h>
 #include <eel/eel-glib-extensions.h>
 #include "nautilus-progress-info.h"
-#include "nautilus-ui-utilities.h"
+#include "nautilus-progress-info-manager.h"
+#include "nautilus-icon-info.h"
 
 enum {
   CHANGED,
@@ -76,8 +77,6 @@ struct _NautilusProgressInfoClass
 	GObjectClass parent_class;
 };
 
-static GList *active_progress_infos = NULL;
-
 static GtkStatusIcon *status_icon = NULL;
 static int n_progress_ops = 0;
 
@@ -85,20 +84,6 @@ static int n_progress_ops = 0;
 G_LOCK_DEFINE_STATIC(progress_info);
 
 G_DEFINE_TYPE (NautilusProgressInfo, nautilus_progress_info, G_TYPE_OBJECT)
-
-GList *
-nautilus_get_all_progress_info (void)
-{
-	GList *l;
-	
-	G_LOCK (progress_info);
-
-	l = eel_g_object_list_copy (active_progress_infos);
-	
-	G_UNLOCK (progress_info);
-
-	return l;
-}
 
 static void
 nautilus_progress_info_finalize (GObject *object)
@@ -125,10 +110,6 @@ nautilus_progress_info_dispose (GObject *object)
 
 	G_LOCK (progress_info);
 
-	/* Remove from active list in dispose, since a get_all_progress_info()
-	   call later could revive the object */
-	active_progress_infos = g_list_remove (active_progress_infos, object);
-	
 	/* Destroy source in dispose, because the callback
 	   could come here before the destroy, which should
 	   ressurect the object for a while */
@@ -442,13 +423,6 @@ handle_new_progress_info (NautilusProgressInfo *info)
 	update_status_icon_and_window ();	
 }
 
-static void
-new_op_finished (NautilusProgressInfo *info)
-{
-	/* release the hold we added in new_op_started() */
-	g_application_release (G_APPLICATION (nautilus_get_application ()));
-}
-
 static gboolean
 new_op_started_timeout (NautilusProgressInfo *info)
 {
@@ -469,24 +443,20 @@ new_op_started (NautilusProgressInfo *info)
 	g_timeout_add_seconds (2,
 			       (GSourceFunc)new_op_started_timeout,
 			       g_object_ref (info));
-
-	/* hold the application, so that it doesn't quit while this operation is
-	 * in progress.
-	 */
-	g_application_hold (G_APPLICATION (nautilus_get_application ()));
 }
 
 static void
 nautilus_progress_info_init (NautilusProgressInfo *info)
 {
+	NautilusProgressInfoManager *manager;
+
 	info->cancellable = g_cancellable_new ();
 
-	G_LOCK (progress_info);
-	active_progress_infos = g_list_append (active_progress_infos, info);
-	G_UNLOCK (progress_info);
-
 	g_signal_connect (info, "started", (GCallback)new_op_started, NULL);
-	g_signal_connect (info, "finished", (GCallback)new_op_finished, NULL);
+
+	manager = nautilus_progress_info_manager_new ();
+	nautilus_progress_info_manager_add_new_info (manager, info);
+	g_object_unref (manager);
 }
 
 NautilusProgressInfo *
