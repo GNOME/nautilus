@@ -109,6 +109,8 @@ nautilus_SOURCES = \
 	nautilus-pathbar.h			\
 	nautilus-places-sidebar.c		\
 	nautilus-places-sidebar.h		\
+	nautilus-progress-ui-handler.c		\
+	nautilus-progress-ui-handler.h		\
 	nautilus-properties-window.c		\
 	nautilus-properties-window.h		\
 	nautilus-query-editor.c			\

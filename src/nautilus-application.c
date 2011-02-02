@@ -41,7 +41,7 @@
 #include "nautilus-list-view.h"
 #include "nautilus-navigation-window.h"
 #include "nautilus-navigation-window-slot.h"
-#include "nautilus-progress-info-manager.h"
+#include "nautilus-progress-ui-handler.h"
 #include "nautilus-self-check-functions.h"
 #include "nautilus-spatial-window.h"
 #include "nautilus-window-bookmarks.h"
@@ -110,7 +110,7 @@ struct _NautilusApplicationPriv {
 	GVolumeMonitor *volume_monitor;
 	GDBusProxy *ck_proxy;
 	gboolean session_is_active;
-	NautilusProgressInfoManager *progress_manager;
+	NautilusProgressUIHandler *progress_handler;
 
 	gboolean initialized;
 };
@@ -473,18 +473,6 @@ do_upgrades_once (NautilusApplication *application,
 }
 
 static void
-new_progress_info_cb (NautilusProgressInfoManager *manager,
-		      NautilusProgressInfo *info,
-		      NautilusApplication *self)
-{
-	/* hold/release application while there are file operations in progress */
-	g_signal_connect_swapped (info, "started",
-				  G_CALLBACK (g_application_hold), self);
-	g_signal_connect_swapped (info, "finished",
-				  G_CALLBACK (g_application_release), self);
-}
-
-static void
 finish_startup (NautilusApplication *application,
 		gboolean no_desktop)
 {
@@ -502,9 +490,8 @@ finish_startup (NautilusApplication *application,
 	/* Initialize the ConsoleKit listener for active session */
 	do_initialize_consolekit (application);
 
-	application->priv->progress_manager = nautilus_progress_info_manager_new ();
-	g_signal_connect (application->priv->progress_manager, "new-progress-info",
-			  G_CALLBACK (new_progress_info_cb), application);
+	/* Initialize the UI handler singleton for file operations */
+	application->priv->progress_handler = nautilus_progress_ui_handler_new ();
 
 	/* Watch for unmounts so we can close open windows */
 	/* TODO-gio: This should be using the UNMOUNTED feature of GFileMonitor instead */
@@ -1281,7 +1268,7 @@ nautilus_application_finalize (GObject *object)
 
 	g_clear_object (&application->priv->volume_monitor);
 	g_clear_object (&application->priv->ck_proxy);
-	g_clear_object (&application->priv->progress_manager);
+	g_clear_object (&application->priv->progress_handler);
 
 	nautilus_dbus_manager_stop ();
 
