@@ -34,48 +34,153 @@
 #include <libnautilus-private/nautilus-progress-info.h>
 #include <libnautilus-private/nautilus-progress-info-manager.h>
 
-static GtkStatusIcon *status_icon = NULL;
-static int n_progress_ops = 0;
+#include <libnotify/notify.h>
 
 struct _NautilusProgressUIHandlerPriv {
 	NautilusProgressInfoManager *manager;
 
 	GtkWidget *progress_window;
+	GtkWidget *window_vbox;
+	guint active_infos;
+
+	gboolean notification_supports_persistence;
+	NotifyNotification *progress_notification;
+	GtkStatusIcon *status_icon;
 };
 
 G_DEFINE_TYPE (NautilusProgressUIHandler, nautilus_progress_ui_handler, G_TYPE_OBJECT);
 
+/* Our policy for showing progress notification is the following:
+ * - file operations that end within two seconds do not get notified in any way
+ * - if no file operations are running, and one passes the two seconds
+ *   timeout, a window is displayed with the progress
+ * - if the window is closed, we show a resident notification, or a status icon, depending on
+ *   the capabilities of the notification daemon running in the session
+ * - if some file operations are running, and another one passes the two seconds
+ *   timeout, and the window is showing, we add it to the window directly
+ * - in the same case, but when the window is not showing, we update the resident
+ *   notification, changing its message, or the status icon's tooltip
+ * - when one file operation finishes, if it's not the last one, we only update the
+ *   resident notification's message, or the status icon's tooltip
+ * - in the same case, if it's the last one, we close the resident notification,
+ *   or the status icon, and trigger a transient one
+ * - in the same case, but the window was showing, we just hide the window
+ */
+
+static void
+status_icon_activate_cb (GtkStatusIcon *icon,
+			 NautilusProgressUIHandler *self)
+{	
+	gtk_status_icon_set_visible (icon, FALSE);
+	gtk_window_present (GTK_WINDOW (self->priv->progress_window));
+}
+
+static void
+progress_ui_handler_ensure_notification (NautilusProgressUIHandler *self)
+{
+	NotifyNotification *notify;
+
+	if (self->priv->progress_notification) {
+		return;
+	}
+
+	notify = notify_notification_new (_("File Operations"),
+					  NULL, NULL);
+	self->priv->progress_notification = notify;
+
+	notify_notification_set_category (notify, "transfer");
+	notify_notification_set_hint (notify, "resident",
+				      g_variant_new_boolean (TRUE));
+}
+
+static void
+progress_ui_handler_ensure_status_icon (NautilusProgressUIHandler *self)
+{
+	GIcon *icon;
+	GtkStatusIcon *status_icon;
+
+	if (self->priv->status_icon != NULL) {
+		return;
+	}
+
+	icon = g_themed_icon_new_with_default_fallbacks ("system-file-manager-symbolic");
+	status_icon = gtk_status_icon_new_from_gicon (icon);
+	g_signal_connect (status_icon, "activate",
+			  (GCallback) status_icon_activate_cb,
+			  self);
+
+	gtk_status_icon_set_visible (status_icon, FALSE);
+	g_object_unref (icon);
+
+	self->priv->status_icon = status_icon;
+}
+
+static void
+progress_ui_handler_update_notification (NautilusProgressUIHandler *self)
+{
+	gchar *body;
+
+	progress_ui_handler_ensure_notification (self);
+
+	body = g_strdup_printf (ngettext ("%'d file operation active",
+					  "%'d file operations active",
+					  self->priv->active_infos),
+				self->priv->active_infos);
+
+	notify_notification_update (self->priv->progress_notification,
+				    _("File Operations"),
+				    body,
+				    NULL);
+
+	notify_notification_show (self->priv->progress_notification, NULL);
+
+	g_free (body);
+}
+
+static void
+progress_ui_handler_update_status_icon (NautilusProgressUIHandler *self)
+{
+	gchar *tooltip;
+
+	progress_ui_handler_ensure_status_icon (self);
+
+	tooltip = g_strdup_printf (ngettext ("%'d file operation active",
+					     "%'d file operations active",
+					     self->priv->active_infos),
+				   self->priv->active_infos);
+	gtk_status_icon_set_tooltip_text (self->priv->status_icon, tooltip);
+	g_free (tooltip);
+
+	gtk_status_icon_set_visible (self->priv->status_icon, TRUE);
+}
+
 static gboolean
-delete_event (GtkWidget *widget,
-	      GdkEventAny *event)
+progress_window_delete_event (GtkWidget *widget,
+			      GdkEvent *event,
+			      NautilusProgressUIHandler *self)
 {
 	gtk_widget_hide (widget);
+
+	if (self->priv->notification_supports_persistence) {
+		progress_ui_handler_update_notification (self);
+	} else {
+		progress_ui_handler_update_status_icon (self);
+	}
+
 	return TRUE;
 }
 
 static void
-status_icon_activate_cb (GtkStatusIcon *icon,
-			 GtkWidget *progress_window)
+progress_ui_handler_ensure_window (NautilusProgressUIHandler *self)
 {
-	if (gtk_widget_get_visible (progress_window)) {
-		gtk_widget_hide (progress_window);
-	} else {
-		gtk_window_present (GTK_WINDOW (progress_window));
-	}
-}
-
-static GtkWidget *
-get_progress_window (void)
-{
-	static GtkWidget *progress_window = NULL;
-	GtkWidget *vbox;
-	GIcon *icon;
+	GtkWidget *vbox, *progress_window;
 	
-	if (progress_window != NULL) {
-		return progress_window;
+	if (self->priv->progress_window != NULL) {
+		return;
 	}
 	
 	progress_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	self->priv->progress_window = progress_window;
 	gtk_window_set_resizable (GTK_WINDOW (progress_window),
 				  FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER (progress_window), 10);
@@ -91,94 +196,165 @@ get_progress_window (void)
 
 	vbox = gtk_vbox_new (FALSE, 0);
 	gtk_box_set_spacing (GTK_BOX (vbox), 5);
-		
 	gtk_container_add (GTK_CONTAINER (progress_window),
 			   vbox);
-
-	gtk_widget_show_all (progress_window);
+	self->priv->window_vbox = vbox;
+	gtk_widget_show (vbox);
 
 	g_signal_connect (progress_window,
-			  "delete_event",
-			  (GCallback)delete_event, NULL);
-
-	icon = g_themed_icon_new_with_default_fallbacks ("system-file-manager-symbolic");
-	status_icon = gtk_status_icon_new_from_gicon (icon);
-	g_signal_connect (status_icon, "activate",
-			  (GCallback)status_icon_activate_cb,
-			  progress_window);
-
-	gtk_status_icon_set_visible (status_icon, FALSE);
-	g_object_unref (icon);
-
-	return progress_window;
+			  "delete-event",
+			  (GCallback) progress_window_delete_event, self);
 }
 
 static void
-update_status_icon_and_window (void)
+progress_ui_handler_update_notification_or_status (NautilusProgressUIHandler *self)
 {
-	char *tooltip;
-
-	tooltip = g_strdup_printf (ngettext ("%'d file operation active",
-					     "%'d file operations active",
-					     n_progress_ops),
-				   n_progress_ops);
-	gtk_status_icon_set_tooltip_text (status_icon, tooltip);
-	g_free (tooltip);
-	
-	if (n_progress_ops == 0) {
-		gtk_status_icon_set_visible (status_icon, FALSE);
-		gtk_widget_hide (get_progress_window ());
+	if (self->priv->notification_supports_persistence) {
+		progress_ui_handler_update_notification (self);
 	} else {
-		gtk_status_icon_set_visible (status_icon, TRUE);
+		progress_ui_handler_update_status_icon (self);
 	}
 }
 
 static void
-handle_new_progress_info (NautilusProgressInfo *info)
+progress_ui_handler_add_to_window (NautilusProgressUIHandler *self,
+				   NautilusProgressInfo *info)
 {
-	GtkWidget *window, *progress;
+	GtkWidget *progress;
 
-	window = get_progress_window ();
-	
 	progress = nautilus_progress_info_widget_new (info);
-	gtk_box_pack_start (GTK_BOX (gtk_bin_get_child (GTK_BIN (window))),
+	progress_ui_handler_ensure_window (self);
+
+	gtk_box_pack_start (GTK_BOX (self->priv->window_vbox),
 			    progress,
 			    FALSE, FALSE, 6);
 
-	gtk_window_present (GTK_WINDOW (window));
-
-	n_progress_ops++;
-	update_status_icon_and_window ();	
+	gtk_widget_show (progress);
 }
 
-static gboolean
-new_op_started_timeout (NautilusProgressInfo *info)
+static void
+progress_ui_handler_show_complete_notification (NautilusProgressUIHandler *self)
 {
-	if (nautilus_progress_info_get_is_paused (info)) {
-		return TRUE;
+	/* don't display the notification if we'd be using a status icon */
+	if (!self->priv->notification_supports_persistence) {
+		return;
 	}
 
-	if (!nautilus_progress_info_get_is_finished (info)) {
-		handle_new_progress_info (info);
+	g_print ("Complete notification\n\n");
+}
+
+static void
+progress_ui_handler_hide_notification_or_status (NautilusProgressUIHandler *self)
+{
+	if (self->priv->status_icon != NULL) {
+		gtk_status_icon_set_visible (self->priv->status_icon, FALSE);
 	}
 
-	g_object_unref (info);
-	return FALSE;
+	if (self->priv->progress_notification != NULL) {
+		notify_notification_close (self->priv->progress_notification, NULL);
+		g_clear_object (&self->priv->progress_notification);
+	}
 }
 
 static void
 progress_info_finished_cb (NautilusProgressInfo *info,
 			   NautilusProgressUIHandler *self)
 {
+	self->priv->active_infos--;
+
+	if (self->priv->active_infos > 0) {
+		if (!gtk_widget_get_visible (self->priv->progress_window)) {
+			progress_ui_handler_update_notification_or_status (self);
+		}
+	} else {
+		if (gtk_widget_get_visible (self->priv->progress_window)) {
+			gtk_widget_hide (self->priv->progress_window);
+		} else {
+			progress_ui_handler_hide_notification_or_status (self);
+			progress_ui_handler_show_complete_notification (self);
+		}
+	}
+}
+
+static void
+handle_new_progress_info (NautilusProgressUIHandler *self,
+			  NautilusProgressInfo *info)
+{
+	g_signal_connect (info, "finished",
+			  G_CALLBACK (progress_info_finished_cb), self);
+
+	self->priv->active_infos++;
+	progress_ui_handler_add_to_window (self, info);
+
+	if (self->priv->active_infos == 1) {
+		/* this is the only active operation, present the window */
+		gtk_window_present (GTK_WINDOW (self->priv->progress_window));
+	} else {
+		if (gtk_widget_get_visible (self->priv->progress_window)) {
+			progress_ui_handler_add_to_window (self, info);
+		} else {
+			progress_ui_handler_update_notification_or_status (self);
+		}
+	}
+}
+
+typedef struct {
+	NautilusProgressInfo *info;
+	NautilusProgressUIHandler *self;
+} TimeoutData;
+
+static void
+timeout_data_free (TimeoutData *data)
+{
+	g_clear_object (&data->self);
+	g_clear_object (&data->info);
+
+	g_slice_free (TimeoutData, data);
+}
+
+static TimeoutData *
+timeout_data_new (NautilusProgressUIHandler *self,
+		  NautilusProgressInfo *info)
+{
+	TimeoutData *retval;
+
+	retval = g_slice_new0 (TimeoutData);
+	retval->self = g_object_ref (self);
+	retval->info = g_object_ref (info);
+
+	return retval;
+}
+
+static gboolean
+new_op_started_timeout (TimeoutData *data)
+{
+	NautilusProgressInfo *info = data->info;
+	NautilusProgressUIHandler *self = data->self;
+
+	if (nautilus_progress_info_get_is_paused (info)) {
+		return TRUE;
+	}
+
+	if (!nautilus_progress_info_get_is_finished (info)) {
+		handle_new_progress_info (self, info);
+	}
+
+	timeout_data_free (data);
+
+	return FALSE;
+}
+
+static void
+release_application (NautilusProgressInfo *info,
+		     NautilusProgressUIHandler *self)
+{
 	NautilusApplication *app;
 
+	/* release the GApplication hold we acquired */
 	app = nautilus_application_dup_singleton ();
 	g_application_release (G_APPLICATION (app));
 
 	g_object_unref (app);
-
-	n_progress_ops--;
-	update_status_icon_and_window ();
 }
 
 static void
@@ -186,19 +362,22 @@ progress_info_started_cb (NautilusProgressInfo *info,
 			  NautilusProgressUIHandler *self)
 {
 	NautilusApplication *app;
+	TimeoutData *data;
 
+	/* hold GApplication so we never quit while there's an operation pending */
 	app = nautilus_application_dup_singleton ();
 	g_application_hold (G_APPLICATION (app));
+	g_object_unref (app);
 
 	g_signal_connect (info, "finished",
-			  G_CALLBACK (progress_info_finished_cb), self);
+			  G_CALLBACK (release_application), self);
 
-	g_object_unref (app);
+	data = timeout_data_new (self, info);
 
 	/* timeout for the progress window to appear */
 	g_timeout_add_seconds (2,
 			       (GSourceFunc) new_op_started_timeout,
-			       g_object_ref (info));
+			       data);
 }
 
 static void
@@ -220,6 +399,25 @@ nautilus_progress_ui_handler_dispose (GObject *obj)
 	G_OBJECT_CLASS (nautilus_progress_ui_handler_parent_class)->dispose (obj);
 }
 
+static gboolean
+server_has_persistence (void)
+{
+        gboolean retval;
+        GList *caps, *l;
+
+        caps = notify_get_server_caps ();
+        if (caps == NULL) {
+                return FALSE;
+        }
+
+        l = g_list_find_custom (caps, "persistence", (GCompareFunc) g_strcmp0);
+        retval = (l != NULL);
+
+	g_list_free_full (caps, g_free);
+
+        return retval;
+}
+
 static void
 nautilus_progress_ui_handler_init (NautilusProgressUIHandler *self)
 {
@@ -227,9 +425,10 @@ nautilus_progress_ui_handler_init (NautilusProgressUIHandler *self)
 						  NautilusProgressUIHandlerPriv);
 
 	self->priv->manager = nautilus_progress_info_manager_new ();
-
 	g_signal_connect (self->priv->manager, "new-progress-info",
 			  G_CALLBACK (new_progress_info_cb), self);
+
+	self->priv->notification_supports_persistence = server_has_persistence ();
 }
 
 static void

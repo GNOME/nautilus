@@ -74,6 +74,7 @@
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
+#include <libnotify/notify.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 
@@ -491,6 +492,7 @@ finish_startup (NautilusApplication *application,
 	do_initialize_consolekit (application);
 
 	/* Initialize the UI handler singleton for file operations */
+	notify_init (GETTEXT_PACKAGE);
 	application->priv->progress_handler = nautilus_progress_ui_handler_new ();
 
 	/* Watch for unmounts so we can close open windows */
@@ -1261,16 +1263,13 @@ nautilus_application_finalize (GObject *object)
 
 	nautilus_bookmarks_exiting ();
 
-	if (application->undo_manager != NULL) {
-		g_object_unref (application->undo_manager);
-		application->undo_manager = NULL;
-	}
-
+	g_clear_object (&application->undo_manager);
 	g_clear_object (&application->priv->volume_monitor);
 	g_clear_object (&application->priv->ck_proxy);
 	g_clear_object (&application->priv->progress_handler);
 
 	nautilus_dbus_manager_stop ();
+	notify_uninit ();
 
         G_OBJECT_CLASS (nautilus_application_parent_class)->finalize (object);
 }
