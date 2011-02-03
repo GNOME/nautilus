@@ -67,11 +67,29 @@ G_DEFINE_TYPE (NautilusProgressUIHandler, nautilus_progress_ui_handler, G_TYPE_O
  * - in the same case, but the window was showing, we just hide the window
  */
 
+#define ACTION_DETAILS "details"
+
 static void
 status_icon_activate_cb (GtkStatusIcon *icon,
 			 NautilusProgressUIHandler *self)
 {	
 	gtk_status_icon_set_visible (icon, FALSE);
+	gtk_window_present (GTK_WINDOW (self->priv->progress_window));
+}
+
+static void
+notification_show_details_cb (NotifyNotification *notification,
+			      char *action_name,
+			      gpointer user_data)
+{
+	NautilusProgressUIHandler *self = user_data;
+
+
+	if (g_strcmp0 (action_name, ACTION_DETAILS) != 0) {
+		return;
+	}
+
+	notify_notification_close (self->priv->progress_notification, NULL);
 	gtk_window_present (GTK_WINDOW (self->priv->progress_window));
 }
 
@@ -91,6 +109,12 @@ progress_ui_handler_ensure_notification (NautilusProgressUIHandler *self)
 	notify_notification_set_category (notify, "transfer");
 	notify_notification_set_hint (notify, "resident",
 				      g_variant_new_boolean (TRUE));
+
+	notify_notification_add_action (notify, ACTION_DETAILS,
+					_("Show Details"),
+					notification_show_details_cb,
+					self,
+					NULL);
 }
 
 static void
