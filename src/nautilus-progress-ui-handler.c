@@ -259,12 +259,19 @@ progress_ui_handler_add_to_window (NautilusProgressUIHandler *self,
 static void
 progress_ui_handler_show_complete_notification (NautilusProgressUIHandler *self)
 {
+	NotifyNotification *complete_notification;
+
 	/* don't display the notification if we'd be using a status icon */
 	if (!self->priv->notification_supports_persistence) {
 		return;
 	}
 
-	g_print ("Complete notification\n\n");
+	complete_notification = notify_notification_new (_("File Operations"),
+							 _("All file operations have been successfully completed"),
+							 NULL);
+	notify_notification_show (complete_notification, NULL);
+
+	g_object_unref (complete_notification);
 }
 
 static void
