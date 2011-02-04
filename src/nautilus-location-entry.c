@@ -80,7 +80,7 @@ try_to_expand_path (gpointer callback_data)
 {
 	NautilusLocationEntry *entry;
 	GtkEditable *editable;
-	char *suffix, *user_location, *absolute_location;
+	char *suffix, *user_location, *absolute_location, *uri_scheme;
 	int user_location_length, pos;
 
 	entry = NAUTILUS_LOCATION_ENTRY (callback_data);
@@ -89,7 +89,9 @@ try_to_expand_path (gpointer callback_data)
 	user_location_length = g_utf8_strlen (user_location, -1);
 	entry->details->idle_id = 0;
 
-	if (!g_path_is_absolute (user_location) && user_location[0] != '~') {
+	uri_scheme = g_uri_parse_scheme (user_location);
+
+	if (!g_path_is_absolute (user_location) && uri_scheme == NULL && user_location[0] != '~') {
 		absolute_location = g_build_filename (entry->details->current_directory, user_location, NULL);
 		suffix = g_filename_completer_get_completion_suffix (entry->details->completer,
 							     absolute_location);
@@ -97,8 +99,10 @@ try_to_expand_path (gpointer callback_data)
 	} else {
 		suffix = g_filename_completer_get_completion_suffix (entry->details->completer,
 							     user_location);
-		g_free (user_location);
 	}
+
+	g_free (user_location);
+	g_free (uri_scheme);
 
 	/* if we've got something, add it to the entry */
 	if (suffix != NULL) {
