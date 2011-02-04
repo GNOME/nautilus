@@ -2625,6 +2625,8 @@ nautilus_list_view_set_zoom_level (NautilusListView *view,
 					  -1, icon_size);
 
 	nautilus_view_update_menus (NAUTILUS_VIEW (view));
+
+	gtk_tree_view_columns_autosize (view->details->tree_view);
 }
 
 static void
