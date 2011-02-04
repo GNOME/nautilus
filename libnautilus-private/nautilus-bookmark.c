@@ -387,14 +387,14 @@ nautilus_bookmark_class_init (NautilusBookmarkClass *class)
 				     "Bookmark's name",
 				     "The name of this bookmark",
 				     NULL,
-				     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT_ONLY);
+				     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	properties[PROP_CUSTOM_NAME] =
 		g_param_spec_boolean ("custom-name",
 				      "Whether the bookmark has a custom name",
 				      "Whether the bookmark has a custom name",
 				      FALSE,
-				      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT_ONLY);
+				      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	properties[PROP_LOCATION] =
 		g_param_spec_object ("location",
