@@ -186,6 +186,7 @@ typedef struct {
 	gboolean in_location;
 	gboolean in_mimetypes;
 	gboolean in_mimetype;
+	gboolean error;
 } ParserInfo;
 
 static void
@@ -263,6 +264,11 @@ error_cb (GMarkupParseContext *ctx,
 	  GError *err,
 	  gpointer user_data)
 {
+	ParserInfo *info;
+
+	info = (ParserInfo *) user_data;
+
+	info->error = TRUE;
 }
 
 static GMarkupParser parser = {
@@ -286,9 +292,15 @@ nautilus_query_parse_xml (char *xml, gsize xml_len)
 	
 	info.query = nautilus_query_new ();
 	info.in_text = FALSE;
+	info.error = FALSE;
 
 	ctx = g_markup_parse_context_new (&parser, 0, &info, NULL);
 	g_markup_parse_context_parse (ctx, xml, xml_len, NULL);
+
+	if (info.error) {
+		g_object_unref (info.query);
+		return NULL;
+	}
 
 	return info.query;
 }
@@ -307,6 +319,11 @@ nautilus_query_load (char *file)
 	
 
 	g_file_get_contents (file, &xml, &xml_len, NULL);
+
+	if (xml_len == 0) {
+		return NULL;
+	}
+
 	query = nautilus_query_parse_xml (xml, xml_len);
 	g_free (xml);
 
