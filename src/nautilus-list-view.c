@@ -2626,6 +2626,7 @@ nautilus_list_view_set_zoom_level (NautilusListView *view,
 
 	nautilus_view_update_menus (NAUTILUS_VIEW (view));
 
+	/* FIXME: https://bugzilla.gnome.org/show_bug.cgi?id=641518 */
 	gtk_tree_view_columns_autosize (view->details->tree_view);
 }
 
