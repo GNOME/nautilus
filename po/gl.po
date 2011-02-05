@@ -23,8 +23,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-master-po-gl-54706\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-03 09:57+0100\n"
-"PO-Revision-Date: 2011-02-03 10:39+0100\n"
+"POT-Creation-Date: 2011-02-06 00:00+0100\n"
+"PO-Revision-Date: 2011-02-06 00:01+0100\n"
 "Last-Translator: Fran Diéguez <frandieguez@ubuntu.com>\n"
 "Language-Team: Galician <gnome-gl-list@gnome.org>\n"
 "Language: gl\n"
@@ -402,10 +402,8 @@ msgstr "Ficheiro existente"
 msgid "Size:"
 msgstr "Tamaño:"
 
-#. second row: type combobox
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:257
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:288
-#: ../src/nautilus-connect-server-dialog.c:904
 #: ../src/nautilus-properties-window.c:3108
 msgid "Type:"
 msgstr "Tipo:"
@@ -1599,19 +1597,8 @@ msgstr ""
 msgid "Details: "
 msgstr "Detalles: "
 
-#: ../libnautilus-private/nautilus-progress-info.c:225
-msgid "File Operations"
-msgstr "Operacións de ficheiro"
-
-#: ../libnautilus-private/nautilus-progress-info.c:308
-#, c-format
-msgid "%'d file operation active"
-msgid_plural "%'d file operations active"
-msgstr[0] "queda %'d operación de ficheiro activa"
-msgstr[1] "queda %'d operacións de ficheiro activas"
-
-#: ../libnautilus-private/nautilus-progress-info.c:512
-#: ../libnautilus-private/nautilus-progress-info.c:530
+#: ../libnautilus-private/nautilus-progress-info.c:192
+#: ../libnautilus-private/nautilus-progress-info.c:210
 msgid "Preparing"
 msgstr "Preparando"
 
@@ -2399,12 +2386,12 @@ msgstr "Acceda e organice ficheiros"
 msgid "Files"
 msgstr "Ficheiros"
 
-#: ../src/nautilus-application.c:157
+#: ../src/nautilus-application.c:168
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "Nautilus non puido creare o cartafol requirido «%s»."
 
-#: ../src/nautilus-application.c:159
+#: ../src/nautilus-application.c:170
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
@@ -2412,12 +2399,12 @@ msgstr ""
 "Antes de executar Nautilus, cree o seguinte cartafol, ou estabeleza os "
 "permisos polos que Nautilus pode crealo."
 
-#: ../src/nautilus-application.c:162
+#: ../src/nautilus-application.c:173
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "Nautilus non puido crear os seguintes cartafoles requiridos: %s."
 
-#: ../src/nautilus-application.c:164
+#: ../src/nautilus-application.c:175
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -2425,7 +2412,7 @@ msgstr ""
 "Antes de executar Nautilus cree os ditos cartafoles ou estabeleza os "
 "permisos para que Nautilus poida crealos."
 
-#: ../src/nautilus-application.c:441
+#: ../src/nautilus-application.c:452
 msgid ""
 "Nautilus 3.0 deprecated this directory and tried migrating this "
 "configuration to ~/.config/nautilus"
@@ -2433,27 +2420,27 @@ msgstr ""
 "Nautilus 3.0 fixo obsoleto este cartafol e tentou migrar a súa configuración "
 "a ~/.config/nautilus"
 
-#: ../src/nautilus-application.c:1301
+#: ../src/nautilus-application.c:1304
 msgid "Perform a quick set of self-check tests."
 msgstr "Levar a cabo un conxunto conxunto rápido de verificacións de proba."
 
-#: ../src/nautilus-application.c:1304
+#: ../src/nautilus-application.c:1307
 msgid "Show the version of the program."
 msgstr "Mostrar a versión do programa."
 
-#: ../src/nautilus-application.c:1306
+#: ../src/nautilus-application.c:1309
 msgid "Create the initial window with the given geometry."
 msgstr "Crear unha xanela inicial coa xeometría proporcionada."
 
-#: ../src/nautilus-application.c:1306
+#: ../src/nautilus-application.c:1309
 msgid "GEOMETRY"
 msgstr "XEOMETRÍA"
 
-#: ../src/nautilus-application.c:1308
+#: ../src/nautilus-application.c:1311
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Só crea xanelas para as URIs explicitamente especificadas."
 
-#: ../src/nautilus-application.c:1310
+#: ../src/nautilus-application.c:1313
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
@@ -2461,19 +2448,19 @@ msgstr ""
 "Non xestionar o escritorio (ignorar o conxunto de preferencias no diálogo de "
 "preferencias)."
 
-#: ../src/nautilus-application.c:1312
+#: ../src/nautilus-application.c:1315
 msgid "Open a browser window."
 msgstr "Abrir unha xanela do navegador."
 
-#: ../src/nautilus-application.c:1314
+#: ../src/nautilus-application.c:1317
 msgid "Quit Nautilus."
 msgstr "Saír de Nautilus."
 
-#: ../src/nautilus-application.c:1315
+#: ../src/nautilus-application.c:1318
 msgid "[URI...]"
 msgstr "[URI…]"
 
-#: ../src/nautilus-application.c:1326
+#: ../src/nautilus-application.c:1329
 msgid ""
 "\n"
 "\n"
@@ -2483,15 +2470,15 @@ msgstr ""
 "\n"
 "Explorar o sistema de ficheiros co explorador de ficheiros"
 
-#: ../src/nautilus-application.c:1351
+#: ../src/nautilus-application.c:1354
 msgid "--check cannot be used with other options."
 msgstr "--check non se pode usar con outras opcións."
 
-#: ../src/nautilus-application.c:1357
+#: ../src/nautilus-application.c:1360
 msgid "--quit cannot be used with URIs."
 msgstr "--quit non se pode usar con URI."
 
-#: ../src/nautilus-application.c:1364
+#: ../src/nautilus-application.c:1367
 msgid "--geometry cannot be used with more than one URI."
 msgstr "--geometry non se pode usar con máis dun URI."
 
@@ -2647,7 +2634,7 @@ msgid "There was an error displaying help."
 msgstr "Produciuse un erro ao mostrar a axuda."
 
 #: ../src/nautilus-connect-server-dialog.c:698
-#: ../src/nautilus-connect-server-dialog.c:1111
+#: ../src/nautilus-connect-server-dialog.c:1117
 msgid "C_onnect"
 msgstr "C_onectar"
 
@@ -2670,39 +2657,44 @@ msgstr "_Servidor:"
 msgid "_Port:"
 msgstr "_Porto:"
 
+#. second row: type combobox
+#: ../src/nautilus-connect-server-dialog.c:904
+msgid "_Type:"
+msgstr "_Tipo:"
+
 #. third row: share entry
-#: ../src/nautilus-connect-server-dialog.c:977
-msgid "Share:"
-msgstr "Compartir:"
+#: ../src/nautilus-connect-server-dialog.c:978
+msgid "Sh_are:"
+msgstr "Comp_artir:"
 
 #. fourth row: folder entry
-#: ../src/nautilus-connect-server-dialog.c:996
-msgid "Folder:"
-msgstr "Cartafol:"
+#: ../src/nautilus-connect-server-dialog.c:998 ../src/nautilus-view.c:1719
+msgid "_Folder:"
+msgstr "Carta_fol:"
 
-#: ../src/nautilus-connect-server-dialog.c:1017
+#: ../src/nautilus-connect-server-dialog.c:1021
 msgid "User Details"
 msgstr "Información do usuario"
 
 #. first row: domain entry
-#: ../src/nautilus-connect-server-dialog.c:1037
-msgid "Domain Name:"
-msgstr "Nome de dominio:"
+#: ../src/nautilus-connect-server-dialog.c:1041
+msgid "_Domain name:"
+msgstr "Nome do _dominio:"
 
 #. second row: username entry
-#: ../src/nautilus-connect-server-dialog.c:1056
-msgid "User Name:"
-msgstr "Nome de usuario:"
+#: ../src/nautilus-connect-server-dialog.c:1060
+msgid "_User name:"
+msgstr "Nome de _usuario:"
 
 #. third row: password entry
-#: ../src/nautilus-connect-server-dialog.c:1075
-msgid "Password:"
-msgstr "Contrasinal:"
+#: ../src/nautilus-connect-server-dialog.c:1080
+msgid "Pass_word:"
+msgstr "Contra_sinal:"
 
 #. fourth row: remember checkbox
-#: ../src/nautilus-connect-server-dialog.c:1095
-msgid "Remember this password"
-msgstr "Lembrar este contrasinal"
+#: ../src/nautilus-connect-server-dialog.c:1101
+msgid "_Remember this password"
+msgstr "_Lembrar este contrasinal"
 
 #: ../src/nautilus-desktop-item-properties.c:412
 #: ../src/nautilus-desktop-item-properties.c:422
@@ -3128,7 +3120,7 @@ msgstr "Columnas da lista"
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../src/nautilus-file-management-properties.ui.h:61
-#: ../src/nautilus-list-view.c:1719 ../src/nautilus-list-view.c:3181
+#: ../src/nautilus-list-view.c:1719 ../src/nautilus-list-view.c:3184
 msgid "List View"
 msgstr "Visualización en lista"
 
@@ -3537,19 +3529,19 @@ msgid "Select the columns visible in this folder"
 msgstr "Seleccione as columnas visíbeis neste cartafol"
 
 #. translators: this is used in the view menu
-#: ../src/nautilus-list-view.c:3183
+#: ../src/nautilus-list-view.c:3186
 msgid "_List"
 msgstr "_Lista"
 
-#: ../src/nautilus-list-view.c:3184
+#: ../src/nautilus-list-view.c:3187
 msgid "The list view encountered an error."
 msgstr "A visualización en lista atopou un erro."
 
-#: ../src/nautilus-list-view.c:3185
+#: ../src/nautilus-list-view.c:3188
 msgid "The list view encountered an error while starting up."
 msgstr "A visualización en lista atopou un erro ao iniciarse."
 
-#: ../src/nautilus-list-view.c:3186
+#: ../src/nautilus-list-view.c:3189
 msgid "Display this location with the list view."
 msgstr "Mostrar esta localización na visualización en lista."
 
@@ -4239,6 +4231,29 @@ msgstr "_Expulsar"
 msgid "_Detect Media"
 msgstr "_Detectar soporte"
 
+#: ../src/nautilus-progress-ui-handler.c:105
+#: ../src/nautilus-progress-ui-handler.c:155
+#: ../src/nautilus-progress-ui-handler.c:213
+#: ../src/nautilus-progress-ui-handler.c:269
+msgid "File Operations"
+msgstr "Operacións de ficheiro"
+
+#: ../src/nautilus-progress-ui-handler.c:114
+msgid "Show Details"
+msgstr "Mostrar detalles"
+
+#: ../src/nautilus-progress-ui-handler.c:149
+#: ../src/nautilus-progress-ui-handler.c:171
+#, c-format
+msgid "%'d file operation active"
+msgid_plural "%'d file operations active"
+msgstr[0] "queda %'d operación de ficheiro activa"
+msgstr[1] "queda %'d operacións de ficheiro activas"
+
+#: ../src/nautilus-progress-ui-handler.c:270
+msgid "All file operations have been successfully completed"
+msgstr "Todas as operacións sobre os ficheiros foron completadas con éxito"
+
 #: ../src/nautilus-properties-window.c:494
 msgid "You cannot assign more than one custom icon at a time!"
 msgstr ""
@@ -4754,10 +4769,6 @@ msgstr "Gardar busca como"
 #: ../src/nautilus-view.c:1705
 msgid "Search _name:"
 msgstr "_Nome da busca:"
-
-#: ../src/nautilus-view.c:1719
-msgid "_Folder:"
-msgstr "Carta_fol:"
 
 #: ../src/nautilus-view.c:1724
 msgid "Select Folder to Save Search In"
@@ -6179,6 +6190,9 @@ msgstr "Enviar un ficheiro por correo, por mensaxaría instantánea…"
 msgid "Send files by mail, instant message..."
 msgstr "Enviar ficheiros por correo, mensaxaría instantánea…"
 
+#~ msgid "Folder:"
+#~ msgstr "Cartafol:"
+
 #~ msgid "File Manager"
 #~ msgstr "Xestor de ficheiros"
 
@@ -6617,9 +6631,6 @@ msgstr "Enviar ficheiros por correo, mensaxaría instantánea…"
 
 #~ msgid "_Software:"
 #~ msgstr "_Software:"
-
-#~ msgid "_Type:"
-#~ msgstr "_Tipo:"
 
 #~ msgid ""
 #~ "Color for the default folder background. Only used if background_set is "
