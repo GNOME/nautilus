@@ -49,7 +49,7 @@ DISTCLEANFILES = \
 
 DISTCHECK_CONFIGURE_FLAGS = --disable-update-mimedb --enable-gtk-doc
 
-ACLOCAL_AMFLAGS = -I m4
+ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 
 distclean-local:
 	if test "$(srcdir)" = "."; then :; else \
