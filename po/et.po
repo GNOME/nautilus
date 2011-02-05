@@ -22,14 +22,14 @@ msgstr ""
 "Project-Id-Version: nautilus MASTER\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2011-02-02 16:42+0000\n"
-"PO-Revision-Date: 2011-02-03 08:06+0200\n"
+"POT-Creation-Date: 2011-02-04 22:35+0000\n"
+"PO-Revision-Date: 2011-02-05 11:48+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
-"Language: et\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: et\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "Saved search"
@@ -310,7 +310,6 @@ msgstr "Algne fail"
 msgid "Size:"
 msgstr "Suurus:"
 
-#. second row: type combobox
 msgid "Type:"
 msgstr "Liik:"
 
@@ -1213,15 +1212,6 @@ msgstr ""
 msgid "Details: "
 msgstr "Üksikasjad: "
 
-msgid "File Operations"
-msgstr "Failioperatsioonid"
-
-#, c-format
-msgid "%'d file operation active"
-msgid_plural "%'d file operations active"
-msgstr[0] "%'d aktiivne failioperatsioon"
-msgstr[1] "%'d aktiivset failioperatsiooni"
-
 msgid "Preparing"
 msgstr "Ettevalmistamine"
 
@@ -2057,32 +2047,36 @@ msgstr "_Server:"
 msgid "_Port:"
 msgstr "_Port:"
 
+#. second row: type combobox
+msgid "_Type:"
+msgstr "_Liik:"
+
 #. third row: share entry
-msgid "Share:"
-msgstr "Maardla:"
+msgid "Sh_are:"
+msgstr "_Jagamine:"
 
 #. fourth row: folder entry
-msgid "Folder:"
-msgstr "Kaust:"
+msgid "_Folder:"
+msgstr "_Kataloog:"
 
 msgid "User Details"
 msgstr "Kasutaja üksikasjad"
 
 #. first row: domain entry
-msgid "Domain Name:"
-msgstr "Domeeninimi:"
+msgid "_Domain name:"
+msgstr "_Domeeni nimi:"
 
 #. second row: username entry
-msgid "User Name:"
-msgstr "Kasutajanimi:"
+msgid "_User name:"
+msgstr "_Kasutaja nimi:"
 
 #. third row: password entry
-msgid "Password:"
-msgstr "Parool:"
+msgid "Pass_word:"
+msgstr "_Parool:"
 
 #. fourth row: remember checkbox
-msgid "Remember this password"
-msgstr "Parool hoitakse meeles"
+msgid "_Remember this password"
+msgstr "Seda _parooli peetakse meeles"
 
 msgid "Comment"
 msgstr "Kommentaar"
@@ -3244,6 +3238,21 @@ msgstr "_Väljasta"
 msgid "_Detect Media"
 msgstr "_Tuvasta meedia"
 
+msgid "File Operations"
+msgstr "Failioperatsioonid"
+
+msgid "Show Details"
+msgstr "Näita üksikasjalisemalt"
+
+#, c-format
+msgid "%'d file operation active"
+msgid_plural "%'d file operations active"
+msgstr[0] "%'d aktiivne failioperatsioon"
+msgstr[1] "%'d aktiivset failioperatsiooni"
+
+msgid "All file operations have been successfully completed"
+msgstr "Kõik failioperatsioonid lõppesid edukalt"
+
 msgid "You cannot assign more than one custom icon at a time!"
 msgstr "Korraga pole võimalik määrata rohkem kui ühte kohandatud ikooni!"
 
@@ -3634,9 +3643,6 @@ msgstr "Otsingu salvestamine faili"
 
 msgid "Search _name:"
 msgstr "Otsingu _nimi:"
-
-msgid "_Folder:"
-msgstr "_Kataloog:"
 
 msgid "Select Folder to Save Search In"
 msgstr "Otsingu salvestamiseks kataloogi valimine"
@@ -4789,6 +4795,9 @@ msgstr "Faili saatmine e-postiga, välksõnumiga..."
 msgid "Send files by mail, instant message..."
 msgstr "Failide saatmine e-postiga, välksõnumiga..."
 
+#~ msgid "Folder:"
+#~ msgstr "Kaust:"
+
 #~ msgid "File Manager"
 #~ msgstr "Failihaldur"
 
@@ -5138,9 +5147,6 @@ msgstr "Failide saatmine e-postiga, välksõnumiga..."
 
 #~ msgid "_Software:"
 #~ msgstr "_Tarkvara:"
-
-#~ msgid "_Type:"
-#~ msgstr "_Liik:"
 
 #~ msgid "History"
 #~ msgstr "Ajalugu"
