@@ -105,8 +105,12 @@ load_metadata_keyfile (void)
 				   &error);
 
 	if (error != NULL) {
-		g_print ("Unable to open the desktop metadata keyfile: %s\n",
-			 error->message);
+		if (!g_error_matches (error,
+				      G_FILE_ERROR,
+				      G_FILE_ERROR_NOENT)) {
+			g_print ("Unable to open the desktop metadata keyfile: %s\n",
+				 error->message);
+		}
 
 		g_error_free (error);
 	}
