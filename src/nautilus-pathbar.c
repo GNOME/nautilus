@@ -1240,6 +1240,8 @@ get_dir_name (ButtonData *button_data)
 {
 	if (button_data->type == DESKTOP_BUTTON) {
 		return _("Desktop");
+	} else if (button_data->type == HOME_BUTTON) {
+		return _("Home");
 	} else {
 		return button_data->dir_name;
 	}
