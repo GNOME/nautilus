@@ -1197,6 +1197,8 @@ eel_editable_label_style_updated (GtkWidget *widget)
   
   label = EEL_EDITABLE_LABEL (widget);
 
+  GTK_WIDGET_CLASS (eel_editable_label_parent_class)->style_updated (widget);
+
   /* We have to clear the layout, fonts etc. may have changed */
   eel_editable_label_recompute (label);
 
