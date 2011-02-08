@@ -25,7 +25,6 @@
 #include "nautilus-navigation-window-pane.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window-manage-views.h"
-#include "nautilus-navigation-bar.h"
 #include "nautilus-pathbar.h"
 #include "nautilus-location-bar.h"
 #include "nautilus-notebook.h"
@@ -543,7 +542,7 @@ real_sync_location_widgets (NautilusWindowPane *pane)
 
 		/* this may be NULL if we just created the slot */
 		uri = nautilus_window_slot_get_location_uri (slot);
-		nautilus_navigation_bar_set_location (NAUTILUS_NAVIGATION_BAR (navigation_pane->navigation_bar), uri);
+		nautilus_location_bar_set_location (NAUTILUS_LOCATION_BAR (navigation_pane->navigation_bar), uri);
 		g_free (uri);
 		nautilus_path_bar_set_path (NAUTILUS_PATH_BAR (navigation_pane->path_bar), slot->location);
 	}
@@ -728,8 +727,8 @@ nautilus_navigation_window_pane_show_navigation_bar_temporarily (NautilusNavigat
 		nautilus_navigation_window_pane_set_bar_mode (pane, NAUTILUS_BAR_NAVIGATION);
 		pane->temporary_navigation_bar = TRUE;
 	}
-	nautilus_navigation_bar_activate
-		(NAUTILUS_NAVIGATION_BAR (pane->navigation_bar));
+	nautilus_location_bar_activate
+		(NAUTILUS_LOCATION_BAR (pane->navigation_bar));
 }
 
 gboolean

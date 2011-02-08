@@ -187,7 +187,7 @@ nautilus_navigation_window_is_in_temporary_navigation_bar (GtkWidget *widget,
 
 	for (walk = NAUTILUS_WINDOW(window)->details->panes; walk; walk = walk->next) {
 		NautilusNavigationWindowPane *pane = walk->data;
-		if(gtk_widget_get_ancestor (widget, NAUTILUS_TYPE_NAVIGATION_BAR) != NULL &&
+		if(gtk_widget_get_ancestor (widget, NAUTILUS_TYPE_LOCATION_BAR) != NULL &&
 			       pane->temporary_navigation_bar)
 			is_in_any = TRUE;
 	}
@@ -453,8 +453,8 @@ real_prompt_for_location (NautilusWindow *window, const char *initial)
 	nautilus_navigation_window_pane_show_navigation_bar_temporarily (pane);
 	
 	if (initial) {
-		nautilus_navigation_bar_set_location (NAUTILUS_NAVIGATION_BAR (pane->navigation_bar),
-						      initial);
+		nautilus_location_bar_set_location (NAUTILUS_LOCATION_BAR (pane->navigation_bar),
+						    initial);
 	}
 }
 

@@ -74,6 +74,14 @@ enum {
 	NAUTILUS_DND_NTARGETS
 };
 
+enum {
+	CANCEL,
+	LOCATION_CHANGED,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
+
 static const GtkTargetEntry drag_types [] = {
 	{ NAUTILUS_DND_URI_LIST_TYPE,   0, NAUTILUS_DND_URI_LIST },
 	{ NAUTILUS_DND_TEXT_PLAIN_TYPE, 0, NAUTILUS_DND_TEXT_PLAIN },
@@ -84,21 +92,51 @@ static const GtkTargetEntry drop_types [] = {
 	{ NAUTILUS_DND_TEXT_PLAIN_TYPE, 0, NAUTILUS_DND_TEXT_PLAIN },
 };
 
-static char *nautilus_location_bar_get_location     (NautilusNavigationBar    *navigation_bar); 
-static void  nautilus_location_bar_set_location     (NautilusNavigationBar    *navigation_bar,
-						     const char               *location);
-static void  nautilus_location_bar_class_init       (NautilusLocationBarClass *class);
-static void  nautilus_location_bar_init             (NautilusLocationBar      *bar);
-static void  nautilus_location_bar_update_label     (NautilusLocationBar      *bar);
-
-EEL_CLASS_BOILERPLATE (NautilusLocationBar,
-		       nautilus_location_bar,
-		       NAUTILUS_TYPE_NAVIGATION_BAR)
+G_DEFINE_TYPE (NautilusLocationBar, nautilus_location_bar,
+	       GTK_TYPE_HBOX);
 
 static NautilusNavigationWindow *
 nautilus_location_bar_get_window (GtkWidget *bar)
 {
 	return NAUTILUS_NAVIGATION_WINDOW (gtk_widget_get_ancestor (bar, NAUTILUS_TYPE_WINDOW));
+}
+
+/**
+ * nautilus_location_bar_get_location
+ *
+ * Get the "URI" represented by the text in the location bar.
+ *
+ * @bar: A NautilusLocationBar.
+ *
+ * returns a newly allocated "string" containing the mangled
+ * (by g_file_parse_name) text that the user typed in...maybe a URI 
+ * but not guaranteed.
+ *
+ **/
+static char *
+nautilus_location_bar_get_location (NautilusLocationBar *bar) 
+{
+	char *user_location, *uri;
+	GFile *location;
+	
+	user_location = gtk_editable_get_chars (GTK_EDITABLE (bar->details->entry), 0, -1);
+	location = g_file_parse_name (user_location);
+	g_free (user_location);
+	uri = g_file_get_uri (location);
+	g_object_unref (location);
+	return uri;
+}
+
+static void
+emit_location_changed (NautilusLocationBar *bar)
+{
+	char *location;
+
+	location = nautilus_location_bar_get_location (bar);
+	g_signal_emit (bar,
+		       signals[LOCATION_CHANGED], 0,
+		       location);
+	g_free (location);
 }
 
 static void
@@ -121,8 +159,8 @@ drag_data_received_callback (GtkWidget *widget,
 	char *prompt;
 	char *detail;
 	GFile *location;
+	NautilusLocationBar *self = NAUTILUS_LOCATION_BAR (widget);
 
-	g_assert (NAUTILUS_IS_LOCATION_BAR (widget));
 	g_assert (data != NULL);
 	g_assert (callback_data == NULL);
 
@@ -170,9 +208,8 @@ drag_data_received_callback (GtkWidget *widget,
 		}
 	}
 
-	nautilus_navigation_bar_set_location (NAUTILUS_NAVIGATION_BAR (widget),
-					      names[0]);	
-	nautilus_navigation_bar_location_changed (NAUTILUS_NAVIGATION_BAR (widget));
+	nautilus_location_bar_set_location (self, names[0]);	
+	emit_location_changed (self);
 
 	if (new_windows_for_extras) {
 		int i;
@@ -203,14 +240,14 @@ drag_data_get_callback (GtkWidget *widget,
 		 	guint32 time,
 			gpointer callback_data)
 {
-	NautilusNavigationBar *bar;
+	NautilusLocationBar *self;
 	char *entry_text;
 
 	g_assert (selection_data != NULL);
-	bar = NAUTILUS_NAVIGATION_BAR (callback_data);
+	self = callback_data;
 
-	entry_text = nautilus_navigation_bar_get_location (bar);
-	
+	entry_text = nautilus_location_bar_get_location (self);
+
 	switch (info) {
 	case NAUTILUS_DND_URI_LIST:
 	case NAUTILUS_DND_TEXT_PLAIN:
@@ -291,15 +328,51 @@ static void
 editable_activate_callback (GtkEntry *entry,
 			    gpointer user_data)
 {
-	NautilusNavigationBar *bar;
+	NautilusLocationBar *self = user_data;
 	const char *entry_text;
-
-	bar = NAUTILUS_NAVIGATION_BAR (user_data);
 
 	entry_text = gtk_entry_get_text (entry);
 	if (entry_text != NULL && *entry_text != '\0') {
-		nautilus_navigation_bar_location_changed (bar);
+		emit_location_changed (self);
 	}
+}
+
+/**
+ * nautilus_location_bar_update_label
+ *
+ * if the text in the entry matches the uri, set the label to "location", otherwise use "goto"
+ *
+ **/
+static void
+nautilus_location_bar_update_label (NautilusLocationBar *bar)
+{
+	const char *current_text;
+	GFile *location;
+	GFile *last_location;
+	
+	if (bar->details->last_location == NULL){
+		gtk_label_set_text (GTK_LABEL (bar->details->label), GO_TO_LABEL);
+		nautilus_location_entry_set_secondary_action (NAUTILUS_LOCATION_ENTRY (bar->details->entry), 
+							      NAUTILUS_LOCATION_ENTRY_ACTION_GOTO);
+		return;
+	}
+
+	current_text = gtk_entry_get_text (GTK_ENTRY (bar->details->entry));
+	location = g_file_parse_name (current_text);
+	last_location = g_file_parse_name (bar->details->last_location);
+	
+	if (g_file_equal (last_location, location)) {
+		gtk_label_set_text (GTK_LABEL (bar->details->label), LOCATION_LABEL);
+		nautilus_location_entry_set_secondary_action (NAUTILUS_LOCATION_ENTRY (bar->details->entry), 
+							      NAUTILUS_LOCATION_ENTRY_ACTION_CLEAR);
+	} else {		 
+		gtk_label_set_text (GTK_LABEL (bar->details->label), GO_TO_LABEL);
+		nautilus_location_entry_set_secondary_action (NAUTILUS_LOCATION_ENTRY (bar->details->entry), 
+							      NAUTILUS_LOCATION_ENTRY_ACTION_GOTO);
+	}
+
+	g_object_unref (location);
+	g_object_unref (last_location);
 }
 
 static void
@@ -309,13 +382,9 @@ editable_changed_callback (GtkEntry *entry,
 	nautilus_location_bar_update_label (NAUTILUS_LOCATION_BAR (user_data));
 }
 
-static void
-real_activate (NautilusNavigationBar *navigation_bar)
+void
+nautilus_location_bar_activate (NautilusLocationBar *bar)
 {
-	NautilusLocationBar *bar;
-
-	bar = NAUTILUS_LOCATION_BAR (navigation_bar);
-
 	/* Put the keyboard focus in the text field when switching to this mode,
 	 * and select all text for easy overtyping 
 	 */
@@ -324,12 +393,12 @@ real_activate (NautilusNavigationBar *navigation_bar)
 }
 
 static void
-real_cancel (NautilusNavigationBar *navigation_bar)
+nautilus_location_bar_cancel (NautilusLocationBar *bar)
 {
 	char *last_location;
 
-	last_location = NAUTILUS_LOCATION_BAR (navigation_bar)->details->last_location;
-	nautilus_navigation_bar_set_location (navigation_bar, last_location);
+	last_location = bar->details->last_location;
+	nautilus_location_bar_set_location (bar, last_location);
 }
 
 static void
@@ -339,18 +408,6 @@ finalize (GObject *object)
 
 	bar = NAUTILUS_LOCATION_BAR (object);
 
-	g_free (bar->details);
-
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
-}
-
-static void
-destroy (GtkWidget *object)
-{
-	NautilusLocationBar *bar;
-
-	bar = NAUTILUS_LOCATION_BAR (object);
-	
 	/* cancel the pending idle call, if any */
 	if (bar->details->idle_id != 0) {
 		g_source_remove (bar->details->idle_id);
@@ -359,29 +416,43 @@ destroy (GtkWidget *object)
 	
 	g_free (bar->details->last_location);
 	bar->details->last_location = NULL;
-	
-	EEL_CALL_PARENT (GTK_WIDGET_CLASS, destroy, (object));
+
+	G_OBJECT_CLASS (nautilus_location_bar_parent_class)->finalize (object);
 }
 
 static void
-nautilus_location_bar_class_init (NautilusLocationBarClass *class)
+nautilus_location_bar_class_init (NautilusLocationBarClass *klass)
 {
 	GObjectClass *gobject_class;
-	GtkWidgetClass *widget_class;
-	NautilusNavigationBarClass *navigation_bar_class;
+	GtkBindingSet *binding_set;
 
-	gobject_class = G_OBJECT_CLASS (class);
+	gobject_class = G_OBJECT_CLASS (klass);
 	gobject_class->finalize = finalize;
 
-	widget_class = GTK_WIDGET_CLASS (class);
-	widget_class->destroy = destroy;
-	
-	navigation_bar_class = NAUTILUS_NAVIGATION_BAR_CLASS (class);
+	klass->cancel = nautilus_location_bar_cancel;
 
-	navigation_bar_class->activate = real_activate;
-	navigation_bar_class->cancel = real_cancel;
-	navigation_bar_class->get_location = nautilus_location_bar_get_location;
-	navigation_bar_class->set_location = nautilus_location_bar_set_location;
+	signals[CANCEL] = g_signal_new
+		("cancel",
+		 G_TYPE_FROM_CLASS (klass),
+		 G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+		 G_STRUCT_OFFSET (NautilusLocationBarClass,
+				  cancel),
+		 NULL, NULL,
+		 g_cclosure_marshal_VOID__VOID,
+		 G_TYPE_NONE, 0);
+
+	signals[LOCATION_CHANGED] = g_signal_new
+		("location_changed",
+		 G_TYPE_FROM_CLASS (klass),
+		 G_SIGNAL_RUN_LAST, 0,
+		 NULL, NULL,
+		 g_cclosure_marshal_VOID__STRING,
+		 G_TYPE_NONE, 1, G_TYPE_STRING);
+
+	binding_set = gtk_binding_set_by_class (klass);
+	gtk_binding_entry_add_signal (binding_set, GDK_KEY_Escape, 0, "cancel", 0);
+
+	g_type_class_add_private (klass, sizeof (NautilusLocationBarDetails));
 }
 
 static void
@@ -392,7 +463,8 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 	GtkWidget *event_box;
 	GtkWidget *hbox;
 
-	bar->details = g_new0 (NautilusLocationBarDetails, 1);
+	bar->details = G_TYPE_INSTANCE_GET_PRIVATE (bar, NAUTILUS_TYPE_LOCATION_BAR,
+						    NautilusLocationBarDetails);
 
 	hbox = gtk_hbox_new (0, FALSE);
 
@@ -467,17 +539,14 @@ nautilus_location_bar_new (NautilusNavigationWindowPane *pane)
 	return bar;
 }
 
-static void
-nautilus_location_bar_set_location (NautilusNavigationBar *navigation_bar,
+void
+nautilus_location_bar_set_location (NautilusLocationBar *bar,
 				    const char *location)
 {
-	NautilusLocationBar *bar;
 	char *formatted_location;
 	GFile *file;
 
 	g_assert (location != NULL);
-	
-	bar = NAUTILUS_LOCATION_BAR (navigation_bar);
 
 	/* Note: This is called in reaction to external changes, and 
 	 * thus should not emit the LOCATION_CHANGED signal. */
@@ -504,76 +573,9 @@ nautilus_location_bar_set_location (NautilusNavigationBar *navigation_bar,
 	nautilus_location_bar_update_label (bar);
 }
 
-/**
- * nautilus_location_bar_get_location
- *
- * Get the "URI" represented by the text in the location bar.
- *
- * @bar: A NautilusLocationBar.
- *
- * returns a newly allocated "string" containing the mangled
- * (by g_file_parse_name) text that the user typed in...maybe a URI 
- * but not guaranteed.
- *
- **/
-static char *
-nautilus_location_bar_get_location (NautilusNavigationBar *navigation_bar) 
-{
-	NautilusLocationBar *bar;
-	char *user_location, *uri;
-	GFile *location;
-
-	bar = NAUTILUS_LOCATION_BAR (navigation_bar);
-	
-	user_location = gtk_editable_get_chars (GTK_EDITABLE (bar->details->entry), 0, -1);
-	location = g_file_parse_name (user_location);
-	g_free (user_location);
-	uri = g_file_get_uri (location);
-	g_object_unref (location);
-	return uri;
-}
-	       
-/**
- * nautilus_location_bar_update_label
- *
- * if the text in the entry matches the uri, set the label to "location", otherwise use "goto"
- *
- **/
-static void
-nautilus_location_bar_update_label (NautilusLocationBar *bar)
-{
-	const char *current_text;
-	GFile *location;
-	GFile *last_location;
-	
-	if (bar->details->last_location == NULL){
-		gtk_label_set_text (GTK_LABEL (bar->details->label), GO_TO_LABEL);
-		nautilus_location_entry_set_secondary_action (NAUTILUS_LOCATION_ENTRY (bar->details->entry), 
-							      NAUTILUS_LOCATION_ENTRY_ACTION_GOTO);
-		return;
-	}
-
-	current_text = gtk_entry_get_text (GTK_ENTRY (bar->details->entry));
-	location = g_file_parse_name (current_text);
-	last_location = g_file_parse_name (bar->details->last_location);
-	
-	if (g_file_equal (last_location, location)) {
-		gtk_label_set_text (GTK_LABEL (bar->details->label), LOCATION_LABEL);
-		nautilus_location_entry_set_secondary_action (NAUTILUS_LOCATION_ENTRY (bar->details->entry), 
-							      NAUTILUS_LOCATION_ENTRY_ACTION_CLEAR);
-	} else {		 
-		gtk_label_set_text (GTK_LABEL (bar->details->label), GO_TO_LABEL);
-		nautilus_location_entry_set_secondary_action (NAUTILUS_LOCATION_ENTRY (bar->details->entry), 
-							      NAUTILUS_LOCATION_ENTRY_ACTION_GOTO);
-	}
-
-	g_object_unref (location);
-	g_object_unref (last_location);
-}
-
 /* change background color based on activity state */
 void
-nautilus_location_bar_set_active(NautilusLocationBar *location_bar, gboolean is_active)
+nautilus_location_bar_set_active (NautilusLocationBar *location_bar, gboolean is_active)
 {
 	if (is_active) {
 		/* reset style to default */

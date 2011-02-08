@@ -30,7 +30,6 @@
 #ifndef NAUTILUS_LOCATION_BAR_H
 #define NAUTILUS_LOCATION_BAR_H
 
-#include "nautilus-navigation-bar.h"
 #include "nautilus-navigation-window.h"
 #include "nautilus-navigation-window-pane.h"
 #include <libnautilus-private/nautilus-entry.h>
@@ -51,12 +50,15 @@
 typedef struct NautilusLocationBarDetails NautilusLocationBarDetails;
 
 typedef struct NautilusLocationBar {
-	NautilusNavigationBar parent;
+	GtkHBox parent;
 	NautilusLocationBarDetails *details;
 } NautilusLocationBar;
 
 typedef struct {
-	NautilusNavigationBarClass parent_class;
+	GtkHBoxClass parent_class;
+
+	/* for GtkBindingSet */
+	void         (* cancel)           (NautilusLocationBar *bar);
 } NautilusLocationBarClass;
 
 GType      nautilus_location_bar_get_type     	(void);
@@ -64,5 +66,9 @@ GtkWidget* nautilus_location_bar_new          	(NautilusNavigationWindowPane *pa
 void       nautilus_location_bar_set_active     (NautilusLocationBar *location_bar,
 						 gboolean is_active);
 NautilusEntry * nautilus_location_bar_get_entry (NautilusLocationBar *location_bar);
+
+void	nautilus_location_bar_activate	 (NautilusLocationBar *bar);
+void    nautilus_location_bar_set_location     (NautilusLocationBar *bar,
+						const char          *location);
 
 #endif /* NAUTILUS_LOCATION_BAR_H */
