@@ -53,7 +53,7 @@
     <value nick="end" value="1"/>
   </enum>
 
-  <schema id="org.gnome.nautilus" path="/apps/nautilus/" gettext-domain="nautilus">
+  <schema id="org.gnome.nautilus" path="/org/gnome/nautilus/" gettext-domain="nautilus">
     <child name="preferences" schema="org.gnome.nautilus.preferences"/>
     <child name="icon-view" schema="org.gnome.nautilus.icon-view"/>
     <child name="compact-view" schema="org.gnome.nautilus.compact-view"/>
@@ -63,7 +63,7 @@
     <child name="window-state" schema="org.gnome.nautilus.window-state"/>
   </schema>
 
-  <schema id="org.gnome.nautilus.preferences" path="/apps/nautilus/preferences/" gettext-domain="nautilus">
+  <schema id="org.gnome.nautilus.preferences" path="/org/gnome/nautilus/preferences/" gettext-domain="nautilus">
     <key name="tabs-open-position" enum="org.gnome.nautilus.TabPosition">
       <aliases>
 	<alias value='after_current_tab' target='after-current-tab'/>
@@ -206,7 +206,7 @@
     </key>
   </schema>
 
-  <schema id="org.gnome.nautilus.icon-view" path="/apps/nautilus/icon-view/" gettext-domain="nautilus">
+  <schema id="org.gnome.nautilus.icon-view" path="/org/gnome/nautilus/icon-view/" gettext-domain="nautilus">
     <key name="captions" type="as">
       <default>[ 'none', 'size', 'date_modified' ]</default>
       <_summary>List of possible captions on icons</_summary>
@@ -261,7 +261,7 @@
     </key>
   </schema>
 
-  <schema id="org.gnome.nautilus.compact-view" path="/apps/nautilus/compact-view/" gettext-domain="nautilus">
+  <schema id="org.gnome.nautilus.compact-view" path="/org/gnome/nautilus/compact-view/" gettext-domain="nautilus">
     <key name="default-zoom-level" enum="org.gnome.nautilus.ZoomLevel">
       <default>'standard'</default>
       <_summary>Default compact view zoom level</_summary>
@@ -274,7 +274,7 @@
     </key>
   </schema>
 
-  <schema id="org.gnome.nautilus.list-view" path="/apps/nautilus/list-view/" gettext-domain="nautilus">
+  <schema id="org.gnome.nautilus.list-view" path="/org/gnome/nautilus/list-view/" gettext-domain="nautilus">
     <key name="default-zoom-level" enum="org.gnome.nautilus.ZoomLevel">
       <default>'smaller'</default>
       <_summary>Default list zoom level</_summary>
@@ -292,11 +292,11 @@
     </key>
   </schema>
 
-  <schema id="org.gnome.nautilus.sidebar-panels" path="/apps/nautilus/sidebar-panels/" gettext-domain="nautilus">
+  <schema id="org.gnome.nautilus.sidebar-panels" path="/org/gnome/nautilus/sidebar-panels/" gettext-domain="nautilus">
     <child name="tree" schema="org.gnome.nautilus.sidebar-panels.tree"/>
   </schema>
 
-  <schema id="org.gnome.nautilus.sidebar-panels.tree" path="/apps/nautilus/sidebar-panels/tree/" gettext-domain="nautilus">
+  <schema id="org.gnome.nautilus.sidebar-panels.tree" path="/org/gnome/nautilus/sidebar-panels/tree/" gettext-domain="nautilus">
     <key name="show-only-directories" type="b">
       <default>true</default>
       <_summary>Only show folders in the tree side pane</_summary>
@@ -304,7 +304,7 @@
     </key>
   </schema>
 
-  <schema id="org.gnome.nautilus.desktop" path="/apps/nautilus/desktop/" gettext-domain="nautilus">
+  <schema id="org.gnome.nautilus.desktop" path="/org/gnome/nautilus/desktop/" gettext-domain="nautilus">
     <key name="font" type="s">
       <default l10n="messages" context="desktop-font">''</default>
       <_summary>Desktop font</_summary>
@@ -367,7 +367,7 @@
     </key>
   </schema>
 
-  <schema id="org.gnome.nautilus.window-state" path="/apps/nautilus/window-state/" gettext-domain="nautilus">
+  <schema id="org.gnome.nautilus.window-state" path="/org/gnome/nautilus/window-state/" gettext-domain="nautilus">
     <key name="geometry" type="s">
       <default>''</default>
       <_summary>The geometry string for a navigation window.</_summary>
