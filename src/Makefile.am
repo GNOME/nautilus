@@ -121,6 +121,8 @@ nautilus_SOURCES = \
 	nautilus-self-check-functions.h 	\
 	nautilus-spatial-window.c               \
 	nautilus-spatial-window.h               \
+	nautilus-toolbar.c			\
+	nautilus-toolbar.h			\
 	nautilus-tree-sidebar.c			\
 	nautilus-tree-sidebar.h			\
 	nautilus-tree-sidebar-model.c		\
