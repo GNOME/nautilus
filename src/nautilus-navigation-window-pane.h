@@ -38,6 +38,8 @@
 typedef struct _NautilusNavigationWindowPaneClass NautilusNavigationWindowPaneClass;
 typedef struct _NautilusNavigationWindowPane      NautilusNavigationWindowPane;
 
+#include "nautilus-toolbar.h"
+
 struct _NautilusNavigationWindowPaneClass {
 	NautilusWindowPaneClass parent_class;
 };
@@ -49,12 +51,11 @@ struct _NautilusNavigationWindowPane {
 
 	/* location bar */
 	GtkWidget *location_bar;
-	GtkWidget *navigation_bar;
 	GtkWidget *path_bar;
 	GtkWidget *search_bar;
+	GtkWidget *tool_bar;
 
 	gboolean temporary_navigation_bar;
-	gboolean temporary_location_bar;
 	gboolean temporary_search_bar;
 
 	/* notebook */
@@ -64,6 +65,8 @@ struct _NautilusNavigationWindowPane {
 	GtkWidget *split_view_hpane;
 };
 
+#include "nautilus-toolbar.h"
+
 GType    nautilus_navigation_window_pane_get_type (void);
 
 NautilusNavigationWindowPane* nautilus_navigation_window_pane_new (NautilusWindow *window);
@@ -71,17 +74,14 @@ NautilusNavigationWindowPane* nautilus_navigation_window_pane_new (NautilusWindo
 /* location bar */
 void     nautilus_navigation_window_pane_setup             (NautilusNavigationWindowPane *pane);
 
-void     nautilus_navigation_window_pane_hide_location_bar (NautilusNavigationWindowPane *pane, gboolean save_preference);
-void     nautilus_navigation_window_pane_show_location_bar (NautilusNavigationWindowPane *pane, gboolean save_preference);
-gboolean nautilus_navigation_window_pane_location_bar_showing (NautilusNavigationWindowPane *pane);
+void     nautilus_navigation_window_pane_ensure_location_bar (NautilusNavigationWindowPane *pane);
+void     nautilus_navigation_window_pane_ensure_search_bar (NautilusNavigationWindowPane *pane);
+void      nautilus_navigation_window_pane_hide_search_bar (NautilusNavigationWindowPane *pane);
+
 void     nautilus_navigation_window_pane_hide_path_bar (NautilusNavigationWindowPane *pane);
 void     nautilus_navigation_window_pane_show_path_bar (NautilusNavigationWindowPane *pane);
 gboolean nautilus_navigation_window_pane_path_bar_showing (NautilusNavigationWindowPane *pane);
 gboolean nautilus_navigation_window_pane_search_bar_showing (NautilusNavigationWindowPane *pane);
-void     nautilus_navigation_window_pane_set_bar_mode  (NautilusNavigationWindowPane *pane, NautilusBarMode mode);
-void     nautilus_navigation_window_pane_show_location_bar_temporarily (NautilusNavigationWindowPane *pane);
-void     nautilus_navigation_window_pane_show_navigation_bar_temporarily (NautilusNavigationWindowPane *pane);
-void     nautilus_navigation_window_pane_always_use_location_entry (NautilusNavigationWindowPane *pane, gboolean use_entry);
 gboolean nautilus_navigation_window_pane_hide_temporary_bars (NautilusNavigationWindowPane *pane);
 /* notebook */
 void     nautilus_navigation_window_pane_add_slot_in_tab (NautilusNavigationWindowPane *pane, NautilusWindowSlot *slot, NautilusWindowOpenSlotFlags flags);
