@@ -417,12 +417,10 @@ real_prompt_for_location (NautilusWindow *window, const char *initial)
 	remember_focus_widget (NAUTILUS_NAVIGATION_WINDOW (window));
 
 	pane = NAUTILUS_NAVIGATION_WINDOW_PANE (window->details->active_pane);
+	nautilus_navigation_window_pane_ensure_location_bar (pane);
 
-	nautilus_navigation_window_pane_show_location_bar_temporarily (pane);
-	nautilus_navigation_window_pane_show_navigation_bar_temporarily (pane);
-	
 	if (initial) {
-		nautilus_location_bar_set_location (NAUTILUS_LOCATION_BAR (pane->navigation_bar),
+		nautilus_location_bar_set_location (NAUTILUS_LOCATION_BAR (pane->location_bar),
 						    initial);
 	}
 }
