@@ -800,8 +800,8 @@ side_pane_id_changed (NautilusNavigationWindow *window)
 static void
 nautilus_navigation_window_init (NautilusNavigationWindow *window)
 {
-	GtkUIManager *ui_manager;
-	GtkWidget *toolbar;
+	//	GtkUIManager *ui_manager;
+	//	GtkWidget *toolbar;
 	NautilusWindow *win;
 	NautilusNavigationWindowPane *pane;
 	GtkWidget *hpaned;
@@ -852,6 +852,7 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 
 	nautilus_navigation_window_initialize_menus (window);
 
+#if 0
 	ui_manager = nautilus_window_get_ui_manager (NAUTILUS_WINDOW (window));
 	toolbar = gtk_ui_manager_get_widget (ui_manager, "/Toolbar");
 	window->details->toolbar = toolbar;
@@ -864,7 +865,7 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 	gtk_widget_show (toolbar);
 
 	nautilus_navigation_window_initialize_toolbars (window);
-
+#endif
 	/* Set initial sensitivity of some buttons & menu items
 	 * now that they're all created.
 	 */
