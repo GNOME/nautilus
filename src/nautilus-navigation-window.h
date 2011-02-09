@@ -31,10 +31,8 @@
 #define NAUTILUS_NAVIGATION_WINDOW_H
 
 #include <gtk/gtk.h>
-#include <eel/eel-glib-extensions.h>
 #include <libnautilus-private/nautilus-bookmark.h>
 
-#include "nautilus-application.h"
 #include "nautilus-window.h"
 
 #define NAUTILUS_TYPE_NAVIGATION_WINDOW nautilus_navigation_window_get_type()
@@ -75,9 +73,6 @@ void     nautilus_navigation_window_clear_back_list      (NautilusNavigationWind
 void     nautilus_navigation_window_clear_forward_list   (NautilusNavigationWindow *window);
 void     nautilus_forget_history                         (void);
 gint     nautilus_navigation_window_get_base_page_index  (NautilusNavigationWindow *window);
-void     nautilus_navigation_window_hide_toolbar         (NautilusNavigationWindow *window);
-void     nautilus_navigation_window_show_toolbar         (NautilusNavigationWindow *window);
-gboolean nautilus_navigation_window_toolbar_showing      (NautilusNavigationWindow *window);
 void     nautilus_navigation_window_hide_sidebar         (NautilusNavigationWindow *window);
 void     nautilus_navigation_window_show_sidebar         (NautilusNavigationWindow *window);
 gboolean nautilus_navigation_window_sidebar_showing      (NautilusNavigationWindow *window);
@@ -89,7 +84,6 @@ void     nautilus_navigation_window_back_or_forward      (NautilusNavigationWind
                                                           guint                     distance,
 							  gboolean                  new_tab);
 void     nautilus_navigation_window_show_search          (NautilusNavigationWindow *window);
-void     nautilus_navigation_window_unset_focus_widget   (NautilusNavigationWindow *window);
 void     nautilus_navigation_window_hide_search          (NautilusNavigationWindow *window);
 void     nautilus_navigation_window_set_search_button	 (NautilusNavigationWindow *window,
                                                           gboolean		    state);
@@ -97,10 +91,5 @@ void     nautilus_navigation_window_restore_focus_widget (NautilusNavigationWind
 void     nautilus_navigation_window_split_view_on        (NautilusNavigationWindow *window);
 void     nautilus_navigation_window_split_view_off       (NautilusNavigationWindow *window);
 gboolean nautilus_navigation_window_split_view_showing   (NautilusNavigationWindow *window);
-
-gboolean nautilus_navigation_window_is_in_temporary_navigation_bar (GtkWidget *widget,
-				NautilusNavigationWindow *window);
-gboolean nautilus_navigation_window_is_in_temporary_search_bar (GtkWidget *widget,
-			    NautilusNavigationWindow *window);
 
 #endif

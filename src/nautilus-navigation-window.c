@@ -168,7 +168,7 @@ use_extra_mouse_buttons_changed (gpointer callback_data)
 	mouse_extra_buttons = g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_MOUSE_USE_EXTRA_BUTTONS);
 }
 
-void
+static void
 nautilus_navigation_window_unset_focus_widget (NautilusNavigationWindow *window)
 {
 	if (window->details->last_focus_widget != NULL) {
@@ -178,35 +178,24 @@ nautilus_navigation_window_unset_focus_widget (NautilusNavigationWindow *window)
 	}
 }
 
-gboolean
-nautilus_navigation_window_is_in_temporary_navigation_bar (GtkWidget *widget,
-				NautilusNavigationWindow *window)
+static gboolean
+nautilus_navigation_window_is_in_temporary_bars (GtkWidget *widget,
+						 NautilusNavigationWindow *window)
 {
 	GList *walk;
 	gboolean is_in_any = FALSE;
+	NautilusNavigationWindowPane *pane;
 
-	for (walk = NAUTILUS_WINDOW(window)->details->panes; walk; walk = walk->next) {
-		NautilusNavigationWindowPane *pane = walk->data;
-		if(gtk_widget_get_ancestor (widget, NAUTILUS_TYPE_LOCATION_BAR) != NULL &&
-			       pane->temporary_navigation_bar)
+	for (walk = NAUTILUS_WINDOW (window)->details->panes; walk; walk = walk->next) {
+		pane = walk->data;
+
+		if ((gtk_widget_get_ancestor (widget, NAUTILUS_TYPE_LOCATION_BAR) != NULL &&
+		    pane->temporary_navigation_bar) ||
+		    (gtk_widget_get_ancestor (widget, NAUTILUS_TYPE_SEARCH_BAR) != NULL &&
+		     pane->temporary_search_bar))
 			is_in_any = TRUE;
 	}
-	return is_in_any;
-}
 
-gboolean
-nautilus_navigation_window_is_in_temporary_search_bar (GtkWidget *widget,
-			    NautilusNavigationWindow *window)
-{
-	GList *walk;
-	gboolean is_in_any = FALSE;
-
-	for (walk = NAUTILUS_WINDOW(window)->details->panes; walk; walk = walk->next) {
-		NautilusNavigationWindowPane *pane = walk->data;
-		if(gtk_widget_get_ancestor (widget, NAUTILUS_TYPE_SEARCH_BAR) != NULL &&
-				       pane->temporary_search_bar)
-			is_in_any = TRUE;
-	}
 	return is_in_any;
 }
 
@@ -220,8 +209,7 @@ remember_focus_widget (NautilusNavigationWindow *window)
 
 	focus_widget = gtk_window_get_focus (GTK_WINDOW (window));
 	if (focus_widget != NULL &&
-	    !nautilus_navigation_window_is_in_temporary_navigation_bar (focus_widget, navigation_window) &&
-	    !nautilus_navigation_window_is_in_temporary_search_bar (focus_widget, navigation_window)) {
+	    !nautilus_navigation_window_is_in_temporary_bars (focus_widget, navigation_window)) {
 		nautilus_navigation_window_unset_focus_widget (navigation_window);
 
 		navigation_window->details->last_focus_widget = focus_widget;
@@ -505,16 +493,6 @@ nautilus_navigation_window_set_search_button (NautilusNavigationWindow *window,
 	g_object_set_data (G_OBJECT (action), "blocked", NULL);
 }
 
-gboolean
-nautilus_navigation_window_toolbar_showing (NautilusNavigationWindow *window)
-{
-	if (window->details->toolbar != NULL) {
-		return gtk_widget_get_visible (window->details->toolbar);
-	}
-	/* If we're not visible yet we haven't changed visibility, so its TRUE */
-	return TRUE;
-}
-
 void
 nautilus_navigation_window_hide_status_bar (NautilusNavigationWindow *window)
 {
@@ -543,22 +521,6 @@ nautilus_navigation_window_status_bar_showing (NautilusNavigationWindow *window)
 	return TRUE;
 }
 
-
-void
-nautilus_navigation_window_hide_toolbar (NautilusNavigationWindow *window)
-{
-	gtk_widget_hide (window->details->toolbar);
-	nautilus_navigation_window_update_show_hide_menu_items (window);
-	g_settings_set_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_TOOLBAR, FALSE);
-}
-
-void
-nautilus_navigation_window_show_toolbar (NautilusNavigationWindow *window)
-{
-	gtk_widget_show (window->details->toolbar);
-	nautilus_navigation_window_update_show_hide_menu_items (window);
-	g_settings_set_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_TOOLBAR, TRUE);
-}
 
 /**
  * nautilus_navigation_window_get_base_page_index:
