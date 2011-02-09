@@ -442,7 +442,7 @@ nautilus_location_bar_class_init (NautilusLocationBarClass *klass)
 		 G_TYPE_NONE, 0);
 
 	signals[LOCATION_CHANGED] = g_signal_new
-		("location_changed",
+		("location-changed",
 		 G_TYPE_FROM_CLASS (klass),
 		 G_SIGNAL_RUN_LAST, 0,
 		 NULL, NULL,
