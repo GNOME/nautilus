@@ -177,23 +177,6 @@ action_split_view_same_location_callback (GtkAction *action,
 }
 
 static void
-action_show_hide_toolbar_callback (GtkAction *action, 
-				   gpointer user_data)
-{
-	NautilusNavigationWindow *window;
-
-	window = NAUTILUS_NAVIGATION_WINDOW (user_data);
-
-	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action))) {
-		nautilus_navigation_window_show_toolbar (window);
-	} else {
-		nautilus_navigation_window_hide_toolbar (window);
-	}
-}
-
-
-
-static void
 action_show_hide_sidebar_callback (GtkAction *action, 
 				   gpointer user_data)
 {
@@ -205,39 +188,6 @@ action_show_hide_sidebar_callback (GtkAction *action,
 		nautilus_navigation_window_show_sidebar (window);
 	} else {
 		nautilus_navigation_window_hide_sidebar (window);
-	}
-}
-
-static void
-pane_show_hide_location_bar (NautilusNavigationWindowPane *pane, gboolean is_active)
-{
-	if (nautilus_navigation_window_pane_location_bar_showing (pane) != is_active) {
-		if (is_active) {
-			nautilus_navigation_window_pane_show_location_bar (pane, TRUE);
-		} else {
-			nautilus_navigation_window_pane_hide_location_bar (pane, TRUE);
-		}
-	}
-}
-
-static void
-action_show_hide_location_bar_callback (GtkAction *action, 
-					gpointer user_data)
-{
-	NautilusWindow *window;
-	GList *walk;
-	gboolean is_active;
-
-	window = NAUTILUS_WINDOW (user_data);
-
-	is_active = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
-
-	/* Do the active pane first, because this will trigger an update of the menu items,
-	 * which in turn relies on the active pane. */
-	pane_show_hide_location_bar (NAUTILUS_NAVIGATION_WINDOW_PANE (window->details->active_pane), is_active);
-
-	for (walk = window->details->panes; walk; walk = walk->next) {
-		pane_show_hide_location_bar (NAUTILUS_NAVIGATION_WINDOW_PANE (walk->data), is_active);
 	}
 }
 
@@ -303,20 +253,10 @@ nautilus_navigation_window_update_show_hide_menu_items (NautilusNavigationWindow
 	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
 
 	action = gtk_action_group_get_action (window->details->navigation_action_group,
-					      NAUTILUS_ACTION_SHOW_HIDE_TOOLBAR);
-	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
-				      nautilus_navigation_window_toolbar_showing (window));
-
-	action = gtk_action_group_get_action (window->details->navigation_action_group,
 					      NAUTILUS_ACTION_SHOW_HIDE_SIDEBAR);
 	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
 				      nautilus_navigation_window_sidebar_showing (window));
 	
-	action = gtk_action_group_get_action (window->details->navigation_action_group,
-					      NAUTILUS_ACTION_SHOW_HIDE_LOCATION_BAR);
-	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
-				      nautilus_navigation_window_pane_location_bar_showing (NAUTILUS_NAVIGATION_WINDOW_PANE (NAUTILUS_WINDOW (window)->details->active_pane)));
-
 	action = gtk_action_group_get_action (window->details->navigation_action_group,
 					      NAUTILUS_ACTION_SHOW_HIDE_STATUSBAR);
 	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
@@ -868,17 +808,12 @@ static const GtkToggleActionEntry navigation_toggle_entries[] = {
   /* name, stock id */     { "Show Hide Toolbar", NULL,
   /* label, accelerator */   N_("_Main Toolbar"), NULL,
   /* tooltip */              N_("Change the visibility of this window's main toolbar"),
-                             G_CALLBACK (action_show_hide_toolbar_callback),
+			     NULL,
   /* is_active */            TRUE }, 
   /* name, stock id */     { "Show Hide Sidebar", NULL,
   /* label, accelerator */   N_("_Show Sidebar"), "F9",
   /* tooltip */              N_("Change the visibility of this window's side pane"),
                              G_CALLBACK (action_show_hide_sidebar_callback),
-  /* is_active */            TRUE }, 
-  /* name, stock id */     { "Show Hide Location Bar", NULL,
-  /* label, accelerator */   N_("Location _Bar"), NULL,
-  /* tooltip */              N_("Change the visibility of this window's location bar"),
-                             G_CALLBACK (action_show_hide_location_bar_callback),
   /* is_active */            TRUE }, 
   /* name, stock id */     { "Show Hide Statusbar", NULL,
   /* label, accelerator */   N_("St_atusbar"), NULL,
@@ -1025,6 +960,20 @@ nautilus_navigation_window_initialize_actions (NautilusNavigationWindow *window)
 	nautilus_navigation_window_update_split_view_actions_sensitivity (window);
 }
 
+static void
+navigation_window_menus_set_bindings (NautilusNavigationWindow *window)
+{
+	GtkAction *action;
+
+	action = gtk_action_group_get_action (window->details->navigation_action_group,
+					      NAUTILUS_ACTION_SHOW_HIDE_TOOLBAR);
+
+	g_settings_bind (nautilus_window_state,
+			 NAUTILUS_WINDOW_STATE_START_WITH_TOOLBAR,
+			 action,
+			 "active",
+			 G_SETTINGS_BIND_DEFAULT);
+}
 
 /**
  * nautilus_window_initialize_menus
@@ -1042,6 +991,8 @@ nautilus_navigation_window_initialize_menus (NautilusNavigationWindow *window)
 
 	ui = nautilus_ui_string_get ("nautilus-navigation-window-ui.xml");
 	gtk_ui_manager_add_ui_from_string (ui_manager, ui, -1, NULL);
+
+	navigation_window_menus_set_bindings (window);
 
 	nautilus_navigation_window_update_show_hide_menu_items (window);
 	nautilus_navigation_window_update_spatial_menu_item (window);
