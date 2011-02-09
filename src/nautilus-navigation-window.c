@@ -432,27 +432,20 @@ nautilus_navigation_window_show_search (NautilusNavigationWindow *window)
 {
 	NautilusNavigationWindowPane *pane;
 
+	remember_focus_widget (window);
+
 	pane = NAUTILUS_NAVIGATION_WINDOW_PANE (NAUTILUS_WINDOW (window)->details->active_pane);
-	if (!nautilus_navigation_window_pane_search_bar_showing (pane)) {
-		remember_focus_widget (window);
 
-		nautilus_navigation_window_pane_show_location_bar_temporarily (pane);
-		nautilus_navigation_window_pane_set_bar_mode (pane, NAUTILUS_BAR_SEARCH);
-		pane->temporary_search_bar = TRUE;
-		nautilus_search_bar_clear (NAUTILUS_SEARCH_BAR (pane->search_bar));
-	}
-
-	nautilus_search_bar_grab_focus (NAUTILUS_SEARCH_BAR (pane->search_bar));
+	nautilus_navigation_window_pane_ensure_search_bar (pane);
 }
 
 void
 nautilus_navigation_window_hide_search (NautilusNavigationWindow *window)
 {
 	NautilusNavigationWindowPane *pane = NAUTILUS_NAVIGATION_WINDOW_PANE (NAUTILUS_WINDOW (window)->details->active_pane);
-	if (nautilus_navigation_window_pane_search_bar_showing (pane)) {
-		if (nautilus_navigation_window_pane_hide_temporary_bars (pane)) {
-			nautilus_navigation_window_restore_focus_widget (window);
-		}
+
+	if (nautilus_navigation_window_pane_hide_temporary_bars (pane)) {
+		nautilus_navigation_window_restore_focus_widget (window);
 	}
 }
 
