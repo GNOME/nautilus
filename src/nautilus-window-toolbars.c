@@ -29,13 +29,11 @@
 #include <config.h>
 
 #include <unistd.h>
-#include "nautilus-application.h"
+
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window.h"
-#include <eel/eel-gnome-extensions.h>
-#include <eel/eel-gtk-extensions.h>
-#include <eel/eel-string.h>
+
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <glib/gi18n.h>
@@ -45,12 +43,6 @@
 #include <libnautilus-private/nautilus-ui-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-module.h>
-
-/* FIXME bugzilla.gnome.org 41243: 
- * We should use inheritance instead of these special cases
- * for the desktop window.
- */
-#include "nautilus-desktop-window.h"
 
 #define TOOLBAR_PATH_EXTENSION_ACTIONS "/Toolbar/Extra Buttons Placeholder/Extension Actions"
 
