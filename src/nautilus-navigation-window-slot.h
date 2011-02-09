@@ -38,16 +38,9 @@ typedef struct NautilusNavigationWindowSlotClass NautilusNavigationWindowSlotCla
 #define NAUTILUS_IS_NAVIGATION_WINDOW_SLOT_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), NAUTILUS_TYPE_NAVIGATION_WINDOW_SLOT))
 #define NAUTILUS_NAVIGATION_WINDOW_SLOT_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), NAUTILUS_TYPE_NAVIGATION_WINDOW_SLOT, NautilusNavigationWindowSlotClass))
   
-typedef enum {
-	NAUTILUS_BAR_PATH,
-	NAUTILUS_BAR_NAVIGATION,
-	NAUTILUS_BAR_SEARCH
-} NautilusBarMode;
-
 struct NautilusNavigationWindowSlot {
 	NautilusWindowSlot parent;
 
-	NautilusBarMode bar_mode;
 	GtkTreeModel *viewer_model;
 	int num_viewers;
 
