@@ -100,22 +100,6 @@ static const struct {
 };
 
 static void
-always_use_location_entry_changed (gpointer callback_data)
-{
-	NautilusNavigationWindow *window;
-	GList *walk;
-	gboolean use_entry;
-
-	window = NAUTILUS_NAVIGATION_WINDOW (callback_data);
-
-	use_entry = g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY);
-
-	for (walk = NAUTILUS_WINDOW(window)->details->panes; walk; walk = walk->next) {
-		nautilus_navigation_window_pane_always_use_location_entry (walk->data, use_entry);
-	}
-}
-
-static void
 always_use_browser_changed (gpointer callback_data)
 {
 	NautilusNavigationWindow *window;
@@ -329,9 +313,6 @@ nautilus_navigation_window_finalize (GObject *object)
 
 	g_signal_handlers_disconnect_by_func (nautilus_preferences,
 					      always_use_browser_changed,
-					      window);
-	g_signal_handlers_disconnect_by_func (nautilus_preferences,
-					      always_use_location_entry_changed,
 					      window);
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -563,38 +544,8 @@ static void
 nautilus_navigation_window_show (GtkWidget *widget)
 {
 	NautilusNavigationWindow *window;
-	gboolean show_location_bar;
-	gboolean always_use_location_entry;
-	GList *walk;
 
 	window = NAUTILUS_NAVIGATION_WINDOW (widget);
-
-	/* Initially show or hide views based on preferences; once the window is displayed
-	 * these can be controlled on a per-window basis from View menu items.
-	 */
-
-	if (g_settings_get_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_TOOLBAR)) {
-		nautilus_navigation_window_show_toolbar (window);
-	} else {
-		nautilus_navigation_window_hide_toolbar (window);
-	}
-
-	show_location_bar = g_settings_get_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_LOCATION_BAR);
-	always_use_location_entry = g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY);
-	for (walk = NAUTILUS_WINDOW(window)->details->panes; walk; walk = walk->next) {
-		NautilusNavigationWindowPane *pane = walk->data;
-		if (show_location_bar) {
-			nautilus_navigation_window_pane_show_location_bar (pane, FALSE);
-		} else {
-			nautilus_navigation_window_pane_hide_location_bar (pane, FALSE);
-		}
-
-		if (always_use_location_entry) {
-			nautilus_navigation_window_pane_set_bar_mode (pane, NAUTILUS_BAR_NAVIGATION);
-		} else {
-			nautilus_navigation_window_pane_set_bar_mode (pane, NAUTILUS_BAR_PATH);
-		}
-	}
 
 	if (g_settings_get_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_SIDEBAR)) {
 		nautilus_navigation_window_show_sidebar (window);
@@ -930,11 +881,6 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 	nautilus_navigation_window_allow_forward (window, FALSE);
 
 	g_signal_connect_swapped (nautilus_preferences,
-				  "changed::" NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY,
-				  G_CALLBACK(always_use_location_entry_changed),
-				  window);
-
-	g_signal_connect_swapped (nautilus_preferences,
 				  "changed::" NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER,
 				  G_CALLBACK(always_use_browser_changed),
 				  window);
@@ -1023,16 +969,13 @@ void
 nautilus_navigation_window_split_view_on (NautilusNavigationWindow *window)
 {
 	NautilusWindow *win;
-	NautilusNavigationWindowPane *pane;
 	NautilusWindowSlot *slot, *old_active_slot;
 	GFile *location;
-	GtkAction *action;
 
 	win = NAUTILUS_WINDOW (window);
 
 	old_active_slot = nautilus_window_get_active_slot (win);
 	slot = create_extra_pane (window);
-	pane = NAUTILUS_NAVIGATION_WINDOW_PANE (slot->pane);
 
 	location = NULL;
 	if (old_active_slot != NULL) {
@@ -1050,14 +993,6 @@ nautilus_navigation_window_split_view_on (NautilusNavigationWindow *window)
 
 	nautilus_window_slot_go_to (slot, location, FALSE);
 	g_object_unref (location);
-
-	action = gtk_action_group_get_action (NAUTILUS_NAVIGATION_WINDOW (NAUTILUS_WINDOW_PANE (pane)->window)->details->navigation_action_group,
-					      NAUTILUS_ACTION_SHOW_HIDE_LOCATION_BAR);
-	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action))) {
-		nautilus_navigation_window_pane_show_location_bar (pane, TRUE);
-	} else {
-		nautilus_navigation_window_pane_hide_location_bar (pane, TRUE);
-	}
 }
 
 void
