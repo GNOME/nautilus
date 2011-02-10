@@ -879,7 +879,6 @@ nautilus_navigation_window_initialize_actions (NautilusNavigationWindow *window)
 			       "arrow-tooltip", _("Back history"),
 			       "window", window,
 			       "direction", NAUTILUS_NAVIGATION_DIRECTION_BACK,
-			       "is_important", TRUE,
 			       NULL);
 	g_signal_connect (action, "activate",
 			  G_CALLBACK (action_back_callback), window);
@@ -896,7 +895,6 @@ nautilus_navigation_window_initialize_actions (NautilusNavigationWindow *window)
 			       "arrow-tooltip", _("Forward history"),
 			       "window", window,
 			       "direction", NAUTILUS_NAVIGATION_DIRECTION_FORWARD,
-			       "is_important", TRUE,
 			       NULL);
 	g_signal_connect (action, "activate",
 			  G_CALLBACK (action_forward_callback), window);
