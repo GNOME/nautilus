@@ -3,7 +3,7 @@
 /*
  *  Nautilus
  *
- *  Copyright (C) 2004 Red Hat, Inc.
+ *  Copyright (C) 2004, 2011 Red Hat, Inc.
  *  Copyright (C) 2003 Marco Pesenti Gritti
  *
  *  Nautilus is free software; you can redistribute it and/or
@@ -24,6 +24,7 @@
  *
  *  Authors: Alexander Larsson <alexl@redhat.com>
  *           Marco Pesenti Gritti
+ *           Cosimo Cecchi <cosimoc@redhat.com>
  *
  */
 
@@ -45,6 +46,8 @@ struct NautilusNavigationActionPrivate
 	NautilusNavigationWindow *window;
 	NautilusNavigationDirection direction;
 	char *arrow_tooltip;
+
+        guint popup_timeout_id;
 };
 
 enum
@@ -131,27 +134,18 @@ fill_menu (NautilusNavigationWindow *window,
 }
 
 static void
-show_menu_callback (GtkMenuToolButton *button,
-		    NautilusNavigationAction *action)
+show_menu (NautilusNavigationAction *self,
+           guint button,
+           guint32 event_time)
 {
-	NautilusNavigationActionPrivate *p;
 	NautilusNavigationWindow *window;
 	GtkWidget *menu;
-	GList *children;
-	GList *li;
 
-	p = action->priv;
-	window = action->priv->window;
+	window = self->priv->window;
 	
-	menu = gtk_menu_tool_button_get_menu (button);
-	
-	children = gtk_container_get_children (GTK_CONTAINER (menu));
-	for (li = children; li; li = li->next) {
-		gtk_container_remove (GTK_CONTAINER (menu), li->data);
-	}
-	g_list_free (children);
+	menu = gtk_menu_new ();
 
-	switch (p->direction) {
+	switch (self->priv->direction) {
 	case NAUTILUS_NAVIGATION_DIRECTION_FORWARD:
 		fill_menu (window, menu, FALSE);
 		break;
@@ -162,72 +156,130 @@ show_menu_callback (GtkMenuToolButton *button,
 		g_assert_not_reached ();
 		break;
 	}
+
+        gtk_menu_popup (GTK_MENU (menu), NULL, NULL, NULL, NULL,
+                        button, event_time);
 }
 
-static gboolean
-proxy_button_press_event_cb (GtkButton *button,
-			     GdkEventButton *event,
-			     gpointer user_data)
-{
-	if (event->button == 2) {
-                g_signal_emit_by_name (button, "pressed", 0);
-	}
-
-	return FALSE;
-}
+#define MENU_POPUP_TIMEOUT 1200
 
 static gboolean
-proxy_button_release_event_cb (GtkButton *button,
-			       GdkEventButton *event,
-			       gpointer user_data)
+popup_menu_timeout_cb (gpointer data)
 {
-	if (event->button == 2) {
-                g_signal_emit_by_name (button, "released", 0);
-	}
+        NautilusNavigationAction *self = data;
 
-	return FALSE;
+        show_menu (self, 1, gtk_get_current_event_time ());
+
+        return FALSE;
 }
 
 static void
-connect_proxy (GtkAction *action, GtkWidget *proxy)
+unschedule_menu_popup_timeout (NautilusNavigationAction *self)
 {
-	if (GTK_IS_MENU_TOOL_BUTTON (proxy)) {
-		NautilusNavigationAction *naction = NAUTILUS_NAVIGATION_ACTION (action);
-		GtkMenuToolButton *button = GTK_MENU_TOOL_BUTTON (proxy);
-		GtkWidget *menu;
-		GtkWidget *child;
+        if (self->priv->popup_timeout_id != 0) {
+                g_source_remove (self->priv->popup_timeout_id);
+                self->priv->popup_timeout_id = 0;
+        }
+}
 
-		/* set an empty menu, so the arrow button becomes sensitive */
-		menu = gtk_menu_new ();
-		gtk_menu_tool_button_set_menu (button, menu);
+static void
+schedule_menu_popup_timeout (NautilusNavigationAction *self)
+{
+        /* unschedule any previous timeouts */
+        unschedule_menu_popup_timeout (self);
 
-		gtk_menu_tool_button_set_arrow_tooltip_text (button,
-							     naction->priv->arrow_tooltip);
-		
-		g_signal_connect (proxy, "show-menu",
-				  G_CALLBACK (show_menu_callback), action);
+        self->priv->popup_timeout_id =
+                g_timeout_add (MENU_POPUP_TIMEOUT,
+                               popup_menu_timeout_cb,
+                               self);
+}
 
-		/* Make sure that middle click works. Note that there is some code duplication
-		 * between here and nautilus-window-menus.c */
-		child = eel_gtk_menu_tool_button_get_button (button);
-		g_signal_connect (child, "button-press-event", G_CALLBACK (proxy_button_press_event_cb), NULL);
-		g_signal_connect (child, "button-release-event", G_CALLBACK (proxy_button_release_event_cb), NULL);
-	}
+static gboolean
+tool_button_press_cb (GtkButton *button,
+                      GdkEventButton *event,
+                      gpointer user_data)
+{
+        NautilusNavigationAction *self = user_data;
+
+        if (event->button == 3) {
+                /* right click */
+                show_menu (self, event->button, event->time);
+                return TRUE;
+        }
+
+        if (event->button == 1) {
+                schedule_menu_popup_timeout (self);
+        }
+
+	return FALSE;
+}
+
+static gboolean
+tool_button_release_cb (GtkButton *button,
+                        GdkEventButton *event,
+                        gpointer user_data)
+{
+        NautilusNavigationAction *self = user_data;
+
+        unschedule_menu_popup_timeout (self);
+        
+        return FALSE;
+}
+
+static GtkWidget *
+get_actual_button (GtkToolButton *tool_button)
+{
+	GList *children;
+	GtkWidget *button;
+
+	g_return_val_if_fail (GTK_IS_TOOL_BUTTON (tool_button), NULL);
+
+	children = gtk_container_get_children (GTK_CONTAINER (tool_button));
+	button = GTK_WIDGET (children->data);
+
+	g_list_free (children);
+
+	return button;
+}
+
+static void
+connect_proxy (GtkAction *action,
+               GtkWidget *proxy)
+{
+        GtkToolButton *tool;
+        GtkWidget *button;
+
+	if (GTK_IS_TOOL_BUTTON (proxy)) {
+                tool = GTK_TOOL_BUTTON (proxy);
+                button = get_actual_button (tool);
+
+                g_signal_connect (button, "button-press-event",
+                                  G_CALLBACK (tool_button_press_cb), action);
+                g_signal_connect (button, "button-release-event",
+                                  G_CALLBACK (tool_button_release_cb), action);
+        }
 
 	(* GTK_ACTION_CLASS (nautilus_navigation_action_parent_class)->connect_proxy) (action, proxy);
 }
 
 static void
-disconnect_proxy (GtkAction *action, GtkWidget *proxy)
+disconnect_proxy (GtkAction *action,
+                  GtkWidget *proxy)
 {
-	if (GTK_IS_MENU_TOOL_BUTTON (proxy)) {
-		GtkWidget *child;
-		
-		g_signal_handlers_disconnect_by_func (proxy, G_CALLBACK (show_menu_callback), action);
+        GtkToolButton *tool;
+        GtkWidget *button;
 
-		child = eel_gtk_menu_tool_button_get_button (GTK_MENU_TOOL_BUTTON (proxy));
-		g_signal_handlers_disconnect_by_func (child, G_CALLBACK (proxy_button_press_event_cb), NULL);
-		g_signal_handlers_disconnect_by_func (child, G_CALLBACK (proxy_button_release_event_cb), NULL);
+	if (GTK_IS_TOOL_BUTTON (proxy)) {
+                tool = GTK_TOOL_BUTTON (proxy);
+                button = get_actual_button (tool);
+
+                /* remove any possible timeout going on */
+                unschedule_menu_popup_timeout (NAUTILUS_NAVIGATION_ACTION (action));
+
+		g_signal_handlers_disconnect_by_func (button,
+                                                      G_CALLBACK (tool_button_press_cb), action);
+		g_signal_handlers_disconnect_by_func (button,
+                                                      G_CALLBACK (tool_button_release_cb), action);
 	}
 
 	(* GTK_ACTION_CLASS (nautilus_navigation_action_parent_class)->disconnect_proxy) (action, proxy);
@@ -237,6 +289,9 @@ static void
 nautilus_navigation_action_finalize (GObject *object)
 {
 	NautilusNavigationAction *action = NAUTILUS_NAVIGATION_ACTION (object);
+
+        /* remove any possible timeout going on */
+        unschedule_menu_popup_timeout (action);
 
 	g_free (action->priv->arrow_tooltip);
 
@@ -302,7 +357,7 @@ nautilus_navigation_action_class_init (NautilusNavigationActionClass *class)
 	object_class->set_property = nautilus_navigation_action_set_property;
 	object_class->get_property = nautilus_navigation_action_get_property;
 
-	action_class->toolbar_item_type = GTK_TYPE_MENU_TOOL_BUTTON;
+	action_class->toolbar_item_type = GTK_TYPE_TOOL_BUTTON;
 	action_class->connect_proxy = connect_proxy;
 	action_class->disconnect_proxy = disconnect_proxy;
 
