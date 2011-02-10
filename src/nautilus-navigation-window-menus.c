@@ -956,8 +956,6 @@ nautilus_navigation_window_initialize_actions (NautilusNavigationWindow *window)
 	g_signal_connect (window, "loading_uri",
 			  G_CALLBACK (nautilus_navigation_window_update_split_view_actions_sensitivity),
 			  NULL);
-
-	nautilus_navigation_window_update_split_view_actions_sensitivity (window);
 }
 
 static void

@@ -839,6 +839,7 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 	gtk_box_pack_start (GTK_BOX (vbox), win->details->statusbar, FALSE, FALSE, 0);
 	gtk_widget_show (win->details->statusbar);
 
+	nautilus_navigation_window_initialize_actions (window);
 	nautilus_navigation_window_pane_setup (pane);
 
 	gtk_paned_pack1 (GTK_PANED(hpaned), pane->widget, TRUE, FALSE);
@@ -847,8 +848,6 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 	/* this has to be done after the location bar has been set up,
 	 * but before menu stuff is being called */
 	nautilus_window_set_active_pane (win, NAUTILUS_WINDOW_PANE (pane));
-
-	nautilus_navigation_window_initialize_actions (window);
 
 	nautilus_navigation_window_initialize_menus (window);
 
