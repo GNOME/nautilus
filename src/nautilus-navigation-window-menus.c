@@ -849,6 +849,13 @@ nautilus_navigation_window_initialize_actions (NautilusNavigationWindow *window)
 	GtkUIManager *ui_manager;
 	GtkAction *action;
 	int i;
+	const char *ui;
+
+	ui_manager = nautilus_window_get_ui_manager (NAUTILUS_WINDOW (window));
+
+	/* add the UI */
+	ui = nautilus_ui_string_get ("nautilus-navigation-window-ui.xml");
+	gtk_ui_manager_add_ui_from_string (ui_manager, ui, -1, NULL);
 	
 	action_group = gtk_action_group_new ("NavigationActions");
 	gtk_action_group_set_translation_domain (action_group, GETTEXT_PACKAGE);
@@ -919,8 +926,6 @@ nautilus_navigation_window_initialize_actions (NautilusNavigationWindow *window)
 				     action);
 	g_object_unref (action);
 
-	ui_manager = nautilus_window_get_ui_manager (NAUTILUS_WINDOW (window));
-
 	/* Alt+N for the first 10 tabs */
 	for (i = 0; i < 10; ++i) {
 		gchar action_name[80];
@@ -982,14 +987,6 @@ navigation_window_menus_set_bindings (NautilusNavigationWindow *window)
 void 
 nautilus_navigation_window_initialize_menus (NautilusNavigationWindow *window)
 {
-	GtkUIManager *ui_manager;
-	const char *ui;
-
-	ui_manager = nautilus_window_get_ui_manager (NAUTILUS_WINDOW (window));
-
-	ui = nautilus_ui_string_get ("nautilus-navigation-window-ui.xml");
-	gtk_ui_manager_add_ui_from_string (ui_manager, ui, -1, NULL);
-
 	navigation_window_menus_set_bindings (window);
 
 	nautilus_navigation_window_update_show_hide_menu_items (window);
