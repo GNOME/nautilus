@@ -622,7 +622,7 @@ nautilus_navigation_window_pane_setup (NautilusNavigationWindowPane *pane)
 	header_size_group = NAUTILUS_NAVIGATION_WINDOW (NAUTILUS_WINDOW_PANE (pane)->window)->details->header_size_group;
 
 	/* build the toolbar */
-	pane->tool_bar = nautilus_toolbar_new (pane);
+	pane->tool_bar = nautilus_toolbar_new (nautilus_window_get_ui_manager (NAUTILUS_WINDOW_PANE (pane)->window));
 	gtk_box_pack_start (GTK_BOX (pane->widget),
 			    pane->tool_bar,
 			    FALSE, FALSE, 0);

@@ -62,7 +62,7 @@ typedef struct {
 } NautilusLocationBarClass;
 
 GType      nautilus_location_bar_get_type     	(void);
-GtkWidget* nautilus_location_bar_new          	(NautilusNavigationWindowPane *pane);
+GtkWidget* nautilus_location_bar_new          	(GtkUIManager *ui_manager);
 void       nautilus_location_bar_set_active     (NautilusLocationBar *location_bar,
 						 gboolean is_active);
 NautilusEntry * nautilus_location_bar_get_entry (NautilusLocationBar *location_bar);

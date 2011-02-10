@@ -29,12 +29,13 @@
 
 #include "nautilus-location-bar.h"
 #include "nautilus-pathbar.h"
+#include "nautilus-window-private.h"
 #include "nautilus-global-preferences.h"
 
 struct _NautilusToolbarPriv {
 	GtkWidget *toolbar;
 
-	NautilusNavigationWindowPane *pane;
+	GtkUIManager *ui_manager;
 
 	GtkWidget *path_bar;
 	GtkWidget *location_bar;
@@ -46,7 +47,7 @@ struct _NautilusToolbarPriv {
 };
 
 enum {
-	PROP_PANE = 1,
+	PROP_UI_MANAGER = 1,
 	PROP_SHOW_LOCATION_ENTRY,
 	PROP_SHOW_SEARCH_BAR,
 	PROP_SHOW_MAIN_BAR,
@@ -86,7 +87,8 @@ nautilus_toolbar_constructed (GObject *obj)
 
 	G_OBJECT_CLASS (nautilus_toolbar_parent_class)->constructed (obj);
 
-	self->priv->toolbar = gtk_toolbar_new ();
+	self->priv->toolbar = gtk_ui_manager_get_widget (self->priv->ui_manager, "/Toolbar");
+	
 	gtk_box_pack_start (GTK_BOX (self), self->priv->toolbar, TRUE, TRUE, 0);
 	gtk_widget_show (self->priv->toolbar);
 
@@ -98,7 +100,7 @@ nautilus_toolbar_constructed (GObject *obj)
 	gtk_box_pack_start (GTK_BOX (hbox), self->priv->path_bar, TRUE, TRUE, 0);
 
 	/* entry-like location bar */
-	self->priv->location_bar = nautilus_location_bar_new (self->priv->pane);
+	self->priv->location_bar = nautilus_location_bar_new (self->priv->ui_manager);
 	gtk_box_pack_start (GTK_BOX (hbox), self->priv->location_bar, TRUE, TRUE, 0);
 
 	item = gtk_tool_item_new ();
@@ -159,8 +161,8 @@ nautilus_toolbar_set_property (GObject *object,
 	NautilusToolbar *self = NAUTILUS_TOOLBAR (object);
 
 	switch (property_id) {
-	case PROP_PANE:
-		self->priv->pane = g_value_get_object (value);
+	case PROP_UI_MANAGER:
+		self->priv->ui_manager = g_value_get_object (value);
 		break;
 	case PROP_SHOW_LOCATION_ENTRY:
 		nautilus_toolbar_set_show_location_entry (self, g_value_get_boolean (value));
@@ -187,11 +189,11 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
 	oclass->set_property = nautilus_toolbar_set_property;
 	oclass->constructed = nautilus_toolbar_constructed;
 
-	properties[PROP_PANE] =
-		g_param_spec_object ("pane",
-				     "The parent pane",
-				     "The pane that contains this toolbar",
-				     NAUTILUS_TYPE_NAVIGATION_WINDOW_PANE,
+	properties[PROP_UI_MANAGER] =
+		g_param_spec_object ("ui-manager",
+				     "The UI manager",
+				     "The UI manager to get actions from",
+				     GTK_TYPE_UI_MANAGER,
 				     G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
 				     G_PARAM_STATIC_STRINGS);
 	properties[PROP_SHOW_LOCATION_ENTRY] =
@@ -218,10 +220,10 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
 }
 
 GtkWidget *
-nautilus_toolbar_new (NautilusNavigationWindowPane *parent)
+nautilus_toolbar_new (GtkUIManager *ui_manager)
 {
 	return g_object_new (NAUTILUS_TYPE_TOOLBAR,
-			     "pane", parent,
+			     "ui-manager", ui_manager,
 			     "orientation", GTK_ORIENTATION_VERTICAL,
 			     NULL);
 }
