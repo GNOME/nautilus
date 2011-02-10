@@ -868,29 +868,34 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 }
 
 static void
-nautilus_navigation_window_class_init (NautilusNavigationWindowClass *class)
+nautilus_navigation_window_class_init (NautilusNavigationWindowClass *klass)
 {
-	NAUTILUS_WINDOW_CLASS (class)->window_type = NAUTILUS_WINDOW_NAVIGATION;
-	NAUTILUS_WINDOW_CLASS (class)->bookmarks_placeholder = MENU_PATH_BOOKMARKS_PLACEHOLDER;
-	
-	G_OBJECT_CLASS (class)->finalize = nautilus_navigation_window_finalize;
-	GTK_WIDGET_CLASS (class)->destroy = nautilus_navigation_window_destroy;
-	GTK_WIDGET_CLASS (class)->show = nautilus_navigation_window_show;
-	GTK_WIDGET_CLASS (class)->window_state_event = nautilus_navigation_window_state_event;
-	GTK_WIDGET_CLASS (class)->key_press_event = nautilus_navigation_window_key_press_event;
-	GTK_WIDGET_CLASS (class)->button_press_event = nautilus_navigation_window_button_press_event;
-	NAUTILUS_WINDOW_CLASS (class)->sync_allow_stop = real_sync_allow_stop;
-	NAUTILUS_WINDOW_CLASS (class)->prompt_for_location = real_prompt_for_location;
-	NAUTILUS_WINDOW_CLASS (class)->sync_title = real_sync_title;
-	NAUTILUS_WINDOW_CLASS (class)->get_icon = real_get_icon;
-	NAUTILUS_WINDOW_CLASS (class)->get_min_size = real_get_min_size;
-	NAUTILUS_WINDOW_CLASS (class)->get_default_size = real_get_default_size;
-	NAUTILUS_WINDOW_CLASS (class)->close = real_window_close;
+	NautilusWindowClass *nclass = NAUTILUS_WINDOW_CLASS (klass);
+	GtkWidgetClass *wclass = GTK_WIDGET_CLASS (klass);
+	GObjectClass *oclass = G_OBJECT_CLASS (klass);
 
-	NAUTILUS_WINDOW_CLASS (class)->open_slot = real_open_slot;
-	NAUTILUS_WINDOW_CLASS (class)->close_slot = real_close_slot;
+	nclass->window_type = NAUTILUS_WINDOW_NAVIGATION;
+	nclass->bookmarks_placeholder = MENU_PATH_BOOKMARKS_PLACEHOLDER;
 
-	g_type_class_add_private (G_OBJECT_CLASS (class), sizeof (NautilusNavigationWindowDetails));
+	nclass->sync_allow_stop = real_sync_allow_stop;
+	nclass->prompt_for_location = real_prompt_for_location;
+	nclass->sync_title = real_sync_title;
+	nclass->get_icon = real_get_icon;
+	nclass->get_min_size = real_get_min_size;
+	nclass->get_default_size = real_get_default_size;
+	nclass->close = real_window_close;
+	nclass->open_slot = real_open_slot;
+	nclass->close_slot = real_close_slot;
+
+	wclass->destroy = nautilus_navigation_window_destroy;
+	wclass->show = nautilus_navigation_window_show;
+	wclass->window_state_event = nautilus_navigation_window_state_event;
+	wclass->key_press_event = nautilus_navigation_window_key_press_event;
+	wclass->button_press_event = nautilus_navigation_window_button_press_event;
+
+	oclass->finalize = nautilus_navigation_window_finalize;
+
+	g_type_class_add_private (G_OBJECT_CLASS (klass), sizeof (NautilusNavigationWindowDetails));
 
 	g_signal_connect_swapped (nautilus_preferences,
 				  "changed::" NAUTILUS_PREFERENCES_MOUSE_BACK_BUTTON,
