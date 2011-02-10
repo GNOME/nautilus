@@ -566,6 +566,8 @@ real_sync_location_widgets (NautilusWindowPane *pane)
 void
 nautilus_navigation_window_pane_hide_search_bar (NautilusNavigationWindowPane *pane)
 {
+	nautilus_toolbar_set_show_search_bar (NAUTILUS_TOOLBAR (pane->tool_bar), FALSE);
+
 	if (pane->temporary_search_bar) {
 		NautilusNavigationWindow *window;
 

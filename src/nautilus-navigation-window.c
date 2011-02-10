@@ -442,9 +442,8 @@ nautilus_navigation_window_hide_search (NautilusNavigationWindow *window)
 {
 	NautilusNavigationWindowPane *pane = NAUTILUS_NAVIGATION_WINDOW_PANE (NAUTILUS_WINDOW (window)->details->active_pane);
 
-	if (nautilus_navigation_window_pane_hide_temporary_bars (pane)) {
-		nautilus_navigation_window_restore_focus_widget (window);
-	}
+	nautilus_navigation_window_pane_hide_search_bar (pane);
+	nautilus_navigation_window_restore_focus_widget (window);
 }
 
 /* This updates the UI state of the search button, but does not
