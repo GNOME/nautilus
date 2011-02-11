@@ -2628,7 +2628,6 @@ nautilus_view_destroy (GtkWidget *object)
 	view->details->window = NULL;
 	
 	nautilus_view_stop_loading (view);
-	g_signal_emit (view, signals[CLEAR], 0);
 
 	for (node = view->details->scripts_directory_list; node != NULL; node = next) {
 		next = node->next;
