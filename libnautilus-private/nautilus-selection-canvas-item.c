@@ -461,7 +461,8 @@ fade_and_request_redraw (gpointer user_data)
 }
 
 void
-nautilus_selection_canvas_item_fade_out (NautilusSelectionCanvasItem *self)
+nautilus_selection_canvas_item_fade_out (NautilusSelectionCanvasItem *self,
+					 guint transition_time)
 {
 	self->priv->fade_out_fill_alpha = self->priv->fill_color.alpha;
 	self->priv->fade_out_outline_alpha = self->priv->outline_color.alpha;
@@ -470,7 +471,8 @@ nautilus_selection_canvas_item_fade_out (NautilusSelectionCanvasItem *self)
 	self->priv->fade_out_outline_delta = self->priv->fade_out_outline_alpha / FADE_OUT_STEPS;
 
 	self->priv->fade_out_handler_id =
-		g_timeout_add (FADE_OUT_SPEED, fade_and_request_redraw, self);
+		g_timeout_add ((guint) (transition_time / FADE_OUT_STEPS),
+			       fade_and_request_redraw, self);
 }
 
 static void
