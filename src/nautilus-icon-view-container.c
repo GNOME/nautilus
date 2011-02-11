@@ -541,18 +541,6 @@ nautilus_icon_view_container_unfreeze_updates (NautilusIconContainer *container)
 }
 
 static void
-nautilus_icon_view_container_dispose (GObject *object)
-{
-	NautilusIconViewContainer *icon_container;
-
-	icon_container = NAUTILUS_ICON_VIEW_CONTAINER (object);
-
-	icon_container->view = NULL;
-
-	G_OBJECT_CLASS (nautilus_icon_view_container_parent_class)->dispose (object);
-}
-
-static void
 nautilus_icon_view_container_class_init (NautilusIconViewContainerClass *klass)
 {
 	NautilusIconContainerClass *ic_class;
@@ -572,8 +560,6 @@ nautilus_icon_view_container_class_init (NautilusIconViewContainerClass *klass)
 	ic_class->compare_icons_by_name = nautilus_icon_view_container_compare_icons_by_name;
 	ic_class->freeze_updates = nautilus_icon_view_container_freeze_updates;
 	ic_class->unfreeze_updates = nautilus_icon_view_container_unfreeze_updates;
-
-	G_OBJECT_CLASS (klass)->dispose = nautilus_icon_view_container_dispose;
 }
 
 static void
