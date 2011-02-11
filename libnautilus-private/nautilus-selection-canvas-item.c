@@ -30,11 +30,6 @@
 
 #include <math.h>
 
-#ifdef HAVE_RENDER
-#include <gdk/gdkx.h>
-#include <X11/extensions/Xrender.h>
-#endif
-
 enum {
 	PROP_X1 = 1,
 	PROP_Y1,
@@ -58,11 +53,6 @@ struct _NautilusSelectionCanvasItemDetails {
 	Rect last_update_rect;
 	Rect last_outline_update_rect;
 	int last_outline_update_width;
-
-#ifdef HAVE_RENDER
-	gboolean use_render;
-	XRenderPictFormat *format;
-#endif
 
 	double x1, y1, x2, y2;		/* Corners of item */
 	double width;			/* Outline width */
@@ -412,35 +402,6 @@ nautilus_selection_canvas_item_update (EelCanvasItem *item,
 }
 
 static void
-nautilus_selection_canvas_item_realize (EelCanvasItem *item)
-{
-#ifdef HAVE_RENDER
-	NautilusSelectionCanvasItemDetails *priv;
-	int event_base, error_base;
-	Display *dpy;
-
-	priv = NAUTILUS_SELECTION_CANVAS_ITEM (item)->priv;
-
-	dpy = GDK_WINDOW_XDISPLAY (gtk_widget_get_window (GTK_WIDGET (item->canvas)));
-	priv->use_render = XRenderQueryExtension (dpy, &event_base, &error_base);
-
-	if (priv->use_render) {
-		GdkVisual *gdk_visual;
-		Visual *visual;
-
-		gdk_visual = gtk_widget_get_visual (GTK_WIDGET (item->canvas));
-		visual = gdk_x11_visual_get_xvisual (gdk_visual);
-
-		priv->format = XRenderFindVisualFormat (dpy, visual);
-	}
-#endif
-	
-	if (EEL_CANVAS_ITEM_CLASS (nautilus_selection_canvas_item_parent_class)->realize) {
-		(* EEL_CANVAS_ITEM_CLASS (nautilus_selection_canvas_item_parent_class)->realize) (item);
-	}
-}
-
-static void
 nautilus_selection_canvas_item_translate (EelCanvasItem *item,
 					  double dx,
 					  double dy)
@@ -691,7 +652,6 @@ nautilus_selection_canvas_item_class_init (NautilusSelectionCanvasItemClass *kla
 	item_class->draw = nautilus_selection_canvas_item_draw;
 	item_class->point = nautilus_selection_canvas_item_point;
 	item_class->update = nautilus_selection_canvas_item_update;
-	item_class->realize = nautilus_selection_canvas_item_realize;
 	item_class->bounds = nautilus_selection_canvas_item_bounds;
 	item_class->translate = nautilus_selection_canvas_item_translate;
 

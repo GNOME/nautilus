@@ -267,19 +267,6 @@ AC_TRY_RUN([#include <time.h>
 	    AC_DEFINE(HAVE_STRFTIME_EXTENSION, 1, [Define if strftime supports %E and %O modifiers.])
             )
 
-dnl ===========================================================================
-
-#
-# Checks for Xft/XRender
-#
-PKG_CHECK_MODULES(RENDER, xrender, [
-	  	  AM_CONDITIONAL(HAVE_RENDER, true)
-		  AC_DEFINE(HAVE_RENDER, 1, [Define to enable render support])
-		  ],
-          	  [AM_CONDITIONAL(HAVE_RENDER, false)])
-
-AC_SUBST(RENDER_LIBS)
-
 dnl ==========================================================================
 	
 dnl base libs
