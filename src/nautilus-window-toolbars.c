@@ -46,60 +46,6 @@
 
 #define TOOLBAR_PATH_EXTENSION_ACTIONS "/Toolbar/Extra Buttons Placeholder/Extension Actions"
 
-void
-nautilus_navigation_window_set_spinner_active (NautilusNavigationWindow *window,
-					       gboolean allow)
-{
-	if (( window->details->spinner_active &&  allow) ||
-	    (!window->details->spinner_active && !allow)) {
-		return;
-	}
-
-	window->details->spinner_active = allow;
-	if (allow) {
-		gtk_widget_show (window->details->spinner);
-		gtk_spinner_start (GTK_SPINNER (window->details->spinner));
-	} else {
-		gtk_widget_hide (window->details->spinner);
-	}
-}
-
-void
-nautilus_navigation_window_activate_spinner (NautilusNavigationWindow *window)
-{
-	GtkToolItem *item;
-	GtkWidget *spinner;
-
-	if (window->details->spinner != NULL) {
-		return;
-	}
-
-	item = gtk_tool_item_new ();
-	gtk_widget_show (GTK_WIDGET (item));
-	gtk_tool_item_set_expand (item, TRUE);
-	gtk_toolbar_insert (GTK_TOOLBAR (window->details->toolbar),
-			    item, -1);
-
-	spinner = gtk_spinner_new ();
-	gtk_widget_show (GTK_WIDGET (spinner));
-
-	item = gtk_tool_item_new ();
-	gtk_container_add (GTK_CONTAINER (item), spinner);
-	gtk_widget_show (GTK_WIDGET (item));
-
-	gtk_toolbar_insert (GTK_TOOLBAR (window->details->toolbar),
-			    item, -1);
-
-	window->details->spinner = spinner;
-}
-
-void
-nautilus_navigation_window_initialize_toolbars (NautilusNavigationWindow *window)
-{
-	nautilus_navigation_window_activate_spinner (window);
-}
-
-
 static GList *
 get_extension_toolbar_items (NautilusNavigationWindow *window)
 {
