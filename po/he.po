@@ -19,8 +19,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eel.HEAD.he\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-04 08:57+0200\n"
-"PO-Revision-Date: 2011-02-04 08:58+0200\n"
+"POT-Creation-Date: 2011-02-12 00:17+0200\n"
+"PO-Revision-Date: 2011-02-12 00:18+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -87,11 +87,11 @@ msgid ""
 "The position of the opposite end of the selection from the cursor in chars."
 msgstr "המיקום של סוף הבחירה הנגדי מהסמן בתווים."
 
-#: ../eel/eel-editable-label.c:3109
+#: ../eel/eel-editable-label.c:3111
 msgid "Select All"
 msgstr "בחירת הכול"
 
-#: ../eel/eel-editable-label.c:3120
+#: ../eel/eel-editable-label.c:3122
 msgid "Input Methods"
 msgstr "שיטות קלט"
 
@@ -109,7 +109,8 @@ msgstr " (יוניקוד לא תקני)"
 
 #: ../libnautilus-private/nautilus-bookmark.c:132
 #: ../libnautilus-private/nautilus-desktop-link.c:120
-#: ../src/nautilus-places-sidebar.c:641 ../src/nautilus-tree-sidebar.c:1311
+#: ../src/nautilus-pathbar.c:1244 ../src/nautilus-places-sidebar.c:641
+#: ../src/nautilus-tree-sidebar.c:1311
 msgid "Home"
 msgstr "בית"
 
@@ -393,10 +394,8 @@ msgstr "קובץ המקור"
 msgid "Size:"
 msgstr "גודל:"
 
-#. second row: type combobox
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:257
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:288
-#: ../src/nautilus-connect-server-dialog.c:904
 #: ../src/nautilus-properties-window.c:3108
 msgid "Type:"
 msgstr "סוג:"
@@ -2562,7 +2561,7 @@ msgid "There was an error displaying help."
 msgstr "ארעה שגיאה בעת הצגת העזרה."
 
 #: ../src/nautilus-connect-server-dialog.c:698
-#: ../src/nautilus-connect-server-dialog.c:1111
+#: ../src/nautilus-connect-server-dialog.c:1117
 msgid "C_onnect"
 msgstr "ה_תחברות"
 
@@ -2585,39 +2584,44 @@ msgstr "_שרת:"
 msgid "_Port:"
 msgstr "_פתחה:"
 
+#. second row: type combobox
+#: ../src/nautilus-connect-server-dialog.c:904
+msgid "_Type:"
+msgstr "_סוג:"
+
 #. third row: share entry
-#: ../src/nautilus-connect-server-dialog.c:977
-msgid "Share:"
-msgstr "שיתוף:"
+#: ../src/nautilus-connect-server-dialog.c:978
+msgid "Sh_are:"
+msgstr "שיתו_ף:"
 
 #. fourth row: folder entry
-#: ../src/nautilus-connect-server-dialog.c:996
-msgid "Folder:"
-msgstr "תיקייה:"
+#: ../src/nautilus-connect-server-dialog.c:998 ../src/nautilus-view.c:1719
+msgid "_Folder:"
+msgstr "_תיקייה:"
 
-#: ../src/nautilus-connect-server-dialog.c:1017
+#: ../src/nautilus-connect-server-dialog.c:1021
 msgid "User Details"
 msgstr "פרטי המשתמש"
 
 #. first row: domain entry
-#: ../src/nautilus-connect-server-dialog.c:1037
-msgid "Domain Name:"
-msgstr "שם מתחם:"
+#: ../src/nautilus-connect-server-dialog.c:1041
+msgid "_Domain name:"
+msgstr "שם המת_חם:"
 
 #. second row: username entry
-#: ../src/nautilus-connect-server-dialog.c:1056
-msgid "User Name:"
-msgstr "שם משתמש:"
+#: ../src/nautilus-connect-server-dialog.c:1060
+msgid "_User name:"
+msgstr "ש_ם משתמש:"
 
 #. third row: password entry
-#: ../src/nautilus-connect-server-dialog.c:1075
-msgid "Password:"
-msgstr "ססמה:"
+#: ../src/nautilus-connect-server-dialog.c:1080
+msgid "Pass_word:"
+msgstr "_ססמה:"
 
 #. fourth row: remember checkbox
-#: ../src/nautilus-connect-server-dialog.c:1095
-msgid "Remember this password"
-msgstr "שמירת ססמה זו"
+#: ../src/nautilus-connect-server-dialog.c:1101
+msgid "_Remember this password"
+msgstr "_שמירת ססמה זו"
 
 #: ../src/nautilus-desktop-item-properties.c:412
 #: ../src/nautilus-desktop-item-properties.c:422
@@ -3038,7 +3042,7 @@ msgstr "רשימת עמודות"
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../src/nautilus-file-management-properties.ui.h:61
-#: ../src/nautilus-list-view.c:1719 ../src/nautilus-list-view.c:3181
+#: ../src/nautilus-list-view.c:1719 ../src/nautilus-list-view.c:3184
 msgid "List View"
 msgstr "תצוגת רשימה"
 
@@ -3445,19 +3449,19 @@ msgid "Select the columns visible in this folder"
 msgstr "בחירת העמודות שיופיעו בתיקייה זו"
 
 #. translators: this is used in the view menu
-#: ../src/nautilus-list-view.c:3183
+#: ../src/nautilus-list-view.c:3186
 msgid "_List"
 msgstr "_רשימה"
 
-#: ../src/nautilus-list-view.c:3184
+#: ../src/nautilus-list-view.c:3187
 msgid "The list view encountered an error."
 msgstr "שגיאה בתצוגת הרשימה."
 
-#: ../src/nautilus-list-view.c:3185
+#: ../src/nautilus-list-view.c:3188
 msgid "The list view encountered an error while starting up."
 msgstr "שגיאה באתחול תצוגת הרשימה."
 
-#: ../src/nautilus-list-view.c:3186
+#: ../src/nautilus-list-view.c:3189
 msgid "Display this location with the list view."
 msgstr "הצגת מיקום זה בתצוגת רשימה."
 
@@ -4147,6 +4151,29 @@ msgstr "_שליפה"
 msgid "_Detect Media"
 msgstr "_זיהוי מדיה"
 
+#: ../src/nautilus-progress-ui-handler.c:105
+#: ../src/nautilus-progress-ui-handler.c:155
+#: ../src/nautilus-progress-ui-handler.c:213
+#: ../src/nautilus-progress-ui-handler.c:269
+msgid "File Operations"
+msgstr "פעולות קבצים"
+
+#: ../src/nautilus-progress-ui-handler.c:114
+msgid "Show Details"
+msgstr "הצגת פרטים"
+
+#: ../src/nautilus-progress-ui-handler.c:149
+#: ../src/nautilus-progress-ui-handler.c:171
+#, c-format
+msgid "%'d file operation active"
+msgid_plural "%'d file operations active"
+msgstr[0] "פעולת קבצים אחת פעילה"
+msgstr[1] "%'d פעולות קבצים פעילות"
+
+#: ../src/nautilus-progress-ui-handler.c:270
+msgid "All file operations have been successfully completed"
+msgstr "כל פעולות הקבצים הושלמו בהצלחה"
+
 #: ../src/nautilus-properties-window.c:494
 msgid "You cannot assign more than one custom icon at a time!"
 msgstr "לא ניתן לשייך יותר מסמל מותאם אישית אחד בכל פעם!"
@@ -4661,10 +4688,6 @@ msgstr "שמירת חיפוש בשם"
 #: ../src/nautilus-view.c:1705
 msgid "Search _name:"
 msgstr "_שם החיפוש:"
-
-#: ../src/nautilus-view.c:1719
-msgid "_Folder:"
-msgstr "_תיקייה:"
 
 #: ../src/nautilus-view.c:1724
 msgid "Select Folder to Save Search In"
@@ -6059,13 +6082,8 @@ msgstr "שליחת קובץ בדוא״ל, הודעות מידיות..."
 msgid "Send files by mail, instant message..."
 msgstr "שליחת קבצים בדוא״ל, הודעות מידיות..."
 
-#~ msgid "File Operations"
-#~ msgstr "פעולות קבצים"
-
-#~ msgid "%'d file operation active"
-#~ msgid_plural "%'d file operations active"
-#~ msgstr[0] "פעולת קבצים אחת פעילה"
-#~ msgstr[1] "%'d פעולות קבצים פעילות"
+#~ msgid "Folder:"
+#~ msgstr "תיקייה:"
 
 #~ msgid "File Manager"
 #~ msgstr "מנהל קבצים"
@@ -6471,9 +6489,6 @@ msgstr "שליחת קבצים בדוא״ל, הודעות מידיות..."
 
 #~ msgid "_Software:"
 #~ msgstr "_תכנה:"
-
-#~ msgid "_Type:"
-#~ msgstr "_סוג:"
 
 #~ msgid "History"
 #~ msgstr "היסטוריה"
