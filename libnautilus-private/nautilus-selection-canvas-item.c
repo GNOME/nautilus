@@ -631,7 +631,9 @@ nautilus_selection_canvas_item_get_property (GObject *object,
 	case PROP_OUTLINE_STIPPLING:
 		g_value_set_boolean (value, self->priv->outline_stippling);
 		break;
-
+	case PROP_WIDTH_PIXELS:
+		g_value_set_uint (value, self->priv->width);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
 		break;
