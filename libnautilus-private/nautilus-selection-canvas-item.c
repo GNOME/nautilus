@@ -444,8 +444,8 @@ fade_and_request_redraw (gpointer user_data)
 {
 	NautilusSelectionCanvasItem *self = user_data;
 
-	if (self->priv->fade_out_fill_alpha == 0 ||
-	    self->priv->fade_out_outline_alpha == 0) {
+	if (self->priv->fade_out_fill_alpha <= 0 ||
+	    self->priv->fade_out_outline_alpha <= 0) {
 		self->priv->fade_out_handler_id = 0;
 		eel_canvas_item_destroy (EEL_CANVAS_ITEM (self));
 
