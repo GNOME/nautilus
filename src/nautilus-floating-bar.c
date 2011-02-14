@@ -163,8 +163,8 @@ nautilus_floating_bar_draw (GtkWidget *widget,
 					 gtk_widget_get_allocated_height (widget));
 
 		  gtk_render_frame (context, cr, 0, 0,
-				    gtk_widget_get_allocated_width (widget),
-				    gtk_widget_get_allocated_height (widget));
+		  		    gtk_widget_get_allocated_width (widget),
+		  		    gtk_widget_get_allocated_height (widget));
 
 		  gtk_style_context_restore (context);
 	  }
@@ -186,8 +186,6 @@ nautilus_floating_bar_constructed (GObject *obj)
 		      "widget", &box,
 		      NULL);
 	gtk_widget_show (box);
-
-	gtk_container_set_border_width (GTK_CONTAINER (box), 2);
 
 	w = gtk_spinner_new ();
 	gtk_box_pack_start (GTK_BOX (box), w, FALSE, FALSE, 0);
