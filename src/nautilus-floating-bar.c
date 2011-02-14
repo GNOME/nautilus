@@ -318,3 +318,29 @@ nautilus_floating_bar_add_action (NautilusFloatingBar *self,
 	g_signal_connect (button, "clicked",
 			  G_CALLBACK (action_button_clicked_cb), self);
 }
+
+void
+nautilus_floating_bar_cleanup_actions (NautilusFloatingBar *self)
+{
+	GtkWidget *box, *widget;
+	GList *children, *l;
+	gpointer data;
+
+	g_object_get (self,
+		      "widget", &box,
+		      NULL);
+
+	children = gtk_container_get_children (GTK_CONTAINER (box));
+	l = children;
+
+	while (l != NULL) {
+		widget = l->data;
+		data = g_object_get_data (G_OBJECT (widget), "action-id");
+		l = l->next;
+
+		if (data != NULL) {
+			/* destroy this */
+			gtk_widget_destroy (widget);
+		}
+	}
+}
