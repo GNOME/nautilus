@@ -1,0 +1,233 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
+/* Nautilus - Floating status bar.
+ *
+ * Copyright (C) 2011 Red Hat Inc.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ *
+ * Authors: Cosimo Cecchi <cosimoc@redhat.com>
+ *
+ */
+
+#include <config.h>
+
+#include "nautilus-floating-bar.h"
+
+struct _NautilusFloatingBarDetails {
+	gchar *label;
+
+	GtkWidget *label_widget;
+	GtkWidget *spinner;
+};
+
+enum {
+	PROP_LABEL = 1,
+	NUM_PROPERTIES
+};
+
+static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
+
+G_DEFINE_TYPE (NautilusFloatingBar, nautilus_floating_bar,
+               GEDIT_TYPE_OVERLAY_CHILD);
+
+static void
+stop_button_clicked_cb (GtkButton *button,
+			NautilusFloatingBar *self)
+{
+	g_print ("clicked!\n");
+}
+
+static void
+nautilus_floating_bar_finalize (GObject *obj)
+{
+	NautilusFloatingBar *self = NAUTILUS_FLOATING_BAR (obj);
+
+	g_free (self->priv->label);
+
+	G_OBJECT_CLASS (nautilus_floating_bar_parent_class)->finalize (obj);
+}
+
+static void
+nautilus_floating_bar_set_property (GObject *object,
+				    guint property_id,
+				    const GValue *value,
+				    GParamSpec *pspec)
+{
+	NautilusFloatingBar *self = NAUTILUS_FLOATING_BAR (object);
+
+	switch (property_id) {
+	case PROP_LABEL:
+		nautilus_floating_bar_set_label (self, g_value_get_string (value));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+		break;
+	}
+}
+
+static void
+update_label (NautilusFloatingBar *self)
+{
+	gtk_label_set_text (GTK_LABEL (self->priv->label_widget), self->priv->label);
+}
+
+static void
+nautilus_floating_bar_show (GtkWidget *widget)
+{
+	NautilusFloatingBar *self = NAUTILUS_FLOATING_BAR (widget);
+
+	GTK_WIDGET_CLASS (nautilus_floating_bar_parent_class)->show (widget);
+
+	gtk_spinner_start (GTK_SPINNER (self->priv->spinner));
+}
+
+static void
+nautilus_floating_bar_hide (GtkWidget *widget)
+{
+	NautilusFloatingBar *self = NAUTILUS_FLOATING_BAR (widget);
+
+	GTK_WIDGET_CLASS (nautilus_floating_bar_parent_class)->hide (widget);
+
+	gtk_spinner_stop (GTK_SPINNER (self->priv->spinner));
+}
+
+static gboolean
+nautilus_floating_bar_draw (GtkWidget *widget,
+                          cairo_t *cr)
+{
+	  GtkStyleContext *context;
+
+	  if (gtk_widget_get_has_window (widget) &&
+	      !gtk_widget_get_app_paintable (widget)) {
+
+		  context = gtk_widget_get_style_context (widget);
+
+		  gtk_style_context_save (context);
+		  gtk_style_context_set_state (context, gtk_widget_get_state_flags (widget));
+
+		  gtk_render_background (context, cr, 0, 0,
+					 gtk_widget_get_allocated_width (widget),
+					 gtk_widget_get_allocated_height (widget));
+
+		  gtk_render_frame (context, cr, 0, 0,
+				    gtk_widget_get_allocated_width (widget),
+				    gtk_widget_get_allocated_height (widget));
+
+		  gtk_style_context_restore (context);
+	  }
+
+	  GTK_WIDGET_CLASS (nautilus_floating_bar_parent_class)->draw (widget, cr);
+
+	  return FALSE;
+}
+
+static void
+nautilus_floating_bar_constructed (GObject *obj)
+{
+	NautilusFloatingBar *self = NAUTILUS_FLOATING_BAR (obj);
+	GtkWidget *w, *button, *box;
+
+	G_OBJECT_CLASS (nautilus_floating_bar_parent_class)->constructed (obj);
+
+	g_object_get (self,
+		      "widget", &box,
+		      NULL);
+	gtk_widget_show (box);
+
+	w = gtk_spinner_new ();
+	gtk_box_pack_start (GTK_BOX (box), w, FALSE, FALSE, 0);
+	gtk_widget_show (w);
+	self->priv->spinner = w;
+
+	gtk_widget_set_size_request (w, 16, 16);
+	gtk_widget_set_margin_left (w, 8);
+
+	w = gtk_label_new (NULL);
+	gtk_box_pack_start (GTK_BOX (box), w, FALSE, FALSE, 0);
+	gtk_widget_set_margin_right (w, 16);
+	self->priv->label_widget = w;
+	gtk_widget_show (w);
+
+	w = gtk_image_new_from_stock (GTK_STOCK_STOP, GTK_ICON_SIZE_SMALL_TOOLBAR);
+	gtk_widget_show (w);
+
+	button = gtk_button_new ();
+	gtk_button_set_image (GTK_BUTTON (button), w);
+	gtk_box_pack_start (GTK_BOX (box), button, FALSE, FALSE, 0);
+	gtk_widget_show (button);
+
+	g_signal_connect (button, "clicked",
+			  G_CALLBACK (stop_button_clicked_cb), self);
+}
+
+static void
+nautilus_floating_bar_init (NautilusFloatingBar *self)
+{
+	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, NAUTILUS_TYPE_FLOATING_BAR,
+						  NautilusFloatingBarDetails);
+
+	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (self)),
+				     "nautilus-floating-bar");
+}
+
+static void
+nautilus_floating_bar_class_init (NautilusFloatingBarClass *klass)
+{
+	GObjectClass *oclass = G_OBJECT_CLASS (klass);
+	GtkWidgetClass *wclass = GTK_WIDGET_CLASS (klass);
+
+	oclass->constructed = nautilus_floating_bar_constructed;
+	oclass->set_property = nautilus_floating_bar_set_property;
+	oclass->finalize = nautilus_floating_bar_finalize;
+
+	wclass->draw = nautilus_floating_bar_draw;
+	wclass->show = nautilus_floating_bar_show;
+	wclass->hide = nautilus_floating_bar_hide;
+
+	properties[PROP_LABEL] =
+		g_param_spec_string ("label",
+				     "Bar's label",
+				     "Label displayed by the bar",
+				     NULL,
+				     G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS);
+
+	g_type_class_add_private (klass, sizeof (NautilusFloatingBarDetails));
+	g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
+}
+
+void
+nautilus_floating_bar_set_label (NautilusFloatingBar *self,
+				 const gchar *label)
+{
+	if (g_strcmp0 (self->priv->label, label) != 0) {
+		g_free (self->priv->label);
+		self->priv->label = g_strdup (label);
+
+		g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_LABEL]);
+
+		update_label (self);
+	}
+}
+
+GtkWidget *
+nautilus_floating_bar_new (const gchar *label)
+{
+	return g_object_new (NAUTILUS_TYPE_FLOATING_BAR,
+			     "widget", gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 8),
+			     "label", label,
+			     NULL);
+}

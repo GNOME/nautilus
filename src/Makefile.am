@@ -76,6 +76,8 @@ nautilus_SOURCES = \
 	nautilus-error-reporting.h		\
 	nautilus-file-management-properties.c	\
 	nautilus-file-management-properties.h	\
+	nautilus-floating-bar.c			\
+	nautilus-floating-bar.h			\
 	nautilus-icon-view.c			\
 	nautilus-icon-view.h			\
 	nautilus-icon-view-container.c		\
