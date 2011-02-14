@@ -31,9 +31,11 @@
 
 #include "nautilus-view.h"
 
+#include "gedit-overlay.h"
 #include "nautilus-actions.h"
 #include "nautilus-desktop-icon-view.h"
 #include "nautilus-error-reporting.h"
+#include "nautilus-floating-bar.h"
 #include "nautilus-list-view.h"
 #include "nautilus-mime-actions.h"
 #include "nautilus-properties-window.h"
@@ -164,6 +166,8 @@ struct NautilusViewDetails
 	GdkEventButton *location_popup_event;
 	GtkActionGroup *dir_action_group;
 	guint dir_merge_id;
+	GtkWidget *overlay;
+	GtkWidget *floating_bar;
 
 	GList *scripts_directory_list;
 	GtkActionGroup *scripts_action_group;
@@ -2980,6 +2984,15 @@ reveal_selection_idle_callback (gpointer data)
 }
 
 static void
+nautilus_view_remove_floating_bar (NautilusView *view)
+{
+	if (view->details->floating_bar != NULL) {
+		gtk_widget_destroy (view->details->floating_bar);
+		view->details->floating_bar = NULL;
+	}
+}
+
+static void
 done_loading (NautilusView *view,
 	      gboolean all_files_seen)
 {
@@ -3031,6 +3044,8 @@ done_loading (NautilusView *view,
 	}
 
 	g_signal_emit (view, signals[END_LOADING], 0, all_files_seen);
+
+	nautilus_view_remove_floating_bar (view);
 
 	view->details->loading = FALSE;
 }
@@ -9109,6 +9124,40 @@ load_directory (NautilusView *view,
 		 G_CALLBACK (file_changed_callback), view);
 }
 
+#define ACTION_ID_STOP 1
+
+static void
+floating_bar_action_cb (NautilusFloatingBar *floating_bar,
+			gint action,
+			NautilusView *view)
+{
+	if (ACTION_ID_STOP != 1) {
+		g_warning ("Unknown action clicked on the floating bar, ignoring.");
+		return;
+	}
+
+	nautilus_view_stop_loading (view);
+}
+
+static void
+nautilus_view_setup_floating_bar (NautilusView *view)
+{
+	/* setup loading overlay */
+	view->details->floating_bar = nautilus_floating_bar_new (_("Loading..."), TRUE);
+	nautilus_floating_bar_add_action (NAUTILUS_FLOATING_BAR (view->details->floating_bar),
+					  GTK_STOCK_STOP,
+					  ACTION_ID_STOP);
+	gtk_widget_show (view->details->floating_bar);
+
+	gedit_overlay_add (GEDIT_OVERLAY (view->details->overlay),
+			   view->details->floating_bar,
+			   GEDIT_OVERLAY_CHILD_POSITION_SOUTH_EAST,
+			   0);
+
+	g_signal_connect (view->details->floating_bar, "action",
+			  G_CALLBACK (floating_bar_action_cb), view);
+}
+
 static void
 finish_loading (NautilusView *view)
 {
@@ -9121,6 +9170,8 @@ finish_loading (NautilusView *view)
 	 * Subclasses use this to know that the new metadata is now available.
 	 */
 	g_signal_emit (view, signals[BEGIN_LOADING], 0);
+
+	nautilus_view_setup_floating_bar (view);
 
 	/* Assume we have now all information to show window */
 	nautilus_window_view_visible  (view->details->window, NAUTILUS_VIEW (view));
@@ -9527,6 +9578,20 @@ real_get_selected_icon_locations (NautilusView *view)
 {
         /* By default, just return an empty list. */
         return g_array_new (FALSE, TRUE, sizeof (GdkPoint));
+}
+
+void
+nautilus_view_setup_overlay (NautilusView *view,
+			     GtkWidget *overlay)
+{
+	if (view->details->overlay != NULL) {
+		g_warning ("Trying to add a view overlay two times, ignoring.");
+		return;
+	}
+
+	gtk_container_add (GTK_CONTAINER (view), overlay);
+
+	view->details->overlay = overlay;
 }
 
 static void

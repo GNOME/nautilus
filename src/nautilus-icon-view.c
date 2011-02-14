@@ -26,6 +26,7 @@
 
 #include "nautilus-icon-view.h"
 
+#include "gedit-overlay.h"
 #include "nautilus-actions.h"
 #include "nautilus-icon-view-container.h"
 #include "nautilus-desktop-icon-view.h"
@@ -2684,9 +2685,11 @@ static NautilusIconContainer *
 create_icon_container (NautilusIconView *icon_view)
 {
 	NautilusIconContainer *icon_container;
+	GtkWidget *overlay;
 
 	icon_container = nautilus_icon_view_container_new (icon_view);
-
+	icon_view->details->icon_container = GTK_WIDGET (icon_container);
+	
 	gtk_widget_set_can_focus (GTK_WIDGET (icon_container), TRUE);
 	
 	g_signal_connect_object (icon_container, "focus_in_event",
@@ -2740,8 +2743,10 @@ create_icon_container (NautilusIconView *icon_view)
 	g_signal_connect_object (icon_container, "store_layout_timestamp",
 				 G_CALLBACK (store_layout_timestamp), icon_view, 0);
 
-	gtk_container_add (GTK_CONTAINER (icon_view),
-			   GTK_WIDGET (icon_container));
+	overlay = gedit_overlay_new (GTK_WIDGET (icon_container));
+	gtk_widget_show (overlay);
+
+	nautilus_view_setup_overlay (NAUTILUS_VIEW (icon_view), overlay);
 
 	nautilus_icon_view_update_click_mode (icon_view);
 
