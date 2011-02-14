@@ -58,9 +58,17 @@ struct _NautilusFloatingBarClass {
 /* GObject */
 GType       nautilus_floating_bar_get_type  (void);
 
-GtkWidget * nautilus_floating_bar_new       (const gchar *label);
-void        nautilus_floating_bar_set_label (NautilusFloatingBar *self,
-					     const gchar *label);
+GtkWidget * nautilus_floating_bar_new              (const gchar *label,
+						    gboolean show_spinner);
+
+void        nautilus_floating_bar_set_label        (NautilusFloatingBar *self,
+						    const gchar *label);
+void        nautilus_floating_bar_set_show_spinner (NautilusFloatingBar *self,
+						    gboolean show_spinner);
+
+void        nautilus_floating_bar_add_action       (NautilusFloatingBar *self,
+						    const gchar *stock_id,
+						    gint action_id);
 
 #endif /* __NAUTILUS_FLOATING_BAR_H__ */
 
