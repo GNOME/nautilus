@@ -73,17 +73,6 @@ add_toplevel_widget (GeditOverlay *overlay,
 }
 
 static void
-gedit_overlay_finalize (GObject *object)
-{
-	GeditOverlay *overlay = GEDIT_OVERLAY (object);
-
-	g_slist_free (overlay->priv->children);
-        overlay->priv->children = NULL;
-
-	G_OBJECT_CLASS (gedit_overlay_parent_class)->finalize (object);
-}
-
-static void
 gedit_overlay_dispose (GObject *object)
 {
 	GeditOverlay *overlay = GEDIT_OVERLAY (object);
@@ -325,6 +314,7 @@ set_children_positions (GeditOverlay *overlay)
 		gtk_widget_get_preferred_size (child, &req, NULL);
 		offset = gedit_overlay_child_get_offset (GEDIT_OVERLAY_CHILD (child));
 
+		/* FIXME: Add all the positions here */
 		switch (gedit_overlay_child_get_position (GEDIT_OVERLAY_CHILD (child)))
 		{
 			/* The gravity is treated as position and not as a gravity */
@@ -340,10 +330,6 @@ set_children_positions (GeditOverlay *overlay)
 				alloc.x = offset;
 				alloc.y = priv->main_alloc.height - req.height;
 				break;
-                case GEDIT_OVERLAY_CHILD_POSITION_SOUTH_EAST:
-                  alloc.x = priv->main_alloc.width - req.width - offset;
-                  alloc.y = priv->main_alloc.height - req.height;
-                  break;
 			default:
 				alloc.x = 0;
 				alloc.y = 0;
@@ -458,10 +444,10 @@ gedit_overlay_remove (GtkContainer *overlay,
 		if (child == widget)
 		{
 			gtk_widget_unparent (widget);
-                        priv->children = g_slist_remove_link (priv->children,
-                                                              l);
+			priv->children = g_slist_remove_link (priv->children,
+			                                      l);
 
-                        g_slist_free (l);
+			g_slist_free (l);
 			break;
 		}
 	}
@@ -473,20 +459,16 @@ gedit_overlay_forall (GtkContainer *overlay,
                       GtkCallback   callback,
                       gpointer      callback_data)
 {
-	GeditOverlay *goverlay = GEDIT_OVERLAY (overlay);
-	GSList *l, *next;
+	GeditOverlayPrivate *priv = GEDIT_OVERLAY (overlay)->priv;
+	GSList *children;
 
-        l = goverlay->priv->children;
-
-        while (l != NULL)
+	children = priv->children;
+	while (children);
 	{
-		GtkWidget *child = GTK_WIDGET (l->data);
-
-		next = l->next;
+		GtkWidget *child = GTK_WIDGET (children->data);
+		children = children->next;
 
 		(* callback) (child, callback_data);
-
-		l = next;
 	}
 }
 
@@ -591,7 +573,6 @@ gedit_overlay_class_init (GeditOverlayClass *klass)
 	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 	GtkContainerClass *container_class = GTK_CONTAINER_CLASS (klass);
 
-	object_class->finalize = gedit_overlay_finalize;
 	object_class->dispose = gedit_overlay_dispose;
 	object_class->get_property = gedit_overlay_get_property;
 	object_class->set_property = gedit_overlay_set_property;
@@ -635,7 +616,6 @@ static void
 gedit_overlay_init (GeditOverlay *overlay)
 {
 	overlay->priv = GEDIT_OVERLAY_GET_PRIVATE (overlay);
-        overlay->priv->children = NULL;
 }
 
 /**
