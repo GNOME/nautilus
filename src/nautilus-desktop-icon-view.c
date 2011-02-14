@@ -96,20 +96,13 @@ G_DEFINE_TYPE (NautilusDesktopIconView, nautilus_desktop_icon_view, NAUTILUS_TYP
 static char *desktop_directory;
 static time_t desktop_dir_modify_time;
 
+#define get_icon_container(w) nautilus_icon_view_get_icon_container(NAUTILUS_ICON_VIEW (w))
+
 static void
 desktop_directory_changed_callback (gpointer callback_data)
 {
 	g_free (desktop_directory);
 	desktop_directory = nautilus_get_desktop_directory ();
-}
-
-static NautilusIconContainer *
-get_icon_container (NautilusDesktopIconView *icon_view)
-{
-	g_return_val_if_fail (NAUTILUS_IS_DESKTOP_ICON_VIEW (icon_view), NULL);
-	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (gtk_bin_get_child (GTK_BIN (icon_view))), NULL);
-
-	return NAUTILUS_ICON_CONTAINER (gtk_bin_get_child (GTK_BIN (icon_view)));
 }
 
 static void
@@ -866,6 +859,7 @@ nautilus_desktop_icon_view_create (NautilusWindowSlot *slot)
 
 	view = g_object_new (NAUTILUS_TYPE_DESKTOP_ICON_VIEW,
 			     "window-slot", slot,
+			     "show-floating-bar", FALSE,
 			     NULL);
 	return NAUTILUS_VIEW (view);
 }

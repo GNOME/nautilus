@@ -132,4 +132,6 @@ gboolean nautilus_icon_view_is_compact   (NautilusIconView *icon_view);
 void    nautilus_icon_view_register         (void);
 void    nautilus_icon_view_compact_register (void);
 
+NautilusIconContainer * nautilus_icon_view_get_icon_container (NautilusIconView *view);
+
 #endif /* NAUTILUS_ICON_VIEW_H */

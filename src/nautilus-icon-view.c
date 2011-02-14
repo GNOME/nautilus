@@ -114,6 +114,8 @@ struct NautilusIconViewDetails
 	gboolean compact;
 
 	gulong clipboard_handler_id;
+
+	GtkWidget *icon_container;
 };
 
 
@@ -220,7 +222,13 @@ nautilus_icon_view_destroy (GtkWidget *object)
 static NautilusIconContainer *
 get_icon_container (NautilusIconView *icon_view)
 {
-	return NAUTILUS_ICON_CONTAINER (gtk_bin_get_child (GTK_BIN (icon_view)));
+	return NAUTILUS_ICON_CONTAINER (icon_view->details->icon_container);
+}
+
+NautilusIconContainer *
+nautilus_icon_view_get_icon_container (NautilusIconView *icon_view)
+{
+	return get_icon_container (icon_view);
 }
 
 static gboolean
@@ -462,7 +470,6 @@ nautilus_icon_view_clear (NautilusView *view)
 	g_slist_foreach (file_list, (GFunc)unref_cover, NULL);
 	g_slist_free (file_list);
 }
-
 
 static gboolean
 should_show_file_on_screen (NautilusView *view, NautilusFile *file)
