@@ -144,12 +144,13 @@ enum {
 };
 
 enum {
-	PROP_0,
-	PROP_WINDOW_SLOT
+	PROP_WINDOW_SLOT = 1,
+	PROP_SHOW_FLOATING_BAR,
+	NUM_PROPERTIES
 };
 
-
 static guint signals[LAST_SIGNAL];
+static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 
 static GdkAtom copied_files_atom;
 
@@ -166,8 +167,10 @@ struct NautilusViewDetails
 	GdkEventButton *location_popup_event;
 	GtkActionGroup *dir_action_group;
 	guint dir_merge_id;
+
 	GtkWidget *overlay;
 	GtkWidget *floating_bar;
+	gboolean show_floating_bar;
 
 	GList *scripts_directory_list;
 	GtkActionGroup *scripts_action_group;
@@ -9628,6 +9631,9 @@ nautilus_view_set_property (GObject         *object,
 					 directory_view, 0);
 		nautilus_view_init_show_hidden_files (directory_view);
 		break;
+	case PROP_SHOW_FLOATING_BAR:
+		directory_view->details->show_floating_bar = g_value_get_boolean (value);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -9714,15 +9720,17 @@ nautilus_view_parent_set (GtkWidget *widget,
 static void
 nautilus_view_class_init (NautilusViewClass *klass)
 {
+	GObjectClass *oclass;
 	GtkWidgetClass *widget_class;
 	GtkScrolledWindowClass *scrolled_window_class;
 	GtkBindingSet *binding_set;
 
 	widget_class = GTK_WIDGET_CLASS (klass);
 	scrolled_window_class = GTK_SCROLLED_WINDOW_CLASS (klass);
+	oclass = G_OBJECT_CLASS (klass);
 
-	G_OBJECT_CLASS (klass)->finalize = nautilus_view_finalize;
-	G_OBJECT_CLASS (klass)->set_property = nautilus_view_set_property;
+	oclass->finalize = nautilus_view_finalize;
+	oclass->set_property = nautilus_view_set_property;
 
 	widget_class->destroy = nautilus_view_destroy;
 	widget_class->scroll_event = nautilus_view_scroll_event;
@@ -9820,6 +9828,22 @@ nautilus_view_class_init (NautilusViewClass *klass)
 			      NULL, NULL,
 			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
+	signals[TRASH] =
+		g_signal_new ("trash",
+			      G_TYPE_FROM_CLASS (klass),
+			      G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+			      G_STRUCT_OFFSET (NautilusViewClass, trash),
+			      g_signal_accumulator_true_handled, NULL,
+			      nautilus_src_marshal_BOOLEAN__VOID,
+			      G_TYPE_BOOLEAN, 0);
+	signals[DELETE] =
+		g_signal_new ("delete",
+			      G_TYPE_FROM_CLASS (klass),
+			      G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+			      G_STRUCT_OFFSET (NautilusViewClass, delete),
+			      g_signal_accumulator_true_handled, NULL,
+			      nautilus_src_marshal_BOOLEAN__VOID,
+			      G_TYPE_BOOLEAN, 0);
 
 	klass->get_selected_icon_locations = real_get_selected_icon_locations;
 	klass->is_read_only = real_is_read_only;
@@ -9831,6 +9855,8 @@ nautilus_view_class_init (NautilusViewClass *klass)
         klass->merge_menus = real_merge_menus;
         klass->unmerge_menus = real_unmerge_menus;
         klass->update_menus = real_update_menus;
+	klass->trash = real_trash;
+	klass->delete = real_delete;
 
 	/* Function pointers that subclasses must override */
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_view, add_file);
@@ -9853,32 +9879,23 @@ nautilus_view_class_init (NautilusViewClass *klass)
 
 	copied_files_atom = gdk_atom_intern ("x-special/gnome-copied-files", FALSE);
 
-	g_object_class_install_property (G_OBJECT_CLASS (klass),
-					 PROP_WINDOW_SLOT,
-					 g_param_spec_object ("window-slot",
-							      "Window Slot",
-							      "The parent window slot reference",
-							      NAUTILUS_TYPE_WINDOW_SLOT,
-							      G_PARAM_WRITABLE |
-							      G_PARAM_CONSTRUCT_ONLY));
+	properties[PROP_WINDOW_SLOT] =
+		g_param_spec_object ("window-slot",
+				     "Window Slot",
+				     "The parent window slot reference",
+				     NAUTILUS_TYPE_WINDOW_SLOT,
+				     G_PARAM_WRITABLE |
+				     G_PARAM_CONSTRUCT_ONLY);
+	properties[PROP_SHOW_FLOATING_BAR] =
+		g_param_spec_boolean ("show-floating-bar",
+				      "Show floating bar",
+				      "Whether the floating bar should be shown",
+				      TRUE,
+				      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
+				      G_PARAM_STATIC_STRINGS);
 
-	signals[TRASH] =
-		g_signal_new ("trash",
-			      G_TYPE_FROM_CLASS (klass),
-			      G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
-			      G_STRUCT_OFFSET (NautilusViewClass, trash),
-			      g_signal_accumulator_true_handled, NULL,
-			      nautilus_src_marshal_BOOLEAN__VOID,
-			      G_TYPE_BOOLEAN, 0);
-	signals[DELETE] =
-		g_signal_new ("delete",
-			      G_TYPE_FROM_CLASS (klass),
-			      G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
-			      G_STRUCT_OFFSET (NautilusViewClass, delete),
-			      g_signal_accumulator_true_handled, NULL,
-			      nautilus_src_marshal_BOOLEAN__VOID,
-			      G_TYPE_BOOLEAN, 0);
-	
+	g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
+
 	binding_set = gtk_binding_set_by_class (klass);
 	gtk_binding_entry_add_signal (binding_set, GDK_KEY_Delete, 0,
 				      "trash", 0);
@@ -9886,8 +9903,5 @@ nautilus_view_class_init (NautilusViewClass *klass)
 				      "trash", 0);
 	gtk_binding_entry_add_signal (binding_set, GDK_KEY_KP_Delete, GDK_SHIFT_MASK,
 				      "delete", 0);
-
-	klass->trash = real_trash;
-	klass->delete = real_delete;
 }
 
