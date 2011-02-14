@@ -2591,6 +2591,10 @@ nautilus_view_init (NautilusView *view)
 	g_signal_connect_swapped (gnome_lockdown_preferences,
 				  "changed::" NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE,
 				  G_CALLBACK (schedule_update_menus), view);
+
+	g_signal_connect_swapped (nautilus_window_state,
+				  "changed::" NAUTILUS_WINDOW_STATE_START_WITH_STATUS_BAR,
+				  G_CALLBACK (nautilus_view_display_selection_info), view);
 }
 
 static void
@@ -2714,6 +2718,28 @@ nautilus_view_finalize (GObject *object)
 	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
+static void
+nautilus_view_set_status (NautilusView *view,
+			  const gchar *status)
+{
+	gboolean show_statusbar;
+
+	nautilus_floating_bar_cleanup_actions (NAUTILUS_FLOATING_BAR (view->details->floating_bar));
+	nautilus_floating_bar_set_show_spinner (NAUTILUS_FLOATING_BAR (view->details->floating_bar),
+						FALSE);
+
+	show_statusbar = g_settings_get_boolean (nautilus_window_state,
+						 NAUTILUS_WINDOW_STATE_START_WITH_STATUS_BAR);
+
+	if (status == NULL || show_statusbar) {
+		gtk_widget_hide (view->details->floating_bar);
+		return;
+	}
+
+	nautilus_floating_bar_set_label (NAUTILUS_FLOATING_BAR (view->details->floating_bar), status);
+	gtk_widget_show (view->details->floating_bar);
+}
+
 /**
  * nautilus_view_display_selection_info:
  *
@@ -2736,6 +2762,7 @@ nautilus_view_display_selection_info (NautilusView *view)
 	char *folder_count_str;
 	char *folder_item_count_str;
 	char *status_string;
+	char *view_status_string;
 	char *free_space_str;
 	char *obj_selected_free_space_str;
 	NautilusFile *file;
@@ -2756,6 +2783,8 @@ nautilus_view_display_selection_info (NautilusView *view)
 	folder_item_count_str = NULL;
 	free_space_str = NULL;
 	obj_selected_free_space_str = NULL;
+	status_string = NULL;
+	view_status_string = NULL;
 	
 	for (p = selection; p != NULL; p = p->next) {
 		file = p->data;
@@ -2880,9 +2909,9 @@ nautilus_view_display_selection_info (NautilusView *view)
 		}
 
 	} else if (folder_count == 0) {
-		if (free_space_str == NULL) {
-			status_string = g_strdup (non_folder_str);
-		} else {
+		view_status_string = g_strdup (non_folder_str);
+
+		if (free_space_str != NULL) {
 			/* Marking this for translation, since you
 			 * might want to change "," to something else.
 			 * After the comma the amount of free space will
@@ -2893,15 +2922,15 @@ nautilus_view_display_selection_info (NautilusView *view)
 							 obj_selected_free_space_str);
 		}
 	} else if (non_folder_count == 0) {
-		if (free_space_str == NULL) {
-		        /* No use marking this for translation, since you
-		         * can't reorder the strings, which is the main thing
-		         * you'd want to do.
-		         */
-			status_string = g_strdup_printf ("%s%s",
-							 folder_count_str,
-							 folder_item_count_str);
-		} else {
+		/* No use marking this for translation, since you
+		 * can't reorder the strings, which is the main thing
+		 * you'd want to do.
+		 */
+		view_status_string = g_strdup_printf ("%s%s",
+						      folder_count_str,
+						      folder_item_count_str);
+
+		if (free_space_str != NULL) {
 			/* Marking this for translation, since you
 			 * might want to change "," to something else.
 			 * After the comma the amount of free space will
@@ -2913,19 +2942,19 @@ nautilus_view_display_selection_info (NautilusView *view)
 							 obj_selected_free_space_str);
 		}
 	} else {
-		if (obj_selected_free_space_str == NULL) {
-			/* This is marked for translation in case a localizer
-			 * needs to change ", " to something else. The comma
-			 * is between the message about the number of folders
-			 * and the number of items in those folders and the
-			 * message about the number of other items and the
-			 * total size of those items.
-			 */
-			status_string = g_strdup_printf (_("%s%s, %s"),
-							 folder_count_str,
-							 folder_item_count_str,
-							 non_folder_str);
-		} else {
+		/* This is marked for translation in case a localizer
+		 * needs to change ", " to something else. The comma
+		 * is between the message about the number of folders
+		 * and the number of items in those folders and the
+		 * message about the number of other items and the
+		 * total size of those items.
+		 */
+		view_status_string = g_strdup_printf (_("%s%s, %s"),
+						      folder_count_str,
+						      folder_item_count_str,
+						      non_folder_str);
+
+		if (obj_selected_free_space_str != NULL) {
 			/* This is marked for translation in case a localizer
 			 * needs to change ", " to something else. The first comma
 			 * is between the message about the number of folders
@@ -2949,9 +2978,16 @@ nautilus_view_display_selection_info (NautilusView *view)
 	g_free (folder_item_count_str);
 	g_free (non_folder_str);
 
+	if (status_string == NULL) {
+		status_string = g_strdup (view_status_string);
+	}
+
 	nautilus_window_slot_set_status (view->details->slot,
 					 status_string);
+	nautilus_view_set_status (view, view_status_string);
+
 	g_free (status_string);
+	g_free (view_status_string);
 }
 
 static void
