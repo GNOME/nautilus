@@ -9135,7 +9135,7 @@ floating_bar_action_cb (NautilusFloatingBar *floating_bar,
 			gint action,
 			NautilusView *view)
 {
-	if (ACTION_ID_STOP != 1) {
+	if (action != ACTION_ID_STOP) {
 		g_warning ("Unknown action clicked on the floating bar, ignoring.");
 		return;
 	}
