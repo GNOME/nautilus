@@ -23,7 +23,15 @@ GtkTreeView.NautilusSidebar {
     ythickness: 0;
 }
 
-.nautilus-floating-bar {
+NautilusFloatingBar {
     background-color: #fdf6bb;
     border-color: #f4e564;
+    border-radius: 1;
+    border-width: 2;
+}
+
+NautilusFloatingBar > GtkBox {
+    border-color: #fdf6bb;
+    background-color: #fdf6bb;    
+    border-width: 0;
 }

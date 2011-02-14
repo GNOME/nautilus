@@ -209,9 +209,6 @@ nautilus_floating_bar_init (NautilusFloatingBar *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, NAUTILUS_TYPE_FLOATING_BAR,
 						  NautilusFloatingBarDetails);
-
-	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (self)),
-				     "nautilus-floating-bar");
 }
 
 static void
