@@ -232,13 +232,6 @@ struct NautilusViewClass {
 						NautilusFile    *a,
 						NautilusFile    *b);
 
-	/* supports_zooming is a function pointer that subclasses may
-	 * override to control whether or not the zooming control and
-	 * menu items should be enabled. The default implementation
-	 * returns TRUE.
-	 */
-	gboolean (* supports_zooming)		(NautilusView *view);
-
 	/* using_manual_layout is a function pointer that subclasses may
 	 * override to control whether or not items can be freely positioned
 	 * on the user-visible area.

@@ -87,7 +87,6 @@ static gboolean real_supports_keep_aligned                        (NautilusIconV
 static gboolean real_supports_labels_beside_icons                 (NautilusIconView             *view);
 static void     real_merge_menus                                  (NautilusView        *view);
 static void     real_update_menus                                 (NautilusView        *view);
-static gboolean real_supports_zooming                             (NautilusView        *view);
 static void     nautilus_desktop_icon_view_update_icon_container_fonts  (NautilusDesktopIconView      *view);
 static void     font_changed_callback                             (gpointer                callback_data);
 
@@ -324,7 +323,6 @@ nautilus_desktop_icon_view_class_init (NautilusDesktopIconViewClass *class)
 	vclass->begin_loading = real_begin_loading;
 	vclass->merge_menus = real_merge_menus;
 	vclass->update_menus = real_update_menus;
-	vclass->supports_zooming = real_supports_zooming;
 	vclass->get_view_id = real_get_id;
 
 	iclass->supports_auto_layout = real_supports_auto_layout;
@@ -843,15 +841,6 @@ real_supports_labels_beside_icons (NautilusIconView *view)
 	return FALSE;
 }
 
-static gboolean
-real_supports_zooming (NautilusView *view)
-{
-	/* Can't zoom on the desktop, because doing so would cause all
-	 * sorts of complications involving the fixed-size window.
-	 */
-	return FALSE;
-}
-
 static NautilusView *
 nautilus_desktop_icon_view_create (NautilusWindowSlot *slot)
 {
@@ -860,6 +849,7 @@ nautilus_desktop_icon_view_create (NautilusWindowSlot *slot)
 	view = g_object_new (NAUTILUS_TYPE_DESKTOP_ICON_VIEW,
 			     "window-slot", slot,
 			     "show-floating-bar", FALSE,
+			     "supports-zooming", FALSE,
 			     NULL);
 	return NAUTILUS_VIEW (view);
 }

@@ -146,6 +146,7 @@ enum {
 enum {
 	PROP_WINDOW_SLOT = 1,
 	PROP_SHOW_FLOATING_BAR,
+	PROP_SUPPORTS_ZOOMING,
 	NUM_PROPERTIES
 };
 
@@ -170,7 +171,9 @@ struct NautilusViewDetails
 
 	GtkWidget *overlay;
 	GtkWidget *floating_bar;
+
 	gboolean show_floating_bar;
+	gboolean supports_zooming;
 
 	GList *scripts_directory_list;
 	GtkActionGroup *scripts_action_group;
@@ -649,9 +652,7 @@ nautilus_view_supports_zooming (NautilusView *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), FALSE);
 
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_VIEW_CLASS, view,
-		 supports_zooming, (view));
+	return view->details->supports_zooming;
 }
 
 /**
@@ -9414,14 +9415,6 @@ nautilus_view_should_show_file (NautilusView *view, NautilusFile *file)
 }
 
 static gboolean
-real_supports_zooming (NautilusView *view)
-{
-	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), FALSE);
-
-	return TRUE;
-}
-
-static gboolean
 real_using_manual_layout (NautilusView *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), FALSE);
@@ -9633,6 +9626,9 @@ nautilus_view_set_property (GObject         *object,
 		break;
 	case PROP_SHOW_FLOATING_BAR:
 		directory_view->details->show_floating_bar = g_value_get_boolean (value);
+		break;
+	case PROP_SUPPORTS_ZOOMING:
+		directory_view->details->supports_zooming = g_value_get_boolean (value);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -9850,7 +9846,6 @@ nautilus_view_class_init (NautilusViewClass *klass)
 	klass->load_error = real_load_error;
 	klass->can_rename_file = can_rename_file;
 	klass->start_renaming_file = start_renaming_file;
-	klass->supports_zooming = real_supports_zooming;
 	klass->using_manual_layout = real_using_manual_layout;
         klass->merge_menus = real_merge_menus;
         klass->unmerge_menus = real_unmerge_menus;
@@ -9890,6 +9885,13 @@ nautilus_view_class_init (NautilusViewClass *klass)
 		g_param_spec_boolean ("show-floating-bar",
 				      "Show floating bar",
 				      "Whether the floating bar should be shown",
+				      TRUE,
+				      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
+				      G_PARAM_STATIC_STRINGS);
+	properties[PROP_SUPPORTS_ZOOMING] =
+		g_param_spec_boolean ("supports-zooming",
+				      "Supports zooming",
+				      "Whether the view supports zooming",
 				      TRUE,
 				      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
 				      G_PARAM_STATIC_STRINGS);
