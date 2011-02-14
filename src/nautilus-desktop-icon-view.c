@@ -81,10 +81,6 @@ struct NautilusDesktopIconViewDetails
 };
 
 static void     default_zoom_level_changed                        (gpointer                user_data);
-static gboolean real_supports_auto_layout                         (NautilusIconView             *view);
-static gboolean real_supports_scaling	                          (NautilusIconView             *view);
-static gboolean real_supports_keep_aligned                        (NautilusIconView             *view);
-static gboolean real_supports_labels_beside_icons                 (NautilusIconView             *view);
 static void     real_merge_menus                                  (NautilusView        *view);
 static void     real_update_menus                                 (NautilusView        *view);
 static void     nautilus_desktop_icon_view_update_icon_container_fonts  (NautilusDesktopIconView      *view);
@@ -313,10 +309,8 @@ static void
 nautilus_desktop_icon_view_class_init (NautilusDesktopIconViewClass *class)
 {
 	NautilusViewClass *vclass;
-	NautilusIconViewClass *iclass;
 
 	vclass = NAUTILUS_VIEW_CLASS (class);
-	iclass = NAUTILUS_ICON_VIEW_CLASS (class);
 
 	G_OBJECT_CLASS (class)->dispose = nautilus_desktop_icon_view_dispose;
 
@@ -324,11 +318,6 @@ nautilus_desktop_icon_view_class_init (NautilusDesktopIconViewClass *class)
 	vclass->merge_menus = real_merge_menus;
 	vclass->update_menus = real_update_menus;
 	vclass->get_view_id = real_get_id;
-
-	iclass->supports_auto_layout = real_supports_auto_layout;
-	iclass->supports_scaling = real_supports_scaling;
-	iclass->supports_keep_aligned = real_supports_keep_aligned;
-	iclass->supports_labels_beside_icons = real_supports_labels_beside_icons;
 
 	g_type_class_add_private (class, sizeof (NautilusDesktopIconViewDetails));
 }
@@ -813,34 +802,6 @@ real_merge_menus (NautilusView *view)
 		gtk_ui_manager_add_ui_from_string (ui_manager, ui, -1, NULL);
 }
 
-static gboolean
-real_supports_auto_layout (NautilusIconView *view)
-{
-	/* Can't use auto-layout on the desktop, because doing so
-	 * would cause all sorts of complications involving the
-	 * fixed-size window.
-	 */
-	return FALSE;
-}
-
-static gboolean
-real_supports_scaling (NautilusIconView *view)
-{
-	return TRUE;
-}
-
-static gboolean
-real_supports_keep_aligned (NautilusIconView *view)
-{
-	return TRUE;
-}
-
-static gboolean
-real_supports_labels_beside_icons (NautilusIconView *view)
-{
-	return FALSE;
-}
-
 static NautilusView *
 nautilus_desktop_icon_view_create (NautilusWindowSlot *slot)
 {
@@ -850,6 +811,10 @@ nautilus_desktop_icon_view_create (NautilusWindowSlot *slot)
 			     "window-slot", slot,
 			     "show-floating-bar", FALSE,
 			     "supports-zooming", FALSE,
+			     "supports-auto-layout", FALSE,
+			     "supports-scaling", TRUE,
+			     "supports-keep-aligned", TRUE,
+			     "supports-labels-beside-icons", FALSE,
 			     NULL);
 	return NAUTILUS_VIEW (view);
 }

@@ -87,37 +87,6 @@ struct NautilusIconViewClass {
 
 	/* Override "clean_up" if your subclass has its own notion of where icons should be positioned */
 	void	 (* clean_up)			 (NautilusIconView *icon_view);
-
-	/* supports_auto_layout is a function pointer that subclasses may
-	 * override to control whether or not the automatic layout options
-	 * should be enabled. The default implementation returns TRUE.
-	 */
-	gboolean (* supports_auto_layout)	 (NautilusIconView *view);
-
-	/* supports_manual_layout is a function pointer that subclasses may
-	 * override to control whether or not the manual layout options
-	 * should be enabled. The default implementation returns TRUE iff
-	 * not in compact mode.
-	 */
-	gboolean (* supports_manual_layout)	 (NautilusIconView *view);
-
-	/* supports_scaling is a function pointer that subclasses may
-	 * override to control whether or not the manual layout supports
-	 * scaling. The default implementation returns FALSE
-	 */
-	gboolean (* supports_scaling)	 (NautilusIconView *view);
-
-	/* supports_auto_layout is a function pointer that subclasses may
-	 * override to control whether snap-to-grid mode
-	 * should be enabled. The default implementation returns FALSE.
-	 */
-	gboolean (* supports_keep_aligned)	 (NautilusIconView *view);
-
-	/* supports_auto_layout is a function pointer that subclasses may
-	 * override to control whether snap-to-grid mode
-	 * should be enabled. The default implementation returns FALSE.
-	 */
-	gboolean (* supports_labels_beside_icons)	 (NautilusIconView *view);
 };
 
 /* GObject support */

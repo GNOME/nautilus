@@ -72,9 +72,15 @@
 
 enum 
 {
-	PROP_0,
-	PROP_COMPACT
+	PROP_COMPACT = 1,
+	PROP_SUPPORTS_AUTO_LAYOUT,
+	PROP_SUPPORTS_SCALING,
+	PROP_SUPPORTS_KEEP_ALIGNED,
+	PROP_SUPPORTS_LABELS_BESIDE_ICONS,
+	NUM_PROPERTIES
 };
+
+static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 
 typedef struct {
 	const NautilusFileSortType sort_type;
@@ -116,6 +122,11 @@ struct NautilusIconViewDetails
 	gulong clipboard_handler_id;
 
 	GtkWidget *icon_container;
+
+	gboolean supports_auto_layout;
+	gboolean supports_scaling;
+	gboolean supports_keep_aligned;
+	gboolean supports_labels_beside_icons;
 };
 
 
@@ -171,7 +182,6 @@ static void                 nautilus_icon_view_update_click_mode            (Nau
 static void                 nautilus_icon_view_set_directory_tighter_layout (NautilusIconView           *icon_view,
 									     NautilusFile         *file,
 									     gboolean              tighter_layout);
-static gboolean             nautilus_icon_view_supports_manual_layout       (NautilusIconView           *icon_view);
 static gboolean             nautilus_icon_view_supports_scaling	      (NautilusIconView           *icon_view);
 static void                 nautilus_icon_view_reveal_selection       (NautilusView               *view);
 static const SortCriterion *get_sort_criterion_by_sort_type           (NautilusFileSortType  sort_type);
@@ -229,6 +239,14 @@ NautilusIconContainer *
 nautilus_icon_view_get_icon_container (NautilusIconView *icon_view)
 {
 	return get_icon_container (icon_view);
+}
+
+static gboolean
+nautilus_icon_view_supports_manual_layout (NautilusIconView *view)
+{
+	g_return_val_if_fail (NAUTILUS_IS_ICON_VIEW (view), FALSE);
+
+	return !nautilus_icon_view_is_compact (view);
 }
 
 static gboolean
@@ -598,9 +616,7 @@ nautilus_icon_view_supports_auto_layout (NautilusIconView *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_ICON_VIEW (view), FALSE);
 
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_ICON_VIEW_CLASS, view,
-		 supports_auto_layout, (view));
+	return view->details->supports_auto_layout;
 }
 
 static gboolean
@@ -608,19 +624,7 @@ nautilus_icon_view_supports_scaling (NautilusIconView *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_ICON_VIEW (view), FALSE);
 
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_ICON_VIEW_CLASS, view,
-		 supports_scaling, (view));
-}
-
-static gboolean
-nautilus_icon_view_supports_manual_layout (NautilusIconView *view)
-{
-	g_return_val_if_fail (NAUTILUS_IS_ICON_VIEW (view), FALSE);
-
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_ICON_VIEW_CLASS, view,
-		 supports_manual_layout, (view));
+	return view->details->supports_scaling;
 }
 
 static gboolean
@@ -628,9 +632,7 @@ nautilus_icon_view_supports_keep_aligned (NautilusIconView *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_ICON_VIEW (view), FALSE);
 
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_ICON_VIEW_CLASS, view,
-		 supports_keep_aligned, (view));
+	return view->details->supports_keep_aligned;
 }
 
 static gboolean
@@ -638,9 +640,7 @@ nautilus_icon_view_supports_labels_beside_icons (NautilusIconView *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_ICON_VIEW (view), FALSE);
 
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_ICON_VIEW_CLASS, view,
-		 supports_labels_beside_icons, (view));
+	return view->details->supports_labels_beside_icons;
 }
 
 static gboolean
@@ -994,46 +994,6 @@ nautilus_icon_view_real_set_directory_tighter_layout (NautilusIconView *icon_vie
 		(file, NAUTILUS_METADATA_KEY_ICON_VIEW_TIGHTER_LAYOUT,
 		 get_default_directory_tighter_layout (),
 		 tighter_layout);
-}
-
-static gboolean
-real_supports_auto_layout (NautilusIconView *view)
-{
-	g_return_val_if_fail (NAUTILUS_IS_ICON_VIEW (view), FALSE);
-
-	return TRUE;
-}
-
-static gboolean
-real_supports_scaling (NautilusIconView *view)
-{
-	g_return_val_if_fail (NAUTILUS_IS_ICON_VIEW (view), FALSE);
-
-	return FALSE;
-}
-
-static gboolean
-real_supports_manual_layout (NautilusIconView *view)
-{
-	g_return_val_if_fail (NAUTILUS_IS_ICON_VIEW (view), FALSE);
-
-	return !nautilus_icon_view_is_compact (view);
-}
-
-static gboolean
-real_supports_keep_aligned (NautilusIconView *view)
-{
-	g_return_val_if_fail (NAUTILUS_IS_ICON_VIEW (view), FALSE);
-
-	return FALSE;
-}
-
-static gboolean
-real_supports_labels_beside_icons (NautilusIconView *view)
-{
-	g_return_val_if_fail (NAUTILUS_IS_ICON_VIEW (view), TRUE);
-
-	return TRUE;
 }
 
 static gboolean
@@ -2869,7 +2829,18 @@ nautilus_icon_view_set_property (GObject         *object,
 								      NAUTILUS_ICON_SIZE_SMALLEST);
 		}
 		break;
-
+	case PROP_SUPPORTS_AUTO_LAYOUT:
+		icon_view->details->supports_auto_layout = g_value_get_boolean (value);
+		break;
+	case PROP_SUPPORTS_SCALING:
+		icon_view->details->supports_scaling = g_value_get_boolean (value);
+		break;
+	case PROP_SUPPORTS_KEEP_ALIGNED:
+		icon_view->details->supports_keep_aligned = g_value_get_boolean (value);
+		break;
+	case PROP_SUPPORTS_LABELS_BESIDE_ICONS:
+		icon_view->details->supports_labels_beside_icons = g_value_get_boolean (value);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -2922,11 +2893,13 @@ static void
 nautilus_icon_view_class_init (NautilusIconViewClass *klass)
 {
 	NautilusViewClass *nautilus_view_class;
+	GObjectClass *oclass;
 
 	nautilus_view_class = NAUTILUS_VIEW_CLASS (klass);
+	oclass = G_OBJECT_CLASS (klass);
 
-	G_OBJECT_CLASS (klass)->set_property = nautilus_icon_view_set_property;
-	G_OBJECT_CLASS (klass)->finalize = nautilus_icon_view_finalize;
+	oclass->set_property = nautilus_icon_view_set_property;
+	oclass->finalize = nautilus_icon_view_finalize;
 
 	GTK_WIDGET_CLASS (klass)->destroy = nautilus_icon_view_destroy;
 	GTK_WIDGET_CLASS (klass)->screen_changed = nautilus_icon_view_screen_changed;
@@ -2970,11 +2943,6 @@ nautilus_icon_view_class_init (NautilusIconViewClass *klass)
 	nautilus_view_class->scroll_to_file = icon_view_scroll_to_file;
 
 	klass->clean_up = nautilus_icon_view_real_clean_up;
-	klass->supports_auto_layout = real_supports_auto_layout;
-	klass->supports_scaling = real_supports_scaling;
-	klass->supports_manual_layout = real_supports_manual_layout;
-	klass->supports_keep_aligned = real_supports_keep_aligned;
-	klass->supports_labels_beside_icons = real_supports_labels_beside_icons;
         klass->get_directory_auto_layout = nautilus_icon_view_real_get_directory_auto_layout;
         klass->get_directory_sort_by = nautilus_icon_view_real_get_directory_sort_by;
         klass->get_directory_sort_reversed = nautilus_icon_view_real_get_directory_sort_reversed;
@@ -2984,15 +2952,43 @@ nautilus_icon_view_class_init (NautilusIconViewClass *klass)
         klass->set_directory_sort_reversed = nautilus_icon_view_real_set_directory_sort_reversed;
         klass->set_directory_tighter_layout = nautilus_icon_view_real_set_directory_tighter_layout;
 
-	g_object_class_install_property (G_OBJECT_CLASS (klass),
-					 PROP_COMPACT,
-					 g_param_spec_boolean ("compact",
-							       "Compact",
-							       "Whether this view provides a compact listing",
-							       FALSE,
-							       G_PARAM_WRITABLE |
-							       G_PARAM_CONSTRUCT_ONLY));
+	properties[PROP_COMPACT] =
+		g_param_spec_boolean ("compact",
+				      "Compact",
+				      "Whether this view provides a compact listing",
+				      FALSE,
+				      G_PARAM_WRITABLE |
+				      G_PARAM_CONSTRUCT_ONLY);
+	properties[PROP_SUPPORTS_AUTO_LAYOUT] =
+		g_param_spec_boolean ("supports-auto-layout",
+				      "Supports auto layout",
+				      "Whether this view supports auto layout",
+				      TRUE,
+				      G_PARAM_WRITABLE |
+				      G_PARAM_CONSTRUCT_ONLY);
+	properties[PROP_SUPPORTS_SCALING] =
+		g_param_spec_boolean ("supports-scaling",
+				      "Supports scaling",
+				      "Whether this view supports scaling",
+				      FALSE,
+				      G_PARAM_WRITABLE |
+				      G_PARAM_CONSTRUCT_ONLY);
+	properties[PROP_SUPPORTS_KEEP_ALIGNED] =
+		g_param_spec_boolean ("supports-keep-aligned",
+				      "Supports keep aligned",
+				      "Whether this view supports keep aligned",
+				      FALSE,
+				      G_PARAM_WRITABLE |
+				      G_PARAM_CONSTRUCT_ONLY);
+	properties[PROP_SUPPORTS_LABELS_BESIDE_ICONS] =
+		g_param_spec_boolean ("supports-labels-beside-icons",
+				      "Supports labels beside icons",
+				      "Whether this view supports labels beside icons",
+				      TRUE,
+				      G_PARAM_WRITABLE |
+				      G_PARAM_CONSTRUCT_ONLY);
 
+	g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 }
 
 static void
