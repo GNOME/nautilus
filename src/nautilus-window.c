@@ -148,6 +148,8 @@ nautilus_window_init (NautilusWindow *window)
 	/* Set initial window title */
 	gtk_window_set_title (GTK_WINDOW (window), _("Nautilus"));
 
+	gtk_window_set_has_resize_grip (GTK_WINDOW (window), FALSE);
+
 	table = gtk_table_new (1, 6, FALSE);
 	window->details->table = table;
 	gtk_widget_show (table);
