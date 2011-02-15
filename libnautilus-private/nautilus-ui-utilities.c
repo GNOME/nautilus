@@ -114,20 +114,6 @@ extension_action_callback (GtkAction *action,
 	nautilus_menu_item_activate (NAUTILUS_MENU_ITEM (callback_data));
 }
 
-static void
-extension_action_sensitive_callback (NautilusMenuItem *item,
-                                     GParamSpec *arg1,
-                                     gpointer user_data)
-{
-	gboolean value;
-	
-	g_object_get (G_OBJECT (item),
-	              "sensitive", &value,
-		      NULL);
-
-	gtk_action_set_sensitive (GTK_ACTION (user_data), value);
-}
-
 GtkAction *
 nautilus_action_from_menu_item (NautilusMenuItem *item)
 {
@@ -162,54 +148,6 @@ nautilus_action_from_menu_item (NautilusMenuItem *item)
 			       G_CALLBACK (extension_action_callback),
 			       g_object_ref (item),
 			       (GClosureNotify)g_object_unref, 0);
-
-	g_free (name);
-	g_free (label);
-	g_free (tip);
-	g_free (icon_name);
-
-	return action;
-}
-
-GtkAction *
-nautilus_toolbar_action_from_menu_item (NautilusMenuItem *item)
-{
-	char *name, *label, *tip, *icon_name;
-	gboolean sensitive, priority;
-	GtkAction *action;
-	GIcon *icon;
-
-	g_object_get (G_OBJECT (item),
-		      "name", &name, "label", &label,
-		      "tip", &tip, "icon", &icon_name,
-		      "sensitive", &sensitive,
-		      "priority", &priority,
-		      NULL);
-
-	action = gtk_action_new (name,
-				 label,
-				 tip,
-				 icon_name);
-
-	if (icon_name != NULL) {
-		icon = g_themed_icon_new_with_default_fallbacks (icon_name);
-		g_object_set_data_full (G_OBJECT (action), "toolbar-icon",
-					icon,
-					g_object_unref);
-	}
-
-	gtk_action_set_sensitive (action, sensitive);
-	g_object_set (action, "is-important", priority, NULL);
-
-	g_signal_connect_data (action, "activate",
-			       G_CALLBACK (extension_action_callback),
-			       g_object_ref (item),
-			       (GClosureNotify)g_object_unref, 0);
-
-	g_signal_connect_object (item, "notify::sensitive",
-				 G_CALLBACK (extension_action_sensitive_callback),
-				 action,
-				 0);
 
 	g_free (name);
 	g_free (label);

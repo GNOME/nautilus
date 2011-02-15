@@ -37,7 +37,6 @@ void        nautilus_ui_prepare_merge_ui           (GtkUIManager      *ui_manage
 						    guint             *merge_id,
 						    GtkActionGroup   **action_group);
 GtkAction * nautilus_action_from_menu_item         (NautilusMenuItem  *item);
-GtkAction * nautilus_toolbar_action_from_menu_item (NautilusMenuItem  *item);
 const char *nautilus_ui_string_get                 (const char        *filename);
 
 #endif /* NAUTILUS_UI_UTILITIES_H */
