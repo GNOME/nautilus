@@ -174,13 +174,10 @@ nautilus_navigation_window_slot_update_query_editor (NautilusWindowSlot *slot)
 static void
 nautilus_navigation_window_slot_active (NautilusWindowSlot *slot)
 {
-	NautilusNavigationWindow *window;
 	NautilusNavigationWindowPane *pane;
 	int page_num;
 
 	pane = NAUTILUS_NAVIGATION_WINDOW_PANE (slot->pane);
-	window = NAUTILUS_NAVIGATION_WINDOW (slot->pane->window);
-
 	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (pane->notebook),
 					  slot->content_box);
 	g_assert (page_num >= 0);
@@ -188,10 +185,6 @@ nautilus_navigation_window_slot_active (NautilusWindowSlot *slot)
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (pane->notebook), page_num);
 
 	EEL_CALL_PARENT (NAUTILUS_WINDOW_SLOT_CLASS, active, (slot));
-
-	if (slot->viewed_file != NULL) {
-		nautilus_navigation_window_load_extension_toolbar_items (window);
-	}
 }
  
 static void

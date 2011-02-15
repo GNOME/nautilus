@@ -155,7 +155,6 @@ nautilus_SOURCES = \
 	nautilus-window-slot.h			\
 	nautilus-window-slot-dnd.c		\
 	nautilus-window-slot-dnd.h		\
-	nautilus-window-toolbars.c              \
 	nautilus-window.c			\
 	nautilus-window.h			\
 	nautilus-window-types.h			\
