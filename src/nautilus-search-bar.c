@@ -25,7 +25,6 @@
 #include "nautilus-search-bar.h"
 
 #include <glib/gi18n.h>
-#include <eel/eel-gtk-macros.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
@@ -43,34 +42,12 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-static void  nautilus_search_bar_class_init       (NautilusSearchBarClass *class);
-static void  nautilus_search_bar_init             (NautilusSearchBar      *bar);
-
-EEL_CLASS_BOILERPLATE (NautilusSearchBar,
-		       nautilus_search_bar,
-		       GTK_TYPE_EVENT_BOX)
-
+G_DEFINE_TYPE (NautilusSearchBar, nautilus_search_bar, GTK_TYPE_EVENT_BOX);
 	
-static void
-finalize (GObject *object)
-{
-	NautilusSearchBar *bar;
-
-	bar = NAUTILUS_SEARCH_BAR (object);
-
-	g_free (bar->details);
-
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
-}
-
 static void
 nautilus_search_bar_class_init (NautilusSearchBarClass *class)
 {
-	GObjectClass *gobject_class;
 	GtkBindingSet *binding_set;
-
-	gobject_class = G_OBJECT_CLASS (class);
-	gobject_class->finalize = finalize;
 
 	signals[ACTIVATE] =
 		g_signal_new ("activate",
@@ -101,6 +78,8 @@ nautilus_search_bar_class_init (NautilusSearchBarClass *class)
 
 	binding_set = gtk_binding_set_by_class (class);
 	gtk_binding_entry_add_signal (binding_set, GDK_KEY_Escape, 0, "cancel", 0);
+
+	g_type_class_add_private (class, sizeof (NautilusSearchBarDetails));
 }
 
 static gboolean
@@ -151,7 +130,9 @@ nautilus_search_bar_init (NautilusSearchBar *bar)
 	GtkWidget *hbox;
 	GtkWidget *label;
 
-	bar->details = g_new0 (NautilusSearchBarDetails, 1);
+	bar->details =
+		G_TYPE_INSTANCE_GET_PRIVATE (bar, NAUTILUS_TYPE_SEARCH_BAR,
+					     NautilusSearchBarDetails);
 
 	gtk_event_box_set_visible_window (GTK_EVENT_BOX (bar), FALSE);
 
