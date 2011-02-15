@@ -90,6 +90,9 @@ nautilus_toolbar_constructed (GObject *obj)
 
 	G_OBJECT_CLASS (nautilus_toolbar_parent_class)->constructed (obj);
 
+	gtk_style_context_set_junction_sides (gtk_widget_get_style_context (GTK_WIDGET (self)),
+					      GTK_JUNCTION_BOTTOM);
+
 	/* add the UI */
 	ui = nautilus_ui_string_get ("nautilus-toolbar-ui.xml");
 	self->priv->ui_manager = gtk_ui_manager_new ();
