@@ -718,15 +718,6 @@ nautilus_navigation_window_show_sidebar (NautilusNavigationWindow *window)
 	g_settings_set_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_SIDEBAR, TRUE);
 }
 
-gboolean
-nautilus_navigation_window_sidebar_showing (NautilusNavigationWindow *window)
-{
-	g_return_val_if_fail (NAUTILUS_IS_NAVIGATION_WINDOW (window), FALSE);
-
-	return (window->details->sidebar != NULL)
-		&& gtk_widget_get_visible (gtk_paned_get_child1 (GTK_PANED (window->details->content_paned)));
-}
-
 static void
 side_pane_id_changed (NautilusNavigationWindow *window)
 {

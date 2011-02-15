@@ -238,11 +238,6 @@ nautilus_navigation_window_update_show_hide_menu_items (NautilusNavigationWindow
 	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
 
 	action = gtk_action_group_get_action (window->details->navigation_action_group,
-					      NAUTILUS_ACTION_SHOW_HIDE_SIDEBAR);
-	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
-				      nautilus_navigation_window_sidebar_showing (window));
-	
-	action = gtk_action_group_get_action (window->details->navigation_action_group,
 					      NAUTILUS_ACTION_SHOW_HIDE_EXTRA_PANE);
 	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
 				      nautilus_navigation_window_split_view_showing (window));
@@ -963,6 +958,15 @@ navigation_window_menus_set_bindings (NautilusNavigationWindow *window)
 
 	g_settings_bind (nautilus_window_state,
 			 NAUTILUS_WINDOW_STATE_START_WITH_STATUS_BAR,
+			 action,
+			 "active",
+			 G_SETTINGS_BIND_DEFAULT);
+
+	action = gtk_action_group_get_action (window->details->navigation_action_group,
+					      NAUTILUS_ACTION_SHOW_HIDE_SIDEBAR);	
+
+	g_settings_bind (nautilus_window_state,
+			 NAUTILUS_WINDOW_STATE_START_WITH_SIDEBAR,
 			 action,
 			 "active",
 			 G_SETTINGS_BIND_DEFAULT);
