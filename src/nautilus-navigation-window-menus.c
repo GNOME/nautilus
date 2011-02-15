@@ -192,21 +192,6 @@ action_show_hide_sidebar_callback (GtkAction *action,
 }
 
 static void
-action_show_hide_statusbar_callback (GtkAction *action,
-				     gpointer user_data)
-{
-	NautilusNavigationWindow *window;
-
-	window = NAUTILUS_NAVIGATION_WINDOW (user_data);
-
-	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action))) {
-		nautilus_navigation_window_show_status_bar (window);
-	} else {
-		nautilus_navigation_window_hide_status_bar (window);
-	}
-}
-
-static void
 action_split_view_callback (GtkAction *action,
 			    gpointer user_data)
 {
@@ -257,11 +242,6 @@ nautilus_navigation_window_update_show_hide_menu_items (NautilusNavigationWindow
 	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
 				      nautilus_navigation_window_sidebar_showing (window));
 	
-	action = gtk_action_group_get_action (window->details->navigation_action_group,
-					      NAUTILUS_ACTION_SHOW_HIDE_STATUSBAR);
-	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
-				      nautilus_navigation_window_status_bar_showing (window));
-
 	action = gtk_action_group_get_action (window->details->navigation_action_group,
 					      NAUTILUS_ACTION_SHOW_HIDE_EXTRA_PANE);
 	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
@@ -818,7 +798,7 @@ static const GtkToggleActionEntry navigation_toggle_entries[] = {
   /* name, stock id */     { "Show Hide Statusbar", NULL,
   /* label, accelerator */   N_("St_atusbar"), NULL,
   /* tooltip */              N_("Change the visibility of this window's statusbar"),
-                             G_CALLBACK (action_show_hide_statusbar_callback),
+                             NULL,
   /* is_active */            TRUE },
   /* name, stock id */     { "Search", "edit-find-symbolic",
   /* label, accelerator */   N_("_Search for Files..."),
@@ -974,6 +954,15 @@ navigation_window_menus_set_bindings (NautilusNavigationWindow *window)
 
 	g_settings_bind (nautilus_window_state,
 			 NAUTILUS_WINDOW_STATE_START_WITH_TOOLBAR,
+			 action,
+			 "active",
+			 G_SETTINGS_BIND_DEFAULT);
+
+	action = gtk_action_group_get_action (window->details->navigation_action_group,
+					      NAUTILUS_ACTION_SHOW_HIDE_STATUSBAR);
+
+	g_settings_bind (nautilus_window_state,
+			 NAUTILUS_WINDOW_STATE_START_WITH_STATUS_BAR,
 			 action,
 			 "active",
 			 G_SETTINGS_BIND_DEFAULT);

@@ -76,9 +76,6 @@ gint     nautilus_navigation_window_get_base_page_index  (NautilusNavigationWind
 void     nautilus_navigation_window_hide_sidebar         (NautilusNavigationWindow *window);
 void     nautilus_navigation_window_show_sidebar         (NautilusNavigationWindow *window);
 gboolean nautilus_navigation_window_sidebar_showing      (NautilusNavigationWindow *window);
-void     nautilus_navigation_window_hide_status_bar      (NautilusNavigationWindow *window);
-void     nautilus_navigation_window_show_status_bar      (NautilusNavigationWindow *window);
-gboolean nautilus_navigation_window_status_bar_showing   (NautilusNavigationWindow *window);
 void     nautilus_navigation_window_back_or_forward      (NautilusNavigationWindow *window,
                                                           gboolean                  back,
                                                           guint                     distance,

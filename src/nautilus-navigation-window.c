@@ -460,35 +460,6 @@ nautilus_navigation_window_set_search_button (NautilusNavigationWindow *window,
 	g_object_set_data (G_OBJECT (action), "blocked", NULL);
 }
 
-void
-nautilus_navigation_window_hide_status_bar (NautilusNavigationWindow *window)
-{
-	gtk_widget_hide (NAUTILUS_WINDOW (window)->details->statusbar);
-
-	nautilus_navigation_window_update_show_hide_menu_items (window);
-	g_settings_set_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_STATUS_BAR, FALSE);
-}
-
-void
-nautilus_navigation_window_show_status_bar (NautilusNavigationWindow *window)
-{
-	gtk_widget_show (NAUTILUS_WINDOW (window)->details->statusbar);
-
-	nautilus_navigation_window_update_show_hide_menu_items (window);
-	g_settings_set_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_STATUS_BAR, TRUE);
-}
-
-gboolean
-nautilus_navigation_window_status_bar_showing (NautilusNavigationWindow *window)
-{
-	if (NAUTILUS_WINDOW (window)->details->statusbar != NULL) {
-		return gtk_widget_get_visible (NAUTILUS_WINDOW (window)->details->statusbar);
-	}
-	/* If we're not visible yet we haven't changed visibility, so its TRUE */
-	return TRUE;
-}
-
-
 /**
  * nautilus_navigation_window_get_base_page_index:
  * @window:	Window to get index from
@@ -537,12 +508,6 @@ nautilus_navigation_window_show (GtkWidget *widget)
 		nautilus_navigation_window_show_sidebar (window);
 	} else {
 		nautilus_navigation_window_hide_sidebar (window);
-	}
-
-	if (g_settings_get_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_STATUS_BAR)) {
-		nautilus_navigation_window_show_status_bar (window);
-	} else {
-		nautilus_navigation_window_hide_status_bar (window);
 	}
 
 	GTK_WIDGET_CLASS (parent_class)->show (widget);
@@ -830,7 +795,12 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 	window->details->split_view_hpane = hpaned;
 
 	gtk_box_pack_start (GTK_BOX (vbox), win->details->statusbar, FALSE, FALSE, 0);
-	gtk_widget_show (win->details->statusbar);
+
+	g_settings_bind (nautilus_window_state,
+			 NAUTILUS_WINDOW_STATE_START_WITH_STATUS_BAR,
+			 win->details->statusbar,
+			 "visible",
+			 G_SETTINGS_BIND_DEFAULT);
 
 	nautilus_navigation_window_initialize_actions (window);
 	nautilus_navigation_window_pane_setup (pane);
