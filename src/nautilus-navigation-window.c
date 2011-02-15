@@ -901,6 +901,18 @@ create_extra_pane (NautilusNavigationWindow *window)
 	return slot;
 }
 
+static void
+navigation_window_set_search_action_text (NautilusNavigationWindow *window,
+					  gboolean setting)
+{
+	GtkAction *action;
+
+	action = gtk_action_group_get_action (window->details->navigation_action_group,
+					      NAUTILUS_ACTION_SEARCH);
+
+	gtk_action_set_is_important (action, setting);
+}
+
 void
 nautilus_navigation_window_split_view_on (NautilusNavigationWindow *window)
 {
@@ -929,6 +941,8 @@ nautilus_navigation_window_split_view_on (NautilusNavigationWindow *window)
 
 	nautilus_window_slot_go_to (slot, location, FALSE);
 	g_object_unref (location);
+
+	navigation_window_set_search_action_text (window, FALSE);
 }
 
 void
@@ -955,6 +969,8 @@ nautilus_navigation_window_split_view_off (NautilusNavigationWindow *window)
 
 	nautilus_navigation_window_update_show_hide_menu_items (window);
 	nautilus_navigation_window_update_split_view_actions_sensitivity (window);
+
+	navigation_window_set_search_action_text (window, TRUE);
 }
 
 gboolean
