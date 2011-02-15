@@ -522,19 +522,11 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 }
 
 GtkWidget *
-nautilus_location_bar_new (GtkUIManager *ui_manager)
+nautilus_location_bar_new (void)
 {
 	GtkWidget *bar;
-	NautilusLocationBar *location_bar;
 
 	bar = gtk_widget_new (NAUTILUS_TYPE_LOCATION_BAR, NULL);
-	location_bar = NAUTILUS_LOCATION_BAR (bar);
-
-	/* Clipboard */
-	nautilus_clipboard_set_up_editable
-		(GTK_EDITABLE (location_bar->details->entry),
-		 ui_manager,
-		 TRUE);
 
 	return bar;
 }

@@ -230,6 +230,7 @@ ui_DATA = 					\
 	nautilus-directory-view-ui.xml		\
 	nautilus-icon-view-ui.xml		\
 	nautilus-list-view-ui.xml		\
+	nautilus-toolbar-ui.xml			\
 	$(NULL)
 
 CLEANFILES = \

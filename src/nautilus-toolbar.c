@@ -31,10 +31,12 @@
 #include "nautilus-pathbar.h"
 #include "nautilus-window-private.h"
 #include "nautilus-global-preferences.h"
+#include "nautilus-ui-utilities.h"
 
 struct _NautilusToolbarPriv {
 	GtkWidget *toolbar;
 
+	GtkActionGroup *action_group;
 	GtkUIManager *ui_manager;
 
 	GtkWidget *path_bar;
@@ -47,7 +49,7 @@ struct _NautilusToolbarPriv {
 };
 
 enum {
-	PROP_UI_MANAGER = 1,
+	PROP_ACTION_GROUP = 1,
 	PROP_SHOW_LOCATION_ENTRY,
 	PROP_SHOW_SEARCH_BAR,
 	PROP_SHOW_MAIN_BAR,
@@ -83,14 +85,21 @@ nautilus_toolbar_constructed (GObject *obj)
 {
 	NautilusToolbar *self = NAUTILUS_TOOLBAR (obj);
 	GtkToolItem *item;
-	GtkWidget *hbox;
+	GtkWidget *hbox, *toolbar;
+	const gchar *ui;
 
 	G_OBJECT_CLASS (nautilus_toolbar_parent_class)->constructed (obj);
 
-	self->priv->toolbar = gtk_ui_manager_get_widget (self->priv->ui_manager, "/Toolbar");
-	
+	/* add the UI */
+	ui = nautilus_ui_string_get ("nautilus-toolbar-ui.xml");
+	self->priv->ui_manager = gtk_ui_manager_new ();
+	gtk_ui_manager_add_ui_from_string (self->priv->ui_manager, ui, -1, NULL);
+	gtk_ui_manager_insert_action_group (self->priv->ui_manager, self->priv->action_group, 0);
+
+	toolbar = gtk_ui_manager_get_widget (self->priv->ui_manager, "/Toolbar");
+	self->priv->toolbar = toolbar;
 	gtk_box_pack_start (GTK_BOX (self), self->priv->toolbar, TRUE, TRUE, 0);
-	gtk_widget_show (self->priv->toolbar);
+	gtk_widget_show_all (self->priv->toolbar);
 
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show (hbox);
@@ -100,7 +109,7 @@ nautilus_toolbar_constructed (GObject *obj)
 	gtk_box_pack_start (GTK_BOX (hbox), self->priv->path_bar, TRUE, TRUE, 0);
 
 	/* entry-like location bar */
-	self->priv->location_bar = nautilus_location_bar_new (self->priv->ui_manager);
+	self->priv->location_bar = nautilus_location_bar_new ();
 	gtk_box_pack_start (GTK_BOX (hbox), self->priv->location_bar, TRUE, TRUE, 0);
 
 	item = gtk_tool_item_new ();
@@ -161,8 +170,8 @@ nautilus_toolbar_set_property (GObject *object,
 	NautilusToolbar *self = NAUTILUS_TOOLBAR (object);
 
 	switch (property_id) {
-	case PROP_UI_MANAGER:
-		self->priv->ui_manager = g_value_get_object (value);
+	case PROP_ACTION_GROUP:
+		self->priv->action_group = g_value_get_object (value);
 		break;
 	case PROP_SHOW_LOCATION_ENTRY:
 		nautilus_toolbar_set_show_location_entry (self, g_value_get_boolean (value));
@@ -180,6 +189,16 @@ nautilus_toolbar_set_property (GObject *object,
 }
 
 static void
+nautilus_toolbar_dispose (GObject *obj)
+{
+	NautilusToolbar *self = NAUTILUS_TOOLBAR (obj);
+
+	g_clear_object (&self->priv->ui_manager);
+
+	G_OBJECT_CLASS (nautilus_toolbar_parent_class)->dispose (obj);
+}
+
+static void
 nautilus_toolbar_class_init (NautilusToolbarClass *klass)
 {
 	GObjectClass *oclass;
@@ -188,12 +207,13 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
 	oclass->get_property = nautilus_toolbar_get_property;
 	oclass->set_property = nautilus_toolbar_set_property;
 	oclass->constructed = nautilus_toolbar_constructed;
+	oclass->dispose = nautilus_toolbar_dispose;
 
-	properties[PROP_UI_MANAGER] =
-		g_param_spec_object ("ui-manager",
-				     "The UI manager",
-				     "The UI manager to get actions from",
-				     GTK_TYPE_UI_MANAGER,
+	properties[PROP_ACTION_GROUP] =
+		g_param_spec_object ("action-group",
+				     "The action group",
+				     "The action group to get actions from",
+				     GTK_TYPE_ACTION_GROUP,
 				     G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
 				     G_PARAM_STATIC_STRINGS);
 	properties[PROP_SHOW_LOCATION_ENTRY] =
@@ -220,10 +240,10 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
 }
 
 GtkWidget *
-nautilus_toolbar_new (GtkUIManager *ui_manager)
+nautilus_toolbar_new (GtkActionGroup *action_group)
 {
 	return g_object_new (NAUTILUS_TYPE_TOOLBAR,
-			     "ui-manager", ui_manager,
+			     "action-group", action_group,
 			     "orientation", GTK_ORIENTATION_VERTICAL,
 			     NULL);
 }

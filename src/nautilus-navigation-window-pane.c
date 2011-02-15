@@ -24,6 +24,8 @@
 
 #include "nautilus-navigation-window-pane.h"
 #include "nautilus-window-private.h"
+
+#include "nautilus-clipboard.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-pathbar.h"
 #include "nautilus-location-bar.h"
@@ -618,13 +620,15 @@ nautilus_navigation_window_pane_setup (NautilusNavigationWindowPane *pane)
 {
 	NautilusEntry *entry;
 	GtkSizeGroup *header_size_group;
+	NautilusNavigationWindow *window;
 
 	pane->widget = gtk_vbox_new (FALSE, 0);
+	window = NAUTILUS_NAVIGATION_WINDOW (NAUTILUS_WINDOW_PANE (pane)->window);
 
-	header_size_group = NAUTILUS_NAVIGATION_WINDOW (NAUTILUS_WINDOW_PANE (pane)->window)->details->header_size_group;
+	header_size_group = window->details->header_size_group;
 
 	/* build the toolbar */
-	pane->tool_bar = nautilus_toolbar_new (nautilus_window_get_ui_manager (NAUTILUS_WINDOW_PANE (pane)->window));
+	pane->tool_bar = nautilus_toolbar_new (window->details->navigation_action_group);
 	gtk_box_pack_start (GTK_BOX (pane->widget),
 			    pane->tool_bar,
 			    FALSE, FALSE, 0);
@@ -647,6 +651,11 @@ nautilus_navigation_window_pane_setup (NautilusNavigationWindowPane *pane)
 	/* connect to the location bar signals */
 	pane->location_bar = nautilus_toolbar_get_location_bar (NAUTILUS_TOOLBAR (pane->tool_bar));
 	gtk_size_group_add_widget (header_size_group, pane->location_bar);
+
+	nautilus_clipboard_set_up_editable
+		(GTK_EDITABLE (nautilus_location_bar_get_entry (NAUTILUS_LOCATION_BAR (pane->location_bar))),
+		 nautilus_window_get_ui_manager (NAUTILUS_WINDOW (window)),
+		 TRUE);
 
 	g_signal_connect_object (pane->location_bar, "location-changed",
 				 G_CALLBACK (navigation_bar_location_changed_callback), pane, 0);
