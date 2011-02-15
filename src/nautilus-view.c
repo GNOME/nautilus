@@ -9245,7 +9245,8 @@ setup_loading_floating_bar (NautilusView *view)
 	}
 
 	nautilus_floating_bar_set_label (NAUTILUS_FLOATING_BAR (view->details->floating_bar),
-					 _("Loading..."));
+					 NAUTILUS_IS_SEARCH_DIRECTORY (view->details->model) ?
+					 _("Searching...") : _("Loading..."));
 	nautilus_floating_bar_set_show_spinner (NAUTILUS_FLOATING_BAR (view->details->floating_bar),
 						TRUE);
 	nautilus_floating_bar_add_action (NAUTILUS_FLOATING_BAR (view->details->floating_bar),
