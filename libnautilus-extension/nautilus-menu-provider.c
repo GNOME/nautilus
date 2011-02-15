@@ -105,22 +105,6 @@ nautilus_menu_provider_get_background_items (NautilusMenuProvider *provider,
 	}
 }
 
-GList *
-nautilus_menu_provider_get_toolbar_items (NautilusMenuProvider *provider,
-					  GtkWidget *window,
-					  NautilusFileInfo *current_folder)
-{
-	g_return_val_if_fail (NAUTILUS_IS_MENU_PROVIDER (provider), NULL);
-	g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (current_folder), NULL);
-
-	if (NAUTILUS_MENU_PROVIDER_GET_IFACE (provider)->get_toolbar_items) {
-		return NAUTILUS_MENU_PROVIDER_GET_IFACE (provider)->get_toolbar_items 
-			(provider, window, current_folder);
-	} else {
-		return NULL;
-	}
-}
-
 /* This function emit a signal to inform nautilus that its item list has changed */
 void
 nautilus_menu_provider_emit_items_updated_signal (NautilusMenuProvider* provider)

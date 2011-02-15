@@ -55,9 +55,6 @@ struct _NautilusMenuProviderIface {
 	GList *(*get_background_items) (NautilusMenuProvider *provider,
 					GtkWidget            *window,
 					NautilusFileInfo     *current_folder);
-	GList *(*get_toolbar_items)    (NautilusMenuProvider *provider,
-					GtkWidget            *window,
-				        NautilusFileInfo     *current_folder);
 };
 
 /* Interface Functions */
@@ -66,9 +63,6 @@ GList                  *nautilus_menu_provider_get_file_items       (NautilusMen
 								     GtkWidget            *window,
 								     GList                *files);
 GList                  *nautilus_menu_provider_get_background_items (NautilusMenuProvider *provider,
-								     GtkWidget            *window,
-								     NautilusFileInfo     *current_folder);
-GList                  *nautilus_menu_provider_get_toolbar_items    (NautilusMenuProvider *provider,
 								     GtkWidget            *window,
 								     NautilusFileInfo     *current_folder);
 
