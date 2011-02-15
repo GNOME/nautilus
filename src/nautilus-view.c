@@ -192,6 +192,7 @@ struct NautilusViewDetails
 	guint update_menus_timeout_id;
 	guint update_status_idle_id;
 	guint reveal_selection_idle_id;
+	guint set_status_timeout_id;
 
 	guint display_pending_source_id;
 	guint changes_timeout_id;
@@ -2676,6 +2677,11 @@ nautilus_view_destroy (GtkWidget *object)
 		view->details->delayed_rename_file_id = 0;
 	}
 
+	if (view->details->set_status_timeout_id != 0) {
+		g_source_remove (view->details->set_status_timeout_id);
+		view->details->set_status_timeout_id = 0;
+	}
+
 	if (view->details->model) {
 		nautilus_directory_unref (view->details->model);
 		view->details->model = NULL;
@@ -2719,9 +2725,10 @@ nautilus_view_finalize (GObject *object)
 }
 
 static void
-nautilus_view_set_status (NautilusView *view,
-			  const gchar *status)
+real_view_set_status (NautilusView *view,
+		      const gchar *status)
 {
+	
 	gboolean show_statusbar;
 
 	nautilus_floating_bar_cleanup_actions (NAUTILUS_FLOATING_BAR (view->details->floating_bar));
@@ -2738,6 +2745,67 @@ nautilus_view_set_status (NautilusView *view,
 
 	nautilus_floating_bar_set_label (NAUTILUS_FLOATING_BAR (view->details->floating_bar), status);
 	gtk_widget_show (view->details->floating_bar);
+}
+
+typedef struct {
+	gchar *status;
+	NautilusView *view;
+} SetStatusData;
+
+static void
+set_status_data_free (gpointer data)
+{
+	SetStatusData *status_data = data;
+
+	g_free (status_data->status);
+	g_object_unref (status_data->view);
+
+	g_slice_free (SetStatusData, data);
+}
+
+static gboolean
+set_status_timeout_cb (gpointer data)
+{
+	SetStatusData *status_data = data;
+
+	status_data->view->details->set_status_timeout_id = 0;
+	real_view_set_status (status_data->view, status_data->status);
+
+	return FALSE;
+}
+
+static void
+nautilus_view_set_status (NautilusView *view,
+			  const gchar *status)
+{
+	GtkSettings *settings;
+	gint double_click_time;
+	SetStatusData *status_data;
+
+	if (view->details->set_status_timeout_id != 0) {
+		g_source_remove (view->details->set_status_timeout_id);
+		view->details->set_status_timeout_id = 0;
+	}
+
+	settings = gtk_settings_get_for_screen (gtk_widget_get_screen (GTK_WIDGET (view)));
+	g_object_get (settings,
+		      "gtk-double-click-time", &double_click_time,
+		      NULL);
+
+	status_data = g_slice_new0 (SetStatusData);
+	status_data->status = g_strdup (status);
+	status_data->view = g_object_ref (view);
+
+	/* waiting for half of the double-click-time before setting
+	 * the status seems to be a good approximation of not setting it
+	 * too often and not delaying the statusbar too much.
+	 */
+	view->details->set_status_timeout_id =
+		g_timeout_add_full (G_PRIORITY_DEFAULT,
+				    (guint) (double_click_time / 2),
+				    set_status_timeout_cb,
+				    status_data,
+				    set_status_data_free);
 }
 
 /**
@@ -9168,6 +9236,10 @@ static void
 setup_loading_floating_bar (NautilusView *view)
 {
 	/* setup loading overlay */
+	if (view->details->set_status_timeout_id != 0) {
+		g_source_remove (view->details->set_status_timeout_id);
+		view->details->set_status_timeout_id = 0;
+	}
 
 	nautilus_floating_bar_set_label (NAUTILUS_FLOATING_BAR (view->details->floating_bar),
 					 _("Loading..."));
