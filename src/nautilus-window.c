@@ -1250,18 +1250,6 @@ nautilus_window_load_view_as_menus (NautilusWindow *window)
 }
 
 void
-nautilus_window_display_error (NautilusWindow *window, const char *error_msg)
-{
-	GtkWidget *dialog;
-
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-
-	dialog = gtk_message_dialog_new (GTK_WINDOW (window), 0, GTK_MESSAGE_ERROR,
-					 GTK_BUTTONS_OK, error_msg, NULL);
-	gtk_widget_show (dialog);
-}
-
-void
 nautilus_window_sync_title (NautilusWindow *window,
 			    NautilusWindowSlot *slot)
 {

@@ -136,8 +136,6 @@ void             nautilus_window_go_to_full           (NautilusWindow    *window
 void             nautilus_window_new_tab              (NautilusWindow    *window);
 void             nautilus_window_prompt_for_location  (NautilusWindow    *window,
                                                        const char        *initial);
-void             nautilus_window_display_error        (NautilusWindow    *window,
-                                                       const char        *error_msg);
 
 void             nautilus_window_allow_up             (NautilusWindow    *window, 
                                                        gboolean           allow);
