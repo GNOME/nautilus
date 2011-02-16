@@ -35,8 +35,6 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-entry.h>
 
-static void nautilus_navigation_window_pane_dispose    (GObject *object);
-
 G_DEFINE_TYPE (NautilusNavigationWindowPane,
 	       nautilus_navigation_window_pane,
 	       NAUTILUS_TYPE_WINDOW_PANE)
@@ -609,7 +607,7 @@ nautilus_navigation_window_pane_hide_search_bar (NautilusNavigationWindowPane *p
 	}
 }
 
-void
+static void
 nautilus_navigation_window_pane_setup (NautilusNavigationWindowPane *pane)
 {
 	NautilusEntry *entry;
@@ -787,16 +785,6 @@ real_sync_search_widgets (NautilusWindowPane *window_pane)
 }
 
 static void
-nautilus_navigation_window_pane_class_init (NautilusNavigationWindowPaneClass *class)
-{
-	G_OBJECT_CLASS (class)->dispose = nautilus_navigation_window_pane_dispose;
-	NAUTILUS_WINDOW_PANE_CLASS (class)->show = nautilus_navigation_window_pane_show;
-	NAUTILUS_WINDOW_PANE_CLASS (class)->set_active = real_set_active;
-	NAUTILUS_WINDOW_PANE_CLASS (class)->sync_search_widgets = real_sync_search_widgets;
-	NAUTILUS_WINDOW_PANE_CLASS (class)->sync_location_widgets = real_sync_location_widgets;
-}
-
-static void
 nautilus_navigation_window_pane_dispose (GObject *object)
 {
 	NautilusNavigationWindowPane *pane = NAUTILUS_NAVIGATION_WINDOW_PANE (object);
@@ -807,6 +795,16 @@ nautilus_navigation_window_pane_dispose (GObject *object)
 	G_OBJECT_CLASS (nautilus_navigation_window_pane_parent_class)->dispose (object);
 }
 
+static void
+nautilus_navigation_window_pane_class_init (NautilusNavigationWindowPaneClass *class)
+{
+	G_OBJECT_CLASS (class)->dispose = nautilus_navigation_window_pane_dispose;
+	NAUTILUS_WINDOW_PANE_CLASS (class)->show = nautilus_navigation_window_pane_show;
+	NAUTILUS_WINDOW_PANE_CLASS (class)->set_active = real_set_active;
+	NAUTILUS_WINDOW_PANE_CLASS (class)->sync_search_widgets = real_sync_search_widgets;
+	NAUTILUS_WINDOW_PANE_CLASS (class)->sync_location_widgets = real_sync_location_widgets;
+}
+
 NautilusNavigationWindowPane *
 nautilus_navigation_window_pane_new (NautilusWindow *window)
 {
@@ -814,6 +812,8 @@ nautilus_navigation_window_pane_new (NautilusWindow *window)
 
 	pane = g_object_new (NAUTILUS_TYPE_NAVIGATION_WINDOW_PANE, NULL);
 	NAUTILUS_WINDOW_PANE(pane)->window = window;
+
+	nautilus_navigation_window_pane_setup (pane);
 
 	return pane;
 }

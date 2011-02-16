@@ -83,7 +83,6 @@ static int mouse_back_button = 8;
 static void mouse_back_button_changed		     (gpointer                  callback_data);
 static void mouse_forward_button_changed	     (gpointer                  callback_data);
 static void use_extra_mouse_buttons_changed          (gpointer                  callback_data);
-static NautilusWindowSlot *create_extra_pane         (NautilusNavigationWindow *window);
 
 
 G_DEFINE_TYPE (NautilusNavigationWindow, nautilus_navigation_window, NAUTILUS_TYPE_WINDOW)
@@ -759,9 +758,6 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 
 	window->details = G_TYPE_INSTANCE_GET_PRIVATE (window, NAUTILUS_TYPE_NAVIGATION_WINDOW, NautilusNavigationWindowDetails);
 
-	pane = nautilus_navigation_window_pane_new (win);
-	win->details->panes = g_list_prepend (win->details->panes, pane);
-
 	window->details->header_size_group = gtk_size_group_new (GTK_SIZE_GROUP_VERTICAL);
 	gtk_size_group_set_ignore_hidden (window->details->header_size_group, FALSE);
 
@@ -793,7 +789,9 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 			 G_SETTINGS_BIND_DEFAULT);
 
 	nautilus_navigation_window_initialize_actions (window);
-	nautilus_navigation_window_pane_setup (pane);
+
+	pane = nautilus_navigation_window_pane_new (win);
+	win->details->panes = g_list_prepend (win->details->panes, pane);
 
 	gtk_paned_pack1 (GTK_PANED(hpaned), pane->widget, TRUE, FALSE);
 	gtk_widget_show (pane->widget);
@@ -876,8 +874,6 @@ create_extra_pane (NautilusNavigationWindow *window)
 	/* New pane */
 	pane = nautilus_navigation_window_pane_new (win);
 	win->details->panes = g_list_append (win->details->panes, pane);
-
-	nautilus_navigation_window_pane_setup (pane);
 
 	paned = GTK_PANED (window->details->split_view_hpane);
 	if (gtk_paned_get_child1 (paned) == NULL) {
