@@ -1592,21 +1592,6 @@ nautilus_window_get_extra_slot (NautilusWindow *window)
 	return extra_pane->active_slot;
 }
 
-GList *
-nautilus_window_get_slots (NautilusWindow *window)
-{
-	GList *walk,*list;
-
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
-	list = NULL;
-	for (walk = window->details->panes; walk; walk = walk->next) {
-		NautilusWindowPane *pane = walk->data;
-		list  = g_list_concat (list, g_list_copy(pane->slots));
-	}
-	return list;
-}
-
 static void
 nautilus_window_reload (NautilusWindow *window)
 {

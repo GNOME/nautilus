@@ -409,13 +409,8 @@ real_open_slot (NautilusWindowPane *pane,
 		NautilusWindowOpenSlotFlags flags)
 {
 	NautilusWindowSlot *slot;
-	GList *slots;
 
 	g_assert (nautilus_window_get_active_slot (pane->window) == NULL);
-
-	slots = nautilus_window_get_slots (pane->window);
-	g_assert (slots == NULL);
-	g_list_free (slots);
 
 	slot = g_object_new (NAUTILUS_TYPE_WINDOW_SLOT, NULL);
 	slot->pane = pane;

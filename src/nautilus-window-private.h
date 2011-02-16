@@ -190,7 +190,6 @@ void                nautilus_window_close_slot                           (Nautil
 NautilusWindowSlot *nautilus_window_get_slot_for_view                    (NautilusWindow *window,
 									  NautilusView   *view);
 
-GList *              nautilus_window_get_slots                           (NautilusWindow    *window);
 NautilusWindowSlot * nautilus_window_get_active_slot                     (NautilusWindow    *window);
 NautilusWindowSlot * nautilus_window_get_extra_slot                      (NautilusWindow    *window);
 void                 nautilus_window_set_active_slot                     (NautilusWindow    *window,
