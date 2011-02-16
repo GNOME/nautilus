@@ -828,15 +828,6 @@ nautilus_navigation_window_initialize_actions (NautilusNavigationWindow *window)
 
 	}
 
-	action = gtk_action_group_get_action (action_group, NAUTILUS_ACTION_SEARCH);
-	g_object_set (action,
-		      "short_label", _("_Search"),
-		      "is-important", TRUE,
-		      NULL);
-
-	action = gtk_action_group_get_action (action_group, "ShowSearch");
-	gtk_action_set_sensitive (action, TRUE);
-
 	window->details->nav_state = nautilus_navigation_state_new (action_group,
 								    nav_state_actions);
 
