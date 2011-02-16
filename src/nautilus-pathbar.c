@@ -1915,9 +1915,3 @@ nautilus_path_bar_down (NautilusPathBar *path_bar)
 		}
         }
 }
-
-GtkWidget *
-nautilus_path_bar_get_button_from_button_list_entry (gpointer entry)
-{
-  return BUTTON_DATA(entry)->button;
-}
