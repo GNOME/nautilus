@@ -718,8 +718,6 @@ nautilus_window_close_slot (NautilusWindowSlot *slot)
 	slot->pane = NULL;
 	g_object_unref (slot);
 	pane->slots = g_list_remove (pane->slots, slot);
-	pane->active_slots = g_list_remove (pane->active_slots, slot);
-
 }
 
 NautilusWindowPane*
@@ -806,11 +804,6 @@ nautilus_window_set_active_slot (NautilusWindow *window, NautilusWindowSlot *new
 
 	/* make new slot active, if it exists */
 	if (new_slot) {
-		window->details->active_pane->active_slots =
-			g_list_remove (window->details->active_pane->active_slots, new_slot);
-		window->details->active_pane->active_slots =
-			g_list_prepend (window->details->active_pane->active_slots, new_slot);
-
 		/* inform sidebar panels */
                 nautilus_window_report_location_change (window);
 		/* TODO decide whether "selection-changed" should be emitted */

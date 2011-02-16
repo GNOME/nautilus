@@ -71,18 +71,7 @@ nautilus_window_pane_slot_close (NautilusWindowPane *pane, NautilusWindowSlot *s
 		NautilusWindow *window;
 		window = pane->window;
 		if (pane->active_slot == slot) {
-			g_assert (pane->active_slots != NULL);
-			g_assert (pane->active_slots->data == slot);
-
-			next_slot = NULL;
-			if (pane->active_slots->next != NULL) {
-				next_slot = NAUTILUS_WINDOW_SLOT (pane->active_slots->next->data);
-			}
-
-			if (next_slot == NULL) {
-				next_slot = get_first_inactive_slot (NAUTILUS_WINDOW_PANE (pane));
-			}
-
+			next_slot = get_first_inactive_slot (NAUTILUS_WINDOW_PANE (pane));
 			nautilus_window_set_active_slot (window, next_slot);
 		}
 		nautilus_window_close_slot (slot);
@@ -158,7 +147,6 @@ static void
 nautilus_window_pane_init (NautilusWindowPane *pane)
 {
 	pane->slots = NULL;
-	pane->active_slots = NULL;
 	pane->active_slot = NULL;
 	pane->is_active = FALSE;
 }
