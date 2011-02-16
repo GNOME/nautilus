@@ -388,7 +388,7 @@ notebook_popup_menu_close_cb (GtkMenuItem *menuitem,
 
 	pane = NAUTILUS_WINDOW_PANE (user_data);
 	slot = pane->active_slot;
-	nautilus_window_slot_close (slot);
+	nautilus_window_pane_slot_close (pane, slot);
 }
 
 static void

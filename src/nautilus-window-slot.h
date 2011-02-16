@@ -124,7 +124,6 @@ void    nautilus_window_slot_update_query_editor	   (NautilusWindowSlot *slot);
 GFile * nautilus_window_slot_get_location		   (NautilusWindowSlot *slot);
 char *  nautilus_window_slot_get_location_uri		   (NautilusWindowSlot *slot);
 
-void    nautilus_window_slot_close			   (NautilusWindowSlot *slot);
 void    nautilus_window_slot_reload			   (NautilusWindowSlot *slot);
 
 void nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,

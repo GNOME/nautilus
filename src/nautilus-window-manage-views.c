@@ -1119,7 +1119,7 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 			/* We're missing a previous location (if opened location
 			 * in a new tab) so close it and return */
 			if (slot->location == NULL) {
-				nautilus_window_slot_close (slot);
+				nautilus_window_pane_slot_close (slot->pane, slot);
 			} else {
 				/* We disconnected this, so we need to re-connect it */
 				viewed_file = nautilus_file_get (slot->location);

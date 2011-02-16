@@ -816,12 +816,6 @@ nautilus_window_set_active_slot (NautilusWindow *window, NautilusWindowSlot *new
 	}
 }
 
-void
-nautilus_window_slot_close (NautilusWindowSlot *slot)
-{
-    nautilus_window_pane_slot_close (slot->pane, slot);
-}
-
 static void
 nautilus_window_get_preferred_width (GtkWidget *widget,
 				     gint *minimal_width,
