@@ -1553,6 +1553,10 @@ nautilus_window_get_active_slot (NautilusWindow *window)
 {
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
+	if (window->details->active_pane == NULL) {
+		return NULL;
+	}
+
 	return window->details->active_pane->active_slot;
 }
 
