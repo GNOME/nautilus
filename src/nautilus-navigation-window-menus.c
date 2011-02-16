@@ -75,33 +75,12 @@ action_close_all_windows_callback (GtkAction *action,
 	g_object_unref (app);
 }
 
-static gboolean
-should_open_in_new_tab (void)
-{
-	/* FIXME this is duplicated */
-	GdkEvent *event;
-
-	event = gtk_get_current_event ();
-
-	if (event == NULL) {
-		return FALSE;
-	}
-
-	if (event->type == GDK_BUTTON_PRESS || event->type == GDK_BUTTON_RELEASE) {
-		return event->button.button == 2;
-	}
-
-	gdk_event_free (event);
-
-	return FALSE;
-}
-
 static void
 action_back_callback (GtkAction *action, 
 		      gpointer user_data) 
 {
 	nautilus_navigation_window_back_or_forward (NAUTILUS_NAVIGATION_WINDOW (user_data), 
-						    TRUE, 0, should_open_in_new_tab ());
+						    TRUE, 0, nautilus_event_should_open_in_new_tab ());
 }
 
 static void
@@ -109,7 +88,7 @@ action_forward_callback (GtkAction *action,
 			 gpointer user_data) 
 {
 	nautilus_navigation_window_back_or_forward (NAUTILUS_NAVIGATION_WINDOW (user_data), 
-			                            FALSE, 0, should_open_in_new_tab ());
+			                            FALSE, 0, nautilus_event_should_open_in_new_tab ());
 }
 
 static void

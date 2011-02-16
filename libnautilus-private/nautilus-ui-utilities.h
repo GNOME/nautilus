@@ -39,4 +39,6 @@ void        nautilus_ui_prepare_merge_ui           (GtkUIManager      *ui_manage
 GtkAction * nautilus_action_from_menu_item         (NautilusMenuItem  *item);
 const char *nautilus_ui_string_get                 (const char        *filename);
 
+gboolean  nautilus_event_should_open_in_new_tab   (void);
+
 #endif /* NAUTILUS_UI_UTILITIES_H */
