@@ -891,15 +891,23 @@ create_extra_pane (NautilusNavigationWindow *window)
 }
 
 static void
-navigation_window_set_search_action_text (NautilusNavigationWindow *window,
+navigation_window_set_search_action_text (NautilusNavigationWindow *nav_window,
 					  gboolean setting)
 {
 	GtkAction *action;
+	NautilusWindow *window;
+	NautilusNavigationWindowPane *pane;
+	GList *l;
 
-	action = gtk_action_group_get_action (window->details->navigation_action_group,
-					      NAUTILUS_ACTION_SEARCH);
+	window = NAUTILUS_WINDOW (nav_window);
 
-	gtk_action_set_is_important (action, setting);
+	for (l = window->details->panes; l != NULL; l = l->next) {
+		pane = l->data;
+		action = gtk_action_group_get_action (pane->action_group,
+						      NAUTILUS_ACTION_SEARCH);
+
+		gtk_action_set_is_important (action, setting);
+	}
 }
 
 void
