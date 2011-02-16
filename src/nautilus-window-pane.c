@@ -63,67 +63,6 @@ nautilus_window_pane_show (NautilusWindowPane *pane)
 }
 
 void
-nautilus_window_pane_zoom_in (NautilusWindowPane *pane)
-{
-	NautilusWindowSlot *slot;
-
-	g_assert (pane != NULL);
-
-	nautilus_window_set_active_pane (pane->window, pane);
-
-	slot = pane->active_slot;
-	if (slot->content_view != NULL) {
-		nautilus_view_bump_zoom_level (slot->content_view, 1);
-	}
-}
-
-void
-nautilus_window_pane_zoom_to_level (NautilusWindowPane *pane,
-			       NautilusZoomLevel level)
-{
-	NautilusWindowSlot *slot;
-
-	g_assert (pane != NULL);
-
-	nautilus_window_set_active_pane (pane->window, pane);
-
-	slot = pane->active_slot;
-	if (slot->content_view != NULL) {
-		nautilus_view_zoom_to_level (slot->content_view, level);
-	}
-}
-
-void
-nautilus_window_pane_zoom_out (NautilusWindowPane *pane)
-{
-	NautilusWindowSlot *slot;
-
-	g_assert (pane != NULL);
-
-	nautilus_window_set_active_pane (pane->window, pane);
-
-	slot = pane->active_slot;
-	if (slot->content_view != NULL) {
-		nautilus_view_bump_zoom_level (slot->content_view, -1);
-	}
-}
-
-void
-nautilus_window_pane_zoom_to_default (NautilusWindowPane *pane)
-{
-	NautilusWindowSlot *slot;
-
-	g_assert (pane != NULL);
-
-	nautilus_window_set_active_pane (pane->window, pane);
-
-	slot = pane->active_slot;
-	if (slot->content_view != NULL) {
-		nautilus_view_restore_default_zoom_level (slot->content_view);
-	}
-}
-
-void
 nautilus_window_pane_slot_close (NautilusWindowPane *pane, NautilusWindowSlot *slot)
 {
 	NautilusWindowSlot *next_slot;

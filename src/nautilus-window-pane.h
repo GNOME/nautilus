@@ -79,10 +79,6 @@ NautilusWindowPane *nautilus_window_pane_new (NautilusWindow *window);
 
 
 void nautilus_window_pane_show (NautilusWindowPane *pane);
-void nautilus_window_pane_zoom_in (NautilusWindowPane *pane);
-void nautilus_window_pane_zoom_to_level (NautilusWindowPane *pane, NautilusZoomLevel level);
-void nautilus_window_pane_zoom_out (NautilusWindowPane *pane);
-void nautilus_window_pane_zoom_to_default (NautilusWindowPane *pane);
 void nautilus_window_pane_sync_location_widgets (NautilusWindowPane *pane);
 void nautilus_window_pane_sync_search_widgets  (NautilusWindowPane *pane);
 void nautilus_window_pane_set_active (NautilusWindowPane *pane, gboolean is_active);

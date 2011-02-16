@@ -354,37 +354,41 @@ nautilus_window_prompt_for_location (NautilusWindow *window,
                          prompt_for_location, (window, initial));
 }
 
+static NautilusView *
+nautilus_window_get_active_view (NautilusWindow *window)
+{
+	NautilusWindowSlot *slot;
+	NautilusView *view;
+
+	slot = window->details->active_pane->active_slot;
+	view = slot->content_view;
+
+	return view;
+}
+
 void
 nautilus_window_zoom_in (NautilusWindow *window)
 {
-	g_assert (window != NULL);
-
-	nautilus_window_pane_zoom_in (window->details->active_pane);
+	nautilus_view_bump_zoom_level (nautilus_window_get_active_view (window), 1);
 }
 
 void
 nautilus_window_zoom_to_level (NautilusWindow *window,
 			       NautilusZoomLevel level)
 {
-	g_assert (window != NULL);
-
-	nautilus_window_pane_zoom_to_level (window->details->active_pane, level);
+	nautilus_view_zoom_to_level (nautilus_window_get_active_view (window), level);
 }
 
 void
 nautilus_window_zoom_out (NautilusWindow *window)
 {
-	g_assert (window != NULL);
-
-	nautilus_window_pane_zoom_out (window->details->active_pane);
+	nautilus_view_bump_zoom_level (nautilus_window_get_active_view (window), -1);
 }
 
 void
 nautilus_window_zoom_to_default (NautilusWindow *window)
 {
-	g_assert (window != NULL);
-
-	nautilus_window_pane_zoom_to_default (window->details->active_pane);
+	nautilus_view_restore_default_zoom_level (nautilus_window_get_active_view (window));
 }
 
 /* Code should never force the window taller than this size.
