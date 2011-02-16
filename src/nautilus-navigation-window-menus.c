@@ -684,6 +684,64 @@ static const GtkRadioActionEntry navigation_radio_entries[] = {
 	  SIDEBAR_TREE }
 };
 
+GtkActionGroup *
+nautilus_navigation_window_create_toolbar_action_group (NautilusNavigationWindow *window)
+{
+	GtkActionGroup *action_group;
+	GtkAction *action;
+
+	action_group = gtk_action_group_new ("ToolbarActions");
+	gtk_action_group_set_translation_domain (action_group, GETTEXT_PACKAGE);
+
+	action = g_object_new (NAUTILUS_TYPE_NAVIGATION_ACTION,
+			       "name", NAUTILUS_ACTION_BACK,
+			       "label", _("_Back"),
+			       "stock_id", GTK_STOCK_GO_BACK,
+			       "tooltip", _("Go to the previous visited location"),
+			       "arrow-tooltip", _("Back history"),
+			       "window", window,
+			       "direction", NAUTILUS_NAVIGATION_DIRECTION_BACK,
+			       NULL);
+	g_signal_connect (action, "activate",
+			  G_CALLBACK (action_back_callback), window);
+	gtk_action_group_add_action (action_group, action);
+
+	g_object_unref (action);
+
+	action = g_object_new (NAUTILUS_TYPE_NAVIGATION_ACTION,
+			       "name", NAUTILUS_ACTION_FORWARD,
+			       "label", _("_Forward"),
+			       "stock_id", GTK_STOCK_GO_FORWARD,
+			       "tooltip", _("Go to the next visited location"),
+			       "arrow-tooltip", _("Forward history"),
+			       "window", window,
+			       "direction", NAUTILUS_NAVIGATION_DIRECTION_FORWARD,
+			       NULL);
+	g_signal_connect (action, "activate",
+			  G_CALLBACK (action_forward_callback), window);
+	gtk_action_group_add_action (action_group, action);
+
+	g_object_unref (action);
+
+	action = GTK_ACTION
+		(gtk_toggle_action_new ("Search",
+					_("Search"),
+					_("Search documents and folders by name"),
+					NULL));
+	g_signal_connect (action, "activate",
+			  G_CALLBACK (action_show_hide_search_callback), window);
+	gtk_action_group_add_action (action_group, action);
+	gtk_action_set_icon_name (GTK_ACTION (action), "edit-find-symbolic");
+	gtk_action_set_is_important (GTK_ACTION (action), TRUE);
+
+	g_object_unref (action);
+
+	nautilus_navigation_state_add_group (window->details->nav_state,
+					     action_group);
+
+	return action_group;
+}
+
 void 
 nautilus_navigation_window_initialize_actions (NautilusNavigationWindow *window)
 {
@@ -692,6 +750,9 @@ nautilus_navigation_window_initialize_actions (NautilusNavigationWindow *window)
 	GtkAction *action;
 	int i;
 	const char *ui;
+	const gchar *nav_state_actions[] = {
+		NAUTILUS_ACTION_BACK, NAUTILUS_ACTION_FORWARD, NULL
+	};
 
 	ui_manager = nautilus_window_get_ui_manager (NAUTILUS_WINDOW (window));
 
@@ -714,7 +775,7 @@ nautilus_navigation_window_initialize_actions (NautilusNavigationWindow *window)
 					    window);
 
 	action = g_object_new (NAUTILUS_TYPE_NAVIGATION_ACTION,
-			       "name", "Back",
+			       "name", NAUTILUS_ACTION_BACK,
 			       "label", _("_Back"),
 			       "stock_id", GTK_STOCK_GO_BACK,
 			       "tooltip", _("Go to the previous visited location"),
@@ -730,7 +791,7 @@ nautilus_navigation_window_initialize_actions (NautilusNavigationWindow *window)
 	g_object_unref (action);
 
 	action = g_object_new (NAUTILUS_TYPE_NAVIGATION_ACTION,
-			       "name", "Forward",
+			       "name", NAUTILUS_ACTION_FORWARD,
 			       "label", _("_Forward"),
 			       "stock_id", GTK_STOCK_GO_FORWARD,
 			       "tooltip", _("Go to the next visited location"),
@@ -797,6 +858,9 @@ nautilus_navigation_window_initialize_actions (NautilusNavigationWindow *window)
 
 	action = gtk_action_group_get_action (action_group, "ShowSearch");
 	gtk_action_set_sensitive (action, TRUE);
+
+	window->details->nav_state = nautilus_navigation_state_new (action_group,
+								    nav_state_actions);
 
 	gtk_ui_manager_insert_action_group (ui_manager, action_group, 0);
 	g_object_unref (action_group); /* owned by ui_manager */

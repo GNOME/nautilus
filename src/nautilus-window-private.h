@@ -32,6 +32,7 @@
 #include "nautilus-window-slot.h"
 #include "nautilus-window-pane.h"
 #include "nautilus-spatial-window.h"
+#include "nautilus-navigation-state.h"
 #include "nautilus-navigation-window.h"
 #include "nautilus-bookmark-list.h"
 
@@ -95,6 +96,7 @@ struct _NautilusNavigationWindowDetails {
         GtkWidget *content_paned;
         GtkWidget *content_box;
         GtkActionGroup *navigation_action_group; /* owned by ui_manager */
+        NautilusNavigationState *nav_state;
 
         GtkSizeGroup *header_size_group;
         
@@ -213,6 +215,7 @@ void nautilus_window_sync_title            (NautilusWindow *window,
 void nautilus_window_sync_zoom_widgets     (NautilusWindow *window);
 
 /* Navigation window menus */
+GtkActionGroup *nautilus_navigation_window_create_toolbar_action_group (NautilusNavigationWindow *window);
 void               nautilus_navigation_window_initialize_actions                    (NautilusNavigationWindow    *window);
 void               nautilus_navigation_window_initialize_menus                      (NautilusNavigationWindow    *window);
 void               nautilus_navigation_window_remove_bookmarks_menu_callback        (NautilusNavigationWindow    *window);

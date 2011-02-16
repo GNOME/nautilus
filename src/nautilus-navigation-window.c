@@ -308,6 +308,7 @@ nautilus_navigation_window_finalize (GObject *object)
 	window = NAUTILUS_NAVIGATION_WINDOW (object);
 
 	g_free (window->details->sidebar_id);
+	g_clear_object (&window->details->nav_state);
 
 	g_signal_handlers_disconnect_by_func (nautilus_preferences,
 					      always_use_browser_changed,
@@ -337,9 +338,9 @@ nautilus_navigation_window_allow_back (NautilusNavigationWindow *window, gboolea
 {
 	GtkAction *action;
 
-	action = gtk_action_group_get_action (window->details->navigation_action_group,
+	action = gtk_action_group_get_action (nautilus_navigation_state_get_master (window->details->nav_state),
 					      NAUTILUS_ACTION_BACK);
-	
+
 	gtk_action_set_sensitive (action, allow);
 }
 
@@ -348,9 +349,9 @@ nautilus_navigation_window_allow_forward (NautilusNavigationWindow *window, gboo
 {
 	GtkAction *action;
 
-	action = gtk_action_group_get_action (window->details->navigation_action_group,
+	action = gtk_action_group_get_action (nautilus_navigation_state_get_master (window->details->nav_state),
 					      NAUTILUS_ACTION_FORWARD);
-	
+
 	gtk_action_set_sensitive (action, allow);
 }
 
@@ -803,12 +804,6 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 
 	nautilus_navigation_window_initialize_menus (window);
 
-	/* Set initial sensitivity of some buttons & menu items
-	 * now that they're all created.
-	 */
-	nautilus_navigation_window_allow_back (window, FALSE);
-	nautilus_navigation_window_allow_forward (window, FALSE);
-
 	g_signal_connect_swapped (nautilus_preferences,
 				  "changed::" NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER,
 				  G_CALLBACK(always_use_browser_changed),
@@ -964,6 +959,10 @@ nautilus_navigation_window_split_view_off (NautilusNavigationWindow *window)
 			nautilus_window_close_pane (pane);
 		}
 	}
+
+	nautilus_window_set_active_pane (win, active_pane);
+	nautilus_navigation_state_set_master (window->details->nav_state,
+					      NAUTILUS_NAVIGATION_WINDOW_PANE (active_pane)->action_group);
 
 	nautilus_navigation_window_update_show_hide_menu_items (window);
 	nautilus_navigation_window_update_split_view_actions_sensitivity (window);

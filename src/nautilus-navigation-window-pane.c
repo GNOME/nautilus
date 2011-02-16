@@ -615,6 +615,7 @@ nautilus_navigation_window_pane_setup (NautilusNavigationWindowPane *pane)
 	NautilusEntry *entry;
 	GtkSizeGroup *header_size_group;
 	NautilusNavigationWindow *window;
+	GtkActionGroup *action_group;
 
 	pane->widget = gtk_vbox_new (FALSE, 0);
 	window = NAUTILUS_NAVIGATION_WINDOW (NAUTILUS_WINDOW_PANE (pane)->window);
@@ -622,7 +623,10 @@ nautilus_navigation_window_pane_setup (NautilusNavigationWindowPane *pane)
 	header_size_group = window->details->header_size_group;
 
 	/* build the toolbar */
-	pane->tool_bar = nautilus_toolbar_new (window->details->navigation_action_group);
+	action_group = nautilus_navigation_window_create_toolbar_action_group (window);
+	pane->tool_bar = nautilus_toolbar_new (action_group);
+	pane->action_group = action_group;
+
 	gtk_box_pack_start (GTK_BOX (pane->widget),
 			    pane->tool_bar,
 			    FALSE, FALSE, 0);
@@ -696,6 +700,9 @@ nautilus_navigation_window_pane_setup (NautilusNavigationWindowPane *pane)
 	gtk_notebook_set_show_border (GTK_NOTEBOOK (pane->notebook), FALSE);
 	gtk_widget_show (pane->notebook);
 	gtk_container_set_border_width (GTK_CONTAINER (pane->notebook), 0);
+
+	/* start as non-active */
+	real_set_active (NAUTILUS_WINDOW_PANE (pane), FALSE);
 
 	/* Ensure that the view has some minimal size and that other parts
 	 * of the UI (like location bar and tabs) don't request more and
@@ -795,6 +802,7 @@ nautilus_navigation_window_pane_dispose (GObject *object)
 	NautilusNavigationWindowPane *pane = NAUTILUS_NAVIGATION_WINDOW_PANE (object);
 
 	gtk_widget_destroy (pane->widget);
+	g_clear_object (&pane->action_group);
 
 	G_OBJECT_CLASS (nautilus_navigation_window_pane_parent_class)->dispose (object);
 }

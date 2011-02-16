@@ -61,8 +61,7 @@ struct _NautilusNavigationWindowPane {
 	/* notebook */
 	GtkWidget *notebook;
 
-	/* split view */
-	GtkWidget *split_view_hpane;
+	GtkActionGroup *action_group;
 };
 
 #include "nautilus-toolbar.h"
