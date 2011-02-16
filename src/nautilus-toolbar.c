@@ -174,7 +174,7 @@ nautilus_toolbar_set_property (GObject *object,
 
 	switch (property_id) {
 	case PROP_ACTION_GROUP:
-		self->priv->action_group = g_value_get_object (value);
+		self->priv->action_group = g_value_dup_object (value);
 		break;
 	case PROP_SHOW_LOCATION_ENTRY:
 		nautilus_toolbar_set_show_location_entry (self, g_value_get_boolean (value));
@@ -197,6 +197,7 @@ nautilus_toolbar_dispose (GObject *obj)
 	NautilusToolbar *self = NAUTILUS_TOOLBAR (obj);
 
 	g_clear_object (&self->priv->ui_manager);
+	g_clear_object (&self->priv->action_group);
 
 	G_OBJECT_CLASS (nautilus_toolbar_parent_class)->dispose (obj);
 }
