@@ -100,6 +100,8 @@ nautilus_SOURCES = \
 	nautilus-mime-actions.h 		\
 	nautilus-navigation-action.c		\
 	nautilus-navigation-action.h		\
+	nautilus-navigation-state.c		\
+	nautilus-navigation-state.h		\
 	nautilus-navigation-window-menus.c      \
 	nautilus-navigation-window.c            \
 	nautilus-navigation-window.h            \
