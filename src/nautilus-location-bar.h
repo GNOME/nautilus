@@ -63,8 +63,6 @@ typedef struct {
 
 GType      nautilus_location_bar_get_type     	(void);
 GtkWidget* nautilus_location_bar_new          	(void);
-void       nautilus_location_bar_set_active     (NautilusLocationBar *location_bar,
-						 gboolean is_active);
 NautilusEntry * nautilus_location_bar_get_entry (NautilusLocationBar *location_bar);
 
 void	nautilus_location_bar_activate	 (NautilusLocationBar *bar);

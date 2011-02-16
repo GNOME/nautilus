@@ -565,23 +565,6 @@ nautilus_location_bar_set_location (NautilusLocationBar *bar,
 	nautilus_location_bar_update_label (bar);
 }
 
-/* change background color based on activity state */
-void
-nautilus_location_bar_set_active (NautilusLocationBar *location_bar, gboolean is_active)
-{
-	if (is_active) {
-		/* reset style to default */
-		gtk_widget_override_background_color (GTK_WIDGET (location_bar->details->entry), GTK_STATE_FLAG_ACTIVE, NULL);
-	} else {
-		GtkStyleContext *style;
-		GdkRGBA color;
-
-		style = gtk_widget_get_style_context (GTK_WIDGET (location_bar->details->entry));
-		gtk_style_context_get_background_color (style, GTK_STATE_FLAG_INSENSITIVE, &color);
-		gtk_widget_override_background_color (GTK_WIDGET (location_bar->details->entry), GTK_STATE_FLAG_ACTIVE, &color);
-	}
-}
-
 NautilusEntry *
 nautilus_location_bar_get_entry (NautilusLocationBar *location_bar)
 {
