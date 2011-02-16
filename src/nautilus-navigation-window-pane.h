@@ -78,11 +78,6 @@ void     nautilus_navigation_window_pane_ensure_location_bar (NautilusNavigation
 void     nautilus_navigation_window_pane_ensure_search_bar (NautilusNavigationWindowPane *pane);
 void      nautilus_navigation_window_pane_hide_search_bar (NautilusNavigationWindowPane *pane);
 
-void     nautilus_navigation_window_pane_hide_path_bar (NautilusNavigationWindowPane *pane);
-void     nautilus_navigation_window_pane_show_path_bar (NautilusNavigationWindowPane *pane);
-gboolean nautilus_navigation_window_pane_path_bar_showing (NautilusNavigationWindowPane *pane);
-gboolean nautilus_navigation_window_pane_search_bar_showing (NautilusNavigationWindowPane *pane);
-gboolean nautilus_navigation_window_pane_hide_temporary_bars (NautilusNavigationWindowPane *pane);
 /* notebook */
 void     nautilus_navigation_window_pane_add_slot_in_tab (NautilusNavigationWindowPane *pane, NautilusWindowSlot *slot, NautilusWindowOpenSlotFlags flags);
 void     nautilus_navigation_window_pane_remove_page (NautilusNavigationWindowPane *pane, int page_num);

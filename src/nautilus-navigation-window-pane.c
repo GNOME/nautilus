@@ -138,6 +138,35 @@ search_bar_activate_callback (NautilusSearchBar *bar,
 }
 
 static void
+nautilus_navigation_window_pane_hide_temporary_bars (NautilusNavigationWindowPane *pane)
+{
+	NautilusWindowSlot *slot;
+	NautilusDirectory *directory;
+
+	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW_PANE (pane));
+
+	slot = NAUTILUS_WINDOW_PANE (pane)->active_slot;
+
+	if (pane->temporary_navigation_bar) {
+		directory = nautilus_directory_get (slot->location);
+
+		pane->temporary_navigation_bar = FALSE;
+
+		/* if we're in a search directory, hide the main bar, and show the search
+		 * bar again; otherwise, just hide the whole toolbar.
+		 */
+		if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
+			nautilus_toolbar_set_show_main_bar (NAUTILUS_TOOLBAR (pane->tool_bar), FALSE);
+			nautilus_toolbar_set_show_search_bar (NAUTILUS_TOOLBAR (pane->tool_bar), TRUE);
+		} else {
+			gtk_widget_hide (pane->tool_bar);
+		}
+
+		nautilus_directory_unref (directory);
+	}
+}
+
+static void
 search_bar_cancel_callback (GtkWidget *widget,
 			    NautilusNavigationWindowPane *pane)
 {
@@ -579,40 +608,6 @@ nautilus_navigation_window_pane_hide_search_bar (NautilusNavigationWindowPane *p
 
 		gtk_widget_hide (pane->tool_bar);
 	}
-}
-
-gboolean
-nautilus_navigation_window_pane_hide_temporary_bars (NautilusNavigationWindowPane *pane)
-{
-	NautilusWindowSlot *slot;
-	NautilusDirectory *directory;
-	gboolean success;
-
-	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW_PANE (pane));
-
-	slot = NAUTILUS_WINDOW_PANE (pane)->active_slot;
-	success = FALSE;
-
-	if (pane->temporary_navigation_bar) {
-		directory = nautilus_directory_get (slot->location);
-
-		pane->temporary_navigation_bar = FALSE;
-		success = TRUE;
-
-		/* if we're in a search directory, hide the main bar, and show the search
-		 * bar again; otherwise, just hide the whole toolbar.
-		 */
-		if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
-			nautilus_toolbar_set_show_main_bar (NAUTILUS_TOOLBAR (pane->tool_bar), FALSE);
-			nautilus_toolbar_set_show_search_bar (NAUTILUS_TOOLBAR (pane->tool_bar), TRUE);
-		} else {
-			gtk_widget_hide (pane->tool_bar);
-		}
-
-		nautilus_directory_unref (directory);
-	}
-
-	return success;
 }
 
 void
