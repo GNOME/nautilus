@@ -2951,6 +2951,9 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 	gtk_scrolled_window_set_vadjustment (GTK_SCROLLED_WINDOW (sidebar), NULL);
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sidebar), GTK_SHADOW_IN);
 
+	gtk_style_context_set_junction_sides (gtk_widget_get_style_context (GTK_WIDGET (sidebar)),
+					      GTK_JUNCTION_RIGHT | GTK_JUNCTION_LEFT);
+
   	/* tree view */
 	tree_view = GTK_TREE_VIEW (gtk_tree_view_new ());
 	gtk_tree_view_set_headers_visible (tree_view, FALSE);

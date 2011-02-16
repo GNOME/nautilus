@@ -2546,7 +2546,7 @@ nautilus_view_init (NautilusView *view)
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (view), GTK_SHADOW_ETCHED_IN);
 
 	gtk_style_context_set_junction_sides (gtk_widget_get_style_context (GTK_WIDGET (view)),
-					      GTK_JUNCTION_TOP);
+					      GTK_JUNCTION_TOP | GTK_JUNCTION_LEFT);
 
 	set_up_scripts_directory_global ();
 	scripts_directory = nautilus_directory_get_by_uri (scripts_directory_uri);
