@@ -55,15 +55,6 @@ real_set_active (NautilusWindowPane *pane, gboolean is_active)
 	gtk_widget_set_sensitive (nav_pane->tool_bar, is_active);
 }
 
-static gboolean
-navigation_bar_focus_in_callback (GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
-{
-	NautilusWindowPane *pane;
-	pane = NAUTILUS_WINDOW_PANE (user_data);
-	nautilus_window_set_active_pane (pane->window, pane);
-	return FALSE;
-}
-
 static int
 bookmark_list_get_uri_index (GList *list, GFile *location)
 {
@@ -87,14 +78,6 @@ bookmark_list_get_uri_index (GList *list, GFile *location)
 
 	return -1;
 }
-
-static void
-search_bar_focus_in_callback (NautilusSearchBar *bar,
-			      NautilusWindowPane *pane)
-{
-	nautilus_window_set_active_pane (pane->window, pane);
-}
-
 
 static void
 search_bar_activate_callback (NautilusSearchBar *bar,
@@ -234,8 +217,6 @@ path_bar_button_pressed_callback (GtkWidget *widget,
 	NautilusView *view;
 	GFile *location;
 	char *uri;
-
-	nautilus_window_set_active_pane (NAUTILUS_WINDOW_PANE (pane)->window, NAUTILUS_WINDOW_PANE (pane));
 
 	g_object_set_data (G_OBJECT (widget), "handle-button-release",
 			   GINT_TO_POINTER (TRUE));
@@ -610,7 +591,6 @@ nautilus_navigation_window_pane_hide_search_bar (NautilusNavigationWindowPane *p
 static void
 nautilus_navigation_window_pane_setup (NautilusNavigationWindowPane *pane)
 {
-	NautilusEntry *entry;
 	GtkSizeGroup *header_size_group;
 	NautilusNavigationWindow *window;
 	GtkActionGroup *action_group;
@@ -658,11 +638,6 @@ nautilus_navigation_window_pane_setup (NautilusNavigationWindowPane *pane)
 	g_signal_connect_object (pane->location_bar, "cancel",
 				 G_CALLBACK (navigation_bar_cancel_callback), pane, 0);
 
-	/* connect to the entry signals */
-	entry = nautilus_location_bar_get_entry (NAUTILUS_LOCATION_BAR (pane->location_bar));
-	g_signal_connect (entry, "focus-in-event",
-			G_CALLBACK (navigation_bar_focus_in_callback), pane);
-
 	/* connect to the search bar signals */
 	pane->search_bar = nautilus_toolbar_get_search_bar (NAUTILUS_TOOLBAR (pane->tool_bar));
 	gtk_size_group_add_widget (header_size_group, pane->search_bar);
@@ -671,8 +646,6 @@ nautilus_navigation_window_pane_setup (NautilusNavigationWindowPane *pane)
 				 G_CALLBACK (search_bar_activate_callback), pane, 0);
 	g_signal_connect_object (pane->search_bar, "cancel",
 				 G_CALLBACK (search_bar_cancel_callback), pane, 0);
-	g_signal_connect_object (pane->search_bar, "focus-in",
-				 G_CALLBACK (search_bar_focus_in_callback), pane, 0);
 
 	/* initialize the notebook */
 	pane->notebook = g_object_new (NAUTILUS_TYPE_NOTEBOOK, NULL);
