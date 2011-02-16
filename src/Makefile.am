@@ -137,8 +137,6 @@ nautilus_SOURCES = \
 	nautilus-tree-sidebar-model.h		\
 	nautilus-trash-bar.c			\
 	nautilus-trash-bar.h			\
-	nautilus-view-as-action.c		\
-	nautilus-view-as-action.h		\
 	nautilus-view.c				\
 	nautilus-view.h				\
 	nautilus-view-dnd.c			\
