@@ -586,9 +586,7 @@ nautilus_window_view_visible (NautilusWindow *window,
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
 	slot = nautilus_window_get_slot_for_view (window, view);
-
-	/* Ensure we got the right active state for newly added panes */
-	nautilus_window_slot_is_in_active_pane (slot, slot->pane->is_active);
+	nautilus_view_set_is_active (view, slot->pane->is_active);
 
 	if (slot->visible) {
 		return;

@@ -384,25 +384,6 @@ nautilus_window_slot_update_icon (NautilusWindowSlot *slot)
 }
 
 void
-nautilus_window_slot_is_in_active_pane (NautilusWindowSlot *slot,
-					gboolean is_active)
-{
-	/* NULL is valid, and happens during init */
-	if (!slot) {
-		return;
-	}
-
-	/* it may also be that the content is not a valid directory view during init */
-	if (slot->content_view != NULL) {
-		nautilus_view_set_is_active (slot->content_view, is_active);
-	}
-
-	if (slot->new_content_view != NULL) {
-		nautilus_view_set_is_active (slot->new_content_view, is_active);
-	}
-}
-
-void
 nautilus_window_slot_set_content_view_widget (NautilusWindowSlot *slot,
 					      NautilusView *new_view)
 {
