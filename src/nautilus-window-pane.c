@@ -158,17 +158,21 @@ nautilus_window_pane_sync_search_widgets (NautilusWindowPane *pane)
 }
 
 void
-nautilus_window_pane_slot_close (NautilusWindowPane *pane, NautilusWindowSlot *slot)
+nautilus_window_pane_slot_close (NautilusWindowPane *pane,
+				 NautilusWindowSlot *slot)
 {
 	NautilusWindowSlot *next_slot;
 
 	if (pane->window) {
 		NautilusWindow *window;
+
 		window = pane->window;
+
 		if (pane->active_slot == slot) {
 			next_slot = get_first_inactive_slot (NAUTILUS_WINDOW_PANE (pane));
 			nautilus_window_set_active_slot (window, next_slot);
 		}
+
 		nautilus_window_close_slot (slot);
 
 		/* If that was the last slot in the active pane, close the pane or even the whole window. */
@@ -181,6 +185,8 @@ nautilus_window_pane_slot_close (NautilusWindowPane *pane, NautilusWindowSlot *s
 			 * no next pane, close the window. */
 			if(next_pane) {
 				nautilus_window_close_pane (pane);
+				nautilus_window_set_active_pane (window, next_pane);
+
 				if (NAUTILUS_IS_NAVIGATION_WINDOW (window)) {
 					nautilus_navigation_window_update_show_hide_menu_items (NAUTILUS_NAVIGATION_WINDOW (window));
 				}
