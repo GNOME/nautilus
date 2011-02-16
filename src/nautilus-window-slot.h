@@ -176,8 +176,6 @@ void    nautilus_window_slot_add_extra_location_widget     (NautilusWindowSlot *
 							    GtkWidget       *widget);
 void    nautilus_window_slot_remove_extra_location_widgets (NautilusWindowSlot *slot);
 
-void    nautilus_window_slot_add_current_location_to_history_list (NautilusWindowSlot *slot);
-
 void    nautilus_window_slot_is_in_active_pane (NautilusWindowSlot *slot, gboolean is_active);
 
 NautilusView * nautilus_window_slot_get_current_view     (NautilusWindowSlot *slot);

@@ -312,9 +312,6 @@ nautilus_window_slot_set_title (NautilusWindowSlot *slot,
 
 	if (eel_strlen (slot->title) > 0 && slot->current_location_bookmark) {
 		changed = TRUE;
-
-		/* Name of item in history list changed, tell listeners. */
-		nautilus_send_history_list_changed ();
 	}
 
 	if (changed) {
@@ -518,16 +515,6 @@ nautilus_window_slot_add_extra_location_widget (NautilusWindowSlot *slot,
 	gtk_box_pack_start (GTK_BOX (slot->extra_location_widgets),
 			    widget, TRUE, TRUE, 0);
 	gtk_widget_show (slot->extra_location_frame);
-}
-
-void
-nautilus_window_slot_add_current_location_to_history_list (NautilusWindowSlot *slot)
-{
-
-	if ((slot->pane->window == NULL || !NAUTILUS_IS_DESKTOP_WINDOW (slot->pane->window)) &&
-	    nautilus_add_bookmark_to_history_list (slot->current_location_bookmark)) {
-		nautilus_send_history_list_changed ();
-	}
 }
 
 /* returns either the pending or the actual current uri */

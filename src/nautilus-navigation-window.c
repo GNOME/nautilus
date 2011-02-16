@@ -309,8 +309,6 @@ nautilus_navigation_window_finalize (GObject *object)
 
 	g_free (window->details->sidebar_id);
 
-	nautilus_navigation_window_remove_go_menu_callback (window);
-
 	g_signal_handlers_disconnect_by_func (nautilus_preferences,
 					      always_use_browser_changed,
 					      window);

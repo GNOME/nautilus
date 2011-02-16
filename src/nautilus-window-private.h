@@ -102,11 +102,6 @@ struct _NautilusNavigationWindowDetails {
         int side_pane_width;
         GtkWidget *sidebar;
         gchar *sidebar_id;
-
-	/* Menus */
-        GtkActionGroup *go_menu_action_group;
-	guint refresh_go_menu_idle_id;
-        guint go_menu_merge_id;
         
         /* Toolbar */
         GtkWidget *toolbar;
@@ -204,9 +199,7 @@ void                 nautilus_window_set_active_pane                     (Nautil
                                                                           NautilusWindowPane *new_pane);
 NautilusWindowPane * nautilus_window_get_active_pane                     (NautilusWindow *window);
 
-void               nautilus_send_history_list_changed                    (void);
 gboolean           nautilus_add_bookmark_to_history_list                 (NautilusBookmark  *bookmark);
-GList *            nautilus_get_history_list                             (void);
 void               nautilus_window_bookmarks_preference_changed_callback (gpointer           user_data);
 
 
@@ -228,8 +221,6 @@ void               nautilus_navigation_window_remove_bookmarks_menu_callback    
 void               nautilus_navigation_window_remove_bookmarks_menu_items           (NautilusNavigationWindow    *window);
 void               nautilus_navigation_window_update_show_hide_menu_items           (NautilusNavigationWindow     *window);
 void               nautilus_navigation_window_update_spatial_menu_item              (NautilusNavigationWindow     *window);
-void               nautilus_navigation_window_remove_go_menu_callback    (NautilusNavigationWindow    *window);
-void               nautilus_navigation_window_remove_go_menu_items       (NautilusNavigationWindow    *window);
 
 /* Navigation window toolbar */
 void               nautilus_navigation_window_activate_spinner                     (NautilusNavigationWindow    *window);

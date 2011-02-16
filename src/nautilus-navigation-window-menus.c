@@ -56,8 +56,6 @@
 #define RESPONSE_FORGET		1000
 #define MENU_ITEM_MAX_WIDTH_CHARS 32
 
-static void                  schedule_refresh_go_menu                      (NautilusNavigationWindow   *window);
-
 enum {
 	SIDEBAR_PLACES,
 	SIDEBAR_TREE
@@ -254,55 +252,6 @@ action_edit_bookmarks_callback (GtkAction *action,
         nautilus_window_edit_bookmarks (NAUTILUS_WINDOW (user_data));
 }
 
-void
-nautilus_navigation_window_remove_go_menu_callback (NautilusNavigationWindow *window)
-{
-        if (window->details->refresh_go_menu_idle_id != 0) {
-                g_source_remove (window->details->refresh_go_menu_idle_id);
-		window->details->refresh_go_menu_idle_id = 0;
-        }
-}
-
-void
-nautilus_navigation_window_remove_go_menu_items (NautilusNavigationWindow *window)
-{
-	GtkUIManager *ui_manager;
-	
-	ui_manager = nautilus_window_get_ui_manager (NAUTILUS_WINDOW (window));
-	if (window->details->go_menu_merge_id != 0) {
-		gtk_ui_manager_remove_ui (ui_manager,
-					  window->details->go_menu_merge_id);
-		window->details->go_menu_merge_id = 0;
-	}
-	if (window->details->go_menu_action_group != NULL) {
-		gtk_ui_manager_remove_action_group (ui_manager,
-						    window->details->go_menu_action_group);
-		window->details->go_menu_action_group = NULL;
-	}
-}
-
-static void
-show_bogus_history_window (NautilusWindow *window,
-			   NautilusBookmark *bookmark)
-{
-	GFile *file;
-	char *uri_for_display;
-	char *detail;
-
-	file = nautilus_bookmark_get_location (bookmark);
-	uri_for_display = g_file_get_parse_name (file);
-	
-	detail = g_strdup_printf (_("The location \"%s\" does not exist."), uri_for_display);
-
-	eel_show_warning_dialog (_("The history location doesn't exist."),
-				 detail,
-				 GTK_WINDOW (window));
-
-	g_object_unref (file);
-	g_free (uri_for_display);
-	g_free (detail);
-}
-
 static void
 connect_proxy_cb (GtkActionGroup *action_group,
                   GtkAction *action,
@@ -337,33 +286,25 @@ static const char* icon_entries[] = {
  * @window: The NautilusWindow whose Go menu will be refreshed.
  **/
 static void
-refresh_go_menu (NautilusNavigationWindow *window)
+nautilus_navigation_window_initialize_go_menu (NautilusNavigationWindow *window)
 {
 	GtkUIManager *ui_manager;
-	GList *node;
 	GtkWidget *menuitem;
-	int index;
+	GtkActionGroup *action_group;
 	int i;
-	
+
 	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
-
-	/* Unregister any pending call to this function. */
-	nautilus_navigation_window_remove_go_menu_callback (window);
-
-	/* Remove old set of history items. */
-	nautilus_navigation_window_remove_go_menu_items (window);
 
 	ui_manager = nautilus_window_get_ui_manager (NAUTILUS_WINDOW (window));
 
-	window->details->go_menu_merge_id = gtk_ui_manager_new_merge_id (ui_manager);
-	window->details->go_menu_action_group = gtk_action_group_new ("GoMenuGroup");
-	g_signal_connect (window->details->go_menu_action_group, "connect-proxy",
+	action_group = gtk_action_group_new ("GoMenuGroup");
+	g_signal_connect (action_group, "connect-proxy",
 			  G_CALLBACK (connect_proxy_cb), NULL);
 
 	gtk_ui_manager_insert_action_group (ui_manager,
-					    window->details->go_menu_action_group,
+					    action_group,
 					    -1);
-	g_object_unref (window->details->go_menu_action_group);
+	g_object_unref (action_group);
 
 	for (i = 0; i < G_N_ELEMENTS (icon_entries); i++) {
 		menuitem = gtk_ui_manager_get_widget (
@@ -373,59 +314,6 @@ refresh_go_menu (NautilusNavigationWindow *window)
 		gtk_image_menu_item_set_always_show_image (
 				GTK_IMAGE_MENU_ITEM (menuitem), TRUE);
 	}
-	
-	/* Add in a new set of history items. */
-	for (node = nautilus_get_history_list (), index = 0;
-	     node != NULL && index < 10;
-	     node = node->next, index++) {
-		nautilus_menus_append_bookmark_to_menu 
-			(NAUTILUS_WINDOW (window),
-			 NAUTILUS_BOOKMARK (node->data),
-			 MENU_PATH_HISTORY_PLACEHOLDER,
-			 "history",
-			 index,
-			 window->details->go_menu_action_group,
-			 window->details->go_menu_merge_id,
-			 G_CALLBACK (schedule_refresh_go_menu),
-			 show_bogus_history_window);
-	}
-}
-
-static gboolean
-refresh_go_menu_idle_callback (gpointer data)
-{
-	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (data));
-
-	refresh_go_menu (NAUTILUS_NAVIGATION_WINDOW (data));
-
-        /* Don't call this again (unless rescheduled) */
-        return FALSE;
-}
-
-static void
-schedule_refresh_go_menu (NautilusNavigationWindow *window)
-{
-	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
-
-	if (window->details->refresh_go_menu_idle_id == 0) {
-                window->details->refresh_go_menu_idle_id
-                        = g_idle_add (refresh_go_menu_idle_callback,
-				      window);
-	}	
-}
-
-/**
- * nautilus_navigation_window_initialize_go_menu
- * 
- * Wire up signals so we'll be notified when history list changes.
- */
-static void 
-nautilus_navigation_window_initialize_go_menu (NautilusNavigationWindow *window)
-{
-	/* Recreate bookmarks part of menu if history list changes
-	 */
-	g_signal_connect_object (nautilus_signaller_get_current (), "history_list_changed",
-				 G_CALLBACK (schedule_refresh_go_menu), window, G_CONNECT_SWAPPED);
 }
 
 void

@@ -106,8 +106,6 @@ static void cancel_view_as_callback         (NautilusWindowSlot      *slot);
 static void action_view_as_callback         (GtkAction               *action,
 					     ActivateViewData        *data);
 
-static GList *history_list;
-
 G_DEFINE_TYPE (NautilusWindow, nautilus_window, GTK_TYPE_WINDOW);
 
 static const struct {
@@ -1476,84 +1474,6 @@ nautilus_window_slot_set_viewed_file (NautilusWindowSlot *slot,
 	slot->viewed_file = file;
 }
 
-void
-nautilus_send_history_list_changed (void)
-{
-	g_signal_emit_by_name (nautilus_signaller_get_current (),
-			       "history_list_changed");
-}
-
-static void
-free_history_list (void)
-{
-	g_list_free_full (history_list, g_object_unref);
-	history_list = NULL;
-}
-
-/* Remove the this URI from the history list.
- * Do not sent out a change notice.
- * We pass in a bookmark for convenience.
- */
-static void
-remove_from_history_list (NautilusBookmark *bookmark)
-{
-	GList *node;
-
-	/* Compare only the uris here. Comparing the names also is not
-	 * necessary and can cause problems due to the asynchronous
-	 * nature of when the title of the window is set.
-	 */
-	node = g_list_find_custom (history_list, 
-				   bookmark,
-				   nautilus_bookmark_compare_uris);
-	
-	/* Remove any older entry for this same item. There can be at most 1. */
-	if (node != NULL) {
-		history_list = g_list_remove_link (history_list, node);
-		g_object_unref (node->data);
-		g_list_free_1 (node);
-	}
-}
-
-gboolean
-nautilus_add_bookmark_to_history_list (NautilusBookmark *bookmark)
-{
-	/* Note that the history is shared amongst all windows so
-	 * this is not a NautilusNavigationWindow function. Perhaps it belongs
-	 * in its own file.
-	 */
-	int i;
-	GList *l, *next;
-	static gboolean free_history_list_is_set_up;
-
-	g_assert (NAUTILUS_IS_BOOKMARK (bookmark));
-
-	if (!free_history_list_is_set_up) {
-		eel_debug_call_at_shutdown (free_history_list);
-		free_history_list_is_set_up = TRUE;
-	}
-
-	if (!history_list ||
-	    nautilus_bookmark_compare_uris (history_list->data, bookmark)) {
-		g_object_ref (bookmark);
-		remove_from_history_list (bookmark);
-		history_list = g_list_prepend (history_list, bookmark);
-
-		for (i = 0, l = history_list; l; l = next) {
-			next = l->next;
-			
-			if (i++ >= MAX_HISTORY_ITEMS) {
-				g_object_unref (l->data);
-				history_list = g_list_delete_link (history_list, l);
-			}
-		}
-
-		return TRUE;
-	}
-
-	return FALSE;
-}
-
 NautilusWindowSlot *
 nautilus_window_get_slot_for_view (NautilusWindow *window,
 				   NautilusView *view)
@@ -1579,7 +1499,6 @@ nautilus_window_get_slot_for_view (NautilusWindow *window,
 void
 nautilus_forget_history (void) 
 {
-	NautilusWindowSlot *slot;
 	NautilusNavigationWindowSlot *navigation_slot;
 	GList *window_node, *l, *walk;
 	NautilusApplication *app;
@@ -1612,45 +1531,9 @@ nautilus_forget_history (void)
 			nautilus_navigation_window_allow_back (window, FALSE);
 			nautilus_navigation_window_allow_forward (window, FALSE);
 		}
-
-		for (walk = NAUTILUS_WINDOW (window_node->data)->details->panes; walk; walk = walk->next) {
-			NautilusWindowPane *pane = walk->data;
-			for (l = pane->slots; l != NULL; l = l->next) {
-				slot = l->data;
-				history_list = g_list_remove (history_list,
-							      slot->current_location_bookmark);
-			}
-		}
-	}
-
-	/* Clobber history list. */
-	free_history_list ();
-
-	/* Re-add each window's current location to history list. */
-	for (window_node = gtk_application_get_windows (GTK_APPLICATION (app));
-	     window_node != NULL;
-	     window_node = window_node->next) {
-		NautilusWindow *window;
-		NautilusWindowSlot *slot;
-		GList *l;
-
-		window = NAUTILUS_WINDOW (window_node->data);
-		for (walk = window->details->panes; walk; walk = walk->next) {
-			NautilusWindowPane *pane = walk->data;
-			for (l = pane->slots; l != NULL; l = l->next) {
-				slot = NAUTILUS_WINDOW_SLOT (l->data);
-				nautilus_window_slot_add_current_location_to_history_list (slot);
-			}
-		}
 	}
 
 	g_object_unref (app);
-}
-
-GList *
-nautilus_get_history_list (void)
-{
-	return history_list;
 }
 
 NautilusWindowType

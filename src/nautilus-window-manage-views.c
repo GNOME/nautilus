@@ -404,18 +404,15 @@ update_history (NautilusWindowSlot *slot,
         switch (type) {
         case NAUTILUS_LOCATION_CHANGE_STANDARD:
         case NAUTILUS_LOCATION_CHANGE_FALLBACK:
-                nautilus_window_slot_add_current_location_to_history_list (slot);
 		handle_go_elsewhere (slot, new_location);
                 return;
         case NAUTILUS_LOCATION_CHANGE_RELOAD:
                 /* for reload there is no work to do */
                 return;
         case NAUTILUS_LOCATION_CHANGE_BACK:
-                nautilus_window_slot_add_current_location_to_history_list (slot);
                 handle_go_back (NAUTILUS_NAVIGATION_WINDOW_SLOT (slot), new_location);
                 return;
         case NAUTILUS_LOCATION_CHANGE_FORWARD:
-                nautilus_window_slot_add_current_location_to_history_list (slot);
                 handle_go_forward (NAUTILUS_NAVIGATION_WINDOW_SLOT (slot), new_location);
                 return;
         case NAUTILUS_LOCATION_CHANGE_REDIRECT:
