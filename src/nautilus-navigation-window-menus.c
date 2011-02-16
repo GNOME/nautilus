@@ -129,7 +129,7 @@ static void
 action_split_view_switch_next_pane_callback(GtkAction *action,
 					    gpointer user_data)
 {
-	nautilus_window_pane_switch_to (nautilus_window_get_next_pane (NAUTILUS_WINDOW (user_data)));
+	nautilus_window_pane_grab_focus (nautilus_window_get_next_pane (NAUTILUS_WINDOW (user_data)));
 }
 
 static void

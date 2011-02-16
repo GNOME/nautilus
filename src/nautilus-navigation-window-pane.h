@@ -71,9 +71,7 @@ GType    nautilus_navigation_window_pane_get_type (void);
 
 NautilusNavigationWindowPane* nautilus_navigation_window_pane_new (NautilusWindow *window);
 
-/* location bar */
-void     nautilus_navigation_window_pane_setup             (NautilusNavigationWindowPane *pane);
-
+/* bars */
 void     nautilus_navigation_window_pane_ensure_location_bar (NautilusNavigationWindowPane *pane);
 void     nautilus_navigation_window_pane_ensure_search_bar (NautilusNavigationWindowPane *pane);
 void      nautilus_navigation_window_pane_hide_search_bar (NautilusNavigationWindowPane *pane);
