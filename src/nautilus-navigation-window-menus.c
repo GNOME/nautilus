@@ -608,6 +608,12 @@ static const GtkActionEntry navigation_entries[] = {
   /* name, stock id, label */  { "Close All Windows", NULL, N_("Close _All Windows"),
                                  "<control>Q", N_("Close all Navigation windows"),
                                  G_CALLBACK (action_close_all_windows_callback) },
+  /* name, stock id, label */  { NAUTILUS_ACTION_BACK, GTK_STOCK_GO_BACK, N_("_Back"),
+				 "<alt>Left", N_("Go to the previous visited location"),
+				 G_CALLBACK (action_back_callback) },
+  /* name, stock id, label */  { NAUTILUS_ACTION_FORWARD, GTK_STOCK_GO_FORWARD, N_("_Forward"),
+				 "<alt>Right", N_("Go to the next visited location"),
+				 G_CALLBACK (action_forward_callback) },
   /* name, stock id, label */  { "Go to Location", NULL, N_("_Location..."),
                                  "<control>L", N_("Specify a location to open"),
                                  G_CALLBACK (action_go_to_location_callback) },
@@ -771,39 +777,6 @@ nautilus_navigation_window_initialize_actions (NautilusNavigationWindow *window)
 					    navigation_radio_entries, G_N_ELEMENTS (navigation_radio_entries),
 					    0, G_CALLBACK (sidebar_radio_entry_changed_cb),
 					    window);
-
-	action = g_object_new (NAUTILUS_TYPE_NAVIGATION_ACTION,
-			       "name", NAUTILUS_ACTION_BACK,
-			       "label", _("_Back"),
-			       "stock_id", GTK_STOCK_GO_BACK,
-			       "tooltip", _("Go to the previous visited location"),
-			       "arrow-tooltip", _("Back history"),
-			       "window", window,
-			       "direction", NAUTILUS_NAVIGATION_DIRECTION_BACK,
-			       NULL);
-	g_signal_connect (action, "activate",
-			  G_CALLBACK (action_back_callback), window);
-	gtk_action_group_add_action_with_accel (action_group,
-						action,
-						"<alt>Left");
-	g_object_unref (action);
-
-	action = g_object_new (NAUTILUS_TYPE_NAVIGATION_ACTION,
-			       "name", NAUTILUS_ACTION_FORWARD,
-			       "label", _("_Forward"),
-			       "stock_id", GTK_STOCK_GO_FORWARD,
-			       "tooltip", _("Go to the next visited location"),
-			       "arrow-tooltip", _("Forward history"),
-			       "window", window,
-			       "direction", NAUTILUS_NAVIGATION_DIRECTION_FORWARD,
-			       NULL);
-	g_signal_connect (action, "activate",
-			  G_CALLBACK (action_forward_callback), window);
-	gtk_action_group_add_action_with_accel (action_group,
-						action,
-						"<alt>Right");
-
-	g_object_unref (action);
 
 	/* Alt+N for the first 10 tabs */
 	for (i = 0; i < 10; ++i) {
