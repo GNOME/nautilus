@@ -59,9 +59,6 @@ GtkMenuItem *         eel_gtk_menu_append_separator                   (GtkMenu  
 GtkMenuItem *         eel_gtk_menu_insert_separator                   (GtkMenu              *menu,
 								       int                   index);
 
-/* GtkMenuToolButton */
-GtkWidget *           eel_gtk_menu_tool_button_get_button             (GtkMenuToolButton    *tool_button);
-
 /* GtkLabel */
 void                  eel_gtk_label_make_bold                         (GtkLabel             *label);
 
