@@ -464,83 +464,18 @@ menu_item_deselect_cb (GtkMenuItem *proxy,
 			   window->details->help_message_cid);
 }
 
-static GtkWidget *
-get_event_widget (GtkWidget *proxy)
-{
-	GtkWidget *widget;
-
-	/**
-	 * Finding the interesting widget requires internal knowledge of
-	 * the widgets in question. This can't be helped, but by keeping
-	 * the sneaky code in one place, it can easily be updated.
-	 */
-	if (GTK_IS_MENU_ITEM (proxy)) {
-		/* Menu items already forward middle clicks */
-		widget = NULL;
-	} else if (GTK_IS_MENU_TOOL_BUTTON (proxy)) {
-		widget = eel_gtk_menu_tool_button_get_button (GTK_MENU_TOOL_BUTTON (proxy));
-	} else if (GTK_IS_TOOL_BUTTON (proxy)) {
-		/* The tool button's button is the direct child */
-		widget = gtk_bin_get_child (GTK_BIN (proxy));
-	} else if (GTK_IS_BUTTON (proxy)) {
-		widget = proxy;
-	} else {
-		/* Don't touch anything we don't know about */
-		widget = NULL;
-	}
-
-	return widget;
-}
-
-static gboolean
-proxy_button_press_event_cb (GtkButton *button,
-			     GdkEventButton *event,
-			     gpointer user_data)
-{
-	if (event->button == 2) {
-		g_signal_emit_by_name (button, "pressed", 0);
-	}
-
-	return FALSE;
-}
-
-static gboolean
-proxy_button_release_event_cb (GtkButton *button,
-			       GdkEventButton *event,
-			       gpointer user_data)
-{
-	if (event->button == 2) {
-		g_signal_emit_by_name (button, "released", 0);
-	}
-
-	return FALSE;
-}
-
 static void
 disconnect_proxy_cb (GtkUIManager *manager,
 		     GtkAction *action,
 		     GtkWidget *proxy,
 		     NautilusWindow *window)
 {
-	GtkWidget *widget;
-
 	if (GTK_IS_MENU_ITEM (proxy)) {
 		g_signal_handlers_disconnect_by_func
 			(proxy, G_CALLBACK (menu_item_select_cb), window);
 		g_signal_handlers_disconnect_by_func
 			(proxy, G_CALLBACK (menu_item_deselect_cb), window);
 	}
-
-	widget = get_event_widget (proxy);
-	if (widget) {
-		g_signal_handlers_disconnect_by_func (widget,
-						      G_CALLBACK (proxy_button_press_event_cb),
-						      action);
-		g_signal_handlers_disconnect_by_func (widget,
-						      G_CALLBACK (proxy_button_release_event_cb),
-						      action);
-	}
-
 }
 
 static void
@@ -549,41 +484,11 @@ connect_proxy_cb (GtkUIManager *manager,
 		  GtkWidget *proxy,
 		  NautilusWindow *window)
 {
-	GIcon *icon;
-	GtkWidget *widget;
-	
 	if (GTK_IS_MENU_ITEM (proxy)) {
 		g_signal_connect (proxy, "select",
 				  G_CALLBACK (menu_item_select_cb), window);
 		g_signal_connect (proxy, "deselect",
 				  G_CALLBACK (menu_item_deselect_cb), window);
-
-
-		/* This is a way to easily get pixbufs into the menu items */
-		icon = g_object_get_data (G_OBJECT (action), "menu-icon");
-		if (icon != NULL) {
-			gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (proxy),
-						       gtk_image_new_from_gicon (icon, GTK_ICON_SIZE_MENU));
-		}
-	}
-	if (GTK_IS_TOOL_BUTTON (proxy)) {
-		icon = g_object_get_data (G_OBJECT (action), "toolbar-icon");
-		if (icon != NULL) {
-			widget = gtk_image_new_from_gicon (icon, GTK_ICON_SIZE_LARGE_TOOLBAR);
-			gtk_widget_show (widget);
-			gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (proxy),
-							 widget);
-		}
-	}
-
-	widget = get_event_widget (proxy);
-	if (widget) {
-		g_signal_connect (widget, "button-press-event",
-				  G_CALLBACK (proxy_button_press_event_cb),
-				  action);
-		g_signal_connect (widget, "button-release-event",
-				  G_CALLBACK (proxy_button_release_event_cb),
-				  action);
 	}
 }
 
