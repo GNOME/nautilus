@@ -45,17 +45,16 @@ static void
 real_set_active (NautilusWindowPane *pane, gboolean is_active)
 {
 	NautilusNavigationWindowPane *nav_pane;
-	GList *l;
 
 	nav_pane = NAUTILUS_NAVIGATION_WINDOW_PANE (pane);
 
-	/* path bar */
-	for (l = NAUTILUS_PATH_BAR (nav_pane->path_bar)->button_list; l; l = l->next) {
-		gtk_widget_set_sensitive (gtk_bin_get_child (GTK_BIN (nautilus_path_bar_get_button_from_button_list_entry (l->data))), is_active);
+	if (is_active) {
+		nautilus_navigation_state_set_master (NAUTILUS_NAVIGATION_WINDOW (pane->window)->details->nav_state,
+						      nav_pane->action_group);
 	}
 
-	/* navigation bar (manual entry) */
-	nautilus_location_bar_set_active (NAUTILUS_LOCATION_BAR (nav_pane->location_bar), is_active);
+	/* toolbar */
+	gtk_widget_set_sensitive (nav_pane->tool_bar, is_active);
 }
 
 static gboolean
