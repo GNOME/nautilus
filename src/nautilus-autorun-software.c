@@ -99,8 +99,10 @@ autorun (GMount *mount)
 	char *error_string;
         GFile *root;
         GFile *program_to_spawn;
+        GFile *program_parameter_file;
         char *path_to_spawn;
         char *cwd_for_program;
+        char *program_parameter;
 
         root = g_mount_get_root (mount);
 
@@ -113,13 +115,16 @@ autorun (GMount *mount)
 
         program_to_spawn = NULL;
         path_to_spawn = NULL;
+        program_parameter_file = NULL;
+        program_parameter = NULL;
 
 	if (_check_file (root, ".autorun", TRUE)) {
                 program_to_spawn = g_file_get_child (root, ".autorun");
         } else if (_check_file (root, "autorun", TRUE)) {
                 program_to_spawn = g_file_get_child (root, "autorun");
         } else if (_check_file (root, "autorun.sh", TRUE)) {
-                program_to_spawn = g_file_get_child (root, "autorun.sh");
+                program_to_spawn = g_file_new_for_path ("/bin/sh");
+                program_parameter_file = g_file_get_child (root, "autorun.sh");
         } else if (_check_file (root, "autorun.exe", TRUE)) {
 		/* TODO */
         } else if (_check_file (root, "AUTORUN.EXE", TRUE)) {
@@ -133,13 +138,16 @@ autorun (GMount *mount)
         if (program_to_spawn != NULL) {
                 path_to_spawn = g_file_get_path (program_to_spawn);
 	}
+        if (program_parameter_file != NULL) {
+                program_parameter = g_file_get_path (program_parameter_file);
+        }
 
         cwd_for_program = g_file_get_path (root);
 
 	error_string = NULL;
         if (path_to_spawn != NULL && cwd_for_program != NULL) {
                 if (chdir (cwd_for_program) == 0)  {
-                        execl (path_to_spawn, path_to_spawn, NULL);
+                        execl (path_to_spawn, path_to_spawn, program_parameter, NULL);
 			error_string = g_strdup_printf (_("Error starting autorun program: %s"), strerror (errno));
 			goto out;
                 }
@@ -152,11 +160,15 @@ out:
         if (program_to_spawn != NULL) {
                 g_object_unref (program_to_spawn);
 	}
+        if(program_parameter_file != NULL) {
+                g_object_unref (program_parameter_file);
+        }
 	if (root != NULL) {
 		g_object_unref (root);
 	}
         g_free (path_to_spawn);
         g_free (cwd_for_program);
+        g_free (program_parameter);
 
 	if (error_string != NULL) {
 		GtkWidget *dialog;
