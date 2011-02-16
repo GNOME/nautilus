@@ -352,43 +352,6 @@ nautilus_window_prompt_for_location (NautilusWindow *window,
                          prompt_for_location, (window, initial));
 }
 
-static NautilusView *
-nautilus_window_get_active_view (NautilusWindow *window)
-{
-	NautilusWindowSlot *slot;
-	NautilusView *view;
-
-	slot = window->details->active_pane->active_slot;
-	view = slot->content_view;
-
-	return view;
-}
-
-void
-nautilus_window_zoom_in (NautilusWindow *window)
-{
-	nautilus_view_bump_zoom_level (nautilus_window_get_active_view (window), 1);
-}
-
-void
-nautilus_window_zoom_to_level (NautilusWindow *window,
-			       NautilusZoomLevel level)
-{
-	nautilus_view_zoom_to_level (nautilus_window_get_active_view (window), level);
-}
-
-void
-nautilus_window_zoom_out (NautilusWindow *window)
-{
-	nautilus_view_bump_zoom_level (nautilus_window_get_active_view (window), -1);
-}
-
-void
-nautilus_window_zoom_to_default (NautilusWindow *window)
-{
-	nautilus_view_restore_default_zoom_level (nautilus_window_get_active_view (window));
-}
-
 /* Code should never force the window taller than this size.
  * (The user can still stretch the window taller if desired).
  */

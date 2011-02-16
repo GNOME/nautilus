@@ -179,11 +179,6 @@ void               nautilus_menus_append_bookmark_to_menu                (Nautil
                                                                           GCallback          refresh_callback,
                                                                           NautilusBookmarkFailedCallback failed_callback);
 void               nautilus_window_update_find_menu_item                 (NautilusWindow    *window);
-void               nautilus_window_zoom_in                               (NautilusWindow    *window);
-void               nautilus_window_zoom_out                              (NautilusWindow    *window);
-void               nautilus_window_zoom_to_level                         (NautilusWindow    *window,
-                                                                          NautilusZoomLevel  level);
-void               nautilus_window_zoom_to_default                       (NautilusWindow    *window);
 
 NautilusWindowSlot *nautilus_window_open_slot                            (NautilusWindowPane *pane,
 									  NautilusWindowOpenSlotFlags flags);

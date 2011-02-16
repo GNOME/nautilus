@@ -39,7 +39,6 @@
 #include "nautilus-trash-bar.h"
 #include "nautilus-view-factory.h"
 #include "nautilus-x-content-bar.h"
-#include "nautilus-zoom-control.h"
 #include "nautilus-navigation-window-pane.h"
 #include <eel/eel-accessibility.h>
 #include <eel/eel-debug.h>

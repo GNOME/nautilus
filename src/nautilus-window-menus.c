@@ -212,25 +212,38 @@ action_reload_callback (GtkAction *action,
 	nautilus_window_slot_reload (slot);
 }
 
+static NautilusView *
+get_current_view (NautilusWindow *window)
+{
+	NautilusWindowSlot *slot;
+	NautilusView *view;
+
+	slot = nautilus_window_get_active_slot (window);
+	view = nautilus_window_slot_get_current_view (slot);
+
+	return view;
+}
+
 static void
 action_zoom_in_callback (GtkAction *action, 
 			 gpointer user_data) 
 {
-	nautilus_window_zoom_in (NAUTILUS_WINDOW (user_data));
+
+	nautilus_view_bump_zoom_level (get_current_view (user_data), 1);
 }
 
 static void
 action_zoom_out_callback (GtkAction *action, 
 			  gpointer user_data) 
 {
-	nautilus_window_zoom_out (NAUTILUS_WINDOW (user_data));
+	nautilus_view_bump_zoom_level (get_current_view (user_data), -1);
 }
 
 static void
 action_zoom_normal_callback (GtkAction *action, 
 			     gpointer user_data) 
 {
-	nautilus_window_zoom_to_default (NAUTILUS_WINDOW (user_data));
+	nautilus_view_restore_default_zoom_level (get_current_view (user_data));
 }
 
 static void
