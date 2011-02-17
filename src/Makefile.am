@@ -102,9 +102,6 @@ nautilus_SOURCES = \
 	nautilus-navigation-action.h		\
 	nautilus-navigation-state.c		\
 	nautilus-navigation-state.h		\
-	nautilus-navigation-window-menus.c      \
-	nautilus-navigation-window.c            \
-	nautilus-navigation-window.h            \
 	nautilus-notebook.c			\
 	nautilus-notebook.h			\
 	nautilus-pathbar.c			\

@@ -28,7 +28,7 @@
 
 #include "nautilus-notebook.h"
 
-#include "nautilus-navigation-window.h"
+#include "nautilus-window.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window-slot.h"
@@ -117,7 +117,7 @@ find_notebook_at_pointer (gint abs_x, gint abs_y)
 	gdk_window_get_user_data (toplevel_win, &toplevel);
 
 	/* toplevel should be an NautilusWindow */
-	if (toplevel != NULL && NAUTILUS_IS_NAVIGATION_WINDOW (toplevel))
+	if (toplevel != NULL && NAUTILUS_IS_WINDOW (toplevel))
 	{
 		return NAUTILUS_NOTEBOOK (NAUTILUS_WINDOW (toplevel)->details->active_pane->notebook);
 	}

@@ -56,7 +56,6 @@ typedef enum {
 } NautilusWindowShowHiddenFilesMode;
 
 typedef enum {
-        NAUTILUS_WINDOW_SPATIAL,
         NAUTILUS_WINDOW_NAVIGATION,
         NAUTILUS_WINDOW_DESKTOP
 } NautilusWindowType;
@@ -76,6 +75,9 @@ typedef enum {
 	NAUTILUS_WINDOW_OPEN_SLOT_APPEND = 1
 }  NautilusWindowOpenSlotFlags;
 
+#define NAUTILUS_WINDOW_SIDEBAR_PLACES "places"
+#define NAUTILUS_WINDOW_SIDEBAR_TREE "tree"
+
 typedef struct NautilusWindowDetails NautilusWindowDetails;
 
 typedef struct {
@@ -89,7 +91,7 @@ typedef struct {
         void   (* sync_title) (NautilusWindow *window,
 			       NautilusWindowSlot *slot);
         NautilusIconInfo * (* get_icon) (NautilusWindow *window,
-					 NautilusWindowSlot *slot);
+                                         NautilusWindowSlot *slot);
 
         void   (* sync_allow_stop) (NautilusWindow *window,
 				    NautilusWindowSlot *slot);
@@ -160,5 +162,28 @@ void                 nautilus_window_set_initiated_unmount (NautilusWindow *wind
 NautilusWindowSlot * nautilus_window_get_active_slot       (NautilusWindow *window);
 void                 nautilus_window_push_status           (NautilusWindow *window,
                                                             const char *text);
+
+void     nautilus_window_allow_back           (NautilusWindow *window,
+                                               gboolean       allow);
+void     nautilus_window_allow_forward        (NautilusWindow *window,
+                                               gboolean        allow);
+void     nautilus_window_clear_back_list      (NautilusWindow *window);
+void     nautilus_window_clear_forward_list   (NautilusWindow *window);
+void     nautilus_forget_history              (void);
+gint     nautilus_window_get_base_page_index  (NautilusWindow *window);
+void     nautilus_window_hide_sidebar         (NautilusWindow *window);
+void     nautilus_window_show_sidebar         (NautilusWindow *window);
+void     nautilus_window_back_or_forward      (NautilusWindow *window,
+                                               gboolean        back,
+                                               guint           distance,
+                                               gboolean        new_tab);
+void     nautilus_window_show_search          (NautilusWindow *window);
+void     nautilus_window_hide_search          (NautilusWindow *window);
+void     nautilus_window_set_search_button    (NautilusWindow *window,
+                                               gboolean	       state);
+void     nautilus_window_restore_focus_widget (NautilusWindow *window);
+void     nautilus_window_split_view_on        (NautilusWindow *window);
+void     nautilus_window_split_view_off       (NautilusWindow *window);
+gboolean nautilus_window_split_view_showing   (NautilusWindow *window);
 
 #endif

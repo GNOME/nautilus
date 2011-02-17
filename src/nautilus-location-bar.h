@@ -30,7 +30,6 @@
 #ifndef NAUTILUS_LOCATION_BAR_H
 #define NAUTILUS_LOCATION_BAR_H
 
-#include "nautilus-navigation-window.h"
 #include <libnautilus-private/nautilus-entry.h>
 #include <gtk/gtk.h>
 

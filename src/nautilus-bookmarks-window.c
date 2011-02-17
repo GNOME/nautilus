@@ -28,12 +28,14 @@
 #include <config.h>
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-window.h"
-#include "nautilus-navigation-window.h"
+
 #include <libnautilus-private/nautilus-undo.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-undo-signal-handlers.h>
+
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gnome-extensions.h>
-#include <libnautilus-private/nautilus-undo-signal-handlers.h>
+
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 

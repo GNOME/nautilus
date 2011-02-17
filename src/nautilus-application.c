@@ -39,9 +39,9 @@
 #include "nautilus-icon-view.h"
 #include "nautilus-image-properties-page.h"
 #include "nautilus-list-view.h"
-#include "nautilus-navigation-window.h"
 #include "nautilus-progress-ui-handler.h"
 #include "nautilus-self-check-functions.h"
+#include "nautilus-window.h"
 #include "nautilus-window-bookmarks.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
@@ -509,9 +509,9 @@ open_window (NautilusApplication *application,
 
 	DEBUG ("Opening new window at uri %s", uri);
 
-	window = nautilus_application_create_navigation_window (application,
-								startup_id,
-								screen);
+	window = nautilus_application_create_window (application,
+						     startup_id,
+						     screen);
 	nautilus_window_go_to (window, location);
 
 	g_object_unref (location);
@@ -705,7 +705,7 @@ nautilus_application_close_desktop (void)
 }
 
 void
-nautilus_application_close_all_navigation_windows (NautilusApplication *self)
+nautilus_application_close_all_windows (NautilusApplication *self)
 {
 	GList *list_copy;
 	GList *l;
@@ -744,7 +744,6 @@ nautilus_window_delete_event_callback (GtkWidget *widget,
 
 static NautilusWindow *
 create_window (NautilusApplication *application,
-	       GType window_type,
 	       const char *startup_id,
 	       GdkScreen *screen)
 {
@@ -752,10 +751,10 @@ create_window (NautilusApplication *application,
 	
 	g_return_val_if_fail (NAUTILUS_IS_APPLICATION (application), NULL);
 	
-	window = NAUTILUS_WINDOW (gtk_widget_new (window_type,
-						  "app", application,
-						  "screen", screen,
-						  NULL));
+	window = g_object_new (NAUTILUS_TYPE_WINDOW,
+			       "app", application,
+			       "screen", screen,
+			       NULL);
 
 	if (startup_id) {
 		gtk_window_set_startup_id (GTK_WINDOW (window), startup_id);
@@ -793,9 +792,9 @@ another_navigation_window_already_showing (NautilusApplication *application,
 }
 
 NautilusWindow *
-nautilus_application_create_navigation_window (NautilusApplication *application,
-					       const char          *startup_id,
-					       GdkScreen           *screen)
+nautilus_application_create_window (NautilusApplication *application,
+				    const char          *startup_id,
+				    GdkScreen           *screen)
 {
 	NautilusWindow *window;
 	char *geometry_string;
@@ -803,7 +802,7 @@ nautilus_application_create_navigation_window (NautilusApplication *application,
 
 	g_return_val_if_fail (NAUTILUS_IS_APPLICATION (application), NULL);
 
-	window = create_window (application, NAUTILUS_TYPE_NAVIGATION_WINDOW, startup_id, screen);
+	window = create_window (application, startup_id, screen);
 
 	maximized = g_settings_get_boolean
 		(nautilus_window_state, NAUTILUS_WINDOW_STATE_MAXIMIZED);
@@ -824,8 +823,8 @@ nautilus_application_create_navigation_window (NautilusApplication *application,
 		eel_gtk_window_set_initial_geometry_from_string 
 			(GTK_WINDOW (window), 
 			 geometry_string,
-			 NAUTILUS_NAVIGATION_WINDOW_MIN_WIDTH,
-			 NAUTILUS_NAVIGATION_WINDOW_MIN_HEIGHT,
+			 NAUTILUS_WINDOW_MIN_WIDTH,
+			 NAUTILUS_WINDOW_MIN_HEIGHT,
 			 another_navigation_window_already_showing (application, window));
 	}
 	g_free (geometry_string);

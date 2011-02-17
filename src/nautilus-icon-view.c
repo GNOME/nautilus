@@ -1804,7 +1804,6 @@ icon_container_activate_alternate_callback (NautilusIconContainer *container,
 	GdkEventButton *button_event;
 	GdkEventKey *key_event;
 	gboolean open_in_tab;
-	NautilusWindow *window;
 	NautilusWindowOpenFlags flags;
 
 	g_assert (NAUTILUS_IS_ICON_VIEW (icon_view));
@@ -1812,24 +1811,20 @@ icon_container_activate_alternate_callback (NautilusIconContainer *container,
 
 	open_in_tab = FALSE;
 
-	window = nautilus_view_get_nautilus_window (NAUTILUS_VIEW (icon_view));
-
-	if (nautilus_window_get_window_type (window) == NAUTILUS_WINDOW_NAVIGATION) {
-		event = gtk_get_current_event ();
-		if (event->type == GDK_BUTTON_PRESS ||
-		    event->type == GDK_BUTTON_RELEASE ||
-		    event->type == GDK_2BUTTON_PRESS ||
-		    event->type == GDK_3BUTTON_PRESS) {
-			button_event = (GdkEventButton *) event;
-			open_in_tab = (button_event->state & GDK_SHIFT_MASK) == 0;
-		} else if (event->type == GDK_KEY_PRESS ||
-			   event->type == GDK_KEY_RELEASE) {
-			key_event = (GdkEventKey *) event;
-			open_in_tab = !((key_event->state & GDK_SHIFT_MASK) != 0 &&
-					(key_event->state & GDK_CONTROL_MASK) != 0);
-		} else {
-			open_in_tab = TRUE;
-		}
+	event = gtk_get_current_event ();
+	if (event->type == GDK_BUTTON_PRESS ||
+	    event->type == GDK_BUTTON_RELEASE ||
+	    event->type == GDK_2BUTTON_PRESS ||
+	    event->type == GDK_3BUTTON_PRESS) {
+		button_event = (GdkEventButton *) event;
+		open_in_tab = (button_event->state & GDK_SHIFT_MASK) == 0;
+	} else if (event->type == GDK_KEY_PRESS ||
+		   event->type == GDK_KEY_RELEASE) {
+		key_event = (GdkEventKey *) event;
+		open_in_tab = !((key_event->state & GDK_SHIFT_MASK) != 0 &&
+				(key_event->state & GDK_CONTROL_MASK) != 0);
+	} else {
+		open_in_tab = TRUE;
 	}
 
 	flags = NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND;

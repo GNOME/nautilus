@@ -153,7 +153,7 @@ search_bar_cancel_callback (GtkWidget *widget,
 	nautilus_toolbar_set_show_search_bar (NAUTILUS_TOOLBAR (pane->tool_bar), FALSE);
 
 	nautilus_window_pane_hide_search_bar (pane);
-	nautilus_navigation_window_restore_focus_widget (NAUTILUS_NAVIGATION_WINDOW (pane->window));
+	nautilus_window_restore_focus_widget (pane->window);
 }
 
 static void
@@ -163,7 +163,7 @@ navigation_bar_cancel_callback (GtkWidget *widget,
 	nautilus_toolbar_set_show_location_entry (NAUTILUS_TOOLBAR (pane->tool_bar), FALSE);
 
 	nautilus_window_pane_hide_temporary_bars (pane);
-	nautilus_navigation_window_restore_focus_widget (NAUTILUS_NAVIGATION_WINDOW (pane->window));
+	nautilus_window_restore_focus_widget (pane->window);
 }
 
 static void
@@ -177,7 +177,7 @@ navigation_bar_location_changed_callback (GtkWidget *widget,
 	nautilus_window_pane_hide_search_bar (pane);
 	nautilus_window_pane_hide_temporary_bars (pane);
 
-	nautilus_navigation_window_restore_focus_widget (NAUTILUS_NAVIGATION_WINDOW (pane->window));
+	nautilus_window_restore_focus_widget (pane->window);
 
 	location = g_file_new_for_uri (uri);
 	nautilus_window_slot_go_to (pane->active_slot, location, FALSE);
@@ -197,7 +197,7 @@ path_bar_location_changed_callback (GtkWidget *widget,
 	/* check whether we already visited the target location */
 	i = bookmark_list_get_uri_index (slot->back_list, location);
 	if (i >= 0) {
-		nautilus_navigation_window_back_or_forward (NAUTILUS_NAVIGATION_WINDOW (pane->window), TRUE, i, FALSE);
+		nautilus_window_back_or_forward (pane->window, TRUE, i, FALSE);
 	} else {
 		nautilus_window_slot_go_to (pane->active_slot, location, FALSE);
 	}
@@ -500,7 +500,7 @@ real_set_active (NautilusWindowPane *pane,
 		 gboolean is_active)
 {
 	if (is_active) {
-		nautilus_navigation_state_set_master (NAUTILUS_NAVIGATION_WINDOW (pane->window)->details->nav_state,
+		nautilus_navigation_state_set_master (pane->window->details->nav_state,
 						      pane->action_group);
 	}
 
@@ -512,16 +512,16 @@ static void
 nautilus_window_pane_setup (NautilusWindowPane *pane)
 {
 	GtkSizeGroup *header_size_group;
-	NautilusNavigationWindow *window;
+	NautilusWindow *window;
 	GtkActionGroup *action_group;
 
 	pane->widget = gtk_vbox_new (FALSE, 0);
-	window = NAUTILUS_NAVIGATION_WINDOW (pane->window);
+	window = pane->window;
 
 	header_size_group = window->details->header_size_group;
 
 	/* build the toolbar */
-	action_group = nautilus_navigation_window_create_toolbar_action_group (window);
+	action_group = nautilus_window_create_toolbar_action_group (window);
 	pane->tool_bar = nautilus_toolbar_new (action_group);
 	pane->action_group = action_group;
 
@@ -716,9 +716,9 @@ nautilus_window_pane_sync_location_widgets (NautilusWindowPane *pane)
 
 		/* Check if the back and forward buttons need enabling or disabling. */
 		active_slot = pane->window->details->active_pane->active_slot;
-		nautilus_navigation_window_allow_back (NAUTILUS_NAVIGATION_WINDOW (pane->window),
+		nautilus_window_allow_back (pane->window,
 						       active_slot->back_list != NULL);
-		nautilus_navigation_window_allow_forward (NAUTILUS_NAVIGATION_WINDOW (pane->window),
+		nautilus_window_allow_forward (pane->window,
 							  active_slot->forward_list != NULL);
 	}
 }
@@ -779,7 +779,7 @@ nautilus_window_pane_slot_close (NautilusWindowPane *pane,
 				nautilus_window_close_pane (pane);
 				nautilus_window_set_active_pane (window, next_pane);
 
-				nautilus_navigation_window_update_show_hide_menu_items (NAUTILUS_NAVIGATION_WINDOW (window));
+				nautilus_window_update_show_hide_menu_items (window);
 			} else {
 				nautilus_window_close (window);
 			}
@@ -801,10 +801,10 @@ nautilus_window_pane_hide_search_bar (NautilusWindowPane *pane)
 	nautilus_toolbar_set_show_search_bar (NAUTILUS_TOOLBAR (pane->tool_bar), FALSE);
 
 	if (pane->temporary_search_bar) {
-		NautilusNavigationWindow *window;
+		NautilusWindow *window;
 
-		window = NAUTILUS_NAVIGATION_WINDOW (NAUTILUS_WINDOW_PANE (pane)->window);
-		nautilus_navigation_window_set_search_button (window, FALSE);
+		window = pane->window;
+		nautilus_window_set_search_button (window, FALSE);
 		pane->temporary_search_bar = FALSE;
 
 		gtk_widget_hide (pane->tool_bar);

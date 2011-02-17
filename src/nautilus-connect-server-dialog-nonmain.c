@@ -79,9 +79,9 @@ nautilus_connect_server_dialog_display_location_async (NautilusConnectServerDial
 
 	application = nautilus_application_dup_singleton ();
 
-	window = nautilus_application_create_navigation_window (application,
-								NULL,
-								gtk_widget_get_screen (widget));
+	window = nautilus_application_create_window (application,
+						     NULL,
+						     gtk_widget_get_screen (widget));
 
 	nautilus_window_go_to_full (window, location,
 				    window_go_to_cb, self);

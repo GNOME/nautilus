@@ -32,7 +32,7 @@
 
 #include "nautilus-navigation-action.h"
 
-#include "nautilus-navigation-window.h"
+#include "nautilus-window.h"
 
 #include <gtk/gtk.h>
 #include <eel/eel-gtk-extensions.h>
@@ -42,7 +42,7 @@ G_DEFINE_TYPE (NautilusNavigationAction, nautilus_navigation_action, GTK_TYPE_AC
 
 struct NautilusNavigationActionPrivate
 {
-	NautilusNavigationWindow *window;
+	NautilusWindow *window;
 	NautilusNavigationDirection direction;
 	char *arrow_tooltip;
 
@@ -75,33 +75,33 @@ should_open_in_new_tab (void)
 
 static void
 activate_back_or_forward_menu_item (GtkMenuItem *menu_item, 
-				    NautilusNavigationWindow *window,
+				    NautilusWindow *window,
 				    gboolean back)
 {
 	int index;
 	
 	g_assert (GTK_IS_MENU_ITEM (menu_item));
-	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
 
 	index = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (menu_item), "user_data"));
 
-	nautilus_navigation_window_back_or_forward (window, back, index, should_open_in_new_tab ());
+	nautilus_window_back_or_forward (window, back, index, should_open_in_new_tab ());
 }
 
 static void
-activate_back_menu_item_callback (GtkMenuItem *menu_item, NautilusNavigationWindow *window)
+activate_back_menu_item_callback (GtkMenuItem *menu_item,
+                                  NautilusWindow *window)
 {
 	activate_back_or_forward_menu_item (menu_item, window, TRUE);
 }
 
 static void
-activate_forward_menu_item_callback (GtkMenuItem *menu_item, NautilusNavigationWindow *window)
+activate_forward_menu_item_callback (GtkMenuItem *menu_item, NautilusWindow *window)
 {
 	activate_back_or_forward_menu_item (menu_item, window, FALSE);
 }
 
 static void
-fill_menu (NautilusNavigationWindow *window,
+fill_menu (NautilusWindow *window,
 	   GtkWidget *menu,
 	   gboolean back)
 {
@@ -110,9 +110,7 @@ fill_menu (NautilusNavigationWindow *window,
 	int index;
 	GList *list;
 
-	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
-
-	slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (window));
+	slot = nautilus_window_get_active_slot (window);
 	
 	list = back ? slot->back_list : slot->forward_list;
 	index = 0;
@@ -137,7 +135,7 @@ show_menu (NautilusNavigationAction *self,
            guint button,
            guint32 event_time)
 {
-	NautilusNavigationWindow *window;
+	NautilusWindow *window;
 	GtkWidget *menu;
 
 	window = self->priv->window;
@@ -317,7 +315,7 @@ nautilus_navigation_action_set_property (GObject *object,
 			nav->priv->direction = g_value_get_int (value);
 			break;
 		case PROP_WINDOW:
-			nav->priv->window = NAUTILUS_NAVIGATION_WINDOW (g_value_get_object (value));
+			nav->priv->window = g_value_get_object (value);
 			break;
 	}
 }
@@ -381,7 +379,7 @@ nautilus_navigation_action_class_init (NautilusNavigationActionClass *class)
                                          g_param_spec_object ("window",
                                                               "Window",
                                                               "The navigation window",
-                                                              NAUTILUS_TYPE_NAVIGATION_WINDOW,
+                                                              NAUTILUS_TYPE_WINDOW,
                                                               G_PARAM_READWRITE));
 
 	g_type_class_add_private (object_class, sizeof(NautilusNavigationActionPrivate));

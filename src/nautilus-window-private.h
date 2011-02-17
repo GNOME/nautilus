@@ -32,12 +32,9 @@
 #include "nautilus-window-slot.h"
 #include "nautilus-window-pane.h"
 #include "nautilus-navigation-state.h"
-#include "nautilus-navigation-window.h"
 #include "nautilus-bookmark-list.h"
 
 #include <libnautilus-private/nautilus-directory.h>
-
-struct _NautilusNavigationWindowPane;
 
 /* FIXME bugzilla.gnome.org 42575: Migrate more fields into here. */
 struct NautilusWindowDetails
@@ -89,12 +86,9 @@ struct NautilusWindowDetails
 	gboolean initiated_unmount;
 
         NautilusApplication *application;
-};
 
-struct _NautilusNavigationWindowDetails {
         GtkWidget *content_paned;
         GtkWidget *content_box;
-        GtkActionGroup *navigation_action_group; /* owned by ui_manager */
         NautilusNavigationState *nav_state;
 
         GtkSizeGroup *header_size_group;
@@ -147,15 +141,10 @@ struct _NautilusNavigationWindowDetails {
  * are turned off, you can see an icon or two at this size. See bug 5946.
  */
 
-#define NAUTILUS_SPATIAL_WINDOW_MIN_WIDTH			100
-#define NAUTILUS_SPATIAL_WINDOW_MIN_HEIGHT			100
-#define NAUTILUS_SPATIAL_WINDOW_DEFAULT_WIDTH			500
-#define NAUTILUS_SPATIAL_WINDOW_DEFAULT_HEIGHT			300
-
-#define NAUTILUS_NAVIGATION_WINDOW_MIN_WIDTH			200
-#define NAUTILUS_NAVIGATION_WINDOW_MIN_HEIGHT			200
-#define NAUTILUS_NAVIGATION_WINDOW_DEFAULT_WIDTH		800
-#define NAUTILUS_NAVIGATION_WINDOW_DEFAULT_HEIGHT		550
+#define NAUTILUS_WINDOW_MIN_WIDTH		200
+#define NAUTILUS_WINDOW_MIN_HEIGHT		200
+#define NAUTILUS_WINDOW_DEFAULT_WIDTH		800
+#define NAUTILUS_WINDOW_DEFAULT_HEIGHT		550
 
 typedef void (*NautilusBookmarkFailedCallback) (NautilusWindow *window,
                                                 NautilusBookmark *bookmark);
@@ -208,25 +197,25 @@ void nautilus_window_sync_title            (NautilusWindow *window,
 					    NautilusWindowSlot *slot);
 void nautilus_window_sync_zoom_widgets     (NautilusWindow *window);
 
-/* Navigation window menus */
-GtkActionGroup *nautilus_navigation_window_create_toolbar_action_group (NautilusNavigationWindow *window);
-void               nautilus_navigation_window_initialize_actions                    (NautilusNavigationWindow    *window);
-void               nautilus_navigation_window_initialize_menus                      (NautilusNavigationWindow    *window);
-void               nautilus_navigation_window_remove_bookmarks_menu_callback        (NautilusNavigationWindow    *window);
+/* window menus */
+GtkActionGroup *nautilus_window_create_toolbar_action_group (NautilusWindow *window);
+void               nautilus_window_initialize_actions                    (NautilusWindow    *window);
+void               nautilus_window_initialize_menus                      (NautilusWindow    *window);
+void               nautilus_window_remove_bookmarks_menu_callback        (NautilusWindow    *window);
 
-void               nautilus_navigation_window_remove_bookmarks_menu_items           (NautilusNavigationWindow    *window);
-void               nautilus_navigation_window_update_show_hide_menu_items           (NautilusNavigationWindow     *window);
-void               nautilus_navigation_window_update_spatial_menu_item              (NautilusNavigationWindow     *window);
+void               nautilus_window_remove_bookmarks_menu_items           (NautilusWindow    *window);
+void               nautilus_window_update_show_hide_menu_items           (NautilusWindow     *window);
+void               nautilus_window_update_spatial_menu_item              (NautilusWindow     *window);
 
-/* Navigation window toolbar */
-void               nautilus_navigation_window_activate_spinner                     (NautilusNavigationWindow    *window);
-void               nautilus_navigation_window_initialize_toolbars                   (NautilusNavigationWindow    *window);
-void               nautilus_navigation_window_load_extension_toolbar_items          (NautilusNavigationWindow    *window);
-void               nautilus_navigation_window_set_spinner_active                   (NautilusNavigationWindow    *window, 
-                                                                                     gboolean                     active);
-void               nautilus_navigation_window_go_back                               (NautilusNavigationWindow    *window);
-void               nautilus_navigation_window_go_forward                            (NautilusNavigationWindow    *window);
-void               nautilus_window_close_pane                                       (NautilusWindowPane *pane);
-void               nautilus_navigation_window_update_split_view_actions_sensitivity (NautilusNavigationWindow    *window);
+/* window toolbar */
+void               nautilus_window_activate_spinner                     (NautilusWindow    *window);
+void               nautilus_window_initialize_toolbars                   (NautilusWindow    *window);
+void               nautilus_window_load_extension_toolbar_items          (NautilusWindow    *window);
+void               nautilus_window_set_spinner_active                   (NautilusWindow    *window, 
+                                                                         gboolean           active);
+void               nautilus_window_go_back                               (NautilusWindow    *window);
+void               nautilus_window_go_forward                            (NautilusWindow    *window);
+void               nautilus_window_close_pane                            (NautilusWindowPane *pane);
+void               nautilus_window_update_split_view_actions_sensitivity (NautilusWindow    *window);
 
 #endif /* NAUTILUS_WINDOW_PRIVATE_H */

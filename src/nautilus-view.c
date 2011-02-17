@@ -7570,7 +7570,7 @@ clipboard_targets_received (GtkClipboard     *clipboard,
 static gboolean
 should_show_empty_trash (NautilusView *view)
 {
-	return (showing_trash_directory (view) || nautilus_window_get_window_type (view->details->window) == NAUTILUS_WINDOW_NAVIGATION);
+	return (showing_trash_directory (view));
 }
 
 static gboolean
@@ -8265,21 +8265,15 @@ real_update_location_menu (NautilusView *view)
 	char *tip;
 
 	show_open_folder_window = FALSE;
-	show_open_in_new_tab = FALSE;
+	show_open_in_new_tab = TRUE;
 
-	if (nautilus_window_get_window_type (view->details->window) == NAUTILUS_WINDOW_NAVIGATION) {
-		if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
-			label = _("Open in New _Window");
-		} else {
-			label = _("Browse in New _Window");
-			show_open_folder_window = TRUE;
-		}
-
-		show_open_in_new_tab = TRUE;
+	if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
+		label = _("Open in New _Window");
 	} else {
-		label = g_strdup (ngettext ("_Browse Folder",
-					    "_Browse Folders", 1));
+		label = _("Browse in New _Window");
+		show_open_folder_window = TRUE;
 	}
+
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      NAUTILUS_ACTION_LOCATION_OPEN_ALTERNATE);
 	g_object_set (action,
@@ -8580,31 +8574,26 @@ real_update_menus (NautilusView *view)
 		!(nautilus_window_get_window_type (view->details->window) == NAUTILUS_WINDOW_DESKTOP &&
 		  g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER));
 	show_open_folder_window = FALSE;
-	if (nautilus_window_get_window_type (view->details->window) == NAUTILUS_WINDOW_NAVIGATION) {
-		if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
-			if (selection_count == 0 || selection_count == 1) {
-				label_with_underscore = g_strdup (_("Open in New _Window"));
-			} else {
-				label_with_underscore = g_strdup_printf (ngettext("Open in %'d New _Window",
-										  "Open in %'d New _Windows",
-										  selection_count), 
-									 selection_count);
-			}
+
+	if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
+		if (selection_count == 0 || selection_count == 1) {
+			label_with_underscore = g_strdup (_("Open in New _Window"));
 		} else {
-			if (selection_count == 0 || selection_count == 1) {
-				label_with_underscore = g_strdup (_("Browse in New _Window"));
-			} else {
-				label_with_underscore = g_strdup_printf (ngettext("Browse in %'d New _Window",
-										  "Browse in %'d New _Windows",
-										  selection_count), 
-									 selection_count);
-			}
-			show_open_folder_window = show_open_alternate;
+			label_with_underscore = g_strdup_printf (ngettext("Open in %'d New _Window",
+									  "Open in %'d New _Windows",
+									  selection_count), 
+								 selection_count);
 		}
 	} else {
-		label_with_underscore = g_strdup (ngettext ("_Browse Folder",
-							    "_Browse Folders",
-							    selection_count));
+		if (selection_count == 0 || selection_count == 1) {
+			label_with_underscore = g_strdup (_("Browse in New _Window"));
+		} else {
+			label_with_underscore = g_strdup_printf (ngettext("Browse in %'d New _Window",
+									  "Browse in %'d New _Windows",
+									  selection_count), 
+								 selection_count);
+		}
+		show_open_folder_window = show_open_alternate;
 	}
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
@@ -8617,51 +8606,33 @@ real_update_menus (NautilusView *view)
 	gtk_action_set_sensitive (action,  selection_count != 0);
 	gtk_action_set_visible (action, show_open_alternate);
 
-	/* Open in New Tab action */
-	if (nautilus_window_get_window_type (view->details->window) == NAUTILUS_WINDOW_NAVIGATION) {
-
-		if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
-			if (selection_count == 0 || selection_count == 1) {
-				label_with_underscore = g_strdup (_("Open in New _Tab"));
-			} else {
-				label_with_underscore = g_strdup_printf (ngettext("Open in %'d New _Tab",
-										  "Open in %'d New _Tabs",
-										  selection_count), 
-									 selection_count);
-			}
+	if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
+		if (selection_count == 0 || selection_count == 1) {
+			label_with_underscore = g_strdup (_("Open in New _Tab"));
 		} else {
-			if (selection_count == 0 || selection_count == 1) {
-				label_with_underscore = g_strdup (_("Browse in New _Tab"));
-			} else {
-				label_with_underscore = g_strdup_printf (ngettext("Browse in %'d New _Tab",
-										  "Browse in %'d New _Tabs",
-										  selection_count), 
-									 selection_count);
-			}
+			label_with_underscore = g_strdup_printf (ngettext("Open in %'d New _Tab",
+									  "Open in %'d New _Tabs",
+									  selection_count), 
+								 selection_count);
 		}
-		action = gtk_action_group_get_action (view->details->dir_action_group,
-						      NAUTILUS_ACTION_OPEN_IN_NEW_TAB);
-		gtk_action_set_sensitive (action, selection_count != 0);
-		gtk_action_set_visible (action, show_open_alternate);
-		g_object_set (action, "label", 
-			      label_with_underscore,
-			      NULL);
-		g_free (label_with_underscore);
 	} else {
-		action = gtk_action_group_get_action (view->details->dir_action_group,
-						      NAUTILUS_ACTION_OPEN_IN_NEW_TAB);
-		gtk_action_set_visible (action, FALSE);
+		if (selection_count == 0 || selection_count == 1) {
+			label_with_underscore = g_strdup (_("Browse in New _Tab"));
+		} else {
+			label_with_underscore = g_strdup_printf (ngettext("Browse in %'d New _Tab",
+									  "Browse in %'d New _Tabs",
+									  selection_count), 
+								 selection_count);
+		}
 	}
-
-	/* next pane actions, only in navigation mode */
-	if (nautilus_window_get_window_type (view->details->window) != NAUTILUS_WINDOW_NAVIGATION) {
-		action = gtk_action_group_get_action (view->details->dir_action_group,
-						      NAUTILUS_ACTION_COPY_TO_NEXT_PANE);
-		gtk_action_set_visible (action, FALSE);
-		action = gtk_action_group_get_action (view->details->dir_action_group,
-						      NAUTILUS_ACTION_MOVE_TO_NEXT_PANE);
-		gtk_action_set_visible (action, FALSE);
-	}
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      NAUTILUS_ACTION_OPEN_IN_NEW_TAB);
+	gtk_action_set_sensitive (action, selection_count != 0);
+	gtk_action_set_visible (action, show_open_alternate);
+	g_object_set (action, "label", 
+		      label_with_underscore,
+		      NULL);
+	g_free (label_with_underscore);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      NAUTILUS_ACTION_OPEN_FOLDER_WINDOW);

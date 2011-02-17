@@ -484,7 +484,7 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 	if (target_same) {
 		target_window = window;
 	} else if (target_navigation) {
-		target_window = nautilus_application_create_navigation_window
+		target_window = nautilus_application_create_window
 			(app,
 			 NULL,
 			 gtk_window_get_screen (GTK_WINDOW (window)));
@@ -1761,8 +1761,10 @@ nautilus_window_manage_views_close_slot (NautilusWindowPane *pane,
 }
 
 void
-nautilus_navigation_window_back_or_forward (NautilusNavigationWindow *window, 
-                                            gboolean back, guint distance, gboolean new_tab)
+nautilus_window_back_or_forward (NautilusWindow *window, 
+				 gboolean back,
+				 guint distance,
+				 gboolean new_tab)
 {
 	NautilusWindowSlot *slot;
 	GList *list;
@@ -1770,7 +1772,7 @@ nautilus_navigation_window_back_or_forward (NautilusNavigationWindow *window,
         guint len;
         NautilusBookmark *bookmark;
 
-	slot = NAUTILUS_WINDOW (window)->details->active_pane->active_slot;
+	slot = window->details->active_pane->active_slot;
 	list = back ? slot->back_list : slot->forward_list;
 
         len = (guint) g_list_length (list);

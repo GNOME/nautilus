@@ -29,7 +29,6 @@
 
 #include "nautilus-window.h"
 #include "nautilus-window-pane.h"
-#include "nautilus-navigation-window.h"
 
 void nautilus_window_manage_views_close_slot (NautilusWindowPane *pane,
                                               NautilusWindowSlot *slot);

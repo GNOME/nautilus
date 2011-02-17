@@ -94,10 +94,10 @@ static const GtkTargetEntry drop_types [] = {
 G_DEFINE_TYPE (NautilusLocationBar, nautilus_location_bar,
 	       GTK_TYPE_HBOX);
 
-static NautilusNavigationWindow *
+static NautilusWindow *
 nautilus_location_bar_get_window (GtkWidget *bar)
 {
-	return NAUTILUS_NAVIGATION_WINDOW (gtk_widget_get_ancestor (bar, NAUTILUS_TYPE_WINDOW));
+	return NAUTILUS_WINDOW (gtk_widget_get_ancestor (bar, NAUTILUS_TYPE_WINDOW));
 }
 
 /**
@@ -151,8 +151,7 @@ drag_data_received_callback (GtkWidget *widget,
 	char **names;
 	NautilusApplication *application;
 	int name_count;
-	NautilusWindow *new_window;
-	NautilusNavigationWindow *window;
+	NautilusWindow *new_window, *window;
 	GdkScreen      *screen;
 	gboolean new_windows_for_extras;
 	char *prompt;
@@ -217,7 +216,7 @@ drag_data_received_callback (GtkWidget *widget,
 		screen = gtk_window_get_screen (GTK_WINDOW (window));
 
 		for (i = 1; names[i] != NULL; ++i) {
-			new_window = nautilus_application_create_navigation_window (application, NULL, screen);
+			new_window = nautilus_application_create_window (application, NULL, screen);
 			location = g_file_new_for_uri (names[i]);
 			nautilus_window_go_to (new_window, location);
 			g_object_unref (location);
@@ -299,10 +298,10 @@ static gboolean
 label_button_pressed_callback (GtkWidget             *widget,
 			       GdkEventButton        *event)
 {
-	NautilusNavigationWindow *window;
-	NautilusWindowSlot       *slot;
-	NautilusView             *view;
-	GtkWidget                *label;
+	NautilusWindow *window;
+	NautilusWindowSlot *slot;
+	NautilusView *view;
+	GtkWidget *label;
 
 	if (event->button != 3) {
 		return FALSE;

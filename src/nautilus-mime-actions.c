@@ -1826,8 +1826,7 @@ activate_files (ActivateParameters *parameters)
 	if (open_in_app_parameters != NULL ||
 	    unhandled_open_in_app_uris != NULL) {
 		if ((parameters->flags & NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND) != 0 &&
-		    window != NULL && 
-		     nautilus_window_get_window_type (window) == NAUTILUS_WINDOW_SPATIAL) {
+		    window != NULL) {
 			nautilus_window_close (window);
 		}
 	}
