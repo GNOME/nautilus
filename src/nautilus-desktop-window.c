@@ -48,25 +48,14 @@ G_DEFINE_TYPE (NautilusDesktopWindow, nautilus_desktop_window,
 	       NAUTILUS_TYPE_WINDOW);
 
 static void
-nautilus_desktop_window_init (NautilusDesktopWindow *window)
+nautilus_desktop_window_constructed (GObject *obj)
 {
 	GtkAction *action;
 	AtkObject *accessible;
+	NautilusDesktopWindow *window = NAUTILUS_DESKTOP_WINDOW (obj);
 
-	window->details = G_TYPE_INSTANCE_GET_PRIVATE (window, NAUTILUS_TYPE_DESKTOP_WINDOW,
-						       NautilusDesktopWindowDetails);
-
-	gtk_window_move (GTK_WINDOW (window), 0, 0);
-
-	/* shouldn't really be needed given our semantic type
-	 * of _NET_WM_TYPE_DESKTOP, but why not
-	 */
-	gtk_window_set_resizable (GTK_WINDOW (window),
-				  FALSE);
-
-	g_object_set_data (G_OBJECT (window), "is_desktop_window", 
-			   GINT_TO_POINTER (1));
-
+	G_OBJECT_CLASS (nautilus_desktop_window_parent_class)->constructed (obj);
+	
 	gtk_widget_hide (NAUTILUS_WINDOW (window)->details->statusbar);
 	gtk_widget_hide (NAUTILUS_WINDOW (window)->details->menubar);
 
@@ -87,6 +76,24 @@ nautilus_desktop_window_init (NautilusDesktopWindow *window)
 	g_signal_connect_swapped (nautilus_preferences, "changed::" NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
 				  G_CALLBACK (nautilus_desktop_window_update_directory),
 				  window);
+}
+
+static void
+nautilus_desktop_window_init (NautilusDesktopWindow *window)
+{
+	window->details = G_TYPE_INSTANCE_GET_PRIVATE (window, NAUTILUS_TYPE_DESKTOP_WINDOW,
+						       NautilusDesktopWindowDetails);
+
+	gtk_window_move (GTK_WINDOW (window), 0, 0);
+
+	/* shouldn't really be needed given our semantic type
+	 * of _NET_WM_TYPE_DESKTOP, but why not
+	 */
+	gtk_window_set_resizable (GTK_WINDOW (window),
+				  FALSE);
+
+	g_object_set_data (G_OBJECT (window), "is_desktop_window", 
+			   GINT_TO_POINTER (1));
 }
 
 static gint
@@ -135,13 +142,13 @@ nautilus_desktop_window_new (NautilusApplication *application,
 	width_request = gdk_screen_get_width (screen);
 	height_request = gdk_screen_get_height (screen);
 
-	window = NAUTILUS_DESKTOP_WINDOW
-		(gtk_widget_new (nautilus_desktop_window_get_type(),
-				 "app", application,
-				 "width_request", width_request,
-				 "height_request", height_request,
-				 "screen", screen,
-				 NULL));
+	window = g_object_new (NAUTILUS_TYPE_DESKTOP_WINDOW,
+			       "disable-chrome", TRUE,
+			       "app", application,
+			       "width_request", width_request,
+			       "height_request", height_request,
+			       "screen", screen,
+			       NULL);
 
 	/* Special sawmill setting*/
 	gtk_window_set_wmclass (GTK_WINDOW (window), "desktop_window", "Nautilus");
@@ -268,6 +275,9 @@ nautilus_desktop_window_class_init (NautilusDesktopWindowClass *klass)
 {
 	GtkWidgetClass *wclass = GTK_WIDGET_CLASS (klass);
 	NautilusWindowClass *nclass = NAUTILUS_WINDOW_CLASS (klass);
+	GObjectClass *oclass = G_OBJECT_CLASS (klass);
+
+	oclass->constructed = nautilus_desktop_window_constructed;
 
 	wclass->realize = realize;
 	wclass->unrealize = unrealize;

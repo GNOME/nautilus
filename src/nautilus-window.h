@@ -186,4 +186,8 @@ void     nautilus_window_split_view_on        (NautilusWindow *window);
 void     nautilus_window_split_view_off       (NautilusWindow *window);
 gboolean nautilus_window_split_view_showing   (NautilusWindow *window);
 
+gboolean nautilus_window_disable_chrome_mapping (GValue *value,
+                                                 GVariant *variant,
+                                                 gpointer user_data);
+
 #endif

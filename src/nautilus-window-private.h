@@ -113,6 +113,8 @@ struct NautilusWindowDetails
         	
         /* split view */
         GtkWidget *split_view_hpane;
+
+        gboolean disable_chrome;
 };
 
 #define NAUTILUS_MENU_PATH_BACK_ITEM			"/menu/Go/Back"

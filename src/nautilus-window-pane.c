@@ -529,11 +529,13 @@ nautilus_window_pane_setup (NautilusWindowPane *pane)
 			    pane->tool_bar,
 			    FALSE, FALSE, 0);
 
-	g_settings_bind (nautilus_window_state,
-			 NAUTILUS_WINDOW_STATE_START_WITH_TOOLBAR,
-			 pane->tool_bar,
-			 "visible",
-			 G_SETTINGS_BIND_GET);
+	g_settings_bind_with_mapping (nautilus_window_state,
+				      NAUTILUS_WINDOW_STATE_START_WITH_TOOLBAR,
+				      pane->tool_bar,
+				      "visible",
+				      G_SETTINGS_BIND_GET,
+				      nautilus_window_disable_chrome_mapping, NULL,
+				      window, NULL);
 
 	/* connect to the pathbar signals */
 	pane->path_bar = nautilus_toolbar_get_path_bar (NAUTILUS_TOOLBAR (pane->tool_bar));

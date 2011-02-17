@@ -108,8 +108,9 @@ static void use_extra_mouse_buttons_changed          (gpointer                  
 #define UPPER_MOUSE_LIMIT 14
 
 enum {
-	ARG_0,
-	ARG_APP
+	PROP_APP = 1,
+	PROP_DISABLE_CHROME,
+	NUM_PROPERTIES,
 };
 
 enum {
@@ -124,6 +125,7 @@ enum {
 };
 
 static guint signals[LAST_SIGNAL] = { 0 };
+static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 
 typedef struct  {
 	NautilusWindow *window;
@@ -427,16 +429,266 @@ nautilus_window_set_initial_window_geometry (NautilusWindow *window)
 				          max_height_for_screen));
 }
 
+
+/* side pane helpers */
+static void
+side_pane_size_allocate_callback (GtkWidget *widget,
+				  GtkAllocation *allocation,
+				  gpointer user_data)
+{
+	NautilusWindow *window;
+
+	window = user_data;
+
+	if (allocation->width != window->details->side_pane_width) {
+		window->details->side_pane_width = allocation->width;
+
+		DEBUG ("Saving sidebar width: %d", allocation->width);
+		
+		g_settings_set_int (nautilus_window_state,
+				    NAUTILUS_WINDOW_STATE_SIDEBAR_WIDTH,
+				    allocation->width <= 1 ? 0 : allocation->width);
+	}
+}
+
+static void
+setup_side_pane_width (NautilusWindow *window)
+{
+	g_return_if_fail (window->details->sidebar != NULL);
+
+	window->details->side_pane_width =
+		g_settings_get_int (nautilus_window_state,
+				    NAUTILUS_WINDOW_STATE_SIDEBAR_WIDTH);
+
+	gtk_paned_set_position (GTK_PANED (window->details->content_paned),
+				window->details->side_pane_width);
+}
+
+static gboolean
+sidebar_id_is_valid (const gchar *sidebar_id)
+{
+	return (g_strcmp0 (sidebar_id, NAUTILUS_WINDOW_SIDEBAR_PLACES) == 0 ||
+		g_strcmp0 (sidebar_id, NAUTILUS_WINDOW_SIDEBAR_TREE) == 0);
+}
+
+static void
+nautilus_window_set_up_sidebar (NautilusWindow *window)
+{
+	GtkWidget *sidebar;
+
+	DEBUG ("Setting up sidebar id %s", window->details->sidebar_id);
+
+	window->details->sidebar = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
+
+	gtk_paned_pack1 (GTK_PANED (window->details->content_paned),
+			 GTK_WIDGET (window->details->sidebar),
+			 FALSE, FALSE);
+
+	setup_side_pane_width (window);
+	g_signal_connect (window->details->sidebar, 
+			  "size_allocate",
+			  G_CALLBACK (side_pane_size_allocate_callback),
+			  window);
+
+	if (g_strcmp0 (window->details->sidebar_id, NAUTILUS_WINDOW_SIDEBAR_PLACES) == 0) {
+		sidebar = nautilus_places_sidebar_new (window);
+	} else if (g_strcmp0 (window->details->sidebar_id, NAUTILUS_WINDOW_SIDEBAR_TREE) == 0) {
+		sidebar = nautilus_tree_sidebar_new (window);
+	} else {
+		g_assert_not_reached ();
+	}
+
+	gtk_box_pack_start (GTK_BOX (window->details->sidebar), sidebar, TRUE, TRUE, 0);
+	gtk_widget_show (sidebar);
+	gtk_widget_show (GTK_WIDGET (window->details->sidebar));
+}
+
+static void
+nautilus_window_tear_down_sidebar (NautilusWindow *window)
+{
+	DEBUG ("Destroying sidebar");
+
+	gtk_widget_destroy (GTK_WIDGET (window->details->sidebar));
+	window->details->sidebar = NULL;
+}
+
+void
+nautilus_window_hide_sidebar (NautilusWindow *window)
+{
+	DEBUG ("Called hide_sidebar()");
+
+	if (window->details->sidebar == NULL) {
+		return;
+	}
+
+	nautilus_window_tear_down_sidebar (window);
+	nautilus_window_update_show_hide_menu_items (window);
+
+	g_settings_set_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_SIDEBAR, FALSE);
+}
+
+void
+nautilus_window_show_sidebar (NautilusWindow *window)
+{
+	DEBUG ("Called show_sidebar()");
+
+	if (window->details->sidebar != NULL) {
+		return;
+	}
+
+	if (window->details->disable_chrome) {
+		return;
+	}
+
+	nautilus_window_set_up_sidebar (window);
+	nautilus_window_update_show_hide_menu_items (window);
+	g_settings_set_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_SIDEBAR, TRUE);
+}
+
+static void
+side_pane_id_changed (NautilusWindow *window)
+{
+	gchar *sidebar_id;
+
+	sidebar_id = g_settings_get_string (nautilus_window_state,
+					    NAUTILUS_WINDOW_STATE_SIDE_PANE_VIEW);
+
+	DEBUG ("Sidebar id changed to %s", sidebar_id);
+
+	if (g_strcmp0 (sidebar_id, window->details->sidebar_id) == 0) {
+		g_free (sidebar_id);
+		return;
+	}
+
+	if (!sidebar_id_is_valid (sidebar_id)) {
+		g_free (sidebar_id);
+		return;
+	}
+
+	g_free (window->details->sidebar_id);
+	window->details->sidebar_id = sidebar_id;
+
+	if (window->details->sidebar != NULL) {
+		/* refresh the sidebar setting */
+		nautilus_window_tear_down_sidebar (window);
+		nautilus_window_set_up_sidebar (window);
+	}
+}
+
+gboolean
+nautilus_window_disable_chrome_mapping (GValue *value,
+					GVariant *variant,
+					gpointer user_data)
+{
+	NautilusWindow *window = user_data;
+
+	g_value_set_boolean (value,
+			     g_variant_get_boolean (variant) &&
+			     !window->details->disable_chrome);
+
+	return TRUE;
+}
+
 static void
 nautilus_window_constructed (GObject *self)
 {
 	NautilusWindow *window;
+	GtkWidget *table;
+	GtkWidget *menu;
+	GtkWidget *statusbar;
+	GtkWidget *hpaned;
+	GtkWidget *vbox;
+	NautilusWindowPane *pane;
+	NautilusWindowSlot *slot;
 
 	window = NAUTILUS_WINDOW (self);
+
+	G_OBJECT_CLASS (nautilus_window_parent_class)->constructed (self);
+
+	table = gtk_table_new (1, 6, FALSE);
+	window->details->table = table;
+	gtk_widget_show (table);
+	gtk_container_add (GTK_CONTAINER (window), table);
+
+	statusbar = gtk_statusbar_new ();
+	gtk_widget_set_name (statusbar, "statusbar-noborder");
+	window->details->statusbar = statusbar;
+	window->details->help_message_cid = gtk_statusbar_get_context_id
+		(GTK_STATUSBAR (statusbar), "help_message");
+	/* Statusbar is packed in the subclasses */
+
+	nautilus_window_initialize_menus (window);
+	nautilus_window_initialize_actions (window);
+
+	menu = gtk_ui_manager_get_widget (window->details->ui_manager, "/MenuBar");
+	window->details->menubar = menu;
+	gtk_widget_show (menu);
+	gtk_table_attach (GTK_TABLE (table),
+			  menu, 
+			  /* X direction */                   /* Y direction */
+			  0, 1,                               0, 1,
+			  GTK_EXPAND | GTK_FILL | GTK_SHRINK, 0,
+			  0,                                  0);
+
+	/* Register to menu provider extension signal managing menu updates */
+	g_signal_connect_object (nautilus_signaller_get_current (), "popup_menu_changed",
+			 G_CALLBACK (nautilus_window_load_extension_menus), window, G_CONNECT_SWAPPED);
+
+	window->details->header_size_group = gtk_size_group_new (GTK_SIZE_GROUP_VERTICAL);
+	gtk_size_group_set_ignore_hidden (window->details->header_size_group, FALSE);
+
+	window->details->content_paned = gtk_paned_new (GTK_ORIENTATION_HORIZONTAL);
+	gtk_table_attach (GTK_TABLE (window->details->table),
+			  window->details->content_paned,
+			  /* X direction */                   /* Y direction */
+			  0, 1,                               3, 4,
+			  GTK_EXPAND | GTK_FILL | GTK_SHRINK, GTK_EXPAND | GTK_FILL | GTK_SHRINK,
+			  0,                                  0);
+	gtk_widget_show (window->details->content_paned);
+
+	vbox = gtk_vbox_new (FALSE, 0);
+	gtk_paned_pack2 (GTK_PANED (window->details->content_paned), vbox,
+			 TRUE, FALSE);
+	gtk_widget_show (vbox);
+
+	hpaned = gtk_paned_new (GTK_ORIENTATION_HORIZONTAL);
+	gtk_box_pack_start (GTK_BOX (vbox), hpaned, TRUE, TRUE, 0);
+	gtk_widget_show (hpaned);
+	window->details->split_view_hpane = hpaned;
+
+	gtk_box_pack_start (GTK_BOX (vbox), window->details->statusbar, FALSE, FALSE, 0);
+
+	g_settings_bind_with_mapping (nautilus_window_state,
+				      NAUTILUS_WINDOW_STATE_START_WITH_STATUS_BAR,
+				      window->details->statusbar,
+				      "visible",
+				      G_SETTINGS_BIND_DEFAULT,
+				      nautilus_window_disable_chrome_mapping, NULL,
+				      window, NULL);
+
+	pane = nautilus_window_pane_new (window);
+	window->details->panes = g_list_prepend (window->details->panes, pane);
+
+	gtk_paned_pack1 (GTK_PANED (hpaned), pane->widget, TRUE, FALSE);
+	gtk_widget_show (pane->widget);
+
+	/* this has to be done after the location bar has been set up,
+	 * but before menu stuff is being called */
+	nautilus_window_set_active_pane (window, pane);
+
+	g_signal_connect_swapped (nautilus_window_state,
+				  "changed::" NAUTILUS_WINDOW_STATE_SIDE_PANE_VIEW,
+				  G_CALLBACK (side_pane_id_changed),
+				  window);
+
+	side_pane_id_changed (window);
 
 	nautilus_window_initialize_bookmarks_menu (window);
 	nautilus_window_set_initial_window_geometry (window);
 	nautilus_undo_manager_attach (window->details->application->undo_manager, G_OBJECT (window));
+
+	slot = nautilus_window_open_slot (window->details->active_pane, 0);
+	nautilus_window_set_active_slot (window, slot);
 }
 
 static void
@@ -450,8 +702,14 @@ nautilus_window_set_property (GObject *object,
 	window = NAUTILUS_WINDOW (object);
 	
 	switch (arg_id) {
-	case ARG_APP:
+	case PROP_APP:
 		window->details->application = NAUTILUS_APPLICATION (g_value_get_object (value));
+		break;
+	case PROP_DISABLE_CHROME:
+		window->details->disable_chrome = g_value_get_boolean (value);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, arg_id, pspec);
 		break;
 	}
 }
@@ -463,7 +721,7 @@ nautilus_window_get_property (GObject *object,
 			      GParamSpec *pspec)
 {
 	switch (arg_id) {
-	case ARG_APP:
+	case PROP_APP:
 		g_value_set_object (value, NAUTILUS_WINDOW (object)->details->application);
 		break;
 	}
@@ -526,27 +784,6 @@ nautilus_window_finalize (GObject *object)
 	g_object_unref (window->details->ui_manager);
 
 	G_OBJECT_CLASS (nautilus_window_parent_class)->finalize (object);
-}
-
-static GObject *
-nautilus_window_constructor (GType type,
-			     guint n_construct_properties,
-			     GObjectConstructParam *construct_params)
-{
-	GObject *object;
-	NautilusWindow *window;
-	NautilusWindowSlot *slot;
-
-	object = (* G_OBJECT_CLASS (nautilus_window_parent_class)->constructor) (type,
-										 n_construct_properties,
-										 construct_params);
-
-	window = NAUTILUS_WINDOW (object);
-
-	slot = nautilus_window_open_slot (window->details->active_pane, 0);
-	nautilus_window_set_active_slot (window, slot);
-
-	return object;
 }
 
 void
@@ -1875,157 +2112,9 @@ nautilus_window_get_base_page_index (NautilusWindow *window)
 	return forward_count;
 }
 
-/* side pane helpers */
-static void
-side_pane_size_allocate_callback (GtkWidget *widget,
-				  GtkAllocation *allocation,
-				  gpointer user_data)
-{
-	NautilusWindow *window;
-
-	window = user_data;
-
-	if (allocation->width != window->details->side_pane_width) {
-		window->details->side_pane_width = allocation->width;
-
-		DEBUG ("Saving sidebar width: %d", allocation->width);
-		
-		g_settings_set_int (nautilus_window_state,
-				    NAUTILUS_WINDOW_STATE_SIDEBAR_WIDTH,
-				    allocation->width <= 1 ? 0 : allocation->width);
-	}
-}
-
-static void
-setup_side_pane_width (NautilusWindow *window)
-{
-	g_return_if_fail (window->details->sidebar != NULL);
-
-	window->details->side_pane_width =
-		g_settings_get_int (nautilus_window_state,
-				    NAUTILUS_WINDOW_STATE_SIDEBAR_WIDTH);
-
-	gtk_paned_set_position (GTK_PANED (window->details->content_paned),
-				window->details->side_pane_width);
-}
-
-static gboolean
-sidebar_id_is_valid (const gchar *sidebar_id)
-{
-	return (g_strcmp0 (sidebar_id, NAUTILUS_WINDOW_SIDEBAR_PLACES) == 0 ||
-		g_strcmp0 (sidebar_id, NAUTILUS_WINDOW_SIDEBAR_TREE) == 0);
-}
-
-static void
-nautilus_window_set_up_sidebar (NautilusWindow *window)
-{
-	GtkWidget *sidebar;
-
-	DEBUG ("Setting up sidebar id %s", window->details->sidebar_id);
-
-	window->details->sidebar = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
-
-	gtk_paned_pack1 (GTK_PANED (window->details->content_paned),
-			 GTK_WIDGET (window->details->sidebar),
-			 FALSE, FALSE);
-
-	setup_side_pane_width (window);
-	g_signal_connect (window->details->sidebar, 
-			  "size_allocate",
-			  G_CALLBACK (side_pane_size_allocate_callback),
-			  window);
-
-	if (g_strcmp0 (window->details->sidebar_id, NAUTILUS_WINDOW_SIDEBAR_PLACES) == 0) {
-		sidebar = nautilus_places_sidebar_new (window);
-	} else if (g_strcmp0 (window->details->sidebar_id, NAUTILUS_WINDOW_SIDEBAR_TREE) == 0) {
-		sidebar = nautilus_tree_sidebar_new (window);
-	} else {
-		g_assert_not_reached ();
-	}
-
-	gtk_box_pack_start (GTK_BOX (window->details->sidebar), sidebar, TRUE, TRUE, 0);
-	gtk_widget_show (sidebar);
-	gtk_widget_show (GTK_WIDGET (window->details->sidebar));
-}
-
-static void
-nautilus_window_tear_down_sidebar (NautilusWindow *window)
-{
-	DEBUG ("Destroying sidebar");
-
-	gtk_widget_destroy (GTK_WIDGET (window->details->sidebar));
-	window->details->sidebar = NULL;
-}
-
-void
-nautilus_window_hide_sidebar (NautilusWindow *window)
-{
-	DEBUG ("Called hide_sidebar()");
-
-	if (window->details->sidebar == NULL) {
-		return;
-	}
-
-	nautilus_window_tear_down_sidebar (window);
-	nautilus_window_update_show_hide_menu_items (window);
-
-	g_settings_set_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_SIDEBAR, FALSE);
-}
-
-void
-nautilus_window_show_sidebar (NautilusWindow *window)
-{
-	DEBUG ("Called show_sidebar()");
-
-	if (window->details->sidebar != NULL) {
-		return;
-	}
-
-	nautilus_window_set_up_sidebar (window);
-	nautilus_window_update_show_hide_menu_items (window);
-	g_settings_set_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_START_WITH_SIDEBAR, TRUE);
-}
-
-static void
-side_pane_id_changed (NautilusWindow *window)
-{
-	gchar *sidebar_id;
-
-	sidebar_id = g_settings_get_string (nautilus_window_state,
-					    NAUTILUS_WINDOW_STATE_SIDE_PANE_VIEW);
-
-	DEBUG ("Sidebar id changed to %s", sidebar_id);
-
-	if (g_strcmp0 (sidebar_id, window->details->sidebar_id) == 0) {
-		g_free (sidebar_id);
-		return;
-	}
-
-	if (!sidebar_id_is_valid (sidebar_id)) {
-		g_free (sidebar_id);
-		return;
-	}
-
-	g_free (window->details->sidebar_id);
-	window->details->sidebar_id = sidebar_id;
-
-	if (window->details->sidebar != NULL) {
-		/* refresh the sidebar setting */
-		nautilus_window_tear_down_sidebar (window);
-		nautilus_window_set_up_sidebar (window);
-	}
-}
-
 static void
 nautilus_window_init (NautilusWindow *window)
 {
-	GtkWidget *table;
-	GtkWidget *menu;
-	GtkWidget *statusbar;
-	GtkWidget *hpaned;
-	GtkWidget *vbox;
-	NautilusWindowPane *pane;
-
 	window->details = G_TYPE_INSTANCE_GET_PRIVATE (window, NAUTILUS_TYPE_WINDOW, NautilusWindowDetails);
 
 	window->details->panes = NULL;
@@ -2037,82 +2126,6 @@ nautilus_window_init (NautilusWindow *window)
 	gtk_window_set_title (GTK_WINDOW (window), _("Nautilus"));
 
 	gtk_window_set_has_resize_grip (GTK_WINDOW (window), FALSE);
-
-	table = gtk_table_new (1, 6, FALSE);
-	window->details->table = table;
-	gtk_widget_show (table);
-	gtk_container_add (GTK_CONTAINER (window), table);
-
-	statusbar = gtk_statusbar_new ();
-	gtk_widget_set_name (statusbar, "statusbar-noborder");
-	window->details->statusbar = statusbar;
-	window->details->help_message_cid = gtk_statusbar_get_context_id
-		(GTK_STATUSBAR (statusbar), "help_message");
-	/* Statusbar is packed in the subclasses */
-
-	nautilus_window_initialize_menus (window);
-	nautilus_window_initialize_actions (window);
-	
-	menu = gtk_ui_manager_get_widget (window->details->ui_manager, "/MenuBar");
-	window->details->menubar = menu;
-	gtk_widget_show (menu);
-	gtk_table_attach (GTK_TABLE (table),
-			  menu, 
-			  /* X direction */                   /* Y direction */
-			  0, 1,                               0, 1,
-			  GTK_EXPAND | GTK_FILL | GTK_SHRINK, 0,
-			  0,                                  0);
-
-	/* Register to menu provider extension signal managing menu updates */
-	g_signal_connect_object (nautilus_signaller_get_current (), "popup_menu_changed",
-			 G_CALLBACK (nautilus_window_load_extension_menus), window, G_CONNECT_SWAPPED);
-
-	window->details->header_size_group = gtk_size_group_new (GTK_SIZE_GROUP_VERTICAL);
-	gtk_size_group_set_ignore_hidden (window->details->header_size_group, FALSE);
-
-	window->details->content_paned = gtk_paned_new (GTK_ORIENTATION_HORIZONTAL);
-	gtk_table_attach (GTK_TABLE (window->details->table),
-			  window->details->content_paned,
-			  /* X direction */                   /* Y direction */
-			  0, 1,                               3, 4,
-			  GTK_EXPAND | GTK_FILL | GTK_SHRINK, GTK_EXPAND | GTK_FILL | GTK_SHRINK,
-			  0,                                  0);
-	gtk_widget_show (window->details->content_paned);
-
-	vbox = gtk_vbox_new (FALSE, 0);
-	gtk_paned_pack2 (GTK_PANED (window->details->content_paned), vbox,
-			 TRUE, FALSE);
-	gtk_widget_show (vbox);
-
-	hpaned = gtk_paned_new (GTK_ORIENTATION_HORIZONTAL);
-	gtk_box_pack_start (GTK_BOX (vbox), hpaned, TRUE, TRUE, 0);
-	gtk_widget_show (hpaned);
-	window->details->split_view_hpane = hpaned;
-
-	gtk_box_pack_start (GTK_BOX (vbox), window->details->statusbar, FALSE, FALSE, 0);
-
-	g_settings_bind (nautilus_window_state,
-			 NAUTILUS_WINDOW_STATE_START_WITH_STATUS_BAR,
-			 window->details->statusbar,
-			 "visible",
-			 G_SETTINGS_BIND_DEFAULT);
-
-	pane = nautilus_window_pane_new (window);
-	window->details->panes = g_list_prepend (window->details->panes, pane);
-
-	gtk_paned_pack1 (GTK_PANED (hpaned), pane->widget, TRUE, FALSE);
-	gtk_widget_show (pane->widget);
-
-	/* this has to be done after the location bar has been set up,
-	 * but before menu stuff is being called */
-	nautilus_window_set_active_pane (window, pane);
-
-	g_signal_connect_swapped (nautilus_window_state,
-				  "changed::" NAUTILUS_WINDOW_STATE_SIDE_PANE_VIEW,
-				  G_CALLBACK (side_pane_id_changed),
-				  window);
-
-	side_pane_id_changed (window);
 }
 
 static NautilusIconInfo *
@@ -2132,7 +2145,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
 	GtkWidgetClass *wclass = GTK_WIDGET_CLASS (class);
 
 	oclass->finalize = nautilus_window_finalize;
-	oclass->constructor = nautilus_window_constructor;
 	oclass->constructed = nautilus_window_constructed;
 	oclass->get_property = nautilus_window_get_property;
 	oclass->set_property = nautilus_window_set_property;
@@ -2150,14 +2162,20 @@ nautilus_window_class_init (NautilusWindowClass *class)
 	class->bookmarks_placeholder = MENU_PATH_BOOKMARKS_PLACEHOLDER;
 	class->get_icon = real_get_icon;
 
-	g_object_class_install_property (oclass,
-					 ARG_APP,
-					 g_param_spec_object ("app",
-							      "Application",
-							      "The NautilusApplication associated with this window.",
-							      NAUTILUS_TYPE_APPLICATION,
-							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-	
+	properties[PROP_APP] =
+		g_param_spec_object ("app",
+				     "Application",
+				     "The NautilusApplication associated with this window.",
+				     NAUTILUS_TYPE_APPLICATION,
+				     G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
+	properties[PROP_DISABLE_CHROME] =
+		g_param_spec_boolean ("disable-chrome",
+				      "Disable chrome",
+				      "Disable window chrome, for the desktop",
+				      FALSE,
+				      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
+				      G_PARAM_STATIC_STRINGS);
+
 	signals[GO_UP] =
 		g_signal_new ("go_up",
 			      G_TYPE_FROM_CLASS (class),
@@ -2248,6 +2266,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
 				  G_CALLBACK(use_extra_mouse_buttons_changed),
 				  NULL);
 
+	g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 	g_type_class_add_private (oclass, sizeof (NautilusWindowDetails));
 }
 
