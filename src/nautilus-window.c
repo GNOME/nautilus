@@ -1547,22 +1547,26 @@ static void
 nautilus_window_class_init (NautilusWindowClass *class)
 {
 	GtkBindingSet *binding_set;
+	GObjectClass *oclass = G_OBJECT_CLASS (class);
+	GtkWidgetClass *wclass = GTK_WIDGET_CLASS (class);
 
-	G_OBJECT_CLASS (class)->finalize = nautilus_window_finalize;
-	G_OBJECT_CLASS (class)->constructor = nautilus_window_constructor;
-	G_OBJECT_CLASS (class)->constructed = nautilus_window_constructed;
-	G_OBJECT_CLASS (class)->get_property = nautilus_window_get_property;
-	G_OBJECT_CLASS (class)->set_property = nautilus_window_set_property;
-	GTK_WIDGET_CLASS (class)->destroy = nautilus_window_destroy;
-	GTK_WIDGET_CLASS (class)->show = nautilus_window_show;
-	GTK_WIDGET_CLASS (class)->get_preferred_width = nautilus_window_get_preferred_width;
-	GTK_WIDGET_CLASS (class)->get_preferred_height = nautilus_window_get_preferred_height;
-	GTK_WIDGET_CLASS (class)->realize = nautilus_window_realize;
-	GTK_WIDGET_CLASS (class)->key_press_event = nautilus_window_key_press_event;
+	oclass->finalize = nautilus_window_finalize;
+	oclass->constructor = nautilus_window_constructor;
+	oclass->constructed = nautilus_window_constructed;
+	oclass->get_property = nautilus_window_get_property;
+	oclass->set_property = nautilus_window_set_property;
+
+	wclass->destroy = nautilus_window_destroy;
+	wclass->show = nautilus_window_show;
+	wclass->get_preferred_width = nautilus_window_get_preferred_width;
+	wclass->get_preferred_height = nautilus_window_get_preferred_height;
+	wclass->realize = nautilus_window_realize;
+	wclass->key_press_event = nautilus_window_key_press_event;
+
 	class->set_allow_up = real_set_allow_up;
 	class->close_slot = real_close_slot;
 
-	g_object_class_install_property (G_OBJECT_CLASS (class),
+	g_object_class_install_property (oclass,
 					 ARG_APP,
 					 g_param_spec_object ("app",
 							      "Application",
@@ -1645,5 +1649,5 @@ nautilus_window_class_init (NautilusWindowClass *class)
 	class->reload = nautilus_window_reload;
 	class->go_up = nautilus_window_go_up_signal;
 
-	g_type_class_add_private (G_OBJECT_CLASS (class), sizeof (NautilusWindowDetails));
+	g_type_class_add_private (oclass, sizeof (NautilusWindowDetails));
 }
