@@ -91,8 +91,6 @@ nautilus_SOURCES = \
 	nautilus-list-view.h 			\
 	nautilus-location-bar.c         	\
 	nautilus-location-bar.h			\
-	nautilus-location-dialog.c              \
-	nautilus-location-dialog.h              \
 	nautilus-location-entry.c               \
 	nautilus-location-entry.h               \
 	nautilus-main.c 			\
