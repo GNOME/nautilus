@@ -26,7 +26,7 @@
 #include "nautilus-navigation-window-slot.h"
 #include "nautilus-window-private.h"
 #include "nautilus-search-bar.h"
-#include "nautilus-navigation-window-pane.h"
+#include "nautilus-window-pane.h"
 #include <libnautilus-private/nautilus-file.h>
 #include <eel/eel-gtk-macros.h>
 
@@ -143,7 +143,7 @@ nautilus_navigation_window_slot_update_query_editor (NautilusWindowSlot *slot)
 			query_editor = nautilus_query_editor_new_with_bar (FALSE,
 									   nautilus_search_directory_is_indexed (search_directory),
 									   slot->pane->window->details->active_pane->active_slot == slot,
-									   NAUTILUS_SEARCH_BAR (NAUTILUS_NAVIGATION_WINDOW_PANE (slot->pane)->search_bar),
+									   NAUTILUS_SEARCH_BAR (slot->pane->search_bar),
 									   slot);
 		}
 	}
@@ -174,10 +174,10 @@ nautilus_navigation_window_slot_update_query_editor (NautilusWindowSlot *slot)
 static void
 nautilus_navigation_window_slot_active (NautilusWindowSlot *slot)
 {
-	NautilusNavigationWindowPane *pane;
+	NautilusWindowPane *pane;
 	int page_num;
 
-	pane = NAUTILUS_NAVIGATION_WINDOW_PANE (slot->pane);
+	pane = slot->pane;
 	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (pane->notebook),
 					  slot->content_box);
 	g_assert (page_num >= 0);

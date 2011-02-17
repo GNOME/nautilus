@@ -39,7 +39,6 @@
 #include "nautilus-trash-bar.h"
 #include "nautilus-view-factory.h"
 #include "nautilus-x-content-bar.h"
-#include "nautilus-navigation-window-pane.h"
 #include <eel/eel-accessibility.h>
 #include <eel/eel-debug.h>
 #include <eel/eel-gdk-extensions.h>
@@ -359,7 +358,7 @@ viewed_file_changed_callback (NautilusFile *file,
 					/* multiview-TODO also update NautilusWindowSlot
 					 * [which as of writing doesn't save/store any path bar state]
 					 */
-					nautilus_path_bar_clear_buttons (NAUTILUS_PATH_BAR (NAUTILUS_NAVIGATION_WINDOW_PANE (slot->pane)->path_bar));
+					nautilus_path_bar_clear_buttons (NAUTILUS_PATH_BAR (slot->pane->path_bar));
 				}
 				
 				nautilus_window_slot_go_to (slot, go_to_file, FALSE);

@@ -42,7 +42,7 @@
 #include "nautilus-places-sidebar.h"
 #include "nautilus-tree-sidebar.h"
 #include "nautilus-window-manage-views.h"
-#include "nautilus-navigation-window-pane.h"
+#include "nautilus-window-pane.h"
 
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
@@ -157,7 +157,7 @@ nautilus_navigation_window_is_in_temporary_bars (GtkWidget *widget,
 {
 	GList *walk;
 	gboolean is_in_any = FALSE;
-	NautilusNavigationWindowPane *pane;
+	NautilusWindowPane *pane;
 
 	for (walk = NAUTILUS_WINDOW (window)->details->panes; walk; walk = walk->next) {
 		pane = walk->data;
@@ -344,7 +344,7 @@ static void
 real_sync_title (NautilusWindow *window,
 		 NautilusWindowSlot *slot)
 {
-	NautilusNavigationWindowPane *pane;
+	NautilusWindowPane *pane;
 	NautilusNotebook *notebook;
 	char *full_title;
 	char *window_title;
@@ -365,7 +365,7 @@ real_sync_title (NautilusWindow *window,
 		g_free (window_title);
 	}
 
-	pane = NAUTILUS_NAVIGATION_WINDOW_PANE (slot->pane);
+	pane = slot->pane;
 	notebook = NAUTILUS_NOTEBOOK (pane->notebook);
 	nautilus_notebook_sync_tab_label (notebook, slot);
 }
@@ -385,19 +385,19 @@ real_sync_allow_stop (NautilusWindow *window,
 {
 	NautilusNotebook *notebook;
 
-	notebook = NAUTILUS_NOTEBOOK (NAUTILUS_NAVIGATION_WINDOW_PANE (slot->pane)->notebook);
+	notebook = NAUTILUS_NOTEBOOK (slot->pane->notebook);
 	nautilus_notebook_sync_loading (notebook, slot);
 }
 
 static void
 real_prompt_for_location (NautilusWindow *window, const char *initial)
 {
-	NautilusNavigationWindowPane *pane;
+	NautilusWindowPane *pane;
 
 	remember_focus_widget (NAUTILUS_NAVIGATION_WINDOW (window));
 
-	pane = NAUTILUS_NAVIGATION_WINDOW_PANE (window->details->active_pane);
-	nautilus_navigation_window_pane_ensure_location_bar (pane);
+	pane = window->details->active_pane;
+	nautilus_window_pane_ensure_location_bar (pane);
 
 	if (initial) {
 		nautilus_location_bar_set_location (NAUTILUS_LOCATION_BAR (pane->location_bar),
@@ -408,21 +408,21 @@ real_prompt_for_location (NautilusWindow *window, const char *initial)
 void 
 nautilus_navigation_window_show_search (NautilusNavigationWindow *window)
 {
-	NautilusNavigationWindowPane *pane;
+	NautilusWindowPane *pane;
 
 	remember_focus_widget (window);
 
-	pane = NAUTILUS_NAVIGATION_WINDOW_PANE (NAUTILUS_WINDOW (window)->details->active_pane);
+	pane = NAUTILUS_WINDOW (window)->details->active_pane;
 
-	nautilus_navigation_window_pane_ensure_search_bar (pane);
+	nautilus_window_pane_ensure_search_bar (pane);
 }
 
 void
 nautilus_navigation_window_hide_search (NautilusNavigationWindow *window)
 {
-	NautilusNavigationWindowPane *pane = NAUTILUS_NAVIGATION_WINDOW_PANE (NAUTILUS_WINDOW (window)->details->active_pane);
+	NautilusWindowPane *pane = NAUTILUS_WINDOW (window)->details->active_pane;
 
-	nautilus_navigation_window_pane_hide_search_bar (pane);
+	nautilus_window_pane_hide_search_bar (pane);
 	nautilus_navigation_window_restore_focus_widget (window);
 }
 
@@ -563,7 +563,7 @@ real_open_slot (NautilusWindowPane *pane,
 	slot = (NautilusWindowSlot *) g_object_new (NAUTILUS_TYPE_NAVIGATION_WINDOW_SLOT, NULL);
 	slot->pane = pane;
 
-	nautilus_navigation_window_pane_add_slot_in_tab (NAUTILUS_NAVIGATION_WINDOW_PANE (pane), slot, flags);
+	nautilus_window_pane_add_slot_in_tab (pane, slot, flags);
 	gtk_widget_show (slot->content_box);
 
 	return slot;
@@ -576,12 +576,12 @@ real_close_slot (NautilusWindowPane *pane,
 	int page_num;
 	GtkNotebook *notebook;
 
-	notebook = GTK_NOTEBOOK (NAUTILUS_NAVIGATION_WINDOW_PANE (pane)->notebook);
+	notebook = GTK_NOTEBOOK (pane->notebook);
 
 	page_num = gtk_notebook_page_num (notebook, slot->content_box);
 	g_assert (page_num >= 0);
 
-	nautilus_navigation_window_pane_remove_page (NAUTILUS_NAVIGATION_WINDOW_PANE (pane), page_num);
+	nautilus_window_pane_remove_page (pane, page_num);
 
 	gtk_notebook_set_show_tabs (notebook,
 				    gtk_notebook_get_n_pages (notebook) > 1);
@@ -736,7 +736,7 @@ static void
 nautilus_navigation_window_init (NautilusNavigationWindow *window)
 {
 	NautilusWindow *win;
-	NautilusNavigationWindowPane *pane;
+	NautilusWindowPane *pane;
 	GtkWidget *hpaned;
 	GtkWidget *vbox;
 
@@ -776,7 +776,7 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 
 	nautilus_navigation_window_initialize_actions (window);
 
-	pane = nautilus_navigation_window_pane_new (win);
+	pane = nautilus_window_pane_new (win);
 	win->details->panes = g_list_prepend (win->details->panes, pane);
 
 	gtk_paned_pack1 (GTK_PANED(hpaned), pane->widget, TRUE, FALSE);
@@ -846,14 +846,14 @@ static NautilusWindowSlot *
 create_extra_pane (NautilusNavigationWindow *window)
 {
 	NautilusWindow *win;
-	NautilusNavigationWindowPane *pane;
+	NautilusWindowPane *pane;
 	NautilusWindowSlot *slot;
 	GtkPaned *paned;
 
 	win = NAUTILUS_WINDOW (window);
 
 	/* New pane */
-	pane = nautilus_navigation_window_pane_new (win);
+	pane = nautilus_window_pane_new (win);
 	win->details->panes = g_list_append (win->details->panes, pane);
 
 	paned = GTK_PANED (window->details->split_view_hpane);
@@ -866,7 +866,7 @@ create_extra_pane (NautilusNavigationWindow *window)
 	/* slot */
 	slot = nautilus_window_open_slot (NAUTILUS_WINDOW_PANE (pane),
 					  NAUTILUS_WINDOW_OPEN_SLOT_APPEND);
-	NAUTILUS_WINDOW_PANE (pane)->active_slot = slot;
+	pane->active_slot = slot;
 
 	return slot;
 }
@@ -877,7 +877,7 @@ navigation_window_set_search_action_text (NautilusNavigationWindow *nav_window,
 {
 	GtkAction *action;
 	NautilusWindow *window;
-	NautilusNavigationWindowPane *pane;
+	NautilusWindowPane *pane;
 	GList *l;
 
 	window = NAUTILUS_WINDOW (nav_window);
@@ -947,7 +947,7 @@ nautilus_navigation_window_split_view_off (NautilusNavigationWindow *window)
 
 	nautilus_window_set_active_pane (win, active_pane);
 	nautilus_navigation_state_set_master (window->details->nav_state,
-					      NAUTILUS_NAVIGATION_WINDOW_PANE (active_pane)->action_group);
+					      active_pane->action_group);
 
 	nautilus_navigation_window_update_show_hide_menu_items (window);
 	nautilus_navigation_window_update_split_view_actions_sensitivity (window);

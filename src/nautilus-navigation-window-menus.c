@@ -37,7 +37,7 @@
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window-bookmarks.h"
-#include "nautilus-navigation-window-pane.h"
+#include "nautilus-window-pane.h"
 
 #include <eel/eel-stock-dialogs.h>
 
@@ -476,9 +476,9 @@ static void
 action_tabs_previous_callback (GtkAction *action,
 			       gpointer user_data)
 {
-	NautilusNavigationWindowPane *pane;
+	NautilusWindowPane *pane;
 
-	pane = NAUTILUS_NAVIGATION_WINDOW_PANE (NAUTILUS_WINDOW (user_data)->details->active_pane);
+	pane = NAUTILUS_WINDOW (user_data)->details->active_pane;
 	nautilus_notebook_set_current_page_relative (NAUTILUS_NOTEBOOK (pane->notebook), -1);
 }
 
@@ -486,9 +486,9 @@ static void
 action_tabs_next_callback (GtkAction *action,
 			   gpointer user_data)
 {
-	NautilusNavigationWindowPane *pane;
+	NautilusWindowPane *pane;
 
-	pane = NAUTILUS_NAVIGATION_WINDOW_PANE (NAUTILUS_WINDOW (user_data)->details->active_pane);
+	pane = NAUTILUS_WINDOW (user_data)->details->active_pane;
 	nautilus_notebook_set_current_page_relative (NAUTILUS_NOTEBOOK (pane->notebook), 1);
 }
 
@@ -496,9 +496,9 @@ static void
 action_tabs_move_left_callback (GtkAction *action,
 				gpointer user_data)
 {
-	NautilusNavigationWindowPane *pane;
+	NautilusWindowPane *pane;
 
-	pane = NAUTILUS_NAVIGATION_WINDOW_PANE (NAUTILUS_WINDOW (user_data)->details->active_pane);
+	pane = NAUTILUS_WINDOW (user_data)->details->active_pane;
 	nautilus_notebook_reorder_current_child_relative (NAUTILUS_NOTEBOOK (pane->notebook), -1);
 }
 
@@ -506,9 +506,9 @@ static void
 action_tabs_move_right_callback (GtkAction *action,
 				 gpointer user_data)
 {
-	NautilusNavigationWindowPane *pane;
+	NautilusWindowPane *pane;
 
-	pane = NAUTILUS_NAVIGATION_WINDOW_PANE (NAUTILUS_WINDOW (user_data)->details->active_pane);
+	pane = NAUTILUS_WINDOW (user_data)->details->active_pane;
 	nautilus_notebook_reorder_current_child_relative (NAUTILUS_NOTEBOOK (pane->notebook), 1);
 }
 
@@ -520,7 +520,7 @@ action_tab_change_action_activate_callback (GtkAction *action, gpointer user_dat
 	window = NAUTILUS_WINDOW (user_data);
 	if (window && window->details->active_pane) {
 		GtkNotebook *notebook;
-		notebook = GTK_NOTEBOOK (NAUTILUS_NAVIGATION_WINDOW_PANE (window->details->active_pane)->notebook);
+		notebook = GTK_NOTEBOOK (window->details->active_pane->notebook);
 		if (notebook) {
 			int num;
 			num = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (action), "num"));

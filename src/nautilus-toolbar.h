@@ -44,8 +44,6 @@ typedef struct _NautilusToolbar NautilusToolbar;
 typedef struct _NautilusToolbarPriv NautilusToolbarPriv;
 typedef struct _NautilusToolbarClass NautilusToolbarClass;
 
-#include "nautilus-navigation-window-pane.h"
-
 typedef enum {
 	NAUTILUS_TOOLBAR_MODE_PATH_BAR,
 	NAUTILUS_TOOLBAR_MODE_LOCATION_BAR,

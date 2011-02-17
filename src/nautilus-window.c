@@ -35,7 +35,6 @@
 #include "nautilus-application.h"
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-mime-actions.h"
-#include "nautilus-navigation-window-pane.h"
 #include "nautilus-navigation-window-slot.h"
 #include "nautilus-search-bar.h"
 #include "nautilus-src-marshal.h"

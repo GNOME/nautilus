@@ -71,11 +71,27 @@ struct _NautilusWindowPane {
 
 	/* whether or not this pane is active */
 	gboolean is_active;
+
+	GtkWidget *widget;
+
+	/* location bar */
+	GtkWidget *location_bar;
+	GtkWidget *path_bar;
+	GtkWidget *search_bar;
+	GtkWidget *tool_bar;
+
+	gboolean temporary_navigation_bar;
+	gboolean temporary_search_bar;
+
+	/* notebook */
+	GtkWidget *notebook;
+
+	GtkActionGroup *action_group;
 };
 
 GType nautilus_window_pane_get_type (void);
-NautilusWindowPane *nautilus_window_pane_new (NautilusWindow *window);
 
+NautilusWindowPane *nautilus_window_pane_new (NautilusWindow *window);
 
 void nautilus_window_pane_show (NautilusWindowPane *pane);
 void nautilus_window_pane_sync_location_widgets (NautilusWindowPane *pane);
@@ -83,8 +99,21 @@ void nautilus_window_pane_sync_search_widgets  (NautilusWindowPane *pane);
 void nautilus_window_pane_set_active (NautilusWindowPane *pane, gboolean is_active);
 void nautilus_window_pane_slot_close (NautilusWindowPane *pane, NautilusWindowSlot *slot);
 
-NautilusWindowSlot* nautilus_window_pane_get_slot_for_content_box (NautilusWindowPane *pane, GtkWidget *content_box);
+NautilusWindowSlot* nautilus_window_pane_get_slot_for_content_box (NautilusWindowPane *pane,
+								   GtkWidget *content_box);
+
 void nautilus_window_pane_grab_focus (NautilusWindowPane *pane);
 
+/* bars */
+void     nautilus_window_pane_ensure_location_bar (NautilusWindowPane *pane);
+void     nautilus_window_pane_ensure_search_bar (NautilusWindowPane *pane);
+void      nautilus_window_pane_hide_search_bar (NautilusWindowPane *pane);
+
+/* notebook */
+void     nautilus_window_pane_add_slot_in_tab (NautilusWindowPane *pane,
+					       NautilusWindowSlot *slot,
+					       NautilusWindowOpenSlotFlags flags);
+void     nautilus_window_pane_remove_page (NautilusWindowPane *pane,
+					   int page_num);
 
 #endif /* NAUTILUS_WINDOW_PANE_H */

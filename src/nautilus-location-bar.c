@@ -36,7 +36,6 @@
 #include "nautilus-location-entry.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window.h"
-#include "nautilus-navigation-window-pane.h"
 #include <eel/eel-accessibility.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-macros.h>
