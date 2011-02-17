@@ -104,10 +104,6 @@ struct NautilusWindowDetails
         guint extensions_toolbar_merge_id;
         GtkActionGroup *extensions_toolbar_action_group;
 
-        /* spinner */
-        gboolean    spinner_active;
-        GtkWidget  *spinner;
-
         /* focus widget before the location bar has been shown temporarily */
         GtkWidget *last_focus_widget;
         	
@@ -151,9 +147,6 @@ struct NautilusWindowDetails
 typedef void (*NautilusBookmarkFailedCallback) (NautilusWindow *window,
                                                 NautilusBookmark *bookmark);
 
-void               nautilus_window_set_status                            (NautilusWindow    *window,
-									  NautilusWindowSlot *slot,
-                                                                          const char        *status);
 void               nautilus_window_load_view_as_menus                    (NautilusWindow    *window);
 void               nautilus_window_load_extension_menus                  (NautilusWindow    *window);
 void               nautilus_window_initialize_menus                      (NautilusWindow    *window);
@@ -168,7 +161,6 @@ void               nautilus_menus_append_bookmark_to_menu                (Nautil
                                                                           guint              merge_id,
                                                                           GCallback          refresh_callback,
                                                                           NautilusBookmarkFailedCallback failed_callback);
-void               nautilus_window_update_find_menu_item                 (NautilusWindow    *window);
 
 NautilusWindowSlot *nautilus_window_open_slot                            (NautilusWindowPane *pane,
 									  NautilusWindowOpenSlotFlags flags);
@@ -184,9 +176,6 @@ void                 nautilus_window_set_active_slot                     (Nautil
 void                 nautilus_window_set_active_pane                     (NautilusWindow *window,
                                                                           NautilusWindowPane *new_pane);
 NautilusWindowPane * nautilus_window_get_active_pane                     (NautilusWindow *window);
-
-gboolean           nautilus_add_bookmark_to_history_list                 (NautilusBookmark  *bookmark);
-void               nautilus_window_bookmarks_preference_changed_callback (gpointer           user_data);
 
 
 /* sync window GUI with current slot. Used when changing slots,
@@ -207,16 +196,8 @@ void               nautilus_window_remove_bookmarks_menu_callback        (Nautil
 
 void               nautilus_window_remove_bookmarks_menu_items           (NautilusWindow    *window);
 void               nautilus_window_update_show_hide_menu_items           (NautilusWindow     *window);
-void               nautilus_window_update_spatial_menu_item              (NautilusWindow     *window);
 
 /* window toolbar */
-void               nautilus_window_activate_spinner                     (NautilusWindow    *window);
-void               nautilus_window_initialize_toolbars                   (NautilusWindow    *window);
-void               nautilus_window_load_extension_toolbar_items          (NautilusWindow    *window);
-void               nautilus_window_set_spinner_active                   (NautilusWindow    *window, 
-                                                                         gboolean           active);
-void               nautilus_window_go_back                               (NautilusWindow    *window);
-void               nautilus_window_go_forward                            (NautilusWindow    *window);
 void               nautilus_window_close_pane                            (NautilusWindowPane *pane);
 void               nautilus_window_update_split_view_actions_sensitivity (NautilusWindow    *window);
 

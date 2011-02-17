@@ -93,20 +93,7 @@ typedef struct {
         NautilusIconInfo * (* get_icon) (NautilusWindow *window,
                                          NautilusWindowSlot *slot);
 
-        void   (* sync_allow_stop) (NautilusWindow *window,
-				    NautilusWindowSlot *slot);
-	void   (* set_allow_up) (NautilusWindow *window, gboolean allow);
         void   (* prompt_for_location) (NautilusWindow *window, const char *initial);
-        void   (* get_min_size) (NautilusWindow *window, guint *default_width, guint *default_height);
-        void   (* get_default_size) (NautilusWindow *window, guint *default_width, guint *default_height);
-        void   (* close) (NautilusWindow *window);
-
-        NautilusWindowSlot * (* open_slot) (NautilusWindowPane *pane,
-					    NautilusWindowOpenSlotFlags flags);
-        void                 (* close_slot) (NautilusWindowPane *pane,
-					     NautilusWindowSlot *slot);
-        void                 (* set_active_slot) (NautilusWindowPane *pane,
-						  NautilusWindowSlot *slot);
 
         /* Signals used only for keybindings */
         gboolean (* go_up)  (NautilusWindow *window,
@@ -170,7 +157,6 @@ void     nautilus_window_allow_forward        (NautilusWindow *window,
 void     nautilus_window_clear_back_list      (NautilusWindow *window);
 void     nautilus_window_clear_forward_list   (NautilusWindow *window);
 void     nautilus_forget_history              (void);
-gint     nautilus_window_get_base_page_index  (NautilusWindow *window);
 void     nautilus_window_hide_sidebar         (NautilusWindow *window);
 void     nautilus_window_show_sidebar         (NautilusWindow *window);
 void     nautilus_window_back_or_forward      (NautilusWindow *window,

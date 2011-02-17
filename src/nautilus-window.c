@@ -1933,6 +1933,40 @@ nautilus_window_state_event (GtkWidget *widget,
 	return FALSE;
 }
 
+static void
+nautilus_window_go_back (NautilusWindow *window)
+{
+	nautilus_window_back_or_forward (window, TRUE, 0, FALSE);
+}
+
+static void
+nautilus_window_go_forward (NautilusWindow *window)
+{
+	nautilus_window_back_or_forward (window, FALSE, 0, FALSE);
+}
+
+void
+nautilus_window_allow_back (NautilusWindow *window, gboolean allow)
+{
+	GtkAction *action;
+
+	action = gtk_action_group_get_action (nautilus_navigation_state_get_master (window->details->nav_state),
+					      NAUTILUS_ACTION_BACK);
+
+	gtk_action_set_sensitive (action, allow);
+}
+
+void
+nautilus_window_allow_forward (NautilusWindow *window, gboolean allow)
+{
+	GtkAction *action;
+
+	action = gtk_action_group_get_action (nautilus_navigation_state_get_master (window->details->nav_state),
+					      NAUTILUS_ACTION_FORWARD);
+
+	gtk_action_set_sensitive (action, allow);
+}
+
 static gboolean
 nautilus_window_button_press_event (GtkWidget *widget,
 				    GdkEventButton *event)
@@ -2009,40 +2043,6 @@ nautilus_window_restore_focus_widget (NautilusWindow *window)
  * Main API
  */
 
-void
-nautilus_window_go_back (NautilusWindow *window)
-{
-	nautilus_window_back_or_forward (window, TRUE, 0, FALSE);
-}
-
-void
-nautilus_window_go_forward (NautilusWindow *window)
-{
-	nautilus_window_back_or_forward (window, FALSE, 0, FALSE);
-}
-
-void
-nautilus_window_allow_back (NautilusWindow *window, gboolean allow)
-{
-	GtkAction *action;
-
-	action = gtk_action_group_get_action (nautilus_navigation_state_get_master (window->details->nav_state),
-					      NAUTILUS_ACTION_BACK);
-
-	gtk_action_set_sensitive (action, allow);
-}
-
-void
-nautilus_window_allow_forward (NautilusWindow *window, gboolean allow)
-{
-	GtkAction *action;
-
-	action = gtk_action_group_get_action (nautilus_navigation_state_get_master (window->details->nav_state),
-					      NAUTILUS_ACTION_FORWARD);
-
-	gtk_action_set_sensitive (action, allow);
-}
-
 void 
 nautilus_window_show_search (NautilusWindow *window)
 {
@@ -2080,36 +2080,6 @@ nautilus_window_set_search_button (NautilusWindow *window,
 	g_object_set_data (G_OBJECT (action), "blocked", GINT_TO_POINTER (1));
 	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), state);
 	g_object_set_data (G_OBJECT (action), "blocked", NULL);
-}
-
-/**
- * nautilus_window_get_base_page_index:
- * @window:	Window to get index from
- *
- * Returns the index of the base page in the history list.
- * Base page is not the currently displayed page, but the page
- * that acts as the base from which the back and forward commands
- * navigate from.
- */
-gint 
-nautilus_window_get_base_page_index (NautilusWindow *window)
-{
-	NautilusWindowSlot *slot;
-	gint forward_count;
-
-	slot = window->details->active_pane->active_slot;
-
-	forward_count = g_list_length (slot->forward_list); 
-
-	/* If forward is empty, the base it at the top of the list */
-	if (forward_count == 0) {
-		return 0;
-	}
-
-	/* The forward count indicate the relative postion of the base page
-	 * in the history list
-	 */ 
-	return forward_count;
 }
 
 static void
