@@ -192,6 +192,7 @@ connect_proxy_cb (GtkActionGroup *action_group,
                   gpointer dummy)
 {
 	GtkLabel *label;
+	GIcon *icon;
 
 	if (!GTK_IS_MENU_ITEM (proxy))
 		return;
@@ -201,6 +202,13 @@ connect_proxy_cb (GtkActionGroup *action_group,
 	gtk_label_set_use_underline (label, FALSE);
 	gtk_label_set_ellipsize (label, PANGO_ELLIPSIZE_END);
 	gtk_label_set_max_width_chars (label, MENU_ITEM_MAX_WIDTH_CHARS);
+
+	icon = g_object_get_data (G_OBJECT (action), "menu-icon");
+
+	if (icon != NULL) {
+		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (proxy),
+					       gtk_image_new_from_gicon (icon, GTK_ICON_SIZE_MENU));
+	}
 }
 
 /* Struct that stores all the info necessary to activate a bookmark. */
