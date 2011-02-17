@@ -63,7 +63,6 @@ static int                   button_pressed_signal_id;
 static int                   key_pressed_signal_id;
 static int                   jump_button_signal_id;
 static NautilusApplication  *application;
-static gboolean              parent_is_browser_window;
 
 /* forward declarations */
 static guint    get_selected_row                            (void);
@@ -265,12 +264,6 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 	jump_button = (GtkWidget *)gtk_builder_get_object (builder, "bookmark_jump_button");
 
 	application = nautilus_application_dup_singleton ();
-
-	if (NAUTILUS_IS_NAVIGATION_WINDOW (undo_manager_source)) {
-		parent_is_browser_window = TRUE;
-	} else {
-		parent_is_browser_window = FALSE;
-	}
 
 	set_up_close_accelerator (window);
 	nautilus_undo_share_undo_manager (G_OBJECT (window), undo_manager_source);

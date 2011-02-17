@@ -177,9 +177,7 @@ nautilus_window_pane_slot_close (NautilusWindowPane *pane,
 				nautilus_window_close_pane (pane);
 				nautilus_window_set_active_pane (window, next_pane);
 
-				if (NAUTILUS_IS_NAVIGATION_WINDOW (window)) {
-					nautilus_navigation_window_update_show_hide_menu_items (NAUTILUS_NAVIGATION_WINDOW (window));
-				}
+				nautilus_navigation_window_update_show_hide_menu_items (NAUTILUS_NAVIGATION_WINDOW (window));
 			} else {
 				nautilus_window_close (window);
 			}

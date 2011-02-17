@@ -1443,24 +1443,22 @@ nautilus_forget_history (void)
 	     window_node != NULL;
 	     window_node = window_node->next) {
 
-		if (NAUTILUS_IS_NAVIGATION_WINDOW (window_node->data)) {
-			NautilusNavigationWindow *window;
+		NautilusNavigationWindow *window;
 			
-			window = NAUTILUS_NAVIGATION_WINDOW (window_node->data);
+		window = NAUTILUS_NAVIGATION_WINDOW (window_node->data);
 
-			for (walk = NAUTILUS_WINDOW (window_node->data)->details->panes; walk; walk = walk->next) {
-				NautilusWindowPane *pane = walk->data;
-				for (l = pane->slots; l != NULL; l = l->next) {
-					navigation_slot = l->data;
+		for (walk = NAUTILUS_WINDOW (window_node->data)->details->panes; walk; walk = walk->next) {
+			NautilusWindowPane *pane = walk->data;
+			for (l = pane->slots; l != NULL; l = l->next) {
+				navigation_slot = l->data;
 
-					nautilus_navigation_window_slot_clear_back_list (navigation_slot);
-					nautilus_navigation_window_slot_clear_forward_list (navigation_slot);
-				}
+				nautilus_navigation_window_slot_clear_back_list (navigation_slot);
+				nautilus_navigation_window_slot_clear_forward_list (navigation_slot);
 			}
-
-			nautilus_navigation_window_allow_back (window, FALSE);
-			nautilus_navigation_window_allow_forward (window, FALSE);
 		}
+
+		nautilus_navigation_window_allow_back (window, FALSE);
+		nautilus_navigation_window_allow_forward (window, FALSE);
 	}
 
 	g_object_unref (app);

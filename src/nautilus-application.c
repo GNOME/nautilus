@@ -717,20 +717,14 @@ nautilus_application_close_all_navigation_windows (NautilusApplication *self)
 		NautilusWindow *window;
 		
 		window = NAUTILUS_WINDOW (l->data);
-
-		if (NAUTILUS_IS_NAVIGATION_WINDOW (window)) {
-			gtk_widget_hide (GTK_WIDGET (window));
-		}
+		gtk_widget_hide (GTK_WIDGET (window));
 	}
 
 	for (l = list_copy; l != NULL; l = l->next) {
 		NautilusWindow *window;
 		
 		window = NAUTILUS_WINDOW (l->data);
-		
-		if (NAUTILUS_IS_NAVIGATION_WINDOW (window)) {
-			nautilus_window_close (window);
-		}
+		nautilus_window_close (window);
 	}
 	g_list_free (list_copy);
 }
@@ -791,8 +785,7 @@ another_navigation_window_already_showing (NautilusApplication *application,
 	
 	list = gtk_application_get_windows (GTK_APPLICATION (application));
 	for (item = list; item != NULL; item = item->next) {
-		if (item->data != the_window &&
-		    NAUTILUS_IS_NAVIGATION_WINDOW (item->data)) {
+		if (item->data != the_window) {
 			return TRUE;
 		}
 	}

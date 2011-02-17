@@ -324,6 +324,9 @@ viewed_file_changed_callback (NautilusFile *file,
                  * file was never seen in the first place.
                  */
                 if (slot->viewed_file_seen) {
+			/* auto-show existing parent. */
+			GFile *go_to_file, *parent, *location;
+
                         /* Detecting a file is gone may happen in the
                          * middle of a pending location change, we
                          * need to cancel it before closing the window
@@ -339,37 +342,30 @@ viewed_file_changed_callback (NautilusFile *file,
                          */
 			end_location_change (slot);
 
-			if (NAUTILUS_IS_NAVIGATION_WINDOW (window)) {
-				/* auto-show existing parent. */
-				GFile *go_to_file, *parent, *location;
-
-				go_to_file = NULL;
-				location =  nautilus_file_get_location (file);
-				parent = g_file_get_parent (location);
-				g_object_unref (location);
-				if (parent) {
-					go_to_file = nautilus_find_existing_uri_in_hierarchy (parent);
-					g_object_unref (parent);
+			go_to_file = NULL;
+			location =  nautilus_file_get_location (file);
+			parent = g_file_get_parent (location);
+			g_object_unref (location);
+			if (parent) {
+				go_to_file = nautilus_find_existing_uri_in_hierarchy (parent);
+				g_object_unref (parent);
+			}
+				
+			if (go_to_file != NULL) {
+				/* the path bar URI will be set to go_to_uri immediately
+				 * in begin_location_change, but we don't want the
+				 * inexistant children to show up anymore */
+				if (slot == slot->pane->active_slot) {
+					/* multiview-TODO also update NautilusWindowSlot
+					 * [which as of writing doesn't save/store any path bar state]
+					 */
+					nautilus_path_bar_clear_buttons (NAUTILUS_PATH_BAR (NAUTILUS_NAVIGATION_WINDOW_PANE (slot->pane)->path_bar));
 				}
 				
-				if (go_to_file != NULL) {
-					/* the path bar URI will be set to go_to_uri immediately
-					 * in begin_location_change, but we don't want the
-					 * inexistant children to show up anymore */
-					if (slot == slot->pane->active_slot) {
-						/* multiview-TODO also update NautilusWindowSlot
-						 * [which as of writing doesn't save/store any path bar state]
-						 */
-						nautilus_path_bar_clear_buttons (NAUTILUS_PATH_BAR (NAUTILUS_NAVIGATION_WINDOW_PANE (slot->pane)->path_bar));
-					}
-
-					nautilus_window_slot_go_to (slot, go_to_file, FALSE);
-					g_object_unref (go_to_file);
-				} else {
-					nautilus_window_slot_go_home (slot, FALSE);
-				}
+				nautilus_window_slot_go_to (slot, go_to_file, FALSE);
+				g_object_unref (go_to_file);
 			} else {
-				nautilus_window_close (window);
+				nautilus_window_slot_go_home (slot, FALSE);
 			}
                 }
 	} else {
@@ -512,8 +508,7 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 
         g_assert (target_window != NULL);
 
-	if ((flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB) != 0 &&
-	    NAUTILUS_IS_NAVIGATION_WINDOW (window)) {
+	if ((flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB) != 0) {
 		g_assert (target_window == window);
 
 		slot_flags = 0;
