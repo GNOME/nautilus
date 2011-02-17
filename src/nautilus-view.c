@@ -8467,6 +8467,7 @@ real_update_menus (NautilusView *view)
 	gboolean save_search_sensitive;
 	gboolean show_save_search_as;
 	gboolean show_open_folder_window;
+	gboolean show_desktop_target;
 	GtkAction *action;
 	GAppInfo *app;
 	GIcon *app_icon;
@@ -8841,12 +8842,17 @@ real_update_menus (NautilusView *view)
 	gtk_action_set_sensitive (action, can_delete_files && next_pane_is_writable);
 
 
+	show_desktop_target =
+		g_settings_get_boolean (gnome_background_preferences, NAUTILUS_PREFERENCES_SHOW_DESKTOP) &&
+		!g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR);
+
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      NAUTILUS_ACTION_COPY_TO_HOME);
 	gtk_action_set_sensitive (action, can_copy_files);
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      NAUTILUS_ACTION_COPY_TO_DESKTOP);
 	gtk_action_set_sensitive (action, can_copy_files);
+	gtk_action_set_visible (action, show_desktop_target);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      NAUTILUS_ACTION_MOVE_TO_HOME);
@@ -8854,6 +8860,7 @@ real_update_menus (NautilusView *view)
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      NAUTILUS_ACTION_MOVE_TO_DESKTOP);
 	gtk_action_set_sensitive (action, can_delete_files);
+	gtk_action_set_visible (action, show_desktop_target);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      "CopyToMenu");
