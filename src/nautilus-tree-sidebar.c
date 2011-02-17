@@ -372,7 +372,6 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
 			nautilus_window_slot_open_location
 				(slot,
 				 location, 
-				 NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
 				 view->details->activation_flags,
 				 NULL);
 			g_object_unref (location);
@@ -399,7 +398,6 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
 			nautilus_window_slot_open_location
 				(slot,
 				 location,
-				 NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
 				 view->details->activation_flags,
 				 NULL);
 			g_object_unref (location);

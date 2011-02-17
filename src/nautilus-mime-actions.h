@@ -45,14 +45,12 @@ void                   nautilus_mime_activate_files                       (GtkWi
 									   NautilusWindowSlot      *slot,
 									   GList                   *files,
 									   const char              *launch_directory,
-									   NautilusWindowOpenMode   mode,
 									   NautilusWindowOpenFlags  flags,
 									   gboolean                 user_confirmation);
 void                   nautilus_mime_activate_file                        (GtkWindow               *parent_window,
 									   NautilusWindowSlot      *slot_info,
 									   NautilusFile            *file,
 									   const char              *launch_directory,
-									   NautilusWindowOpenMode   mode,
 									   NautilusWindowOpenFlags  flags);
 
 

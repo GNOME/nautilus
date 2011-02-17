@@ -77,7 +77,6 @@ typedef struct {
 	GList *mountables;
 	GList *start_mountables;
 	GList *not_mounted;
-	NautilusWindowOpenMode mode;
 	NautilusWindowOpenFlags flags;
 	char *timed_wait_prompt;
 	gboolean timed_wait_active;
@@ -1064,7 +1063,6 @@ typedef struct {
 	GtkWindow *parent_window;
 	NautilusFile *file;
 	GList *files;
-	NautilusWindowOpenMode mode;
 	NautilusWindowOpenFlags flags;
 	char *activation_directory;
 	gboolean user_confirmation;
@@ -1285,7 +1283,6 @@ search_for_application_dbus_call_notify_cb (GDBusProxy   *proxy,
 	                              parameters_install->slot,
 	                              parameters_install->files,
 	                              parameters_install->activation_directory,
-	                              parameters_install->mode,
 	                              parameters_install->flags,
 	                              parameters_install->user_confirmation);
 
@@ -1428,7 +1425,6 @@ application_unhandled_uri (ActivateParameters *parameters, char *uri)
 	parameters_install->activation_directory = g_strdup (parameters->activation_directory);
 	parameters_install->file = file;
 	parameters_install->files = get_file_list_for_launch_locations (parameters->locations);
-	parameters_install->mode = parameters->mode;
 	parameters_install->flags = parameters->flags;
 	parameters_install->user_confirmation = parameters->user_confirmation;
 	parameters_install->uri = g_strdup(uri);
@@ -1755,7 +1751,7 @@ activate_files (ActivateParameters *parameters)
 			uri = nautilus_file_get_activation_uri (file);
 			f = g_file_new_for_uri (uri);
 			nautilus_window_slot_open_location (parameters->slot,
-							    f, parameters->mode, flags, NULL);
+							    f, flags, NULL);
 			g_object_unref (f);
 			g_free (uri);
 		}
@@ -2270,7 +2266,6 @@ nautilus_mime_activate_files (GtkWindow *parent_window,
 			      NautilusWindowSlot *slot,
 			      GList *files,
 			      const char *launch_directory,
-			      NautilusWindowOpenMode mode,
 			      NautilusWindowOpenFlags flags,
 			      gboolean user_confirmation)
 {
@@ -2297,7 +2292,6 @@ nautilus_mime_activate_files (GtkWindow *parent_window,
 	parameters->cancellable = g_cancellable_new ();
 	parameters->activation_directory = g_strdup (launch_directory);
 	parameters->locations = launch_locations_from_file_list (files);
-	parameters->mode = mode;
 	parameters->flags = flags;
 	parameters->user_confirmation = user_confirmation;
 
@@ -2355,7 +2349,6 @@ nautilus_mime_activate_file (GtkWindow *parent_window,
 			     NautilusWindowSlot *slot,
 			     NautilusFile *file,
 			     const char *launch_directory,
-			     NautilusWindowOpenMode mode,
 			     NautilusWindowOpenFlags flags)
 {
 	GList *files;
@@ -2363,6 +2356,6 @@ nautilus_mime_activate_file (GtkWindow *parent_window,
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
 	files = g_list_prepend (NULL, file);
-	nautilus_mime_activate_files (parent_window, slot, files, launch_directory, mode, flags, FALSE);
+	nautilus_mime_activate_files (parent_window, slot, files, launch_directory, flags, FALSE);
 	g_list_free (files);
 }

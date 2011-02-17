@@ -507,7 +507,6 @@ location_menu_item_activated_callback (GtkWidget *menu_item,
 		}
 
 		nautilus_window_slot_open_location (slot, dest,
-						    NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
 						    close_behind ? NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND : 0,
 						    selection);
 

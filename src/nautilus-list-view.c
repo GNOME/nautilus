@@ -260,9 +260,7 @@ activate_selected_items (NautilusListView *view)
 	
 	nautilus_view_activate_files (NAUTILUS_VIEW (view),
 				      file_list,
-				      NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
-				      0,
-				      TRUE);
+				      0, TRUE);
 	nautilus_file_list_free (file_list);
 
 }
@@ -291,7 +289,6 @@ activate_selected_items_alternate (NautilusListView *view,
 	}
 	nautilus_view_activate_files (NAUTILUS_VIEW (view),
 				      file_list,
-				      NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
 				      flags,
 				      TRUE);
 	nautilus_file_list_free (file_list);

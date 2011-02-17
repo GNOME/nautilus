@@ -270,7 +270,6 @@ path_bar_button_released_callback (GtkWidget *widget,
 		if (flags != 0) {
 			slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW_PANE (pane)->window);
 			nautilus_window_slot_open_location (slot, location,
-							    NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
 							    flags, NULL);
 			g_object_unref (location);
 			return TRUE;

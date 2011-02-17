@@ -543,7 +543,6 @@ nautilus_window_slot_go_home (NautilusWindowSlot *slot,
 
 	home = g_file_new_for_path (g_get_home_dir ());
 	nautilus_window_slot_open_location_full (slot, home, 
-						 NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE, 
 						 flags, NULL, NULL, NULL);
 	g_object_unref (home);
 }
@@ -578,7 +577,6 @@ nautilus_window_slot_go_up (NautilusWindowSlot *slot,
 	}
 
 	nautilus_window_slot_open_location (slot, parent, 
-					    NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
 					    flags,
 					    selection);
 

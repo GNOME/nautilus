@@ -41,12 +41,6 @@ typedef void (* NautilusWindowGoToCallback) (NautilusWindow *window,
                                              gpointer user_data);
 
 typedef enum {
-        NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
-        NAUTILUS_WINDOW_OPEN_IN_SPATIAL,
-        NAUTILUS_WINDOW_OPEN_IN_NAVIGATION
-} NautilusWindowOpenMode;
-
-typedef enum {
         /* used in spatial mode */
         NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND = 1<<0,
         /* used in navigation mode */

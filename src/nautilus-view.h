@@ -319,7 +319,6 @@ gboolean            nautilus_view_get_loading                      (NautilusView
  */
 void                nautilus_view_activate_files                   (NautilusView        *view,
 								    GList                  *files,
-								    NautilusWindowOpenMode  mode,
 								    NautilusWindowOpenFlags flags,
 								    gboolean                confirm_multiple);
 void                nautilus_view_start_batching_selection_changes (NautilusView  *view);

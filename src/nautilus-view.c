@@ -1079,7 +1079,6 @@ get_view_directory (NautilusView *view)
 void
 nautilus_view_activate_files (NautilusView *view,
 			      GList *files,
-			      NautilusWindowOpenMode mode,
 			      NautilusWindowOpenFlags flags,
 			      gboolean confirm_multiple)
 {
@@ -1090,7 +1089,6 @@ nautilus_view_activate_files (NautilusView *view,
 				      view->details->slot,
 				      files,
 				      path,
-				      mode,
 				      flags,
 				      confirm_multiple);
 
@@ -1100,7 +1098,6 @@ nautilus_view_activate_files (NautilusView *view,
 static void
 nautilus_view_activate_file (NautilusView *view,
 			     NautilusFile *file,
-			     NautilusWindowOpenMode mode,
 			     NautilusWindowOpenFlags flags)
 {
 	char *path;
@@ -1110,7 +1107,6 @@ nautilus_view_activate_file (NautilusView *view,
 				     view->details->slot,
 				     file,
 				     path,
-				     mode,
 				     flags);
 
 	g_free (path);
@@ -1128,7 +1124,6 @@ action_open_callback (GtkAction *action,
 	selection = nautilus_view_get_selection (view);
 	nautilus_view_activate_files (view,
 				      selection,
-				      NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
 				      0,
 				      TRUE);
 	nautilus_file_list_free (selection);
@@ -1146,7 +1141,6 @@ action_open_close_parent_callback (GtkAction *action,
 	selection = nautilus_view_get_selection (view);
 	nautilus_view_activate_files (view,
 				      selection,
-				      NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
 				      NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND,
 				      TRUE);
 	nautilus_file_list_free (selection);
@@ -1189,7 +1183,6 @@ action_open_new_tab_callback (GtkAction *action,
 	if (nautilus_view_confirm_multiple (window, g_list_length (selection), TRUE)) {
 		nautilus_view_activate_files (view,
 					      selection,
-					      NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
 					      NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB,
 					      FALSE);
 	}
@@ -4275,7 +4268,6 @@ open_one_in_new_window (gpointer data, gpointer callback_data)
 
 	nautilus_view_activate_file (NAUTILUS_VIEW (callback_data),
 				     NAUTILUS_FILE (data),
-				     NAUTILUS_WINDOW_OPEN_IN_NAVIGATION,
 				     0);
 }
 
@@ -4287,7 +4279,6 @@ open_one_in_folder_window (gpointer data, gpointer callback_data)
 
 	nautilus_view_activate_file (NAUTILUS_VIEW (callback_data),
 				     NAUTILUS_FILE (data),
-				     NAUTILUS_WINDOW_OPEN_IN_SPATIAL,
 				     0);
 }
 
@@ -6900,7 +6891,6 @@ action_location_open_alternate_callback (GtkAction *action,
 
 	nautilus_view_activate_file (view,
 				     file,
-				     NAUTILUS_WINDOW_OPEN_IN_NAVIGATION,
 				     0);
 }
 
@@ -6920,7 +6910,6 @@ action_location_open_in_new_tab_callback (GtkAction *action,
 
 	nautilus_view_activate_file (view,
 				     file,
-				     NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
 				     NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB);
 }
 
@@ -6938,7 +6927,6 @@ action_location_open_folder_window_callback (GtkAction *action,
 
 	nautilus_view_activate_file (view,
 				     file,
-				     NAUTILUS_WINDOW_OPEN_IN_SPATIAL,
 				     0);
 }
 

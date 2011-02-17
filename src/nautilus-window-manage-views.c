@@ -435,25 +435,9 @@ cancel_viewed_file_changed_callback (NautilusWindowSlot *slot)
         }
 }
 
-static void
-new_window_show_callback (GtkWidget *widget,
-                          gpointer user_data)
-{
-        NautilusWindow *window;
-        
-        window = NAUTILUS_WINDOW (user_data);
-        
-        nautilus_window_close (window);
-
-        g_signal_handlers_disconnect_by_func (widget, 
-                                              G_CALLBACK (new_window_show_callback),
-                                              user_data);
-}
-
 void
 nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 					 GFile *location,
-					 NautilusWindowOpenMode mode,
 					 NautilusWindowOpenFlags flags,
 					 GList *new_selection,
 					 NautilusWindowGoToCallback callback,
@@ -464,7 +448,6 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
         NautilusWindowPane *pane;
         NautilusWindowSlot *target_slot;
 	NautilusWindowOpenFlags slot_flags;
-        gboolean existing = FALSE;
 	GFile *old_location;
 	char *old_uri, *new_uri;
 	int new_slot_position;
@@ -477,6 +460,8 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 
         target_window = NULL;
 	target_slot = NULL;
+	target_same = FALSE;
+	target_navigation = FALSE;
 
 	old_uri = nautilus_window_slot_get_location_uri (slot);
 	if (old_uri == NULL) {
@@ -498,32 +483,18 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 
 	old_location = nautilus_window_slot_get_location (slot);
 
-	switch (mode) {
-        case NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE :
-		if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
-			/* always use browser: if we're on the desktop the target is a new navigation window,
-			 * otherwise it's the same window.
-			 */
-			if (is_desktop) {
-				target_navigation = TRUE;
-			} else {
-				target_same = TRUE;
-			}
-		} else if (flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) {
-			/* if it's specified to open a new window, and we're not using spatial,
-			 * the target is a navigation.
-			 */
+	if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
+		/* always use browser: if we're on the desktop the target is a new navigation window,
+		 * otherwise it's the same window.
+		 */
+		if (is_desktop) {
 			target_navigation = TRUE;
+		} else {
+			target_same = TRUE;
 		}
-                break;
-        case NAUTILUS_WINDOW_OPEN_IN_NAVIGATION :
+	} else {
 		target_navigation = TRUE;
-                break;
-        default :
-                g_critical ("Unknown open location mode");
-		g_object_unref (old_location);
-                return;
-        }
+	}
 
 	app = nautilus_application_dup_singleton ();
 
@@ -535,37 +506,9 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 			(app,
 			 NULL,
 			 gtk_window_get_screen (GTK_WINDOW (window)));
-	} else {
-		target_window = nautilus_application_get_spatial_window
-			(app,
-			 window,
-			 NULL,
-			 location,
-			 gtk_window_get_screen (GTK_WINDOW (window)),
-			 &existing);
 	}
 
 	g_object_unref (app);
-
-	/* if the spatial window is already showing, present it and set the
-	 * new selection, if present.
-	 */
-	if (existing) {
-		target_slot = target_window->details->active_pane->active_slot;
-
-		gtk_window_present (GTK_WINDOW (target_window));
-
-		if (new_selection != NULL && slot->content_view != NULL) {
-			nautilus_view_set_selection (target_slot->content_view, new_selection);
-		}
-
-		/* call the callback successfully */
-		if (callback != NULL) {
-			callback (window, NULL, user_data);
-		}
-
-		return;
-	}
 
         g_assert (target_window != NULL);
 
@@ -582,20 +525,6 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 
 		target_slot = nautilus_window_open_slot (window->details->active_pane, slot_flags);
 	}
-
-        if ((flags & NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND) != 0) {
-                if (NAUTILUS_IS_SPATIAL_WINDOW (window) && !NAUTILUS_IS_DESKTOP_WINDOW (window)) {
-                        if (gtk_widget_get_visible (GTK_WIDGET (target_window))) {
-                                nautilus_window_close (window);
-                        } else {
-                                g_signal_connect_object (target_window,
-                                                         "show",
-                                                         G_CALLBACK (new_window_show_callback),
-                                                         window,
-                                                         G_CONNECT_AFTER);
-                        }
-                }
-        }
 
 	if (target_slot == NULL) {
 		if (target_window == window) {
@@ -1975,7 +1904,6 @@ nautilus_navigation_window_back_or_forward (NautilusNavigationWindow *window,
 
 	if (new_tab) {
 		nautilus_window_slot_open_location_full (slot, location,
-							 NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
 							 NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB,
 							 NULL, NULL, NULL);
 	} else {

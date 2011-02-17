@@ -1744,7 +1744,6 @@ volume_mounted_cb (GVolume *volume,
 		if (sidebar->go_to_after_mount_slot != NULL) {
 			if ((sidebar->go_to_after_mount_flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) == 0) {
 				nautilus_window_slot_open_location (sidebar->go_to_after_mount_slot, location,
-								    NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
 								    sidebar->go_to_after_mount_flags, NULL);
 			} else {
 				NautilusApplication *app;
@@ -1822,7 +1821,6 @@ open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 		if ((flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) == 0) {
 			slot = nautilus_window_get_active_slot (sidebar->window);
 			nautilus_window_slot_open_location (slot, location,
-							    NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
 							    flags, NULL);
 		} else {
 			NautilusWindow *cur, *new;

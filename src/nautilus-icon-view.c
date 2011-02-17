@@ -1792,8 +1792,7 @@ icon_container_activate_callback (NautilusIconContainer *container,
 
 	nautilus_view_activate_files (NAUTILUS_VIEW (icon_view),
 				      file_list, 
-				      NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE, 0,
-				      TRUE);
+				      0, TRUE);
 }
 
 static void
@@ -1842,7 +1841,6 @@ icon_container_activate_alternate_callback (NautilusIconContainer *container,
 
 	nautilus_view_activate_files (NAUTILUS_VIEW (icon_view), 
 				      file_list, 
-				      NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
 				      flags,
 				      TRUE);
 }
