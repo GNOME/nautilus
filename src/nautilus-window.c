@@ -1508,6 +1508,12 @@ nautilus_window_sync_title (NautilusWindow *window,
 	char *full_title;
 	char *window_title;
 
+	if (NAUTILUS_WINDOW_CLASS (G_OBJECT_GET_CLASS (window))->sync_title != NULL) {
+		NAUTILUS_WINDOW_CLASS (G_OBJECT_GET_CLASS (window))->sync_title (window, slot);
+
+		return;
+	}
+
 	if (slot == window->details->active_pane->active_slot) {
 		/* if spatial mode is default, we keep "File Browser" in the window title
 		 * to recognize browser windows. Otherwise, we default to the directory name.
@@ -2220,6 +2226,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
 
 	class->reload = nautilus_window_reload;
 	class->go_up = nautilus_window_go_up_signal;
+	class->prompt_for_location = nautilus_window_prompt_for_location;
 
 	g_signal_connect_swapped (nautilus_preferences,
 				  "changed::" NAUTILUS_PREFERENCES_MOUSE_BACK_BUTTON,
