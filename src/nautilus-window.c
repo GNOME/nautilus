@@ -530,12 +530,6 @@ nautilus_window_show_window (NautilusWindow    *window)
 	gtk_widget_show (GTK_WIDGET (window));
 
 	slot = window->details->active_pane->active_slot;
-
-	if (slot->viewed_file) {
-		if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
-			nautilus_file_set_has_open_window (slot->viewed_file, TRUE);
-		}
-	}
 }
 
 void
@@ -1384,7 +1378,6 @@ void
 nautilus_window_slot_set_viewed_file (NautilusWindowSlot *slot,
 				      NautilusFile *file)
 {
-	NautilusWindow *window;
 	NautilusFileAttributes attributes;
 
 	if (slot->viewed_file == file) {
@@ -1396,12 +1389,6 @@ nautilus_window_slot_set_viewed_file (NautilusWindowSlot *slot,
 	cancel_view_as_callback (slot);
 
 	if (slot->viewed_file != NULL) {
-		window = slot->pane->window;
-
-		if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
-			nautilus_file_set_has_open_window (slot->viewed_file,
-							   FALSE);
-		}
 		nautilus_file_monitor_remove (slot->viewed_file,
 					      slot);
 	}

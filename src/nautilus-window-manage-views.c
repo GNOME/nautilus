@@ -757,96 +757,6 @@ begin_location_change (NautilusWindowSlot *slot,
 				       slot);
 }
 
-static void
-setup_new_spatial_window (NautilusWindowSlot *slot, NautilusFile *file)
-{
-	NautilusWindow *window;
-	char *show_hidden_file_setting;
-	char *geometry_string;
-	char *scroll_string;
-	gboolean maximized, sticky, above;
-	GtkAction *action;
-
-	window = slot->pane->window;
-
-	if (NAUTILUS_IS_SPATIAL_WINDOW (window) && !NAUTILUS_IS_DESKTOP_WINDOW (window)) {
-		/* load show hidden state */
-		show_hidden_file_setting = nautilus_file_get_metadata 
-			(file, NAUTILUS_METADATA_KEY_WINDOW_SHOW_HIDDEN_FILES,
-			 NULL);
-		if (show_hidden_file_setting != NULL) {
-			if (strcmp (show_hidden_file_setting, "1") == 0) {
-				window->details->show_hidden_files_mode = NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_ENABLE;
-			} else {
-				window->details->show_hidden_files_mode = NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DISABLE;
-			}
-
-			/* Update the UI, since we initialize it to the default */
-			action = gtk_action_group_get_action (window->details->main_action_group, NAUTILUS_ACTION_SHOW_HIDDEN_FILES);
-			gtk_action_block_activate (action);
-			gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
-						      window->details->show_hidden_files_mode == NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_ENABLE);
-			gtk_action_unblock_activate (action);
-		} else {
-			NAUTILUS_WINDOW (window)->details->show_hidden_files_mode = NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT;
-		}
-		g_free (show_hidden_file_setting);
-
-		/* load the saved window geometry */
-		maximized = nautilus_file_get_boolean_metadata
-			(file, NAUTILUS_METADATA_KEY_WINDOW_MAXIMIZED, FALSE);
-		if (maximized) {
-			gtk_window_maximize (GTK_WINDOW (window));
-		} else {
-			gtk_window_unmaximize (GTK_WINDOW (window));
-		}
-
-		sticky = nautilus_file_get_boolean_metadata
-			(file, NAUTILUS_METADATA_KEY_WINDOW_STICKY, FALSE);
-		if (sticky) {
-			gtk_window_stick (GTK_WINDOW (window));
-		} else {
-			gtk_window_unstick (GTK_WINDOW (window));
-		}
-
-		above = nautilus_file_get_boolean_metadata
-			(file, NAUTILUS_METADATA_KEY_WINDOW_KEEP_ABOVE, FALSE);
-		if (above) {
-			gtk_window_set_keep_above (GTK_WINDOW (window), TRUE);
-		} else {
-			gtk_window_set_keep_above (GTK_WINDOW (window), FALSE);
-		}
-
-		geometry_string = nautilus_file_get_metadata 
-			(file, NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY, NULL);
-                if (geometry_string != NULL) {
-                        eel_gtk_window_set_initial_geometry_from_string 
-                                (GTK_WINDOW (window), 
-                                 geometry_string,
-                                 NAUTILUS_SPATIAL_WINDOW_MIN_WIDTH, 
-                                 NAUTILUS_SPATIAL_WINDOW_MIN_HEIGHT,
-				 FALSE);
-                }
-                g_free (geometry_string);
-
-		if (slot->pending_selection == NULL) {
-			/* If there is no pending selection, then load the saved scroll position. */
-			scroll_string = nautilus_file_get_metadata 
-				(file, NAUTILUS_METADATA_KEY_WINDOW_SCROLL_POSITION,
-				 NULL);
-		} else {
-			/* If there is a pending selection, we want to scroll to an item in
-			 * the pending selection list. */
-			scroll_string = nautilus_file_get_uri (slot->pending_selection->data);
-		}
-
-		/* scroll_string might be NULL if there was no saved scroll position. */
-		if (scroll_string != NULL) {
-			slot->pending_scroll_to = scroll_string;
-		}
-        }
-}
-
 typedef struct {
 	GCancellable *cancellable;
 	NautilusWindowSlot *slot;
@@ -987,10 +897,6 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 	}
 
 	if (view_id != NULL) {
-                if (!gtk_widget_get_visible (GTK_WIDGET (window)) && NAUTILUS_IS_SPATIAL_WINDOW (window)) {
-			/* We now have the metadata to set up the window position, etc */
-			setup_new_spatial_window (slot, file);
-		}
 		create_content_view (slot, view_id);
 		g_free (view_id);
 

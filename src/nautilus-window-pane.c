@@ -32,21 +32,6 @@ G_DEFINE_TYPE (NautilusWindowPane, nautilus_window_pane,
 	       G_TYPE_OBJECT)
 #define parent_class nautilus_window_pane_parent_class
 
-static void
-real_sync_location_widgets (NautilusWindowPane *pane)
-{
-	NautilusWindowSlot *slot;
-
-	/* TODO: Would be nice with a real subclass for spatial panes */
-	g_assert (NAUTILUS_IS_SPATIAL_WINDOW (pane->window));
-
-	slot = pane->active_slot;
-
-	/* Change the location button to match the current location. */
-	nautilus_spatial_window_set_location_button (NAUTILUS_SPATIAL_WINDOW (pane->window),
-						     slot->location);
-}
-
 static inline NautilusWindowSlot *
 get_first_inactive_slot (NautilusWindowPane *pane)
 {
@@ -80,7 +65,6 @@ nautilus_window_pane_class_init (NautilusWindowPaneClass *klass)
 	GObjectClass *oclass = G_OBJECT_CLASS (klass);
 
 	oclass->dispose = nautilus_window_pane_dispose;
-	klass->sync_location_widgets = real_sync_location_widgets;
 }
 
 static void

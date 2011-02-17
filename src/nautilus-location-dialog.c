@@ -30,6 +30,7 @@
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include "nautilus-location-entry.h"
 #include "nautilus-desktop-window.h"
+#include "nautilus-window-private.h"
 #include <glib/gi18n.h>
 
 struct _NautilusLocationDialogDetails {

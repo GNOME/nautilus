@@ -28,9 +28,8 @@
 #ifndef NAUTILUS_DESKTOP_WINDOW_H
 #define NAUTILUS_DESKTOP_WINDOW_H
 
-#include "nautilus-window.h"
+#include "nautilus-navigation-window.h"
 #include "nautilus-application.h"
-#include "nautilus-spatial-window.h"
 
 #define NAUTILUS_TYPE_DESKTOP_WINDOW nautilus_desktop_window_get_type()
 #define NAUTILUS_DESKTOP_WINDOW(obj) \

@@ -31,7 +31,6 @@
 #include "nautilus-window.h"
 #include "nautilus-window-slot.h"
 #include "nautilus-window-pane.h"
-#include "nautilus-spatial-window.h"
 #include "nautilus-navigation-state.h"
 #include "nautilus-navigation-window.h"
 #include "nautilus-bookmark-list.h"

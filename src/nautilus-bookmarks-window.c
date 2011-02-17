@@ -29,7 +29,6 @@
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-window.h"
 #include "nautilus-navigation-window.h"
-#include "nautilus-spatial-window.h"
 #include <libnautilus-private/nautilus-undo.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <eel/eel-gtk-extensions.h>

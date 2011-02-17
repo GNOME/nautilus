@@ -127,8 +127,6 @@ nautilus_SOURCES = \
 	nautilus-search-bar.h			\
 	nautilus-self-check-functions.c 	\
 	nautilus-self-check-functions.h 	\
-	nautilus-spatial-window.c               \
-	nautilus-spatial-window.h               \
 	nautilus-toolbar.c			\
 	nautilus-toolbar.h			\
 	nautilus-tree-sidebar.c			\
@@ -220,7 +218,6 @@ uidir = $(datadir)/nautilus/ui
 ui_DATA = 					\
 	nautilus-shell-ui.xml			\
 	nautilus-navigation-window-ui.xml       \
-	nautilus-spatial-window-ui.xml          \
 	nautilus-file-management-properties.ui	\
 	nautilus-bookmarks-window.ui		\
 	nautilus-desktop-icon-view-ui.xml	\
