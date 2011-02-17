@@ -43,7 +43,6 @@
 #include "nautilus-navigation-window-slot.h"
 #include "nautilus-progress-ui-handler.h"
 #include "nautilus-self-check-functions.h"
-#include "nautilus-spatial-window.h"
 #include "nautilus-window-bookmarks.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
@@ -91,9 +90,6 @@ static NautilusApplication *singleton = NULL;
 /* Keeps track of all the desktop windows. */
 static GList *nautilus_application_desktop_windows;
 
-/* Keeps track of all the object windows */
-static GList *nautilus_application_spatial_window_list;
-
 /* The saving of the accelerator map was requested  */
 static gboolean save_of_accel_map_requested = FALSE;
 
@@ -115,12 +111,6 @@ struct _NautilusApplicationPriv {
 
 	gboolean initialized;
 };
-
-static GList *
-nautilus_application_get_spatial_window_list (void)
-{
-	return nautilus_application_spatial_window_list;
-}
 
 static gboolean
 check_required_directories (NautilusApplication *application)
@@ -507,12 +497,10 @@ finish_startup (NautilusApplication *application,
 static void
 open_window (NautilusApplication *application,
 	     const char *startup_id,
-	     const char *uri, GdkScreen *screen, const char *geometry,
-	     gboolean browser_window)
+	     const char *uri, GdkScreen *screen, const char *geometry)
 {
 	GFile *location;
 	NautilusWindow *window;
-	gboolean open_in_browser;
 
 	if (uri == NULL) {
 		location = g_file_new_for_path (g_get_home_dir ());
@@ -520,24 +508,11 @@ open_window (NautilusApplication *application,
 		location = g_file_new_for_uri (uri);
 	}
 
-	open_in_browser = browser_window ||
-		g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER);
+	DEBUG ("Opening new window at uri %s", uri);
 
-	DEBUG ("Opening new window at uri %s, browser %d", uri, open_in_browser);
-
-	if (open_in_browser) {
-		window = nautilus_application_create_navigation_window (application,
-									startup_id,
-									screen);
-	} else {
-		window = nautilus_application_get_spatial_window (application,
-								  NULL,
-								  startup_id,
-								  location,
-								  screen,
-								  NULL);
-	}
-
+	window = nautilus_application_create_navigation_window (application,
+								startup_id,
+								screen);
 	nautilus_window_go_to (window, location);
 
 	g_object_unref (location);
@@ -560,18 +535,17 @@ open_windows (NautilusApplication *application,
 	      const char *startup_id,
 	      char **uris,
 	      GdkScreen *screen,
-	      const char *geometry,
-	      gboolean browser_window)
+	      const char *geometry)
 {
 	guint i;
 
 	if (uris == NULL || uris[0] == NULL) {
 		/* Open a window pointing at the default location. */
-		open_window (application, startup_id, NULL, screen, geometry, browser_window);
+		open_window (application, startup_id, NULL, screen, geometry);
 	} else {
 		/* Open windows at each requested location. */
 		for (i = 0; uris[i] != NULL; i++) {
-			open_window (application, startup_id, uris[i], screen, geometry, browser_window);
+			open_window (application, startup_id, uris[i], screen, geometry);
 		}
 	}
 }
@@ -761,130 +735,6 @@ nautilus_application_close_all_navigation_windows (NautilusApplication *self)
 	g_list_free (list_copy);
 }
 
-static NautilusSpatialWindow *
-nautilus_application_get_existing_spatial_window (GFile *location)
-{
-	GList *l;
-	NautilusWindowSlot *slot;
-	GFile *window_location;
-
-	for (l = nautilus_application_get_spatial_window_list ();
-	     l != NULL; l = l->next) {
-		slot = NAUTILUS_WINDOW (l->data)->details->active_pane->active_slot;
-
-		window_location = slot->pending_location;
-		
-		if (window_location == NULL) {
-			window_location = slot->location;
-		}
-
-		if (window_location != NULL) {
-			if (g_file_equal (location, window_location)) {
-				return NAUTILUS_SPATIAL_WINDOW (l->data);
-			}
-		}
-	}
-
-	return NULL;
-}
-
-static NautilusSpatialWindow *
-find_parent_spatial_window (NautilusSpatialWindow *window)
-{
-	NautilusFile *file;
-	NautilusFile *parent_file;
-	NautilusWindowSlot *slot;
-	GFile *location;
-
-	slot = NAUTILUS_WINDOW (window)->details->active_pane->active_slot;
-
-	location = slot->location;
-	if (location == NULL) {
-		return NULL;
-	}
-	file = nautilus_file_get (location);
-
-	if (!file) {
-		return NULL;
-	}
-
-	parent_file = nautilus_file_get_parent (file);
-	nautilus_file_unref (file);
-	while (parent_file) {
-		NautilusSpatialWindow *parent_window;
-
-		location = nautilus_file_get_location (parent_file);
-		parent_window = nautilus_application_get_existing_spatial_window (location);
-		g_object_unref (location);
-
-		/* Stop at the desktop directory if it's not explicitely opened
-		 * in a spatial window of its own.
-		 */
-		if (nautilus_file_is_desktop_directory (parent_file) && !parent_window) {
-			nautilus_file_unref (parent_file);
-			return NULL;
-		}
-
-		if (parent_window) {
-			nautilus_file_unref (parent_file);
-			return parent_window;
-		}
-		file = parent_file;
-		parent_file = nautilus_file_get_parent (file);
-		nautilus_file_unref (file);
-	}
-
-	return NULL;
-}
-
-void
-nautilus_application_close_parent_windows (NautilusSpatialWindow *window)
-{
-	NautilusSpatialWindow *parent_window;
-	NautilusSpatialWindow *new_parent_window;
-
-	g_return_if_fail (NAUTILUS_IS_SPATIAL_WINDOW (window));
-
-	parent_window = find_parent_spatial_window (window);
-	
-	while (parent_window) {
-		
-		new_parent_window = find_parent_spatial_window (parent_window);
-		nautilus_window_close (NAUTILUS_WINDOW (parent_window));
-		parent_window = new_parent_window;
-	}
-}
-
-void
-nautilus_application_close_all_spatial_windows (void)
-{
-	GList *list_copy;
-	GList *l;
-	
-	list_copy = g_list_copy (nautilus_application_spatial_window_list);
-	/* First hide all window to get the feeling of quick response */
-	for (l = list_copy; l != NULL; l = l->next) {
-		NautilusWindow *window;
-		
-		window = NAUTILUS_WINDOW (l->data);
-		
-		if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
-			gtk_widget_hide (GTK_WIDGET (window));
-		}
-	}
-
-	for (l = list_copy; l != NULL; l = l->next) {
-		NautilusWindow *window;
-		
-		window = NAUTILUS_WINDOW (l->data);
-		
-		if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
-			nautilus_window_close (window);
-		}
-	}
-	g_list_free (list_copy);
-}
-
 static gboolean
 nautilus_window_delete_event_callback (GtkWidget *widget,
 				       GdkEvent *event,
@@ -929,75 +779,6 @@ create_window (NautilusApplication *application,
 	 * successfully display its initial URI. Otherwise it will be destroyed
 	 * without ever having seen the light of day.
 	 */
-
-	return window;
-}
-
-static void
-spatial_window_destroyed_callback (void *user_data, GObject *window)
-{
-	nautilus_application_spatial_window_list =
-		g_list_remove (nautilus_application_spatial_window_list, window);
-}
-
-NautilusWindow *
-nautilus_application_get_spatial_window (NautilusApplication *application,
-					 NautilusWindow      *requesting_window,
-					 const char          *startup_id,
-					 GFile               *location,
-					 GdkScreen           *screen,
-					 gboolean            *existing)
-{
-	NautilusWindow *window;
-
-	g_return_val_if_fail (NAUTILUS_IS_APPLICATION (application), NULL);
-
-	window = NAUTILUS_WINDOW
-		(nautilus_application_get_existing_spatial_window (location));
-
-	if (window != NULL) {
-		if (existing != NULL) {
-			*existing = TRUE;
-		}
-
-		DEBUG ("returning existing spatial window");
-
-		return window;
-	}
-
-	if (existing != NULL) {
-		*existing = FALSE;
-	}
-
-	window = create_window (application, NAUTILUS_TYPE_SPATIAL_WINDOW, startup_id, screen);
-	if (requesting_window) {
-		/* Center the window over the requesting window by default */
-		int orig_x, orig_y, orig_width, orig_height;
-		int new_x, new_y, new_width, new_height;
-		
-		gtk_window_get_position (GTK_WINDOW (requesting_window), 
-					 &orig_x, &orig_y);
-		gtk_window_get_size (GTK_WINDOW (requesting_window), 
-				     &orig_width, &orig_height);
-		gtk_window_get_default_size (GTK_WINDOW (window),
-					     &new_width, &new_height);
-		
-		new_x = orig_x + (orig_width - new_width) / 2;
-		new_y = orig_y + (orig_height - new_height) / 2;
-		
-		if (orig_width - new_width < 10) {
-			new_x += 10;
-			new_y += 10;
-		}
-
-		gtk_window_move (GTK_WINDOW (window), new_x, new_y);
-	}
-
-	nautilus_application_spatial_window_list = g_list_prepend (nautilus_application_spatial_window_list, window);
-	g_object_weak_ref (G_OBJECT (window), 
-			   spatial_window_destroyed_callback, NULL);
-
-	DEBUG ("Creating new spatial window");
 
 	return window;
 }
@@ -1133,9 +914,6 @@ should_close_slot_with_mount (NautilusWindow *window,
 			      NautilusWindowSlot *slot,
 			      GMount *mount)
 {
-	if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
-		return TRUE;
-	}
 	return nautilus_navigation_window_slot_should_close_with_mount (NAUTILUS_NAVIGATION_WINDOW_SLOT (slot),
 									mount);
 }
@@ -1292,7 +1070,6 @@ nautilus_application_command_line (GApplication *app,
 	gboolean version = FALSE;
 	gboolean no_default_window = FALSE;
 	gboolean no_desktop = FALSE;
-	gboolean browser_window = FALSE;
 	gboolean kill_shell = FALSE;
 	gboolean autostart_mode = FALSE;
 	const gchar *autostart_id;
@@ -1311,8 +1088,6 @@ nautilus_application_command_line (GApplication *app,
 		  N_("Only create windows for explicitly specified URIs."), NULL },
 		{ "no-desktop", '\0', 0, G_OPTION_ARG_NONE, &no_desktop,
 		  N_("Do not manage the desktop (ignore the preference set in the preferences dialog)."), NULL },
-		{ "browser", '\0', 0, G_OPTION_ARG_NONE, &browser_window, 
-		  N_("Open a browser window."), NULL },
 		{ "quit", 'q', 0, G_OPTION_ARG_NONE, &kill_shell, 
 		  N_("Quit Nautilus."), NULL },
 		{ G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, &remaining, NULL,  N_("[URI...]") },
@@ -1403,9 +1178,9 @@ nautilus_application_command_line (GApplication *app,
 		no_desktop = FALSE;
 	}
 
-	DEBUG ("Parsing command line, no_default_window %d browser %d, quit %d, "
+	DEBUG ("Parsing command line, no_default_window %d, quit %d, "
 	       "self checks %d, no_desktop %d",
-	       no_default_window, browser_window, kill_shell, perform_self_check, no_desktop);
+	       no_default_window, kill_shell, perform_self_check, no_desktop);
 
 	if (kill_shell) {
 		nautilus_application_quit (self);
@@ -1473,8 +1248,7 @@ nautilus_application_command_line (GApplication *app,
 			open_windows (self, NULL,
 				      uris,
 				      gdk_screen_get_default (),
-				      geometry,
-				      browser_window);
+				      geometry);
 		}
 	}
 

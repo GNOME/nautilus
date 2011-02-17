@@ -223,19 +223,6 @@ nautilus_navigation_window_update_show_hide_menu_items (NautilusNavigationWindow
 	gtk_radio_action_set_current_value (GTK_RADIO_ACTION (action), current_value);
 }
 
-void
-nautilus_navigation_window_update_spatial_menu_item (NautilusNavigationWindow *window) 
-{
-	GtkAction *action;
-
-	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
-
-	action = gtk_action_group_get_action (window->details->navigation_action_group,
-					      NAUTILUS_ACTION_FOLDER_WINDOW);
-	gtk_action_set_visible (action,
-				!g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER));
-}
-
 static void
 action_add_bookmark_callback (GtkAction *action,
 			      gpointer user_data)
@@ -394,34 +381,6 @@ action_new_tab_callback (GtkAction *action,
 
 	window = NAUTILUS_WINDOW (user_data);
 	nautilus_window_new_tab (window);
-}
-
-static void
-action_folder_window_callback (GtkAction *action,
-			       gpointer user_data)
-{
-	NautilusApplication *application;
-	NautilusWindow *current_window, *window;
-	NautilusWindowSlot *slot;
-	GFile *current_location;
-
-	current_window = NAUTILUS_WINDOW (user_data);
-	application = nautilus_application_dup_singleton ();
-	slot = current_window->details->active_pane->active_slot;
-	current_location = nautilus_window_slot_get_location (slot);
-
-	window = nautilus_application_get_spatial_window
-		(application,
-		 current_window,
-		 NULL,
-		 current_location,
-		 gtk_window_get_screen (GTK_WINDOW (current_window)),
-		 NULL);
-
-	nautilus_window_go_to (window, current_location);
-
-	g_clear_object (&current_location);
-	g_object_unref (application);
 }
 
 static void
@@ -602,9 +561,6 @@ static const GtkActionEntry navigation_entries[] = {
   /* name, stock id, label */  { "New Tab", "tab-new", N_("New _Tab"),
                                  "<control>T", N_("Open another tab for the displayed location"),
                                  G_CALLBACK (action_new_tab_callback) },
-  /* name, stock id, label */  { "Folder Window", "folder", N_("Open Folder W_indow"),
-                                 NULL, N_("Open a folder window for the displayed location"),
-                                 G_CALLBACK (action_folder_window_callback) },
   /* name, stock id, label */  { "Close All Windows", NULL, N_("Close _All Windows"),
                                  "<control>Q", N_("Close all Navigation windows"),
                                  G_CALLBACK (action_close_all_windows_callback) },
@@ -857,7 +813,5 @@ nautilus_navigation_window_initialize_menus (NautilusNavigationWindow *window)
 	navigation_window_menus_set_bindings (window);
 
 	nautilus_navigation_window_update_show_hide_menu_items (window);
-	nautilus_navigation_window_update_spatial_menu_item (window);
-
 	nautilus_navigation_window_initialize_go_menu (window);
 }

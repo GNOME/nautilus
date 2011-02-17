@@ -307,20 +307,6 @@ nautilus_spatial_window_show (GtkWidget *widget)
 }
 
 static void
-action_close_parent_folders_callback (GtkAction *action, 
-				      gpointer user_data)
-{
-	nautilus_application_close_parent_windows (NAUTILUS_SPATIAL_WINDOW (user_data));
-}
-
-static void
-action_close_all_folders_callback (GtkAction *action, 
-				   gpointer user_data)
-{
-	nautilus_application_close_all_spatial_windows ();
-}
-
-static void
 real_prompt_for_location (NautilusWindow *window,
 			  const char     *initial)
 {
@@ -885,12 +871,6 @@ static const GtkActionEntry spatial_entries[] = {
   /* name, stock id, label */  { SPATIAL_ACTION_GO_TO_LOCATION, NULL, N_("Open _Location..."),
                                  "<control>L", N_("Specify a location to open"),
                                  G_CALLBACK (action_go_to_location_callback) },
-  /* name, stock id, label */  { SPATIAL_ACTION_CLOSE_PARENT_FOLDERS, NULL, N_("Close P_arent Folders"),
-                                 "<control><shift>W", N_("Close this folder's parents"),
-                                 G_CALLBACK (action_close_parent_folders_callback) },
-  /* name, stock id, label */  { SPATIAL_ACTION_CLOSE_ALL_FOLDERS, NULL, N_("Clos_e All Folders"), 
-                                 "<control>Q", N_("Close all folder windows"),
-                                 G_CALLBACK (action_close_all_folders_callback) },
   /* name, stock id, label */  { "Add Bookmark", GTK_STOCK_ADD, N_("_Add Bookmark"),
                                  "<control>d", N_("Add a bookmark for the current location to this menu"),
                                  G_CALLBACK (action_add_bookmark_callback) },

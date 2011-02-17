@@ -98,16 +98,6 @@ static const struct {
 #endif
 };
 
-static void
-always_use_browser_changed (gpointer callback_data)
-{
-	NautilusNavigationWindow *window;
-
-	window = NAUTILUS_NAVIGATION_WINDOW (callback_data);
-
-	nautilus_navigation_window_update_spatial_menu_item (window);
-}
-
 /* Sanity check: highest mouse button value I could find was 14. 5 is our 
  * lower threshold (well-documented to be the one of the button events for the 
  * scrollwheel), so it's hardcoded in the functions below. However, if you have
@@ -308,10 +298,6 @@ nautilus_navigation_window_finalize (GObject *object)
 
 	g_free (window->details->sidebar_id);
 	g_clear_object (&window->details->nav_state);
-
-	g_signal_handlers_disconnect_by_func (nautilus_preferences,
-					      always_use_browser_changed,
-					      window);
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -801,11 +787,6 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 	nautilus_window_set_active_pane (win, NAUTILUS_WINDOW_PANE (pane));
 
 	nautilus_navigation_window_initialize_menus (window);
-
-	g_signal_connect_swapped (nautilus_preferences,
-				  "changed::" NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER,
-				  G_CALLBACK(always_use_browser_changed),
-				  window);
 
 	g_signal_connect_swapped (nautilus_window_state,
 				  "changed::" NAUTILUS_WINDOW_STATE_SIDE_PANE_VIEW,

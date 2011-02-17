@@ -71,19 +71,10 @@ NautilusApplication *nautilus_application_dup_singleton (void);
 
 void nautilus_application_quit (NautilusApplication *self);
 
-NautilusWindow *     nautilus_application_get_spatial_window     (NautilusApplication *application,
-								  NautilusWindow      *requesting_window,
-								  const char          *startup_id,
-								  GFile               *location,
-								  GdkScreen           *screen,
-								  gboolean            *existing);
-
 NautilusWindow *     nautilus_application_create_navigation_window     (NautilusApplication *application,
 									const char          *startup_id,
 									GdkScreen           *screen);
 
 void nautilus_application_close_all_navigation_windows (NautilusApplication *self);
-void                 nautilus_application_close_parent_windows     (NautilusSpatialWindow *window);
-void                 nautilus_application_close_all_spatial_windows  (void);
 
 #endif /* __NAUTILUS_APPLICATION_H__ */
