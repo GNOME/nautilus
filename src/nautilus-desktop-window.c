@@ -45,7 +45,7 @@ struct NautilusDesktopWindowDetails {
 };
 
 G_DEFINE_TYPE (NautilusDesktopWindow, nautilus_desktop_window, 
-	       NAUTILUS_TYPE_SPATIAL_WINDOW);
+	       NAUTILUS_TYPE_NAVIGATION_WINDOW);
 
 static void
 nautilus_desktop_window_init (NautilusDesktopWindow *window)

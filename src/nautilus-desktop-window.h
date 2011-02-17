@@ -47,13 +47,13 @@
 typedef struct NautilusDesktopWindowDetails NautilusDesktopWindowDetails;
 
 typedef struct {
-	NautilusSpatialWindow parent_spot;
+	NautilusNavigationWindow parent_spot;
 	NautilusDesktopWindowDetails *details;
         gboolean affect_desktop_on_next_location_change;
 } NautilusDesktopWindow;
 
 typedef struct {
-	NautilusSpatialWindowClass parent_spot;
+	NautilusNavigationWindowClass parent_spot;
 } NautilusDesktopWindowClass;
 
 GType                  nautilus_desktop_window_get_type            (void);
