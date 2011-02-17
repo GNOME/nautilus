@@ -52,8 +52,6 @@ struct NautilusWindowSlotClass {
 	/* wrapped NautilusWindowInfo signals, for overloading */
 	void (* active)   (NautilusWindowSlot *slot);
 	void (* inactive) (NautilusWindowSlot *slot);
-
-	void (* update_query_editor) (NautilusWindowSlot *slot);
 };
 
 /* Each NautilusWindowSlot corresponds to
@@ -113,6 +111,11 @@ struct NautilusWindowSlot {
 	GCancellable *find_mount_cancellable;
 
 	gboolean visible;
+
+	/* Back/Forward chain, and history list. 
+	 * The data in these lists are NautilusBookmark pointers. 
+	 */
+	GList *back_list, *forward_list;
 };
 
 GType   nautilus_window_slot_get_type (void);
@@ -178,5 +181,11 @@ NautilusView * nautilus_window_slot_get_current_view     (NautilusWindowSlot *sl
 char           * nautilus_window_slot_get_current_uri      (NautilusWindowSlot *slot);
 NautilusWindow * nautilus_window_slot_get_window           (NautilusWindowSlot *slot);
 void           nautilus_window_slot_make_hosting_pane_active (NautilusWindowSlot *slot);
+
+gboolean nautilus_window_slot_should_close_with_mount (NautilusWindowSlot *slot,
+						       GMount *mount);
+
+void nautilus_window_slot_clear_forward_list (NautilusWindowSlot *slot);
+void nautilus_window_slot_clear_back_list    (NautilusWindowSlot *slot);
 
 #endif /* NAUTILUS_WINDOW_SLOT_H */

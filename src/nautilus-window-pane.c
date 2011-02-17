@@ -28,7 +28,6 @@
 
 #include "nautilus-clipboard.h"
 #include "nautilus-location-bar.h"
-#include "nautilus-navigation-window-slot.h"
 #include "nautilus-notebook.h"
 #include "nautilus-pathbar.h"
 #include "nautilus-toolbar.h"
@@ -190,10 +189,10 @@ path_bar_location_changed_callback (GtkWidget *widget,
 				    GFile *location,
 				    NautilusWindowPane *pane)
 {
-	NautilusNavigationWindowSlot *slot;
+	NautilusWindowSlot *slot;
 	int i;
 
-	slot = NAUTILUS_NAVIGATION_WINDOW_SLOT (pane->active_slot);
+	slot = pane->active_slot;
 
 	/* check whether we already visited the target location */
 	i = bookmark_list_get_uri_index (slot->back_list, location);
@@ -694,8 +693,7 @@ nautilus_window_pane_show (NautilusWindowPane *pane)
 void
 nautilus_window_pane_sync_location_widgets (NautilusWindowPane *pane)
 {
-	NautilusNavigationWindowSlot *navigation_slot;
-	NautilusWindowSlot *slot;
+	NautilusWindowSlot *slot, *active_slot;
 
 	slot = pane->active_slot;
 
@@ -717,11 +715,11 @@ nautilus_window_pane_sync_location_widgets (NautilusWindowPane *pane)
 		nautilus_window_update_up_button (pane->window);
 
 		/* Check if the back and forward buttons need enabling or disabling. */
-		navigation_slot = NAUTILUS_NAVIGATION_WINDOW_SLOT (pane->window->details->active_pane->active_slot);
+		active_slot = pane->window->details->active_pane->active_slot;
 		nautilus_navigation_window_allow_back (NAUTILUS_NAVIGATION_WINDOW (pane->window),
-						       navigation_slot->back_list != NULL);
+						       active_slot->back_list != NULL);
 		nautilus_navigation_window_allow_forward (NAUTILUS_NAVIGATION_WINDOW (pane->window),
-							  navigation_slot->forward_list != NULL);
+							  active_slot->forward_list != NULL);
 	}
 }
 

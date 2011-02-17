@@ -37,7 +37,6 @@
 #include "nautilus-location-bar.h"
 #include "nautilus-query-editor.h"
 #include "nautilus-search-bar.h"
-#include "nautilus-navigation-window-slot.h"
 #include "nautilus-notebook.h"
 #include "nautilus-places-sidebar.h"
 #include "nautilus-tree-sidebar.h"
@@ -456,10 +455,10 @@ nautilus_navigation_window_set_search_button (NautilusNavigationWindow *window,
 gint 
 nautilus_navigation_window_get_base_page_index (NautilusNavigationWindow *window)
 {
-	NautilusNavigationWindowSlot *slot;
+	NautilusWindowSlot *slot;
 	gint forward_count;
 
-	slot = NAUTILUS_NAVIGATION_WINDOW_SLOT (NAUTILUS_WINDOW (window)->details->active_pane->active_slot);
+	slot = NAUTILUS_WINDOW (window)->details->active_pane->active_slot;
 
 	forward_count = g_list_length (slot->forward_list); 
 
@@ -560,7 +559,7 @@ real_open_slot (NautilusWindowPane *pane,
 {
 	NautilusWindowSlot *slot;
 
-	slot = (NautilusWindowSlot *) g_object_new (NAUTILUS_TYPE_NAVIGATION_WINDOW_SLOT, NULL);
+	slot = (NautilusWindowSlot *) g_object_new (NAUTILUS_TYPE_WINDOW_SLOT, NULL);
 	slot->pane = pane;
 
 	nautilus_window_pane_add_slot_in_tab (pane, slot, flags);

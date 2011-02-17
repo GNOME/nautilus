@@ -33,7 +33,6 @@
 #include "nautilus-navigation-action.h"
 
 #include "nautilus-navigation-window.h"
-#include "nautilus-navigation-window-slot.h"
 
 #include <gtk/gtk.h>
 #include <eel/eel-gtk-extensions.h>
@@ -106,14 +105,14 @@ fill_menu (NautilusNavigationWindow *window,
 	   GtkWidget *menu,
 	   gboolean back)
 {
-	NautilusNavigationWindowSlot *slot;
+	NautilusWindowSlot *slot;
 	GtkWidget *menu_item;
 	int index;
 	GList *list;
 
 	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
 
-	slot = NAUTILUS_NAVIGATION_WINDOW_SLOT (nautilus_window_get_active_slot (NAUTILUS_WINDOW (window)));
+	slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (window));
 	
 	list = back ? slot->back_list : slot->forward_list;
 	index = 0;

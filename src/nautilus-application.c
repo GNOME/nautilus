@@ -40,7 +40,6 @@
 #include "nautilus-image-properties-page.h"
 #include "nautilus-list-view.h"
 #include "nautilus-navigation-window.h"
-#include "nautilus-navigation-window-slot.h"
 #include "nautilus-progress-ui-handler.h"
 #include "nautilus-self-check-functions.h"
 #include "nautilus-window-bookmarks.h"
@@ -893,9 +892,7 @@ get_first_navigation_slot (GList *slot_list)
 	GList *l;
 
 	for (l = slot_list; l != NULL; l = l->next) {
-		if (NAUTILUS_IS_NAVIGATION_WINDOW_SLOT (l->data)) {
-			return l->data;
-		}
+		return l->data;
 	}
 
 	return NULL;
@@ -907,8 +904,7 @@ should_close_slot_with_mount (NautilusWindow *window,
 			      NautilusWindowSlot *slot,
 			      GMount *mount)
 {
-	return nautilus_navigation_window_slot_should_close_with_mount (NAUTILUS_NAVIGATION_WINDOW_SLOT (slot),
-									mount);
+	return nautilus_window_slot_should_close_with_mount (slot, mount);
 }
 
 /* Called whenever a mount is unmounted. Check and see if there are

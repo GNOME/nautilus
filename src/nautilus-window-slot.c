@@ -22,7 +22,6 @@
    Author: Christian Neumair <cneumair@gnome.org>
 */
 #include "nautilus-window-slot.h"
-#include "nautilus-navigation-window-slot.h"
 
 #include "nautilus-desktop-window.h"
 #include "nautilus-window-private.h"
@@ -51,6 +50,8 @@ query_editor_changed_callback (NautilusSearchBar *bar,
 {
 	NautilusDirectory *directory;
 
+	g_assert (NAUTILUS_IS_FILE (slot->viewed_file));
+
 	directory = nautilus_directory_get_for_file (slot->viewed_file);
 	g_assert (NAUTILUS_IS_SEARCH_DIRECTORY (directory));
 
@@ -66,23 +67,34 @@ query_editor_changed_callback (NautilusSearchBar *bar,
 static void
 real_update_query_editor (NautilusWindowSlot *slot)
 {
-	GtkWidget *query_editor;
-	NautilusQuery *query;
 	NautilusDirectory *directory;
 	NautilusSearchDirectory *search_directory;
+	NautilusQuery *query;
+	GtkWidget *query_editor;
+
+	g_assert (slot->pane->window != NULL);
+
+	query_editor = NULL;
 
 	directory = nautilus_directory_get (slot->location);
-
 	if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
 		search_directory = NAUTILUS_SEARCH_DIRECTORY (directory);
 
-		query_editor = nautilus_query_editor_new (nautilus_search_directory_is_saved_search (search_directory),
-							  nautilus_search_directory_is_indexed (search_directory));
+		if (nautilus_search_directory_is_saved_search (search_directory)) {
+			query_editor = nautilus_query_editor_new (TRUE,
+								  nautilus_search_directory_is_indexed (search_directory));
+		} else {
+			query_editor = nautilus_query_editor_new_with_bar (FALSE,
+									   nautilus_search_directory_is_indexed (search_directory),
+									   slot->pane->window->details->active_pane->active_slot == slot,
+									   NAUTILUS_SEARCH_BAR (slot->pane->search_bar),
+									   slot);
+		}
+	}
 
-		slot->query_editor = NAUTILUS_QUERY_EDITOR (query_editor);
+	slot->query_editor = NAUTILUS_QUERY_EDITOR (query_editor);
 
-		nautilus_window_slot_add_extra_location_widget (slot, query_editor);
-		gtk_widget_show (query_editor);
+	if (query_editor != NULL) {
 		g_signal_connect_object (query_editor, "changed",
 					 G_CALLBACK (query_editor_changed_callback), slot, 0);
 		
@@ -94,18 +106,30 @@ real_update_query_editor (NautilusWindowSlot *slot)
 		} else {
 			nautilus_query_editor_set_default_query (NAUTILUS_QUERY_EDITOR (query_editor));
 		}
-	} 
+
+		nautilus_window_slot_add_extra_location_widget (slot, query_editor);
+		gtk_widget_show (query_editor);
+		nautilus_query_editor_grab_focus (NAUTILUS_QUERY_EDITOR (query_editor));
+	}
 
 	nautilus_directory_unref (directory);
 }
-
 
 static void
 real_active (NautilusWindowSlot *slot)
 {
 	NautilusWindow *window;
+	NautilusWindowPane *pane;
+	int page_num;
 
 	window = slot->pane->window;
+
+	pane = slot->pane;
+	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (pane->notebook),
+					  slot->content_box);
+	g_assert (page_num >= 0);
+
+	gtk_notebook_set_current_page (GTK_NOTEBOOK (pane->notebook), page_num);
 
 	/* sync window to new slot */
 	nautilus_window_sync_status (window);
@@ -170,6 +194,9 @@ nautilus_window_slot_dispose (GObject *object)
 
 	slot = NAUTILUS_WINDOW_SLOT (object);
 
+	nautilus_window_slot_clear_forward_list (slot);
+	nautilus_window_slot_clear_back_list (slot);
+
 	if (slot->content_view) {
 		widget = nautilus_view_get_widget (slot->content_view);
 		gtk_widget_destroy (widget);
@@ -222,7 +249,6 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *class)
 {
 	class->active = real_active;
 	class->inactive = real_inactive;
-	class->update_query_editor = real_update_query_editor;
 
 	signals[ACTIVE] =
 		g_signal_new ("active",
@@ -464,8 +490,7 @@ nautilus_window_slot_update_query_editor (NautilusWindowSlot *slot)
 		g_assert (slot->query_editor == NULL);
 	}
 
-        EEL_CALL_METHOD (NAUTILUS_WINDOW_SLOT_CLASS, slot,
-                         update_query_editor, (slot));
+	real_update_query_editor (slot);
 
 	eel_add_weak_pointer (&slot->query_editor);
 }
@@ -582,4 +607,65 @@ nautilus_window_slot_go_up (NautilusWindowSlot *slot,
 
 	g_object_unref (parent);
 	g_list_free_full (selection, g_object_unref);
+}
+
+void
+nautilus_window_slot_clear_forward_list (NautilusWindowSlot *slot)
+{
+	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
+
+	g_list_free_full (slot->forward_list, g_object_unref);
+	slot->forward_list = NULL;
+}
+
+void
+nautilus_window_slot_clear_back_list (NautilusWindowSlot *slot)
+{
+	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
+
+	g_list_free_full (slot->back_list, g_object_unref);
+	slot->back_list = NULL;
+}
+
+gboolean
+nautilus_window_slot_should_close_with_mount (NautilusWindowSlot *slot,
+					      GMount *mount)
+{
+	NautilusBookmark *bookmark;
+	GFile *mount_location, *bookmark_location;
+	GList *l;
+	gboolean close_with_mount;
+
+	if (slot->pane->window->details->initiated_unmount) {
+		return FALSE;
+	}
+
+	mount_location = g_mount_get_root (mount);
+
+	close_with_mount = TRUE;
+
+	for (l = slot->back_list; l != NULL; l = l->next) {
+		bookmark = NAUTILUS_BOOKMARK (l->data);
+
+		bookmark_location = nautilus_bookmark_get_location (bookmark);
+		close_with_mount &= g_file_has_prefix (bookmark_location, mount_location) ||
+				    g_file_equal (bookmark_location, mount_location);
+		g_object_unref (bookmark_location);
+
+		if (!close_with_mount) {
+			break;
+		}
+	}
+
+	close_with_mount &= g_file_has_prefix (NAUTILUS_WINDOW_SLOT (slot)->location, mount_location) ||
+			    g_file_equal (NAUTILUS_WINDOW_SLOT (slot)->location, mount_location);
+
+	/* we could also consider the forward list here, but since the “go home” request
+	 * in nautilus-window-manager-views.c:mount_removed_callback() would discard those
+	 * anyway, we don't consider them.
+	 */
+
+	g_object_unref (mount_location);
+
+	return close_with_mount;
 }

@@ -35,7 +35,6 @@
 #include "nautilus-application.h"
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-mime-actions.h"
-#include "nautilus-navigation-window-slot.h"
 #include "nautilus-search-bar.h"
 #include "nautilus-src-marshal.h"
 #include "nautilus-view-factory.h"
@@ -1428,7 +1427,7 @@ nautilus_window_get_slot_for_view (NautilusWindow *window,
 void
 nautilus_forget_history (void) 
 {
-	NautilusNavigationWindowSlot *navigation_slot;
+	NautilusWindowSlot *slot;
 	GList *window_node, *l, *walk;
 	NautilusApplication *app;
 
@@ -1449,10 +1448,10 @@ nautilus_forget_history (void)
 		for (walk = NAUTILUS_WINDOW (window_node->data)->details->panes; walk; walk = walk->next) {
 			NautilusWindowPane *pane = walk->data;
 			for (l = pane->slots; l != NULL; l = l->next) {
-				navigation_slot = l->data;
+				slot = l->data;
 
-				nautilus_navigation_window_slot_clear_back_list (navigation_slot);
-				nautilus_navigation_window_slot_clear_forward_list (navigation_slot);
+				nautilus_window_slot_clear_back_list (slot);
+				nautilus_window_slot_clear_forward_list (slot);
 			}
 		}
 
