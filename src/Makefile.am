@@ -210,7 +210,6 @@ TESTS=check-nautilus
 uidir = $(datadir)/nautilus/ui
 ui_DATA = 					\
 	nautilus-shell-ui.xml			\
-	nautilus-navigation-window-ui.xml       \
 	nautilus-file-management-properties.ui	\
 	nautilus-bookmarks-window.ui		\
 	nautilus-desktop-icon-view-ui.xml	\

@@ -1,10 +1,19 @@
 <ui>
+<accelerator action="ShowSearch"/>
+<accelerator action="SplitViewNextPane"/>
+<accelerator action="TabsPrevious"/>
+<accelerator action="TabsNext"/>
+<accelerator action="TabsMoveLeft"/>
+<accelerator action="TabsMoveRight"/>
 <accelerator action="ZoomInAccel"/>
 <accelerator action="ZoomInAccel2"/>
 <accelerator action="ZoomOutAccel"/>
 <menubar name="MenuBar">
 	<menu action="File">
-		<placeholder name="New Items Placeholder"/>
+		<placeholder name="New Items Placeholder">
+			<menuitem name="New Tab" action="New Tab"/>
+			<menuitem name="New Window" action="New Window"/>
+		</placeholder>
 		<separator/>
 		<placeholder name="Open Placeholder"/>
 		<separator/>
@@ -17,7 +26,9 @@
 		<separator/>
 		<placeholder name="Extension Actions"/>
 		<separator/>
-                <placeholder name="Close Items Placeholder"/>
+                <placeholder name="Close Items Placeholder">
+			<menuitem name="Close All Windows" action="Close All Windows"/>
+		</placeholder>
 		<menuitem name="Close" action="Close"/>
 	</menu>
 	<menu action="Edit">
@@ -43,7 +54,17 @@
 		<menuitem name="Stop" action="Stop"/>
 		<menuitem name="Reload" action="Reload"/>
 		<separator/>
-		<placeholder name="Show Hide Placeholder"/>
+		<placeholder name="Show Hide Placeholder">
+			<menu action="Sidebar List">
+				<menuitem name="Sidebar Places" action="Sidebar Places"/>
+				<menuitem name="Sidebar Tree" action="Sidebar Tree"/>
+				<separator/>
+				<menuitem name="Show Hide Sidebar" action="Show Hide Sidebar"/>
+			</menu>
+			<menuitem name="Show Hide Toolbar" action="Show Hide Toolbar"/>
+			<menuitem name="Show Hide Statusbar" action="Show Hide Statusbar"/>
+			<menuitem name="Show Hide Extra Pane" action="Show Hide Extra Pane"/>
+		</placeholder>
 		<separator/>
 		<placeholder name="View Preferences Placeholder"/>
 		<separator/>
@@ -61,7 +82,35 @@
 			<placeholder name="Short List"/>
 		</placeholder>
 	</menu>
-	<placeholder name="Other Menus"/>
+	<placeholder name="Other Menus">
+	        <menu action="Go">
+                        <placeholder name="Navigation Items">
+			<menuitem name="Up" action="Up"/>
+			<menuitem name="Back" action="Back"/>
+			<menuitem name="Forward"  action="Forward"/>
+			<menuitem name="SplitViewSameLocationMenu" action="SplitViewSameLocation"/>
+	                </placeholder>
+	                <separator/>
+			<menuitem name="Home" action="Home"/>
+			<menuitem name="Computer" action="Go to Computer"/>
+			<menuitem name="Go to Templates" action="Go to Templates"/>
+			<menuitem name="Go to Trash" action="Go to Trash"/>
+		        <menuitem name="Go to Network" action="Go to Network"/>
+			<menuitem name="Go to Location" action="Go to Location"/>
+			<menuitem name="Search" action="Search"/>
+			<separator/>
+			<menuitem name="Clear History" action="Clear History"/>
+			<separator/>
+			<placeholder name="History Placeholder"/>
+		</menu>
+		<menu action="Bookmarks">
+			<menuitem name="Add Bookmark" action="Add Bookmark"/>
+			<menuitem name="Edit Bookmark" action="Edit Bookmarks"/>
+			<separator/>
+			<placeholder name="Bookmarks Placeholder"/>
+		</menu>
+
+	</placeholder>
 	<menu action="Help">
 		<menuitem name="Nautilus Manual" action="Nautilus Manual"/>
 		<menuitem name="About Nautilus" action="About Nautilus"/>

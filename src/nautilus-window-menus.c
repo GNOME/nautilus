@@ -1394,9 +1394,6 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 	ui = nautilus_ui_string_get ("nautilus-shell-ui.xml");
 	gtk_ui_manager_add_ui_from_string (ui_manager, ui, -1, NULL);
 
-	ui = nautilus_ui_string_get ("nautilus-navigation-window-ui.xml");
-	gtk_ui_manager_add_ui_from_string (ui_manager, ui, -1, NULL);
-
 	nautilus_window_initialize_trash_icon_monitor (window);
 	nautilus_window_initialize_go_menu (window);
 }
