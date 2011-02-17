@@ -659,20 +659,24 @@ update_places (NautilusPlacesSidebar *sidebar)
 		g_free (mount_uri);
 	}
 
-	/* desktop */
-	mount_uri = g_filename_to_uri (desktop_path, NULL, NULL);
-	icon = g_themed_icon_new (NAUTILUS_ICON_DESKTOP);
-	last_iter = add_place (sidebar, PLACES_BUILT_IN,
-			       SECTION_COMPUTER,
-			       _("Desktop"), icon,
-			       mount_uri, NULL, NULL, NULL, 0,
-			       _("Open the contents of your desktop in a folder"));
-	g_object_unref (icon);
-	compare_for_selection (sidebar,
-			       location, mount_uri, last_uri,
-			       &last_iter, &select_path);
-	g_free (mount_uri);
-	g_free (desktop_path);
+
+	if (g_settings_get_boolean (gnome_background_preferences, NAUTILUS_PREFERENCES_SHOW_DESKTOP) &&
+	    !g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
+		/* desktop */
+		mount_uri = g_filename_to_uri (desktop_path, NULL, NULL);
+		icon = g_themed_icon_new (NAUTILUS_ICON_DESKTOP);
+		last_iter = add_place (sidebar, PLACES_BUILT_IN,
+				       SECTION_COMPUTER,
+				       _("Desktop"), icon,
+				       mount_uri, NULL, NULL, NULL, 0,
+				       _("Open the contents of your desktop in a folder"));
+		g_object_unref (icon);
+		compare_for_selection (sidebar,
+				       location, mount_uri, last_uri,
+				       &last_iter, &select_path);
+		g_free (mount_uri);
+		g_free (desktop_path);
+	}
 
 	/* file system root */
  	mount_uri = "file:///"; /* No need to strdup */
@@ -1001,10 +1005,10 @@ clicked_eject_button (NautilusPlacesSidebar *sidebar,
 }
 
 static void
-desktop_location_changed_callback (gpointer user_data)
+desktop_setting_changed_callback (gpointer user_data)
 {
 	NautilusPlacesSidebar *sidebar;
-	
+
 	sidebar = NAUTILUS_PLACES_SIDEBAR (user_data);
 
 	update_places (sidebar);
@@ -3131,7 +3135,11 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 							TRUE);
 
 	g_signal_connect_swapped (nautilus_preferences, "changed::" NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
-				  G_CALLBACK(desktop_location_changed_callback),
+				  G_CALLBACK(desktop_setting_changed_callback),
+				  sidebar);
+
+	g_signal_connect_swapped (gnome_background_preferences, "changed::" NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
+				  G_CALLBACK(desktop_setting_changed_callback),
 				  sidebar);
 
 	g_signal_connect_object (nautilus_trash_monitor_get (),
@@ -3168,7 +3176,11 @@ nautilus_places_sidebar_dispose (GObject *object)
 	eel_remove_weak_pointer (&(sidebar->go_to_after_mount_slot));
 
 	g_signal_handlers_disconnect_by_func (nautilus_preferences,
-					      desktop_location_changed_callback,
+					      desktop_setting_changed_callback,
+					      sidebar);
+
+	g_signal_handlers_disconnect_by_func (gnome_background_preferences,
+					      desktop_setting_changed_callback,
 					      sidebar);
 
 	G_OBJECT_CLASS (nautilus_places_sidebar_parent_class)->dispose (object);
