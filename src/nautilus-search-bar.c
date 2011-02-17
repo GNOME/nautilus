@@ -42,7 +42,7 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-G_DEFINE_TYPE (NautilusSearchBar, nautilus_search_bar, GTK_TYPE_EVENT_BOX);
+G_DEFINE_TYPE (NautilusSearchBar, nautilus_search_bar, GTK_TYPE_BOX);
 	
 static void
 nautilus_search_bar_class_init (NautilusSearchBarClass *class)
@@ -126,37 +126,22 @@ focus_in_event_callback (GtkWidget *widget,
 static void
 nautilus_search_bar_init (NautilusSearchBar *bar)
 {
-	GtkWidget *alignment;
-	GtkWidget *hbox;
 	GtkWidget *label;
 
 	bar->details =
 		G_TYPE_INSTANCE_GET_PRIVATE (bar, NAUTILUS_TYPE_SEARCH_BAR,
 					     NautilusSearchBarDetails);
 
-	gtk_event_box_set_visible_window (GTK_EVENT_BOX (bar), FALSE);
-
-	alignment = gtk_alignment_new (0.5, 0.5,
-				       1.0, 1.0);
-	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment),
-				   0, 0, 6, 6);
-	gtk_widget_show (alignment);
-	gtk_container_add (GTK_CONTAINER (bar), alignment);
-
-	hbox = gtk_hbox_new (FALSE, 6);
-	gtk_widget_show (hbox);
-	gtk_container_add (GTK_CONTAINER (alignment), hbox);
-
 	label = gtk_label_new (_("Search:"));
 	gtk_widget_show (label);
 
-	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (bar), label, FALSE, FALSE, 0);
 
 	bar->details->entry = gtk_entry_new ();
 	gtk_entry_set_icon_from_stock (GTK_ENTRY (bar->details->entry),
 				       GTK_ENTRY_ICON_SECONDARY,
 				       GTK_STOCK_FIND);
-	gtk_box_pack_start (GTK_BOX (hbox), bar->details->entry, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (bar), bar->details->entry, TRUE, TRUE, 0);
 
 	g_signal_connect (bar->details->entry, "activate",
 			  G_CALLBACK (entry_activate_cb), bar);
@@ -196,7 +181,10 @@ nautilus_search_bar_new (void)
 {
 	GtkWidget *bar;
 
-	bar = g_object_new (NAUTILUS_TYPE_SEARCH_BAR, NULL);
+	bar = g_object_new (NAUTILUS_TYPE_SEARCH_BAR,
+			    "orientation", GTK_ORIENTATION_HORIZONTAL,
+			    "spacing", 6,
+			    NULL);
 
 	return bar;
 }

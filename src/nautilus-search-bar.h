@@ -42,12 +42,12 @@
 typedef struct NautilusSearchBarDetails NautilusSearchBarDetails;
 
 typedef struct NautilusSearchBar {
-	GtkEventBox parent;
+	GtkBox parent;
 	NautilusSearchBarDetails *details;
 } NautilusSearchBar;
 
 typedef struct {
-	GtkEventBoxClass parent_class;
+	GtkBoxClass parent_class;
 
 	void (* activate) (NautilusSearchBar *bar);
 	void (* cancel)   (NautilusSearchBar *bar);
