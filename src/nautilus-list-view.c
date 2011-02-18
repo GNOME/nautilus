@@ -273,13 +273,18 @@ activate_selected_items_alternate (NautilusListView *view,
 	GList *file_list;
 	NautilusWindowOpenFlags flags;
 
-	flags = NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND;
+	flags = 0;
 
-	if (open_in_tab) {
-		flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
-        } else {
-		flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
-        }
+	if (g_settings_get_boolean (nautilus_preferences,
+				    NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
+		if (open_in_tab) {
+			flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
+		} else {
+			flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
+		}
+	} else {
+		flags |= NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND;
+	}
 
 	if (file != NULL) {
 		nautilus_file_ref (file);

@@ -59,6 +59,10 @@
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-desktop-icon-file.h>
+
+#define DEBUG_FLAG NAUTILUS_DEBUG_ICON_VIEW
+#include <libnautilus-private/nautilus-debug.h>
+
 #include <locale.h>
 #include <signal.h>
 #include <stdio.h>
@@ -1795,6 +1799,19 @@ icon_container_activate_callback (NautilusIconContainer *container,
 				      0, TRUE);
 }
 
+/* this is called in one of these cases:
+ * - we activate with enter holding shift
+ * - we activate with space holding shift
+ * - we double click an icon holding shift
+ * - we middle click an icon
+ *
+ * If we don't open in new windows by default, the behavior should be
+ * - middle click, shift + activate -> open in new tab
+ * - shift + double click -> open in new window
+ *
+ * If we open in new windows by default, the behaviour should be
+ * - middle click, or shift + activate, or shift + double-click -> close parent
+ */
 static void
 icon_container_activate_alternate_callback (NautilusIconContainer *container,
 					    GList *file_list,
@@ -1803,36 +1820,50 @@ icon_container_activate_alternate_callback (NautilusIconContainer *container,
 	GdkEvent *event;
 	GdkEventButton *button_event;
 	GdkEventKey *key_event;
-	gboolean open_in_tab;
+	gboolean open_in_tab, open_in_window, close_behind;
 	NautilusWindowOpenFlags flags;
 
 	g_assert (NAUTILUS_IS_ICON_VIEW (icon_view));
 	g_assert (container == get_icon_container (icon_view));
 
-	open_in_tab = FALSE;
-
+	flags = 0;
 	event = gtk_get_current_event ();
-	if (event->type == GDK_BUTTON_PRESS ||
-	    event->type == GDK_BUTTON_RELEASE ||
-	    event->type == GDK_2BUTTON_PRESS ||
-	    event->type == GDK_3BUTTON_PRESS) {
-		button_event = (GdkEventButton *) event;
-		open_in_tab = (button_event->state & GDK_SHIFT_MASK) == 0;
-	} else if (event->type == GDK_KEY_PRESS ||
-		   event->type == GDK_KEY_RELEASE) {
-		key_event = (GdkEventKey *) event;
-		open_in_tab = !((key_event->state & GDK_SHIFT_MASK) != 0 &&
-				(key_event->state & GDK_CONTROL_MASK) != 0);
+	open_in_tab = FALSE;
+	open_in_window = FALSE;
+	close_behind = FALSE;
+	
+	if (g_settings_get_boolean (nautilus_preferences,
+				    NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
+		if (event->type == GDK_BUTTON_PRESS ||
+		    event->type == GDK_BUTTON_RELEASE ||
+		    event->type == GDK_2BUTTON_PRESS ||
+		    event->type == GDK_3BUTTON_PRESS) {
+			button_event = (GdkEventButton *) event;
+			open_in_window = ((button_event->state & GDK_SHIFT_MASK) != 0);
+			open_in_tab = !open_in_window;
+		} else if (event->type == GDK_KEY_PRESS ||
+			   event->type == GDK_KEY_RELEASE) {
+			key_event = (GdkEventKey *) event;
+			open_in_tab = ((key_event->state & GDK_SHIFT_MASK) != 0);
+		}
 	} else {
-		open_in_tab = TRUE;
-	}
+		close_behind = TRUE;
+	} 
 
-	flags = NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND;
 	if (open_in_tab) {
 		flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
-	} else {
+	}
+
+	if (open_in_window) {
 		flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
 	}
+
+	if (close_behind) {
+		flags |= NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND;
+	}
+
+	DEBUG ("Activate alternate, open in tab %d, close behind %d, new window %d\n",
+	       open_in_tab, close_behind, open_in_window);
 
 	nautilus_view_activate_files (NAUTILUS_VIEW (icon_view), 
 				      file_list, 

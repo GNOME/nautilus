@@ -417,6 +417,19 @@ cancel_viewed_file_changed_callback (NautilusWindowSlot *slot)
         }
 }
 
+static void
+new_window_show_callback (GtkWidget *widget,
+			  gpointer user_data){
+	NautilusWindow *window;
+
+	window = NAUTILUS_WINDOW (user_data);
+	nautilus_window_close (window);
+
+	g_signal_handlers_disconnect_by_func (widget,
+					      G_CALLBACK (new_window_show_callback),
+					      user_data);
+}
+
 void
 nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 					 GFile *location,
@@ -444,6 +457,7 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 	target_slot = NULL;
 	use_same = FALSE;
 
+	/* this happens at startup */
 	old_uri = nautilus_window_slot_get_location_uri (slot);
 	if (old_uri == NULL) {
 		old_uri = g_strdup ("(none)");
@@ -460,27 +474,33 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 		    (flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB) != 0));
 
 	is_desktop = NAUTILUS_IS_DESKTOP_WINDOW (window);
+
+	/* we use the same window if the preferences say so, but also for the first desktop window */
 	use_same |= g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER) ||
 		(is_desktop && !nautilus_desktop_window_loaded (NAUTILUS_DESKTOP_WINDOW (window)));
 
+	/* and if the flags specify so, this is overridden */
+	if ((flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) != 0) {
+		use_same = FALSE;
+	}
+
 	old_location = nautilus_window_slot_get_location (slot);
 
-	app = nautilus_application_dup_singleton ();
-
-	/* now get/create the window according to the mode */
+	/* now get/create the window */
 	if (use_same) {
 		target_window = window;
 	} else {
+		app = nautilus_application_dup_singleton ();
 		target_window = nautilus_application_create_window
 			(app,
 			 NULL,
 			 gtk_window_get_screen (GTK_WINDOW (window)));
+		g_object_unref (app);
 	}
-
-	g_object_unref (app);
 
         g_assert (target_window != NULL);
 
+	/* if the flags say we want a new tab, open a slot in the current window */
 	if ((flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB) != 0) {
 		g_assert (target_window == window);
 
@@ -492,6 +512,21 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 		}
 
 		target_slot = nautilus_window_open_slot (window->details->active_pane, slot_flags);
+	}
+
+	/* close the current window if the flags say so */
+	if ((flags & NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND) != 0) {
+		if (!is_desktop) {
+			if (gtk_widget_get_visible (GTK_WIDGET (target_window))) {
+				nautilus_window_close (window);
+			} else {
+				g_signal_connect_object (target_window,
+							 "show",
+							 G_CALLBACK (new_window_show_callback),
+							 window,
+							 G_CONNECT_AFTER);
+			}
+		}
 	}
 
 	if (target_slot == NULL) {
