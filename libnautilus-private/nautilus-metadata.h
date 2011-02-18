@@ -41,7 +41,6 @@
 
 #define NAUTILUS_METADATA_KEY_ICON_VIEW_ZOOM_LEVEL       	"nautilus-icon-view-zoom-level"
 #define NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT      	"nautilus-icon-view-auto-layout"
-#define NAUTILUS_METADATA_KEY_ICON_VIEW_TIGHTER_LAYOUT      	"nautilus-icon-view-tighter-layout"
 #define NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY          	"nautilus-icon-view-sort-by"
 #define NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED    	"nautilus-icon-view-sort-reversed"
 #define NAUTILUS_METADATA_KEY_ICON_VIEW_KEEP_ALIGNED            "nautilus-icon-view-keep-aligned"

@@ -79,12 +79,6 @@ struct NautilusIconViewClass {
 						  NautilusFile *file, 
 						  gboolean auto_layout);
 	
-	gboolean (* get_directory_tighter_layout) (NautilusIconView *icon_view, 
-						   NautilusFile *file);
-	void     (* set_directory_tighter_layout)   (NautilusIconView *icon_view, 
-						     NautilusFile *file, 
-						     gboolean tighter_layout);
-
 	/* Override "clean_up" if your subclass has its own notion of where icons should be positioned */
 	void	 (* clean_up)			 (NautilusIconView *icon_view);
 };

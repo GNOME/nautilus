@@ -1273,7 +1273,6 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 	double max_height_above, max_height_below;
 	double height_above, height_below;
 	double line_width;
-	gboolean gridded_layout;
 	double grid_width;
 	double max_text_width, max_icon_width;
 	int icon_width;
@@ -1309,8 +1308,6 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 	} else {
 		grid_width = STANDARD_ICON_GRID_WIDTH;
 	}
-
-	gridded_layout = !nautilus_icon_container_is_tighter_layout (container);
 	
 	line_width = container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE ? ICON_PAD_LEFT : 0;
 	line_start = icons;
@@ -1330,13 +1327,7 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 		icon_bounds = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
 		text_bounds = nautilus_icon_canvas_item_get_text_rectangle (icon->item, TRUE);
 
-		if (gridded_layout) {
-			icon_width = ceil ((bounds.x1 - bounds.x0)/grid_width) * grid_width;
-
-
-		} else {
-			icon_width = (bounds.x1 - bounds.x0) + ICON_PAD_RIGHT + 8; /* 8 pixels extra for fancy selection box */
-		}		
+		icon_width = ceil ((bounds.x1 - bounds.x0)/grid_width) * grid_width;
 		
 		/* Calculate size above/below baseline */
 		height_above = icon_bounds.y1 - bounds.y0;
@@ -1381,11 +1372,7 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 		position->height = icon_bounds.y1 - icon_bounds.y0;
 
 		if (container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
-			if (gridded_layout) {
-				position->x_offset = max_icon_width + ICON_PAD_LEFT + ICON_PAD_RIGHT - (icon_bounds.x1 - icon_bounds.x0);
-			} else {
-				position->x_offset = icon_width - ((icon_bounds.x1 - icon_bounds.x0) + (text_bounds.x1 - text_bounds.x0));
-			}
+			position->x_offset = max_icon_width + ICON_PAD_LEFT + ICON_PAD_RIGHT - (icon_bounds.x1 - icon_bounds.x0);
 			position->y_offset = 0;
 		} else {
 			position->x_offset = (icon_width - (icon_bounds.x1 - icon_bounds.x0)) / 2;
@@ -2033,7 +2020,7 @@ lay_down_icons_vertical_desktop (NautilusIconContainer *container, GList *icons)
 			int icon_height_for_bound_check;
 			gboolean should_snap;
 			
-			should_snap = !(container->details->tighter_layout && !container->details->keep_aligned);
+			should_snap = container->details->keep_aligned;
 			
 			y = DESKTOP_PAD_VERTICAL;
 
@@ -7917,35 +7904,6 @@ nautilus_icon_container_set_auto_layout (NautilusIconContainer *container,
 	g_signal_emit (container, signals[LAYOUT_CHANGED], 0);
 }
 
-
-/* Toggle the tighter layout boolean. */
-void
-nautilus_icon_container_set_tighter_layout (NautilusIconContainer *container,
-					    gboolean tighter_layout)
-{
-	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
-	g_return_if_fail (tighter_layout == FALSE || tighter_layout == TRUE);
-
-	if (container->details->tighter_layout == tighter_layout) {
-		return;
-	}
-
-	container->details->tighter_layout = tighter_layout;
-
-	if (container->details->auto_layout) {
-		invalidate_label_sizes (container);
-		redo_layout (container);
-
-		g_signal_emit (container, signals[LAYOUT_CHANGED], 0);
-	} else {
-		/* in manual layout, label sizes still change, even though
-		 * the icons don't move.
-		 */
-		invalidate_label_sizes (container);	
-		nautilus_icon_container_request_update_all (container);	
-	}
-}
-
 gboolean
 nautilus_icon_container_is_keep_aligned (NautilusIconContainer *container)
 {
@@ -8081,14 +8039,6 @@ nautilus_icon_container_is_auto_layout (NautilusIconContainer *container)
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), FALSE);
 
 	return container->details->auto_layout;
-}
-
-gboolean
-nautilus_icon_container_is_tighter_layout (NautilusIconContainer *container)
-{
-	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), FALSE);
-
-	return container->details->tighter_layout;
 }
 
 static void

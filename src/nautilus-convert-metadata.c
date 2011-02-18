@@ -94,7 +94,6 @@ static struct {
 	{"background_tile_image", "metadata::" NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_IMAGE},
 	{"icon_view_zoom_level", "metadata::" NAUTILUS_METADATA_KEY_ICON_VIEW_ZOOM_LEVEL},
 	{"icon_view_auto_layout", "metadata::" NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT},
-	{"icon_view_tighter_layout", "metadata::" NAUTILUS_METADATA_KEY_ICON_VIEW_TIGHTER_LAYOUT},
 	{"icon_view_sort_by", "metadata::" NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY},
 	{"icon_view_sort_reversed", "metadata::" NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED},
 	{"icon_view_keep_aligned", "metadata::" NAUTILUS_METADATA_KEY_ICON_VIEW_KEEP_ALIGNED},
