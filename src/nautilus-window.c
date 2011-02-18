@@ -429,6 +429,21 @@ nautilus_window_set_initial_window_geometry (NautilusWindow *window)
 				          max_height_for_screen));
 }
 
+static gboolean
+save_sidebar_width_cb (gpointer user_data)
+{
+	NautilusWindow *window = user_data;
+
+	window->details->sidebar_width_handler_id = 0;
+
+	DEBUG ("Saving sidebar width: %d", window->details->side_pane_width);
+
+	g_settings_set_int (nautilus_window_state,
+			    NAUTILUS_WINDOW_STATE_SIDEBAR_WIDTH,
+			    window->details->side_pane_width);
+
+	return FALSE;
+}
 
 /* side pane helpers */
 static void
@@ -440,14 +455,17 @@ side_pane_size_allocate_callback (GtkWidget *widget,
 
 	window = user_data;
 
-	if (allocation->width != window->details->side_pane_width) {
+	if (window->details->sidebar_width_handler_id != 0) {
+		g_source_remove (window->details->sidebar_width_handler_id);
+		window->details->sidebar_width_handler_id = 0;
+	}
+
+	if (allocation->width != window->details->side_pane_width &&
+	    allocation->width > 1) {
 		window->details->side_pane_width = allocation->width;
 
-		DEBUG ("Saving sidebar width: %d", allocation->width);
-		
-		g_settings_set_int (nautilus_window_state,
-				    NAUTILUS_WINDOW_STATE_SIDEBAR_WIDTH,
-				    allocation->width <= 1 ? 0 : allocation->width);
+		window->details->sidebar_width_handler_id =
+			g_idle_add (save_sidebar_width_cb, window);
 	}
 }
 
@@ -767,6 +785,11 @@ nautilus_window_finalize (GObject *object)
 	NautilusWindow *window;
 
 	window = NAUTILUS_WINDOW (object);
+
+	if (window->details->sidebar_width_handler_id != 0) {
+		g_source_remove (window->details->sidebar_width_handler_id);
+		window->details->sidebar_width_handler_id = 0;
+	}
 
 	g_free (window->details->sidebar_id);
 	g_clear_object (&window->details->nav_state);
