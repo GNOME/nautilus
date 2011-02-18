@@ -1148,15 +1148,7 @@ draw_label_text (NautilusIconCanvasItem *item,
 				      "activate_prelight_icon_label", &prelight_label,
 				      NULL);
 		if (!needs_highlight && details->text_width > 0 && details->text_height > 0) {
-			if (!(prelight_label && item->details->is_prelit)) {
-				draw_frame (item, 
-					    cr,
-					    &container->details->normal_color_rgba,
-					    text_rect.x0,
-					    text_rect.y0,
-					    text_rect.x1 - text_rect.x0,
-					    text_rect.y1 - text_rect.y0);
-			} else {
+			if (prelight_label && item->details->is_prelit) {
 				draw_frame (item, 
 					    cr,
 					    &container->details->prelight_color_rgba,
