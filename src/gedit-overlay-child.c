@@ -24,7 +24,6 @@
 struct _GeditOverlayChildPrivate
 {
 	GtkWidget                *widget;
-	GtkAllocation             widget_alloc;
 	GeditOverlayChildPosition position;
 	guint                     offset;
 	gboolean                  fixed;
@@ -128,19 +127,17 @@ gedit_overlay_child_get_preferred_width (GtkWidget *widget,
                                          gint      *natural)
 {
 	GeditOverlayChild *child = GEDIT_OVERLAY_CHILD (widget);
-	gint width;
+        gint child_min = 0, child_nat = 0;
 
 	if (child->priv->widget != NULL)
 	{
-		gint child_min, child_nat;
 
 		gtk_widget_get_preferred_width (child->priv->widget,
 		                                &child_min, &child_nat);
-		child->priv->widget_alloc.width = child_min;
 	}
 
-	width = child->priv->widget_alloc.width;
-	*minimum = *natural = width;
+	*minimum = child_min;
+        *natural = child_nat;
 }
 
 static void
@@ -149,19 +146,17 @@ gedit_overlay_child_get_preferred_height (GtkWidget *widget,
                                           gint      *natural)
 {
 	GeditOverlayChild *child = GEDIT_OVERLAY_CHILD (widget);
-	gint height;
+        gint child_min = 0, child_nat = 0;
 
 	if (child->priv->widget != NULL)
-	{
-		gint child_min, child_nat;
+        {
 
 		gtk_widget_get_preferred_height (child->priv->widget,
 		                                 &child_min, &child_nat);
-		child->priv->widget_alloc.height = child_min;
 	}
 
-	height = child->priv->widget_alloc.height;
-	*minimum = *natural = height;
+	*minimum = child_min;
+        *natural = child_nat;
 }
 
 static void
@@ -169,15 +164,18 @@ gedit_overlay_child_size_allocate (GtkWidget     *widget,
                                    GtkAllocation *allocation)
 {
 	GeditOverlayChild *child = GEDIT_OVERLAY_CHILD (widget);
+        GtkAllocation tmp;
+
+        tmp.width = allocation->width;
+        tmp.height = allocation->height;
+        tmp.x = 0;
+        tmp.y = 0;
 
 	GTK_WIDGET_CLASS (gedit_overlay_child_parent_class)->size_allocate (widget, allocation);
 
-	if (child->priv->widget != NULL &&
-	    child->priv->widget_alloc.height &&
-	    child->priv->widget_alloc.width)
+	if (child->priv->widget != NULL)
 	{
-		gtk_widget_size_allocate (child->priv->widget,
-		                          &child->priv->widget_alloc);
+		gtk_widget_size_allocate (child->priv->widget, &tmp);
 	}
 }
 

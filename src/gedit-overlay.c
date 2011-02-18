@@ -35,8 +35,6 @@ struct _GeditOverlayPrivate
 
 	GtkAdjustment *hadjustment;
 	GtkAdjustment *vadjustment;
-	glong          hadjustment_signal_id;
-	glong          vadjustment_signal_id;
 
 	/* GtkScrollablePolicy needs to be checked when
 	 * driving the scrollable adjustment values */
@@ -70,28 +68,6 @@ add_toplevel_widget (GeditOverlay *overlay,
 
 	overlay->priv->children = g_slist_append (overlay->priv->children,
 	                                          child);
-}
-
-static void
-gedit_overlay_dispose (GObject *object)
-{
-	GeditOverlay *overlay = GEDIT_OVERLAY (object);
-
-	if (overlay->priv->hadjustment != NULL)
-	{
-		g_signal_handler_disconnect (overlay->priv->hadjustment,
-		                             overlay->priv->hadjustment_signal_id);
-		overlay->priv->hadjustment = NULL;
-	}
-
-	if (overlay->priv->vadjustment != NULL)
-	{
-		g_signal_handler_disconnect (overlay->priv->vadjustment,
-		                             overlay->priv->vadjustment_signal_id);
-		overlay->priv->vadjustment = NULL;
-	}
-
-	G_OBJECT_CLASS (gedit_overlay_parent_class)->dispose (object);
 }
 
 static void
@@ -311,7 +287,7 @@ set_children_positions (GeditOverlay *overlay)
 		if (child == priv->main_widget)
 			continue;
 
-		gtk_widget_get_preferred_size (child, &req, NULL);
+		gtk_widget_get_preferred_size (child, NULL, &req);
 		offset = gedit_overlay_child_get_offset (GEDIT_OVERLAY_CHILD (child));
 
 		/* FIXME: Add all the positions here */
@@ -331,8 +307,8 @@ set_children_positions (GeditOverlay *overlay)
 				alloc.y = priv->main_alloc.height - req.height;
 				break;
 	                case GEDIT_OVERLAY_CHILD_POSITION_SOUTH_EAST:
-				alloc.x = priv->main_alloc.width - req.width - offset;
-				alloc.y = priv->main_alloc.height - req.height;
+				alloc.x = MAX (priv->main_alloc.x, priv->main_alloc.width - req.width - (gint) offset);
+				alloc.y = MAX (priv->main_alloc.y, priv->main_alloc.height - req.height);
 				break;
 			default:
 				alloc.x = 0;
@@ -345,8 +321,8 @@ set_children_positions (GeditOverlay *overlay)
 			alloc.y *= gtk_adjustment_get_value (priv->vadjustment);
 		}
 
-		alloc.width = req.width;
-		alloc.height = req.height;
+		alloc.width = MIN (priv->main_alloc.width, req.width);
+		alloc.height = MIN (priv->main_alloc.height, req.height);
 
 		gtk_widget_size_allocate (child, &alloc);
 	}
@@ -486,13 +462,6 @@ gedit_overlay_child_type (GtkContainer *overlay)
 }
 
 static void
-adjustment_value_changed (GtkAdjustment *adjustment,
-                          GeditOverlay  *overlay)
-{
-	set_children_positions (overlay);
-}
-
-static void
 gedit_overlay_set_hadjustment (GeditOverlay  *overlay,
                                GtkAdjustment *adjustment)
 {
@@ -501,24 +470,11 @@ gedit_overlay_set_hadjustment (GeditOverlay  *overlay,
 	if (adjustment && priv->vadjustment == adjustment)
 		return;
 
-	if (priv->hadjustment != NULL)
-	{
-		g_signal_handler_disconnect (priv->hadjustment,
-		                             priv->hadjustment_signal_id);
-		g_object_unref (priv->hadjustment);
-	}
-
 	if (adjustment == NULL)
 	{
 		adjustment = gtk_adjustment_new (0.0, 0.0, 0.0,
 		                                 0.0, 0.0, 0.0);
 	}
-
-	priv->hadjustment_signal_id =
-		g_signal_connect (adjustment,
-		                  "value-changed",
-		                  G_CALLBACK (adjustment_value_changed),
-		                  overlay);
 
 	priv->hadjustment = g_object_ref_sink (adjustment);
 
@@ -542,24 +498,11 @@ gedit_overlay_set_vadjustment (GeditOverlay  *overlay,
 	if (adjustment && priv->vadjustment == adjustment)
 		return;
 
-	if (priv->vadjustment != NULL)
-	{
-		g_signal_handler_disconnect (priv->vadjustment,
-		                             priv->vadjustment_signal_id);
-		g_object_unref (priv->vadjustment);
-	}
-
 	if (adjustment == NULL)
 	{
 		adjustment = gtk_adjustment_new (0.0, 0.0, 0.0,
 		                                 0.0, 0.0, 0.0);
 	}
-
-	overlay->priv->vadjustment_signal_id =
-		g_signal_connect (adjustment,
-		                  "value-changed",
-		                  G_CALLBACK (adjustment_value_changed),
-		                  overlay);
 
 	priv->vadjustment = g_object_ref_sink (adjustment);
 
@@ -580,7 +523,6 @@ gedit_overlay_class_init (GeditOverlayClass *klass)
 	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 	GtkContainerClass *container_class = GTK_CONTAINER_CLASS (klass);
 
-	object_class->dispose = gedit_overlay_dispose;
 	object_class->get_property = gedit_overlay_get_property;
 	object_class->set_property = gedit_overlay_set_property;
 
