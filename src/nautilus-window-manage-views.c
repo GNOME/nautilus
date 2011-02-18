@@ -463,8 +463,6 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 	use_same |= g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER) ||
 		(is_desktop && !nautilus_desktop_window_loaded (NAUTILUS_DESKTOP_WINDOW (window)));
 
-	g_print ("use same %d\n", use_same);
-
 	old_location = nautilus_window_slot_get_location (slot);
 
 	app = nautilus_application_dup_singleton ();
