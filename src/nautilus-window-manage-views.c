@@ -434,7 +434,7 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 	char *old_uri, *new_uri;
 	int new_slot_position;
 	GList *l;
-	gboolean target_navigation, target_same;
+	gboolean use_same;
 	gboolean is_desktop;
 	NautilusApplication *app;
 
@@ -442,8 +442,7 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 
         target_window = NULL;
 	target_slot = NULL;
-	target_same = FALSE;
-	target_navigation = FALSE;
+	use_same = TRUE;
 
 	old_uri = nautilus_window_slot_get_location_uri (slot);
 	if (old_uri == NULL) {
@@ -460,30 +459,18 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 		    (flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB) != 0));
 
 	is_desktop = NAUTILUS_IS_DESKTOP_WINDOW (window);
-	target_same = is_desktop &&
-		!nautilus_desktop_window_loaded (NAUTILUS_DESKTOP_WINDOW (window));
-
 	old_location = nautilus_window_slot_get_location (slot);
 
-	if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
-		/* always use browser: if we're on the desktop the target is a new navigation window,
-		 * otherwise it's the same window.
-		 */
-		if (is_desktop) {
-			target_navigation = TRUE;
-		} else {
-			target_same = TRUE;
-		}
-	} else {
-		target_navigation = TRUE;
+	if (is_desktop && nautilus_desktop_window_loaded (NAUTILUS_DESKTOP_WINDOW (window))) {
+		use_same = FALSE;
 	}
 
 	app = nautilus_application_dup_singleton ();
 
 	/* now get/create the window according to the mode */
-	if (target_same) {
+	if (use_same) {
 		target_window = window;
-	} else if (target_navigation) {
+	} else {
 		target_window = nautilus_application_create_window
 			(app,
 			 NULL,
