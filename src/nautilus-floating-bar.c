@@ -196,6 +196,7 @@ nautilus_floating_bar_constructed (GObject *obj)
 	gtk_widget_set_margin_left (w, 8);
 
 	w = gtk_label_new (NULL);
+	gtk_label_set_ellipsize (GTK_LABEL (w), PANGO_ELLIPSIZE_END);
 	gtk_box_pack_start (GTK_BOX (box), w, FALSE, FALSE, 0);
 	g_object_set (w,
 		      "margin-top", 6,
