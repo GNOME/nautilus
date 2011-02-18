@@ -613,6 +613,13 @@ do_popup_menu (GtkWidget *widget, NautilusListView *view, GdkEventButton *event)
 	}
 }
 
+static void
+row_activated_callback (GtkTreeView *treeview, GtkTreePath *path, 
+			GtkTreeViewColumn *column, NautilusListView *view)
+{
+	activate_selected_items (view);
+}
+
 static gboolean
 button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callback_data)
 {
@@ -769,7 +776,15 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 			}
 		
 			if (call_parent) {
+				g_signal_handlers_block_by_func (tree_view,
+								 row_activated_callback,
+								 view);
+
 				tree_view_class->button_press_event (widget, event);
+
+				g_signal_handlers_unblock_by_func (tree_view,
+								   row_activated_callback,
+								   view);
 			} else if (gtk_tree_selection_path_is_selected (selection, path)) {
 				gtk_widget_grab_focus (widget);
 			}
@@ -958,13 +973,6 @@ row_collapsed_callback (GtkTreeView *treeview, GtkTreeIter *iter, GtkTreePath *p
 	g_timeout_add_seconds (COLLAPSE_TO_UNLOAD_DELAY,
 			       unload_file_timeout,
 			       unload_data);
-}
-
-static void
-row_activated_callback (GtkTreeView *treeview, GtkTreePath *path, 
-			GtkTreeViewColumn *column, NautilusListView *view)
-{
-	activate_selected_items (view);
 }
 
 static void
