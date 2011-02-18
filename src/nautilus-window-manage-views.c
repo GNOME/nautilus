@@ -442,11 +442,11 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 
         target_window = NULL;
 	target_slot = NULL;
-	use_same = TRUE;
 
 	old_uri = nautilus_window_slot_get_location_uri (slot);
 	if (old_uri == NULL) {
 		old_uri = g_strdup ("(none)");
+		use_same = TRUE;
 	}
 	new_uri = g_file_get_uri (location);
 
@@ -459,11 +459,10 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 		    (flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB) != 0));
 
 	is_desktop = NAUTILUS_IS_DESKTOP_WINDOW (window);
-	old_location = nautilus_window_slot_get_location (slot);
+	use_same |= g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER) ||
+		(is_desktop && !nautilus_desktop_window_loaded (NAUTILUS_DESKTOP_WINDOW (window)));
 
-	if (is_desktop && nautilus_desktop_window_loaded (NAUTILUS_DESKTOP_WINDOW (window))) {
-		use_same = FALSE;
-	}
+	old_location = nautilus_window_slot_get_location (slot);
 
 	app = nautilus_application_dup_singleton ();
 
