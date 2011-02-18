@@ -85,37 +85,14 @@ struct _ButtonData
         GtkWidget *image;
         GtkWidget *label;
         guint ignore_changes : 1;
-        guint file_is_hidden : 1;
         guint fake_root : 1;
 };
 
-G_DEFINE_TYPE (NautilusPathBar,
-	       nautilus_path_bar,
+G_DEFINE_TYPE (NautilusPathBar, nautilus_path_bar,
 	       GTK_TYPE_CONTAINER);
 
-static void     nautilus_path_bar_finalize                 (GObject         *object);
-static void     nautilus_path_bar_dispose                  (GObject         *object);
-static void     nautilus_path_bar_get_preferred_width      (GtkWidget        *widget,
-							    gint             *minimum,
-							    gint             *natural);
-static void     nautilus_path_bar_get_preferred_height     (GtkWidget        *widget,
-							    gint             *minimum,
-							    gint             *natural);
-static void     nautilus_path_bar_unmap                    (GtkWidget       *widget);
-static void     nautilus_path_bar_size_allocate            (GtkWidget       *widget,
-							    GtkAllocation   *allocation);
-static void     nautilus_path_bar_add                      (GtkContainer    *container,
-							    GtkWidget       *widget);
-static void     nautilus_path_bar_remove                   (GtkContainer    *container,
-							    GtkWidget       *widget);
-static void     nautilus_path_bar_forall                   (GtkContainer    *container,
-							    gboolean         include_internals,
-							    GtkCallback      callback,
-							    gpointer         callback_data);
 static void     nautilus_path_bar_scroll_up                (NautilusPathBar *path_bar);
 static void     nautilus_path_bar_scroll_down              (NautilusPathBar *path_bar);
-static gboolean nautilus_path_bar_scroll                   (GtkWidget       *path_bar,
-							    GdkEventScroll  *scroll);
 static void     nautilus_path_bar_stop_scrolling           (NautilusPathBar *path_bar);
 static gboolean nautilus_path_bar_slider_button_press      (GtkWidget       *widget,
 							    GdkEventButton  *event,
@@ -123,14 +100,6 @@ static gboolean nautilus_path_bar_slider_button_press      (GtkWidget       *wid
 static gboolean nautilus_path_bar_slider_button_release    (GtkWidget       *widget,
 							    GdkEventButton  *event,
 							    NautilusPathBar *path_bar);
-static void     nautilus_path_bar_grab_notify              (GtkWidget       *widget,
-							    gboolean         was_grabbed);
-static void     nautilus_path_bar_state_changed            (GtkWidget       *widget,
-							    GtkStateType     previous_state);
-static void     nautilus_path_bar_style_set                (GtkWidget       *widget,
-							    GtkStyle        *previous_style);
-static void     nautilus_path_bar_screen_changed           (GtkWidget       *widget,
-							    GdkScreen       *previous_screen);
 static void     nautilus_path_bar_check_icon_theme         (NautilusPathBar *path_bar);
 static void     nautilus_path_bar_update_button_appearance (ButtonData      *button_data);
 static void     nautilus_path_bar_update_button_state      (ButtonData      *button_data,
@@ -345,57 +314,6 @@ nautilus_path_bar_init (NautilusPathBar *path_bar)
                           G_CALLBACK (trash_state_changed_cb),
                           path_bar);
 }
-
-static void
-nautilus_path_bar_class_init (NautilusPathBarClass *path_bar_class)
-{
-        GObjectClass *gobject_class;
-        GtkWidgetClass *widget_class;
-        GtkContainerClass *container_class;
-
-        gobject_class = (GObjectClass *) path_bar_class;
-        widget_class = (GtkWidgetClass *) path_bar_class;
-        container_class = (GtkContainerClass *) path_bar_class;
-
-        gobject_class->finalize = nautilus_path_bar_finalize;
-        gobject_class->dispose = nautilus_path_bar_dispose;
-
-	widget_class->get_preferred_height = nautilus_path_bar_get_preferred_height;
-	widget_class->get_preferred_width = nautilus_path_bar_get_preferred_width;
-	widget_class->unmap = nautilus_path_bar_unmap;
-        widget_class->size_allocate = nautilus_path_bar_size_allocate;
-        widget_class->style_set = nautilus_path_bar_style_set;
-        widget_class->screen_changed = nautilus_path_bar_screen_changed;
-        widget_class->grab_notify = nautilus_path_bar_grab_notify;
-        widget_class->state_changed = nautilus_path_bar_state_changed;
-	widget_class->scroll_event = nautilus_path_bar_scroll;
-
-        container_class->add = nautilus_path_bar_add;
-        container_class->forall = nautilus_path_bar_forall;
-        container_class->remove = nautilus_path_bar_remove;
-
-        path_bar_signals [PATH_CLICKED] =
-                g_signal_new ("path-clicked",
-		  G_OBJECT_CLASS_TYPE (path_bar_class),
-		  G_SIGNAL_RUN_FIRST,
-		  G_STRUCT_OFFSET (NautilusPathBarClass, path_clicked),
-		  NULL, NULL,
-		  g_cclosure_marshal_VOID__OBJECT,
-		  G_TYPE_NONE, 1,
-		  G_TYPE_FILE);
-	 path_bar_signals [PATH_SET] =
-		g_signal_new ("path-set",
-		  G_OBJECT_CLASS_TYPE (path_bar_class),
-		  G_SIGNAL_RUN_FIRST,
-		  G_STRUCT_OFFSET (NautilusPathBarClass, path_set),
-		  NULL, NULL,
-		  g_cclosure_marshal_VOID__OBJECT,
-		  G_TYPE_NONE, 1,
-		  G_TYPE_FILE);
-
-	 gtk_container_class_handle_border_width (container_class);
-}
-
 
 static void
 nautilus_path_bar_finalize (GObject *object)
@@ -769,11 +687,9 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
 }
 
 static void
-nautilus_path_bar_style_set (GtkWidget *widget,	GtkStyle  *previous_style)
+nautilus_path_bar_style_updated (GtkWidget *widget)
 {
-        if (GTK_WIDGET_CLASS (nautilus_path_bar_parent_class)->style_set) {
-        	GTK_WIDGET_CLASS (nautilus_path_bar_parent_class)->style_set (widget, previous_style);
-	}
+	GTK_WIDGET_CLASS (nautilus_path_bar_parent_class)->style_updated (widget);
 
         nautilus_path_bar_check_icon_theme (NAUTILUS_PATH_BAR (widget));
 }
@@ -894,6 +810,74 @@ nautilus_path_bar_forall (GtkContainer *container,
         if (path_bar->down_slider_button) {
                 (* callback) (path_bar->down_slider_button, callback_data);
 	}
+}
+
+static void
+nautilus_path_bar_grab_notify (GtkWidget *widget,
+			       gboolean   was_grabbed)
+{
+        if (!was_grabbed) {
+                nautilus_path_bar_stop_scrolling (NAUTILUS_PATH_BAR (widget));
+	}
+}
+
+static void
+nautilus_path_bar_state_changed (GtkWidget    *widget,
+			         GtkStateType  previous_state)
+{
+        if (!gtk_widget_get_sensitive (widget)) {
+                nautilus_path_bar_stop_scrolling (NAUTILUS_PATH_BAR (widget));
+	}
+}
+
+static void
+nautilus_path_bar_class_init (NautilusPathBarClass *path_bar_class)
+{
+        GObjectClass *gobject_class;
+        GtkWidgetClass *widget_class;
+        GtkContainerClass *container_class;
+
+        gobject_class = (GObjectClass *) path_bar_class;
+        widget_class = (GtkWidgetClass *) path_bar_class;
+        container_class = (GtkContainerClass *) path_bar_class;
+
+        gobject_class->finalize = nautilus_path_bar_finalize;
+        gobject_class->dispose = nautilus_path_bar_dispose;
+
+	widget_class->get_preferred_height = nautilus_path_bar_get_preferred_height;
+	widget_class->get_preferred_width = nautilus_path_bar_get_preferred_width;
+	widget_class->unmap = nautilus_path_bar_unmap;
+        widget_class->size_allocate = nautilus_path_bar_size_allocate;
+        widget_class->style_updated = nautilus_path_bar_style_updated;
+        widget_class->screen_changed = nautilus_path_bar_screen_changed;
+        widget_class->grab_notify = nautilus_path_bar_grab_notify;
+        widget_class->state_changed = nautilus_path_bar_state_changed;
+	widget_class->scroll_event = nautilus_path_bar_scroll;
+
+        container_class->add = nautilus_path_bar_add;
+        container_class->forall = nautilus_path_bar_forall;
+        container_class->remove = nautilus_path_bar_remove;
+
+        path_bar_signals [PATH_CLICKED] =
+                g_signal_new ("path-clicked",
+		  G_OBJECT_CLASS_TYPE (path_bar_class),
+		  G_SIGNAL_RUN_FIRST,
+		  G_STRUCT_OFFSET (NautilusPathBarClass, path_clicked),
+		  NULL, NULL,
+		  g_cclosure_marshal_VOID__OBJECT,
+		  G_TYPE_NONE, 1,
+		  G_TYPE_FILE);
+	 path_bar_signals [PATH_SET] =
+		g_signal_new ("path-set",
+		  G_OBJECT_CLASS_TYPE (path_bar_class),
+		  G_SIGNAL_RUN_FIRST,
+		  G_STRUCT_OFFSET (NautilusPathBarClass, path_set),
+		  NULL, NULL,
+		  g_cclosure_marshal_VOID__OBJECT,
+		  G_TYPE_NONE, 1,
+		  G_TYPE_FILE);
+
+	 gtk_container_class_handle_border_width (container_class);
 }
 
 static void
@@ -1077,25 +1061,6 @@ nautilus_path_bar_slider_button_release (GtkWidget      *widget,
 
         return FALSE;
 }
-
-static void
-nautilus_path_bar_grab_notify (GtkWidget *widget,
-			       gboolean   was_grabbed)
-{
-        if (!was_grabbed) {
-                nautilus_path_bar_stop_scrolling (NAUTILUS_PATH_BAR (widget));
-	}
-}
-
-static void
-nautilus_path_bar_state_changed (GtkWidget    *widget,
-			         GtkStateType  previous_state)
-{
-        if (!gtk_widget_get_sensitive (widget)) {
-                nautilus_path_bar_stop_scrolling (NAUTILUS_PATH_BAR (widget));
-	}
-}
-
 
 
 /* Changes the icons wherever it is needed */
@@ -1594,8 +1559,7 @@ static ButtonData *
 make_directory_button (NautilusPathBar  *path_bar,
 		       NautilusFile     *file,
 		       gboolean          current_dir,
-		       gboolean          base_dir,	
-		       gboolean          file_is_hidden)
+		       gboolean          base_dir)
 {
 	GFile *path;
         GtkWidget *child;
@@ -1607,7 +1571,6 @@ make_directory_button (NautilusPathBar  *path_bar,
 	child = NULL;
 	label_alignment = NULL;
 
-        file_is_hidden = !! file_is_hidden;
         /* Is it a special button? */
         button_data = g_new0 (ButtonData, 1);
 
@@ -1660,8 +1623,6 @@ make_directory_button (NautilusPathBar  *path_bar,
 					  G_CALLBACK (button_data_file_changed),
 					  button_data);
 	}
-
-        button_data->file_is_hidden = file_is_hidden;
 
 	/* FIXME: Maybe we dont need this alignment at all and we can
 	 * use GtkMisc aligments or even GtkWidget:halign/valign center.
@@ -1782,7 +1743,7 @@ nautilus_path_bar_update_path (NautilusPathBar *path_bar,
         while (file != NULL) {
 		parent_file = nautilus_file_get_parent (file);
 		last_directory = !parent_file;
-		button_data = make_directory_button (path_bar, file, first_directory, last_directory, FALSE);
+		button_data = make_directory_button (path_bar, file, first_directory, last_directory);
 		nautilus_file_unref (file);
 
 		if (first_directory) {
