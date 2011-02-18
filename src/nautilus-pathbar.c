@@ -330,18 +330,9 @@ nautilus_path_bar_finalize (GObject *object)
 	}
 
         g_list_free (path_bar->button_list);
-	if (path_bar->root_path) {
-		g_object_unref (path_bar->root_path);
-		path_bar->root_path = NULL;
-	}
-	if (path_bar->home_path) {
-		g_object_unref (path_bar->home_path);
-		path_bar->home_path = NULL;
-	}
-	if (path_bar->desktop_path) {
-		g_object_unref (path_bar->desktop_path);
-		path_bar->desktop_path = NULL;
-	}
+	g_clear_object (&path_bar->root_path);
+	g_clear_object (&path_bar->home_path);
+	g_clear_object (&path_bar->desktop_path);
 
 	g_signal_handlers_disconnect_by_func (nautilus_trash_monitor_get (),
 					      trash_state_changed_cb, path_bar);
