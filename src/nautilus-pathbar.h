@@ -82,7 +82,4 @@ GFile *  nautilus_path_bar_get_path_for_button (NautilusPathBar *path_bar,
 						GtkWidget       *button);
 void     nautilus_path_bar_clear_buttons (NautilusPathBar *path_bar);
 
-void     nautilus_path_bar_up              (NautilusPathBar *path_bar);
-void     nautilus_path_bar_down            (NautilusPathBar *path_bar);
-
 #endif /* NAUTILUS_PATHBAR_H */
