@@ -113,6 +113,8 @@ gedit_overlay_child_realize (GtkWidget *widget)
 	attributes.window_type = GDK_WINDOW_CHILD;
 	attributes.wclass = GDK_INPUT_OUTPUT;
 	attributes.event_mask = GDK_EXPOSURE_MASK;
+        attributes.width = 0;
+        attributes.height = 0;
 
 	window = gdk_window_new (parent_window, &attributes, 0);
 	gdk_window_set_user_data (window, widget);
