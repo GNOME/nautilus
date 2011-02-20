@@ -1081,11 +1081,9 @@ do_run_simple_dialog (gpointer _data)
 	}
 	
 	/* Run it. */
-        gtk_widget_show (dialog);
         result = gtk_dialog_run (GTK_DIALOG (dialog));
 	
 	while ((result == GTK_RESPONSE_NONE || result == GTK_RESPONSE_DELETE_EVENT) && data->ignore_close_box) {
-		gtk_widget_show (GTK_WIDGET (dialog));
 		result = gtk_dialog_run (GTK_DIALOG (dialog));
 	}
 	
