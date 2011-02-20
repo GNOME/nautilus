@@ -206,6 +206,8 @@ nautilus_floating_bar_constructed (GObject *obj)
 		      NULL);
 	self->priv->label_widget = w;
 	gtk_widget_show (w);
+
+	g_object_unref (box);
 }
 
 static void
@@ -318,6 +320,8 @@ nautilus_floating_bar_add_action (NautilusFloatingBar *self,
 
 	g_signal_connect (button, "clicked",
 			  G_CALLBACK (action_button_clicked_cb), self);
+
+	g_object_unref (box);
 }
 
 void
@@ -344,4 +348,7 @@ nautilus_floating_bar_cleanup_actions (NautilusFloatingBar *self)
 			gtk_widget_destroy (widget);
 		}
 	}
+
+	g_object_unref (box);
+	g_list_free (children);
 }

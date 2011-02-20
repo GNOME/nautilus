@@ -377,8 +377,11 @@ get_overlay_child (GeditOverlay *overlay,
 			if (in_widget == widget)
 			{
 				overlay_child = GEDIT_OVERLAY_CHILD (child);
+				g_object_unref (in_widget);
 				break;
 			}
+
+			g_object_unref (in_widget);
 		}
 	}
 
