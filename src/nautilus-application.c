@@ -104,8 +104,6 @@ G_DEFINE_TYPE (NautilusApplication, nautilus_application, GTK_TYPE_APPLICATION);
 
 struct _NautilusApplicationPriv {
 	GVolumeMonitor *volume_monitor;
-	GDBusProxy *ck_proxy;
-	gboolean session_is_active;
 	NautilusProgressUIHandler *progress_handler;
 
 	gboolean initialized;
@@ -261,150 +259,6 @@ mark_desktop_files_trusted (void)
 	g_free (do_once_file);
 }
 
-#define CK_NAME       "org.freedesktop.ConsoleKit"
-#define CK_PATH       "/org/freedesktop/ConsoleKit"
-#define CK_INTERFACE  "org.freedesktop.ConsoleKit"
-
-static void
-ck_session_proxy_signal_cb (GDBusProxy *proxy,
-			    const char *sender_name,
-			    const char *signal_name,
-			    GVariant   *parameters,
-			    gpointer    user_data)
-{
-	NautilusApplication *application = user_data;
-
-	if (g_strcmp0 (signal_name, "ActiveChanged") == 0) {
-		g_variant_get (parameters, "(b)", &application->priv->session_is_active);
-		DEBUG ("ConsoleKit session is active %d", application->priv->session_is_active);
-	}
-}
-
-static void
-ck_call_is_active_cb (GDBusProxy   *proxy,
-		      GAsyncResult *result,
-		      gpointer      user_data)
-{
-	NautilusApplication *application = user_data;
-	GVariant *variant;
-	GError *error = NULL;
-
-	variant = g_dbus_proxy_call_finish (proxy, result, &error);
-
-	if (variant == NULL) {
-		g_warning ("Error when calling IsActive(): %s\n", error->message);
-		application->priv->session_is_active = TRUE;
-
-		g_error_free (error);
-		return;
-	}
-
-	g_variant_get (variant, "(b)", &application->priv->session_is_active);
-	DEBUG ("ConsoleKit session is active %d", application->priv->session_is_active);
-
-	g_variant_unref (variant);
-}
-
-static void
-session_proxy_appeared (GObject       *source,
-                        GAsyncResult *res,
-                        gpointer      user_data)
-{
-	NautilusApplication *application = user_data;
-        GDBusProxy *proxy;
-	GError *error = NULL;
-
-        proxy = g_dbus_proxy_new_for_bus_finish (res, &error);
-
-	if (error != NULL) {
-		g_warning ("Failed to get the current CK session: %s", error->message);
-		g_error_free (error);
-
-		application->priv->session_is_active = TRUE;
-		return;
-	}
-
-	g_signal_connect (proxy, "g-signal",
-			  G_CALLBACK (ck_session_proxy_signal_cb),
-			  application);
-
-	g_dbus_proxy_call (proxy,
-			   "IsActive",
-			   g_variant_new ("()"),
-			   G_DBUS_CALL_FLAGS_NONE,
-			   -1,
-			   NULL,
-			   (GAsyncReadyCallback) ck_call_is_active_cb,
-			   application);
-
-        application->priv->ck_proxy = proxy;
-}
-
-static void
-ck_get_current_session_cb (GDBusConnection *connection,
-			   GAsyncResult    *result,
-			   gpointer         user_data)
-{
-	NautilusApplication *application = user_data;
-	GVariant *variant;
-	const char *session_path = NULL;
-	GError *error = NULL;
-
-	variant = g_dbus_connection_call_finish (connection, result, &error);
-
-	if (variant == NULL) {
-		g_warning ("Failed to get the current CK session: %s", error->message);
-		g_error_free (error);
-
-		application->priv->session_is_active = TRUE;
-		return;
-	}
-
-	g_variant_get (variant, "(&o)", &session_path);
-
-	DEBUG ("Found ConsoleKit session at path %s", session_path);
-
-	g_dbus_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
-				  G_DBUS_PROXY_FLAGS_NONE,
-				  NULL,
-				  CK_NAME,
-				  session_path,
-				  CK_INTERFACE ".Session",
-				  NULL,
-				  session_proxy_appeared,
-				  application);
-
-	g_variant_unref (variant);
-}
-
-static void
-do_initialize_consolekit (NautilusApplication *application)
-{
-	GDBusConnection *connection;
-
-	connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, NULL);
-
-	if (connection == NULL) {
-		application->priv->session_is_active = TRUE;
-		return;
-	}
-
-	g_dbus_connection_call (connection,
-				CK_NAME,
-				CK_PATH "/Manager",
-				CK_INTERFACE ".Manager",
-				"GetCurrentSession",
-				g_variant_new ("()"),
-				G_VARIANT_TYPE ("(o)"),
-				G_DBUS_CALL_FLAGS_NONE,
-				-1,
-				NULL,
-				(GAsyncReadyCallback) ck_get_current_session_cb,
-				application);
-
-	g_object_unref (connection);
-}
-
 static void
 do_upgrades_once (NautilusApplication *application,
 		  gboolean no_desktop)
@@ -476,9 +330,6 @@ finish_startup (NautilusApplication *application,
 	
 	/* Initialize the desktop link monitor singleton */
 	nautilus_desktop_link_monitor_get ();
-
-	/* Initialize the ConsoleKit listener for active session */
-	do_initialize_consolekit (application);
 
 	/* Initialize the UI handler singleton for file operations */
 	notify_init (GETTEXT_PACKAGE);
@@ -866,10 +717,6 @@ mount_added_callback (GVolumeMonitor *monitor,
 	NautilusDirectory *directory;
 	GFile *root;
 	gchar *uri;
-
-	if (!application->priv->session_is_active) {
-		return;
-	}
 		
 	root = g_mount_get_root (mount);
 	uri = g_file_get_uri (root);
@@ -1031,7 +878,6 @@ nautilus_application_finalize (GObject *object)
 
 	g_clear_object (&application->undo_manager);
 	g_clear_object (&application->priv->volume_monitor);
-	g_clear_object (&application->priv->ck_proxy);
 	g_clear_object (&application->priv->progress_handler);
 
 	nautilus_dbus_manager_stop ();
