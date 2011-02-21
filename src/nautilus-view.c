@@ -157,7 +157,7 @@ static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 
 static GdkAtom copied_files_atom;
 
-static char *scripts_directory_uri;
+static char *scripts_directory_uri = NULL;
 static int scripts_directory_uri_length;
 
 struct NautilusViewDetails
@@ -2269,14 +2269,14 @@ sort_directories_first_changed_callback (gpointer callback_data)
 	}
 }
 
-static void
+static gboolean
 set_up_scripts_directory_global (void)
 {
 	char *scripts_directory_path;
 	const char *override;
 
 	if (scripts_directory_uri != NULL) {
-		return;
+		return TRUE;
 	}
 
 	override = g_getenv ("GNOME22_USER_DIR");
@@ -2298,6 +2298,8 @@ set_up_scripts_directory_global (void)
 	}
 
 	g_free (scripts_directory_path);
+
+	return (scripts_directory_uri != NULL) ? TRUE : FALSE;
 }
 
 static void
@@ -2541,10 +2543,13 @@ nautilus_view_init (NautilusView *view)
 	gtk_style_context_set_junction_sides (gtk_widget_get_style_context (GTK_WIDGET (view)),
 					      GTK_JUNCTION_TOP | GTK_JUNCTION_LEFT);
 
-	set_up_scripts_directory_global ();
-	scripts_directory = nautilus_directory_get_by_uri (scripts_directory_uri);
-	add_directory_to_scripts_directory_list (view, scripts_directory);
-	nautilus_directory_unref (scripts_directory);
+	if (set_up_scripts_directory_global ()) {
+		scripts_directory = nautilus_directory_get_by_uri (scripts_directory_uri);
+		add_directory_to_scripts_directory_list (view, scripts_directory);
+		nautilus_directory_unref (scripts_directory);
+	} else {
+		g_warning ("Ignoring scripts directory, it may be a broken link\n");
+	}
 
 	if (nautilus_should_use_templates_directory ()) {
 		templates_uri = nautilus_get_templates_directory_uri ();
