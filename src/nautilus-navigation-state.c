@@ -73,6 +73,13 @@ update_bindings (NautilusNavigationState *self)
 						  slave_action, "sensitive",
 						  G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
 
+		/* bind "active" too for toggle actions */
+		if (GTK_IS_TOGGLE_ACTION (master_action)) {
+			binding = g_object_bind_property (master_action, "active",
+							  slave_action, "active",
+							  G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
+		}
+
 		self->priv->active_bindings = g_list_prepend (self->priv->active_bindings, binding);
 	}
 }
