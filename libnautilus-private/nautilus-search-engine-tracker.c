@@ -23,166 +23,128 @@
 
 #include <config.h>
 #include "nautilus-search-engine-tracker.h"
-#include <eel/eel-gtk-macros.h>
 #include <gmodule.h>
 #include <string.h>
+#include <gio/gio.h>
 
+/* If defined, we use fts:match, this has to be enabled in Tracker to
+ * work which it usually is. The alternative is to undefine it and
+ * use filename matching instead. This doesn't use the content of the
+ * file however.
+ */
+#undef FTS_MATCHING
 
-typedef struct _TrackerClient TrackerClient;
+#define MODULE_FILENAME "libtracker-sparql-0.10.so.0"
 
-typedef enum {
-	TRACKER_0_6 = 1 << 0,
-	TRACKER_0_7 = 1 << 1,
-	TRACKER_0_8 = 1 << 2
-} TrackerVersion;
+#define MODULE_MAP(a)   { #a, (gpointer *)&a }
 
+/* Connection object */
+typedef struct _TrackerSparqlConnection TrackerSparqlConnection;
 
-/* tracker 0.6 API */
-typedef void (*TrackerArrayReply) (char **result, GError *error, gpointer user_data);
+#define TRACKER_SPARQL_TYPE_CONNECTION (tracker_sparql_connection_get_type ())
+#define TRACKER_SPARQL_CONNECTION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), TRACKER_SPARQL_TYPE_CONNECTION, TrackerSparqlConnection))
 
-static TrackerClient *	(*tracker_connect)		(gboolean enable_warnings,
-							 gint     timeout) = NULL;
-static void		(*tracker_disconnect)		(TrackerClient *client) = NULL;
-static void		(*tracker_cancel_last_call)	(TrackerClient *client) = NULL;
-static int		(*tracker_get_version)		(TrackerClient *client, GError **error) = NULL;
+/* Cursor object */
+typedef struct _TrackerSparqlCursor TrackerSparqlCursor;
 
+#define TRACKER_SPARQL_TYPE_CURSOR (tracker_sparql_cursor_get_type ())
+#define TRACKER_SPARQL_CURSOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), TRACKER_SPARQL_TYPE_CURSOR, TrackerSparqlCursor))
 
-static void (*tracker_search_metadata_by_text_async) (TrackerClient *client,
-						      const char *query,
-						      TrackerArrayReply callback,
-						      gpointer user_data) = NULL;
-static void (*tracker_search_metadata_by_text_and_mime_async) (TrackerClient *client,
-							       const char *query,
-							       const char **mimes,
-							       TrackerArrayReply callback,
-							       gpointer user_data) = NULL;
-static void (*tracker_search_metadata_by_text_and_location_async) (TrackerClient *client,
-								   const char *query,
-								   const char *location,
-								   TrackerArrayReply callback,
-								   gpointer user_data) = NULL;
-static void (*tracker_search_metadata_by_text_and_mime_and_location_async) (TrackerClient *client,
-									    const char *query,
-									    const char **mimes,
-									    const char *location,
-									    TrackerArrayReply callback,
-									    gpointer user_data) = NULL;
+/* API */
+static GType                     (*tracker_sparql_connection_get_type)     (void) = NULL;
+static TrackerSparqlConnection * (*tracker_sparql_connection_get)          (GCancellable             *cancellable,
+                                                                            GError                  **error) = NULL;
+static void                      (*tracker_sparql_connection_query_async)  (TrackerSparqlConnection  *self,
+                                                                            const gchar              *sparql,
+                                                                            GCancellable             *cancellable,
+                                                                            GAsyncReadyCallback       callback,
+                                                                            gpointer                  user_data) = NULL;
+static TrackerSparqlCursor *     (*tracker_sparql_connection_query_finish) (TrackerSparqlConnection  *self,
+                                                                            GAsyncResult             *_res_,
+                                                                            GError                  **error) = NULL;
+static GType                     (*tracker_sparql_cursor_get_type)         (void) = NULL;
+static void                      (*tracker_sparql_cursor_next_async)       (TrackerSparqlCursor      *self,
+                                                                            GCancellable             *cancellable,
+                                                                            GAsyncReadyCallback       callback,
+                                                                            gpointer                  user_data) = NULL;
+static gboolean                  (*tracker_sparql_cursor_next_finish)      (TrackerSparqlCursor      *self,
+                                                                            GAsyncResult             *_res_,
+                                                                            GError                  **error) = NULL;
+static const gchar *             (*tracker_sparql_cursor_get_string)       (TrackerSparqlCursor      *self,
+                                                                            gint                     *column,
+                                                                            glong                    *length) = NULL;
+static gchar *                   (*tracker_sparql_escape_string)           (const gchar              *literal) = NULL;
 
-
-/* tracker 0.8 API */
-typedef enum {
-	TRACKER_CLIENT_ENABLE_WARNINGS = 1 << 0
-} TrackerClientFlags;
-
-typedef void (*TrackerReplyGPtrArray) (GPtrArray *result,
-				       GError    *error,
-				       gpointer   user_data);
-
-static TrackerClient *	(*tracker_client_new)			(TrackerClientFlags      flags,
-								 gint                    timeout) = NULL;
-static gchar *		(*tracker_sparql_escape)		(const gchar            *str) = NULL;
-static guint		(*tracker_resources_sparql_query_async)	(TrackerClient          *client,
-								 const gchar            *query,
-								 TrackerReplyGPtrArray   callback,
-								 gpointer                user_data) = NULL;
-
-
-static struct TrackerDlMapping {
-	const char	*fn_name;
-	gpointer	*fn_ptr_ref;
-	TrackerVersion	versions;
-} tracker_dl_mapping[] = {
-#define MAP(a,v) { #a, (gpointer *)&a, v }
-	MAP (tracker_connect, TRACKER_0_6 | TRACKER_0_7),
-	MAP (tracker_disconnect, TRACKER_0_6 | TRACKER_0_7),
-	MAP (tracker_get_version, TRACKER_0_6),
-	MAP (tracker_cancel_last_call, TRACKER_0_6 | TRACKER_0_7 | TRACKER_0_8),
-	MAP (tracker_search_metadata_by_text_async, TRACKER_0_6 | TRACKER_0_7),
-	MAP (tracker_search_metadata_by_text_and_location_async, TRACKER_0_6 | TRACKER_0_7),
-	MAP (tracker_client_new, TRACKER_0_8),
-	MAP (tracker_sparql_escape, TRACKER_0_8),
-	MAP (tracker_resources_sparql_query_async, TRACKER_0_8)
-#undef MAP
+static struct TrackerFunctions
+{
+	const char *name;
+	gpointer *pointer;
+} funcs[] = {
+	MODULE_MAP (tracker_sparql_connection_get_type),
+	MODULE_MAP (tracker_sparql_connection_get),
+	MODULE_MAP (tracker_sparql_connection_query_async),
+	MODULE_MAP (tracker_sparql_connection_query_finish),
+	MODULE_MAP (tracker_sparql_cursor_get_type),
+	MODULE_MAP (tracker_sparql_cursor_next_async),
+	MODULE_MAP (tracker_sparql_cursor_next_finish),
+	MODULE_MAP (tracker_sparql_cursor_get_string),
+	MODULE_MAP (tracker_sparql_escape_string)
 };
 
-
-static TrackerVersion
-open_libtracker (void)
+static gboolean
+init (void)
 {
-	static gboolean done = FALSE;
-	static TrackerVersion version = 0;
-	gpointer x;
+	static gboolean inited = FALSE;
+	gint i;
+	GModule *m;
+	GModuleFlags flags;
 
-	if (!done) {
-		int i;
-		GModule *tracker;
-		GModuleFlags flags;
+	if (inited) {
+		return TRUE;
+	}
 
-		done = TRUE;
-		flags = G_MODULE_BIND_LAZY | G_MODULE_BIND_LOCAL;
+	flags = G_MODULE_BIND_LAZY | G_MODULE_BIND_LOCAL;
 
-		tracker = g_module_open ("libtracker-client-0.8.so.0", flags);
-		version = TRACKER_0_8;
+	/* Only support 0.10 onwards */
+	if ((m = g_module_open (MODULE_FILENAME, flags)) == NULL)  {
+		g_debug ("No tracker backend available or it is not new enough");
+		g_debug ("Only available using '%s'", MODULE_FILENAME);
+		return FALSE;
+	}
 
-		if (!tracker) {
-			tracker = g_module_open ("libtracker-client-0.7.so.0", flags);
+	inited = TRUE;
 
-			if (tracker && !g_module_symbol (tracker, "tracker_resources_sparql_query_async", &x)) {
-				version = TRACKER_0_7;
-			}
-		}
+	/* Check for the symbols we need */
+	for (i = 0; i < G_N_ELEMENTS (funcs); i++) {
+		if (!g_module_symbol (m, funcs[i].name, funcs[i].pointer)) {
+			g_warning ("Missing symbol '%s' in libtracker-sparql\n",
+				   funcs[i].name);
+			g_module_close (m);
 
-		if (!tracker) {
-			tracker = g_module_open ("libtrackerclient.so.0", flags);
-			version = TRACKER_0_6;
-		}
+			for (i = 0; i < G_N_ELEMENTS (funcs); i++)
+				funcs[i].pointer = NULL;
 
-		if (!tracker) {
-			tracker = g_module_open ("libtracker.so.0", flags);
-			version = TRACKER_0_6;
-		}
-
-		if (!tracker)
-			return 0;
-
-		for (i = 0; i < G_N_ELEMENTS (tracker_dl_mapping); i++) {
-			if ((tracker_dl_mapping[i].versions & version) == 0)
-				continue;
-
-			if (!g_module_symbol (tracker, tracker_dl_mapping[i].fn_name,
-					      tracker_dl_mapping[i].fn_ptr_ref)) {
-				g_warning ("Missing symbol '%s' in libtracker\n",
-					   tracker_dl_mapping[i].fn_name);
-				g_module_close (tracker);
-
-				for (i = 0; i < G_N_ELEMENTS (tracker_dl_mapping); i++)
-					tracker_dl_mapping[i].fn_ptr_ref = NULL;
-
-				return 0;
-			}
+			return FALSE;
 		}
 	}
 
-	return version;
+	g_debug ("Loaded Tracker library and all required symbols");
+
+	return TRUE;
 }
 
-
 struct NautilusSearchEngineTrackerDetails {
+	TrackerSparqlConnection *connection;
+	GCancellable *cancellable;
+
 	NautilusQuery 	*query;
-	TrackerClient 	*client;
 	gboolean 	query_pending;
-	TrackerVersion	version;
 };
 
-
-static void  nautilus_search_engine_tracker_class_init       (NautilusSearchEngineTrackerClass *class);
-static void  nautilus_search_engine_tracker_init             (NautilusSearchEngineTracker      *engine);
 
 G_DEFINE_TYPE (NautilusSearchEngineTracker,
 	       nautilus_search_engine_tracker,
 	       NAUTILUS_TYPE_SEARCH_ENGINE);
-
-static NautilusSearchEngineClass *parent_class = NULL;
 
 static void
 finalize (GObject *object)
@@ -190,21 +152,12 @@ finalize (GObject *object)
 	NautilusSearchEngineTracker *tracker;
 
 	tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (object);
-	
-	if (tracker->details->query) {
-		g_object_unref (tracker->details->query);
-		tracker->details->query = NULL;
-	}
 
-	if (tracker->details->version == TRACKER_0_8) {
-		g_object_unref (tracker->details->client);
-	} else {
-		tracker_disconnect (tracker->details->client);
-	}
+	g_clear_object (&tracker->details->query);
+	g_clear_object (&tracker->details->cancellable);
+	g_clear_object (&tracker->details->connection);
 
-	g_free (tracker->details);
-
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+	G_OBJECT_CLASS (nautilus_search_engine_tracker_parent_class)->finalize (object);
 }
 
 
@@ -215,7 +168,7 @@ sparql_append_string_literal (GString     *sparql,
 {
 	char *s;
 
-	s = tracker_sparql_escape (str);
+	s = tracker_sparql_escape_string (str);
 
 	g_string_append_c (sparql, '"');
 	g_string_append (sparql, s);
@@ -224,21 +177,84 @@ sparql_append_string_literal (GString     *sparql,
 	g_free (s);
 }
 
+static void cursor_callback (GObject      *object,
+			     GAsyncResult *result,
+			     gpointer      user_data);
 
 static void
-search_callback (gpointer results, GError *error, gpointer user_data)
+cursor_next (NautilusSearchEngineTracker *tracker,
+             TrackerSparqlCursor    *cursor)
+{
+	tracker_sparql_cursor_next_async (cursor,
+	                                  tracker->details->cancellable,
+	                                  cursor_callback,
+	                                  tracker);
+}
+
+static void
+cursor_callback (GObject      *object,
+                 GAsyncResult *result,
+                 gpointer      user_data)
 {
 	NautilusSearchEngineTracker *tracker;
-	char **results_p;
-	GPtrArray *OUT_result;
-	GList *hit_uris;
-	gint i;
-	char *uri;
-	
+	GError *error = NULL;
+	TrackerSparqlCursor *cursor;
+	GList *hits;
+	gboolean success;
+
 	tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (user_data);
-	hit_uris = NULL;
+
+	cursor = TRACKER_SPARQL_CURSOR (object);
+	success = tracker_sparql_cursor_next_finish (cursor, result, &error);
+
+	if (error) {
+		nautilus_search_engine_error (NAUTILUS_SEARCH_ENGINE (tracker), error->message);
+		g_error_free (error);
+
+		if (cursor) {
+			g_object_unref (cursor);
+		}
+
+		return;
+	}
+
+	if (!success) {
+		nautilus_search_engine_finished (NAUTILUS_SEARCH_ENGINE (tracker));
+
+		if (cursor) {
+			g_object_unref (cursor);
+		}
+
+		return;
+	}
+
+	/* We iterate result by result, not n at a time. */
+	hits = g_list_append (NULL, (gchar*) tracker_sparql_cursor_get_string (cursor, 0, NULL));
+	nautilus_search_engine_hits_added (NAUTILUS_SEARCH_ENGINE (tracker), hits);
+	g_list_free (hits);
+
+	/* Get next */
+	cursor_next (tracker, cursor);
+}
+
+static void
+query_callback (GObject      *object,
+                GAsyncResult *result,
+                gpointer      user_data)
+{
+	NautilusSearchEngineTracker *tracker;
+	TrackerSparqlConnection *connection;
+	TrackerSparqlCursor *cursor;
+	GError *error = NULL;
+
+	tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (user_data);
 
 	tracker->details->query_pending = FALSE;
+
+	connection = TRACKER_SPARQL_CONNECTION (object);
+	cursor = tracker_sparql_connection_query_finish (connection,
+	                                                 result,
+	                                                 &error);
 
 	if (error) {
 		nautilus_search_engine_error (NAUTILUS_SEARCH_ENGINE (tracker), error->message);
@@ -246,58 +262,24 @@ search_callback (gpointer results, GError *error, gpointer user_data)
 		return;
 	}
 
-	if (! results) {
+	if (!cursor) {
+		nautilus_search_engine_finished (NAUTILUS_SEARCH_ENGINE (tracker));
 		return;
 	}
-	
-	if (tracker->details->version == TRACKER_0_8) {
-		/* new tracker 0.8 API */
-		OUT_result = (GPtrArray*) results;
 
-		for (i = 0; i < OUT_result->len; i++) {
-			uri = g_strdup (((gchar **) OUT_result->pdata[i])[0]);
-			if (uri) {
-				hit_uris = g_list_prepend (hit_uris, (char *)uri);
-			}
-		}
-
-		g_ptr_array_foreach (OUT_result, (GFunc) g_free, NULL);
-		g_ptr_array_free (OUT_result, TRUE);
-
-	} else {
-		/* old tracker 0.6 API */
-		for (results_p = results; *results_p; results_p++) {
-			if (tracker->details->version == TRACKER_0_6)
-				uri = g_filename_to_uri (*results_p, NULL, NULL);
-			else
-				uri = g_strdup (*results_p);
-
-			if (uri) {
-				hit_uris = g_list_prepend (hit_uris, (char *)uri);
-			}
-		}
-		g_strfreev ((gchar **)results);
-	}
-
-	nautilus_search_engine_hits_added (NAUTILUS_SEARCH_ENGINE (tracker), hit_uris);
-	nautilus_search_engine_finished (NAUTILUS_SEARCH_ENGINE (tracker));
-	g_list_foreach (hit_uris, (GFunc) g_free, NULL);
-	g_list_free (hit_uris);
+	cursor_next (tracker, cursor);
 }
-
 
 static void
 nautilus_search_engine_tracker_start (NautilusSearchEngine *engine)
 {
 	NautilusSearchEngineTracker *tracker;
-	GList 	*mimetypes, *l;
-	char 	*search_text, *location, *location_uri;
-	char 	**mimes;
-	int 	i, mime_count;
+	gchar	*search_text, *location_uri;
 	GString *sparql;
+	GList *mimetypes, *l;
+	gint mime_count;
 
 	tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (engine);
-
 
 	if (tracker->details->query_pending) {
 		return;
@@ -308,113 +290,108 @@ nautilus_search_engine_tracker_start (NautilusSearchEngine *engine)
 	}
 
 	search_text = nautilus_query_get_text (tracker->details->query);
-
-	mimetypes = nautilus_query_get_mime_types (tracker->details->query);
-
 	location_uri = nautilus_query_get_location (tracker->details->query);
-
-	if (location_uri) {
-		location = (tracker->details->version == TRACKER_0_6) ?
-				g_filename_from_uri (location_uri, NULL, NULL) :
-				g_strdup (location_uri);
-		g_free (location_uri);
-	} else {
-		location = NULL;
-	}
+	mimetypes = nautilus_query_get_mime_types (tracker->details->query);
 
 	mime_count = g_list_length (mimetypes);
 
-	i = 0;
-	sparql = NULL;
+#ifdef FTS_MATCHING
+	/* Using FTS: */
+	sparql = g_string_new ("SELECT nie:url(?urn) "
+			       "WHERE {"
+			       "  ?urn a nfo:FileDataObject ;"
+			       "  tracker:available true ; ");
 
-	if (tracker->details->version == TRACKER_0_8) {
-		/* new tracker 0.8 API */
-		sparql = g_string_new ("SELECT ?url WHERE { ?file a nfo:FileDataObject ; nie:url ?url; ");
-		if (mime_count > 0)
-			g_string_append (sparql, "nie:mimeType ?mime ; ");
-		g_string_append (sparql, "fts:match ");
-		sparql_append_string_literal (sparql, search_text);
-
-		if (location || mime_count > 0) {
-			g_string_append (sparql, " . FILTER (");
-
-			if (location) {
-				g_string_append (sparql, "fn:starts-with(?url, ");
-				sparql_append_string_literal (sparql, location);
-				g_string_append (sparql, ")");
-			}
-
-			if (mime_count > 0) {
-				if (location)
-					g_string_append (sparql, " && ");
-				g_string_append (sparql, "(");
-				for (l = mimetypes; l != NULL; l = l->next) {
-					if (l != mimetypes)
-						g_string_append (sparql, " || ");
-					g_string_append (sparql, "?mime = ");
-					sparql_append_string_literal (sparql, l->data);
-				}
-				g_string_append (sparql, ")");
-			}
-
-			g_string_append (sparql, ")");
-		}
-		g_string_append (sparql, " }");
-
-		tracker_resources_sparql_query_async (tracker->details->client,
-						      sparql->str,
-						      (TrackerReplyGPtrArray) search_callback,
-						      tracker);
-		g_string_free (sparql, TRUE);
-
-	} else {
-		/* old tracker 0.6 API */
-		if (mime_count > 0) {
-			/* convert list into array */
-			mimes = g_new (char *, (mime_count + 1));
-
-			for (l = mimetypes; l != NULL; l = l->next) {
-				mimes[i] = g_strdup (l->data);
-				i++;
-			}
-
-			mimes[mime_count] = NULL;
-
-			if (location) {
-				tracker_search_metadata_by_text_and_mime_and_location_async (tracker->details->client,
-											     search_text, (const char **)mimes, location,
-											     (TrackerArrayReply) search_callback,
-											     tracker);
-			} else {
-				tracker_search_metadata_by_text_and_mime_async (tracker->details->client,
-										search_text, (const char**)mimes,
-										(TrackerArrayReply) search_callback,
-										tracker);
-			}
-
-			g_strfreev (mimes);
-
-		} else {
-			if (location) {
-				tracker_search_metadata_by_text_and_location_async (tracker->details->client,
-										    search_text,
-										    location,
-										    (TrackerArrayReply) search_callback,
-										    tracker);
-			} else {
-				tracker_search_metadata_by_text_async (tracker->details->client,
-								       search_text,
-								       (TrackerArrayReply) search_callback,
-								       tracker);
-			}
-		}
+	if (mime_count > 0) {
+		g_string_append (sparql, "nie:mimeType ?mime ;");
 	}
 
-	g_free (location);
+	g_string_append (sparql, "  fts:match ");
+	sparql_append_string_literal (sparql, search_text);
+
+	if (location || mime_count > 0) {
+		g_string_append (sparql, " . FILTER (");
+	
+		if (location_uri)  {
+			g_string_append (sparql, " fn:starts-with(nie:url(?urn),");
+			sparql_append_string_literal (sparql, location_uri);
+			g_string_append (sparql, ")");
+		}
+
+		if (mime_count > 0) {
+			if (location_uri) {
+				g_string_append (sparql, " && ");
+			}
+
+			g_string_append (sparql, "(");
+			for (l = mimetypes; l != NULL; l = l->next) {
+				if (l != mimetypes) {
+					g_string_append (sparql, " || ");
+				}
+
+				g_string_append (sparql, "?mime = ");
+				sparql_append_string_literal (sparql, l->data);
+			}
+			g_string_append (sparql, ")");
+		}
+
+		g_string_append (sparql, ")");
+	}
+
+	g_string_append (sparql, " } ORDER BY DESC(fts:rank(?urn)) ASC(nie:url(?urn))");
+#else  /* FTS_MATCHING */
+	/* Using filename matching: */
+	sparql = g_string_new ("SELECT nie:url(?urn) "
+			       "WHERE {"
+			       "  ?urn a nfo:FileDataObject ;");
+
+	if (mime_count > 0) {
+		g_string_append (sparql, "nie:mimeType ?mime ;");
+	}
+
+	g_string_append (sparql, "    tracker:available true ."
+			 "  FILTER (fn:contains(nfo:fileName(?urn),");
+
+	sparql_append_string_literal (sparql, search_text);
+
+	g_string_append (sparql, ")");
+
+	if (mime_count > 0) {
+		g_string_append (sparql, " && ");
+		g_string_append (sparql, "(");
+		for (l = mimetypes; l != NULL; l = l->next) {
+			if (l != mimetypes) {
+				g_string_append (sparql, " || ");
+			}
+
+			g_string_append (sparql, "?mime = ");
+			sparql_append_string_literal (sparql, l->data);
+		}
+		g_string_append (sparql, ")");
+	}
+
+	g_string_append (sparql, ")");
+
+
+	g_string_append (sparql, 
+			 "} ORDER BY DESC(nie:url(?urn)) DESC(nfo:fileName(?urn))");
+#endif /* FTS_MATCHING */
+
+	tracker_sparql_connection_query_async (tracker->details->connection,
+					       sparql->str,
+					       tracker->details->cancellable,
+					       query_callback,
+					       tracker);
+	g_string_free (sparql, TRUE);
 
 	tracker->details->query_pending = TRUE;
+
 	g_free (search_text);
-	g_list_free_full (mimetypes, g_free);
+	g_free (location_uri);
+
+	if (mimetypes != NULL) {
+		g_list_free_full (mimetypes, g_free);
+	}
 }
 
 static void
@@ -425,7 +402,7 @@ nautilus_search_engine_tracker_stop (NautilusSearchEngine *engine)
 	tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (engine);
 	
 	if (tracker->details->query && tracker->details->query_pending) {
-		tracker_cancel_last_call (tracker->details->client);
+		g_cancellable_cancel (tracker->details->cancellable);
 		tracker->details->query_pending = FALSE;
 	}
 }
@@ -460,8 +437,6 @@ nautilus_search_engine_tracker_class_init (NautilusSearchEngineTrackerClass *cla
 	GObjectClass *gobject_class;
 	NautilusSearchEngineClass *engine_class;
 
-	parent_class = g_type_class_peek_parent (class);
-
 	gobject_class = G_OBJECT_CLASS (class);
 	gobject_class->finalize = finalize;
 
@@ -470,12 +445,15 @@ nautilus_search_engine_tracker_class_init (NautilusSearchEngineTrackerClass *cla
 	engine_class->start = nautilus_search_engine_tracker_start;
 	engine_class->stop = nautilus_search_engine_tracker_stop;
 	engine_class->is_indexed = nautilus_search_engine_tracker_is_indexed;
+
+	g_type_class_add_private (class, sizeof (NautilusSearchEngineTrackerDetails));
 }
 
 static void
 nautilus_search_engine_tracker_init (NautilusSearchEngineTracker *engine)
 {
-	engine->details = g_new0 (NautilusSearchEngineTrackerDetails, 1);
+	engine->details = G_TYPE_INSTANCE_GET_PRIVATE (engine, NAUTILUS_TYPE_SEARCH_ENGINE_TRACKER,
+						       NautilusSearchEngineTrackerDetails);
 }
 
 
@@ -483,41 +461,35 @@ NautilusSearchEngine *
 nautilus_search_engine_tracker_new (void)
 {
 	NautilusSearchEngineTracker *engine;
-	TrackerClient *tracker_client;
-	TrackerVersion version;
+	GCancellable *cancellable;
+	TrackerSparqlConnection *connection;
+	GError *error = NULL;
 
-	version = open_libtracker ();
-
-	if (version == TRACKER_0_8) {
-		tracker_client = tracker_client_new (TRACKER_CLIENT_ENABLE_WARNINGS, G_MAXINT);
-	} else {
-		if (! tracker_connect)
-			return NULL;
-
-		tracker_client = tracker_connect (FALSE, -1);
-	}
-
-	if (!tracker_client) {
+	if (!init()) {
 		return NULL;
 	}
 
-	if (version == TRACKER_0_6) {
-		GError *err = NULL;
+	cancellable = g_cancellable_new ();
+	connection = tracker_sparql_connection_get (cancellable, &error);
 
-		tracker_get_version (tracker_client, &err);
+	if (error) {
+		g_warning ("Could not establish a connection to Tracker: %s", error->message);
+		g_error_free (error);
+		g_object_unref (cancellable);
 
-		if (err != NULL) {
-			g_error_free (err);
-			tracker_disconnect (tracker_client);
-			return NULL;
-		}
+		return NULL;
+	} else if (!connection) {
+		g_warning ("Could not establish a connection to Tracker, no TrackerSparqlConnection was returned");
+		g_object_unref (cancellable);
+
+		return NULL;
 	}
 
 	engine = g_object_new (NAUTILUS_TYPE_SEARCH_ENGINE_TRACKER, NULL);
 
-	engine->details->client = tracker_client;
+	engine->details->connection = connection;
+	engine->details->cancellable = cancellable;	
 	engine->details->query_pending = FALSE;
-	engine->details->version = version;
 
 	return NAUTILUS_SEARCH_ENGINE (engine);
 }
