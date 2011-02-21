@@ -29,7 +29,6 @@
 #include "nautilus-window-pane.h"
 
 #include "nautilus-actions.h"
-#include "nautilus-clipboard.h"
 #include "nautilus-location-bar.h"
 #include "nautilus-notebook.h"
 #include "nautilus-pathbar.h"
@@ -37,6 +36,7 @@
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 
+#include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-entry.h>
 

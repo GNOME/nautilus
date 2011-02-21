@@ -30,8 +30,9 @@
 #include "nautilus-location-bar.h"
 #include "nautilus-pathbar.h"
 #include "nautilus-window-private.h"
-#include "nautilus-global-preferences.h"
-#include "nautilus-ui-utilities.h"
+
+#include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-ui-utilities.h>
 
 struct _NautilusToolbarPriv {
 	GtkWidget *toolbar;
