@@ -855,84 +855,6 @@ action_go_to_location_callback (GtkAction *action,
 	nautilus_window_prompt_for_location (window, NULL);
 }
 
-/* The ctrl-f Keyboard shortcut always enables, rather than toggles
-   the search mode */
-static void
-action_show_search_callback (GtkAction *action,
-			     gpointer user_data)
-{
-	GtkAction *search_action;
-	NautilusWindow *window;
-
-	window = NAUTILUS_WINDOW (user_data);
-
-	search_action =
-		gtk_action_group_get_action (window->details->main_action_group,
-					      NAUTILUS_ACTION_SEARCH);
-
-	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (search_action))) {
-		/* Already visible, just show it */
-		nautilus_window_show_search (window);
-	} else {
-		/* Otherwise, enable */
-		gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (search_action),
-					      TRUE);
-	}
-}
-
-static void
-action_show_hide_search_callback (GtkAction *action,
-				  gpointer user_data)
-{
-	NautilusWindow *window;
-
-	/* This is used when toggling the action for updating the UI
-	   state only, not actually activating the action */
-	if (g_object_get_data (G_OBJECT (action), "blocked") != NULL) {
-		return;
-	}
-
-	window = NAUTILUS_WINDOW (user_data);
-
-	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action))) {
-		nautilus_window_show_search (window);
-	} else {
-		NautilusWindowSlot *slot;
-		GFile *location = NULL;
-
-		slot = NAUTILUS_WINDOW (window)->details->active_pane->active_slot;
-
-		/* Use the location bar as the return location */
-		if (slot->query_editor == NULL){
-			location = nautilus_window_slot_get_location (slot);
-		/* Use the search location as the return location */
-		} else {
-			NautilusQuery *query;
-			char *uri;
-
-			query = nautilus_query_editor_get_query (slot->query_editor);
-			if (query != NULL) {
-				uri = nautilus_query_get_location (query);
-				if (uri != NULL) {
-					location = g_file_new_for_uri (uri);
-					g_free (uri);
-				}
-				g_object_unref (query);
-			}
-		}
-
-		/* Last try: use the home directory as the return location */
-		if (location == NULL) {
-			location = g_file_new_for_path (g_get_home_dir ());
-		}
-
-		nautilus_window_go_to (NAUTILUS_WINDOW (window), location);
-		g_object_unref (location);
-
-		nautilus_window_hide_search (window);
-	}
-}
-
 static void
 action_tabs_previous_callback (GtkAction *action,
 			       gpointer user_data)
@@ -1146,9 +1068,6 @@ static const GtkActionEntry main_entries[] = {
   { "TabsMoveRight", NULL, N_("Move Tab _Right"), "<shift><control>Page_Down",
     N_("Move current tab to right"),
     G_CALLBACK (action_tabs_move_right_callback) },
-  { "ShowSearch", NULL, N_("S_how Search"), "<control>f",
-    N_("Show search"),
-    G_CALLBACK (action_show_search_callback) },
   { "Sidebar List", NULL, N_("Sidebar") }
 };
 
@@ -1174,10 +1093,9 @@ static const GtkToggleActionEntry main_toggle_entries[] = {
                              NULL,
   /* is_active */            TRUE },
   /* name, stock id */     { "Search", "edit-find-symbolic",
-  /* label, accelerator */   N_("_Search for Files..."),
-			     /* Accelerator is in ShowSearch */"",
+  /* label, accelerator */   N_("_Search for Files..."), "<control>f",
   /* tooltip */              N_("Search documents and folders by name"),
-                             G_CALLBACK (action_show_hide_search_callback),
+			     NULL,
   /* is_active */            FALSE },
   /* name, stock id */     { NAUTILUS_ACTION_SHOW_HIDE_EXTRA_PANE, NULL,
   /* label, accelerator */   N_("E_xtra Pane"), "F3",
@@ -1235,12 +1153,10 @@ nautilus_window_create_toolbar_action_group (NautilusWindow *window)
 	g_object_unref (action);
 
 	action = GTK_ACTION
-		(gtk_toggle_action_new ("Search",
+		(gtk_toggle_action_new (NAUTILUS_ACTION_SEARCH,
 					_("Search"),
 					_("Search documents and folders by name"),
 					NULL));
-	g_signal_connect (action, "activate",
-			  G_CALLBACK (action_show_hide_search_callback), window);
 	gtk_action_group_add_action (action_group, action);
 	gtk_action_set_icon_name (GTK_ACTION (action), "edit-find-symbolic");
 	gtk_action_set_is_important (GTK_ACTION (action), TRUE);
@@ -1291,7 +1207,8 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 {
 	GtkActionGroup *action_group;
 	const gchar *nav_state_actions[] = {
-		NAUTILUS_ACTION_BACK, NAUTILUS_ACTION_FORWARD, NULL
+		NAUTILUS_ACTION_BACK, NAUTILUS_ACTION_FORWARD,
+		NAUTILUS_ACTION_SEARCH, NULL
 	};
 
 	action_group = window->details->main_action_group;

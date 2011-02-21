@@ -319,53 +319,6 @@ nautilus_window_sync_allow_stop (NautilusWindow *window,
 	}
 }
 
-static gboolean
-nautilus_window_is_in_temporary_bars (GtkWidget *widget,
-				      NautilusWindow *window)
-{
-	GList *walk;
-	gboolean is_in_any = FALSE;
-	NautilusWindowPane *pane;
-
-	for (walk = window->details->panes; walk; walk = walk->next) {
-		pane = walk->data;
-
-		if ((gtk_widget_get_ancestor (widget, NAUTILUS_TYPE_LOCATION_BAR) != NULL &&
-		    pane->temporary_navigation_bar) ||
-		    (gtk_widget_get_ancestor (widget, NAUTILUS_TYPE_SEARCH_BAR) != NULL &&
-		     pane->temporary_search_bar))
-			is_in_any = TRUE;
-	}
-
-	return is_in_any;
-}
-
-static void
-nautilus_window_unset_focus_widget (NautilusWindow *window)
-{
-	if (window->details->last_focus_widget != NULL) {
-		g_object_remove_weak_pointer (G_OBJECT (window->details->last_focus_widget),
-					      (gpointer *) &window->details->last_focus_widget);
-		window->details->last_focus_widget = NULL;
-	}
-}
-
-static void
-remember_focus_widget (NautilusWindow *window)
-{
-	GtkWidget *focus_widget;
-
-	focus_widget = gtk_window_get_focus (GTK_WINDOW (window));
-	if (focus_widget != NULL &&
-	    !nautilus_window_is_in_temporary_bars (focus_widget, window)) {
-		nautilus_window_unset_focus_widget (window);
-
-		window->details->last_focus_widget = focus_widget;
-		g_object_add_weak_pointer (G_OBJECT (focus_widget),
-					   (gpointer *) &(window->details->last_focus_widget));
-	}
-}
-
 void
 nautilus_window_prompt_for_location (NautilusWindow *window,
 				     const char     *initial)
@@ -373,8 +326,6 @@ nautilus_window_prompt_for_location (NautilusWindow *window,
 	NautilusWindowPane *pane;
 
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-
-	remember_focus_widget (window);
 
 	pane = window->details->active_pane;
 	nautilus_window_pane_ensure_location_bar (pane);
@@ -761,8 +712,6 @@ nautilus_window_destroy (GtkWidget *object)
 	GList *panes_copy;
 
 	window = NAUTILUS_WINDOW (object);
-
-	nautilus_window_unset_focus_widget (window);
 
 	window->details->content_paned = NULL;
 	window->details->split_view_hpane = NULL;
@@ -2054,62 +2003,10 @@ use_extra_mouse_buttons_changed (gpointer callback_data)
 	mouse_extra_buttons = g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_MOUSE_USE_EXTRA_BUTTONS);
 }
 
-void
-nautilus_window_restore_focus_widget (NautilusWindow *window)
-{
-	if (window->details->last_focus_widget != NULL) {
-		if (NAUTILUS_IS_VIEW (window->details->last_focus_widget)) {
-			nautilus_view_grab_focus (NAUTILUS_VIEW (window->details->last_focus_widget));
-		} else {
-			gtk_widget_grab_focus (window->details->last_focus_widget);
-		}
-
-		nautilus_window_unset_focus_widget (window);
-	}
-}
 
 /*
  * Main API
  */
-
-void 
-nautilus_window_show_search (NautilusWindow *window)
-{
-	NautilusWindowPane *pane;
-
-	remember_focus_widget (window);
-
-	pane = window->details->active_pane;
-
-	nautilus_window_pane_ensure_search_bar (pane);
-}
-
-void
-nautilus_window_hide_search (NautilusWindow *window)
-{
-	NautilusWindowPane *pane = window->details->active_pane;
-
-	nautilus_window_pane_hide_search_bar (pane);
-	nautilus_window_restore_focus_widget (window);
-}
-
-/* This updates the UI state of the search button, but does not
-   in itself trigger a search action */
-void
-nautilus_window_set_search_button (NautilusWindow *window,
-				   gboolean state)
-{
-	GtkAction *action;
-
-	action = gtk_action_group_get_action (window->details->main_action_group,
-					      "Search");
-
-	/* Block callback so we don't activate the action and thus focus the
-	   search entry */
-	g_object_set_data (G_OBJECT (action), "blocked", GINT_TO_POINTER (1));
-	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), state);
-	g_object_set_data (G_OBJECT (action), "blocked", NULL);
-}
 
 static void
 nautilus_window_init (NautilusWindow *window)

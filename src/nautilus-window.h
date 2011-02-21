@@ -163,11 +163,6 @@ void     nautilus_window_back_or_forward      (NautilusWindow *window,
                                                gboolean        back,
                                                guint           distance,
                                                gboolean        new_tab);
-void     nautilus_window_show_search          (NautilusWindow *window);
-void     nautilus_window_hide_search          (NautilusWindow *window);
-void     nautilus_window_set_search_button    (NautilusWindow *window,
-                                               gboolean	       state);
-void     nautilus_window_restore_focus_widget (NautilusWindow *window);
 void     nautilus_window_split_view_on        (NautilusWindow *window);
 void     nautilus_window_split_view_off       (NautilusWindow *window);
 gboolean nautilus_window_split_view_showing   (NautilusWindow *window);
