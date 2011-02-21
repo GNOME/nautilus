@@ -603,9 +603,6 @@ nautilus_window_constructed (GObject *self)
 	g_signal_connect_object (nautilus_signaller_get_current (), "popup_menu_changed",
 			 G_CALLBACK (nautilus_window_load_extension_menus), window, G_CONNECT_SWAPPED);
 
-	window->details->header_size_group = gtk_size_group_new (GTK_SIZE_GROUP_VERTICAL);
-	gtk_size_group_set_ignore_hidden (window->details->header_size_group, FALSE);
-
 	window->details->content_paned = gtk_paned_new (GTK_ORIENTATION_HORIZONTAL);
 	gtk_table_attach (GTK_TABLE (window->details->table),
 			  window->details->content_paned,

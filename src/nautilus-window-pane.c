@@ -666,7 +666,8 @@ nautilus_window_pane_setup (NautilusWindowPane *pane)
 	pane->widget = gtk_vbox_new (FALSE, 0);
 	window = pane->window;
 
-	header_size_group = window->details->header_size_group;
+	header_size_group = gtk_size_group_new (GTK_SIZE_GROUP_VERTICAL);
+	gtk_size_group_set_ignore_hidden (header_size_group, FALSE);
 
 	/* build the toolbar */
 	action_group = nautilus_window_create_toolbar_action_group (window);
@@ -752,6 +753,9 @@ nautilus_window_pane_setup (NautilusWindowPane *pane)
 	 * thus affect the default position of the split view paned.
 	 */
 	gtk_widget_set_size_request (pane->widget, 60, 60);
+
+	/* we can unref the size group now */
+	g_object_unref (header_size_group);
 }
 
 static void

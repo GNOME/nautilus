@@ -90,8 +90,6 @@ struct NautilusWindowDetails
         GtkWidget *content_paned;
         GtkWidget *content_box;
         NautilusNavigationState *nav_state;
-
-        GtkSizeGroup *header_size_group;
         
         /* Side Pane */
         int side_pane_width;
