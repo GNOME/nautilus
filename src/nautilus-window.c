@@ -45,7 +45,6 @@
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-bookmarks.h"
 #include "nautilus-window-slot.h"
-#include "nautilus-zoom-control.h"
 
 #include <eel/eel-debug.h>
 #include <eel/eel-gtk-extensions.h>

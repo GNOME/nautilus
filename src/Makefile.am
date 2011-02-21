@@ -149,8 +149,6 @@ nautilus_SOURCES = \
 	nautilus-window-types.h			\
 	nautilus-x-content-bar.c		\
 	nautilus-x-content-bar.h		\
-	nautilus-zoom-control.c			\
-	nautilus-zoom-control.h			\
 	$(NULL)
 
 EMPTY_VIEW_SOURCES = \
