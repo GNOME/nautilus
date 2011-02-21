@@ -543,7 +543,7 @@ action_back_callback (GtkAction *action,
 		      gpointer user_data) 
 {
 	nautilus_window_back_or_forward (NAUTILUS_WINDOW (user_data), 
-						    TRUE, 0, nautilus_event_should_open_in_new_tab ());
+					 TRUE, 0, nautilus_event_should_open_in_new_tab ());
 }
 
 static void
@@ -551,7 +551,7 @@ action_forward_callback (GtkAction *action,
 			 gpointer user_data) 
 {
 	nautilus_window_back_or_forward (NAUTILUS_WINDOW (user_data), 
-			                            FALSE, 0, nautilus_event_should_open_in_new_tab ());
+					 FALSE, 0, nautilus_event_should_open_in_new_tab ());
 }
 
 static void
