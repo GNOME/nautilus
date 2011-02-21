@@ -113,15 +113,6 @@ struct NautilusWindowDetails
         guint sidebar_width_handler_id;
 };
 
-#define NAUTILUS_MENU_PATH_BACK_ITEM			"/menu/Go/Back"
-#define NAUTILUS_MENU_PATH_FORWARD_ITEM			"/menu/Go/Forward"
-#define NAUTILUS_MENU_PATH_UP_ITEM			"/menu/Go/Up"
-
-#define NAUTILUS_MENU_PATH_RELOAD_ITEM			"/menu/View/Reload"
-#define NAUTILUS_MENU_PATH_ZOOM_IN_ITEM			"/menu/View/Zoom Items Placeholder/Zoom In"
-#define NAUTILUS_MENU_PATH_ZOOM_OUT_ITEM		"/menu/View/Zoom Items Placeholder/Zoom Out"
-#define NAUTILUS_MENU_PATH_ZOOM_NORMAL_ITEM		"/menu/View/Zoom Items Placeholder/Zoom Normal"
-
 /* window geometry */
 /* Min values are very small, and a Nautilus window at this tiny size is *almost*
  * completely unusable. However, if all the extra bits (sidebar, location bar, etc)
