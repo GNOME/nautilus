@@ -68,6 +68,11 @@ typedef struct {
 	unsigned int automount_idle_id;
 	GDBusProxy *proxy;
 	gboolean session_is_active;
+
+	gboolean screensaver_active;
+	guint ss_watch_id;
+	GDBusProxy *ss_proxy;
+	GList *volume_queue;
 } NautilusApplication;
 
 typedef struct {
