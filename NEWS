@@ -1,3 +1,8 @@
+Major changes in 2.91.90.1 are:
+* Make modules of extensions pulling in ORBit resident, to avoid
+  ORBit's atexit()'s handler to call into unloaded code
+* Cleanup some unused code
+
 Major changes in 2.91.90 are:
 * Huge changes in the user interface, to match GNOME3 mockups
 * Remove the spatial mode
