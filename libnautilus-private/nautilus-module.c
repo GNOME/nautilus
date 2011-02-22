@@ -1,3 +1,4 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  *  nautilus-module.h - Interface to nautilus extensions
  * 
@@ -64,6 +65,17 @@ G_DEFINE_TYPE (NautilusModule, nautilus_module, G_TYPE_TYPE_MODULE);
 #define parent_class nautilus_module_parent_class
 
 static gboolean
+module_pulls_in_orbit (GModule *module)
+{
+	gpointer symbol;
+	gboolean res;
+
+	res = g_module_symbol (module, "ORBit_realloc_tcval", &symbol);
+
+	return res;
+}
+
+static gboolean
 nautilus_module_load (GTypeModule *gmodule)
 {
 	NautilusModule *module;
@@ -71,6 +83,16 @@ nautilus_module_load (GTypeModule *gmodule)
 	module = NAUTILUS_MODULE (gmodule);
 	
 	module->library = g_module_open (module->path, G_MODULE_BIND_LAZY | G_MODULE_BIND_LOCAL);
+
+	/* ORBit installs atexit() handlers, which would get unloaded together
+	 * with the module now that the main process doesn't depend on GConf anymore,
+	 * causing nautilus to sefgault at exit.
+	 * If we detect that an extension would pull in ORBit, we make the
+	 * module resident to prevent that.
+	 */
+        if (module_pulls_in_orbit (module->library)) {
+		g_module_make_resident (module->library);
+        }
 
 	if (!module->library) {
 		g_warning ("%s", g_module_error ());
