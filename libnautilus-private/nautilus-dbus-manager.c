@@ -57,6 +57,7 @@ struct _NautilusDBusManager {
   GObject parent;
 
   GDBusConnection *connection;
+  GApplication *application;
 
   guint owner_id;
   guint registration_id;
@@ -65,6 +66,15 @@ struct _NautilusDBusManager {
 struct _NautilusDBusManagerClass {
   GObjectClass parent_class;
 };
+
+enum {
+  PROP_APPLICATION = 1,
+  NUM_PROPERTIES
+};
+
+#define SERVICE_TIMEOUT 5
+
+static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 
 static GType nautilus_dbus_manager_get_type (void) G_GNUC_CONST;
 G_DEFINE_TYPE (NautilusDBusManager, nautilus_dbus_manager, G_TYPE_OBJECT);
@@ -93,12 +103,19 @@ nautilus_dbus_manager_dispose (GObject *object)
   G_OBJECT_CLASS (nautilus_dbus_manager_parent_class)->dispose (object);
 }
 
-static void
-nautilus_dbus_manager_class_init (NautilusDBusManagerClass *klass)
+static gboolean
+service_timeout_handler (gpointer user_data)
 {
-  GObjectClass *oclass = G_OBJECT_CLASS (klass);
+  NautilusDBusManager *self = user_data;
 
-  oclass->dispose = nautilus_dbus_manager_dispose;
+  DEBUG ("Reached the DBus service timeout");
+
+  /* just unconditionally release here, as if an operation has been
+   * called, its progress handler will hold it alive for all the task duration.
+   */
+  g_application_release (self->application);
+
+  return FALSE;
 }
 
 static void
@@ -252,6 +269,8 @@ bus_acquired_handler_cb (GDBusConnection *conn,
       g_bus_unown_name (self->owner_id);
       self->owner_id = 0;
 
+      g_application_release (self->application);
+
       return;
     }
   
@@ -271,13 +290,48 @@ bus_acquired_handler_cb (GDBusConnection *conn,
 
       g_bus_unown_name (self->owner_id);
 
+      g_application_release (self->application);
+
       return;
     }
+
+  g_timeout_add_seconds (SERVICE_TIMEOUT, service_timeout_handler, self);
 }
 
 static void
 nautilus_dbus_manager_init (NautilusDBusManager *self)
 {
+  /* do nothing */
+}
+
+static void
+nautilus_dbus_manager_set_property (GObject *object,
+                                    guint property_id,
+                                    const GValue *value,
+                                    GParamSpec *pspec)
+{
+  NautilusDBusManager *self = (NautilusDBusManager *) (object);
+
+  switch (property_id)
+    {
+    case PROP_APPLICATION:
+      self->application = g_value_get_object (value);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+      break;
+    }
+}
+
+static void
+nautilus_dbus_manager_constructed (GObject *object)
+{
+  NautilusDBusManager *self = (NautilusDBusManager *) (object);
+
+  G_OBJECT_CLASS (nautilus_dbus_manager_parent_class)->constructed (object);
+
+  g_application_hold (self->application);
+
   self->owner_id = g_bus_own_name (G_BUS_TYPE_SESSION,
                                    "org.gnome.Nautilus",
                                    G_BUS_NAME_OWNER_FLAGS_NONE,
@@ -285,13 +339,34 @@ nautilus_dbus_manager_init (NautilusDBusManager *self)
                                    NULL,
                                    NULL,
                                    self,
-                                   NULL);
+                                   NULL);  
+}
+
+static void
+nautilus_dbus_manager_class_init (NautilusDBusManagerClass *klass)
+{
+  GObjectClass *oclass = G_OBJECT_CLASS (klass);
+
+  oclass->dispose = nautilus_dbus_manager_dispose;
+  oclass->constructed = nautilus_dbus_manager_constructed;
+  oclass->set_property = nautilus_dbus_manager_set_property;
+
+  properties[PROP_APPLICATION] =
+    g_param_spec_object ("application",
+                         "GApplication instance",
+                         "The owning GApplication instance",
+                         G_TYPE_APPLICATION,
+                         G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
+                         G_PARAM_STATIC_STRINGS);
+
+  g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 }
 
 void
-nautilus_dbus_manager_start (void)
+nautilus_dbus_manager_start (GApplication *application)
 {
   singleton = g_object_new (nautilus_dbus_manager_get_type (),
+                            "application", application,
                             NULL);
 }
 

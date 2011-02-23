@@ -1154,7 +1154,7 @@ nautilus_application_startup (GApplication *app)
 	gtk_icon_theme_append_search_path (gtk_icon_theme_get_default (),
 					   NAUTILUS_DATADIR G_DIR_SEPARATOR_S "icons");
 
-	nautilus_dbus_manager_start ();
+	nautilus_dbus_manager_start (app);
 }
 
 static void
