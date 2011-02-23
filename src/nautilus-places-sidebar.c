@@ -703,7 +703,11 @@ update_places (NautilusPlacesSidebar *sidebar)
 
 		path = g_get_user_special_dir (index);
 
-		if (!path) {
+		/* xdg resets special dirs to the home directory in case
+		 * it's not finiding what it expects. We don't want the home
+		 * to be added multiple times in that weird configuration.
+		 */
+		if (!path || g_strcmp0 (path, g_get_home_dir ()) == 0) {
 			continue;
 		}
 
