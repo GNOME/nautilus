@@ -89,6 +89,7 @@ struct FMTreeViewDetails {
 	GtkWidget *popup;
 	GtkWidget *popup_open;
 	GtkWidget *popup_open_in_new_window;
+	GtkWidget *popup_open_in_new_tab;
 	GtkWidget *popup_create_folder;
 	GtkWidget *popup_cut;
 	GtkWidget *popup_copy;
@@ -679,6 +680,10 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
 	gboolean file_is_special_link;
 	gboolean can_move_file_to_trash;
 	gboolean can_delete_file;
+	gboolean using_browser;
+
+	using_browser = g_settings_get_boolean (nautilus_preferences,
+						NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER);
 
 	if (event->button == 3) {
 		gboolean show_unmount = FALSE;
@@ -705,8 +710,13 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
 
 		create_popup_menu (view);
 
-		gtk_widget_set_sensitive (view->details->popup_open_in_new_window,
-			nautilus_file_is_directory (view->details->popup_file));
+		if (using_browser) {
+			gtk_widget_set_sensitive (view->details->popup_open_in_new_window,
+						  nautilus_file_is_directory (view->details->popup_file));
+			gtk_widget_set_sensitive (view->details->popup_open_in_new_tab,
+						  nautilus_file_is_directory (view->details->popup_file));
+		}
+
 		gtk_widget_set_sensitive (view->details->popup_create_folder,
 			nautilus_file_is_directory (view->details->popup_file) &&
 			nautilus_file_can_write (view->details->popup_file));
@@ -770,6 +780,7 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
 		return TRUE;
 	} else if (event->button == 2 && event->type == GDK_BUTTON_PRESS) {
 		NautilusFile *file;
+		NautilusWindowOpenFlags flags = 0;
 
 		if (!gtk_tree_view_get_path_at_pos (treeview, event->x, event->y,
 						    &path, NULL, NULL, NULL)) {
@@ -777,11 +788,17 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
 		}
 
 		file = sort_model_path_to_file (view, path);
+
+		if (using_browser) {
+			flags = (event->state & GDK_CONTROL_MASK) ?
+				NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW :
+				NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
+		} else {
+			flags = NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND;
+		}
+
 		if (file) {
-			fm_tree_view_activate_file (view, file, 
-						    (event->state & GDK_CONTROL_MASK) != 0 ?
-						    NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW :
-						    NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB);
+			fm_tree_view_activate_file (view, file, flags);
 			nautilus_file_unref (file);
 		}
 
@@ -1151,16 +1168,26 @@ create_popup_menu (FMTreeView *view)
 	g_signal_connect (menu_item, "activate",
 			  G_CALLBACK (fm_tree_view_open_in_new_tab_cb),
 			  view);
-	gtk_widget_show (menu_item);
+	g_settings_bind (nautilus_preferences,
+			 NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER,
+			 menu_item,
+			 "visible",
+			 G_SETTINGS_BIND_GET);
+
 	gtk_menu_shell_append (GTK_MENU_SHELL (popup), menu_item);
-	view->details->popup_open_in_new_window = menu_item;
+	view->details->popup_open_in_new_tab = menu_item;
 	
 	/* add the "open in new window" menu item */
 	menu_item = gtk_menu_item_new_with_mnemonic (_("Open in New _Window"));
 	g_signal_connect (menu_item, "activate",
 			  G_CALLBACK (fm_tree_view_open_in_new_window_cb),
 			  view);
-	gtk_widget_show (menu_item);
+	g_settings_bind (nautilus_preferences,
+			 NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER,
+			 menu_item,
+			 "visible",
+			 G_SETTINGS_BIND_GET);
+
 	gtk_menu_shell_append (GTK_MENU_SHELL (popup), menu_item);
 	view->details->popup_open_in_new_window = menu_item;
 	
