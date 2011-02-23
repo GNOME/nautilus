@@ -613,12 +613,10 @@ action_show_hide_search_callback (GtkAction *action,
 		GFile *location = NULL;
 
 		slot = pane->active_slot;
+		nautilus_window_pane_hide_search_bar (pane);
 
 		/* Use the location bar as the return location */
-		if (slot->query_editor == NULL){
-			location = nautilus_window_slot_get_location (slot);
-		/* Use the search location as the return location */
-		} else {
+		if (slot->query_editor != NULL) {
 			NautilusQuery *query;
 			char *uri;
 
@@ -631,17 +629,15 @@ action_show_hide_search_callback (GtkAction *action,
 				}
 				g_object_unref (query);
 			}
+
+			/* Last try: use the home directory as the return location */
+			if (location == NULL) {
+				location = g_file_new_for_path (g_get_home_dir ());
+			}
+
+			nautilus_window_go_to (window, location);
+			g_object_unref (location);
 		}
-
-		/* Last try: use the home directory as the return location */
-		if (location == NULL) {
-			location = g_file_new_for_path (g_get_home_dir ());
-		}
-
-		nautilus_window_go_to (window, location);
-		g_object_unref (location);
-
-		nautilus_window_pane_hide_search_bar (pane);
 	}
 }
 
