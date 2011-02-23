@@ -746,6 +746,9 @@ nautilus_window_finalize (GObject *object)
 		g_object_unref (window->details->bookmark_list);
 	}
 
+	g_signal_handlers_disconnect_by_func (nautilus_window_state,
+					      side_pane_id_changed, window);
+
 	/* nautilus_window_close() should have run */
 	g_assert (window->details->panes == NULL);
 
