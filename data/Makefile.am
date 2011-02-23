@@ -14,6 +14,13 @@ desktop_in_files = 					\
 mimedir = $(datadir)/mime/packages
 mime_DATA = $(xml_files)
 
+servicedir = $(datadir)/dbus-1/services
+service_in_files = org.gnome.Nautilus.service.in
+service_DATA = $(service_in_files:.service.in=.service)
+
+org.gnome.Nautilus.service: org.gnome.Nautilus.service.in Makefile
+	$(AM_V_GEN) sed -e "s|\@bindir\@|$(bindir)|" $< > $@
+
 nautilusdatadir = $(datadir)/nautilus
 
 nautilusdata_DATA = \
@@ -28,10 +35,12 @@ EXTRA_DIST = $(nautilusdata_DATA) 	\
 	nautilus.css			\
 	$(xml_in_files) 		\
 	$(desktop_in_files)		\
+	$(service_in_files)		\
 	$(NULL)
 
 CLEANFILES = $(xml_files)	\
 	$(desktop_DATA)		\
+	$(service_DATA)		\
 	$(NULL)
 
 SUBDIRS = \
