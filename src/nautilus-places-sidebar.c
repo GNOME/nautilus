@@ -2765,6 +2765,7 @@ bookmarks_button_press_event_cb (GtkWidget             *widget,
 		GtkTreeModel *model;
 		GtkTreePath *path;
 		GtkTreeView *tree_view;
+		NautilusWindowOpenFlags flags = 0;
 
 		tree_view = GTK_TREE_VIEW (widget);
 		g_assert (tree_view == sidebar->tree_view);
@@ -2774,10 +2775,16 @@ bookmarks_button_press_event_cb (GtkWidget             *widget,
 		gtk_tree_view_get_path_at_pos (tree_view, (int) event->x, (int) event->y, 
 					       &path, NULL, NULL, NULL);
 
-		open_selected_bookmark (sidebar, model, path,
-					event->state & GDK_CONTROL_MASK ?
-					NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW :
-					NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB);
+		if (g_settings_get_boolean (nautilus_preferences,
+					    NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
+			flags = (event->state & GDK_CONTROL_MASK) ?
+				NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW :
+				NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
+		} else {
+			flags = NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND;
+		}
+
+		open_selected_bookmark (sidebar, model, path, flags);
 
 		if (path != NULL) {
 			gtk_tree_path_free (path);
