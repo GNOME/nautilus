@@ -1182,7 +1182,9 @@ eel_editable_label_state_changed (GtkWidget   *widget,
   
   label = EEL_EDITABLE_LABEL (widget);
 
-  eel_editable_label_select_region (label, 0, 0);
+  /* clear any selection if we're insensitive */
+  if (!gtk_widget_is_sensitive (widget))
+    eel_editable_label_select_region (label, 0, 0);
 
   if (GTK_WIDGET_CLASS (eel_editable_label_parent_class)->state_changed)
     GTK_WIDGET_CLASS (eel_editable_label_parent_class)->state_changed (widget, prev_state);
