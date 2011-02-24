@@ -402,7 +402,4 @@ void              nautilus_view_update_menus               (NautilusView      *v
 void              nautilus_view_set_is_active              (NautilusView      *view,
 							    gboolean           is_active);
 
-void              nautilus_view_setup_overlay              (NautilusView      *view,
-							    GtkWidget         *overlay);
-
 #endif /* NAUTILUS_VIEW_H */

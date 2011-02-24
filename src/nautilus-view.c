@@ -31,11 +31,9 @@
 
 #include "nautilus-view.h"
 
-#include "gedit-overlay.h"
 #include "nautilus-actions.h"
 #include "nautilus-desktop-icon-view.h"
 #include "nautilus-error-reporting.h"
-#include "nautilus-floating-bar.h"
 #include "nautilus-list-view.h"
 #include "nautilus-mime-actions.h"
 #include "nautilus-properties-window.h"
@@ -125,8 +123,6 @@
 #define MAX_MENU_LEVELS 5
 #define TEMPLATE_LIMIT 30
 
-#define FLOATING_BAR_ACTION_ID_STOP 1
-
 enum {
 	ADD_FILE,
 	BEGIN_FILE_CHANGES,
@@ -147,7 +143,6 @@ enum {
 
 enum {
 	PROP_WINDOW_SLOT = 1,
-	PROP_SHOW_FLOATING_BAR,
 	PROP_SUPPORTS_ZOOMING,
 	NUM_PROPERTIES
 };
@@ -171,10 +166,6 @@ struct NautilusViewDetails
 	GtkActionGroup *dir_action_group;
 	guint dir_merge_id;
 
-	GtkWidget *overlay;
-	GtkWidget *floating_bar;
-
-	gboolean show_floating_bar;
 	gboolean supports_zooming;
 
 	GList *scripts_directory_list;
@@ -192,7 +183,6 @@ struct NautilusViewDetails
 	guint update_menus_timeout_id;
 	guint update_status_idle_id;
 	guint reveal_selection_idle_id;
-	guint set_status_timeout_id;
 
 	guint display_pending_source_id;
 	guint changes_timeout_id;
@@ -2678,11 +2668,6 @@ nautilus_view_destroy (GtkWidget *object)
 		view->details->delayed_rename_file_id = 0;
 	}
 
-	if (view->details->set_status_timeout_id != 0) {
-		g_source_remove (view->details->set_status_timeout_id);
-		view->details->set_status_timeout_id = 0;
-	}
-
 	if (view->details->model) {
 		nautilus_directory_unref (view->details->model);
 		view->details->model = NULL;
@@ -2725,90 +2710,6 @@ nautilus_view_finalize (GObject *object)
 	g_free (view->details);
 
 	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
-}
-
-static void
-real_view_set_status (NautilusView *view,
-		      const gchar *status)
-{
-	
-	gboolean show_statusbar;
-
-	nautilus_floating_bar_cleanup_actions (NAUTILUS_FLOATING_BAR (view->details->floating_bar));
-	nautilus_floating_bar_set_show_spinner (NAUTILUS_FLOATING_BAR (view->details->floating_bar),
-						FALSE);
-
-	show_statusbar = g_settings_get_boolean (nautilus_window_state,
-						 NAUTILUS_WINDOW_STATE_START_WITH_STATUS_BAR);
-
-	if (status == NULL || show_statusbar) {
-		gtk_widget_hide (view->details->floating_bar);
-		return;
-	}
-
-	nautilus_floating_bar_set_label (NAUTILUS_FLOATING_BAR (view->details->floating_bar), status);
-	gtk_widget_show (view->details->floating_bar);
-}
-
-typedef struct {
-	gchar *status;
-	NautilusView *view;
-} SetStatusData;
-
-static void
-set_status_data_free (gpointer data)
-{
-	SetStatusData *status_data = data;
-
-	g_free (status_data->status);
-	g_object_unref (status_data->view);
-
-	g_slice_free (SetStatusData, data);
-}
-
-static gboolean
-set_status_timeout_cb (gpointer data)
-{
-	SetStatusData *status_data = data;
-
-	status_data->view->details->set_status_timeout_id = 0;
-	real_view_set_status (status_data->view, status_data->status);
-
-	return FALSE;
-}
-
-static void
-nautilus_view_set_status (NautilusView *view,
-			  const gchar *status)
-{
-	GtkSettings *settings;
-	gint double_click_time;
-	SetStatusData *status_data;
-
-	if (view->details->set_status_timeout_id != 0) {
-		g_source_remove (view->details->set_status_timeout_id);
-		view->details->set_status_timeout_id = 0;
-	}
-
-	settings = gtk_settings_get_for_screen (gtk_widget_get_screen (GTK_WIDGET (view)));
-	g_object_get (settings,
-		      "gtk-double-click-time", &double_click_time,
-		      NULL);
-
-	status_data = g_slice_new0 (SetStatusData);
-	status_data->status = g_strdup (status);
-	status_data->view = g_object_ref (view);
-
-	/* waiting for half of the double-click-time before setting
-	 * the status seems to be a good approximation of not setting it
-	 * too often and not delaying the statusbar too much.
-	 */
-	view->details->set_status_timeout_id =
-		g_timeout_add_full (G_PRIORITY_DEFAULT,
-				    (guint) (double_click_time / 2),
-				    set_status_timeout_cb,
-				    status_data,
-				    set_status_data_free);
 }
 
 /**
@@ -3054,8 +2955,8 @@ nautilus_view_display_selection_info (NautilusView *view)
 	}
 
 	nautilus_window_slot_set_status (view->details->slot,
-					 status_string);
-	nautilus_view_set_status (view, view_status_string);
+					 status_string,
+					 view_status_string);
 
 	g_free (status_string);
 	g_free (view_status_string);
@@ -3094,13 +2995,6 @@ reveal_selection_idle_callback (gpointer data)
 	nautilus_view_reveal_selection (view);
 
 	return FALSE;
-}
-
-static void
-remove_loading_floating_bar (NautilusView *view)
-{
-	gtk_widget_hide (view->details->floating_bar);
-	nautilus_floating_bar_cleanup_actions (NAUTILUS_FLOATING_BAR (view->details->floating_bar));
 }
 
 static void
@@ -3155,8 +3049,6 @@ done_loading (NautilusView *view,
 	}
 
 	g_signal_emit (view, signals[END_LOADING], 0, all_files_seen);
-
-	remove_loading_floating_bar (view);
 
 	view->details->loading = FALSE;
 }
@@ -5898,7 +5790,7 @@ copy_or_cut_files (NautilusView *view,
 	}
 
 	nautilus_window_slot_set_status (view->details->slot,
-					 status_string);
+					 status_string, NULL);
 	g_free (status_string);
 }
 
@@ -6067,7 +5959,8 @@ paste_clipboard_data (NautilusView *view,
 
 	if (item_uris == NULL|| destination_uri == NULL) {
 		nautilus_window_slot_set_status (view->details->slot,
-						 _("There is nothing on the clipboard to paste."));
+						 _("There is nothing on the clipboard to paste."),
+						 NULL);
 	} else {
 		nautilus_view_move_copy_items (view, item_uris, NULL, destination_uri,
 					       cut ? GDK_ACTION_MOVE : GDK_ACTION_COPY,
@@ -9209,26 +9102,6 @@ load_directory (NautilusView *view,
 }
 
 static void
-setup_loading_floating_bar (NautilusView *view)
-{
-	/* setup loading overlay */
-	if (view->details->set_status_timeout_id != 0) {
-		g_source_remove (view->details->set_status_timeout_id);
-		view->details->set_status_timeout_id = 0;
-	}
-
-	nautilus_floating_bar_set_label (NAUTILUS_FLOATING_BAR (view->details->floating_bar),
-					 NAUTILUS_IS_SEARCH_DIRECTORY (view->details->model) ?
-					 _("Searching...") : _("Loading..."));
-	nautilus_floating_bar_set_show_spinner (NAUTILUS_FLOATING_BAR (view->details->floating_bar),
-						TRUE);
-	nautilus_floating_bar_add_action (NAUTILUS_FLOATING_BAR (view->details->floating_bar),
-					  GTK_STOCK_STOP,
-					  FLOATING_BAR_ACTION_ID_STOP);
-	gtk_widget_show (view->details->floating_bar);
-}
-
-static void
 finish_loading (NautilusView *view)
 {
 	NautilusFileAttributes attributes;
@@ -9240,8 +9113,6 @@ finish_loading (NautilusView *view)
 	 * Subclasses use this to know that the new metadata is now available.
 	 */
 	g_signal_emit (view, signals[BEGIN_LOADING], 0);
-
-	setup_loading_floating_bar (view);
 
 	/* Assume we have now all information to show window */
 	nautilus_window_view_visible  (view->details->window, NAUTILUS_VIEW (view));
@@ -9643,38 +9514,6 @@ real_get_selected_icon_locations (NautilusView *view)
 }
 
 static void
-floating_bar_action_cb (NautilusFloatingBar *floating_bar,
-			gint action,
-			NautilusView *view)
-{
-	if (action == FLOATING_BAR_ACTION_ID_STOP) {
-		nautilus_view_stop_loading (view);
-	}
-}
-
-void
-nautilus_view_setup_overlay (NautilusView *view,
-			     GtkWidget *overlay)
-{
-	if (view->details->overlay != NULL) {
-		g_warning ("Trying to add a view overlay two times, ignoring.");
-		return;
-	}
-
-	gtk_container_add (GTK_CONTAINER (view), overlay);
-	view->details->overlay = overlay;
-
-	view->details->floating_bar = nautilus_floating_bar_new ("", FALSE);
-	gedit_overlay_add (GEDIT_OVERLAY (view->details->overlay),
-			   view->details->floating_bar,
-			   GEDIT_OVERLAY_CHILD_POSITION_SOUTH_EAST,
-			   0);
-
-	g_signal_connect (view->details->floating_bar, "action",
-			  G_CALLBACK (floating_bar_action_cb), view);
-}
-
-static void
 nautilus_view_set_property (GObject         *object,
 			    guint            prop_id,
 			    const GValue    *value,
@@ -9707,9 +9546,6 @@ nautilus_view_set_property (GObject         *object,
 					 "hidden-files-mode-changed", G_CALLBACK (hidden_files_mode_changed),
 					 directory_view, 0);
 		nautilus_view_init_show_hidden_files (directory_view);
-		break;
-	case PROP_SHOW_FLOATING_BAR:
-		directory_view->details->show_floating_bar = g_value_get_boolean (value);
 		break;
 	case PROP_SUPPORTS_ZOOMING:
 		directory_view->details->supports_zooming = g_value_get_boolean (value);
@@ -9965,13 +9801,6 @@ nautilus_view_class_init (NautilusViewClass *klass)
 				     NAUTILUS_TYPE_WINDOW_SLOT,
 				     G_PARAM_WRITABLE |
 				     G_PARAM_CONSTRUCT_ONLY);
-	properties[PROP_SHOW_FLOATING_BAR] =
-		g_param_spec_boolean ("show-floating-bar",
-				      "Show floating bar",
-				      "Whether the floating bar should be shown",
-				      TRUE,
-				      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
-				      G_PARAM_STATIC_STRINGS);
 	properties[PROP_SUPPORTS_ZOOMING] =
 		g_param_spec_boolean ("supports-zooming",
 				      "Supports zooming",

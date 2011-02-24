@@ -2016,7 +2016,7 @@ icon_container_preview_callback (NautilusIconContainer *container,
 			g_free (file_name);
 			nautilus_window_slot_set_status
 				(nautilus_view_get_nautilus_window_slot (NAUTILUS_VIEW (icon_view)),
-				 message);
+				 message, NULL);
 			g_free (message);
 		} else {
 			nautilus_view_display_selection_info (NAUTILUS_VIEW(icon_view));
@@ -2541,7 +2541,6 @@ static NautilusIconContainer *
 create_icon_container (NautilusIconView *icon_view)
 {
 	NautilusIconContainer *icon_container;
-	GtkWidget *overlay;
 
 	icon_container = nautilus_icon_view_container_new (icon_view);
 	icon_view->details->icon_container = GTK_WIDGET (icon_container);
@@ -2599,10 +2598,8 @@ create_icon_container (NautilusIconView *icon_view)
 	g_signal_connect_object (icon_container, "store_layout_timestamp",
 				 G_CALLBACK (store_layout_timestamp), icon_view, 0);
 
-	overlay = gedit_overlay_new (GTK_WIDGET (icon_container));
-	gtk_widget_show (overlay);
-
-	nautilus_view_setup_overlay (NAUTILUS_VIEW (icon_view), overlay);
+	gtk_container_add (GTK_CONTAINER (icon_view),
+			   GTK_WIDGET (icon_container));
 
 	nautilus_icon_view_update_click_mode (icon_view);
 

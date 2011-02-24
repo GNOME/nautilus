@@ -30,6 +30,8 @@
 
 #include "gedit-overlay-child.h"
 
+#define NAUTILUS_FLOATING_BAR_ACTION_ID_STOP 1
+
 #define NAUTILUS_TYPE_FLOATING_BAR nautilus_floating_bar_get_type()
 #define NAUTILUS_FLOATING_BAR(obj) \
   (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_FLOATING_BAR, NautilusFloatingBar))

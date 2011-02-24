@@ -23,11 +23,16 @@
 */
 #include "nautilus-window-slot.h"
 
+#include "gedit-overlay.h"
 #include "nautilus-desktop-window.h"
+#include "nautilus-floating-bar.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window-manage-views.h"
+
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
+
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
 
@@ -155,6 +160,16 @@ real_inactive (NautilusWindowSlot *slot)
 }
 
 static void
+floating_bar_action_cb (NautilusFloatingBar *floating_bar,
+			gint action,
+			NautilusWindowSlot *slot)
+{
+	if (action == NAUTILUS_FLOATING_BAR_ACTION_ID_STOP) {
+		nautilus_window_slot_stop_loading (slot);
+	}
+}
+
+static void
 nautilus_window_slot_init (NautilusWindowSlot *slot)
 {
 	GtkWidget *content_box, *eventbox, *extras_vbox, *frame;
@@ -180,8 +195,19 @@ nautilus_window_slot_init (NautilusWindowSlot *slot)
 	gtk_widget_show (extras_vbox);
 
 	slot->view_box = gtk_vbox_new (FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (content_box), slot->view_box, TRUE, TRUE, 0);
+	slot->view_overlay = gedit_overlay_new (slot->view_box);
+	gtk_box_pack_start (GTK_BOX (content_box), slot->view_overlay, TRUE, TRUE, 0);
+	gtk_widget_show (slot->view_overlay);
 	gtk_widget_show (slot->view_box);
+
+	slot->floating_bar = nautilus_floating_bar_new ("", FALSE);
+	gedit_overlay_add (GEDIT_OVERLAY (slot->view_overlay),
+			   slot->floating_bar,
+			   GEDIT_OVERLAY_CHILD_POSITION_SOUTH_EAST,
+			   0);
+
+	g_signal_connect (slot->floating_bar, "action",
+			  G_CALLBACK (floating_bar_action_cb), slot);
 
 	slot->title = g_strdup (_("Loading..."));
 }
@@ -209,6 +235,11 @@ nautilus_window_slot_dispose (GObject *object)
 		gtk_widget_destroy (widget);
 		g_object_unref (slot->new_content_view);
 		slot->new_content_view = NULL;
+	}
+
+	if (slot->set_status_timeout_id != 0) {
+		g_source_remove (slot->set_status_timeout_id);
+		slot->set_status_timeout_id = 0;
 	}
 
 	nautilus_window_slot_set_viewed_file (slot, NULL);
@@ -458,9 +489,94 @@ nautilus_window_slot_set_allow_stop (NautilusWindowSlot *slot,
 	nautilus_window_sync_allow_stop (window, slot);
 }
 
+static void
+real_slot_set_short_status (NautilusWindowSlot *slot,
+			    const gchar *status)
+{
+	
+	gboolean show_statusbar;
+
+	nautilus_floating_bar_cleanup_actions (NAUTILUS_FLOATING_BAR (slot->floating_bar));
+	nautilus_floating_bar_set_show_spinner (NAUTILUS_FLOATING_BAR (slot->floating_bar),
+						FALSE);
+
+	show_statusbar = g_settings_get_boolean (nautilus_window_state,
+						 NAUTILUS_WINDOW_STATE_START_WITH_STATUS_BAR);
+
+	if (status == NULL || show_statusbar) {
+		gtk_widget_hide (slot->floating_bar);
+		return;
+	}
+
+	nautilus_floating_bar_set_label (NAUTILUS_FLOATING_BAR (slot->floating_bar), status);
+	gtk_widget_show (slot->floating_bar);
+}
+
+typedef struct {
+	gchar *status;
+	NautilusWindowSlot *slot;
+} SetStatusData;
+
+static void
+set_status_data_free (gpointer data)
+{
+	SetStatusData *status_data = data;
+
+	g_free (status_data->status);
+	g_object_unref (status_data->slot);
+
+	g_slice_free (SetStatusData, data);
+}
+
+static gboolean
+set_status_timeout_cb (gpointer data)
+{
+	SetStatusData *status_data = data;
+
+	status_data->slot->set_status_timeout_id = 0;
+	real_slot_set_short_status (status_data->slot, status_data->status);
+
+	return FALSE;
+}
+
+static void
+set_floating_bar_status (NautilusWindowSlot *slot,
+			 const gchar *status)
+{
+	GtkSettings *settings;
+	gint double_click_time;
+	SetStatusData *status_data;
+
+	if (slot->set_status_timeout_id != 0) {
+		g_source_remove (slot->set_status_timeout_id);
+		slot->set_status_timeout_id = 0;
+	}
+
+	settings = gtk_settings_get_for_screen (gtk_widget_get_screen (GTK_WIDGET (slot->content_view)));
+	g_object_get (settings,
+		      "gtk-double-click-time", &double_click_time,
+		      NULL);
+
+	status_data = g_slice_new0 (SetStatusData);
+	status_data->status = g_strdup (status);
+	status_data->slot = g_object_ref (slot);
+
+	/* waiting for half of the double-click-time before setting
+	 * the status seems to be a good approximation of not setting it
+	 * too often and not delaying the statusbar too much.
+	 */
+	slot->set_status_timeout_id =
+		g_timeout_add_full (G_PRIORITY_DEFAULT,
+				    (guint) (double_click_time / 2),
+				    set_status_timeout_cb,
+				    status_data,
+				    set_status_data_free);
+}
+
 void
 nautilus_window_slot_set_status (NautilusWindowSlot *slot,
-				 const char *status)
+				 const char *status,
+				 const char *short_status)
 {
 	NautilusWindow *window;
 
@@ -468,6 +584,10 @@ nautilus_window_slot_set_status (NautilusWindowSlot *slot,
 
 	g_free (slot->status_text);
 	slot->status_text = g_strdup (status);
+
+	if (slot->content_view != NULL) {
+		set_floating_bar_status (slot, short_status);
+	}
 
 	window = NAUTILUS_WINDOW (slot->pane->window);
 	if (slot == window->details->active_pane->active_slot) {

@@ -75,6 +75,11 @@ struct NautilusWindowSlot {
 	GtkWidget *extra_location_widgets;
 	GtkWidget *view_box;
 
+	GtkWidget *view_overlay;
+	GtkWidget *floating_bar;
+
+	guint set_status_timeout_id;
+
 	NautilusView *content_view;
 	NautilusView *new_content_view;
 
@@ -171,7 +176,8 @@ void    nautilus_window_slot_set_viewed_file		   (NautilusWindowSlot *slot,
 void    nautilus_window_slot_set_allow_stop		   (NautilusWindowSlot *slot,
 							    gboolean	    allow_stop);
 void    nautilus_window_slot_set_status			   (NautilusWindowSlot *slot,
-							    const char	 *status);
+							    const char	 *status,
+							    const char   *short_status);
 
 void    nautilus_window_slot_add_extra_location_widget     (NautilusWindowSlot *slot,
 							    GtkWidget       *widget);

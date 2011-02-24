@@ -30,6 +30,7 @@
 
 #include "nautilus-actions.h"
 #include "nautilus-application.h"
+#include "nautilus-floating-bar.h"
 #include "nautilus-location-bar.h"
 #include "nautilus-search-bar.h"
 #include "nautilus-pathbar.h"
@@ -697,7 +698,7 @@ begin_location_change (NautilusWindowSlot *slot,
 	end_location_change (slot);
 
 	nautilus_window_slot_set_allow_stop (slot, TRUE);
-	nautilus_window_slot_set_status (slot, " ");
+	nautilus_window_slot_set_status (slot, " ", NULL);
 
 	g_assert (slot->pending_location == NULL);
 	g_assert (slot->pending_selection == NULL);
@@ -1161,6 +1162,26 @@ nautilus_window_report_location_change (NautilusWindow *window)
 	}
 }
 
+static void
+setup_loading_floating_bar (NautilusWindowSlot *slot)
+{
+	/* setup loading overlay */
+	if (slot->set_status_timeout_id != 0) {
+		g_source_remove (slot->set_status_timeout_id);
+		slot->set_status_timeout_id = 0;
+	}
+
+	nautilus_floating_bar_set_label (NAUTILUS_FLOATING_BAR (slot->floating_bar),
+					 NAUTILUS_IS_SEARCH_DIRECTORY (nautilus_view_get_model (slot->content_view)) ?
+					 _("Searching...") : _("Loading..."));
+	nautilus_floating_bar_set_show_spinner (NAUTILUS_FLOATING_BAR (slot->floating_bar),
+						TRUE);
+	nautilus_floating_bar_add_action (NAUTILUS_FLOATING_BAR (slot->floating_bar),
+					  GTK_STOCK_STOP,
+					  NAUTILUS_FLOATING_BAR_ACTION_ID_STOP);
+	gtk_widget_show (slot->floating_bar);
+}
+
 /* This is called when we have decided we can actually change to the new view/location situation. */
 static void
 location_has_really_changed (NautilusWindowSlot *slot)
@@ -1200,6 +1221,8 @@ location_has_really_changed (NautilusWindowSlot *slot)
 
 		g_object_unref (location_copy);
 	}
+
+	setup_loading_floating_bar (slot);
 }
 
 static void
@@ -1464,6 +1487,13 @@ nautilus_window_report_load_complete (NautilusWindow *window,
 }
 
 static void
+remove_loading_floating_bar (NautilusWindowSlot *slot)
+{
+	gtk_widget_hide (slot->floating_bar);
+	nautilus_floating_bar_cleanup_actions (NAUTILUS_FLOATING_BAR (slot->floating_bar));
+}
+
+static void
 end_location_change (NautilusWindowSlot *slot)
 {
 	char *uri;
@@ -1475,6 +1505,7 @@ end_location_change (NautilusWindowSlot *slot)
 	}
 
 	nautilus_window_slot_set_allow_stop (slot, FALSE);
+	remove_loading_floating_bar (slot);
 
         /* Now we can free pending_scroll_to, since the load_complete
          * callback already has been emitted.

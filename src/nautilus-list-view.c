@@ -1541,7 +1541,6 @@ create_and_set_up_tree_view (NautilusListView *view)
 {
 	GtkCellRenderer *cell;
 	GtkTreeViewColumn *column;
-	GtkWidget *overlay;
 	GtkBindingSet *binding_set;
 	AtkObject *atk_obj;
 	GList *nautilus_columns;
@@ -1724,11 +1723,7 @@ create_and_set_up_tree_view (NautilusListView *view)
 				default_visible_columns);
 
 	gtk_widget_show (GTK_WIDGET (view->details->tree_view));
-
-	overlay = gedit_overlay_new (GTK_WIDGET (view->details->tree_view));
-	gtk_widget_show (overlay);
-
-	nautilus_view_setup_overlay (NAUTILUS_VIEW (view), overlay);
+	gtk_container_add (GTK_CONTAINER (view), GTK_WIDGET (view->details->tree_view));
 
         atk_obj = gtk_widget_get_accessible (GTK_WIDGET (view->details->tree_view));
         atk_object_set_name (atk_obj, _("List View"));
