@@ -1927,8 +1927,17 @@ rename_selected_bookmark (NautilusPlacesSidebar *sidebar)
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *cell;
 	GList *renderers;
+	PlaceType type;
 	
 	if (get_selected_iter (sidebar, &iter)) {
+		gtk_tree_model_get (GTK_TREE_MODEL (sidebar->filter_model), &iter,
+				    PLACES_SIDEBAR_COLUMN_ROW_TYPE, &type,
+				    -1);
+
+		if (type != PLACES_BOOKMARK) {
+			return;
+		}
+
 		path = gtk_tree_model_get_path (GTK_TREE_MODEL (sidebar->filter_model), &iter);
 		column = gtk_tree_view_get_column (GTK_TREE_VIEW (sidebar->tree_view), 0);
 		renderers = gtk_cell_layout_get_cells (GTK_CELL_LAYOUT (column));
