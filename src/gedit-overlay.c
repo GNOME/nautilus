@@ -199,17 +199,7 @@ gedit_overlay_size_allocate (GtkWidget     *widget,
 	/* if a relative widget exists place the floating widgets in relation to it */
 	if (priv->relative_widget)
 	{
-		GtkWidget *child;
-
-		/* if the relative widget is a scrolled window, place the children
-		 * inside of it to avoid covering the scrollbars.
-		 */
-		if (GTK_IS_SCROLLED_WINDOW (priv->relative_widget)) {
-			child = gtk_bin_get_child (GTK_BIN (priv->relative_widget));
-			gtk_widget_get_allocation (child, &main_alloc);
-		} else {
-            		gtk_widget_get_allocation (priv->relative_widget, &main_alloc);
-		}
+		gtk_widget_get_allocation (priv->relative_widget, &main_alloc);
 	}
 
 	for (l = priv->children; l != NULL; l = g_slist_next (l))
