@@ -472,7 +472,7 @@ nautilus_window_slot_set_content_view_widget (NautilusWindowSlot *slot,
 
 		g_object_set (slot->view_overlay,
 			      "relative-widget",
-			      slot->content_view,
+			      gtk_bin_get_child (GTK_BIN (slot->content_view)),
 			      NULL);
 
 		/* connect new view */
