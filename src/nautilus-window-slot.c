@@ -195,7 +195,7 @@ nautilus_window_slot_init (NautilusWindowSlot *slot)
 	gtk_widget_show (extras_vbox);
 
 	slot->view_box = gtk_vbox_new (FALSE, 0);
-	slot->view_overlay = gedit_overlay_new (slot->view_box);
+	slot->view_overlay = gedit_overlay_new (slot->view_box, NULL);
 	gtk_box_pack_start (GTK_BOX (content_box), slot->view_overlay, TRUE, TRUE, 0);
 	gtk_widget_show (slot->view_overlay);
 	gtk_widget_show (slot->view_box);
@@ -469,6 +469,11 @@ nautilus_window_slot_set_content_view_widget (NautilusWindowSlot *slot,
 
 		slot->content_view = new_view;
 		g_object_ref (slot->content_view);
+
+		g_object_set (slot->view_overlay,
+			      "relative-widget",
+			      slot->content_view,
+			      NULL);
 
 		/* connect new view */
 		nautilus_window_connect_content_view (window, new_view);
