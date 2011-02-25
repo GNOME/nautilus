@@ -1189,6 +1189,17 @@ sort_column_changed_callback (GtkTreeSortable *sortable,
 }
 
 static void
+editable_focus_out_cb (GtkWidget *widget,
+		       GdkEvent *event,
+		       gpointer user_data)
+{
+	NautilusListView *view = user_data;
+
+	nautilus_view_unfreeze_updates (NAUTILUS_VIEW (view));
+	view->details->editable_widget = NULL;
+}
+
+static void
 cell_renderer_editing_started_cb (GtkCellRenderer *renderer,
 				  GtkCellEditable *editable,
 				  const gchar *path_str,
@@ -1207,6 +1218,9 @@ cell_renderer_editing_started_cb (GtkCellRenderer *renderer,
 	eel_filename_get_rename_region (list_view->details->original_name,
 					&start_offset, &end_offset);
 	gtk_editable_select_region (GTK_EDITABLE (entry), start_offset, end_offset);
+
+	g_signal_connect (entry, "focus-out-event",
+			  G_CALLBACK (editable_focus_out_cb), list_view);
 
 	nautilus_clipboard_set_up_editable
 		(GTK_EDITABLE (entry),
