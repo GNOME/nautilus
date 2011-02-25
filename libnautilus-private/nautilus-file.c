@@ -2981,6 +2981,18 @@ compare_by_type (NautilusFile *file_1, NautilusFile *file_2)
 	type_string_1 = nautilus_file_get_type_as_string (file_1);
 	type_string_2 = nautilus_file_get_type_as_string (file_2);
 
+	if (type_string_1 == NULL || type_string_2 == NULL) {
+		if (type_string_1 != NULL) {
+			return -1;
+		}
+
+		if (type_string_2 != NULL) {
+			return 1;
+		}
+
+		return 0;
+	}
+
 	result = g_utf8_collate (type_string_1, type_string_2);
 
 	g_free (type_string_1);
