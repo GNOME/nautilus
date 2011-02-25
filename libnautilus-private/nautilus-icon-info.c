@@ -397,6 +397,7 @@ nautilus_icon_info_lookup (GIcon *icon,
 
 		filename = gtk_icon_info_get_filename (gtkicon_info);
 		if (filename == NULL) {
+			gtk_icon_info_free (gtkicon_info);
 			return nautilus_icon_info_new_for_pixbuf (NULL);
 		}
 
