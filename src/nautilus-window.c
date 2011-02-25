@@ -578,6 +578,8 @@ nautilus_window_constructed (GObject *self)
 	gtk_widget_show (table);
 	gtk_container_add (GTK_CONTAINER (window), table);
 
+	gtk_widget_set_margin_bottom (GTK_WIDGET (window), 3);
+
 	statusbar = gtk_statusbar_new ();
 	gtk_widget_set_name (statusbar, "statusbar-noborder");
 	window->details->statusbar = statusbar;
