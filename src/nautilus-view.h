@@ -351,7 +351,6 @@ gboolean            nautilus_view_is_editable                     (NautilusView 
 
 /* NautilusView methods */
 const char *      nautilus_view_get_view_id                (NautilusView      *view);
-GtkWidget *       nautilus_view_get_widget                 (NautilusView      *view);
 
 /* file operations */
 char *            nautilus_view_get_backing_uri            (NautilusView      *view);

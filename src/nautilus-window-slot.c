@@ -224,14 +224,14 @@ nautilus_window_slot_dispose (GObject *object)
 	nautilus_window_slot_clear_back_list (slot);
 
 	if (slot->content_view) {
-		widget = nautilus_view_get_widget (slot->content_view);
+		widget = GTK_WIDGET (slot->content_view);
 		gtk_widget_destroy (widget);
 		g_object_unref (slot->content_view);
 		slot->content_view = NULL;
 	}
 
 	if (slot->new_content_view) {
-		widget = nautilus_view_get_widget (slot->new_content_view);
+		widget = GTK_WIDGET (slot->new_content_view);
 		gtk_widget_destroy (widget);
 		g_object_unref (slot->new_content_view);
 		slot->new_content_view = NULL;
@@ -454,14 +454,14 @@ nautilus_window_slot_set_content_view_widget (NautilusWindowSlot *slot,
 		/* disconnect old view */
 		nautilus_window_disconnect_content_view (window, slot->content_view);
 
-		widget = nautilus_view_get_widget (slot->content_view);
+		widget = GTK_WIDGET (slot->content_view);
 		gtk_widget_destroy (widget);
 		g_object_unref (slot->content_view);
 		slot->content_view = NULL;
 	}
 
 	if (new_view != NULL) {
-		widget = nautilus_view_get_widget (new_view);
+		widget = GTK_WIDGET (new_view);
 		gtk_container_add (GTK_CONTAINER (slot->view_box),
 						  GTK_WIDGET (new_view));
 

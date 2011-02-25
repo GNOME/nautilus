@@ -1193,7 +1193,7 @@ location_has_really_changed (NautilusWindowSlot *slot)
 	window = slot->pane->window;
 
 	if (slot->new_content_view != NULL) {
-		widget = nautilus_view_get_widget (slot->new_content_view);
+		widget = GTK_WIDGET (slot->new_content_view);
 		/* Switch to the new content view. */
 		if (gtk_widget_get_parent (widget) == NULL) {
 			nautilus_window_slot_set_content_view_widget (slot, slot->new_content_view);

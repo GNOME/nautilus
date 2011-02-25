@@ -2439,12 +2439,6 @@ nautilus_view_grab_focus (NautilusView *view)
 	}
 }
 
-GtkWidget *
-nautilus_view_get_widget (NautilusView *view)
-{
-	return GTK_WIDGET (view);
-}
-
 int
 nautilus_view_get_selection_count (NautilusView *view)
 {
