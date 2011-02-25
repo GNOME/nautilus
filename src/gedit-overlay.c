@@ -30,35 +30,18 @@
 struct _GeditOverlayPrivate
 {
 	GtkWidget *main_widget;
+	GtkWidget *relative_widget;
 	GSList    *children;
-	GtkAllocation main_alloc;
-
-	GtkAdjustment *hadjustment;
-	GtkAdjustment *vadjustment;
-
-	/* GtkScrollablePolicy needs to be checked when
-	 * driving the scrollable adjustment values */
-	guint hscroll_policy : 1;
-	guint vscroll_policy : 1;
 };
 
 enum
 {
 	PROP_0,
 	PROP_MAIN_WIDGET,
-	PROP_HADJUSTMENT,
-	PROP_VADJUSTMENT,
-	PROP_HSCROLL_POLICY,
-	PROP_VSCROLL_POLICY
+	PROP_RELATIVE_WIDGET
 };
 
-static void	gedit_overlay_set_hadjustment		(GeditOverlay  *overlay,
-							 GtkAdjustment *adjustment);
-static void	gedit_overlay_set_vadjustment		(GeditOverlay  *overlay,
-							 GtkAdjustment *adjustment);
-
-G_DEFINE_TYPE_WITH_CODE (GeditOverlay, gedit_overlay, GTK_TYPE_CONTAINER,
-                         G_IMPLEMENT_INTERFACE (GTK_TYPE_SCROLLABLE, NULL))
+G_DEFINE_TYPE (GeditOverlay, gedit_overlay, GTK_TYPE_CONTAINER)
 
 static void
 add_toplevel_widget (GeditOverlay *overlay,
@@ -68,6 +51,12 @@ add_toplevel_widget (GeditOverlay *overlay,
 
 	overlay->priv->children = g_slist_append (overlay->priv->children,
 	                                          child);
+}
+
+static void
+gedit_overlay_dispose (GObject *object)
+{
+	G_OBJECT_CLASS (gedit_overlay_parent_class)->dispose (object);
 }
 
 static void
@@ -85,36 +74,8 @@ gedit_overlay_get_property (GObject    *object,
 			g_value_set_object (value, priv->main_widget);
 			break;
 
-		case PROP_HADJUSTMENT:
-			g_value_set_object (value, priv->hadjustment);
-			break;
-
-		case PROP_VADJUSTMENT:
-			g_value_set_object (value, priv->vadjustment);
-			break;
-
-		case PROP_HSCROLL_POLICY:
-			if (GTK_IS_SCROLLABLE (priv->main_widget))
-			{
-				g_value_set_enum (value,
-				                  gtk_scrollable_get_hscroll_policy (GTK_SCROLLABLE (priv->main_widget)));
-			}
-			else
-			{
-				g_value_set_enum (value, priv->hscroll_policy);
-			}
-			break;
-
-		case PROP_VSCROLL_POLICY:
-			if (GTK_IS_SCROLLABLE (priv->main_widget))
-			{
-				g_value_set_enum (value,
-				                  gtk_scrollable_get_vscroll_policy (GTK_SCROLLABLE (priv->main_widget)));
-			}
-			else
-			{
-				g_value_set_enum (value, priv->vscroll_policy);
-			}
+		case PROP_RELATIVE_WIDGET:
+			g_value_set_object (value, priv->relative_widget);
 			break;
 
 		default:
@@ -135,45 +96,12 @@ gedit_overlay_set_property (GObject      *object,
 	switch (prop_id)
 	{
 		case PROP_MAIN_WIDGET:
-			overlay->priv->main_widget = g_value_get_object (value);
-			add_toplevel_widget (overlay,
-			                     overlay->priv->main_widget);
+			priv->main_widget = g_value_get_object (value);
+			add_toplevel_widget (overlay, priv->main_widget);
 			break;
 
-		case PROP_HADJUSTMENT:
-			gedit_overlay_set_hadjustment (overlay,
-						       g_value_get_object (value));
-			break;
-
-		case PROP_VADJUSTMENT:
-			gedit_overlay_set_vadjustment (overlay,
-						       g_value_get_object (value));
-			break;
-
-		case PROP_HSCROLL_POLICY:
-			if (GTK_IS_SCROLLABLE (priv->main_widget))
-			{
-				gtk_scrollable_set_hscroll_policy (GTK_SCROLLABLE (priv->main_widget),
-				                                   g_value_get_uint (value));
-			}
-			else
-			{
-				priv->hscroll_policy = g_value_get_enum (value);
-				gtk_widget_queue_resize (GTK_WIDGET (overlay));
-			}
-			break;
-
-		case PROP_VSCROLL_POLICY:
-			if (GTK_IS_SCROLLABLE (priv->main_widget))
-			{
-				gtk_scrollable_set_vscroll_policy (GTK_SCROLLABLE (priv->main_widget),
-				                                   g_value_get_enum (value));
-			}
-			else
-			{
-				priv->vscroll_policy = g_value_get_enum (value);
-				gtk_widget_queue_resize (GTK_WIDGET (overlay));
-			}
+		case PROP_RELATIVE_WIDGET:
+			priv->relative_widget = g_value_get_object (value);
 			break;
 
 		default:
@@ -223,24 +151,13 @@ gedit_overlay_get_preferred_width (GtkWidget *widget,
                                    gint      *natural)
 {
 	GeditOverlayPrivate *priv = GEDIT_OVERLAY (widget)->priv;
-	GtkWidget *child;
-	GSList *children;
-	gint child_min, child_nat;
 
 	*minimum = 0;
 	*natural = 0;
 
-	for (children = priv->children; children; children = children->next)
+	if (priv->main_widget)
 	{
-		child = children->data;
-
-		if (!gtk_widget_get_visible (child))
-			continue;
-
-		gtk_widget_get_preferred_width (child, &child_min, &child_nat);
-
-		*minimum = MAX (*minimum, child_min);
-		*natural = MAX (*natural, child_nat);
+		gtk_widget_get_preferred_width (priv->main_widget, minimum, natural);
 	}
 }
 
@@ -250,35 +167,53 @@ gedit_overlay_get_preferred_height (GtkWidget *widget,
                                     gint      *natural)
 {
 	GeditOverlayPrivate *priv = GEDIT_OVERLAY (widget)->priv;
-	GtkWidget *child;
-	GSList *children;
-	gint child_min, child_nat;
 
 	*minimum = 0;
 	*natural = 0;
 
-	for (children = priv->children; children; children = children->next)
+	if (priv->main_widget)
 	{
-		child = children->data;
-
-		if (!gtk_widget_get_visible (child))
-			continue;
-
-		gtk_widget_get_preferred_height (child, &child_min, &child_nat);
-
-		*minimum = MAX (*minimum, child_min);
-		*natural = MAX (*natural, child_nat);
+		gtk_widget_get_preferred_height (priv->main_widget, minimum, natural);
 	}
 }
 
 static void
-set_children_positions (GeditOverlay *overlay)
+gedit_overlay_size_allocate (GtkWidget     *widget,
+                             GtkAllocation *allocation)
 {
+	GeditOverlay *overlay = GEDIT_OVERLAY (widget);
+	GeditOverlayPrivate *priv = overlay->priv;
+	GtkAllocation main_alloc;
 	GSList *l;
 
-	for (l = overlay->priv->children; l != NULL; l = g_slist_next (l))
+	GTK_WIDGET_CLASS (gedit_overlay_parent_class)->size_allocate (widget, allocation);
+
+	/* main widget allocation */
+	main_alloc.x = 0;
+	main_alloc.y = 0;
+	main_alloc.width = allocation->width;
+	main_alloc.height = allocation->height;
+
+	gtk_widget_size_allocate (overlay->priv->main_widget, &main_alloc);
+
+	/* if a relative widget exists place the floating widgets in relation to it */
+	if (priv->relative_widget)
 	{
-		GeditOverlayPrivate *priv = overlay->priv;
+		GtkWidget *child;
+
+		/* if the relative widget is a scrolled window, place the children
+		 * inside of it to avoid covering the scrollbars.
+		 */
+		if (GTK_IS_SCROLLED_WINDOW (priv->relative_widget)) {
+			child = gtk_bin_get_child (GTK_BIN (priv->relative_widget));
+			gtk_widget_get_allocation (child, &main_alloc);
+		} else {
+            		gtk_widget_get_allocation (priv->relative_widget, &main_alloc);
+		}
+	}
+
+	for (l = priv->children; l != NULL; l = g_slist_next (l))
+	{
 		GtkWidget *child = GTK_WIDGET (l->data);
 		GtkRequisition req;
 		GtkAllocation alloc;
@@ -295,7 +230,7 @@ set_children_positions (GeditOverlay *overlay)
 		{
 			/* The gravity is treated as position and not as a gravity */
 			case GEDIT_OVERLAY_CHILD_POSITION_NORTH_EAST:
-				alloc.x = priv->main_alloc.width - req.width - offset;
+				alloc.x = MAX (main_alloc.x, main_alloc.width - req.width - (gint) offset);
 				alloc.y = 0;
 				break;
 			case GEDIT_OVERLAY_CHILD_POSITION_NORTH_WEST:
@@ -304,46 +239,22 @@ set_children_positions (GeditOverlay *overlay)
 				break;
 			case GEDIT_OVERLAY_CHILD_POSITION_SOUTH_WEST:
 				alloc.x = offset;
-				alloc.y = priv->main_alloc.height - req.height;
+				alloc.y = MAX (main_alloc.y, main_alloc.height - req.height);
 				break;
-	                case GEDIT_OVERLAY_CHILD_POSITION_SOUTH_EAST:
-				alloc.x = MAX (priv->main_alloc.x, priv->main_alloc.width - req.width - (gint) offset);
-				alloc.y = MAX (priv->main_alloc.y, priv->main_alloc.height - req.height);
+			case GEDIT_OVERLAY_CHILD_POSITION_SOUTH_EAST:
+				alloc.x = MAX (main_alloc.x, main_alloc.width - req.width - (gint) offset);
+				alloc.y = MAX (main_alloc.y, main_alloc.height - req.height);
 				break;
 			default:
 				alloc.x = 0;
 				alloc.y = 0;
 		}
 
-		if (!gedit_overlay_child_get_fixed (GEDIT_OVERLAY_CHILD (child)))
-		{
-			alloc.x *= gtk_adjustment_get_value (priv->hadjustment);
-			alloc.y *= gtk_adjustment_get_value (priv->vadjustment);
-		}
-
-		alloc.width = MIN (priv->main_alloc.width, req.width);
-		alloc.height = MIN (priv->main_alloc.height, req.height);
+		alloc.width = MIN (main_alloc.width, req.width);
+		alloc.height = MIN (main_alloc.height, req.height);
 
 		gtk_widget_size_allocate (child, &alloc);
 	}
-}
-
-static void
-gedit_overlay_size_allocate (GtkWidget     *widget,
-                             GtkAllocation *allocation)
-{
-	GeditOverlay *overlay = GEDIT_OVERLAY (widget);
-
-	GTK_WIDGET_CLASS (gedit_overlay_parent_class)->size_allocate (widget, allocation);
-
-	overlay->priv->main_alloc.x = 0;
-	overlay->priv->main_alloc.y = 0;
-	overlay->priv->main_alloc.width = allocation->width;
-	overlay->priv->main_alloc.height = allocation->height;
-
-	gtk_widget_size_allocate (overlay->priv->main_widget,
-	                          &overlay->priv->main_alloc);
-	set_children_positions (overlay);
 }
 
 static GeditOverlayChild *
@@ -378,6 +289,7 @@ get_overlay_child (GeditOverlay *overlay,
 			{
 				overlay_child = GEDIT_OVERLAY_CHILD (child);
 				g_object_unref (in_widget);
+
 				break;
 			}
 
@@ -409,7 +321,7 @@ overlay_add (GtkContainer *overlay,
 			gtk_widget_show (GTK_WIDGET (child));
 
 			g_signal_connect_swapped (widget, "destroy",
-						  G_CALLBACK (gtk_widget_destroy), child);
+			                          G_CALLBACK (gtk_widget_destroy), child);
 		}
 
 		add_toplevel_widget (GEDIT_OVERLAY (overlay), GTK_WIDGET (child));
@@ -464,60 +376,6 @@ gedit_overlay_child_type (GtkContainer *overlay)
 	return GTK_TYPE_WIDGET;
 }
 
-static void
-gedit_overlay_set_hadjustment (GeditOverlay  *overlay,
-                               GtkAdjustment *adjustment)
-{
-	GeditOverlayPrivate *priv = overlay->priv;
-
-	if (adjustment && priv->vadjustment == adjustment)
-		return;
-
-	if (adjustment == NULL)
-	{
-		adjustment = gtk_adjustment_new (0.0, 0.0, 0.0,
-		                                 0.0, 0.0, 0.0);
-	}
-
-	priv->hadjustment = g_object_ref_sink (adjustment);
-
-	if (GTK_IS_SCROLLABLE (priv->main_widget))
-	{
-		g_object_set (priv->main_widget,
-		              "hadjustment", adjustment,
-		              NULL);
-
-	}
-
-	g_object_notify (G_OBJECT (overlay), "hadjustment");
-}
-
-static void
-gedit_overlay_set_vadjustment (GeditOverlay  *overlay,
-                               GtkAdjustment *adjustment)
-{
-	GeditOverlayPrivate *priv = overlay->priv;
-
-	if (adjustment && priv->vadjustment == adjustment)
-		return;
-
-	if (adjustment == NULL)
-	{
-		adjustment = gtk_adjustment_new (0.0, 0.0, 0.0,
-		                                 0.0, 0.0, 0.0);
-	}
-
-	priv->vadjustment = g_object_ref_sink (adjustment);
-
-	if (GTK_IS_SCROLLABLE (priv->main_widget))
-	{
-		g_object_set (priv->main_widget,
-		              "vadjustment", adjustment,
-		              NULL);
-	}
-
-	g_object_notify (G_OBJECT (overlay), "vadjustment");
-}
 
 static void
 gedit_overlay_class_init (GeditOverlayClass *klass)
@@ -526,6 +384,7 @@ gedit_overlay_class_init (GeditOverlayClass *klass)
 	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 	GtkContainerClass *container_class = GTK_CONTAINER_CLASS (klass);
 
+	object_class->dispose = gedit_overlay_dispose;
 	object_class->get_property = gedit_overlay_get_property;
 	object_class->set_property = gedit_overlay_set_property;
 
@@ -548,18 +407,13 @@ gedit_overlay_class_init (GeditOverlayClass *klass)
 	                                                      G_PARAM_CONSTRUCT_ONLY |
 	                                                      G_PARAM_STATIC_STRINGS));
 
-	g_object_class_override_property (object_class,
-	                                  PROP_HADJUSTMENT,
-	                                  "hadjustment");
-	g_object_class_override_property (object_class,
-	                                  PROP_VADJUSTMENT,
-	                                  "vadjustment");
-	g_object_class_override_property (object_class,
-	                                  PROP_HSCROLL_POLICY,
-	                                  "hscroll-policy");
-	g_object_class_override_property (object_class,
-	                                  PROP_VSCROLL_POLICY,
-	                                  "vscroll-policy");
+	g_object_class_install_property (object_class, PROP_RELATIVE_WIDGET,
+	                                 g_param_spec_object ("relative-widget",
+	                                                      "Relative Widget",
+	                                                      "Widget on which the floating widgets are placed",
+	                                                      GTK_TYPE_WIDGET,
+	                                                      G_PARAM_READWRITE |
+	                                                      G_PARAM_STATIC_STRINGS));
 
 	g_type_class_add_private (object_class, sizeof (GeditOverlayPrivate));
 }
@@ -573,18 +427,23 @@ gedit_overlay_init (GeditOverlay *overlay)
 /**
  * gedit_overlay_new:
  * @main_widget: a #GtkWidget
+ * @relative_widget: (allow-none): a #Gtkwidget
  *
- * Creates a new #GeditOverlay
+ * Creates a new #GeditOverlay. If @relative_widget is not %NULL the floating
+ * widgets will be placed in relation to it, if not @main_widget will be use
+ * for this purpose.
  *
  * Returns: a new #GeditOverlay object.
  */
 GtkWidget *
-gedit_overlay_new (GtkWidget *main_widget)
+gedit_overlay_new (GtkWidget *main_widget,
+                   GtkWidget *relative_widget)
 {
 	g_return_val_if_fail (GTK_IS_WIDGET (main_widget), NULL);
 
 	return GTK_WIDGET (g_object_new (GEDIT_TYPE_OVERLAY,
 	                                 "main-widget", main_widget,
+	                                 "relative-widget", relative_widget,
 	                                 NULL));
 }
 

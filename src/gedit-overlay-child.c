@@ -23,10 +23,10 @@
 
 struct _GeditOverlayChildPrivate
 {
-	GtkWidget                *widget;
+	GtkWidget		 *widget;
+	GBinding		 *binding;
 	GeditOverlayChildPosition position;
 	guint                     offset;
-	gboolean                  fixed;
 };
 
 enum
@@ -34,8 +34,7 @@ enum
 	PROP_0,
 	PROP_WIDGET,
 	PROP_POSITION,
-	PROP_OFFSET,
-	PROP_FIXED
+	PROP_OFFSET
 };
 
 G_DEFINE_TYPE (GeditOverlayChild, gedit_overlay_child, GTK_TYPE_BIN)
@@ -58,9 +57,6 @@ gedit_overlay_child_get_property (GObject    *object,
 			break;
 		case PROP_OFFSET:
 			g_value_set_uint (value, child->priv->offset);
-			break;
-		case PROP_FIXED:
-			g_value_set_boolean (value, child->priv->fixed);
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -88,9 +84,6 @@ gedit_overlay_child_set_property (GObject      *object,
 		case PROP_OFFSET:
 			child->priv->offset = g_value_get_uint (value);
 			break;
-		case PROP_FIXED:
-			child->priv->fixed = g_value_get_boolean (value);
-			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 			break;
@@ -113,8 +106,8 @@ gedit_overlay_child_realize (GtkWidget *widget)
 	attributes.window_type = GDK_WINDOW_CHILD;
 	attributes.wclass = GDK_INPUT_OUTPUT;
 	attributes.event_mask = GDK_EXPOSURE_MASK;
-        attributes.width = 0;
-        attributes.height = 0;
+	attributes.width = 0;
+	attributes.height = 0;
 
 	window = gdk_window_new (parent_window, &attributes, 0);
 	gdk_window_set_user_data (window, widget);
@@ -133,7 +126,6 @@ gedit_overlay_child_get_preferred_width (GtkWidget *widget,
 
 	if (child->priv->widget != NULL)
 	{
-
 		gtk_widget_get_preferred_width (child->priv->widget,
 		                                &child_min, &child_nat);
 	}
@@ -151,8 +143,7 @@ gedit_overlay_child_get_preferred_height (GtkWidget *widget,
         gint child_min = 0, child_nat = 0;
 
 	if (child->priv->widget != NULL)
-        {
-
+	{
 		gtk_widget_get_preferred_height (child->priv->widget,
 		                                 &child_min, &child_nat);
 	}
@@ -170,14 +161,14 @@ gedit_overlay_child_size_allocate (GtkWidget     *widget,
 
         tmp.width = allocation->width;
         tmp.height = allocation->height;
-        tmp.x = 0;
-        tmp.y = 0;
-
+        tmp.x = tmp.y = 0;
+        
 	GTK_WIDGET_CLASS (gedit_overlay_child_parent_class)->size_allocate (widget, allocation);
 
 	if (child->priv->widget != NULL)
 	{
-		gtk_widget_size_allocate (child->priv->widget, &tmp);
+		gtk_widget_size_allocate (child->priv->widget,
+		                          &tmp);
 	}
 }
 
@@ -189,6 +180,10 @@ gedit_overlay_child_add (GtkContainer *container,
 
 	child->priv->widget = widget;
 
+	child->priv->binding = g_object_bind_property (G_OBJECT (widget), "visible",
+						       G_OBJECT (container), "visible",
+						       G_BINDING_BIDIRECTIONAL);
+
 	GTK_CONTAINER_CLASS (gedit_overlay_child_parent_class)->add (container, widget);
 }
 
@@ -199,6 +194,8 @@ gedit_overlay_child_remove (GtkContainer *container,
 	GeditOverlayChild *child = GEDIT_OVERLAY_CHILD (container);
 
 	child->priv->widget = NULL;
+
+	g_object_unref (child->priv->binding);
 
 	GTK_CONTAINER_CLASS (gedit_overlay_child_parent_class)->remove (container, widget);
 }
@@ -234,8 +231,9 @@ gedit_overlay_child_class_init (GeditOverlayChildClass *klass)
 	                                 g_param_spec_uint ("position",
 	                                                    "Position",
 	                                                    "The Widget Position",
-	                                                    1, GEDIT_OVERLAY_CHILD_POSITION_STATIC,
+                                                            0, 
 	                                                    GEDIT_OVERLAY_CHILD_POSITION_STATIC,
+                                                            0,
 	                                                    G_PARAM_READWRITE |
 	                                                    G_PARAM_CONSTRUCT |
 	                                                    G_PARAM_STATIC_STRINGS));
@@ -250,15 +248,6 @@ gedit_overlay_child_class_init (GeditOverlayChildClass *klass)
 	                                                    G_PARAM_READWRITE |
 	                                                    G_PARAM_CONSTRUCT |
 	                                                    G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (object_class, PROP_FIXED,
-	                                 g_param_spec_boolean ("fixed",
-	                                                       "Fixed",
-	                                                       "Wether the Widget is in a fixed position",
-	                                                       TRUE,
-	                                                       G_PARAM_READWRITE |
-	                                                       G_PARAM_CONSTRUCT |
-	                                                       G_PARAM_STATIC_STRINGS));
 
 	g_type_class_add_private (object_class, sizeof (GeditOverlayChildPrivate));
 }
@@ -361,46 +350,6 @@ gedit_overlay_child_set_offset (GeditOverlayChild *child,
 		child->priv->offset = offset;
 
 		g_object_notify (G_OBJECT (child), "offset");
-	}
-}
-
-/**
- * gedit_overlay_child_get_fixed:
- * @child: a #GeditOverlayChild
- *
- * Gets wether @child is fixed in its position. If @child is not fixed the position
- * will change when for example you scroll the container.
- *
- * Returns: wether @child is fixed in its position
- */
-gboolean
-gedit_overlay_child_get_fixed (GeditOverlayChild *child)
-{
-	g_return_val_if_fail (GEDIT_IS_OVERLAY_CHILD (child), TRUE);
-
-	return child->priv->fixed;
-}
-
-/**
- * gedit_overlay_child_set_fixed:
- * @child: a #GeditOverlayChild
- * @fixed: wether @child is in a fixed position
- *
- * Sets wether @child is in a fixed position
- */
-void
-gedit_overlay_child_set_fixed (GeditOverlayChild *child,
-                               gboolean           fixed)
-{
-	g_return_if_fail (GEDIT_IS_OVERLAY_CHILD (child));
-
-	fixed = (fixed != FALSE);
-
-	if (child->priv->fixed != fixed)
-	{
-		child->priv->fixed = fixed;
-
-		g_object_notify (G_OBJECT (child), "fixed");
 	}
 }
 
