@@ -1206,7 +1206,6 @@ cell_renderer_editing_started_cb (GtkCellRenderer *renderer,
 				  NautilusListView *list_view)
 {
 	GtkEntry *entry;
-	gint start_offset, end_offset;
 
 	entry = GTK_ENTRY (editable);
 	list_view->details->editable_widget = editable;
@@ -1215,9 +1214,6 @@ cell_renderer_editing_started_cb (GtkCellRenderer *renderer,
 	g_free (list_view->details->original_name);
 
 	list_view->details->original_name = g_strdup (gtk_entry_get_text (entry));
-	eel_filename_get_rename_region (list_view->details->original_name,
-					&start_offset, &end_offset);
-	gtk_editable_select_region (GTK_EDITABLE (entry), start_offset, end_offset);
 
 	g_signal_connect (entry, "focus-out-event",
 			  G_CALLBACK (editable_focus_out_cb), list_view);
@@ -2889,6 +2885,7 @@ nautilus_list_view_start_renaming_file (NautilusView *view,
 	NautilusListView *list_view;
 	GtkTreeIter iter;
 	GtkTreePath *path;
+	gint start_offset, end_offset;
 	
 	list_view = NAUTILUS_LIST_VIEW (view);
 	
@@ -2922,6 +2919,15 @@ nautilus_list_view_start_renaming_file (NautilusView *view,
 				  path,
 				  list_view->details->file_name_column,
 				  TRUE);
+
+	/* set cursor also triggers editing-started, where we save the editable widget */
+	if (list_view->details->editable_widget != NULL) {
+		eel_filename_get_rename_region (list_view->details->original_name,
+						&start_offset, &end_offset);
+
+		gtk_editable_select_region (GTK_EDITABLE (list_view->details->editable_widget),
+					    start_offset, end_offset);
+	}
 
 	gtk_tree_path_free (path);
 }
