@@ -360,6 +360,51 @@ nautilus_view_unmerge_menus (NautilusView *view)
 		 unmerge_menus, (view));
 }
 
+static char *
+real_get_backing_uri (NautilusView *view)
+{
+	NautilusDirectory *directory;
+	char *uri;
+       
+	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NULL);
+
+	if (view->details->model == NULL) {
+		return NULL;
+	}
+       
+	directory = view->details->model;
+       
+	if (NAUTILUS_IS_DESKTOP_DIRECTORY (directory)) {
+		directory = nautilus_desktop_directory_get_real_directory (NAUTILUS_DESKTOP_DIRECTORY (directory));
+	} else {
+		nautilus_directory_ref (directory);
+	}
+       
+	uri = nautilus_directory_get_uri (directory);
+
+	nautilus_directory_unref (directory);
+
+	return uri;
+}
+
+/**
+ *
+ * nautilus_view_get_backing_uri:
+ *
+ * Returns the URI for the target location of new directory, new file, new
+ * link, new launcher, and paste operations.
+ */
+
+char *
+nautilus_view_get_backing_uri (NautilusView *view)
+{
+	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NULL);
+
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(NAUTILUS_VIEW_CLASS, view,
+		 get_backing_uri, (view));
+}
+
 /**
  * nautilus_view_select_all:
  *
@@ -1285,34 +1330,6 @@ action_other_application_callback (GtkAction *action,
 	g_assert (NAUTILUS_IS_VIEW (callback_data));
 
 	open_with_other_program (NAUTILUS_VIEW (callback_data));
-}
-
-/* Get the real directory where files will be stored and created */
-char *
-nautilus_view_get_backing_uri (NautilusView *view)
-{
-	NautilusDirectory *directory;
-	char *uri;
-	
-	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NULL);
-
-	if (view->details->model == NULL) {
-		return NULL;
-	}
-	
-	directory = view->details->model;
-	
-	if (NAUTILUS_IS_DESKTOP_DIRECTORY (directory)) {
-		directory = nautilus_desktop_directory_get_real_directory (NAUTILUS_DESKTOP_DIRECTORY (directory));
-	} else {
-		nautilus_directory_ref (directory);
-	}
-	
-	uri = nautilus_directory_get_uri (directory);
-
-	nautilus_directory_unref (directory);
-
-	return uri;
 }
 
 static void
@@ -9760,6 +9777,7 @@ nautilus_view_class_init (NautilusViewClass *klass)
 	klass->load_error = real_load_error;
 	klass->can_rename_file = can_rename_file;
 	klass->start_renaming_file = start_renaming_file;
+	klass->get_backing_uri = real_get_backing_uri;
 	klass->using_manual_layout = real_using_manual_layout;
         klass->merge_menus = real_merge_menus;
         klass->unmerge_menus = real_unmerge_menus;

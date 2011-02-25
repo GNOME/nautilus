@@ -2025,6 +2025,163 @@ nautilus_list_view_file_changed (NautilusView *view, NautilusFile *file, Nautilu
 	}
 }
 
+typedef struct {
+	GtkTreePath *path;
+	gboolean is_common;
+	gboolean is_root;
+} HasCommonParentData;
+
+static void
+tree_selection_has_common_parent_foreach_func (GtkTreeModel *model,
+						GtkTreePath *path,
+						GtkTreeIter *iter,
+						gpointer user_data)
+{
+	HasCommonParentData *data;
+	GtkTreePath *parent_path;
+	gboolean has_parent;
+
+	data = (HasCommonParentData *) user_data;
+
+	parent_path = gtk_tree_path_copy (path);
+	gtk_tree_path_up (parent_path);
+
+	has_parent = (gtk_tree_path_get_depth (parent_path) > 0) ? TRUE : FALSE;
+
+	if (!has_parent) {
+		data->is_root = TRUE;
+	}
+
+	if (data->is_common && !data->is_root) {
+		if (data->path == NULL) {
+			data->path = gtk_tree_path_copy (parent_path);
+		} else if (gtk_tree_path_compare (data->path, parent_path) != 0) {
+			data->is_common = FALSE;
+		}
+	}
+
+	gtk_tree_path_free (parent_path);
+}
+
+static void
+tree_selection_has_common_parent (GtkTreeSelection *selection,
+				  gboolean *is_common,
+				  gboolean *is_root)
+{
+	HasCommonParentData data;
+
+	g_assert (is_common != NULL);
+	g_assert (is_root != NULL);
+
+	data.path = NULL;
+	data.is_common = *is_common = TRUE;
+	data.is_root = *is_root = FALSE;
+
+	gtk_tree_selection_selected_foreach (selection,
+					     tree_selection_has_common_parent_foreach_func,
+					     &data);
+
+	*is_common = data.is_common;
+	*is_root = data.is_root;
+
+	if (data.path != NULL) {
+		gtk_tree_path_free (data.path);
+	}
+}
+
+static char *
+nautilus_list_view_get_backing_uri (NautilusView *view)
+{
+	NautilusListView *list_view;
+	NautilusListModel *list_model;
+	NautilusFile *file;
+	GtkTreeView *tree_view;
+	GtkTreeSelection *selection;
+	GtkTreePath *path;
+	GList *paths;
+	guint length;
+	char *uri;
+
+	g_return_val_if_fail (NAUTILUS_IS_LIST_VIEW (view), NULL);
+
+	list_view = NAUTILUS_LIST_VIEW (view);
+	list_model = list_view->details->model;
+	tree_view = list_view->details->tree_view;
+
+	g_assert (list_model);
+
+	/* We currently handle three common cases here:
+	 * (a) if the selection contains non-filesystem items (i.e., the
+	 *     "(Empty)" label), we return the uri of the parent.
+	 * (b) if the selection consists of exactly one _expanded_ directory, we
+	 *     return its URI.
+	 * (c) if the selection consists of either exactly one item which is not
+	 *     an expanded directory) or multiple items in the same directory,
+	 *     we return the URI of the common parent.
+	 */
+
+	uri = NULL;
+
+	selection = gtk_tree_view_get_selection (tree_view);
+	length = gtk_tree_selection_count_selected_rows (selection);
+
+	if (length == 1) {
+
+		paths = gtk_tree_selection_get_selected_rows (selection, NULL);
+		path = (GtkTreePath *) paths->data;
+
+		file = nautilus_list_model_file_for_path (list_model, path);
+		if (file == NULL) {
+			/* The selected item is a label, not a file */
+			gtk_tree_path_up (path);
+			file = nautilus_list_model_file_for_path (list_model, path);
+		}
+
+		if (file != NULL) {
+			if (nautilus_file_is_directory (file) &&
+			    gtk_tree_view_row_expanded (tree_view, path)) {
+				uri = nautilus_file_get_uri (file);
+			}
+			nautilus_file_unref (file);
+		}
+
+		gtk_tree_path_free (path);
+		g_list_free (paths);
+	}
+
+	if (uri == NULL && length > 0) {
+
+		gboolean is_common, is_root;
+
+		/* Check that all the selected items belong to the same
+		 * directory and that directory is not the root directory (which
+		 * is handled by NautilusView::get_backing_directory.) */
+
+		tree_selection_has_common_parent (selection, &is_common, &is_root);
+
+		if (is_common && !is_root) {
+
+			paths = gtk_tree_selection_get_selected_rows (selection, NULL);
+			path = (GtkTreePath *) paths->data;
+
+			file = nautilus_list_model_file_for_path (list_model, path);
+			g_assert (file != NULL);
+			uri = nautilus_file_get_parent_uri (file);
+			nautilus_file_unref (file);
+
+			g_list_foreach (paths, (GFunc) gtk_tree_path_free, NULL);
+			g_list_free (paths);
+		}
+	}
+
+	if (uri != NULL) {
+		return uri;
+	}
+
+	return EEL_CALL_PARENT_WITH_RETURN_VALUE (NAUTILUS_VIEW_CLASS,
+						  get_backing_uri, (view));
+}
+
 static void
 nautilus_list_view_get_selection_foreach_func (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, gpointer data)
 {
@@ -3100,6 +3257,7 @@ nautilus_list_view_class_init (NautilusListViewClass *class)
         nautilus_view_class->click_policy_changed = nautilus_list_view_click_policy_changed;
 	nautilus_view_class->clear = nautilus_list_view_clear;
 	nautilus_view_class->file_changed = nautilus_list_view_file_changed;
+	nautilus_view_class->get_backing_uri = nautilus_list_view_get_backing_uri;
 	nautilus_view_class->get_selection = nautilus_list_view_get_selection;
 	nautilus_view_class->get_selection_for_file_transfer = nautilus_list_view_get_selection_for_file_transfer;
 	nautilus_view_class->get_item_count = nautilus_list_view_get_item_count;
