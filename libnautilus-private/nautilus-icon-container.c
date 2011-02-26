@@ -4769,7 +4769,7 @@ nautilus_icon_container_search_position_func (NautilusIconContainer *container,
 
 	gtk_widget_get_preferred_size (search_dialog, &requisition, NULL);
 
-	if (cont_x + cont_width - requisition.width > gdk_screen_get_width (screen)) {
+	if (cont_x + cont_width > gdk_screen_get_width (screen)) {
 		x = gdk_screen_get_width (screen) - requisition.width;
 	} else if (cont_x + cont_width - requisition.width < 0) {
 		x = 0;
@@ -4777,7 +4777,7 @@ nautilus_icon_container_search_position_func (NautilusIconContainer *container,
 		x = cont_x + cont_width - requisition.width;
 	}
 
-	if (cont_y + cont_height > gdk_screen_get_height (screen)) {
+	if (cont_y + cont_height + requisition.height > gdk_screen_get_height (screen)) {
 		y = gdk_screen_get_height (screen) - requisition.height;
 	} else if (cont_y + cont_height < 0) { /* isn't really possible ... */
 		y = 0;
