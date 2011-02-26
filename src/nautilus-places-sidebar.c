@@ -2426,6 +2426,58 @@ empty_trash_cb (GtkMenuItem           *item,
 	nautilus_file_operations_empty_trash (GTK_WIDGET (sidebar->window));
 }
 
+static gboolean
+find_prev_or_next_row (NautilusPlacesSidebar *sidebar,
+		       GtkTreePath **path,
+		       gboolean go_up)
+{
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	int place_type;
+	gboolean res;
+
+	g_assert (path != NULL);
+
+	model = gtk_tree_view_get_model (sidebar->tree_view);
+	gtk_tree_view_get_cursor (sidebar->tree_view, path, NULL);
+
+	if (go_up) {
+		res = gtk_tree_path_prev (*path);
+	} else {
+		gtk_tree_path_next (*path);
+		res = gtk_tree_model_get_iter (model, &iter, *path);
+	}
+
+	if (res) {
+		gtk_tree_model_get_iter (model, &iter, *path);
+		gtk_tree_model_get (model, &iter,
+				    PLACES_SIDEBAR_COLUMN_ROW_TYPE, &place_type,
+				    -1);
+		if (place_type == PLACES_HEADING) {
+			if (go_up) {
+				res = gtk_tree_path_prev (*path);
+			} else {
+				gtk_tree_path_next (*path);
+				res = gtk_tree_model_get_iter (model, &iter, *path);
+			}
+		}
+	}
+
+	return res;
+}
+
+static gboolean
+find_prev_row (NautilusPlacesSidebar *sidebar, GtkTreePath **path)
+{
+	return find_prev_or_next_row (sidebar, path, TRUE);
+}
+
+static gboolean
+find_next_row (NautilusPlacesSidebar *sidebar, GtkTreePath **path)
+{
+	return find_prev_or_next_row (sidebar, path, FALSE);
+}
+
 /* Handler for GtkWidget::key-press-event on the shortcuts list */
 static gboolean
 bookmarks_key_press_event_cb (GtkWidget             *widget,
@@ -2463,6 +2515,24 @@ bookmarks_key_press_event_cb (GtkWidget             *widget,
   if (event->keyval == GDK_KEY_Down &&
       (event->state & modifiers) == GDK_MOD1_MASK) {
       return eject_or_unmount_selection (sidebar);
+  }
+
+  if (event->keyval == GDK_KEY_Up) {
+      GtkTreePath *path;
+      if (find_prev_row (sidebar, &path)) {
+          gtk_tree_view_set_cursor (sidebar->tree_view, path, NULL, FALSE);
+      }
+      gtk_tree_path_free (path);
+      return TRUE;
+  }
+
+  if (event->keyval == GDK_KEY_Down) {
+      GtkTreePath *path;
+      if (find_next_row (sidebar, &path)) {
+          gtk_tree_view_set_cursor (sidebar->tree_view, path, NULL, FALSE);
+      }
+      gtk_tree_path_free (path);
+      return TRUE;
   }
 
   if ((event->keyval == GDK_KEY_Delete
