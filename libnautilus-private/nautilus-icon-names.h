@@ -23,6 +23,7 @@
 #define NAUTILUS_ICON_FOLDER_PUBLIC_SHARE "folder-publicshare"
 #define NAUTILUS_ICON_FOLDER_TEMPLATES  "folder-templates"
 #define NAUTILUS_ICON_FOLDER_VIDEOS     "folder-videos"
+#define NAUTILUS_ICON_FOLDER_SAVED_SEARCH "folder-saved-search"
 
 /* Other icons */
 #define NAUTILUS_ICON_TEMPLATE		"text-x-generic-template"

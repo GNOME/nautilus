@@ -191,11 +191,18 @@ nautilus_bookmark_set_icon_to_default (NautilusBookmark *bookmark)
 {
 	GIcon *icon, *emblemed_icon, *folder;
 	GEmblem *emblem;
+	char *uri;
 
 	if (g_file_is_native (bookmark->details->location)) {
 		folder = g_themed_icon_new (NAUTILUS_ICON_FOLDER);
 	} else {
-		folder = g_themed_icon_new (NAUTILUS_ICON_FOLDER_REMOTE);
+		uri = nautilus_bookmark_get_uri (bookmark);
+		if (g_str_has_prefix (uri, EEL_SEARCH_URI)) {
+			folder = g_themed_icon_new (NAUTILUS_ICON_FOLDER_SAVED_SEARCH);
+		} else {
+			folder = g_themed_icon_new (NAUTILUS_ICON_FOLDER_REMOTE);
+		}
+		g_free (uri);
 	}
 
 	if (nautilus_bookmark_uri_known_not_to_exist (bookmark)) {
