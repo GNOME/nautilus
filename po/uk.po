@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-28 19:30+0200\n"
-"PO-Revision-Date: 2011-03-01 20:37+0300\n"
+"POT-Creation-Date: 2011-03-01 20:41+0200\n"
+"PO-Revision-Date: 2011-03-02 20:25+0300\n"
 "Last-Translator: Korostil Daniel <ted.korostiled@gmail.com>\n"
 "Language-Team: translation@linux.org.ua\n"
 "Language: uk\n"
@@ -1661,7 +1661,7 @@ msgid ""
 "larger (200%), largest (400%)"
 msgstr ""
 "Рядок, що вказує як частини довгих назв файлів будуть замінюватись овалами, "
-"залежно від масштабу. Кожен список записі у формі \"Масштаб:ціле_число\". "
+"залежно від масштабу. Кожен список записі у формі \"Масштаб:цифра\". "
 "Для кожного масштабу, якщо ціле більше за 0, назва файла не перевищуватиме "
 "вказану кількість ліній. Якщо ціле дорівнює 0 або менше, для вказаного "
 "масштабу не накладається обмежень. Типовий вивід у формі \"Ціле\" без будь-"
@@ -1942,7 +1942,7 @@ msgid ""
 "is not set to a full path, it will be searched for in the search path."
 msgstr ""
 "Якщо позначено, Nautilus додасть URI вибраних файлів і вважатиме командний "
-"рядок масового перейменування як результат. Прогроами масового "
+"рядок масового перейменування як результат. Програми масового "
 "перейменування можуть зареєструвати себе за цією клавішею через налаштування "
 "клавіш для рядків розділених пропусками їхніх назв і будь-яких параметрів "
 "командного рядка. Якщо в назві вказано неповний шлях, пошук "
@@ -2116,7 +2116,7 @@ msgid ""
 "local file systems. If set to \"never\" then it never previews sound."
 msgstr ""
 "Співвідношення швидкості для перегляду звукових файлів, коли мишу підведено "
-"до піктограми файлів. Якщо вказано «alwaysи», то звук постійно програвати, "
+"до піктограми файлів. Якщо вказано «always», то звук постійно програвати, "
 "навіть якщо файл розміщено на віддаленому сервері. Якщо вказано «local-"
 "only», то програватиме лише локальні файли з системи. Якщо вказано «never», "
 "то ніколи не буде прослуховування звуку."
@@ -2254,9 +2254,9 @@ msgid ""
 "text files."
 msgstr ""
 "Що робити з виконуваними текстовими файлами, коли їх активовано (наприклад, "
-"одиночним або подвійним клацанням).  Можливі значення: \"launch\" — запускати "
-"їх як програми; \"ask\" — питати, що з ними робити; та \"display\" — показувати "
-"їх як тестові файли."
+"одиночним або подвійним клацанням).  Можливі значення: \"launch\" — "
+"запускати їх як програми; \"ask\" — питати, що з ними робити; та \"display\" "
+"— показувати їх як тестові файли."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:100
 msgid ""
@@ -2294,7 +2294,8 @@ msgstr "Чи вікно навігації повинне бути розгор�
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:107
 msgid "Whether to ask for confirmation when deleting files, or emptying Trash"
-msgstr "Чи запитувати підтвердження при вилученні файлів, або очищенні смітника"
+msgstr ""
+"Чи запитувати підтвердження при вилученні файлів, або очищенні смітника"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:108
 msgid "Whether to enable immediate deletion"
@@ -3060,7 +3061,7 @@ msgstr "Стовпчики списку"
 #: ../src/nautilus-file-management-properties.ui.h:61
 #: ../src/nautilus-list-view.c:1739 ../src/nautilus-list-view.c:3372
 msgid "List View"
-msgstr "Перегляд списоком"
+msgstr "Перегляд списком"
 
 #: ../src/nautilus-file-management-properties.ui.h:62
 msgid "Local Files Only"
@@ -3853,9 +3854,8 @@ msgid "File Operations"
 msgstr "Дії над файлами"
 
 #: ../src/nautilus-progress-ui-handler.c:114
-#, fuzzy
 msgid "Show Details"
-msgstr "_Докладніше"
+msgstr "Показати подробиці"
 
 #: ../src/nautilus-progress-ui-handler.c:149
 #: ../src/nautilus-progress-ui-handler.c:171
@@ -3868,15 +3868,17 @@ msgstr[2] "Тривають %'d дій над файлами"
 
 #: ../src/nautilus-progress-ui-handler.c:270
 msgid "All file operations have been successfully completed"
-msgstr ""
+msgstr "Всі дії над файлами успішно виконано"
 
 #: ../src/nautilus-properties-window.c:494
 msgid "You cannot assign more than one custom icon at a time!"
-msgstr "Не можна зв'язати більш ніж з одним нетиповим значком одночасно!"
+msgstr "Неможливо зв'язати понад одну вказану піктограму за раз!"
 
 #: ../src/nautilus-properties-window.c:495
 msgid "Please drag just one image to set a custom icon."
-msgstr "Перетягніть лише одне зображення, щоб встановити інший значок."
+msgstr ""
+"Будь ласка, перетягніть лише одне зображення, щоб встановити іншу "
+"піктограму."
 
 #: ../src/nautilus-properties-window.c:506
 msgid "The file that you dropped is not local."
@@ -3885,7 +3887,7 @@ msgstr "Вказаний файл не є локальним."
 #: ../src/nautilus-properties-window.c:507
 #: ../src/nautilus-properties-window.c:513
 msgid "You can only use local images as custom icons."
-msgstr "Для значків можна використовувати лише локальні зображення."
+msgstr "Для піктограм можна використовувати лише локальні зображення."
 
 #: ../src/nautilus-properties-window.c:512
 msgid "The file that you dropped is not an image."
@@ -3896,7 +3898,7 @@ msgid "_Name:"
 msgid_plural "_Names:"
 msgstr[0] "_Назва:"
 msgstr[1] "_Назви:"
-msgstr[2] "_Назви:"
+msgstr[2] "_Назв:"
 
 #: ../src/nautilus-properties-window.c:847
 #, c-format
@@ -3928,7 +3930,7 @@ msgstr "нічого"
 
 #: ../src/nautilus-properties-window.c:2149
 msgid "unreadable"
-msgstr "неможливо зчитати"
+msgstr "нечіткий"
 
 #: ../src/nautilus-properties-window.c:2159
 #, c-format
@@ -3955,7 +3957,7 @@ msgstr "Вміст:"
 #. Translators: "used" refers to the capacity of the filesystem
 #: ../src/nautilus-properties-window.c:2953
 msgid "used"
-msgstr "використовується"
+msgstr "зайнято"
 
 #. Translators: "free" refers to the capacity of the filesystem
 #: ../src/nautilus-properties-window.c:2958
@@ -3964,7 +3966,7 @@ msgstr "вільно"
 
 #: ../src/nautilus-properties-window.c:2960
 msgid "Total capacity:"
-msgstr "Загальна ємкість:"
+msgstr "Загальна місткість:"
 
 #: ../src/nautilus-properties-window.c:2969
 msgid "Filesystem type:"
@@ -4017,7 +4019,7 @@ msgstr "ні"
 
 #: ../src/nautilus-properties-window.c:3853
 msgid "list"
-msgstr "Список"
+msgstr "список"
 
 #: ../src/nautilus-properties-window.c:3855
 msgid "read"
@@ -4025,7 +4027,7 @@ msgstr "читання"
 
 #: ../src/nautilus-properties-window.c:3864
 msgid "create/delete"
-msgstr "створити/видалити"
+msgstr "створити/вилучити"
 
 #: ../src/nautilus-properties-window.c:3866
 msgid "write"
@@ -4045,7 +4047,7 @@ msgstr "Доступ до теки:"
 
 #: ../src/nautilus-properties-window.c:3928
 msgid "File access:"
-msgstr "Доступ до файлу:"
+msgstr "Доступ до файла:"
 
 #: ../src/nautilus-properties-window.c:3946
 msgid "List files only"
@@ -4057,7 +4059,7 @@ msgstr "Доступ до файлів"
 
 #: ../src/nautilus-properties-window.c:3950
 msgid "Create and delete files"
-msgstr "Створення та видалення файлів"
+msgstr "Створення та вилучення файлів"
 
 #: ../src/nautilus-properties-window.c:3957
 msgid "Read-only"
@@ -4069,15 +4071,15 @@ msgstr "Читання та запис"
 
 #: ../src/nautilus-properties-window.c:4026
 msgid "Set _user ID"
-msgstr "Встановити ідентифікатор _користувача (SUID)"
+msgstr "Встановити ідентифікатор _користувача"
 
 #: ../src/nautilus-properties-window.c:4029
 msgid "Special flags:"
-msgstr "Особливі ознаки:"
+msgstr "Особливі прапорці:"
 
 #: ../src/nautilus-properties-window.c:4031
 msgid "Set gro_up ID"
-msgstr "Встановити ідентифікатор _групи (SGID)"
+msgstr "Встановити ідентифікатор _групи"
 
 #: ../src/nautilus-properties-window.c:4032
 msgid "_Sticky"
@@ -4107,15 +4109,15 @@ msgstr "Група:"
 
 #: ../src/nautilus-properties-window.c:4179
 msgid "Others"
-msgstr "Інші:"
+msgstr "Інші"
 
 #: ../src/nautilus-properties-window.c:4197
 msgid "Execute:"
-msgstr "Виконання"
+msgstr "Виконання:"
 
 #: ../src/nautilus-properties-window.c:4201
 msgid "Allow _executing file as program"
-msgstr "Дозволити _виконання файлу як програми"
+msgstr "Дозволити _виконання файла як програми"
 
 #: ../src/nautilus-properties-window.c:4220
 msgid "Others:"
@@ -4123,19 +4125,19 @@ msgstr "Інші:"
 
 #: ../src/nautilus-properties-window.c:4370
 msgid "Folder Permissions:"
-msgstr "Права теки:"
+msgstr "Права на теки:"
 
 #: ../src/nautilus-properties-window.c:4383
 msgid "File Permissions:"
-msgstr "Права файлу:"
+msgstr "Права на файли:"
 
 #: ../src/nautilus-properties-window.c:4394
 msgid "Text view:"
-msgstr "Текстовий вигляд:"
+msgstr "Текстовий перегляд:"
 
 #: ../src/nautilus-properties-window.c:4542
 msgid "You are not the owner, so you cannot change these permissions."
-msgstr "Ви не власник, то ж не можете змінювати ці права."
+msgstr "Ви не власник, тож не можете змінювати ці права."
 
 #: ../src/nautilus-properties-window.c:4567
 msgid "SELinux context:"
@@ -4152,15 +4154,15 @@ msgstr "Застосувати права до вкладених файлів"
 #: ../src/nautilus-properties-window.c:4596
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
-msgstr "Не вдається визначити права доступу \"%s\"."
+msgstr "Не вдалось визначити права доступу на «%s»."
 
 #: ../src/nautilus-properties-window.c:4599
 msgid "The permissions of the selected file could not be determined."
-msgstr "Не вдається визначити визначити права доступу цього файлу."
+msgstr "Не вдалось визначити визначити права доступу на вибраний файл."
 
 #: ../src/nautilus-properties-window.c:4828
 msgid "Open With"
-msgstr "Відкрити у програмі"
+msgstr "Відкрити за допомогою"
 
 #: ../src/nautilus-properties-window.c:5138
 msgid "Creating Properties window."
@@ -4168,15 +4170,15 @@ msgstr "Створення вікна властивостей."
 
 #: ../src/nautilus-properties-window.c:5420
 msgid "Select Custom Icon"
-msgstr "Вибрати нетиповий значок"
+msgstr "Вибрати власну піктограму"
 
 #: ../src/nautilus-query-editor.c:123
 msgid "File Type"
-msgstr "Тип файлу"
+msgstr "Тип файла"
 
 #: ../src/nautilus-query-editor.c:264
 msgid "Select folder to search in"
-msgstr "Вибрати каталог для пошуку"
+msgstr "Вибрати теку для пошуку"
 
 #: ../src/nautilus-query-editor.c:354
 msgid "Documents"
@@ -4224,11 +4226,11 @@ msgstr "Будь-який"
 
 #: ../src/nautilus-query-editor.c:648
 msgid "Other Type..."
-msgstr "Інший тип..."
+msgstr "Інший тип…"
 
 #: ../src/nautilus-query-editor.c:929
 msgid "Remove this criterion from the search"
-msgstr "Видалити цей критерій з пошуку"
+msgstr "Вилучити цей критерій з пошуку"
 
 #: ../src/nautilus-query-editor.c:974
 msgid "Search Folder"
@@ -4252,7 +4254,7 @@ msgstr "Перезавантажити"
 
 #: ../src/nautilus-query-editor.c:1030
 msgid "Perform or update the search"
-msgstr "Виконати або оновити пошук"
+msgstr "Здійснити або оновити пошук"
 
 #: ../src/nautilus-query-editor.c:1051
 msgid "_Search for:"
@@ -4267,24 +4269,22 @@ msgid "Search:"
 msgstr "Пошук:"
 
 #: ../src/nautilus-trash-bar.c:197
-#, fuzzy
 msgid "Restore Selected Items"
-msgstr "Перейменувати вибраний елемент"
+msgstr "Відновити вибрані об'єкти"
 
 #: ../src/nautilus-trash-bar.c:203
-#, fuzzy
 msgid "Restore selected items to their original position"
-msgstr "Відновити розміри всіх виділених значків"
+msgstr "Відновити вибрані об'єкти до їхніх початкових позицій"
 
 #: ../src/nautilus-tree-sidebar.c:914 ../src/nautilus-view.c:5776
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
-msgstr "\"%s\" буде переміщено, якщо ви виберете команду \"Вставити\""
+msgstr "«%s» буде переміщено, якщо ви виберете команду «Вставити»"
 
 #: ../src/nautilus-tree-sidebar.c:918 ../src/nautilus-view.c:5780
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
-msgstr "\"%s\" буде скопійовано, якщо ви виберете команду \"Вставити\""
+msgstr "«%s» буде скопійовано, якщо ви виберете команду «Вставити»"
 
 #: ../src/nautilus-tree-sidebar.c:957 ../src/nautilus-view.c:5973
 msgid "There is nothing on the clipboard to paste."
@@ -4311,18 +4311,18 @@ msgstr "Вст_авити у теку"
 #: ../src/nautilus-tree-sidebar.c:1259 ../src/nautilus-view.c:7107
 #: ../src/nautilus-view.c:7222 ../src/nautilus-view.c:8582
 msgid "_Delete"
-msgstr "В_идалити"
+msgstr "В_илучити"
 
 #: ../src/nautilus-tree-sidebar.c:1344
 msgid "Network Neighbourhood"
-msgstr "Мережне оточення"
+msgstr "Мережеве оточення"
 
 #: ../src/nautilus-view.c:1040
 #, c-format
 msgid "This will open %'d separate tab."
 msgid_plural "This will open %'d separate tabs."
-msgstr[0] "Буде відкрито %'d вкладка."
-msgstr[1] "Буде відкрито %'d окремих вкладки."
+msgstr[0] "Буде відкрито %'d вкладку."
+msgstr[1] "Буде відкрито %'d окремі вкладки."
 msgstr[2] "Буде відкрито %'d окремих вкладок."
 
 #: ../src/nautilus-view.c:1043
@@ -4330,12 +4330,12 @@ msgstr[2] "Буде відкрито %'d окремих вкладок."
 msgid "This will open %'d separate window."
 msgid_plural "This will open %'d separate windows."
 msgstr[0] "Буде відкрито %'d вікно."
-msgstr[1] "Буде відкрито %'d окремих вікон."
+msgstr[1] "Буде відкрито %'d окремі вікна."
 msgstr[2] "Буде відкрито %'d окремих вікон."
 
 #: ../src/nautilus-view.c:1560
 msgid "Select Items Matching"
-msgstr "Виберіть відповідні елементи"
+msgstr "Виберіть відповідні об'єкти"
 
 #: ../src/nautilus-view.c:1575
 msgid "_Pattern:"
@@ -4343,7 +4343,7 @@ msgstr "_Шаблон:"
 
 #: ../src/nautilus-view.c:1578
 msgid "Examples: "
-msgstr ""
+msgstr "Приклади:"
 
 #: ../src/nautilus-view.c:1696
 msgid "Save Search as"
@@ -4355,12 +4355,12 @@ msgstr "_Назва пошуку:"
 
 #: ../src/nautilus-view.c:1735
 msgid "Select Folder to Save Search In"
-msgstr "Вибрати каталог для збереження пошуку"
+msgstr "Вибрати теку для збереження знайденого"
 
 #: ../src/nautilus-view.c:2802 ../src/nautilus-view.c:2839
 #, c-format
 msgid "\"%s\" selected"
-msgstr "Виділено \"%s\""
+msgstr "Виділено «%s»"
 
 #: ../src/nautilus-view.c:2804
 #, c-format
@@ -4384,8 +4384,8 @@ msgstr[2] " (містить %'d об'єктів)"
 msgid " (containing a total of %'d item)"
 msgid_plural " (containing a total of %'d items)"
 msgstr[0] " (загалом містить %'d об'єкт)"
-msgstr[1] " (загалом містить %'d об'єктів)"
-msgstr[2] " (загалом містить %'d об'єкти)"
+msgstr[1] " (загалом містить %'d об'єкти)"
+msgstr[2] " (загалом містить %'d об'єктів)"
 
 #: ../src/nautilus-view.c:2842
 #, c-format
@@ -4415,9 +4415,9 @@ msgid "%s (%s)"
 msgstr "%s (%s)"
 
 #: ../src/nautilus-view.c:2877
-#, fuzzy, c-format
+#, c-format
 msgid "Free space: %s"
-msgstr "Вільний простір:"
+msgstr "Вільний простір: %s"
 
 #: ../src/nautilus-view.c:2888
 #, c-format
@@ -4430,9 +4430,9 @@ msgstr "%s, Вільний простір: %s"
 #. * be shown.
 #.
 #: ../src/nautilus-view.c:2903
-#, fuzzy, c-format
+#, c-format
 msgid "%s, %s"
-msgstr "%s%s, %s"
+msgstr "%s, %s"
 
 #. Marking this for translation, since you
 #. * might want to change "," to something else.
@@ -4460,44 +4460,43 @@ msgstr "%s%s, %s"
 #. * the free space is written.
 #.
 #: ../src/nautilus-view.c:2949
-#, fuzzy, c-format
+#, c-format
 msgid "%s%s, %s, %s"
-msgstr "%s%s, %s"
+msgstr "%s%s, %s, %s"
 
 #: ../src/nautilus-view.c:4362
-#, fuzzy, c-format
+#, c-format
 msgid "Open With %s"
-msgstr "Відкрити у програмі \"%s\""
+msgstr "Відкрити за допомогою %s"
 
 #: ../src/nautilus-view.c:4364
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgid_plural "Use \"%s\" to open the selected items"
-msgstr[0] "Використати \"%s\" для відкривання вибраного елементу"
-msgstr[1] "Використати \"%s\" для відкривання вибраних елементів"
-msgstr[2] "Використати \"%s\" для відкривання вибраних елементів"
+msgstr[0] "Використати «%s» для відкривання вибраного об'єкту"
+msgstr[1] "Використати «%s» для відкривання вибраних об'єктів"
+msgstr[2] "Використати «%s» для відкривання вибраних об'єктів"
 
 #: ../src/nautilus-view.c:5199
 #, c-format
 msgid "Run \"%s\" on any selected items"
-msgstr "Запускати \"%s\" на будь-яких вибраних елементах"
+msgstr "Запускати «%s» на будь-які вибрані об'єкти"
 
 #: ../src/nautilus-view.c:5450
-#, fuzzy, c-format
+#, c-format
 msgid "Create a new document from template \"%s\""
-msgstr "Створити документ з шаблону \"%s\""
+msgstr "Створити документ зі шаблону «%s»"
 
 #: ../src/nautilus-view.c:5704
 msgid "All executable files in this folder will appear in the Scripts menu."
-msgstr "Всі виконувані файли у цій теці з'являтимуться у меню сценаріїв."
+msgstr "Всі виконувані файли у цій теці з'являтимуться у меню скриптів."
 
 #: ../src/nautilus-view.c:5706
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 msgstr ""
-"Вибір сценарію з меню запустить його з будь-яким вибраним елементом у якості "
-"вводу."
+"Вибір скрипту з меню запустить його з будь-яким вибраним об'єктом у як ввід."
 
 #: ../src/nautilus-view.c:5708
 msgid ""
@@ -4529,15 +4528,15 @@ msgid ""
 "NAUTILUS_SCRIPT_NEXT_PANE_CURRENT_URI: URI for current location in the "
 "inactive pane of a split-view window"
 msgstr ""
-"Всі виконувані файли цієї теки з'являться у меню \"Сценарії\". Вибір "
-"сценарію з цього меню призведе до виконання цього сценарію.\n"
+"Всі виконувані файли цієї теки з'являться у меню «Скрипти». Вибір скрипту з "
+"цього меню призведе до його виконання.\n"
 "\n"
-"При виконанні з локальної теки сценарію буде передано назви виділених "
-"файлів. При виконанні з віддаленої теки (наприклад з теки, що показує вміст "
-"тенет або ftp), сценарій буде виконано без параметрів.\n"
+"При виконанні з локальної теки скрипту буде передано назви виділених файлів. "
+"При виконанні з віддаленої теки (наприклад з теки, що показує вміст тенет "
+"або ftp), скрипт буде виконано без параметрів.\n"
 "\n"
-"В усіх випадках, програмою Nautilus для сценарію будуть встановлені наступні "
-"змінні оточення:\n"
+"В усіх випадках, програмою Nautilus для скрипту будуть встановлені такі "
+"змінні середовища:\n"
 "\n"
 "NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: розділений новим рядком перелік "
 "виділених файлів (лише для локальних тек)\n"
@@ -4545,9 +4544,9 @@ msgstr ""
 "NAUTILUS_SCRIPT_SELECTED_URIS: розділений новим рядком перелік URI виділених "
 "файлів\n"
 "\n"
-"NAUTILUS_SCRIPT_CURRENT_URI: URI поточного знаходження\n"
+"NAUTILUS_SCRIPT_CURRENT_URI: URI теперішнього знаходження\n"
 "\n"
-"NAUTILUS_SCRIPT_WINDOW_GEOMETRY: позиція та розмір поточного вікна\n"
+"NAUTILUS_SCRIPT_WINDOW_GEOMETRY: позиція та розмір теперішнього вікна\n"
 "NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_FILE_PATHS: розділені символами нового "
 "рядка шляхи для вибору файлів у неактивній панелі розділеного вікна (лише "
 "локальні)\n"
@@ -4555,8 +4554,8 @@ msgstr ""
 "NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_URIS: розділені символами нового рядка "
 "URI для вибору файлів у неактивній панелі розділеного вікна\n"
 "\n"
-"NAUTILUS_SCRIPT_NEXT_PANE_CURRENT_URI: URI для поточної адреси у неактивній "
-"панелі розділеного вікна"
+"NAUTILUS_SCRIPT_NEXT_PANE_CURRENT_URI: URI для теперішньої адреси у "
+"неактивній панелі розділеного вікна"
 
 #: ../src/nautilus-view.c:5787
 #, c-format
@@ -4564,11 +4563,11 @@ msgid "The %'d selected item will be moved if you select the Paste command"
 msgid_plural ""
 "The %'d selected items will be moved if you select the Paste command"
 msgstr[0] ""
-"%'d вибраний елемент буде переміщено, якщо ви виберете команду \"Вставити\""
+"%'d вибраний об'єкт буде переміщено, якщо ви виберете команду «Вставити»"
 msgstr[1] ""
-"%'d вибраних елементи буде переміщено, якщо ви виберете команду \"Вставити\""
+"%'d вибрані об'єкти буде переміщено, якщо ви виберете команду «Вставити»"
 msgstr[2] ""
-"%'d вибраних елементів буде переміщено, якщо ви виберете команду \"Вставити\""
+"%'d вибраних об'єктів буде переміщено, якщо ви виберете команду «Вставити»"
 
 #: ../src/nautilus-view.c:5794
 #, c-format
@@ -4576,29 +4575,28 @@ msgid "The %'d selected item will be copied if you select the Paste command"
 msgid_plural ""
 "The %'d selected items will be copied if you select the Paste command"
 msgstr[0] ""
-"%'d вибраний елемент буде скопійовано, якщо ви виберете команду \"Вставити\""
+"%'d вибраний об'єкт буде скопійовано, якщо ви виберете команду «Вставити»"
 msgstr[1] ""
-"%'d вибраних елементи буде скопійовано, якщо ви виберете команду \"Вставити\""
+"%'d вибрані об'єкти буде скопійовано, якщо ви виберете команду «Вставити»"
 msgstr[2] ""
-"%'d вибраних елементів буде скопійовано, якщо ви виберете команду \"Вставити"
-"\""
+"%'d вибраних об'єктів буде скопійовано, якщо ви виберете команду «Вставити»"
 
 #: ../src/nautilus-view.c:6210
 msgid "Unable to unmount location"
-msgstr "Не вдається від'єднати місцерозташування"
+msgstr "Не вдалось демонтувати адресу"
 
 #: ../src/nautilus-view.c:6231
 msgid "Unable to eject location"
-msgstr "Не вдається витягнути місцерозташування"
+msgstr "Не вдалось витягнути адресу"
 
 #: ../src/nautilus-view.c:6246
 msgid "Unable to stop drive"
-msgstr "Не вдається зупинити пристрій"
+msgstr "Не вдалось зупинити пристрій"
 
 #: ../src/nautilus-view.c:6738
 #, c-format
 msgid "Connect to Server %s"
-msgstr "З'єднання з сервером \"%s\""
+msgstr "З'єднатись з сервером «%s»"
 
 #: ../src/nautilus-view.c:6743 ../src/nautilus-view.c:7885
 #: ../src/nautilus-view.c:7972 ../src/nautilus-view.c:8076
@@ -4611,18 +4609,17 @@ msgstr "_Назва посилання:"
 
 #. name, stock id, label
 #: ../src/nautilus-view.c:6993
-#, fuzzy
 msgid "Create New _Document"
 msgstr "Створити _документ"
 
 #. name, stock id, label
 #: ../src/nautilus-view.c:6994
 msgid "Open Wit_h"
-msgstr "Відкрити у п_рограмі"
+msgstr "Відкрити за допомо_гою"
 
 #: ../src/nautilus-view.c:6995
 msgid "Choose a program with which to open the selected item"
-msgstr "Виберіть програму для відкривання вибраного елементу"
+msgstr "Виберіть програму для відкривання вибраного об'єкту"
 
 #. name, stock id
 #. label, accelerator
@@ -4633,12 +4630,12 @@ msgstr "В_ластивості"
 #. tooltip
 #: ../src/nautilus-view.c:6998 ../src/nautilus-view.c:8616
 msgid "View or modify the properties of each selected item"
-msgstr "Показати чи змінити властивості кожного вибраного елементу"
+msgstr "Переглядати чи змінити властивості кожного вибраного об'єкту"
 
 #. tooltip
 #: ../src/nautilus-view.c:7006
 msgid "Create a new empty folder inside this folder"
-msgstr "Створити нову порожню теку в цій"
+msgstr "Створити порожню теку в цій теці"
 
 #. name, stock id, label
 #: ../src/nautilus-view.c:7008
@@ -4649,20 +4646,18 @@ msgstr "Шаблони не встановлено"
 #. translators: this is used to indicate that a document doesn't contain anything
 #. label, accelerator
 #: ../src/nautilus-view.c:7011
-#, fuzzy
 msgid "_Empty Document"
-msgstr "Документи"
+msgstr "_Порожні документи"
 
 #. tooltip
 #: ../src/nautilus-view.c:7012
-#, fuzzy
 msgid "Create a new empty document inside this folder"
-msgstr "Створити нову порожню теку в цій"
+msgstr "Створити порожній документ у цій теці"
 
 #. tooltip
 #: ../src/nautilus-view.c:7020
 msgid "Open the selected item in this window"
-msgstr "Відкрити вибраний елемент у цьому вікні"
+msgstr "Відкрити вибраний об'єкт у цьому вікні"
 
 #. name, stock id
 #. label, accelerator
@@ -4671,17 +4666,17 @@ msgstr "Відкрити вибраний елемент у цьому вікн�
 #. label, accelerator
 #: ../src/nautilus-view.c:7027 ../src/nautilus-view.c:7191
 msgid "Open in Navigation Window"
-msgstr "Відкрити у новому вікні"
+msgstr "Відкрити у вікні навігації"
 
 #. tooltip
 #: ../src/nautilus-view.c:7028
 msgid "Open each selected item in a navigation window"
-msgstr "Відкрити кожен виділений елемент у новому вікні"
+msgstr "Відкрити кожен виділений об'єкт у вікні навігації"
 
 #. tooltip
 #: ../src/nautilus-view.c:7032
 msgid "Open each selected item in a new tab"
-msgstr "Відкрити кожен виділений елемент у новій вкладці"
+msgstr "Відкрити кожен виділений об'єкт у новій вкладці"
 
 #. name, stock id
 #. label, accelerator
@@ -4698,38 +4693,36 @@ msgstr "Відкрити кожен виділений елемент у вік�
 #. label, accelerator
 #: ../src/nautilus-view.c:7039
 msgid "Other _Application..."
-msgstr "Відкрити у іншій п_рограмі..."
+msgstr "Інша п_рограмі…"
 
 #. tooltip
 #: ../src/nautilus-view.c:7040 ../src/nautilus-view.c:7044
 msgid "Choose another application with which to open the selected item"
-msgstr "Виберіть іншу програму для відкривання вибраного елементу"
+msgstr "Виберіть іншу програму для відкривання вибраного об'єкту"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-view.c:7043
-#, fuzzy
 msgid "Open With Other _Application..."
-msgstr "Відкрити у іншій п_рограмі..."
+msgstr "Відкрити через іншу п_рограму…"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-view.c:7047
 msgid "_Open Scripts Folder"
-msgstr "_Відкрити теку сценаріїв"
+msgstr "_Відкрити теку скриптів"
 
 #. tooltip
 #: ../src/nautilus-view.c:7048
 msgid "Show the folder containing the scripts that appear in this menu"
-msgstr "Показати теку, яка містить сценарії, що з'являються у цьому меню"
+msgstr "Показати теку, яка містить скрипти, що з'являються у цьому меню"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
 #: ../src/nautilus-view.c:7056
 msgid "Prepare the selected files to be moved with a Paste command"
-msgstr ""
-"Підготувати виділені файли до переносу за допомогою команди \"Вставити\""
+msgstr "Підготувати виділені файли до переносу за допомогою команди «Вставити»"
 
 #. name, stock id
 #. label, accelerator
@@ -4737,7 +4730,7 @@ msgstr ""
 #: ../src/nautilus-view.c:7060
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr ""
-"Підготувати виділені файли до копіювання за допомогою команди \"Вставити\""
+"Підготувати виділені файли до копіювання за допомогою команди «Вставити»"
 
 #. name, stock id
 #. label, accelerator
@@ -4745,8 +4738,8 @@ msgstr ""
 #: ../src/nautilus-view.c:7064
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr ""
-"Перемістити чи скопіювати файли попередньо виділені командою \"Вирізати\" чи "
-"\"Копіювати\""
+"Перемістити або скопіювати файли попередньо виділені командою «Вирізати» або "
+"«Копіювати»"
 
 #. tooltip
 #: ../src/nautilus-view.c:7070
@@ -4755,35 +4748,33 @@ msgid ""
 "selected folder"
 msgstr ""
 "Перемістити чи скопіювати у вибрану теку попередньо виділені файли командою "
-"\"Вирізати\" чи \"Копіювати\""
+"«Вирізати» або «Копіювати»"
 
 #. name, stock id, label
 #: ../src/nautilus-view.c:7072
-#, fuzzy
 msgid "Cop_y to"
-msgstr "Копіювати до"
+msgstr "_Копіювати в"
 
 #. name, stock id, label
 #: ../src/nautilus-view.c:7073
-#, fuzzy
 msgid "M_ove to"
-msgstr "Перемістити до"
+msgstr "_Перемістити в"
 
 #. tooltip
 #: ../src/nautilus-view.c:7076
 msgid "Select all items in this window"
-msgstr "Виділити всі елементи у цьому вікні"
+msgstr "Виділити всі об'єкти у цьому вікні"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-view.c:7079
 msgid "Select I_tems Matching..."
-msgstr "Виберіть відповідні _елементи..."
+msgstr "Виберіть відповідні _об'єкти…"
 
 #. tooltip
 #: ../src/nautilus-view.c:7080
 msgid "Select items in this window matching a given pattern"
-msgstr "Показати у цьому вікні елементи, що відповідають шаблону"
+msgstr "Показати у цьому вікні об'єкти, що відповідають шаблону"
 
 #. name, stock id
 #. label, accelerator
@@ -4794,7 +4785,7 @@ msgstr "_Інвертувати виділення"
 #. tooltip
 #: ../src/nautilus-view.c:7084
 msgid "Select all and only the items that are not currently selected"
-msgstr "Виділити лише елементи, які наразі не є виділеними"
+msgstr "Виділити лише об'єкти, які наразі не є виділеними"
 
 #. name, stock id
 #. label, accelerator
@@ -4805,7 +4796,7 @@ msgstr "Д_ублювати"
 #. tooltip
 #: ../src/nautilus-view.c:7088
 msgid "Duplicate each selected item"
-msgstr "Дублювати кожен вибраний елемент"
+msgstr "Дублювати кожен вибраний об'єкт"
 
 #. name, stock id
 #. label, accelerator
@@ -4819,28 +4810,28 @@ msgstr[2] "Створити по_силання"
 #. tooltip
 #: ../src/nautilus-view.c:7092
 msgid "Create a symbolic link for each selected item"
-msgstr "Створити символьне посилання для кожного вибраного елементу"
+msgstr "Створити символьне посилання для кожного вибраного об'єкта"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-view.c:7095
 msgid "_Rename..."
-msgstr "Пере_йменувати"
+msgstr "Пере_йменувати…"
 
 #. tooltip
 #: ../src/nautilus-view.c:7096
 msgid "Rename selected item"
-msgstr "Перейменувати вибраний елемент"
+msgstr "Перейменувати вибраний об'єкт"
 
 #. tooltip
 #: ../src/nautilus-view.c:7104 ../src/nautilus-view.c:8562
 msgid "Move each selected item to the Trash"
-msgstr "Перемістити всі вибрані елементи у смітник"
+msgstr "Перемістити всі вибрані об'єкти у смітник"
 
 #. tooltip
 #: ../src/nautilus-view.c:7108
 msgid "Delete each selected item, without moving to the Trash"
-msgstr "Видалити всі вибрані елементи без переносу в смітник"
+msgstr "Вилучити всі вибрані об'єкти без переносу в смітник"
 
 #. name, stock id
 #. label, accelerator
@@ -4858,13 +4849,14 @@ msgstr "_Відновити"
 #. label, accelerator
 #: ../src/nautilus-view.c:7121
 msgid "Reset View to _Defaults"
-msgstr "Скинути показ на _типове"
+msgstr "Скинути перегляд на _типовий"
 
 #. tooltip
 #: ../src/nautilus-view.c:7122
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr ""
-"Скидає порядок сортування та масштаб на типові значення для цього показу"
+"Скидає порядок сортування та рівень масштабу на типові значення для цього "
+"показу"
 
 #. name, stock id
 #. label, accelerator
@@ -4880,12 +4872,12 @@ msgstr "Зробити постійне з'єднання з цим сервер
 #. tooltip
 #: ../src/nautilus-view.c:7130
 msgid "Mount the selected volume"
-msgstr "Підключити вибраний том"
+msgstr "Змонтувати вибраний том"
 
 #. tooltip
 #: ../src/nautilus-view.c:7134
 msgid "Unmount the selected volume"
-msgstr "Відключити вибраний том"
+msgstr "Демонтувати вибраний том"
 
 #. tooltip
 #: ../src/nautilus-view.c:7138
@@ -4895,28 +4887,28 @@ msgstr "Витягнути виділений том"
 #. tooltip
 #: ../src/nautilus-view.c:7142
 msgid "Start the selected volume"
-msgstr "Запустити обраний том"
+msgstr "Запустити вибраний том"
 
 #. tooltip
 #: ../src/nautilus-view.c:7146 ../src/nautilus-view.c:8098
 msgid "Stop the selected volume"
-msgstr "Зупинити обраний том"
+msgstr "Зупинити вибраний том"
 
 #. tooltip
 #: ../src/nautilus-view.c:7150 ../src/nautilus-view.c:7174
 #: ../src/nautilus-view.c:7251
 msgid "Detect media in the selected drive"
-msgstr "Визначити наявність носія у обраному пристрої."
+msgstr "Визначити наявність носія у вибраному пристрої"
 
 #. tooltip
 #: ../src/nautilus-view.c:7154
 msgid "Mount the volume associated with the open folder"
-msgstr "Підключити том, що пов'язаний з відкритою текою"
+msgstr "Змонтувати том, що пов'язаний з відкритою текою"
 
 #. tooltip
 #: ../src/nautilus-view.c:7158
 msgid "Unmount the volume associated with the open folder"
-msgstr "Відключити том, що пов'язаний з відкритою текою"
+msgstr "Демонтувати том, що пов'язаний з відкритою текою"
 
 #. tooltip
 #: ../src/nautilus-view.c:7162
@@ -4954,12 +4946,12 @@ msgstr "Зберегти змінений пошук"
 #. label, accelerator
 #: ../src/nautilus-view.c:7185
 msgid "Sa_ve Search As..."
-msgstr "Зберегти пошук _як..."
+msgstr "Зберегти пошук _як…"
 
 #. tooltip
 #: ../src/nautilus-view.c:7186
 msgid "Save the current search as a file"
-msgstr "Зберегти поточний пошук як файл"
+msgstr "Зберегти теперішній пошук як файл"
 
 #. tooltip
 #: ../src/nautilus-view.c:7192
@@ -4981,14 +4973,14 @@ msgstr "Відкрити цю теку у вікні теки"
 #. tooltip
 #: ../src/nautilus-view.c:7206
 msgid "Prepare this folder to be moved with a Paste command"
-msgstr "Підготувати цю теку для переміщення командою \"Вставити\""
+msgstr "Підготувати цю теку для переміщення командою «Вставити»"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
 #: ../src/nautilus-view.c:7210
 msgid "Prepare this folder to be copied with a Paste command"
-msgstr "Підготувати цю теку для копіювання командою \"Вставити\""
+msgstr "Підготувати цю теку для копіювання командою «Вставити»"
 
 #. tooltip
 #: ../src/nautilus-view.c:7214
@@ -4997,7 +4989,7 @@ msgid ""
 "folder"
 msgstr ""
 "Перемістити чи скопіювати у вибрану теку попередньо виділені файли командою "
-"\"Вирізати\" чи \"Копіювати\""
+"«Вирізати» або «Копіювати»"
 
 #. tooltip
 #: ../src/nautilus-view.c:7219
@@ -5007,17 +4999,17 @@ msgstr "Перемістити цю теку у смітник"
 #. tooltip
 #: ../src/nautilus-view.c:7223
 msgid "Delete this folder, without moving to the Trash"
-msgstr "Видалити цю теку без переміщення в смітник"
+msgstr "Вилучити цю теку без переміщення в смітник"
 
 #. tooltip
 #: ../src/nautilus-view.c:7231
 msgid "Mount the volume associated with this folder"
-msgstr "Приєднати том, пов'язаний з цією текою"
+msgstr "Змонтувати том, пов'язаний з цією текою"
 
 #. tooltip
 #: ../src/nautilus-view.c:7235
 msgid "Unmount the volume associated with this folder"
-msgstr "Від'єднати том, пов'язаний з цією текою"
+msgstr "Демонтувати том, пов'язаний з цією текою"
 
 #. tooltip
 #: ../src/nautilus-view.c:7239
@@ -5037,7 +5029,7 @@ msgstr "Зупинити том, пов'язаний з цією текою"
 #. tooltip
 #: ../src/nautilus-view.c:7256
 msgid "View or modify the properties of this folder"
-msgstr "Показати чи змінити властивості цією теки"
+msgstr "Переглянути чи змінити властивості цієї теки"
 
 #. name, stock id, label
 #: ../src/nautilus-view.c:7259 ../src/nautilus-view.c:7262
@@ -5046,11 +5038,11 @@ msgstr "_Інша панель"
 
 #: ../src/nautilus-view.c:7260
 msgid "Copy the current selection to the other pane in the window"
-msgstr "Копіювати вибраний елемент у іншу панель вікна"
+msgstr "Копіювати вибраний об'єкт у іншу панель вікна"
 
 #: ../src/nautilus-view.c:7263
 msgid "Move the current selection to the other pane in the window"
-msgstr "Перемістити вибраний елемент у іншу панель вікна"
+msgstr "Перемістити вибраний об'єкт у іншу панель вікна"
 
 #. name, stock id, label
 #. name, stock id
@@ -5058,52 +5050,52 @@ msgstr "Перемістити вибраний елемент у іншу па�
 #: ../src/nautilus-view.c:7266 ../src/nautilus-view.c:7270
 #: ../src/nautilus-window-menus.c:1004 ../src/nautilus-window-menus.c:1263
 msgid "_Home"
-msgstr "До_машня тека"
+msgstr "До_мівка"
 
 #: ../src/nautilus-view.c:7267
 msgid "Copy the current selection to the home folder"
-msgstr "Копіювати виділений елемент у домашній каталог"
+msgstr "Копіювати виділений об'єкт у домашню теку"
 
 #: ../src/nautilus-view.c:7271
 msgid "Move the current selection to the home folder"
-msgstr "Перемістити виділений елемент у домашній каталог"
+msgstr "Перемістити виділений об'єкт у домашню теку"
 
 #. name, stock id, label
 #: ../src/nautilus-view.c:7274 ../src/nautilus-view.c:7278
 msgid "_Desktop"
-msgstr "_Робочий стіл"
+msgstr "С_тільниця"
 
 #: ../src/nautilus-view.c:7275
 msgid "Copy the current selection to the desktop"
-msgstr "Копіювати виділений елемент на робочий стіл"
+msgstr "Копіювати виділений об'єкт на стільницю"
 
 #: ../src/nautilus-view.c:7279
 msgid "Move the current selection to the desktop"
-msgstr "Перемістити виділений елемент на робочий стіл"
+msgstr "Перемістити виділений об'єкт на стільницю"
 
 #. Translators: %s is a directory
 #: ../src/nautilus-view.c:7359
 #, c-format
 msgid "Run or manage scripts from %s"
-msgstr "Виконати або керувати сценаріями у %s"
+msgstr "Виконати або організувати скрипти у %s"
 
 #. Create a script action here specially because its tooltip is dynamic
 #: ../src/nautilus-view.c:7361
 msgid "_Scripts"
-msgstr "С_ценарії"
+msgstr "С_крипти"
 
 #: ../src/nautilus-view.c:7735
 #, c-format
 msgid "Move the open folder out of the trash to \"%s\""
-msgstr "Перемістити відкриту теку зі смітника до \"%s\""
+msgstr "Перемістити відкриту теку зі смітника до «%s»"
 
 #: ../src/nautilus-view.c:7738
 #, c-format
 msgid "Move the selected folder out of the trash to \"%s\""
 msgid_plural "Move the selected folders out of the trash to \"%s\""
-msgstr[0] "Перемістити відкриту теку зі смітника до \"%s\""
-msgstr[1] "Перемістити відкриті теки зі смітника до \"%s\""
-msgstr[2] "Перемістити відкриті теки зі смітника до \"%s\""
+msgstr[0] "Перемістити відкриту теку зі смітника до «%s»"
+msgstr[1] "Перемістити відкриті теки зі смітника до «%s»"
+msgstr[2] "Перемістити відкриті теки зі смітника до «%s»"
 
 #: ../src/nautilus-view.c:7742
 #, c-format
@@ -5117,33 +5109,33 @@ msgstr[2] "Перемістити відкриті теки зі смітник�
 #, c-format
 msgid "Move the selected file out of the trash to \"%s\""
 msgid_plural "Move the selected files out of the trash to \"%s\""
-msgstr[0] "Перемістити вибраний елемент зі смітника до \"%s\""
-msgstr[1] "Перемістити всі вибрані елементи зі смітника до \"%s\""
-msgstr[2] "Перемістити всі вибрані елементи зі смітника до \"%s\""
+msgstr[0] "Перемістити вибраний об'єкт зі смітника до «%s»"
+msgstr[1] "Перемістити всі вибрані об'єкти зі смітника до «%s»"
+msgstr[2] "Перемістити всі вибрані об'єкти зі смітника до «%s»"
 
 #: ../src/nautilus-view.c:7752
 #, c-format
 msgid "Move the selected file out of the trash"
 msgid_plural "Move the selected files out of the trash"
-msgstr[0] "Перемістити вибраний елемент зі смітника"
-msgstr[1] "Перемістити всі вибрані елементи зі смітника"
-msgstr[2] "Перемістити всі вибрані елементи зі смітника"
+msgstr[0] "Перемістити вибраний об'єкт зі смітника"
+msgstr[1] "Перемістити всі вибрані об'єкти зі смітника"
+msgstr[2] "Перемістити всі вибрані об'єкти зі смітника"
 
 #: ../src/nautilus-view.c:7758
 #, c-format
 msgid "Move the selected item out of the trash to \"%s\""
 msgid_plural "Move the selected items out of the trash to \"%s\""
-msgstr[0] "Перемістити вибраний елемент зі смітника до \"%s\""
-msgstr[1] "Перемістити всі вибрані елементи зі смітника до \"%s\""
-msgstr[2] "Перемістити всі вибрані елементи зі смітника до \"%s\""
+msgstr[0] "Перемістити вибраний об'єкт смітника до «%s»"
+msgstr[1] "Перемістити всі вибрані об'єкти зі смітника до «%s»"
+msgstr[2] "Перемістити всі вибрані об'єкти зі смітника до «%s»"
 
 #: ../src/nautilus-view.c:7762
 #, c-format
 msgid "Move the selected item out of the trash"
 msgid_plural "Move the selected items out of the trash"
-msgstr[0] "Перемістити вибраний елемент зі смітника"
-msgstr[1] "Перемістити всі вибрані елементи зі смітника"
-msgstr[2] "Перемістити всі вибрані елементи зі смітника"
+msgstr[0] "Перемістити вибраний об'єкт зі смітника"
+msgstr[1] "Перемістити всі вибрані об'єкти зі смітника"
+msgstr[2] "Перемістити всі вибрані об'єкти зі смітника"
 
 #: ../src/nautilus-view.c:7878 ../src/nautilus-view.c:7882
 #: ../src/nautilus-view.c:8069 ../src/nautilus-view.c:8073
@@ -5152,7 +5144,7 @@ msgstr "Запустити вибраний пристрій"
 
 #: ../src/nautilus-view.c:7886 ../src/nautilus-view.c:8077
 msgid "Connect to the selected drive"
-msgstr "Підключися до вибраного приводу"
+msgstr "З'єднатись з вибраним пристроєм"
 
 #: ../src/nautilus-view.c:7889 ../src/nautilus-view.c:7976
 #: ../src/nautilus-view.c:8080
@@ -5161,7 +5153,7 @@ msgstr "З_апустити багатодисковий пристрій"
 
 #: ../src/nautilus-view.c:7890 ../src/nautilus-view.c:8081
 msgid "Start the selected multi-disk drive"
-msgstr "Запустити обраний багатодисковий пристрій"
+msgstr "Запустити вибраний багатодисковий пристрій"
 
 #: ../src/nautilus-view.c:7893
 msgid "U_nlock Drive"
@@ -5177,16 +5169,16 @@ msgstr "Зупинити вибраний пристрій"
 
 #: ../src/nautilus-view.c:7911 ../src/nautilus-view.c:8102
 msgid "Safely remove the selected drive"
-msgstr "Безпечне усунення вибраного приводу"
+msgstr "Безпечне вилучення вибраного приводу"
 
 #: ../src/nautilus-view.c:7914 ../src/nautilus-view.c:8001
 #: ../src/nautilus-view.c:8105
 msgid "_Disconnect"
-msgstr "_Від'єднатися"
+msgstr "_Від'єднатись"
 
 #: ../src/nautilus-view.c:7915 ../src/nautilus-view.c:8106
 msgid "Disconnect the selected drive"
-msgstr "Від'єднатися від вибраного приводу"
+msgstr "Від'єднатись від вибраного приводу"
 
 #: ../src/nautilus-view.c:7918 ../src/nautilus-view.c:8005
 #: ../src/nautilus-view.c:8109
@@ -5207,7 +5199,7 @@ msgstr "Запустити пристрій, пов'язаний з відкри
 
 #: ../src/nautilus-view.c:7973
 msgid "Connect to the drive associated with the open folder"
-msgstr "Приєднатися до приводу, пов'язаного з відкритою текою"
+msgstr "З'єднатись з пристроєм, пов'язаним з відкритою текою"
 
 #: ../src/nautilus-view.c:7977
 msgid "Start the multi-disk drive associated with the open folder"
@@ -5223,11 +5215,11 @@ msgstr "З_упинити пристрій, пов'язаний з відкри�
 
 #: ../src/nautilus-view.c:7998
 msgid "Safely remove the drive associated with the open folder"
-msgstr "Безпечно усунути пристрій, пов'язаний з відкритою текою"
+msgstr "Безпечно вилучити пристрій, пов'язаний з відкритою текою"
 
 #: ../src/nautilus-view.c:8002
 msgid "Disconnect the drive associated with the open folder"
-msgstr "Від'єднатися від приводу, пов'язаного з відкритою текою"
+msgstr "Від'єднатись від приводу, пов'язаного з відкритою текою"
 
 #: ../src/nautilus-view.c:8006
 msgid "Stop the multi-disk drive associated with the open folder"
@@ -5247,20 +5239,20 @@ msgstr "Переглянути у новій в_кладці"
 
 #: ../src/nautilus-view.c:8251 ../src/nautilus-view.c:8557
 msgid "_Delete Permanently"
-msgstr "В_идалити остаточно"
+msgstr "В_илучити остаточно"
 
 #: ../src/nautilus-view.c:8252
 msgid "Delete the open folder permanently"
-msgstr "Видалити відкриту теку остаточно"
+msgstr "Вилучити відкриту теку остаточно"
 
 #: ../src/nautilus-view.c:8256
 msgid "Move the open folder to the Trash"
 msgstr "Перемістити відкриту теку у смітник"
 
 #: ../src/nautilus-view.c:8440
-#, fuzzy, c-format
+#, c-format
 msgid "_Open With %s"
-msgstr "_Відкрити у програмі \"%s\""
+msgstr "_Відкрити за допомогою %s"
 
 #: ../src/nautilus-view.c:8493
 #, c-format
@@ -5274,9 +5266,9 @@ msgstr[2] "Відкрити у %'d нових _вікнах"
 #, c-format
 msgid "Browse in %'d New _Window"
 msgid_plural "Browse in %'d New _Windows"
-msgstr[0] "Відкрити у %'d новому _вікні оглядача"
-msgstr[1] "Відкрити у %'d нових _вікнах оглядача"
-msgstr[2] "Відкрити у %'d нових _вікнах оглядача"
+msgstr[0] "Переглянути у %'d новому _вікні"
+msgstr[1] "Переглянути у %'d нових _вікнах"
+msgstr[2] "Переглянути у %'d нових _вікнах"
 
 #: ../src/nautilus-view.c:8524
 #, c-format
@@ -5290,25 +5282,25 @@ msgstr[2] "Відкрити у %'d нових в_кладках"
 #, c-format
 msgid "Browse in %'d New _Tab"
 msgid_plural "Browse in %'d New _Tabs"
-msgstr[0] "Відкрити у %'d новій в_кладці оглядача"
-msgstr[1] "Відкрити у %'d нових в_кладках оглядача"
-msgstr[2] "Відкрити у %'d нових в_кладках оглядача"
+msgstr[0] "Переглянути у %'d новій в_кладці"
+msgstr[1] "Переглянути у %'d нових в_кладках"
+msgstr[2] "Переглянути у %'d нових в_кладках"
 
 #: ../src/nautilus-view.c:8558
 msgid "Delete all selected items permanently"
-msgstr "Видалити всі виділені елементи остаточно"
+msgstr "Вилучити всі виділені об'єкти остаточно"
 
 #: ../src/nautilus-view.c:8614
 msgid "View or modify the properties of the open folder"
-msgstr "Показати чи змінити властивості кожної відкритої теки"
+msgstr "Переглянути чи змінити властивості кожної відкритої теки"
 
 #: ../src/nautilus-view-dnd.c:101
 msgid "Download location?"
-msgstr "Завантажити цю адресу?"
+msgstr "Звантажити адресу?"
 
 #: ../src/nautilus-view-dnd.c:104
 msgid "You can download it or make a link to it."
-msgstr "Ви можете завантажити її або створити на неї посилання."
+msgstr "Можете звантажити її або створити на неї посилання."
 
 #: ../src/nautilus-view-dnd.c:107
 msgid "Make a _Link"
@@ -5316,7 +5308,7 @@ msgstr "Створити _посилання"
 
 #: ../src/nautilus-view-dnd.c:111
 msgid "_Download"
-msgstr "_Завантажити"
+msgstr "_Звантажити"
 
 #: ../src/nautilus-view-dnd.c:251 ../src/nautilus-view-dnd.c:309
 #: ../src/nautilus-view-dnd.c:413
@@ -5348,41 +5340,40 @@ msgstr "відкинуті дані"
 msgid ""
 "Do you want to remove any bookmarks with the non-existing location from your "
 "list?"
-msgstr "Бажаєте видалити всі закладки на недійсні місця з вашого списку?"
+msgstr "Вилучити всі закладки на недійсні адреси з вашого списку?"
 
 #: ../src/nautilus-window-bookmarks.c:84
 #, c-format
 msgid "The location \"%s\" does not exist."
-msgstr "Місце \"%s\" більше не існує."
+msgstr "Адреса «%s» більше не існує."
 
 #: ../src/nautilus-window-bookmarks.c:87
 msgid "Bookmark for Nonexistent Location"
-msgstr "Закладка на положення, що не існує"
+msgstr "Закладка на недійсні адреси"
 
 #: ../src/nautilus-window-bookmarks.c:317
 msgid "Go to the location specified by this bookmark"
-msgstr "Перейти до місця вказаного закладкою"
+msgstr "Перейти до адреси вказаної цією закладкою"
 
 #: ../src/nautilus-window-manage-views.c:601
 msgid "You can choose another view or go to a different location."
-msgstr "Ви можете вибрати інший показ чи перейти до іншого місця."
+msgstr "Можете вибрати інший перегляд чи перейти до іншої адреси."
 
 #: ../src/nautilus-window-manage-views.c:620
 msgid "The location cannot be displayed with this viewer."
-msgstr "Місце не може бути показане цим засобом перегляду."
+msgstr "Адресу неможливо показати цим переглядачем."
 
 #: ../src/nautilus-window-manage-views.c:1022
 msgid "Content View"
-msgstr "Показ вмісту"
+msgstr "Перегляд вмісту"
 
 #: ../src/nautilus-window-manage-views.c:1023
 msgid "View of the current folder"
-msgstr "Перегляд поточної теки"
+msgstr "Перегляд теперішньої теки"
 
 #: ../src/nautilus-window-manage-views.c:1176
-#, fuzzy
 msgid "Searching..."
-msgstr "Пошук"
+msgstr "Пошук…"
 
 #: ../src/nautilus-window-manage-views.c:1667
 msgid "Nautilus has no installed viewer capable of displaying the folder."
@@ -5395,16 +5386,16 @@ msgstr "Адреса не є текою."
 #: ../src/nautilus-window-manage-views.c:1679
 #, c-format
 msgid "Could not find \"%s\"."
-msgstr "Не вдається знайти \"%s\"."
+msgstr "Не вдалось знайти «%s»."
 
 #: ../src/nautilus-window-manage-views.c:1682
 msgid "Please check the spelling and try again."
-msgstr "Перевірте написання, та спробуйте знову."
+msgstr "Будь ласка, перевірте орфографію та спробуйте знову."
 
 #: ../src/nautilus-window-manage-views.c:1690
 #, c-format
 msgid "Nautilus cannot handle \"%s\" locations."
-msgstr "Nautilus не може обробляти \"%s\"-адреси."
+msgstr "Nautilus не може обробляти адреси «%s»."
 
 #: ../src/nautilus-window-manage-views.c:1693
 msgid "Nautilus cannot handle this kind of location."
@@ -5412,7 +5403,7 @@ msgstr "Nautilus не може обробляти адреси такого ти
 
 #: ../src/nautilus-window-manage-views.c:1700
 msgid "Unable to mount the location."
-msgstr "Не вдається підключити місцерозташування."
+msgstr "Не вдалось змонтувати адресу."
 
 #: ../src/nautilus-window-manage-views.c:1706
 msgid "Access was denied."
@@ -5426,7 +5417,7 @@ msgstr "Доступ заборонено."
 #: ../src/nautilus-window-manage-views.c:1715
 #, c-format
 msgid "Could not display \"%s\", because the host could not be found."
-msgstr "Не вдається показати «%s», оскільки не знайдено вузол."
+msgstr "Не вдалось показати «%s», оскільки не знайдено вузол."
 
 #: ../src/nautilus-window-manage-views.c:1717
 msgid ""
@@ -5451,9 +5442,10 @@ msgid ""
 "Software Foundation; either version 2 of the License, or (at your option) "
 "any later version."
 msgstr ""
-"Nautilus - вільне програмне забезпечення; ви можете розповсюджувати його та/"
-"або змінювати на умовах Універсальної публічної ліцензії GNU версії 2 або "
-"будь-якій більш старшій версії."
+"Nautilus — вільний програмний засіб; ви можете розповсюджувати його й/або "
+"змінювати на умовах GNU General Public License, що опубліковано Free "
+"Software Foundation; версії 2 цієї ліцензії або (на ваш розсуд) будь-якої "
+"подальшої."
 
 #: ../src/nautilus-window-menus.c:360
 msgid ""
@@ -5462,11 +5454,10 @@ msgid ""
 "FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
 "details."
 msgstr ""
-"Nautilus розповсюджується з надією, що він може бути корисним, але БЕЗ БУДЬ-"
-"ЯКОЇ ГАРАНТІЇ, ВИРАЖЕНОЇ ЯВНО ЧИ НЕЯВНО, ВКЛЮЧНО, АЛЕ НЕ ОБМЕЖУЮЧИСЬ "
+"Nautilus розповсюджується з надією, що він може бути корисним, але БЕЗ "
+"БУДЬ-ЯКОЇ ГАРАНТІЇ, ВИРАЖЕНОЇ ЯВНО ЧИ НЕЯВНО, ЗОКРЕМА, АЛЕ НЕ ОБМЕЖУЮЧИСЬ "
 "НЕЯВНИМИ ГАРАНТІЯМИ КОМЕРЦІЙНОЇ ЦІННОСТІ ТА ПРИДАТНОСТІ ДЛЯ ПЕВНОЇ МЕТИ. Для "
-"отримання додаткових відомостей зверніться до Універсальної Публічної "
-"Ліцензії GNU."
+"отримання додаткових відомостей зверніться до GNU General Public License."
 
 #: ../src/nautilus-window-menus.c:364
 msgid ""
@@ -5475,9 +5466,9 @@ msgid ""
 "Street, Fifth Floor, Boston, MA 02110-1301 USA"
 msgstr ""
 "Ви маєте отримати копію ліцензії GNU з програмою Nautilus. Якщо ліцензія не "
-"була отримана, сповістіть про це Фонд вільного програмного забезпечення за "
-"адресою Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, "
-"Boston, MA 02110-1301 USA"
+"була отримана, сповістіть про це Free Software Foundatio за адресою Free "
+"Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA "
+"02110-1301 USA"
 
 #. Set initial window title
 #: ../src/nautilus-window-menus.c:374 ../src/nautilus-window.c:2023
@@ -5490,12 +5481,11 @@ msgid ""
 "online."
 msgstr ""
 "Nautilus дозволяє організувати файли та каталоги як на комп'ютері, так і у "
-"мережних ресурсах."
+"мережі."
 
 #: ../src/nautilus-window-menus.c:379
-#, fuzzy
 msgid "Copyright © 1999-2010 The Nautilus authors"
-msgstr "Авторські права © 1999-2009 Автори програми Nautilus"
+msgstr "© 1999-2010 Автори програми Nautilus"
 
 #. Translators should localize the following string
 #. * which will be displayed at the bottom of the about
@@ -5505,15 +5495,16 @@ msgstr "Авторські права © 1999-2009 Автори програми
 msgid "translator-credits"
 msgstr ""
 "Юрій Сирота <yuri@renome.rovno.ua>\n"
-"Максим Дзюманенко <dziumanenko@gmail.com>"
+"Максим Дзюманенко <dziumanenko@gmail.com>\n"
+"Daniel Korostil <ted.korostiled@gmail.com>"
 
 #: ../src/nautilus-window-menus.c:392
 msgid "Nautilus Web Site"
-msgstr "Веб-сайт Nautilus"
+msgstr "Cайт Nautilus"
 
 #: ../src/nautilus-window-menus.c:571
 msgid "Are you sure you want to clear the list of locations you have visited?"
-msgstr "Ви впевнені, що хочете знищити інформацію про відвідані вами місця?"
+msgstr "Очистити інформацію про відвідані вами місця?"
 
 #. name, stock id, label
 #: ../src/nautilus-window-menus.c:938
@@ -5552,7 +5543,7 @@ msgstr "_Параметри"
 
 #: ../src/nautilus-window-menus.c:948
 msgid "Edit Nautilus preferences"
-msgstr "Редагування параметрів Nautilus"
+msgstr "Редагувати параметри Nautilus"
 
 #. name, stock id, label
 #: ../src/nautilus-window-menus.c:950
@@ -5561,16 +5552,16 @@ msgstr "_Повернути"
 
 #: ../src/nautilus-window-menus.c:951
 msgid "Undo the last text change"
-msgstr "Вернути останню зміну тексту"
+msgstr "Повернути останню зміну тексту"
 
 #. name, stock id, label
 #: ../src/nautilus-window-menus.c:953
 msgid "Open _Parent"
-msgstr "Відкрити _батьківську"
+msgstr "Відкрити _верхню"
 
 #: ../src/nautilus-window-menus.c:954
 msgid "Open the parent folder"
-msgstr "Відкрити батьківську теку"
+msgstr "Відкрити теку вище"
 
 #. tooltip
 #: ../src/nautilus-window-menus.c:961
@@ -5647,12 +5638,12 @@ msgstr "Звичайний розмір перегляду"
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:1000
 msgid "Connect to _Server..."
-msgstr "З'єднатись з _сервером..."
+msgstr "З'єднатись з _сервером…"
 
 #. tooltip
 #: ../src/nautilus-window-menus.c:1001
 msgid "Connect to a remote computer or shared disk"
-msgstr "З'єднатись до віддаленого комп'ютера або спільного диску"
+msgstr "З'єднатись з віддаленим комп'ютером або спільним диском"
 
 #. name, stock id
 #. label, accelerator
@@ -5677,7 +5668,7 @@ msgstr "_Мережа"
 #. tooltip
 #: ../src/nautilus-window-menus.c:1013
 msgid "Browse bookmarked and local network locations"
-msgstr "Переглянути локальні та мережні адреси"
+msgstr "Переглянути локальні та мережеві адреси"
 
 #. name, stock id
 #. label, accelerator
@@ -5704,12 +5695,12 @@ msgstr "Відкрити вашу теку смітника"
 #. name, stock id, label
 #: ../src/nautilus-window-menus.c:1023
 msgid "_Go"
-msgstr "Пере_йти"
+msgstr "Пере_хід"
 
 #. name, stock id, label
 #: ../src/nautilus-window-menus.c:1024
 msgid "_Bookmarks"
-msgstr "_Закладки"
+msgstr "Зак_ладки"
 
 #. name, stock id, label
 #: ../src/nautilus-window-menus.c:1025
@@ -5777,23 +5768,21 @@ msgstr "О_чистити історію"
 
 #: ../src/nautilus-window-menus.c:1045
 msgid "Clear contents of Go menu and Back/Forward lists"
-msgstr "Очистити меню \"Перейти\" та списків \"Назад\" і \"Вперед\""
+msgstr "Очистити меню «Перехід» та списки «Назад» і «Вперед»"
 
 #. name, stock id, label
 #: ../src/nautilus-window-menus.c:1047
-#, fuzzy
 msgid "S_witch to Other Pane"
-msgstr "Перейти до іншої панелі"
+msgstr "Пере_мкнутись на іншу панель"
 
 #: ../src/nautilus-window-menus.c:1048
 msgid "Move focus to the other pane in a split view window"
-msgstr "Передати фокус до іншої панелі при режимі показу у розділеному вікні"
+msgstr "Передати фокус до іншої панелі при перегляді у розділеному вікні"
 
 #. name, stock id, label
 #: ../src/nautilus-window-menus.c:1050
-#, fuzzy
 msgid "Sa_me Location as Other Pane"
-msgstr "Та ж сама адреса у іншій панелі"
+msgstr "Та ж сама адреса як інша панель"
 
 #: ../src/nautilus-window-menus.c:1051
 msgid "Go to the same location as in the extra pane"
@@ -5879,9 +5868,8 @@ msgstr "Змінити видимість головної панелі інст
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:1086
-#, fuzzy
 msgid "_Show Sidebar"
-msgstr "Показати пошук"
+msgstr "_Показувати бокову панель"
 
 #. tooltip
 #: ../src/nautilus-window-menus.c:1087
@@ -5905,7 +5893,7 @@ msgstr "Змінити видимість панелі стану цього в�
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:1096
 msgid "_Search for Files..."
-msgstr "По_шук файлів..."
+msgstr "По_шук файлів…"
 
 #. tooltip
 #: ../src/nautilus-window-menus.c:1097 ../src/nautilus-window-menus.c:1158
@@ -5916,14 +5904,13 @@ msgstr "Пошук документів та тек за назвою"
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:1101
-#, fuzzy
 msgid "E_xtra Pane"
-msgstr "Додаткова панель"
+msgstr "Дода_ткова панель"
 
 #. tooltip
 #: ../src/nautilus-window-menus.c:1102
 msgid "Open an extra folder view side-by-side"
-msgstr "Відкрити додаткову теку у режимі бік о бік"
+msgstr "Відкрити додаткову теку у перегляді бік-о-бік"
 
 #: ../src/nautilus-window-menus.c:1109
 msgid "Places"
@@ -5931,7 +5918,7 @@ msgstr "Місця"
 
 #: ../src/nautilus-window-menus.c:1109
 msgid "Select Places as the default sidebar"
-msgstr ""
+msgstr "Вибрати «Місця» як типову бокову панель"
 
 #: ../src/nautilus-window-menus.c:1112
 msgid "Tree"
@@ -5939,7 +5926,7 @@ msgstr "Дерево"
 
 #: ../src/nautilus-window-menus.c:1112
 msgid "Select Tree as the default sidebar"
-msgstr ""
+msgstr "Вибрати «Дерево» як типову бокову панель"
 
 #: ../src/nautilus-window-menus.c:1130
 msgid "Back history"
@@ -5954,9 +5941,8 @@ msgid "_Up"
 msgstr "В_гору"
 
 #: ../src/nautilus-window-pane.c:476
-#, fuzzy
 msgid "_New Tab"
-msgstr "Нова _вкладка"
+msgstr "_Нова вкладка"
 
 #: ../src/nautilus-window-pane.c:505
 msgid "_Close Tab"
@@ -5977,11 +5963,11 @@ msgstr "Ці файли знаходяться на звуковому DVD."
 
 #: ../src/nautilus-x-content-bar.c:72
 msgid "These files are on a Video DVD."
-msgstr "Ці файли знаходяться на DVD-диску з відео."
+msgstr "Ці файли знаходяться на відео DVD."
 
 #: ../src/nautilus-x-content-bar.c:74
 msgid "These files are on a Video CD."
-msgstr "Ці файли знаходяться на CD-диску з відео."
+msgstr "Ці файли знаходяться на відео CD."
 
 #: ../src/nautilus-x-content-bar.c:76
 msgid "These files are on a Super Video CD."
@@ -6001,11 +5987,11 @@ msgstr "Носій містить цифрові фотографії."
 
 #: ../src/nautilus-x-content-bar.c:84
 msgid "These files are on a digital audio player."
-msgstr "Ці файли знаходяться на цифровому аудіо-плеєрі."
+msgstr "Ці файли знаходяться на цифровому аудіопрогравачі."
 
 #: ../src/nautilus-x-content-bar.c:86
 msgid "The media contains software."
-msgstr "Носій містить програмне забезпечення."
+msgstr "Носій містить програмні засоби."
 
 #. fallback to generic greeting
 #: ../src/nautilus-x-content-bar.c:89
@@ -6021,17 +6007,15 @@ msgstr "Відкрити %s"
 #: ../nautilus-sendto-extension/nautilus-nste.c:80
 #: ../nautilus-sendto-extension/nautilus-nste.c:85
 msgid "Send To..."
-msgstr "Надіслати до…"
+msgstr "Відправити до…"
 
 #: ../nautilus-sendto-extension/nautilus-nste.c:81
-#, fuzzy
 msgid "Send file by mail, instant message..."
-msgstr "Файл не є файлом зображення."
+msgstr "Відправити файл листом, повідомленням…"
 
 #: ../nautilus-sendto-extension/nautilus-nste.c:86
-#, fuzzy
 msgid "Send files by mail, instant message..."
-msgstr "Файл не є файлом зображення."
+msgstr "Відправити файли листом, повідомлення…"
 
 #~ msgid "If true, icons will be laid out tighter by default in new windows."
 #~ msgstr ""
