@@ -2568,10 +2568,11 @@ create_column_editor (NautilusListView *view)
 	
 	gtk_window_set_default_size (GTK_WINDOW (window), 300, 400);
 
-	box = gtk_vbox_new (FALSE, 12);
+	box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 12);
 	gtk_container_set_border_width (GTK_CONTAINER (box), 12);
 	gtk_widget_show (box);
-	gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (window))), box);
+	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (window))), box,
+			    TRUE, TRUE, 0);
 
 	label_text = _("Choose the order of information to appear in this folder:");
 	str = g_strconcat ("<b>", label_text, "</b>", NULL);
