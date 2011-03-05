@@ -2,7 +2,7 @@
 # Copyright © 2009 GNOME i18n Project for Vietnamese.
 # Hoang Ngoc Tu <hntu@gmx.de>, 2001-2002.
 # Joern v. Kattchee <kattchee@gmx.net>, 2001-2002.
-# Nguyễn Thái Ngọc Duy <pclouds@gmail.com>, 2002, 2004, 2007-2008.
+# Nguyễn Thái Ngọc Duy <pclouds@gmail.com>, 2002, 2004, 2007-2008, 2011.
 # Trinh Minh Thanh <tmthanh@yahoo.com>, 2002-2003, 2005.
 # Phạm Thành Long <lngt@ngonngu.net>, 2007.
 # Clytie Siddall <clytie@riverland.net.au>, 2005-2009.
@@ -10,11 +10,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.25.4\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=nautilus&component=Internationalization (i18n)\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus&component=Internationalization (i18n)\n"
 "POT-Creation-Date: 2011-02-27 14:28+0000\n"
-"PO-Revision-Date: 2009-10-13 20:09+0700\n"
-"Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
+"PO-Revision-Date: 2011-03-05 16:19+0700\n"
+"Last-Translator: Nguyễn Thái Ngọc Duy <pclouds@gmail.com>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -105,10 +104,9 @@ msgstr " (Unicode không hợp lệ)"
 #: ../libnautilus-private/nautilus-desktop-link.c:120
 #: ../src/nautilus-pathbar.c:1200 ../src/nautilus-places-sidebar.c:652
 #: ../src/nautilus-tree-sidebar.c:1336
-#, fuzzy
 #| msgid "_Home"
 msgid "Home"
-msgstr "_Thư mục chính"
+msgstr "Thư mục cá nhân"
 
 #. name, stock id
 #. label, accelerator
@@ -165,7 +163,7 @@ msgstr "Tên và biểu tượng của tập tin."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:50
 msgid "Size"
-msgstr "Cỡ"
+msgstr "Kích thước"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:51
 msgid "The size of the file."
@@ -252,32 +250,28 @@ msgid "Location"
 msgstr "Địa điểm"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:130
-#, fuzzy
 #| msgid "The owner of the file."
 msgid "The location of the file."
-msgstr "Chủ sở hữu của tập tin."
+msgstr "Vị trí tập tin."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:171
-#, fuzzy
 #| msgid "Trash"
 msgid "Trashed On"
-msgstr "Sọt rác"
+msgstr "Bỏ rác lúc"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:172
-#, fuzzy
 #| msgid "The file \"%B\" cannot be moved to the trash."
 msgid "Date when file was moved to the Trash"
-msgstr "Không thể chuyển tập tin « %B » vào Sọt rác."
+msgstr "Ngày chuyển vào sọt rác"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:178
-#, fuzzy
 #| msgid "Open Location"
 msgid "Original Location"
-msgstr "Mở địa chỉ"
+msgstr "Địa chỉ gốc"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:179
 msgid "Original location of file before moved to the Trash"
-msgstr ""
+msgstr "Địa chỉ gốc trước khi bị chuyển vào sọt rác"
 
 #: ../libnautilus-private/nautilus-desktop-directory-file.c:432
 #: ../libnautilus-private/nautilus-desktop-icon-file.c:151
@@ -302,8 +296,8 @@ msgid ""
 "If you want to unmount the volume, please use \"Unmount Volume\" in the "
 "popup menu of the volume."
 msgstr ""
-"Nếu bạn muốn tháo gắn kết khối tin ra, vui lòng dùng lệnh « Tháo gắn kết khối "
-"tin » trong trình đơn bật lên của khối tin này."
+"Nếu bạn muốn tháo gắn kết khối tin ra, vui lòng dùng lệnh « Tháo gắn kết "
+"khối tin » trong trình đơn bật lên của khối tin này."
 
 #: ../libnautilus-private/nautilus-dnd.c:771
 msgid "_Move Here"
@@ -326,13 +320,12 @@ msgid "Cancel"
 msgstr "Thôi"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:141
-#, fuzzy, c-format
+#, c-format
 #| msgid "Search for \"%s\""
 msgid "Merge folder \"%s\"?"
-msgstr "Tìm kiếm « %s »"
+msgstr "Gộp thư mục \"%s\" chứ?"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:145
-#, fuzzy
 #| msgid ""
 #| "The source folder already exists in \"%B\".  Merging will ask for "
 #| "confirmation before replacing any files in the folder that conflict with "
@@ -341,87 +334,80 @@ msgid ""
 "Merging will ask for confirmation before replacing any files in the folder "
 "that conflict with the files being copied."
 msgstr ""
-"Thư mục nguồn đã tồn tại trong « %B ». Chức năng trộn sẽ yêu cầu bạn xác nhận "
-"trước khi thay thế tập tin trong thư mục mà xung đột với tập tin đang sao "
-"chép."
+"Sẽ hỏi xác nhận thay thế tập tin đã có trong thư mục với tập tin mới trong "
+"khi gộp."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:150
 #, c-format
 msgid "An older folder with the same name already exists in \"%s\"."
-msgstr ""
+msgstr "Đã có thư mục cũ hơn cùng tên \"%s\"."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:154
 #, c-format
 msgid "A newer folder with the same name already exists in \"%s\"."
-msgstr ""
+msgstr "Đã có thư mục mới hơn cùng tên \"%s\"."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:158
 #, c-format
 msgid "Another folder with the same name already exists in \"%s\"."
-msgstr ""
+msgstr "Đã có thư mục khác cùng tên \"%s\"."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:163
-#, fuzzy
 #| msgid ""
 #| "The folder already exists in \"%F\".  Replacing it will remove all files "
 #| "in the folder."
 msgid "Replacing it will remove all files in the folder."
-msgstr ""
-"Thư mục đã tồn tại trong « %F ». Việc thay thế nó sẽ gỡ bỏ mọi tập tin khỏi "
-"thư mục."
+msgstr "Thay thế có nghĩa là xoá tất cả tập tin cũ trong thư mục."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:165
-#, fuzzy, c-format
+#, c-format
 #| msgid "Search for \"%s\""
 msgid "Replace folder \"%s\"?"
-msgstr "Tìm kiếm « %s »"
+msgstr "Thay thế \"%s\" chứ?"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:167
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not remove the already existing file %F."
 msgid "A folder with the same name already exists in \"%s\"."
-msgstr "Không thể gỡ bỏ tập tin đã tồn tại %F."
+msgstr "Đã có thư mục cùng tên \"%s\"."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:172
-#, fuzzy, c-format
+#, c-format
 #| msgid "Search for \"%s\""
 msgid "Replace file \"%s\"?"
-msgstr "Tìm kiếm « %s »"
+msgstr "Thay thế tập tin \"%s\" chứ?"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:174
-#, fuzzy
 #| msgid ""
 #| "The file already exists in \"%F\".  Replacing it will overwrite its "
 #| "content."
 msgid "Replacing it will overwrite its content."
-msgstr ""
-"Tập tin đã tồn tại trong « %F ». Việc thay thế nó sẽ ghi đè lên nội dung của "
-"nó."
+msgstr "Thay thế nghĩa là sẽ ghi đè nội dung."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:178
 #, c-format
 msgid "An older file with the same name already exists in \"%s\"."
-msgstr ""
+msgstr "Đã có tập tin cũ hơn cùng tên \"%s\"."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:182
 #, c-format
 msgid "A newer file with the same name already exists in \"%s\"."
-msgstr ""
+msgstr "Đã có tập tin mới hơn cùng tên \"%s\"."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:186
 #, c-format
 msgid "Another file with the same name already exists in \"%s\"."
-msgstr ""
+msgstr "Đã có tập tin khác cùng tên \"%s\"."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:253
 msgid "Original file"
-msgstr ""
+msgstr "Tập tin gốc"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:254
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:285
 #: ../src/nautilus-properties-window.c:3126
 msgid "Size:"
-msgstr "Cỡ:"
+msgstr "Kích thước:"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:257
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:288
@@ -431,29 +417,25 @@ msgstr "Loại:"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:260
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:291
-#, fuzzy
 #| msgid "Date Modified"
 msgid "Last modified:"
-msgstr "Ngày sửa đổi"
+msgstr "Ngày sửa đổi:"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:284
-#, fuzzy
 #| msgid "_Replace"
 msgid "Replace with"
-msgstr "T_hay thế"
+msgstr "Thay bằng"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:313
-#, fuzzy
 #| msgid "_Merge"
 msgid "Merge"
-msgstr "_Gộp"
+msgstr "Gộp"
 
 #. Setup the expander for the rename action
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:506
-#, fuzzy
 #| msgid "Enter a new name for the displayed emblem:"
 msgid "_Select a new name for the destination"
-msgstr "Nhập tên mới cho hình tượng được hiển thị:"
+msgstr "_Chọn tên mới cho đích đến"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:520
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:379
@@ -462,10 +444,9 @@ msgstr "Đặt lại"
 
 #. Setup the checkbox to apply the action to all files
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:532
-#, fuzzy
 #| msgid "Apply Permissions to Enclosed Files"
 msgid "Apply this action to all files"
-msgstr "Áp dụng quyền hạn cho các tập tin bên trong"
+msgstr "Hành xử như vậy cho mọi tập tin"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:543
 #: ../libnautilus-private/nautilus-file-operations.c:183
@@ -473,20 +454,18 @@ msgid "_Skip"
 msgstr "_Bỏ qua"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:548
-#, fuzzy
 #| msgid "Rename"
 msgid "Re_name"
-msgstr "Thay tên"
+msgstr "Đổ_i tên"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:554
-#, fuzzy
 #| msgid "_Replace"
 msgid "Replace"
-msgstr "T_hay thế"
+msgstr "Thay thế"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:626
 msgid "File conflict"
-msgstr ""
+msgstr "Xung đột tập tin"
 
 #: ../libnautilus-private/nautilus-file-operations.c:184
 msgid "S_kip All"
@@ -707,16 +686,14 @@ msgid "If you delete an item, it will be permanently lost."
 msgstr "Nếu bạn xóa bỏ một mục, nó sẽ bị mất vĩnh viễn."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1332
-#, fuzzy
 #| msgid "Empty all of the items from the trash?"
 msgid "Empty all items from Trash?"
-msgstr "Đổ toàn bộ mọi thứ trong sọt rác không chứ?"
+msgstr "Bỏ mọi thứ trong sọt rác chứ?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1336
-#, fuzzy
 #| msgid "If you delete an item, it will be permanently lost."
 msgid "All items in the Trash will be permanently deleted."
-msgstr "Nếu bạn xóa bỏ một mục, nó sẽ bị mất vĩnh viễn."
+msgstr "Mọi thứ trong sọt rác sẽ bị mất vĩnh viễn."
 
 #. Empty Trash menu item
 #: ../libnautilus-private/nautilus-file-operations.c:1339
@@ -1167,24 +1144,22 @@ msgstr "Đăng đặt quyền hạn"
 
 #. localizers: the initial name of a new folder
 #: ../libnautilus-private/nautilus-file-operations.c:5802
-#, fuzzy
 #| msgid "untitled folder"
 msgid "Untitled Folder"
-msgstr "thư mục không tên"
+msgstr "Thư mục không tên"
 
 #. localizers: the initial name of a new template document
 #: ../libnautilus-private/nautilus-file-operations.c:5808
-#, fuzzy, c-format
+#, c-format
 #| msgid "untitled folder"
 msgid "Untitled %s"
-msgstr "thư mục không tên"
+msgstr "%s không tên"
 
 #. localizers: the initial name of a new empty document
 #: ../libnautilus-private/nautilus-file-operations.c:5814
-#, fuzzy
 #| msgid "Create _Document"
 msgid "Untitled Document"
-msgstr "Tạo _tài liệu"
+msgstr "Tài liệu không tên"
 
 #: ../libnautilus-private/nautilus-file-operations.c:5970
 msgid "Error while creating directory %B."
@@ -1502,36 +1477,34 @@ msgid "The selection rectangle"
 msgstr "Chữ nhật lựa chọn"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:83
-#, fuzzy, c-format
+#, c-format
 #| msgid "Error while moving \"%B\"."
 msgid "Error while adding \"%s\": %s"
-msgstr "Gặp lỗi khi di chuyển « %B »."
+msgstr "Gặp lỗi khi thêm \"%s\": %s"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:85
 msgid "Could not add application"
 msgstr "Không thể thêm ứng dụng"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:113
-#, fuzzy
 #| msgid "Could not run application"
 msgid "Could not forget association"
-msgstr "Không thể chạy ứng dụng"
+msgstr "Không thể quên liên kết"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:137
 msgid "Forget association"
-msgstr ""
+msgstr "Quên liên kết"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:175
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not set as default application"
 msgid "Error while setting \"%s\" as default application: %s"
-msgstr "Không thể đặt làm ứng dụng mặc định"
+msgstr "Lỗi đặt \"%s\" làm ứng dụng mặc định: %s"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:177
-#, fuzzy
 #| msgid "Could not set as default application"
 msgid "Could not set as default"
-msgstr "Không thể đặt làm ứng dụng mặc định"
+msgstr "Không thể đặt làm mặc định"
 
 #. the %s here is a file extension
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:279
@@ -1541,10 +1514,10 @@ msgid "%s document"
 msgstr "Tài liệu %s"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:284
-#, fuzzy, c-format
+#, c-format
 #| msgid "Open all files of type \"%s\" with:"
 msgid "Open all files of type \"%s\" with"
-msgstr "Mở tất cả tập tin kiểu \"%s\" bằng:"
+msgstr "Mở mọi tập tin kiểu \"%s\" bằng"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:304
 #, c-format
@@ -1552,16 +1525,14 @@ msgid "Select an application to open %s and other files of type \"%s\""
 msgstr "Chọn một ứng dụng để mở %s và các tập tin khác có dạng « %s »"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:366
-#, fuzzy
 #| msgid "Could not run application"
 msgid "Show other applications"
-msgstr "Không thể chạy ứng dụng"
+msgstr "Hiện ứng dụng khác"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:395
-#, fuzzy
 #| msgid "Use De_fault"
 msgid "Set as default"
-msgstr "_Dùng làm mặc định"
+msgstr "Đặ_t làm mặc định"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:311
 msgid "Sorry, but you cannot execute commands from a remote site."
@@ -1642,7 +1613,6 @@ msgid "Redo the edit"
 msgstr "Hoàn lại bước chỉnh sửa vừa mới hủy"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:1
-#, fuzzy
 #| msgid ""
 #| "A list of captions below an icon in the icon view and the desktop. The "
 #| "actual number of captions shown depends on the zoom level. Possible "
@@ -1656,12 +1626,12 @@ msgid ""
 "\"date_accessed\", \"owner\", \"group\", \"permissions\", \"octal_permissions"
 "\" and \"mime_type\"."
 msgstr ""
-"Danh sách phụ đề dưới biểu tượng trong Ô xem Biểu tượng và trên màn hình "
+"Danh sách phụ đề dưới biểu tượng trong ô xem biểu tượng và trên màn hình "
 "nền. Số phụ đề thực sự được hiển thị tùy thuộc vào hệ số thu phóng. Giá trị "
 "có thể là: \"size\" — kích cỡ, \"type\" — kiểu, \"date_modified\" — ngày sửa "
 "đổi, \"date_changed\" — ngày thay đổi, \"date_accessed\" — ngày truy cập, "
 "\"owner\" — chủ sở hữu, \"group\" — nhóm sở hữu, \"permissions\" — quyền "
-"truy cập, \"octal_permissions\" — quyền sở hữu dạng bát phân và \"mime_type"
+"truy cập, \"octal_permissions\" — quyền truy cập dạng bát phân và \"mime_type"
 "\" — kiểu MIME."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:2
@@ -1722,7 +1692,7 @@ msgstr ""
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:8
 msgid "Bulk rename utility"
-msgstr ""
+msgstr "Tiện ích đổi tên hàng loạt"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:9
 msgid "Computer icon visible on desktop"
@@ -1806,7 +1776,7 @@ msgstr "Bật hành vi Nautilus cổ điển, mọi cửa sổ là bộ duyệt"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:29
 msgid "Fade the background on change"
-msgstr ""
+msgstr "Mờ lúc đổi nền"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:30
 msgid ""
@@ -1842,7 +1812,6 @@ msgid "Home icon visible on desktop"
 msgstr "Biểu tượng thư mục cá nhân hiện trên màn hình nền"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:34
-#, fuzzy
 #| msgid ""
 #| "If set to \"after_current_tab\", then new tabs are inserted after the "
 #| "current tab. If set to \"end\", then new tabs are appended to the end of "
@@ -1852,7 +1821,7 @@ msgid ""
 "current tab. If set to \"end\", then new tabs are appended to the end of the "
 "tab list."
 msgstr ""
-"Nếu đặt là \"after_current_tab\", thanh mới sẽ được chèn sau thanh hiện "
+"Nếu đặt là \"after-current-tab\", thanh mới sẽ được chèn sau thanh hiện "
 "thời. Nếu đặt \"end\", thanh mới sẽ được đặt ở cuối danh sách thanh."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:35
@@ -1922,12 +1891,13 @@ msgstr ""
 "dùng cẩn thận."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:45
-#, fuzzy
 #| msgid "If set to true, then Nautilus will draw the icons on the desktop."
 msgid ""
 "If set to true, then Nautilus will use a fade effect to change the desktop "
 "background."
-msgstr "Nếu đặt là đúng thì Nautilus sẽ vẽ các biểu tượng trên màn hình nền."
+msgstr ""
+"Nếu đặt là đúng thì Nautilus sẽ dùng hiểu ứng mờ để thay đổi ảnh màn hình "
+"nền."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:46
 msgid ""
@@ -1958,7 +1928,8 @@ msgid ""
 msgstr ""
 "Nếu đặt là đúng, hiển thị các tập tin ẩn trong trình quản lý tập tin. Tập "
 "tin ẩn là những tập tin bắt đầu bằng dấu chấm, hoặc nhưng tập tin được liệt "
-"kê trong tập tin « .hidden » của thư mục đó."
+"kê trong tập tin \".hidden\" của thư mục đó, hoặc tập tin sao lưu có dấu ngã "
+"(~) ở cuối."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:49
 msgid ""
@@ -2128,7 +2099,6 @@ msgid "Side pane view"
 msgstr "Xem Ô lề"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:79
-#, fuzzy
 #| msgid ""
 #| "Speed tradeoff for when to preview a sound file when mousing over a files "
 #| "icon. If set to \"always\" then always plays the sound, even if the file "
@@ -2141,13 +2111,12 @@ msgid ""
 "local file systems. If set to \"never\" then it never previews sound."
 msgstr ""
 "Thoả hiệp tốc độ khi nghe thử tập tin âm thanh khi di chuyển chuột qua các "
-"biểu tượng tập tin. Nếu đặt là « luôn luôn » thì luôn luôn phát âm, kể cả nếu "
-"tập tin ở trên máy ở xa. Nếu đặt « chỉ tập tin cục bộ » thì chỉ phát âm nếu "
-"nằm trên hệ thống tập tin cục bộ. Nếu đặt « không bao giờ » thì không bao giờ "
-"phát âm thử."
+"biểu tượng tập tin. Nếu đặt là \"always\" (luôn luôn) thì luôn luôn phát âm, "
+"kể cả nếu tập tin ở trên máy ở xa. Nếu đặt \"local-only\" (chỉ tập tin cục "
+"bộ) thì chỉ phát âm nếu nằm trên hệ thống tập tin cục bộ. Nếu đặt \"never"
+"\" (không bao giờ) thì không bao giờ phát âm thử."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:80
-#, fuzzy
 #| msgid ""
 #| "Speed tradeoff for when to show a preview of text file contents in the "
 #| "file's icon. If set to \"always\" then always show previews, even if the "
@@ -2162,13 +2131,12 @@ msgid ""
 "read preview data."
 msgstr ""
 "Thoả hiệp tốc độ khi xem thử tập tin văn bản khi di chuyển chuột qua các "
-"biểu tượng tập tin. Nếu đặt là « luôn luôn » thì luôn luôn xem trước, kể cả "
-"nếu tập tin ở trên máy ở xa. Nếu đặt « chỉ tập tin cục bộ » thì chỉ xem trước "
-"nếu nằm trên hệ thống tập tin cục bộ. Nếu đặt « không bao giờ » thì không bao "
-"giờ xem trước."
+"biểu tượng tập tin. Nếu đặt là \"always\" (luôn luôn) thì luôn luôn xem "
+"trước, kể cả nếu tập tin ở trên máy ở xa. Nếu đặt \"local-only\" (chỉ tập "
+"tin cục bộ) thì chỉ xem trước nếu nằm trên hệ thống tập tin cục bộ. Nếu đặt "
+"\"never\" (không bao giờ) thì không bao giờ xem trước."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:81
-#, fuzzy
 #| msgid ""
 #| "Speed tradeoff for when to show an image file as a thumbnail. If set to "
 #| "\"always\" then always thumbnail, even if the folder is on a remote "
@@ -2182,10 +2150,11 @@ msgid ""
 "If set to \"never\" then never bother to thumbnail images, just use a "
 "generic icon."
 msgstr ""
-"Thoả hiệp tốc độ khi hiển thị tập tin ảnh dạng ảnh mẫu. Đặt là « luôn luôn » "
-"thì luôn luôn tạo ảnh mẫu, kể cả nếu thư mục ở trên máy ở xa. Đặt « chỉ tập "
-"tin cục bộ » thì chỉ hiển thị ảnh mẫu đối với hệ thống tập tin cục bộ. Đặt « "
-"không bao giờ » thì đừng bao giờ tạo ảnh mẫu, chỉ dùng ảnh biểu tượng chung."
+"Thoả hiệp tốc độ khi hiển thị tập tin ảnh dạng ảnh mẫu. Đặt là \"always"
+"\" (luôn luôn) thì luôn luôn tạo ảnh mẫu, kể cả nếu thư mục ở trên máy ở xa. "
+"Đặt \"local-only\" (chỉ tập tin cục bộ) thì chỉ hiển thị ảnh mẫu đối với hệ "
+"thống tập tin cục bộ. Đặt \"never\" (không bao giờ) thì đừng bao giờ tạo ảnh "
+"mẫu, chỉ dùng ảnh biểu tượng chung."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:82
 #, fuzzy
@@ -2215,7 +2184,6 @@ msgid "The default size of an icon for a thumbnail in the icon view."
 msgstr "Kích cỡ mặc định của biểu tượng cho ảnh mẫu trong ô xem biểu tượng."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:85
-#, fuzzy
 #| msgid ""
 #| "The default sort-order for the items in the list view. Possible values "
 #| "are \"name\", \"size\", \"type\", and \"modification_date\"."
@@ -2224,8 +2192,7 @@ msgid ""
 "\", \"size\", \"type\" and \"mtime\"."
 msgstr ""
 "Thứ tự sắp xếp mặc định cho Ô xem Danh sách. Giá trị có thể là: \"name\" - "
-"tên, \"size\" - kích cỡ, \"type\" - loại và \"modification_date\" - ngày sửa "
-"đổi"
+"tên, \"size\" - kích cỡ, \"type\" - loại và \"mdate\" - ngày sửa đổi."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:86
 msgid "The default width of the side pane in new windows."
@@ -2249,11 +2216,11 @@ msgstr ""
 #, fuzzy
 #| msgid "Open this folder in a navigation window"
 msgid "The geometry string for a navigation window."
-msgstr "Mở thư mục này trong cửa sổ duyệt"
+msgstr "Chuỗi toạ độ cho cửa sổ duyệt."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:90
 msgid "The side pane view to show in newly opened windows."
-msgstr "Ô xem Ô lề để hiển thị trong cửa sổ mới mở."
+msgstr "Ô lề để hiển thị trong cửa sổ mới mở."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:91
 msgid ""
@@ -2317,7 +2284,6 @@ msgstr ""
 " • display\t\thiển thị như tập tin văn bản."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:100
-#, fuzzy
 #| msgid ""
 #| "When a folder is visited this viewer is used unless you have selected "
 #| "another view for that particular folder. Possible values are \"list_view"
@@ -2327,11 +2293,9 @@ msgid ""
 "another view for that particular folder. Possible values are \"list-view\", "
 "\"icon-view\" and \"compact-view\"."
 msgstr ""
-"Khi xem một thư mục, ô xem này sẽ được dùng, trừ khi bạn chọn ô xem khác cho "
-"thư mục đặc biệt. Giá trị có thể:\n"
-" • list_view\t\txem danh sách\n"
-" • icon_view\t\txem các biểu tượng\n"
-" • compact_view\txem chặt."
+"Khi xem một thư mục, khung xem này được dùng trừ khi bạn chọn riêng cho thư "
+"mục. Giá trị có thể là \"list-view\" - danh sách, \"icon-view\" - biểu tượng "
+"và \"compact-view\" - thu gọn."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:101
 msgid "When to show number of items in a folder"
@@ -2391,16 +2355,14 @@ msgid "Autorun Prompt"
 msgstr "Hỏi tự động chạy"
 
 #: ../data/nautilus.desktop.in.in.h:1
-#, fuzzy
 #| msgid "Access files"
 msgid "Access and organize files"
-msgstr "Truy cập tập tin"
+msgstr "Truy cập và tổ chức tập tin"
 
 #: ../data/nautilus.desktop.in.in.h:2
-#, fuzzy
 #| msgid "_File"
 msgid "Files"
-msgstr "_Tập tin"
+msgstr "Tập tin"
 
 #: ../src/nautilus-application.c:155
 #, c-format
@@ -2433,6 +2395,8 @@ msgid ""
 "Nautilus 3.0 deprecated this directory and tried migrating this "
 "configuration to ~/.config/nautilus"
 msgstr ""
+"Nautilus 3.0 sẽ thôi sử dụng thư mục này và chuyển cấu hình qua ~/.config/"
+"nautilus"
 
 #: ../src/nautilus-application.c:915
 msgid "Perform a quick set of self-check tests."
@@ -2481,22 +2445,19 @@ msgstr ""
 "Duyệt hệ thống tập tin bằng trình quản lý tập tin"
 
 #: ../src/nautilus-application.c:963
-#, fuzzy
 #| msgid "nautilus: --check cannot be used with other options.\n"
 msgid "--check cannot be used with other options."
-msgstr "nautilus: không thể dùng được « --check » với các lựa chọn khác.\n"
+msgstr "không thể dùng --check với các lựa chọn khác."
 
 #: ../src/nautilus-application.c:969
-#, fuzzy
 #| msgid "nautilus: %s cannot be used with URIs.\n"
 msgid "--quit cannot be used with URIs."
-msgstr "nautilus: %s không thể được dùng với URI.\n"
+msgstr "không thể dùng --quit với URI."
 
 #: ../src/nautilus-application.c:976
-#, fuzzy
 #| msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgid "--geometry cannot be used with more than one URI."
-msgstr "nautilus: không thể dùng « --geometry » với nhiều URI.\n"
+msgstr "không thể dùng --geometry với nhiều URI."
 
 #: ../src/nautilus-autorun-software.c:143
 #: ../src/nautilus-autorun-software.c:146
@@ -2571,7 +2532,7 @@ msgstr "Biên soạn các Đánh dấu"
 
 #: ../src/nautilus-connect-server-dialog-main.c:120
 msgid "Print but do not open the URI"
-msgstr ""
+msgstr "In nhưng không mở URI"
 
 #. Translators: This is the --help description for the connect to server app,
 #. the initial newlines are between the command line arg and the description
@@ -2612,42 +2573,42 @@ msgid "Secure WebDAV (HTTPS)"
 msgstr "WebDAV bảo mật (HTTPS)"
 
 #: ../src/nautilus-connect-server-dialog.c:185
-#, fuzzy
 #| msgid "_Connect"
 msgid "Connecting..."
-msgstr "_Kết nối"
+msgstr "Kết nối..."
 
 #: ../src/nautilus-connect-server-dialog.c:209
 msgid ""
 "Can't load the supported server method list.\n"
 "Please check your gvfs installation."
 msgstr ""
+"Không thể nạp danh sách phương thức máy chủ hỗ trợ.\n"
+"Vui lòng kiểm tra bản cài đặt gvfs."
 
 #: ../src/nautilus-connect-server-dialog.c:287
-#, fuzzy, c-format
+#, c-format
 #| msgid "The file \"%B\" cannot be moved to the trash."
 msgid "The folder \"%s\" cannot be opened on \"%s\"."
-msgstr "Không thể chuyển tập tin « %B » vào Sọt rác."
+msgstr "Không thể mở thư mục \"%s\" trên \"%s\"."
 
 #: ../src/nautilus-connect-server-dialog.c:297
-#, fuzzy, c-format
+#, c-format
 #| msgid "This file cannot be mounted"
 msgid "The server at \"%s\" cannot be found."
-msgstr "Không thể gắn kết tập tin này"
+msgstr "Không tìm thấy máy chủ ở \"%s\"."
 
 #: ../src/nautilus-connect-server-dialog.c:332
 msgid "Try Again"
-msgstr ""
+msgstr "Thử lại"
 
 #: ../src/nautilus-connect-server-dialog.c:397
 msgid "Please verify your user details."
-msgstr ""
+msgstr "Vui lòng kiểm tra chi tiết người dùng."
 
 #: ../src/nautilus-connect-server-dialog.c:427
-#, fuzzy
 #| msgid "Concrete"
 msgid "Continue"
-msgstr "Bê tông"
+msgstr "Tiếp tục"
 
 #: ../src/nautilus-connect-server-dialog.c:680
 #: ../src/nautilus-properties-window.c:5165 ../src/nautilus-view.c:1540
@@ -2665,10 +2626,9 @@ msgid "Connect to Server"
 msgstr "Kết nối đến máy phục vụ"
 
 #: ../src/nautilus-connect-server-dialog.c:841
-#, fuzzy
 #| msgid "Show more _details"
 msgid "Server Details"
-msgstr "Hiện _chi tiết hơn"
+msgstr "Chi tiết máy chủ"
 
 #. first row: server entry + port spinbutton
 #: ../src/nautilus-connect-server-dialog.c:862
@@ -2687,7 +2647,6 @@ msgstr "_Kiểu:"
 
 #. third row: share entry
 #: ../src/nautilus-connect-server-dialog.c:978
-#, fuzzy
 #| msgid "_Share:"
 msgid "Sh_are:"
 msgstr "Chia _sẻ:"
@@ -2698,38 +2657,33 @@ msgid "_Folder:"
 msgstr "Thư _mục:"
 
 #: ../src/nautilus-connect-server-dialog.c:1021
-#, fuzzy
 #| msgid "Use De_fault"
 msgid "User Details"
-msgstr "_Dùng làm mặc định"
+msgstr "Chi tiết người dùng"
 
 #. first row: domain entry
 #: ../src/nautilus-connect-server-dialog.c:1041
-#, fuzzy
 #| msgid "_Domain Name:"
 msgid "_Domain name:"
 msgstr "Tên _miền:"
 
 #. second row: username entry
 #: ../src/nautilus-connect-server-dialog.c:1060
-#, fuzzy
 #| msgid "_User Name:"
 msgid "_User name:"
 msgstr "Tên người _dùng:"
 
 #. third row: password entry
 #: ../src/nautilus-connect-server-dialog.c:1080
-#, fuzzy
 #| msgid "_Keyword:"
 msgid "Pass_word:"
-msgstr "Từ _khóa:"
+msgstr "_Mật khẩu:"
 
 #. fourth row: remember checkbox
 #: ../src/nautilus-connect-server-dialog.c:1101
-#, fuzzy
 #| msgid "_Remember this application for %s documents"
 msgid "_Remember this password"
-msgstr "_Nhớ ứng dụng này cho các tài liệu %s"
+msgstr "_Nhớ mật khẩu này"
 
 #: ../src/nautilus-desktop-item-properties.c:412
 #: ../src/nautilus-desktop-item-properties.c:422
@@ -2892,10 +2846,10 @@ msgid "The name \"%s\" is not valid. Please use a different name."
 msgstr "Tên « %s » là không hợp lệ. Hãy dùng một tên khác."
 
 #: ../src/nautilus-error-reporting.c:229
-#, fuzzy, c-format
+#, c-format
 #| msgid "The name \"%s\" is not valid. Please use a different name."
 msgid "The name \"%s\" is too long. Please use a different name."
-msgstr "Tên « %s » là không hợp lệ. Hãy dùng một tên khác."
+msgstr "Tên \"%s\" quá dài. Vui lòng dùng tên khác."
 
 #. fall through
 #: ../src/nautilus-error-reporting.c:243
@@ -3074,14 +3028,13 @@ msgid "Behavior"
 msgstr "Ứng xử"
 
 #: ../src/nautilus-file-management-properties.ui.h:44
-#, fuzzy
 #| msgid "Access files"
 msgid "By Access Date"
-msgstr "Truy cập tập tin"
+msgstr "Theo ngày truy cập"
 
 #: ../src/nautilus-file-management-properties.ui.h:45
 msgid "By Modification Date"
-msgstr "Theo Ngày sửa đổi"
+msgstr "Theo ngày sửa đổi"
 
 #: ../src/nautilus-file-management-properties.ui.h:46
 msgid "By Name"
@@ -3093,11 +3046,11 @@ msgstr "Theo kích thước"
 
 #: ../src/nautilus-file-management-properties.ui.h:48
 msgid "By Trashed Date"
-msgstr ""
+msgstr "Theo ngày bỏ rác"
 
 #: ../src/nautilus-file-management-properties.ui.h:49
 msgid "By Type"
-msgstr "Theo Loại"
+msgstr "Theo loại"
 
 #: ../src/nautilus-file-management-properties.ui.h:50
 msgid ""
@@ -3169,10 +3122,9 @@ msgid "Never"
 msgstr "Không bao giờ"
 
 #: ../src/nautilus-file-management-properties.ui.h:64
-#, fuzzy
 #| msgid "Open this folder in a navigation window"
 msgid "Open each _folder in its own window"
-msgstr "Mở thư mục này trong cửa sổ duyệt"
+msgstr "_Mở thư mục này trong cửa sổ riêng"
 
 #: ../src/nautilus-file-management-properties.ui.h:65
 msgid "Preview"
@@ -3283,20 +3235,18 @@ msgid "Keep icons sorted by modification date in rows"
 msgstr "Sắp xếp các biểu tượng theo ngày sửa đổi với biểu diễn hàng"
 
 #: ../src/nautilus-icon-view.c:174
-#, fuzzy
 #| msgid "by _Name"
 msgid "by T_rash Time"
-msgstr "theo tê_n"
+msgstr "theo lúc bỏ rác"
 
 #: ../src/nautilus-icon-view.c:175 ../src/nautilus-icon-view.c:1434
-#, fuzzy
 #| msgid "Keep icons sorted by name in rows"
 msgid "Keep icons sorted by trash time in rows"
-msgstr "Sắp xếp các biểu tượng theo tên với biểu diễn hàng"
+msgstr "Sắp biểu tưởng theo hàng dựa theo lúc bỏ"
 
 #: ../src/nautilus-icon-view.c:667
 msgid "_Organize Desktop by Name"
-msgstr ""
+msgstr "_Tổ chức màn hình nền theo tên"
 
 #. name, stock id, label
 #: ../src/nautilus-icon-view.c:1383
@@ -3306,17 +3256,15 @@ msgstr "_Sắp xếp các mục"
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-icon-view.c:1385
-#, fuzzy
 #| msgid "Stretc_h Icon..."
 msgid "Resize Icon..."
-msgstr "C_o giãn biểu tượng..."
+msgstr "Co giãn biểu tượng..."
 
 #. tooltip
 #: ../src/nautilus-icon-view.c:1386
-#, fuzzy
 #| msgid "Make the selected icon stretchable"
 msgid "Make the selected icon resizable"
-msgstr "Làm biểu tượng được chọn căng ra được"
+msgstr "Làm biểu tượng được chọn co giãn được"
 
 #. name, stock id
 #. label, accelerator
@@ -3333,7 +3281,7 @@ msgstr "Đưa biểu tượng đã chọn về kích cỡ gốc"
 #. label, accelerator
 #: ../src/nautilus-icon-view.c:1393
 msgid "_Organize by Name"
-msgstr ""
+msgstr "_Tổ chức theo tên"
 
 #. tooltip
 #: ../src/nautilus-icon-view.c:1394
@@ -3389,10 +3337,9 @@ msgid "By Modification _Date"
 msgstr "Theo ngày thay đổ_i"
 
 #: ../src/nautilus-icon-view.c:1433
-#, fuzzy
 #| msgid "By _Name"
 msgid "By T_rash Time"
-msgstr "Theo _tên"
+msgstr "Theo lúc _bỏ rác"
 
 #: ../src/nautilus-icon-view.c:1556
 msgid "Restore Icon's Original Si_ze"
@@ -3721,7 +3668,7 @@ msgstr "Đánh dấu _tin cậy"
 #| msgid_plural "This will open %d separate tabs."
 msgid "This will open %d separate application."
 msgid_plural "This will open %d separate applications."
-msgstr[0] "Hành động này sẽ mở %d thanh riêng."
+msgstr[0] "Hành động này sẽ mở %d ứng dụng riêng."
 
 #: ../src/nautilus-mime-actions.c:1863 ../src/nautilus-mime-actions.c:2137
 #: ../src/nautilus-view.c:6179
@@ -3749,13 +3696,12 @@ msgstr "Đóng thanh"
 
 #: ../src/nautilus-places-sidebar.c:307
 msgid "Devices"
-msgstr ""
+msgstr "Thiết bị"
 
 #: ../src/nautilus-places-sidebar.c:315
-#, fuzzy
 #| msgid "_Bookmarks"
 msgid "Bookmarks"
-msgstr "_Liên kết lưu"
+msgstr "Liên kết lưu"
 
 #: ../src/nautilus-places-sidebar.c:516 ../src/nautilus-places-sidebar.c:541
 #, c-format
@@ -3796,10 +3742,9 @@ msgid "Network"
 msgstr "Mạng"
 
 #: ../src/nautilus-places-sidebar.c:824
-#, fuzzy
 #| msgid "Network"
 msgid "Browse Network"
-msgstr "Mạng"
+msgstr "Duyệt mạng"
 
 #: ../src/nautilus-places-sidebar.c:826
 msgid "Browse the contents of the network"
@@ -3955,10 +3900,9 @@ msgid "File Operations"
 msgstr "Thao tác tập tin"
 
 #: ../src/nautilus-progress-ui-handler.c:114
-#, fuzzy
 #| msgid "Show more _details"
 msgid "Show Details"
-msgstr "Hiện _chi tiết hơn"
+msgstr "Hiện chi tiết"
 
 #: ../src/nautilus-progress-ui-handler.c:149
 #: ../src/nautilus-progress-ui-handler.c:171
@@ -3969,7 +3913,7 @@ msgstr[0] "%'d thao tác tập tin đang chạy"
 
 #: ../src/nautilus-progress-ui-handler.c:270
 msgid "All file operations have been successfully completed"
-msgstr ""
+msgstr "Đã hoàn tất thành công mọi thao tác tập tin"
 
 #: ../src/nautilus-properties-window.c:494
 msgid "You cannot assign more than one custom icon at a time!"
@@ -4364,16 +4308,14 @@ msgid "Search:"
 msgstr "Tìm:"
 
 #: ../src/nautilus-trash-bar.c:197
-#, fuzzy
 #| msgid "Rename selected item"
 msgid "Restore Selected Items"
-msgstr "Đổi tên mục đã chọn"
+msgstr "Phục hồi mục đã chọn"
 
 #: ../src/nautilus-trash-bar.c:203
-#, fuzzy
 #| msgid "Restore each selected icon to its original size"
 msgid "Restore selected items to their original position"
-msgstr "Đưa biểu tượng đã chọn về kích cỡ gốc"
+msgstr "Phục hồi biểu tượng đã chọn về kích cỡ gốc"
 
 #: ../src/nautilus-tree-sidebar.c:914 ../src/nautilus-view.c:5776
 #, c-format
@@ -4393,7 +4335,6 @@ msgstr "Không có gì trong khay nháp để dán."
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-tree-sidebar.c:1197 ../src/nautilus-view.c:7005
-#, fuzzy
 #| msgid "Create _Folder"
 msgid "Create New _Folder"
 msgstr "Tạo thư _mục"
@@ -4439,10 +4380,9 @@ msgid "_Pattern:"
 msgstr "_Mẫu:"
 
 #: ../src/nautilus-view.c:1578
-#, fuzzy
 #| msgid "Emblems:"
 msgid "Examples: "
-msgstr "Hình tượng:"
+msgstr "Ví dụ: "
 
 #: ../src/nautilus-view.c:1696
 msgid "Save Search as"
@@ -4504,10 +4444,10 @@ msgid "%s (%s)"
 msgstr "%s (%s)"
 
 #: ../src/nautilus-view.c:2877
-#, fuzzy, c-format
+#, c-format
 #| msgid "Free space:"
 msgid "Free space: %s"
-msgstr "Chỗ còn rảnh::"
+msgstr "Chỗ trống: %s"
 
 #: ../src/nautilus-view.c:2888
 #, c-format
@@ -4521,10 +4461,10 @@ msgstr "%s, Sức chứa còn trống: %s"
 #. * be shown.
 #.
 #: ../src/nautilus-view.c:2903
-#, fuzzy, c-format
+#, c-format
 #| msgid "%s%s, %s"
 msgid "%s, %s"
-msgstr "%s%s, %s"
+msgstr "%s, %s"
 
 # Variable: don't translate / Biến: đừng dịch
 #. Marking this for translation, since you
@@ -4554,13 +4494,13 @@ msgstr "%s%s, %s"
 #. * the free space is written.
 #.
 #: ../src/nautilus-view.c:2949
-#, fuzzy, c-format
+#, c-format
 #| msgid "%s%s, %s"
 msgid "%s%s, %s, %s"
-msgstr "%s%s, %s"
+msgstr "%s%s, %s, %s"
 
 #: ../src/nautilus-view.c:4362
-#, fuzzy, c-format
+#, c-format
 #| msgid "Open with %s"
 msgid "Open With %s"
 msgstr "Mở bằng %s"
@@ -4577,10 +4517,10 @@ msgid "Run \"%s\" on any selected items"
 msgstr "Thực hiện « %s » trên các mục đã chọn"
 
 #: ../src/nautilus-view.c:5450
-#, fuzzy, c-format
+#, c-format
 #| msgid "Create Document from template \"%s\""
 msgid "Create a new document from template \"%s\""
-msgstr "Tạo tài liệu theo mẫu « %s »"
+msgstr "Tạo tài liệu theo mẫu \"%s\""
 
 #: ../src/nautilus-view.c:5704
 msgid "All executable files in this folder will appear in the Scripts menu."
@@ -4708,7 +4648,6 @@ msgstr "Tê_n liên kết:"
 
 #. name, stock id, label
 #: ../src/nautilus-view.c:6993
-#, fuzzy
 #| msgid "Create _Document"
 msgid "Create New _Document"
 msgstr "Tạo _tài liệu"
@@ -4747,17 +4686,15 @@ msgstr "Chưa cài mẫu"
 #. translators: this is used to indicate that a document doesn't contain anything
 #. label, accelerator
 #: ../src/nautilus-view.c:7011
-#, fuzzy
 #| msgid "Documents"
 msgid "_Empty Document"
-msgstr "Tài liệu"
+msgstr "Tài liệu t_rống"
 
 #. tooltip
 #: ../src/nautilus-view.c:7012
-#, fuzzy
 #| msgid "Create a new empty folder inside this folder"
 msgid "Create a new empty document inside this folder"
-msgstr "Tạo một thư mục rỗng bên trong thư mục này"
+msgstr "Tạo một tài liệu trống bên trong thư mục này"
 
 #. tooltip
 #: ../src/nautilus-view.c:7020
@@ -4808,10 +4745,9 @@ msgstr "Chọn ứng dụng khác để mở mục đã chọn"
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-view.c:7043
-#, fuzzy
 #| msgid "Open with Other _Application..."
 msgid "Open With Other _Application..."
-msgstr "Mở bằng Ứng dụng _khác..."
+msgstr "Mở bằng ứng dụng _khác..."
 
 #. name, stock id
 #. label, accelerator
@@ -4859,11 +4795,10 @@ msgstr ""
 #. name, stock id, label
 #: ../src/nautilus-view.c:7072
 msgid "Cop_y to"
-msgstr ""
+msgstr "Chép _sang"
 
 #. name, stock id, label
 #: ../src/nautilus-view.c:7073
-#, fuzzy
 #| msgid "Move Dow_n"
 msgid "M_ove to"
 msgstr "Chuyển _xuống"
@@ -5344,10 +5279,10 @@ msgid "Move the open folder to the Trash"
 msgstr "Di chuyển thư mục đang mở vào Sọt rác"
 
 #: ../src/nautilus-view.c:8440
-#, fuzzy, c-format
+#, c-format
 #| msgid "Open with %s"
 msgid "_Open With %s"
-msgstr "Mở bằng %s"
+msgstr "_Mở bằng %s"
 
 #: ../src/nautilus-view.c:8493
 #, c-format
@@ -5460,10 +5395,9 @@ msgid "View of the current folder"
 msgstr "Xem thư mục hiện thời"
 
 #: ../src/nautilus-window-manage-views.c:1176
-#, fuzzy
 #| msgid "Search"
 msgid "Searching..."
-msgstr "Tìm kiếm"
+msgstr "Tìm..."
 
 #: ../src/nautilus-window-manage-views.c:1667
 msgid "Nautilus has no installed viewer capable of displaying the folder."
@@ -5574,10 +5508,9 @@ msgstr ""
 "mục, cả hai trên máy này và trực tuyến."
 
 #: ../src/nautilus-window-menus.c:379
-#, fuzzy
 #| msgid "Copyright © 1999-2008 The Nautilus authors"
 msgid "Copyright © 1999-2010 The Nautilus authors"
-msgstr "Tác quyền © năm 1999-2008 của Những tác giả Nautilus"
+msgstr "Tác quyền © năm 1999-2010 của Những tác giả Nautilus"
 
 #. Translators should localize the following string
 #. * which will be displayed at the bottom of the about
@@ -5862,10 +5795,9 @@ msgstr "Xóa nội dung trong thư mục Đi và danh sách « Lùi/Tới »"
 
 #. name, stock id, label
 #: ../src/nautilus-window-menus.c:1047
-#, fuzzy
 #| msgid "_Other pane"
 msgid "S_witch to Other Pane"
-msgstr "Bảng _khác"
+msgstr "_Chuyển qua khung khác"
 
 #: ../src/nautilus-window-menus.c:1048
 msgid "Move focus to the other pane in a split view window"
@@ -5873,10 +5805,9 @@ msgstr "Di chuyển tiêu điểm sang bàng khác trong cửa sổ xem chia nhi
 
 #. name, stock id, label
 #: ../src/nautilus-window-menus.c:1050
-#, fuzzy
 #| msgid "Go to the same location as in the extra pane"
 msgid "Sa_me Location as Other Pane"
-msgstr "Đếm địa điểm giống với trong bảng phụ"
+msgstr "Cùng địa điểm với khung kia"
 
 #: ../src/nautilus-window-menus.c:1051
 msgid "Go to the same location as in the extra pane"
@@ -5933,10 +5864,9 @@ msgid "Move current tab to right"
 msgstr "Chuyển thanh hiện thời sang bên phải"
 
 #: ../src/nautilus-window-menus.c:1071
-#, fuzzy
 #| msgid "Silver"
 msgid "Sidebar"
-msgstr "Bạc"
+msgstr "Khung lề"
 
 #. name, stock id
 #. label, accelerator
@@ -5964,10 +5894,9 @@ msgstr "Hiện/Ẩn thanh công cụ chính của cửa sổ này"
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:1086
-#, fuzzy
 #| msgid "Show search"
 msgid "_Show Sidebar"
-msgstr "Xem tìm kiếm"
+msgstr "_Hiện khung lề"
 
 #. tooltip
 #: ../src/nautilus-window-menus.c:1087
@@ -6002,10 +5931,9 @@ msgstr "Tìm tài liệu và thư mục theo tên"
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:1101
-#, fuzzy
 #| msgid "_Other pane"
 msgid "E_xtra Pane"
-msgstr "Bảng _khác"
+msgstr "_Khung phụ"
 
 #. tooltip
 #: ../src/nautilus-window-menus.c:1102
@@ -6018,7 +5946,7 @@ msgstr "Mở nhanh"
 
 #: ../src/nautilus-window-menus.c:1109
 msgid "Select Places as the default sidebar"
-msgstr ""
+msgstr "Chọn Mở nhanh làm khung bên mặc định"
 
 #: ../src/nautilus-window-menus.c:1112
 msgid "Tree"
@@ -6026,7 +5954,7 @@ msgstr "Cây"
 
 #: ../src/nautilus-window-menus.c:1112
 msgid "Select Tree as the default sidebar"
-msgstr ""
+msgstr "Chọn Cây làm khung bên mặc định"
 
 #: ../src/nautilus-window-menus.c:1130
 msgid "Back history"
@@ -6041,7 +5969,6 @@ msgid "_Up"
 msgstr "_Lên"
 
 #: ../src/nautilus-window-pane.c:476
-#, fuzzy
 #| msgid "New _Tab"
 msgid "_New Tab"
 msgstr "Thanh _mới"
@@ -6109,19 +6036,17 @@ msgstr "Mở %s"
 #: ../nautilus-sendto-extension/nautilus-nste.c:80
 #: ../nautilus-sendto-extension/nautilus-nste.c:85
 msgid "Send To..."
-msgstr ""
+msgstr "Gửi đến..."
 
 #: ../nautilus-sendto-extension/nautilus-nste.c:81
-#, fuzzy
 #| msgid "The file is not an image."
 msgid "Send file by mail, instant message..."
-msgstr "Tập tin không phải ảnh."
+msgstr "Gửi tập tin dạng thư hoặc tin nhắn..."
 
 #: ../nautilus-sendto-extension/nautilus-nste.c:86
-#, fuzzy
 #| msgid "The file is not an image."
 msgid "Send files by mail, instant message..."
-msgstr "Tập tin không phải ảnh."
+msgstr "Gửi tập tin dạng thư hoặc tin nhắn..."
 
 #~ msgid "File is not a valid .desktop file"
 #~ msgstr "Tập tin không phải là một tập tin .desktop hợp lệ"
@@ -6400,7 +6325,8 @@ msgstr "Tập tin không phải ảnh."
 #~ "Color for the default folder background. Only used if background_set is "
 #~ "true."
 #~ msgstr ""
-#~ "Màu cho nền thư mục mặc định. Chỉ được dùng nếu « background_set » là đúng."
+#~ "Màu cho nền thư mục mặc định. Chỉ được dùng nếu « background_set » là "
+#~ "đúng."
 
 #~ msgid "Criteria for search bar searching"
 #~ msgstr "Tiêu chuẩn tìm kiếm trên thanh tìm kiếm"
@@ -6441,8 +6367,8 @@ msgstr "Tập tin không phải ảnh."
 #~ "Filename for the default folder background. Only used if background_set "
 #~ "is true."
 #~ msgstr ""
-#~ "Tên tập tin cho nền thư mục mặc định. Chỉ được dùng nếu « background_set » "
-#~ "là đúng."
+#~ "Tên tập tin cho nền thư mục mặc định. Chỉ được dùng nếu « background_set "
+#~ "» là đúng."
 
 #~ msgid ""
 #~ "Filename for the default side pane background. Only used if "
@@ -6894,8 +6820,8 @@ msgstr "Tập tin không phải ảnh."
 #~ "\"%s\" cannot open \"%s\" because \"%s\" cannot access files at \"%s\" "
 #~ "locations."
 #~ msgstr ""
-#~ "« %s » không thể mở « %s » được vì « %s » không thể truy cập các tập tin tại "
-#~ "địa điểm « %s »."
+#~ "« %s » không thể mở « %s » được vì « %s » không thể truy cập các tập tin "
+#~ "tại địa điểm « %s »."
 
 #~ msgid "Open Failed, would you like to choose another action?"
 #~ msgstr "Mở thất bại, bạn có muốn chọn một hành động khác không?"
