@@ -1,3 +1,12 @@
+Major changes in 2.91.91 are:
+* Allow the dbus manager to run as a service
+* Create folders in subdirectories in list view, when possible
+* Make sure we don't focus headers in the places sidebar
+* Don't activate 'Rename' in the sidebar for non-bookmarks
+* Fix the list view not updating anymore after creating an empty file
+* Fix regressions in rename widget focus
+* Fix some UI regressions from the latest changes
+
 Major changes in 2.91.90.1 are:
 * Make modules of extensions pulling in ORBit resident, to avoid
   ORBit's atexit()'s handler to call into unloaded code
