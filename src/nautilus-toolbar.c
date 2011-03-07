@@ -87,6 +87,7 @@ nautilus_toolbar_constructed (GObject *obj)
 	NautilusToolbar *self = NAUTILUS_TOOLBAR (obj);
 	GtkToolItem *item;
 	GtkWidget *hbox, *toolbar;
+	GtkStyleContext *context;
 	const gchar *ui;
 
 	G_OBJECT_CLASS (nautilus_toolbar_parent_class)->constructed (obj);
@@ -102,6 +103,10 @@ nautilus_toolbar_constructed (GObject *obj)
 
 	toolbar = gtk_ui_manager_get_widget (self->priv->ui_manager, "/Toolbar");
 	self->priv->toolbar = toolbar;
+
+	context = gtk_widget_get_style_context (toolbar);
+	gtk_style_context_add_class (context, GTK_STYLE_CLASS_PRIMARY_TOOLBAR);
+
 	gtk_box_pack_start (GTK_BOX (self), self->priv->toolbar, TRUE, TRUE, 0);
 	gtk_widget_show_all (self->priv->toolbar);
 
@@ -138,7 +143,7 @@ nautilus_toolbar_init (NautilusToolbar *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, NAUTILUS_TYPE_TOOLBAR,
 						  NautilusToolbarPriv);
-	self->priv->show_main_bar = TRUE;
+	self->priv->show_main_bar = TRUE;	
 }
 
 static void
