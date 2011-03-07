@@ -2428,54 +2428,54 @@ empty_trash_cb (GtkMenuItem           *item,
 
 static gboolean
 find_prev_or_next_row (NautilusPlacesSidebar *sidebar,
-		       GtkTreePath **path,
+		       GtkTreeIter *iter,
 		       gboolean go_up)
 {
+	GtkTreeSelection *selection;
 	GtkTreeModel *model;
-	GtkTreeIter iter;
 	int place_type;
 	gboolean res;
 
-	g_assert (path != NULL);
+	selection = gtk_tree_view_get_selection (sidebar->tree_view);
+	res = gtk_tree_selection_get_selected (selection, &model, iter);
 
-	model = gtk_tree_view_get_model (sidebar->tree_view);
-	gtk_tree_view_get_cursor (sidebar->tree_view, path, NULL);
+	if (!res) {
+		goto out;
+	}
 
 	if (go_up) {
-		res = gtk_tree_path_prev (*path);
+		res = gtk_tree_model_iter_previous (model, iter);
 	} else {
-		gtk_tree_path_next (*path);
-		res = gtk_tree_model_get_iter (model, &iter, *path);
+		res = gtk_tree_model_iter_next (model, iter);
 	}
 
 	if (res) {
-		gtk_tree_model_get_iter (model, &iter, *path);
-		gtk_tree_model_get (model, &iter,
+		gtk_tree_model_get (model, iter,
 				    PLACES_SIDEBAR_COLUMN_ROW_TYPE, &place_type,
 				    -1);
 		if (place_type == PLACES_HEADING) {
 			if (go_up) {
-				res = gtk_tree_path_prev (*path);
+				res = gtk_tree_model_iter_previous (model, iter);
 			} else {
-				gtk_tree_path_next (*path);
-				res = gtk_tree_model_get_iter (model, &iter, *path);
+				res = gtk_tree_model_iter_next (model, iter);
 			}
 		}
 	}
 
+ out:
 	return res;
 }
 
 static gboolean
-find_prev_row (NautilusPlacesSidebar *sidebar, GtkTreePath **path)
+find_prev_row (NautilusPlacesSidebar *sidebar, GtkTreeIter *iter)
 {
-	return find_prev_or_next_row (sidebar, path, TRUE);
+	return find_prev_or_next_row (sidebar, iter, TRUE);
 }
 
 static gboolean
-find_next_row (NautilusPlacesSidebar *sidebar, GtkTreePath **path)
+find_next_row (NautilusPlacesSidebar *sidebar, GtkTreeIter *iter)
 {
-	return find_prev_or_next_row (sidebar, path, FALSE);
+	return find_prev_or_next_row (sidebar, iter, FALSE);
 }
 
 /* Handler for GtkWidget::key-press-event on the shortcuts list */
@@ -2485,6 +2485,7 @@ bookmarks_key_press_event_cb (GtkWidget             *widget,
 			      NautilusPlacesSidebar *sidebar)
 {
   guint modifiers;
+  GtkTreeIter iter;
 
   modifiers = gtk_accelerator_get_default_mod_mask ();
 
@@ -2518,20 +2519,18 @@ bookmarks_key_press_event_cb (GtkWidget             *widget,
   }
 
   if (event->keyval == GDK_KEY_Up) {
-      GtkTreePath *path;
-      if (find_prev_row (sidebar, &path)) {
-          gtk_tree_view_set_cursor (sidebar->tree_view, path, NULL, FALSE);
+      if (find_prev_row (sidebar, &iter)) {
+	      gtk_tree_selection_select_iter (gtk_tree_view_get_selection (sidebar->tree_view),
+					      &iter);
       }
-      gtk_tree_path_free (path);
       return TRUE;
   }
 
   if (event->keyval == GDK_KEY_Down) {
-      GtkTreePath *path;
-      if (find_next_row (sidebar, &path)) {
-          gtk_tree_view_set_cursor (sidebar->tree_view, path, NULL, FALSE);
+      if (find_next_row (sidebar, &iter)) {
+	      gtk_tree_selection_select_iter (gtk_tree_view_get_selection (sidebar->tree_view),
+					      &iter);
       }
-      gtk_tree_path_free (path);
       return TRUE;
   }
 
