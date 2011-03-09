@@ -86,7 +86,7 @@ nautilus_toolbar_constructed (GObject *obj)
 {
 	NautilusToolbar *self = NAUTILUS_TOOLBAR (obj);
 	GtkToolItem *item;
-	GtkWidget *hbox, *toolbar;
+	GtkWidget *hbox, *toolbar, *search;
 	GtkStyleContext *context;
 	const gchar *ui;
 
@@ -106,6 +106,9 @@ nautilus_toolbar_constructed (GObject *obj)
 
 	context = gtk_widget_get_style_context (toolbar);
 	gtk_style_context_add_class (context, GTK_STYLE_CLASS_PRIMARY_TOOLBAR);
+
+	search = gtk_ui_manager_get_widget (self->priv->ui_manager, "/Toolbar/Search");
+	gtk_style_context_add_class (gtk_widget_get_style_context (search), GTK_STYLE_CLASS_RAISED);
 
 	gtk_box_pack_start (GTK_BOX (self), self->priv->toolbar, TRUE, TRUE, 0);
 	gtk_widget_show_all (self->priv->toolbar);
