@@ -27,8 +27,8 @@ NautilusFloatingBar {
     border-width: 2;
 }
 
-NautilusFloatingBar > GtkBox > .button {
-    background-color: #fdf6bb;
+NautilusFloatingBar > GtkBox > GtkButton {
+    background-color: alpha (@theme_base_color, 0.0);
     background-image: none;
     border-style: none;
 }
