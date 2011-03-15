@@ -1,11 +1,35 @@
+@define-color cluebar_color #729fcf;
+
 * {
     -NautilusIconContainer-selection-box-rgba: @selected_bg_color;
     -NautilusIconContainer-dark-info-rgba: shade (@selected_bg_color, 0.6);
     -NautilusIconContainer-light-info-rgba: shade (@selected_fg_color, 0.6);
 }
 
-#nautilus-extra-view-widget {
-    background-color: #a7c6e1;
+NautilusTrashBar.info,
+NautilusXContentBar.info,
+NautilusSearchBar.info {
+    background-color: @cluebar_color;
+    border-color: darker (@cluebar_color);
+
+    border-radius: 0;
+    border-width: 1;
+    border-style: solid;
+}
+
+NautilusSearchBar .entry {
+    -GtkEntry-inner-border: 1;
+}
+
+.nautilus-cluebar-label {
+    font: bold;
+    color: @theme_base_color;
+}
+
+
+#nautilus-search-button:active,
+#nautilus-search-button:active:prelight {
+    color: darker (@cluebar_color);
 }
 
 #nautilus-tab-close-button {
