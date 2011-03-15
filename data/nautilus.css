@@ -21,16 +21,21 @@
 
 
 NautilusFloatingBar {
-    background-color: #fdf6bb;
-    border-color: #f4e564;
-    border-radius: 1;
-    border-width: 2;
+    background-color: shade (@theme_base_color, 0.95);
+    border-color: darker (shade (@theme_base_color, 0.95));
+    border-radius: 2;
+    border-width: 1;
+
+    padding: 0;
 }
 
 NautilusFloatingBar > GtkBox > GtkButton {
     background-color: alpha (@theme_base_color, 0.0);
     background-image: none;
     border-style: none;
+
+    -GtkButton-image-spacing: 0;
+    -GtkButton-inner-border: 0;
 }
 
 NautilusPlacesSidebar {
