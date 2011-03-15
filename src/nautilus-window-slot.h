@@ -79,6 +79,7 @@ struct NautilusWindowSlot {
 	GtkWidget *floating_bar;
 
 	guint set_status_timeout_id;
+	guint loading_timeout_id;
 
 	NautilusView *content_view;
 	NautilusView *new_content_view;

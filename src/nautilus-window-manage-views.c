@@ -1163,14 +1163,8 @@ nautilus_window_report_location_change (NautilusWindow *window)
 }
 
 static void
-setup_loading_floating_bar (NautilusWindowSlot *slot)
+real_setup_loading_floating_bar (NautilusWindowSlot *slot)
 {
-	/* setup loading overlay */
-	if (slot->set_status_timeout_id != 0) {
-		g_source_remove (slot->set_status_timeout_id);
-		slot->set_status_timeout_id = 0;
-	}
-
 	nautilus_floating_bar_set_label (NAUTILUS_FLOATING_BAR (slot->floating_bar),
 					 NAUTILUS_IS_SEARCH_DIRECTORY (nautilus_view_get_model (slot->content_view)) ?
 					 _("Searching...") : _("Loading..."));
@@ -1180,6 +1174,35 @@ setup_loading_floating_bar (NautilusWindowSlot *slot)
 					  GTK_STOCK_STOP,
 					  NAUTILUS_FLOATING_BAR_ACTION_ID_STOP);
 	gtk_widget_show (slot->floating_bar);
+}
+
+static gboolean
+setup_loading_floating_bar_timeout_cb (gpointer user_data)
+{
+	NautilusWindowSlot *slot = user_data;
+
+	slot->loading_timeout_id = 0;
+	real_setup_loading_floating_bar (slot);
+
+	return FALSE;
+}
+
+static void
+setup_loading_floating_bar (NautilusWindowSlot *slot)
+{
+	/* setup loading overlay */
+	if (slot->set_status_timeout_id != 0) {
+		g_source_remove (slot->set_status_timeout_id);
+		slot->set_status_timeout_id = 0;
+	}
+
+	if (slot->loading_timeout_id != 0) {
+		g_source_remove (slot->loading_timeout_id);
+		slot->loading_timeout_id = 0;
+	}
+
+	slot->loading_timeout_id =
+		g_timeout_add (500, setup_loading_floating_bar_timeout_cb, slot);
 }
 
 /* This is called when we have decided we can actually change to the new view/location situation. */
@@ -1489,6 +1512,11 @@ nautilus_window_report_load_complete (NautilusWindow *window,
 static void
 remove_loading_floating_bar (NautilusWindowSlot *slot)
 {
+	if (slot->loading_timeout_id != 0) {
+		g_source_remove (slot->loading_timeout_id);
+		slot->loading_timeout_id = 0;
+	}
+
 	gtk_widget_hide (slot->floating_bar);
 	nautilus_floating_bar_cleanup_actions (NAUTILUS_FLOATING_BAR (slot->floating_bar));
 }

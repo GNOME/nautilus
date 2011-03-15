@@ -242,6 +242,11 @@ nautilus_window_slot_dispose (GObject *object)
 		slot->set_status_timeout_id = 0;
 	}
 
+	if (slot->loading_timeout_id != 0) {
+		g_source_remove (slot->loading_timeout_id);
+		slot->loading_timeout_id = 0;
+	}
+
 	nautilus_window_slot_set_viewed_file (slot, NULL);
 	/* TODO? why do we unref here? the file is NULL.
 	 * It was already here before the slot move, though */
