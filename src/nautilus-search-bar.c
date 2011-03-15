@@ -24,6 +24,8 @@
 #include <config.h>
 #include "nautilus-search-bar.h"
 
+#include <libnautilus-private/nautilus-icon-info.h>
+
 #include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
@@ -43,11 +45,41 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 G_DEFINE_TYPE (NautilusSearchBar, nautilus_search_bar, GTK_TYPE_BOX);
-	
+
+static gboolean
+nautilus_search_bar_draw (GtkWidget *widget,
+			  cairo_t *cr)
+{
+	GtkStyleContext *context;
+
+	context = gtk_widget_get_style_context (widget);
+
+	gtk_style_context_save (context);
+	gtk_style_context_add_class (context, GTK_STYLE_CLASS_INFO);
+
+	gtk_render_background (context, cr, 0, 0,
+			       gtk_widget_get_allocated_width (widget),
+			       gtk_widget_get_allocated_height (widget));
+
+	gtk_render_frame (context, cr, 0, 0,
+			  gtk_widget_get_allocated_width (widget),
+			  gtk_widget_get_allocated_height (widget));
+
+	gtk_style_context_restore (context);
+
+	GTK_WIDGET_CLASS (nautilus_search_bar_parent_class)->draw (widget, cr);
+
+	return FALSE;
+}
+
 static void
 nautilus_search_bar_class_init (NautilusSearchBarClass *class)
 {
 	GtkBindingSet *binding_set;
+	GtkWidgetClass *wclass;
+
+	wclass = GTK_WIDGET_CLASS (class);
+	wclass->draw = nautilus_search_bar_draw;
 
 	signals[ACTIVATE] =
 		g_signal_new ("activate",
@@ -123,25 +155,71 @@ focus_in_event_callback (GtkWidget *widget,
 	return FALSE;
 }
 
+static GdkPixbuf *
+lookup_and_color_symbolic_find (NautilusSearchBar *bar)
+{
+	GtkIconInfo *icon_info;
+	GdkRGBA color;
+	GdkPixbuf *icon;
+	GtkStyleContext *context;
+
+	context = gtk_widget_get_style_context (GTK_WIDGET (bar));
+	gtk_style_context_save (context);
+	gtk_style_context_add_class (context, GTK_STYLE_CLASS_INFO);
+	gtk_style_context_get_background_color (context, 0, &color);
+
+	icon_info = gtk_icon_theme_lookup_icon (gtk_icon_theme_get_default (),
+						"edit-find-symbolic",
+						nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU),
+						GTK_ICON_LOOKUP_GENERIC_FALLBACK);
+	icon = gtk_icon_info_load_symbolic (icon_info, &color,
+					    NULL, NULL, NULL,
+					    NULL, NULL);
+
+	gtk_style_context_restore (context);
+
+	gtk_icon_info_free (icon_info);
+
+	return icon;
+}
+
 static void
 nautilus_search_bar_init (NautilusSearchBar *bar)
 {
 	GtkWidget *label;
+	GtkWidget *align;
+	GdkPixbuf *icon;
 
 	bar->details =
 		G_TYPE_INSTANCE_GET_PRIVATE (bar, NAUTILUS_TYPE_SEARCH_BAR,
 					     NautilusSearchBarDetails);
 
 	label = gtk_label_new (_("Search:"));
+	gtk_style_context_add_class (gtk_widget_get_style_context (label),
+				     "nautilus-cluebar-label");
 	gtk_widget_show (label);
 
 	gtk_box_pack_start (GTK_BOX (bar), label, FALSE, FALSE, 0);
 
+	g_object_set (label,
+		      "margin-left", 6,
+		      NULL);
+
+	align = gtk_alignment_new (0.5, 0.5, 1.0, 1.0);
+	gtk_alignment_set_padding (GTK_ALIGNMENT (align),
+				   6, 6, 0, 6);
+	gtk_box_pack_start (GTK_BOX (bar), align, TRUE, TRUE, 0);
+	gtk_widget_show (align);
+
 	bar->details->entry = gtk_entry_new ();
-	gtk_entry_set_icon_from_stock (GTK_ENTRY (bar->details->entry),
-				       GTK_ENTRY_ICON_SECONDARY,
-				       GTK_STOCK_FIND);
-	gtk_box_pack_start (GTK_BOX (bar), bar->details->entry, TRUE, TRUE, 0);
+	icon = lookup_and_color_symbolic_find (bar);
+	
+	gtk_entry_set_icon_from_pixbuf (GTK_ENTRY (bar->details->entry),
+					GTK_ENTRY_ICON_SECONDARY,
+					icon);
+	gtk_container_add (GTK_CONTAINER (align), bar->details->entry);
+
+	g_object_unref (icon);
 
 	g_signal_connect (bar->details->entry, "activate",
 			  G_CALLBACK (entry_activate_cb), bar);
