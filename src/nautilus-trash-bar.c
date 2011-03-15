@@ -41,28 +41,18 @@ enum {
 	NUM_PROPERTIES
 };
 
+enum {
+	TRASH_BAR_RESPONSE_EMPTY = 1,
+	TRASH_BAR_RESPONSE_RESTORE
+};
+
 struct NautilusTrashBarPrivate
 {
-	GtkWidget *empty_button;
-	GtkWidget *restore_button;
-
 	NautilusView *view;
 	gulong selection_handler_id;
 };
 
-G_DEFINE_TYPE (NautilusTrashBar, nautilus_trash_bar, GTK_TYPE_HBOX);
-
-static void
-restore_button_clicked_cb (GtkWidget *button,
-			   NautilusTrashBar *bar)
-{
-	GList *files;
-
-	files = nautilus_view_get_selection (bar->priv->view);
-	nautilus_restore_files_from_trash (files, GTK_WINDOW (gtk_widget_get_toplevel (button)));
-
-	nautilus_file_list_free (files);
-}
+G_DEFINE_TYPE (NautilusTrashBar, nautilus_trash_bar, GTK_TYPE_INFO_BAR);
 
 static void
 selection_changed_cb (NautilusView *view,
@@ -72,7 +62,9 @@ selection_changed_cb (NautilusView *view,
 
 	count = nautilus_view_get_selection_count (view);
 
-	gtk_widget_set_sensitive (bar->priv->restore_button, (count > 0));
+	gtk_info_bar_set_response_sensitive (GTK_INFO_BAR (bar),
+					     TRASH_BAR_RESPONSE_RESTORE,
+					     (count > 0));
 }
 
 static void
@@ -129,8 +121,9 @@ nautilus_trash_bar_trash_state_changed (NautilusTrashMonitor *trash_monitor,
 
 	bar = NAUTILUS_TRASH_BAR (data);
 
-	gtk_widget_set_sensitive (bar->priv->empty_button,
-				  !nautilus_trash_monitor_is_empty ());
+	gtk_info_bar_set_response_sensitive (GTK_INFO_BAR (bar),
+					     TRASH_BAR_RESPONSE_EMPTY,
+					     !nautilus_trash_monitor_is_empty ());
 }
 
 static void
@@ -157,69 +150,78 @@ nautilus_trash_bar_class_init (NautilusTrashBarClass *klass)
 }
 
 static void
-empty_trash_callback (GtkWidget *button, gpointer data)
+trash_bar_response_cb (GtkInfoBar *infobar,
+		       gint response_id,
+		       gpointer user_data)
 {
+	NautilusTrashBar *bar;
 	GtkWidget *window;
-	
-	window = gtk_widget_get_toplevel (button);
+	GList *files;
 
-	nautilus_file_operations_empty_trash (window);
+	bar = NAUTILUS_TRASH_BAR (infobar);
+	window = gtk_widget_get_toplevel (GTK_WIDGET (bar));
+
+	switch (response_id) {
+	case TRASH_BAR_RESPONSE_EMPTY:
+		nautilus_file_operations_empty_trash (window);
+		break;
+	case TRASH_BAR_RESPONSE_RESTORE:
+		files = nautilus_view_get_selection (bar->priv->view);
+		nautilus_restore_files_from_trash (files, GTK_WINDOW (window));
+		nautilus_file_list_free (files);
+		break;
+	default:
+		break;
+	}
 }
 
 static void
 nautilus_trash_bar_init (NautilusTrashBar *bar)
 {
+	GtkWidget *content_area, *action_area, *w;
 	GtkWidget *label;
-	GtkWidget *hbox;
 
 	bar->priv = NAUTILUS_TRASH_BAR_GET_PRIVATE (bar);
+	content_area = gtk_info_bar_get_content_area (GTK_INFO_BAR (bar));
+	action_area = gtk_info_bar_get_action_area (GTK_INFO_BAR (bar));
 
-	hbox = GTK_WIDGET (bar);
+	gtk_orientable_set_orientation (GTK_ORIENTABLE (action_area),
+					GTK_ORIENTATION_HORIZONTAL);
 
 	label = gtk_label_new (_("Trash"));
+	gtk_style_context_add_class (gtk_widget_get_style_context (label),
+				     "nautilus-cluebar-label");
 	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (bar), label, FALSE, FALSE, 0);
+	gtk_container_add (GTK_CONTAINER (content_area), label);
 
-	bar->priv->empty_button = gtk_button_new_with_mnemonic (_("Empty _Trash"));
-	gtk_widget_show (bar->priv->empty_button);
-	gtk_box_pack_end (GTK_BOX (hbox), bar->priv->empty_button, FALSE, FALSE, 0);
-
-	gtk_widget_set_sensitive (bar->priv->empty_button,
-				  !nautilus_trash_monitor_is_empty ());
-	gtk_widget_set_tooltip_text (bar->priv->empty_button,
-				     _("Delete all items in the Trash"));
-
-	g_signal_connect (bar->priv->empty_button,
-			  "clicked",
-			  G_CALLBACK (empty_trash_callback),
-			  bar);
-
-	bar->priv->restore_button = gtk_button_new_with_mnemonic (_("Restore Selected Items"));
-	gtk_widget_show (bar->priv->restore_button);
-	gtk_box_pack_end (GTK_BOX (hbox), bar->priv->restore_button, FALSE, FALSE, 6);
-
-	gtk_widget_set_sensitive (bar->priv->restore_button, FALSE);
-	gtk_widget_set_tooltip_text (bar->priv->restore_button,
+	w = gtk_info_bar_add_button (GTK_INFO_BAR (bar),
+				     _("Restore Selected Items"),
+				     TRASH_BAR_RESPONSE_RESTORE);
+	gtk_widget_set_tooltip_text (w,
 				     _("Restore selected items to their original position"));
 
-	g_signal_connect (bar->priv->restore_button,
-			  "clicked",
-			  G_CALLBACK (restore_button_clicked_cb),
-			  bar);
+	w = gtk_info_bar_add_button (GTK_INFO_BAR (bar),
+				     _("Empty _Trash"),
+				     TRASH_BAR_RESPONSE_EMPTY);
+	gtk_widget_set_tooltip_text (w,
+				     _("Delete all items in the Trash"));
 
 	g_signal_connect_object (nautilus_trash_monitor_get (),
 				 "trash_state_changed",
 				 G_CALLBACK (nautilus_trash_bar_trash_state_changed),
 				 bar,
 				 0);
+	nautilus_trash_bar_trash_state_changed (nautilus_trash_monitor_get (),
+						FALSE, bar);
+
+	g_signal_connect (bar, "response",
+			  G_CALLBACK (trash_bar_response_cb), bar);
 }
 
 GtkWidget *
 nautilus_trash_bar_new (NautilusView *view)
 {
-	GObject *bar;
-
-	bar = g_object_new (NAUTILUS_TYPE_TRASH_BAR, "view", view, NULL);
-
-	return GTK_WIDGET (bar);
+	return g_object_new (NAUTILUS_TYPE_TRASH_BAR,
+			     "view", view,
+			     NULL);
 }

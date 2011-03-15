@@ -40,14 +40,14 @@ typedef struct NautilusTrashBarPrivate NautilusTrashBarPrivate;
 
 typedef struct
 {
-	GtkHBox	box;
+	GtkInfoBar parent;
 
 	NautilusTrashBarPrivate *priv;
 } NautilusTrashBar;
 
 typedef struct
 {
-	GtkHBoxClass	    parent_class;
+	GtkInfoBarClass parent_class;
 } NautilusTrashBarClass;
 
 GType		 nautilus_trash_bar_get_type	(void) G_GNUC_CONST;
