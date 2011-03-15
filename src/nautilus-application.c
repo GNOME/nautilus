@@ -350,7 +350,9 @@ nautilus_application_finalize (GObject *object)
 
 	g_object_unref (application->unique_app);
 
-	g_bus_unwatch_name (application->ss_watch_id);
+	if (application->ss_watch_id > 0) {
+		g_bus_unwatch_name (application->ss_watch_id);
+	}
 
 	if (application->volume_queue != NULL) {
 		g_list_free_full (application->volume_queue, g_object_unref);
