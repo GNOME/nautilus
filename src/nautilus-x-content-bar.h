@@ -41,26 +41,20 @@ typedef struct NautilusXContentBarPrivate NautilusXContentBarPrivate;
 
 typedef struct
 {
-	GtkHBox	box;
+	GtkInfoBar parent;
 
 	NautilusXContentBarPrivate *priv;
 } NautilusXContentBar;
 
 typedef struct
 {
-	GtkHBoxClass	    parent_class;
+	GtkInfoBarClass parent_class;
 } NautilusXContentBarClass;
 
 GType		 nautilus_x_content_bar_get_type	(void) G_GNUC_CONST;
 
 GtkWidget	*nautilus_x_content_bar_new		   (GMount              *mount, 
 							    const char          *x_content_type);
-const char      *nautilus_x_content_bar_get_x_content_type (NautilusXContentBar *bar);
-void             nautilus_x_content_bar_set_x_content_type (NautilusXContentBar *bar, 
-							    const char          *x_content_type);
-void             nautilus_x_content_bar_set_mount          (NautilusXContentBar *bar, 
-							    GMount              *mount);
-GMount          *nautilus_x_content_bar_get_mount          (NautilusXContentBar *bar);
 
 G_END_DECLS
 
