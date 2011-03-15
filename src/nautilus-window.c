@@ -578,10 +578,7 @@ nautilus_window_constructed (GObject *self)
 	gtk_widget_show (table);
 	gtk_container_add (GTK_CONTAINER (window), table);
 
-	gtk_widget_set_margin_bottom (GTK_WIDGET (window), 3);
-
 	statusbar = gtk_statusbar_new ();
-	gtk_widget_set_name (statusbar, "statusbar-noborder");
 	window->details->statusbar = statusbar;
 	window->details->help_message_cid = gtk_statusbar_get_context_id
 		(GTK_STATUSBAR (statusbar), "help_message");
@@ -2021,8 +2018,6 @@ nautilus_window_init (NautilusWindow *window)
 
 	/* Set initial window title */
 	gtk_window_set_title (GTK_WINDOW (window), _("Nautilus"));
-
-	gtk_window_set_has_resize_grip (GTK_WINDOW (window), FALSE);
 }
 
 static NautilusIconInfo *
