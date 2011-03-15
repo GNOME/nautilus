@@ -929,11 +929,9 @@ nautilus_window_pane_slot_close (NautilusWindowPane *pane,
 			/* If next_pane is non-NULL, we have more than one pane available. In this
 			 * case, close the current pane and switch to the next one. If there is
 			 * no next pane, close the window. */
-			if(next_pane) {
-				nautilus_window_close_pane (pane);
+			if (next_pane) {
 				nautilus_window_set_active_pane (window, next_pane);
-
-				nautilus_window_update_show_hide_menu_items (window);
+				nautilus_window_split_view_off (window);
 			} else {
 				nautilus_window_close (window);
 			}
