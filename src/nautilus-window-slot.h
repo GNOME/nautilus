@@ -71,7 +71,6 @@ struct NautilusWindowSlot {
  	 *  2) the view box for the content view
  	 */
 	GtkWidget *content_box;
-	GtkWidget *extra_location_frame;
 	GtkWidget *extra_location_widgets;
 	GtkWidget *view_box;
 
