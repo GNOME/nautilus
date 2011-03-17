@@ -3,21 +3,21 @@
 # Marius Andreiana <marius galuna.ro>, 2001, 2002, 2003.
 # Mugurel Tudor <mugurelu@gnome.ro>, 2003-2004, 2005, 2006, 2007.
 # Adi Roiban https://launchpad.net/~adiroiban, 2008, 2009
-# Lucian Adrian Grijincu <lucian.grijincu@gmail.com>, 2009, 2010.
+# Lucian Adrian Grijincu <lucian.grijincu@gmail.com>, 2009, 2010, 2011.
 # Daniel Șerbănescu <cyber19rider@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.ro\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautil"
+"us&keywords=I18N+L10N&component=Internationalization (i18n)\n"
 "POT-Creation-Date: 2011-03-16 18:30+0000\n"
-"PO-Revision-Date: 2010-11-21 19:28+0200\n"
-"Last-Translator: Daniel Șerbănescu <cyber19rider@gmail.com>\n"
+"PO-Revision-Date: 2011-03-17 11:17+0200\n"
+"Last-Translator: Lucian Adrian Grijincu <lucian.grijincu@gmail.com>\n"
 "Language-Team: Romanian Gnome Team <gnomero-list@lists.sourceforge.net>\n"
+"Language: ro\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ro\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2);;\n"
 "X-Generator: Virtaal 0.6.1\n"
@@ -107,10 +107,9 @@ msgstr " (Unicode nevalid)"
 #: ../libnautilus-private/nautilus-desktop-link.c:120
 #: ../src/nautilus-pathbar.c:1200 ../src/nautilus-places-sidebar.c:652
 #: ../src/nautilus-tree-sidebar.c:1336
-#, fuzzy
 #| msgid "_Home"
 msgid "Home"
-msgstr "_Acasă"
+msgstr "Dosar personal"
 
 #. name, stock id
 #. label, accelerator
@@ -1176,24 +1175,22 @@ msgstr "Se definesc permisiunile"
 
 #. localizers: the initial name of a new folder
 #: ../libnautilus-private/nautilus-file-operations.c:5802
-#, fuzzy
 #| msgid "untitled folder"
 msgid "Untitled Folder"
-msgstr "dosar fără nume"
+msgstr "Dosar fără nume"
 
 #. localizers: the initial name of a new template document
 #: ../libnautilus-private/nautilus-file-operations.c:5808
-#, fuzzy, c-format
+#, c-format
 #| msgid "untitled folder"
 msgid "Untitled %s"
-msgstr "dosar fără nume"
+msgstr "%s fără nume"
 
 #. localizers: the initial name of a new empty document
 #: ../libnautilus-private/nautilus-file-operations.c:5814
-#, fuzzy
 #| msgid "Create _Document"
 msgid "Untitled Document"
-msgstr "Creează _document"
+msgstr "Document fără nume"
 
 #: ../libnautilus-private/nautilus-file-operations.c:5970
 msgid "Error while creating directory %B."
@@ -2379,16 +2376,14 @@ msgid "Autorun Prompt"
 msgstr "Solicitare pornire automată"
 
 #: ../data/nautilus.desktop.in.in.h:1
-#, fuzzy
 #| msgid "Access files"
 msgid "Access and organize files"
-msgstr "Acces fișiere"
+msgstr "Accesați și organizați fișiere"
 
 #: ../data/nautilus.desktop.in.in.h:2
-#, fuzzy
 #| msgid "_File"
 msgid "Files"
-msgstr "_Fișier"
+msgstr "Fișiere"
 
 #: ../src/nautilus-application.c:155
 #, c-format
@@ -2473,10 +2468,9 @@ msgid "--check cannot be used with other options."
 msgstr "--check nu poate fi folosit cu alte opțiuni."
 
 #: ../src/nautilus-application.c:969
-#, fuzzy
 #| msgid "-- quit cannot be used with URIs."
 msgid "--quit cannot be used with URIs."
-msgstr "-- quit nu poate fi folosit cu URI-uri."
+msgstr "--quit nu poate fi folosit cu URI-uri."
 
 #: ../src/nautilus-application.c:976
 msgid "--geometry cannot be used with more than one URI."
@@ -2663,10 +2657,9 @@ msgstr "_Tip:"
 
 #. third row: share entry
 #: ../src/nautilus-connect-server-dialog.c:978
-#, fuzzy
 #| msgid "Share:"
 msgid "Sh_are:"
-msgstr "Partajare:"
+msgstr "P_artajare:"
 
 #. fourth row: folder entry
 #: ../src/nautilus-connect-server-dialog.c:998 ../src/nautilus-view.c:1730
@@ -2679,31 +2672,27 @@ msgstr "Detalii utilizator"
 
 #. first row: domain entry
 #: ../src/nautilus-connect-server-dialog.c:1041
-#, fuzzy
 #| msgid "Domain Name:"
 msgid "_Domain name:"
-msgstr "Nume domeniu:"
+msgstr "Nume _domeniu:"
 
 #. second row: username entry
 #: ../src/nautilus-connect-server-dialog.c:1060
-#, fuzzy
 #| msgid "User Name:"
 msgid "_User name:"
-msgstr "Nume utilizator:"
+msgstr "Nume _utilizator:"
 
 #. third row: password entry
 #: ../src/nautilus-connect-server-dialog.c:1080
-#, fuzzy
 #| msgid "Password:"
 msgid "Pass_word:"
-msgstr "Parolă:"
+msgstr "Paro_lă:"
 
 #. fourth row: remember checkbox
 #: ../src/nautilus-connect-server-dialog.c:1101
-#, fuzzy
 #| msgid "Remember this password"
 msgid "_Remember this password"
-msgstr "Memorează această parolă"
+msgstr "Memo_rează această parolă"
 
 #: ../src/nautilus-desktop-item-properties.c:412
 #: ../src/nautilus-desktop-item-properties.c:422
@@ -2837,8 +2826,7 @@ msgstr "Permisiunile nu au putut fi schimbate."
 #, c-format
 msgid ""
 "The name \"%s\" is already used in this folder. Please use a different name."
-msgstr ""
-"Numele „%s” este deja folosit în acest dosar. Vă rog să alegeți alt nume."
+msgstr "Numele „%s” este deja folosit în acest dosar. Alegeți alt nume."
 
 #: ../src/nautilus-error-reporting.c:209
 #, c-format
@@ -2862,13 +2850,13 @@ msgstr ""
 #: ../src/nautilus-error-reporting.c:223
 #, c-format
 msgid "The name \"%s\" is not valid. Please use a different name."
-msgstr "Numele „%s” nu este valid, alegeți alt nume."
+msgstr "Numele „%s” nu este valid. Alegeți alt nume."
 
 #: ../src/nautilus-error-reporting.c:229
-#, fuzzy, c-format
+#, c-format
 #| msgid "The name \"%s\" is not valid. Please use a different name."
 msgid "The name \"%s\" is too long. Please use a different name."
-msgstr "Numele „%s” nu este valid, alegeți alt nume."
+msgstr "Numele „%s” este prea lung. Alegeți alt nume."
 
 #. fall through
 #: ../src/nautilus-error-reporting.c:243
@@ -3927,10 +3915,9 @@ msgid "File Operations"
 msgstr "Operații cu fișiere"
 
 #: ../src/nautilus-progress-ui-handler.c:114
-#, fuzzy
 #| msgid "Show more _details"
 msgid "Show Details"
-msgstr "Arată mai multe _detalii"
+msgstr "Arată detalii"
 
 #: ../src/nautilus-progress-ui-handler.c:149
 #: ../src/nautilus-progress-ui-handler.c:171
@@ -3943,7 +3930,7 @@ msgstr[2] "%'d de operații cu fișiere active"
 
 #: ../src/nautilus-progress-ui-handler.c:270
 msgid "All file operations have been successfully completed"
-msgstr ""
+msgstr "Toate operațiunile pe fișiere au fost încheiate cu succes"
 
 #: ../src/nautilus-properties-window.c:494
 msgid "You cannot assign more than one custom icon at a time!"
@@ -4369,10 +4356,9 @@ msgstr "Nu este nimic în memorie pentru a fi lipit."
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-tree-sidebar.c:1197 ../src/nautilus-view.c:7005
-#, fuzzy
 #| msgid "Create _Folder"
 msgid "Create New _Folder"
-msgstr "_Dosar nou"
+msgstr "Creează un _dosar nou"
 
 #. We make accelerator "" instead of null here to not inherit the stock
 #. accelerator for paste
@@ -4560,10 +4546,10 @@ msgid "Run \"%s\" on any selected items"
 msgstr "Execută „%s” pe orice elemente selectate"
 
 #: ../src/nautilus-view.c:5450
-#, fuzzy, c-format
+#, c-format
 #| msgid "Create Document from template \"%s\""
 msgid "Create a new document from template \"%s\""
-msgstr "Creați document folosind șablonul „%s”"
+msgstr "Creează un document folosind șablonul „%s”"
 
 #: ../src/nautilus-view.c:5704
 msgid "All executable files in this folder will appear in the Scripts menu."
@@ -4691,10 +4677,9 @@ msgstr "_Nume legătură:"
 
 #. name, stock id, label
 #: ../src/nautilus-view.c:6993
-#, fuzzy
 #| msgid "Create _Document"
 msgid "Create New _Document"
-msgstr "Creează _document"
+msgstr "Creează un _document nou"
 
 #. name, stock id, label
 #: ../src/nautilus-view.c:6994
@@ -4730,17 +4715,15 @@ msgstr "Nici un șablon instalat"
 #. translators: this is used to indicate that a document doesn't contain anything
 #. label, accelerator
 #: ../src/nautilus-view.c:7011
-#, fuzzy
 #| msgid "Documents"
 msgid "_Empty Document"
-msgstr "Documente"
+msgstr "Docum_ent gol"
 
 #. tooltip
 #: ../src/nautilus-view.c:7012
-#, fuzzy
 #| msgid "Create a new empty folder inside this folder"
 msgid "Create a new empty document inside this folder"
-msgstr "Creează un dosar gol în dosarul curent"
+msgstr "Creează un document gol în dosarul curent"
 
 #. tooltip
 #: ../src/nautilus-view.c:7020
@@ -5463,10 +5446,9 @@ msgid "View of the current folder"
 msgstr "Vizualizarea dosarului curent"
 
 #: ../src/nautilus-window-manage-views.c:1170
-#, fuzzy
 #| msgid "Search"
 msgid "Searching..."
-msgstr "Caută"
+msgstr "Se caută..."
 
 #: ../src/nautilus-window-manage-views.c:1695
 msgid "Nautilus has no installed viewer capable of displaying the folder."
