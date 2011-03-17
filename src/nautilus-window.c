@@ -447,6 +447,8 @@ nautilus_window_set_up_sidebar (NautilusWindow *window)
 	DEBUG ("Setting up sidebar id %s", window->details->sidebar_id);
 
 	window->details->sidebar = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
+	gtk_style_context_add_class (gtk_widget_get_style_context (window->details->sidebar),
+				     GTK_STYLE_CLASS_SIDEBAR);
 
 	gtk_paned_pack1 (GTK_PANED (window->details->content_paned),
 			 GTK_WIDGET (window->details->sidebar),
