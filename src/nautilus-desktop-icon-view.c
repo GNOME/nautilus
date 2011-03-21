@@ -809,7 +809,6 @@ nautilus_desktop_icon_view_create (NautilusWindowSlot *slot)
 
 	view = g_object_new (NAUTILUS_TYPE_DESKTOP_ICON_VIEW,
 			     "window-slot", slot,
-			     "show-floating-bar", FALSE,
 			     "supports-zooming", FALSE,
 			     "supports-auto-layout", FALSE,
 			     "supports-scaling", TRUE,

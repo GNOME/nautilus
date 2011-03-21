@@ -495,6 +495,7 @@ real_slot_set_short_status (NautilusWindowSlot *slot,
 {
 	
 	gboolean show_statusbar;
+	gboolean disable_chrome;
 
 	nautilus_floating_bar_cleanup_actions (NAUTILUS_FLOATING_BAR (slot->floating_bar));
 	nautilus_floating_bar_set_show_spinner (NAUTILUS_FLOATING_BAR (slot->floating_bar),
@@ -503,7 +504,11 @@ real_slot_set_short_status (NautilusWindowSlot *slot,
 	show_statusbar = g_settings_get_boolean (nautilus_window_state,
 						 NAUTILUS_WINDOW_STATE_START_WITH_STATUS_BAR);
 
-	if (status == NULL || show_statusbar) {
+	g_object_get (slot->pane->window,
+		      "disable-chrome", &disable_chrome,
+		      NULL);
+
+	if (status == NULL || show_statusbar || disable_chrome) {
 		gtk_widget_hide (slot->floating_bar);
 		return;
 	}

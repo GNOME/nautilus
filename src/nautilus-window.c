@@ -686,9 +686,16 @@ nautilus_window_get_property (GObject *object,
 			      GValue *value,
 			      GParamSpec *pspec)
 {
+	NautilusWindow *window;
+
+	window = NAUTILUS_WINDOW (object);
+
 	switch (arg_id) {
 	case PROP_APP:
-		g_value_set_object (value, NAUTILUS_WINDOW (object)->details->application);
+		g_value_set_object (value, window->details->application);
+		break;
+	case PROP_DISABLE_CHROME:
+		g_value_set_boolean (value, window->details->disable_chrome);
 		break;
 	}
 }
@@ -2067,7 +2074,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
 				      "Disable chrome",
 				      "Disable window chrome, for the desktop",
 				      FALSE,
-				      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
+				      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY |
 				      G_PARAM_STATIC_STRINGS);
 
 	signals[GO_UP] =

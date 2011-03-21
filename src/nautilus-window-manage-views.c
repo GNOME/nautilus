@@ -1165,6 +1165,17 @@ nautilus_window_report_location_change (NautilusWindow *window)
 static void
 real_setup_loading_floating_bar (NautilusWindowSlot *slot)
 {
+	gboolean disable_chrome;
+
+	g_object_get (slot->pane->window,
+		      "disable-chrome", &disable_chrome,
+		      NULL);
+
+	if (disable_chrome) {
+		gtk_widget_hide (slot->floating_bar);
+		return;
+	}
+
 	nautilus_floating_bar_set_label (NAUTILUS_FLOATING_BAR (slot->floating_bar),
 					 NAUTILUS_IS_SEARCH_DIRECTORY (nautilus_view_get_model (slot->content_view)) ?
 					 _("Searching...") : _("Loading..."));
