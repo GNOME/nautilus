@@ -97,15 +97,9 @@ eel_make_valid_utf8 (const char *name)
 }
 
 char *
-eel_filename_strip_extension (const char * filename_with_extension)
+eel_filename_get_extension_offset (const char *filename)
 {
-	char *filename, *end, *end2;
-
-	if (filename_with_extension == NULL) {
-		return NULL;
-	}
-	
-	filename = g_strdup (filename_with_extension);
+	char *end, *end2;
 
 	end = strrchr (filename, '.');
 
@@ -123,6 +117,24 @@ eel_filename_strip_extension (const char * filename_with_extension)
 				end = end2;
 			}
 		}
+	}
+
+	return end;
+}
+
+char *
+eel_filename_strip_extension (const char * filename_with_extension)
+{
+	char *filename, *end;
+
+	if (filename_with_extension == NULL) {
+		return NULL;
+	}
+
+	filename = g_strdup (filename_with_extension);
+	end = eel_filename_get_extension_offset (filename);
+
+	if (end && end != filename) {
 		*end = '\0';
 	}
 

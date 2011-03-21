@@ -540,8 +540,9 @@ parse_previous_duplicate_name (const char *name,
 	const char *tag;
 
 	g_assert (name[0] != '\0');
-	
-	*suffix = strchr (name + 1, '.');
+
+	*suffix = eel_filename_get_extension_offset (name);
+
 	if (*suffix == NULL || (*suffix)[1] == '\0') {
 		/* no suffix */
 		*suffix = "";
