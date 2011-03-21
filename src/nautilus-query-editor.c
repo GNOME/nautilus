@@ -1096,14 +1096,21 @@ static void
 setup_external_entry (NautilusQueryEditor *editor, GtkWidget *entry)
 {
 	GtkWidget *hbox, *label;
+	gchar *label_markup;
 	
 	/* Create visible part: */
 	hbox = gtk_hbox_new (FALSE, 6);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (editor->details->visible_vbox), hbox, FALSE, FALSE, 0);
 
-	label = gtk_label_new (_("Search results"));
+	label_markup = g_strconcat ("<b>", _("Search results"), "</b>", NULL);
+	label = gtk_label_new (NULL);
+	gtk_label_set_markup (GTK_LABEL (label), label_markup);
 	gtk_widget_show (label);
+
+	gtk_style_context_add_class (gtk_widget_get_style_context (label),
+				     "nautilus-cluebar-label");
+	
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 	
 	editor->details->entry = entry;
@@ -1114,6 +1121,7 @@ setup_external_entry (NautilusQueryEditor *editor, GtkWidget *entry)
 
 	finish_first_line (editor, hbox, FALSE);
 
+	g_free (label_markup);
 }
 
 void
