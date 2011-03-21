@@ -15,11 +15,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2011-03-20 02:59+0000\n"
-"PO-Revision-Date: 2011-03-21 19:11+0100\n"
-"Last-Translator: Kristjan SCHMIDT <kristjan.schmidt@googlemail.com>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
+"POT-Creation-Date: 2011-03-21 18:12+0000\n"
+"PO-Revision-Date: 2011-03-21 19:19+0100\n"
+"Last-Translator: Kristjan SCHMIDT <kristjan.schmidt@googlemai.com>\n"
 "Language-Team: Esperanto <ubuntu-l10n-eo@lists.launchpad.net>\n"
 "Language: eo\n"
 "MIME-Version: 1.0\n"
@@ -33,11 +32,13 @@ msgstr ""
 msgid "Saved search"
 msgstr "Konservita serĉo"
 
-#: ../eel/eel-canvas.c:1247 ../eel/eel-canvas.c:1248
+#: ../eel/eel-canvas.c:1247
+#: ../eel/eel-canvas.c:1248
 msgid "X"
 msgstr "X"
 
-#: ../eel/eel-canvas.c:1254 ../eel/eel-canvas.c:1255
+#: ../eel/eel-canvas.c:1254
+#: ../eel/eel-canvas.c:1255
 msgid "Y"
 msgstr "Y"
 
@@ -54,14 +55,8 @@ msgid "Justification"
 msgstr "Ĝisrandigo"
 
 #: ../eel/eel-editable-label.c:320
-msgid ""
-"The alignment of the lines in the text of the label relative to each other. "
-"This does NOT affect the alignment of the label within its allocation. See "
-"GtkMisc::xalign for that."
-msgstr ""
-"La linio-ĝisrandigo en la teksto de la etikedo rilate al aliaj. Ĉi tio ne "
-"afektas la ĝisrandigon de la etikedo en ĝia loko.  Vidi GtkMisc::xalign por "
-"tio."
+msgid "The alignment of the lines in the text of the label relative to each other. This does NOT affect the alignment of the label within its allocation. See GtkMisc::xalign for that."
+msgstr "La linio-ĝisrandigo en la teksto de la etikedo rilate al aliaj. Ĉi tio ne afektas la ĝisrandigon de la etikedo en ĝia loko.  Vidi GtkMisc::xalign por tio."
 
 #: ../eel/eel-editable-label.c:328
 msgid "Line wrap"
@@ -84,8 +79,7 @@ msgid "Selection Bound"
 msgstr "Limo de elekto"
 
 #: ../eel/eel-editable-label.c:347
-msgid ""
-"The position of the opposite end of the selection from the cursor in chars."
+msgid "The position of the opposite end of the selection from the cursor in chars."
 msgstr "La loko de la kontraŭa rando de la elektaĵo el kursoro en signoj."
 
 #: ../eel/eel-editable-label.c:3113
@@ -110,7 +104,9 @@ msgstr " (nevalida unikodo)"
 
 #: ../libnautilus-private/nautilus-bookmark.c:132
 #: ../libnautilus-private/nautilus-desktop-link.c:120
-#: ../src/nautilus-pathbar.c:1200 ../src/nautilus-places-sidebar.c:652
+#: ../libnautilus-private/nautilus-file-utilities.c:68
+#: ../src/nautilus-pathbar.c:1201
+#: ../src/nautilus-places-sidebar.c:652
 #: ../src/nautilus-tree-sidebar.c:1336
 msgid "Home"
 msgstr "Hejmo"
@@ -138,7 +134,8 @@ msgstr "Alglui la tekston kiu estas en la tondejo"
 
 #. name, stock id
 #. label, accelerator
-#: ../libnautilus-private/nautilus-clipboard.c:444 ../src/nautilus-view.c:7078
+#: ../libnautilus-private/nautilus-clipboard.c:444
+#: ../src/nautilus-view.c:7024
 msgid "Select _All"
 msgstr "Elekti ĉ_ion"
 
@@ -252,7 +249,7 @@ msgstr "La SELinuksa sekureca kunteksto de la dosiero."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:129
 #: ../src/nautilus-image-properties-page.c:342
-#: ../src/nautilus-query-editor.c:117
+#: ../src/nautilus-query-editor.c:114
 msgid "Location"
 msgstr "Loko"
 
@@ -287,20 +284,12 @@ msgid "You cannot move the volume \"%s\" to the trash."
 msgstr "Vi ne povas movi datumportilon \"%s\" rubujen."
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:111
-msgid ""
-"If you want to eject the volume, please use \"Eject\" in the popup menu of "
-"the volume."
-msgstr ""
-"Se vi volas elĵeti la datumportilon, bonvolu uzi \"Elĵetu\" en la ŝprucmenuo "
-"de la datumportilo."
+msgid "If you want to eject the volume, please use \"Eject\" in the popup menu of the volume."
+msgstr "Se vi volas elĵeti la datumportilon, bonvolu uzi \"Elĵetu\" en la ŝprucmenuo de la datumportilo."
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:120
-msgid ""
-"If you want to unmount the volume, please use \"Unmount Volume\" in the "
-"popup menu of the volume."
-msgstr ""
-"Se vi volas demeti datumportilon, bonvolu uzi \"Demetu Datumportilon\" en la "
-"ŝprucmenuo de la datumportilo."
+msgid "If you want to unmount the volume, please use \"Unmount Volume\" in the popup menu of the volume."
+msgstr "Se vi volas demeti datumportilon, bonvolu uzi \"Demetu Datumportilon\" en la ŝprucmenuo de la datumportilo."
 
 #: ../libnautilus-private/nautilus-dnd.c:771
 msgid "_Move Here"
@@ -328,12 +317,8 @@ msgid "Merge folder \"%s\"?"
 msgstr "Ĉu kunigi dosierujon \"%s\"?"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:145
-msgid ""
-"Merging will ask for confirmation before replacing any files in the folder "
-"that conflict with the files being copied."
-msgstr ""
-"Kunfando demandas konfirmon antaŭ ol ajna dosiero en la dosierujo estas "
-"anstataŭigata per konfliktanta dosiero."
+msgid "Merging will ask for confirmation before replacing any files in the folder that conflict with the files being copied."
+msgstr "Kunfando demandas konfirmon antaŭ ol ajna dosiero en la dosierujo estas anstataŭigata per konfliktanta dosiero."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:150
 #, c-format
@@ -516,7 +501,8 @@ msgstr[1] "proksimume %'d horoj"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:375
-#: ../libnautilus-private/nautilus-file.c:6267 ../src/nautilus-view-dnd.c:328
+#: ../libnautilus-private/nautilus-file.c:6267
+#: ../src/nautilus-view-dnd.c:328
 #, c-format
 msgid "Link to %s"
 msgstr "Ligo al %s"
@@ -657,16 +643,10 @@ msgstr "Ĉu vi certe volas forigi \"%B\" el rubujo por ĉiam?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1302
 #, c-format
-msgid ""
-"Are you sure you want to permanently delete the %'d selected item from the "
-"trash?"
-msgid_plural ""
-"Are you sure you want to permanently delete the %'d selected items from the "
-"trash?"
-msgstr[0] ""
-"Ĉu vi certe volas forigi la elektitan elementon %'d el rubujo por ĉiam?"
-msgstr[1] ""
-"Ĉu vi certe volas forigi la elektitajn elementojn %'d el rubujo por ĉiam?"
+msgid "Are you sure you want to permanently delete the %'d selected item from the trash?"
+msgid_plural "Are you sure you want to permanently delete the %'d selected items from the trash?"
+msgstr[0] "Ĉu vi certe volas forigi la elektitan elementon %'d el rubujo por ĉiam?"
+msgstr[1] "Ĉu vi certe volas forigi la elektitajn elementojn %'d el rubujo por ĉiam?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1312
 #: ../libnautilus-private/nautilus-file-operations.c:1378
@@ -684,7 +664,8 @@ msgstr "Ĉiuj eroj de rubujo estos daŭre forigitaj."
 #. Empty Trash menu item
 #: ../libnautilus-private/nautilus-file-operations.c:1339
 #: ../libnautilus-private/nautilus-file-operations.c:2189
-#: ../src/nautilus-places-sidebar.c:2656 ../src/nautilus-trash-bar.c:204
+#: ../src/nautilus-places-sidebar.c:2664
+#: ../src/nautilus-trash-bar.c:204
 msgid "Empty _Trash"
 msgstr "Malplenigi _rubujon"
 
@@ -695,8 +676,7 @@ msgstr "Ĉu vi certe deziras forigi por ĉiam \"%B\"?"
 #: ../libnautilus-private/nautilus-file-operations.c:1369
 #, c-format
 msgid "Are you sure you want to permanently delete the %'d selected item?"
-msgid_plural ""
-"Are you sure you want to permanently delete the %'d selected items?"
+msgid_plural "Are you sure you want to permanently delete the %'d selected items?"
 msgstr[0] "Ĉu vi certe volas forigi daŭre la %'d elektitan elementon?"
 msgstr[1] "Ĉu vi certe volas forigi daŭre la %'d elektitajn elementojn?"
 
@@ -729,17 +709,13 @@ msgid "Error while deleting."
 msgstr "Eraro dum forigo."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1503
-msgid ""
-"Files in the folder \"%B\" cannot be deleted because you do not have "
-"permissions to see them."
-msgstr ""
-"Ne eblas forigi dosierojn el ujo \"%B\", ĉar vi ne havas la rajton vidi ilin."
+msgid "Files in the folder \"%B\" cannot be deleted because you do not have permissions to see them."
+msgstr "Ne eblas forigi dosierojn el ujo \"%B\", ĉar vi ne havas la rajton vidi ilin."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1506
 #: ../libnautilus-private/nautilus-file-operations.c:2488
 #: ../libnautilus-private/nautilus-file-operations.c:3475
-msgid ""
-"There was an error getting information about the files in the folder \"%B\"."
+msgid "There was an error getting information about the files in the folder \"%B\"."
 msgstr "Eraro dum akiro de informoj pri la dosieroj en la dosierujo \"%B\"."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1515
@@ -748,12 +724,8 @@ msgid "_Skip files"
 msgstr "Trans_salti dosierojn"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1536
-msgid ""
-"The folder \"%B\" cannot be deleted because you do not have permissions to "
-"read it."
-msgstr ""
-"La dosierujo \"%s\" ne povis esti kopiita ĉar vi ne havas permeson por legi "
-"ĝin."
+msgid "The folder \"%B\" cannot be deleted because you do not have permissions to read it."
+msgstr "La dosierujo \"%s\" ne povis esti kopiita ĉar vi ne havas permeson por legi ĝin."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1539
 #: ../libnautilus-private/nautilus-file-operations.c:2527
@@ -809,9 +781,7 @@ msgid "Do you want to empty the trash before you unmount?"
 msgstr "Ĉu ve deziras malplenigi la rubujon antaŭ demetigo?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2181
-msgid ""
-"In order to regain the free space on this volume the trash must be emptied. "
-"All trashed items on the volume will be permanently lost."
+msgid "In order to regain the free space on this volume the trash must be emptied. All trashed items on the volume will be permanently lost."
 msgstr ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:2187
@@ -869,21 +839,15 @@ msgid "Error while moving files to trash."
 msgstr "Eraro dum movado de la dosieroj al la rubujo."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2485
-msgid ""
-"Files in the folder \"%B\" cannot be handled because you do not have "
-"permissions to see them."
+msgid "Files in the folder \"%B\" cannot be handled because you do not have permissions to see them."
 msgstr ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:2524
-msgid ""
-"The folder \"%B\" cannot be handled because you do not have permissions to "
-"read it."
+msgid "The folder \"%B\" cannot be handled because you do not have permissions to read it."
 msgstr ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:2601
-msgid ""
-"The file \"%B\" cannot be handled because you do not have permissions to "
-"read it."
+msgid "The file \"%B\" cannot be handled because you do not have permissions to read it."
 msgstr ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:2604
@@ -910,9 +874,7 @@ msgid "The destination is not a folder."
 msgstr "La celo ne estas dosierujo."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2780
-msgid ""
-"There is not enough space on the destination. Try to remove files to make "
-"space."
+msgid "There is not enough space on the destination. Try to remove files to make space."
 msgstr ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:2782
@@ -991,9 +953,7 @@ msgstr[0] "%S el %S — %T restas (%S/s)"
 msgstr[1] "%S el %S — %T restas (%S/s)"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3345
-msgid ""
-"The folder \"%B\" cannot be copied because you do not have permissions to "
-"create it in the destination."
+msgid "The folder \"%B\" cannot be copied because you do not have permissions to create it in the destination."
 msgstr ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:3348
@@ -1001,15 +961,11 @@ msgid "There was an error creating the folder \"%B\"."
 msgstr "Okazis eraro dum kreo de la dosierujo \"%B\"."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3472
-msgid ""
-"Files in the folder \"%B\" cannot be copied because you do not have "
-"permissions to see them."
+msgid "Files in the folder \"%B\" cannot be copied because you do not have permissions to see them."
 msgstr ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:3517
-msgid ""
-"The folder \"%B\" cannot be copied because you do not have permissions to "
-"read it."
+msgid "The folder \"%B\" cannot be copied because you do not have permissions to read it."
 msgstr ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:3562
@@ -1175,12 +1131,12 @@ msgstr "Malplenigante la rubujon"
 msgid "Unable to mark launcher trusted (executable)"
 msgstr ""
 
-#: ../libnautilus-private/nautilus-file-utilities.c:1260
+#: ../libnautilus-private/nautilus-file-utilities.c:1264
 #, c-format
 msgid "Could not determine original location of \"%s\" "
 msgstr "Ne eblis determini la origina loko de \"%s\" "
 
-#: ../libnautilus-private/nautilus-file-utilities.c:1264
+#: ../libnautilus-private/nautilus-file-utilities.c:1268
 msgid "The item cannot be restored from trash"
 msgstr ""
 
@@ -1395,7 +1351,8 @@ msgstr ""
 msgid "Specified group '%s' doesn't exist"
 msgstr ""
 
-#: ../libnautilus-private/nautilus-file.c:5760 ../src/nautilus-view.c:2888
+#: ../libnautilus-private/nautilus-file.c:5760
+#: ../src/nautilus-view.c:2866
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
@@ -1539,19 +1496,12 @@ msgid "This drop target only supports local files."
 msgstr "Ĉi tiu faliga celo nur subtenas lokajn dosierojn."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:350
-msgid ""
-"To open non-local files copy them to a local folder and then drop them again."
-msgstr ""
-"Por malfermi nelokajn dosierojn kopiu ilin al loka dosierujo kaj tiam faligu "
-"ilin denove."
+msgid "To open non-local files copy them to a local folder and then drop them again."
+msgstr "Por malfermi nelokajn dosierojn kopiu ilin al loka dosierujo kaj tiam faligu ilin denove."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:361
-msgid ""
-"To open non-local files copy them to a local folder and then drop them "
-"again. The local files you dropped have already been opened."
-msgstr ""
-"Por malfermi nelokajn dosierojn kopiu ilin al loka dosierujo kaj tiam faligu "
-"ilin denove. La lokaj dosieroj faligitaj de vi jam estas malfermitaj."
+msgid "To open non-local files copy them to a local folder and then drop them again. The local files you dropped have already been opened."
+msgstr "Por malfermi nelokajn dosierojn kopiu ilin al loka dosierujo kaj tiam faligu ilin denove. La lokaj dosieroj faligitaj de vi jam estas malfermitaj."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:390
 msgid "Details: "
@@ -1576,7 +1526,7 @@ msgid "Search for \"%s\""
 msgstr "Serĉi por \"%s\""
 
 #: ../libnautilus-private/nautilus-undo-signal-handlers.c:174
-#: ../src/nautilus-query-editor.c:980
+#: ../src/nautilus-query-editor.c:1001
 msgid "Edit"
 msgstr "Redakti"
 
@@ -1597,60 +1547,17 @@ msgid "Redo the edit"
 msgstr "Refari la redakton"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:1
-msgid ""
-"A list of captions below an icon in the icon view and the desktop. The "
-"actual number of captions shown depends on the zoom level. Some possible "
-"values are: \"size\", \"type\", \"date_modified\", \"date_changed\", "
-"\"date_accessed\", \"owner\", \"group\", \"permissions\", \"octal_permissions"
-"\" and \"mime_type\"."
-msgstr ""
-"Listo de apudskiboj sub piktogramo en la piktograma vido kaj en la "
-"labortablo. La reala nombro da apudskriboj montritaj dependas de la "
-"zomnivelo. Eblaj valoroj estas: \"grandeco\", \"tipo\", \"dato_modifita\", "
-"\"dato_ŝanĝita\", \"dato_atingita\", \"posedanto\", \"grupo\", \"permesoj\", "
-"\"okumaj_permesoj\" kaj \"mime_tipo\"."
+msgid "A list of captions below an icon in the icon view and the desktop. The actual number of captions shown depends on the zoom level. Some possible values are: \"size\", \"type\", \"date_modified\", \"date_changed\", \"date_accessed\", \"owner\", \"group\", \"permissions\", \"octal_permissions\" and \"mime_type\"."
+msgstr "Listo de apudskiboj sub piktogramo en la piktograma vido kaj en la labortablo. La reala nombro da apudskriboj montritaj dependas de la zomnivelo. Eblaj valoroj estas: \"grandeco\", \"tipo\", \"dato_modifita\", \"dato_ŝanĝita\", \"dato_atingita\", \"posedanto\", \"grupo\", \"permesoj\", \"okumaj_permesoj\" kaj \"mime_tipo\"."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:2
-msgid ""
-"A string containing the saved geometry and coordinates string for navigation "
-"windows."
-msgstr ""
-"Signovico kun en ĝi la konservitaj grandoj kaj koordinatoj por navigaj "
-"fenestroj."
+msgid "A string containing the saved geometry and coordinates string for navigation windows."
+msgstr "Signovico kun en ĝi la konservitaj grandoj kaj koordinatoj por navigaj fenestroj."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:4
 #, no-c-format
-msgid ""
-"A string specifying how parts of overlong file names should be replaced by "
-"ellipses, depending on the zoom level. Each of the list entries is of the "
-"form \"Zoom Level:Integer\". For each specified zoom level, if the given "
-"integer is larger than 0, the file name will not exceed the given number of "
-"lines. If the integer is 0 or smaller, no limit is imposed on the specified "
-"zoom level. A default entry of the form \"Integer\" without any specified "
-"zoom level is also allowed. It defines the maximum number of lines for all "
-"other zoom levels. Examples: 0 - always display overlong file names; 3 - "
-"shorten file names if they exceed three lines; smallest:5,smaller:4,0 - "
-"shorten file names if they exceed five lines for zoom level \"smallest\". "
-"Shorten file names if they exceed four lines for zoom level \"smaller\". Do "
-"not shorten file names for other zoom levels. Available zoom levels: "
-"smallest (33%), smaller (50%), small (66%), standard (100%), large (150%), "
-"larger (200%), largest (400%)"
-msgstr ""
-"Ĉeno specifante kiel partoj de trolongaj doriernomoj devus esti "
-"anstataŭigita per tripuktoj, dependante de la zomnivelo. Ĉiuj elementoj de "
-"la listo estas el \"Zoom Level:Integer\". Por ĉiu specifita zomnivelo, se la "
-"entjero menciita estas pli granda ol 0, la dosiernomo ne transpasos la "
-"menciita nombro da linioj. Se la entjero estas 0 aŭ pli malgranda, neniu "
-"limito estos trudita al la specifita zomnivelo. Defaŭlta enigo el la "
-"formularo \"Interger\" sen specifita zomnivelo estas ankaŭ permesita. Ĝi "
-"difinas la maksima nombro da linioj por ĉiuj aliaj zomniveloj. Ekzemploj: 0 "
-"- ĉiam vidigas longegajn dosiernomojn; 3 - mallongigas dosiernomojn se ili "
-"transpas tri linioj; smallest:5,smaller:4,0 - mallongigas dosiernomojn se "
-"ili transpas kvin linioj por la zomnivelo \"smallest\". Mallongigas "
-"dosiernomon se ili transpasas kvar linioj por la zomnivelo \"smaller\". Ne "
-"mallongigas la dosiernomojn por aliaj zomniveloj. Disponeblaj zomniveloj: "
-"smallest (33%), smaller (50%), small (66%), standard (100%), large (150%), "
-"larger (200%), largest (400%)"
+msgid "A string specifying how parts of overlong file names should be replaced by ellipses, depending on the zoom level. Each of the list entries is of the form \"Zoom Level:Integer\". For each specified zoom level, if the given integer is larger than 0, the file name will not exceed the given number of lines. If the integer is 0 or smaller, no limit is imposed on the specified zoom level. A default entry of the form \"Integer\" without any specified zoom level is also allowed. It defines the maximum number of lines for all other zoom levels. Examples: 0 - always display overlong file names; 3 - shorten file names if they exceed three lines; smallest:5,smaller:4,0 - shorten file names if they exceed five lines for zoom level \"smallest\". Shorten file names if they exceed four lines for zoom level \"smaller\". Do not shorten file names for other zoom levels. Available zoom levels: smallest (33%), smaller (50%), small (66%), standard (100%), large (150%), larger (200%), largest (400%)"
+msgstr "Ĉeno specifante kiel partoj de trolongaj doriernomoj devus esti anstataŭigita per tripuktoj, dependante de la zomnivelo. Ĉiuj elementoj de la listo estas el \"Zoom Level:Integer\". Por ĉiu specifita zomnivelo, se la entjero menciita estas pli granda ol 0, la dosiernomo ne transpasos la menciita nombro da linioj. Se la entjero estas 0 aŭ pli malgranda, neniu limito estos trudita al la specifita zomnivelo. Defaŭlta enigo el la formularo \"Interger\" sen specifita zomnivelo estas ankaŭ permesita. Ĝi difinas la maksima nombro da linioj por ĉiuj aliaj zomniveloj. Ekzemploj: 0 - ĉiam vidigas longegajn dosiernomojn; 3 - mallongigas dosiernomojn se ili transpas tri linioj; smallest:5,smaller:4,0 - mallongigas dosiernomojn se ili transpas kvin linioj por la zomnivelo \"smallest\". Mallongigas dosiernomon se ili transpasas kvar linioj por la zomnivelo \"smaller\". Ne mallongigas la dosiernomojn por aliaj zomniveloj. Disponeblaj zomniveloj: smallest (33%), smaller (50%), small (66%), standard (100%), large (150%), larger (200%), largest (400%)"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:5
 msgid "All columns have same width"
@@ -1661,17 +1568,8 @@ msgid "Always use the location entry, instead of the pathbar"
 msgstr "Ĉiam uzu la lokokampon, anstataŭ la padan strion."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:7
-msgid ""
-"An integer specifying how parts of overlong file names should be replaced by "
-"ellipses on the desktop. If the number is larger than 0, the file name will "
-"not exceed the given number of lines. If the number is 0 or smaller, no "
-"limit is imposed on the number of displayed lines."
-msgstr ""
-"Entjero kiu specifias kiel la longegaj dosiernomoj devus esti anstataŭigitaj "
-"per tripunktoj sur la labortablo. Se la nombro estas pli granda ol 0, la "
-"dosiernomo ne transpasos la menciita nombro da linioj. Se la nombro estas 0 "
-"aŭ pli malgranda, neniu limito estos trudita al la nombro de vidigitaj "
-"linioj."
+msgid "An integer specifying how parts of overlong file names should be replaced by ellipses on the desktop. If the number is larger than 0, the file name will not exceed the given number of lines. If the number is 0 or smaller, no limit is imposed on the number of displayed lines."
+msgstr "Entjero kiu specifias kiel la longegaj dosiernomoj devus esti anstataŭigitaj per tripunktoj sur la labortablo. Se la nombro estas pli granda ol 0, la dosiernomo ne transpasos la menciita nombro da linioj. Se la nombro estas 0 aŭ pli malgranda, neniu limito estos trudita al la nombro de vidigitaj linioj."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:8
 msgid "Bulk rename utility"
@@ -1755,68 +1653,38 @@ msgstr "Labortabla nomo de piktogramo rubujo"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:28
 msgid "Enables the classic Nautilus behavior, where all windows are browsers"
-msgstr ""
-"Ebligi klasikan konduton de Naŭtilo, kie ĉiuj fenestroj estas foliumiloj"
+msgstr "Ebligi klasikan konduton de Naŭtilo, kie ĉiuj fenestroj estas foliumiloj"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:29
 msgid "Fade the background on change"
 msgstr ""
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:30
-msgid ""
-"For users with mice that have \"Forward\" and \"Back\" buttons, this key "
-"will determine if any action is taken inside of Nautilus when either is "
-"pressed."
-msgstr ""
-"Por usantoj de muso kun \"sekva\" kaj \"antaŭa\" klavoj, tiu ŝlosilo "
-"kondiĉas se ago devus esti farita en Naŭtilo kiam unu aŭ la alia estas "
-"premita."
+msgid "For users with mice that have \"Forward\" and \"Back\" buttons, this key will determine if any action is taken inside of Nautilus when either is pressed."
+msgstr "Por usantoj de muso kun \"sekva\" kaj \"antaŭa\" klavoj, tiu ŝlosilo kondiĉas se ago devus esti farita en Naŭtilo kiam unu aŭ la alia estas premita."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:31
-msgid ""
-"For users with mice that have buttons for \"Forward\" and \"Back\", this key "
-"will set which button activates the \"Back\" command in a browser window. "
-"Possible values range between 6 and 14."
-msgstr ""
-"Por usantoj de muso kun \"sekva\" kaj \"antaŭa\" klavoj, tiu ŝlosilo agordos "
-"se kiu klavo aktivigita la \"antaŭa\" komando en la esplorila fenestro. Ebla "
-"amplekso de valoroj inter 6 kaj 14."
+msgid "For users with mice that have buttons for \"Forward\" and \"Back\", this key will set which button activates the \"Back\" command in a browser window. Possible values range between 6 and 14."
+msgstr "Por usantoj de muso kun \"sekva\" kaj \"antaŭa\" klavoj, tiu ŝlosilo agordos se kiu klavo aktivigita la \"antaŭa\" komando en la esplorila fenestro. Ebla amplekso de valoroj inter 6 kaj 14."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:32
-msgid ""
-"For users with mice that have buttons for \"Forward\" and \"Back\", this key "
-"will set which button activates the \"Forward\" command in a browser window. "
-"Possible values range between 6 and 14."
-msgstr ""
-"Por usantoj de muso kun \"sekva\" kaj \"antaŭa\" klavoj, tiu ŝlosilo agordos "
-"se kiu klavo aktivigita la \"sekva\" komando en la esplorila fenestro. Ebla "
-"amplekso de valoroj inter 6 kaj 14."
+msgid "For users with mice that have buttons for \"Forward\" and \"Back\", this key will set which button activates the \"Forward\" command in a browser window. Possible values range between 6 and 14."
+msgstr "Por usantoj de muso kun \"sekva\" kaj \"antaŭa\" klavoj, tiu ŝlosilo agordos se kiu klavo aktivigita la \"sekva\" komando en la esplorila fenestro. Ebla amplekso de valoroj inter 6 kaj 14."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:33
 msgid "Home icon visible on desktop"
 msgstr "Hejma bildsimbolo videbla en labortablo"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:34
-msgid ""
-"If set to \"after-current-tab\", then new tabs are inserted after the "
-"current tab. If set to \"end\", then new tabs are appended to the end of the "
-"tab list."
-msgstr ""
-"Se agordita al \"after_current_tab\", la novaj langetoj estos insertitaj "
-"post la nuna langeto. Se agorditaj al \"end\", la novaj langetoj estos "
-"insertitaj ĉe la langetbreta fino."
+msgid "If set to \"after-current-tab\", then new tabs are inserted after the current tab. If set to \"end\", then new tabs are appended to the end of the tab list."
+msgstr "Se agordita al \"after_current_tab\", la novaj langetoj estos insertitaj post la nuna langeto. Se agorditaj al \"end\", la novaj langetoj estos insertitaj ĉe la langetbreta fino."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:35
-msgid ""
-"If set to true, Nautilus will only show folders in the tree side pane. "
-"Otherwise it will show both folders and files."
-msgstr ""
-"Se agordita al vero, Naŭtilo vidigos nur dosierujoj en la flanka arbpanelo. "
-"Alie, ĝi vidiga anbaŭ dosierujon kaj dosierojn."
+msgid "If set to true, Nautilus will only show folders in the tree side pane. Otherwise it will show both folders and files."
+msgstr "Se agordita al vero, Naŭtilo vidigos nur dosierujoj en la flanka arbpanelo. Alie, ĝi vidiga anbaŭ dosierujon kaj dosierojn."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:36
-msgid ""
-"If set to true, newly opened windows will have the location bar visible."
+msgid "If set to true, newly opened windows will have the location bar visible."
 msgstr "Agordita kiel vera, fenestroj ĵus malfermitaj vidigos lokbreton."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:37
@@ -1832,166 +1700,80 @@ msgid "If set to true, newly opened windows will have toolbars visible."
 msgstr "Agordita kiel vera, fenestroj ĵus malfermitaj vidigos ilobretojn."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:40
-msgid ""
-"If set to true, then Nautilus browser windows will always use a textual "
-"input entry for the location toolbar, instead of the pathbar."
-msgstr ""
-"Se vera, tiam Naŭtilaj krozilaj fenestroj ĉiam uzos tekstan enigan kampon "
-"por la loka ilstrio, anstataŭ ol padstrion."
+msgid "If set to true, then Nautilus browser windows will always use a textual input entry for the location toolbar, instead of the pathbar."
+msgstr "Se vera, tiam Naŭtilaj krozilaj fenestroj ĉiam uzos tekstan enigan kampon por la loka ilstrio, anstataŭ ol padstrion."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:41
-msgid ""
-"If set to true, then Nautilus lets you edit and display file permissions in "
-"a more unix-like way, accessing some more esoteric options."
-msgstr ""
-"Se agordita kiel vera, do Naŭtilo permesos al vi redakti kelkajn pli "
-"strangajn ecojn de dosiero en agorda dialogo de dosiero."
+msgid "If set to true, then Nautilus lets you edit and display file permissions in a more unix-like way, accessing some more esoteric options."
+msgstr "Se agordita kiel vera, do Naŭtilo permesos al vi redakti kelkajn pli strangajn ecojn de dosiero en agorda dialogo de dosiero."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:42
-msgid ""
-"If set to true, then Nautilus shows folders prior to showing files in the "
-"icon and list views."
-msgstr ""
-"Se agordita kiel vera, do Naŭtilo vidigos dosierujojn antaŭ ol dosierojn en "
-"piktograma kaj lista vidoj."
+msgid "If set to true, then Nautilus shows folders prior to showing files in the icon and list views."
+msgstr "Se agordita kiel vera, do Naŭtilo vidigos dosierujojn antaŭ ol dosierojn en piktograma kaj lista vidoj."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:43
-msgid ""
-"If set to true, then Nautilus will ask for confirmation when you attempt to "
-"delete files, or empty the Trash."
-msgstr ""
-"Se jes, Naŭtilo demandos vian konfirmon, kiam vi provas forigi dosierojn aŭ "
-"malplenigi la rubujon."
+msgid "If set to true, then Nautilus will ask for confirmation when you attempt to delete files, or empty the Trash."
+msgstr "Se jes, Naŭtilo demandos vian konfirmon, kiam vi provas forigi dosierojn aŭ malplenigi la rubujon."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:44
-msgid ""
-"If set to true, then Nautilus will have a feature allowing you to delete a "
-"file immediately and in-place, instead of moving it to the trash. This "
-"feature can be dangerous, so use caution."
-msgstr ""
-"Se agordita kiel vera, do Naŭtilo havos eblecon por permesi al vi forigi "
-"tuje dosieron anstataŭ sendi ĝin rubujen. Ĉi tiu ebleco povas esti danĝera, "
-"do, zorgu."
+msgid "If set to true, then Nautilus will have a feature allowing you to delete a file immediately and in-place, instead of moving it to the trash. This feature can be dangerous, so use caution."
+msgstr "Se agordita kiel vera, do Naŭtilo havos eblecon por permesi al vi forigi tuje dosieron anstataŭ sendi ĝin rubujen. Ĉi tiu ebleco povas esti danĝera, do, zorgu."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:45
-msgid ""
-"If set to true, then Nautilus will use a fade effect to change the desktop "
-"background."
-msgstr ""
-"Se agordita kiel vera, Naŭtilo uzas disvolvan efekton por ŝanĝi la "
-"labortablan fonon."
+msgid "If set to true, then Nautilus will use a fade effect to change the desktop background."
+msgstr "Se agordita kiel vera, Naŭtilo uzas disvolvan efekton por ŝanĝi la labortablan fonon."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:46
-msgid ""
-"If set to true, then Nautilus will use the user's home folder as the "
-"desktop. If it is false, then it will use ~/Desktop as the desktop."
-msgstr ""
-"Se agordita kiel vera, do Naŭtilo uzos la hejman dosierujon de uzanto kiel "
-"labortablo. Se ĝi estas falsa tiam oni uzos ~/Desktop kiel labortablo."
+msgid "If set to true, then Nautilus will use the user's home folder as the desktop. If it is false, then it will use ~/Desktop as the desktop."
+msgstr "Se agordita kiel vera, do Naŭtilo uzos la hejman dosierujon de uzanto kiel labortablo. Se ĝi estas falsa tiam oni uzos ~/Desktop kiel labortablo."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:47
-msgid ""
-"If set to true, then all Nautilus windows will be browser windows. This is "
-"how Nautilus used to behave before version 2.6, and some people prefer this "
-"behavior."
-msgstr ""
-"Se agordita kiel vera, ĉiuj fenestroj de Naŭtilo estos foliumaj fenestroj. "
-"Tiel kondutis Naŭtilo antaŭ ol versio 2.6, kaj kelkaj personoj preferas tiun "
-"konduton."
+msgid "If set to true, then all Nautilus windows will be browser windows. This is how Nautilus used to behave before version 2.6, and some people prefer this behavior."
+msgstr "Se agordita kiel vera, ĉiuj fenestroj de Naŭtilo estos foliumaj fenestroj. Tiel kondutis Naŭtilo antaŭ ol versio 2.6, kaj kelkaj personoj preferas tiun konduton."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:48
-msgid ""
-"If set to true, then hidden files are shown by default in the file manager. "
-"Hidden files are either dotfiles, listed in the folder's .hidden file or "
-"backup files ending with a tilde (~)."
-msgstr ""
-"Agordita kiel vera, kaŝitaj dosieroj videblas en la dosiera mastrumilo. "
-"Kaŝitaj dosieroj komencas per punkto aŭ estas listigitaj en la dosiero \"."
-"hidden\" de la dosierujo aŭ sekurkopia dosieroj finante per tildo (~)."
+msgid "If set to true, then hidden files are shown by default in the file manager. Hidden files are either dotfiles, listed in the folder's .hidden file or backup files ending with a tilde (~)."
+msgstr "Agordita kiel vera, kaŝitaj dosieroj videblas en la dosiera mastrumilo. Kaŝitaj dosieroj komencas per punkto aŭ estas listigitaj en la dosiero \".hidden\" de la dosierujo aŭ sekurkopia dosieroj finante per tildo (~)."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:49
-msgid ""
-"If set, Nautilus will append URIs of selected files and treat the result as "
-"a command line for bulk renaming. Bulk rename applications can register "
-"themselves in this key by setting the key to a space-separated string of "
-"their executable name and any command line options. If the executable name "
-"is not set to a full path, it will be searched for in the search path."
+msgid "If set, Nautilus will append URIs of selected files and treat the result as a command line for bulk renaming. Bulk rename applications can register themselves in this key by setting the key to a space-separated string of their executable name and any command line options. If the executable name is not set to a full path, it will be searched for in the search path."
 msgstr ""
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:50
-msgid ""
-"If this is set to true, an icon linking to the Network Servers view will be "
-"put on the desktop."
-msgstr ""
-"Se agordita al vera, piktogramo ligita al la  vido de Retaj Serviloj estos "
-"metata sur la labortablo."
+msgid "If this is set to true, an icon linking to the Network Servers view will be put on the desktop."
+msgstr "Se agordita al vera, piktogramo ligita al la  vido de Retaj Serviloj estos metata sur la labortablo."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:51
-msgid ""
-"If this is set to true, an icon linking to the computer location will be put "
-"on the desktop."
-msgstr ""
-"Agordita kiel vera, piktogramo kun ligo al komputila loko estos metita en la "
-"labortablo."
+msgid "If this is set to true, an icon linking to the computer location will be put on the desktop."
+msgstr "Agordita kiel vera, piktogramo kun ligo al komputila loko estos metita en la labortablo."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:52
-msgid ""
-"If this is set to true, an icon linking to the home folder will be put on "
-"the desktop."
-msgstr ""
-"Agordita kiel vera, piktogramo kun ligo al hejma dosierujo estos metita en "
-"la labortablo."
+msgid "If this is set to true, an icon linking to the home folder will be put on the desktop."
+msgstr "Agordita kiel vera, piktogramo kun ligo al hejma dosierujo estos metita en la labortablo."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:53
-msgid ""
-"If this is set to true, an icon linking to the trash will be put on the "
-"desktop."
-msgstr ""
-"Agordita kiel vera, piktogramo kun ligo al rubujo estos metita en la "
-"labortablo."
+msgid "If this is set to true, an icon linking to the trash will be put on the desktop."
+msgstr "Agordita kiel vera, piktogramo kun ligo al rubujo estos metita en la labortablo."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:54
-msgid ""
-"If this is set to true, icons linking to mounted volumes will be put on the "
-"desktop."
-msgstr ""
-"Agordita kiel vera, piktogramo kun ligo al surmetitaj datumportiloj estos "
-"metita en la labortablo."
+msgid "If this is set to true, icons linking to mounted volumes will be put on the desktop."
+msgstr "Agordita kiel vera, piktogramo kun ligo al surmetitaj datumportiloj estos metita en la labortablo."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:55
-msgid ""
-"If this preference is set, all columns in the compact view have the same "
-"width. Otherwise, the width of each column is determined seperately."
-msgstr ""
-"Se enŝaltite, ĉiuj kolumnoj en la kompakta vido havos la saman larĝon. Alie "
-"la larĝo de ĉiu kolumno estas aparte difinita."
+msgid "If this preference is set, all columns in the compact view have the same width. Otherwise, the width of each column is determined seperately."
+msgstr "Se enŝaltite, ĉiuj kolumnoj en la kompakta vido havos la saman larĝon. Alie la larĝo de ĉiu kolumno estas aparte difinita."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:56
-msgid ""
-"If true, files in new windows will be sorted in reverse order. ie, if sorted "
-"by name, then instead of sorting the files from \"a\" to \"z\", they will be "
-"sorted from \"z\" to \"a\"; if sorted by size, instead of being "
-"incrementally they will be sorted decrementally."
-msgstr ""
-"Se vera, dosieroj en novaj fenestroj estos ordigataj renverse. Ekz., se "
-"ordigataj laŭ nomo, tiam anstataŭ ordigi la dosierojn de \"a\" al \"z\", ili "
-"estos ordigataj de \"z\" al \"a\"; se ordigataj laŭ grando, anstataŭ "
-"kreskante ili estos ordigataj malkreskante."
+msgid "If true, files in new windows will be sorted in reverse order. ie, if sorted by name, then instead of sorting the files from \"a\" to \"z\", they will be sorted from \"z\" to \"a\"; if sorted by size, instead of being incrementally they will be sorted decrementally."
+msgstr "Se vera, dosieroj en novaj fenestroj estos ordigataj renverse. Ekz., se ordigataj laŭ nomo, tiam anstataŭ ordigi la dosierojn de \"a\" al \"z\", ili estos ordigataj de \"z\" al \"a\"; se ordigataj laŭ grando, anstataŭ kreskante ili estos ordigataj malkreskante."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:57
-msgid ""
-"If true, labels will be placed beside icons rather than underneath them."
+msgid "If true, labels will be placed beside icons rather than underneath them."
 msgstr "Se vera, etikedoj estos lokataj apud piktogramoj anstataŭ ol sub ili."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:58
-msgid ""
-"Images over this size (in bytes) won't be thumbnailed. The purpose of this "
-"setting is to avoid thumbnailing large images that may take a long time to "
-"load or use lots of memory."
-msgstr ""
-"Bildoj super ĉi tiu grando (en bajtoj) ne estos bildetigitaj. La celo de ĉi "
-"tiu agordo estas eviti bildetigi grandajn bildojn kiuj bezonos longan tempon "
-"por ŝargiĝi kaj uzas multan memoron."
+msgid "Images over this size (in bytes) won't be thumbnailed. The purpose of this setting is to avoid thumbnailing large images that may take a long time to load or use lots of memory."
+msgstr "Bildoj super ĉi tiu grando (en bajtoj) ne estos bildetigitaj. La celo de ĉi tiu agordo estas eviti bildetigi grandajn bildojn kiuj bezonos longan tempon por ŝargiĝi kaj uzas multan memoron."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:59
 msgid "List of possible captions on icons"
@@ -2026,12 +1808,8 @@ msgid "Only show folders in the tree side pane"
 msgstr "Vidigi nur dosierujojn en arba flanko"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:67
-msgid ""
-"Possible values are \"single\" to launch files on a single click, or \"double"
-"\" to launch them on a double click."
-msgstr ""
-"Eblaj valoroj estas \"sola\" por lanĉi dosierojn per sola klako, aŭ \"duobla"
-"\" por lanĉi ilin per duobla klako."
+msgid "Possible values are \"single\" to launch files on a single click, or \"double\" to launch them on a double click."
+msgstr "Eblaj valoroj estas \"sola\" por lanĉi dosierojn per sola klako, aŭ \"duobla\" por lanĉi ilin per duobla klako."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:68
 msgid "Put labels beside icons"
@@ -2078,57 +1856,20 @@ msgid "Side pane view"
 msgstr "Vido de Flanka Panelo"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:79
-msgid ""
-"Speed tradeoff for when to preview a sound file when mousing over a files "
-"icon. If set to \"always\" then always plays the sound, even if the file is "
-"on a remote server. If set to \"local-only\" then only plays previews on "
-"local file systems. If set to \"never\" then it never previews sound."
-msgstr ""
-"Rapideca kompromiso por la kazo antaŭludigi sondosieron kiam la muso ŝvebas "
-"super la dosieran piktogramon. Kiam \"always\" tiam ĉiam antaŭludiĝas la "
-"sono, eĉ se la dosiero estas sur fora servilo. Se \"local_only\" tiam nur "
-"antaŭludiĝas sono sur lokaj dosiersistemoj. Se \"never\" tiam ĝi neniam "
-"antaŭludigas sonon."
+msgid "Speed tradeoff for when to preview a sound file when mousing over a files icon. If set to \"always\" then always plays the sound, even if the file is on a remote server. If set to \"local-only\" then only plays previews on local file systems. If set to \"never\" then it never previews sound."
+msgstr "Rapideca kompromiso por la kazo antaŭludigi sondosieron kiam la muso ŝvebas super la dosieran piktogramon. Kiam \"always\" tiam ĉiam antaŭludiĝas la sono, eĉ se la dosiero estas sur fora servilo. Se \"local_only\" tiam nur antaŭludiĝas sono sur lokaj dosiersistemoj. Se \"never\" tiam ĝi neniam antaŭludigas sonon."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:80
-msgid ""
-"Speed tradeoff for when to show a preview of text file contents in the "
-"file's icon. If set to \"always\" then always show previews, even if the "
-"folder is on a remote server. If set to \"local-only\" then only show "
-"previews for local file systems. If set to \"never\" then never bother to "
-"read preview data."
-msgstr ""
-"Rapideca kompromiso por la kazo montri antaŭrigardon de tekstdosieran "
-"entenon en la dosiera piktogramo. Se \"always\" tiam ĝi ĉiam montras "
-"antaŭrigardojn, eĉ se la dosierujo estas sur fora servilo. Se \"local_only\" "
-"tiam ĝi nur montras antaŭrigardojn sur lokaj dosiersistemoj. Se \"never\" "
-"tiam ĝi neniam penas legi antaŭrigardajn informojn."
+msgid "Speed tradeoff for when to show a preview of text file contents in the file's icon. If set to \"always\" then always show previews, even if the folder is on a remote server. If set to \"local-only\" then only show previews for local file systems. If set to \"never\" then never bother to read preview data."
+msgstr "Rapideca kompromiso por la kazo montri antaŭrigardon de tekstdosieran entenon en la dosiera piktogramo. Se \"always\" tiam ĝi ĉiam montras antaŭrigardojn, eĉ se la dosierujo estas sur fora servilo. Se \"local_only\" tiam ĝi nur montras antaŭrigardojn sur lokaj dosiersistemoj. Se \"never\" tiam ĝi neniam penas legi antaŭrigardajn informojn."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:81
-msgid ""
-"Speed tradeoff for when to show an image file as a thumbnail. If set to "
-"\"always\" then always thumbnail, even if the folder is on a remote server. "
-"If set to \"local-only\" then only show thumbnails for local file systems. "
-"If set to \"never\" then never bother to thumbnail images, just use a "
-"generic icon."
-msgstr ""
-"Rapideca kompromiso por la kazo montri bilddosieron kiel bildeton. Se "
-"\"always\" tiam ĝi ĉiam kreas bildetojn, eĉ se la dosierujo estas sur fora "
-"servilo. Se \"local_only\" tiam nur montras bildetojn por lokaj "
-"dosiersistemoj. Se \"never\" tiam ĝi neniam penas bildetigi bildojn kaj nur "
-"uzas ĝeneralan piktogramon."
+msgid "Speed tradeoff for when to show an image file as a thumbnail. If set to \"always\" then always thumbnail, even if the folder is on a remote server. If set to \"local-only\" then only show thumbnails for local file systems. If set to \"never\" then never bother to thumbnail images, just use a generic icon."
+msgstr "Rapideca kompromiso por la kazo montri bilddosieron kiel bildeton. Se \"always\" tiam ĝi ĉiam kreas bildetojn, eĉ se la dosierujo estas sur fora servilo. Se \"local_only\" tiam nur montras bildetojn por lokaj dosiersistemoj. Se \"never\" tiam ĝi neniam penas bildetigi bildojn kaj nur uzas ĝeneralan piktogramon."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:82
-msgid ""
-"Speed tradeoff for when to show the number of items in a folder. If set to "
-"\"always\" then always show item counts, even if the folder is on a remote "
-"server. If set to \"local-only\" then only show counts for local file "
-"systems. If set to \"never\" then never bother to compute item counts."
-msgstr ""
-"Rapideca kompromiso por la kazo montri la nombron de eroj en dosierujo. Se "
-"\"always\" tiam ĉiam montras eronombrojn, eĉ se la dosierujo estas sur fora "
-"servilo. Se \"local_only\" tiam nur montras nombrojn por lokaj "
-"dosiersistemoj. Se \"never\" tiam neniam penas komputi eronombrojn."
+msgid "Speed tradeoff for when to show the number of items in a folder. If set to \"always\" then always show item counts, even if the folder is on a remote server. If set to \"local-only\" then only show counts for local file systems. If set to \"never\" then never bother to compute item counts."
+msgstr "Rapideca kompromiso por la kazo montri la nombron de eroj en dosierujo. Se \"always\" tiam ĉiam montras eronombrojn, eĉ se la dosierujo estas sur fora servilo. Se \"local_only\" tiam nur montras nombrojn por lokaj dosiersistemoj. Se \"never\" tiam neniam penas komputi eronombrojn."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:83
 msgid "Text Ellipsis Limit"
@@ -2139,12 +1880,8 @@ msgid "The default size of an icon for a thumbnail in the icon view."
 msgstr "Norma grando de piktogramoj por antaŭmontraĵo en la piktograma vido."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:85
-msgid ""
-"The default sort-order for items in the icon view. Possible values are \"name"
-"\", \"size\", \"type\" and \"mtime\"."
-msgstr ""
-"La defaŭlta sinsekvo por eroj en la listrigardo. Eblaj valoroj estas \"name"
-"\", \"size\", \"type\", kaj \"mtime\"."
+msgid "The default sort-order for items in the icon view. Possible values are \"name\", \"size\", \"type\" and \"mtime\"."
+msgstr "La defaŭlta sinsekvo por eroj en la listrigardo. Eblaj valoroj estas \"name\", \"size\", \"type\", kaj \"mtime\"."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:86
 msgid "The default width of the side pane in new windows."
@@ -2155,12 +1892,8 @@ msgid "The font _description used for the icons on the desktop."
 msgstr "La tipar_priskribo uzita por piktogramoj sur la labortablo."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:88
-msgid ""
-"The format of file dates. Possible values are \"locale\", \"iso\", and "
-"\"informal\"."
-msgstr ""
-"La formato de dosierdatoj. Eblaj valoroj estas \"locale\", \"iso\", and "
-"\"informal\"."
+msgid "The format of file dates. Possible values are \"locale\", \"iso\", and \"informal\"."
+msgstr "La formato de dosierdatoj. Eblaj valoroj estas \"locale\", \"iso\", and \"informal\"."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:89
 #, fuzzy
@@ -2172,36 +1905,20 @@ msgid "The side pane view to show in newly opened windows."
 msgstr "La vido de flanka panelo montrota en novaj malfermitaj fenestroj."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:91
-msgid ""
-"This name can be set if you want a custom name for the computer icon on the "
-"desktop."
-msgstr ""
-"Ĉi nomo povas esti agordita se vi deziras propran nomon por la komputilo-"
-"piktogramo sur la labortablo."
+msgid "This name can be set if you want a custom name for the computer icon on the desktop."
+msgstr "Ĉi nomo povas esti agordita se vi deziras propran nomon por la komputilo-piktogramo sur la labortablo."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:92
-msgid ""
-"This name can be set if you want a custom name for the home icon on the "
-"desktop."
-msgstr ""
-"Ĉi nomo povas esti agordita se vi deziras propran nomon por la hejmo-"
-"piktogramo sur la labortablo."
+msgid "This name can be set if you want a custom name for the home icon on the desktop."
+msgstr "Ĉi nomo povas esti agordita se vi deziras propran nomon por la hejmo-piktogramo sur la labortablo."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:93
-msgid ""
-"This name can be set if you want a custom name for the network servers icon "
-"on the desktop."
-msgstr ""
-"Tiu nomo povas esti agordita, se vi deziras propran nomon por la retservilo-"
-"piktogramo sur la labortablo."
+msgid "This name can be set if you want a custom name for the network servers icon on the desktop."
+msgstr "Tiu nomo povas esti agordita, se vi deziras propran nomon por la retservilo-piktogramo sur la labortablo."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:94
-msgid ""
-"This name can be set if you want a custom name for the trash icon on the "
-"desktop."
-msgstr ""
-"Ĉi nomo povas esti agordita se vi deziras propran nomon por la rubujo-"
-"piktogramo sur la labortablo."
+msgid "This name can be set if you want a custom name for the trash icon on the desktop."
+msgstr "Ĉi nomo povas esti agordita se vi deziras propran nomon por la rubujo-piktogramo sur la labortablo."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:95
 msgid "Trash icon visible on desktop"
@@ -2220,22 +1937,11 @@ msgid "What to do with executable text files when activated"
 msgstr "Kiel agi post ŝalto de ruleblaj tekstaj dosieroj"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:99
-msgid ""
-"What to do with executable text files when they are activated (single or "
-"double clicked). Possible values are \"launch\" to launch them as programs, "
-"\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
-"text files."
-msgstr ""
-"Kiel agi post ŝalto de ruleblaj tekstaj dosieroj (unuopa aŭ duopa alklako). "
-"Eblaj valoroj estas \"lanĉi\" por lanĉi ilin kiel programoj, \"demandi\" por "
-"demandi kiel agi per dialogo, kaj \"vidigi\" por vidigi ilin kiel tekstaj "
-"dosieroj."
+msgid "What to do with executable text files when they are activated (single or double clicked). Possible values are \"launch\" to launch them as programs, \"ask\" to ask what to do via a dialog, and \"display\" to display them as text files."
+msgstr "Kiel agi post ŝalto de ruleblaj tekstaj dosieroj (unuopa aŭ duopa alklako). Eblaj valoroj estas \"lanĉi\" por lanĉi ilin kiel programoj, \"demandi\" por demandi kiel agi per dialogo, kaj \"vidigi\" por vidigi ilin kiel tekstaj dosieroj."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:100
-msgid ""
-"When a folder is visited this viewer is used unless you have selected "
-"another view for that particular folder. Possible values are \"list-view\", "
-"\"icon-view\" and \"compact-view\"."
+msgid "When a folder is visited this viewer is used unless you have selected another view for that particular folder. Possible values are \"list-view\", \"icon-view\" and \"compact-view\"."
 msgstr ""
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:101
@@ -2279,12 +1985,8 @@ msgid "Whether to show hidden files"
 msgstr "Vidigi kaŝitajn dosierojn"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:111
-msgid ""
-"Whether to show the user a package installer dialog in case an unknown mime "
-"type is opened, in order to search for an application to handle it."
-msgstr ""
-"Ĉu montri dialogon de pakaĵinstalilo kiam mime-tipo estas malfermita, por "
-"serĉi aplikaĵon pritraktiante ĝin."
+msgid "Whether to show the user a package installer dialog in case an unknown mime type is opened, in order to search for an application to handle it."
+msgstr "Ĉu montri dialogon de pakaĵinstalilo kiam mime-tipo estas malfermita, por serĉi aplikaĵon pritraktiante ĝin."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:112
 msgid "Width of the side pane"
@@ -2309,12 +2011,8 @@ msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "Naŭtilo ne povis krei bezonatan dosierujon \"%s\"."
 
 #: ../src/nautilus-application.c:157
-msgid ""
-"Before running Nautilus, please create the following folder, or set "
-"permissions such that Nautilus can create it."
-msgstr ""
-"Antaŭ ol ruli Naŭtilon, bv. kreu ĉi dosierujon, aŭ agordu permesojn tiel, ke "
-"Naŭtilo povos ĝin krei."
+msgid "Before running Nautilus, please create the following folder, or set permissions such that Nautilus can create it."
+msgstr "Antaŭ ol ruli Naŭtilon, bv. kreu ĉi dosierujon, aŭ agordu permesojn tiel, ke Naŭtilo povos ĝin krei."
 
 #: ../src/nautilus-application.c:160
 #, c-format
@@ -2322,17 +2020,11 @@ msgid "Nautilus could not create the following required folders: %s."
 msgstr "Naŭtilo ne povas krei ĉi bezonatajn dosierujojn: %s."
 
 #: ../src/nautilus-application.c:162
-msgid ""
-"Before running Nautilus, please create these folders, or set permissions "
-"such that Nautilus can create them."
-msgstr ""
-"Antaŭ ol ruli Naŭtilon, bv. kreu ĉi dosierujojn, aŭ agordu permesojn tiel, "
-"ke Naŭtilo povos ilin krei."
+msgid "Before running Nautilus, please create these folders, or set permissions such that Nautilus can create them."
+msgstr "Antaŭ ol ruli Naŭtilon, bv. kreu ĉi dosierujojn, aŭ agordu permesojn tiel, ke Naŭtilo povos ilin krei."
 
 #: ../src/nautilus-application.c:295
-msgid ""
-"Nautilus 3.0 deprecated this directory and tried migrating this "
-"configuration to ~/.config/nautilus"
+msgid "Nautilus 3.0 deprecated this directory and tried migrating this configuration to ~/.config/nautilus"
 msgstr ""
 
 #: ../src/nautilus-application.c:915
@@ -2356,9 +2048,7 @@ msgid "Only create windows for explicitly specified URIs."
 msgstr "Nur krei fenestrojn por eksplicite specifitaj URI-ojn."
 
 #: ../src/nautilus-application.c:924
-msgid ""
-"Do not manage the desktop (ignore the preference set in the preferences "
-"dialog)."
+msgid "Do not manage the desktop (ignore the preference set in the preferences dialog)."
 msgstr "Ne mastrumi la labortablon (ignori la agordaĵoj en agordara dialogo)."
 
 #: ../src/nautilus-application.c:926
@@ -2407,21 +2097,19 @@ msgid "<big><b>Error autorunning software</b></big>"
 msgstr ""
 
 #: ../src/nautilus-autorun-software.c:193
-msgid ""
-"<big><b>This medium contains software intended to be automatically started. "
-"Would you like to run it?</b></big>"
+msgid "<big><b>This medium contains software intended to be automatically started. Would you like to run it?</b></big>"
 msgstr ""
 
 #: ../src/nautilus-autorun-software.c:195
 #, c-format
 msgid ""
-"The software will run directly from the medium \"%s\". You should never run "
-"software that you don't trust.\n"
+"The software will run directly from the medium \"%s\". You should never run software that you don't trust.\n"
 "\n"
 "If in doubt, press Cancel."
 msgstr ""
 
-#: ../src/nautilus-autorun-software.c:229 ../src/nautilus-mime-actions.c:718
+#: ../src/nautilus-autorun-software.c:229
+#: ../src/nautilus-mime-actions.c:718
 msgid "_Run"
 msgstr "_Ruli"
 
@@ -2529,7 +2217,8 @@ msgid "Continue"
 msgstr "Daŭrigi"
 
 #: ../src/nautilus-connect-server-dialog.c:680
-#: ../src/nautilus-properties-window.c:5165 ../src/nautilus-view.c:1540
+#: ../src/nautilus-properties-window.c:5165
+#: ../src/nautilus-view.c:1518
 msgid "There was an error displaying help."
 msgstr "Okazis eraro dum montrado de helpo."
 
@@ -2568,7 +2257,8 @@ msgid "Sh_are:"
 msgstr "_Komunigi:"
 
 #. fourth row: folder entry
-#: ../src/nautilus-connect-server-dialog.c:998 ../src/nautilus-view.c:1730
+#: ../src/nautilus-connect-server-dialog.c:998
+#: ../src/nautilus-view.c:1708
 msgid "_Folder:"
 msgstr "Dosierujo:"
 
@@ -2617,20 +2307,23 @@ msgstr "Komando"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-desktop-icon-view.c:744 ../src/nautilus-view.c:7054
-#: ../src/nautilus-view.c:8632
+#: ../src/nautilus-desktop-icon-view.c:744
+#: ../src/nautilus-view.c:7000
+#: ../src/nautilus-view.c:8535
 msgid "E_mpty Trash"
 msgstr "_Malplenigi rubujon"
 
 #. label, accelerator
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-desktop-icon-view.c:756 ../src/nautilus-view.c:7018
+#: ../src/nautilus-desktop-icon-view.c:756
+#: ../src/nautilus-view.c:6968
 msgid "Create L_auncher..."
 msgstr "Krei l_anĉilon..."
 
 #. tooltip
-#: ../src/nautilus-desktop-icon-view.c:758 ../src/nautilus-view.c:7019
+#: ../src/nautilus-desktop-icon-view.c:758
+#: ../src/nautilus-view.c:6969
 msgid "Create a new launcher"
 msgstr "Krei novan lanĉilon"
 
@@ -2641,11 +2334,8 @@ msgstr "Ŝanĝi fonon de la_bortablo"
 
 #. tooltip
 #: ../src/nautilus-desktop-icon-view.c:765
-msgid ""
-"Show a window that lets you set your desktop background's pattern or color"
-msgstr ""
-"Montri fenestron kiu ebligos agordi vian fonan ŝablonon aŭ koloron "
-"delabortablo"
+msgid "Show a window that lets you set your desktop background's pattern or color"
+msgstr "Montri fenestron kiu ebligos agordi vian fonan ŝablonon aŭ koloron delabortablo"
 
 #. label, accelerator
 #: ../src/nautilus-desktop-icon-view.c:770
@@ -2653,8 +2343,9 @@ msgid "Empty Trash"
 msgstr "Malplenigi rubujon"
 
 #. tooltip
-#: ../src/nautilus-desktop-icon-view.c:772 ../src/nautilus-trash-bar.c:207
-#: ../src/nautilus-view.c:7055
+#: ../src/nautilus-desktop-icon-view.c:772
+#: ../src/nautilus-trash-bar.c:207
+#: ../src/nautilus-view.c:7001
 msgid "Delete all items in the Trash"
 msgstr "Forigi ĉiujn elementojn el rubujo"
 
@@ -2667,15 +2358,16 @@ msgid "The desktop view encountered an error while starting up."
 msgstr "La labortabla vido trafis eraron dum starto."
 
 #. hardcode "Desktop"
-#: ../src/nautilus-desktop-window.c:71 ../src/nautilus-desktop-window.c:270
-#: ../src/nautilus-pathbar.c:1198 ../src/nautilus-places-sidebar.c:670
+#: ../src/nautilus-desktop-window.c:71
+#: ../src/nautilus-desktop-window.c:270
+#: ../src/nautilus-pathbar.c:1199
+#: ../src/nautilus-places-sidebar.c:670
 msgid "Desktop"
 msgstr "Labortablo"
 
 #: ../src/nautilus-error-reporting.c:68
 #, c-format
-msgid ""
-"You do not have the permissions necessary to view the contents of \"%s\"."
+msgid "You do not have the permissions necessary to view the contents of \"%s\"."
 msgstr "Vi ne havas la bezonatan permeson por vidi la enhavon de \"%s\"."
 
 #: ../src/nautilus-error-reporting.c:72
@@ -2694,8 +2386,7 @@ msgstr "La enhavo de la dosierujo ne estas montrebla."
 
 #: ../src/nautilus-error-reporting.c:107
 #, c-format
-msgid ""
-"You do not have the permissions necessary to change the group of \"%s\"."
+msgid "You do not have the permissions necessary to change the group of \"%s\"."
 msgstr "Vi ne havas la bezonatan permeson por ŝanĝi la grupon de \"%s\"."
 
 #. fall through
@@ -2728,15 +2419,12 @@ msgstr "La permesoj ne ŝanĝeblis."
 
 #: ../src/nautilus-error-reporting.c:204
 #, c-format
-msgid ""
-"The name \"%s\" is already used in this folder. Please use a different name."
-msgstr ""
-"La nomo \"%s\" jam estas uzata en ĉi tiu dosierujo. Bonvolu uzi alian nomon."
+msgid "The name \"%s\" is already used in this folder. Please use a different name."
+msgstr "La nomo \"%s\" jam estas uzata en ĉi tiu dosierujo. Bonvolu uzi alian nomon."
 
 #: ../src/nautilus-error-reporting.c:209
 #, c-format
-msgid ""
-"There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
+msgid "There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
 msgstr ""
 
 #: ../src/nautilus-error-reporting.c:214
@@ -2746,9 +2434,7 @@ msgstr "Vi ne havas la bezonatan permeson por alinomi \"%s\"."
 
 #: ../src/nautilus-error-reporting.c:219
 #, c-format
-msgid ""
-"The name \"%s\" is not valid because it contains the character \"/\". Please "
-"use a different name."
+msgid "The name \"%s\" is not valid because it contains the character \"/\". Please use a different name."
 msgstr ""
 
 #: ../src/nautilus-error-reporting.c:223
@@ -2962,12 +2648,8 @@ msgid "By Type"
 msgstr "Laŭ tipo"
 
 #: ../src/nautilus-file-management-properties.ui.h:50
-msgid ""
-"Choose the order of information to appear beneath icon names. More "
-"information will appear when zooming in closer."
-msgstr ""
-"Elektu la ordigon de informoj aperendaj sub piktogramaj nomon. Ekstra "
-"informo aperos enzomante."
+msgid "Choose the order of information to appear beneath icon names. More information will appear when zooming in closer."
+msgstr "Elektu la ordigon de informoj aperendaj sub piktogramaj nomon. Ekstra informo aperos enzomante."
 
 #: ../src/nautilus-file-management-properties.ui.h:51
 msgid "Choose the order of information to appear in the list view."
@@ -3007,7 +2689,8 @@ msgstr "I_nkludi komandon Forigi kiu transiras Rubujon"
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../src/nautilus-file-management-properties.ui.h:59
-#: ../src/nautilus-icon-view-container.c:579 ../src/nautilus-icon-view.c:3001
+#: ../src/nautilus-icon-view-container.c:579
+#: ../src/nautilus-icon-view.c:3001
 msgid "Icon View"
 msgstr "Piktograma vido"
 
@@ -3018,7 +2701,8 @@ msgstr "Kolumnoj de listo"
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../src/nautilus-file-management-properties.ui.h:61
-#: ../src/nautilus-list-view.c:1739 ../src/nautilus-list-view.c:3373
+#: ../src/nautilus-list-view.c:1739
+#: ../src/nautilus-list-view.c:3373
 msgid "List View"
 msgstr "Lista vido"
 
@@ -3114,7 +2798,8 @@ msgstr ""
 msgid "by _Name"
 msgstr "laŭ _nomo"
 
-#: ../src/nautilus-icon-view.c:147 ../src/nautilus-icon-view.c:1418
+#: ../src/nautilus-icon-view.c:147
+#: ../src/nautilus-icon-view.c:1418
 msgid "Keep icons sorted by name in rows"
 msgstr "Lasi piktogramojn ordigitaj laŭ nomo en vicoj"
 
@@ -3122,7 +2807,8 @@ msgstr "Lasi piktogramojn ordigitaj laŭ nomo en vicoj"
 msgid "by _Size"
 msgstr "laŭ _grando"
 
-#: ../src/nautilus-icon-view.c:154 ../src/nautilus-icon-view.c:1422
+#: ../src/nautilus-icon-view.c:154
+#: ../src/nautilus-icon-view.c:1422
 msgid "Keep icons sorted by size in rows"
 msgstr "Lasi piktogramojn ordigitaj laŭ grandeco en vicoj"
 
@@ -3130,7 +2816,8 @@ msgstr "Lasi piktogramojn ordigitaj laŭ grandeco en vicoj"
 msgid "by _Type"
 msgstr "laŭ _tipo"
 
-#: ../src/nautilus-icon-view.c:161 ../src/nautilus-icon-view.c:1426
+#: ../src/nautilus-icon-view.c:161
+#: ../src/nautilus-icon-view.c:1426
 msgid "Keep icons sorted by type in rows"
 msgstr "Lasi piktogramojn ordigitaj laŭ tipo en vicoj"
 
@@ -3138,7 +2825,8 @@ msgstr "Lasi piktogramojn ordigitaj laŭ tipo en vicoj"
 msgid "by Modification _Date"
 msgstr "laŭ _dato de modifo"
 
-#: ../src/nautilus-icon-view.c:168 ../src/nautilus-icon-view.c:1430
+#: ../src/nautilus-icon-view.c:168
+#: ../src/nautilus-icon-view.c:1430
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Lasi piktogramojn ordigitaj laŭ dato de modifo en vicoj"
 
@@ -3146,7 +2834,8 @@ msgstr "Lasi piktogramojn ordigitaj laŭ dato de modifo en vicoj"
 msgid "by T_rash Time"
 msgstr "laŭ _forigtempo"
 
-#: ../src/nautilus-icon-view.c:175 ../src/nautilus-icon-view.c:1434
+#: ../src/nautilus-icon-view.c:175
+#: ../src/nautilus-icon-view.c:1434
 msgid "Keep icons sorted by trash time in rows"
 msgstr "Lasi piktogramojn ordigitaj laŭ forigtempo en vicoj"
 
@@ -3172,7 +2861,8 @@ msgstr "Fari la elektitan piktogramon streĉebla"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-icon-view.c:1389 ../src/nautilus-icon-view.c:1555
+#: ../src/nautilus-icon-view.c:1389
+#: ../src/nautilus-icon-view.c:1555
 msgid "Restore Icons' Original Si_zes"
 msgstr "Restaŭri originalajn _grandecojn de piktogramoj"
 
@@ -3190,9 +2880,7 @@ msgstr "_Ordigi laŭnome"
 #. tooltip
 #: ../src/nautilus-icon-view.c:1394
 msgid "Reposition icons to better fit in the window and avoid overlapping"
-msgstr ""
-"Repoziciigi piktogramoj por pli bone adapti en la fenestro kaj eviti "
-"transkovron."
+msgstr "Repoziciigi piktogramoj por pli bone adapti en la fenestro kaj eviti transkovron."
 
 #. name, stock id
 #. label, accelerator
@@ -3382,13 +3070,15 @@ msgstr "ŝargado..."
 msgid "Image"
 msgstr "Bildo"
 
-#: ../src/nautilus-list-model.c:393 ../src/nautilus-tree-sidebar-model.c:1252
+#: ../src/nautilus-list-model.c:393
+#: ../src/nautilus-tree-sidebar-model.c:1252
 msgid "(Empty)"
 msgstr "(Malplene)"
 
-#: ../src/nautilus-list-model.c:395 ../src/nautilus-tree-sidebar-model.c:1252
+#: ../src/nautilus-list-model.c:395
+#: ../src/nautilus-tree-sidebar-model.c:1252
 #: ../src/nautilus-window-manage-views.c:1170
-#: ../src/nautilus-window-slot.c:201
+#: ../src/nautilus-window-slot.c:202
 msgid "Loading..."
 msgstr "Ŝargante..."
 
@@ -3429,7 +3119,8 @@ msgstr "La lista vido trafis eraron dum startado."
 msgid "Display this location with the list view."
 msgstr "Montri ĉi lokon per lista vido."
 
-#: ../src/nautilus-location-bar.c:55 ../src/nautilus-properties-window.c:3135
+#: ../src/nautilus-location-bar.c:55
+#: ../src/nautilus-properties-window.c:3135
 msgid "Location:"
 msgstr "Loko:"
 
@@ -3444,7 +3135,8 @@ msgid_plural "Do you want to view %d locations?"
 msgstr[0] "Ĉu vi volas vidi %d lokon?"
 msgstr[1] "Ĉu vi volas vidi %d lokojn?"
 
-#: ../src/nautilus-location-bar.c:185 ../src/nautilus-mime-actions.c:1047
+#: ../src/nautilus-location-bar.c:185
+#: ../src/nautilus-mime-actions.c:1047
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
@@ -3472,9 +3164,12 @@ msgstr ""
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-mime-actions.c:646 ../src/nautilus-tree-sidebar.c:1245
-#: ../src/nautilus-view.c:7106 ../src/nautilus-view.c:7221
-#: ../src/nautilus-view.c:8258 ../src/nautilus-view.c:8564
+#: ../src/nautilus-mime-actions.c:646
+#: ../src/nautilus-tree-sidebar.c:1245
+#: ../src/nautilus-view.c:7052
+#: ../src/nautilus-view.c:7162
+#: ../src/nautilus-view.c:8185
+#: ../src/nautilus-view.c:8467
 msgid "Mo_ve to Trash"
 msgstr "Mo_vi rubujen"
 
@@ -3496,8 +3191,9 @@ msgstr "Rulu en _terminalo"
 msgid "_Display"
 msgstr "Vi_digi"
 
-#: ../src/nautilus-mime-actions.c:1042 ../src/nautilus-mime-actions.c:1785
-#: ../src/nautilus-view.c:1038
+#: ../src/nautilus-mime-actions.c:1042
+#: ../src/nautilus-mime-actions.c:1785
+#: ../src/nautilus-view.c:1036
 msgid "Are you sure you want to open all files?"
 msgstr "Ĉu vi certe deziras malfermi ĉiujn dosierojn?"
 
@@ -3553,9 +3249,7 @@ msgstr ""
 
 #: ../src/nautilus-mime-actions.c:1544
 #, c-format
-msgid ""
-"The application launcher \"%s\" has not been marked as trusted. If you do "
-"not know the source of this file, launching it may be unsafe."
+msgid "The application launcher \"%s\" has not been marked as trusted. If you do not know the source of this file, launching it may be unsafe."
 msgstr ""
 
 #: ../src/nautilus-mime-actions.c:1559
@@ -3573,12 +3267,14 @@ msgid_plural "This will open %d separate applications."
 msgstr[0] "Ĉi tio malfermos %d apartan aplikaĵon."
 msgstr[1] "Ĉi tio malfermos %d apartajn aplikaĵojn."
 
-#: ../src/nautilus-mime-actions.c:1863 ../src/nautilus-mime-actions.c:2137
-#: ../src/nautilus-view.c:6182
+#: ../src/nautilus-mime-actions.c:1863
+#: ../src/nautilus-mime-actions.c:2137
+#: ../src/nautilus-view.c:6149
 msgid "Unable to mount location"
 msgstr ""
 
-#: ../src/nautilus-mime-actions.c:2216 ../src/nautilus-view.c:6343
+#: ../src/nautilus-mime-actions.c:2216
+#: ../src/nautilus-view.c:6310
 msgid "Unable to start location"
 msgstr ""
 
@@ -3606,7 +3302,8 @@ msgstr "Aparatoj"
 msgid "Bookmarks"
 msgstr "Legosignoj"
 
-#: ../src/nautilus-places-sidebar.c:516 ../src/nautilus-places-sidebar.c:541
+#: ../src/nautilus-places-sidebar.c:516
+#: ../src/nautilus-places-sidebar.c:541
 #, c-format
 msgid "Mount and open %s"
 msgstr "Almeti kaj malfermi %s"
@@ -3616,7 +3313,8 @@ msgid "Computer"
 msgstr "Komputilo"
 
 #. tooltip
-#: ../src/nautilus-places-sidebar.c:654 ../src/nautilus-window-menus.c:1005
+#: ../src/nautilus-places-sidebar.c:654
+#: ../src/nautilus-window-menus.c:1005
 msgid "Open your personal folder"
 msgstr "Malfermi vian personan dosierujon"
 
@@ -3624,7 +3322,8 @@ msgstr "Malfermi vian personan dosierujon"
 msgid "Open the contents of your desktop in a folder"
 msgstr "Malfermi la enhavon de via labortablo en dosierujo"
 
-#: ../src/nautilus-places-sidebar.c:686 ../src/nautilus-tree-sidebar.c:1340
+#: ../src/nautilus-places-sidebar.c:686
+#: ../src/nautilus-tree-sidebar.c:1340
 msgid "File System"
 msgstr "Dosiersistemo"
 
@@ -3632,7 +3331,8 @@ msgstr "Dosiersistemo"
 msgid "Open the contents of the File System"
 msgstr "Malfermi la enhavon de la dosiera sistemo"
 
-#: ../src/nautilus-places-sidebar.c:782 ../src/nautilus-trash-bar.c:191
+#: ../src/nautilus-places-sidebar.c:782
+#: ../src/nautilus-trash-bar.c:191
 msgid "Trash"
 msgstr "Rubujo"
 
@@ -3655,142 +3355,173 @@ msgstr "Esplori la enhavon de la reto"
 #. Adjust start/stop items to reflect the type of the drive
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:1690 ../src/nautilus-places-sidebar.c:2640
-#: ../src/nautilus-view.c:7144 ../src/nautilus-view.c:7168
-#: ../src/nautilus-view.c:7245 ../src/nautilus-view.c:7880
-#: ../src/nautilus-view.c:7884 ../src/nautilus-view.c:7967
-#: ../src/nautilus-view.c:7971 ../src/nautilus-view.c:8071
-#: ../src/nautilus-view.c:8075
+#: ../src/nautilus-places-sidebar.c:1688
+#: ../src/nautilus-places-sidebar.c:2648
+#: ../src/nautilus-view.c:7090
+#: ../src/nautilus-view.c:7114
+#: ../src/nautilus-view.c:7186
+#: ../src/nautilus-view.c:7821
+#: ../src/nautilus-view.c:7825
+#: ../src/nautilus-view.c:7908
+#: ../src/nautilus-view.c:7912
+#: ../src/nautilus-view.c:8012
+#: ../src/nautilus-view.c:8016
 msgid "_Start"
 msgstr "_Starti"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:1691 ../src/nautilus-places-sidebar.c:2647
-#: ../src/nautilus-view.c:7148 ../src/nautilus-view.c:7172
-#: ../src/nautilus-view.c:7249 ../src/nautilus-view.c:7909
-#: ../src/nautilus-view.c:7996 ../src/nautilus-view.c:8100
+#: ../src/nautilus-places-sidebar.c:1689
+#: ../src/nautilus-places-sidebar.c:2655
+#: ../src/nautilus-view.c:7094
+#: ../src/nautilus-view.c:7118
+#: ../src/nautilus-view.c:7190
+#: ../src/nautilus-view.c:7850
+#: ../src/nautilus-view.c:7937
+#: ../src/nautilus-view.c:8041
 #: ../src/nautilus-window-menus.c:960
 msgid "_Stop"
 msgstr "_Halti"
 
 #. start() for type G_DRIVE_START_STOP_TYPE_SHUTDOWN is normally not used
-#: ../src/nautilus-places-sidebar.c:1696
+#: ../src/nautilus-places-sidebar.c:1694
 msgid "_Power On"
 msgstr "_Kurentenŝalto"
 
-#: ../src/nautilus-places-sidebar.c:1697 ../src/nautilus-view.c:7913
-#: ../src/nautilus-view.c:8000 ../src/nautilus-view.c:8104
+#: ../src/nautilus-places-sidebar.c:1695
+#: ../src/nautilus-view.c:7854
+#: ../src/nautilus-view.c:7941
+#: ../src/nautilus-view.c:8045
 msgid "_Safely Remove Drive"
 msgstr ""
 
-#: ../src/nautilus-places-sidebar.c:1700
+#: ../src/nautilus-places-sidebar.c:1698
 msgid "_Connect Drive"
 msgstr "Ko_nekti diskingon"
 
-#: ../src/nautilus-places-sidebar.c:1701
+#: ../src/nautilus-places-sidebar.c:1699
 msgid "_Disconnect Drive"
 msgstr "_Malkonekti diskingon"
 
-#: ../src/nautilus-places-sidebar.c:1704
+#: ../src/nautilus-places-sidebar.c:1702
 msgid "_Start Multi-disk Device"
 msgstr "_Starti plurdisko aparaton"
 
-#: ../src/nautilus-places-sidebar.c:1705
+#: ../src/nautilus-places-sidebar.c:1703
 msgid "_Stop Multi-disk Device"
 msgstr "_Haltigi plurdisko aparaton"
 
 #. stop() for type G_DRIVE_START_STOP_TYPE_PASSWORD is normally not used
-#: ../src/nautilus-places-sidebar.c:1709 ../src/nautilus-view.c:7983
-#: ../src/nautilus-view.c:8087
+#: ../src/nautilus-places-sidebar.c:1707
+#: ../src/nautilus-view.c:7924
+#: ../src/nautilus-view.c:8028
 msgid "_Unlock Drive"
 msgstr ""
 
-#: ../src/nautilus-places-sidebar.c:1710 ../src/nautilus-view.c:7925
-#: ../src/nautilus-view.c:8012 ../src/nautilus-view.c:8116
+#: ../src/nautilus-places-sidebar.c:1708
+#: ../src/nautilus-view.c:7866
+#: ../src/nautilus-view.c:7953
+#: ../src/nautilus-view.c:8057
 msgid "_Lock Drive"
 msgstr ""
 
-#: ../src/nautilus-places-sidebar.c:1788 ../src/nautilus-places-sidebar.c:2328
+#: ../src/nautilus-places-sidebar.c:1786
+#: ../src/nautilus-places-sidebar.c:2326
 #, c-format
 msgid "Unable to start %s"
 msgstr "Ne eblas starti %s"
 
-#: ../src/nautilus-places-sidebar.c:2082 ../src/nautilus-places-sidebar.c:2111
-#: ../src/nautilus-places-sidebar.c:2140
+#: ../src/nautilus-places-sidebar.c:2080
+#: ../src/nautilus-places-sidebar.c:2109
+#: ../src/nautilus-places-sidebar.c:2138
 #, c-format
 msgid "Unable to eject %s"
 msgstr ""
 
-#: ../src/nautilus-places-sidebar.c:2283
+#: ../src/nautilus-places-sidebar.c:2281
 #, c-format
 msgid "Unable to poll %s for media changes"
 msgstr "Ne eblas sondi %s por datumportiloj ŝanĝoj"
 
-#: ../src/nautilus-places-sidebar.c:2384
+#: ../src/nautilus-places-sidebar.c:2382
 #, c-format
 msgid "Unable to stop %s"
 msgstr "Ne eblas haltigi %s"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:2568 ../src/nautilus-tree-sidebar.c:1156
-#: ../src/nautilus-view.c:7022 ../src/nautilus-view.c:8456
+#: ../src/nautilus-places-sidebar.c:2570
+#: ../src/nautilus-tree-sidebar.c:1156
+#: ../src/nautilus-view.c:6972
+#: ../src/nautilus-view.c:8383
 msgid "_Open"
 msgstr "_Malfermi"
 
 #. add the "open in new tab" menu item
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:2576 ../src/nautilus-tree-sidebar.c:1167
-#: ../src/nautilus-view.c:7034 ../src/nautilus-view.c:7198
-#: ../src/nautilus-view.c:8203 ../src/nautilus-view.c:8525
+#: ../src/nautilus-places-sidebar.c:2578
+#: ../src/nautilus-tree-sidebar.c:1167
+#: ../src/nautilus-view.c:6984
+#: ../src/nautilus-view.c:7144
+#: ../src/nautilus-view.c:8138
+#: ../src/nautilus-view.c:8445
 msgid "Open in New _Tab"
 msgstr "Malfermi en nova _langeto"
 
 #. add the "open in new window" menu item
-#: ../src/nautilus-places-sidebar.c:2583 ../src/nautilus-tree-sidebar.c:1181
-#: ../src/nautilus-view.c:8185 ../src/nautilus-view.c:8494
+#: ../src/nautilus-places-sidebar.c:2588
+#: ../src/nautilus-tree-sidebar.c:1181
+#: ../src/nautilus-view.c:8129
+#: ../src/nautilus-view.c:8425
 msgid "Open in New _Window"
 msgstr "Malfermi en nova _fenestro"
 
-#: ../src/nautilus-places-sidebar.c:2591
+#: ../src/nautilus-places-sidebar.c:2599
 msgid "Remove"
 msgstr "Forigi"
 
-#: ../src/nautilus-places-sidebar.c:2600
+#: ../src/nautilus-places-sidebar.c:2608
 msgid "Rename..."
 msgstr "Alinomi..."
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:2612 ../src/nautilus-view.c:7132
-#: ../src/nautilus-view.c:7156 ../src/nautilus-view.c:7233
+#: ../src/nautilus-places-sidebar.c:2620
+#: ../src/nautilus-view.c:7078
+#: ../src/nautilus-view.c:7102
+#: ../src/nautilus-view.c:7174
 msgid "_Mount"
 msgstr "Sur_meti"
 
 #. add the "Unmount" menu item
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:2619 ../src/nautilus-tree-sidebar.c:1272
-#: ../src/nautilus-view.c:7136 ../src/nautilus-view.c:7160
-#: ../src/nautilus-view.c:7237
+#: ../src/nautilus-places-sidebar.c:2627
+#: ../src/nautilus-tree-sidebar.c:1272
+#: ../src/nautilus-view.c:7082
+#: ../src/nautilus-view.c:7106
+#: ../src/nautilus-view.c:7178
 msgid "_Unmount"
 msgstr "Demeti dat_umportilon"
 
 #. add the "Eject" menu item
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:2626 ../src/nautilus-tree-sidebar.c:1281
-#: ../src/nautilus-view.c:7140 ../src/nautilus-view.c:7164
-#: ../src/nautilus-view.c:7241
+#: ../src/nautilus-places-sidebar.c:2634
+#: ../src/nautilus-tree-sidebar.c:1281
+#: ../src/nautilus-view.c:7086
+#: ../src/nautilus-view.c:7110
+#: ../src/nautilus-view.c:7182
 msgid "_Eject"
 msgstr "_Elĵeti"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:2633 ../src/nautilus-view.c:7152
-#: ../src/nautilus-view.c:7176 ../src/nautilus-view.c:7253
+#: ../src/nautilus-places-sidebar.c:2641
+#: ../src/nautilus-view.c:7098
+#: ../src/nautilus-view.c:7122
+#: ../src/nautilus-view.c:7194
 msgid "_Detect Media"
 msgstr ""
 
@@ -4115,95 +3846,95 @@ msgstr "Kreado de fenestro-ecoj."
 msgid "Select Custom Icon"
 msgstr "Elekti propran piktogramon"
 
-#: ../src/nautilus-query-editor.c:123
+#: ../src/nautilus-query-editor.c:120
 msgid "File Type"
 msgstr "Dosiertipo"
 
-#: ../src/nautilus-query-editor.c:264
+#: ../src/nautilus-query-editor.c:278
 msgid "Select folder to search in"
 msgstr "Elekti dosierujon por serĉado"
 
-#: ../src/nautilus-query-editor.c:354
+#: ../src/nautilus-query-editor.c:368
 msgid "Documents"
 msgstr "Dokumentoj"
 
-#: ../src/nautilus-query-editor.c:372
+#: ../src/nautilus-query-editor.c:386
 msgid "Music"
 msgstr "Muziko"
 
-#: ../src/nautilus-query-editor.c:387
+#: ../src/nautilus-query-editor.c:401
 msgid "Video"
 msgstr "Video"
 
-#: ../src/nautilus-query-editor.c:403
+#: ../src/nautilus-query-editor.c:417
 msgid "Picture"
 msgstr "Bildo"
 
-#: ../src/nautilus-query-editor.c:423
+#: ../src/nautilus-query-editor.c:437
 msgid "Illustration"
 msgstr "Ilustraĵo"
 
-#: ../src/nautilus-query-editor.c:437
+#: ../src/nautilus-query-editor.c:451
 msgid "Spreadsheet"
 msgstr "Sterntabelo"
 
-#: ../src/nautilus-query-editor.c:453
+#: ../src/nautilus-query-editor.c:467
 msgid "Presentation"
 msgstr "Prezentaĵo"
 
-#: ../src/nautilus-query-editor.c:462
+#: ../src/nautilus-query-editor.c:476
 msgid "Pdf / Postscript"
 msgstr "Pdf / Postskripto"
 
-#: ../src/nautilus-query-editor.c:470
+#: ../src/nautilus-query-editor.c:484
 msgid "Text File"
 msgstr "Teksta dosiero"
 
-#: ../src/nautilus-query-editor.c:549
+#: ../src/nautilus-query-editor.c:563
 msgid "Select type"
 msgstr "Elekti tipon"
 
-#: ../src/nautilus-query-editor.c:633
+#: ../src/nautilus-query-editor.c:647
 msgid "Any"
 msgstr "Iu ajn"
 
-#: ../src/nautilus-query-editor.c:648
+#: ../src/nautilus-query-editor.c:662
 msgid "Other Type..."
 msgstr "Alia speco..."
 
-#: ../src/nautilus-query-editor.c:929
+#: ../src/nautilus-query-editor.c:943
 msgid "Remove this criterion from the search"
 msgstr "Forigi ĉi tiun kriterion de la serĉo"
 
-#: ../src/nautilus-query-editor.c:974
+#: ../src/nautilus-query-editor.c:991
 msgid "Search Folder"
 msgstr "Serĉenda dosierujo"
 
-#: ../src/nautilus-query-editor.c:988
+#: ../src/nautilus-query-editor.c:1009
 msgid "Edit the saved search"
 msgstr "Redakti la konservitan serĉon"
 
-#: ../src/nautilus-query-editor.c:1019
+#: ../src/nautilus-query-editor.c:1040
 msgid "Add a new criterion to this search"
 msgstr "Aldoni novan kriterion al la serĉo"
 
-#: ../src/nautilus-query-editor.c:1023
+#: ../src/nautilus-query-editor.c:1044
 msgid "Go"
 msgstr "Ek"
 
-#: ../src/nautilus-query-editor.c:1025
+#: ../src/nautilus-query-editor.c:1046
 msgid "Reload"
 msgstr "Reŝargi"
 
-#: ../src/nautilus-query-editor.c:1030
+#: ../src/nautilus-query-editor.c:1051
 msgid "Perform or update the search"
 msgstr "Plenumi aŭ ĝisdatigi la serĉon"
 
-#: ../src/nautilus-query-editor.c:1051
+#: ../src/nautilus-query-editor.c:1072
 msgid "_Search for:"
 msgstr "_Serĉi:"
 
-#: ../src/nautilus-query-editor.c:1080
+#: ../src/nautilus-query-editor.c:1106
 msgid "Search results"
 msgstr "Serĉrezultoj"
 
@@ -4219,24 +3950,28 @@ msgstr "Restaŭri elektitan elementon"
 msgid "Restore selected items to their original position"
 msgstr "Restaŭri ĉiun elektitan piktogramon al ties originala grando"
 
-#: ../src/nautilus-tree-sidebar.c:914 ../src/nautilus-view.c:5779
+#: ../src/nautilus-tree-sidebar.c:914
+#: ../src/nautilus-view.c:5746
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "\"%s\" estos movita se vi elektas la komandon Alglui"
 
-#: ../src/nautilus-tree-sidebar.c:918 ../src/nautilus-view.c:5783
+#: ../src/nautilus-tree-sidebar.c:918
+#: ../src/nautilus-view.c:5750
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "\"%s\" estos kopiita se vi elektas la komandon Alglui"
 
-#: ../src/nautilus-tree-sidebar.c:957 ../src/nautilus-view.c:5976
+#: ../src/nautilus-tree-sidebar.c:957
+#: ../src/nautilus-view.c:5943
 msgid "There is nothing on the clipboard to paste."
 msgstr "Estas nenio en tondejo por alglui."
 
 #. add the "create new folder" menu item
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-tree-sidebar.c:1197 ../src/nautilus-view.c:7008
+#: ../src/nautilus-tree-sidebar.c:1197
+#: ../src/nautilus-view.c:6958
 msgid "Create New _Folder"
 msgstr "Krei novan _dosierujon"
 
@@ -4244,15 +3979,18 @@ msgstr "Krei novan _dosierujon"
 #. accelerator for paste
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-tree-sidebar.c:1229 ../src/nautilus-view.c:7072
-#: ../src/nautilus-view.c:7216
+#: ../src/nautilus-tree-sidebar.c:1229
+#: ../src/nautilus-view.c:7018
+#: ../src/nautilus-view.c:7157
 msgid "_Paste Into Folder"
 msgstr "_Alglui dosierujen"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-tree-sidebar.c:1259 ../src/nautilus-view.c:7110
-#: ../src/nautilus-view.c:7225 ../src/nautilus-view.c:8585
+#: ../src/nautilus-tree-sidebar.c:1259
+#: ../src/nautilus-view.c:7056
+#: ../src/nautilus-view.c:7166
+#: ../src/nautilus-view.c:8488
 msgid "_Delete"
 msgstr "_Forigi"
 
@@ -4260,57 +3998,58 @@ msgstr "_Forigi"
 msgid "Network Neighbourhood"
 msgstr "Reta ĉirkaŭaĵo"
 
-#: ../src/nautilus-view.c:1040
+#: ../src/nautilus-view.c:1038
 #, c-format
 msgid "This will open %'d separate tab."
 msgid_plural "This will open %'d separate tabs."
 msgstr[0] "Ĉi tio malfermos %'d en aparta langeto."
 msgstr[1] "Ĉi tio malfermos %'d en apartaj langetoj."
 
-#: ../src/nautilus-view.c:1043
+#: ../src/nautilus-view.c:1041
 #, c-format
 msgid "This will open %'d separate window."
 msgid_plural "This will open %'d separate windows."
 msgstr[0] "Ĉi tio malfermos %'d en aparta fenestro."
 msgstr[1] "Ĉi tio malfermos %'d en apartaj fenestroj."
 
-#: ../src/nautilus-view.c:1560
+#: ../src/nautilus-view.c:1538
 msgid "Select Items Matching"
 msgstr ""
 
-#: ../src/nautilus-view.c:1575
+#: ../src/nautilus-view.c:1553
 msgid "_Pattern:"
 msgstr "Ŝ_ablono:"
 
-#: ../src/nautilus-view.c:1578
+#: ../src/nautilus-view.c:1556
 msgid "Examples: "
 msgstr "Ekzemploj:"
 
-#: ../src/nautilus-view.c:1696
+#: ../src/nautilus-view.c:1674
 msgid "Save Search as"
 msgstr "Konservi serĉon kiel"
 
-#: ../src/nautilus-view.c:1716
+#: ../src/nautilus-view.c:1694
 msgid "Search _name:"
 msgstr "Serĉ_nomo:"
 
-#: ../src/nautilus-view.c:1735
+#: ../src/nautilus-view.c:1713
 msgid "Select Folder to Save Search In"
 msgstr "Elekti dosierujon por serĉo"
 
-#: ../src/nautilus-view.c:2805 ../src/nautilus-view.c:2842
+#: ../src/nautilus-view.c:2783
+#: ../src/nautilus-view.c:2820
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" elektite"
 
-#: ../src/nautilus-view.c:2807
+#: ../src/nautilus-view.c:2785
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "%'d dosierujo elektita"
 msgstr[1] "%'d dosierujoj elektitaj"
 
-#: ../src/nautilus-view.c:2817
+#: ../src/nautilus-view.c:2795
 #, c-format
 msgid " (containing %'d item)"
 msgid_plural " (containing %'d items)"
@@ -4318,14 +4057,14 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: ../src/nautilus-view.c:2828
+#: ../src/nautilus-view.c:2806
 #, c-format
 msgid " (containing a total of %'d item)"
 msgid_plural " (containing a total of %'d items)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/nautilus-view.c:2845
+#: ../src/nautilus-view.c:2823
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -4333,7 +4072,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. Folders selected also, use "other" terminology
-#: ../src/nautilus-view.c:2852
+#: ../src/nautilus-view.c:2830
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -4345,17 +4084,17 @@ msgstr[1] ""
 #. * first message gives the number of items selected;
 #. * the message in parentheses the size of those items.
 #.
-#: ../src/nautilus-view.c:2867
+#: ../src/nautilus-view.c:2845
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../src/nautilus-view.c:2880
+#: ../src/nautilus-view.c:2858
 #, c-format
 msgid "Free space: %s"
 msgstr "Libera spaco: %s"
 
-#: ../src/nautilus-view.c:2891
+#: ../src/nautilus-view.c:2869
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s, Libera spaco: %s"
@@ -4365,7 +4104,7 @@ msgstr "%s, Libera spaco: %s"
 #. * After the comma the amount of free space will
 #. * be shown.
 #.
-#: ../src/nautilus-view.c:2906
+#: ../src/nautilus-view.c:2884
 #, c-format
 msgid "%s, %s"
 msgstr "%s, %s"
@@ -4382,7 +4121,8 @@ msgstr "%s, %s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: ../src/nautilus-view.c:2925 ../src/nautilus-view.c:2938
+#: ../src/nautilus-view.c:2903
+#: ../src/nautilus-view.c:2916
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -4395,59 +4135,50 @@ msgstr "%s%s, %s"
 #. * total size of those items. After the second comma
 #. * the free space is written.
 #.
-#: ../src/nautilus-view.c:2952
+#: ../src/nautilus-view.c:2930
 #, c-format
 msgid "%s%s, %s, %s"
 msgstr "%s%s, %s, %s"
 
-#: ../src/nautilus-view.c:4365
+#: ../src/nautilus-view.c:4332
 #, c-format
 msgid "Open With %s"
 msgstr "Malfermi per %s"
 
-#: ../src/nautilus-view.c:4367
+#: ../src/nautilus-view.c:4334
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgid_plural "Use \"%s\" to open the selected items"
 msgstr[0] "Uzi \"%s\" por malfermi la elektitan elementon"
 msgstr[1] "Uzi \"%s\" por malfermi la elektitajn elementojn"
 
-#: ../src/nautilus-view.c:5202
+#: ../src/nautilus-view.c:5169
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Ruli \"%s\" por ĉiu elektita elemento"
 
-#: ../src/nautilus-view.c:5453
+#: ../src/nautilus-view.c:5420
 #, c-format
 msgid "Create a new document from template \"%s\""
 msgstr "Krei novan dokumenton el ŝablono \"%s\""
 
-#: ../src/nautilus-view.c:5707
+#: ../src/nautilus-view.c:5674
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "Ĉiuj ruleblaj dosieroj en ĉi dosierujo aperos en la menuo Skriptoj."
 
-#: ../src/nautilus-view.c:5709
-msgid ""
-"Choosing a script from the menu will run that script with any selected items "
-"as input."
-msgstr ""
-"Elekto de skripto de la menuo rulos tiun skripton kun ĉiu elektita elemento "
-"kiel argumento."
+#: ../src/nautilus-view.c:5676
+msgid "Choosing a script from the menu will run that script with any selected items as input."
+msgstr "Elekto de skripto de la menuo rulos tiun skripton kun ĉiu elektita elemento kiel argumento."
 
-#: ../src/nautilus-view.c:5711
+#: ../src/nautilus-view.c:5678
 msgid ""
-"All executable files in this folder will appear in the Scripts menu. "
-"Choosing a script from the menu will run that script.\n"
+"All executable files in this folder will appear in the Scripts menu. Choosing a script from the menu will run that script.\n"
 "\n"
-"When executed from a local folder, scripts will be passed the selected file "
-"names. When executed from a remote folder (e.g. a folder showing web or ftp "
-"content), scripts will be passed no parameters.\n"
+"When executed from a local folder, scripts will be passed the selected file names. When executed from a remote folder (e.g. a folder showing web or ftp content), scripts will be passed no parameters.\n"
 "\n"
-"In all cases, the following environment variables will be set by Nautilus, "
-"which the scripts may use:\n"
+"In all cases, the following environment variables will be set by Nautilus, which the scripts may use:\n"
 "\n"
-"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: newline-delimited paths for selected "
-"files (only if local)\n"
+"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: newline-delimited paths for selected files (only if local)\n"
 "\n"
 "NAUTILUS_SCRIPT_SELECTED_URIS: newline-delimited URIs for selected files\n"
 "\n"
@@ -4455,135 +4186,125 @@ msgid ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window\n"
 "\n"
-"NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_FILE_PATHS: newline-delimited paths for "
-"selected files in the inactive pane of a split-view window (only if local)\n"
+"NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_FILE_PATHS: newline-delimited paths for selected files in the inactive pane of a split-view window (only if local)\n"
 "\n"
-"NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_URIS: newline-delimited URIs for selected "
-"files in the inactive pane of a split-view window\n"
+"NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_URIS: newline-delimited URIs for selected files in the inactive pane of a split-view window\n"
 "\n"
-"NAUTILUS_SCRIPT_NEXT_PANE_CURRENT_URI: URI for current location in the "
-"inactive pane of a split-view window"
+"NAUTILUS_SCRIPT_NEXT_PANE_CURRENT_URI: URI for current location in the inactive pane of a split-view window"
 msgstr ""
-"Ĉiuj ruleblaj dosieroj en tiu ĉi dosierujo aperos en la menuo \"skriptoj\". "
-"Elektado de skripto en la menuo rulas la skripton.\n"
+"Ĉiuj ruleblaj dosieroj en tiu ĉi dosierujo aperos en la menuo \"skriptoj\". Elektado de skripto en la menuo rulas la skripton.\n"
 "\n"
-"Skriptoj rulataj en loka dosierujo ricevas la nomojn de la markitaj "
-"dosieroj. Skriptoj rulataj en fora dosierujo (http, ftp) ne ricevas "
-"parametrojn.\n"
+"Skriptoj rulataj en loka dosierujo ricevas la nomojn de la markitaj dosieroj. Skriptoj rulataj en fora dosierujo (http, ftp) ne ricevas parametrojn.\n"
 "\n"
 "En ĉiuj okazoj jenaj mediaj variabloj estas je dispono de la skriptoj:\n"
 "\n"
-"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: nomoj de elektitaj dosieroj (se lokaj), "
-"disigitaj per lini-ŝanĝo\n"
+"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: nomoj de elektitaj dosieroj (se lokaj), disigitaj per lini-ŝanĝo\n"
 "\n"
-"NAUTILUS_SCRIPT_SELECTED_URIS: URI-adresoj de elektitaj dosieroj, disigitaj "
-"per lini-ŝanĝo\n"
+"NAUTILUS_SCRIPT_SELECTED_URIS: URI-adresoj de elektitaj dosieroj, disigitaj per lini-ŝanĝo\n"
 "\n"
 "NAUTILUS_SCRIPT_CURRENT_URI: URI=adreso de aktuala loko\n"
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: pozicio kaj grandeco de la uzata fenestro\n"
 "\n"
-"NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_FILE_PATHS: padoj de elektitaj dosieroj "
-"en la neaktiva parto de duparta fenestro (nur se lokaj), disigitaj per lini-"
-"ŝanĝo\n"
+"NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_FILE_PATHS: padoj de elektitaj dosieroj en la neaktiva parto de duparta fenestro (nur se lokaj), disigitaj per lini-ŝanĝo\n"
 "\n"
-"NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_URIS: URI-adresoj de elektitaj dosieroj "
-"en la neaktiva parto de duparta fenestro, disigitaj per lini-ŝanĝo\n"
+"NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_URIS: URI-adresoj de elektitaj dosieroj en la neaktiva parto de duparta fenestro, disigitaj per lini-ŝanĝo\n"
 "\n"
-"NAUTILUS_SCRIPT_NEXT_PANE_CURRENT_URI: URI-adreso de la aktuala loko en la "
-"neaktiva parto de duparta fenestro"
+"NAUTILUS_SCRIPT_NEXT_PANE_CURRENT_URI: URI-adreso de la aktuala loko en la neaktiva parto de duparta fenestro"
 
-#: ../src/nautilus-view.c:5790
+#: ../src/nautilus-view.c:5757
 #, c-format
 msgid "The %'d selected item will be moved if you select the Paste command"
-msgid_plural ""
-"The %'d selected items will be moved if you select the Paste command"
+msgid_plural "The %'d selected items will be moved if you select the Paste command"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/nautilus-view.c:5797
+#: ../src/nautilus-view.c:5764
 #, c-format
 msgid "The %'d selected item will be copied if you select the Paste command"
-msgid_plural ""
-"The %'d selected items will be copied if you select the Paste command"
+msgid_plural "The %'d selected items will be copied if you select the Paste command"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/nautilus-view.c:6213
+#: ../src/nautilus-view.c:6180
 msgid "Unable to unmount location"
 msgstr ""
 
-#: ../src/nautilus-view.c:6234
+#: ../src/nautilus-view.c:6201
 msgid "Unable to eject location"
 msgstr ""
 
-#: ../src/nautilus-view.c:6249
+#: ../src/nautilus-view.c:6216
 msgid "Unable to stop drive"
 msgstr ""
 
-#: ../src/nautilus-view.c:6741
+#: ../src/nautilus-view.c:6708
 #, c-format
 msgid "Connect to Server %s"
 msgstr "Konekti al servilo %s"
 
-#: ../src/nautilus-view.c:6746 ../src/nautilus-view.c:7888
-#: ../src/nautilus-view.c:7975 ../src/nautilus-view.c:8079
+#: ../src/nautilus-view.c:6713
+#: ../src/nautilus-view.c:7829
+#: ../src/nautilus-view.c:7916
+#: ../src/nautilus-view.c:8020
 msgid "_Connect"
 msgstr "_Konekti"
 
-#: ../src/nautilus-view.c:6760
+#: ../src/nautilus-view.c:6727
 msgid "Link _name:"
 msgstr "_Nomo de ligilo:"
 
 #. name, stock id, label
-#: ../src/nautilus-view.c:6996
+#: ../src/nautilus-view.c:6946
 msgid "Create New _Document"
 msgstr "Krei novan _dokumenton"
 
 #. name, stock id, label
-#: ../src/nautilus-view.c:6997
+#: ../src/nautilus-view.c:6947
 msgid "Open Wit_h"
 msgstr "Malfermi _per"
 
-#: ../src/nautilus-view.c:6998
+#: ../src/nautilus-view.c:6948
 msgid "Choose a program with which to open the selected item"
 msgstr "Elekti programon por malfermi la elektitan elementon"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7000 ../src/nautilus-view.c:7258
+#: ../src/nautilus-view.c:6950
+#: ../src/nautilus-view.c:7199
 msgid "_Properties"
 msgstr "_Ecoj"
 
 #. tooltip
-#: ../src/nautilus-view.c:7001 ../src/nautilus-view.c:8619
+#: ../src/nautilus-view.c:6951
+#: ../src/nautilus-view.c:8522
 msgid "View or modify the properties of each selected item"
 msgstr "Vidi aŭ modifi la ecojn de ĉiu elektita elemento"
 
 #. tooltip
-#: ../src/nautilus-view.c:7009
+#: ../src/nautilus-view.c:6959
 msgid "Create a new empty folder inside this folder"
 msgstr "Krei novan malplenan dosierujon en tiu ĉi dosierujo"
 
 #. name, stock id, label
-#: ../src/nautilus-view.c:7011
+#: ../src/nautilus-view.c:6961
 msgid "No templates installed"
 msgstr "Neniu ŝablono instalita"
 
 #. name, stock id
 #. translators: this is used to indicate that a document doesn't contain anything
 #. label, accelerator
-#: ../src/nautilus-view.c:7014
+#: ../src/nautilus-view.c:6964
 msgid "_Empty Document"
 msgstr "_Malplena dokumento"
 
 #. tooltip
-#: ../src/nautilus-view.c:7015
+#: ../src/nautilus-view.c:6965
 msgid "Create a new empty document inside this folder"
 msgstr "Krei novan malplenan dokumenton en tiu ĉi dosierujo"
 
 #. tooltip
-#: ../src/nautilus-view.c:7023
+#: ../src/nautilus-view.c:6973
 msgid "Open the selected item in this window"
 msgstr "Malfermi elektitan elementon ĉi-fenestre"
 
@@ -4592,176 +4313,164 @@ msgstr "Malfermi elektitan elementon ĉi-fenestre"
 #. Location-specific actions
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7030 ../src/nautilus-view.c:7194
+#: ../src/nautilus-view.c:6980
+#: ../src/nautilus-view.c:7140
 msgid "Open in Navigation Window"
 msgstr "Malfermi en navigada fenestro"
 
 #. tooltip
-#: ../src/nautilus-view.c:7031
+#: ../src/nautilus-view.c:6981
 msgid "Open each selected item in a navigation window"
 msgstr "Malfermi ĉiun elektaĵon en iu navigada fenestro"
 
 #. tooltip
-#: ../src/nautilus-view.c:7035
+#: ../src/nautilus-view.c:6985
 msgid "Open each selected item in a new tab"
 msgstr ""
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7038 ../src/nautilus-view.c:7203
-msgid "Open in _Folder Window"
-msgstr ""
-
-#. tooltip
-#: ../src/nautilus-view.c:7039
-msgid "Open each selected item in a folder window"
-msgstr ""
-
-#. name, stock id
-#. label, accelerator
-#: ../src/nautilus-view.c:7042
+#: ../src/nautilus-view.c:6988
 msgid "Other _Application..."
 msgstr ""
 
 #. tooltip
-#: ../src/nautilus-view.c:7043 ../src/nautilus-view.c:7047
+#: ../src/nautilus-view.c:6989
+#: ../src/nautilus-view.c:6993
 msgid "Choose another application with which to open the selected item"
 msgstr "Elekti alian aplikaĵon por malfermi elektitan elementon"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7046
+#: ../src/nautilus-view.c:6992
 msgid "Open With Other _Application..."
 msgstr "Malfermi per alia _aplikaĵo..."
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7050
+#: ../src/nautilus-view.c:6996
 msgid "_Open Scripts Folder"
 msgstr "Malfermi skriptan d_osierujon"
 
 #. tooltip
-#: ../src/nautilus-view.c:7051
+#: ../src/nautilus-view.c:6997
 msgid "Show the folder containing the scripts that appear in this menu"
-msgstr ""
-"Montri la dosierujon kiu enhavas la skriptojn aperantajn en tiu ĉi menuo"
+msgstr "Montri la dosierujon kiu enhavas la skriptojn aperantajn en tiu ĉi menuo"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/nautilus-view.c:7059
+#: ../src/nautilus-view.c:7005
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "Prepari la elektitajn dosierojn por esti movitaj per komando Alglui"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/nautilus-view.c:7063
+#: ../src/nautilus-view.c:7009
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "Prepari la elektitajn dosierojn por esti kopiitaj per komando Alglui"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/nautilus-view.c:7067
+#: ../src/nautilus-view.c:7013
 msgid "Move or copy files previously selected by a Cut or Copy command"
-msgstr ""
-"Movi aŭ kopii antaŭe elektitajn dosierojn per komandoj Eltondi aŭ Kopii"
+msgstr "Movi aŭ kopii antaŭe elektitajn dosierojn per komandoj Eltondi aŭ Kopii"
 
 #. tooltip
-#: ../src/nautilus-view.c:7073
-msgid ""
-"Move or copy files previously selected by a Cut or Copy command into the "
-"selected folder"
-msgstr ""
-"Movi aŭ kopii antaŭe elektitajn dosierojn per komandoj Eltondi aŭ Kopii en "
-"la elektitan dosierujon"
+#: ../src/nautilus-view.c:7019
+msgid "Move or copy files previously selected by a Cut or Copy command into the selected folder"
+msgstr "Movi aŭ kopii antaŭe elektitajn dosierojn per komandoj Eltondi aŭ Kopii en la elektitan dosierujon"
 
 #. name, stock id, label
-#: ../src/nautilus-view.c:7075
+#: ../src/nautilus-view.c:7021
 msgid "Cop_y to"
 msgstr "Kop_ii al"
 
 #. name, stock id, label
-#: ../src/nautilus-view.c:7076
+#: ../src/nautilus-view.c:7022
 msgid "M_ove to"
 msgstr "M_ovi al"
 
 #. tooltip
-#: ../src/nautilus-view.c:7079
+#: ../src/nautilus-view.c:7025
 msgid "Select all items in this window"
 msgstr "Elekti ĉiujn elementojn en tiu ĉi fenestro"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7082
+#: ../src/nautilus-view.c:7028
 msgid "Select I_tems Matching..."
 msgstr ""
 
 #. tooltip
-#: ../src/nautilus-view.c:7083
+#: ../src/nautilus-view.c:7029
 msgid "Select items in this window matching a given pattern"
 msgstr "Elekti elementojn en tiu ĉi fenestro kongruaj kun indikita ŝablono"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7086
+#: ../src/nautilus-view.c:7032
 msgid "_Invert Selection"
 msgstr "_Inversigi la elekton"
 
 #. tooltip
-#: ../src/nautilus-view.c:7087
+#: ../src/nautilus-view.c:7033
 msgid "Select all and only the items that are not currently selected"
 msgstr ""
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7090
+#: ../src/nautilus-view.c:7036
 msgid "D_uplicate"
 msgstr "D_uobligi"
 
 #. tooltip
-#: ../src/nautilus-view.c:7091
+#: ../src/nautilus-view.c:7037
 msgid "Duplicate each selected item"
 msgstr "Duobligi ĉiun elektitan elementon"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7094 ../src/nautilus-view.c:8604
+#: ../src/nautilus-view.c:7040
+#: ../src/nautilus-view.c:8507
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "Krei ligilon"
 msgstr[1] "Krei ligilojn"
 
 #. tooltip
-#: ../src/nautilus-view.c:7095
+#: ../src/nautilus-view.c:7041
 msgid "Create a symbolic link for each selected item"
 msgstr "Krei simbolan ligilon por ĉiu elektita elemento"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7098
+#: ../src/nautilus-view.c:7044
 msgid "_Rename..."
 msgstr "_Alinomi…"
 
 #. tooltip
-#: ../src/nautilus-view.c:7099
+#: ../src/nautilus-view.c:7045
 msgid "Rename selected item"
 msgstr "Alinomi elektitan elementon"
 
 #. tooltip
-#: ../src/nautilus-view.c:7107 ../src/nautilus-view.c:8565
+#: ../src/nautilus-view.c:7053
+#: ../src/nautilus-view.c:8468
 msgid "Move each selected item to the Trash"
 msgstr "Movi ĉiun elektitan elementon rubujen"
 
 #. tooltip
-#: ../src/nautilus-view.c:7111
+#: ../src/nautilus-view.c:7057
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "Forigi ĉiun elektitan elementon, sen movo al rubujo"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7114 ../src/nautilus-view.c:7229
+#: ../src/nautilus-view.c:7060
+#: ../src/nautilus-view.c:7170
 msgid "_Restore"
 msgstr "_Restaŭri"
 
@@ -4773,437 +4482,427 @@ msgstr "_Restaŭri"
 #.
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7124
+#: ../src/nautilus-view.c:7070
 msgid "Reset View to _Defaults"
 msgstr "Reagordi vidon _defaŭlte"
 
 #. tooltip
-#: ../src/nautilus-view.c:7125
+#: ../src/nautilus-view.c:7071
 msgid "Reset sorting order and zoom level to match preferences for this view"
-msgstr ""
-"Reŝargi ordigon kaj zoman nivelon por kongrui kun preferoj por ĉi tiu vido"
+msgstr "Reŝargi ordigon kaj zoman nivelon por kongrui kun preferoj por ĉi tiu vido"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7128
+#: ../src/nautilus-view.c:7074
 msgid "Connect To This Server"
 msgstr "Konekti al tiu ĉi servilo"
 
 #. tooltip
-#: ../src/nautilus-view.c:7129
+#: ../src/nautilus-view.c:7075
 msgid "Make a permanent connection to this server"
 msgstr "Fari daŭran konekton al ĉi tiu servilo"
 
 #. tooltip
-#: ../src/nautilus-view.c:7133
+#: ../src/nautilus-view.c:7079
 msgid "Mount the selected volume"
 msgstr "Surmeti la elektitan datumportilon"
 
 #. tooltip
-#: ../src/nautilus-view.c:7137
+#: ../src/nautilus-view.c:7083
 msgid "Unmount the selected volume"
 msgstr "Demeti la elektitan datumportilon"
 
 #. tooltip
-#: ../src/nautilus-view.c:7141
+#: ../src/nautilus-view.c:7087
 msgid "Eject the selected volume"
 msgstr "Elĵeti la elektitan datumportilon"
 
 #. tooltip
-#: ../src/nautilus-view.c:7145
+#: ../src/nautilus-view.c:7091
 msgid "Start the selected volume"
 msgstr ""
 
 #. tooltip
-#: ../src/nautilus-view.c:7149 ../src/nautilus-view.c:8101
+#: ../src/nautilus-view.c:7095
+#: ../src/nautilus-view.c:8042
 msgid "Stop the selected volume"
 msgstr ""
 
 #. tooltip
-#: ../src/nautilus-view.c:7153 ../src/nautilus-view.c:7177
-#: ../src/nautilus-view.c:7254
+#: ../src/nautilus-view.c:7099
+#: ../src/nautilus-view.c:7123
+#: ../src/nautilus-view.c:7195
 msgid "Detect media in the selected drive"
 msgstr ""
 
 #. tooltip
-#: ../src/nautilus-view.c:7157
+#: ../src/nautilus-view.c:7103
 msgid "Mount the volume associated with the open folder"
 msgstr "Instali la datumportilon ligitan kun malfermita dosierujo"
 
 #. tooltip
-#: ../src/nautilus-view.c:7161
+#: ../src/nautilus-view.c:7107
 msgid "Unmount the volume associated with the open folder"
 msgstr "Malinstali la datumportilon ligitan kun malfermita dosierujo"
 
 #. tooltip
-#: ../src/nautilus-view.c:7165
+#: ../src/nautilus-view.c:7111
 msgid "Eject the volume associated with the open folder"
 msgstr "Elŝovi la datumportilon ligitan kun la malfermita dosierujo"
 
 #. tooltip
-#: ../src/nautilus-view.c:7169
+#: ../src/nautilus-view.c:7115
 msgid "Start the volume associated with the open folder"
 msgstr "Start the volume associated with the open folder"
 
 #. tooltip
-#: ../src/nautilus-view.c:7173
+#: ../src/nautilus-view.c:7119
 msgid "Stop the volume associated with the open folder"
 msgstr "Stop the volume associated with the open folder"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7180
+#: ../src/nautilus-view.c:7126
 msgid "Open File and Close window"
 msgstr "Malfermi dosieron kaj fermi fenestron"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7184
+#: ../src/nautilus-view.c:7130
 msgid "Sa_ve Search"
 msgstr "Konser_vi serĉon"
 
 #. tooltip
-#: ../src/nautilus-view.c:7185
+#: ../src/nautilus-view.c:7131
 msgid "Save the edited search"
 msgstr "Konservi la redaktitan serĉon"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7188
+#: ../src/nautilus-view.c:7134
 msgid "Sa_ve Search As..."
 msgstr "Konser_vi serĉon kiel..."
 
 #. tooltip
-#: ../src/nautilus-view.c:7189
+#: ../src/nautilus-view.c:7135
 msgid "Save the current search as a file"
 msgstr "Konservi la aktualan serĉon kiel dosieron"
 
 #. tooltip
-#: ../src/nautilus-view.c:7195
+#: ../src/nautilus-view.c:7141
 msgid "Open this folder in a navigation window"
 msgstr "Malfermi ĉi dosieron en navigada fenestro"
 
 #. tooltip
-#: ../src/nautilus-view.c:7199
+#: ../src/nautilus-view.c:7145
 msgid "Open this folder in a new tab"
-msgstr ""
-
-#. tooltip
-#: ../src/nautilus-view.c:7204
-msgid "Open this folder in a folder window"
 msgstr ""
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/nautilus-view.c:7209
+#: ../src/nautilus-view.c:7150
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "Prepari ĉi dosieron por esti movita per komando Inseru"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/nautilus-view.c:7213
+#: ../src/nautilus-view.c:7154
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "Prepari ĉi dosieron por esti kopiita per komando Insertu"
 
 #. tooltip
-#: ../src/nautilus-view.c:7217
-msgid ""
-"Move or copy files previously selected by a Cut or Copy command into this "
-"folder"
+#: ../src/nautilus-view.c:7158
+msgid "Move or copy files previously selected by a Cut or Copy command into this folder"
 msgstr ""
 
 #. tooltip
-#: ../src/nautilus-view.c:7222
+#: ../src/nautilus-view.c:7163
 msgid "Move this folder to the Trash"
 msgstr "Movi ĉi dosierujon rubujen"
 
 #. tooltip
-#: ../src/nautilus-view.c:7226
+#: ../src/nautilus-view.c:7167
 msgid "Delete this folder, without moving to the Trash"
 msgstr "Forigi ĉi dosierujon, sen movo al rubujo"
 
 #. tooltip
-#: ../src/nautilus-view.c:7234
+#: ../src/nautilus-view.c:7175
 msgid "Mount the volume associated with this folder"
 msgstr ""
 
 #. tooltip
-#: ../src/nautilus-view.c:7238
+#: ../src/nautilus-view.c:7179
 msgid "Unmount the volume associated with this folder"
 msgstr ""
 
 #. tooltip
-#: ../src/nautilus-view.c:7242
+#: ../src/nautilus-view.c:7183
 msgid "Eject the volume associated with this folder"
 msgstr ""
 
 #. tooltip
-#: ../src/nautilus-view.c:7246
+#: ../src/nautilus-view.c:7187
 msgid "Start the volume associated with this folder"
 msgstr ""
 
 #. tooltip
-#: ../src/nautilus-view.c:7250
+#: ../src/nautilus-view.c:7191
 msgid "Stop the volume associated with this folder"
 msgstr ""
 
 #. tooltip
-#: ../src/nautilus-view.c:7259
+#: ../src/nautilus-view.c:7200
 msgid "View or modify the properties of this folder"
 msgstr ""
 
 #. name, stock id, label
-#: ../src/nautilus-view.c:7262 ../src/nautilus-view.c:7265
+#: ../src/nautilus-view.c:7203
+#: ../src/nautilus-view.c:7206
 msgid "_Other pane"
 msgstr "Alia part_o"
 
-#: ../src/nautilus-view.c:7263
+#: ../src/nautilus-view.c:7204
 msgid "Copy the current selection to the other pane in the window"
 msgstr "Kopii la elektaĵon al la alia parto de la fenestro"
 
-#: ../src/nautilus-view.c:7266
+#: ../src/nautilus-view.c:7207
 msgid "Move the current selection to the other pane in the window"
 msgstr "Movi la elektaĵon al la alia parto de la fenestro"
 
 #. name, stock id, label
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7269 ../src/nautilus-view.c:7273
-#: ../src/nautilus-window-menus.c:1004 ../src/nautilus-window-menus.c:1263
+#: ../src/nautilus-view.c:7210
+#: ../src/nautilus-view.c:7214
+#: ../src/nautilus-window-menus.c:1004
+#: ../src/nautilus-window-menus.c:1263
 msgid "_Home"
 msgstr "_Hejmo"
 
-#: ../src/nautilus-view.c:7270
+#: ../src/nautilus-view.c:7211
 msgid "Copy the current selection to the home folder"
 msgstr "Kopii la elektaĵon al la hejma dosierujo"
 
-#: ../src/nautilus-view.c:7274
+#: ../src/nautilus-view.c:7215
 msgid "Move the current selection to the home folder"
 msgstr "Movi la elektaĵon al la hejma dosierujo"
 
 #. name, stock id, label
-#: ../src/nautilus-view.c:7277 ../src/nautilus-view.c:7281
+#: ../src/nautilus-view.c:7218
+#: ../src/nautilus-view.c:7222
 msgid "_Desktop"
 msgstr "_Labortablo"
 
-#: ../src/nautilus-view.c:7278
+#: ../src/nautilus-view.c:7219
 msgid "Copy the current selection to the desktop"
 msgstr "Kopii la elektaĵon al la labortablo"
 
-#: ../src/nautilus-view.c:7282
+#: ../src/nautilus-view.c:7223
 msgid "Move the current selection to the desktop"
 msgstr "Movi la elektaĵon al la labortablo"
 
 #. Translators: %s is a directory
-#: ../src/nautilus-view.c:7362
+#: ../src/nautilus-view.c:7303
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "Ruli aŭ administri skriptojn de %s"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/nautilus-view.c:7364
+#: ../src/nautilus-view.c:7305
 msgid "_Scripts"
 msgstr "_Skriptoj"
 
-#: ../src/nautilus-view.c:7738
+#: ../src/nautilus-view.c:7679
 #, c-format
 msgid "Move the open folder out of the trash to \"%s\""
 msgstr ""
 
-#: ../src/nautilus-view.c:7741
+#: ../src/nautilus-view.c:7682
 #, c-format
 msgid "Move the selected folder out of the trash to \"%s\""
 msgid_plural "Move the selected folders out of the trash to \"%s\""
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/nautilus-view.c:7745
+#: ../src/nautilus-view.c:7686
 #, c-format
 msgid "Move the selected folder out of the trash"
 msgid_plural "Move the selected folders out of the trash"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/nautilus-view.c:7751
+#: ../src/nautilus-view.c:7692
 #, c-format
 msgid "Move the selected file out of the trash to \"%s\""
 msgid_plural "Move the selected files out of the trash to \"%s\""
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/nautilus-view.c:7755
+#: ../src/nautilus-view.c:7696
 #, c-format
 msgid "Move the selected file out of the trash"
 msgid_plural "Move the selected files out of the trash"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/nautilus-view.c:7761
+#: ../src/nautilus-view.c:7702
 #, c-format
 msgid "Move the selected item out of the trash to \"%s\""
 msgid_plural "Move the selected items out of the trash to \"%s\""
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/nautilus-view.c:7765
+#: ../src/nautilus-view.c:7706
 #, c-format
 msgid "Move the selected item out of the trash"
 msgid_plural "Move the selected items out of the trash"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/nautilus-view.c:7881 ../src/nautilus-view.c:7885
-#: ../src/nautilus-view.c:8072 ../src/nautilus-view.c:8076
+#: ../src/nautilus-view.c:7822
+#: ../src/nautilus-view.c:7826
+#: ../src/nautilus-view.c:8013
+#: ../src/nautilus-view.c:8017
 msgid "Start the selected drive"
 msgstr ""
 
-#: ../src/nautilus-view.c:7889 ../src/nautilus-view.c:8080
+#: ../src/nautilus-view.c:7830
+#: ../src/nautilus-view.c:8021
 msgid "Connect to the selected drive"
 msgstr ""
 
-#: ../src/nautilus-view.c:7892 ../src/nautilus-view.c:7979
-#: ../src/nautilus-view.c:8083
+#: ../src/nautilus-view.c:7833
+#: ../src/nautilus-view.c:7920
+#: ../src/nautilus-view.c:8024
 msgid "_Start Multi-disk Drive"
 msgstr ""
 
-#: ../src/nautilus-view.c:7893 ../src/nautilus-view.c:8084
+#: ../src/nautilus-view.c:7834
+#: ../src/nautilus-view.c:8025
 msgid "Start the selected multi-disk drive"
 msgstr ""
 
-#: ../src/nautilus-view.c:7896
+#: ../src/nautilus-view.c:7837
 msgid "U_nlock Drive"
 msgstr ""
 
-#: ../src/nautilus-view.c:7897 ../src/nautilus-view.c:8088
+#: ../src/nautilus-view.c:7838
+#: ../src/nautilus-view.c:8029
 msgid "Unlock the selected drive"
 msgstr ""
 
-#: ../src/nautilus-view.c:7910
+#: ../src/nautilus-view.c:7851
 msgid "Stop the selected drive"
 msgstr ""
 
-#: ../src/nautilus-view.c:7914 ../src/nautilus-view.c:8105
+#: ../src/nautilus-view.c:7855
+#: ../src/nautilus-view.c:8046
 msgid "Safely remove the selected drive"
 msgstr ""
 
-#: ../src/nautilus-view.c:7917 ../src/nautilus-view.c:8004
-#: ../src/nautilus-view.c:8108
+#: ../src/nautilus-view.c:7858
+#: ../src/nautilus-view.c:7945
+#: ../src/nautilus-view.c:8049
 msgid "_Disconnect"
 msgstr "_Malkonekti"
 
-#: ../src/nautilus-view.c:7918 ../src/nautilus-view.c:8109
+#: ../src/nautilus-view.c:7859
+#: ../src/nautilus-view.c:8050
 msgid "Disconnect the selected drive"
 msgstr ""
 
-#: ../src/nautilus-view.c:7921 ../src/nautilus-view.c:8008
-#: ../src/nautilus-view.c:8112
+#: ../src/nautilus-view.c:7862
+#: ../src/nautilus-view.c:7949
+#: ../src/nautilus-view.c:8053
 msgid "_Stop Multi-disk Drive"
 msgstr ""
 
-#: ../src/nautilus-view.c:7922 ../src/nautilus-view.c:8113
+#: ../src/nautilus-view.c:7863
+#: ../src/nautilus-view.c:8054
 msgid "Stop the selected multi-disk drive"
 msgstr ""
 
-#: ../src/nautilus-view.c:7926 ../src/nautilus-view.c:8117
+#: ../src/nautilus-view.c:7867
+#: ../src/nautilus-view.c:8058
 msgid "Lock the selected drive"
 msgstr ""
 
-#: ../src/nautilus-view.c:7968 ../src/nautilus-view.c:7972
+#: ../src/nautilus-view.c:7909
+#: ../src/nautilus-view.c:7913
 msgid "Start the drive associated with the open folder"
 msgstr ""
 
-#: ../src/nautilus-view.c:7976
+#: ../src/nautilus-view.c:7917
 msgid "Connect to the drive associated with the open folder"
 msgstr ""
 
-#: ../src/nautilus-view.c:7980
+#: ../src/nautilus-view.c:7921
 msgid "Start the multi-disk drive associated with the open folder"
 msgstr ""
 
-#: ../src/nautilus-view.c:7984
+#: ../src/nautilus-view.c:7925
 msgid "Unlock the drive associated with the open folder"
 msgstr ""
 
-#: ../src/nautilus-view.c:7997
+#: ../src/nautilus-view.c:7938
 msgid "_Stop the drive associated with the open folder"
 msgstr ""
 
-#: ../src/nautilus-view.c:8001
+#: ../src/nautilus-view.c:7942
 msgid "Safely remove the drive associated with the open folder"
 msgstr ""
 
-#: ../src/nautilus-view.c:8005
+#: ../src/nautilus-view.c:7946
 msgid "Disconnect the drive associated with the open folder"
 msgstr "Malkonekti la datumportilon apartenantan al la malfermita dosierujo."
 
-#: ../src/nautilus-view.c:8009
+#: ../src/nautilus-view.c:7950
 msgid "Stop the multi-disk drive associated with the open folder"
 msgstr ""
 
-#: ../src/nautilus-view.c:8013
+#: ../src/nautilus-view.c:7954
 msgid "Lock the drive associated with the open folder"
 msgstr ""
 
-#: ../src/nautilus-view.c:8187 ../src/nautilus-view.c:8503
-msgid "Browse in New _Window"
-msgstr ""
-
-#: ../src/nautilus-view.c:8205 ../src/nautilus-view.c:8534
-msgid "Browse in New _Tab"
-msgstr ""
-
-#: ../src/nautilus-view.c:8254 ../src/nautilus-view.c:8560
+#: ../src/nautilus-view.c:8181
+#: ../src/nautilus-view.c:8463
 msgid "_Delete Permanently"
 msgstr ""
 
-#: ../src/nautilus-view.c:8255
+#: ../src/nautilus-view.c:8182
 msgid "Delete the open folder permanently"
 msgstr "Forigi la malfermitan dosierujon por ĉiam"
 
-#: ../src/nautilus-view.c:8259
+#: ../src/nautilus-view.c:8186
 msgid "Move the open folder to the Trash"
 msgstr "Movi la malfermitan dosierujon rubujen"
 
-#: ../src/nautilus-view.c:8443
+#: ../src/nautilus-view.c:8370
 #, c-format
 msgid "_Open With %s"
 msgstr "_Malfermi per %s"
 
-#: ../src/nautilus-view.c:8496
+#: ../src/nautilus-view.c:8427
 #, c-format
 msgid "Open in %'d New _Window"
 msgid_plural "Open in %'d New _Windows"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/nautilus-view.c:8505
-#, c-format
-msgid "Browse in %'d New _Window"
-msgid_plural "Browse in %'d New _Windows"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ../src/nautilus-view.c:8527
+#: ../src/nautilus-view.c:8447
 #, c-format
 msgid "Open in %'d New _Tab"
 msgid_plural "Open in %'d New _Tabs"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/nautilus-view.c:8536
-#, c-format
-msgid "Browse in %'d New _Tab"
-msgid_plural "Browse in %'d New _Tabs"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ../src/nautilus-view.c:8561
+#: ../src/nautilus-view.c:8464
 msgid "Delete all selected items permanently"
 msgstr "Forigi ĉiujn elektitajn elementojn por ĉiam"
 
-#: ../src/nautilus-view.c:8617
+#: ../src/nautilus-view.c:8520
 msgid "View or modify the properties of the open folder"
 msgstr "Vidi aŭ modifi la ecojn de la malfermita dosierujo"
 
@@ -5223,7 +4922,8 @@ msgstr "Krei _ligilon"
 msgid "_Download"
 msgstr "_Elŝuti"
 
-#: ../src/nautilus-view-dnd.c:251 ../src/nautilus-view-dnd.c:309
+#: ../src/nautilus-view-dnd.c:251
+#: ../src/nautilus-view-dnd.c:309
 #: ../src/nautilus-view-dnd.c:413
 msgid "Drag and drop is not supported."
 msgstr "Treno kaj faligo ne estas subtenataj"
@@ -5232,7 +4932,8 @@ msgstr "Treno kaj faligo ne estas subtenataj"
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Treno kaj faligo nur estas subtenataj sur lokaj dosiersistemoj."
 
-#: ../src/nautilus-view-dnd.c:310 ../src/nautilus-view-dnd.c:414
+#: ../src/nautilus-view-dnd.c:310
+#: ../src/nautilus-view-dnd.c:414
 msgid "An invalid drag type was used."
 msgstr "Nevalida trenspeco estis uzita."
 
@@ -5249,11 +4950,8 @@ msgid "dropped data"
 msgstr "altrenitaj datenoj"
 
 #: ../src/nautilus-window-bookmarks.c:82
-msgid ""
-"Do you want to remove any bookmarks with the non-existing location from your "
-"list?"
-msgstr ""
-"Ĉu vi volas forigi ĉiun legosignon por ĉiu neekzistanta loko de via listo?"
+msgid "Do you want to remove any bookmarks with the non-existing location from your list?"
+msgstr "Ĉu vi volas forigi ĉiun legosignon por ĉiu neekzistanta loko de via listo?"
 
 #: ../src/nautilus-window-bookmarks.c:84
 #, c-format
@@ -5333,8 +5031,7 @@ msgid "Could not display \"%s\", because the host could not be found."
 msgstr "Ne suksesis vidigi \"%s\", ĉar la gastigejo ne estis trovita."
 
 #: ../src/nautilus-window-manage-views.c:1745
-msgid ""
-"Check that the spelling is correct and that your proxy settings are correct."
+msgid "Check that the spelling is correct and that your proxy settings are correct."
 msgstr "Kontrolu ĝustajn literumadon kaj prokurilan agordaron."
 
 #: ../src/nautilus-window-manage-views.c:1760
@@ -5347,11 +5044,7 @@ msgstr ""
 "Bonvolu elekti alian vidigilon kaj reprovi."
 
 #: ../src/nautilus-window-menus.c:356
-msgid ""
-"Nautilus is free software; you can redistribute it and/or modify it under "
-"the terms of the GNU General Public License as published by the Free "
-"Software Foundation; either version 2 of the License, or (at your option) "
-"any later version."
+msgid "Nautilus is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
 msgstr ""
 "Naŭtilo estas libera softvaro; vi povas disvastigi ĝin kaj/aŭ modifi\n"
 "ĝin sub la kondiĉoj de la GNU Ĝenerala Publika Permesilo kiel publikita de \n"
@@ -5359,35 +5052,21 @@ msgstr ""
 "(laŭ via elekto) iu ajn posta versio."
 
 #: ../src/nautilus-window-menus.c:360
-msgid ""
-"Nautilus is distributed in the hope that it will be useful, but WITHOUT ANY "
-"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
-"FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
-"details."
-msgstr ""
-"Naŭtilo estas distribuata kun la espero ke ĝi estas utila, sed SEN IU "
-"GARANTIO; eĉ sen implicita garantio de NEGOCEBLO aŭ TAŬGECO POR SPECIFA "
-"CELO. Vidu la GNU Ĝeneralan Publikan Licencon por pli da detaloj."
+msgid "Nautilus is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details."
+msgstr "Naŭtilo estas distribuata kun la espero ke ĝi estas utila, sed SEN IU GARANTIO; eĉ sen implicita garantio de NEGOCEBLO aŭ TAŬGECO POR SPECIFA CELO. Vidu la GNU Ĝeneralan Publikan Licencon por pli da detaloj."
 
 #: ../src/nautilus-window-menus.c:364
-msgid ""
-"You should have received a copy of the GNU General Public License along with "
-"Nautilus; if not, write to the Free Software Foundation, Inc., 51 Franklin "
-"Street, Fifth Floor, Boston, MA 02110-1301 USA"
-msgstr ""
-"Vi devus esti ricevinta kopion de la Ĝenerala Publika Permesilo de GNU kun "
-"Evince; se ne, skribu al Free Software Foundation, Inc., 51 Franklin Street, "
-"Fifth Floor, Boston, MA 02110-1301 USA"
+msgid "You should have received a copy of the GNU General Public License along with Nautilus; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA"
+msgstr "Vi devus esti ricevinta kopion de la Ĝenerala Publika Permesilo de GNU kun Evince; se ne, skribu al Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA"
 
 #. Set initial window title
-#: ../src/nautilus-window-menus.c:374 ../src/nautilus-window.c:2022
+#: ../src/nautilus-window-menus.c:374
+#: ../src/nautilus-window.c:2022
 msgid "Nautilus"
 msgstr "Naŭtilo"
 
 #: ../src/nautilus-window-menus.c:376
-msgid ""
-"Nautilus lets you organize files and folders, both on your computer and "
-"online."
+msgid "Nautilus lets you organize files and folders, both on your computer and online."
 msgstr ""
 
 #: ../src/nautilus-window-menus.c:379
@@ -5567,11 +5246,8 @@ msgstr "_Komputilo"
 
 #. tooltip
 #: ../src/nautilus-window-menus.c:1009
-msgid ""
-"Browse all local and remote disks and folders accessible from this computer"
-msgstr ""
-"Foliumu ĉiujn lokajn kaj forajn diskojn kaj dosierujojn atingeblajn de ĉi "
-"tiu komputilo."
+msgid "Browse all local and remote disks and folders accessible from this computer"
+msgstr "Foliumu ĉiujn lokajn kaj forajn diskojn kaj dosierujojn atingeblajn de ĉi tiu komputilo."
 
 #. name, stock id
 #. label, accelerator
@@ -5649,20 +5325,24 @@ msgid "Close all Navigation windows"
 msgstr "Fermi ĉiujn navigadajn fenestrojn"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:1035 ../src/nautilus-window-menus.c:1127
+#: ../src/nautilus-window-menus.c:1035
+#: ../src/nautilus-window-menus.c:1127
 msgid "_Back"
 msgstr "_Reen"
 
-#: ../src/nautilus-window-menus.c:1036 ../src/nautilus-window-menus.c:1129
+#: ../src/nautilus-window-menus.c:1036
+#: ../src/nautilus-window-menus.c:1129
 msgid "Go to the previous visited location"
 msgstr "Iri al antaŭa vizitita loko"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:1038 ../src/nautilus-window-menus.c:1142
+#: ../src/nautilus-window-menus.c:1038
+#: ../src/nautilus-window-menus.c:1142
 msgid "_Forward"
 msgstr "_Antaŭen"
 
-#: ../src/nautilus-window-menus.c:1039 ../src/nautilus-window-menus.c:1144
+#: ../src/nautilus-window-menus.c:1039
+#: ../src/nautilus-window-menus.c:1144
 msgid "Go to the next visited location"
 msgstr "Iri al sekvonta vizitita loko"
 
@@ -5736,7 +5416,8 @@ msgstr "_Posta langeto"
 msgid "Activate next tab"
 msgstr "Aktivigi sekvan langeton"
 
-#: ../src/nautilus-window-menus.c:1065 ../src/nautilus-window-pane.c:486
+#: ../src/nautilus-window-menus.c:1065
+#: ../src/nautilus-window-pane.c:486
 msgid "Move Tab _Left"
 msgstr "Movi langeton _maldekstren"
 
@@ -5744,7 +5425,8 @@ msgstr "Movi langeton _maldekstren"
 msgid "Move current tab to left"
 msgstr "Movi nunan langeton maldekstren"
 
-#: ../src/nautilus-window-menus.c:1068 ../src/nautilus-window-pane.c:494
+#: ../src/nautilus-window-menus.c:1068
+#: ../src/nautilus-window-pane.c:494
 msgid "Move Tab _Right"
 msgstr "Movi langeton _dekstren"
 
@@ -5810,7 +5492,8 @@ msgid "_Search for Files..."
 msgstr "_Serĉi dosierojn..."
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:1097 ../src/nautilus-window-menus.c:1158
+#: ../src/nautilus-window-menus.c:1097
+#: ../src/nautilus-window-menus.c:1158
 msgid "Search documents and folders by name"
 msgstr "Serĉi dokumentojn kaj dosierujojn per ilia nomo"
 
@@ -5935,391 +5618,266 @@ msgstr ""
 #~ msgstr ""
 #~ "Se vera, piktogramoj implicite estos aranĝataj pli kompakte en novaj "
 #~ "fenestroj."
-
 #~ msgid "Use tighter layout in new windows"
 #~ msgstr "Uzi striktan araĝon en novaj fenestroj"
-
 #~ msgid "Open a browser window."
 #~ msgstr "Malfermi foliuman fenestron."
-
 #~ msgid "Folder:"
 #~ msgstr "Dosierujo:"
-
 #~ msgid "_Use compact layout"
 #~ msgstr "_Uzi kompaktan aranĝon"
-
 #~ msgid "Compact _Layout"
 #~ msgstr "Kompaktigi aranĝon"
-
 #~ msgid "Toggle using a tighter layout scheme"
 #~ msgstr "Ŝalti uzadon de pli kompakta aranĝa skemo"
-
 #~ msgid "Open Location"
 #~ msgstr "Malfermi lokon"
-
 #~ msgid "_Location:"
 #~ msgstr "_Loko:"
-
 #~ msgid "The history location doesn't exist."
 #~ msgstr "La historia loko ne ekzistas."
-
 #~ msgid "Open Folder W_indow"
 #~ msgstr "Malfermi dosierujan fenestron"
-
 #~ msgid "Open a folder window for the displayed location"
 #~ msgstr "Malfermi dosierujan fenestron de Naŭtilo por la montrita loko"
-
 #~ msgid "S_how Search"
 #~ msgstr "_Montri serĉon"
-
 #~ msgid "Show search"
 #~ msgstr "Montri serĉon"
-
 #~ msgid "Location _Bar"
 #~ msgstr "Loko_breto"
-
 #~ msgid "Change the visibility of this window's location bar"
 #~ msgstr "Ŝanĝi la videblecon de lokobreto en ĉi fenestro"
-
 #~ msgid "_Zoom"
 #~ msgstr "_Zomo"
-
 #~ msgid "_View As"
 #~ msgstr "_Vidi kiel"
-
 #~ msgid "_Search"
 #~ msgstr "_Serĉi"
-
 #~ msgid "_Places"
 #~ msgstr "_Lokoj"
-
 #~ msgid "Open _Location..."
 #~ msgstr "Malfermi _lokon..."
-
 #~ msgid "Close P_arent Folders"
 #~ msgstr "Fermi p_atrajn dosierujojn"
-
 #~ msgid "Close this folder's parents"
 #~ msgstr "Fermi la patrojn de tiu ĉi dosierujo"
-
 #~ msgid "Clos_e All Folders"
 #~ msgstr "Fermi ĉiujn dosierujojn"
-
 #~ msgid "Close all folder windows"
 #~ msgstr "Fermi ĉiujn dosierujajn fenestrojn"
-
 #~ msgid "Locate documents and folders on this computer by name or content"
 #~ msgstr ""
 #~ "Trovi dokumentojn kaj dosierujojn sur ĉi tiu komputilo laŭ nomo aŭ enhavo"
-
 #~ msgid "_Browse Folder"
 #~ msgid_plural "_Browse Folders"
 #~ msgstr[0] "_Foliumi dosierujon"
 #~ msgstr[1] "_Foliumi dosierujojn"
-
 #~ msgid "Zoom In"
 #~ msgstr "Zomi"
-
 #~ msgid "Zoom Out"
 #~ msgstr "Malzomi"
-
 #~ msgid "Zoom to Default"
 #~ msgstr "Zomi je defaŭlto"
-
 #~ msgid "Zoom"
 #~ msgstr "Zomi"
-
 #~ msgid "Set the zoom level of the current view"
 #~ msgstr "Agordi zomnivelon de aktuala vido"
-
 #~ msgid "File Manager"
 #~ msgstr "Dosiera administrilo"
-
 #~ msgid "By Path"
 #~ msgstr "Laŭ vojo"
-
 #~ msgid "File is not a valid .desktop file"
 #~ msgstr "Dosiero ne estas valida .desktop-dosiero"
-
 #~ msgid "Unrecognized desktop file Version '%s'"
 #~ msgstr "Nerekonata versio '%s' de labortabla dosiero"
-
 #~ msgid "Starting %s"
 #~ msgstr "Lanĉante %s"
-
 #~ msgid "Application does not accept documents on command line"
 #~ msgstr "Aplikaĵo ne akceptas dokumentojn per komandlinio"
-
 #~ msgid "Unrecognized launch option: %d"
 #~ msgstr "Nerekonata lanĉparametro: %d"
-
 #~ msgid "Can't pass document URIs to a 'Type=Link' desktop entry"
 #~ msgstr ""
 #~ "Ne eblas transdoni URI-dokumentojn al labortabla elemento 'Type=Link'"
-
 #~ msgid "Not a launchable item"
 #~ msgstr "Nelanĉebla ero"
-
 #~ msgid "Disable connection to session manager"
 #~ msgstr "Elŝalti konekton al la seancoadministrilo"
-
 #~ msgid "Specify file containing saved configuration"
 #~ msgstr "Specifi dosieron kiun enhavas konservitan agordon"
-
 #~ msgid "FILE"
 #~ msgstr "DOSIERO"
-
 #~ msgid "Specify session management ID"
 #~ msgstr "Specifi identigilon de la seancoadministrilo"
-
 #~ msgid "ID"
 #~ msgstr "ID"
-
 #~ msgid "Session management options:"
 #~ msgstr "Opcioj de la seancoadministrilo:"
-
 #~ msgid "Show session management options"
 #~ msgstr "Montri opciojn de la seancoadministrilo"
-
 #~ msgid "Apparition"
 #~ msgstr "Apero"
-
 #~ msgid "Azul"
 #~ msgstr "Blua"
-
 #~ msgid "Black"
 #~ msgstr "Nigra"
-
 #~ msgid "Blue Ridge"
 #~ msgstr "Blua kresto"
-
 #~ msgid "Blue Rough"
 #~ msgstr "Malglata bluo"
-
 #~ msgid "Blue Type"
 #~ msgstr "Blua tipo"
-
 #~ msgid "Brushed Metal"
 #~ msgstr "Polurita metalo"
-
 #~ msgid "Bubble Gum"
 #~ msgstr "Maĉgumo"
-
 #~ msgid "Burlap"
 #~ msgstr "Dreliko"
-
 #~ msgid "C_olors"
 #~ msgstr "K_oloroj"
-
 #~ msgid "Camouflage"
 #~ msgstr "Kamuflaĵo"
-
 #~ msgid "Chalk"
 #~ msgstr "Kreto"
-
 #~ msgid "Charcoal"
 #~ msgstr "Karbo"
-
 #~ msgid "Cork"
 #~ msgstr "Korko"
-
 #~ msgid "Countertop"
 #~ msgstr "Abstrakta"
-
 #~ msgid "Danube"
 #~ msgstr "Danubo"
-
 #~ msgid "Dark Cork"
 #~ msgstr "Malhela korko"
-
 #~ msgid "Dark GNOME"
 #~ msgstr "Malhela GNOME"
-
 #~ msgid "Deep Teal"
 #~ msgstr "Marĉanaso"
-
 #~ msgid "Dots"
 #~ msgstr "Punktoj"
-
 #~ msgid "Drag a color to an object to change it to that color"
 #~ msgstr "Treni koloron al objekto por kolorigi ĝin"
-
 #~ msgid "Drag a pattern tile to an object to change it"
 #~ msgstr "Treni ŝablonon al objekto por ŝanĝi ĝin"
-
 #~ msgid "Drag an emblem to an object to add it to the object"
 #~ msgstr "Treni emblemon al objekto por aldoni ĝin al objekto"
-
 #~ msgid "Eclipse"
 #~ msgstr "Eklipso"
-
 #~ msgid "Envy"
 #~ msgstr "Envio"
-
 #~ msgid "Erase"
 #~ msgstr "Gumo"
-
 #~ msgid "Fibers"
 #~ msgstr "Fibroj"
-
 #~ msgid "Fire Engine"
 #~ msgstr "Fajrestingilo"
-
 #~ msgid "Fleur De Lis"
 #~ msgstr "Lilia floro"
-
 #~ msgid "Floral"
 #~ msgstr "Flora"
-
 #~ msgid "Fossil"
 #~ msgstr "Fosilio"
-
 #~ msgid "GNOME"
 #~ msgstr "GNOME"
-
 #~ msgid "Granite"
 #~ msgstr "Granito"
-
 #~ msgid "Grapefruit"
 #~ msgstr "Grapfrukto"
-
 #~ msgid "Green Weave"
 #~ msgstr "Verda teksaĵo"
-
 #~ msgid "Ice"
 #~ msgstr "Glacio"
-
 #~ msgid "Indigo"
 #~ msgstr "Indigo"
-
 #~ msgid "Leaf"
 #~ msgstr "Folio"
-
 #~ msgid "Lemon"
 #~ msgstr "Citrono"
-
 #~ msgid "Mango"
 #~ msgstr "Mango"
-
 #~ msgid "Manila Paper"
 #~ msgstr "Papero de manilo"
-
 #~ msgid "Moss Ridge"
 #~ msgstr "Muskaĵo"
-
 #~ msgid "Mud"
 #~ msgstr "Koto"
-
 #~ msgid "Numbers"
 #~ msgstr "Nombroj"
-
 #~ msgid "Ocean Strips"
 #~ msgstr "Oceanaj strioj"
-
 #~ msgid "Onyx"
 #~ msgstr "Onikso"
-
 #~ msgid "Orange"
 #~ msgstr "Oranĝa"
-
 #~ msgid "Pale Blue"
 #~ msgstr "Pala bluo"
-
 #~ msgid "Purple Marble"
 #~ msgstr "Purpura marmoro"
-
 #~ msgid "Ridged Paper"
 #~ msgstr "Ĉifita papero"
-
 #~ msgid "Rough Paper"
 #~ msgstr "Aspra papero"
-
 #~ msgid "Ruby"
 #~ msgstr "Rubeno"
-
 #~ msgid "Sea Foam"
 #~ msgstr "Mara ŝaŭmo"
-
 #~ msgid "Shale"
 #~ msgstr "Skisto"
-
 #~ msgid "Sky"
 #~ msgstr "Ĉielo"
-
 #~ msgid "Sky Ridge"
 #~ msgstr "Ĉiela kresto"
-
 #~ msgid "Snow Ridge"
 #~ msgstr "Neĝa kresto"
-
 #~ msgid "Stucco"
 #~ msgstr "Stuko"
-
 #~ msgid "Tangerine"
 #~ msgstr "Klementino"
-
 #~ msgid "Terracotta"
 #~ msgstr "Terakoto"
-
 #~ msgid "Violet"
 #~ msgstr "Viola"
-
 #~ msgid "Wavy White"
 #~ msgstr "Blanka ondo"
-
 #~ msgid "White"
 #~ msgstr "Blanka"
-
 #~ msgid "White Ribs"
 #~ msgstr "Blankaj ripoj"
-
 #~ msgid "_Emblems"
 #~ msgstr "_Emblemoj"
-
 #~ msgid "_Patterns"
 #~ msgstr "Ŝablonoj"
-
 #~ msgid "Image/label border"
 #~ msgstr "Bordero de bildoj aŭ etikedoj"
-
 #~ msgid "Width of border around the label and image in the alert dialog"
 #~ msgstr "Borderlarĝo ĉirkaŭ etikedo kaj bildo en la averto-dialogo"
-
 #~ msgid "Alert Type"
 #~ msgstr "Averta tipo"
-
 #~ msgid "The type of alert"
 #~ msgstr "La tipo de averto"
-
 #~ msgid "Alert Buttons"
 #~ msgstr "Avertaj butonoj"
-
 #~ msgid "The buttons shown in the alert dialog"
 #~ msgstr "Butonoj montritaj en la averto-dialogo"
-
 #~ msgid ""
 #~ "GConf error:\n"
 #~ "  %s"
 #~ msgstr ""
 #~ "Eraro de GConf:\n"
 #~ "  %s"
-
 #~ msgid "GConf error: %s"
 #~ msgstr "Eraro de GConf: %s"
-
 #~ msgid "All further errors shown only on terminal."
 #~ msgstr "Ĉiuj pliaj eraroj estos montritaj nur en terminalo."
-
 #~ msgid ""
 #~ "Color for the default folder background. Only used if background_set is "
 #~ "true."
 #~ msgstr ""
 #~ "Koloro por la fono de defaŭlta dosierujo. Nur uzata se background_set "
 #~ "estas vera."
-
 #~ msgid "Criteria for search bar searching"
 #~ msgstr "Kriterioj por serĉi per serĉobreto"
-
 #~ msgid ""
 #~ "Criteria when matching files searched for in the search bar. If set to "
 #~ "\"search_by_text\", then Nautilus will Search for files by file name "
@@ -6330,42 +5888,32 @@ msgstr ""
 #~ "al \"serĉi per teksto\", Naŭtilo serĉos dosierojn nur per dosiernomo. Se "
 #~ "agordita al \"serĉi per teksto kaj atributoj\", Naŭtilo serĉos dosierojn "
 #~ "per dosiernomo kaj atributoj."
-
 #~ msgid "Current Nautilus theme (deprecated)"
 #~ msgstr "Aktuala temo de Naŭtilo (kaduka)"
-
 #~ msgid "Custom Background"
 #~ msgstr "Propra fona agordo"
-
 #~ msgid "Custom Side Pane Background Set"
 #~ msgstr "Agordo de fono de flanka panelo"
-
 #~ msgid "Default Background Color"
 #~ msgstr "Defaŭlta fona koloro"
-
 #~ msgid "Default Background Filename"
 #~ msgstr "Defaŭlta fona dosiernomo"
-
 #~ msgid "Default Side Pane Background Color"
 #~ msgstr "Defaŭlta koloro de fono de flanka panelo"
-
 #~ msgid "Default Side Pane Background Filename"
 #~ msgstr "Defaŭlta dosiernomo de fono de flanka panelo"
-
 #~ msgid ""
 #~ "Filename for the default folder background. Only used if background_set "
 #~ "is true."
 #~ msgstr ""
 #~ "Nomo por la fono de defaŭlta dosierujo. Nur uzata se background_set estas "
 #~ "vera."
-
 #~ msgid ""
 #~ "Filename for the default side pane background. Only used if "
 #~ "side_pane_background_set is true."
 #~ msgstr ""
 #~ "Nomo por la defaŭlta fono de flanka panelo. Nur uzata se "
 #~ "side_pane_background_set estas vera."
-
 #~ msgid ""
 #~ "Folders over this size will be truncated to around this size. The purpose "
 #~ "of this is to avoid unintentionally blowing the heap and killing Nautilus "
@@ -6376,7 +5924,6 @@ msgstr ""
 #~ "La celo estas eviti superŝarĝi la stakon kaj mortigi Naŭtilon per pezegaj "
 #~ "dosierujoj. Negativa valoro signifas nenio limo. La limo estas proksimume "
 #~ "pro la lego de la dosierujon per peco."
-
 #~ msgid ""
 #~ "If set to true, then backup files such as those created by Emacs are "
 #~ "displayed. Currently, only files ending in a tilde (~) are considered "
@@ -6385,7 +5932,6 @@ msgstr ""
 #~ "Agordita kiel vera, restaŭrdosieroj kiel tiuj kreitaj de Emacs estos "
 #~ "montrataj. Aktuale, nur dosieroj finitaj per '~' estas konsiderataj "
 #~ "restaŭrdosieroj."
-
 #~ msgid ""
 #~ "If true, files in new windows will be sorted in reverse order. ie, if "
 #~ "sorted by name, then instead of sorting the files from \"a\" to \"z\", "
@@ -6394,26 +5940,20 @@ msgstr ""
 #~ "Se vera, dosieroj en novaj fenestroj estos ordigataj renverse. Ekz., se "
 #~ "ordigataj laŭ nomo, tiam anstataŭ ordigi la dosierojn de \"a\" al \"z\", "
 #~ "ili estos ordigataj de \"z\" al \"a\"."
-
 #~ msgid "If true, new windows will use manual layout by default."
 #~ msgstr "Se vera, novaj fenestroj implicite uzos manan aranĝadon."
-
 #~ msgid "Maximum handled files in a folder"
 #~ msgstr "Maks. trakteblaj dosieroj en dosierujo"
-
 #~ msgid ""
 #~ "Name of the Nautilus theme to use. This has been deprecated as of "
 #~ "Nautilus 2.2. Please use the icon theme instead."
 #~ msgstr ""
 #~ "Nomo de la uzenda Naŭtilo-etoso. Tio ĉi estas evitinda ekde Naŭtilo 2.2. "
 #~ "Bonvolu uzi la bildsimbolan etoson anstataŭe."
-
 #~ msgid "Nautilus handles drawing the desktop"
 #~ msgstr "Naŭtilo zorgas pri desegno de la labortablo"
-
 #~ msgid "Sans 10"
 #~ msgstr "Sans 10"
-
 #~ msgid ""
 #~ "The default sort-order for items in the icon view. Possible values are "
 #~ "\"name\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
@@ -6421,631 +5961,438 @@ msgstr ""
 #~ "La defaŭlta sinsekvo por eroj en la piktograma rigardo. Eblaj valoroj "
 #~ "estas \"name\", \"size\", \"type\", \"modification_date\", kaj \"emblems"
 #~ "\"."
-
 #~ msgid "Use manual layout in new windows"
 #~ msgstr "Uzi manan araĝon en novaj fenestroj"
-
 #~ msgid "Whether a custom default folder background has been set."
 #~ msgstr "Ĉu propra defaŭlta dosieruja fono estis agordita."
-
 #~ msgid "Whether a custom default side pane background has been set."
 #~ msgstr "Ĉu propra defaŭlta fono por flanka panelo estis agordita."
-
 #~ msgid "Whether to automatically mount media"
 #~ msgstr "Ĉu aŭtomate surmeti datumportilojn"
-
 #~ msgid "Whether to automatically open a folder for automounted media"
 #~ msgstr ""
 #~ "Ĉu aŭtomate malfermi dosierujon pri aŭtomate surmetitaj datumportiloj"
-
 #~ msgid "Whether to show backup files"
 #~ msgstr "Vidigi restaŭrdosierojn"
-
 #~ msgid "No applications found"
 #~ msgstr "Neniu aplikaĵo trovita"
-
 #~ msgid "Ask what to do"
 #~ msgstr "Demandi kion fari"
-
 #~ msgid "Do Nothing"
 #~ msgstr "Nenion fari"
-
 #~ msgid "Open Folder"
 #~ msgstr "Malfermi dosierujon"
-
 #~ msgid "You have just inserted an Audio CD."
 #~ msgstr "Vi ĵus enmetis Son-KD-on."
-
 #~ msgid "You have just inserted an Audio DVD."
 #~ msgstr "Vi ĵus enmetis Son-DVD-on."
-
 #~ msgid "You have just inserted a Video DVD."
 #~ msgstr "Vi ĵus enmetis video-DVD-on."
-
 #~ msgid "You have just inserted a Video CD."
 #~ msgstr "Vi ĵus enmetis video-KD-on."
-
 #~ msgid "You have just inserted a Super Video CD."
 #~ msgstr "Vi ĵus enmetis super-video-KD-on."
-
 #~ msgid "You have just inserted a blank CD."
 #~ msgstr "Vi ĵus enmetis malplenan KD-on."
-
 #~ msgid "You have just inserted a blank DVD."
 #~ msgstr "Vi ĵus enmetis malplenan DVD-on."
-
 #~ msgid "You have just inserted a blank Blu-Ray disc."
 #~ msgstr "Vi ĵus enmetis malplenan blu-radian diskon."
-
 #~ msgid "You have just inserted a blank HD DVD."
 #~ msgstr "Vi ĵus enmetis malplenan alt-densan DVD-on."
-
 #~ msgid "You have just inserted a Photo CD."
 #~ msgstr "Vi ĵus enmetis foto-KD-on."
-
 #~ msgid "You have just inserted a Picture CD."
 #~ msgstr "Vi ĵus enmetis KD-on kun bildoj."
-
 #~ msgid "You have just inserted a medium with digital photos."
 #~ msgstr "Vi ĵus enmetis datumportilon kun ciferecaj fotoj."
-
 #~ msgid "You have just inserted a digital audio player."
 #~ msgstr "Vi ĵus enmetis ciferecan sonludilon."
-
 #~ msgid ""
 #~ "You have just inserted a medium with software intended to be "
 #~ "automatically started."
 #~ msgstr "Vi ĵus enmetis datumportilon kun programo kun aŭto-lanĉo inteco."
-
 #~ msgid "You have just inserted a medium."
 #~ msgstr "Vi ĵus enmetis datumportilon."
-
 #~ msgid "Choose what application to launch."
 #~ msgstr "Elekti aplikaĵon por lanĉi."
-
 #~ msgid ""
 #~ "Select how to open \"%s\" and whether to perform this action in the "
 #~ "future for other media of type \"%s\"."
 #~ msgstr ""
 #~ "Elekti kiel malfermi \"%s\" kaj ĉu plenumi ĉi-tiun agon estonte por aliaj "
 #~ "datenportiloj de tipo \"%s\"."
-
 #~ msgid "_Always perform this action"
 #~ msgstr "_Ĉiam plenumi ĉi tiun agon"
-
 #~ msgid "Set as background for _all folders"
 #~ msgstr "_Agordi kiel fono por ĉiuj dosieroj"
-
 #~ msgid "Set as background for _this folder"
 #~ msgstr "Agordi kiel fono por ĉi _tiu dosiero"
-
 #~ msgid "The emblem cannot be installed."
 #~ msgstr "La emblemo ne instaleblas."
-
 #~ msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
 #~ msgstr "Vi devas specifi ne malplenan ŝlosilvorton por la nova emblemo."
-
 #~ msgid ""
 #~ "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 #~ msgstr ""
 #~ "Pardonu, sed ŝlosilvortoj de la emblemo povas enhavi nur literojn, "
 #~ "spacetojn kaj nombrojn."
-
 #~ msgid "Sorry, but there is already an emblem named \"%s\"."
 #~ msgstr "Pardonu, sed jam ekzistas emblemo nomata \"%s\"."
-
 #~ msgid "Please choose a different emblem name."
 #~ msgstr "Bonvolu elekti alian nomon por emblemo."
-
 #~ msgid "Sorry, unable to save custom emblem."
 #~ msgstr "Pardonu, ne povas konservi akomoditan emblemon."
-
 #~ msgid "Sorry, unable to save custom emblem name."
 #~ msgstr "Pardonu, ne povas konservi akomoditan emblemnomon."
-
 #~ msgid "An older"
 #~ msgstr "Pli malalta"
-
 #~ msgid "A newer"
 #~ msgstr "Pli nova"
-
 #~ msgid "Another"
 #~ msgstr "Alia"
-
 #~ msgid ""
 #~ "If you choose to empty the trash, all items in it will be permanently "
 #~ "lost. Please note that you can also delete them separately."
 #~ msgstr ""
 #~ "Se vi malplenigas rubujon, ĉiuj elementoj estos forigitaj por ĉiam. "
 #~ "Bonvolu rimarku ke vi povas ilin forigi aparte."
-
 #~ msgid "new file"
 #~ msgstr "nova dosiero"
-
 #~ msgid "_Always"
 #~ msgstr "Ĉi_am"
-
 #~ msgid "_Local File Only"
 #~ msgstr "_Loka dosiero nur"
-
 #~ msgid "_Never"
 #~ msgstr "_Neniam"
-
 #~ msgid "25%"
 #~ msgstr "25%"
-
 #~ msgid "75%"
 #~ msgstr "75%"
-
 #~ msgid "100 K"
 #~ msgstr "100 KB"
-
 #~ msgid "500 K"
 #~ msgstr "500KB"
-
 #~ msgid "Activate items with a _single click"
 #~ msgstr "Aktivigi elementojn per _unuopa alklako"
-
 #~ msgid "Activate items with a _double click"
 #~ msgstr "Aktivigi elementojn per _duopa alklako"
-
 #~ msgid "E_xecute files when they are clicked"
 #~ msgstr "Ruli dosierojn post alklako"
-
 #~ msgid "Display _files when they are clicked"
 #~ msgstr "Vidigi dosierojn post alklako"
-
 #~ msgid "Search for files by file name only"
 #~ msgstr "Serĉi dosierojn nur laŭ dosiernomo"
-
 #~ msgid "Search for files by file name and file properties"
 #~ msgstr "Serĉi dosierojn laŭ dosiernomo kaj atributoj"
-
 #~ msgid "Manually"
 #~ msgstr "Mane"
-
 #~ msgid "By Emblems"
 #~ msgstr "Laŭ emblemoj"
-
 #~ msgid "8"
 #~ msgstr "8"
-
 #~ msgid "10"
 #~ msgstr "10"
-
 #~ msgid "12"
 #~ msgstr "12"
-
 #~ msgid "14"
 #~ msgstr "14"
-
 #~ msgid "16"
 #~ msgstr "16"
-
 #~ msgid "18"
 #~ msgstr "18"
-
 #~ msgid "20"
 #~ msgstr "20"
-
 #~ msgid "22"
 #~ msgstr "22"
-
 #~ msgid "24"
 #~ msgstr "24"
-
 #~ msgid "%s's Home"
 #~ msgstr "Hejmo de %s"
-
 #~ msgid "Network Servers"
 #~ msgstr "Retaj serviloj"
-
 #~ msgid "Switch to Manual Layout?"
 #~ msgstr "Ĉu ŝanĝi al mana aranĝo?"
-
 #~ msgid "Default"
 #~ msgstr "Defaŭlto"
-
 #~ msgid "Icon"
 #~ msgstr "Piktogramo"
-
 #~ msgid "Unknown"
 #~ msgstr "Nekonate"
-
 #~ msgid "_Browse..."
 #~ msgstr "_Foliumi..."
-
 #~ msgid "Open %s and other %s document with:"
 #~ msgstr "Malfermi %s kaj aliajn dokumentojn de tipo %s per:"
-
 #~ msgid "Open %s with:"
 #~ msgstr "Malfermi %s per:"
-
 #~ msgid "_Remember this application for %s documents"
 #~ msgstr "Memo_ri tiun ĉi aplikaĵon por dokumentoj de tipo %s."
-
 #~ msgid "Open all %s documents with:"
 #~ msgstr "Malfermi ĉiujn dokumentojn de tipo %s per:"
-
 #~ msgid "Open %s and other \"%s\" files with:"
 #~ msgstr "Malfermi %s kaj aliajn dokumentojn de tipo \"%s\" per:"
-
 #~ msgid "_Remember this application for \"%s\" files"
 #~ msgstr "Memo_ri tiun ĉi aplikaĵon por dokumentoj de tipo \"%s\"."
-
 #~ msgid "_Add"
 #~ msgstr "_Aldoni"
-
 #~ msgid "Open Failed, would you like to choose another application?"
 #~ msgstr "Malfermo malsukcesis, ĉu vi deziras elekti alian aplikaĵon?"
-
 #~ msgid "Open Failed, would you like to choose another action?"
 #~ msgstr "Malfermo malsukcesis, ĉu vi deziras elekti alian agon?"
-
 #~ msgid ""
 #~ "No other applications are available to view this file.  If you copy this "
 #~ "file onto your computer, you may be able to open it."
 #~ msgstr ""
 #~ "Neniu alia aplikaĵo estas disponebla por vidi tiun ĉi dosieron. Se vi "
 #~ "kopias ĝin al via komputilo, vi eble povos ĝin malfermi."
-
 #~ msgid ""
 #~ "No other actions are available to view this file.  If you copy this file "
 #~ "onto your computer, you may be able to open it."
 #~ msgstr ""
 #~ "Neniu alia ago estas disponebla por vidi tiun ĉi dosieron. Se vi kopias "
 #~ "ĝin al via komputilo, vi eble povos ĝin malfermi."
-
 #~ msgid "Browse the file system with the file manager"
 #~ msgstr "Foliumi dosiersistemon per dosiera mastrumilo"
-
 #~ msgid "File Browser"
 #~ msgstr "Foliumilo de dosieroj"
-
 #~ msgid "Change the behaviour and appearance of file manager windows"
 #~ msgstr "Ŝanĝi la konduton kaj aperon de dosieradministrilaj fenestroj"
-
 #~ msgid "File Management"
 #~ msgstr "Administrado de dosieroj"
-
 #~ msgid "Home Folder"
 #~ msgstr "Hejma dosierujo"
-
 #~ msgid "Background"
 #~ msgstr "Fono"
-
 #~ msgid "The folder \"%s\" contains more files than Nautilus can handle."
 #~ msgstr ""
 #~ "La dosierujo \"%s\" enhavas pli da dosieroj ol Naŭtilo povas trakti."
-
 #~ msgid "Some files will not be displayed."
 #~ msgstr "Kelkaj dosieroj ne estos montritaj."
-
 #~ msgid "_Empty File"
 #~ msgstr "Malplena dosiero"
-
 #~ msgid "Create a new empty file inside this folder"
 #~ msgstr "Krei novan malplenan dosieron en tiu ĉi dosierujo"
-
 #~ msgid "_Format"
 #~ msgstr "_Formato"
-
 #~ msgid "Format the selected volume"
 #~ msgstr "Formati la elektitan datumportilon"
-
 #~ msgid "Format the volume associated with the open folder"
 #~ msgstr "Formatizi la dautmportilon ligitan kun la malfermita dosierujo"
-
 #~ msgid "_Home Folder"
 #~ msgstr "_Hejma dosierujo"
-
 #~ msgid "by _Emblems"
 #~ msgstr "laŭ _emblemoj"
-
 #~ msgid "Keep icons sorted by emblems in rows"
 #~ msgstr "Lasi piktogramojn ordigitaj laŭ emblemoj en vicoj"
-
 #~ msgid "Clean _Up by Name"
 #~ msgstr "_Vakigi laŭ nomo"
-
 #~ msgid "By _Emblems"
 #~ msgstr "Laŭ _emblemoj"
-
 #~ msgid "Emblems"
 #~ msgstr "Emblemoj"
-
 #~ msgid "Show Tree"
 #~ msgstr "Vidigi arbon"
-
 #~ msgid "[URI]"
 #~ msgstr "[URI]"
-
 #~ msgid "Custom Location"
 #~ msgstr "Propra loko"
-
 #~ msgid "Please enter a name and try again."
 #~ msgstr "Bv. entajpi nomon kaj provi denove."
-
 #~ msgid "_Location (URI):"
 #~ msgstr "_Loko (URI):"
-
 #~ msgid "Optional information:"
 #~ msgstr "Opcia Informo:"
-
 #~ msgid "Service _type:"
 #~ msgstr "Servo_tipo:"
-
 #~ msgid "Add _bookmark"
 #~ msgstr "_Aldoni legosignon"
-
 #~ msgid ""
 #~ "This is probably because the emblem is a permanent one, and not one that "
 #~ "you added yourself."
 #~ msgstr ""
 #~ "Ĉi tio probable estas ĉar la emblemo estas iu daŭra, kaj ne iu aldonata "
 #~ "de vi mem."
-
 #~ msgid "Rename Emblem"
 #~ msgstr "Alinomi emblemon"
-
 #~ msgid "Enter a new name for the displayed emblem:"
 #~ msgstr "Entajpi novan nomon por la montrita emblemo:"
-
 #~ msgid "Rename"
 #~ msgstr "Alinomi"
-
 #~ msgid "Add Emblems..."
 #~ msgstr "Aldoni emblemojn..."
-
 #~ msgid ""
 #~ "Enter a descriptive name next to each emblem.  This name will be used in "
 #~ "other places to identify the emblem."
 #~ msgstr ""
 #~ "Tajpu priskriban nomon apud ĉiu emblemo. Ĉi tiu nomo estos uzata en aliaj "
 #~ "lokoj por identigi la emblemon."
-
 #~ msgid ""
 #~ "Enter a descriptive name next to the emblem.  This name will be used in "
 #~ "other places to identify the emblem."
 #~ msgstr ""
 #~ "Tajpu priskriban nomon apud la emblemo. Ĉi tiu nomo estos uzata en aliaj "
 #~ "lokoj por identigi la emblemon."
-
 #~ msgid "Some of the files could not be added as emblems."
 #~ msgstr "Kelkaj el la dosieroj ne povas esti aldonitaj kiel emblemoj."
-
 #~ msgid "The emblems do not appear to be valid images."
 #~ msgstr "La emblemoj ŝajnas ne esti validaj bildoj."
-
 #~ msgid "None of the files could be added as emblems."
 #~ msgstr "Neniu el la dosieroj povas esti aldonitaj kiel emblemoj."
-
 #~ msgid "The file '%s' does not appear to be a valid image."
 #~ msgstr "La dosiero \"%s\" ne ŝajnas esti valida bildo."
-
 #~ msgid "The dragged file does not appear to be a valid image."
 #~ msgstr "La trenita dosiero ne ŝajnas esti valida bildo."
-
 #~ msgid "Show Emblems"
 #~ msgstr "Montri emblemojn"
-
 #~ msgid "Acti_on:"
 #~ msgstr "_Ago:"
-
 #~ msgid "CD _Audio:"
 #~ msgstr "Sona _k-disko:"
-
 #~ msgid "Media"
 #~ msgstr "Aŭdvidaĵo"
-
 #~ msgid "_DVD Video:"
 #~ msgstr "Vida _DVD:"
-
 #~ msgid "_Music Player:"
 #~ msgstr "Muzika ludilo:"
-
 #~ msgid "_Photos:"
 #~ msgstr "_Fotoj:"
-
 #~ msgid "_Software:"
 #~ msgstr "_Programaro:"
-
 #~ msgid "History"
 #~ msgstr "Historio"
-
 #~ msgid "Show History"
 #~ msgstr "Montri historion"
-
 #~ msgid "Information"
 #~ msgstr "Informo"
-
 #~ msgid "Show Information"
 #~ msgstr "Vidigi Informon"
-
 #~ msgid "Use _Default Background"
 #~ msgstr "Uzi _defaŭltan fonon"
-
 #~ msgid "You cannot assign more than one custom icon at a time."
 #~ msgstr "Vi ne povas atribui pli ol unu propra bildsimbolo samtempe."
-
 #~ msgid "You can only use images as custom icons."
 #~ msgstr "Vi povas nur uzi bildojn kiel propraj piktogramoj."
-
 #~ msgid "_Side Pane"
 #~ msgstr "Flanka Panelo"
-
 #~ msgid "Notes"
 #~ msgstr "Notoj"
-
 #~ msgid "Show Notes"
 #~ msgstr "Montri notojn"
-
 #~ msgid "Show Places"
 #~ msgstr "Vidigi ejoj"
-
 #~ msgid "Backgrounds and Emblems"
 #~ msgstr "Fonoj kaj Emblemoj"
-
 #~ msgid "_Remove..."
 #~ msgstr "_Forigi..."
-
 #~ msgid "Add new..."
 #~ msgstr "Aldoni novan..."
-
 #~ msgid "Sorry, but pattern %s could not be deleted."
 #~ msgstr "Bedaŭrinde la ŝablono %s ne povas esti forigita."
-
 #~ msgid "Check that you have permission to delete the pattern."
 #~ msgstr "Kontrolu se vi havas permeson por forigi la ŝablonon"
-
 #~ msgid "Sorry, but emblem %s could not be deleted."
 #~ msgstr "Bedaŭrinde la emblemo %s ne povas esti forigita."
-
 #~ msgid "Check that you have permission to delete the emblem."
 #~ msgstr "Kontrolu se vi havas permeson por forigi la emblemon."
-
 #~ msgid "Select an Image File for the New Emblem"
 #~ msgstr "Elektu bildodosieron por la nova emblemo"
-
 #~ msgid "Create a New Emblem"
 #~ msgstr "Krei novan emblemon"
-
 #~ msgid "_Keyword:"
 #~ msgstr "Ŝlosil_vorto:"
-
 #~ msgid "_Image:"
 #~ msgstr "_Bildo:"
-
 #~ msgid "Create a New Color:"
 #~ msgstr "Krei novan koloron:"
-
 #~ msgid "Color _name:"
 #~ msgstr "Kolor_nomo:"
-
 #~ msgid "Color _value:"
 #~ msgstr "Kolor_valoro:"
-
 #~ msgid "Sorry, but you cannot replace the reset image."
 #~ msgstr "Bedaŭrinde vi ne rajtas anstataŭigi la reŝargan bildon 'reŝarĝo'."
-
 #~ msgid "Reset is a special image that cannot be deleted."
 #~ msgstr "Reŝarĝo estas speciala bildo neforigebla."
-
 #~ msgid "Sorry, but the pattern %s could not be installed."
 #~ msgstr "Bedaŭrinde la ŝablono %s ne povas esti instalita."
-
 #~ msgid "Select an Image File to Add as a Pattern"
 #~ msgstr "Elektu bildodosieron por aldoni kiel ŝablono"
-
 #~ msgid "The color cannot be installed."
 #~ msgstr "La koloro ne instaleblas."
-
 #~ msgid "Sorry, but you must specify an unused color name for the new color."
 #~ msgstr "Vi devas specifi neuzitan nomon de koloro por la nova koloro."
-
 #~ msgid "Sorry, but you must specify a non-blank name for the new color."
 #~ msgstr "Vi devas specifi nemalplenan nomon por la nova koloro."
-
 #~ msgid "Select a Color to Add"
 #~ msgstr "Elektu koloron por aldoni"
-
 #~ msgid "Sorry, but \"%s\" is not a usable image file."
 #~ msgstr "Bedaŭrinde \"%s\" ne estas uzebla bilda dosiero."
-
 #~ msgid "Select a Category:"
 #~ msgstr "Elekti kategorion:"
-
 #~ msgid "C_ancel Remove"
 #~ msgstr "Rezigni Forigon"
-
 #~ msgid "_Add a New Pattern..."
 #~ msgstr "_Aldoni novan ŝablonon..."
-
 #~ msgid "_Add a New Color..."
 #~ msgstr "_Aldoni novan koloron..."
-
 #~ msgid "_Add a New Emblem..."
 #~ msgstr "_Aldoni novan emblemon..."
-
 #~ msgid "Click on a pattern to remove it"
 #~ msgstr "Alklaku ŝablonon por forigi ĝin"
-
 #~ msgid "Click on a color to remove it"
 #~ msgstr "Alklaku koloron por forigi ĝin"
-
 #~ msgid "Click on an emblem to remove it"
 #~ msgstr "Alklaku emblemon por forigi ĝin"
-
 #~ msgid "Patterns:"
 #~ msgstr "Ŝablonoj:"
-
 #~ msgid "Colors:"
 #~ msgstr "Koloroj:"
-
 #~ msgid "Emblems:"
 #~ msgstr "Emblemoj:"
-
 #~ msgid "_Remove a Pattern..."
 #~ msgstr "Fo_rigi ŝablonon..."
-
 #~ msgid "_Remove a Color..."
 #~ msgstr "Fo_rigi koloron..."
-
 #~ msgid "_Remove an Emblem..."
 #~ msgstr "Fo_rigi emblemon..."
-
 #~ msgid "Close the side pane"
 #~ msgstr "Fermi flankan panelon"
-
 #~ msgid "_Backgrounds and Emblems..."
 #~ msgstr "_Fonoj kaj emblemoj..."
-
 #~ msgid ""
 #~ "Display patterns, colors, and emblems that can be used to customize "
 #~ "appearance"
 #~ msgstr ""
 #~ "Montras ŝablonojn, kolorojn kaj emblemojn uzeblaj por akomodi aspekton"
-
 #~ msgid "Archive Mounter"
 #~ msgstr "Arĥivsurmetilo"
-
 #~ msgid ""
 #~ "A folder named \"%B\" already exists.  Do you want to merge the source "
 #~ "folder?"
 #~ msgstr ""
 #~ "A folder named \"%B\" already exists.  Do you want to merge the source "
 #~ "folder?"
-
 #~ msgid "A folder named \"%B\" already exists.  Do you want to replace it?"
 #~ msgstr "A folder named \"%B\" already exists.  Do you want to replace it?"
-
 #~ msgid "A file named \"%B\" already exists.  Do you want to replace it?"
 #~ msgstr "A file named \"%B\" already exists.  Do you want to replace it?"
-
 #~ msgid "Could not use system package installer"
 #~ msgstr "Ne sukcesis uzi la operaciuman pakaĵinstalilon"
-
 #~ msgid "Show copy dialog"
 #~ msgstr "Montri kopiadan dialogon"
-
 #~ msgid "<b>Width:</b> %d pixel\n"
 #~ msgid_plural "<b>Width:</b> %d pixels\n"
 #~ msgstr[0] "<b>Larĝo:</b> %d bitbildero\n"
 #~ msgstr[1] "<b>Larĝo:</b> %d bitbilderoj\n"
-
 #~ msgid "<b>Height:</b> %d pixel\n"
 #~ msgid_plural "<b>Height:</b> %d pixels\n"
 #~ msgstr[0] "<b>Alto:</b> %d bitbildero\n"
 #~ msgstr[1] "<b>Alto:</b> %d bitbilderoj\n"
-
 #~ msgid "Toggle between button and text-based location bar"
 #~ msgstr "Ŝalti inter butona kaj teksta vojmontrilo"
-
 #~ msgid "throbber"
 #~ msgstr "throbber"
-
 #~ msgid "Always open in _browser windows"
 #~ msgstr "Ĉiam malfermi en foliumaj fenestroj"
-
 #~ msgid "provides visual status"
 #~ msgstr "provizas vidan statuson"
+
