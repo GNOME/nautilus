@@ -877,6 +877,22 @@ nautilus_window_pane_sync_location_widgets (NautilusWindowPane *pane)
 	}
 }
 
+static void
+toggle_toolbar_search_button (NautilusWindowPane *pane)
+{
+	GtkActionGroup *group;
+	GtkAction *action;
+
+	group = pane->action_group;
+	action = gtk_action_group_get_action (group, NAUTILUS_ACTION_SEARCH);
+
+	g_signal_handlers_block_by_func (action,
+					 action_show_hide_search_callback, pane);
+	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), TRUE);
+	g_signal_handlers_unblock_by_func (action,
+					   action_show_hide_search_callback, pane);	
+}
+
 void
 nautilus_window_pane_sync_search_widgets (NautilusWindowPane *pane)
 {
@@ -892,10 +908,13 @@ nautilus_window_pane_sync_search_widgets (NautilusWindowPane *pane)
 		search_directory = NAUTILUS_SEARCH_DIRECTORY (directory);
 	}
 
-	if (search_directory != NULL &&
-	    !nautilus_search_directory_is_saved_search (search_directory)) {
-		nautilus_toolbar_set_show_search_bar (NAUTILUS_TOOLBAR (pane->tool_bar), TRUE);
-		pane->temporary_search_bar = FALSE;
+	if (search_directory != NULL) {
+		if (!nautilus_search_directory_is_saved_search (search_directory)) {
+			nautilus_toolbar_set_show_search_bar (NAUTILUS_TOOLBAR (pane->tool_bar), TRUE);
+			pane->temporary_search_bar = FALSE;
+		} else {
+			toggle_toolbar_search_button (pane);
+		}
 	} else {
 		search_bar_cancel_callback (pane->search_bar, pane);
 	}

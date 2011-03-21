@@ -88,6 +88,7 @@ real_update_query_editor (NautilusWindowSlot *slot)
 		if (nautilus_search_directory_is_saved_search (search_directory)) {
 			query_editor = nautilus_query_editor_new (TRUE,
 								  nautilus_search_directory_is_indexed (search_directory));
+			nautilus_window_pane_sync_search_widgets (slot->pane);
 		} else {
 			query_editor = nautilus_query_editor_new_with_bar (FALSE,
 									   nautilus_search_directory_is_indexed (search_directory),
