@@ -63,6 +63,10 @@ nautilus_compute_title_for_location (GFile *location)
 
 	/* TODO-gio: This doesn't really work all that great if the
 	   info about the file isn't known atm... */
+
+	if (nautilus_is_home_directory (location)) {
+		return g_strdup (_("Home"));
+	}
 	
 	title = NULL;
 	if (location) {
