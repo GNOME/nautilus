@@ -4181,7 +4181,7 @@ open_one_in_new_window (gpointer data, gpointer callback_data)
 
 	nautilus_view_activate_file (NAUTILUS_VIEW (callback_data),
 				     NAUTILUS_FILE (data),
-				     0);
+				     NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW);
 }
 
 static void
