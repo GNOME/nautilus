@@ -27,7 +27,6 @@ NautilusSearchBar .entry {
     color: @theme_base_color;
 }
 
-
 #nautilus-search-button:active,
 #nautilus-search-button:active:prelight {
     color: darker (@cluebar_color);
@@ -36,17 +35,16 @@ NautilusSearchBar .entry {
 #nautilus-tab-close-button {
     -GtkWidget-focus-padding : 0;
     -GtkWidget-focus-line-width: 0;
-    xthickness: 0;
-    ythickness: 0;
 }
 
 NautilusFloatingBar {
-    background-color: shade (@theme_base_color, 0.95);
-    border-color: darker (shade (@theme_base_color, 0.95));
-    border-radius: 2;
+    background-image: -gtk-gradient (linear,
+                                     left top, left bottom,
+                                     from (shade (@notebook_tab_gradient_a, 0.97)),
+                                     to (shade (@notebook_tab_gradient_b, 0.90)));
+    border-color: shade (@notebook_tab_gradient_b, 0.80);
+    border-radius: 1;
     border-width: 1;
-
-    padding: 0;
 }
 
 NautilusFloatingBar > GtkBox > GtkButton {
