@@ -29,7 +29,7 @@
 #include <string.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
-#include <eel/eel-gtk-macros.h>
+
 #include <eel/eel-glib-extensions.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
@@ -87,9 +87,6 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-static void  nautilus_query_editor_class_init       (NautilusQueryEditorClass *class);
-static void  nautilus_query_editor_init             (NautilusQueryEditor      *editor);
-
 static void entry_activate_cb (GtkWidget *entry, NautilusQueryEditor *editor);
 static void entry_changed_cb  (GtkWidget *entry, NautilusQueryEditor *editor);
 static void nautilus_query_editor_changed_force (NautilusQueryEditor *editor,
@@ -128,21 +125,7 @@ static NautilusQueryEditorRowOps row_type[] = {
 	},
 };
 
-EEL_CLASS_BOILERPLATE (NautilusQueryEditor,
-		       nautilus_query_editor,
-		       GTK_TYPE_VBOX)
-
-static void
-nautilus_query_editor_finalize (GObject *object)
-{
-	NautilusQueryEditor *editor;
-
-	editor = NAUTILUS_QUERY_EDITOR (object);
-
-	g_free (editor->details);
-
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
-}
+G_DEFINE_TYPE (NautilusQueryEditor, nautilus_query_editor, GTK_TYPE_BOX);
 
 static void
 nautilus_query_editor_dispose (GObject *object)
@@ -168,18 +151,47 @@ nautilus_query_editor_dispose (GObject *object)
 		eel_remove_weak_pointer (&editor->details->bar);
 	}
 
-	EEL_CALL_PARENT (G_OBJECT_CLASS, dispose, (object));
+	G_OBJECT_CLASS (nautilus_query_editor_parent_class)->dispose (object);
+}
+
+static gboolean
+nautilus_query_editor_draw (GtkWidget *widget,
+			    cairo_t *cr)
+{
+	GtkStyleContext *context;
+
+	context = gtk_widget_get_style_context (widget);
+
+	gtk_style_context_save (context);
+	gtk_style_context_add_class (context, GTK_STYLE_CLASS_INFO);
+
+	gtk_render_background (context, cr, 0, 0,
+			       gtk_widget_get_allocated_width (widget),
+			       gtk_widget_get_allocated_height (widget));
+
+	gtk_render_frame (context, cr, 0, 0,
+			  gtk_widget_get_allocated_width (widget),
+			  gtk_widget_get_allocated_height (widget));
+
+	gtk_style_context_restore (context);
+
+	GTK_WIDGET_CLASS (nautilus_query_editor_parent_class)->draw (widget, cr);
+
+	return FALSE;
 }
 
 static void
 nautilus_query_editor_class_init (NautilusQueryEditorClass *class)
 {
 	GObjectClass *gobject_class;
+	GtkWidgetClass *widget_class;
 	GtkBindingSet *binding_set;
 
 	gobject_class = G_OBJECT_CLASS (class);
-	gobject_class->finalize = nautilus_query_editor_finalize;
         gobject_class->dispose = nautilus_query_editor_dispose;
+
+	widget_class = GTK_WIDGET_CLASS (class);
+	widget_class->draw = nautilus_query_editor_draw;
 
 	signals[CHANGED] =
 		g_signal_new ("changed",
@@ -201,6 +213,8 @@ nautilus_query_editor_class_init (NautilusQueryEditorClass *class)
 
 	binding_set = gtk_binding_set_by_class (class);
 	gtk_binding_entry_add_signal (binding_set, GDK_KEY_Escape, 0, "cancel", 0);
+
+	g_type_class_add_private (class, sizeof (NautilusQueryEditorDetails));
 }
 
 static void
@@ -952,8 +966,11 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
 	GtkWidget *hbox, *label, *button;
 	char *label_markup;
 
-	editor->details = g_new0 (NautilusQueryEditorDetails, 1);
+	editor->details = G_TYPE_INSTANCE_GET_PRIVATE (editor, NAUTILUS_TYPE_QUERY_EDITOR,
+						       NautilusQueryEditorDetails);
 	editor->details->is_visible = TRUE;
+
+	gtk_orientable_set_orientation (GTK_ORIENTABLE (editor), GTK_ORIENTATION_VERTICAL);
 
 	editor->details->invisible_vbox = gtk_vbox_new (FALSE, 6);
 	gtk_box_pack_start (GTK_BOX (editor), editor->details->invisible_vbox,
@@ -974,6 +991,10 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
 	label_markup = g_strconcat ("<b>", _("Search Folder"), "</b>", NULL);
 	gtk_label_set_markup (GTK_LABEL (label), label_markup);
 	g_free (label_markup);
+
+	gtk_style_context_add_class (gtk_widget_get_style_context (label),
+				     "nautilus-cluebar-label");
+	
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 	gtk_widget_show (label);
 	
@@ -1052,6 +1073,10 @@ setup_internal_entry (NautilusQueryEditor *editor)
 	gtk_label_set_markup_with_mnemonic (GTK_LABEL (label), label_markup);
 	g_free (label_markup);
 	gtk_widget_show (label);
+
+	gtk_style_context_add_class (gtk_widget_get_style_context (label),
+				     "nautilus-cluebar-label");
+	
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
 	editor->details->entry = gtk_entry_new ();

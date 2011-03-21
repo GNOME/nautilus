@@ -45,12 +45,12 @@
 typedef struct NautilusQueryEditorDetails NautilusQueryEditorDetails;
 
 typedef struct NautilusQueryEditor {
-	GtkVBox parent;
+	GtkBox parent;
 	NautilusQueryEditorDetails *details;
 } NautilusQueryEditor;
 
 typedef struct {
-	GtkVBoxClass parent_class;
+	GtkBoxClass parent_class;
 
 	void (* changed) (NautilusQueryEditor  *editor,
 			  NautilusQuery        *query,
