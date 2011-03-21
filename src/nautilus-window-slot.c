@@ -663,9 +663,9 @@ NautilusView *
 nautilus_window_slot_get_current_view (NautilusWindowSlot *slot)
 {
 	if (slot->content_view != NULL) {
-		return g_object_ref (slot->content_view);
+		return slot->content_view;
 	} else if (slot->new_content_view) {
-		return g_object_ref (slot->new_content_view);
+		return slot->new_content_view;
 	}
 
 	return NULL;

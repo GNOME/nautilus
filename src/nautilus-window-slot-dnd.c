@@ -263,10 +263,6 @@ slot_proxy_handle_drop (GtkWidget                *widget,
     gtk_drag_finish (context, FALSE, FALSE, time);
   }
 
-  if (target_view != NULL) {
-    g_object_unref (target_view);
-  }
-
   g_free (target_uri);
 
   drag_info_clear (drag_info);
