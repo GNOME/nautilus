@@ -348,7 +348,8 @@ nautilus_directory_get_internal (GFile *location, gboolean create)
 	/* Create the hash table first time through. */
 	if (directories == NULL) {
 		directories = eel_g_hash_table_new_free_at_exit
-			(g_file_hash, (GCompareFunc)g_file_equal, "nautilus-directory.c: directories");
+			(g_file_hash, (GCompareFunc)g_file_equal, NULL,
+			 "nautilus-directory.c: directories");
 
 		add_preferences_callbacks ();
 	}

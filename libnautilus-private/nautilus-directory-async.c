@@ -365,7 +365,7 @@ async_job_start (NautilusDirectory *directory,
 	if (async_job_count >= MAX_ASYNC_JOBS) {
 		if (waiting_directories == NULL) {
 			waiting_directories = eel_g_hash_table_new_free_at_exit
-				(NULL, NULL,
+				(NULL, NULL, NULL,
 				 "nautilus-directory-async.c: waiting_directories");
 		}
 
@@ -381,7 +381,7 @@ async_job_start (NautilusDirectory *directory,
 		char *uri;
 		if (async_jobs == NULL) {
 			async_jobs = eel_g_hash_table_new_free_at_exit
-				(g_str_hash, g_str_equal,
+				(g_str_hash, g_str_equal, NULL,
 				 "nautilus-directory-async.c: async_jobs");
 		}
 		uri = nautilus_directory_get_uri (directory);

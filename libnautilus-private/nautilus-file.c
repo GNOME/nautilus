@@ -550,7 +550,7 @@ modify_link_hash_table (NautilusFile *file,
 	/* Create the hash table first time through. */
 	if (symbolic_links == NULL) {
 		symbolic_links = eel_g_hash_table_new_free_at_exit
-			(g_str_hash, g_str_equal, "nautilus-file.c: symbolic_links");
+			(g_str_hash, g_str_equal, NULL, "nautilus-file.c: symbolic_links");
 	}
 
 	target_uri = nautilus_file_get_symbolic_link_target_uri (file);

@@ -272,7 +272,7 @@ eel_timed_wait_start_with_duration (int duration,
 	/* Put in the hash table so we can find it later. */
 	if (timed_wait_hash_table == NULL) {
 		timed_wait_hash_table = eel_g_hash_table_new_free_at_exit
-			(timed_wait_hash, timed_wait_hash_equal, __FILE__ ": timed wait");
+			(timed_wait_hash, timed_wait_hash_equal, NULL, __FILE__ ": timed wait");
 	}
 	g_assert (g_hash_table_lookup (timed_wait_hash_table, wait) == NULL);
 	g_hash_table_insert (timed_wait_hash_table, wait, wait);

@@ -48,7 +48,7 @@
 typedef struct {
 	GHashTable *hash_table;
 	char *display_name;
-	gboolean keys_known_to_be_strings;
+	GHFunc foreach_func;
 } HashTableToFree;
 
 static GList *hash_tables_to_free_at_exit;
@@ -533,16 +533,16 @@ free_hash_tables_at_exit (void)
 
 		size = g_hash_table_size (hash_table_to_free->hash_table);
 		if (size != 0) {
-			if (hash_table_to_free->keys_known_to_be_strings) {
+			if (hash_table_to_free->foreach_func) {
 				g_print ("\n--- Hash table keys for warning below:\n");
 				g_hash_table_foreach (hash_table_to_free->hash_table,
-						      print_key_string,
+						      hash_table_to_free->foreach_func,
 						      NULL);
 			}
 			g_warning ("\"%s\" hash table still has %u element%s at quit time%s",
 				   hash_table_to_free->display_name, size,
 				   size == 1 ? "" : "s",
-				   hash_table_to_free->keys_known_to_be_strings
+				   hash_table_to_free->foreach_func
 				   ? " (keys above)" : "");
 		}
 
@@ -557,6 +557,7 @@ free_hash_tables_at_exit (void)
 GHashTable *
 eel_g_hash_table_new_free_at_exit (GHashFunc hash_func,
 				   GCompareFunc key_compare_func,
+				   GHFunc foreach_func,
 				   const char *display_name)
 {
 	GHashTable *hash_table;
@@ -575,8 +576,11 @@ eel_g_hash_table_new_free_at_exit (GHashFunc hash_func,
 	hash_table_to_free = g_new (HashTableToFree, 1);
 	hash_table_to_free->hash_table = hash_table;
 	hash_table_to_free->display_name = g_strdup (display_name);
-	hash_table_to_free->keys_known_to_be_strings =
-		hash_func == g_str_hash;
+	hash_table_to_free->foreach_func = foreach_func;
+	if (hash_table_to_free->foreach_func == NULL &&
+	    hash_func == g_str_hash) {
+		hash_table_to_free->foreach_func = print_key_string;
+	}
 
 	hash_tables_to_free_at_exit = g_list_prepend
 		(hash_tables_to_free_at_exit, hash_table_to_free);
