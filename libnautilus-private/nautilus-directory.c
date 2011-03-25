@@ -331,6 +331,16 @@ add_preferences_callbacks (void)
 				  NULL);
 }
 
+static void
+print_key_directory (gpointer key, gpointer value, gpointer callback_data)
+{
+	char *uri;
+
+	uri = g_file_get_uri (G_FILE (key));
+	g_print ("--> %s\n", uri);
+	g_free (uri);
+}
+
 /**
  * nautilus_directory_get_by_uri:
  * @uri: URI of directory to get.
@@ -348,7 +358,7 @@ nautilus_directory_get_internal (GFile *location, gboolean create)
 	/* Create the hash table first time through. */
 	if (directories == NULL) {
 		directories = eel_g_hash_table_new_free_at_exit
-			(g_file_hash, (GCompareFunc)g_file_equal, NULL,
+			(g_file_hash, (GCompareFunc)g_file_equal, print_key_directory,
 			 "nautilus-directory.c: directories");
 
 		add_preferences_callbacks ();
