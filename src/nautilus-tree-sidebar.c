@@ -1639,7 +1639,6 @@ nautilus_tree_sidebar_new (NautilusWindow *window)
 	
 	sidebar = g_object_new (fm_tree_view_get_type (), NULL);
 	fm_tree_view_set_parent_window (sidebar, window);
-	g_object_ref_sink (sidebar);
 
 	return GTK_WIDGET (sidebar);
 }

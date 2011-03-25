@@ -3350,7 +3350,6 @@ nautilus_places_sidebar_new (NautilusWindow *window)
 	
 	sidebar = g_object_new (nautilus_places_sidebar_get_type (), NULL);
 	nautilus_places_sidebar_set_parent_window (sidebar, window);
-	g_object_ref_sink (sidebar);
 
 	return GTK_WIDGET (sidebar);
 }
