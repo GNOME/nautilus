@@ -616,6 +616,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 			nautilus_file_unref (file);
 			continue;
 		}
+		nautilus_file_unref (file);
 
 		bookmark_name = nautilus_bookmark_get_name (bookmark);
 		icon = nautilus_bookmark_get_icon (bookmark);
