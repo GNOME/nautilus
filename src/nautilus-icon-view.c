@@ -198,6 +198,7 @@ static void                 preview_audio                             (NautilusI
 static void                 update_layout_menus                       (NautilusIconView     *view);
 static NautilusFileSortType get_default_sort_order                    (NautilusFile         *file,
 								       gboolean             *reversed);
+static void                 nautilus_icon_view_clear                  (NautilusView         *view);
 
 G_DEFINE_TYPE (NautilusIconView, nautilus_icon_view, NAUTILUS_TYPE_VIEW);
 
@@ -207,6 +208,8 @@ nautilus_icon_view_destroy (GtkWidget *object)
 	NautilusIconView *icon_view;
 
 	icon_view = NAUTILUS_ICON_VIEW (object);
+
+	nautilus_icon_view_clear (NAUTILUS_VIEW (object));
 
         if (icon_view->details->react_to_icon_change_idle_id != 0) {
                 g_source_remove (icon_view->details->react_to_icon_change_idle_id);
@@ -2544,6 +2547,8 @@ create_icon_container (NautilusIconView *icon_view)
 
 	icon_container = nautilus_icon_view_container_new (icon_view);
 	icon_view->details->icon_container = GTK_WIDGET (icon_container);
+	g_object_add_weak_pointer (G_OBJECT (icon_container),
+				   (gpointer *) &icon_view->details->icon_container);
 	
 	gtk_widget_set_can_focus (GTK_WIDGET (icon_container), TRUE);
 	
