@@ -674,7 +674,7 @@ connect_dialog_response_cb (NautilusConnectServerDialog *dialog,
 	case GTK_RESPONSE_HELP :
 		error = NULL;
 		gtk_show_uri (gtk_window_get_screen (GTK_WINDOW (dialog)),
-			      "ghelp:user-guide#nautilus-server-connect",
+			      "ghelp:gnome-help#nautilus-connect",
 			      gtk_get_current_event_time (), &error);
 		if (error) {
 			eel_show_error_dialog (_("There was an error displaying help."), error->message,

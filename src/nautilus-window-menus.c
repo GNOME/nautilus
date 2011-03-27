@@ -422,7 +422,7 @@ action_nautilus_manual_callback (GtkAction *action,
 		nautilus_launch_application_from_command (gtk_window_get_screen (GTK_WINDOW (window)), "gnome-help", FALSE, NULL);
 	} else {
 		gtk_show_uri (gtk_window_get_screen (GTK_WINDOW (window)),
-			      "ghelp:user-guide#gosnautilus-1",
+			      "ghelp:gnome-help#files",
 			      gtk_get_current_event_time (), &error);
 	}
 

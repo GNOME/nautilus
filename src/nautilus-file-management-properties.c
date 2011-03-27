@@ -225,25 +225,22 @@ nautilus_file_management_properties_dialog_response_cb (GtkDialog *parent,
 		switch (gtk_notebook_get_current_page (GTK_NOTEBOOK (gtk_builder_get_object (builder, "notebook1")))) {
 		default:
 		case 0:
-			section = "gosnautilus-438";
+			section = "nautilus-views";
 			break;
 		case 1:
-			section = "gosnautilus-56";
+			section = "nautilus-behavior";
 			break;
 		case 2:
-			section = "gosnautilus-439";
+			section = "nautilus-display";
 			break;
 		case 3:
-			section = "gosnautilus-490";
+			section = "nautilus-list";
 			break;
 		case 4:
-			section = "gosnautilus-60";
-			break;
-		case 5:
-			section = "gosnautilus-61";
+			section = "nautilus-preview";
 			break;
 		}
-		preferences_show_help (GTK_WINDOW (parent), "user-guide", section);
+		preferences_show_help (GTK_WINDOW (parent), "gnome-help", section);
 	} else if (response_id == GTK_RESPONSE_CLOSE) {
 		gtk_widget_destroy (GTK_WIDGET (parent));
 	}
