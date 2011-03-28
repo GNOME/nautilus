@@ -188,8 +188,11 @@ static void
 eel_accessibility_destroy (gpointer data,
 			   GObject *where_the_object_was)
 {
+	g_object_set_qdata
+		(G_OBJECT (data), get_quark_gobject (), NULL);
 	atk_object_notify_state_change
-		(ATK_OBJECT (data), ATK_STATE_DEFUNCT, TRUE); 
+		(ATK_OBJECT (data), ATK_STATE_DEFUNCT, TRUE);
+	g_object_unref (data);
 }
 
 /**
