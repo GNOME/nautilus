@@ -137,12 +137,13 @@ update_button_types (NautilusPathBar *path_bar)
 		ButtonData *button_data;
 		button_data = BUTTON_DATA (list->data);
 		if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button_data->button))) {
-			path = button_data->path;
+			path = g_object_ref (button_data->path);
 			break;
 		}
         }
 	if (path != NULL) {
 		nautilus_path_bar_update_path (path_bar, path, TRUE);
+		g_object_unref (path);
 	}
 }
 
