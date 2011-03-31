@@ -142,6 +142,8 @@ struct NautilusIconCanvasItemDetails {
 	EelIRect bounds_cache_for_layout;
 	EelIRect bounds_cache_for_entire_item;
 
+	GdkWindow *cursor_window;
+
 	/* Accessibility bits */
 	GailTextUtil *text_util;
 };
@@ -218,6 +220,11 @@ nautilus_icon_canvas_item_finalize (GObject *object)
 	g_assert (NAUTILUS_IS_ICON_CANVAS_ITEM (object));
 
 	details = NAUTILUS_ICON_CANVAS_ITEM (object)->details;
+
+	if (details->cursor_window != NULL) {
+		gdk_window_set_cursor (details->cursor_window, NULL);
+		g_object_unref (details->cursor_window);
+	}
 
 	if (details->pixbuf != NULL) {
 		g_object_unref (details->pixbuf);
@@ -1667,8 +1674,10 @@ nautilus_icon_canvas_item_event (EelCanvasItem *item, GdkEvent *event)
 {
 	NautilusIconCanvasItem *icon_item;
 	GdkCursor *cursor;
+	GdkWindow *cursor_window;
 
 	icon_item = NAUTILUS_ICON_CANVAS_ITEM (item);
+	cursor_window = ((GdkEventAny *)event)->window;
 
 	switch (event->type) {
 	case GDK_ENTER_NOTIFY:
@@ -1683,8 +1692,10 @@ nautilus_icon_canvas_item_event (EelCanvasItem *item, GdkEvent *event)
 			if (in_single_click_mode ()) {
 				cursor = gdk_cursor_new_for_display (gdk_display_get_default(),
 								     GDK_HAND2);
-				gdk_window_set_cursor (((GdkEventAny *)event)->window, cursor);
+				gdk_window_set_cursor (cursor_window, cursor);
 				g_object_unref (cursor);
+
+				icon_item->details->cursor_window = g_object_ref (cursor_window);
 			}
 
 			/* FIXME bugzilla.gnome.org 42473: 
@@ -1730,7 +1741,8 @@ nautilus_icon_canvas_item_event (EelCanvasItem *item, GdkEvent *event)
 			eel_canvas_item_request_update (item);
 
 			/* show default cursor */
-			gdk_window_set_cursor (((GdkEventAny *)event)->window, NULL);
+			gdk_window_set_cursor (cursor_window, NULL);
+			g_clear_object (&icon_item->details->cursor_window);
 		}
 		return TRUE;
 		
