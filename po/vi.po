@@ -13,7 +13,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
 "POT-Creation-Date: 2011-03-23 10:24+0000\n"
-"PO-Revision-Date: 2011-03-05 16:19+0700\n"
+"PO-Revision-Date: 2011-04-02 12:58+0700\n"
 "Last-Translator: Nguyễn Thái Ngọc Duy <pclouds@gmail.com>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -1596,7 +1596,7 @@ msgstr ""
 msgid ""
 "A string containing the saved geometry and coordinates string for navigation "
 "windows."
-msgstr ""
+msgstr "Chuỗi chứ toạ độ được lưu của cửa sổ duyệt."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:4
 #, no-c-format
@@ -1870,7 +1870,6 @@ msgstr ""
 "động của Nautilus trước phiên bản 2.6, và một phần người thích cách này hơn."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:48
-#, fuzzy
 #| msgid ""
 #| "If set to true, then hidden files are shown in the file manager. Hidden "
 #| "files are either dotfiles or are listed in the folder's .hidden file."
@@ -1891,7 +1890,7 @@ msgid ""
 "themselves in this key by setting the key to a space-separated string of "
 "their executable name and any command line options. If the executable name "
 "is not set to a full path, it will be searched for in the search path."
-msgstr ""
+msgstr "Nếu đặt, Nautilus sẽ nối URI của tập tin được chọn vào đuôi và xem kết quả như là dòng lệnh để đổi tên số hàng loạt. Ứng dụng đổi tên hàng loạt có thể tự đăng ký bằng khoá này, cách nhau bởi khoảng trắng, tên chương trình và các tuỳ chọn dòng lệnh. Nếu tên chương trình không chứa đường dẫn đầy đủ, chương trình sẽ được tìm."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:50
 msgid ""
@@ -2093,7 +2092,6 @@ msgstr ""
 "mẫu, chỉ dùng ảnh biểu tượng chung."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:82
-#, fuzzy
 #| msgid ""
 #| "Speed tradeoff for when to show the number of items in a folder. If set "
 #| "to \"always\" then always show item counts, even if the folder is on a "
@@ -2105,11 +2103,7 @@ msgid ""
 "\"always\" then always show item counts, even if the folder is on a remote "
 "server. If set to \"local-only\" then only show counts for local file "
 "systems. If set to \"never\" then never bother to compute item counts."
-msgstr ""
-"Thoả hiệp tốc độ khi hiện số mục trong một thư mục. Nếu đặt là « luôn luôn » "
-"thì luôn luôn đếm số mục, kể cả nếu tập tin ở trên máy ở xa. Nếu đặt « chỉ "
-"tập tin cục bộ » thì chỉ xem số đếm nếu nằm trên hệ thống tập tin _cục bộ_. "
-"Nếu đặt « không bao giờ » thì không bao giờ đếm."
+msgstr "Thoả hiệp tốc độ khi hiện số mục trong một thư mục. Nếu đặt là \"always\" (luôn luôn) thì luôn luôn đếm số mục, kể cả nếu tập tin ở trên máy ở xa. Nếu đặt \"local-only\" (chỉ tập tin cục bộ) thì chỉ xem số đếm nếu nằm trên hệ thống tập tin cục bộ. Nếu đặt \"never\" (không bao giờ) thì không bao giờ đếm."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:83
 msgid "Text Ellipsis Limit"
@@ -2132,10 +2126,9 @@ msgid "The default width of the side pane in new windows."
 msgstr "Độ rộng mặc định của Ô lề trong cửa sổ mới."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:87
-#, fuzzy
 #| msgid "The font description used for the icons on the desktop."
 msgid "The font _description used for the icons on the desktop."
-msgstr "Mô tả phông chữ dùng cho các biểu tượng trên màn hình nền."
+msgstr "_Mô tả phông chữ dùng cho các biểu tượng trên màn hình nền."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:88
 msgid ""
@@ -2146,7 +2139,6 @@ msgstr ""
 "không hình thức »."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:89
-#, fuzzy
 #| msgid "Open this folder in a navigation window"
 msgid "The geometry string for a navigation window."
 msgstr "Chuỗi toạ độ cho cửa sổ duyệt."
@@ -2244,11 +2236,11 @@ msgstr "Nơi đặt thanh mới trong cửa sổ duyệt."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:105
 msgid "Whether the navigation window should be maximized by default."
-msgstr ""
+msgstr "Có mặc định phóng to cửa sổ không."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:106
 msgid "Whether the navigation window should be maximized."
-msgstr ""
+msgstr "Có mặc định phóng to cửa sổ không."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:107
 msgid "Whether to ask for confirmation when deleting files, or emptying Trash"
@@ -3568,7 +3560,7 @@ msgid "Mark as _Trusted"
 msgstr "Đánh dấu _tin cậy"
 
 #: ../src/nautilus-mime-actions.c:1786
-#, fuzzy, c-format
+#, c-format
 #| msgid "This will open %d separate tab."
 #| msgid_plural "This will open %d separate tabs."
 msgid "This will open %d separate application."
@@ -4430,7 +4422,6 @@ msgstr ""
 "lệnh là những mục đã chọn."
 
 #: ../src/nautilus-view.c:5678
-#, fuzzy
 #| msgid ""
 #| "All executable files in this folder will appear in the Scripts menu. "
 #| "Choosing a script from the menu will run that script.\n"
@@ -4479,25 +4470,25 @@ msgid ""
 "NAUTILUS_SCRIPT_NEXT_PANE_CURRENT_URI: URI for current location in the "
 "inactive pane of a split-view window"
 msgstr ""
-"Mọi tập tin có thể thực thi trong thư mục này sẽ xuất hiện trong trình đơn "
-"Văn lệnh Việc chọn một văn lệnh trong trình đơn thì sẽ chạy văn lệnh đó.\n"
+"Mọi tập tin có thể thực thi trong thư mục này sẽ xuất hiện trong trình đơn Văn lệnh Việc chọn một văn lệnh trong trình đơn thì sẽ chạy văn lệnh đó.\n"
 "\n"
-"Khi được thực thi từ thư mục cục bộ, các văn lệnh sẽ nhận những tên các tập "
-"tin được chọn. Khi được thực thi từ thư mục ở xa (v.d.: thư mục hiển thị nội "
-"dung http hay ftp), các văn lệnh sẽ không nhận tham số nào.\n"
+"Khi được thực thi từ thư mục cục bộ, các văn lệnh sẽ nhận những tên các tập tin được chọn. Khi được thực thi từ thư mục ở xa (v.d.: thư mục hiển thị nội dung http hay ftp), các văn lệnh sẽ không nhận tham số nào.\n"
 "\n"
-"Trong mọi trường hợp, Nautilus sẽ lập các biến môi trường sau đây, để các "
-"văn lệnh có thể dùng:\n"
+"Trong mọi trường hợp, Nautilus sẽ lập các biến môi trường sau đây, để các văn lệnh có thể dùng:\n"
 "\n"
-"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: đường dẫn định giới bằng ký tự dòng mới "
-"cho các tập tin được chọn (chỉ nếu là cục bộ)\n"
+"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: đường dẫn định giới bằng ký tự dòng mới cho các tập tin được chọn (chỉ nếu là cục bộ)\n"
 "\n"
-"NAUTILUS_SCRIPT_SELECTED_URIS: URI định giới bằng ký tự dòng mới cho tập tin "
-"được chọn\n"
+"NAUTILUS_SCRIPT_SELECTED_URIS: URI định giới bằng ký tự dòng mới cho tập tin được chọn\n"
 "\n"
 "NAUTILUS_SCRIPT_CURRENT_URI: URI cho địa điểm hiện thời\n"
 "\n"
-"NAUTILUS_SCRIPT_WINDOW_GEOMETRY: vị trí và kích cỡ cửa sổ hiện thời"
+"NAUTILUS_SCRIPT_WINDOW_GEOMETRY: vị trí và kích cỡ cửa sổ hiện thời\n"
+"\n"
+"NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_FILE_PATHS: đường dẫn cách nhau bằng dấu xuống hàng của những tập tin được chọn trong khung không hoạt động của cửa sổ chia đôi (chỉ cục bộ)\n"
+"\n"
+"NAUTILUS_SCRIPT_NEXT_PANE_SELECTED_URIS: URI cách nhau bằng dấu xuống hàng của những tập tin được chọn trong khung không hoạt động của cửa sổ chia đôi\n"
+"\n"
+"NAUTILUS_SCRIPT_NEXT_PANE_CURRENT_URI: URI của vị trí hiện thời của khung không hoạt động của cửa sổ chia đôi"
 
 #: ../src/nautilus-view.c:5757
 #, c-format
