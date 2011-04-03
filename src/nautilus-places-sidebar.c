@@ -3253,6 +3253,10 @@ nautilus_places_sidebar_dispose (GObject *object)
 					      desktop_setting_changed_callback,
 					      sidebar);
 
+	g_signal_handlers_disconnect_by_func (nautilus_preferences,
+					      bookmarks_popup_menu_detach_cb,
+					      sidebar);
+
 	g_signal_handlers_disconnect_by_func (gnome_background_preferences,
 					      desktop_setting_changed_callback,
 					      sidebar);
