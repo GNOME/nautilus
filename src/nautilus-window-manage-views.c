@@ -476,9 +476,11 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 
 	is_desktop = NAUTILUS_IS_DESKTOP_WINDOW (window);
 
-	/* we use the same window if the preferences say so, but also for the first desktop window */
-	use_same |= g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER) ||
-		(is_desktop && !nautilus_desktop_window_loaded (NAUTILUS_DESKTOP_WINDOW (window)));
+	if (is_desktop) {
+		use_same = !nautilus_desktop_window_loaded (NAUTILUS_DESKTOP_WINDOW (window));
+	} else {
+		use_same |= g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER);
+	}
 
 	/* and if the flags specify so, this is overridden */
 	if ((flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) != 0) {
