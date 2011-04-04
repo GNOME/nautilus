@@ -194,7 +194,7 @@ static void     link_info_done                                (NautilusDirectory
 							       NautilusFile           *file,
 							       const char             *uri,
 							       const char             *name,
-							       const char             *icon,
+							       GIcon                  *icon,
 							       gboolean                is_launcher,
 							       gboolean                is_foreign);
 static void     move_file_to_low_priority_queue               (NautilusDirectory      *directory,
@@ -3548,7 +3548,7 @@ link_info_done (NautilusDirectory *directory,
 		NautilusFile *file,
 		const char *uri,
 		const char *name, 
-		const char *icon,
+		GIcon *icon,
 		gboolean is_launcher,
 		gboolean is_foreign)
 {
@@ -3565,16 +3565,16 @@ link_info_done (NautilusDirectory *directory,
 	}
 	
 	file->details->got_link_info = TRUE;
-	g_free (file->details->custom_icon);
-	file->details->custom_icon = NULL;
+	g_clear_object (&file->details->custom_icon);
+
 	if (uri) {
 		g_free (file->details->activation_uri);
 		file->details->activation_uri = NULL;
 		file->details->got_custom_activation_uri = TRUE;
 		file->details->activation_uri = g_strdup (uri);
 	}
-	if (is_trusted) {
-		file->details->custom_icon = g_strdup (icon);
+	if (is_trusted && (icon != NULL)) {
+		file->details->custom_icon = g_object_ref (icon);
 	}
 	file->details->is_launcher = is_launcher;
 	file->details->is_foreign_link = is_foreign;
@@ -3623,7 +3623,8 @@ link_info_got_data (NautilusDirectory *directory,
 		    goffset bytes_read,
 		    char *file_contents)
 {
-	char *link_uri, *uri, *name, *icon;
+	char *link_uri, *uri, *name;
+	GIcon *icon;
 	gboolean is_launcher;
 	gboolean is_foreign;
 
@@ -3652,7 +3653,10 @@ link_info_got_data (NautilusDirectory *directory,
 	
 	g_free (uri);
 	g_free (name);
-	g_free (icon);
+
+	if (icon != NULL) {
+		g_object_unref (icon);
+	}
 
 	nautilus_directory_unref (directory);
 }

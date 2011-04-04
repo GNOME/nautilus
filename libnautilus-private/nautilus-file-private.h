@@ -106,7 +106,7 @@ struct NautilusFileDetails
 	char *top_left_text;
 
 	/* Info you might get from a link (.desktop, .directory or nautilus link) */
-	char *custom_icon;
+	GIcon *custom_icon;
 	char *activation_uri;
 
 	/* used during DND, for checking whether source and destination are on

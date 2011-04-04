@@ -800,8 +800,8 @@ finalize (GObject *object)
 	g_free (file->details->selinux_context);
 	g_free (file->details->description);
 	g_free (file->details->top_left_text);
-	g_free (file->details->custom_icon);
 	g_free (file->details->activation_uri);
+	g_clear_object (&file->details->custom_icon);
 
 	if (file->details->thumbnail) {
 		g_object_unref (file->details->thumbnail);
@@ -3923,13 +3923,7 @@ get_custom_icon (NautilusFile *file)
 	}
  
 	if (icon == NULL && file->details->got_link_info && file->details->custom_icon != NULL) {
-		if (g_path_is_absolute (file->details->custom_icon)) {
-			icon_file = g_file_new_for_path (file->details->custom_icon);
-			icon = g_file_icon_new (icon_file);
-			g_object_unref (icon_file);
-		} else {
-			icon = g_themed_icon_new (file->details->custom_icon);
-		}
+		icon = g_object_ref (file->details->custom_icon);
  	}
  
 	return icon;

@@ -440,50 +440,77 @@ nautilus_link_get_link_name_from_desktop (GKeyFile *key_file)
 	return g_key_file_get_locale_string (key_file, MAIN_GROUP, "Name", NULL, NULL);
 }
 
-static char *
+static GIcon *
 nautilus_link_get_link_icon_from_desktop (GKeyFile *key_file)
 {
-	char *icon_uri, *icon, *p, *type;
+	char *icon_str, *p, *type = NULL;
+	GFile *file;
+	GIcon *icon;
 
-	icon_uri = g_key_file_get_string (key_file, MAIN_GROUP, "X-Nautilus-Icon", NULL);
-	if (icon_uri != NULL) {
-		return icon_uri;
-	}
+	/* Look at the Icon: key */
+	icon_str = g_key_file_get_string (key_file, MAIN_GROUP, "Icon", NULL);
 
-	icon = g_key_file_get_string (key_file, MAIN_GROUP, "Icon", NULL);
-	if (icon != NULL) {
-		if (!g_path_is_absolute (icon)) {
-			/* Strip out any extension on non-filename icons. Old desktop files may have this */
-			p = strchr (icon, '.');
-                        /* Only strip known icon extensions */
-			if ((p != NULL) &&
-			    ((g_ascii_strcasecmp (p, ".png") == 0)
-			     || (g_ascii_strcasecmp (p, ".svn") == 0)
-			     || (g_ascii_strcasecmp (p, ".jpg") == 0)
-			     || (g_ascii_strcasecmp (p, ".xpm") == 0)
-			     || (g_ascii_strcasecmp (p, ".bmp") == 0)
-			     || (g_ascii_strcasecmp (p, ".jpeg") == 0))) {
-				*p = 0;
-			}
-		}
-		return icon;
+	/* if it's an absolute path, return a GFileIcon for that path */
+	if (icon_str != NULL && g_path_is_absolute (icon_str)) {
+		file = g_file_new_for_path (icon_str);
+		icon = g_file_icon_new (file);
+
+		g_object_unref (file);
+
+		goto out;
 	}
 
 	type = g_key_file_get_string (key_file, MAIN_GROUP, "Type", NULL);
-	if (g_strcmp0 (type, "Application") == 0) {
-		icon = g_strdup ("gnome-fs-executable");
-	} else if (g_strcmp0 (type, "Link") == 0) {
-		icon = g_strdup ("gnome-dev-symlink");
-	} else if (g_strcmp0 (type, "FSDevice") == 0) {
-		icon = g_strdup ("gnome-dev-harddisk");
-	} else if (g_strcmp0 (type, "Directory") == 0) {
-		icon = g_strdup (NAUTILUS_ICON_FOLDER);
-	} else if (g_strcmp0 (type, "Service") == 0 ||
-		   g_strcmp0 (type, "ServiceType") == 0) {
-		icon = g_strdup ("gnome-fs-web");
+
+	if (icon_str == NULL) {
+		if (g_strcmp0 (type, "Application") == 0) {
+			icon_str = g_strdup ("application-x-executable");
+		} else if (g_strcmp0 (type, "FSDevice") == 0) {
+			icon_str = g_strdup ("drive-harddisk");
+		} else if (g_strcmp0 (type, "Directory") == 0) {
+			icon_str = g_strdup (NAUTILUS_ICON_FOLDER);
+		} else if (g_strcmp0 (type, "Service") == 0 ||
+			   g_strcmp0 (type, "ServiceType") == 0) {
+			icon_str = g_strdup ("folder-remote");
+		} else {
+			icon_str = g_strdup ("text-x-preview");
+		}
 	} else {
-		icon = g_strdup ("gnome-fs-regular");
+		/* Strip out any extension on non-filename icons. Old desktop files may have this */
+		p = strchr (icon_str, '.');
+		/* Only strip known icon extensions */
+		if ((p != NULL) &&
+		    ((g_ascii_strcasecmp (p, ".png") == 0)
+		     || (g_ascii_strcasecmp (p, ".svn") == 0)
+		     || (g_ascii_strcasecmp (p, ".jpg") == 0)
+		     || (g_ascii_strcasecmp (p, ".xpm") == 0)
+		     || (g_ascii_strcasecmp (p, ".bmp") == 0)
+		     || (g_ascii_strcasecmp (p, ".jpeg") == 0))) {
+			*p = 0;
+		}
 	}
+
+	icon = g_themed_icon_new_with_default_fallbacks (icon_str);
+
+	/* apply a link emblem if it's a link */
+	if (g_strcmp0 (type, "Link") == 0) {
+		GIcon *emblemed, *emblem_icon;
+		GEmblem *emblem;
+
+		emblem_icon = g_themed_icon_new ("emblem-symbolic-link");
+		emblem = g_emblem_new (emblem_icon);
+
+		emblemed = g_emblemed_icon_new (icon, emblem);
+
+		g_object_unref (icon);
+		g_object_unref (emblem_icon);
+		g_object_unref (emblem);
+
+		icon = emblemed;
+	}
+
+ out:
+	g_free (icon_str);
 	g_free (type);
 
 	return icon;
@@ -533,7 +560,7 @@ nautilus_link_get_link_info_given_file_contents (const char  *file_contents,
 						 const char  *file_uri,
 						 char       **uri,
 						 char       **name,
-						 char       **icon,
+						 GIcon      **icon,
 						 gboolean    *is_launcher,
 						 gboolean    *is_foreign)
 {

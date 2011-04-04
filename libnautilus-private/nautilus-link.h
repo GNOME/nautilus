@@ -47,7 +47,7 @@ void             nautilus_link_get_link_info_given_file_contents (const char    
 								  const char        *file_uri,
 								  char             **uri,
 								  char             **name,
-								  char             **icon,
+								  GIcon            **icon,
 								  gboolean          *is_launcher,
 								  gboolean          *is_foreign);
 
