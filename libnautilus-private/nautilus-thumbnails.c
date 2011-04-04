@@ -69,17 +69,6 @@ typedef struct {
 	time_t original_file_mtime;
 } NautilusThumbnailInfo;
 
-struct NautilusThumbnailAsyncLoadHandle {
-	GCancellable *cancellable;
-	char *file_path;
-	guint base_size;
-	guint nominal_size;
-	gboolean force_nominal; 
-	NautilusThumbnailAsyncLoadFunc load_func;
-	gpointer load_func_user_data;
-};
-
-
 /*
  * Thumbnail thread state.
  */
