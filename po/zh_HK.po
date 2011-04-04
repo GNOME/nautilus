@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.91.94\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-04-04 21:06+0800\n"
-"PO-Revision-Date: 2011-04-04 21:06+0800\n"
+"POT-Creation-Date: 2011-04-05 06:45+0800\n"
+"PO-Revision-Date: 2011-04-05 06:45+0800\n"
 "Last-Translator: Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>\n"
 "Language-Team: Chinese (Hong Kong) <community@linuxhall.org>\n"
 "Language: \n"
@@ -500,7 +500,7 @@ msgstr[1] "大約 %'d 小時"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:375
-#: ../libnautilus-private/nautilus-file.c:6267 ../src/nautilus-view-dnd.c:328
+#: ../libnautilus-private/nautilus-file.c:6261 ../src/nautilus-view-dnd.c:123
 #, c-format
 msgid "Link to %s"
 msgstr "連結至 %s"
@@ -1226,65 +1226,65 @@ msgstr "無法重新命名桌面檔案"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: ../libnautilus-private/nautilus-file.c:4344
+#: ../libnautilus-private/nautilus-file.c:4338
 msgid "today at 00:00:00 PM"
 msgstr "今天凌晨 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4345
+#: ../libnautilus-private/nautilus-file.c:4339
 #: ../src/nautilus-file-management-properties.c:471
 msgid "today at %-I:%M:%S %p"
 msgstr "今天%p %-I:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:4347
+#: ../libnautilus-private/nautilus-file.c:4341
 msgid "today at 00:00 PM"
 msgstr "今天凌晨 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4348
+#: ../libnautilus-private/nautilus-file.c:4342
 msgid "today at %-I:%M %p"
 msgstr "今天%p %-I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4350
+#: ../libnautilus-private/nautilus-file.c:4344
 msgid "today, 00:00 PM"
 msgstr "今天凌晨 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4351
+#: ../libnautilus-private/nautilus-file.c:4345
 msgid "today, %-I:%M %p"
 msgstr "今天%p %-I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4353
-#: ../libnautilus-private/nautilus-file.c:4354
+#: ../libnautilus-private/nautilus-file.c:4347
+#: ../libnautilus-private/nautilus-file.c:4348
 msgid "today"
 msgstr "今天"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: ../libnautilus-private/nautilus-file.c:4363
+#: ../libnautilus-private/nautilus-file.c:4357
 msgid "yesterday at 00:00:00 PM"
 msgstr "昨天凌晨 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4364
+#: ../libnautilus-private/nautilus-file.c:4358
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "昨天%p %-I:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:4366
+#: ../libnautilus-private/nautilus-file.c:4360
 msgid "yesterday at 00:00 PM"
 msgstr "昨天凌晨 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4367
+#: ../libnautilus-private/nautilus-file.c:4361
 msgid "yesterday at %-I:%M %p"
 msgstr "昨天%p %-I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4369
+#: ../libnautilus-private/nautilus-file.c:4363
 msgid "yesterday, 00:00 PM"
 msgstr "昨天凌晨 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4370
+#: ../libnautilus-private/nautilus-file.c:4364
 msgid "yesterday, %-I:%M %p"
 msgstr "昨天%p %-I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4372
-#: ../libnautilus-private/nautilus-file.c:4373
+#: ../libnautilus-private/nautilus-file.c:4366
+#: ../libnautilus-private/nautilus-file.c:4367
 msgid "yesterday"
 msgstr "昨天"
 
@@ -1293,102 +1293,102 @@ msgstr "昨天"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: ../libnautilus-private/nautilus-file.c:4384
+#: ../libnautilus-private/nautilus-file.c:4378
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "0000年00月00日(週三)於下午 00時00分00秒"
 
-#: ../libnautilus-private/nautilus-file.c:4385
+#: ../libnautilus-private/nautilus-file.c:4379
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%Y年%m月%d日(%A) %p %I時%M分%S秒"
 
-#: ../libnautilus-private/nautilus-file.c:4387
+#: ../libnautilus-private/nautilus-file.c:4381
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "0000年00月00日(一) 下午 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4388
+#: ../libnautilus-private/nautilus-file.c:4382
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%Y年%m月%d日(%a) %p %I:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:4390
+#: ../libnautilus-private/nautilus-file.c:4384
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "0000年00月00日(一) 下午 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4391
+#: ../libnautilus-private/nautilus-file.c:4385
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%Y年%m月%d日(%a) %p %I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4393
+#: ../libnautilus-private/nautilus-file.c:4387
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "0000年00月00日下午 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4394
+#: ../libnautilus-private/nautilus-file.c:4388
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%Y年%m月%d日%p %I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4396
+#: ../libnautilus-private/nautilus-file.c:4390
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "0000年00月00日下午 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4397
+#: ../libnautilus-private/nautilus-file.c:4391
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%Y年%m月%d日%p %I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4399
+#: ../libnautilus-private/nautilus-file.c:4393
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00 下午 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4400
+#: ../libnautilus-private/nautilus-file.c:4394
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%y/%m/%d %p %I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4402
+#: ../libnautilus-private/nautilus-file.c:4396
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: ../libnautilus-private/nautilus-file.c:4403
+#: ../libnautilus-private/nautilus-file.c:4397
 msgid "%m/%d/%y"
 msgstr "%y/%m/%d"
 
-#: ../libnautilus-private/nautilus-file.c:5046
+#: ../libnautilus-private/nautilus-file.c:5040
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "不允許設定權限"
 
-#: ../libnautilus-private/nautilus-file.c:5331
+#: ../libnautilus-private/nautilus-file.c:5325
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "不允許設定擁有者"
 
-#: ../libnautilus-private/nautilus-file.c:5349
+#: ../libnautilus-private/nautilus-file.c:5343
 #, c-format
 msgid "Specified owner '%s' doesn't exist"
 msgstr "指定的擁有者“%s”不存在"
 
-#: ../libnautilus-private/nautilus-file.c:5598
+#: ../libnautilus-private/nautilus-file.c:5592
 #, c-format
 msgid "Not allowed to set group"
 msgstr "不允許設定羣組"
 
-#: ../libnautilus-private/nautilus-file.c:5616
+#: ../libnautilus-private/nautilus-file.c:5610
 #, c-format
 msgid "Specified group '%s' doesn't exist"
 msgstr "指定的羣組「%s」不存在"
 
-#: ../libnautilus-private/nautilus-file.c:5760 ../src/nautilus-view.c:2866
+#: ../libnautilus-private/nautilus-file.c:5754 ../src/nautilus-view.c:2866
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
 msgstr[0] "%'u 個項目"
 msgstr[1] "%'u 個項目"
 
-#: ../libnautilus-private/nautilus-file.c:5761
+#: ../libnautilus-private/nautilus-file.c:5755
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u 個資料夾"
 msgstr[1] "%'u 個資料夾"
 
-#: ../libnautilus-private/nautilus-file.c:5762
+#: ../libnautilus-private/nautilus-file.c:5756
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -1396,51 +1396,51 @@ msgstr[0] "%'u 個檔案"
 msgstr[1] "%'u 個檔案"
 
 #. Do this in a separate stage so that we don't have to put G_GUINT64_FORMAT in the translated string
-#: ../libnautilus-private/nautilus-file.c:5841
+#: ../libnautilus-private/nautilus-file.c:5835
 msgid "%"
 msgstr "%"
 
-#: ../libnautilus-private/nautilus-file.c:5842
+#: ../libnautilus-private/nautilus-file.c:5836
 #, c-format
 msgid "%s (%s bytes)"
 msgstr "%s (%s 位元組)"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:6153
-#: ../libnautilus-private/nautilus-file.c:6169
+#: ../libnautilus-private/nautilus-file.c:6147
+#: ../libnautilus-private/nautilus-file.c:6163
 msgid "? items"
 msgstr "? 個項目"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:6159
+#: ../libnautilus-private/nautilus-file.c:6153
 msgid "? bytes"
 msgstr "? 個位元組"
 
-#: ../libnautilus-private/nautilus-file.c:6174
+#: ../libnautilus-private/nautilus-file.c:6168
 msgid "unknown type"
 msgstr "類型不詳"
 
-#: ../libnautilus-private/nautilus-file.c:6177
+#: ../libnautilus-private/nautilus-file.c:6171
 msgid "unknown MIME type"
 msgstr "MIME 類型不詳"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:6191
+#: ../libnautilus-private/nautilus-file.c:6185
 #: ../src/nautilus-properties-window.c:1137
 msgid "unknown"
 msgstr "不明"
 
-#: ../libnautilus-private/nautilus-file.c:6241
+#: ../libnautilus-private/nautilus-file.c:6235
 msgid "program"
 msgstr "程式"
 
-#: ../libnautilus-private/nautilus-file.c:6261
+#: ../libnautilus-private/nautilus-file.c:6255
 msgid "link"
 msgstr "連結"
 
-#: ../libnautilus-private/nautilus-file.c:6283
+#: ../libnautilus-private/nautilus-file.c:6277
 msgid "link (broken)"
 msgstr "連結（目標不存在）"
 
@@ -1541,7 +1541,7 @@ msgstr "正在準備"
 #: ../libnautilus-private/nautilus-search-directory-file.c:160
 #: ../libnautilus-private/nautilus-search-directory-file.c:186
 #: ../libnautilus-private/nautilus-search-directory-file.c:218
-#: ../src/nautilus-window-menus.c:1157
+#: ../src/nautilus-window-menus.c:1158
 msgid "Search"
 msgstr "搜尋"
 
@@ -2285,7 +2285,7 @@ msgstr "執行(_R)"
 
 #: ../src/nautilus-bookmarks-window.c:158
 #: ../src/nautilus-file-management-properties.c:204
-#: ../src/nautilus-window-menus.c:434
+#: ../src/nautilus-window-menus.c:435
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -3242,7 +3242,7 @@ msgid "(Empty)"
 msgstr "(空的)"
 
 #: ../src/nautilus-list-model.c:395 ../src/nautilus-tree-sidebar-model.c:1252
-#: ../src/nautilus-window-manage-views.c:1181
+#: ../src/nautilus-window-manage-views.c:1183
 #: ../src/nautilus-window-slot.c:202
 msgid "Loading..."
 msgstr "載入中…"
@@ -3364,12 +3364,12 @@ msgstr[0] "這樣會開啟 %d 個分頁。"
 msgstr[1] "這樣會開啟 %d 個分頁。"
 
 #: ../src/nautilus-mime-actions.c:1117
-#: ../src/nautilus-window-manage-views.c:1703
-#: ../src/nautilus-window-manage-views.c:1709
-#: ../src/nautilus-window-manage-views.c:1726
-#: ../src/nautilus-window-manage-views.c:1737
-#: ../src/nautilus-window-manage-views.c:1743
-#: ../src/nautilus-window-manage-views.c:1769
+#: ../src/nautilus-window-manage-views.c:1705
+#: ../src/nautilus-window-manage-views.c:1711
+#: ../src/nautilus-window-manage-views.c:1728
+#: ../src/nautilus-window-manage-views.c:1739
+#: ../src/nautilus-window-manage-views.c:1745
+#: ../src/nautilus-window-manage-views.c:1771
 #, c-format
 msgid "Could not display \"%s\"."
 msgstr "無法顯示「%s」。"
@@ -3473,7 +3473,7 @@ msgid "Computer"
 msgstr "電腦"
 
 #. tooltip
-#: ../src/nautilus-places-sidebar.c:652 ../src/nautilus-window-menus.c:1005
+#: ../src/nautilus-places-sidebar.c:652 ../src/nautilus-window-menus.c:1006
 msgid "Open your personal folder"
 msgstr "開啟你的個人資料夾"
 
@@ -3527,7 +3527,7 @@ msgstr "開啟(_S)"
 #: ../src/nautilus-view.c:7094 ../src/nautilus-view.c:7118
 #: ../src/nautilus-view.c:7190 ../src/nautilus-view.c:7850
 #: ../src/nautilus-view.c:7937 ../src/nautilus-view.c:8041
-#: ../src/nautilus-window-menus.c:960
+#: ../src/nautilus-window-menus.c:961
 msgid "_Stop"
 msgstr "停止(_S)"
 
@@ -4797,7 +4797,7 @@ msgstr "將目前的選擇區域移動到視窗中的其他窗格"
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-view.c:7210 ../src/nautilus-view.c:7214
-#: ../src/nautilus-window-menus.c:1004 ../src/nautilus-window-menus.c:1263
+#: ../src/nautilus-window-menus.c:1005 ../src/nautilus-window-menus.c:1264
 msgid "_Home"
 msgstr "個人資料夾(_H)"
 
@@ -5011,44 +5011,28 @@ msgstr "永久刪除所有選定的項目"
 msgid "View or modify the properties of the open folder"
 msgstr "顯示或修改開啟的資料夾的屬性"
 
-#: ../src/nautilus-view-dnd.c:101
-msgid "Download location?"
-msgstr "下載位置？"
-
-#: ../src/nautilus-view-dnd.c:104
-msgid "You can download it or make a link to it."
-msgstr "你可以將它下載或給它建立連結。"
-
-#: ../src/nautilus-view-dnd.c:107
-msgid "Make a _Link"
-msgstr "建立連結(_L)"
-
-#: ../src/nautilus-view-dnd.c:111
-msgid "_Download"
-msgstr "下載(_D)"
-
-#: ../src/nautilus-view-dnd.c:251 ../src/nautilus-view-dnd.c:309
-#: ../src/nautilus-view-dnd.c:413
+#: ../src/nautilus-view-dnd.c:170 ../src/nautilus-view-dnd.c:204
+#: ../src/nautilus-view-dnd.c:295
 msgid "Drag and drop is not supported."
 msgstr "不支援拖放圖示。"
 
-#: ../src/nautilus-view-dnd.c:252
+#: ../src/nautilus-view-dnd.c:171
 msgid "Drag and drop is only supported on local file systems."
 msgstr "拖放圖示只在本機的檔案系統之間適用。"
 
-#: ../src/nautilus-view-dnd.c:310 ../src/nautilus-view-dnd.c:414
+#: ../src/nautilus-view-dnd.c:205 ../src/nautilus-view-dnd.c:296
 msgid "An invalid drag type was used."
 msgstr "拖曳方式不正確。"
 
 #. Translator: This is the filename used for when you dnd text to a directory
-#: ../src/nautilus-view-dnd.c:491
+#: ../src/nautilus-view-dnd.c:373
 msgid "dropped text.txt"
 msgstr "拖放的 text.txt"
 
 #. Translator: This is the filename used for when you dnd raw
 #. * data to a directory, if the source didn't supply a name.
 #.
-#: ../src/nautilus-view-dnd.c:536
+#: ../src/nautilus-view-dnd.c:418
 msgid "dropped data"
 msgstr "拖放的資料"
 
@@ -5071,57 +5055,57 @@ msgstr "書籤所表示的位置不存在"
 msgid "Go to the location specified by this bookmark"
 msgstr "前往該書籤指定的位置"
 
-#: ../src/nautilus-window-manage-views.c:601
+#: ../src/nautilus-window-manage-views.c:603
 msgid "You can choose another view or go to a different location."
 msgstr "可以選擇另一種顯示模式，或者瀏覽其它位置。"
 
-#: ../src/nautilus-window-manage-views.c:620
+#: ../src/nautilus-window-manage-views.c:622
 msgid "The location cannot be displayed with this viewer."
 msgstr "這個顯示模式無法顯示指定的位置。"
 
-#: ../src/nautilus-window-manage-views.c:1022
+#: ../src/nautilus-window-manage-views.c:1024
 msgid "Content View"
 msgstr "內容顯示模式"
 
-#: ../src/nautilus-window-manage-views.c:1023
+#: ../src/nautilus-window-manage-views.c:1025
 msgid "View of the current folder"
 msgstr "顯示目前的資料夾"
 
-#: ../src/nautilus-window-manage-views.c:1181
+#: ../src/nautilus-window-manage-views.c:1183
 msgid "Searching..."
 msgstr "搜尋…"
 
-#: ../src/nautilus-window-manage-views.c:1706
+#: ../src/nautilus-window-manage-views.c:1708
 msgid "Nautilus has no installed viewer capable of displaying the folder."
 msgstr "Nautilus 沒有一個已安裝的檢示程式能顯示這資料夾"
 
-#: ../src/nautilus-window-manage-views.c:1712
+#: ../src/nautilus-window-manage-views.c:1714
 msgid "The location is not a folder."
 msgstr "該位置並非資料夾。"
 
-#: ../src/nautilus-window-manage-views.c:1718
+#: ../src/nautilus-window-manage-views.c:1720
 #, c-format
 msgid "Could not find \"%s\"."
 msgstr "找不到「%s」。"
 
-#: ../src/nautilus-window-manage-views.c:1721
+#: ../src/nautilus-window-manage-views.c:1723
 msgid "Please check the spelling and try again."
 msgstr "請檢查拼字是否正確並再試一次。"
 
-#: ../src/nautilus-window-manage-views.c:1729
+#: ../src/nautilus-window-manage-views.c:1731
 #, c-format
 msgid "Nautilus cannot handle \"%s\" locations."
 msgstr "Nautilus 無法處理「%s」的位置。"
 
-#: ../src/nautilus-window-manage-views.c:1732
+#: ../src/nautilus-window-manage-views.c:1734
 msgid "Nautilus cannot handle this kind of location."
 msgstr "Nautilus 無法處理此類型的位置。"
 
-#: ../src/nautilus-window-manage-views.c:1739
+#: ../src/nautilus-window-manage-views.c:1741
 msgid "Unable to mount the location."
 msgstr "無法掛載該位置。"
 
-#: ../src/nautilus-window-manage-views.c:1745
+#: ../src/nautilus-window-manage-views.c:1747
 msgid "Access was denied."
 msgstr "存取被禁止。"
 
@@ -5130,17 +5114,17 @@ msgstr "存取被禁止。"
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: ../src/nautilus-window-manage-views.c:1754
+#: ../src/nautilus-window-manage-views.c:1756
 #, c-format
 msgid "Could not display \"%s\", because the host could not be found."
 msgstr "無法顯示「%s」，因為找不到主機。"
 
-#: ../src/nautilus-window-manage-views.c:1756
+#: ../src/nautilus-window-manage-views.c:1758
 msgid ""
 "Check that the spelling is correct and that your proxy settings are correct."
 msgstr "請檢查是否有錯字而且代理伺服程式設定是否正確。"
 
-#: ../src/nautilus-window-manage-views.c:1771
+#: ../src/nautilus-window-manage-views.c:1773
 #, c-format
 msgid ""
 "Error: %s\n"
@@ -5149,7 +5133,7 @@ msgstr ""
 "錯誤：%s\n"
 "請選擇另一種顯示模式並再嘗試。"
 
-#: ../src/nautilus-window-menus.c:356
+#: ../src/nautilus-window-menus.c:357
 msgid ""
 "Nautilus is free software; you can redistribute it and/or modify it under "
 "the terms of the GNU General Public License as published by the Free "
@@ -5160,7 +5144,7 @@ msgstr ""
 "條款規定，就本程式再為散布與／或修改；無論你根據據的是本授權的第二版或\n"
 "（你自行選擇的）任一日後發行的版本。"
 
-#: ../src/nautilus-window-menus.c:360
+#: ../src/nautilus-window-menus.c:361
 msgid ""
 "Nautilus is distributed in the hope that it will be useful, but WITHOUT ANY "
 "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
@@ -5170,7 +5154,7 @@ msgstr ""
 "Nautilus 係基於使用目的而加以散布，然而不負任何擔保責任；亦無對適售性\n"
 "或特定目的適用性所為的默示性擔保。詳情請參照 GNU 通用公共授權。"
 
-#: ../src/nautilus-window-menus.c:364
+#: ../src/nautilus-window-menus.c:365
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "Nautilus; if not, write to the Free Software Foundation, Inc., 51 Franklin "
@@ -5178,25 +5162,25 @@ msgid ""
 msgstr "你應該已經和程式一起收到一份 GNU 通用公共許可證的副本。如果還沒有，寫信給：  the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA"
 
 #. Set initial window title
-#: ../src/nautilus-window-menus.c:374 ../src/nautilus-window.c:2029
+#: ../src/nautilus-window-menus.c:375 ../src/nautilus-window.c:2029
 msgid "Nautilus"
 msgstr "Nautilus"
 
-#: ../src/nautilus-window-menus.c:376
+#: ../src/nautilus-window-menus.c:377
 msgid ""
 "Nautilus lets you organize files and folders, both on your computer and "
 "online."
 msgstr "Nautilus 讓你組織檔案和資料夾，不管是在你的電腦或是在網絡上。"
 
-#: ../src/nautilus-window-menus.c:379
-msgid "Copyright © 1999-2010 The Nautilus authors"
-msgstr "版權所有 © 1999-2010 Nautilus 作者羣"
+#: ../src/nautilus-window-menus.c:380
+msgid "Copyright © 1999-2011 The Nautilus authors"
+msgstr "版權所有 © 1999-2011 Nautilus 作者羣"
 
 #. Translators should localize the following string
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window-menus.c:389
+#: ../src/nautilus-window-menus.c:390
 msgid "translator-credits"
 msgstr ""
 "如對翻譯有任何意見，請送一封電子郵件給\n"
@@ -5207,443 +5191,443 @@ msgstr ""
 "Abel Cheung <abel@oaka.org>, 2001-2004\n"
 "Gong Yi LIAO <granziliao@sinamail.com>, 2000"
 
-#: ../src/nautilus-window-menus.c:392
+#: ../src/nautilus-window-menus.c:393
 msgid "Nautilus Web Site"
 msgstr "Nautilus 網站"
 
-#: ../src/nautilus-window-menus.c:571
+#: ../src/nautilus-window-menus.c:572
 msgid "Are you sure you want to clear the list of locations you have visited?"
 msgstr "是否確定清除所有曾經瀏覽的位置的紀錄？"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:938
+#: ../src/nautilus-window-menus.c:939
 msgid "_File"
 msgstr "檔案(_F)"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:939
+#: ../src/nautilus-window-menus.c:940
 msgid "_Edit"
 msgstr "編輯(_E)"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:940
+#: ../src/nautilus-window-menus.c:941
 msgid "_View"
 msgstr "檢視(_V)"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:941
+#: ../src/nautilus-window-menus.c:942
 msgid "_Help"
 msgstr "求助(_H)"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:943
+#: ../src/nautilus-window-menus.c:944
 msgid "_Close"
 msgstr "關閉(_C)"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:944
+#: ../src/nautilus-window-menus.c:945
 msgid "Close this folder"
 msgstr "關閉本資料夾"
 
-#: ../src/nautilus-window-menus.c:947
+#: ../src/nautilus-window-menus.c:948
 msgid "Prefere_nces"
 msgstr "偏好設定(_N)"
 
-#: ../src/nautilus-window-menus.c:948
+#: ../src/nautilus-window-menus.c:949
 msgid "Edit Nautilus preferences"
 msgstr "修改 Nautilus 偏好設定"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:950
+#: ../src/nautilus-window-menus.c:951
 msgid "_Undo"
 msgstr "復原(_U)"
 
-#: ../src/nautilus-window-menus.c:951
+#: ../src/nautilus-window-menus.c:952
 msgid "Undo the last text change"
 msgstr "復原上一次文字修改"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:953
+#: ../src/nautilus-window-menus.c:954
 msgid "Open _Parent"
 msgstr "開啟上一層(_P)"
 
-#: ../src/nautilus-window-menus.c:954
+#: ../src/nautilus-window-menus.c:955
 msgid "Open the parent folder"
 msgstr "開啟上層資料夾"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:961
+#: ../src/nautilus-window-menus.c:962
 msgid "Stop loading the current location"
 msgstr "停止載入目前的位置"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:964
+#: ../src/nautilus-window-menus.c:965
 msgid "_Reload"
 msgstr "重新載入(_R)"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:965
+#: ../src/nautilus-window-menus.c:966
 msgid "Reload the current location"
 msgstr "重新載入目前的位置"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:968
+#: ../src/nautilus-window-menus.c:969
 msgid "_Contents"
 msgstr "內容(_C)"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:969
+#: ../src/nautilus-window-menus.c:970
 msgid "Display Nautilus help"
 msgstr "顯示 Nautilus 說明文件"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:972
+#: ../src/nautilus-window-menus.c:973
 msgid "_About"
 msgstr "關於(_A)"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:973
+#: ../src/nautilus-window-menus.c:974
 msgid "Display credits for the creators of Nautilus"
 msgstr "顯示鳴謝 Nautilus 開發者的清單"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:976
+#: ../src/nautilus-window-menus.c:977
 msgid "Zoom _In"
 msgstr "拉近(_I)"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:977
+#: ../src/nautilus-window-menus.c:978
 msgid "Increase the view size"
 msgstr "增加檢視的大小"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:988
+#: ../src/nautilus-window-menus.c:989
 msgid "Zoom _Out"
 msgstr "拉遠(_O)"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:989
+#: ../src/nautilus-window-menus.c:990
 msgid "Decrease the view size"
 msgstr "減少檢視的大小"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:996
+#: ../src/nautilus-window-menus.c:997
 msgid "Normal Si_ze"
 msgstr "原來大小(_Z)"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:997
+#: ../src/nautilus-window-menus.c:998
 msgid "Use the normal view size"
 msgstr "使用一般的檢視大小"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:1000
+#: ../src/nautilus-window-menus.c:1001
 msgid "Connect to _Server..."
 msgstr "連接伺服器(_S)…"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:1001
+#: ../src/nautilus-window-menus.c:1002
 msgid "Connect to a remote computer or shared disk"
 msgstr "連接遠端電腦或磁碟共享"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:1008
+#: ../src/nautilus-window-menus.c:1009
 msgid "_Computer"
 msgstr "電腦(_C)"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:1009
+#: ../src/nautilus-window-menus.c:1010
 msgid ""
 "Browse all local and remote disks and folders accessible from this computer"
 msgstr "從本電腦瀏覽所有本機及遠端磁碟及資料夾"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:1012
+#: ../src/nautilus-window-menus.c:1013
 msgid "_Network"
 msgstr "網絡(_N)"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:1013
+#: ../src/nautilus-window-menus.c:1014
 msgid "Browse bookmarked and local network locations"
 msgstr "瀏覽已記錄及本地網絡的位置"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:1016
+#: ../src/nautilus-window-menus.c:1017
 msgid "T_emplates"
 msgstr "樣板(_E)"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:1017
+#: ../src/nautilus-window-menus.c:1018
 msgid "Open your personal templates folder"
 msgstr "開啟個人樣板資料夾"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:1020
+#: ../src/nautilus-window-menus.c:1021
 msgid "_Trash"
 msgstr "回收筒(_T)"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:1021
+#: ../src/nautilus-window-menus.c:1022
 msgid "Open your personal trash folder"
 msgstr "開啟個人回收筒資料夾"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:1023
+#: ../src/nautilus-window-menus.c:1024
 msgid "_Go"
 msgstr "前往(_G)"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:1024
+#: ../src/nautilus-window-menus.c:1025
 msgid "_Bookmarks"
 msgstr "書籤(_B)"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:1025
+#: ../src/nautilus-window-menus.c:1026
 msgid "_Tabs"
 msgstr "分頁(_T)"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:1026
+#: ../src/nautilus-window-menus.c:1027
 msgid "New _Window"
 msgstr "開新視窗(_W)"
 
-#: ../src/nautilus-window-menus.c:1027
+#: ../src/nautilus-window-menus.c:1028
 msgid "Open another Nautilus window for the displayed location"
 msgstr "在已顯示的位置中開啟另一個 Nautilus 視窗"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:1029
+#: ../src/nautilus-window-menus.c:1030
 msgid "New _Tab"
 msgstr "新增分頁(_T)"
 
-#: ../src/nautilus-window-menus.c:1030
+#: ../src/nautilus-window-menus.c:1031
 msgid "Open another tab for the displayed location"
 msgstr "在已顯示的位置中開啟另一個分頁"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:1032
+#: ../src/nautilus-window-menus.c:1033
 msgid "Close _All Windows"
 msgstr "關閉所有視窗(_A)"
 
-#: ../src/nautilus-window-menus.c:1033
+#: ../src/nautilus-window-menus.c:1034
 msgid "Close all Navigation windows"
 msgstr "關閉所有導航視窗"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:1035 ../src/nautilus-window-menus.c:1127
+#: ../src/nautilus-window-menus.c:1036 ../src/nautilus-window-menus.c:1128
 msgid "_Back"
 msgstr "上一頁(_B)"
 
-#: ../src/nautilus-window-menus.c:1036 ../src/nautilus-window-menus.c:1129
+#: ../src/nautilus-window-menus.c:1037 ../src/nautilus-window-menus.c:1130
 msgid "Go to the previous visited location"
 msgstr "回到上一個瀏覽過的位置"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:1038 ../src/nautilus-window-menus.c:1142
+#: ../src/nautilus-window-menus.c:1039 ../src/nautilus-window-menus.c:1143
 msgid "_Forward"
 msgstr "下一頁(_F)"
 
-#: ../src/nautilus-window-menus.c:1039 ../src/nautilus-window-menus.c:1144
+#: ../src/nautilus-window-menus.c:1040 ../src/nautilus-window-menus.c:1145
 msgid "Go to the next visited location"
 msgstr "前住下一個瀏覽過的位置"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:1041
+#: ../src/nautilus-window-menus.c:1042
 msgid "_Location..."
 msgstr "位置(_L)…"
 
-#: ../src/nautilus-window-menus.c:1042
+#: ../src/nautilus-window-menus.c:1043
 msgid "Specify a location to open"
 msgstr "指定一個位置來開啟"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:1044
+#: ../src/nautilus-window-menus.c:1045
 msgid "Clea_r History"
 msgstr "清除紀錄(_R)"
 
-#: ../src/nautilus-window-menus.c:1045
+#: ../src/nautilus-window-menus.c:1046
 msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "清除「前往」選單及「上一頁/下一頁」清單的內容"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:1047
+#: ../src/nautilus-window-menus.c:1048
 msgid "S_witch to Other Pane"
 msgstr "切換至其他窗格(_W)"
 
-#: ../src/nautilus-window-menus.c:1048
+#: ../src/nautilus-window-menus.c:1049
 msgid "Move focus to the other pane in a split view window"
 msgstr "將焦移至分離檢視視窗的其他窗格中"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:1050
+#: ../src/nautilus-window-menus.c:1051
 msgid "Sa_me Location as Other Pane"
 msgstr "與其他窗格同樣的位置(_M)"
 
-#: ../src/nautilus-window-menus.c:1051
+#: ../src/nautilus-window-menus.c:1052
 msgid "Go to the same location as in the extra pane"
 msgstr "前往與額外窗格中同樣的位置"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:1053
+#: ../src/nautilus-window-menus.c:1054
 msgid "_Add Bookmark"
 msgstr "加入書籤(_A)"
 
-#: ../src/nautilus-window-menus.c:1054
+#: ../src/nautilus-window-menus.c:1055
 msgid "Add a bookmark for the current location to this menu"
 msgstr "將目前的位置加入書籤中"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:1056
+#: ../src/nautilus-window-menus.c:1057
 msgid "_Edit Bookmarks..."
 msgstr "編輯書籤(_E)…"
 
-#: ../src/nautilus-window-menus.c:1057
+#: ../src/nautilus-window-menus.c:1058
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "顯示可修改書籤的視窗"
 
-#: ../src/nautilus-window-menus.c:1059
+#: ../src/nautilus-window-menus.c:1060
 msgid "_Previous Tab"
 msgstr "上一個分頁(_P)"
 
-#: ../src/nautilus-window-menus.c:1060
+#: ../src/nautilus-window-menus.c:1061
 msgid "Activate previous tab"
 msgstr "使用上一個分頁"
 
-#: ../src/nautilus-window-menus.c:1062
+#: ../src/nautilus-window-menus.c:1063
 msgid "_Next Tab"
 msgstr "下一個分頁(_N)"
 
-#: ../src/nautilus-window-menus.c:1063
+#: ../src/nautilus-window-menus.c:1064
 msgid "Activate next tab"
 msgstr "使用下一個分頁"
 
-#: ../src/nautilus-window-menus.c:1065 ../src/nautilus-window-pane.c:486
+#: ../src/nautilus-window-menus.c:1066 ../src/nautilus-window-pane.c:486
 msgid "Move Tab _Left"
 msgstr "將分頁左移(_L)"
 
-#: ../src/nautilus-window-menus.c:1066
+#: ../src/nautilus-window-menus.c:1067
 msgid "Move current tab to left"
 msgstr "將目前的分頁向左移動"
 
-#: ../src/nautilus-window-menus.c:1068 ../src/nautilus-window-pane.c:494
+#: ../src/nautilus-window-menus.c:1069 ../src/nautilus-window-pane.c:494
 msgid "Move Tab _Right"
 msgstr "將分頁右移(_R)"
 
-#: ../src/nautilus-window-menus.c:1069
+#: ../src/nautilus-window-menus.c:1070
 msgid "Move current tab to right"
 msgstr "將目前的分頁向右移動"
 
-#: ../src/nautilus-window-menus.c:1071
+#: ../src/nautilus-window-menus.c:1072
 msgid "Sidebar"
 msgstr "側邊欄"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:1076
+#: ../src/nautilus-window-menus.c:1077
 msgid "Show _Hidden Files"
 msgstr "顯示隱藏檔(_H)"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:1077
+#: ../src/nautilus-window-menus.c:1078
 msgid "Toggle the display of hidden files in the current window"
 msgstr "在目前視窗中切換隱藏檔的顯示"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:1081
+#: ../src/nautilus-window-menus.c:1082
 msgid "_Main Toolbar"
 msgstr "主工具列(_M)"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:1082
+#: ../src/nautilus-window-menus.c:1083
 msgid "Change the visibility of this window's main toolbar"
 msgstr "顯示或隱藏本視窗的主工具列"
 
 #. is_active
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:1086
+#: ../src/nautilus-window-menus.c:1087
 msgid "_Show Sidebar"
 msgstr "顯示側邊欄(_S)"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:1087
+#: ../src/nautilus-window-menus.c:1088
 msgid "Change the visibility of this window's side pane"
 msgstr "顯示或隱藏本視窗的側面窗格"
 
 #. is_active
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:1091
+#: ../src/nautilus-window-menus.c:1092
 msgid "St_atusbar"
 msgstr "狀態列(_A)"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:1092
+#: ../src/nautilus-window-menus.c:1093
 msgid "Change the visibility of this window's statusbar"
 msgstr "顯示或隱藏本視窗的狀態列"
 
 #. is_active
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:1096
+#: ../src/nautilus-window-menus.c:1097
 msgid "_Search for Files..."
 msgstr "搜尋檔案(_S)…"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:1097 ../src/nautilus-window-menus.c:1158
+#: ../src/nautilus-window-menus.c:1098 ../src/nautilus-window-menus.c:1159
 msgid "Search documents and folders by name"
 msgstr "根據名稱搜尋文件和資料夾"
 
 #. is_active
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:1101
+#: ../src/nautilus-window-menus.c:1102
 msgid "E_xtra Pane"
 msgstr "額外窗格(_X)"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:1102
+#: ../src/nautilus-window-menus.c:1103
 msgid "Open an extra folder view side-by-side"
 msgstr "開啟額外資料夾檢視"
 
-#: ../src/nautilus-window-menus.c:1109
+#: ../src/nautilus-window-menus.c:1110
 msgid "Places"
 msgstr "位置"
 
-#: ../src/nautilus-window-menus.c:1109
+#: ../src/nautilus-window-menus.c:1110
 msgid "Select Places as the default sidebar"
 msgstr "選擇位置做為預設的側邊欄"
 
-#: ../src/nautilus-window-menus.c:1112
+#: ../src/nautilus-window-menus.c:1113
 msgid "Tree"
 msgstr "目錄樹"
 
-#: ../src/nautilus-window-menus.c:1112
+#: ../src/nautilus-window-menus.c:1113
 msgid "Select Tree as the default sidebar"
 msgstr "選擇樹狀圖做為預設的側邊欄"
 
-#: ../src/nautilus-window-menus.c:1130
+#: ../src/nautilus-window-menus.c:1131
 msgid "Back history"
 msgstr "上一頁紀錄"
 
-#: ../src/nautilus-window-menus.c:1145
+#: ../src/nautilus-window-menus.c:1146
 msgid "Forward history"
 msgstr "上一頁紀錄"
 
-#: ../src/nautilus-window-menus.c:1260
+#: ../src/nautilus-window-menus.c:1261
 msgid "_Up"
 msgstr "上層(_U)"
 
@@ -5723,6 +5707,18 @@ msgstr "經電子郵件、即時訊息…傳送檔案"
 #: ../nautilus-sendto-extension/nautilus-nste.c:86
 msgid "Send files by mail, instant message..."
 msgstr "經電子郵件、即時訊息…傳送檔案"
+
+#~ msgid "Download location?"
+#~ msgstr "下載位置？"
+
+#~ msgid "You can download it or make a link to it."
+#~ msgstr "您可以將它下載或給它建立連結。"
+
+#~ msgid "Make a _Link"
+#~ msgstr "建立連結(_L)"
+
+#~ msgid "_Download"
+#~ msgstr "下載(_D)"
 
 #~ msgid "If true, icons will be laid out tighter by default in new windows."
 #~ msgstr "如設定為‘true’，新的視窗會使用較緊密的方式排列圖示。"
