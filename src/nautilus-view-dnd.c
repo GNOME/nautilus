@@ -67,77 +67,13 @@ view_widget_to_file_operation_position_xy (NautilusView *view,
 	*y = position.y;
 }
 
-
 typedef struct {
-	NautilusView  *view;
-	GCancellable *cancellable;
-	char *encoded_url;
+	NautilusView *view;
+	char *link_name;
 	char *target_uri;
-	int x;
-	int y;
-	guint timeout;
-} NetscapeUrlDropAsk;
-
-static GdkDragAction
-ask_link_action (NautilusView *view)
-{
-	int button_pressed;
-	GdkDragAction result;
-	GtkWindow *parent_window;
-	GtkWidget *dialog;
-
-	parent_window = NULL;
-
-	/* Don't use desktop window as parent, since that means
-	   we show up an all desktops etc */
-	if (! NAUTILUS_IS_DESKTOP_ICON_VIEW (view)) {
-		parent_window = GTK_WINDOW (GET_ANCESTOR (view));
-	}
-
-	dialog = gtk_message_dialog_new (parent_window,
-					 GTK_DIALOG_DESTROY_WITH_PARENT,
-					 GTK_MESSAGE_QUESTION,
-					 GTK_BUTTONS_NONE,
-					 _("Download location?"));
-
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  _("You can download it or make a link to it."));
-
-	gtk_dialog_add_button (GTK_DIALOG (dialog),
-			       _("Make a _Link"), 0);
-	gtk_dialog_add_button (GTK_DIALOG (dialog),
-			       GTK_STOCK_CANCEL, 1);
-	gtk_dialog_add_button (GTK_DIALOG (dialog),
-			       _("_Download"), 2);
-
-	gtk_window_set_title (GTK_WINDOW (dialog), ""); /* as per HIG */
-	gtk_window_set_focus_on_map (GTK_WINDOW (dialog), TRUE);
-	gtk_dialog_set_default_response (GTK_DIALOG (dialog), 2);
-
-	gtk_window_present (GTK_WINDOW (dialog));
-
-	button_pressed = gtk_dialog_run (GTK_DIALOG (dialog));
-
-	gtk_widget_destroy (dialog);
-
-	switch (button_pressed) {
-	case 0:
-		result = GDK_ACTION_LINK;
-		break;
-	case 1:
-	case GTK_RESPONSE_DELETE_EVENT:
-		result = 0;
-		break;
-	case 2:
-		result = GDK_ACTION_COPY;
-		break;
-	default:
-		g_assert_not_reached ();
-		result = 0;
-	}
-
-	return result;
-}
+	char *url;
+	GdkPoint point;
+} NetscapeUrlDropLink;
 
 static void
 revert_slashes (char *string)
@@ -151,70 +87,66 @@ revert_slashes (char *string)
 }
 
 static void
-handle_netscape_url_drop_ask_cb (GObject *source_object,
-				 GAsyncResult *res,
-				 gpointer user_data)
+handle_netscape_url_drop_link_cb (GObject *source_object,
+				  GAsyncResult *res,
+				  gpointer user_data)
 {
-	NetscapeUrlDropAsk *data;
-	GdkDragAction action;
+	NetscapeUrlDropLink *data = user_data;
+	char *link_name = data->link_name;
+	char *link_display_name;
+	gint screen_num;
 	GFileInfo *info;
-	GFile *f;
-	const char *mime_type;
+	char *icon_name = NULL;
+	GdkScreen *screen;
 
-	data = user_data;
-	f = G_FILE (source_object);
+	info = g_file_query_info_finish (G_FILE (source_object),
+					 res, NULL);
 
-	info = g_file_query_info_finish (f, res, NULL);
-	mime_type = NULL;
+	if (info != NULL) {
+		GIcon *icon;
+		const char * const *names;
 
-	if (info) {
-		mime_type = g_file_info_get_content_type (info);
-	}
+		icon = g_file_info_get_icon (info);
 
-	if (mime_type != NULL &&
-	    (g_content_type_equals (mime_type, "text/html") ||
-	     g_content_type_equals (mime_type, "text/xml")  ||
-	     g_content_type_equals (mime_type, "application/xhtml+xml"))) {
-		action = GDK_ACTION_LINK;
-	} else if (mime_type != NULL &&
-		   g_content_type_equals (mime_type, "text/plain")) {
-		action = ask_link_action (data->view);
-	} else {
-		action = GDK_ACTION_COPY;
-	}
-	if (info) {
+		if (G_IS_THEMED_ICON (icon)) {
+			names = g_themed_icon_get_names (G_THEMED_ICON (icon));
+			icon_name = g_strdup (names[0]);
+		}
+	
 		g_object_unref (info);
 	}
-	
-	if (action != 0) {
-		nautilus_view_handle_netscape_url_drop (data->view,
-                                                        data->encoded_url,
-                                                        data->target_uri,
-                                                        action,
-                                                        data->x, data->y);
+
+	if (icon_name == NULL) {
+		icon_name = g_strdup ("text-html");
 	}
-	
-	g_object_unref (data->view);
-	g_object_unref (data->cancellable);
-	if (data->timeout != 0) {
-		g_source_remove (data->timeout);
-	}
-	g_free (data->encoded_url);
+
+	link_display_name = g_strdup_printf (_("Link to %s"), link_name);
+
+	/* The filename can't contain slashes, strip em.
+	   (the basename of http://foo/ is http://foo/) */
+	revert_slashes (link_name);
+
+	screen = gtk_widget_get_screen (GTK_WIDGET (data->view));
+	screen_num = gdk_screen_get_number (screen);
+
+	nautilus_link_local_create (data->target_uri,
+				    link_name,
+				    link_display_name,
+				    icon_name,
+				    data->url,
+				    &data->point,
+				    screen_num,
+				    TRUE);
+
+	g_free (link_display_name);
+	g_free (icon_name);
+
+	g_free (data->url);
+	g_free (data->link_name);
 	g_free (data->target_uri);
-	g_free (data);
-}
 
-static gboolean
-handle_netscape_url_drop_timeout (gpointer user_data)
-{
-	NetscapeUrlDropAsk *data;
-
-	data = user_data;
-
-	g_cancellable_cancel (data->cancellable);
-	data->timeout = 0;
-	
-	return FALSE;
+	g_object_unref (data->view);
+	g_slice_free (NetscapeUrlDropLink, data);
 }
 
 void
@@ -225,36 +157,23 @@ nautilus_view_handle_netscape_url_drop (NautilusView  *view,
                                         int            x,
                                         int            y)
 {
-	GdkPoint point;
-	GdkScreen *screen;
-	int screen_num;
 	char *url, *title;
-	char *link_name, *link_display_name;
-	char *container_uri;
+	char *link_name;
 	GArray *points;
 	char **bits;
 	GList *uri_list = NULL;
 	GFile *f;
 
-	if (encoded_url == NULL) {
-		return;
-	}
+	f = g_file_new_for_uri (target_uri);
 
-	container_uri = NULL;
-	if (target_uri == NULL) {
-		container_uri = nautilus_view_get_backing_uri (view);
-		g_assert (container_uri != NULL);
-	}
-
-	f = g_file_new_for_uri (target_uri != NULL ? target_uri : container_uri);
 	if (!g_file_is_native (f)) {
 		eel_show_warning_dialog (_("Drag and drop is not supported."),
 					 _("Drag and drop is only supported on local file systems."),
                                          GET_ANCESTOR (view));
 		g_object_unref (f);
-		g_free (container_uri);
 		return;
 	}
+
 	g_object_unref (f);
 
 	/* _NETSCAPE_URL_ works like this: $URL\n$TITLE */
@@ -262,7 +181,6 @@ nautilus_view_handle_netscape_url_drop (NautilusView  *view,
 	switch (g_strv_length (bits)) {
 	case 0:
 		g_strfreev (bits);
-		g_free (container_uri);
 		return;
 	case 1:
 		url = bits[0];
@@ -273,30 +191,7 @@ nautilus_view_handle_netscape_url_drop (NautilusView  *view,
 		title = bits[1];
 	}
 
-	if (action == GDK_ACTION_ASK) {
-		NetscapeUrlDropAsk *data;
-
-		f = g_file_new_for_uri (url);
-		data = g_new0 (NetscapeUrlDropAsk, 1);
-		data->view = g_object_ref (view);
-		data->cancellable = g_cancellable_new ();
-		data->encoded_url = g_strdup (encoded_url);
-		data->target_uri = g_strdup (target_uri);
-		data->x = x;
-		data->y = y;
-		/* Ensure we wait at most 1 second for mimetype */
-		data->timeout = g_timeout_add (1000,
-					       handle_netscape_url_drop_timeout,
-					       data);
-		g_file_query_info_async (f,
-					 G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE, 0,
-					 0, data->cancellable,
-					 handle_netscape_url_drop_ask_cb,
-					 data);
-		
-		g_free (container_uri);
-		return;
-	}
+	f = g_file_new_for_uri (url);
 
 	view_widget_to_file_operation_position_xy (view, &x, &y);
 
@@ -309,46 +204,33 @@ nautilus_view_handle_netscape_url_drop (NautilusView  *view,
 		eel_show_warning_dialog (_("Drag and drop is not supported."),
 					 _("An invalid drag type was used."),
                                          GET_ANCESTOR (view));
-		g_free (container_uri);
 		return;
 	}
 
 	if (action == GDK_ACTION_LINK) {
 		if (eel_str_is_empty (title)) {
-			GFile *f;
-
-			f = g_file_new_for_uri (url);
 			link_name = g_file_get_basename (f);
-			g_object_unref (f);
 		} else {
 			link_name = g_strdup (title);
 		}
-		
+
 		if (!eel_str_is_empty (link_name)) {
-			link_display_name = g_strdup_printf (_("Link to %s"), link_name);
+			NetscapeUrlDropLink *data;
 
-			/* The filename can't contain slashes, strip em.
-			   (the basename of http://foo/ is http://foo/) */
-			revert_slashes (link_name);
+			data = g_slice_new0 (NetscapeUrlDropLink);
+			data->link_name = link_name;
+			data->point.x = x;
+			data->point.y = y;
+			data->view = g_object_ref (view);
+			data->target_uri = g_strdup (target_uri);
+			data->url = g_strdup (url);
 
-			point.x = x;
-			point.y = y;
-
-			screen = gtk_widget_get_screen (GTK_WIDGET (view));
-			screen_num = gdk_screen_get_number (screen);
-
-			nautilus_link_local_create (target_uri != NULL ? target_uri : container_uri,
-						    link_name,
-						    link_display_name,
-						    "gnome-fs-bookmark",
-						    url,
-						    &point,
-						    screen_num,
-						    TRUE);
-
-			g_free (link_display_name);
+			g_file_query_info_async (f,
+						 G_FILE_ATTRIBUTE_STANDARD_ICON,
+						 0, 0, NULL,
+						 handle_netscape_url_drop_link_cb,
+						 data);
 		}
-		g_free (link_name);
 	} else {
 		GdkPoint tmp_point = { 0, 0 };
 
@@ -359,15 +241,15 @@ nautilus_view_handle_netscape_url_drop (NautilusView  *view,
 		uri_list = g_list_append (uri_list, url);
 
 		nautilus_view_move_copy_items (view, uri_list, points,
-                                               target_uri != NULL ? target_uri : container_uri,
+                                               target_uri,
                                                action, x, y);
 
 		g_list_free (uri_list);
 		g_array_free (points, TRUE);
 	}
 
+	g_object_unref (f);
 	g_strfreev (bits);
-	g_free (container_uri);
 }
 
 void

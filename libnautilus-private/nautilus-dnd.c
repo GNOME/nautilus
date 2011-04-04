@@ -369,10 +369,10 @@ GdkDragAction
 nautilus_drag_default_drop_action_for_netscape_url (GdkDragContext *context)
 {
 	/* Mozilla defaults to copy, but unless thats the
-	   only allowed thing (enforced by ctrl) we want to ASK */
+	   only allowed thing (enforced by ctrl) we want to LINK */
 	if (gdk_drag_context_get_suggested_action (context) == GDK_ACTION_COPY &&
 	    gdk_drag_context_get_actions (context) != GDK_ACTION_COPY) {
-		return GDK_ACTION_ASK;
+		return GDK_ACTION_LINK;
 	} else if (gdk_drag_context_get_suggested_action (context) == GDK_ACTION_MOVE) {
 		/* Don't support move */
 		return GDK_ACTION_COPY;
