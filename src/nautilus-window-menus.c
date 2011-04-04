@@ -366,10 +366,19 @@ action_about_nautilus_callback (GtkAction *action,
 		   "along with Nautilus; if not, write to the Free Software Foundation, Inc., "
 		   "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA")
 	};
-	gchar *license_trans;
+	gchar *license_trans, *copyright_str;
+	GDateTime *date;
 
 	license_trans = g_strjoin ("\n\n", _(license[0]), _(license[1]),
 					     _(license[2]), NULL);
+
+	date = g_date_time_new_now_local ();
+
+	/* Translators: these two strings here indicate the copyright time span,
+	 * e.g. 1999-2011.
+	 */
+	copyright_str = g_strdup_printf (_("Copyright \xC2\xA9 %Id-%Id "
+					   "The Nautilus authors"), 1999, g_date_time_get_year (date));
 
 	gtk_show_about_dialog (GTK_WINDOW (user_data),
 			       "program-name", _("Nautilus"),
@@ -377,8 +386,7 @@ action_about_nautilus_callback (GtkAction *action,
 			       "comments", _("Nautilus lets you organize "
 					     "files and folders, both on "
 					     "your computer and online."),
-			       "copyright", _("Copyright \xC2\xA9 1999-2011 "
-					      "The Nautilus authors"),
+			       "copyright", copyright_str,
 			       "license", license_trans,
 			       "wrap-license", TRUE,
 			       "authors", authors,
@@ -394,7 +402,8 @@ action_about_nautilus_callback (GtkAction *action,
 			      NULL);
 
 	g_free (license_trans);
-
+	g_free (copyright_str);
+	g_date_time_unref (date);
 }
 
 static void
