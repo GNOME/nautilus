@@ -830,7 +830,7 @@ mount_removed_callback (GVolumeMonitor *monitor,
 		    slot != force_no_close_slot) {
 			nautilus_window_pane_slot_close (slot->pane, slot);
 		} else {
-			computer = g_file_new_for_uri ("computer:///");
+			computer = g_file_new_for_path (g_get_home_dir ());
 			nautilus_window_slot_go_to (slot, computer, FALSE);
 			g_object_unref(computer);
 		}
