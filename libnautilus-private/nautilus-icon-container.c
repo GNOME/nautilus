@@ -105,13 +105,6 @@
 #define SNAP_SIZE_X 		78
 #define SNAP_SIZE_Y 		20
 
-#define DEFAULT_SELECTION_BOX_ALPHA 0x40
-#define DEFAULT_HIGHLIGHT_ALPHA 0xff
-#define DEFAULT_NORMAL_ALPHA 0xff
-#define DEFAULT_PRELIGHT_ALPHA 0xff
-#define DEFAULT_LIGHT_INFO_COLOR "#AAAAFD"
-#define DEFAULT_DARK_INFO_COLOR  "#33337F"
-
 #define MINIMUM_EMBEDDED_TEXT_RECT_WIDTH       20
 #define MINIMUM_EMBEDDED_TEXT_RECT_HEIGHT      20
 
@@ -6005,18 +5998,6 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 								     GDK_TYPE_RGBA,
 								     G_PARAM_READABLE));
 	gtk_widget_class_install_style_property (widget_class,
-						 g_param_spec_boxed ("light_info_rgba",
-								     "Light Info RGBA",
-								     "Color used for information text against a dark background",
-								     GDK_TYPE_RGBA,
-								     G_PARAM_READABLE));
-	gtk_widget_class_install_style_property (widget_class,
-						 g_param_spec_boxed ("dark_info_rgba",
-								     "Dark Info RGBA",
-								     "Color used for information text against a light background",
-								     GDK_TYPE_RGBA,
-								     G_PARAM_READABLE));
-	gtk_widget_class_install_style_property (widget_class,
 						 g_param_spec_boolean ("activate_prelight_icon_label",
 								     "Activate Prelight Icon Label",
 								     "Whether icon labels should make use of its prelight color in prelight state",
@@ -8409,7 +8390,6 @@ static void
 setup_label_gcs (NautilusIconContainer *container)
 {
 	GtkWidget *widget;
-	GdkRGBA *light_info_color, *dark_info_color;
 	GtkStyleContext *style;
 	GdkRGBA color;
 	
@@ -8422,58 +8402,34 @@ setup_label_gcs (NautilusIconContainer *container)
 
 	/* read the info colors from the current theme; use a reasonable default if undefined */
 	style = gtk_widget_get_style_context (widget);
-	gtk_style_context_get_style (style,
-				     "light_info_rgba", &light_info_color,
-				     "dark_info_rgba", &dark_info_color,
-				     NULL);
 
-	if (!light_info_color) {
-		gdk_rgba_parse (&color, DEFAULT_LIGHT_INFO_COLOR);
-		light_info_color = gdk_rgba_copy (&color);
-	}
-
-	if (!dark_info_color) {
-		gdk_rgba_parse (&color, DEFAULT_DARK_INFO_COLOR);
-		dark_info_color = gdk_rgba_copy (&color);
-	}
-
-	gtk_style_context_get_color (style, GTK_STATE_FLAG_SELECTED, &color);
+	gtk_style_context_get_color (style,
+				     GTK_STATE_FLAG_SELECTED,
+				     &color);
 	setup_gc_with_fg (container, LABEL_COLOR_HIGHLIGHT, &color);
+	setup_gc_with_fg (container, LABEL_INFO_COLOR_HIGHLIGHT, &color);
+
 
 	gtk_style_context_get_color (style, GTK_STATE_FLAG_ACTIVE, &color);
 	setup_gc_with_fg (container, LABEL_COLOR_ACTIVE, &color);
+	setup_gc_with_fg (container, LABEL_INFO_COLOR_ACTIVE, &color);
 
 	gtk_style_context_get_color (style, GTK_STATE_FLAG_PRELIGHT, &color);
 	setup_gc_with_fg (container, LABEL_COLOR_PRELIGHT, &color);
 
-	gtk_style_context_get_background_color (style, GTK_STATE_FLAG_SELECTED, &color);
-	setup_gc_with_fg (container, 
-			  LABEL_INFO_COLOR_HIGHLIGHT, 
-			  eel_gdk_rgba_is_dark (&color) ? light_info_color : dark_info_color);
-
-	gtk_style_context_get_background_color (style, GTK_STATE_FLAG_ACTIVE, &color);
-	setup_gc_with_fg (container,
-			  LABEL_INFO_COLOR_ACTIVE,
-			  eel_gdk_rgba_is_dark (&color) ? light_info_color : dark_info_color);
-		
+	gtk_style_context_get_color (style, GTK_STATE_FLAG_INSENSITIVE, &color);
+	setup_gc_with_fg (container, LABEL_INFO_COLOR, 
+			  &color);
+	
 	if (!nautilus_icon_container_get_is_desktop (container)) {
 		gtk_style_context_get_color (style, GTK_STATE_FLAG_NORMAL, &color);
 		setup_gc_with_fg (container, LABEL_COLOR, &color);
-
-		gtk_style_context_get_background_color (style, GTK_STATE_FLAG_NORMAL, &color);
-		setup_gc_with_fg (container, LABEL_INFO_COLOR, 
-				  eel_gdk_rgba_is_dark (&color) ?
-				  light_info_color : dark_info_color);
 	} else {
 		GdkRGBA tmp;
 
 		gdk_rgba_parse (&tmp, "#EFEFEF");
 		setup_gc_with_fg (container, LABEL_COLOR, &tmp);
-		setup_gc_with_fg (container, LABEL_INFO_COLOR, light_info_color);
 	}
-
-	gdk_rgba_free (dark_info_color);
-	gdk_rgba_free (light_info_color);
 }
 
 /* Return if the icon container is a fixed size */
