@@ -540,8 +540,9 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 		}
 	}
 
-        if ((target_window == window && target_slot == slot &&
-	     old_location && g_file_equal (old_location, location))) {
+        if (target_window == window && target_slot == slot &&
+	    old_location && g_file_equal (old_location, location) &&
+	    !is_desktop) {
 
 		if (callback != NULL) {
 			callback (window, NULL, user_data);
