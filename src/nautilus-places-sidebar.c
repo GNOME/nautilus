@@ -639,28 +639,25 @@ update_places (NautilusPlacesSidebar *sidebar)
 			       _("Computer"));
 
 	/* add built in bookmarks */
-	desktop_path = nautilus_get_desktop_directory ();
 
 	/* home folder */
-	if (strcmp (g_get_home_dir(), desktop_path) != 0) {
-		mount_uri = nautilus_get_home_directory_uri ();
-		icon = g_themed_icon_new (NAUTILUS_ICON_HOME);
-		last_iter = add_place (sidebar, PLACES_BUILT_IN,
-				       SECTION_COMPUTER,
-				       _("Home"), icon,
-				       mount_uri, NULL, NULL, NULL, 0,
-				       _("Open your personal folder"));
-		g_object_unref (icon);
-		compare_for_selection (sidebar,
-				       location, mount_uri, last_uri,
-				       &last_iter, &select_path);
-		g_free (mount_uri);
-	}
-
+	mount_uri = nautilus_get_home_directory_uri ();
+	icon = g_themed_icon_new (NAUTILUS_ICON_HOME);
+	last_iter = add_place (sidebar, PLACES_BUILT_IN,
+			       SECTION_COMPUTER,
+			       _("Home"), icon,
+			       mount_uri, NULL, NULL, NULL, 0,
+			       _("Open your personal folder"));
+	g_object_unref (icon);
+	compare_for_selection (sidebar,
+			       location, mount_uri, last_uri,
+			       &last_iter, &select_path);
+	g_free (mount_uri);
 
 	if (g_settings_get_boolean (gnome_background_preferences, NAUTILUS_PREFERENCES_SHOW_DESKTOP) &&
 	    !g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
 		/* desktop */
+		desktop_path = nautilus_get_desktop_directory ();
 		mount_uri = g_filename_to_uri (desktop_path, NULL, NULL);
 		icon = g_themed_icon_new (NAUTILUS_ICON_DESKTOP);
 		last_iter = add_place (sidebar, PLACES_BUILT_IN,
