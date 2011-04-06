@@ -377,7 +377,7 @@ action_about_nautilus_callback (GtkAction *action,
 	/* Translators: these two strings here indicate the copyright time span,
 	 * e.g. 1999-2011.
 	 */
-	copyright_str = g_strdup_printf (_("Copyright \xC2\xA9 %Id-%Id "
+	copyright_str = g_strdup_printf (_("Copyright \xC2\xA9 %Id\xE2\x80\x93%Id "
 					   "The Nautilus authors"), 1999, g_date_time_get_year (date));
 
 	gtk_show_about_dialog (GTK_WINDOW (user_data),
