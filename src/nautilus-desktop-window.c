@@ -48,6 +48,18 @@ G_DEFINE_TYPE (NautilusDesktopWindow, nautilus_desktop_window,
 	       NAUTILUS_TYPE_WINDOW);
 
 static void
+nautilus_desktop_window_dispose (GObject *obj)
+{
+	NautilusDesktopWindow *window = NAUTILUS_DESKTOP_WINDOW (obj);
+
+	g_signal_handlers_disconnect_by_func (nautilus_preferences,
+					      nautilus_desktop_window_update_directory,
+					      window);
+
+	G_OBJECT_CLASS (nautilus_desktop_window_parent_class)->dispose (obj);
+}
+
+static void
 nautilus_desktop_window_constructed (GObject *obj)
 {
 	GtkAction *action;
@@ -278,6 +290,7 @@ nautilus_desktop_window_class_init (NautilusDesktopWindowClass *klass)
 	GObjectClass *oclass = G_OBJECT_CLASS (klass);
 
 	oclass->constructed = nautilus_desktop_window_constructed;
+	oclass->dispose = nautilus_desktop_window_dispose;
 
 	wclass->realize = realize;
 	wclass->unrealize = unrealize;
