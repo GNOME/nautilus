@@ -3212,7 +3212,7 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 				  G_CALLBACK(desktop_setting_changed_callback),
 				  sidebar);
 
-	g_signal_connect_swapped (gnome_background_preferences, "changed::" NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
+	g_signal_connect_swapped (gnome_background_preferences, "changed::" NAUTILUS_PREFERENCES_SHOW_DESKTOP,
 				  G_CALLBACK(desktop_setting_changed_callback),
 				  sidebar);
 
