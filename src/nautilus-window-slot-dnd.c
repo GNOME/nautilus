@@ -42,7 +42,7 @@ typedef struct {
     char *netscape_url;
   } data;
 
-  GFile *target_location;
+  NautilusFile *target_file;
   NautilusWindowSlot *target_slot;
 } NautilusDragSlotProxyInfo;
 
@@ -83,8 +83,8 @@ slot_proxy_drag_motion (GtkWidget          *widget,
   }
 
   target_uri = NULL;
-  if (drag_info->target_location != NULL) {
-    target_uri = g_file_get_uri (drag_info->target_location);
+  if (drag_info->target_file != NULL) {
+    target_uri = nautilus_file_get_uri (drag_info->target_file);
   } else {
     if (drag_info->target_slot != NULL) {
       target_slot = drag_info->target_slot;
@@ -129,7 +129,7 @@ drag_info_free (gpointer user_data)
 {
   NautilusDragSlotProxyInfo *drag_info = user_data;
 
-  g_clear_object (&drag_info->target_location);
+  g_clear_object (&drag_info->target_file);
   g_clear_object (&drag_info->target_slot);
 
   g_slice_free (NautilusDragSlotProxyInfo, drag_info);
@@ -223,8 +223,8 @@ slot_proxy_handle_drop (GtkWidget                *widget,
   }
 
   target_uri = NULL;
-  if (drag_info->target_location != NULL) {
-    target_uri = g_file_get_uri (drag_info->target_location);
+  if (drag_info->target_file != NULL) {
+    target_uri = nautilus_file_get_uri (drag_info->target_file);
   } else if (target_slot != NULL) {
     target_uri = nautilus_window_slot_get_current_uri (target_slot);
   }
@@ -316,7 +316,7 @@ slot_proxy_drag_data_received (GtkWidget          *widget,
 
 void
 nautilus_drag_slot_proxy_init (GtkWidget *widget,
-                               GFile *target_location,
+                               NautilusFile *target_file,
                                NautilusWindowSlot *target_slot)
 {
   NautilusDragSlotProxyInfo *drag_info;
@@ -334,8 +334,8 @@ nautilus_drag_slot_proxy_init (GtkWidget *widget,
   g_object_set_data_full (G_OBJECT (widget), "drag-slot-proxy-data", drag_info,
                           drag_info_free);
 
-  if (target_location != NULL)
-    drag_info->target_location = g_object_ref (target_location);
+  if (target_file != NULL)
+    drag_info->target_file = g_object_ref (target_file);
 
   if (target_slot != NULL)
     drag_info->target_slot = g_object_ref (target_slot);

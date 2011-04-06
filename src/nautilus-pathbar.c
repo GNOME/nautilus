@@ -1637,7 +1637,7 @@ make_directory_button (NautilusPathBar  *path_bar,
 
 	setup_button_drag_source (button_data);
 
-	nautilus_drag_slot_proxy_init (button_data->button, path, NULL);
+	nautilus_drag_slot_proxy_init (button_data->button, button_data->file, NULL);
 
 	g_object_unref (path);
 
