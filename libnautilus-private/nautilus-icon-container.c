@@ -4105,6 +4105,10 @@ setup_background (NautilusIconContainer *container)
 	GdkRGBA color;
 	GtkStyleContext *style;
 
+	if (container->details->is_desktop) {
+		return;
+	}
+
 	style = gtk_widget_get_style_context (GTK_WIDGET (container));
 
 	DEBUG ("Container %p: setting up background, is_active %d", container,
