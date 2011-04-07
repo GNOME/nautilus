@@ -5320,6 +5320,9 @@ handle_popups (NautilusIconContainer *container,
 {
 	GdkEventButton button_event = { 0 };
 
+	/* ensure we clear the drag state before showing the menu */
+	clear_drag_state (container);
+
 	g_signal_emit_by_name (container, signal, &button_event);
 
 	return TRUE;
@@ -6318,6 +6321,8 @@ handle_icon_button_press (NautilusIconContainer *container,
 	}
 
 	if (event->button == CONTEXTUAL_MENU_BUTTON) {
+		clear_drag_state (container);
+
 		g_signal_emit (container,
 			       signals[CONTEXT_CLICK_SELECTION], 0,
 			       event);
