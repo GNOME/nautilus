@@ -194,6 +194,8 @@ nautilus_search_bar_init (NautilusSearchBar *bar)
 		G_TYPE_INSTANCE_GET_PRIVATE (bar, NAUTILUS_TYPE_SEARCH_BAR,
 					     NautilusSearchBarDetails);
 
+	gtk_widget_set_redraw_on_allocate (GTK_WIDGET (bar), TRUE);
+
 	label = gtk_label_new (_("Search:"));
 	gtk_style_context_add_class (gtk_widget_get_style_context (label),
 				     "nautilus-cluebar-label");
