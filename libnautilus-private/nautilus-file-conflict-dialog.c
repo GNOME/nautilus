@@ -198,6 +198,7 @@ file_list_ready_cb (GList *files,
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_box_pack_start (GTK_BOX (details->titles_vbox),
 			    label, FALSE, FALSE, 0);
+	gtk_widget_show (label);
 
 	attr_list = pango_attr_list_new ();
 	pango_attr_list_insert (attr_list, pango_attr_weight_new (PANGO_WEIGHT_BOLD));
