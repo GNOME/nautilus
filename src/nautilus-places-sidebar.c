@@ -220,7 +220,7 @@ get_eject_icon (NautilusPlacesSidebar *sidebar,
 	GtkStyleContext *style;
 
 	icon_theme = gtk_icon_theme_get_default ();
-	icon_size = nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_SMALL_TOOLBAR);
+	icon_size = nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU);
 	icon = g_themed_icon_new_with_default_fallbacks ("media-eject-symbolic");
 	icon_info = gtk_icon_theme_lookup_by_gicon (icon_theme, icon, icon_size, 0);
 
