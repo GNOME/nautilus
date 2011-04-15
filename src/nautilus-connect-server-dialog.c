@@ -1243,6 +1243,12 @@ nautilus_connect_server_dialog_fill_details_async (NautilusConnectServerDialog *
 			g_mount_operation_set_password (G_MOUNT_OPERATION (operation),
 							str);
 			set_flags ^= G_ASK_PASSWORD_NEED_PASSWORD;
+			
+			if (flags & G_ASK_PASSWORD_SAVING_SUPPORTED &&
+			    gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (self->details->remember_checkbox))) {
+				g_mount_operation_set_password_save (G_MOUNT_OPERATION (operation),
+								     G_PASSWORD_SAVE_PERMANENTLY);
+			}
 
 			self->details->last_password_set = TRUE;
 		}
