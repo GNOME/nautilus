@@ -329,6 +329,9 @@ void                nautilus_view_activate_files                   (NautilusView
 								    GList                  *files,
 								    NautilusWindowOpenFlags flags,
 								    gboolean                confirm_multiple);
+void                nautilus_view_preview_files                    (NautilusView        *view,
+								    GList               *files,
+								    GArray              *locations);
 void                nautilus_view_start_batching_selection_changes (NautilusView  *view);
 void                nautilus_view_stop_batching_selection_changes  (NautilusView  *view);
 void                nautilus_view_notify_selection_changed         (NautilusView  *view);

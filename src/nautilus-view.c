@@ -36,9 +36,11 @@
 #include "nautilus-error-reporting.h"
 #include "nautilus-list-view.h"
 #include "nautilus-mime-actions.h"
+#include "nautilus-previewer.h"
 #include "nautilus-properties-window.h"
 #include "nautilus-src-marshal.h"
 
+#include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
@@ -1107,6 +1109,34 @@ get_view_directory (NautilusView *view)
 	g_free (uri);
 	
 	return path;
+}
+
+void
+nautilus_view_preview_files (NautilusView *view,
+			     GList *files,
+			     GArray *locations)
+{
+	NautilusPreviewer *previewer;
+	gchar *uri;
+	guint xid, x, y;
+	GdkPoint location;
+	GtkWidget *toplevel;
+
+	previewer = nautilus_previewer_dup_singleton ();
+	uri = nautilus_file_get_uri (files->data);
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (view));
+
+	if (locations != NULL) {
+		location = g_array_index (locations, GdkPoint, 0);
+		x = location.x;
+		y = location.y;
+	} else {
+		x = y = 0;
+	}
+
+	xid = gdk_x11_window_get_xid (gtk_widget_get_window (toplevel));
+
+	nautilus_previewer_call_show_file (previewer, uri, xid, x, y);
 }
 
 void

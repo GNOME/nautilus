@@ -1688,6 +1688,19 @@ icon_container_activate_callback (NautilusIconContainer *container,
 				      0, TRUE);
 }
 
+static void
+icon_container_activate_previewer_callback (NautilusIconContainer *container,
+					    GList *file_list,
+					    GArray *locations,
+					    NautilusIconView *icon_view)
+{
+	g_assert (NAUTILUS_IS_ICON_VIEW (icon_view));
+	g_assert (container == get_icon_container (icon_view));
+
+	nautilus_view_preview_files (NAUTILUS_VIEW (icon_view),
+				     file_list, locations);
+}
+
 /* this is called in one of these cases:
  * - we activate with enter holding shift
  * - we activate with space holding shift
@@ -2558,6 +2571,8 @@ create_icon_container (NautilusIconView *icon_view)
 				 G_CALLBACK (icon_container_activate_callback), icon_view, 0);
 	g_signal_connect_object (icon_container, "activate_alternate",	
 				 G_CALLBACK (icon_container_activate_alternate_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "activate_previewer",
+				 G_CALLBACK (icon_container_activate_previewer_callback), icon_view, 0);
 	g_signal_connect_object (icon_container, "band_select_started",
 				 G_CALLBACK (band_select_started_callback), icon_view, 0);
 	g_signal_connect_object (icon_container, "band_select_ended",

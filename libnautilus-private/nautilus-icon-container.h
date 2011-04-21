@@ -93,6 +93,9 @@ typedef struct {
 						   NautilusIconData *data);
 	void         (* activate_alternate)       (NautilusIconContainer *container,
 						   NautilusIconData *data);
+	void         (* activate_previewer)       (NautilusIconContainer *container,
+						   GList *files,
+						   GArray *locations);
 	void         (* context_click_selection)  (NautilusIconContainer *container,
 						   GdkEventButton *event);
 	void	     (* move_copy_items)	  (NautilusIconContainer *container,

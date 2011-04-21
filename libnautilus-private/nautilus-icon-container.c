@@ -144,6 +144,7 @@ typedef struct {
 
 static GType         nautilus_icon_container_accessible_get_type (void);
 
+static void          preview_selected_items                         (NautilusIconContainer *container);
 static void          activate_selected_items                        (NautilusIconContainer *container);
 static void          activate_selected_items_alternate              (NautilusIconContainer *container,
 								     NautilusIcon          *icon);
@@ -226,6 +227,7 @@ G_DEFINE_TYPE (NautilusIconContainer, nautilus_icon_container, EEL_TYPE_CANVAS);
 enum {
 	ACTIVATE,
 	ACTIVATE_ALTERNATE,
+	ACTIVATE_PREVIEWER,
 	BAND_SELECT_STARTED,
 	BAND_SELECT_ENDED,
 	BUTTON_PRESS,
@@ -3891,7 +3893,7 @@ keyboard_space (NautilusIconContainer *container,
 	} else if ((event->state & GDK_SHIFT_MASK) != 0) {
 		activate_selected_items_alternate (container, NULL);
 	} else {
-		activate_selected_items (container);
+		preview_selected_items (container);
 	}
 }
 
@@ -5743,6 +5745,16 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                g_cclosure_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1,
 				G_TYPE_POINTER);
+	signals[ACTIVATE_PREVIEWER]
+		= g_signal_new ("activate_previewer",
+		                G_TYPE_FROM_CLASS (class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
+						 activate_previewer),
+		                NULL, NULL,
+		                nautilus_marshal_VOID__POINTER_POINTER,
+		                G_TYPE_NONE, 2,
+				G_TYPE_POINTER, G_TYPE_POINTER);
 	signals[CONTEXT_CLICK_SELECTION]
 		= g_signal_new ("context_click_selection",
 		                G_TYPE_FROM_CLASS (class),
@@ -6738,6 +6750,37 @@ activate_selected_items (NautilusIconContainer *container)
 				 selection);
 	}
 	g_list_free (selection);
+}
+
+static void
+preview_selected_items (NautilusIconContainer *container)
+{
+	GList *selection;
+	GArray *locations;
+	gint idx;
+
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+
+	selection = nautilus_icon_container_get_selection (container);
+	locations = nautilus_icon_container_get_selected_icon_locations (container);
+
+	for (idx = 0; idx < locations->len; idx++) {
+		GdkPoint *point = &(g_array_index (locations, GdkPoint, idx));
+		gint scroll_x, scroll_y;
+
+		eel_canvas_get_scroll_offsets (EEL_CANVAS (container),
+					       &scroll_x, &scroll_y);
+
+		point->x -= scroll_x;
+		point->y -= scroll_y;
+	}
+
+	if (selection != NULL) {
+	  	g_signal_emit (container,
+			       signals[ACTIVATE_PREVIEWER], 0,
+			       selection, locations);
+	}
+	g_list_free (selection);	
 }
 
 static void
