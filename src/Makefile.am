@@ -106,6 +106,8 @@ nautilus_SOURCES = \
 	nautilus-pathbar.h			\
 	nautilus-places-sidebar.c		\
 	nautilus-places-sidebar.h		\
+	nautilus-previewer.c			\
+	nautilus-previewer.h			\
 	nautilus-progress-info-widget.c		\
 	nautilus-progress-info-widget.h		\
 	nautilus-progress-ui-handler.c		\
