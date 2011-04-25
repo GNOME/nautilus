@@ -4187,10 +4187,15 @@ style_updated (GtkWidget *widget)
 {
 	NautilusIconContainer *container;
 
-	GTK_WIDGET_CLASS (nautilus_icon_container_parent_class)->style_updated (widget);
-	
 	container = NAUTILUS_ICON_CONTAINER (widget);
 	container->details->use_drop_shadows = container->details->drop_shadows_requested;
+
+	/* Don't chain up to parent, if this is a desktop container,
+	 * because that resets the background of the window.
+	 */
+	if (!nautilus_icon_container_get_is_desktop (container)) {
+		GTK_WIDGET_CLASS (nautilus_icon_container_parent_class)->style_updated (widget);
+	}
 
 	nautilus_icon_container_theme_changed (NAUTILUS_ICON_CONTAINER (widget));
 
@@ -4198,9 +4203,6 @@ style_updated (GtkWidget *widget)
 		invalidate_label_sizes (container);
 		nautilus_icon_container_request_update_all (container);
 	}
-
-	/* Don't chain up to parent, because that sets the background of the window and we're doing
-	   that ourself with some delay, so this would cause flickering */
 }
 
 static gboolean
