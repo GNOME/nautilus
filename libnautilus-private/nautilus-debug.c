@@ -46,6 +46,7 @@ static GDebugKey keys[] = {
   { "ListView", NAUTILUS_DEBUG_LIST_VIEW },
   { "Mime", NAUTILUS_DEBUG_MIME },
   { "Places", NAUTILUS_DEBUG_PLACES },
+  { "Previewer", NAUTILUS_DEBUG_PREVIEWER },
   { "Smclient", NAUTILUS_DEBUG_SMCLIENT },
   { "Window", NAUTILUS_DEBUG_WINDOW },
   { 0, }
