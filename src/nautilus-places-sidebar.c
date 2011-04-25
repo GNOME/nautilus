@@ -147,7 +147,7 @@ typedef enum {
 
 static void  open_selected_bookmark                    (NautilusPlacesSidebar        *sidebar,
 							GtkTreeModel                 *model,
-							GtkTreePath                  *path,
+							GtkTreeIter                  *iter,
 							NautilusWindowOpenFlags flags);
 static void  nautilus_places_sidebar_style_set         (GtkWidget                    *widget,
 							GtkStyle                     *previous_style);
@@ -1777,23 +1777,18 @@ drive_start_from_bookmark_cb (GObject      *source_object,
 static void
 open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 			GtkTreeModel	      *model,
-			GtkTreePath	      *path,
+			GtkTreeIter	      *iter,
 			NautilusWindowOpenFlags	      flags)
 {
 	NautilusWindowSlot *slot;
-	GtkTreeIter iter;
 	GFile *location;
 	char *uri;
 
-	if (!path) {
+	if (!iter) {
 		return;
 	}
 
-	if (!gtk_tree_model_get_iter (model, &iter, path)) {
-		return;
-	}
-
-	gtk_tree_model_get (model, &iter, PLACES_SIDEBAR_COLUMN_URI, &uri, -1);
+	gtk_tree_model_get (model, iter, PLACES_SIDEBAR_COLUMN_URI, &uri, -1);
 
 	if (uri != NULL) {
 		DEBUG ("Activating bookmark %s", uri);
@@ -1825,7 +1820,7 @@ open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 		GVolume *volume;
 		NautilusWindowSlot *slot;
 
-		gtk_tree_model_get (model, &iter,
+		gtk_tree_model_get (model, iter,
 				    PLACES_SIDEBAR_COLUMN_DRIVE, &drive,
 				    PLACES_SIDEBAR_COLUMN_VOLUME, &volume,
 				    -1);
@@ -1866,11 +1861,14 @@ open_shortcut_from_menu (NautilusPlacesSidebar *sidebar,
 {
 	GtkTreeModel *model;
 	GtkTreePath *path;
+	GtkTreeIter iter;
 
 	model = gtk_tree_view_get_model (sidebar->tree_view);
 	gtk_tree_view_get_cursor (sidebar->tree_view, &path, NULL);
 
-	open_selected_bookmark (sidebar, model, path, flags);
+	gtk_tree_model_get_iter (model, &iter, path);
+
+	open_selected_bookmark (sidebar, model, &iter, flags);
 
 	gtk_tree_path_free (path);
 }
@@ -2473,7 +2471,8 @@ bookmarks_key_press_event_cb (GtkWidget             *widget,
        event->keyval == GDK_KEY_space)) {
 
       GtkTreeModel *model;
-      GtkTreePath *path;
+      GtkTreeSelection *selection;
+      GtkTreeIter iter;
       NautilusWindowOpenFlags flags = 0;
 
       if ((event->state & modifiers) == GDK_SHIFT_MASK) {
@@ -2483,11 +2482,11 @@ bookmarks_key_press_event_cb (GtkWidget             *widget,
       }
 
       model = gtk_tree_view_get_model (sidebar->tree_view);
-      gtk_tree_view_get_cursor (sidebar->tree_view, &path, NULL);
+      selection = gtk_tree_view_get_selection (sidebar->tree_view);
+      gtk_tree_selection_get_selected (selection, NULL, &iter);
 
-      open_selected_bookmark (sidebar, model, path, flags);
+      open_selected_bookmark (sidebar, model, &iter, flags);
 
-      gtk_tree_path_free (path);
       return TRUE;
   }
 
@@ -2683,6 +2682,7 @@ bookmarks_button_release_event_cb (GtkWidget *widget,
 				   NautilusPlacesSidebar *sidebar)
 {
 	GtkTreePath *path;
+	GtkTreeIter iter;
 	GtkTreeModel *model;
 	GtkTreeView *tree_view;
 
@@ -2711,7 +2711,9 @@ bookmarks_button_release_event_cb (GtkWidget *widget,
 		gtk_tree_view_get_path_at_pos (tree_view, (int) event->x, (int) event->y,
 					       &path, NULL, NULL, NULL);
 
-		open_selected_bookmark (sidebar, model, path, 0);
+		gtk_tree_model_get_iter (model, &iter, path);
+
+		open_selected_bookmark (sidebar, model, &iter, 0);
 
 		gtk_tree_path_free (path);
 	}
@@ -2834,6 +2836,7 @@ bookmarks_button_press_event_cb (GtkWidget             *widget,
 	} else if (event->button == 2) {
 		GtkTreeModel *model;
 		GtkTreePath *path;
+		GtkTreeIter iter;
 		GtkTreeView *tree_view;
 		NautilusWindowOpenFlags flags = 0;
 
@@ -2844,6 +2847,7 @@ bookmarks_button_press_event_cb (GtkWidget             *widget,
 
 		gtk_tree_view_get_path_at_pos (tree_view, (int) event->x, (int) event->y, 
 					       &path, NULL, NULL, NULL);
+		gtk_tree_model_get_iter (model, &iter, path);
 
 		if (g_settings_get_boolean (nautilus_preferences,
 					    NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
@@ -2854,7 +2858,7 @@ bookmarks_button_press_event_cb (GtkWidget             *widget,
 			flags = NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND;
 		}
 
-		open_selected_bookmark (sidebar, model, path, flags);
+		open_selected_bookmark (sidebar, model, &iter, flags);
 
 		if (path != NULL) {
 			gtk_tree_path_free (path);
