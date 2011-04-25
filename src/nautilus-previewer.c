@@ -23,6 +23,9 @@
 
 #include "nautilus-previewer.h"
 
+#define DEBUG_FLAG NAUTILUS_DEBUG_PREVIEWER
+#include <libnautilus-private/nautilus-debug.h>
+
 #include <gio/gio.h>
 
 G_DEFINE_TYPE (NautilusPreviewer, nautilus_previewer, G_TYPE_OBJECT);
@@ -34,74 +37,21 @@ G_DEFINE_TYPE (NautilusPreviewer, nautilus_previewer, G_TYPE_OBJECT);
 static NautilusPreviewer *singleton = NULL;
 
 struct _NautilusPreviewerPriv {
-  guint watch_id;
   GDBusProxy *proxy;
+
+  GVariant *pending_variant;
 };
 
 static void
-previewer_proxy_async_ready_cb (GObject *source,
-                                GAsyncResult *res,
-                                gpointer user_data)
-{
-  GDBusProxy *proxy;
-  NautilusPreviewer *self = user_data;
-  GError *error = NULL;
-
-  proxy = g_dbus_proxy_new_finish (res, &error);
-
-  if (error != NULL) {
-    g_warning ("Unable to create a dbus proxy for NautilusPreviewer: %s",
-               error->message);
-    g_error_free (error);
-
-    return;
-  }
-
-  self->priv->proxy = proxy;
-}
-
-static void
-previewer_name_appeared_cb (GDBusConnection *conn,
-                            const gchar *name,
-                            const gchar *name_owner,
-                            gpointer user_data)
-{
-  NautilusPreviewer *self = user_data;
-
-  g_dbus_proxy_new (conn,
-                    G_DBUS_PROXY_FLAGS_NONE,
-                    NULL,
-                    name,
-                    PREVIEWER_DBUS_PATH,
-                    PREVIEWER_DBUS_IFACE,
-                    NULL,
-                    previewer_proxy_async_ready_cb,
-                    self);
-}
-
-static void
-previewer_name_vanished_cb (GDBusConnection *conn,
-                            const gchar *name,
-                            gpointer user_data)
-{
-  NautilusPreviewer *self = user_data;
-
-  g_print ("vanished %p %s\n", self, name);
-}
-
-static void
-nautilus_previewer_constructed (GObject *object)
+nautilus_previewer_dispose (GObject *object)
 {
   NautilusPreviewer *self = NAUTILUS_PREVIEWER (object);
 
-  self->priv->watch_id =
-    g_bus_watch_name (G_BUS_TYPE_SESSION,
-                      PREVIEWER_DBUS_NAME,
-                      G_BUS_NAME_WATCHER_FLAGS_AUTO_START,
-                      previewer_name_appeared_cb,
-                      previewer_name_vanished_cb,
-                      self,
-                      NULL);
+  DEBUG ("%p", self);
+
+  g_clear_object (&self->priv->proxy);
+
+  G_OBJECT_CLASS (nautilus_previewer_parent_class)->dispose (object);
 }
 
 static GObject *
@@ -137,7 +87,7 @@ nautilus_previewer_class_init (NautilusPreviewerClass *klass)
 
   oclass = G_OBJECT_CLASS (klass);
   oclass->constructor = nautilus_previewer_constructor;
-  oclass->constructed = nautilus_previewer_constructed;
+  oclass->dispose = nautilus_previewer_dispose;
 
   g_type_class_add_private (klass, sizeof (NautilusPreviewerPriv));
 }
@@ -158,6 +108,63 @@ previewer_show_file_ready_cb (GObject *source,
                error->message);
     g_error_free (error);
   }
+
+  g_object_unref (self);
+}
+
+static void
+real_call_show_file (NautilusPreviewer *self,
+                     GVariant *args)
+{
+  gchar *variant_str;
+
+  variant_str = g_variant_print (args, TRUE);
+  DEBUG ("Calling ShowFile with params %s", variant_str);
+
+  g_dbus_proxy_call (self->priv->proxy,
+                     "ShowFile",
+                     args,
+                     G_DBUS_CALL_FLAGS_NONE,
+                     -1,
+                     NULL,
+                     previewer_show_file_ready_cb,
+                     self);
+
+  g_free (variant_str);
+}
+
+static void
+previewer_proxy_async_ready_cb (GObject *source,
+                                GAsyncResult *res,
+                                gpointer user_data)
+{
+  GDBusProxy *proxy;
+  NautilusPreviewer *self = user_data;
+  GError *error = NULL;
+
+  proxy = g_dbus_proxy_new_finish (res, &error);
+
+  if (error != NULL) {
+    g_warning ("Unable to create a dbus proxy for NautilusPreviewer: %s",
+               error->message);
+    g_error_free (error);
+    g_object_unref (self);
+
+    return;
+  }
+
+  DEBUG ("Got previewer DBus proxy");
+
+  self->priv->proxy = proxy;
+
+  if (self->priv->pending_variant != NULL) {
+    real_call_show_file (self, self->priv->pending_variant);
+
+    g_variant_unref (self->priv->pending_variant);
+    self->priv->pending_variant = NULL;
+  } else {
+    g_object_unref (self);
+  }
 }
 
 NautilusPreviewer *
@@ -173,16 +180,27 @@ nautilus_previewer_call_show_file (NautilusPreviewer *self,
                                    guint x,
                                    guint y)
 {
-  if (!self->priv->proxy)
-    return;
+  GVariant *variant;
 
-  g_dbus_proxy_call (self->priv->proxy,
-                     "ShowFile",
-                     g_variant_new ("(siii)",
-                                    uri, xid, x, y),
-                     G_DBUS_CALL_FLAGS_NONE,
-                     -1,
-                     NULL,
-                     previewer_show_file_ready_cb,
-                     self);
+  variant = g_variant_new ("(siii)",
+                           uri, xid, x, y);
+  g_object_ref (self);
+
+  if (self->priv->proxy == NULL) {
+    if (self->priv->pending_variant != NULL)
+      g_variant_unref (self->priv->pending_variant);
+
+    self->priv->pending_variant = g_variant_ref_sink (variant);
+    g_dbus_proxy_new_for_bus (G_BUS_TYPE_SESSION,
+                              G_DBUS_PROXY_FLAGS_NONE,
+                              NULL,
+                              PREVIEWER_DBUS_NAME,
+                              PREVIEWER_DBUS_PATH,
+                              PREVIEWER_DBUS_IFACE,
+                              NULL,
+                              previewer_proxy_async_ready_cb,
+                              self);
+  } else {
+    real_call_show_file (self, variant);
+  }
 }
