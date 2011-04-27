@@ -176,14 +176,12 @@ nautilus_previewer_dup_singleton (void)
 void
 nautilus_previewer_call_show_file (NautilusPreviewer *self,
                                    const gchar *uri,
-                                   guint xid,
-                                   guint x,
-                                   guint y)
+                                   guint xid)
 {
   GVariant *variant;
 
-  variant = g_variant_new ("(siii)",
-                           uri, xid, x, y);
+  variant = g_variant_new ("(si)",
+                           uri, xid);
   g_object_ref (self);
 
   if (self->priv->proxy == NULL) {

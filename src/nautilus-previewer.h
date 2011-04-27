@@ -58,9 +58,7 @@ GType nautilus_previewer_get_type (void);
 NautilusPreviewer *nautilus_previewer_dup_singleton (void);
 void nautilus_previewer_call_show_file (NautilusPreviewer *previewer,
                                         const gchar *uri,
-                                        guint xid,
-                                        guint x,
-                                        guint y);
+                                        guint xid);
 
 G_END_DECLS
 
