@@ -2685,6 +2685,7 @@ bookmarks_button_release_event_cb (GtkWidget *widget,
 	GtkTreeIter iter;
 	GtkTreeModel *model;
 	GtkTreeView *tree_view;
+	gboolean res;
 
 	path = NULL;
 
@@ -2708,8 +2709,12 @@ bookmarks_button_release_event_cb (GtkWidget *widget,
 			return FALSE;
 		}
 
-		gtk_tree_view_get_path_at_pos (tree_view, (int) event->x, (int) event->y,
-					       &path, NULL, NULL, NULL);
+		res = gtk_tree_view_get_path_at_pos (tree_view, (int) event->x, (int) event->y,
+						     &path, NULL, NULL, NULL);
+
+		if (!res) {
+			return FALSE;
+		}
 
 		gtk_tree_model_get_iter (model, &iter, path);
 
