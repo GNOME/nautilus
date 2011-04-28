@@ -315,10 +315,10 @@ handle_new_progress_info (NautilusProgressUIHandler *self,
 			  G_CALLBACK (progress_info_finished_cb), self);
 
 	self->priv->active_infos++;
-	progress_ui_handler_add_to_window (self, info);
 
 	if (self->priv->active_infos == 1) {
 		/* this is the only active operation, present the window */
+		progress_ui_handler_add_to_window (self, info);
 		gtk_window_present (GTK_WINDOW (self->priv->progress_window));
 	} else {
 		if (gtk_widget_get_visible (self->priv->progress_window)) {
