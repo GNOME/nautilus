@@ -1150,6 +1150,8 @@ open_with_response_cb (GtkDialog *dialog,
 	nautilus_launch_application (info, &files, parent_window);
 
 	g_object_unref (info);
+
+	activate_parameters_install_free (parameters);
 }
 
 static void
@@ -1162,6 +1164,7 @@ choose_program (GtkDialog *message_dialog, int response, gpointer callback_data)
 
 	if (response != GTK_RESPONSE_ACCEPT){
 		gtk_widget_destroy (GTK_WIDGET (message_dialog));
+		activate_parameters_install_free (parameters);
 		return;
 	}
 
@@ -1172,6 +1175,9 @@ choose_program (GtkDialog *message_dialog, int response, gpointer callback_data)
 	location = nautilus_file_get_location (file);
 	nautilus_file_ref (file);
 
+	/* Destroy the message dialog after ref:ing the file */
+	gtk_widget_destroy (GTK_WIDGET (message_dialog));
+
 	dialog = gtk_app_chooser_dialog_new (parameters->parent_window,
 					     0, location);
 	g_object_set_data_full (G_OBJECT (dialog), 
@@ -1179,16 +1185,12 @@ choose_program (GtkDialog *message_dialog, int response, gpointer callback_data)
 				nautilus_file_ref (file),
 				(GDestroyNotify)nautilus_file_unref);
 
-	/* Destroy the message dialog after ref:ing the file */
-	gtk_widget_destroy (GTK_WIDGET (message_dialog));
-
 	gtk_widget_show (dialog);
 
-	g_signal_connect_object (dialog, 
-				 "response", 
-				 G_CALLBACK (open_with_response_cb),
-				 parameters,
-				 0);
+	g_signal_connect (dialog, 
+			  "response", 
+			  G_CALLBACK (open_with_response_cb),
+			  parameters);
 
 	g_object_unref (location);
 	nautilus_file_unref (file);	
@@ -1439,8 +1441,9 @@ application_unhandled_uri (ActivateParameters *parameters, char *uri)
 	/* There is no use trying to look for handlers of application/octet-stream */
 	if (g_content_type_is_unknown (mime_type)) {
 		show_install_mime = FALSE;
-		goto out;
 	}
+
+	g_free (mime_type);
 
 	if (!show_install_mime) {
 		goto out;
@@ -1461,10 +1464,6 @@ application_unhandled_uri (ActivateParameters *parameters, char *uri)
 out:
         /* show an unhelpful dialog */
         show_unhandled_type_error (parameters_install);
-        /* The callback wasn't started, so we have to free the parameters */
-        activate_parameters_install_free (parameters_install);
-
-	g_free (mime_type);
 }
 
 typedef struct {
