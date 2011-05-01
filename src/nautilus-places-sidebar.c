@@ -97,6 +97,8 @@ typedef struct {
 	NautilusWindowOpenFlags go_to_after_mount_flags;
 
 	GtkTreePath *eject_highlight_path;
+
+	guint bookmarks_changed_id;
 } NautilusPlacesSidebar;
 
 typedef struct {
@@ -3248,6 +3250,12 @@ nautilus_places_sidebar_dispose (GObject *object)
 		sidebar->eject_highlight_path = NULL;
 	}
 
+	if (sidebar->bookmarks_changed_id != 0) {
+		g_signal_handler_disconnect (sidebar->bookmarks,
+					     sidebar->bookmarks_changed_id);
+		sidebar->bookmarks_changed_id = 0;
+	}
+
 	g_clear_object (&sidebar->store);
 	g_clear_object (&sidebar->volume_monitor);
 	g_clear_object (&sidebar->bookmarks);
@@ -3291,9 +3299,10 @@ nautilus_places_sidebar_set_parent_window (NautilusPlacesSidebar *sidebar,
 	sidebar->bookmarks = nautilus_bookmark_list_new ();
 	sidebar->uri = nautilus_window_slot_get_current_uri (slot);
 
-	g_signal_connect_object (sidebar->bookmarks, "changed",
-				 G_CALLBACK (update_places),
-				 sidebar, G_CONNECT_SWAPPED);
+	sidebar->bookmarks_changed_id =
+		g_signal_connect_swapped (sidebar->bookmarks, "changed",
+					  G_CALLBACK (update_places),
+					  sidebar);
 
 	g_signal_connect_object (window, "loading_uri",
 				 G_CALLBACK (loading_uri_callback),
