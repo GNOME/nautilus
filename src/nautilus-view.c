@@ -1121,14 +1121,12 @@ nautilus_view_preview_files (NautilusView *view,
 	guint xid;
 	GtkWidget *toplevel;
 
-	previewer = nautilus_previewer_dup_singleton ();
+	previewer = nautilus_previewer_get_singleton ();
 	uri = nautilus_file_get_uri (files->data);
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (view));
 
 	xid = gdk_x11_window_get_xid (gtk_widget_get_window (toplevel));
 	nautilus_previewer_call_show_file (previewer, uri, xid, TRUE);
-
-	g_object_unref (previewer);
 }
 
 void

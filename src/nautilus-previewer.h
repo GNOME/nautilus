@@ -55,7 +55,7 @@ typedef struct {
 
 GType nautilus_previewer_get_type (void);
 
-NautilusPreviewer *nautilus_previewer_dup_singleton (void);
+NautilusPreviewer *nautilus_previewer_get_singleton (void);
 void nautilus_previewer_call_show_file (NautilusPreviewer *previewer,
                                         const gchar *uri,
                                         guint xid,

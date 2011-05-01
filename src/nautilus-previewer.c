@@ -62,7 +62,7 @@ nautilus_previewer_constructor (GType type,
   GObject *retval;
 
   if (singleton != NULL)
-    return g_object_ref (singleton);
+    return G_OBJECT (singleton);
 
   retval = G_OBJECT_CLASS (nautilus_previewer_parent_class)->constructor
     (type, n_construct_params, construct_params);
@@ -168,7 +168,7 @@ previewer_proxy_async_ready_cb (GObject *source,
 }
 
 NautilusPreviewer *
-nautilus_previewer_dup_singleton (void)
+nautilus_previewer_get_singleton (void)
 {
   return g_object_new (NAUTILUS_TYPE_PREVIEWER, NULL);
 }
