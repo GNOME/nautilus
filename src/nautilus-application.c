@@ -905,8 +905,6 @@ nautilus_application_command_line (GApplication *app,
 	gboolean no_default_window = FALSE;
 	gboolean no_desktop = FALSE;
 	gboolean kill_shell = FALSE;
-	gboolean autostart_mode = FALSE;
-	const gchar *autostart_id;
 	gchar *geometry = NULL;
 	gchar **remaining = NULL;
 	const GOptionEntry options[] = {
@@ -940,11 +938,6 @@ nautilus_application_command_line (GApplication *app,
 	g_option_context_add_group (context, gtk_get_option_group (TRUE));
 
 	argv = g_application_command_line_get_arguments (command_line, &argc);
-
-	autostart_id = g_getenv ("DESKTOP_AUTOSTART_ID");
-	if (autostart_id != NULL && *autostart_id != '\0') {
-		autostart_mode = TRUE;
-        }
 
 	if (!g_option_context_parse (context, &argc, &argv, &error)) {
 		g_printerr ("Could not parse arguments: %s\n", error->message);
@@ -1002,14 +995,6 @@ nautilus_application_command_line (GApplication *app,
 	if (!kill_shell && !check_required_directories (self)) {
 		retval = EXIT_FAILURE;
 		goto out;
-	}
-
-	/* If in autostart mode (aka started by gnome-session), we need to ensure 
-         * nautilus starts with the correct options.
-         */
-	if (autostart_mode) {
-		no_default_window = TRUE;
-		no_desktop = FALSE;
 	}
 
 	DEBUG ("Parsing command line, no_default_window %d, quit %d, "
