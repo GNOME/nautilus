@@ -2147,7 +2147,10 @@ redo_layout_internal (NautilusIconContainer *container)
 	 */
 	if (container->details->auto_layout
 	    && container->details->drag_state != DRAG_STATE_STRETCH) {
-		resort (container);
+		if (container->details->needs_resort) {
+			resort (container);
+			container->details->needs_resort = FALSE;
+		}
 		lay_down_icons (container, container->details->icons, 0);
 	}
 
@@ -7188,6 +7191,8 @@ nautilus_icon_container_add (NautilusIconContainer *container,
 
 	g_hash_table_insert (details->icon_set, data, icon);
 
+	details->needs_resort = TRUE;
+
 	/* Run an idle function to add the icons. */
 	schedule_redo_layout (container);
 	
@@ -7260,6 +7265,7 @@ nautilus_icon_container_request_update (NautilusIconContainer *container,
 
 	if (icon != NULL) {
 		nautilus_icon_container_update_icon (container, icon);
+		container->details->needs_resort = TRUE;
 		schedule_redo_layout (container);
 	}
 }
@@ -7324,6 +7330,7 @@ nautilus_icon_container_request_update_all (NautilusIconContainer *container)
 		nautilus_icon_container_update_icon (container, icon);
 	}
 
+	container->details->needs_resort = TRUE;
 	redo_layout (container);
 }
 
@@ -7891,6 +7898,7 @@ nautilus_icon_container_set_auto_layout (NautilusIconContainer *container,
 		nautilus_icon_container_freeze_icon_positions (container);
 	}
 
+	container->details->needs_resort = TRUE;
 	redo_layout (container);
 
 	g_signal_emit (container, signals[LAYOUT_CHANGED], 0);
@@ -7957,6 +7965,7 @@ nautilus_icon_container_set_layout_mode (NautilusIconContainer *container,
 	container->details->layout_mode = mode;
 	invalidate_labels (container);
 
+	container->details->needs_resort = TRUE;
 	redo_layout (container);
 
 	g_signal_emit (container, signals[LAYOUT_CHANGED], 0);
@@ -8018,6 +8027,7 @@ nautilus_icon_container_sort (NautilusIconContainer *container)
 	container->details->auto_layout = TRUE;
 
 	reset_scroll_region_if_not_empty (container);
+	container->details->needs_resort = TRUE;
 	redo_layout (container);
 
 	if (changed) {
