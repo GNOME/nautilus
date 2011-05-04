@@ -18,14 +18,26 @@ INCLUDES = 						\
 	-DNAUTILUS_EXTENSIONDIR=\""$(libdir)/nautilus/extensions-3.0"\" \
 	$(NULL)
 
+dbus_built_sources = nautilus-generated.c nautilus-generated.h
+$(dbus_built_sources) : Makefile.am $(top_srcdir)/data/dbus-interfaces.xml
+	gdbus-codegen									\
+		--interface-prefix org.gnome.Nautilus.					\
+		--c-namespace NautilusDBus						\
+		--c-generate-object-manager						\
+		--generate-c-code nautilus-generated					\
+		--generate-docbook nautilus-generated-doc				\
+		$(top_srcdir)/data/dbus-interfaces.xml					\
+		$(NULL)
+
 BUILT_SOURCES = \
 	nautilus-marshal.c \
 	nautilus-marshal.h \
+	$(dbus_built_sources) \
 	$(NULL)
 
 dependency_static_libs = \
 	$(top_builddir)/cut-n-paste-code/libegg/libegg.la \
-        $(NULL)
+	$(NULL)
 
 libnautilus_private_la_LDFLAGS =	\
 	-no-undefined			\
@@ -100,6 +112,8 @@ libnautilus_private_la_SOURCES = \
 	nautilus-file-utilities.h \
 	nautilus-file.c \
 	nautilus-file.h \
+	nautilus-generated.c \
+	nautilus-generated.h \
 	nautilus-global-preferences.c \
 	nautilus-global-preferences.h \
 	nautilus-icon-canvas-item.c \

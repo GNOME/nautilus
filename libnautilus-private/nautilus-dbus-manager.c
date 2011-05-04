@@ -24,6 +24,7 @@
 #include <config.h>
 
 #include "nautilus-dbus-manager.h"
+#include "nautilus-generated.h"
 
 #include "nautilus-file-operations.h"
 
@@ -31,24 +32,6 @@
 #include "nautilus-debug.h"
 
 #include <gio/gio.h>
-
-static const gchar introspection_xml[] =
-  "<node>"
-  "  <interface name='org.gnome.Nautilus.FileOperations'>"
-  "    <method name='CopyURIs'>"
-  "      <arg type='as' name='SourceFilesURIList' direction='in'/>"
-  "      <arg type='s' name='DestinationDirectoryURI' direction='in'/>"
-  "    </method>"
-  "    <method name='EmptyTrash'>"
-  "    </method>"
-  "    <method name='CopyFile'>"
-  "      <arg type='s' name='SourceFileURI' direction='in'/>"
-  "      <arg type='s' name='SourceDisplayName' direction='in'/>"
-  "      <arg type='s' name='DestinationDirectoryURI' direction='in'/>"
-  "      <arg type='s' name='DestinationDisplayName' direction='in'/>"
-  "    </method>"
-  "  </interface>"
-  "</node>";
 
 typedef struct _NautilusDBusManager NautilusDBusManager;
 typedef struct _NautilusDBusManagerClass NautilusDBusManagerClass;
@@ -59,8 +42,10 @@ struct _NautilusDBusManager {
   GDBusConnection *connection;
   GApplication *application;
 
+  GDBusObjectManagerServer *object_manager;
+  NautilusDBusFileOperations *file_operations;
+
   guint owner_id;
-  guint registration_id;
 };
 
 struct _NautilusDBusManagerClass {
@@ -86,17 +71,23 @@ nautilus_dbus_manager_dispose (GObject *object)
 {
   NautilusDBusManager *self = (NautilusDBusManager *) object;
 
-  if (self->registration_id != 0)
-    {
-      g_dbus_connection_unregister_object (self->connection, self->registration_id);
-      self->registration_id = 0;
-    }
-  
+  /* Unown before unregistering so we're not registred in a partial state */
   if (self->owner_id != 0)
     {
       g_bus_unown_name (self->owner_id);
       self->owner_id = 0;
     }
+
+  if (self->file_operations) {
+    g_dbus_interface_skeleton_unexport (G_DBUS_INTERFACE_SKELETON (self->file_operations));
+    g_object_unref (self->file_operations);
+    self->file_operations = NULL;
+  }
+
+  if (self->object_manager) {
+    g_object_unref (self->object_manager);
+    self->object_manager = NULL;
+  }
 
   g_clear_object (&self->connection);
 
@@ -118,21 +109,16 @@ service_timeout_handler (gpointer user_data)
   return FALSE;
 }
 
-static void
-trigger_copy_file_operation (const gchar *source_uri,
-                             const gchar *source_display_name,
-                             const gchar *dest_dir_uri,
-                             const gchar *dest_name)
+static gboolean
+handle_copy_file (NautilusDBusFileOperations *object,
+		  GDBusMethodInvocation *invocation,
+		  const gchar *source_uri,
+		  const gchar *source_display_name,
+		  const gchar *dest_dir_uri,
+		  const gchar *dest_name)
 {
   GFile *source_file, *target_dir;
   const gchar *target_name = NULL, *source_name = NULL;
-
-  if (source_uri == NULL || source_uri[0] == '\0' ||
-      dest_dir_uri == NULL || dest_dir_uri[0] == '\0')
-    {
-      DEBUG ("Called 'CopyFile' with invalid arguments, discarding");
-      return;
-    }
 
   source_file = g_file_new_for_uri (source_uri);
   target_dir = g_file_new_for_uri (dest_dir_uri);
@@ -144,25 +130,24 @@ trigger_copy_file_operation (const gchar *source_uri,
     source_name = source_display_name;
 
   nautilus_file_operations_copy_file (source_file, target_dir, source_name, target_name,
-                                      NULL, NULL, NULL);
+				      NULL, NULL, NULL);
 
   g_object_unref (source_file);
   g_object_unref (target_dir);
+
+  nautilus_dbus_file_operations_complete_copy_file (object, invocation);
+  return TRUE; /* invocation was handled */
 }
 
-static void
-trigger_copy_uris_operation (const gchar **sources,
-                             const gchar *destination)
+static gboolean
+handle_copy_uris (NautilusDBusFileOperations *object,
+		  GDBusMethodInvocation *invocation,
+		  const gchar **sources,
+		  const gchar *destination)
 {
   GList *source_files = NULL;
   GFile *dest_dir;
   gint idx;
-
-  if (sources == NULL || sources[0] == NULL || destination == NULL)
-    {
-      DEBUG ("Called 'CopyURIs' with NULL arguments, discarding");
-      return;
-    }
 
   dest_dir = g_file_new_for_uri (destination);
 
@@ -176,76 +161,20 @@ trigger_copy_uris_operation (const gchar **sources,
 
   g_list_free_full (source_files, g_object_unref);
   g_object_unref (dest_dir);
+
+  nautilus_dbus_file_operations_complete_copy_uris (object, invocation);
+  return TRUE; /* invocation was handled */
 }
 
-static void
-trigger_empty_trash_operation (void)
+static gboolean
+handle_empty_trash (NautilusDBusFileOperations *object,
+		    GDBusMethodInvocation *invocation)
 {
   nautilus_file_operations_empty_trash (NULL);
+
+  nautilus_dbus_file_operations_complete_empty_trash (object, invocation);
+  return TRUE; /* invocation was handled */
 }
-
-static void
-handle_method_call (GDBusConnection *connection,
-                    const gchar *sender,
-                    const gchar *object_path,
-                    const gchar *interface_name,
-                    const gchar *method_name,
-                    GVariant *parameters,
-                    GDBusMethodInvocation *invocation,
-                    gpointer user_data)
-{
-  DEBUG ("Handle method, sender %s, object_path %s, interface %s, method %s",
-         sender, object_path, interface_name, method_name);
-
-  if (g_strcmp0 (method_name, "CopyURIs") == 0)
-    {
-      const gchar **uris = NULL;
-      const gchar *destination_uri = NULL;
-
-      g_variant_get (parameters, "(^a&s&s)", &uris, &destination_uri);
-      trigger_copy_uris_operation (uris, destination_uri);
-
-      DEBUG ("Called CopyURIs with dest %s and uri %s\n", destination_uri, uris[0]);
-
-      goto out;
-    }
-
-  if (g_strcmp0 (method_name, "EmptyTrash") == 0)
-    {
-      trigger_empty_trash_operation ();
-
-      DEBUG ("Called EmptyTrash");
-
-      goto out;
-    }
-
-  if (g_strcmp0 (method_name, "CopyFile") == 0)
-    {
-      const gchar *source_uri;
-      const gchar *source_display_name;
-      const gchar *destination_dir;
-      const gchar *destination_name;
-
-      g_variant_get (parameters, "(&s&s&s&s)", &source_uri, &source_display_name,
-                     &destination_dir, &destination_name);
-      trigger_copy_file_operation (source_uri, source_display_name, destination_dir, destination_name);
-
-      DEBUG ("Called CopyFile with source %s, dest dir %s and dest name %s", source_uri, destination_dir,
-             destination_name);
-
-      goto out;
-    }
-
- out:
-  g_dbus_method_invocation_return_value (invocation, NULL);
-}
-
-static const GDBusInterfaceVTable interface_vtable =
-{
-  handle_method_call,
-  NULL,
-  NULL,
-};
 
 static void
 bus_acquired_handler_cb (GDBusConnection *conn,
@@ -253,49 +182,50 @@ bus_acquired_handler_cb (GDBusConnection *conn,
                          gpointer user_data)
 {
   NautilusDBusManager *self = user_data;
-  GDBusNodeInfo *introspection_data;
-  GError *error = NULL;
 
   DEBUG ("Bus acquired at %s", name);
 
   self->connection = g_object_ref (conn);
-  introspection_data = g_dbus_node_info_new_for_xml (introspection_xml, &error);
 
-  if (error != NULL)
-    {
-      g_warning ("Error parsing the FileOperations XML interface: %s", error->message);
-      g_error_free (error);
+  self->object_manager = g_dbus_object_manager_server_new ("/org/gnome/Nautilus");
 
-      g_bus_unown_name (self->owner_id);
-      self->owner_id = 0;
+  self->file_operations = nautilus_dbus_file_operations_skeleton_new ();
 
-      g_application_release (self->application);
+  g_signal_connect (self->file_operations,
+		    "handle-copy-uris",
+		    G_CALLBACK (handle_copy_uris),
+		    self);
+  g_signal_connect (self->file_operations,
+		    "handle-copy-file",
+		    G_CALLBACK (handle_copy_file),
+		    self);
+  g_signal_connect (self->file_operations,
+		    "handle-empty-trash",
+		    G_CALLBACK (handle_empty_trash),
+		    self);
 
-      return;
-    }
-  
-  self->registration_id = g_dbus_connection_register_object (conn,
-                                                             "/org/gnome/Nautilus",
-                                                             introspection_data->interfaces[0],
-                                                             &interface_vtable,
-                                                             self,
-                                                             NULL, &error);
+  g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (self->file_operations), self->connection,
+				    "/org/gnome/Nautilus", NULL);
 
-  g_dbus_node_info_unref (introspection_data);
-
-  if (error != NULL)
-    {
-      g_warning ("Error registering the FileOperations proxy on the bus: %s", error->message);
-      g_error_free (error);
-
-      g_bus_unown_name (self->owner_id);
-
-      g_application_release (self->application);
-
-      return;
-    }
+  g_dbus_object_manager_server_set_connection (self->object_manager, self->connection);
 
   g_timeout_add_seconds (SERVICE_TIMEOUT, service_timeout_handler, self);
+}
+
+static void
+on_name_lost (GDBusConnection *connection,
+	      const gchar     *name,
+	      gpointer         user_data)
+{
+  DEBUG ("Lost (or failed to acquire) the name %s on the session message bus\n", name);
+}
+
+static void
+on_name_acquired (GDBusConnection *connection,
+		  const gchar     *name,
+		  gpointer         user_data)
+{
+  DEBUG ("Acquired the name %s on the session message bus\n", name);
 }
 
 static void
@@ -333,13 +263,13 @@ nautilus_dbus_manager_constructed (GObject *object)
   g_application_hold (self->application);
 
   self->owner_id = g_bus_own_name (G_BUS_TYPE_SESSION,
-                                   "org.gnome.Nautilus",
-                                   G_BUS_NAME_OWNER_FLAGS_NONE,
-                                   bus_acquired_handler_cb,
-                                   NULL,
-                                   NULL,
-                                   self,
-                                   NULL);  
+				   "org.gnome.Nautilus",
+				   G_BUS_NAME_OWNER_FLAGS_NONE,
+				   bus_acquired_handler_cb,
+				   on_name_acquired,
+				   on_name_lost,
+				   self,
+				   NULL);
 }
 
 static void
