@@ -703,20 +703,16 @@ nautilus_window_slot_go_up (NautilusWindowSlot *slot,
 			    gboolean new_tab)
 {
 	GFile *parent;
-	GList *selection;
 	NautilusWindowOpenFlags flags;
 
 	if (slot->location == NULL) {
 		return;
 	}
-	
-	parent = g_file_get_parent (slot->location);
 
+	parent = g_file_get_parent (slot->location);
 	if (parent == NULL) {
 		return;
 	}
-	
-	selection = g_list_prepend (NULL, nautilus_file_get (slot->location));
 
 	flags = 0;
 	if (close_behind) {
@@ -726,12 +722,11 @@ nautilus_window_slot_go_up (NautilusWindowSlot *slot,
 		flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
 	}
 
-	nautilus_window_slot_open_location (slot, parent, 
+	nautilus_window_slot_open_location (slot, parent,
 					    flags,
-					    selection);
+					    NULL);
 
 	g_object_unref (parent);
-	g_list_free_full (selection, g_object_unref);
 }
 
 void
