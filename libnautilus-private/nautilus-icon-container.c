@@ -4101,6 +4101,67 @@ size_allocate (GtkWidget *widget,
 	}
 }
 
+static GtkSizeRequestMode
+get_request_mode (GtkWidget *widget)
+{
+  /* Don't trade size at all, since we get whatever we get anyway. */
+  return GTK_SIZE_REQUEST_CONSTANT_SIZE;
+}
+
+/* We need to implement these since the GtkScrolledWindow uses them
+   to guess whether to show scrollbars or not, and if we don't report
+   anything it'll tend to get it wrong causing double calls
+   to size_allocate (at different sizes) during its size allocation. */
+static void
+get_prefered_width (GtkWidget *widget,
+		    gint      *minimum_size,
+		    gint      *natural_size)
+{
+	EelCanvasGroup *root;
+	double x1, x2;
+	int cx1, cx2;
+	int width;
+
+	root = eel_canvas_root (EEL_CANVAS (widget));
+	eel_canvas_item_get_bounds (EEL_CANVAS_ITEM (root),
+				    &x1, NULL, &x2, NULL);
+	eel_canvas_w2c (EEL_CANVAS (widget), x1, 0, &cx1, NULL);
+	eel_canvas_w2c (EEL_CANVAS (widget), x2, 0, &cx2, NULL);
+
+	width = cx2 - cx1;
+	if (natural_size) {
+		*natural_size = width;
+	}
+	if (minimum_size) {
+		*minimum_size = width;
+	}
+}
+
+static void
+get_prefered_height (GtkWidget *widget,
+		     gint      *minimum_size,
+		     gint      *natural_size)
+{
+	EelCanvasGroup *root;
+	double y1, y2;
+	int cy1, cy2;
+	int height;
+
+	root = eel_canvas_root (EEL_CANVAS (widget));
+	eel_canvas_item_get_bounds (EEL_CANVAS_ITEM (root),
+				    NULL, &y1, NULL, &y2);
+	eel_canvas_w2c (EEL_CANVAS (widget), 0, y1, NULL, &cy1);
+	eel_canvas_w2c (EEL_CANVAS (widget), 0, y2, NULL, &cy2);
+
+	height = cy2 - cy1;
+	if (natural_size) {
+		*natural_size = height;
+	}
+	if (minimum_size) {
+		*minimum_size = height;
+	}
+}
+
 static void
 setup_background (NautilusIconContainer *container)
 {
@@ -5992,6 +6053,9 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 	widget_class = GTK_WIDGET_CLASS (class);
 	widget_class->destroy = destroy;
 	widget_class->size_allocate = size_allocate;
+	widget_class->get_request_mode = get_request_mode;
+	widget_class->get_preferred_width = get_prefered_width;
+	widget_class->get_preferred_height = get_prefered_height;
 	widget_class->realize = realize;
 	widget_class->unrealize = unrealize;
 	widget_class->button_press_event = button_press_event;
