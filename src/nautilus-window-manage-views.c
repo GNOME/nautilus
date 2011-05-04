@@ -78,6 +78,7 @@
 
 static void begin_location_change                     (NautilusWindowSlot         *slot,
 						       GFile                      *location,
+						       GFile                      *previous_location,
 						       GList                      *new_selection,
 						       NautilusLocationChangeType  type,
 						       guint                       distance,
@@ -551,12 +552,8 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 		g_object_unref (old_location);
                 return;
         }
-	
-	if (old_location) {
-		g_object_unref (old_location);
-	}
 
-        begin_location_change (target_slot, location, new_selection,
+        begin_location_change (target_slot, location, old_location, new_selection,
 			       NAUTILUS_LOCATION_CHANGE_STANDARD, 0, NULL, callback, user_data);
 
 	/* Additionally, load this in all slots that have no location, this means
@@ -565,9 +562,13 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 		pane = l->data;
 		slot = pane->active_slot;
 		if (slot->location == NULL && slot->pending_location == NULL) {
-			begin_location_change (slot, location, new_selection,
+			begin_location_change (slot, location, old_location, new_selection,
 					       NAUTILUS_LOCATION_CHANGE_STANDARD, 0, NULL, NULL, NULL);
 		}
+	}
+
+	if (old_location) {
+		g_object_unref (old_location);
 	}
 }
 
@@ -666,6 +667,7 @@ report_callback (NautilusWindowSlot *slot,
  * Change a window slot's location.
  * @window: The NautilusWindow whose location should be changed.
  * @location: A url specifying the location to load
+ * @previous_location: The url that was previously shown in the window that initialized the change, if any
  * @new_selection: The initial selection to present after loading the location
  * @type: Which type of location change is this? Standard, back, forward, or reload?
  * @distance: If type is back or forward, the index into the back or forward chain. If
@@ -680,6 +682,7 @@ report_callback (NautilusWindowSlot *slot,
 static void
 begin_location_change (NautilusWindowSlot *slot,
                        GFile *location,
+                       GFile *previous_location,
 		       GList *new_selection,
                        NautilusLocationChangeType type,
                        guint distance,
@@ -691,12 +694,32 @@ begin_location_change (NautilusWindowSlot *slot,
         NautilusFile *file;
 	gboolean force_reload;
         char *current_pos;
+	GFile *from_folder, *parent;
 
 	g_assert (slot != NULL);
         g_assert (location != NULL);
         g_assert (type == NAUTILUS_LOCATION_CHANGE_BACK
                   || type == NAUTILUS_LOCATION_CHANGE_FORWARD
                   || distance == 0);
+
+	/* If there is no new selection and the new location is
+	 * a (grand)parent of the old location then we automatically
+	 * select the folder the previous location was in */
+	if (new_selection == NULL && previous_location != NULL &&
+	    g_file_has_prefix (previous_location, location)) {
+		from_folder = g_object_ref (previous_location);
+		parent = g_file_get_parent (from_folder);
+		while (parent != NULL && !g_file_equal (parent, location)) {
+			g_object_unref (from_folder);
+			from_folder = parent;
+			parent = g_file_get_parent (from_folder);
+		}
+		if (parent != NULL) {
+			new_selection = g_list_prepend (NULL, nautilus_file_get (from_folder));
+		}
+		g_object_unref (from_folder);
+		g_object_unref (parent);
+	}
 
 	end_location_change (slot);
 
@@ -1690,7 +1713,7 @@ nautilus_window_report_view_failed (NautilusWindow *window,
 
 	if (fallback_load_location != NULL) {
 		/* We loose the pending selection change here, but who cares... */
-		begin_location_change (slot, fallback_load_location, NULL,
+		begin_location_change (slot, fallback_load_location, NULL, NULL,
 				       NAUTILUS_LOCATION_CHANGE_FALLBACK, 0, NULL, NULL, NULL);
 		g_object_unref (fallback_load_location);
 	}
@@ -1888,6 +1911,7 @@ nautilus_window_back_or_forward (NautilusWindow *window,
 	GFile *location;
         guint len;
         NautilusBookmark *bookmark;
+	GFile *old_location;
 
 	slot = window->details->active_pane->active_slot;
 	list = back ? slot->back_list : slot->forward_list;
@@ -1911,16 +1935,20 @@ nautilus_window_back_or_forward (NautilusWindow *window,
 							 NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB,
 							 NULL, NULL, NULL);
 	} else {
-        	char *scroll_pos;
-		
+		char *scroll_pos;
+
+		old_location = nautilus_window_slot_get_location (slot);
 		scroll_pos = nautilus_bookmark_get_scroll_pos (bookmark);
 		begin_location_change
 			(slot,
-			 location, NULL,
+			 location, old_location, NULL,
 			 back ? NAUTILUS_LOCATION_CHANGE_BACK : NAUTILUS_LOCATION_CHANGE_FORWARD,
 			 distance,
 			 scroll_pos,
 			 NULL, NULL);
+		if (old_location) {
+			g_object_unref (old_location);
+		}
 
 		g_free (scroll_pos);
 	}
@@ -1941,7 +1969,7 @@ nautilus_window_slot_reload (NautilusWindowSlot *slot)
 	if (slot->location == NULL) {
 		return;
 	}
-	
+
 	/* peek_slot_field (window, location) can be free'd during the processing
 	 * of begin_location_change, so make a copy
 	 */
@@ -1953,7 +1981,7 @@ nautilus_window_slot_reload (NautilusWindowSlot *slot)
 		selection = nautilus_view_get_selection (slot->content_view);
 	}
 	begin_location_change
-		(slot, location, selection,
+		(slot, location, location, selection,
 		 NAUTILUS_LOCATION_CHANGE_RELOAD, 0, current_pos,
 		 NULL, NULL);
         g_free (current_pos);
