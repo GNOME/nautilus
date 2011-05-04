@@ -6769,10 +6769,9 @@ action_location_open_alternate_callback (GtkAction *action,
 	if (file == NULL) {
 		return;
 	}
-
 	nautilus_view_activate_file (view,
 				     file,
-				     0);
+				     NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW);
 }
 
 static void
