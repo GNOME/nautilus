@@ -25,7 +25,6 @@ $(dbus_built_sources) : Makefile.am $(top_srcdir)/data/dbus-interfaces.xml
 		--c-namespace NautilusDBus						\
 		--c-generate-object-manager						\
 		--generate-c-code nautilus-generated					\
-		--generate-docbook nautilus-generated-doc				\
 		$(top_srcdir)/data/dbus-interfaces.xml					\
 		$(NULL)
 
