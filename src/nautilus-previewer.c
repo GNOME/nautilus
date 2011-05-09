@@ -104,8 +104,8 @@ previewer_show_file_ready_cb (GObject *source,
                             res, &error);
 
   if (error != NULL) {
-    g_warning ("Unable to call ShowFile on NautilusPreviewer: %s",
-               error->message);
+    DEBUG ("Unable to call ShowFile on NautilusPreviewer: %s",
+           error->message);
     g_error_free (error);
   }
 
