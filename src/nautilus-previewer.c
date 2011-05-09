@@ -186,19 +186,24 @@ nautilus_previewer_call_show_file (NautilusPreviewer *self,
   g_object_ref (self);
 
   if (self->priv->proxy == NULL) {
+    /* if we already have a variant, don't call
+     * g_dbus_proxy_new_for_bus() again, but just change the pending
+     * argument to the new variant.
+     */
     if (self->priv->pending_variant != NULL)
       g_variant_unref (self->priv->pending_variant);
+    else
+      g_dbus_proxy_new_for_bus (G_BUS_TYPE_SESSION,
+                                G_DBUS_PROXY_FLAGS_NONE,
+                                NULL,
+                                PREVIEWER_DBUS_NAME,
+                                PREVIEWER_DBUS_PATH,
+                                PREVIEWER_DBUS_IFACE,
+                                NULL,
+                                previewer_proxy_async_ready_cb,
+                                self);
 
     self->priv->pending_variant = g_variant_ref_sink (variant);
-    g_dbus_proxy_new_for_bus (G_BUS_TYPE_SESSION,
-                              G_DBUS_PROXY_FLAGS_NONE,
-                              NULL,
-                              PREVIEWER_DBUS_NAME,
-                              PREVIEWER_DBUS_PATH,
-                              PREVIEWER_DBUS_IFACE,
-                              NULL,
-                              previewer_proxy_async_ready_cb,
-                              self);
   } else {
     real_call_show_file (self, variant);
   }
