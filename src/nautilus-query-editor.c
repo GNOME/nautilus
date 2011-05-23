@@ -973,9 +973,11 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
 	gtk_orientable_set_orientation (GTK_ORIENTABLE (editor), GTK_ORIENTATION_VERTICAL);
 
 	editor->details->invisible_vbox = gtk_vbox_new (FALSE, 6);
+	gtk_container_set_border_width (GTK_CONTAINER (editor->details->invisible_vbox), 6);
 	gtk_box_pack_start (GTK_BOX (editor), editor->details->invisible_vbox,
 			    FALSE, FALSE, 0);
 	editor->details->visible_vbox = gtk_vbox_new (FALSE, 6);
+	gtk_container_set_border_width (GTK_CONTAINER (editor->details->visible_vbox), 6);
 	gtk_box_pack_start (GTK_BOX (editor), editor->details->visible_vbox,
 			    FALSE, FALSE, 0);
 	/* Only show visible vbox */
