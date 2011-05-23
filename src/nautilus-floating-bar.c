@@ -33,11 +33,16 @@ struct _NautilusFloatingBarDetails {
 	GtkWidget *label_widget;
 	GtkWidget *spinner;
 	gboolean show_spinner;
+
+	guint escaping_distance;
+	GtkAllocation initial_allocation;
+	GdkRectangle escaping_area;
 };
 
 enum {
 	PROP_LABEL = 1,
 	PROP_SHOW_SPINNER,
+	PROP_ESCAPING_DISTANCE,
 	NUM_PROPERTIES
 };
 
@@ -45,6 +50,8 @@ enum {
 	ACTION,
 	NUM_SIGNALS
 };
+
+#define NAUTILUS_FLOATING_BAR_ESCAPING_DISTANCE 20
 
 static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 static guint signals[NUM_SIGNALS] = { 0, };
@@ -89,6 +96,9 @@ nautilus_floating_bar_get_property (GObject *object,
 	case PROP_SHOW_SPINNER:
 		g_value_set_boolean (value, self->priv->show_spinner);
 		break;
+	case PROP_ESCAPING_DISTANCE:
+		g_value_set_uint (value, self->priv->escaping_distance);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 		break;
@@ -110,6 +120,9 @@ nautilus_floating_bar_set_property (GObject *object,
 	case PROP_SHOW_SPINNER:
 		nautilus_floating_bar_set_show_spinner (self, g_value_get_boolean (value));
 		break;
+	case PROP_ESCAPING_DISTANCE:
+		self->priv->escaping_distance = g_value_get_uint (value);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 		break;
@@ -121,6 +134,180 @@ update_label (NautilusFloatingBar *self)
 {
 	gtk_label_set_text (GTK_LABEL (self->priv->label_widget), self->priv->label);
 }
+
+/* this is adapted from Epiphany:
+ * lib/widgets/ephy-overlay-escaping-child.c
+ *
+ * License: LGPL v2.1+
+ * Copyright © 2011 Igalia S.L.
+ */
+
+/* If the pointer leaves the window, restore the widget position */
+static gboolean
+parent_leave_notify_event (GtkWidget *widget,
+                           GdkEventMotion *event,
+                           GtkWidget *parent)
+{
+	NautilusFloatingBar *self = NAUTILUS_FLOATING_BAR (widget);
+	NautilusFloatingBarDetails *priv = self->priv;
+	GtkAllocation alloc;
+
+	gtk_widget_get_allocation (widget, &alloc);
+	alloc.y = priv->initial_allocation.y;
+	gtk_widget_size_allocate (widget, &alloc);
+
+	return FALSE;
+}
+
+/* this should be in Gdk...really */
+static gboolean
+is_point_in_rectangle (int point_x,
+                       int point_y,
+                       GdkRectangle rectangle)
+{
+	int rectangle_x_higher_bound = rectangle.x + rectangle.width;
+	int rectangle_y_higher_bound = rectangle.y + rectangle.height;
+
+	return point_x >= rectangle.x && point_x < rectangle_x_higher_bound
+		&& point_y >= rectangle.y && point_y < rectangle_y_higher_bound;
+}
+
+/* Keep the widget-pointer distance at at least
+ * EphyOverlayEscapingChildPrivate::escaping_distance by sliding the widget
+ * away if needed.
+ */
+static gboolean
+parent_motion_notify_event (GtkWidget *widget,
+                            GdkEventMotion *event,
+                            GtkWidget *parent)
+{
+	NautilusFloatingBar *self = NAUTILUS_FLOATING_BAR (widget);
+	NautilusFloatingBarDetails *priv = self->priv;
+	int distance_x, distance_y;
+	GtkAllocation alloc;
+
+	gtk_widget_get_allocation (widget, &alloc);
+
+	if (is_point_in_rectangle (event->x, event->y, priv->escaping_area)) {
+		gtk_widget_get_pointer (widget, &distance_x, &distance_y);
+		alloc.y += priv->escaping_distance + distance_y;
+	} else {
+		/* Put the widget at its original position if we are out of the escaping
+		 * zone. Do nothing if it is already there.
+		 */
+		if (alloc.y == priv->initial_allocation.y) {
+			return FALSE;
+		}
+
+		alloc.y = priv->initial_allocation.y;
+	}
+
+	gtk_widget_size_allocate (widget, &alloc);
+
+	return FALSE;
+}
+
+/* When the parent overlay is resized, the child relative position is modified.
+ * So we update our initial_allocation to this new value and redefine our
+ * escaping area.
+ */
+static void
+parent_size_allocate (GtkWidget    *widget,
+                      GdkRectangle *allocation,
+                      GtkWidget      *parent)
+{
+	NautilusFloatingBar *self = NAUTILUS_FLOATING_BAR (widget);
+	NautilusFloatingBarDetails *priv = self->priv;
+	GtkAllocation initial_allocation;
+
+	gtk_widget_get_allocation (widget, &initial_allocation);
+	priv->escaping_area = priv->initial_allocation = initial_allocation;
+
+	/* Define an escaping area around the widget.
+	 * Current implementation only handle horizontal lowerside widgets
+	 */
+	priv->escaping_area.height += priv->escaping_distance;
+	/* escape on both right and left */
+	priv->escaping_area.width += 2 * priv->escaping_distance;
+	priv->escaping_area.x -= priv->escaping_distance;
+	priv->escaping_area.y -= priv->escaping_distance;
+}
+
+/* Install listeners on our overlay parents to locate the pointer
+ * and our relative position.
+ */
+static void
+nautilus_floating_bar_parent_set (GtkWidget *widget,
+				  GtkWidget *previous_parent)
+{
+	GtkWidget *parent;
+
+	if (previous_parent != NULL) {
+		g_signal_handlers_disconnect_by_func (previous_parent,
+						      G_CALLBACK (parent_motion_notify_event),
+						      widget);
+		g_signal_handlers_disconnect_by_func (previous_parent,
+						      G_CALLBACK (parent_leave_notify_event),
+						      widget);
+		g_signal_handlers_disconnect_by_func (previous_parent,
+						      G_CALLBACK (parent_size_allocate),
+						      widget);
+	}
+
+	parent = gtk_widget_get_parent (widget);
+
+	if (parent == NULL) {
+		return;
+	}
+
+	g_signal_connect_swapped (parent,
+				  "motion-notify-event",
+				  G_CALLBACK (parent_motion_notify_event),
+				  widget);
+	g_signal_connect_swapped (parent,
+				  "leave-notify-event",
+				  G_CALLBACK (parent_leave_notify_event),
+				  widget);
+	g_signal_connect_swapped (parent,
+				  "size-allocate",
+				  G_CALLBACK (parent_size_allocate),
+				  widget);
+}
+
+/* When the mouse is over us, translate the event coords and slide the widget
+ * accordingly
+ */
+static gboolean
+nautilus_floating_bar_motion_notify (GtkWidget *widget,
+				     GdkEventMotion *event)
+{
+	NautilusFloatingBar *self = NAUTILUS_FLOATING_BAR (widget);
+	NautilusFloatingBarDetails *priv = self->priv;
+
+	event->x += priv->initial_allocation.x;
+	event->y += priv->initial_allocation.y;
+	return parent_motion_notify_event (widget, event, gtk_widget_get_parent (widget));
+}
+
+/* Make our event window propagate mouse motion events, so we can slide the widget,
+ * when hovered.
+ */
+static void
+nautilus_floating_bar_realize (GtkWidget *widget)
+{
+	GdkWindow *window;
+	GdkEventMask events;
+
+	GTK_WIDGET_CLASS (nautilus_floating_bar_parent_class)->realize (widget);
+
+	window = gtk_widget_get_window (widget);
+	events = gdk_window_get_events (window);
+	events |= GDK_POINTER_MOTION_MASK;
+
+	gdk_window_set_events (window, events);
+}
+
+/* end of code adapted from Epiphany */
 
 static void
 nautilus_floating_bar_show (GtkWidget *widget)
@@ -231,6 +418,9 @@ nautilus_floating_bar_class_init (NautilusFloatingBarClass *klass)
 	wclass->draw = nautilus_floating_bar_draw;
 	wclass->show = nautilus_floating_bar_show;
 	wclass->hide = nautilus_floating_bar_hide;
+	wclass->parent_set = nautilus_floating_bar_parent_set;
+	wclass->motion_notify_event = nautilus_floating_bar_motion_notify;
+	wclass->realize = nautilus_floating_bar_realize;
 
 	properties[PROP_LABEL] =
 		g_param_spec_string ("label",
@@ -244,6 +434,16 @@ nautilus_floating_bar_class_init (NautilusFloatingBarClass *klass)
 				      "Whether a spinner should be shown in the floating bar",
 				      FALSE,
 				      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+	properties[PROP_ESCAPING_DISTANCE] =
+		g_param_spec_uint ("escaping-distance",
+				   "Escaping distance",
+				   "Maximum distance between the mouse pointer and the widget",
+				   0,
+				   G_MAXUINT,
+				   NAUTILUS_FLOATING_BAR_ESCAPING_DISTANCE,
+				   G_PARAM_CONSTRUCT_ONLY |
+				   G_PARAM_READWRITE |
+				   G_PARAM_STATIC_STRINGS);
 
 	signals[ACTION] =
 		g_signal_new ("action",
