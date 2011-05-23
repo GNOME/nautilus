@@ -391,14 +391,14 @@ nautilus_location_entry_set_secondary_action (NautilusLocationEntry *entry,
 	}
 	switch (secondary_action) {
 	case NAUTILUS_LOCATION_ENTRY_ACTION_CLEAR:
-		gtk_entry_set_icon_from_stock (GTK_ENTRY (entry), 
-					       GTK_ENTRY_ICON_SECONDARY,
-					       GTK_STOCK_CLEAR);
+		gtk_entry_set_icon_from_icon_name (GTK_ENTRY (entry), 
+						   GTK_ENTRY_ICON_SECONDARY,
+						   "edit-clear-symbolic");
 		break;
 	case NAUTILUS_LOCATION_ENTRY_ACTION_GOTO:
-		gtk_entry_set_icon_from_stock (GTK_ENTRY (entry),
-					       GTK_ENTRY_ICON_SECONDARY,
-					       GTK_STOCK_GO_FORWARD);
+		gtk_entry_set_icon_from_icon_name (GTK_ENTRY (entry),
+						   GTK_ENTRY_ICON_SECONDARY,
+						   "go-next-symbolic");
 		break;
 	default:
 		g_assert_not_reached ();
