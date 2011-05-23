@@ -565,6 +565,9 @@ nautilus_icon_view_container_class_init (NautilusIconViewContainerClass *klass)
 static void
 nautilus_icon_view_container_init (NautilusIconViewContainer *icon_container)
 {
+	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (icon_container)),
+				     GTK_STYLE_CLASS_VIEW);
+
 }
 
 NautilusIconContainer *

@@ -2596,9 +2596,6 @@ nautilus_view_init (NautilusView *view)
 	g_signal_connect_swapped (nautilus_window_state,
 				  "changed::" NAUTILUS_WINDOW_STATE_START_WITH_STATUS_BAR,
 				  G_CALLBACK (nautilus_view_display_selection_info), view);
-
-	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (view)),
-				     GTK_STYLE_CLASS_VIEW);
 }
 
 static void
