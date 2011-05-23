@@ -513,6 +513,7 @@ connect_dialog_connect_to_server (NautilusConnectServerDialog *dialog)
 	GtkTreeIter iter;
 	char *user, *initial_path, *server, *folder, *domain, *port_str;
 	char *t, *join, *uri;
+	char *temp, *stripped_server;
 	double port;
 
 	/* Get our method info */
@@ -523,6 +524,14 @@ connect_dialog_connect_to_server (NautilusConnectServerDialog *dialog)
 	meth = &(methods[index]);
 
 	server = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->server_entry), 0, -1);
+
+	temp = g_strconcat (meth->scheme, "://", NULL);
+	if (g_str_has_prefix (server, temp)) {
+		stripped_server = g_strdup (server + strlen (temp));
+		g_free (server);
+		server = stripped_server;
+	}
+	g_free (temp);
 
 	user = NULL;
 	initial_path = g_strdup ("");
