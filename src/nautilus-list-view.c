@@ -1006,6 +1006,20 @@ subdirectory_unloaded_callback (NautilusListModel *model,
 }
 
 static gboolean
+key_release_callback (GtkWidget *widget, GdkEventKey *event, gpointer callback_data)
+{
+	switch (event->keyval) {
+	case GDK_KEY_v:
+		/* Re-enable tree search entry; disabled in key_press_callback */
+		if ((event->state & GDK_CONTROL_MASK) != 0) {
+			gtk_tree_view_set_enable_search (GTK_TREE_VIEW (widget), TRUE);
+		}
+	}
+
+	return FALSE;
+}
+
+static gboolean
 key_press_callback (GtkWidget *widget, GdkEventKey *event, gpointer callback_data)
 {
 	NautilusView *view;
@@ -1076,9 +1090,21 @@ key_press_callback (GtkWidget *widget, GdkEventKey *event, gpointer callback_dat
 		handled = TRUE;
 		break;
 	case GDK_KEY_v:
-		/* Eat Control + v to not enable type ahead */
+		/* HACK: see https://bugzilla.gnome.org/show_bug.cgi?id=314431
+		 *
+		 * We force event propagating to the focus window before the keybindings
+		 * in nautilus-window.c:nautilus_window_key_press_event(),
+		 * but that will trigger the type-ahead window when Ctrl+V is pressed.
+		 * We used to special-case Ctrl+V here, and handle the event,
+		 * to block the default GtkTreeView handler to run and show the window,
+		 * but that's ineffective as well, because it would break Copy/Paste, as keybindings
+		 * are now processed later, and they won't run if we return TRUE here.
+		 * So, we resort to disabling search while the handler runs, and re-enable it later
+		 * in the key_release callback, while not handling the event, so the accelerator
+		 * can still run.
+		 */
 		if ((event->state & GDK_CONTROL_MASK) != 0) {
-			handled = TRUE;
+			gtk_tree_view_set_enable_search (tree_view, FALSE);
 		}
 		break;
 
@@ -1624,6 +1650,8 @@ create_and_set_up_tree_view (NautilusListView *view)
 				 G_CALLBACK (button_release_callback), view, 0);
 	g_signal_connect_object (view->details->tree_view, "key_press_event",
 				 G_CALLBACK (key_press_callback), view, 0);
+	g_signal_connect_object (view->details->tree_view, "key_release_event",
+				 G_CALLBACK (key_release_callback), view, 0);
 	g_signal_connect_object (view->details->tree_view, "popup_menu",
                                  G_CALLBACK (popup_menu_callback), view, 0);
 	g_signal_connect_object (view->details->tree_view, "row_expanded",
