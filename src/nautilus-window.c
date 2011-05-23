@@ -1104,10 +1104,27 @@ static gboolean
 nautilus_window_key_press_event (GtkWidget *widget,
 				 GdkEventKey *event)
 {
+	static gpointer grand_parent_class = NULL;
 	NautilusWindow *window;
 	int i;
+	gboolean handled;
 
 	window = NAUTILUS_WINDOW (widget);
+	handled = FALSE;
+
+	if (!grand_parent_class) {
+		grand_parent_class = g_type_class_peek_parent (nautilus_window_parent_class);
+	}
+
+	/* See https://bugzilla.gnome.org/show_bug.cgi?id=314431
+	 *
+	 * We need to handle the keybindings for the currently focused widget
+	 * before the common accelerator bindings.
+	 */
+	handled = gtk_window_propagate_key_event (GTK_WINDOW (window), event);
+	if (handled) {
+		return TRUE;
+	}
 
 	for (i = 0; i < G_N_ELEMENTS (extra_window_keybindings); i++) {
 		if (extra_window_keybindings[i].keyval == event->keyval) {
@@ -1125,14 +1142,22 @@ nautilus_window_key_press_event (GtkWidget *widget,
 			g_assert (action != NULL);
 			if (gtk_action_is_sensitive (action)) {
 				gtk_action_activate (action);
-				return TRUE;
+				handled = TRUE;
 			}
 
 			break;
 		}
 	}
 
-	return GTK_WIDGET_CLASS (nautilus_window_parent_class)->key_press_event (widget, event);
+	if (!handled) {
+		handled  = gtk_window_activate_key (GTK_WINDOW (window), event);
+	}
+
+	if (!handled) {
+		handled = GTK_WIDGET_CLASS (grand_parent_class)->key_press_event (widget, event);
+	}
+
+	return handled;
 }
 
 /*
