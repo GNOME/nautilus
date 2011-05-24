@@ -9,6 +9,11 @@ desktop_DATA     = $(desktop_in_files:.desktop.in=.desktop)
 desktop_in_files = 					\
 	nautilus.desktop.in				\
 	nautilus-autorun-software.desktop.in
+
+autostartdir     = $(sysconfdir)/xdg/autostart
+autostart_in_files = nautilus-autostart.desktop.in
+autostart_DATA = $(autostart_in_files:.desktop.in=.desktop)
+
 @INTLTOOL_DESKTOP_RULE@
 
 mimedir = $(datadir)/mime/packages
@@ -36,11 +41,13 @@ EXTRA_DIST = $(nautilusdata_DATA) 	\
 	$(xml_in_files) 		\
 	$(desktop_in_files)		\
 	$(service_in_files)		\
+	$(autostart_in_files)		\
 	$(NULL)
 
 CLEANFILES = $(xml_files)	\
 	$(desktop_DATA)		\
 	$(service_DATA)		\
+	$(autostart_DATA)	\
 	$(NULL)
 
 SUBDIRS = \
