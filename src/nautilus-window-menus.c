@@ -837,7 +837,6 @@ action_new_window_callback (GtkAction *action,
 
 	new_window = nautilus_application_create_window (
 				application,
-				NULL,
 				gtk_window_get_screen (GTK_WINDOW (current_window)));
 	nautilus_window_slot_go_home (nautilus_window_get_active_slot (new_window), FALSE);
 

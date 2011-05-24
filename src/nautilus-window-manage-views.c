@@ -497,7 +497,6 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 		app = nautilus_application_dup_singleton ();
 		target_window = nautilus_application_create_window
 			(app,
-			 NULL,
 			 gtk_window_get_screen (GTK_WINDOW (window)));
 		g_object_unref (app);
 	}

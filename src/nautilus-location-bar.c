@@ -216,7 +216,7 @@ drag_data_received_callback (GtkWidget *widget,
 		screen = gtk_window_get_screen (GTK_WINDOW (window));
 
 		for (i = 1; names[i] != NULL; ++i) {
-			new_window = nautilus_application_create_window (application, NULL, screen);
+			new_window = nautilus_application_create_window (application, screen);
 			location = g_file_new_for_uri (names[i]);
 			nautilus_window_go_to (new_window, location);
 			g_object_unref (location);
