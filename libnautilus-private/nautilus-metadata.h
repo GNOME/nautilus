@@ -70,6 +70,7 @@
 #define NAUTILUS_METADATA_KEY_ANNOTATION                 	"annotation"
 #define NAUTILUS_METADATA_KEY_ICON_SCALE                 	"icon-scale"
 #define NAUTILUS_METADATA_KEY_CUSTOM_ICON                	"custom-icon"
+#define NAUTILUS_METADATA_KEY_CUSTOM_ICON_NAME                	"custom-icon-name"
 #define NAUTILUS_METADATA_KEY_SCREEN				"screen"
 #define NAUTILUS_METADATA_KEY_EMBLEMS				"emblems"
 

@@ -3899,10 +3899,21 @@ get_custom_icon_metadata_uri (NautilusFile *file)
 	return custom_icon_uri;
 }
 
+static char *
+get_custom_icon_metadata_name (NautilusFile *file)
+{
+	char *icon_name;
+
+	icon_name = nautilus_file_get_metadata (file,
+						NAUTILUS_METADATA_KEY_CUSTOM_ICON_NAME, NULL);
+
+	return icon_name;
+}
+
 static GIcon *
 get_custom_icon (NautilusFile *file)
 {
-	char *custom_icon_uri;
+	char *custom_icon_uri, *custom_icon_name;
 	GFile *icon_file;
 	GIcon *icon;
 
@@ -3912,7 +3923,9 @@ get_custom_icon (NautilusFile *file)
 
 	icon = NULL;
 	
-	/* Metadata takes precedence */
+	/* Metadata takes precedence; first we look at the custom
+	 * icon URI, then at the custom icon name.
+	 */
 	custom_icon_uri = get_custom_icon_metadata_uri (file);
 
 	if (custom_icon_uri) {
@@ -3920,6 +3933,15 @@ get_custom_icon (NautilusFile *file)
 		icon = g_file_icon_new (icon_file);
 		g_object_unref (icon_file);
 		g_free (custom_icon_uri);
+	}
+
+	if (icon == NULL) {
+		custom_icon_name = get_custom_icon_metadata_name (file);
+
+		if (custom_icon_name != NULL) {
+			icon = g_themed_icon_new_with_default_fallbacks (custom_icon_name);
+			g_free (custom_icon_name);
+		}
 	}
  
 	if (icon == NULL && file->details->got_link_info && file->details->custom_icon != NULL) {
