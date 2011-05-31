@@ -752,6 +752,7 @@ open_window (NautilusApplication *application,
 static void
 open_windows (NautilusApplication *application,
 	      GFile **files,
+	      gint n_files,
 	      GdkScreen *screen,
 	      const char *geometry)
 {
@@ -762,7 +763,7 @@ open_windows (NautilusApplication *application,
 		open_window (application, NULL, screen, geometry);
 	} else {
 		/* Open windows at each requested location. */
-		for (i = 0; files[i] != NULL; i++) {
+		for (i = 0; i < n_files; i++) {
 			open_window (application, files[i], screen, geometry);
 		}
 	}
@@ -778,7 +779,7 @@ nautilus_application_open (GApplication *app,
 
 	DEBUG ("Open called on the GApplication instance; %d files", n_files);
 
-	open_windows (self, files,
+	open_windows (self, files, n_files,
 		      gdk_screen_get_default (),
 		      self->priv->geometry);
 }
