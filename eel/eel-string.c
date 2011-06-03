@@ -900,7 +900,7 @@ eel_ref_str_unref (eel_ref_str str)
 	} else if (old_ref == 0x80000001) {
 		G_LOCK (unique_ref_strs);
 		/* Need to recheck after taking lock to avoid races with _get_unique() */
-		if (g_atomic_int_exchange_and_add (count, -1) == 0x80000001) {
+		if (g_atomic_int_add (count, -1) == 0x80000001) {
 			g_hash_table_remove (unique_ref_strs, (char *)str);
 			g_free ((char *)count);
 		} 
