@@ -93,12 +93,22 @@ nautilus_connect_server_operation_set_property (GObject *object,
 
 	switch (property_id) {
 	case PROP_DIALOG:
-		self->details->dialog = g_value_get_object (value);
+		self->details->dialog = g_value_dup_object (value);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 		break;
 	}
+}
+
+static void
+nautilus_connect_server_operation_dispose (GObject *object)
+{
+	NautilusConnectServerOperation *self = NAUTILUS_CONNECT_SERVER_OPERATION (object);
+
+	g_clear_object (&self->details->dialog);
+
+	G_OBJECT_CLASS (nautilus_connect_server_operation_parent_class)->dispose (object);
 }
 
 static void
@@ -110,6 +120,7 @@ nautilus_connect_server_operation_class_init (NautilusConnectServerOperationClas
 
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->set_property = nautilus_connect_server_operation_set_property;
+	object_class->dispose = nautilus_connect_server_operation_dispose;
 
 	mount_op_class = G_MOUNT_OPERATION_CLASS (klass);
 	mount_op_class->ask_password = nautilus_connect_server_operation_ask_password;

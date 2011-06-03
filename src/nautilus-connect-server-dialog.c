@@ -73,6 +73,8 @@ struct _NautilusConnectServerDialogDetails {
 	gboolean last_password_set;
 	gulong password_sensitive_id;
 	gboolean should_destroy;
+
+	GCancellable *mount_cancellable;
 };
 
 G_DEFINE_TYPE (NautilusConnectServerDialog, nautilus_connect_server_dialog,
@@ -486,6 +488,8 @@ mount_enclosing_ready_cb (GObject *source,
 		}
 	}
 
+	g_clear_object (&dialog->details->mount_cancellable);
+
 	if (error != NULL) {
 		g_error_free (error);
 	}
@@ -497,9 +501,11 @@ connect_dialog_present_uri_async (NautilusConnectServerDialog *self,
 {
 	GMountOperation *op;
 
+	self->details->mount_cancellable = g_cancellable_new ();
+
 	op = nautilus_connect_server_operation_new (self);
 	g_file_mount_enclosing_volume (location,
-				       0, op, NULL,
+				       0, op, self->details->mount_cancellable,
 				       mount_enclosing_ready_cb, self);
 	g_object_unref (op);
 }
@@ -636,7 +642,12 @@ connect_to_server_or_finish_fill (NautilusConnectServerDialog *dialog)
 static gboolean
 connect_dialog_abort_mount_operation (NautilusConnectServerDialog *dialog)
 {
-	if (dialog->details->fill_details_res != NULL) {
+	gboolean retval = FALSE;
+
+	if (dialog->details->mount_cancellable != NULL) {
+		g_cancellable_cancel (dialog->details->mount_cancellable);
+		retval = TRUE;
+	} else if (dialog->details->fill_details_res != NULL) {
 		g_simple_async_result_set_op_res_gboolean (dialog->details->fill_details_res, FALSE);
 		g_simple_async_result_complete (dialog->details->fill_details_res);
 
@@ -648,10 +659,10 @@ connect_dialog_abort_mount_operation (NautilusConnectServerDialog *dialog)
 			dialog->details->fill_operation = NULL;
 		}
 
-		return TRUE;
+		retval = TRUE;
 	}
 
-	return FALSE;
+	return retval;
 }
 
 static void
@@ -659,6 +670,7 @@ connect_dialog_destroy (NautilusConnectServerDialog *dialog)
 {
 	if (connect_dialog_abort_mount_operation (dialog)) {
 		dialog->details->should_destroy = TRUE;
+		gtk_widget_hide (GTK_WIDGET (dialog));
 	} else {
 		gtk_widget_destroy (GTK_WIDGET (dialog));
 	}
@@ -1204,6 +1216,15 @@ nautilus_connect_server_dialog_fill_details_async (NautilusConnectServerDialog *
 	GSimpleAsyncResult *fill_details_res;
 	const gchar *str;
 	GAskPasswordFlags set_flags;
+
+	if (g_cancellable_is_cancelled (self->details->mount_cancellable)) {
+		g_simple_async_report_error_in_idle (G_OBJECT (self),
+						     callback, user_data,
+						     G_IO_ERROR, G_IO_ERROR_CANCELLED,
+						     "%s", _("Operation cancelled"));
+
+		return;
+	}
 
 	fill_details_res = g_simple_async_result_new (G_OBJECT (self), callback, user_data,
 						      nautilus_connect_server_dialog_fill_details_async);
