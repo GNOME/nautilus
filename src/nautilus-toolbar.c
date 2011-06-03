@@ -210,6 +210,9 @@ nautilus_toolbar_dispose (GObject *obj)
 	g_clear_object (&self->priv->ui_manager);
 	g_clear_object (&self->priv->action_group);
 
+	g_signal_handlers_disconnect_by_func (nautilus_preferences,
+					      toolbar_update_appearance, self);
+
 	G_OBJECT_CLASS (nautilus_toolbar_parent_class)->dispose (obj);
 }
 
