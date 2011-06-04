@@ -17,17 +17,17 @@
 # Carlos Perelló Marín <carlos@hispalinux.es>, 2000.
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2004, 2005, 2006.
 # Juanje Ojeda Croissier <jojeda@emergya.es>, 2009.
-# Daniel Mustieles <daniel.mustieles@gmail.com>, 2010, 2011.
 # Jorge González <jorgegonz@svn.gnome.org>, 2007, 2008, 2010, 2011.
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2010, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.master.es\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2011-05-29 08:38+0000\n"
-"PO-Revision-Date: 2011-02-20 15:15+0100\n"
-"Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
+"POT-Creation-Date: 2011-06-03 23:37+0000\n"
+"PO-Revision-Date: 2011-06-04 10:35+0200\n"
+"Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1981,9 +1981,9 @@ msgid ""
 "will determine if any action is taken inside of Nautilus when either is "
 "pressed."
 msgstr ""
-"Para usuarios con ratones que tienen botones «Adelante» y «Atrás», esta tecla "
-"determinará si cualquier acción se realiza dentro de Nautilus cuando se "
-"pulse cualquiera de los botones."
+"Para usuarios con ratones que tienen botones «Adelante» y «Atrás», esta "
+"tecla determinará si cualquier acción se realiza dentro de Nautilus cuando "
+"se pulse cualquiera de los botones."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:31
 msgid ""
@@ -1991,8 +1991,8 @@ msgid ""
 "will set which button activates the \"Back\" command in a browser window. "
 "Possible values range between 6 and 14."
 msgstr ""
-"Para usuarios con ratones que tienen botones «Adelante» y «Atrás», esta tecla "
-"establecerá qué botón activa el comando «Atrás» en una ventana del "
+"Para usuarios con ratones que tienen botones «Adelante» y «Atrás», esta "
+"tecla establecerá qué botón activa el comando «Atrás» en una ventana del "
 "examinador. Los posibles rangos de valores están entre 6 y 14."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:32
@@ -2001,8 +2001,8 @@ msgid ""
 "will set which button activates the \"Forward\" command in a browser window. "
 "Possible values range between 6 and 14."
 msgstr ""
-"Para usuarios con ratones que tienen botones «Adelante» y «Atrás», esta tecla "
-"establecerá qué botón activa el comando «Adelante» en una ventana del "
+"Para usuarios con ratones que tienen botones «Adelante» y «Atrás», esta "
+"tecla establecerá qué botón activa el comando «Adelante» en una ventana del "
 "examinador. Los posibles rangos de valores están entre 6 y 14."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:33
@@ -2208,8 +2208,9 @@ msgid ""
 msgstr ""
 "Si se establece a cierto, los archivos en las ventanas nuevas se colocarán "
 "en sentido inverso. Ej: si se ordenados por nombre entonces en vez de "
-"colocarse de la «a» a la «z» se colocarán de la «z» a la «a» ; si se colocan por "
-"tamaño; en lugar de ordenarse incrementalmente se ordenarán decrementalmente."
+"colocarse de la «a» a la «z» se colocarán de la «z» a la «a» ; si se colocan "
+"por tamaño; en lugar de ordenarse incrementalmente se ordenarán "
+"decrementalmente."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:57
 msgid ""
@@ -2363,8 +2364,8 @@ msgstr ""
 "mostrarán miniaturas, aún cuando la carpeta se encuentre en un servidor "
 "remoto. Si está definido como «local_only» (sólo local) entonces sólo se "
 "mostrarán miniaturas en los sistemas de archivos locales. Si se establece a "
-"«never» (nunca) entonces no se mostrarán miniaturas de las imágenes, sino que "
-"se mostrará un icono genérico."
+"«never» (nunca) entonces no se mostrarán miniaturas de las imágenes, sino "
+"que se mostrará un icono genérico."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:82
 msgid ""
@@ -2374,10 +2375,10 @@ msgid ""
 "systems. If set to \"never\" then never bother to compute item counts."
 msgstr ""
 "Compensación de velocidad para cuando se muestre el número de elementos en "
-"una carpeta. Si se establece a «always» (siempre) entonces siempre se contará "
-"el número de elementos, aún si la carpeta se encuentra en un servidor "
-"remoto. Si se establece a «local_only» (sólo local) entonces sólo se mostrará "
-"el número en los sistemas de archivos locales. Si se establece a "
+"una carpeta. Si se establece a «always» (siempre) entonces siempre se "
+"contará el número de elementos, aún si la carpeta se encuentra en un "
+"servidor remoto. Si se establece a «local_only» (sólo local) entonces sólo "
+"se mostrará el número en los sistemas de archivos locales. Si se establece a "
 "«never» (nunca) entonces nunca se contará el número de elementos."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:83
@@ -2610,43 +2611,43 @@ msgstr ""
 "a ~/.config/nautilus"
 
 # src/nautilus-main.c:117
-#: ../src/nautilus-application.c:862
+#: ../src/nautilus-application.c:863
 msgid "--check cannot be used with other options."
 msgstr "--check no se puede usar con otras opciones."
 
 # src/nautilus-main.c:117
-#: ../src/nautilus-application.c:868
+#: ../src/nautilus-application.c:869
 msgid "--quit cannot be used with URIs."
 msgstr "--quit no se puede usar con URI."
 
 # src/nautilus-main.c:117
-#: ../src/nautilus-application.c:875
+#: ../src/nautilus-application.c:876
 msgid "--geometry cannot be used with more than one URI."
 msgstr "--geometry no se puede usar con más de un URI."
 
 # src/nautilus-main.c:63
-#: ../src/nautilus-application.c:928
+#: ../src/nautilus-application.c:929
 msgid "Perform a quick set of self-check tests."
 msgstr "Realiza un conjunto rápido de auto-verificaciones."
 
 # src/file-manager/fm-properties-window.c:1641
-#: ../src/nautilus-application.c:931
+#: ../src/nautilus-application.c:932
 msgid "Show the version of the program."
 msgstr "Mostrar la versión del programa."
 
-#: ../src/nautilus-application.c:933
+#: ../src/nautilus-application.c:934
 msgid "Create the initial window with the given geometry."
 msgstr "Crea la ventana inicial con la geometría indicada."
 
-#: ../src/nautilus-application.c:933
+#: ../src/nautilus-application.c:934
 msgid "GEOMETRY"
 msgstr "GEOMETRÍA"
 
-#: ../src/nautilus-application.c:935
+#: ../src/nautilus-application.c:936
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Sólo crear ventanas para las URI explícitamente especificadas."
 
-#: ../src/nautilus-application.c:937
+#: ../src/nautilus-application.c:938
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
@@ -2655,15 +2656,15 @@ msgstr ""
 "diálogo de preferencias)."
 
 # src/nautilus-main.c:65
-#: ../src/nautilus-application.c:939
+#: ../src/nautilus-application.c:940
 msgid "Quit Nautilus."
 msgstr "Salir de Nautilus."
 
-#: ../src/nautilus-application.c:940
+#: ../src/nautilus-application.c:941
 msgid "[URI...]"
 msgstr "[URI…]"
 
-#: ../src/nautilus-application.c:951
+#: ../src/nautilus-application.c:952
 msgid ""
 "\n"
 "\n"
@@ -2764,35 +2765,35 @@ msgstr ""
 "\n"
 "Añadir conexión a montaje de servidor"
 
-#: ../src/nautilus-connect-server-dialog.c:126
+#: ../src/nautilus-connect-server-dialog.c:128
 msgid "SSH"
 msgstr "SSH"
 
-#: ../src/nautilus-connect-server-dialog.c:129
+#: ../src/nautilus-connect-server-dialog.c:131
 msgid "Public FTP"
 msgstr "FTP público"
 
-#: ../src/nautilus-connect-server-dialog.c:131
+#: ../src/nautilus-connect-server-dialog.c:133
 msgid "FTP (with login)"
 msgstr "FTP (con login)"
 
-#: ../src/nautilus-connect-server-dialog.c:134
+#: ../src/nautilus-connect-server-dialog.c:136
 msgid "Windows share"
 msgstr "Compartido por Windows"
 
-#: ../src/nautilus-connect-server-dialog.c:136
+#: ../src/nautilus-connect-server-dialog.c:138
 msgid "WebDAV (HTTP)"
 msgstr "WebDAV (HTTP)"
 
-#: ../src/nautilus-connect-server-dialog.c:138
+#: ../src/nautilus-connect-server-dialog.c:140
 msgid "Secure WebDAV (HTTPS)"
 msgstr "WebDAV seguro (HTTPS)"
 
-#: ../src/nautilus-connect-server-dialog.c:185
+#: ../src/nautilus-connect-server-dialog.c:187
 msgid "Connecting..."
 msgstr "Conectando…"
 
-#: ../src/nautilus-connect-server-dialog.c:209
+#: ../src/nautilus-connect-server-dialog.c:211
 msgid ""
 "Can't load the supported server method list.\n"
 "Please check your gvfs installation."
@@ -2800,80 +2801,80 @@ msgstr ""
 "No se puede cargar la lista de métodos soportada por el servidor.\n"
 "Compruebe su instalación de gvfs."
 
-#: ../src/nautilus-connect-server-dialog.c:287
+#: ../src/nautilus-connect-server-dialog.c:289
 #, c-format
 msgid "The folder \"%s\" cannot be opened on \"%s\"."
 msgstr "No se puede abrir la carpeta «%s» en «%s»."
 
-#: ../src/nautilus-connect-server-dialog.c:297
+#: ../src/nautilus-connect-server-dialog.c:299
 #, c-format
 msgid "The server at \"%s\" cannot be found."
 msgstr "No se puede encontrar el servidor en «%s»."
 
-#: ../src/nautilus-connect-server-dialog.c:332
+#: ../src/nautilus-connect-server-dialog.c:334
 msgid "Try Again"
 msgstr "Intentarlo de nuevo"
 
-#: ../src/nautilus-connect-server-dialog.c:397
+#: ../src/nautilus-connect-server-dialog.c:399
 msgid "Please verify your user details."
 msgstr "Verificar sus detalles de usuario."
 
-#: ../src/nautilus-connect-server-dialog.c:427
+#: ../src/nautilus-connect-server-dialog.c:429
 msgid "Continue"
 msgstr "Continuar"
 
-#: ../src/nautilus-connect-server-dialog.c:689
+#: ../src/nautilus-connect-server-dialog.c:701
 #: ../src/nautilus-properties-window.c:5165 ../src/nautilus-view.c:1538
 msgid "There was an error displaying help."
 msgstr "Hubo un error al mostrar la ayuda."
 
-#: ../src/nautilus-connect-server-dialog.c:707
-#: ../src/nautilus-connect-server-dialog.c:1126
+#: ../src/nautilus-connect-server-dialog.c:719
+#: ../src/nautilus-connect-server-dialog.c:1138
 msgid "C_onnect"
 msgstr "C_onectar"
 
 # libnautilus-private/nautilus-global-preferences.c:592
 #. set dialog properties
-#: ../src/nautilus-connect-server-dialog.c:832
+#: ../src/nautilus-connect-server-dialog.c:844
 msgid "Connect to Server"
 msgstr "Conectar con el servidor"
 
-#: ../src/nautilus-connect-server-dialog.c:850
+#: ../src/nautilus-connect-server-dialog.c:862
 msgid "Server Details"
 msgstr "Detalles del servidor"
 
 # libnautilus-private/nautilus-global-preferences.c:592
 #. first row: server entry + port spinbutton
-#: ../src/nautilus-connect-server-dialog.c:871
+#: ../src/nautilus-connect-server-dialog.c:883
 msgid "_Server:"
 msgstr "_Servidor:"
 
 #. port
-#: ../src/nautilus-connect-server-dialog.c:895
+#: ../src/nautilus-connect-server-dialog.c:907
 msgid "_Port:"
 msgstr "_Puerto:"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-properties-window.c:1094
 #. second row: type combobox
-#: ../src/nautilus-connect-server-dialog.c:913
+#: ../src/nautilus-connect-server-dialog.c:925
 msgid "_Type:"
 msgstr "_Tipo:"
 
 #. third row: share entry
-#: ../src/nautilus-connect-server-dialog.c:987
+#: ../src/nautilus-connect-server-dialog.c:999
 msgid "Sh_are:"
 msgstr "Comp_artir:"
 
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
 #. fourth row: folder entry
-#: ../src/nautilus-connect-server-dialog.c:1007 ../src/nautilus-view.c:1728
+#: ../src/nautilus-connect-server-dialog.c:1019 ../src/nautilus-view.c:1728
 msgid "_Folder:"
 msgstr "_Carpeta:"
 
 # src/nautilus-sidebar.c:424
-#: ../src/nautilus-connect-server-dialog.c:1030
+#: ../src/nautilus-connect-server-dialog.c:1042
 msgid "User Details"
 msgstr "Detalles del usuario"
 
@@ -2883,7 +2884,7 @@ msgstr "Detalles del usuario"
 # src/file-manager/fm-search-list-view.c:140
 # src/nautilus-bookmarks-window.c:172
 #. first row: domain entry
-#: ../src/nautilus-connect-server-dialog.c:1050
+#: ../src/nautilus-connect-server-dialog.c:1062
 msgid "_Domain name:"
 msgstr "Nombre del _dominio:"
 
@@ -2893,19 +2894,23 @@ msgstr "Nombre del _dominio:"
 # src/file-manager/fm-search-list-view.c:140
 # src/nautilus-bookmarks-window.c:172
 #. second row: username entry
-#: ../src/nautilus-connect-server-dialog.c:1069
+#: ../src/nautilus-connect-server-dialog.c:1081
 msgid "_User name:"
 msgstr "Nombre de _usuario:"
 
 #. third row: password entry
-#: ../src/nautilus-connect-server-dialog.c:1089
+#: ../src/nautilus-connect-server-dialog.c:1101
 msgid "Pass_word:"
 msgstr "Contra_seña:"
 
 #. fourth row: remember checkbox
-#: ../src/nautilus-connect-server-dialog.c:1110
+#: ../src/nautilus-connect-server-dialog.c:1122
 msgid "_Remember this password"
 msgstr "_Recordar esta contraseña"
+
+#: ../src/nautilus-connect-server-dialog.c:1224
+msgid "Operation cancelled"
+msgstr "Operación cancelada"
 
 # components/music/nautilus-music-view.c:198
 #: ../src/nautilus-desktop-item-properties.c:412
@@ -5068,7 +5073,8 @@ msgstr[1] ""
 msgid "The %'d selected item will be copied if you select the Paste command"
 msgid_plural ""
 "The %'d selected items will be copied if you select the Paste command"
-msgstr[0] "El elemento seleccionado se copiará si selecciona el comando «Pegar»"
+msgstr[0] ""
+"El elemento seleccionado se copiará si selecciona el comando «Pegar»"
 msgstr[1] ""
 "Los %'d elementos seleccionados se copiarán si selecciona el comando «Pegar»"
 
@@ -5223,14 +5229,16 @@ msgstr "Muestra la carpeta que contiene los scripts que aparecen en este menú"
 #. tooltip
 #: ../src/nautilus-view.c:7021
 msgid "Prepare the selected files to be moved with a Paste command"
-msgstr "Prepara los archivos seleccionados para moverlos con un comando «Pegar»"
+msgstr ""
+"Prepara los archivos seleccionados para moverlos con un comando «Pegar»"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
 #: ../src/nautilus-view.c:7025
 msgid "Prepare the selected files to be copied with a Paste command"
-msgstr "Prepara los archivos seleccionados para copiarse con un comando «Pegar»"
+msgstr ""
+"Prepara los archivos seleccionados para copiarse con un comando «Pegar»"
 
 #. name, stock id
 #. label, accelerator
@@ -5238,8 +5246,8 @@ msgstr "Prepara los archivos seleccionados para copiarse con un comando «Pegar�
 #: ../src/nautilus-view.c:7029
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr ""
-"Mover o copiar los archivos previamente seleccionados por un comando «Cortar» "
-"o «Copiar»"
+"Mover o copiar los archivos previamente seleccionados por un comando "
+"«Cortar» o «Copiar»"
 
 #. tooltip
 #: ../src/nautilus-view.c:7035
@@ -5247,8 +5255,8 @@ msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
 msgstr ""
-"Mover o copiar los archivos previamente seleccionados por un comando «Cortar» "
-"o «Copiar» en la carpeta seleccionada"
+"Mover o copiar los archivos previamente seleccionados por un comando "
+"«Cortar» o «Copiar» en la carpeta seleccionada"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/dfos-xfer.c:725
@@ -5971,7 +5979,6 @@ msgstr ""
 #. * e.g. 1999-2011.
 #.
 #: ../src/nautilus-window-menus.c:380
-#| msgid "Copyright © 1999-2010 The Nautilus authors"
 msgid "Copyright © %Id–%Id The Nautilus authors"
 msgstr "Copyright © %Id–%Id Los autores de Nautilus"
 
@@ -6850,9 +6857,9 @@ msgstr "Enviar archivos por correo, mensajería instantánea…"
 #~ msgstr ""
 #~ "Si se establece a cierto, entonces Nautilus saldrá cuando todas las "
 #~ "ventanas se destruyan. Este es el ajuste predeterminado. Si se establece "
-#~ "a «false», se puede iniciar sin ninguna ventana, de tal forma que Nautilus "
-#~ "puede servir como un demonio para monitorizar el automontaje de soportes, "
-#~ "o tareas similares."
+#~ "a «false», se puede iniciar sin ninguna ventana, de tal forma que "
+#~ "Nautilus puede servir como un demonio para monitorizar el automontaje de "
+#~ "soportes, o tareas similares."
 
 #~ msgid "Nautilus will exit when last window destroyed."
 #~ msgstr "Nautilus saldrá cuando la última ventana se haya destruido."
@@ -6942,8 +6949,8 @@ msgstr "Enviar archivos por correo, mensajería instantánea…"
 #~ "\"%s\" cannot open \"%s\" because \"%s\" cannot access files at \"%s\" "
 #~ "locations."
 #~ msgstr ""
-#~ "«%s» no puede abrir «%s» porque «%s» no puede acceder a los archivos en los "
-#~ "lugares «%s»."
+#~ "«%s» no puede abrir «%s» porque «%s» no puede acceder a los archivos en "
+#~ "los lugares «%s»."
 
 #~ msgid "Open Failed, would you like to choose another action?"
 #~ msgstr "La apertura ha fallado, ¿quiere probar con otra acción?"
@@ -6952,8 +6959,8 @@ msgstr "Enviar archivos por correo, mensajería instantánea…"
 #~ "The default action cannot open \"%s\" because it cannot access files at "
 #~ "\"%s\" locations."
 #~ msgstr ""
-#~ "La acción predeterminada no puede abrir «%s» porque no puede acceder a los "
-#~ "archivos en los lugares «%s»."
+#~ "La acción predeterminada no puede abrir «%s» porque no puede acceder a "
+#~ "los archivos en los lugares «%s»."
 
 #~ msgid ""
 #~ "No other applications are available to view this file. If you copy this "
@@ -7067,8 +7074,8 @@ msgstr "Enviar archivos por correo, mensajería instantánea…"
 #~ "Select how to open \"%s\" and whether to perform this action in the "
 #~ "future for other media of type \"%s\"."
 #~ msgstr ""
-#~ "Seleccione cómo abrir «%s» y si se realizará esta acción en el futuro para "
-#~ "otros soportes del tipo «%s»."
+#~ "Seleccione cómo abrir «%s» y si se realizará esta acción en el futuro "
+#~ "para otros soportes del tipo «%s»."
 
 #~ msgid "_Always perform this action"
 #~ msgstr "_Siempre realizar esta acción"
@@ -7629,9 +7636,10 @@ msgstr "Enviar archivos por correo, mensajería instantánea…"
 #~ "search for files by file name and file properties."
 #~ msgstr ""
 #~ "El criterio al buscar archivos en la barra de búsqueda. Si está definido "
-#~ "como «search_by_text» entonces Nautilus buscará los archivos por el nombre "
-#~ "de archivo solamente. Si se establece a «search_by_text_and_properties» "
-#~ "entonces Nautilus buscará los archivos por su nombre y propiedades."
+#~ "como «search_by_text» entonces Nautilus buscará los archivos por el "
+#~ "nombre de archivo solamente. Si se establece a "
+#~ "«search_by_text_and_properties» entonces Nautilus buscará los archivos "
+#~ "por su nombre y propiedades."
 
 #~ msgid "Current Nautilus theme (deprecated)"
 #~ msgstr "Tema actual de Nautilus (obsoleto)"
@@ -8103,8 +8111,8 @@ msgstr "Enviar archivos por correo, mensajería instantánea…"
 #~ "A folder named \"%B\" already exists.  Do you want to merge the source "
 #~ "folder?"
 #~ msgstr ""
-#~ "Ya existe una carpeta llamada «%B» ya existe. ¿Desea mezclar la carpeta de "
-#~ "origen?"
+#~ "Ya existe una carpeta llamada «%B» ya existe. ¿Desea mezclar la carpeta "
+#~ "de origen?"
 
 # src/file-manager/dfos-xfer.c:407
 #~ msgid "A folder named \"%B\" already exists.  Do you want to replace it?"
