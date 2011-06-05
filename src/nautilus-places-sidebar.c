@@ -80,6 +80,7 @@ typedef struct {
 
 	GtkWidget *popup_menu;
 	GtkWidget *popup_menu_open_in_new_tab_item;
+	GtkWidget *popup_menu_add_shortcut_item;
 	GtkWidget *popup_menu_remove_item;
 	GtkWidget *popup_menu_rename_item;
 	GtkWidget *popup_menu_separator_item;
@@ -1537,6 +1538,7 @@ bookmarks_popup_menu_detach_cb (GtkWidget *attach_widget,
 	g_assert (NAUTILUS_IS_PLACES_SIDEBAR (sidebar));
 	
 	sidebar->popup_menu = NULL;
+	sidebar->popup_menu_add_shortcut_item = NULL;
 	sidebar->popup_menu_remove_item = NULL;
 	sidebar->popup_menu_rename_item = NULL;
 	sidebar->popup_menu_separator_item = NULL;
@@ -1641,6 +1643,8 @@ bookmarks_check_popup_sensitivity (NautilusPlacesSidebar *sidebar)
 				    PLACES_SIDEBAR_COLUMN_URI, &uri,
 				    -1);
 	}
+
+	gtk_widget_set_visible (sidebar->popup_menu_add_shortcut_item, (type == PLACES_MOUNTED_VOLUME));
 
 	gtk_widget_set_sensitive (sidebar->popup_menu_remove_item, (type == PLACES_BOOKMARK));
 	gtk_widget_set_sensitive (sidebar->popup_menu_rename_item, (type == PLACES_BOOKMARK));
@@ -1892,6 +1896,45 @@ open_shortcut_in_new_tab_cb (GtkMenuItem	      *item,
 				NautilusPlacesSidebar *sidebar)
 {
 	open_shortcut_from_menu (sidebar, NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB);
+}
+
+/* Add bookmark for the selected item */
+static void
+add_bookmark (NautilusPlacesSidebar *sidebar)
+{
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	char *uri;
+	GFile *location;
+	NautilusBookmark *bookmark;
+
+	model = gtk_tree_view_get_model (sidebar->tree_view);
+
+	if (get_selected_iter (sidebar, &iter)) {
+		gtk_tree_model_get (model, &iter, PLACES_SIDEBAR_COLUMN_URI, &uri, -1);
+
+		if (uri == NULL) {
+			return;
+		}
+
+		location = g_file_new_for_uri (uri);
+		bookmark = nautilus_bookmark_new (location, NULL, NULL);
+
+		if (!nautilus_bookmark_list_contains (sidebar->bookmarks, bookmark)) {
+			nautilus_bookmark_list_append (sidebar->bookmarks, bookmark);
+		}
+
+		g_object_unref (location);
+		g_object_unref (bookmark);
+		g_free (uri);
+	}
+}
+
+static void
+add_shortcut_cb (GtkMenuItem           *item,
+		 NautilusPlacesSidebar *sidebar)
+{
+	add_bookmark (sidebar);
 }
 
 /* Rename the selected bookmark */
@@ -2574,6 +2617,12 @@ bookmarks_build_popup_menu (NautilusPlacesSidebar *sidebar)
 	}
 
 	eel_gtk_menu_append_separator (GTK_MENU (sidebar->popup_menu));
+
+	item = gtk_menu_item_new_with_mnemonic (_("_Add Bookmark"));
+	sidebar->popup_menu_add_shortcut_item = item;
+	g_signal_connect (item, "activate",
+			  G_CALLBACK (add_shortcut_cb), sidebar);
+	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
 
 	item = gtk_image_menu_item_new_with_label (_("Remove"));
 	sidebar->popup_menu_remove_item = item;
