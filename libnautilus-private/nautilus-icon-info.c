@@ -587,13 +587,13 @@ nautilus_icon_info_get_attach_points (NautilusIconInfo  *icon,
 	return icon->n_attach_points != 0;
 }
 
-G_CONST_RETURN char *
+const char *
 nautilus_icon_info_get_display_name   (NautilusIconInfo  *icon)
 {
 	return icon->display_name;
 }
 
-G_CONST_RETURN char *
+const char *
 nautilus_icon_info_get_used_name (NautilusIconInfo  *icon)
 {
 	return icon->icon_name;

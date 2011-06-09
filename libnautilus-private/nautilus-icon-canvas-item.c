@@ -2490,7 +2490,7 @@ nautilus_icon_canvas_item_accessible_action_interface_init (AtkActionIface *ifac
 	iface->set_description = nautilus_icon_canvas_item_accessible_action_set_description;
 }
 
-static G_CONST_RETURN gchar *
+static const gchar *
 nautilus_icon_canvas_item_accessible_get_name (AtkObject *accessible)
 {
 	NautilusIconCanvasItem *item;
@@ -2506,7 +2506,7 @@ nautilus_icon_canvas_item_accessible_get_name (AtkObject *accessible)
 	return item->details->editable_text;
 }
 
-static G_CONST_RETURN gchar*
+static const gchar*
 nautilus_icon_canvas_item_accessible_get_description (AtkObject *accessible)
 {
 	NautilusIconCanvasItem *item;
@@ -2564,7 +2564,7 @@ nautilus_icon_canvas_item_accessible_get_index_in_parent (AtkObject *accessible)
 	return -1;
 }
 
-static G_CONST_RETURN gchar * 
+static const gchar *
 nautilus_icon_canvas_item_accessible_get_image_description (AtkImage *image)
 {
 	NautilusIconCanvasItemAccessiblePrivate *priv;
