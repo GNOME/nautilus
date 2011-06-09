@@ -109,7 +109,7 @@ GType                 eel_editable_label_get_type          (void) G_GNUC_CONST;
 GtkWidget*            eel_editable_label_new                  (const char       *str);
 void                  eel_editable_label_set_text             (EelEditableLabel *label,
 							       const char       *str);
-G_CONST_RETURN gchar* eel_editable_label_get_text             (EelEditableLabel *label);
+const gchar*          eel_editable_label_get_text             (EelEditableLabel *label);
 void                  eel_editable_label_set_justify          (EelEditableLabel *label,
 							       GtkJustification  jtype);
 GtkJustification      eel_editable_label_get_justify          (EelEditableLabel *label);

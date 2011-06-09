@@ -681,7 +681,7 @@ eel_editable_label_set_text (EelEditableLabel *label,
  * Return value: the text in the label widget. This is the internal
  *   string used by the label, and must not be modified.
  **/
-G_CONST_RETURN gchar *
+const gchar *
 eel_editable_label_get_text (EelEditableLabel *label)
 {
   g_return_val_if_fail (EEL_IS_EDITABLE_LABEL (label), NULL);
@@ -4204,7 +4204,7 @@ eel_editable_label_accessible_initialize (AtkObject *accessible,
   atk_object_set_role (accessible, ATK_ROLE_TEXT);
 }
 
-static G_CONST_RETURN gchar*
+static const gchar*
 eel_editable_label_accessible_get_name (AtkObject *accessible)
 {
   if (accessible->name != NULL)
