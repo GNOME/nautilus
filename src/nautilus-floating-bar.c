@@ -204,28 +204,22 @@ nautilus_floating_bar_draw (GtkWidget *widget,
 {
 	  GtkStyleContext *context;
 
-	  if (gtk_widget_get_has_window (widget) &&
-	      !gtk_widget_get_app_paintable (widget)) {
+	  context = gtk_widget_get_style_context (widget);
 
-		  context = gtk_widget_get_style_context (widget);
+	  gtk_style_context_save (context);
+	  gtk_style_context_set_state (context, gtk_widget_get_state_flags (widget));
 
-		  gtk_style_context_save (context);
-		  gtk_style_context_set_state (context, gtk_widget_get_state_flags (widget));
+	  gtk_render_background (context, cr, 0, 0,
+				 gtk_widget_get_allocated_width (widget),
+				 gtk_widget_get_allocated_height (widget));
 
-		  gtk_render_background (context, cr, 0, 0,
-					 gtk_widget_get_allocated_width (widget),
-					 gtk_widget_get_allocated_height (widget));
+	  gtk_render_frame (context, cr, 0, 0,
+			    gtk_widget_get_allocated_width (widget),
+			    gtk_widget_get_allocated_height (widget));
 
-		  gtk_render_frame (context, cr, 0, 0,
-		  		    gtk_widget_get_allocated_width (widget),
-		  		    gtk_widget_get_allocated_height (widget));
+	  gtk_style_context_restore (context);
 
-		  gtk_style_context_restore (context);
-	  }
-
-	  GTK_WIDGET_CLASS (nautilus_floating_bar_parent_class)->draw (widget, cr);
-
-	  return FALSE;
+	  return GTK_WIDGET_CLASS (nautilus_floating_bar_parent_class)->draw (widget, cr);;
 }
 
 static void
