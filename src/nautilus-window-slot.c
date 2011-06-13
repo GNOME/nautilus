@@ -23,7 +23,6 @@
 */
 #include "nautilus-window-slot.h"
 
-#include "gedit-overlay.h"
 #include "nautilus-desktop-window.h"
 #include "nautilus-floating-bar.h"
 #include "nautilus-window-private.h"
@@ -184,17 +183,18 @@ nautilus_window_slot_init (NautilusWindowSlot *slot)
 	gtk_box_pack_start (GTK_BOX (content_box), extras_vbox, FALSE, FALSE, 0);
 	gtk_widget_show (extras_vbox);
 
-	slot->view_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	slot->view_overlay = gedit_overlay_new (slot->view_box, NULL);
+	slot->view_overlay = gtk_overlay_new ();
+	gtk_widget_add_events (slot->view_overlay,
+			       GDK_ENTER_NOTIFY_MASK |
+			       GDK_LEAVE_NOTIFY_MASK);
 	gtk_box_pack_start (GTK_BOX (content_box), slot->view_overlay, TRUE, TRUE, 0);
 	gtk_widget_show (slot->view_overlay);
-	gtk_widget_show (slot->view_box);
 
 	slot->floating_bar = nautilus_floating_bar_new ("", FALSE);
-	gedit_overlay_add (GEDIT_OVERLAY (slot->view_overlay),
-			   slot->floating_bar,
-			   GEDIT_OVERLAY_CHILD_POSITION_SOUTH_EAST,
-			   0);
+	gtk_widget_set_halign (slot->floating_bar, GTK_ALIGN_END);
+	gtk_widget_set_valign (slot->floating_bar, GTK_ALIGN_END);
+	gtk_overlay_add_overlay (GTK_OVERLAY (slot->view_overlay),
+				 slot->floating_bar);
 
 	g_signal_connect (slot->floating_bar, "action",
 			  G_CALLBACK (floating_bar_action_cb), slot);
@@ -457,17 +457,11 @@ nautilus_window_slot_set_content_view_widget (NautilusWindowSlot *slot,
 
 	if (new_view != NULL) {
 		widget = GTK_WIDGET (new_view);
-		gtk_box_pack_start (GTK_BOX (slot->view_box), widget, 
-				    TRUE, TRUE, 0);
+		gtk_container_add (GTK_CONTAINER (slot->view_overlay), widget);
 		gtk_widget_show (widget);
 
 		slot->content_view = new_view;
 		g_object_ref (slot->content_view);
-
-		g_object_set (slot->view_overlay,
-			      "relative-widget",
-			      gtk_bin_get_child (GTK_BIN (slot->content_view)),
-			      NULL);
 
 		/* connect new view */
 		nautilus_window_connect_content_view (window, new_view);

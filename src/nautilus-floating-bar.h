@@ -28,8 +28,6 @@
 
 #include <gtk/gtk.h>
 
-#include "gedit-overlay-child.h"
-
 #define NAUTILUS_FLOATING_BAR_ACTION_ID_STOP 1
 
 #define NAUTILUS_TYPE_FLOATING_BAR nautilus_floating_bar_get_type()
@@ -49,12 +47,12 @@ typedef struct _NautilusFloatingBarClass NautilusFloatingBarClass;
 typedef struct _NautilusFloatingBarDetails NautilusFloatingBarDetails;
 
 struct _NautilusFloatingBar {
-	GeditOverlayChild parent;
+	GtkBox parent;
 	NautilusFloatingBarDetails *priv;
 };
 
 struct _NautilusFloatingBarClass {
-	GeditOverlayChildClass parent_class;
+	GtkBoxClass parent_class;
 };
 
 /* GObject */

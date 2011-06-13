@@ -72,7 +72,6 @@ struct NautilusWindowSlot {
  	 */
 	GtkWidget *content_box;
 	GtkWidget *extra_location_widgets;
-	GtkWidget *view_box;
 
 	GtkWidget *view_overlay;
 	GtkWidget *floating_bar;

@@ -28,7 +28,6 @@
 #include <config.h>
 #include "nautilus-list-view.h"
 
-#include "gedit-overlay.h"
 #include "nautilus-list-model.h"
 #include "nautilus-error-reporting.h"
 #include "nautilus-view-dnd.h"

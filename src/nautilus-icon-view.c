@@ -26,7 +26,6 @@
 
 #include "nautilus-icon-view.h"
 
-#include "gedit-overlay.h"
 #include "nautilus-actions.h"
 #include "nautilus-icon-view-container.h"
 #include "nautilus-desktop-icon-view.h"

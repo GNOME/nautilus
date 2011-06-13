@@ -49,10 +49,6 @@ BUILT_SOURCES = \
 	$(NULL)
 
 nautilus_SOURCES = \
-	gedit-overlay.h				\
-	gedit-overlay.c				\
-	gedit-overlay-child.h			\
-	gedit-overlay-child.c			\
 	nautilus-actions.h			\
 	nautilus-application.c			\
 	nautilus-application.h			\
