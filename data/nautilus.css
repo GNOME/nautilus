@@ -12,12 +12,15 @@ NautilusQueryEditor.info {
     border-color: darker (@cluebar_color);
 
     border-radius: 0;
-    border-width: 1;
+    border-width: 1 0;
     border-style: solid;
 }
 
 NautilusSearchBar .entry {
-    -GtkEntry-inner-border: 1;
+    border-image: none;
+    border-color: @cluebar_color;
+
+    -GtkEntry-inner-border: 3;
 }
 
 .nautilus-cluebar-label {
@@ -30,25 +33,25 @@ NautilusSearchBar .entry {
     color: darker (@cluebar_color);
 }
 
-#nautilus-tab-close-button {
-    -GtkWidget-focus-padding : 0;
-    -GtkWidget-focus-line-width: 0;
-}
-
 NautilusFloatingBar {
     background-image: -gtk-gradient (linear,
                                      left top, left bottom,
                                      from (shade (@notebook_tab_gradient_a, 0.97)),
                                      to (shade (@notebook_tab_gradient_b, 0.90)));
+
     border-color: shade (@notebook_tab_gradient_b, 0.80);
-    border-radius: 1;
+
+    border-radius: 3 3 0 0;
     border-width: 1;
+    border-style: solid;
 }
 
-NautilusFloatingBar > GtkBox > GtkButton {
+NautilusFloatingBar .button {
     background-color: alpha (@theme_base_color, 0.0);
     background-image: none;
+
     border-style: none;
+    border-image: none;
 
     -GtkButton-image-spacing: 0;
     -GtkButton-inner-border: 0;
