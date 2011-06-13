@@ -6736,7 +6736,7 @@ action_connect_to_server_link_callback (GtkAction *action,
 		gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
 		gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), 2);
 
-		box = gtk_hbox_new (FALSE, 12);
+		box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
 		gtk_widget_show (box);
 		gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))),
 				    box, TRUE, TRUE, 0);

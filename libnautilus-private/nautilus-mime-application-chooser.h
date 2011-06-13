@@ -38,12 +38,12 @@ typedef struct _NautilusMimeApplicationChooserClass   NautilusMimeApplicationCho
 typedef struct _NautilusMimeApplicationChooserDetails NautilusMimeApplicationChooserDetails;
 
 struct _NautilusMimeApplicationChooser {
-	GtkVBox parent;
+	GtkBox parent;
 	NautilusMimeApplicationChooserDetails *details;
 };
 
 struct _NautilusMimeApplicationChooserClass {
-	GtkVBoxClass parent_class;
+	GtkBoxClass parent_class;
 };
 
 GType      nautilus_mime_application_chooser_get_type (void);

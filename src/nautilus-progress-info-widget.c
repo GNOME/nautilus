@@ -109,12 +109,12 @@ nautilus_progress_info_widget_constructed (GObject *obj)
 			    0);
 	self->priv->status = label;
 
-	hbox = gtk_hbox_new (FALSE, 10);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 10);
 
 	progress_bar = gtk_progress_bar_new ();
 	self->priv->progress_bar = progress_bar;
 	gtk_progress_bar_set_pulse_step (GTK_PROGRESS_BAR (progress_bar), 0.05);
-	box = gtk_vbox_new (FALSE,0);
+	box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start(GTK_BOX (box),
 			   progress_bar,
 			   TRUE, FALSE,

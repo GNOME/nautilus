@@ -335,7 +335,7 @@ build_tab_label (NautilusNotebook *nb, NautilusWindowSlot *slot)
 
 	/* set hbox spacing and label padding (see below) so that there's an
 	 * equal amount of space around the label */
-	hbox = gtk_hbox_new (FALSE, 4);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_widget_show (hbox);
 
 	/* setup load feedback */

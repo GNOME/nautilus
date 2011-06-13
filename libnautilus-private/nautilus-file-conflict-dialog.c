@@ -466,7 +466,7 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 	dialog = GTK_DIALOG (fcd);
 
 	/* Setup the main hbox */
-	hbox = gtk_hbox_new (FALSE, 12);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
 	dialog_area = gtk_dialog_get_content_area (dialog);
 	gtk_box_pack_start (GTK_BOX (dialog_area), hbox, FALSE, FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox), 6);
@@ -478,26 +478,26 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 	gtk_misc_set_alignment (GTK_MISC (widget), 0.5, 0.0);
 
 	/* Setup the vbox containing the dialog body */
-	vbox = gtk_vbox_new (FALSE, 12);
+	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 12);
 	gtk_box_pack_start (GTK_BOX (hbox), vbox, FALSE, FALSE, 0);
 
 	/* Setup the vbox for the dialog labels */
-	widget = gtk_vbox_new (FALSE, 12);
+	widget = gtk_box_new (GTK_ORIENTATION_VERTICAL, 12);
 	gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 0);
 	details->titles_vbox = widget;
 
 	/* Setup the hboxes to pack file infos into */
 	alignment = gtk_alignment_new (0.0, 0.0, 0.0, 0.0);
 	g_object_set (alignment, "left-padding", 12, NULL);
-	vbox2 = gtk_vbox_new (FALSE, 12);
+	vbox2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 12);
 	gtk_container_add (GTK_CONTAINER (alignment), vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox), alignment, FALSE, FALSE, 0);
 
-	hbox = gtk_hbox_new (FALSE, 12);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
 	details->first_hbox = hbox;
 
-	hbox = gtk_hbox_new (FALSE, 12);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
 	details->second_hbox = hbox;
 
@@ -507,7 +507,7 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 	g_signal_connect (details->expander, "activate",
 			  G_CALLBACK (expander_activated_cb), dialog);
 
-	hbox = gtk_hbox_new (FALSE, 6);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_container_add (GTK_CONTAINER (details->expander), hbox);
 
 	widget = gtk_entry_new ();

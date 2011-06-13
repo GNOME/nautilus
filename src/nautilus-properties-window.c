@@ -334,7 +334,7 @@ get_target_file (NautilusPropertiesWindow *window)
 }
 
 static void
-add_prompt (GtkVBox *vbox, const char *prompt_text, gboolean pack_at_start)
+add_prompt (GtkWidget *vbox, const char *prompt_text, gboolean pack_at_start)
 {
 	GtkWidget *prompt;
 
@@ -350,7 +350,7 @@ add_prompt (GtkVBox *vbox, const char *prompt_text, gboolean pack_at_start)
 }
 
 static void
-add_prompt_and_separator (GtkVBox *vbox, const char *prompt_text)
+add_prompt_and_separator (GtkWidget *vbox, const char *prompt_text)
 {
 	GtkWidget *separator_line;
 
@@ -2354,7 +2354,7 @@ create_page_with_hbox (GtkNotebook *notebook,
 	g_assert (GTK_IS_NOTEBOOK (notebook));
 	g_assert (title != NULL);
 
-	hbox = gtk_hbox_new (FALSE, 0);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show (hbox);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox), 12);
 	gtk_box_set_spacing (GTK_BOX (hbox), 12);
@@ -2372,7 +2372,7 @@ create_page_with_vbox (GtkNotebook *notebook,
 	g_assert (GTK_IS_NOTEBOOK (notebook));
 	g_assert (title != NULL);
 
-	vbox = gtk_vbox_new (FALSE, 0);
+	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show (vbox);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
 	gtk_notebook_append_page (notebook, vbox, gtk_label_new (title));
@@ -2398,7 +2398,7 @@ apply_standard_table_padding (GtkTable *table)
 }
 
 static GtkWidget *
-create_attribute_value_table (GtkVBox *vbox, int row_count)
+create_attribute_value_table (GtkWidget *vbox, int row_count)
 {
 	GtkWidget *table;
 
@@ -3063,11 +3063,11 @@ create_basic_page (NautilusPropertiesWindow *window)
 
 	/* Table */
 
-	vbox = gtk_vbox_new (FALSE, 0);
+	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show (vbox);
 	gtk_container_add (GTK_CONTAINER (hbox), vbox);
 
-	table = GTK_TABLE (create_attribute_value_table (GTK_VBOX (vbox), 0));
+	table = GTK_TABLE (create_attribute_value_table (vbox, 0));
 	window->details->basic_table = table;
 
 	/* Name label.  The text will be determined in update_name_field */
@@ -4538,7 +4538,7 @@ create_permissions_page (NautilusPropertiesWindow *window)
 		
 		if (!all_can_set_permissions (file_list)) {
 			add_prompt_and_separator (
-				GTK_VBOX (vbox), 
+				vbox, 
 				_("You are not the owner, so you cannot change these permissions."));
 		}
 
@@ -4575,7 +4575,7 @@ create_permissions_page (NautilusPropertiesWindow *window)
 	
 		if (window->details->has_recursive_apply) {
 			last_row = append_row (page_table);
-			hbox = gtk_hbox_new (FALSE, 0);
+			hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 			gtk_widget_show (hbox);
 			gtk_table_attach (page_table, hbox,
 					  0, 2,
@@ -4599,7 +4599,7 @@ create_permissions_page (NautilusPropertiesWindow *window)
 			prompt_text = g_strdup (_("The permissions of the selected file could not be determined."));
 		}
 		
-		add_prompt (GTK_VBOX (vbox), prompt_text, TRUE);
+		add_prompt (vbox, prompt_text, TRUE);
 		g_free (prompt_text);
 	}
 }

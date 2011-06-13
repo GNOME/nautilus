@@ -218,7 +218,7 @@ progress_ui_handler_ensure_window (NautilusProgressUIHandler *self)
 	gtk_window_set_icon_name (GTK_WINDOW (progress_window),
 				"system-file-manager");
 
-	vbox = gtk_vbox_new (FALSE, 0);
+	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_set_spacing (GTK_BOX (vbox), 5);
 	gtk_container_add (GTK_CONTAINER (progress_window),
 			   vbox);

@@ -171,7 +171,7 @@ connect_dialog_set_connecting (NautilusConnectServerDialog *dialog)
 
 	content_area = gtk_info_bar_get_content_area (GTK_INFO_BAR (dialog->details->info_bar));
 
-	hbox = gtk_hbox_new (FALSE, 6);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_container_add (GTK_CONTAINER (content_area), hbox);
 	gtk_widget_show (hbox);
 
@@ -200,7 +200,7 @@ connect_dialog_gvfs_error (NautilusConnectServerDialog *dialog)
 
 	content_area = gtk_info_bar_get_content_area (GTK_INFO_BAR (dialog->details->info_bar));
 
-	hbox = gtk_hbox_new (FALSE, 6);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_container_add (GTK_CONTAINER (content_area), hbox);
 	gtk_widget_show (hbox);
 
@@ -312,7 +312,7 @@ connect_dialog_set_info_bar_error (NautilusConnectServerDialog *dialog,
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
 	gtk_widget_show (dialog->details->info_bar);
 
-	hbox = gtk_hbox_new (FALSE, 6);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_box_pack_start (GTK_BOX (content_area), hbox, FALSE, FALSE, 6);
 	gtk_widget_show (hbox);
 
@@ -387,7 +387,7 @@ connect_dialog_request_additional_details (NautilusConnectServerDialog *self,
 
 	content_area = gtk_info_bar_get_content_area (GTK_INFO_BAR (self->details->info_bar));
 
-	hbox = gtk_hbox_new (FALSE, 6);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_box_pack_start (GTK_BOX (content_area), hbox, FALSE, FALSE, 6);
 	gtk_widget_show (hbox);
 
@@ -889,7 +889,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	gtk_size_group_add_widget (dialog->details->labels_size_group, label);
 	gtk_widget_show (label);
 
-	hbox = gtk_hbox_new (FALSE, 6);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_widget_show (hbox);
 	gtk_table_attach (GTK_TABLE (table), hbox,
 			  1, 2,

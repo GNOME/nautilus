@@ -659,7 +659,7 @@ nautilus_window_pane_setup (NautilusWindowPane *pane)
 	NautilusWindow *window;
 	GtkActionGroup *action_group;
 
-	pane->widget = gtk_vbox_new (FALSE, 0);
+	pane->widget = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	window = pane->window;
 
 	header_size_group = gtk_size_group_new (GTK_SIZE_GROUP_VERTICAL);

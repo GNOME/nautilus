@@ -63,7 +63,7 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 
-G_DEFINE_TYPE(NautilusColumnChooser, nautilus_column_chooser, GTK_TYPE_HBOX);
+G_DEFINE_TYPE(NautilusColumnChooser, nautilus_column_chooser, GTK_TYPE_BOX);
 
 static void nautilus_column_chooser_constructed (GObject *object);
 
@@ -361,7 +361,7 @@ add_buttons (NautilusColumnChooser *chooser)
 	GtkWidget *box;
 	GtkWidget *separator;
 	
-	box = gtk_vbox_new (FALSE, 8);
+	box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
 	gtk_widget_show (box);
 	
 	chooser->details->move_up_button = button_new_with_mnemonic (GTK_STOCK_GO_UP,
@@ -455,6 +455,7 @@ nautilus_column_chooser_init (NautilusColumnChooser *chooser)
 	g_object_set (G_OBJECT (chooser), 
 		      "homogeneous", FALSE,
 		      "spacing", 8,
+		      "orientation", GTK_ORIENTATION_HORIZONTAL,
 		      NULL);
 
 	add_tree_view (chooser);

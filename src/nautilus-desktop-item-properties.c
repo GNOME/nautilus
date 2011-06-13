@@ -494,7 +494,7 @@ nautilus_desktop_item_properties_make_box (GtkSizeGroup *label_size_group,
 
 	g_assert (nautilus_desktop_item_properties_should_show (files));
 
-	box = gtk_vbox_new (FALSE, 6);
+	box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
 	g_object_set_data_full (G_OBJECT (box), "label-size-group",
 				label_size_group, (GDestroyNotify) g_object_unref);
 

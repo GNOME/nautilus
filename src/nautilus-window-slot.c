@@ -175,16 +175,16 @@ nautilus_window_slot_init (NautilusWindowSlot *slot)
 {
 	GtkWidget *content_box, *extras_vbox;
 
-	content_box = gtk_vbox_new (FALSE, 0);
+	content_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	slot->content_box = content_box;
 	gtk_widget_show (content_box);
 
-	extras_vbox = gtk_vbox_new (FALSE, 6);
+	extras_vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
 	slot->extra_location_widgets = extras_vbox;
 	gtk_box_pack_start (GTK_BOX (content_box), extras_vbox, FALSE, FALSE, 0);
 	gtk_widget_show (extras_vbox);
 
-	slot->view_box = gtk_vbox_new (FALSE, 0);
+	slot->view_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	slot->view_overlay = gedit_overlay_new (slot->view_box, NULL);
 	gtk_box_pack_start (GTK_BOX (content_box), slot->view_overlay, TRUE, TRUE, 0);
 	gtk_widget_show (slot->view_overlay);
@@ -457,9 +457,8 @@ nautilus_window_slot_set_content_view_widget (NautilusWindowSlot *slot,
 
 	if (new_view != NULL) {
 		widget = GTK_WIDGET (new_view);
-		gtk_container_add (GTK_CONTAINER (slot->view_box),
-						  GTK_WIDGET (new_view));
-
+		gtk_box_pack_start (GTK_BOX (slot->view_box), widget, 
+				    TRUE, TRUE, 0);
 		gtk_widget_show (widget);
 
 		slot->content_view = new_view;

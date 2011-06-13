@@ -89,7 +89,7 @@ static GType nautilus_image_properties_page_provider_get_type (void);
 static void  property_page_provider_iface_init                (NautilusPropertyPageProviderIface *iface);
 
 
-G_DEFINE_TYPE (NautilusImagePropertiesPage, nautilus_image_properties_page, GTK_TYPE_VBOX);
+G_DEFINE_TYPE (NautilusImagePropertiesPage, nautilus_image_properties_page, GTK_TYPE_BOX);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusImagePropertiesPageProvider, nautilus_image_properties_page_provider, G_TYPE_OBJECT,
 			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_PROPERTY_PAGE_PROVIDER,
@@ -607,11 +607,12 @@ nautilus_image_properties_page_init (NautilusImagePropertiesPage *page)
 						     NAUTILUS_TYPE_IMAGE_PROPERTIES_PAGE,
 						     NautilusImagePropertiesPageDetails);
 
+	gtk_orientable_set_orientation (GTK_ORIENTABLE (page), GTK_ORIENTATION_VERTICAL);
 	gtk_box_set_homogeneous (GTK_BOX (page), FALSE);
 	gtk_box_set_spacing (GTK_BOX (page), 2);
 	gtk_container_set_border_width (GTK_CONTAINER (page), 6);
 
-	page->details->vbox = gtk_vbox_new (FALSE, 6);
+	page->details->vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
 	page->details->loading_label =
 		append_label (page->details->vbox,_("loading..."));
 	gtk_box_pack_start (GTK_BOX (page),

@@ -43,13 +43,13 @@
 typedef struct _NautilusColumnChooserDetails NautilusColumnChooserDetails;
 
 typedef struct {
-	GtkHBox parent;
+	GtkBox parent;
 	
 	NautilusColumnChooserDetails *details;
 } NautilusColumnChooser;
 
 typedef struct {
-        GtkHBoxClass parent_slot;
+        GtkBoxClass parent_slot;
 
 	void (*changed) (NautilusColumnChooser *chooser);
 	void (*use_default) (NautilusColumnChooser *chooser);

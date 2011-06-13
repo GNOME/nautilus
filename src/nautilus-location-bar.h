@@ -48,12 +48,12 @@
 typedef struct NautilusLocationBarDetails NautilusLocationBarDetails;
 
 typedef struct NautilusLocationBar {
-	GtkHBox parent;
+	GtkBox parent;
 	NautilusLocationBarDetails *details;
 } NautilusLocationBar;
 
 typedef struct {
-	GtkHBoxClass parent_class;
+	GtkBoxClass parent_class;
 
 	/* for GtkBindingSet */
 	void         (* cancel)           (NautilusLocationBar *bar);

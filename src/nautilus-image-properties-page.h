@@ -41,12 +41,12 @@
 typedef struct NautilusImagePropertiesPageDetails NautilusImagePropertiesPageDetails;
 
 typedef struct {
-	GtkVBox parent;
+	GtkBox parent;
 	NautilusImagePropertiesPageDetails *details;
 } NautilusImagePropertiesPage;
 
 typedef struct {
-	GtkVBoxClass parent;
+	GtkBoxClass parent;
 } NautilusImagePropertiesPageClass;
 
 GType nautilus_image_properties_page_get_type (void);

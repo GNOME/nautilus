@@ -92,7 +92,7 @@ static const GtkTargetEntry drop_types [] = {
 };
 
 G_DEFINE_TYPE (NautilusLocationBar, nautilus_location_bar,
-	       GTK_TYPE_HBOX);
+	       GTK_TYPE_BOX);
 
 static NautilusWindow *
 nautilus_location_bar_get_window (GtkWidget *bar)
@@ -464,7 +464,10 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 	bar->details = G_TYPE_INSTANCE_GET_PRIVATE (bar, NAUTILUS_TYPE_LOCATION_BAR,
 						    NautilusLocationBarDetails);
 
-	hbox = gtk_hbox_new (0, FALSE);
+	gtk_orientable_set_orientation (GTK_ORIENTABLE (bar),
+					GTK_ORIENTATION_HORIZONTAL);
+
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, FALSE);
 
 	event_box = gtk_event_box_new ();
 	gtk_event_box_set_visible_window (GTK_EVENT_BOX (event_box), FALSE);

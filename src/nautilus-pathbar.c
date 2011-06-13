@@ -1586,7 +1586,7 @@ make_directory_button (NautilusPathBar  *path_bar,
                         button_data->label = gtk_label_new (NULL);
                         label_alignment = gtk_alignment_new (0.5, 0.5, 1.0, 1.0);
                         gtk_container_add (GTK_CONTAINER (label_alignment), button_data->label);
-                        child = gtk_hbox_new (FALSE, 2);
+                        child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
                         gtk_box_pack_start (GTK_BOX (child), button_data->image, FALSE, FALSE, 0);
                         gtk_box_pack_start (GTK_BOX (child), label_alignment, FALSE, FALSE, 0);
                         break;
@@ -1595,7 +1595,7 @@ make_directory_button (NautilusPathBar  *path_bar,
 			button_data->label = gtk_label_new (NULL);
 			label_alignment = gtk_alignment_new (0.5, 0.5, 1.0, 1.0);
 			gtk_container_add (GTK_CONTAINER (label_alignment), button_data->label);
-			child = gtk_hbox_new (FALSE, 2);
+                        child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
 			gtk_box_pack_start (GTK_BOX (child), button_data->image, FALSE, FALSE, 0);
 			gtk_box_pack_start (GTK_BOX (child), label_alignment, FALSE, FALSE, 0);
 			button_data->is_base_dir = base_dir;

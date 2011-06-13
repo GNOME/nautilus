@@ -612,7 +612,7 @@ nautilus_window_constructed (GObject *self)
 			  0,                                  0);
 	gtk_widget_show (window->details->content_paned);
 
-	vbox = gtk_vbox_new (FALSE, 0);
+	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_paned_pack2 (GTK_PANED (window->details->content_paned), vbox,
 			 TRUE, FALSE);
 	gtk_widget_show (vbox);
