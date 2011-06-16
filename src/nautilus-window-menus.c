@@ -112,10 +112,8 @@ action_undo_callback (GtkAction *action,
 {
 	NautilusApplication *app;
 
-	app = nautilus_application_dup_singleton ();
+	app = nautilus_application_get_singleton ();
 	nautilus_undo_manager_undo (app->undo_manager);
-
-	g_object_unref (app);
 }
 
 static void
@@ -540,12 +538,7 @@ static void
 action_close_all_windows_callback (GtkAction *action, 
 				   gpointer user_data)
 {
-	NautilusApplication *app;
-
-	app = nautilus_application_dup_singleton ();
-	nautilus_application_close_all_windows (app);
-
-	g_object_unref (app);
+	nautilus_application_close_all_windows (nautilus_application_get_singleton ());
 }
 
 static void
@@ -833,14 +826,12 @@ action_new_window_callback (GtkAction *action,
 	NautilusWindow *current_window, *new_window;
 
 	current_window = NAUTILUS_WINDOW (user_data);
-	application = nautilus_application_dup_singleton ();
+	application = nautilus_application_get_singleton ();
 
 	new_window = nautilus_application_create_window (
 				application,
 				gtk_window_get_screen (GTK_WINDOW (current_window)));
 	nautilus_window_slot_go_home (nautilus_window_get_active_slot (new_window), FALSE);
-
-	g_object_unref (application);
 }
 
 static void

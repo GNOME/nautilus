@@ -64,7 +64,6 @@ static int                   row_activated_signal_id;
 static int                   button_pressed_signal_id;
 static int                   key_pressed_signal_id;
 static int                   jump_button_signal_id;
-static NautilusApplication  *application;
 
 /* forward declarations */
 static guint    get_selected_row                            (void);
@@ -264,8 +263,6 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 	bookmark_list_widget = (GtkTreeView *)gtk_builder_get_object (builder, "bookmark_tree_view");
 	remove_button = (GtkWidget *)gtk_builder_get_object (builder, "bookmark_delete_button");
 	jump_button = (GtkWidget *)gtk_builder_get_object (builder, "bookmark_jump_button");
-
-	application = nautilus_application_dup_singleton ();
 
 	set_up_close_accelerator (window);
 	nautilus_undo_share_undo_manager (G_OBJECT (window), undo_manager_source);
@@ -912,7 +909,6 @@ on_window_destroy_event (GtkWidget *widget,
 {
 	g_object_unref (bookmark_list_store);
 	g_object_unref (bookmark_empty_list_store);
-	g_object_unref (application);
 	g_source_remove_by_user_data (widget);
 }
 

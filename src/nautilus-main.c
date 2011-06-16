@@ -97,7 +97,7 @@ main (int argc, char *argv[])
 #endif
 
 	/* Run the nautilus application. */
-	application = nautilus_application_dup_singleton ();
+	application = nautilus_application_get_singleton ();
 
 	retval = g_application_run (G_APPLICATION (application),
 				    argc, argv);

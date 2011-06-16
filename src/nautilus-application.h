@@ -67,7 +67,7 @@ typedef struct {
 
 GType nautilus_application_get_type (void);
 
-NautilusApplication *nautilus_application_dup_singleton (void);
+NautilusApplication *nautilus_application_get_singleton (void);
 
 void nautilus_application_quit (NautilusApplication *self);
 

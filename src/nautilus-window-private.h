@@ -85,8 +85,6 @@ struct NautilusWindowDetails
 	 */
 	gboolean initiated_unmount;
 
-        NautilusApplication *application;
-
         GtkWidget *content_paned;
         GtkWidget *content_box;
         NautilusNavigationState *nav_state;

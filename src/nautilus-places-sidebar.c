@@ -1734,16 +1734,12 @@ volume_mounted_cb (GVolume *volume,
 				nautilus_window_slot_open_location (sidebar->go_to_after_mount_slot, location,
 								    sidebar->go_to_after_mount_flags, NULL);
 			} else {
-				NautilusApplication *app;
 				NautilusWindow *new, *cur;
 
 				cur = NAUTILUS_WINDOW (sidebar->window);
-				app = nautilus_application_dup_singleton ();
-				new = nautilus_application_create_window (app,
+				new = nautilus_application_create_window (nautilus_application_get_singleton (),
 									  gtk_window_get_screen (GTK_WINDOW (cur)));
 				nautilus_window_go_to (new, location);
-
-				g_object_unref (app);
 			}
 		}
 
@@ -1806,15 +1802,11 @@ open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 							    flags, NULL);
 		} else {
 			NautilusWindow *cur, *new;
-			NautilusApplication *app;
 			
 			cur = NAUTILUS_WINDOW (sidebar->window);
-			app = nautilus_application_dup_singleton ();
-			new = nautilus_application_create_window (app,
+			new = nautilus_application_create_window (nautilus_application_get_singleton (),
 								  gtk_window_get_screen (GTK_WINDOW (cur)));
 			nautilus_window_go_to (new, location);
-
-			g_object_unref (app);
 		}
 		g_object_unref (location);
 		g_free (uri);

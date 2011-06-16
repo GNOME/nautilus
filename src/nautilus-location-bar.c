@@ -33,6 +33,7 @@
 #include <config.h>
 #include "nautilus-location-bar.h"
 
+#include "nautilus-application.h"
 #include "nautilus-location-entry.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window.h"
@@ -212,7 +213,7 @@ drag_data_received_callback (GtkWidget *widget,
 	if (new_windows_for_extras) {
 		int i;
 
-		application = nautilus_application_dup_singleton ();
+		application = nautilus_application_get_singleton ();
 		screen = gtk_window_get_screen (GTK_WINDOW (window));
 
 		for (i = 1; names[i] != NULL; ++i) {
@@ -221,8 +222,6 @@ drag_data_received_callback (GtkWidget *widget,
 			nautilus_window_go_to (new_window, location);
 			g_object_unref (location);
 		}
-
-		g_object_unref (application);
 	}
 
 	g_strfreev (names);

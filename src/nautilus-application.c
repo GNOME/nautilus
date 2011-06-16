@@ -489,7 +489,6 @@ create_window (NautilusApplication *application,
 	g_return_val_if_fail (NAUTILUS_IS_APPLICATION (application), NULL);
 	
 	window = g_object_new (NAUTILUS_TYPE_WINDOW,
-			       "app", application,
 			       "screen", screen,
 			       NULL);
 
@@ -792,7 +791,7 @@ nautilus_application_constructor (GType type,
         GObject *retval;
 
         if (singleton != NULL) {
-                return g_object_ref (singleton);
+                return G_OBJECT (singleton);
         }
 
         retval = G_OBJECT_CLASS (nautilus_application_parent_class)->constructor
@@ -1236,7 +1235,7 @@ nautilus_application_class_init (NautilusApplicationClass *class)
 }
 
 NautilusApplication *
-nautilus_application_dup_singleton (void)
+nautilus_application_get_singleton (void)
 {
 	return g_object_new (NAUTILUS_TYPE_APPLICATION,
 			     "application-id", "org.gnome.NautilusApplication",

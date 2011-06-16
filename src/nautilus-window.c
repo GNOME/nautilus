@@ -107,8 +107,7 @@ static void use_extra_mouse_buttons_changed          (gpointer                  
 #define UPPER_MOUSE_LIMIT 14
 
 enum {
-	PROP_APP = 1,
-	PROP_DISABLE_CHROME,
+	PROP_DISABLE_CHROME = 1,
 	NUM_PROPERTIES,
 };
 
@@ -570,8 +569,10 @@ nautilus_window_constructed (GObject *self)
 	GtkWidget *vbox;
 	NautilusWindowPane *pane;
 	NautilusWindowSlot *slot;
+	NautilusApplication *application;
 
 	window = NAUTILUS_WINDOW (self);
+	application = nautilus_application_get_singleton ();
 
 	G_OBJECT_CLASS (nautilus_window_parent_class)->constructed (self);
 
@@ -651,7 +652,7 @@ nautilus_window_constructed (GObject *self)
 
 	nautilus_window_initialize_bookmarks_menu (window);
 	nautilus_window_set_initial_window_geometry (window);
-	nautilus_undo_manager_attach (window->details->application->undo_manager, G_OBJECT (window));
+	nautilus_undo_manager_attach (application->undo_manager, G_OBJECT (window));
 
 	slot = nautilus_window_open_slot (window->details->active_pane, 0);
 	nautilus_window_set_active_slot (window, slot);
@@ -668,9 +669,6 @@ nautilus_window_set_property (GObject *object,
 	window = NAUTILUS_WINDOW (object);
 	
 	switch (arg_id) {
-	case PROP_APP:
-		window->details->application = NAUTILUS_APPLICATION (g_value_get_object (value));
-		break;
 	case PROP_DISABLE_CHROME:
 		window->details->disable_chrome = g_value_get_boolean (value);
 		break;
@@ -691,9 +689,6 @@ nautilus_window_get_property (GObject *object,
 	window = NAUTILUS_WINDOW (object);
 
 	switch (arg_id) {
-	case PROP_APP:
-		g_value_set_object (value, window->details->application);
-		break;
 	case PROP_DISABLE_CHROME:
 		g_value_set_boolean (value, window->details->disable_chrome);
 		break;
@@ -1772,7 +1767,7 @@ nautilus_forget_history (void)
 	GList *window_node, *l, *walk;
 	NautilusApplication *app;
 
-	app = nautilus_application_dup_singleton ();
+	app = nautilus_application_get_singleton ();
 
 	/* Clear out each window's back & forward lists. Also, remove 
 	 * each window's current location bookmark from history list 
@@ -1799,8 +1794,6 @@ nautilus_forget_history (void)
 		nautilus_window_allow_back (window, FALSE);
 		nautilus_window_allow_forward (window, FALSE);
 	}
-
-	g_object_unref (app);
 }
 
 NautilusWindowType
@@ -2088,12 +2081,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
 	class->bookmarks_placeholder = MENU_PATH_BOOKMARKS_PLACEHOLDER;
 	class->get_icon = real_get_icon;
 
-	properties[PROP_APP] =
-		g_param_spec_object ("app",
-				     "Application",
-				     "The NautilusApplication associated with this window.",
-				     NAUTILUS_TYPE_APPLICATION,
-				     G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
 	properties[PROP_DISABLE_CHROME] =
 		g_param_spec_boolean ("disable-chrome",
 				      "Disable chrome",

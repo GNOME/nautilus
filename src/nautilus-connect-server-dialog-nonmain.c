@@ -68,7 +68,6 @@ nautilus_connect_server_dialog_display_location_async (NautilusConnectServerDial
 {
 	NautilusWindow *window;
 	GtkWidget *widget;
-	NautilusApplication *application;
 
 	widget = GTK_WIDGET (self);
 
@@ -77,13 +76,9 @@ nautilus_connect_server_dialog_display_location_async (NautilusConnectServerDial
 					   callback, user_data,
 					   nautilus_connect_server_dialog_display_location_async);
 
-	application = nautilus_application_dup_singleton ();
-
-	window = nautilus_application_create_window (application,
+	window = nautilus_application_create_window (nautilus_application_get_singleton (),
 						     gtk_widget_get_screen (widget));
 
 	nautilus_window_go_to_full (window, location,
 				    window_go_to_cb, self);
-
-	g_object_unref (application);
 }

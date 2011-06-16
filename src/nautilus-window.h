@@ -62,8 +62,6 @@ typedef enum {
 
 GType          nautilus_window_slot_get_type (void);
 
-#include "nautilus-application.h"
-
 typedef enum {
         NAUTILUS_WINDOW_NOT_SHOWN,
         NAUTILUS_WINDOW_POSITION_SET,

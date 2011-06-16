@@ -494,11 +494,10 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 	if (use_same) {
 		target_window = window;
 	} else {
-		app = nautilus_application_dup_singleton ();
+		app = nautilus_application_get_singleton ();
 		target_window = nautilus_application_create_window
 			(app,
 			 gtk_window_get_screen (GTK_WINDOW (window)));
-		g_object_unref (app);
 	}
 
         g_assert (target_window != NULL);
@@ -846,6 +845,7 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 	GFile *location;
 	GMountOperation *mount_op;
 	MountNotMountedData *data;
+	NautilusApplication *app;
 
 	slot = callback_data;
 	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
@@ -964,9 +964,7 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 			 */
 			/* if this is the only window, we don't want to quit, so we redirect it to home */
 
-			NautilusApplication *app;
-
-			app = nautilus_application_dup_singleton ();
+			app = nautilus_application_get_singleton ();
 			
 			if (g_list_length (gtk_application_get_windows (GTK_APPLICATION (app))) == 1) {
 				/* the user could have typed in a home directory that doesn't exist,
@@ -991,8 +989,6 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 				/* Since this is a window, destroying it will also unref it. */
 				gtk_widget_destroy (GTK_WIDGET (window));
 			}
-
-			g_object_unref (app);
 		} else {
 			/* Clean up state of already-showing window */
 			end_location_change (slot);

@@ -382,10 +382,8 @@ release_application (NautilusProgressInfo *info,
 	NautilusApplication *app;
 
 	/* release the GApplication hold we acquired */
-	app = nautilus_application_dup_singleton ();
+	app = nautilus_application_get_singleton ();
 	g_application_release (G_APPLICATION (app));
-
-	g_object_unref (app);
 }
 
 static void
@@ -396,9 +394,8 @@ progress_info_started_cb (NautilusProgressInfo *info,
 	TimeoutData *data;
 
 	/* hold GApplication so we never quit while there's an operation pending */
-	app = nautilus_application_dup_singleton ();
+	app = nautilus_application_get_singleton ();
 	g_application_hold (G_APPLICATION (app));
-	g_object_unref (app);
 
 	g_signal_connect (info, "finished",
 			  G_CALLBACK (release_application), self);
