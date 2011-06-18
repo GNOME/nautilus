@@ -399,9 +399,8 @@ nautilus_application_create_desktop_windows (NautilusApplication *application)
 		
 		selection_widget = get_desktop_manager_selection (display, i);
 		if (selection_widget != NULL) {
-			window = nautilus_desktop_window_new (application,
-							      gdk_display_get_screen (display, i));
-			
+			window = nautilus_desktop_window_new (gdk_display_get_screen (display, i));
+
 			g_signal_connect (selection_widget, "selection_clear_event",
 					  G_CALLBACK (selection_clear_event_cb), window);
 			

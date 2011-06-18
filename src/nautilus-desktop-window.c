@@ -146,8 +146,7 @@ nautilus_desktop_window_screen_size_changed (GdkScreen             *screen,
 }
 
 NautilusDesktopWindow *
-nautilus_desktop_window_new (NautilusApplication *application,
-			     GdkScreen           *screen)
+nautilus_desktop_window_new (GdkScreen *screen)
 {
 	NautilusDesktopWindow *window;
 	int width_request, height_request;
@@ -157,7 +156,6 @@ nautilus_desktop_window_new (NautilusApplication *application,
 
 	window = g_object_new (NAUTILUS_TYPE_DESKTOP_WINDOW,
 			       "disable-chrome", TRUE,
-			       "app", application,
 			       "width_request", width_request,
 			       "height_request", height_request,
 			       "screen", screen,

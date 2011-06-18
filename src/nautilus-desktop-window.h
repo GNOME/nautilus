@@ -29,7 +29,6 @@
 #define NAUTILUS_DESKTOP_WINDOW_H
 
 #include "nautilus-window.h"
-#include "nautilus-application.h"
 
 #define NAUTILUS_TYPE_DESKTOP_WINDOW nautilus_desktop_window_get_type()
 #define NAUTILUS_DESKTOP_WINDOW(obj) \
@@ -56,8 +55,7 @@ typedef struct {
 } NautilusDesktopWindowClass;
 
 GType                  nautilus_desktop_window_get_type            (void);
-NautilusDesktopWindow *nautilus_desktop_window_new                 (NautilusApplication *application,
-								    GdkScreen           *screen);
+NautilusDesktopWindow *nautilus_desktop_window_new                 (GdkScreen *screen);
 void                   nautilus_desktop_window_update_directory    (NautilusDesktopWindow *window);
 gboolean               nautilus_desktop_window_loaded              (NautilusDesktopWindow *window);
 
