@@ -448,14 +448,6 @@ nautilus_application_close_all_windows (NautilusApplication *self)
 	GList *l;
 	
 	list_copy = g_list_copy (gtk_application_get_windows (GTK_APPLICATION (self)));
-	/* First hide all window to get the feeling of quick response */
-	for (l = list_copy; l != NULL; l = l->next) {
-		NautilusWindow *window;
-		
-		window = NAUTILUS_WINDOW (l->data);
-		gtk_widget_hide (GTK_WIDGET (window));
-	}
-
 	for (l = list_copy; l != NULL; l = l->next) {
 		NautilusWindow *window;
 		

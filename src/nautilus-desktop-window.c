@@ -282,6 +282,13 @@ real_sync_title (NautilusWindow *window,
 }
 
 static void
+real_window_close (NautilusWindow *window)
+{
+	/* stub, does nothing */
+	return;
+}
+
+static void
 nautilus_desktop_window_class_init (NautilusDesktopWindowClass *klass)
 {
 	GtkWidgetClass *wclass = GTK_WIDGET_CLASS (klass);
@@ -298,6 +305,7 @@ nautilus_desktop_window_class_init (NautilusDesktopWindowClass *klass)
 	nclass->window_type = NAUTILUS_WINDOW_DESKTOP;
 	nclass->sync_title = real_sync_title;
 	nclass->get_icon = real_get_icon;
+	nclass->close = real_window_close;
 
 	g_type_class_add_private (klass, sizeof (NautilusDesktopWindowDetails));
 }

@@ -92,6 +92,7 @@ typedef struct {
                                          NautilusWindowSlot *slot);
 
         void   (* prompt_for_location) (NautilusWindow *window, const char *initial);
+        void   (* close) (NautilusWindow *window);
 
         /* Signals used only for keybindings */
         gboolean (* go_up)  (NautilusWindow *window,

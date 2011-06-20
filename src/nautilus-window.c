@@ -859,11 +859,7 @@ nautilus_window_save_geometry (NautilusWindow *window)
 void
 nautilus_window_close (NautilusWindow *window)
 {
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-
-	nautilus_window_save_geometry (window);
-
-	gtk_widget_destroy (GTK_WIDGET (window));
+	NAUTILUS_WINDOW_CLASS (G_OBJECT_GET_CLASS (window))->close (window);
 }
 
 NautilusWindowSlot *
@@ -2017,6 +2013,16 @@ real_get_icon (NautilusWindow *window,
 }
 
 static void
+real_window_close (NautilusWindow *window)
+{
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+
+	nautilus_window_save_geometry (window);
+
+	gtk_widget_destroy (GTK_WIDGET (window));
+}
+
+static void
 nautilus_window_class_init (NautilusWindowClass *class)
 {
 	GtkBindingSet *binding_set;
@@ -2040,6 +2046,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
 	class->window_type = NAUTILUS_WINDOW_NAVIGATION;
 	class->bookmarks_placeholder = MENU_PATH_BOOKMARKS_PLACEHOLDER;
 	class->get_icon = real_get_icon;
+	class->close = real_window_close;
 
 	properties[PROP_DISABLE_CHROME] =
 		g_param_spec_boolean ("disable-chrome",
