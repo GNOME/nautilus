@@ -1024,7 +1024,7 @@ nautilus_application_local_command_line (GApplication *application,
 		g_strfreev (remaining);
 	}
 
-	if (files == NULL) {
+	if (files == NULL && !no_default_window) {
 		files = g_malloc0 (2 * sizeof (GFile *));
 		len = 1;
 
@@ -1033,7 +1033,7 @@ nautilus_application_local_command_line (GApplication *application,
 	}
 
 	/* Invoke "Open" to create new windows */
-	if (!no_default_window) {
+	if (len > 0) {
 		g_application_open (application, files, len, "");
 	}
 
