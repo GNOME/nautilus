@@ -36,7 +36,6 @@
 #include "nautilus-file-changes-queue.h"
 #include "nautilus-icon-dnd.h"
 #include "nautilus-link.h"
-#include "nautilus-marshal.h"
 
 #include <eel/eel-gtk-macros.h>
 #include <gtk/gtk.h>

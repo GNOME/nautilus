@@ -32,7 +32,6 @@
 #include "nautilus-signaller.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-link.h"
-#include "nautilus-marshal.h"
 #include <eel/eel-glib-extensions.h>
 #include <gtk/gtk.h>
 #include <libxml/parser.h>
