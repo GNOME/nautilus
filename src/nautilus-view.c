@@ -38,7 +38,6 @@
 #include "nautilus-mime-actions.h"
 #include "nautilus-previewer.h"
 #include "nautilus-properties-window.h"
-#include "nautilus-src-marshal.h"
 
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
@@ -9596,7 +9595,7 @@ nautilus_view_class_init (NautilusViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusViewClass, add_file),
 		              NULL, NULL,
-		              nautilus_src_marshal_VOID__OBJECT_OBJECT,
+		              g_cclosure_marshal_generic,
 		              G_TYPE_NONE, 2, NAUTILUS_TYPE_FILE, NAUTILUS_TYPE_DIRECTORY);
 	signals[BEGIN_FILE_CHANGES] =
 		g_signal_new ("begin_file_changes",
@@ -9644,7 +9643,7 @@ nautilus_view_class_init (NautilusViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusViewClass, file_changed),
 		              NULL, NULL,
-		              nautilus_src_marshal_VOID__OBJECT_OBJECT,
+		              g_cclosure_marshal_generic,
 		              G_TYPE_NONE, 2, NAUTILUS_TYPE_FILE, NAUTILUS_TYPE_DIRECTORY);
 	signals[LOAD_ERROR] =
 		g_signal_new ("load_error",
@@ -9660,7 +9659,7 @@ nautilus_view_class_init (NautilusViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusViewClass, remove_file),
 		              NULL, NULL,
-		              nautilus_src_marshal_VOID__OBJECT_OBJECT,
+		              g_cclosure_marshal_generic,
 		              G_TYPE_NONE, 2, NAUTILUS_TYPE_FILE, NAUTILUS_TYPE_DIRECTORY);
 	signals[ZOOM_LEVEL_CHANGED] =
 		g_signal_new ("zoom-level-changed",
@@ -9683,7 +9682,7 @@ nautilus_view_class_init (NautilusViewClass *klass)
 			      G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
 			      G_STRUCT_OFFSET (NautilusViewClass, trash),
 			      g_signal_accumulator_true_handled, NULL,
-			      nautilus_src_marshal_BOOLEAN__VOID,
+			      g_cclosure_marshal_generic,
 			      G_TYPE_BOOLEAN, 0);
 	signals[DELETE] =
 		g_signal_new ("delete",
@@ -9691,7 +9690,7 @@ nautilus_view_class_init (NautilusViewClass *klass)
 			      G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
 			      G_STRUCT_OFFSET (NautilusViewClass, delete),
 			      g_signal_accumulator_true_handled, NULL,
-			      nautilus_src_marshal_BOOLEAN__VOID,
+			      g_cclosure_marshal_generic,
 			      G_TYPE_BOOLEAN, 0);
 
 	klass->get_selected_icon_locations = real_get_selected_icon_locations;

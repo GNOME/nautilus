@@ -39,7 +39,6 @@
 #include "nautilus-notebook.h"
 #include "nautilus-places-sidebar.h"
 #include "nautilus-search-bar.h"
-#include "nautilus-src-marshal.h"
 #include "nautilus-tree-sidebar.h"
 #include "nautilus-view-factory.h"
 #include "nautilus-window-manage-views.h"
@@ -2095,7 +2094,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
 			      G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
 			      G_STRUCT_OFFSET (NautilusWindowClass, go_up),
 			      g_signal_accumulator_true_handled, NULL,
-			      nautilus_src_marshal_BOOLEAN__BOOLEAN,
+			      g_cclosure_marshal_generic,
 			      G_TYPE_BOOLEAN, 1, G_TYPE_BOOLEAN);
 	signals[RELOAD] =
 		g_signal_new ("reload",
@@ -2119,7 +2118,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
 			      G_SIGNAL_RUN_LAST,
 			      0,
 			      NULL, NULL,
-			      nautilus_src_marshal_VOID__INT_BOOLEAN_BOOLEAN_BOOLEAN_BOOLEAN,
+			      g_cclosure_marshal_generic,
 			      G_TYPE_NONE, 5,
 			      G_TYPE_INT, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN,
 			      G_TYPE_BOOLEAN, G_TYPE_BOOLEAN);

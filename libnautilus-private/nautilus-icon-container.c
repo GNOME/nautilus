@@ -33,7 +33,6 @@
 #include "nautilus-icon-private.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-selection-canvas-item.h"
-#include "nautilus-marshal.h"
 #include <atk/atkaction.h>
 #include <eel/eel-accessibility.h>
 #include <eel/eel-vfs-extensions.h>
@@ -5717,7 +5716,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 button_press),
 		                NULL, NULL,
-		                nautilus_marshal_BOOLEAN__POINTER,
+		                g_cclosure_marshal_generic,
 		                G_TYPE_BOOLEAN, 1,
 				GDK_TYPE_EVENT);
 	signals[ACTIVATE]
@@ -5747,7 +5746,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 activate_previewer),
 		                NULL, NULL,
-		                nautilus_marshal_VOID__POINTER_POINTER,
+		                g_cclosure_marshal_generic,
 		                G_TYPE_NONE, 2,
 				G_TYPE_POINTER, G_TYPE_POINTER);
 	signals[CONTEXT_CLICK_SELECTION]
@@ -5787,7 +5786,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 icon_position_changed),
 		                NULL, NULL,
-		                nautilus_marshal_VOID__POINTER_POINTER,
+		                g_cclosure_marshal_generic,
 		                G_TYPE_NONE, 2,
 				G_TYPE_POINTER,
 				G_TYPE_POINTER);
@@ -5798,7 +5797,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 icon_text_changed),
 		                NULL, NULL,
-		                nautilus_marshal_VOID__POINTER_STRING,
+		                g_cclosure_marshal_generic,
 		                G_TYPE_NONE, 2,
 				G_TYPE_POINTER,
 				G_TYPE_STRING);
@@ -5839,7 +5838,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 get_icon_uri),
 		                NULL, NULL,
-		                nautilus_marshal_STRING__POINTER,
+		                g_cclosure_marshal_generic,
 		                G_TYPE_STRING, 1,
 				G_TYPE_POINTER);
 	signals[GET_ICON_DROP_TARGET_URI]
@@ -5849,7 +5848,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 get_icon_drop_target_uri),
 		                NULL, NULL,
-		                nautilus_marshal_STRING__POINTER,
+		                g_cclosure_marshal_generic,
 		                G_TYPE_STRING, 1,
 				G_TYPE_POINTER);
 	signals[MOVE_COPY_ITEMS] 
@@ -5859,7 +5858,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass, 
 						 move_copy_items),
 		                NULL, NULL,
-		                nautilus_marshal_VOID__POINTER_POINTER_POINTER_ENUM_INT_INT,
+		                g_cclosure_marshal_generic,
 		                G_TYPE_NONE, 6,
 				G_TYPE_POINTER,
 				G_TYPE_POINTER,
@@ -5874,7 +5873,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass, 
 						 handle_netscape_url),
 		                NULL, NULL,
-		                nautilus_marshal_VOID__STRING_STRING_ENUM_INT_INT,
+		                g_cclosure_marshal_generic,
 		                G_TYPE_NONE, 5,
 				G_TYPE_STRING,
 				G_TYPE_STRING,
@@ -5888,7 +5887,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass, 
 						     handle_uri_list),
 		                NULL, NULL,
-		                nautilus_marshal_VOID__STRING_STRING_ENUM_INT_INT,
+		                g_cclosure_marshal_generic,
 		                G_TYPE_NONE, 5,
 				G_TYPE_STRING,
 				G_TYPE_STRING,
@@ -5902,7 +5901,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass, 
 						 handle_text),
 		                NULL, NULL,
-		                nautilus_marshal_VOID__STRING_STRING_ENUM_INT_INT,
+		                g_cclosure_marshal_generic,
 		                G_TYPE_NONE, 5,
 				G_TYPE_STRING,
 				G_TYPE_STRING,
@@ -5916,7 +5915,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 handle_raw),
 		                NULL, NULL,
-		                nautilus_marshal_VOID__POINTER_INT_STRING_STRING_ENUM_INT_INT,
+		                g_cclosure_marshal_generic,
 		                G_TYPE_NONE, 7,
 				G_TYPE_POINTER,
 				G_TYPE_INT,
@@ -5932,7 +5931,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass, 
 						 get_container_uri),
 		                NULL, NULL,
-		                nautilus_marshal_STRING__VOID,
+		                g_cclosure_marshal_generic,
 		                G_TYPE_STRING, 0);
 	signals[CAN_ACCEPT_ITEM] 
 		= g_signal_new ("can_accept_item",
@@ -5941,7 +5940,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass, 
 						 can_accept_item),
 		                NULL, NULL,
-		                nautilus_marshal_INT__POINTER_STRING,
+		                g_cclosure_marshal_generic,
 		                G_TYPE_INT, 2,
 				G_TYPE_POINTER,
 				G_TYPE_STRING);
@@ -5952,7 +5951,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 get_stored_icon_position),
 		                NULL, NULL,
-		                nautilus_marshal_BOOLEAN__POINTER_POINTER,
+		                g_cclosure_marshal_generic,
 		                G_TYPE_BOOLEAN, 2,
 				G_TYPE_POINTER,
 				G_TYPE_POINTER);
@@ -5963,7 +5962,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 get_stored_layout_timestamp),
 		                NULL, NULL,
-		                nautilus_marshal_BOOLEAN__POINTER_POINTER,
+		                g_cclosure_marshal_generic,
 		                G_TYPE_BOOLEAN, 2,
 				G_TYPE_POINTER,
 				G_TYPE_POINTER);
@@ -5974,7 +5973,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 store_layout_timestamp),
 		                NULL, NULL,
-		                nautilus_marshal_BOOLEAN__POINTER_POINTER,
+		                g_cclosure_marshal_generic,
 		                G_TYPE_BOOLEAN, 2,
 				G_TYPE_POINTER,
 				G_TYPE_POINTER);
@@ -5994,7 +5993,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 preview),
 		                NULL, NULL,
-		                nautilus_marshal_INT__POINTER_BOOLEAN,
+		                g_cclosure_marshal_generic,
 		                G_TYPE_INT, 2,
 				G_TYPE_POINTER,
 				G_TYPE_BOOLEAN);
@@ -6052,7 +6051,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 				G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 start_interactive_search),
 				NULL, NULL,
-				nautilus_marshal_BOOLEAN__VOID,
+				g_cclosure_marshal_generic,
 				G_TYPE_BOOLEAN, 0);
 
 	/* GtkWidget class.  */

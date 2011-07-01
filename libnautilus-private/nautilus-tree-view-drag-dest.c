@@ -1048,7 +1048,7 @@ nautilus_tree_view_drag_dest_class_init (NautilusTreeViewDragDestClass *class)
 			      G_STRUCT_OFFSET (NautilusTreeViewDragDestClass,
 					       get_root_uri),
 			      NULL, NULL,
-			      nautilus_marshal_STRING__VOID,
+			      g_cclosure_marshal_generic,
 			      G_TYPE_STRING, 0);
 	signals[GET_FILE_FOR_PATH] = 
 		g_signal_new ("get_file_for_path",
@@ -1057,7 +1057,7 @@ nautilus_tree_view_drag_dest_class_init (NautilusTreeViewDragDestClass *class)
 			      G_STRUCT_OFFSET (NautilusTreeViewDragDestClass,
 					       get_file_for_path),
 			      NULL, NULL,
-			      nautilus_marshal_OBJECT__BOXED,
+			      g_cclosure_marshal_generic,
 			      NAUTILUS_TYPE_FILE, 1,
 			      GTK_TYPE_TREE_PATH);
 	signals[MOVE_COPY_ITEMS] =
@@ -1068,7 +1068,7 @@ nautilus_tree_view_drag_dest_class_init (NautilusTreeViewDragDestClass *class)
 					       move_copy_items),
 			      NULL, NULL,
 			      
-			      nautilus_marshal_VOID__POINTER_STRING_ENUM_INT_INT,
+			      g_cclosure_marshal_generic,
 			      G_TYPE_NONE, 5,
 			      G_TYPE_POINTER,
 			      G_TYPE_STRING,
@@ -1082,7 +1082,7 @@ nautilus_tree_view_drag_dest_class_init (NautilusTreeViewDragDestClass *class)
 			      G_STRUCT_OFFSET (NautilusTreeViewDragDestClass, 
 					       handle_netscape_url),
 			      NULL, NULL,
-			      nautilus_marshal_VOID__STRING_STRING_ENUM_INT_INT,
+			      g_cclosure_marshal_generic,
 			      G_TYPE_NONE, 5,
 			      G_TYPE_STRING,
 			      G_TYPE_STRING,
@@ -1096,7 +1096,7 @@ nautilus_tree_view_drag_dest_class_init (NautilusTreeViewDragDestClass *class)
 			      G_STRUCT_OFFSET (NautilusTreeViewDragDestClass, 
 					       handle_uri_list),
 			      NULL, NULL,
-			      nautilus_marshal_VOID__STRING_STRING_ENUM_INT_INT,
+			      g_cclosure_marshal_generic,
 			      G_TYPE_NONE, 5,
 			      G_TYPE_STRING,
 			      G_TYPE_STRING,
@@ -1110,7 +1110,7 @@ nautilus_tree_view_drag_dest_class_init (NautilusTreeViewDragDestClass *class)
 			      G_STRUCT_OFFSET (NautilusTreeViewDragDestClass, 
 					       handle_text),
 			      NULL, NULL,
-			      nautilus_marshal_VOID__STRING_STRING_ENUM_INT_INT,
+			      g_cclosure_marshal_generic,
 			      G_TYPE_NONE, 5,
 			      G_TYPE_STRING,
 			      G_TYPE_STRING,
@@ -1124,7 +1124,7 @@ nautilus_tree_view_drag_dest_class_init (NautilusTreeViewDragDestClass *class)
 			      G_STRUCT_OFFSET (NautilusTreeViewDragDestClass,
 					       handle_raw),
 			      NULL, NULL,
-			      nautilus_marshal_VOID__POINTER_INT_STRING_STRING_ENUM_INT_INT,
+			      g_cclosure_marshal_generic,
 			      G_TYPE_NONE, 7,
 			      G_TYPE_POINTER,
 			      G_TYPE_INT,

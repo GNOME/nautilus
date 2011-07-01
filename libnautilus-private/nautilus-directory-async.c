@@ -4489,7 +4489,7 @@ extension_info_start (NautilusDirectory *directory,
 					  directory,
 					  NULL);
 	g_closure_set_marshal (update_complete,
-			       nautilus_marshal_VOID__POINTER_ENUM);
+			       g_cclosure_marshal_generic);
 			       
 	result = nautilus_info_provider_update_file_info
 		(provider, 

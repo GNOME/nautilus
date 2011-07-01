@@ -29,8 +29,6 @@ $(dbus_built_sources) : Makefile.am $(top_srcdir)/data/dbus-interfaces.xml
 		$(NULL)
 
 BUILT_SOURCES = \
-	nautilus-marshal.c \
-	nautilus-marshal.h \
 	$(dbus_built_sources) \
 	$(NULL)
 
@@ -198,24 +196,6 @@ nodist_libnautilus_private_la_SOURCES =\
 
 $(lib_LTLIBRARIES): $(dependency_static_libs)
 
-nautilus-marshal.list: $(libnautilus_private_la_SOURCES) Makefile.am
-	$(AM_V_GEN)( cd $(srcdir) && \
-	sed -n -e 's/.*nautilus_marshal_\([[:upper:][:digit:]]*__[[:upper:][:digit:]_]*\).*/\1/p' \
-	$(libnautilus_private_la_SOURCES) ) \
-	| sed -e 's/__/:/' -e 'y/_/,/' | sort -u > $@.tmp
-	@if cmp -s $@.tmp $@; then \
-		rm $@.tmp; \
-	else \
-		mv $@.tmp $@; \
-	fi
-
-%-marshal.h: %-marshal.list Makefile
-	$(AM_V_GEN)$(GLIB_GENMARSHAL) --header --prefix=$(subst -,_,$*)_marshal $< > $*-marshal.h
-
-%-marshal.c: %-marshal.list Makefile
-	$(AM_V_GEN)echo "#include \"nautilus-marshal.h\"" > $@ && \
-	$(GLIB_GENMARSHAL) --body --prefix=$(subst -,_,$*)_marshal $< >> $*-marshal.c
-
 gsettingsschema_in_files = org.gnome.nautilus.gschema.xml.in
 gsettings_SCHEMAS = $(gsettingsschema_in_files:.xml.in=.xml)
 .PRECIOUS: $(gsettings_SCHEMAS)
@@ -228,7 +208,6 @@ convert_DATA = nautilus.convert
 @GSETTINGS_RULES@
 
 EXTRA_DIST =				\
-	nautilus-marshal.list		\
 	nautilus.convert		\
 	$(gsettingsschema_in_files)     \
 	$(TRACKER_SOURCES)		\
@@ -237,7 +216,6 @@ EXTRA_DIST =				\
 CLEANFILES = \
 	$(BUILT_SOURCES)				\
 	$(gsettings_SCHEMAS)				\
-	nautilus-marshal.list				\
 	$(NULL)
 
 dist-hook:

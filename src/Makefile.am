@@ -43,11 +43,6 @@ LDADD =\
 	$(POPT_LIBS) \
 	$(NULL)
 
-BUILT_SOURCES = \
-	nautilus-src-marshal.c \
-	nautilus-src-marshal.h \
-	$(NULL)
-
 nautilus_SOURCES = \
 	nautilus-actions.h			\
 	nautilus-application.c			\
@@ -157,28 +152,6 @@ if ENABLE_EMPTY_VIEW
 nautilus_SOURCES += $(EMPTY_VIEW_SOURCES)
 endif
 
-nodist_nautilus_SOURCES = \
-	$(BUILT_SOURCES) \
-	$(NULL)
-
-nautilus-src-marshal.list: $(nautilus_SOURCES) Makefile.am
-	$(AM_V_GEN)( cd $(srcdir) && \
-	sed -n -e 's/.*nautilus_src_marshal_\([[:upper:][:digit:]]*__[[:upper:][:digit:]_]*\).*/\1/p' \
-	$(nautilus_SOURCES) ) \
-	| sed -e 's/__/:/' -e 'y/_/,/' | sort -u > $@.tmp
-	@if cmp -s $@.tmp $@; then \
-		rm $@.tmp; \
-	else \
-		mv $@.tmp $@; \
-	fi
-
-%-marshal.c: %-marshal.list Makefile
-	$(AM_V_GEN)echo "#include \"nautilus-src-marshal.h\"" > $@ && \
-	$(GLIB_GENMARSHAL) --body --prefix=$(subst -,_,$*)_marshal $< >> $*-marshal.c
-
-%-marshal.h: %-marshal.list Makefile
-	$(AM_V_GEN)$(GLIB_GENMARSHAL) --header --prefix=$(subst -,_,$*)_marshal $< > $*-marshal.h
-
 nautilus_autorun_software_SOURCES= 			\
 	nautilus-autorun-software.c			\
 	$(NULL)
@@ -214,13 +187,10 @@ ui_DATA = 					\
 	$(NULL)
 
 CLEANFILES = \
-	nautilus-src-marshal.list		\
-	$(BUILT_SOURCES)			\
 	$(server_DATA)				\
 	$(NULL)
 
 EXTRA_DIST =					\
-	nautilus-src-marshal.list		\
 	$(server_in_files)			\
 	$(ui_DATA)				\
 	check-nautilus				\

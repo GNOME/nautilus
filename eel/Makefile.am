@@ -15,11 +15,6 @@ INCLUDES =						\
 	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\
 	$(NULL)
 
-BUILT_SOURCES = \
-	eel-marshal.c \
-	eel-marshal.h \
-	$(NULL)
-
 libeel_2_la_LDFLAGS =				\
 	-no-undefined				\
 	$(NULL)
@@ -69,28 +64,6 @@ libeel_2_la_SOURCES =				\
 	$(eel_headers)				\
 	$(NULL)
 
-nodist_libeel_2_la_SOURCES =			\
-	$(BUILT_SOURCES)			\
-	$(NULL)
-
-eel-marshal.list: $(libeel_2_la_SOURCES) Makefile.am
-	$(AM_V_GEN)( cd $(srcdir) && \
-	sed -n -e 's/.*eel_marshal_\([[:upper:][:digit:]]*__[[:upper:][:digit:]_]*\).*/\1/p' \
-	$(libeel_2_la_SOURCES) ) \
-	| sed -e 's/__/:/' -e 'y/_/,/' | sort -u > $@.tmp
-	@if cmp -s $@.tmp $@; then \
-		rm $@.tmp; \
-	else \
-		mv $@.tmp $@; \
-	fi
-
-%-marshal.c: %-marshal.list Makefile
-	$(AM_V_GEN)echo "#include \"eel-marshal.h\"" > $@ && \
-	$(GLIB_GENMARSHAL) --body --prefix=$(subst -,_,$*)_marshal $< >> $*-marshal.c
-
-%-marshal.h: %-marshal.list Makefile
-	$(AM_V_GEN)$(GLIB_GENMARSHAL) --header --prefix=$(subst -,_,$*)_marshal $< > $*-marshal.h
-
 noinst_PROGRAMS = check-program
 
 check_program_SOURCES = check-program.c
@@ -102,10 +75,4 @@ TESTS = check-eel
 
 EXTRA_DIST =					\
 	check-eel				\
-	eel-marshal.list			\
-	$(NULL)
-
-CLEANFILES = \
-	eel-marshal.list \
-	$(BUILT_SOURCES) \
 	$(NULL)

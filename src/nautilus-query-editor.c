@@ -23,7 +23,6 @@
 
 #include <config.h>
 #include "nautilus-query-editor.h"
-#include "nautilus-src-marshal.h"
 #include "nautilus-window-slot.h"
 
 #include <string.h>
@@ -199,7 +198,7 @@ nautilus_query_editor_class_init (NautilusQueryEditorClass *class)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusQueryEditorClass, changed),
 		              NULL, NULL,
-		              nautilus_src_marshal_VOID__OBJECT_BOOLEAN,
+		              g_cclosure_marshal_generic,
 		              G_TYPE_NONE, 2, NAUTILUS_TYPE_QUERY, G_TYPE_BOOLEAN);
 
 	signals[CANCEL] =

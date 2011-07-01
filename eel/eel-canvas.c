@@ -72,8 +72,6 @@
 #include <cairo-gobject.h>
 #include "eel-canvas.h"
 
-#include "eel-marshal.h"
-
 static void eel_canvas_request_update (EelCanvas      *canvas);
 static void group_add                   (EelCanvasGroup *group,
 					 EelCanvasItem  *item);
@@ -3966,7 +3964,7 @@ eel_canvas_item_class_init (EelCanvasItemClass *klass)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (EelCanvasItemClass, event),
 			      boolean_handled_accumulator, NULL,
-			      eel_marshal_BOOLEAN__BOXED,
+			      g_cclosure_marshal_generic,
 			      G_TYPE_BOOLEAN, 1,
 			      GDK_TYPE_EVENT | G_SIGNAL_TYPE_STATIC_SCOPE);
 
