@@ -333,45 +333,6 @@ eel_accessibility_text_get_character_count (AtkText *text)
 	return gtk_text_buffer_get_char_count (util->buffer);
 }
 
-static void
-eel_accessibility_simple_text_interface_init (AtkTextIface *iface)
-{
-	iface->get_text                = eel_accessibility_text_get_text;
-	iface->get_character_at_offset = eel_accessibility_text_get_character_at_offset;
-	iface->get_text_before_offset  = eel_accessibility_text_get_text_before_offset;
-	iface->get_text_at_offset      = eel_accessibility_text_get_text_at_offset;
-	iface->get_text_after_offset   = eel_accessibility_text_get_text_after_offset;
-	iface->get_character_count     = eel_accessibility_text_get_character_count;
-
-/*	iface->get_caret_offset = eel_accessibility_text_get_caret_offset;
-	iface->set_caret_offset = eel_accessibility_text_set_caret_offset;
-	iface->get_selection = eel_accessibility_text_get_selection;
-	iface->get_n_selections = eel_accessibility_text_get_n_selections;
-	iface->add_selection = eel_accessibility_text_add_selection;
-	iface->remove_selection = eel_accessibility_text_remove_selection;
-	iface->set_selection = eel_accessibility_text_set_selection;
-	iface->get_run_attributes = eel_accessibility_text_get_run_attributes;
-	iface->get_default_attributes = eel_accessibility_text_get_default_attributes;
-	iface->get_character_extents = eel_accessibility_text_get_character_extents;
-	iface->get_offset_at_point = eel_accessibility_text_get_offset_at_point; */
-}
-
-void
-eel_accessibility_add_simple_text (GType type)
-{
-	const GInterfaceInfo simple_text_info = {
-		(GInterfaceInitFunc)
-		eel_accessibility_simple_text_interface_init,
-		(GInterfaceFinalizeFunc) NULL,
-		NULL
-	};
-
-	g_return_if_fail (type != G_TYPE_INVALID);
-
-	g_type_add_interface_static (
-		type, ATK_TYPE_TEXT, &simple_text_info);
-}
-
 GType
 eel_accessible_text_get_type (void)
 {
