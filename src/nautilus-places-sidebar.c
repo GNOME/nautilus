@@ -676,19 +676,6 @@ update_places (NautilusPlacesSidebar *sidebar)
 		g_free (desktop_path);
 	}
 
-	/* file system root */
- 	mount_uri = "file:///"; /* No need to strdup */
-	icon = g_themed_icon_new (NAUTILUS_ICON_FILESYSTEM);
-	last_iter = add_place (sidebar, PLACES_BUILT_IN,
-			       SECTION_COMPUTER,
-			       _("File System"), icon,
-			       mount_uri, NULL, NULL, NULL, 0,
-			       _("Open the contents of the File System"));
-	g_object_unref (icon);
-	compare_for_selection (sidebar,
-			       location, mount_uri, last_uri,
-			       &last_iter, &select_path);
-
 	
 	/* XDG directories */
 	for (index = 0; index < G_USER_N_DIRECTORIES; index++) {
@@ -772,6 +759,19 @@ update_places (NautilusPlacesSidebar *sidebar)
 		g_free (tooltip);
 	}
 	g_list_free (mounts);
+
+	/* file system root */
+ 	mount_uri = "file:///"; /* No need to strdup */
+	icon = g_themed_icon_new (NAUTILUS_ICON_FILESYSTEM);
+	last_iter = add_place (sidebar, PLACES_BUILT_IN,
+			       SECTION_COMPUTER,
+			       _("File System"), icon,
+			       mount_uri, NULL, NULL, NULL, 0,
+			       _("Open the contents of the File System"));
+	g_object_unref (icon);
+	compare_for_selection (sidebar,
+			       location, mount_uri, last_uri,
+			       &last_iter, &select_path);
 
 	mount_uri = "trash:///"; /* No need to strdup */
 	icon = nautilus_trash_monitor_get_icon ();
