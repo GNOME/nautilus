@@ -33,6 +33,7 @@ struct _NautilusFloatingBarDetails {
 	GtkWidget *label_widget;
 	GtkWidget *spinner;
 	gboolean show_spinner;
+	gboolean is_interactive;
 
 	guint escaping_distance;
 	GtkAllocation initial_allocation;
@@ -143,6 +144,10 @@ overlay_enter_notify_cb (GtkWidget        *parent,
 	GtkWidget *widget = user_data;
 
 	if (event->window != gtk_widget_get_window (widget)) {
+		return FALSE;
+	}
+
+	if (NAUTILUS_FLOATING_BAR (widget)->priv->is_interactive) {
 		return FALSE;
 	}
 
@@ -371,6 +376,8 @@ nautilus_floating_bar_add_action (NautilusFloatingBar *self,
 
 	g_signal_connect (button, "clicked",
 			  G_CALLBACK (action_button_clicked_cb), self);
+
+	self->priv->is_interactive = TRUE;
 }
 
 void
@@ -395,4 +402,6 @@ nautilus_floating_bar_cleanup_actions (NautilusFloatingBar *self)
 	}
 
 	g_list_free (children);
+
+	self->priv->is_interactive = FALSE;
 }

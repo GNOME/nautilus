@@ -1227,6 +1227,8 @@ real_setup_loading_floating_bar (NautilusWindowSlot *slot)
 	nautilus_floating_bar_add_action (NAUTILUS_FLOATING_BAR (slot->floating_bar),
 					  GTK_STOCK_STOP,
 					  NAUTILUS_FLOATING_BAR_ACTION_ID_STOP);
+
+	gtk_widget_set_halign (slot->floating_bar, GTK_ALIGN_END);
 	gtk_widget_show (slot->floating_bar);
 }
 
