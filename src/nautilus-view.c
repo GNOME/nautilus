@@ -2852,7 +2852,7 @@ nautilus_view_display_selection_info (NautilusView *view)
 		if (non_folder_size_known) {
 			char *size_string;
 
-			size_string = g_format_size_for_display (non_folder_size);
+			size_string = g_format_size (non_folder_size);
 			/* This is marked for translation in case a localiser
 			 * needs to use something other than parentheses. The
 			 * first message gives the number of items selected;
