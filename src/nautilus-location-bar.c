@@ -458,15 +458,12 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 	GtkWidget *label;
 	GtkWidget *entry;
 	GtkWidget *event_box;
-	GtkWidget *hbox;
 
 	bar->details = G_TYPE_INSTANCE_GET_PRIVATE (bar, NAUTILUS_TYPE_LOCATION_BAR,
 						    NautilusLocationBarDetails);
 
 	gtk_orientable_set_orientation (GTK_ORIENTABLE (bar),
 					GTK_ORIENTATION_HORIZONTAL);
-
-	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, FALSE);
 
 	event_box = gtk_event_box_new ();
 	gtk_event_box_set_visible_window (GTK_EVENT_BOX (event_box), FALSE);
@@ -479,7 +476,7 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 	g_signal_connect (label, "style_set", 
 			  G_CALLBACK (style_set_handler), NULL);
 
-	gtk_box_pack_start (GTK_BOX (hbox), event_box, FALSE, TRUE, 4);
+	gtk_box_pack_start (GTK_BOX (bar), event_box, FALSE, TRUE, 4);
 
 	entry = nautilus_location_entry_new ();
 	
@@ -488,11 +485,9 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 	g_signal_connect_object (entry, "changed",
 				 G_CALLBACK (editable_changed_callback), bar, 0);
 
-	gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (bar), entry, TRUE, TRUE, 0);
 
 	eel_accessibility_set_up_label_widget_relation (label, entry);
-
-	gtk_container_add (GTK_CONTAINER (bar), hbox);
 
 
 	/* Label context menu */
@@ -515,10 +510,10 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 	g_signal_connect (bar, "drag_data_received",
 			  G_CALLBACK (drag_data_received_callback), NULL);
 
-	gtk_widget_show_all (hbox);
-
 	bar->details->label = GTK_LABEL (label);
 	bar->details->entry = NAUTILUS_ENTRY (entry);	
+
+	gtk_widget_show_all (GTK_WIDGET (bar));
 }
 
 GtkWidget *
