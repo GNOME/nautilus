@@ -4,7 +4,7 @@
 /* Icons for places */
 #define NAUTILUS_ICON_COMPUTER		"computer"
 #define NAUTILUS_ICON_DESKTOP		"user-desktop"
-#define NAUTILUS_ICON_FILESYSTEM	"drive-harddisk"
+#define NAUTILUS_ICON_FILESYSTEM	"drive-harddisk-system"
 #define NAUTILUS_ICON_FOLDER		"folder"
 #define NAUTILUS_ICON_FOLDER_REMOTE	"folder-remote"
 #define NAUTILUS_ICON_HOME		"user-home"
