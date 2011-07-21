@@ -72,8 +72,6 @@
 #include <math.h>
 #include <sys/time.h>
 
-#define MAX_HISTORY_ITEMS 50
-
 #define SIDE_PANE_MINIMUM_WIDTH 1
 #define SIDE_PANE_MINIMUM_HEIGHT 400
 
@@ -143,7 +141,6 @@ static const struct {
 	{ XF86XK_AddFavorite,	NAUTILUS_ACTION_ADD_BOOKMARK },
 	{ XF86XK_Favorites,	NAUTILUS_ACTION_EDIT_BOOKMARKS },
 	{ XF86XK_Go,		NAUTILUS_ACTION_GO_TO_LOCATION },
-/* TODO?{ XF86XK_History,	NAUTILUS_ACTION_HISTORY }, */
 	{ XF86XK_HomePage,      NAUTILUS_ACTION_GO_HOME },
 	{ XF86XK_OpenURL,	NAUTILUS_ACTION_GO_TO_LOCATION },
 	{ XF86XK_Refresh,	NAUTILUS_ACTION_RELOAD },
@@ -1757,42 +1754,6 @@ nautilus_window_get_slot_for_view (NautilusWindow *window,
 	}
 
 	return NULL;
-}
-
-void
-nautilus_forget_history (void) 
-{
-	NautilusWindowSlot *slot;
-	GList *window_node, *l, *walk;
-	NautilusApplication *app;
-
-	app = nautilus_application_get_singleton ();
-
-	/* Clear out each window's back & forward lists. Also, remove 
-	 * each window's current location bookmark from history list 
-	 * so it doesn't get clobbered.
-	 */
-	for (window_node = gtk_application_get_windows (GTK_APPLICATION (app));
-	     window_node != NULL;
-	     window_node = window_node->next) {
-
-		NautilusWindow *window;
-			
-		window = window_node->data;
-
-		for (walk = window->details->panes; walk; walk = walk->next) {
-			NautilusWindowPane *pane = walk->data;
-			for (l = pane->slots; l != NULL; l = l->next) {
-				slot = l->data;
-
-				nautilus_window_slot_clear_back_list (slot);
-				nautilus_window_slot_clear_forward_list (slot);
-			}
-		}
-
-		nautilus_window_allow_back (window, FALSE);
-		nautilus_window_allow_forward (window, FALSE);
-	}
 }
 
 NautilusWindowType

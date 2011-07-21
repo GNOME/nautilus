@@ -152,9 +152,6 @@ void     nautilus_window_allow_back           (NautilusWindow *window,
                                                gboolean       allow);
 void     nautilus_window_allow_forward        (NautilusWindow *window,
                                                gboolean        allow);
-void     nautilus_window_clear_back_list      (NautilusWindow *window);
-void     nautilus_window_clear_forward_list   (NautilusWindow *window);
-void     nautilus_forget_history              (void);
 void     nautilus_window_hide_sidebar         (NautilusWindow *window);
 void     nautilus_window_show_sidebar         (NautilusWindow *window);
 void     nautilus_window_back_or_forward      (NautilusWindow *window,

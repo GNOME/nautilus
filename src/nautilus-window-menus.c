@@ -524,9 +524,6 @@ nautilus_window_initialize_trash_icon_monitor (NautilusWindow *window)
 			  G_CALLBACK (trash_state_changed_cb), window);
 }
 
-#define MENU_PATH_HISTORY_PLACEHOLDER			"/MenuBar/Other Menus/Go/History Placeholder"
-
-#define RESPONSE_FORGET		1000
 #define MENU_ITEM_MAX_WIDTH_CHARS 32
 
 enum {
@@ -555,42 +552,6 @@ action_forward_callback (GtkAction *action,
 {
 	nautilus_window_back_or_forward (NAUTILUS_WINDOW (user_data), 
 					 FALSE, 0, nautilus_event_should_open_in_new_tab ());
-}
-
-static void
-forget_history_if_yes (GtkDialog *dialog, int response, gpointer callback_data)
-{
-	if (response == RESPONSE_FORGET) {
-		nautilus_forget_history ();
-	}
-	gtk_widget_destroy (GTK_WIDGET (dialog));
-}
-
-static void
-forget_history_if_confirmed (NautilusWindow *window)
-{
-	GtkDialog *dialog;
-
-	dialog = eel_create_question_dialog (_("Are you sure you want to clear the list "
-					       "of locations you have visited?"),
-					     NULL,
-					     GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-					     GTK_STOCK_CLEAR, RESPONSE_FORGET,
-					     GTK_WINDOW (window));
-
-	gtk_widget_show (GTK_WIDGET (dialog));
-	
-	g_signal_connect (dialog, "response",
-			  G_CALLBACK (forget_history_if_yes), NULL);
-
-	gtk_dialog_set_default_response (dialog, GTK_RESPONSE_CANCEL);
-}
-
-static void
-action_clear_history_callback (GtkAction *action, 
-			       gpointer user_data) 
-{
-	forget_history_if_confirmed (NAUTILUS_WINDOW (user_data));
 }
 
 static void
@@ -1041,9 +1002,6 @@ static const GtkActionEntry main_entries[] = {
   /* name, stock id, label */  { "Go to Location", NULL, N_("_Location..."),
                                  "<control>L", N_("Specify a location to open"),
                                  G_CALLBACK (action_go_to_location_callback) },
-  /* name, stock id, label */  { "Clear History", NULL, N_("Clea_r History"),
-                                 NULL, N_("Clear contents of Go menu and Back/Forward lists"),
-                                 G_CALLBACK (action_clear_history_callback) },
   /* name, stock id, label */  { "SplitViewNextPane", NULL, N_("S_witch to Other Pane"),
 				 "F6", N_("Move focus to the other pane in a split view window"),
 				 G_CALLBACK (action_split_view_switch_next_pane_callback) },
