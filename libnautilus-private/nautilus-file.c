@@ -5831,9 +5831,6 @@ nautilus_file_get_size_as_string_with_real_size (NautilusFile *file)
 {
 	guint item_count;
 	gboolean count_unreadable;
-	char * formated;
-	char * formated_plus_real;
-	char * real_size;
 
 	if (file == NULL) {
 		return NULL;
@@ -5852,13 +5849,7 @@ nautilus_file_get_size_as_string_with_real_size (NautilusFile *file)
 		return NULL;
 	}
 
-	formated = g_format_size (file->details->size);
-	/* Do this in a separate stage so that we don't have to put G_GUINT64_FORMAT in the translated string */
-	real_size = g_strdup_printf (_("%"G_GUINT64_FORMAT), (guint64) file->details->size);
-	formated_plus_real = g_strdup_printf (_("%s (%s bytes)"), formated, real_size);
-	g_free (real_size);
-	g_free (formated);
-	return formated_plus_real;
+	return g_format_size_full (file->details->size, G_FORMAT_SIZE_LONG_FORMAT);
 }
 
 
