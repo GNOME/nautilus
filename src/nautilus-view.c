@@ -391,7 +391,7 @@ real_get_backing_uri (NautilusView *view)
  * nautilus_view_get_backing_uri:
  *
  * Returns the URI for the target location of new directory, new file, new
- * link, new launcher, and paste operations.
+ * link and paste operations.
  */
 
 char *
@@ -2108,30 +2108,6 @@ action_new_empty_file_callback (GtkAction *action,
 }
 
 static void
-action_new_launcher_callback (GtkAction *action,
-			      gpointer callback_data)
-{
-	char *parent_uri;
-	NautilusView *view;
-	GtkWindow *window;
-
-	g_assert (NAUTILUS_IS_VIEW (callback_data));
-
-	view = NAUTILUS_VIEW (callback_data);
-
-	parent_uri = nautilus_view_get_backing_uri (view);
-
-	window = nautilus_view_get_containing_window (view);
-	DEBUG ("Create new launcher in window=%p: %s", window, parent_uri);
-	nautilus_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (view)),
-						  "gnome-desktop-item-edit",
-						  FALSE,
-						  "--create-new", parent_uri, NULL);
-
-	g_free (parent_uri);
-}
-
-static void
 action_properties_callback (GtkAction *action,
 			    gpointer callback_data)
 {
@@ -2208,32 +2184,6 @@ all_selected_items_in_trash (NautilusView *view)
 	nautilus_file_list_free (selection);
 
 	return result;
-}
-
-static gboolean
-we_are_in_vfolder_desktop_dir (NautilusView *view)
-{
-	NautilusFile *file;
-	char *mime_type;
-
-	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), FALSE);
-
-	if (view->details->model == NULL) {
-		return FALSE;
-	}
-
-	file = nautilus_directory_get_corresponding_file (view->details->model);
-	mime_type = nautilus_file_get_mime_type (file);
-	nautilus_file_unref (file);
-
-	if (mime_type != NULL
-	    && strcmp (mime_type, "x-directory/vfolder-desktop") == 0) {
-		g_free (mime_type);
-		return TRUE;
-	} else {
-		g_free (mime_type);
-		return FALSE;
-	}
 }
 
 static void
@@ -6979,10 +6929,6 @@ static const GtkActionEntry directory_view_entries[] = {
   /* label, accelerator */       N_("_Empty Document"), NULL,
   /* tooltip */                  N_("Create a new empty document inside this folder"),
 				 G_CALLBACK (action_new_empty_file_callback) },
-  /* name, stock id */         { "New Launcher", NULL,
-  /* label, accelerator */       N_("Create L_auncher..."), NULL,
-  /* tooltip */                  N_("Create a new launcher"),
-				 G_CALLBACK (action_new_launcher_callback) },
   /* name, stock id */         { "Open", NULL,
   /* label, accelerator */       N_("_Open"), "<control>o",
   /* tooltip */                  N_("Open the selected item in this window"),
@@ -8296,8 +8242,6 @@ real_update_menus (NautilusView *view)
 	gboolean can_link_files;
 	gboolean can_duplicate_files;
 	gboolean show_separate_delete_command;
-	gboolean vfolder_directory;
-	gboolean disable_command_line;
 	gboolean show_open_alternate;
 	gboolean show_open_in_new_tab;
 	gboolean can_open;
@@ -8331,8 +8275,6 @@ real_update_menus (NautilusView *view)
 	can_duplicate_files = can_create_files && can_copy_files;
 	can_link_files = can_create_files && can_copy_files;
 	
-	vfolder_directory = we_are_in_vfolder_desktop_dir (view);
-
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      NAUTILUS_ACTION_RENAME);
 	/* rename sensitivity depending on selection */
@@ -8597,12 +8539,6 @@ real_update_menus (NautilusView *view)
 	gtk_action_set_sensitive (action, can_copy_files);
 
 	real_update_paste_menu (view, selection, selection_count);
-
-	disable_command_line = g_settings_get_boolean (gnome_lockdown_preferences, NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE);
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_NEW_LAUNCHER);
-	gtk_action_set_visible (action, vfolder_directory && !disable_command_line);
-	gtk_action_set_sensitive (action, can_create_files);
 
 	real_update_menus_volumes (view, selection, selection_count);
 

@@ -145,7 +145,7 @@ struct NautilusViewClass {
 	/* get_backing uri is a function pointer for subclasses to
 	 * override. Subclasses may replace it with a function that
 	 * returns the URI for the location where to create new folders,
-	 * files, links, launchers, and paste the clipboard to.
+	 * files, links and paste the clipboard to.
 	 */
 
 	char *	(* get_backing_uri)		(NautilusView *view);

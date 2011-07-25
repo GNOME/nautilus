@@ -646,23 +646,6 @@ nautilus_desktop_icon_view_init (NautilusDesktopIconView *desktop_icon_view)
 }
 
 static void
-action_new_launcher_callback (GtkAction *action, gpointer data)
-{
-	char *desktop_directory;
-
-        g_assert (NAUTILUS_VIEW (data));
-
-	desktop_directory = nautilus_get_desktop_directory ();
-
-	nautilus_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (data)),
-						  "gnome-desktop-item-edit",
-						  FALSE,
-						  "--create-new", desktop_directory, NULL);
-	g_free (desktop_directory);
-
-}
-
-static void
 action_change_background_callback (GtkAction *action, 
 				   gpointer data)
 {
@@ -717,7 +700,6 @@ real_update_menus (NautilusView *view)
 {
 	NautilusDesktopIconView *desktop_view;
 	char *label;
-	gboolean disable_command_line;
 	gboolean include_empty_trash;
 	GtkAction *action;
 
@@ -726,13 +708,6 @@ real_update_menus (NautilusView *view)
 	NAUTILUS_VIEW_CLASS (nautilus_desktop_icon_view_parent_class)->update_menus (view);
 
 	desktop_view = NAUTILUS_DESKTOP_ICON_VIEW (view);
-
-	/* New Launcher */
-	disable_command_line = g_settings_get_boolean (gnome_lockdown_preferences, NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE);
-	action = gtk_action_group_get_action (desktop_view->details->desktop_action_group,
-					      NAUTILUS_ACTION_NEW_LAUNCHER_DESKTOP);
-	gtk_action_set_visible (action,
-				!disable_command_line);
 
 	/* Empty Trash */
 	include_empty_trash = trash_link_is_selection (view);
@@ -750,13 +725,6 @@ real_update_menus (NautilusView *view)
 }
 
 static const GtkActionEntry desktop_view_entries[] = {
-	/* name, stock id */
-	{ "New Launcher Desktop", NULL,
-	  /* label, accelerator */
-	  N_("Create L_auncher..."), NULL,
-	  /* tooltip */
-	  N_("Create a new launcher"),
-	  G_CALLBACK (action_new_launcher_callback) },
 	/* name, stock id */
 	{ "Change Background", NULL,
 	  /* label, accelerator */
