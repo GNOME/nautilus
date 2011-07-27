@@ -481,7 +481,7 @@ get_types_table (void)
 		for (l = format_list; l; l = l->next) {
 			types = gdk_pixbuf_format_get_mime_types (l->data);
 
-			for (i = 0; i < G_N_ELEMENTS (types); i++) {
+			for (i = 0; types[i] != NULL; i++) {
 				g_hash_table_insert (image_mime_types,
 						     types [i],
 						     GUINT_TO_POINTER (1));
