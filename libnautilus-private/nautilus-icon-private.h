@@ -310,9 +310,6 @@ char *        nautilus_icon_container_get_icon_drop_target_uri    (NautilusIconC
 void          nautilus_icon_container_update_icon                 (NautilusIconContainer *container,
 								   NautilusIcon          *icon);
 gboolean      nautilus_icon_container_has_stored_icon_positions   (NautilusIconContainer *container);
-gboolean      nautilus_icon_container_emit_preview_signal         (NautilusIconContainer *view,
-								   NautilusIcon          *icon,
-								   gboolean               start_flag);
 gboolean      nautilus_icon_container_scroll                      (NautilusIconContainer *container,
 								   int                    delta_x,
 								   int                    delta_y);

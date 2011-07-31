@@ -251,7 +251,6 @@ enum {
 	HANDLE_URI_LIST,
 	HANDLE_TEXT,
 	HANDLE_RAW,
-	PREVIEW,
 	SELECTION_CHANGED,
 	ICON_ADDED,
 	ICON_REMOVED,
@@ -5986,17 +5985,6 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                NULL, NULL,
 		                g_cclosure_marshal_VOID__VOID,
 		                G_TYPE_NONE, 0);
-	signals[PREVIEW]
-		= g_signal_new ("preview",
-		                G_TYPE_FROM_CLASS (class),
-		                G_SIGNAL_RUN_LAST,
-		                G_STRUCT_OFFSET (NautilusIconContainerClass,
-						 preview),
-		                NULL, NULL,
-		                g_cclosure_marshal_generic,
-		                G_TYPE_INT, 2,
-				G_TYPE_POINTER,
-				G_TYPE_BOOLEAN);
 	signals[BAND_SELECT_STARTED]
 		= g_signal_new ("band_select_started",
 		                G_TYPE_FROM_CLASS (class),
@@ -8407,28 +8395,6 @@ end_renaming_mode (NautilusIconContainer *container, gboolean commit)
 
 	g_free (container->details->original_text);
 
-}
-
-/* emit preview signal, called by the canvas item */
-gboolean
-nautilus_icon_container_emit_preview_signal (NautilusIconContainer *icon_container,
-					     NautilusIcon *icon,
-					     gboolean start_flag)
-{
-	gboolean result;
-	
-	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (icon_container), FALSE);
-	g_return_val_if_fail (icon != NULL, FALSE);
-	g_return_val_if_fail (start_flag == FALSE || start_flag == TRUE, FALSE);
-	
-	result = FALSE;
-	g_signal_emit (icon_container,
-			 signals[PREVIEW], 0,
-			 icon->data,
-			 start_flag,
-			 &result);
-	
-	return result;
 }
 
 gboolean

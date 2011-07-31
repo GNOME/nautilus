@@ -69,8 +69,6 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#include "nautilus-audio-mime-types.h"
-
 #define POPUP_PATH_ICON_APPEARANCE		"/selection/Icon Appearance Items"
 
 enum 
@@ -112,11 +110,6 @@ struct NautilusIconViewDetails
 	GtkActionGroup *icon_action_group;
 	guint icon_merge_id;
 	
-	int audio_preview_timeout;
-	NautilusFile *audio_preview_file;
-	int audio_preview_child_watch;
-	GPid audio_preview_child_pid;
-
 	gboolean filter_by_screen;
 	int num_screens;
 
@@ -191,9 +184,6 @@ static gboolean             set_sort_reversed                         (NautilusI
 								       gboolean              new_value,
 								       gboolean              set_metadata);
 static void                 switch_to_manual_layout                   (NautilusIconView     *view);
-static void                 preview_audio                             (NautilusIconView     *icon_view,
-								       NautilusFile         *file,
-								       gboolean              start_flag);
 static void                 update_layout_menus                       (NautilusIconView     *view);
 static NautilusFileSortType get_default_sort_order                    (NautilusFile         *file,
 								       gboolean             *reversed);
@@ -220,9 +210,6 @@ nautilus_icon_view_destroy (GtkWidget *object)
 					     icon_view->details->clipboard_handler_id);
 		icon_view->details->clipboard_handler_id = 0;
 	}
-
-	/* kill any sound preview process that is ongoing */
-	preview_audio (icon_view, NULL, FALSE);
 
 	if (icon_view->details->icons_not_positioned) {
 		nautilus_file_list_free (icon_view->details->icons_not_positioned);
@@ -523,10 +510,6 @@ nautilus_icon_view_remove_file (NautilusView *view, NautilusFile *file, Nautilus
 
 	if (nautilus_icon_container_remove (get_icon_container (icon_view),
 					    NAUTILUS_ICON_CONTAINER_ICON_DATA (file))) {
-		if (file == icon_view->details->audio_preview_file) {
-			preview_audio (icon_view, NULL, FALSE);
-		}
-
 		nautilus_file_unref (file);
 	}
 }
@@ -1023,9 +1006,6 @@ nautilus_icon_view_begin_loading (NautilusView *view)
 						 !eel_uri_is_search (uri));
 
 	g_free (uri);
-
-	/* kill any sound preview process that is ongoing */
-	preview_audio (icon_view, NULL, FALSE);
 
 	/* Set up the zoom level from the metadata. */
 	if (nautilus_view_supports_zooming (NAUTILUS_VIEW (icon_view))) {
@@ -1792,255 +1772,6 @@ band_select_ended_callback (NautilusIconContainer *container,
 	nautilus_view_stop_batching_selection_changes (NAUTILUS_VIEW (icon_view));
 }
 
-/* handle the preview signal by inspecting the mime type.  For now, we only preview local sound files. */
-
-static char **
-get_preview_argv (char *uri)
-{
-	char *command;
-	char **argv;
-	int i;
-
-	command = g_find_program_in_path ("totem-audio-preview");
-	if (command) {
-		argv = g_new (char *, 3);
-		argv[0] = command;
-		argv[1] = g_strdup (uri);
-		argv[2] = NULL;
-
-		return argv;
-	}
-		
-	command = g_find_program_in_path ("gst-launch-0.10");
-	if (command) {
-		argv = g_new (char *, 10);
-		i = 0;
-		argv[i++] = command;
-		argv[i++] = g_strdup ("playbin");
-		argv[i++] = g_strconcat ("uri=", uri, NULL);
-		/* do not display videos */
-		argv[i++] = g_strdup ("current-video=-1");
-		argv[i++] = NULL;
-		return argv;
-	}
-
-	return NULL;
-}
-
-static void
-audio_child_died (GPid     pid,
-		  gint     status,
-		  gpointer data)
-{
-	NautilusIconView *icon_view;
-
-	icon_view = NAUTILUS_ICON_VIEW (data);
-
-	icon_view->details->audio_preview_child_watch = 0;
-	icon_view->details->audio_preview_child_pid = 0;
-}
-
-/* here's the timer task that actually plays the file using mpg123, ogg123 or play. */
-/* FIXME bugzilla.gnome.org 41258: we should get the application from our mime-type stuff */
-static gboolean
-play_file (gpointer callback_data)
-{
-	NautilusFile *file;
-	NautilusIconView *icon_view;
-	GPid child_pid;
-	char **argv;
-	GError *error;
-	char *uri;
-	GFile *gfile;
-	char *path;
-
-	icon_view = NAUTILUS_ICON_VIEW (callback_data);
-	
-	/* Stop timeout */
-	icon_view->details->audio_preview_timeout = 0;
-
-	file = icon_view->details->audio_preview_file;
-	gfile = nautilus_file_get_location (file);
-	path = g_file_get_path (gfile);
-
-	/* if we have a local path, use that instead of the native URI.
-	 * this can be useful for special GVfs mounts, such as cdda://
-	 */
-	if (path) {
-		uri = g_filename_to_uri (path, NULL, NULL);
-	} else {
-		uri = nautilus_file_get_uri (file);
-	}
-
-	g_object_unref (gfile);
-	g_free (path);
-
-	argv = get_preview_argv (uri);
-	g_free (uri);
-	if (argv == NULL) {
-		return FALSE;
-	}
-
-	error = NULL;
-	if (!g_spawn_async_with_pipes (NULL,
-				       argv,
-				       NULL, 
-				       G_SPAWN_STDOUT_TO_DEV_NULL | G_SPAWN_STDERR_TO_DEV_NULL,
-				       NULL,
-				       NULL /* user_data */,
-				       &child_pid,
-				       NULL, NULL, NULL,
-				       &error)) {
-		g_strfreev (argv);
-		g_warning ("Error spawning sound preview: %s\n", error->message);
-		g_error_free (error);
-		return FALSE;
-	}
-	g_strfreev (argv);
-
-	icon_view->details->audio_preview_child_watch =
-		g_child_watch_add (child_pid,
-				   audio_child_died, NULL);
-	icon_view->details->audio_preview_child_pid = child_pid;
-	
-	return FALSE;
-}
-
-/* FIXME bugzilla.gnome.org 42530: Hardcoding this here sucks. We should be using components
- * for open ended things like this.
- */
-
-/* this routine is invoked from the preview signal handler to preview a sound file.  We
-   want to wait a suitable delay until we actually do it, so set up a timer task to actually
-   start playing.  If we move out before the task files, we remove it. */
-
-static void
-preview_audio (NautilusIconView *icon_view, NautilusFile *file, gboolean start_flag)
-{		
-	/* Stop current audio playback */
-	if (icon_view->details->audio_preview_child_pid != 0) {
-		kill (icon_view->details->audio_preview_child_pid, SIGTERM);
-		g_source_remove (icon_view->details->audio_preview_child_watch);
-		waitpid (icon_view->details->audio_preview_child_pid, NULL, 0);
-		icon_view->details->audio_preview_child_pid = 0;
-	}
-	
-	if (icon_view->details->audio_preview_timeout != 0) {
-		g_source_remove (icon_view->details->audio_preview_timeout);
-		icon_view->details->audio_preview_timeout = 0;
-	}
-			
-	if (start_flag) {
-		icon_view->details->audio_preview_file = file;
-		icon_view->details->audio_preview_timeout = g_timeout_add (1000, play_file, icon_view);
-	}
-}
-
-static gboolean
-sound_preview_type_supported (NautilusFile *file)
-{
-	char *mime_type;
-	guint i;
-	
-	mime_type = nautilus_file_get_mime_type (file);
-	if (mime_type == NULL) {
- 		return FALSE;
-	}
-	for (i = 0; i < G_N_ELEMENTS (audio_mime_types); i++) {
-		if (g_content_type_is_a (mime_type, audio_mime_types[i])) {
-			g_free (mime_type);
-			return TRUE;
-		}
-	}
-	
-	g_free (mime_type);
-	return FALSE;
-}
-
-
-static gboolean
-should_preview_sound (NautilusFile *file)
-{
-	GFile *location;
-	GFilesystemPreviewType use_preview;
-	int preview_sound_pref;
-
-	use_preview = nautilus_file_get_filesystem_use_preview (file);
-	preview_sound_pref = g_settings_get_enum (nautilus_preferences,
-						  NAUTILUS_PREFERENCES_PREVIEW_SOUND);
-
-	location = nautilus_file_get_location (file);
-	if (g_file_has_uri_scheme (location, "burn")) {
-		g_object_unref (location);
-		return FALSE;
-	}
-	g_object_unref (location);
-
-	/* Check user performance preference */	
-	if (preview_sound_pref == NAUTILUS_SPEED_TRADEOFF_NEVER) {
-		return FALSE;
-	}
-		
-	if (preview_sound_pref == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
-		if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_NEVER) {
-			return FALSE;
-		} else {
-			return TRUE;
-		}
-	}
-	
-	if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_NEVER) {
-		/* file system says to never preview anything */
-		return FALSE;
-	} else if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_IF_LOCAL) {
-		/* file system says we should treat file as if it's local */
-		return TRUE;
-	} else {
-		/* only local files */
-		return nautilus_file_is_local (file);
-	}
-}
-
-static int
-icon_container_preview_callback (NautilusIconContainer *container,
-				 NautilusFile *file,
-				 gboolean start_flag,
-				 NautilusIconView *icon_view)
-{
-	int result;
-	char *file_name, *message;
-		
-	result = 0;
-	
-	/* preview files based on the mime_type. */
-	/* at first, we just handle sounds */
-	if (should_preview_sound (file)) {
-		if (sound_preview_type_supported (file)) {
-			result = 1;
-			preview_audio (icon_view, file, start_flag);
-		}
-	}
-
-	/* Display file name in status area at low zoom levels, since
-	 * the name is not displayed or hard to read in the icon view.
-	 */
-	if (nautilus_icon_view_get_zoom_level (NAUTILUS_VIEW (icon_view)) <= NAUTILUS_ZOOM_LEVEL_SMALLER) {
-		if (start_flag) {
-			file_name = nautilus_file_get_display_name (file);
-			message = g_strdup_printf (_("pointing at \"%s\""), file_name);
-			g_free (file_name);
-			nautilus_window_slot_set_status
-				(nautilus_view_get_nautilus_window_slot (NAUTILUS_VIEW (icon_view)),
-				 message, NULL);
-			g_free (message);
-		} else {
-			nautilus_view_display_selection_info (NAUTILUS_VIEW(icon_view));
-		}
-	}
-	
-	return result;
-}
-
 static void
 renaming_icon_callback (NautilusIconContainer *container,
 			GtkWidget *widget,
@@ -2601,8 +2332,6 @@ create_icon_container (NautilusIconView *icon_view)
 				 G_CALLBACK (get_stored_icon_position_callback), icon_view, 0);
 	g_signal_connect_object (icon_container, "layout_changed",
 				 G_CALLBACK (layout_changed_callback), icon_view, 0);
-	g_signal_connect_object (icon_container, "preview",
-				 G_CALLBACK (icon_container_preview_callback), icon_view, 0);
 	g_signal_connect_object (icon_container, "renaming_icon",
 				 G_CALLBACK (renaming_icon_callback), icon_view, 0);
 	g_signal_connect_object (icon_container, "icon_stretch_started",

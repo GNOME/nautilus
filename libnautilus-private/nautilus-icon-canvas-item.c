@@ -101,9 +101,6 @@ struct NautilusIconCanvasItemDetails {
 	 * text_height_for_layout will always be equal to text_height.
 	 * Used for the last line of a line-wise icon layout. */
 	guint entire_text : 1;
-	
-	/* preview state */
-	guint is_active : 1;
 
     	/* Highlight state. */
    	guint is_highlighted_for_selection : 1;
@@ -113,7 +110,6 @@ struct NautilusIconCanvasItemDetails {
 	guint show_stretch_handles : 1;
 	guint is_prelit : 1;
 
-	guint rendered_is_active : 1;
 	guint rendered_is_highlighted_for_selection : 1;
 	guint rendered_is_highlighted_for_drop : 1;
 	guint rendered_is_highlighted_for_clipboard : 1;
@@ -1341,9 +1337,7 @@ static GdkPixbuf *
 real_map_pixbuf (NautilusIconCanvasItem *icon_item)
 {
 	EelCanvas *canvas;
-	char *audio_filename;
-	GdkPixbuf *temp_pixbuf, *old_pixbuf, *audio_pixbuf;
-	int emblem_size;
+	GdkPixbuf *temp_pixbuf, *old_pixbuf;
 	
 	temp_pixbuf = icon_item->details->pixbuf;
 	canvas = EEL_CANVAS_ITEM(icon_item)->canvas;
@@ -1356,45 +1350,6 @@ real_map_pixbuf (NautilusIconCanvasItem *icon_item)
 
 		temp_pixbuf = eel_create_spotlight_pixbuf (temp_pixbuf);
 		g_object_unref (old_pixbuf);
-
-		/* FIXME bugzilla.gnome.org 42471: This hard-wired image is inappropriate to
-		 * this level of code, which shouldn't know that the
-		 * preview is audio, nor should it have an icon
-		 * hard-wired in.
-		 */
-
-		/* if the icon is currently being previewed, superimpose an image to indicate that */
-		/* audio is the only kind of previewing right now, so this code isn't as general as it could be */
-		if (icon_item->details->is_active) {
-			emblem_size = nautilus_icon_get_emblem_size_for_icon_size (gdk_pixbuf_get_width (temp_pixbuf));
-			/* Load the audio symbol. */
-			audio_filename = nautilus_pixmap_file ("audio.svg");
-			if (audio_filename != NULL) {
-				audio_pixbuf = gdk_pixbuf_new_from_file_at_scale (audio_filename,
-										  emblem_size, emblem_size,
-										  TRUE,
-										  NULL);
-			} else {
-				audio_pixbuf = NULL;
-			}
-			
-			/* Composite it onto the icon. */
-			if (audio_pixbuf != NULL) {
-				gdk_pixbuf_composite
-					(audio_pixbuf,
-					 temp_pixbuf,
-					 0, 0,
-					 gdk_pixbuf_get_width (audio_pixbuf),
-					 gdk_pixbuf_get_height (audio_pixbuf),
-					 0, 0,
-					 1.0, 1.0,
-					 GDK_INTERP_BILINEAR, 0xFF);
-				
-				g_object_unref (audio_pixbuf);
-			}
-			
-			g_free (audio_filename);
-		}
 	}
 
 	if (icon_item->details->is_highlighted_for_selection
@@ -1419,7 +1374,6 @@ static GdkPixbuf *
 map_pixbuf (NautilusIconCanvasItem *icon_item)
 {
 	if (!(icon_item->details->rendered_pixbuf != NULL
-	      && icon_item->details->rendered_is_active == icon_item->details->is_active
 	      && icon_item->details->rendered_is_prelit == icon_item->details->is_prelit
 	      && icon_item->details->rendered_is_highlighted_for_selection == icon_item->details->is_highlighted_for_selection
 	      && icon_item->details->rendered_is_highlighted_for_drop == icon_item->details->is_highlighted_for_drop
@@ -1429,7 +1383,6 @@ map_pixbuf (NautilusIconCanvasItem *icon_item)
 			g_object_unref (icon_item->details->rendered_pixbuf);
 		}
 		icon_item->details->rendered_pixbuf = real_map_pixbuf (icon_item);
-		icon_item->details->rendered_is_active = icon_item->details->is_active;
 		icon_item->details->rendered_is_prelit = icon_item->details->is_prelit;
 		icon_item->details->rendered_is_highlighted_for_selection = icon_item->details->is_highlighted_for_selection;
 		icon_item->details->rendered_is_highlighted_for_drop = icon_item->details->is_highlighted_for_drop;
@@ -1697,20 +1650,6 @@ nautilus_icon_canvas_item_event (EelCanvasItem *item, GdkEvent *event)
 
 				icon_item->details->cursor_window = g_object_ref (cursor_window);
 			}
-
-			/* FIXME bugzilla.gnome.org 42473: 
-			 * We should emit our own signal here,
-			 * not one from the container; it could hook
-			 * up to that signal and emit one of its
-			 * own. Doing it this way hard-codes what
-			 * "user_data" is. Also, the two signals
-			 * should be separate. The "unpreview" signal
-			 * does not have a return value.
-			 */
-			icon_item->details->is_active = nautilus_icon_container_emit_preview_signal
-				(NAUTILUS_ICON_CONTAINER (item->canvas),
-				 NAUTILUS_ICON_CANVAS_ITEM (item)->user_data,
-				 TRUE);
 		}
 		return TRUE;
 		
@@ -1721,21 +1660,7 @@ nautilus_icon_canvas_item_event (EelCanvasItem *item, GdkEvent *event)
 			 * higlighted for drop. The latter gets turned on
 			 * by the drag&drop motion callback.
 			 */
-			/* FIXME bugzilla.gnome.org 42473: 
-			 * We should emit our own signal here,
-			 * not one from the containe; it could hook up
-			 * to that signal and emit one of its
-			 * ownr. Doing it this way hard-codes what
-			 * "user_data" is. Also, the two signals
-			 * should be separate. The "unpreview" signal
-			 * does not have a return value.
-			 */
-			nautilus_icon_container_emit_preview_signal
-				(NAUTILUS_ICON_CONTAINER (item->canvas),
-				 NAUTILUS_ICON_CANVAS_ITEM (item)->user_data,
-				 FALSE);			
 			icon_item->details->is_prelit = FALSE;
-			icon_item->details->is_active = 0;			
 			icon_item->details->is_highlighted_for_drop = FALSE;
 			nautilus_icon_canvas_item_invalidate_label_size (icon_item);
 			eel_canvas_item_request_update (item);
