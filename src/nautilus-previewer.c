@@ -175,3 +175,26 @@ nautilus_previewer_call_show_file (NautilusPreviewer *self,
                           previewer_show_file_ready_cb,
                           g_object_ref (self));
 }
+
+void
+nautilus_previewer_call_close (NautilusPreviewer *self)
+{
+  if (self->priv->connection == NULL) {
+    g_printerr ("No DBus connection available");
+    return;
+  }
+
+  /* don't autostart the previewer if it's not running */
+  g_dbus_connection_call (self->priv->connection,
+                          PREVIEWER_DBUS_NAME,
+                          PREVIEWER_DBUS_PATH,
+                          PREVIEWER_DBUS_IFACE,
+                          "Close",
+                          NULL,
+                          NULL,
+                          G_DBUS_CALL_FLAGS_NO_AUTO_START,
+                          -1,
+                          NULL,
+                          previewer_close_ready_cb,
+                          g_object_ref (self));
+}

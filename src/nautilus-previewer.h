@@ -60,6 +60,7 @@ void nautilus_previewer_call_show_file (NautilusPreviewer *previewer,
                                         const gchar *uri,
                                         guint xid,
 					gboolean close_if_already_visible);
+void nautilus_previewer_call_close (NautilusPreviewer *previewer);
 
 G_END_DECLS
 
