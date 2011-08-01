@@ -39,6 +39,7 @@
 #include "nautilus-icon-view.h"
 #include "nautilus-image-properties-page.h"
 #include "nautilus-list-view.h"
+#include "nautilus-previewer.h"
 #include "nautilus-progress-ui-handler.h"
 #include "nautilus-self-check-functions.h"
 #include "nautilus-window.h"
@@ -1143,6 +1144,9 @@ nautilus_application_startup (GApplication *app)
 	 */
 	G_APPLICATION_CLASS (nautilus_application_parent_class)->startup (app);
 
+	/* initialize the previewer singleton */
+	nautilus_previewer_get_singleton ();
+
 	/* create an undo manager */
 	self->undo_manager = nautilus_undo_manager_new ();
 
@@ -1207,10 +1211,27 @@ nautilus_application_quit_mainloop (GApplication *app)
 }
 
 static void
+nautilus_application_window_removed (GtkApplication *app,
+				     GtkWindow *window)
+{
+	NautilusPreviewer *previewer;
+
+	/* chain to parent */
+	GTK_APPLICATION_CLASS (nautilus_application_parent_class)->window_removed (app, window);
+
+	/* if this was the last window, close the previewer */
+	if (g_list_length (gtk_application_get_windows (app)) == 0) {
+		previewer = nautilus_previewer_get_singleton ();
+		nautilus_previewer_call_close (previewer);
+	}
+}
+
+static void
 nautilus_application_class_init (NautilusApplicationClass *class)
 {
         GObjectClass *object_class;
 	GApplicationClass *application_class;
+	GtkApplicationClass *gtkapp_class;
 
         object_class = G_OBJECT_CLASS (class);
 	object_class->constructor = nautilus_application_constructor;
@@ -1221,6 +1242,9 @@ nautilus_application_class_init (NautilusApplicationClass *class)
 	application_class->quit_mainloop = nautilus_application_quit_mainloop;
 	application_class->open = nautilus_application_open;
 	application_class->local_command_line = nautilus_application_local_command_line;
+
+	gtkapp_class = GTK_APPLICATION_CLASS (class);
+	gtkapp_class->window_removed = nautilus_application_window_removed;
 
 	g_type_class_add_private (class, sizeof (NautilusApplication));
 }
