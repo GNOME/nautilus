@@ -37,9 +37,7 @@ G_DEFINE_TYPE (NautilusPreviewer, nautilus_previewer, G_TYPE_OBJECT);
 static NautilusPreviewer *singleton = NULL;
 
 struct _NautilusPreviewerPriv {
-  GDBusProxy *proxy;
-
-  GVariant *pending_variant;
+  GDBusConnection *connection;
 };
 
 static void
@@ -49,7 +47,7 @@ nautilus_previewer_dispose (GObject *object)
 
   DEBUG ("%p", self);
 
-  g_clear_object (&self->priv->proxy);
+  g_clear_object (&self->priv->connection);
 
   G_OBJECT_CLASS (nautilus_previewer_parent_class)->dispose (object);
 }
@@ -76,8 +74,18 @@ nautilus_previewer_constructor (GType type,
 static void
 nautilus_previewer_init (NautilusPreviewer *self)
 {
+  GError *error = NULL;
+
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, NAUTILUS_TYPE_PREVIEWER,
                                             NautilusPreviewerPriv);
+
+  self->priv->connection = g_bus_get_sync (G_BUS_TYPE_SESSION,
+                                           NULL, &error);
+
+  if (error != NULL) {
+    g_printerr ("Unable to initialize DBus connection: %s", error->message);
+    return;
+  }
 }
 
 static void
@@ -100,8 +108,8 @@ previewer_show_file_ready_cb (GObject *source,
   NautilusPreviewer *self = user_data;
   GError *error = NULL;
 
-  g_dbus_proxy_call_finish (self->priv->proxy,
-                            res, &error);
+  g_dbus_connection_call_finish (self->priv->connection,
+                                 res, &error);
 
   if (error != NULL) {
     DEBUG ("Unable to call ShowFile on NautilusPreviewer: %s",
@@ -113,58 +121,23 @@ previewer_show_file_ready_cb (GObject *source,
 }
 
 static void
-real_call_show_file (NautilusPreviewer *self,
-                     GVariant *args)
+previewer_close_ready_cb (GObject *source,
+                          GAsyncResult *res,
+                          gpointer user_data)
 {
-  gchar *variant_str;
-
-  variant_str = g_variant_print (args, TRUE);
-  DEBUG ("Calling ShowFile with params %s", variant_str);
-
-  g_dbus_proxy_call (self->priv->proxy,
-                     "ShowFile",
-                     args,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     -1,
-                     NULL,
-                     previewer_show_file_ready_cb,
-                     self);
-
-  g_free (variant_str);
-}
-
-static void
-previewer_proxy_async_ready_cb (GObject *source,
-                                GAsyncResult *res,
-                                gpointer user_data)
-{
-  GDBusProxy *proxy;
   NautilusPreviewer *self = user_data;
   GError *error = NULL;
 
-  proxy = g_dbus_proxy_new_finish (res, &error);
+  g_dbus_connection_call_finish (self->priv->connection,
+                                 res, &error);
 
   if (error != NULL) {
-    g_warning ("Unable to create a dbus proxy for NautilusPreviewer: %s",
-               error->message);
+    DEBUG ("Unable to call Close on NautilusPreviewer: %s",
+           error->message);
     g_error_free (error);
-    g_object_unref (self);
-
-    return;
   }
 
-  DEBUG ("Got previewer DBus proxy");
-
-  self->priv->proxy = proxy;
-
-  if (self->priv->pending_variant != NULL) {
-    real_call_show_file (self, self->priv->pending_variant);
-
-    g_variant_unref (self->priv->pending_variant);
-    self->priv->pending_variant = NULL;
-  } else {
-    g_object_unref (self);
-  }
+  g_object_unref (self);
 }
 
 NautilusPreviewer *
@@ -183,28 +156,22 @@ nautilus_previewer_call_show_file (NautilusPreviewer *self,
 
   variant = g_variant_new ("(sib)",
                            uri, xid, close_if_already_visible);
-  g_object_ref (self);
 
-  if (self->priv->proxy == NULL) {
-    /* if we already have a variant, don't call
-     * g_dbus_proxy_new_for_bus() again, but just change the pending
-     * argument to the new variant.
-     */
-    if (self->priv->pending_variant != NULL)
-      g_variant_unref (self->priv->pending_variant);
-    else
-      g_dbus_proxy_new_for_bus (G_BUS_TYPE_SESSION,
-                                G_DBUS_PROXY_FLAGS_NONE,
-                                NULL,
-                                PREVIEWER_DBUS_NAME,
-                                PREVIEWER_DBUS_PATH,
-                                PREVIEWER_DBUS_IFACE,
-                                NULL,
-                                previewer_proxy_async_ready_cb,
-                                self);
-
-    self->priv->pending_variant = g_variant_ref_sink (variant);
-  } else {
-    real_call_show_file (self, variant);
+  if (self->priv->connection == NULL) {
+    g_printerr ("No DBus connection available");
+    return;
   }
+
+  g_dbus_connection_call (self->priv->connection,
+                          PREVIEWER_DBUS_NAME,
+                          PREVIEWER_DBUS_PATH,
+                          PREVIEWER_DBUS_IFACE,
+                          "ShowFile",
+                          variant,
+                          NULL,
+                          G_DBUS_CALL_FLAGS_NONE,
+                          -1,
+                          NULL,
+                          previewer_show_file_ready_cb,
+                          g_object_ref (self));
 }
