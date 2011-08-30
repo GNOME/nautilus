@@ -158,7 +158,6 @@ typedef enum
 #define NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS "show-directory-item-counts"
 #define NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS	"show-image-thumbnails"
 #define NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT	"thumbnail-limit"
-#define NAUTILUS_PREFERENCES_PREVIEW_SOUND		"preview-sound"
 
 typedef enum
 {
