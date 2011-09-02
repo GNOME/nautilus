@@ -422,15 +422,29 @@ action_nautilus_manual_callback (GtkAction *action,
 	NautilusWindow *window;
 	GError *error;
 	GtkWidget *dialog;
+	const char* helpuri;
+	const char* name = gtk_action_get_name (action);
 
 	error = NULL;
 	window = NAUTILUS_WINDOW (user_data);
+
+	if (g_str_equal (name, "NautilusHelpSearch")) {
+		helpuri = "help:gnome-help/files-search";
+	} else if (g_str_equal (name,"NautilusHelpSort")) {
+		helpuri = "help:gnome-help/files-sort";
+	} else if (g_str_equal (name, "NautilusHelpLost")) {
+		helpuri = "help:gnome-help/files-lost";
+	} else if (g_str_equal (name, "NautilusHelpShare")) {
+		helpuri = "help:gnome-help/files-share";
+	} else {
+		helpuri = "help:gnome-help/files";
+	}
 
 	if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
 		nautilus_launch_application_from_command (gtk_window_get_screen (GTK_WINDOW (window)), "gnome-help", FALSE, NULL);
 	} else {
 		gtk_show_uri (gtk_window_get_screen (GTK_WINDOW (window)),
-			      "ghelp:gnome-help#files",
+			      helpuri,
 			      gtk_get_current_event_time (), &error);
 	}
 
@@ -925,9 +939,25 @@ static const GtkActionEntry main_entries[] = {
   /* label, accelerator */       N_("_Reload"), "<control>R",
   /* tooltip */                  N_("Reload the current location"),
                                  G_CALLBACK (action_reload_callback) },
-  /* name, stock id */         { "Nautilus Manual", GTK_STOCK_HELP,
-  /* label, accelerator */       N_("_Contents"), "F1",
+  /* name, stock id */         { "NautilusHelp", GTK_STOCK_HELP,
+  /* label, accelerator */       N_("_All Topics"), "F1",
   /* tooltip */                  N_("Display Nautilus help"),
+                                 G_CALLBACK (action_nautilus_manual_callback) },
+  /* name, stock id */         { "NautilusHelpSearch", NULL,
+  /* label, accelerator */       N_("Search for files"), NULL,
+  /* tooltip */                  N_("Locate files based on file name and type. Save your searches for later use."),
+                                 G_CALLBACK (action_nautilus_manual_callback) },
+  /* name, stock id */         { "NautilusHelpSort", NULL,
+  /* label, accelerator */       N_("Sort files and folders"), NULL,
+  /* tooltip */                  N_("Arrange files by name, size, type, or when they were changed."),
+                                 G_CALLBACK (action_nautilus_manual_callback) },
+  /* name, stock id */         { "NautilusHelpLost", NULL,
+  /* label, accelerator */       N_("Find a lost file"), NULL,
+  /* tooltip */                  N_("Follow these tips if you can't find a file you created or downloaded."),
+                                 G_CALLBACK (action_nautilus_manual_callback) },
+  /* name, stock id */         { "NautilusHelpShare", NULL,
+  /* label, accelerator */       N_("Share and transfer files"), NULL,
+  /* tooltip */                  N_("Easily transfer files to your contacts and devices from the file manager."),
                                  G_CALLBACK (action_nautilus_manual_callback) },
   /* name, stock id */         { "About Nautilus", GTK_STOCK_ABOUT,
   /* label, accelerator */       N_("_About"), NULL,

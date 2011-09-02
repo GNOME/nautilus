@@ -145,7 +145,7 @@ nautilus_bookmarks_window_response_callback (GtkDialog *dialog,
 		GError *error = NULL;
 
 		gtk_show_uri (gtk_window_get_screen (GTK_WINDOW (dialog)),
-			      "ghelp:gnome-help#nautilus-bookmarks-edit",
+			      "help:gnome-help/nautilus-bookmarks-edit",
 			      gtk_get_current_event_time (), &error);
 
 		if (error) {

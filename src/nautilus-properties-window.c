@@ -2347,7 +2347,8 @@ append_directory_contents_fields (NautilusPropertiesWindow *window,
 
 static GtkWidget *
 create_page_with_hbox (GtkNotebook *notebook,
-		       const char *title)
+		       const char *title,
+		       const char *help_uri)
 {
 	GtkWidget *hbox;
 
@@ -2359,13 +2360,15 @@ create_page_with_hbox (GtkNotebook *notebook,
 	gtk_container_set_border_width (GTK_CONTAINER (hbox), 12);
 	gtk_box_set_spacing (GTK_BOX (hbox), 12);
 	gtk_notebook_append_page (notebook, hbox, gtk_label_new (title));
+	g_object_set_data_full (G_OBJECT (hbox), "help-uri", g_strdup (help_uri), g_free);
 
 	return hbox;
 }
 
 static GtkWidget *
 create_page_with_vbox (GtkNotebook *notebook,
-		       const char *title)
+		       const char *title,
+		       const char *help_uri)
 {
 	GtkWidget *vbox;
 
@@ -2376,6 +2379,7 @@ create_page_with_vbox (GtkNotebook *notebook,
 	gtk_widget_show (vbox);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
 	gtk_notebook_append_page (notebook, vbox, gtk_label_new (title));
+	g_object_set_data_full (G_OBJECT (vbox), "help-uri", g_strdup (help_uri), g_free);
 
 	return vbox;
 }		       
@@ -3045,7 +3049,8 @@ create_basic_page (NautilusPropertiesWindow *window)
 	
 	guint last_row, row;
 
-	hbox = create_page_with_hbox (window->details->notebook, _("Basic"));
+	hbox = create_page_with_hbox (window->details->notebook, _("Basic"),
+				      "help:gnome-help/nautilus-file-properties-basic");
 	
 	/* Icon pixmap */
 
@@ -4526,7 +4531,8 @@ create_permissions_page (NautilusPropertiesWindow *window)
 	gint nrows;
 
 	vbox = create_page_with_vbox (window->details->notebook,
-				      _("Permissions"));
+				      _("Permissions"),
+				      "help:gnome-help/nautilus-file-properties-permissions");
 
 	file_list = window->details->original_files;
 
@@ -4824,6 +4830,7 @@ create_open_with_page (NautilusPropertiesWindow *window)
 	gtk_widget_show (vbox);
 	g_free (mime_type);
 
+	g_object_set_data_full (G_OBJECT (vbox), "help-uri", g_strdup ("help:gnome-help/files-open"), g_free);
 	gtk_notebook_append_page (window->details->notebook, 
 				  vbox, gtk_label_new (_("Open With")));
 }
@@ -5154,11 +5161,17 @@ real_response (GtkDialog *dialog,
 	       int        response)
 {
 	GError *error = NULL;
+	NautilusPropertiesWindow *window = NAUTILUS_PROPERTIES_WINDOW (dialog);
+	GtkWidget *curpage;
+	const char *helpuri;
 
 	switch (response) {
 	case GTK_RESPONSE_HELP:
+		curpage = gtk_notebook_get_nth_page (window->details->notebook,
+						     gtk_notebook_get_current_page (window->details->notebook));
+		helpuri = g_object_get_data (G_OBJECT (curpage), "help-uri");
 		gtk_show_uri (gtk_window_get_screen (GTK_WINDOW (dialog)),
-			      "ghelp:gnome-help#nautilus-file-properties-basic",
+			      helpuri ? helpuri : "help:gnome-help/files",
 			      gtk_get_current_event_time (),
 			      &error);
 		if (error != NULL) {

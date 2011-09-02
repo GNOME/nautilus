@@ -188,7 +188,7 @@ preferences_show_help (GtkWindow *parent,
 	g_assert (helpfile != NULL);
 	g_assert (sect_id != NULL);
 
-	help_string = g_strdup_printf ("ghelp:%s#%s", helpfile, sect_id);
+	help_string = g_strdup_printf ("help:%s/%s", helpfile, sect_id);
 
 	gtk_show_uri (gtk_window_get_screen (parent),
 		      help_string, gtk_get_current_event_time (),
