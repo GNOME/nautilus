@@ -84,6 +84,7 @@ nautilus_previewer_init (NautilusPreviewer *self)
 
   if (error != NULL) {
     g_printerr ("Unable to initialize DBus connection: %s", error->message);
+    g_error_free (error);
     return;
   }
 }
