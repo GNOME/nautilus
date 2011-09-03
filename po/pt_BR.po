@@ -15,18 +15,17 @@
 # Vladimir Melo <vmelo@gnome.org>, 2008-2009.
 # Fabrício Godoy <skarllot@gmail.com>, 2008-2009.
 # Jonh Wendell <jwendell@gnome.org>, 2009.
-# André Gondim <andregondim@ubuntu.com>, 2009.
+# André Gondim <andregondim@ubuntu.com>, 2009, 2011.
 # Krix Apolinário <krixapolinario@gmail.com>, 2009.
 # Henrique P. Machado <hpmachado@gnome.org>, 2010-2011.
 # Djavan Fagundes <djavan@comum.org>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: eel.HEAD.pt_BR\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2011-07-25 12:57+0000\n"
-"PO-Revision-Date: 2011-06-03 09:49-0200\n"
-"Last-Translator: Djavan Fagundes <djavan@comum.org>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-09-03 16:54-0400\n"
+"PO-Revision-Date: 2011-08-08 17:04-0300\n"
+"Last-Translator: André Gondim <andregondim@ubuntu.com>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1288,7 +1287,7 @@ msgid "today at 00:00:00 PM"
 msgstr "hoje às 00:00:00 PM"
 
 #: ../libnautilus-private/nautilus-file.c:4361
-#: ../src/nautilus-file-management-properties.c:471
+#: ../src/nautilus-file-management-properties.c:470
 msgid "today at %-I:%M:%S %p"
 msgstr "hoje às %-H:%M:%S"
 
@@ -1491,7 +1490,7 @@ msgstr "link"
 msgid "link (broken)"
 msgstr "link (quebrado)"
 
-#: ../libnautilus-private/nautilus-icon-container.c:2672
+#: ../libnautilus-private/nautilus-icon-container.c:2671
 msgid "The selection rectangle"
 msgstr "O retângulo da seleção"
 
@@ -2122,19 +2121,6 @@ msgstr "Visão do painel lateral"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:79
 msgid ""
-"Speed tradeoff for when to preview a sound file when mousing over a files "
-"icon. If set to \"always\" then always plays the sound, even if the file is "
-"on a remote server. If set to \"local-only\" then only plays previews on "
-"local file systems. If set to \"never\" then it never previews sound."
-msgstr ""
-"Compromisso de quando reproduzir uma prévia de um arquivo sonoro quando o "
-"mouse estiver sobre um ícone de arquivo. Se definido como \"always\", então "
-"sempre reproduzir o som, mesmo se o arquivo estiver em um servidor remoto. "
-"Se definido como \"local-only\", reproduzir apenas em sistemas de arquivos "
-"locais. Se definido como \"never\", nunca reproduzir som."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:80
-msgid ""
 "Speed tradeoff for when to show a preview of text file contents in the "
 "file's icon. If set to \"always\" then always show previews, even if the "
 "folder is on a remote server. If set to \"local-only\" then only show "
@@ -2147,7 +2133,7 @@ msgstr ""
 "only\", mostrar prévias em sistemas de arquivos locais. Se definido como "
 "\"never\", então nunca ler os dados."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:81
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:80
 msgid ""
 "Speed tradeoff for when to show an image file as a thumbnail. If set to "
 "\"always\" then always thumbnail, even if the folder is on a remote server. "
@@ -2161,7 +2147,7 @@ msgstr ""
 "apenas em sistemas de arquivos locais. Se definido como \"never\", então "
 "nunca gerar miniaturas, usar apenas um ícone genérico."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:82
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:81
 msgid ""
 "Speed tradeoff for when to show the number of items in a folder. If set to "
 "\"always\" then always show item counts, even if the folder is on a remote "
@@ -2174,15 +2160,15 @@ msgstr ""
 "sistemas de arquivos locais. Se definido como \"never\", então nunca contar "
 "o número de itens."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:83
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:82
 msgid "Text Ellipsis Limit"
 msgstr "Limite de omissão do texto"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:84
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:83
 msgid "The default size of an icon for a thumbnail in the icon view."
 msgstr "O tamanho padrão de um ícone para uma miniatura na visão em ícones."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:85
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:84
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\" and \"mtime\"."
@@ -2190,15 +2176,15 @@ msgstr ""
 "A ordenação padrão para itens na visão em lista. Valores possíveis são \"name"
 "\", \"size\", \"type\" e \"mtime\"."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:86
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:85
 msgid "The default width of the side pane in new windows."
 msgstr "A largura padrão do painel lateral em novas janelas."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:87
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:86
 msgid "The font _description used for the icons on the desktop."
 msgstr "A _descrição da fonte usada para os ícones na área de trabalho."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:88
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:87
 msgid ""
 "The format of file dates. Possible values are \"locale\", \"iso\", and "
 "\"informal\"."
@@ -2206,15 +2192,15 @@ msgstr ""
 "O formato das datas dos arquivos. Valores possíveis são \"locale\", \"iso\" "
 "e \"informal\"."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:89
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:88
 msgid "The geometry string for a navigation window."
 msgstr "A string de geometria para uma janela de navegação"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:90
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:89
 msgid "The side pane view to show in newly opened windows."
 msgstr "A visão do painel lateral a mostrar em novas janelas abertas."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:91
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:90
 msgid ""
 "This name can be set if you want a custom name for the computer icon on the "
 "desktop."
@@ -2222,7 +2208,7 @@ msgstr ""
 "Este nome pode ser definido se você quiser um nome personalizado para o "
 "ícone do computador na área de trabalho."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:92
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:91
 msgid ""
 "This name can be set if you want a custom name for the home icon on the "
 "desktop."
@@ -2230,7 +2216,7 @@ msgstr ""
 "Este nome pode ser definido se você quiser um nome personalizado para o "
 "ícone da pasta pessoal (home) na área de trabalho."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:93
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:92
 msgid ""
 "This name can be set if you want a custom name for the network servers icon "
 "on the desktop."
@@ -2238,7 +2224,7 @@ msgstr ""
 "Este nome pode ser definido se você quiser um nome personalizado para o "
 "ícone de servidores de rede na área de trabalho."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:94
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:93
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
@@ -2246,23 +2232,23 @@ msgstr ""
 "Este nome pode ser definido se você quiser um nome personalizado para o "
 "ícone da lixeira na área de trabalho."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:95
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:94
 msgid "Trash icon visible on desktop"
 msgstr "Ícone da lixeira visível na área de trabalho"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:96
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:95
 msgid "Type of click used to launch/open files"
 msgstr "Tipo de clique usado para abrir arquivos"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:97
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:96
 msgid "Use extra mouse button events in Nautilus' browser window"
 msgstr "Usar botão extra do mouse em eventos na janela do navegador Nautilus'"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:98
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:97
 msgid "What to do with executable text files when activated"
 msgstr "O que fazer com arquivos de texto executáveis ao ativá-los"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:99
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:98
 msgid ""
 "What to do with executable text files when they are activated (single or "
 "double clicked). Possible values are \"launch\" to launch them as programs, "
@@ -2274,7 +2260,7 @@ msgstr ""
 "los como programas, \"ask\" para perguntar através de um diálogo e \"display"
 "\" para exibi-los como arquivos de texto."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:100
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:99
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
 "another view for that particular folder. Possible values are \"list-view\", "
@@ -2285,49 +2271,44 @@ msgstr ""
 "são \"list-view\" (lista), \"icon-view\" (ícones) e \"compact-view"
 "\" (compacta)."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:101
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:100
 msgid "When to show number of items in a folder"
 msgstr "Quando mostrar o número de itens de uma pasta"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:102
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:101
 msgid "When to show preview text in icons"
 msgstr "Quando mostrar visualização de texto em ícones"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:103
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:102
 msgid "When to show thumbnails of image files"
 msgstr "Quando mostrar miniaturas de arquivos de imagens"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:104
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:103
 msgid "Where to position newly open tabs in browser windows."
 msgstr "Onde posicionar as abas abertas recentemente em janelas de navegador."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:105
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:104
 msgid "Whether the navigation window should be maximized by default."
 msgstr "Se a janela de navegação deve ser maximizada por padrão."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:106
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:105
 msgid "Whether the navigation window should be maximized."
 msgstr "Se a janela de navegação deve ser maximizada."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:107
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:106
 msgid "Whether to ask for confirmation when deleting files, or emptying Trash"
 msgstr ""
 "Pedir confirmação antes de excluir arquivos, ou movê-los para a lixeira"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:108
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:107
 msgid "Whether to enable immediate deletion"
 msgstr "Permitir que arquivos sejam excluídos diretamente"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:109
-msgid "Whether to preview sounds when mousing over an icon"
-msgstr ""
-"Reproduzir prévia de arquivo de som quando o mouse estiver sobre o ícone"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:110
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:108
 msgid "Whether to show hidden files"
 msgstr "Mostrar arquivos ocultos"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:111
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:109
 msgid ""
 "Whether to show the user a package installer dialog in case an unknown mime "
 "type is opened, in order to search for an application to handle it."
@@ -2335,7 +2316,7 @@ msgstr ""
 "Se mostrar ao usuário um diálogo do instalador de pacote caso um tipo mime "
 "desconhecido for aberto, a fim de procurar um aplicativo para manipulá-lo."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:112
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:110
 msgid "Width of the side pane"
 msgstr "Largura do painel lateral"
 
@@ -2351,12 +2332,12 @@ msgstr "Acessar e organizar arquivos"
 msgid "Files"
 msgstr "Arquivos"
 
-#: ../src/nautilus-application.c:156
+#: ../src/nautilus-application.c:157
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "O Nautilus não pôde criar a pasta necessária: \"%s\"."
 
-#: ../src/nautilus-application.c:158
+#: ../src/nautilus-application.c:159
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
@@ -2364,12 +2345,12 @@ msgstr ""
 "Antes de executar o Nautilus, por favor crie a seguinte pasta ou configure "
 "as permissões de forma que o Nautilus possa criá-la."
 
-#: ../src/nautilus-application.c:161
+#: ../src/nautilus-application.c:162
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "O Nautilus não pôde criar as seguintes pastas necessárias: %s."
 
-#: ../src/nautilus-application.c:163
+#: ../src/nautilus-application.c:164
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -2377,7 +2358,7 @@ msgstr ""
 "Antes de executar o Nautilus, por favor crie essas pastas ou configure as "
 "permissões de forma que o Nautilus possa criá-las."
 
-#: ../src/nautilus-application.c:295
+#: ../src/nautilus-application.c:296
 msgid ""
 "Nautilus 3.0 deprecated this directory and tried migrating this "
 "configuration to ~/.config/nautilus"
@@ -2385,39 +2366,39 @@ msgstr ""
 "O Nautilus 3.0 tornou obsoleto este diretório e tentou migrar esta "
 "configuração para ~/.config/nautilus"
 
-#: ../src/nautilus-application.c:853
+#: ../src/nautilus-application.c:854
 msgid "--check cannot be used with other options."
 msgstr "--check não pode ser usado com outras opções."
 
-#: ../src/nautilus-application.c:859
+#: ../src/nautilus-application.c:860
 msgid "--quit cannot be used with URIs."
 msgstr "--quit não pode ser usado com URIs."
 
-#: ../src/nautilus-application.c:866
+#: ../src/nautilus-application.c:867
 msgid "--geometry cannot be used with more than one URI."
 msgstr "--geometry não pode ser usado com mais de uma URI."
 
-#: ../src/nautilus-application.c:919
+#: ../src/nautilus-application.c:920
 msgid "Perform a quick set of self-check tests."
 msgstr "Realiza um conjunto rápido de testes automáticos."
 
-#: ../src/nautilus-application.c:922
+#: ../src/nautilus-application.c:923
 msgid "Show the version of the program."
 msgstr "Mostra a versão do programa."
 
-#: ../src/nautilus-application.c:924
+#: ../src/nautilus-application.c:925
 msgid "Create the initial window with the given geometry."
 msgstr "Cria a janela inicial com a geometria dada."
 
-#: ../src/nautilus-application.c:924
+#: ../src/nautilus-application.c:925
 msgid "GEOMETRY"
 msgstr "GEOMETRIA"
 
-#: ../src/nautilus-application.c:926
+#: ../src/nautilus-application.c:927
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Cria janelas apenas para URIs especificadas explicitamente."
 
-#: ../src/nautilus-application.c:928
+#: ../src/nautilus-application.c:929
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
@@ -2425,15 +2406,15 @@ msgstr ""
 "Não gerencia a área de trabalho (ignora as preferências definidas no diálogo "
 "de preferências)."
 
-#: ../src/nautilus-application.c:930
+#: ../src/nautilus-application.c:931
 msgid "Quit Nautilus."
 msgstr "Sai do Nautilus."
 
-#: ../src/nautilus-application.c:931
+#: ../src/nautilus-application.c:932
 msgid "[URI...]"
 msgstr "[URI...]"
 
-#: ../src/nautilus-application.c:942
+#: ../src/nautilus-application.c:943
 msgid ""
 "\n"
 "\n"
@@ -2484,7 +2465,7 @@ msgid "_Run"
 msgstr "E_xecutar"
 
 #: ../src/nautilus-bookmarks-window.c:157
-#: ../src/nautilus-file-management-properties.c:204
+#: ../src/nautilus-file-management-properties.c:203
 #: ../src/nautilus-window-menus.c:442
 #, c-format
 msgid ""
@@ -2569,7 +2550,7 @@ msgstr ""
 #: ../src/nautilus-connect-server-dialog.c:289
 #, c-format
 msgid "The folder \"%s\" cannot be opened on \"%s\"."
-msgstr "A pasta \"%s\" não pode ser ser aberta em \"%s\"."
+msgstr "A pasta \"%s\" não pode ser aberta em \"%s\"."
 
 #: ../src/nautilus-connect-server-dialog.c:299
 #, c-format
@@ -2835,7 +2816,7 @@ msgstr "Renomeando \"%s\" para \"%s\"."
 #. Translators: this is referred to the permissions
 #. * the user has in a directory.
 #.
-#: ../src/nautilus-file-management-properties.c:288
+#: ../src/nautilus-file-management-properties.c:287
 #: ../src/nautilus-properties-window.c:3943
 #: ../src/nautilus-properties-window.c:3954
 msgid "None"
@@ -2961,62 +2942,58 @@ msgid "<b>Other Previewable Files</b>"
 msgstr "<b>Outros arquivos visualizáveis</b>"
 
 #: ../src/nautilus-file-management-properties.ui.h:36
-msgid "<b>Sound Files</b>"
-msgstr "<b>Arquivos de som</b>"
-
-#: ../src/nautilus-file-management-properties.ui.h:37
 msgid "<b>Text Files</b>"
 msgstr "<b>Arquivos de texto</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:38
+#: ../src/nautilus-file-management-properties.ui.h:37
 msgid "<b>Trash</b>"
 msgstr "<b>Lixeira</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:39
+#: ../src/nautilus-file-management-properties.ui.h:38
 msgid "<b>Tree View Defaults</b>"
 msgstr "<b>Padrões da visão em árvore</b>"
 
-#: ../src/nautilus-file-management-properties.ui.h:40
+#: ../src/nautilus-file-management-properties.ui.h:39
 msgid "A_ll columns have the same width"
 msgstr "_Todas as colunas têm a mesma largura"
 
-#: ../src/nautilus-file-management-properties.ui.h:41
+#: ../src/nautilus-file-management-properties.ui.h:40
 msgid "Always"
 msgstr "Sempre"
 
-#: ../src/nautilus-file-management-properties.ui.h:42
+#: ../src/nautilus-file-management-properties.ui.h:41
 msgid "Ask before _emptying the Trash or deleting files"
 msgstr "Perguntar antes de _esvaziar a lixeira ou excluir arquivos"
 
-#: ../src/nautilus-file-management-properties.ui.h:43
+#: ../src/nautilus-file-management-properties.ui.h:42
 msgid "Behavior"
 msgstr "Comportamento"
 
-#: ../src/nautilus-file-management-properties.ui.h:44
+#: ../src/nautilus-file-management-properties.ui.h:43
 msgid "By Access Date"
 msgstr "Por data de acesso"
 
-#: ../src/nautilus-file-management-properties.ui.h:45
+#: ../src/nautilus-file-management-properties.ui.h:44
 msgid "By Modification Date"
 msgstr "Por data de modificação"
 
-#: ../src/nautilus-file-management-properties.ui.h:46
+#: ../src/nautilus-file-management-properties.ui.h:45
 msgid "By Name"
 msgstr "Por nome"
 
-#: ../src/nautilus-file-management-properties.ui.h:47
+#: ../src/nautilus-file-management-properties.ui.h:46
 msgid "By Size"
 msgstr "Por tamanho"
 
-#: ../src/nautilus-file-management-properties.ui.h:48
+#: ../src/nautilus-file-management-properties.ui.h:47
 msgid "By Trashed Date"
 msgstr "Por data de exclusão"
 
-#: ../src/nautilus-file-management-properties.ui.h:49
+#: ../src/nautilus-file-management-properties.ui.h:48
 msgid "By Type"
 msgstr "Por tipo"
 
-#: ../src/nautilus-file-management-properties.ui.h:50
+#: ../src/nautilus-file-management-properties.ui.h:49
 msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
@@ -3024,320 +3001,311 @@ msgstr ""
 "Escolha a ordem em que as informações aparecerão sob os nomes dos ícones. "
 "Você terá acesso a mais informações a medida que a visão se aproximar."
 
-#: ../src/nautilus-file-management-properties.ui.h:51
+#: ../src/nautilus-file-management-properties.ui.h:50
 msgid "Choose the order of information to appear in the list view."
 msgstr "Escolha a ordem em que as informações aparecerão na visão em lista."
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
-#: ../src/nautilus-file-management-properties.ui.h:52
-#: ../src/nautilus-icon-view.c:3034
+#: ../src/nautilus-file-management-properties.ui.h:51
+#: ../src/nautilus-icon-view.c:2763
 msgid "Compact View"
 msgstr "Visão compacta"
 
-#: ../src/nautilus-file-management-properties.ui.h:53
+#: ../src/nautilus-file-management-properties.ui.h:52
 msgid "Count _number of items:"
 msgstr "Contar _número de itens:"
 
-#: ../src/nautilus-file-management-properties.ui.h:54
+#: ../src/nautilus-file-management-properties.ui.h:53
 msgid "D_efault zoom level:"
 msgstr "Nível padrão de _zoom:"
 
-#: ../src/nautilus-file-management-properties.ui.h:55
+#: ../src/nautilus-file-management-properties.ui.h:54
 msgid "Default _zoom level:"
 msgstr "Nível padrão de _zoom:"
 
-#: ../src/nautilus-file-management-properties.ui.h:56
+#: ../src/nautilus-file-management-properties.ui.h:55
 msgid "Display"
 msgstr "Exibir"
 
-#: ../src/nautilus-file-management-properties.ui.h:57
+#: ../src/nautilus-file-management-properties.ui.h:56
 msgid "File Management Preferences"
 msgstr "Preferências de gerenciamento de arquivos"
 
-#: ../src/nautilus-file-management-properties.ui.h:58
+#: ../src/nautilus-file-management-properties.ui.h:57
 msgid "I_nclude a Delete command that bypasses Trash"
 msgstr "I_ncluir um comando excluir que não usa a lixeira"
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
-#: ../src/nautilus-file-management-properties.ui.h:59
-#: ../src/nautilus-icon-view-container.c:582 ../src/nautilus-icon-view.c:3020
+#: ../src/nautilus-file-management-properties.ui.h:58
+#: ../src/nautilus-icon-view-container.c:582 ../src/nautilus-icon-view.c:2749
 msgid "Icon View"
 msgstr "Visão em ícones"
 
-#: ../src/nautilus-file-management-properties.ui.h:60
+#: ../src/nautilus-file-management-properties.ui.h:59
 msgid "List Columns"
 msgstr "Colunas da lista"
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
-#: ../src/nautilus-file-management-properties.ui.h:61
+#: ../src/nautilus-file-management-properties.ui.h:60
 #: ../src/nautilus-list-view.c:1778 ../src/nautilus-list-view.c:3412
 msgid "List View"
 msgstr "Visão em lista"
 
-#: ../src/nautilus-file-management-properties.ui.h:62
+#: ../src/nautilus-file-management-properties.ui.h:61
 msgid "Local Files Only"
 msgstr "Apenas arquivos locais"
 
-#: ../src/nautilus-file-management-properties.ui.h:63
+#: ../src/nautilus-file-management-properties.ui.h:62
 msgid "Never"
 msgstr "Nunca"
 
-#: ../src/nautilus-file-management-properties.ui.h:64
+#: ../src/nautilus-file-management-properties.ui.h:63
 msgid "Open each _folder in its own window"
 msgstr "Abre cada _pasta em sua própria janela"
 
-#: ../src/nautilus-file-management-properties.ui.h:65
+#: ../src/nautilus-file-management-properties.ui.h:64
 msgid "Preview"
 msgstr "Visualização"
 
-#: ../src/nautilus-file-management-properties.ui.h:66
-msgid "Preview _sound files:"
-msgstr "Prever arquivos de _som:"
-
-#: ../src/nautilus-file-management-properties.ui.h:67
+#: ../src/nautilus-file-management-properties.ui.h:65
 msgid "Show _only folders"
 msgstr "Mostrar apenas pa_stas"
 
-#: ../src/nautilus-file-management-properties.ui.h:68
+#: ../src/nautilus-file-management-properties.ui.h:66
 msgid "Show _thumbnails:"
 msgstr "Mostrar minia_turas:"
 
-#: ../src/nautilus-file-management-properties.ui.h:69
+#: ../src/nautilus-file-management-properties.ui.h:67
 msgid "Show hidden and _backup files"
 msgstr "Mostrar arquivos ocultos e de _backup"
 
-#: ../src/nautilus-file-management-properties.ui.h:70
+#: ../src/nautilus-file-management-properties.ui.h:68
 msgid "Show te_xt in icons:"
 msgstr "Mostrar te_xto nos ícones:"
 
-#: ../src/nautilus-file-management-properties.ui.h:71
+#: ../src/nautilus-file-management-properties.ui.h:69
 msgid "Sort _folders before files"
 msgstr "Pastas antes de arquiv_os"
 
-#: ../src/nautilus-file-management-properties.ui.h:72
+#: ../src/nautilus-file-management-properties.ui.h:70
 msgid "View _new folders using:"
 msgstr "Ver _novas pastas usando:"
 
-#: ../src/nautilus-file-management-properties.ui.h:73
+#: ../src/nautilus-file-management-properties.ui.h:71
 msgid "Views"
 msgstr "Visões"
 
-#: ../src/nautilus-file-management-properties.ui.h:74
+#: ../src/nautilus-file-management-properties.ui.h:72
 msgid "_Arrange items:"
 msgstr "Org_anizar itens:"
 
-#: ../src/nautilus-file-management-properties.ui.h:75
+#: ../src/nautilus-file-management-properties.ui.h:73
 msgid "_Ask each time"
 msgstr "Perguntar a cada _vez"
 
-#: ../src/nautilus-file-management-properties.ui.h:76
+#: ../src/nautilus-file-management-properties.ui.h:74
 msgid "_Default zoom level:"
 msgstr "Nível pa_drão de zoom:"
 
-#: ../src/nautilus-file-management-properties.ui.h:77
+#: ../src/nautilus-file-management-properties.ui.h:75
 msgid "_Double click to open items"
 msgstr "Clique _duplo para abrir itens"
 
-#: ../src/nautilus-file-management-properties.ui.h:78
+#: ../src/nautilus-file-management-properties.ui.h:76
 msgid "_Format:"
 msgstr "_Formato:"
 
-#: ../src/nautilus-file-management-properties.ui.h:79
+#: ../src/nautilus-file-management-properties.ui.h:77
 msgid "_Only for files smaller than:"
 msgstr "Apenas para arquivos _menores que:"
 
-#: ../src/nautilus-file-management-properties.ui.h:80
+#: ../src/nautilus-file-management-properties.ui.h:78
 msgid "_Run executable text files when they are opened"
 msgstr "E_xecutar arquivos de texto executáveis quando forem abertos"
 
-#: ../src/nautilus-file-management-properties.ui.h:81
+#: ../src/nautilus-file-management-properties.ui.h:79
 msgid "_Single click to open items"
 msgstr "Clique único para abrir iten_s"
 
-#: ../src/nautilus-file-management-properties.ui.h:82
+#: ../src/nautilus-file-management-properties.ui.h:80
 msgid "_Text beside icons"
 msgstr "_Texto ao lado de ícones"
 
-#: ../src/nautilus-file-management-properties.ui.h:83
+#: ../src/nautilus-file-management-properties.ui.h:81
 msgid "_View executable text files when they are opened"
 msgstr "_Ver arquivos de texto executáveis quando forem abertos"
 
-#: ../src/nautilus-icon-view.c:145
+#: ../src/nautilus-icon-view.c:138
 msgid "by _Name"
 msgstr "por _nome"
 
-#: ../src/nautilus-icon-view.c:146 ../src/nautilus-icon-view.c:1420
+#: ../src/nautilus-icon-view.c:139 ../src/nautilus-icon-view.c:1400
 msgid "Keep icons sorted by name in rows"
 msgstr "Mantém ícones ordenados por nome nas linhas"
 
-#: ../src/nautilus-icon-view.c:152
+#: ../src/nautilus-icon-view.c:145
 msgid "by _Size"
 msgstr "por _tamanho"
 
-#: ../src/nautilus-icon-view.c:153 ../src/nautilus-icon-view.c:1424
+#: ../src/nautilus-icon-view.c:146 ../src/nautilus-icon-view.c:1404
 msgid "Keep icons sorted by size in rows"
 msgstr "Mantém ícones ordenados por tamanho nas linhas"
 
-#: ../src/nautilus-icon-view.c:159
+#: ../src/nautilus-icon-view.c:152
 msgid "by _Type"
 msgstr "por t_ipo"
 
-#: ../src/nautilus-icon-view.c:160 ../src/nautilus-icon-view.c:1428
+#: ../src/nautilus-icon-view.c:153 ../src/nautilus-icon-view.c:1408
 msgid "Keep icons sorted by type in rows"
 msgstr "Mantém ícones ordenados por tipo nas linhas"
 
-#: ../src/nautilus-icon-view.c:166
+#: ../src/nautilus-icon-view.c:159
 msgid "by Modification _Date"
 msgstr "por _data de modificação"
 
-#: ../src/nautilus-icon-view.c:167 ../src/nautilus-icon-view.c:1432
+#: ../src/nautilus-icon-view.c:160 ../src/nautilus-icon-view.c:1412
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Mantém ícones ordenados por data de modificação nas linhas"
 
-#: ../src/nautilus-icon-view.c:173
+#: ../src/nautilus-icon-view.c:166
 msgid "by T_rash Time"
 msgstr "por ho_ra de exclusão"
 
-#: ../src/nautilus-icon-view.c:174 ../src/nautilus-icon-view.c:1436
+#: ../src/nautilus-icon-view.c:167 ../src/nautilus-icon-view.c:1416
 msgid "Keep icons sorted by trash time in rows"
 msgstr "Mantém ícones ordenados por hora de exclusão nas linhas"
 
-#: ../src/nautilus-icon-view.c:669
+#: ../src/nautilus-icon-view.c:652
 msgid "_Organize Desktop by Name"
 msgstr "_Organizar a área de trabalho por nome"
 
 #. name, stock id, label
-#: ../src/nautilus-icon-view.c:1385
+#: ../src/nautilus-icon-view.c:1365
 msgid "Arran_ge Items"
 msgstr "_Organizar itens"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-icon-view.c:1387
+#: ../src/nautilus-icon-view.c:1367
 msgid "Resize Icon..."
 msgstr "Redimensionar ícone..."
 
 #. tooltip
-#: ../src/nautilus-icon-view.c:1388
+#: ../src/nautilus-icon-view.c:1368
 msgid "Make the selected icon resizable"
 msgstr "Torna o ícone selecionado redimensionável"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-icon-view.c:1391 ../src/nautilus-icon-view.c:1557
+#: ../src/nautilus-icon-view.c:1371 ../src/nautilus-icon-view.c:1537
 msgid "Restore Icons' Original Si_zes"
 msgstr "Restaurar _tamanho original dos ícones"
 
 #. tooltip
-#: ../src/nautilus-icon-view.c:1392
+#: ../src/nautilus-icon-view.c:1372
 msgid "Restore each selected icon to its original size"
 msgstr "Restaura cada ícone selecionado ao tamanho original"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-icon-view.c:1395
+#: ../src/nautilus-icon-view.c:1375
 msgid "_Organize by Name"
 msgstr "_Organizar por nome"
 
 #. tooltip
-#: ../src/nautilus-icon-view.c:1396
+#: ../src/nautilus-icon-view.c:1376
 msgid "Reposition icons to better fit in the window and avoid overlapping"
 msgstr ""
 "Reposiciona os ícones de forma a caber melhor na janela e evitar sobreposição"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-icon-view.c:1402
+#: ../src/nautilus-icon-view.c:1382
 msgid "Re_versed Order"
 msgstr "_Ordem reversa"
 
 #. tooltip
-#: ../src/nautilus-icon-view.c:1403
+#: ../src/nautilus-icon-view.c:1383
 msgid "Display icons in the opposite order"
 msgstr "Exibe ícones na ordem contrária"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-icon-view.c:1407
+#: ../src/nautilus-icon-view.c:1387
 msgid "_Keep Aligned"
 msgstr "_Manter alinhado"
 
 #. tooltip
-#: ../src/nautilus-icon-view.c:1408
+#: ../src/nautilus-icon-view.c:1388
 msgid "Keep icons lined up on a grid"
 msgstr "Mantém ícones alinhados"
 
-#: ../src/nautilus-icon-view.c:1415
+#: ../src/nautilus-icon-view.c:1395
 msgid "_Manually"
 msgstr "_Manualmente"
 
-#: ../src/nautilus-icon-view.c:1416
+#: ../src/nautilus-icon-view.c:1396
 msgid "Leave icons wherever they are dropped"
 msgstr "Deixa os ícones onde foram colocados"
 
-#: ../src/nautilus-icon-view.c:1419
+#: ../src/nautilus-icon-view.c:1399
 msgid "By _Name"
 msgstr "Por _nome"
 
-#: ../src/nautilus-icon-view.c:1423
+#: ../src/nautilus-icon-view.c:1403
 msgid "By _Size"
 msgstr "Por _tamanho"
 
-#: ../src/nautilus-icon-view.c:1427
+#: ../src/nautilus-icon-view.c:1407
 msgid "By _Type"
 msgstr "Por t_ipo"
 
-#: ../src/nautilus-icon-view.c:1431
+#: ../src/nautilus-icon-view.c:1411
 msgid "By Modification _Date"
 msgstr "Por _data de modificação"
 
-#: ../src/nautilus-icon-view.c:1435
+#: ../src/nautilus-icon-view.c:1415
 msgid "By T_rash Time"
 msgstr "Por ho_ra de exclusão"
 
-#: ../src/nautilus-icon-view.c:1558
+#: ../src/nautilus-icon-view.c:1538
 msgid "Restore Icon's Original Si_ze"
 msgstr "Restaurar _tamanho original do ícone"
 
-#: ../src/nautilus-icon-view.c:2030
-#, c-format
-msgid "pointing at \"%s\""
-msgstr "apontando para \"%s\""
-
 #. translators: this is used in the view menu
-#: ../src/nautilus-icon-view.c:3022
+#: ../src/nautilus-icon-view.c:2751
 msgid "_Icons"
 msgstr "Íc_ones"
 
-#: ../src/nautilus-icon-view.c:3023
+#: ../src/nautilus-icon-view.c:2752
 msgid "The icon view encountered an error."
 msgstr "A visão em ícones encontrou um erro."
 
-#: ../src/nautilus-icon-view.c:3024
+#: ../src/nautilus-icon-view.c:2753
 msgid "The icon view encountered an error while starting up."
 msgstr "A visão em ícones encontrou um erro ao iniciar."
 
-#: ../src/nautilus-icon-view.c:3025
+#: ../src/nautilus-icon-view.c:2754
 msgid "Display this location with the icon view."
 msgstr "Exibir esta localização com a visão em ícones."
 
 #. translators: this is used in the view menu
-#: ../src/nautilus-icon-view.c:3036
+#: ../src/nautilus-icon-view.c:2765
 msgid "_Compact"
 msgstr "_Compacta"
 
-#: ../src/nautilus-icon-view.c:3037
+#: ../src/nautilus-icon-view.c:2766
 msgid "The compact view encountered an error."
 msgstr "A visão compacta encontrou um erro."
 
-#: ../src/nautilus-icon-view.c:3038
+#: ../src/nautilus-icon-view.c:2767
 msgid "The compact view encountered an error while starting up."
 msgstr "A visão compacta encontrou um erro ao iniciar."
 
-#: ../src/nautilus-icon-view.c:3039
+#: ../src/nautilus-icon-view.c:2768
 msgid "Display this location with the compact view."
 msgstr "Exibir esta localização com a visão compacta."
 
@@ -5949,6 +5917,31 @@ msgstr "Enviar o arquivo por e-mail, mensageiro instantâneo, ..."
 #: ../nautilus-sendto-extension/nautilus-nste.c:86
 msgid "Send files by mail, instant message..."
 msgstr "Envia arquivos por e-mail, mensageiros instantâneos, ..."
+
+#~ msgid ""
+#~ "Speed tradeoff for when to preview a sound file when mousing over a files "
+#~ "icon. If set to \"always\" then always plays the sound, even if the file "
+#~ "is on a remote server. If set to \"local-only\" then only plays previews "
+#~ "on local file systems. If set to \"never\" then it never previews sound."
+#~ msgstr ""
+#~ "Compromisso de quando reproduzir uma prévia de um arquivo sonoro quando o "
+#~ "mouse estiver sobre um ícone de arquivo. Se definido como \"always\", "
+#~ "então sempre reproduzir o som, mesmo se o arquivo estiver em um servidor "
+#~ "remoto. Se definido como \"local-only\", reproduzir apenas em sistemas de "
+#~ "arquivos locais. Se definido como \"never\", nunca reproduzir som."
+
+#~ msgid "Whether to preview sounds when mousing over an icon"
+#~ msgstr ""
+#~ "Reproduzir prévia de arquivo de som quando o mouse estiver sobre o ícone"
+
+#~ msgid "<b>Sound Files</b>"
+#~ msgstr "<b>Arquivos de som</b>"
+
+#~ msgid "Preview _sound files:"
+#~ msgstr "Prever arquivos de _som:"
+
+#~ msgid "pointing at \"%s\""
+#~ msgstr "apontando para \"%s\""
 
 #~ msgid "%"
 #~ msgstr "%"
