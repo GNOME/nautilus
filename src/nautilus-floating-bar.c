@@ -34,16 +34,11 @@ struct _NautilusFloatingBarDetails {
 	GtkWidget *spinner;
 	gboolean show_spinner;
 	gboolean is_interactive;
-
-	guint escaping_distance;
-	GtkAllocation initial_allocation;
-	GdkRectangle escaping_area;
 };
 
 enum {
 	PROP_LABEL = 1,
 	PROP_SHOW_SPINNER,
-	PROP_ESCAPING_DISTANCE,
 	NUM_PROPERTIES
 };
 
@@ -51,8 +46,6 @@ enum {
 	ACTION,
 	NUM_SIGNALS
 };
-
-#define NAUTILUS_FLOATING_BAR_ESCAPING_DISTANCE 20
 
 static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 static guint signals[NUM_SIGNALS] = { 0, };
@@ -97,9 +90,6 @@ nautilus_floating_bar_get_property (GObject *object,
 	case PROP_SHOW_SPINNER:
 		g_value_set_boolean (value, self->priv->show_spinner);
 		break;
-	case PROP_ESCAPING_DISTANCE:
-		g_value_set_uint (value, self->priv->escaping_distance);
-		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 		break;
@@ -120,9 +110,6 @@ nautilus_floating_bar_set_property (GObject *object,
 		break;
 	case PROP_SHOW_SPINNER:
 		nautilus_floating_bar_set_show_spinner (self, g_value_get_boolean (value));
-		break;
-	case PROP_ESCAPING_DISTANCE:
-		self->priv->escaping_distance = g_value_get_uint (value);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -293,16 +280,6 @@ nautilus_floating_bar_class_init (NautilusFloatingBarClass *klass)
 				      "Whether a spinner should be shown in the floating bar",
 				      FALSE,
 				      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-	properties[PROP_ESCAPING_DISTANCE] =
-		g_param_spec_uint ("escaping-distance",
-				   "Escaping distance",
-				   "Maximum distance between the mouse pointer and the widget",
-				   0,
-				   G_MAXUINT,
-				   NAUTILUS_FLOATING_BAR_ESCAPING_DISTANCE,
-				   G_PARAM_CONSTRUCT_ONLY |
-				   G_PARAM_READWRITE |
-				   G_PARAM_STATIC_STRINGS);
 
 	signals[ACTION] =
 		g_signal_new ("action",
