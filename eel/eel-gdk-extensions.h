@@ -48,12 +48,6 @@ EelGdkGeometryFlags eel_gdk_parse_geometry                 (const char          
 							    int                 *y_return,
 							    guint               *width_return,
 							    guint               *height_return);
-void                eel_cairo_draw_layout_with_drop_shadow (cairo_t             *cr,
-							    GdkRGBA            *text_color,
-							    GdkRGBA            *shadow_color,
-							    int                  x,
-							    int                  y,
-							    PangoLayout         *layout);
 void                eel_make_color_inactive                (GdkRGBA             *color);
 
 #endif /* EEL_GDK_EXTENSIONS_H */

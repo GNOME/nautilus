@@ -91,27 +91,6 @@ eel_gdk_parse_geometry (const char *string, int *x_return, int *y_return,
 	return gdk_flags;
 }
 
-void
-eel_cairo_draw_layout_with_drop_shadow (cairo_t     *cr,
-					GdkRGBA     *text_color,
-					GdkRGBA     *shadow_color,
-					int          x,
-					int          y,
-					PangoLayout *layout)
-{
-        cairo_save (cr);
-
-	gdk_cairo_set_source_rgba (cr, shadow_color);
-	cairo_move_to (cr, x+1, y+1);
-	pango_cairo_show_layout (cr, layout);
-	
-	gdk_cairo_set_source_rgba (cr, text_color);
-	cairo_move_to (cr, x, y);
-	pango_cairo_show_layout (cr, layout);
-	
-	cairo_restore (cr);
-}
-
 #define CLAMP_COLOR(v) (t = (v), CLAMP (t, 0, 1))
 #define SATURATE(v) ((1.0 - saturation) * intensity + saturation * (v))
 
