@@ -4225,7 +4225,8 @@ nautilus_file_get_icon (NautilusFile *file,
 			}
 
 			scaled_pixbuf = gdk_pixbuf_scale_simple (raw_pixbuf,
-								 w * scale, h * scale,
+								 MAX (w * scale, 1),
+								 MAX (h * scale, 1),
 								 GDK_INTERP_BILINEAR);
 
 			/* We don't want frames around small icons */
