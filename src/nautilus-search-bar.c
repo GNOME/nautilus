@@ -155,40 +155,11 @@ focus_in_event_callback (GtkWidget *widget,
 	return FALSE;
 }
 
-static GdkPixbuf *
-lookup_and_color_symbolic_find (NautilusSearchBar *bar)
-{
-	GtkIconInfo *icon_info;
-	GdkRGBA color;
-	GdkPixbuf *icon;
-	GtkStyleContext *context;
-
-	context = gtk_widget_get_style_context (GTK_WIDGET (bar));
-	gtk_style_context_save (context);
-	gtk_style_context_add_class (context, GTK_STYLE_CLASS_INFO);
-	gtk_style_context_get_background_color (context, 0, &color);
-
-	icon_info = gtk_icon_theme_lookup_icon (gtk_icon_theme_get_default (),
-						"edit-find-symbolic",
-						nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU),
-						GTK_ICON_LOOKUP_GENERIC_FALLBACK);
-	icon = gtk_icon_info_load_symbolic (icon_info, &color,
-					    NULL, NULL, NULL,
-					    NULL, NULL);
-
-	gtk_style_context_restore (context);
-
-	gtk_icon_info_free (icon_info);
-
-	return icon;
-}
-
 static void
 nautilus_search_bar_init (NautilusSearchBar *bar)
 {
 	GtkWidget *label;
 	GtkWidget *align;
-	GdkPixbuf *icon;
 
 	bar->details =
 		G_TYPE_INSTANCE_GET_PRIVATE (bar, NAUTILUS_TYPE_SEARCH_BAR,
@@ -214,14 +185,10 @@ nautilus_search_bar_init (NautilusSearchBar *bar)
 	gtk_widget_show (align);
 
 	bar->details->entry = gtk_entry_new ();
-	icon = lookup_and_color_symbolic_find (bar);
-	
-	gtk_entry_set_icon_from_pixbuf (GTK_ENTRY (bar->details->entry),
-					GTK_ENTRY_ICON_SECONDARY,
-					icon);
+	gtk_entry_set_icon_from_icon_name (GTK_ENTRY (bar->details->entry),
+					   GTK_ENTRY_ICON_SECONDARY,
+					   "edit-find-symbolic");
 	gtk_container_add (GTK_CONTAINER (align), bar->details->entry);
-
-	g_object_unref (icon);
 
 	g_signal_connect (bar->details->entry, "activate",
 			  G_CALLBACK (entry_activate_cb), bar);
