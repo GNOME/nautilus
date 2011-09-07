@@ -8456,6 +8456,13 @@ nautilus_icon_container_set_is_desktop (NautilusIconContainer *container,
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 
 	container->details->is_desktop = is_desktop;
+
+	if (is_desktop) {
+		GtkStyleContext *context;
+
+		context = gtk_widget_get_style_context (GTK_WIDGET (container));
+		gtk_style_context_add_class (context, "nautilus-desktop");
+	}
 }
 
 void
