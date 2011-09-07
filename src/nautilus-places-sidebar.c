@@ -221,6 +221,7 @@ get_eject_icon (NautilusPlacesSidebar *sidebar,
 	int icon_size;
 	GtkIconTheme *icon_theme;
 	GtkStyleContext *style;
+	GtkStateFlags state;
 
 	icon_theme = gtk_icon_theme_get_default ();
 	icon_size = nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU);
@@ -228,17 +229,23 @@ get_eject_icon (NautilusPlacesSidebar *sidebar,
 	icon_info = gtk_icon_theme_lookup_by_gicon (icon_theme, icon, icon_size, 0);
 
 	style = gtk_widget_get_style_context (GTK_WIDGET (sidebar));
+	state = gtk_widget_get_state_flags (GTK_WIDGET (sidebar));
+
+	gtk_style_context_save (style);
+	gtk_style_context_add_class (style, GTK_STYLE_CLASS_IMAGE);
+
+	if (highlighted) {
+		state |= GTK_STATE_FLAG_PRELIGHT;
+	}
+
+	gtk_style_context_set_state (style, state);
+
 	eject = gtk_icon_info_load_symbolic_for_context (icon_info,
 							 style,
 							 NULL,
 							 NULL);
 
-	if (highlighted) {
-		GdkPixbuf *high;
-		high = eel_create_spotlight_pixbuf (eject);
-		g_object_unref (eject);
-		eject = high;
-	}
+	gtk_style_context_restore (style);
 
 	g_object_unref (icon);
 	gtk_icon_info_free (icon_info);
