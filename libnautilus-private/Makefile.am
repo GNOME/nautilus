@@ -32,6 +32,12 @@ BUILT_SOURCES = \
 	$(dbus_built_sources) \
 	$(NULL)
 
+if ENABLE_TRACKER
+nautilus_tracker_engine_sources = \
+	nautilus-search-engine-tracker.c \
+	nautilus-search-engine-tracker.h
+endif
+
 dependency_static_libs = \
 	$(top_builddir)/cut-n-paste-code/libegg/libegg.la \
 	$(NULL)
@@ -157,8 +163,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-search-engine.h \
 	nautilus-search-engine-simple.c \
 	nautilus-search-engine-simple.h \
-	nautilus-search-engine-tracker.c \
-	nautilus-search-engine-tracker.h \
 	nautilus-selection-canvas-item.c \
 	nautilus-selection-canvas-item.h \
 	nautilus-signaller.h \
@@ -188,6 +192,7 @@ libnautilus_private_la_SOURCES = \
 	nautilus-vfs-directory.h \
 	nautilus-vfs-file.c \
 	nautilus-vfs-file.h \
+	$(nautilus_tracker_engine_sources) \
 	$(NULL)
 
 nodist_libnautilus_private_la_SOURCES =\

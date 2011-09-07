@@ -24,7 +24,10 @@
 #include <config.h>
 #include "nautilus-search-engine.h"
 #include "nautilus-search-engine-simple.h"
+
+#ifdef ENABLE_TRACKER
 #include "nautilus-search-engine-tracker.h"
+#endif
 
 #include <eel/eel-gtk-macros.h>
 
@@ -125,10 +128,12 @@ nautilus_search_engine_new (void)
 {
 	NautilusSearchEngine *engine;
 	
+#ifdef ENABLE_TRACKER	
 	engine = nautilus_search_engine_tracker_new ();
 	if (engine) {
 		return engine;
 	}
+#endif
 	
 	engine = nautilus_search_engine_simple_new ();
 	return engine;
