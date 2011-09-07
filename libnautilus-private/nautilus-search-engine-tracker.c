@@ -27,111 +27,14 @@
 #include <string.h>
 #include <gio/gio.h>
 
+#include <libtracker-sparql/tracker-sparql.h>
+
 /* If defined, we use fts:match, this has to be enabled in Tracker to
  * work which it usually is. The alternative is to undefine it and
  * use filename matching instead. This doesn't use the content of the
  * file however.
  */
 #undef FTS_MATCHING
-
-#define MODULE_FILENAME "libtracker-sparql-0.10.so.0"
-
-#define MODULE_MAP(a)   { #a, (gpointer *)&a }
-
-/* Connection object */
-typedef struct _TrackerSparqlConnection TrackerSparqlConnection;
-
-#define TRACKER_SPARQL_TYPE_CONNECTION (tracker_sparql_connection_get_type ())
-#define TRACKER_SPARQL_CONNECTION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), TRACKER_SPARQL_TYPE_CONNECTION, TrackerSparqlConnection))
-
-/* Cursor object */
-typedef struct _TrackerSparqlCursor TrackerSparqlCursor;
-
-#define TRACKER_SPARQL_TYPE_CURSOR (tracker_sparql_cursor_get_type ())
-#define TRACKER_SPARQL_CURSOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), TRACKER_SPARQL_TYPE_CURSOR, TrackerSparqlCursor))
-
-/* API */
-static GType                     (*tracker_sparql_connection_get_type)     (void) = NULL;
-static TrackerSparqlConnection * (*tracker_sparql_connection_get)          (GCancellable             *cancellable,
-                                                                            GError                  **error) = NULL;
-static void                      (*tracker_sparql_connection_query_async)  (TrackerSparqlConnection  *self,
-                                                                            const gchar              *sparql,
-                                                                            GCancellable             *cancellable,
-                                                                            GAsyncReadyCallback       callback,
-                                                                            gpointer                  user_data) = NULL;
-static TrackerSparqlCursor *     (*tracker_sparql_connection_query_finish) (TrackerSparqlConnection  *self,
-                                                                            GAsyncResult             *_res_,
-                                                                            GError                  **error) = NULL;
-static GType                     (*tracker_sparql_cursor_get_type)         (void) = NULL;
-static void                      (*tracker_sparql_cursor_next_async)       (TrackerSparqlCursor      *self,
-                                                                            GCancellable             *cancellable,
-                                                                            GAsyncReadyCallback       callback,
-                                                                            gpointer                  user_data) = NULL;
-static gboolean                  (*tracker_sparql_cursor_next_finish)      (TrackerSparqlCursor      *self,
-                                                                            GAsyncResult             *_res_,
-                                                                            GError                  **error) = NULL;
-static const gchar *             (*tracker_sparql_cursor_get_string)       (TrackerSparqlCursor      *self,
-                                                                            gint                     *column,
-                                                                            glong                    *length) = NULL;
-static gchar *                   (*tracker_sparql_escape_string)           (const gchar              *literal) = NULL;
-
-static struct TrackerFunctions
-{
-	const char *name;
-	gpointer *pointer;
-} funcs[] = {
-	MODULE_MAP (tracker_sparql_connection_get_type),
-	MODULE_MAP (tracker_sparql_connection_get),
-	MODULE_MAP (tracker_sparql_connection_query_async),
-	MODULE_MAP (tracker_sparql_connection_query_finish),
-	MODULE_MAP (tracker_sparql_cursor_get_type),
-	MODULE_MAP (tracker_sparql_cursor_next_async),
-	MODULE_MAP (tracker_sparql_cursor_next_finish),
-	MODULE_MAP (tracker_sparql_cursor_get_string),
-	MODULE_MAP (tracker_sparql_escape_string)
-};
-
-static gboolean
-init (void)
-{
-	static gboolean inited = FALSE;
-	gint i;
-	GModule *m;
-	GModuleFlags flags;
-
-	if (inited) {
-		return TRUE;
-	}
-
-	flags = G_MODULE_BIND_LAZY | G_MODULE_BIND_LOCAL;
-
-	/* Only support 0.10 onwards */
-	if ((m = g_module_open (MODULE_FILENAME, flags)) == NULL)  {
-		g_debug ("No tracker backend available or it is not new enough");
-		g_debug ("Only available using '%s'", MODULE_FILENAME);
-		return FALSE;
-	}
-
-	inited = TRUE;
-
-	/* Check for the symbols we need */
-	for (i = 0; i < G_N_ELEMENTS (funcs); i++) {
-		if (!g_module_symbol (m, funcs[i].name, funcs[i].pointer)) {
-			g_warning ("Missing symbol '%s' in libtracker-sparql\n",
-				   funcs[i].name);
-			g_module_close (m);
-
-			for (i = 0; i < G_N_ELEMENTS (funcs); i++)
-				funcs[i].pointer = NULL;
-
-			return FALSE;
-		}
-	}
-
-	g_debug ("Loaded Tracker library and all required symbols");
-
-	return TRUE;
-}
 
 struct NautilusSearchEngineTrackerDetails {
 	TrackerSparqlConnection *connection;
@@ -464,10 +367,6 @@ nautilus_search_engine_tracker_new (void)
 	GCancellable *cancellable;
 	TrackerSparqlConnection *connection;
 	GError *error = NULL;
-
-	if (!init()) {
-		return NULL;
-	}
 
 	cancellable = g_cancellable_new ();
 	connection = tracker_sparql_connection_get (cancellable, &error);

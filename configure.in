@@ -297,6 +297,7 @@ PKG_CHECK_MODULES(NAUTILUS, [
 	gio-unix-2.0 >= glib_minver
 	gsettings-desktop-schemas
 	libnotify >= notify_minver
+	tracker-sparql-0.12
 ])
 
 AC_SUBST(NAUTILUS_CFLAGS)
