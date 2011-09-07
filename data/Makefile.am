@@ -31,13 +31,11 @@ nautilusdatadir = $(datadir)/nautilus
 nautilusdata_DATA = \
 	nautilus-extras.placeholder 	\
 	nautilus-suggested.placeholder 	\
-	nautilus.css			\
 	$(NULL)
 
 EXTRA_DIST = $(nautilusdata_DATA) 	\
 	nautilus.desktop		\
 	nautilus.desktop.in		\
-	nautilus.css			\
 	dbus-interfaces.xml		\
 	$(xml_in_files) 		\
 	$(desktop_in_files)		\

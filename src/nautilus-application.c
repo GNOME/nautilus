@@ -1044,25 +1044,6 @@ nautilus_application_local_command_line (GApplication *application,
 static void
 init_icons_and_styles (void)
 {
-	GtkCssProvider *provider;
-	GError *error = NULL;
-
-	/* add our custom CSS provider */
-	provider = gtk_css_provider_new ();
-	gtk_css_provider_load_from_path (provider,
-					 NAUTILUS_DATADIR G_DIR_SEPARATOR_S "nautilus.css", &error);
-
-	if (error != NULL) {
-		g_warning ("Can't parse Nautilus' CSS custom description: %s\n", error->message);
-		g_error_free (error);
-	} else {
-		gtk_style_context_add_provider_for_screen (gdk_screen_get_default (),
-							   GTK_STYLE_PROVIDER (provider),
-							   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-	}
-
-	g_object_unref (provider);
-
 	/* initialize search path for custom icons */
 	gtk_icon_theme_append_search_path (gtk_icon_theme_get_default (),
 					   NAUTILUS_DATADIR G_DIR_SEPARATOR_S "icons");
