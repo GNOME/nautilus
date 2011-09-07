@@ -2610,10 +2610,10 @@ start_rubberbanding (NautilusIconContainer *container,
 	AtkObject *accessible;
 	NautilusIconContainerDetails *details;
 	NautilusIconRubberbandInfo *band_info;
-	GdkRGBA *fill_color_gdk, outline, color;
+	GdkRGBA bg_color, border_color;
 	GList *p;
 	NautilusIcon *icon;
-	GtkStyleContext *style;
+	GtkStyleContext *context;
 
 	details = container->details;
 	band_info = &details->rubberband_info;
@@ -2630,23 +2630,14 @@ start_rubberbanding (NautilusIconContainer *container,
 		(EEL_CANVAS (container), event->x, event->y,
 		 &band_info->start_x, &band_info->start_y);
 
-	style = gtk_widget_get_style_context (GTK_WIDGET (container));
-	gtk_style_context_get_style (style,
-				     "selection_box_rgba", &fill_color_gdk,
-				     NULL);
+	context = gtk_widget_get_style_context (GTK_WIDGET (container));
+	gtk_style_context_save (context);
+	gtk_style_context_add_class (context, GTK_STYLE_CLASS_RUBBERBAND);
 
-	if (!fill_color_gdk) {
-		gtk_style_context_get_background_color (style, GTK_STATE_FLAG_SELECTED,
-							&color);
-		fill_color_gdk = gdk_rgba_copy (&color);
-	}
+	gtk_style_context_get_background_color (context, GTK_STATE_FLAG_NORMAL, &bg_color);
+	gtk_style_context_get_border_color (context, GTK_STATE_FLAG_NORMAL, &border_color);
 
-	if (fill_color_gdk->alpha == 1) {
-		fill_color_gdk->alpha = 0.25;
-	}
-
-	outline = *fill_color_gdk;
-	eel_make_color_inactive (&outline);
+	gtk_style_context_restore (context);
 
 	band_info->selection_rectangle = eel_canvas_item_new
 		(eel_canvas_root
@@ -2656,12 +2647,10 @@ start_rubberbanding (NautilusIconContainer *container,
 		 "y1", band_info->start_y,
 		 "x2", band_info->start_x,
 		 "y2", band_info->start_y,
-		 "fill_color_rgba", fill_color_gdk,
-		 "outline_color_rgba", &outline,
+		 "fill_color_rgba", &bg_color,
+		 "outline_color_rgba", &border_color,
 		 "width_pixels", 1,
 		 NULL);
-
-	gdk_rgba_free (fill_color_gdk);
 
 	accessible = atk_gobject_accessible_for_object
 		(G_OBJECT (band_info->selection_rectangle));
@@ -6061,12 +6050,6 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 
 	class->start_interactive_search = nautilus_icon_container_start_interactive_search;
 
-	gtk_widget_class_install_style_property (widget_class,
-						 g_param_spec_boxed ("selection_box_rgba",
-								     "Selection Box RGBA",
-								     "Color of the selection box",
-								     GDK_TYPE_RGBA,
-								     G_PARAM_READABLE));
 	gtk_widget_class_install_style_property (widget_class,
 						 g_param_spec_boolean ("activate_prelight_icon_label",
 								     "Activate Prelight Icon Label",
