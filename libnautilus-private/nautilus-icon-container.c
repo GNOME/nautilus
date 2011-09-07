@@ -147,7 +147,6 @@ static void          preview_selected_items                         (NautilusIco
 static void          activate_selected_items                        (NautilusIconContainer *container);
 static void          activate_selected_items_alternate              (NautilusIconContainer *container,
 								     NautilusIcon          *icon);
-static void          nautilus_icon_container_theme_changed          (gpointer               user_data);
 static void          compute_stretch                                (StretchState          *start,
 								     StretchState          *current);
 static NautilusIcon *get_first_selected_icon                        (NautilusIconContainer *container);
@@ -171,7 +170,6 @@ static inline void   icon_get_bounding_box                          (NautilusIco
 static gboolean      is_renaming                                    (NautilusIconContainer *container);
 static gboolean      is_renaming_pending                            (NautilusIconContainer *container);
 static void          process_pending_icon_to_rename                 (NautilusIconContainer *container);
-static void          setup_label_gcs                                (NautilusIconContainer *container);
 static void          nautilus_icon_container_stop_monitor_top_left  (NautilusIconContainer *container,
 								     NautilusIconData      *data,
 								     gconstpointer          client);
@@ -4217,7 +4215,6 @@ realize (GtkWidget *widget)
 	nautilus_icon_dnd_init (container);
 
 	setup_background (container);
-	setup_label_gcs (container);
 
 	hadj = gtk_scrollable_get_hadjustment (GTK_SCROLLABLE (widget));
 	g_signal_connect (hadj, "value_changed",
@@ -4260,8 +4257,6 @@ style_updated (GtkWidget *widget)
 	if (!nautilus_icon_container_get_is_desktop (container)) {
 		GTK_WIDGET_CLASS (nautilus_icon_container_parent_class)->style_updated (widget);
 	}
-
-	nautilus_icon_container_theme_changed (NAUTILUS_ICON_CONTAINER (widget));
 
 	if (gtk_widget_get_realized (widget)) {
 		invalidate_label_sizes (container);
@@ -6229,9 +6224,6 @@ nautilus_icon_container_init (NautilusIconContainer *container)
 			  G_CALLBACK (handle_focus_in_event), NULL);
 	g_signal_connect (container, "focus-out-event",
 			  G_CALLBACK (handle_focus_out_event), NULL);
-
-	/* read in theme-dependent data */
-	nautilus_icon_container_theme_changed (container);
 
 	if (!setup_prefs) {
 		g_signal_connect_swapped (nautilus_icon_view_preferences,
@@ -8430,101 +8422,6 @@ nautilus_icon_container_set_single_click_mode (NautilusIconContainer *container,
 	container->details->single_click_mode = single_click_mode;
 }
 
-
-/* update the label color when the background changes */
-
-void
-nautilus_icon_container_get_label_color (NautilusIconContainer *container,
-					 GdkRGBA               *color,
-					 gboolean               is_name,
-					 gboolean               is_highlight,
-					 gboolean		is_prelit)
-{
-	int idx;
-	
-	if (is_name) {
-		if (is_highlight) {
-			if (gtk_widget_has_focus (GTK_WIDGET (container))) {
-				idx = LABEL_COLOR_HIGHLIGHT;
-			} else {
-				idx = LABEL_COLOR_ACTIVE;
-			}
-		} else {
-			if (is_prelit) {
-				idx = LABEL_COLOR_PRELIGHT;
-			} else {
-				idx = LABEL_COLOR;
-			}
-		}
-	} else {
-		if (is_highlight) {
-			if (gtk_widget_has_focus (GTK_WIDGET (container))) {
-				idx = LABEL_INFO_COLOR_HIGHLIGHT;
-			} else {
-				idx = LABEL_INFO_COLOR_ACTIVE;
-			}
-		} else {
-			idx = LABEL_INFO_COLOR;
-		}
-	}
-
-	if (color) {
-		*color = container->details->label_colors[idx];
-	}
-}
-
-static void
-setup_gc_with_fg (NautilusIconContainer *container, int idx, GdkRGBA *color)
-{
-	container->details->label_colors[idx] = *color;
-}
-
-static void
-setup_label_gcs (NautilusIconContainer *container)
-{
-	GtkWidget *widget;
-	GtkStyleContext *style;
-	GdkRGBA color;
-	
-	if (!gtk_widget_get_realized (GTK_WIDGET (container)))
-		return;
-
-	widget = GTK_WIDGET (container);
-
-	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
-
-	/* read the info colors from the current theme; use a reasonable default if undefined */
-	style = gtk_widget_get_style_context (widget);
-
-	gtk_style_context_get_color (style,
-				     GTK_STATE_FLAG_SELECTED,
-				     &color);
-	setup_gc_with_fg (container, LABEL_COLOR_HIGHLIGHT, &color);
-	setup_gc_with_fg (container, LABEL_INFO_COLOR_HIGHLIGHT, &color);
-
-
-	gtk_style_context_get_color (style, GTK_STATE_FLAG_ACTIVE, &color);
-	setup_gc_with_fg (container, LABEL_COLOR_ACTIVE, &color);
-	setup_gc_with_fg (container, LABEL_INFO_COLOR_ACTIVE, &color);
-
-	gtk_style_context_get_color (style, GTK_STATE_FLAG_PRELIGHT, &color);
-	setup_gc_with_fg (container, LABEL_COLOR_PRELIGHT, &color);
-
-	gtk_style_context_get_color (style, GTK_STATE_FLAG_INSENSITIVE, &color);
-	setup_gc_with_fg (container, LABEL_INFO_COLOR, 
-			  &color);
-	
-	if (!nautilus_icon_container_get_is_desktop (container)) {
-		gtk_style_context_get_color (style, GTK_STATE_FLAG_NORMAL, &color);
-		setup_gc_with_fg (container, LABEL_COLOR, &color);
-	} else {
-		GdkRGBA tmp;
-
-		gdk_rgba_parse (&tmp, "#EFEFEF");
-		setup_gc_with_fg (container, LABEL_COLOR, &tmp);
-	}
-}
-
 /* Return if the icon container is a fixed size */
 gboolean
 nautilus_icon_container_get_is_fixed_size (NautilusIconContainer *container)
@@ -8593,31 +8490,6 @@ nautilus_icon_container_set_use_drop_shadows (NautilusIconContainer  *container,
 }
 
 /* handle theme changes */
-
-static void
-nautilus_icon_container_theme_changed (gpointer user_data)
-{
-	NautilusIconContainer *container;
-	GtkStyleContext *style;
-	GdkRGBA color;
-
-	container = NAUTILUS_ICON_CONTAINER (user_data);
-	style = gtk_widget_get_style_context (GTK_WIDGET (container));
-
-	gtk_style_context_get_background_color (style, GTK_STATE_FLAG_SELECTED, &color);
-	container->details->highlight_color_rgba = color;
-
-	gtk_style_context_get_background_color (style, GTK_STATE_FLAG_ACTIVE, &color);	
-	container->details->active_color_rgba = color;
-
-	gtk_style_context_get_background_color (style, GTK_STATE_FLAG_PRELIGHT, &color);
-	container->details->prelight_color_rgba = color;
-  
-	gtk_style_context_get_background_color (style, GTK_STATE_FLAG_NORMAL, &color);
-	container->details->normal_color_rgba = color;
-
-	setup_label_gcs (container);
-}
 
 void
 nautilus_icon_container_set_font (NautilusIconContainer *container,

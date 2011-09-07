@@ -203,15 +203,6 @@ struct NautilusIconContainerDetails {
 	/* font sizes used to draw labels */
 	int font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1];
 
-	/* pixbuf and color for label highlighting */
-	GdkRGBA    highlight_color_rgba;
-	GdkRGBA    active_color_rgba;
-	GdkRGBA    normal_color_rgba;
-	GdkRGBA    prelight_color_rgba;
-
-	/* colors for text labels */
-	GdkRGBA label_colors [LAST_LABEL_COLOR];
-	
 	/* State used so arrow keys don't wander if icons aren't lined up.
 	 */
 	int arrow_key_start_x;
@@ -314,12 +305,5 @@ gboolean      nautilus_icon_container_scroll                      (NautilusIconC
 								   int                    delta_x,
 								   int                    delta_y);
 void          nautilus_icon_container_update_scroll_region        (NautilusIconContainer *container);
-
-/* label color for items */
-void          nautilus_icon_container_get_label_color             (NautilusIconContainer *container,
-								   GdkRGBA               *color,
-								   gboolean               first_line,
-								   gboolean               needs_highlight,
-								   gboolean		  is_prelit);
 
 #endif /* NAUTILUS_ICON_CONTAINER_PRIVATE_H */
