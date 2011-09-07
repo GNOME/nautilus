@@ -1773,7 +1773,8 @@ activate_files (ActivateParameters *parameters)
 
 	if (open_in_app_uris != NULL &&
 	    (!parameters->user_confirmation ||
-	     num_files + num_unhandled > SILENT_OPEN_LIMIT)) {
+	     num_files + num_unhandled > SILENT_OPEN_LIMIT) &&
+	     num_apps > 1) {
 		GtkDialog *dialog;
 		char *prompt;
 		char *detail;
