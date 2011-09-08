@@ -144,8 +144,8 @@ start_or_stop_search_engine (NautilusSearchDirectory *search, gboolean adding)
 		reset_file_list (search);
 
 		nautilus_search_engine_start (search->details->engine);
-	} else if (!adding && !search->details->monitor_list &&
-		   !search->details->pending_callback_list &&
+	} else if (!adding && (!search->details->monitor_list ||
+		   !search->details->pending_callback_list) &&
 		   search->details->engine &&
 		   search->details->search_running) {
 		search->details->search_running = FALSE;
