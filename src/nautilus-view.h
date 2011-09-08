@@ -353,6 +353,9 @@ gboolean            nautilus_view_handle_scroll_event              (NautilusView
 
 void                nautilus_view_freeze_updates                   (NautilusView  *view);
 void                nautilus_view_unfreeze_updates                 (NautilusView  *view);
+gboolean            nautilus_view_get_is_renaming                  (NautilusView  *view);
+void                nautilus_view_set_is_renaming                  (NautilusView  *view,
+								    gboolean       renaming);
 void                nautilus_view_add_subdirectory                (NautilusView  *view,
 								   NautilusDirectory*directory);
 void                nautilus_view_remove_subdirectory             (NautilusView  *view,

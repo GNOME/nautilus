@@ -231,6 +231,8 @@ struct NautilusViewDetails
 	guint	 updates_queued;
 	gboolean needs_reload;
 
+	gboolean is_renaming;
+
 	gboolean sort_directories_first;
 
 	gboolean show_foreign_files;
@@ -4090,11 +4092,26 @@ can_rename_file (NautilusView *view, NautilusFile *file)
 	return nautilus_file_can_rename (file);
 }
 
+gboolean
+nautilus_view_get_is_renaming (NautilusView *view)
+{
+	return view->details->is_renaming;
+}
+
+void
+nautilus_view_set_is_renaming (NautilusView *view,
+			       gboolean      is_renaming)
+{
+	view->details->is_renaming = is_renaming;
+}
+
 static void
 start_renaming_file (NautilusView *view,
 		     NautilusFile *file,
 		     gboolean select_all)
 {
+	view->details->is_renaming = TRUE;
+
 	if (file !=  NULL) {
 		nautilus_view_select_file (view, file);
 	}

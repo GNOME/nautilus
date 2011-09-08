@@ -1205,8 +1205,10 @@ editable_focus_out_cb (GtkWidget *widget,
 {
 	NautilusListView *view = user_data;
 
-	nautilus_view_unfreeze_updates (NAUTILUS_VIEW (view));
 	view->details->editable_widget = NULL;
+
+	nautilus_view_set_is_renaming (NAUTILUS_VIEW (view), FALSE);
+	nautilus_view_unfreeze_updates (NAUTILUS_VIEW (view));
 }
 
 static void
@@ -1236,10 +1238,11 @@ cell_renderer_editing_started_cb (GtkCellRenderer *renderer,
 
 static void
 cell_renderer_editing_canceled (GtkCellRendererText *cell,
-				NautilusListView          *view)
+				NautilusListView    *view)
 {
 	view->details->editable_widget = NULL;
 
+	nautilus_view_set_is_renaming (NAUTILUS_VIEW (view), FALSE);
 	nautilus_view_unfreeze_updates (NAUTILUS_VIEW (view));
 }
 
@@ -1247,13 +1250,14 @@ static void
 cell_renderer_edited (GtkCellRendererText *cell,
 		      const char          *path_str,
 		      const char          *new_text,
-		      NautilusListView          *view)
+		      NautilusListView    *view)
 {
 	GtkTreePath *path;
 	NautilusFile *file;
 	GtkTreeIter iter;
 
 	view->details->editable_widget = NULL;
+	nautilus_view_set_is_renaming (NAUTILUS_VIEW (view), FALSE);
 
 	/* Don't allow a rename with an empty string. Revert to original 
 	 * without notifying the user.
@@ -2911,6 +2915,9 @@ nautilus_list_view_start_renaming_file (NautilusView *view,
 	if (!nautilus_list_model_get_first_iter_for_file (list_view->details->model, file, &iter)) {
 		return;
 	}
+
+	/* call parent class to make sure the right icon is selected */
+	NAUTILUS_VIEW_CLASS (nautilus_list_view_parent_class)->start_renaming_file (view, file, select_all);
 
 	/* Freeze updates to the view to prevent losing rename focus when the tree view updates */
 	nautilus_view_freeze_updates (NAUTILUS_VIEW (view));

@@ -1772,20 +1772,6 @@ band_select_ended_callback (NautilusIconContainer *container,
 	nautilus_view_stop_batching_selection_changes (NAUTILUS_VIEW (icon_view));
 }
 
-static void
-renaming_icon_callback (NautilusIconContainer *container,
-			GtkWidget *widget,
-			gpointer callback_data)
-{
-	NautilusView *directory_view;
-
-	directory_view = NAUTILUS_VIEW (callback_data);
-	nautilus_clipboard_set_up_editable
-		(GTK_EDITABLE (widget),
-		 nautilus_view_get_ui_manager (directory_view),
-		 FALSE);
-}
-
 int
 nautilus_icon_view_compare_files (NautilusIconView   *icon_view,
 				  NautilusFile *a,
@@ -1990,21 +1976,37 @@ icon_position_changed_callback (NautilusIconContainer *container,
 
 /* Attempt to change the filename to the new text.  Notify user if operation fails. */
 static void
-nautilus_icon_view_icon_text_changed_callback (NautilusIconContainer *container,
-					 NautilusFile *file,				    
-					 char *new_name,
-					 NautilusIconView *icon_view)
+icon_rename_ended_cb (NautilusIconContainer *container,
+		      NautilusFile *file,				    
+		      const char *new_name,
+		      NautilusIconView *icon_view)
 {
 	g_assert (NAUTILUS_IS_FILE (file));
-	g_assert (new_name != NULL);
+
+	nautilus_view_set_is_renaming (NAUTILUS_VIEW (icon_view), FALSE);
 
 	/* Don't allow a rename with an empty string. Revert to original 
 	 * without notifying the user.
 	 */
-	if (new_name[0] == '\0') {
+	if ((new_name == NULL) || (new_name[0] == '\0')) {
 		return;
 	}
+
 	nautilus_rename_file (file, new_name, NULL, NULL);
+}
+
+static void
+icon_rename_started_cb (NautilusIconContainer *container,
+			GtkWidget *widget,
+			gpointer callback_data)
+{
+	NautilusView *directory_view;
+
+	directory_view = NAUTILUS_VIEW (callback_data);
+	nautilus_clipboard_set_up_editable
+		(GTK_EDITABLE (widget),
+		 nautilus_view_get_ui_manager (directory_view),
+		 FALSE);
 }
 
 static char *
@@ -2313,8 +2315,6 @@ create_icon_container (NautilusIconView *icon_view)
 				 G_CALLBACK (icon_container_context_click_background_callback), icon_view, 0);
 	g_signal_connect_object (icon_container, "icon_position_changed",
 				 G_CALLBACK (icon_position_changed_callback), icon_view, 0);
-	g_signal_connect_object (icon_container, "icon_text_changed",
-				 G_CALLBACK (nautilus_icon_view_icon_text_changed_callback), icon_view, 0);
 	g_signal_connect_object (icon_container, "selection_changed",
 				 G_CALLBACK (selection_changed_callback), icon_view, 0);
 	/* FIXME: many of these should move into fm-icon-container as virtual methods */
@@ -2332,8 +2332,10 @@ create_icon_container (NautilusIconView *icon_view)
 				 G_CALLBACK (get_stored_icon_position_callback), icon_view, 0);
 	g_signal_connect_object (icon_container, "layout_changed",
 				 G_CALLBACK (layout_changed_callback), icon_view, 0);
-	g_signal_connect_object (icon_container, "renaming_icon",
-				 G_CALLBACK (renaming_icon_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "icon_rename_started",
+				 G_CALLBACK (icon_rename_started_cb), icon_view, 0);
+	g_signal_connect_object (icon_container, "icon_rename_ended",
+				 G_CALLBACK (icon_rename_ended_cb), icon_view, 0);
 	g_signal_connect_object (icon_container, "icon_stretch_started",
 				 G_CALLBACK (nautilus_view_update_menus), icon_view,
 				 G_CONNECT_SWAPPED);

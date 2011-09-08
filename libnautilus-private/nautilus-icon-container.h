@@ -217,11 +217,11 @@ typedef struct {
 	void         (* icon_position_changed)    (NautilusIconContainer *container,
 						   NautilusIconData *data,
 						   const NautilusIconPosition *position);
-	void         (* icon_text_changed)        (NautilusIconContainer *container,
+	void         (* icon_rename_started)      (NautilusIconContainer *container,
+						   GtkWidget *renaming_widget);
+	void         (* icon_rename_ended)        (NautilusIconContainer *container,
 						   NautilusIconData *data,
 						   const char *text);
-	void         (* renaming_icon)            (NautilusIconContainer *container,
-						   GtkWidget *renaming_widget);
 	void	     (* icon_stretch_started)     (NautilusIconContainer *container,
 						   NautilusIconData *data);
 	void	     (* icon_stretch_ended)       (NautilusIconContainer *container,

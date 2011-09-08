@@ -239,10 +239,10 @@ enum {
 	ICON_POSITION_CHANGED,
 	GET_STORED_LAYOUT_TIMESTAMP,
 	STORE_LAYOUT_TIMESTAMP,
-	ICON_TEXT_CHANGED,
+	ICON_RENAME_STARTED,
+	ICON_RENAME_ENDED,
 	ICON_STRETCH_STARTED,
 	ICON_STRETCH_ENDED,
-	RENAMING_ICON,
 	LAYOUT_CHANGED,
 	MOVE_COPY_ITEMS,
 	HANDLE_NETSCAPE_URL,
@@ -5778,17 +5778,6 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_TYPE_NONE, 2,
 				G_TYPE_POINTER,
 				G_TYPE_POINTER);
-	signals[ICON_TEXT_CHANGED]
-		= g_signal_new ("icon_text_changed",
-		                G_TYPE_FROM_CLASS (class),
-		                G_SIGNAL_RUN_LAST,
-		                G_STRUCT_OFFSET (NautilusIconContainerClass,
-						 icon_text_changed),
-		                NULL, NULL,
-		                g_cclosure_marshal_generic,
-		                G_TYPE_NONE, 2,
-				G_TYPE_POINTER,
-				G_TYPE_STRING);
 	signals[ICON_STRETCH_STARTED]
 		= g_signal_new ("icon_stretch_started",
 		                G_TYPE_FROM_CLASS (class),
@@ -5809,16 +5798,27 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                g_cclosure_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1,
 				G_TYPE_POINTER);
-	signals[RENAMING_ICON]
-		= g_signal_new ("renaming_icon",
+	signals[ICON_RENAME_STARTED]
+		= g_signal_new ("icon_rename_started",
 		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
-						 renaming_icon),
+						 icon_rename_started),
 		                NULL, NULL,
 		                g_cclosure_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1,
 				G_TYPE_POINTER);
+	signals[ICON_RENAME_ENDED]
+		= g_signal_new ("icon_rename_ended",
+		                G_TYPE_FROM_CLASS (class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
+						 icon_rename_ended),
+		                NULL, NULL,
+		                g_cclosure_marshal_generic,
+		                G_TYPE_NONE, 2,
+				G_TYPE_POINTER,
+				G_TYPE_STRING);
 	signals[GET_ICON_URI]
 		= g_signal_new ("get_icon_uri",
 		                G_TYPE_FROM_CLASS (class),
@@ -8325,7 +8325,7 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 					  end_offset);
 	
 	g_signal_emit (container,
-		       signals[RENAMING_ICON], 0,
+		       signals[ICON_RENAME_STARTED], 0,
 		       GTK_EDITABLE (details->rename_widget));
 	
 	nautilus_icon_container_update_icon (container, icon);
@@ -8339,7 +8339,7 @@ static void
 end_renaming_mode (NautilusIconContainer *container, gboolean commit)
 {
 	NautilusIcon *icon;
-	const char *changed_text;
+	const char *changed_text = NULL;
 
 	set_pending_icon_to_rename (container, NULL);
 
@@ -8363,18 +8363,18 @@ end_renaming_mode (NautilusIconContainer *container, gboolean commit)
 	if (commit) {
 		/* Verify that text has been modified before signalling change. */			
 		changed_text = eel_editable_label_get_text (EEL_EDITABLE_LABEL (container->details->rename_widget));
-		if (strcmp (container->details->original_text, changed_text) != 0) {			
-			g_signal_emit (container,
-				       signals[ICON_TEXT_CHANGED], 0,
-				       icon->data,
-				       changed_text);
+		if (strcmp (container->details->original_text, changed_text) == 0) {
+			changed_text = NULL;
 		}
 	}
 
+	g_signal_emit (container,
+		       signals[ICON_RENAME_ENDED], 0,
+		       icon->data,
+		       changed_text);
+
 	gtk_widget_hide (container->details->rename_widget);
-
 	g_free (container->details->original_text);
-
 }
 
 gboolean
