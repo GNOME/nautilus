@@ -48,7 +48,6 @@ typedef struct {
 	void (*set_query) (NautilusSearchEngine *engine, NautilusQuery *query);
 	void (*start) (NautilusSearchEngine *engine);
 	void (*stop) (NautilusSearchEngine *engine);
-	gboolean (*is_indexed) (NautilusSearchEngine *engine);
 
 	/* Signals */
 	void (*hits_added) (NautilusSearchEngine *engine, GList *hits);
@@ -65,7 +64,6 @@ NautilusSearchEngine* nautilus_search_engine_new       (void);
 void           nautilus_search_engine_set_query (NautilusSearchEngine *engine, NautilusQuery *query);
 void	       nautilus_search_engine_start (NautilusSearchEngine *engine);
 void	       nautilus_search_engine_stop (NautilusSearchEngine *engine);
-gboolean       nautilus_search_engine_is_indexed (NautilusSearchEngine *engine);
 
 void	       nautilus_search_engine_hits_added (NautilusSearchEngine *engine, GList *hits);
 void	       nautilus_search_engine_hits_subtracted (NautilusSearchEngine *engine, GList *hits);

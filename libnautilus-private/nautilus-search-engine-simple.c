@@ -368,12 +368,6 @@ nautilus_search_engine_simple_stop (NautilusSearchEngine *engine)
 	}
 }
 
-static gboolean
-nautilus_search_engine_simple_is_indexed (NautilusSearchEngine *engine)
-{
-	return FALSE;
-}
-
 static void
 nautilus_search_engine_simple_set_query (NautilusSearchEngine *engine, NautilusQuery *query)
 {
@@ -407,7 +401,6 @@ nautilus_search_engine_simple_class_init (NautilusSearchEngineSimpleClass *class
 	engine_class->set_query = nautilus_search_engine_simple_set_query;
 	engine_class->start = nautilus_search_engine_simple_start;
 	engine_class->stop = nautilus_search_engine_simple_stop;
-	engine_class->is_indexed = nautilus_search_engine_simple_is_indexed;
 }
 
 static void

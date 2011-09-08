@@ -167,15 +167,6 @@ nautilus_search_engine_stop (NautilusSearchEngine *engine)
 	NAUTILUS_SEARCH_ENGINE_GET_CLASS (engine)->stop (engine);
 }
 
-gboolean
-nautilus_search_engine_is_indexed (NautilusSearchEngine *engine)
-{
-	g_return_val_if_fail (NAUTILUS_IS_SEARCH_ENGINE (engine), FALSE);
-	g_return_val_if_fail (NAUTILUS_SEARCH_ENGINE_GET_CLASS (engine)->is_indexed != NULL, FALSE);
-
-	return NAUTILUS_SEARCH_ENGINE_GET_CLASS (engine)->is_indexed (engine);
-}
-
 void	       
 nautilus_search_engine_hits_added (NautilusSearchEngine *engine, GList *hits)
 {

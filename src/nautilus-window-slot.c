@@ -85,12 +85,10 @@ real_update_query_editor (NautilusWindowSlot *slot)
 		search_directory = NAUTILUS_SEARCH_DIRECTORY (directory);
 
 		if (nautilus_search_directory_is_saved_search (search_directory)) {
-			query_editor = nautilus_query_editor_new (TRUE,
-								  nautilus_search_directory_is_indexed (search_directory));
+			query_editor = nautilus_query_editor_new (TRUE);
 			nautilus_window_pane_sync_search_widgets (slot->pane);
 		} else {
 			query_editor = nautilus_query_editor_new_with_bar (FALSE,
-									   nautilus_search_directory_is_indexed (search_directory),
 									   slot->pane->window->details->active_pane->active_slot == slot,
 									   NAUTILUS_SEARCH_BAR (slot->pane->search_bar),
 									   slot);

@@ -316,12 +316,6 @@ nautilus_search_engine_tracker_stop (NautilusSearchEngine *engine)
 	}
 }
 
-static gboolean
-nautilus_search_engine_tracker_is_indexed (NautilusSearchEngine *engine)
-{
-	return TRUE;
-}
-
 static void
 nautilus_search_engine_tracker_set_query (NautilusSearchEngine *engine, NautilusQuery *query)
 {
@@ -353,7 +347,6 @@ nautilus_search_engine_tracker_class_init (NautilusSearchEngineTrackerClass *cla
 	engine_class->set_query = nautilus_search_engine_tracker_set_query;
 	engine_class->start = nautilus_search_engine_tracker_start;
 	engine_class->stop = nautilus_search_engine_tracker_stop;
-	engine_class->is_indexed = nautilus_search_engine_tracker_is_indexed;
 
 	g_type_class_add_private (class, sizeof (NautilusSearchEngineTrackerDetails));
 }

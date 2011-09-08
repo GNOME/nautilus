@@ -63,7 +63,6 @@ typedef struct {
 } NautilusQueryEditorRowOps;
 
 struct NautilusQueryEditorDetails {
-	gboolean is_indexed;
 	GtkWidget *entry;
 	gboolean change_frozen;
 	guint typing_timeout_id;
@@ -1013,10 +1012,8 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
 void
 nautilus_query_editor_set_default_query (NautilusQueryEditor *editor)
 {
-	if (!editor->details->is_indexed) {
-		nautilus_query_editor_add_row (editor, NAUTILUS_QUERY_EDITOR_ROW_LOCATION);
-		nautilus_query_editor_changed (editor);
-	}
+	nautilus_query_editor_add_row (editor, NAUTILUS_QUERY_EDITOR_ROW_LOCATION);
+	nautilus_query_editor_changed (editor);
 }
 
 static void
@@ -1040,22 +1037,20 @@ finish_first_line (NautilusQueryEditor *editor, GtkWidget *hbox, gboolean use_go
 	gtk_widget_set_tooltip_text (button,
 				     _("Add a new criterion to this search"));
 
-	if (!editor->details->is_indexed) {
-		if (use_go) {
-			button = gtk_button_new_with_label (_("Go"));
-		} else {
-			button = gtk_button_new_with_label (_("Reload"));
-		}
-		gtk_widget_show (button);
-
-		gtk_widget_set_tooltip_text (button,
-					     _("Perform or update the search"));
-		
-		g_signal_connect (button, "clicked",
-				  G_CALLBACK (go_search_cb), editor);
-		
-		gtk_box_pack_end (GTK_BOX (hbox), button, FALSE, FALSE, 0);
+	if (use_go) {
+		button = gtk_button_new_with_label (_("Go"));
+	} else {
+		button = gtk_button_new_with_label (_("Reload"));
 	}
+	gtk_widget_show (button);
+
+	gtk_widget_set_tooltip_text (button,
+				     _("Perform or update the search"));
+		
+	g_signal_connect (button, "clicked",
+			  G_CALLBACK (go_search_cb), editor);
+		
+	gtk_box_pack_end (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 }
 
 static void
@@ -1161,7 +1156,7 @@ nautilus_query_editor_changed_force (NautilusQueryEditor *editor, gboolean force
 	if (query_is_valid (editor)) {
 		query = nautilus_query_editor_get_query (editor);
 		g_signal_emit (editor, signals[CHANGED], 0,
-			       query, editor->details->is_indexed || force_reload);
+			       query, force_reload);
 		g_object_unref (query);
 	}
 }
@@ -1224,15 +1219,11 @@ nautilus_query_editor_clear_query (NautilusQueryEditor *editor)
 }
 
 GtkWidget *
-nautilus_query_editor_new (gboolean start_hidden,
-			   gboolean is_indexed)
+nautilus_query_editor_new (gboolean start_hidden)
 {
 	GtkWidget *editor;
 
 	editor = g_object_new (NAUTILUS_TYPE_QUERY_EDITOR, NULL);
-
-	NAUTILUS_QUERY_EDITOR (editor)->details->is_indexed = is_indexed;
-
 	nautilus_query_editor_set_visible (NAUTILUS_QUERY_EDITOR (editor),
 					   !start_hidden);
 	
@@ -1276,7 +1267,6 @@ attach_to_external_entry (NautilusQueryEditor *editor)
 
 GtkWidget*
 nautilus_query_editor_new_with_bar (gboolean start_hidden,
-				    gboolean is_indexed,
 				    gboolean start_attached,
 				    NautilusSearchBar *bar,
 				    NautilusWindowSlot *slot)
@@ -1285,8 +1275,6 @@ nautilus_query_editor_new_with_bar (gboolean start_hidden,
 	NautilusQueryEditor *editor;
 
 	editor = NAUTILUS_QUERY_EDITOR (g_object_new (NAUTILUS_TYPE_QUERY_EDITOR, NULL));
-	editor->details->is_indexed = is_indexed;
-
 	nautilus_query_editor_set_visible (editor, !start_hidden);
 
 	editor->details->bar = bar;

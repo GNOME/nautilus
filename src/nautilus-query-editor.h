@@ -61,10 +61,8 @@ typedef struct {
 #include "nautilus-window-slot.h"
 
 GType      nautilus_query_editor_get_type     	   (void);
-GtkWidget* nautilus_query_editor_new          	   (gboolean start_hidden,
-						    gboolean is_indexed);
+GtkWidget* nautilus_query_editor_new          	   (gboolean start_hidden);
 GtkWidget* nautilus_query_editor_new_with_bar      (gboolean start_hidden,
-						    gboolean is_indexed,
 						    gboolean start_attached,
 						    NautilusSearchBar *bar,
 						    NautilusWindowSlot *slot);

@@ -150,30 +150,28 @@ search_bar_activate_callback (NautilusSearchBar *bar,
 
 	uri = nautilus_search_directory_generate_new_uri ();
 	location = g_file_new_for_uri (uri);
-	g_free (uri);
 
 	directory = nautilus_directory_get (location);
-
 	g_assert (NAUTILUS_IS_SEARCH_DIRECTORY (directory));
 
 	search_directory = NAUTILUS_SEARCH_DIRECTORY (directory);
-
 	query = nautilus_search_bar_get_query (NAUTILUS_SEARCH_BAR (pane->search_bar));
+
 	if (query != NULL) {
-		NautilusWindowSlot *slot = pane->active_slot;
-		if (!nautilus_search_directory_is_indexed (search_directory)) {
-			current_uri = nautilus_window_slot_get_location_uri (slot);
-			nautilus_query_set_location (query, current_uri);
-			g_free (current_uri);
-		}
+		current_uri = nautilus_window_slot_get_location_uri (pane->active_slot);
+
+		nautilus_query_set_location (query, current_uri);
 		nautilus_search_directory_set_query (search_directory, query);
+
+		g_free (current_uri);
 		g_object_unref (query);
 	}
 
 	nautilus_window_slot_go_to (pane->active_slot, location, FALSE);
 
 	nautilus_directory_unref (directory);
-	g_object_unref (location);
+	g_object_unref (location);	
+	g_free (uri);
 }
 
 static void

@@ -833,14 +833,6 @@ nautilus_search_directory_is_modified (NautilusSearchDirectory *search)
 	return search->details->modified;
 }
 
-gboolean
-nautilus_search_directory_is_indexed (NautilusSearchDirectory *search)
-{
-	ensure_search_engine (search);
-	return nautilus_search_engine_is_indexed (search->details->engine);
-}
-
-
 void
 nautilus_search_directory_save_to_file (NautilusSearchDirectory *search,
 					const char              *save_file_uri)
