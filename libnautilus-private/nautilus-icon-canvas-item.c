@@ -1376,17 +1376,21 @@ draw_embedded_text (NautilusIconCanvasItem *item,
 	PangoLayout *layout;
 	PangoContext *context;
 	PangoFontDescription *desc;
-	
+	GtkWidget *widget;
+	GtkStyleContext *style_context;
+
 	if (item->details->embedded_text == NULL ||
 	    item->details->embedded_text_rect.width == 0 ||
 	    item->details->embedded_text_rect.height == 0) {
 		return;
 	}
 
+	widget = GTK_WIDGET (EEL_CANVAS_ITEM (item)->canvas);
+
 	if (item->details->embedded_text_layout != NULL) {
 		layout = g_object_ref (item->details->embedded_text_layout);
 	} else {
-		context = gtk_widget_get_pango_context (GTK_WIDGET (EEL_CANVAS_ITEM (item)->canvas));
+		context = gtk_widget_get_pango_context (widget);
 		layout = pango_layout_new (context);
 		pango_layout_set_text (layout, item->details->embedded_text, -1);
 		
@@ -1399,22 +1403,16 @@ draw_embedded_text (NautilusIconCanvasItem *item,
 		}
 	}
 
-	cairo_save (cr);
+	style_context = gtk_widget_get_style_context (widget);
+	gtk_style_context_save (style_context);
+	gtk_style_context_add_class (style_context, "icon-embedded-text");
 
-	cairo_rectangle (cr,
-			 x + item->details->embedded_text_rect.x,
-			 y + item->details->embedded_text_rect.y,
-			 item->details->embedded_text_rect.width,
-			 item->details->embedded_text_rect.height);
-	cairo_clip (cr);
+	gtk_render_layout (style_context, cr,
+			   x + item->details->embedded_text_rect.x,
+			   y + item->details->embedded_text_rect.y,
+			   layout);
 
-	cairo_set_source_rgb (cr, 0, 0, 0);
-	cairo_move_to (cr, 
-		       x + item->details->embedded_text_rect.x,
-		       y + item->details->embedded_text_rect.y);
-	pango_cairo_show_layout (cr, layout);
-
-	cairo_restore (cr);
+	gtk_style_context_restore (style_context);
 }
 
 /* Draw the icon item for non-anti-aliased mode. */
