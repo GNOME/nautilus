@@ -712,11 +712,13 @@ begin_location_change (NautilusWindowSlot *slot,
 			from_folder = parent;
 			parent = g_file_get_parent (from_folder);
 		}
+
 		if (parent != NULL) {
 			new_selection = g_list_prepend (NULL, nautilus_file_get (from_folder));
+			g_object_unref (parent);
 		}
+
 		g_object_unref (from_folder);
-		g_object_unref (parent);
 	}
 
 	end_location_change (slot);
