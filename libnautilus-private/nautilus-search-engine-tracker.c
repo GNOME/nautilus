@@ -38,12 +38,11 @@
 
 struct NautilusSearchEngineTrackerDetails {
 	TrackerSparqlConnection *connection;
-	GCancellable *cancellable;
+	NautilusQuery *query;
 
-	NautilusQuery 	*query;
-	gboolean 	query_pending;
+	gboolean       query_pending;
+	GCancellable  *cancellable;
 };
-
 
 G_DEFINE_TYPE (NautilusSearchEngineTracker,
 	       nautilus_search_engine_tracker,
@@ -111,22 +110,18 @@ cursor_callback (GObject      *object,
 	success = tracker_sparql_cursor_next_finish (cursor, result, &error);
 
 	if (error) {
+		tracker->details->query_pending = FALSE;
 		nautilus_search_engine_error (NAUTILUS_SEARCH_ENGINE (tracker), error->message);
 		g_error_free (error);
-
-		if (cursor) {
-			g_object_unref (cursor);
-		}
+		g_object_unref (cursor);
 
 		return;
 	}
 
 	if (!success) {
+		tracker->details->query_pending = FALSE;
 		nautilus_search_engine_finished (NAUTILUS_SEARCH_ENGINE (tracker));
-
-		if (cursor) {
-			g_object_unref (cursor);
-		}
+		g_object_unref (cursor);
 
 		return;
 	}
@@ -152,20 +147,20 @@ query_callback (GObject      *object,
 
 	tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (user_data);
 
-	tracker->details->query_pending = FALSE;
-
 	connection = TRACKER_SPARQL_CONNECTION (object);
 	cursor = tracker_sparql_connection_query_finish (connection,
 	                                                 result,
 	                                                 &error);
 
 	if (error) {
+		tracker->details->query_pending = FALSE;
 		nautilus_search_engine_error (NAUTILUS_SEARCH_ENGINE (tracker), error->message);
 		g_error_free (error);
 		return;
 	}
 
 	if (!cursor) {
+		tracker->details->query_pending = FALSE;
 		nautilus_search_engine_finished (NAUTILUS_SEARCH_ENGINE (tracker));
 		return;
 	}
@@ -191,6 +186,8 @@ nautilus_search_engine_tracker_start (NautilusSearchEngine *engine)
 	if (tracker->details->query == NULL) {
 		return;
 	}
+
+	g_cancellable_reset (tracker->details->cancellable);
 
 	search_text = nautilus_query_get_text (tracker->details->query);
 	location_uri = nautilus_query_get_location (tracker->details->query);
@@ -363,31 +360,20 @@ NautilusSearchEngine *
 nautilus_search_engine_tracker_new (void)
 {
 	NautilusSearchEngineTracker *engine;
-	GCancellable *cancellable;
 	TrackerSparqlConnection *connection;
 	GError *error = NULL;
 
-	cancellable = g_cancellable_new ();
-	connection = tracker_sparql_connection_get (cancellable, &error);
+	connection = tracker_sparql_connection_get (NULL, &error);
 
 	if (error) {
 		g_warning ("Could not establish a connection to Tracker: %s", error->message);
 		g_error_free (error);
-		g_object_unref (cancellable);
-
-		return NULL;
-	} else if (!connection) {
-		g_warning ("Could not establish a connection to Tracker, no TrackerSparqlConnection was returned");
-		g_object_unref (cancellable);
-
 		return NULL;
 	}
 
 	engine = g_object_new (NAUTILUS_TYPE_SEARCH_ENGINE_TRACKER, NULL);
-
 	engine->details->connection = connection;
-	engine->details->cancellable = cancellable;	
-	engine->details->query_pending = FALSE;
+	engine->details->cancellable = g_cancellable_new ();
 
 	return NAUTILUS_SEARCH_ENGINE (engine);
 }
