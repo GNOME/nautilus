@@ -1364,7 +1364,7 @@ drag_highlight_draw (GtkWidget *widget,
 	style = gtk_widget_get_style_context (widget);
 
 	gtk_style_context_save (style);
-	gtk_style_context_add_class (style, "dnd");
+	gtk_style_context_add_class (style, GTK_STYLE_CLASS_DND);
 	gtk_style_context_set_state (style, GTK_STATE_FLAG_FOCUSED);
 
 	gtk_render_frame (style,
@@ -1372,11 +1372,6 @@ drag_highlight_draw (GtkWidget *widget,
 			  0, 0, width, height);
 
 	gtk_style_context_restore (style);
-
-	cairo_set_line_width (cr, 1.0);
-	cairo_set_source_rgb (cr, 0, 0, 0);
-	cairo_rectangle (cr, 0.5, 0.5, width - 1, height - 1);
-	cairo_stroke (cr);
 
 	return FALSE;
 }
