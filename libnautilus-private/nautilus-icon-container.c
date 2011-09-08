@@ -5492,6 +5492,12 @@ key_press_event (GtkWidget *widget,
 							 "context_click_background");
 			}
 			break;
+		case GDK_KEY_v:
+			/* Eat Control + v to not enable type ahead */
+			if ((event->state & GDK_CONTROL_MASK) != 0) {
+				handled = TRUE;
+			}
+			break;
 		default:
 			break;
 		}
@@ -5507,8 +5513,7 @@ key_press_event (GtkWidget *widget,
 	if (!handled &&
 	    event->keyval != GDK_KEY_slash /* don't steal slash key event, used for "go to" */ &&
 	    event->keyval != GDK_KEY_BackSpace &&
-	    event->keyval != GDK_KEY_Delete &&
-	    !(event->keyval == GDK_KEY_v && event->state == GDK_CONTROL_MASK)) {
+	    event->keyval != GDK_KEY_Delete) {
 		GdkEvent *new_event;
 		GdkWindow *window;
 		char *old_text;
