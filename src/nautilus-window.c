@@ -1092,9 +1092,25 @@ nautilus_window_key_press_event (GtkWidget *widget,
 				 GdkEventKey *event)
 {
 	NautilusWindow *window;
+	NautilusWindowSlot *active_slot;
+	NautilusView *view;
 	int i;
 
 	window = NAUTILUS_WINDOW (widget);
+
+	active_slot = nautilus_window_get_active_slot (window);
+	view = active_slot->content_view;
+
+	if (view != NULL && nautilus_view_get_is_renaming (view)) {
+		/* if we're renaming, just forward the event to the
+		 * focused widget and return. We don't want to process the window
+		 * accelerator bindings, as they might conflict with the 
+		 * editable widget bindings.
+		 */
+		if (gtk_window_propagate_key_event (GTK_WINDOW (window), event)) {
+			return TRUE;
+		}
+	}
 
 	for (i = 0; i < G_N_ELEMENTS (extra_window_keybindings); i++) {
 		if (extra_window_keybindings[i].keyval == event->keyval) {
