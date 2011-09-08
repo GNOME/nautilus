@@ -259,6 +259,12 @@ nautilus_search_engine_tracker_start (NautilusSearchEngine *engine)
 
 	g_string_append (sparql, ")");
 
+	if (location_uri)  {
+		g_string_append (sparql, " && fn:starts-with(nie:url(?urn),");
+		sparql_append_string_literal (sparql, location_uri);
+		g_string_append (sparql, ")");
+	}
+
 	if (mime_count > 0) {
 		g_string_append (sparql, " && ");
 		g_string_append (sparql, "(");
