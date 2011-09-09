@@ -2298,7 +2298,8 @@ volume_mount_cb (GObject *source_object,
 
 	error = NULL;
 	if (!g_volume_mount_finish (G_VOLUME (source_object), res, &error)) {
-		if (error->code != G_IO_ERROR_FAILED_HANDLED) {
+		if (error->code != G_IO_ERROR_FAILED_HANDLED &&
+                    error->code != G_IO_ERROR_ALREADY_MOUNTED) {
 			name = g_volume_get_name (G_VOLUME (source_object));
 			primary = g_strdup_printf (_("Unable to mount %s"), name);
 			g_free (name);
