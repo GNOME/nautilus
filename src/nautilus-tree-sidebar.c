@@ -777,7 +777,7 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
 		gtk_tree_view_set_cursor (view->details->tree_widget, cursor_path, NULL, FALSE);
 		gtk_tree_path_free (cursor_path);
 
-		return TRUE;
+		return FALSE;
 	} else if (event->button == 2 && event->type == GDK_BUTTON_PRESS) {
 		NautilusFile *file;
 		NautilusWindowOpenFlags flags = 0;
