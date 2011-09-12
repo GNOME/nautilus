@@ -6496,6 +6496,7 @@ nautilus_file_get_keywords (NautilusFile *file)
 
 	keywords = eel_g_str_list_copy (file->details->extension_emblems);
 	keywords = g_list_concat (keywords, eel_g_str_list_copy (file->details->pending_extension_emblems));
+	keywords = g_list_concat (keywords, nautilus_file_get_metadata_list (file, NAUTILUS_METADATA_KEY_EMBLEMS));
 
 	return sort_keyword_list_and_remove_duplicates (keywords);
 }
