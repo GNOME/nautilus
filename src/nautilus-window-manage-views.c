@@ -891,10 +891,12 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 		}
 
 		g_clear_object (&slot->pending_location);
+		g_free (slot->pending_scroll_to);
 	
 		slot->pending_location = nautilus_file_get_parent_location (file);
 		slot->pending_selection = g_list_prepend (NULL, nautilus_file_ref (file));
 		slot->determine_view_file = nautilus_file_get_parent (file);
+		slot->pending_scroll_to = nautilus_file_get_uri (file);
 
 		nautilus_file_invalidate_all_attributes (slot->determine_view_file);
 		nautilus_file_call_when_ready (slot->determine_view_file,
