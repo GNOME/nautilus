@@ -208,6 +208,9 @@ desktop_callback_check_done (DesktopCallback *desktop_callback)
 		return;
 	}
 
+	/* Ensure our metadata is updated before calling back */
+	nautilus_desktop_update_metadata_from_keyfile (NAUTILUS_FILE (desktop_callback->desktop_file), "directory");
+
 	/* Remove from the hash table before sending it. */
 	g_hash_table_remove (desktop_callback->desktop_file->details->callbacks,
 			     desktop_callback);
@@ -483,9 +486,6 @@ nautilus_desktop_directory_file_init (NautilusDesktopDirectoryFile *desktop_file
 	nautilus_directory_unref (real_dir);
 	
 	desktop_file->details->real_dir_file = real_dir_file;
-
-	nautilus_desktop_update_metadata_from_keyfile (NAUTILUS_FILE (desktop_file), "directory");
-
 	g_signal_connect_object (real_dir_file, "changed",
 				 G_CALLBACK (real_file_changed_callback), desktop_file, 0);
 }
