@@ -299,8 +299,10 @@ nautilus_icon_canvas_item_set_property (GObject        *object,
 {
 	NautilusIconCanvasItem *item;
 	NautilusIconCanvasItemDetails *details;
+	AtkObject *accessible;
 
 	item = NAUTILUS_ICON_CANVAS_ITEM (object);
+	accessible = atk_gobject_accessible_for_object (G_OBJECT (item));
 	details = item->details;
 
 	switch (property_id) {
@@ -314,11 +316,8 @@ nautilus_icon_canvas_item_set_property (GObject        *object,
 		g_free (details->editable_text);
 		details->editable_text = g_strdup (g_value_get_string (value));
 		if (details->text_util) {
-			AtkObject *accessible;
-
 			gail_text_util_text_setup (details->text_util,
 						   details->editable_text);
-			accessible = atk_gobject_accessible_for_object (G_OBJECT (item));
 			g_object_notify (G_OBJECT(accessible), "accessible-name");
 		}
 		
@@ -351,6 +350,10 @@ nautilus_icon_canvas_item_set_property (GObject        *object,
 		}
 		details->is_highlighted_for_selection = g_value_get_boolean (value);
 		nautilus_icon_canvas_item_invalidate_label_size (item);
+
+		atk_object_notify_state_change (accessible, ATK_STATE_SELECTED,
+						details->is_highlighted_for_selection);
+
 		break;
          
         case PROP_HIGHLIGHTED_AS_KEYBOARD_FOCUS:
@@ -360,8 +363,7 @@ nautilus_icon_canvas_item_set_property (GObject        *object,
 		details->is_highlighted_as_keyboard_focus = g_value_get_boolean (value);
 
 		if (details->is_highlighted_as_keyboard_focus) {
-			AtkObject *atk_object = atk_gobject_accessible_for_object (object);
-			atk_focus_tracker_notify (atk_object);
+			atk_focus_tracker_notify (accessible);
 		}
 		break;
 		

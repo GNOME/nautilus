@@ -514,6 +514,21 @@ void eel_canvas_window_to_world (EelCanvas *canvas,
 void eel_canvas_world_to_window (EelCanvas *canvas,
 				 double worldx, double worldy, double *winx, double *winy);
 
+/* Accessible implementation */
+GType eel_canvas_accessible_get_type(void);
+
+typedef struct _EelCanvasAccessible EelCanvasAccessible;
+struct _EelCanvasAccessible
+{
+	GtkAccessible parent;
+};
+
+typedef struct _EelCanvasAccessibleClass EelCanvasAccessibleClass;
+struct _EelCanvasAccessibleClass
+{
+	GtkAccessibleClass parent_class;
+};
+
 G_END_DECLS
 
 #endif
