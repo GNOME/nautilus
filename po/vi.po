@@ -7,14 +7,16 @@
 # Phạm Thành Long <lngt@ngonngu.net>, 2007.
 # Clytie Siddall <clytie@riverland.net.au>, 2005-2009.
 # Lê Trường An <truongan@linuxmail.org>, 2011.
+# Nguyễn Vũ Hưng <vuhung16plus@gmail.com>, 2011
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.25.4\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
 "POT-Creation-Date: 2011-04-14 11:48+0000\n"
-"PO-Revision-Date: 2011-07-09 15:18+0700\n"
-"Last-Translator: Lê Trường An <truongan@linuxmail.org>\n"
+"PO-Revision-Date: 2011-08-26 16:18+0700\n"
+"Last-Translator: Nguyễn Vũ Hưng <vuhung16plus@gmail.com>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1177,9 +1179,9 @@ msgid "This file cannot be stopped"
 msgstr "Tập tin này không thể dừng được"
 
 #: ../libnautilus-private/nautilus-file.c:1806
-#, fuzzy, c-format
+#, c-format
 msgid "Slashes are not allowed in filenames"
-msgstr "Không cho phép dấu xuyệc trong tên tập tin"
+msgstr "Không cho phép dấu gạch chéo trong tên tập tin"
 
 #: ../libnautilus-private/nautilus-file.c:1824
 #, c-format
@@ -1231,18 +1233,16 @@ msgid "today at 00:00 PM"
 msgstr "hôm nay vào 00:00 PM"
 
 #: ../libnautilus-private/nautilus-file.c:4348
-#, fuzzy
 msgid "today at %-I:%M %p"
-msgstr "hôm nay vào lúc %-H:%M"
+msgstr "hôm nay, lúc %-I:%M %p"
 
 #: ../libnautilus-private/nautilus-file.c:4350
 msgid "today, 00:00 PM"
 msgstr "hôm nay, 00:00 PM"
 
 #: ../libnautilus-private/nautilus-file.c:4351
-#, fuzzy
 msgid "today, %-I:%M %p"
-msgstr "hôm nay, %-H:%M"
+msgstr "hôm nay, %-I:%M %p"
 
 #: ../libnautilus-private/nautilus-file.c:4353
 #: ../libnautilus-private/nautilus-file.c:4354
@@ -1257,27 +1257,24 @@ msgid "yesterday at 00:00:00 PM"
 msgstr "hôm qua vào 00:00:00"
 
 #: ../libnautilus-private/nautilus-file.c:4364
-#, fuzzy
 msgid "yesterday at %-I:%M:%S %p"
-msgstr "hôm qua vào lúc %-H:%M:%S"
+msgstr "hôm qua, lúc %-I:%M:%S %p"
 
 #: ../libnautilus-private/nautilus-file.c:4366
 msgid "yesterday at 00:00 PM"
 msgstr "hôm qua vào 00:00 PM"
 
 #: ../libnautilus-private/nautilus-file.c:4367
-#, fuzzy
 msgid "yesterday at %-I:%M %p"
-msgstr "hôm qua vào lúc %-H:%M"
+msgstr "hôm qua lúc %-I:%M %p"
 
 #: ../libnautilus-private/nautilus-file.c:4369
 msgid "yesterday, 00:00 PM"
 msgstr "hôm qua, 00:00 PM"
 
 #: ../libnautilus-private/nautilus-file.c:4370
-#, fuzzy
 msgid "yesterday, %-I:%M %p"
-msgstr "hôm qua, %-H:%M"
+msgstr "hôm qua, %-I:%M %p"
 
 #: ../libnautilus-private/nautilus-file.c:4372
 #: ../libnautilus-private/nautilus-file.c:4373
@@ -1294,45 +1291,40 @@ msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Thứ tư, 00 tháng chín 0000 vào 00:00:00 PM"
 
 #: ../libnautilus-private/nautilus-file.c:4385
-#, fuzzy
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
-msgstr "%A, %-d %B %Y vào lúc %-H:%M:%S"
+msgstr "%A, %B %-d %Y lúc %-I:%M:%S %p"
 
 #: ../libnautilus-private/nautilus-file.c:4387
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Thứ hai, 00 T10 0000 vào 00:00:00"
 
 #: ../libnautilus-private/nautilus-file.c:4388
-#, fuzzy
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
-msgstr "%a, %-d %b %Y vào lúc %-H:%M:%S"
+msgstr "%a, %b %-d %Y lúc %-I:%M:%S %p "
 
 #: ../libnautilus-private/nautilus-file.c:4390
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Thứ hai, 00 T10 0000 vào 00:00"
 
 #: ../libnautilus-private/nautilus-file.c:4391
-#, fuzzy
 msgid "%a, %b %-d %Y at %-I:%M %p"
-msgstr "%a, %-d %b %Y vào lúc %-H:%M"
+msgstr "%a, %b %-d %Y lúc %-I:%M %p"
 
 #: ../libnautilus-private/nautilus-file.c:4393
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "00 T10 0000 vào 00:00"
 
 #: ../libnautilus-private/nautilus-file.c:4394
-#, fuzzy
 msgid "%b %-d %Y at %-I:%M %p"
-msgstr "%-d %b %Y vào lúc %-H:%M"
+msgstr "%b %-d %Y lúc %-I:%M %p"
 
 #: ../libnautilus-private/nautilus-file.c:4396
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "00 T10 0000, 00:00"
 
 #: ../libnautilus-private/nautilus-file.c:4397
-#, fuzzy
 msgid "%b %-d %Y, %-I:%M %p"
-msgstr "%-d %b %Y, %-H:%M"
+msgstr "%b %-d %Y, %-I:%M %p"
 
 #: ../libnautilus-private/nautilus-file.c:4399
 msgid "00/00/00, 00:00 PM"
@@ -5233,15 +5225,15 @@ msgstr "Liên kết lưu địa chỉ không tồn tại"
 
 #: ../src/nautilus-window-bookmarks.c:317
 msgid "Go to the location specified by this bookmark"
-msgstr "Đi đến địa chỉ được chỉ ra bởi liên kết lưu này"
+msgstr "Đến địa chỉ của liên kết lưu này"
 
 #: ../src/nautilus-window-manage-views.c:601
 msgid "You can choose another view or go to a different location."
-msgstr "Bạn có thể chọn khung xem khác hoặc đi tới một địa chỉ khác."
+msgstr "Bạn có thể chọn khung xem khác hoặc tới một địa chỉ khác."
 
 #: ../src/nautilus-window-manage-views.c:620
 msgid "The location cannot be displayed with this viewer."
-msgstr "Không thể xem địa chỉ này bằng trình hiển thị này."
+msgstr "Địa chỉ không thể xem được bằng trình hiển thị này."
 
 #: ../src/nautilus-window-manage-views.c:1022
 msgid "Content View"
@@ -5249,15 +5241,15 @@ msgstr "Xem nội dung"
 
 #: ../src/nautilus-window-manage-views.c:1023
 msgid "View of the current folder"
-msgstr "Xem thư mục hiện thời"
+msgstr "Thư mục hiện thời"
 
 #: ../src/nautilus-window-manage-views.c:1181
 msgid "Searching..."
-msgstr "Tìm..."
+msgstr "Tìm kiếm..."
 
 #: ../src/nautilus-window-manage-views.c:1706
 msgid "Nautilus has no installed viewer capable of displaying the folder."
-msgstr "Nautilus chưa được cài đặt bộ quan sát để có thể hiển thị thư mục này."
+msgstr "Nautilus chưa được cài đặt trình xem hỗ trợ thư mục này."
 
 #: ../src/nautilus-window-manage-views.c:1712
 msgid "The location is not a folder."
@@ -5266,7 +5258,7 @@ msgstr "Địa chỉ này không phải là thư mục."
 #: ../src/nautilus-window-manage-views.c:1718
 #, c-format
 msgid "Could not find \"%s\"."
-msgstr "Không thể tìm thấy \"%s\"."
+msgstr "Không tìm thấy \"%s\"."
 
 #: ../src/nautilus-window-manage-views.c:1721
 msgid "Please check the spelling and try again."
@@ -5275,7 +5267,7 @@ msgstr "Hãy kiểm tra lại lỗi chính tả và thử lại một lần nữ
 #: ../src/nautilus-window-manage-views.c:1729
 #, c-format
 msgid "Nautilus cannot handle \"%s\" locations."
-msgstr "Nautilus không thể xử lý được địa chỉ loại « %s: »"
+msgstr "Nautilus không thể xử lý được địa chỉ loại \"%s\"."
 
 #: ../src/nautilus-window-manage-views.c:1732
 msgid "Nautilus cannot handle this kind of location."
@@ -5297,13 +5289,12 @@ msgstr "Truy cập bị từ chối."
 #: ../src/nautilus-window-manage-views.c:1754
 #, c-format
 msgid "Could not display \"%s\", because the host could not be found."
-msgstr "Không hiển thị được \"%s\", vì không tìm thấy máy hỗ trợ."
+msgstr "Không hiển thị được \"%s\", vì không tìm thấy máy chủ."
 
 #: ../src/nautilus-window-manage-views.c:1756
 msgid ""
 "Check that the spelling is correct and that your proxy settings are correct."
-msgstr ""
-"Hãy kiểm tra lại xem chính tả và thiết đặt ủy nhiệm của bạn có đúng không."
+msgstr "Hãy kiểm tra lại chính tả và thiết lập máy ủy nhiệm."
 
 #: ../src/nautilus-window-manage-views.c:1771
 #, c-format
@@ -5321,10 +5312,10 @@ msgid ""
 "Software Foundation; either version 2 of the License, or (at your option) "
 "any later version."
 msgstr ""
-"Chương trình Nautilus là phần mềm tự do; bạn có thể phát hành lại nó và/hoặc "
-"sửa đổi nó với điều kiện của Giấy Phép Công Cộng GNU như được xuất bản bởi "
-"Tổ Chức Phần Mềm Tự Do; hoặc phiên bản 2 của Giấy Phép này, hoặc (tùy chọn) "
-"bất kỳ phiên bản sau nào."
+"Nautilus là phần mềm tự do; bạn có thể phát hành lại nó và/hoặc sửa đổi nó "
+"với điều kiện của Giấy Phép Công Cộng GNU như được xuất bản bởi Tổ Chức Phần "
+"Mềm Tự Do; hoặc phiên bản 2 của Giấy Phép này, hoặc (tùy chọn) bất kỳ phiên "
+"bản sau nào."
 
 #: ../src/nautilus-window-menus.c:360
 msgid ""
@@ -5333,9 +5324,9 @@ msgid ""
 "FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
 "details."
 msgstr ""
-"Nautilus được phát hành vì mong muốn nó có ích, nhưng KHÔNG CÓ BẢO HÀNH GÌ "
-"CẢ, THẬM CHÍ KHÔNG CÓ BẢO ĐẢM ĐƯỢC NGỤ Ý KHẢ NĂNG BÁN HAY KHẢ NĂNG LÀM ĐƯỢC "
-"VIỆC DỨT KHOÁT. Xem Giấy Phép Công Cộng GNU để biết thêm chi tiết."
+"Nautilus được phát hành vì mong muốn nó có ích, nhưng KHÔNG BẢO HÀNH GÌ, "
+"THẬM CHÍ KHÔNG CÓ BẢO ĐẢM ĐƯỢC NGỤ Ý KHẢ NĂNG BÁN HAY KHẢ NĂNG LÀM ĐƯỢC VIỆC "
+"DỨT KHOÁT. Xem Giấy Phép Công Cộng GNU để biết thêm chi tiết."
 
 #: ../src/nautilus-window-menus.c:364
 msgid ""
@@ -5360,8 +5351,8 @@ msgid ""
 "Nautilus lets you organize files and folders, both on your computer and "
 "online."
 msgstr ""
-"Chương trình Nautilus cho người dùng có khả năng tổ chức các tập tin và thư "
-"mục, cả hai trên máy này và trực tuyến."
+"Nautilus cho người dùng có khả năng tổ chức các tập tin và thư mục, cả hai "
+"trên máy này và trực tuyến."
 
 #: ../src/nautilus-window-menus.c:379
 msgid "Copyright © 1999-2011 The Nautilus authors"
@@ -5373,7 +5364,7 @@ msgstr "Tác quyền © năm 1999-2011 của Những tác giả Nautilus"
 #.
 #: ../src/nautilus-window-menus.c:389
 msgid "translator-credits"
-msgstr "Nhóm Việt hoá GNOME <http://gnomevi.sourceforge.net>"
+msgstr "Dự án MOST <http://lists.hanoilug.org/listinfo/du-an-most>"
 
 #: ../src/nautilus-window-menus.c:392
 msgid "Nautilus Web Site"
@@ -5466,7 +5457,7 @@ msgstr "Mụ_c lục"
 #. tooltip
 #: ../src/nautilus-window-menus.c:969
 msgid "Display Nautilus help"
-msgstr "Hiện trợ giúp của Nautilus"
+msgstr "Hiện trợ giúp Nautilus"
 
 #. name, stock id
 #. label, accelerator
