@@ -43,7 +43,6 @@
 #include "nautilus-search-directory.h"
 #include "nautilus-search-directory-file.h"
 #include "nautilus-thumbnails.h"
-#include "nautilus-users-groups-cache.h"
 #include "nautilus-vfs-file.h"
 #include "nautilus-saved-search-file.h"
 #include <eel/eel-debug.h>

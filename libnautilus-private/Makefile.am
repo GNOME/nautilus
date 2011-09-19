@@ -186,8 +186,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-undo-transaction.h \
 	nautilus-undo.c \
 	nautilus-undo.h \
-	nautilus-users-groups-cache.c \
-	nautilus-users-groups-cache.h \
 	nautilus-vfs-directory.c \
 	nautilus-vfs-directory.h \
 	nautilus-vfs-file.c \
