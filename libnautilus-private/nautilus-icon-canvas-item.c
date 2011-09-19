@@ -1409,12 +1409,22 @@ draw_embedded_text (NautilusIconCanvasItem *item,
 	gtk_style_context_save (style_context);
 	gtk_style_context_add_class (style_context, "icon-embedded-text");
 
+	cairo_save (cr);
+
+	cairo_rectangle (cr,
+			 x + item->details->embedded_text_rect.x,
+			 y + item->details->embedded_text_rect.y,
+			 item->details->embedded_text_rect.width,
+			 item->details->embedded_text_rect.height);
+	cairo_clip (cr);
+
 	gtk_render_layout (style_context, cr,
 			   x + item->details->embedded_text_rect.x,
 			   y + item->details->embedded_text_rect.y,
 			   layout);
 
 	gtk_style_context_restore (style_context);
+	cairo_restore (cr);
 }
 
 /* Draw the icon item for non-anti-aliased mode. */
