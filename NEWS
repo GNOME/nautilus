@@ -1,3 +1,23 @@
+Major changes in 3.1.92 are:
+* Hopefully fix once and for all NautilusWindow keybindings
+* Don't hide the floating bar on hover if it's interactive
+* Fix canvas accessibility implementation for GTK 3.2
+* Don't warn when opening multiple files with one application
+* Correctly remember remote passwords when asked so
+* Add a new topic-based help menu
+* Fix default list view sorting order
+* Don't warn when a mount operation fails with ALREADY_MOUNTED
+* Select the item on right click in the Tree sidebar
+* Scroll to the selected file when opening an URI from the cmdline
+* Read the emblem icon names from the metadata
+* Use libtracker-sparql directly as an optional dependency
+* Streamline icon container rendering code to use gtk_render_*
+* Correctly remember "Keep Aligned" and other desktop metadata
+* Invalidate the text size when changing the DPI xsetting
+* Strip the hardcoded theme bits
+* Add Unity desktop file compatibility
+* Use XDG_CURRENT_DESKTOP when possible
+
 Major changes in 3.1.90 are:
 * Remove the built-in audio previewer
 
