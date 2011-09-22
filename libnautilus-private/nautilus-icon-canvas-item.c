@@ -1116,7 +1116,8 @@ draw_label_text (NautilusIconCanvasItem *item,
 		x = text_rect.x0 + ((text_rect.x1 - text_rect.x0) - max_text_width) / 2;
 	}
 	
-	if (have_editable) {
+	if (have_editable &&
+	    !details->is_renaming) {
 		state = GTK_STATE_FLAG_NORMAL;
 
 		if (prelight_label && item->details->is_prelit) {
@@ -1142,7 +1143,8 @@ draw_label_text (NautilusIconCanvasItem *item,
 		gtk_style_context_restore (context);
 	}
 
-	if (have_additional) {
+	if (have_additional &&
+	    !details->is_renaming) {
 		state = GTK_STATE_FLAG_NORMAL;
 
 		if (needs_highlight && gtk_widget_has_focus (GTK_WIDGET (container))) {
