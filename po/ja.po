@@ -19,8 +19,8 @@ msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2011-09-13 02:01+0000\n"
-"PO-Revision-Date: 2011-09-11 08:23+0900\n"
+"POT-Creation-Date: 2011-09-19 17:58+0000\n"
+"PO-Revision-Date: 2011-09-17 18:43+0900\n"
 "Last-Translator: Jiro Matsuzawa <jmatsuzawa@src.gnome.org>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -31,7 +31,7 @@ msgstr ""
 
 #: ../data/nautilus.xml.in.h:1
 msgid "Saved search"
-msgstr "検索結果の保存"
+msgstr "検索の保存"
 
 #: ../eel/eel-canvas.c:1245 ../eel/eel-canvas.c:1246
 msgid "X"
@@ -514,7 +514,7 @@ msgstr[0] "およそ %'d 時間"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:375
-#: ../libnautilus-private/nautilus-file.c:6275 ../src/nautilus-view-dnd.c:123
+#: ../libnautilus-private/nautilus-file.c:6274 ../src/nautilus-view-dnd.c:123
 #, c-format
 msgid "Link to %s"
 msgstr "%sへのリンク"
@@ -1182,50 +1182,50 @@ msgstr "\"%s\" があった元の場所を特定できませんでした "
 msgid "The item cannot be restored from trash"
 msgstr "ゴミ箱からそのアイテムを戻せません。"
 
-#: ../libnautilus-private/nautilus-file.c:1210
+#: ../libnautilus-private/nautilus-file.c:1209
 #: ../libnautilus-private/nautilus-vfs-file.c:389
 msgid "This file cannot be mounted"
 msgstr "このファイルはマウントできません"
 
-#: ../libnautilus-private/nautilus-file.c:1255
+#: ../libnautilus-private/nautilus-file.c:1254
 msgid "This file cannot be unmounted"
 msgstr "このファイルはアンマウントできません"
 
-#: ../libnautilus-private/nautilus-file.c:1289
+#: ../libnautilus-private/nautilus-file.c:1288
 msgid "This file cannot be ejected"
 msgstr "このファイルは取り出せません"
 
-#: ../libnautilus-private/nautilus-file.c:1322
+#: ../libnautilus-private/nautilus-file.c:1321
 #: ../libnautilus-private/nautilus-vfs-file.c:567
 msgid "This file cannot be started"
 msgstr "このファイルは起動できません"
 
-#: ../libnautilus-private/nautilus-file.c:1374
-#: ../libnautilus-private/nautilus-file.c:1405
+#: ../libnautilus-private/nautilus-file.c:1373
+#: ../libnautilus-private/nautilus-file.c:1404
 msgid "This file cannot be stopped"
 msgstr "このファイルは停止できません"
 
-#: ../libnautilus-private/nautilus-file.c:1806
+#: ../libnautilus-private/nautilus-file.c:1805
 #, c-format
 msgid "Slashes are not allowed in filenames"
 msgstr "ファイル名にスラッシュは使えません"
 
-#: ../libnautilus-private/nautilus-file.c:1824
+#: ../libnautilus-private/nautilus-file.c:1823
 #, c-format
 msgid "File not found"
 msgstr "ファイルが見つかりません"
 
-#: ../libnautilus-private/nautilus-file.c:1852
+#: ../libnautilus-private/nautilus-file.c:1851
 #, c-format
 msgid "Toplevel files cannot be renamed"
 msgstr "トップレベルのファイル名を変更できません"
 
-#: ../libnautilus-private/nautilus-file.c:1875
+#: ../libnautilus-private/nautilus-file.c:1874
 #, c-format
 msgid "Unable to rename desktop icon"
 msgstr "デスクトップのアイコン名を変更できません"
 
-#: ../libnautilus-private/nautilus-file.c:1904
+#: ../libnautilus-private/nautilus-file.c:1903
 #, c-format
 msgid "Unable to rename desktop file"
 msgstr "デスクトップのファイル名を変更できません"
@@ -1245,65 +1245,65 @@ msgstr "デスクトップのファイル名を変更できません"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: ../libnautilus-private/nautilus-file.c:4361
+#: ../libnautilus-private/nautilus-file.c:4360
 msgid "today at 00:00:00 PM"
 msgstr "今日の午後00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4362
+#: ../libnautilus-private/nautilus-file.c:4361
 #: ../src/nautilus-file-management-properties.c:470
 msgid "today at %-I:%M:%S %p"
 msgstr "今日の%p%-I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4364
+#: ../libnautilus-private/nautilus-file.c:4363
 msgid "today at 00:00 PM"
 msgstr "今日の午後00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4365
+#: ../libnautilus-private/nautilus-file.c:4364
 msgid "today at %-I:%M %p"
 msgstr "今日の%p%-I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4367
+#: ../libnautilus-private/nautilus-file.c:4366
 msgid "today, 00:00 PM"
 msgstr "今日の午後00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4368
+#: ../libnautilus-private/nautilus-file.c:4367
 msgid "today, %-I:%M %p"
 msgstr "今日の%p%-I:%M"
 
+#: ../libnautilus-private/nautilus-file.c:4369
 #: ../libnautilus-private/nautilus-file.c:4370
-#: ../libnautilus-private/nautilus-file.c:4371
 msgid "today"
 msgstr "今日"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: ../libnautilus-private/nautilus-file.c:4380
+#: ../libnautilus-private/nautilus-file.c:4379
 msgid "yesterday at 00:00:00 PM"
 msgstr "昨日の午後00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4381
+#: ../libnautilus-private/nautilus-file.c:4380
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "昨日の%p%-I:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:4383
+#: ../libnautilus-private/nautilus-file.c:4382
 msgid "yesterday at 00:00 PM"
 msgstr "昨日の午後00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4384
+#: ../libnautilus-private/nautilus-file.c:4383
 msgid "yesterday at %-I:%M %p"
 msgstr "昨日の%p%-I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4386
+#: ../libnautilus-private/nautilus-file.c:4385
 msgid "yesterday, 00:00 PM"
 msgstr "昨日の午後00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4387
+#: ../libnautilus-private/nautilus-file.c:4386
 msgid "yesterday, %-I:%M %p"
 msgstr "昨日の%p%-I:%M"
 
+#: ../libnautilus-private/nautilus-file.c:4388
 #: ../libnautilus-private/nautilus-file.c:4389
-#: ../libnautilus-private/nautilus-file.c:4390
 msgid "yesterday"
 msgstr "昨日"
 
@@ -1312,141 +1312,141 @@ msgstr "昨日"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: ../libnautilus-private/nautilus-file.c:4401
+#: ../libnautilus-private/nautilus-file.c:4400
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "0000年9月00日 水曜日 午後00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4402
+#: ../libnautilus-private/nautilus-file.c:4401
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%Y年%-m月%-d日 %A %p%-I:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:4404
+#: ../libnautilus-private/nautilus-file.c:4403
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "0000/10/00 (月) 午後00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4405
+#: ../libnautilus-private/nautilus-file.c:4404
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%Y/%-m/%-d (%a) %p%-I:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:4407
+#: ../libnautilus-private/nautilus-file.c:4406
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "0000/10/00 (月) 午後00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4408
+#: ../libnautilus-private/nautilus-file.c:4407
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%Y/%-m/%-d (%a) %p%-I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4410
+#: ../libnautilus-private/nautilus-file.c:4409
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "0000/10/00 午後00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4411
+#: ../libnautilus-private/nautilus-file.c:4410
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%Y/%-m/%-d %p%-I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4413
+#: ../libnautilus-private/nautilus-file.c:4412
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "0000/10/00 午後00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4414
+#: ../libnautilus-private/nautilus-file.c:4413
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%Y/%-m/%-d %p%-I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4416
+#: ../libnautilus-private/nautilus-file.c:4415
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00 午後00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4417
+#: ../libnautilus-private/nautilus-file.c:4416
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%y/%-m/%-d %p%-I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4419
+#: ../libnautilus-private/nautilus-file.c:4418
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: ../libnautilus-private/nautilus-file.c:4420
+#: ../libnautilus-private/nautilus-file.c:4419
 msgid "%m/%d/%y"
 msgstr "%y/%m/%d"
 
-#: ../libnautilus-private/nautilus-file.c:5063
+#: ../libnautilus-private/nautilus-file.c:5062
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "アクセス権は指定できません"
 
-#: ../libnautilus-private/nautilus-file.c:5348
+#: ../libnautilus-private/nautilus-file.c:5347
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "所有者は指定できません"
 
-#: ../libnautilus-private/nautilus-file.c:5366
+#: ../libnautilus-private/nautilus-file.c:5365
 #, c-format
 msgid "Specified owner '%s' doesn't exist"
 msgstr "指定した '%s' という所有者は存在しません"
 
-#: ../libnautilus-private/nautilus-file.c:5615
+#: ../libnautilus-private/nautilus-file.c:5614
 #, c-format
 msgid "Not allowed to set group"
 msgstr "グループは指定できません"
 
-#: ../libnautilus-private/nautilus-file.c:5633
+#: ../libnautilus-private/nautilus-file.c:5632
 #, c-format
 msgid "Specified group '%s' doesn't exist"
 msgstr "指定した '%s' というグループは存在しません"
 
-#: ../libnautilus-private/nautilus-file.c:5777 ../src/nautilus-view.c:2834
+#: ../libnautilus-private/nautilus-file.c:5776 ../src/nautilus-view.c:2834
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
 msgstr[0] "%'u個のアイテム"
 
-#: ../libnautilus-private/nautilus-file.c:5778
+#: ../libnautilus-private/nautilus-file.c:5777
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u個のフォルダー"
 
-#: ../libnautilus-private/nautilus-file.c:5779
+#: ../libnautilus-private/nautilus-file.c:5778
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
 msgstr[0] "%'u個のファイル"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:6161
-#: ../libnautilus-private/nautilus-file.c:6177
+#: ../libnautilus-private/nautilus-file.c:6160
+#: ../libnautilus-private/nautilus-file.c:6176
 msgid "? items"
 msgstr "?個のアイテム"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:6167
+#: ../libnautilus-private/nautilus-file.c:6166
 msgid "? bytes"
 msgstr "?バイト"
 
-#: ../libnautilus-private/nautilus-file.c:6182
+#: ../libnautilus-private/nautilus-file.c:6181
 msgid "unknown type"
 msgstr "不明な種類"
 
-#: ../libnautilus-private/nautilus-file.c:6185
+#: ../libnautilus-private/nautilus-file.c:6184
 msgid "unknown MIME type"
 msgstr "不明な MIME 型"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:6199
+#: ../libnautilus-private/nautilus-file.c:6198
 #: ../src/nautilus-properties-window.c:1137
 msgid "unknown"
 msgstr "不明"
 
-#: ../libnautilus-private/nautilus-file.c:6249
+#: ../libnautilus-private/nautilus-file.c:6248
 msgid "program"
 msgstr "プログラム"
 
-#: ../libnautilus-private/nautilus-file.c:6269
+#: ../libnautilus-private/nautilus-file.c:6268
 msgid "link"
 msgstr "リンク"
 
-#: ../libnautilus-private/nautilus-file.c:6291
+#: ../libnautilus-private/nautilus-file.c:6290
 msgid "link (broken)"
 msgstr "リンク切れ"
 
@@ -1558,7 +1558,7 @@ msgstr "検索"
 #: ../libnautilus-private/nautilus-query.c:138
 #, c-format
 msgid "Search for \"%s\""
-msgstr "\"%s\" の検索結果"
+msgstr "\"%s\" の検索"
 
 #: ../libnautilus-private/nautilus-undo-signal-handlers.c:174
 #: ../src/nautilus-query-editor.c:1001
@@ -2322,15 +2322,15 @@ msgstr "--geometry オプションには複数の URI を指定できません�
 
 #: ../src/nautilus-application.c:920
 msgid "Perform a quick set of self-check tests."
-msgstr "簡易自己診断テストセットを実行する"
+msgstr "簡易自己診断テストセットを実行する。"
 
 #: ../src/nautilus-application.c:923
 msgid "Show the version of the program."
-msgstr "バージョンを表示する"
+msgstr "バージョンを表示する。"
 
 #: ../src/nautilus-application.c:925
 msgid "Create the initial window with the given geometry."
-msgstr "指定した大きさでウィンドウを起動する"
+msgstr "指定した大きさでウィンドウを起動する。"
 
 #: ../src/nautilus-application.c:925
 msgid "GEOMETRY"
@@ -2338,7 +2338,7 @@ msgstr "GEOMETRY"
 
 #: ../src/nautilus-application.c:927
 msgid "Only create windows for explicitly specified URIs."
-msgstr "明示的に指定した URI のウィンドウだけを起動する"
+msgstr "明示的に指定した URI のウィンドウだけを起動する。"
 
 #: ../src/nautilus-application.c:929
 msgid ""
@@ -2579,7 +2579,7 @@ msgstr "パスワードを記憶する(_R)"
 
 #: ../src/nautilus-connect-server-dialog.c:1224
 msgid "Operation cancelled"
-msgstr ""
+msgstr "操作がキャンセルされました"
 
 #: ../src/nautilus-desktop-item-properties.c:412
 #: ../src/nautilus-desktop-item-properties.c:422
@@ -2749,7 +2749,7 @@ msgstr "アイテムの名前を変更できませんでした。"
 #: ../src/nautilus-error-reporting.c:348
 #, c-format
 msgid "Renaming \"%s\" to \"%s\"."
-msgstr "\"%s\" から \"%s\" に変更中"
+msgstr "\"%s\" から \"%s\" に変更中。"
 
 #. Translators: this is referred to captions under icons.
 #. Translators: this is referred to the permissions
@@ -3228,7 +3228,7 @@ msgstr "起動する際にアイコン表示でエラーが発生しました。
 
 #: ../src/nautilus-icon-view.c:2756
 msgid "Display this location with the icon view."
-msgstr "この場所をアイコン表示で表示します"
+msgstr "この場所をアイコン表示で表示します。"
 
 #. translators: this is used in the view menu
 #: ../src/nautilus-icon-view.c:2767
@@ -3245,7 +3245,7 @@ msgstr "起動する際にコンパクト表示でエラーが発生しました
 
 #: ../src/nautilus-icon-view.c:2770
 msgid "Display this location with the compact view."
-msgstr "この場所をコンパクト表示で表示します"
+msgstr "この場所をコンパクト表示で表示します。"
 
 #: ../src/nautilus-image-properties-page.c:262
 msgid "Camera Brand"
@@ -3385,7 +3385,7 @@ msgstr "起動する際に一覧表示でエラーが発生しました。"
 
 #: ../src/nautilus-list-view.c:3396
 msgid "Display this location with the list view."
-msgstr "この場所を一覧表示で表示します"
+msgstr "この場所を一覧表示で表示します。"
 
 #: ../src/nautilus-location-bar.c:56 ../src/nautilus-properties-window.c:3140
 msgid "Location:"
@@ -3553,7 +3553,7 @@ msgstr "\"%s\" を開いています。"
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
-msgstr[0] "%d 個のアイテムを開いています"
+msgstr[0] "%d 個のアイテムを開いています。"
 
 #: ../src/nautilus-notebook.c:369
 msgid "Close tab"
@@ -4145,7 +4145,7 @@ msgstr "検索フォルダー"
 
 #: ../src/nautilus-query-editor.c:1009
 msgid "Edit the saved search"
-msgstr "保存した検索結果を編集します"
+msgstr "保存した検索を編集します"
 
 #: ../src/nautilus-query-editor.c:1038
 msgid "Add a new criterion to this search"
@@ -4165,7 +4165,7 @@ msgstr "検索を実行または更新します"
 
 #: ../src/nautilus-query-editor.c:1068
 msgid "_Search for:"
-msgstr "検索(_S):"
+msgstr "検索ワード(_S):"
 
 #: ../src/nautilus-query-editor.c:1102
 msgid "Search results"
@@ -4250,7 +4250,7 @@ msgstr "例: "
 
 #: ../src/nautilus-view.c:1695
 msgid "Save Search as"
-msgstr "検索結果の保存"
+msgstr "名前を付けて検索を保存"
 
 #: ../src/nautilus-view.c:1715
 msgid "Search _name:"
@@ -4258,7 +4258,7 @@ msgstr "検索名(_N):"
 
 #: ../src/nautilus-view.c:1734
 msgid "Select Folder to Save Search In"
-msgstr "検索結果を保存するフォルダーの選択"
+msgstr "検索を保存するフォルダーの選択"
 
 #: ../src/nautilus-view.c:2751 ../src/nautilus-view.c:2788
 #, c-format
@@ -4811,23 +4811,23 @@ msgstr "ファイルを開いてウィンドウを閉じます"
 #. label, accelerator
 #: ../src/nautilus-view.c:7108
 msgid "Sa_ve Search"
-msgstr "検索結果の保存(_V)"
+msgstr "検索の保存(_V)"
 
 #. tooltip
 #: ../src/nautilus-view.c:7109
 msgid "Save the edited search"
-msgstr "編集した検索結果を保存します"
+msgstr "入力した検索条件を保存します"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-view.c:7112
 msgid "Sa_ve Search As..."
-msgstr "検索結果を別名で保存(_V)..."
+msgstr "名前を付けて検索を保存(_V)..."
 
 #. tooltip
 #: ../src/nautilus-view.c:7113
 msgid "Save the current search as a file"
-msgstr "この検索結果に名前を付けて保存します"
+msgstr "この検索に名前を付けて保存します"
 
 #. tooltip
 #: ../src/nautilus-view.c:7119
@@ -5289,10 +5289,8 @@ msgstr ""
 #. * e.g. 1999-2011.
 #.
 #: ../src/nautilus-window-menus.c:378
-#, fuzzy
-#| msgid "Copyright © 1999-2011 The Nautilus authors"
 msgid "Copyright © %Id–%Id The Nautilus authors"
-msgstr "Copyright © 1999-2011 Nautilus 開発チーム"
+msgstr "Copyright © %Id–%Id The Nautilus 開発チーム"
 
 #. Set initial window title
 #: ../src/nautilus-window-menus.c:382 ../src/nautilus-window.c:1994
@@ -5408,7 +5406,7 @@ msgstr "この場所をもう一度読み込みます"
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:943
 msgid "_All Topics"
-msgstr ""
+msgstr "すべてのトピック(_A)"
 
 #. tooltip
 #: ../src/nautilus-window-menus.c:944
@@ -5418,56 +5416,54 @@ msgstr "Nautilus のヘルプを表示します"
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:947
-#, fuzzy
-#| msgid "_Search for Files..."
 msgid "Search for files"
-msgstr "ファイルの検索(_S)..."
+msgstr "ファイルの検索"
 
 #. tooltip
 #: ../src/nautilus-window-menus.c:948
 msgid ""
 "Locate files based on file name and type. Save your searches for later use."
 msgstr ""
+"ファイルの名前や種類をもとにファイルの配置場所を特定します。検索条件を保存し"
+"て、あとで使用することができます。"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:951
-#, fuzzy
-#| msgid "Sort _folders before files"
 msgid "Sort files and folders"
-msgstr "フォルダーをファイルより前に配置する(_F)"
+msgstr "ファイルとフォルダーの並び替え"
 
 #. tooltip
 #: ../src/nautilus-window-menus.c:952
 msgid "Arrange files by name, size, type, or when they were changed."
-msgstr ""
+msgstr "ファイルの名前、サイズ、種類、更新日時の順にファイルを配置します。"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:955
-#, fuzzy
-#| msgid "Original file"
 msgid "Find a lost file"
-msgstr "元のファイル"
+msgstr "見失ったファイルを探す"
 
 #. tooltip
 #: ../src/nautilus-window-menus.c:956
 msgid "Follow these tips if you can't find a file you created or downloaded."
 msgstr ""
+"作ったファイルやダウンロードしたファイルが見つからない場合は、このヒントを参"
+"考にしてください。"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:959
-#, fuzzy
-#| msgid "Access and organize files"
 msgid "Share and transfer files"
-msgstr "ファイルの操作や整理をします"
+msgstr "ファイルの共有と転送"
 
 #. tooltip
 #: ../src/nautilus-window-menus.c:960
 msgid ""
 "Easily transfer files to your contacts and devices from the file manager."
 msgstr ""
+"ファイルマネージャーを使って、仲間や別のデバイスにファイルを簡単に転送しま"
+"す。"
 
 #. name, stock id
 #. label, accelerator
@@ -5880,1397 +5876,3 @@ msgstr "ファイルをメール、インスタントメッセージで送る...
 #: ../nautilus-sendto-extension/nautilus-nste.c:86
 msgid "Send files by mail, instant message..."
 msgstr "ファイルをメール、インスタントメッセージで送る..."
-
-#~ msgid "%"
-#~ msgstr "%"
-
-#~ msgid "%s (%s bytes)"
-#~ msgstr "%s (%s バイト)"
-
-#~ msgid ""
-#~ "Speed tradeoff for when to preview a sound file when mousing over a files "
-#~ "icon. If set to \"always\" then always plays the sound, even if the file "
-#~ "is on a remote server. If set to \"local-only\" then only plays previews "
-#~ "on local file systems. If set to \"never\" then it never previews sound."
-#~ msgstr ""
-#~ "ファイルのアイコンの上にマウスを移動した時、サウンドファイルをどういう場合"
-#~ "にプレビュー再生するかです。指定内容により、処理速度のトレードオフがありま"
-#~ "す。\"always\" にすると、リモートサーバー上にあるファイルであってもサウン"
-#~ "ドを再生します。\"local-only\" にすると、ローカルのファイルシステムにある"
-#~ "サウンドファイルのみ再生します。\"never\" にすると再生しません。"
-
-#~ msgid "Whether to preview sounds when mousing over an icon"
-#~ msgstr "サウンドファイルを演奏するかどうか"
-
-#~ msgid "Create L_auncher..."
-#~ msgstr "ランチャの生成(_A)..."
-
-#~ msgid "Create a new launcher"
-#~ msgstr "新しいランチャを作成します"
-
-#~ msgid "<b>Sound Files</b>"
-#~ msgstr "<b>サウンドファイル</b>"
-
-#~ msgid "Preview _sound files:"
-#~ msgstr "サウンドファイルの演奏(_S):"
-
-#~ msgid "pointing at \"%s\""
-#~ msgstr "\"%s\" です"
-
-#~ msgid "Download location?"
-#~ msgstr "場所をダウンロードしますか?"
-
-#~ msgid "You can download it or make a link to it."
-#~ msgstr "そのまま、あるいは、その場所のリンクをダウンロードできます。"
-
-#~ msgid "Make a _Link"
-#~ msgstr "リンクを作成する(_L)"
-
-#~ msgid "_Download"
-#~ msgstr "ダウンロードする(_D)"
-
-#~ msgid ""
-#~ "Are you sure you want to clear the list of locations you have visited?"
-#~ msgstr "本当に訪問した場所の一覧をクリアしてもよろしいですか?"
-
-#~ msgid "_Contents"
-#~ msgstr "目次(_C)"
-
-#~ msgid "Clea_r History"
-#~ msgstr "履歴のクリア(_R)"
-
-#~ msgid "Clear contents of Go menu and Back/Forward lists"
-#~ msgstr "\"ジャンプ\" メニューと \"戻る/進む\" の一覧の内容をクリアします"
-
-#~ msgid "File is not a valid .desktop file"
-#~ msgstr "正常な .desktop ファイルではありません"
-
-#~ msgid "Unrecognized desktop file Version '%s'"
-#~ msgstr ".desktop ファイルのバージョン '%s' は認識できません"
-
-#~ msgid "Starting %s"
-#~ msgstr "%s の起動中"
-
-#~ msgid "Application does not accept documents on command line"
-#~ msgstr "アプリケーションはコマンドラインからドキュメントを受け取れません"
-
-#~ msgid "Unrecognized launch option: %d"
-#~ msgstr "起動オプションの解析エラー: %d"
-
-#~ msgid "Can't pass document URIs to a 'Type=Link' desktop entry"
-#~ msgstr "'Type=Link' の .desktop エントリにはドキュメントの URI を渡せません"
-
-#~ msgid "Not a launchable item"
-#~ msgstr "起動できるアイテムではありません"
-
-#~ msgid "Disable connection to session manager"
-#~ msgstr "セッションマネージャーに接続しない"
-
-#~ msgid "Specify file containing saved configuration"
-#~ msgstr "保存した設定を格納しているファイルを指定する"
-
-#~ msgid "FILE"
-#~ msgstr "FILE"
-
-#~ msgid "Specify session management ID"
-#~ msgstr "セッション管理の ID を指定する"
-
-#~ msgid "ID"
-#~ msgstr "ID"
-
-#~ msgid "Session management options:"
-#~ msgstr "セッション管理のオプション:"
-
-#~ msgid "Show session management options"
-#~ msgstr "セッション管理のオプションを表示する"
-
-#~ msgid "No applications found"
-#~ msgstr "アプリケーションが見つかりませんでした"
-
-#~ msgid "Ask what to do"
-#~ msgstr "アクションを問い合わせる"
-
-#~ msgid "Do Nothing"
-#~ msgstr "何もしない"
-
-#~ msgid "Open Folder"
-#~ msgstr "フォルダーを開く"
-
-#~ msgid "Open with other Application..."
-#~ msgstr "別のアプリケーションで開く..."
-
-#~ msgid "You have just inserted an Audio CD."
-#~ msgstr "オーディオ CD を挿入しました。"
-
-#~ msgid "You have just inserted an Audio DVD."
-#~ msgstr "オーディオ DVD を挿入しました。"
-
-#~ msgid "You have just inserted a Video DVD."
-#~ msgstr "ビデオ DVD を挿入しました。"
-
-#~ msgid "You have just inserted a Video CD."
-#~ msgstr "ビデオ CD を挿入しました。"
-
-#~ msgid "You have just inserted a Super Video CD."
-#~ msgstr "スーパービデオ CD を挿入しました。"
-
-#~ msgid "You have just inserted a blank CD."
-#~ msgstr "空の CD を挿入しました。"
-
-#~ msgid "You have just inserted a blank DVD."
-#~ msgstr "空の DVD を挿入しました。"
-
-#~ msgid "You have just inserted a blank Blu-Ray disc."
-#~ msgstr "空のブルーレイディスクを挿入しました。"
-
-#~ msgid "You have just inserted a blank HD DVD."
-#~ msgstr "空の HD DVD を挿入しました。"
-
-#~ msgid "You have just inserted a Photo CD."
-#~ msgstr "フォト CD を挿入しました。"
-
-#~ msgid "You have just inserted a Picture CD."
-#~ msgstr "ピクチャー CD を挿入しました。"
-
-#~ msgid "You have just inserted a medium with digital photos."
-#~ msgstr "デジタル写真が入ったメディアを挿入しました。"
-
-#~ msgid "You have just inserted a digital audio player."
-#~ msgstr "デジタルオーディオプレイヤーを挿入しました。"
-
-#~ msgid ""
-#~ "You have just inserted a medium with software intended to be "
-#~ "automatically started."
-#~ msgstr ""
-#~ "自動的に起動されることを意図したソフトウェアが入っているメディアを挿入しま"
-#~ "した。"
-
-#~ msgid "You have just inserted a medium."
-#~ msgstr "メディアを挿入しました。"
-
-#~ msgid "Choose what application to launch."
-#~ msgstr "起動するアプリケーションを選択してください。"
-
-#~ msgid ""
-#~ "Select how to open \"%s\" and whether to perform this action in the "
-#~ "future for other media of type \"%s\"."
-#~ msgstr ""
-#~ "\"%s\" を開く方法と、このアクションを今後 \"%s\" というメディアに対しても"
-#~ "適用するかを選択してください。"
-
-#~ msgid "_Always perform this action"
-#~ msgstr "常にこのアクションを適用する(_A)"
-
-#~ msgid "%s's Home"
-#~ msgstr "%s のホーム"
-
-#~ msgid "new file"
-#~ msgstr "新しいファイル"
-
-#~ msgid "Could not set application as the default: %s"
-#~ msgstr "デフォルトのアプリケーションとして指定できませんでした: %s"
-
-#~ msgid "Default"
-#~ msgstr "デフォルト"
-
-#~ msgid "Icon"
-#~ msgstr "アイコン"
-
-#~ msgid "Could not remove application"
-#~ msgstr "アプリケーションを削除できませんでした"
-
-#~ msgid "No applications selected"
-#~ msgstr "アプリケーションが選択されていません"
-
-#~ msgid "Unknown"
-#~ msgstr "不明"
-
-#~ msgid "Could not find '%s'"
-#~ msgstr "'%s' が見つかりませんでした"
-
-#~ msgid "Could not find application"
-#~ msgstr "アプリケーションが見つかりませんでした"
-
-#~ msgid "Could not add application to the application database: %s"
-#~ msgstr ""
-#~ "次のアプリケーションをアプリケーション・データベースに追加できませんでし"
-#~ "た: %s"
-
-#~ msgid "Select an Application"
-#~ msgstr "アプリケーションの選択"
-
-#~ msgid "Select an application to view its description."
-#~ msgstr "(アプリケーションを選択すると、その説明が表示されます)"
-
-#~ msgid "_Use a custom command"
-#~ msgstr "コマンドを直接指定する(_U)"
-
-#~ msgid "_Browse..."
-#~ msgstr "参照(_B)..."
-
-#~ msgid "Open %s and other %s document with:"
-#~ msgstr ""
-#~ "%s や他の \"%s\" のファイルを開くアプリケーションを選択してください:"
-
-#~ msgid "Open %s with:"
-#~ msgstr "%s を次のアプリケーションで開く:"
-
-#~ msgid "Open all %s documents with:"
-#~ msgstr "\"%s\" のファイルすべてを開くアプリケーションを選択してください:"
-
-#~ msgid "Open %s and other \"%s\" files with:"
-#~ msgstr ""
-#~ "%s と \"%s\" に属すファイルを開くアプリケーションを選択してください:"
-
-#~ msgid "_Remember this application for \"%s\" files"
-#~ msgstr "これを \"%s\" のファイルを開くアプリケーションとして記憶する(_R)"
-
-#~ msgid "Open all \"%s\" files with:"
-#~ msgstr ""
-#~ "すべての \"%s\" 関連ファイルを開くアプリケーションを選択してください:"
-
-#~ msgid "_Add"
-#~ msgstr "追加(_A)"
-
-#~ msgid "Add Application"
-#~ msgstr "アプリケーションの追加"
-
-#~ msgid "Open Failed, would you like to choose another application?"
-#~ msgstr "オープンに失敗しました。他のアプリケーションを選択しますか?"
-
-#~ msgid ""
-#~ "\"%s\" cannot open \"%s\" because \"%s\" cannot access files at \"%s\" "
-#~ "locations."
-#~ msgstr ""
-#~ "\"%s\" は \"%s\" を開けません (理由: \"%s\" は \"%s\" にあるファイルにアク"
-#~ "セスできないため)。"
-
-#~ msgid "Open Failed, would you like to choose another action?"
-#~ msgstr "オープンに失敗しました。別のアクションを指定しますか?"
-
-#~ msgid ""
-#~ "The default action cannot open \"%s\" because it cannot access files at "
-#~ "\"%s\" locations."
-#~ msgstr ""
-#~ "デフォルトのアクションでは \"%s\" を開けません (理由: \"%s\" にあるファイ"
-#~ "ルにアクセスできないため)。"
-
-#~ msgid ""
-#~ "No other applications are available to view this file. If you copy this "
-#~ "file onto your computer, you may be able to open it."
-#~ msgstr ""
-#~ "このファイルを参照できるアプリケーションがありません。このファイルをお使い"
-#~ "のコンピューターへコピーすると、開くことができるかもしれません。"
-
-#~ msgid ""
-#~ "No other actions are available to view this file. If you copy this file "
-#~ "onto your computer, you may be able to open it."
-#~ msgstr ""
-#~ "このファイルを参照できるアクションが他にありません。このファイルをお使いの"
-#~ "コンピューターへコピーすると、開くことができるかもしれません。"
-
-#~ msgid ""
-#~ "If set to true, then Nautilus will automatically mount media such as user-"
-#~ "visible hard disks and removable media on start-up and media insertion."
-#~ msgstr ""
-#~ "TRUE にすると、GNOME デスクトップを起動した時やメディアを挿入した時に、"
-#~ "ユーザーに表示することが可能なハードディスクやリムーバブルメディアなどを自"
-#~ "動的にマウントします。"
-
-#~ msgid ""
-#~ "If set to true, then Nautilus will automatically open a folder when media "
-#~ "is automounted. This only applies to media where no known x-content/* "
-#~ "type was detected; for media where a known x-content type is detected, "
-#~ "the user configurable action will be taken instead."
-#~ msgstr ""
-#~ "TRUE にすると、メディアがマウントされたら自動的にフォルダーとして開きま"
-#~ "す。この機能は未知の x-content/* 型が検出されたメディアにのみ適用されま"
-#~ "す。"
-
-#~ msgid ""
-#~ "If set to true, then Nautilus will never prompt nor autorun/autostart "
-#~ "programs when a medium is inserted."
-#~ msgstr ""
-#~ "TRUE にすると、メディアを挿入してもオートラン/オートスタート・プログラムを"
-#~ "起動したり確認ダイアログを表示しなくなります。"
-
-#~ msgid ""
-#~ "List of x-content/* types for which the user have chosen \"Do Nothing\" "
-#~ "in the preference capplet. No prompt will be shown nor will any matching "
-#~ "application be started on insertion of media matching these types."
-#~ msgstr ""
-#~ "メディアの取り扱いで \"何もしない\" を選択している場合に参照される x-"
-#~ "content/* 型の並びです。この並びに一致するメディアをドライブに挿入した場合"
-#~ "は何も問い合わせが行われないか、もしくは何もアプリケーションが起動されませ"
-#~ "ん。"
-
-#~ msgid ""
-#~ "List of x-content/* types for which the user have chosen \"Open Folder\" "
-#~ "in the preferences capplet. A folder window will be opened on insertion "
-#~ "of media matching these types."
-#~ msgstr ""
-#~ "メディアの取り扱いで \"フォルダーを開く\" を選択している場合に参照される "
-#~ "x-content/* 型の並びです。この並びに一致するメディアをドライブに挿入すると"
-#~ "フォルダーウィンドウを開きます。"
-
-#~ msgid ""
-#~ "List of x-content/* types for which the user have chosen to start an "
-#~ "application in the preference capplet. The preferred application for the "
-#~ "given type will be started on insertion on media matching these types."
-#~ msgstr ""
-#~ "メディアの取り扱いで何かアプリケーションを起動するような選択をしている場合"
-#~ "に参照される x-content/* 型の並びです。この並びに一致するメディアをドライ"
-#~ "ブに挿入すると指定した型に対してお気に入りのアプリケーションを起動します。"
-
-#~ msgid "List of x-content/* types set to \"Do Nothing\""
-#~ msgstr "\"何もしない\" x-content/* 型のリスト"
-
-#~ msgid "List of x-content/* types set to \"Open Folder\""
-#~ msgstr "\"フォルダーを開く\" x-content/* 型のリスト"
-
-#~ msgid ""
-#~ "List of x-content/* types where the preferred application will be launched"
-#~ msgstr "お気に入りのアプリを起動する x-content/* 型のリスト"
-
-#~ msgid "Never prompt or autorun/autostart programs when media are inserted"
-#~ msgstr ""
-#~ "メディアの挿入時にオートラン・プログラムを起動したり問い合わせはしない"
-
-#~ msgid "Whether to automatically mount media"
-#~ msgstr "メディアを自動的にマウントするかどうか"
-
-#~ msgid "Whether to automatically open a folder for automounted media"
-#~ msgstr "マウントしたメディアを自動的にフォルダーとして開くかどうか"
-
-#~ msgid ""
-#~ "If set to true, then Nautilus will exit when all windows are destroyed. "
-#~ "This is the default setting. If set to false, it can be started without "
-#~ "any window, so nautilus can serve as a daemon to monitor media automount, "
-#~ "or similar tasks."
-#~ msgstr ""
-#~ "TRUE にセットすると、すべてのウインドウが終了させられた時に Nautilus は実"
-#~ "行終了します。これはデフォルトの設定です。FALSE ならば、ウインドウ無しで起"
-#~ "動することができ、メディアのオートマウントや、それに類するタスクを監視する"
-#~ "デーモンとして Nautilus を起動できます。"
-
-#~ msgid "If true, icons will be laid out tighter by default in new windows."
-#~ msgstr ""
-#~ "TRUE にすると、新しいウィンドウの中にデフォルトでアイコンが小さく配置され"
-#~ "ます。"
-
-#~ msgid "Nautilus will exit when last window destroyed."
-#~ msgstr "最後のウインドウが削除された時に、Nautilus を終了します。"
-
-#~ msgid "Use tighter layout in new windows"
-#~ msgstr "新しいウィンドウの中で小さく配置する"
-
-#~ msgid "Browse the file system with the file manager"
-#~ msgstr "ファイルマネージャーを使ってファイルシステムを閲覧します"
-
-#~ msgid "File Browser"
-#~ msgstr "ファイルブラウザー"
-
-#~ msgid "Change the behaviour and appearance of file manager windows"
-#~ msgstr "ファイルマネージャーの動きとウィンドウの外観を変更します"
-
-#~ msgid "File Management"
-#~ msgstr "ファイル管理"
-
-#~ msgid "Home Folder"
-#~ msgstr "ホームフォルダー"
-
-#~ msgid "File Manager"
-#~ msgstr "ファイルマネージャー"
-
-#~ msgid "Background"
-#~ msgstr "背景"
-
-#~ msgid "_Empty File"
-#~ msgstr "空のファイル(_E)"
-
-#~ msgid "Create a new empty file inside this folder"
-#~ msgstr "このフォルダーの中に空のファイルを新規に作成します"
-
-#~ msgid "Open in _Folder Window"
-#~ msgstr "フォルダーウィンドウの中で開く(_F)"
-
-#~ msgid "Open each selected item in a folder window"
-#~ msgstr "選択したアイテムをフォルダーウィンドウの中に開きます"
-
-#~ msgid "_Format"
-#~ msgstr "初期化(_F)"
-
-#~ msgid "Format the selected volume"
-#~ msgstr "選択したボリュームをフォーマットします"
-
-#~ msgid "Format the volume associated with the open folder"
-#~ msgstr ""
-#~ "オープンするフォルダーに関連づけられているボリュームをフォーマットします"
-
-#~ msgid "Open this folder in a folder window"
-#~ msgstr "このフォルダーをフォルダーウィンドウの中に開きます"
-
-#~ msgid "Format the volume associated with this folder"
-#~ msgstr "このフォルダーに関連づけられているボリュームをフォーマットします"
-
-#~ msgid "_Home Folder"
-#~ msgstr "ホームフォルダー(_H)"
-
-#~ msgid "Browse in New _Window"
-#~ msgstr "新しいウィンドウで表示する(_W)"
-
-#~ msgid "_Browse Folder"
-#~ msgid_plural "_Browse Folders"
-#~ msgstr[0] "フォルダーの表示(_B)"
-
-#~ msgid "Browse in New _Tab"
-#~ msgstr "新しいタブで表示する(_T)"
-
-#~ msgid "Browse in %'d New _Window"
-#~ msgid_plural "Browse in %'d New _Windows"
-#~ msgstr[0] "%'d個の新しいウィンドウで表示する(_W)"
-
-#~ msgid "Browse in %'d New _Tab"
-#~ msgid_plural "Browse in %'d New _Tabs"
-#~ msgstr[0] "%'d個の新しいタブで表示する(_T)"
-
-#~ msgid "Compact _Layout"
-#~ msgstr "小さいレイアウト(_L)"
-
-#~ msgid "Toggle using a tighter layout scheme"
-#~ msgstr "アイコンを小さいレイアウトに切り替えます"
-
-#~ msgid "Show Tree"
-#~ msgstr "ツリーの表示"
-
-#, fuzzy
-#~ msgid "Open a browser window."
-#~ msgstr "ブラウザーウィンドウを開く"
-
-#, fuzzy
-#~ msgid "Folder:"
-#~ msgstr "フォルダー(_F):"
-
-#~ msgid "<b>Media Handling</b>"
-#~ msgstr "<b>メディアの取り扱い</b>"
-
-#~ msgid "<b>Other Media</b>"
-#~ msgstr "<b>その他のメディア</b>"
-
-#~ msgid "Acti_on:"
-#~ msgstr "アクション(_O):"
-
-#~ msgid "B_rowse media when inserted"
-#~ msgstr "メディアを挿入したら表示する(_R)"
-
-#~ msgid "CD _Audio:"
-#~ msgstr "オーディオ CD(_A):"
-
-#~ msgid ""
-#~ "Choose what happens when inserting media or connecting devices to the "
-#~ "system"
-#~ msgstr ""
-#~ "メディアを挿入したりデバイスをシステムに接続したら実行するアクションを選択"
-#~ "してください:"
-
-#~ msgid "Less common media formats can be configured here"
-#~ msgstr "あまり一般的ではない形式のメディアをここで設定してください:"
-
-#~ msgid "Media"
-#~ msgstr "メディア"
-
-#~ msgid "_DVD Video:"
-#~ msgstr "DVD ビデオ(_D):"
-
-#~ msgid "_Music Player:"
-#~ msgstr "楽曲プレイヤー(_M):"
-
-#~ msgid "_Never prompt or start programs on media insertion"
-#~ msgstr "メディアを挿入してもプログラムを起動したり問い合わせをしない(_N)"
-
-#~ msgid "_Photos:"
-#~ msgstr "写真(_P):"
-
-#~ msgid "_Software:"
-#~ msgstr "ソフトウェア(_S):"
-
-#~ msgid "_Use compact layout"
-#~ msgstr "コンパクトな配置にする(_U)"
-
-#~ msgid "History"
-#~ msgstr "履歴"
-
-#~ msgid "Show History"
-#~ msgstr "履歴の表示"
-
-#~ msgid "Open Location"
-#~ msgstr "場所を開く"
-
-#~ msgid "_Location:"
-#~ msgstr "場所(_L):"
-
-#~ msgid "The history location doesn't exist."
-#~ msgstr "履歴にある場所が存在しません。"
-
-#~ msgid "Open Folder W_indow"
-#~ msgstr "フォルダーウィンドウで開く(_I)"
-
-#~ msgid "Open a folder window for the displayed location"
-#~ msgstr "この場所をフォルダーウィンドウで開きます"
-
-#~ msgid "Show search"
-#~ msgstr "検索を行う"
-
-#~ msgid "_Side Pane"
-#~ msgstr "サイドペイン(_S)"
-
-#~ msgid "Location _Bar"
-#~ msgstr "場所バー(_B)"
-
-#~ msgid "Change the visibility of this window's location bar"
-#~ msgstr "場所バーの表示/非表示を切り替えます"
-
-#~ msgid "_Zoom"
-#~ msgstr "ズーム(_Z)"
-
-#~ msgid "_View As"
-#~ msgstr "表示方法(_V)"
-
-#~ msgid "_Search"
-#~ msgstr "検索(_S)"
-
-#~ msgid "Notes"
-#~ msgstr "メモ"
-
-#~ msgid "Show Notes"
-#~ msgstr "メモの表示"
-
-#~ msgid "Show Places"
-#~ msgstr "場所の表示"
-
-#~ msgid "Close the side pane"
-#~ msgstr "サイドペインを閉じます"
-
-#~ msgid "_Places"
-#~ msgstr "場所(_P)"
-
-#~ msgid "Open _Location..."
-#~ msgstr "場所を開く(_L)..."
-
-#~ msgid "Close P_arent Folders"
-#~ msgstr "すべての親フォルダーを閉じる(_A)"
-
-#~ msgid "Close this folder's parents"
-#~ msgstr "このフォルダーの親フォルダーを閉じます"
-
-#~ msgid "Clos_e All Folders"
-#~ msgstr "すべてのフォルダーを閉じる(_E)"
-
-#~ msgid "Close all folder windows"
-#~ msgstr "すべてのフォルダーウィンドウを閉じます"
-
-#~ msgid "Locate documents and folders on this computer by name or content"
-#~ msgstr ""
-#~ "このコンピューターから名前や内容でドキュメントとフォルダーを特定します"
-
-#~ msgid "Zoom In"
-#~ msgstr "拡大"
-
-#~ msgid "Zoom Out"
-#~ msgstr "縮小"
-
-#~ msgid "Zoom to Default"
-#~ msgstr "デフォルトのレベル"
-
-#~ msgid "Zoom"
-#~ msgstr "ズーム"
-
-#~ msgid "Set the zoom level of the current view"
-#~ msgstr "現在のビューのズームレベルを設定します"
-
-#~ msgid "Apparition"
-#~ msgstr "アパリッション"
-
-#~ msgid "Azul"
-#~ msgstr "アズル"
-
-#~ msgid "Black"
-#~ msgstr "黒"
-
-#~ msgid "Blue Ridge"
-#~ msgstr "ブルー・リッジ"
-
-#~ msgid "Blue Rough"
-#~ msgstr "ブルー・ラフ"
-
-#~ msgid "Blue Type"
-#~ msgstr "ブルー・タイプ"
-
-#~ msgid "Brushed Metal"
-#~ msgstr "ブラッシュド・メタル"
-
-#~ msgid "Bubble Gum"
-#~ msgstr "バブル・ガム"
-
-#~ msgid "Burlap"
-#~ msgstr "バーラップ"
-
-#~ msgid "C_olors"
-#~ msgstr "色(_O)"
-
-#~ msgid "Camouflage"
-#~ msgstr "カモフラージュ"
-
-#~ msgid "Chalk"
-#~ msgstr "チョーク"
-
-#~ msgid "Charcoal"
-#~ msgstr "チャーコール"
-
-#~ msgid "Concrete"
-#~ msgstr "コンクリート"
-
-#~ msgid "Cork"
-#~ msgstr "コーク"
-
-#~ msgid "Countertop"
-#~ msgstr "カウンタートップ"
-
-#~ msgid "Danube"
-#~ msgstr "ドナウ"
-
-#~ msgid "Dark Cork"
-#~ msgstr "ダーク・コーク"
-
-#~ msgid "Dark GNOME"
-#~ msgstr "ダーク GNOME"
-
-#~ msgid "Deep Teal"
-#~ msgstr "ディープ・ティール"
-
-#~ msgid "Dots"
-#~ msgstr "ドット"
-
-#~ msgid "Drag a color to an object to change it to that color"
-#~ msgstr "色を変更する場合はオブジェクトに色をドラッグしてください"
-
-#~ msgid "Drag a pattern tile to an object to change it"
-#~ msgstr ""
-#~ "パターンを変更する場合はオブジェクトにそのタイルをドラッグしてください"
-
-#~ msgid "Drag an emblem to an object to add it to the object"
-#~ msgstr ""
-#~ "エンブレムをオブジェクトに付与する場合はオブジェクトにドラッグしてください"
-
-#~ msgid "Eclipse"
-#~ msgstr "エクリプス"
-
-#~ msgid "Envy"
-#~ msgstr "エンビー"
-
-#~ msgid "Erase"
-#~ msgstr "削除"
-
-#~ msgid "Fibers"
-#~ msgstr "ファイバー"
-
-#~ msgid "Fire Engine"
-#~ msgstr "ファイア・エンジン"
-
-#~ msgid "Fleur De Lis"
-#~ msgstr "フルール・デ・リス"
-
-#~ msgid "Floral"
-#~ msgstr "フローラル"
-
-#~ msgid "Fossil"
-#~ msgstr "化石"
-
-#~ msgid "GNOME"
-#~ msgstr "GNOME"
-
-#~ msgid "Granite"
-#~ msgstr "グラナイト"
-
-#~ msgid "Grapefruit"
-#~ msgstr "グレープフルーツ"
-
-#~ msgid "Green Weave"
-#~ msgstr "グリーン・ウィーブ"
-
-#~ msgid "Ice"
-#~ msgstr "氷"
-
-#~ msgid "Indigo"
-#~ msgstr "インディゴ"
-
-#~ msgid "Leaf"
-#~ msgstr "リーフ"
-
-#~ msgid "Lemon"
-#~ msgstr "レモン"
-
-#~ msgid "Mango"
-#~ msgstr "マンゴー"
-
-#~ msgid "Manila Paper"
-#~ msgstr "マニラ麻"
-
-#~ msgid "Moss Ridge"
-#~ msgstr "モス・リッジ"
-
-#~ msgid "Mud"
-#~ msgstr "ムッド"
-
-#~ msgid "Numbers"
-#~ msgstr "ナンバーズ"
-
-#~ msgid "Ocean Strips"
-#~ msgstr "オーシャン・ストリップ"
-
-#~ msgid "Onyx"
-#~ msgstr "オニキス"
-
-#~ msgid "Orange"
-#~ msgstr "橙"
-
-#~ msgid "Pale Blue"
-#~ msgstr "ペール・ブルー"
-
-#~ msgid "Purple Marble"
-#~ msgstr "パープル・マーブル"
-
-#~ msgid "Ridged Paper"
-#~ msgstr "リッジ・ペーパー"
-
-#~ msgid "Rough Paper"
-#~ msgstr "ラフ・ペーパー"
-
-#~ msgid "Ruby"
-#~ msgstr "ルビー"
-
-#~ msgid "Sea Foam"
-#~ msgstr "シー・フォーム"
-
-#~ msgid "Shale"
-#~ msgstr "シェール"
-
-#~ msgid "Silver"
-#~ msgstr "シルバー"
-
-#~ msgid "Sky"
-#~ msgstr "スカイ"
-
-#~ msgid "Sky Ridge"
-#~ msgstr "スカイ・リッジ"
-
-#~ msgid "Snow Ridge"
-#~ msgstr "スノー・リッジ"
-
-#~ msgid "Stucco"
-#~ msgstr "スタッコ"
-
-#~ msgid "Tangerine"
-#~ msgstr "タンジェリン"
-
-#~ msgid "Terracotta"
-#~ msgstr "テラコッタ"
-
-#~ msgid "Violet"
-#~ msgstr "バイオレット"
-
-#~ msgid "Wavy White"
-#~ msgstr "ウェービー・ホワイト"
-
-#~ msgid "White"
-#~ msgstr "白"
-
-#~ msgid "White Ribs"
-#~ msgstr "ホワイト・リブ"
-
-#~ msgid "_Emblems"
-#~ msgstr "エンブレム(_E)"
-
-#~ msgid "_Patterns"
-#~ msgstr "パターン(_P)"
-
-#~ msgid "Image/label border"
-#~ msgstr "画像/ラベルの境界"
-
-#~ msgid "Width of border around the label and image in the alert dialog"
-#~ msgstr "警告ダイアログのラベルと画像の外側にある境界の幅"
-
-#~ msgid "Alert Type"
-#~ msgstr "警告の種類"
-
-#~ msgid "The type of alert"
-#~ msgstr "警告の種類です"
-
-#~ msgid "Alert Buttons"
-#~ msgstr "警告ボタン"
-
-#~ msgid "The buttons shown in the alert dialog"
-#~ msgstr "警告ダイアログの中に表示するボタンです"
-
-#~ msgid ""
-#~ "GConf error:\n"
-#~ "  %s"
-#~ msgstr ""
-#~ "GConf エラー:\n"
-#~ "  %s"
-
-#~ msgid "GConf error: %s"
-#~ msgstr "GConf エラー: %s"
-
-#~ msgid "All further errors shown only on terminal."
-#~ msgstr "更に多くのエラーは端末にのみ表示されます。"
-
-#~ msgid ""
-#~ "Color for the default folder background. Only used if background_set is "
-#~ "true."
-#~ msgstr ""
-#~ "フォルダーの背景に使用するデフォルトの色 (背景色) で、background_set が "
-#~ "TRUE の場合にのみ指定可能です。"
-
-#~ msgid "Criteria for search bar searching"
-#~ msgstr "検索時の検索条件"
-
-#~ msgid ""
-#~ "Criteria when matching files searched for in the search bar. If set to "
-#~ "\"search_by_text\", then Nautilus will Search for files by file name "
-#~ "only. If set to \"search_by_text_and_properties\", then Nautilus will "
-#~ "search for files by file name and file properties."
-#~ msgstr ""
-#~ "検索バーでファイルを検索する際の一致条件です。\"search_by_text\" をセット"
-#~ "すると Nautilus はファイル名だけで検索します。"
-#~ "\"search_by_text_and_properties\" をセットすると、Nautilus はファイル名と"
-#~ "プロパティで検索します。"
-
-#~ msgid "Current Nautilus theme (deprecated)"
-#~ msgstr "現在使用している Nautilus のテーマ (廃止)"
-
-#~ msgid "Custom Background"
-#~ msgstr "背景のカスタマイズ"
-
-#~ msgid "Custom Side Pane Background Set"
-#~ msgstr "サイドペインの背景のカスタマイズ"
-
-#~ msgid "Default Background Color"
-#~ msgstr "背景色 (デフォルト値)"
-
-#~ msgid "Default Background Filename"
-#~ msgstr "背景のファイル名 (デフォルト値)"
-
-#~ msgid "Default Side Pane Background Color"
-#~ msgstr "サイドペインの背景色 (デフォルト値)"
-
-#~ msgid "Default Side Pane Background Filename"
-#~ msgstr "サイドペインの背景のファイル名 (デフォルト値)"
-
-#~ msgid ""
-#~ "Filename for the default folder background. Only used if background_set "
-#~ "is true."
-#~ msgstr ""
-#~ "フォルダーの背景に使用するデフォルトのファイル名で、background_set が "
-#~ "TRUE の場合にのみ指定可能です。"
-
-#~ msgid ""
-#~ "Filename for the default side pane background. Only used if "
-#~ "side_pane_background_set is true."
-#~ msgstr ""
-#~ "サイドペインの背景に使用するデフォルトのファイル名 (背景画像) で、"
-#~ "side_pane_background_set が TRUE の場合にのみ指定可能です。"
-
-#~ msgid ""
-#~ "Folders over this size will be truncated to around this size. The purpose "
-#~ "of this is to avoid unintentionally blowing the heap and killing Nautilus "
-#~ "on massive folders. A negative value denotes no limit. The limit is "
-#~ "approximate due to the reading of folders chunk-wise."
-#~ msgstr ""
-#~ "このサイズを超えたフォルダーを強制的にこのサイズに切りつめます。この意図は"
-#~ "巨大なフォルダーを開いた際に CPU 使用率を大きくしたり、Nautilus を強制終了"
-#~ "することがないようにするためです。負の値は制限なしを意味します。これは複数"
-#~ "のフォルダーをまとめて読み込むためのおおよその値です。"
-
-#~ msgid ""
-#~ "If set to true, then backup files such as those created by Emacs are "
-#~ "displayed. Currently, only files ending in a tilde (~) are considered "
-#~ "backup files."
-#~ msgstr ""
-#~ "TRUE にすると、Emacs が生成するようなバックアップファイルを表示します。こ"
-#~ "のバージョンではファイルの最後にチルダ (~) がついているものをバックアップ"
-#~ "ファイルとみなしています。"
-
-#~ msgid ""
-#~ "If true, files in new windows will be sorted in reverse order. ie, if "
-#~ "sorted by name, then instead of sorting the files from \"a\" to \"z\", "
-#~ "they will be sorted from \"z\" to \"a\"."
-#~ msgstr ""
-#~ "TRUE にすると、ウィンドウに表示されるファイルが逆順に並びます。つまり、名"
-#~ "前順の場合は \"a\" 〜 \"z\" でファイルを並び替えるかわりに、\"z\" 〜 \"a"
-#~ "\" の順番で並べます。"
-
-#~ msgid "If true, new windows will use manual layout by default."
-#~ msgstr "TRUE にすると、デフォルトで手動レイアウトを使用します。"
-
-#~ msgid "Maximum handled files in a folder"
-#~ msgstr "フォルダー内で取り扱う最大ファイル数"
-
-#~ msgid ""
-#~ "Name of the Nautilus theme to use. This has been deprecated as of "
-#~ "Nautilus 2.2. Please use the icon theme instead."
-#~ msgstr ""
-#~ "使用する Nautilus のテーマ名です。このエントリは、Nautilus 2.2 専用として"
-#~ "廃止になりました。かわりにアイコンテーマのエントリを使用してください。"
-
-#~ msgid "Nautilus handles drawing the desktop"
-#~ msgstr "Nautilus がデスクトップを取り扱う"
-
-#~ msgid "Sans 10"
-#~ msgstr "Sans 10"
-
-#~ msgid ""
-#~ "The default sort-order for items in the icon view. Possible values are "
-#~ "\"name\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
-#~ msgstr ""
-#~ "アイコン表示でアイテムを並べるデフォルトの順番です。利用可能な値: \"name"
-#~ "\", \"size\", \"type\", \"modification_date\", \"emblems\""
-
-#~ msgid "Use manual layout in new windows"
-#~ msgstr "新しいウィンドウをマニュアルで配置する"
-
-#~ msgid "Whether a custom default folder background has been set."
-#~ msgstr ""
-#~ "デフォルトで使用するフォルダーの背景をカスタマイズできるかどうかです。"
-
-#~ msgid "Whether a custom default side pane background has been set."
-#~ msgstr "サイドペインの背景をカスタマイズできるかどうかです。"
-
-#~ msgid "Whether to show backup files"
-#~ msgstr "バックアップファイルを表示するかどうか"
-
-#~ msgid "Set as background for _all folders"
-#~ msgstr "すべてのフォルダーの背景にセット(_A)"
-
-#~ msgid "Set as background for _this folder"
-#~ msgstr "このフォルダーの背景にセット(_T)"
-
-#~ msgid "The emblem cannot be installed."
-#~ msgstr "エンブレムをインストールできません。"
-
-#~ msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
-#~ msgstr "新しいエンブレムには空白以外のキーワードを指定してください。"
-
-#~ msgid ""
-#~ "Sorry, but emblem keywords can only contain letters, spaces and numbers."
-#~ msgstr "文字、スペース、数字だけがエンブレムのキーワードにできます。"
-
-#~ msgid "Sorry, but there is already an emblem named \"%s\"."
-#~ msgstr "既に \"%s\" というエンブレムは存在します。"
-
-#~ msgid "Please choose a different emblem name."
-#~ msgstr "別のエンブレム名を選択してください。"
-
-#~ msgid "Sorry, unable to save custom emblem."
-#~ msgstr "カスタマイズしたエンブレムを保存できません。"
-
-#~ msgid "Sorry, unable to save custom emblem name."
-#~ msgstr "カスタマイズしたエンブレムの名前を保存できません。"
-
-#~ msgid "_Always"
-#~ msgstr "常に(_A)"
-
-#~ msgid "_Local File Only"
-#~ msgstr "ローカルファイル専用(_L)"
-
-#~ msgid "_Never"
-#~ msgstr "しない(_N)"
-
-#~ msgid "25%"
-#~ msgstr "25%"
-
-#~ msgid "75%"
-#~ msgstr "75%"
-
-#~ msgid "100 K"
-#~ msgstr "100K バイト"
-
-#~ msgid "500 K"
-#~ msgstr "500K バイト"
-
-#~ msgid "Activate items with a _single click"
-#~ msgstr "シングルクリックでアイテムを起動する(_S)"
-
-#~ msgid "Activate items with a _double click"
-#~ msgstr "ダブルクリックでアイテムを起動する(_D)"
-
-#~ msgid "E_xecute files when they are clicked"
-#~ msgstr "クリック時にファイルを実行する(_X)"
-
-#~ msgid "Display _files when they are clicked"
-#~ msgstr "クリック時にファイルを表示する(_F)"
-
-#~ msgid "Search for files by file name only"
-#~ msgstr "ファイル名のみでファイルを検索します"
-
-#~ msgid "Search for files by file name and file properties"
-#~ msgstr "ファイル名と属性でファイルを検索します"
-
-#~ msgid "Manually"
-#~ msgstr "手動"
-
-#~ msgid "By Emblems"
-#~ msgstr "エンブレム順"
-
-#~ msgid "8"
-#~ msgstr "8"
-
-#~ msgid "10"
-#~ msgstr "10"
-
-#~ msgid "12"
-#~ msgstr "12"
-
-#~ msgid "14"
-#~ msgstr "14"
-
-#~ msgid "16"
-#~ msgstr "16"
-
-#~ msgid "18"
-#~ msgstr "18"
-
-#~ msgid "20"
-#~ msgstr "20"
-
-#~ msgid "22"
-#~ msgstr "22"
-
-#~ msgid "24"
-#~ msgstr "24"
-
-#~ msgid "Network Servers"
-#~ msgstr "ネットワーク・サーバー"
-
-#~ msgid "Switch to Manual Layout?"
-#~ msgstr "手動レイアウトに切替えますか?"
-
-#~ msgid "The folder \"%s\" contains more files than Nautilus can handle."
-#~ msgstr ""
-#~ "\"%s\" というフォルダーには Nautilus が処理できる以上のファイルがありま"
-#~ "す。"
-
-#~ msgid "Some files will not be displayed."
-#~ msgstr "いくつかのファイルは表示されません。"
-
-#~ msgid "by _Emblems"
-#~ msgstr "エンブレム順(_E)"
-
-#~ msgid "Keep icons sorted by emblems in rows"
-#~ msgstr "アイコンをエンブレム順に並び替えます"
-
-#~ msgid "By _Emblems"
-#~ msgstr "エンブレム順(_E)"
-
-#~ msgid "Emblems"
-#~ msgstr "エンブレム"
-
-#~ msgid "Cannot display location \"%s\""
-#~ msgstr "\"%s\" という場所を表示できません"
-
-#~ msgid "[URI]"
-#~ msgstr "[URI]"
-
-#~ msgid "Custom Location"
-#~ msgstr "その他"
-
-#~ msgid "Cannot Connect to Server. You must enter a name for the server."
-#~ msgstr "サーバーに接続できません (サーバー名を入力してください)。"
-
-#~ msgid "Please enter a name and try again."
-#~ msgstr "名前を確認して再試行してください。"
-
-#~ msgid "_Location (URI):"
-#~ msgstr "場所 (URI)(_L):"
-
-#~ msgid "Optional information:"
-#~ msgstr "追加情報"
-
-#~ msgid "Bookmark _name:"
-#~ msgstr "ブックマーク名(_N):"
-
-#~ msgid "Service _type:"
-#~ msgstr "サービスの種類(_T):"
-
-#~ msgid "Add _bookmark"
-#~ msgstr "ブックマークを追加する(_B)"
-
-#~ msgid "Could not remove emblem with name '%s'."
-#~ msgstr "'%s' というエンブレムを削除できませんでした。"
-
-#~ msgid ""
-#~ "This is probably because the emblem is a permanent one, and not one that "
-#~ "you added yourself."
-#~ msgstr ""
-#~ "これは、おそらく絶対に削除することも追加することもできないエンブレムかもし"
-#~ "れません。"
-
-#~ msgid "Could not rename emblem with name '%s'."
-#~ msgstr "エンブレムの名前を '%s' に変更できませんでした。"
-
-#~ msgid "Rename Emblem"
-#~ msgstr "エンブレム名の変更"
-
-#~ msgid "Enter a new name for the displayed emblem:"
-#~ msgstr "表示されているエンブレムの新しい名前を入力してください:"
-
-#~ msgid "Rename"
-#~ msgstr "名前の変更"
-
-#~ msgid "Add Emblems..."
-#~ msgstr "エンブレムの追加..."
-
-#~ msgid ""
-#~ "Enter a descriptive name next to each emblem.  This name will be used in "
-#~ "other places to identify the emblem."
-#~ msgstr ""
-#~ "各エンブレムの隣にわかりやすい名前を入力してください。この名前はエンブレム"
-#~ "を識別するために他の場所で使用します。"
-
-#~ msgid ""
-#~ "Enter a descriptive name next to the emblem.  This name will be used in "
-#~ "other places to identify the emblem."
-#~ msgstr ""
-#~ "各エンブレムの隣にわかりやすい名前を入力してください。この名前はエンブレム"
-#~ "を識別するために他の場所で使用します。"
-
-#~ msgid "Some of the files could not be added as emblems."
-#~ msgstr "エンブレムとしていくつかのファイルを追加できませんでした。"
-
-#~ msgid "The emblems do not appear to be valid images."
-#~ msgstr "エンブレムは正しい画像として表示されません。"
-
-#~ msgid "None of the files could be added as emblems."
-#~ msgstr "エンブレムとして追加できるファイルがありません。"
-
-#~ msgid "The file '%s' does not appear to be a valid image."
-#~ msgstr "ファイル '%s' は正しい画像として表示されません。"
-
-#~ msgid "The dragged file does not appear to be a valid image."
-#~ msgstr "ドラッグしたファイルは正しい画像として表示されません。"
-
-#~ msgid "Show Emblems"
-#~ msgstr "エンブレムの表示"
-
-#~ msgid "Information"
-#~ msgstr "情報"
-
-#~ msgid "Show Information"
-#~ msgstr "情報の表示"
-
-#~ msgid "Use _Default Background"
-#~ msgstr "デフォルトの背景(_D)"
-
-#~ msgid "You cannot assign more than one custom icon at a time."
-#~ msgstr "一度に二つ以上のアイコンをカスタマイズできません。"
-
-#~ msgid "You can only use images as custom icons."
-#~ msgstr "カスタマイズするアイコンに指定できるのは画像だけです。"
-
-#~ msgid "Backgrounds and Emblems"
-#~ msgstr "背景とエンブレム"
-
-#~ msgid "_Remove..."
-#~ msgstr "削除(_R)..."
-
-#~ msgid "Add new..."
-#~ msgstr "新規追加..."
-
-#~ msgid "Sorry, but pattern %s could not be deleted."
-#~ msgstr "%s というパターンを削除できませんでした。"
-
-#~ msgid "Check that you have permission to delete the pattern."
-#~ msgstr "パターンを削除する権限があるか確認してください。"
-
-#~ msgid "Sorry, but emblem %s could not be deleted."
-#~ msgstr "%s とうエンブレムを削除できませんでした。"
-
-#~ msgid "Check that you have permission to delete the emblem."
-#~ msgstr "エンブレムを削除する権限があるか確認してください。"
-
-#~ msgid "Select an Image File for the New Emblem"
-#~ msgstr "新しいエンブレムにする画像ファイルの選択"
-
-#~ msgid "Create a New Emblem"
-#~ msgstr "新しいエンブレムの作成"
-
-#~ msgid "_Image:"
-#~ msgstr "画像(_I):"
-
-#~ msgid "Create a New Color:"
-#~ msgstr "新しい色を作成:"
-
-#~ msgid "Color _name:"
-#~ msgstr "色の名前(_N):"
-
-#~ msgid "Color _value:"
-#~ msgstr "色の値(_V):"
-
-#~ msgid "Sorry, but you cannot replace the reset image."
-#~ msgstr "リセットされた画像を置き換えることはできません。"
-
-#~ msgid "Reset is a special image that cannot be deleted."
-#~ msgstr "リセットは削除できない特別な画像です。"
-
-#~ msgid "Sorry, but the pattern %s could not be installed."
-#~ msgstr "%s というパターンをインストールできませんでした。"
-
-#~ msgid "Select an Image File to Add as a Pattern"
-#~ msgstr "パターンとして追加する画像ファイルの選択"
-
-#~ msgid "The color cannot be installed."
-#~ msgstr "色をインストールできません。"
-
-#~ msgid "Sorry, but you must specify an unused color name for the new color."
-#~ msgstr "新しい色には使用していない色の名前を指定してください。"
-
-#~ msgid "Sorry, but you must specify a non-blank name for the new color."
-#~ msgstr "新しい色は空白以外の名前を指定してください。"
-
-#~ msgid "Select a Color to Add"
-#~ msgstr "追加する色の選択"
-
-#~ msgid "Sorry, but \"%s\" is not a usable image file."
-#~ msgstr "画像ファイル '%s' は利用できません。"
-
-#~ msgid "Select a Category:"
-#~ msgstr "カテゴリの選択"
-
-#~ msgid "C_ancel Remove"
-#~ msgstr "削除のキャンセル(_A)"
-
-#~ msgid "_Add a New Pattern..."
-#~ msgstr "新しいパターンの追加(_A)..."
-
-#~ msgid "_Add a New Color..."
-#~ msgstr "新しい色の追加(_A)..."
-
-#~ msgid "_Add a New Emblem..."
-#~ msgstr "新しいエンブレムの追加(_A)..."
-
-#~ msgid "Click on a pattern to remove it"
-#~ msgstr "削除するパターンをクリックしてください"
-
-#~ msgid "Click on a color to remove it"
-#~ msgstr "削除する色をクリックしてください"
-
-#~ msgid "Click on an emblem to remove it"
-#~ msgstr "削除するエンブレムをクリックしてください"
-
-#~ msgid "Patterns:"
-#~ msgstr "パターン:"
-
-#~ msgid "Colors:"
-#~ msgstr "色:"
-
-#~ msgid "Emblems:"
-#~ msgstr "エンブレム:"
-
-#~ msgid "_Remove a Pattern..."
-#~ msgstr "パターンの削除(_R)..."
-
-#~ msgid "_Remove a Color..."
-#~ msgstr "色の削除(_R)..."
-
-#~ msgid "_Remove an Emblem..."
-#~ msgstr "エンブレムの削除(_R)..."
-
-#~ msgid "_Backgrounds and Emblems..."
-#~ msgstr "背景とエンブレム(_B)..."
-
-#~ msgid ""
-#~ "Display patterns, colors, and emblems that can be used to customize "
-#~ "appearance"
-#~ msgstr "パターン、色、エンブレムなどの外観をカスタマイズします"
-
-#~ msgid "An older"
-#~ msgstr "古い"
-
-#~ msgid "A newer"
-#~ msgstr "新しい"
-
-#~ msgid "Another"
-#~ msgstr "その他の"
-
-#~ msgid ""
-#~ "%s folder with the same name already exists in \"%s\".\n"
-#~ "Merging will ask for confirmation before replacing any files in the "
-#~ "folder that conflict with the files being copied."
-#~ msgstr ""
-#~ "%sフォルダーと同じ名前のフォルダーが \"%s\" にあります。\n"
-#~ "マージすると、コピーによって衝突するフォルダーの中にあるファイルを置き換え"
-#~ "る前に確認ダイアログを表示します。"
-
-#, fuzzy
-#~ msgid ""
-#~ "Uri of the default folder background. Only used if background_set is true."
-#~ msgstr ""
-#~ "フォルダーの背景に使用するデフォルトの色 (背景色) で、background_set が "
-#~ "TRUE の場合にのみ指定可能です。"
-
-#, fuzzy
-#~ msgid ""
-#~ "Uri of the default side pane background. Only used if "
-#~ "side_pane_background_set is true."
-#~ msgstr ""
-#~ "サイドペインの背景に使用するデフォルトのファイル名 (背景画像) で、"
-#~ "side_pane_background_set が TRUE の場合にのみ指定可能です。"
-
-#~ msgid ""
-#~ "If set to true, then multiple views can be opened in one browser window, "
-#~ "each in a separate tab."
-#~ msgstr ""
-#~ "TRUE にすると、一つのブラウザーウィンドウの中に複数のビューを別々のタブを"
-#~ "使って開くことができるようになります。"
-
-#~ msgid "Whether to enable tabs in Nautilus browser windows"
-#~ msgstr "Nautilus のブラウザーウィンドウでタブを利用できるようにするかどうか"
-
-#~ msgid ""
-#~ "If you choose to empty the trash, all items in it will be permanently "
-#~ "lost. Please note that you can also delete them separately."
-#~ msgstr ""
-#~ "ゴミ箱を空にすると、アイテムは完全に削除されます。それらを一つ一つ削除する"
-#~ "ことも可能です。"
-
-#~ msgid ""
-#~ "A folder named \"%B\" already exists.  Do you want to merge the source "
-#~ "folder?"
-#~ msgstr ""
-#~ "既に \"%B\" というフォルダーが存在します。転送元のフォルダーをマージしても"
-#~ "よろしいですか?"
-
-#~ msgid "A folder named \"%B\" already exists.  Do you want to replace it?"
-#~ msgstr ""
-#~ "既に \"%B\" というフォルダーが存在します。置き換えてもよろしいですか?"
-
-#~ msgid "A file named \"%B\" already exists.  Do you want to replace it?"
-#~ msgstr "既に \"%B\" というファイルが存在します。置き換えてもよろしいですか?"
-
-#~ msgid "Could not use system package installer"
-#~ msgstr "システムのパッケージ・インストーラーを利用できませんでした"
-
-#~ msgid "Clean _Up by Name"
-#~ msgstr "名前順に整理する(_U)"
-
-#~ msgid "Always open in _browser windows"
-#~ msgstr "常にブラウザーウィンドウで開く(_B)"
-
-#~ msgid "Toggle between button and text-based location bar"
-#~ msgstr "ボタン形式の場所バーまたは入力形式の場所バーに切り替えます"
-
-#~ msgid "throbber"
-#~ msgstr "throbber"
-
-#~ msgid "provides visual status"
-#~ msgstr "視覚的なステータスを表示します"
