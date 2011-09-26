@@ -717,7 +717,7 @@ nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow
 							       3);
 	nautilus_file_management_properties_size_group_create (builder,
 							       "preview_label",
-							       5);
+							       4);
 	create_date_format_menu (builder);
 
 	/* setup preferences */
