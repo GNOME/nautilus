@@ -738,7 +738,7 @@ nautilus_window_finalize (GObject *object)
 	g_free (window->details->sidebar_id);
 	g_clear_object (&window->details->nav_state);
 
-	nautilus_window_remove_trash_monitor_callback (window);
+	nautilus_window_finalize_menus (window);
 	free_stored_viewers (window);
 
 	if (window->details->bookmark_list != NULL) {
