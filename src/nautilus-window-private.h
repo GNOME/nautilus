@@ -127,7 +127,6 @@ typedef void (*NautilusBookmarkFailedCallback) (NautilusWindow *window,
 
 void               nautilus_window_load_view_as_menus                    (NautilusWindow    *window);
 void               nautilus_window_load_extension_menus                  (NautilusWindow    *window);
-void               nautilus_window_initialize_menus                      (NautilusWindow    *window);
 void               nautilus_window_remove_trash_monitor_callback         (NautilusWindow    *window);
 NautilusWindowPane *nautilus_window_get_next_pane                        (NautilusWindow *window);
 void               nautilus_menus_append_bookmark_to_menu                (NautilusWindow    *window, 
@@ -170,6 +169,7 @@ void nautilus_window_sync_zoom_widgets     (NautilusWindow *window);
 GtkActionGroup *nautilus_window_create_toolbar_action_group (NautilusWindow *window);
 void               nautilus_window_initialize_actions                    (NautilusWindow    *window);
 void               nautilus_window_initialize_menus                      (NautilusWindow    *window);
+void               nautilus_window_finalize_menus                        (NautilusWindow    *window);
 void               nautilus_window_remove_bookmarks_menu_callback        (NautilusWindow    *window);
 
 void               nautilus_window_remove_bookmarks_menu_items           (NautilusWindow    *window);

@@ -1303,6 +1303,20 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 	nautilus_window_initialize_go_menu (window);
 }
 
+void
+nautilus_window_finalize_menus (NautilusWindow *window)
+{
+	NautilusTrashMonitor *monitor;
+
+	monitor = nautilus_trash_monitor_get ();
+
+	g_signal_handlers_disconnect_by_func (monitor,
+					      trash_state_changed_cb, window);
+
+	g_signal_handlers_disconnect_by_func (nautilus_preferences,
+					      show_hidden_files_preference_callback, window);
+}
+
 static GList *
 get_extension_menus (NautilusWindow *window)
 {
@@ -1433,15 +1447,3 @@ nautilus_window_load_extension_menus (NautilusWindow *window)
 		g_list_free (items);
 	}
 }
-
-void
-nautilus_window_remove_trash_monitor_callback (NautilusWindow *window)
-{
-	NautilusTrashMonitor *monitor;
-
-	monitor = nautilus_trash_monitor_get ();
-
-	g_signal_handlers_disconnect_by_func (monitor,
-					      trash_state_changed_cb, window);
-}
-
