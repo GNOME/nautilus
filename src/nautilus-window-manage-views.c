@@ -693,6 +693,7 @@ begin_location_change (NautilusWindowSlot *slot,
 	gboolean force_reload;
         char *current_pos;
 	GFile *from_folder, *parent;
+	GList *parent_selection = NULL;
 
 	g_assert (slot != NULL);
         g_assert (location != NULL);
@@ -714,7 +715,8 @@ begin_location_change (NautilusWindowSlot *slot,
 		}
 
 		if (parent != NULL) {
-			new_selection = g_list_prepend (NULL, nautilus_file_get (from_folder));
+			new_selection = parent_selection = 
+				g_list_prepend (NULL, nautilus_file_get (from_folder));
 			g_object_unref (parent);
 		}
 
@@ -762,6 +764,10 @@ begin_location_change (NautilusWindowSlot *slot,
 	}
 
         nautilus_directory_unref (directory);
+
+	if (parent_selection != NULL) {
+		g_list_free_full (parent_selection, g_object_unref);
+	}
 
         /* Set current_bookmark scroll pos */
         if (slot->current_location_bookmark != NULL &&
