@@ -201,6 +201,7 @@ static int compare_icons_vertical (NautilusIconContainer *container,
 				   NautilusIcon *icon_b);
 
 static void store_layout_timestamps_now (NautilusIconContainer *container);
+static void remove_search_entry_timeout (NautilusIconContainer *container);
 
 static gpointer accessible_parent_class;
 
@@ -3977,12 +3978,9 @@ destroy (GtkWidget *object)
 		gtk_widget_destroy (container->details->search_window);
 		container->details->search_window = NULL;
 		container->details->search_entry = NULL;
-		if (container->details->typeselect_flush_timeout) {
-			g_source_remove (container->details->typeselect_flush_timeout);
-			container->details->typeselect_flush_timeout = 0;
-		}
 	}
 
+	remove_search_entry_timeout (container);
 
 	GTK_WIDGET_CLASS (nautilus_icon_container_parent_class)->destroy (object);
 }
@@ -4223,11 +4221,7 @@ unrealize (GtkWidget *widget)
 	container = NAUTILUS_ICON_CONTAINER (widget);
 
 	nautilus_icon_dnd_fini (container);
-
-	if (container->details->typeselect_flush_timeout) {
-		g_source_remove (container->details->typeselect_flush_timeout);
-		container->details->typeselect_flush_timeout = 0;
-	}
+	remove_search_entry_timeout (container);
 
 	GTK_WIDGET_CLASS (nautilus_icon_container_parent_class)->unrealize (widget);
 }
@@ -4840,41 +4834,6 @@ nautilus_icon_container_search_position_func (NautilusIconContainer *container,
 	gtk_window_move (GTK_WINDOW (search_dialog), x, y);
 }
 
-static gboolean
-nautilus_icon_container_real_search_enable_popdown (gpointer data)
-{
-	NautilusIconContainer *container = (NautilusIconContainer *)data;
-
-	container->details->disable_popdown = FALSE;
-	
-	g_object_unref (container);
-
-	return FALSE;
-}
-
-static void
-nautilus_icon_container_search_enable_popdown (GtkWidget *widget,
-					       gpointer   data)
-{
-	NautilusIconContainer *container = (NautilusIconContainer *) data;
-	
-	g_object_ref (container);
-	g_timeout_add (200, nautilus_icon_container_real_search_enable_popdown, data);
-}
-
-static void
-nautilus_icon_container_search_disable_popdown (GtkEntry *entry,
-						GtkMenu  *menu,
-						gpointer  data)
-{
-	NautilusIconContainer *container = (NautilusIconContainer *) data;
-
-	container->details->disable_popdown = TRUE;
-	g_signal_connect (menu, "hide",
-			  G_CALLBACK (nautilus_icon_container_search_enable_popdown),
-			  data);
-}
-
 /* Cut and paste from gtkwindow.c */
 static void
 send_focus_change (GtkWidget *widget, gboolean in)
@@ -4904,19 +4863,13 @@ static void
 nautilus_icon_container_search_dialog_hide (GtkWidget *search_dialog,
 					    NautilusIconContainer *container)
 {
-	if (container->details->disable_popdown) {
-		return;
-	}
-
 	if (container->details->search_entry_changed_id) {
 		g_signal_handler_disconnect (container->details->search_entry,
 					     container->details->search_entry_changed_id);
 		container->details->search_entry_changed_id = 0;
 	}
-	if (container->details->typeselect_flush_timeout) {
-		g_source_remove (container->details->typeselect_flush_timeout);
-		container->details->typeselect_flush_timeout = 0;
-	}
+
+	remove_search_entry_timeout (container);
 
 	/* send focus-in event */
 	send_focus_change (GTK_WIDGET (container->details->search_entry), FALSE);
@@ -4925,11 +4878,39 @@ nautilus_icon_container_search_dialog_hide (GtkWidget *search_dialog,
 }
 
 static gboolean
-nautilus_icon_container_search_entry_flush_timeout (NautilusIconContainer *container)
+nautilus_icon_container_search_entry_flush_timeout (gpointer data)
 {
+	NautilusIconContainer *container = data;
+
+	container->details->typeselect_flush_timeout = 0;
 	nautilus_icon_container_search_dialog_hide (container->details->search_window, container);
 
-	return TRUE;
+	return FALSE;
+}
+
+static void
+add_search_entry_timeout (NautilusIconContainer *container)
+{
+	container->details->typeselect_flush_timeout =
+		g_timeout_add_seconds (NAUTILUS_ICON_CONTAINER_SEARCH_DIALOG_TIMEOUT,
+				       nautilus_icon_container_search_entry_flush_timeout,
+				       container);
+}
+
+static void
+remove_search_entry_timeout (NautilusIconContainer *container)
+{
+	if (container->details->typeselect_flush_timeout) {
+		g_source_remove (container->details->typeselect_flush_timeout);
+		container->details->typeselect_flush_timeout = 0;
+	}
+}
+
+static void
+reset_search_entry_timeout (NautilusIconContainer *container)
+{
+	remove_search_entry_timeout (container);
+	add_search_entry_timeout (container);
 }
 
 /* Because we're visible but offscreen, we just set a flag in the preedit
@@ -4941,13 +4922,7 @@ nautilus_icon_container_search_preedit_changed (GtkEntry *entry,
 						NautilusIconContainer *container)
 {
 	container->details->imcontext_changed = 1;
-	if (container->details->typeselect_flush_timeout) {
-		g_source_remove (container->details->typeselect_flush_timeout);
-		container->details->typeselect_flush_timeout =
-			g_timeout_add_seconds (NAUTILUS_ICON_CONTAINER_SEARCH_DIALOG_TIMEOUT,
-				(GSourceFunc) nautilus_icon_container_search_entry_flush_timeout,
-				container);
-	}
+	reset_search_entry_timeout (container);
 }
 
 static void
@@ -4965,8 +4940,6 @@ nautilus_icon_container_search_delete_event (GtkWidget *widget,
 					     GdkEventAny *event,
 					     NautilusIconContainer *container)
 {
-	g_assert (GTK_IS_WIDGET (widget));
-
 	nautilus_icon_container_search_dialog_hide (widget, container);
 
 	return TRUE;
@@ -4977,8 +4950,6 @@ nautilus_icon_container_search_button_press_event (GtkWidget *widget,
 						   GdkEventButton *event,
 						   NautilusIconContainer *container)
 {
-	g_assert (GTK_IS_WIDGET (widget));
-
 	nautilus_icon_container_search_dialog_hide (widget, container);
 
 	if (event->window == gtk_layout_get_bin_window (GTK_LAYOUT (container))) {
@@ -4986,6 +4957,26 @@ nautilus_icon_container_search_button_press_event (GtkWidget *widget,
 	}
 
 	return TRUE;
+}
+
+static gboolean
+nautilus_icon_container_search_entry_button_press_event (GtkWidget *widget,
+							 GdkEventButton *event,
+							 NautilusIconContainer *container)
+{
+	reset_search_entry_timeout (container);
+
+	return FALSE;
+}
+
+static void
+nautilus_icon_container_search_populate_popup (GtkEntry *entry,
+					       GtkMenu *menu,
+					       NautilusIconContainer *container)
+{
+	remove_search_entry_timeout (container);
+	g_signal_connect_swapped (menu, "hide",
+				  G_CALLBACK (add_search_entry_timeout), container);
 }
 
 static void
@@ -5135,14 +5126,7 @@ nautilus_icon_container_search_scroll_event (GtkWidget *widget,
 		retval = TRUE;
 	}
 
-	/* renew the flush timeout */
-	if (retval && container->details->typeselect_flush_timeout) {
-		g_source_remove (container->details->typeselect_flush_timeout);
-		container->details->typeselect_flush_timeout =
-			g_timeout_add_seconds (NAUTILUS_ICON_CONTAINER_SEARCH_DIALOG_TIMEOUT,
-				(GSourceFunc) nautilus_icon_container_search_entry_flush_timeout,
-				container);
-	}
+	reset_search_entry_timeout (container);
 
 	return retval;
 }
@@ -5196,14 +5180,7 @@ nautilus_icon_container_search_key_press_event (GtkWidget *widget,
 		retval = TRUE;
 	}
 
-	/* renew the flush timeout */
-	if (retval && container->details->typeselect_flush_timeout) {
-		g_source_remove (container->details->typeselect_flush_timeout);
-		container->details->typeselect_flush_timeout =
-			g_timeout_add_seconds (NAUTILUS_ICON_CONTAINER_SEARCH_DIALOG_TIMEOUT,
-				(GSourceFunc) nautilus_icon_container_search_entry_flush_timeout,
-				container);
-	}
+	reset_search_entry_timeout (container);
 
 	return retval;
 }
@@ -5224,14 +5201,7 @@ nautilus_icon_container_search_init (GtkWidget   *entry,
 
 	/* search */
 	unselect_all (container);
-	if (container->details->typeselect_flush_timeout)
-	{
-		g_source_remove (container->details->typeselect_flush_timeout);
-		container->details->typeselect_flush_timeout =
-			g_timeout_add_seconds (NAUTILUS_ICON_CONTAINER_SEARCH_DIALOG_TIMEOUT,
-				(GSourceFunc) nautilus_icon_container_search_entry_flush_timeout,
-				container);
-	}
+	reset_search_entry_timeout (container);
 
 	if (len < 1) {
 		return;
@@ -5285,15 +5255,17 @@ nautilus_icon_container_ensure_interactive_directory (NautilusIconContainer *con
 	/* add entry */
 	container->details->search_entry = gtk_entry_new ();
 	gtk_widget_show (container->details->search_entry);
-	g_signal_connect (container->details->search_entry, "populate_popup",
-			  G_CALLBACK (nautilus_icon_container_search_disable_popdown),
+	g_signal_connect (container->details->search_entry, "populate-popup",
+			  G_CALLBACK (nautilus_icon_container_search_populate_popup),
 			  container);
 	g_signal_connect (container->details->search_entry, "activate",
 			  G_CALLBACK (nautilus_icon_container_search_activate),
 			  container);
-	g_signal_connect (container->details->search_entry,
-			  "preedit-changed",
+	g_signal_connect (container->details->search_entry, "preedit-changed",
 			  G_CALLBACK (nautilus_icon_container_search_preedit_changed),
+			  container);
+	g_signal_connect (container->details->search_entry, "button-press-event",
+			  G_CALLBACK (nautilus_icon_container_search_entry_button_press_event),
 			  container);
 	gtk_container_add (GTK_CONTAINER (vbox), container->details->search_entry);
 
@@ -5336,11 +5308,6 @@ nautilus_icon_container_real_start_interactive_search (NautilusIconContainer *co
 				G_CALLBACK (nautilus_icon_container_search_init),
 				container);
 	}
-
-	container->details->typeselect_flush_timeout =
-		g_timeout_add_seconds (NAUTILUS_ICON_CONTAINER_SEARCH_DIALOG_TIMEOUT,
-			(GSourceFunc) nautilus_icon_container_search_entry_flush_timeout,
-			container);
 
 	/* Grab focus will select all the text.  We don't want that to happen, so we
 	* call the parent instance and bypass the selection change.  This is probably
