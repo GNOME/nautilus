@@ -229,26 +229,34 @@ get_eject_icon (NautilusPlacesSidebar *sidebar,
 	icon_info = gtk_icon_theme_lookup_by_gicon (icon_theme, icon, icon_size, 0);
 
 	style = gtk_widget_get_style_context (GTK_WIDGET (sidebar));
-	state = gtk_widget_get_state_flags (GTK_WIDGET (sidebar));
-
 	gtk_style_context_save (style);
-	gtk_style_context_add_class (style, GTK_STYLE_CLASS_IMAGE);
 
-	if (highlighted) {
-		state |= GTK_STATE_FLAG_PRELIGHT;
+	if (icon_info != NULL) {
+		state = gtk_widget_get_state_flags (GTK_WIDGET (sidebar));
+		gtk_style_context_add_class (style, GTK_STYLE_CLASS_IMAGE);
+
+		if (highlighted) {
+			state |= GTK_STATE_FLAG_PRELIGHT;
+		}
+
+		gtk_style_context_set_state (style, state);
+
+		eject = gtk_icon_info_load_symbolic_for_context (icon_info,
+								 style,
+								 NULL,
+								 NULL);
+
+		gtk_icon_info_free (icon_info);
+	} else {
+		GtkIconSet *icon_set;
+
+		gtk_style_context_set_state (style, GTK_STATE_FLAG_NORMAL);
+		icon_set = gtk_style_context_lookup_icon_set (style, GTK_STOCK_MISSING_IMAGE);
+		eject = gtk_icon_set_render_icon_pixbuf (icon_set, style, GTK_ICON_SIZE_MENU);
 	}
 
-	gtk_style_context_set_state (style, state);
-
-	eject = gtk_icon_info_load_symbolic_for_context (icon_info,
-							 style,
-							 NULL,
-							 NULL);
-
 	gtk_style_context_restore (style);
-
 	g_object_unref (icon);
-	gtk_icon_info_free (icon_info);
 
 	return eject;
 }
