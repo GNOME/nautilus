@@ -272,7 +272,6 @@ struct NautilusIconContainerDetails {
 	time_t layout_timestamp;
 
 	/* interactive search */
-	gboolean disable_popdown;
 	gboolean imcontext_changed;
 	int selected_iter;
 	GtkWidget *search_window;
