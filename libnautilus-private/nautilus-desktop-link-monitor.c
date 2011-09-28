@@ -390,6 +390,8 @@ create_link_and_add_preference (NautilusDesktopLink   **link_ref,
 	g_signal_connect_swapped (nautilus_desktop_preferences,
 				  detailed_signal,
 				  callback, callback_data);
+
+	g_free (detailed_signal);
 }
 
 static void
