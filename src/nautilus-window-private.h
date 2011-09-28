@@ -127,7 +127,6 @@ typedef void (*NautilusBookmarkFailedCallback) (NautilusWindow *window,
 
 void               nautilus_window_load_view_as_menus                    (NautilusWindow    *window);
 void               nautilus_window_load_extension_menus                  (NautilusWindow    *window);
-void               nautilus_window_remove_trash_monitor_callback         (NautilusWindow    *window);
 NautilusWindowPane *nautilus_window_get_next_pane                        (NautilusWindow *window);
 void               nautilus_menus_append_bookmark_to_menu                (NautilusWindow    *window, 
                                                                           NautilusBookmark  *bookmark, 

@@ -735,23 +735,19 @@ nautilus_window_finalize (GObject *object)
 		window->details->sidebar_width_handler_id = 0;
 	}
 
-	g_free (window->details->sidebar_id);
-	g_clear_object (&window->details->nav_state);
-
 	nautilus_window_finalize_menus (window);
-	free_stored_viewers (window);
-
-	if (window->details->bookmark_list != NULL) {
-		g_object_unref (window->details->bookmark_list);
-	}
-
 	g_signal_handlers_disconnect_by_func (nautilus_window_state,
 					      side_pane_id_changed, window);
 
+	g_clear_object (&window->details->nav_state);
+	g_clear_object (&window->details->bookmark_list);
+	g_clear_object (&window->details->ui_manager);
+
+	g_free (window->details->sidebar_id);
+	free_stored_viewers (window);
+
 	/* nautilus_window_close() should have run */
 	g_assert (window->details->panes == NULL);
-
-	g_object_unref (window->details->ui_manager);
 
 	G_OBJECT_CLASS (nautilus_window_parent_class)->finalize (object);
 }
