@@ -931,17 +931,22 @@ nautilus_window_pane_slot_close (NautilusWindowPane *pane,
 
 		nautilus_window_close_slot (slot);
 
-		/* If that was the last slot in the active pane, close the pane or even the whole window. */
-		if (window->details->active_pane->slots == NULL) {
-			NautilusWindowPane *next_pane;
-			next_pane = nautilus_window_get_next_pane (window);
-			
-			/* If next_pane is non-NULL, we have more than one pane available. In this
-			 * case, close the current pane and switch to the next one. If there is
-			 * no next pane, close the window. */
-			if (next_pane) {
-				nautilus_window_set_active_pane (window, next_pane);
-				nautilus_window_split_view_off (window);
+		/* If that was the last slot in the pane, close the pane or even the whole window. */
+		if (pane->slots == NULL) {
+			if (nautilus_window_split_view_showing (window)) {
+				NautilusWindowPane *new_pane;
+
+				DEBUG ("Last slot removed from the pane %p, closing it", pane);
+				nautilus_window_close_pane (window, pane);
+
+				new_pane = window->details->panes->data;
+
+				if (new_pane->active_slot == NULL) {
+					new_pane->active_slot = get_first_inactive_slot (new_pane);
+				}
+
+				DEBUG ("Calling set_active_pane, new slot %p", new_pane->active_slot);
+				nautilus_window_set_active_pane (window, new_pane);
 			} else {
 				nautilus_window_close (window);
 			}
