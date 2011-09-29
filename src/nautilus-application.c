@@ -616,15 +616,6 @@ get_first_navigation_slot (GList *slot_list)
 	return NULL;
 }
 
-/* We redirect some slots and close others */
-static gboolean
-should_close_slot_with_mount (NautilusWindow *window,
-			      NautilusWindowSlot *slot,
-			      GMount *mount)
-{
-	return nautilus_window_slot_should_close_with_mount (slot, mount);
-}
-
 /* Called whenever a mount is unmounted. Check and see if there are
  * any windows open displaying contents on the mount. If there are,
  * close them.  It would also be cool to save open window and position
@@ -662,24 +653,15 @@ mount_removed_callback (GVolumeMonitor *monitor,
 		if (window != NULL && window_can_be_closed (window)) {
 			GList *l;
 			GList *lp;
-			GFile *location;
 
 			for (lp = window->details->panes; lp != NULL; lp = lp->next) {
 				NautilusWindowPane *pane;
 				pane = (NautilusWindowPane*) lp->data;
 				for (l = pane->slots; l != NULL; l = l->next) {
 					slot = l->data;
-					location = slot->location;
-					if (location == NULL ||
-					    g_file_has_prefix (location, root) ||
-					    g_file_equal (location, root)) {
-						close_list = g_list_prepend (close_list, slot);
-
-						if (!should_close_slot_with_mount (window, slot, mount)) {
-							/* We'll be redirecting this, not closing */
-							unclosed_slot = TRUE;
-						}
-					} else {
+					close_list = g_list_prepend (close_list, slot);
+					if (!nautilus_window_slot_should_close_with_mount (slot, mount)) {
+						/* We'll be redirecting this, not closing */
 						unclosed_slot = TRUE;
 					}
 				} /* for all slots */
@@ -698,7 +680,7 @@ mount_removed_callback (GVolumeMonitor *monitor,
 		slot = node->data;
 		window = slot->pane->window;
 
-		if (should_close_slot_with_mount (window, slot, mount) &&
+		if (nautilus_window_slot_should_close_with_mount (slot, mount) &&
 		    slot != force_no_close_slot) {
 			nautilus_window_pane_slot_close (slot->pane, slot);
 		} else {
