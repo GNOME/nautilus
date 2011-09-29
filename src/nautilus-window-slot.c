@@ -742,9 +742,7 @@ gboolean
 nautilus_window_slot_should_close_with_mount (NautilusWindowSlot *slot,
 					      GMount *mount)
 {
-	NautilusBookmark *bookmark;
-	GFile *mount_location, *bookmark_location;
-	GList *l;
+	GFile *mount_location;
 	gboolean close_with_mount;
 
 	if (slot->pane->window->details->initiated_unmount) {
@@ -752,29 +750,9 @@ nautilus_window_slot_should_close_with_mount (NautilusWindowSlot *slot,
 	}
 
 	mount_location = g_mount_get_root (mount);
-
-	close_with_mount = TRUE;
-
-	for (l = slot->back_list; l != NULL; l = l->next) {
-		bookmark = NAUTILUS_BOOKMARK (l->data);
-
-		bookmark_location = nautilus_bookmark_get_location (bookmark);
-		close_with_mount &= g_file_has_prefix (bookmark_location, mount_location) ||
-				    g_file_equal (bookmark_location, mount_location);
-		g_object_unref (bookmark_location);
-
-		if (!close_with_mount) {
-			break;
-		}
-	}
-
-	close_with_mount &= g_file_has_prefix (NAUTILUS_WINDOW_SLOT (slot)->location, mount_location) ||
-			    g_file_equal (NAUTILUS_WINDOW_SLOT (slot)->location, mount_location);
-
-	/* we could also consider the forward list here, but since the “go home” request
-	 * in nautilus-window-manager-views.c:mount_removed_callback() would discard those
-	 * anyway, we don't consider them.
-	 */
+	close_with_mount = 
+		g_file_has_prefix (NAUTILUS_WINDOW_SLOT (slot)->location, mount_location) ||
+		g_file_equal (NAUTILUS_WINDOW_SLOT (slot)->location, mount_location);
 
 	g_object_unref (mount_location);
 
