@@ -465,6 +465,8 @@ update_places (NautilusPlacesSidebar *sidebar)
 	GList *network_mounts;
 	NautilusFile *file;
 
+	DEBUG ("Updating places sidebar");
+
 	model = NULL;
 	last_uri = NULL;
 	select_path = NULL;
@@ -3311,7 +3313,6 @@ nautilus_places_sidebar_dispose (GObject *object)
 	}
 
 	g_clear_object (&sidebar->store);
-	g_clear_object (&sidebar->volume_monitor);
 	g_clear_object (&sidebar->bookmarks);
 	g_clear_object (&sidebar->filter_model);
 
@@ -3328,6 +3329,29 @@ nautilus_places_sidebar_dispose (GObject *object)
 	g_signal_handlers_disconnect_by_func (gnome_background_preferences,
 					      desktop_setting_changed_callback,
 					      sidebar);
+
+	if (sidebar->volume_monitor != NULL) {
+		g_signal_handlers_disconnect_by_func (sidebar->volume_monitor, 
+						      volume_added_callback, sidebar);
+		g_signal_handlers_disconnect_by_func (sidebar->volume_monitor, 
+						      volume_removed_callback, sidebar);
+		g_signal_handlers_disconnect_by_func (sidebar->volume_monitor, 
+						      volume_changed_callback, sidebar);
+		g_signal_handlers_disconnect_by_func (sidebar->volume_monitor, 
+						      mount_added_callback, sidebar);
+		g_signal_handlers_disconnect_by_func (sidebar->volume_monitor, 
+						      mount_removed_callback, sidebar);
+		g_signal_handlers_disconnect_by_func (sidebar->volume_monitor, 
+						      mount_changed_callback, sidebar);
+		g_signal_handlers_disconnect_by_func (sidebar->volume_monitor, 
+						      drive_disconnected_callback, sidebar);
+		g_signal_handlers_disconnect_by_func (sidebar->volume_monitor, 
+						      drive_connected_callback, sidebar);
+		g_signal_handlers_disconnect_by_func (sidebar->volume_monitor, 
+						      drive_changed_callback, sidebar);
+
+		g_clear_object (&sidebar->volume_monitor);
+	}
 
 	G_OBJECT_CLASS (nautilus_places_sidebar_parent_class)->dispose (object);
 }
