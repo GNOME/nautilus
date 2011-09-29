@@ -700,6 +700,16 @@ free_stored_viewers (NautilusWindow *window)
 }
 
 static void
+destroy_panes_foreach (gpointer data,
+		       gpointer user_data)
+{
+	NautilusWindowPane *pane = data;
+	NautilusWindow *window = user_data;
+
+	nautilus_window_close_pane (window, pane);
+}
+
+static void
 nautilus_window_destroy (GtkWidget *object)
 {
 	NautilusWindow *window;
@@ -712,7 +722,7 @@ nautilus_window_destroy (GtkWidget *object)
 
 	/* close all panes safely */
 	panes_copy = g_list_copy (window->details->panes);
-	g_list_foreach (panes_copy, (GFunc) nautilus_window_close_pane, NULL);
+	g_list_foreach (panes_copy, (GFunc) destroy_panes_foreach, window);
 	g_list_free (panes_copy);
 
 	/* the panes list should now be empty */
@@ -877,13 +887,10 @@ nautilus_window_open_slot (NautilusWindowPane *pane,
 }
 
 void
-nautilus_window_close_pane (NautilusWindowPane *pane)
+nautilus_window_close_pane (NautilusWindow *window,
+			    NautilusWindowPane *pane)
 {
-	NautilusWindow *window;
-
 	g_assert (NAUTILUS_IS_WINDOW_PANE (pane));
-	g_assert (NAUTILUS_IS_WINDOW (pane->window));
-	g_assert (g_list_find (pane->window->details->panes, pane) != NULL);
 
 	while (pane->slots != NULL) {
 		NautilusWindowSlot *slot = pane->slots->data;
@@ -891,10 +898,8 @@ nautilus_window_close_pane (NautilusWindowPane *pane)
 		nautilus_window_close_slot (slot);
 	}
 
-	window = pane->window;
-
 	/* If the pane was active, set it to NULL. The caller is responsible
-	 * for setting a new active pane with nautilus_window_pane_switch_to()
+	 * for setting a new active pane with nautilus_window_set_active_pane()
 	 * if it wants to continue using the window. */
 	if (window->details->active_pane == pane) {
 		window->details->active_pane = NULL;
@@ -2180,7 +2185,7 @@ nautilus_window_split_view_off (NautilusWindow *window)
 		next = l->next;
 		pane = l->data;
 		if (pane != active_pane) {
-			nautilus_window_close_pane (pane);
+			nautilus_window_close_pane (window, pane);
 		}
 	}
 

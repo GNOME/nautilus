@@ -175,7 +175,8 @@ void               nautilus_window_remove_bookmarks_menu_items           (Nautil
 void               nautilus_window_update_show_hide_menu_items           (NautilusWindow     *window);
 
 /* window toolbar */
-void               nautilus_window_close_pane                            (NautilusWindowPane *pane);
+void               nautilus_window_close_pane                            (NautilusWindow    *window,
+                                                                          NautilusWindowPane *pane);
 void               nautilus_window_update_split_view_actions_sensitivity (NautilusWindow    *window);
 
 #endif /* NAUTILUS_WINDOW_PRIVATE_H */
