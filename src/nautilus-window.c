@@ -717,6 +717,8 @@ nautilus_window_destroy (GtkWidget *object)
 
 	window = NAUTILUS_WINDOW (object);
 
+	DEBUG ("Destroying window");
+
 	window->details->content_paned = NULL;
 	window->details->split_view_hpane = NULL;
 
@@ -921,6 +923,8 @@ nautilus_window_close_slot (NautilusWindowSlot *slot)
 	g_assert (NAUTILUS_IS_WINDOW_PANE(slot->pane));
 	g_assert (g_list_find (slot->pane->slots, slot) != NULL);
 
+	DEBUG ("Closing slot %p", slot);
+
 	/* save pane because slot is not valid anymore after this call */
 	pane = slot->pane;
 	notebook = GTK_NOTEBOOK (pane->notebook);
@@ -971,6 +975,9 @@ nautilus_window_set_active_pane (NautilusWindow *window,
 				 NautilusWindowPane *new_pane)
 {
 	g_assert (NAUTILUS_IS_WINDOW_PANE (new_pane));
+
+	DEBUG ("Setting new pane %p as active", new_pane);
+
 	if (new_pane->active_slot) {
 		nautilus_window_set_active_slot (window, new_pane->active_slot);
 	} else if (new_pane != window->details->active_pane) {
@@ -987,6 +994,8 @@ nautilus_window_set_active_slot (NautilusWindow *window, NautilusWindowSlot *new
 	NautilusWindowSlot *old_slot;
 
 	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	DEBUG ("Setting new slot %p as active", new_slot);
 
 	if (new_slot) {
 		g_assert (NAUTILUS_IS_WINDOW_SLOT (new_slot));

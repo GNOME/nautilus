@@ -40,6 +40,9 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-entry.h>
 
+#define DEBUG_FLAG NAUTILUS_DEBUG_WINDOW
+#include <libnautilus-private/nautilus-debug.h>
+
 G_DEFINE_TYPE (NautilusWindowPane, nautilus_window_pane,
 	       GTK_TYPE_BOX)
 
@@ -919,6 +922,8 @@ nautilus_window_pane_slot_close (NautilusWindowPane *pane,
 {
 	NautilusWindowSlot *next_slot;
 
+	DEBUG ("Requesting to remove slot %p from pane %p", slot, pane);
+
 	if (pane->window) {
 		NautilusWindow *window;
 
@@ -948,6 +953,7 @@ nautilus_window_pane_slot_close (NautilusWindowPane *pane,
 				DEBUG ("Calling set_active_pane, new slot %p", new_pane->active_slot);
 				nautilus_window_set_active_pane (window, new_pane);
 			} else {
+				DEBUG ("Last slot removed from the last pane, close the window");
 				nautilus_window_close (window);
 			}
 		}
