@@ -2375,7 +2375,10 @@ static void
 slot_active (NautilusWindowSlot *slot,
 	     NautilusView *view)
 {
-	g_assert (!view->details->active);
+	if (view->details->active) {
+		return;
+	}
+
 	view->details->active = TRUE;
 
 	nautilus_view_merge_menus (view);
@@ -2386,8 +2389,10 @@ static void
 slot_inactive (NautilusWindowSlot *slot,
 	       NautilusView *view)
 {
-	g_assert (view->details->active ||
-		  gtk_widget_get_parent (GTK_WIDGET (view)) == NULL);
+	if (!view->details->active) {
+		return;
+	}
+
 	view->details->active = FALSE;
 
 	nautilus_view_unmerge_menus (view);
