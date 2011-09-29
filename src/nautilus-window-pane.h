@@ -39,7 +39,7 @@
 #define NAUTILUS_WINDOW_PANE_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), NAUTILUS_TYPE_WINDOW_PANE, NautilusWindowPaneClass))
 
 struct _NautilusWindowPaneClass {
-	GObjectClass parent_class;
+	GtkBoxClass parent_class;
 };
 
 /* A NautilusWindowPane is a layer between a slot and a window.
@@ -49,15 +49,13 @@ struct _NautilusWindowPaneClass {
  * window can contain one or multiple panes. Likewise, the window has
  * the notion of an "active pane".
  *
- * A spatial window has only one pane, which contains a single slot.
  * A navigation window may have one or more panes.
  */
 struct _NautilusWindowPane {
-	GObject parent;
+	GtkBox parent;
 
 	/* hosting window */
 	NautilusWindow *window;
-	gboolean visible;
 
 	/* available slots, and active slot.
 	 * Both of them may never be NULL. */
@@ -66,8 +64,6 @@ struct _NautilusWindowPane {
 
 	/* whether or not this pane is active */
 	gboolean is_active;
-
-	GtkWidget *widget;
 
 	/* location bar */
 	GtkWidget *location_bar;
@@ -90,7 +86,6 @@ GType nautilus_window_pane_get_type (void);
 
 NautilusWindowPane *nautilus_window_pane_new (NautilusWindow *window);
 
-void nautilus_window_pane_show (NautilusWindowPane *pane);
 void nautilus_window_pane_sync_location_widgets (NautilusWindowPane *pane);
 void nautilus_window_pane_sync_search_widgets  (NautilusWindowPane *pane);
 void nautilus_window_pane_set_active (NautilusWindowPane *pane, gboolean is_active);

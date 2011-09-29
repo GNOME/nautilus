@@ -41,7 +41,7 @@
 #include <libnautilus-private/nautilus-entry.h>
 
 G_DEFINE_TYPE (NautilusWindowPane, nautilus_window_pane,
-	       G_TYPE_OBJECT)
+	       GTK_TYPE_BOX)
 
 static gboolean
 widget_is_in_temporary_bars (GtkWidget *widget,
@@ -657,7 +657,6 @@ nautilus_window_pane_setup (NautilusWindowPane *pane)
 	NautilusWindow *window;
 	GtkActionGroup *action_group;
 
-	pane->widget = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	window = pane->window;
 
 	header_size_group = gtk_size_group_new (GTK_SIZE_GROUP_VERTICAL);
@@ -670,7 +669,7 @@ nautilus_window_pane_setup (NautilusWindowPane *pane)
 
 	setup_search_action (pane);
 
-	gtk_box_pack_start (GTK_BOX (pane->widget),
+	gtk_box_pack_start (GTK_BOX (pane),
 			    pane->tool_bar,
 			    FALSE, FALSE, 0);
 
@@ -716,7 +715,7 @@ nautilus_window_pane_setup (NautilusWindowPane *pane)
 
 	/* initialize the notebook */
 	pane->notebook = g_object_new (NAUTILUS_TYPE_NOTEBOOK, NULL);
-	gtk_box_pack_start (GTK_BOX (pane->widget), pane->notebook,
+	gtk_box_pack_start (GTK_BOX (pane), pane->notebook,
 			    TRUE, TRUE, 0);
 	g_signal_connect (pane->notebook,
 			  "tab-close-request",
@@ -746,7 +745,7 @@ nautilus_window_pane_setup (NautilusWindowPane *pane)
 	 * of the UI (like location bar and tabs) don't request more and
 	 * thus affect the default position of the split view paned.
 	 */
-	gtk_widget_set_size_request (pane->widget, 60, 60);
+	gtk_widget_set_size_request (GTK_WIDGET (pane), 60, 60);
 
 	/* we can unref the size group now */
 	g_object_unref (header_size_group);
@@ -760,7 +759,6 @@ nautilus_window_pane_dispose (GObject *object)
 	unset_focus_widget (pane);
 
 	pane->window = NULL;
-	gtk_widget_destroy (pane->widget);
 	g_clear_object (&pane->action_group);
 
 	g_assert (pane->slots == NULL);
@@ -782,6 +780,8 @@ nautilus_window_pane_init (NautilusWindowPane *pane)
 	pane->slots = NULL;
 	pane->active_slot = NULL;
 	pane->is_active = FALSE;
+
+	gtk_orientable_set_orientation (GTK_ORIENTABLE (pane), GTK_ORIENTATION_VERTICAL);
 }
 
 NautilusWindowPane *
@@ -833,13 +833,6 @@ nautilus_window_pane_set_active (NautilusWindowPane *pane,
 	}
 
 	real_set_active (pane, is_active);
-}
-
-void
-nautilus_window_pane_show (NautilusWindowPane *pane)
-{
-	pane->visible = TRUE;
-	gtk_widget_show (pane->widget);
 }
 
 void

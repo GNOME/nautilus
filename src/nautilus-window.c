@@ -632,8 +632,7 @@ nautilus_window_constructed (GObject *self)
 	pane = nautilus_window_pane_new (window);
 	window->details->panes = g_list_prepend (window->details->panes, pane);
 
-	gtk_paned_pack1 (GTK_PANED (hpaned), pane->widget, TRUE, FALSE);
-	gtk_widget_show (pane->widget);
+	gtk_paned_pack1 (GTK_PANED (hpaned), GTK_WIDGET (pane), TRUE, FALSE);
 
 	/* this has to be done after the location bar has been set up,
 	 * but before menu stuff is being called */
@@ -792,10 +791,9 @@ nautilus_window_view_visible (NautilusWindow *window,
 	}
 
 	slot->visible = TRUE;
-
 	pane = slot->pane;
 
-	if (pane->visible) {
+	if (gtk_widget_get_visible (GTK_WIDGET (pane))) {
 		return;
 	}
 
@@ -809,13 +807,13 @@ nautilus_window_view_visible (NautilusWindow *window,
 	}
 
 	/* None, this pane is visible */
-	nautilus_window_pane_show (pane);
+	gtk_widget_show (GTK_WIDGET (pane));
 
 	/* Look for other non-visible panes */
 	for (walk = window->details->panes; walk; walk = walk->next) {
 		pane = walk->data;
 
-		if (!pane->visible) {
+		if (!gtk_widget_get_visible (GTK_WIDGET (pane))) {
 			return;
 		}
 	}
@@ -904,7 +902,7 @@ nautilus_window_close_pane (NautilusWindowPane *pane)
 
 	window->details->panes = g_list_remove (window->details->panes, pane);
 
-	g_object_unref (pane);
+	gtk_widget_destroy (GTK_WIDGET (pane));
 }
 
 void
@@ -1841,9 +1839,9 @@ create_extra_pane (NautilusWindow *window)
 
 	paned = GTK_PANED (window->details->split_view_hpane);
 	if (gtk_paned_get_child1 (paned) == NULL) {
-		gtk_paned_pack1 (paned, pane->widget, TRUE, FALSE);
+		gtk_paned_pack1 (paned, GTK_WIDGET (pane), TRUE, FALSE);
 	} else {
-		gtk_paned_pack2 (paned, pane->widget, TRUE, FALSE);
+		gtk_paned_pack2 (paned, GTK_WIDGET (pane), TRUE, FALSE);
 	}
 
 	/* slot */
