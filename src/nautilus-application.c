@@ -604,18 +604,6 @@ mount_added_callback (GVolumeMonitor *monitor,
 	}
 }
 
-static NautilusWindowSlot *
-get_first_navigation_slot (GList *slot_list)
-{
-	GList *l;
-
-	for (l = slot_list; l != NULL; l = l->next) {
-		return l->data;
-	}
-
-	return NULL;
-}
-
 /* Called whenever a mount is unmounted. Check and see if there are
  * any windows open displaying contents on the mount. If there are,
  * close them.  It would also be cool to save open window and position
@@ -631,12 +619,12 @@ mount_removed_callback (GVolumeMonitor *monitor,
 	NautilusWindowSlot *slot;
 	NautilusWindowSlot *force_no_close_slot;
 	GFile *root, *computer;
-	gboolean unclosed_slot;
 	gchar *uri;
+	gint n_slots;
 
 	close_list = NULL;
 	force_no_close_slot = NULL;
-	unclosed_slot = FALSE;
+	n_slots = 0;
 
 	/* Check and see if any of the open windows are displaying contents from the unmounted mount */
 	window_list = gtk_application_get_windows (GTK_APPLICATION (application));
@@ -659,20 +647,20 @@ mount_removed_callback (GVolumeMonitor *monitor,
 				pane = (NautilusWindowPane*) lp->data;
 				for (l = pane->slots; l != NULL; l = l->next) {
 					slot = l->data;
-					close_list = g_list_prepend (close_list, slot);
-					if (!nautilus_window_slot_should_close_with_mount (slot, mount)) {
-						/* We'll be redirecting this, not closing */
-						unclosed_slot = TRUE;
+					n_slots++;
+					if (nautilus_window_slot_should_close_with_mount (slot, mount)) {
+						close_list = g_list_prepend (close_list, slot);
 					}
 				} /* for all slots */
 			} /* for all panes */
 		}
 	}
 
-	if (nautilus_application_desktop_windows == NULL &&
-	    !unclosed_slot) {
+	if ((nautilus_application_desktop_windows == NULL) &&
+	    (close_list != NULL) &&
+	    (g_list_length (close_list) == n_slots)) {
 		/* We are trying to close all open slots. Keep one navigation slot open. */
-		force_no_close_slot = get_first_navigation_slot (close_list);
+		force_no_close_slot = close_list->data;
 	}
 
 	/* Handle the windows in the close list. */
@@ -680,8 +668,7 @@ mount_removed_callback (GVolumeMonitor *monitor,
 		slot = node->data;
 		window = slot->pane->window;
 
-		if (nautilus_window_slot_should_close_with_mount (slot, mount) &&
-		    slot != force_no_close_slot) {
+		if (slot != force_no_close_slot) {
 			nautilus_window_pane_slot_close (slot->pane, slot);
 		} else {
 			computer = g_file_new_for_path (g_get_home_dir ());

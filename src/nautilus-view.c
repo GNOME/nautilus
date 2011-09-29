@@ -6140,16 +6140,6 @@ file_mount_callback (NautilusFile  *file,
 }
 
 static void
-nautilus_view_set_initiated_unmount (NautilusView *view,
-				     gboolean initiated_unmount)
-{
-	if (view->details->window != NULL) {
-		nautilus_window_set_initiated_unmount(view->details->window,
-						      initiated_unmount);
-	}
-}
-
-static void
 file_unmount_callback (NautilusFile  *file,
 		       GFile         *result_location,
 		       GError        *error,
@@ -6158,7 +6148,6 @@ file_unmount_callback (NautilusFile  *file,
 	NautilusView *view;
 
 	view = NAUTILUS_VIEW (callback_data);
-	nautilus_view_set_initiated_unmount (view, FALSE);
 	g_object_unref (view);
 
 	if (error != NULL &&
@@ -6179,7 +6168,6 @@ file_eject_callback (NautilusFile  *file,
 	NautilusView *view;
 
 	view = NAUTILUS_VIEW (callback_data);
-	nautilus_view_set_initiated_unmount (view, FALSE);
 	g_object_unref (view);
 
 	if (error != NULL &&
@@ -6249,7 +6237,6 @@ action_unmount_volume_callback (GtkAction *action,
 		if (nautilus_file_can_unmount (file)) {
 			GMountOperation *mount_op;
 			mount_op = gtk_mount_operation_new (nautilus_view_get_containing_window (view));
-			nautilus_view_set_initiated_unmount (view, TRUE);
 			nautilus_file_unmount (file, mount_op, NULL,
 					       file_unmount_callback, g_object_ref (view));
 			g_object_unref (mount_op);
@@ -6275,7 +6262,6 @@ action_eject_volume_callback (GtkAction *action,
 		if (nautilus_file_can_eject (file)) {
 			GMountOperation *mount_op;
 			mount_op = gtk_mount_operation_new (nautilus_view_get_containing_window (view));
-			nautilus_view_set_initiated_unmount (view, TRUE);
 			nautilus_file_eject (file, mount_op, NULL,
 					     file_eject_callback, g_object_ref (view));
 			g_object_unref (mount_op);
@@ -6408,7 +6394,6 @@ action_self_unmount_volume_callback (GtkAction *action,
 	}
 
 	mount_op = gtk_mount_operation_new (nautilus_view_get_containing_window (view));
-	nautilus_view_set_initiated_unmount (view, TRUE);
 	nautilus_file_unmount (file, mount_op, NULL, file_unmount_callback, g_object_ref (view));
 	g_object_unref (mount_op);
 }
@@ -6429,7 +6414,6 @@ action_self_eject_volume_callback (GtkAction *action,
 	}
 	
 	mount_op = gtk_mount_operation_new (nautilus_view_get_containing_window (view));
-	nautilus_view_set_initiated_unmount (view, TRUE);
 	nautilus_file_eject (file, mount_op, NULL, file_eject_callback, g_object_ref (view));
 	g_object_unref (mount_op);
 }
@@ -6529,7 +6513,6 @@ action_location_unmount_volume_callback (GtkAction *action,
 	}
 
 	mount_op = gtk_mount_operation_new (nautilus_view_get_containing_window (view));
-	nautilus_view_set_initiated_unmount (view, TRUE);
 	nautilus_file_unmount (file, mount_op, NULL,
 			       file_unmount_callback, g_object_ref (view));
 	g_object_unref (mount_op);
@@ -6551,7 +6534,6 @@ action_location_eject_volume_callback (GtkAction *action,
 	}
 	
 	mount_op = gtk_mount_operation_new (nautilus_view_get_containing_window (view));
-	nautilus_view_set_initiated_unmount (view, TRUE);
 	nautilus_file_eject (file, mount_op, NULL,
 			     file_eject_callback, g_object_ref (view));
 	g_object_unref (mount_op);

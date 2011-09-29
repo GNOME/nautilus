@@ -745,10 +745,6 @@ nautilus_window_slot_should_close_with_mount (NautilusWindowSlot *slot,
 	GFile *mount_location;
 	gboolean close_with_mount;
 
-	if (slot->pane->window->details->initiated_unmount) {
-		return FALSE;
-	}
-
 	mount_location = g_mount_get_root (mount);
 	close_with_mount = 
 		g_file_has_prefix (NAUTILUS_WINDOW_SLOT (slot)->location, mount_location) ||
