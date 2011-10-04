@@ -635,7 +635,7 @@ nautilus_get_icon_size_for_stock_size (GtkIconSize size)
   if (gtk_icon_size_lookup (size, &w, &h)) {
     return MAX (w, h);
   } 
-  return NAUTILUS_ZOOM_LEVEL_STANDARD;
+  return NAUTILUS_ICON_SIZE_STANDARD;
 }
 
 
