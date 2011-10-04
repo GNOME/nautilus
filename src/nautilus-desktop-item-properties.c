@@ -297,22 +297,21 @@ entry_focus_out_cb (GtkWidget *entry,
 }
 
 static GtkWidget *
-build_table (GtkWidget *container,
-	     GKeyFile *key_file,
-	     GtkSizeGroup *label_size_group,
-	     GList *entries)
+build_grid (GtkWidget *container,
+            GKeyFile *key_file,
+            GtkSizeGroup *label_size_group,
+            GList *entries)
 {
-	GtkWidget *table;
+	GtkWidget *grid;
 	GtkWidget *label;
 	GtkWidget *entry;
 	GList *l;
 	char *val;
-	int i;
-	
-	table = gtk_table_new (g_list_length (entries) + 1, 2, FALSE);
-	gtk_table_set_row_spacings (GTK_TABLE (table), 6);
-	gtk_table_set_col_spacings (GTK_TABLE (table), 12);
-	i = 0;
+
+        grid = gtk_grid_new ();
+        gtk_orientable_set_orientation (GTK_ORIENTABLE (grid), GTK_ORIENTATION_VERTICAL);
+	gtk_grid_set_row_spacing (GTK_GRID (grid), 6);
+	gtk_grid_set_column_spacing (GTK_GRID (grid), 12);
 	
 	for (l = entries; l; l = l->next) {
 		ItemEntry *item_entry = (ItemEntry *)l->data;
@@ -326,6 +325,7 @@ build_table (GtkWidget *container,
 		gtk_size_group_add_widget (label_size_group, label);
 
 		entry = gtk_entry_new ();
+                gtk_widget_set_hexpand (entry, TRUE);
 
 		if (item_entry->localized) {
 			val = g_key_file_get_locale_string (key_file,
@@ -343,12 +343,10 @@ build_table (GtkWidget *container,
 		gtk_entry_set_text (GTK_ENTRY (entry), item_entry->current_value);
 		g_free (val);
 
-		gtk_table_attach (GTK_TABLE (table), label,
-				  0, 1, i, i+1, GTK_FILL, GTK_FILL,
-				  0, 0);
-		gtk_table_attach (GTK_TABLE (table), entry,
-				  1, 2, i, i+1, GTK_EXPAND|GTK_FILL, GTK_EXPAND|GTK_FILL,
-				  0, 0);
+                gtk_container_add (GTK_CONTAINER (grid), label);
+                gtk_grid_attach_next_to (GTK_GRID (grid), entry, label,
+                                         GTK_POS_RIGHT, 1, 1);
+
 		g_signal_connect (entry, "activate",
 				  G_CALLBACK (entry_activate_cb),
 				  container);
@@ -378,26 +376,21 @@ build_table (GtkWidget *container,
 					  G_CALLBACK (nautilus_desktop_item_properties_exec_drag_data_received),
 					  entry);
 		}
-		
-		i++;
 	}
 
 	/* append dummy row */
 	label = gtk_label_new ("");
-	gtk_table_attach (GTK_TABLE (table), label,
-			  0, 1, i, i+1, GTK_FILL, GTK_FILL,
-			  0, 0);
+        gtk_container_add (GTK_CONTAINER (grid), label);
 	gtk_size_group_add_widget (label_size_group, label);
 
-
-	gtk_widget_show_all (table);
-	return table;
+	gtk_widget_show_all (grid);
+	return grid;
 }
 
 static void
 create_page (GKeyFile *key_file, GtkWidget *box)
 {
-	GtkWidget *table;
+	GtkWidget *grid;
 	GList *entries;
 	GtkSizeGroup *label_size_group;
 	char *type;
@@ -437,10 +430,10 @@ create_page (GKeyFile *key_file, GtkWidget *box)
 build_table:
 	label_size_group = g_object_get_data (G_OBJECT (box), "label-size-group");
 
-	table = build_table (box, key_file, label_size_group, entries);
+	grid = build_grid (box, key_file, label_size_group, entries);
 	g_list_free (entries);
 	
-	gtk_box_pack_start (GTK_BOX (box), table, FALSE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (box), grid, FALSE, TRUE, 0);
 	gtk_widget_show_all (GTK_WIDGET (box));
 }
 
