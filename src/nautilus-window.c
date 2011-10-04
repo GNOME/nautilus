@@ -558,7 +558,7 @@ static void
 nautilus_window_constructed (GObject *self)
 {
 	NautilusWindow *window;
-	GtkWidget *table;
+	GtkWidget *grid;
 	GtkWidget *menu;
 	GtkWidget *statusbar;
 	GtkWidget *hpaned;
@@ -572,10 +572,10 @@ nautilus_window_constructed (GObject *self)
 
 	G_OBJECT_CLASS (nautilus_window_parent_class)->constructed (self);
 
-	table = gtk_table_new (1, 6, FALSE);
-	window->details->table = table;
-	gtk_widget_show (table);
-	gtk_container_add (GTK_CONTAINER (window), table);
+	grid = gtk_grid_new ();
+	gtk_orientable_set_orientation (GTK_ORIENTABLE (grid), GTK_ORIENTATION_VERTICAL);
+	gtk_widget_show (grid);
+	gtk_container_add (GTK_CONTAINER (window), grid);
 
 	statusbar = gtk_statusbar_new ();
 	window->details->statusbar = statusbar;
@@ -588,25 +588,19 @@ nautilus_window_constructed (GObject *self)
 
 	menu = gtk_ui_manager_get_widget (window->details->ui_manager, "/MenuBar");
 	window->details->menubar = menu;
+	gtk_widget_set_hexpand (menu, TRUE);
 	gtk_widget_show (menu);
-	gtk_table_attach (GTK_TABLE (table),
-			  menu, 
-			  /* X direction */                   /* Y direction */
-			  0, 1,                               0, 1,
-			  GTK_EXPAND | GTK_FILL | GTK_SHRINK, 0,
-			  0,                                  0);
+	gtk_container_add (GTK_CONTAINER (grid), menu);
 
 	/* Register to menu provider extension signal managing menu updates */
 	g_signal_connect_object (nautilus_signaller_get_current (), "popup_menu_changed",
 			 G_CALLBACK (nautilus_window_load_extension_menus), window, G_CONNECT_SWAPPED);
 
 	window->details->content_paned = gtk_paned_new (GTK_ORIENTATION_HORIZONTAL);
-	gtk_table_attach (GTK_TABLE (window->details->table),
-			  window->details->content_paned,
-			  /* X direction */                   /* Y direction */
-			  0, 1,                               3, 4,
-			  GTK_EXPAND | GTK_FILL | GTK_SHRINK, GTK_EXPAND | GTK_FILL | GTK_SHRINK,
-			  0,                                  0);
+	gtk_widget_set_hexpand (window->details->content_paned, TRUE);
+	gtk_widget_set_vexpand (window->details->content_paned, TRUE);
+
+	gtk_container_add (GTK_CONTAINER (grid), window->details->content_paned);
 	gtk_widget_show (window->details->content_paned);
 
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
