@@ -44,7 +44,7 @@
  */
 
 struct _NautilusConnectServerDialogDetails {
-	GtkWidget *primary_table;
+	GtkWidget *primary_grid;
 	GtkWidget *user_details;
 	GtkWidget *port_spinbutton;
 
@@ -214,7 +214,7 @@ connect_dialog_gvfs_error (NautilusConnectServerDialog *dialog)
 	gtk_widget_show (label);
 
 	gtk_widget_set_sensitive (dialog->details->connect_button, FALSE);
-	gtk_widget_set_sensitive (dialog->details->primary_table, FALSE);
+	gtk_widget_set_sensitive (dialog->details->primary_grid, FALSE);
 
 	gtk_widget_show (dialog->details->info_bar);
 }
@@ -828,7 +828,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	GtkWidget *label;
 	GtkWidget *alignment;
 	GtkWidget *content_area;
-	GtkWidget *combo ,* table;
+	GtkWidget *combo, *grid;
 	GtkWidget *hbox, *connect_button, *checkbox;
 	GtkListStore *store;
 	GtkCellRenderer *renderer;
@@ -873,28 +873,27 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	gtk_box_pack_start (GTK_BOX (content_area), alignment, TRUE, TRUE, 0);
 	gtk_widget_show (alignment);
 
-	table = gtk_table_new (4, 2, FALSE);
-	gtk_container_add (GTK_CONTAINER (alignment), table);
-	gtk_widget_show (table);
+	grid = gtk_grid_new ();
+	gtk_orientable_set_orientation (GTK_ORIENTABLE (grid), GTK_ORIENTATION_VERTICAL);
+	gtk_grid_set_row_spacing (GTK_GRID (grid), 6);
+	gtk_grid_set_column_spacing (GTK_GRID (grid), 3);
+	gtk_container_add (GTK_CONTAINER (alignment), grid);
+	gtk_widget_show (grid);
 
-	dialog->details->primary_table = table;
+	dialog->details->primary_grid = grid;
 
 	/* first row: server entry + port spinbutton */
 	label = gtk_label_new_with_mnemonic (_("_Server:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_table_attach (GTK_TABLE (table), label,
-			  0, 1,
-			  0, 1,
-			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_container_add (GTK_CONTAINER (grid), label);
 	gtk_size_group_add_widget (dialog->details->labels_size_group, label);
 	gtk_widget_show (label);
 
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_widget_show (hbox);
-	gtk_table_attach (GTK_TABLE (table), hbox,
-			  1, 2,
-			  0, 1,
-			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_grid_attach_next_to (GTK_GRID (grid), hbox, label,
+				 GTK_POS_RIGHT,
+				 1, 1);
 	gtk_size_group_add_widget (dialog->details->contents_size_group, hbox);
 
 	dialog->details->server_entry = gtk_entry_new ();
@@ -924,10 +923,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	/* second row: type combobox */
 	label = gtk_label_new_with_mnemonic (_("_Type:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_table_attach (GTK_TABLE (table), label,
-			  0, 1,
-			  1, 2,
-			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_container_add (GTK_CONTAINER (grid), label);
 	gtk_size_group_add_widget (dialog->details->labels_size_group, label);
 	gtk_widget_show (label);
 
@@ -987,10 +983,8 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 
 	gtk_widget_show (combo);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), combo);
-	gtk_table_attach (GTK_TABLE (table), combo,
-			  1, 2,
-			  1, 2,
-			  GTK_EXPAND | GTK_FILL, GTK_EXPAND, 6, 3);
+	gtk_grid_attach_next_to (GTK_GRID (grid), combo, label,
+				 GTK_POS_RIGHT, 1, 1);
 	g_signal_connect_swapped (combo, "changed",
 				  G_CALLBACK (connect_dialog_setup_for_type),
 				  dialog);
@@ -998,18 +992,13 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	/* third row: share entry */
 	label = gtk_label_new_with_mnemonic (_("Sh_are:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_table_attach (GTK_TABLE (table), label,
-			  0, 1,
-			  2, 3,
-			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_container_add (GTK_CONTAINER (grid), label);
 	gtk_size_group_add_widget (dialog->details->labels_size_group, label);
 
 	dialog->details->share_entry = gtk_entry_new ();
 	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->share_entry), TRUE);
-	gtk_table_attach (GTK_TABLE (table), dialog->details->share_entry,
-			  1, 2,
-			  2, 3,
-			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_grid_attach_next_to (GTK_GRID (grid), dialog->details->share_entry, label,
+				 GTK_POS_RIGHT, 1, 1);
 	gtk_size_group_add_widget (dialog->details->contents_size_group, dialog->details->share_entry);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), dialog->details->share_entry);
 
@@ -1018,10 +1007,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	/* fourth row: folder entry */
 	label = gtk_label_new_with_mnemonic (_("_Folder:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_table_attach (GTK_TABLE (table), label,
-			  0, 1,
-			  3, 4,
-			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_container_add (GTK_CONTAINER (grid), label);
 	gtk_size_group_add_widget (dialog->details->labels_size_group, label);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), dialog->details->share_entry);
 	gtk_widget_show (label);
@@ -1029,10 +1015,8 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	dialog->details->folder_entry = gtk_entry_new ();
 	gtk_entry_set_text (GTK_ENTRY (dialog->details->folder_entry), "/");
 	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->folder_entry), TRUE);
-	gtk_table_attach (GTK_TABLE (table), dialog->details->folder_entry,
-			  1, 2,
-			  3, 4,
-			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_grid_attach_next_to (GTK_GRID (grid), dialog->details->folder_entry, label,
+				 GTK_POS_RIGHT, 1, 1);
 	gtk_size_group_add_widget (dialog->details->contents_size_group, dialog->details->folder_entry);
 	gtk_widget_show (dialog->details->folder_entry);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), dialog->details->folder_entry);
@@ -1054,25 +1038,24 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	bind_visibility (dialog, alignment, label);
 	dialog->details->user_details = alignment;
 
-	table = gtk_table_new (4, 2, FALSE);
-	gtk_container_add (GTK_CONTAINER (alignment), table);
-	gtk_widget_show (table);
+	grid = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (grid), 6);
+	gtk_grid_set_column_spacing (GTK_GRID (grid), 3);
+	gtk_orientable_set_orientation (GTK_ORIENTABLE (grid), GTK_ORIENTATION_VERTICAL);
+	gtk_container_add (GTK_CONTAINER (alignment), grid);
+	gtk_widget_show (grid);
 
 	/* first row: domain entry */
 	label = gtk_label_new_with_mnemonic (_("_Domain name:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_table_attach (GTK_TABLE (table), label,
-			  0, 1,
-			  0, 1,
-			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_container_add (GTK_CONTAINER (grid), label);
 
 	dialog->details->domain_entry = gtk_entry_new ();
 	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->domain_entry), TRUE);
 	gtk_size_group_add_widget (dialog->details->labels_size_group, label);
-	gtk_table_attach (GTK_TABLE (table), dialog->details->domain_entry,
-			  1, 2,
-			  0, 1,
-			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_grid_attach_next_to (GTK_GRID (grid), dialog->details->domain_entry, label,
+				 GTK_POS_RIGHT, 1, 1);
+
 	gtk_size_group_add_widget (dialog->details->contents_size_group, dialog->details->domain_entry);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), dialog->details->domain_entry);
 	bind_visibility (dialog, dialog->details->domain_entry, label);
@@ -1080,18 +1063,13 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	/* second row: username entry */
 	label = gtk_label_new_with_mnemonic (_("_User name:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_table_attach (GTK_TABLE (table), label,
-			  0, 1,
-			  1, 2,
-			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_container_add (GTK_CONTAINER (grid), label);
 	gtk_size_group_add_widget (dialog->details->labels_size_group, label);
 
 	dialog->details->user_entry = gtk_entry_new ();
 	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->user_entry), TRUE);
-	gtk_table_attach (GTK_TABLE (table), dialog->details->user_entry,
-			  1, 2,
-			  1, 2,
-			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_grid_attach_next_to (GTK_GRID (grid), dialog->details->user_entry, label,
+				 GTK_POS_RIGHT, 1, 1);
 	gtk_size_group_add_widget (dialog->details->contents_size_group, dialog->details->user_entry);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), dialog->details->user_entry);
 
@@ -1100,19 +1078,14 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	/* third row: password entry */
 	label = gtk_label_new_with_mnemonic (_("Pass_word:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_table_attach (GTK_TABLE (table), label,
-			  0, 1,
-			  2, 3,
-			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_container_add (GTK_CONTAINER (grid), label);
 	gtk_size_group_add_widget (dialog->details->labels_size_group, label);
 
 	dialog->details->password_entry = gtk_entry_new ();
 	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->password_entry), TRUE);
 	gtk_entry_set_visibility (GTK_ENTRY (dialog->details->password_entry), FALSE);
-	gtk_table_attach (GTK_TABLE (table), dialog->details->password_entry,
-			  1, 2,
-			  2, 3,
-			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 3);
+	gtk_grid_attach_next_to (GTK_GRID (grid), dialog->details->password_entry, label,
+				 GTK_POS_RIGHT, 1, 1);
 	gtk_size_group_add_widget (dialog->details->contents_size_group, dialog->details->password_entry);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), dialog->details->password_entry);
 
@@ -1120,10 +1093,8 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 
 	/* fourth row: remember checkbox */
 	checkbox = gtk_check_button_new_with_mnemonic (_("_Remember this password"));
-	gtk_table_attach (GTK_TABLE (table), checkbox,
-			  1, 2,
-			  3, 4,
-			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 6, 0);
+	gtk_grid_attach_next_to (GTK_GRID (grid), checkbox, dialog->details->password_entry,
+				 GTK_POS_BOTTOM, 1, 1);
 	dialog->details->remember_checkbox = checkbox;
 
 	bind_visibility (dialog, dialog->details->password_entry, checkbox);
