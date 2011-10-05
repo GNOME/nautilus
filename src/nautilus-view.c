@@ -3205,8 +3205,7 @@ compare_files_cover (gconstpointer a, gconstpointer b, gpointer callback_data)
 	} else if (fad1->directory > fad2->directory) {
 		return 1;
 	} else {
-		return EEL_INVOKE_METHOD (NAUTILUS_VIEW_CLASS, view, compare_files,
-					  (view, fad1->file, fad2->file));
+		return NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->compare_files (view, fad1->file, fad2->file);
 	}
 }
 static void
