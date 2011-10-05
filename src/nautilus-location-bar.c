@@ -250,7 +250,7 @@ drag_data_get_callback (GtkWidget *widget,
 		gtk_selection_data_set (selection_data,
 					gtk_selection_data_get_target (selection_data),
 					8, (guchar *) entry_text,
-					eel_strlen (entry_text));
+					strlen (entry_text));
 		break;
 	default:
 		g_assert_not_reached ();

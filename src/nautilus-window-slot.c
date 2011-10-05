@@ -359,7 +359,7 @@ nautilus_window_slot_set_title (NautilusWindowSlot *slot,
 		slot->title = g_strdup (title);
 	}
 
-	if (eel_strlen (slot->title) > 0 && slot->current_location_bookmark) {
+	if (strlen (slot->title) > 0 && slot->current_location_bookmark) {
 		changed = TRUE;
 	}
 
