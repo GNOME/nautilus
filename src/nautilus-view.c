@@ -315,24 +315,6 @@ static void unschedule_pop_up_location_context_menu (NautilusView *view);
 G_DEFINE_TYPE (NautilusView, nautilus_view, GTK_TYPE_SCROLLED_WINDOW);
 #define parent_class nautilus_view_parent_class
 
-EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_view, add_file)
-EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_view, bump_zoom_level)
-EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_view, can_zoom_in)
-EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_view, can_zoom_out)
-EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_view, clear)
-EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_view, file_changed)
-EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_view, get_selection)
-EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_view, get_selection_for_file_transfer)
-EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_view, get_item_count)
-EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_view, is_empty)
-EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_view, reset_to_defaults)
-EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_view, restore_default_zoom_level)
-EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_view, select_all)
-EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_view, set_selection)
-EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_view, zoom_to_level)
-EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_view, get_zoom_level)
-EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_view, invert_selection)
-
 /* virtual methods (public and non-public) */
 
 /**
@@ -9591,25 +9573,6 @@ nautilus_view_class_init (NautilusViewClass *klass)
         klass->update_menus = real_update_menus;
 	klass->trash = real_trash;
 	klass->delete = real_delete;
-
-	/* Function pointers that subclasses must override */
-	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_view, add_file);
-	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_view, bump_zoom_level);
-	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_view, can_zoom_in);
-	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_view, can_zoom_out);
-	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_view, clear);
-	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_view, file_changed);
-	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_view, get_selection);
-	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_view, get_selection_for_file_transfer);
-	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_view, get_item_count);
-	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_view, is_empty);
-	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_view, reset_to_defaults);
-	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_view, restore_default_zoom_level);
-	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_view, select_all);
-	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_view, set_selection);
-	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_view, invert_selection);
-	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_view, zoom_to_level);
-	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_view, get_zoom_level);
 
 	copied_files_atom = gdk_atom_intern ("x-special/gnome-copied-files", FALSE);
 
