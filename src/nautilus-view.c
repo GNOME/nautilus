@@ -4911,7 +4911,7 @@ get_strings_for_environment_variables (NautilusView *view, GList *selected_files
 	 * nautilus_directory_is_local returns FALSE for nfs.
 	 */
 	directory_uri = nautilus_directory_get_uri (view->details->model);
-	if (eel_str_has_prefix (directory_uri, "file:") ||
+	if (g_str_has_prefix (directory_uri, "file:") ||
 	    eel_uri_is_desktop (directory_uri) ||
 	    eel_uri_is_trash (directory_uri)) {
 		*file_paths = get_file_paths_as_newline_delimited_string (selected_files);
@@ -5172,7 +5172,7 @@ directory_belongs_in_scripts_menu (const char *uri)
 	int num_levels;
 	int i;
 
-	if (!eel_str_has_prefix (uri, scripts_directory_uri)) {
+	if (!g_str_has_prefix (uri, scripts_directory_uri)) {
 		return FALSE;
 	}
 
