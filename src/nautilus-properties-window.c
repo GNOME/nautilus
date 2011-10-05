@@ -2590,14 +2590,25 @@ paint_pie_chart (GtkWidget *widget,
 	double free, used;
 	double angle1, angle2, split, xc, yc, radius;
 	GtkAllocation allocation;
+	GtkStyleContext *notebook_ctx;
+	GdkRGBA bg_color;
 
 	window = NAUTILUS_PROPERTIES_WINDOW (data);
 	gtk_widget_get_allocation (widget, &allocation);
 
 	width  = allocation.width;
   	height = allocation.height;
-	
-		
+
+	notebook_ctx = gtk_widget_get_style_context (GTK_WIDGET (window->details->notebook));
+	gtk_style_context_get_background_color (notebook_ctx,
+						gtk_widget_get_state_flags (GTK_WIDGET (window->details->notebook)),
+						&bg_color);
+
+	cairo_save (cr);
+	gdk_cairo_set_source_rgba (cr, &bg_color);
+	cairo_paint (cr);
+	cairo_restore (cr);
+
 	free = (double)window->details->volume_free / (double)window->details->volume_capacity;
 	used =  1.0 - free;
 
