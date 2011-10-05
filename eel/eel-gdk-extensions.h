@@ -40,8 +40,6 @@ typedef enum {
 	EEL_GDK_Y_NEGATIVE   = 0x20
 } EelGdkGeometryFlags;
 
-gboolean            eel_gdk_rgba_is_dark                   (const GdkRGBA       *color);
-
 /* Wrapper for XParseGeometry */
 EelGdkGeometryFlags eel_gdk_parse_geometry                 (const char          *string,
 							    int                 *x_return,

@@ -35,23 +35,6 @@
 #include <stdlib.h>
 #include <pango/pango.h>
 
-/**
- * eel_gdk_rgba_is_dark:
- * 
- * Return true if the given color is `dark'
- */
-gboolean
-eel_gdk_rgba_is_dark (const GdkRGBA *color)
-{
-	int intensity;
-
-	intensity = ((((int) (color->red) >> 8) * 77)
-		     + (((int) (color->green) >> 8) * 150)
-		     + (((int) (color->blue) >> 8) * 28)) >> 8;
-
-	return intensity < 128;
-}
-
 EelGdkGeometryFlags
 eel_gdk_parse_geometry (const char *string, int *x_return, int *y_return,
 			     guint *width_return, guint *height_return)
