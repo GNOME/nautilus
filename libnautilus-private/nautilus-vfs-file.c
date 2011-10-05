@@ -29,16 +29,9 @@
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-file-private.h"
-#include <eel/eel-gtk-macros.h>
 #include <glib/gi18n.h>
 
-static void nautilus_vfs_file_init       (gpointer   object,
-						gpointer   klass);
-static void nautilus_vfs_file_class_init (gpointer   klass);
-
-EEL_CLASS_BOILERPLATE (NautilusVFSFile,
-		       nautilus_vfs_file,
-		       NAUTILUS_TYPE_FILE)
+G_DEFINE_TYPE (NautilusVFSFile, nautilus_vfs_file, NAUTILUS_TYPE_FILE);
 
 static void             
 vfs_file_monitor_add (NautilusFile *file,
@@ -688,16 +681,14 @@ vfs_file_poll_for_media (NautilusFile *file)
 }
 
 static void
-nautilus_vfs_file_init (gpointer object, gpointer klass)
+nautilus_vfs_file_init (NautilusVFSFile *file)
 {
 }
 
 static void
-nautilus_vfs_file_class_init (gpointer klass)
+nautilus_vfs_file_class_init (NautilusVFSFileClass *klass)
 {
-	NautilusFileClass *file_class;
-
-	file_class = NAUTILUS_FILE_CLASS (klass);
+	NautilusFileClass *file_class = NAUTILUS_FILE_CLASS (klass);
 
 	file_class->monitor_add = vfs_file_monitor_add;
 	file_class->monitor_remove = vfs_file_monitor_remove;

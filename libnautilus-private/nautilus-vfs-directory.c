@@ -27,20 +27,14 @@
 #include "nautilus-vfs-directory.h"
 
 #include "nautilus-directory-private.h"
-#include <eel/eel-gtk-macros.h>
 #include "nautilus-file-private.h"
 
-static void nautilus_vfs_directory_init       (gpointer   object,
-					       gpointer   klass);
-static void nautilus_vfs_directory_class_init (gpointer   klass);
-
-EEL_CLASS_BOILERPLATE (NautilusVFSDirectory,
-		       nautilus_vfs_directory,
-		       NAUTILUS_TYPE_DIRECTORY)
+G_DEFINE_TYPE (NautilusVFSDirectory, nautilus_vfs_directory, NAUTILUS_TYPE_DIRECTORY);
 
 static void
-nautilus_vfs_directory_init (gpointer object, gpointer klass)
+nautilus_vfs_directory_init (NautilusVFSDirectory *directory)
 {
+
 }
 
 static gboolean
@@ -146,12 +140,10 @@ vfs_is_not_empty (NautilusDirectory *directory)
 }
 
 static void
-nautilus_vfs_directory_class_init (gpointer klass)
+nautilus_vfs_directory_class_init (NautilusVFSDirectoryClass *klass)
 {
-	NautilusDirectoryClass *directory_class;
+	NautilusDirectoryClass *directory_class = NAUTILUS_DIRECTORY_CLASS (klass);
 
-	directory_class = NAUTILUS_DIRECTORY_CLASS (klass);
-	
 	directory_class->contains_file = vfs_contains_file;
 	directory_class->call_when_ready = vfs_call_when_ready;
 	directory_class->cancel_callback = vfs_cancel_callback;
