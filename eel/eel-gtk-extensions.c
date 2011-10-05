@@ -266,10 +266,8 @@ eel_gtk_window_set_initial_geometry_from_string (GtkWindow *window,
  * In case no event is provided, gtk_get_current_event_time() will be used automatically.
  **/
 void 
-eel_pop_up_context_menu (GtkMenu	     *menu,
-			      gint16	      offset_x,
-			      gint16	      offset_y,
-			      GdkEventButton *event)
+eel_pop_up_context_menu (GtkMenu *menu,
+			 GdkEventButton *event)
 {
 	int button;
 

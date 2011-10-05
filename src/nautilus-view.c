@@ -8551,8 +8551,6 @@ nautilus_view_pop_up_selection_context_menu  (NautilusView *view,
 
 	eel_pop_up_context_menu (create_popup_menu 
 				 (view, NAUTILUS_VIEW_POPUP_PATH_SELECTION),
-				 EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
-				 EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
 				 event);
 }
 
@@ -8581,8 +8579,6 @@ nautilus_view_pop_up_background_context_menu (NautilusView *view,
 
 	eel_pop_up_context_menu (create_popup_menu 
 				 (view, NAUTILUS_VIEW_POPUP_PATH_BACKGROUND),
-				 EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
-				 EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
 				 event);
 }
 
@@ -8596,8 +8592,6 @@ real_pop_up_location_context_menu (NautilusView *view)
 
 	eel_pop_up_context_menu (create_popup_menu 
 				 (view, NAUTILUS_VIEW_POPUP_PATH_LOCATION),
-				 EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
-				 EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
 				 view->details->location_popup_event);
 }
 

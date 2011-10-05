@@ -2710,9 +2710,7 @@ bookmarks_popup_menu (NautilusPlacesSidebar *sidebar,
 {
 	bookmarks_update_popup_menu (sidebar);
 	eel_pop_up_context_menu (GTK_MENU(sidebar->popup_menu),
-			      EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
-			      EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
-			      event);
+				 event);
 }
 
 /* Callback used for the GtkWidget::popup-menu signal of the shortcuts list */
