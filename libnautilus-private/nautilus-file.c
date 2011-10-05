@@ -220,12 +220,12 @@ nautilus_file_set_display_name (NautilusFile *file,
 	    
 	changed = FALSE;
 	
-	if (eel_strcmp (eel_ref_str_peek (file->details->display_name), display_name) != 0) {
+	if (g_strcmp0 (eel_ref_str_peek (file->details->display_name), display_name) != 0) {
 		changed = TRUE;
 		
 		eel_ref_str_unref (file->details->display_name);
 		
-		if (eel_strcmp (eel_ref_str_peek (file->details->name), display_name) == 0) {
+		if (g_strcmp0 (eel_ref_str_peek (file->details->name), display_name) == 0) {
 			file->details->display_name = eel_ref_str_ref (file->details->name);
 		} else {
 			file->details->display_name = eel_ref_str_new (display_name);
@@ -235,11 +235,11 @@ nautilus_file_set_display_name (NautilusFile *file,
 		file->details->display_name_collation_key = g_utf8_collate_key_for_filename (display_name, -1);
 	}
 
-	if (eel_strcmp (eel_ref_str_peek (file->details->edit_name), edit_name) != 0) {
+	if (g_strcmp0 (eel_ref_str_peek (file->details->edit_name), edit_name) != 0) {
 		changed = TRUE;
 		
 		eel_ref_str_unref (file->details->edit_name);
-		if (eel_strcmp (eel_ref_str_peek (file->details->display_name), edit_name) == 0) {
+		if (g_strcmp0 (eel_ref_str_peek (file->details->display_name), edit_name) == 0) {
 			file->details->edit_name = eel_ref_str_ref (file->details->display_name);
 		} else {
 			file->details->edit_name = eel_ref_str_new (edit_name);
@@ -2316,19 +2316,19 @@ update_info_internal (NautilusFile *file,
 	file->details->uid = uid;
 	file->details->gid = gid;
 
-	if (eel_strcmp (eel_ref_str_peek (file->details->owner), owner) != 0) {
+	if (g_strcmp0 (eel_ref_str_peek (file->details->owner), owner) != 0) {
 		changed = TRUE;
 		eel_ref_str_unref (file->details->owner);
 		file->details->owner = eel_ref_str_get_unique (owner);
 	}
 	
-	if (eel_strcmp (eel_ref_str_peek (file->details->owner_real), owner_real) != 0) {
+	if (g_strcmp0 (eel_ref_str_peek (file->details->owner_real), owner_real) != 0) {
 		changed = TRUE;
 		eel_ref_str_unref (file->details->owner_real);
 		file->details->owner_real = eel_ref_str_get_unique (owner_real);
 	}
 	
-	if (eel_strcmp (eel_ref_str_peek (file->details->group), group) != 0) {
+	if (g_strcmp0 (eel_ref_str_peek (file->details->group), group) != 0) {
 		changed = TRUE;
 		eel_ref_str_unref (file->details->group);
 		file->details->group = eel_ref_str_get_unique (group);
@@ -2390,7 +2390,7 @@ update_info_internal (NautilusFile *file,
 	}
 
 	thumbnail_path =  g_file_info_get_attribute_byte_string (info, G_FILE_ATTRIBUTE_THUMBNAIL_PATH);
-	if (eel_strcmp (file->details->thumbnail_path, thumbnail_path) != 0) {
+	if (g_strcmp0 (file->details->thumbnail_path, thumbnail_path) != 0) {
 		changed = TRUE;
 		g_free (file->details->thumbnail_path);
 		file->details->thumbnail_path = g_strdup (thumbnail_path);
@@ -2403,35 +2403,35 @@ update_info_internal (NautilusFile *file,
 	}
 	
 	symlink_name = g_file_info_get_symlink_target (info);
-	if (eel_strcmp (file->details->symlink_name, symlink_name) != 0) {
+	if (g_strcmp0 (file->details->symlink_name, symlink_name) != 0) {
 		changed = TRUE;
 		g_free (file->details->symlink_name);
 		file->details->symlink_name = g_strdup (symlink_name);
 	}
 
 	mime_type = g_file_info_get_content_type (info);
-	if (eel_strcmp (eel_ref_str_peek (file->details->mime_type), mime_type) != 0) {
+	if (g_strcmp0 (eel_ref_str_peek (file->details->mime_type), mime_type) != 0) {
 		changed = TRUE;
 		eel_ref_str_unref (file->details->mime_type);
 		file->details->mime_type = eel_ref_str_get_unique (mime_type);
 	}
 	
 	selinux_context = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_SELINUX_CONTEXT);
-	if (eel_strcmp (file->details->selinux_context, selinux_context) != 0) {
+	if (g_strcmp0 (file->details->selinux_context, selinux_context) != 0) {
 		changed = TRUE;
 		g_free (file->details->selinux_context);
 		file->details->selinux_context = g_strdup (selinux_context);
 	}
 	
 	description = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STANDARD_DESCRIPTION);
-	if (eel_strcmp (file->details->description, description) != 0) {
+	if (g_strcmp0 (file->details->description, description) != 0) {
 		changed = TRUE;
 		g_free (file->details->description);
 		file->details->description = g_strdup (description);
 	}
 
 	filesystem_id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILESYSTEM);
-	if (eel_strcmp (eel_ref_str_peek (file->details->filesystem_id), filesystem_id) != 0) {
+	if (g_strcmp0 (eel_ref_str_peek (file->details->filesystem_id), filesystem_id) != 0) {
 		changed = TRUE;
 		eel_ref_str_unref (file->details->filesystem_id);
 		file->details->filesystem_id = eel_ref_str_get_unique (filesystem_id);
@@ -2449,7 +2449,7 @@ update_info_internal (NautilusFile *file,
 	}
 
 	trash_orig_path = g_file_info_get_attribute_byte_string (info, "trash::orig-path");
-	if (eel_strcmp (file->details->trash_orig_path, trash_orig_path) != 0) {
+	if (g_strcmp0 (file->details->trash_orig_path, trash_orig_path) != 0) {
 		changed = TRUE;
 		g_free (file->details->trash_orig_path);
 		file->details->trash_orig_path = g_strdup (trash_orig_path);
@@ -2468,8 +2468,8 @@ update_info_internal (NautilusFile *file,
 				(file->details->directory, file);
 			
 			eel_ref_str_unref (file->details->name);
-			if (eel_strcmp (eel_ref_str_peek (file->details->display_name),
-					name) == 0) {
+			if (g_strcmp0 (eel_ref_str_peek (file->details->display_name),
+				       name) == 0) {
 				file->details->name = eel_ref_str_ref (file->details->display_name);
 			} else {
 				file->details->name = eel_ref_str_new (name);
@@ -5155,8 +5155,8 @@ get_real_name (const char *name, const char *gecos)
 
 
 	if (eel_str_is_empty (real_name)
-	    || eel_strcmp (name, real_name) == 0
-	    || eel_strcmp (capitalized_login_name, real_name) == 0) {
+	    || g_strcmp0 (name, real_name) == 0
+	    || g_strcmp0 (capitalized_login_name, real_name) == 0) {
 		g_free (real_name);
 		real_name = NULL;
 	}

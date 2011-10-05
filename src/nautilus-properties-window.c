@@ -687,7 +687,7 @@ update_name_field (NautilusPropertiesWindow *window)
 		set_name_field (window, original_name, current_name);
 
 		if (original_name == NULL || 
-		    eel_strcmp (original_name, current_name) != 0) {
+		    g_strcmp0 (original_name, current_name) != 0) {
 			g_object_set_data_full (G_OBJECT (window->details->name_field),
 						"original_name",
 						current_name,

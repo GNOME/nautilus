@@ -307,7 +307,7 @@ nautilus_icon_canvas_item_set_property (GObject        *object,
 	switch (property_id) {
 
 	case PROP_EDITABLE_TEXT:
-		if (eel_strcmp (details->editable_text,
+		if (g_strcmp0 (details->editable_text,
 				g_value_get_string (value)) == 0) {
 			return;
 		}
@@ -328,8 +328,8 @@ nautilus_icon_canvas_item_set_property (GObject        *object,
 		break;
 
 	case PROP_ADDITIONAL_TEXT:
-		if (eel_strcmp (details->additional_text,
-				g_value_get_string (value)) == 0) {
+		if (g_strcmp0 (details->additional_text,
+			       g_value_get_string (value)) == 0) {
 			return;
 		}
 

@@ -458,7 +458,7 @@ nautilus_progress_info_take_status (NautilusProgressInfo *info,
 {
 	G_LOCK (progress_info);
 	
-	if (eel_strcmp (info->status, status) != 0) {
+	if (g_strcmp0 (info->status, status) != 0) {
 		g_free (info->status);
 		info->status = status;
 		
@@ -477,7 +477,7 @@ nautilus_progress_info_set_status (NautilusProgressInfo *info,
 {
 	G_LOCK (progress_info);
 	
-	if (eel_strcmp (info->status, status) != 0) {
+	if (g_strcmp0 (info->status, status) != 0) {
 		g_free (info->status);
 		info->status = g_strdup (status);
 		
@@ -495,7 +495,7 @@ nautilus_progress_info_take_details (NautilusProgressInfo *info,
 {
 	G_LOCK (progress_info);
 	
-	if (eel_strcmp (info->details, details) != 0) {
+	if (g_strcmp0 (info->details, details) != 0) {
 		g_free (info->details);
 		info->details = details;
 		
@@ -514,7 +514,7 @@ nautilus_progress_info_set_details (NautilusProgressInfo *info,
 {
 	G_LOCK (progress_info);
 	
-	if (eel_strcmp (info->details, details) != 0) {
+	if (g_strcmp0 (info->details, details) != 0) {
 		g_free (info->details);
 		info->details = g_strdup (details);
 		

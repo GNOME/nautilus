@@ -702,7 +702,7 @@ nautilus_directory_find_file_by_internal_filename (NautilusDirectory *directory,
 {
 	NautilusFile *result;
 
-	if (eel_strcmp (internal_filename, ".") == 0) {
+	if (g_strcmp0 (internal_filename, ".") == 0) {
 		result = nautilus_directory_get_existing_corresponding_file (directory);
 		if (result != NULL) {
 			nautilus_file_unref (result);

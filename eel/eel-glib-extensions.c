@@ -297,7 +297,7 @@ eel_g_str_list_equal (GList *list_a, GList *list_b)
 	GList *p, *q;
 
 	for (p = list_a, q = list_b; p != NULL && q != NULL; p = p->next, q = q->next) {
-		if (eel_strcmp (p->data, q->data) != 0) {
+		if (g_strcmp0 (p->data, q->data) != 0) {
 			return FALSE;
 		}
 	}

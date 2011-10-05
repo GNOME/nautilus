@@ -352,7 +352,7 @@ nautilus_window_slot_set_title (NautilusWindowSlot *slot,
 
 	changed = FALSE;
 
-	if (eel_strcmp (title, slot->title) != 0) {
+	if (g_strcmp0 (title, slot->title) != 0) {
 		changed = TRUE;
 
 		g_free (slot->title);
