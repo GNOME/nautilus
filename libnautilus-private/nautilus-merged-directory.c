@@ -69,7 +69,6 @@ static guint signals[LAST_SIGNAL];
 
 G_DEFINE_TYPE (NautilusMergedDirectory, nautilus_merged_directory,
 	       NAUTILUS_TYPE_DIRECTORY);
-#define parent_class nautilus_merged_directory_parent_class
 
 static guint
 merged_callback_hash (gconstpointer merged_callback_as_pointer)
@@ -414,8 +413,8 @@ merged_get_file_list (NautilusDirectory *directory)
 						 nautilus_directory_get_file_list (cur_dir));
 	}
 
-	merged_dir_file_list = EEL_CALL_PARENT_WITH_RETURN_VALUE
-				(NAUTILUS_DIRECTORY_CLASS, get_file_list, (directory));
+	merged_dir_file_list = NAUTILUS_DIRECTORY_CLASS 
+		(nautilus_merged_directory_parent_class)->get_file_list (directory);
 
 	return g_list_concat (dirs_file_list, merged_dir_file_list);
 }
@@ -640,15 +639,15 @@ merged_finalize (GObject *object)
 	g_hash_table_destroy (merged->details->monitors);
 	nautilus_directory_list_free (merged->details->directories);
 	g_list_free (merged->details->directories_not_done_loading);
-	g_free (merged->details);
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (nautilus_merged_directory_parent_class)->finalize (object);
 }
 
 static void
 nautilus_merged_directory_init (NautilusMergedDirectory *merged)
 {
-	merged->details = g_new0 (NautilusMergedDirectoryDetails, 1);
+	merged->details = G_TYPE_INSTANCE_GET_PRIVATE (merged, NAUTILUS_TYPE_MERGED_DIRECTORY,
+						       NautilusMergedDirectoryDetails);
 	merged->details->callbacks = g_hash_table_new
 		(merged_callback_hash, merged_callback_equal);
 	merged->details->monitors = g_hash_table_new (NULL, NULL);
@@ -678,6 +677,8 @@ nautilus_merged_directory_class_init (NautilusMergedDirectoryClass *class)
 
 	class->add_real_directory = merged_add_real_directory;
 	class->remove_real_directory = merged_remove_real_directory;
+
+	g_type_class_add_private (class, sizeof (NautilusMergedDirectoryDetails));
 
 	signals[ADD_REAL_DIRECTORY] 
 		= g_signal_new ("add_real_directory",

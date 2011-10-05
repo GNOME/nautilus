@@ -78,14 +78,10 @@ enum {
 	LAST_SIGNAL
 };
 
-static void nautilus_tree_view_drag_dest_init (NautilusTreeViewDragDest      *dest);
-static void nautilus_tree_view_drag_dest_class_init    (NautilusTreeViewDragDestClass *class);
-
 static guint signals[LAST_SIGNAL];
 
 G_DEFINE_TYPE (NautilusTreeViewDragDest, nautilus_tree_view_drag_dest,
 	       G_TYPE_OBJECT);
-#define parent_class nautilus_tree_view_drag_dest_parent_class
 
 static const GtkTargetEntry drag_types [] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
@@ -1007,7 +1003,7 @@ nautilus_tree_view_drag_dest_dispose (GObject *object)
 	remove_scroll_timeout (dest);
 	remove_expand_timeout (dest);
 
-	EEL_CALL_PARENT (G_OBJECT_CLASS, dispose, (object));
+	G_OBJECT_CLASS (nautilus_tree_view_drag_dest_parent_class)->dispose (object);
 }
 
 static void
@@ -1016,18 +1012,16 @@ nautilus_tree_view_drag_dest_finalize (GObject *object)
 	NautilusTreeViewDragDest *dest;
 	
 	dest = NAUTILUS_TREE_VIEW_DRAG_DEST (object);
-
 	free_drag_data (dest);
 
-	g_free (dest->details);
-
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+	G_OBJECT_CLASS (nautilus_tree_view_drag_dest_parent_class)->finalize (object);
 }
 
 static void
 nautilus_tree_view_drag_dest_init (NautilusTreeViewDragDest *dest)
 {
-	dest->details = g_new0 (NautilusTreeViewDragDestDetails, 1);
+	dest->details = G_TYPE_INSTANCE_GET_PRIVATE (dest, NAUTILUS_TYPE_TREE_VIEW_DRAG_DEST,
+						     NautilusTreeViewDragDestDetails);
 }
 
 static void
@@ -1039,6 +1033,8 @@ nautilus_tree_view_drag_dest_class_init (NautilusTreeViewDragDestClass *class)
 	
 	gobject_class->dispose = nautilus_tree_view_drag_dest_dispose;
 	gobject_class->finalize = nautilus_tree_view_drag_dest_finalize;
+
+	g_type_class_add_private (class, sizeof (NautilusTreeViewDragDestDetails));
 
 	signals[GET_ROOT_URI] = 
 		g_signal_new ("get_root_uri",

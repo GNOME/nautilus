@@ -53,9 +53,6 @@ static guint signals[LAST_SIGNAL];
 static GHashTable *directories;
 
 static void               nautilus_directory_finalize         (GObject                *object);
-static void               nautilus_directory_init             (gpointer                object,
-							       gpointer                klass);
-static void               nautilus_directory_class_init (NautilusDirectoryClass *klass);
 static NautilusDirectory *nautilus_directory_new              (GFile                  *location);
 static char *             real_get_name_for_self_as_new_file  (NautilusDirectory      *directory);
 static GList *            real_get_file_list                  (NautilusDirectory      *directory);
@@ -63,9 +60,7 @@ static gboolean		  real_is_editable                    (NautilusDirectory      *
 static void               set_directory_location              (NautilusDirectory      *directory,
 							       GFile                  *location);
 
-EEL_CLASS_BOILERPLATE (NautilusDirectory,
-		       nautilus_directory,
-		       G_TYPE_OBJECT)
+G_DEFINE_TYPE (NautilusDirectory, nautilus_directory, G_TYPE_OBJECT);
 
 static void
 nautilus_directory_class_init (NautilusDirectoryClass *klass)
@@ -117,12 +112,8 @@ nautilus_directory_class_init (NautilusDirectoryClass *klass)
 }
 
 static void
-nautilus_directory_init (gpointer object, gpointer klass)
+nautilus_directory_init (NautilusDirectory *directory)
 {
-	NautilusDirectory *directory;
-
-	directory = NAUTILUS_DIRECTORY(object);
-
 	directory->details = G_TYPE_INSTANCE_GET_PRIVATE ((directory), NAUTILUS_TYPE_DIRECTORY, NautilusDirectoryDetails);
 	directory->details->file_hash = g_hash_table_new (g_str_hash, g_str_equal);
 	directory->details->high_priority_queue = nautilus_file_queue_new ();
@@ -205,7 +196,7 @@ nautilus_directory_finalize (GObject *object)
 	g_assert (directory->details->dequeue_pending_idle_id == 0);
 	g_list_free_full (directory->details->pending_file_info, g_object_unref);
 
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+	G_OBJECT_CLASS (nautilus_directory_parent_class)->finalize (object);
 }
 
 static void

@@ -31,8 +31,6 @@
 
 #include <string.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
-#include <eel/eel-glib-extensions.h>
-#include <eel/eel-gtk-macros.h>
 #include <eel/eel-vfs-extensions.h>
 
 struct NautilusEmptyViewDetails {
@@ -45,9 +43,6 @@ static void   nautilus_empty_view_scroll_to_file                  (NautilusView 
 								   const char        *uri);
 
 G_DEFINE_TYPE (NautilusEmptyView, nautilus_empty_view, NAUTILUS_TYPE_VIEW)
-
-/* for EEL_CALL_PARENT */
-#define parent_class nautilus_empty_view_parent_class
 
 static void
 nautilus_empty_view_add_file (NautilusView *view, NautilusFile *file, NautilusDirectory *directory)
@@ -144,13 +139,13 @@ nautilus_empty_view_reveal_selection (NautilusView *view)
 static void
 nautilus_empty_view_merge_menus (NautilusView *view)
 {
-	EEL_CALL_PARENT (NAUTILUS_VIEW_CLASS, merge_menus, (view));
+	NAUTILUS_VIEW_CLASS (nautilus_empty_view_parent_class)->merge_menus (view);
 }
 
 static void
 nautilus_empty_view_update_menus (NautilusView *view)
 {
-	EEL_CALL_PARENT (NAUTILUS_VIEW_CLASS, update_menus, (view));
+	NAUTILUS_VIEW_CLASS (nautilus_empty_view_parent_class)->update_menus (view);
 }
 
 /* Reset sort criteria and zoom level to match defaults */
@@ -232,17 +227,6 @@ nautilus_empty_view_end_loading (NautilusView *view,
 {
 }
 
-static void
-nautilus_empty_view_finalize (GObject *object)
-{
-	NautilusEmptyView *empty_view;
-
-	empty_view = NAUTILUS_EMPTY_VIEW (object);
-	g_free (empty_view->details);
-
-	G_OBJECT_CLASS (parent_class)->finalize (object);
-}
-
 static char *
 nautilus_empty_view_get_first_visible_file (NautilusView *view)
 {
@@ -271,9 +255,9 @@ nautilus_empty_view_class_init (NautilusEmptyViewClass *class)
 {
 	NautilusViewClass *nautilus_view_class;
 
-	nautilus_view_class = NAUTILUS_VIEW_CLASS (class);
+	g_type_class_add_private (class, sizeof (NautilusEmptyViewDetails));
 
-	G_OBJECT_CLASS (class)->finalize = nautilus_empty_view_finalize;
+	nautilus_view_class = NAUTILUS_VIEW_CLASS (class);
 
 	nautilus_view_class->add_file = nautilus_empty_view_add_file;
 	nautilus_view_class->begin_loading = nautilus_empty_view_begin_loading;
@@ -311,7 +295,8 @@ nautilus_empty_view_class_init (NautilusEmptyViewClass *class)
 static void
 nautilus_empty_view_init (NautilusEmptyView *empty_view)
 {
-	empty_view->details = g_new0 (NautilusEmptyViewDetails, 1);
+	empty_view->details = G_TYPE_INSTANCE_GET_PRIVATE (empty_view, NAUTILUS_TYPE_EMPTY_VIEW,
+							   NautilusEmptyViewDetails);
 }
 
 static NautilusView *

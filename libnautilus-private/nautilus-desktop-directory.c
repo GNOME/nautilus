@@ -66,7 +66,6 @@ static void desktop_directory_changed_callback (gpointer data);
 
 G_DEFINE_TYPE (NautilusDesktopDirectory, nautilus_desktop_directory,
 	       NAUTILUS_TYPE_DIRECTORY);
-#define parent_class nautilus_desktop_directory_parent_class
 
 static gboolean
 desktop_contains_file (NautilusDirectory *directory,
@@ -398,7 +397,7 @@ desktop_get_file_list (NautilusDirectory *directory)
 	
 	real_dir_file_list = nautilus_directory_get_file_list
 				(NAUTILUS_DESKTOP_DIRECTORY (directory)->details->real_directory);
-	desktop_dir_file_list = EEL_CALL_PARENT_WITH_RETURN_VALUE (NAUTILUS_DIRECTORY_CLASS, get_file_list, (directory));
+	desktop_dir_file_list = NAUTILUS_DIRECTORY_CLASS (nautilus_desktop_directory_parent_class)->get_file_list (directory);
 
 	return g_list_concat (real_dir_file_list, desktop_dir_file_list);
 }

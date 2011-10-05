@@ -57,14 +57,7 @@ struct NautilusDesktopLinkMonitorDetails {
 	GList *mount_links;
 };
 
-
-static void nautilus_desktop_link_monitor_init       (gpointer              object,
-						      gpointer              klass);
-static void nautilus_desktop_link_monitor_class_init (gpointer              klass);
-
-EEL_CLASS_BOILERPLATE (NautilusDesktopLinkMonitor,
-		       nautilus_desktop_link_monitor,
-		       G_TYPE_OBJECT)
+G_DEFINE_TYPE (NautilusDesktopLinkMonitor, nautilus_desktop_link_monitor, G_TYPE_OBJECT);
 
 static NautilusDesktopLinkMonitor *the_link_monitor = NULL;
 
@@ -395,18 +388,15 @@ create_link_and_add_preference (NautilusDesktopLink   **link_ref,
 }
 
 static void
-nautilus_desktop_link_monitor_init (gpointer object, gpointer klass)
+nautilus_desktop_link_monitor_init (NautilusDesktopLinkMonitor *monitor)
 {
-	NautilusDesktopLinkMonitor *monitor;
 	GList *l, *mounts;
 	GMount *mount;
 
-	monitor = NAUTILUS_DESKTOP_LINK_MONITOR (object);
+	monitor->details = G_TYPE_INSTANCE_GET_PRIVATE (monitor, NAUTILUS_TYPE_DESKTOP_LINK_MONITOR,
+							NautilusDesktopLinkMonitorDetails);
 
 	the_link_monitor = monitor;
-
-	monitor->details = g_new0 (NautilusDesktopLinkMonitorDetails, 1);
-
 	monitor->details->volume_monitor = g_volume_monitor_get ();
 
 	/* We keep around a ref to the desktop dir */
@@ -534,18 +524,16 @@ desktop_link_monitor_finalize (GObject *object)
 		g_source_remove (monitor->details->changed_id);
 	}
 
-	g_free (monitor->details);
-
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+	G_OBJECT_CLASS (nautilus_desktop_link_monitor_parent_class)->finalize (object);
 }
 
 static void
-nautilus_desktop_link_monitor_class_init (gpointer klass)
+nautilus_desktop_link_monitor_class_init (NautilusDesktopLinkMonitorClass *klass)
 {
 	GObjectClass *object_class;
 
 	object_class = G_OBJECT_CLASS (klass);
-
 	object_class->finalize = desktop_link_monitor_finalize;
 
+	g_type_class_add_private (klass, sizeof (NautilusDesktopLinkMonitorDetails));
 }

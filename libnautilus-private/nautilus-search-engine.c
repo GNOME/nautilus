@@ -29,12 +29,6 @@
 #include "nautilus-search-engine-tracker.h"
 #endif
 
-#include <eel/eel-gtk-macros.h>
-
-struct NautilusSearchEngineDetails {
-	int none;
-};
-
 enum {
 	HITS_ADDED,
 	HITS_SUBTRACTED,
@@ -45,37 +39,12 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-static void  nautilus_search_engine_class_init       (NautilusSearchEngineClass *class);
-static void  nautilus_search_engine_init             (NautilusSearchEngine      *engine);
-
-G_DEFINE_ABSTRACT_TYPE (NautilusSearchEngine,
-			nautilus_search_engine,
+G_DEFINE_ABSTRACT_TYPE (NautilusSearchEngine, nautilus_search_engine,
 			G_TYPE_OBJECT);
-
-static GObjectClass *parent_class = NULL;
-
-static void
-finalize (GObject *object)
-{
-	NautilusSearchEngine *engine;
-
-	engine = NAUTILUS_SEARCH_ENGINE (object);
-	
-	g_free (engine->details);
-
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
-}
 
 static void
 nautilus_search_engine_class_init (NautilusSearchEngineClass *class)
 {
-	GObjectClass *gobject_class;
-
-	parent_class = g_type_class_peek_parent (class);
-
-	gobject_class = G_OBJECT_CLASS (class);
-	gobject_class->finalize = finalize;
-
 	signals[HITS_ADDED] =
 		g_signal_new ("hits-added",
 		              G_TYPE_FROM_CLASS (class),
@@ -120,7 +89,6 @@ nautilus_search_engine_class_init (NautilusSearchEngineClass *class)
 static void
 nautilus_search_engine_init (NautilusSearchEngine *engine)
 {
-	engine->details = g_new0 (NautilusSearchEngineDetails, 1);
 }
 
 NautilusSearchEngine *

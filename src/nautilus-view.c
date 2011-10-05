@@ -2483,7 +2483,8 @@ nautilus_view_init (NautilusView *view)
 	NautilusDirectory *templates_directory;
 	char *templates_uri;
 
-	view->details = g_new0 (NautilusViewDetails, 1);
+	view->details = G_TYPE_INSTANCE_GET_PRIVATE (view, NAUTILUS_TYPE_VIEW,
+						     NautilusViewDetails);
 
 	/* Default to true; desktop-icon-view sets to false */
 	view->details->show_foreign_files = TRUE;
@@ -2649,7 +2650,7 @@ nautilus_view_destroy (GtkWidget *object)
 		view->details->directory_as_file = NULL;
 	}
 
-	EEL_CALL_PARENT (GTK_WIDGET_CLASS, destroy, (object));
+	GTK_WIDGET_CLASS (nautilus_view_parent_class)->destroy (object);
 }
 
 static void
@@ -2678,9 +2679,7 @@ nautilus_view_finalize (GObject *object)
 
 	g_hash_table_destroy (view->details->non_ready_files);
 
-	g_free (view->details);
-
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+	G_OBJECT_CLASS (nautilus_view_parent_class)->finalize (object);
 }
 
 /**
@@ -9529,6 +9528,8 @@ nautilus_view_class_init (NautilusViewClass *klass)
 	widget_class->destroy = nautilus_view_destroy;
 	widget_class->scroll_event = nautilus_view_scroll_event;
 	widget_class->parent_set = nautilus_view_parent_set;
+
+	g_type_class_add_private (klass, sizeof (NautilusViewDetails));
 
 	/* Get rid of the strange 3-pixel gap that GtkScrolledWindow
 	 * uses by default. It does us no good.

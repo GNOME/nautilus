@@ -56,15 +56,8 @@ struct NautilusSearchEngineSimpleDetails {
 	gboolean query_finished;
 };
 
-
-static void  nautilus_search_engine_simple_class_init       (NautilusSearchEngineSimpleClass *class);
-static void  nautilus_search_engine_simple_init             (NautilusSearchEngineSimple      *engine);
-
-G_DEFINE_TYPE (NautilusSearchEngineSimple,
-	       nautilus_search_engine_simple,
+G_DEFINE_TYPE (NautilusSearchEngineSimple, nautilus_search_engine_simple,
 	       NAUTILUS_TYPE_SEARCH_ENGINE);
-
-static NautilusSearchEngineClass *parent_class = NULL;
 
 static void
 finalize (GObject *object)
@@ -78,9 +71,7 @@ finalize (GObject *object)
 		simple->details->query = NULL;
 	}
 
-	g_free (simple->details);
-
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+	G_OBJECT_CLASS (nautilus_search_engine_simple_parent_class)->finalize (object);
 }
 
 static SearchThreadData *
@@ -392,8 +383,6 @@ nautilus_search_engine_simple_class_init (NautilusSearchEngineSimpleClass *class
 	GObjectClass *gobject_class;
 	NautilusSearchEngineClass *engine_class;
 
-	parent_class = g_type_class_peek_parent (class);
-
 	gobject_class = G_OBJECT_CLASS (class);
 	gobject_class->finalize = finalize;
 
@@ -401,14 +390,16 @@ nautilus_search_engine_simple_class_init (NautilusSearchEngineSimpleClass *class
 	engine_class->set_query = nautilus_search_engine_simple_set_query;
 	engine_class->start = nautilus_search_engine_simple_start;
 	engine_class->stop = nautilus_search_engine_simple_stop;
+
+	g_type_class_add_private (class, sizeof (NautilusSearchEngineSimpleDetails));
 }
 
 static void
 nautilus_search_engine_simple_init (NautilusSearchEngineSimple *engine)
 {
-	engine->details = g_new0 (NautilusSearchEngineSimpleDetails, 1);
+	engine->details = G_TYPE_INSTANCE_GET_PRIVATE (engine, NAUTILUS_TYPE_SEARCH_ENGINE_SIMPLE,
+						       NautilusSearchEngineSimpleDetails);
 }
-
 
 NautilusSearchEngine *
 nautilus_search_engine_simple_new (void)

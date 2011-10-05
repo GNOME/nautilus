@@ -39,11 +39,7 @@ struct NautilusQueryDetails {
 static void  nautilus_query_class_init       (NautilusQueryClass *class);
 static void  nautilus_query_init             (NautilusQuery      *query);
 
-G_DEFINE_TYPE (NautilusQuery,
-	       nautilus_query,
-	       G_TYPE_OBJECT);
-
-static GObjectClass *parent_class = NULL;
+G_DEFINE_TYPE (NautilusQuery, nautilus_query, G_TYPE_OBJECT);
 
 static void
 finalize (GObject *object)
@@ -51,11 +47,9 @@ finalize (GObject *object)
 	NautilusQuery *query;
 
 	query = NAUTILUS_QUERY (object);
-	
 	g_free (query->details->text);
-	g_free (query->details);
 
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+	G_OBJECT_CLASS (nautilus_query_parent_class)->finalize (object);
 }
 
 static void
@@ -63,16 +57,17 @@ nautilus_query_class_init (NautilusQueryClass *class)
 {
 	GObjectClass *gobject_class;
 
-	parent_class = g_type_class_peek_parent (class);
-
 	gobject_class = G_OBJECT_CLASS (class);
 	gobject_class->finalize = finalize;
+
+	g_type_class_add_private (class, sizeof (NautilusQueryDetails));
 }
 
 static void
 nautilus_query_init (NautilusQuery *query)
 {
-	query->details = g_new0 (NautilusQueryDetails, 1);
+	query->details = G_TYPE_INSTANCE_GET_PRIVATE (query, NAUTILUS_TYPE_QUERY,
+						      NautilusQueryDetails);
 }
 
 NautilusQuery *

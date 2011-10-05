@@ -35,10 +35,6 @@
 
 #include "nautilus-window-private.h"
 #include "nautilus-window.h"
-#include <eel/eel-glib-extensions.h>
-#include <eel/eel-gtk-macros.h>
-#include <eel/eel-stock-dialogs.h>
-#include <eel/eel-string.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <glib/gi18n.h>
@@ -64,12 +60,7 @@ struct NautilusLocationEntryDetails {
 	NautilusLocationEntryAction secondary_action;
 };
 
-static void  nautilus_location_entry_class_init       (NautilusLocationEntryClass *class);
-static void  nautilus_location_entry_init             (NautilusLocationEntry      *entry);
-
-EEL_CLASS_BOILERPLATE (NautilusLocationEntry,
-		       nautilus_location_entry,
-		       NAUTILUS_TYPE_ENTRY)
+G_DEFINE_TYPE (NautilusLocationEntry, nautilus_location_entry, NAUTILUS_TYPE_ENTRY);
 
 /* routine that performs the tab expansion.  Extract the directory name and
    incomplete basename, then iterate through the directory trying to complete it.  If we
@@ -259,9 +250,8 @@ finalize (GObject *object)
 
 	g_object_unref (entry->details->completer);
 	g_free (entry->details->special_text);
-	g_free (entry->details);
 
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+	G_OBJECT_CLASS (nautilus_location_entry_parent_class)->finalize (object);
 }
 
 static void
@@ -280,7 +270,7 @@ destroy (GtkWidget *object)
 	g_free (entry->details->current_directory);
 	entry->details->current_directory = NULL;
 	
-	EEL_CALL_PARENT (GTK_WIDGET_CLASS, destroy, (object));
+	GTK_WIDGET_CLASS (nautilus_location_entry_parent_class)->destroy (object);
 }
 
 static void
@@ -324,7 +314,7 @@ nautilus_location_entry_focus_in (GtkWidget     *widget,
 		entry->details->setting_special_text = FALSE;
 	}
 
-	return EEL_CALL_PARENT_WITH_RETURN_VALUE (GTK_WIDGET_CLASS, focus_in_event, (widget, event));
+	return GTK_WIDGET_CLASS (nautilus_location_entry_parent_class)->focus_in_event (widget, event);
 }
 
 static void
@@ -350,7 +340,7 @@ nautilus_location_entry_activate (GtkEntry *entry)
 		g_free (uri_scheme);
 	}
 
-	EEL_CALL_PARENT (GTK_ENTRY_CLASS, activate, (entry));
+	GTK_ENTRY_CLASS (nautilus_location_entry_parent_class)->activate (entry);
 }
 
 static void
@@ -369,6 +359,8 @@ nautilus_location_entry_class_init (NautilusLocationEntryClass *class)
 
 	entry_class = GTK_ENTRY_CLASS (class);
 	entry_class->activate = nautilus_location_entry_activate;
+
+	g_type_class_add_private (class, sizeof (NautilusLocationEntryDetails));
 }
 
 void
@@ -409,7 +401,8 @@ nautilus_location_entry_set_secondary_action (NautilusLocationEntry *entry,
 static void
 nautilus_location_entry_init (NautilusLocationEntry *entry)
 {
-	entry->details = g_new0 (NautilusLocationEntryDetails, 1);
+	entry->details = G_TYPE_INSTANCE_GET_PRIVATE (entry, NAUTILUS_TYPE_LOCATION_ENTRY,
+						      NautilusLocationEntryDetails);
 
 	entry->details->completer = g_filename_completer_new ();
 	g_filename_completer_set_dirs_only (entry->details->completer, TRUE);

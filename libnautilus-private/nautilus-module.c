@@ -62,7 +62,6 @@ static GList *module_objects = NULL;
 static GType nautilus_module_get_type (void);
 
 G_DEFINE_TYPE (NautilusModule, nautilus_module, G_TYPE_TYPE_MODULE);
-#define parent_class nautilus_module_parent_class
 
 static gboolean
 module_pulls_in_orbit (GModule *module)
@@ -145,7 +144,7 @@ nautilus_module_finalize (GObject *object)
 
 	g_free (module->path);
 	
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+	G_OBJECT_CLASS (nautilus_module_parent_class)->finalize (object);
 }
 
 static void

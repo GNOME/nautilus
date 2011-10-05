@@ -158,10 +158,6 @@ static const char * default_trash_columns_order[] = {
 	"name", "size", "type", "trashed_on", "trash_orig_path", NULL
 };
 
-/* for EEL_CALL_PARENT */
-#define parent_class nautilus_list_view_parent_class
-
-
 static const gchar*
 get_default_sort_order (NautilusFile *file, gboolean *reversed)
 {
@@ -2190,8 +2186,7 @@ nautilus_list_view_get_backing_uri (NautilusView *view)
 		return uri;
 	}
 
-	return EEL_CALL_PARENT_WITH_RETURN_VALUE (NAUTILUS_VIEW_CLASS,
-						  get_backing_uri, (view));
+	return NAUTILUS_VIEW_CLASS (nautilus_list_view_parent_class)->get_backing_uri (view);
 }
 
 static void
@@ -2657,9 +2652,9 @@ nautilus_list_view_merge_menus (NautilusView *view)
 	GtkActionGroup *action_group;
 	const char *ui;
 
-	EEL_CALL_PARENT (NAUTILUS_VIEW_CLASS, merge_menus, (view));
-
 	list_view = NAUTILUS_LIST_VIEW (view);
+
+	NAUTILUS_VIEW_CLASS (nautilus_list_view_parent_class)->merge_menus (view);
 
 	ui_manager = nautilus_view_get_ui_manager (view);
 
@@ -2709,7 +2704,7 @@ nautilus_list_view_update_menus (NautilusView *view)
 		return;
 	}
 
-	EEL_CALL_PARENT (NAUTILUS_VIEW_CLASS, update_menus, (view));
+	NAUTILUS_VIEW_CLASS (nautilus_list_view_parent_class)->update_menus (view);
 }
 
 /* Reset sort criteria and zoom level to match defaults */
@@ -3093,7 +3088,7 @@ nautilus_list_view_dispose (GObject *object)
 		list_view->details->clipboard_handler_id = 0;
 	}
 
-	G_OBJECT_CLASS (parent_class)->dispose (object);
+	G_OBJECT_CLASS (nautilus_list_view_parent_class)->dispose (object);
 }
 
 static void
@@ -3142,7 +3137,7 @@ nautilus_list_view_finalize (GObject *object)
 					      default_column_order_changed_callback,
 					      list_view);
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (nautilus_list_view_parent_class)->finalize (object);
 }
 
 static char *
