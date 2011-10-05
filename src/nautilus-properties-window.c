@@ -2850,7 +2850,7 @@ static GtkWidget*
 create_pie_widget (NautilusPropertiesWindow *window)
 {
 	NautilusFile		*file;
-	GtkTable                *table;
+	GtkGrid                 *grid;
 	GtkStyleContext		*style;
 	GtkWidget 		*pie_canvas;
 	GtkWidget 		*used_canvas;
@@ -2875,9 +2875,10 @@ create_pie_widget (NautilusPropertiesWindow *window)
 	
 	uri = nautilus_file_get_activation_uri (file);
 	
-	table = GTK_TABLE (gtk_table_new (4, 3, FALSE));
-
-	style = gtk_widget_get_style_context (GTK_WIDGET (table));
+	grid = GTK_GRID (gtk_grid_new ());
+	gtk_container_set_border_width (GTK_CONTAINER (grid), 5);
+	gtk_grid_set_column_spacing (GTK_GRID (grid), 5);
+	style = gtk_widget_get_style_context (GTK_WIDGET (grid));
 
 	if (!gtk_style_context_lookup_color (style, "chart_rgba_1", &window->details->used_color)) {
 		window->details->used_color.red = USED_FILL_R;
@@ -2900,12 +2901,16 @@ create_pie_widget (NautilusPropertiesWindow *window)
 	gtk_widget_set_size_request (pie_canvas, 200, 200);
 
 	used_canvas = gtk_drawing_area_new ();
+	gtk_widget_set_valign (used_canvas, GTK_ALIGN_CENTER);
+	gtk_widget_set_halign (used_canvas, GTK_ALIGN_CENTER);
 	gtk_widget_set_size_request (used_canvas, 20, 20);
 	/* Translators: "used" refers to the capacity of the filesystem */
 	used_label = gtk_label_new (g_strconcat (used, " ", _("used"), NULL));
 
 	free_canvas = gtk_drawing_area_new ();
-	gtk_widget_set_size_request (free_canvas,20,20);
+	gtk_widget_set_valign (free_canvas, GTK_ALIGN_CENTER);
+	gtk_widget_set_halign (free_canvas, GTK_ALIGN_CENTER);
+	gtk_widget_set_size_request (free_canvas, 20, 20);
 	/* Translators: "free" refers to the capacity of the filesystem */
 	free_label = gtk_label_new (g_strconcat (free, " ", _("free"), NULL));  
 
@@ -2930,16 +2935,23 @@ create_pie_widget (NautilusPropertiesWindow *window)
 	g_free (used);
 	g_free (free);
 
-	gtk_table_attach (table, pie_canvas , 0, 1, 0, 4, GTK_FILL, 	GTK_SHRINK, 5, 5);
-		
-	gtk_table_attach (table, used_canvas, 1, 2, 0, 1, 0, 	    	0, 	    5, 5);	
-	gtk_table_attach (table, used_label , 2, 3, 0, 1, GTK_FILL, 	0,          5, 5);	
+	gtk_container_add_with_properties (GTK_CONTAINER (grid), pie_canvas,
+					   "height", 4,
+					   NULL);
+	gtk_grid_attach_next_to (grid, used_canvas, pie_canvas,
+				 GTK_POS_RIGHT, 1, 1);
+	gtk_grid_attach_next_to (grid, used_label, used_canvas,
+				 GTK_POS_RIGHT, 1, 1);
 
-	gtk_table_attach (table, free_canvas, 1, 2, 1, 2, 0, 		0,          5, 5);	
-	gtk_table_attach (table, free_label , 2, 3, 1, 2, GTK_FILL, 	0,          5, 5);
-	
-	gtk_table_attach (table, capacity_label , 1, 3, 2, 3, GTK_FILL, 0,          5, 5);
-	gtk_table_attach (table, fstype_label , 1, 3, 3, 4, GTK_FILL, 0,          5, 5);
+	gtk_grid_attach_next_to (grid, free_canvas, used_canvas,
+				 GTK_POS_BOTTOM, 1, 1);
+	gtk_grid_attach_next_to (grid, free_label, free_canvas,
+				 GTK_POS_RIGHT, 1, 1);
+
+	gtk_grid_attach_next_to (grid, capacity_label, free_canvas,
+				 GTK_POS_BOTTOM, 2, 1);
+	gtk_grid_attach_next_to (grid, fstype_label, capacity_label,
+				 GTK_POS_BOTTOM, 2, 1);
 	
 	g_signal_connect (pie_canvas, "draw",
 			  G_CALLBACK (paint_pie_chart), window);
@@ -2948,7 +2960,7 @@ create_pie_widget (NautilusPropertiesWindow *window)
 	g_signal_connect (free_canvas, "draw",
 			  G_CALLBACK (paint_free_legend), window);
 	        
-	return GTK_WIDGET (table);
+	return GTK_WIDGET (grid);
 }
 
 static GtkWidget*
@@ -3012,7 +3024,7 @@ create_basic_page (NautilusPropertiesWindow *window)
 
 	window->details->icon_chooser = NULL;
 
-	/* Table */
+	/* Grid */
 
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show (vbox);
