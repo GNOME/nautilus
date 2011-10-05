@@ -406,8 +406,7 @@ nautilus_window_slot_update_icon (NautilusWindowSlot *slot)
 
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
-	info = EEL_CALL_METHOD_WITH_RETURN_VALUE (NAUTILUS_WINDOW_CLASS, window,
-						 get_icon, (window, slot));
+	info = NAUTILUS_WINDOW_CLASS (G_OBJECT_GET_CLASS (window))->get_icon (window, slot);
 
 	icon_name = NULL;
 	if (info) {

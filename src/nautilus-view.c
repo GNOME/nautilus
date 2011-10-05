@@ -346,9 +346,7 @@ nautilus_view_merge_menus (NautilusView *view)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW (view));
 
-	EEL_CALL_METHOD
-		(NAUTILUS_VIEW_CLASS, view,
-		 merge_menus, (view));
+	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->merge_menus (view);
 }
 
 static void
@@ -356,10 +354,7 @@ nautilus_view_unmerge_menus (NautilusView *view)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW (view));
 
-	EEL_CALL_METHOD
-		(NAUTILUS_VIEW_CLASS, view,
-		 unmerge_menus, (view));
-}
+	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->unmerge_menus (view);}
 
 static char *
 real_get_backing_uri (NautilusView *view)
@@ -401,9 +396,7 @@ nautilus_view_get_backing_uri (NautilusView *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NULL);
 
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_VIEW_CLASS, view,
-		 get_backing_uri, (view));
+	return NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_backing_uri (view);
 }
 
 /**
@@ -417,9 +410,7 @@ nautilus_view_select_all (NautilusView *view)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW (view));
 
-	EEL_CALL_METHOD
-		(NAUTILUS_VIEW_CLASS, view,
-		 select_all, (view));
+	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->select_all (view);
 }
 
 static void
@@ -427,9 +418,7 @@ nautilus_view_call_set_selection (NautilusView *view, GList *selection)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW (view));
 
-	EEL_CALL_METHOD
-		(NAUTILUS_VIEW_CLASS, view,
-		 set_selection, (view, selection));
+	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->set_selection (view, selection);
 }
 
 static GList *
@@ -437,9 +426,7 @@ nautilus_view_get_selection_for_file_transfer (NautilusView *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NULL);
 
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_VIEW_CLASS, view,
-		 get_selection_for_file_transfer, (view));
+	return NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_selection_for_file_transfer (view);
 }
 
 /**
@@ -454,9 +441,7 @@ nautilus_view_get_selected_icon_locations (NautilusView *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NULL);
 
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_VIEW_CLASS, view,
-		 get_selected_icon_locations, (view));
+	return NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_selected_icon_locations (view);
 }
 
 static void
@@ -464,9 +449,7 @@ nautilus_view_invert_selection (NautilusView *view)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW (view));
 
-	EEL_CALL_METHOD
-		(NAUTILUS_VIEW_CLASS, view,
-		 invert_selection, (view));
+	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->invert_selection (view);
 }
 
 /**
@@ -479,9 +462,7 @@ nautilus_view_reveal_selection (NautilusView *view)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW (view));
 
-	EEL_CALL_METHOD
-		(NAUTILUS_VIEW_CLASS, view,
-		 reveal_selection, (view));
+	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->reveal_selection (view);
 }
 
 /**
@@ -496,10 +477,9 @@ nautilus_view_reset_to_defaults (NautilusView *view)
 	NautilusWindowShowHiddenFilesMode mode;
 
 	g_return_if_fail (NAUTILUS_IS_VIEW (view));
-	
-	EEL_CALL_METHOD
-		(NAUTILUS_VIEW_CLASS, view,
-		 reset_to_defaults, (view));
+
+	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->reset_to_defaults (view);
+
 	mode = nautilus_window_get_hidden_files_mode (view->details->window);
 	if (mode != NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT) {
 		nautilus_window_set_hidden_files_mode (view->details->window,
@@ -512,9 +492,7 @@ nautilus_view_using_manual_layout (NautilusView  *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), FALSE);
 
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_VIEW_CLASS, view,
-		 using_manual_layout, (view));
+	return 	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->using_manual_layout (view);
 }
 
 static guint
@@ -522,9 +500,7 @@ nautilus_view_get_item_count (NautilusView *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), 0);
 
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_VIEW_CLASS, view,
-		 get_item_count, (view));
+	return 	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_item_count (view);
 }
 
 /**
@@ -539,9 +515,7 @@ nautilus_view_get_item_count (NautilusView *view)
 static gboolean
 nautilus_view_can_rename_file (NautilusView *view, NautilusFile *file)
 {
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_VIEW_CLASS, view,
-		 can_rename_file, (view, file));
+	return 	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->can_rename_file (view, file);
 }
 
 static gboolean
@@ -549,9 +523,7 @@ nautilus_view_is_read_only (NautilusView *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), FALSE);
 
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_VIEW_CLASS, view,
-		 is_read_only, (view));
+	return 	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->is_read_only (view);
 }
 
 static gboolean
@@ -579,9 +551,7 @@ nautilus_view_is_empty (NautilusView *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), FALSE);
 
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_VIEW_CLASS, view,
-		 is_empty, (view));
+	return 	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->is_empty (view);
 }
 
 /**
@@ -600,9 +570,7 @@ nautilus_view_bump_zoom_level (NautilusView *view,
 		return;
 	}
 
-	EEL_CALL_METHOD
-		(NAUTILUS_VIEW_CLASS, view,
-		 bump_zoom_level, (view, zoom_increment));
+	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->bump_zoom_level (view, zoom_increment);
 }
 
 /**
@@ -621,9 +589,7 @@ nautilus_view_zoom_to_level (NautilusView *view,
 		return;
 	}
 
-	EEL_CALL_METHOD
-		(NAUTILUS_VIEW_CLASS, view,
-		 zoom_to_level, (view, zoom_level));
+	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->zoom_to_level (view, zoom_level);
 }
 
 NautilusZoomLevel
@@ -635,9 +601,7 @@ nautilus_view_get_zoom_level (NautilusView *view)
 		return NAUTILUS_ZOOM_LEVEL_STANDARD;
 	}
 
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_VIEW_CLASS, view,
-		 get_zoom_level, (view));
+	return NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_zoom_level (view);
 }
 
 /**
@@ -658,9 +622,7 @@ nautilus_view_can_zoom_in (NautilusView *view)
 		return FALSE;
 	}
 
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_VIEW_CLASS, view,
-		 can_zoom_in, (view));
+	return NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->can_zoom_in (view);
 }
 
 /**
@@ -681,9 +643,7 @@ nautilus_view_can_zoom_out (NautilusView *view)
 		return FALSE;
 	}
 
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_VIEW_CLASS, view,
-		 can_zoom_out, (view));
+	return NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->can_zoom_out (view);
 }
 
 gboolean
@@ -709,34 +669,26 @@ nautilus_view_restore_default_zoom_level (NautilusView *view)
 		return;
 	}
 
-	EEL_CALL_METHOD
-		(NAUTILUS_VIEW_CLASS, view,
-		 restore_default_zoom_level, (view));
+	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->restore_default_zoom_level (view);
 }
 
 const char *
 nautilus_view_get_view_id (NautilusView *view)
 {
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_VIEW_CLASS, view,
-		 get_view_id, (view));
+	return NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_view_id (view);
 }
 
 char *
 nautilus_view_get_first_visible_file (NautilusView *view)
 {
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_VIEW_CLASS, view,
-		 get_first_visible_file, (view));
+	return NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_first_visible_file (view);
 }
 
 void
 nautilus_view_scroll_to_file (NautilusView *view,
 			      const char *uri)
 {
-	EEL_CALL_METHOD
-		(NAUTILUS_VIEW_CLASS, view,
-		 scroll_to_file, (view, uri));
+	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->scroll_to_file (view, uri);
 }
 
 char **
@@ -767,8 +719,7 @@ nautilus_view_set_is_active (NautilusView *view,
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW (view));
 
-	EEL_CALL_METHOD (NAUTILUS_VIEW_CLASS, view,
-			 set_is_active, (view, is_active));
+	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->set_is_active (view, is_active);
 }
 
 /**
@@ -788,11 +739,8 @@ nautilus_view_get_selection (NautilusView *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NULL);
 
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_VIEW_CLASS, view,
-		 get_selection, (view));
+	return NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_selection (view);
 }
-
 
 /**
  * nautilus_view_update_menus:
@@ -809,10 +757,7 @@ nautilus_view_update_menus (NautilusView *view)
 		return;
 	}
 
-
-	EEL_CALL_METHOD
-		(NAUTILUS_VIEW_CLASS, view,
-		 update_menus, (view));
+	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->update_menus (view);
 
 	view->details->menu_states_untrustworthy = FALSE;
 }
@@ -1806,7 +1751,7 @@ delayed_rename_file_hack_callback (RenameData *data)
 
 	if (view->details->window != NULL &&
 	    view->details->active) {
-		EEL_CALL_METHOD (NAUTILUS_VIEW_CLASS, view, start_renaming_file, (view, new_file, FALSE));
+		NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->start_renaming_file (view, new_file, FALSE);
 		nautilus_view_reveal_selection (view);
 	}
 
@@ -1857,7 +1802,7 @@ rename_file (NautilusView *view, NautilusFile *new_file)
 	/* no need to select because start_renaming_file selects
 	 * nautilus_view_select_file (view, new_file);
 	 */
-	EEL_CALL_METHOD (NAUTILUS_VIEW_CLASS, view, start_renaming_file, (view, new_file, FALSE));
+	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->start_renaming_file (view, new_file, FALSE);
 	nautilus_view_reveal_selection (view);
 }
 
@@ -1968,17 +1913,16 @@ new_folder_data_new (NautilusView *directory_view)
 }
 
 static GdkPoint *
-context_menu_to_file_operation_position (NautilusView *directory_view)
+context_menu_to_file_operation_position (NautilusView *view)
 {
-	g_return_val_if_fail (NAUTILUS_IS_VIEW (directory_view), NULL);
+	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NULL);
 
-	if (nautilus_view_using_manual_layout (directory_view)
-	    && directory_view->details->context_menu_position.x >= 0
-	    && directory_view->details->context_menu_position.y >= 0) {
-		EEL_CALL_METHOD (NAUTILUS_VIEW_CLASS, directory_view,
-				 widget_to_file_operation_position,
-				 (directory_view, &directory_view->details->context_menu_position));
-		return &directory_view->details->context_menu_position;
+	if (nautilus_view_using_manual_layout (view)
+	    && view->details->context_menu_position.x >= 0
+	    && view->details->context_menu_position.y >= 0) {
+		NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->widget_to_file_operation_position
+			(view, &view->details->context_menu_position);
+		return &view->details->context_menu_position;
 	} else {
 		return NULL;
 	}
@@ -2201,9 +2145,7 @@ click_policy_changed_callback (gpointer callback_data)
 
 	view = NAUTILUS_VIEW (callback_data);
 
-	EEL_CALL_METHOD
-		(NAUTILUS_VIEW_CLASS, view,
-		 click_policy_changed, (view));
+	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->click_policy_changed (view);
 }
 
 gboolean
@@ -2225,9 +2167,7 @@ sort_directories_first_changed_callback (gpointer callback_data)
 
 	if (preference_value != view->details->sort_directories_first) {
 		view->details->sort_directories_first = preference_value;
-		EEL_CALL_METHOD
-			(NAUTILUS_VIEW_CLASS, view,
-			 sort_directories_first_changed, (view));
+		return NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->sort_directories_first_changed (view);
 	}
 }
 
@@ -6107,7 +6047,7 @@ real_action_rename (NautilusView *view,
 				 * they are always pre-selected as a whole */
 				select_all = nautilus_file_is_directory (file);
 			}
-			EEL_CALL_METHOD (NAUTILUS_VIEW_CLASS, view, start_renaming_file, (view, file, select_all));
+			NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->start_renaming_file (view, file, select_all);
 		}
 	}
 

@@ -3461,9 +3461,7 @@ nautilus_file_set_metadata (NautilusFile *file,
 		val = default_metadata;
 	}
 
-	EEL_CALL_METHOD
-		(NAUTILUS_FILE_CLASS, file,
-		 set_metadata, (file, key, val));
+	NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->set_metadata (file, key, val);
 }
 
 void
@@ -3486,13 +3484,10 @@ nautilus_file_set_metadata_list (NautilusFile *file,
 	}
 	val[i] = NULL;
 
-	EEL_CALL_METHOD
-		(NAUTILUS_FILE_CLASS, file,
-		 set_metadata_as_list, (file, key, val));
+	NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->set_metadata_as_list (file, key, val);
 
 	g_free (val);
 }
-
 
 gboolean
 nautilus_file_get_boolean_metadata (NautilusFile *file,
@@ -3752,9 +3747,7 @@ nautilus_file_monitor_add (NautilusFile *file,
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (client != NULL);
 
-	EEL_CALL_METHOD
-		(NAUTILUS_FILE_CLASS, file,
-		 monitor_add, (file, client, attributes));
+	NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->monitor_add (file, client, attributes);
 }   
 			   
 void
@@ -3764,9 +3757,7 @@ nautilus_file_monitor_remove (NautilusFile *file,
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (client != NULL);
 
-	EEL_CALL_METHOD
-		(NAUTILUS_FILE_CLASS, file,
-		 monitor_remove, (file, client));
+	NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->monitor_remove (file, client);
 }			      
 
 gboolean
@@ -4322,9 +4313,7 @@ nautilus_file_get_date (NautilusFile *file,
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_FILE_CLASS, file,
-		 get_date, (file, date_type, date));
+	return NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->get_date (file, date_type, date);
 }
 
 static char *
@@ -4336,9 +4325,7 @@ nautilus_file_get_where_string (NautilusFile *file)
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_FILE_CLASS, file,
-		 get_where_string, (file));
+	return NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->get_where_string (file);
 }
 
 static const char *TODAY_TIME_FORMATS [] = {
@@ -4754,9 +4741,8 @@ nautilus_file_get_directory_item_count (NautilusFile *file,
 		return FALSE;
 	}
 
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_FILE_CLASS, file,
-		 get_item_count, (file, count, count_unreadable));
+	return NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->get_item_count 
+		(file, count, count_unreadable);
 }
 
 /**
@@ -4807,13 +4793,9 @@ nautilus_file_get_deep_counts (NautilusFile *file,
 		return file->details->deep_counts_status;
 	}
 
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_FILE_CLASS, file,
-		 get_deep_counts, (file,
-				   directory_count,
-				   file_count,
-				   unreadable_directory_count,
-				   total_size));
+	return NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->get_deep_counts 
+		(file, directory_count, file_count,
+		 unreadable_directory_count, total_size);
 }
 
 void
@@ -7174,9 +7156,7 @@ nautilus_file_check_if_ready (NautilusFile *file,
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_FILE_CLASS, file,
-		 check_if_ready, (file, file_attributes));
+	return NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->check_if_ready (file, file_attributes);
 }			      
 
 void
@@ -7193,10 +7173,8 @@ nautilus_file_call_when_ready (NautilusFile *file,
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
-	EEL_CALL_METHOD
-		(NAUTILUS_FILE_CLASS, file,
-		 call_when_ready, (file, file_attributes, 
-				   callback, callback_data));
+	NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->call_when_ready
+		(file, file_attributes, callback, callback_data);
 }
 
 void
@@ -7212,9 +7190,8 @@ nautilus_file_cancel_call_when_ready (NautilusFile *file,
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
-	EEL_CALL_METHOD
-		(NAUTILUS_FILE_CLASS, file,
-		 cancel_call_when_ready, (file, callback, callback_data));
+	NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->cancel_call_when_ready
+		(file, callback, callback_data);
 }
 
 static void
@@ -7744,9 +7721,8 @@ nautilus_file_list_cancel_call_when_ready (NautilusFileListHandle *handle)
 		for (l = data->remaining_files; l != NULL; l = l->next) {
 			file = NAUTILUS_FILE (l->data);
 
-			EEL_CALL_METHOD
-				(NAUTILUS_FILE_CLASS, file,
-				 cancel_call_when_ready, (file, file_list_file_ready_callback, data));
+			NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->cancel_call_when_ready
+				(file, file_list_file_ready_callback, data);
 		}
 
 		file_list_ready_data_free (data);

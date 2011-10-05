@@ -126,7 +126,6 @@ typedef struct
 	void     (* force_reload)        (NautilusDirectory         *directory);
 	gboolean (* are_all_files_seen)  (NautilusDirectory         *directory);
 	gboolean (* is_not_empty)        (NautilusDirectory         *directory);
-	char *	 (* get_name_for_self_as_new_file) (NautilusDirectory *directory);
 
 	/* get_file_list is a function pointer that subclasses may override to
 	 * customize collecting the list of files in a directory.

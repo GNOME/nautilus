@@ -54,7 +54,6 @@ static GHashTable *directories;
 
 static void               nautilus_directory_finalize         (GObject                *object);
 static NautilusDirectory *nautilus_directory_new              (GFile                  *location);
-static char *             real_get_name_for_self_as_new_file  (NautilusDirectory      *directory);
 static GList *            real_get_file_list                  (NautilusDirectory      *directory);
 static gboolean		  real_is_editable                    (NautilusDirectory      *directory);
 static void               set_directory_location              (NautilusDirectory      *directory,
@@ -104,7 +103,6 @@ nautilus_directory_class_init (NautilusDirectoryClass *klass)
 		              g_cclosure_marshal_VOID__POINTER,
 		              G_TYPE_NONE, 1, G_TYPE_POINTER);
 
-	klass->get_name_for_self_as_new_file = real_get_name_for_self_as_new_file;
 	klass->get_file_list = real_get_file_list;
 	klass->is_editable = real_is_editable;
 
@@ -477,16 +475,6 @@ nautilus_directory_get_existing_corresponding_file (NautilusDirectory *directory
 char *
 nautilus_directory_get_name_for_self_as_new_file (NautilusDirectory *directory)
 {
-	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
-	
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_DIRECTORY_CLASS, directory,
-		 get_name_for_self_as_new_file, (directory));
-}
-
-static char *
-real_get_name_for_self_as_new_file (NautilusDirectory *directory)
-{
 	char *directory_uri;
 	char *name, *colon;
 	
@@ -573,10 +561,8 @@ gboolean
 nautilus_directory_are_all_files_seen (NautilusDirectory *directory)
 {
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
-	
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_DIRECTORY_CLASS, directory,
-		 are_all_files_seen, (directory));
+
+	return NAUTILUS_DIRECTORY_CLASS (G_OBJECT_GET_CLASS (directory))->are_all_files_seen (directory);
 }
 
 static void
@@ -1479,9 +1465,7 @@ nautilus_directory_contains_file (NautilusDirectory *directory,
 		return FALSE;
 	}
 
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_DIRECTORY_CLASS, directory,
-		 contains_file, (directory, file));
+	return NAUTILUS_DIRECTORY_CLASS (G_OBJECT_GET_CLASS (directory))->contains_file (directory, file);
 }
 
 char *
@@ -1513,10 +1497,9 @@ nautilus_directory_call_when_ready (NautilusDirectory *directory,
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (callback != NULL);
 
-	EEL_CALL_METHOD
-		(NAUTILUS_DIRECTORY_CLASS, directory,
-		 call_when_ready, (directory, file_attributes, wait_for_all_files,
-				   callback, callback_data));
+	NAUTILUS_DIRECTORY_CLASS (G_OBJECT_GET_CLASS (directory))->call_when_ready 
+		(directory, file_attributes, wait_for_all_files,
+		 callback, callback_data);
 }
 
 void
@@ -1527,9 +1510,8 @@ nautilus_directory_cancel_callback (NautilusDirectory *directory,
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (callback != NULL);
 
-	EEL_CALL_METHOD
-		(NAUTILUS_DIRECTORY_CLASS, directory,
-		 cancel_callback, (directory, callback, callback_data));
+	NAUTILUS_DIRECTORY_CLASS (G_OBJECT_GET_CLASS (directory))->cancel_callback 
+		(directory, callback, callback_data);
 }
 
 void
@@ -1543,12 +1525,11 @@ nautilus_directory_file_monitor_add (NautilusDirectory *directory,
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (client != NULL);
 
-	EEL_CALL_METHOD
-		(NAUTILUS_DIRECTORY_CLASS, directory,
-		 file_monitor_add, (directory, client,
-				    monitor_hidden_files,
-				    file_attributes,
-				    callback, callback_data));
+	NAUTILUS_DIRECTORY_CLASS (G_OBJECT_GET_CLASS (directory))->file_monitor_add 
+		(directory, client,
+		 monitor_hidden_files,
+		 file_attributes,
+		 callback, callback_data);
 }
 
 void
@@ -1558,9 +1539,8 @@ nautilus_directory_file_monitor_remove (NautilusDirectory *directory,
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (client != NULL);
 
-	EEL_CALL_METHOD
-		(NAUTILUS_DIRECTORY_CLASS, directory,
-		 file_monitor_remove, (directory, client));
+	NAUTILUS_DIRECTORY_CLASS (G_OBJECT_GET_CLASS (directory))->file_monitor_remove
+		(directory, client);
 }
 
 void
@@ -1568,9 +1548,7 @@ nautilus_directory_force_reload (NautilusDirectory *directory)
 {
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 
-	EEL_CALL_METHOD
-		(NAUTILUS_DIRECTORY_CLASS, directory,
-		 force_reload, (directory));
+	NAUTILUS_DIRECTORY_CLASS (G_OBJECT_GET_CLASS (directory))->force_reload (directory);
 }
 
 gboolean
@@ -1578,9 +1556,7 @@ nautilus_directory_is_not_empty (NautilusDirectory *directory)
 {
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
 
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_DIRECTORY_CLASS, directory,
-		 is_not_empty, (directory));
+	return NAUTILUS_DIRECTORY_CLASS (G_OBJECT_GET_CLASS (directory))->is_not_empty (directory);
 }
 
 static gboolean
@@ -1601,9 +1577,7 @@ is_tentative (gpointer data, gpointer callback_data)
 GList *
 nautilus_directory_get_file_list (NautilusDirectory *directory)
 {
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_DIRECTORY_CLASS, directory,
-		 get_file_list, (directory));
+	return NAUTILUS_DIRECTORY_CLASS (G_OBJECT_GET_CLASS (directory))->get_file_list (directory);
 }
 
 static GList *
@@ -1629,9 +1603,7 @@ real_is_editable (NautilusDirectory *directory)
 gboolean
 nautilus_directory_is_editable (NautilusDirectory *directory)
 {
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_DIRECTORY_CLASS, directory, 
-		 is_editable, (directory));
+	return NAUTILUS_DIRECTORY_CLASS (G_OBJECT_GET_CLASS (directory))->is_editable (directory);
 }
 
 GList *
