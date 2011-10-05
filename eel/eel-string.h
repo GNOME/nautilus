@@ -37,39 +37,12 @@
 
 /* NULL is allowed for all the str parameters to these functions. */
 
-/* Versions of basic string functions that allow NULL, and handle
- * cases that the standard ones get a bit wrong for our purposes.
- */
-size_t   eel_strlen                        (const char    *str);
-char *   eel_strchr                        (const char    *haystack,
-					    char           needle);
-int      eel_strcmp                        (const char    *str_a,
-					    const char    *str_b);
-int      eel_strcasecmp                    (const char    *str_a,
-					    const char    *str_b);
-int      eel_strcmp_case_breaks_ties       (const char    *str_a,
-					    const char    *str_b);
-
 /* Other basic string operations. */
 gboolean eel_str_is_empty                  (const char    *str_or_null);
 gboolean eel_str_is_equal                  (const char    *str_a,
 					    const char    *str_b);
-gboolean eel_istr_is_equal                 (const char    *str_a,
-					    const char    *str_b);
-gboolean eel_str_has_prefix                (const char    *target,
-					    const char    *prefix);
-char *   eel_str_get_prefix                (const char    *source,
-					    const char    *delimiter);
 gboolean eel_istr_has_prefix               (const char    *target,
 					    const char    *prefix);
-gboolean eel_str_has_suffix                (const char    *target,
-					    const char    *suffix);
-gboolean eel_istr_has_suffix               (const char    *target,
-					    const char    *suffix);
-
-/* Conversions to and from strings. */
-gboolean eel_str_to_int                    (const char    *str,
-					    int           *integer);
 
 /* Escape function for '_' character. */
 char *   eel_str_double_underscores        (const char    *str);

@@ -35,105 +35,10 @@
 #include "eel-lib-self-check-functions.h"
 #endif
 
-size_t
-eel_strlen (const char *string)
-{
-	return string == NULL ? 0 : strlen (string);
-}
-
-char *
-eel_strchr (const char *haystack, char needle)
-{
-	return haystack == NULL ? NULL : strchr (haystack, needle);
-}
-
-int
-eel_strcmp (const char *string_a, const char *string_b)
-{
-	/* FIXME bugzilla.eazel.com 5450: Maybe we need to make this
-	 * treat 'NULL < ""', or have a flavor that does that. If we
-	 * didn't have code that already relies on 'NULL == ""', I
-	 * would change it right now.
-	 */
-	return strcmp (string_a == NULL ? "" : string_a,
-		       string_b == NULL ? "" : string_b);
-}
-
-int
-eel_strcasecmp (const char *string_a, const char *string_b)
-{
-	/* FIXME bugzilla.eazel.com 5450: Maybe we need to make this
-	 * treat 'NULL < ""', or have a flavor that does that. If we
-	 * didn't have code that already relies on 'NULL == ""', I
-	 * would change it right now.
-	 */
-	return g_ascii_strcasecmp (string_a == NULL ? "" : string_a,
-				   string_b == NULL ? "" : string_b);
-}
-
-int
-eel_strcmp_case_breaks_ties (const char *string_a, const char *string_b)
-{
-	int casecmp_result;
-
-	/* FIXME bugzilla.eazel.com 5450: Maybe we need to make this
-	 * treat 'NULL < ""', or have a flavor that does that. If we
-	 * didn't have code that already relies on 'NULL == ""', I
-	 * would change it right now.
-	 */
-	casecmp_result = eel_strcasecmp (string_a, string_b);
-	if (casecmp_result != 0) {
-		return casecmp_result;
-	}
-	return eel_strcmp (string_a, string_b);
-}
-
 gboolean
 eel_str_is_empty (const char *string_or_null)
 {
-	return eel_strcmp (string_or_null, NULL) == 0;
-}
-
-gboolean
-eel_str_is_equal (const char *string_a, const char *string_b)
-{
-	/* FIXME bugzilla.eazel.com 5450: Maybe we need to make this
-	 * treat 'NULL != ""', or have a flavor that does that. If we
-	 * didn't have code that already relies on 'NULL == ""', I
-	 * would change it right now.
-	 */
-	return eel_strcmp (string_a, string_b) == 0;
-}
-
-gboolean
-eel_istr_is_equal (const char *string_a, const char *string_b)
-{
-	/* FIXME bugzilla.eazel.com 5450: Maybe we need to make this
-	 * treat 'NULL != ""', or have a flavor that does that. If we
-	 * didn't have code that already relies on 'NULL == ""', I
-	 * would change it right now.
-	 */
-	return eel_strcasecmp (string_a, string_b) == 0;
-}
-
-gboolean
-eel_str_has_prefix (const char *haystack, const char *needle)
-{
-	return g_str_has_prefix (haystack == NULL ? "" : haystack,
-				 needle == NULL ? "" : needle);
-}
-
-gboolean
-eel_str_has_suffix (const char *haystack, const char *needle)
-{
-	if (needle == NULL) {
-		return TRUE;
-	}
-	if (haystack == NULL) {
-		return needle[0] == '\0';
-	}
-		
-	return g_str_has_suffix (haystack, needle);
+	return g_strcmp0 (string_or_null, NULL) == 0;
 }
 
 gboolean
@@ -158,109 +63,6 @@ eel_istr_has_prefix (const char *haystack, const char *needle)
 		nc = g_ascii_tolower (nc);
 	} while (hc == nc);
 	return FALSE;
-}
-
-gboolean
-eel_istr_has_suffix (const char *haystack, const char *needle)
-{
-	const char *h, *n;
-	char hc, nc;
-
-	if (needle == NULL) {
-		return TRUE;
-	}
-	if (haystack == NULL) {
-		return needle[0] == '\0';
-	}
-		
-	/* Eat one character at a time. */
-	h = haystack + strlen (haystack);
-	n = needle + strlen (needle);
-	do {
-		if (n == needle) {
-			return TRUE;
-		}
-		if (h == haystack) {
-			return FALSE;
-		}
-		hc = *--h;
-		nc = *--n;
-		hc = g_ascii_tolower (hc);
-		nc = g_ascii_tolower (nc);
-	} while (hc == nc);
-	return FALSE;
-}
-
-/**
- * eel_str_get_prefix:
- * Get a new string containing the first part of an existing string.
- * 
- * @source: The string whose prefix should be extracted.
- * @delimiter: The string that marks the end of the prefix.
- * 
- * Return value: A newly-allocated string that that matches the first part
- * of @source, up to but not including the first occurrence of
- * @delimiter. If @source is NULL, returns NULL. If 
- * @delimiter is NULL, returns a copy of @source.
- * If @delimiter does not occur in @source, returns
- * a copy of @source.
- **/
-char *
-eel_str_get_prefix (const char *source, 
-			 const char *delimiter)
-{
-	char *prefix_start;
-
-	if (source == NULL) {
-		return NULL;
-	}
-
-	if (delimiter == NULL) {
-		return g_strdup (source);
-	}
-
-	prefix_start = strstr (source, delimiter);
-
-	if (prefix_start == NULL) {
-		return g_strdup ("");
-	}
-
-	return g_strndup (source, prefix_start - source);
-}
-
-gboolean
-eel_str_to_int (const char *string, int *integer)
-{
-	long result;
-	char *parse_end;
-
-	/* Check for the case of an empty string. */
-	if (string == NULL || *string == '\0') {
-		return FALSE;
-	}
-	
-	/* Call the standard library routine to do the conversion. */
-	errno = 0;
-	result = strtol (string, &parse_end, 0);
-
-	/* Check that the result is in range. */
-	if ((result == G_MINLONG || result == G_MAXLONG) && errno == ERANGE) {
-		return FALSE;
-	}
-	if (result < G_MININT || result > G_MAXINT) {
-		return FALSE;
-	}
-
-	/* Check that all the trailing characters are spaces. */
-	while (*parse_end != '\0') {
-		if (!g_ascii_isspace (*parse_end++)) {
-			return FALSE;
-		}
-	}
-
-	/* Return the result. */
-	*integer = result;
-	return TRUE;
 }
 
 char *
@@ -405,7 +207,7 @@ eel_str_replace_substring (const char *string,
 	}
 
 	substring_length = strlen (substring);
-	replacement_length = eel_strlen (replacement);
+	replacement_length = strlen (replacement);
 
 	result_length = strlen (string);
 	for (p = string; ; p = substring_position + substring_length) {
@@ -914,16 +716,6 @@ eel_ref_str_unref (eel_ref_str str)
 
 #if !defined (EEL_OMIT_SELF_CHECK)
 
-static int
-call_str_to_int (const char *string)
-{
-	int integer;
-
-	integer = 9999;
-	eel_str_to_int (string, &integer);
-	return integer;
-}
-
 static void
 verify_printf (const char *format, ...)
 {
@@ -997,72 +789,6 @@ verify_custom (const char *orig, const char *format, ...)
 void
 eel_self_check_string (void)
 {
-	int integer;
-
-	EEL_CHECK_INTEGER_RESULT (eel_strlen (NULL), 0);
-	EEL_CHECK_INTEGER_RESULT (eel_strlen (""), 0);
-	EEL_CHECK_INTEGER_RESULT (eel_strlen ("abc"), 3);
-
-	EEL_CHECK_INTEGER_RESULT (eel_strcmp (NULL, NULL), 0);
-	EEL_CHECK_INTEGER_RESULT (eel_strcmp (NULL, ""), 0);
-	EEL_CHECK_INTEGER_RESULT (eel_strcmp ("", NULL), 0);
-	EEL_CHECK_INTEGER_RESULT (eel_strcmp ("a", "a"), 0);
-	EEL_CHECK_INTEGER_RESULT (eel_strcmp ("aaab", "aaab"), 0);
-	EEL_CHECK_BOOLEAN_RESULT (eel_strcmp (NULL, "a") < 0, TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_strcmp ("a", NULL) > 0, TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_strcmp ("", "a") < 0, TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_strcmp ("a", "") > 0, TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_strcmp ("a", "b") < 0, TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_strcmp ("a", "ab") < 0, TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_strcmp ("ab", "a") > 0, TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_strcmp ("aaa", "aaab") < 0, TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_strcmp ("aaab", "aaa") > 0, TRUE);
-
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_prefix (NULL, NULL), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_prefix (NULL, ""), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_prefix ("", NULL), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_prefix ("a", "a"), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_prefix ("aaab", "aaab"), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_prefix (NULL, "a"), FALSE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_prefix ("a", NULL), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_prefix ("", "a"), FALSE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_prefix ("a", ""), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_prefix ("a", "b"), FALSE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_prefix ("a", "ab"), FALSE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_prefix ("ab", "a"), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_prefix ("aaa", "aaab"), FALSE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_prefix ("aaab", "aaa"), TRUE);
-
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_suffix (NULL, NULL), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_suffix (NULL, ""), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_suffix ("", NULL), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_suffix ("", ""), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_suffix ("a", ""), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_suffix ("", "a"), FALSE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_suffix ("a", "a"), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_suffix ("aaab", "aaab"), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_suffix (NULL, "a"), FALSE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_suffix ("a", NULL), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_suffix ("", "a"), FALSE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_suffix ("a", ""), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_suffix ("a", "b"), FALSE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_suffix ("a", "ab"), FALSE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_suffix ("ab", "a"), FALSE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_suffix ("ab", "b"), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_suffix ("aaa", "baaa"), FALSE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_has_suffix ("baaa", "aaa"), TRUE);
-
-	EEL_CHECK_STRING_RESULT (eel_str_get_prefix (NULL, NULL), NULL);
-	EEL_CHECK_STRING_RESULT (eel_str_get_prefix (NULL, "foo"), NULL);
-	EEL_CHECK_STRING_RESULT (eel_str_get_prefix ("foo", NULL), "foo");
-	EEL_CHECK_STRING_RESULT (eel_str_get_prefix ("", ""), "");
-	EEL_CHECK_STRING_RESULT (eel_str_get_prefix ("", "foo"), "");
-	EEL_CHECK_STRING_RESULT (eel_str_get_prefix ("foo", ""), "");
-	EEL_CHECK_STRING_RESULT (eel_str_get_prefix ("foo", "foo"), "");
-	EEL_CHECK_STRING_RESULT (eel_str_get_prefix ("foo:", ":"), "foo");
-	EEL_CHECK_STRING_RESULT (eel_str_get_prefix ("foo:bar", ":"), "foo");
-	EEL_CHECK_STRING_RESULT (eel_str_get_prefix ("footle:bar", "tle:"), "foo");	
-
 	EEL_CHECK_STRING_RESULT (eel_str_double_underscores (NULL), NULL);
 	EEL_CHECK_STRING_RESULT (eel_str_double_underscores (""), "");
 	EEL_CHECK_STRING_RESULT (eel_str_double_underscores ("_"), "__");
@@ -1108,49 +834,6 @@ eel_self_check_string (void)
 	EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("something_odd", 13), "something_odd");
 	EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("something_even", 14), "something_even");
 	EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("something_odd", 13), "something_odd");
-
-	#define TEST_INTEGER_CONVERSION_FUNCTIONS(string, boolean_result, integer_result) \
-		EEL_CHECK_BOOLEAN_RESULT (eel_str_to_int (string, &integer), boolean_result); \
-		EEL_CHECK_INTEGER_RESULT (call_str_to_int (string), integer_result);
-
-	TEST_INTEGER_CONVERSION_FUNCTIONS (NULL, FALSE, 9999)
-	TEST_INTEGER_CONVERSION_FUNCTIONS ("", FALSE, 9999)
-	TEST_INTEGER_CONVERSION_FUNCTIONS ("a", FALSE, 9999)
-	TEST_INTEGER_CONVERSION_FUNCTIONS (".", FALSE, 9999)
-	TEST_INTEGER_CONVERSION_FUNCTIONS ("0", TRUE, 0)
-	TEST_INTEGER_CONVERSION_FUNCTIONS ("1", TRUE, 1)
-	TEST_INTEGER_CONVERSION_FUNCTIONS ("+1", TRUE, 1)
-	TEST_INTEGER_CONVERSION_FUNCTIONS ("-1", TRUE, -1)
-	TEST_INTEGER_CONVERSION_FUNCTIONS ("2147483647", TRUE, 2147483647)
-	TEST_INTEGER_CONVERSION_FUNCTIONS ("2147483648", FALSE, 9999)
-	TEST_INTEGER_CONVERSION_FUNCTIONS ("+2147483647", TRUE, 2147483647)
-	TEST_INTEGER_CONVERSION_FUNCTIONS ("+2147483648", FALSE, 9999)
-	TEST_INTEGER_CONVERSION_FUNCTIONS ("-2147483648", TRUE, INT_MIN)
-	TEST_INTEGER_CONVERSION_FUNCTIONS ("-2147483649", FALSE, 9999)
-	TEST_INTEGER_CONVERSION_FUNCTIONS ("1a", FALSE, 9999)
-	TEST_INTEGER_CONVERSION_FUNCTIONS ("0.0", FALSE, 9999)
-	TEST_INTEGER_CONVERSION_FUNCTIONS ("1e1", FALSE, 9999)
-	TEST_INTEGER_CONVERSION_FUNCTIONS ("21474836470", FALSE, 9999)
-	TEST_INTEGER_CONVERSION_FUNCTIONS ("+21474836470", FALSE, 9999)
-	TEST_INTEGER_CONVERSION_FUNCTIONS ("-21474836480", FALSE, 9999)
-
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_is_equal (NULL, NULL), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_is_equal (NULL, ""), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_is_equal ("", ""), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_is_equal ("", NULL), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_is_equal ("", ""), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_is_equal ("foo", "foo"), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_str_is_equal ("foo", "bar"), FALSE);
-
-	EEL_CHECK_BOOLEAN_RESULT (eel_istr_is_equal (NULL, NULL), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_istr_is_equal (NULL, ""), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_istr_is_equal ("", ""), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_istr_is_equal ("", NULL), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_istr_is_equal ("", ""), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_istr_is_equal ("foo", "foo"), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_istr_is_equal ("foo", "bar"), FALSE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_istr_is_equal ("Foo", "foo"), TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (eel_istr_is_equal ("foo", "Foo"), TRUE);
 
 	EEL_CHECK_STRING_RESULT (eel_str_strip_substring_and_after (NULL, "bar"), NULL);
 	EEL_CHECK_STRING_RESULT (eel_str_strip_substring_and_after ("", "bar"), "");
