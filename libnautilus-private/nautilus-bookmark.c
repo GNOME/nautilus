@@ -28,9 +28,6 @@
 
 #include "nautilus-bookmark.h"
 
-#include <eel/eel-gtk-extensions.h>
-#include <eel/eel-gtk-macros.h>
-#include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gio/gio.h>
 #include <glib/gi18n.h>

@@ -30,8 +30,6 @@
 #include <string.h>
 #include "nautilus-global-preferences.h"
 #include "nautilus-undo-signal-handlers.h"
-#include <eel/eel-gdk-extensions.h>
-#include <eel/eel-gtk-macros.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>

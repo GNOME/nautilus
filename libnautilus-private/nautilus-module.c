@@ -25,7 +25,6 @@
 #include <config.h>
 #include "nautilus-module.h"
 
-#include <eel/eel-gtk-macros.h>
 #include <eel/eel-debug.h>
 #include <gmodule.h>
 

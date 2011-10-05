@@ -26,8 +26,6 @@
 #include <libnautilus-private/nautilus-undo-manager.h>
 #include <libnautilus-private/nautilus-undo-transaction.h>
 
-#include <eel/eel-gtk-macros.h>
-#include <eel/eel-gtk-extensions.h>
 #include <gtk/gtk.h>
 #include "nautilus-undo-private.h"
 

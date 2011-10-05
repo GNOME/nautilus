@@ -71,7 +71,6 @@
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 #include <eel/eel-gtk-extensions.h>
-#include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
 #include <libnotify/notify.h>
 #include <gdk/gdkx.h>

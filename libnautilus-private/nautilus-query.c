@@ -25,7 +25,6 @@
 #include <string.h>
 
 #include "nautilus-query.h"
-#include <eel/eel-gtk-macros.h>
 #include <eel/eel-glib-extensions.h>
 #include <glib/gi18n.h>
 #include <libnautilus-private/nautilus-file-utilities.h>

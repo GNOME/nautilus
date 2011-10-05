@@ -32,7 +32,6 @@
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 
-#include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
 
 G_DEFINE_TYPE (NautilusWindowSlot, nautilus_window_slot, G_TYPE_OBJECT);

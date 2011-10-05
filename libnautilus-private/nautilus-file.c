@@ -49,7 +49,6 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-vfs-extensions.h>
-#include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
 #include <grp.h>
 #include <gtk/gtk.h>

@@ -37,7 +37,6 @@
 #include "nautilus-icon-dnd.h"
 #include "nautilus-link.h"
 
-#include <eel/eel-gtk-macros.h>
 #include <gtk/gtk.h>
 
 #include <stdio.h>

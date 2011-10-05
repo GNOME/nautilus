@@ -29,7 +29,6 @@
 #include <glib/gi18n.h>
 #include <libnautilus-private/nautilus-undo.h>
 
-#include <eel/eel-gtk-macros.h>
 #include <string.h>
 
 #include "nautilus-undo-signal-handlers.h"

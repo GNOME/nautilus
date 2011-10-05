@@ -30,7 +30,6 @@
 #include "nautilus-directory-notify.h"
 #include "nautilus-file.h"
 #include <eel/eel-glib-extensions.h>
-#include <eel/eel-gtk-macros.h>
 #include <gtk/gtk.h>
 
 struct NautilusMergedDirectoryDetails {

@@ -26,7 +26,6 @@
 
 #include <string.h>
 #include <glib.h>
-#include <eel/eel-gtk-macros.h>
 #include <gio/gio.h>
 
 #define BATCH_SIZE 500

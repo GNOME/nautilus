@@ -32,8 +32,6 @@
 #include "nautilus-file-private.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
-#include <eel/eel-glib-extensions.h>
-#include <eel/eel-gtk-macros.h>
 #include <gtk/gtk.h>
 
 struct NautilusDesktopDirectoryDetails {

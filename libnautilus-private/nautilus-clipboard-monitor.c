@@ -27,8 +27,6 @@
 #include "nautilus-file.h"
 
 #include <eel/eel-debug.h>
-#include <eel/eel-gtk-macros.h>
-#include <eel/eel-glib-extensions.h>
 #include <gtk/gtk.h>
 
 /* X11 has a weakness when it comes to clipboard handling,

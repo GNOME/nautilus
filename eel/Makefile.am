@@ -36,7 +36,6 @@ eel_headers =					\
 	eel-gnome-extensions.h			\
 	eel-graphic-effects.h			\
 	eel-gtk-extensions.h			\
-	eel-gtk-macros.h			\
 	eel-self-checks.h			\
 	eel-stock-dialogs.h			\
 	eel-string.h				\
