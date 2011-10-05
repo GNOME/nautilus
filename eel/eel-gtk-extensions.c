@@ -259,9 +259,11 @@ eel_gtk_window_set_initial_geometry_from_string (GtkWindow *window,
  * so perhaps it belongs in a different file.
  * 
  * @menu: The menu to pop up under the mouse.
- * @offset_x: Number of pixels to displace the popup menu vertically
- * @offset_y: Number of pixels to displace the popup menu horizontally
- * @event: The event that invoked this popup menu.
+ * @offset_x: Ignored.
+ * @offset_y: Ignored.
+ * @event: The event that invoked this popup menu, or #NULL if there
+ * is no event available.  This is used to get the timestamp for the menu's popup.
+ * In case no event is provided, gtk_get_current_event_time() will be used automatically.
  **/
 void 
 eel_pop_up_context_menu (GtkMenu	     *menu,
@@ -269,13 +271,9 @@ eel_pop_up_context_menu (GtkMenu	     *menu,
 			      gint16	      offset_y,
 			      GdkEventButton *event)
 {
-	GdkPoint offset;
 	int button;
 
 	g_return_if_fail (GTK_IS_MENU (menu));
-
-	offset.x = offset_x;
-	offset.y = offset_y;
 
 	/* The event button needs to be 0 if we're popping up this menu from
 	 * a button release, else a 2nd click outside the menu with any button
@@ -294,10 +292,10 @@ eel_pop_up_context_menu (GtkMenu	     *menu,
 	gtk_menu_popup (menu,					/* menu */
 			NULL,					/* parent_menu_shell */
 			NULL,					/* parent_menu_item */
-			NULL,
-			&offset,			        /* data */
+			NULL,					/* popup_position_func */
+			NULL,					/* popup_position_data */
 			button,					/* button */
-			event ? event->time : GDK_CURRENT_TIME); /* activate_time */
+			event ? event->time : gtk_get_current_event_time ()); /* activate_time */
 
 	g_object_ref_sink (menu);
 	g_object_unref (menu);
