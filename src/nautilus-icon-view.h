@@ -55,32 +55,6 @@ struct NautilusIconView {
 
 struct NautilusIconViewClass {
 	NautilusViewClass parent_class;
-
-	/* Methods that can be overriden for settings you don't want to come from metadata.
-	 */
-	 
-	/* Note: get_directory_sort_by must return a string that can/will be g_freed.
-	 */
-	char *	 (* get_directory_sort_by)       (NautilusIconView *icon_view, 
-						  NautilusFile *file);
-	void     (* set_directory_sort_by)       (NautilusIconView *icon_view, 
-						  NautilusFile *file, 
-						  const char* sort_by);
-
-	gboolean (* get_directory_sort_reversed) (NautilusIconView *icon_view, 
-						  NautilusFile *file);
-	void     (* set_directory_sort_reversed) (NautilusIconView *icon_view, 
-						  NautilusFile *file, 
-						  gboolean sort_reversed);
-
-	gboolean (* get_directory_auto_layout)   (NautilusIconView *icon_view, 
-						  NautilusFile *file);
-	void     (* set_directory_auto_layout)   (NautilusIconView *icon_view, 
-						  NautilusFile *file, 
-						  gboolean auto_layout);
-	
-	/* Override "clean_up" if your subclass has its own notion of where icons should be positioned */
-	void	 (* clean_up)			 (NautilusIconView *icon_view);
 };
 
 /* GObject support */
