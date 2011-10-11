@@ -209,7 +209,7 @@ nautilus_search_engine_tracker_start (NautilusSearchEngine *engine)
 	g_string_append (sparql, "  fts:match ");
 	sparql_append_string_literal (sparql, search_text);
 
-	if (location || mime_count > 0) {
+	if (location_uri || mime_count > 0) {
 		g_string_append (sparql, " . FILTER (");
 	
 		if (location_uri)  {
