@@ -1619,17 +1619,15 @@ eel_editable_label_draw (GtkWidget *widget,
 	eel_editable_label_draw_cursor (label, cr, x, y);
 
       if (label->draw_outline) {
-        GtkAllocation allocation;
-        GdkRGBA color;
+        gtk_style_context_save (style);
+        gtk_style_context_set_state (style, gtk_widget_get_state_flags (widget));
 
-        gtk_widget_get_allocation (widget, &allocation);
-        gtk_style_context_get_color (style, gtk_widget_get_state_flags (widget), &color);
-	gdk_cairo_set_source_rgba (cr, &color);
-	cairo_set_line_width (cr, 1.0);
-	cairo_rectangle (cr, 0.5, 0.5, 
-			 allocation.width - 1,
-			 allocation.height - 1);
-	cairo_stroke (cr);
+        gtk_render_frame (style, cr,
+                          0, 0,
+                          gtk_widget_get_allocated_width (widget),
+                          gtk_widget_get_allocated_height (widget));
+
+        gtk_style_context_restore (style);
       }
     }
 
