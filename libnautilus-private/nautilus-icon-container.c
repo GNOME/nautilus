@@ -254,7 +254,6 @@ enum {
 	ICON_ADDED,
 	ICON_REMOVED,
 	CLEARED,
-	START_INTERACTIVE_SEARCH,
 	LAST_SIGNAL
 };
 
@@ -5276,8 +5275,7 @@ nautilus_icon_container_ensure_interactive_directory (NautilusIconContainer *con
  * started this by typing the start_interactive_search keybinding.  Otherwise, it came from 
  */
 static gboolean
-nautilus_icon_container_real_start_interactive_search (NautilusIconContainer *container,
-						       gboolean keybinding)
+nautilus_icon_container_start_interactive_search (NautilusIconContainer *container)
 {
 	/* We only start interactive search if we have focus.  If one of our
 	 * children have focus, we don't want to start the search.
@@ -5294,10 +5292,6 @@ nautilus_icon_container_real_start_interactive_search (NautilusIconContainer *co
 	}
 
 	nautilus_icon_container_ensure_interactive_directory (container);
-
-	if (keybinding) {
-		gtk_entry_set_text (GTK_ENTRY (container->details->search_entry), "");
-	}
 
 	/* done, show it */
 	nautilus_icon_container_search_position_func (container, container->details->search_window);
@@ -5322,12 +5316,6 @@ nautilus_icon_container_real_start_interactive_search (NautilusIconContainer *co
 	nautilus_icon_container_search_init (container->details->search_entry, container);
 
 	return TRUE;
-}
-
-static gboolean
-nautilus_icon_container_start_interactive_search (NautilusIconContainer *container)
-{
-	return nautilus_icon_container_real_start_interactive_search (container, TRUE);
 }
 
 static gboolean
@@ -5525,7 +5513,7 @@ key_press_event (GtkWidget *widget,
 		g_free (old_text);
 		if (container->details->imcontext_changed ||    /* we're in a preedit */
 		    (retval && text_modified)) {                /* ...or the text was modified */
-			if (nautilus_icon_container_real_start_interactive_search (container, FALSE)) {
+			if (nautilus_icon_container_start_interactive_search (container)) {
 				gtk_widget_grab_focus (GTK_WIDGET (container));
 				return TRUE;
 			} else {
@@ -5648,7 +5636,6 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 {
 	GtkWidgetClass *widget_class;
 	EelCanvasClass *canvas_class;
-	GtkBindingSet *binding_set;
 
 	G_OBJECT_CLASS (class)->constructor = nautilus_icon_container_constructor;
 	G_OBJECT_CLASS (class)->finalize = finalize;
@@ -5988,16 +5975,6 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                g_cclosure_marshal_VOID__VOID,
 		                G_TYPE_NONE, 0);
 
-	signals[START_INTERACTIVE_SEARCH]
-		= g_signal_new ("start_interactive_search",
-				G_TYPE_FROM_CLASS (class),
-				G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
-				G_STRUCT_OFFSET (NautilusIconContainerClass,
-						 start_interactive_search),
-				NULL, NULL,
-				g_cclosure_marshal_generic,
-				G_TYPE_BOOLEAN, 0);
-
 	/* GtkWidget class.  */
 
 	widget_class = GTK_WIDGET_CLASS (class);
@@ -6020,20 +5997,12 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 	canvas_class = EEL_CANVAS_CLASS (class);
 	canvas_class->draw_background = draw_canvas_background;
 
-	class->start_interactive_search = nautilus_icon_container_start_interactive_search;
-
 	gtk_widget_class_install_style_property (widget_class,
 						 g_param_spec_boolean ("activate_prelight_icon_label",
 								     "Activate Prelight Icon Label",
 								     "Whether icon labels should make use of its prelight color in prelight state",
 								     FALSE,
 								     G_PARAM_READABLE));
-								     								     
-
-	binding_set = gtk_binding_set_by_class (class);
-
-	gtk_binding_entry_add_signal (binding_set, GDK_KEY_f, GDK_CONTROL_MASK, "start_interactive_search", 0);
-	gtk_binding_entry_add_signal (binding_set, GDK_KEY_F, GDK_CONTROL_MASK, "start_interactive_search", 0);
 }
 
 static void
