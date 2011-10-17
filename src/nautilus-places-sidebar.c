@@ -2892,14 +2892,20 @@ bookmarks_button_press_event_cb (GtkWidget             *widget,
 		GtkTreeIter iter;
 		GtkTreeView *tree_view;
 		NautilusWindowOpenFlags flags = 0;
+		gboolean res;
 
 		tree_view = GTK_TREE_VIEW (widget);
 		g_assert (tree_view == sidebar->tree_view);
 
 		model = gtk_tree_view_get_model (tree_view);
 
-		gtk_tree_view_get_path_at_pos (tree_view, (int) event->x, (int) event->y, 
-					       &path, NULL, NULL, NULL);
+		res = gtk_tree_view_get_path_at_pos (tree_view, (int) event->x, (int) event->y, 
+						     &path, NULL, NULL, NULL);
+
+		if (!res) {
+			return FALSE;
+		}
+
 		gtk_tree_model_get_iter (model, &iter, path);
 
 		if (g_settings_get_boolean (nautilus_preferences,
