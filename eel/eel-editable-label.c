@@ -1098,7 +1098,7 @@ eel_editable_label_size_request (GtkWidget      *widget,
   gint width, height;
   PangoRectangle logical_rect;
   gint set_width;
-  gfloat xpad, ypad;
+  gint xpad, ypad;
 
   g_assert (EEL_IS_EDITABLE_LABEL (widget));
   g_assert (requisition != NULL);
@@ -1123,8 +1123,8 @@ eel_editable_label_size_request (GtkWidget      *widget,
 
   eel_editable_label_ensure_layout (label, TRUE);
 
-  gtk_misc_get_alignment (&label->misc,
-			  &xpad, &ypad);
+  gtk_misc_get_padding (&label->misc,
+                        &xpad, &ypad);
   width = xpad * 2;
   height = ypad * 2;
 
