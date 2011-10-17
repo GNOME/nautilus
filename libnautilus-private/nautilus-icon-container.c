@@ -4830,7 +4830,7 @@ nautilus_icon_container_search_position_func (NautilusIconContainer *container,
 		y = cont_y + cont_height;
 	}
 
-	gtk_window_move (GTK_WINDOW (search_dialog), x, y);
+	gdk_window_move (gtk_widget_get_window (search_dialog), x, y);
 }
 
 /* Cut and paste from gtkwindow.c */
