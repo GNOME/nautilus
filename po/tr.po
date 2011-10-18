@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2011-10-03 15:17+0000\n"
-"PO-Revision-Date: 2011-10-10 10:55+0300\n"
+"POT-Creation-Date: 2011-10-18 15:28+0000\n"
+"PO-Revision-Date: 2011-10-18 20:43+0300\n"
 "Last-Translator: Muhammet Kara <muhammet.k@gmail.com>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -86,15 +86,15 @@ msgid ""
 "The position of the opposite end of the selection from the cursor in chars."
 msgstr "Seçimin karşı ucunun imlece göre karakter olarak konumu."
 
-#: ../eel/eel-editable-label.c:3112
+#: ../eel/eel-editable-label.c:3105
 msgid "Select All"
 msgstr "Tümünü Seç"
 
-#: ../eel/eel-editable-label.c:3123
+#: ../eel/eel-editable-label.c:3116
 msgid "Input Methods"
 msgstr "Giriş Yöntemleri"
 
-#: ../eel/eel-gtk-extensions.c:407
+#: ../eel/eel-gtk-extensions.c:403
 msgid "Show more _details"
 msgstr "_Daha fazla ayrıntı göster"
 
@@ -107,7 +107,7 @@ msgid " (invalid Unicode)"
 msgstr " (geçersiz Unikod)"
 
 # src/nautilus-shell-ui.xml.h:83
-#: ../libnautilus-private/nautilus-bookmark.c:132
+#: ../libnautilus-private/nautilus-bookmark.c:129
 #: ../libnautilus-private/nautilus-desktop-link.c:120
 #: ../libnautilus-private/nautilus-file-utilities.c:68
 #: ../src/nautilus-pathbar.c:1202 ../src/nautilus-places-sidebar.c:668
@@ -142,7 +142,7 @@ msgstr "Panodsa saklanan resmi yapıştır"
 # src/nautilus-shell-ui.xml.h:92
 #. name, stock id
 #. label, accelerator
-#: ../libnautilus-private/nautilus-clipboard.c:444 ../src/nautilus-view.c:6989
+#: ../libnautilus-private/nautilus-clipboard.c:444 ../src/nautilus-view.c:6914
 msgid "Select _All"
 msgstr "_Hepsini Seç"
 
@@ -171,7 +171,7 @@ msgstr "Öntanımlı _Kullan"
 # src/file-manager/fm-search-list-view.c:334
 # src/nautilus-bookmarks-window.c:164 src/nautilus-search-bar-criterion.c:67
 #: ../libnautilus-private/nautilus-column-utilities.c:43
-#: ../src/nautilus-list-view.c:1697
+#: ../src/nautilus-list-view.c:1692
 msgid "Name"
 msgstr "İsim"
 
@@ -244,7 +244,7 @@ msgstr "Dosyanın grubu."
 
 # src/file-manager/fm-properties-window.c:1658
 #: ../libnautilus-private/nautilus-column-utilities.c:97
-#: ../src/nautilus-properties-window.c:4534
+#: ../src/nautilus-properties-window.c:4462
 msgid "Permissions"
 msgstr "Erişim Hakları"
 
@@ -318,12 +318,12 @@ msgid "on the desktop"
 msgstr "masaüstünde"
 
 # libnautilus-private/nautilus-file-operations.c:1805
-#: ../libnautilus-private/nautilus-desktop-link-monitor.c:101
+#: ../libnautilus-private/nautilus-desktop-link-monitor.c:92
 #, c-format
 msgid "You cannot move the volume \"%s\" to the trash."
 msgstr "\"%s\" birimini çöpe taşıyamazsınız."
 
-#: ../libnautilus-private/nautilus-desktop-link-monitor.c:111
+#: ../libnautilus-private/nautilus-desktop-link-monitor.c:102
 msgid ""
 "If you want to eject the volume, please use \"Eject\" in the popup menu of "
 "the volume."
@@ -331,7 +331,7 @@ msgstr ""
 "Birimi çıkartmak istiyorsanız, lütfen birime sağ tıklayarak açılan menüden "
 "\"Çıkart\"ı kullanın."
 
-#: ../libnautilus-private/nautilus-desktop-link-monitor.c:120
+#: ../libnautilus-private/nautilus-desktop-link-monitor.c:111
 msgid ""
 "If you want to unmount the volume, please use \"Unmount Volume\" in the "
 "popup menu of the volume."
@@ -440,14 +440,14 @@ msgstr "Asıl dosya"
 # src/file-manager/fm-properties-window.c:1278
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:253
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:284
-#: ../src/nautilus-properties-window.c:3131
+#: ../src/nautilus-properties-window.c:3096
 msgid "Size:"
 msgstr "Boyut:"
 
 # src/file-manager/fm-properties-window.c:1273
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:256
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:287
-#: ../src/nautilus-properties-window.c:3113
+#: ../src/nautilus-properties-window.c:3078
 msgid "Type:"
 msgstr "Tür:"
 
@@ -492,7 +492,7 @@ msgstr "Bu eylemi tüm dosyalara uygula"
 # libnautilus-private/nautilus-file-operations.c:1043
 # libnautilus-private/nautilus-file-operations.c:1057
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:542
-#: ../libnautilus-private/nautilus-file-operations.c:183
+#: ../libnautilus-private/nautilus-file-operations.c:182
 msgid "_Skip"
 msgstr "_Atla"
 
@@ -512,65 +512,65 @@ msgstr "Yer değiştir"
 msgid "File conflict"
 msgstr "Dosya çakışması"
 
-#: ../libnautilus-private/nautilus-file-operations.c:184
+#: ../libnautilus-private/nautilus-file-operations.c:183
 msgid "S_kip All"
 msgstr "Hepsini _Atla"
 
 # libnautilus-private/nautilus-file-operations.c:929
-#: ../libnautilus-private/nautilus-file-operations.c:185
+#: ../libnautilus-private/nautilus-file-operations.c:184
 msgid "_Retry"
 msgstr "_Yeniden dene"
 
 # src/nautilus-shell-ui.xml.h:92
-#: ../libnautilus-private/nautilus-file-operations.c:186
+#: ../libnautilus-private/nautilus-file-operations.c:185
 msgid "Delete _All"
 msgstr "_Hepsini Sil"
 
 # libnautilus-private/nautilus-file-operations.c:1043
 # libnautilus-private/nautilus-file-operations.c:1057
-#: ../libnautilus-private/nautilus-file-operations.c:187
+#: ../libnautilus-private/nautilus-file-operations.c:186
 msgid "_Replace"
 msgstr "_Yer değiştir"
 
 # libnautilus-private/nautilus-file-operations.c:1057
-#: ../libnautilus-private/nautilus-file-operations.c:188
+#: ../libnautilus-private/nautilus-file-operations.c:187
 msgid "Replace _All"
 msgstr "_Hepsini yer değiştir"
 
 # libnautilus-private/nautilus-program-chooser.c:1317
-#: ../libnautilus-private/nautilus-file-operations.c:189
+#: ../libnautilus-private/nautilus-file-operations.c:188
 msgid "_Merge"
 msgstr "_Birleştir"
 
 # src/nautilus-shell-ui.xml.h:92
-#: ../libnautilus-private/nautilus-file-operations.c:190
+#: ../libnautilus-private/nautilus-file-operations.c:189
 msgid "Merge _All"
 msgstr "_Hepsini Birleştir"
 
-#: ../libnautilus-private/nautilus-file-operations.c:191
+#: ../libnautilus-private/nautilus-file-operations.c:190
 msgid "Copy _Anyway"
 msgstr "Yine de Kopy_ala"
 
-#: ../libnautilus-private/nautilus-file-operations.c:276
+#: ../libnautilus-private/nautilus-file-operations.c:275
 #, c-format
 msgid "%'d second"
 msgid_plural "%'d seconds"
 msgstr[0] "%'d saniye"
 
-#: ../libnautilus-private/nautilus-file-operations.c:281
-#: ../libnautilus-private/nautilus-file-operations.c:292
+#: ../libnautilus-private/nautilus-file-operations.c:280
+#: ../libnautilus-private/nautilus-file-operations.c:291
 #, c-format
 msgid "%'d minute"
 msgid_plural "%'d minutes"
 msgstr[0] "%'d dakika"
 
-#: ../libnautilus-private/nautilus-file-operations.c:291
+#: ../libnautilus-private/nautilus-file-operations.c:290
 #, c-format
 msgid "%'d hour"
 msgid_plural "%'d hours"
 msgstr[0] "%'d saat"
 
-#: ../libnautilus-private/nautilus-file-operations.c:299
+#: ../libnautilus-private/nautilus-file-operations.c:298
 #, c-format
 msgid "approximately %'d hour"
 msgid_plural "approximately %'d hours"
@@ -583,15 +583,15 @@ msgstr[0] "tahmini %'d saat"
 #. * (e.g. "folder", "plain text") to file type for symbolic link
 #. * to that kind of file (e.g. "link to folder").
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:375
-#: ../libnautilus-private/nautilus-file.c:6274 ../src/nautilus-view-dnd.c:123
+#: ../libnautilus-private/nautilus-file-operations.c:374
+#: ../libnautilus-private/nautilus-file.c:6255 ../src/nautilus-view-dnd.c:123
 #, c-format
 msgid "Link to %s"
 msgstr "%s için bağ"
 
 # libnautilus-private/nautilus-file-operations.c:1110
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:379
+#: ../libnautilus-private/nautilus-file-operations.c:378
 #, c-format
 msgid "Another link to %s"
 msgstr "%s için başka bir bağ"
@@ -601,28 +601,28 @@ msgstr "%s için başka bir bağ"
 #. * if there's no way to do that nicely for a
 #. * particular language.
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:395
+#: ../libnautilus-private/nautilus-file-operations.c:394
 #, c-format
 msgid "%'dst link to %s"
 msgstr "%'d. %s bağlantısı"
 
 # libnautilus-private/nautilus-file-operations.c:1130
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:399
+#: ../libnautilus-private/nautilus-file-operations.c:398
 #, c-format
 msgid "%'dnd link to %s"
 msgstr "%'d. %s bağlantısı"
 
 # libnautilus-private/nautilus-file-operations.c:1134
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:403
+#: ../libnautilus-private/nautilus-file-operations.c:402
 #, c-format
 msgid "%'drd link to %s"
 msgstr "%'d. %s bağlantısı"
 
 # libnautilus-private/nautilus-file-operations.c:1138
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:407
+#: ../libnautilus-private/nautilus-file-operations.c:406
 #, c-format
 msgid "%'dth link to %s"
 msgstr "%'d. %s bağlantısı"
@@ -634,14 +634,14 @@ msgstr "%'d. %s bağlantısı"
 #. * make some or all of them match.
 #.
 #. localizers: tag used to detect the first copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:446
+#: ../libnautilus-private/nautilus-file-operations.c:445
 msgid " (copy)"
 msgstr " (kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:1160
 # libnautilus-private/nautilus-file-operations.c:2259
 #. localizers: tag used to detect the second copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:448
+#: ../libnautilus-private/nautilus-file-operations.c:447
 msgid " (another copy)"
 msgstr " (başka kopya)"
 
@@ -650,41 +650,41 @@ msgstr " (başka kopya)"
 #. localizers: tag used to detect the x12th copy of a file
 #. localizers: tag used to detect the x13th copy of a file
 #. localizers: tag used to detect the xxth copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:451
-#: ../libnautilus-private/nautilus-file-operations.c:453
-#: ../libnautilus-private/nautilus-file-operations.c:455
-#: ../libnautilus-private/nautilus-file-operations.c:465
+#: ../libnautilus-private/nautilus-file-operations.c:450
+#: ../libnautilus-private/nautilus-file-operations.c:452
+#: ../libnautilus-private/nautilus-file-operations.c:454
+#: ../libnautilus-private/nautilus-file-operations.c:464
 msgid "th copy)"
 msgstr ". kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:1162
 #. localizers: tag used to detect the x1st copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:458
+#: ../libnautilus-private/nautilus-file-operations.c:457
 msgid "st copy)"
 msgstr ". kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:1164
 #. localizers: tag used to detect the x2nd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:460
+#: ../libnautilus-private/nautilus-file-operations.c:459
 msgid "nd copy)"
 msgstr ". kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:1166
 #. localizers: tag used to detect the x3rd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:462
+#: ../libnautilus-private/nautilus-file-operations.c:461
 msgid "rd copy)"
 msgstr ". kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:1178
 #. localizers: appended to first file copy
-#: ../libnautilus-private/nautilus-file-operations.c:479
+#: ../libnautilus-private/nautilus-file-operations.c:478
 #, c-format
 msgid "%s (copy)%s"
 msgstr "%s (kopya)%s"
 
 # libnautilus-private/nautilus-file-operations.c:1180
 #. localizers: appended to second file copy
-#: ../libnautilus-private/nautilus-file-operations.c:481
+#: ../libnautilus-private/nautilus-file-operations.c:480
 #, c-format
 msgid "%s (another copy)%s"
 msgstr "%s (başka kopya)%s"
@@ -694,10 +694,10 @@ msgstr "%s (başka kopya)%s"
 #. localizers: appended to x12th file copy
 #. localizers: appended to x13th file copy
 #. localizers: appended to xxth file copy
-#: ../libnautilus-private/nautilus-file-operations.c:484
-#: ../libnautilus-private/nautilus-file-operations.c:486
-#: ../libnautilus-private/nautilus-file-operations.c:488
-#: ../libnautilus-private/nautilus-file-operations.c:502
+#: ../libnautilus-private/nautilus-file-operations.c:483
+#: ../libnautilus-private/nautilus-file-operations.c:485
+#: ../libnautilus-private/nautilus-file-operations.c:487
+#: ../libnautilus-private/nautilus-file-operations.c:501
 #, c-format
 msgid "%s (%'dth copy)%s"
 msgstr "%s (%'d. kopya)%s"
@@ -708,46 +708,46 @@ msgstr "%s (%'d. kopya)%s"
 #. * strings look like "%s (copy %'d)%s".
 #.
 #. localizers: appended to x1st file copy
-#: ../libnautilus-private/nautilus-file-operations.c:496
+#: ../libnautilus-private/nautilus-file-operations.c:495
 #, c-format
 msgid "%s (%'dst copy)%s"
 msgstr "%s (%'d. kopya)%s"
 
 # libnautilus-private/nautilus-file-operations.c:1184
 #. localizers: appended to x2nd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:498
+#: ../libnautilus-private/nautilus-file-operations.c:497
 #, c-format
 msgid "%s (%'dnd copy)%s"
 msgstr "%s (%'d. kopya)%s"
 
 # libnautilus-private/nautilus-file-operations.c:1186
 #. localizers: appended to x3rd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:500
+#: ../libnautilus-private/nautilus-file-operations.c:499
 #, c-format
 msgid "%s (%'drd copy)%s"
 msgstr "%s (%'d. kopya)%s"
 
 # libnautilus-private/nautilus-file-operations.c:1272
 #. localizers: opening parentheses to match the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:601
+#: ../libnautilus-private/nautilus-file-operations.c:600
 msgid " ("
 msgstr " ("
 
 # libnautilus-private/nautilus-file-operations.c:1280
 #. localizers: opening parentheses of the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:609
+#: ../libnautilus-private/nautilus-file-operations.c:608
 #, c-format
 msgid " (%'d"
 msgstr " (%'d"
 
 # src/file-manager/fm-directory-view.c:2639
-#: ../libnautilus-private/nautilus-file-operations.c:1300
+#: ../libnautilus-private/nautilus-file-operations.c:1299
 msgid "Are you sure you want to permanently delete \"%B\" from the trash?"
 msgstr ""
 "\"%B\" dosyasını çöpten kalıcı olarak silmek istediğinize emin misiniz?"
 
 # src/file-manager/fm-directory-view.c:2639
-#: ../libnautilus-private/nautilus-file-operations.c:1303
+#: ../libnautilus-private/nautilus-file-operations.c:1302
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %'d selected item from the "
@@ -759,18 +759,18 @@ msgstr[0] ""
 "%'d seçili öğeyi kalıcı olarak çöpten silmek istediğinizden emin misiniz?"
 
 # src/file-manager/fm-directory-view.c:2643
-#: ../libnautilus-private/nautilus-file-operations.c:1313
-#: ../libnautilus-private/nautilus-file-operations.c:1379
+#: ../libnautilus-private/nautilus-file-operations.c:1312
+#: ../libnautilus-private/nautilus-file-operations.c:1378
 msgid "If you delete an item, it will be permanently lost."
 msgstr "Eğer bir öğeyi silerseniz, o kalıcı olarak kaybolur."
 
 # libnautilus-private/nautilus-file-operations.c:2219
-#: ../libnautilus-private/nautilus-file-operations.c:1333
+#: ../libnautilus-private/nautilus-file-operations.c:1332
 msgid "Empty all items from Trash?"
 msgstr "Çöpteki bütün öğeler boşaltılsın mı?"
 
 # src/file-manager/fm-directory-view.c:2643
-#: ../libnautilus-private/nautilus-file-operations.c:1337
+#: ../libnautilus-private/nautilus-file-operations.c:1336
 msgid "All items in the Trash will be permanently deleted."
 msgstr "Çöpteki bütün öğeler kalıcı olarak silinecek."
 
@@ -778,57 +778,57 @@ msgstr "Çöpteki bütün öğeler kalıcı olarak silinecek."
 # src/file-manager/nautilus-desktop-icon-view-ui.xml.h:4
 # src/file-manager/nautilus-directory-view-ui.xml.h:11
 #. Empty Trash menu item
-#: ../libnautilus-private/nautilus-file-operations.c:1340
-#: ../libnautilus-private/nautilus-file-operations.c:2190
+#: ../libnautilus-private/nautilus-file-operations.c:1339
+#: ../libnautilus-private/nautilus-file-operations.c:2189
 #: ../src/nautilus-places-sidebar.c:2691 ../src/nautilus-trash-bar.c:204
 msgid "Empty _Trash"
 msgstr "Çöpü _Boşalt"
 
 # src/file-manager/fm-directory-view.c:455
 # src/file-manager/fm-directory-view.c:2639
-#: ../libnautilus-private/nautilus-file-operations.c:1367
+#: ../libnautilus-private/nautilus-file-operations.c:1366
 msgid "Are you sure you want to permanently delete \"%B\"?"
 msgstr "\"%B\" dosyasını kalıcı olarak silmek istediğinize emin misiniz?"
 
 # src/file-manager/fm-directory-view.c:455
 # src/file-manager/fm-directory-view.c:2639
-#: ../libnautilus-private/nautilus-file-operations.c:1370
+#: ../libnautilus-private/nautilus-file-operations.c:1369
 #, c-format
 msgid "Are you sure you want to permanently delete the %'d selected item?"
 msgid_plural ""
 "Are you sure you want to permanently delete the %'d selected items?"
 msgstr[0] "%'d seçili öğeyi kalıcı olarak silmek istediğinizden emin misiniz?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1413
+#: ../libnautilus-private/nautilus-file-operations.c:1412
 #, c-format
 msgid "%'d file left to delete"
 msgid_plural "%'d files left to delete"
 msgstr[0] "%'d dosya silmek için bekliyor"
 
 # libnautilus-private/nautilus-file-operations.c:2146
-#: ../libnautilus-private/nautilus-file-operations.c:1419
+#: ../libnautilus-private/nautilus-file-operations.c:1418
 msgid "Deleting files"
 msgstr "Dosyalar siliniyor"
 
 #. To translators: %T will expand to a time like "2 minutes".
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:1433
+#: ../libnautilus-private/nautilus-file-operations.c:1432
 msgid "%T left"
 msgid_plural "%T left"
 msgstr[0] "%T kaldı"
 
 # libnautilus-private/nautilus-file-operations.c:885
-#: ../libnautilus-private/nautilus-file-operations.c:1500
-#: ../libnautilus-private/nautilus-file-operations.c:1534
-#: ../libnautilus-private/nautilus-file-operations.c:1573
-#: ../libnautilus-private/nautilus-file-operations.c:1650
-#: ../libnautilus-private/nautilus-file-operations.c:2431
+#: ../libnautilus-private/nautilus-file-operations.c:1499
+#: ../libnautilus-private/nautilus-file-operations.c:1533
+#: ../libnautilus-private/nautilus-file-operations.c:1572
+#: ../libnautilus-private/nautilus-file-operations.c:1649
+#: ../libnautilus-private/nautilus-file-operations.c:2430
 msgid "Error while deleting."
 msgstr "Silinirken hata oluştu."
 
 # libnautilus-private/nautilus-file-operations.c:617
-#: ../libnautilus-private/nautilus-file-operations.c:1504
+#: ../libnautilus-private/nautilus-file-operations.c:1503
 msgid ""
 "Files in the folder \"%B\" cannot be deleted because you do not have "
 "permissions to see them."
@@ -836,9 +836,9 @@ msgstr ""
 "\"%B\" klasöründeki dosyalar silinemiyor çünkü onları görmek için yeterli "
 "izne sahip değilsiniz."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1507
-#: ../libnautilus-private/nautilus-file-operations.c:2490
-#: ../libnautilus-private/nautilus-file-operations.c:3477
+#: ../libnautilus-private/nautilus-file-operations.c:1506
+#: ../libnautilus-private/nautilus-file-operations.c:2489
+#: ../libnautilus-private/nautilus-file-operations.c:3478
 msgid ""
 "There was an error getting information about the files in the folder \"%B\"."
 msgstr "\"%B\" klasöründeki dosyalar hakkında bilgi alınırken hata oluştu."
@@ -847,13 +847,13 @@ msgstr "\"%B\" klasöründeki dosyalar hakkında bilgi alınırken hata oluştu.
 # libnautilus-private/nautilus-file-operations.c:929
 # libnautilus-private/nautilus-file-operations.c:1043
 # libnautilus-private/nautilus-file-operations.c:1057
-#: ../libnautilus-private/nautilus-file-operations.c:1516
-#: ../libnautilus-private/nautilus-file-operations.c:3486
+#: ../libnautilus-private/nautilus-file-operations.c:1515
+#: ../libnautilus-private/nautilus-file-operations.c:3487
 msgid "_Skip files"
 msgstr "_Dosyaları atla"
 
 # libnautilus-private/nautilus-file-operations.c:617
-#: ../libnautilus-private/nautilus-file-operations.c:1537
+#: ../libnautilus-private/nautilus-file-operations.c:1536
 msgid ""
 "The folder \"%B\" cannot be deleted because you do not have permissions to "
 "read it."
@@ -861,64 +861,64 @@ msgstr ""
 "\"%B\" klasörü silinemiyor çünkü onu okumak için yeterli erişim hakkınız yok."
 
 # components/music/nautilus-music-view.c:1709
-#: ../libnautilus-private/nautilus-file-operations.c:1540
-#: ../libnautilus-private/nautilus-file-operations.c:2529
-#: ../libnautilus-private/nautilus-file-operations.c:3522
+#: ../libnautilus-private/nautilus-file-operations.c:1539
+#: ../libnautilus-private/nautilus-file-operations.c:2528
+#: ../libnautilus-private/nautilus-file-operations.c:3523
 msgid "There was an error reading the folder \"%B\"."
 msgstr "\"%B\" klasörü okunurken hata oluştu."
 
 # src/nautilus-theme-selector.c:616
-#: ../libnautilus-private/nautilus-file-operations.c:1574
+#: ../libnautilus-private/nautilus-file-operations.c:1573
 msgid "Could not remove the folder %B."
 msgstr "%B klasörü silinemedi."
 
 # components/music/nautilus-music-view.c:1709
-#: ../libnautilus-private/nautilus-file-operations.c:1651
+#: ../libnautilus-private/nautilus-file-operations.c:1650
 msgid "There was an error deleting %B."
 msgstr "%B silinirken bir hata oluştu."
 
 # libnautilus-private/nautilus-file-operations.c:2099
-#: ../libnautilus-private/nautilus-file-operations.c:1731
+#: ../libnautilus-private/nautilus-file-operations.c:1730
 msgid "Moving files to trash"
 msgstr "Dosyalar çöpe taşınıyor"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1733
+#: ../libnautilus-private/nautilus-file-operations.c:1732
 #, c-format
 msgid "%'d file left to trash"
 msgid_plural "%'d files left to trash"
 msgstr[0] "%'d dosya çöpe gönderilmeyi bekliyor"
 
 # src/file-manager/fm-directory-view.c:2591
-#: ../libnautilus-private/nautilus-file-operations.c:1783
+#: ../libnautilus-private/nautilus-file-operations.c:1782
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr "Dosya çöpe taşınamadı, kalıcı olarak silmek ister misiniz?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1784
+#: ../libnautilus-private/nautilus-file-operations.c:1783
 msgid "The file \"%B\" cannot be moved to the trash."
 msgstr "\"%B\" dosyası çöpe taşınamıyor."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1957
+#: ../libnautilus-private/nautilus-file-operations.c:1956
 msgid "Trashing Files"
 msgstr "Dosyalar Çöpe Atılıyor"
 
 # libnautilus-private/nautilus-file-operations.c:2146
-#: ../libnautilus-private/nautilus-file-operations.c:1959
+#: ../libnautilus-private/nautilus-file-operations.c:1958
 msgid "Deleting Files"
 msgstr "Dosyalar Siliniyor"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2023
+#: ../libnautilus-private/nautilus-file-operations.c:2022
 msgid "Unable to eject %V"
 msgstr "%V çıkartılamadı"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2025
+#: ../libnautilus-private/nautilus-file-operations.c:2024
 msgid "Unable to unmount %V"
 msgstr "%V bağı kaldırılamadı"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2180
+#: ../libnautilus-private/nautilus-file-operations.c:2179
 msgid "Do you want to empty the trash before you unmount?"
 msgstr "Bağı kaldırmadan önce çöpü boşaltmak istiyor musunuz?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2182
+#: ../libnautilus-private/nautilus-file-operations.c:2181
 msgid ""
 "In order to regain the free space on this volume the trash must be emptied. "
 "All trashed items on the volume will be permanently lost."
@@ -929,65 +929,65 @@ msgstr ""
 # src/file-manager/fm-desktop-icon-view.c:1093
 # src/file-manager/nautilus-desktop-icon-view-ui.xml.h:4
 # src/file-manager/nautilus-directory-view-ui.xml.h:11
-#: ../libnautilus-private/nautilus-file-operations.c:2188
+#: ../libnautilus-private/nautilus-file-operations.c:2187
 msgid "Do _not Empty Trash"
 msgstr "Çöpü _Boşaltma"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2304
+#: ../libnautilus-private/nautilus-file-operations.c:2303
 #, c-format
 msgid "Unable to mount %s"
 msgstr "%s bağlanamadı"
 
 # libnautilus-private/nautilus-file-operations.c:2151
-#: ../libnautilus-private/nautilus-file-operations.c:2378
+#: ../libnautilus-private/nautilus-file-operations.c:2377
 #, c-format
 msgid "Preparing to copy %'d file (%S)"
 msgid_plural "Preparing to copy %'d files (%S)"
 msgstr[0] "%'d dosya kopyalanmak için hazırlanıyor (%S)"
 
 # libnautilus-private/nautilus-file-operations.c:2151
-#: ../libnautilus-private/nautilus-file-operations.c:2384
+#: ../libnautilus-private/nautilus-file-operations.c:2383
 #, c-format
 msgid "Preparing to move %'d file (%S)"
 msgid_plural "Preparing to move %'d files (%S)"
 msgstr[0] "%'d dosya taşınmak için hazırlanıyor (%S)"
 
 # libnautilus-private/nautilus-file-operations.c:2151
-#: ../libnautilus-private/nautilus-file-operations.c:2390
+#: ../libnautilus-private/nautilus-file-operations.c:2389
 #, c-format
 msgid "Preparing to delete %'d file (%S)"
 msgid_plural "Preparing to delete %'d files (%S)"
 msgstr[0] "%'d dosya silinmek için hazırlanıyor (%S)"
 
 # libnautilus-private/nautilus-file-operations.c:2151
-#: ../libnautilus-private/nautilus-file-operations.c:2396
+#: ../libnautilus-private/nautilus-file-operations.c:2395
 #, c-format
 msgid "Preparing to trash %'d file"
 msgid_plural "Preparing to trash %'d files"
 msgstr[0] "%'d dosya çöpe atılmak için hazırlanıyor"
 
 # libnautilus-private/nautilus-file-operations.c:874
-#: ../libnautilus-private/nautilus-file-operations.c:2427
-#: ../libnautilus-private/nautilus-file-operations.c:3343
-#: ../libnautilus-private/nautilus-file-operations.c:3469
-#: ../libnautilus-private/nautilus-file-operations.c:3514
+#: ../libnautilus-private/nautilus-file-operations.c:2426
+#: ../libnautilus-private/nautilus-file-operations.c:3344
+#: ../libnautilus-private/nautilus-file-operations.c:3470
+#: ../libnautilus-private/nautilus-file-operations.c:3515
 msgid "Error while copying."
 msgstr "Kopyalarken hata oluştu."
 
 # libnautilus-private/nautilus-file-operations.c:877
-#: ../libnautilus-private/nautilus-file-operations.c:2429
-#: ../libnautilus-private/nautilus-file-operations.c:3467
-#: ../libnautilus-private/nautilus-file-operations.c:3512
+#: ../libnautilus-private/nautilus-file-operations.c:2428
+#: ../libnautilus-private/nautilus-file-operations.c:3468
+#: ../libnautilus-private/nautilus-file-operations.c:3513
 msgid "Error while moving."
 msgstr "Taşınırken hata oluştu."
 
 # libnautilus-private/nautilus-file-operations.c:877
-#: ../libnautilus-private/nautilus-file-operations.c:2433
+#: ../libnautilus-private/nautilus-file-operations.c:2432
 msgid "Error while moving files to trash."
 msgstr "Dosyalar çöpe taşınırken hata."
 
 # libnautilus-private/nautilus-file-operations.c:617
-#: ../libnautilus-private/nautilus-file-operations.c:2487
+#: ../libnautilus-private/nautilus-file-operations.c:2486
 msgid ""
 "Files in the folder \"%B\" cannot be handled because you do not have "
 "permissions to see them."
@@ -996,7 +996,7 @@ msgstr ""
 "erişim hakkınız yok."
 
 # libnautilus-private/nautilus-file-operations.c:617
-#: ../libnautilus-private/nautilus-file-operations.c:2526
+#: ../libnautilus-private/nautilus-file-operations.c:2525
 msgid ""
 "The folder \"%B\" cannot be handled because you do not have permissions to "
 "read it."
@@ -1005,7 +1005,7 @@ msgstr ""
 "yok."
 
 # libnautilus-private/nautilus-file-operations.c:617
-#: ../libnautilus-private/nautilus-file-operations.c:2603
+#: ../libnautilus-private/nautilus-file-operations.c:2602
 msgid ""
 "The file \"%B\" cannot be handled because you do not have permissions to "
 "read it."
@@ -1013,15 +1013,15 @@ msgstr ""
 "\"%B\" dosyası işlenemedi çünkü onu okumak için yeterli erişim hakkınız yok."
 
 # components/music/nautilus-music-view.c:1709
-#: ../libnautilus-private/nautilus-file-operations.c:2606
+#: ../libnautilus-private/nautilus-file-operations.c:2605
 msgid "There was an error getting information about \"%B\"."
 msgstr "\"%B\" hakkında bilgi alırken bir hata oluştu."
 
 # libnautilus-private/nautilus-file-operations.c:874
 #: ../libnautilus-private/nautilus-file-operations.c:2706
 #: ../libnautilus-private/nautilus-file-operations.c:2748
-#: ../libnautilus-private/nautilus-file-operations.c:2781
-#: ../libnautilus-private/nautilus-file-operations.c:2811
+#: ../libnautilus-private/nautilus-file-operations.c:2782
+#: ../libnautilus-private/nautilus-file-operations.c:2812
 msgid "Error while copying to \"%B\"."
 msgstr "\"%B\" hedefine kopyalanırken hata."
 
@@ -1041,67 +1041,67 @@ msgid "The destination is not a folder."
 msgstr "Hedef bir klasör değil."
 
 # libnautilus-private/nautilus-file-operations.c:644
-#: ../libnautilus-private/nautilus-file-operations.c:2782
+#: ../libnautilus-private/nautilus-file-operations.c:2783
 msgid ""
 "There is not enough space on the destination. Try to remove files to make "
 "space."
 msgstr ""
 "Hedefte yeterli boş alan yok. Dosyaları silerek boş alan açmayı deneyin."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2784
+#: ../libnautilus-private/nautilus-file-operations.c:2785
 #, c-format
-msgid "There is %S available, but %S is required."
-msgstr "%S kullanılabilir alan var, ancak %S gerekli."
+msgid "%S more space is required to copy to the destination."
+msgstr "Hedefe kopyalama yapabilmek için %S kadar daha boş alan gerekiyor."
 
 # libnautilus-private/nautilus-file-operations.c:664
-#: ../libnautilus-private/nautilus-file-operations.c:2812
+#: ../libnautilus-private/nautilus-file-operations.c:2813
 msgid "The destination is read-only."
 msgstr "Hedef salt okunur."
 
 # src/file-manager/fm-error-reporting.c:253
-#: ../libnautilus-private/nautilus-file-operations.c:2871
+#: ../libnautilus-private/nautilus-file-operations.c:2872
 msgid "Moving \"%B\" to \"%B\""
 msgstr "\"%B\", \"%B\" hedefine taşınıyor"
 
 # src/file-manager/fm-error-reporting.c:253
-#: ../libnautilus-private/nautilus-file-operations.c:2872
+#: ../libnautilus-private/nautilus-file-operations.c:2873
 msgid "Copying \"%B\" to \"%B\""
 msgstr "\"%B\", \"%B\" hedefine kopyalanıyor"
 
 # src/file-manager/fm-icon-view.c:1457
-#: ../libnautilus-private/nautilus-file-operations.c:2879
+#: ../libnautilus-private/nautilus-file-operations.c:2880
 msgid "Duplicating \"%B\""
 msgstr "\"%B\" çoğaltılıyor"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2887
+#: ../libnautilus-private/nautilus-file-operations.c:2888
 msgid "Moving %'d file (in \"%B\") to \"%B\""
 msgid_plural "Moving %'d files (in \"%B\") to \"%B\""
 msgstr[0] "%'d dosya (\"%B\" içerisinde) \"%B\" hedefine taşınıyor"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2891
+#: ../libnautilus-private/nautilus-file-operations.c:2892
 msgid "Copying %'d file (in \"%B\") to \"%B\""
 msgid_plural "Copying %'d files (in \"%B\") to \"%B\""
 msgstr[0] "%'d dosya (\"%B\" içerisinde) \"%B\" hedefine kopyalanıyor"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2899
+#: ../libnautilus-private/nautilus-file-operations.c:2900
 msgid "Duplicating %'d file (in \"%B\")"
 msgid_plural "Duplicating %'d files (in \"%B\")"
 msgstr[0] "%'d dosya (\"%B\" içerisinde) çoğaltılıyor"
 
 # libnautilus-private/nautilus-file-operations.c:1753
-#: ../libnautilus-private/nautilus-file-operations.c:2909
+#: ../libnautilus-private/nautilus-file-operations.c:2910
 msgid "Moving %'d file to \"%B\""
 msgid_plural "Moving %'d files to \"%B\""
 msgstr[0] "%'d dosya \"%B\" hedefine taşınıyor"
 
 # libnautilus-private/nautilus-file-operations.c:1782
-#: ../libnautilus-private/nautilus-file-operations.c:2913
+#: ../libnautilus-private/nautilus-file-operations.c:2914
 msgid "Copying %'d file to \"%B\""
 msgid_plural "Copying %'d files to \"%B\""
 msgstr[0] "%'d dosya \"%B\" hedefine kopyalanıyor"
 
 # libnautilus-private/nautilus-file-operations.c:2146
-#: ../libnautilus-private/nautilus-file-operations.c:2919
+#: ../libnautilus-private/nautilus-file-operations.c:2920
 #, c-format
 msgid "Duplicating %'d file"
 msgid_plural "Duplicating %'d files"
@@ -1109,7 +1109,7 @@ msgstr[0] "%'d dosya çoğaltılıyor"
 
 # libnautilus-private/nautilus-file-operations.c:1178
 #. To translators: %S will expand to a size like "2 bytes" or "3 MB", so something like "4 kb of 4 MB"
-#: ../libnautilus-private/nautilus-file-operations.c:2939
+#: ../libnautilus-private/nautilus-file-operations.c:2940
 #, c-format
 msgid "%S of %S"
 msgstr "%S / %S"
@@ -1119,13 +1119,13 @@ msgstr "%S / %S"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:2950
+#: ../libnautilus-private/nautilus-file-operations.c:2951
 msgid "%S of %S — %T left (%S/sec)"
 msgid_plural "%S of %S — %T left (%S/sec)"
 msgstr[0] "%S / %S — %T kaldı (%S/sn)"
 
 # libnautilus-private/nautilus-file-operations.c:617
-#: ../libnautilus-private/nautilus-file-operations.c:3347
+#: ../libnautilus-private/nautilus-file-operations.c:3348
 msgid ""
 "The folder \"%B\" cannot be copied because you do not have permissions to "
 "create it in the destination."
@@ -1134,12 +1134,12 @@ msgstr ""
 "erişim hakkınız yok."
 
 # components/music/nautilus-music-view.c:1709
-#: ../libnautilus-private/nautilus-file-operations.c:3350
+#: ../libnautilus-private/nautilus-file-operations.c:3351
 msgid "There was an error creating the folder \"%B\"."
 msgstr "\"%B\" klasörü oluşturulurken hata oluştu."
 
 # libnautilus-private/nautilus-file-operations.c:617
-#: ../libnautilus-private/nautilus-file-operations.c:3474
+#: ../libnautilus-private/nautilus-file-operations.c:3475
 msgid ""
 "Files in the folder \"%B\" cannot be copied because you do not have "
 "permissions to see them."
@@ -1148,7 +1148,7 @@ msgstr ""
 "yeterli erişim hakkınız yok."
 
 # libnautilus-private/nautilus-file-operations.c:617
-#: ../libnautilus-private/nautilus-file-operations.c:3519
+#: ../libnautilus-private/nautilus-file-operations.c:3520
 msgid ""
 "The folder \"%B\" cannot be copied because you do not have permissions to "
 "read it."
@@ -1157,178 +1157,178 @@ msgstr ""
 "yok."
 
 # libnautilus-private/nautilus-file-operations.c:877
-#: ../libnautilus-private/nautilus-file-operations.c:3564
-#: ../libnautilus-private/nautilus-file-operations.c:4250
-#: ../libnautilus-private/nautilus-file-operations.c:4844
+#: ../libnautilus-private/nautilus-file-operations.c:3565
+#: ../libnautilus-private/nautilus-file-operations.c:4251
+#: ../libnautilus-private/nautilus-file-operations.c:4845
 msgid "Error while moving \"%B\"."
 msgstr "\"%B\" taşınırken hata oluştu."
 
 # libnautilus-private/nautilus-file-operations.c:1830
-#: ../libnautilus-private/nautilus-file-operations.c:3565
+#: ../libnautilus-private/nautilus-file-operations.c:3566
 msgid "Could not remove the source folder."
 msgstr "Hedef klasör silinemedi."
 
 # libnautilus-private/nautilus-file-operations.c:874
-#: ../libnautilus-private/nautilus-file-operations.c:3650
-#: ../libnautilus-private/nautilus-file-operations.c:3691
-#: ../libnautilus-private/nautilus-file-operations.c:4252
-#: ../libnautilus-private/nautilus-file-operations.c:4323
+#: ../libnautilus-private/nautilus-file-operations.c:3651
+#: ../libnautilus-private/nautilus-file-operations.c:3692
+#: ../libnautilus-private/nautilus-file-operations.c:4253
+#: ../libnautilus-private/nautilus-file-operations.c:4324
 msgid "Error while copying \"%B\"."
 msgstr "\"%B\" kopyalanırken hata."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3651
+#: ../libnautilus-private/nautilus-file-operations.c:3652
 #, c-format
 msgid "Could not remove files from the already existing folder %F."
 msgstr "Zaten mevcut olan %F klasöründen dosyalar silinemedi."
 
 # src/nautilus-theme-selector.c:616
-#: ../libnautilus-private/nautilus-file-operations.c:3692
+#: ../libnautilus-private/nautilus-file-operations.c:3693
 #, c-format
 msgid "Could not remove the already existing file %F."
 msgstr "Zaten mevcut olan %F dosyası silinemedi."
 
 # libnautilus-private/nautilus-file-operations.c:1805
 #. the run_warning() frees all strings passed in automatically
-#: ../libnautilus-private/nautilus-file-operations.c:4010
-#: ../libnautilus-private/nautilus-file-operations.c:4695
+#: ../libnautilus-private/nautilus-file-operations.c:4011
+#: ../libnautilus-private/nautilus-file-operations.c:4696
 msgid "You cannot move a folder into itself."
 msgstr "Bir klasörü kendi üzerine taşıyamazsınız."
 
 # libnautilus-private/nautilus-file-operations.c:1854
-#: ../libnautilus-private/nautilus-file-operations.c:4011
-#: ../libnautilus-private/nautilus-file-operations.c:4696
+#: ../libnautilus-private/nautilus-file-operations.c:4012
+#: ../libnautilus-private/nautilus-file-operations.c:4697
 msgid "You cannot copy a folder into itself."
 msgstr "Bir klasörü kendi üzerine kopyalayamazsınız."
 
 # src/nautilus-window-menus.c:734
-#: ../libnautilus-private/nautilus-file-operations.c:4012
-#: ../libnautilus-private/nautilus-file-operations.c:4697
+#: ../libnautilus-private/nautilus-file-operations.c:4013
+#: ../libnautilus-private/nautilus-file-operations.c:4698
 msgid "The destination folder is inside the source folder."
 msgstr "Hedef klasör kaynak klasörünün içerisinde."
 
 # libnautilus-private/nautilus-file-operations.c:1805
 #. the run_warning() frees all strings passed in automatically
-#: ../libnautilus-private/nautilus-file-operations.c:4043
+#: ../libnautilus-private/nautilus-file-operations.c:4044
 msgid "You cannot move a file over itself."
 msgstr "Dosyayı kendi üzerine taşıyamazsınız."
 
 # libnautilus-private/nautilus-file-operations.c:1854
-#: ../libnautilus-private/nautilus-file-operations.c:4044
+#: ../libnautilus-private/nautilus-file-operations.c:4045
 msgid "You cannot copy a file over itself."
 msgstr "Dosyayı kendi üzerine kopyalayamazsınız."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4045
+#: ../libnautilus-private/nautilus-file-operations.c:4046
 msgid "The source file would be overwritten by the destination."
 msgstr "Kaynak dosya hedef tarafından kendi üzerine yazılabilir."
 
 # src/nautilus-theme-selector.c:616
-#: ../libnautilus-private/nautilus-file-operations.c:4254
+#: ../libnautilus-private/nautilus-file-operations.c:4255
 #, c-format
 msgid "Could not remove the already existing file with the same name in %F."
 msgstr "%F içerisinde aynı isimde zaten mevcut olan dosya silinemedi."
 
 # components/music/nautilus-music-view.c:1709
-#: ../libnautilus-private/nautilus-file-operations.c:4324
+#: ../libnautilus-private/nautilus-file-operations.c:4325
 #, c-format
 msgid "There was an error copying the file into %F."
 msgstr "Dosya %F içerisine kopyalanırken bir hata oluştu."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4554
-#: ../libnautilus-private/nautilus-file-operations.c:4588
+#: ../libnautilus-private/nautilus-file-operations.c:4555
+#: ../libnautilus-private/nautilus-file-operations.c:4589
 msgid "Copying Files"
 msgstr "Dosyalar Kopyalanıyor"
 
 # libnautilus-private/nautilus-file-operations.c:2104
-#: ../libnautilus-private/nautilus-file-operations.c:4605
+#: ../libnautilus-private/nautilus-file-operations.c:4606
 msgid "Preparing to Move to \"%B\""
 msgstr "\"%B\" içine Taşımak için Hazırlanıyor"
 
 # libnautilus-private/nautilus-file-operations.c:2151
-#: ../libnautilus-private/nautilus-file-operations.c:4609
+#: ../libnautilus-private/nautilus-file-operations.c:4610
 #, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
 msgstr[0] "%'d dosya taşınmak için hazırlanıyor"
 
 # components/music/nautilus-music-view.c:1709
-#: ../libnautilus-private/nautilus-file-operations.c:4845
+#: ../libnautilus-private/nautilus-file-operations.c:4846
 #, c-format
 msgid "There was an error moving the file into %F."
 msgstr "Dosya %F içerisine taşınırken hata oluştu."
 
 # libnautilus-private/nautilus-file-operations.c:2099
-#: ../libnautilus-private/nautilus-file-operations.c:5105
+#: ../libnautilus-private/nautilus-file-operations.c:5106
 msgid "Moving Files"
 msgstr "Dosyalar Taşınıyor"
 
 # libnautilus-private/nautilus-file-operations.c:1769
-#: ../libnautilus-private/nautilus-file-operations.c:5122
+#: ../libnautilus-private/nautilus-file-operations.c:5123
 msgid "Creating links in \"%B\""
 msgstr "\"%B\" içerisinde bağlar oluşturuluyor"
 
 # libnautilus-private/nautilus-file-operations.c:1769
-#: ../libnautilus-private/nautilus-file-operations.c:5126
+#: ../libnautilus-private/nautilus-file-operations.c:5127
 #, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
 msgstr[0] "%'d dosyaya bağ yapılıyor"
 
 # libnautilus-private/nautilus-file-operations.c:880
-#: ../libnautilus-private/nautilus-file-operations.c:5255
+#: ../libnautilus-private/nautilus-file-operations.c:5256
 msgid "Error while creating link to %B."
 msgstr "%B bağı oluşturulurken hata."
 
 #
-#: ../libnautilus-private/nautilus-file-operations.c:5257
+#: ../libnautilus-private/nautilus-file-operations.c:5258
 msgid "Symbolic links only supported for local files"
 msgstr "Sembolik bağlar sadece yerel dosyalar için desteklenir"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5260
+#: ../libnautilus-private/nautilus-file-operations.c:5261
 msgid "The target doesn't support symbolic links."
 msgstr "Hedef sembolik bağları desteklemiyor."
 
 # components/music/nautilus-music-view.c:1709
-#: ../libnautilus-private/nautilus-file-operations.c:5263
+#: ../libnautilus-private/nautilus-file-operations.c:5264
 #, c-format
 msgid "There was an error creating the symlink in %F."
 msgstr "%F içerisinde sembolik bağ oluştururken hata oluştu."
 
 # src/file-manager/fm-properties-window.c:1658
-#: ../libnautilus-private/nautilus-file-operations.c:5552
+#: ../libnautilus-private/nautilus-file-operations.c:5553
 msgid "Setting permissions"
 msgstr "İzinler atanıyor"
 
 # libnautilus-private/nautilus-file-operations.c:1994
 #. localizers: the initial name of a new folder
-#: ../libnautilus-private/nautilus-file-operations.c:5804
+#: ../libnautilus-private/nautilus-file-operations.c:5805
 msgid "Untitled Folder"
 msgstr "Adsız Klasör"
 
 # libnautilus-private/nautilus-file-operations.c:1994
 #. localizers: the initial name of a new template document
-#: ../libnautilus-private/nautilus-file-operations.c:5810
+#: ../libnautilus-private/nautilus-file-operations.c:5811
 #, c-format
 msgid "Untitled %s"
 msgstr "Adsız %s"
 
 # components/music/nautilus-music-view.c:1710
 #. localizers: the initial name of a new empty document
-#: ../libnautilus-private/nautilus-file-operations.c:5816
+#: ../libnautilus-private/nautilus-file-operations.c:5817
 msgid "Untitled Document"
 msgstr "Adsız Belge"
 
 # libnautilus-private/nautilus-file-operations.c:880
-#: ../libnautilus-private/nautilus-file-operations.c:5972
+#: ../libnautilus-private/nautilus-file-operations.c:5973
 msgid "Error while creating directory %B."
 msgstr "%B dizini oluştururken hata."
 
 # libnautilus-private/nautilus-file-operations.c:880
-#: ../libnautilus-private/nautilus-file-operations.c:5974
+#: ../libnautilus-private/nautilus-file-operations.c:5975
 msgid "Error while creating file %B."
 msgstr "%B dosyası oluştururken hata."
 
 # components/music/nautilus-music-view.c:1709
-#: ../libnautilus-private/nautilus-file-operations.c:5976
+#: ../libnautilus-private/nautilus-file-operations.c:5977
 #, c-format
 msgid "There was an error creating the directory in %F."
 msgstr "%F içerisinde dizin oluştururken bir hata oluştu."
@@ -1336,14 +1336,14 @@ msgstr "%F içerisinde dizin oluştururken bir hata oluştu."
 # src/file-manager/fm-desktop-icon-view.c:1093
 # src/file-manager/nautilus-desktop-icon-view-ui.xml.h:4
 # src/file-manager/nautilus-directory-view-ui.xml.h:11
-#: ../libnautilus-private/nautilus-file-operations.c:6232
+#: ../libnautilus-private/nautilus-file-operations.c:6233
 msgid "Emptying Trash"
 msgstr "Çöp Boşaltılıyor"
 
-#: ../libnautilus-private/nautilus-file-operations.c:6279
-#: ../libnautilus-private/nautilus-file-operations.c:6320
-#: ../libnautilus-private/nautilus-file-operations.c:6355
-#: ../libnautilus-private/nautilus-file-operations.c:6390
+#: ../libnautilus-private/nautilus-file-operations.c:6280
+#: ../libnautilus-private/nautilus-file-operations.c:6321
+#: ../libnautilus-private/nautilus-file-operations.c:6356
+#: ../libnautilus-private/nautilus-file-operations.c:6391
 msgid "Unable to mark launcher trusted (executable)"
 msgstr "Başlatıcı güvenilir olarak işaretlenemedi (çalıştırılabilir)"
 
@@ -1357,55 +1357,55 @@ msgid "The item cannot be restored from trash"
 msgstr "Öğe çöpten geri getirilemedi"
 
 # src/nautilus-theme-selector.c:425
-#: ../libnautilus-private/nautilus-file.c:1209
-#: ../libnautilus-private/nautilus-vfs-file.c:389
+#: ../libnautilus-private/nautilus-file.c:1208
+#: ../libnautilus-private/nautilus-vfs-file.c:382
 msgid "This file cannot be mounted"
 msgstr "Bu dosya bağlanamaz"
 
 # src/nautilus-theme-selector.c:425
-#: ../libnautilus-private/nautilus-file.c:1254
+#: ../libnautilus-private/nautilus-file.c:1253
 msgid "This file cannot be unmounted"
 msgstr "Bu dosyanın bağı kesilemez"
 
 # src/nautilus-theme-selector.c:425
-#: ../libnautilus-private/nautilus-file.c:1288
+#: ../libnautilus-private/nautilus-file.c:1287
 msgid "This file cannot be ejected"
 msgstr "Bu dosya çıkartılamaz"
 
 # src/nautilus-theme-selector.c:425
-#: ../libnautilus-private/nautilus-file.c:1321
-#: ../libnautilus-private/nautilus-vfs-file.c:567
+#: ../libnautilus-private/nautilus-file.c:1320
+#: ../libnautilus-private/nautilus-vfs-file.c:560
 msgid "This file cannot be started"
 msgstr "Bu dosya başlatılamaz"
 
 # src/nautilus-theme-selector.c:425
-#: ../libnautilus-private/nautilus-file.c:1373
-#: ../libnautilus-private/nautilus-file.c:1404
+#: ../libnautilus-private/nautilus-file.c:1372
+#: ../libnautilus-private/nautilus-file.c:1403
 msgid "This file cannot be stopped"
 msgstr "Bu dosya durdurulamaz"
 
-#: ../libnautilus-private/nautilus-file.c:1805
+#: ../libnautilus-private/nautilus-file.c:1804
 #, c-format
 msgid "Slashes are not allowed in filenames"
 msgstr "Dosya isimlerinde taksim işareti kullanılamaz"
 
-#: ../libnautilus-private/nautilus-file.c:1823
+#: ../libnautilus-private/nautilus-file.c:1822
 #, c-format
 msgid "File not found"
 msgstr "Dosya bulunamadı"
 
 # src/nautilus-theme-selector.c:615
-#: ../libnautilus-private/nautilus-file.c:1851
+#: ../libnautilus-private/nautilus-file.c:1850
 #, c-format
 msgid "Toplevel files cannot be renamed"
 msgstr "Üst düzey dosyalar yeniden adlandırılamıyor"
 
-#: ../libnautilus-private/nautilus-file.c:1874
+#: ../libnautilus-private/nautilus-file.c:1873
 #, c-format
 msgid "Unable to rename desktop icon"
 msgstr "Masaüstü simgesi yeniden adlandırılamadı"
 
-#: ../libnautilus-private/nautilus-file.c:1903
+#: ../libnautilus-private/nautilus-file.c:1902
 #, c-format
 msgid "Unable to rename desktop file"
 msgstr "Masaüstü dosyası yeniden adlandırılamadı"
@@ -1425,37 +1425,37 @@ msgstr "Masaüstü dosyası yeniden adlandırılamadı"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: ../libnautilus-private/nautilus-file.c:4360
+#: ../libnautilus-private/nautilus-file.c:4346
 msgid "today at 00:00:00 PM"
 msgstr "bugün saat 00:00:00 da"
 
 # libnautilus-private/nautilus-file.c:2242
-#: ../libnautilus-private/nautilus-file.c:4361
+#: ../libnautilus-private/nautilus-file.c:4347
 #: ../src/nautilus-file-management-properties.c:470
 msgid "today at %-I:%M:%S %p"
 msgstr "bugün saat %-H:%M:%S da"
 
 # libnautilus-private/nautilus-file.c:2242
-#: ../libnautilus-private/nautilus-file.c:4363
+#: ../libnautilus-private/nautilus-file.c:4349
 msgid "today at 00:00 PM"
 msgstr "bugün saat 00:00"
 
 # libnautilus-private/nautilus-file.c:2242
-#: ../libnautilus-private/nautilus-file.c:4364
+#: ../libnautilus-private/nautilus-file.c:4350
 msgid "today at %-I:%M %p"
 msgstr "bugün saat %-H:%M da"
 
-#: ../libnautilus-private/nautilus-file.c:4366
+#: ../libnautilus-private/nautilus-file.c:4352
 msgid "today, 00:00 PM"
 msgstr "bugün saat 00:00 da"
 
 # libnautilus-private/nautilus-file.c:2242
-#: ../libnautilus-private/nautilus-file.c:4367
+#: ../libnautilus-private/nautilus-file.c:4353
 msgid "today, %-I:%M %p"
 msgstr "bugün saat %-H:%M da"
 
-#: ../libnautilus-private/nautilus-file.c:4369
-#: ../libnautilus-private/nautilus-file.c:4370
+#: ../libnautilus-private/nautilus-file.c:4355
+#: ../libnautilus-private/nautilus-file.c:4356
 msgid "today"
 msgstr "bugün"
 
@@ -1463,37 +1463,37 @@ msgstr "bugün"
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: ../libnautilus-private/nautilus-file.c:4379
+#: ../libnautilus-private/nautilus-file.c:4365
 msgid "yesterday at 00:00:00 PM"
 msgstr "dün saat 00:00:00 da"
 
 # libnautilus-private/nautilus-file.c:2247
-#: ../libnautilus-private/nautilus-file.c:4380
+#: ../libnautilus-private/nautilus-file.c:4366
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "dün saat %-H:%M:%S da"
 
 # libnautilus-private/nautilus-file.c:2247
-#: ../libnautilus-private/nautilus-file.c:4382
+#: ../libnautilus-private/nautilus-file.c:4368
 msgid "yesterday at 00:00 PM"
 msgstr "dün saat 00:00 da"
 
 # libnautilus-private/nautilus-file.c:2247
-#: ../libnautilus-private/nautilus-file.c:4383
+#: ../libnautilus-private/nautilus-file.c:4369
 msgid "yesterday at %-I:%M %p"
 msgstr "dün saat %-H:%M da"
 
-#: ../libnautilus-private/nautilus-file.c:4385
+#: ../libnautilus-private/nautilus-file.c:4371
 msgid "yesterday, 00:00 PM"
 msgstr "dün saat 00:00 da"
 
 # libnautilus-private/nautilus-file.c:2247
-#: ../libnautilus-private/nautilus-file.c:4386
+#: ../libnautilus-private/nautilus-file.c:4372
 msgid "yesterday, %-I:%M %p"
 msgstr "dün saat %-H:%M da"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:118
-#: ../libnautilus-private/nautilus-file.c:4388
-#: ../libnautilus-private/nautilus-file.c:4389
+#: ../libnautilus-private/nautilus-file.c:4374
+#: ../libnautilus-private/nautilus-file.c:4375
 msgid "yesterday"
 msgstr "dün"
 
@@ -1502,91 +1502,91 @@ msgstr "dün"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: ../libnautilus-private/nautilus-file.c:4400
+#: ../libnautilus-private/nautilus-file.c:4386
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Eylül 00 0000 Çarşamba, saat 00:00:00 da"
 
 # libnautilus-private/nautilus-file.c:2252
-#: ../libnautilus-private/nautilus-file.c:4401
+#: ../libnautilus-private/nautilus-file.c:4387
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%-d %B %Y %A, saat %-H:%M:%S da"
 
-#: ../libnautilus-private/nautilus-file.c:4403
+#: ../libnautilus-private/nautilus-file.c:4389
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Eki 00 0000 Pzt, saat 00:00:00 da"
 
 # libnautilus-private/nautilus-file.c:2252
-#: ../libnautilus-private/nautilus-file.c:4404
+#: ../libnautilus-private/nautilus-file.c:4390
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%-d %b %Y %a, saat %-H:%M:%S da"
 
-#: ../libnautilus-private/nautilus-file.c:4406
+#: ../libnautilus-private/nautilus-file.c:4392
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Eki 00 0000 Pzt, saat 00:00:00 da"
 
 # libnautilus-private/nautilus-file.c:2252
-#: ../libnautilus-private/nautilus-file.c:4407
+#: ../libnautilus-private/nautilus-file.c:4393
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%-d %b %Y %a, saat %-H:%M da"
 
-#: ../libnautilus-private/nautilus-file.c:4409
+#: ../libnautilus-private/nautilus-file.c:4395
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "Eki 00 0000, saat 00:00 da"
 
 # libnautilus-private/nautilus-file.c:2257
-#: ../libnautilus-private/nautilus-file.c:4410
+#: ../libnautilus-private/nautilus-file.c:4396
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d %m %Y, saat %-H:%M da"
 
-#: ../libnautilus-private/nautilus-file.c:4412
+#: ../libnautilus-private/nautilus-file.c:4398
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "Eki 00 0000, saat 00:00 da"
 
 # libnautilus-private/nautilus-file.c:2257
-#: ../libnautilus-private/nautilus-file.c:4413
+#: ../libnautilus-private/nautilus-file.c:4399
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d %b %Y, saat %-H:%M da"
 
-#: ../libnautilus-private/nautilus-file.c:4415
+#: ../libnautilus-private/nautilus-file.c:4401
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, saat 00:00 da"
 
 # libnautilus-private/nautilus-file.c:2257
-#: ../libnautilus-private/nautilus-file.c:4416
+#: ../libnautilus-private/nautilus-file.c:4402
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%-d/%m/%y, saat %-H:%M da"
 
-#: ../libnautilus-private/nautilus-file.c:4418
+#: ../libnautilus-private/nautilus-file.c:4404
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: ../libnautilus-private/nautilus-file.c:4419
+#: ../libnautilus-private/nautilus-file.c:4405
 msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
 # src/file-manager/fm-properties-window.c:1658
-#: ../libnautilus-private/nautilus-file.c:5062
+#: ../libnautilus-private/nautilus-file.c:5043
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "Yetkilerin İzinlerin atanmasına izin verilmiyor"
 
-#: ../libnautilus-private/nautilus-file.c:5347
+#: ../libnautilus-private/nautilus-file.c:5328
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "Sahibin atanmasına izin verilmiyor"
 
 # src/nautilus-window-menus.c:734
-#: ../libnautilus-private/nautilus-file.c:5365
+#: ../libnautilus-private/nautilus-file.c:5346
 #, c-format
 msgid "Specified owner '%s' doesn't exist"
 msgstr "Belirtilen sahip '%s' mevcut değil"
 
-#: ../libnautilus-private/nautilus-file.c:5614
+#: ../libnautilus-private/nautilus-file.c:5595
 #, c-format
 msgid "Not allowed to set group"
 msgstr "Grup atamasına izin verilemiyor"
 
-#: ../libnautilus-private/nautilus-file.c:5632
+#: ../libnautilus-private/nautilus-file.c:5613
 #, c-format
 msgid "Specified group '%s' doesn't exist"
 msgstr "Belirtilen grup '%s' mevcut değil"
@@ -1596,21 +1596,21 @@ msgstr "Belirtilen grup '%s' mevcut değil"
 # libnautilus-private/nautilus-file.c:3304
 # libnautilus-private/nautilus-file.c:3604
 # libnautilus-private/nautilus-file.c:3618
-#: ../libnautilus-private/nautilus-file.c:5776 ../src/nautilus-view.c:2839
+#: ../libnautilus-private/nautilus-file.c:5757 ../src/nautilus-view.c:2765
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
 msgstr[0] "%'u öğe"
 
 # components/music/nautilus-music-view.c:1710
-#: ../libnautilus-private/nautilus-file.c:5777
+#: ../libnautilus-private/nautilus-file.c:5758
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u klasör"
 
 # libnautilus-private/nautilus-file.c:3300
-#: ../libnautilus-private/nautilus-file.c:5778
+#: ../libnautilus-private/nautilus-file.c:5759
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -1622,25 +1622,25 @@ msgstr[0] "%'u dosya"
 # libnautilus-private/nautilus-file.c:3604
 # libnautilus-private/nautilus-file.c:3618
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:6160
-#: ../libnautilus-private/nautilus-file.c:6176
+#: ../libnautilus-private/nautilus-file.c:6141
+#: ../libnautilus-private/nautilus-file.c:6157
 msgid "? items"
 msgstr "? öğe"
 
 # libnautilus-private/nautilus-file.c:3604
 # libnautilus-private/nautilus-file.c:3618
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:6166
+#: ../libnautilus-private/nautilus-file.c:6147
 msgid "? bytes"
 msgstr "? bayt"
 
 # libnautilus-private/nautilus-file.c:3622
-#: ../libnautilus-private/nautilus-file.c:6181
+#: ../libnautilus-private/nautilus-file.c:6162
 msgid "unknown type"
 msgstr "bilinmeyen tür"
 
 # libnautilus-private/nautilus-file.c:3624
-#: ../libnautilus-private/nautilus-file.c:6184
+#: ../libnautilus-private/nautilus-file.c:6165
 msgid "unknown MIME type"
 msgstr "bilinmeyen MIME türü"
 
@@ -1648,28 +1648,28 @@ msgstr "bilinmeyen MIME türü"
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:6198
-#: ../src/nautilus-properties-window.c:1137
+#: ../libnautilus-private/nautilus-file.c:6179
+#: ../src/nautilus-properties-window.c:1121
 msgid "unknown"
 msgstr "bilinmiyor"
 
 # libnautilus-private/nautilus-file.c:3664
-#: ../libnautilus-private/nautilus-file.c:6248
+#: ../libnautilus-private/nautilus-file.c:6229
 msgid "program"
 msgstr "program"
 
 # libnautilus-private/nautilus-file.c:3693
-#: ../libnautilus-private/nautilus-file.c:6268
+#: ../libnautilus-private/nautilus-file.c:6249
 msgid "link"
 msgstr "bağlantı"
 
 # libnautilus-private/nautilus-file.c:3713
-#: ../libnautilus-private/nautilus-file.c:6290
+#: ../libnautilus-private/nautilus-file.c:6271
 msgid "link (broken)"
 msgstr "link (kırık)"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:12
-#: ../libnautilus-private/nautilus-icon-container.c:2659
+#: ../libnautilus-private/nautilus-icon-container.c:2658
 msgid "The selection rectangle"
 msgstr "Seçim dörgeni"
 
@@ -1775,7 +1775,7 @@ msgstr "Detaylar: "
 msgid "Preparing"
 msgstr "Hazırlanıyor"
 
-#: ../libnautilus-private/nautilus-query.c:135
+#: ../libnautilus-private/nautilus-query.c:129
 #: ../libnautilus-private/nautilus-search-directory-file.c:160
 #: ../libnautilus-private/nautilus-search-directory-file.c:186
 #: ../libnautilus-private/nautilus-search-directory-file.c:218
@@ -1783,34 +1783,34 @@ msgstr "Hazırlanıyor"
 msgid "Search"
 msgstr "Arama"
 
-#: ../libnautilus-private/nautilus-query.c:138
+#: ../libnautilus-private/nautilus-query.c:132
 #, c-format
 msgid "Search for \"%s\""
 msgstr "\"%s\" için arama"
 
 # libnautilus-private/nautilus-undo-signal-handlers.c:175
-#: ../libnautilus-private/nautilus-undo-signal-handlers.c:174
+#: ../libnautilus-private/nautilus-undo-signal-handlers.c:173
 #: ../src/nautilus-query-editor.c:1001
 msgid "Edit"
 msgstr "Düzenle"
 
 # libnautilus-private/nautilus-undo-signal-handlers.c:176
-#: ../libnautilus-private/nautilus-undo-signal-handlers.c:175
+#: ../libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Undo Edit"
 msgstr "Düzenlemeyi Geri Al"
 
 # libnautilus-private/nautilus-undo-signal-handlers.c:177
-#: ../libnautilus-private/nautilus-undo-signal-handlers.c:176
+#: ../libnautilus-private/nautilus-undo-signal-handlers.c:175
 msgid "Undo the edit"
 msgstr "Düzenlemeyi geri al"
 
 # libnautilus-private/nautilus-undo-signal-handlers.c:178
-#: ../libnautilus-private/nautilus-undo-signal-handlers.c:177
+#: ../libnautilus-private/nautilus-undo-signal-handlers.c:176
 msgid "Redo Edit"
 msgstr "Düzenlemeyi Tekrar Yap"
 
 # libnautilus-private/nautilus-undo-signal-handlers.c:179
-#: ../libnautilus-private/nautilus-undo-signal-handlers.c:178
+#: ../libnautilus-private/nautilus-undo-signal-handlers.c:177
 msgid "Redo the edit"
 msgstr "Düzenlemeyi tekrar yap"
 
@@ -2572,12 +2572,12 @@ msgid "Files"
 msgstr "Dosyalar"
 
 # src/nautilus-application.c:280
-#: ../src/nautilus-application.c:157
+#: ../src/nautilus-application.c:156
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "Natutilus gerekli \"%s\" klasörünü oluşturamadı."
 
-#: ../src/nautilus-application.c:159
+#: ../src/nautilus-application.c:158
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
@@ -2585,12 +2585,12 @@ msgstr ""
 "Nautilus'u çalıştırmadan önce, lütfen aşağıdaki klasörü oluşturun, ya da "
 "Nautilus'un oluşturabileceği şekilde erişim haklarını ayarlayın."
 
-#: ../src/nautilus-application.c:162
+#: ../src/nautilus-application.c:161
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "Nautilus aşağıdaki gereken klasörleri oluşturamadı: %s."
 
-#: ../src/nautilus-application.c:164
+#: ../src/nautilus-application.c:163
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -2598,7 +2598,7 @@ msgstr ""
 "Nautilus'u çalıştırmadan önce, lütfen aşağıdaki klasörü oluşturun, ya da "
 "Nautilus'un oluşturabileceği şekilde erişim haklarını ayarlayın."
 
-#: ../src/nautilus-application.c:296
+#: ../src/nautilus-application.c:295
 msgid ""
 "Nautilus 3.0 deprecated this directory and tried migrating this "
 "configuration to ~/.config/nautilus"
@@ -2607,61 +2607,61 @@ msgstr ""
 "nautilus konumuna taşımayı denedi"
 
 # src/nautilus-main.c:209
-#: ../src/nautilus-application.c:823
+#: ../src/nautilus-application.c:822
 msgid "--check cannot be used with other options."
 msgstr "--check diğer seçeneklerle birlikte kullanılamaz."
 
 # src/nautilus-main.c:213
-#: ../src/nautilus-application.c:829
+#: ../src/nautilus-application.c:828
 msgid "--quit cannot be used with URIs."
 msgstr "--quit URI adresleriyle birlikte kullanılamaz."
 
 # src/nautilus-main.c:221
-#: ../src/nautilus-application.c:836
+#: ../src/nautilus-application.c:835
 msgid "--geometry cannot be used with more than one URI."
 msgstr "--geometry birden fazla URI adresi ile birlikte kullanılamaz."
 
 # src/nautilus-main.c:143
-#: ../src/nautilus-application.c:889
+#: ../src/nautilus-application.c:888
 msgid "Perform a quick set of self-check tests."
 msgstr "Nautilus'un hızlı iç testini gerçekleştir."
 
 # src/file-manager/fm-properties-window.c:1796
-#: ../src/nautilus-application.c:892
+#: ../src/nautilus-application.c:891
 msgid "Show the version of the program."
 msgstr "Programın sürümünü göster."
 
 # src/nautilus-main.c:146
-#: ../src/nautilus-application.c:894
+#: ../src/nautilus-application.c:893
 msgid "Create the initial window with the given geometry."
 msgstr "Verilen geometride giriş penceresi oluştur."
 
 # src/nautilus-main.c:146
-#: ../src/nautilus-application.c:894
+#: ../src/nautilus-application.c:893
 msgid "GEOMETRY"
 msgstr "GEOMETRİ"
 
 # src/nautilus-main.c:148
-#: ../src/nautilus-application.c:896
+#: ../src/nautilus-application.c:895
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Sadece açık olarak belirtilen URI'ler için pencere oluştur."
 
-#: ../src/nautilus-application.c:898
+#: ../src/nautilus-application.c:897
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
 msgstr "Masaüstünü yönetme (tercihler penceresindeki özellikleri gözardı et)."
 
 # src/nautilus-main.c:150
-#: ../src/nautilus-application.c:900
+#: ../src/nautilus-application.c:899
 msgid "Quit Nautilus."
 msgstr "Nautilus'tan Çık."
 
-#: ../src/nautilus-application.c:901
+#: ../src/nautilus-application.c:900
 msgid "[URI...]"
 msgstr "[URI...]"
 
-#: ../src/nautilus-application.c:912
+#: ../src/nautilus-application.c:911
 msgid ""
 "\n"
 "\n"
@@ -2825,12 +2825,12 @@ msgstr "Devam Et"
 
 # components/music/nautilus-music-view.c:1709
 #: ../src/nautilus-connect-server-dialog.c:701
-#: ../src/nautilus-properties-window.c:5178 ../src/nautilus-view.c:1539
+#: ../src/nautilus-properties-window.c:5099 ../src/nautilus-view.c:1465
 msgid "There was an error displaying help."
 msgstr "Yardım görüntülenirken bir hata oluştu."
 
 #: ../src/nautilus-connect-server-dialog.c:719
-#: ../src/nautilus-connect-server-dialog.c:1138
+#: ../src/nautilus-connect-server-dialog.c:1109
 msgid "C_onnect"
 msgstr "_Bağlan"
 
@@ -2846,36 +2846,36 @@ msgstr "Sunucu Ayrıntıları"
 
 # libnautilus-private/nautilus-global-preferences.c:894
 #. first row: server entry + port spinbutton
-#: ../src/nautilus-connect-server-dialog.c:883
+#: ../src/nautilus-connect-server-dialog.c:886
 msgid "_Server:"
 msgstr "_Sunucu:"
 
 # src/nautilus-window-menus.c:315
 #. port
-#: ../src/nautilus-connect-server-dialog.c:907
+#: ../src/nautilus-connect-server-dialog.c:906
 msgid "_Port:"
 msgstr "_Port:"
 
 # src/file-manager/fm-properties-window.c:1273
 #. second row: type combobox
-#: ../src/nautilus-connect-server-dialog.c:925
+#: ../src/nautilus-connect-server-dialog.c:924
 msgid "_Type:"
 msgstr "_Tür:"
 
 # src/nautilus-service-ui.xml.h:6
 #. third row: share entry
-#: ../src/nautilus-connect-server-dialog.c:999
+#: ../src/nautilus-connect-server-dialog.c:993
 msgid "Sh_are:"
 msgstr "P_aylaş:"
 
 # components/music/nautilus-music-view.c:1710
 #. fourth row: folder entry
-#: ../src/nautilus-connect-server-dialog.c:1019 ../src/nautilus-view.c:1729
+#: ../src/nautilus-connect-server-dialog.c:1008 ../src/nautilus-view.c:1659
 msgid "_Folder:"
 msgstr "_Klasör:"
 
 # src/file-manager/nautilus-desktop-icon-view-ui.xml.h:9
-#: ../src/nautilus-connect-server-dialog.c:1042
+#: ../src/nautilus-connect-server-dialog.c:1026
 msgid "User Details"
 msgstr "Kullanıcı Ayrıntıları"
 
@@ -2884,7 +2884,7 @@ msgstr "Kullanıcı Ayrıntıları"
 # src/file-manager/fm-search-list-view.c:334
 # src/nautilus-bookmarks-window.c:164 src/nautilus-search-bar-criterion.c:67
 #. first row: domain entry
-#: ../src/nautilus-connect-server-dialog.c:1062
+#: ../src/nautilus-connect-server-dialog.c:1049
 msgid "_Domain name:"
 msgstr "Alan a_dı:"
 
@@ -2893,42 +2893,42 @@ msgstr "Alan a_dı:"
 # src/file-manager/fm-search-list-view.c:334
 # src/nautilus-bookmarks-window.c:164 src/nautilus-search-bar-criterion.c:67
 #. second row: username entry
-#: ../src/nautilus-connect-server-dialog.c:1081
+#: ../src/nautilus-connect-server-dialog.c:1064
 msgid "_User name:"
 msgstr "K_ullanıcı adı:"
 
 # src/nautilus-property-browser.c:1016
 #. third row: password entry
-#: ../src/nautilus-connect-server-dialog.c:1101
+#: ../src/nautilus-connect-server-dialog.c:1079
 msgid "Pass_word:"
 msgstr "Par_ola:"
 
 #. fourth row: remember checkbox
-#: ../src/nautilus-connect-server-dialog.c:1122
+#: ../src/nautilus-connect-server-dialog.c:1095
 msgid "_Remember this password"
 msgstr "Bu parolayı hatı_rla"
 
-#: ../src/nautilus-connect-server-dialog.c:1224
+#: ../src/nautilus-connect-server-dialog.c:1195
 msgid "Operation cancelled"
 msgstr "İşlem iptal edildi"
 
 # components/music/nautilus-music-view.c:233
-#: ../src/nautilus-desktop-item-properties.c:412
-#: ../src/nautilus-desktop-item-properties.c:422
+#: ../src/nautilus-desktop-item-properties.c:405
+#: ../src/nautilus-desktop-item-properties.c:415
 msgid "Comment"
 msgstr "Açıklama"
 
-#: ../src/nautilus-desktop-item-properties.c:415
+#: ../src/nautilus-desktop-item-properties.c:408
 msgid "URL"
 msgstr "URL"
 
-#: ../src/nautilus-desktop-item-properties.c:418
-#: ../src/nautilus-desktop-item-properties.c:428
+#: ../src/nautilus-desktop-item-properties.c:411
+#: ../src/nautilus-desktop-item-properties.c:421
 #: ../src/nautilus-image-properties-page.c:343
 msgid "Description"
 msgstr "Tanım"
 
-#: ../src/nautilus-desktop-item-properties.c:425
+#: ../src/nautilus-desktop-item-properties.c:418
 msgid "Command"
 msgstr "Komut"
 
@@ -2937,8 +2937,8 @@ msgstr "Komut"
 # src/file-manager/nautilus-directory-view-ui.xml.h:11
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-desktop-icon-view.c:719 ../src/nautilus-view.c:6965
-#: ../src/nautilus-view.c:8496
+#: ../src/nautilus-desktop-icon-view.c:719 ../src/nautilus-view.c:6890
+#: ../src/nautilus-view.c:8421
 msgid "E_mpty Trash"
 msgstr "Çöpü _Boşalt"
 
@@ -2967,7 +2967,7 @@ msgstr "Çöpü Boşalt"
 # src/file-manager/nautilus-directory-view-ui.xml.h:8
 #. tooltip
 #: ../src/nautilus-desktop-icon-view.c:740 ../src/nautilus-trash-bar.c:207
-#: ../src/nautilus-view.c:6966
+#: ../src/nautilus-view.c:6891
 msgid "Delete all items in the Trash"
 msgstr "Çöpteki tüm öğeleri sil"
 
@@ -3124,8 +3124,8 @@ msgstr "\"%s\"nin adı \"%s\"ye değiştiriliyor."
 #. * the user has in a directory.
 #.
 #: ../src/nautilus-file-management-properties.c:287
-#: ../src/nautilus-properties-window.c:3948
-#: ../src/nautilus-properties-window.c:3959
+#: ../src/nautilus-properties-window.c:3914
+#: ../src/nautilus-properties-window.c:3925
 msgid "None"
 msgstr "Yok"
 
@@ -3335,7 +3335,7 @@ msgstr "List görünümünde gösterilecek bilgilerin sırasını seçin."
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../src/nautilus-file-management-properties.ui.h:51
-#: ../src/nautilus-icon-view.c:2765
+#: ../src/nautilus-icon-view.c:2689
 msgid "Compact View"
 msgstr "Sıkışık Görünüm"
 
@@ -3369,7 +3369,7 @@ msgstr "Çö_pü kullanmayacak bir Sil komutu ekle"
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../src/nautilus-file-management-properties.ui.h:58
-#: ../src/nautilus-icon-view-container.c:582 ../src/nautilus-icon-view.c:2751
+#: ../src/nautilus-icon-view-container.c:582 ../src/nautilus-icon-view.c:2675
 msgid "Icon View"
 msgstr "Simge Görünümü"
 
@@ -3381,7 +3381,7 @@ msgstr "Liste Sütunları"
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../src/nautilus-file-management-properties.ui.h:60
-#: ../src/nautilus-list-view.c:1755 ../src/nautilus-list-view.c:3393
+#: ../src/nautilus-list-view.c:1750 ../src/nautilus-list-view.c:3387
 msgid "List View"
 msgstr "Liste Görünümü"
 
@@ -3481,108 +3481,108 @@ msgstr "_Açıldığında çalıştırılabilir metin dosyalarını görüntüle
 
 # src/file-manager/fm-icon-view.c:156
 # src/file-manager/nautilus-icon-view-ui.xml.h:38
-#: ../src/nautilus-icon-view.c:138
+#: ../src/nautilus-icon-view.c:133
 msgid "by _Name"
 msgstr "İ_sme göre"
 
 # src/file-manager/fm-icon-view.c:157
 # src/file-manager/nautilus-icon-view-ui.xml.h:7
-#: ../src/nautilus-icon-view.c:139 ../src/nautilus-icon-view.c:1400
+#: ../src/nautilus-icon-view.c:134 ../src/nautilus-icon-view.c:1332
 msgid "Keep icons sorted by name in rows"
 msgstr "Simgeleri isimlerine göre sırala"
 
 # src/file-manager/fm-icon-view.c:163
 # src/file-manager/nautilus-icon-view-ui.xml.h:39
-#: ../src/nautilus-icon-view.c:145
+#: ../src/nautilus-icon-view.c:140
 msgid "by _Size"
 msgstr "_Büyüklüğe göre"
 
 # src/file-manager/fm-icon-view.c:164
 # src/file-manager/nautilus-icon-view-ui.xml.h:8
-#: ../src/nautilus-icon-view.c:146 ../src/nautilus-icon-view.c:1404
+#: ../src/nautilus-icon-view.c:141 ../src/nautilus-icon-view.c:1336
 msgid "Keep icons sorted by size in rows"
 msgstr "Simgeleri büyüklüklerine göre sırala"
 
 # src/file-manager/fm-icon-view.c:170
 # src/file-manager/nautilus-icon-view-ui.xml.h:40
-#: ../src/nautilus-icon-view.c:152
+#: ../src/nautilus-icon-view.c:147
 msgid "by _Type"
 msgstr "_Türe göre"
 
 # src/file-manager/fm-icon-view.c:171
 # src/file-manager/nautilus-icon-view-ui.xml.h:9
-#: ../src/nautilus-icon-view.c:153 ../src/nautilus-icon-view.c:1408
+#: ../src/nautilus-icon-view.c:148 ../src/nautilus-icon-view.c:1340
 msgid "Keep icons sorted by type in rows"
 msgstr "Simgeleri türlerine göre sırala"
 
 # src/file-manager/fm-icon-view.c:177
 # src/file-manager/nautilus-icon-view-ui.xml.h:33
-#: ../src/nautilus-icon-view.c:159
+#: ../src/nautilus-icon-view.c:154
 msgid "by Modification _Date"
 msgstr "_Değişim tarihine göre"
 
 # src/file-manager/fm-icon-view.c:178
 # src/file-manager/nautilus-icon-view-ui.xml.h:6
-#: ../src/nautilus-icon-view.c:160 ../src/nautilus-icon-view.c:1412
+#: ../src/nautilus-icon-view.c:155 ../src/nautilus-icon-view.c:1344
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Simgeleri değişim tarihlerine göre sırala"
 
 # src/file-manager/fm-icon-view.c:156
 # src/file-manager/nautilus-icon-view-ui.xml.h:38
-#: ../src/nautilus-icon-view.c:166
+#: ../src/nautilus-icon-view.c:161
 msgid "by T_rash Time"
 msgstr "Çöpe Gönde_rilme Zamanına göre"
 
 # src/file-manager/fm-icon-view.c:157
 # src/file-manager/nautilus-icon-view-ui.xml.h:7
-#: ../src/nautilus-icon-view.c:167 ../src/nautilus-icon-view.c:1416
+#: ../src/nautilus-icon-view.c:162 ../src/nautilus-icon-view.c:1348
 msgid "Keep icons sorted by trash time in rows"
 msgstr "Simgeleri satırlarda çöpe gönderilme zamanına göre sıralı tut"
 
-#: ../src/nautilus-icon-view.c:652
+#: ../src/nautilus-icon-view.c:641
 msgid "_Organize Desktop by Name"
 msgstr "_Masaüstünü İsme Göre Düzenle"
 
 #. name, stock id, label
-#: ../src/nautilus-icon-view.c:1365
+#: ../src/nautilus-icon-view.c:1297
 msgid "Arran_ge Items"
 msgstr "Öğ_eleri Düzenle"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:20
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-icon-view.c:1367
+#: ../src/nautilus-icon-view.c:1299
 msgid "Resize Icon..."
 msgstr "Simgeyi Yeniden Boyutlandır..."
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:12
 #. tooltip
-#: ../src/nautilus-icon-view.c:1368
+#: ../src/nautilus-icon-view.c:1300
 msgid "Make the selected icon resizable"
 msgstr "Seçili simgeyi yeniden boyutlandırılabilir yap"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:17
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-icon-view.c:1371 ../src/nautilus-icon-view.c:1537
+#: ../src/nautilus-icon-view.c:1303 ../src/nautilus-icon-view.c:1469
 msgid "Restore Icons' Original Si_zes"
 msgstr "_Simgeleri Asıl Boyutlarına Getir"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:18
 #. tooltip
-#: ../src/nautilus-icon-view.c:1372
+#: ../src/nautilus-icon-view.c:1304
 msgid "Restore each selected icon to its original size"
 msgstr "Her seçili simgeyi eski konumuna getir"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-icon-view.c:1375
+#: ../src/nautilus-icon-view.c:1307
 msgid "_Organize by Name"
 msgstr "İsme G_öre Düzenle"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:16
 #. tooltip
-#: ../src/nautilus-icon-view.c:1376
+#: ../src/nautilus-icon-view.c:1308
 msgid "Reposition icons to better fit in the window and avoid overlapping"
 msgstr ""
 "Simgeleri üst üste gelmeyi engelleyecek şekilde pencere içinde daha uygun "
@@ -3591,113 +3591,113 @@ msgstr ""
 # src/file-manager/nautilus-icon-view-ui.xml.h:13
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-icon-view.c:1382
+#: ../src/nautilus-icon-view.c:1314
 msgid "Re_versed Order"
 msgstr "_Ters Sıra"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:3
 #. tooltip
-#: ../src/nautilus-icon-view.c:1383
+#: ../src/nautilus-icon-view.c:1315
 msgid "Display icons in the opposite order"
 msgstr "Simgeleri ters sıra ile göster"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-icon-view.c:1387
+#: ../src/nautilus-icon-view.c:1319
 msgid "_Keep Aligned"
 msgstr "_Sıralı Tut"
 
 # src/file-manager/fm-icon-view.c:157
 # src/file-manager/nautilus-icon-view-ui.xml.h:7
 #. tooltip
-#: ../src/nautilus-icon-view.c:1388
+#: ../src/nautilus-icon-view.c:1320
 msgid "Keep icons lined up on a grid"
 msgstr "Simgeleri bir ızgara üzerinde hizalı tut"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:30
-#: ../src/nautilus-icon-view.c:1395
+#: ../src/nautilus-icon-view.c:1327
 msgid "_Manually"
 msgstr "_Elle"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:11
-#: ../src/nautilus-icon-view.c:1396
+#: ../src/nautilus-icon-view.c:1328
 msgid "Leave icons wherever they are dropped"
 msgstr "Simgeler nerede bırakılırsa orada dursun"
 
 # src/file-manager/fm-icon-view.c:156
 # src/file-manager/nautilus-icon-view-ui.xml.h:38
-#: ../src/nautilus-icon-view.c:1399
+#: ../src/nautilus-icon-view.c:1331
 msgid "By _Name"
 msgstr "İ_sme Göre"
 
 # src/file-manager/fm-icon-view.c:163
 # src/file-manager/nautilus-icon-view-ui.xml.h:39
-#: ../src/nautilus-icon-view.c:1403
+#: ../src/nautilus-icon-view.c:1335
 msgid "By _Size"
 msgstr "_Büyüklüğe Göre"
 
 # src/file-manager/fm-icon-view.c:170
 # src/file-manager/nautilus-icon-view-ui.xml.h:40
-#: ../src/nautilus-icon-view.c:1407
+#: ../src/nautilus-icon-view.c:1339
 msgid "By _Type"
 msgstr "_Türe Göre"
 
 # src/file-manager/fm-icon-view.c:177
 # src/file-manager/nautilus-icon-view-ui.xml.h:33
-#: ../src/nautilus-icon-view.c:1411
+#: ../src/nautilus-icon-view.c:1343
 msgid "By Modification _Date"
 msgstr "_Değişim Tarihine Göre"
 
 # src/file-manager/fm-icon-view.c:156
 # src/file-manager/nautilus-icon-view-ui.xml.h:38
-#: ../src/nautilus-icon-view.c:1415
+#: ../src/nautilus-icon-view.c:1347
 msgid "By T_rash Time"
 msgstr "Çöpe Gönde_rilme Zamanına Göre"
 
 # src/file-manager/fm-icon-view.c:1242
-#: ../src/nautilus-icon-view.c:1538
+#: ../src/nautilus-icon-view.c:1470
 msgid "Restore Icon's Original Si_ze"
 msgstr "S_imgeyi Asıl Boyutlarına Getir"
 
 # src/Nautilus_shell.oaf.in.h:2
 #. translators: this is used in the view menu
-#: ../src/nautilus-icon-view.c:2753
+#: ../src/nautilus-icon-view.c:2677
 msgid "_Icons"
 msgstr "_Simgeler"
 
 # src/nautilus-window-manage-views.c:799
-#: ../src/nautilus-icon-view.c:2754
+#: ../src/nautilus-icon-view.c:2678
 msgid "The icon view encountered an error."
 msgstr "Simge görünümü bir hata ile karşılaştı."
 
 # src/nautilus-window-manage-views.c:799
-#: ../src/nautilus-icon-view.c:2755
+#: ../src/nautilus-icon-view.c:2679
 msgid "The icon view encountered an error while starting up."
 msgstr "Simge görünümü başlatılırken bir hata ile karşılaşıldı."
 
 # libnautilus-private/nautilus-global-preferences.c:139
-#: ../src/nautilus-icon-view.c:2756
+#: ../src/nautilus-icon-view.c:2680
 msgid "Display this location with the icon view."
 msgstr "Bu konumu simge görünümü ile göster"
 
 # components/text/nautilus-text-view-ui.xml.h:6
 #. translators: this is used in the view menu
-#: ../src/nautilus-icon-view.c:2767
+#: ../src/nautilus-icon-view.c:2691
 msgid "_Compact"
 msgstr "_Sıkışık"
 
 # src/nautilus-window-manage-views.c:799
-#: ../src/nautilus-icon-view.c:2768
+#: ../src/nautilus-icon-view.c:2692
 msgid "The compact view encountered an error."
 msgstr "Sıkışık görünüm bir hata ile karşılaştı."
 
 # src/nautilus-window-manage-views.c:799
-#: ../src/nautilus-icon-view.c:2769
+#: ../src/nautilus-icon-view.c:2693
 msgid "The compact view encountered an error while starting up."
 msgstr "Sıkışık görünüm başlatılırken bir hata ile karşılaşıldı."
 
 # libnautilus-private/nautilus-global-preferences.c:139
-#: ../src/nautilus-icon-view.c:2770
+#: ../src/nautilus-icon-view.c:2694
 msgid "Display this location with the compact view."
 msgstr "Bu konumu sıkışık görünüm ile göster."
 
@@ -3821,72 +3821,72 @@ msgstr "(Boş)"
 
 # src/nautilus-bookmarks-window.c:177
 #: ../src/nautilus-list-model.c:395 ../src/nautilus-tree-sidebar-model.c:1252
-#: ../src/nautilus-window-manage-views.c:1234
-#: ../src/nautilus-window-slot.c:200
+#: ../src/nautilus-window-manage-views.c:1231
+#: ../src/nautilus-window-slot.c:199
 msgid "Loading..."
 msgstr "Yükleniyor..."
 
-#: ../src/nautilus-list-view.c:2573
+#: ../src/nautilus-list-view.c:2567
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s Görünen Sütunları"
 
 # src/file-manager/fm-icon-text-window.c:271
-#: ../src/nautilus-list-view.c:2593
+#: ../src/nautilus-list-view.c:2587
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Bu klasörde görünecek bilgi sırasını seçin:"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-list-view.c:2647
+#: ../src/nautilus-list-view.c:2641
 msgid "Visible _Columns..."
 msgstr "Gösterilecek _Sütunlar..."
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:6
 #. tooltip
-#: ../src/nautilus-list-view.c:2648
+#: ../src/nautilus-list-view.c:2642
 msgid "Select the columns visible in this folder"
 msgstr "Bu klasör için gösterilecek sütunları seçin"
 
 # src/Nautilus_shell.oaf.in.h:3
 #. translators: this is used in the view menu
-#: ../src/nautilus-list-view.c:3395
+#: ../src/nautilus-list-view.c:3389
 msgid "_List"
 msgstr "_Liste"
 
 # src/nautilus-window-manage-views.c:799
-#: ../src/nautilus-list-view.c:3396
+#: ../src/nautilus-list-view.c:3390
 msgid "The list view encountered an error."
 msgstr "Liste görünümü bir hata ile karşılaştı."
 
 # src/nautilus-window-manage-views.c:799
-#: ../src/nautilus-list-view.c:3397
+#: ../src/nautilus-list-view.c:3391
 msgid "The list view encountered an error while starting up."
 msgstr "Liste görünümü başlatılırken bir hata ile karşılaşıldı."
 
 # libnautilus-private/nautilus-global-preferences.c:139
-#: ../src/nautilus-list-view.c:3398
+#: ../src/nautilus-list-view.c:3392
 msgid "Display this location with the list view."
 msgstr "Bu konumu liste görünümü ile göster."
 
 # src/nautilus-location-bar.c:60
-#: ../src/nautilus-location-bar.c:56 ../src/nautilus-properties-window.c:3140
+#: ../src/nautilus-location-bar.c:55 ../src/nautilus-properties-window.c:3105
 msgid "Location:"
 msgstr "Konum:"
 
 # src/nautilus-location-bar.c:61
-#: ../src/nautilus-location-bar.c:57
+#: ../src/nautilus-location-bar.c:56
 msgid "Go To:"
 msgstr "Git:"
 
 # src/nautilus-shell-ui.xml.h:31
-#: ../src/nautilus-location-bar.c:182
+#: ../src/nautilus-location-bar.c:181
 #, c-format
 msgid "Do you want to view %d location?"
 msgid_plural "Do you want to view %d locations?"
 msgstr[0] "%d konumu görüntülemek istiyor musunuz?"
 
-#: ../src/nautilus-location-bar.c:186 ../src/nautilus-mime-actions.c:1047
+#: ../src/nautilus-location-bar.c:185 ../src/nautilus-mime-actions.c:1047
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
@@ -3918,8 +3918,8 @@ msgstr "Bu bağ kullanılamaz, çünkü \"%s\" hedefi bulunmuyor."
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-mime-actions.c:646 ../src/nautilus-tree-sidebar.c:1245
-#: ../src/nautilus-view.c:7017 ../src/nautilus-view.c:7127
-#: ../src/nautilus-view.c:8150 ../src/nautilus-view.c:8428
+#: ../src/nautilus-view.c:6942 ../src/nautilus-view.c:7052
+#: ../src/nautilus-view.c:8075 ../src/nautilus-view.c:8353
 msgid "Mo_ve to Trash"
 msgstr "Çöpe _Taşı"
 
@@ -3946,7 +3946,7 @@ msgstr "_Göster"
 # src/file-manager/fm-directory-view.c:457
 # src/file-manager/fm-directory-view.c:2639
 #: ../src/nautilus-mime-actions.c:1042 ../src/nautilus-mime-actions.c:1785
-#: ../src/nautilus-view.c:1039
+#: ../src/nautilus-view.c:965
 msgid "Are you sure you want to open all files?"
 msgstr "Tüm dosyaları açmak istediğinize emin misiniz?"
 
@@ -3958,12 +3958,12 @@ msgstr[0] "Bu %d ayrı sekme açar."
 
 # src/nautilus-theme-selector.c:397
 #: ../src/nautilus-mime-actions.c:1117
-#: ../src/nautilus-window-manage-views.c:1758
-#: ../src/nautilus-window-manage-views.c:1764
-#: ../src/nautilus-window-manage-views.c:1781
-#: ../src/nautilus-window-manage-views.c:1792
-#: ../src/nautilus-window-manage-views.c:1798
-#: ../src/nautilus-window-manage-views.c:1824
+#: ../src/nautilus-window-manage-views.c:1755
+#: ../src/nautilus-window-manage-views.c:1761
+#: ../src/nautilus-window-manage-views.c:1778
+#: ../src/nautilus-window-manage-views.c:1789
+#: ../src/nautilus-window-manage-views.c:1795
+#: ../src/nautilus-window-manage-views.c:1821
 #, c-format
 msgid "Could not display \"%s\"."
 msgstr "\"%s\" gösterilemedi."
@@ -4031,12 +4031,12 @@ msgstr[0] "Bu %d ayrı uygulama açar."
 
 # src/nautilus-shell-ui.xml.h:29
 #: ../src/nautilus-mime-actions.c:1863 ../src/nautilus-mime-actions.c:2137
-#: ../src/nautilus-view.c:6137
+#: ../src/nautilus-view.c:6062
 msgid "Unable to mount location"
 msgstr "Konum bağlanamadı"
 
 # src/nautilus-shell-ui.xml.h:29
-#: ../src/nautilus-mime-actions.c:2216 ../src/nautilus-view.c:6284
+#: ../src/nautilus-mime-actions.c:2216 ../src/nautilus-view.c:6209
 msgid "Unable to start location"
 msgstr "Konum başlatılamıyor"
 
@@ -4054,7 +4054,7 @@ msgid_plural "Opening %d items."
 msgstr[0] "%d öğe açılıyor."
 
 # src/nautilus-shell-ui.xml.h:73
-#: ../src/nautilus-notebook.c:369
+#: ../src/nautilus-notebook.c:374
 msgid "Close tab"
 msgstr "Sekmeyi kapat"
 
@@ -4127,11 +4127,11 @@ msgstr "Ağdaki içeriğe gözat"
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-places-sidebar.c:1691 ../src/nautilus-places-sidebar.c:2675
-#: ../src/nautilus-view.c:7055 ../src/nautilus-view.c:7079
-#: ../src/nautilus-view.c:7151 ../src/nautilus-view.c:7786
-#: ../src/nautilus-view.c:7790 ../src/nautilus-view.c:7873
-#: ../src/nautilus-view.c:7877 ../src/nautilus-view.c:7977
-#: ../src/nautilus-view.c:7981
+#: ../src/nautilus-view.c:6980 ../src/nautilus-view.c:7004
+#: ../src/nautilus-view.c:7076 ../src/nautilus-view.c:7711
+#: ../src/nautilus-view.c:7715 ../src/nautilus-view.c:7798
+#: ../src/nautilus-view.c:7802 ../src/nautilus-view.c:7902
+#: ../src/nautilus-view.c:7906
 msgid "_Start"
 msgstr "_Başlat"
 
@@ -4143,9 +4143,9 @@ msgstr "_Başlat"
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-places-sidebar.c:1692 ../src/nautilus-places-sidebar.c:2682
-#: ../src/nautilus-view.c:7059 ../src/nautilus-view.c:7083
-#: ../src/nautilus-view.c:7155 ../src/nautilus-view.c:7815
-#: ../src/nautilus-view.c:7902 ../src/nautilus-view.c:8006
+#: ../src/nautilus-view.c:6984 ../src/nautilus-view.c:7008
+#: ../src/nautilus-view.c:7080 ../src/nautilus-view.c:7740
+#: ../src/nautilus-view.c:7827 ../src/nautilus-view.c:7931
 #: ../src/nautilus-window-menus.c:935
 msgid "_Stop"
 msgstr "_Dur"
@@ -4156,8 +4156,8 @@ msgid "_Power On"
 msgstr "_Güc Açık"
 
 # src/nautilus-property-browser.c:2177 src/nautilus-theme-selector.c:503
-#: ../src/nautilus-places-sidebar.c:1698 ../src/nautilus-view.c:7819
-#: ../src/nautilus-view.c:7906 ../src/nautilus-view.c:8010
+#: ../src/nautilus-places-sidebar.c:1698 ../src/nautilus-view.c:7744
+#: ../src/nautilus-view.c:7831 ../src/nautilus-view.c:7935
 msgid "_Safely Remove Drive"
 msgstr "_Sürücüyü Güvenle Kaldır"
 
@@ -4178,13 +4178,13 @@ msgid "_Stop Multi-disk Device"
 msgstr "Çoklu-disk Aygıtını _Durdur"
 
 #. stop() for type G_DRIVE_START_STOP_TYPE_PASSWORD is normally not used
-#: ../src/nautilus-places-sidebar.c:1710 ../src/nautilus-view.c:7889
-#: ../src/nautilus-view.c:7993
+#: ../src/nautilus-places-sidebar.c:1710 ../src/nautilus-view.c:7814
+#: ../src/nautilus-view.c:7918
 msgid "_Unlock Drive"
 msgstr "_Sürücü Kilidini Kaldır"
 
-#: ../src/nautilus-places-sidebar.c:1711 ../src/nautilus-view.c:7831
-#: ../src/nautilus-view.c:7918 ../src/nautilus-view.c:8022
+#: ../src/nautilus-places-sidebar.c:1711 ../src/nautilus-view.c:7756
+#: ../src/nautilus-view.c:7843 ../src/nautilus-view.c:7947
 msgid "_Lock Drive"
 msgstr "_Sürücüyü Kilitle"
 
@@ -4214,7 +4214,7 @@ msgstr "%s durdurulamadı"
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-places-sidebar.c:2591 ../src/nautilus-tree-sidebar.c:1156
-#: ../src/nautilus-view.c:6937 ../src/nautilus-view.c:8344
+#: ../src/nautilus-view.c:6862 ../src/nautilus-view.c:8269
 msgid "_Open"
 msgstr "_Aç"
 
@@ -4223,15 +4223,15 @@ msgstr "_Aç"
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-places-sidebar.c:2599 ../src/nautilus-tree-sidebar.c:1167
-#: ../src/nautilus-view.c:6949 ../src/nautilus-view.c:7109
-#: ../src/nautilus-view.c:8103 ../src/nautilus-view.c:8406
+#: ../src/nautilus-view.c:6874 ../src/nautilus-view.c:7034
+#: ../src/nautilus-view.c:8028 ../src/nautilus-view.c:8331
 msgid "Open in New _Tab"
 msgstr "_Yeni Sekmede Aç"
 
 # src/file-manager/nautilus-search-list-view-ui.xml.h:2
 #. add the "open in new window" menu item
 #: ../src/nautilus-places-sidebar.c:2609 ../src/nautilus-tree-sidebar.c:1181
-#: ../src/nautilus-view.c:8094 ../src/nautilus-view.c:8386
+#: ../src/nautilus-view.c:8019 ../src/nautilus-view.c:8311
 msgid "Open in New _Window"
 msgstr "_Yeni Pencerede Aç"
 
@@ -4253,8 +4253,8 @@ msgstr "Yeniden adlandır..."
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:2647 ../src/nautilus-view.c:7043
-#: ../src/nautilus-view.c:7067 ../src/nautilus-view.c:7139
+#: ../src/nautilus-places-sidebar.c:2647 ../src/nautilus-view.c:6968
+#: ../src/nautilus-view.c:6992 ../src/nautilus-view.c:7064
 msgid "_Mount"
 msgstr "_Bağla"
 
@@ -4263,8 +4263,8 @@ msgstr "_Bağla"
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-places-sidebar.c:2654 ../src/nautilus-tree-sidebar.c:1272
-#: ../src/nautilus-view.c:7047 ../src/nautilus-view.c:7071
-#: ../src/nautilus-view.c:7143
+#: ../src/nautilus-view.c:6972 ../src/nautilus-view.c:6996
+#: ../src/nautilus-view.c:7068
 msgid "_Unmount"
 msgstr "_Bağı Kaldır"
 
@@ -4273,8 +4273,8 @@ msgstr "_Bağı Kaldır"
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-places-sidebar.c:2661 ../src/nautilus-tree-sidebar.c:1281
-#: ../src/nautilus-view.c:7051 ../src/nautilus-view.c:7075
-#: ../src/nautilus-view.c:7147
+#: ../src/nautilus-view.c:6976 ../src/nautilus-view.c:7000
+#: ../src/nautilus-view.c:7072
 msgid "_Eject"
 msgstr "Çı_kart"
 
@@ -4282,8 +4282,8 @@ msgstr "Çı_kart"
 # src/file-manager/fm-directory-view.c:2650
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:2668 ../src/nautilus-view.c:7063
-#: ../src/nautilus-view.c:7087 ../src/nautilus-view.c:7159
+#: ../src/nautilus-places-sidebar.c:2668 ../src/nautilus-view.c:6988
+#: ../src/nautilus-view.c:7012 ../src/nautilus-view.c:7084
 msgid "_Detect Media"
 msgstr "_Ortamı Tanı"
 
@@ -4311,28 +4311,28 @@ msgid "All file operations have been successfully completed"
 msgstr "Tüm dosya işlemleri başarıyla tamamlandı"
 
 # src/nautilus-sidebar.c:655
-#: ../src/nautilus-properties-window.c:494
+#: ../src/nautilus-properties-window.c:482
 msgid "You cannot assign more than one custom icon at a time!"
 msgstr "Bir seferde birden daha fazla özel simge atayamazsınız!"
 
 # src/nautilus-sidebar.c:655
-#: ../src/nautilus-properties-window.c:495
+#: ../src/nautilus-properties-window.c:483
 msgid "Please drag just one image to set a custom icon."
 msgstr "Lütfen özel simge ayarlamak için sadece bir resmi taşıyın."
 
 # src/nautilus-sidebar.c:676
-#: ../src/nautilus-properties-window.c:506
+#: ../src/nautilus-properties-window.c:494
 msgid "The file that you dropped is not local."
 msgstr "Bıraktığınız dosya yerel değil."
 
 # src/nautilus-sidebar.c:676
-#: ../src/nautilus-properties-window.c:507
-#: ../src/nautilus-properties-window.c:513
+#: ../src/nautilus-properties-window.c:495
+#: ../src/nautilus-properties-window.c:501
 msgid "You can only use local images as custom icons."
 msgstr "Özel simge olarak sadece yerel resimleri kullanabilirsiniz."
 
 # src/nautilus-sidebar.c:676
-#: ../src/nautilus-properties-window.c:512
+#: ../src/nautilus-properties-window.c:500
 msgid "The file that you dropped is not an image."
 msgstr "Bıraktığınız dosya resim dosyası değil."
 
@@ -4340,51 +4340,51 @@ msgstr "Bıraktığınız dosya resim dosyası değil."
 # src/file-manager/fm-list-view.c:1918
 # src/file-manager/fm-search-list-view.c:334
 # src/nautilus-bookmarks-window.c:164 src/nautilus-search-bar-criterion.c:67
-#: ../src/nautilus-properties-window.c:652
+#: ../src/nautilus-properties-window.c:636
 msgid "_Name:"
 msgid_plural "_Names:"
 msgstr[0] "İ_sim:"
 
 # src/file-manager/fm-properties-window.c:487
-#: ../src/nautilus-properties-window.c:847
+#: ../src/nautilus-properties-window.c:831
 #, c-format
 msgid "Properties"
 msgstr "Özellikler"
 
 # src/file-manager/fm-properties-window.c:487
-#: ../src/nautilus-properties-window.c:855
+#: ../src/nautilus-properties-window.c:839
 #, c-format
 msgid "%s Properties"
 msgstr "%s Özellikleri"
 
 # libnautilus-private/nautilus-file-operations.c:1178
-#: ../src/nautilus-properties-window.c:1178
+#: ../src/nautilus-properties-window.c:1162
 #, c-format
 msgctxt "MIME type description (MIME type)"
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
 # src/file-manager/fm-properties-window.c:614
-#: ../src/nautilus-properties-window.c:1395
+#: ../src/nautilus-properties-window.c:1376
 msgid "Cancel Group Change?"
 msgstr "Grup Değişimi İptal Edilsin mi?"
 
 # src/file-manager/fm-properties-window.c:774
-#: ../src/nautilus-properties-window.c:1813
+#: ../src/nautilus-properties-window.c:1791
 msgid "Cancel Owner Change?"
 msgstr "Sahip Değişimi İptal Edilsin mi?"
 
 # src/file-manager/fm-properties-window.c:950
-#: ../src/nautilus-properties-window.c:2147
+#: ../src/nautilus-properties-window.c:2109
 msgid "nothing"
 msgstr "hiçbiri"
 
 # src/file-manager/fm-properties-window.c:952
-#: ../src/nautilus-properties-window.c:2149
+#: ../src/nautilus-properties-window.c:2111
 msgid "unreadable"
 msgstr "okunmaz"
 
-#: ../src/nautilus-properties-window.c:2159
+#: ../src/nautilus-properties-window.c:2121
 #, c-format
 msgid "%'d item, with size %s"
 msgid_plural "%'d items, totalling %s"
@@ -4392,7 +4392,7 @@ msgstr[0] "%'d öğe, %s boyutunda"
 
 # src/file-manager/fm-properties-window.c:961
 # src/file-manager/fm-properties-window.c:969
-#: ../src/nautilus-properties-window.c:2168
+#: ../src/nautilus-properties-window.c:2130
 msgid "(some contents unreadable)"
 msgstr "(bazı içerikler okunmaz)"
 
@@ -4403,269 +4403,269 @@ msgstr "(bazı içerikler okunmaz)"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: ../src/nautilus-properties-window.c:2185
+#: ../src/nautilus-properties-window.c:2147
 msgid "Contents:"
 msgstr "İçerik:"
 
 #. Translators: "used" refers to the capacity of the filesystem
-#: ../src/nautilus-properties-window.c:2957
+#: ../src/nautilus-properties-window.c:2919
 msgid "used"
 msgstr "kullanılan"
 
 # components/tree/Nautilus_View_tree.oaf.in.h:3
 #. Translators: "free" refers to the capacity of the filesystem
-#: ../src/nautilus-properties-window.c:2962
+#: ../src/nautilus-properties-window.c:2926
 msgid "free"
 msgstr "boş"
 
-#: ../src/nautilus-properties-window.c:2964
+#: ../src/nautilus-properties-window.c:2928
 msgid "Total capacity:"
 msgstr "Toplam kapasite:"
 
-#: ../src/nautilus-properties-window.c:2973
+#: ../src/nautilus-properties-window.c:2937
 msgid "Filesystem type:"
 msgstr "Dosya Sistemi türü:"
 
 # src/file-manager/fm-properties-window.c:1200
-#: ../src/nautilus-properties-window.c:3052
+#: ../src/nautilus-properties-window.c:3021
 msgid "Basic"
 msgstr "Temel"
 
 # src/nautilus-link-set-window.c:191
-#: ../src/nautilus-properties-window.c:3121
+#: ../src/nautilus-properties-window.c:3086
 msgid "Link target:"
 msgstr "Bağlantı hedefi:"
 
 # libnautilus-private/nautilus-volume-monitor.c:1300
-#: ../src/nautilus-properties-window.c:3146
+#: ../src/nautilus-properties-window.c:3111
 msgid "Volume:"
 msgstr "Birim:"
 
 # src/file-manager/fm-properties-window.c:1289
-#: ../src/nautilus-properties-window.c:3155
+#: ../src/nautilus-properties-window.c:3120
 msgid "Accessed:"
 msgstr "Erişim:"
 
 # src/file-manager/fm-properties-window.c:1288
-#: ../src/nautilus-properties-window.c:3159
+#: ../src/nautilus-properties-window.c:3124
 msgid "Modified:"
 msgstr "Değişim:"
 
 # components/music/mpg123.c:62
-#: ../src/nautilus-properties-window.c:3168
+#: ../src/nautilus-properties-window.c:3133
 msgid "Free space:"
 msgstr "Boş alan:"
 
 # src/file-manager/fm-properties-window.c:1725
-#: ../src/nautilus-properties-window.c:3583
+#: ../src/nautilus-properties-window.c:3550
 msgid "_Read"
 msgstr "_Okuma"
 
 # src/file-manager/fm-properties-window.c:1729
-#: ../src/nautilus-properties-window.c:3585
+#: ../src/nautilus-properties-window.c:3552
 msgid "_Write"
 msgstr "_Yazma"
 
 # src/file-manager/fm-properties-window.c:1733
-#: ../src/nautilus-properties-window.c:3587
+#: ../src/nautilus-properties-window.c:3554
 msgid "E_xecute"
 msgstr "Ç_alıştırma"
 
 #. translators: this gets concatenated to "no read",
 #. * "no access", etc. (see following strings)
 #.
-#: ../src/nautilus-properties-window.c:3855
-#: ../src/nautilus-properties-window.c:3866
-#: ../src/nautilus-properties-window.c:3878
+#: ../src/nautilus-properties-window.c:3822
+#: ../src/nautilus-properties-window.c:3833
+#: ../src/nautilus-properties-window.c:3845
 msgid "no "
 msgstr "-"
 
 # src/Nautilus_shell.oaf.in.h:3
-#: ../src/nautilus-properties-window.c:3858
+#: ../src/nautilus-properties-window.c:3825
 msgid "list"
 msgstr "listeleme"
 
 # src/file-manager/fm-properties-window.c:1725
-#: ../src/nautilus-properties-window.c:3860
+#: ../src/nautilus-properties-window.c:3827
 msgid "read"
 msgstr "okuma"
 
-#: ../src/nautilus-properties-window.c:3869
+#: ../src/nautilus-properties-window.c:3836
 msgid "create/delete"
 msgstr "oluşturma/silme"
 
 # src/file-manager/fm-properties-window.c:1729
-#: ../src/nautilus-properties-window.c:3871
+#: ../src/nautilus-properties-window.c:3838
 msgid "write"
 msgstr "yazma"
 
 # src/file-manager/fm-properties-window.c:1289
-#: ../src/nautilus-properties-window.c:3880
+#: ../src/nautilus-properties-window.c:3847
 msgid "access"
 msgstr "erişim"
 
 # src/file-manager/fm-properties-window.c:1289
-#: ../src/nautilus-properties-window.c:3929
+#: ../src/nautilus-properties-window.c:3895
 msgid "Access:"
 msgstr "Erişim:"
 
 # components/music/nautilus-music-view.c:1710
-#: ../src/nautilus-properties-window.c:3931
+#: ../src/nautilus-properties-window.c:3897
 msgid "Folder access:"
 msgstr "Klasör erişimi:"
 
 # src/file-manager/fm-properties-window.c:1289
-#: ../src/nautilus-properties-window.c:3933
+#: ../src/nautilus-properties-window.c:3899
 msgid "File access:"
 msgstr "Dosya erişimi:"
 
 # libnautilus-private/nautilus-global-preferences.c:890
-#: ../src/nautilus-properties-window.c:3951
+#: ../src/nautilus-properties-window.c:3917
 msgid "List files only"
 msgstr "Sadece dosyaları listeler"
 
 # src/file-manager/fm-properties-window.c:1289
-#: ../src/nautilus-properties-window.c:3953
+#: ../src/nautilus-properties-window.c:3919
 msgid "Access files"
 msgstr "Dosyalara erişim"
 
 # libnautilus-private/nautilus-file-operations.c:1769
-#: ../src/nautilus-properties-window.c:3955
+#: ../src/nautilus-properties-window.c:3921
 msgid "Create and delete files"
 msgstr "Dosyaları oluştur ve sil"
 
-#: ../src/nautilus-properties-window.c:3962
+#: ../src/nautilus-properties-window.c:3928
 msgid "Read-only"
 msgstr "Salt-okunur"
 
 # libnautilus-private/nautilus-undo-signal-handlers.c:178
-#: ../src/nautilus-properties-window.c:3964
+#: ../src/nautilus-properties-window.c:3930
 msgid "Read and write"
 msgstr "Okuma ve yazma"
 
-# src/file-manager/fm-properties-window.c:1636
-#: ../src/nautilus-properties-window.c:4031
-msgid "Set _user ID"
-msgstr "_Kullanıcı nosu ayarla"
-
 # src/file-manager/fm-properties-window.c:1637
-#: ../src/nautilus-properties-window.c:4034
+#: ../src/nautilus-properties-window.c:3995
 msgid "Special flags:"
 msgstr "Özel bayraklar:"
 
+# src/file-manager/fm-properties-window.c:1636
+#: ../src/nautilus-properties-window.c:3997
+msgid "Set _user ID"
+msgstr "_Kullanıcı nosu ayarla"
+
 # src/file-manager/fm-properties-window.c:1639
-#: ../src/nautilus-properties-window.c:4036
+#: ../src/nautilus-properties-window.c:3998
 msgid "Set gro_up ID"
 msgstr "_Grup nosu ayarla"
 
 # src/file-manager/fm-properties-window.c:1640
-#: ../src/nautilus-properties-window.c:4037
+#: ../src/nautilus-properties-window.c:3999
 msgid "_Sticky"
 msgstr "_Yapışık"
 
 # src/file-manager/fm-properties-window.c:1704
-#: ../src/nautilus-properties-window.c:4119
-#: ../src/nautilus-properties-window.c:4327
+#: ../src/nautilus-properties-window.c:4074
+#: ../src/nautilus-properties-window.c:4266
 msgid "_Owner:"
 msgstr "_Sahibi:"
 
 # src/file-manager/fm-properties-window.c:1704
-#: ../src/nautilus-properties-window.c:4125
-#: ../src/nautilus-properties-window.c:4223
-#: ../src/nautilus-properties-window.c:4335
+#: ../src/nautilus-properties-window.c:4082
+#: ../src/nautilus-properties-window.c:4171
+#: ../src/nautilus-properties-window.c:4276
 msgid "Owner:"
 msgstr "Sahibi:"
 
 # src/file-manager/fm-properties-window.c:1705
-#: ../src/nautilus-properties-window.c:4149
-#: ../src/nautilus-properties-window.c:4347
+#: ../src/nautilus-properties-window.c:4104
+#: ../src/nautilus-properties-window.c:4288
 msgid "_Group:"
 msgstr "_Grubu:"
 
 # src/file-manager/fm-properties-window.c:1705
-#: ../src/nautilus-properties-window.c:4158
-#: ../src/nautilus-properties-window.c:4224
-#: ../src/nautilus-properties-window.c:4356
+#: ../src/nautilus-properties-window.c:4112
+#: ../src/nautilus-properties-window.c:4172
+#: ../src/nautilus-properties-window.c:4296
 msgid "Group:"
 msgstr "Grubu:"
 
 # src/file-manager/fm-properties-window.c:1706
-#: ../src/nautilus-properties-window.c:4184
+#: ../src/nautilus-properties-window.c:4136
 msgid "Others"
 msgstr "Diğerleri"
 
 # src/file-manager/fm-properties-window.c:1733
-#: ../src/nautilus-properties-window.c:4202
+#: ../src/nautilus-properties-window.c:4151
 msgid "Execute:"
 msgstr "Çalıştırma:"
 
-#: ../src/nautilus-properties-window.c:4206
+#: ../src/nautilus-properties-window.c:4154
 msgid "Allow _executing file as program"
 msgstr "Dosyayı bir program gibi ç_alıştırmaya izin ver"
 
 # src/file-manager/fm-properties-window.c:1706
-#: ../src/nautilus-properties-window.c:4225
+#: ../src/nautilus-properties-window.c:4173
 msgid "Others:"
 msgstr "Diğerleri:"
 
 # src/file-manager/fm-properties-window.c:1658
-#: ../src/nautilus-properties-window.c:4375
+#: ../src/nautilus-properties-window.c:4312
 msgid "Folder Permissions:"
 msgstr "Klasör İzinleri:"
 
 # src/file-manager/fm-properties-window.c:1658
-#: ../src/nautilus-properties-window.c:4388
+#: ../src/nautilus-properties-window.c:4320
 msgid "File Permissions:"
 msgstr "Dosya İzinleri:"
 
 # components/text/Nautilus_View_text.oaf.in.h:3
-#: ../src/nautilus-properties-window.c:4399
+#: ../src/nautilus-properties-window.c:4329
 msgid "Text view:"
 msgstr "Metin görünüm:"
 
 # src/file-manager/fm-properties-window.c:1664
-#: ../src/nautilus-properties-window.c:4548
+#: ../src/nautilus-properties-window.c:4476
 msgid "You are not the owner, so you cannot change these permissions."
 msgstr "Sahibi olmadığınız için bu erişim haklarını değiştiremezsiniz."
 
-#: ../src/nautilus-properties-window.c:4573
+#: ../src/nautilus-properties-window.c:4496
 msgid "SELinux context:"
 msgstr "SELinux bağlamı:"
 
 # src/file-manager/fm-properties-window.c:1792
-#: ../src/nautilus-properties-window.c:4578
+#: ../src/nautilus-properties-window.c:4501
 msgid "Last changed:"
 msgstr "Son değiştirme:"
 
 # src/file-manager/fm-properties-window.c:1796
-#: ../src/nautilus-properties-window.c:4592
+#: ../src/nautilus-properties-window.c:4513
 msgid "Apply Permissions to Enclosed Files"
 msgstr "Çevrelenmiş Dosyalara İzinleri Uygula"
 
 # src/file-manager/fm-properties-window.c:1796
-#: ../src/nautilus-properties-window.c:4602
+#: ../src/nautilus-properties-window.c:4523
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "\"%s\"nin erişim hakları belirlenemedi."
 
 # src/file-manager/fm-properties-window.c:1796
-#: ../src/nautilus-properties-window.c:4605
+#: ../src/nautilus-properties-window.c:4526
 msgid "The permissions of the selected file could not be determined."
 msgstr "Seçilen dosyanın erişim hakları belirlenemedi."
 
 # #-#-#-#-#  tr.po (nautilus)  #-#-#-#-#
 # src/file-manager/nautilus-directory-view-ui.xml.h:18
-#: ../src/nautilus-properties-window.c:4835
+#: ../src/nautilus-properties-window.c:4756
 msgid "Open With"
 msgstr "Birlikte Aç"
 
 # src/file-manager/fm-properties-window.c:2044
-#: ../src/nautilus-properties-window.c:5145
+#: ../src/nautilus-properties-window.c:5066
 msgid "Creating Properties window."
 msgstr "Özellikler penceresi oluşturuluyor."
 
 # src/file-manager/fm-properties-window.c:1297
-#: ../src/nautilus-properties-window.c:5433
+#: ../src/nautilus-properties-window.c:5353
 msgid "Select Custom Icon"
 msgstr "Özel Simge Seç"
 
@@ -4784,18 +4784,18 @@ msgstr "Seçili Öğeleri Geri Yükle"
 msgid "Restore selected items to their original position"
 msgstr "Seçili öğeleri asıl konumlarına geri yükle"
 
-#: ../src/nautilus-tree-sidebar.c:914 ../src/nautilus-view.c:5734
+#: ../src/nautilus-tree-sidebar.c:914 ../src/nautilus-view.c:5659
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "Yapıştır komutunu seçerseniz \"%s\" taşınacak"
 
-#: ../src/nautilus-tree-sidebar.c:918 ../src/nautilus-view.c:5738
+#: ../src/nautilus-tree-sidebar.c:918 ../src/nautilus-view.c:5663
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "Yapıştır komutunu seçerseniz \"%s\" kopyalanacak"
 
 # src/file-manager/fm-directory-view.c:2596
-#: ../src/nautilus-tree-sidebar.c:957 ../src/nautilus-view.c:5931
+#: ../src/nautilus-tree-sidebar.c:957 ../src/nautilus-view.c:5856
 msgid "There is nothing on the clipboard to paste."
 msgstr "Panoda yapıştırılacak bir şey yok."
 
@@ -4803,7 +4803,7 @@ msgstr "Panoda yapıştırılacak bir şey yok."
 #. add the "create new folder" menu item
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-tree-sidebar.c:1197 ../src/nautilus-view.c:6927
+#: ../src/nautilus-tree-sidebar.c:1197 ../src/nautilus-view.c:6852
 msgid "Create New _Folder"
 msgstr "Yeni _Klasör Oluştur"
 
@@ -4812,8 +4812,8 @@ msgstr "Yeni _Klasör Oluştur"
 #. accelerator for paste
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-tree-sidebar.c:1229 ../src/nautilus-view.c:6983
-#: ../src/nautilus-view.c:7122
+#: ../src/nautilus-tree-sidebar.c:1229 ../src/nautilus-view.c:6908
+#: ../src/nautilus-view.c:7047
 msgid "_Paste Into Folder"
 msgstr "_Klasörün İçine Yapıştır"
 
@@ -4821,8 +4821,8 @@ msgstr "_Klasörün İçine Yapıştır"
 # src/file-manager/fm-directory-view.c:2650
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-tree-sidebar.c:1259 ../src/nautilus-view.c:7021
-#: ../src/nautilus-view.c:7131 ../src/nautilus-view.c:8449
+#: ../src/nautilus-tree-sidebar.c:1259 ../src/nautilus-view.c:6946
+#: ../src/nautilus-view.c:7056 ../src/nautilus-view.c:8374
 msgid "_Delete"
 msgstr "_Sil"
 
@@ -4830,68 +4830,68 @@ msgstr "_Sil"
 msgid "Network Neighbourhood"
 msgstr "Ağ Komşuları"
 
-#: ../src/nautilus-view.c:1041
+#: ../src/nautilus-view.c:967
 #, c-format
 msgid "This will open %'d separate tab."
 msgid_plural "This will open %'d separate tabs."
 msgstr[0] "Bu %'d ayrı sekme açacak."
 
-#: ../src/nautilus-view.c:1044
+#: ../src/nautilus-view.c:970
 #, c-format
 msgid "This will open %'d separate window."
 msgid_plural "This will open %'d separate windows."
 msgstr[0] "Bu %'d ayrı pencere açacak."
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:32
-#: ../src/nautilus-view.c:1559
+#: ../src/nautilus-view.c:1485
 msgid "Select Items Matching"
 msgstr "Eşleşen Öğeleri Seçin"
 
 # data/browser.xml.h:65
-#: ../src/nautilus-view.c:1574
+#: ../src/nautilus-view.c:1500
 msgid "_Pattern:"
 msgstr "_Dokular:"
 
 # src/nautilus-property-browser.c:2231
-#: ../src/nautilus-view.c:1577
+#: ../src/nautilus-view.c:1506
 msgid "Examples: "
 msgstr "Örnekler:"
 
-#: ../src/nautilus-view.c:1695
+#: ../src/nautilus-view.c:1619
 msgid "Save Search as"
 msgstr "Aramayı Kaydet"
 
 # src/nautilus-property-browser.c:1066
-#: ../src/nautilus-view.c:1715
+#: ../src/nautilus-view.c:1642
 msgid "Search _name:"
 msgstr "Arama _adı:"
 
-#: ../src/nautilus-view.c:1734
+#: ../src/nautilus-view.c:1664
 msgid "Select Folder to Save Search In"
 msgstr "Aramanın Kaydedileceği Klasörü Seçin"
 
 # src/file-manager/fm-directory-view.c:1211
-#: ../src/nautilus-view.c:2756 ../src/nautilus-view.c:2793
+#: ../src/nautilus-view.c:2682 ../src/nautilus-view.c:2719
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" seçildi"
 
 # src/file-manager/fm-directory-view.c:1211
-#: ../src/nautilus-view.c:2758
+#: ../src/nautilus-view.c:2684
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "%'d klasör seçildi"
 
 # libnautilus-private/nautilus-search-uri.c:825
-#: ../src/nautilus-view.c:2768
+#: ../src/nautilus-view.c:2694
 #, c-format
 msgid " (containing %'d item)"
 msgid_plural " (containing %'d items)"
 msgstr[0] " (%'d öğe içeriyor)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: ../src/nautilus-view.c:2779
+#: ../src/nautilus-view.c:2705
 #, c-format
 msgid " (containing a total of %'d item)"
 msgid_plural " (containing a total of %'d items)"
@@ -4901,7 +4901,7 @@ msgstr[0] " (toplam olarak %'d öğe içeriyor)"
 # src/file-manager/fm-directory-view.c:1226
 # src/file-manager/fm-directory-view.c:1226
 # src/file-manager/fm-directory-view.c:1237
-#: ../src/nautilus-view.c:2796
+#: ../src/nautilus-view.c:2722
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -4912,7 +4912,7 @@ msgstr[0] "%'d öğe seçildi"
 # src/file-manager/fm-directory-view.c:1226
 # src/file-manager/fm-directory-view.c:1237
 #. Folders selected also, use "other" terminology
-#: ../src/nautilus-view.c:2803
+#: ../src/nautilus-view.c:2729
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -4924,13 +4924,13 @@ msgstr[0] "%'d başka öğe seçildi"
 #. * first message gives the number of items selected;
 #. * the message in parentheses the size of those items.
 #.
-#: ../src/nautilus-view.c:2818
+#: ../src/nautilus-view.c:2744
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
 # components/music/mpg123.c:62
-#: ../src/nautilus-view.c:2831
+#: ../src/nautilus-view.c:2757
 #, c-format
 msgid "Free space: %s"
 msgstr "Boş alan: %s"
@@ -4938,7 +4938,7 @@ msgstr "Boş alan: %s"
 # src/file-manager/fm-directory-view.c:1241
 # src/file-manager/fm-directory-view.c:1251
 # components/music/mpg123.c:62
-#: ../src/nautilus-view.c:2842
+#: ../src/nautilus-view.c:2768
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s, Boş alan: %s"
@@ -4949,7 +4949,7 @@ msgstr "%s, Boş alan: %s"
 #. * After the comma the amount of free space will
 #. * be shown.
 #.
-#: ../src/nautilus-view.c:2857
+#: ../src/nautilus-view.c:2783
 #, c-format
 msgid "%s, %s"
 msgstr "%s, %s"
@@ -4967,7 +4967,7 @@ msgstr "%s, %s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: ../src/nautilus-view.c:2876 ../src/nautilus-view.c:2889
+#: ../src/nautilus-view.c:2802 ../src/nautilus-view.c:2815
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -4981,20 +4981,20 @@ msgstr "%s%s, %s"
 #. * total size of those items. After the second comma
 #. * the free space is written.
 #.
-#: ../src/nautilus-view.c:2903
+#: ../src/nautilus-view.c:2829
 #, c-format
 msgid "%s%s, %s, %s"
 msgstr "%s%s, %s, %s"
 
 # src/nautilus-sidebar.c:1237
-#: ../src/nautilus-view.c:4320
+#: ../src/nautilus-view.c:4245
 #, c-format
 msgid "Open With %s"
 msgstr "%s ile Aç"
 
 # src/file-manager/fm-directory-view.c:2922
 # src/file-manager/fm-directory-view.c:2963
-#: ../src/nautilus-view.c:4322
+#: ../src/nautilus-view.c:4247
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgid_plural "Use \"%s\" to open the selected items"
@@ -5002,22 +5002,22 @@ msgstr[0] "Seçili öğeyi açmak için \"%s\" kullan"
 
 # src/file-manager/fm-directory-view.c:2922
 # src/file-manager/fm-directory-view.c:2963
-#: ../src/nautilus-view.c:5157
+#: ../src/nautilus-view.c:5082
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Herhangi bir seçili öğe üzerinde \"%s\" çalıştır"
 
-#: ../src/nautilus-view.c:5408
+#: ../src/nautilus-view.c:5333
 #, c-format
 msgid "Create a new document from template \"%s\""
 msgstr "\"%s\" şablonundan yeni bir belge oluştur"
 
-#: ../src/nautilus-view.c:5662
+#: ../src/nautilus-view.c:5587
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
 "Bu klasördeki tüm çalıştırılabilir dosyalar Betikler menüsünde görünecek."
 
-#: ../src/nautilus-view.c:5664
+#: ../src/nautilus-view.c:5589
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -5025,7 +5025,7 @@ msgstr ""
 "Menüden bir betik seçmek, bu betiği girdi olarak tüm seçili öğeleri "
 "kullanarak çalıştırır."
 
-#: ../src/nautilus-view.c:5666
+#: ../src/nautilus-view.c:5591
 #, fuzzy
 #| msgid ""
 #| "All executable files in this folder will appear in the Scripts menu. "
@@ -5095,14 +5095,14 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: güncel pencerenin konumu ve boyutu"
 
-#: ../src/nautilus-view.c:5745
+#: ../src/nautilus-view.c:5670
 #, c-format
 msgid "The %'d selected item will be moved if you select the Paste command"
 msgid_plural ""
 "The %'d selected items will be moved if you select the Paste command"
 msgstr[0] "Eğer Yapıştır komutunu seçerseniz %'d seçili öğe taşınacak"
 
-#: ../src/nautilus-view.c:5752
+#: ../src/nautilus-view.c:5677
 #, c-format
 msgid "The %'d selected item will be copied if you select the Paste command"
 msgid_plural ""
@@ -5110,72 +5110,72 @@ msgid_plural ""
 msgstr[0] "Eğer Yapıştır komutunu seçerseniz %'d seçili öğe kopyalanacak"
 
 # src/nautilus-shell-ui.xml.h:29
-#: ../src/nautilus-view.c:6157
+#: ../src/nautilus-view.c:6082
 msgid "Unable to unmount location"
 msgstr "Konum bağı kesilemiyor"
 
 # src/nautilus-shell-ui.xml.h:29
-#: ../src/nautilus-view.c:6177
+#: ../src/nautilus-view.c:6102
 msgid "Unable to eject location"
 msgstr "Konum çıkartılamıyor"
 
-#: ../src/nautilus-view.c:6192
+#: ../src/nautilus-view.c:6117
 msgid "Unable to stop drive"
 msgstr "Sürücü durdurulamıyor"
 
 # libnautilus-private/nautilus-global-preferences.c:894
-#: ../src/nautilus-view.c:6678
+#: ../src/nautilus-view.c:6603
 #, c-format
 msgid "Connect to Server %s"
 msgstr "%s Sunucusuna Bağlan"
 
-#: ../src/nautilus-view.c:6683 ../src/nautilus-view.c:7794
-#: ../src/nautilus-view.c:7881 ../src/nautilus-view.c:7985
+#: ../src/nautilus-view.c:6608 ../src/nautilus-view.c:7719
+#: ../src/nautilus-view.c:7806 ../src/nautilus-view.c:7910
 msgid "_Connect"
 msgstr "_Bağlan"
 
-#: ../src/nautilus-view.c:6697
+#: ../src/nautilus-view.c:6622
 msgid "Link _name:"
 msgstr "Bağ _adı:"
 
 # components/music/nautilus-music-view.c:1710
 #. name, stock id, label
-#: ../src/nautilus-view.c:6915
+#: ../src/nautilus-view.c:6840
 msgid "Create New _Document"
 msgstr "Yeni _Belge Oluştur"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:18
 #. name, stock id, label
-#: ../src/nautilus-view.c:6916
+#: ../src/nautilus-view.c:6841
 msgid "Open Wit_h"
 msgstr "_Birlikte Aç"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:1
-#: ../src/nautilus-view.c:6917
+#: ../src/nautilus-view.c:6842
 msgid "Choose a program with which to open the selected item"
 msgstr "Seçili dosyayı açacak uygulamayı seç"
 
 # src/file-manager/fm-properties-window.c:487
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:6919 ../src/nautilus-view.c:7164
+#: ../src/nautilus-view.c:6844 ../src/nautilus-view.c:7089
 msgid "_Properties"
 msgstr "Ö_zellikler"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:37
 #. tooltip
-#: ../src/nautilus-view.c:6920 ../src/nautilus-view.c:8483
+#: ../src/nautilus-view.c:6845 ../src/nautilus-view.c:8408
 msgid "View or modify the properties of each selected item"
 msgstr "Seçili her öğenin özelliklerini göster ya da değiştir"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:6
 #. tooltip
-#: ../src/nautilus-view.c:6928
+#: ../src/nautilus-view.c:6853
 msgid "Create a new empty folder inside this folder"
 msgstr "Bu klasör içinde boş bir klasör oluştur"
 
 #. name, stock id, label
-#: ../src/nautilus-view.c:6930
+#: ../src/nautilus-view.c:6855
 msgid "No templates installed"
 msgstr "Hiçbir şablom kurulmamış"
 
@@ -5183,19 +5183,19 @@ msgstr "Hiçbir şablom kurulmamış"
 #. name, stock id
 #. translators: this is used to indicate that a document doesn't contain anything
 #. label, accelerator
-#: ../src/nautilus-view.c:6933
+#: ../src/nautilus-view.c:6858
 msgid "_Empty Document"
 msgstr "Boş B_elge"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:6
 #. tooltip
-#: ../src/nautilus-view.c:6934
+#: ../src/nautilus-view.c:6859
 msgid "Create a new empty document inside this folder"
 msgstr "Bu klasör içinde boş bir belge oluştur"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:21
 #. tooltip
-#: ../src/nautilus-view.c:6938
+#: ../src/nautilus-view.c:6863
 msgid "Open the selected item in this window"
 msgstr "Seçili dosyayı bu pencerede aç"
 
@@ -5205,78 +5205,78 @@ msgstr "Seçili dosyayı bu pencerede aç"
 #. Location-specific actions
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:6945 ../src/nautilus-view.c:7105
+#: ../src/nautilus-view.c:6870 ../src/nautilus-view.c:7030
 msgid "Open in Navigation Window"
 msgstr "Yöneltme Penceresinde Aç"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:19
 #. tooltip
-#: ../src/nautilus-view.c:6946
+#: ../src/nautilus-view.c:6871
 msgid "Open each selected item in a navigation window"
 msgstr "Seçili her dosyayı yöneltme penceresinde aç"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:19
 #. tooltip
-#: ../src/nautilus-view.c:6950
+#: ../src/nautilus-view.c:6875
 msgid "Open each selected item in a new tab"
 msgstr "Her seçili öğeyi yeni bir sekmede aç"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:22
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:6953
+#: ../src/nautilus-view.c:6878
 msgid "Other _Application..."
 msgstr "Başka _Uygulama..."
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:2
 #. tooltip
-#: ../src/nautilus-view.c:6954 ../src/nautilus-view.c:6958
+#: ../src/nautilus-view.c:6879 ../src/nautilus-view.c:6883
 msgid "Choose another application with which to open the selected item"
 msgstr "Seçili dosyayı açacak başka bir uygulamayı seç"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:22
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:6957
+#: ../src/nautilus-view.c:6882
 msgid "Open With Other _Application..."
 msgstr "Başka Bir _Uygulama ile Aç..."
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:6961
+#: ../src/nautilus-view.c:6886
 msgid "_Open Scripts Folder"
 msgstr "_Betikler Klasörünü Aç"
 
 #. tooltip
-#: ../src/nautilus-view.c:6962
+#: ../src/nautilus-view.c:6887
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Bu menüde görüntülenen betikleri içeren klasörü göster"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/nautilus-view.c:6970
+#: ../src/nautilus-view.c:6895
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "Seçili dosyaları Yapıştır komutuyla taşımaya hazırla"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/nautilus-view.c:6974
+#: ../src/nautilus-view.c:6899
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "Seçili dosyaları Yapıştır komutuyla kopyalamaya hazırla"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/nautilus-view.c:6978
+#: ../src/nautilus-view.c:6903
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr ""
 "Daha önce Kes ya da Kopyala komutu yardımıyla seçilen dosyaları taşı ya da "
 "kopyala"
 
 #. tooltip
-#: ../src/nautilus-view.c:6984
+#: ../src/nautilus-view.c:6909
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
@@ -5285,100 +5285,100 @@ msgstr ""
 "klasöre taşı ya da kopyala"
 
 #. name, stock id, label
-#: ../src/nautilus-view.c:6986
+#: ../src/nautilus-view.c:6911
 msgid "Cop_y to"
 msgstr "Şuraya Kop_yala:"
 
 #. name, stock id, label
-#: ../src/nautilus-view.c:6987
+#: ../src/nautilus-view.c:6912
 msgid "M_ove to"
 msgstr "_Şuraya Taşı:"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:32
 #. tooltip
-#: ../src/nautilus-view.c:6990
+#: ../src/nautilus-view.c:6915
 msgid "Select all items in this window"
 msgstr "Bu penceredeki tüm öğeleri seç"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:6993
+#: ../src/nautilus-view.c:6918
 msgid "Select I_tems Matching..."
 msgstr "_Eşleşen Öğeleri Seç..."
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:32
 #. tooltip
-#: ../src/nautilus-view.c:6994
+#: ../src/nautilus-view.c:6919
 msgid "Select items in this window matching a given pattern"
 msgstr "Bu penceredeki belirtilen desenle eşleşen öğeleri seç"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:6997
+#: ../src/nautilus-view.c:6922
 msgid "_Invert Selection"
 msgstr "_Seçimi Tersine Çevir"
 
 #. tooltip
-#: ../src/nautilus-view.c:6998
+#: ../src/nautilus-view.c:6923
 msgid "Select all and only the items that are not currently selected"
 msgstr "Hepsini ve sadece şu anda seçili olmayan öğeleri seç"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:9
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7001
+#: ../src/nautilus-view.c:6926
 msgid "D_uplicate"
 msgstr "İ_kizle"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:10
 #. tooltip
-#: ../src/nautilus-view.c:7002
+#: ../src/nautilus-view.c:6927
 msgid "Duplicate each selected item"
 msgstr "Her seçili öğeyi ikizle"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:4
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7005 ../src/nautilus-view.c:8468
+#: ../src/nautilus-view.c:6930 ../src/nautilus-view.c:8393
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "B_ağlantı Oluştur"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:7
 #. tooltip
-#: ../src/nautilus-view.c:7006
+#: ../src/nautilus-view.c:6931
 msgid "Create a symbolic link for each selected item"
 msgstr "Seçilen her dosya için sembolik bağlantı oluştur"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:26
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7009
+#: ../src/nautilus-view.c:6934
 msgid "_Rename..."
 msgstr "Ye_niden adlandır..."
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:15
 #. tooltip
-#: ../src/nautilus-view.c:7010
+#: ../src/nautilus-view.c:6935
 msgid "Rename selected item"
 msgstr "Seçili öğeyi yeniden adlandır"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:12
 #. tooltip
-#: ../src/nautilus-view.c:7018 ../src/nautilus-view.c:8429
+#: ../src/nautilus-view.c:6943 ../src/nautilus-view.c:8354
 msgid "Move each selected item to the Trash"
 msgstr "Tüm seçilen öğeleri Çöpe taşı"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:12
 #. tooltip
-#: ../src/nautilus-view.c:7022
+#: ../src/nautilus-view.c:6947
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "Tüm seçilen öğeleri Çöpe göndermeden sil"
 
 # libnautilus-private/nautilus-file-operations.c:929
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7025 ../src/nautilus-view.c:7135
+#: ../src/nautilus-view.c:6950 ../src/nautilus-view.c:7060
 msgid "_Restore"
 msgstr "_Geri Getir"
 
@@ -5391,12 +5391,12 @@ msgstr "_Geri Getir"
 #.
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7035
+#: ../src/nautilus-view.c:6960
 msgid "Reset View to _Defaults"
 msgstr "_Görünümleri Öntanımlı Hale Getir"
 
 #. tooltip
-#: ../src/nautilus-view.c:7036
+#: ../src/nautilus-view.c:6961
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr ""
 "Bu görünüm için tercihlerle uyuşmak için sıralamayı ve yaklaştırma oranını "
@@ -5405,135 +5405,135 @@ msgstr ""
 # libnautilus-private/nautilus-global-preferences.c:894
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7039
+#: ../src/nautilus-view.c:6964
 msgid "Connect To This Server"
 msgstr "Bu Sunucuya Bağlan"
 
 #. tooltip
-#: ../src/nautilus-view.c:7040
+#: ../src/nautilus-view.c:6965
 msgid "Make a permanent connection to this server"
 msgstr "Bu sunucuya kalıcı bir bağlantı oluştur"
 
 # libnautilus-private/nautilus-volume-monitor.c:1177
 #. tooltip
-#: ../src/nautilus-view.c:7044
+#: ../src/nautilus-view.c:6969
 msgid "Mount the selected volume"
 msgstr "Seçilen birimi bağla"
 
 # libnautilus-private/nautilus-volume-monitor.c:1177
 #. tooltip
-#: ../src/nautilus-view.c:7048
+#: ../src/nautilus-view.c:6973
 msgid "Unmount the selected volume"
 msgstr "Seçilen birimi ayır"
 
 # libnautilus-private/nautilus-volume-monitor.c:1177
 #. tooltip
-#: ../src/nautilus-view.c:7052
+#: ../src/nautilus-view.c:6977
 msgid "Eject the selected volume"
 msgstr "Seçili birimi çıkart"
 
 # libnautilus-private/nautilus-volume-monitor.c:1177
 #. tooltip
-#: ../src/nautilus-view.c:7056
+#: ../src/nautilus-view.c:6981
 msgid "Start the selected volume"
 msgstr "Seçilen birimi başlat"
 
 # libnautilus-private/nautilus-volume-monitor.c:1177
 #. tooltip
-#: ../src/nautilus-view.c:7060 ../src/nautilus-view.c:8007
+#: ../src/nautilus-view.c:6985 ../src/nautilus-view.c:7932
 msgid "Stop the selected volume"
 msgstr "Seçilen birimi durdur"
 
 # libnautilus-private/nautilus-volume-monitor.c:1177
 #. tooltip
-#: ../src/nautilus-view.c:7064 ../src/nautilus-view.c:7088
-#: ../src/nautilus-view.c:7160
+#: ../src/nautilus-view.c:6989 ../src/nautilus-view.c:7013
+#: ../src/nautilus-view.c:7085
 msgid "Detect media in the selected drive"
 msgstr "Seçilen sürücüdeki ortamı tanı"
 
 #. tooltip
-#: ../src/nautilus-view.c:7068
+#: ../src/nautilus-view.c:6993
 msgid "Mount the volume associated with the open folder"
 msgstr "Açık olan klasör ile ilişkili birimi bağla"
 
 #. tooltip
-#: ../src/nautilus-view.c:7072
+#: ../src/nautilus-view.c:6997
 msgid "Unmount the volume associated with the open folder"
 msgstr "Açık olan klasör ile ilişkili birimin bağını kaldır"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:6
 #. tooltip
-#: ../src/nautilus-view.c:7076
+#: ../src/nautilus-view.c:7001
 msgid "Eject the volume associated with the open folder"
 msgstr "Açılı klasör ile ilişkili birimi çıkart"
 
 #. tooltip
-#: ../src/nautilus-view.c:7080
+#: ../src/nautilus-view.c:7005
 msgid "Start the volume associated with the open folder"
 msgstr "Açık klasör ile ilişkili birimi başlat"
 
 #. tooltip
-#: ../src/nautilus-view.c:7084
+#: ../src/nautilus-view.c:7009
 msgid "Stop the volume associated with the open folder"
 msgstr "Açık olan klasör ile ilişkili birimi durdur"
 
 # src/file-manager/nautilus-search-list-view-ui.xml.h:2
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7091
+#: ../src/nautilus-view.c:7016
 msgid "Open File and Close window"
 msgstr "Dosyaı Aç ve Pencereyi Kapat"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7095
+#: ../src/nautilus-view.c:7020
 msgid "Sa_ve Search"
 msgstr "Aramayı _Kaydet"
 
 #. tooltip
-#: ../src/nautilus-view.c:7096
+#: ../src/nautilus-view.c:7021
 msgid "Save the edited search"
 msgstr "Düzenlenmiş aramayı kaydet"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7099
+#: ../src/nautilus-view.c:7024
 msgid "Sa_ve Search As..."
 msgstr "_Aramayı Farklı Kaydet..."
 
 #. tooltip
-#: ../src/nautilus-view.c:7100
+#: ../src/nautilus-view.c:7025
 msgid "Save the current search as a file"
 msgstr "Mevcut aramayı dosya olarak kaydet"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:19
 #. tooltip
-#: ../src/nautilus-view.c:7106
+#: ../src/nautilus-view.c:7031
 msgid "Open this folder in a navigation window"
 msgstr "Bu klasörü bir seyir penceresinde aç"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:19
 #. tooltip
-#: ../src/nautilus-view.c:7110
+#: ../src/nautilus-view.c:7035
 msgid "Open this folder in a new tab"
 msgstr "Bu klasörü yeni bir sekmede aç"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/nautilus-view.c:7115
+#: ../src/nautilus-view.c:7040
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "Bu klasörü Yapıştır konumuyla taşınacak şekilde hazırla"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/nautilus-view.c:7119
+#: ../src/nautilus-view.c:7044
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "Bu klasörü Yapıştır konumuyla kopyalanacak şekilde hazırla"
 
 #. tooltip
-#: ../src/nautilus-view.c:7123
+#: ../src/nautilus-view.c:7048
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into this "
 "folder"
@@ -5543,60 +5543,60 @@ msgstr ""
 
 # libnautilus-private/nautilus-file-operations.c:2099
 #. tooltip
-#: ../src/nautilus-view.c:7128
+#: ../src/nautilus-view.c:7053
 msgid "Move this folder to the Trash"
 msgstr "Bu klasörü Çöp'e taşı"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:12
 #. tooltip
-#: ../src/nautilus-view.c:7132
+#: ../src/nautilus-view.c:7057
 msgid "Delete this folder, without moving to the Trash"
 msgstr "Bu klasörü Çöp'e taşımadan sil"
 
 #. tooltip
-#: ../src/nautilus-view.c:7140
+#: ../src/nautilus-view.c:7065
 msgid "Mount the volume associated with this folder"
 msgstr "Bu klasörle ilişkili birimi bağla"
 
 #. tooltip
-#: ../src/nautilus-view.c:7144
+#: ../src/nautilus-view.c:7069
 msgid "Unmount the volume associated with this folder"
 msgstr "Bu klasör ile ilişkili birimin bağını kaldır"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:6
 #. tooltip
-#: ../src/nautilus-view.c:7148
+#: ../src/nautilus-view.c:7073
 msgid "Eject the volume associated with this folder"
 msgstr "Bu klasör ile ilişkili birimi çıkart"
 
 #. tooltip
-#: ../src/nautilus-view.c:7152
+#: ../src/nautilus-view.c:7077
 msgid "Start the volume associated with this folder"
 msgstr "Bu klasör ile ilişkili birimi başlat"
 
 #. tooltip
-#: ../src/nautilus-view.c:7156
+#: ../src/nautilus-view.c:7081
 msgid "Stop the volume associated with this folder"
 msgstr "Bu klasörle ilişkili birimi durdur"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:37
 #. tooltip
-#: ../src/nautilus-view.c:7165
+#: ../src/nautilus-view.c:7090
 msgid "View or modify the properties of this folder"
 msgstr "Bu klasörün özelliklerini görüntüle ya da değiştir"
 
 #. name, stock id, label
-#: ../src/nautilus-view.c:7168 ../src/nautilus-view.c:7171
+#: ../src/nautilus-view.c:7093 ../src/nautilus-view.c:7096
 msgid "_Other pane"
 msgstr "_Başka panel"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:21
-#: ../src/nautilus-view.c:7169
+#: ../src/nautilus-view.c:7094
 msgid "Copy the current selection to the other pane in the window"
 msgstr "Geçerli seçimi penceredeki diğer panele kopyala"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:21
-#: ../src/nautilus-view.c:7172
+#: ../src/nautilus-view.c:7097
 msgid "Move the current selection to the other pane in the window"
 msgstr "Geçerli seçimi penceredeki diğer panele taşı"
 
@@ -5604,235 +5604,235 @@ msgstr "Geçerli seçimi penceredeki diğer panele taşı"
 #. name, stock id, label
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7175 ../src/nautilus-view.c:7179
+#: ../src/nautilus-view.c:7100 ../src/nautilus-view.c:7104
 #: ../src/nautilus-window-menus.c:995 ../src/nautilus-window-menus.c:1251
 msgid "_Home"
 msgstr "_Başlangıç"
 
-#: ../src/nautilus-view.c:7176
+#: ../src/nautilus-view.c:7101
 msgid "Copy the current selection to the home folder"
 msgstr "Mevcut seçimi başlangıç klasörüne kopyala"
 
-#: ../src/nautilus-view.c:7180
+#: ../src/nautilus-view.c:7105
 msgid "Move the current selection to the home folder"
 msgstr "Mevcut seçimi başlangıç klasörüne taşı"
 
 # data/linksets/desktop.xml.h:1
 # libnautilus-private/nautilus-global-preferences.c:588
 #. name, stock id, label
-#: ../src/nautilus-view.c:7183 ../src/nautilus-view.c:7187
+#: ../src/nautilus-view.c:7108 ../src/nautilus-view.c:7112
 msgid "_Desktop"
 msgstr "_Masaüstü"
 
-#: ../src/nautilus-view.c:7184
+#: ../src/nautilus-view.c:7109
 msgid "Copy the current selection to the desktop"
 msgstr "Mevcut seçimi masaüstüne kopyala"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:12
-#: ../src/nautilus-view.c:7188
+#: ../src/nautilus-view.c:7113
 msgid "Move the current selection to the desktop"
 msgstr "Mevcut seçimi masaüstüne taşı"
 
 #. Translators: %s is a directory
-#: ../src/nautilus-view.c:7268
+#: ../src/nautilus-view.c:7193
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "Betikleri %s konumundan çalıştır ya da yönet"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/nautilus-view.c:7270
+#: ../src/nautilus-view.c:7195
 msgid "_Scripts"
 msgstr "_Betikler"
 
 # libnautilus-private/nautilus-file-operations.c:2099
-#: ../src/nautilus-view.c:7644
+#: ../src/nautilus-view.c:7569
 #, c-format
 msgid "Move the open folder out of the trash to \"%s\""
 msgstr "Açık olan klasörü çöpün dışındaki \"%s\" konumuna taşı"
 
 # libnautilus-private/nautilus-file-operations.c:2099
-#: ../src/nautilus-view.c:7647
+#: ../src/nautilus-view.c:7572
 #, c-format
 msgid "Move the selected folder out of the trash to \"%s\""
 msgid_plural "Move the selected folders out of the trash to \"%s\""
 msgstr[0] "Tüm seçili klasörleri çöpün dışındaki \"%s\" konumuna taşı"
 
 # libnautilus-private/nautilus-file-operations.c:2099
-#: ../src/nautilus-view.c:7651
+#: ../src/nautilus-view.c:7576
 #, c-format
 msgid "Move the selected folder out of the trash"
 msgid_plural "Move the selected folders out of the trash"
 msgstr[0] "Tüm seçili klasörleri çöpün dışına taşı"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:12
-#: ../src/nautilus-view.c:7657
+#: ../src/nautilus-view.c:7582
 #, c-format
 msgid "Move the selected file out of the trash to \"%s\""
 msgid_plural "Move the selected files out of the trash to \"%s\""
 msgstr[0] "Tüm seçili dosyaları çöpün dışındaki \"%s\" konumuna taşı"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:12
-#: ../src/nautilus-view.c:7661
+#: ../src/nautilus-view.c:7586
 #, c-format
 msgid "Move the selected file out of the trash"
 msgid_plural "Move the selected files out of the trash"
 msgstr[0] "Tüm seçili dosyaları çöpün dışına taşı"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:12
-#: ../src/nautilus-view.c:7667
+#: ../src/nautilus-view.c:7592
 #, c-format
 msgid "Move the selected item out of the trash to \"%s\""
 msgid_plural "Move the selected items out of the trash to \"%s\""
 msgstr[0] "Tüm seçili öğeleri çöpün dışındaki \"%s\" konumuna taşı"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:12
-#: ../src/nautilus-view.c:7671
+#: ../src/nautilus-view.c:7596
 #, c-format
 msgid "Move the selected item out of the trash"
 msgid_plural "Move the selected items out of the trash"
 msgstr[0] "Tüm seçili öğeleri çöpün dışına taşı"
 
 # libnautilus-private/nautilus-volume-monitor.c:1177
-#: ../src/nautilus-view.c:7787 ../src/nautilus-view.c:7791
-#: ../src/nautilus-view.c:7978 ../src/nautilus-view.c:7982
+#: ../src/nautilus-view.c:7712 ../src/nautilus-view.c:7716
+#: ../src/nautilus-view.c:7903 ../src/nautilus-view.c:7907
 msgid "Start the selected drive"
 msgstr "Seçilen sürücüyü başlat"
 
 # libnautilus-private/nautilus-volume-monitor.c:1177
-#: ../src/nautilus-view.c:7795 ../src/nautilus-view.c:7986
+#: ../src/nautilus-view.c:7720 ../src/nautilus-view.c:7911
 msgid "Connect to the selected drive"
 msgstr "Seçilen sürücüye bağlan"
 
-#: ../src/nautilus-view.c:7798 ../src/nautilus-view.c:7885
-#: ../src/nautilus-view.c:7989
+#: ../src/nautilus-view.c:7723 ../src/nautilus-view.c:7810
+#: ../src/nautilus-view.c:7914
 msgid "_Start Multi-disk Drive"
 msgstr "Çoklu Disk Sürücü _Başlat"
 
-#: ../src/nautilus-view.c:7799 ../src/nautilus-view.c:7990
+#: ../src/nautilus-view.c:7724 ../src/nautilus-view.c:7915
 msgid "Start the selected multi-disk drive"
 msgstr "Seçilen çoklu disk sürücünü başlat"
 
-#: ../src/nautilus-view.c:7802
+#: ../src/nautilus-view.c:7727
 msgid "U_nlock Drive"
 msgstr "_Sürücü Kilidini Kaldır"
 
 # libnautilus-private/nautilus-volume-monitor.c:1177
-#: ../src/nautilus-view.c:7803 ../src/nautilus-view.c:7994
+#: ../src/nautilus-view.c:7728 ../src/nautilus-view.c:7919
 msgid "Unlock the selected drive"
 msgstr "Seçilen sürücünün kilidini kaldır"
 
 # libnautilus-private/nautilus-volume-monitor.c:1177
-#: ../src/nautilus-view.c:7816
+#: ../src/nautilus-view.c:7741
 msgid "Stop the selected drive"
 msgstr "Seçilen sürücüyü durdur"
 
 # libnautilus-private/nautilus-volume-monitor.c:1177
-#: ../src/nautilus-view.c:7820 ../src/nautilus-view.c:8011
+#: ../src/nautilus-view.c:7745 ../src/nautilus-view.c:7936
 msgid "Safely remove the selected drive"
 msgstr "Seçilen sürücüyü güvenle kaldır"
 
-#: ../src/nautilus-view.c:7823 ../src/nautilus-view.c:7910
-#: ../src/nautilus-view.c:8014
+#: ../src/nautilus-view.c:7748 ../src/nautilus-view.c:7835
+#: ../src/nautilus-view.c:7939
 msgid "_Disconnect"
 msgstr "_Bağlantıyı Kes"
 
 # libnautilus-private/nautilus-volume-monitor.c:1177
-#: ../src/nautilus-view.c:7824 ../src/nautilus-view.c:8015
+#: ../src/nautilus-view.c:7749 ../src/nautilus-view.c:7940
 msgid "Disconnect the selected drive"
 msgstr "Seçilen sürücünün bağlantısını kes"
 
-#: ../src/nautilus-view.c:7827 ../src/nautilus-view.c:7914
-#: ../src/nautilus-view.c:8018
+#: ../src/nautilus-view.c:7752 ../src/nautilus-view.c:7839
+#: ../src/nautilus-view.c:7943
 msgid "_Stop Multi-disk Drive"
 msgstr "Çoklu Disk _Sürücüyü Durdur"
 
-#: ../src/nautilus-view.c:7828 ../src/nautilus-view.c:8019
+#: ../src/nautilus-view.c:7753 ../src/nautilus-view.c:7944
 msgid "Stop the selected multi-disk drive"
 msgstr "Seçilen çoklu disk sürücüsünü durdur"
 
 # libnautilus-private/nautilus-volume-monitor.c:1177
-#: ../src/nautilus-view.c:7832 ../src/nautilus-view.c:8023
+#: ../src/nautilus-view.c:7757 ../src/nautilus-view.c:7948
 msgid "Lock the selected drive"
 msgstr "Seçilen sürücüyü kilitle"
 
-#: ../src/nautilus-view.c:7874 ../src/nautilus-view.c:7878
+#: ../src/nautilus-view.c:7799 ../src/nautilus-view.c:7803
 msgid "Start the drive associated with the open folder"
 msgstr "Açık klasör ile ilişkili sürücüyü başlat"
 
-#: ../src/nautilus-view.c:7882
+#: ../src/nautilus-view.c:7807
 msgid "Connect to the drive associated with the open folder"
 msgstr "Açık olan klasör ile ilişkili sürücüye bağlan"
 
-#: ../src/nautilus-view.c:7886
+#: ../src/nautilus-view.c:7811
 msgid "Start the multi-disk drive associated with the open folder"
 msgstr "Açık klasör ile ilişkili çoklu disk sürücünü başlat"
 
-#: ../src/nautilus-view.c:7890
+#: ../src/nautilus-view.c:7815
 msgid "Unlock the drive associated with the open folder"
 msgstr "Açık olan klasör ile ilişkili sürücünün kilidini kaldır"
 
-#: ../src/nautilus-view.c:7903
+#: ../src/nautilus-view.c:7828
 msgid "_Stop the drive associated with the open folder"
 msgstr "Açık olan klasör ile ilişkili sürücüyü _durdur"
 
-#: ../src/nautilus-view.c:7907
+#: ../src/nautilus-view.c:7832
 msgid "Safely remove the drive associated with the open folder"
 msgstr "Açık klasör ile ilişkili sürücüyü güvenle kaldır"
 
-#: ../src/nautilus-view.c:7911
+#: ../src/nautilus-view.c:7836
 msgid "Disconnect the drive associated with the open folder"
 msgstr "Açık olan klasör ile ilişkili sürücünün bağlantısını kes"
 
-#: ../src/nautilus-view.c:7915
+#: ../src/nautilus-view.c:7840
 msgid "Stop the multi-disk drive associated with the open folder"
 msgstr "Açık olan klasör ile ilişkili çoklu disk sürücüsünü durdur"
 
-#: ../src/nautilus-view.c:7919
+#: ../src/nautilus-view.c:7844
 msgid "Lock the drive associated with the open folder"
 msgstr "Açık olan klasör ile ilişkili sürücüyü kilitle"
 
 # src/file-manager/fm-directory-view.c:3176
-#: ../src/nautilus-view.c:8146 ../src/nautilus-view.c:8424
+#: ../src/nautilus-view.c:8071 ../src/nautilus-view.c:8349
 msgid "_Delete Permanently"
 msgstr "_Kalıcı Olarak Sil"
 
 # src/file-manager/fm-directory-view.c:3176
-#: ../src/nautilus-view.c:8147
+#: ../src/nautilus-view.c:8072
 msgid "Delete the open folder permanently"
 msgstr "Açık olan klasörü kalıcı olarak sil"
 
 # libnautilus-private/nautilus-file-operations.c:2099
-#: ../src/nautilus-view.c:8151
+#: ../src/nautilus-view.c:8076
 msgid "Move the open folder to the Trash"
 msgstr "Açık olan klasörü Çöp'e taşı"
 
 # src/nautilus-sidebar.c:1237
-#: ../src/nautilus-view.c:8331
+#: ../src/nautilus-view.c:8256
 #, c-format
 msgid "_Open With %s"
 msgstr "%s İle _Aç"
 
 # src/file-manager/nautilus-search-list-view-ui.xml.h:2
-#: ../src/nautilus-view.c:8388
+#: ../src/nautilus-view.c:8313
 #, c-format
 msgid "Open in %'d New _Window"
 msgid_plural "Open in %'d New _Windows"
 msgstr[0] "%'d Yeni Pencerede _Aç"
 
 # src/file-manager/nautilus-search-list-view-ui.xml.h:2
-#: ../src/nautilus-view.c:8408
+#: ../src/nautilus-view.c:8333
 #, c-format
 msgid "Open in %'d New _Tab"
 msgid_plural "Open in %'d New _Tabs"
 msgstr[0] "%'d Yeni Sekmede _Aç"
 
 # src/file-manager/fm-directory-view.c:3176
-#: ../src/nautilus-view.c:8425
+#: ../src/nautilus-view.c:8350
 msgid "Delete all selected items permanently"
 msgstr "Seçili öğeleri kalıcı olarak sil"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:37
-#: ../src/nautilus-view.c:8481
+#: ../src/nautilus-view.c:8406
 msgid "View or modify the properties of the open folder"
 msgstr "Açık olan klasörün özelliklerini göster ya da değiştir"
 
@@ -5886,66 +5886,66 @@ msgid "Go to the location specified by this bookmark"
 msgstr "Bu yer imi tarafından belirtilen konuma git"
 
 # src/nautilus-window-manage-views.c:788
-#: ../src/nautilus-window-manage-views.c:603
+#: ../src/nautilus-window-manage-views.c:600
 msgid "You can choose another view or go to a different location."
 msgstr "Başka bir görünüm seçebilir ya da başka bir konuma gidebilirsiniz."
 
-#: ../src/nautilus-window-manage-views.c:622
+#: ../src/nautilus-window-manage-views.c:619
 msgid "The location cannot be displayed with this viewer."
 msgstr "Konum bu görüntüleyici ile gösterilemez."
 
 # src/file-manager/fm-properties-window.c:983
-#: ../src/nautilus-window-manage-views.c:1075
+#: ../src/nautilus-window-manage-views.c:1072
 msgid "Content View"
 msgstr "İçerik Görünümü"
 
 # libnautilus-private/nautilus-search-uri.c:249
-#: ../src/nautilus-window-manage-views.c:1076
+#: ../src/nautilus-window-manage-views.c:1073
 msgid "View of the current folder"
 msgstr "Mevcut klasörün görünümü"
 
-#: ../src/nautilus-window-manage-views.c:1234
+#: ../src/nautilus-window-manage-views.c:1231
 msgid "Searching..."
 msgstr "Arıyor..."
 
 # src/nautilus-window-manage-views.c:1330
-#: ../src/nautilus-window-manage-views.c:1761
+#: ../src/nautilus-window-manage-views.c:1758
 msgid "Nautilus has no installed viewer capable of displaying the folder."
 msgstr ""
 "Nautilus'e klasörü gösterebilecek yetenekte bir görüntüleyici kurulmamış."
 
 # src/nautilus-window-menus.c:734
-#: ../src/nautilus-window-manage-views.c:1767
+#: ../src/nautilus-window-manage-views.c:1764
 msgid "The location is not a folder."
 msgstr "Konum bir klasör değil."
 
 # src/nautilus-theme-selector.c:397
-#: ../src/nautilus-window-manage-views.c:1773
+#: ../src/nautilus-window-manage-views.c:1770
 #, c-format
 msgid "Could not find \"%s\"."
 msgstr "\"%s\" bulunamadı."
 
 # src/nautilus-window-manage-views.c:1302
-#: ../src/nautilus-window-manage-views.c:1776
+#: ../src/nautilus-window-manage-views.c:1773
 msgid "Please check the spelling and try again."
 msgstr "Lütfen, yazım hatalarını kontrol edip tekrar deneyin."
 
 # src/nautilus-window-manage-views.c:1342
-#: ../src/nautilus-window-manage-views.c:1784
+#: ../src/nautilus-window-manage-views.c:1781
 #, c-format
 msgid "Nautilus cannot handle \"%s\" locations."
 msgstr "Nautilus \"%s\" konumlarını işleyemiyor."
 
 # src/nautilus-window-manage-views.c:1342
-#: ../src/nautilus-window-manage-views.c:1787
+#: ../src/nautilus-window-manage-views.c:1784
 msgid "Nautilus cannot handle this kind of location."
 msgstr "Nautilus bu tip bir konumu işleyemiyor."
 
-#: ../src/nautilus-window-manage-views.c:1794
+#: ../src/nautilus-window-manage-views.c:1791
 msgid "Unable to mount the location."
 msgstr "Konum bağlanamadı."
 
-#: ../src/nautilus-window-manage-views.c:1800
+#: ../src/nautilus-window-manage-views.c:1797
 msgid "Access was denied."
 msgstr "Erişim engellendi."
 
@@ -5955,18 +5955,18 @@ msgstr "Erişim engellendi."
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: ../src/nautilus-window-manage-views.c:1809
+#: ../src/nautilus-window-manage-views.c:1806
 #, c-format
 msgid "Could not display \"%s\", because the host could not be found."
 msgstr "\"%s\" gösterilemedi, çünkü makine bulunamadı."
 
 # src/nautilus-window-manage-views.c:1358
-#: ../src/nautilus-window-manage-views.c:1811
+#: ../src/nautilus-window-manage-views.c:1808
 msgid ""
 "Check that the spelling is correct and that your proxy settings are correct."
 msgstr "Yazım yanlışlarını ve vekil ayarlarınızın doğruluğunu kontrol edin."
 
-#: ../src/nautilus-window-manage-views.c:1826
+#: ../src/nautilus-window-manage-views.c:1823
 #, c-format
 msgid ""
 "Error: %s\n"
@@ -6017,7 +6017,7 @@ msgstr "Telif Hakkı © %Id–%Id Nautilus geliştiricileri"
 # data/static_bookmarks.xml.h:25 src/nautilus-window-manage-views.c:235
 # src/nautilus-window-menus.c:552
 #. Set initial window title
-#: ../src/nautilus-window-menus.c:382 ../src/nautilus-window.c:2002
+#: ../src/nautilus-window-menus.c:382 ../src/nautilus-window.c:1996
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -6153,7 +6153,6 @@ msgstr "Nautilus yardımını göster"
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:947
-#| msgid "_Search for Files..."
 msgid "Search for files"
 msgstr "Dosya ara"
 
@@ -6168,7 +6167,6 @@ msgstr ""
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:951
-#| msgid "Sort _folders before files"
 msgid "Sort files and folders"
 msgstr "Dosya ve klasörleri sırala"
 
@@ -6181,7 +6179,6 @@ msgstr ""
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:955
-#| msgid "Original file"
 msgid "Find a lost file"
 msgstr "Kayıp bir dosyayı bul"
 
@@ -6196,7 +6193,6 @@ msgstr ""
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:959
-#| msgid "Access and organize files"
 msgid "Share and transfer files"
 msgstr "Dosyaları paylaş ve aktar"
 
@@ -6596,7 +6592,7 @@ msgid "_Close Tab"
 msgstr "Sekmeyi _Kapat"
 
 # src/file-manager/fm-properties-window.c:1677
-#: ../src/nautilus-window.c:1512
+#: ../src/nautilus-window.c:1506
 #, c-format
 msgid "%s - File Browser"
 msgstr "%s - Dosya Tarayıcı"
@@ -6665,6 +6661,9 @@ msgstr "Dosyayı posta veya anlık ileti yoluyla gönder..."
 #: ../nautilus-sendto-extension/nautilus-nste.c:86
 msgid "Send files by mail, instant message..."
 msgstr "Dosyaları posta veya anlık ileti yoluyla gönder..."
+
+#~ msgid "There is %S available, but %S is required."
+#~ msgstr "%S kullanılabilir alan var, ancak %S gerekli."
 
 #~ msgid "%"
 #~ msgstr "%"
