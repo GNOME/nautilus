@@ -2678,6 +2678,7 @@ verify_destination (CommonJob *job,
 	GFileInfo *info, *fsinfo;
 	GError *error;
 	guint64 free_size;
+	guint64 size_difference;
 	char *primary, *secondary, *details;
 	int response;
 	GFileType file_type;
@@ -2777,10 +2778,11 @@ verify_destination (CommonJob *job,
 							      G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
 		
 		if (free_size < required_size) {
+			size_difference = required_size - free_size;
 			primary = f (_("Error while copying to \"%B\"."), dest);
-			secondary = f(_("There is not enough space on the destination. Try to remove files to make space."));
+			secondary = f (_("There is not enough space on the destination. Try to remove files to make space."));
 			
-			details = f (_("There is %S available, but %S is required."), free_size, required_size);
+			details = f (_("%S more space is required to copy to the destination."), size_difference);
 			
 			response = run_warning (job,
 						primary,
