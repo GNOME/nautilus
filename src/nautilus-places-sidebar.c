@@ -49,6 +49,7 @@
 #include "nautilus-application.h"
 #include "nautilus-bookmark-list.h"
 #include "nautilus-places-sidebar.h"
+#include "nautilus-properties-window.h"
 #include "nautilus-window.h"
 #include "nautilus-window-slot.h"
 
@@ -91,6 +92,8 @@ typedef struct {
 	GtkWidget *popup_menu_empty_trash_item;
 	GtkWidget *popup_menu_start_item;
 	GtkWidget *popup_menu_stop_item;
+	GtkWidget *popup_menu_properties_separator_item;
+	GtkWidget *popup_menu_properties_item;
 
 	/* volume mounting - delayed open process */
 	gboolean mounting;
@@ -1566,6 +1569,8 @@ bookmarks_popup_menu_detach_cb (GtkWidget *attach_widget,
 	sidebar->popup_menu_start_item = NULL;
 	sidebar->popup_menu_stop_item = NULL;
 	sidebar->popup_menu_empty_trash_item = NULL;
+	sidebar->popup_menu_properties_separator_item = NULL;
+	sidebar->popup_menu_properties_item = NULL;
 }
 
 static void
@@ -1636,6 +1641,8 @@ bookmarks_check_popup_sensitivity (NautilusPlacesSidebar *sidebar)
 	GDrive *drive = NULL;
 	GVolume *volume = NULL;
 	GMount *mount = NULL;
+	GFile *location;
+	NautilusDirectory *directory;
 	gboolean show_mount;
 	gboolean show_unmount;
 	gboolean show_eject;
@@ -1643,6 +1650,7 @@ bookmarks_check_popup_sensitivity (NautilusPlacesSidebar *sidebar)
 	gboolean show_start;
 	gboolean show_stop;
 	gboolean show_empty_trash;
+	gboolean show_properties;
 	char *uri = NULL;
 	
 	type = PLACES_BUILT_IN;
@@ -1677,6 +1685,18 @@ bookmarks_check_popup_sensitivity (NautilusPlacesSidebar *sidebar)
 	show_empty_trash = (uri != NULL) &&
 			   (!strcmp (uri, "trash:///"));
 
+	/* Only show properties for local mounts */
+	show_properties = (mount != NULL);
+	if (mount != NULL) {
+		location = g_mount_get_default_location (mount);
+		directory = nautilus_directory_get (location);
+
+		show_properties = nautilus_directory_is_local (directory);
+
+		nautilus_directory_unref (directory);
+		g_object_unref (location);
+	}
+
 	gtk_widget_set_visible (sidebar->popup_menu_separator_item,
 		      show_mount || show_unmount || show_eject || show_empty_trash);
 	gtk_widget_set_visible (sidebar->popup_menu_mount_item, show_mount);
@@ -1686,6 +1706,8 @@ bookmarks_check_popup_sensitivity (NautilusPlacesSidebar *sidebar)
 	gtk_widget_set_visible (sidebar->popup_menu_start_item, show_start);
 	gtk_widget_set_visible (sidebar->popup_menu_stop_item, show_stop);
 	gtk_widget_set_visible (sidebar->popup_menu_empty_trash_item, show_empty_trash);
+	gtk_widget_set_visible (sidebar->popup_menu_properties_separator_item, show_properties);
+	gtk_widget_set_visible (sidebar->popup_menu_properties_item, show_properties);
 
 	/* Adjust start/stop items to reflect the type of the drive */
 	gtk_menu_item_set_label (GTK_MENU_ITEM (sidebar->popup_menu_start_item), _("_Start"));
@@ -2496,6 +2518,41 @@ find_next_row (NautilusPlacesSidebar *sidebar, GtkTreeIter *iter)
 	return find_prev_or_next_row (sidebar, iter, FALSE);
 }
 
+static void
+properties_cb (GtkMenuItem           *item,
+	       NautilusPlacesSidebar *sidebar)
+{
+	GtkTreeModel *model;
+	GtkTreePath *path = NULL;
+	GtkTreeIter iter;
+	GList *list;
+	NautilusFile *file;
+	char *uri;
+
+	model = gtk_tree_view_get_model (sidebar->tree_view);
+	gtk_tree_view_get_cursor (sidebar->tree_view, &path, NULL);
+
+	if (path == NULL || !gtk_tree_model_get_iter (model, &iter, path)) {
+		gtk_tree_path_free (path);
+		return;
+	}
+
+	gtk_tree_model_get (model, &iter, PLACES_SIDEBAR_COLUMN_URI, &uri, -1);
+
+	if (uri != NULL) {
+
+		file = nautilus_file_get_by_uri (uri);
+		list = g_list_prepend (NULL, nautilus_file_ref (file));
+
+		nautilus_properties_window_present (list, GTK_WIDGET (sidebar));
+
+		nautilus_file_list_free (list);
+		g_free (uri);
+	}
+
+	gtk_tree_path_free (path);
+}
+
 /* Handler for GtkWidget::key-press-event on the shortcuts list */
 static gboolean
 bookmarks_key_press_event_cb (GtkWidget             *widget,
@@ -2692,6 +2749,18 @@ bookmarks_build_popup_menu (NautilusPlacesSidebar *sidebar)
 	sidebar->popup_menu_empty_trash_item = item;
 	g_signal_connect (item, "activate",
 		    G_CALLBACK (empty_trash_cb), sidebar);
+	gtk_widget_show (item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
+
+	/* Properties menu item */
+
+	sidebar->popup_menu_properties_separator_item =
+		GTK_WIDGET (eel_gtk_menu_append_separator (GTK_MENU (sidebar->popup_menu)));
+
+	item = gtk_menu_item_new_with_mnemonic (_("_Properties"));
+	sidebar->popup_menu_properties_item = item;
+	g_signal_connect (item, "activate",
+			  G_CALLBACK (properties_cb), sidebar);
 	gtk_widget_show (item);
 	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
 
