@@ -25,14 +25,6 @@
 
 #include "nautilus-directory-notify.h"
 
-#ifdef G_THREADS_ENABLED
-#define MUTEX_LOCK(a)	if ((a) != NULL) g_mutex_lock (a)
-#define MUTEX_UNLOCK(a)	if ((a) != NULL) g_mutex_unlock (a)
-#else
-#define MUTEX_LOCK(a)
-#define MUTEX_UNLOCK(a)
-#endif
-
 typedef enum {
 	CHANGE_FILE_INITIAL,
 	CHANGE_FILE_ADDED,
@@ -54,9 +46,7 @@ typedef struct {
 typedef struct {
 	GList *head;
 	GList *tail;
-#ifdef G_THREADS_ENABLED
-	GMutex *mutex;
-#endif
+	GMutex mutex;
 } NautilusFileChangesQueue;
 
 static NautilusFileChangesQueue *
@@ -65,10 +55,8 @@ nautilus_file_changes_queue_new (void)
 	NautilusFileChangesQueue *result;
 
 	result = g_new0 (NautilusFileChangesQueue, 1);
-	
-#ifdef G_THREADS_ENABLED
-	result->mutex = g_mutex_new ();
-#endif
+	g_mutex_init (&result->mutex);
+
 	return result;
 }
 
@@ -84,58 +72,18 @@ nautilus_file_changes_queue_get (void)
 	return file_changes_queue;
 }
 
-#if 0 /* no public free call yet */
-
-static void
-nautilus_file_change_free (NautilusFileChange *change)
-{
-	if (change->from) {
-		g_object_unref (change->from);
-	}
-	if (change->to) {
-		g_object_unref (change->to);
-	}
-}
-
-void
-nautilus_file_changes_queue_free (NautilusFileChangesQueue *queue)
-{
-	GList *p;
-	if (queue == NULL) {
-		return;
-	}
-	
-#ifdef G_THREADS_ENABLED
-	/* if lock on a defunct mutex were defined (returning a failure)
-	 * we would lock here 
-	 */
-#endif
-
-	for (p = queue->head; p != NULL; p = p->next) {
-		nautilus_file_change_free (p->data);
-	}
-	g_list_free (queue->head);
-
-#ifdef G_THREADS_ENABLED
-	g_mutex_free (queue->mutex);
-#endif
-	g_free (queue);
-}
-
-#endif /* no public free call yet */
-
 static void
 nautilus_file_changes_queue_add_common (NautilusFileChangesQueue *queue, 
 	NautilusFileChange *new_item)
 {
 	/* enqueue the new queue item while locking down the list */
-	MUTEX_LOCK (queue->mutex);
+	g_mutex_lock (&queue->mutex);
 
 	queue->head = g_list_prepend (queue->head, new_item);
 	if (queue->tail == NULL)
 		queue->tail = queue->head;
 
-	MUTEX_UNLOCK (queue->mutex);
+	g_mutex_unlock (&queue->mutex);
 }
 
 void
@@ -237,7 +185,7 @@ nautilus_file_changes_queue_get_change (NautilusFileChangesQueue *queue)
 	g_assert (queue != NULL);
 	
 	/* dequeue the tail item while locking down the list */
-	MUTEX_LOCK (queue->mutex);
+	g_mutex_lock (&queue->mutex);
 
 	if (queue->tail == NULL) {
 		result = NULL;
@@ -250,7 +198,7 @@ nautilus_file_changes_queue_get_change (NautilusFileChangesQueue *queue)
 		queue->tail = new_tail;
 	}
 
-	MUTEX_UNLOCK (queue->mutex);
+	g_mutex_unlock (&queue->mutex);
 
 	return result;
 }
