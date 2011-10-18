@@ -47,8 +47,6 @@ main (int argc, char* argv[])
         NautilusProgressInfoManager *manager;
 	NautilusProgressInfo *progress_info;
 	
-	g_thread_init (NULL);
-	
 	test_init (&argc, &argv);
 
 	if (argc < 3) {

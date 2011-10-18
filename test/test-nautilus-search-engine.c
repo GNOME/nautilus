@@ -33,8 +33,6 @@ main (int argc, char* argv[])
 {
 	NautilusSearchEngine *engine;
 	NautilusQuery *query;
-
-	g_thread_init (NULL);
 	
 	gtk_init (&argc, &argv);
 
