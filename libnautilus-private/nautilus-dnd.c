@@ -833,11 +833,16 @@ void
 nautilus_drag_autoscroll_calculate_delta (GtkWidget *widget, float *x_scroll_delta, float *y_scroll_delta)
 {
 	GtkAllocation allocation;
+	GdkDeviceManager *manager;
+	GdkDevice *pointer;
 	int x, y;
 
 	g_assert (GTK_IS_WIDGET (widget));
 
-	gdk_window_get_pointer (gtk_widget_get_window (widget), &x, &y, NULL);
+	manager = gdk_display_get_device_manager (gtk_widget_get_display (widget));
+	pointer = gdk_device_manager_get_client_pointer (manager);
+	gdk_window_get_device_position (gtk_widget_get_window (widget), pointer,
+					&x, &y, NULL);
 
 	/* Find out if we are anywhere close to the tree view edges
 	 * to see if we need to autoscroll.

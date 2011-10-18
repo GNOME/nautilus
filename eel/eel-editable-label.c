@@ -1902,9 +1902,10 @@ eel_editable_label_motion (GtkWidget      *widget,
   if ((event->state & GDK_BUTTON1_MASK) == 0)
     return FALSE;
 
-  gdk_window_get_pointer (gtk_widget_get_window (widget),
-                          &x, &y, NULL);
-  
+  gdk_window_get_device_position (gtk_widget_get_window (widget),
+                                  event->device,
+                                  &x, &y, NULL);
+
   get_layout_index (label, x, y, &index);
 
   eel_editable_label_select_region_index (label,
