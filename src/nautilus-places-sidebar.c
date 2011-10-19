@@ -1380,9 +1380,9 @@ reorder_bookmarks (NautilusPlacesSidebar *sidebar,
 	int old_position;
 
 	/* Get the selected path */
-
-	if (!get_selected_iter (sidebar, &iter))
-		g_assert_not_reached ();
+	if (!get_selected_iter (sidebar, &iter)) {
+		return;
+	}
 
 	gtk_tree_model_get (GTK_TREE_MODEL (sidebar->filter_model), &iter,
 			    PLACES_SIDEBAR_COLUMN_ROW_TYPE, &type,
