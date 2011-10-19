@@ -1873,15 +1873,15 @@ open_shortcut_from_menu (NautilusPlacesSidebar *sidebar,
 			 NautilusWindowOpenFlags	       flags)
 {
 	GtkTreeModel *model;
-	GtkTreePath *path;
 	GtkTreeIter iter;
+	GtkTreePath *path = NULL;
 
 	model = gtk_tree_view_get_model (sidebar->tree_view);
 	gtk_tree_view_get_cursor (sidebar->tree_view, &path, NULL);
 
-	gtk_tree_model_get_iter (model, &iter, path);
-
-	open_selected_bookmark (sidebar, model, &iter, flags);
+	if (path != NULL && gtk_tree_model_get_iter (model, &iter, path)) {
+		open_selected_bookmark (sidebar, model, &iter, flags);
+	}
 
 	gtk_tree_path_free (path);
 }
@@ -2878,35 +2878,32 @@ static gboolean
 bookmarks_button_press_event_cb (GtkWidget             *widget,
 				 GdkEventButton        *event,
 				 NautilusPlacesSidebar *sidebar)
+
 {
+	GtkTreeModel *model;
+	GtkTreeView *tree_view;
+	GtkTreeIter iter;
+	GtkTreePath *path = NULL;
+	gboolean retval = FALSE;
+
 	if (event->type != GDK_BUTTON_PRESS) {
 		/* ignore multiple clicks */
 		return TRUE;
 	}
 
+	tree_view = GTK_TREE_VIEW (widget);
+	model = gtk_tree_view_get_model (tree_view);
+	gtk_tree_view_get_path_at_pos (tree_view, (int) event->x, (int) event->y, 
+				       &path, NULL, NULL, NULL);
+
+	if (path == NULL || !gtk_tree_model_get_iter (model, &iter, path)) {
+		return FALSE;
+	}
+
 	if (event->button == 3) {
 		bookmarks_popup_menu (sidebar, event);
 	} else if (event->button == 2) {
-		GtkTreeModel *model;
-		GtkTreePath *path;
-		GtkTreeIter iter;
-		GtkTreeView *tree_view;
 		NautilusWindowOpenFlags flags = 0;
-		gboolean res;
-
-		tree_view = GTK_TREE_VIEW (widget);
-		g_assert (tree_view == sidebar->tree_view);
-
-		model = gtk_tree_view_get_model (tree_view);
-
-		res = gtk_tree_view_get_path_at_pos (tree_view, (int) event->x, (int) event->y, 
-						     &path, NULL, NULL, NULL);
-
-		if (!res) {
-			return FALSE;
-		}
-
-		gtk_tree_model_get_iter (model, &iter, path);
 
 		if (g_settings_get_boolean (nautilus_preferences,
 					    NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
@@ -2918,14 +2915,12 @@ bookmarks_button_press_event_cb (GtkWidget             *widget,
 		}
 
 		open_selected_bookmark (sidebar, model, &iter, flags);
-
-		if (path != NULL) {
-			gtk_tree_path_free (path);
-			return TRUE;
-		}
+		retval = TRUE;
 	}
 
-	return FALSE;
+	gtk_tree_path_free (path);
+
+	return retval;
 }
 
 
