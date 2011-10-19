@@ -1069,10 +1069,8 @@ compute_drop_position (GtkTreeView *tree_view,
 	SectionType section_type;
 
 	if (!gtk_tree_view_get_dest_row_at_pos (tree_view,
-					   x,
-					   y,
-					   path,
-					   pos)) {
+						x, y,
+						path, pos)) {
 		return FALSE;
 	}
 
