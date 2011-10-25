@@ -206,8 +206,8 @@ eel_str_replace_substring (const char *string,
 		return NULL;
 	}
 
-	substring_length = strlen (substring);
-	replacement_length = strlen (replacement);
+	substring_length = substring ? strlen (substring) : 0;
+	replacement_length = replacement ? strlen (replacement) : 0;
 
 	result_length = strlen (string);
 	for (p = string; ; p = substring_position + substring_length) {
