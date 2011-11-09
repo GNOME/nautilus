@@ -25,7 +25,7 @@ msgstr ""
 "Project-Id-Version: nautilus.master.es\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2011-10-18 15:28+0000\n"
+"POT-Creation-Date: 2011-10-29 15:03+0000\n"
 "PO-Revision-Date: 2011-10-19 16:19+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
@@ -120,7 +120,7 @@ msgstr " (Unicode inválido)"
 #: ../libnautilus-private/nautilus-bookmark.c:129
 #: ../libnautilus-private/nautilus-desktop-link.c:120
 #: ../libnautilus-private/nautilus-file-utilities.c:68
-#: ../src/nautilus-pathbar.c:1202 ../src/nautilus-places-sidebar.c:668
+#: ../src/nautilus-pathbar.c:1202 ../src/nautilus-places-sidebar.c:671
 #: ../src/nautilus-tree-sidebar.c:1336
 msgid "Home"
 msgstr "Carpeta personal"
@@ -775,7 +775,7 @@ msgstr "Se eliminarán permanentemente todos los elementos en la papelera."
 #. Empty Trash menu item
 #: ../libnautilus-private/nautilus-file-operations.c:1339
 #: ../libnautilus-private/nautilus-file-operations.c:2189
-#: ../src/nautilus-places-sidebar.c:2691 ../src/nautilus-trash-bar.c:204
+#: ../src/nautilus-places-sidebar.c:2749 ../src/nautilus-trash-bar.c:204
 msgid "Empty _Trash"
 msgstr "Vaciar la _papelera"
 
@@ -2048,7 +2048,7 @@ msgid ""
 "If set to true, then Nautilus browser windows will always use a textual "
 "input entry for the location toolbar, instead of the pathbar."
 msgstr ""
-"Si se establece a cierto, entonces las ventanas del explorador Nautilus "
+"Si se establece a cierto, entonces las ventanas del examinador Nautilus "
 "usarán siempre una entrada textual para la barra de lugar, en vez de la "
 "barra de rutas."
 
@@ -2945,7 +2945,7 @@ msgstr "La vista de escritorio ha encontrado un error mientras se iniciaba."
 
 #. hardcode "Desktop"
 #: ../src/nautilus-desktop-window.c:83 ../src/nautilus-desktop-window.c:281
-#: ../src/nautilus-pathbar.c:1200 ../src/nautilus-places-sidebar.c:685
+#: ../src/nautilus-pathbar.c:1200 ../src/nautilus-places-sidebar.c:688
 msgid "Desktop"
 msgstr "Escritorio"
 
@@ -3986,70 +3986,70 @@ msgstr[1] "Abriendo %d elementos."
 msgid "Close tab"
 msgstr "Cerrar pestaña"
 
-#: ../src/nautilus-places-sidebar.c:322
+#: ../src/nautilus-places-sidebar.c:325
 msgid "Devices"
 msgstr "Dispositivos"
 
 # src/nautilus-window-menus.c:1235
-#: ../src/nautilus-places-sidebar.c:330
+#: ../src/nautilus-places-sidebar.c:333
 msgid "Bookmarks"
 msgstr "Marcadores"
 
-#: ../src/nautilus-places-sidebar.c:533 ../src/nautilus-places-sidebar.c:558
+#: ../src/nautilus-places-sidebar.c:536 ../src/nautilus-places-sidebar.c:561
 #, c-format
 msgid "Mount and open %s"
 msgstr "Montar y abrir %s"
 
-#: ../src/nautilus-places-sidebar.c:659
+#: ../src/nautilus-places-sidebar.c:662
 msgid "Computer"
 msgstr "Equipo"
 
 # libnautilus-private/nautilus-file.c:2586
 #. tooltip
-#: ../src/nautilus-places-sidebar.c:670 ../src/nautilus-window-menus.c:996
+#: ../src/nautilus-places-sidebar.c:673 ../src/nautilus-window-menus.c:996
 msgid "Open your personal folder"
 msgstr "Abrir su carpeta personal"
 
 # libnautilus-private/nautilus-file.c:2586
-#: ../src/nautilus-places-sidebar.c:687
+#: ../src/nautilus-places-sidebar.c:690
 msgid "Open the contents of your desktop in a folder"
 msgstr "Abrir el contenido de su escritorio en una carpeta"
 
-#: ../src/nautilus-places-sidebar.c:785 ../src/nautilus-tree-sidebar.c:1340
+#: ../src/nautilus-places-sidebar.c:788 ../src/nautilus-tree-sidebar.c:1340
 msgid "File System"
 msgstr "Sistema de archivos"
 
-#: ../src/nautilus-places-sidebar.c:787
+#: ../src/nautilus-places-sidebar.c:790
 msgid "Open the contents of the File System"
 msgstr "Abrir el contenido del sistema de archivos"
 
-#: ../src/nautilus-places-sidebar.c:797 ../src/nautilus-trash-bar.c:191
+#: ../src/nautilus-places-sidebar.c:800 ../src/nautilus-trash-bar.c:191
 msgid "Trash"
 msgstr "Papelera"
 
 # src/nautilus-sidebar.c:1145
-#: ../src/nautilus-places-sidebar.c:799
+#: ../src/nautilus-places-sidebar.c:802
 msgid "Open the trash"
 msgstr "Abrir la papelera"
 
 # libnautilus-private/nautilus-undo-signal-handlers.c:177
-#: ../src/nautilus-places-sidebar.c:807
+#: ../src/nautilus-places-sidebar.c:810
 msgid "Network"
 msgstr "Red"
 
 # libnautilus-private/nautilus-undo-signal-handlers.c:177
-#: ../src/nautilus-places-sidebar.c:839
+#: ../src/nautilus-places-sidebar.c:842
 msgid "Browse Network"
 msgstr "Examinar la red"
 
-#: ../src/nautilus-places-sidebar.c:841
+#: ../src/nautilus-places-sidebar.c:844
 msgid "Browse the contents of the network"
 msgstr "Examinar el contenido de la red"
 
 #. Adjust start/stop items to reflect the type of the drive
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:1691 ../src/nautilus-places-sidebar.c:2675
+#: ../src/nautilus-places-sidebar.c:1714 ../src/nautilus-places-sidebar.c:2733
 #: ../src/nautilus-view.c:6980 ../src/nautilus-view.c:7004
 #: ../src/nautilus-view.c:7076 ../src/nautilus-view.c:7711
 #: ../src/nautilus-view.c:7715 ../src/nautilus-view.c:7798
@@ -4064,7 +4064,7 @@ msgstr "_Iniciar"
 # src/nautilus-window-toolbars.c:156
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:1692 ../src/nautilus-places-sidebar.c:2682
+#: ../src/nautilus-places-sidebar.c:1715 ../src/nautilus-places-sidebar.c:2740
 #: ../src/nautilus-view.c:6984 ../src/nautilus-view.c:7008
 #: ../src/nautilus-view.c:7080 ../src/nautilus-view.c:7740
 #: ../src/nautilus-view.c:7827 ../src/nautilus-view.c:7931
@@ -4073,60 +4073,60 @@ msgid "_Stop"
 msgstr "_Detener"
 
 #. start() for type G_DRIVE_START_STOP_TYPE_SHUTDOWN is normally not used
-#: ../src/nautilus-places-sidebar.c:1697
+#: ../src/nautilus-places-sidebar.c:1720
 msgid "_Power On"
 msgstr "_Encender"
 
 # src/nautilus-property-browser.c:1985
-#: ../src/nautilus-places-sidebar.c:1698 ../src/nautilus-view.c:7744
+#: ../src/nautilus-places-sidebar.c:1721 ../src/nautilus-view.c:7744
 #: ../src/nautilus-view.c:7831 ../src/nautilus-view.c:7935
 msgid "_Safely Remove Drive"
 msgstr "Expulsar unidad de forma _segura"
 
-#: ../src/nautilus-places-sidebar.c:1701
+#: ../src/nautilus-places-sidebar.c:1724
 msgid "_Connect Drive"
 msgstr "_Conectar unidad"
 
-#: ../src/nautilus-places-sidebar.c:1702
+#: ../src/nautilus-places-sidebar.c:1725
 msgid "_Disconnect Drive"
 msgstr "_Desconectar unidad"
 
-#: ../src/nautilus-places-sidebar.c:1705
+#: ../src/nautilus-places-sidebar.c:1728
 msgid "_Start Multi-disk Device"
 msgstr "_Iniciar unidad multidisco"
 
-#: ../src/nautilus-places-sidebar.c:1706
+#: ../src/nautilus-places-sidebar.c:1729
 msgid "_Stop Multi-disk Device"
 msgstr "_Parar unidad multidisco"
 
 #. stop() for type G_DRIVE_START_STOP_TYPE_PASSWORD is normally not used
-#: ../src/nautilus-places-sidebar.c:1710 ../src/nautilus-view.c:7814
+#: ../src/nautilus-places-sidebar.c:1733 ../src/nautilus-view.c:7814
 #: ../src/nautilus-view.c:7918
 msgid "_Unlock Drive"
 msgstr "_Desbloquear unidad"
 
-#: ../src/nautilus-places-sidebar.c:1711 ../src/nautilus-view.c:7756
+#: ../src/nautilus-places-sidebar.c:1734 ../src/nautilus-view.c:7756
 #: ../src/nautilus-view.c:7843 ../src/nautilus-view.c:7947
 msgid "_Lock Drive"
 msgstr "_Bloquear unidad"
 
-#: ../src/nautilus-places-sidebar.c:1784 ../src/nautilus-places-sidebar.c:2348
+#: ../src/nautilus-places-sidebar.c:1807 ../src/nautilus-places-sidebar.c:2371
 #, c-format
 msgid "Unable to start %s"
 msgstr "No se pudo iniciar %s"
 
-#: ../src/nautilus-places-sidebar.c:2107 ../src/nautilus-places-sidebar.c:2135
-#: ../src/nautilus-places-sidebar.c:2163
+#: ../src/nautilus-places-sidebar.c:2130 ../src/nautilus-places-sidebar.c:2158
+#: ../src/nautilus-places-sidebar.c:2186
 #, c-format
 msgid "Unable to eject %s"
 msgstr "No se pudo expulsar %s"
 
-#: ../src/nautilus-places-sidebar.c:2303
+#: ../src/nautilus-places-sidebar.c:2326
 #, c-format
 msgid "Unable to poll %s for media changes"
 msgstr "No se pudo sondear %s para cambios en los soportes"
 
-#: ../src/nautilus-places-sidebar.c:2403
+#: ../src/nautilus-places-sidebar.c:2426
 #, c-format
 msgid "Unable to stop %s"
 msgstr "No se pudo parar %s"
@@ -4135,7 +4135,7 @@ msgstr "No se pudo parar %s"
 # src/file-manager/fm-directory-view.c:2114
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:2591 ../src/nautilus-tree-sidebar.c:1156
+#: ../src/nautilus-places-sidebar.c:2649 ../src/nautilus-tree-sidebar.c:1156
 #: ../src/nautilus-view.c:6862 ../src/nautilus-view.c:8269
 msgid "_Open"
 msgstr "_Abrir"
@@ -4144,7 +4144,7 @@ msgstr "_Abrir"
 #. add the "open in new tab" menu item
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:2599 ../src/nautilus-tree-sidebar.c:1167
+#: ../src/nautilus-places-sidebar.c:2657 ../src/nautilus-tree-sidebar.c:1167
 #: ../src/nautilus-view.c:6874 ../src/nautilus-view.c:7034
 #: ../src/nautilus-view.c:8028 ../src/nautilus-view.c:8331
 msgid "Open in New _Tab"
@@ -4152,32 +4152,32 @@ msgstr "Abrir en una pesta_ña nueva"
 
 # src/file-manager/fm-directory-view.c:2126
 #. add the "open in new window" menu item
-#: ../src/nautilus-places-sidebar.c:2609 ../src/nautilus-tree-sidebar.c:1181
+#: ../src/nautilus-places-sidebar.c:2667 ../src/nautilus-tree-sidebar.c:1181
 #: ../src/nautilus-view.c:8019 ../src/nautilus-view.c:8311
 msgid "Open in New _Window"
 msgstr "Abrir en una _ventana nueva"
 
 # src/nautilus-window-menus.c:1235
 #. name, stock id, label
-#: ../src/nautilus-places-sidebar.c:2620 ../src/nautilus-window-menus.c:1041
+#: ../src/nautilus-places-sidebar.c:2678 ../src/nautilus-window-menus.c:1041
 msgid "_Add Bookmark"
 msgstr "_Añadir un marcador"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/nautilus-bookmarks-window.c:198 src/nautilus-window-menus.c:588
-#: ../src/nautilus-places-sidebar.c:2626
+#: ../src/nautilus-places-sidebar.c:2684
 msgid "Remove"
 msgstr "Quitar"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-icon-view.c:328
-#: ../src/nautilus-places-sidebar.c:2635
+#: ../src/nautilus-places-sidebar.c:2693
 msgid "Rename..."
 msgstr "Renombrar…"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:2647 ../src/nautilus-view.c:6968
+#: ../src/nautilus-places-sidebar.c:2705 ../src/nautilus-view.c:6968
 #: ../src/nautilus-view.c:6992 ../src/nautilus-view.c:7064
 msgid "_Mount"
 msgstr "_Montar"
@@ -4186,7 +4186,7 @@ msgstr "_Montar"
 #. add the "Unmount" menu item
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:2654 ../src/nautilus-tree-sidebar.c:1272
+#: ../src/nautilus-places-sidebar.c:2712 ../src/nautilus-tree-sidebar.c:1272
 #: ../src/nautilus-view.c:6972 ../src/nautilus-view.c:6996
 #: ../src/nautilus-view.c:7068
 msgid "_Unmount"
@@ -4197,7 +4197,7 @@ msgstr "_Desmontar"
 #. add the "Eject" menu item
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:2661 ../src/nautilus-tree-sidebar.c:1281
+#: ../src/nautilus-places-sidebar.c:2719 ../src/nautilus-tree-sidebar.c:1281
 #: ../src/nautilus-view.c:6976 ../src/nautilus-view.c:7000
 #: ../src/nautilus-view.c:7072
 msgid "_Eject"
@@ -4207,10 +4207,18 @@ msgstr "E_xpulsar"
 # src/file-manager/fm-directory-view.c:1865
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:2668 ../src/nautilus-view.c:6988
+#: ../src/nautilus-places-sidebar.c:2726 ../src/nautilus-view.c:6988
 #: ../src/nautilus-view.c:7012 ../src/nautilus-view.c:7084
 msgid "_Detect Media"
 msgstr "_Detectar soporte"
+
+# src/file-manager/fm-directory-view.c:2151
+#. name, stock id
+#. label, accelerator
+#: ../src/nautilus-places-sidebar.c:2761 ../src/nautilus-view.c:6844
+#: ../src/nautilus-view.c:7089
+msgid "_Properties"
+msgstr "_Propiedades"
 
 # src/file-manager/fm-properties-window.c:1493
 #: ../src/nautilus-progress-ui-handler.c:105
@@ -5073,13 +5081,6 @@ msgstr "Abrir c_on"
 msgid "Choose a program with which to open the selected item"
 msgstr ""
 "Selecciona un programa con el cual poder abrir el elemento seleccionado"
-
-# src/file-manager/fm-directory-view.c:2151
-#. name, stock id
-#. label, accelerator
-#: ../src/nautilus-view.c:6844 ../src/nautilus-view.c:7089
-msgid "_Properties"
-msgstr "_Propiedades"
 
 #. tooltip
 #: ../src/nautilus-view.c:6845 ../src/nautilus-view.c:8408
