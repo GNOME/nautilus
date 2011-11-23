@@ -139,6 +139,7 @@ enum {
 
 typedef enum {
 	PLACES_BUILT_IN,
+	PLACES_XDG_DIR,
 	PLACES_MOUNTED_VOLUME,
 	PLACES_BOOKMARK,
 	PLACES_HEADING,
@@ -722,7 +723,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 		mount_uri = g_file_get_uri (root);
 		tooltip = g_file_get_parse_name (root);
 
-		last_iter = add_place (sidebar, PLACES_BUILT_IN,
+		last_iter = add_place (sidebar, PLACES_XDG_DIR,
 				       SECTION_COMPUTER,
 				       name, icon, mount_uri,
 				       NULL, NULL, NULL, 0,
@@ -3138,6 +3139,50 @@ heading_cell_renderer_func (GtkTreeViewColumn *column,
 	}
 }
 
+static gint
+places_sidebar_sort_func (GtkTreeModel *model,
+			  GtkTreeIter *iter_a,
+			  GtkTreeIter *iter_b,
+			  gpointer user_data)
+{
+	SectionType section_type_a, section_type_b;
+	PlaceType place_type_a, place_type_b;
+	gint retval = 0;
+
+	gtk_tree_model_get (model, iter_a,
+			    PLACES_SIDEBAR_COLUMN_SECTION_TYPE, &section_type_a,
+			    PLACES_SIDEBAR_COLUMN_ROW_TYPE, &place_type_a,
+			    -1);
+	gtk_tree_model_get (model, iter_b,
+			    PLACES_SIDEBAR_COLUMN_SECTION_TYPE, &section_type_b,
+			    PLACES_SIDEBAR_COLUMN_ROW_TYPE, &place_type_b,
+			    -1);
+
+	/* fall back to the default order if we're not in the
+	 * XDG part of the computer section.
+	 */
+	if ((section_type_a == section_type_b) &&
+	    (section_type_a == SECTION_COMPUTER) &&
+	    (place_type_a == place_type_b) &&
+	    (place_type_a == PLACES_XDG_DIR)) {
+		gchar *name_a, *name_b;
+
+		gtk_tree_model_get (model, iter_a,
+				    PLACES_SIDEBAR_COLUMN_NAME, &name_a,
+				    -1);
+		gtk_tree_model_get (model, iter_b,
+				    PLACES_SIDEBAR_COLUMN_NAME, &name_b,
+				    -1);
+
+		retval = g_utf8_collate (name_a, name_b);
+
+		g_free (name_a);
+		g_free (name_b);
+	}
+
+	return retval;
+}
+
 static void
 nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 {
@@ -3274,6 +3319,13 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 					     G_TYPE_STRING);
 
 	gtk_tree_view_set_tooltip_column (tree_view, PLACES_SIDEBAR_COLUMN_TOOLTIP);
+	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (sidebar->store),
+					      PLACES_SIDEBAR_COLUMN_NAME,
+					      GTK_SORT_ASCENDING);
+	gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE (sidebar->store),
+					 PLACES_SIDEBAR_COLUMN_NAME,
+					 places_sidebar_sort_func,
+					 sidebar, NULL);
 
 	sidebar->filter_model = nautilus_shortcuts_model_filter_new (sidebar,
 								     GTK_TREE_MODEL (sidebar->store),
