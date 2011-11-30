@@ -2521,7 +2521,11 @@ rubberband_timeout_callback (gpointer data)
 		adj_changed = TRUE;
 	}
 
-	gtk_widget_get_pointer (widget, &x, &y);
+	gdk_window_get_device_position (gtk_widget_get_window (widget),
+					gdk_device_manager_get_client_pointer (
+						gdk_display_get_device_manager (
+							gtk_widget_get_display (widget))),
+					&x, &y, NULL);
 
 	if (x < 0) {
 		x_scroll = x;
