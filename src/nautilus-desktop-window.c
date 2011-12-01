@@ -76,6 +76,11 @@ nautilus_desktop_window_constructed (GObject *obj)
 					      NAUTILUS_ACTION_CLOSE);
 	gtk_action_set_sensitive (action, FALSE);
 
+	/* Don't allow new tab on desktop */
+	action = gtk_action_group_get_action (NAUTILUS_WINDOW (window)->details->main_action_group,
+					      NAUTILUS_ACTION_NEW_TAB);
+	gtk_action_set_sensitive (action, FALSE);
+
 	/* Set the accessible name so that it doesn't inherit the cryptic desktop URI. */
 	accessible = gtk_widget_get_accessible (GTK_WIDGET (window));
 
