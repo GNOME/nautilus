@@ -55,6 +55,8 @@
 /* Interval for updating the rubberband selection, in milliseconds.  */
 #define RUBBERBAND_TIMEOUT_INTERVAL 10
 
+#define RUBBERBAND_SCROLL_THRESHOLD 5
+
 /* Initial unpositioned icon value */
 #define ICON_UNPOSITIONED_VALUE -1
 
@@ -2527,21 +2529,21 @@ rubberband_timeout_callback (gpointer data)
 							gtk_widget_get_display (widget))),
 					&x, &y, NULL);
 
-	if (x < 0) {
-		x_scroll = x;
+	if (x < RUBBERBAND_SCROLL_THRESHOLD) {
+		x_scroll = x - RUBBERBAND_SCROLL_THRESHOLD;
 		x = 0;
-	} else if (x >= allocation.width) {
-		x_scroll = x - allocation.width + 1;
+	} else if (x >= allocation.width - RUBBERBAND_SCROLL_THRESHOLD) {
+		x_scroll = x - allocation.width + RUBBERBAND_SCROLL_THRESHOLD + 1;
 		x = allocation.width - 1;
 	} else {
 		x_scroll = 0;
 	}
 
-	if (y < 0) {
-		y_scroll = y;
+	if (y < RUBBERBAND_SCROLL_THRESHOLD) {
+		y_scroll = y - RUBBERBAND_SCROLL_THRESHOLD;
 		y = 0;
-	} else if (y >= allocation.height) {
-		y_scroll = y - allocation.height + 1;
+	} else if (y >= allocation.height - RUBBERBAND_SCROLL_THRESHOLD) {
+		y_scroll = y - allocation.height + RUBBERBAND_SCROLL_THRESHOLD + 1;
 		y = allocation.height - 1;
 	} else {
 		y_scroll = 0;
