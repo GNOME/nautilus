@@ -473,8 +473,10 @@ nautilus_window_tear_down_sidebar (NautilusWindow *window)
 {
 	DEBUG ("Destroying sidebar");
 
-	gtk_widget_destroy (GTK_WIDGET (window->details->sidebar));
-	window->details->sidebar = NULL;
+	if (window->details->sidebar != NULL) {
+		gtk_widget_destroy (GTK_WIDGET (window->details->sidebar));
+		window->details->sidebar = NULL;
+	}
 }
 
 void
@@ -720,8 +722,8 @@ nautilus_window_destroy (GtkWidget *object)
 
 	DEBUG ("Destroying window");
 
-	window->details->content_paned = NULL;
-	window->details->split_view_hpane = NULL;
+	/* close the sidebar first */
+	nautilus_window_tear_down_sidebar (window);
 
 	/* close all panes safely */
 	panes_copy = g_list_copy (window->details->panes);
