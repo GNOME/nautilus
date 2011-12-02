@@ -3518,8 +3518,12 @@ add_permissions_checkbox_with_label (NautilusPropertiesWindow *window,
 	check_button = gtk_check_button_new_with_mnemonic (label);
 	gtk_widget_show (check_button);
 
-	gtk_grid_attach_next_to (grid, check_button, sibling,
-				 GTK_POS_RIGHT, 1, 1);
+	if (sibling) {
+		gtk_grid_attach_next_to (grid, check_button, sibling,
+					 GTK_POS_RIGHT, 1, 1);
+	} else {
+		gtk_container_add (GTK_CONTAINER (grid), check_button);
+	}
 
 	set_up_permissions_checkbox (window, 
 				     check_button, 
