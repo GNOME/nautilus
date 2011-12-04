@@ -266,6 +266,13 @@ get_eject_icon (NautilusPlacesSidebar *sidebar,
 }
 
 static gboolean
+should_show_desktop (void)
+{
+	return g_settings_get_boolean (gnome_background_preferences, NAUTILUS_PREFERENCES_SHOW_DESKTOP) &&
+	       !g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR);
+}
+
+static gboolean
 is_built_in_bookmark (NautilusFile *file)
 {
 	gboolean built_in;
@@ -273,6 +280,10 @@ is_built_in_bookmark (NautilusFile *file)
 
 	if (nautilus_file_is_home (file)) {
 		return TRUE;
+	}
+
+	if (nautilus_file_is_desktop_directory (file) && !should_show_desktop ()) {
+		return FALSE;
 	}
 
 	built_in = FALSE;
@@ -678,8 +689,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 			       &last_iter, &select_path);
 	g_free (mount_uri);
 
-	if (g_settings_get_boolean (gnome_background_preferences, NAUTILUS_PREFERENCES_SHOW_DESKTOP) &&
-	    !g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
+	if (should_show_desktop ()) {
 		/* desktop */
 		desktop_path = nautilus_get_desktop_directory ();
 		mount_uri = g_filename_to_uri (desktop_path, NULL, NULL);
