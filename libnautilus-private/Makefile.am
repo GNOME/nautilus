@@ -129,8 +129,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-icon-info.c \
 	nautilus-icon-info.h \
 	nautilus-icon-names.h \
-	nautilus-idle-queue.c \
-	nautilus-idle-queue.h \
 	nautilus-lib-self-check-functions.c \
 	nautilus-lib-self-check-functions.h \
 	nautilus-link.c \
