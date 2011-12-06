@@ -23,7 +23,9 @@
 #ifndef __NAUTILUS_FREEDESKTOP_DBUS_H__
 #define __NAUTILUS_FREEDESKTOP_DBUS_H__
 
-void nautilus_freedesktop_dbus_start (void);
+#include "nautilus-application.h"
+
+void nautilus_freedesktop_dbus_start (NautilusApplication *app);
 void nautilus_freedesktop_dbus_stop (void);
 
 #endif /* __NAUTILUS_FREEDESKTOP_DBUS_H__ */

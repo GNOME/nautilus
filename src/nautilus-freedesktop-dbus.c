@@ -31,6 +31,9 @@
 #include "gio/gio.h"
 
 
+/* Parent application */
+static NautilusApplication *application;
+
 /* Id from g_dbus_own_name() */
 static guint owner_id;
 
@@ -76,7 +79,7 @@ name_lost_cb (GDBusConnection *connection,
 
 /* Tries to own the org.freedesktop.FileManager1 service name */
 void
-nautilus_freedesktop_dbus_start (void)
+nautilus_freedesktop_dbus_start (NautilusApplication *app)
 {
 	if (owner_id != 0)
 		return;
@@ -89,6 +92,8 @@ nautilus_freedesktop_dbus_start (void)
 				   name_lost_cb,
 				   NULL,
 				   NULL);
+
+	application = app;
 }
 
 /* Releases the org.freedesktop.FileManager1 service name */
@@ -112,4 +117,5 @@ nautilus_freedesktop_dbus_stop (void)
 	}
 
 	g_clear_object (&connection);
+	application = NULL;
 }
