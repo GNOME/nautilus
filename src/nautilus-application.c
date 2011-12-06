@@ -36,6 +36,7 @@
 
 #include "nautilus-desktop-icon-view.h"
 #include "nautilus-desktop-window.h"
+#include "nautilus-freedesktop-dbus.h"
 #include "nautilus-icon-view.h"
 #include "nautilus-image-properties-page.h"
 #include "nautilus-list-view.h"
@@ -803,6 +804,7 @@ nautilus_application_finalize (GObject *object)
 	g_free (application->priv->geometry);
 
 	nautilus_dbus_manager_stop ();
+	nautilus_freedesktop_dbus_stop ();
 	notify_uninit ();
 
         G_OBJECT_CLASS (nautilus_application_parent_class)->finalize (object);
@@ -1101,6 +1103,7 @@ nautilus_application_startup (GApplication *app)
 
 	/* create DBus manager */
 	nautilus_dbus_manager_start (app);
+	nautilus_freedesktop_dbus_start (self);
 
 	/* initialize preferences and create the global GSettings objects */
 	nautilus_global_preferences_init ();
