@@ -83,6 +83,8 @@ nautilus_SOURCES = \
 	nautilus-file-management-properties.h	\
 	nautilus-floating-bar.c			\
 	nautilus-floating-bar.h			\
+	nautilus-freedesktop-dbus.c		\
+	nautilus-freedesktop-dbus.h		\
 	nautilus-icon-view.c			\
 	nautilus-icon-view.h			\
 	nautilus-icon-view-container.c		\
