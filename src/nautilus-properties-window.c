@@ -4774,8 +4774,10 @@ create_properties_window (StartupData *startup_data)
 	window->details->target_files = nautilus_file_list_copy (startup_data->target_files);
 
 	gtk_window_set_wmclass (GTK_WINDOW (window), "file_properties", "Nautilus");
-	gtk_window_set_screen (GTK_WINDOW (window),
-			       gtk_widget_get_screen (startup_data->parent_widget));
+
+	if (startup_data->parent_widget)
+		gtk_window_set_screen (GTK_WINDOW (window),
+				       gtk_widget_get_screen (startup_data->parent_widget));
 
 	gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_DIALOG);
 
@@ -4968,9 +4970,10 @@ remove_pending (StartupData *startup_data,
 			(cancel_create_properties_window_callback, startup_data);
 	}
 	if (cancel_destroy_handler) {
-		g_signal_handlers_disconnect_by_func (startup_data->parent_widget,
-						      G_CALLBACK (parent_widget_destroyed_callback),
-						      startup_data);
+		if (startup_data->parent_widget)
+			g_signal_handlers_disconnect_by_func (startup_data->parent_widget,
+							      G_CALLBACK (parent_widget_destroyed_callback),
+							      startup_data);
 	}
 
 	g_hash_table_remove (pending_lists, startup_data->pending_key);
@@ -5014,7 +5017,7 @@ nautilus_properties_window_present (GList *original_files,
 	char *pending_key;
 
 	g_return_if_fail (original_files != NULL);
-	g_return_if_fail (GTK_IS_WIDGET (parent_widget));
+	g_return_if_fail (parent_widget == NULL || GTK_IS_WIDGET (parent_widget));
 
 	/* Create the hash tables first time through. */
 	if (windows == NULL) {
@@ -5030,8 +5033,9 @@ nautilus_properties_window_present (GList *original_files,
 	/* Look to see if there's already a window for this file. */
 	existing_window = get_existing_window (original_files);
 	if (existing_window != NULL) {
-		gtk_window_set_screen (existing_window,
-				       gtk_widget_get_screen (parent_widget));
+		if (parent_widget)
+			gtk_window_set_screen (existing_window,
+					       gtk_widget_get_screen (parent_widget));
 		gtk_window_present (existing_window);
 		return;
 	}
@@ -5059,17 +5063,19 @@ nautilus_properties_window_present (GList *original_files,
 	 */
 	
 	g_hash_table_insert (pending_lists, startup_data->pending_key, startup_data->pending_key);
-	g_signal_connect (parent_widget, "destroy",
-			  G_CALLBACK (parent_widget_destroyed_callback), startup_data);
+	if (parent_widget) {
+		g_signal_connect (parent_widget, "destroy",
+				  G_CALLBACK (parent_widget_destroyed_callback), startup_data);
 
-	parent_window = gtk_widget_get_ancestor (parent_widget, GTK_TYPE_WINDOW);
+		parent_window = gtk_widget_get_ancestor (parent_widget, GTK_TYPE_WINDOW);
+	} else
+		parent_window = NULL;
 
 	eel_timed_wait_start
 		(cancel_create_properties_window_callback,
 		 startup_data,
 		 _("Creating Properties window."),
 		 parent_window == NULL ? NULL : GTK_WINDOW (parent_window));
-
 
 	for (l = startup_data->target_files; l != NULL; l = next) {
 		next = l->next;
