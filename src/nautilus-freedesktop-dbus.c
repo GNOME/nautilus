@@ -44,6 +44,35 @@ static GDBusObjectManagerServer *object_manager;
 /* Our DBus implementation skeleton */
 static NautilusFreedesktopFileManager1 *skeleton;
 
+
+static gboolean
+skeleton_handle_show_items_cb (NautilusFreedesktopFileManager1 *object,
+			       GDBusMethodInvocation *invocation,
+			       const gchar *const *uris,
+			       const gchar *startup_id)
+{
+	int i;
+
+	for (i = 0; uris[i] != NULL; i++) {
+		GFile *file;
+		GFile *files[1];
+
+		file = g_file_new_for_uri (uris[i]);
+		files[0] = file;
+
+		/* FIXME: we are not using the startup_id.  This is not
+		 * what g_application_open() expects, and neither does
+		 * NautilusApplication internally.
+		 */
+		g_application_open (G_APPLICATION (application), files, 1, "");
+		g_object_unref (file);
+	}
+
+	nautilus_freedesktop_file_manager1_complete_show_items (object, invocation);
+	return TRUE;
+}
+
+
 static void
 bus_acquired_cb (GDBusConnection *conn,
 		 const gchar     *name,
@@ -55,6 +84,9 @@ bus_acquired_cb (GDBusConnection *conn,
 	object_manager = g_dbus_object_manager_server_new ("/org/freedesktop/FileManager1");
 
 	skeleton = nautilus_freedesktop_file_manager1_skeleton_new ();
+
+	g_signal_connect (skeleton, "handle-show-items",
+			  G_CALLBACK (skeleton_handle_show_items_cb), NULL);
 
 	g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (skeleton), connection, "/org/freedesktop/FileManager1", NULL);
 
