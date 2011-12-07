@@ -877,6 +877,7 @@ nautilus_application_local_command_line (GApplication *application,
 {
 	gboolean perform_self_check = FALSE;
 	gboolean version = FALSE;
+	gboolean browser = FALSE;
 	gboolean kill_shell = FALSE;
 	gboolean no_default_window = FALSE;
 	gchar **remaining = NULL;
@@ -887,6 +888,9 @@ nautilus_application_local_command_line (GApplication *application,
 		{ "check", 'c', 0, G_OPTION_ARG_NONE, &perform_self_check, 
 		  N_("Perform a quick set of self-check tests."), NULL },
 #endif
+		/* dummy, only for compatibility reasons */
+		{ "browser", '\0', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_NONE, &browser,
+		  NULL, NULL },
 		{ "version", '\0', 0, G_OPTION_ARG_NONE, &version,
 		  N_("Show the version of the program."), NULL },
 		{ "geometry", 'g', 0, G_OPTION_ARG_STRING, &self->priv->geometry,
