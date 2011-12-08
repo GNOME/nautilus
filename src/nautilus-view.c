@@ -2400,6 +2400,7 @@ have_bulk_rename_tool ()
 static void
 nautilus_view_init (NautilusView *view)
 {
+	AtkObject *atk_object;
 	NautilusDirectory *scripts_directory;
 	NautilusDirectory *templates_directory;
 	char *templates_uri;
@@ -2480,6 +2481,11 @@ nautilus_view_init (NautilusView *view)
 	g_signal_connect_swapped (nautilus_window_state,
 				  "changed::" NAUTILUS_WINDOW_STATE_START_WITH_STATUS_BAR,
 				  G_CALLBACK (nautilus_view_display_selection_info), view);
+
+	/* Accessibility */
+	atk_object = gtk_widget_get_accessible (GTK_WIDGET (view));
+	atk_object_set_name (atk_object, _("Content View"));
+	atk_object_set_description (atk_object, _("View of the current folder"));
 }
 
 static void

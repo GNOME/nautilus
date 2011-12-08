@@ -1069,9 +1069,6 @@ create_content_view (NautilusWindowSlot *slot,
                 /* create a new content view */
 		view = nautilus_view_factory_create (view_id, slot);
 
-                eel_accessibility_set_name (view, _("Content View"));
-                eel_accessibility_set_description (view, _("View of the current folder"));
-
                 slot->new_content_view = view;
 		nautilus_window_connect_content_view (window, slot->new_content_view);
         }
