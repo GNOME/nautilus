@@ -353,25 +353,3 @@ eel_accessible_text_get_type (void)
 
 	return type;
 }
-
-void
-eel_accessibility_set_name (gpointer    object,
-			    const char *name)
-{
-	AtkObject *atk_object = eel_accessibility_for_object (object);
-
-	if (atk_object) {
-		atk_object_set_name (atk_object, name);
-	}
-}
-
-void
-eel_accessibility_set_description (gpointer    object,
-				   const char *description)
-{
-	AtkObject *atk_object = eel_accessibility_for_object (object);
-
-	if (atk_object) {
-		atk_object_set_description (atk_object, description);
-	}
-}
