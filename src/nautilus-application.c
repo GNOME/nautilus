@@ -766,24 +766,19 @@ nautilus_application_constructor (GType type,
 static void
 nautilus_application_init (NautilusApplication *application)
 {
-	GSimpleActionGroup *action_group;
 	GSimpleAction *action;
 
 	application->priv =
 		G_TYPE_INSTANCE_GET_PRIVATE (application, NAUTILUS_TYPE_APPLICATION,
 					     NautilusApplicationPriv);
 
-	action_group = g_simple_action_group_new ();
 	action = g_simple_action_new ("quit", NULL);
-	g_simple_action_group_insert (action_group, G_ACTION (action));
 
-	g_application_set_action_group (G_APPLICATION (application),
-					G_ACTION_GROUP (action_group));
+        g_action_map_add_action (G_ACTION_MAP (application), G_ACTION (action));
 
 	g_signal_connect_swapped (action, "activate",
 				  G_CALLBACK (nautilus_application_quit), application);
 
-	g_object_unref (action_group);
 	g_object_unref (action);
 }
 
