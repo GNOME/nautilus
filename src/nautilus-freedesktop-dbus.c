@@ -33,26 +33,50 @@
 #include <gio/gio.h>
 
 
-/* Parent application */
-static NautilusApplication *application;
+typedef struct _NautilusFreedesktopDBus NautilusFreedesktopDBus;
+typedef struct _NautilusFreedesktopDBusClass NautilusFreedesktopDBusClass;
 
-/* Id from g_dbus_own_name() */
-static guint owner_id;
+struct _NautilusFreedesktopDBus {
+	GObject parent;
 
-/* DBus paraphernalia */
-static GDBusConnection *connection;
-static GDBusObjectManagerServer *object_manager;
+	/* Parent application */
+	NautilusApplication *application;
 
-/* Our DBus implementation skeleton */
-static NautilusFreedesktopFileManager1 *skeleton;
+	/* Id from g_dbus_own_name() */
+	guint owner_id;
+
+	/* DBus paraphernalia */
+	GDBusConnection *connection;
+	GDBusObjectManagerServer *object_manager;
+
+	/* Our DBus implementation skeleton */
+	NautilusFreedesktopFileManager1 *skeleton;
+};
+
+struct _NautilusFreedesktopDBusClass {
+	GObjectClass parent_class;
+};
+
+enum {
+	PROP_APPLICATION = 1
+};
+
+#define SERVICE_TIMEOUT 5
+
+static GType nautilus_freedesktop_dbus_get_type (void) G_GNUC_CONST;
+G_DEFINE_TYPE (NautilusFreedesktopDBus, nautilus_freedesktop_dbus, G_TYPE_OBJECT);
+
+static NautilusFreedesktopDBus *singleton;
 
 
 static gboolean
 skeleton_handle_show_items_cb (NautilusFreedesktopFileManager1 *object,
 			       GDBusMethodInvocation *invocation,
 			       const gchar *const *uris,
-			       const gchar *startup_id)
+			       const gchar *startup_id,
+			       gpointer data)
 {
+	NautilusFreedesktopDBus *fdb = data;
 	int i;
 
 	for (i = 0; uris[i] != NULL; i++) {
@@ -66,7 +90,7 @@ skeleton_handle_show_items_cb (NautilusFreedesktopFileManager1 *object,
 		 * what g_application_open() expects, and neither does
 		 * NautilusApplication internally.
 		 */
-		g_application_open (G_APPLICATION (application), files, 1, "");
+		g_application_open (G_APPLICATION (fdb->application), files, 1, "");
 		g_object_unref (file);
 	}
 
@@ -78,13 +102,14 @@ static gboolean
 skeleton_handle_show_folders_cb (NautilusFreedesktopFileManager1 *object,
 				 GDBusMethodInvocation *invocation,
 				 const gchar *const *uris,
-				 const gchar *startup_id)
+				 const gchar *startup_id,
+				 gpointer data)
 {
 	/* FIXME: NautilusApplication makes no distinction between showing
 	 * files vs. folders.  For now we will just use the same
 	 * implementation.
 	 */
-
+	NautilusFreedesktopDBus *fdb = data;
 	int i;
 
 	for (i = 0; uris[i] != NULL; i++) {
@@ -98,7 +123,7 @@ skeleton_handle_show_folders_cb (NautilusFreedesktopFileManager1 *object,
 		 * what g_application_open() expects, and neither does
 		 * NautilusApplication internally.
 		 */
-		g_application_open (G_APPLICATION (application), files, 1, "");
+		g_application_open (G_APPLICATION (fdb->application), files, 1, "");
 		g_object_unref (file);
 	}
 
@@ -110,7 +135,8 @@ static gboolean
 skeleton_handle_show_item_properties_cb (NautilusFreedesktopFileManager1 *object,
 					 GDBusMethodInvocation *invocation,
 					 const gchar *const *uris,
-					 const gchar *startup_id)
+					 const gchar *startup_id,
+					 gpointer data)
 {
 	GList *files;
 	int i;
@@ -131,28 +157,47 @@ skeleton_handle_show_item_properties_cb (NautilusFreedesktopFileManager1 *object
 	return TRUE;
 }
 
+static gboolean
+service_timeout_cb (gpointer data)
+{
+	NautilusFreedesktopDBus *fdb = data;
+
+	DEBUG ("Reached the DBus service timeout");
+
+	/* just unconditionally release here, as if an operation has been
+	 * called, its progress handler will hold it alive for all the task duration.
+	 */
+	g_application_release (G_APPLICATION (fdb->application));
+
+	return FALSE;
+}
+
 static void
 bus_acquired_cb (GDBusConnection *conn,
 		 const gchar     *name,
 		 gpointer         user_data)
 {
+	NautilusFreedesktopDBus *fdb = user_data;
+
 	DEBUG ("Bus acquired at %s", name);
 
-	connection = g_object_ref (conn);
-	object_manager = g_dbus_object_manager_server_new ("/org/freedesktop/FileManager1");
+	fdb->connection = g_object_ref (conn);
+	fdb->object_manager = g_dbus_object_manager_server_new ("/org/freedesktop/FileManager1");
 
-	skeleton = nautilus_freedesktop_file_manager1_skeleton_new ();
+	fdb->skeleton = nautilus_freedesktop_file_manager1_skeleton_new ();
 
-	g_signal_connect (skeleton, "handle-show-items",
-			  G_CALLBACK (skeleton_handle_show_items_cb), NULL);
-	g_signal_connect (skeleton, "handle-show-folders",
-			  G_CALLBACK (skeleton_handle_show_folders_cb), NULL);
-	g_signal_connect (skeleton, "handle-show-item-properties",
-			  G_CALLBACK (skeleton_handle_show_item_properties_cb), NULL);
+	g_signal_connect (fdb->skeleton, "handle-show-items",
+			  G_CALLBACK (skeleton_handle_show_items_cb), fdb);
+	g_signal_connect (fdb->skeleton, "handle-show-folders",
+			  G_CALLBACK (skeleton_handle_show_folders_cb), fdb);
+	g_signal_connect (fdb->skeleton, "handle-show-item-properties",
+			  G_CALLBACK (skeleton_handle_show_item_properties_cb), fdb);
 
-	g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (skeleton), connection, "/org/freedesktop/FileManager1", NULL);
+	g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (fdb->skeleton), fdb->connection, "/org/freedesktop/FileManager1", NULL);
 
-	g_dbus_object_manager_server_set_connection (object_manager, connection);
+	g_dbus_object_manager_server_set_connection (fdb->object_manager, fdb->connection);
+
+	g_timeout_add_seconds (SERVICE_TIMEOUT, service_timeout_cb, fdb);
 }
 
 static void
@@ -171,45 +216,112 @@ name_lost_cb (GDBusConnection *connection,
 	DEBUG ("Lost (or failed to acquire) the name %s on the session message bus\n", name);
 }
 
+static void
+nautilus_freedesktop_dbus_dispose (GObject *object)
+{
+	NautilusFreedesktopDBus *fdb = (NautilusFreedesktopDBus *) object;
+
+	if (fdb->owner_id != 0) {
+		g_bus_unown_name (fdb->owner_id);
+		fdb->owner_id = 0;
+	}
+
+	if (fdb->skeleton != NULL) {
+		g_dbus_interface_skeleton_unexport (G_DBUS_INTERFACE_SKELETON (fdb->skeleton));
+		g_object_unref (fdb->skeleton);
+		fdb->skeleton = NULL;
+	}
+
+	if (fdb->object_manager != NULL) {
+		g_object_unref (fdb->object_manager);
+		fdb->object_manager = NULL;
+	}
+
+	g_clear_object (&fdb->connection);
+	fdb->application = NULL;
+
+	G_OBJECT_CLASS (nautilus_freedesktop_dbus_parent_class)->dispose (object);
+}
+
+static void
+nautilus_freedesktop_dbus_constructed (GObject *object)
+{
+	NautilusFreedesktopDBus *fdb = (NautilusFreedesktopDBus *) object;
+
+	G_OBJECT_CLASS (nautilus_freedesktop_dbus_parent_class)->constructed (object);
+
+	g_application_hold (G_APPLICATION (fdb->application));
+
+	fdb->owner_id = g_bus_own_name (G_BUS_TYPE_SESSION,
+					"org.freedesktop.FileManager1",
+					G_BUS_NAME_OWNER_FLAGS_NONE,
+					bus_acquired_cb,
+					name_acquired_cb,
+					name_lost_cb,
+					fdb,
+					NULL);
+}
+
+static void
+nautilus_freedesktop_dbus_set_property (GObject *object,
+					guint property_id,
+					const GValue *value,
+					GParamSpec *pspec)
+{
+	NautilusFreedesktopDBus *fdb = (NautilusFreedesktopDBus *) object;
+
+	switch (property_id) {
+	case PROP_APPLICATION:
+		fdb->application = g_value_get_object (value);
+		break;
+
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+		break;
+	}
+}
+
+
+static void
+nautilus_freedesktop_dbus_class_init (NautilusFreedesktopDBusClass *klass)
+{
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
+	object_class->dispose		= nautilus_freedesktop_dbus_dispose;
+	object_class->constructed	= nautilus_freedesktop_dbus_constructed;
+	object_class->set_property	= nautilus_freedesktop_dbus_set_property;
+
+	g_object_class_install_property (object_class,
+					 PROP_APPLICATION,
+					 g_param_spec_object ("application",
+							      "NautilusApplication instance",
+							      "The owning NautilusApplication instance",
+							      NAUTILUS_TYPE_APPLICATION,
+							      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+
+}
+
+static void
+nautilus_freedesktop_dbus_init (NautilusFreedesktopDBus *fdb)
+{
+	/* nothing */
+}
+
 /* Tries to own the org.freedesktop.FileManager1 service name */
 void
 nautilus_freedesktop_dbus_start (NautilusApplication *app)
 {
-	if (owner_id != 0)
+	if (singleton)
 		return;
 
-	owner_id = g_bus_own_name (G_BUS_TYPE_SESSION,
-				   "org.freedesktop.FileManager1",
-				   G_BUS_NAME_OWNER_FLAGS_NONE,
-				   bus_acquired_cb,
-				   name_acquired_cb,
-				   name_lost_cb,
-				   NULL,
-				   NULL);
-
-	application = app;
+	singleton = g_object_new (nautilus_freedesktop_dbus_get_type (),
+				  "application", app,
+				  NULL);
 }
 
 /* Releases the org.freedesktop.FileManager1 service name */
 void
 nautilus_freedesktop_dbus_stop (void)
 {
-	if (owner_id != 0) {
-		g_bus_unown_name (owner_id);
-		owner_id = 0;
-	}
-
-	if (skeleton != NULL) {
-		g_dbus_interface_skeleton_unexport (G_DBUS_INTERFACE_SKELETON (skeleton));
-		g_object_unref (skeleton);
-		skeleton = NULL;
-	}
-
-	if (object_manager != NULL) {
-		g_object_unref (object_manager);
-		object_manager = NULL;
-	}
-
-	g_clear_object (&connection);
-	application = NULL;
+	g_clear_object (&singleton);
 }
