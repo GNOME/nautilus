@@ -81,17 +81,15 @@ skeleton_handle_show_items_cb (NautilusFreedesktopFileManager1 *object,
 
 	for (i = 0; uris[i] != NULL; i++) {
 		GFile *file;
-		GFile *files[1];
+		GFile *parent;
 
 		file = g_file_new_for_uri (uris[i]);
-		files[0] = file;
+		parent = g_file_get_parent (file);
 
-		/* FIXME: we are not using the startup_id.  This is not
-		 * what g_application_open() expects, and neither does
-		 * NautilusApplication internally.
-		 */
-		g_application_open (G_APPLICATION (fdb->application), files, 1, "");
+		nautilus_application_open_location (fdb->application, parent, file, startup_id);
+
 		g_object_unref (file);
+		g_object_unref (parent);
 	}
 
 	nautilus_freedesktop_file_manager1_complete_show_items (object, invocation);
@@ -105,25 +103,16 @@ skeleton_handle_show_folders_cb (NautilusFreedesktopFileManager1 *object,
 				 const gchar *startup_id,
 				 gpointer data)
 {
-	/* FIXME: NautilusApplication makes no distinction between showing
-	 * files vs. folders.  For now we will just use the same
-	 * implementation.
-	 */
 	NautilusFreedesktopDBus *fdb = data;
 	int i;
 
 	for (i = 0; uris[i] != NULL; i++) {
 		GFile *file;
-		GFile *files[1];
 
 		file = g_file_new_for_uri (uris[i]);
-		files[0] = file;
 
-		/* FIXME: we are not using the startup_id.  This is not
-		 * what g_application_open() expects, and neither does
-		 * NautilusApplication internally.
-		 */
-		g_application_open (G_APPLICATION (fdb->application), files, 1, "");
+		nautilus_application_open_location (fdb->application, file, NULL, startup_id);
+
 		g_object_unref (file);
 	}
 
