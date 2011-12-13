@@ -642,11 +642,13 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 	int double_click_time;
 	int expander_size, horizontal_separator;
 	gboolean on_expander;
+	gboolean blank_click;
 
 	view = NAUTILUS_LIST_VIEW (callback_data);
 	tree_view = GTK_TREE_VIEW (widget);
 	tree_view_class = GTK_WIDGET_GET_CLASS (tree_view);
 	selection = gtk_tree_view_get_selection (tree_view);
+	blank_click = FALSE;
 
 	if (event->window != gtk_tree_view_get_bin_window (tree_view)) {
 		return FALSE;
@@ -736,7 +738,12 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 			 * want that; we want the right click menu or single
 			 * click to apply to everything that's currently selected. */
 			
-			if (event->button == 3 && gtk_tree_selection_path_is_selected (selection, path)) {
+			if (event->button == 3) {
+				blank_click = gtk_tree_view_is_blank_at_pos (tree_view, event->x, event->y, NULL, NULL, NULL, NULL);
+			}
+
+			if (event->button == 3 && 
+			    (blank_click || gtk_tree_selection_path_is_selected (selection, path))) {
 				call_parent = FALSE;
 			} 
 			
@@ -805,6 +812,9 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 			}
 			
 			if (event->button == 3) {
+				if (blank_click) {
+					gtk_tree_selection_unselect_all (selection);
+				}
 				do_popup_menu (widget, view, event);
 			}
 		}
