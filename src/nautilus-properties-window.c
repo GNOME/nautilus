@@ -4969,11 +4969,10 @@ remove_pending (StartupData *startup_data,
 		eel_timed_wait_stop 
 			(cancel_create_properties_window_callback, startup_data);
 	}
-	if (cancel_destroy_handler) {
-		if (startup_data->parent_widget)
-			g_signal_handlers_disconnect_by_func (startup_data->parent_widget,
-							      G_CALLBACK (parent_widget_destroyed_callback),
-							      startup_data);
+	if (cancel_destroy_handler && startup_data->parent_widget) {
+		g_signal_handlers_disconnect_by_func (startup_data->parent_widget,
+						      G_CALLBACK (parent_widget_destroyed_callback),
+						      startup_data);
 	}
 
 	g_hash_table_remove (pending_lists, startup_data->pending_key);
