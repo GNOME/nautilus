@@ -221,11 +221,7 @@ nautilus_freedesktop_dbus_dispose (GObject *object)
 		fdb->skeleton = NULL;
 	}
 
-	if (fdb->object_manager != NULL) {
-		g_object_unref (fdb->object_manager);
-		fdb->object_manager = NULL;
-	}
-
+	g_clear_object (&fdb->object_manager);
 	g_clear_object (&fdb->connection);
 	fdb->application = NULL;
 
