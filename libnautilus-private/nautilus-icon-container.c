@@ -2699,6 +2699,7 @@ stop_rubberbanding (NautilusIconContainer *container,
 
 	/* Destroy this canvas item; the parent will unref it. */
 	eel_canvas_item_ungrab (band_info->selection_rectangle, time);
+	eel_canvas_item_lower_to_bottom (band_info->selection_rectangle);
 	nautilus_selection_canvas_item_fade_out (NAUTILUS_SELECTION_CANVAS_ITEM (band_info->selection_rectangle), 150);
 	band_info->selection_rectangle = NULL;
 
