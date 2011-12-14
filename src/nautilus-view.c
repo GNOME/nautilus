@@ -2056,12 +2056,12 @@ action_properties_callback (GtkAction *action,
 		if (view->details->directory_as_file != NULL) {
 			files = g_list_append (NULL, nautilus_file_ref (view->details->directory_as_file));
 
-			nautilus_properties_window_present (files, GTK_WIDGET (view));
+			nautilus_properties_window_present (files, GTK_WIDGET (view), NULL);
 
 			nautilus_file_list_free (files);
 		}
 	} else {
-		nautilus_properties_window_present (selection, GTK_WIDGET (view));
+		nautilus_properties_window_present (selection, GTK_WIDGET (view), NULL);
 	}
         nautilus_file_list_free (selection);
 }
@@ -2080,7 +2080,7 @@ action_location_properties_callback (GtkAction *action,
 
 	files = g_list_append (NULL, nautilus_file_ref (view->details->location_popup_directory_as_file));
 
-	nautilus_properties_window_present (files, GTK_WIDGET (view));
+	nautilus_properties_window_present (files, GTK_WIDGET (view), NULL);
 
 	nautilus_file_list_free (files);
 }

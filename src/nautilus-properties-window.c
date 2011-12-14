@@ -5101,19 +5101,12 @@ prepare_properties_window (GList *original_files,
 }
 
 void
-nautilus_properties_window_present (GList *original_files,
-				    GtkWidget *parent_widget) 
+nautilus_properties_window_present (GList       *original_files,
+				    GtkWidget   *parent_widget,
+				    const gchar *startup_id) 
 {
-	prepare_properties_window (original_files, parent_widget, NULL);
+	prepare_properties_window (original_files, parent_widget, startup_id);
 }
-
-void
-nautilus_properties_window_present_with_startup_id (GList *original_files,
-						    const char *startup_id)
-{
-	prepare_properties_window (original_files, NULL, startup_id);
-}
-
 
 static void
 real_response (GtkDialog *dialog,

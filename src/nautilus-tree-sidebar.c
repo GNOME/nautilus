@@ -858,7 +858,7 @@ new_folder_done (GFile *new_folder, gpointer data)
 	 */
 	list = g_list_prepend (NULL, nautilus_file_get (new_folder));
 
-	nautilus_properties_window_present (list, GTK_WIDGET (data));
+	nautilus_properties_window_present (list, GTK_WIDGET (data), NULL);
 
         nautilus_file_list_free (list);
 }
@@ -1056,7 +1056,7 @@ fm_tree_view_properties_cb (GtkWidget *menu_item,
         
 	list = g_list_prepend (NULL, nautilus_file_ref (view->details->popup_file));
 
-	nautilus_properties_window_present (list, GTK_WIDGET (view->details->tree_widget));
+	nautilus_properties_window_present (list, GTK_WIDGET (view->details->tree_widget), NULL);
 
         nautilus_file_list_free (list);
 }
