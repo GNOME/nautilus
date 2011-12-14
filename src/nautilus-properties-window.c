@@ -5013,10 +5013,10 @@ is_directory_ready_callback (NautilusFile *file,
 }
 
 
-static void
-prepare_properties_window (GList *original_files,
-			   GtkWidget *parent_widget,
-			   const char *startup_id) 
+void
+nautilus_properties_window_present (GList       *original_files,
+				    GtkWidget   *parent_widget,
+				    const gchar *startup_id) 
 {
 	GList *l, *next;
 	GtkWidget *parent_window;
@@ -5098,14 +5098,6 @@ prepare_properties_window (GList *original_files,
 			 is_directory_ready_callback,
 			 startup_data);
 	}
-}
-
-void
-nautilus_properties_window_present (GList       *original_files,
-				    GtkWidget   *parent_widget,
-				    const gchar *startup_id) 
-{
-	prepare_properties_window (original_files, parent_widget, startup_id);
 }
 
 static void
