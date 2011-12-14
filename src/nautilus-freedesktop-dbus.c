@@ -137,8 +137,7 @@ skeleton_handle_show_item_properties_cb (NautilusFreedesktopFileManager1 *object
 
 	files = g_list_reverse (files);
 
-	/* FIXME: we are not using the startup_id */
-	nautilus_properties_window_present (files, NULL);
+	nautilus_properties_window_present_with_startup_id (files, startup_id);
 
 	nautilus_file_list_free (files);
 
