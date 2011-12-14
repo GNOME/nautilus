@@ -736,28 +736,24 @@ nautilus_application_open_location (NautilusApplication *application,
 				    const char *startup_id)
 {
 	NautilusWindow *window;
-	GList sel_list;
-	GList *sel_list_ptr;
+	GList *sel_list = NULL;
 
 	window = nautilus_application_create_window (application, gdk_screen_get_default ());
 	gtk_window_set_startup_id (GTK_WINDOW (window), startup_id);
 
-	if (selection) {
-		sel_list.data = nautilus_file_get (selection);
-		sel_list.prev = sel_list.next = NULL;
-		sel_list_ptr = &sel_list;
-	} else
-		sel_list_ptr = NULL;
+	if (selection != NULL) {
+		sel_list = g_list_prepend (sel_list, nautilus_file_get (selection));
+	}
 
 	nautilus_window_slot_open_location (nautilus_window_get_active_slot (window),
 					    location,
 					    0,
-					    sel_list_ptr);
+					    sel_list);
 
-	if (sel_list_ptr)
-		g_object_unref (sel_list.data);
+	if (sel_list != NULL) {
+		nautilus_file_list_free (sel_list);
+	}
 }
-
 
 static void
 nautilus_application_open (GApplication *app,
