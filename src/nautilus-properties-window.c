@@ -4779,11 +4779,14 @@ create_properties_window (StartupData *startup_data)
 
 	gtk_window_set_wmclass (GTK_WINDOW (window), "file_properties", "Nautilus");
 
-	if (startup_data->parent_widget)
+	if (startup_data->parent_widget) {
 		gtk_window_set_screen (GTK_WINDOW (window),
 				       gtk_widget_get_screen (startup_data->parent_widget));
-	else if (startup_data->startup_id)
+	}
+
+	if (startup_data->startup_id) {
 		gtk_window_set_startup_id (GTK_WINDOW (window), startup_data->startup_id);
+	}
 
 	gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_DIALOG);
 
