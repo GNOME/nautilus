@@ -86,10 +86,14 @@ skeleton_handle_show_items_cb (NautilusFreedesktopFileManager1 *object,
 		file = g_file_new_for_uri (uris[i]);
 		parent = g_file_get_parent (file);
 
-		nautilus_application_open_location (fdb->application, parent, file, startup_id);
+		if (parent != NULL) {
+			nautilus_application_open_location (fdb->application, parent, file, startup_id);
+			g_object_unref (parent);
+		} else {
+			nautilus_application_open_location (fdb->application, file, NULL, startup_id);
+		}
 
 		g_object_unref (file);
-		g_object_unref (parent);
 	}
 
 	nautilus_freedesktop_file_manager1_complete_show_items (object, invocation);
