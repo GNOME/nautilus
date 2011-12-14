@@ -36,6 +36,7 @@
 
 #include "nautilus-desktop-icon-view.h"
 #include "nautilus-desktop-window.h"
+#include "nautilus-freedesktop-dbus.h"
 #include "nautilus-icon-view.h"
 #include "nautilus-image-properties-page.h"
 #include "nautilus-list-view.h"
@@ -728,6 +729,32 @@ open_windows (NautilusApplication *application,
 	}
 }
 
+void
+nautilus_application_open_location (NautilusApplication *application,
+				    GFile *location,
+				    GFile *selection,
+				    const char *startup_id)
+{
+	NautilusWindow *window;
+	GList *sel_list = NULL;
+
+	window = nautilus_application_create_window (application, gdk_screen_get_default ());
+	gtk_window_set_startup_id (GTK_WINDOW (window), startup_id);
+
+	if (selection != NULL) {
+		sel_list = g_list_prepend (sel_list, nautilus_file_get (selection));
+	}
+
+	nautilus_window_slot_open_location (nautilus_window_get_active_slot (window),
+					    location,
+					    0,
+					    sel_list);
+
+	if (sel_list != NULL) {
+		nautilus_file_list_free (sel_list);
+	}
+}
+
 static void
 nautilus_application_open (GApplication *app,
 			   GFile **files,
@@ -798,6 +825,7 @@ nautilus_application_finalize (GObject *object)
 	g_free (application->priv->geometry);
 
 	nautilus_dbus_manager_stop ();
+	nautilus_freedesktop_dbus_stop ();
 	notify_uninit ();
 
         G_OBJECT_CLASS (nautilus_application_parent_class)->finalize (object);
@@ -1100,6 +1128,7 @@ nautilus_application_startup (GApplication *app)
 
 	/* create DBus manager */
 	nautilus_dbus_manager_start (app);
+	nautilus_freedesktop_dbus_start (self);
 
 	/* initialize preferences and create the global GSettings objects */
 	nautilus_global_preferences_init ();

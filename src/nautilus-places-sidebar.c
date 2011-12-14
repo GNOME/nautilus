@@ -2546,7 +2546,7 @@ properties_cb (GtkMenuItem           *item,
 		file = nautilus_file_get_by_uri (uri);
 		list = g_list_prepend (NULL, nautilus_file_ref (file));
 
-		nautilus_properties_window_present (list, GTK_WIDGET (sidebar));
+		nautilus_properties_window_present (list, GTK_WIDGET (sidebar), NULL);
 
 		nautilus_file_list_free (list);
 		g_free (uri);

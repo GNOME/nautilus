@@ -74,6 +74,11 @@ void nautilus_application_quit (NautilusApplication *self);
 NautilusWindow *     nautilus_application_create_window (NautilusApplication *application,
 							 GdkScreen           *screen);
 
+void nautilus_application_open_location (NautilusApplication *application,
+					 GFile *location,
+					 GFile *selection,
+					 const char *startup_id);
+
 void nautilus_application_close_all_windows (NautilusApplication *self);
 
 #endif /* __NAUTILUS_APPLICATION_H__ */

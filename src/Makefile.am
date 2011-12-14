@@ -43,7 +43,22 @@ LDADD =\
 	$(POPT_LIBS) \
 	$(NULL)
 
+dbus_built_sources = nautilus-freedesktop-generated.c nautilus-freedesktop-generated.h
+$(dbus_built_sources) : Makefile.am $(top_srcdir)/data/freedesktop-dbus-interfaces.xml
+	gdbus-codegen									\
+		--interface-prefix org.freedesktop.					\
+		--c-namespace NautilusFreedesktop					\
+		--c-generate-object-manager						\
+		--generate-c-code nautilus-freedesktop-generated			\
+		$(top_srcdir)/data/freedesktop-dbus-interfaces.xml			\
+		$(NULL)
+
+BUILT_SOURCES = \
+	$(dbus_built_sources) \
+	$(NULL)
+
 nautilus_SOURCES = \
+	$(BUILT_SOURCES)			\
 	nautilus-actions.h			\
 	nautilus-application.c			\
 	nautilus-application.h			\
@@ -68,6 +83,8 @@ nautilus_SOURCES = \
 	nautilus-file-management-properties.h	\
 	nautilus-floating-bar.c			\
 	nautilus-floating-bar.h			\
+	nautilus-freedesktop-dbus.c		\
+	nautilus-freedesktop-dbus.h		\
 	nautilus-icon-view.c			\
 	nautilus-icon-view.h			\
 	nautilus-icon-view-container.c		\
@@ -186,6 +203,7 @@ ui_DATA = 					\
 	$(NULL)
 
 CLEANFILES = \
+	$(BUILT_SOURCES)			\
 	$(server_DATA)				\
 	$(NULL)
 

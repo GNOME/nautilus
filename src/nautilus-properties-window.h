@@ -61,7 +61,8 @@ typedef struct NautilusPropertiesWindowClass NautilusPropertiesWindowClass;
 
 GType   nautilus_properties_window_get_type   (void);
 
-void 	nautilus_properties_window_present    (GList *files,
-					       GtkWidget *parent_widget);
+void 	nautilus_properties_window_present    (GList       *files,
+					       GtkWidget   *parent_widget,
+					       const gchar *startup_id);
 
 #endif /* NAUTILUS_PROPERTIES_WINDOW_H */
