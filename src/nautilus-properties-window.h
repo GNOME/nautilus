@@ -64,4 +64,7 @@ GType   nautilus_properties_window_get_type   (void);
 void 	nautilus_properties_window_present    (GList *files,
 					       GtkWidget *parent_widget);
 
+void 	nautilus_properties_window_present_with_startup_id (GList *files,
+							    const char *startup_id);
+
 #endif /* NAUTILUS_PROPERTIES_WINDOW_H */
