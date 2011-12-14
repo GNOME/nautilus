@@ -66,8 +66,7 @@ enum {
 static GType nautilus_freedesktop_dbus_get_type (void) G_GNUC_CONST;
 G_DEFINE_TYPE (NautilusFreedesktopDBus, nautilus_freedesktop_dbus, G_TYPE_OBJECT);
 
-static NautilusFreedesktopDBus *singleton;
-
+static NautilusFreedesktopDBus *singleton = NULL;
 
 static gboolean
 skeleton_handle_show_items_cb (NautilusFreedesktopFileManager1 *object,
@@ -136,8 +135,9 @@ skeleton_handle_show_item_properties_cb (NautilusFreedesktopFileManager1 *object
 
 	files = NULL;
 
-	for (i = 0; uris[i] != NULL; i++)
+	for (i = 0; uris[i] != NULL; i++) {
 		files = g_list_prepend (files, nautilus_file_get_by_uri (uris[i]));
+        }
 
 	files = g_list_reverse (files);
 
@@ -298,9 +298,10 @@ nautilus_freedesktop_dbus_init (NautilusFreedesktopDBus *fdb)
 /* Tries to own the org.freedesktop.FileManager1 service name */
 void
 nautilus_freedesktop_dbus_start (NautilusApplication *app)
-{
-	if (singleton)
+{	
+	if (singleton != NULL) {
 		return;
+	}
 
 	singleton = g_object_new (nautilus_freedesktop_dbus_get_type (),
 				  "application", app,
