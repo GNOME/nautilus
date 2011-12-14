@@ -20,10 +20,15 @@ mimedir = $(datadir)/mime/packages
 mime_DATA = $(xml_files)
 
 servicedir = $(datadir)/dbus-1/services
-service_in_files = org.gnome.Nautilus.service.in
 service_DATA = $(service_in_files:.service.in=.service)
+service_in_files = 				\
+	org.freedesktop.FileManager1.service.in	\
+	org.gnome.Nautilus.service.in
 
 org.gnome.Nautilus.service: org.gnome.Nautilus.service.in Makefile
+	$(AM_V_GEN) sed -e "s|\@bindir\@|$(bindir)|" $< > $@
+
+org.freedesktop.FileManager1.service: org.freedesktop.FileManager1.service.in Makefile
 	$(AM_V_GEN) sed -e "s|\@bindir\@|$(bindir)|" $< > $@
 
 nautilusdatadir = $(datadir)/nautilus
