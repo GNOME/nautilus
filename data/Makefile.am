@@ -42,6 +42,7 @@ EXTRA_DIST = $(nautilusdata_DATA) 	\
 	nautilus.desktop		\
 	nautilus.desktop.in		\
 	dbus-interfaces.xml		\
+	freedesktop-dbus-interfaces.xml	\
 	$(xml_in_files) 		\
 	$(desktop_in_files)		\
 	$(service_in_files)		\
