@@ -41,4 +41,6 @@ const char *nautilus_ui_string_get                 (const char        *filename)
 
 gboolean  nautilus_event_should_open_in_new_tab   (void);
 
+GdkPixbuf * nautilus_ui_get_menu_icon              (const char        *icon_name);
+
 #endif /* NAUTILUS_UI_UTILITIES_H */

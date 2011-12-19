@@ -120,7 +120,7 @@ nautilus_action_from_menu_item (NautilusMenuItem *item)
 	char *name, *label, *tip, *icon_name;
 	gboolean sensitive, priority;
 	GtkAction *action;
-	GIcon *icon;
+	GdkPixbuf *pixbuf;
 
 	g_object_get (G_OBJECT (item),
 		      "name", &name, "label", &label,
@@ -132,13 +132,14 @@ nautilus_action_from_menu_item (NautilusMenuItem *item)
 	action = gtk_action_new (name,
 				 label,
 				 tip,
-				 icon_name);
+				 NULL);
 
 	if (icon_name != NULL) {
-		icon = g_themed_icon_new_with_default_fallbacks (icon_name);
-		g_object_set_data_full (G_OBJECT (action), "menu-icon",
-					icon,
-					g_object_unref);
+		pixbuf = nautilus_ui_get_menu_icon (icon_name);
+		if (pixbuf != NULL) {
+			gtk_action_set_gicon (action, G_ICON (pixbuf));
+			g_object_unref (pixbuf);
+		}
 	}
 
 	gtk_action_set_sensitive (action, sensitive);
@@ -175,4 +176,24 @@ nautilus_event_should_open_in_new_tab (void)
 	gdk_event_free (event);
 
 	return FALSE;
+}
+
+GdkPixbuf *
+nautilus_ui_get_menu_icon (const char *icon_name)
+{
+	NautilusIconInfo *info;
+	GdkPixbuf *pixbuf;
+	int size;
+
+	size = nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU);
+
+	if (g_path_is_absolute (icon_name)) {
+		info = nautilus_icon_info_lookup_from_path (icon_name, size);
+	} else {
+		info = nautilus_icon_info_lookup_from_name (icon_name, size);
+	}
+	pixbuf = nautilus_icon_info_get_pixbuf_nodefault_at_size (info, size);
+	g_object_unref (info);
+
+	return pixbuf;
 }

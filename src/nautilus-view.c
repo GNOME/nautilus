@@ -4600,26 +4600,6 @@ extension_action_callback (GtkAction *action,
 }
 
 static GdkPixbuf *
-get_menu_icon (const char *icon_name)
-{
-	NautilusIconInfo *info;
-	GdkPixbuf *pixbuf;
-	int size;
-
-	size = nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU);
-
-	if (g_path_is_absolute (icon_name)) {
-		info = nautilus_icon_info_lookup_from_path (icon_name, size);
-	} else {
-		info = nautilus_icon_info_lookup_from_name (icon_name, size);
-	}
-	pixbuf = nautilus_icon_info_get_pixbuf_nodefault_at_size (info, size);
-	g_object_unref (info);
-
-	return pixbuf;
-}
-
-static GdkPixbuf *
 get_menu_icon_for_file (NautilusFile *file)
 {
 	NautilusIconInfo *info;
@@ -4656,14 +4636,13 @@ add_extension_action_for_files (NautilusView *view,
 	action = gtk_action_new (name,
 				 label,
 				 tip,
-				 icon);
+				 NULL);
 
 	if (icon != NULL) {
-		pixbuf = get_menu_icon (icon);
+		pixbuf = nautilus_ui_get_menu_icon (icon);
 		if (pixbuf != NULL) {
-			g_object_set_data_full (G_OBJECT (action), "menu-icon",
-						pixbuf,
-						g_object_unref);
+			gtk_action_set_gicon (action, G_ICON (pixbuf));
+			g_object_unref (pixbuf);
 		}
 	}
 
@@ -7131,7 +7110,7 @@ connect_proxy (NautilusView *view,
 
 	if (strcmp (gtk_action_get_name (action), NAUTILUS_ACTION_NEW_EMPTY_DOCUMENT) == 0 &&
 	    GTK_IS_IMAGE_MENU_ITEM (proxy)) {
-		pixbuf = get_menu_icon ("text-x-generic");
+		pixbuf = nautilus_ui_get_menu_icon ("text-x-generic");
 		if (pixbuf != NULL) {
 			image = gtk_image_new_from_pixbuf (pixbuf);
 			gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (proxy), image);
