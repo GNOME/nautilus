@@ -26,7 +26,7 @@
 
 /* We share the same debug domain as nautilus-dbus-manager */
 #define DEBUG_FLAG NAUTILUS_DEBUG_DBUS
-#include "nautilus-debug.h"
+#include <libnautilus-private/nautilus-debug.h>
 
 #include "nautilus-properties-window.h"
 
