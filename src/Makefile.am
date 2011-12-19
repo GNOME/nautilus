@@ -58,7 +58,6 @@ BUILT_SOURCES = \
 	$(NULL)
 
 nautilus_SOURCES = \
-	$(BUILT_SOURCES)			\
 	nautilus-actions.h			\
 	nautilus-application.c			\
 	nautilus-application.h			\
@@ -158,6 +157,10 @@ nautilus_SOURCES = \
 	nautilus-window-types.h			\
 	nautilus-x-content-bar.c		\
 	nautilus-x-content-bar.h		\
+	$(NULL)
+
+nodist_nautilus_SOURCES = \
+	$(BUILT_SOURCES) \
 	$(NULL)
 
 EMPTY_VIEW_SOURCES = \
