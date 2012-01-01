@@ -8284,7 +8284,7 @@ real_update_menus (NautilusView *view)
 	show_open_alternate = file_list_all_are_folders (selection) &&
 		selection_count > 0 &&
 		g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER) &&
-		!(nautilus_window_get_window_type (view->details->window) == NAUTILUS_WINDOW_DESKTOP);
+		!NAUTILUS_IS_DESKTOP_ICON_VIEW (view);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      NAUTILUS_ACTION_OPEN_ALTERNATE);
