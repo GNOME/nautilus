@@ -1746,13 +1746,6 @@ nautilus_window_set_hidden_files_mode (NautilusWindow *window,
 	g_signal_emit_by_name (window, "hidden_files_mode_changed");
 }
 
-void
-nautilus_window_set_initiated_unmount (NautilusWindow *window,
-				       gboolean initiated_unmount)
-{
-	window->details->initiated_unmount = initiated_unmount;
-}
-
 NautilusWindowSlot *
 nautilus_window_get_active_slot (NautilusWindow *window)
 {

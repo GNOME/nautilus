@@ -142,8 +142,6 @@ void                 nautilus_window_report_load_underway  (NautilusWindow *wind
                                                             NautilusView *view);
 void                 nautilus_window_view_visible          (NautilusWindow *window,
                                                             NautilusView *view);
-void                 nautilus_window_set_initiated_unmount (NautilusWindow *window,
-                                                            gboolean initiated_unmount);
 NautilusWindowSlot * nautilus_window_get_active_slot       (NautilusWindow *window);
 void                 nautilus_window_push_status           (NautilusWindow *window,
                                                             const char *text);

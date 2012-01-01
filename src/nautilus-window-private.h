@@ -79,10 +79,6 @@ struct NautilusWindowDetails
         GList *panes;
         NautilusWindowPane *active_pane;
 
-	/* So we can tell which window initiated
-	 * an unmount operation.
-	 */
-	gboolean initiated_unmount;
 
         GtkWidget *content_paned;
         GtkWidget *content_box;
