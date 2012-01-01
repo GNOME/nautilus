@@ -156,15 +156,6 @@ static const struct {
 #endif
 };
 
-/* Unconditionally synchronize the GtkUIManager of WINDOW. */
-static void
-nautilus_window_ui_update (NautilusWindow *window)
-{
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
-	gtk_ui_manager_ensure_update (window->details->ui_manager);
-}
-
 void
 nautilus_window_push_status (NautilusWindow *window,
 			     const char *text)
@@ -1659,8 +1650,8 @@ nautilus_window_show (GtkWidget *widget)
 	}
 
 	GTK_WIDGET_CLASS (nautilus_window_parent_class)->show (widget);	
-	
-	nautilus_window_ui_update (window);
+
+	gtk_ui_manager_ensure_update (window->details->ui_manager);
 }
 
 GtkUIManager *
