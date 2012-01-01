@@ -751,26 +751,6 @@ nautilus_window_finalize (GObject *object)
 }
 
 void
-nautilus_window_show_window (NautilusWindow    *window)
-{
-	NautilusWindowSlot *slot;
-	NautilusWindowPane *pane;
-	GList *l, *walk;
-
-	for (walk = window->details->panes; walk; walk = walk->next) {
-		pane = walk->data;
-		for (l = pane->slots; l != NULL; l = l->next) {
-			slot = l->data;
-
-			nautilus_window_slot_update_title (slot);
-			nautilus_window_slot_update_icon (slot);
-		}
-	}
-
-	gtk_widget_show (GTK_WIDGET (window));
-}
-
-void
 nautilus_window_view_visible (NautilusWindow *window,
 			      NautilusView *view)
 {
@@ -813,12 +793,19 @@ nautilus_window_view_visible (NautilusWindow *window,
 		if (!gtk_widget_get_visible (GTK_WIDGET (pane))) {
 			return;
 		}
+
+		for (l = pane->slots; l != NULL; l = l->next) {
+			slot = l->data;
+
+			nautilus_window_slot_update_title (slot);
+			nautilus_window_slot_update_icon (slot);
+		}
 	}
 
 	nautilus_window_pane_grab_focus (window->details->active_pane);
 
 	/* All slots and panes visible, show window */
-	nautilus_window_show_window (window);
+	gtk_widget_show (GTK_WIDGET (window));
 }
 
 static void
