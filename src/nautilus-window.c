@@ -83,8 +83,6 @@
 
 #define MAX_TITLE_LENGTH 180
 
-#define MENU_PATH_BOOKMARKS_PLACEHOLDER			"/MenuBar/Other Menus/Bookmarks/Bookmarks Placeholder"
-
 /* Forward and back buttons on the mouse */
 static gboolean mouse_extra_buttons = TRUE;
 static int mouse_forward_button = 9;
@@ -1999,7 +1997,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
 	wclass->window_state_event = nautilus_window_state_event;
 	wclass->button_press_event = nautilus_window_button_press_event;
 
-	class->bookmarks_placeholder = MENU_PATH_BOOKMARKS_PLACEHOLDER;
 	class->get_icon = real_get_icon;
 	class->close = real_window_close;
 

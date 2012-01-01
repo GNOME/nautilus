@@ -76,8 +76,6 @@ typedef struct NautilusWindowDetails NautilusWindowDetails;
 typedef struct {
         GtkWindowClass parent_spot;
 
-        const char *bookmarks_placeholder;
-
 	/* Function pointers for overriding, without corresponding signals */
 
         void   (* sync_title) (NautilusWindow *window,

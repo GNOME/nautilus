@@ -42,6 +42,7 @@
 #include <glib/gi18n.h>
 
 #define MENU_ITEM_MAX_WIDTH_CHARS 32
+#define MENU_PATH_BOOKMARKS_PLACEHOLDER	 "/MenuBar/Other Menus/Bookmarks/Bookmarks Placeholder"
 
 static GtkWindow *bookmarks_window = NULL;
 
@@ -391,7 +392,7 @@ update_bookmarks (NautilusWindow *window)
 		nautilus_menus_append_bookmark_to_menu
 			(NAUTILUS_WINDOW (window),
 			 bookmark,
-			 NAUTILUS_WINDOW_GET_CLASS (window)->bookmarks_placeholder,
+			 MENU_PATH_BOOKMARKS_PLACEHOLDER,
 			 "dynamic",
 			 index,
 			 window->details->bookmarks_action_group,
