@@ -768,8 +768,6 @@ nautilus_window_show_window (NautilusWindow    *window)
 	}
 
 	gtk_widget_show (GTK_WIDGET (window));
-
-	slot = window->details->active_pane->active_slot;
 }
 
 void
