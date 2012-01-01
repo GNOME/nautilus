@@ -1723,14 +1723,6 @@ nautilus_window_get_slot_for_view (NautilusWindow *window,
 	return NULL;
 }
 
-NautilusWindowType
-nautilus_window_get_window_type (NautilusWindow *window)
-{
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
-	return NAUTILUS_WINDOW_GET_CLASS (window)->window_type;
-}
-
 NautilusWindowShowHiddenFilesMode
 nautilus_window_get_hidden_files_mode (NautilusWindow *window)
 {
@@ -2007,7 +1999,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
 	wclass->window_state_event = nautilus_window_state_event;
 	wclass->button_press_event = nautilus_window_button_press_event;
 
-	class->window_type = NAUTILUS_WINDOW_NAVIGATION;
 	class->bookmarks_placeholder = MENU_PATH_BOOKMARKS_PLACEHOLDER;
 	class->get_icon = real_get_icon;
 	class->close = real_window_close;

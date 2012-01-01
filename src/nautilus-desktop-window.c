@@ -307,7 +307,6 @@ nautilus_desktop_window_class_init (NautilusDesktopWindowClass *klass)
 	wclass->unrealize = unrealize;
 	wclass->map = map;
 
-	nclass->window_type = NAUTILUS_WINDOW_DESKTOP;
 	nclass->sync_title = real_sync_title;
 	nclass->get_icon = real_get_icon;
 	nclass->close = real_window_close;

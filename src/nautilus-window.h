@@ -55,11 +55,6 @@ typedef enum {
         NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DISABLE
 } NautilusWindowShowHiddenFilesMode;
 
-typedef enum {
-        NAUTILUS_WINDOW_NAVIGATION,
-        NAUTILUS_WINDOW_DESKTOP
-} NautilusWindowType;
-
 GType          nautilus_window_slot_get_type (void);
 
 typedef enum {
@@ -81,7 +76,6 @@ typedef struct NautilusWindowDetails NautilusWindowDetails;
 typedef struct {
         GtkWindowClass parent_spot;
 
-        NautilusWindowType window_type;
         const char *bookmarks_placeholder;
 
 	/* Function pointers for overriding, without corresponding signals */
@@ -137,7 +131,6 @@ NautilusWindowShowHiddenFilesMode
                      nautilus_window_get_hidden_files_mode (NautilusWindow *window);
 void                 nautilus_window_set_hidden_files_mode (NautilusWindow *window,
                                                             NautilusWindowShowHiddenFilesMode  mode);
-NautilusWindowType   nautilus_window_get_window_type       (NautilusWindow *window);
 void                 nautilus_window_report_load_underway  (NautilusWindow *window,
                                                             NautilusView *view);
 void                 nautilus_window_view_visible          (NautilusWindow *window,
