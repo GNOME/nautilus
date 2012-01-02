@@ -12,7 +12,7 @@
 # Priit Laes <plaes+gi18n plaes org>, 2004–2008.
 # Ivar Smolin <okul linux ee>, 2005–2011.
 # Sven Sapelson <sven.sapelson gmail com>, 2005.
-# Mattias Põldaru <mahfiaz gmail com>, 2009–2011.
+# Mattias Põldaru <mahfiaz@gmail.com>, 2009–2011, 2012.
 #
 # FIXME - selles tõlkes tuleks kontrollida, et failirekvisiitide "modified" ja
 # "changed" poleks omavahel sassi aetud.
@@ -21,16 +21,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus MASTER\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=nautilus&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2011-02-21 00:16+0000\n"
-"PO-Revision-Date: 2011-03-17 16:18+0300\n"
+"product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
+"POT-Creation-Date: 2011-12-27 01:49+0000\n"
+"PO-Revision-Date: 2012-01-01 23:22+0200\n"
 "Last-Translator: Mattias Põldaru <mahfiaz@gmail.com>\n"
-"Language-Team: Estonian <gnome-et@linux.ee>\n"
+"Language-Team: Estonian <>\n"
+"Language: et\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Language: et\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Transfer-Encoding: 8bits\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
 msgid "Saved search"
 msgstr "Salvestatud otsing"
@@ -717,8 +717,8 @@ msgstr ""
 "võimalusel sealt mõned tarbetud failid kustutada."
 
 #, c-format
-msgid "There is %S available, but %S is required."
-msgstr "%S on saadaval, kuid vajalik on %S."
+msgid "%S more space is required to copy to the destination."
+msgstr "Sihtkohta kopeerimiseks jääb puudu %S ruumi."
 
 msgid "The destination is read-only."
 msgstr "Sihtkoht on kirjutuskaitsega."
@@ -1106,14 +1106,6 @@ msgid "%'u file"
 msgid_plural "%'u files"
 msgstr[0] "%'u fail"
 msgstr[1] "%'u faili"
-
-#. Do this in a separate stage so that we don't have to put G_GUINT64_FORMAT in the translated string
-msgid "%"
-msgstr "%"
-
-#, c-format
-msgid "%s (%s bytes)"
-msgstr "%s (%s baiti)"
 
 #. This means no contents at all were readable
 msgid "? items"
@@ -1635,18 +1627,6 @@ msgid "Side pane view"
 msgstr "Külgpaanivaade"
 
 msgid ""
-"Speed tradeoff for when to preview a sound file when mousing over a files "
-"icon. If set to \"always\" then always plays the sound, even if the file is "
-"on a remote server. If set to \"local-only\" then only plays previews on "
-"local file systems. If set to \"never\" then it never previews sound."
-msgstr ""
-"Kompromiss kiiruse nimel hiirekursori liikumisel helifailide ikoonide "
-"kohale. Kui väärtuseks on \"always\", siis esitatakse heli alati, ka siis, "
-"kui fail asub kaugserveris. Kui väärtuseks on \"local_only\", siis "
-"esitatakse heli ainult kohalike failide korral. Kui väärtuseks on \"never\", "
-"siis heli ei esitata."
-
-msgid ""
 "Speed tradeoff for when to show a preview of text file contents in the "
 "file's icon. If set to \"always\" then always show previews, even if the "
 "folder is on a remote server. If set to \"local-only\" then only show "
@@ -1804,9 +1784,6 @@ msgstr ""
 msgid "Whether to enable immediate deletion"
 msgstr "Kas kohene kustutamine on lubatud"
 
-msgid "Whether to preview sounds when mousing over an icon"
-msgstr "Kas kursori liikumisel üle ikooni on eelvaatehääled lubatud"
-
 msgid "Whether to show hidden files"
 msgstr "Kas peidetud faile näidatakse või mitte"
 
@@ -1858,6 +1835,15 @@ msgstr ""
 "Nautilusega 3.0 muutus see kataloog aegunuks ning seadistused püüti "
 "kohandada kausta ~/.config/nautilus"
 
+msgid "--check cannot be used with other options."
+msgstr "--check võtit pole võimalik kasutada koos teiste võtmetega."
+
+msgid "--quit cannot be used with URIs."
+msgstr "--quit võtit pole võimalik koos URI-dega kasutada."
+
+msgid "--geometry cannot be used with more than one URI."
+msgstr "--geometry võtit pole võimalik rohkem kui ühe URI-ga kasutada."
+
 msgid "Perform a quick set of self-check tests."
 msgstr "Kiirete enesetestide läbiviimine."
 
@@ -1892,15 +1878,6 @@ msgstr ""
 "\n"
 "\n"
 "Failisüsteemi sirvimine failihalduriga"
-
-msgid "--check cannot be used with other options."
-msgstr "--check võtit pole võimalik kasutada koos teiste võtmetega."
-
-msgid "--quit cannot be used with URIs."
-msgstr "--quit võtit pole võimalik koos URI-dega kasutada."
-
-msgid "--geometry cannot be used with more than one URI."
-msgstr "--geometry võtit pole võimalik rohkem kui ühe URI-ga kasutada."
 
 #, c-format
 msgid "Error starting autorun program: %s"
@@ -2069,6 +2046,9 @@ msgstr "_Parool:"
 msgid "_Remember this password"
 msgstr "Seda _parooli peetakse meeles"
 
+msgid "Operation cancelled"
+msgstr "Toiming katkestati"
+
 msgid "Comment"
 msgstr "Kommentaar"
 
@@ -2085,16 +2065,6 @@ msgstr "Käsk"
 #. label, accelerator
 msgid "E_mpty Trash"
 msgstr "_Tühjenda prügikast"
-
-#. label, accelerator
-#. name, stock id
-#. label, accelerator
-msgid "Create L_auncher..."
-msgstr "Loo kä_ivitaja..."
-
-#. tooltip
-msgid "Create a new launcher"
-msgstr "Uue käivitaja loomine"
 
 #. label, accelerator
 msgid "Change Desktop _Background"
@@ -2306,9 +2276,6 @@ msgstr "<b>Nimekirjavaate vaikeväärtused</b>"
 msgid "<b>Other Previewable Files</b>"
 msgstr "<b>Muud eelvaadeldavad failid</b>"
 
-msgid "<b>Sound Files</b>"
-msgstr "<b>Helifailid</b>"
-
 msgid "<b>Text Files</b>"
 msgstr "<b>Tekstifailid</b>"
 
@@ -2407,9 +2374,6 @@ msgstr "_Iga kataloog avaneb oma aknas"
 
 msgid "Preview"
 msgstr "Eelvaatlemine"
-
-msgid "Preview _sound files:"
-msgstr "_Helifaile eelvaadeldakse:"
 
 msgid "Show _only folders"
 msgstr "Näidatakse ai_nult katalooge"
@@ -2568,10 +2532,6 @@ msgstr "_Kustutamise aja järgi"
 
 msgid "Restore Icon's Original Si_ze"
 msgstr "_Taasta ikooni algne suurus"
-
-#, c-format
-msgid "pointing at \"%s\""
-msgstr "osutab kirjele \"%s\""
 
 #. translators: this is used in the view menu
 msgid "_Icons"
@@ -2948,6 +2908,10 @@ msgstr "Ava uuel _kaardil"
 msgid "Open in New _Window"
 msgstr "Ava uues _aknas"
 
+#. name, stock id, label
+msgid "_Add Bookmark"
+msgstr "_Lisa järjehoidja"
+
 msgid "Remove"
 msgstr "Eemalda"
 
@@ -2975,6 +2939,11 @@ msgstr "_Väljasta"
 #. label, accelerator
 msgid "_Detect Media"
 msgstr "_Tuvasta meedia"
+
+#. name, stock id
+#. label, accelerator
+msgid "_Properties"
+msgstr "_Omadused"
 
 msgid "File Operations"
 msgstr "Failioperatsioonid"
@@ -3140,11 +3109,11 @@ msgstr "Ainult lugemine"
 msgid "Read and write"
 msgstr "Lugemine ja kirjutamine"
 
-msgid "Set _user ID"
-msgstr "_Kasutaja ID määramine"
-
 msgid "Special flags:"
 msgstr "Erilipud:"
+
+msgid "Set _user ID"
+msgstr "_Kasutaja ID määramine"
 
 msgid "Set gro_up ID"
 msgstr "_Grupi ID määramine"
@@ -3355,6 +3324,12 @@ msgstr "Otsingu _nimi:"
 
 msgid "Select Folder to Save Search In"
 msgstr "Otsingu salvestamiseks kataloogi valimine"
+
+msgid "Content View"
+msgstr "Sisuvaade"
+
+msgid "View of the current folder"
+msgstr "Käesoleva kataloogi vaade"
 
 #, c-format
 msgid "\"%s\" selected"
@@ -3577,11 +3552,6 @@ msgstr "Ava _programmiga..."
 msgid "Choose a program with which to open the selected item"
 msgstr "Vali programm, millega valitud kirje avada"
 
-#. name, stock id
-#. label, accelerator
-msgid "_Properties"
-msgstr "_Omadused"
-
 #. tooltip
 msgid "View or modify the properties of each selected item"
 msgstr "Valitud kirje omaduste vaatamine või muutmine"
@@ -3623,15 +3593,6 @@ msgstr "Kõikide navigatsiooniaknas valitud kirjete avamine"
 #. tooltip
 msgid "Open each selected item in a new tab"
 msgstr "Iga valitud kirje avamine uuel kaardil"
-
-#. name, stock id
-#. label, accelerator
-msgid "Open in _Folder Window"
-msgstr "Ava _kataloogiaknas"
-
-#. tooltip
-msgid "Open each selected item in a folder window"
-msgstr "Iga valitud kirje avamine kataloogiaknas"
 
 #. name, stock id
 #. label, accelerator
@@ -3858,10 +3819,6 @@ msgstr "Kataloogi avamine navigeerimisaknas"
 msgid "Open this folder in a new tab"
 msgstr "Selle kataloogi avamine uuel kaardil"
 
-#. tooltip
-msgid "Open this folder in a folder window"
-msgstr "Selle kataloogi avamine kataloogiaknas"
-
 #. name, stock id
 #. label, accelerator
 #. tooltip
@@ -4061,12 +4018,6 @@ msgstr "Avatud kataloogiga seotud mitmekettaseadme seiskamine"
 msgid "Lock the drive associated with the open folder"
 msgstr "Avatud kataloogiga seotud kettaseadme lukustamine"
 
-msgid "Browse in New _Window"
-msgstr "Sirvi uues _aknas"
-
-msgid "Browse in New _Tab"
-msgstr "Sirvi uuel _kaardil"
-
 msgid "_Delete Permanently"
 msgstr "Kustuta _jäädavalt"
 
@@ -4087,43 +4038,16 @@ msgstr[0] "Ava uues _aknas"
 msgstr[1] "Ava %'d-s uues _aknas"
 
 #, c-format
-msgid "Browse in %'d New _Window"
-msgid_plural "Browse in %'d New _Windows"
-msgstr[0] "Sirvi uues _aknas"
-msgstr[1] "Sirvi %'d-s uues _aknas"
-
-#, c-format
 msgid "Open in %'d New _Tab"
 msgid_plural "Open in %'d New _Tabs"
 msgstr[0] "Ava uuel _kaardil"
 msgstr[1] "Ava %'d-l uuel _kaardil"
-
-#, c-format
-msgid "Browse in %'d New _Tab"
-msgid_plural "Browse in %'d New _Tabs"
-msgstr[0] "Sirvi uuel _kaardil"
-msgstr[1] "Sirvi %'d-l uuel _kaardil"
 
 msgid "Delete all selected items permanently"
 msgstr "Kõigi kirjete lõplik kustutamine"
 
 msgid "View or modify the properties of the open folder"
 msgstr "Avatud kataloogi omaduste vaatamine või muutmine"
-
-msgid "Searching..."
-msgstr "Otsimine..."
-
-msgid "Download location?"
-msgstr "Kas laadida asukoht alla?"
-
-msgid "You can download it or make a link to it."
-msgstr "Sa võid selle alla laadida või sellele viida luua."
-
-msgid "Make a _Link"
-msgstr "Loo _viit"
-
-msgid "_Download"
-msgstr "_Laadi alla"
 
 msgid "Drag and drop is not supported."
 msgstr "Pukseerimine ei ole toetatud."
@@ -4167,11 +4091,8 @@ msgstr "Valida võib uue vaate või liikuda teise asukohta."
 msgid "The location cannot be displayed with this viewer."
 msgstr "Asukohta ei ole võimalik selle vaatajaga kuvada."
 
-msgid "Content View"
-msgstr "Sisuvaade"
-
-msgid "View of the current folder"
-msgstr "Käesoleva kataloogi vaade"
+msgid "Searching..."
+msgstr "Otsimine..."
 
 msgid "Nautilus has no installed viewer capable of displaying the folder."
 msgstr ""
@@ -4254,6 +4175,12 @@ msgstr ""
 "Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA "
 "02110-1301 USA"
 
+#. Translators: these two strings here indicate the copyright time span,
+#. * e.g. 1999-2011.
+#.
+msgid "Copyright © %Id–%Id The Nautilus authors"
+msgstr "Autoriõigused © %Id–%Id Nautiluse autorid"
+
 #. Set initial window title
 msgid "Nautilus"
 msgstr "Nautilus"
@@ -4264,9 +4191,6 @@ msgid ""
 msgstr ""
 "Nautiluse abil saab korras hoida nii enda arvutis kui internetis olevaid "
 "faile ja kaustu."
-
-msgid "Copyright © 1999-2010 The Nautilus authors"
-msgstr "Autoriõigused © 1999–2010 Nautiluse autorid"
 
 #. Translators should localize the following string
 #. * which will be displayed at the bottom of the about
@@ -4281,13 +4205,10 @@ msgstr ""
 "Sven Sapelson <sven.sapelson gmail com>,2005.\n"
 "Priit Laes <plaes+gi18n plaes org>, 2004–2008.\n"
 "Ivar Smolin <okul linux ee>, 2005–2011.\n"
-"Mattias Põldaru <mahfiaz gmail com>, 2009–2010."
+"Mattias Põldaru <mahfiaz gmail com>, 2009–2012."
 
 msgid "Nautilus Web Site"
 msgstr "Nautiluse veebisait"
-
-msgid "Are you sure you want to clear the list of locations you have visited?"
-msgstr "Kas oled kindel, et tahad oma külastatud asukohtade loendi tühjendada?"
 
 #. name, stock id, label
 msgid "_File"
@@ -4349,12 +4270,55 @@ msgstr "Käesoleva asukoha uuestilaadimine"
 
 #. name, stock id
 #. label, accelerator
-msgid "_Contents"
-msgstr "_Sisukord"
+msgid "_All Topics"
+msgstr "_Kõik teemad"
 
 #. tooltip
 msgid "Display Nautilus help"
 msgstr "Nautiluse abiteabe kuvamine"
+
+#. name, stock id
+#. label, accelerator
+msgid "Search for files"
+msgstr "Failide otsing"
+
+#. tooltip
+msgid ""
+"Locate files based on file name and type. Save your searches for later use."
+msgstr ""
+"Failide otsimine nime ja liigi järgi. Otsingute salvestamine hilisemaks "
+"kasutamiseks."
+
+#. name, stock id
+#. label, accelerator
+msgid "Sort files and folders"
+msgstr "Failide ja kataloogide sorteerimine"
+
+#. tooltip
+msgid "Arrange files by name, size, type, or when they were changed."
+msgstr "Failide järjestamine nime, suuruse, liigi ja muutmise aja järgi."
+
+#. name, stock id
+#. label, accelerator
+msgid "Find a lost file"
+msgstr "Kadunud faili otsimine"
+
+#. tooltip
+msgid "Follow these tips if you can't find a file you created or downloaded."
+msgstr ""
+"Järgi neid nõuanded, kui sa ei leia faili, mille oled loonud või alla "
+"laadinud."
+
+#. name, stock id
+#. label, accelerator
+msgid "Share and transfer files"
+msgstr "Failide jagamine ja saatmine"
+
+#. tooltip
+msgid ""
+"Easily transfer files to your contacts and devices from the file manager."
+msgstr ""
+"Failide lihtne saatmine kontaktidele ja seadmetesse otse failihaldurist."
 
 #. name, stock id
 #. label, accelerator
@@ -4493,13 +4457,6 @@ msgid "Specify a location to open"
 msgstr "Avatava asukoha määramine"
 
 #. name, stock id, label
-msgid "Clea_r History"
-msgstr "Puhasta a_jalugu"
-
-msgid "Clear contents of Go menu and Back/Forward lists"
-msgstr "Liikumise menüü ja edasi/tagasi loendite tühjendamine"
-
-#. name, stock id, label
 msgid "S_witch to Other Pane"
 msgstr "_Lülitumine teisele paneelile"
 
@@ -4512,10 +4469,6 @@ msgstr "_Sama asukoht kui teisel paneelil"
 
 msgid "Go to the same location as in the extra pane"
 msgstr "Liikumine samasse asukohta nagu lisapaanil"
-
-#. name, stock id, label
-msgid "_Add Bookmark"
-msgstr "_Lisa järjehoidja"
 
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Siia menüüsse praeguse asukoha jaoks järjehoida lisamine"
@@ -4682,21 +4635,6 @@ msgstr "Meedium tuvastati kui \"%s\"."
 msgid "Open %s"
 msgstr "Avatakse: %s"
 
-msgid "Zoom In"
-msgstr "Suurenda"
-
-msgid "Zoom Out"
-msgstr "Vähenda"
-
-msgid "Zoom to Default"
-msgstr "Vaikimisi suurendus"
-
-msgid "Zoom"
-msgstr "Suurendus"
-
-msgid "Set the zoom level of the current view"
-msgstr "Praeguse vaate suurendusastme seadmine"
-
 msgid "Send To..."
 msgstr "Saada..."
 
@@ -4705,459 +4643,3 @@ msgstr "Faili saatmine e-postiga, välksõnumiga..."
 
 msgid "Send files by mail, instant message..."
 msgstr "Failide saatmine e-postiga, välksõnumiga..."
-
-#~ msgid "If true, icons will be laid out tighter by default in new windows."
-#~ msgstr ""
-#~ "Kui märgitud, paigutatakse ikoonid uutes aknendes tihedamasse rivisse."
-
-#~ msgid "Use tighter layout in new windows"
-#~ msgstr "Tihepaigutuse kasutamine uutes akendes"
-
-#~ msgid "Open a browser window."
-#~ msgstr "Sirvija akna avamine."
-
-#~ msgid "_Use compact layout"
-#~ msgstr "Kasutatakse kom_paktset paigutust"
-
-#~ msgid "Compact _Layout"
-#~ msgstr "Kompaktne _paigutus"
-
-#~ msgid "Toggle using a tighter layout scheme"
-#~ msgstr "Tihepaigutuse sisse- ja väljalülitamine"
-
-#~ msgid "Open Location"
-#~ msgstr "Asukoha avamine"
-
-#~ msgid "_Location:"
-#~ msgstr "_Asukoht:"
-
-#~ msgid "The history location doesn't exist."
-#~ msgstr "Ajaloo asukohta pole enam olemas."
-
-#~ msgid "Open Folder W_indow"
-#~ msgstr "Ava _kataloogiaken"
-
-#~ msgid "Open a folder window for the displayed location"
-#~ msgstr "Näidatava asukoha jaoks uue kataloogiakna avamine"
-
-#~ msgid "S_how Search"
-#~ msgstr "_Otsingu kuvamine"
-
-#~ msgid "Show search"
-#~ msgstr "Otsingu kuvamine"
-
-#~ msgid "Location _Bar"
-#~ msgstr "Asukoha_riba"
-
-#~ msgid "Change the visibility of this window's location bar"
-#~ msgstr "Selle akna asukohariba näitamine või peitmine"
-
-#~ msgid "_Zoom"
-#~ msgstr "_Suurendus"
-
-#~ msgid "_View As"
-#~ msgstr "_Kuva kui"
-
-#~ msgid "_Search"
-#~ msgstr "_Otsing"
-
-#~ msgid "_Places"
-#~ msgstr "_Asukohad"
-
-#~ msgid "Open _Location..."
-#~ msgstr "_Ava asukoht..."
-
-#~ msgid "Close P_arent Folders"
-#~ msgstr "Su_lge ülemised kataloogid"
-
-#~ msgid "Close this folder's parents"
-#~ msgstr "Sulgeb selle kataloogi ülemised kataloogid"
-
-#~ msgid "Clos_e All Folders"
-#~ msgstr "_Sulge kõik kataloogid"
-
-#~ msgid "Close all folder windows"
-#~ msgstr "Kõigi kataloogiakende sulgemine"
-
-#~ msgid "Locate documents and folders on this computer by name or content"
-#~ msgstr ""
-#~ "Arvutis asuvate dokumentide ja kataloogide otsing nime või sisu järgi"
-
-#~ msgid "_Browse Folder"
-#~ msgid_plural "_Browse Folders"
-#~ msgstr[0] "_Sirvi kataloogi"
-#~ msgstr[1] "_Sirvi katalooge"
-
-#~ msgid "Folder:"
-#~ msgstr "Kaust:"
-
-#~ msgid "File Manager"
-#~ msgstr "Failihaldur"
-
-#~ msgid "Manage files on your computer and network locations"
-#~ msgstr "Sinu arvutis olevate failide ja võrgukohtade haldamine"
-
-#~ msgid "By Path"
-#~ msgstr "Raja järgi"
-
-#~ msgid "Browse the file system with the file manager"
-#~ msgstr "Sirvi failihalduriga failisüsteemi"
-
-#~ msgid "File Browser"
-#~ msgstr "Faililehitseja"
-
-#~ msgid "Open Folder"
-#~ msgstr "Avatakse kataloog"
-
-#~ msgid "Home Folder"
-#~ msgstr "Kodukataloog"
-
-#~ msgid "_Format"
-#~ msgstr "_Vorming"
-
-#~ msgid "Format the selected volume"
-#~ msgstr "Valitud kettaseadme vormindamine"
-
-#~ msgid "Format the volume associated with the open folder"
-#~ msgstr "Avatud kataloogiga seotud kettaseadme vormindamine"
-
-#~ msgid "Format the volume associated with this folder"
-#~ msgstr "Selle kataloogiga seotud kettaseadme vormindamine"
-
-#~ msgid "new file"
-#~ msgstr "uus fail"
-
-#~ msgid "_Empty File"
-#~ msgstr "_Tühi fail"
-
-#~ msgid "Create a new empty file inside this folder"
-#~ msgstr "Selle kataloogi sisse uue tühja faili loomine"
-
-#~ msgid "File is not a valid .desktop file"
-#~ msgstr "Fail pole korrektne .desktop fail"
-
-#~ msgid "Unrecognized desktop file Version '%s'"
-#~ msgstr "Tundmatu töölauafaili versioon '%s'"
-
-#~ msgid "Starting %s"
-#~ msgstr "Käivitamine: %s"
-
-#~ msgid "Application does not accept documents on command line"
-#~ msgstr "Rakendusele ei saa avamiseks anda käsureal faile"
-
-#~ msgid "Unrecognized launch option: %d"
-#~ msgstr "Tundmatu käivitusvalik: %d"
-
-#~ msgid "Can't pass document URIs to a 'Type=Link' desktop entry"
-#~ msgstr ""
-#~ "Dokumendi URI-sid pole võimalik 'Liik=Viit' tüüpi töölauakirjetele "
-#~ "edastada"
-
-#~ msgid "Not a launchable item"
-#~ msgstr "See pole käivitatav kirje"
-
-#~ msgid "Disable connection to session manager"
-#~ msgstr "Seansihalduriga ühendumise keelamine"
-
-#~ msgid "Specify file containing saved configuration"
-#~ msgstr "Määra salvestatud seadistuse fail"
-
-#~ msgid "FILE"
-#~ msgstr "FAIL"
-
-#~ msgid "Session management options:"
-#~ msgstr "Seansihalduse valikud:"
-
-#~ msgid "Show session management options"
-#~ msgstr "Seansihalduse valikute näitamine"
-
-#~ msgid "%s's Home"
-#~ msgstr "%.0s Kodukataloog"
-
-#~ msgid "Background"
-#~ msgstr "Taust"
-
-#~ msgid "Could not invoke bulk rename utility"
-#~ msgstr "Nimede hulgimuutmise utiliiti pole võimalik käivitada"
-
-#~ msgid "_Home Folder"
-#~ msgstr "_Kodukataloogi"
-
-#~ msgid "Copyright © 1999-2011 The Nautilus authors"
-#~ msgstr "Autoriõigused © 1999–2011 Nautiluse autorid"
-
-#~ msgid "No applications found"
-#~ msgstr "Ühtegi rakendust ei leitud"
-
-#~ msgid "Ask what to do"
-#~ msgstr "Küsitakse, mida teha"
-
-#~ msgid "Do Nothing"
-#~ msgstr "Ei tehta midagi"
-
-#~ msgid "Open with other Application..."
-#~ msgstr "Avatakse mõne muu rakendusega..."
-
-#~ msgid ""
-#~ "You have just inserted a medium with software intended to be "
-#~ "automatically started."
-#~ msgstr ""
-#~ "Sa sisestasid meediumi, millel olev tarkvara on märgitud automaatseks "
-#~ "käivitamiseks."
-
-#~ msgid "You have just inserted a medium."
-#~ msgstr "Sa sisestasid meediumi."
-
-#~ msgid "Choose what application to launch."
-#~ msgstr "Vali käivitatav rakendus."
-
-#~ msgid ""
-#~ "Select how to open \"%s\" and whether to perform this action in the "
-#~ "future for other media of type \"%s\"."
-#~ msgstr ""
-#~ "Vali, mismoodi tuleb \"%s\" käivitada ning kas ka tulevikus tuleb \"%s\"-"
-#~ "liigilise meediumi korral sedasama teha."
-
-#~ msgid "_Always perform this action"
-#~ msgstr "_Tulevikus tehakse seda ilma küsimata"
-
-#~ msgid "Could not set application as the default: %s"
-#~ msgstr "Rakendust pole võimalik vaikimisi rakenduseks määrata: %s"
-
-#~ msgid "Select an Application"
-#~ msgstr "Rakenduse valimine"
-
-#~ msgid "Select an application to view its description."
-#~ msgstr "Rakenduse kirjelduse vaatamiseks klõpsa selle nime peal."
-
-#~ msgid "_Use a custom command"
-#~ msgstr "_Kasutatakse kohandatud käsku"
-
-#~ msgid "_Browse..."
-#~ msgstr "_Sirvi..."
-
-#~ msgid "Open %s and other %s document with:"
-#~ msgstr "Faili %s ja teisi \"%s\" dokumente tuleb avada rakendusega:"
-
-#~ msgid "Open %s with:"
-#~ msgstr "Faili %s avamine rakendusega:"
-
-#~ msgid "_Remember this application for %s documents"
-#~ msgstr "_Pea meeles seda rakendust %s dokumentide jaoks"
-
-#~ msgid "Open all %s documents with:"
-#~ msgstr "Kõiki %s-dokumente avatakse rakendusega:"
-
-#~ msgid "Open %s and other \"%s\" files with:"
-#~ msgstr "Faili %s ja teisi \"%s\" faile tuleb avada rakendusega:"
-
-#~ msgid "_Remember this application for \"%s\" files"
-#~ msgstr "_Pea meeles seda rakendust \"%s\" failide jaoks"
-
-#~ msgid "Open all \"%s\" files with:"
-#~ msgstr "Kõik \"%s\" failid avatakse rakendusega:"
-
-#~ msgid "_Add"
-#~ msgstr "L_isa"
-
-#~ msgid "Add Application"
-#~ msgstr "Rakenduse lisamine"
-
-#~ msgid "Open Failed, would you like to choose another application?"
-#~ msgstr "Tõrge avamisel, kas soovid valida mõne teise rakenduse?"
-
-#~ msgid ""
-#~ "\"%s\" cannot open \"%s\" because \"%s\" cannot access files at \"%s\" "
-#~ "locations."
-#~ msgstr ""
-#~ "\"%s\" ei saa faili \"%s\" avada, kuna \"%s\" ei pääse asukohas \"%s\" "
-#~ "olevatele failidele ligi."
-
-#~ msgid ""
-#~ "The default action cannot open \"%s\" because it cannot access files at "
-#~ "\"%s\" locations."
-#~ msgstr ""
-#~ "Vaikimisi käsuga pole võimalik faili \"%s\" avada, kuna asukohas \"%s\" "
-#~ "olevatele failidele pole võimalik ligi pääseda."
-
-#~ msgid ""
-#~ "No other applications are available to view this file. If you copy this "
-#~ "file onto your computer, you may be able to open it."
-#~ msgstr ""
-#~ "Selle faili vaatamiseks pole ühtegi muud rakendust saadaval.  Selle "
-#~ "avamine võib võimalik olla siis, kui kopeerid faili oma arvutisse."
-
-#~ msgid ""
-#~ "No other actions are available to view this file. If you copy this file "
-#~ "onto your computer, you may be able to open it."
-#~ msgstr ""
-#~ "Selle faili vaatamiseks pole ühtegi teist käsku saadaval. Selle avamine "
-#~ "võib olla võimalik siis, kui kopeerid selle oma arvutisse."
-
-#~ msgid ""
-#~ "If set to true, then Nautilus will automatically mount media such as user-"
-#~ "visible hard disks and removable media on start-up and media insertion."
-#~ msgstr ""
-#~ "Kui märgitud, siis haagib Nautilus käivitumisel või meediumi sisestamisel "
-#~ "automaatselt külge kõik külgehaagitavad meediumid (näiteks kasutajale "
-#~ "nähtavad kõvakettad või irdmeediumid)."
-
-#~ msgid ""
-#~ "If set to true, then Nautilus will automatically open a folder when media "
-#~ "is automounted. This only applies to media where no known x-content/* "
-#~ "type was detected; for media where a known x-content type is detected, "
-#~ "the user configurable action will be taken instead."
-#~ msgstr ""
-#~ "Kui märgitud, siis avab Nautilus meediumi automaatsel haakimisel "
-#~ "kataloogi. See rakendub ainult meediumile, mille kohta pole x-content/* "
-#~ "tüüpi tuvastatud. Tuvastatud x-content tüübiga meediumi korral "
-#~ "rakendatakse aga kasutaja poolt määratud tegevus."
-
-#~ msgid ""
-#~ "If set to true, then Nautilus will never prompt nor autorun/autostart "
-#~ "programs when a medium is inserted."
-#~ msgstr ""
-#~ "Kui märgitud, siis ei küsi Nautilus meediumi sisestamise korral "
-#~ "automaatselt käivitatavate programmide käivitamisel kasutajalt kunagi "
-#~ "kinnitust."
-
-#~ msgid ""
-#~ "List of x-content/* types for which the user have chosen \"Do Nothing\" "
-#~ "in the preference capplet. No prompt will be shown nor will any matching "
-#~ "application be started on insertion of media matching these types."
-#~ msgstr ""
-#~ "Nimekiri x-content/* liikidest, millede kohta kasutaja on eelistuste "
-#~ "rakendist valinud \"Ei tehta midagi\". Nendele liikidele vastava meediumi "
-#~ "sisestamisel ei küsita kasutajalt mingit kinnitust ega käivitata ühtegi "
-#~ "rakendust."
-
-#~ msgid ""
-#~ "List of x-content/* types for which the user have chosen \"Open Folder\" "
-#~ "in the preferences capplet. A folder window will be opened on insertion "
-#~ "of media matching these types."
-#~ msgstr ""
-#~ "Nimekiri x-content/* liikidest, millede kohta kasutaja on eelistuste "
-#~ "rakendist valinud \"Avatakse kataloog\". Nendele liikidele vastava "
-#~ "meediumi sisestamisel avatakse kataloogiaken."
-
-#~ msgid ""
-#~ "List of x-content/* types for which the user have chosen to start an "
-#~ "application in the preference capplet. The preferred application for the "
-#~ "given type will be started on insertion on media matching these types."
-#~ msgstr ""
-#~ "Nimekiri x-content/* liikidest, millede kohta kasutaja on eelistuste "
-#~ "rakendist valinud käivitatava rakenduse. Nendele liikidele vastava "
-#~ "meediumi sisestamisel käivitatakse eelistatud rakendus."
-
-#~ msgid "List of x-content/* types set to \"Do Nothing\""
-#~ msgstr ""
-#~ "Nimekiri x-content/* liikidest, millele on määratud \"Ei tehta midagi\""
-
-#~ msgid "List of x-content/* types set to \"Open Folder\""
-#~ msgstr ""
-#~ "Nimekiri x-content/* liikidest, millele on määratud \"Avatakse kataloog\""
-
-#~ msgid ""
-#~ "List of x-content/* types where the preferred application will be launched"
-#~ msgstr ""
-#~ "Nimekiri x-content/* liikidest, mille puhul tuleb käivitada eelistatav "
-#~ "rakendus"
-
-#~ msgid "Never prompt or autorun/autostart programs when media are inserted"
-#~ msgstr ""
-#~ "Automaatkäivitusega programmide käivitamise kohta ei küsita meediumi "
-#~ "sisestamisel kinnitust"
-
-#~ msgid "Whether to automatically mount media"
-#~ msgstr "Kas ühendatav meedium haagitakse automaatselt külge või mitte"
-
-#~ msgid "Whether to automatically open a folder for automounted media"
-#~ msgstr ""
-#~ "Kas automaatselt külge haagitud meediumi kataloog avatakse automaatselt "
-#~ "või mitte"
-
-#~ msgid ""
-#~ "If set to true, then Nautilus will exit when all windows are destroyed. "
-#~ "This is the default setting. If set to false, it can be started without "
-#~ "any window, so nautilus can serve as a daemon to monitor media automount, "
-#~ "or similar tasks."
-#~ msgstr ""
-#~ "Kui tõene, lõpetab Nautilus töö, kui kõik aknad suletakse. See on "
-#~ "vaikimisi säte. Kui väär, saab Nautilust käivitada ilma akendeta, nii "
-#~ "võib Nautilust kasutada teenusprotsessina, mis monitoorib meediumide "
-#~ "isehaakimist või täidab sarnaseid ülesandeid."
-
-#~ msgid "Nautilus will exit when last window destroyed."
-#~ msgstr "Nautilus sulgub, kui viimane aken suletakse."
-
-#~ msgid "Change the behaviour and appearance of file manager windows"
-#~ msgstr "Failihalduri akende käitumise ja välimuse muutmine"
-
-#~ msgid "File Management"
-#~ msgstr "Failihaldus"
-
-#~ msgid "Show Tree"
-#~ msgstr "Näita kataloogipuud"
-
-#~ msgid "<b>Media Handling</b>"
-#~ msgstr "<b>Meediakäsitlemine</b>"
-
-#~ msgid "<b>Other Media</b>"
-#~ msgstr "<b>Muu meedium</b>"
-
-#~ msgid "Acti_on:"
-#~ msgstr "T_egevus:"
-
-#~ msgid "B_rowse media when inserted"
-#~ msgstr "Meediumi si_rvimine pärast sisestamist"
-
-#~ msgid "CD _Audio:"
-#~ msgstr "_CD-audio:"
-
-#~ msgid ""
-#~ "Choose what happens when inserting media or connecting devices to the "
-#~ "system"
-#~ msgstr ""
-#~ "Vali, mida tuleb seadmete ühendamisel või meediumi sisestamisel ette võtta"
-
-#~ msgid "Less common media formats can be configured here"
-#~ msgstr "Siin on võimalik seadistada vähemtuntud meediumivorminguid"
-
-#~ msgid "Media"
-#~ msgstr "Meedium"
-
-#~ msgid "_DVD Video:"
-#~ msgstr "_DVD-Video:"
-
-#~ msgid "_Music Player:"
-#~ msgstr "_Muusikaesitaja:"
-
-#~ msgid "_Never prompt or start programs on media insertion"
-#~ msgstr "Meediumi sisestamisel ei käivitata _programme ega küsita"
-
-#~ msgid "_Photos:"
-#~ msgstr "_Fotod:"
-
-#~ msgid "_Software:"
-#~ msgstr "_Tarkvara:"
-
-#~ msgid "History"
-#~ msgstr "Ajalugu"
-
-#~ msgid "Show History"
-#~ msgstr "Näita ajalugu"
-
-#~ msgid "_Side Pane"
-#~ msgstr "_Külgpaan"
-
-#~ msgid "Notes"
-#~ msgstr "Märkmed"
-
-#~ msgid "Show Notes"
-#~ msgstr "Näita märkmeid"
-
-#~ msgid "Show Places"
-#~ msgstr "Näita asukohti"
-
-#~ msgid "Close the side pane"
-#~ msgstr "Sulge külgpaan"
