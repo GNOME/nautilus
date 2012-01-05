@@ -45,7 +45,6 @@ struct _NautilusProgressUIHandlerPriv {
 	GtkWidget *window_vbox;
 	guint active_infos;
 
-	gboolean notification_supports_persistence;
 	NotifyNotification *progress_notification;
 	GtkStatusIcon *status_icon;
 };
@@ -70,6 +69,8 @@ G_DEFINE_TYPE (NautilusProgressUIHandler, nautilus_progress_ui_handler, G_TYPE_O
  */
 
 #define ACTION_DETAILS "details"
+
+static gboolean server_has_persistence (void);
 
 static void
 status_icon_activate_cb (GtkStatusIcon *icon,
@@ -187,7 +188,7 @@ progress_window_delete_event (GtkWidget *widget,
 {
 	gtk_widget_hide (widget);
 
-	if (self->priv->notification_supports_persistence) {
+	if (server_has_persistence ()) {
 		progress_ui_handler_update_notification (self);
 	} else {
 		progress_ui_handler_update_status_icon (self);
@@ -235,7 +236,7 @@ progress_ui_handler_ensure_window (NautilusProgressUIHandler *self)
 static void
 progress_ui_handler_update_notification_or_status (NautilusProgressUIHandler *self)
 {
-	if (self->priv->notification_supports_persistence) {
+	if (server_has_persistence ()) {
 		progress_ui_handler_update_notification (self);
 	} else {
 		progress_ui_handler_update_status_icon (self);
@@ -264,7 +265,7 @@ progress_ui_handler_show_complete_notification (NautilusProgressUIHandler *self)
 	NotifyNotification *complete_notification;
 
 	/* don't display the notification if we'd be using a status icon */
-	if (!self->priv->notification_supports_persistence) {
+	if (!server_has_persistence ()) {
 		return;
 	}
 
@@ -432,8 +433,14 @@ nautilus_progress_ui_handler_dispose (GObject *obj)
 static gboolean
 server_has_persistence (void)
 {
-        gboolean retval;
+        static gboolean retval = FALSE;
         GList *caps, *l;
+        static gboolean initialized = FALSE;
+
+        if (initialized) {
+                return retval;
+        }
+        initialized = TRUE;
 
         caps = notify_get_server_caps ();
         if (caps == NULL) {
@@ -457,8 +464,6 @@ nautilus_progress_ui_handler_init (NautilusProgressUIHandler *self)
 	self->priv->manager = nautilus_progress_info_manager_new ();
 	g_signal_connect (self->priv->manager, "new-progress-info",
 			  G_CALLBACK (new_progress_info_cb), self);
-
-	self->priv->notification_supports_persistence = server_has_persistence ();
 }
 
 static void
