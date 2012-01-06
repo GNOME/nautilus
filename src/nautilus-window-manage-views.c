@@ -261,6 +261,8 @@ handle_go_elsewhere (NautilusWindowSlot *slot,
 void
 nautilus_window_update_up_button (NautilusWindow *window)
 {
+	GtkAction *action;
+	GtkActionGroup *action_group;
 	NautilusWindowSlot *slot;
 	gboolean allowed;
 	GFile *parent;
@@ -276,7 +278,14 @@ nautilus_window_update_up_button (NautilusWindow *window)
 		}
 	}
 
-	nautilus_window_allow_up (window, allowed);
+	action_group = nautilus_window_get_main_action_group (window);
+
+	action = gtk_action_group_get_action (action_group,
+					      NAUTILUS_ACTION_UP);
+	gtk_action_set_sensitive (action, allowed);
+	action = gtk_action_group_get_action (action_group,
+					      NAUTILUS_ACTION_UP_ACCEL);
+	gtk_action_set_sensitive (action, allowed);
 }
 
 static void

@@ -138,9 +138,6 @@ NautilusWindowSlot * nautilus_window_get_active_slot       (NautilusWindow *wind
 void                 nautilus_window_push_status           (NautilusWindow *window,
                                                             const char *text);
 
-void     nautilus_window_allow_up             (NautilusWindow *window, 
-                                               gboolean        allow);
-
 void     nautilus_window_hide_sidebar         (NautilusWindow *window);
 void     nautilus_window_show_sidebar         (NautilusWindow *window);
 void     nautilus_window_back_or_forward      (NautilusWindow *window,

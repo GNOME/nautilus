@@ -239,23 +239,6 @@ nautilus_window_new_tab (NautilusWindow *window)
 	}
 }
 
-void
-nautilus_window_allow_up (NautilusWindow *window, 
-			  gboolean allow)
-{
-	GtkAction *action;
-	GtkActionGroup *action_group;
-
-	action_group = nautilus_window_get_main_action_group (window);
-
-	action = gtk_action_group_get_action (action_group,
-					      NAUTILUS_ACTION_UP);
-	gtk_action_set_sensitive (action, allow);
-	action = gtk_action_group_get_action (action_group,
-					      NAUTILUS_ACTION_UP_ACCEL);
-	gtk_action_set_sensitive (action, allow);
-}
-
 static void
 update_cursor (NautilusWindow *window)
 {
