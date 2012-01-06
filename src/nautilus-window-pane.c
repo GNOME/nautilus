@@ -36,6 +36,8 @@
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 
+#include <glib/gi18n.h>
+
 #include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-entry.h>

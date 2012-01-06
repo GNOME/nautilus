@@ -31,6 +31,8 @@
 #include "nautilus-application.h"
 #include "nautilus-progress-info-widget.h"
 
+#include <glib/gi18n.h>
+
 #include <libnautilus-private/nautilus-progress-info.h>
 #include <libnautilus-private/nautilus-progress-info-manager.h>
 

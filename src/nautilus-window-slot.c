@@ -28,6 +28,8 @@
 #include "nautilus-window-private.h"
 #include "nautilus-window-manage-views.h"
 
+#include <glib/gi18n.h>
+
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>

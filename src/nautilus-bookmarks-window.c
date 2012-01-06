@@ -38,6 +38,7 @@
 
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
+#include <glib/gi18n.h>
 
 /* Static variables to keep track of window state. If there were
  * more than one bookmark-editing window, these would be struct or

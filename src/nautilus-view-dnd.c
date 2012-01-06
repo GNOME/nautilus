@@ -37,6 +37,8 @@
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 
+#include <glib/gi18n.h>
+
 #include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-dnd.h>
 
