@@ -666,7 +666,6 @@ mount_removed_callback (GVolumeMonitor *monitor,
 	/* Handle the windows in the close list. */
 	for (node = close_list; node != NULL; node = node->next) {
 		slot = node->data;
-		window = slot->pane->window;
 
 		if (slot != force_no_close_slot) {
 			nautilus_window_pane_slot_close (slot->pane, slot);
