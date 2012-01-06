@@ -235,7 +235,7 @@ nautilus_window_new_tab (NautilusWindow *window)
 		}
 		g_free (scheme);
 
-		new_slot = nautilus_window_open_slot (current_slot->pane, flags);
+		new_slot = nautilus_window_pane_open_slot (current_slot->pane, flags);
 		nautilus_window_set_active_slot (window, new_slot);
 		nautilus_window_slot_go_to (new_slot, location, FALSE);
 		g_object_unref (location);
@@ -638,7 +638,7 @@ nautilus_window_constructed (GObject *self)
 	nautilus_window_set_initial_window_geometry (window);
 	nautilus_undo_manager_attach (application->undo_manager, G_OBJECT (window));
 
-	slot = nautilus_window_open_slot (window->details->active_pane, 0);
+	slot = nautilus_window_pane_open_slot (window->details->active_pane, 0);
 	nautilus_window_set_active_slot (window, slot);
 }
 
@@ -842,26 +842,6 @@ nautilus_window_close (NautilusWindow *window)
 	NAUTILUS_WINDOW_CLASS (G_OBJECT_GET_CLASS (window))->close (window);
 }
 
-NautilusWindowSlot *
-nautilus_window_open_slot (NautilusWindowPane *pane,
-			   NautilusWindowOpenSlotFlags flags)
-{
-	NautilusWindowSlot *slot;
-
-	g_assert (NAUTILUS_IS_WINDOW_PANE (pane));
-	g_assert (NAUTILUS_IS_WINDOW (pane->window));
-
-	slot = (NautilusWindowSlot *) g_object_new (NAUTILUS_TYPE_WINDOW_SLOT, NULL);
-	slot->pane = pane;
-
-	nautilus_window_pane_add_slot_in_tab (pane, slot, flags);
-	gtk_widget_show (slot->content_box);
-
-	pane->slots = g_list_append (pane->slots, slot);
-
-	return slot;
-}
-
 void
 nautilus_window_close_pane (NautilusWindow *window,
 			    NautilusWindowPane *pane)
@@ -871,7 +851,7 @@ nautilus_window_close_pane (NautilusWindow *window,
 	while (pane->slots != NULL) {
 		NautilusWindowSlot *slot = pane->slots->data;
 
-		nautilus_window_close_slot (slot);
+		nautilus_window_pane_close_slot (pane, slot);
 	}
 
 	/* If the pane was active, set it to NULL. The caller is responsible
@@ -884,40 +864,6 @@ nautilus_window_close_pane (NautilusWindow *window,
 	window->details->panes = g_list_remove (window->details->panes, pane);
 
 	gtk_widget_destroy (GTK_WIDGET (pane));
-}
-
-void
-nautilus_window_close_slot (NautilusWindowSlot *slot)
-{
-	NautilusWindowPane *pane;
-	int page_num;
-	GtkNotebook *notebook;
-
-	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
-	g_assert (NAUTILUS_IS_WINDOW_PANE(slot->pane));
-	g_assert (g_list_find (slot->pane->slots, slot) != NULL);
-
-	DEBUG ("Closing slot %p", slot);
-
-	/* save pane because slot is not valid anymore after this call */
-	pane = slot->pane;
-	notebook = GTK_NOTEBOOK (pane->notebook);
-
-	page_num = gtk_notebook_page_num (notebook, slot->content_box);
-	g_assert (page_num >= 0);
-
-	nautilus_window_pane_remove_page (pane, page_num);
-
-	gtk_notebook_set_show_tabs (notebook,
-				    gtk_notebook_get_n_pages (notebook) > 1);
-
-	nautilus_window_manage_views_close_slot (pane, slot);
-	cancel_view_as_callback (slot);
-
-	g_object_run_dispose (G_OBJECT (slot));
-	slot->pane = NULL;
-	g_object_unref (slot);
-	pane->slots = g_list_remove (pane->slots, slot);
 }
 
 NautilusWindowPane*
@@ -1814,8 +1760,8 @@ create_extra_pane (NautilusWindow *window)
 	}
 
 	/* slot */
-	slot = nautilus_window_open_slot (NAUTILUS_WINDOW_PANE (pane),
-					  NAUTILUS_WINDOW_OPEN_SLOT_APPEND);
+	slot = nautilus_window_pane_open_slot (NAUTILUS_WINDOW_PANE (pane),
+					       NAUTILUS_WINDOW_OPEN_SLOT_APPEND);
 	pane->active_slot = slot;
 
 	return slot;

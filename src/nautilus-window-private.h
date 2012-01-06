@@ -133,10 +133,6 @@ void               nautilus_menus_append_bookmark_to_menu                (Nautil
                                                                           GCallback          refresh_callback,
                                                                           NautilusBookmarkFailedCallback failed_callback);
 
-NautilusWindowSlot *nautilus_window_open_slot                            (NautilusWindowPane *pane,
-									  NautilusWindowOpenSlotFlags flags);
-void                nautilus_window_close_slot                           (NautilusWindowSlot *slot);
-
 NautilusWindowSlot *nautilus_window_get_slot_for_view                    (NautilusWindow *window,
 									  NautilusView   *view);
 

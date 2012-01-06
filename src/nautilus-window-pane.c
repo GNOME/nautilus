@@ -936,7 +936,7 @@ nautilus_window_pane_slot_close (NautilusWindowPane *pane,
 			nautilus_window_set_active_slot (window, next_slot);
 		}
 
-		nautilus_window_close_slot (slot);
+		nautilus_window_pane_close_slot (pane, slot);
 
 		/* If that was the last slot in the pane, close the pane or even the whole window. */
 		if (pane->slots == NULL) {
@@ -989,39 +989,72 @@ nautilus_window_pane_ensure_location_bar (NautilusWindowPane *pane)
 }
 
 void
-nautilus_window_pane_add_slot_in_tab (NautilusWindowPane *pane,
-				      NautilusWindowSlot *slot,
-				      NautilusWindowOpenSlotFlags flags)
+nautilus_window_pane_close_slot (NautilusWindowPane *pane,
+				 NautilusWindowSlot *slot)
 {
-	NautilusNotebook *notebook;
-
-	notebook = NAUTILUS_NOTEBOOK (pane->notebook);
-	g_signal_handlers_block_by_func (notebook,
-					 G_CALLBACK (notebook_switch_page_cb),
-					 pane);
-	nautilus_notebook_add_tab (notebook,
-				   slot,
-				   (flags & NAUTILUS_WINDOW_OPEN_SLOT_APPEND) != 0 ?
-				   -1 :
-				   gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook)) + 1,
-				   FALSE);
-	g_signal_handlers_unblock_by_func (notebook,
-					   G_CALLBACK (notebook_switch_page_cb),
-					   pane);
-}
-
-void
-nautilus_window_pane_remove_page (NautilusWindowPane *pane,
-				  int page_num)
-{
+	int page_num;
 	GtkNotebook *notebook;
+
+	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
+	g_assert (NAUTILUS_IS_WINDOW_PANE (slot->pane));
+	g_assert (g_list_find (slot->pane->slots, slot) != NULL);
+
+	DEBUG ("Closing slot %p", slot);
+
+	/* save pane because slot is not valid anymore after this call */
+	pane = slot->pane;
 	notebook = GTK_NOTEBOOK (pane->notebook);
 
+	page_num = gtk_notebook_page_num (notebook, GTK_WIDGET (slot->content_box));
+	g_assert (page_num >= 0);
+
 	g_signal_handlers_block_by_func (notebook,
-					 G_CALLBACK (notebook_switch_page_cb),
+                                        G_CALLBACK (notebook_switch_page_cb),
 					 pane);
 	gtk_notebook_remove_page (notebook, page_num);
 	g_signal_handlers_unblock_by_func (notebook,
 					   G_CALLBACK (notebook_switch_page_cb),
 					   pane);
+
+	gtk_notebook_set_show_tabs (notebook,
+				    gtk_notebook_get_n_pages (notebook) > 1);
+
+	nautilus_window_manage_views_close_slot (pane, slot);
+
+	g_object_run_dispose (G_OBJECT (slot));
+	slot->pane = NULL;
+	g_object_unref (slot);
+	pane->slots = g_list_remove (pane->slots, slot);
+}
+
+NautilusWindowSlot *
+nautilus_window_pane_open_slot (NautilusWindowPane *pane,
+				NautilusWindowOpenSlotFlags flags)
+{
+	NautilusWindowSlot *slot;
+
+	g_assert (NAUTILUS_IS_WINDOW_PANE (pane));
+	g_assert (NAUTILUS_IS_WINDOW (pane->window));
+
+	slot = (NautilusWindowSlot *) g_object_new (NAUTILUS_TYPE_WINDOW_SLOT, NULL);
+	slot->pane = pane;
+
+	g_signal_handlers_block_by_func (pane->notebook,
+					 G_CALLBACK (notebook_switch_page_cb),
+					 pane);
+	nautilus_notebook_add_tab (NAUTILUS_NOTEBOOK (pane->notebook),
+				   slot,
+				   (flags & NAUTILUS_WINDOW_OPEN_SLOT_APPEND) != 0 ?
+				   -1 :
+				   gtk_notebook_get_current_page (GTK_NOTEBOOK (pane->notebook)) + 1,
+				   FALSE);
+	g_signal_handlers_unblock_by_func (pane->notebook,
+					   G_CALLBACK (notebook_switch_page_cb),
+					   pane);
+
+	gtk_widget_show (GTK_WIDGET (slot->content_box));
+
+	pane->slots = g_list_append (pane->slots, slot);
+
+	return slot;
 }

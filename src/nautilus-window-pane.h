@@ -86,6 +86,11 @@ GType nautilus_window_pane_get_type (void);
 
 NautilusWindowPane *nautilus_window_pane_new (NautilusWindow *window);
 
+NautilusWindowSlot *nautilus_window_pane_open_slot  (NautilusWindowPane *pane,
+						     NautilusWindowOpenSlotFlags flags);
+void                nautilus_window_pane_close_slot (NautilusWindowPane *pane,
+						     NautilusWindowSlot *slot);
+
 void nautilus_window_pane_sync_location_widgets (NautilusWindowPane *pane);
 void nautilus_window_pane_sync_search_widgets  (NautilusWindowPane *pane);
 void nautilus_window_pane_set_active (NautilusWindowPane *pane, gboolean is_active);
@@ -98,12 +103,5 @@ void nautilus_window_pane_grab_focus (NautilusWindowPane *pane);
 
 /* bars */
 void     nautilus_window_pane_ensure_location_bar (NautilusWindowPane *pane);
-
-/* notebook */
-void     nautilus_window_pane_add_slot_in_tab (NautilusWindowPane *pane,
-					       NautilusWindowSlot *slot,
-					       NautilusWindowOpenSlotFlags flags);
-void     nautilus_window_pane_remove_page (NautilusWindowPane *pane,
-					   int page_num);
 
 #endif /* NAUTILUS_WINDOW_PANE_H */
