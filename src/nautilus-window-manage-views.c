@@ -510,7 +510,8 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 			slot_flags = NAUTILUS_WINDOW_OPEN_SLOT_APPEND;
 		}
 
-		target_slot = nautilus_window_open_slot (window->details->active_pane, slot_flags);
+		target_slot = nautilus_window_open_slot (nautilus_window_get_active_pane (window),
+							 slot_flags);
 	}
 
 	/* close the current window if the flags say so */

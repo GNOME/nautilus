@@ -2138,9 +2138,7 @@ nautilus_window_split_view_off (NautilusWindow *window)
 	NautilusWindowPane *pane, *active_pane;
 	GList *l, *next;
 
-	g_return_if_fail (window);
-
-	active_pane = window->details->active_pane;
+	active_pane = nautilus_window_get_active_pane (window);
 
 	/* delete all panes except the first (main) pane */
 	for (l = window->details->panes; l != NULL; l = next) {

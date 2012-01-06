@@ -835,8 +835,9 @@ action_tabs_previous_callback (GtkAction *action,
 			       gpointer user_data)
 {
 	NautilusWindowPane *pane;
+	NautilusWindow *window = user_data;
 
-	pane = NAUTILUS_WINDOW (user_data)->details->active_pane;
+	pane = nautilus_window_get_active_pane (window);
 	nautilus_notebook_set_current_page_relative (NAUTILUS_NOTEBOOK (pane->notebook), -1);
 }
 
@@ -845,8 +846,9 @@ action_tabs_next_callback (GtkAction *action,
 			   gpointer user_data)
 {
 	NautilusWindowPane *pane;
+	NautilusWindow *window = user_data;
 
-	pane = NAUTILUS_WINDOW (user_data)->details->active_pane;
+	pane = nautilus_window_get_active_pane (window);
 	nautilus_notebook_set_current_page_relative (NAUTILUS_NOTEBOOK (pane->notebook), 1);
 }
 
@@ -855,8 +857,9 @@ action_tabs_move_left_callback (GtkAction *action,
 				gpointer user_data)
 {
 	NautilusWindowPane *pane;
+	NautilusWindow *window = user_data;
 
-	pane = NAUTILUS_WINDOW (user_data)->details->active_pane;
+	pane = nautilus_window_get_active_pane (window);
 	nautilus_notebook_reorder_current_child_relative (NAUTILUS_NOTEBOOK (pane->notebook), -1);
 }
 
@@ -865,27 +868,27 @@ action_tabs_move_right_callback (GtkAction *action,
 				 gpointer user_data)
 {
 	NautilusWindowPane *pane;
+	NautilusWindow *window = user_data;
 
-	pane = NAUTILUS_WINDOW (user_data)->details->active_pane;
+	pane = nautilus_window_get_active_pane (window);
 	nautilus_notebook_reorder_current_child_relative (NAUTILUS_NOTEBOOK (pane->notebook), 1);
 }
 
 static void
-action_tab_change_action_activate_callback (GtkAction *action, gpointer user_data)
+action_tab_change_action_activate_callback (GtkAction *action, 
+					    gpointer user_data)
 {
-	NautilusWindow *window;
+	NautilusWindowPane *pane;
+	NautilusWindow *window = user_data;
+	GtkNotebook *notebook;
+	int num;
 
-	window = NAUTILUS_WINDOW (user_data);
-	if (window && window->details->active_pane) {
-		GtkNotebook *notebook;
-		notebook = GTK_NOTEBOOK (window->details->active_pane->notebook);
-		if (notebook) {
-			int num;
-			num = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (action), "num"));
-			if (num < gtk_notebook_get_n_pages (notebook)) {
-				gtk_notebook_set_current_page (notebook, num);
-			}
-		}
+	pane = nautilus_window_get_active_pane (window);
+	notebook = GTK_NOTEBOOK (pane->notebook);
+
+	num = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (action), "num"));
+	if (num < gtk_notebook_get_n_pages (notebook)) {
+		gtk_notebook_set_current_page (notebook, num);
 	}
 }
 
