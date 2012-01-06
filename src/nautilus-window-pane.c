@@ -591,7 +591,8 @@ notebook_switch_page_cb (GtkNotebook *notebook,
 	slot = nautilus_window_pane_get_slot_for_content_box (pane, widget);
 	g_assert (slot != NULL);
 
-	nautilus_window_set_active_slot (slot->pane->window, slot);
+	nautilus_window_set_active_slot (nautilus_window_slot_get_window (slot),
+					 slot);
 
 	return FALSE;
 }

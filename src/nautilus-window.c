@@ -898,9 +898,8 @@ nautilus_window_set_active_slot (NautilusWindow *window, NautilusWindowSlot *new
 	DEBUG ("Setting new slot %p as active", new_slot);
 
 	if (new_slot) {
-		g_assert (NAUTILUS_IS_WINDOW_SLOT (new_slot));
+		g_assert ((window == nautilus_window_slot_get_window (new_slot)));
 		g_assert (NAUTILUS_IS_WINDOW_PANE (new_slot->pane));
-		g_assert (window == new_slot->pane->window);
 		g_assert (g_list_find (new_slot->pane->slots, new_slot) != NULL);
 	}
 
@@ -1351,7 +1350,7 @@ load_view_as_menus_callback (NautilusFile *file,
 	NautilusWindowSlot *slot;
 
 	slot = callback_data;
-	window = slot->pane->window;
+	window = nautilus_window_slot_get_window (slot);
 
 	if (slot == nautilus_window_get_active_slot (window)) {
 		load_view_as_menu (window);

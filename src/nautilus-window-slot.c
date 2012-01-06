@@ -76,11 +76,11 @@ real_update_query_editor (NautilusWindowSlot *slot)
 	NautilusQuery *query;
 	GtkWidget *query_editor;
 	gboolean slot_is_active;
+	NautilusWindow *window;
 
-	g_assert (slot->pane->window != NULL);
-
+	window = nautilus_window_slot_get_window (slot);
 	query_editor = NULL;
-	slot_is_active = (slot == nautilus_window_get_active_slot (slot->pane->window));
+	slot_is_active = (slot == nautilus_window_get_active_slot (window));
 
 	directory = nautilus_directory_get (slot->location);
 	if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
@@ -127,8 +127,7 @@ real_active (NautilusWindowSlot *slot)
 	NautilusWindowPane *pane;
 	int page_num;
 
-	window = slot->pane->window;
-
+	window = nautilus_window_slot_get_window (slot);
 	pane = slot->pane;
 	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (pane->notebook),
 					  slot->content_box);
@@ -155,7 +154,7 @@ real_inactive (NautilusWindowSlot *slot)
 {
 	NautilusWindow *window;
 
-	window = NAUTILUS_WINDOW (slot->pane->window);
+	window = nautilus_window_slot_get_window (slot);
 	g_assert (slot == nautilus_window_get_active_slot (window));
 }
 
@@ -303,7 +302,6 @@ GFile *
 nautilus_window_slot_get_location (NautilusWindowSlot *slot)
 {
 	g_assert (slot != NULL);
-	g_assert (NAUTILUS_IS_WINDOW (slot->pane->window));
 
 	if (slot->location != NULL) {
 		return g_object_ref (slot->location);
@@ -325,10 +323,10 @@ nautilus_window_slot_get_location_uri (NautilusWindowSlot *slot)
 void
 nautilus_window_slot_make_hosting_pane_active (NautilusWindowSlot *slot)
 {
-	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
 	g_assert (NAUTILUS_IS_WINDOW_PANE (slot->pane));
 	
-	nautilus_window_set_active_slot (slot->pane->window, slot);
+	nautilus_window_set_active_slot (nautilus_window_slot_get_window (slot),
+					 slot);
 }
 
 NautilusWindow *
@@ -353,7 +351,7 @@ nautilus_window_slot_update_title (NautilusWindowSlot *slot)
 	gboolean do_sync = FALSE;
 
 	title = nautilus_compute_title_for_location (slot->location);
-	window = NAUTILUS_WINDOW (slot->pane->window);
+	window = nautilus_window_slot_get_window (slot);
 
 	if (g_strcmp0 (title, slot->title) != 0) {
 		do_sync = TRUE;
@@ -391,10 +389,7 @@ nautilus_window_slot_update_icon (NautilusWindowSlot *slot)
 	const char *icon_name;
 	GdkPixbuf *pixbuf;
 
-	window = slot->pane->window;
-
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-
+	window = nautilus_window_slot_get_window (slot);
 	info = NAUTILUS_WINDOW_CLASS (G_OBJECT_GET_CLASS (window))->get_icon (window, slot);
 
 	icon_name = NULL;
@@ -428,8 +423,7 @@ nautilus_window_slot_set_content_view_widget (NautilusWindowSlot *slot,
 	NautilusWindow *window;
 	GtkWidget *widget;
 
-	window = slot->pane->window;
-	g_assert (NAUTILUS_IS_WINDOW (window));
+	window = nautilus_window_slot_get_window (slot);
 
 	if (slot->content_view != NULL) {
 		/* disconnect old view */
@@ -464,7 +458,7 @@ nautilus_window_slot_set_allow_stop (NautilusWindowSlot *slot,
 
 	slot->allow_stop = allow;
 
-	window = NAUTILUS_WINDOW (slot->pane->window);
+	window = nautilus_window_slot_get_window (slot);
 	nautilus_window_sync_allow_stop (window, slot);
 }
 
@@ -483,7 +477,7 @@ real_slot_set_short_status (NautilusWindowSlot *slot,
 	show_statusbar = g_settings_get_boolean (nautilus_window_state,
 						 NAUTILUS_WINDOW_STATE_START_WITH_STATUS_BAR);
 
-	g_object_get (slot->pane->window,
+	g_object_get (nautilus_window_slot_get_window (slot),
 		      "disable-chrome", &disable_chrome,
 		      NULL);
 
@@ -573,7 +567,7 @@ nautilus_window_slot_set_status (NautilusWindowSlot *slot,
 		set_floating_bar_status (slot, short_status);
 	}
 
-	window = NAUTILUS_WINDOW (slot->pane->window);
+	window = nautilus_window_slot_get_window (slot);
 	if (slot == nautilus_window_get_active_slot (window)) {
 		nautilus_window_sync_status (window);
 	}

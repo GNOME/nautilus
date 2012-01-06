@@ -296,12 +296,10 @@ viewed_file_changed_callback (NautilusFile *file,
         GFile *new_location;
 	gboolean is_in_trash, was_in_trash;
 
-	window = slot->pane->window;
+	window = nautilus_window_slot_get_window (slot);
 
         g_assert (NAUTILUS_IS_FILE (file));
 	g_assert (NAUTILUS_IS_WINDOW_PANE (slot->pane));
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
 	g_assert (file == slot->viewed_file);
 
         if (!nautilus_file_is_not_yet_confirmed (file)) {
@@ -459,7 +457,7 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 	gboolean is_desktop;
 	NautilusApplication *app;
 
-	window = slot->pane->window;
+	window = nautilus_window_slot_get_window (slot);
 
         target_window = NULL;
 	target_slot = NULL;
@@ -603,7 +601,7 @@ report_current_content_view_failure_to_user (NautilusWindowSlot *slot)
 	NautilusWindow *window;
 	char *message;
 
-	window = slot->pane->window;
+	window = nautilus_window_slot_get_window (slot);
 
 	message = nautilus_window_slot_get_view_startup_error_label (slot);
   	eel_show_error_dialog (message,
@@ -619,7 +617,7 @@ report_nascent_content_view_failure_to_user (NautilusWindowSlot *slot,
 	NautilusWindow *window;
 	char *message;
 
-	window = slot->pane->window;
+	window = nautilus_window_slot_get_window (slot);
 
 	/* TODO? why are we using the current view's error label here, instead of the next view's?
  	 * This behavior has already been present in pre-slot days.
@@ -656,7 +654,8 @@ report_callback (NautilusWindowSlot *slot,
 		 GError *error)
 {
 	if (slot->open_callback != NULL) {
-		slot->open_callback (slot->pane->window, error, slot->open_callback_user_data);
+		slot->open_callback (nautilus_window_slot_get_window (slot),
+				     error, slot->open_callback_user_data);
 		slot->open_callback = NULL;
 		slot->open_callback_user_data = NULL;
 
@@ -863,12 +862,9 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 	NautilusApplication *app;
 
 	slot = callback_data;
-	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
+	window = nautilus_window_slot_get_window (slot);
+
 	g_assert (slot->determine_view_file == file);
-
-	window = slot->pane->window;
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
 	slot->determine_view_file = NULL;
 
 	if (slot->mount_error) {
@@ -1054,7 +1050,7 @@ create_content_view (NautilusWindowSlot *slot,
         NautilusView *view;
 	GList *selection;
 
-	window = slot->pane->window;
+	window = nautilus_window_slot_get_window (slot);
 
  	/* FIXME bugzilla.gnome.org 41243: 
 	 * We should use inheritance instead of these special cases
@@ -1124,11 +1120,8 @@ load_new_location (NautilusWindowSlot *slot,
 	g_assert (slot != NULL);
 	g_assert (location != NULL);
 
-	window = slot->pane->window;
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
+	window = nautilus_window_slot_get_window (slot);
 	selection_copy = eel_g_object_list_copy (selection);
-
 	view = NULL;
 	
 	/* Note, these may recurse into report_load_underway */
@@ -1222,7 +1215,7 @@ real_setup_loading_floating_bar (NautilusWindowSlot *slot)
 {
 	gboolean disable_chrome;
 
-	g_object_get (slot->pane->window,
+	g_object_get (nautilus_window_slot_get_window (slot),
 		      "disable-chrome", &disable_chrome,
 		      NULL);
 
@@ -1281,7 +1274,7 @@ location_has_really_changed (NautilusWindowSlot *slot)
 	GtkWidget *widget;
 	GFile *location_copy;
 
-	window = slot->pane->window;
+	window = nautilus_window_slot_get_window (slot);
 
 	if (slot->new_content_view != NULL) {
 		widget = GTK_WIDGET (slot->new_content_view);
@@ -1322,15 +1315,17 @@ slot_add_extension_extra_widgets (NautilusWindowSlot *slot)
 	GList *providers, *l;
 	GtkWidget *widget;
 	char *uri;
+	NautilusWindow *window;
 	
 	providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_LOCATION_WIDGET_PROVIDER);
+	window = nautilus_window_slot_get_window (slot);
 
 	uri = g_file_get_uri (slot->location);
 	for (l = providers; l != NULL; l = l->next) {
 		NautilusLocationWidgetProvider *provider;
 		
 		provider = NAUTILUS_LOCATION_WIDGET_PROVIDER (l->data);
-		widget = nautilus_location_widget_provider_get_widget (provider, uri, GTK_WIDGET (slot->pane->window));
+		widget = nautilus_location_widget_provider_get_widget (provider, uri, GTK_WIDGET (window));
 		if (widget != NULL) {
 			nautilus_window_slot_add_extra_location_widget (slot, widget);
 		}
@@ -1458,8 +1453,7 @@ update_for_new_location (NautilusWindowSlot *slot)
 	gboolean location_really_changed;
 	FindMountData *data;
 
-	window = slot->pane->window;
-
+	window = nautilus_window_slot_get_window (slot);
 	new_location = slot->pending_location;
 	slot->pending_location = NULL;
 
@@ -1617,8 +1611,7 @@ free_location_change (NautilusWindowSlot *slot)
 {
 	NautilusWindow *window;
 
-	window = slot->pane->window;
-	g_assert (NAUTILUS_IS_WINDOW (window));
+	window = nautilus_window_slot_get_window (slot);
 
 	if (slot->pending_location) {
 		g_object_unref (slot->pending_location);
@@ -1841,8 +1834,7 @@ nautilus_window_slot_stop_loading (NautilusWindowSlot *slot)
 {
 	NautilusWindow *window;
 
-	window = NAUTILUS_WINDOW (slot->pane->window);
-	g_assert (NAUTILUS_IS_WINDOW (window));
+	window = nautilus_window_slot_get_window (slot);
 
 	nautilus_view_stop_loading (slot->content_view);
 	
@@ -1867,8 +1859,7 @@ nautilus_window_slot_set_content_view (NautilusWindowSlot *slot,
 	g_assert (slot->location != NULL);
 	g_assert (id != NULL);
 
-	window = slot->pane->window;
-	g_assert (NAUTILUS_IS_WINDOW (window));
+	window = nautilus_window_slot_get_window (slot);
   
 	uri = nautilus_window_slot_get_location_uri (slot);
 	DEBUG ("Change view of window %s to %s", uri, id);
@@ -1902,7 +1893,8 @@ nautilus_window_manage_views_close_slot (NautilusWindowPane *pane,
 					 NautilusWindowSlot *slot)
 {
 	if (slot->content_view != NULL) {
-		nautilus_window_disconnect_content_view (slot->pane->window, slot->content_view);
+		nautilus_window_disconnect_content_view (nautilus_window_slot_get_window (slot), 
+							 slot->content_view);
 	}
 
 	free_location_change (slot);
