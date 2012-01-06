@@ -338,42 +338,6 @@ nautilus_window_slot_get_window (NautilusWindowSlot *slot)
 	return slot->pane->window;
 }
 
-/* nautilus_window_slot_set_title:
- *
- * Sets slot->title, and if it changed
- * synchronizes the actual GtkWindow title which
- * might look a bit different (e.g. with "file browser:" added)
- */
-static void
-nautilus_window_slot_set_title (NautilusWindowSlot *slot,
-				const char *title)
-{
-	NautilusWindow *window;
-	gboolean changed;
-
-	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
-
-	window = NAUTILUS_WINDOW (slot->pane->window);
-
-	changed = FALSE;
-
-	if (g_strcmp0 (title, slot->title) != 0) {
-		changed = TRUE;
-
-		g_free (slot->title);
-		slot->title = g_strdup (title);
-	}
-
-	if (strlen (slot->title) > 0 && slot->current_location_bookmark) {
-		changed = TRUE;
-	}
-
-	if (changed) {
-		nautilus_window_sync_title (window, slot);
-	}
-}
-
-
 /* nautilus_window_slot_update_title:
  * 
  * Re-calculate the slot title.
@@ -384,12 +348,33 @@ nautilus_window_slot_set_title (NautilusWindowSlot *slot,
 void
 nautilus_window_slot_update_title (NautilusWindowSlot *slot)
 {
+	NautilusWindow *window;
 	char *title;
+	gboolean do_sync = FALSE;
 
 	title = nautilus_compute_title_for_location (slot->location);
-	nautilus_window_slot_set_title (slot, title);
+	window = NAUTILUS_WINDOW (slot->pane->window);
 
-	g_free (title);
+	if (g_strcmp0 (title, slot->title) != 0) {
+		do_sync = TRUE;
+
+		g_free (slot->title);
+		slot->title = title;
+		title = NULL;
+	}
+
+	if (strlen (slot->title) > 0 &&
+	    slot->current_location_bookmark != NULL) {
+		do_sync = TRUE;
+	}
+
+	if (do_sync) {
+		nautilus_window_sync_title (window, slot);
+	}
+
+	if (title != NULL) {
+		g_free (title);
+	}
 }
 
 /* nautilus_window_slot_update_icon:
