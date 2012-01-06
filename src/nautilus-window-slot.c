@@ -37,7 +37,6 @@
 #include <eel/eel-string.h>
 
 G_DEFINE_TYPE (NautilusWindowSlot, nautilus_window_slot, G_TYPE_OBJECT);
-#define parent_class nautilus_window_slot_parent_class
 
 enum {
 	ACTIVE,
@@ -268,18 +267,22 @@ nautilus_window_slot_dispose (GObject *object)
 	g_free (slot->status_text);
 	slot->status_text = NULL;
 
-	G_OBJECT_CLASS (parent_class)->dispose (object);
+	G_OBJECT_CLASS (nautilus_window_slot_parent_class)->dispose (object);
 }
 
 static void
-nautilus_window_slot_class_init (NautilusWindowSlotClass *class)
+nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
 {
-	class->active = real_active;
-	class->inactive = real_inactive;
+	GObjectClass *oclass = G_OBJECT_CLASS (klass);
+
+	klass->active = real_active;
+	klass->inactive = real_inactive;
+
+	oclass->dispose = nautilus_window_slot_dispose;
 
 	signals[ACTIVE] =
 		g_signal_new ("active",
-			      G_TYPE_FROM_CLASS (class),
+			      G_TYPE_FROM_CLASS (klass),
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (NautilusWindowSlotClass, active),
 			      NULL, NULL,
@@ -288,14 +291,12 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *class)
 
 	signals[INACTIVE] =
 		g_signal_new ("inactive",
-			      G_TYPE_FROM_CLASS (class),
+			      G_TYPE_FROM_CLASS (klass),
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (NautilusWindowSlotClass, inactive),
 			      NULL, NULL,
 			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
-
-	G_OBJECT_CLASS (class)->dispose = nautilus_window_slot_dispose;
 }
 
 GFile *
@@ -755,4 +756,15 @@ nautilus_window_slot_should_close_with_mount (NautilusWindowSlot *slot,
 	g_object_unref (mount_location);
 
 	return close_with_mount;
+}
+
+NautilusWindowSlot *
+nautilus_window_slot_new (NautilusWindowPane *pane)
+{
+	NautilusWindowSlot *slot;
+
+	slot = g_object_new (NAUTILUS_TYPE_WINDOW_SLOT, NULL);
+	slot->pane = pane;
+
+	return slot;
 }

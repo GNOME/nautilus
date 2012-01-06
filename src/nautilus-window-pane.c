@@ -1036,8 +1036,7 @@ nautilus_window_pane_open_slot (NautilusWindowPane *pane,
 	g_assert (NAUTILUS_IS_WINDOW_PANE (pane));
 	g_assert (NAUTILUS_IS_WINDOW (pane->window));
 
-	slot = (NautilusWindowSlot *) g_object_new (NAUTILUS_TYPE_WINDOW_SLOT, NULL);
-	slot->pane = pane;
+	slot = nautilus_window_slot_new (pane);
 
 	g_signal_handlers_block_by_func (pane->notebook,
 					 G_CALLBACK (notebook_switch_page_cb),

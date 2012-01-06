@@ -123,6 +123,8 @@ struct NautilusWindowSlot {
 
 GType   nautilus_window_slot_get_type (void);
 
+NautilusWindowSlot * nautilus_window_slot_new (NautilusWindowPane *pane);
+
 void    nautilus_window_slot_update_title		   (NautilusWindowSlot *slot);
 void    nautilus_window_slot_update_icon		   (NautilusWindowSlot *slot);
 void    nautilus_window_slot_update_query_editor	   (NautilusWindowSlot *slot);
