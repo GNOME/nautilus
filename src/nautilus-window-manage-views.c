@@ -575,61 +575,6 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 	}
 }
 
-static char *
-nautilus_window_slot_get_view_error_label (NautilusWindowSlot *slot)
-{
-	const NautilusViewInfo *info;
-
-	info = nautilus_view_factory_lookup (nautilus_window_slot_get_content_view_id (slot));
-
-	return g_strdup (info->error_label);
-}
-
-static char *
-nautilus_window_slot_get_view_startup_error_label (NautilusWindowSlot *slot)
-{
-	const NautilusViewInfo *info;
-
-	info = nautilus_view_factory_lookup (nautilus_window_slot_get_content_view_id (slot));
-
-	return g_strdup (info->startup_error_label);
-}
-
-static void
-report_current_content_view_failure_to_user (NautilusWindowSlot *slot)
-{
-	NautilusWindow *window;
-	char *message;
-
-	window = nautilus_window_slot_get_window (slot);
-
-	message = nautilus_window_slot_get_view_startup_error_label (slot);
-  	eel_show_error_dialog (message,
-  			       _("You can choose another view or go to a different location."),
-  			       GTK_WINDOW (window));
-	g_free (message);
-}
-
-static void
-report_nascent_content_view_failure_to_user (NautilusWindowSlot *slot,
-					     NautilusView *view)
-{
-	NautilusWindow *window;
-	char *message;
-
-	window = nautilus_window_slot_get_window (slot);
-
-	/* TODO? why are we using the current view's error label here, instead of the next view's?
- 	 * This behavior has already been present in pre-slot days.
- 	 */
-	message = nautilus_window_slot_get_view_error_label (slot);
-	eel_show_error_dialog (message,
-			       _("The location cannot be displayed with this viewer."),
-			       GTK_WINDOW (window));
-	g_free (message);
-}
-
-
 const char *
 nautilus_window_slot_get_content_view_id (NautilusWindowSlot *slot)
 {
@@ -1672,57 +1617,6 @@ cancel_location_change (NautilusWindowSlot *slot)
         }
 
         end_location_change (slot);
-}
-
-void
-nautilus_window_report_view_failed (NautilusWindow *window,
-				    NautilusView *view)
-{
-	NautilusWindowSlot *slot;
-	gboolean do_close_window;
-	GFile *fallback_load_location;
-
-	if (window->details->temporarily_ignore_view_signals) {
-		return;
-	}
-
-	slot = nautilus_window_get_slot_for_view (window, view);
-	g_assert (slot != NULL);
-  
-        g_warning ("A view failed. The UI will handle this with a dialog but this should be debugged.");
-
-	do_close_window = FALSE;
-	fallback_load_location = NULL;
-	
-	if (view == slot->content_view) {
-                nautilus_window_slot_set_content_view_widget (slot, NULL);
-
-                report_current_content_view_failure_to_user (slot);
-        } else {
-		/* Only report error on first try */
-		if (slot->location_change_type != NAUTILUS_LOCATION_CHANGE_FALLBACK) {
-			report_nascent_content_view_failure_to_user (slot, view);
-
-			fallback_load_location = g_object_ref (slot->pending_location);
-		} else {
-			if (!gtk_widget_get_visible (GTK_WIDGET (window))) {
-				do_close_window = TRUE;
-			}
-		}
-        }
-        
-        cancel_location_change (slot);
-
-	if (fallback_load_location != NULL) {
-		/* We loose the pending selection change here, but who cares... */
-		begin_location_change (slot, fallback_load_location, NULL, NULL,
-				       NAUTILUS_LOCATION_CHANGE_FALLBACK, 0, NULL, NULL, NULL);
-		g_object_unref (fallback_load_location);
-	}
-
-	if (do_close_window) {
-		gtk_widget_destroy (GTK_WIDGET (window));
-	}
 }
 
 static void
