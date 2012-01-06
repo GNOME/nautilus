@@ -45,6 +45,13 @@
 #define DEBUG_FLAG NAUTILUS_DEBUG_WINDOW
 #include <libnautilus-private/nautilus-debug.h>
 
+enum {
+	PROP_WINDOW = 1,
+	NUM_PROPERTIES
+};
+
+static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
+
 G_DEFINE_TYPE (NautilusWindowPane, nautilus_window_pane,
 	       GTK_TYPE_BOX)
 
@@ -658,11 +665,65 @@ setup_search_action (NautilusWindowPane *pane)
 }
 
 static void
-nautilus_window_pane_setup (NautilusWindowPane *pane)
+nautilus_window_pane_set_property (GObject *object,
+				   guint arg_id,
+				   const GValue *value,
+				   GParamSpec *pspec)
 {
+	NautilusWindowPane *self = NAUTILUS_WINDOW_PANE (object);
+
+	switch (arg_id) {
+	case PROP_WINDOW:
+		self->window = g_value_get_object (value);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, arg_id, pspec);
+		break;
+	}
+}
+
+static void
+nautilus_window_pane_get_property (GObject *object,
+				   guint arg_id,
+				   GValue *value,
+				   GParamSpec *pspec)
+{
+	NautilusWindowPane *self = NAUTILUS_WINDOW_PANE (object);
+
+	switch (arg_id) {
+	case PROP_WINDOW:
+		g_value_set_object (value, self->window);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, arg_id, pspec);
+		break;
+	}
+}
+
+static void
+nautilus_window_pane_dispose (GObject *object)
+{
+	NautilusWindowPane *pane = NAUTILUS_WINDOW_PANE (object);
+
+	unset_focus_widget (pane);
+
+	pane->window = NULL;
+	g_clear_object (&pane->action_group);
+
+	g_assert (pane->slots == NULL);
+
+	G_OBJECT_CLASS (nautilus_window_pane_parent_class)->dispose (object);
+}
+
+static void
+nautilus_window_pane_constructed (GObject *obj)
+{
+	NautilusWindowPane *pane = NAUTILUS_WINDOW_PANE (obj);
 	GtkSizeGroup *header_size_group;
 	NautilusWindow *window;
 	GtkActionGroup *action_group;
+
+	G_OBJECT_CLASS (nautilus_window_pane_parent_class)->constructed (obj);
 
 	window = pane->window;
 
@@ -759,26 +820,25 @@ nautilus_window_pane_setup (NautilusWindowPane *pane)
 }
 
 static void
-nautilus_window_pane_dispose (GObject *object)
-{
-	NautilusWindowPane *pane = NAUTILUS_WINDOW_PANE (object);
-
-	unset_focus_widget (pane);
-
-	pane->window = NULL;
-	g_clear_object (&pane->action_group);
-
-	g_assert (pane->slots == NULL);
-
-	G_OBJECT_CLASS (nautilus_window_pane_parent_class)->dispose (object);
-}
-
-static void
 nautilus_window_pane_class_init (NautilusWindowPaneClass *klass)
 {
 	GObjectClass *oclass = G_OBJECT_CLASS (klass);
 
+	oclass->constructed = nautilus_window_pane_constructed;
 	oclass->dispose = nautilus_window_pane_dispose;
+	oclass->set_property = nautilus_window_pane_set_property;
+	oclass->get_property = nautilus_window_pane_get_property;
+
+	properties[PROP_WINDOW] =
+		g_param_spec_object ("window",
+				     "The NautilusWindow",
+				     "The parent NautilusWindow",
+				     NAUTILUS_TYPE_WINDOW,
+				     G_PARAM_READWRITE |
+				     G_PARAM_CONSTRUCT_ONLY |
+				     G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 }
 
 static void
@@ -794,14 +854,9 @@ nautilus_window_pane_init (NautilusWindowPane *pane)
 NautilusWindowPane *
 nautilus_window_pane_new (NautilusWindow *window)
 {
-	NautilusWindowPane *pane;
-
-	pane = g_object_new (NAUTILUS_TYPE_WINDOW_PANE, NULL);
-	pane->window = window;
-
-	nautilus_window_pane_setup (pane);
-	
-	return pane;
+	return g_object_new (NAUTILUS_TYPE_WINDOW_PANE,
+			     "window", window,
+			     NULL);
 }
 
 NautilusWindowSlot *
