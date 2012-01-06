@@ -117,8 +117,6 @@ void             nautilus_window_new_tab              (NautilusWindow    *window
 void             nautilus_window_prompt_for_location  (NautilusWindow    *window,
                                                        const char        *initial);
 
-void             nautilus_window_allow_up             (NautilusWindow    *window, 
-                                                       gboolean           allow);
 GtkUIManager *   nautilus_window_get_ui_manager       (NautilusWindow    *window);
 GtkActionGroup * nautilus_window_get_main_action_group (NautilusWindow   *window);
 NautilusNavigationState * 
@@ -140,10 +138,9 @@ NautilusWindowSlot * nautilus_window_get_active_slot       (NautilusWindow *wind
 void                 nautilus_window_push_status           (NautilusWindow *window,
                                                             const char *text);
 
-void     nautilus_window_allow_back           (NautilusWindow *window,
-                                               gboolean       allow);
-void     nautilus_window_allow_forward        (NautilusWindow *window,
+void     nautilus_window_allow_up             (NautilusWindow *window, 
                                                gboolean        allow);
+
 void     nautilus_window_hide_sidebar         (NautilusWindow *window);
 void     nautilus_window_show_sidebar         (NautilusWindow *window);
 void     nautilus_window_back_or_forward      (NautilusWindow *window,

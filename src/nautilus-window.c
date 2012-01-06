@@ -1820,28 +1820,6 @@ nautilus_window_go_forward (NautilusWindow *window)
 	nautilus_window_back_or_forward (window, FALSE, 0, FALSE);
 }
 
-void
-nautilus_window_allow_back (NautilusWindow *window, gboolean allow)
-{
-	GtkAction *action;
-
-	action = gtk_action_group_get_action (nautilus_navigation_state_get_master (window->details->nav_state),
-					      NAUTILUS_ACTION_BACK);
-
-	gtk_action_set_sensitive (action, allow);
-}
-
-void
-nautilus_window_allow_forward (NautilusWindow *window, gboolean allow)
-{
-	GtkAction *action;
-
-	action = gtk_action_group_get_action (nautilus_navigation_state_get_master (window->details->nav_state),
-					      NAUTILUS_ACTION_FORWARD);
-
-	gtk_action_set_sensitive (action, allow);
-}
-
 static gboolean
 nautilus_window_button_press_event (GtkWidget *widget,
 				    GdkEventButton *event)
