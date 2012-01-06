@@ -243,3 +243,20 @@ nautilus_navigation_state_get_master (NautilusNavigationState *self)
 {
 	return self->priv->master;
 }
+
+void
+nautilus_navigation_state_set_boolean (NautilusNavigationState *self,
+				       const gchar *action_name,
+				       gboolean value)
+{
+	GtkAction *action;
+
+	action = gtk_action_group_get_action (self->priv->master,
+					      action_name);
+
+	if (action == NULL) {
+		return;
+	}
+
+	gtk_action_set_sensitive (action, value);
+}

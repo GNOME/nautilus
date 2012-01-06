@@ -68,4 +68,8 @@ GtkActionGroup * nautilus_navigation_state_get_master (NautilusNavigationState *
 
 void nautilus_navigation_state_sync_all (NautilusNavigationState *state);
 
+void nautilus_navigation_state_set_boolean (NautilusNavigationState *self,
+					    const gchar *action_name,
+					    gboolean value);
+
 #endif /* __NAUTILUS_NAVIGATION_STATE_H__ */
