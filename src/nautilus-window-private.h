@@ -79,9 +79,7 @@ struct NautilusWindowDetails
         GList *panes;
         NautilusWindowPane *active_pane;
 
-
         GtkWidget *content_paned;
-        GtkWidget *content_box;
         NautilusNavigationState *nav_state;
         
         /* Side Pane */

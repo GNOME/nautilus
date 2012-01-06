@@ -72,9 +72,6 @@
 #include <math.h>
 #include <sys/time.h>
 
-#define SIDE_PANE_MINIMUM_WIDTH 1
-#define SIDE_PANE_MINIMUM_HEIGHT 400
-
 /* dock items */
 
 #define NAUTILUS_MENU_PATH_EXTRA_VIEWER_PLACEHOLDER	"/MenuBar/View/View Choices/Extra Viewer"
