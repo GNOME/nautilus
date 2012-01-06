@@ -265,7 +265,7 @@ nautilus_window_update_up_button (NautilusWindow *window)
 	gboolean allowed;
 	GFile *parent;
 
-	slot = window->details->active_pane->active_slot;
+	slot = nautilus_window_get_active_slot (window);
 
 	allowed = FALSE;
 	if (slot->location != NULL) {
@@ -532,7 +532,7 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 		if (target_window == window) {
 			target_slot = slot;
 		} else {
-			target_slot = target_window->details->active_pane->active_slot;
+			target_slot = nautilus_window_get_active_slot (target_window);
 		}
 	}
 
@@ -1189,9 +1189,7 @@ nautilus_window_report_location_change (NautilusWindow *window)
 	NautilusWindowSlot *slot;
 	GFile *location;
 
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
-	slot = window->details->active_pane->active_slot;
+	slot = nautilus_window_get_active_slot (window);
 	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
 
 	location = NULL;
@@ -1482,7 +1480,7 @@ update_for_new_location (NautilusWindowSlot *slot)
 				 G_CALLBACK (viewed_file_changed_callback), slot, 0);
         nautilus_file_unref (file);
 
-	if (slot == window->details->active_pane->active_slot) {
+	if (slot == nautilus_window_get_active_slot (window)) {
 		/* Check if we can go up. */
 		nautilus_window_update_up_button (window);
 
@@ -1914,7 +1912,7 @@ nautilus_window_back_or_forward (NautilusWindow *window,
         NautilusBookmark *bookmark;
 	GFile *old_location;
 
-	slot = window->details->active_pane->active_slot;
+	slot = nautilus_window_get_active_slot (window);
 	list = back ? slot->back_list : slot->forward_list;
 
         len = (guint) g_list_length (list);

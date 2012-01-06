@@ -140,8 +140,6 @@ void                nautilus_window_close_slot                           (Nautil
 NautilusWindowSlot *nautilus_window_get_slot_for_view                    (NautilusWindow *window,
 									  NautilusView   *view);
 
-NautilusWindowSlot * nautilus_window_get_active_slot                     (NautilusWindow    *window);
-NautilusWindowSlot * nautilus_window_get_extra_slot                      (NautilusWindow    *window);
 void                 nautilus_window_set_active_slot                     (NautilusWindow    *window,
 									  NautilusWindowSlot *slot);
 void                 nautilus_window_set_active_pane                     (NautilusWindow *window,
@@ -164,9 +162,7 @@ GtkActionGroup *nautilus_window_create_toolbar_action_group (NautilusWindow *win
 void               nautilus_window_initialize_actions                    (NautilusWindow    *window);
 void               nautilus_window_initialize_menus                      (NautilusWindow    *window);
 void               nautilus_window_finalize_menus                        (NautilusWindow    *window);
-void               nautilus_window_remove_bookmarks_menu_callback        (NautilusWindow    *window);
 
-void               nautilus_window_remove_bookmarks_menu_items           (NautilusWindow    *window);
 void               nautilus_window_update_show_hide_menu_items           (NautilusWindow     *window);
 
 /* window toolbar */

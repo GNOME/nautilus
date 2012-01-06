@@ -147,7 +147,7 @@ nautilus_window_add_bookmark_for_current_location (NautilusWindow *window)
 
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
-	slot = window->details->active_pane->active_slot;
+	slot = nautilus_window_get_active_slot (window);
 	bookmark = slot->current_location_bookmark;
 	list = window->details->bookmark_list;
 

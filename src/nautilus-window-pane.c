@@ -863,7 +863,7 @@ nautilus_window_pane_sync_location_widgets (NautilusWindowPane *pane)
 		nautilus_window_update_up_button (pane->window);
 
 		/* Check if the back and forward buttons need enabling or disabling. */
-		active_slot = pane->window->details->active_pane->active_slot;
+		active_slot = nautilus_window_get_active_slot (pane->window);
 		nautilus_window_allow_back (pane->window,
 					    active_slot->back_list != NULL);
 		nautilus_window_allow_forward (pane->window,

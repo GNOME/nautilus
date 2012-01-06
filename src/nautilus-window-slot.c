@@ -74,10 +74,12 @@ real_update_query_editor (NautilusWindowSlot *slot)
 	NautilusSearchDirectory *search_directory;
 	NautilusQuery *query;
 	GtkWidget *query_editor;
+	gboolean slot_is_active;
 
 	g_assert (slot->pane->window != NULL);
 
 	query_editor = NULL;
+	slot_is_active = (slot == nautilus_window_get_active_slot (slot->pane->window));
 
 	directory = nautilus_directory_get (slot->location);
 	if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
@@ -88,7 +90,7 @@ real_update_query_editor (NautilusWindowSlot *slot)
 			nautilus_window_pane_sync_search_widgets (slot->pane);
 		} else {
 			query_editor = nautilus_query_editor_new_with_bar (FALSE,
-									   slot->pane->window->details->active_pane->active_slot == slot,
+									   slot_is_active,
 									   NAUTILUS_SEARCH_BAR (slot->pane->search_bar),
 									   slot);
 		}
@@ -153,7 +155,7 @@ real_inactive (NautilusWindowSlot *slot)
 	NautilusWindow *window;
 
 	window = NAUTILUS_WINDOW (slot->pane->window);
-	g_assert (slot == window->details->active_pane->active_slot);
+	g_assert (slot == nautilus_window_get_active_slot (window));
 }
 
 static void
@@ -584,7 +586,7 @@ nautilus_window_slot_set_status (NautilusWindowSlot *slot,
 	}
 
 	window = NAUTILUS_WINDOW (slot->pane->window);
-	if (slot == window->details->active_pane->active_slot) {
+	if (slot == nautilus_window_get_active_slot (window)) {
 		nautilus_window_sync_status (window);
 	}
 }

@@ -591,7 +591,7 @@ action_split_view_same_location_callback (GtkAction *action,
 	}
 	location = nautilus_window_slot_get_location (next_pane->active_slot);
 	if (location) {
-		nautilus_window_slot_go_to (window->details->active_pane->active_slot, location, FALSE);
+		nautilus_window_slot_go_to (nautilus_window_get_active_slot (window), location, FALSE);
 		g_object_unref (location);
 	}
 }
@@ -622,16 +622,17 @@ action_split_view_callback (GtkAction *action,
 
 	is_active = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
 	if (is_active != nautilus_window_split_view_showing (window)) {
-		NautilusWindow *nautilus_window;
+		NautilusWindowSlot *slot;
 
 		if (is_active) {
 			nautilus_window_split_view_on (window);
 		} else {
 			nautilus_window_split_view_off (window);
 		}
-		nautilus_window = NAUTILUS_WINDOW (window);
-		if (nautilus_window->details->active_pane && nautilus_window->details->active_pane->active_slot) {
-			nautilus_view_update_menus (nautilus_window->details->active_pane->active_slot->content_view);
+
+		slot = nautilus_window_get_active_slot (window);
+		if (slot != NULL) {
+			nautilus_view_update_menus (slot->content_view);
 		}
 	}
 }
@@ -743,7 +744,6 @@ nautilus_window_initialize_go_menu (NautilusWindow *window)
 void
 nautilus_window_update_split_view_actions_sensitivity (NautilusWindow *window)
 {
-	NautilusWindow *win;
 	GtkActionGroup *action_group;
 	GtkAction *action;
 	gboolean have_multiple_panes;
@@ -751,21 +751,21 @@ nautilus_window_update_split_view_actions_sensitivity (NautilusWindow *window)
 	GFile *active_pane_location;
 	GFile *next_pane_location;
 	NautilusWindowPane *next_pane;
+	NautilusWindowSlot *active_slot;
 
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
 	action_group = window->details->main_action_group;
-	win = NAUTILUS_WINDOW (window);
+	active_slot = nautilus_window_get_active_slot (window);
 
 	/* collect information */
-	have_multiple_panes = (win->details->panes && win->details->panes->next);
-	if (win->details->active_pane->active_slot) {
-		active_pane_location = nautilus_window_slot_get_location (win->details->active_pane->active_slot);
-	}
-	else {
+	have_multiple_panes = (window->details->panes && window->details->panes->next);
+	if (active_slot != NULL) {
+		active_pane_location = nautilus_window_slot_get_location (active_slot);
+	} else {
 		active_pane_location = NULL;
 	}
-	next_pane = nautilus_window_get_next_pane (win);
+	next_pane = nautilus_window_get_next_pane (window);
 	if (next_pane && next_pane->active_slot) {
 		next_pane_location = nautilus_window_slot_get_location (next_pane->active_slot);
 		next_pane_is_in_same_location = (active_pane_location && next_pane_location &&

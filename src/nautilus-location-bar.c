@@ -35,7 +35,6 @@
 
 #include "nautilus-application.h"
 #include "nautilus-location-entry.h"
-#include "nautilus-window-private.h"
 #include "nautilus-window.h"
 #include <eel/eel-accessibility.h>
 #include <eel/eel-glib-extensions.h>
@@ -306,7 +305,7 @@ label_button_pressed_callback (GtkWidget             *widget,
 	}
 
 	window = nautilus_location_bar_get_window (gtk_widget_get_parent (widget));
-	slot = NAUTILUS_WINDOW (window)->details->active_pane->active_slot;
+	slot = nautilus_window_get_active_slot (window);
 	view = slot->content_view;
 	label = gtk_bin_get_child (GTK_BIN (widget));
 	/* only pop-up if the URI in the entry matches the displayed location */
