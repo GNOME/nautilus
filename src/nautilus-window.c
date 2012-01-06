@@ -1599,6 +1599,14 @@ nautilus_window_get_main_action_group (NautilusWindow *window)
 	return window->details->main_action_group;
 }
 
+NautilusNavigationState *
+nautilus_window_get_navigation_state (NautilusWindow *window)
+{
+	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), NULL);
+
+	return window->details->nav_state;
+}
+
 NautilusWindowPane *
 nautilus_window_get_next_pane (NautilusWindow *window)
 {

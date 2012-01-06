@@ -593,9 +593,11 @@ static void
 real_set_active (NautilusWindowPane *pane,
 		 gboolean is_active)
 {
+	NautilusNavigationState *nav_state;
+
 	if (is_active) {
-		nautilus_navigation_state_set_master (pane->window->details->nav_state,
-						      pane->action_group);
+		nav_state = nautilus_window_get_navigation_state (pane->window);
+		nautilus_navigation_state_set_master (nav_state, pane->action_group);
 	}
 
 	/* toolbar */

@@ -1104,6 +1104,7 @@ static const GtkRadioActionEntry main_radio_entries[] = {
 GtkActionGroup *
 nautilus_window_create_toolbar_action_group (NautilusWindow *window)
 {
+	NautilusNavigationState *navigation_state;
 	GtkActionGroup *action_group;
 	GtkAction *action;
 
@@ -1151,8 +1152,8 @@ nautilus_window_create_toolbar_action_group (NautilusWindow *window)
 
 	g_object_unref (action);
 
-	nautilus_navigation_state_add_group (window->details->nav_state,
-					     action_group);
+	navigation_state = nautilus_window_get_navigation_state (window);
+	nautilus_navigation_state_add_group (navigation_state, action_group);
 
 	return action_group;
 }
