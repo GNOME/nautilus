@@ -2,7 +2,7 @@
 # Copyright © 2009 GNOME i18n Project for Vietnamese.
 # Hoang Ngoc Tu <hntu@gmx.de>, 2001-2002.
 # Joern v. Kattchee <kattchee@gmx.net>, 2001-2002.
-# Nguyễn Thái Ngọc Duy <pclouds@gmail.com>, 2002, 2004, 2007-2008, 2011.
+# Nguyễn Thái Ngọc Duy <pclouds@gmail.com>, 2002, 2004, 2007-2008, 2011-2012.
 # Trinh Minh Thanh <tmthanh@yahoo.com>, 2002-2003, 2005.
 # Phạm Thành Long <lngt@ngonngu.net>, 2007.
 # Clytie Siddall <clytie@riverland.net.au>, 2005-2009.
@@ -16,7 +16,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
 "POT-Creation-Date: 2011-12-26 15:30+0000\n"
-"PO-Revision-Date: 2012-01-06 16:37+0700\n"
+"PO-Revision-Date: 2012-01-06 16:42+0700\n"
 "Last-Translator: Lê Hoàng Phương <herophuong93@gmail.com>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -911,7 +911,7 @@ msgstr ""
 #: ../libnautilus-private/nautilus-file-operations.c:2785
 #, c-format
 msgid "%S more space is required to copy to the destination."
-msgstr ""
+msgstr "Cần thêm %S không gian để chép đến đích."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2813
 msgid "The destination is read-only."
@@ -1240,9 +1240,8 @@ msgstr "hôm nay vào 00:00:00"
 
 #: ../libnautilus-private/nautilus-file.c:4347
 #: ../src/nautilus-file-management-properties.c:470
-#, fuzzy
 msgid "today at %-I:%M:%S %p"
-msgstr "hôm nay vào lúc %-H:%M:%S"
+msgstr "hôm nay vào lúc %-I:%M:%S %p"
 
 #: ../libnautilus-private/nautilus-file.c:4349
 msgid "today at 00:00 PM"
@@ -2571,7 +2570,7 @@ msgstr "_Nhớ mật khẩu này"
 
 #: ../src/nautilus-connect-server-dialog.c:1195
 msgid "Operation cancelled"
-msgstr ""
+msgstr "Thao tác bị huỷ"
 
 #: ../src/nautilus-desktop-item-properties.c:405
 #: ../src/nautilus-desktop-item-properties.c:415
@@ -5272,10 +5271,9 @@ msgstr ""
 #. * e.g. 1999-2011.
 #.
 #: ../src/nautilus-window-menus.c:378
-#, fuzzy
 #| msgid "Copyright © 1999-2011 The Nautilus authors"
 msgid "Copyright © %Id–%Id The Nautilus authors"
-msgstr "Tác quyền © năm 1999-2011 của Những tác giả Nautilus"
+msgstr "Tác quyền © %Id-%Id của Những tác giả Nautilus"
 
 # Name: don't translate / Tên: đừng dịch
 #. Set initial window title
@@ -5380,7 +5378,7 @@ msgstr "Nạp lại địa điểm hiện thời"
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:943
 msgid "_All Topics"
-msgstr ""
+msgstr "_Mọi chủ đề"
 
 #. tooltip
 #: ../src/nautilus-window-menus.c:944
@@ -5390,56 +5388,56 @@ msgstr "Hiện trợ giúp Nautilus"
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:947
-#, fuzzy
 #| msgid "_Search for Files..."
 msgid "Search for files"
-msgstr "_Tìm tập tin..."
+msgstr "Tìm tập tin"
 
 #. tooltip
 #: ../src/nautilus-window-menus.c:948
 msgid ""
 "Locate files based on file name and type. Save your searches for later use."
-msgstr ""
+msgstr "Định vị tập tin dựa trên tên và loại. Lưu tìm kiếm để dùng lại sau."
 
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:951
-#, fuzzy
 #| msgid "Sort _folders before files"
 msgid "Sort files and folders"
-msgstr "Sắp _thư mục trước tập tin"
+msgstr "Sắp thư mục và tập tin"
 
 #. tooltip
 #: ../src/nautilus-window-menus.c:952
 msgid "Arrange files by name, size, type, or when they were changed."
-msgstr ""
+msgstr "Sắp xếp tập tin theo tên, kích thước, loại hoặc lúc thay đổi."
 
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:955
-#, fuzzy
 #| msgid "Original file"
 msgid "Find a lost file"
-msgstr "Tập tin gốc"
+msgstr "Tìm tập tin thất lạc"
 
 #. tooltip
 #: ../src/nautilus-window-menus.c:956
 msgid "Follow these tips if you can't find a file you created or downloaded."
 msgstr ""
+"Làm theo những mẹo sau nếu bạn không thể tìm thấy tập tin bạn tạo hoặc tải "
+"về."
 
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:959
-#, fuzzy
 #| msgid "Access and organize files"
 msgid "Share and transfer files"
-msgstr "Truy cập và tổ chức tập tin"
+msgstr "Chia sẻ và truyền tập tin"
 
 #. tooltip
 #: ../src/nautilus-window-menus.c:960
 msgid ""
 "Easily transfer files to your contacts and devices from the file manager."
 msgstr ""
+"Truyền tập tin dễ dàng cho người khác hoặc đến thiết bị khác từ trình quản "
+"lý tập tin."
 
 #. name, stock id
 #. label, accelerator
