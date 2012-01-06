@@ -119,7 +119,7 @@ void             nautilus_window_prompt_for_location  (NautilusWindow    *window
 void             nautilus_window_allow_up             (NautilusWindow    *window, 
                                                        gboolean           allow);
 GtkUIManager *   nautilus_window_get_ui_manager       (NautilusWindow    *window);
-
+GtkActionGroup * nautilus_window_get_main_action_group (NautilusWindow   *window);
 
 void                 nautilus_window_report_load_complete     (NautilusWindow *window,
                                                                NautilusView *view);

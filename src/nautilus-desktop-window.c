@@ -62,22 +62,26 @@ nautilus_desktop_window_dispose (GObject *obj)
 static void
 nautilus_desktop_window_constructed (GObject *obj)
 {
+	GtkActionGroup *action_group;
 	GtkAction *action;
 	AtkObject *accessible;
 	NautilusDesktopWindow *window = NAUTILUS_DESKTOP_WINDOW (obj);
+	NautilusWindow *nwindow = NAUTILUS_WINDOW (obj);
 
 	G_OBJECT_CLASS (nautilus_desktop_window_parent_class)->constructed (obj);
 	
-	gtk_widget_hide (NAUTILUS_WINDOW (window)->details->statusbar);
-	gtk_widget_hide (NAUTILUS_WINDOW (window)->details->menubar);
+	gtk_widget_hide (nwindow->details->statusbar);
+	gtk_widget_hide (nwindow->details->menubar);
+
+	action_group = nautilus_window_get_main_action_group (nwindow);
 
 	/* Don't allow close action on desktop */
-	action = gtk_action_group_get_action (NAUTILUS_WINDOW (window)->details->main_action_group,
+	action = gtk_action_group_get_action (action_group,
 					      NAUTILUS_ACTION_CLOSE);
 	gtk_action_set_sensitive (action, FALSE);
 
 	/* Don't allow new tab on desktop */
-	action = gtk_action_group_get_action (NAUTILUS_WINDOW (window)->details->main_action_group,
+	action = gtk_action_group_get_action (action_group,
 					      NAUTILUS_ACTION_NEW_TAB);
 	gtk_action_set_sensitive (action, FALSE);
 

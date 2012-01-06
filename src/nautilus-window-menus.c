@@ -276,8 +276,8 @@ show_hidden_files_preference_callback (gpointer callback_data)
 	window = NAUTILUS_WINDOW (callback_data);
 
 	if (window->details->show_hidden_files_mode == NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT) {
-		action = gtk_action_group_get_action (window->details->main_action_group, NAUTILUS_ACTION_SHOW_HIDDEN_FILES);
-		g_assert (GTK_IS_ACTION (action));
+		action = gtk_action_group_get_action (nautilus_window_get_main_action_group (window),
+						      NAUTILUS_ACTION_SHOW_HIDDEN_FILES);
 
 		/* update button */
 		g_signal_handlers_block_by_func (action, action_show_hidden_files_callback, window);
@@ -514,7 +514,7 @@ trash_state_changed_cb (NautilusTrashMonitor *monitor,
 	GtkAction *action;
 	GIcon *gicon;
 
-	action_group = window->details->main_action_group;
+	action_group = nautilus_window_get_main_action_group (window);
 	action = gtk_action_group_get_action (action_group, "Go to Trash");
 
 	gicon = nautilus_trash_monitor_get_icon ();
@@ -653,17 +653,18 @@ sidebar_id_to_value (const gchar *sidebar_id)
 void
 nautilus_window_update_show_hide_menu_items (NautilusWindow *window) 
 {
+	GtkActionGroup *action_group;
 	GtkAction *action;
 	guint current_value;
 
-	g_assert (NAUTILUS_IS_WINDOW (window));
+	action_group = nautilus_window_get_main_action_group (window);
 
-	action = gtk_action_group_get_action (window->details->main_action_group,
+	action = gtk_action_group_get_action (action_group,
 					      NAUTILUS_ACTION_SHOW_HIDE_EXTRA_PANE);
 	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
 				      nautilus_window_split_view_showing (window));
 
-	action = gtk_action_group_get_action (window->details->main_action_group,
+	action = gtk_action_group_get_action (action_group,
 					      "Sidebar Places");
 	current_value = sidebar_id_to_value (window->details->sidebar_id);
 	gtk_radio_action_set_current_value (GTK_RADIO_ACTION (action), current_value);
@@ -727,8 +728,6 @@ nautilus_window_initialize_go_menu (NautilusWindow *window)
 	GtkWidget *menuitem;
 	int i;
 
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
 	ui_manager = nautilus_window_get_ui_manager (NAUTILUS_WINDOW (window));
 
 	for (i = 0; i < G_N_ELEMENTS (icon_entries); i++) {
@@ -753,10 +752,8 @@ nautilus_window_update_split_view_actions_sensitivity (NautilusWindow *window)
 	NautilusWindowPane *next_pane;
 	NautilusWindowSlot *active_slot;
 
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
-	action_group = window->details->main_action_group;
 	active_slot = nautilus_window_get_active_slot (window);
+	action_group = nautilus_window_get_main_action_group (window);
 
 	/* collect information */
 	have_multiple_panes = (window->details->panes && window->details->panes->next);
@@ -1163,9 +1160,12 @@ nautilus_window_create_toolbar_action_group (NautilusWindow *window)
 static void
 window_menus_set_bindings (NautilusWindow *window)
 {
+	GtkActionGroup *action_group;
 	GtkAction *action;
 
-	action = gtk_action_group_get_action (window->details->main_action_group,
+	action_group = nautilus_window_get_main_action_group (window);
+
+	action = gtk_action_group_get_action (action_group,
 					      NAUTILUS_ACTION_SHOW_HIDE_TOOLBAR);
 
 	g_settings_bind (nautilus_window_state,
@@ -1174,7 +1174,7 @@ window_menus_set_bindings (NautilusWindow *window)
 			 "active",
 			 G_SETTINGS_BIND_DEFAULT);
 
-	action = gtk_action_group_get_action (window->details->main_action_group,
+	action = gtk_action_group_get_action (action_group,
 					      NAUTILUS_ACTION_SHOW_HIDE_STATUSBAR);
 
 	g_settings_bind (nautilus_window_state,
@@ -1183,7 +1183,7 @@ window_menus_set_bindings (NautilusWindow *window)
 			 "active",
 			 G_SETTINGS_BIND_DEFAULT);
 
-	action = gtk_action_group_get_action (window->details->main_action_group,
+	action = gtk_action_group_get_action (action_group,
 					      NAUTILUS_ACTION_SHOW_HIDE_SIDEBAR);	
 
 	g_settings_bind (nautilus_window_state,
@@ -1202,7 +1202,7 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 		NAUTILUS_ACTION_SEARCH, NULL
 	};
 
-	action_group = window->details->main_action_group;
+	action_group = nautilus_window_get_main_action_group (window);
 	window->details->nav_state = nautilus_navigation_state_new (action_group,
 								    nav_state_actions);
 

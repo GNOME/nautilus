@@ -240,16 +240,18 @@ nautilus_window_new_tab (NautilusWindow *window)
 }
 
 void
-nautilus_window_allow_up (NautilusWindow *window, gboolean allow)
+nautilus_window_allow_up (NautilusWindow *window, 
+			  gboolean allow)
 {
 	GtkAction *action;
-	
-        g_assert (NAUTILUS_IS_WINDOW (window));
+	GtkActionGroup *action_group;
 
-	action = gtk_action_group_get_action (window->details->main_action_group,
+	action_group = nautilus_window_get_main_action_group (window);
+
+	action = gtk_action_group_get_action (action_group,
 					      NAUTILUS_ACTION_UP);
 	gtk_action_set_sensitive (action, allow);
-	action = gtk_action_group_get_action (window->details->main_action_group,
+	action = gtk_action_group_get_action (action_group,
 					      NAUTILUS_ACTION_UP_ACCEL);
 	gtk_action_set_sensitive (action, allow);
 }
@@ -279,9 +281,7 @@ nautilus_window_sync_allow_stop (NautilusWindow *window,
 	gboolean allow_stop, slot_is_active;
 	NautilusNotebook *notebook;
 
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
-	action = gtk_action_group_get_action (window->details->main_action_group,
+	action = gtk_action_group_get_action (nautilus_window_get_main_action_group (window),
 					      NAUTILUS_ACTION_STOP);
 	allow_stop = gtk_action_get_sensitive (action);
 
@@ -1443,6 +1443,7 @@ nautilus_window_sync_zoom_widgets (NautilusWindow *window)
 {
 	NautilusWindowSlot *slot;
 	NautilusView *view;
+	GtkActionGroup *action_group;
 	GtkAction *action;
 	gboolean supports_zooming;
 	gboolean can_zoom, can_zoom_in, can_zoom_out;
@@ -1467,17 +1468,19 @@ nautilus_window_sync_zoom_widgets (NautilusWindow *window)
 		can_zoom_out = FALSE;
 	}
 
-	action = gtk_action_group_get_action (window->details->main_action_group,
+	action_group = nautilus_window_get_main_action_group (window);
+
+	action = gtk_action_group_get_action (action_group,
 					      NAUTILUS_ACTION_ZOOM_IN);
 	gtk_action_set_visible (action, supports_zooming);
 	gtk_action_set_sensitive (action, can_zoom_in);
 	
-	action = gtk_action_group_get_action (window->details->main_action_group,
+	action = gtk_action_group_get_action (action_group,
 					      NAUTILUS_ACTION_ZOOM_OUT);
 	gtk_action_set_visible (action, supports_zooming);
 	gtk_action_set_sensitive (action, can_zoom_out);
 
-	action = gtk_action_group_get_action (window->details->main_action_group,
+	action = gtk_action_group_get_action (action_group,
 					      NAUTILUS_ACTION_ZOOM_NORMAL);
 	gtk_action_set_visible (action, supports_zooming);
 	gtk_action_set_sensitive (action, can_zoom);
@@ -1586,6 +1589,14 @@ nautilus_window_get_ui_manager (NautilusWindow *window)
 	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), NULL);
 
 	return window->details->ui_manager;
+}
+
+GtkActionGroup *
+nautilus_window_get_main_action_group (NautilusWindow *window)
+{
+	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), NULL);
+
+	return window->details->main_action_group;
 }
 
 NautilusWindowPane *
