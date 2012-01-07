@@ -51,7 +51,6 @@ typedef struct {
 
 	void (* activate) (NautilusSearchBar *bar);
 	void (* cancel)   (NautilusSearchBar *bar);
-	void (* focus_in) (NautilusSearchBar *bar);
 } NautilusSearchBarClass;
 
 GType      nautilus_search_bar_get_type     	(void);
