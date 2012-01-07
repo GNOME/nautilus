@@ -56,8 +56,6 @@ typedef enum {
         NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DISABLE
 } NautilusWindowShowHiddenFilesMode;
 
-GType          nautilus_window_slot_get_type (void);
-
 typedef enum {
         NAUTILUS_WINDOW_NOT_SHOWN,
         NAUTILUS_WINDOW_POSITION_SET,

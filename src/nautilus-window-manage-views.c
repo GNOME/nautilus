@@ -290,11 +290,8 @@ static void
 viewed_file_changed_callback (NautilusFile *file,
                               NautilusWindowSlot *slot)
 {
-	NautilusWindow *window;
         GFile *new_location;
 	gboolean is_in_trash, was_in_trash;
-
-	window = nautilus_window_slot_get_window (slot);
 
         g_assert (NAUTILUS_IS_FILE (file));
 	g_assert (NAUTILUS_IS_WINDOW_PANE (slot->pane));
@@ -1054,14 +1051,12 @@ load_new_location (NautilusWindowSlot *slot,
 		   gboolean tell_current_content_view,
 		   gboolean tell_new_content_view)
 {
-	NautilusWindow *window;
 	GList *selection_copy;
 	NautilusView *view;
 
 	g_assert (slot != NULL);
 	g_assert (location != NULL);
 
-	window = nautilus_window_slot_get_window (slot);
 	selection_copy = eel_g_object_list_copy (selection);
 	view = NULL;
 	
@@ -1735,7 +1730,6 @@ void
 nautilus_window_slot_set_content_view (NautilusWindowSlot *slot,
 				       const char *id)
 {
-	NautilusWindow *window;
 	NautilusFile *file;
 	char *uri;
 
@@ -1743,8 +1737,6 @@ nautilus_window_slot_set_content_view (NautilusWindowSlot *slot,
 	g_assert (slot->location != NULL);
 	g_assert (id != NULL);
 
-	window = nautilus_window_slot_get_window (slot);
-  
 	uri = nautilus_window_slot_get_location_uri (slot);
 	DEBUG ("Change view of window %s to %s", uri, id);
 	g_free (uri);

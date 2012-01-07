@@ -756,19 +756,19 @@ nautilus_window_update_split_view_actions_sensitivity (NautilusWindow *window)
 	action_group = nautilus_window_get_main_action_group (window);
 
 	/* collect information */
-	have_multiple_panes = (window->details->panes && window->details->panes->next);
+	have_multiple_panes = nautilus_window_split_view_showing (window);
 	if (active_slot != NULL) {
 		active_pane_location = nautilus_window_slot_get_location (active_slot);
 	} else {
 		active_pane_location = NULL;
 	}
+
 	next_pane = nautilus_window_get_next_pane (window);
 	if (next_pane && next_pane->active_slot) {
 		next_pane_location = nautilus_window_slot_get_location (next_pane->active_slot);
 		next_pane_is_in_same_location = (active_pane_location && next_pane_location &&
 						 g_file_equal (active_pane_location, next_pane_location));
-	}
-	else {
+	} else {
 		next_pane_location = NULL;
 		next_pane_is_in_same_location = FALSE;
 	}

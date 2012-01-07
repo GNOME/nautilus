@@ -4771,7 +4771,7 @@ create_properties_window (StartupData *startup_data)
 	NautilusPropertiesWindow *window;
 	GList *l;
 
-	window = NAUTILUS_PROPERTIES_WINDOW (gtk_widget_new (nautilus_properties_window_get_type (), NULL));
+	window = NAUTILUS_PROPERTIES_WINDOW (gtk_widget_new (NAUTILUS_TYPE_PROPERTIES_WINDOW, NULL));
 
 	window->details->original_files = nautilus_file_list_copy (startup_data->original_files);
 	

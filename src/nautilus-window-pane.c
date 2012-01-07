@@ -327,7 +327,7 @@ path_bar_button_pressed_callback (GtkWidget *widget,
 				uri = g_file_get_uri (location);
 				nautilus_view_pop_up_location_context_menu (
 					view, event, uri);
-				g_object_unref (G_OBJECT (location));
+				g_object_unref (location);
 				g_free (uri);
 				return TRUE;
 			}
@@ -1009,7 +1009,7 @@ nautilus_window_pane_slot_close (NautilusWindowPane *pane,
 				DEBUG ("Last slot removed from the pane %p, closing it", pane);
 				nautilus_window_close_pane (window, pane);
 
-				new_pane = window->details->panes->data;
+				new_pane = g_list_nth_data (window->details->panes, 0);
 
 				if (new_pane->active_slot == NULL) {
 					new_pane->active_slot = get_first_inactive_slot (new_pane);

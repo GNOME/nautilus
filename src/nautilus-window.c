@@ -60,7 +60,6 @@
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-metadata.h>
-#include <libnautilus-private/nautilus-program-choosing.h>
 #include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-undo.h>
 #include <libnautilus-private/nautilus-search-directory.h>
@@ -1207,7 +1206,7 @@ replace_extra_viewer_in_view_as_menus (NautilusWindow *window)
 }
 
 /**
- * nautilus_window_synch_view_as_menus:
+ * nautilus_window_sync_view_as_menus:
  * 
  * Set the visible item of the "View as" option menu and
  * the marked "View as" item in the View menu to
@@ -1216,7 +1215,7 @@ replace_extra_viewer_in_view_as_menus (NautilusWindow *window)
  * @window: The NautilusWindow whose "View as" option menu should be synched.
  */
 static void
-nautilus_window_synch_view_as_menus (NautilusWindow *window)
+nautilus_window_sync_view_as_menus (NautilusWindow *window)
 {
 	NautilusWindowSlot *slot;
 	int index;
@@ -1336,10 +1335,9 @@ load_view_as_menu (NautilusWindow *window)
 					    -1);
 	g_object_unref (window->details->view_as_action_group); /* owned by ui_manager */
 
-	nautilus_window_synch_view_as_menus (window);
+	nautilus_window_sync_view_as_menus (window);
 
 	g_signal_emit (window, signals[VIEW_AS_CHANGED], 0);
-
 }
 
 static void
