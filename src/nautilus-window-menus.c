@@ -782,12 +782,8 @@ nautilus_window_update_split_view_actions_sensitivity (NautilusWindow *window)
 	gtk_action_set_sensitive (action, have_multiple_panes && !next_pane_is_in_same_location);
 
 	/* clean up */
-	if (active_pane_location) {
-		g_object_unref (active_pane_location);
-	}
-	if (next_pane_location) {
-		g_object_unref (next_pane_location);
-	}
+	g_clear_object (&active_pane_location);
+	g_clear_object (&next_pane_location);
 }
 
 static void

@@ -119,9 +119,8 @@ set_displayed_location (NautilusWindowSlot *slot, GFile *location)
         
         if (recreate) {
                 /* We've changed locations, must recreate bookmark for current location. */
-		if (slot->last_location_bookmark != NULL)  {
-			g_object_unref (slot->last_location_bookmark);
-                }
+		g_clear_object (&slot->last_location_bookmark);
+
 		slot->last_location_bookmark = slot->current_location_bookmark;
 		slot->current_location_bookmark = (location == NULL) ? NULL
                         : nautilus_bookmark_new (location, NULL, NULL);
@@ -273,9 +272,8 @@ nautilus_window_update_up_button (NautilusWindow *window)
 	if (slot->location != NULL) {
 		parent = g_file_get_parent (slot->location);
 		allowed = parent != NULL;
-		if (parent != NULL) {
-			g_object_unref (parent);
-		}
+
+		g_clear_object (&parent);
 	}
 
 	action_group = nautilus_window_get_main_action_group (window);
@@ -570,9 +568,7 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 		}
 	}
 
-	if (old_location) {
-		g_object_unref (old_location);
-	}
+	g_clear_object (&old_location);
 }
 
 const char *
@@ -1411,9 +1407,7 @@ update_for_new_location (NautilusWindowSlot *slot)
 		!g_file_equal (slot->location, new_location);
 		
         /* Set the new location. */
-	if (slot->location) {
-		g_object_unref (slot->location);
-	}
+	g_clear_object (&slot->location);
 	slot->location = new_location;
 
         /* Create a NautilusFile for this location, so we can catch it
@@ -1558,11 +1552,7 @@ free_location_change (NautilusWindowSlot *slot)
 
 	window = nautilus_window_slot_get_window (slot);
 
-	if (slot->pending_location) {
-		g_object_unref (slot->pending_location);
-	}
-        slot->pending_location = NULL;
-
+	g_clear_object (&slot->pending_location);
 	g_list_free_full (slot->pending_selection, g_object_unref);
 	slot->pending_selection = NULL;
 
@@ -1841,10 +1831,8 @@ nautilus_window_back_or_forward (NautilusWindow *window,
 			 distance,
 			 scroll_pos,
 			 NULL, NULL);
-		if (old_location) {
-			g_object_unref (old_location);
-		}
 
+		g_clear_object (&old_location);
 		g_free (scroll_pos);
 	}
 
