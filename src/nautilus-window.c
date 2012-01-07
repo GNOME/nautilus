@@ -1383,6 +1383,35 @@ nautilus_window_load_view_as_menus (NautilusWindow *window)
 }
 
 void
+nautilus_window_sync_up_button (NautilusWindow *window)
+{
+	GtkAction *action;
+	GtkActionGroup *action_group;
+	NautilusWindowSlot *slot;
+	gboolean allowed;
+	GFile *parent;
+
+	slot = nautilus_window_get_active_slot (window);
+
+	allowed = FALSE;
+	if (slot->location != NULL) {
+		parent = g_file_get_parent (slot->location);
+		allowed = parent != NULL;
+
+		g_clear_object (&parent);
+	}
+
+	action_group = nautilus_window_get_main_action_group (window);
+
+	action = gtk_action_group_get_action (action_group,
+					      NAUTILUS_ACTION_UP);
+	gtk_action_set_sensitive (action, allowed);
+	action = gtk_action_group_get_action (action_group,
+					      NAUTILUS_ACTION_UP_ACCEL);
+	gtk_action_set_sensitive (action, allowed);
+}
+
+void
 nautilus_window_sync_title (NautilusWindow *window,
 			    NautilusWindowSlot *slot)
 {

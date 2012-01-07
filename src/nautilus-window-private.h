@@ -150,6 +150,7 @@ void nautilus_window_sync_allow_stop       (NautilusWindow *window,
 void nautilus_window_sync_title            (NautilusWindow *window,
 					    NautilusWindowSlot *slot);
 void nautilus_window_sync_zoom_widgets     (NautilusWindow *window);
+void nautilus_window_sync_up_button        (NautilusWindow *window);
 
 /* window menus */
 GtkActionGroup *nautilus_window_create_toolbar_action_group (NautilusWindow *window);

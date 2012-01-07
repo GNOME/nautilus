@@ -36,6 +36,5 @@ void nautilus_window_manage_views_close_slot (NautilusWindowPane *pane,
 
 /* NautilusWindowInfo implementation: */
 void nautilus_window_report_location_change   (NautilusWindow     *window);
-void nautilus_window_update_up_button         (NautilusWindow     *window);
 
 #endif /* NAUTILUS_WINDOW_MANAGE_VIEWS_H */

@@ -921,7 +921,7 @@ nautilus_window_pane_sync_location_widgets (NautilusWindowPane *pane)
 
 	/* Update window global UI if this is the active pane */
 	if (pane == nautilus_window_get_active_pane (pane->window)) {
-		nautilus_window_update_up_button (pane->window);
+		nautilus_window_sync_up_button (pane->window);
 
 		/* Check if the back and forward buttons need enabling or disabling. */
 		active_slot = nautilus_window_get_active_slot (pane->window);

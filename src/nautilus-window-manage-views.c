@@ -257,35 +257,6 @@ handle_go_elsewhere (NautilusWindowSlot *slot,
 	}
 }
 
-void
-nautilus_window_update_up_button (NautilusWindow *window)
-{
-	GtkAction *action;
-	GtkActionGroup *action_group;
-	NautilusWindowSlot *slot;
-	gboolean allowed;
-	GFile *parent;
-
-	slot = nautilus_window_get_active_slot (window);
-
-	allowed = FALSE;
-	if (slot->location != NULL) {
-		parent = g_file_get_parent (slot->location);
-		allowed = parent != NULL;
-
-		g_clear_object (&parent);
-	}
-
-	action_group = nautilus_window_get_main_action_group (window);
-
-	action = gtk_action_group_get_action (action_group,
-					      NAUTILUS_ACTION_UP);
-	gtk_action_set_sensitive (action, allowed);
-	action = gtk_action_group_get_action (action_group,
-					      NAUTILUS_ACTION_UP_ACCEL);
-	gtk_action_set_sensitive (action, allowed);
-}
-
 static void
 viewed_file_changed_callback (NautilusFile *file,
                               NautilusWindowSlot *slot)
@@ -1419,9 +1390,8 @@ update_for_new_location (NautilusWindowSlot *slot)
         nautilus_file_unref (file);
 
 	if (slot == nautilus_window_get_active_slot (window)) {
-		/* Check if we can go up. */
-		nautilus_window_update_up_button (window);
-
+		/* Sync up and zoom action states */
+		nautilus_window_sync_up_button (window);
 		nautilus_window_sync_zoom_widgets (window);
 
 		/* Set up the content view menu for this new location. */
