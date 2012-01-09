@@ -356,7 +356,6 @@ update_history (NautilusWindowSlot *slot,
 {
         switch (type) {
         case NAUTILUS_LOCATION_CHANGE_STANDARD:
-        case NAUTILUS_LOCATION_CHANGE_FALLBACK:
 		handle_go_elsewhere (slot, new_location);
                 return;
         case NAUTILUS_LOCATION_CHANGE_RELOAD:
@@ -367,9 +366,6 @@ update_history (NautilusWindowSlot *slot,
                 return;
         case NAUTILUS_LOCATION_CHANGE_FORWARD:
                 handle_go_forward (slot, new_location);
-                return;
-        case NAUTILUS_LOCATION_CHANGE_REDIRECT:
-                /* for the redirect case, the caller can do the updating */
                 return;
         }
 	g_return_if_fail (FALSE);
@@ -837,19 +833,16 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 
 		mimetype = nautilus_file_get_mime_type (file);
 
-		/* If fallback, don't use view from metadata */
-		if (slot->location_change_type != NAUTILUS_LOCATION_CHANGE_FALLBACK) {
-			/* Look in metadata for view */
-			view_id = nautilus_file_get_metadata 
-				(file, NAUTILUS_METADATA_KEY_DEFAULT_VIEW, NULL);
-			if (view_id != NULL && 
-			    !nautilus_view_factory_view_supports_uri (view_id,
-								      location,
-								      nautilus_file_get_file_type (file),
-								      mimetype)) {
-				g_free (view_id);
-				view_id = NULL;
-			}
+		/* Look in metadata for view */
+		view_id = nautilus_file_get_metadata 
+			(file, NAUTILUS_METADATA_KEY_DEFAULT_VIEW, NULL);
+		if (view_id != NULL && 
+		    !nautilus_view_factory_view_supports_uri (view_id,
+							      location,
+							      nautilus_file_get_file_type (file),
+							      mimetype)) {
+			g_free (view_id);
+			view_id = NULL;
 		}
 
 		/* Otherwise, use default */
