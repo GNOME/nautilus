@@ -96,9 +96,6 @@ void nautilus_window_pane_sync_search_widgets  (NautilusWindowPane *pane);
 void nautilus_window_pane_set_active (NautilusWindowPane *pane, gboolean is_active);
 void nautilus_window_pane_slot_close (NautilusWindowPane *pane, NautilusWindowSlot *slot);
 
-NautilusWindowSlot* nautilus_window_pane_get_slot_for_content_box (NautilusWindowPane *pane,
-								   GtkWidget *content_box);
-
 void nautilus_window_pane_grab_focus (NautilusWindowPane *pane);
 
 /* bars */

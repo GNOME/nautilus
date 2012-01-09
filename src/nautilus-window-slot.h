@@ -44,7 +44,7 @@ typedef enum {
 } NautilusLocationChangeType;
 
 struct NautilusWindowSlotClass {
-	GObjectClass parent_class;
+	GtkBoxClass parent_class;
 
 	/* wrapped NautilusWindowInfo signals, for overloading */
 	void (* active)   (NautilusWindowSlot *slot);
@@ -59,15 +59,14 @@ struct NautilusWindowSlotClass {
  * tab, while spatial windows only have one slot.
  */
 struct NautilusWindowSlot {
-	GObject parent;
+	GtkBox parent;
 
 	NautilusWindowPane *pane;
 
-	/* content_box contains
+	/* slot contains
  	 *  1) an event box containing extra_location_widgets
  	 *  2) the view box for the content view
  	 */
-	GtkWidget *content_box;
 	GtkWidget *extra_location_widgets;
 
 	GtkWidget *view_overlay;

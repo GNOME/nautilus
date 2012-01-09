@@ -262,7 +262,8 @@ nautilus_notebook_sync_loading (NautilusNotebook *notebook,
 	g_return_if_fail (NAUTILUS_IS_NOTEBOOK (notebook));
 	g_return_if_fail (NAUTILUS_IS_WINDOW_SLOT (slot));
 
-	tab_label = gtk_notebook_get_tab_label (GTK_NOTEBOOK (notebook), slot->content_box);
+	tab_label = gtk_notebook_get_tab_label (GTK_NOTEBOOK (notebook), 
+						GTK_WIDGET (slot));
 	g_return_if_fail (GTK_IS_WIDGET (tab_label));
 
 	spinner = GTK_WIDGET (g_object_get_data (G_OBJECT (tab_label), "spinner"));
@@ -295,9 +296,8 @@ nautilus_notebook_sync_tab_label (NautilusNotebook *notebook,
 
 	g_return_if_fail (NAUTILUS_IS_NOTEBOOK (notebook));
 	g_return_if_fail (NAUTILUS_IS_WINDOW_SLOT (slot));
-	g_return_if_fail (GTK_IS_WIDGET (slot->content_box));
 
-	hbox = gtk_notebook_get_tab_label (GTK_NOTEBOOK (notebook), slot->content_box);
+	hbox = gtk_notebook_get_tab_label (GTK_NOTEBOOK (notebook), GTK_WIDGET (slot));
 	g_return_if_fail (GTK_IS_WIDGET (hbox));
 
 	label = GTK_WIDGET (g_object_get_data (G_OBJECT (hbox), "label"));
@@ -323,7 +323,7 @@ close_button_clicked_cb (GtkWidget *widget,
 {
 	GtkWidget *notebook;
 
-	notebook = gtk_widget_get_ancestor (slot->content_box, NAUTILUS_TYPE_NOTEBOOK);
+	notebook = gtk_widget_get_ancestor (GTK_WIDGET (slot), NAUTILUS_TYPE_NOTEBOOK);
 	if (notebook != NULL) {
 		g_signal_emit (notebook, signals[TAB_CLOSE_REQUEST], 0, slot);
 	}
@@ -424,12 +424,12 @@ nautilus_notebook_add_tab (NautilusNotebook *notebook,
 	tab_label = build_tab_label (notebook, slot);
 
 	position = gtk_notebook_insert_page (GTK_NOTEBOOK (notebook),
-					     slot->content_box,
+					     GTK_WIDGET (slot),
 					     tab_label,
 					     position);
 
 	gtk_container_child_set (GTK_CONTAINER (notebook),
-				 slot->content_box,
+				 GTK_WIDGET (slot),
 				 "tab-expand", TRUE,
 				 NULL);
 
@@ -440,7 +440,7 @@ nautilus_notebook_add_tab (NautilusNotebook *notebook,
 	/* FIXME gtk bug! */
 	/* FIXME: this should be fixed in gtk 2.12; check & remove this! */
 	/* The signal handler may have reordered the tabs */
-	position = gtk_notebook_page_num (gnotebook, slot->content_box);
+	position = gtk_notebook_page_num (gnotebook, GTK_WIDGET (slot));
 
 	if (jump_to)
 	{

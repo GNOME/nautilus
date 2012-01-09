@@ -36,7 +36,7 @@
 
 #include <eel/eel-string.h>
 
-G_DEFINE_TYPE (NautilusWindowSlot, nautilus_window_slot, G_TYPE_OBJECT);
+G_DEFINE_TYPE (NautilusWindowSlot, nautilus_window_slot, GTK_TYPE_BOX);
 
 enum {
 	ACTIVE,
@@ -130,7 +130,7 @@ real_active (NautilusWindowSlot *slot)
 	window = nautilus_window_slot_get_window (slot);
 	pane = slot->pane;
 	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (pane->notebook),
-					  slot->content_box);
+					  GTK_WIDGET (slot));
 	g_assert (page_num >= 0);
 
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (pane->notebook), page_num);
@@ -171,22 +171,22 @@ floating_bar_action_cb (NautilusFloatingBar *floating_bar,
 static void
 nautilus_window_slot_init (NautilusWindowSlot *slot)
 {
-	GtkWidget *content_box, *extras_vbox;
+	GtkWidget *extras_vbox;
 
-	content_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	slot->content_box = content_box;
-	gtk_widget_show (content_box);
+	gtk_orientable_set_orientation (GTK_ORIENTABLE (slot),
+					GTK_ORIENTATION_VERTICAL);
+	gtk_widget_show (GTK_WIDGET (slot));
 
 	extras_vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
 	slot->extra_location_widgets = extras_vbox;
-	gtk_box_pack_start (GTK_BOX (content_box), extras_vbox, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (slot), extras_vbox, FALSE, FALSE, 0);
 	gtk_widget_show (extras_vbox);
 
 	slot->view_overlay = gtk_overlay_new ();
 	gtk_widget_add_events (slot->view_overlay,
 			       GDK_ENTER_NOTIFY_MASK |
 			       GDK_LEAVE_NOTIFY_MASK);
-	gtk_box_pack_start (GTK_BOX (content_box), slot->view_overlay, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (slot), slot->view_overlay, TRUE, TRUE, 0);
 	gtk_widget_show (slot->view_overlay);
 
 	slot->floating_bar = nautilus_floating_bar_new ("", FALSE);

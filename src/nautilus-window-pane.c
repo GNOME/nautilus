@@ -588,7 +588,7 @@ notebook_switch_page_cb (GtkNotebook *notebook,
 	g_assert (widget != NULL);
 
 	/* find slot corresponding to the target page */
-	slot = nautilus_window_pane_get_slot_for_content_box (pane, widget);
+	slot = NAUTILUS_WINDOW_SLOT (widget);
 	g_assert (slot != NULL);
 
 	nautilus_window_set_active_slot (nautilus_window_slot_get_window (slot),
@@ -860,23 +860,6 @@ nautilus_window_pane_new (NautilusWindow *window)
 			     NULL);
 }
 
-NautilusWindowSlot *
-nautilus_window_pane_get_slot_for_content_box (NautilusWindowPane *pane,
-					       GtkWidget *content_box)
-{
-	NautilusWindowSlot *slot;
-	GList *l;
-
-	for (l = pane->slots; l != NULL; l = l->next) {
-		slot = NAUTILUS_WINDOW_SLOT (l->data);
-
-		if (slot->content_box == content_box) {
-			return slot;
-		}
-	}
-	return NULL;
-}
-
 void
 nautilus_window_pane_set_active (NautilusWindowPane *pane,
 				 gboolean is_active)
@@ -1068,12 +1051,15 @@ nautilus_window_pane_close_slot (NautilusWindowPane *pane,
 	pane = slot->pane;
 	notebook = GTK_NOTEBOOK (pane->notebook);
 
-	page_num = gtk_notebook_page_num (notebook, GTK_WIDGET (slot->content_box));
+	nautilus_window_manage_views_close_slot (slot);
+
+	page_num = gtk_notebook_page_num (notebook, GTK_WIDGET (slot));
 	g_assert (page_num >= 0);
 
 	g_signal_handlers_block_by_func (notebook,
-                                        G_CALLBACK (notebook_switch_page_cb),
+					 G_CALLBACK (notebook_switch_page_cb),
 					 pane);
+	/* this will call gtk_widget_destroy on the slot */
 	gtk_notebook_remove_page (notebook, page_num);
 	g_signal_handlers_unblock_by_func (notebook,
 					   G_CALLBACK (notebook_switch_page_cb),
@@ -1082,11 +1068,7 @@ nautilus_window_pane_close_slot (NautilusWindowPane *pane,
 	gtk_notebook_set_show_tabs (notebook,
 				    gtk_notebook_get_n_pages (notebook) > 1);
 
-	nautilus_window_manage_views_close_slot (pane, slot);
-
-	g_object_run_dispose (G_OBJECT (slot));
 	slot->pane = NULL;
-	g_object_unref (slot);
 	pane->slots = g_list_remove (pane->slots, slot);
 }
 
@@ -1113,8 +1095,6 @@ nautilus_window_pane_open_slot (NautilusWindowPane *pane,
 	g_signal_handlers_unblock_by_func (pane->notebook,
 					   G_CALLBACK (notebook_switch_page_cb),
 					   pane);
-
-	gtk_widget_show (GTK_WIDGET (slot->content_box));
 
 	pane->slots = g_list_append (pane->slots, slot);
 

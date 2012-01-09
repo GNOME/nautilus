@@ -1728,8 +1728,7 @@ nautilus_window_slot_set_content_view (NautilusWindowSlot *slot,
 }
 
 void
-nautilus_window_manage_views_close_slot (NautilusWindowPane *pane,
-					 NautilusWindowSlot *slot)
+nautilus_window_manage_views_close_slot (NautilusWindowSlot *slot)
 {
 	if (slot->content_view != NULL) {
 		nautilus_window_disconnect_content_view (nautilus_window_slot_get_window (slot), 
