@@ -1043,7 +1043,6 @@ nautilus_window_pane_close_slot (NautilusWindowPane *pane,
 
 	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
 	g_assert (NAUTILUS_IS_WINDOW_PANE (slot->pane));
-	g_assert (g_list_find (slot->pane->slots, slot) != NULL);
 
 	DEBUG ("Closing slot %p", slot);
 
