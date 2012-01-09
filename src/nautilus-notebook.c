@@ -38,12 +38,8 @@
 #include <gio/gio.h>
 #include <gtk/gtk.h>
 
-#define TAB_WIDTH_N_CHARS 15
-
 #define AFTER_ALL_TABS -1
 #define NOT_IN_APP_WINDOWS -2
-
-#define INSANE_NUMBER_OF_URLS 20
 
 static void nautilus_notebook_init		 (NautilusNotebook *notebook);
 static void nautilus_notebook_class_init	 (NautilusNotebookClass *klass);
