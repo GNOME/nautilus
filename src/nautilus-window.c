@@ -106,7 +106,6 @@ enum {
 	GO_UP,
 	RELOAD,
 	PROMPT_FOR_LOCATION,
-	VIEW_AS_CHANGED,
 	LOADING_URI,
 	HIDDEN_FILES_MODE_CHANGED,
 	LAST_SIGNAL
@@ -1335,8 +1334,6 @@ load_view_as_menu (NautilusWindow *window)
 	g_object_unref (window->details->view_as_action_group); /* owned by ui_manager */
 
 	nautilus_window_sync_view_as_menus (window);
-
-	g_signal_emit (window, signals[VIEW_AS_CHANGED], 0);
 }
 
 static void
@@ -1976,15 +1973,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
 			      NULL, NULL,
 			      g_cclosure_marshal_VOID__STRING,
 			      G_TYPE_NONE, 1, G_TYPE_STRING);
-	signals[VIEW_AS_CHANGED] =
-		g_signal_new ("view-as-changed",
-			      G_TYPE_FROM_CLASS (class),
-			      G_SIGNAL_RUN_LAST,
-			      0,
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__VOID,
-			      G_TYPE_NONE, 0);
-
 	signals[HIDDEN_FILES_MODE_CHANGED] =
 		g_signal_new ("hidden_files_mode_changed",
 			      G_TYPE_FROM_CLASS (class),
@@ -1993,7 +1981,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
 			      NULL, NULL,
 			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
-
 	signals[LOADING_URI] =
 		g_signal_new ("loading_uri",
 			      G_TYPE_FROM_CLASS (class),
