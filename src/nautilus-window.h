@@ -112,8 +112,6 @@ void             nautilus_window_go_to_full           (NautilusWindow    *window
                                                        NautilusWindowGoToCallback callback,
                                                        gpointer           user_data);
 void             nautilus_window_new_tab              (NautilusWindow    *window);
-void             nautilus_window_prompt_for_location  (NautilusWindow    *window,
-                                                       const char        *initial);
 
 GtkUIManager *   nautilus_window_get_ui_manager       (NautilusWindow    *window);
 GtkActionGroup * nautilus_window_get_main_action_group (NautilusWindow   *window);

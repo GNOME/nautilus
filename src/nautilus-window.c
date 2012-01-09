@@ -283,7 +283,7 @@ nautilus_window_sync_allow_stop (NautilusWindow *window,
 	}
 }
 
-void
+static void
 nautilus_window_prompt_for_location (NautilusWindow *window,
 				     const char     *initial)
 {	
