@@ -59,6 +59,14 @@ nautilus_location_widget_provider_get_type (void)
 	return type;
 }
 
+/**
+ * nautilus_location_widget_provider_get_widget:
+ * @provider: a #NautilusLocationWidgetProvider
+ * @uri: the URI of the location
+ * @window: parent #GtkWindow
+ *
+ * Returns: (transfer none): the location widget for @provider at @uri
+ */
 GtkWidget *
 nautilus_location_widget_provider_get_widget (NautilusLocationWidgetProvider     *provider,
 					      const char                         *uri,

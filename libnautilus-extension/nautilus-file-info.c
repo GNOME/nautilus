@@ -25,6 +25,13 @@
 
 NautilusFileInfo *(*nautilus_file_info_getter) (GFile *location, gboolean create);
 
+/**
+ * nautilus_file_info_list_copy:
+ * @files: (element-type NautilusFileInfo): the files to copy
+ *
+ * Returns: (element-type NautilusFileInfo) (transfer full): a copy of @files.
+ *  Use #nautilus_file_info_list_free to free the list and unref its contents.
+ */
 GList *
 nautilus_file_info_list_copy (GList *files)
 {
@@ -39,6 +46,12 @@ nautilus_file_info_list_copy (GList *files)
 	return ret;
 }
 
+/**
+ * nautilus_file_info_list_free:
+ * @files: (element-type NautilusFileInfo): a list created with
+ *   #nautilus_file_info_list_copy
+ *
+ */
 void              
 nautilus_file_info_list_free (GList *files)
 {
@@ -110,6 +123,12 @@ nautilus_file_info_get_name (NautilusFileInfo *file)
 	return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_name (file);
 }
 
+/**
+ * nautilus_file_info_get_location:
+ * @file: a #NautilusFileInfo
+ *
+ * Returns: (transfer full): a #GFile for the location of @file
+ */
 GFile *
 nautilus_file_info_get_location (NautilusFileInfo *file)
 {
@@ -136,6 +155,13 @@ nautilus_file_info_get_activation_uri (NautilusFileInfo *file)
 	return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_activation_uri (file);
 }
 
+/**
+ * nautilus_file_info_get_parent_location:
+ * @file: a #NautilusFileInfo
+ *
+ * Returns: (allow-none) (transfer full): a #GFile for the parent location of @file, 
+ *   or %NULL if @file has no parent
+ */
 GFile *
 nautilus_file_info_get_parent_location (NautilusFileInfo *file)
 {
@@ -154,6 +180,13 @@ nautilus_file_info_get_parent_uri (NautilusFileInfo *file)
 	return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_parent_uri (file);
 }
 
+/**
+ * nautilus_file_info_get_parent_info:
+ * @file: a #NautilusFileInfo
+ *
+ * Returns: (allow-none) (transfer full): a #NautilusFileInfo for the parent of @file, 
+ *   or %NULL if @file has no parent
+ */
 NautilusFileInfo *
 nautilus_file_info_get_parent_info (NautilusFileInfo *file)
 {
@@ -163,6 +196,13 @@ nautilus_file_info_get_parent_info (NautilusFileInfo *file)
 	return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_parent_info (file);
 }
 
+/**
+ * nautilus_file_info_get_mount:
+ * @file: a #NautilusFileInfo
+ *
+ * Returns: (allow-none) (transfer full): a #GMount for the mount of @file, 
+ *   or %NULL if @file has no mount
+ */
 GMount *
 nautilus_file_info_get_mount (NautilusFileInfo *file)
 {
@@ -265,18 +305,36 @@ nautilus_file_info_invalidate_extension_info (NautilusFileInfo *file)
 	NAUTILUS_FILE_INFO_GET_IFACE (file)->invalidate_extension_info (file);
 }
 
+/**
+ * nautilus_file_info_lookup:
+ * @location: the location to lookup the file info for
+ *
+ * Returns: (transfer full): a #NautilusFileInfo
+ */
 NautilusFileInfo *
 nautilus_file_info_lookup (GFile *location)
 {
 	return nautilus_file_info_getter (location, FALSE);
 }
 
+/**
+ * nautilus_file_info_create:
+ * @location: the location to create the file info for
+ *
+ * Returns: (transfer full): a #NautilusFileInfo
+ */
 NautilusFileInfo *
 nautilus_file_info_create (GFile *location)
 {
 	return nautilus_file_info_getter (location, TRUE);
 }
 
+/**
+ * nautilus_file_info_lookup_for_uri:
+ * @uri: the URI to lookup the file info for
+ *
+ * Returns: (transfer full): a #NautilusFileInfo
+ */
 NautilusFileInfo *
 nautilus_file_info_lookup_for_uri (const char *uri)
 {
@@ -290,6 +348,12 @@ nautilus_file_info_lookup_for_uri (const char *uri)
 	return file;
 }
 
+/**
+ * nautilus_file_info_create_for_uri:
+ * @uri: the URI to lookup the file info for
+ *
+ * Returns: (transfer full): a #NautilusFileInfo
+ */
 NautilusFileInfo *
 nautilus_file_info_create_for_uri (const char *uri)
 {
