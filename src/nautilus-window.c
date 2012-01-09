@@ -106,7 +106,6 @@ enum {
 	GO_UP,
 	RELOAD,
 	PROMPT_FOR_LOCATION,
-	ZOOM_CHANGED,
 	VIEW_AS_CHANGED,
 	LOADING_URI,
 	HIDDEN_FILES_MODE_CHANGED,
@@ -1493,10 +1492,6 @@ nautilus_window_sync_zoom_widgets (NautilusWindow *window)
 					      NAUTILUS_ACTION_ZOOM_NORMAL);
 	gtk_action_set_visible (action, supports_zooming);
 	gtk_action_set_sensitive (action, can_zoom);
-
-	g_signal_emit (window, signals[ZOOM_CHANGED], 0,
-		       zoom_level, supports_zooming, can_zoom,
-		       can_zoom_in, can_zoom_out);
 }
 
 static void
@@ -1981,16 +1976,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
 			      NULL, NULL,
 			      g_cclosure_marshal_VOID__STRING,
 			      G_TYPE_NONE, 1, G_TYPE_STRING);
-	signals[ZOOM_CHANGED] =
-		g_signal_new ("zoom-changed",
-			      G_TYPE_FROM_CLASS (class),
-			      G_SIGNAL_RUN_LAST,
-			      0,
-			      NULL, NULL,
-			      g_cclosure_marshal_generic,
-			      G_TYPE_NONE, 5,
-			      G_TYPE_INT, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN,
-			      G_TYPE_BOOLEAN, G_TYPE_BOOLEAN);
 	signals[VIEW_AS_CHANGED] =
 		g_signal_new ("view-as-changed",
 			      G_TYPE_FROM_CLASS (class),
