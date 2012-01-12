@@ -1233,15 +1233,16 @@ static GdkPixbuf *
 get_knob_pixbuf (void)
 {
 	GdkPixbuf *knob_pixbuf;
-	char *knob_filename;
 
 	knob_pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
 						"stock-nautilus-knob",
 						8, 0, NULL);
 	if (!knob_pixbuf) {
-		knob_filename = nautilus_pixmap_file ("knob.png");
-		knob_pixbuf = gdk_pixbuf_new_from_file (knob_filename, NULL);
-		g_free (knob_filename);
+		GInputStream *stream = g_resources_open_stream ("/org/gnome/nautilus/icons/knob.png", 0, NULL);
+		if (stream != NULL) {
+			knob_pixbuf = gdk_pixbuf_new_from_stream (stream, NULL, NULL);
+			g_object_unref (stream);
+		}
 	}
 
 	return knob_pixbuf;

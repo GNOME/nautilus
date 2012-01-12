@@ -254,9 +254,9 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 	bookmarks = list;
 
 	builder = gtk_builder_new ();
-	if (!gtk_builder_add_from_file (builder,
-					UIDIR  "/nautilus-bookmarks-window.ui",
-					NULL)) {
+	if (!gtk_builder_add_from_resource (builder,
+					    "/org/gnome/nautilus/nautilus-bookmarks-window.ui",
+					    NULL)) {
 		return NULL;
 	}
 

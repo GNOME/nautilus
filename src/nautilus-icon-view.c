@@ -1356,7 +1356,6 @@ nautilus_icon_view_merge_menus (NautilusView *view)
 	GtkUIManager *ui_manager;
 	GtkActionGroup *action_group;
 	GtkAction *action;
-	const char *ui;
 	
         g_assert (NAUTILUS_IS_ICON_VIEW (view));
 
@@ -1385,9 +1384,8 @@ nautilus_icon_view_merge_menus (NautilusView *view)
 	gtk_ui_manager_insert_action_group (ui_manager, action_group, 0);
 	g_object_unref (action_group); /* owned by ui manager */
 
-	ui = nautilus_ui_string_get ("nautilus-icon-view-ui.xml");
 	icon_view->details->icon_merge_id =
-		gtk_ui_manager_add_ui_from_string (ui_manager, ui, -1, NULL);
+		gtk_ui_manager_add_ui_from_resource (ui_manager, "/org/gnome/nautilus/nautilus-icon-view-ui.xml", NULL);
 
 	/* Do one-time state-setting here; context-dependent state-setting
 	 * is done in update_menus.

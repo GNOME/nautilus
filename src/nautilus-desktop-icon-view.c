@@ -747,7 +747,6 @@ real_merge_menus (NautilusView *view)
 	NautilusDesktopIconView *desktop_view;
 	GtkUIManager *ui_manager;
 	GtkActionGroup *action_group;
-	const char *ui;
 
 	NAUTILUS_VIEW_CLASS (nautilus_desktop_icon_view_parent_class)->merge_menus (view);
 
@@ -765,9 +764,8 @@ real_merge_menus (NautilusView *view)
 	gtk_ui_manager_insert_action_group (ui_manager, action_group, 0);
 	g_object_unref (action_group); /* owned by ui manager */
 
-	ui = nautilus_ui_string_get ("nautilus-desktop-icon-view-ui.xml");
 	desktop_view->details->desktop_merge_id =
-		gtk_ui_manager_add_ui_from_string (ui_manager, ui, -1, NULL);
+		gtk_ui_manager_add_ui_from_resource (ui_manager, "/org/gnome/nautilus/nautilus-desktop-icon-view-ui.xml", NULL);
 }
 
 static NautilusView *

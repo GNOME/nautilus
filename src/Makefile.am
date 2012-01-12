@@ -53,8 +53,28 @@ $(dbus_built_sources) : Makefile.am $(top_srcdir)/data/freedesktop-dbus-interfac
 		$(top_srcdir)/data/freedesktop-dbus-interfaces.xml			\
 		$(NULL)
 
+UI_FILES = \
+	nautilus-bookmarks-window.ui		\
+	nautilus-file-management-properties.ui	\
+	nautilus-icon-view-ui.xml		\
+	nautilus-toolbar-ui.xml			\
+	nautilus-directory-view-ui.xml		\
+	nautilus-desktop-icon-view-ui.xml	\
+	nautilus-list-view-ui.xml		\
+	nautilus-shell-ui.xml			\
+	$(NULL)
+
+nautilus-resources.c: nautilus.gresource.xml $(UI_FILES)
+	glib-compile-resources --target=$@ --sourcedir=$(srcdir) --generate-source --c-name nautilus $(srcdir)/nautilus.gresource.xml
+
+nautilus-resources.h: nautilus.gresource.xml
+	glib-compile-resources --target=$@ --sourcedir=$(srcdir) --generate-header --c-name nautilus $(srcdir)/nautilus.gresource.xml
+
+
 BUILT_SOURCES = \
 	$(dbus_built_sources) \
+	nautilus-resources.c \
+	nautilus-resources.h \
 	$(NULL)
 
 nautilus_SOURCES = \
@@ -193,18 +213,6 @@ TESTS=check-nautilus
 
 @INTLTOOL_SERVER_RULE@
 
-uidir = $(datadir)/nautilus/ui
-ui_DATA = 					\
-	nautilus-shell-ui.xml			\
-	nautilus-file-management-properties.ui	\
-	nautilus-bookmarks-window.ui		\
-	nautilus-desktop-icon-view-ui.xml	\
-	nautilus-directory-view-ui.xml		\
-	nautilus-icon-view-ui.xml		\
-	nautilus-list-view-ui.xml		\
-	nautilus-toolbar-ui.xml			\
-	$(NULL)
-
 CLEANFILES = \
 	$(BUILT_SOURCES)			\
 	$(server_DATA)				\
@@ -212,7 +220,7 @@ CLEANFILES = \
 
 EXTRA_DIST =					\
 	$(server_in_files)			\
-	$(ui_DATA)				\
+	$(UI_FILES)				\
 	check-nautilus				\
 	$(NULL)
 

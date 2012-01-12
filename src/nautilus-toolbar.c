@@ -88,7 +88,6 @@ nautilus_toolbar_constructed (GObject *obj)
 	GtkToolItem *item;
 	GtkWidget *hbox, *toolbar, *search;
 	GtkStyleContext *context;
-	const gchar *ui;
 
 	G_OBJECT_CLASS (nautilus_toolbar_parent_class)->constructed (obj);
 
@@ -96,9 +95,8 @@ nautilus_toolbar_constructed (GObject *obj)
 					      GTK_JUNCTION_BOTTOM);
 
 	/* add the UI */
-	ui = nautilus_ui_string_get ("nautilus-toolbar-ui.xml");
 	self->priv->ui_manager = gtk_ui_manager_new ();
-	gtk_ui_manager_add_ui_from_string (self->priv->ui_manager, ui, -1, NULL);
+	gtk_ui_manager_add_ui_from_resource (self->priv->ui_manager, "/org/gnome/nautilus/nautilus-toolbar-ui.xml", NULL);
 	gtk_ui_manager_insert_action_group (self->priv->ui_manager, self->priv->action_group, 0);
 
 	toolbar = gtk_ui_manager_get_widget (self->priv->ui_manager, "/Toolbar");

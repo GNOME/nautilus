@@ -27,8 +27,6 @@
 #include <gtk/gtk.h>
 #include <libnautilus-extension/nautilus-menu-item.h>
 
-char *      nautilus_get_ui_directory              (void);
-char *      nautilus_ui_file                       (const char        *partial_path);
 void        nautilus_ui_unmerge_ui                 (GtkUIManager      *ui_manager,
 						    guint             *merge_id,
 						    GtkActionGroup   **action_group);
@@ -37,7 +35,6 @@ void        nautilus_ui_prepare_merge_ui           (GtkUIManager      *ui_manage
 						    guint             *merge_id,
 						    GtkActionGroup   **action_group);
 GtkAction * nautilus_action_from_menu_item         (NautilusMenuItem  *item);
-const char *nautilus_ui_string_get                 (const char        *filename);
 
 gboolean  nautilus_event_should_open_in_new_tab   (void);
 

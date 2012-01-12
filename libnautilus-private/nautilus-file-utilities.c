@@ -726,41 +726,6 @@ nautilus_get_gmc_desktop_directory (void)
 	return g_build_filename (g_get_home_dir (), LEGACY_DESKTOP_DIRECTORY_NAME, NULL);
 }
 
-/**
- * nautilus_get_pixmap_directory
- * 
- * Get the path for the directory containing Nautilus pixmaps.
- *
- * Return value: the directory path.
- **/
-char *
-nautilus_get_pixmap_directory (void)
-{
-	return g_strdup (DATADIR "/pixmaps/nautilus");
-}
-
-/* FIXME bugzilla.gnome.org 42423: 
- * Callers just use this and dereference so we core dump if
- * pixmaps are missing. That is lame.
- */
-char *
-nautilus_pixmap_file (const char *partial_path)
-{
-	char *path;
-
-	path = g_build_filename (DATADIR "/pixmaps/nautilus", partial_path, NULL);
-	if (g_file_test (path, G_FILE_TEST_EXISTS)) {
-		return path;
-	} else {
-		char *tmp;
-		tmp = nautilus_get_pixmap_directory ();
-		g_debug ("Failed to locate \"%s\" in Nautilus pixmap path \"%s\". Incomplete installation?", partial_path, tmp);
-		g_free (tmp);
-	}
-	g_free (path);
-	return NULL;
-}
-
 char *
 nautilus_get_data_file_path (const char *partial_path)
 {

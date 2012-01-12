@@ -7162,7 +7162,6 @@ real_merge_menus (NautilusView *view)
 	GtkActionGroup *action_group;
 	GtkUIManager *ui_manager;
 	GtkAction *action;
-	const char *ui;
 	char *tooltip;
 
 	ui_manager = nautilus_window_get_ui_manager (view->details->window);
@@ -7196,8 +7195,7 @@ real_merge_menus (NautilusView *view)
 	gtk_ui_manager_insert_action_group (ui_manager, action_group, -1);
 	g_object_unref (action_group); /* owned by ui manager */
 
-	ui = nautilus_ui_string_get ("nautilus-directory-view-ui.xml");
-	view->details->dir_merge_id = gtk_ui_manager_add_ui_from_string (ui_manager, ui, -1, NULL);
+	view->details->dir_merge_id = gtk_ui_manager_add_ui_from_resource (ui_manager, "/org/gnome/nautilus/nautilus-directory-view-ui.xml", NULL);
 	
 	view->details->scripts_invalid = TRUE;
 	view->details->templates_invalid = TRUE;

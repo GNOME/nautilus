@@ -240,15 +240,14 @@ nautilus_remove_thumbnail_for_file (const char *file_uri)
 static GdkPixbuf *
 nautilus_get_thumbnail_frame (void)
 {
-	char *image_path;
 	static GdkPixbuf *thumbnail_frame = NULL;
 
 	if (thumbnail_frame == NULL) {
-		image_path = nautilus_pixmap_file ("thumbnail_frame.png");
-		if (image_path != NULL) {
-			thumbnail_frame = gdk_pixbuf_new_from_file (image_path, NULL);
+		GInputStream *stream = g_resources_open_stream ("/org/gnome/nautilus/icons/thumbnail_frame.png", 0, NULL);
+		if (stream != NULL) {
+			thumbnail_frame = gdk_pixbuf_new_from_stream (stream, NULL, NULL);
+			g_object_unref (stream);
 		}
-		g_free (image_path);
 	}
 	
 	return thumbnail_frame;

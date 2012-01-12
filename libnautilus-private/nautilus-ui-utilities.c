@@ -60,53 +60,6 @@ nautilus_ui_prepare_merge_ui (GtkUIManager *ui_manager,
 	g_object_unref (*action_group); /* owned by ui manager */
 }
 
-
-char *
-nautilus_get_ui_directory (void)
-{
-	return g_strdup (DATADIR "/nautilus/ui");
-}
-
-char *
-nautilus_ui_file (const char *partial_path)
-{
-	char *path;
-
-	path = g_build_filename (DATADIR "/nautilus/ui", partial_path, NULL);
-	if (g_file_test (path, G_FILE_TEST_EXISTS)) {
-		return path;
-	}
-	g_free (path);
-	return NULL;
-}
-
-const char *
-nautilus_ui_string_get (const char *filename)
-{
-	static GHashTable *ui_cache = NULL;
-	char *ui;
-	char *path;
-
-	if (ui_cache == NULL) {
-		ui_cache = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
-		eel_debug_call_at_shutdown_with_data ((GFreeFunc)g_hash_table_destroy, ui_cache);
-	}
-
-	ui = g_hash_table_lookup (ui_cache, filename);
-	if (ui == NULL) {
-		path = nautilus_ui_file (filename);
-		if (path == NULL || !g_file_get_contents (path, &ui, NULL, NULL)) {
-			g_warning ("Unable to load ui file %s\n", filename); 
-		} 
-		g_free (path);
-		g_hash_table_insert (ui_cache,
-				     g_strdup (filename),
-				     ui);
-	}
-	
-	return ui;
-}
-
 static void
 extension_action_callback (GtkAction *action,
 			   gpointer callback_data)

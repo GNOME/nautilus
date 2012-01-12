@@ -1223,7 +1223,6 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 	GtkActionGroup *action_group;
 	GtkUIManager *ui_manager;
 	GtkAction *action;
-	const char *ui;
 	gint i;
 
 	window->details->ui_manager = gtk_ui_manager_new ();
@@ -1296,8 +1295,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 			  G_CALLBACK (disconnect_proxy_cb), window);
 
 	/* add the UI */
-	ui = nautilus_ui_string_get ("nautilus-shell-ui.xml");
-	gtk_ui_manager_add_ui_from_string (ui_manager, ui, -1, NULL);
+	gtk_ui_manager_add_ui_from_resource (ui_manager, "/org/gnome/nautilus/nautilus-shell-ui.xml", NULL);
 
 	nautilus_window_initialize_trash_icon_monitor (window);
 	nautilus_window_initialize_go_menu (window);

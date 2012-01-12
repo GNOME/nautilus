@@ -837,9 +837,9 @@ nautilus_file_management_properties_dialog_show (GtkWindow *window)
 
 	builder = gtk_builder_new ();
 
-	gtk_builder_add_from_file (builder,
-				   UIDIR "/nautilus-file-management-properties.ui",
-				   NULL);
+	gtk_builder_add_from_resource (builder,
+				       "/org/gnome/nautilus/nautilus-file-management-properties.ui",
+				       NULL);
 
 	nautilus_file_management_properties_dialog_setup (builder, window);
 

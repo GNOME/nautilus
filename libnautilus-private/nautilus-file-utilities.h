@@ -49,7 +49,6 @@ gboolean nautilus_is_home_directory_file             (GFile *dir,
 						      const char *filename);
 gboolean nautilus_is_in_system_dir                   (GFile *location);
 char *   nautilus_get_gmc_desktop_directory          (void);
-char *   nautilus_get_pixmap_directory               (void);
 
 gboolean nautilus_should_use_templates_directory     (void);
 char *   nautilus_get_templates_directory            (void);
@@ -63,16 +62,6 @@ char *	 nautilus_compute_title_for_location	     (GFile *file);
 /* This function returns something that needs to be freed with g_free,
  * is not NULL, but is not garaunteed to exist */
 char *   nautilus_get_desktop_directory_uri_no_create (void);
-
-/* A version of gnome's gnome_pixmap_file that works for the nautilus prefix.
- * Otherwise similar to gnome_pixmap_file in that it checks to see if the file
- * exists and returns NULL if it doesn't.
- */
-/* FIXME bugzilla.gnome.org 42425: 
- * We might not need this once we get on gnome-libs 2.0 which handles
- * gnome_pixmap_file better, using GNOME_PATH.
- */
-char *   nautilus_pixmap_file                        (const char *partial_path);
 
 /* Locate a file in either the uers directory or the datadir. */
 char *   nautilus_get_data_file_path                 (const char *partial_path);

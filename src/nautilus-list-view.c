@@ -2659,7 +2659,6 @@ nautilus_list_view_merge_menus (NautilusView *view)
 	NautilusListView *list_view;
 	GtkUIManager *ui_manager;
 	GtkActionGroup *action_group;
-	const char *ui;
 
 	list_view = NAUTILUS_LIST_VIEW (view);
 
@@ -2677,8 +2676,8 @@ nautilus_list_view_merge_menus (NautilusView *view)
 	gtk_ui_manager_insert_action_group (ui_manager, action_group, 0);
 	g_object_unref (action_group); /* owned by ui manager */
 
-	ui = nautilus_ui_string_get ("nautilus-list-view-ui.xml");
-	list_view->details->list_merge_id = gtk_ui_manager_add_ui_from_string (ui_manager, ui, -1, NULL);
+	list_view->details->list_merge_id =
+		gtk_ui_manager_add_ui_from_resource (ui_manager, "/org/gnome/nautilus/nautilus-list-view-ui.xml", NULL);
 
 	list_view->details->menus_ready = TRUE;
 }
