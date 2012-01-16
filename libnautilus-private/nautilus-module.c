@@ -82,6 +82,11 @@ nautilus_module_load (GTypeModule *gmodule)
 	
 	module->library = g_module_open (module->path, G_MODULE_BIND_LAZY | G_MODULE_BIND_LOCAL);
 
+	if (!module->library) {
+		g_warning ("%s", g_module_error ());
+		return FALSE;
+	}
+
 	/* ORBit installs atexit() handlers, which would get unloaded together
 	 * with the module now that the main process doesn't depend on GConf anymore,
 	 * causing nautilus to sefgault at exit.
@@ -91,11 +96,6 @@ nautilus_module_load (GTypeModule *gmodule)
         if (module_pulls_in_orbit (module->library)) {
 		g_module_make_resident (module->library);
         }
-
-	if (!module->library) {
-		g_warning ("%s", g_module_error ());
-		return FALSE;
-	}
 
 	if (!g_module_symbol (module->library,
 			      "nautilus_module_initialize",
