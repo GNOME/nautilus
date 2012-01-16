@@ -43,6 +43,12 @@ nautilus_menu_append_item (NautilusMenu *menu, NautilusMenuItem *item)
 	menu->priv->item_list = g_list_append (menu->priv->item_list, g_object_ref (item));
 }
 
+/**
+ * nautilus_menu_get_items:
+ * @menu: a #NautilusMenu
+ *
+ * Returns: (element-type NautilusMenuItem) (transfer full): the provided #NautilusMenuItem list
+ */
 GList *
 nautilus_menu_get_items (NautilusMenu *menu)
 {
@@ -56,6 +62,11 @@ nautilus_menu_get_items (NautilusMenu *menu)
 	return item_list;
 }
 
+/**
+ * nautilus_menu_item_list_free:
+ * @item_list: (element-type NautilusMenuItem): a list of #NautilusMenuItem
+ *
+ */
 void
 nautilus_menu_item_list_free (GList *item_list)
 {

@@ -74,6 +74,14 @@ nautilus_menu_provider_get_type (void)
 	return type;
 }
 
+/**
+ * nautilus_menu_provider_get_file_items:
+ * @provider: a #NautilusMenuProvider
+ * @window: the parent #GtkWidget window
+ * @files: (element-type NautilusFileInfo): a list of #NautilusFileInfo
+ *
+ * Returns: (element-type NautilusMenuItem) (transfer full): the provided list of #NautilusMenuItem
+ */
 GList *
 nautilus_menu_provider_get_file_items (NautilusMenuProvider *provider,
 				       GtkWidget *window,
@@ -89,6 +97,14 @@ nautilus_menu_provider_get_file_items (NautilusMenuProvider *provider,
 	}
 }
 
+/**
+ * nautilus_menu_provider_get_background_items:
+ * @provider: a #NautilusMenuProvider
+ * @window: the parent #GtkWidget window
+ * @current_folder: the folder for which background items are requested
+ *
+ * Returns: (element-type NautilusMenuItem) (transfer full): the provided list of #NautilusMenuItem
+ */
 GList *
 nautilus_menu_provider_get_background_items (NautilusMenuProvider *provider,
 					     GtkWidget *window,

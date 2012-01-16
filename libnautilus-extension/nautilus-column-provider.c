@@ -59,6 +59,12 @@ nautilus_column_provider_get_type (void)
 	return type;
 }
 
+/**
+ * nautilus_column_provider_get_columns:
+ * @provider: a #NautilusColumnProvider
+ *
+ * Returns: (element-type NautilusColumn) (transfer full): the provided #NautilusColumn objects
+ */
 GList *
 nautilus_column_provider_get_columns (NautilusColumnProvider *provider)
 {
