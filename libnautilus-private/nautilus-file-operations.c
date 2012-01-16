@@ -2884,43 +2884,36 @@ report_copy_progress (CopyMoveJob *copy_job,
 			   copy_job->files->next == NULL) {
 			if (copy_job->destination != NULL) {
 				nautilus_progress_info_take_status (job->progress,
-								    f (is_move?
-								       ngettext ("Moving %'d file (in \"%B\") to \"%B\"",
-										 "Moving %'d files (in \"%B\") to \"%B\"",
-										 files_left)
+								    f (is_move ?
+								       _("Moving file %'d of %'d (in \"%B\") to \"%B\"")
 								       :
-								       ngettext ("Copying %'d file (in \"%B\") to \"%B\"",
-										 "Copying %'d files (in \"%B\") to \"%B\"",
-										 files_left),
-								       files_left,
+								       _("Copying file %'d of %'d (in \"%B\") to \"%B\""),
+								       transfer_info->num_files,
+								       source_info->num_files,
 								       (GFile *)copy_job->files->data,
 								       copy_job->destination));
 			} else {
 				nautilus_progress_info_take_status (job->progress,
-								    f (ngettext ("Duplicating %'d file (in \"%B\")",
-										 "Duplicating %'d files (in \"%B\")",
-										 files_left),
-								       files_left,
+								    f (_("Duplicating file %'d of %'d (in \"%B\")"),
+								       transfer_info->num_files,
+								       source_info->num_files,
 								       (GFile *)copy_job->files->data));
 			}
 		} else {
 			if (copy_job->destination != NULL) {
 				nautilus_progress_info_take_status (job->progress,
-								    f (is_move?
-								       ngettext ("Moving %'d file to \"%B\"",
-										 "Moving %'d files to \"%B\"",
-										 files_left)
+								    f (is_move ?
+								       _("Moving file %'d of %'d to \"%B\"")
 								       :
-								       ngettext ("Copying %'d file to \"%B\"",
-										 "Copying %'d files to \"%B\"",
-										 files_left),
-								       files_left, copy_job->destination));
+								       _ ("Copying file %'d of %'d to \"%B\""),
+								       transfer_info->num_files,
+								       source_info->num_files,
+								       copy_job->destination));
 			} else {
 				nautilus_progress_info_take_status (job->progress,
-								    f (ngettext ("Duplicating %'d file",
-										 "Duplicating %'d files",
-										 files_left),
-								       files_left));
+								    f (_("Duplicating file %'d of %'d"),
+								       transfer_info->num_files,
+								       source_info->num_files));
 			}
 		}
 	}
