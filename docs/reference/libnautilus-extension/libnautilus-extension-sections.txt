@@ -17,7 +17,6 @@ NautilusMenuProvider
 NautilusMenuProviderIface
 nautilus_menu_provider_get_file_items
 nautilus_menu_provider_get_background_items
-nautilus_menu_provider_get_toolbar_items
 nautilus_menu_provider_emit_items_updated_signal
 <SUBSECTION Standard>
 NAUTILUS_MENU_PROVIDER
@@ -91,6 +90,11 @@ NAUTILUS_FILE_DEFINED
 NautilusFile
 NautilusFileInfo
 NautilusFileInfoIface
+nautilus_file_info_create
+nautilus_file_info_create_for_uri
+nautilus_file_info_getter
+nautilus_file_info_lookup
+nautilus_file_info_lookup_for_uri
 nautilus_file_info_list_copy
 nautilus_file_info_list_free
 nautilus_file_info_is_gone
