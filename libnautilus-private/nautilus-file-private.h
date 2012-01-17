@@ -28,6 +28,7 @@
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-monitor.h>
+#include <libnautilus-private/nautilus-file-undo-types.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 
@@ -230,6 +231,7 @@ typedef struct {
 	
 	gpointer data;
 	GDestroyNotify free_data;
+	NautilusFileUndoData *undo_redo_data;
 } NautilusFileOperation;
 
 NautilusFile *nautilus_file_new_from_info                  (NautilusDirectory      *directory,
