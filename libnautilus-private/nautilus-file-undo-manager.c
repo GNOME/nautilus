@@ -453,6 +453,7 @@ get_redo_description (NautilusFileUndoData *action)
 
 static void
 do_undo_redo (NautilusFileUndoManager *self,
+	      GtkWindow *parent_window,
 	      gboolean undo,
 	      NautilusFileUndoFinishCallback callback,
 	      gpointer user_data)
@@ -482,9 +483,9 @@ do_undo_redo (NautilusFileUndoManager *self,
 		priv->undo_redo_flag = TRUE;
 
 		if (undo) {
-			action->undo_func (action);
+			action->undo_func (action, parent_window);
 		} else {
-			action->redo_func (action);
+			action->redo_func (action, parent_window);
 		}
 	}
 
@@ -495,18 +496,20 @@ do_undo_redo (NautilusFileUndoManager *self,
 
 void
 nautilus_file_undo_manager_redo (NautilusFileUndoManager        *manager,
+				 GtkWindow                      *parent_window,
                                   NautilusFileUndoFinishCallback  callback,
                                   gpointer                         user_data)
 {
-	do_undo_redo (manager, FALSE, callback, user_data);
+	do_undo_redo (manager, parent_window, FALSE, callback, user_data);
 }
 
 void
 nautilus_file_undo_manager_undo (NautilusFileUndoManager        *manager,
+				 GtkWindow                      *parent_window,
 				  NautilusFileUndoFinishCallback  callback,
 				  gpointer                         user_data)
 {
-	do_undo_redo (manager, TRUE, callback, user_data);
+	do_undo_redo (manager, parent_window, TRUE, callback, user_data);
 }
 
 void

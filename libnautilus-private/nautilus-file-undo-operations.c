@@ -193,27 +193,29 @@ undo_redo_op_callback (gpointer callback_data)
 
 static void
 delete_files (NautilusFileUndoManager *self,
+	      GtkWindow *parent_window,
 	      GList *files,
 	      NautilusFileUndoData *action)
 {
-	nautilus_file_operations_delete (files, NULL,
+	nautilus_file_operations_delete (files, parent_window,
 					 undo_redo_done_delete_callback, action);
 }
 
 static void
-create_undo_func (NautilusFileUndoData *action)
+create_undo_func (NautilusFileUndoData *action, GtkWindow *parent_window)
 {
 	GList *files = NULL;
 	NautilusFileUndoDataCreate* eaction = (NautilusFileUndoDataCreate*) action;
 
 	files = g_list_append (files, g_object_ref (eaction->target_file));
-	delete_files (action->manager, files, action);
+	delete_files (action->manager, parent_window,
+		      files, action);
 
 	g_list_free_full (files, g_object_unref);
 }
 
 static void
-copy_or_link_undo_func (NautilusFileUndoData *action)
+copy_or_link_undo_func (NautilusFileUndoData *action, GtkWindow *parent_window)
 {
 	GList *files;
 	NautilusFileUndoDataExt* eaction = (NautilusFileUndoDataExt*) action;
@@ -221,21 +223,22 @@ copy_or_link_undo_func (NautilusFileUndoData *action)
 	files = g_list_copy (eaction->destinations);
 	files = g_list_reverse (files); /* Deleting must be done in reverse */
 
-	delete_files (action->manager, files, action);
+	delete_files (action->manager, parent_window,
+		      files, action);
 
 	g_list_free (files);
 }
 
 static void
-restore_undo_func (NautilusFileUndoData *action)
+restore_undo_func (NautilusFileUndoData *action, GtkWindow *parent_window)
 {
 	NautilusFileUndoDataExt* eaction = (NautilusFileUndoDataExt*) action;
-	nautilus_file_operations_trash_or_delete (eaction->destinations, NULL,
+	nautilus_file_operations_trash_or_delete (eaction->destinations, parent_window,
 						  undo_redo_done_delete_callback, action);
 }
 
 static void
-trash_undo_func (NautilusFileUndoData *action)
+trash_undo_func (NautilusFileUndoData *action, GtkWindow *parent_window)
 {
 	NautilusFileUndoManagerPrivate *priv = action->manager->priv;
 	GHashTable *files_to_restore;
@@ -275,16 +278,16 @@ trash_undo_func (NautilusFileUndoData *action)
 }
 
 static void
-move_undo_func (NautilusFileUndoData *action)
+move_undo_func (NautilusFileUndoData *action, GtkWindow *parent_window)
 {
 	NautilusFileUndoDataExt* eaction = (NautilusFileUndoDataExt*) action;
 	nautilus_file_operations_move (eaction->destinations, NULL,
-				       eaction->src_dir, NULL,
+				       eaction->src_dir, parent_window,
 				       undo_redo_done_transfer_callback, action);
 }
 
 static void
-rename_undo_func (NautilusFileUndoData *action)
+rename_undo_func (NautilusFileUndoData *action, GtkWindow *parent_window)
 {
 	gchar *new_name;
 	NautilusFile *file;
@@ -301,7 +304,7 @@ rename_undo_func (NautilusFileUndoData *action)
 }
 
 static void
-set_permissions_undo_func (NautilusFileUndoData *action)
+set_permissions_undo_func (NautilusFileUndoData *action, GtkWindow *parent_window)
 {
 	NautilusFile *file;
 	NautilusFileUndoDataPermissions* eaction = (NautilusFileUndoDataPermissions*) action;
@@ -316,7 +319,7 @@ set_permissions_undo_func (NautilusFileUndoData *action)
 }
 
 static void
-recursive_permissions_undo_func (NautilusFileUndoData *action)
+recursive_permissions_undo_func (NautilusFileUndoData *action, GtkWindow *parent_window)
 {
 	NautilusFileUndoManagerPrivate *priv = action->manager->priv;
 	NautilusFileUndoDataRecursivePermissions* eaction = (NautilusFileUndoDataRecursivePermissions*) action;
@@ -349,7 +352,7 @@ recursive_permissions_undo_func (NautilusFileUndoData *action)
 }
 
 static void
-change_group_undo_func (NautilusFileUndoData *action)
+change_group_undo_func (NautilusFileUndoData *action, GtkWindow *parent_window)
 {
 	NautilusFile *file;
 	NautilusFileUndoDataOwnership* eaction = (NautilusFileUndoDataOwnership*) action;
@@ -364,7 +367,7 @@ change_group_undo_func (NautilusFileUndoData *action)
 }
 
 static void
-change_owner_undo_func (NautilusFileUndoData *action)
+change_owner_undo_func (NautilusFileUndoData *action, GtkWindow *parent_window)
 {
 	NautilusFile *file;
 	NautilusFileUndoDataOwnership* eaction = (NautilusFileUndoDataOwnership*) action;
@@ -381,19 +384,19 @@ change_owner_undo_func (NautilusFileUndoData *action)
 /* redo helpers */
 
 static void
-copy_redo_func (NautilusFileUndoData *action)
+copy_redo_func (NautilusFileUndoData *action, GtkWindow *parent_window)
 {
 	GList *locations;
 	NautilusFileUndoDataExt* eaction = (NautilusFileUndoDataExt*) action;
 
 	locations = eaction->sources;
 	nautilus_file_operations_copy (locations, NULL,
-				       eaction->dest_dir, NULL,
+				       eaction->dest_dir, parent_window,
 				       undo_redo_done_transfer_callback, action);
 }
 
 static void
-create_from_template_redo_func (NautilusFileUndoData *action)
+create_from_template_redo_func (NautilusFileUndoData *action, GtkWindow *parent_window)
 {
 	GFile *parent;
 	gchar *parent_uri, *new_name;
@@ -413,7 +416,7 @@ create_from_template_redo_func (NautilusFileUndoData *action)
 }
 
 static void
-duplicate_redo_func (NautilusFileUndoData *action)
+duplicate_redo_func (NautilusFileUndoData *action, GtkWindow *parent_window)
 {
 	GList *locations;
 	NautilusFileUndoDataExt* eaction = (NautilusFileUndoDataExt*) action;
@@ -424,7 +427,7 @@ duplicate_redo_func (NautilusFileUndoData *action)
 }
 
 static void
-move_restore_redo_func (NautilusFileUndoData *action)
+move_restore_redo_func (NautilusFileUndoData *action, GtkWindow *parent_window)
 {
 	GList *locations;
 	NautilusFileUndoDataExt* eaction = (NautilusFileUndoDataExt*) action;
@@ -436,7 +439,7 @@ move_restore_redo_func (NautilusFileUndoData *action)
 }
 
 static void
-rename_redo_func (NautilusFileUndoData *action)
+rename_redo_func (NautilusFileUndoData *action, GtkWindow *parent_window)
 {
 	gchar *new_name;
 	NautilusFile *file;
@@ -452,7 +455,7 @@ rename_redo_func (NautilusFileUndoData *action)
 }
 
 static void
-create_empty_redo_func (NautilusFileUndoData *action)
+create_empty_redo_func (NautilusFileUndoData *action, GtkWindow *parent_window)
 {
 	GFile *parent;
 	gchar *parent_uri;
@@ -473,7 +476,7 @@ create_empty_redo_func (NautilusFileUndoData *action)
 }
 
 static void
-create_folder_redo_func (NautilusFileUndoData *action)
+create_folder_redo_func (NautilusFileUndoData *action, GtkWindow *parent_window)
 {
 	GFile *parent;
 	gchar *parent_uri;
@@ -489,7 +492,7 @@ create_folder_redo_func (NautilusFileUndoData *action)
 }
 
 static void
-trash_redo_func (NautilusFileUndoData *action)
+trash_redo_func (NautilusFileUndoData *action, GtkWindow *parent_window)
 {
 	NautilusFileUndoDataTrash* eaction = (NautilusFileUndoDataTrash*) action;
 	
@@ -498,7 +501,7 @@ trash_redo_func (NautilusFileUndoData *action)
 
 		uri_to_trash = g_hash_table_get_keys (eaction->trashed);
 		locations = uri_list_to_gfile_list (uri_to_trash);
-		nautilus_file_operations_trash_or_delete (locations, NULL,
+		nautilus_file_operations_trash_or_delete (locations, parent_window,
 							  undo_redo_done_delete_callback, action);
 		g_list_free (uri_to_trash);
 		g_list_free_full (locations, g_object_unref);
@@ -506,19 +509,19 @@ trash_redo_func (NautilusFileUndoData *action)
 }
 
 static void
-create_link_redo_func (NautilusFileUndoData *action)
+create_link_redo_func (NautilusFileUndoData *action, GtkWindow *parent_window)
 {
 	GList *locations;
 	NautilusFileUndoDataExt* eaction = (NautilusFileUndoDataExt*) action;
 
 	locations = eaction->sources;
 	nautilus_file_operations_link (locations, NULL,
-				       eaction->dest_dir, NULL,
+				       eaction->dest_dir, parent_window,
 				       undo_redo_done_transfer_callback, action);
 }
 
 static void
-set_permissions_redo_func (NautilusFileUndoData *action)
+set_permissions_redo_func (NautilusFileUndoData *action, GtkWindow *parent_window)
 {
 	NautilusFile *file;
 	NautilusFileUndoDataPermissions* eaction = (NautilusFileUndoDataPermissions*) action;
@@ -531,7 +534,7 @@ set_permissions_redo_func (NautilusFileUndoData *action)
 }
 
 static void
-recursive_permissions_redo_func (NautilusFileUndoData *action)
+recursive_permissions_redo_func (NautilusFileUndoData *action, GtkWindow *parent_window)
 {
 	gchar *parent_uri;
 	NautilusFileUndoDataRecursivePermissions* eaction = (NautilusFileUndoDataRecursivePermissions*) action;
@@ -548,7 +551,7 @@ recursive_permissions_redo_func (NautilusFileUndoData *action)
 }
 
 static void
-change_group_redo_func (NautilusFileUndoData *action)
+change_group_redo_func (NautilusFileUndoData *action, GtkWindow *parent_window)
 {
 	NautilusFile *file;
 	NautilusFileUndoDataOwnership* eaction = (NautilusFileUndoDataOwnership*) action;
@@ -564,7 +567,7 @@ change_group_redo_func (NautilusFileUndoData *action)
 }
 
 static void
-change_owner_redo_func (NautilusFileUndoData *action)
+change_owner_redo_func (NautilusFileUndoData *action, GtkWindow *parent_window)
 {
 	NautilusFile *file;
 	NautilusFileUndoDataOwnership* eaction = (NautilusFileUndoDataOwnership*) action;
@@ -1035,8 +1038,10 @@ static NautilusFileUndoData *
 create_from_type (NautilusFileUndoDataType type)
 {
 	struct {
-		void (* undo_func)               (NautilusFileUndoData *data);
-		void (* redo_func)               (NautilusFileUndoData *data);
+		void (* undo_func)               (NautilusFileUndoData *data,
+						  GtkWindow            *parent_window);
+		void (* redo_func)               (NautilusFileUndoData *data,
+						  GtkWindow            *parent_window);
 		void (* strings_func)            (NautilusFileUndoData *data,
 						  guint count,
 						  gchar **labels,

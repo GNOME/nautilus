@@ -2353,10 +2353,68 @@ nautilus_view_get_selection_count (NautilusView *view)
 }
 
 static void
+update_undo_actions (NautilusView *view,
+		     gboolean invalidate)
+{
+	NautilusFileUndoManager *manager;
+	NautilusFileUndoMenuData *menu_data;
+	GtkAction *action;
+	const gchar *label, *tooltip;
+	gboolean available;
+	gboolean undo_active, redo_active;
+
+	manager = nautilus_file_undo_manager_get ();
+	menu_data = nautilus_file_undo_manager_get_menu_data (manager);
+
+	undo_active = menu_data->undo_label != NULL && !invalidate;
+	redo_active = menu_data->redo_label != NULL && !invalidate;
+
+	/* Update undo entry */
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      "Undo");
+	available = undo_active;
+	if (available) {
+		label = menu_data->undo_label;
+		tooltip = menu_data->undo_description;
+	} else {
+		/* Reset to default info */
+		label = _("Undo");
+		tooltip = _("Undo the last action");
+	}
+
+	g_object_set (action,
+		      "label", label,
+		      "tooltip", tooltip,
+		      NULL);
+	gtk_action_set_sensitive (action, available);
+
+	/* Update redo entry */
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      "Redo");
+	available = redo_active;
+	if (available) {
+		label = menu_data->redo_label;
+		tooltip = menu_data->redo_description;
+	} else {
+		/* Reset to default info */
+		label = _("Redo");
+		tooltip = _("Redo the last undone action");
+	}
+
+	g_object_set (action,
+		      "label", label,
+		      "tooltip", tooltip,
+		      NULL);
+	gtk_action_set_sensitive (action, available);
+
+	nautilus_file_undo_menu_data_free (menu_data);
+}
+
+static void
 undo_manager_changed_cb (NautilusFileUndoManager* manager,
 			 NautilusView *view)
 {
-	schedule_update_menus (view);
+	update_undo_actions (view, FALSE);
 }
 
 void
@@ -6004,87 +6062,37 @@ invoke_external_bulk_rename_utility (NautilusView *view,
 }
 
 static void
-update_undo_actions (NautilusView *view,
-		     gboolean invalidate)
-{
-	NautilusFileUndoManager *manager;
-	NautilusFileUndoMenuData *menu_data;
-	GtkAction *action;
-	const gchar *label, *tooltip;
-	gboolean available;
-	gboolean undo_active, redo_active;
-
-	manager = nautilus_file_undo_manager_get ();
-	menu_data = nautilus_file_undo_manager_get_menu_data (manager);
-
-	undo_active = menu_data->undo_label != NULL && !invalidate;
-	redo_active = menu_data->redo_label != NULL && !invalidate;
-
-	/* Update undo entry */
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      "Undo");
-	available = undo_active;
-	if (available) {
-		label = menu_data->undo_label;
-		tooltip = menu_data->undo_description;
-	} else {
-		/* Reset to default info */
-		label = _("Undo");
-		tooltip = _("Undo the last action");
-	}
-
-	g_object_set (action,
-		      "label", label,
-		      "tooltip", tooltip,
-		      NULL);
-	gtk_action_set_sensitive (action, available);
-
-	/* Update redo entry */
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      "Redo");
-	available = redo_active;
-	if (available) {
-		label = menu_data->redo_label;
-		tooltip = menu_data->redo_description;
-	} else {
-		/* Reset to default info */
-		label = _("Redo");
-		tooltip = _("Redo the last undone action");
-	}
-
-	g_object_set (action,
-		      "label", label,
-		      "tooltip", tooltip,
-		      NULL);
-	gtk_action_set_sensitive (action, available);
-
-	nautilus_file_undo_menu_data_free (menu_data);
-}
-
-static void
 real_action_undo (NautilusView *view)
 {
 	NautilusFileUndoManager *manager;
+	GtkWidget *toplevel;
 
 	manager = nautilus_file_undo_manager_get ();
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (view));
 
 	/* Disable menus because they are in an untrustworthy status */
 	update_undo_actions (view, TRUE);
 
-	nautilus_file_undo_manager_undo (manager, NULL, NULL);
+	nautilus_file_undo_manager_undo (manager, 
+					 GTK_WINDOW (toplevel),
+					 NULL, NULL);
 }
 
 static void
 real_action_redo (NautilusView *view)
 {
 	NautilusFileUndoManager *manager;
+	GtkWidget *toplevel;
 
 	manager = nautilus_file_undo_manager_get ();
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (view));
 
 	/* Disable menus because they are in an untrustworthy status */
 	update_undo_actions (view, TRUE);
 
-	nautilus_file_undo_manager_redo (manager, NULL, NULL);
+	nautilus_file_undo_manager_redo (manager, 
+					 GTK_WINDOW (toplevel),
+					 NULL, NULL);
 }
 
 static void

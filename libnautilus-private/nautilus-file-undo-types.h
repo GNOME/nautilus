@@ -30,6 +30,7 @@
 
 #include <glib.h>
 #include <gio/gio.h>
+#include <gtk/gtk.h>
 
 typedef struct _NautilusFileUndoManager NautilusFileUndoManager;
 typedef void (* NautilusFileUndoFinishCallback) (gpointer data);
@@ -65,8 +66,10 @@ struct _NautilusFileUndoData
 {
 	NautilusFileUndoDataType type;
 
-	void (* undo_func) (NautilusFileUndoData *data);
-	void (* redo_func) (NautilusFileUndoData *data);
+	void (* undo_func) (NautilusFileUndoData *data,
+			    GtkWindow            *parent_window);
+	void (* redo_func) (NautilusFileUndoData *data,
+			    GtkWindow            *parent_window);
 
 	NautilusFileUndoFinishCallback callback;
 	gpointer callback_user_data;
