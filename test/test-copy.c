@@ -5,7 +5,9 @@
 #include <libnautilus-private/nautilus-progress-info-manager.h>
 
 static void
-copy_done (GHashTable *debuting_uris, gpointer data)
+copy_done (GHashTable *debuting_uris, 
+           gboolean success,
+           gpointer data)
 {
 	g_print ("Copy done\n");
 }

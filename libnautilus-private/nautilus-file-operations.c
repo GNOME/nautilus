@@ -2319,7 +2319,9 @@ volume_mount_cb (GObject *source_object,
 	GError *error;
 	char *primary;
 	char *name;
+	gboolean success;
 
+	success = TRUE;
 	error = NULL;
 	if (!g_volume_mount_finish (G_VOLUME (source_object), res, &error)) {
 		if (error->code != G_IO_ERROR_FAILED_HANDLED &&
@@ -2327,6 +2329,7 @@ volume_mount_cb (GObject *source_object,
 			name = g_volume_get_name (G_VOLUME (source_object));
 			primary = g_strdup_printf (_("Unable to mount %s"), name);
 			g_free (name);
+			success = FALSE;
 			eel_show_error_dialog (primary,
 					       error->message,
 					       NULL);
@@ -2342,6 +2345,7 @@ volume_mount_cb (GObject *source_object,
 
 	if (mount_callback != NULL) {
 		(* mount_callback) (G_VOLUME (source_object),
+				    success,
 				    mount_callback_data_object);
 
 	    	if (mount_callback_data_object != NULL) {
@@ -4464,7 +4468,9 @@ copy_job_done (gpointer user_data)
 
 	job = user_data;
 	if (job->done_callback) {
-		job->done_callback (job->debuting_files, job->done_callback_data);
+		job->done_callback (job->debuting_files, 
+				    !job_aborted ((CommonJob *) job),
+				    job->done_callback_data);
 	}
 
 	g_list_free_full (job->files, g_object_unref);
@@ -5025,7 +5031,9 @@ move_job_done (gpointer user_data)
 
 	job = user_data;
 	if (job->done_callback) {
-		job->done_callback (job->debuting_files, job->done_callback_data);
+		job->done_callback (job->debuting_files,
+				    !job_aborted ((CommonJob *) job),
+				    job->done_callback_data);
 	}
 
 	g_list_free_full (job->files, g_object_unref);
@@ -5364,7 +5372,9 @@ link_job_done (gpointer user_data)
 
 	job = user_data;
 	if (job->done_callback) {
-		job->done_callback (job->debuting_files, job->done_callback_data);
+		job->done_callback (job->debuting_files,
+				    !job_aborted ((CommonJob *) job),
+				    job->done_callback_data);
 	}
 
 	g_list_free_full (job->files, g_object_unref);
@@ -5541,7 +5551,8 @@ set_permissions_job_done (gpointer user_data)
 	g_object_unref (job->file);
 
 	if (job->done_callback) {
-		job->done_callback (job->done_callback_data);
+		job->done_callback (!job_aborted ((CommonJob *) job),
+				    job->done_callback_data);
 	}
 	
 	finalize_common ((CommonJob *)job);
@@ -5724,7 +5735,7 @@ callback_for_move_to_trash (GHashTable *debuting_uris,
 			    MoveTrashCBData *data)
 {
 	if (data->real_callback)
-		data->real_callback (debuting_uris, data->real_data);
+		data->real_callback (debuting_uris, !user_cancelled, data->real_data);
 	g_slice_free (MoveTrashCBData, data);
 }
 
@@ -5838,7 +5849,9 @@ create_job_done (gpointer user_data)
 
 	job = user_data;
 	if (job->done_callback) {
-		job->done_callback (job->created_file, job->done_callback_data);
+		job->done_callback (job->created_file,
+				    !job_aborted ((CommonJob *) job),
+				    job->done_callback_data);
 	}
 
 	g_object_unref (job->dest_dir);
@@ -6314,7 +6327,8 @@ empty_trash_job_done (gpointer user_data)
 	g_list_free_full (job->trash_dirs, g_object_unref);
 
 	if (job->done_callback) {
-		job->done_callback (job->done_callback_data);
+		job->done_callback (!job_aborted ((CommonJob *) job),
+				    job->done_callback_data);
 	}
 
 	nautilus_file_undo_manager_trash_has_emptied (nautilus_file_undo_manager_get ());
@@ -6392,7 +6406,8 @@ mark_trusted_job_done (gpointer user_data)
 	g_object_unref (job->file);
 
 	if (job->done_callback) {
-		job->done_callback (job->done_callback_data);
+		job->done_callback (!job_aborted ((CommonJob *) job),
+				    job->done_callback_data);
 	}
 	
 	finalize_common ((CommonJob *)job);

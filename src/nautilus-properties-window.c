@@ -4337,7 +4337,8 @@ create_advanced_permissions (NautilusPropertiesWindow *window, GtkGrid *page_gri
 }
 
 static void
-set_recursive_permissions_done (gpointer callback_data)
+set_recursive_permissions_done (gboolean success,
+				gpointer callback_data)
 {
 	NautilusPropertiesWindow *window;
 

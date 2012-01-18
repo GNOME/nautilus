@@ -1766,6 +1766,7 @@ bookmarks_selection_changed_cb (GtkTreeSelection      *selection,
 
 static void
 volume_mounted_cb (GVolume *volume,
+		   gboolean success,
 		   GObject *user_data)
 {
 	GMount *mount;

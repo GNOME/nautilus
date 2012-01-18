@@ -70,13 +70,9 @@ NautilusFileUndoManager * nautilus_file_undo_manager_get (void);
 void nautilus_file_undo_manager_add_action (NautilusFileUndoManager *manager,
 					     NautilusFileUndoData *action);
 void nautilus_file_undo_manager_undo (NautilusFileUndoManager *manager,
-				      GtkWindow *parent_window,
-				       NautilusFileUndoFinishCallback callback,
-				       gpointer user_data);
+				      GtkWindow *parent_window);
 void nautilus_file_undo_manager_redo (NautilusFileUndoManager *manager,
-				      GtkWindow *parent_window,
-				       NautilusFileUndoFinishCallback callback,
-				       gpointer user_data);
+				      GtkWindow *parent_window);
 
 gboolean nautilus_file_undo_manager_is_undo_redo (NautilusFileUndoManager *manager);
 void nautilus_file_undo_manager_trash_has_emptied (NautilusFileUndoManager *manager);

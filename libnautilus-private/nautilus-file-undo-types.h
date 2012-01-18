@@ -32,9 +32,6 @@
 #include <gio/gio.h>
 #include <gtk/gtk.h>
 
-typedef struct _NautilusFileUndoManager NautilusFileUndoManager;
-typedef void (* NautilusFileUndoFinishCallback) (gpointer data);
-
 typedef enum {
 	NAUTILUS_FILE_UNDO_COPY,
 	NAUTILUS_FILE_UNDO_DUPLICATE,
@@ -61,37 +58,10 @@ typedef struct {
 } NautilusFileUndoMenuData;
 
 typedef struct _NautilusFileUndoData NautilusFileUndoData;
-
-struct _NautilusFileUndoData
-{
-	NautilusFileUndoDataType type;
-
-	void (* undo_func) (NautilusFileUndoData *data,
-			    GtkWindow            *parent_window);
-	void (* redo_func) (NautilusFileUndoData *data,
-			    GtkWindow            *parent_window);
-
-	NautilusFileUndoFinishCallback callback;
-	gpointer callback_user_data;
-
-	NautilusFileUndoManager *manager;
-	guint is_valid : 1;
-	guint locked : 1;	/* True if the action is being undone/redone */
-	guint freed : 1;	/* True if the action must be freed after undo/redo */
-	guint count;		/* Number of items */
-
-	void    (* strings_func) (NautilusFileUndoData *data,
-				  guint count,
-				  gchar **labels,
-				  gchar **descriptions);
-
-	gchar *undo_label;
-	gchar *redo_label;
-	gchar *undo_description;
-	gchar *redo_description;
-	
-	void (* finalize_func) (NautilusFileUndoData *data);
-};
+typedef struct _NautilusFileUndoManager NautilusFileUndoManager;
+typedef void (* NautilusFileUndoFinishCallback) (NautilusFileUndoData *data,
+						 gboolean success,
+						 gpointer user_data);
 
 typedef struct 
 {

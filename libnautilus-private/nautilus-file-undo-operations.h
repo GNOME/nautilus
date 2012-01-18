@@ -31,48 +31,70 @@
 #include <glib.h>
 #include <libnautilus-private/nautilus-file-undo-types.h>
 
+#define NAUTILUS_TYPE_FILE_UNDO_INFO         (nautilus_file_undo_info_get_type ())
+#define NAUTILUS_FILE_UNDO_INFO(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), NAUTILUS_TYPE_FILE_UNDO_INFO, NautilusFileUndoInfo))
+#define NAUTILUS_FILE_UNDO_INFO_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), NAUTILUS_TYPE_FILE_UNDO_INFO, NautilusFileUndoInfoClass))
+#define NAUTILUS_IS_FILE_UNDO_INFO(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), NAUTILUS_TYPE_FILE_UNDO_INFO))
+#define NAUTILUS_IS_FILE_UNDO_INFO_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), NAUTILUS_TYPE_FILE_UNDO_INFO))
+#define NAUTILUS_FILE_UNDO_INFO_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), NAUTILUS_TYPE_FILE_UNDO_INFO, NautilusFileUndoInfoClass))
+
+typedef struct _NautilusFileUndoInfo      NautilusFileUndoInfo;
+typedef struct _NautilusFileUndoInfoClass NautilusFileUndoInfoClass;
+typedef struct _NautilusFileUndoInfoDetails NautilusFileUndoInfoDetails;
+
+struct _NautilusFileUndoInfo {
+	GObject parent;
+	NautilusFileUndoInfoDetails *priv;
+};
+
+struct _NautilusFileUndoInfoClass {
+	GObjectClass parent_class;
+};
+
+GType nautilus_file_undo_info_get_type (void) G_GNUC_CONST;
+
 NautilusFileUndoData *nautilus_file_undo_data_new (NautilusFileUndoDataType type,
-                                                                   gint items_count);
+						   gint items_count);
 void nautilus_file_undo_data_free (NautilusFileUndoData *action);
 
 void nautilus_file_undo_data_set_src_dir (NautilusFileUndoData *data, 
-                                                  GFile *src);
+					  GFile *src);
 void nautilus_file_undo_data_set_dest_dir (NautilusFileUndoData *data, 
-						   GFile *dest);
+					   GFile *dest);
 
 void nautilus_file_undo_data_add_origin_target_pair (NautilusFileUndoData *data, 
-							     GFile *origin, 
-							     GFile *target);
+						     GFile *origin, 
+						     GFile *target);
 void nautilus_file_undo_data_set_create_data (NautilusFileUndoData *data, 
-						      GFile *target_file,
-						      const char *template_uri);
+					      GFile *target_file,
+					      const char *template_uri);
 void nautilus_file_undo_data_set_rename_information (NautilusFileUndoData *data, 
-							     GFile *old_file, 
-							     GFile *new_file);
+						     GFile *old_file, 
+						     GFile *new_file);
 void nautilus_file_undo_data_add_trashed_file (NautilusFileUndoData *data, 
-						       GFile *file, 
-						       guint64 mtime);
+					       GFile *file, 
+					       guint64 mtime);
 void nautilus_file_undo_data_add_file_permissions (NautilusFileUndoData *data, 
-							   GFile *file, 
-							   guint32 permission);
+						   GFile *file, 
+						   guint32 permission);
 void nautilus_file_undo_data_set_recursive_permissions (NautilusFileUndoData *data, 
-								guint32 file_permissions, 
-								guint32 file_mask, 
-								guint32 dir_permissions, 
-								guint32 dir_mask);
+							guint32 file_permissions, 
+							guint32 file_mask, 
+							guint32 dir_permissions, 
+							guint32 dir_mask);
 void nautilus_file_undo_data_set_recursive_permissions_dest_dir (NautilusFileUndoData *data,
-                                GFile *dest);
+								 GFile *dest);
 void nautilus_file_undo_data_set_file_permissions (NautilusFileUndoData *data, 
-							   GFile *file,
-							   guint32 current_permissions,
-							   guint32 new_permissions);
+						   GFile *file,
+						   guint32 current_permissions,
+						   guint32 new_permissions);
 void nautilus_file_undo_data_set_owner_change_information (NautilusFileUndoData *data, 
-								   GFile *file,
-								   const char *current_user, 
-								   const char *new_user);
+							   GFile *file,
+							   const char *current_user, 
+							   const char *new_user);
 void nautilus_file_undo_data_set_group_change_information (NautilusFileUndoData *data, 
-								   GFile *file,
-								   const char *current_group, 
-								   const char *new_group);
+							   GFile *file,
+							   const char *current_group, 
+							   const char *new_group);
 
 #endif /* __NAUTILUS_FILE_UNDO_OPERATIONS_H__ */

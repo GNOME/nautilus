@@ -452,11 +452,35 @@ get_redo_description (NautilusFileUndoData *action)
 }
 
 static void
+do_undo_redo_finish (NautilusFileUndoData *data,
+		     gboolean success,
+		     gpointer user_data)
+{
+	NautilusFileUndoManager *self = user_data;
+
+	self->priv->undo_redo_flag = FALSE;
+
+	/* If the action needed to be freed but was locked, free now */
+	if (data->freed) {
+		nautilus_file_undo_data_free (data);
+		return;
+	}
+
+	g_print ("success %d\n\n", success);
+
+	data->locked = FALSE;
+
+	if (!success) {
+		nautilus_file_undo_manager_add_action (self, data);
+	}
+
+	g_signal_emit (self, signals[SIGNAL_UNDO_CHANGED], 0);
+}
+
+static void
 do_undo_redo (NautilusFileUndoManager *self,
 	      GtkWindow *parent_window,
-	      gboolean undo,
-	      NautilusFileUndoFinishCallback callback,
-	      gpointer user_data)
+	      gboolean undo)
 {
 	NautilusFileUndoManagerPrivate *priv = self->priv;
 	NautilusFileUndoData *action;
@@ -481,6 +505,9 @@ do_undo_redo (NautilusFileUndoManager *self,
 
 	if (action != NULL) {
 		priv->undo_redo_flag = TRUE;
+		
+		action->callback = do_undo_redo_finish;
+		action->callback_user_data = self;
 
 		if (undo) {
 			action->undo_func (action, parent_window);
@@ -488,28 +515,20 @@ do_undo_redo (NautilusFileUndoManager *self,
 			action->redo_func (action, parent_window);
 		}
 	}
-
-	if (callback != NULL) {
-		callback (user_data);
-	}
 }
 
 void
 nautilus_file_undo_manager_redo (NautilusFileUndoManager        *manager,
-				 GtkWindow                      *parent_window,
-                                  NautilusFileUndoFinishCallback  callback,
-                                  gpointer                         user_data)
+				 GtkWindow                      *parent_window)
 {
-	do_undo_redo (manager, parent_window, FALSE, callback, user_data);
+	do_undo_redo (manager, parent_window, FALSE);
 }
 
 void
 nautilus_file_undo_manager_undo (NautilusFileUndoManager        *manager,
-				 GtkWindow                      *parent_window,
-				  NautilusFileUndoFinishCallback  callback,
-				  gpointer                         user_data)
+				 GtkWindow                      *parent_window)
 {
-	do_undo_redo (manager, parent_window, TRUE, callback, user_data);
+	do_undo_redo (manager, parent_window, TRUE);
 }
 
 void
@@ -540,16 +559,9 @@ nautilus_file_undo_manager_add_action (NautilusFileUndoManager    *self,
 gboolean
 nautilus_file_undo_manager_is_undo_redo (NautilusFileUndoManager *manager)
 {
-	NautilusFileUndoManagerPrivate *priv;
+	NautilusFileUndoManagerPrivate *priv = manager->priv;
 
-	priv = manager->priv;
-
-	if (priv->undo_redo_flag) {
-		priv->undo_redo_flag = FALSE;
-		return TRUE;
-	}
-
-	return FALSE;
+	return priv->undo_redo_flag;
 }
 
 NautilusFileUndoManager *

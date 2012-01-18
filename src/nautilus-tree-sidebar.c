@@ -849,7 +849,9 @@ fm_tree_view_open_in_new_window_cb (GtkWidget *menu_item,
 }
 
 static void
-new_folder_done (GFile *new_folder, gpointer data)
+new_folder_done (GFile *new_folder, 
+		 gboolean success,
+		 gpointer data)
 {
 	GList *list;
 

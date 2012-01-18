@@ -36,6 +36,48 @@
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-file-undo-types.h"
 
+G_DEFINE_TYPE (NautilusFileUndoInfo, nautilus_file_undo_info, G_TYPE_OBJECT)
+
+enum {
+	PROP_TYPE = 1,
+	PROP_ITEM_COUNT,
+	N_PROPERTIES
+};
+
+static GParamSpec *properties[N_PROPERTIES] = { NULL, };
+
+struct _NautilusFileUndoInfoDetails {
+	NautilusFileUndoData *undo_data;
+
+	NautilusFileUndoDataType type;
+
+	NautilusFileUndoFinishCallback callback;
+	gpointer callback_user_data;
+
+	NautilusFileUndoManager *manager;
+	guint is_valid : 1;
+	guint locked : 1;	/* True if the action is being undone/redone */
+	guint freed : 1;	/* True if the action must be freed after undo/redo */
+	guint count;		/* Number of items */
+
+	void (* undo_func) (NautilusFileUndoData *data,
+			    GtkWindow            *parent_window);
+	void (* redo_func) (NautilusFileUndoData *data,
+			    GtkWindow            *parent_window);
+
+	void (* strings_func) (NautilusFileUndoData *data,
+			       guint count,
+			       gchar **labels,
+			       gchar **descriptions);
+
+	void (* finalize_func) (NautilusFileUndoData *data);
+
+	gchar *undo_label;
+	gchar *redo_label;
+	gchar *undo_description;
+	gchar *redo_description;
+};
+
 void
 nautilus_file_undo_data_free (NautilusFileUndoData *action)
 {
@@ -143,20 +185,12 @@ retrieve_files_to_restore (GHashTable * trashed)
 
 static void
 undo_redo_done_transfer_callback (GHashTable * debuting_uris,
+				  gboolean success,
                                   gpointer data)
 {
 	NautilusFileUndoData *action = data;
-	NautilusFileUndoManager *manager = action->manager;
 
-	/* If the action needed to be freed but was locked, free now */
-	if (action->freed) {
-		nautilus_file_undo_data_free (action);
-	} else {
-		action->locked = FALSE;
-	}
-
-	/* Update menus */
-	g_signal_emit_by_name (manager, "undo-changed", 0);
+	action->callback (action, success, action->callback_user_data);
 }
 
 static void
@@ -165,14 +199,15 @@ undo_redo_done_rename_callback (NautilusFile * file,
 				GError * error,
 				gpointer callback_data)
 {
-	undo_redo_done_transfer_callback (NULL, callback_data);
+	undo_redo_done_transfer_callback (NULL, (error != NULL), callback_data);
 }
 
 static void
 undo_redo_done_create_callback (GFile * new_file,
+				gboolean success,
 				gpointer callback_data)
 {
-	undo_redo_done_transfer_callback (NULL, callback_data);
+	undo_redo_done_transfer_callback (NULL, success, callback_data);
 }
 
 static void
@@ -180,13 +215,14 @@ undo_redo_done_delete_callback (GHashTable *debuting_uris,
                                 gboolean user_cancel,
                                 gpointer callback_data)
 {
-	undo_redo_done_transfer_callback (debuting_uris, callback_data);
+	undo_redo_done_transfer_callback (debuting_uris, !user_cancel, callback_data);
 }
 
 static void
-undo_redo_op_callback (gpointer callback_data)
+undo_redo_recursive_permissions_callback (gboolean success,
+					  gpointer callback_data)
 {
-	undo_redo_done_transfer_callback (NULL, callback_data);
+	undo_redo_done_transfer_callback (NULL, success, callback_data);
 }
 
 /* undo helpers */
@@ -274,7 +310,7 @@ trash_undo_func (NautilusFileUndoData *action, GtkWindow *parent_window)
 	g_hash_table_destroy (files_to_restore);
 
 	/* Here we must do what's necessary for the callback */
-	undo_redo_done_transfer_callback (NULL, action);
+	undo_redo_done_transfer_callback (NULL, TRUE, action);
 }
 
 static void
@@ -347,7 +383,7 @@ recursive_permissions_undo_func (NautilusFileUndoData *action, GtkWindow *parent
 
 		g_list_free (gfiles_list);
 		/* Here we must do what's necessary for the callback */
-		undo_redo_done_transfer_callback (NULL, action);
+		undo_redo_done_transfer_callback (NULL, TRUE, action);
 	}
 }
 
@@ -545,7 +581,7 @@ recursive_permissions_redo_func (NautilusFileUndoData *action, GtkWindow *parent
 						 eaction->file_mask,
 						 eaction->dir_permissions,
 						 eaction->dir_mask,
-						 undo_redo_op_callback,
+						 undo_redo_recursive_permissions_callback,
 						 action);
 	g_free (parent_uri);
 }
@@ -1121,7 +1157,7 @@ create_from_type (NautilusFileUndoDataType type)
 /* functions to manipulate the action data */
 NautilusFileUndoData *
 nautilus_file_undo_data_new (NautilusFileUndoDataType type,
-                                     gint                        items_count)
+			     gint                     items_count)
 {
 	NautilusFileUndoData *data;
 
@@ -1132,9 +1168,97 @@ nautilus_file_undo_data_new (NautilusFileUndoDataType type,
 	return data;
 }
 
+static void
+nautilus_file_undo_info_init (NautilusFileUndoInfo *self)
+{
+	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, NAUTILUS_TYPE_FILE_UNDO_INFO,
+						  NautilusFileUndoInfoDetails);
+}
+
+static void
+nautilus_file_undo_info_get_property (GObject *object,
+				      guint property_id,
+				      GValue *value,
+				      GParamSpec *pspec)
+{
+
+}
+
+static void
+nautilus_file_undo_info_set_property (GObject *object,
+				      guint property_id,
+				      const GValue *value,
+				      GParamSpec *pspec)
+{
+
+}
+
+static void
+nautilus_file_undo_info_constructed (GObject *obj)
+{
+	NautilusFileUndoInfo *self = NAUTILUS_FILE_UNDO_INFO (obj);
+}
+
+static void
+nautilus_file_undo_info_finalize (GObject *obj)
+{
+	NautilusFileUndoInfo *self = NAUTILUS_FILE_UNDO_INFO (obj);
+
+	if (self->priv->undo_data != NULL) {
+		nautilus_file_undo_data_free (self->priv->undo_data);
+		self->priv->undo_data = NULL;
+	}
+
+	G_OBJECT_CLASS (nautilus_file_undo_info_parent_class)->finalize (obj);
+}
+
+static void
+nautilus_file_undo_info_class_init (NautilusFileUndoInfoClass *klass)
+{
+	GObjectClass *oclass = G_OBJECT_CLASS (klass);
+
+	oclass->finalize = nautilus_file_undo_info_finalize;
+	oclass->constructed = nautilus_file_undo_info_constructed;
+	oclass->get_property = nautilus_file_undo_info_get_property;
+	oclass->set_property = nautilus_file_undo_info_set_property;
+
+	properties[PROP_TYPE] =
+		g_param_spec_int ("type",
+				  "Undo info type",
+				  "Type of undo operation",
+				  0, NAUTILUS_FILE_UNDO_NUM_TYPES - 1, 0,
+				  G_PARAM_READWRITE |
+				  G_PARAM_CONSTRUCT_ONLY);
+	properties[PROP_ITEM_COUNT] =
+		g_param_spec_int ("item-count",
+				  "Number of items",
+				  "Number of items",
+				  0, G_MAXINT, 0,
+				  G_PARAM_READWRITE |
+				  G_PARAM_CONSTRUCT_ONLY);
+
+	g_type_class_add_private (klass, sizeof (NautilusFileUndoInfoDetails));
+	g_object_class_install_properties (oclass, N_PROPERTIES, properties);
+}
+
+NautilusFileUndoInfo *
+nautilus_file_undo_info_new (NautilusFileUndoDataType type,
+			     gint item_count)
+{
+	NautilusFileUndoInfo *retval;
+	NautilusFileUndoData *data;
+
+	retval = g_object_new (NAUTILUS_TYPE_FILE_UNDO_INFO, 
+			       "type", type,
+			       "item-count", item_count,
+			       NULL);
+
+	return retval;
+}
+
 void
 nautilus_file_undo_data_set_src_dir (NautilusFileUndoData        *action_data,
-                                             GFile                       *src)
+				     GFile                       *src)
 {
 	NautilusFileUndoDataExt* eaction_data = (NautilusFileUndoDataExt*) action_data;
 	eaction_data->src_dir = g_object_ref (src);
@@ -1142,7 +1266,7 @@ nautilus_file_undo_data_set_src_dir (NautilusFileUndoData        *action_data,
 
 void
 nautilus_file_undo_data_set_dest_dir (NautilusFileUndoData        *action_data,
-                                              GFile                       *dest)
+				      GFile                       *dest)
 {
 	NautilusFileUndoDataExt* eaction_data = (NautilusFileUndoDataExt*) action_data;
 	eaction_data->dest_dir = g_object_ref (dest);
@@ -1150,8 +1274,8 @@ nautilus_file_undo_data_set_dest_dir (NautilusFileUndoData        *action_data,
 
 void
 nautilus_file_undo_data_add_origin_target_pair (NautilusFileUndoData        *action_data,
-                                                        GFile                       *origin,
-                                                        GFile                       *target)
+						GFile                       *origin,
+						GFile                       *target)
 {
 	NautilusFileUndoDataExt* eaction_data = (NautilusFileUndoDataExt*) action_data;
 	eaction_data->sources =
@@ -1164,8 +1288,8 @@ nautilus_file_undo_data_add_origin_target_pair (NautilusFileUndoData        *act
 
 void
 nautilus_file_undo_data_add_trashed_file (NautilusFileUndoData        *action_data,
-                                                  GFile                       *file,
-                                                  guint64                      mtime)
+					  GFile                       *file,
+					  guint64                      mtime)
 {
 	guint64 *modification_time;
 	char *original_uri;
@@ -1189,8 +1313,8 @@ nautilus_file_undo_data_add_trashed_file (NautilusFileUndoData        *action_da
 
 void
 nautilus_file_undo_data_add_file_permissions (NautilusFileUndoData        *action_data,
-                                                      GFile                       *file,
-                                                      guint32                      permission)
+					      GFile                       *file,
+					      guint32                      permission)
 {
 	guint32 *current_permissions;
 	char *original_uri;
@@ -1213,9 +1337,9 @@ nautilus_file_undo_data_add_file_permissions (NautilusFileUndoData        *actio
 
 void
 nautilus_file_undo_data_set_file_permissions (NautilusFileUndoData        *action_data,
-                                                      GFile                       *file,
-                                                      guint32                      current_permissions,
-                                                      guint32                      new_permissions)
+					      GFile                       *file,
+					      guint32                      current_permissions,
+					      guint32                      new_permissions)
 {
 	NautilusFileUndoDataPermissions* eaction_data = (NautilusFileUndoDataPermissions*) action_data;
 	eaction_data->target_file = g_object_ref (file);
@@ -1227,9 +1351,9 @@ nautilus_file_undo_data_set_file_permissions (NautilusFileUndoData        *actio
 
 void
 nautilus_file_undo_data_set_owner_change_information (NautilusFileUndoData        *action_data,
-                                                              GFile                       *file,
-                                                              const char                  *current_user,
-                                                              const char                  *new_user)
+						      GFile                       *file,
+						      const char                  *current_user,
+						      const char                  *new_user)
 {
 	NautilusFileUndoDataOwnership* eaction_data = (NautilusFileUndoDataOwnership*) action_data;
 	eaction_data->target_file = g_object_ref (file);
@@ -1241,9 +1365,9 @@ nautilus_file_undo_data_set_owner_change_information (NautilusFileUndoData      
 
 void
 nautilus_file_undo_data_set_group_change_information (NautilusFileUndoData        *action_data,
-                                                              GFile                       *file,
-                                                              const char                  *current_group,
-                                                              const char                  *new_group)
+						      GFile                       *file,
+						      const char                  *current_group,
+						      const char                  *new_group)
 {
 	NautilusFileUndoDataOwnership* eaction_data = (NautilusFileUndoDataOwnership*) action_data;
 	eaction_data->target_file = g_object_ref (file);
@@ -1255,10 +1379,10 @@ nautilus_file_undo_data_set_group_change_information (NautilusFileUndoData      
 
 void
 nautilus_file_undo_data_set_recursive_permissions (NautilusFileUndoData         *action_data,
-                                                           guint32                      file_permissions,
-                                                           guint32                      file_mask,
-                                                           guint32                      dir_permissions,
-                                                           guint32                      dir_mask)
+						   guint32                      file_permissions,
+						   guint32                      file_mask,
+						   guint32                      dir_permissions,
+						   guint32                      dir_mask)
 {
 	NautilusFileUndoDataRecursivePermissions* eaction_data = (NautilusFileUndoDataRecursivePermissions*) action_data;
 	eaction_data->file_permissions = file_permissions;
@@ -1291,8 +1415,8 @@ nautilus_file_undo_data_set_create_data (NautilusFileUndoData        *action_dat
 
 void
 nautilus_file_undo_data_set_rename_information (NautilusFileUndoData        *action_data,
-                                                        GFile                       *old_file,
-                                                        GFile                       *new_file)
+						GFile                       *old_file,
+						GFile                       *new_file)
 {
 	NautilusFileUndoDataRename* eaction_data = (NautilusFileUndoDataRename*) action_data;
 	eaction_data->old_file = g_object_ref (old_file);

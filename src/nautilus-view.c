@@ -1822,7 +1822,9 @@ track_newly_added_locations (NautilusView *view, NautilusFile *new_file,
 }
 
 static void
-new_folder_done (GFile *new_folder, gpointer user_data)
+new_folder_done (GFile *new_folder, 
+		 gboolean success,
+		 gpointer user_data)
 {
 	NautilusView *directory_view;
 	NautilusFile *file;
@@ -3160,7 +3162,9 @@ remove_not_really_moved_files (gpointer key,
  * up a signal handler to await their arrival.
  */
 static void
-copy_move_done_callback (GHashTable *debuting_files, gpointer data)
+copy_move_done_callback (GHashTable *debuting_files, 
+			 gboolean success,
+			 gpointer data)
 {
 	NautilusView  *directory_view;
 	CopyMoveDoneData *copy_move_done_data;
@@ -6070,12 +6074,8 @@ real_action_undo (NautilusView *view)
 	manager = nautilus_file_undo_manager_get ();
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (view));
 
-	/* Disable menus because they are in an untrustworthy status */
-	update_undo_actions (view, TRUE);
-
 	nautilus_file_undo_manager_undo (manager, 
-					 GTK_WINDOW (toplevel),
-					 NULL, NULL);
+					 GTK_WINDOW (toplevel));
 }
 
 static void
@@ -6087,12 +6087,8 @@ real_action_redo (NautilusView *view)
 	manager = nautilus_file_undo_manager_get ();
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (view));
 
-	/* Disable menus because they are in an untrustworthy status */
-	update_undo_actions (view, TRUE);
-
 	nautilus_file_undo_manager_redo (manager, 
-					 GTK_WINDOW (toplevel),
-					 NULL, NULL);
+					 GTK_WINDOW (toplevel));
 }
 
 static void
