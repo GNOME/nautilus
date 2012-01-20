@@ -231,7 +231,7 @@ typedef struct {
 	
 	gpointer data;
 	GDestroyNotify free_data;
-	NautilusFileUndoData *undo_redo_data;
+	NautilusFileUndoInfo *undo_info;
 } NautilusFileOperation;
 
 NautilusFile *nautilus_file_new_from_info                  (NautilusDirectory      *directory,

@@ -78,7 +78,7 @@ typedef struct {
 	GCancellable *cancellable;
 	GHashTable *skip_files;
 	GHashTable *skip_readdir_error;
-	NautilusFileUndoData *undo_redo_data;
+	NautilusFileUndoInfo *undo_info;
 	gboolean skip_all_error;
 	gboolean skip_all_conflict;
 	gboolean merge_all;
@@ -957,9 +957,10 @@ finalize_common (CommonJob *common)
 		g_hash_table_destroy (common->skip_readdir_error);
 	}
 
-	if (common->undo_redo_data != NULL) {
+	if (common->undo_info != NULL) {
 		nautilus_file_undo_manager_add_action (nautilus_file_undo_manager_get (),
-							common->undo_redo_data);
+						       common->undo_info);
+		g_object_unref (common->undo_info);
 	}
 
 	g_object_unref (common->progress);
@@ -1265,11 +1266,10 @@ inhibit_power_manager (CommonJob *job, const char *message)
 static void
 abort_job (CommonJob *job)
 {
-	g_cancellable_cancel (job->cancellable);
-
 	/* destroy the undo action data too */
-	nautilus_file_undo_data_free (job->undo_redo_data);
-	job->undo_redo_data = NULL;
+	g_clear_object (&job->undo_info);
+
+	g_cancellable_cancel (job->cancellable);
 }
 
 static gboolean
@@ -1980,7 +1980,7 @@ trash_or_delete_internal (GList                  *files,
 	}
 	
 	if (try_trash && !nautilus_file_undo_manager_is_undo_redo (nautilus_file_undo_manager_get ())) {
-		job->common.undo_redo_data = nautilus_file_undo_data_new (NAUTILUS_FILE_UNDO_MOVE_TO_TRASH, g_list_length(files));
+		job->common.undo_info = nautilus_file_undo_info_trash_new (g_list_length (files));
 	}
 
 	g_io_scheduler_push_job (delete_job,
@@ -3397,8 +3397,9 @@ create_dest_dir (CommonJob *job,
 	}
 	nautilus_file_changes_queue_file_added (*dest);
 
-	if (job->undo_redo_data != NULL) {
-		nautilus_file_undo_data_add_origin_target_pair (job->undo_redo_data, src, *dest);
+	if (job->undo_info != NULL) {
+		nautilus_file_undo_info_ext_add_origin_target_pair (NAUTILUS_FILE_UNDO_INFO_EXT (job->undo_info),
+								    src, *dest);
 	}
 
 	return CREATE_DEST_DIR_SUCCESS;
@@ -4156,8 +4157,9 @@ copy_move_file (CopyMoveJob *copy_job,
 						   FALSE);
 		}
 
-		if (job->undo_redo_data != NULL) {
-			nautilus_file_undo_data_add_origin_target_pair (job->undo_redo_data, src, dest);
+		if (job->undo_info != NULL) {
+			nautilus_file_undo_info_ext_add_origin_target_pair (NAUTILUS_FILE_UNDO_INFO_EXT (job->undo_info),
+									    src, dest);
 		}
 
 		g_object_unref (dest);
@@ -4624,11 +4626,10 @@ nautilus_file_operations_copy (GList *files,
 	if (!nautilus_file_undo_manager_is_undo_redo (nautilus_file_undo_manager_get ())) {
 		GFile* src_dir;
 
-		job->common.undo_redo_data = nautilus_file_undo_data_new (NAUTILUS_FILE_UNDO_COPY, g_list_length(files));
 		src_dir = g_file_get_parent (files->data);
-
-		nautilus_file_undo_data_set_src_dir (job->common.undo_redo_data, src_dir);
-		nautilus_file_undo_data_set_dest_dir (job->common.undo_redo_data, target_dir);
+		job->common.undo_info = nautilus_file_undo_info_ext_new (NAUTILUS_FILE_UNDO_OP_COPY,
+									 g_list_length (files),
+									 src_dir, target_dir);
 
 		g_object_unref (src_dir);
 	}
@@ -4790,8 +4791,8 @@ move_file_prepare (CopyMoveJob *move_job,
 			nautilus_file_changes_queue_schedule_position_remove (dest);
 		}
 
-		if (job->undo_redo_data != NULL) {
-			nautilus_file_undo_data_add_origin_target_pair (job->undo_redo_data, src, dest);
+		if (job->undo_info != NULL) {
+			nautilus_file_undo_info_ext_add_origin_target_pair (job->undo_info, src, dest);
 		}
 
 		return;
@@ -5159,16 +5160,17 @@ nautilus_file_operations_move (GList *files,
 	if (!nautilus_file_undo_manager_is_undo_redo (nautilus_file_undo_manager_get ())) {
 		GFile* src_dir;
 
-		if (g_file_has_uri_scheme (g_list_first(files)->data, "trash")) {
-			job->common.undo_redo_data = nautilus_file_undo_data_new (NAUTILUS_FILE_UNDO_RESTORE_FROM_TRASH, g_list_length(files));
-		} else {
-			job->common.undo_redo_data = nautilus_file_undo_data_new (NAUTILUS_FILE_UNDO_MOVE, g_list_length(files));
-		}
-
 		src_dir = g_file_get_parent (files->data);
 
-		nautilus_file_undo_data_set_src_dir (job->common.undo_redo_data, src_dir);
-		nautilus_file_undo_data_set_dest_dir (job->common.undo_redo_data, target_dir);
+		if (g_file_has_uri_scheme (g_list_first (files)->data, "trash")) {
+			job->common.undo_info = nautilus_file_undo_info_ext_new (NAUTILUS_FILE_UNDO_OP_RESTORE_FROM_TRASH,
+										 g_list_length (files),
+										 src_dir, target_dir);
+		} else {
+			job->common.undo_info = nautilus_file_undo_info_ext_new (NAUTILUS_FILE_UNDO_OP_MOVE,
+										 g_list_length (files),
+										 src_dir, target_dir);
+		}
 
 		g_object_unref (src_dir);
 	}
@@ -5267,8 +5269,8 @@ link_file (CopyMoveJob *job,
 					      common->cancellable,
 					      &error)) {
 
-		if (common->undo_redo_data != NULL) {
-			nautilus_file_undo_data_add_origin_target_pair (common->undo_redo_data, src, dest);
+		if (common->undo_info != NULL) {
+			nautilus_file_undo_info_ext_add_origin_target_pair (common->undo_info, src, dest);
 		}
 
 		g_free (path);
@@ -5481,12 +5483,10 @@ nautilus_file_operations_link (GList *files,
 	if (!nautilus_file_undo_manager_is_undo_redo (nautilus_file_undo_manager_get ())) {
 		GFile* src_dir;
 
-		job->common.undo_redo_data = nautilus_file_undo_data_new (NAUTILUS_FILE_UNDO_CREATE_LINK, g_list_length(files));
 		src_dir = g_file_get_parent (files->data);
-
-		nautilus_file_undo_data_set_src_dir (job->common.undo_redo_data, src_dir);
-		nautilus_file_undo_data_set_dest_dir (job->common.undo_redo_data, target_dir);
-
+		job->common.undo_info = nautilus_file_undo_info_ext_new (NAUTILUS_FILE_UNDO_OP_CREATE_LINK,
+									 g_list_length (files),
+									 src_dir, target_dir);
 		g_object_unref (src_dir);
 	}
 
@@ -5524,13 +5524,11 @@ nautilus_file_operations_duplicate (GList *files,
 	if (!nautilus_file_undo_manager_is_undo_redo (nautilus_file_undo_manager_get ())) {
 		GFile* src_dir;
 
-		job->common.undo_redo_data =
-			nautilus_file_undo_data_new (NAUTILUS_FILE_UNDO_DUPLICATE, g_list_length(files));
 		src_dir = g_file_get_parent (files->data);
-
-		nautilus_file_undo_data_set_src_dir (job->common.undo_redo_data, src_dir);
-		nautilus_file_undo_data_set_dest_dir (job->common.undo_redo_data, src_dir);
-
+		job->common.undo_info =
+			nautilus_file_undo_info_ext_new (NAUTILUS_FILE_UNDO_OP_DUPLICATE,
+							 g_list_length (files),
+							 src_dir, src_dir);
 		g_object_unref (src_dir);
 	}
 
@@ -5605,8 +5603,9 @@ set_permissions_file (SetPermissionsJob *job,
 	    g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_UNIX_MODE)) {
 		current = g_file_info_get_attribute_uint32 (info, G_FILE_ATTRIBUTE_UNIX_MODE);
 
-		if (common->undo_redo_data != NULL) {
-			nautilus_file_undo_data_add_file_permissions (common->undo_redo_data, file, current);
+		if (common->undo_info != NULL) {
+			nautilus_file_undo_info_rec_permissions_add_file (common->undo_info,
+									  file, current);
 		}
 
 		current = (current & ~mask) | value;
@@ -5693,12 +5692,10 @@ nautilus_file_set_permissions_recursive (const char *directory,
 	job->done_callback_data = callback_data;
 
 	if (!nautilus_file_undo_manager_is_undo_redo (nautilus_file_undo_manager_get ())) {
-		job->common.undo_redo_data = nautilus_file_undo_data_new (NAUTILUS_FILE_UNDO_RECURSIVE_SET_PERMISSIONS, 1);
-
-		nautilus_file_undo_data_set_recursive_permissions_dest_dir (job->common.undo_redo_data, job->file);
-		nautilus_file_undo_data_set_recursive_permissions
-			(job->common.undo_redo_data,
-			 file_permissions, file_mask, dir_permissions, dir_mask);
+		job->common.undo_info = 
+			nautilus_file_undo_info_rec_permissions_new (job->file,
+								     file_permissions, file_mask,
+								     dir_permissions, dir_mask);
 	}
 
 	g_io_scheduler_push_job (set_permissions_job,
@@ -5958,10 +5955,10 @@ create_job (GIOSchedulerJob *io_job,
 					     common->cancellable,
 					     &error);
 
-		if (res && common->undo_redo_data != NULL) {
-			nautilus_file_undo_data_set_create_data (common->undo_redo_data,
-									 dest,
-									 NULL);
+		if (res && common->undo_info != NULL) {
+			nautilus_file_undo_info_create_set_data (common->undo_info,
+								 dest,
+								 NULL);
 		}
 
 	} else {
@@ -5973,12 +5970,12 @@ create_job (GIOSchedulerJob *io_job,
 					   NULL, NULL,
 					   &error);
 
-			if (res && common->undo_redo_data != NULL) {
+			if (res && common->undo_info != NULL) {
 				gchar *uri;
 
 				uri = g_file_get_uri (job->src);
-				nautilus_file_undo_data_set_create_data (common->undo_redo_data,
-										 dest, uri);
+				nautilus_file_undo_info_create_set_data (common->undo_info,
+									 dest, uri);
 
 				g_free (uri);
 			}
@@ -6006,9 +6003,9 @@ create_job (GIOSchedulerJob *io_job,
 								     common->cancellable,
 								     &error);
 
-					if (res && common->undo_redo_data != NULL) {
-						nautilus_file_undo_data_set_create_data (common->undo_redo_data,
-												 dest, data);
+					if (res && common->undo_info != NULL) {
+						nautilus_file_undo_info_create_set_data (common->undo_info,
+											 dest, data);
 					}
 				}
 
@@ -6181,7 +6178,7 @@ nautilus_file_operations_new_folder (GtkWidget *parent_view,
 	}
 
 	if (!nautilus_file_undo_manager_is_undo_redo (nautilus_file_undo_manager_get ())) {
-		job->common.undo_redo_data = nautilus_file_undo_data_new (NAUTILUS_FILE_UNDO_CREATE_FOLDER, 1);
+		job->common.undo_info = nautilus_file_undo_info_create_new (NAUTILUS_FILE_UNDO_OP_CREATE_FOLDER);
 	}
 
 	g_io_scheduler_push_job (create_job,
@@ -6223,7 +6220,7 @@ nautilus_file_operations_new_file_from_template (GtkWidget *parent_view,
 	}
 
 	if (!nautilus_file_undo_manager_is_undo_redo (nautilus_file_undo_manager_get ())) {
-		job->common.undo_redo_data = nautilus_file_undo_data_new (NAUTILUS_FILE_UNDO_CREATE_FILE_FROM_TEMPLATE, 1);
+		job->common.undo_info = nautilus_file_undo_info_create_new (NAUTILUS_FILE_UNDO_OP_CREATE_FILE_FROM_TEMPLATE);
 	}
 
 	g_io_scheduler_push_job (create_job,
@@ -6264,7 +6261,7 @@ nautilus_file_operations_new_file (GtkWidget *parent_view,
 	job->filename = g_strdup (target_filename);
 
 	if (!nautilus_file_undo_manager_is_undo_redo (nautilus_file_undo_manager_get ())) {
-		job->common.undo_redo_data = nautilus_file_undo_data_new (NAUTILUS_FILE_UNDO_CREATE_EMPTY_FILE, length);
+		job->common.undo_info = nautilus_file_undo_info_create_new (NAUTILUS_FILE_UNDO_OP_CREATE_EMPTY_FILE);
 	}
 
 	g_io_scheduler_push_job (create_job,

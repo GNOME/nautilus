@@ -1654,8 +1654,8 @@ nautilus_file_operation_free (NautilusFileOperation *op)
 		op->free_data (op->data);
 	}
 
-	if (op->undo_redo_data != NULL) {
-		nautilus_file_undo_manager_add_action (nautilus_file_undo_manager_get (), op->undo_redo_data);
+	if (op->undo_info != NULL) {
+		nautilus_file_undo_manager_add_action (nautilus_file_undo_manager_get (), op->undo_info);
 	}
 
 	g_free (op);
@@ -1762,8 +1762,9 @@ rename_callback (GObject *source_object,
 						   res, &error);
 
 	if (new_file != NULL) {
-		if (op->undo_redo_data != NULL) {
-			nautilus_file_undo_data_set_rename_information (op->undo_redo_data, G_FILE (source_object), new_file);
+		if (op->undo_info != NULL) {
+			nautilus_file_undo_info_rename_set_data (NAUTILUS_FILE_UNDO_INFO_RENAME (op->undo_info),
+								 G_FILE (source_object), new_file);
 		}
 
 		g_file_query_info_async (new_file,
@@ -1940,7 +1941,7 @@ nautilus_file_rename (NautilusFile *file,
 
 	/* Tell the undo manager a rename is taking place */
 	if (!nautilus_file_undo_manager_is_undo_redo (nautilus_file_undo_manager_get ())) {
-		op->undo_redo_data = nautilus_file_undo_data_new (NAUTILUS_FILE_UNDO_RENAME, 1);
+		op->undo_info = nautilus_file_undo_info_rename_new ();
 	}
 
 	/* Do the renaming. */
@@ -5071,14 +5072,13 @@ nautilus_file_set_permissions (NautilusFile *file,
 	}
 
 	if (!nautilus_file_undo_manager_is_undo_redo (nautilus_file_undo_manager_get ())) {
-		NautilusFileUndoData *undo_redo_data;
+		NautilusFileUndoInfo *undo_info;
 
-		undo_redo_data = nautilus_file_undo_data_new (NAUTILUS_FILE_UNDO_SET_PERMISSIONS, 1);
-		nautilus_file_undo_data_set_file_permissions (undo_redo_data,
-		                                                      nautilus_file_get_location (file),
-		                                                      file->details->permissions,
-		                                                      new_permissions);
-		nautilus_file_undo_manager_add_action (nautilus_file_undo_manager_get (), undo_redo_data);
+		undo_info = nautilus_file_undo_info_permissions_new (nautilus_file_get_location (file),
+								     file->details->permissions,
+								     new_permissions);
+		nautilus_file_undo_manager_add_action (nautilus_file_undo_manager_get (),
+						       undo_info);
 	}
 
 	info = g_file_info_new ();
@@ -5386,17 +5386,16 @@ nautilus_file_set_owner (NautilusFile *file,
 	}
 	
 	if (!nautilus_file_undo_manager_is_undo_redo (nautilus_file_undo_manager_get ())) {
-		NautilusFileUndoData *undo_redo_data;
+		NautilusFileUndoInfo *undo_info;
 		char* current_owner;
 
 		current_owner = nautilus_file_get_owner_as_string (file, FALSE);
-		undo_redo_data = nautilus_file_undo_data_new (NAUTILUS_FILE_UNDO_CHANGE_OWNER, 1);
 
-		nautilus_file_undo_data_set_owner_change_information (undo_redo_data,
-		                                                              nautilus_file_get_location (file),
-		                                                              current_owner,
-		                                                              user_name_or_id);
-		nautilus_file_undo_manager_add_action (nautilus_file_undo_manager_get (), undo_redo_data);
+		undo_info = nautilus_file_undo_info_ownership_new (NAUTILUS_FILE_UNDO_OP_CHANGE_OWNER,
+								   nautilus_file_get_location (file),
+								   current_owner,
+								   user_name_or_id);
+		nautilus_file_undo_manager_add_action (nautilus_file_undo_manager_get (), undo_info);
 
 		g_free (current_owner);
 	}
@@ -5665,17 +5664,15 @@ nautilus_file_set_group (NautilusFile *file,
 	}
 
 	if (!nautilus_file_undo_manager_is_undo_redo (nautilus_file_undo_manager_get ())) {
-		NautilusFileUndoData *undo_redo_data;
+		NautilusFileUndoData *undo_info;
 		char *current_group;
 
 		current_group = nautilus_file_get_group_name (file);
-		undo_redo_data = nautilus_file_undo_data_new (NAUTILUS_FILE_UNDO_CHANGE_GROUP, 1);
-
-		nautilus_file_undo_data_set_group_change_information (undo_redo_data,
-		                                                              nautilus_file_get_location (file),
-		                                                              current_group,
-		                                                              group_name_or_id);
-		nautilus_file_undo_manager_add_action (nautilus_file_undo_manager_get (), undo_redo_data);
+		undo_info = nautilus_file_undo_info_ownership_new (NAUTILUS_FILE_UNDO_CHANGE_GROUP,
+								   nautilus_file_get_location (file),
+								   current_group,
+								   group_name_or_id);
+		nautilus_file_undo_manager_add_action (nautilus_file_undo_manager_get (), undo_info);
 
 		g_free (current_group);
 	}

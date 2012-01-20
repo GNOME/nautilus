@@ -32,24 +32,6 @@
 #include <gio/gio.h>
 #include <gtk/gtk.h>
 
-typedef enum {
-	NAUTILUS_FILE_UNDO_COPY,
-	NAUTILUS_FILE_UNDO_DUPLICATE,
-	NAUTILUS_FILE_UNDO_MOVE,
-	NAUTILUS_FILE_UNDO_RENAME,
-	NAUTILUS_FILE_UNDO_CREATE_EMPTY_FILE,
-	NAUTILUS_FILE_UNDO_CREATE_FILE_FROM_TEMPLATE,
-	NAUTILUS_FILE_UNDO_CREATE_FOLDER,
-	NAUTILUS_FILE_UNDO_MOVE_TO_TRASH,
-	NAUTILUS_FILE_UNDO_RESTORE_FROM_TRASH,
-	NAUTILUS_FILE_UNDO_CREATE_LINK,
-	NAUTILUS_FILE_UNDO_RECURSIVE_SET_PERMISSIONS,
-	NAUTILUS_FILE_UNDO_SET_PERMISSIONS,
-	NAUTILUS_FILE_UNDO_CHANGE_GROUP,
-	NAUTILUS_FILE_UNDO_CHANGE_OWNER,
-	NAUTILUS_FILE_UNDO_NUM_TYPES,
-} NautilusFileUndoDataType;
-
 typedef struct {
 	const char *undo_label;
 	const char *undo_description;
@@ -62,69 +44,6 @@ typedef struct _NautilusFileUndoManager NautilusFileUndoManager;
 typedef void (* NautilusFileUndoFinishCallback) (NautilusFileUndoData *data,
 						 gboolean success,
 						 gpointer user_data);
-
-typedef struct 
-{
-	NautilusFileUndoData base_data;
-	/* Copy / Move / Duplicate / Link / Restore from trash stuff */
-	GFile *src_dir;
-	GFile *dest_dir;
-	GList *sources;	     /* Relative to src_dir */
-	GList *destinations; /* Relative to dest_dir */
-} NautilusFileUndoDataExt;
-
-typedef struct
-{
-	NautilusFileUndoData base_data;
-	/* Create new file/folder stuff/set permissions */
-	char *template;
-	GFile *target_file;
-} NautilusFileUndoDataCreate;
-
-typedef struct
-{
-	NautilusFileUndoData base_data;
-	/* Rename stuff */
-	GFile *old_file;
-	GFile *new_file;
-} NautilusFileUndoDataRename;
-
-typedef struct
-{
-	NautilusFileUndoData base_data;
-	/* Trash stuff */
-	GHashTable *trashed;
-} NautilusFileUndoDataTrash;
-
-typedef struct
-{
-	NautilusFileUndoData base_data;
-	/* Recursive change permissions stuff */
-	GFile *dest_dir;
-	GHashTable *original_permissions;
-	guint32 dir_mask;
-	guint32 dir_permissions;
-	guint32 file_mask;
-	guint32 file_permissions;
-} NautilusFileUndoDataRecursivePermissions;
-
-typedef struct
-{
-	NautilusFileUndoData base_data;
-	/* Single file change permissions stuff */
-	GFile *target_file;
-	guint32 current_permissions;
-	guint32 new_permissions;
-} NautilusFileUndoDataPermissions;
-
-typedef struct
-{
-	NautilusFileUndoData base_data;
-	/* Group and Owner change stuff */
-	GFile *target_file;
-	char *original_ownership;
-	char *new_ownership;
-} NautilusFileUndoDataOwnership;
 
 struct _NautilusFileUndoManagerPrivate
 {
