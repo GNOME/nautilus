@@ -192,7 +192,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-file-undo-operations.h \
 	nautilus-file-undo-manager.c \
 	nautilus-file-undo-manager.h \
-	nautilus-file-undo-types.h \
 	$(nautilus_tracker_engine_sources) \
 	$(NULL)
 
