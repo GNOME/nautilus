@@ -30,8 +30,9 @@
 #include <gtk/gtk.h>
 #include <gio/gio.h>
 
-#include <libnautilus-private/nautilus-file-undo-types.h>
+#include <libnautilus-private/nautilus-file-undo-operations.h>
 
+typedef struct _NautilusFileUndoManager NautilusFileUndoManager;
 typedef struct _NautilusFileUndoManagerClass NautilusFileUndoManagerClass;
 typedef struct _NautilusFileUndoManagerPrivate NautilusFileUndoManagerPrivate;
 
@@ -51,6 +52,12 @@ typedef struct _NautilusFileUndoManagerPrivate NautilusFileUndoManagerPrivate;
 	(G_TYPE_INSTANCE_GET_CLASS((object), NAUTILUS_TYPE_FILE_UNDO_MANAGER,\
 				   NautilusFileUndoManagerClass))
 
+typedef enum {
+	NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE,
+	NAUTILUS_FILE_UNDO_MANAGER_STATE_UNDO,
+	NAUTILUS_FILE_UNDO_MANAGER_STATE_REDO
+} NautilusFileUndoManagerState;
+
 struct _NautilusFileUndoManager {
 	GObject parent_instance;
 
@@ -62,24 +69,19 @@ struct _NautilusFileUndoManagerClass {
 	GObjectClass parent_class;
 };
 
-
 GType nautilus_file_undo_manager_get_type (void) G_GNUC_CONST;
 
 NautilusFileUndoManager * nautilus_file_undo_manager_get (void);
 
-void nautilus_file_undo_manager_add_action (NautilusFileUndoManager *manager,
-					     NautilusFileUndoData *action);
-void nautilus_file_undo_manager_undo (NautilusFileUndoManager *manager,
-				      GtkWindow *parent_window);
-void nautilus_file_undo_manager_redo (NautilusFileUndoManager *manager,
-				      GtkWindow *parent_window);
+void nautilus_file_undo_manager_set_action (NautilusFileUndoInfo *info);
+NautilusFileUndoInfo *nautilus_file_undo_manager_get_action (void);
 
-gboolean nautilus_file_undo_manager_is_undo_redo (NautilusFileUndoManager *manager);
-void nautilus_file_undo_manager_trash_has_emptied (NautilusFileUndoManager *manager);
-void nautilus_file_undo_manager_request_menu_update (NautilusFileUndoManager        *manager);
-guint64 nautilus_file_undo_manager_get_file_modification_time (GFile *file);
+NautilusFileUndoManagerState nautilus_file_undo_manager_get_state (void);
 
-NautilusFileUndoMenuData * nautilus_file_undo_manager_get_menu_data (NautilusFileUndoManager *self);
-void nautilus_file_undo_menu_data_free (NautilusFileUndoMenuData *data);
+void nautilus_file_undo_manager_undo (GtkWindow *parent_window);
+void nautilus_file_undo_manager_redo (GtkWindow *parent_window);
+
+void nautilus_file_undo_manager_push_flag (void);
+gboolean nautilus_file_undo_manager_pop_flag (void);
 
 #endif /* __NAUTILUS_FILE_UNDO_MANAGER_H__ */

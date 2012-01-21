@@ -3,7 +3,7 @@
 /* nautilus-file-undo-manager.c - Manages the undo/redo stack
  *
  * Copyright (C) 2007-2011 Amos Brocco
- * Copyright (C) 2010 Red Hat, Inc.
+ * Copyright (C) 2010, 2012 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
@@ -31,24 +31,12 @@
 
 #include "nautilus-file-operations.h"
 #include "nautilus-file.h"
-#include "nautilus-file-undo-operations.h"
-#include "nautilus-file-undo-types.h"
+#include "nautilus-trash-monitor.h"
 
-#include <gio/gio.h>
-#include <glib.h>
 #include <glib/gi18n.h>
-#include <locale.h>
-#include <gdk/gdk.h>
-#include <eel/eel-glib-extensions.h>
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_UNDO
 #include "nautilus-debug.h"
-
-/* Default depth of the undo/redo stack. */
-#define DEFAULT_UNDO_DEPTH 32
-
-#define NAUTILUS_FILE_UNDO_MANAGER_GET_PRIVATE(o)	\
-	 (G_TYPE_INSTANCE_GET_PRIVATE ((o), NAUTILUS_TYPE_FILE_UNDO_MANAGER, NautilusFileUndoManagerPrivate))
 
 enum {
 	SIGNAL_UNDO_CHANGED,
@@ -59,217 +47,69 @@ static guint signals[NUM_SIGNALS] = { 0, };
 
 G_DEFINE_TYPE (NautilusFileUndoManager, nautilus_file_undo_manager, G_TYPE_OBJECT)
 
-static NautilusFileUndoManager *singleton = NULL;
-
-/* must be called with the mutex locked */
-static NautilusFileUndoData *
-get_next_redo_action (NautilusFileUndoManagerPrivate *priv)
+struct _NautilusFileUndoManagerPrivate
 {
-	NautilusFileUndoData *retval = NULL;
+	NautilusFileUndoInfo *info;
+	NautilusFileUndoManagerState state;
+	NautilusFileUndoManagerState last_state;
 
-	if (g_queue_is_empty (priv->stack)) {
-		DEBUG ("Queue is empty, no redo actions to return");
-		goto out;
+	guint undo_redo_flag : 1;
+
+	gulong trash_signal_id;
+};
+
+static NautilusFileUndoManager *undo_singleton = NULL;
+
+static NautilusFileUndoManager *
+get_singleton (void)
+{
+	if (undo_singleton == NULL) {
+		undo_singleton = g_object_new (NAUTILUS_TYPE_FILE_UNDO_MANAGER, NULL);
+		g_object_add_weak_pointer (G_OBJECT (undo_singleton), (gpointer) &undo_singleton);
 	}
 
-	if (priv->index == 0) {
-		DEBUG ("Queue has only undoable actions, no redo actions to return");
-		goto out;
-	}
-
-	DEBUG ("Getting redo action for index %d", priv->index);
-	retval = g_queue_peek_nth (priv->stack, priv->index - 1);
-
-	if (retval && retval->locked) {
-		DEBUG ("Action is locked, no redo actions to return");
-		retval = NULL;
-	}
-
- out:
-	DEBUG ("Returning %p as next redo action", retval);
-	return retval;
+	return undo_singleton;
 }
 
-/* must be called with the mutex locked */
-static NautilusFileUndoData *
-get_next_undo_action (NautilusFileUndoManagerPrivate *priv)
-{
-	NautilusFileUndoData *retval = NULL;
-	guint stack_size;
-
-	if (g_queue_is_empty (priv->stack)) {
-		DEBUG ("Queue is empty, no undo actions to return");
-		goto out;
-	}
-
-	stack_size = g_queue_get_length (priv->stack);
-
-	if (priv->index == stack_size) {
-		DEBUG ("Queue has only of undone actions, no undo actions to return");
-		goto out;
-	}
-
-	DEBUG ("Getting undo action for index %d", priv->index);
-	retval = g_queue_peek_nth (priv->stack, priv->index);
-
-	if (retval->locked) {
-		DEBUG ("Action is locked, no undo actions to return");
-		retval = NULL;
-	}
-
- out:
-	DEBUG ("Returning %p as next undo action", retval);
-	return retval;
-}
-
-/* must be called with the mutex locked */
 static void
-clear_redo_actions (NautilusFileUndoManagerPrivate *priv)
+file_undo_manager_clear (NautilusFileUndoManager *self)
 {
-	DEBUG ("Clearing redo actions, index is %d", priv->index);
-
-	while (priv->index > 0) {
-		NautilusFileUndoData *head;
-
-		head = g_queue_pop_head (priv->stack);
-		nautilus_file_undo_data_free (head);
-
-		DEBUG ("Removed action, index was %d", priv->index);
-
-		priv->index--;
-	}
+	g_clear_object (&self->priv->info);
+	self->priv->state = NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE;
 }
 
-/* must be called with the mutex locked */
-static gboolean
-can_undo (NautilusFileUndoManagerPrivate *priv)
-{
-	return (get_next_undo_action (priv) != NULL);
-}
-
-/* must be called with the mutex locked */
-static gboolean
-can_redo (NautilusFileUndoManagerPrivate *priv)
-{
-	return (get_next_redo_action (priv) != NULL);
-}
-
-/* must be called with the mutex locked */
-static NautilusFileUndoData *
-stack_scroll_right (NautilusFileUndoManagerPrivate *priv)
-{
-	NautilusFileUndoData *data;
-
-	if (!can_undo (priv)) {
-		DEBUG ("Scrolling stack right, but no undo actions");
-		return NULL;
-	}
-
-	data = g_queue_peek_nth (priv->stack, priv->index);
-
-	if (priv->index < g_queue_get_length (priv->stack)) {
-		priv->index++;
-		DEBUG ("Scrolling stack right, increasing index to %d", priv->index);
-	}
-
-	return data;
-}
-
-/* must be called with the mutex locked */
-static NautilusFileUndoData *
-stack_scroll_left (NautilusFileUndoManagerPrivate *priv)
-{
-	NautilusFileUndoData *data;
-
-	if (!can_redo (priv)) {
-		DEBUG ("Scrolling stack left, but no redo actions");
-		return NULL;
-	}
-
-	priv->index--;
-	data = g_queue_peek_nth (priv->stack, priv->index);
-
-	DEBUG ("Scrolling stack left, decreasing index to %d", priv->index);
-
-	return data;
-}
-
-/* must be called with the mutex locked */
 static void
-stack_clear_n_oldest (GQueue *stack,
-		      guint n)
+trash_state_changed_cb (NautilusTrashMonitor *monitor,
+			gboolean is_empty,
+			gpointer user_data)
 {
-	NautilusFileUndoData *action;
-	guint i;
+	NautilusFileUndoManager *self = user_data;
 
-	DEBUG ("Clearing %u oldest actions from the undo stack", n);
-
-	for (i = 0; i < n; i++) {
-		action = (NautilusFileUndoData *) g_queue_pop_tail (stack);
-		if (action->locked) {
-			action->freed = TRUE;
-		} else {
-			nautilus_file_undo_data_free (action);
-		}
+	if (!is_empty) {
+		return;
 	}
-}
 
-/* must be called with the mutex locked */
-static void
-stack_ensure_size (NautilusFileUndoManager *self)
-{
-	NautilusFileUndoManagerPrivate *priv = self->priv;
-	guint length;
-
-	length = g_queue_get_length (priv->stack);
-
-	if (length > priv->undo_levels) {
-		if (priv->index > (priv->undo_levels + 1)) {
-			/* If the index will fall off the stack
-			 * move it back to the maximum position */
-			priv->index = priv->undo_levels + 1;
-		}
-		stack_clear_n_oldest (priv->stack, length - (priv->undo_levels));
+	if (self->priv->state == NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE) {
+		return;
 	}
-}
 
-/* must be called with the mutex locked */
-static void
-stack_push_action (NautilusFileUndoManager *self,
-		   NautilusFileUndoData *action)
-{
-	NautilusFileUndoManagerPrivate *priv = self->priv;
-
-	/* clear all the redo items, as we're pushing a new undoable action */
-	clear_redo_actions (priv);
-
-	g_queue_push_head (priv->stack, action);
-
-	/* cleanup items in excess, if any */
-	stack_ensure_size (self);
+	if (NAUTILUS_IS_FILE_UNDO_INFO_TRASH (self->priv->info)) {
+		file_undo_manager_clear (self);
+		g_signal_emit (self, signals[SIGNAL_UNDO_CHANGED], 0);
+	}
 }
 
 static void
 nautilus_file_undo_manager_init (NautilusFileUndoManager * self)
 {
-	NautilusFileUndoManagerPrivate *priv;
+	NautilusFileUndoManagerPrivate *priv = self->priv = 
+		G_TYPE_INSTANCE_GET_PRIVATE (self, 
+					     NAUTILUS_TYPE_FILE_UNDO_MANAGER, 
+					     NautilusFileUndoManagerPrivate);
 
-	priv = NAUTILUS_FILE_UNDO_MANAGER_GET_PRIVATE (self);
-
-	self->priv = priv;
-
-	/* Initialize private fields */
-	priv->stack = g_queue_new ();
-	g_mutex_init(&priv->mutex);
-	priv->index = 0;
-	priv->undo_redo_flag = FALSE;
-
-	/* initialize the undo stack depth */
-	priv->undo_levels = DEFAULT_UNDO_DEPTH;
-
-	g_mutex_lock (&priv->mutex);
-	stack_ensure_size (self);
-	g_mutex_unlock (&priv->mutex);
+	priv->trash_signal_id = g_signal_connect (nautilus_trash_monitor_get (),
+						  "trash-state-changed",
+						  G_CALLBACK (trash_state_changed_cb), self);
 }
 
 static void
@@ -278,35 +118,15 @@ nautilus_file_undo_manager_finalize (GObject * object)
 	NautilusFileUndoManager *self = NAUTILUS_FILE_UNDO_MANAGER (object);
 	NautilusFileUndoManagerPrivate *priv = self->priv;
 
-	g_mutex_lock (&priv->mutex);
-	
-	g_queue_foreach (priv->stack, (GFunc) nautilus_file_undo_data_free, NULL);
-	g_queue_free (priv->stack);
-
-	g_mutex_unlock (&priv->mutex);
-	g_mutex_clear (&priv->mutex);
-
-	G_OBJECT_CLASS (nautilus_file_undo_manager_parent_class)->finalize (object);
-}
-
-static GObject *
-nautilus_file_undo_manager_constructor (GType type,
-					 guint n_construct_params,
-					 GObjectConstructParam *construct_params)
-{
-	GObject *retval;
-
-	if (singleton != NULL) {
-		return G_OBJECT (singleton);
+	if (priv->trash_signal_id != 0) {
+		g_signal_handler_disconnect (nautilus_trash_monitor_get (),
+					     priv->trash_signal_id);
+		priv->trash_signal_id = 0;
 	}
 
-	retval = G_OBJECT_CLASS (nautilus_file_undo_manager_parent_class)->constructor
-		(type, n_construct_params, construct_params);
+	file_undo_manager_clear (self);
 
-	singleton = NAUTILUS_FILE_UNDO_MANAGER (retval);
-	g_object_add_weak_pointer (retval, (gpointer) &singleton);
-
-	return retval;
+	G_OBJECT_CLASS (nautilus_file_undo_manager_parent_class)->finalize (object);
 }
 
 static void
@@ -316,7 +136,6 @@ nautilus_file_undo_manager_class_init (NautilusFileUndoManagerClass *klass)
 
 	oclass = G_OBJECT_CLASS (klass);
 
-	oclass->constructor = nautilus_file_undo_manager_constructor;
 	oclass->finalize = nautilus_file_undo_manager_finalize;
 
 	signals[SIGNAL_UNDO_CHANGED] =
@@ -330,148 +149,36 @@ nautilus_file_undo_manager_class_init (NautilusFileUndoManagerClass *klass)
 	g_type_class_add_private (klass, sizeof (NautilusFileUndoManagerPrivate));
 }
 
-void
-nautilus_file_undo_manager_trash_has_emptied (NautilusFileUndoManager *manager)
-{
-	NautilusFileUndoManagerPrivate *priv;
-	NautilusFileUndoData *action;
-	guint newest_move_to_trash_position;
-	guint i, length;
-
-	priv = manager->priv;
-
-	g_mutex_lock (&priv->mutex);
-
-	/* Clear actions from the oldest to the newest move to trash */
-	clear_redo_actions (priv);
-
-	/* Search newest move to trash */
-	length = g_queue_get_length (priv->stack);
-	newest_move_to_trash_position = -1;
-	action = NULL;
-
-	for (i = 0; i < length; i++) {
-		action = (NautilusFileUndoData *)g_queue_peek_nth (priv->stack, i);
-		if (action->type == NAUTILUS_FILE_UNDO_MOVE_TO_TRASH) {
-			newest_move_to_trash_position = i;
-			break;
-		}
-	}
-
-	if (newest_move_to_trash_position >= 0) {
-		guint to_clear;
-		to_clear = length - newest_move_to_trash_position;
-		stack_clear_n_oldest (priv->stack, to_clear);
-	}
-
-	g_mutex_unlock (&priv->mutex);
-}
-
-guint64
-nautilus_file_undo_manager_get_file_modification_time (GFile * file)
-{
-	GFileInfo *info;
-	guint64 mtime;
-
-	/* TODO: Synch-I/O, Error checking. */
-	info = g_file_query_info (file, G_FILE_ATTRIBUTE_TIME_MODIFIED, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, FALSE, NULL);
-	if (info == NULL) {
-		return -1;
-	}
-
-	mtime = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
-
-	g_object_unref (info);
-
-	return mtime;
-}
-
 static void
-refresh_strings (NautilusFileUndoData *action)
-{
-	gchar **descriptions;
-	gchar **labels;
-
-	descriptions = (gchar **) g_malloc0 (3 * sizeof (gchar *));
-	descriptions[2] = NULL;
-
-	labels = (gchar **) g_malloc0 (3 * sizeof (gchar *));
-	labels[2] = NULL;
-
-	action->strings_func (action, action->count,
-			      labels, descriptions);
-
-	action->undo_label = labels[0];
-	action->redo_label = labels[1];
-
-	action->undo_description = descriptions[0];
-	action->redo_description = descriptions[1];
-
-	g_free (descriptions);
-	g_free (labels);
-}
-
-static const gchar *
-get_redo_label (NautilusFileUndoData *action)
-{
-	if (action->redo_label == NULL) {
-		refresh_strings (action);
-	}
-
-	return action->redo_label;
-}
-
-static const gchar *
-get_undo_label (NautilusFileUndoData *action)
-{
-	if (action->undo_label == NULL) {
-		refresh_strings (action);
-	}
-
-	return action->undo_label;
-}
-
-static const char *
-get_undo_description (NautilusFileUndoData *action)
-{
-	if (action->undo_description == NULL) {
-		refresh_strings (action);
-	}
-
-	return action->undo_description;
-}
-
-static const char *
-get_redo_description (NautilusFileUndoData *action)
-{
-	if (action->redo_description == NULL) {
-		refresh_strings (action);
-	}
-
-	return action->redo_description;
-}
-
-static void
-do_undo_redo_finish (NautilusFileUndoData *data,
-		     gboolean success,
-		     gpointer user_data)
+undo_info_apply_ready (GObject *source,
+		       GAsyncResult *res,
+		       gpointer user_data)
 {
 	NautilusFileUndoManager *self = user_data;
+	NautilusFileUndoInfo *info = NAUTILUS_FILE_UNDO_INFO (source);
+	gboolean success, user_cancel;
 
-	self->priv->undo_redo_flag = FALSE;
+	success = nautilus_file_undo_info_apply_finish (info, res, &user_cancel, NULL);
 
-	/* If the action needed to be freed but was locked, free now */
-	if (data->freed) {
-		nautilus_file_undo_data_free (data);
+	/* just return in case we got another another operation set */
+	if ((self->priv->info != NULL) &&
+	    (self->priv->info != info)) {
 		return;
 	}
 
-	g_print ("success %d\n\n", success);
+	if (success) {
+		if (self->priv->last_state == NAUTILUS_FILE_UNDO_MANAGER_STATE_UNDO) {
+			self->priv->state = NAUTILUS_FILE_UNDO_MANAGER_STATE_REDO;
+		} else if (self->priv->last_state == NAUTILUS_FILE_UNDO_MANAGER_STATE_REDO) {
+			self->priv->state = NAUTILUS_FILE_UNDO_MANAGER_STATE_UNDO;
+		}
 
-	data->locked = FALSE;
-
-	if (!success) {
-		nautilus_file_undo_manager_add_action (self, data);
+		self->priv->info = g_object_ref (info);
+	} else if (user_cancel) {
+		self->priv->state = self->priv->last_state;
+		self->priv->info = g_object_ref (info);
+	} else {
+		file_undo_manager_clear (self);
 	}
 
 	g_signal_emit (self, signals[SIGNAL_UNDO_CHANGED], 0);
@@ -479,137 +186,109 @@ do_undo_redo_finish (NautilusFileUndoData *data,
 
 static void
 do_undo_redo (NautilusFileUndoManager *self,
-	      GtkWindow *parent_window,
-	      gboolean undo)
+	      GtkWindow *parent_window)
 {
-	NautilusFileUndoManagerPrivate *priv = self->priv;
-	NautilusFileUndoData *action;
+	gboolean undo = self->priv->state == NAUTILUS_FILE_UNDO_MANAGER_STATE_UNDO;
 
-	/* Update the menus invalidating undo/redo while an operation is already underway */
-	g_mutex_lock (&priv->mutex);
+	self->priv->last_state = self->priv->state;
+	
+	nautilus_file_undo_manager_push_flag ();
+	nautilus_file_undo_info_apply_async (self->priv->info, undo, parent_window,
+					     undo_info_apply_ready, self);
 
-	if (undo) {
-		action = stack_scroll_right (priv);
-	} else {
-		action = stack_scroll_left (priv);
-	}
-
-	/* Action will be NULL if redo is not possible */
-	if (action != NULL) {
-		action->locked = TRUE;  /* Remember to unlock when finished */
-	}
-
-	g_mutex_unlock (&priv->mutex);
-
+	/* clear actions while undoing */
+	file_undo_manager_clear (self);
 	g_signal_emit (self, signals[SIGNAL_UNDO_CHANGED], 0);
-
-	if (action != NULL) {
-		priv->undo_redo_flag = TRUE;
-		
-		action->callback = do_undo_redo_finish;
-		action->callback_user_data = self;
-
-		if (undo) {
-			action->undo_func (action, parent_window);
-		} else {
-			action->redo_func (action, parent_window);
-		}
-	}
 }
 
 void
-nautilus_file_undo_manager_redo (NautilusFileUndoManager        *manager,
-				 GtkWindow                      *parent_window)
+nautilus_file_undo_manager_redo (GtkWindow *parent_window)
 {
-	do_undo_redo (manager, parent_window, FALSE);
-}
+	NautilusFileUndoManager *self = get_singleton ();
 
-void
-nautilus_file_undo_manager_undo (NautilusFileUndoManager        *manager,
-				 GtkWindow                      *parent_window)
-{
-	do_undo_redo (manager, parent_window, TRUE);
-}
-
-void
-nautilus_file_undo_manager_add_action (NautilusFileUndoManager    *self,
-                                        NautilusFileUndoData *action)
-{
-	NautilusFileUndoManagerPrivate *priv;
-
-	priv = self->priv;
-
-	DEBUG ("Adding action %p, type %d", action, action->type);
-
-	if (!(action && action->is_valid)) {
-		DEBUG ("Action %p is not valid, ignoring", action);
-		nautilus_file_undo_data_free (action);
+	if (self->priv->state != NAUTILUS_FILE_UNDO_MANAGER_STATE_REDO) {
+		g_warning ("Called redo, but state is %s!", self->priv->state == 0 ?
+			   "none" : "undo");
 		return;
 	}
 
-	action->manager = self;
+	do_undo_redo (self, parent_window);
+}
 
-	g_mutex_lock (&priv->mutex);
-	stack_push_action (self, action);
-	g_mutex_unlock (&priv->mutex);
+void
+nautilus_file_undo_manager_undo (GtkWindow *parent_window)
+{
+	NautilusFileUndoManager *self = get_singleton ();
+
+	if (self->priv->state != NAUTILUS_FILE_UNDO_MANAGER_STATE_UNDO) {
+		g_warning ("Called undo, but state is %s!", self->priv->state == 0 ?
+			   "none" : "redo");
+		return;
+	}
+
+	do_undo_redo (self, parent_window);
+}
+
+void
+nautilus_file_undo_manager_set_action (NautilusFileUndoInfo *info)
+{
+	NautilusFileUndoManager *self = get_singleton ();
+
+	DEBUG ("Setting undo information %p", info);
+
+	file_undo_manager_clear (self);
+
+	if (info != NULL) {
+		self->priv->info = g_object_ref (info);
+		self->priv->state = NAUTILUS_FILE_UNDO_MANAGER_STATE_UNDO;
+		self->priv->last_state = NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE;
+	}
 
 	g_signal_emit (self, signals[SIGNAL_UNDO_CHANGED], 0);
 }
 
-gboolean
-nautilus_file_undo_manager_is_undo_redo (NautilusFileUndoManager *manager)
+NautilusFileUndoInfo *
+nautilus_file_undo_manager_get_action (void)
 {
-	NautilusFileUndoManagerPrivate *priv = manager->priv;
+	NautilusFileUndoManager *self = get_singleton ();
 
-	return priv->undo_redo_flag;
+	return self->priv->info;
 }
 
-NautilusFileUndoManager *
-nautilus_file_undo_manager_get (void)
+NautilusFileUndoManagerState 
+nautilus_file_undo_manager_get_state (void)
 {
-	NautilusFileUndoManager *manager;
+	NautilusFileUndoManager *self = get_singleton ();
 
-	manager = g_object_new (NAUTILUS_TYPE_FILE_UNDO_MANAGER,
-				NULL);
-
-	return manager;
-}
-
-NautilusFileUndoMenuData *
-nautilus_file_undo_manager_get_menu_data (NautilusFileUndoManager *self)
-{
-	NautilusFileUndoData *action;
-	NautilusFileUndoManagerPrivate *priv;
-	NautilusFileUndoMenuData *data;
-
-	priv = self->priv;
-	data = g_slice_new0 (NautilusFileUndoMenuData);
-
-	DEBUG ("Getting menu data");
-
-	g_mutex_lock (&priv->mutex);
-
-	action = get_next_undo_action (priv);
-
-	if (action != NULL) {
-		data->undo_label = get_undo_label (action);
-		data->undo_description = get_undo_description (action);
-	}
-
-	action = get_next_redo_action (priv);
-
-	if (action != NULL) {
-		data->redo_label = get_redo_label (action);
-		data->redo_description = get_redo_description (action);
-	}
-
-	g_mutex_unlock (&priv->mutex);
-
-	return data;
+	return self->priv->state;
 }
 
 void
-nautilus_file_undo_menu_data_free (NautilusFileUndoMenuData *data)
+nautilus_file_undo_manager_push_flag ()
 {
-	g_slice_free (NautilusFileUndoMenuData, data);
+	NautilusFileUndoManager *self = get_singleton ();
+	NautilusFileUndoManagerPrivate *priv = self->priv;
+
+	priv->undo_redo_flag = TRUE;
+}
+
+gboolean
+nautilus_file_undo_manager_pop_flag ()
+{
+	NautilusFileUndoManager *self = get_singleton ();
+	NautilusFileUndoManagerPrivate *priv = self->priv;
+	gboolean retval = FALSE;
+
+	if (priv->undo_redo_flag) {
+		retval = TRUE;
+	}
+
+	priv->undo_redo_flag = FALSE;
+	return retval;
+}
+
+NautilusFileUndoManager *
+nautilus_file_undo_manager_get ()
+{
+	return get_singleton ();
 }
