@@ -28,7 +28,7 @@
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-monitor.h>
-#include <libnautilus-private/nautilus-file-undo-types.h>
+#include <libnautilus-private/nautilus-file-undo-operations.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 
