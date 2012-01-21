@@ -343,7 +343,7 @@ file_undo_info_complete_apply (NautilusFileUndoInfo *self,
 	op_res.success = success;
 
 	g_simple_async_result_set_op_res_gpointer (self->priv->apply_async_result, &op_res, NULL);
-	g_simple_async_result_complete (self->priv->apply_async_result);
+	g_simple_async_result_complete_in_idle (self->priv->apply_async_result);
 
 	g_clear_object (&self->priv->apply_async_result);
 }
