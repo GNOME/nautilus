@@ -1762,8 +1762,6 @@ trash_files (CommonJob *job, GList *files, int *files_skipped)
 	int total_files, files_trashed;
 	char *primary, *secondary, *details;
 	int response;
-	GFileInfo *info;
-	guint64 mtime;
 
 	if (job_aborted (job)) {
 		return;
@@ -1781,19 +1779,6 @@ trash_files (CommonJob *job, GList *files, int *files_skipped)
 		file = l->data;
 
 		error = NULL;
-		mtime = 0;
-
-		if (job->undo_info != NULL) {
-			info = g_file_query_info (file,
-						  G_FILE_ATTRIBUTE_TIME_MODIFIED,
-						  G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, 
-						  NULL, NULL);
-
-			if (info != NULL) {
-				mtime = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
-				g_object_unref (info);
-			}
-		}
 
 		if (!g_file_trash (file, job->cancellable, &error)) {
 			if (job->skip_all_error) {
@@ -1842,9 +1827,8 @@ trash_files (CommonJob *job, GList *files, int *files_skipped)
 		} else {
 			nautilus_file_changes_queue_file_removed (file);
 
-			if (job->undo_info != NULL && mtime != 0) {
-				nautilus_file_undo_info_trash_add_file (NAUTILUS_FILE_UNDO_INFO_TRASH (job->undo_info),
-									file, mtime);
+			if (job->undo_info != NULL) {
+				nautilus_file_undo_info_trash_add_file (NAUTILUS_FILE_UNDO_INFO_TRASH (job->undo_info), file);
 			}
 
 			files_trashed++;

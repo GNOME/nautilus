@@ -72,67 +72,6 @@ uri_list_to_gfile_list (GList * urilist)
 	return file_list;
 }
 
-/* TODO: Synch-I/O, error handling */
-static GHashTable *
-retrieve_files_to_restore (GHashTable * trashed)
-{
-	GFileEnumerator *enumerator;
-	GHashTable *to_restore;
-	GFile *trash;
-
-	to_restore = g_hash_table_new_full (g_direct_hash, g_direct_equal, g_object_unref, g_free);
-
-	trash = g_file_new_for_uri ("trash:///");
-
-	enumerator = g_file_enumerate_children (trash,
-			G_FILE_ATTRIBUTE_STANDARD_NAME","
-			G_FILE_ATTRIBUTE_TIME_MODIFIED","
-			G_FILE_ATTRIBUTE_TRASH_ORIG_PATH,
-			G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-			NULL, NULL);
-
-	if (enumerator) {
-		GFileInfo *info;
-		guint64 *mtime;
-		gpointer lookupvalue;
-		GFile *item;
-		guint64 mtime_item;
-		char *origpath;
-		GFile *origfile;
-		char *origuri;
-
-		mtime = 0;
-		while ((info = g_file_enumerator_next_file (enumerator, NULL, NULL)) != NULL) {
-			/* Retrieve the original file uri */
-			origpath = g_file_info_get_attribute_as_string (info, G_FILE_ATTRIBUTE_TRASH_ORIG_PATH);
-			origfile = g_file_new_for_path (origpath);
-			origuri = g_file_get_uri (origfile);
-			g_object_unref (origfile);
-			g_free (origpath);
-
-			lookupvalue = g_hash_table_lookup (trashed, origuri);
-
-			if (lookupvalue) {
-				mtime = (guint64 *)lookupvalue;
-				mtime_item = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
-				if (*mtime == mtime_item) {
-					/* File in the trash */
-					item = g_file_get_child (trash, g_file_info_get_name (info));
-					g_hash_table_insert (to_restore, item, origuri);
-				}
-			} else {
-				g_free (origuri);
-			}
-
-		}
-		g_file_enumerator_close (enumerator, FALSE, NULL);
-		g_object_unref (enumerator);
-	}
-	g_object_unref (trash);
-
-	return to_restore;
-}
-
 /* description helpers */
 static void
 nautilus_file_undo_info_init (NautilusFileUndoInfo *self)
@@ -1062,19 +1001,123 @@ trash_redo_func (NautilusFileUndoInfo *info,
 	}
 }
 
-static void
-trash_undo_func (NautilusFileUndoInfo *info,
-		 GtkWindow *parent_window)
+static GHashTable *
+trash_retrieve_files_to_restore_finish (NautilusFileUndoInfoTrash *self,
+					GAsyncResult *res,
+					GError **error)
 {
-	NautilusFileUndoInfoTrash *self = NAUTILUS_FILE_UNDO_INFO_TRASH (info);
+	GHashTable *retval = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (res));
+
+	if (retval == NULL) {
+		g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (res), error);
+	}
+
+	return retval;
+}
+
+static void
+trash_retrieve_files_to_restore_thread (GSimpleAsyncResult *res,
+					GObject *object,
+					GCancellable *cancellable)
+{
+	NautilusFileUndoInfoTrash *self = NAUTILUS_FILE_UNDO_INFO_TRASH (object);
+	GFileEnumerator *enumerator;
+	GHashTable *to_restore;
+	GFile *trash;
+	GError *error = NULL;
+
+	to_restore = g_hash_table_new_full (g_direct_hash, g_direct_equal, g_object_unref, g_free);
+
+	trash = g_file_new_for_uri ("trash:///");
+
+	enumerator = g_file_enumerate_children (trash,
+			G_FILE_ATTRIBUTE_STANDARD_NAME","
+			G_FILE_ATTRIBUTE_TRASH_DELETION_DATE","
+			G_FILE_ATTRIBUTE_TRASH_ORIG_PATH,
+			G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+			NULL, &error);
+
+	if (enumerator) {
+		GFileInfo *info;
+		gpointer lookupvalue;
+		GFile *item;
+		GTimeVal timeval;
+		glong trash_time, orig_trash_time;
+		char *origpath;
+		GFile *origfile;
+		char *origuri;
+		const char *time_string;
+
+		while ((info = g_file_enumerator_next_file (enumerator, NULL, &error)) != NULL) {
+			/* Retrieve the original file uri */
+			origpath = g_file_info_get_attribute_as_string (info, G_FILE_ATTRIBUTE_TRASH_ORIG_PATH);
+			origfile = g_file_new_for_path (origpath);
+			origuri = g_file_get_uri (origfile);
+			g_object_unref (origfile);
+			g_free (origpath);
+
+			lookupvalue = g_hash_table_lookup (self->priv->trashed, origuri);
+
+			if (lookupvalue) {
+				orig_trash_time = GPOINTER_TO_SIZE (lookupvalue);
+				time_string = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_TRASH_DELETION_DATE);
+				if (time_string != NULL) {
+					g_time_val_from_iso8601 (time_string, &timeval);
+					trash_time = timeval.tv_sec;
+				} else {
+					trash_time = 0;
+				}
+
+				if (trash_time == orig_trash_time) {
+					/* File in the trash */
+					item = g_file_get_child (trash, g_file_info_get_name (info));
+					g_hash_table_insert (to_restore, item, origuri);
+				}
+			} else {
+				g_free (origuri);
+			}
+
+		}
+		g_file_enumerator_close (enumerator, FALSE, NULL);
+		g_object_unref (enumerator);
+	}
+	g_object_unref (trash);
+
+	if (error != NULL) {
+		g_simple_async_result_take_error (res, error);
+		g_hash_table_destroy (to_restore);
+	} else {
+		g_simple_async_result_set_op_res_gpointer (res, to_restore, NULL);
+	}
+}
+
+static void
+trash_retrieve_files_to_restore_async (NautilusFileUndoInfoTrash *self,
+				 GAsyncReadyCallback callback,
+				 gpointer user_data)
+{
+	GSimpleAsyncResult *async_op;
+
+	async_op = g_simple_async_result_new (G_OBJECT (self), callback, user_data,
+					      trash_retrieve_files_to_restore_async);
+	g_simple_async_result_run_in_thread (async_op, trash_retrieve_files_to_restore_thread,
+					     G_PRIORITY_DEFAULT, NULL);
+
+	g_object_unref (async_op);
+}
+
+static void
+trash_retrieve_files_ready (GObject *source,
+			    GAsyncResult *res,
+			    gpointer user_data)
+{
+	NautilusFileUndoInfoTrash *self = NAUTILUS_FILE_UNDO_INFO_TRASH (source);
 	GHashTable *files_to_restore;
+	GError *error = NULL;
 
-	/* Internally managed op, pop flag. */
-	nautilus_file_undo_manager_pop_flag ();
+	files_to_restore = trash_retrieve_files_to_restore_finish (self, res, &error);
 
-	files_to_restore = retrieve_files_to_restore (self->priv->trashed);
-
-	if (g_hash_table_size (files_to_restore) > 0) {
+	if (error == NULL && g_hash_table_size (files_to_restore) > 0) {
 		GList *gfiles_in_trash, *l;
 		GFile *item;
 		GFile *dest;
@@ -1086,6 +1129,7 @@ trash_undo_func (NautilusFileUndoInfo *info,
 			item = l->data;
 			value = g_hash_table_lookup (files_to_restore, item);
 			dest = g_file_new_for_uri (value);
+
 			g_file_move (item, dest, G_FILE_COPY_NOFOLLOW_SYMLINKS, NULL, NULL, NULL, NULL);
 			g_object_unref (dest);
 		}
@@ -1093,10 +1137,25 @@ trash_undo_func (NautilusFileUndoInfo *info,
 		g_list_free (gfiles_in_trash);
 	}
 
-	g_hash_table_destroy (files_to_restore);
+	if (files_to_restore != NULL) {
+		g_hash_table_destroy (files_to_restore);
+	}
 
 	/* Here we must do what's necessary for the callback */
-	file_undo_info_transfer_callback (NULL, TRUE, self);
+	file_undo_info_transfer_callback (NULL, (error != NULL), self);
+	g_clear_error (&error);
+}
+
+static void
+trash_undo_func (NautilusFileUndoInfo *info,
+		 GtkWindow *parent_window)
+{
+	NautilusFileUndoInfoTrash *self = NAUTILUS_FILE_UNDO_INFO_TRASH (info);
+
+	/* Internally managed op, pop flag. */
+	nautilus_file_undo_manager_pop_flag ();
+
+	trash_retrieve_files_to_restore_async (self, trash_retrieve_files_ready, NULL);
 }
 
 static void
@@ -1143,17 +1202,17 @@ nautilus_file_undo_info_trash_new (gint item_count)
 
 void
 nautilus_file_undo_info_trash_add_file (NautilusFileUndoInfoTrash *self,
-					GFile                     *file,
-					guint64                    mtime)
+					GFile                     *file)
 {
-	guint64 *modification_time;
+	GTimeVal current_time;
+	gsize orig_trash_time;
 	gchar *original_uri;
 
-	modification_time = g_new (guint64, 1);
-	*modification_time = mtime;
-
+	g_get_current_time (&current_time);
+	orig_trash_time = current_time.tv_sec;
 	original_uri = g_file_get_uri (file);
-	g_hash_table_insert (self->priv->trashed, original_uri, modification_time);
+
+	g_hash_table_insert (self->priv->trashed, original_uri, GSIZE_TO_POINTER (orig_trash_time));
 }
 
 /* recursive permissions */
