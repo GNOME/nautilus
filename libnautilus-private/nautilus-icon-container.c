@@ -2688,6 +2688,7 @@ stop_rubberbanding (NautilusIconContainer *container,
 {
 	NautilusIconRubberbandInfo *band_info;
 	GList *icons;
+	gboolean enable_animation;
 
 	band_info = &container->details->rubberband_info;
 
@@ -2697,10 +2698,16 @@ stop_rubberbanding (NautilusIconContainer *container,
 
 	band_info->active = FALSE;
 
+	g_object_get (gtk_settings_get_default (), "gtk-enable-animations", &enable_animation, NULL);
+
 	/* Destroy this canvas item; the parent will unref it. */
 	eel_canvas_item_ungrab (band_info->selection_rectangle, time);
 	eel_canvas_item_lower_to_bottom (band_info->selection_rectangle);
-	nautilus_selection_canvas_item_fade_out (NAUTILUS_SELECTION_CANVAS_ITEM (band_info->selection_rectangle), 150);
+	if (enable_animation) {
+		nautilus_selection_canvas_item_fade_out (NAUTILUS_SELECTION_CANVAS_ITEM (band_info->selection_rectangle), 150);
+	} else {
+		eel_canvas_item_destroy (band_info->selection_rectangle);
+	}
 	band_info->selection_rectangle = NULL;
 
 	/* if only one item has been selected, use it as range
