@@ -1164,7 +1164,7 @@ nautilus_file_undo_info_trash_init (NautilusFileUndoInfoTrash *self)
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, nautilus_file_undo_info_trash_get_type (),
 						  NautilusFileUndoInfoTrashDetails);
 	self->priv->trashed =
-		g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+		g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 }
 
 static void
