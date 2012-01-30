@@ -226,6 +226,12 @@ typedef struct {
 	gboolean user_cancel;
 } FileUndoInfoOpRes;
 
+static void
+file_undo_info_op_res_free (gpointer data)
+{
+	g_slice_free (FileUndoInfoOpRes, data);
+}
+
 gboolean
 nautilus_file_undo_info_apply_finish (NautilusFileUndoInfo *self,
 				      GAsyncResult *res,
@@ -261,12 +267,14 @@ file_undo_info_complete_apply (NautilusFileUndoInfo *self,
 			       gboolean success,
 			       gboolean user_cancel)
 {
-	FileUndoInfoOpRes op_res;
+	FileUndoInfoOpRes *op_res = g_slice_new0 (FileUndoInfoOpRes);
 
-	op_res.user_cancel = user_cancel;
-	op_res.success = success;
+	op_res->user_cancel = user_cancel;
+	op_res->success = success;
 
-	g_simple_async_result_set_op_res_gpointer (self->priv->apply_async_result, &op_res, NULL);
+
+	g_simple_async_result_set_op_res_gpointer (self->priv->apply_async_result, op_res,
+						   file_undo_info_op_res_free);
 	g_simple_async_result_complete_in_idle (self->priv->apply_async_result);
 
 	g_clear_object (&self->priv->apply_async_result);
@@ -1113,14 +1121,17 @@ trash_retrieve_files_ready (GObject *source,
 		}
 
 		g_list_free (gfiles_in_trash);
+
+		/* Here we must do what's necessary for the callback */
+		file_undo_info_transfer_callback (NULL, (error == NULL), self);
+	} else {
+		file_undo_info_transfer_callback (NULL, FALSE, self);
 	}
 
 	if (files_to_restore != NULL) {
 		g_hash_table_destroy (files_to_restore);
 	}
 
-	/* Here we must do what's necessary for the callback */
-	file_undo_info_transfer_callback (NULL, (error != NULL), self);
 	g_clear_error (&error);
 }
 
