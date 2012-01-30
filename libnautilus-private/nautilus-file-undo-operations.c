@@ -976,6 +976,43 @@ trash_strings_func (NautilusFileUndoInfo *info,
 }
 
 static void
+trash_redo_func_callback (GHashTable *debuting_uris,
+			  gboolean user_cancel,
+			  gpointer user_data)
+{
+	NautilusFileUndoInfoTrash *self = user_data;
+	GHashTable *new_trashed_files;
+	GTimeVal current_time;
+	gsize updated_trash_time;
+	GFile *file;
+	GList *keys, *l;
+
+	if (!user_cancel) {
+		new_trashed_files = 
+			g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal, 
+					       g_object_unref, NULL);
+
+		keys = g_hash_table_get_keys (self->priv->trashed);
+
+		g_get_current_time (&current_time);
+		updated_trash_time = current_time.tv_sec;
+
+		for (l = keys; l != NULL; l = l->next) {
+			file = l->data;
+			g_hash_table_insert (new_trashed_files,
+					     g_object_ref (file), GSIZE_TO_POINTER (updated_trash_time));
+		}
+
+		g_list_free (keys);
+		g_hash_table_destroy (self->priv->trashed);
+
+		self->priv->trashed = new_trashed_files;
+	}
+
+	file_undo_info_delete_callback (debuting_uris, user_cancel, user_data);
+}
+
+static void
 trash_redo_func (NautilusFileUndoInfo *info,
 		 GtkWindow *parent_window)
 {
@@ -986,7 +1023,7 @@ trash_redo_func (NautilusFileUndoInfo *info,
 
 		locations = g_hash_table_get_keys (self->priv->trashed);
 		nautilus_file_operations_trash_or_delete (locations, parent_window,
-							  file_undo_info_delete_callback, self);
+							  trash_redo_func_callback, self);
 
 		g_list_free (locations);
 	}
