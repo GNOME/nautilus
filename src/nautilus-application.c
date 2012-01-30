@@ -1222,7 +1222,7 @@ nautilus_application_class_init (NautilusApplicationClass *class)
 	gtkapp_class = GTK_APPLICATION_CLASS (class);
 	gtkapp_class->window_removed = nautilus_application_window_removed;
 
-	g_type_class_add_private (class, sizeof (NautilusApplication));
+	g_type_class_add_private (class, sizeof (NautilusApplicationPriv));
 }
 
 NautilusApplication *
