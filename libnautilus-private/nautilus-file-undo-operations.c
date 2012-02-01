@@ -301,7 +301,7 @@ file_undo_info_operation_callback (NautilusFile * file,
 {
 	NautilusFileUndoInfo *self = user_data;
 
-	file_undo_info_complete_apply (self, (error != NULL),
+	file_undo_info_complete_apply (self, (error == NULL),
 				       g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED));
 }
 
