@@ -424,6 +424,7 @@ on_widget_destroyed (GtkWidget *widget,
 		self->details->change_idle_id = 0;
 	}
 
+	free_fade (self);
 	self->details->widget = NULL;
 }
 
