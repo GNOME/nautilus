@@ -117,6 +117,8 @@ nautilus_desktop_background_finalize (GObject *object)
 	free_background_surface (self);
 	free_fade (self);
 
+	g_clear_object (&self->details->bg);
+
 	G_OBJECT_CLASS (nautilus_desktop_background_parent_class)->finalize (object);
 }
 
