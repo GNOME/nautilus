@@ -340,7 +340,7 @@ check_heading_for_section (NautilusPlacesSidebar *sidebar,
 	}
 }
 
-static GtkTreeIter
+static void
 add_place (NautilusPlacesSidebar *sidebar,
 	   PlaceType place_type,
 	   SectionType section_type,
@@ -409,34 +409,58 @@ add_place (NautilusPlacesSidebar *sidebar,
 	if (pixbuf != NULL) {
 		g_object_unref (pixbuf);
 	}
+}
 
-	return iter;
+typedef struct {
+	const gchar *location;
+	const gchar *last_uri;
+	NautilusPlacesSidebar *sidebar;
+	GtkTreePath *path;
+} RestoreLocationData;
+
+static gboolean
+restore_selection_foreach (GtkTreeModel *model,
+			   GtkTreePath *path,
+			   GtkTreeIter *iter,
+			   gpointer user_data)
+{
+	RestoreLocationData *data = user_data;
+	gchar *uri;
+
+	gtk_tree_model_get (model, iter,
+			    PLACES_SIDEBAR_COLUMN_URI, &uri,
+			    -1);
+
+	if (g_strcmp0 (uri, data->last_uri) == 0 ||
+	    g_strcmp0 (uri, data->location) == 0) {
+		data->path = gtk_tree_path_copy (path);
+	}
+
+	g_free (uri);
+
+	return (data->path != NULL);
 }
 
 static void
-compare_for_selection (NautilusPlacesSidebar *sidebar,
-		       const gchar *location,
-		       const gchar *added_uri,
-		       const gchar *last_uri,
-		       GtkTreeIter *iter,
-		       GtkTreePath **path)
+sidebar_update_restore_selection (NautilusPlacesSidebar *sidebar,
+				  const gchar *location,
+				  const gchar *last_uri)
 {
-	int res;
+	RestoreLocationData data;
+	GtkTreeSelection *selection;
 
-	res = g_strcmp0 (added_uri, last_uri);
+	data.location = location;
+	data.last_uri = last_uri;
+	data.sidebar = sidebar;
+	data.path = NULL;
 
-	if (res == 0) {
-		/* last_uri always comes first */
-		if (*path != NULL) {
-			gtk_tree_path_free (*path);
-		}
-		*path = gtk_tree_model_get_path (sidebar->filter_model,
-						 iter);
-	} else if (g_strcmp0 (location, added_uri) == 0) {
-		if (*path == NULL) {
-			*path = gtk_tree_model_get_path (sidebar->filter_model,
-							 iter);
-		}
+	gtk_tree_model_foreach (GTK_TREE_MODEL (sidebar->store),
+				restore_selection_foreach, &data);
+
+	if (data.path != NULL) {
+		selection = gtk_tree_view_get_selection (sidebar->tree_view);
+		gtk_tree_selection_select_path (selection, data.path);
+		gtk_tree_path_free (data.path);
 	}
 }
 
@@ -446,7 +470,6 @@ update_places (NautilusPlacesSidebar *sidebar)
 	NautilusBookmark *bookmark;
 	GtkTreeSelection *selection;
 	GtkTreeIter last_iter;
-	GtkTreePath *select_path;
 	GtkTreeModel *model;
 	GVolumeMonitor *volume_monitor;
 	GList *mounts, *l, *ll;
@@ -469,7 +492,6 @@ update_places (NautilusPlacesSidebar *sidebar)
 
 	model = NULL;
 	last_uri = NULL;
-	select_path = NULL;
 
 	selection = gtk_tree_view_get_selection (sidebar->tree_view);
 	if (gtk_tree_selection_get_selected (selection, &model, &last_iter)) {
@@ -506,13 +528,10 @@ update_places (NautilusPlacesSidebar *sidebar)
 					name = g_mount_get_name (mount);
 					tooltip = g_file_get_parse_name (root);
 
-					last_iter = add_place (sidebar, PLACES_MOUNTED_VOLUME,
-							       SECTION_DEVICES,
-							       name, icon, mount_uri,
-							       drive, volume, mount, 0, tooltip);
-					compare_for_selection (sidebar,
-							       location, mount_uri, last_uri,
-							       &last_iter, &select_path);
+					add_place (sidebar, PLACES_MOUNTED_VOLUME,
+						   SECTION_DEVICES,
+						   name, icon, mount_uri,
+						   drive, volume, mount, 0, tooltip);
 					g_object_unref (root);
 					g_object_unref (mount);
 					g_object_unref (icon);
@@ -532,10 +551,10 @@ update_places (NautilusPlacesSidebar *sidebar)
 					name = g_volume_get_name (volume);
 					tooltip = g_strdup_printf (_("Mount and open %s"), name);
 
-					last_iter = add_place (sidebar, PLACES_MOUNTED_VOLUME,
-							       SECTION_DEVICES,
-							       name, icon, NULL,
-							       drive, volume, NULL, 0, tooltip);
+					add_place (sidebar, PLACES_MOUNTED_VOLUME,
+						   SECTION_DEVICES,
+						   name, icon, NULL,
+						   drive, volume, NULL, 0, tooltip);
 					g_object_unref (icon);
 					g_free (name);
 					g_free (tooltip);
@@ -557,10 +576,10 @@ update_places (NautilusPlacesSidebar *sidebar)
 				name = g_drive_get_name (drive);
 				tooltip = g_strdup_printf (_("Mount and open %s"), name);
 
-				last_iter = add_place (sidebar, PLACES_BUILT_IN,
-						       SECTION_DEVICES,
-						       name, icon, NULL,
-						       drive, NULL, NULL, 0, tooltip);
+				add_place (sidebar, PLACES_BUILT_IN,
+					   SECTION_DEVICES,
+					   name, icon, NULL,
+					   drive, NULL, NULL, 0, tooltip);
 				g_object_unref (icon);
 				g_free (tooltip);
 				g_free (name);
@@ -588,13 +607,10 @@ update_places (NautilusPlacesSidebar *sidebar)
 			tooltip = g_file_get_parse_name (root);
 			g_object_unref (root);
 			name = g_mount_get_name (mount);
-			last_iter = add_place (sidebar, PLACES_MOUNTED_VOLUME,
-					       SECTION_DEVICES,
-					       name, icon, mount_uri,
-					       NULL, volume, mount, 0, tooltip);
-			compare_for_selection (sidebar,
-					       location, mount_uri, last_uri,
-					       &last_iter, &select_path);
+			add_place (sidebar, PLACES_MOUNTED_VOLUME,
+				   SECTION_DEVICES,
+				   name, icon, mount_uri,
+				   NULL, volume, mount, 0, tooltip);
 			g_object_unref (mount);
 			g_object_unref (icon);
 			g_free (name);
@@ -604,10 +620,10 @@ update_places (NautilusPlacesSidebar *sidebar)
 			/* see comment above in why we add an icon for an unmounted mountable volume */
 			icon = g_volume_get_icon (volume);
 			name = g_volume_get_name (volume);
-			last_iter = add_place (sidebar, PLACES_MOUNTED_VOLUME,
-					       SECTION_DEVICES,
-					       name, icon, NULL,
-					       NULL, volume, NULL, 0, name);
+			add_place (sidebar, PLACES_MOUNTED_VOLUME,
+				   SECTION_DEVICES,
+				   name, icon, NULL,
+				   NULL, volume, NULL, 0, name);
 			g_object_unref (icon);
 			g_free (name);
 		}
@@ -640,38 +656,31 @@ update_places (NautilusPlacesSidebar *sidebar)
 		mount_uri = nautilus_bookmark_get_uri (bookmark);
 		tooltip = g_file_get_parse_name (root);
 
-		last_iter = add_place (sidebar, PLACES_BOOKMARK,
-				       SECTION_BOOKMARKS,
-				       bookmark_name, icon, mount_uri,
-				       NULL, NULL, NULL, index,
-				       tooltip);
-		compare_for_selection (sidebar,
-				       location, mount_uri, last_uri,
-				       &last_iter, &select_path);
-
+		add_place (sidebar, PLACES_BOOKMARK,
+			   SECTION_BOOKMARKS,
+			   bookmark_name, icon, mount_uri,
+			   NULL, NULL, NULL, index,
+			   tooltip);
 		g_object_unref (root);
 		g_object_unref (icon);
 		g_free (mount_uri);
 		g_free (tooltip);
 	}
 
-	last_iter = add_heading (sidebar, SECTION_COMPUTER,
-			       _("Computer"));
+	add_heading (sidebar, SECTION_COMPUTER,
+		     _("Computer"));
 
 	/* add built in bookmarks */
 
 	/* home folder */
 	mount_uri = nautilus_get_home_directory_uri ();
 	icon = g_themed_icon_new (NAUTILUS_ICON_HOME);
-	last_iter = add_place (sidebar, PLACES_BUILT_IN,
-			       SECTION_COMPUTER,
-			       _("Home"), icon,
-			       mount_uri, NULL, NULL, NULL, 0,
-			       _("Open your personal folder"));
+	add_place (sidebar, PLACES_BUILT_IN,
+		   SECTION_COMPUTER,
+		   _("Home"), icon,
+		   mount_uri, NULL, NULL, NULL, 0,
+		   _("Open your personal folder"));
 	g_object_unref (icon);
-	compare_for_selection (sidebar,
-			       location, mount_uri, last_uri,
-			       &last_iter, &select_path);
 	g_free (mount_uri);
 
 	if (should_show_desktop ()) {
@@ -679,15 +688,12 @@ update_places (NautilusPlacesSidebar *sidebar)
 		desktop_path = nautilus_get_desktop_directory ();
 		mount_uri = g_filename_to_uri (desktop_path, NULL, NULL);
 		icon = g_themed_icon_new (NAUTILUS_ICON_DESKTOP);
-		last_iter = add_place (sidebar, PLACES_BUILT_IN,
-				       SECTION_COMPUTER,
-				       _("Desktop"), icon,
-				       mount_uri, NULL, NULL, NULL, 0,
-				       _("Open the contents of your desktop in a folder"));
+		add_place (sidebar, PLACES_BUILT_IN,
+			   SECTION_COMPUTER,
+			   _("Desktop"), icon,
+			   mount_uri, NULL, NULL, NULL, 0,
+			   _("Open the contents of your desktop in a folder"));
 		g_object_unref (icon);
-		compare_for_selection (sidebar,
-				       location, mount_uri, last_uri,
-				       &last_iter, &select_path);
 		g_free (mount_uri);
 		g_free (desktop_path);
 	}
@@ -718,14 +724,11 @@ update_places (NautilusPlacesSidebar *sidebar)
 		mount_uri = g_file_get_uri (root);
 		tooltip = g_file_get_parse_name (root);
 
-		last_iter = add_place (sidebar, PLACES_XDG_DIR,
-				       SECTION_COMPUTER,
-				       name, icon, mount_uri,
-				       NULL, NULL, NULL, 0,
-				       tooltip);
-		compare_for_selection (sidebar,
-				       location, mount_uri, last_uri,
-				       &last_iter, &select_path);
+		add_place (sidebar, PLACES_XDG_DIR,
+			   SECTION_COMPUTER,
+			   name, icon, mount_uri,
+			   NULL, NULL, NULL, 0,
+			   tooltip);
 		g_free (name);
 		g_object_unref (root);
 		g_object_unref (icon);
@@ -760,13 +763,10 @@ update_places (NautilusPlacesSidebar *sidebar)
 		mount_uri = g_file_get_uri (root);
 		name = g_mount_get_name (mount);
 		tooltip = g_file_get_parse_name (root);
-		last_iter = add_place (sidebar, PLACES_MOUNTED_VOLUME,
-				       SECTION_COMPUTER,
-				       name, icon, mount_uri,
-				       NULL, NULL, mount, 0, tooltip);
-		compare_for_selection (sidebar,
-				       location, mount_uri, last_uri,
-				       &last_iter, &select_path);
+		add_place (sidebar, PLACES_MOUNTED_VOLUME,
+			   SECTION_COMPUTER,
+			   name, icon, mount_uri,
+			   NULL, NULL, mount, 0, tooltip);
 		g_object_unref (root);
 		g_object_unref (mount);
 		g_object_unref (icon);
@@ -779,31 +779,25 @@ update_places (NautilusPlacesSidebar *sidebar)
 	/* file system root */
  	mount_uri = "file:///"; /* No need to strdup */
 	icon = g_themed_icon_new (NAUTILUS_ICON_FILESYSTEM);
-	last_iter = add_place (sidebar, PLACES_BUILT_IN,
-			       SECTION_COMPUTER,
-			       _("File System"), icon,
-			       mount_uri, NULL, NULL, NULL, 0,
-			       _("Open the contents of the File System"));
+	add_place (sidebar, PLACES_BUILT_IN,
+		   SECTION_COMPUTER,
+		   _("File System"), icon,
+		   mount_uri, NULL, NULL, NULL, 0,
+		   _("Open the contents of the File System"));
 	g_object_unref (icon);
-	compare_for_selection (sidebar,
-			       location, mount_uri, last_uri,
-			       &last_iter, &select_path);
 
 	mount_uri = "trash:///"; /* No need to strdup */
 	icon = nautilus_trash_monitor_get_icon ();
-	last_iter = add_place (sidebar, PLACES_BUILT_IN,
-			       SECTION_COMPUTER,
-			       _("Trash"), icon, mount_uri,
-			       NULL, NULL, NULL, 0,
-			       _("Open the trash"));
-	compare_for_selection (sidebar,
-			       location, mount_uri, last_uri,
-			       &last_iter, &select_path);
+	add_place (sidebar, PLACES_BUILT_IN,
+		   SECTION_COMPUTER,
+		   _("Trash"), icon, mount_uri,
+		   NULL, NULL, NULL, 0,
+		   _("Open the trash"));
 	g_object_unref (icon);
 
 	/* network */
-	last_iter = add_heading (sidebar, SECTION_NETWORK,
-				 _("Network"));
+	add_heading (sidebar, SECTION_NETWORK,
+		     _("Network"));
 
 	network_mounts = g_list_reverse (network_mounts);
 	for (l = network_mounts; l != NULL; l = l->next) {
@@ -813,13 +807,10 @@ update_places (NautilusPlacesSidebar *sidebar)
 		mount_uri = g_file_get_uri (root);
 		name = g_mount_get_name (mount);
 		tooltip = g_file_get_parse_name (root);
-		last_iter = add_place (sidebar, PLACES_MOUNTED_VOLUME,
-				       SECTION_NETWORK,
-				       name, icon, mount_uri,
-				       NULL, NULL, mount, 0, tooltip);
-		compare_for_selection (sidebar,
-				       location, mount_uri, last_uri,
-				       &last_iter, &select_path);
+		add_place (sidebar, PLACES_MOUNTED_VOLUME,
+			   SECTION_NETWORK,
+			   name, icon, mount_uri,
+			   NULL, NULL, mount, 0, tooltip);
 		g_object_unref (root);
 		g_object_unref (mount);
 		g_object_unref (icon);
@@ -833,26 +824,17 @@ update_places (NautilusPlacesSidebar *sidebar)
 	/* network:// */
  	mount_uri = "network:///"; /* No need to strdup */
 	icon = g_themed_icon_new (NAUTILUS_ICON_NETWORK);
-	last_iter = add_place (sidebar, PLACES_BUILT_IN,
-			       SECTION_NETWORK,
-			       _("Browse Network"), icon,
-			       mount_uri, NULL, NULL, NULL, 0,
-			       _("Browse the contents of the network"));
+	add_place (sidebar, PLACES_BUILT_IN,
+		   SECTION_NETWORK,
+		   _("Browse Network"), icon,
+		   mount_uri, NULL, NULL, NULL, 0,
+		   _("Browse the contents of the network"));
 	g_object_unref (icon);
-	compare_for_selection (sidebar,
-			       location, mount_uri, last_uri,
-			       &last_iter, &select_path);
-	
+
+	/* restore selection */
+	sidebar_update_restore_selection (sidebar, location, last_uri);
+
 	g_free (location);
-
-	if (select_path != NULL) {
-		gtk_tree_selection_select_path (selection, select_path);
-	}
-
-	if (select_path != NULL) {
-		gtk_tree_path_free (select_path);
-	}
-
 	g_free (last_uri);
 }
 
