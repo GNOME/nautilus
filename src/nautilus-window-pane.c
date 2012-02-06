@@ -1066,8 +1066,6 @@ nautilus_window_pane_close_slot (NautilusWindowPane *pane,
 
 	gtk_notebook_set_show_tabs (notebook,
 				    gtk_notebook_get_n_pages (notebook) > 1);
-
-	slot->pane = NULL;
 	pane->slots = g_list_remove (pane->slots, slot);
 }
 
