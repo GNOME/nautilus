@@ -438,16 +438,24 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *slot,
 	g_free (old_uri);
 	g_free (new_uri);
 
-	g_assert (!((flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) != 0 &&
-		    (flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB) != 0));
-
 	is_desktop = NAUTILUS_IS_DESKTOP_WINDOW (window);
 
 	if (is_desktop) {
 		use_same = !nautilus_desktop_window_loaded (NAUTILUS_DESKTOP_WINDOW (window));
+
+		/* if we're requested to open a new tab on the desktop, open a window
+		 * instead.
+		 */
+		if (flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB) {
+			flags ^= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
+			flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
+		}
 	} else {
 		use_same |= g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER);
 	}
+
+	g_assert (!((flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) != 0 &&
+		    (flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB) != 0));
 
 	/* and if the flags specify so, this is overridden */
 	if ((flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) != 0) {
