@@ -639,6 +639,51 @@ action_split_view_callback (GtkAction *action,
 	}
 }
 
+static void
+nautilus_window_update_split_view_actions_sensitivity (NautilusWindow *window)
+{
+	GtkActionGroup *action_group;
+	GtkAction *action;
+	gboolean have_multiple_panes;
+	gboolean next_pane_is_in_same_location;
+	GFile *active_pane_location;
+	GFile *next_pane_location;
+	NautilusWindowPane *next_pane;
+	NautilusWindowSlot *active_slot;
+
+	active_slot = nautilus_window_get_active_slot (window);
+	action_group = nautilus_window_get_main_action_group (window);
+
+	/* collect information */
+	have_multiple_panes = nautilus_window_split_view_showing (window);
+	if (active_slot != NULL) {
+		active_pane_location = nautilus_window_slot_get_location (active_slot);
+	} else {
+		active_pane_location = NULL;
+	}
+
+	next_pane = nautilus_window_get_next_pane (window);
+	if (next_pane && next_pane->active_slot) {
+		next_pane_location = nautilus_window_slot_get_location (next_pane->active_slot);
+		next_pane_is_in_same_location = (active_pane_location && next_pane_location &&
+						 g_file_equal (active_pane_location, next_pane_location));
+	} else {
+		next_pane_location = NULL;
+		next_pane_is_in_same_location = FALSE;
+	}
+
+	/* switch to next pane */
+	action = gtk_action_group_get_action (action_group, "SplitViewNextPane");
+	gtk_action_set_sensitive (action, have_multiple_panes);
+
+	/* same location */
+	action = gtk_action_group_get_action (action_group, "SplitViewSameLocation");
+	gtk_action_set_sensitive (action, have_multiple_panes && !next_pane_is_in_same_location);
+
+	/* clean up */
+	g_clear_object (&active_pane_location);
+	g_clear_object (&next_pane_location);
+}
 
 /* TODO: bind all of this with g_settings_bind and GBinding */
 static guint
@@ -665,6 +710,7 @@ nautilus_window_update_show_hide_menu_items (NautilusWindow *window)
 					      NAUTILUS_ACTION_SHOW_HIDE_EXTRA_PANE);
 	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
 				      nautilus_window_split_view_showing (window));
+	nautilus_window_update_split_view_actions_sensitivity (window);
 
 	action = gtk_action_group_get_action (action_group,
 					      "Sidebar Places");
@@ -740,52 +786,6 @@ nautilus_window_initialize_go_menu (NautilusWindow *window)
 		gtk_image_menu_item_set_always_show_image (
 				GTK_IMAGE_MENU_ITEM (menuitem), TRUE);
 	}
-}
-
-void
-nautilus_window_update_split_view_actions_sensitivity (NautilusWindow *window)
-{
-	GtkActionGroup *action_group;
-	GtkAction *action;
-	gboolean have_multiple_panes;
-	gboolean next_pane_is_in_same_location;
-	GFile *active_pane_location;
-	GFile *next_pane_location;
-	NautilusWindowPane *next_pane;
-	NautilusWindowSlot *active_slot;
-
-	active_slot = nautilus_window_get_active_slot (window);
-	action_group = nautilus_window_get_main_action_group (window);
-
-	/* collect information */
-	have_multiple_panes = nautilus_window_split_view_showing (window);
-	if (active_slot != NULL) {
-		active_pane_location = nautilus_window_slot_get_location (active_slot);
-	} else {
-		active_pane_location = NULL;
-	}
-
-	next_pane = nautilus_window_get_next_pane (window);
-	if (next_pane && next_pane->active_slot) {
-		next_pane_location = nautilus_window_slot_get_location (next_pane->active_slot);
-		next_pane_is_in_same_location = (active_pane_location && next_pane_location &&
-						 g_file_equal (active_pane_location, next_pane_location));
-	} else {
-		next_pane_location = NULL;
-		next_pane_is_in_same_location = FALSE;
-	}
-
-	/* switch to next pane */
-	action = gtk_action_group_get_action (action_group, "SplitViewNextPane");
-	gtk_action_set_sensitive (action, have_multiple_panes);
-
-	/* same location */
-	action = gtk_action_group_get_action (action_group, "SplitViewSameLocation");
-	gtk_action_set_sensitive (action, have_multiple_panes && !next_pane_is_in_same_location);
-
-	/* clean up */
-	g_clear_object (&active_pane_location);
-	g_clear_object (&next_pane_location);
 }
 
 static void

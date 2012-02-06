@@ -2075,8 +2075,6 @@ nautilus_window_split_view_off (NautilusWindow *window)
 					      active_pane->action_group);
 
 	nautilus_window_update_show_hide_menu_items (window);
-	nautilus_window_update_split_view_actions_sensitivity (window);
-
 	window_set_search_action_text (window, TRUE);
 }
 
