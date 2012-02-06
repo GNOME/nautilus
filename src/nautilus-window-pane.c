@@ -1000,6 +1000,7 @@ nautilus_window_pane_slot_close (NautilusWindowPane *pane,
 
 				DEBUG ("Calling set_active_pane, new slot %p", new_pane->active_slot);
 				nautilus_window_set_active_pane (window, new_pane);
+				nautilus_window_update_show_hide_menu_items (window);
 			} else {
 				DEBUG ("Last slot removed from the last pane, close the window");
 				nautilus_window_close (window);
