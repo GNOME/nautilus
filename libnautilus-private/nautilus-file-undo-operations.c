@@ -653,7 +653,6 @@ create_strings_func (NautilusFileUndoInfo *info,
 		*redo_label = g_strdup (_("_Redo Create Folder"));
 	} else if (op_type == NAUTILUS_FILE_UNDO_OP_CREATE_FILE_FROM_TEMPLATE) {
 		*redo_description = g_strdup_printf (_("Create new file '%s' from template "), name);
-		g_free (name);
 
 		*undo_label = g_strdup (_("_Undo Create from Template"));
 		*redo_label = g_strdup (_("_Redo Create from Template"));
