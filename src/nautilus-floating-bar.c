@@ -248,8 +248,13 @@ nautilus_floating_bar_constructed (GObject *obj)
 static void
 nautilus_floating_bar_init (NautilusFloatingBar *self)
 {
+	GtkStyleContext *context;
+
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, NAUTILUS_TYPE_FLOATING_BAR,
 						  NautilusFloatingBarDetails);
+
+	context = gtk_widget_get_style_context (GTK_WIDGET (self));
+	gtk_style_context_add_class (context, "floating-bar");
 }
 
 static void
