@@ -1025,7 +1025,7 @@ draw_label_text (NautilusIconCanvasItem *item,
 	PangoLayout *editable_layout;
 	PangoLayout *additional_layout;
 	GtkStyleContext *context;
-	GtkStateFlags state;
+	GtkStateFlags state, base_state;
 	gboolean have_editable, have_additional;
 	gboolean needs_highlight, prelight_label, is_rtl_label_beside;
 	EelIRect text_rect;
@@ -1064,7 +1064,11 @@ draw_label_text (NautilusIconCanvasItem *item,
 
 	max_text_width = floor (nautilus_icon_canvas_item_get_max_text_width (item));
 
-	state = GTK_STATE_FLAG_NORMAL;
+	base_state = gtk_widget_get_state_flags (GTK_WIDGET (container));
+	base_state &= ~(GTK_STATE_FLAG_SELECTED | 
+			GTK_STATE_FLAG_PRELIGHT);
+	state = base_state;
+
 	gtk_widget_style_get (GTK_WIDGET (container),
 			      "activate_prelight_icon_label", &prelight_label,
 			      NULL);
@@ -1072,11 +1076,7 @@ draw_label_text (NautilusIconCanvasItem *item,
 	/* if the icon is highlighted, do some set-up */
 	if (needs_highlight &&
 	    !details->is_renaming) {
-		if (gtk_widget_has_focus (GTK_WIDGET (container))) {
-			state |= GTK_STATE_FLAG_SELECTED;
-		} else {
-			state |= GTK_STATE_FLAG_ACTIVE;
-		}
+		state |= GTK_STATE_FLAG_SELECTED;
 
 		frame_x = is_rtl_label_beside ? text_rect.x0 + item->details->text_dx : text_rect.x0;
 		frame_y = text_rect.y0;
@@ -1117,16 +1117,14 @@ draw_label_text (NautilusIconCanvasItem *item,
 	
 	if (have_editable &&
 	    !details->is_renaming) {
-		state = GTK_STATE_FLAG_NORMAL;
+		state = base_state;
 
 		if (prelight_label && item->details->is_prelit) {
 			state |= GTK_STATE_FLAG_PRELIGHT;
 		}
 
-		if (needs_highlight && gtk_widget_has_focus (GTK_WIDGET (container))) {
+		if (needs_highlight) {
 			state |= GTK_STATE_FLAG_SELECTED;
-		} else if (needs_highlight) {
-			state |= GTK_STATE_FLAG_ACTIVE;
 		}
 
 		editable_layout = get_label_layout (&item->details->editable_text_layout, item, item->details->editable_text);
@@ -1144,12 +1142,10 @@ draw_label_text (NautilusIconCanvasItem *item,
 
 	if (have_additional &&
 	    !details->is_renaming) {
-		state = GTK_STATE_FLAG_NORMAL;
+		state = base_state;
 
-		if (needs_highlight && gtk_widget_has_focus (GTK_WIDGET (container))) {
+		if (needs_highlight) {
 			state |= GTK_STATE_FLAG_SELECTED;
-		} else if (needs_highlight) {
-			state |= GTK_STATE_FLAG_ACTIVE;
 		}
 
 		additional_layout = get_label_layout (&item->details->additional_text_layout, item, item->details->additional_text);
@@ -1167,8 +1163,6 @@ draw_label_text (NautilusIconCanvasItem *item,
 	if (item->details->is_highlighted_as_keyboard_focus) {
 		if (needs_highlight) {
 			state = GTK_STATE_FLAG_SELECTED;
-		} else {
-			state = GTK_STATE_FLAG_ACTIVE;
 		}
 
 		gtk_style_context_save (context);
