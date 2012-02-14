@@ -364,11 +364,19 @@ ext_strings_func (NautilusFileUndoInfo *info,
 
 	if (op_type == NAUTILUS_FILE_UNDO_OP_MOVE) {
 		if (count > 1) {
-			*undo_description = g_strdup_printf (_("Move %d items back to '%s'"), count, source);
-			*redo_description = g_strdup_printf (_("Move %d items to '%s'"), count, destination);
+			*undo_description = g_strdup_printf (ngettext ("Move %d item back to '%s'",
+								       "Move %d items back to '%s'", count),
+							     count, source);
+			*redo_description = g_strdup_printf (ngettext ("Move %d item to '%s'",
+								       "Move %d items to '%s'", count),
+							     count, destination);
 
-			*undo_label = g_strdup_printf (_("_Undo Move %d items"), count);
-			*redo_label = g_strdup_printf (_("_Redo Move %d items"), count);
+			*undo_label = g_strdup_printf (ngettext ("_Undo Move %d item",
+								 "_Undo Move %d items", count),
+						       count);
+			*redo_label = g_strdup_printf (ngettext ("_Redo Move %d item",
+								 "_Redo Move %d items", count),
+						       count);
 		} else {
 			*undo_description = g_strdup_printf (_("Move '%s' back to '%s'"), name, source);
 			*redo_description = g_strdup_printf (_("Move '%s' to '%s'"), name, destination);
@@ -381,19 +389,31 @@ ext_strings_func (NautilusFileUndoInfo *info,
 		*redo_label = g_strdup (_("_Redo Restore from Trash"));
 
 		if (count > 1) {
-			*undo_description = g_strdup_printf (_("Move %d items back to trash"), count);
-			*redo_description = g_strdup_printf (_("Restore %d items from trash"), count);
+			*undo_description = g_strdup_printf (ngettext ("Move %d item back to trash",
+								       "Move %d items back to trash", count),
+							     count);
+			*redo_description = g_strdup_printf (ngettext ("Restore %d item from trash",
+								       "Restore %d items from trash", count),
+							     count);
 		} else {
 			*undo_description = g_strdup_printf (_("Move '%s' back to trash"), name);
 			*redo_description = g_strdup_printf (_("Restore '%s' from trash"), name);
 		}
 	} else if (op_type == NAUTILUS_FILE_UNDO_OP_COPY) {
 		if (count > 1) {
-			*undo_description = g_strdup_printf (_("Delete %d copied items"), count);
-			*redo_description = g_strdup_printf (_("Copy %d items to '%s'"), count, destination);
+			*undo_description = g_strdup_printf (ngettext ("Delete %d copied item",
+								       "Delete %d copied items", count),
+							     count);
+			*redo_description = g_strdup_printf (ngettext ("Copy %d item to '%s'",
+								       "Copy %d items to '%s'", count),
+							     count, destination);
 
-			*undo_label = g_strdup_printf (_("_Undo Copy %d items"), count);
-			*redo_label = g_strdup_printf (_("_Redo Copy %d items"), count);
+			*undo_label = g_strdup_printf (ngettext ("_Undo Copy %d item",
+								 "_Undo Copy %d items", count),
+						       count);
+			*redo_label = g_strdup_printf (ngettext ("_Redo Copy %d item",
+								 "_Redo Copy %d items", count),
+						       count);
 		} else {
 			*undo_description = g_strdup_printf (_("Delete '%s'"), name);
 			*redo_description = g_strdup_printf (_("Copy '%s' to '%s'"), name, destination);
@@ -403,12 +423,19 @@ ext_strings_func (NautilusFileUndoInfo *info,
 		}
 	} else if (op_type == NAUTILUS_FILE_UNDO_OP_DUPLICATE) {
 		if (count > 1) {
-			*undo_description = g_strdup_printf (_("Delete %d duplicated items"), count);
-			*redo_description = g_strdup_printf (_("Duplicate of %d items in '%s'"),
-							   count, destination);
+			*undo_description = g_strdup_printf (ngettext ("Delete %d duplicated item",
+								       "Delete %d duplicated items", count),
+							     count);
+			*redo_description = g_strdup_printf (ngettext ("Duplicate %d item in '%s'",
+								       "Duplicate %d items in '%s'", count),
+							     count, destination);
 
-			*undo_label = g_strdup_printf (_("_Undo Duplicate %d items"), count);
-			*redo_label = g_strdup_printf (_("_Redo Duplicate %d items"), count);
+			*undo_label = g_strdup_printf (ngettext ("_Undo Duplicate %d item",
+								 "_Undo Duplicate %d items", count),
+						       count);
+			*redo_label = g_strdup_printf (ngettext ("_Redo Duplicate %d item",
+								 "_Redo Duplicate %d items", count),
+						       count);
 		} else {
 			*undo_description = g_strdup_printf (_("Delete '%s'"), name);
 			*redo_description = g_strdup_printf (_("Duplicate '%s' in '%s'"),
@@ -419,8 +446,12 @@ ext_strings_func (NautilusFileUndoInfo *info,
 		}
 	} else if (op_type == NAUTILUS_FILE_UNDO_OP_CREATE_LINK) {
 		if (count > 1) {
-			*undo_description = g_strdup_printf (_("Delete links to %d items"), count);
-			*redo_description = g_strdup_printf (_("Create links to %d items"), count);
+			*undo_description = g_strdup_printf (ngettext ("Delete links to %d item",
+								       "Delete links to %d items", count),
+							     count);
+			*redo_description = g_strdup_printf (ngettext ("Create links to %d item",
+								       "Create links to %d items", count),
+							     count);
 		} else {
 			*undo_description = g_strdup_printf (_("Delete link to '%s'"), name);
 			*redo_description = g_strdup_printf (_("Create link to '%s'"), name);
@@ -947,8 +978,12 @@ trash_strings_func (NautilusFileUndoInfo *info,
 	gint count = g_hash_table_size (self->priv->trashed);
 
 	if (count != 1) {
-		*undo_description = g_strdup_printf (_("Restore %d items from trash"), count);
-		*redo_description = g_strdup_printf (_("Move %d items to trash"), count);
+		*undo_description = g_strdup_printf (ngettext ("Restore %d item from trash",
+							       "Restore %d items from trash", count),
+						     count);
+		*redo_description = g_strdup_printf (ngettext ("Move %d item to trash",
+							       "Move %d items to trash", count),
+						     count);
 	} else {
 		GList *keys;
 		char *name, *orig_path;
