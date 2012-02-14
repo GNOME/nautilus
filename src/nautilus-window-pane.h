@@ -62,9 +62,6 @@ struct _NautilusWindowPane {
 	GList *slots;
 	NautilusWindowSlot *active_slot;
 
-	/* whether or not this pane is active */
-	gboolean is_active;
-
 	/* location bar */
 	GtkWidget *location_bar;
 	GtkWidget *path_bar;

@@ -1567,14 +1567,6 @@ nautilus_icon_view_using_manual_layout (NautilusView *view)
 }
 
 static void
-nautilus_icon_view_set_is_active (NautilusView *view,
-			    gboolean is_active)
-{
-	nautilus_icon_container_set_active (get_icon_container (NAUTILUS_ICON_VIEW (view)),
-					    is_active);
-}
-
-static void
 nautilus_icon_view_widget_to_file_operation_position (NautilusView *view,
 						GdkPoint *position)
 {
@@ -2487,7 +2479,6 @@ nautilus_icon_view_class_init (NautilusIconViewClass *klass)
 	nautilus_view_class->restore_default_zoom_level = nautilus_icon_view_restore_default_zoom_level;
 	nautilus_view_class->reveal_selection = nautilus_icon_view_reveal_selection;
 	nautilus_view_class->select_all = nautilus_icon_view_select_all;
-	nautilus_view_class->set_is_active = nautilus_icon_view_set_is_active;
 	nautilus_view_class->set_selection = nautilus_icon_view_set_selection;
 	nautilus_view_class->invert_selection = nautilus_icon_view_invert_selection;
 	nautilus_view_class->compare_files = compare_files;

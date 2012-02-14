@@ -4158,41 +4158,6 @@ get_prefered_height (GtkWidget *widget,
 }
 
 static void
-setup_background (NautilusIconContainer *container)
-{
-	GdkWindow *window;
-	GdkRGBA color;
-	GtkStyleContext *style;
-
-	if (container->details->is_desktop) {
-		return;
-	}
-
-	style = gtk_widget_get_style_context (GTK_WIDGET (container));
-
-	DEBUG ("Container %p: setting up background, is_active %d", container,
-	       container->details->active_background);
-
-	window = gtk_layout_get_bin_window (GTK_LAYOUT (container));
-
-	if (!container->details->active_background) {
-		gtk_style_context_get_background_color (style, GTK_STATE_FLAG_NORMAL, &color);
-
-		DEBUG ("Container %p, making color inactive", container);
-		eel_make_color_inactive (&color);
-
-		gtk_widget_override_background_color (GTK_WIDGET (container), GTK_STATE_FLAG_NORMAL,
-						      &color);
-		gtk_style_context_set_background (style, window);
-	} else {
-		DEBUG ("Container %p, removing color override", container);
-		gtk_widget_override_background_color (GTK_WIDGET (container), GTK_STATE_FLAG_NORMAL,
-						      NULL);
-		gtk_style_context_set_background (style, window);
-	}
-}
-
-static void
 realize (GtkWidget *widget)
 {
 	GtkAdjustment *vadj, *hadj;
@@ -4210,8 +4175,6 @@ realize (GtkWidget *widget)
 
 	/* Set up DnD.  */
 	nautilus_icon_dnd_init (container);
-
-	setup_background (container);
 
 	hadj = gtk_scrollable_get_hadjustment (GTK_SCROLLABLE (widget));
 	g_signal_connect (hadj, "value_changed",
@@ -6142,7 +6105,6 @@ nautilus_icon_container_init (NautilusIconContainer *container)
 
 	details->icon_set = g_hash_table_new (g_direct_hash, g_direct_equal);
 	details->layout_timestamp = UNDEFINED_TIME;
-	details->active_background = TRUE;
 	details->zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
 
 	details->font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = -2 * PANGO_SCALE;
@@ -8567,17 +8529,6 @@ nautilus_icon_container_set_highlighted_for_clipboard (NautilusIconContainer *co
 				     NULL);
 	}
 
-}
-
-void
-nautilus_icon_container_set_active (NautilusIconContainer *container,
-				    gboolean active)
-{
-	container->details->active_background = active;
-
-	if (gtk_widget_get_realized (GTK_WIDGET (container))) {
-		setup_background (container);
-	}
 }
 
 /* NautilusIconContainerAccessible */

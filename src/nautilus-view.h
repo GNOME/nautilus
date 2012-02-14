@@ -285,9 +285,6 @@ struct NautilusViewClass {
 	void	(* click_policy_changed)	   (NautilusView *view);
 	void	(* sort_directories_first_changed) (NautilusView *view);
 
-	void    (* set_is_active)                  (NautilusView *view,
-						    gboolean         is_active);
-
 	/* Get the id string for this view. Its a constant string, not memory managed */
 	const char *   (* get_view_id)            (NautilusView          *view);
 
@@ -412,7 +409,5 @@ void              nautilus_view_pop_up_location_context_menu (NautilusView    *v
 							      const char      *location);
 void              nautilus_view_grab_focus                 (NautilusView      *view);
 void              nautilus_view_update_menus               (NautilusView      *view);
-void              nautilus_view_set_is_active              (NautilusView      *view,
-							    gboolean           is_active);
 
 #endif /* NAUTILUS_VIEW_H */

@@ -695,15 +695,6 @@ nautilus_view_get_emblem_names_to_exclude (NautilusView *view)
 	return excludes;
 }
 
-void
-nautilus_view_set_is_active (NautilusView *view,
-			     gboolean is_active)
-{
-	g_return_if_fail (NAUTILUS_IS_VIEW (view));
-
-	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->set_is_active (view, is_active);
-}
-
 /**
  * nautilus_view_get_selection:
  *

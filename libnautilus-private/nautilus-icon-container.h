@@ -350,9 +350,6 @@ void              nautilus_icon_container_set_store_layout_timestamps   (Nautilu
 
 void              nautilus_icon_container_widget_to_file_operation_position (NautilusIconContainer *container,
 									     GdkPoint              *position);
-void              nautilus_icon_container_set_active                    (NautilusIconContainer  *container,
-									 gboolean                active);
-
 
 #define CANVAS_WIDTH(container,allocation) ((allocation.width	  \
 				- container->details->left_margin \

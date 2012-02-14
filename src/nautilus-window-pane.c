@@ -598,21 +598,6 @@ notebook_switch_page_cb (GtkNotebook *notebook,
 }
 
 static void
-real_set_active (NautilusWindowPane *pane,
-		 gboolean is_active)
-{
-	NautilusNavigationState *nav_state;
-
-	if (is_active) {
-		nav_state = nautilus_window_get_navigation_state (pane->window);
-		nautilus_navigation_state_set_master (nav_state, pane->action_group);
-	}
-
-	/* toolbar */
-	gtk_widget_set_sensitive (pane->tool_bar, is_active);
-}
-
-static void
 action_show_hide_search_callback (GtkAction *action,
 				  gpointer user_data)
 {
@@ -742,6 +727,9 @@ nautilus_window_pane_constructed (GObject *obj)
 			    pane->tool_bar,
 			    FALSE, FALSE, 0);
 
+	/* start as non-active */
+	nautilus_window_pane_set_active (pane, FALSE);
+
 	g_settings_bind_with_mapping (nautilus_window_state,
 				      NAUTILUS_WINDOW_STATE_START_WITH_TOOLBAR,
 				      pane->tool_bar,
@@ -807,9 +795,6 @@ nautilus_window_pane_constructed (GObject *obj)
 	gtk_widget_show (pane->notebook);
 	gtk_container_set_border_width (GTK_CONTAINER (pane->notebook), 0);
 
-	/* start as non-active */
-	real_set_active (pane, FALSE);
-
 	/* Ensure that the view has some minimal size and that other parts
 	 * of the UI (like location bar and tabs) don't request more and
 	 * thus affect the default position of the split view paned.
@@ -847,7 +832,6 @@ nautilus_window_pane_init (NautilusWindowPane *pane)
 {
 	pane->slots = NULL;
 	pane->active_slot = NULL;
-	pane->is_active = FALSE;
 
 	gtk_orientable_set_orientation (GTK_ORIENTABLE (pane), GTK_ORIENTATION_VERTICAL);
 }
@@ -860,25 +844,45 @@ nautilus_window_pane_new (NautilusWindow *window)
 			     NULL);
 }
 
+static void
+nautilus_window_pane_set_active_style (NautilusWindowPane *pane,
+				       gboolean is_active)
+{
+	GtkStyleContext *style;
+	gboolean has_inactive;
+
+	style = gtk_widget_get_style_context (GTK_WIDGET (pane));
+	has_inactive = gtk_style_context_has_class (style, "nautilus-inactive-pane");
+
+	if (has_inactive == !is_active) {
+		return;
+	}
+
+	if (is_active) {
+		gtk_style_context_remove_class (style, "nautilus-inactive-pane");
+	} else {
+		gtk_style_context_add_class (style, "nautilus-inactive-pane");
+	}
+
+	gtk_widget_reset_style (GTK_WIDGET (pane));
+}
+
 void
 nautilus_window_pane_set_active (NautilusWindowPane *pane,
 				 gboolean is_active)
 {
-	NautilusView *view;
+	NautilusNavigationState *nav_state;
 
-	if (is_active == pane->is_active) {
-		return;
+	if (is_active) {
+		nav_state = nautilus_window_get_navigation_state (pane->window);
+		nautilus_navigation_state_set_master (nav_state, pane->action_group);
 	}
 
-	pane->is_active = is_active;
+	/* toolbar */
+	gtk_widget_set_sensitive (pane->tool_bar, is_active);
 
-	/* notify the current view about its activity state */
-	if (pane->active_slot != NULL) {
-		view = nautilus_window_slot_get_current_view (pane->active_slot);
-		nautilus_view_set_is_active (view, is_active);
-	}
-
-	real_set_active (pane, is_active);
+	/* pane inactive style */
+	nautilus_window_pane_set_active_style (pane, is_active);
 }
 
 void

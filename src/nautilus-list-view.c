@@ -1512,48 +1512,6 @@ filename_cell_data_func (GtkTreeViewColumn *column,
 	g_free (text);
 }
 
-static void
-setup_background (NautilusListView *view)
-{
-	GtkWidget *widget;
-	GdkRGBA color;
-	GtkStyleContext *style;
-	GdkWindow *window;
-	gboolean is_active = view->details->active;
-
-	widget = GTK_WIDGET (nautilus_list_view_get_tree_view (NAUTILUS_LIST_VIEW (view)));
-
-	if (!gtk_widget_get_realized (widget)) {
-		return;
-	}
-
-	DEBUG ("Setting up background; is active %d", is_active);
-
-	style = gtk_widget_get_style_context (widget);
-	window = gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget));
-
-	if (!is_active) {
-		gtk_style_context_get_background_color (style, GTK_STATE_FLAG_NORMAL,
-							&color);
-		eel_make_color_inactive (&color);
-
-		gtk_widget_override_background_color (widget, GTK_STATE_FLAG_NORMAL, &color);
-		gtk_style_context_set_background (style, window);
-	} else {
-		gtk_widget_override_background_color (widget, GTK_STATE_FLAG_NORMAL, NULL);
-		gtk_style_context_set_background (style, window);
-	}
-}
-
-static void
-realize_event_callback (GtkWidget *tree_view,
-			gpointer user_data)
-{
-	NautilusListView *view = user_data;
-
-	setup_background (view);
-}
-
 static gboolean
 focus_in_event_callback (GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
 {
@@ -1644,8 +1602,6 @@ create_and_set_up_tree_view (NautilusListView *view)
 	
     	g_signal_connect_object (view->details->tree_view, "focus_in_event",
 				 G_CALLBACK(focus_in_event_callback), view, 0);
-	g_signal_connect (view->details->tree_view, "realize",
-			  G_CALLBACK (realize_event_callback), view);
     
 	view->details->model = g_object_new (NAUTILUS_TYPE_LIST_MODEL, NULL);
 	gtk_tree_view_set_model (view->details->tree_view, GTK_TREE_MODEL (view->details->model));
@@ -3253,15 +3209,6 @@ nautilus_list_view_end_loading (NautilusView *view,
 	list_view_notify_clipboard_info (monitor, info, NAUTILUS_LIST_VIEW (view));
 }
 
-static void
-real_set_is_active (NautilusView *view,
-		    gboolean is_active)
-{
-	NAUTILUS_LIST_VIEW (view)->details->active = is_active;
-
-	setup_background (NAUTILUS_LIST_VIEW (view));
-}
-
 static const char *
 nautilus_list_view_get_id (NautilusView *view)
 {
@@ -3309,7 +3256,6 @@ nautilus_list_view_class_init (NautilusListViewClass *class)
 	nautilus_view_class->zoom_to_level = nautilus_list_view_zoom_to_level;
 	nautilus_view_class->end_file_changes = nautilus_list_view_end_file_changes;
 	nautilus_view_class->using_manual_layout = nautilus_list_view_using_manual_layout;
-	nautilus_view_class->set_is_active = real_set_is_active;
 	nautilus_view_class->get_view_id = nautilus_list_view_get_id;
 	nautilus_view_class->get_first_visible_file = nautilus_list_view_get_first_visible_file;
 	nautilus_view_class->scroll_to_file = list_view_scroll_to_file;
