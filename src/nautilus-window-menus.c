@@ -1119,6 +1119,7 @@ nautilus_window_create_toolbar_action_group (NautilusWindow *window)
 			       "arrow-tooltip", _("Back history"),
 			       "window", window,
 			       "direction", NAUTILUS_NAVIGATION_DIRECTION_BACK,
+			       "sensitive", FALSE,
 			       NULL);
 	g_signal_connect (action, "activate",
 			  G_CALLBACK (action_back_callback), window);
@@ -1134,6 +1135,7 @@ nautilus_window_create_toolbar_action_group (NautilusWindow *window)
 			       "arrow-tooltip", _("Forward history"),
 			       "window", window,
 			       "direction", NAUTILUS_NAVIGATION_DIRECTION_FORWARD,
+			       "sensitive", FALSE,
 			       NULL);
 	g_signal_connect (action, "activate",
 			  G_CALLBACK (action_forward_callback), window);

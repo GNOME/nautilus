@@ -56,6 +56,7 @@ typedef struct {
 GType      nautilus_search_bar_get_type     	(void);
 GtkWidget* nautilus_search_bar_new          	(void);
 
+GtkWidget *    nautilus_search_bar_get_entry     (NautilusSearchBar *bar);
 GtkWidget *    nautilus_search_bar_borrow_entry  (NautilusSearchBar *bar);
 void           nautilus_search_bar_return_entry  (NautilusSearchBar *bar);
 void           nautilus_search_bar_grab_focus    (NautilusSearchBar *bar);

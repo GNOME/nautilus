@@ -285,6 +285,17 @@ navigation_bar_location_changed_callback (GtkWidget *widget,
 	g_object_unref (location);
 }
 
+static gboolean
+toolbar_focus_in_callback (GtkWidget *widget,
+			   GdkEventFocus *event,
+			   gpointer user_data)
+{
+	NautilusWindowPane *pane = user_data;
+	nautilus_window_set_active_pane (pane->window, pane);
+
+	return FALSE;
+}
+
 static void
 path_bar_location_changed_callback (GtkWidget *widget,
 				    GFile *location,
@@ -294,6 +305,7 @@ path_bar_location_changed_callback (GtkWidget *widget,
 	int i;
 
 	slot = pane->active_slot;
+	nautilus_window_set_active_pane (pane->window, pane);
 
 	/* check whether we already visited the target location */
 	i = bookmark_list_get_uri_index (slot->back_list, location);
@@ -651,6 +663,15 @@ setup_search_action (NautilusWindowPane *pane)
 }
 
 static void
+toolbar_action_group_activated_callback (GtkActionGroup *action_group,
+					 GtkAction *action,
+					 gpointer user_data)
+{
+	NautilusWindowPane *pane = user_data;
+	nautilus_window_set_active_pane (pane->window, pane);
+}
+
+static void
 nautilus_window_pane_set_property (GObject *object,
 				   guint arg_id,
 				   const GValue *value,
@@ -722,6 +743,8 @@ nautilus_window_pane_constructed (GObject *obj)
 	pane->action_group = action_group;
 
 	setup_search_action (pane);
+	g_signal_connect (pane->action_group, "pre-activate",
+			  G_CALLBACK (toolbar_action_group_activated_callback), pane);
 
 	gtk_box_pack_start (GTK_BOX (pane),
 			    pane->tool_bar,
@@ -760,6 +783,8 @@ nautilus_window_pane_constructed (GObject *obj)
 				 G_CALLBACK (navigation_bar_location_changed_callback), pane, 0);
 	g_signal_connect_object (pane->location_bar, "cancel",
 				 G_CALLBACK (navigation_bar_cancel_callback), pane, 0);
+	g_signal_connect_object (nautilus_location_bar_get_entry (NAUTILUS_LOCATION_BAR (pane->location_bar)), "focus-in-event",
+				 G_CALLBACK (toolbar_focus_in_callback), pane, 0);
 
 	/* connect to the search bar signals */
 	pane->search_bar = nautilus_toolbar_get_search_bar (NAUTILUS_TOOLBAR (pane->tool_bar));
@@ -769,6 +794,8 @@ nautilus_window_pane_constructed (GObject *obj)
 				 G_CALLBACK (search_bar_activate_callback), pane, 0);
 	g_signal_connect_object (pane->search_bar, "cancel",
 				 G_CALLBACK (search_bar_cancel_callback), pane, 0);
+	g_signal_connect_object (nautilus_search_bar_get_entry (NAUTILUS_SEARCH_BAR (pane->search_bar)), "focus-in-event",
+				 G_CALLBACK (toolbar_focus_in_callback), pane, 0);
 
 	/* initialize the notebook */
 	pane->notebook = g_object_new (NAUTILUS_TYPE_NOTEBOOK, NULL);
@@ -877,9 +904,6 @@ nautilus_window_pane_set_active (NautilusWindowPane *pane,
 		nav_state = nautilus_window_get_navigation_state (pane->window);
 		nautilus_navigation_state_set_master (nav_state, pane->action_group);
 	}
-
-	/* toolbar */
-	gtk_widget_set_sensitive (pane->tool_bar, is_active);
 
 	/* pane inactive style */
 	nautilus_window_pane_set_active_style (pane, is_active);
