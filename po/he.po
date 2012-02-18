@@ -19,8 +19,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eel.HEAD.he\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-28 12:11+0200\n"
-"PO-Revision-Date: 2012-01-28 12:22+0200\n"
+"POT-Creation-Date: 2012-02-18 10:15+0200\n"
+"PO-Revision-Date: 2012-02-18 10:38+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "Language: he\n"
@@ -120,7 +120,7 @@ msgstr " (יוניקוד לא תקני)"
 #: ../libnautilus-private/nautilus-desktop-link.c:120
 #: ../libnautilus-private/nautilus-file-utilities.c:68
 #: ../src/nautilus-pathbar.c:1202
-#: ../src/nautilus-places-sidebar.c:683
+#: ../src/nautilus-places-sidebar.c:680
 #: ../src/nautilus-tree-sidebar.c:1338
 msgid "Home"
 msgstr "בית"
@@ -149,14 +149,14 @@ msgstr "הדבקת הטקסט השמור בלוח הגזירים"
 #. name, stock id
 #. label, accelerator
 #: ../libnautilus-private/nautilus-clipboard.c:444
-#: ../src/nautilus-view.c:7029
+#: ../src/nautilus-view.c:7020
 msgid "Select _All"
 msgstr "בחירת _הכול"
 
 #. tooltip
 #: ../libnautilus-private/nautilus-clipboard.c:445
 msgid "Select all the text in a text field"
-msgstr "בחר את כל הטקסט בשדה הטקסט"
+msgstr "בחירת כל הטקסט בשדה הטקסט"
 
 #: ../libnautilus-private/nautilus-column-chooser.c:368
 msgid "Move _Up"
@@ -171,7 +171,7 @@ msgid "Use De_fault"
 msgstr "שימוש _בבררת המחדל"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
-#: ../src/nautilus-list-view.c:1702
+#: ../src/nautilus-list-view.c:1658
 msgid "Name"
 msgstr "שם"
 
@@ -537,7 +537,7 @@ msgid "Specified group '%s' doesn't exist"
 msgstr "הקבוצה '%s' שצוינה לא קיימת"
 
 #: ../libnautilus-private/nautilus-file.c:5811
-#: ../src/nautilus-view.c:2865
+#: ../src/nautilus-view.c:2856
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
@@ -957,7 +957,7 @@ msgstr "כל פריטי האשפה ימחקו לצמיתות."
 #. Empty Trash menu item
 #: ../libnautilus-private/nautilus-file-operations.c:1350
 #: ../libnautilus-private/nautilus-file-operations.c:2209
-#: ../src/nautilus-places-sidebar.c:2761
+#: ../src/nautilus-places-sidebar.c:2730
 #: ../src/nautilus-trash-bar.c:204
 msgid "Empty _Trash"
 msgstr "פינוי ה_אשפה"
@@ -1192,34 +1192,29 @@ msgid "Duplicating \"%B\""
 msgstr "‏„%B“ בשכפול"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2912
-#, fuzzy
 msgid "Moving file %'d of %'d (in \"%B\") to \"%B\""
-msgstr "קובץ %'d מועבר (ב־„%B“) אל „%B“"
+msgstr "קובץ אחד (%'d) מתוך %'d מועבר (ב־„%B“) אל „%B“"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2914
-#, fuzzy
 msgid "Copying file %'d of %'d (in \"%B\") to \"%B\""
-msgstr "קובץ %'d מועתק (ב־„%B“) אל „%B“"
+msgstr "קובץ אחד (%'d) מתוך %'d מועתק (ב־„%B“) אל „%B“"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2921
-#, fuzzy
 msgid "Duplicating file %'d of %'d (in \"%B\")"
-msgstr "קובץ אחד (%'d) משוכפל (ב־„%B“)"
+msgstr "קובץ אחד (%'d) מתוך %'d משוכפל (ב־„%B“)"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2930
-#, fuzzy
 msgid "Moving file %'d of %'d to \"%B\""
-msgstr "קובץ %'d מועבר אל „%B“"
+msgstr "קובץ אחד (%'d) מתוך %'d מועבר אל „%B“"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2932
-#, fuzzy
 msgid "Copying file %'d of %'d to \"%B\""
-msgstr "קובץ אחד (%'d) מועתק אל „%B“"
+msgstr "קובץ אחד (%'d) מתוך %'d מועתק אל „%B“"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2938
-#, fuzzy, c-format
+#, c-format
 msgid "Duplicating file %'d of %'d"
-msgstr "קובץ אחד משוכפל"
+msgstr "קובץ %'d מתוך %'d בשכפול"
 
 #. To translators: %S will expand to a size like "2 bytes" or "3 MB", so something like "4 kb of 4 MB"
 #: ../libnautilus-private/nautilus-file-operations.c:2957
@@ -1419,352 +1414,369 @@ msgstr "לא ניתן לסמן את המשגר כמהימן (קובץ הפעלה
 
 #. Reset to default info
 #: ../libnautilus-private/nautilus-file-undo-operations.c:135
-#: ../src/nautilus-view.c:2401
+#: ../src/nautilus-view.c:2392
 msgid "Undo"
 msgstr "ביטול"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:138
-#: ../src/nautilus-view.c:2402
+#: ../src/nautilus-view.c:2393
 msgid "Undo last action"
 msgstr "ביטול הפעולה האחרונה"
 
 #. Reset to default info
 #: ../libnautilus-private/nautilus-file-undo-operations.c:142
-#: ../src/nautilus-view.c:2420
+#: ../src/nautilus-view.c:2411
 msgid "Redo"
 msgstr "ביצוע שוב"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:145
-#: ../src/nautilus-view.c:2421
+#: ../src/nautilus-view.c:2412
 msgid "Redo last undone action"
 msgstr "ביצוע הפעולה האחרונה שבוטלה שוב"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:359
+#: ../libnautilus-private/nautilus-file-undo-operations.c:367
 #, c-format
-msgid "Move %d items back to '%s'"
-msgstr "העברת %d פריטים בחזרה ל־'%s'"
+msgid "Move %d item back to '%s'"
+msgid_plural "Move %d items back to '%s'"
+msgstr[0] "העברת פריט אחד (%d) בחזרה ל־'%s'"
+msgstr[1] "העברת %d פריטים בחזרה ל־'%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:360
+#: ../libnautilus-private/nautilus-file-undo-operations.c:370
 #, c-format
-msgid "Move %d items to '%s'"
-msgstr "העברת %d פריטים אל '%s'"
+msgid "Move %d item to '%s'"
+msgid_plural "Move %d items to '%s'"
+msgstr[0] "העברת פריט אחד (%d) אל '%s'"
+msgstr[1] "העברת %d פריטים אל '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:362
-#, fuzzy, c-format
-msgid "_Undo Move %d items"
-msgstr "ביטול העריכה"
+#: ../libnautilus-private/nautilus-file-undo-operations.c:374
+#, c-format
+msgid "_Undo Move %d item"
+msgid_plural "_Undo Move %d items"
+msgstr[0] "_ביטול ההעברה של פריט אחד"
+msgstr[1] "_ביטול ההעברה של %d פריטים"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:363
-#, fuzzy, c-format
-msgid "_Redo Move %d items"
-msgstr "ביצוע העריכה פעם נוספת"
+#: ../libnautilus-private/nautilus-file-undo-operations.c:377
+#, c-format
+msgid "_Redo Move %d item"
+msgid_plural "_Redo Move %d items"
+msgstr[0] "ה_עברת הפריט שוב"
+msgstr[1] "ה_עברת %d פריטים שוב"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:365
+#: ../libnautilus-private/nautilus-file-undo-operations.c:381
 #, c-format
 msgid "Move '%s' back to '%s'"
 msgstr "העברת '%s' בחזרה ל־'%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:366
+#: ../libnautilus-private/nautilus-file-undo-operations.c:382
 #, c-format
 msgid "Move '%s' to '%s'"
 msgstr "העברת '%s' אל '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:368
+#: ../libnautilus-private/nautilus-file-undo-operations.c:384
 msgid "_Undo Move"
 msgstr "_ביטול ההעברה"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:369
+#: ../libnautilus-private/nautilus-file-undo-operations.c:385
 msgid "_Redo Move"
 msgstr "ביצוע ההעברה _שוב"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:372
+#: ../libnautilus-private/nautilus-file-undo-operations.c:388
 msgid "_Undo Restore from Trash"
 msgstr "ביטול ה_שחזור מהאשפה"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:373
+#: ../libnautilus-private/nautilus-file-undo-operations.c:389
 msgid "_Redo Restore from Trash"
 msgstr "ש_חזור מהאשפה שוב"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:376
+#: ../libnautilus-private/nautilus-file-undo-operations.c:392
 #, c-format
-msgid "Move %d items back to trash"
-msgstr "העברת %d פריטים בחזרה לאשפה"
+msgid "Move %d item back to trash"
+msgid_plural "Move %d items back to trash"
+msgstr[0] "העברת הפריט בחזרה לאשפה"
+msgstr[1] "העברת %d פריטים בחזרה לאשפה"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:377
-#: ../libnautilus-private/nautilus-file-undo-operations.c:943
+#: ../libnautilus-private/nautilus-file-undo-operations.c:395
+#: ../libnautilus-private/nautilus-file-undo-operations.c:981
 #, c-format
-msgid "Restore %d items from trash"
-msgstr "שחזור %d פריטים מהאשפה"
+msgid "Restore %d item from trash"
+msgid_plural "Restore %d items from trash"
+msgstr[0] "שחזור הפריט מהאשפה"
+msgstr[1] "שחזור %d פריטים מהאשפה"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:379
+#: ../libnautilus-private/nautilus-file-undo-operations.c:399
 #, c-format
 msgid "Move '%s' back to trash"
 msgstr "העברת '%s' בחזרה לאשפה"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:380
+#: ../libnautilus-private/nautilus-file-undo-operations.c:400
 #, c-format
 msgid "Restore '%s' from trash"
 msgstr "שחזור '%s' מהאשפה"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:384
+#: ../libnautilus-private/nautilus-file-undo-operations.c:404
 #, c-format
-msgid "Delete %d copied items"
-msgstr "מחיקת %d פריטים שהועתקו"
+msgid "Delete %d copied item"
+msgid_plural "Delete %d copied items"
+msgstr[0] "מחיקת הפריט שהועתק"
+msgstr[1] "מחיקת %d פריטים שהועתקו"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:385
-#, fuzzy, c-format
-msgid "Copy %d items to '%s'"
-msgstr "קובץ אחד (%'d) מועתק אל „%B“"
-
-#: ../libnautilus-private/nautilus-file-undo-operations.c:387
+#: ../libnautilus-private/nautilus-file-undo-operations.c:407
 #, c-format
-msgid "_Undo Copy %d items"
-msgstr "_ביטול העתקת %d פריטים"
+msgid "Copy %d item to '%s'"
+msgid_plural "Copy %d items to '%s'"
+msgstr[0] "העתקת קובץ אחד (%d) אל '%s'"
+msgstr[1] "העתקת %d קבצים אל '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:388
+#: ../libnautilus-private/nautilus-file-undo-operations.c:411
 #, c-format
-msgid "_Redo Copy %d items"
-msgstr "העתקת %d פריטים מ_חדש"
+msgid "_Undo Copy %d item"
+msgid_plural "_Undo Copy %d items"
+msgstr[0] "_ביטול העתקת הפריט"
+msgstr[1] "_ביטול העתקת %d פריטים"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:390
-#: ../libnautilus-private/nautilus-file-undo-operations.c:405
-#: ../libnautilus-private/nautilus-file-undo-operations.c:634
+#: ../libnautilus-private/nautilus-file-undo-operations.c:414
+#, c-format
+msgid "_Redo Copy %d item"
+msgid_plural "_Redo Copy %d items"
+msgstr[0] "ה_עתקת הפריט שוב"
+msgstr[1] "ה_עתקת %d פריטים שוב"
+
+#: ../libnautilus-private/nautilus-file-undo-operations.c:418
+#: ../libnautilus-private/nautilus-file-undo-operations.c:440
+#: ../libnautilus-private/nautilus-file-undo-operations.c:673
 #, c-format
 msgid "Delete '%s'"
 msgstr "מחיקת '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:391
+#: ../libnautilus-private/nautilus-file-undo-operations.c:419
 #, c-format
 msgid "Copy '%s' to '%s'"
 msgstr "העתקת '%s' אל '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:393
-#, fuzzy
+#: ../libnautilus-private/nautilus-file-undo-operations.c:421
 msgid "_Undo Copy"
-msgstr "_ביטול"
+msgstr "_ביטול העתקה"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:394
+#: ../libnautilus-private/nautilus-file-undo-operations.c:422
 msgid "_Redo Copy"
 msgstr "העתקה מ_חדש"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:398
-#, fuzzy, c-format
-msgid "Delete %d duplicated items"
-msgstr "מחיקת כל הפריטים הנבחרים לצמיתות"
+#: ../libnautilus-private/nautilus-file-undo-operations.c:426
+#, c-format
+msgid "Delete %d duplicated item"
+msgid_plural "Delete %d duplicated items"
+msgstr[0] "מחיקת פריט משוכפל אחד"
+msgstr[1] "מחיקת %d פריטים משוכפלים"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:399
-#, fuzzy, c-format
-msgid "Duplicate of %d items in '%s'"
-msgstr "קובץ אחד (%'d) משוכפל (ב־„%B“)"
+#: ../libnautilus-private/nautilus-file-undo-operations.c:429
+#, c-format
+msgid "Duplicate %d item in '%s'"
+msgid_plural "Duplicate %d items in '%s'"
+msgstr[0] "שכפול פריט אחד (%d) תחת '%s'"
+msgstr[1] "שכפול %d פריטים תחת '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:402
-#, fuzzy, c-format
-msgid "_Undo Duplicate %d items"
-msgstr "קובץ אחד משוכפל"
+#: ../libnautilus-private/nautilus-file-undo-operations.c:433
+#, c-format
+msgid "_Undo Duplicate %d item"
+msgid_plural "_Undo Duplicate %d items"
+msgstr[0] "_ביטול שכפול הקובץ"
+msgstr[1] "ביטול שכפולם של %d קבצים"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:403
-#, fuzzy, c-format
-msgid "_Redo Duplicate %d items"
-msgstr "קובץ אחד משוכפל"
+#: ../libnautilus-private/nautilus-file-undo-operations.c:436
+#, c-format
+msgid "_Redo Duplicate %d item"
+msgid_plural "_Redo Duplicate %d items"
+msgstr[0] "_שכפול פריט אחד שוב"
+msgstr[1] "_שכפול %d פריטים שוב"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:406
-#, fuzzy, c-format
+#: ../libnautilus-private/nautilus-file-undo-operations.c:441
+#, c-format
 msgid "Duplicate '%s' in '%s'"
-msgstr "‏„%B“ בשכפול"
+msgstr "שכפול '%s' תחת '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:409
+#: ../libnautilus-private/nautilus-file-undo-operations.c:444
 msgid "_Undo Duplicate"
 msgstr "_ביטול השכפול"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:410
+#: ../libnautilus-private/nautilus-file-undo-operations.c:445
 msgid "_Redo Duplicate"
 msgstr "שכפול מ_חדש"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:414
+#: ../libnautilus-private/nautilus-file-undo-operations.c:449
 #, c-format
-msgid "Delete links to %d items"
-msgstr "מחיקת קישורים ל־%d פריטים"
+msgid "Delete links to %d item"
+msgid_plural "Delete links to %d items"
+msgstr[0] "מחיקת קישורים לפריט אחד"
+msgstr[1] "מחיקת קישורים ל־%d פריטים"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:415
+#: ../libnautilus-private/nautilus-file-undo-operations.c:452
 #, c-format
-msgid "Create links to %d items"
-msgstr "יצירת קישורים ל־%d פריטים"
+msgid "Create links to %d item"
+msgid_plural "Create links to %d items"
+msgstr[0] "יצירת קישורים לפריט אחד"
+msgstr[1] "יצירת קישורים ל־%d פריטים"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:417
+#: ../libnautilus-private/nautilus-file-undo-operations.c:456
 #, c-format
 msgid "Delete link to '%s'"
 msgstr "מחיקת קישור אל '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:418
+#: ../libnautilus-private/nautilus-file-undo-operations.c:457
 #, c-format
 msgid "Create link to '%s'"
 msgstr "יצירת קישור אל '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:420
-#, fuzzy
+#: ../libnautilus-private/nautilus-file-undo-operations.c:459
 msgid "_Undo Create Link"
-msgstr "מתכונן ליצירת קישורים..."
+msgstr "_ביטול יצירת קישורים"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:421
-#, fuzzy
+#: ../libnautilus-private/nautilus-file-undo-operations.c:460
 msgid "_Redo Create Link"
-msgstr "מתכונן ליצירת קישורים..."
+msgstr "_יצירת קישורים שוב"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:637
-#, fuzzy, c-format
+#: ../libnautilus-private/nautilus-file-undo-operations.c:676
+#, c-format
 msgid "Create an empty file '%s'"
-msgstr "יצירת ומחיקת קבצים"
+msgstr "יצירת קובץ ריק '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:639
-#, fuzzy
+#: ../libnautilus-private/nautilus-file-undo-operations.c:678
 msgid "_Undo Create Empty File"
-msgstr "קובץ _ריק"
+msgstr "_ביטול יצירת קובץ ריק"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:640
-#, fuzzy
+#: ../libnautilus-private/nautilus-file-undo-operations.c:679
 msgid "_Redo Create Empty File"
-msgstr "קובץ _ריק"
+msgstr "_יצירת קובץ ריק שוב"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:642
-#, fuzzy, c-format
+#: ../libnautilus-private/nautilus-file-undo-operations.c:681
+#, c-format
 msgid "Create a new folder '%s'"
-msgstr "יצירת _תיקייה חדשה"
+msgstr "יצירת תיקייה חדשה בשם '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:644
-#, fuzzy
+#: ../libnautilus-private/nautilus-file-undo-operations.c:683
 msgid "_Undo Create Folder"
-msgstr "צור תיקייה"
+msgstr "_ביטול יצירת תיקייה"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:645
-#, fuzzy
+#: ../libnautilus-private/nautilus-file-undo-operations.c:684
 msgid "_Redo Create Folder"
-msgstr "צור תיקייה"
+msgstr "_יצירת תיקייה שוב"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:647
-#, fuzzy, c-format
+#: ../libnautilus-private/nautilus-file-undo-operations.c:686
+#, c-format
 msgid "Create new file '%s' from template "
-msgstr "יצירת מסמך חדש מהתבנית „%s“"
+msgstr "יצירת קובץ חדש „%s“ מתבנית"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:650
+#: ../libnautilus-private/nautilus-file-undo-operations.c:688
 msgid "_Undo Create from Template"
 msgstr "_ביטול היצירה מתבנית"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:651
+#: ../libnautilus-private/nautilus-file-undo-operations.c:689
 msgid "_Redo Create from Template"
 msgstr "יצירה מתבנית מ_חדש"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:831
-#: ../libnautilus-private/nautilus-file-undo-operations.c:832
+#: ../libnautilus-private/nautilus-file-undo-operations.c:869
+#: ../libnautilus-private/nautilus-file-undo-operations.c:870
 #, c-format
 msgid "Rename '%s' as '%s'"
 msgstr "שינוי השם של '%s' ל־'%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:834
-#, fuzzy
+#: ../libnautilus-private/nautilus-file-undo-operations.c:872
 msgid "_Undo Rename"
-msgstr "שינוי שם"
+msgstr "_ביטול שינוי שם"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:835
-#, fuzzy
+#: ../libnautilus-private/nautilus-file-undo-operations.c:873
 msgid "_Redo Rename"
-msgstr "שינוי שם"
+msgstr "_שינוי שם שוב"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:944
-#, fuzzy, c-format
-msgid "Move %d items to trash"
-msgstr "קבצים מועברים לאשפה"
+#: ../libnautilus-private/nautilus-file-undo-operations.c:984
+#, c-format
+msgid "Move %d item to trash"
+msgid_plural "Move %d items to trash"
+msgstr[0] "העברת פריט אחד לאשפה"
+msgstr[1] "העברת %d פריטים לאשפה"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:954
+#: ../libnautilus-private/nautilus-file-undo-operations.c:996
 #, c-format
 msgid "Restore '%s' to '%s'"
 msgstr "שחזור '%s' ל־'%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:961
-#, fuzzy, c-format
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1003
+#, c-format
 msgid "Move '%s' to trash"
-msgstr "זרוק לאשפה"
+msgstr "העברת '%s' לאשפה"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:965
-#, fuzzy
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1007
 msgid "_Undo Trash"
-msgstr "_אשפה"
+msgstr "ביטול העברה ל_אשפה"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:966
-#, fuzzy
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1008
 msgid "_Redo Trash"
-msgstr "ה_עברה לאשפה"
+msgstr "ה_עברה לאשפה שוב"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1219
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1301
 #, c-format
 msgid "Restore original permissions of items enclosed in '%s'"
 msgstr "שחזור ההגדרות המקוריות של הפריטים שבתוך '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1220
-#, fuzzy, c-format
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1302
+#, c-format
 msgid "Set permissions of items enclosed in '%s'"
-msgstr "ההרשאות של הקובץ."
+msgstr "ה_גדרת הרשאות של הפריט הנמצא בתוך '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1222
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1377
-#, fuzzy
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1304
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1459
 msgid "_Undo Change Permissions"
-msgstr "הרשאות תיקייה:"
+msgstr "_ביטול שינוי ההרשאות"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1223
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1378
-#, fuzzy
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1305
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1460
 msgid "_Redo Change Permissions"
-msgstr "הרשאות תיקייה:"
+msgstr "_שינוי ההרשאות שוב"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1374
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1456
 #, c-format
 msgid "Restore original permissions of '%s'"
 msgstr "שחזור ההרשאות המקוריות של '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1375
-#, fuzzy, c-format
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1457
+#, c-format
 msgid "Set permissions of '%s'"
-msgstr "קובע הרשאות"
+msgstr "הגדרת ההרשאות של '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1485
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1567
 #, c-format
 msgid "Restore group of '%s' to '%s'"
 msgstr "שחזור קבוצה של '%s' ל־'%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1487
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1569
 #, c-format
 msgid "Set group of '%s' to '%s'"
 msgstr "הגדרת קבוצת '%s' ל־'%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1490
-#, fuzzy
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1572
 msgid "_Undo Change Group"
-msgstr "משנה קבוצה."
+msgstr "_ביטול שינוי הקבוצה"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1491
-#, fuzzy
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1573
 msgid "_Redo Change Group"
-msgstr "משנה קבוצה."
+msgstr "_שינוי הקבוצה שוב"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1493
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1575
 #, c-format
 msgid "Restore owner of '%s' to '%s'"
 msgstr "שחזור הבעלות של '%s' לידי '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1495
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1577
 #, c-format
 msgid "Set owner of '%s' to '%s'"
 msgstr "הגדרת הבעלים של %s' כ־'%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1498
-#, fuzzy
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1580
 msgid "_Undo Change Owner"
-msgstr "משנה בעלים."
+msgstr "_ביטול שינוי הבעלות"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1499
-#, fuzzy
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1581
 msgid "_Redo Change Owner"
-msgstr "משנה בעלים."
+msgstr "_שינוי הבעלות שוב"
 
 #: ../libnautilus-private/nautilus-file-utilities.c:1229
 #, c-format
@@ -1869,7 +1881,7 @@ msgstr "בהכנות"
 #: ../libnautilus-private/nautilus-search-directory-file.c:160
 #: ../libnautilus-private/nautilus-search-directory-file.c:186
 #: ../libnautilus-private/nautilus-search-directory-file.c:218
-#: ../src/nautilus-window-menus.c:1146
+#: ../src/nautilus-window-menus.c:1148
 msgid "Search"
 msgstr "חיפוש"
 
@@ -2552,7 +2564,7 @@ msgstr "המשך"
 
 #: ../src/nautilus-connect-server-dialog.c:701
 #: ../src/nautilus-properties-window.c:5123
-#: ../src/nautilus-view.c:1466
+#: ../src/nautilus-view.c:1457
 msgid "There was an error displaying help."
 msgstr "אירעה שגיאה בעת הצגת העזרה."
 
@@ -2592,7 +2604,7 @@ msgstr "שיתו_ף:"
 
 #. fourth row: folder entry
 #: ../src/nautilus-connect-server-dialog.c:1008
-#: ../src/nautilus-view.c:1660
+#: ../src/nautilus-view.c:1651
 msgid "_Folder:"
 msgstr "_תיקייה:"
 
@@ -2643,8 +2655,8 @@ msgstr ""
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-desktop-icon-view.c:719
-#: ../src/nautilus-view.c:7005
-#: ../src/nautilus-view.c:8542
+#: ../src/nautilus-view.c:6996
+#: ../src/nautilus-view.c:8533
 msgid "E_mpty Trash"
 msgstr "_פינוי אשפה"
 
@@ -2666,7 +2678,7 @@ msgstr "פינוי האשפה"
 #. tooltip
 #: ../src/nautilus-desktop-icon-view.c:740
 #: ../src/nautilus-trash-bar.c:207
-#: ../src/nautilus-view.c:7006
+#: ../src/nautilus-view.c:6997
 msgid "Delete all items in the Trash"
 msgstr "מחיקת כל הפריטים מהאשפה"
 
@@ -2701,7 +2713,7 @@ msgstr "פקודה"
 #: ../src/nautilus-desktop-window.c:92
 #: ../src/nautilus-desktop-window.c:290
 #: ../src/nautilus-pathbar.c:1200
-#: ../src/nautilus-places-sidebar.c:699
+#: ../src/nautilus-places-sidebar.c:693
 msgid "Desktop"
 msgstr "שולחן עבודה"
 
@@ -2996,7 +3008,7 @@ msgstr "בחירת סדר המידע שיופיע בתצוגת הרשימה."
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../src/nautilus-file-management-properties.ui.h:51
-#: ../src/nautilus-icon-view.c:2687
+#: ../src/nautilus-icon-view.c:2678
 msgid "Compact View"
 msgstr "תצוגה קומפקטית"
 
@@ -3027,7 +3039,7 @@ msgstr "ה_כללת פקודת מחיקה העוקפת את האשפה"
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../src/nautilus-file-management-properties.ui.h:58
-#: ../src/nautilus-icon-view.c:2673
+#: ../src/nautilus-icon-view.c:2664
 #: ../src/nautilus-icon-view-container.c:582
 msgid "Icon View"
 msgstr "תצוגת סמלים"
@@ -3039,8 +3051,8 @@ msgstr "רשימת עמודות"
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../src/nautilus-file-management-properties.ui.h:60
-#: ../src/nautilus-list-view.c:1760
-#: ../src/nautilus-list-view.c:3396
+#: ../src/nautilus-list-view.c:1716
+#: ../src/nautilus-list-view.c:3342
 msgid "List View"
 msgstr "תצוגת רשימה"
 
@@ -3271,36 +3283,36 @@ msgid "Restore Icon's Original Si_ze"
 msgstr "שחזור ל_גודל המקורי של הסמל"
 
 #. translators: this is used in the view menu
-#: ../src/nautilus-icon-view.c:2675
+#: ../src/nautilus-icon-view.c:2666
 msgid "_Icons"
 msgstr "_סמלים"
 
-#: ../src/nautilus-icon-view.c:2676
+#: ../src/nautilus-icon-view.c:2667
 msgid "The icon view encountered an error."
 msgstr "שגיאה בתצוגת הסמלים."
 
-#: ../src/nautilus-icon-view.c:2677
+#: ../src/nautilus-icon-view.c:2668
 msgid "The icon view encountered an error while starting up."
 msgstr "שגיאה באתחול תצוגת הסמלים."
 
-#: ../src/nautilus-icon-view.c:2678
+#: ../src/nautilus-icon-view.c:2669
 msgid "Display this location with the icon view."
 msgstr "הצגת מיקום זה בתצוגת הסמלים"
 
 #. translators: this is used in the view menu
-#: ../src/nautilus-icon-view.c:2689
+#: ../src/nautilus-icon-view.c:2680
 msgid "_Compact"
 msgstr "_קומפקטי"
 
-#: ../src/nautilus-icon-view.c:2690
+#: ../src/nautilus-icon-view.c:2681
 msgid "The compact view encountered an error."
 msgstr "שגיאה בתצוגה הקומפקטית."
 
-#: ../src/nautilus-icon-view.c:2691
+#: ../src/nautilus-icon-view.c:2682
 msgid "The compact view encountered an error while starting up."
 msgstr "שגיאה באתחול התצוגה הקומפקטית."
 
-#: ../src/nautilus-icon-view.c:2692
+#: ../src/nautilus-icon-view.c:2683
 msgid "Display this location with the compact view."
 msgstr "הצגת מיקום זה בתצוגה הקומפקטית."
 
@@ -3406,45 +3418,45 @@ msgstr "(ריק)"
 
 #: ../src/nautilus-list-model.c:395
 #: ../src/nautilus-tree-sidebar-model.c:1252
-#: ../src/nautilus-window-manage-views.c:1129
+#: ../src/nautilus-window-manage-views.c:1137
 #: ../src/nautilus-window-slot.c:201
 msgid "Loading..."
 msgstr "בטעינה..."
 
-#: ../src/nautilus-list-view.c:2577
+#: ../src/nautilus-list-view.c:2533
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s עמודות גלויות"
 
-#: ../src/nautilus-list-view.c:2597
+#: ../src/nautilus-list-view.c:2553
 msgid "Choose the order of information to appear in this folder:"
 msgstr "בחירת סדר המידע שיופיע בתיקייה זו:"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-list-view.c:2651
+#: ../src/nautilus-list-view.c:2607
 msgid "Visible _Columns..."
 msgstr "_עמודות גלויות..."
 
 #. tooltip
-#: ../src/nautilus-list-view.c:2652
+#: ../src/nautilus-list-view.c:2608
 msgid "Select the columns visible in this folder"
 msgstr "בחירת העמודות שיופיעו בתיקייה זו"
 
 #. translators: this is used in the view menu
-#: ../src/nautilus-list-view.c:3398
+#: ../src/nautilus-list-view.c:3344
 msgid "_List"
 msgstr "_רשימה"
 
-#: ../src/nautilus-list-view.c:3399
+#: ../src/nautilus-list-view.c:3345
 msgid "The list view encountered an error."
 msgstr "שגיאה בתצוגת הרשימה."
 
-#: ../src/nautilus-list-view.c:3400
+#: ../src/nautilus-list-view.c:3346
 msgid "The list view encountered an error while starting up."
 msgstr "שגיאה באתחול תצוגת הרשימה."
 
-#: ../src/nautilus-list-view.c:3401
+#: ../src/nautilus-list-view.c:3347
 msgid "Display this location with the list view."
 msgstr "הצגת מיקום זה בתצוגת רשימה."
 
@@ -3495,10 +3507,10 @@ msgstr "לא ניתן להשתמש בקישור זה, כיוון שיעדו „%
 #. label, accelerator
 #: ../src/nautilus-mime-actions.c:646
 #: ../src/nautilus-tree-sidebar.c:1247
-#: ../src/nautilus-view.c:7057
-#: ../src/nautilus-view.c:7175
-#: ../src/nautilus-view.c:8196
-#: ../src/nautilus-view.c:8474
+#: ../src/nautilus-view.c:7048
+#: ../src/nautilus-view.c:7166
+#: ../src/nautilus-view.c:8187
+#: ../src/nautilus-view.c:8465
 msgid "Mo_ve to Trash"
 msgstr "ה_עברה לאשפה"
 
@@ -3522,7 +3534,7 @@ msgstr "ה_צגה"
 
 #: ../src/nautilus-mime-actions.c:1042
 #: ../src/nautilus-mime-actions.c:1785
-#: ../src/nautilus-view.c:966
+#: ../src/nautilus-view.c:957
 msgid "Are you sure you want to open all files?"
 msgstr "האם ברצונך לפתוח את כל הקבצים?"
 
@@ -3534,12 +3546,12 @@ msgstr[0] "לשונית חדשה תיפתח."
 msgstr[1] "%d לשוניות חדשות יפתחו."
 
 #: ../src/nautilus-mime-actions.c:1117
-#: ../src/nautilus-window-manage-views.c:1595
-#: ../src/nautilus-window-manage-views.c:1601
-#: ../src/nautilus-window-manage-views.c:1618
-#: ../src/nautilus-window-manage-views.c:1629
-#: ../src/nautilus-window-manage-views.c:1635
-#: ../src/nautilus-window-manage-views.c:1661
+#: ../src/nautilus-window-manage-views.c:1603
+#: ../src/nautilus-window-manage-views.c:1609
+#: ../src/nautilus-window-manage-views.c:1626
+#: ../src/nautilus-window-manage-views.c:1637
+#: ../src/nautilus-window-manage-views.c:1643
+#: ../src/nautilus-window-manage-views.c:1669
 #, c-format
 msgid "Could not display \"%s\"."
 msgstr "לא ניתן להציג את „%s“."
@@ -3600,12 +3612,12 @@ msgstr[1] "פעולה זו תפתח %d יישומים נפרדים."
 
 #: ../src/nautilus-mime-actions.c:1863
 #: ../src/nautilus-mime-actions.c:2137
-#: ../src/nautilus-view.c:6177
+#: ../src/nautilus-view.c:6168
 msgid "Unable to mount location"
 msgstr "לא ניתן לעגן את המיקום"
 
 #: ../src/nautilus-mime-actions.c:2216
-#: ../src/nautilus-view.c:6324
+#: ../src/nautilus-view.c:6315
 msgid "Unable to start location"
 msgstr "לא ניתן להתחיל את המיקום"
 
@@ -3625,248 +3637,248 @@ msgstr[1] "‏%d פריטים נפתחים."
 msgid "Close tab"
 msgstr "סגירת לשונית"
 
-#: ../src/nautilus-places-sidebar.c:337
+#: ../src/nautilus-places-sidebar.c:325
 msgid "Devices"
 msgstr "התקנים"
 
-#: ../src/nautilus-places-sidebar.c:345
+#: ../src/nautilus-places-sidebar.c:333
 msgid "Bookmarks"
 msgstr "סימניות"
 
-#: ../src/nautilus-places-sidebar.c:548
-#: ../src/nautilus-places-sidebar.c:573
+#: ../src/nautilus-places-sidebar.c:552
+#: ../src/nautilus-places-sidebar.c:577
 #, c-format
 msgid "Mount and open %s"
 msgstr "חיבור ופתיחה של %s"
 
-#: ../src/nautilus-places-sidebar.c:674
+#: ../src/nautilus-places-sidebar.c:671
 msgid "Computer"
 msgstr "מחשב"
 
 #. tooltip
-#: ../src/nautilus-places-sidebar.c:685
+#: ../src/nautilus-places-sidebar.c:682
 #: ../src/nautilus-window-menus.c:996
 msgid "Open your personal folder"
 msgstr "פתיחת התיקייה הפרטית שלך"
 
-#: ../src/nautilus-places-sidebar.c:701
+#: ../src/nautilus-places-sidebar.c:695
 msgid "Open the contents of your desktop in a folder"
 msgstr "פתיחת תוכן שולחן העבודה שלך בתיקייה"
 
-#: ../src/nautilus-places-sidebar.c:799
+#: ../src/nautilus-places-sidebar.c:784
 #: ../src/nautilus-tree-sidebar.c:1342
 msgid "File System"
 msgstr "מערכת קבצים"
 
-#: ../src/nautilus-places-sidebar.c:801
+#: ../src/nautilus-places-sidebar.c:786
 msgid "Open the contents of the File System"
 msgstr "פתיחת תוכן מערכת הקבצים"
 
-#: ../src/nautilus-places-sidebar.c:811
+#: ../src/nautilus-places-sidebar.c:793
 #: ../src/nautilus-trash-bar.c:191
 msgid "Trash"
 msgstr "אשפה"
 
-#: ../src/nautilus-places-sidebar.c:813
+#: ../src/nautilus-places-sidebar.c:795
 msgid "Open the trash"
 msgstr "פתיחת האשפה"
 
-#: ../src/nautilus-places-sidebar.c:821
+#: ../src/nautilus-places-sidebar.c:800
 msgid "Network"
 msgstr "רשת"
 
-#: ../src/nautilus-places-sidebar.c:853
+#: ../src/nautilus-places-sidebar.c:829
 msgid "Browse Network"
 msgstr "עיון ברשת"
 
-#: ../src/nautilus-places-sidebar.c:855
+#: ../src/nautilus-places-sidebar.c:831
 msgid "Browse the contents of the network"
 msgstr "עיון בתוכן הרשת"
 
 #. Adjust start/stop items to reflect the type of the drive
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:1725
-#: ../src/nautilus-places-sidebar.c:2745
-#: ../src/nautilus-view.c:7103
-#: ../src/nautilus-view.c:7127
-#: ../src/nautilus-view.c:7199
-#: ../src/nautilus-view.c:7832
-#: ../src/nautilus-view.c:7836
-#: ../src/nautilus-view.c:7919
-#: ../src/nautilus-view.c:7923
-#: ../src/nautilus-view.c:8023
-#: ../src/nautilus-view.c:8027
+#: ../src/nautilus-places-sidebar.c:1694
+#: ../src/nautilus-places-sidebar.c:2714
+#: ../src/nautilus-view.c:7094
+#: ../src/nautilus-view.c:7118
+#: ../src/nautilus-view.c:7190
+#: ../src/nautilus-view.c:7823
+#: ../src/nautilus-view.c:7827
+#: ../src/nautilus-view.c:7910
+#: ../src/nautilus-view.c:7914
+#: ../src/nautilus-view.c:8014
+#: ../src/nautilus-view.c:8018
 msgid "_Start"
 msgstr "ה_תחלה"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:1726
-#: ../src/nautilus-places-sidebar.c:2752
-#: ../src/nautilus-view.c:7107
-#: ../src/nautilus-view.c:7131
-#: ../src/nautilus-view.c:7203
-#: ../src/nautilus-view.c:7861
-#: ../src/nautilus-view.c:7948
-#: ../src/nautilus-view.c:8052
+#: ../src/nautilus-places-sidebar.c:1695
+#: ../src/nautilus-places-sidebar.c:2721
+#: ../src/nautilus-view.c:7098
+#: ../src/nautilus-view.c:7122
+#: ../src/nautilus-view.c:7194
+#: ../src/nautilus-view.c:7852
+#: ../src/nautilus-view.c:7939
+#: ../src/nautilus-view.c:8043
 #: ../src/nautilus-window-menus.c:935
 msgid "_Stop"
 msgstr "_עצירה"
 
 #. start() for type G_DRIVE_START_STOP_TYPE_SHUTDOWN is normally not used
-#: ../src/nautilus-places-sidebar.c:1731
+#: ../src/nautilus-places-sidebar.c:1700
 msgid "_Power On"
 msgstr "ה_דלקה"
 
-#: ../src/nautilus-places-sidebar.c:1732
-#: ../src/nautilus-view.c:7865
-#: ../src/nautilus-view.c:7952
-#: ../src/nautilus-view.c:8056
+#: ../src/nautilus-places-sidebar.c:1701
+#: ../src/nautilus-view.c:7856
+#: ../src/nautilus-view.c:7943
+#: ../src/nautilus-view.c:8047
 msgid "_Safely Remove Drive"
 msgstr "הסרת הכונן _בבטחה"
 
-#: ../src/nautilus-places-sidebar.c:1735
+#: ../src/nautilus-places-sidebar.c:1704
 msgid "_Connect Drive"
 msgstr "_חיבור כונן"
 
-#: ../src/nautilus-places-sidebar.c:1736
+#: ../src/nautilus-places-sidebar.c:1705
 msgid "_Disconnect Drive"
 msgstr "_ניתוק כונן"
 
-#: ../src/nautilus-places-sidebar.c:1739
+#: ../src/nautilus-places-sidebar.c:1708
 msgid "_Start Multi-disk Device"
 msgstr "ה_תחלת התקן מרובה כוננים"
 
-#: ../src/nautilus-places-sidebar.c:1740
+#: ../src/nautilus-places-sidebar.c:1709
 msgid "_Stop Multi-disk Device"
 msgstr "_עצירת התקן מרובה כוננים"
 
 #. stop() for type G_DRIVE_START_STOP_TYPE_PASSWORD is normally not used
-#: ../src/nautilus-places-sidebar.c:1744
-#: ../src/nautilus-view.c:7935
-#: ../src/nautilus-view.c:8039
+#: ../src/nautilus-places-sidebar.c:1713
+#: ../src/nautilus-view.c:7926
+#: ../src/nautilus-view.c:8030
 msgid "_Unlock Drive"
 msgstr "_שחרור כונן"
 
-#: ../src/nautilus-places-sidebar.c:1745
-#: ../src/nautilus-view.c:7877
-#: ../src/nautilus-view.c:7964
-#: ../src/nautilus-view.c:8068
+#: ../src/nautilus-places-sidebar.c:1714
+#: ../src/nautilus-view.c:7868
+#: ../src/nautilus-view.c:7955
+#: ../src/nautilus-view.c:8059
 msgid "_Lock Drive"
 msgstr "_נעילת כונן"
 
-#: ../src/nautilus-places-sidebar.c:1819
-#: ../src/nautilus-places-sidebar.c:2383
+#: ../src/nautilus-places-sidebar.c:1788
+#: ../src/nautilus-places-sidebar.c:2352
 #, c-format
 msgid "Unable to start %s"
 msgstr "לא ניתן להתחיל את %s"
 
-#: ../src/nautilus-places-sidebar.c:2142
-#: ../src/nautilus-places-sidebar.c:2170
-#: ../src/nautilus-places-sidebar.c:2198
+#: ../src/nautilus-places-sidebar.c:2111
+#: ../src/nautilus-places-sidebar.c:2139
+#: ../src/nautilus-places-sidebar.c:2167
 #, c-format
 msgid "Unable to eject %s"
 msgstr "לא ניתן להוציא את %s"
 
-#: ../src/nautilus-places-sidebar.c:2338
+#: ../src/nautilus-places-sidebar.c:2307
 #, c-format
 msgid "Unable to poll %s for media changes"
 msgstr "לא ניתן לבדוק את %s עבור שינויי מדיה"
 
-#: ../src/nautilus-places-sidebar.c:2438
+#: ../src/nautilus-places-sidebar.c:2407
 #, c-format
 msgid "Unable to stop %s"
 msgstr "לא ניתן לעצור את %s"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:2661
+#: ../src/nautilus-places-sidebar.c:2630
 #: ../src/nautilus-tree-sidebar.c:1158
-#: ../src/nautilus-view.c:6977
-#: ../src/nautilus-view.c:8390
+#: ../src/nautilus-view.c:6968
+#: ../src/nautilus-view.c:8381
 msgid "_Open"
 msgstr "_פתיחה"
 
 #. add the "open in new tab" menu item
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:2669
+#: ../src/nautilus-places-sidebar.c:2638
 #: ../src/nautilus-tree-sidebar.c:1169
-#: ../src/nautilus-view.c:6989
-#: ../src/nautilus-view.c:7157
-#: ../src/nautilus-view.c:8149
-#: ../src/nautilus-view.c:8452
+#: ../src/nautilus-view.c:6980
+#: ../src/nautilus-view.c:7148
+#: ../src/nautilus-view.c:8140
+#: ../src/nautilus-view.c:8443
 msgid "Open in New _Tab"
 msgstr "פתיחה ב_לשונית חדשה"
 
 #. add the "open in new window" menu item
-#: ../src/nautilus-places-sidebar.c:2679
+#: ../src/nautilus-places-sidebar.c:2648
 #: ../src/nautilus-tree-sidebar.c:1183
-#: ../src/nautilus-view.c:8140
-#: ../src/nautilus-view.c:8432
+#: ../src/nautilus-view.c:8131
+#: ../src/nautilus-view.c:8423
 msgid "Open in New _Window"
 msgstr "פתיחה ב_חלון חדש"
 
 #. name, stock id, label
-#: ../src/nautilus-places-sidebar.c:2690
+#: ../src/nautilus-places-sidebar.c:2659
 #: ../src/nautilus-window-menus.c:1041
 msgid "_Add Bookmark"
 msgstr "הו_ספת סימנייה"
 
-#: ../src/nautilus-places-sidebar.c:2696
+#: ../src/nautilus-places-sidebar.c:2665
 msgid "Remove"
 msgstr "הסרה"
 
-#: ../src/nautilus-places-sidebar.c:2705
+#: ../src/nautilus-places-sidebar.c:2674
 msgid "Rename..."
 msgstr "שינוי שם..."
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:2717
-#: ../src/nautilus-view.c:7091
-#: ../src/nautilus-view.c:7115
-#: ../src/nautilus-view.c:7187
+#: ../src/nautilus-places-sidebar.c:2686
+#: ../src/nautilus-view.c:7082
+#: ../src/nautilus-view.c:7106
+#: ../src/nautilus-view.c:7178
 msgid "_Mount"
 msgstr "_עיגון"
 
 #. add the "Unmount" menu item
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:2724
+#: ../src/nautilus-places-sidebar.c:2693
 #: ../src/nautilus-tree-sidebar.c:1274
-#: ../src/nautilus-view.c:7095
-#: ../src/nautilus-view.c:7119
-#: ../src/nautilus-view.c:7191
+#: ../src/nautilus-view.c:7086
+#: ../src/nautilus-view.c:7110
+#: ../src/nautilus-view.c:7182
 msgid "_Unmount"
 msgstr "_ניתוק"
 
 #. add the "Eject" menu item
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:2731
+#: ../src/nautilus-places-sidebar.c:2700
 #: ../src/nautilus-tree-sidebar.c:1283
-#: ../src/nautilus-view.c:7099
-#: ../src/nautilus-view.c:7123
-#: ../src/nautilus-view.c:7195
+#: ../src/nautilus-view.c:7090
+#: ../src/nautilus-view.c:7114
+#: ../src/nautilus-view.c:7186
 msgid "_Eject"
 msgstr "_שליפה"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:2738
-#: ../src/nautilus-view.c:7111
-#: ../src/nautilus-view.c:7135
-#: ../src/nautilus-view.c:7207
+#: ../src/nautilus-places-sidebar.c:2707
+#: ../src/nautilus-view.c:7102
+#: ../src/nautilus-view.c:7126
+#: ../src/nautilus-view.c:7198
 msgid "_Detect Media"
 msgstr "_זיהוי מדיה"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:2773
-#: ../src/nautilus-view.c:6959
-#: ../src/nautilus-view.c:7212
+#: ../src/nautilus-places-sidebar.c:2742
+#: ../src/nautilus-view.c:6950
+#: ../src/nautilus-view.c:7203
 msgid "_Properties"
 msgstr "_מאפיינים"
 
@@ -4296,19 +4308,19 @@ msgid "Restore selected items to their original position"
 msgstr "שחזור הפריטים הנבחרים למקומם המקורי"
 
 #: ../src/nautilus-tree-sidebar.c:916
-#: ../src/nautilus-view.c:5742
+#: ../src/nautilus-view.c:5733
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "הפריט \"%s\" יועבר אם פקודת ההדבקה תיבחר"
 
 #: ../src/nautilus-tree-sidebar.c:920
-#: ../src/nautilus-view.c:5746
+#: ../src/nautilus-view.c:5737
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "הפריט \"%s\" יועתק אם פקודת ההדבקה תיבחר"
 
 #: ../src/nautilus-tree-sidebar.c:959
-#: ../src/nautilus-view.c:5939
+#: ../src/nautilus-view.c:5930
 msgid "There is nothing on the clipboard to paste."
 msgstr "אין שום דבר בלוח הגזירים להדבקה."
 
@@ -4316,7 +4328,7 @@ msgstr "אין שום דבר בלוח הגזירים להדבקה."
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-tree-sidebar.c:1199
-#: ../src/nautilus-view.c:6967
+#: ../src/nautilus-view.c:6958
 msgid "Create New _Folder"
 msgstr "יצירת _תיקייה חדשה"
 
@@ -4325,17 +4337,17 @@ msgstr "יצירת _תיקייה חדשה"
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-tree-sidebar.c:1231
-#: ../src/nautilus-view.c:7023
-#: ../src/nautilus-view.c:7170
+#: ../src/nautilus-view.c:7014
+#: ../src/nautilus-view.c:7161
 msgid "_Paste Into Folder"
 msgstr "ה_דבקה לתוך התיקייה"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-tree-sidebar.c:1261
-#: ../src/nautilus-view.c:7061
-#: ../src/nautilus-view.c:7179
-#: ../src/nautilus-view.c:8495
+#: ../src/nautilus-view.c:7052
+#: ../src/nautilus-view.c:7170
+#: ../src/nautilus-view.c:8486
 msgid "_Delete"
 msgstr "_מחיקה"
 
@@ -4343,66 +4355,66 @@ msgstr "_מחיקה"
 msgid "Network Neighbourhood"
 msgstr "שכנים ברשת"
 
-#: ../src/nautilus-view.c:968
+#: ../src/nautilus-view.c:959
 #, c-format
 msgid "This will open %'d separate tab."
 msgid_plural "This will open %'d separate tabs."
 msgstr[0] "פעולה זו תפתח לשונית נפרדת."
 msgstr[1] "פעולה זו תפתח %'d לשוניות נפרדות."
 
-#: ../src/nautilus-view.c:971
+#: ../src/nautilus-view.c:962
 #, c-format
 msgid "This will open %'d separate window."
 msgid_plural "This will open %'d separate windows."
 msgstr[0] "פעולה זו תפתח חלון נפרד."
 msgstr[1] "פעולה זו תפתח %'d חלונות נפרדים."
 
-#: ../src/nautilus-view.c:1486
+#: ../src/nautilus-view.c:1477
 msgid "Select Items Matching"
 msgstr "בחירת פריטים שמתאימים"
 
-#: ../src/nautilus-view.c:1501
+#: ../src/nautilus-view.c:1492
 msgid "_Pattern:"
 msgstr "_תבנית:"
 
-#: ../src/nautilus-view.c:1507
+#: ../src/nautilus-view.c:1498
 msgid "Examples: "
 msgstr "דוגמאות:"
 
-#: ../src/nautilus-view.c:1620
+#: ../src/nautilus-view.c:1611
 msgid "Save Search as"
 msgstr "שמירת חיפוש בשם"
 
-#: ../src/nautilus-view.c:1643
+#: ../src/nautilus-view.c:1634
 msgid "Search _name:"
 msgstr "_שם החיפוש:"
 
-#: ../src/nautilus-view.c:1665
+#: ../src/nautilus-view.c:1656
 msgid "Select Folder to Save Search In"
 msgstr "בחירת תיקייה בה החיפוש יישמר"
 
-#: ../src/nautilus-view.c:2581
+#: ../src/nautilus-view.c:2572
 msgid "Content View"
 msgstr "תצוגה נוכחית"
 
-#: ../src/nautilus-view.c:2582
+#: ../src/nautilus-view.c:2573
 msgid "View of the current folder"
 msgstr "תצוגה של התיקייה הנוכחית"
 
-#: ../src/nautilus-view.c:2782
-#: ../src/nautilus-view.c:2819
+#: ../src/nautilus-view.c:2773
+#: ../src/nautilus-view.c:2810
 #, c-format
 msgid "\"%s\" selected"
 msgstr "הפריט „%s“ נבחר"
 
-#: ../src/nautilus-view.c:2784
+#: ../src/nautilus-view.c:2775
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "תיקייה אחת נבחרה"
 msgstr[1] "‏%'d תיקיות נבחרו"
 
-#: ../src/nautilus-view.c:2794
+#: ../src/nautilus-view.c:2785
 #, c-format
 msgid " (containing %'d item)"
 msgid_plural " (containing %'d items)"
@@ -4410,14 +4422,14 @@ msgstr[0] " (מכיל פריט אחד)"
 msgstr[1] " (מכיל %'d פריטים)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: ../src/nautilus-view.c:2805
+#: ../src/nautilus-view.c:2796
 #, c-format
 msgid " (containing a total of %'d item)"
 msgid_plural " (containing a total of %'d items)"
 msgstr[0] " (מכיל סך־הכול פריט אחד)"
 msgstr[1] " (מכיל סך־הכול %'d פריטים)"
 
-#: ../src/nautilus-view.c:2822
+#: ../src/nautilus-view.c:2813
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -4425,7 +4437,7 @@ msgstr[0] "פריט אחד נבחר"
 msgstr[1] "%'d פריטים נבחרו"
 
 #. Folders selected also, use "other" terminology
-#: ../src/nautilus-view.c:2829
+#: ../src/nautilus-view.c:2820
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -4437,17 +4449,17 @@ msgstr[1] "%'d פריטים אחרים נבחרו"
 #. * first message gives the number of items selected;
 #. * the message in parentheses the size of those items.
 #.
-#: ../src/nautilus-view.c:2844
+#: ../src/nautilus-view.c:2835
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../src/nautilus-view.c:2857
+#: ../src/nautilus-view.c:2848
 #, c-format
 msgid "Free space: %s"
 msgstr "מקום פנוי: %s"
 
-#: ../src/nautilus-view.c:2868
+#: ../src/nautilus-view.c:2859
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s, מקום פנוי: %s"
@@ -4457,7 +4469,7 @@ msgstr "%s, מקום פנוי: %s"
 #. * After the comma the amount of free space will
 #. * be shown.
 #.
-#: ../src/nautilus-view.c:2883
+#: ../src/nautilus-view.c:2874
 #, c-format
 msgid "%s, %s"
 msgstr "%s, %s"
@@ -4474,8 +4486,8 @@ msgstr "%s, %s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: ../src/nautilus-view.c:2902
-#: ../src/nautilus-view.c:2915
+#: ../src/nautilus-view.c:2893
+#: ../src/nautilus-view.c:2906
 #, c-format
 msgid "%s%s, %s"
 msgstr "‏%s%s, %s"
@@ -4488,42 +4500,42 @@ msgstr "‏%s%s, %s"
 #. * total size of those items. After the second comma
 #. * the free space is written.
 #.
-#: ../src/nautilus-view.c:2929
+#: ../src/nautilus-view.c:2920
 #, c-format
 msgid "%s%s, %s, %s"
 msgstr "%s%s, %s, %s"
 
-#: ../src/nautilus-view.c:4349
+#: ../src/nautilus-view.c:4340
 #, c-format
 msgid "Open With %s"
 msgstr "פתיחה באמצעות %s"
 
-#: ../src/nautilus-view.c:4351
+#: ../src/nautilus-view.c:4342
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgid_plural "Use \"%s\" to open the selected items"
 msgstr[0] "שימוש ב־„%s“ לפתיחת הפריט הנבחר"
 msgstr[1] "שימוש ב־„%s“ לפתיחת הפריטים הנבחרים"
 
-#: ../src/nautilus-view.c:5165
+#: ../src/nautilus-view.c:5156
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "הפעלת „%s“ על כל הפריטים שנבחרו"
 
-#: ../src/nautilus-view.c:5416
+#: ../src/nautilus-view.c:5407
 #, c-format
 msgid "Create a new document from template \"%s\""
 msgstr "יצירת מסמך חדש מהתבנית „%s“"
 
-#: ../src/nautilus-view.c:5670
+#: ../src/nautilus-view.c:5661
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "כל קובצי ההפעלה בתיקייה זו יופיעו בתפריט הסקריפטים."
 
-#: ../src/nautilus-view.c:5672
+#: ../src/nautilus-view.c:5663
 msgid "Choosing a script from the menu will run that script with any selected items as input."
 msgstr "בחירת סקריפט מהתפריט תפעיל את הסקריפט עם כל קובץ נבחר כקלט."
 
-#: ../src/nautilus-view.c:5674
+#: ../src/nautilus-view.c:5665
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. Choosing a script from the menu will run that script.\n"
 "\n"
@@ -4564,92 +4576,92 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_NEXT_PANE_CURRENT_URI: כתובת המיקום הנוכחי של החלונית שאינה פעילה בחלון בתצוגה מפוצל"
 
-#: ../src/nautilus-view.c:5753
+#: ../src/nautilus-view.c:5744
 #, c-format
 msgid "The %'d selected item will be moved if you select the Paste command"
 msgid_plural "The %'d selected items will be moved if you select the Paste command"
 msgstr[0] "הפריט הנבחר יועבר אם הפקודה „הדבקה“ תיבחר"
 msgstr[1] "‏%'d הפריטים הנבחרים יועברו אם הפקודה „הדבקה“ תיבחר"
 
-#: ../src/nautilus-view.c:5760
+#: ../src/nautilus-view.c:5751
 #, c-format
 msgid "The %'d selected item will be copied if you select the Paste command"
 msgid_plural "The %'d selected items will be copied if you select the Paste command"
 msgstr[0] "הפריט הנבחר יועתק אם הפקודה „הדבקה“ תיבחר"
 msgstr[1] "‏%'d הפריטים הנבחרים יועתקו אם הפקודה „הדבקה“ תיבחר"
 
-#: ../src/nautilus-view.c:6197
+#: ../src/nautilus-view.c:6188
 msgid "Unable to unmount location"
 msgstr "לא ניתן לנתק את המיקום"
 
-#: ../src/nautilus-view.c:6217
+#: ../src/nautilus-view.c:6208
 msgid "Unable to eject location"
 msgstr "לא ניתן לשלוף את המיקום"
 
-#: ../src/nautilus-view.c:6232
+#: ../src/nautilus-view.c:6223
 msgid "Unable to stop drive"
 msgstr "לא ניתן לעצור את הכונן"
 
-#: ../src/nautilus-view.c:6718
+#: ../src/nautilus-view.c:6709
 #, c-format
 msgid "Connect to Server %s"
 msgstr "התחברות לשרת %s"
 
-#: ../src/nautilus-view.c:6723
-#: ../src/nautilus-view.c:7840
-#: ../src/nautilus-view.c:7927
-#: ../src/nautilus-view.c:8031
+#: ../src/nautilus-view.c:6714
+#: ../src/nautilus-view.c:7831
+#: ../src/nautilus-view.c:7918
+#: ../src/nautilus-view.c:8022
 msgid "_Connect"
 msgstr "ה_תחברות"
 
-#: ../src/nautilus-view.c:6737
+#: ../src/nautilus-view.c:6728
 msgid "Link _name:"
 msgstr "_שם הקישור:"
 
 #. name, stock id, label
-#: ../src/nautilus-view.c:6955
+#: ../src/nautilus-view.c:6946
 msgid "Create New _Document"
 msgstr "יצירת מסמך _חדש"
 
 #. name, stock id, label
-#: ../src/nautilus-view.c:6956
+#: ../src/nautilus-view.c:6947
 msgid "Open Wit_h"
 msgstr "פתיחה ב_אמצעות"
 
-#: ../src/nautilus-view.c:6957
+#: ../src/nautilus-view.c:6948
 msgid "Choose a program with which to open the selected item"
 msgstr "בחירת תכנית לפתיחת הפריט הנבחר"
 
 #. tooltip
-#: ../src/nautilus-view.c:6960
-#: ../src/nautilus-view.c:8529
+#: ../src/nautilus-view.c:6951
+#: ../src/nautilus-view.c:8520
 msgid "View or modify the properties of each selected item"
 msgstr "הצגה או עריכה של המאפיינים לכול פריט נבחר"
 
 #. tooltip
-#: ../src/nautilus-view.c:6968
+#: ../src/nautilus-view.c:6959
 msgid "Create a new empty folder inside this folder"
 msgstr "יצירת תיקייה חדשה וריקה בתוך תיקייה זו"
 
 #. name, stock id, label
-#: ../src/nautilus-view.c:6970
+#: ../src/nautilus-view.c:6961
 msgid "No templates installed"
 msgstr "לא מותקנות תבניות"
 
 #. name, stock id
 #. translators: this is used to indicate that a document doesn't contain anything
 #. label, accelerator
-#: ../src/nautilus-view.c:6973
+#: ../src/nautilus-view.c:6964
 msgid "_Empty Document"
 msgstr "מסמך _ריק"
 
 #. tooltip
-#: ../src/nautilus-view.c:6974
+#: ../src/nautilus-view.c:6965
 msgid "Create a new empty document inside this folder"
 msgstr "יצירת תיקייה חדש וריק בתוך תיקייה זו"
 
 #. tooltip
-#: ../src/nautilus-view.c:6978
+#: ../src/nautilus-view.c:6969
 msgid "Open the selected item in this window"
 msgstr "פתיחת הפריט הנבחר בחלון זה"
 
@@ -4658,188 +4670,188 @@ msgstr "פתיחת הפריט הנבחר בחלון זה"
 #. Location-specific actions
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:6985
-#: ../src/nautilus-view.c:7153
+#: ../src/nautilus-view.c:6976
+#: ../src/nautilus-view.c:7144
 msgid "Open in Navigation Window"
 msgstr "פתיחה בחלון ניווט"
 
 #. tooltip
-#: ../src/nautilus-view.c:6986
+#: ../src/nautilus-view.c:6977
 msgid "Open each selected item in a navigation window"
 msgstr "פתיחת כל אחד מהפריטים שנבחרו בחלון ניווט"
 
 #. tooltip
-#: ../src/nautilus-view.c:6990
+#: ../src/nautilus-view.c:6981
 msgid "Open each selected item in a new tab"
 msgstr "פתיחת כל פריט נבחר בלשונית חדשה"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:6993
+#: ../src/nautilus-view.c:6984
 msgid "Other _Application..."
 msgstr "_יישום אחר..."
 
 #. tooltip
-#: ../src/nautilus-view.c:6994
-#: ../src/nautilus-view.c:6998
+#: ../src/nautilus-view.c:6985
+#: ../src/nautilus-view.c:6989
 msgid "Choose another application with which to open the selected item"
 msgstr "בחירת יישום אחר אתו יש להציג את הפריט הנבחר"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:6997
+#: ../src/nautilus-view.c:6988
 msgid "Open With Other _Application..."
 msgstr "פתיחה באמצעות _יישום אחר..."
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7001
+#: ../src/nautilus-view.c:6992
 msgid "_Open Scripts Folder"
 msgstr "_פתיחת תיקיית הסקריפטים"
 
 #. tooltip
-#: ../src/nautilus-view.c:7002
+#: ../src/nautilus-view.c:6993
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "הצגת התיקייה שמכילה את הסקריפטים שמופיעים בתפריט זה"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/nautilus-view.c:7010
+#: ../src/nautilus-view.c:7001
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "הכנת הקבצים שנבחרו להעברה עם פקודת הדבקה"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/nautilus-view.c:7014
+#: ../src/nautilus-view.c:7005
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "הכנת הקבצים שנבחרו להעתקה עם פקודת הדבקה"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/nautilus-view.c:7018
+#: ../src/nautilus-view.c:7009
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr "העברה או העתקה של קבצים שנבחרו מוקדם יותר על־ידי פקודת גזירה או העתקה"
 
 #. tooltip
-#: ../src/nautilus-view.c:7024
+#: ../src/nautilus-view.c:7015
 msgid "Move or copy files previously selected by a Cut or Copy command into the selected folder"
 msgstr "העברה או העתקה של קבצים שנבחרו מוקדם יותר על־ידי פקודת גזירה או העתקה לתוך התיקייה"
 
 #. name, stock id, label
-#: ../src/nautilus-view.c:7026
+#: ../src/nautilus-view.c:7017
 msgid "Cop_y to"
 msgstr "ה_עתקה אל"
 
 #. name, stock id, label
-#: ../src/nautilus-view.c:7027
+#: ../src/nautilus-view.c:7018
 msgid "M_ove to"
 msgstr "הע_ברה אל"
 
 #. tooltip
-#: ../src/nautilus-view.c:7030
+#: ../src/nautilus-view.c:7021
 msgid "Select all items in this window"
 msgstr "בחירת כל הקבצים בחלון זה"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7033
+#: ../src/nautilus-view.c:7024
 msgid "Select I_tems Matching..."
 msgstr "בחירת _פריטים התואמים..."
 
 #. tooltip
-#: ../src/nautilus-view.c:7034
+#: ../src/nautilus-view.c:7025
 msgid "Select items in this window matching a given pattern"
 msgstr "בחירת קבצים בחלון זה המתאימים לתבנית הנתונה"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7037
+#: ../src/nautilus-view.c:7028
 msgid "_Invert Selection"
 msgstr "הי_פוך הבחירה"
 
 #. tooltip
-#: ../src/nautilus-view.c:7038
+#: ../src/nautilus-view.c:7029
 msgid "Select all and only the items that are not currently selected"
 msgstr "בחירת כל הפריטים שלא נבחרו בלבד"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7041
+#: ../src/nautilus-view.c:7032
 msgid "D_uplicate"
 msgstr "שכ_פול"
 
 #. tooltip
-#: ../src/nautilus-view.c:7042
+#: ../src/nautilus-view.c:7033
 msgid "Duplicate each selected item"
 msgstr "שכפול כל פריט שנבחר"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7045
-#: ../src/nautilus-view.c:8514
+#: ../src/nautilus-view.c:7036
+#: ../src/nautilus-view.c:8505
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "י_צירת קישור"
 msgstr[1] "י_צירת קישורים"
 
 #. tooltip
-#: ../src/nautilus-view.c:7046
+#: ../src/nautilus-view.c:7037
 msgid "Create a symbolic link for each selected item"
 msgstr "יצירת קישור סימבולי לכול פריט שנבחר"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7049
+#: ../src/nautilus-view.c:7040
 msgid "_Rename..."
 msgstr "_שינוי שם..."
 
 #. tooltip
-#: ../src/nautilus-view.c:7050
+#: ../src/nautilus-view.c:7041
 msgid "Rename selected item"
 msgstr "שינוי שם הפריט הנבחר"
 
 #. tooltip
-#: ../src/nautilus-view.c:7058
-#: ../src/nautilus-view.c:8475
+#: ../src/nautilus-view.c:7049
+#: ../src/nautilus-view.c:8466
 msgid "Move each selected item to the Trash"
 msgstr "השלכת כל אחד מהפריטים הנבחרים לאשפה"
 
 #. tooltip
-#: ../src/nautilus-view.c:7062
+#: ../src/nautilus-view.c:7053
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "מחיקת כל פריט נבחר, מבלי לזרוק אותו לאשפה"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7065
-#: ../src/nautilus-view.c:7183
+#: ../src/nautilus-view.c:7056
+#: ../src/nautilus-view.c:7174
 msgid "_Restore"
 msgstr "_שחזור"
 
 #. name, stock id
 #. label, accelerator
 #. name, stock id, label
-#: ../src/nautilus-view.c:7069
+#: ../src/nautilus-view.c:7060
 #: ../src/nautilus-window-menus.c:924
 msgid "_Undo"
 msgstr "_ביטול"
 
 #. tooltip
-#: ../src/nautilus-view.c:7070
+#: ../src/nautilus-view.c:7061
 msgid "Undo the last action"
 msgstr "ביטול הפעולה האחרונה"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7073
+#: ../src/nautilus-view.c:7064
 msgid "_Redo"
 msgstr "ביצוע מ_חדש"
 
 #. tooltip
-#: ../src/nautilus-view.c:7074
+#: ../src/nautilus-view.c:7065
 msgid "Redo the last undone action"
 msgstr "ביצוע הפעולה האחרונה שבוטלה שוב"
 
@@ -4851,427 +4863,427 @@ msgstr "ביצוע הפעולה האחרונה שבוטלה שוב"
 #.
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7083
+#: ../src/nautilus-view.c:7074
 msgid "Reset View to _Defaults"
 msgstr "החזרת התצוגה _לבררת המחדל"
 
 #. tooltip
-#: ../src/nautilus-view.c:7084
+#: ../src/nautilus-view.c:7075
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr "איפוס סדר המיון ורמת התקריב כך שיתאימו להעדפות תצוגה זו"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7087
+#: ../src/nautilus-view.c:7078
 msgid "Connect To This Server"
 msgstr "התחברות לשרת זה"
 
 #. tooltip
-#: ../src/nautilus-view.c:7088
+#: ../src/nautilus-view.c:7079
 msgid "Make a permanent connection to this server"
 msgstr "יצירת חיבור קבוע לשרת זה"
 
 #. tooltip
-#: ../src/nautilus-view.c:7092
+#: ../src/nautilus-view.c:7083
 msgid "Mount the selected volume"
 msgstr "עיגון הכרך הנבחר"
 
 #. tooltip
-#: ../src/nautilus-view.c:7096
+#: ../src/nautilus-view.c:7087
 msgid "Unmount the selected volume"
 msgstr "ניתוק הכרך הנבחר"
 
 #. tooltip
-#: ../src/nautilus-view.c:7100
+#: ../src/nautilus-view.c:7091
 msgid "Eject the selected volume"
 msgstr "שליפת הכרך הנבחר"
 
 #. tooltip
-#: ../src/nautilus-view.c:7104
+#: ../src/nautilus-view.c:7095
 msgid "Start the selected volume"
 msgstr "התחלת הכרך הנבחר"
 
 #. tooltip
-#: ../src/nautilus-view.c:7108
-#: ../src/nautilus-view.c:8053
+#: ../src/nautilus-view.c:7099
+#: ../src/nautilus-view.c:8044
 msgid "Stop the selected volume"
 msgstr "עצירת הכרך הנבחר"
 
 #. tooltip
-#: ../src/nautilus-view.c:7112
-#: ../src/nautilus-view.c:7136
-#: ../src/nautilus-view.c:7208
+#: ../src/nautilus-view.c:7103
+#: ../src/nautilus-view.c:7127
+#: ../src/nautilus-view.c:7199
 msgid "Detect media in the selected drive"
 msgstr "איתור המדיה בכונן הנבחר"
 
 #. tooltip
-#: ../src/nautilus-view.c:7116
+#: ../src/nautilus-view.c:7107
 msgid "Mount the volume associated with the open folder"
 msgstr "עיגון הכרך המשויך לתיקייה הפתוחה"
 
 #. tooltip
-#: ../src/nautilus-view.c:7120
+#: ../src/nautilus-view.c:7111
 msgid "Unmount the volume associated with the open folder"
 msgstr "ניתוק הכרך המשויך לתיקייה הפתוחה"
 
 #. tooltip
-#: ../src/nautilus-view.c:7124
+#: ../src/nautilus-view.c:7115
 msgid "Eject the volume associated with the open folder"
 msgstr "שליפת הכרך המשויך לתיקייה הפתוחה"
 
 #. tooltip
-#: ../src/nautilus-view.c:7128
+#: ../src/nautilus-view.c:7119
 msgid "Start the volume associated with the open folder"
 msgstr "התחלת הכרך המשויך לתיקייה הפתוחה"
 
 #. tooltip
-#: ../src/nautilus-view.c:7132
+#: ../src/nautilus-view.c:7123
 msgid "Stop the volume associated with the open folder"
 msgstr "עצירת הכרך המשויך לתיקייה הפתוחה"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7139
+#: ../src/nautilus-view.c:7130
 msgid "Open File and Close window"
 msgstr "פתיחת קובץ וסגירת החלון"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7143
+#: ../src/nautilus-view.c:7134
 msgid "Sa_ve Search"
 msgstr "ש_מירת החיפוש"
 
 #. tooltip
-#: ../src/nautilus-view.c:7144
+#: ../src/nautilus-view.c:7135
 msgid "Save the edited search"
 msgstr "שמירת החיפוש שנערך"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7147
+#: ../src/nautilus-view.c:7138
 msgid "Sa_ve Search As..."
 msgstr "שמ_ירת החיפוש בשם..."
 
 #. tooltip
-#: ../src/nautilus-view.c:7148
+#: ../src/nautilus-view.c:7139
 msgid "Save the current search as a file"
 msgstr "שמירת החיפוש הנוכחי כקובץ"
 
 #. tooltip
-#: ../src/nautilus-view.c:7154
+#: ../src/nautilus-view.c:7145
 msgid "Open this folder in a navigation window"
 msgstr "פתיחת תיקייה זו בחלון ניווט"
 
 #. tooltip
-#: ../src/nautilus-view.c:7158
+#: ../src/nautilus-view.c:7149
 msgid "Open this folder in a new tab"
 msgstr "פתיחת תיקייה זו בלשונית חדשה"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/nautilus-view.c:7163
+#: ../src/nautilus-view.c:7154
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "הכנת התיקייה להעברה עם פקודת הדבקה"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/nautilus-view.c:7167
+#: ../src/nautilus-view.c:7158
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "הכנת התיקייה להעתקה עם פקודת הדבקה"
 
 #. tooltip
-#: ../src/nautilus-view.c:7171
+#: ../src/nautilus-view.c:7162
 msgid "Move or copy files previously selected by a Cut or Copy command into this folder"
 msgstr "העברה או העתקה של קבצים שנבחרו מוקדם יותר על־ידי פקודת גזירה או העתקה לתוך תיקייה זאת"
 
 #. tooltip
-#: ../src/nautilus-view.c:7176
+#: ../src/nautilus-view.c:7167
 msgid "Move this folder to the Trash"
 msgstr "העברת התיקייה לאשפה"
 
 #. tooltip
-#: ../src/nautilus-view.c:7180
+#: ../src/nautilus-view.c:7171
 msgid "Delete this folder, without moving to the Trash"
 msgstr "מחיקת התיקייה, מבלי להעביר אותה לאשפה"
 
 #. tooltip
-#: ../src/nautilus-view.c:7188
+#: ../src/nautilus-view.c:7179
 msgid "Mount the volume associated with this folder"
 msgstr "חיבור הכרך המשויך לתיקייה זאת"
 
 #. tooltip
-#: ../src/nautilus-view.c:7192
+#: ../src/nautilus-view.c:7183
 msgid "Unmount the volume associated with this folder"
 msgstr "ניתוק הכרך המשויך לתיקייה זאת"
 
 #. tooltip
-#: ../src/nautilus-view.c:7196
+#: ../src/nautilus-view.c:7187
 msgid "Eject the volume associated with this folder"
 msgstr "שליפת הכרך המשויך לתיקייה זאת"
 
 #. tooltip
-#: ../src/nautilus-view.c:7200
+#: ../src/nautilus-view.c:7191
 msgid "Start the volume associated with this folder"
 msgstr "התחלת הכרך המשויך לתיקייה זאת"
 
 #. tooltip
-#: ../src/nautilus-view.c:7204
+#: ../src/nautilus-view.c:7195
 msgid "Stop the volume associated with this folder"
 msgstr "עצירת הכרך המשויך לתיקייה זאת"
 
 #. tooltip
-#: ../src/nautilus-view.c:7213
+#: ../src/nautilus-view.c:7204
 msgid "View or modify the properties of this folder"
 msgstr "הצגה או שינוי של המאפיינים של תיקייה זאת"
 
 #. name, stock id, label
-#: ../src/nautilus-view.c:7216
-#: ../src/nautilus-view.c:7219
+#: ../src/nautilus-view.c:7207
+#: ../src/nautilus-view.c:7210
 msgid "_Other pane"
 msgstr "חלונית _אחרת"
 
-#: ../src/nautilus-view.c:7217
+#: ../src/nautilus-view.c:7208
 msgid "Copy the current selection to the other pane in the window"
 msgstr "העתקת הבחירה הנוכחית אל החלונית השנייה שבחלון"
 
-#: ../src/nautilus-view.c:7220
+#: ../src/nautilus-view.c:7211
 msgid "Move the current selection to the other pane in the window"
 msgstr "העברת הבחירה הנוכחית אל חלונית אחרת בחלון"
 
 #. name, stock id, label
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7223
-#: ../src/nautilus-view.c:7227
+#: ../src/nautilus-view.c:7214
+#: ../src/nautilus-view.c:7218
 #: ../src/nautilus-window-menus.c:995
-#: ../src/nautilus-window-menus.c:1254
+#: ../src/nautilus-window-menus.c:1256
 msgid "_Home"
 msgstr "_בית"
 
-#: ../src/nautilus-view.c:7224
+#: ../src/nautilus-view.c:7215
 msgid "Copy the current selection to the home folder"
 msgstr "העתקת הבחירה הנוכחית אל תיקיית הבית"
 
-#: ../src/nautilus-view.c:7228
+#: ../src/nautilus-view.c:7219
 msgid "Move the current selection to the home folder"
 msgstr "העברת הבחירה הנוכחית אל תיקיית הבית"
 
 #. name, stock id, label
-#: ../src/nautilus-view.c:7231
-#: ../src/nautilus-view.c:7235
+#: ../src/nautilus-view.c:7222
+#: ../src/nautilus-view.c:7226
 msgid "_Desktop"
 msgstr "_שולחן עבודה"
 
-#: ../src/nautilus-view.c:7232
+#: ../src/nautilus-view.c:7223
 msgid "Copy the current selection to the desktop"
 msgstr "העתקת הבחירה הנוכחית אל שולחן העבודה"
 
-#: ../src/nautilus-view.c:7236
+#: ../src/nautilus-view.c:7227
 msgid "Move the current selection to the desktop"
 msgstr "העברת הבחירה הנוכחית אל שולחן העבודה"
 
 #. Translators: %s is a directory
-#: ../src/nautilus-view.c:7315
+#: ../src/nautilus-view.c:7306
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "הפעלה או ניהול של סקריפטים מ־%s"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/nautilus-view.c:7317
+#: ../src/nautilus-view.c:7308
 msgid "_Scripts"
 msgstr "_סקריפטים"
 
-#: ../src/nautilus-view.c:7690
+#: ../src/nautilus-view.c:7681
 #, c-format
 msgid "Move the open folder out of the trash to \"%s\""
 msgstr "העברת התיקייה הפתוחה מהאשפה ל־„%s“"
 
-#: ../src/nautilus-view.c:7693
+#: ../src/nautilus-view.c:7684
 #, c-format
 msgid "Move the selected folder out of the trash to \"%s\""
 msgid_plural "Move the selected folders out of the trash to \"%s\""
 msgstr[0] "העברת התיקייה הנבחרת מהאשפה ל־„%s“"
 msgstr[1] "העברת התיקיות הנבחרות מהאשפה ל־„%s“"
 
-#: ../src/nautilus-view.c:7697
+#: ../src/nautilus-view.c:7688
 #, c-format
 msgid "Move the selected folder out of the trash"
 msgid_plural "Move the selected folders out of the trash"
 msgstr[0] "העברת התיקייה הנבחרת מהאשפה"
 msgstr[1] "העברת התיקיות הנבחרות מהאשפה"
 
-#: ../src/nautilus-view.c:7703
+#: ../src/nautilus-view.c:7694
 #, c-format
 msgid "Move the selected file out of the trash to \"%s\""
 msgid_plural "Move the selected files out of the trash to \"%s\""
 msgstr[0] "העברת הקובץ הנבחר מהאשפה ל־„%s“"
 msgstr[1] "העברת הקבצים הנבחרים מהאשפה ל־„%s“"
 
-#: ../src/nautilus-view.c:7707
+#: ../src/nautilus-view.c:7698
 #, c-format
 msgid "Move the selected file out of the trash"
 msgid_plural "Move the selected files out of the trash"
 msgstr[0] "העברת הקובץ הנבחר מהאשפה"
 msgstr[1] "העברת הקבצים הנבחרים מהאשפה"
 
-#: ../src/nautilus-view.c:7713
+#: ../src/nautilus-view.c:7704
 #, c-format
 msgid "Move the selected item out of the trash to \"%s\""
 msgid_plural "Move the selected items out of the trash to \"%s\""
 msgstr[0] "העברת הפריט הנבחר מהאשפה ל־„%s“"
 msgstr[1] "העברת הפריטים הנבחרים מהאשפה ל־„%s“"
 
-#: ../src/nautilus-view.c:7717
+#: ../src/nautilus-view.c:7708
 #, c-format
 msgid "Move the selected item out of the trash"
 msgid_plural "Move the selected items out of the trash"
 msgstr[0] "העברת הפריט הנבחר מהאשפה"
 msgstr[1] "העברת הפריטים הנבחרים מהאשפה"
 
-#: ../src/nautilus-view.c:7833
-#: ../src/nautilus-view.c:7837
-#: ../src/nautilus-view.c:8024
-#: ../src/nautilus-view.c:8028
+#: ../src/nautilus-view.c:7824
+#: ../src/nautilus-view.c:7828
+#: ../src/nautilus-view.c:8015
+#: ../src/nautilus-view.c:8019
 msgid "Start the selected drive"
 msgstr "התחלת הכונן הנבחר"
 
-#: ../src/nautilus-view.c:7841
-#: ../src/nautilus-view.c:8032
+#: ../src/nautilus-view.c:7832
+#: ../src/nautilus-view.c:8023
 msgid "Connect to the selected drive"
 msgstr "התחברות אל הכונן הנבחר"
 
-#: ../src/nautilus-view.c:7844
-#: ../src/nautilus-view.c:7931
-#: ../src/nautilus-view.c:8035
+#: ../src/nautilus-view.c:7835
+#: ../src/nautilus-view.c:7922
+#: ../src/nautilus-view.c:8026
 msgid "_Start Multi-disk Drive"
 msgstr "ה_תחלת כונן מרובה דיסקים"
 
-#: ../src/nautilus-view.c:7845
-#: ../src/nautilus-view.c:8036
+#: ../src/nautilus-view.c:7836
+#: ../src/nautilus-view.c:8027
 msgid "Start the selected multi-disk drive"
 msgstr "התחלת הכונן מרובה הדיסקים הנבחר"
 
-#: ../src/nautilus-view.c:7848
+#: ../src/nautilus-view.c:7839
 msgid "U_nlock Drive"
 msgstr "ש_חרור כונן"
 
-#: ../src/nautilus-view.c:7849
-#: ../src/nautilus-view.c:8040
+#: ../src/nautilus-view.c:7840
+#: ../src/nautilus-view.c:8031
 msgid "Unlock the selected drive"
 msgstr "שחרור הכונן הנבחר"
 
-#: ../src/nautilus-view.c:7862
+#: ../src/nautilus-view.c:7853
 msgid "Stop the selected drive"
 msgstr "עצירת הכונן הנבחר"
 
-#: ../src/nautilus-view.c:7866
-#: ../src/nautilus-view.c:8057
+#: ../src/nautilus-view.c:7857
+#: ../src/nautilus-view.c:8048
 msgid "Safely remove the selected drive"
 msgstr "הסרת הכונן הנבחר בבטחה"
 
-#: ../src/nautilus-view.c:7869
-#: ../src/nautilus-view.c:7956
-#: ../src/nautilus-view.c:8060
+#: ../src/nautilus-view.c:7860
+#: ../src/nautilus-view.c:7947
+#: ../src/nautilus-view.c:8051
 msgid "_Disconnect"
 msgstr "_ניתוק"
 
-#: ../src/nautilus-view.c:7870
-#: ../src/nautilus-view.c:8061
+#: ../src/nautilus-view.c:7861
+#: ../src/nautilus-view.c:8052
 msgid "Disconnect the selected drive"
 msgstr "ניתוק הכונן הנבחר"
 
-#: ../src/nautilus-view.c:7873
-#: ../src/nautilus-view.c:7960
-#: ../src/nautilus-view.c:8064
+#: ../src/nautilus-view.c:7864
+#: ../src/nautilus-view.c:7951
+#: ../src/nautilus-view.c:8055
 msgid "_Stop Multi-disk Drive"
 msgstr "_עצירה כונן מרובה דיסקים"
 
-#: ../src/nautilus-view.c:7874
-#: ../src/nautilus-view.c:8065
+#: ../src/nautilus-view.c:7865
+#: ../src/nautilus-view.c:8056
 msgid "Stop the selected multi-disk drive"
 msgstr "עצירת כונן מרובה הדיסקים הנבחר"
 
-#: ../src/nautilus-view.c:7878
-#: ../src/nautilus-view.c:8069
+#: ../src/nautilus-view.c:7869
+#: ../src/nautilus-view.c:8060
 msgid "Lock the selected drive"
 msgstr "נעילת הכונן הנבחר"
 
-#: ../src/nautilus-view.c:7920
-#: ../src/nautilus-view.c:7924
+#: ../src/nautilus-view.c:7911
+#: ../src/nautilus-view.c:7915
 msgid "Start the drive associated with the open folder"
 msgstr "התחלת הכונן המשויך לתיקייה הפתוחה"
 
-#: ../src/nautilus-view.c:7928
+#: ../src/nautilus-view.c:7919
 msgid "Connect to the drive associated with the open folder"
 msgstr "התחברות אל הכונן המשויך לתיקייה הפתוחה"
 
-#: ../src/nautilus-view.c:7932
+#: ../src/nautilus-view.c:7923
 msgid "Start the multi-disk drive associated with the open folder"
 msgstr "התחלת הכונן מרובה הדיסקים עם התיקייה הפתוחה"
 
-#: ../src/nautilus-view.c:7936
+#: ../src/nautilus-view.c:7927
 msgid "Unlock the drive associated with the open folder"
 msgstr "שחרור הכונן המשויך לתיקייה הפתוחה"
 
-#: ../src/nautilus-view.c:7949
+#: ../src/nautilus-view.c:7940
 msgid "_Stop the drive associated with the open folder"
 msgstr "_עצירת הכונן המשויך לתיקייה הפתוחה"
 
-#: ../src/nautilus-view.c:7953
+#: ../src/nautilus-view.c:7944
 msgid "Safely remove the drive associated with the open folder"
 msgstr "הסרת הכונן המשויך לתיקייה הפתוחה בבטחה"
 
-#: ../src/nautilus-view.c:7957
+#: ../src/nautilus-view.c:7948
 msgid "Disconnect the drive associated with the open folder"
 msgstr "ניתוק הכונן המשויך לתיקייה הפתוחה"
 
-#: ../src/nautilus-view.c:7961
+#: ../src/nautilus-view.c:7952
 msgid "Stop the multi-disk drive associated with the open folder"
 msgstr "עצירת הכונן מרובה הדיסקים המשויך לתיקייה הפתוחה"
 
-#: ../src/nautilus-view.c:7965
+#: ../src/nautilus-view.c:7956
 msgid "Lock the drive associated with the open folder"
 msgstr "נעילת הכונן המשויך לתיקייה הפתוחה"
 
-#: ../src/nautilus-view.c:8192
-#: ../src/nautilus-view.c:8470
+#: ../src/nautilus-view.c:8183
+#: ../src/nautilus-view.c:8461
 msgid "_Delete Permanently"
 msgstr "מחיקה _לצמיתות"
 
-#: ../src/nautilus-view.c:8193
+#: ../src/nautilus-view.c:8184
 msgid "Delete the open folder permanently"
 msgstr "מחיקת התיקייה הפתוחה לצמיתות"
 
-#: ../src/nautilus-view.c:8197
+#: ../src/nautilus-view.c:8188
 msgid "Move the open folder to the Trash"
 msgstr "העברת התיקייה הפתוחה לאשפה"
 
-#: ../src/nautilus-view.c:8377
+#: ../src/nautilus-view.c:8368
 #, c-format
 msgid "_Open With %s"
 msgstr "_פתיחה באמצעות %s"
 
-#: ../src/nautilus-view.c:8434
+#: ../src/nautilus-view.c:8425
 #, c-format
 msgid "Open in %'d New _Window"
 msgid_plural "Open in %'d New _Windows"
 msgstr[0] "פתיחה ב_חלון חדש"
 msgstr[1] "פתיחה ב־%'d _חלונות חדשים"
 
-#: ../src/nautilus-view.c:8454
+#: ../src/nautilus-view.c:8445
 #, c-format
 msgid "Open in %'d New _Tab"
 msgid_plural "Open in %'d New _Tabs"
 msgstr[0] "פתיחה ב_לשונית חדשה"
 msgstr[1] "פתיחה ב־%'d _לשוניות חדשות"
 
-#: ../src/nautilus-view.c:8471
+#: ../src/nautilus-view.c:8462
 msgid "Delete all selected items permanently"
 msgstr "מחיקת כל הפריטים הנבחרים לצמיתות"
 
-#: ../src/nautilus-view.c:8527
+#: ../src/nautilus-view.c:8518
 msgid "View or modify the properties of the open folder"
 msgstr "הצגה או עריכה של המאפיינים של התיקייה הפתוחה"
 
@@ -5319,52 +5331,52 @@ msgstr "סימנייה אל מיקום לא קיים"
 msgid "Go to the location specified by this bookmark"
 msgstr "מעבר למיקום המצוין על־ידי הסימנייה"
 
-#: ../src/nautilus-window.c:1430
+#: ../src/nautilus-window.c:1429
 #, c-format
 msgid "%s - File Browser"
 msgstr "%s — דפדפן הקבצים"
 
 #. Set initial window title
-#: ../src/nautilus-window.c:1898
+#: ../src/nautilus-window.c:1897
 #: ../src/nautilus-window-menus.c:384
 msgid "Nautilus"
 msgstr "Nautilus"
 
-#: ../src/nautilus-window-manage-views.c:1129
+#: ../src/nautilus-window-manage-views.c:1137
 msgid "Searching..."
 msgstr "מתבצע חיפוש..."
 
-#: ../src/nautilus-window-manage-views.c:1598
+#: ../src/nautilus-window-manage-views.c:1606
 msgid "Nautilus has no installed viewer capable of displaying the folder."
 msgstr "ל־Nautilus אין מציג מותקן המסוגל להציג את התיקייה."
 
-#: ../src/nautilus-window-manage-views.c:1604
+#: ../src/nautilus-window-manage-views.c:1612
 msgid "The location is not a folder."
 msgstr "המיקום אינו תיקייה."
 
-#: ../src/nautilus-window-manage-views.c:1610
+#: ../src/nautilus-window-manage-views.c:1618
 #, c-format
 msgid "Could not find \"%s\"."
 msgstr "לא ניתן למצוא את „%s“."
 
-#: ../src/nautilus-window-manage-views.c:1613
+#: ../src/nautilus-window-manage-views.c:1621
 msgid "Please check the spelling and try again."
 msgstr "נא לבדוק את האיות ולנסות שוב."
 
-#: ../src/nautilus-window-manage-views.c:1621
+#: ../src/nautilus-window-manage-views.c:1629
 #, c-format
 msgid "Nautilus cannot handle \"%s\" locations."
 msgstr "אין באפשרות ‏Nautilus לטפל במיקומי „%s“."
 
-#: ../src/nautilus-window-manage-views.c:1624
+#: ../src/nautilus-window-manage-views.c:1632
 msgid "Nautilus cannot handle this kind of location."
 msgstr "אין באפשרות ‏Nautilus לטפל במיקום מסוג זה."
 
-#: ../src/nautilus-window-manage-views.c:1631
+#: ../src/nautilus-window-manage-views.c:1639
 msgid "Unable to mount the location."
 msgstr "לא ניתן לחבר את המיקום."
 
-#: ../src/nautilus-window-manage-views.c:1637
+#: ../src/nautilus-window-manage-views.c:1645
 msgid "Access was denied."
 msgstr "הגישה נדחתה."
 
@@ -5373,16 +5385,16 @@ msgstr "הגישה נדחתה."
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: ../src/nautilus-window-manage-views.c:1646
+#: ../src/nautilus-window-manage-views.c:1654
 #, c-format
 msgid "Could not display \"%s\", because the host could not be found."
 msgstr "לא ניתן להציג את „%s“, כיוון שהמארח לא נמצא."
 
-#: ../src/nautilus-window-manage-views.c:1648
+#: ../src/nautilus-window-manage-views.c:1656
 msgid "Check that the spelling is correct and that your proxy settings are correct."
 msgstr "יש לבדוק שהאיות נכון ושהגדרות המתווך נכונות."
 
-#: ../src/nautilus-window-manage-views.c:1663
+#: ../src/nautilus-window-manage-views.c:1671
 #, c-format
 msgid ""
 "Error: %s\n"
@@ -5710,12 +5722,12 @@ msgstr "מעבר למקום הקודם שביקרת בו"
 
 #. name, stock id, label
 #: ../src/nautilus-window-menus.c:1029
-#: ../src/nautilus-window-menus.c:1131
+#: ../src/nautilus-window-menus.c:1132
 msgid "_Forward"
 msgstr "_קדימה"
 
 #: ../src/nautilus-window-menus.c:1030
-#: ../src/nautilus-window-menus.c:1133
+#: ../src/nautilus-window-menus.c:1134
 msgid "Go to the next visited location"
 msgstr "מעבר למקום הבא שביקרת בו"
 
@@ -5776,7 +5788,7 @@ msgid "Activate next tab"
 msgstr "הפעלת הלשונית הבאה"
 
 #: ../src/nautilus-window-menus.c:1053
-#: ../src/nautilus-window-pane.c:496
+#: ../src/nautilus-window-pane.c:508
 msgid "Move Tab _Left"
 msgstr "הזזת לשונית _שמאלה"
 
@@ -5785,7 +5797,7 @@ msgid "Move current tab to left"
 msgstr "הזזת הלשונית הנוכחית שמאלה"
 
 #: ../src/nautilus-window-menus.c:1056
-#: ../src/nautilus-window-pane.c:504
+#: ../src/nautilus-window-pane.c:516
 msgid "Move Tab _Right"
 msgstr "הזזת לשונית י_מינה"
 
@@ -5852,7 +5864,7 @@ msgstr "_חיפוש קבצים..."
 
 #. tooltip
 #: ../src/nautilus-window-menus.c:1085
-#: ../src/nautilus-window-menus.c:1147
+#: ../src/nautilus-window-menus.c:1149
 msgid "Search documents and folders by name"
 msgstr "חיפוש מסמכים ותיקיות לפי השם"
 
@@ -5888,19 +5900,19 @@ msgstr "בחירת העץ כבררת המחדל לסרגל הצד"
 msgid "Back history"
 msgstr "היסטוריית אחורה"
 
-#: ../src/nautilus-window-menus.c:1134
+#: ../src/nautilus-window-menus.c:1135
 msgid "Forward history"
 msgstr "היסטוריית קדימה"
 
-#: ../src/nautilus-window-menus.c:1251
+#: ../src/nautilus-window-menus.c:1253
 msgid "_Up"
 msgstr "מ_עלה"
 
-#: ../src/nautilus-window-pane.c:486
+#: ../src/nautilus-window-pane.c:498
 msgid "_New Tab"
 msgstr "_לשונית חדשה"
 
-#: ../src/nautilus-window-pane.c:515
+#: ../src/nautilus-window-pane.c:527
 msgid "_Close Tab"
 msgstr "סגירת ה_לשונית"
 
