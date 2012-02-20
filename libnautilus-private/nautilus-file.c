@@ -7976,6 +7976,22 @@ icon_theme_changed_callback (GtkIconTheme *icon_theme,
 }
 
 static void
+real_set_metadata (NautilusFile  *file,
+		   const char    *key,
+		   const char    *value)
+{
+	/* Dummy default impl */
+}
+
+static void
+real_set_metadata_as_list (NautilusFile *file,
+			   const char   *key,
+			   char         **value)
+{
+	/* Dummy default impl */
+}
+
+static void
 nautilus_file_class_init (NautilusFileClass *class)
 {
 	GtkIconTheme *icon_theme;
@@ -8012,6 +8028,9 @@ nautilus_file_class_init (NautilusFileClass *class)
 	
 	G_OBJECT_CLASS (class)->finalize = finalize;
 	G_OBJECT_CLASS (class)->constructor = nautilus_file_constructor;
+
+	class->set_metadata = real_set_metadata;
+	class->set_metadata_as_list = real_set_metadata_as_list;
 
 	signals[CHANGED] =
 		g_signal_new ("changed",
