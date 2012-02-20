@@ -55,6 +55,7 @@ libnautilus_private_la_LIBADD =		\
 	$(BASE_LIBS)			\
 	$(COMMON_LIBS)			\
 	$(NAUTILUS_LIBS)		\
+	-lm				\
 	$(NULL)
 
 libnautilus_private_la_SOURCES = \
