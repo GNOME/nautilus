@@ -12,18 +12,18 @@
 # Priit Laes <plaes+gi18n plaes org>, 2004–2008.
 # Ivar Smolin <okul linux ee>, 2005–2011.
 # Sven Sapelson <sven.sapelson gmail com>, 2005.
-# Mattias Põldaru <mahfiaz@gmail.com>, 2009–2011, 2012.
 #
 # FIXME - selles tõlkes tuleks kontrollida, et failirekvisiitide "modified" ja
 # "changed" poleks omavahel sassi aetud.
+# Mattias Põldaru <mahfiaz@gmail.com>, 2009–2011, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus MASTER\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2011-12-27 01:49+0000\n"
-"PO-Revision-Date: 2012-01-01 23:22+0200\n"
+"POT-Creation-Date: 2012-02-20 21:38+0000\n"
+"PO-Revision-Date: 2012-02-22 11:21+0200\n"
 "Last-Translator: Mattias Põldaru <mahfiaz@gmail.com>\n"
 "Language-Team: Estonian <>\n"
 "Language: et\n"
@@ -34,6 +34,15 @@ msgstr ""
 
 msgid "Saved search"
 msgstr "Salvestatud otsing"
+
+msgid "Autorun Prompt"
+msgstr "Automaatkäivituse küsimus"
+
+msgid "Files"
+msgstr "Failid"
+
+msgid "Access and organize files"
+msgstr "Ligipääs failidele ning failipuu korrastamine"
 
 msgid "X"
 msgstr "X"
@@ -251,6 +260,224 @@ msgstr "Säti _taustapildiks"
 msgid "Cancel"
 msgstr "Loobu"
 
+msgid "This file cannot be mounted"
+msgstr "Seda faili pole võimalik külge haakida"
+
+msgid "This file cannot be unmounted"
+msgstr "Seda faili pole võimalik lahti haakida"
+
+msgid "This file cannot be ejected"
+msgstr "Seda faili pole võimalik väljastada"
+
+msgid "This file cannot be started"
+msgstr "Seda faili pole võimalik käivitada"
+
+msgid "This file cannot be stopped"
+msgstr "Seda faili pole võimalik seisata"
+
+#, c-format
+msgid "Slashes are not allowed in filenames"
+msgstr "Failinimedes pole kaldkriipsud lubatud"
+
+#, c-format
+msgid "File not found"
+msgstr "Faili ei leitud"
+
+#, c-format
+msgid "Toplevel files cannot be renamed"
+msgstr "Ülemise taseme failide nime pole võimalik muuta"
+
+#, c-format
+msgid "Unable to rename desktop icon"
+msgstr "Töölauaikooni nime pole võimalik muuta"
+
+#, c-format
+msgid "Unable to rename desktop file"
+msgstr "Töölauafaili nime pole võimalik muuta"
+
+#. Today, use special word.
+#. * strftime patterns preceeded with the widest
+#. * possible resulting string for that pattern.
+#. *
+#. * Note to localizers: You can look at man strftime
+#. * for details on the format, but you should only use
+#. * the specifiers from the C standard, not extensions.
+#. * These include "%" followed by one of
+#. * "aAbBcdHIjmMpSUwWxXyYZ". There are two extensions
+#. * in the Nautilus version of strftime that can be
+#. * used (and match GNU extensions). Putting a "-"
+#. * between the "%" and any numeric directive will turn
+#. * off zero padding, and putting a "_" there will use
+#. * space padding instead of zero padding.
+#.
+msgid "today at 00:00:00 PM"
+msgstr "täna kell 00:00:00"
+
+msgid "today at %-I:%M:%S %p"
+msgstr "täna kell %-H:%M:%S"
+
+msgid "today at 00:00 PM"
+msgstr "täna kell 00:00"
+
+msgid "today at %-I:%M %p"
+msgstr "täna kell %H:%M"
+
+msgid "today, 00:00 PM"
+msgstr "täna 00:00"
+
+msgid "today, %-I:%M %p"
+msgstr "täna %H:%M"
+
+msgid "today"
+msgstr "täna"
+
+#. Yesterday, use special word.
+#. * Note to localizers: Same issues as "today" string.
+#.
+msgid "yesterday at 00:00:00 PM"
+msgstr "eile kell 00:00:00"
+
+msgid "yesterday at %-I:%M:%S %p"
+msgstr "eile kell %H:%M:%S"
+
+msgid "yesterday at 00:00 PM"
+msgstr "eile kell 00:00"
+
+msgid "yesterday at %-I:%M %p"
+msgstr "eile kell %H:%M"
+
+msgid "yesterday, 00:00 PM"
+msgstr "eile 00:00"
+
+msgid "yesterday, %-I:%M %p"
+msgstr "eile %H:%M"
+
+msgid "yesterday"
+msgstr "eile"
+
+#. Current week, include day of week.
+#. * Note to localizers: Same issues as "today" string.
+#. * The width measurement templates correspond to
+#. * the day/month name with the most letters.
+#.
+msgid "Wednesday, September 00 0000 at 00:00:00 PM"
+msgstr "Kolmapäev, 00. september 0000 kell 00:00:00"
+
+msgid "%A, %B %-d %Y at %-I:%M:%S %p"
+msgstr "%A, %-d. %B %Y kell %H:%M:%S"
+
+msgid "Mon, Oct 00 0000 at 00:00:00 PM"
+msgstr "E, 00. okt 0000 kell 00:00:00"
+
+msgid "%a, %b %-d %Y at %-I:%M:%S %p"
+msgstr "%a, %-d. %b %Y kell %H:%M:%S"
+
+msgid "Mon, Oct 00 0000 at 00:00 PM"
+msgstr "E, 00. okt 0000 kell 00:00"
+
+msgid "%a, %b %-d %Y at %-I:%M %p"
+msgstr "%a, %-d. %b %Y kell %H:%M"
+
+msgid "Oct 00 0000 at 00:00 PM"
+msgstr "00. okt 0000 kell 00:00"
+
+msgid "%b %-d %Y at %-I:%M %p"
+msgstr "%-d. %b %Y kell %H:%M"
+
+msgid "Oct 00 0000, 00:00 PM"
+msgstr "00. okt 0000, 00:00"
+
+msgid "%b %-d %Y, %-I:%M %p"
+msgstr "%-d %b %Y, %H:%M"
+
+msgid "00/00/00, 00:00 PM"
+msgstr "00.00.00, 00:00"
+
+msgid "%m/%-d/%y, %-I:%M %p"
+msgstr "%d.%m.%y, %H:%M"
+
+msgid "00/00/00"
+msgstr "00.00.00"
+
+msgid "%m/%d/%y"
+msgstr "%d.%m.%y"
+
+#, c-format
+msgid "Not allowed to set permissions"
+msgstr "Õiguseid pole lubatud määrata"
+
+#, c-format
+msgid "Not allowed to set owner"
+msgstr "Omanikku pole lubatud määrata"
+
+#, c-format
+msgid "Specified owner '%s' doesn't exist"
+msgstr "Määratud omanikku '%s' pole olemas"
+
+#, c-format
+msgid "Not allowed to set group"
+msgstr "Omanikgruppi pole lubatud määrata"
+
+#, c-format
+msgid "Specified group '%s' doesn't exist"
+msgstr "Määratud gruppi '%s' pole olemas"
+
+#, c-format
+msgid "%'u item"
+msgid_plural "%'u items"
+msgstr[0] "%'u kirje"
+msgstr[1] "%'u kirjet"
+
+#, c-format
+msgid "%'u folder"
+msgid_plural "%'u folders"
+msgstr[0] "%'u kataloog"
+msgstr[1] "%'u kataloogi"
+
+#, c-format
+msgid "%'u file"
+msgid_plural "%'u files"
+msgstr[0] "%'u fail"
+msgstr[1] "%'u faili"
+
+#. This means no contents at all were readable
+msgid "? items"
+msgstr "? kirjet"
+
+#. This means no contents at all were readable
+msgid "? bytes"
+msgstr "? baiti"
+
+msgid "unknown type"
+msgstr "tundmatu liik"
+
+msgid "unknown MIME type"
+msgstr "tundmatu MIME-liik"
+
+#. Fallback, use for both unknown attributes and attributes
+#. * for which we have no more appropriate default.
+#.
+msgid "unknown"
+msgstr "tundmatu"
+
+msgid "program"
+msgstr "programm"
+
+msgid "link"
+msgstr "link"
+
+#. Note to localizers: convert file type string for file
+#. * (e.g. "folder", "plain text") to file type for symbolic link
+#. * to that kind of file (e.g. "link to folder").
+#.
+#. appended to new link file
+#, c-format
+msgid "Link to %s"
+msgstr "Viit > %s"
+
+msgid "link (broken)"
+msgstr "link (katkenud)"
+
 #, c-format
 msgid "Merge folder \"%s\"?"
 msgstr "Kas liita kataloog \"%s\"?"
@@ -392,15 +619,6 @@ msgid "approximately %'d hour"
 msgid_plural "approximately %'d hours"
 msgstr[0] "ligikaudu %'d tund"
 msgstr[1] "ligikaudu %'d tundi"
-
-#. appended to new link file
-#. Note to localizers: convert file type string for file
-#. * (e.g. "folder", "plain text") to file type for symbolic link
-#. * to that kind of file (e.g. "link to folder").
-#.
-#, c-format
-msgid "Link to %s"
-msgstr "Viit -> %s"
 
 #. appended to new link file
 #, c-format
@@ -732,36 +950,24 @@ msgstr "\"%B\" kopeerimine sihtkohta \"%B\""
 msgid "Duplicating \"%B\""
 msgstr "\"%B\" dubleerimine"
 
-msgid "Moving %'d file (in \"%B\") to \"%B\""
-msgid_plural "Moving %'d files (in \"%B\") to \"%B\""
-msgstr[0] "%'d faili ümbertõstmine (asukohast \"%B\") sihtkohta \"%B\""
-msgstr[1] "%'d faili ümbertõstmine (asukohast \"%B\") sihtkohta \"%B\""
+msgid "Moving file %'d of %'d (in \"%B\") to \"%B\""
+msgstr "%'d. faili %'d-st ümbertõstmine kohast \"%B\" kohta \"%B\""
 
-msgid "Copying %'d file (in \"%B\") to \"%B\""
-msgid_plural "Copying %'d files (in \"%B\") to \"%B\""
-msgstr[0] "%'d faili kopeerimine (asukohast \"%B\") sihtkohta \"%B\""
-msgstr[1] "%'d faili kopeerimine (asukohast \"%B\") sihtkohta \"%B\""
+msgid "Copying file %'d of %'d (in \"%B\") to \"%B\""
+msgstr "%'d. faili %'d-st kopeerimine kohast \"%B\" kohta \"%B\""
 
-msgid "Duplicating %'d file (in \"%B\")"
-msgid_plural "Duplicating %'d files (in \"%B\")"
-msgstr[0] "%'d faili dubleerimine (asukohas \"%B\")"
-msgstr[1] "%'d faili dubleerimine (asukohas \"%B\")"
+msgid "Duplicating file %'d of %'d (in \"%B\")"
+msgstr "%'d. faili %'d-st dubleerimine kohast \"%B\" kohta \"%B\""
 
-msgid "Moving %'d file to \"%B\""
-msgid_plural "Moving %'d files to \"%B\""
-msgstr[0] "%'d faili ümbertõstmine sihtkohta \"%B\""
-msgstr[1] "%'d faili ümbertõstmine sihtkohta \"%B\""
+msgid "Moving file %'d of %'d to \"%B\""
+msgstr "%'d. faili %'d-st liigutamine kohta \"%B\""
 
-msgid "Copying %'d file to \"%B\""
-msgid_plural "Copying %'d files to \"%B\""
-msgstr[0] "%'d faili kopeerimine sihtkohta \"%B\""
-msgstr[1] "%'d faili kopeerimine sihtkohta \"%B\""
+msgid "Copying file %'d of %'d to \"%B\""
+msgstr "%'d. faili %'d-st kopeerimine kohta \"%B\""
 
 #, c-format
-msgid "Duplicating %'d file"
-msgid_plural "Duplicating %'d files"
-msgstr[0] "%'d faili dubleerimine"
-msgstr[1] "%'d faili dubleerimine"
+msgid "Duplicating file %'d of %'d"
+msgstr "%'d. faili %'d-st dubleerimine"
 
 #. To translators: %S will expand to a size like "2 bytes" or "3 MB", so something like "4 kb of 4 MB"
 #, c-format
@@ -920,221 +1126,298 @@ msgid "Unable to mark launcher trusted (executable)"
 msgstr ""
 "Rakenduse käivitajat pole võimalik määrata usaldusväärseks (käivitatavaks)"
 
+#. Reset to default info
+msgid "Undo"
+msgstr "Võta tagasi"
+
+msgid "Undo last action"
+msgstr "Viimase tegevuse tagasivõtmine"
+
+#. Reset to default info
+msgid "Redo"
+msgstr "Tee uuesti"
+
+msgid "Redo last undone action"
+msgstr "Viimase tagasivõetud tegevuse uuesti tegemine"
+
+#, c-format
+msgid "Move %d item back to '%s'"
+msgid_plural "Move %d items back to '%s'"
+msgstr[0] "%d kirje liigutamine tagasi kohta '%s'"
+msgstr[1] "%d kirje liigutamine tagasi kohta '%s'"
+
+#, c-format
+msgid "Move %d item to '%s'"
+msgid_plural "Move %d items to '%s'"
+msgstr[0] "%d kirje liigutamine kohta '%s'"
+msgstr[1] "%d kirje liigutamine kohta '%s'"
+
+#, c-format
+msgid "_Undo Move %d item"
+msgid_plural "_Undo Move %d items"
+msgstr[0] "%d kirje liigutamise _tagasivõtmine"
+msgstr[1] "%d kirje liigutamise _tagasivõtmine"
+
+#, c-format
+msgid "_Redo Move %d item"
+msgid_plural "_Redo Move %d items"
+msgstr[0] "%d kirje _uuesti liigutamine"
+msgstr[1] "%d kirje _uuesti liigutamine"
+
+#, c-format
+msgid "Move '%s' back to '%s'"
+msgstr "'%s' liigutamine tagasi kohta '%s'"
+
+#, c-format
+msgid "Move '%s' to '%s'"
+msgstr "'%s' liigutamine kohta '%s'"
+
+msgid "_Undo Move"
+msgstr "_Võta liigutamine tagasi"
+
+msgid "_Redo Move"
+msgstr "Liiguta _uuesti"
+
+msgid "_Undo Restore from Trash"
+msgstr "_Võta tagasi prügikastist taastamine"
+
+msgid "_Redo Restore from Trash"
+msgstr "Viska _uuesti prügikasti"
+
+#, c-format
+msgid "Move %d item back to trash"
+msgid_plural "Move %d items back to trash"
+msgstr[0] "%d kirje liigutamine tagasi prügikasti"
+msgstr[1] "%d kirje liigutamine tagasi prügikasti"
+
+#, c-format
+msgid "Restore %d item from trash"
+msgid_plural "Restore %d items from trash"
+msgstr[0] "%d kirje taastamine prügikastist"
+msgstr[1] "%d kirje taastamine prügikastist"
+
+#, c-format
+msgid "Move '%s' back to trash"
+msgstr "'%s' liigutamine tagasi prügikasti"
+
+#, c-format
+msgid "Restore '%s' from trash"
+msgstr "'%s' taastamine prügikastist"
+
+#, c-format
+msgid "Delete %d copied item"
+msgid_plural "Delete %d copied items"
+msgstr[0] "%d kopeeritud kirje kustutamine"
+msgstr[1] "%d kopeeritud kirje kustutamine"
+
+#, c-format
+msgid "Copy %d item to '%s'"
+msgid_plural "Copy %d items to '%s'"
+msgstr[0] "%d kirje kopeerimine kohta '%s'"
+msgstr[1] "%d kirje kopeerimine kohta '%s'"
+
+#, c-format
+msgid "_Undo Copy %d item"
+msgid_plural "_Undo Copy %d items"
+msgstr[0] "_Võta tagasi %d kirje kopeerimine"
+msgstr[1] "_Võta tagasi %d kirje kopeerimine"
+
+#, c-format
+msgid "_Redo Copy %d item"
+msgid_plural "_Redo Copy %d items"
+msgstr[0] "Kopeeri _uuesti %d kirjet"
+msgstr[1] "Kopeeri _uuesti %d kirjet"
+
+#, c-format
+msgid "Delete '%s'"
+msgstr "'%s' kustutamine"
+
+#, c-format
+msgid "Copy '%s' to '%s'"
+msgstr "'%s' kopeerimine kohta '%s'"
+
+msgid "_Undo Copy"
+msgstr "_Võta kopeerimine tagasi"
+
+msgid "_Redo Copy"
+msgstr "Kopeeri _uuesti"
+
+#, c-format
+msgid "Delete %d duplicated item"
+msgid_plural "Delete %d duplicated items"
+msgstr[0] "%d duplikaatkirje kustutamine"
+msgstr[1] "%d duplikaatkirje kustutamine"
+
+#, c-format
+msgid "Duplicate %d item in '%s'"
+msgid_plural "Duplicate %d items in '%s'"
+msgstr[0] "%d kirje dubleerimine kohas '%s'"
+msgstr[1] "%d kirje dubleerimine kohas '%s'"
+
+#, c-format
+msgid "_Undo Duplicate %d item"
+msgid_plural "_Undo Duplicate %d items"
+msgstr[0] "_Võta tagasi %d kirje dubleerimine"
+msgstr[1] "_Võta tagasi %d kirje dubleerimine"
+
+#, c-format
+msgid "_Redo Duplicate %d item"
+msgid_plural "_Redo Duplicate %d items"
+msgstr[0] "Dubleeri _uuesti %d kirjet"
+msgstr[1] "Dubleeri _uuesti %d kirjet"
+
+#, c-format
+msgid "Duplicate '%s' in '%s'"
+msgstr "'%s' dubleerimine kohas '%s'"
+
+msgid "_Undo Duplicate"
+msgstr "_Võta dubleerimine tagasi"
+
+msgid "_Redo Duplicate"
+msgstr "Dubleeri _uuesti"
+
+#, c-format
+msgid "Delete links to %d item"
+msgid_plural "Delete links to %d items"
+msgstr[0] "Viitade kustutamine %d kirjele"
+msgstr[1] "Viitade kustutamine %d kirjele"
+
+#, c-format
+msgid "Create links to %d item"
+msgid_plural "Create links to %d items"
+msgstr[0] "Viitade loomine %d kirjele"
+msgstr[1] "Viitade loomine %d kirjele"
+
+#, c-format
+msgid "Delete link to '%s'"
+msgstr "Viida kustutamine kirjele '%s'"
+
+#, c-format
+msgid "Create link to '%s'"
+msgstr "Viida loomine kohta '%s'"
+
+msgid "_Undo Create Link"
+msgstr "_Võta tagasi viida loomine"
+
+msgid "_Redo Create Link"
+msgstr "Loo viit _uuesti"
+
+#, c-format
+msgid "Create an empty file '%s'"
+msgstr "Tühja faili '%s' loomine"
+
+msgid "_Undo Create Empty File"
+msgstr "_Võta tagasi tühjafaili loomine"
+
+msgid "_Redo Create Empty File"
+msgstr "Loo _uuesti tühi fail"
+
+#, c-format
+msgid "Create a new folder '%s'"
+msgstr "Uue kataloogi '%s' loomine"
+
+msgid "_Undo Create Folder"
+msgstr "_Võta tagasi uue kataloogi loomine"
+
+msgid "_Redo Create Folder"
+msgstr "Loo _uuesti uus kataloog"
+
+#, c-format
+msgid "Create new file '%s' from template "
+msgstr "Uue faili '%s' loomine mallist"
+
+msgid "_Undo Create from Template"
+msgstr "_Võta tagasi mallist loomine"
+
+msgid "_Redo Create from Template"
+msgstr "Loo _uuesti mallist"
+
+#, c-format
+msgid "Rename '%s' as '%s'"
+msgstr "'%s' ümbernimetamine '%s'-ks"
+
+msgid "_Undo Rename"
+msgstr "_Võta tagasi nime muutmine"
+
+msgid "_Redo Rename"
+msgstr "Muuda _uuesti nime"
+
+#, c-format
+msgid "Move %d item to trash"
+msgid_plural "Move %d items to trash"
+msgstr[0] "%d kirje liigutamine prügikasti"
+msgstr[1] "%d kirje liigutamine prügikasti"
+
+#, c-format
+msgid "Restore '%s' to '%s'"
+msgstr "'%s' taastamine kohta '%s'"
+
+#, c-format
+msgid "Move '%s' to trash"
+msgstr "'%s' liigutamine prügikasti"
+
+msgid "_Undo Trash"
+msgstr "_Võta tagasi prügikasti viskamine"
+
+msgid "_Redo Trash"
+msgstr "Viska _uuesti prügikasti"
+
+#, c-format
+msgid "Restore original permissions of items enclosed in '%s'"
+msgstr "'%s' kirjete esialgsete õiguste taastamine"
+
+#, c-format
+msgid "Set permissions of items enclosed in '%s'"
+msgstr "'%s' kirjete õiguste määramine"
+
+msgid "_Undo Change Permissions"
+msgstr "_Võta tagasi õiguste muutmine"
+
+msgid "_Redo Change Permissions"
+msgstr "Muuda õigused _uuesti"
+
+#, c-format
+msgid "Restore original permissions of '%s'"
+msgstr "'%s' esialgsete õiguste taastamine"
+
+#, c-format
+msgid "Set permissions of '%s'"
+msgstr "'%s' õiguste määramine"
+
+#, c-format
+msgid "Restore group of '%s' to '%s'"
+msgstr "'%s' grupi taastamine kohta '%s'"
+
+#, c-format
+msgid "Set group of '%s' to '%s'"
+msgstr "'%s' grupi määramine kohta '%s'"
+
+msgid "_Undo Change Group"
+msgstr "_Võta tagasi grupi muutmine"
+
+msgid "_Redo Change Group"
+msgstr "Muuda gruppi _uuesti"
+
+#, c-format
+msgid "Restore owner of '%s' to '%s'"
+msgstr "'%s' eelmise omaniku '%s' taastamine"
+
+#, c-format
+msgid "Set owner of '%s' to '%s'"
+msgstr "'%s' omanikuks '%s' määramine"
+
+msgid "_Undo Change Owner"
+msgstr "_Võta tagasi omaniku muutmine"
+
+msgid "_Redo Change Owner"
+msgstr "_Muuda uuesti omanikku"
+
 #, c-format
 msgid "Could not determine original location of \"%s\" "
 msgstr "\"%s\" algset asukohta pole võimalik tuvastada"
 
 msgid "The item cannot be restored from trash"
 msgstr "Kirjet pole võimalik prügikastist taastada"
-
-msgid "This file cannot be mounted"
-msgstr "Seda faili pole võimalik külge haakida"
-
-msgid "This file cannot be unmounted"
-msgstr "Seda faili pole võimalik lahti haakida"
-
-msgid "This file cannot be ejected"
-msgstr "Seda faili pole võimalik väljastada"
-
-msgid "This file cannot be started"
-msgstr "Seda faili pole võimalik käivitada"
-
-msgid "This file cannot be stopped"
-msgstr "Seda faili pole võimalik seisata"
-
-#, c-format
-msgid "Slashes are not allowed in filenames"
-msgstr "Failinimedes pole kaldkriipsud lubatud"
-
-#, c-format
-msgid "File not found"
-msgstr "Faili ei leitud"
-
-#, c-format
-msgid "Toplevel files cannot be renamed"
-msgstr "Ülemise taseme failide nime pole võimalik muuta"
-
-#, c-format
-msgid "Unable to rename desktop icon"
-msgstr "Töölauaikooni nime pole võimalik muuta"
-
-#, c-format
-msgid "Unable to rename desktop file"
-msgstr "Töölauafaili nime pole võimalik muuta"
-
-#. Today, use special word.
-#. * strftime patterns preceeded with the widest
-#. * possible resulting string for that pattern.
-#. *
-#. * Note to localizers: You can look at man strftime
-#. * for details on the format, but you should only use
-#. * the specifiers from the C standard, not extensions.
-#. * These include "%" followed by one of
-#. * "aAbBcdHIjmMpSUwWxXyYZ". There are two extensions
-#. * in the Nautilus version of strftime that can be
-#. * used (and match GNU extensions). Putting a "-"
-#. * between the "%" and any numeric directive will turn
-#. * off zero padding, and putting a "_" there will use
-#. * space padding instead of zero padding.
-#.
-msgid "today at 00:00:00 PM"
-msgstr "täna kell 00:00:00"
-
-msgid "today at %-I:%M:%S %p"
-msgstr "täna kell %-H:%M:%S"
-
-msgid "today at 00:00 PM"
-msgstr "täna kell 00:00"
-
-msgid "today at %-I:%M %p"
-msgstr "täna kell %H:%M"
-
-msgid "today, 00:00 PM"
-msgstr "täna, 00:00"
-
-msgid "today, %-I:%M %p"
-msgstr "täna, %H:%M"
-
-msgid "today"
-msgstr "täna"
-
-#. Yesterday, use special word.
-#. * Note to localizers: Same issues as "today" string.
-#.
-msgid "yesterday at 00:00:00 PM"
-msgstr "eile kell 00:00:00"
-
-msgid "yesterday at %-I:%M:%S %p"
-msgstr "eile kell %H:%M:%S"
-
-msgid "yesterday at 00:00 PM"
-msgstr "eile kell 00:00"
-
-msgid "yesterday at %-I:%M %p"
-msgstr "eile kell %H:%M"
-
-msgid "yesterday, 00:00 PM"
-msgstr "eile, 00:00"
-
-msgid "yesterday, %-I:%M %p"
-msgstr "eile, %H:%M"
-
-msgid "yesterday"
-msgstr "eile"
-
-#. Current week, include day of week.
-#. * Note to localizers: Same issues as "today" string.
-#. * The width measurement templates correspond to
-#. * the day/month name with the most letters.
-#.
-msgid "Wednesday, September 00 0000 at 00:00:00 PM"
-msgstr "Kolmapäev, 00. september 0000 kell 00:00:00"
-
-msgid "%A, %B %-d %Y at %-I:%M:%S %p"
-msgstr "%A, %-d. %B %Y kell %H:%M:%S"
-
-msgid "Mon, Oct 00 0000 at 00:00:00 PM"
-msgstr "E, 00. okt 0000 kell 00:00:00"
-
-msgid "%a, %b %-d %Y at %-I:%M:%S %p"
-msgstr "%a, %-d. %b %Y kell %H:%M:%S"
-
-msgid "Mon, Oct 00 0000 at 00:00 PM"
-msgstr "E, 00. okt 0000 kell 00:00"
-
-msgid "%a, %b %-d %Y at %-I:%M %p"
-msgstr "%a, %-d. %b %Y kell %H:%M"
-
-msgid "Oct 00 0000 at 00:00 PM"
-msgstr "00. okt 0000 kell 00:00"
-
-msgid "%b %-d %Y at %-I:%M %p"
-msgstr "%-d. %b %Y kell %H:%M"
-
-msgid "Oct 00 0000, 00:00 PM"
-msgstr "00. okt 0000, 00:00"
-
-msgid "%b %-d %Y, %-I:%M %p"
-msgstr "%-d %b %Y, %H:%M"
-
-msgid "00/00/00, 00:00 PM"
-msgstr "00.00.00, 00:00"
-
-msgid "%m/%-d/%y, %-I:%M %p"
-msgstr "%d.%m.%y, %H:%M"
-
-msgid "00/00/00"
-msgstr "00.00.00"
-
-msgid "%m/%d/%y"
-msgstr "%d.%m.%y"
-
-#, c-format
-msgid "Not allowed to set permissions"
-msgstr "Õiguseid pole lubatud määrata"
-
-#, c-format
-msgid "Not allowed to set owner"
-msgstr "Omanikku pole lubatud määrata"
-
-#, c-format
-msgid "Specified owner '%s' doesn't exist"
-msgstr "Määratud omanikku '%s' pole olemas"
-
-#, c-format
-msgid "Not allowed to set group"
-msgstr "Omanikgruppi pole lubatud määrata"
-
-#, c-format
-msgid "Specified group '%s' doesn't exist"
-msgstr "Määratud gruppi '%s' pole olemas"
-
-#, c-format
-msgid "%'u item"
-msgid_plural "%'u items"
-msgstr[0] "%'u kirje"
-msgstr[1] "%'u kirjet"
-
-#, c-format
-msgid "%'u folder"
-msgid_plural "%'u folders"
-msgstr[0] "%'u kataloog"
-msgstr[1] "%'u kataloogi"
-
-#, c-format
-msgid "%'u file"
-msgid_plural "%'u files"
-msgstr[0] "%'u fail"
-msgstr[1] "%'u faili"
-
-#. This means no contents at all were readable
-msgid "? items"
-msgstr "? kirjet"
-
-#. This means no contents at all were readable
-msgid "? bytes"
-msgstr "? baiti"
-
-msgid "unknown type"
-msgstr "tundmatu liik"
-
-msgid "unknown MIME type"
-msgstr "tundmatu MIME-liik"
-
-#. Fallback, use for both unknown attributes and attributes
-#. * for which we have no more appropriate default.
-#.
-msgid "unknown"
-msgstr "tundmatu"
-
-msgid "program"
-msgstr "programm"
-
-msgid "link"
-msgstr "link"
-
-msgid "link (broken)"
-msgstr "link (katkenud)"
 
 msgid "The selection rectangle"
 msgstr "Valiku ristkülik"
@@ -1210,9 +1493,10 @@ msgstr "Ettevalmistamine"
 msgid "Search"
 msgstr "Otsing"
 
+# Nautiluses saki peal, %s on loomulikult otsingusõne.
 #, c-format
 msgid "Search for \"%s\""
-msgstr "\"%s\" otsimine"
+msgstr "\"%s\" otsing"
 
 msgid "Edit"
 msgstr "Redigeeri"
@@ -1229,6 +1513,304 @@ msgstr "Tagasta redigeeritud"
 msgid "Redo the edit"
 msgstr "Tagasta redigeeritud"
 
+msgid "Where to position newly open tabs in browser windows."
+msgstr "Kuhu paigutatakse sirvija akendes avatavad uued kaardid."
+
+msgid ""
+"If set to \"after-current-tab\", then new tabs are inserted after the "
+"current tab. If set to \"end\", then new tabs are appended to the end of the "
+"tab list."
+msgstr ""
+"Kui väärtuseks on \"after_current_tab\", siis paigutatakse uued kaardid "
+"käesoleva kaardi järele. Kui väärtuseks on \"end\", siis paigutatakse uued "
+"kaardid kaartide nimekirja lõppu."
+
+msgid "Enables the classic Nautilus behavior, where all windows are browsers"
+msgstr "Nautiluse klassikalise käitumise lubamine, kus kõik aknad on sirvijad"
+
+msgid ""
+"If set to true, then all Nautilus windows will be browser windows. This is "
+"how Nautilus used to behave before version 2.6, and some people prefer this "
+"behavior."
+msgstr ""
+"Kui märgitud, näitab Nautilus kõiki aknaid sirvijana. Nii toimis Nautilus "
+"enne versiooni 2.6 ning osa kasutajaid eelistab seda võimalust."
+
+msgid "Always use the location entry, instead of the pathbar"
+msgstr "Rajariba asemel alati asukohakirje kasutamine"
+
+msgid ""
+"If set to true, then Nautilus browser windows will always use a textual "
+"input entry for the location toolbar, instead of the pathbar."
+msgstr ""
+"Kui märgitud, siis Nautiluse sirvimisaknad kasutavad asukoha tööribal "
+"rajariba asemel alati tekstilist sisendit."
+
+msgid "Whether to ask for confirmation when deleting files, or emptying Trash"
+msgstr ""
+"Kas failide kustutamisel ja prügikasti tühjendamisel küsitakse kinnitust või "
+"mitte"
+
+msgid ""
+"If set to true, then Nautilus will ask for confirmation when you attempt to "
+"delete files, or empty the Trash."
+msgstr ""
+"Kui märgitud, siis Nautilus küsib enne failide kustutamist või prügikasti "
+"tühjendamist kinnitust."
+
+msgid "Whether to enable immediate deletion"
+msgstr "Kas kohene kustutamine on lubatud"
+
+# "Kui tõene, väljub Nautilus, kui kõik aknad suletakse. See on vaikimisi säte. "
+# "Kui see pole tõene, "
+msgid ""
+"If set to true, then Nautilus will have a feature allowing you to delete a "
+"file immediately and in-place, instead of moving it to the trash. This "
+"feature can be dangerous, so use caution."
+msgstr ""
+"Kui märgitud, siis lubab Nautilus faile kustutada ilma neid prügikasti "
+"viskamata. See omadus võib olla ohtlik ja seda tuleks kasutada "
+"ettevaatlikult."
+
+msgid "When to show preview text in icons"
+msgstr "Kas ikoonide eelvaadet näidatakse või mitte"
+
+msgid ""
+"Speed tradeoff for when to show a preview of text file contents in the "
+"file's icon. If set to \"always\" then always show previews, even if the "
+"folder is on a remote server. If set to \"local-only\" then only show "
+"previews for local file systems. If set to \"never\" then never bother to "
+"read preview data."
+msgstr ""
+"Kompromiss kiiruse nimel tekstifailide eelvaateikoonide loomisel. Kui "
+"väärtuseks on \"always\", siis näidatakse teksti eelvaadet alati (ka siis, "
+"kui fail asub kaugserveris). Kui väärtuseks on \"local_only\", siis "
+"näidatakse eelvaadet ainult kohalike failide korral. Kui väärtuseks on "
+"\"never\", siis eelvaadet ei näidata."
+
+msgid "When to show number of items in a folder"
+msgstr "Kas kataloogis olevate kirjete arvu näidatakse või mitte"
+
+msgid ""
+"Speed tradeoff for when to show the number of items in a folder. If set to "
+"\"always\" then always show item counts, even if the folder is on a remote "
+"server. If set to \"local-only\" then only show counts for local file "
+"systems. If set to \"never\" then never bother to compute item counts."
+msgstr ""
+"Kompromiss kiiruse nimel kataloogis olevate kirjete arvu näitamisel. Kui "
+"väärtuseks on \"always\", siis näidatakse kirjete arvu alati (ka siis, kui "
+"kataloog asub kaugserveris). Kui väärtuseks on \"local_only\", siis "
+"näidatakse kirjete arvu ainult kohalike failisüsteemide korral. Kui "
+"väärtuseks on \"never\", siis kirjete arvu ei näidata."
+
+msgid "Type of click used to launch/open files"
+msgstr "Hiireklõpsu liik, millega faile avatakse"
+
+msgid ""
+"Possible values are \"single\" to launch files on a single click, or \"double"
+"\" to launch them on a double click."
+msgstr ""
+"Võimalikud väärtused on \"single\" failide ühe klõpsuga käivitamiseks, või "
+"\"double\" topeltklõpsuga käivitamiseks."
+
+msgid "What to do with executable text files when activated"
+msgstr "Mida tehakse käivitatavate tekstifailidega neile klõpsamisel"
+
+msgid ""
+"What to do with executable text files when they are activated (single or "
+"double clicked). Possible values are \"launch\" to launch them as programs, "
+"\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
+"text files."
+msgstr ""
+"Mida tehakse käivitatavate tekstifailidega nende aktiveerimisel (üksiku- või "
+"topeltklõpsuga). Võimalikud väärtused on \"launch\" nende programmina "
+"käivitamiseks, \"ask\" küsimusedialoogi kuvamiseks ja \"display\" nende "
+"tekstifailina kuvamiseks."
+
+msgid "Show the package installer for unknown mime types"
+msgstr "Tundmatute mime-tüüpide jaoks pakipaigaldaja näitamine"
+
+msgid ""
+"Whether to show the user a package installer dialog in case an unknown mime "
+"type is opened, in order to search for an application to handle it."
+msgstr ""
+"Kas tundmatute mime-tüüpide avamisel tuleb sobiva rakenduse leidmiseks "
+"näidata pakipaigaldaja dialoogi või mitte."
+
+msgid "Use extra mouse button events in Nautilus' browser window"
+msgstr "Nautiluse aknas kasutatakse hiire lisanuppe"
+
+msgid ""
+"For users with mice that have \"Forward\" and \"Back\" buttons, this key "
+"will determine if any action is taken inside of Nautilus when either is "
+"pressed."
+msgstr ""
+"Mõnel hiirel on \"Edasi\" ja \"Tagasi\" nupud. See võti määrab, mida teeb "
+"Nautilus nende nuppude vajutamisel."
+
+msgid "Mouse button to activate the \"Forward\" command in browser window"
+msgstr "Hiirenupp, millega aktiveeritakse brauseriaknas käsk \"Edasi\""
+
+msgid ""
+"For users with mice that have buttons for \"Forward\" and \"Back\", this key "
+"will set which button activates the \"Forward\" command in a browser window. "
+"Possible values range between 6 and 14."
+msgstr ""
+"Mõnel hiirel on \"Edasi\" ja \"Tagasi\" nupud. See võti määrab, mis nupp "
+"aktiveerib brauseriaknas käsu \"Edasi\". Võimalikud on väärtused vahemikus 6 "
+"kuni 14."
+
+msgid "Mouse button to activate the \"Back\" command in browser window"
+msgstr "Hiirenupp, millega aktiveeritakse brauseriaknas käsk \"Tagasi\""
+
+msgid ""
+"For users with mice that have buttons for \"Forward\" and \"Back\", this key "
+"will set which button activates the \"Back\" command in a browser window. "
+"Possible values range between 6 and 14."
+msgstr ""
+"Mõnel hiirel on \"Edasi\" ja \"Tagasi\" nupud. See võti määrab, mis nupp "
+"aktiveerib brauseriaknas käsu \"Tagasi\". Võimalikud on väärtused vahemikus "
+"6 kuni 14."
+
+msgid "When to show thumbnails of image files"
+msgstr "Kas pildifailidel näidatakse pisipilte või mitte"
+
+msgid ""
+"Speed tradeoff for when to show an image file as a thumbnail. If set to "
+"\"always\" then always thumbnail, even if the folder is on a remote server. "
+"If set to \"local-only\" then only show thumbnails for local file systems. "
+"If set to \"never\" then never bother to thumbnail images, just use a "
+"generic icon."
+msgstr ""
+"Kompromiss kiiruse nimel pildifailide eelvaateikoonide loomisel. Kui "
+"väärtuseks on \"always\", siis näidatakse pildist tehtud pisipilti alati (ka "
+"siis, kui fail asub kaugserveris). Kui väärtuseks on \"local_only\", siis "
+"näidatakse pisipilti ainult kohalike failide korral. Kui väärtuseks on "
+"\"never\", siis ei näidata pisipilti vaid tavalist ikooni."
+
+msgid "Maximum image size for thumbnailing"
+msgstr "Pildifaili maksimaalne suurus pisipildi näitamiseks"
+
+msgid ""
+"Images over this size (in bytes) won't be thumbnailed. The purpose of this "
+"setting is to avoid thumbnailing large images that may take a long time to "
+"load or use lots of memory."
+msgstr ""
+"Sellest suurusest (baitides) suurematest piltidest pisipilte ei tehta. Selle "
+"valiku eesmärk on välistada olukorrad, kus suurtest piltidest pisipiltide "
+"tegemine võtab kaua aega ja kasutab palju mälu."
+
+msgid "Show advanced permissions in the file property dialog"
+msgstr "Laiendatud pääsuõiguste näitamine faili omaduste dialoogis"
+
+msgid ""
+"If set to true, then Nautilus lets you edit and display file permissions in "
+"a more unix-like way, accessing some more esoteric options."
+msgstr ""
+"Kui märgitud, siis Nautilus võimaldab failieelistuste dialoogis redigeerida "
+"faili pääsuõigusi UNIX-i moodi, koos mõningate esoteeriliste valikutega."
+
+msgid "Show folders first in windows"
+msgstr "Akendes kataloogide esimesena näitamine"
+
+msgid ""
+"If set to true, then Nautilus shows folders prior to showing files in the "
+"icon and list views."
+msgstr ""
+"Kui märgitud, siis Nautilus näitab ikooni- ja nimekirjavaates katalooge "
+"failidest eespool."
+
+msgid "Default sort order"
+msgstr "Vaikimisi järjestus"
+
+msgid ""
+"The default sort-order for items in the icon view. Possible values are \"name"
+"\", \"size\", \"type\" and \"mtime\"."
+msgstr ""
+"Ikoonivaate kirjete vaikimisi sortimisjärjekord. Võimalikud väärtused on "
+"\"name\" (nime järgi), \"size\" (suuruse järgi), \"type\" (liigi järgi) ja "
+"\"mtime\" (muutmisaja järgi)."
+
+msgid "Reverse sort order in new windows"
+msgstr "Uutes akendes järjestatakse kirjed pööratud järjestuses"
+
+msgid ""
+"If true, files in new windows will be sorted in reverse order. ie, if sorted "
+"by name, then instead of sorting the files from \"a\" to \"z\", they will be "
+"sorted from \"z\" to \"a\"; if sorted by size, instead of being "
+"incrementally they will be sorted decrementally."
+msgstr ""
+"Kui märgitud, siis uutes akendes sorditakse failid pööratud järjestuses. See "
+"tähendab, et kui failid on sorditud näiteks nime alusel, siis tavapärase \"a"
+"\"-st kuni \"ü\"-ni sortmise asemel sorditakse järjestuses \"ü\"-st kuni \"a"
+"\"-ni. Kui sorditakse suuruse alusel, siis kasvava järjestuse asemel "
+"sorditakse kahanevas järjestuses."
+
+msgid "Nautilus uses the users home folder as the desktop"
+msgstr "Nautilus kasutab kodukataloogi kui töölauda"
+
+msgid ""
+"If set to true, then Nautilus will use the user's home folder as the "
+"desktop. If it is false, then it will use ~/Desktop as the desktop."
+msgstr ""
+"Kui märgitud, kasutab Nautilus kasutaja kodukataloogi kui töölauda. Kui "
+"valik on aktiveerimata, kasutatakse töölauana kataloogi ~/Desktop."
+
+msgid "Default folder viewer"
+msgstr "Kataloogide vaikimisi vaataja"
+
+msgid ""
+"When a folder is visited this viewer is used unless you have selected "
+"another view for that particular folder. Possible values are \"list-view\", "
+"\"icon-view\" and \"compact-view\"."
+msgstr ""
+"Kui ei ole määratud teisiti, siis kataloogi külastamisel kasutatakse "
+"vaatamiseks seda vaadet. Võimalikud väärtused on \"list-view"
+"\" (nimekirjavaade), \"icon-view\" (ikoonivaade) ja \"compact-view"
+"\" (kompaktvaade)."
+
+msgid "Date Format"
+msgstr "Kuupäeva vorming"
+
+msgid ""
+"The format of file dates. Possible values are \"locale\", \"iso\", and "
+"\"informal\"."
+msgstr ""
+"Failiaegade vorming. Võimalikud väärtused on \"locale\", \"iso\", ja "
+"\"informal\"."
+
+msgid "Whether to show hidden files"
+msgstr "Kas peidetud faile näidatakse või mitte"
+
+msgid ""
+"If set to true, then hidden files are shown by default in the file manager. "
+"Hidden files are either dotfiles, listed in the folder's .hidden file or "
+"backup files ending with a tilde (~)."
+msgstr ""
+"Kui tõene, siis vaikimisi näitab failihaldur peidetud faile. Peidetud failid "
+"algavad punktiga või on loetletud kataloogi failis nimega .hidden või on "
+"varundusfailid, mis lõppevad tildega (~)."
+
+msgid "Bulk rename utility"
+msgstr "Nimede hulgimuutmise utiliit"
+
+msgid ""
+"If set, Nautilus will append URIs of selected files and treat the result as "
+"a command line for bulk renaming. Bulk rename applications can register "
+"themselves in this key by setting the key to a space-separated string of "
+"their executable name and any command line options. If the executable name "
+"is not set to a full path, it will be searched for in the search path."
+msgstr ""
+"Kui määratud, siis kasutab Nautilus vailitud failide URI-sid käsureal "
+"failinimede hulgimuutmisel. Nimede hulgimuutmise rakendused saavad end selle "
+"võtme abil registreerida, kui määravad võtme väärtuseks tühikutega eraldatud "
+"stringi, milles on käivitatava programmifaili nimi ja käsureavõtmed. Kui "
+"käivitatav fail pole määratud täisrajaga, siis otsitakse seda kõigilt "
+"otsinguradadelt."
+
+msgid "List of possible captions on icons"
+msgstr "Võimalike ikoonipealkirjade nimekiri"
+
 msgid ""
 "A list of captions below an icon in the icon view and the desktop. The "
 "actual number of captions shown depends on the zoom level. Some possible "
@@ -1244,10 +1826,27 @@ msgstr ""
 "\" (pääsuõigused), \"octal_permissions\" (pääsuõigused kaheksandsüsteemis) "
 "ja \"mime_type\" (mime-tüüp)."
 
+msgid "Put labels beside icons"
+msgstr "Sildid asetatakse ikoonide kõrvale"
+
 msgid ""
-"A string containing the saved geometry and coordinates string for navigation "
-"windows."
-msgstr "Sõne, mis sisaldab navigatsiooniakende salvestatud geometriat."
+"If true, labels will be placed beside icons rather than underneath them."
+msgstr "Kui märgitud, siis näidatakse silte ikooni kõrval, mitte all."
+
+msgid "Default icon zoom level"
+msgstr "Ikoonide vaikimisi suurendusaste"
+
+msgid "Default zoom level used by the icon view."
+msgstr "Ikoonivaate vaikimisi suurendus."
+
+msgid "Default Thumbnail Icon Size"
+msgstr "Vaikimisi pisipildi ikooni suurus"
+
+msgid "The default size of an icon for a thumbnail in the icon view."
+msgstr "Ikoonivaates oleva pisipildi ikooni vaikimisi suurus."
+
+msgid "Text Ellipsis Limit"
+msgstr "Teksti väljajätmise piirang"
 
 #, no-c-format
 msgid ""
@@ -1281,11 +1880,136 @@ msgstr ""
 "lühendata. Saadaolevad suurendusastmed: väikseim (33%), väiksem (50%), väike "
 "(66%), tavaline (100%), suur (150%), suurem (200%), suurim (400%)"
 
+msgid "Default compact view zoom level"
+msgstr "Kompaktvaate vaikimisi suurendusaste"
+
+msgid "Default zoom level used by the compact view."
+msgstr "Kompaktvaate vaikimisi suurendus."
+
 msgid "All columns have same width"
 msgstr "Kõigile veergudele sama laius"
 
-msgid "Always use the location entry, instead of the pathbar"
-msgstr "Rajariba asemel alati asukohakirje kasutamine"
+msgid ""
+"If this preference is set, all columns in the compact view have the same "
+"width. Otherwise, the width of each column is determined seperately."
+msgstr ""
+"Kui märgitud, siis on kompaktvaate kõik veerud sama laiusega. Vastasel juhul "
+"määratakse iga veeru laius eraldi."
+
+msgid "Default list zoom level"
+msgstr "Nimekirjavaate vaikimisi suurendus"
+
+msgid "Default zoom level used by the list view."
+msgstr "Nimekirjavaate vaikimisi suurendus."
+
+msgid "Default list of columns visible in the list view"
+msgstr "Loendivaates vaikimisi nähtaval olevate veergude loetelu"
+
+msgid "Default list of columns visible in the list view."
+msgstr "Nimekirjavaate vaikimisi nähtavate veergude loetelu."
+
+msgid "Default column order in the list view"
+msgstr "Nimekirjavaate vaikimisi veerujärjestus"
+
+msgid "Default column order in the list view."
+msgstr "Nimekirjavaate vaikimisi suurendus."
+
+msgid "Only show folders in the tree side pane"
+msgstr "Külgpaani puuvaates kuvatakse ainult katalooge"
+
+msgid ""
+"If set to true, Nautilus will only show folders in the tree side pane. "
+"Otherwise it will show both folders and files."
+msgstr ""
+"Kui märgitud, näitab Nautilus külgpaanis ainult katalooge. Vastasel juhul "
+"näitab Nautilus katalooge ja faile."
+
+msgid "Desktop font"
+msgstr "Töölaua kirjatüüp"
+
+msgid "The font _description used for the icons on the desktop."
+msgstr "Töölaua ikoonidel kasutatava kirjastiili _kirjeldus."
+
+msgid "Home icon visible on desktop"
+msgstr "Kodukataloogi ikoon on töölaual nähtav"
+
+msgid ""
+"If this is set to true, an icon linking to the home folder will be put on "
+"the desktop."
+msgstr "Kui märgitud, siis on kodukataloogile viitav ikoon töölaual nähtav."
+
+msgid "Computer icon visible on desktop"
+msgstr "Arvutiikoon on töölaual nähtav"
+
+msgid ""
+"If this is set to true, an icon linking to the computer location will be put "
+"on the desktop."
+msgstr "Kui märgitud, siis on arvutiikoon töölaual nähtav."
+
+msgid "Trash icon visible on desktop"
+msgstr "Prügikastiikoon on töölaual nähtav"
+
+msgid ""
+"If this is set to true, an icon linking to the trash will be put on the "
+"desktop."
+msgstr "Kui märgitud, siis on prügikastile viitav ikoon töölaual nähtav."
+
+msgid "Show mounted volumes on the desktop"
+msgstr "Haagitud kettaseadmete näitamine töölaual"
+
+msgid ""
+"If this is set to true, icons linking to mounted volumes will be put on the "
+"desktop."
+msgstr ""
+"Kui märgitud, siis on haagitud kettaseadmete ikoonid töölaual nähtaval."
+
+msgid "Network Servers icon visible on the desktop"
+msgstr "Võrguserverite ikoon on töölaual nähtav"
+
+msgid ""
+"If this is set to true, an icon linking to the Network Servers view will be "
+"put on the desktop."
+msgstr "Kui märgitud, siis on võrguserveritele viitav ikoon töölaual nähtav."
+
+msgid "Desktop computer icon name"
+msgstr "Arvutiikooni nimi töölaual"
+
+msgid ""
+"This name can be set if you want a custom name for the computer icon on the "
+"desktop."
+msgstr ""
+"See nimi määratakse juhul, kui soovitakse töölaual oleva arvutiikooni nime "
+"kohandada."
+
+msgid "Desktop home icon name"
+msgstr "Kodukataloogi ikooni nimi töölaual"
+
+msgid ""
+"This name can be set if you want a custom name for the home icon on the "
+"desktop."
+msgstr ""
+"See nimi määratakse juhul, kui soovitakse töölaual oleva kodukataloogiikooni "
+"nime kohandada."
+
+msgid "Desktop trash icon name"
+msgstr "Prügikastiikooni nimi töölaual"
+
+msgid ""
+"This name can be set if you want a custom name for the trash icon on the "
+"desktop."
+msgstr ""
+"See nimi määratakse juhul, kui soovitakse töölaual oleva prügikastiikooni "
+"nime kohandada."
+
+msgid "Network servers icon name"
+msgstr "Võrguserverite ikooni nimi"
+
+msgid ""
+"This name can be set if you want a custom name for the network servers icon "
+"on the desktop."
+msgstr ""
+"See nimi määratakse juhul, kui soovitakse töölaual oleva võrguserverite "
+"ikooni nime kohandada."
 
 msgid ""
 "An integer specifying how parts of overlong file names should be replaced by "
@@ -1298,513 +2022,73 @@ msgstr ""
 "suurem, siis ei lasta failinimel ületada seda arvu ridu. Kui number on null "
 "või väiksem, siis failinime kuvamisel piirangut ei rakendata."
 
-msgid "Bulk rename utility"
-msgstr "Nimede hulgimuutmise utiliit"
-
-msgid "Computer icon visible on desktop"
-msgstr "Arvutiikoon on töölaual nähtav"
-
-msgid "Date Format"
-msgstr "Kuupäeva vorming"
-
-msgid "Default Thumbnail Icon Size"
-msgstr "Vaikimisi pisipildi ikooni suurus"
-
-msgid "Default column order in the list view"
-msgstr "Nimekirjavaate vaikimisi veerujärjestus"
-
-msgid "Default column order in the list view."
-msgstr "Nimekirjavaate vaikimisi suurendus."
-
-msgid "Default compact view zoom level"
-msgstr "Kompaktvaate vaikimisi suurendusaste"
-
-msgid "Default folder viewer"
-msgstr "Kataloogide vaikimisi vaataja"
-
-msgid "Default icon zoom level"
-msgstr "Ikoonide vaikimisi suurendusaste"
-
-msgid "Default list of columns visible in the list view"
-msgstr "Loendivaates vaikimisi nähtaval olevate veergude loetelu"
-
-msgid "Default list of columns visible in the list view."
-msgstr "Nimekirjavaate vaikimisi nähtavate veergude loetelu."
-
-msgid "Default list zoom level"
-msgstr "Nimekirjavaate vaikimisi suurendus"
-
-msgid "Default sort order"
-msgstr "Vaikimisi järjestus"
-
-msgid "Default zoom level used by the compact view."
-msgstr "Kompaktvaate vaikimisi suurendus."
-
-msgid "Default zoom level used by the icon view."
-msgstr "Ikoonivaate vaikimisi suurendus."
-
-msgid "Default zoom level used by the list view."
-msgstr "Nimekirjavaate vaikimisi suurendus."
-
-msgid "Desktop computer icon name"
-msgstr "Arvutiikooni nimi töölaual"
-
-msgid "Desktop font"
-msgstr "Töölaua kirjatüüp"
-
-msgid "Desktop home icon name"
-msgstr "Kodukataloogi ikooni nimi töölaual"
-
-msgid "Desktop trash icon name"
-msgstr "Prügikastiikooni nimi töölaual"
-
-msgid "Enables the classic Nautilus behavior, where all windows are browsers"
-msgstr "Nautiluse klassikalise käitumise lubamine, kus kõik aknad on sirvijad"
-
 msgid "Fade the background on change"
 msgstr "Tausta sujuv vahetamine"
-
-msgid ""
-"For users with mice that have \"Forward\" and \"Back\" buttons, this key "
-"will determine if any action is taken inside of Nautilus when either is "
-"pressed."
-msgstr ""
-"Mõnel hiirel on \"Edasi\" ja \"Tagasi\" nupud. See võti määrab, mida teeb "
-"Nautilus nende nuppude vajutamisel."
-
-msgid ""
-"For users with mice that have buttons for \"Forward\" and \"Back\", this key "
-"will set which button activates the \"Back\" command in a browser window. "
-"Possible values range between 6 and 14."
-msgstr ""
-"Mõnel hiirel on \"Edasi\" ja \"Tagasi\" nupud. See võti määrab, mis nupp "
-"aktiveerib brauseriaknas käsu \"Tagasi\". Võimalikud on väärtused vahemikus "
-"6 kuni 14."
-
-msgid ""
-"For users with mice that have buttons for \"Forward\" and \"Back\", this key "
-"will set which button activates the \"Forward\" command in a browser window. "
-"Possible values range between 6 and 14."
-msgstr ""
-"Mõnel hiirel on \"Edasi\" ja \"Tagasi\" nupud. See võti määrab, mis nupp "
-"aktiveerib brauseriaknas käsu \"Edasi\". Võimalikud on väärtused vahemikus 6 "
-"kuni 14."
-
-msgid "Home icon visible on desktop"
-msgstr "Kodukataloogi ikoon on töölaual nähtav"
-
-msgid ""
-"If set to \"after-current-tab\", then new tabs are inserted after the "
-"current tab. If set to \"end\", then new tabs are appended to the end of the "
-"tab list."
-msgstr ""
-"Kui väärtuseks on \"after_current_tab\", siis paigutatakse uued kaardid "
-"käesoleva kaardi järele. Kui väärtuseks on \"end\", siis paigutatakse uued "
-"kaardid kaartide nimekirja lõppu."
-
-msgid ""
-"If set to true, Nautilus will only show folders in the tree side pane. "
-"Otherwise it will show both folders and files."
-msgstr ""
-"Kui märgitud, näitab Nautilus külgpaanis ainult katalooge. Vastasel juhul "
-"näitab Nautilus katalooge ja faile."
-
-msgid ""
-"If set to true, newly opened windows will have the location bar visible."
-msgstr "Kui märgitud, siis uutel akendel näidatakse asukohariba."
-
-msgid "If set to true, newly opened windows will have the side pane visible."
-msgstr "Kui märgitud, siis uutel akendel näidatakse külgpaani."
-
-msgid "If set to true, newly opened windows will have the status bar visible."
-msgstr "Kui märgitud, siis uutel akendel näidatakse olekuriba."
-
-msgid "If set to true, newly opened windows will have toolbars visible."
-msgstr "Kui märgitud, siis uutel akendel on tööriistariba nähtaval."
-
-msgid ""
-"If set to true, then Nautilus browser windows will always use a textual "
-"input entry for the location toolbar, instead of the pathbar."
-msgstr ""
-"Kui märgitud, siis Nautiluse sirvimisaknad kasutavad asukoha tööribal "
-"rajariba asemel alati tekstilist sisendit."
-
-msgid ""
-"If set to true, then Nautilus lets you edit and display file permissions in "
-"a more unix-like way, accessing some more esoteric options."
-msgstr ""
-"Kui märgitud, siis Nautilus võimaldab failieelistuste dialoogis redigeerida "
-"faili pääsuõigusi UNIX-i moodi, koos mõningate esoteeriliste valikutega."
-
-msgid ""
-"If set to true, then Nautilus shows folders prior to showing files in the "
-"icon and list views."
-msgstr ""
-"Kui märgitud, siis Nautilus näitab ikooni- ja nimekirjavaates katalooge "
-"failidest eespool."
-
-msgid ""
-"If set to true, then Nautilus will ask for confirmation when you attempt to "
-"delete files, or empty the Trash."
-msgstr ""
-"Kui märgitud, siis Nautilus küsib enne failide kustutamist või prügikasti "
-"tühjendamist kinnitust."
-
-# "Kui tõene, väljub Nautilus, kui kõik aknad suletakse. See on vaikimisi säte. "
-# "Kui see pole tõene, "
-msgid ""
-"If set to true, then Nautilus will have a feature allowing you to delete a "
-"file immediately and in-place, instead of moving it to the trash. This "
-"feature can be dangerous, so use caution."
-msgstr ""
-"Kui märgitud, siis lubab Nautilus faile kustutada ilma neid prügikasti "
-"viskamata. See omadus võib olla ohtlik ja seda tuleks kasutada "
-"ettevaatlikult."
 
 msgid ""
 "If set to true, then Nautilus will use a fade effect to change the desktop "
 "background."
 msgstr "Kui märgitud, vahetab Nautilus töölaua tausta sujuva üleminekuga."
 
-msgid ""
-"If set to true, then Nautilus will use the user's home folder as the "
-"desktop. If it is false, then it will use ~/Desktop as the desktop."
-msgstr ""
-"Kui märgitud, kasutab Nautilus kasutaja kodukataloogi kui töölauda. Kui "
-"valik on aktiveerimata, kasutatakse töölauana kataloogi ~/Desktop."
-
-msgid ""
-"If set to true, then all Nautilus windows will be browser windows. This is "
-"how Nautilus used to behave before version 2.6, and some people prefer this "
-"behavior."
-msgstr ""
-"Kui märgitud, näitab Nautilus kõiki aknaid sirvijana. Nii toimis Nautilus "
-"enne versiooni 2.6 ning osa kasutajaid eelistab seda võimalust."
-
-msgid ""
-"If set to true, then hidden files are shown by default in the file manager. "
-"Hidden files are either dotfiles, listed in the folder's .hidden file or "
-"backup files ending with a tilde (~)."
-msgstr ""
-"Kui tõene, siis vaikimisi näitab failihaldur peidetud faile. Peidetud failid "
-"algavad punktiga või on loetletud kataloogi failis nimega .hidden või on "
-"varundusfailid, mis lõppevad tildega (~)."
-
-msgid ""
-"If set, Nautilus will append URIs of selected files and treat the result as "
-"a command line for bulk renaming. Bulk rename applications can register "
-"themselves in this key by setting the key to a space-separated string of "
-"their executable name and any command line options. If the executable name "
-"is not set to a full path, it will be searched for in the search path."
-msgstr ""
-"Kui määratud, siis kasutab Nautilus vailitud failide URI-sid käsureal "
-"failinimede hulgimuutmisel. Nimede hulgimuutmise rakendused saavad end selle "
-"võtme abil registreerida, kui määravad võtme väärtuseks tühikutega eraldatud "
-"stringi, milles on käivitatava programmifaili nimi ja käsureavõtmed. Kui "
-"käivitatav fail pole määratud täisrajaga, siis otsitakse seda kõigilt "
-"otsinguradadelt."
-
-msgid ""
-"If this is set to true, an icon linking to the Network Servers view will be "
-"put on the desktop."
-msgstr "Kui märgitud, siis on võrguserveritele viitav ikoon töölaual nähtav."
-
-msgid ""
-"If this is set to true, an icon linking to the computer location will be put "
-"on the desktop."
-msgstr "Kui märgitud, siis on arvutiikoon töölaual nähtav."
-
-msgid ""
-"If this is set to true, an icon linking to the home folder will be put on "
-"the desktop."
-msgstr "Kui märgitud, siis on kodukataloogile viitav ikoon töölaual nähtav."
-
-msgid ""
-"If this is set to true, an icon linking to the trash will be put on the "
-"desktop."
-msgstr "Kui märgitud, siis on prügikastile viitav ikoon töölaual nähtav."
-
-msgid ""
-"If this is set to true, icons linking to mounted volumes will be put on the "
-"desktop."
-msgstr ""
-"Kui märgitud, siis on haagitud kettaseadmete ikoonid töölaual nähtaval."
-
-msgid ""
-"If this preference is set, all columns in the compact view have the same "
-"width. Otherwise, the width of each column is determined seperately."
-msgstr ""
-"Kui märgitud, siis on kompaktvaate kõik veerud sama laiusega. Vastasel juhul "
-"määratakse iga veeru laius eraldi."
-
-msgid ""
-"If true, files in new windows will be sorted in reverse order. ie, if sorted "
-"by name, then instead of sorting the files from \"a\" to \"z\", they will be "
-"sorted from \"z\" to \"a\"; if sorted by size, instead of being "
-"incrementally they will be sorted decrementally."
-msgstr ""
-"Kui märgitud, siis uutes akendes sorditakse failid pööratud järjestuses. See "
-"tähendab, et kui failid on sorditud näiteks nime alusel, siis tavapärase \"a"
-"\"-st kuni \"ü\"-ni sortmise asemel sorditakse järjestuses \"ü\"-st kuni \"a"
-"\"-ni. Kui sorditakse suuruse alusel, siis kasvava järjestuse asemel "
-"sorditakse kahanevas järjestuses."
-
-msgid ""
-"If true, labels will be placed beside icons rather than underneath them."
-msgstr "Kui märgitud, siis näidatakse silte ikooni kõrval, mitte all."
-
-msgid ""
-"Images over this size (in bytes) won't be thumbnailed. The purpose of this "
-"setting is to avoid thumbnailing large images that may take a long time to "
-"load or use lots of memory."
-msgstr ""
-"Sellest suurusest (baitides) suurematest piltidest pisipilte ei tehta. Selle "
-"valiku eesmärk on välistada olukorrad, kus suurtest piltidest pisipiltide "
-"tegemine võtab kaua aega ja kasutab palju mälu."
-
-msgid "List of possible captions on icons"
-msgstr "Võimalike ikoonipealkirjade nimekiri"
-
-msgid "Maximum image size for thumbnailing"
-msgstr "Pildifaili maksimaalne suurus pisipildi näitamiseks"
-
-msgid "Mouse button to activate the \"Back\" command in browser window"
-msgstr "Hiirenupp, millega aktiveeritakse brauseriaknas käsk \"Tagasi\""
-
-msgid "Mouse button to activate the \"Forward\" command in browser window"
-msgstr "Hiirenupp, millega aktiveeritakse brauseriaknas käsk \"Edasi\""
-
-msgid "Nautilus uses the users home folder as the desktop"
-msgstr "Nautilus kasutab kodukataloogi kui töölauda"
-
-msgid "Network Servers icon visible on the desktop"
-msgstr "Võrguserverite ikoon on töölaual nähtav"
-
-msgid "Network servers icon name"
-msgstr "Võrguserverite ikooni nimi"
-
-msgid "Only show folders in the tree side pane"
-msgstr "Külgpaani puuvaates kuvatakse ainult katalooge"
-
-msgid ""
-"Possible values are \"single\" to launch files on a single click, or \"double"
-"\" to launch them on a double click."
-msgstr ""
-"Võimalikud väärtused on \"single\" failide ühe klõpsuga käivitamiseks, või "
-"\"double\" topeltklõpsuga käivitamiseks."
-
-msgid "Put labels beside icons"
-msgstr "Sildid asetatakse ikoonide kõrvale"
-
-msgid "Reverse sort order in new windows"
-msgstr "Uutes akendes järjestatakse kirjed pööratud järjestuses"
-
-msgid "Show advanced permissions in the file property dialog"
-msgstr "Laiendatud pääsuõiguste näitamine faili omaduste dialoogis"
-
-msgid "Show folders first in windows"
-msgstr "Akendes kataloogide esimesena näitamine"
-
-msgid "Show location bar in new windows"
-msgstr "Uutes akendes asukohariba näitamine"
-
-msgid "Show mounted volumes on the desktop"
-msgstr "Haagitud kettaseadmete näitamine töölaual"
-
-msgid "Show side pane in new windows"
-msgstr "Uutes akendes külgpaani näitamine"
-
-msgid "Show status bar in new windows"
-msgstr "Uutes akendes olekuriba näitamine"
-
-msgid "Show the package installer for unknown mime types"
-msgstr "Tundmatute mime-tüüpide jaoks pakipaigaldaja näitamine"
-
-msgid "Show toolbar in new windows"
-msgstr "Uutes akendes tööriistariba näitamine"
-
-msgid "Side pane view"
-msgstr "Külgpaanivaade"
-
-msgid ""
-"Speed tradeoff for when to show a preview of text file contents in the "
-"file's icon. If set to \"always\" then always show previews, even if the "
-"folder is on a remote server. If set to \"local-only\" then only show "
-"previews for local file systems. If set to \"never\" then never bother to "
-"read preview data."
-msgstr ""
-"Kompromiss kiiruse nimel tekstifailide eelvaateikoonide loomisel. Kui "
-"väärtuseks on \"always\", siis näidatakse teksti eelvaadet alati (ka siis, "
-"kui fail asub kaugserveris). Kui väärtuseks on \"local_only\", siis "
-"näidatakse eelvaadet ainult kohalike failide korral. Kui väärtuseks on "
-"\"never\", siis eelvaadet ei näidata."
-
-msgid ""
-"Speed tradeoff for when to show an image file as a thumbnail. If set to "
-"\"always\" then always thumbnail, even if the folder is on a remote server. "
-"If set to \"local-only\" then only show thumbnails for local file systems. "
-"If set to \"never\" then never bother to thumbnail images, just use a "
-"generic icon."
-msgstr ""
-"Kompromiss kiiruse nimel pildifailide eelvaateikoonide loomisel. Kui "
-"väärtuseks on \"always\", siis näidatakse pildist tehtud pisipilti alati (ka "
-"siis, kui fail asub kaugserveris). Kui väärtuseks on \"local_only\", siis "
-"näidatakse pisipilti ainult kohalike failide korral. Kui väärtuseks on "
-"\"never\", siis ei näidata pisipilti vaid tavalist ikooni."
-
-msgid ""
-"Speed tradeoff for when to show the number of items in a folder. If set to "
-"\"always\" then always show item counts, even if the folder is on a remote "
-"server. If set to \"local-only\" then only show counts for local file "
-"systems. If set to \"never\" then never bother to compute item counts."
-msgstr ""
-"Kompromiss kiiruse nimel kataloogis olevate kirjete arvu näitamisel. Kui "
-"väärtuseks on \"always\", siis näidatakse kirjete arvu alati (ka siis, kui "
-"kataloog asub kaugserveris). Kui väärtuseks on \"local_only\", siis "
-"näidatakse kirjete arvu ainult kohalike failisüsteemide korral. Kui "
-"väärtuseks on \"never\", siis kirjete arvu ei näidata."
-
-msgid "Text Ellipsis Limit"
-msgstr "Teksti väljajätmise piirang"
-
-msgid "The default size of an icon for a thumbnail in the icon view."
-msgstr "Ikoonivaates oleva pisipildi ikooni vaikimisi suurus."
-
-msgid ""
-"The default sort-order for items in the icon view. Possible values are \"name"
-"\", \"size\", \"type\" and \"mtime\"."
-msgstr ""
-"Ikoonivaate kirjete vaikimisi sortimisjärjekord. Võimalikud väärtused on "
-"\"name\" (nime järgi), \"size\" (suuruse järgi), \"type\" (liigi järgi) ja "
-"\"mtime\" (muutmisaja järgi)."
-
-msgid "The default width of the side pane in new windows."
-msgstr "Külgpaani vaikimisi laius uutes akendes."
-
-msgid "The font _description used for the icons on the desktop."
-msgstr "Töölaua ikoonidel kasutatava kirjastiili _kirjeldus."
-
-msgid ""
-"The format of file dates. Possible values are \"locale\", \"iso\", and "
-"\"informal\"."
-msgstr ""
-"Failiaegade vorming. Võimalikud väärtused on \"locale\", \"iso\", ja "
-"\"informal\"."
-
 msgid "The geometry string for a navigation window."
 msgstr "Navigeerimisakna geomeetriastring."
 
-msgid "The side pane view to show in newly opened windows."
-msgstr "Külgpaanivaate kasutamine uutes akendes."
-
 msgid ""
-"This name can be set if you want a custom name for the computer icon on the "
-"desktop."
-msgstr ""
-"See nimi määratakse juhul, kui soovitakse töölaual oleva arvutiikooni nime "
-"kohandada."
-
-msgid ""
-"This name can be set if you want a custom name for the home icon on the "
-"desktop."
-msgstr ""
-"See nimi määratakse juhul, kui soovitakse töölaual oleva kodukataloogiikooni "
-"nime kohandada."
-
-msgid ""
-"This name can be set if you want a custom name for the network servers icon "
-"on the desktop."
-msgstr ""
-"See nimi määratakse juhul, kui soovitakse töölaual oleva võrguserverite "
-"ikooni nime kohandada."
-
-msgid ""
-"This name can be set if you want a custom name for the trash icon on the "
-"desktop."
-msgstr ""
-"See nimi määratakse juhul, kui soovitakse töölaual oleva prügikastiikooni "
-"nime kohandada."
-
-msgid "Trash icon visible on desktop"
-msgstr "Prügikastiikoon on töölaual nähtav"
-
-msgid "Type of click used to launch/open files"
-msgstr "Hiireklõpsu liik, millega faile avatakse"
-
-msgid "Use extra mouse button events in Nautilus' browser window"
-msgstr "Nautiluse aknas kasutatakse hiire lisanuppe"
-
-msgid "What to do with executable text files when activated"
-msgstr "Mida tehakse käivitatavate tekstifailidega neile klõpsamisel"
-
-msgid ""
-"What to do with executable text files when they are activated (single or "
-"double clicked). Possible values are \"launch\" to launch them as programs, "
-"\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
-"text files."
-msgstr ""
-"Mida tehakse käivitatavate tekstifailidega nende aktiveerimisel (üksiku- või "
-"topeltklõpsuga). Võimalikud väärtused on \"launch\" nende programmina "
-"käivitamiseks, \"ask\" küsimusedialoogi kuvamiseks ja \"display\" nende "
-"tekstifailina kuvamiseks."
-
-msgid ""
-"When a folder is visited this viewer is used unless you have selected "
-"another view for that particular folder. Possible values are \"list-view\", "
-"\"icon-view\" and \"compact-view\"."
-msgstr ""
-"Kui ei ole määratud teisiti, siis kataloogi külastamisel kasutatakse "
-"vaatamiseks seda vaadet. Võimalikud väärtused on \"list-view"
-"\" (nimekirjavaade), \"icon-view\" (ikoonivaade) ja \"compact-view"
-"\" (kompaktvaade)."
-
-msgid "When to show number of items in a folder"
-msgstr "Kas kataloogis olevate kirjete arvu näidatakse või mitte"
-
-msgid "When to show preview text in icons"
-msgstr "Kas ikoonide eelvaadet näidatakse või mitte"
-
-msgid "When to show thumbnails of image files"
-msgstr "Kas pildifailidel näidatakse pisipilte või mitte"
-
-msgid "Where to position newly open tabs in browser windows."
-msgstr "Kuhu paigutatakse sirvija akendes avatavad uued kaardid."
-
-msgid "Whether the navigation window should be maximized by default."
-msgstr "Kas navigatsiooniaken peaks vaikimisi olema maksimeeritud."
+"A string containing the saved geometry and coordinates string for navigation "
+"windows."
+msgstr "Sõne, mis sisaldab navigatsiooniakende salvestatud geometriat."
 
 msgid "Whether the navigation window should be maximized."
 msgstr "Kas navigatsiooniaken peaks olema maksimeeritud."
 
-msgid "Whether to ask for confirmation when deleting files, or emptying Trash"
-msgstr ""
-"Kas failide kustutamisel ja prügikasti tühjendamisel küsitakse kinnitust või "
-"mitte"
-
-msgid "Whether to enable immediate deletion"
-msgstr "Kas kohene kustutamine on lubatud"
-
-msgid "Whether to show hidden files"
-msgstr "Kas peidetud faile näidatakse või mitte"
-
-msgid ""
-"Whether to show the user a package installer dialog in case an unknown mime "
-"type is opened, in order to search for an application to handle it."
-msgstr ""
-"Kas tundmatute mime-tüüpide avamisel tuleb sobiva rakenduse leidmiseks "
-"näidata pakipaigaldaja dialoogi või mitte."
+msgid "Whether the navigation window should be maximized by default."
+msgstr "Kas navigatsiooniaken peaks vaikimisi olema maksimeeritud."
 
 msgid "Width of the side pane"
 msgstr "Külgpaani laius"
 
-msgid "Autorun Prompt"
-msgstr "Automaatkäivituse küsimus"
+msgid "The default width of the side pane in new windows."
+msgstr "Külgpaani vaikimisi laius uutes akendes."
 
-msgid "Access and organize files"
-msgstr "Ligipääs failidele ning failipuu korrastamine"
+msgid "Show toolbar in new windows"
+msgstr "Uutes akendes tööriistariba näitamine"
 
-msgid "Files"
-msgstr "Failid"
+msgid "If set to true, newly opened windows will have toolbars visible."
+msgstr "Kui märgitud, siis uutel akendel on tööriistariba nähtaval."
+
+msgid "Show location bar in new windows"
+msgstr "Uutes akendes asukohariba näitamine"
+
+msgid ""
+"If set to true, newly opened windows will have the location bar visible."
+msgstr "Kui märgitud, siis uutel akendel näidatakse asukohariba."
+
+msgid "Show status bar in new windows"
+msgstr "Uutes akendes olekuriba näitamine"
+
+msgid "If set to true, newly opened windows will have the status bar visible."
+msgstr "Kui märgitud, siis uutel akendel näidatakse olekuriba."
+
+msgid "Show side pane in new windows"
+msgstr "Uutes akendes külgpaani näitamine"
+
+msgid "If set to true, newly opened windows will have the side pane visible."
+msgstr "Kui märgitud, siis uutel akendel näidatakse külgpaani."
+
+msgid "Side pane view"
+msgstr "Külgpaanivaade"
+
+msgid "The side pane view to show in newly opened windows."
+msgstr "Külgpaanivaate kasutamine uutes akendes."
+
+msgid "Send To..."
+msgstr "Saada..."
+
+msgid "Send file by mail, instant message..."
+msgstr "Faili saatmine e-postiga, välksõnumiga..."
+
+msgid "Send files by mail, instant message..."
+msgstr "Failide saatmine e-postiga, välksõnumiga..."
 
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
@@ -1923,31 +2207,17 @@ msgstr ""
 msgid "No bookmarks defined"
 msgstr "Järjehoidjaid pole kirjeldatud"
 
+msgid "Edit Bookmarks"
+msgstr "Järjehoidjate redaktor"
+
 msgid "<b>_Bookmarks</b>"
 msgstr "<b>_Järjehoidjad</b>"
-
-msgid "<b>_Location</b>"
-msgstr "<b>_Asukoht</b>"
 
 msgid "<b>_Name</b>"
 msgstr "<b>_Nimi</b>"
 
-msgid "Edit Bookmarks"
-msgstr "Järjehoidjate redaktor"
-
-msgid "Print but do not open the URI"
-msgstr "Prindi, kuid ära ava URI"
-
-#. Translators: This is the --help description for the connect to server app,
-#. the initial newlines are between the command line arg and the description
-msgid ""
-"\n"
-"\n"
-"Add connect to server mount"
-msgstr ""
-"\n"
-"\n"
-"Ühenduse lisamine serveri jagatud kataloogile"
+msgid "<b>_Location</b>"
+msgstr "<b>_Asukoht</b>"
 
 msgid "SSH"
 msgstr "SSH"
@@ -2049,17 +2319,19 @@ msgstr "Seda _parooli peetakse meeles"
 msgid "Operation cancelled"
 msgstr "Toiming katkestati"
 
-msgid "Comment"
-msgstr "Kommentaar"
+msgid "Print but do not open the URI"
+msgstr "Prindi, kuid ära ava URI"
 
-msgid "URL"
-msgstr "URL"
-
-msgid "Description"
-msgstr "Kirjeldus"
-
-msgid "Command"
-msgstr "Käsk"
+#. Translators: This is the --help description for the connect to server app,
+#. the initial newlines are between the command line arg and the description
+msgid ""
+"\n"
+"\n"
+"Add connect to server mount"
+msgstr ""
+"\n"
+"\n"
+"Ühenduse lisamine serveri jagatud kataloogile"
 
 #. name, stock id
 #. label, accelerator
@@ -2088,6 +2360,18 @@ msgstr "Töölauavaade sattus veale."
 
 msgid "The desktop view encountered an error while starting up."
 msgstr "Töölauavaade sattus käivitamise ajal veale."
+
+msgid "Comment"
+msgstr "Kommentaar"
+
+msgid "URL"
+msgstr "URL"
+
+msgid "Description"
+msgstr "Kirjeldus"
+
+msgid "Command"
+msgstr "Käsk"
 
 #. hardcode "Desktop"
 msgid "Desktop"
@@ -2185,20 +2469,201 @@ msgstr "\"%s\" ümbernimetamine \"%s\"-ks."
 msgid "None"
 msgstr "Puuduvad"
 
-msgid "1 GB"
-msgstr "1 GB"
+msgid "File Management Preferences"
+msgstr "Failihalduse eelistused"
 
-msgid "1 MB"
-msgstr "1 MB"
+msgid "<b>Default View</b>"
+msgstr "<b>Vaikimisi vaade</b>"
 
-msgid "10 MB"
-msgstr "10 MB"
+msgid "View _new folders using:"
+msgstr "_Uusi katalooge näidatakse kasutades:"
 
-msgid "100 KB"
-msgstr "100 KB"
+msgid "_Arrange items:"
+msgstr "Kir_jed järjestatakse:"
 
-msgid "100 MB"
-msgstr "100 MB"
+msgid "Sort _folders before files"
+msgstr "_Kataloogid sorditakse enne faile"
+
+msgid "Show hidden and _backup files"
+msgstr "Peidetud- ja varuk_oopiafailid on nähtaval"
+
+msgid "<b>Icon View Defaults</b>"
+msgstr "<b>Ikoonivaate vaikeväärtused</b>"
+
+msgid "Default _zoom level:"
+msgstr "Vaikimisi _suurendus:"
+
+msgid "_Text beside icons"
+msgstr "_Tekst ikoonide kõrval"
+
+msgid "<b>Compact View Defaults</b>"
+msgstr "<b>Kompaktvaate vaikeväärtused</b>"
+
+msgid "_Default zoom level:"
+msgstr "Vaikimisi suu_rendus:"
+
+msgid "A_ll columns have the same width"
+msgstr "Kõigile _veergudele sama laius"
+
+msgid "<b>List View Defaults</b>"
+msgstr "<b>Nimekirjavaate vaikeväärtused</b>"
+
+msgid "D_efault zoom level:"
+msgstr "Vaikimisi suuren_dus:"
+
+msgid "<b>Tree View Defaults</b>"
+msgstr "<b>Puuvaate vaikeväärtused</b>"
+
+msgid "Show _only folders"
+msgstr "Näidatakse ai_nult katalooge"
+
+# Redaktor → Eelistused all saki pealkiri
+msgid "Views"
+msgstr "Vaade"
+
+msgid "<b>Behavior</b>"
+msgstr "<b>Käitumine</b>"
+
+msgid "_Single click to open items"
+msgstr "Kirjed avatakse ü_he klõpsuga"
+
+msgid "_Double click to open items"
+msgstr "Kirjed avatakse _topeltklõpsuga"
+
+msgid "Open each _folder in its own window"
+msgstr "_Iga kataloog avaneb oma aknas"
+
+msgid "<b>Executable Text Files</b>"
+msgstr "<b>Käivitatavad tekstifailid</b>"
+
+msgid "_Run executable text files when they are opened"
+msgstr "Käivitatavade teksti_failide avamisel need käivitatakse"
+
+msgid "_View executable text files when they are opened"
+msgstr "Käi_vitatavate tekstifailide avamisel näidatakse nende sisu"
+
+msgid "_Ask each time"
+msgstr "_Küsitakse iga kord"
+
+msgid "<b>Trash</b>"
+msgstr "<b>Prügikast</b>"
+
+msgid "Ask before _emptying the Trash or deleting files"
+msgstr "_Prügikasti tühjendamisel ja failide kustutamisel küsitakse luba"
+
+# tegelikult Edit ja kontekstimenüüs
+# võib valesti eeldada, et see keelab ka Shift+Delete ära, ei keela
+msgid "I_nclude a Delete command that bypasses Trash"
+msgstr "Menüüs on käsk kustutamiseks _ilma prügikasti viskamata"
+
+msgid "Behavior"
+msgstr "Käitumine"
+
+msgid "<b>Icon Captions</b>"
+msgstr "<b>Ikoonide pealdised</b>"
+
+msgid ""
+"Choose the order of information to appear beneath icon names. More "
+"information will appear when zooming in closer."
+msgstr ""
+"Vali ikooni all olevate andmete järjekord. Täpsemad andmed ilmuvad ikoonide "
+"suurendamisel."
+
+msgid "<b>Date</b>"
+msgstr "<b>Kuupäev</b>"
+
+msgid "_Format:"
+msgstr "_Vorming:"
+
+msgid "Display"
+msgstr "Kuvamine"
+
+msgid "<b>List Columns</b>"
+msgstr "<b>Nimekirja veerud</b>"
+
+msgid "Choose the order of information to appear in the list view."
+msgstr "Nimekirjavaates ilmuvate andmete järjekorra valimine."
+
+msgid "List Columns"
+msgstr "Nimekirja veerud"
+
+msgid "<b>Text Files</b>"
+msgstr "<b>Tekstifailid</b>"
+
+msgid "Show te_xt in icons:"
+msgstr "_Teksti näidatakse ikoonidel:"
+
+msgid "<b>Other Previewable Files</b>"
+msgstr "<b>Muud eelvaadeldavad failid</b>"
+
+msgid "Show _thumbnails:"
+msgstr "_Pisipilte näidatakse:"
+
+msgid "_Only for files smaller than:"
+msgstr "Ainult _failidele, mis on väiksemad kui:"
+
+msgid "<b>Folders</b>"
+msgstr "<b>Kataloogid</b>"
+
+msgid "Count _number of items:"
+msgstr "_Kirjete arvu loendatakse:"
+
+msgid "Preview"
+msgstr "Eelvaatlemine"
+
+#. translators: this is used in the view selection dropdown
+#. * of navigation windows and in the preferences dialog
+msgid "Icon View"
+msgstr "Ikoonivaade"
+
+#. translators: this is used in the view selection dropdown
+#. * of navigation windows and in the preferences dialog
+msgid "List View"
+msgstr "Nimekirjavaade"
+
+#. translators: this is used in the view selection dropdown
+#. * of navigation windows and in the preferences dialog
+msgid "Compact View"
+msgstr "Kompaktvaade"
+
+msgid "Always"
+msgstr "Alati"
+
+msgid "Local Files Only"
+msgstr "Ainult kohalike failide korral"
+
+msgid "Never"
+msgstr "Mitte kunagi"
+
+msgid "By Name"
+msgstr "Nime järgi"
+
+msgid "By Size"
+msgstr "Suuruse järgi"
+
+msgid "By Type"
+msgstr "Tüübi järgi"
+
+msgid "By Modification Date"
+msgstr "Muutmisaja järgi"
+
+msgid "By Access Date"
+msgstr "Kasutusaja järgi"
+
+msgid "By Trashed Date"
+msgstr "Kustutamise aja järgi"
+
+#, no-c-format
+msgid "33%"
+msgstr "33%"
+
+#, no-c-format
+msgid "50%"
+msgstr "50%"
+
+#, no-c-format
+msgid "66%"
+msgstr "66%"
 
 #, no-c-format
 msgid "100%"
@@ -2208,224 +2673,43 @@ msgstr "100%"
 msgid "150%"
 msgstr "150%"
 
-msgid "2 GB"
-msgstr "2 GB"
-
 #, no-c-format
 msgid "200%"
 msgstr "200%"
-
-msgid "3 MB"
-msgstr "3 MB"
-
-#, no-c-format
-msgid "33%"
-msgstr "33%"
-
-msgid "4 GB"
-msgstr "4 GB"
 
 #, no-c-format
 msgid "400%"
 msgstr "400%"
 
-msgid "5 MB"
-msgstr "5 MB"
-
-#, no-c-format
-msgid "50%"
-msgstr "50%"
+msgid "100 KB"
+msgstr "100 KB"
 
 msgid "500 KB"
 msgstr "500 KB"
 
-#, no-c-format
-msgid "66%"
-msgstr "66%"
+msgid "1 MB"
+msgstr "1 MB"
 
-msgid "<b>Behavior</b>"
-msgstr "<b>Käitumine</b>"
+msgid "3 MB"
+msgstr "3 MB"
 
-msgid "<b>Compact View Defaults</b>"
-msgstr "<b>Kompaktvaate vaikeväärtused</b>"
+msgid "5 MB"
+msgstr "5 MB"
 
-msgid "<b>Date</b>"
-msgstr "<b>Kuupäev</b>"
+msgid "10 MB"
+msgstr "10 MB"
 
-msgid "<b>Default View</b>"
-msgstr "<b>Vaikimisi vaade</b>"
+msgid "100 MB"
+msgstr "100 MB"
 
-msgid "<b>Executable Text Files</b>"
-msgstr "<b>Käivitatavad tekstifailid</b>"
+msgid "1 GB"
+msgstr "1 GB"
 
-msgid "<b>Folders</b>"
-msgstr "<b>Kataloogid</b>"
+msgid "2 GB"
+msgstr "2 GB"
 
-msgid "<b>Icon Captions</b>"
-msgstr "<b>Ikoonide pealdised</b>"
-
-msgid "<b>Icon View Defaults</b>"
-msgstr "<b>Ikoonivaate vaikeväärtused</b>"
-
-msgid "<b>List Columns</b>"
-msgstr "<b>Nimekirja veerud</b>"
-
-msgid "<b>List View Defaults</b>"
-msgstr "<b>Nimekirjavaate vaikeväärtused</b>"
-
-msgid "<b>Other Previewable Files</b>"
-msgstr "<b>Muud eelvaadeldavad failid</b>"
-
-msgid "<b>Text Files</b>"
-msgstr "<b>Tekstifailid</b>"
-
-msgid "<b>Trash</b>"
-msgstr "<b>Prügikast</b>"
-
-msgid "<b>Tree View Defaults</b>"
-msgstr "<b>Puuvaate vaikeväärtused</b>"
-
-msgid "A_ll columns have the same width"
-msgstr "Kõigile _veergudele sama laius"
-
-msgid "Always"
-msgstr "Alati"
-
-msgid "Ask before _emptying the Trash or deleting files"
-msgstr "_Prügikasti tühjendamisel ja failide kustutamisel küsitakse luba"
-
-msgid "Behavior"
-msgstr "Käitumine"
-
-msgid "By Access Date"
-msgstr "Kasutusaja järgi"
-
-msgid "By Modification Date"
-msgstr "Muutmisaja järgi"
-
-msgid "By Name"
-msgstr "Nime järgi"
-
-msgid "By Size"
-msgstr "Suuruse järgi"
-
-msgid "By Trashed Date"
-msgstr "Kustutamise aja järgi"
-
-msgid "By Type"
-msgstr "Tüübi järgi"
-
-msgid ""
-"Choose the order of information to appear beneath icon names. More "
-"information will appear when zooming in closer."
-msgstr ""
-"Vali ikooni all olevate andmete järjekord. Täpsemad andmed ilmuvad ikoonide "
-"suurendamisel."
-
-msgid "Choose the order of information to appear in the list view."
-msgstr "Nimekirjavaates ilmuvate andmete järjekorra valimine."
-
-#. translators: this is used in the view selection dropdown
-#. * of navigation windows and in the preferences dialog
-msgid "Compact View"
-msgstr "Kompaktvaade"
-
-msgid "Count _number of items:"
-msgstr "_Kirjete arvu loendatakse:"
-
-msgid "D_efault zoom level:"
-msgstr "Vaikimisi suuren_dus:"
-
-msgid "Default _zoom level:"
-msgstr "Vaikimisi _suurendus:"
-
-msgid "Display"
-msgstr "Kuvamine"
-
-msgid "File Management Preferences"
-msgstr "Failihalduse eelistused"
-
-# tegelikult Edit ja kontekstimenüüs
-# võib valesti eeldada, et see keelab ka Shift+Delete ära, ei keela
-msgid "I_nclude a Delete command that bypasses Trash"
-msgstr "Menüüs on käsk kustutamiseks _ilma prügikasti viskamata"
-
-#. translators: this is used in the view selection dropdown
-#. * of navigation windows and in the preferences dialog
-msgid "Icon View"
-msgstr "Ikoonivaade"
-
-msgid "List Columns"
-msgstr "Nimekirja veerud"
-
-#. translators: this is used in the view selection dropdown
-#. * of navigation windows and in the preferences dialog
-msgid "List View"
-msgstr "Nimekirjavaade"
-
-msgid "Local Files Only"
-msgstr "Ainult kohalike failide korral"
-
-msgid "Never"
-msgstr "Mitte kunagi"
-
-msgid "Open each _folder in its own window"
-msgstr "_Iga kataloog avaneb oma aknas"
-
-msgid "Preview"
-msgstr "Eelvaatlemine"
-
-msgid "Show _only folders"
-msgstr "Näidatakse ai_nult katalooge"
-
-msgid "Show _thumbnails:"
-msgstr "_Pisipilte näidatakse:"
-
-msgid "Show hidden and _backup files"
-msgstr "Peidetud- ja varuk_oopiafailid on nähtaval"
-
-msgid "Show te_xt in icons:"
-msgstr "_Teksti näidatakse ikoonidel:"
-
-msgid "Sort _folders before files"
-msgstr "_Kataloogid sorditakse enne faile"
-
-msgid "View _new folders using:"
-msgstr "_Uusi katalooge näidatakse kasutades:"
-
-# Redaktor → Eelistused all saki pealkiri
-msgid "Views"
-msgstr "Vaade"
-
-msgid "_Arrange items:"
-msgstr "Kir_jed järjestatakse:"
-
-msgid "_Ask each time"
-msgstr "_Küsitakse iga kord"
-
-msgid "_Default zoom level:"
-msgstr "Vaikimisi suu_rendus:"
-
-msgid "_Double click to open items"
-msgstr "Kirjed avatakse _topeltklõpsuga"
-
-msgid "_Format:"
-msgstr "_Vorming:"
-
-msgid "_Only for files smaller than:"
-msgstr "Ainult _failidele, mis on väiksemad kui:"
-
-msgid "_Run executable text files when they are opened"
-msgstr "Käivitatavade teksti_failide avamisel need käivitatakse"
-
-msgid "_Single click to open items"
-msgstr "Kirjed avatakse ü_he klõpsuga"
-
-msgid "_Text beside icons"
-msgstr "_Tekst ikoonide kõrval"
-
-msgid "_View executable text files when they are opened"
-msgstr "Käi_vitatavate tekstifailide avamisel näidatakse nende sisu"
+msgid "4 GB"
+msgstr "4 GB"
 
 msgid "by _Name"
 msgstr "_nime järgi"
@@ -3718,6 +4002,25 @@ msgstr "Kõigi valitud kirjete kustutamine ilma neid prügikasti viskamata"
 msgid "_Restore"
 msgstr "_Taasta"
 
+#. name, stock id
+#. label, accelerator
+#. name, stock id, label
+msgid "_Undo"
+msgstr "_Tühista"
+
+#. tooltip
+msgid "Undo the last action"
+msgstr "Viimase tegevuse tühistamine"
+
+#. name, stock id
+#. label, accelerator
+msgid "_Redo"
+msgstr "_Tee uuesti"
+
+#. tooltip
+msgid "Redo the last undone action"
+msgstr "Viimati tühistatud tegevuse uuesti tegemine"
+
 #.
 #. * multiview-TODO: decide whether "Reset to Defaults" should
 #. * be window-wide, and not just view-wide.
@@ -4085,12 +4388,15 @@ msgstr "Järjehodja olematusse asukohta"
 msgid "Go to the location specified by this bookmark"
 msgstr "Järjehoidjaga määratud asukoha avamine"
 
-msgid "You can choose another view or go to a different location."
-msgstr "Valida võib uue vaate või liikuda teise asukohta."
+#, c-format
+msgid "%s - File Browser"
+msgstr "%s - Failisirvija"
 
-msgid "The location cannot be displayed with this viewer."
-msgstr "Asukohta ei ole võimalik selle vaatajaga kuvada."
+#. Set initial window title
+msgid "Nautilus"
+msgstr "Nautilus"
 
+# Näidatakse otsimise ajal kollasel pisikesel ribal, tegevusnimi peaks õige olema.
 msgid "Searching..."
 msgstr "Otsimine..."
 
@@ -4181,10 +4487,6 @@ msgstr ""
 msgid "Copyright © %Id–%Id The Nautilus authors"
 msgstr "Autoriõigused © %Id–%Id Nautiluse autorid"
 
-#. Set initial window title
-msgid "Nautilus"
-msgstr "Nautilus"
-
 msgid ""
 "Nautilus lets you organize files and folders, both on your computer and "
 "online."
@@ -4241,10 +4543,6 @@ msgstr "_Eelistused"
 msgid "Edit Nautilus preferences"
 msgstr "Nautiluse eelistuste muutmine"
 
-#. name, stock id, label
-msgid "_Undo"
-msgstr "_Tühista"
-
 msgid "Undo the last text change"
 msgstr "Tühista viimane tekstimuutus"
 
@@ -4296,7 +4594,7 @@ msgstr "Failide ja kataloogide sorteerimine"
 
 #. tooltip
 msgid "Arrange files by name, size, type, or when they were changed."
-msgstr "Failide järjestamine nime, suuruse, liigi ja muutmise aja järgi."
+msgstr "Failide järjestamine nime, suuruse, liigi ja muutmisaja järgi."
 
 #. name, stock id
 #. label, accelerator
@@ -4592,10 +4890,6 @@ msgstr "_Uus kaart"
 msgid "_Close Tab"
 msgstr "Sul_ge kaart"
 
-#, c-format
-msgid "%s - File Browser"
-msgstr "%s - Failisirvija"
-
 msgid "These files are on an Audio CD."
 msgstr "Need failid on audio-CD peal."
 
@@ -4635,11 +4929,8 @@ msgstr "Meedium tuvastati kui \"%s\"."
 msgid "Open %s"
 msgstr "Avatakse: %s"
 
-msgid "Send To..."
-msgstr "Saada..."
+#~ msgid "You can choose another view or go to a different location."
+#~ msgstr "Valida võib uue vaate või liikuda teise asukohta."
 
-msgid "Send file by mail, instant message..."
-msgstr "Faili saatmine e-postiga, välksõnumiga..."
-
-msgid "Send files by mail, instant message..."
-msgstr "Failide saatmine e-postiga, välksõnumiga..."
+#~ msgid "The location cannot be displayed with this viewer."
+#~ msgstr "Asukohta ei ole võimalik selle vaatajaga kuvada."
