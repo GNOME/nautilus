@@ -16,8 +16,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
 "POT-Creation-Date: 2012-02-14 20:05+0000\n"
-"PO-Revision-Date: 2012-03-03 23:44+0700\n"
-"Last-Translator: Lê Hoàng Phương <herophuong93@gmail.com>\n"
+"PO-Revision-Date: 2012-03-04 11:15+0700\n"
+"Last-Translator: Nguyễn Thái Ngọc Duy <pclouds@gmail.com>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -850,27 +850,23 @@ msgstr " (bản sao khác)"
 #: ../libnautilus-private/nautilus-file-operations.c:455
 #: ../libnautilus-private/nautilus-file-operations.c:457
 #: ../libnautilus-private/nautilus-file-operations.c:467
-#, fuzzy
 msgid "th copy)"
-msgstr "(bản sao thứ"
+msgstr ")"
 
 #. localizers: tag used to detect the x1st copy of a file
 #: ../libnautilus-private/nautilus-file-operations.c:460
-#, fuzzy
 msgid "st copy)"
-msgstr "(bản sao thứ"
+msgstr ")"
 
 #. localizers: tag used to detect the x2nd copy of a file
 #: ../libnautilus-private/nautilus-file-operations.c:462
-#, fuzzy
 msgid "nd copy)"
-msgstr "(bản sao thứ"
+msgstr ")"
 
 #. localizers: tag used to detect the x3rd copy of a file
 #: ../libnautilus-private/nautilus-file-operations.c:464
-#, fuzzy
 msgid "rd copy)"
-msgstr "(bản sao thứ"
+msgstr ")"
 
 #. localizers: appended to first file copy
 #: ../libnautilus-private/nautilus-file-operations.c:481
@@ -921,13 +917,13 @@ msgstr "%s (bản sao thứ %'d)%s"
 #. localizers: opening parentheses to match the "th copy)" string
 #: ../libnautilus-private/nautilus-file-operations.c:603
 msgid " ("
-msgstr " ("
+msgstr " (bản sao thứ"
 
 #. localizers: opening parentheses of the "th copy)" string
 #: ../libnautilus-private/nautilus-file-operations.c:611
-#, fuzzy, c-format
+#, c-format
 msgid " (%'d"
-msgstr " %'d)"
+msgstr " (bản sao thứ %'d"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1310
 msgid "Are you sure you want to permanently delete \"%B\" from the trash?"
@@ -1211,52 +1207,47 @@ msgid "Duplicating \"%B\""
 msgstr "Đang nhân đôi \"%B\""
 
 #: ../libnautilus-private/nautilus-file-operations.c:2912
-#, fuzzy
 #| msgid "Moving %'d file (in \"%B\") to \"%B\""
 #| msgid_plural "Moving %'d files (in \"%B\") to \"%B\""
 msgid "Moving file %'d of %'d (in \"%B\") to \"%B\""
-msgstr "Đang chuyển %'d tập tin (trong \"%B\") sang \"%B\""
+msgstr "Đang chuyển %'d/%'d tập tin (trong \"%B\") sang \"%B\""
 
 #: ../libnautilus-private/nautilus-file-operations.c:2914
-#, fuzzy
 #| msgid "Copying %'d file (in \"%B\") to \"%B\""
 #| msgid_plural "Copying %'d files (in \"%B\") to \"%B\""
 msgid "Copying file %'d of %'d (in \"%B\") to \"%B\""
-msgstr "Đang chép %'d tập tin (trong \"%B\") đến \"%B\""
+msgstr "Đang chép %'d/%'d tập tin (trong \"%B\") đến \"%B\""
 
 #: ../libnautilus-private/nautilus-file-operations.c:2921
-#, fuzzy
 #| msgid "Duplicating %'d file (in \"%B\")"
 #| msgid_plural "Duplicating %'d files (in \"%B\")"
 msgid "Duplicating file %'d of %'d (in \"%B\")"
-msgstr "Đang nhân đôi %'d tập tin (trong \"%B\")"
+msgstr "Đang nhân đôi %'d/%'d tập tin (trong \"%B\")"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2930
-#, fuzzy
 #| msgid "Moving %'d file to \"%B\""
 #| msgid_plural "Moving %'d files to \"%B\""
 msgid "Moving file %'d of %'d to \"%B\""
-msgstr "Đang chuyển %'d tập tin sang \"%B\""
+msgstr "Đang chuyển %'d/%'d tập tin sang \"%B\""
 
 #: ../libnautilus-private/nautilus-file-operations.c:2932
-#, fuzzy
 #| msgid "Copying %'d file to \"%B\""
 #| msgid_plural "Copying %'d files to \"%B\""
 msgid "Copying file %'d of %'d to \"%B\""
-msgstr "Đang chép %'d tập tin sang \"%B\""
+msgstr "Đang chép %'d/%'d tập tin sang \"%B\""
 
 #: ../libnautilus-private/nautilus-file-operations.c:2938
-#, fuzzy, c-format
+#, c-format
 #| msgid "Duplicating %'d file"
 #| msgid_plural "Duplicating %'d files"
 msgid "Duplicating file %'d of %'d"
-msgstr "Đang nhân đôi %'d tập tin"
+msgstr "Đang nhân đôi %'d/%'d tập tin"
 
 #. To translators: %S will expand to a size like "2 bytes" or "3 MB", so something like "4 kb of 4 MB"
 #: ../libnautilus-private/nautilus-file-operations.c:2957
 #, c-format
 msgid "%S of %S"
-msgstr "%S trong số %S"
+msgstr "%S/%S"
 
 #. To translators: %S will expand to a size like "2 bytes" or "3 MB", %T to a time duration like
 #. * "2 minutes". So the whole thing will be something like "2 kb of 4 MB -- 2 hours left (4kb/sec)"
@@ -1457,424 +1448,402 @@ msgstr "Không thể để đánh dấu tin cậy cho bộ khởi động (có t
 #. Reset to default info
 #: ../libnautilus-private/nautilus-file-undo-operations.c:135
 #: ../src/nautilus-view.c:2392
-#, fuzzy
 #| msgid "_Undo"
 msgid "Undo"
-msgstr "_Hủy bước"
+msgstr "Hồi lại"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:138
 #: ../src/nautilus-view.c:2393
-#, fuzzy
 #| msgid "Unable to start location"
 msgid "Undo last action"
-msgstr "Không thể bắt đầu vị trí"
+msgstr "Hồi lại hành động cuối cùng"
 
 #. Reset to default info
 #: ../libnautilus-private/nautilus-file-undo-operations.c:142
 #: ../src/nautilus-view.c:2411
-#, fuzzy
 #| msgid "_Read"
 msgid "Redo"
-msgstr "Đọ_c"
+msgstr "Làm lại"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:145
 #: ../src/nautilus-view.c:2412
 msgid "Redo last undone action"
-msgstr ""
+msgstr "Làm lại hành động hồi lại cuối cùng"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:367
 #, c-format
 msgid "Move %d item back to '%s'"
 msgid_plural "Move %d items back to '%s'"
-msgstr[0] ""
+msgstr[0] "Chuyển %d mục ngược về '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:370
-#, fuzzy, c-format
+#, c-format
 #| msgid "Moving %'d file to \"%B\""
 #| msgid_plural "Moving %'d files to \"%B\""
 msgid "Move %d item to '%s'"
 msgid_plural "Move %d items to '%s'"
-msgstr[0] "Đang chuyển %'d tập tin sang \"%B\""
+msgstr[0] "Đang chuyển %'d mục sang '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:374
-#, fuzzy, c-format
+#, c-format
 #| msgid "Undo the edit"
 msgid "_Undo Move %d item"
 msgid_plural "_Undo Move %d items"
-msgstr[0] "Hoàn lại bước chỉnh sửa"
+msgstr[0] "_Hồi lại việc chuyển %d mục"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:377
-#, fuzzy, c-format
+#, c-format
 #| msgid "Redo the edit"
 msgid "_Redo Move %d item"
 msgid_plural "_Redo Move %d items"
-msgstr[0] "Hoàn lại bước chỉnh sửa vừa mới hủy"
+msgstr[0] "_Làm lại việc chuyển %d mục"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:381
 #, c-format
 msgid "Move '%s' back to '%s'"
-msgstr ""
+msgstr "Chuyển '%s' ngược về '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:382
 #, c-format
 msgid "Move '%s' to '%s'"
-msgstr ""
+msgstr "Chuyển '%s' sang '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:384
-#, fuzzy
 #| msgid "_Undo"
 msgid "_Undo Move"
-msgstr "_Hủy bước"
+msgstr "_Hồi lại di chuyển"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:385
-#, fuzzy
 #| msgid "Remove"
 msgid "_Redo Move"
-msgstr "Bỏ"
+msgstr "_Làm lại di chuyển"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:388
-#, fuzzy
 #| msgid "The item cannot be restored from trash"
 msgid "_Undo Restore from Trash"
-msgstr "Không thể khôi phục mục được chọn từ sọt rác"
+msgstr "_Hồi lại phục hồi từ sọt rác"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:389
-#, fuzzy
 #| msgid "The item cannot be restored from trash"
 msgid "_Redo Restore from Trash"
-msgstr "Không thể khôi phục mục được chọn từ sọt rác"
+msgstr "_Làm lại phục hồi tự sọt rác"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:392
-#, fuzzy, c-format
+#, c-format
 #| msgid "Move each selected item to the Trash"
 msgid "Move %d item back to trash"
 msgid_plural "Move %d items back to trash"
-msgstr[0] "Bỏ các mục được chọn vào Sọt rác"
+msgstr[0] "Di chuyển %d mục ngược về sọt rác"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:395
 #: ../libnautilus-private/nautilus-file-undo-operations.c:981
-#, fuzzy, c-format
+#, c-format
 #| msgid "Empty all items from Trash?"
 msgid "Restore %d item from trash"
 msgid_plural "Restore %d items from trash"
-msgstr[0] "Bỏ mọi thứ trong sọt rác chứ?"
+msgstr[0] "Phục hồi %d mục từ sọt rác"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:399
-#, fuzzy, c-format
+#, c-format
 #| msgid "Mo_ve to Trash"
 msgid "Move '%s' back to trash"
-msgstr "Cho _vào Sọt rác"
+msgstr "Chuyển '%s' ngược về sọt rác"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:400
 #, c-format
 msgid "Restore '%s' from trash"
-msgstr ""
+msgstr "Phục hồi '%s' từ sọt rác"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:404
 #, c-format
 msgid "Delete %d copied item"
 msgid_plural "Delete %d copied items"
-msgstr[0] ""
+msgstr[0] "Xoá %d mục đã chép"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:407
-#, fuzzy, c-format
+#, c-format
 #| msgid "Copying %'d file to \"%B\""
 #| msgid_plural "Copying %'d files to \"%B\""
 msgid "Copy %d item to '%s'"
 msgid_plural "Copy %d items to '%s'"
-msgstr[0] "Đang chép %'d tập tin sang \"%B\""
+msgstr[0] "Chép %d mục vào '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:411
 #, c-format
 msgid "_Undo Copy %d item"
 msgid_plural "_Undo Copy %d items"
-msgstr[0] ""
+msgstr[0] "_Hồi lại chép %d mục"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:414
 #, c-format
 msgid "_Redo Copy %d item"
 msgid_plural "_Redo Copy %d items"
-msgstr[0] ""
+msgstr[0] "_Làm lại chép %d mục"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:418
 #: ../libnautilus-private/nautilus-file-undo-operations.c:440
 #: ../libnautilus-private/nautilus-file-undo-operations.c:673
-#, fuzzy, c-format
+#, c-format
 #| msgid "_Delete"
 msgid "Delete '%s'"
-msgstr "_Xóa"
+msgstr "Xóa '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:419
 #, c-format
 msgid "Copy '%s' to '%s'"
-msgstr ""
+msgstr "Chép '%s' sang '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:421
-#, fuzzy
 msgid "_Undo Copy"
-msgstr "(bản sao thứ"
+msgstr "_Hồi lại chép"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:422
 msgid "_Redo Copy"
-msgstr ""
+msgstr "_Làm lại chép"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:426
-#, fuzzy, c-format
+#, c-format
 #| msgid "Duplicate each selected item"
 msgid "Delete %d duplicated item"
 msgid_plural "Delete %d duplicated items"
-msgstr[0] "Tạo bản sao cho mỗi mục đã chọn"
+msgstr[0] "Xoá %d mục trùng"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:429
-#, fuzzy, c-format
+#, c-format
 #| msgid "Duplicating %'d file (in \"%B\")"
 #| msgid_plural "Duplicating %'d files (in \"%B\")"
 msgid "Duplicate %d item in '%s'"
 msgid_plural "Duplicate %d items in '%s'"
-msgstr[0] "Đang nhân đôi %'d tập tin (trong \"%B\")"
+msgstr[0] "Nhân đôi %d mục trong '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:433
-#, fuzzy, c-format
+#, c-format
 #| msgid "Duplicating %'d file"
 #| msgid_plural "Duplicating %'d files"
 msgid "_Undo Duplicate %d item"
 msgid_plural "_Undo Duplicate %d items"
-msgstr[0] "Đang nhân đôi %'d tập tin"
+msgstr[0] "_Hồi lại nhân đôi %d mục"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:436
-#, fuzzy, c-format
+#, c-format
 #| msgid "Duplicating %'d file"
 #| msgid_plural "Duplicating %'d files"
 msgid "_Redo Duplicate %d item"
 msgid_plural "_Redo Duplicate %d items"
-msgstr[0] "Đang nhân đôi %'d tập tin"
+msgstr[0] "_Làm lại nhân đôi %d mục"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:441
-#, fuzzy, c-format
+#, c-format
 #| msgid "Duplicating \"%B\""
 msgid "Duplicate '%s' in '%s'"
-msgstr "Đang nhân đôi \"%B\""
+msgstr "Nhân đôi '%s' trong '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:444
-#, fuzzy
 #| msgid "D_uplicate"
 msgid "_Undo Duplicate"
-msgstr "Tạo bản _sao"
+msgstr "_Hồi lại nhân đôi"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:445
-#, fuzzy
 #| msgid "D_uplicate"
 msgid "_Redo Duplicate"
-msgstr "Tạo bản _sao"
+msgstr "_Làm lại nhân đôi"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:449
-#, fuzzy, c-format
+#, c-format
 #| msgid "_Double click to open items"
 msgid "Delete links to %d item"
 msgid_plural "Delete links to %d items"
-msgstr[0] "Nhấn đú_p để mở mục"
+msgstr[0] "Xoá liên kết đến %d mục"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:452
-#, fuzzy, c-format
+#, c-format
 #| msgid "Making link to %'d file"
 #| msgid_plural "Making links to %'d files"
 msgid "Create links to %d item"
 msgid_plural "Create links to %d items"
-msgstr[0] "Đang tạo liên kết tới %'d tập tin"
+msgstr[0] "Tạo liên kết đến %d mục"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:456
-#, fuzzy, c-format
+#, c-format
 #| msgid "Another link to %s"
 msgid "Delete link to '%s'"
-msgstr "Liên kết khác đến %s"
+msgstr "Xoá liên kết đến '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:457
-#, fuzzy, c-format
+#, c-format
 #| msgid "Another link to %s"
 msgid "Create link to '%s'"
-msgstr "Liên kết khác đến %s"
+msgstr "Tạo liên kết đến '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:459
-#, fuzzy
 #| msgid "Undo the edit"
 msgid "_Undo Create Link"
-msgstr "Hoàn lại bước chỉnh sửa"
+msgstr "_Hồi lại tạo liên kết"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:460
-#, fuzzy
 #| msgid "Redo the edit"
 msgid "_Redo Create Link"
-msgstr "Hoàn lại bước chỉnh sửa vừa mới hủy"
+msgstr "_Làm lại tạo liên kết"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:676
-#, fuzzy, c-format
+#, c-format
 #| msgid "Create and delete files"
 msgid "Create an empty file '%s'"
-msgstr "Tạo và xoá tập tin"
+msgstr "Tạo tập tin rỗng '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:678
-#, fuzzy
 #| msgid "_Empty File"
 msgid "_Undo Create Empty File"
-msgstr "Tập tin _rỗng"
+msgstr "_Hồi lại tạo tập tin rỗng"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:679
-#, fuzzy
 #| msgid "_Empty File"
 msgid "_Redo Create Empty File"
-msgstr "Tập tin _rỗng"
+msgstr "_Làm lại tạo tập tin rỗng"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:681
-#, fuzzy, c-format
+#, c-format
 #| msgid "Create New _Folder"
 msgid "Create a new folder '%s'"
-msgstr "Tạo thư _mục"
+msgstr "Tạo thư mục mới '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:683
-#, fuzzy
 #| msgid "Create New _Folder"
 msgid "_Undo Create Folder"
-msgstr "Tạo thư _mục"
+msgstr "_Hồi lại tạo thư mục mới"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:684
-#, fuzzy
 #| msgid "Create New _Folder"
 msgid "_Redo Create Folder"
-msgstr "Tạo thư _mục"
+msgstr "_Làm lại tạo thư mục mới"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:686
-#, fuzzy, c-format
+#, c-format
 #| msgid "Create a new document from template \"%s\""
 msgid "Create new file '%s' from template "
-msgstr "Tạo tài liệu theo mẫu \"%s\""
+msgstr "Tạo tập tin mới '%s' từ mẫu "
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:688
 msgid "_Undo Create from Template"
-msgstr ""
+msgstr "_Hồi lại tạo tập tin mới từ mẫu"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:689
 msgid "_Redo Create from Template"
-msgstr ""
+msgstr "_Làm lại tạo tập tin mới từ mẫu"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:869
 #: ../libnautilus-private/nautilus-file-undo-operations.c:870
 #, c-format
 msgid "Rename '%s' as '%s'"
-msgstr ""
+msgstr "Đổi tên '%s' thành '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:872
-#, fuzzy
 #| msgid "_Rename..."
 msgid "_Undo Rename"
-msgstr "Đổi _tên..."
+msgstr "_Hồi lại đổi tên"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:873
-#, fuzzy
 #| msgid "_Rename..."
 msgid "_Redo Rename"
-msgstr "Đổi _tên..."
+msgstr "_Làm lại đổi tên"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:984
-#, fuzzy, c-format
+#, c-format
 #| msgid "Moving files to trash"
 msgid "Move %d item to trash"
 msgid_plural "Move %d items to trash"
-msgstr[0] "Đang chuyển tập tin vào sọt rác"
+msgstr[0] "Chuyển %d mục vào sọt rác"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:996
 #, c-format
 msgid "Restore '%s' to '%s'"
-msgstr ""
+msgstr "Phục hồi '%s' về '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1003
-#, fuzzy, c-format
+#, c-format
 #| msgid "Mo_ve to Trash"
 msgid "Move '%s' to trash"
-msgstr "Cho _vào Sọt rác"
+msgstr "Chuyển '%s' vào sọt rác"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1007
-#, fuzzy
 #| msgid "_Trash"
 msgid "_Undo Trash"
-msgstr "Sọt _rác"
+msgstr "_Hồi lại cho vào sọt rác"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1008
-#, fuzzy
 #| msgid "Mo_ve to Trash"
 msgid "_Redo Trash"
-msgstr "Cho _vào Sọt rác"
+msgstr "_Làm lại cho vào sọt rác"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1301
 #, c-format
 msgid "Restore original permissions of items enclosed in '%s'"
-msgstr ""
+msgstr "Phục hồi quyền gốc của các mục trong '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1302
-#, fuzzy, c-format
+#, c-format
 #| msgid "The permissions of the file."
 msgid "Set permissions of items enclosed in '%s'"
-msgstr "Quyền đối với tập tin."
+msgstr "Đặt quyền cho mục nằm trong '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1304
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1459
-#, fuzzy
 #| msgid "Folder Permissions:"
 msgid "_Undo Change Permissions"
-msgstr "Quyền hạn thư mục:"
+msgstr "_Hồi lại đổi quyền"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1305
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1460
-#, fuzzy
 #| msgid "Setting permissions"
 msgid "_Redo Change Permissions"
-msgstr "Thiết lập quyền hạn"
+msgstr "_Làm lại đổi quyền"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1456
 #, c-format
 msgid "Restore original permissions of '%s'"
-msgstr ""
+msgstr "Phục hồi quyền gốc của '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1457
-#, fuzzy, c-format
+#, c-format
 #| msgid "Setting permissions"
 msgid "Set permissions of '%s'"
-msgstr "Thiết lập quyền hạn"
+msgstr "Đặt quyền cho '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1567
 #, c-format
 msgid "Restore group of '%s' to '%s'"
-msgstr ""
+msgstr "Phục hồi nhóm của '%s' về '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1569
 #, c-format
 msgid "Set group of '%s' to '%s'"
-msgstr ""
+msgstr "Đặt nhóm của '%s' là '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1572
 msgid "_Undo Change Group"
-msgstr ""
+msgstr "_Hồi lại chuyển nhóm"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1573
 msgid "_Redo Change Group"
-msgstr ""
+msgstr "_Làm lại chuyển nhóm"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1575
 #, c-format
 msgid "Restore owner of '%s' to '%s'"
-msgstr ""
+msgstr "Phục hồi chủ sở hữu của '%s' về '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1577
 #, c-format
 msgid "Set owner of '%s' to '%s'"
-msgstr ""
+msgstr "Đặt chủ sở hữu của '%s' là '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1580
 msgid "_Undo Change Owner"
-msgstr ""
+msgstr "_Hồi lại chuyển chủ sở hữu"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1581
 msgid "_Redo Change Owner"
-msgstr ""
+msgstr "_Làm lại chuyển chủ sở hữu"
 
 #: ../libnautilus-private/nautilus-file-utilities.c:1229
 #, c-format
@@ -3545,7 +3514,7 @@ msgstr "Sắp xếp các biểu tượng theo ngày sửa đổi với biểu di
 
 #: ../src/nautilus-icon-view.c:161
 msgid "by T_rash Time"
-msgstr "theo lúc bỏ rác"
+msgstr "theo lúc bỏ _rác"
 
 #: ../src/nautilus-icon-view.c:162 ../src/nautilus-icon-view.c:1348
 msgid "Keep icons sorted by trash time in rows"
@@ -4002,7 +3971,7 @@ msgstr "Đánh dấu"
 #: ../src/nautilus-places-sidebar.c:552 ../src/nautilus-places-sidebar.c:577
 #, c-format
 msgid "Mount and open %s"
-msgstr "Lắp và mở %s"
+msgstr "Gắn và mở %s"
 
 #: ../src/nautilus-places-sidebar.c:671
 msgid "Computer"
@@ -4165,7 +4134,7 @@ msgstr "Đổi tên..."
 #: ../src/nautilus-places-sidebar.c:2686 ../src/nautilus-view.c:7082
 #: ../src/nautilus-view.c:7106 ../src/nautilus-view.c:7178
 msgid "_Mount"
-msgstr "_Lắp"
+msgstr "_Gắn kết"
 
 #. add the "Unmount" menu item
 #. name, stock id
@@ -4174,7 +4143,7 @@ msgstr "_Lắp"
 #: ../src/nautilus-view.c:7086 ../src/nautilus-view.c:7110
 #: ../src/nautilus-view.c:7182
 msgid "_Unmount"
-msgstr "_Bỏ lắp"
+msgstr "_Bỏ gắn kết"
 
 #. add the "Eject" menu item
 #. name, stock id
@@ -4917,7 +4886,7 @@ msgstr[0] "Sẽ sao chép %'d mục đã chọn, nếu bạn chọn lệnh « D�
 
 #: ../src/nautilus-view.c:6188
 msgid "Unable to unmount location"
-msgstr "Không thể bỏ lắp địa chỉ"
+msgstr "Không thể bỏ gắn kết địa chỉ"
 
 #: ../src/nautilus-view.c:6208
 msgid "Unable to eject location"
@@ -5158,29 +5127,26 @@ msgstr "_Khôi phục"
 #. name, stock id, label
 #: ../src/nautilus-view.c:7060 ../src/nautilus-window-menus.c:924
 msgid "_Undo"
-msgstr "_Hủy bước"
+msgstr "_Hồi lại"
 
 #. tooltip
 #: ../src/nautilus-view.c:7061
-#, fuzzy
 #| msgid "Undo the last text change"
 msgid "Undo the last action"
-msgstr "Hồi phục lại sự sửa đổi văn bản lần cuối"
+msgstr "Hồi lại hành động cuối"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-view.c:7064
-#, fuzzy
 #| msgid "_Read"
 msgid "_Redo"
-msgstr "Đọ_c"
+msgstr "_Làm lại"
 
 #. tooltip
 #: ../src/nautilus-view.c:7065
-#, fuzzy
 #| msgid "Undo the last text change"
 msgid "Redo the last undone action"
-msgstr "Hồi phục lại sự sửa đổi văn bản lần cuối"
+msgstr "Làm lại hành động hồi lại cuối cùng"
 
 #.
 #. * multiview-TODO: decide whether "Reset to Defaults" should
@@ -6085,7 +6051,7 @@ msgstr "Di chuyển tiêu điểm sang khung khác trong cửa sổ xem chia nhi
 #. name, stock id, label
 #: ../src/nautilus-window-menus.c:1038
 msgid "Sa_me Location as Other Pane"
-msgstr "Cùng địa điểm với khung kia"
+msgstr "_Cùng địa điểm với khung kia"
 
 #: ../src/nautilus-window-menus.c:1039
 msgid "Go to the same location as in the extra pane"
