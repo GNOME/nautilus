@@ -7044,7 +7044,7 @@ static const GtkActionEntry directory_view_entries[] = {
   /* label, accelerator */       "RenameSelectAll", "<shift>F2",
   /* tooltip */                  NULL,
 				 G_CALLBACK (action_rename_select_all_callback) },
-  /* name, stock id */         { "Trash", NULL,
+  /* name, stock id */         { "Trash", "<control>Delete",
   /* label, accelerator */       N_("Mo_ve to Trash"), NULL,
   /* tooltip */                  N_("Move each selected item to the Trash"),
 				 G_CALLBACK (action_trash_callback) },
@@ -9701,9 +9701,9 @@ nautilus_view_class_init (NautilusViewClass *klass)
 	g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 
 	binding_set = gtk_binding_set_by_class (klass);
-	gtk_binding_entry_add_signal (binding_set, GDK_KEY_Delete, 0,
+	gtk_binding_entry_add_signal (binding_set, GDK_KEY_Delete, GDK_CONTROL_MASK,
 				      "trash", 0);
-	gtk_binding_entry_add_signal (binding_set, GDK_KEY_KP_Delete, 0,
+	gtk_binding_entry_add_signal (binding_set, GDK_KEY_KP_Delete, GDK_CONTROL_MASK,
 				      "trash", 0);
 	gtk_binding_entry_add_signal (binding_set, GDK_KEY_KP_Delete, GDK_SHIFT_MASK,
 				      "delete", 0);
