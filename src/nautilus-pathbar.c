@@ -118,6 +118,7 @@ get_slider_button (NautilusPathBar  *path_bar,
 
         button = gtk_button_new ();
 	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
+	gtk_widget_add_events (button, GDK_SCROLL_MASK);
         gtk_container_add (GTK_CONTAINER (button), gtk_arrow_new (arrow_type, GTK_SHADOW_OUT));
         gtk_container_add (GTK_CONTAINER (path_bar), button);
         gtk_widget_show_all (button);
@@ -718,6 +719,8 @@ nautilus_path_bar_scroll (GtkWidget      *widget,
 		case GDK_SCROLL_UP:
 			nautilus_path_bar_scroll_up (path_bar);
 			return TRUE;
+		case GDK_SCROLL_SMOOTH:
+			break;
 	}
 
 	return FALSE;
@@ -1570,6 +1573,7 @@ make_directory_button (NautilusPathBar  *path_bar,
         setup_button_type (button_data, path_bar, path);
         button_data->button = gtk_toggle_button_new ();
 	gtk_button_set_focus_on_click (GTK_BUTTON (button_data->button), FALSE);
+	gtk_widget_add_events (button_data->button, GDK_SCROLL_MASK);
 	/* TODO update button type when xdg directories change */
 
 	button_data->image = gtk_image_new ();
