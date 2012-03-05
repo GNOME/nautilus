@@ -501,7 +501,6 @@ set_status_data_free (gpointer data)
 	SetStatusData *status_data = data;
 
 	g_free (status_data->status);
-	g_object_unref (status_data->slot);
 
 	g_slice_free (SetStatusData, data);
 }
@@ -537,7 +536,7 @@ set_floating_bar_status (NautilusWindowSlot *slot,
 
 	status_data = g_slice_new0 (SetStatusData);
 	status_data->status = g_strdup (status);
-	status_data->slot = g_object_ref (slot);
+	status_data->slot = slot;
 
 	/* waiting for half of the double-click-time before setting
 	 * the status seems to be a good approximation of not setting it
