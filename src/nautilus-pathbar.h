@@ -38,6 +38,8 @@ typedef struct _NautilusPathBarClass NautilusPathBarClass;
 struct _NautilusPathBar
 {
 	GtkContainer parent;
+
+	GdkWindow *event_window;
  
 	GFile *root_path;
 	GFile *home_path;

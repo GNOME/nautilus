@@ -467,8 +467,17 @@ static void
 nautilus_path_bar_unmap (GtkWidget *widget)
 {
 	nautilus_path_bar_stop_scrolling (NAUTILUS_PATH_BAR (widget));
+	gdk_window_hide (NAUTILUS_PATH_BAR (widget)->event_window);
 
 	GTK_WIDGET_CLASS (nautilus_path_bar_parent_class)->unmap (widget);
+}
+
+static void
+nautilus_path_bar_map (GtkWidget *widget)
+{
+	gdk_window_show (NAUTILUS_PATH_BAR (widget)->event_window);
+
+	GTK_WIDGET_CLASS (nautilus_path_bar_parent_class)->map (widget);
 }
 
 /* This is a tad complicated */
@@ -495,6 +504,12 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
 	path_bar = NAUTILUS_PATH_BAR (widget);
 
 	gtk_widget_set_allocation (widget, allocation);
+
+	if (gtk_widget_get_realized (widget)) {
+		gdk_window_move_resize (path_bar->event_window,
+					allocation->x, allocation->y,
+					allocation->width, allocation->height);
+	}
 
         /* No path is set so we don't have to allocate anything. */
         if (path_bar->button_list == NULL) {
@@ -726,6 +741,52 @@ nautilus_path_bar_scroll (GtkWidget      *widget,
 	return FALSE;
 }
 
+static void
+nautilus_path_bar_realize (GtkWidget *widget)
+{
+	NautilusPathBar *path_bar;
+	GtkAllocation allocation;
+	GdkWindow *window;
+	GdkWindowAttr attributes;
+	gint attributes_mask;
+
+	gtk_widget_set_realized (widget, TRUE);
+
+	path_bar = NAUTILUS_PATH_BAR (widget);
+	window = gtk_widget_get_parent_window (widget);
+	gtk_widget_set_window (widget, window);
+	g_object_ref (window);
+
+	gtk_widget_get_allocation (widget, &allocation);
+
+	attributes.window_type = GDK_WINDOW_CHILD;
+	attributes.x = allocation.x;
+	attributes.y = allocation.y;
+	attributes.width = allocation.width;
+	attributes.height = allocation.height;
+	attributes.wclass = GDK_INPUT_ONLY;
+	attributes.event_mask = gtk_widget_get_events (widget);
+	attributes.event_mask |= GDK_SCROLL_MASK;
+	attributes_mask = GDK_WA_X | GDK_WA_Y;
+
+	path_bar->event_window = gdk_window_new (gtk_widget_get_parent_window (widget),
+						 &attributes, attributes_mask);
+	gdk_window_set_user_data (path_bar->event_window, widget);
+}
+
+static void
+nautilus_path_bar_unrealize (GtkWidget *widget)
+{
+	NautilusPathBar *path_bar;
+
+	path_bar = NAUTILUS_PATH_BAR (widget);
+
+	gdk_window_set_user_data (path_bar->event_window, NULL);
+	gdk_window_destroy (path_bar->event_window);
+	path_bar->event_window = NULL;
+
+	GTK_WIDGET_CLASS (nautilus_path_bar_parent_class)->unrealize (widget);
+}
 
 static void
 nautilus_path_bar_add (GtkContainer *container,
@@ -841,7 +902,10 @@ nautilus_path_bar_class_init (NautilusPathBarClass *path_bar_class)
 
 	widget_class->get_preferred_height = nautilus_path_bar_get_preferred_height;
 	widget_class->get_preferred_width = nautilus_path_bar_get_preferred_width;
+	widget_class->realize = nautilus_path_bar_realize;
+	widget_class->unrealize = nautilus_path_bar_unrealize;
 	widget_class->unmap = nautilus_path_bar_unmap;
+	widget_class->map = nautilus_path_bar_map;
         widget_class->size_allocate = nautilus_path_bar_size_allocate;
         widget_class->style_updated = nautilus_path_bar_style_updated;
         widget_class->screen_changed = nautilus_path_bar_screen_changed;
