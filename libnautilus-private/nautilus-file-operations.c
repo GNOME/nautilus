@@ -2229,6 +2229,14 @@ prompt_empty_trash (GtkWindow *parent_window)
 	return result;
 }
 
+static void
+empty_trash_for_unmount_done (gboolean success,
+			      gpointer user_data)
+{
+	UnmountData *data = user_data;
+	do_unmount (data);
+}
+
 void
 nautilus_file_operations_unmount_mount_full (GtkWindow                      *parent_window,
 					     GMount                         *mount,
@@ -2260,7 +2268,7 @@ nautilus_file_operations_unmount_mount_full (GtkWindow                      *par
 			job = op_job_new (EmptyTrashJob, parent_window);
 			job->should_confirm = FALSE;
 			job->trash_dirs = get_trash_dirs_for_mount (mount);
-			job->done_callback = (NautilusOpCallback)do_unmount;
+			job->done_callback = empty_trash_for_unmount_done;
 			job->done_callback_data = data;
 			g_io_scheduler_push_job (empty_trash_job,
 					   job,
