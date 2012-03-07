@@ -49,8 +49,7 @@ static gboolean
 is_link_mime_type (const char *mime_type)
 {
 	if (mime_type != NULL &&
-	    (g_ascii_strcasecmp (mime_type, "application/x-gnome-app-info") == 0 ||
-	     g_ascii_strcasecmp (mime_type, "application/x-desktop") == 0)) {
+	     g_ascii_strcasecmp (mime_type, "application/x-desktop") == 0) {
 		return TRUE;
 	}
 
