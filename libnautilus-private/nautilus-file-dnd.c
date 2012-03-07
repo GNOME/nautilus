@@ -51,13 +51,8 @@ nautilus_drag_can_accept_files (NautilusFile *drop_target_item)
 		return TRUE;
 	}
 	
-	/* All Nautilus links are assumed to be links to directories.
-	 * Therefore, they all can accept drags, like all other
-	 * directories to. As with other directories, there can be
-	 * errors when the actual copy is attempted due to
-	 * permissions.
-	 */
-	if (nautilus_file_is_nautilus_link (drop_target_item)) {
+	/* Launchers are an acceptable drop target */
+	if (nautilus_file_is_launcher (drop_target_item)) {
 		return TRUE;
 	}
 
