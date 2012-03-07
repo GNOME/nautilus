@@ -3071,7 +3071,7 @@ create_basic_page (NautilusPropertiesWindow *window)
 
 		gtk_grid_attach_next_to (window->details->basic_grid, box, 
 					 GTK_WIDGET (window->details->name_label),
-					 GTK_POS_BOTTOM, 1, 1);
+					 GTK_POS_BOTTOM, 2, 1);
 	}
 
 	if (should_show_file_type (window)) {
