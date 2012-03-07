@@ -759,8 +759,7 @@ gboolean
 nautilus_mime_file_opens_in_view (NautilusFile *file)
 {
   return (nautilus_file_is_directory (file) ||
-	  NAUTILUS_IS_DESKTOP_ICON_FILE (file) ||
-	  nautilus_file_is_nautilus_link (file));
+	  NAUTILUS_IS_DESKTOP_ICON_FILE (file));
 }
 
 static ActivationAction
@@ -769,7 +768,7 @@ get_activation_action (NautilusFile *file)
 	ActivationAction action;
 	char *activation_uri;
 
-	if (nautilus_file_is_launcher (file)) {
+	if (nautilus_file_is_nautilus_link (file)) {
 		return ACTIVATION_ACTION_LAUNCH_DESKTOP_FILE;
 	}
 	
