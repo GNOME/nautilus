@@ -3582,16 +3582,6 @@ link_info_done (NautilusDirectory *directory,
 	nautilus_directory_async_state_changed (directory);
 }
 
-static gboolean
-should_read_link_info_sync (NautilusFile *file)
-{
-#ifdef READ_LOCAL_LINKS_SYNC
-	return (nautilus_file_is_local (file) && !nautilus_file_is_directory (file));
-#else
-	return FALSE;
-#endif
-}
-
 static void
 link_info_stop (NautilusDirectory *directory)
 {
@@ -3714,9 +3704,6 @@ link_info_start (NautilusDirectory *directory,
 {
 	GFile *location;
 	gboolean nautilus_style_link;
-	gsize file_size;
-	char *file_contents;
-	gboolean result;
 	LinkInfoReadState *state;
 	
 	if (directory->details->link_info_read_state != NULL) {
@@ -3738,10 +3725,6 @@ link_info_start (NautilusDirectory *directory,
 	/* If it's not a link we are done. If it is, we need to read it. */
 	if (!nautilus_style_link) {
 		link_info_done (directory, file, NULL, NULL, NULL, FALSE, FALSE);
-	} else if (should_read_link_info_sync (file)) {
-		result = g_file_load_contents (location, NULL, &file_contents, &file_size, NULL, NULL);
-		link_info_got_data (directory, file, result, file_size, file_contents);
-		g_free (file_contents);
 	} else {
 		if (!async_job_start (directory, "link info")) {
 			g_object_unref (location);
