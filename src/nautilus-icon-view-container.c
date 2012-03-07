@@ -311,7 +311,6 @@ nautilus_icon_view_container_get_icon_text (NautilusIconContainer *container,
 					    gboolean               include_invisible)
 {
 	char *actual_uri;
-	gchar *description;
 	GQuark *attributes;
 	char *text_array[4];
 	int i, j, num_attributes;
@@ -359,10 +358,8 @@ nautilus_icon_view_container_get_icon_text (NautilusIconContainer *container,
  		*additional_text = NULL;
 		if (nautilus_file_is_local (file)) {
 			actual_uri = nautilus_file_get_uri (file);
-			description = nautilus_link_local_get_additional_text (actual_uri);
-			if (description)
-				*additional_text = g_strdup_printf (" \n%s\n ", description);
-			g_free (description);
+			*additional_text = nautilus_link_local_get_additional_text (actual_uri);
+
 			g_free (actual_uri);
 		}
 		/* Don't show the normal extra information for desktop files, it doesn't

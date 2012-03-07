@@ -351,14 +351,8 @@ nautilus_link_local_get_text (const char *path)
 }
 
 char *
-nautilus_link_local_get_additional_text (const char *path)
+nautilus_link_local_get_additional_text (const char *uri)
 {
-	/* The comment field of current .desktop files is often bad.
-	 * It just contains a copy of the name. This is probably because the
-	 * panel shows the comment field as a tooltip.
-	 */
-	return NULL;
-#ifdef THIS_IS_NOT_USED_RIGHT_NOW
 	char *type;
 	char *retval;
 
@@ -366,20 +360,19 @@ nautilus_link_local_get_additional_text (const char *path)
 		return NULL;
 	}
 
-	type = slurp_key_string (path, "Type", FALSE);
+	type = slurp_key_string (uri, "Type", FALSE);
 	retval = NULL;
 	if (type == NULL) {
 		return NULL;
 	}
 
 	if (strcmp (type, "Application") == 0) {
-		retval = slurp_key_string (path, "Comment", TRUE);
+		retval = slurp_key_string (uri, "Comment", TRUE);
 	}
 	
 	g_free (type);
 
 	return retval;
-#endif
 }
 
 static char *
