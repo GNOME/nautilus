@@ -5031,13 +5031,11 @@ nautilus_properties_window_present (GList       *original_files,
 
 	/* Create the hash tables first time through. */
 	if (windows == NULL) {
-		windows = eel_g_hash_table_new_free_at_exit
-			(NULL, NULL, NULL, "property windows");
+		windows = g_hash_table_new (NULL, NULL);
 	}
 	
 	if (pending_lists == NULL) {
-		pending_lists = eel_g_hash_table_new_free_at_exit
-			(g_str_hash, g_str_equal, NULL, "pending property window files");
+		pending_lists = g_hash_table_new (g_str_hash, g_str_equal);
 	}
 	
 	/* Look to see if there's already a window for this file. */

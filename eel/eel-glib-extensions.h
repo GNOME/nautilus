@@ -67,10 +67,6 @@ GList *     eel_g_object_list_ref                       (GList                 *
 GList *     eel_g_object_list_copy                      (GList                 *list);
 
 /* GHashTable functions */
-GHashTable *eel_g_hash_table_new_free_at_exit           (GHashFunc              hash_function,
-							 GCompareFunc           key_compare_function,
-							 GHFunc                 foreach_func,
-							 const char            *display_name);
 void        eel_g_hash_table_safe_for_each              (GHashTable            *hash_table,
 							 GHFunc                 callback,
 							 gpointer               callback_data);

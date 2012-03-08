@@ -473,8 +473,6 @@ get_types_table (void)
 		image_mime_types =
 			g_hash_table_new_full (g_str_hash, g_str_equal,
 					       g_free, NULL);
-		eel_debug_call_at_shutdown_with_data ((GFreeFunc)g_hash_table_destroy,
-						      image_mime_types);
 
 		format_list = gdk_pixbuf_get_formats ();
 		for (l = format_list; l; l = l->next) {

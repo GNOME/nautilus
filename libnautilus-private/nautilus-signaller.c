@@ -55,7 +55,6 @@ nautilus_signaller_get_current (void)
 
 	if (global_signaller == NULL) {
 		global_signaller = g_object_new (nautilus_signaller_get_type (), NULL);
-		eel_debug_call_at_shutdown_with_data (g_object_unref, global_signaller);
 	}
 
 	return global_signaller;

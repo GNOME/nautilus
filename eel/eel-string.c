@@ -656,8 +656,7 @@ eel_ref_str_get_unique (const char *string)
 	G_LOCK (unique_ref_strs);
 	if (unique_ref_strs == NULL) {
 		unique_ref_strs =
-			eel_g_hash_table_new_free_at_exit (g_str_hash, g_str_equal,
-							   NULL, "unique eel_ref_str");
+			g_hash_table_new (g_str_hash, g_str_equal);
 	}
 
 	res = g_hash_table_lookup (unique_ref_strs, string);
