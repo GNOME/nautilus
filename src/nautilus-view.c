@@ -9465,6 +9465,8 @@ gboolean
 nautilus_view_handle_scroll_event (NautilusView *directory_view,
 				   GdkEventScroll *event)
 {
+	gdouble delta_x, delta_y;
+
 	if (event->state & GDK_CONTROL_MASK) {
 		switch (event->direction) {
 		case GDK_SCROLL_UP:
@@ -9476,6 +9478,20 @@ nautilus_view_handle_scroll_event (NautilusView *directory_view,
 			/* Zoom Out */
 			nautilus_view_bump_zoom_level (directory_view, -1);
 			return TRUE;
+
+		case GDK_SCROLL_SMOOTH:
+			gdk_event_get_scroll_deltas ((const GdkEvent *) event,
+						     &delta_x, &delta_y);
+
+			if (delta_y > 0) {
+				nautilus_view_bump_zoom_level (directory_view, 1);
+				return TRUE;
+			} else if (delta_y < 0) {
+				nautilus_view_bump_zoom_level (directory_view, -1);
+				return TRUE;				
+			} else {
+				break;
+			}
 
 		case GDK_SCROLL_LEFT:
 		case GDK_SCROLL_RIGHT:
