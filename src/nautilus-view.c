@@ -9484,10 +9484,12 @@ nautilus_view_handle_scroll_event (NautilusView *directory_view,
 						     &delta_x, &delta_y);
 
 			if (delta_y > 0) {
-				nautilus_view_bump_zoom_level (directory_view, 1);
+				/* emulate scroll down */
+				nautilus_view_bump_zoom_level (directory_view, -1);
 				return TRUE;
 			} else if (delta_y < 0) {
-				nautilus_view_bump_zoom_level (directory_view, -1);
+				/* emulate scroll up */
+				nautilus_view_bump_zoom_level (directory_view, 1);
 				return TRUE;				
 			} else {
 				break;
