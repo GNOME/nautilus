@@ -3075,11 +3075,11 @@ create_basic_page (NautilusPropertiesWindow *window)
 	}
 
 	if (should_show_file_type (window)) {
-		append_title_value_pair (window,
-					 grid, _("Type:"), 
-					 "type",
-					 INCONSISTENT_STATE_STRING,
-					 FALSE);
+		append_title_and_ellipsizing_value (window, grid,
+						    _("Type:"), 
+						    "type",
+						    INCONSISTENT_STATE_STRING,
+						    FALSE);
 	}
 
 	if (should_show_link_target (window)) {
