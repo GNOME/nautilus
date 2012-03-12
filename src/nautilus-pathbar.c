@@ -84,6 +84,7 @@ struct _ButtonData
 
         GtkWidget *image;
         GtkWidget *label;
+	GtkWidget *alignment;
         guint ignore_changes : 1;
         guint fake_root : 1;
 };
@@ -1276,8 +1277,7 @@ get_dir_name (ButtonData *button_data)
  * or not the contents are bold
  */
 static void
-set_label_size_request (GtkWidget       *alignment,
-			ButtonData      *button_data)
+set_label_size_request (ButtonData *button_data)
 {
         const gchar *dir_name = get_dir_name (button_data);
         PangoLayout *layout;
@@ -1293,7 +1293,7 @@ set_label_size_request (GtkWidget       *alignment,
 
         pango_layout_get_pixel_size (layout, &bold_width, &bold_height);
 
-	gtk_widget_set_size_request (alignment,
+	gtk_widget_set_size_request (button_data->alignment,
 				     MAX (width, bold_width),
 				     MAX (height, bold_height));
 	
@@ -1317,6 +1317,14 @@ nautilus_path_bar_update_button_appearance (ButtonData *button_data)
 		} else {
 			gtk_label_set_text (GTK_LABEL (button_data->label), dir_name);
 		}
+
+		/* FIXME: Maybe we dont need this alignment at all and we can
+		 * use GtkMisc aligments or even GtkWidget:halign/valign center.
+		 *
+		 * The following function ensures that the alignment will always
+		 * request the same size whether the button's text is bold or not.
+		 */
+		set_label_size_request (button_data);
         }
 
         if (button_data->image != NULL) {
@@ -1624,13 +1632,10 @@ make_directory_button (NautilusPathBar  *path_bar,
 {
 	GFile *path;
         GtkWidget *child;
-        GtkWidget *label_alignment;
         ButtonData *button_data;
 
 	path = nautilus_file_get_location (file);
-
 	child = NULL;
-	label_alignment = NULL;
 
         /* Is it a special button? */
         button_data = g_new0 (ButtonData, 1);
@@ -1653,20 +1658,20 @@ make_directory_button (NautilusPathBar  *path_bar,
 		case MOUNT_BUTTON:
 		case DEFAULT_LOCATION_BUTTON:
                         button_data->label = gtk_label_new (NULL);
-                        label_alignment = gtk_alignment_new (0.5, 0.5, 1.0, 1.0);
-                        gtk_container_add (GTK_CONTAINER (label_alignment), button_data->label);
+                        button_data->alignment = gtk_alignment_new (0.5, 0.5, 1.0, 1.0);
+                        gtk_container_add (GTK_CONTAINER (button_data->alignment), button_data->label);
                         child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
                         gtk_box_pack_start (GTK_BOX (child), button_data->image, FALSE, FALSE, 0);
-                        gtk_box_pack_start (GTK_BOX (child), label_alignment, FALSE, FALSE, 0);
+                        gtk_box_pack_start (GTK_BOX (child), button_data->alignment, FALSE, FALSE, 0);
                         break;
 		case NORMAL_BUTTON:
     		default:
 			button_data->label = gtk_label_new (NULL);
-			label_alignment = gtk_alignment_new (0.5, 0.5, 1.0, 1.0);
-			gtk_container_add (GTK_CONTAINER (label_alignment), button_data->label);
+			button_data->alignment = gtk_alignment_new (0.5, 0.5, 1.0, 1.0);
+			gtk_container_add (GTK_CONTAINER (button_data->alignment), button_data->label);
                         child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
 			gtk_box_pack_start (GTK_BOX (child), button_data->image, FALSE, FALSE, 0);
-			gtk_box_pack_start (GTK_BOX (child), label_alignment, FALSE, FALSE, 0);
+			gtk_box_pack_start (GTK_BOX (child), button_data->alignment, FALSE, FALSE, 0);
 			button_data->is_base_dir = base_dir;
         }
 
@@ -1684,16 +1689,6 @@ make_directory_button (NautilusPathBar  *path_bar,
 			g_signal_connect (button_data->file, "changed",
 					  G_CALLBACK (button_data_file_changed),
 					  button_data);
-	}
-
-	/* FIXME: Maybe we dont need this alignment at all and we can
-	 * use GtkMisc aligments or even GtkWidget:halign/valign center.
-	 *
-	 * The following function ensures that the alignment will always
-	 * request the same size whether the button's text is bold or not.
-	 */
-	if (label_alignment) {
-		set_label_size_request (label_alignment, button_data);
 	}
 			  
         gtk_container_add (GTK_CONTAINER (button_data->button), child);
