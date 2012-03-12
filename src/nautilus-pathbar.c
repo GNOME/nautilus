@@ -1350,7 +1350,8 @@ nautilus_path_bar_update_button_state (ButtonData *button_data,
 				       gboolean    current_dir)
 {
 	if (button_data->label != NULL) {
-		g_object_set (button_data->label, "use-markup", current_dir, NULL);
+		gtk_label_set_label (GTK_LABEL (button_data->label), NULL);
+		gtk_label_set_use_markup (GTK_LABEL (button_data->label), current_dir);
 	}
 
 	nautilus_path_bar_update_button_appearance (button_data);
