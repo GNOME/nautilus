@@ -9483,16 +9483,21 @@ nautilus_view_handle_scroll_event (NautilusView *directory_view,
 			gdk_event_get_scroll_deltas ((const GdkEvent *) event,
 						     &delta_x, &delta_y);
 
-			if (delta_y > 0) {
+			/* threshold the delta, so that when events come from a device supporting
+			 * smooth scrolling (e.g. a touchpad), we only change zoom level if the event
+			 * is relevant enough.
+			 */
+			if (delta_y > 0.25) {
 				/* emulate scroll down */
 				nautilus_view_bump_zoom_level (directory_view, -1);
 				return TRUE;
-			} else if (delta_y < 0) {
+			} else if (delta_y < - 0.25) {
 				/* emulate scroll up */
 				nautilus_view_bump_zoom_level (directory_view, 1);
 				return TRUE;				
 			} else {
-				break;
+				/* eat event */
+				return TRUE;
 			}
 
 		case GDK_SCROLL_LEFT:
