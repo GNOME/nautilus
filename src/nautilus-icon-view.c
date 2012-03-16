@@ -1775,21 +1775,32 @@ nautilus_icon_view_scroll_event (GtkWidget *widget,
 
 	if (icon_view->details->compact &&
 	    (scroll_event->direction == GDK_SCROLL_UP ||
-	     scroll_event->direction == GDK_SCROLL_DOWN)) {
+	     scroll_event->direction == GDK_SCROLL_DOWN ||
+	     scroll_event->direction == GDK_SCROLL_SMOOTH)) {
 		ret = nautilus_view_handle_scroll_event (NAUTILUS_VIEW (icon_view), scroll_event);
 		if (!ret) {
 			/* in column-wise layout, re-emit vertical mouse scroll events as horizontal ones,
 			 * if they don't bump zoom */
 			event_copy = gdk_event_copy ((GdkEvent *) scroll_event);
-
 			scroll_event_copy = (GdkEventScroll *) event_copy;
+
+			/* transform vertical integer smooth scroll events into horizontal events */
+			if (scroll_event_copy->direction == GDK_SCROLL_SMOOTH &&
+				   scroll_event_copy->delta_x == 0) {
+				if (scroll_event_copy->delta_y == 1.0) {
+					scroll_event_copy->direction = GDK_SCROLL_DOWN;
+				} else if (scroll_event_copy->delta_y == -1.0) {
+					scroll_event_copy->direction = GDK_SCROLL_UP;
+				}
+			}
+
 			if (scroll_event_copy->direction == GDK_SCROLL_UP) {
 				scroll_event_copy->direction = GDK_SCROLL_LEFT;
-			} else {
+			} else if (scroll_event_copy->direction == GDK_SCROLL_DOWN) {
 				scroll_event_copy->direction = GDK_SCROLL_RIGHT;
 			}
 
-			ret = gtk_widget_event (widget, event_copy);
+			ret = GTK_WIDGET_CLASS (nautilus_icon_view_parent_class)->scroll_event (widget, scroll_event_copy);
 			gdk_event_free (event_copy);
 		}
 
