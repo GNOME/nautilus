@@ -31,10 +31,6 @@
 
 const EelDRect eel_drect_empty = { 0.0, 0.0, 0.0, 0.0 };
 const EelIRect eel_irect_empty = { 0, 0, 0, 0 };
-const EelIPoint eel_ipoint_max = { G_MAXINT, G_MAXINT };
-const EelIPoint eel_ipoint_min = { G_MININT, G_MININT };
-const EelIPoint eel_ipoint_zero = { 0, 0 };
-const EelDimensions eel_dimensions_empty = { 0, 0 };
 
 void
 eel_irect_copy (EelIRect *dest, const EelIRect *src)
@@ -77,46 +73,6 @@ eel_irect_is_empty (const EelIRect *src)
 {
 	return (src->x1 <= src->x0 ||
 		src->y1 <= src->y0);
-}
-
-EelIRect
-eel_irect_assign (int x,
-		      int y,
-		      int width,
-		      int height)
-{
-	EelIRect rectangle;
-
-	rectangle.x0 = x;
-	rectangle.y0 = y;
-	rectangle.x1 = rectangle.x0 + width;
-	rectangle.y1 = rectangle.y0 + height;
-
-	return rectangle;
-}
-
-/**
- * eel_irect_assign_dimensions:
- * 
- * @x: X coodinate for resulting rectangle.
- * @y: Y coodinate for resulting rectangle.
- * @dimensions: A EelDimensions structure for the rect's width and height.
- *
- * Returns: An EelIRect with the given coordinates and dimensions.
- */
-EelIRect
-eel_irect_assign_dimensions (int x,
-				 int y,
-				 EelDimensions dimensions)
-{
-	EelIRect rectangle;
-
-	rectangle.x0 = x;
-	rectangle.y0 = y;
-	rectangle.x1 = rectangle.x0 + dimensions.width;
-	rectangle.y1 = rectangle.y0 + dimensions.height;
-
-	return rectangle;
 }
 
 /**
@@ -221,68 +177,6 @@ eel_irect_equal (EelIRect rectangle_a,
 		&& rectangle_a.y0 == rectangle_b.y0
 		&& rectangle_a.x1 == rectangle_b.x1
 		&& rectangle_a.y1 == rectangle_b.y1;
-}
-
-/**
- * eel_irect_align:
- * 
- * @container: The rectangle that is to contain the aligned rectangle.
- * @aligned_width: Width of rectangle being algined.
- * @aligned_height: Height of rectangle being algined.
- * @x_alignment: X alignment.
- * @y_alignment: Y alignment.
- *
- * Returns: A rectangle aligned within a container rectangle
- *          using the given alignment parameters.
- */
-EelIRect
-eel_irect_align (EelIRect container,
-		     int aligned_width,
-		     int aligned_height,
-		     float x_alignment,
-		     float y_alignment)
-{
-	EelIRect aligned;
-	int available_width;
-	int available_height;
-
-	if (eel_irect_is_empty (&container)) {
-		return eel_irect_empty;
-	}
-
-	if (aligned_width == 0 || aligned_height == 0) {
-		return eel_irect_empty;
-	}
-
-	/* Make sure the aligment parameters are within range */
-	x_alignment = MAX (0, x_alignment);
-	x_alignment = MIN (1.0, x_alignment);
-	y_alignment = MAX (0, y_alignment);
-	y_alignment = MIN (1.0, y_alignment);
-
-	available_width = eel_irect_get_width (container) - aligned_width;
-	available_height = eel_irect_get_height (container) - aligned_height;
-
-	aligned.x0 = floor (container.x0 + (available_width * x_alignment) + 0.5);
-	aligned.y0 = floor (container.y0 + (available_height * y_alignment) + 0.5);
-	aligned.x1 = aligned.x0 + aligned_width;
-	aligned.y1 = aligned.y0 + aligned_height;
-
-	return aligned;
-}
-
-
-/**
- * eel_dimensions_are_empty:
- * 
- * @dimensions: A EelDimensions structure.
- *
- * Returns: Whether the dimensions are empty.
- */
-gboolean
-eel_dimensions_are_empty (EelDimensions dimensions)
-{
-	return dimensions.width <= 0 || dimensions.height <= 0;
 }
 
 EelIRect 

@@ -132,40 +132,6 @@ eel_check_rectangle_result (EelIRect result,
 }
 
 void
-eel_check_dimensions_result (EelDimensions result,
-			     int expected_width,
-			     int expected_height)
-{
-	if (result.width != expected_width
-	    || result.height != expected_height) {
-		eel_report_check_failure (g_strdup_printf ("width=%d, height=%d",
-							   result.width,
-							   result.height),
-					  g_strdup_printf ("width=%d, height=%d",
-							   expected_width,
-							   expected_height));
-	}
-	eel_after_check ();
-}
-
-void
-eel_check_point_result (EelIPoint result,
-			int expected_x,
-			int expected_y)
-{
-	if (result.x != expected_x
-	    || result.y != expected_y) {
-		eel_report_check_failure (g_strdup_printf ("x=%d, y=%d",
-							   result.x,
-							   result.y),
-					  g_strdup_printf ("x=%d, y=%d",
-							   expected_x,
-							   expected_y));
-	}
-	eel_after_check ();
-}
-
-void
 eel_check_integer_result (long result, long expected)
 {
 	if (result != expected) {

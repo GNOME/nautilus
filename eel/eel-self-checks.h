@@ -47,16 +47,6 @@ G_STMT_START { \
 	eel_before_check (#expression, __FILE__, __LINE__); \
 	eel_check_rectangle_result (expression, expected_x0, expected_y0, expected_x1, expected_y1); \
 } G_STMT_END
-#define EEL_CHECK_DIMENSIONS_RESULT(expression, expected_width, expected_height) \
-G_STMT_START { \
-	eel_before_check (#expression, __FILE__, __LINE__); \
-	eel_check_dimensions_result (expression, expected_width, expected_height); \
-} G_STMT_END
-#define EEL_CHECK_POINT_RESULT(expression, expected_x, expected_y) \
-G_STMT_START { \
-	eel_before_check (#expression, __FILE__, __LINE__); \
-	eel_check_point_result (expression, expected_x, expected_y); \
-} G_STMT_END
 
 void eel_exit_if_self_checks_failed (void);
 void eel_before_check_function      (const char    *name);
@@ -80,12 +70,6 @@ void eel_check_rectangle_result     (EelIRect       result,
 				     int            expected_y0,
 				     int            expected_x1,
 				     int            expected_y1);
-void eel_check_dimensions_result    (EelDimensions  result,
-				     int            expected_width,
-				     int            expected_height);
-void eel_check_point_result         (EelIPoint      result,
-				     int            expected_x,
-				     int            expected_y);
 void eel_check_string_result        (char          *result,
 				     const char    *expected_value);
 
