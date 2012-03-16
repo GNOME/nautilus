@@ -4428,7 +4428,6 @@ start_stretching (NautilusIconContainer *container)
 {
 	NautilusIconContainerDetails *details;
 	NautilusIcon *icon;
-	EelDPoint world_point;
 	GtkWidget *toplevel;
 	GtkCornerType corner;
 	GdkCursor *cursor;
@@ -4437,9 +4436,9 @@ start_stretching (NautilusIconContainer *container)
 	icon = details->stretch_icon;
 	
 	/* Check if we hit the stretch handles. */
-	world_point.x = details->drag_x;
-	world_point.y = details->drag_y;
-	if (!nautilus_icon_canvas_item_hit_test_stretch_handles (icon->item, world_point, &corner)) {
+	if (!nautilus_icon_canvas_item_hit_test_stretch_handles (icon->item,
+								 details->drag_x, details->drag_y,
+								 &corner)) {
 		return FALSE;
 	}
 

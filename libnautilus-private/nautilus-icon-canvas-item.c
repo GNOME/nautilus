@@ -583,23 +583,23 @@ recompute_bounding_box (NautilusIconCanvasItem *icon_item,
 	 */
 
 	EelCanvasItem *item;
-	EelDPoint top_left, bottom_right;
+	EelDRect bounds_rect;
 
 	item = EEL_CANVAS_ITEM (icon_item);
 
 	eel_canvas_item_get_bounds (item,
-				    &top_left.x, &top_left.y,
-				    &bottom_right.x, &bottom_right.y);
+				    &bounds_rect.x0, &bounds_rect.y0,
+				    &bounds_rect.x1, &bounds_rect.y1);
 
-	top_left.x += i2w_dx;
-	top_left.y += i2w_dy;
-	bottom_right.x += i2w_dx;
-	bottom_right.y += i2w_dy;
+	bounds_rect.x0 += i2w_dx;
+	bounds_rect.y0 += i2w_dy;
+	bounds_rect.x1 += i2w_dx;
+	bounds_rect.y1 += i2w_dy;
 	eel_canvas_w2c_d (item->canvas,
-			  top_left.x, top_left.y,
+			  bounds_rect.x0, bounds_rect.y0,
 			  &item->x1, &item->y1);
 	eel_canvas_w2c_d (item->canvas,
-			  bottom_right.x, bottom_right.y,
+			  bounds_rect.x1, bounds_rect.y1,
 			  &item->x2, &item->y2);
 }
 
@@ -1990,7 +1990,8 @@ hit_test_stretch_handle (NautilusIconCanvasItem *item,
 
 gboolean
 nautilus_icon_canvas_item_hit_test_stretch_handles (NautilusIconCanvasItem *item,
-						    EelDPoint world_point,
+						    gdouble world_x,
+						    gdouble world_y,
 						    GtkCornerType *corner)
 {
 	EelIRect canvas_rect;
@@ -1998,8 +1999,8 @@ nautilus_icon_canvas_item_hit_test_stretch_handles (NautilusIconCanvasItem *item
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (item), FALSE);
 	
 	eel_canvas_w2c (EEL_CANVAS_ITEM (item)->canvas,
-			  world_point.x,
-			  world_point.y,
+			  world_x,
+			  world_y,
 			  &canvas_rect.x0,
 			  &canvas_rect.y0);
 	canvas_rect.x1 = canvas_rect.x0 + 1;

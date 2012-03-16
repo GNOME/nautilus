@@ -90,7 +90,8 @@ void        nautilus_icon_canvas_item_set_renaming             (NautilusIconCanv
 gboolean    nautilus_icon_canvas_item_hit_test_rectangle       (NautilusIconCanvasItem       *item,
 								EelIRect                      canvas_rect);
 gboolean    nautilus_icon_canvas_item_hit_test_stretch_handles (NautilusIconCanvasItem       *item,
-								EelDPoint                     world_point,
+								gdouble                       world_x,
+								gdouble                       world_y,
 								GtkCornerType                *corner);
 void        nautilus_icon_canvas_item_invalidate_label         (NautilusIconCanvasItem       *item);
 void        nautilus_icon_canvas_item_invalidate_label_size    (NautilusIconCanvasItem       *item);
