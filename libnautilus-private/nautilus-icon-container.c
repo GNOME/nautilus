@@ -7497,11 +7497,13 @@ nautilus_icon_container_set_selection (NautilusIconContainer *container,
 	gboolean selection_changed;
 	GHashTable *hash;
 	GList *p;
-	NautilusIcon *icon;
+	gboolean res;
+	NautilusIcon *icon, *selected_icon;
 
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 
 	selection_changed = FALSE;
+	selected_icon = NULL;
 
 	hash = g_hash_table_new (NULL, NULL);
 	for (p = selection; p != NULL; p = p->next) {
@@ -7510,13 +7512,24 @@ nautilus_icon_container_set_selection (NautilusIconContainer *container,
 	for (p = container->details->icons; p != NULL; p = p->next) {
 		icon = p->data;
 		
-		selection_changed |= icon_set_selected
+		res = icon_set_selected
 			(container, icon,
 			 g_hash_table_lookup (hash, icon->data) != NULL);
+		selection_changed |= res;
+
+		if (res) {
+			selected_icon = icon;
+		}
 	}
 	g_hash_table_destroy (hash);
 
 	if (selection_changed) {
+		/* if only one item has been selected, use it as range
+		 * selection base (cf. handle_icon_button_press) */
+		if (g_list_length (selection) == 1) {
+			container->details->range_selection_base_icon = selected_icon;
+		}
+
 		g_signal_emit (container,
 				 signals[SELECTION_CHANGED], 0);
 	}
