@@ -2453,17 +2453,9 @@ find_prev_or_next_row (NautilusPlacesSidebar *sidebar,
 		       GtkTreeIter *iter,
 		       gboolean go_up)
 {
-	GtkTreeSelection *selection;
-	GtkTreeModel *model;
-	int place_type;
+	GtkTreeModel *model = GTK_TREE_MODEL (sidebar->store);
 	gboolean res;
-
-	selection = gtk_tree_view_get_selection (sidebar->tree_view);
-	res = gtk_tree_selection_get_selected (selection, &model, iter);
-
-	if (!res) {
-		goto out;
-	}
+	int place_type;
 
 	if (go_up) {
 		res = gtk_tree_model_iter_previous (model, iter);
@@ -2484,7 +2476,6 @@ find_prev_or_next_row (NautilusPlacesSidebar *sidebar,
 		}
 	}
 
- out:
 	return res;
 }
 
@@ -2542,7 +2533,11 @@ bookmarks_key_press_event_cb (GtkWidget             *widget,
 			      NautilusPlacesSidebar *sidebar)
 {
   guint modifiers;
-  GtkTreeIter iter;
+  GtkTreeIter selected_iter;
+
+  if (!get_selected_iter (sidebar, &selected_iter)) {
+	  return FALSE;
+  }
 
   modifiers = gtk_accelerator_get_default_mod_mask ();
 
@@ -2550,10 +2545,6 @@ bookmarks_key_press_event_cb (GtkWidget             *widget,
        event->keyval == GDK_KEY_KP_Enter ||
        event->keyval == GDK_KEY_ISO_Enter ||
        event->keyval == GDK_KEY_space)) {
-
-      GtkTreeModel *model;
-      GtkTreeSelection *selection;
-      GtkTreeIter iter;
       NautilusWindowOpenFlags flags = 0;
 
       if ((event->state & modifiers) == GDK_SHIFT_MASK) {
@@ -2562,12 +2553,8 @@ bookmarks_key_press_event_cb (GtkWidget             *widget,
           flags = NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
       }
 
-      model = gtk_tree_view_get_model (sidebar->tree_view);
-      selection = gtk_tree_view_get_selection (sidebar->tree_view);
-      gtk_tree_selection_get_selected (selection, NULL, &iter);
-
-      open_selected_bookmark (sidebar, model, &iter, flags);
-
+      open_selected_bookmark (sidebar, GTK_TREE_MODEL (sidebar->store),
+			      &selected_iter, flags);
       return TRUE;
   }
 
@@ -2577,17 +2564,17 @@ bookmarks_key_press_event_cb (GtkWidget             *widget,
   }
 
   if (event->keyval == GDK_KEY_Up) {
-      if (find_prev_row (sidebar, &iter)) {
+      if (find_prev_row (sidebar, &selected_iter)) {
 	      gtk_tree_selection_select_iter (gtk_tree_view_get_selection (sidebar->tree_view),
-					      &iter);
+					      &selected_iter);
       }
       return TRUE;
   }
 
   if (event->keyval == GDK_KEY_Down) {
-      if (find_next_row (sidebar, &iter)) {
+      if (find_next_row (sidebar, &selected_iter)) {
 	      gtk_tree_selection_select_iter (gtk_tree_view_get_selection (sidebar->tree_view),
-					      &iter);
+					      &selected_iter);
       }
       return TRUE;
   }
