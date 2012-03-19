@@ -479,13 +479,13 @@ update_places (NautilusPlacesSidebar *sidebar)
 	GList *volumes;
 	GVolume *volume;
 	int bookmark_count, index;
-	char *location, *mount_uri, *name, *desktop_path, *last_uri;
+	char *location, *mount_uri, *name, *desktop_path, *last_uri, *identifier;
 	const gchar *path, *bookmark_name;
 	GIcon *icon;
 	GFile *root;
 	NautilusWindowSlot *slot;
 	char *tooltip;
-	GList *network_mounts;
+	GList *network_mounts, *network_volumes;
 	NautilusFile *file;
 
 	DEBUG ("Updating places sidebar");
@@ -507,6 +507,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 	slot = nautilus_window_get_active_slot (sidebar->window);
 	location = nautilus_window_slot_get_current_uri (slot);
 
+	network_mounts = network_volumes = NULL;
 	volume_monitor = sidebar->volume_monitor;
 
 	/* first go through all connected drives */
@@ -519,6 +520,15 @@ update_places (NautilusPlacesSidebar *sidebar)
 		if (volumes != NULL) {
 			for (ll = volumes; ll != NULL; ll = ll->next) {
 				volume = ll->data;
+				identifier = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_CLASS);
+
+				if (g_strcmp0 (identifier, "network") == 0) {
+					g_free (identifier);
+					network_volumes = g_list_prepend (network_volumes, volume);
+					continue;
+				}
+				g_free (identifier);
+
 				mount = g_volume_get_mount (volume);
 				if (mount != NULL) {
 					/* Show mounted volume in the sidebar */
@@ -599,6 +609,16 @@ update_places (NautilusPlacesSidebar *sidebar)
 			g_object_unref (drive);
 			continue;
 		}
+
+		identifier = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_CLASS);
+
+		if (g_strcmp0 (identifier, "network") == 0) {
+			g_free (identifier);
+			network_volumes = g_list_prepend (network_volumes, volume);
+			continue;
+		}
+		g_free (identifier);
+
 		mount = g_volume_get_mount (volume);
 		if (mount != NULL) {
 			icon = g_mount_get_icon (mount);
@@ -737,7 +757,6 @@ update_places (NautilusPlacesSidebar *sidebar)
 	}
 
 	/* add mounts that has no volume (/etc/mtab mounts, ftp, sftp,...) */
-	network_mounts = NULL;
 	mounts = g_volume_monitor_get_mounts (volume_monitor);
 
 	for (l = mounts; l != NULL; l = l->next) {
@@ -798,6 +817,31 @@ update_places (NautilusPlacesSidebar *sidebar)
 	/* network */
 	add_heading (sidebar, SECTION_NETWORK,
 		     _("Network"));
+
+	network_volumes = g_list_reverse (network_volumes);
+	for (l = network_volumes; l != NULL; l = l->next) {
+		volume = l->data;
+		mount = g_volume_get_mount (volume);
+
+		if (mount != NULL) {
+			network_mounts = g_list_prepend (network_mounts, mount);
+			continue;
+		} else {
+			icon = g_volume_get_icon (volume);
+			name = g_volume_get_name (volume);
+			tooltip = g_strdup_printf (_("Mount and open %s"), name);
+
+			add_place (sidebar, PLACES_MOUNTED_VOLUME,
+				   SECTION_NETWORK,
+				   name, icon, NULL,
+				   NULL, volume, NULL, 0, tooltip);
+			g_object_unref (icon);
+			g_free (name);
+			g_free (tooltip);
+		}
+	}
+
+	g_list_free_full (network_volumes, g_object_unref);
 
 	network_mounts = g_list_reverse (network_mounts);
 	for (l = network_mounts; l != NULL; l = l->next) {
