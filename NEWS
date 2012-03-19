@@ -1,3 +1,17 @@
+Major changes in 3.3.92 are:
+* Fix scrolling in compact view to work with latest GTK
+* Fix Ctrl+Scroll zooming to work with latest GTK
+* Don't hide Open With applications for subtypes of application/x-desktop
+* Add support for the "network" GVolume class identifier
+* Fix a crash at exit with certain extensions that keep refs of the
+  NautilusFileInfos
+* Fix initial focus row when moving the focus into the Places sidebar
+* Fix Shift+Click selection when going back/forward in browsing history
+* Fix packing of desktop file box in properties view
+* Fix pathbar button sizing when a file watched by the pathbar changes name
+* Fix properties window not being able to shrink size
+* Remove unused --enable-profiler configure option
+
 Major changes in 3.3.91 are:
 * Ensure pathbar scrolling works with latest GTK
 * Fix a crash when unmounting volumes with non-empty trash
