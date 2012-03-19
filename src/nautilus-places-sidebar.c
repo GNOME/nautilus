@@ -2526,6 +2526,30 @@ properties_cb (GtkMenuItem           *item,
 	gtk_tree_path_free (path);
 }
 
+static gboolean
+nautilus_places_sidebar_focus (GtkWidget *widget,
+			       GtkDirectionType direction)
+{
+	NautilusPlacesSidebar *sidebar = NAUTILUS_PLACES_SIDEBAR (widget);
+	GtkTreePath *path;
+	GtkTreeIter iter;
+	gboolean res;
+
+	res = get_selected_iter (sidebar, &iter);
+
+	if (!res) {
+		gtk_tree_model_get_iter_first (GTK_TREE_MODEL (sidebar->store), &iter);
+		res = find_next_row (sidebar, &iter);
+		if (res) {
+			path = gtk_tree_model_get_path (GTK_TREE_MODEL (sidebar->store), &iter);
+			gtk_tree_view_set_cursor (sidebar->tree_view, path, NULL, FALSE);
+			gtk_tree_path_free (path);
+		}
+	}
+
+	return GTK_WIDGET_CLASS (nautilus_places_sidebar_parent_class)->focus (widget, direction);
+}
+
 /* Handler for GtkWidget::key-press-event on the shortcuts list */
 static gboolean
 bookmarks_key_press_event_cb (GtkWidget             *widget,
@@ -3420,6 +3444,7 @@ nautilus_places_sidebar_class_init (NautilusPlacesSidebarClass *class)
 	G_OBJECT_CLASS (class)->dispose = nautilus_places_sidebar_dispose;
 
 	GTK_WIDGET_CLASS (class)->style_set = nautilus_places_sidebar_style_set;
+	GTK_WIDGET_CLASS (class)->focus = nautilus_places_sidebar_focus;
 }
 
 static void
