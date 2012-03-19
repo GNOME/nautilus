@@ -2534,6 +2534,7 @@ bookmarks_key_press_event_cb (GtkWidget             *widget,
 {
   guint modifiers;
   GtkTreeIter selected_iter;
+  GtkTreePath *path;
 
   if (!get_selected_iter (sidebar, &selected_iter)) {
 	  return FALSE;
@@ -2565,16 +2566,18 @@ bookmarks_key_press_event_cb (GtkWidget             *widget,
 
   if (event->keyval == GDK_KEY_Up) {
       if (find_prev_row (sidebar, &selected_iter)) {
-	      gtk_tree_selection_select_iter (gtk_tree_view_get_selection (sidebar->tree_view),
-					      &selected_iter);
+	      path = gtk_tree_model_get_path (GTK_TREE_MODEL (sidebar->store), &selected_iter);
+	      gtk_tree_view_set_cursor (sidebar->tree_view, path, NULL, FALSE);
+	      gtk_tree_path_free (path);
       }
       return TRUE;
   }
 
   if (event->keyval == GDK_KEY_Down) {
       if (find_next_row (sidebar, &selected_iter)) {
-	      gtk_tree_selection_select_iter (gtk_tree_view_get_selection (sidebar->tree_view),
-					      &selected_iter);
+	      path = gtk_tree_model_get_path (GTK_TREE_MODEL (sidebar->store), &selected_iter);
+	      gtk_tree_view_set_cursor (sidebar->tree_view, path, NULL, FALSE);
+	      gtk_tree_path_free (path);
       }
       return TRUE;
   }
