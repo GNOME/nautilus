@@ -5,11 +5,11 @@
 # Sarah Smith <sarahs@redhat.com>, 2002
 # Funda Wang <fundawang@gmail.com>, 2003, 2009
 # Richard Ma <richard.ma.19850509@gmail.com>, 2009
-# Aron Xu <happyaron.xu@gmail.com>, 2009, 2010, 2011.
 # Xhacker Liu <liu.dongyuan@gmail.com>, 2010.
 # 朱涛 <bill_zt@sina.com>, 2010.
 # Lele Long <schemacs@gmail.com>, 2011.
 # YunQiang Su <wzssyqa@gmail.com>, 2011, 2012.
+# Aron Xu <happyaron.xu@gmail.com>, 2009, 2010, 2011, 2012.
 #
 msgid ""
 msgstr ""
@@ -17,8 +17,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
 "POT-Creation-Date: 2012-02-14 20:05+0000\n"
-"PO-Revision-Date: 2012-03-21 00:39+0800\n"
-"Last-Translator: YunQiang Su <wzssyqa@gmail.com>\n"
+"PO-Revision-Date: 2012-03-21 05:13+0000\n"
+"Last-Translator: Aron Xu <happyaron.xu@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1192,44 +1192,27 @@ msgid "Duplicating \"%B\""
 msgstr "就地复制“%B”"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2912
-#, fuzzy
-#| msgid "Moving %'d file (in \"%B\") to \"%B\""
-#| msgid_plural "Moving %'d files (in \"%B\") to \"%B\""
 msgid "Moving file %'d of %'d (in \"%B\") to \"%B\""
 msgstr "将 %'d/%'d 个文件(“%B”中)移动到“%B”"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2914
-#, fuzzy
-#| msgid "Copying %'d file (in \"%B\") to \"%B\""
-#| msgid_plural "Copying %'d files (in \"%B\") to \"%B\""
 msgid "Copying file %'d of %'d (in \"%B\") to \"%B\""
 msgstr "将 %'d/%'d 个文件(“%B”中)复制到“%B”"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2921
-#, fuzzy
-#| msgid "Duplicating %'d file (in \"%B\")"
-#| msgid_plural "Duplicating %'d files (in \"%B\")"
 msgid "Duplicating file %'d of %'d (in \"%B\")"
 msgstr "就地复制 %'d/%'d 个文件(“%B”中)"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2930
-#, fuzzy
-#| msgid "Moving %'d file to \"%B\""
-#| msgid_plural "Moving %'d files to \"%B\""
 msgid "Moving file %'d of %'d to \"%B\""
 msgstr "将 %'d/%'d 个文件移动到“%B”"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2932
-#, fuzzy
-#| msgid "Copying %'d file to \"%B\""
-#| msgid_plural "Copying %'d files to \"%B\""
 msgid "Copying file %'d of %'d to \"%B\""
 msgstr "将 %'d/%'d 个文件复制到“%B”"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2938
-#, fuzzy, c-format
-#| msgid "Duplicating %'d file"
-#| msgid_plural "Duplicating %'d files"
+#, c-format
 msgid "Duplicating file %'d of %'d"
 msgstr "就地复制 %'d/%'d 个文件"
 
@@ -1764,13 +1747,12 @@ msgstr "重做回收站(_R)"
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1301
 #, c-format
 msgid "Restore original permissions of items enclosed in '%s'"
-msgstr ""
+msgstr "恢复附加于 %s 的权限"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1302
-#, fuzzy, c-format
-#| msgid "The permissions of the file."
+#, c-format
 msgid "Set permissions of items enclosed in '%s'"
-msgstr "文件的权限。"
+msgstr "设置附加于 %s 的权限"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1304
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1459
