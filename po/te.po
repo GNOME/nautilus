@@ -1,6 +1,6 @@
 # Telugu translation of nautilus
 # Copyright (C) 2011 nautilus.
-# Copyright (C) 2005,2011 Swecha Telugu Localisation Team <localization@swecha.net>.
+# Copyright (C) 2005,2011,2012 Swecha Telugu Localisation Team <localization@swecha.net>.
 # This file is distributed under the same license as the nautilus package.
 #
 #
@@ -12,20 +12,21 @@
 # Krishnababu Krothapalli <kkrothap@redhat.com>, 2011, 2012.
 # Hari Krishna <hari@swecha.net>, 2011.
 # Praveen Illa <mail2ipn@gmail.com>, 2010, 2011, 2012.
+# Hari Krishna <hari@swecha.net>, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.master.te\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2012-03-22 16:44+0000\n"
+"POT-Creation-Date: 2012-03-23 07:07+0000\n"
 "PO-Revision-Date: 2012-03-23 12:35+0530\n"
-"Last-Translator: Praveen Illa <mail2ipn@gmail.com>\n"
+"Last-Translator: Hari Krishna <hari@swecha.net>\n"
 "Language-Team: Telugu <indlinux-telugu@lists.sourceforge.net>\n"
-"Language: te\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: te\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
 #: ../data/nautilus.xml.in.h:1
@@ -1219,34 +1220,28 @@ msgid "Duplicating \"%B\""
 msgstr "\"%B\" కి నకిలీచేయుచున్నది"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2920
-#, fuzzy
 msgid "Moving file %'d of %'d (in \"%B\") to \"%B\""
-msgstr "(\"%B\" లోని) %'d ఫైలును \"%B\" కు తరలిస్తున్నది"
+msgstr "(\"%B\" లోని) %'d యొక్క  %'d ఫైలును \"%B\" కు తరలిస్తున్నది"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2922
-#, fuzzy
 msgid "Copying file %'d of %'d (in \"%B\") to \"%B\""
-msgstr "(\"%B\" లోని) %'d ఫైలును \"%B\" కు నకలుతీస్తున్నది"
+msgstr "(\"%B\" లోని) %'d యొక్క  %'d ఫైలును \"%B\" కు నకలుతీస్తున్నది"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2929
-#, fuzzy
 msgid "Duplicating file %'d of %'d (in \"%B\")"
-msgstr "(\"%B\" లోని) %'d ఫైలును నకిలీ చేస్తున్నది"
+msgstr "(\"%B\" లోని) %'d యొక్క  %'d ఫైలును నకిలీ చేస్తున్నది"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2938
-#, fuzzy
 msgid "Moving file %'d of %'d to \"%B\""
-msgstr "%'d ఫైలును \"%B\" కు తరలిస్తున్నది"
+msgstr "%'d యొక్క  %'d ఫైలును \"%B\" కు తరలిస్తున్నది"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2940
-#, fuzzy
 msgid "Copying file %'d of %'d to \"%B\""
-msgstr "%'d ఫైలును \"%B\" కు నకలుతీస్తున్నది"
+msgstr "%'d యొక్క  %'d ఫైలును \"%B\" కు నకలుతీస్తున్నది"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2946
-#, fuzzy, c-format
 msgid "Duplicating file %'d of %'d"
-msgstr "%'d ఫైలుని నకిలీచేస్తున్నది"
+msgstr "%'d యొక్క  %'d ఫైలుని నకిలీచేస్తున్నది"
 
 #. To translators: %S will expand to a size like "2 bytes" or "3 MB", so something like "4 kb of 4 MB"
 #: ../libnautilus-private/nautilus-file-operations.c:2965
@@ -1460,9 +1455,8 @@ msgstr "రద్దుచేయి"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:138
 #: ../src/nautilus-view.c:2393
-#, fuzzy
 msgid "Undo last action"
-msgstr "స్థానమును ప్రారంభించలేకపోతుంది"
+msgstr "చివరి క్రియను రద్దుచేయు"
 
 #. Reset to default info
 #: ../libnautilus-private/nautilus-file-undo-operations.c:142
@@ -1473,40 +1467,37 @@ msgstr "మళ్ళీచేయి"
 #: ../libnautilus-private/nautilus-file-undo-operations.c:145
 #: ../src/nautilus-view.c:2412
 msgid "Redo last undone action"
-msgstr ""
+msgstr "చివరి అసమాప్త క్రియను మళ్ళీచేయు"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:367
 #, c-format
 msgid "Move %d item back to '%s'"
 msgid_plural "Move %d items back to '%s'"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d ఐటంను  మరల'%s'నకు మార్చుము "
+msgstr[1] "%d ఐటంలను  మరల'%s'నకు మార్చుము"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:370
-#, fuzzy, c-format
 msgid "Move %d item to '%s'"
 msgid_plural "Move %d items to '%s'"
-msgstr[0] "%'d ఫైలును \"%B\" కు తరలిస్తున్నది"
-msgstr[1] "%'d ఫైళ్ళను \"%B\" కు తరలిస్తున్నది"
+msgstr[0] "%'d ఫైలును '%s' కు తరలిస్తున్నది"
+msgstr[1] "%'d ఫైళ్ళను '%s' కు తరలిస్తున్నది"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:374
-#, fuzzy, c-format
 msgid "_Undo Move %d item"
 msgid_plural "_Undo Move %d items"
-msgstr[0] "సవరణను రద్దు చేయి"
-msgstr[1] "సవరణను రద్దు చేయి"
+msgstr[0] "ఐటంను %d కి తరలించుట రద్దు చేయి(_U)"
+msgstr[1] "ఐటంలను %d కి తరలించుట రద్దు చేయి(_U)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:377
-#, fuzzy, c-format
 msgid "_Redo Move %d item"
 msgid_plural "_Redo Move %d items"
-msgstr[0] "సవరణను మళ్ళీచేయి"
-msgstr[1] "సవరణను మళ్ళీచేయి"
+msgstr[0] "ఐటంను %d కి తరలించుట మళ్ళీ చేయి(_R)"
+msgstr[1] "ఐటంలను %d కి తరలించుట మళ్ళీ చేయి(_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:381
 #, c-format
 msgid "Move '%s' back to '%s'"
-msgstr ""
+msgstr "'%s' ని  మరళ '%s'కు తరలించు"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:382
 #, c-format
@@ -1522,67 +1513,61 @@ msgid "_Redo Move"
 msgstr "తరలింపును మళ్ళీచేయి (_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:388
-#, fuzzy
 msgid "_Undo Restore from Trash"
-msgstr "అంశము చెత్తబుట్ట నుండి యధాస్థానములో వుంచబడదు"
+msgstr "చెత్తబుట్ట నుండి యధాస్థానములో వుంచడము రద్దుచేయుము(_U)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:389
-#, fuzzy
 msgid "_Redo Restore from Trash"
-msgstr "అంశము చెత్తబుట్ట నుండి యధాస్థానములో వుంచబడదు"
+msgstr "చెత్తబుట్ట నుండి యధాస్థానములో వుంచుము మరళ చేయుము(_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:392
-#, fuzzy, c-format
 msgid "Move %d item back to trash"
 msgid_plural "Move %d items back to trash"
-msgstr[0] "ఎంచుకున్న ప్రతీ అంశమును చెత్తబుట్టకి కదుపు"
-msgstr[1] "ఎంచుకున్న ప్రతీ అంశమును చెత్తబుట్టకి కదుపు"
+msgstr[0] "ఎంచుకున్న %d అంశమును చెత్తబుట్టకి కదుపు"
+msgstr[1] "ఎంచుకున్న  %d అంశములను చెత్తబుట్టకి కదుపు"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:395
 #: ../libnautilus-private/nautilus-file-undo-operations.c:981
-#, fuzzy, c-format
 msgid "Restore %d item from trash"
 msgid_plural "Restore %d items from trash"
-msgstr[0] "చెత్తబుట్ట నుండి అన్ని అంశాలను ఖాళీచేయాలా?"
-msgstr[1] "చెత్తబుట్ట నుండి అన్ని అంశాలను ఖాళీచేయాలా?"
+msgstr[0] "చెత్తబుట్ట నుండి %d అంశమును ఖాళీచేయాలా?"
+msgstr[1] "చెత్తబుట్ట నుండి %d అంశాలను ఖాళీచేయాలా?"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:399
-#, fuzzy, c-format
 msgid "Move '%s' back to trash"
-msgstr "చెత్తబుట్టకి కదుపు (_v)"
+msgstr "'%s'చెత్తబుట్టకి కదుపు "
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:400
 #, c-format
 msgid "Restore '%s' from trash"
-msgstr ""
+msgstr "'%s'చెత్తబుట్ట నుంచి యధాస్థానములో వుంచుము "
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:404
 #, c-format
 msgid "Delete %d copied item"
 msgid_plural "Delete %d copied items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d నకలుచేయబడ్డ అంశము రద్దుచేయుము"
+msgstr[1] "%d నకలుచేయబడ్డ అంశములు రద్దుచేయుము"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:407
-#, fuzzy, c-format
 msgid "Copy %d item to '%s'"
 msgid_plural "Copy %d items to '%s'"
-msgstr[0] "%'d ఫైలును \"%B\" కు నకలుతీస్తున్నది"
-msgstr[1] "%'d ఫైళ్ళను \"%B\" కు నకలుతీస్తున్నది"
+msgstr[0] "%d ఫైలును '%s' కు నకలుతీస్తున్నది"
+msgstr[1] "%d ఫైళ్ళను '%s' కు నకలుతీస్తున్నది"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:411
 #, c-format
 msgid "_Undo Copy %d item"
 msgid_plural "_Undo Copy %d items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d అంశమును నకలు చేయుట రద్దుచేయు(_U)"
+msgstr[1] "%d అంశములును నకలు చేయుట రద్దుచేయు(_U)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:414
 #, c-format
 msgid "_Redo Copy %d item"
 msgid_plural "_Redo Copy %d items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d అంశమును నకలు చేయుట మరళచేయు(_R)"
+msgstr[1] "%d అంశములను నకలు చేయుట మరళచేయు(_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:418
 #: ../libnautilus-private/nautilus-file-undo-operations.c:440
@@ -1594,7 +1579,7 @@ msgstr "'%s'ను తొలగించు"
 #: ../libnautilus-private/nautilus-file-undo-operations.c:419
 #, c-format
 msgid "Copy '%s' to '%s'"
-msgstr ""
+msgstr "'%s'ను '%s'నకు నకలుచేయు"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:421
 msgid "_Undo Copy"
@@ -1605,96 +1590,80 @@ msgid "_Redo Copy"
 msgstr "నకలును మళ్ళీచేయి (_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:426
-#, fuzzy, c-format
 msgid "Delete %d duplicated item"
 msgid_plural "Delete %d duplicated items"
-msgstr[0] "ఎంచుకున్న ప్రతీ అంశమును నకిలీచేయి"
-msgstr[1] "ఎంచుకున్న ప్రతీ అంశమును నకిలీచేయి"
+msgstr[0] "ఎంచుకున్న %d అంశమును నకిలీచేయి"
+msgstr[1] "ఎంచుకున్న %d అంశములను నకిలీచేయి"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:429
-#, fuzzy, c-format
 msgid "Duplicate %d item in '%s'"
 msgid_plural "Duplicate %d items in '%s'"
-msgstr[0] "(\"%B\" లోని) %'d ఫైలును నకిలీ చేస్తున్నది"
-msgstr[1] "(\"%B\" లోని) %'d ఫైళ్ళను నకిలీ చేస్తున్నది"
+msgstr[0] " %d అంశమును '%s'లో నకిలీ చేస్తున్నది"
+msgstr[1] "%d అంశములను '%s'లో నకిలీ చేస్తున్నది"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:433
-#, fuzzy, c-format
 msgid "_Undo Duplicate %d item"
 msgid_plural "_Undo Duplicate %d items"
-msgstr[0] "%'d ఫైలుని నకిలీచేస్తున్నది"
-msgstr[1] "%'d ఫైళ్ళను నకిలీచేస్తున్నది"
+msgstr[0] "%d నకిలీ అంశమును  రద్దుచేయుము(_U)"
+msgstr[1] "%d నకిలీ అంశములను  రద్దుచేయుము(_U)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:436
-#, fuzzy, c-format
 msgid "_Redo Duplicate %d item"
 msgid_plural "_Redo Duplicate %d items"
-msgstr[0] "%'d ఫైలుని నకిలీచేస్తున్నది"
-msgstr[1] "%'d ఫైళ్ళను నకిలీచేస్తున్నది"
+msgstr[0] "%d నకిలీ అంశమును  మరళచేయుము(_R)"
+msgstr[1] "%d నకిలీ అంశములను  మరళచేయుము(_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:441
-#, fuzzy, c-format
 msgid "Duplicate '%s' in '%s'"
-msgstr "\"%B\" కి నకిలీచేయుచున్నది"
+msgstr "'%s'ను '%s'కు నకిలీచేయుచున్నది"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:444
-#, fuzzy
 msgid "_Undo Duplicate"
-msgstr "నకిళీచేయి (_u)"
+msgstr "నకిళీ రద్దుచేయి (_U)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:445
-#, fuzzy
 msgid "_Redo Duplicate"
-msgstr "నకిళీచేయి (_u)"
+msgstr "నకిళీ మరళచేయి (_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:449
-#, fuzzy, c-format
 msgid "Delete links to %d item"
 msgid_plural "Delete links to %d items"
-msgstr[0] "అంశములను తెరుచుటకు రెండు సార్లు నొక్కండి(_D)"
-msgstr[1] "అంశములను తెరుచుటకు రెండు సార్లు నొక్కండి(_D)"
+msgstr[0] "%d అంశమును యొక్క లింక్ లను తొలగించుము"
+msgstr[1] "%d అంశములను యొక్క లింక్ లను తొలగించుము"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:452
-#, fuzzy, c-format
 msgid "Create links to %d item"
 msgid_plural "Create links to %d items"
-msgstr[0] "%'d ఫైలుకు లంకె తయారుచేస్తోంది"
-msgstr[1] "%'d ఫైళ్ళకు లంకెలు తయారుచేస్తోంది"
+msgstr[0] "%d అంశమును యొక్క లింక్ ను సృష్టించుము"
+msgstr[1] "%d అంశమును యొక్క లింక్ ను సృష్టించుము"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:456
-#, fuzzy, c-format
 msgid "Delete link to '%s'"
-msgstr "%s నకు మరొక లంకె చేయి"
+msgstr "'%s' నకు లింక్ తొలగించుము"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:457
-#, fuzzy, c-format
 msgid "Create link to '%s'"
-msgstr "%s నకు మరొక లంకె చేయి"
+msgstr "'%s' నకు లింక్ సృష్టించుము"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:459
-#, fuzzy
 msgid "_Undo Create Link"
-msgstr "సవరణను రద్దు చేయి"
+msgstr "లింక్ ను రద్దు చేయి(_U)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:460
-#, fuzzy
 msgid "_Redo Create Link"
-msgstr "సవరణను మళ్ళీచేయి"
+msgstr "లింక్ ను మరళచేయి(_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:676
-#, fuzzy, c-format
 msgid "Create an empty file '%s'"
-msgstr "ఫైళ్ళను సృష్టించు మరియు తొలగించు"
+msgstr "'%s'ఖాళీ ఫైళ్ళను సృష్టించు "
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:678
-#, fuzzy
 msgid "_Undo Create Empty File"
-msgstr "ఖాళీ దస్త్రము(_E)"
+msgstr "ఖాళీ దస్త్రము సృష్టించుట రద్దుచేయుము(_U)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:679
-#, fuzzy
 msgid "_Redo Create Empty File"
-msgstr "ఖాళీ దస్త్రము(_E)"
+msgstr "ఖాళీ దస్త్రము సృష్టించుట రద్దుచేయుము(_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:681
 #, c-format
@@ -1710,17 +1679,16 @@ msgid "_Redo Create Folder"
 msgstr "సంచయమును సృష్టించుటను మళ్ళీచేయి (_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:686
-#, fuzzy, c-format
 msgid "Create new file '%s' from template "
-msgstr "\"%s\" టెంప్లేట్ నుండి ఒక కొత్త పత్రాన్ని సృష్టించు"
+msgstr "'%s' టెంప్లేట్ నుండి ఒక కొత్త పత్రాన్ని సృష్టించు"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:688
 msgid "_Undo Create from Template"
-msgstr ""
+msgstr "టెంప్లేట్ నుండి  సృష్టించుట రద్దుచేయు(_U)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:689
 msgid "_Redo Create from Template"
-msgstr ""
+msgstr "టెంప్లేట్ నుండి  సృష్టించుట మరళచేయు(_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:869
 #: ../libnautilus-private/nautilus-file-undo-operations.c:870
@@ -1737,58 +1705,51 @@ msgid "_Redo Rename"
 msgstr "పేరుమార్పును మళ్ళీచేయి...(_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:984
-#, fuzzy, c-format
 msgid "Move %d item to trash"
 msgid_plural "Move %d items to trash"
-msgstr[0] "ఫైళ్ళను చెత్తబుట్టకు తరలిస్తున్నది"
-msgstr[1] "ఫైళ్ళను చెత్తబుట్టకు తరలిస్తున్నది"
+msgstr[0] "%d ఫైళ్ళను చెత్తబుట్టకు తరలిస్తున్నది"
+msgstr[1] "%d ఫైళ్ళను చెత్తబుట్టకు తరలిస్తున్నది"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:996
 #, c-format
 msgid "Restore '%s' to '%s'"
-msgstr ""
+msgstr "'%s' ను '%s'నుంచి యధాస్థానమునకు తరలించుము"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1003
-#, fuzzy, c-format
 msgid "Move '%s' to trash"
-msgstr "చెత్తబుట్టకి కదుపు (_v)"
+msgstr "'%s' ని చెత్తబుట్టకి కదుపు "
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1007
-#, fuzzy
 msgid "_Undo Trash"
-msgstr "చెత్తబుట్ట (_T)"
+msgstr "చెత్తబుట్టకు తరళించుట రద్దుచేయుము(_U)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1008
-#, fuzzy
 msgid "_Redo Trash"
-msgstr "చెత్తబుట్టకి కదుపు (_v)"
+msgstr "చెత్తబుట్టకు తరళించుట మరళచేయుము(_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1301
 #, c-format
 msgid "Restore original permissions of items enclosed in '%s'"
-msgstr ""
+msgstr "'%s'లోనున్న అంశముల యొక్క నిజమైన అనుమతులు యధాస్థానమున ఉంచుము"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1302
-#, fuzzy, c-format
 msgid "Set permissions of items enclosed in '%s'"
-msgstr "ఫైల్ యొక్క అనుమతులు."
+msgstr "'%s'ఫైల్ యొక్క అనుమతులు అమర్చు"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1304
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1459
-#, fuzzy
 msgid "_Undo Change Permissions"
-msgstr "సంచయము అనుమతులు:"
+msgstr "అనుమతులు మార్పు రద్దుచేయుము(_U)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1305
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1460
-#, fuzzy
 msgid "_Redo Change Permissions"
-msgstr "సంచయము అనుమతులు:"
+msgstr "అనుమతులు మార్పు మరళచేయుము(_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1456
 #, c-format
 msgid "Restore original permissions of '%s'"
-msgstr ""
+msgstr "'%s'యొక్క నిజమైన అనుమతులు యధాస్థానమున ఉంచుము"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1457
 #, c-format
@@ -1798,30 +1759,30 @@ msgstr "'%s' అనుమతులను అమర్చు"
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1567
 #, c-format
 msgid "Restore group of '%s' to '%s'"
-msgstr ""
+msgstr "'%s'నుంచి'%s' సమూహమునకు యధాస్థానమునకు మార్చు"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1569
 #, c-format
 msgid "Set group of '%s' to '%s'"
-msgstr ""
+msgstr "'%s'నుంచి'%s' సమూహమునకు అమర్చు"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1572
 msgid "_Undo Change Group"
-msgstr ""
+msgstr "సమూహమునకు మార్పు రద్దుచేయు(_U)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1573
 msgid "_Redo Change Group"
-msgstr ""
+msgstr "సమూహమునకు మార్పు రద్దుచేయు(_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1575
 #, c-format
 msgid "Restore owner of '%s' to '%s'"
-msgstr ""
+msgstr "యజమాని'%s'ని '%s' యధాస్థానమునకు మార్చు"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1577
 #, c-format
 msgid "Set owner of '%s' to '%s'"
-msgstr ""
+msgstr "యజమాని'%s'ని '%s'నకు మార్చు"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1580
 msgid "_Undo Change Owner"
@@ -5103,7 +5064,6 @@ msgstr "మళ్ళీచేయి (_R)"
 
 #. tooltip
 #: ../src/nautilus-view.c:7064
-#, fuzzy
 msgid "Redo the last undone action"
 msgstr "చివరగా చేసిన పాఠము మార్పును రద్దు చేయి"
 
@@ -5667,8 +5627,8 @@ msgid ""
 "Street, Fifth Floor, Boston, MA 02110-1301 USA"
 msgstr ""
 "మీరు నాటిలస్‌తో పాటుగా గ్నూ జనరల్ పబ్లిక్ లైసెన్స్ యొక్క నకలు పొందివుండాలి; ఒకవేళ పొందకపోతే, Free "
-"Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA "
-"02110-1301 USA కి వ్రాయండి"
+"Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-"
+"1301 USA కి వ్రాయండి"
 
 #. Translators: these two strings here indicate the copyright time span,
 #. * e.g. 1999-2011.
