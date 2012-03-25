@@ -19,8 +19,8 @@ msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2012-02-16 05:12+0000\n"
-"PO-Revision-Date: 2012-02-16 15:11+0900\n"
+"POT-Creation-Date: 2012-03-24 16:44+0000\n"
+"PO-Revision-Date: 2012-03-25 15:39+0900\n"
 "Last-Translator: Jiro Matsuzawa <jmatsuzawa@src.gnome.org>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -124,7 +124,7 @@ msgstr " (Unicode が正しくありません)"
 #: ../libnautilus-private/nautilus-bookmark.c:129
 #: ../libnautilus-private/nautilus-desktop-link.c:120
 #: ../libnautilus-private/nautilus-file-utilities.c:68
-#: ../src/nautilus-pathbar.c:1202 ../src/nautilus-places-sidebar.c:680
+#: ../src/nautilus-pathbar.c:1273 ../src/nautilus-places-sidebar.c:700
 #: ../src/nautilus-tree-sidebar.c:1338
 msgid "Home"
 msgstr "ホーム"
@@ -152,7 +152,7 @@ msgstr "クリップボードに格納したテキストを貼り付けます"
 
 #. name, stock id
 #. label, accelerator
-#: ../libnautilus-private/nautilus-clipboard.c:444 ../src/nautilus-view.c:7020
+#: ../libnautilus-private/nautilus-clipboard.c:444 ../src/nautilus-view.c:7019
 msgid "Select _All"
 msgstr "すべて選択(_A)"
 
@@ -258,7 +258,7 @@ msgstr "ファイルの MIME 型"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:121
 msgid "SELinux Context"
-msgstr "SELinux のコンテキスト"
+msgstr "SELinux コンテキスト"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:122
 msgid "The SELinux security context of the file."
@@ -336,50 +336,50 @@ msgstr "背景としてセット(_B)"
 msgid "Cancel"
 msgstr "キャンセル"
 
-#: ../libnautilus-private/nautilus-file.c:1210
+#: ../libnautilus-private/nautilus-file.c:1209
 #: ../libnautilus-private/nautilus-vfs-file.c:382
 msgid "This file cannot be mounted"
 msgstr "このファイルはマウントできません"
 
-#: ../libnautilus-private/nautilus-file.c:1255
+#: ../libnautilus-private/nautilus-file.c:1254
 msgid "This file cannot be unmounted"
 msgstr "このファイルはアンマウントできません"
 
-#: ../libnautilus-private/nautilus-file.c:1289
+#: ../libnautilus-private/nautilus-file.c:1288
 msgid "This file cannot be ejected"
 msgstr "このファイルは取り出せません"
 
-#: ../libnautilus-private/nautilus-file.c:1322
+#: ../libnautilus-private/nautilus-file.c:1321
 #: ../libnautilus-private/nautilus-vfs-file.c:560
 msgid "This file cannot be started"
 msgstr "このファイルは起動できません"
 
-#: ../libnautilus-private/nautilus-file.c:1374
-#: ../libnautilus-private/nautilus-file.c:1405
+#: ../libnautilus-private/nautilus-file.c:1373
+#: ../libnautilus-private/nautilus-file.c:1404
 msgid "This file cannot be stopped"
 msgstr "このファイルは停止できません"
 
-#: ../libnautilus-private/nautilus-file.c:1816
+#: ../libnautilus-private/nautilus-file.c:1815
 #, c-format
 msgid "Slashes are not allowed in filenames"
 msgstr "ファイル名にスラッシュは使えません"
 
-#: ../libnautilus-private/nautilus-file.c:1834
+#: ../libnautilus-private/nautilus-file.c:1833
 #, c-format
 msgid "File not found"
 msgstr "ファイルが見つかりません"
 
-#: ../libnautilus-private/nautilus-file.c:1862
+#: ../libnautilus-private/nautilus-file.c:1861
 #, c-format
 msgid "Toplevel files cannot be renamed"
 msgstr "トップレベルのファイル名を変更できません"
 
-#: ../libnautilus-private/nautilus-file.c:1885
+#: ../libnautilus-private/nautilus-file.c:1884
 #, c-format
 msgid "Unable to rename desktop icon"
 msgstr "デスクトップのアイコン名を変更できません"
 
-#: ../libnautilus-private/nautilus-file.c:1914
+#: ../libnautilus-private/nautilus-file.c:1913
 #, c-format
 msgid "Unable to rename desktop file"
 msgstr "デスクトップのファイル名を変更できません"
@@ -399,65 +399,65 @@ msgstr "デスクトップのファイル名を変更できません"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: ../libnautilus-private/nautilus-file.c:4362
+#: ../libnautilus-private/nautilus-file.c:4361
 msgid "today at 00:00:00 PM"
 msgstr "今日の午後00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4363
+#: ../libnautilus-private/nautilus-file.c:4362
 #: ../src/nautilus-file-management-properties.c:470
 msgid "today at %-I:%M:%S %p"
 msgstr "今日の%p%-I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4365
+#: ../libnautilus-private/nautilus-file.c:4364
 msgid "today at 00:00 PM"
 msgstr "今日の午後00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4366
+#: ../libnautilus-private/nautilus-file.c:4365
 msgid "today at %-I:%M %p"
 msgstr "今日の%p%-I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4368
+#: ../libnautilus-private/nautilus-file.c:4367
 msgid "today, 00:00 PM"
 msgstr "今日の午後00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4369
+#: ../libnautilus-private/nautilus-file.c:4368
 msgid "today, %-I:%M %p"
 msgstr "今日の%p%-I:%M"
 
+#: ../libnautilus-private/nautilus-file.c:4370
 #: ../libnautilus-private/nautilus-file.c:4371
-#: ../libnautilus-private/nautilus-file.c:4372
 msgid "today"
 msgstr "今日"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: ../libnautilus-private/nautilus-file.c:4381
+#: ../libnautilus-private/nautilus-file.c:4380
 msgid "yesterday at 00:00:00 PM"
 msgstr "昨日の午後00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4382
+#: ../libnautilus-private/nautilus-file.c:4381
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "昨日の%p%-I:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:4384
+#: ../libnautilus-private/nautilus-file.c:4383
 msgid "yesterday at 00:00 PM"
 msgstr "昨日の午後00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4385
+#: ../libnautilus-private/nautilus-file.c:4384
 msgid "yesterday at %-I:%M %p"
 msgstr "昨日の%p%-I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4387
+#: ../libnautilus-private/nautilus-file.c:4386
 msgid "yesterday, 00:00 PM"
 msgstr "昨日の午後00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4388
+#: ../libnautilus-private/nautilus-file.c:4387
 msgid "yesterday, %-I:%M %p"
 msgstr "昨日の%p%-I:%M"
 
+#: ../libnautilus-private/nautilus-file.c:4389
 #: ../libnautilus-private/nautilus-file.c:4390
-#: ../libnautilus-private/nautilus-file.c:4391
 msgid "yesterday"
 msgstr "昨日"
 
@@ -466,137 +466,137 @@ msgstr "昨日"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: ../libnautilus-private/nautilus-file.c:4402
+#: ../libnautilus-private/nautilus-file.c:4401
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "0000年9月00日 水曜日 午後00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4403
+#: ../libnautilus-private/nautilus-file.c:4402
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%Y年%-m月%-d日 %A %p%-I:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:4405
+#: ../libnautilus-private/nautilus-file.c:4404
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "0000/10/00 (月) 午後00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4406
+#: ../libnautilus-private/nautilus-file.c:4405
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%Y/%-m/%-d (%a) %p%-I:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:4408
+#: ../libnautilus-private/nautilus-file.c:4407
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "0000/10/00 (月) 午後00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4409
+#: ../libnautilus-private/nautilus-file.c:4408
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%Y/%-m/%-d (%a) %p%-I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4411
+#: ../libnautilus-private/nautilus-file.c:4410
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "0000/10/00 午後00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4412
+#: ../libnautilus-private/nautilus-file.c:4411
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%Y/%-m/%-d %p%-I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4414
+#: ../libnautilus-private/nautilus-file.c:4413
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "0000/10/00 午後00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4415
+#: ../libnautilus-private/nautilus-file.c:4414
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%Y/%-m/%-d %p%-I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4417
+#: ../libnautilus-private/nautilus-file.c:4416
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00 午後00:00"
 
-#: ../libnautilus-private/nautilus-file.c:4418
+#: ../libnautilus-private/nautilus-file.c:4417
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%y/%-m/%-d %p%-I:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4420
+#: ../libnautilus-private/nautilus-file.c:4419
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: ../libnautilus-private/nautilus-file.c:4421
+#: ../libnautilus-private/nautilus-file.c:4420
 msgid "%m/%d/%y"
 msgstr "%y/%m/%d"
 
-#: ../libnautilus-private/nautilus-file.c:5059
+#: ../libnautilus-private/nautilus-file.c:5058
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "アクセス権は指定できません"
 
-#: ../libnautilus-private/nautilus-file.c:5354
+#: ../libnautilus-private/nautilus-file.c:5353
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "所有者は指定できません"
 
-#: ../libnautilus-private/nautilus-file.c:5372
+#: ../libnautilus-private/nautilus-file.c:5371
 #, c-format
 msgid "Specified owner '%s' doesn't exist"
 msgstr "指定した '%s' という所有者は存在しません"
 
-#: ../libnautilus-private/nautilus-file.c:5636
+#: ../libnautilus-private/nautilus-file.c:5635
 #, c-format
 msgid "Not allowed to set group"
 msgstr "グループは指定できません"
 
-#: ../libnautilus-private/nautilus-file.c:5654
+#: ../libnautilus-private/nautilus-file.c:5653
 #, c-format
 msgid "Specified group '%s' doesn't exist"
 msgstr "指定した '%s' というグループは存在しません"
 
-#: ../libnautilus-private/nautilus-file.c:5811 ../src/nautilus-view.c:2856
+#: ../libnautilus-private/nautilus-file.c:5810 ../src/nautilus-view.c:2856
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
 msgstr[0] "%'u個のアイテム"
 
-#: ../libnautilus-private/nautilus-file.c:5812
+#: ../libnautilus-private/nautilus-file.c:5811
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u個のフォルダー"
 
-#: ../libnautilus-private/nautilus-file.c:5813
+#: ../libnautilus-private/nautilus-file.c:5812
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
 msgstr[0] "%'u個のファイル"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:6195
-#: ../libnautilus-private/nautilus-file.c:6211
+#: ../libnautilus-private/nautilus-file.c:6194
+#: ../libnautilus-private/nautilus-file.c:6210
 msgid "? items"
 msgstr "?個のアイテム"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:6201
+#: ../libnautilus-private/nautilus-file.c:6200
 msgid "? bytes"
 msgstr "?バイト"
 
-#: ../libnautilus-private/nautilus-file.c:6216
+#: ../libnautilus-private/nautilus-file.c:6215
 msgid "unknown type"
 msgstr "不明な種類"
 
-#: ../libnautilus-private/nautilus-file.c:6219
+#: ../libnautilus-private/nautilus-file.c:6218
 msgid "unknown MIME type"
 msgstr "不明な MIME 型"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:6233
+#: ../libnautilus-private/nautilus-file.c:6232
 #: ../src/nautilus-properties-window.c:1122
 msgid "unknown"
 msgstr "不明"
 
-#: ../libnautilus-private/nautilus-file.c:6283
+#: ../libnautilus-private/nautilus-file.c:6282
 msgid "program"
 msgstr "プログラム"
 
-#: ../libnautilus-private/nautilus-file.c:6303
+#: ../libnautilus-private/nautilus-file.c:6302
 msgid "link"
 msgstr "リンク"
 
@@ -605,14 +605,14 @@ msgstr "リンク"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file.c:6309
+#: ../libnautilus-private/nautilus-file.c:6308
 #: ../libnautilus-private/nautilus-file-operations.c:377
 #: ../src/nautilus-view-dnd.c:125
 #, c-format
 msgid "Link to %s"
 msgstr "%sへのリンク"
 
-#: ../libnautilus-private/nautilus-file.c:6325
+#: ../libnautilus-private/nautilus-file.c:6324
 msgid "link (broken)"
 msgstr "リンク切れ"
 
@@ -952,7 +952,7 @@ msgstr "ここでアイテムを削除すると元に戻すことはできませ
 
 #: ../libnautilus-private/nautilus-file-operations.c:1343
 msgid "Empty all items from Trash?"
-msgstr "ゴミ箱からすべてのアイテムを空にしてもよろしいですか?"
+msgstr "ゴミ箱からすべてのアイテムを削除してもよろしいですか?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1347
 msgid "All items in the Trash will be permanently deleted."
@@ -961,7 +961,7 @@ msgstr "ここでアイテムを削除すると元に戻すことはできませ
 #. Empty Trash menu item
 #: ../libnautilus-private/nautilus-file-operations.c:1350
 #: ../libnautilus-private/nautilus-file-operations.c:2209
-#: ../src/nautilus-places-sidebar.c:2730 ../src/nautilus-trash-bar.c:204
+#: ../src/nautilus-places-sidebar.c:2788 ../src/nautilus-trash-bar.c:204
 msgid "Empty _Trash"
 msgstr "ゴミ箱を空にする(_T)"
 
@@ -998,7 +998,7 @@ msgstr[0] "残り %T"
 #: ../libnautilus-private/nautilus-file-operations.c:1544
 #: ../libnautilus-private/nautilus-file-operations.c:1583
 #: ../libnautilus-private/nautilus-file-operations.c:1660
-#: ../libnautilus-private/nautilus-file-operations.c:2454
+#: ../libnautilus-private/nautilus-file-operations.c:2462
 msgid "Error while deleting."
 msgstr "削除中にエラーが発生しました。"
 
@@ -1011,8 +1011,8 @@ msgstr ""
 "ファイルを削除できません。"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1517
-#: ../libnautilus-private/nautilus-file-operations.c:2513
-#: ../libnautilus-private/nautilus-file-operations.c:3501
+#: ../libnautilus-private/nautilus-file-operations.c:2521
+#: ../libnautilus-private/nautilus-file-operations.c:3509
 msgid ""
 "There was an error getting information about the files in the folder \"%B\"."
 msgstr ""
@@ -1020,7 +1020,7 @@ msgstr ""
 "した。"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1526
-#: ../libnautilus-private/nautilus-file-operations.c:3510
+#: ../libnautilus-private/nautilus-file-operations.c:3518
 msgid "_Skip files"
 msgstr "ファイルのスキップ(_S)"
 
@@ -1033,8 +1033,8 @@ msgstr ""
 "ん。"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1550
-#: ../libnautilus-private/nautilus-file-operations.c:2552
-#: ../libnautilus-private/nautilus-file-operations.c:3546
+#: ../libnautilus-private/nautilus-file-operations.c:2560
+#: ../libnautilus-private/nautilus-file-operations.c:3554
 msgid "There was an error reading the folder \"%B\"."
 msgstr "\"%B\" というフォルダーを読み込んでいる際にエラーが発生しました。"
 
@@ -1096,53 +1096,53 @@ msgstr ""
 msgid "Do _not Empty Trash"
 msgstr "ゴミ箱を空にしない(_N)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2325
+#: ../libnautilus-private/nautilus-file-operations.c:2333
 #, c-format
 msgid "Unable to mount %s"
 msgstr "%s をマウントできません"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2401
+#: ../libnautilus-private/nautilus-file-operations.c:2409
 #, c-format
 msgid "Preparing to copy %'d file (%S)"
 msgid_plural "Preparing to copy %'d files (%S)"
 msgstr[0] "%'d 個のファイル (%S) をコピーする準備中..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2407
+#: ../libnautilus-private/nautilus-file-operations.c:2415
 #, c-format
 msgid "Preparing to move %'d file (%S)"
 msgid_plural "Preparing to move %'d files (%S)"
 msgstr[0] "%'d 個のファイル (%S) を移動する準備中..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2413
+#: ../libnautilus-private/nautilus-file-operations.c:2421
 #, c-format
 msgid "Preparing to delete %'d file (%S)"
 msgid_plural "Preparing to delete %'d files (%S)"
 msgstr[0] "%'d 個のファイル (%S) を削除する準備中..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2419
+#: ../libnautilus-private/nautilus-file-operations.c:2427
 #, c-format
 msgid "Preparing to trash %'d file"
 msgid_plural "Preparing to trash %'d files"
 msgstr[0] "%'d 個のファイルをゴミ箱に移動する準備中..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2450
-#: ../libnautilus-private/nautilus-file-operations.c:3361
-#: ../libnautilus-private/nautilus-file-operations.c:3493
-#: ../libnautilus-private/nautilus-file-operations.c:3538
+#: ../libnautilus-private/nautilus-file-operations.c:2458
+#: ../libnautilus-private/nautilus-file-operations.c:3369
+#: ../libnautilus-private/nautilus-file-operations.c:3501
+#: ../libnautilus-private/nautilus-file-operations.c:3546
 msgid "Error while copying."
 msgstr "コピー中にエラーが発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2452
-#: ../libnautilus-private/nautilus-file-operations.c:3491
-#: ../libnautilus-private/nautilus-file-operations.c:3536
+#: ../libnautilus-private/nautilus-file-operations.c:2460
+#: ../libnautilus-private/nautilus-file-operations.c:3499
+#: ../libnautilus-private/nautilus-file-operations.c:3544
 msgid "Error while moving."
 msgstr "移動中にエラーが発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2456
+#: ../libnautilus-private/nautilus-file-operations.c:2464
 msgid "Error while moving files to trash."
 msgstr "ファイルをゴミ箱へ移動する際にエラーが発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2510
+#: ../libnautilus-private/nautilus-file-operations.c:2518
 msgid ""
 "Files in the folder \"%B\" cannot be handled because you do not have "
 "permissions to see them."
@@ -1150,7 +1150,7 @@ msgstr ""
 "\"%B\" というフォルダーの中にあるファイルを参照する権限がないため、それらの"
 "ファイルを操作できません。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2549
+#: ../libnautilus-private/nautilus-file-operations.c:2557
 msgid ""
 "The folder \"%B\" cannot be handled because you do not have permissions to "
 "read it."
@@ -1158,37 +1158,37 @@ msgstr ""
 "\"%B\" というフォルダーを参照する権限がないため、そのフォルダーを操作できませ"
 "ん。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2626
+#: ../libnautilus-private/nautilus-file-operations.c:2634
 msgid ""
 "The file \"%B\" cannot be handled because you do not have permissions to "
 "read it."
 msgstr ""
 "\"%B\" というファイルを参照する権限がないため、そのファイルを操作できません。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2629
+#: ../libnautilus-private/nautilus-file-operations.c:2637
 msgid "There was an error getting information about \"%B\"."
 msgstr "\"%B\" の情報を取得する際にエラーが発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2730
-#: ../libnautilus-private/nautilus-file-operations.c:2772
-#: ../libnautilus-private/nautilus-file-operations.c:2806
-#: ../libnautilus-private/nautilus-file-operations.c:2836
+#: ../libnautilus-private/nautilus-file-operations.c:2738
+#: ../libnautilus-private/nautilus-file-operations.c:2780
+#: ../libnautilus-private/nautilus-file-operations.c:2814
+#: ../libnautilus-private/nautilus-file-operations.c:2844
 msgid "Error while copying to \"%B\"."
 msgstr "\"%B\" へコピー中にエラーが発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2734
+#: ../libnautilus-private/nautilus-file-operations.c:2742
 msgid "You do not have permissions to access the destination folder."
 msgstr "転送先のフォルダーにアクセスする権限がありません。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2736
+#: ../libnautilus-private/nautilus-file-operations.c:2744
 msgid "There was an error getting information about the destination."
 msgstr "転送先の情報を取得する際にエラーが発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2773
+#: ../libnautilus-private/nautilus-file-operations.c:2781
 msgid "The destination is not a folder."
 msgstr "その場所はフォルダーではありません。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2807
+#: ../libnautilus-private/nautilus-file-operations.c:2815
 msgid ""
 "There is not enough space on the destination. Try to remove files to make "
 "space."
@@ -1196,71 +1196,54 @@ msgstr ""
 "転送先に十分な空き容量がありません (容量を増やすためにファイルを削除してみて"
 "ください)。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2809
+#: ../libnautilus-private/nautilus-file-operations.c:2817
 #, c-format
 msgid "%S more space is required to copy to the destination."
-msgstr ""
+msgstr "転送先にコピーするには、%S 以上の空き容量が必要です。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2837
+#: ../libnautilus-private/nautilus-file-operations.c:2845
 msgid "The destination is read-only."
 msgstr "コピー先は読み込み専用です。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2896
+#: ../libnautilus-private/nautilus-file-operations.c:2904
 msgid "Moving \"%B\" to \"%B\""
 msgstr "\"%B\" から \"%B\" へ移動中"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2897
+#: ../libnautilus-private/nautilus-file-operations.c:2905
 msgid "Copying \"%B\" to \"%B\""
 msgstr "\"%B\" から \"%B\" へコピー中"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2904
-msgid "Duplicating \"%B\""
-msgstr "\"%B\" の複製を生成中"
-
 #: ../libnautilus-private/nautilus-file-operations.c:2912
-#, fuzzy
-#| msgid "Moving %'d file (in \"%B\") to \"%B\""
-#| msgid_plural "Moving %'d files (in \"%B\") to \"%B\""
+msgid "Duplicating \"%B\""
+msgstr "\"%B\" の複製中"
+
+#: ../libnautilus-private/nautilus-file-operations.c:2920
 msgid "Moving file %'d of %'d (in \"%B\") to \"%B\""
-msgstr "%'d 個のファイルを \"%B\" から \"%B\" へ移動中"
+msgstr "%'d / %'d のファイルを \"%B\" から \"%B\" へ移動中"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2914
-#, fuzzy
-#| msgid "Copying %'d file (in \"%B\") to \"%B\""
-#| msgid_plural "Copying %'d files (in \"%B\") to \"%B\""
+#: ../libnautilus-private/nautilus-file-operations.c:2922
 msgid "Copying file %'d of %'d (in \"%B\") to \"%B\""
-msgstr "%'d 個のファイルを \"%B\" から \"%B\" へコピー中"
+msgstr "%'d / %'d のファイルを \"%B\" から \"%B\" へコピー中"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2921
-#, fuzzy
-#| msgid "Duplicating %'d file (in \"%B\")"
-#| msgid_plural "Duplicating %'d files (in \"%B\")"
+#: ../libnautilus-private/nautilus-file-operations.c:2929
 msgid "Duplicating file %'d of %'d (in \"%B\")"
-msgstr "%'d 個のファイルの複製を \"%B\" の中に生成中"
-
-#: ../libnautilus-private/nautilus-file-operations.c:2930
-#, fuzzy
-#| msgid "Moving %'d file to \"%B\""
-#| msgid_plural "Moving %'d files to \"%B\""
-msgid "Moving file %'d of %'d to \"%B\""
-msgstr "%'d 個のファイルを \"%B\" へ移動中"
-
-#: ../libnautilus-private/nautilus-file-operations.c:2932
-#, fuzzy
-#| msgid "Copying %'d file to \"%B\""
-#| msgid_plural "Copying %'d files to \"%B\""
-msgid "Copying file %'d of %'d to \"%B\""
-msgstr "%'d 個のファイルを \"%B\" へコピー中"
+msgstr "%'d / %'d のファイルを \"%B\" から \"%B\" へ複製中"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2938
-#, fuzzy, c-format
-#| msgid "Duplicating %'d file"
-#| msgid_plural "Duplicating %'d files"
+msgid "Moving file %'d of %'d to \"%B\""
+msgstr "%'d / %'d のファイルを \"%B\" へ移動中"
+
+#: ../libnautilus-private/nautilus-file-operations.c:2940
+msgid "Copying file %'d of %'d to \"%B\""
+msgstr "%'d / %'d のファイルを \"%B\" へコピー中"
+
+#: ../libnautilus-private/nautilus-file-operations.c:2946
+#, c-format
 msgid "Duplicating file %'d of %'d"
-msgstr "%'d 個のファイルの複製を生成中"
+msgstr "%'d / %'d のファイルを複製中"
 
 #. To translators: %S will expand to a size like "2 bytes" or "3 MB", so something like "4 kb of 4 MB"
-#: ../libnautilus-private/nautilus-file-operations.c:2957
+#: ../libnautilus-private/nautilus-file-operations.c:2965
 #, c-format
 msgid "%S of %S"
 msgstr "%S / %S"
@@ -1270,24 +1253,24 @@ msgstr "%S / %S"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:2968
+#: ../libnautilus-private/nautilus-file-operations.c:2976
 msgid "%S of %S — %T left (%S/sec)"
 msgid_plural "%S of %S — %T left (%S/sec)"
 msgstr[0] "%S / %S — 残り %T (%S/秒)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3365
+#: ../libnautilus-private/nautilus-file-operations.c:3373
 msgid ""
 "The folder \"%B\" cannot be copied because you do not have permissions to "
 "create it in the destination."
 msgstr ""
-"\"%B\" というフォルダーをコピー先に生成する権限がないため、そのフォルダーをコ"
+"\"%B\" というフォルダーをコピー先に作成する権限がないため、そのフォルダーをコ"
 "ピーできません。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3368
+#: ../libnautilus-private/nautilus-file-operations.c:3376
 msgid "There was an error creating the folder \"%B\"."
-msgstr "\"%B\" というフォルダーを生成する際にエラーが発生しました。"
+msgstr "\"%B\" というフォルダーを作成する際にエラーが発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3498
+#: ../libnautilus-private/nautilus-file-operations.c:3506
 msgid ""
 "Files in the folder \"%B\" cannot be copied because you do not have "
 "permissions to see them."
@@ -1295,7 +1278,7 @@ msgstr ""
 "\"%B\" というフォルダーの中にあるファイルを参照する権限がないため、それらの"
 "ファイルをコピーできません。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3543
+#: ../libnautilus-private/nautilus-file-operations.c:3551
 msgid ""
 "The folder \"%B\" cannot be copied because you do not have permissions to "
 "read it."
@@ -1303,586 +1286,516 @@ msgstr ""
 "\"%B\" というフォルダーを参照する権限がないため、そのフォルダーをコピーできま"
 "せん。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3588
-#: ../libnautilus-private/nautilus-file-operations.c:4279
-#: ../libnautilus-private/nautilus-file-operations.c:4891
+#: ../libnautilus-private/nautilus-file-operations.c:3596
+#: ../libnautilus-private/nautilus-file-operations.c:4287
+#: ../libnautilus-private/nautilus-file-operations.c:4899
 msgid "Error while moving \"%B\"."
 msgstr "\"%B\" の移動中にエラーが発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3589
+#: ../libnautilus-private/nautilus-file-operations.c:3597
 msgid "Could not remove the source folder."
 msgstr "転送元のフォルダーを削除できませんでした。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3674
-#: ../libnautilus-private/nautilus-file-operations.c:3715
-#: ../libnautilus-private/nautilus-file-operations.c:4281
-#: ../libnautilus-private/nautilus-file-operations.c:4352
+#: ../libnautilus-private/nautilus-file-operations.c:3682
+#: ../libnautilus-private/nautilus-file-operations.c:3723
+#: ../libnautilus-private/nautilus-file-operations.c:4289
+#: ../libnautilus-private/nautilus-file-operations.c:4360
 msgid "Error while copying \"%B\"."
 msgstr "\"%B\" のコピー中にエラーが発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3675
+#: ../libnautilus-private/nautilus-file-operations.c:3683
 #, c-format
 msgid "Could not remove files from the already existing folder %F."
 msgstr ""
 "既に存在している %F というフォルダーからファイルを削除できませんでした。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3716
+#: ../libnautilus-private/nautilus-file-operations.c:3724
 #, c-format
 msgid "Could not remove the already existing file %F."
 msgstr "既に存在しているファイル %F を削除できませんでした。"
 
 #. the run_warning() frees all strings passed in automatically
-#: ../libnautilus-private/nautilus-file-operations.c:4034
-#: ../libnautilus-private/nautilus-file-operations.c:4737
+#: ../libnautilus-private/nautilus-file-operations.c:4042
+#: ../libnautilus-private/nautilus-file-operations.c:4745
 msgid "You cannot move a folder into itself."
 msgstr "フォルダーを自分自身の中に移動することはできません。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4035
-#: ../libnautilus-private/nautilus-file-operations.c:4738
+#: ../libnautilus-private/nautilus-file-operations.c:4043
+#: ../libnautilus-private/nautilus-file-operations.c:4746
 msgid "You cannot copy a folder into itself."
 msgstr "フォルダーを自分自身の中にコピーすることはできません。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4036
-#: ../libnautilus-private/nautilus-file-operations.c:4739
+#: ../libnautilus-private/nautilus-file-operations.c:4044
+#: ../libnautilus-private/nautilus-file-operations.c:4747
 msgid "The destination folder is inside the source folder."
 msgstr "転送先のフォルダーが転送元のフォルダーの中にあります。"
 
 #. the run_warning() frees all strings passed in automatically
-#: ../libnautilus-private/nautilus-file-operations.c:4067
+#: ../libnautilus-private/nautilus-file-operations.c:4075
 msgid "You cannot move a file over itself."
 msgstr "ファイルを自分自身に移動することはできません。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4068
+#: ../libnautilus-private/nautilus-file-operations.c:4076
 msgid "You cannot copy a file over itself."
 msgstr "ファイルを自分自身にコピーすることはできません。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4069
+#: ../libnautilus-private/nautilus-file-operations.c:4077
 msgid "The source file would be overwritten by the destination."
 msgstr "転送元のファイルが転送先で上書きされます。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4283
+#: ../libnautilus-private/nautilus-file-operations.c:4291
 #, c-format
 msgid "Could not remove the already existing file with the same name in %F."
 msgstr "%F の中にある同名のファイルを削除できませんでした。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4353
+#: ../libnautilus-private/nautilus-file-operations.c:4361
 #, c-format
 msgid "There was an error copying the file into %F."
 msgstr "ファイルを %F へコピーする際にエラーが発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4585
-#: ../libnautilus-private/nautilus-file-operations.c:4619
+#: ../libnautilus-private/nautilus-file-operations.c:4593
+#: ../libnautilus-private/nautilus-file-operations.c:4627
 msgid "Copying Files"
 msgstr "ファイルをコピー中"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4647
+#: ../libnautilus-private/nautilus-file-operations.c:4655
 msgid "Preparing to Move to \"%B\""
 msgstr "\"%B\" へ移動する準備中"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4651
+#: ../libnautilus-private/nautilus-file-operations.c:4659
 #, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
 msgstr[0] "%'d 個のファイルを移動する準備中..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4892
+#: ../libnautilus-private/nautilus-file-operations.c:4900
 #, c-format
 msgid "There was an error moving the file into %F."
 msgstr "%F の中にファイルを移動する際にエラーが発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5154
+#: ../libnautilus-private/nautilus-file-operations.c:5162
 msgid "Moving Files"
 msgstr "ファイルを移動中"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5189
+#: ../libnautilus-private/nautilus-file-operations.c:5197
 msgid "Creating links in \"%B\""
 msgstr "\"%B\" でリンクの作成中"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5193
+#: ../libnautilus-private/nautilus-file-operations.c:5201
 #, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
 msgstr[0] "%'d 個のファイルへのリンクの作成中"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5328
+#: ../libnautilus-private/nautilus-file-operations.c:5336
 msgid "Error while creating link to %B."
-msgstr "%B へリンクの生成中にエラーが発生しました。"
+msgstr "%B へリンクの作成中にエラーが発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5330
+#: ../libnautilus-private/nautilus-file-operations.c:5338
 msgid "Symbolic links only supported for local files"
 msgstr "シンボリックリンクはローカルのファイルのみサポートしています。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5333
+#: ../libnautilus-private/nautilus-file-operations.c:5341
 msgid "The target doesn't support symbolic links."
 msgstr "リンクの作成先はシンボリックリンクをサポートしていません。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5336
+#: ../libnautilus-private/nautilus-file-operations.c:5344
 #, c-format
 msgid "There was an error creating the symlink in %F."
 msgstr "%F でシンボリックリンクを作成する際にエラーが発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5655
+#: ../libnautilus-private/nautilus-file-operations.c:5663
 msgid "Setting permissions"
 msgstr "アクセス権の設定中"
 
 #. localizers: the initial name of a new folder
-#: ../libnautilus-private/nautilus-file-operations.c:5920
+#: ../libnautilus-private/nautilus-file-operations.c:5928
 msgid "Untitled Folder"
 msgstr "無題のフォルダー"
 
 #. localizers: the initial name of a new template document
-#: ../libnautilus-private/nautilus-file-operations.c:5926
+#: ../libnautilus-private/nautilus-file-operations.c:5934
 #, c-format
 msgid "Untitled %s"
 msgstr "無題の%s"
 
 #. localizers: the initial name of a new empty document
-#: ../libnautilus-private/nautilus-file-operations.c:5932
+#: ../libnautilus-private/nautilus-file-operations.c:5940
 msgid "Untitled Document"
 msgstr "無題のドキュメント"
 
-#: ../libnautilus-private/nautilus-file-operations.c:6110
+#: ../libnautilus-private/nautilus-file-operations.c:6118
 msgid "Error while creating directory %B."
 msgstr "%B というフォルダーの作成中にエラーが発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:6112
+#: ../libnautilus-private/nautilus-file-operations.c:6120
 msgid "Error while creating file %B."
 msgstr "%B というファイルの作成中にエラーが発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:6114
+#: ../libnautilus-private/nautilus-file-operations.c:6122
 #, c-format
 msgid "There was an error creating the directory in %F."
 msgstr "%F にフォルダーを作成する際にエラーが発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:6383
+#: ../libnautilus-private/nautilus-file-operations.c:6391
 msgid "Emptying Trash"
 msgstr "ゴミ箱を空にしている"
 
-#: ../libnautilus-private/nautilus-file-operations.c:6431
-#: ../libnautilus-private/nautilus-file-operations.c:6472
-#: ../libnautilus-private/nautilus-file-operations.c:6507
-#: ../libnautilus-private/nautilus-file-operations.c:6542
+#: ../libnautilus-private/nautilus-file-operations.c:6439
+#: ../libnautilus-private/nautilus-file-operations.c:6480
+#: ../libnautilus-private/nautilus-file-operations.c:6515
+#: ../libnautilus-private/nautilus-file-operations.c:6550
 msgid "Unable to mark launcher trusted (executable)"
 msgstr "ランチャー (実行形式) の安全性を確認できません"
 
 #. Reset to default info
 #: ../libnautilus-private/nautilus-file-undo-operations.c:135
 #: ../src/nautilus-view.c:2392
-#, fuzzy
-#| msgid "_Undo"
 msgid "Undo"
-msgstr "元に戻す(_U)"
+msgstr "元に戻す"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:138
 #: ../src/nautilus-view.c:2393
-#, fuzzy
-#| msgid "Unable to start location"
 msgid "Undo last action"
-msgstr "場所を起動できません"
+msgstr "最後のアクションを元に戻す"
 
 #. Reset to default info
 #: ../libnautilus-private/nautilus-file-undo-operations.c:142
 #: ../src/nautilus-view.c:2411
-#, fuzzy
-#| msgid "_Read"
 msgid "Redo"
-msgstr "読み込み(_R)"
+msgstr "やり直す"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:145
 #: ../src/nautilus-view.c:2412
 msgid "Redo last undone action"
-msgstr ""
+msgstr "最後に元に戻したアクションをやり直す"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:367
 #, c-format
 msgid "Move %d item back to '%s'"
 msgid_plural "Move %d items back to '%s'"
-msgstr[0] ""
+msgstr[0] "%d 件のアイテムを '%s' へ移動し直します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:370
-#, fuzzy, c-format
-#| msgid "Moving %'d file to \"%B\""
-#| msgid_plural "Moving %'d files to \"%B\""
+#, c-format
 msgid "Move %d item to '%s'"
 msgid_plural "Move %d items to '%s'"
-msgstr[0] "%'d 個のファイルを \"%B\" へ移動中"
+msgstr[0] "%d 件のアイテムを '%s' へ移動します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:374
-#, fuzzy, c-format
-#| msgid "Undo the edit"
+#, c-format
 msgid "_Undo Move %d item"
 msgid_plural "_Undo Move %d items"
-msgstr[0] "編集を元に戻す"
+msgstr[0] "元に戻す: %d 件の移動(_U)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:377
-#, fuzzy, c-format
-#| msgid "Redo the edit"
+#, c-format
 msgid "_Redo Move %d item"
 msgid_plural "_Redo Move %d items"
-msgstr[0] "編集を繰り返す"
+msgstr[0] "やり直す: %d 件の移動(_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:381
 #, c-format
 msgid "Move '%s' back to '%s'"
-msgstr ""
+msgstr "'%s' を '%s' へ移動し直します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:382
 #, c-format
 msgid "Move '%s' to '%s'"
-msgstr ""
+msgstr "'%s' を '%s' へ移動します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:384
-#, fuzzy
-#| msgid "_Undo"
 msgid "_Undo Move"
-msgstr "元に戻す(_U)"
+msgstr "元に戻す: 移動(_U)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:385
-#, fuzzy
-#| msgid "Remove"
 msgid "_Redo Move"
-msgstr "削除"
+msgstr "やり直す: 移動(_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:388
-#, fuzzy
-#| msgid "The item cannot be restored from trash"
 msgid "_Undo Restore from Trash"
-msgstr "ゴミ箱からそのアイテムを戻せません。"
+msgstr "元に戻す: ゴミ箱から元に戻す(_U)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:389
-#, fuzzy
-#| msgid "The item cannot be restored from trash"
 msgid "_Redo Restore from Trash"
-msgstr "ゴミ箱からそのアイテムを戻せません。"
+msgstr "やり直す: ゴミ箱から元に戻す(_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:392
-#, fuzzy, c-format
-#| msgid "Move each selected item to the Trash"
+#, c-format
 msgid "Move %d item back to trash"
 msgid_plural "Move %d items back to trash"
-msgstr[0] "選択したアイテムをゴミ箱へ移動します"
+msgstr[0] "%d 件のアイテムをゴミ箱へ移動し直します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:395
 #: ../libnautilus-private/nautilus-file-undo-operations.c:981
-#, fuzzy, c-format
-#| msgid "Empty all items from Trash?"
+#, c-format
 msgid "Restore %d item from trash"
 msgid_plural "Restore %d items from trash"
-msgstr[0] "ゴミ箱からすべてのアイテムを空にしてもよろしいですか?"
+msgstr[0] "%d 件のアイテムをゴミ箱から元に戻します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:399
-#, fuzzy, c-format
-#| msgid "Mo_ve to Trash"
+#, c-format
 msgid "Move '%s' back to trash"
-msgstr "ゴミ箱へ移動する(_V)"
+msgstr "'%s' をゴミ箱へ移動し直します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:400
 #, c-format
 msgid "Restore '%s' from trash"
-msgstr ""
+msgstr "'%s' をゴミ箱から元に戻します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:404
 #, c-format
 msgid "Delete %d copied item"
 msgid_plural "Delete %d copied items"
-msgstr[0] ""
+msgstr[0] "コピーされた %d 件のアイテムを削除します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:407
-#, fuzzy, c-format
-#| msgid "Copying %'d file to \"%B\""
-#| msgid_plural "Copying %'d files to \"%B\""
+#, c-format
 msgid "Copy %d item to '%s'"
 msgid_plural "Copy %d items to '%s'"
-msgstr[0] "%'d 個のファイルを \"%B\" へコピー中"
+msgstr[0] "%d 件のアイテムルを '%s' へコピーします"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:411
 #, c-format
 msgid "_Undo Copy %d item"
 msgid_plural "_Undo Copy %d items"
-msgstr[0] ""
+msgstr[0] "元に戻す: %d 件のコピー(_U)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:414
 #, c-format
 msgid "_Redo Copy %d item"
 msgid_plural "_Redo Copy %d items"
-msgstr[0] ""
+msgstr[0] "やり直す: %d 件のコピー(_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:418
 #: ../libnautilus-private/nautilus-file-undo-operations.c:440
 #: ../libnautilus-private/nautilus-file-undo-operations.c:673
-#, fuzzy, c-format
-#| msgid "_Delete"
+#, c-format
 msgid "Delete '%s'"
-msgstr "削除(_D)"
+msgstr "'%s' を削除します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:419
 #, c-format
 msgid "Copy '%s' to '%s'"
-msgstr ""
+msgstr "'%s' を '%s' へコピーします"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:421
-#, fuzzy
-#| msgid "nd copy)"
 msgid "_Undo Copy"
-msgstr "番目のコピー)"
+msgstr "元に戻す: コピー(_U)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:422
 msgid "_Redo Copy"
-msgstr ""
+msgstr "やり直す: コピー(_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:426
-#, fuzzy, c-format
-#| msgid "Duplicate each selected item"
+#, c-format
 msgid "Delete %d duplicated item"
 msgid_plural "Delete %d duplicated items"
-msgstr[0] "選択したアイテムの複製を作成します"
+msgstr[0] "%d 件の複製したアイテムを削除します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:429
-#, fuzzy, c-format
-#| msgid "Duplicating %'d file (in \"%B\")"
-#| msgid_plural "Duplicating %'d files (in \"%B\")"
+#, c-format
 msgid "Duplicate %d item in '%s'"
 msgid_plural "Duplicate %d items in '%s'"
-msgstr[0] "%'d 個のファイルの複製を \"%B\" の中に生成中"
+msgstr[0] "%d 件のアイテムを '%s' に複製します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:433
-#, fuzzy, c-format
-#| msgid "Duplicating %'d file"
-#| msgid_plural "Duplicating %'d files"
+#, c-format
 msgid "_Undo Duplicate %d item"
 msgid_plural "_Undo Duplicate %d items"
-msgstr[0] "%'d 個のファイルの複製を生成中"
+msgstr[0] "元に戻す: %d 件の複製(_U)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:436
-#, fuzzy, c-format
-#| msgid "Duplicating %'d file"
-#| msgid_plural "Duplicating %'d files"
+#, c-format
 msgid "_Redo Duplicate %d item"
 msgid_plural "_Redo Duplicate %d items"
-msgstr[0] "%'d 個のファイルの複製を生成中"
+msgstr[0] "やり直す: %d 件の複製(_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:441
-#, fuzzy, c-format
-#| msgid "Duplicating \"%B\""
+#, c-format
 msgid "Duplicate '%s' in '%s'"
-msgstr "\"%B\" の複製を生成中"
+msgstr "'%s' を '%s' に複製します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:444
-#, fuzzy
-#| msgid "D_uplicate"
 msgid "_Undo Duplicate"
-msgstr "複製(_U)"
+msgstr "元に戻す: 複製(_U)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:445
-#, fuzzy
-#| msgid "D_uplicate"
 msgid "_Redo Duplicate"
-msgstr "複製(_U)"
+msgstr "やり直す: 複製(_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:449
-#, fuzzy, c-format
-#| msgid "_Double click to open items"
+#, c-format
 msgid "Delete links to %d item"
 msgid_plural "Delete links to %d items"
-msgstr[0] "ダブルクリックでアイテムを開く(_D)"
+msgstr[0] "%d 件のアイテムへのリンクを削除します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:452
-#, fuzzy, c-format
-#| msgid "Making link to %'d file"
-#| msgid_plural "Making links to %'d files"
+#, c-format
 msgid "Create links to %d item"
 msgid_plural "Create links to %d items"
-msgstr[0] "%'d 個のファイルへのリンクの作成中"
+msgstr[0] "%d 件のアイテムへのリンクを作成します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:456
-#, fuzzy, c-format
-#| msgid "Another link to %s"
+#, c-format
 msgid "Delete link to '%s'"
-msgstr "%sへの別のリンク"
+msgstr "'%s' へのリンクを削除します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:457
-#, fuzzy, c-format
-#| msgid "Another link to %s"
+#, c-format
 msgid "Create link to '%s'"
-msgstr "%sへの別のリンク"
+msgstr "'%s' へのリンクを作成します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:459
-#, fuzzy
-#| msgid "Undo the edit"
 msgid "_Undo Create Link"
-msgstr "編集を元に戻す"
+msgstr "元に戻す: リンクの作成(_U)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:460
-#, fuzzy
-#| msgid "Redo the edit"
 msgid "_Redo Create Link"
-msgstr "編集を繰り返す"
+msgstr "やり直す: リンクの作成(_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:676
-#, fuzzy, c-format
-#| msgid "Create and delete files"
+#, c-format
 msgid "Create an empty file '%s'"
-msgstr "作成と削除"
+msgstr "空のファイル '%s' を作成します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:678
 msgid "_Undo Create Empty File"
-msgstr ""
+msgstr "元に戻す: 空のファイルの作成(_U)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:679
 msgid "_Redo Create Empty File"
-msgstr ""
+msgstr "やり直す: 空のファイルの作成(_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:681
-#, fuzzy, c-format
-#| msgid "Create New _Folder"
+#, c-format
 msgid "Create a new folder '%s'"
-msgstr "新しいフォルダーの作成(_F)"
+msgstr "新しいフォルダー '%s' を作成します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:683
-#, fuzzy
-#| msgid "Create New _Folder"
 msgid "_Undo Create Folder"
-msgstr "新しいフォルダーの作成(_F)"
+msgstr "元に戻す: フォルダーの作成(_U)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:684
-#, fuzzy
-#| msgid "Create New _Folder"
 msgid "_Redo Create Folder"
-msgstr "新しいフォルダーの作成(_F)"
+msgstr "やり直す: フォルダーの作成(_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:686
-#, fuzzy, c-format
-#| msgid "Create a new document from template \"%s\""
+#, c-format
 msgid "Create new file '%s' from template "
-msgstr "テンプレート \"%s\" から新しいドキュメントを作成する"
+msgstr "新しいファイル '%s' をテンプレートから作成します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:688
 msgid "_Undo Create from Template"
-msgstr ""
+msgstr "元に戻す: テンプレートからの作成(_U)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:689
 msgid "_Redo Create from Template"
-msgstr ""
+msgstr "やり直す: テンプレートからの作成(_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:869
 #: ../libnautilus-private/nautilus-file-undo-operations.c:870
 #, c-format
 msgid "Rename '%s' as '%s'"
-msgstr ""
+msgstr "'%s' の名前を '%s' に変更します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:872
-#, fuzzy
-#| msgid "_Rename..."
 msgid "_Undo Rename"
-msgstr "名前の変更(_R)..."
+msgstr "元に戻す: 名前の変更(_U)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:873
-#, fuzzy
-#| msgid "_Rename..."
 msgid "_Redo Rename"
-msgstr "名前の変更(_R)..."
+msgstr "やり直す: 名前の変更(_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:984
-#, fuzzy, c-format
-#| msgid "Moving files to trash"
+#, c-format
 msgid "Move %d item to trash"
 msgid_plural "Move %d items to trash"
-msgstr[0] "ファイルをゴミ箱へ移動中"
+msgstr[0] "%d 件のアイテムをゴミ箱へ移動します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:996
 #, c-format
 msgid "Restore '%s' to '%s'"
-msgstr ""
+msgstr "'%s' を '%s' へ戻します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1003
-#, fuzzy, c-format
-#| msgid "Mo_ve to Trash"
+#, c-format
 msgid "Move '%s' to trash"
-msgstr "ゴミ箱へ移動する(_V)"
+msgstr "'%s' をゴミ箱へ移動します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1007
-#, fuzzy
-#| msgid "_Trash"
 msgid "_Undo Trash"
-msgstr "ゴミ箱(_T)"
+msgstr "元に戻す: ゴミ箱へ移動する(_U)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1008
-#, fuzzy
-#| msgid "Mo_ve to Trash"
 msgid "_Redo Trash"
-msgstr "ゴミ箱へ移動する(_V)"
+msgstr "やり直す: ゴミ箱へ移動する(_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1301
 #, c-format
 msgid "Restore original permissions of items enclosed in '%s'"
-msgstr ""
+msgstr "'%s' 内のアイテムのアクセス権を元に戻します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1302
-#, fuzzy, c-format
-#| msgid "The permissions of the file."
+#, c-format
 msgid "Set permissions of items enclosed in '%s'"
-msgstr "ファイルのアクセス権"
+msgstr "'%s' 内のアイテムのアクセス権を設定します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1304
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1459
-#, fuzzy
-#| msgid "Folder Permissions:"
 msgid "_Undo Change Permissions"
-msgstr "フォルダーのアクセス権:"
+msgstr "元に戻す: アクセス権の変更(_U)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1305
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1460
-#, fuzzy
-#| msgid "Setting permissions"
 msgid "_Redo Change Permissions"
-msgstr "アクセス権の設定中"
+msgstr "やり直す: アクセス権の変更(_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1456
 #, c-format
 msgid "Restore original permissions of '%s'"
-msgstr ""
+msgstr "'%s' のアクセス権を元に戻します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1457
-#, fuzzy, c-format
-#| msgid "Setting permissions"
+#, c-format
 msgid "Set permissions of '%s'"
-msgstr "アクセス権の設定中"
+msgstr "'%s' のアクセス権を設定します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1567
 #, c-format
 msgid "Restore group of '%s' to '%s'"
-msgstr ""
+msgstr "'%s' のグループを 元の '%s' に戻します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1569
 #, c-format
 msgid "Set group of '%s' to '%s'"
-msgstr ""
+msgstr "'%s' のグループを '%s' に設定します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1572
 msgid "_Undo Change Group"
-msgstr ""
+msgstr "元に戻す: グループの変更(_U)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1573
 msgid "_Redo Change Group"
-msgstr ""
+msgstr "やり直す: グループの変更(_R)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1575
 #, c-format
 msgid "Restore owner of '%s' to '%s'"
-msgstr ""
+msgstr "'%s' の所有者を元の '%s' に戻します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1577
 #, c-format
 msgid "Set owner of '%s' to '%s'"
-msgstr ""
+msgstr "'%s' の所有者を '%s' に設定します"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1580
 msgid "_Undo Change Owner"
-msgstr ""
+msgstr "元に戻す: 所有者の変更(_U)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1581
 msgid "_Redo Change Owner"
-msgstr ""
+msgstr "やり直す: 所有者の変更(_R)"
 
 #: ../libnautilus-private/nautilus-file-utilities.c:1229
 #, c-format
@@ -2266,7 +2179,7 @@ msgstr ""
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:35
 msgid "Default sort order"
-msgstr "デフォルトの配置方式"
+msgstr "デフォルトの並び順"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:36
 msgid ""
@@ -2288,7 +2201,7 @@ msgid ""
 "incrementally they will be sorted decrementally."
 msgstr ""
 "true にすると、ウィンドウに表示されるファイルが逆順に並びます。つまり、名前順"
-"の場合は \"a\" 〜 \"z\" でファイルを並び替えるかわりに、\"z\" 〜 \"a\" の順番"
+"の場合は \"a\" 〜 \"z\" でファイルを並べ替えるかわりに、\"z\" 〜 \"a\" の順番"
 "で並べます。サイズ順にすると、大きい順のかわりに小さい順で並べます。"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:39
@@ -2721,20 +2634,20 @@ msgstr "ファイルをメール、インスタントメッセージで送る...
 #: ../src/nautilus-application.c:157
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
-msgstr "指定したフォルダー \"%s\" を生成できませんでした。"
+msgstr "指定したフォルダー \"%s\" を作成できませんでした。"
 
 #: ../src/nautilus-application.c:159
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
 msgstr ""
-"Nautilus を起動する前にこのフォルダーを生成するか、Nautilus がフォルダーを生"
+"Nautilus を起動する前にこのフォルダーを作成するか、Nautilus がフォルダーを作"
 "成できるように適切なパーミッションを設定してください。"
 
 #: ../src/nautilus-application.c:162
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
-msgstr "Nautilus は必要なフォルダーを生成できませんでした: %s"
+msgstr "Nautilus は必要なフォルダーを作成できませんでした: %s"
 
 #: ../src/nautilus-application.c:164
 msgid ""
@@ -2885,7 +2798,7 @@ msgstr "SSH"
 
 #: ../src/nautilus-connect-server-dialog.c:131
 msgid "Public FTP"
-msgstr "パブリックな FTP"
+msgstr "公開 FTP"
 
 #: ../src/nautilus-connect-server-dialog.c:133
 msgid "FTP (with login)"
@@ -2901,7 +2814,7 @@ msgstr "WebDAV (HTTP)"
 
 #: ../src/nautilus-connect-server-dialog.c:140
 msgid "Secure WebDAV (HTTPS)"
-msgstr "セキュアな WebDAV (HTTPS)"
+msgstr "Secure WebDAV (HTTPS)"
 
 #: ../src/nautilus-connect-server-dialog.c:187
 msgid "Connecting..."
@@ -2938,7 +2851,7 @@ msgid "Continue"
 msgstr "続行"
 
 #: ../src/nautilus-connect-server-dialog.c:701
-#: ../src/nautilus-properties-window.c:5123 ../src/nautilus-view.c:1457
+#: ../src/nautilus-properties-window.c:5121 ../src/nautilus-view.c:1457
 msgid "There was an error displaying help."
 msgstr "ヘルプを表示する際にエラーが発生しました。"
 
@@ -3027,8 +2940,8 @@ msgstr ""
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-desktop-icon-view.c:719 ../src/nautilus-view.c:6996
-#: ../src/nautilus-view.c:8533
+#: ../src/nautilus-desktop-icon-view.c:719 ../src/nautilus-view.c:6995
+#: ../src/nautilus-view.c:8532
 msgid "E_mpty Trash"
 msgstr "ゴミ箱を空にする(_M)"
 
@@ -3050,7 +2963,7 @@ msgstr "ゴミ箱を空にする"
 
 #. tooltip
 #: ../src/nautilus-desktop-icon-view.c:740 ../src/nautilus-trash-bar.c:207
-#: ../src/nautilus-view.c:6997
+#: ../src/nautilus-view.c:6996
 msgid "Delete all items in the Trash"
 msgstr "ゴミ箱にあるすべてのアイテムを削除します"
 
@@ -3083,7 +2996,7 @@ msgstr "コマンド"
 
 #. hardcode "Desktop"
 #: ../src/nautilus-desktop-window.c:92 ../src/nautilus-desktop-window.c:290
-#: ../src/nautilus-pathbar.c:1200 ../src/nautilus-places-sidebar.c:693
+#: ../src/nautilus-pathbar.c:1271 ../src/nautilus-places-sidebar.c:713
 msgid "Desktop"
 msgstr "デスクトップ"
 
@@ -3219,7 +3132,7 @@ msgstr "新しいフォルダーの表示形式(_N):"
 
 #: ../src/nautilus-file-management-properties.ui.h:4
 msgid "_Arrange items:"
-msgstr "アイテムの配置方式(_A):"
+msgstr "アイテムの並び順(_A):"
 
 #: ../src/nautilus-file-management-properties.ui.h:5
 msgid "Sort _folders before files"
@@ -3239,7 +3152,7 @@ msgstr "デフォルトのズームレベル(_Z):"
 
 #: ../src/nautilus-file-management-properties.ui.h:9
 msgid "_Text beside icons"
-msgstr "アイコンの横にラベルを配置する(_T)"
+msgstr "アイコンの横に見出しを配置する(_T)"
 
 #: ../src/nautilus-file-management-properties.ui.h:10
 msgid "<b>Compact View Defaults</b>"
@@ -3315,7 +3228,7 @@ msgstr "ゴミ箱を空にする/ファイルを削除する前に確認する(_
 
 #: ../src/nautilus-file-management-properties.ui.h:28
 msgid "I_nclude a Delete command that bypasses Trash"
-msgstr "ゴミ箱を経由しないで削除する(_N)"
+msgstr "\"削除\" (ゴミ箱を経由しない) をメニューに追加する(_N)"
 
 #: ../src/nautilus-file-management-properties.ui.h:29
 msgid "Behavior"
@@ -3323,7 +3236,7 @@ msgstr "動作"
 
 #: ../src/nautilus-file-management-properties.ui.h:30
 msgid "<b>Icon Captions</b>"
-msgstr "<b>アイコンのタイトル</b>"
+msgstr "<b>アイコンの見出し</b>"
 
 #: ../src/nautilus-file-management-properties.ui.h:31
 msgid ""
@@ -3392,7 +3305,7 @@ msgstr "プレビュー"
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../src/nautilus-file-management-properties.ui.h:46
-#: ../src/nautilus-icon-view.c:2664 ../src/nautilus-icon-view-container.c:582
+#: ../src/nautilus-icon-view.c:2675 ../src/nautilus-icon-view-container.c:579
 msgid "Icon View"
 msgstr "アイコン表示"
 
@@ -3406,7 +3319,7 @@ msgstr "一覧表示"
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../src/nautilus-file-management-properties.ui.h:48
-#: ../src/nautilus-icon-view.c:2678
+#: ../src/nautilus-icon-view.c:2689
 msgid "Compact View"
 msgstr "コンパクト表示"
 
@@ -3527,7 +3440,7 @@ msgstr "名前順(_N)"
 
 #: ../src/nautilus-icon-view.c:134 ../src/nautilus-icon-view.c:1332
 msgid "Keep icons sorted by name in rows"
-msgstr "アイコンを名前順に並び替えます"
+msgstr "アイコンを名前順に並べ替えます"
 
 #: ../src/nautilus-icon-view.c:140
 msgid "by _Size"
@@ -3535,15 +3448,15 @@ msgstr "サイズ順(_S)"
 
 #: ../src/nautilus-icon-view.c:141 ../src/nautilus-icon-view.c:1336
 msgid "Keep icons sorted by size in rows"
-msgstr "アイコンをサイズ順で並び替えます"
+msgstr "アイコンをサイズ順で並べ替えます"
 
 #: ../src/nautilus-icon-view.c:147
 msgid "by _Type"
-msgstr "種類別(_T)"
+msgstr "種類順(_T)"
 
 #: ../src/nautilus-icon-view.c:148 ../src/nautilus-icon-view.c:1340
 msgid "Keep icons sorted by type in rows"
-msgstr "アイコンを種類別に並び替えます"
+msgstr "アイコンを種類順に並べ替えます"
 
 #: ../src/nautilus-icon-view.c:154
 msgid "by Modification _Date"
@@ -3551,7 +3464,7 @@ msgstr "更新日時順(_D)"
 
 #: ../src/nautilus-icon-view.c:155 ../src/nautilus-icon-view.c:1344
 msgid "Keep icons sorted by modification date in rows"
-msgstr "アイコンを更新日時順に並び替えます"
+msgstr "アイコンを更新日時順に並べ替えます"
 
 #: ../src/nautilus-icon-view.c:161
 msgid "by T_rash Time"
@@ -3568,7 +3481,7 @@ msgstr "デスクトップを名前順に整理(_O)"
 #. name, stock id, label
 #: ../src/nautilus-icon-view.c:1297
 msgid "Arran_ge Items"
-msgstr "アイテムの並び替え(_G)"
+msgstr "アイテムの並べ替え(_G)"
 
 #. name, stock id
 #. label, accelerator
@@ -3601,7 +3514,7 @@ msgstr "名前順に整理(_O)"
 #. tooltip
 #: ../src/nautilus-icon-view.c:1308
 msgid "Reposition icons to better fit in the window and avoid overlapping"
-msgstr "ウィンドウに合わせてアイコンを並び替えて、重ならないようにします"
+msgstr "ウィンドウに合わせてアイコンを並べ替えて、重ならないようにします"
 
 #. name, stock id
 #. label, accelerator
@@ -3643,7 +3556,7 @@ msgstr "サイズ順(_S)"
 
 #: ../src/nautilus-icon-view.c:1339
 msgid "By _Type"
-msgstr "種類別(_T)"
+msgstr "種類順(_T)"
 
 #: ../src/nautilus-icon-view.c:1343
 msgid "By Modification _Date"
@@ -3658,36 +3571,36 @@ msgid "Restore Icon's Original Si_ze"
 msgstr "アイコンを元のサイズに戻す(_Z)"
 
 #. translators: this is used in the view menu
-#: ../src/nautilus-icon-view.c:2666
+#: ../src/nautilus-icon-view.c:2677
 msgid "_Icons"
 msgstr "アイコン(_I)"
 
-#: ../src/nautilus-icon-view.c:2667
+#: ../src/nautilus-icon-view.c:2678
 msgid "The icon view encountered an error."
 msgstr "アイコン表示でエラーが発生しました。"
 
-#: ../src/nautilus-icon-view.c:2668
+#: ../src/nautilus-icon-view.c:2679
 msgid "The icon view encountered an error while starting up."
 msgstr "起動する際にアイコン表示でエラーが発生しました。"
 
-#: ../src/nautilus-icon-view.c:2669
+#: ../src/nautilus-icon-view.c:2680
 msgid "Display this location with the icon view."
 msgstr "この場所をアイコン表示で表示します。"
 
 #. translators: this is used in the view menu
-#: ../src/nautilus-icon-view.c:2680
+#: ../src/nautilus-icon-view.c:2691
 msgid "_Compact"
 msgstr "コンパクト(_C)"
 
-#: ../src/nautilus-icon-view.c:2681
+#: ../src/nautilus-icon-view.c:2692
 msgid "The compact view encountered an error."
 msgstr "コンパクト表示でエラーが発生しました。"
 
-#: ../src/nautilus-icon-view.c:2682
+#: ../src/nautilus-icon-view.c:2693
 msgid "The compact view encountered an error while starting up."
 msgstr "起動する際にコンパクト表示でエラーが発生しました。"
 
-#: ../src/nautilus-icon-view.c:2683
+#: ../src/nautilus-icon-view.c:2694
 msgid "Display this location with the compact view."
 msgstr "この場所をコンパクト表示で表示します。"
 
@@ -3845,7 +3758,7 @@ msgid "Do you want to view %d location?"
 msgid_plural "Do you want to view %d locations?"
 msgstr[0] " %d 個の場所を表示しますか?"
 
-#: ../src/nautilus-location-bar.c:184 ../src/nautilus-mime-actions.c:1047
+#: ../src/nautilus-location-bar.c:184 ../src/nautilus-mime-actions.c:1046
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
@@ -3873,8 +3786,8 @@ msgstr "このリンクはリンク先である \"%s\" が存在しないので�
 #. name, stock id
 #. label, accelerator
 #: ../src/nautilus-mime-actions.c:646 ../src/nautilus-tree-sidebar.c:1247
-#: ../src/nautilus-view.c:7048 ../src/nautilus-view.c:7166
-#: ../src/nautilus-view.c:8187 ../src/nautilus-view.c:8465
+#: ../src/nautilus-view.c:7047 ../src/nautilus-view.c:7165
+#: ../src/nautilus-view.c:8186 ../src/nautilus-view.c:8464
 msgid "Mo_ve to Trash"
 msgstr "ゴミ箱へ移動する(_V)"
 
@@ -3896,18 +3809,18 @@ msgstr "端末内で実行する(_T)"
 msgid "_Display"
 msgstr "表示する(_D)"
 
-#: ../src/nautilus-mime-actions.c:1042 ../src/nautilus-mime-actions.c:1785
+#: ../src/nautilus-mime-actions.c:1041 ../src/nautilus-mime-actions.c:1784
 #: ../src/nautilus-view.c:957
 msgid "Are you sure you want to open all files?"
 msgstr "すべてのファイルを開いてもよろしいですか?"
 
-#: ../src/nautilus-mime-actions.c:1044
+#: ../src/nautilus-mime-actions.c:1043
 #, c-format
 msgid "This will open %d separate tab."
 msgid_plural "This will open %d separate tabs."
 msgstr[0] "%d 個のタブを別々に開きます。"
 
-#: ../src/nautilus-mime-actions.c:1117
+#: ../src/nautilus-mime-actions.c:1116
 #: ../src/nautilus-window-manage-views.c:1603
 #: ../src/nautilus-window-manage-views.c:1609
 #: ../src/nautilus-window-manage-views.c:1626
@@ -3918,31 +3831,31 @@ msgstr[0] "%d 個のタブを別々に開きます。"
 msgid "Could not display \"%s\"."
 msgstr "\"%s\" を表示できませんでした。"
 
-#: ../src/nautilus-mime-actions.c:1214
+#: ../src/nautilus-mime-actions.c:1213
 msgid "The file is of an unknown type"
 msgstr "そのファイルの種類を特定できません"
 
-#: ../src/nautilus-mime-actions.c:1218
+#: ../src/nautilus-mime-actions.c:1217
 #, c-format
 msgid "There is no application installed for %s files"
 msgstr ""
 "%s な種類のファイルを扱うことが可能なアプリケーションはインストールされていま"
 "せん"
 
-#: ../src/nautilus-mime-actions.c:1233
+#: ../src/nautilus-mime-actions.c:1232
 msgid "_Select Application"
 msgstr "アプリケーションの選択(_S)"
 
-#: ../src/nautilus-mime-actions.c:1269
+#: ../src/nautilus-mime-actions.c:1268
 msgid "There was an internal error trying to search for applications:"
 msgstr ""
 "アプリケーションを検索している最中に Nautilus の内部エラーが発生しました:"
 
-#: ../src/nautilus-mime-actions.c:1271
+#: ../src/nautilus-mime-actions.c:1270
 msgid "Unable to search for application"
 msgstr "アプリケーションを検索できません"
 
-#: ../src/nautilus-mime-actions.c:1390
+#: ../src/nautilus-mime-actions.c:1389
 #, c-format
 msgid ""
 "There is no application installed for %s files.\n"
@@ -3951,11 +3864,11 @@ msgstr ""
 "%s な種類のファイルを扱えるアプリケーションがインストールされていません。\n"
 "この類のファイルを開くことができるアプリケーションを検索してみますか?"
 
-#: ../src/nautilus-mime-actions.c:1540
+#: ../src/nautilus-mime-actions.c:1539
 msgid "Untrusted application launcher"
 msgstr "信用できないアプリケーションのランチャー"
 
-#: ../src/nautilus-mime-actions.c:1543
+#: ../src/nautilus-mime-actions.c:1542
 #, c-format
 msgid ""
 "The application launcher \"%s\" has not been marked as trusted. If you do "
@@ -3965,35 +3878,35 @@ msgstr ""
 "ファイルや実行形式を起動すると、セキュリティ上の安全性が損なわれる可能性があ"
 "ります。"
 
-#: ../src/nautilus-mime-actions.c:1558
+#: ../src/nautilus-mime-actions.c:1557
 msgid "_Launch Anyway"
 msgstr "とにかく起動する(_L)"
 
-#: ../src/nautilus-mime-actions.c:1561
+#: ../src/nautilus-mime-actions.c:1560
 msgid "Mark as _Trusted"
 msgstr "信用できるアプリにする(_T)"
 
-#: ../src/nautilus-mime-actions.c:1786
+#: ../src/nautilus-mime-actions.c:1785
 #, c-format
 msgid "This will open %d separate application."
 msgid_plural "This will open %d separate applications."
 msgstr[0] "%d 個のアプリケーションを別々に開きます。"
 
-#: ../src/nautilus-mime-actions.c:1863 ../src/nautilus-mime-actions.c:2137
-#: ../src/nautilus-view.c:6168
+#: ../src/nautilus-mime-actions.c:1862 ../src/nautilus-mime-actions.c:2136
+#: ../src/nautilus-view.c:6167
 msgid "Unable to mount location"
 msgstr "場所をマウントできません"
 
-#: ../src/nautilus-mime-actions.c:2216 ../src/nautilus-view.c:6315
+#: ../src/nautilus-mime-actions.c:2215 ../src/nautilus-view.c:6314
 msgid "Unable to start location"
 msgstr "場所を起動できません"
 
-#: ../src/nautilus-mime-actions.c:2300
+#: ../src/nautilus-mime-actions.c:2299
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "\"%s\" を開いています。"
 
-#: ../src/nautilus-mime-actions.c:2303
+#: ../src/nautilus-mime-actions.c:2302
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -4011,203 +3924,204 @@ msgstr "デバイス"
 msgid "Bookmarks"
 msgstr "ブックマーク"
 
-#: ../src/nautilus-places-sidebar.c:552 ../src/nautilus-places-sidebar.c:577
+#: ../src/nautilus-places-sidebar.c:562 ../src/nautilus-places-sidebar.c:587
+#: ../src/nautilus-places-sidebar.c:832
 #, c-format
 msgid "Mount and open %s"
 msgstr "\"%s\" をマウントして開く"
 
-#: ../src/nautilus-places-sidebar.c:671
+#: ../src/nautilus-places-sidebar.c:691
 msgid "Computer"
 msgstr "コンピューター"
 
 #. tooltip
-#: ../src/nautilus-places-sidebar.c:682 ../src/nautilus-window-menus.c:996
+#: ../src/nautilus-places-sidebar.c:702 ../src/nautilus-window-menus.c:996
 msgid "Open your personal folder"
 msgstr "ユーザー専用のフォルダーを開きます"
 
-#: ../src/nautilus-places-sidebar.c:695
+#: ../src/nautilus-places-sidebar.c:715
 msgid "Open the contents of your desktop in a folder"
 msgstr "フォルダー内にあるデスクトップの内容を開きます"
 
-#: ../src/nautilus-places-sidebar.c:784 ../src/nautilus-tree-sidebar.c:1342
+#: ../src/nautilus-places-sidebar.c:803 ../src/nautilus-tree-sidebar.c:1342
 msgid "File System"
 msgstr "ファイルシステム"
 
-#: ../src/nautilus-places-sidebar.c:786
+#: ../src/nautilus-places-sidebar.c:805
 msgid "Open the contents of the File System"
 msgstr "ファイルシステムの内容を開く"
 
-#: ../src/nautilus-places-sidebar.c:793 ../src/nautilus-trash-bar.c:191
+#: ../src/nautilus-places-sidebar.c:812 ../src/nautilus-trash-bar.c:191
 msgid "Trash"
 msgstr "ゴミ箱"
 
-#: ../src/nautilus-places-sidebar.c:795
+#: ../src/nautilus-places-sidebar.c:814
 msgid "Open the trash"
 msgstr "ゴミ箱を開く"
 
-#: ../src/nautilus-places-sidebar.c:800
+#: ../src/nautilus-places-sidebar.c:819
 msgid "Network"
 msgstr "ネットワーク"
 
-#: ../src/nautilus-places-sidebar.c:829
+#: ../src/nautilus-places-sidebar.c:873
 msgid "Browse Network"
 msgstr "ネットワークを表示"
 
-#: ../src/nautilus-places-sidebar.c:831
+#: ../src/nautilus-places-sidebar.c:875
 msgid "Browse the contents of the network"
 msgstr "ネットワークの内容を表示する"
 
 #. Adjust start/stop items to reflect the type of the drive
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:1694 ../src/nautilus-places-sidebar.c:2714
-#: ../src/nautilus-view.c:7094 ../src/nautilus-view.c:7118
-#: ../src/nautilus-view.c:7190 ../src/nautilus-view.c:7823
-#: ../src/nautilus-view.c:7827 ../src/nautilus-view.c:7910
-#: ../src/nautilus-view.c:7914 ../src/nautilus-view.c:8014
-#: ../src/nautilus-view.c:8018
+#: ../src/nautilus-places-sidebar.c:1738 ../src/nautilus-places-sidebar.c:2772
+#: ../src/nautilus-view.c:7093 ../src/nautilus-view.c:7117
+#: ../src/nautilus-view.c:7189 ../src/nautilus-view.c:7822
+#: ../src/nautilus-view.c:7826 ../src/nautilus-view.c:7909
+#: ../src/nautilus-view.c:7913 ../src/nautilus-view.c:8013
+#: ../src/nautilus-view.c:8017
 msgid "_Start"
 msgstr "開始(_S)"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:1695 ../src/nautilus-places-sidebar.c:2721
-#: ../src/nautilus-view.c:7098 ../src/nautilus-view.c:7122
-#: ../src/nautilus-view.c:7194 ../src/nautilus-view.c:7852
-#: ../src/nautilus-view.c:7939 ../src/nautilus-view.c:8043
+#: ../src/nautilus-places-sidebar.c:1739 ../src/nautilus-places-sidebar.c:2779
+#: ../src/nautilus-view.c:7097 ../src/nautilus-view.c:7121
+#: ../src/nautilus-view.c:7193 ../src/nautilus-view.c:7851
+#: ../src/nautilus-view.c:7938 ../src/nautilus-view.c:8042
 #: ../src/nautilus-window-menus.c:935
 msgid "_Stop"
 msgstr "停止(_S)"
 
 #. start() for type G_DRIVE_START_STOP_TYPE_SHUTDOWN is normally not used
-#: ../src/nautilus-places-sidebar.c:1700
+#: ../src/nautilus-places-sidebar.c:1744
 msgid "_Power On"
 msgstr "電源オン(_P)"
 
-#: ../src/nautilus-places-sidebar.c:1701 ../src/nautilus-view.c:7856
-#: ../src/nautilus-view.c:7943 ../src/nautilus-view.c:8047
+#: ../src/nautilus-places-sidebar.c:1745 ../src/nautilus-view.c:7855
+#: ../src/nautilus-view.c:7942 ../src/nautilus-view.c:8046
 msgid "_Safely Remove Drive"
 msgstr "ドライブの安全な取り出し(_S)"
 
-#: ../src/nautilus-places-sidebar.c:1704
+#: ../src/nautilus-places-sidebar.c:1748
 msgid "_Connect Drive"
 msgstr "ドライブに接続(_C)"
 
-#: ../src/nautilus-places-sidebar.c:1705
+#: ../src/nautilus-places-sidebar.c:1749
 msgid "_Disconnect Drive"
 msgstr "ドライブを切断(_D)"
 
-#: ../src/nautilus-places-sidebar.c:1708
+#: ../src/nautilus-places-sidebar.c:1752
 msgid "_Start Multi-disk Device"
 msgstr "マルチディスク・デバイスを起動(_S)"
 
-#: ../src/nautilus-places-sidebar.c:1709
+#: ../src/nautilus-places-sidebar.c:1753
 msgid "_Stop Multi-disk Device"
 msgstr "マルチディスク・デバイスを停止(_S)"
 
 #. stop() for type G_DRIVE_START_STOP_TYPE_PASSWORD is normally not used
-#: ../src/nautilus-places-sidebar.c:1713 ../src/nautilus-view.c:7926
-#: ../src/nautilus-view.c:8030
+#: ../src/nautilus-places-sidebar.c:1757 ../src/nautilus-view.c:7925
+#: ../src/nautilus-view.c:8029
 msgid "_Unlock Drive"
 msgstr "ドライブのロック解除(_U)"
 
-#: ../src/nautilus-places-sidebar.c:1714 ../src/nautilus-view.c:7868
-#: ../src/nautilus-view.c:7955 ../src/nautilus-view.c:8059
+#: ../src/nautilus-places-sidebar.c:1758 ../src/nautilus-view.c:7867
+#: ../src/nautilus-view.c:7954 ../src/nautilus-view.c:8058
 msgid "_Lock Drive"
 msgstr "ドライブのロック(_L)"
 
-#: ../src/nautilus-places-sidebar.c:1788 ../src/nautilus-places-sidebar.c:2352
+#: ../src/nautilus-places-sidebar.c:1832 ../src/nautilus-places-sidebar.c:2396
 #, c-format
 msgid "Unable to start %s"
 msgstr "%s を起動できません"
 
-#: ../src/nautilus-places-sidebar.c:2111 ../src/nautilus-places-sidebar.c:2139
-#: ../src/nautilus-places-sidebar.c:2167
+#: ../src/nautilus-places-sidebar.c:2155 ../src/nautilus-places-sidebar.c:2183
+#: ../src/nautilus-places-sidebar.c:2211
 #, c-format
 msgid "Unable to eject %s"
 msgstr "%s を取り出せません"
 
-#: ../src/nautilus-places-sidebar.c:2307
+#: ../src/nautilus-places-sidebar.c:2351
 #, c-format
 msgid "Unable to poll %s for media changes"
 msgstr "メディアの変更で %s を監視できません"
 
-#: ../src/nautilus-places-sidebar.c:2407
+#: ../src/nautilus-places-sidebar.c:2451
 #, c-format
 msgid "Unable to stop %s"
 msgstr "%s を停止できません"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:2630 ../src/nautilus-tree-sidebar.c:1158
-#: ../src/nautilus-view.c:6968 ../src/nautilus-view.c:8381
+#: ../src/nautilus-places-sidebar.c:2688 ../src/nautilus-tree-sidebar.c:1158
+#: ../src/nautilus-view.c:6967 ../src/nautilus-view.c:8380
 msgid "_Open"
 msgstr "開く(_O)"
 
 #. add the "open in new tab" menu item
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:2638 ../src/nautilus-tree-sidebar.c:1169
-#: ../src/nautilus-view.c:6980 ../src/nautilus-view.c:7148
-#: ../src/nautilus-view.c:8140 ../src/nautilus-view.c:8443
+#: ../src/nautilus-places-sidebar.c:2696 ../src/nautilus-tree-sidebar.c:1169
+#: ../src/nautilus-view.c:6979 ../src/nautilus-view.c:7147
+#: ../src/nautilus-view.c:8139 ../src/nautilus-view.c:8442
 msgid "Open in New _Tab"
 msgstr "新しいタブで開く(_T)"
 
 #. add the "open in new window" menu item
-#: ../src/nautilus-places-sidebar.c:2648 ../src/nautilus-tree-sidebar.c:1183
-#: ../src/nautilus-view.c:8131 ../src/nautilus-view.c:8423
+#: ../src/nautilus-places-sidebar.c:2706 ../src/nautilus-tree-sidebar.c:1183
+#: ../src/nautilus-view.c:8130 ../src/nautilus-view.c:8422
 msgid "Open in New _Window"
 msgstr "新しいウィンドウで開く(_W)"
 
 #. name, stock id, label
-#: ../src/nautilus-places-sidebar.c:2659 ../src/nautilus-window-menus.c:1041
+#: ../src/nautilus-places-sidebar.c:2717 ../src/nautilus-window-menus.c:1041
 msgid "_Add Bookmark"
 msgstr "ブックマークの追加(_A)"
 
-#: ../src/nautilus-places-sidebar.c:2665
+#: ../src/nautilus-places-sidebar.c:2723
 msgid "Remove"
 msgstr "削除"
 
-#: ../src/nautilus-places-sidebar.c:2674
+#: ../src/nautilus-places-sidebar.c:2732
 msgid "Rename..."
 msgstr "名前の変更..."
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:2686 ../src/nautilus-view.c:7082
-#: ../src/nautilus-view.c:7106 ../src/nautilus-view.c:7178
+#: ../src/nautilus-places-sidebar.c:2744 ../src/nautilus-view.c:7081
+#: ../src/nautilus-view.c:7105 ../src/nautilus-view.c:7177
 msgid "_Mount"
 msgstr "マウント(_M)"
 
 #. add the "Unmount" menu item
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:2693 ../src/nautilus-tree-sidebar.c:1274
-#: ../src/nautilus-view.c:7086 ../src/nautilus-view.c:7110
-#: ../src/nautilus-view.c:7182
+#: ../src/nautilus-places-sidebar.c:2751 ../src/nautilus-tree-sidebar.c:1274
+#: ../src/nautilus-view.c:7085 ../src/nautilus-view.c:7109
+#: ../src/nautilus-view.c:7181
 msgid "_Unmount"
 msgstr "アンマウント(_U)"
 
 #. add the "Eject" menu item
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:2700 ../src/nautilus-tree-sidebar.c:1283
-#: ../src/nautilus-view.c:7090 ../src/nautilus-view.c:7114
-#: ../src/nautilus-view.c:7186
+#: ../src/nautilus-places-sidebar.c:2758 ../src/nautilus-tree-sidebar.c:1283
+#: ../src/nautilus-view.c:7089 ../src/nautilus-view.c:7113
+#: ../src/nautilus-view.c:7185
 msgid "_Eject"
 msgstr "取り出す(_E)"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:2707 ../src/nautilus-view.c:7102
-#: ../src/nautilus-view.c:7126 ../src/nautilus-view.c:7198
+#: ../src/nautilus-places-sidebar.c:2765 ../src/nautilus-view.c:7101
+#: ../src/nautilus-view.c:7125 ../src/nautilus-view.c:7197
 msgid "_Detect Media"
 msgstr "メディアを検出(_D)"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-places-sidebar.c:2742 ../src/nautilus-view.c:6950
-#: ../src/nautilus-view.c:7203
+#: ../src/nautilus-places-sidebar.c:2800 ../src/nautilus-view.c:6949
+#: ../src/nautilus-view.c:7202
 msgid "_Properties"
 msgstr "プロパティ(_P)"
 
@@ -4285,7 +4199,7 @@ msgstr "所有者の変更をキャンセルしますか?"
 
 #: ../src/nautilus-properties-window.c:2110
 msgid "nothing"
-msgstr "何もありません"
+msgstr "なし"
 
 #: ../src/nautilus-properties-window.c:2112
 msgid "unreadable"
@@ -4347,7 +4261,7 @@ msgstr "アクセス日時:"
 
 #: ../src/nautilus-properties-window.c:3125
 msgid "Modified:"
-msgstr "修正日時:"
+msgstr "更新日時:"
 
 #: ../src/nautilus-properties-window.c:3134
 msgid "Free space:"
@@ -4499,7 +4413,7 @@ msgstr ""
 
 #: ../src/nautilus-properties-window.c:4502
 msgid "SELinux context:"
-msgstr "SELinux のコンテキスト:"
+msgstr "SELinux コンテキスト:"
 
 #: ../src/nautilus-properties-window.c:4507
 msgid "Last changed:"
@@ -4522,11 +4436,11 @@ msgstr "指定したファイルのアクセス権を決定できませんでし
 msgid "Open With"
 msgstr "開き方"
 
-#: ../src/nautilus-properties-window.c:5091
+#: ../src/nautilus-properties-window.c:5089
 msgid "Creating Properties window."
-msgstr "プロパティウィンドウを生成しています"
+msgstr "プロパティウィンドウを作成しています"
 
-#: ../src/nautilus-properties-window.c:5377
+#: ../src/nautilus-properties-window.c:5375
 msgid "Select Custom Icon"
 msgstr "アイコンの選択"
 
@@ -4634,24 +4548,24 @@ msgstr "選択したアイテムを戻す"
 msgid "Restore selected items to their original position"
 msgstr "選択したアイテムを元あった場所に戻します"
 
-#: ../src/nautilus-tree-sidebar.c:916 ../src/nautilus-view.c:5733
+#: ../src/nautilus-tree-sidebar.c:916 ../src/nautilus-view.c:5732
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "\"ファイルの貼り付け\" コマンドを選択すると \"%s\" を移動します"
 
-#: ../src/nautilus-tree-sidebar.c:920 ../src/nautilus-view.c:5737
+#: ../src/nautilus-tree-sidebar.c:920 ../src/nautilus-view.c:5736
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "\"ファイルの貼り付け\" コマンドを選択すると \"%s\" をコピーします"
 
-#: ../src/nautilus-tree-sidebar.c:959 ../src/nautilus-view.c:5930
+#: ../src/nautilus-tree-sidebar.c:959 ../src/nautilus-view.c:5929
 msgid "There is nothing on the clipboard to paste."
 msgstr "貼り付けるものがクリップボードにはありません。"
 
 #. add the "create new folder" menu item
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-tree-sidebar.c:1199 ../src/nautilus-view.c:6958
+#: ../src/nautilus-tree-sidebar.c:1199 ../src/nautilus-view.c:6957
 msgid "Create New _Folder"
 msgstr "新しいフォルダーの作成(_F)"
 
@@ -4659,15 +4573,15 @@ msgstr "新しいフォルダーの作成(_F)"
 #. accelerator for paste
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-tree-sidebar.c:1231 ../src/nautilus-view.c:7014
-#: ../src/nautilus-view.c:7161
+#: ../src/nautilus-tree-sidebar.c:1231 ../src/nautilus-view.c:7013
+#: ../src/nautilus-view.c:7160
 msgid "_Paste Into Folder"
 msgstr "フォルダーへ貼り付け(_P)"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-tree-sidebar.c:1261 ../src/nautilus-view.c:7052
-#: ../src/nautilus-view.c:7170 ../src/nautilus-view.c:8486
+#: ../src/nautilus-tree-sidebar.c:1261 ../src/nautilus-view.c:7051
+#: ../src/nautilus-view.c:7169 ../src/nautilus-view.c:8485
 msgid "_Delete"
 msgstr "削除(_D)"
 
@@ -4827,23 +4741,23 @@ msgid "Use \"%s\" to open the selected item"
 msgid_plural "Use \"%s\" to open the selected items"
 msgstr[0] "選択したアイテムを \"%s\" を使って開きます"
 
-#: ../src/nautilus-view.c:5156
+#: ../src/nautilus-view.c:5155
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "選択したアイテムを \"%s\" で実行します"
 
-#: ../src/nautilus-view.c:5407
+#: ../src/nautilus-view.c:5406
 #, c-format
 msgid "Create a new document from template \"%s\""
 msgstr "テンプレート \"%s\" から新しいドキュメントを作成する"
 
-#: ../src/nautilus-view.c:5661
+#: ../src/nautilus-view.c:5660
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
 "このフォルダーにある実行可能なすべてのファイルが [スクリプト] メニューに表示"
 "されます。"
 
-#: ../src/nautilus-view.c:5663
+#: ../src/nautilus-view.c:5662
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -4851,7 +4765,7 @@ msgstr ""
 "メニューからスクリプトを選択すると、選択したアイテムを入力値としてスクリプト"
 "を実行します。"
 
-#: ../src/nautilus-view.c:5665
+#: ../src/nautilus-view.c:5664
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4910,7 +4824,7 @@ msgstr ""
 "NAUTILUS_SCRIPT_NEXT_PANE_CURRENT_URI:  スプリット表示ウィンドウの、アクティ"
 "ブでないペイン中の現在位置を示す URI"
 
-#: ../src/nautilus-view.c:5744
+#: ../src/nautilus-view.c:5743
 #, c-format
 msgid "The %'d selected item will be moved if you select the Paste command"
 msgid_plural ""
@@ -4918,7 +4832,7 @@ msgid_plural ""
 msgstr[0] ""
 "\"ファイルの貼り付け\" コマンドを選択すると %'d 個 のファイルを移動します"
 
-#: ../src/nautilus-view.c:5751
+#: ../src/nautilus-view.c:5750
 #, c-format
 msgid "The %'d selected item will be copied if you select the Paste command"
 msgid_plural ""
@@ -4926,75 +4840,75 @@ msgid_plural ""
 msgstr[0] ""
 "\"ファイルの貼り付け\" コマンドを選択すると %'d 個のファイルをコピーします"
 
-#: ../src/nautilus-view.c:6188
+#: ../src/nautilus-view.c:6187
 msgid "Unable to unmount location"
 msgstr "場所をアンマウントできません"
 
-#: ../src/nautilus-view.c:6208
+#: ../src/nautilus-view.c:6207
 msgid "Unable to eject location"
 msgstr "場所を取り出せません"
 
-#: ../src/nautilus-view.c:6223
+#: ../src/nautilus-view.c:6222
 msgid "Unable to stop drive"
 msgstr "ドライブを停止できません"
 
-#: ../src/nautilus-view.c:6709
+#: ../src/nautilus-view.c:6708
 #, c-format
 msgid "Connect to Server %s"
 msgstr "サーバー %s への接続"
 
-#: ../src/nautilus-view.c:6714 ../src/nautilus-view.c:7831
-#: ../src/nautilus-view.c:7918 ../src/nautilus-view.c:8022
+#: ../src/nautilus-view.c:6713 ../src/nautilus-view.c:7830
+#: ../src/nautilus-view.c:7917 ../src/nautilus-view.c:8021
 msgid "_Connect"
 msgstr "接続する(_C)"
 
-#: ../src/nautilus-view.c:6728
+#: ../src/nautilus-view.c:6727
 msgid "Link _name:"
 msgstr "リンクの名前(_N):"
 
 #. name, stock id, label
-#: ../src/nautilus-view.c:6946
+#: ../src/nautilus-view.c:6945
 msgid "Create New _Document"
 msgstr "新しいドキュメントの作成(_D)"
 
 #. name, stock id, label
-#: ../src/nautilus-view.c:6947
+#: ../src/nautilus-view.c:6946
 msgid "Open Wit_h"
 msgstr "別のアプリで開く(_H)"
 
-#: ../src/nautilus-view.c:6948
+#: ../src/nautilus-view.c:6947
 msgid "Choose a program with which to open the selected item"
 msgstr "選択したアイテムを開くプログラムを選びます"
 
 #. tooltip
-#: ../src/nautilus-view.c:6951 ../src/nautilus-view.c:8520
+#: ../src/nautilus-view.c:6950 ../src/nautilus-view.c:8519
 msgid "View or modify the properties of each selected item"
 msgstr "選択したアイテムのプロパティを表示または変更します"
 
 #. tooltip
-#: ../src/nautilus-view.c:6959
+#: ../src/nautilus-view.c:6958
 msgid "Create a new empty folder inside this folder"
 msgstr "このフォルダーに空のフォルダーを新規に作成します"
 
 #. name, stock id, label
-#: ../src/nautilus-view.c:6961
+#: ../src/nautilus-view.c:6960
 msgid "No templates installed"
 msgstr "テンプレートがインストールされていません"
 
 #. name, stock id
 #. translators: this is used to indicate that a document doesn't contain anything
 #. label, accelerator
-#: ../src/nautilus-view.c:6964
+#: ../src/nautilus-view.c:6963
 msgid "_Empty Document"
 msgstr "空のドキュメント(_E)"
 
 #. tooltip
-#: ../src/nautilus-view.c:6965
+#: ../src/nautilus-view.c:6964
 msgid "Create a new empty document inside this folder"
 msgstr "このフォルダーに空のドキュメントを新規に作成します"
 
 #. tooltip
-#: ../src/nautilus-view.c:6969
+#: ../src/nautilus-view.c:6968
 msgid "Open the selected item in this window"
 msgstr "選択したアイテムを開きます"
 
@@ -5003,53 +4917,53 @@ msgstr "選択したアイテムを開きます"
 #. Location-specific actions
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:6976 ../src/nautilus-view.c:7144
+#: ../src/nautilus-view.c:6975 ../src/nautilus-view.c:7143
 msgid "Open in Navigation Window"
 msgstr "新しいナビゲーションウィンドウで開く"
 
 #. tooltip
-#: ../src/nautilus-view.c:6977
+#: ../src/nautilus-view.c:6976
 msgid "Open each selected item in a navigation window"
 msgstr "選択したアイテムをナビゲーションウィンドウの中に開きます"
 
 #. tooltip
-#: ../src/nautilus-view.c:6981
+#: ../src/nautilus-view.c:6980
 msgid "Open each selected item in a new tab"
 msgstr "選択したアイテムを新しいタブの中に開きます"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:6984
+#: ../src/nautilus-view.c:6983
 msgid "Other _Application..."
 msgstr "別のアプリ(_A)..."
 
 #. tooltip
-#: ../src/nautilus-view.c:6985 ../src/nautilus-view.c:6989
+#: ../src/nautilus-view.c:6984 ../src/nautilus-view.c:6988
 msgid "Choose another application with which to open the selected item"
 msgstr "選択したアイテムを開く別のアプリケーションを選びます"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:6988
+#: ../src/nautilus-view.c:6987
 msgid "Open With Other _Application..."
 msgstr "別のアプリで開く(_A)..."
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:6992
+#: ../src/nautilus-view.c:6991
 msgid "_Open Scripts Folder"
 msgstr "このフォルダーを開く(_O)"
 
 # FIXME: スクリプト・フォルダの確認
 #. tooltip
-#: ../src/nautilus-view.c:6993
+#: ../src/nautilus-view.c:6992
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "スクリプト・フォルダーへ移動します"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/nautilus-view.c:7001
+#: ../src/nautilus-view.c:7000
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr ""
 "選択したファイルを \"ファイルの貼り付け\" コマンドで移動する準備を行います"
@@ -5057,7 +4971,7 @@ msgstr ""
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/nautilus-view.c:7005
+#: ../src/nautilus-view.c:7004
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr ""
 "選択したファイルを \"ファイルの貼り付け\" コマンドでコピーする準備を行います"
@@ -5065,14 +4979,14 @@ msgstr ""
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/nautilus-view.c:7009
+#: ../src/nautilus-view.c:7008
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr ""
 "以前、ファイルの切り取りまたはコピーで指定したファイルを移動またはコピーしま"
 "す"
 
 #. tooltip
-#: ../src/nautilus-view.c:7015
+#: ../src/nautilus-view.c:7014
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
@@ -5081,28 +4995,28 @@ msgstr ""
 "ダーへ移動またはコピーします"
 
 #. name, stock id, label
-#: ../src/nautilus-view.c:7017
+#: ../src/nautilus-view.c:7016
 msgid "Cop_y to"
 msgstr "指定先にコピー(_Y)"
 
 #. name, stock id, label
-#: ../src/nautilus-view.c:7018
+#: ../src/nautilus-view.c:7017
 msgid "M_ove to"
 msgstr "指定先に移動(_O)"
 
 #. tooltip
-#: ../src/nautilus-view.c:7021
+#: ../src/nautilus-view.c:7020
 msgid "Select all items in this window"
 msgstr "このウィンドウの中にあるすべてのアイテムを選択します"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7024
+#: ../src/nautilus-view.c:7023
 msgid "Select I_tems Matching..."
 msgstr "パターンによる選択(_T)..."
 
 #. tooltip
-#: ../src/nautilus-view.c:7025
+#: ../src/nautilus-view.c:7024
 msgid "Select items in this window matching a given pattern"
 msgstr ""
 "このウィンドウの中から指定されたパターンに一致するすべてのアイテムを選択しま"
@@ -5110,93 +5024,87 @@ msgstr ""
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7028
+#: ../src/nautilus-view.c:7027
 msgid "_Invert Selection"
 msgstr "選択を反転する(_I)"
 
 #. tooltip
-#: ../src/nautilus-view.c:7029
+#: ../src/nautilus-view.c:7028
 msgid "Select all and only the items that are not currently selected"
 msgstr "現在選択されていないすべてのアイテムを選択状態にします"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7032
+#: ../src/nautilus-view.c:7031
 msgid "D_uplicate"
 msgstr "複製(_U)"
 
 #. tooltip
-#: ../src/nautilus-view.c:7033
+#: ../src/nautilus-view.c:7032
 msgid "Duplicate each selected item"
-msgstr "選択したアイテムの複製を作成します"
+msgstr "選択したアイテム複製します"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7036 ../src/nautilus-view.c:8505
+#: ../src/nautilus-view.c:7035 ../src/nautilus-view.c:8504
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "リンクの作成(_K)"
 
 #. tooltip
-#: ../src/nautilus-view.c:7037
+#: ../src/nautilus-view.c:7036
 msgid "Create a symbolic link for each selected item"
 msgstr "選択した各アイテムのシンボリックリンクを作成します"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7040
+#: ../src/nautilus-view.c:7039
 msgid "_Rename..."
 msgstr "名前の変更(_R)..."
 
 #. tooltip
-#: ../src/nautilus-view.c:7041
+#: ../src/nautilus-view.c:7040
 msgid "Rename selected item"
 msgstr "選択したアイテムの名前を変更します"
 
 #. tooltip
-#: ../src/nautilus-view.c:7049 ../src/nautilus-view.c:8466
+#: ../src/nautilus-view.c:7048 ../src/nautilus-view.c:8465
 msgid "Move each selected item to the Trash"
 msgstr "選択したアイテムをゴミ箱へ移動します"
 
 #. tooltip
-#: ../src/nautilus-view.c:7053
+#: ../src/nautilus-view.c:7052
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "ゴミ箱へ移動せずに選択したアイテムを削除します"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7056 ../src/nautilus-view.c:7174
+#: ../src/nautilus-view.c:7055 ../src/nautilus-view.c:7173
 msgid "_Restore"
 msgstr "元に戻す(_R)"
 
 #. name, stock id
 #. label, accelerator
 #. name, stock id, label
-#: ../src/nautilus-view.c:7060 ../src/nautilus-window-menus.c:924
+#: ../src/nautilus-view.c:7059 ../src/nautilus-window-menus.c:924
 msgid "_Undo"
 msgstr "元に戻す(_U)"
 
 #. tooltip
-#: ../src/nautilus-view.c:7061
-#, fuzzy
-#| msgid "Undo the last text change"
+#: ../src/nautilus-view.c:7060
 msgid "Undo the last action"
-msgstr "最後に変更したテキストを元に戻します"
+msgstr "最後のアクションを元に戻します"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7064
-#, fuzzy
-#| msgid "_Read"
+#: ../src/nautilus-view.c:7063
 msgid "_Redo"
-msgstr "読み込み(_R)"
+msgstr "やり直す(_R)"
 
 #. tooltip
-#: ../src/nautilus-view.c:7065
-#, fuzzy
-#| msgid "Undo the last text change"
+#: ../src/nautilus-view.c:7064
 msgid "Redo the last undone action"
-msgstr "最後に変更したテキストを元に戻します"
+msgstr "最後に元に戻したアクションをやり直します"
 
 #.
 #. * multiview-TODO: decide whether "Reset to Defaults" should
@@ -5206,137 +5114,137 @@ msgstr "最後に変更したテキストを元に戻します"
 #.
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7074
+#: ../src/nautilus-view.c:7073
 msgid "Reset View to _Defaults"
 msgstr "デフォルト表示にリセット(_D)"
 
 #. tooltip
-#: ../src/nautilus-view.c:7075
+#: ../src/nautilus-view.c:7074
 msgid "Reset sorting order and zoom level to match preferences for this view"
-msgstr "並び替えとズームレベルをこのビューの設定にリセットします"
+msgstr "並べ替えとズームレベルをこのビューの設定にリセットします"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7078
+#: ../src/nautilus-view.c:7077
 msgid "Connect To This Server"
 msgstr "このサーバーへの接続"
 
 #. tooltip
-#: ../src/nautilus-view.c:7079
+#: ../src/nautilus-view.c:7078
 msgid "Make a permanent connection to this server"
 msgstr "このサーバーへ永続的に接続します"
 
 #. tooltip
-#: ../src/nautilus-view.c:7083
+#: ../src/nautilus-view.c:7082
 msgid "Mount the selected volume"
 msgstr "選択したボリュームをマウントします"
 
 #. tooltip
-#: ../src/nautilus-view.c:7087
+#: ../src/nautilus-view.c:7086
 msgid "Unmount the selected volume"
 msgstr "選択したボリュームをアンマウントします"
 
 #. tooltip
-#: ../src/nautilus-view.c:7091
+#: ../src/nautilus-view.c:7090
 msgid "Eject the selected volume"
 msgstr "選択したボリュームを取り出します"
 
 #. tooltip
-#: ../src/nautilus-view.c:7095
+#: ../src/nautilus-view.c:7094
 msgid "Start the selected volume"
 msgstr "選択したボリュームを起動します"
 
 #. tooltip
-#: ../src/nautilus-view.c:7099 ../src/nautilus-view.c:8044
+#: ../src/nautilus-view.c:7098 ../src/nautilus-view.c:8043
 msgid "Stop the selected volume"
 msgstr "選択したボリュームを停止します"
 
 #. tooltip
-#: ../src/nautilus-view.c:7103 ../src/nautilus-view.c:7127
-#: ../src/nautilus-view.c:7199
+#: ../src/nautilus-view.c:7102 ../src/nautilus-view.c:7126
+#: ../src/nautilus-view.c:7198
 msgid "Detect media in the selected drive"
 msgstr "選択したドライブのメディアを検出します"
 
 #. tooltip
-#: ../src/nautilus-view.c:7107
+#: ../src/nautilus-view.c:7106
 msgid "Mount the volume associated with the open folder"
 msgstr "オープンするフォルダーに関連づけられているボリュームをマウントします"
 
 #. tooltip
-#: ../src/nautilus-view.c:7111
+#: ../src/nautilus-view.c:7110
 msgid "Unmount the volume associated with the open folder"
 msgstr ""
 "オープンするフォルダーに関連づけられているボリュームをアンマウントします"
 
 #. tooltip
-#: ../src/nautilus-view.c:7115
+#: ../src/nautilus-view.c:7114
 msgid "Eject the volume associated with the open folder"
 msgstr "オープンするフォルダーに関連づけられているボリュームを取り出します"
 
 #. tooltip
-#: ../src/nautilus-view.c:7119
+#: ../src/nautilus-view.c:7118
 msgid "Start the volume associated with the open folder"
 msgstr "オープンするフォルダーに関連づけられているボリュームを開始します"
 
 #. tooltip
-#: ../src/nautilus-view.c:7123
+#: ../src/nautilus-view.c:7122
 msgid "Stop the volume associated with the open folder"
 msgstr "オープンするフォルダーに関連づけられているボリュームを停止します"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7130
+#: ../src/nautilus-view.c:7129
 msgid "Open File and Close window"
 msgstr "ファイルを開いてウィンドウを閉じます"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7134
+#: ../src/nautilus-view.c:7133
 msgid "Sa_ve Search"
 msgstr "検索の保存(_V)"
 
 #. tooltip
-#: ../src/nautilus-view.c:7135
+#: ../src/nautilus-view.c:7134
 msgid "Save the edited search"
 msgstr "入力した検索条件を保存します"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7138
+#: ../src/nautilus-view.c:7137
 msgid "Sa_ve Search As..."
 msgstr "名前を付けて検索を保存(_V)..."
 
 #. tooltip
-#: ../src/nautilus-view.c:7139
+#: ../src/nautilus-view.c:7138
 msgid "Save the current search as a file"
 msgstr "この検索に名前を付けて保存します"
 
 #. tooltip
-#: ../src/nautilus-view.c:7145
+#: ../src/nautilus-view.c:7144
 msgid "Open this folder in a navigation window"
 msgstr "このフォルダーをナビゲーションウィンドウの中に開きます"
 
 #. tooltip
-#: ../src/nautilus-view.c:7149
+#: ../src/nautilus-view.c:7148
 msgid "Open this folder in a new tab"
 msgstr "このフォルダーを新しいタブの中に開きます"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/nautilus-view.c:7154
+#: ../src/nautilus-view.c:7153
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "このフォルダーを \"貼り付け\" コマンドで移動する準備を行います"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/nautilus-view.c:7158
+#: ../src/nautilus-view.c:7157
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "このフォルダーを \"貼り付け\" コマンドでコピーする準備を行います"
 
 #. tooltip
-#: ../src/nautilus-view.c:7162
+#: ../src/nautilus-view.c:7161
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into this "
 "folder"
@@ -5345,269 +5253,269 @@ msgstr ""
 "はコピーします"
 
 #. tooltip
-#: ../src/nautilus-view.c:7167
+#: ../src/nautilus-view.c:7166
 msgid "Move this folder to the Trash"
 msgstr "このフォルダーをゴミ箱へ移動します"
 
 #. tooltip
-#: ../src/nautilus-view.c:7171
+#: ../src/nautilus-view.c:7170
 msgid "Delete this folder, without moving to the Trash"
 msgstr "ゴミ箱へ移動せずに、このフォルダーを削除します"
 
 #. tooltip
-#: ../src/nautilus-view.c:7179
+#: ../src/nautilus-view.c:7178
 msgid "Mount the volume associated with this folder"
 msgstr "このフォルダーに関連づけられているボリュームをマウントします"
 
 #. tooltip
-#: ../src/nautilus-view.c:7183
+#: ../src/nautilus-view.c:7182
 msgid "Unmount the volume associated with this folder"
 msgstr "このフォルダーに関連づけられているボリュームをアンマウントします"
 
 #. tooltip
-#: ../src/nautilus-view.c:7187
+#: ../src/nautilus-view.c:7186
 msgid "Eject the volume associated with this folder"
 msgstr "このフォルダーに関連づけられているボリュームを取り出します"
 
 #. tooltip
-#: ../src/nautilus-view.c:7191
+#: ../src/nautilus-view.c:7190
 msgid "Start the volume associated with this folder"
 msgstr "このフォルダーに関連づけられているボリュームを開始します"
 
 #. tooltip
-#: ../src/nautilus-view.c:7195
+#: ../src/nautilus-view.c:7194
 msgid "Stop the volume associated with this folder"
 msgstr "このフォルダーに関連づけられているボリュームを停止します"
 
 #. tooltip
-#: ../src/nautilus-view.c:7204
+#: ../src/nautilus-view.c:7203
 msgid "View or modify the properties of this folder"
 msgstr "このフォルダーのプロパティを表示または変更します"
 
 #. name, stock id, label
-#: ../src/nautilus-view.c:7207 ../src/nautilus-view.c:7210
+#: ../src/nautilus-view.c:7206 ../src/nautilus-view.c:7209
 msgid "_Other pane"
 msgstr "他のペイン(_O)"
 
-#: ../src/nautilus-view.c:7208
+#: ../src/nautilus-view.c:7207
 msgid "Copy the current selection to the other pane in the window"
 msgstr "現在選択されているものをウィンドウの他のペインへコピーします"
 
-#: ../src/nautilus-view.c:7211
+#: ../src/nautilus-view.c:7210
 msgid "Move the current selection to the other pane in the window"
 msgstr "現在選択されているものをウィンドウの他のペインへ移動します"
 
 #. name, stock id, label
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-view.c:7214 ../src/nautilus-view.c:7218
+#: ../src/nautilus-view.c:7213 ../src/nautilus-view.c:7217
 #: ../src/nautilus-window-menus.c:995 ../src/nautilus-window-menus.c:1256
 msgid "_Home"
 msgstr "ホーム(_H)"
 
-#: ../src/nautilus-view.c:7215
+#: ../src/nautilus-view.c:7214
 msgid "Copy the current selection to the home folder"
 msgstr "現在選択されているものをホーム・フォルダーへコピーします"
 
-#: ../src/nautilus-view.c:7219
+#: ../src/nautilus-view.c:7218
 msgid "Move the current selection to the home folder"
 msgstr "現在選択されているものをホーム・フォルダーへ移動します"
 
 #. name, stock id, label
-#: ../src/nautilus-view.c:7222 ../src/nautilus-view.c:7226
+#: ../src/nautilus-view.c:7221 ../src/nautilus-view.c:7225
 msgid "_Desktop"
 msgstr "デスクトップ(_D)"
 
-#: ../src/nautilus-view.c:7223
+#: ../src/nautilus-view.c:7222
 msgid "Copy the current selection to the desktop"
 msgstr "現在選択されているものをデスクトップへコピーします"
 
-#: ../src/nautilus-view.c:7227
+#: ../src/nautilus-view.c:7226
 msgid "Move the current selection to the desktop"
 msgstr "現在選択されているものをデスクトップへ移動します"
 
 #. Translators: %s is a directory
-#: ../src/nautilus-view.c:7306
+#: ../src/nautilus-view.c:7305
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "%s にあるスクリプトの実行したり管理します"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/nautilus-view.c:7308
+#: ../src/nautilus-view.c:7307
 msgid "_Scripts"
 msgstr "スクリプト(_S)"
 
-#: ../src/nautilus-view.c:7681
+#: ../src/nautilus-view.c:7680
 #, c-format
 msgid "Move the open folder out of the trash to \"%s\""
 msgstr "開いたフォルダーをゴミ箱から \"%s\" へ移動します"
 
-#: ../src/nautilus-view.c:7684
+#: ../src/nautilus-view.c:7683
 #, c-format
 msgid "Move the selected folder out of the trash to \"%s\""
 msgid_plural "Move the selected folders out of the trash to \"%s\""
 msgstr[0] "選択したフォルダーをゴミ箱から \"%s\" へ移動します"
 
-#: ../src/nautilus-view.c:7688
+#: ../src/nautilus-view.c:7687
 #, c-format
 msgid "Move the selected folder out of the trash"
 msgid_plural "Move the selected folders out of the trash"
 msgstr[0] "選択したフォルダーをゴミ箱から移動します"
 
-#: ../src/nautilus-view.c:7694
+#: ../src/nautilus-view.c:7693
 #, c-format
 msgid "Move the selected file out of the trash to \"%s\""
 msgid_plural "Move the selected files out of the trash to \"%s\""
 msgstr[0] "選択したファイルをゴミ箱から \"%s\" へ移動します"
 
-#: ../src/nautilus-view.c:7698
+#: ../src/nautilus-view.c:7697
 #, c-format
 msgid "Move the selected file out of the trash"
 msgid_plural "Move the selected files out of the trash"
 msgstr[0] "選択したファイルをゴミ箱から移動します"
 
-#: ../src/nautilus-view.c:7704
+#: ../src/nautilus-view.c:7703
 #, c-format
 msgid "Move the selected item out of the trash to \"%s\""
 msgid_plural "Move the selected items out of the trash to \"%s\""
 msgstr[0] "選択したアイテムをゴミ箱から \"%s\" へ移動します"
 
-#: ../src/nautilus-view.c:7708
+#: ../src/nautilus-view.c:7707
 #, c-format
 msgid "Move the selected item out of the trash"
 msgid_plural "Move the selected items out of the trash"
 msgstr[0] "選択したアイテムをゴミ箱から移動します"
 
-#: ../src/nautilus-view.c:7824 ../src/nautilus-view.c:7828
-#: ../src/nautilus-view.c:8015 ../src/nautilus-view.c:8019
+#: ../src/nautilus-view.c:7823 ../src/nautilus-view.c:7827
+#: ../src/nautilus-view.c:8014 ../src/nautilus-view.c:8018
 msgid "Start the selected drive"
 msgstr "選択したドライブを起動します"
 
-#: ../src/nautilus-view.c:7832 ../src/nautilus-view.c:8023
+#: ../src/nautilus-view.c:7831 ../src/nautilus-view.c:8022
 msgid "Connect to the selected drive"
 msgstr "選択したドライブに接続します"
 
-#: ../src/nautilus-view.c:7835 ../src/nautilus-view.c:7922
-#: ../src/nautilus-view.c:8026
+#: ../src/nautilus-view.c:7834 ../src/nautilus-view.c:7921
+#: ../src/nautilus-view.c:8025
 msgid "_Start Multi-disk Drive"
 msgstr "マルチディスク・ドライブを起動(_S)"
 
-#: ../src/nautilus-view.c:7836 ../src/nautilus-view.c:8027
+#: ../src/nautilus-view.c:7835 ../src/nautilus-view.c:8026
 msgid "Start the selected multi-disk drive"
 msgstr "選択したマルチディスク・ドライブを起動します"
 
-#: ../src/nautilus-view.c:7839
+#: ../src/nautilus-view.c:7838
 msgid "U_nlock Drive"
 msgstr "ドライブのロック解除(_N)"
 
-#: ../src/nautilus-view.c:7840 ../src/nautilus-view.c:8031
+#: ../src/nautilus-view.c:7839 ../src/nautilus-view.c:8030
 msgid "Unlock the selected drive"
 msgstr "選択したドライブのロックを解除します"
 
-#: ../src/nautilus-view.c:7853
+#: ../src/nautilus-view.c:7852
 msgid "Stop the selected drive"
 msgstr "選択したドライブを停止します"
 
-#: ../src/nautilus-view.c:7857 ../src/nautilus-view.c:8048
+#: ../src/nautilus-view.c:7856 ../src/nautilus-view.c:8047
 msgid "Safely remove the selected drive"
 msgstr "選択したドライブを安全に取り出します"
 
-#: ../src/nautilus-view.c:7860 ../src/nautilus-view.c:7947
-#: ../src/nautilus-view.c:8051
+#: ../src/nautilus-view.c:7859 ../src/nautilus-view.c:7946
+#: ../src/nautilus-view.c:8050
 msgid "_Disconnect"
 msgstr "切断(_D)"
 
-#: ../src/nautilus-view.c:7861 ../src/nautilus-view.c:8052
+#: ../src/nautilus-view.c:7860 ../src/nautilus-view.c:8051
 msgid "Disconnect the selected drive"
 msgstr "選択したドライブを切断します"
 
-#: ../src/nautilus-view.c:7864 ../src/nautilus-view.c:7951
-#: ../src/nautilus-view.c:8055
+#: ../src/nautilus-view.c:7863 ../src/nautilus-view.c:7950
+#: ../src/nautilus-view.c:8054
 msgid "_Stop Multi-disk Drive"
 msgstr "マルチディスク・ドライブの停止(_S)"
 
-#: ../src/nautilus-view.c:7865 ../src/nautilus-view.c:8056
+#: ../src/nautilus-view.c:7864 ../src/nautilus-view.c:8055
 msgid "Stop the selected multi-disk drive"
 msgstr "選択したマルチディスク・ドライブを停止します"
 
-#: ../src/nautilus-view.c:7869 ../src/nautilus-view.c:8060
+#: ../src/nautilus-view.c:7868 ../src/nautilus-view.c:8059
 msgid "Lock the selected drive"
 msgstr "選択したドライブをロックします"
 
-#: ../src/nautilus-view.c:7911 ../src/nautilus-view.c:7915
+#: ../src/nautilus-view.c:7910 ../src/nautilus-view.c:7914
 msgid "Start the drive associated with the open folder"
 msgstr "オープンするフォルダーに関連づけられているボリュームを起動します"
 
-#: ../src/nautilus-view.c:7919
+#: ../src/nautilus-view.c:7918
 msgid "Connect to the drive associated with the open folder"
 msgstr "オープンするフォルダーに関連づけられているドライブに接続します"
 
-#: ../src/nautilus-view.c:7923
+#: ../src/nautilus-view.c:7922
 msgid "Start the multi-disk drive associated with the open folder"
 msgstr ""
 "オープンするフォルダーに関連づけられているマルチディスク・ドライブを起動しま"
 "す"
 
-#: ../src/nautilus-view.c:7927
+#: ../src/nautilus-view.c:7926
 msgid "Unlock the drive associated with the open folder"
 msgstr "オープンするフォルダーに関連づけられているドライブのロックを解除します"
 
-#: ../src/nautilus-view.c:7940
+#: ../src/nautilus-view.c:7939
 msgid "_Stop the drive associated with the open folder"
 msgstr "オープンするフォルダーに関連づけられているドライブを停止(_S)"
 
-#: ../src/nautilus-view.c:7944
+#: ../src/nautilus-view.c:7943
 msgid "Safely remove the drive associated with the open folder"
 msgstr "オープンするフォルダーに関連づけられているドライブを安全に取り出します"
 
-#: ../src/nautilus-view.c:7948
+#: ../src/nautilus-view.c:7947
 msgid "Disconnect the drive associated with the open folder"
 msgstr "オープンするフォルダーに関連づけられているドライブを切断します"
 
-#: ../src/nautilus-view.c:7952
+#: ../src/nautilus-view.c:7951
 msgid "Stop the multi-disk drive associated with the open folder"
 msgstr ""
 "オープンするフォルダーに関連づけられているマルチディスク・ドライブを停止しま"
 "す"
 
-#: ../src/nautilus-view.c:7956
+#: ../src/nautilus-view.c:7955
 msgid "Lock the drive associated with the open folder"
 msgstr "オープンするフォルダーに関連づけられているドライブをロックします"
 
-#: ../src/nautilus-view.c:8183 ../src/nautilus-view.c:8461
+#: ../src/nautilus-view.c:8182 ../src/nautilus-view.c:8460
 msgid "_Delete Permanently"
 msgstr "完全に削除する(_D)"
 
-#: ../src/nautilus-view.c:8184
+#: ../src/nautilus-view.c:8183
 msgid "Delete the open folder permanently"
 msgstr "開いたフォルダーを完全に削除します"
 
-#: ../src/nautilus-view.c:8188
+#: ../src/nautilus-view.c:8187
 msgid "Move the open folder to the Trash"
 msgstr "開いたフォルダーをゴミ箱へ移動します"
 
-#: ../src/nautilus-view.c:8368
+#: ../src/nautilus-view.c:8367
 #, c-format
 msgid "_Open With %s"
 msgstr "%sで開く(_O)"
 
-#: ../src/nautilus-view.c:8425
+#: ../src/nautilus-view.c:8424
 #, c-format
 msgid "Open in %'d New _Window"
 msgid_plural "Open in %'d New _Windows"
 msgstr[0] "%'d 個の新しいウィンドウで開く(_W)"
 
-#: ../src/nautilus-view.c:8445
+#: ../src/nautilus-view.c:8444
 #, c-format
 msgid "Open in %'d New _Tab"
 msgid_plural "Open in %'d New _Tabs"
 msgstr[0] "%'d 個の新しいタブで開く(_T)"
 
-#: ../src/nautilus-view.c:8462
+#: ../src/nautilus-view.c:8461
 msgid "Delete all selected items permanently"
 msgstr "選択したすべてのアイテムを完全に削除します"
 
-#: ../src/nautilus-view.c:8518
+#: ../src/nautilus-view.c:8517
 msgid "View or modify the properties of the open folder"
 msgstr "開いたフォルダーのプロパティを表示または変更します"
 
@@ -5897,7 +5805,7 @@ msgstr ""
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:951
 msgid "Sort files and folders"
-msgstr "ファイルとフォルダーの並び替え"
+msgstr "ファイルとフォルダーの並べ替え"
 
 #. tooltip
 #: ../src/nautilus-window-menus.c:952
