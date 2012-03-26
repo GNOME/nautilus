@@ -4491,8 +4491,9 @@ reset_open_with_menu (NautilusView *view, GList *selection)
 
 		file = NAUTILUS_FILE (node->data);
 
-		other_applications_visible &= (!nautilus_mime_file_opens_in_view (file) &&
-					       !nautilus_file_is_nautilus_link (file));
+		other_applications_visible &= ((!nautilus_mime_file_opens_in_view (file) &&
+						!nautilus_file_is_nautilus_link (file)) ||
+					       nautilus_file_is_directory (file));
 	}
 
 	default_app = NULL;
