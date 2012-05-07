@@ -2989,6 +2989,7 @@ bookmarks_button_press_event_cb (GtkWidget             *widget,
 	GtkTreeIter iter;
 	GtkTreePath *path = NULL;
 	gboolean retval = FALSE;
+	PlaceType row_type;
 
 	if (event->type != GDK_BUTTON_PRESS) {
 		/* ignore multiple clicks */
@@ -3005,7 +3006,13 @@ bookmarks_button_press_event_cb (GtkWidget             *widget,
 	}
 
 	if (event->button == 3) {
-		bookmarks_popup_menu (sidebar, event);
+		gtk_tree_model_get (model, &iter,
+				    PLACES_SIDEBAR_COLUMN_ROW_TYPE, &row_type,
+				    -1);
+
+		if (row_type != PLACES_HEADING) {
+			bookmarks_popup_menu (sidebar, event);
+		}
 	} else if (event->button == 2) {
 		NautilusWindowOpenFlags flags = 0;
 
