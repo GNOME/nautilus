@@ -66,7 +66,6 @@
 #include <gio/gio.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-stock-dialogs.h>
-#include <libnotify/notify.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 
@@ -83,8 +82,6 @@ struct _NautilusApplicationPriv {
 	NautilusFreedesktopDBus *fdb_manager;
 
 	gboolean desktop_override;
-
-	NotifyNotification *unmount_notify;
 
 	NautilusBookmarkList *bookmark_list;
 
@@ -117,23 +114,22 @@ void
 nautilus_application_notify_unmount_done (NautilusApplication *application,
 					  const gchar *message)
 {
-	if (application->priv->unmount_notify) {
-		notify_notification_close (application->priv->unmount_notify, NULL);
-		g_clear_object (&application->priv->unmount_notify);
-	}
+	g_application_withdraw_notification (G_APPLICATION (application), "unmount");
 
 	if (message != NULL) {
-		NotifyNotification *unplug;
+		GNotification *unplug;
+		GIcon *icon;
 		gchar **strings;
 
 		strings = g_strsplit (message, "\n", 0);
-		unplug = notify_notification_new (strings[0], strings[1],
-						  "media-removable");
-		notify_notification_set_hint (unplug,
-					      "desktop-entry", g_variant_new_string ("nautilus"));
+		icon = g_themed_icon_new ("media-removable");
+		unplug = g_notification_new (strings[0]);
+		g_notification_set_body (unplug, strings[1]);
+		g_notification_set_icon (unplug, icon);
 
-		notify_notification_show (unplug, NULL);
+		g_application_send_notification (G_APPLICATION (application), "unplug", unplug);
 		g_object_unref (unplug);
+		g_object_unref (icon);
 		g_strfreev (strings);
 	}
 }
@@ -142,28 +138,22 @@ void
 nautilus_application_notify_unmount_show (NautilusApplication *application,
 					  const gchar *message)
 {
+	GNotification *unmount;
+	GIcon *icon;
 	gchar **strings;
 
 	strings = g_strsplit (message, "\n", 0);
 
-	if (!application->priv->unmount_notify) {
-		application->priv->unmount_notify =
-			notify_notification_new (strings[0], strings[1],
-						 "media-removable");
+	icon = g_themed_icon_new ("media-removable");
 
-		notify_notification_set_hint (application->priv->unmount_notify,
-					      "desktop-entry", g_variant_new_string ("nautilus"));
-		notify_notification_set_hint (application->priv->unmount_notify,
-					      "transient", g_variant_new_boolean (TRUE));
-		notify_notification_set_urgency (application->priv->unmount_notify,
-						 NOTIFY_URGENCY_CRITICAL);
-	} else {
-		notify_notification_update (application->priv->unmount_notify,
-					    strings[0], strings[1],
-					    "media-removable");
-	}
+	unmount = g_notification_new (strings[0]);
+	g_notification_set_body (unmount, strings[1]);
+	g_notification_set_icon (unmount, icon);
+	g_notification_set_urgent (unmount, TRUE);
 
-	notify_notification_show (application->priv->unmount_notify, NULL);
+	g_application_send_notification (G_APPLICATION (application), "unmount", unmount);
+	g_object_unref (unmount);
+	g_object_unref (icon);
 	g_strfreev (strings);
 }
 

@@ -43,7 +43,6 @@ struct _NautilusProgressUIHandlerPriv {
 	GtkWidget *window_vbox;
 	guint active_infos;
 
-	NotifyNotification *progress_notification;
 	GtkStatusIcon *status_icon;
 };
 
@@ -66,8 +65,6 @@ G_DEFINE_TYPE (NautilusProgressUIHandler, nautilus_progress_ui_handler, G_TYPE_O
  * - in the same case, but the window was showing, we just hide the window
  */
 
-#define ACTION_DETAILS "details"
-
 static gboolean server_has_persistence (void);
 
 static void
@@ -79,45 +76,15 @@ status_icon_activate_cb (GtkStatusIcon *icon,
 }
 
 static void
-notification_show_details_cb (NotifyNotification *notification,
-			      char *action_name,
-			      gpointer user_data)
+notification_show_details_cb (GSimpleAction *action,
+			      GVariant      *parameter,
+			      gpointer       user_data)
 {
 	NautilusProgressUIHandler *self = user_data;
 
-
-	if (g_strcmp0 (action_name, ACTION_DETAILS) != 0) {
-		return;
-	}
-
-	notify_notification_close (self->priv->progress_notification, NULL);
+	g_application_withdraw_notification (g_application_get_default (),
+					     "progress");
 	gtk_window_present (GTK_WINDOW (self->priv->progress_window));
-}
-
-static void
-progress_ui_handler_ensure_notification (NautilusProgressUIHandler *self)
-{
-	NotifyNotification *notify;
-
-	if (self->priv->progress_notification) {
-		return;
-	}
-
-	notify = notify_notification_new (_("File Operations"),
-					  NULL, NULL);
-	self->priv->progress_notification = notify;
-
-	notify_notification_set_category (notify, "transfer");
-	notify_notification_set_hint (notify, "resident",
-				      g_variant_new_boolean (TRUE));
-	notify_notification_set_hint (notify,
-				      "desktop-entry", g_variant_new_string ("nautilus"));
-
-	notify_notification_add_action (notify, ACTION_DETAILS,
-					_("Show Details"),
-					notification_show_details_cb,
-					self,
-					NULL);
 }
 
 static void
@@ -145,22 +112,23 @@ progress_ui_handler_ensure_status_icon (NautilusProgressUIHandler *self)
 static void
 progress_ui_handler_update_notification (NautilusProgressUIHandler *self)
 {
+        GNotification *notification;
 	gchar *body;
 
-	progress_ui_handler_ensure_notification (self);
+        notification = g_notification_new (_("File Operations"));
+        g_notification_add_button (notification, _("Show Details"),
+                                   "app.show-progress-window");
 
 	body = g_strdup_printf (ngettext ("%'d file operation active",
 					  "%'d file operations active",
 					  self->priv->active_infos),
 				self->priv->active_infos);
+        g_notification_set_body (notification, body);
 
-	notify_notification_update (self->priv->progress_notification,
-				    _("File Operations"),
-				    body,
-				    NULL);
+        g_application_send_notification (g_application_get_default (),
+                                         "progress", notification);
 
-	notify_notification_show (self->priv->progress_notification, NULL);
-
+        g_object_unref (notification);
 	g_free (body);
 }
 
@@ -262,19 +230,19 @@ progress_ui_handler_add_to_window (NautilusProgressUIHandler *self,
 static void
 progress_ui_handler_show_complete_notification (NautilusProgressUIHandler *self)
 {
-	NotifyNotification *complete_notification;
+	GNotification *complete_notification;
 
 	/* don't display the notification if we'd be using a status icon */
 	if (!server_has_persistence ()) {
 		return;
 	}
 
-	complete_notification = notify_notification_new (_("File Operations"),
-							 _("All file operations have been successfully completed"),
-							 NULL);
-	notify_notification_set_hint (complete_notification,
-				      "desktop-entry", g_variant_new_string ("nautilus"));
-	notify_notification_show (complete_notification, NULL);
+	complete_notification = g_notification_new (_("File Operations"));
+        g_notification_set_body (complete_notification,
+                                 _("All file operations have been successfully completed"));
+	g_application_send_notification (g_application_get_default (),
+                                         "transfer-complete",
+                                         complete_notification);
 
 	g_object_unref (complete_notification);
 }
@@ -286,10 +254,8 @@ progress_ui_handler_hide_notification_or_status (NautilusProgressUIHandler *self
 		gtk_status_icon_set_visible (self->priv->status_icon, FALSE);
 	}
 
-	if (self->priv->progress_notification != NULL) {
-		notify_notification_close (self->priv->progress_notification, NULL);
-		g_clear_object (&self->priv->progress_notification);
-	}
+        g_application_withdraw_notification (g_application_get_default (),
+                                             "progress");
 }
 
 static void
@@ -455,8 +421,17 @@ server_has_persistence (void)
 static void
 nautilus_progress_ui_handler_init (NautilusProgressUIHandler *self)
 {
+        GSimpleAction *show_details_action;
+
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, NAUTILUS_TYPE_PROGRESS_UI_HANDLER,
 						  NautilusProgressUIHandlerPriv);
+
+        show_details_action = g_simple_action_new ("show-progress-window", NULL);
+        g_action_map_add_action (G_ACTION_MAP (g_application_get_default ()),
+                                 G_ACTION (show_details_action));
+        g_signal_connect (show_details_action, "activate",
+                          G_CALLBACK (notification_show_details_cb), self);
+        g_object_unref (show_details_action);
 
 	self->priv->manager = nautilus_progress_info_manager_new ();
 	g_signal_connect (self->priv->manager, "new-progress-info",
