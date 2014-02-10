@@ -4786,24 +4786,34 @@ add_extension_menu_items (NautilusView *view,
 	ui_manager = nautilus_view_get_ui_manager (view);
 	
 	for (l = menu_items; l; l = l->next) {
+		GtkUIManagerItemType menu_type;
 		NautilusMenuItem *item;
 		NautilusMenu *menu;
 		GtkAction *action;
-		char *path;
+		char *path, *label;
 		
 		item = NAUTILUS_MENU_ITEM (l->data);
 		
-		g_object_get (item, "menu", &menu, NULL);
+		g_object_get (item,
+		              "menu", &menu,
+		              "label", &label,
+		              NULL);
 		
 		action = add_extension_action_for_files (view, item, files);
 		
+		if ((label)&&(strcmp(label, "-") == 0)) {
+			menu_type = GTK_UI_MANAGER_SEPARATOR;
+		} else {
+			menu_type = (menu != NULL) ? GTK_UI_MANAGER_MENU : GTK_UI_MANAGER_MENUITEM;
+		}
+
 		path = g_build_path ("/", NAUTILUS_VIEW_POPUP_PATH_EXTENSION_ACTIONS, subdirectory, NULL);
 		gtk_ui_manager_add_ui (ui_manager,
 				       view->details->extensions_menu_merge_id,
 				       path,
 				       gtk_action_get_name (action),
 				       gtk_action_get_name (action),
-				       (menu != NULL) ? GTK_UI_MANAGER_MENU : GTK_UI_MANAGER_MENUITEM,
+				       menu_type,
 				       FALSE);
 		g_free (path);
 
@@ -4813,7 +4823,7 @@ add_extension_menu_items (NautilusView *view,
 				       path,
 				       gtk_action_get_name (action),
 				       gtk_action_get_name (action),
-				       (menu != NULL) ? GTK_UI_MANAGER_MENU : GTK_UI_MANAGER_MENUITEM,
+				       menu_type,
 				       FALSE);
 		g_free (path);
 
