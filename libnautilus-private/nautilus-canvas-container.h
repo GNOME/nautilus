@@ -315,9 +315,6 @@ void              nautilus_canvas_container_set_margins                   (Nauti
 									   int                     bottom_margin);
 char*             nautilus_canvas_container_get_icon_description          (NautilusCanvasContainer  *container,
 									     NautilusCanvasIconData       *data);
-gboolean          nautilus_canvas_container_get_allow_moves               (NautilusCanvasContainer  *container);
-void              nautilus_canvas_container_set_allow_moves               (NautilusCanvasContainer  *container,
-									   gboolean                allow_moves);
 
 gboolean	  nautilus_canvas_container_is_layout_rtl			(NautilusCanvasContainer  *container);
 gboolean	  nautilus_canvas_container_is_layout_vertical		(NautilusCanvasContainer  *container);

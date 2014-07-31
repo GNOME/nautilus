@@ -32,7 +32,6 @@
 #include "nautilus-view-dnd.h"
 
 #include <stdlib.h>
-#include <eel/eel-vfs-extensions.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <gtk/gtk.h>
@@ -803,9 +802,6 @@ nautilus_canvas_view_begin_loading (NautilusView *view)
 	canvas_container = GTK_WIDGET (get_canvas_container (canvas_view));
 
 	nautilus_canvas_container_begin_loading (NAUTILUS_CANVAS_CONTAINER (canvas_container));
-
-	nautilus_canvas_container_set_allow_moves (NAUTILUS_CANVAS_CONTAINER (canvas_container),
-						 !eel_uri_is_search (uri));
 
 	g_free (uri);
 

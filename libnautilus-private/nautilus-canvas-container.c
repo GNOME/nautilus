@@ -4457,12 +4457,9 @@ motion_notify_event (GtkWidget *widget,
 						&canvas_y);
 
 				actions = GDK_ACTION_COPY
+					| GDK_ACTION_MOVE
 					| GDK_ACTION_LINK
 					| GDK_ACTION_ASK;
-
-				if (container->details->drag_allow_moves) {
-					actions |= GDK_ACTION_MOVE;
-				}
 
 				nautilus_canvas_dnd_begin_drag (container,
 								actions,
@@ -7483,23 +7480,6 @@ nautilus_canvas_container_get_icon_description (NautilusCanvasContainer *contain
 	} else {
 		return NULL;
 	}
-}
-
-gboolean
-nautilus_canvas_container_get_allow_moves (NautilusCanvasContainer *container)
-{
-	g_return_val_if_fail (NAUTILUS_IS_CANVAS_CONTAINER (container), FALSE);
-
-	return container->details->drag_allow_moves;
-}
-
-void
-nautilus_canvas_container_set_allow_moves	(NautilusCanvasContainer *container,
-						 gboolean               allow_moves)
-{
-	g_return_if_fail (NAUTILUS_IS_CANVAS_CONTAINER (container));
-
-	container->details->drag_allow_moves = allow_moves;
 }
 
 /**
