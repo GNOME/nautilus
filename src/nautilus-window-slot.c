@@ -975,6 +975,10 @@ nautilus_window_slot_set_location (NautilusWindowSlot *slot,
 
 	if (slot->details->location &&
 	    g_file_equal (location, slot->details->location)) {
+		/* The location name could be updated even if the location
+		 * wasn't changed. This is the case for a search.
+		 */
+		nautilus_window_slot_update_title (slot);
 		return;
 	}
 
