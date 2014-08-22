@@ -68,6 +68,9 @@ struct NautilusWindowSlotDetails {
 	GtkWidget *floating_bar;
 	GtkWidget *view_overlay;
 
+	/* no search results widget */
+	GtkWidget *no_search_results_widget;
+
 	/* slot contains
 	 *  1) an vbox containing extra_location_widgets
 	 *  2) the view
@@ -189,6 +192,23 @@ nautilus_window_slot_sync_view_mode (NautilusWindowSlot *slot)
 	} else {
 		g_simple_action_set_enabled (G_SIMPLE_ACTION (action), FALSE);
 	}
+}
+
+static void
+nautilus_window_slot_on_done_loading (NautilusDirectory  *directory,
+                                      NautilusWindowSlot *slot)
+{
+	GList *files;
+
+	files = nautilus_directory_get_file_list (directory);
+
+	if (g_list_length (files) != 0) {
+		gtk_widget_hide (slot->details->no_search_results_widget);
+        } else {
+		gtk_widget_show (slot->details->no_search_results_widget);
+        }
+
+	nautilus_file_list_unref (files);
 }
 
 static void
@@ -566,6 +586,7 @@ static void
 nautilus_window_slot_constructed (GObject *object)
 {
 	NautilusWindowSlot *slot = NAUTILUS_WINDOW_SLOT (object);
+        GtkBuilder *builder;
 	GtkWidget *extras_vbox;
 
 	G_OBJECT_CLASS (nautilus_window_slot_parent_class)->constructed (object);
@@ -592,6 +613,12 @@ nautilus_window_slot_constructed (GObject *object)
 			       GDK_LEAVE_NOTIFY_MASK);
 	gtk_box_pack_start (GTK_BOX (slot), slot->details->view_overlay, TRUE, TRUE, 0);
 	gtk_widget_show (slot->details->view_overlay);
+
+        builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-no-search-results.ui");
+	slot->details->no_search_results_widget = GTK_WIDGET (gtk_builder_get_object (builder, "no_search_results"));
+	gtk_overlay_add_overlay (GTK_OVERLAY (slot->details->view_overlay),
+				 slot->details->no_search_results_widget);
+        g_object_unref (builder);
 
 	slot->details->floating_bar = nautilus_floating_bar_new (NULL, NULL, FALSE);
 	gtk_widget_set_halign (slot->details->floating_bar, GTK_ALIGN_END);
@@ -860,6 +887,7 @@ begin_location_change (NautilusWindowSlot *slot,
 		       NautilusWindowGoToCallback callback,
 		       gpointer user_data)
 {
+	NautilusDirectory *previous_directory;
         NautilusDirectory *directory;
         NautilusFile *file;
 	gboolean force_reload;
@@ -874,6 +902,25 @@ begin_location_change (NautilusWindowSlot *slot,
                   || distance == 0);
 
 	nautilus_profile_start (NULL);
+
+	previous_directory = nautilus_directory_get (previous_location);
+        directory = nautilus_directory_get (location);
+
+	/* Disconnect search signals from the old directory if it was a search directory */
+        if (NAUTILUS_IS_SEARCH_DIRECTORY (previous_directory)) {
+                gtk_widget_hide (slot->details->no_search_results_widget);
+	        g_signal_handlers_disconnect_by_func (previous_directory,
+	                                              G_CALLBACK (nautilus_window_slot_on_done_loading),
+	                                              slot);
+        }
+	nautilus_directory_unref (previous_directory);
+
+        /* Connect to the done loading signal if it is a search directory to update
+         * the no results widget */
+        if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
+	        g_signal_connect_object (directory, "done-loading",
+				         G_CALLBACK (nautilus_window_slot_on_done_loading), slot, 0);
+        }
 
 	/* If there is no new selection and the new location is
 	 * a (grand)parent of the old location then we automatically
@@ -915,8 +962,6 @@ begin_location_change (NautilusWindowSlot *slot,
 
 	slot->details->open_callback = callback;
 	slot->details->open_callback_user_data = user_data;
-
-        directory = nautilus_directory_get (location);
 
 	/* The code to force a reload is here because if we do it
 	 * after determining an initial view (in the components), then
@@ -1766,6 +1811,7 @@ nautilus_window_slot_force_reload (NautilusWindowSlot *slot)
 
 	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
 
+        gtk_widget_hide (slot->details->no_search_results_widget);
 	location = nautilus_window_slot_get_location (slot);
 	if (location == NULL) {
 		return;
@@ -2424,6 +2470,7 @@ static void
 nautilus_window_slot_dispose (GObject *object)
 {
 	NautilusWindowSlot *slot;
+	NautilusDirectory *directory;
 	GtkWidget *widget;
 
 	slot = NAUTILUS_WINDOW_SLOT (object);
@@ -2466,6 +2513,14 @@ nautilus_window_slot_dispose (GObject *object)
 		/* TODO? why do we ref here, instead of unreffing?
 		 * It was already here before the slot migration, though */
 		g_object_ref (slot->details->location);
+
+		directory = nautilus_directory_get (slot->details->location);
+                if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
+	                g_signal_handlers_disconnect_by_func (directory,
+	                                                      G_CALLBACK (nautilus_window_slot_on_done_loading),
+	                                                      slot);
+                }
+                g_object_unref (directory);
 	}
 
         if (slot->details->view_mode_before_search) {
