@@ -68,10 +68,10 @@ struct _NautilusSelectionCanvasItemDetails {
 	double fade_out_fill_alpha;
 	double fade_out_outline_alpha;
 
-	double fade_out_fill_delta;
-	double fade_out_outline_delta;	
+	gint64 fade_out_start_time;
+	gint64 fade_out_end_time;
 
-	guint fade_out_handler_id;
+	guint fade_out_tick_id;
 };
 
 G_DEFINE_TYPE (NautilusSelectionCanvasItem, nautilus_selection_canvas_item, EEL_TYPE_CANVAS_ITEM);
@@ -114,7 +114,7 @@ nautilus_selection_canvas_item_draw (EelCanvasItem *item,
 
 		actual_fill = self->priv->fill_color;
 
-		if (self->priv->fade_out_handler_id != 0) {
+		if (self->priv->fade_out_tick_id != 0) {
 			actual_fill.alpha = self->priv->fade_out_fill_alpha;
 		}
 
@@ -131,7 +131,7 @@ nautilus_selection_canvas_item_draw (EelCanvasItem *item,
 
 		actual_outline = self->priv->outline_color;
 
-		if (self->priv->fade_out_handler_id != 0) {
+		if (self->priv->fade_out_tick_id != 0) {
 			actual_outline.alpha = self->priv->fade_out_outline_alpha;
 		}
 
@@ -434,43 +434,52 @@ nautilus_selection_canvas_item_bounds (EelCanvasItem *item,
 	*y2 = self->priv->y2 + hwidth;
 }
 
-#define FADE_OUT_STEPS 5
-#define FADE_OUT_SPEED 30
-
 static gboolean
-fade_and_request_redraw (gpointer user_data)
+fade_and_request_redraw (GtkWidget *canvas,
+			 GdkFrameClock *frame_clock,
+			 gpointer user_data)
 {
 	NautilusSelectionCanvasItem *self = user_data;
+	gint64 frame_time;
+	gdouble percentage;
 
-	if (self->priv->fade_out_fill_alpha <= 0 ||
-	    self->priv->fade_out_outline_alpha <= 0) {
-		self->priv->fade_out_handler_id = 0;
+	frame_time = gdk_frame_clock_get_frame_time (frame_clock);
+	if (frame_time >= self->priv->fade_out_end_time) {
+		self->priv->fade_out_tick_id = 0;
 		eel_canvas_item_destroy (EEL_CANVAS_ITEM (self));
 
-		return FALSE;
+		return G_SOURCE_REMOVE;
 	}
 
-	self->priv->fade_out_fill_alpha -= self->priv->fade_out_fill_delta;
-	self->priv->fade_out_outline_alpha -= self->priv->fade_out_outline_delta;
+	percentage = 1.0 - (gdouble) (frame_time - self->priv->fade_out_start_time) /
+		(gdouble) (self->priv->fade_out_end_time - self->priv->fade_out_start_time);
+
+	self->priv->fade_out_fill_alpha = self->priv->fill_color.alpha * percentage;
+	self->priv->fade_out_outline_alpha = self->priv->outline_color.alpha * percentage;
 
 	eel_canvas_item_request_redraw (EEL_CANVAS_ITEM (self));
 
-	return TRUE;
+	return G_SOURCE_CONTINUE;
 }
 
 void
 nautilus_selection_canvas_item_fade_out (NautilusSelectionCanvasItem *self,
 					 guint transition_time)
 {
+	EelCanvasItem *item = EEL_CANVAS_ITEM (self);
+	GtkWidget *widget;
+	GdkFrameClock *clock;
+
 	self->priv->fade_out_fill_alpha = self->priv->fill_color.alpha;
 	self->priv->fade_out_outline_alpha = self->priv->outline_color.alpha;
 
-	self->priv->fade_out_fill_delta = self->priv->fade_out_fill_alpha / FADE_OUT_STEPS;
-	self->priv->fade_out_outline_delta = self->priv->fade_out_outline_alpha / FADE_OUT_STEPS;
+	widget = GTK_WIDGET (item->canvas);
+	clock = gtk_widget_get_frame_clock (widget);
+	self->priv->fade_out_start_time = gdk_frame_clock_get_frame_time (clock);
+	self->priv->fade_out_end_time = self->priv->fade_out_start_time + 1000 * transition_time;
 
-	self->priv->fade_out_handler_id =
-		g_timeout_add ((guint) (transition_time / FADE_OUT_STEPS),
-			       fade_and_request_redraw, self);
+	self->priv->fade_out_tick_id =
+		gtk_widget_add_tick_callback (GTK_WIDGET (item->canvas), fade_and_request_redraw, self, NULL);
 }
 
 static void
@@ -478,9 +487,9 @@ nautilus_selection_canvas_item_dispose (GObject *obj)
 {
 	NautilusSelectionCanvasItem *self = NAUTILUS_SELECTION_CANVAS_ITEM (obj);
 
-	if (self->priv->fade_out_handler_id != 0) {
-		g_source_remove (self->priv->fade_out_handler_id);
-		self->priv->fade_out_handler_id = 0;
+	if (self->priv->fade_out_tick_id != 0) {
+		gtk_widget_remove_tick_callback (GTK_WIDGET (EEL_CANVAS_ITEM (self)->canvas), self->priv->fade_out_tick_id);
+		self->priv->fade_out_tick_id = 0;
 	}
 
 	G_OBJECT_CLASS (nautilus_selection_canvas_item_parent_class)->dispose (obj);
