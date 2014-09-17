@@ -225,7 +225,6 @@ struct NautilusViewDetails
 	 * after it finishes loading the directory and its view.
 	 */
 	gboolean loading;
-	gboolean menu_states_untrustworthy;
 	gboolean scripts_invalid;
 	gboolean templates_invalid;
 	gboolean templates_present;
@@ -731,8 +730,6 @@ nautilus_view_update_menus (NautilusView *view)
 	}
 
 	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->update_menus (view);
-
-	view->details->menu_states_untrustworthy = FALSE;
 }
 
 typedef struct {
@@ -978,15 +975,6 @@ selection_contains_one_item_in_menu_callback (NautilusView *view, GList *selecti
 		return TRUE;
 	}
 
-	/* If we've requested a menu update that hasn't yet occurred, then
-	 * the mismatch here doesn't surprise us, and we won't complain.
-	 * Otherwise, we will complain.
-	 */
-	if (!view->details->menu_states_untrustworthy) {
-		g_warning ("Expected one selected item, found %'d. No action will be performed.", 	
-			   g_list_length (selection));
-	}
-
 	return FALSE;
 }
 
@@ -995,14 +983,6 @@ selection_not_empty_in_menu_callback (NautilusView *view, GList *selection)
 {
 	if (selection != NULL) {
 		return TRUE;
-	}
-
-	/* If we've requested a menu update that hasn't yet occurred, then
-	 * the mismatch here doesn't surprise us, and we won't complain.
-	 * Otherwise, we will complain.
-	 */
-	if (!view->details->menu_states_untrustworthy) {
-		g_warning ("Empty selection found when selection was expected. No action will be performed.");
 	}
 
 	return FALSE;
@@ -3586,7 +3566,7 @@ remove_update_menus_timeout_callback (NautilusView *view)
 static void
 update_menus_if_pending (NautilusView *view)
 {
-	if (!view->details->menu_states_untrustworthy) {
+	if (view->details->update_menus_timeout_id == 0) {
 		return;
 	}
 
@@ -8953,8 +8933,6 @@ schedule_update_menus (NautilusView *view)
 		return;
 	}
 	
-	view->details->menu_states_untrustworthy = TRUE;
-
 	/* Schedule a menu update with the current update interval */
 	if (view->details->update_menus_timeout_id == 0) {
 		view->details->update_menus_timeout_id
