@@ -2084,6 +2084,11 @@ create_and_set_up_tree_view (NautilusListView *view)
 				      "xalign", xalign,
 				      "xpad", 5,
 				      NULL);
+			if (!strcmp (name, "permissions")) {
+				g_object_set (cell,
+					      "family", "Monospace",
+					      NULL);
+			}
 			view->details->cells = g_list_append (view->details->cells,
 							      cell);
 			column = gtk_tree_view_column_new_with_attributes (label,
