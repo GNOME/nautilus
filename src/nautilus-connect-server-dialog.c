@@ -354,6 +354,7 @@ server_list_save (GBookmarkFile *bookmarks)
 
 	filename = g_build_filename (g_get_user_config_dir (), "nautilus", "servers", NULL);
 	g_bookmark_file_to_file (bookmarks, filename, NULL);
+	g_free (filename);
 }
 
 static void
