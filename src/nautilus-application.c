@@ -761,6 +761,8 @@ nautilus_application_handle_file_args (NautilusApplication *self,
 		file = g_file_new_for_path (g_get_home_dir ());
 		g_ptr_array_add (file_array, file);
 	} else {
+		g_ptr_array_unref (file_array);
+
 		/* No command line options or files, just activate the application */
 		nautilus_application_activate (G_APPLICATION (self));
 		return EXIT_SUCCESS;
