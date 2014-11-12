@@ -61,7 +61,6 @@ typedef struct {
 struct NautilusQueryEditorDetails {
 	GtkWidget *entry;
 	gboolean change_frozen;
-	guint typing_timeout_id;
 
 	GtkWidget *search_current_button;
 	GtkWidget *search_all_button;
@@ -178,11 +177,6 @@ nautilus_query_editor_dispose (GObject *object)
 
 	editor = NAUTILUS_QUERY_EDITOR (object);
 
-	if (editor->details->typing_timeout_id > 0) {
-		g_source_remove (editor->details->typing_timeout_id);
-		editor->details->typing_timeout_id = 0;
-	}
-
 	g_clear_object (&editor->details->query);
 
 	g_list_free_full (editor->details->rows, (GDestroyNotify) row_destroy);
@@ -264,21 +258,6 @@ entry_activate_cb (GtkWidget *entry, NautilusQueryEditor *editor)
 	g_signal_emit (editor, signals[ACTIVATED], 0);
 }
 
-static gboolean
-typing_timeout_cb (gpointer user_data)
-{
-	NautilusQueryEditor *editor;
-
-	editor = NAUTILUS_QUERY_EDITOR (user_data);
-	editor->details->typing_timeout_id = 0;
-
-	nautilus_query_editor_changed (editor);
-
-	return FALSE;
-}
-
-#define TYPING_TIMEOUT 250
-
 static void
 entry_changed_cb (GtkWidget *entry, NautilusQueryEditor *editor)
 {
@@ -286,14 +265,7 @@ entry_changed_cb (GtkWidget *entry, NautilusQueryEditor *editor)
 		return;
 	}
 
-	if (editor->details->typing_timeout_id > 0) {
-		g_source_remove (editor->details->typing_timeout_id);
-	}
-
-	editor->details->typing_timeout_id =
-		g_timeout_add (TYPING_TIMEOUT,
-			       typing_timeout_cb,
-			       editor);
+	nautilus_query_editor_changed (editor);
 }
 
 /* Type */
@@ -961,7 +933,7 @@ setup_widgets (NautilusQueryEditor *editor)
 			  G_CALLBACK (entry_key_press_event_cb), editor);
 	g_signal_connect (editor->details->entry, "activate",
 			  G_CALLBACK (entry_activate_cb), editor);
-	g_signal_connect (editor->details->entry, "changed",
+	g_signal_connect (editor->details->entry, "search-changed",
 			  G_CALLBACK (entry_changed_cb), editor);
 
 	/* create the Current/All Files selector */
