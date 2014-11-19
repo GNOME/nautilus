@@ -1715,7 +1715,6 @@ rename_get_info_callback (GObject *source_object,
 	NautilusFileOperation *op;
 	NautilusDirectory *directory;
 	NautilusFile *existing_file;
-	char *old_name;
 	char *old_uri;
 	char *new_uri;
 	const char *new_name;
@@ -1742,11 +1741,8 @@ rename_get_info_callback (GObject *source_object,
 		}
 		
 		old_uri = nautilus_file_get_uri (op->file);
-		old_name = g_strdup (eel_ref_str_peek (op->file->details->name));
 		
 		update_info_and_name (op->file, new_info);
-		
-		g_free (old_name);
 		
 		new_uri = nautilus_file_get_uri (op->file);
 		nautilus_directory_moved (old_uri, new_uri);
