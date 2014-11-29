@@ -102,6 +102,7 @@ progress_ui_handler_update_notification (NautilusProgressUIHandler *self)
 	gchar *body;
 
         notification = g_notification_new (_("File Operations"));
+	g_notification_set_default_action (notification, "app.show-file-transfers");
         g_notification_add_button (notification, _("Show Details"),
                                    "app.show-file-transfers");
 
