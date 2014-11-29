@@ -79,9 +79,6 @@ notification_show_details_cb (GSimpleAction *action,
 			      gpointer       user_data)
 {
 	NautilusProgressUIHandler *self = user_data;
-
-	g_application_withdraw_notification (g_application_get_default (),
-					     "progress");
 	gtk_window_present (GTK_WINDOW (self->priv->progress_window));
 }
 
