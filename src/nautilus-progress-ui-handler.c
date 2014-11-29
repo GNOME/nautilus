@@ -74,15 +74,6 @@ status_icon_activate_cb (GtkStatusIcon *icon,
 }
 
 static void
-notification_show_details_cb (GSimpleAction *action,
-			      GVariant      *parameter,
-			      gpointer       user_data)
-{
-	NautilusProgressUIHandler *self = user_data;
-	gtk_window_present (GTK_WINDOW (self->priv->progress_window));
-}
-
-static void
 progress_ui_handler_ensure_status_icon (NautilusProgressUIHandler *self)
 {
 	GIcon *icon;
@@ -112,7 +103,7 @@ progress_ui_handler_update_notification (NautilusProgressUIHandler *self)
 
         notification = g_notification_new (_("File Operations"));
         g_notification_add_button (notification, _("Show Details"),
-                                   "app.show-progress-window");
+                                   "app.show-file-transfers");
 
 	body = g_strdup_printf (ngettext ("%'d file operation active",
 					  "%'d file operations active",
@@ -431,17 +422,8 @@ server_has_persistence (void)
 static void
 nautilus_progress_ui_handler_init (NautilusProgressUIHandler *self)
 {
-        GSimpleAction *show_details_action;
-
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, NAUTILUS_TYPE_PROGRESS_UI_HANDLER,
 						  NautilusProgressUIHandlerPriv);
-
-        show_details_action = g_simple_action_new ("show-progress-window", NULL);
-        g_action_map_add_action (G_ACTION_MAP (g_application_get_default ()),
-                                 G_ACTION (show_details_action));
-        g_signal_connect (show_details_action, "activate",
-                          G_CALLBACK (notification_show_details_cb), self);
-        g_object_unref (show_details_action);
 
 	self->priv->manager = nautilus_progress_info_manager_new ();
 	g_signal_connect (self->priv->manager, "new-progress-info",
@@ -463,4 +445,11 @@ NautilusProgressUIHandler *
 nautilus_progress_ui_handler_new (void)
 {
 	return g_object_new (NAUTILUS_TYPE_PROGRESS_UI_HANDLER, NULL);
+}
+
+void
+nautilus_progress_ui_handler_ensure_window (NautilusProgressUIHandler *self)
+{
+	if (self->priv->active_infos > 0)
+		gtk_window_present (GTK_WINDOW (self->priv->progress_window));
 }

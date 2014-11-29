@@ -233,6 +233,18 @@ action_search (GSimpleAction *action,
 	g_object_unref (location);
 }
 
+static void
+action_show_file_transfers (GSimpleAction *action,
+			    GVariant *parameter,
+			    gpointer user_data)
+{
+	NautilusApplication *application = user_data;
+	NautilusProgressUIHandler *progress_handler;
+
+	progress_handler = nautilus_application_get_progress_ui_handler (application);
+	nautilus_progress_ui_handler_ensure_window (progress_handler);
+}
+
 static GActionEntry app_entries[] = {
 	{ "new-window", action_new_window, NULL, NULL, NULL },
 	{ "connect-to-server", action_connect_to_server, NULL, NULL, NULL },
@@ -246,6 +258,7 @@ static GActionEntry app_entries[] = {
 	{ "kill", action_kill, NULL, NULL, NULL },
 	{ "open-desktop", action_open_desktop, NULL, NULL, NULL },
 	{ "close-desktop", action_close_desktop, NULL, NULL, NULL },
+	{ "show-file-transfers", action_show_file_transfers, NULL, NULL, NULL }
 };
 
 void

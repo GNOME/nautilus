@@ -57,6 +57,7 @@ typedef struct {
 GType nautilus_progress_ui_handler_get_type (void);
 
 NautilusProgressUIHandler * nautilus_progress_ui_handler_new (void);
+void nautilus_progress_ui_handler_ensure_window (NautilusProgressUIHandler *self);
 
 G_END_DECLS
 

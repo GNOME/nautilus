@@ -37,7 +37,6 @@
 #include "nautilus-freedesktop-dbus.h"
 #include "nautilus-image-properties-page.h"
 #include "nautilus-previewer.h"
-#include "nautilus-progress-ui-handler.h"
 #include "nautilus-self-check-functions.h"
 #include "nautilus-shell-search-provider.h"
 #include "nautilus-window.h"
@@ -89,6 +88,12 @@ struct _NautilusApplicationPriv {
 
 	NautilusShellSearchProvider *search_provider;
 };
+
+NautilusProgressUIHandler *
+nautilus_application_get_progress_ui_handler (NautilusApplication *application)
+{
+	return application->priv->progress_handler;
+}
 
 NautilusBookmarkList *
 nautilus_application_get_bookmarks (NautilusApplication *application)
