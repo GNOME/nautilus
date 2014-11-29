@@ -110,53 +110,6 @@ nautilus_application_edit_bookmarks (NautilusApplication *application,
 	gtk_window_present (bookmarks_window);
 }
 
-void
-nautilus_application_notify_unmount_done (NautilusApplication *application,
-					  const gchar *message)
-{
-	g_application_withdraw_notification (G_APPLICATION (application), "unmount");
-
-	if (message != NULL) {
-		GNotification *unplug;
-		GIcon *icon;
-		gchar **strings;
-
-		strings = g_strsplit (message, "\n", 0);
-		icon = g_themed_icon_new ("media-removable");
-		unplug = g_notification_new (strings[0]);
-		g_notification_set_body (unplug, strings[1]);
-		g_notification_set_icon (unplug, icon);
-
-		g_application_send_notification (G_APPLICATION (application), "unplug", unplug);
-		g_object_unref (unplug);
-		g_object_unref (icon);
-		g_strfreev (strings);
-	}
-}
-
-void
-nautilus_application_notify_unmount_show (NautilusApplication *application,
-					  const gchar *message)
-{
-	GNotification *unmount;
-	GIcon *icon;
-	gchar **strings;
-
-	strings = g_strsplit (message, "\n", 0);
-
-	icon = g_themed_icon_new ("media-removable");
-
-	unmount = g_notification_new (strings[0]);
-	g_notification_set_body (unmount, strings[1]);
-	g_notification_set_icon (unmount, icon);
-	g_notification_set_priority (unmount, G_NOTIFICATION_PRIORITY_URGENT);
-
-	g_application_send_notification (G_APPLICATION (application), "unmount", unmount);
-	g_object_unref (unmount);
-	g_object_unref (icon);
-	g_strfreev (strings);
-}
-
 static gboolean
 check_required_directories (NautilusApplication *application)
 {
@@ -1291,8 +1244,6 @@ nautilus_application_quit_mainloop (GApplication *app)
 
 	nautilus_icon_info_clear_caches ();
  	nautilus_application_save_accel_map (NULL);
-
-	nautilus_application_notify_unmount_done (NAUTILUS_APPLICATION (app), NULL);
 
 	G_APPLICATION_CLASS (nautilus_application_parent_class)->quit_mainloop (app);
 }
