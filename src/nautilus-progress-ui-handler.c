@@ -34,8 +34,6 @@
 #include <libnautilus-private/nautilus-progress-info.h>
 #include <libnautilus-private/nautilus-progress-info-manager.h>
 
-#include <libnotify/notify.h>
-
 struct _NautilusProgressUIHandlerPriv {
 	NautilusProgressInfoManager *manager;
 
@@ -397,7 +395,9 @@ static gboolean
 server_has_persistence (void)
 {
         static gboolean retval = FALSE;
-        GList *caps, *l;
+        GDBusConnection *conn;
+        GVariant *result;
+        char **cap, **caps;
         static gboolean initialized = FALSE;
 
         if (initialized) {
@@ -405,15 +405,28 @@ server_has_persistence (void)
         }
         initialized = TRUE;
 
-        caps = notify_get_server_caps ();
-        if (caps == NULL) {
+        conn = g_application_get_dbus_connection (g_application_get_default ());
+        result = g_dbus_connection_call_sync (conn,
+                                              "org.freedesktop.Notifications",
+                                              "/org/freedesktop/Notifications",
+                                              "org.freedesktop.Notifications",
+                                              "GetCapabilities",
+                                              g_variant_new ("()"),
+                                              G_VARIANT_TYPE ("(as)"),
+                                              G_DBUS_CALL_FLAGS_NONE,
+                                              -1, NULL, NULL);
+
+        if (result == NULL)
                 return FALSE;
-        }
 
-        l = g_list_find_custom (caps, "persistence", (GCompareFunc) g_strcmp0);
-        retval = (l != NULL);
+        g_variant_get (result, "(^a&s)", &caps);
 
-	g_list_free_full (caps, g_free);
+        for (cap = caps; *cap != NULL; cap++)
+                if (g_strcmp0 ("persistence", *cap) == 0)
+                        retval = TRUE;
+
+        g_free (caps);
+        g_variant_unref (result);
 
         return retval;
 }
