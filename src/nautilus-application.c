@@ -937,7 +937,6 @@ nautilus_application_handle_local_options (GApplication *application,
 static void
 nautilus_application_activate (GApplication *app)
 {
-	NautilusApplication *self = NAUTILUS_APPLICATION (app);
 	GFile **files;
 
 	DEBUG ("Calling activate");
