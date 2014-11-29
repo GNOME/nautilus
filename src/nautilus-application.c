@@ -149,7 +149,7 @@ nautilus_application_notify_unmount_show (NautilusApplication *application,
 	unmount = g_notification_new (strings[0]);
 	g_notification_set_body (unmount, strings[1]);
 	g_notification_set_icon (unmount, icon);
-	g_notification_set_urgent (unmount, TRUE);
+	g_notification_set_priority (unmount, G_NOTIFICATION_PRIORITY_URGENT);
 
 	g_application_send_notification (G_APPLICATION (application), "unmount", unmount);
 	g_object_unref (unmount);
