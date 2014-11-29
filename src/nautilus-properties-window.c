@@ -68,19 +68,6 @@
 #include <sys/mount.h>
 #endif
 
-#define UNKNOWN_FILL_R  0.5333333333333333
-#define UNKNOWN_FILL_G  0.5411764705882353
-#define UNKNOWN_FILL_B  0.5215686274509804
-
-#define USED_FILL_R  0.4470588235294118
-#define USED_FILL_G  0.6235294117647059
-#define USED_FILL_B  0.8117647058823529
-
-#define FREE_FILL_R  0.9333333333333333
-#define FREE_FILL_G  0.9333333333333333
-#define FREE_FILL_B  0.9254901960784314
-
-
 #define PREVIEW_IMAGE_WIDTH 96
 
 #define ROW_PAD 6
@@ -154,13 +141,6 @@ struct NautilusPropertiesWindowDetails {
 	guint64 volume_capacity;
 	guint64 volume_free;
 	guint64 volume_used;
-
-	GdkRGBA used_color;
-	GdkRGBA free_color;
-	GdkRGBA unknown_color;
-	GdkRGBA used_stroke_color;
-	GdkRGBA free_stroke_color;
-	GdkRGBA unknown_stroke_color;
 };
 
 enum {
@@ -2617,78 +2597,61 @@ should_show_volume_usage (NautilusPropertiesWindow *window)
 }
 
 static void
-paint_used_legend (GtkWidget *widget,
-		   cairo_t *cr,
-		   gpointer data)
+paint_legend (GtkWidget *widget,
+	      cairo_t *cr,
+	      gpointer data)
 {
-	NautilusPropertiesWindow *window;
-	gint width, height;
+	GtkStyleContext *context;
 	GtkAllocation allocation;
 
 	gtk_widget_get_allocation (widget, &allocation);
-	
-  	width  = allocation.width;
-  	height = allocation.height;
-  	
-	window = NAUTILUS_PROPERTIES_WINDOW (data);
+	context = gtk_widget_get_style_context (widget);
 
-	cairo_rectangle  (cr,
-			  2,
-			  2,
-			  width - 4,
-			  height - 4);
-
-	gdk_cairo_set_source_rgba (cr, &window->details->used_color);
-	cairo_fill_preserve (cr);
-
-	gdk_cairo_set_source_rgba (cr, &window->details->used_stroke_color);
-	cairo_stroke (cr);
+	gtk_render_background (context, cr, 0, 0, allocation.width, allocation.height);
+	gtk_render_frame (context, cr, 0, 0, allocation.width, allocation.height);
 }
 
 static void
-paint_free_legend (GtkWidget *widget,
-		   cairo_t *cr, gpointer data)
-{
-	NautilusPropertiesWindow *window;
-	gint width, height;
-	GtkAllocation allocation;
-
-	window = NAUTILUS_PROPERTIES_WINDOW (data);
-	gtk_widget_get_allocation (widget, &allocation);
-	
-  	width  = allocation.width;
-  	height = allocation.height;
-  
-	cairo_rectangle (cr,
-			 2,
-			 2,
-			 width - 4,
-			 height - 4);
-
-	gdk_cairo_set_source_rgba (cr, &window->details->free_color);
-	cairo_fill_preserve(cr);
-
-	gdk_cairo_set_source_rgba (cr, &window->details->free_stroke_color);
-	cairo_stroke (cr);
-}
-
-static void
-paint_slice (cairo_t       *cr,
-	     double         x,
-	     double         y,
-	     double         radius,
-	     double         percent_start,
-	     double         percent_width,
-	     const GdkRGBA *fill,
-	     const GdkRGBA *stroke)
+paint_slice (GtkWidget		*widget,
+	     cairo_t		*cr,
+	     double		 percent_start,
+	     double		 percent_width,
+	     const gchar	*style_class)
 {
 	double angle1;
 	double angle2;
 	gboolean full;
 	double offset = G_PI / 2.0;
+	GdkRGBA stroke, fill;
+	GtkStateFlags state;
+	GtkBorder border;
+	GtkStyleContext *context;
+	double x, y, radius;
+	gint width, height;
 
 	if (percent_width < .01) {
 		return;
+	}
+
+	context = gtk_widget_get_style_context (widget);
+	state = gtk_style_context_get_state (context);
+	gtk_style_context_get_border (context, state, &border);
+
+	gtk_style_context_save (context);
+	gtk_style_context_add_class (context, style_class);
+	gtk_style_context_get_background_color (context, state, &fill);
+	gtk_style_context_get_border_color (context, state, &stroke);
+	gtk_style_context_restore (context);
+
+	width = gtk_widget_get_allocated_width (widget);
+	height = gtk_widget_get_allocated_height (widget);
+	x = width / 2;
+	y = height / 2;
+
+	if (width < height) {
+		radius = (width - border.left) / 2;
+	} else {
+		radius = (height - border.top) / 2;
 	}
 
 	angle1 = (percent_start * 2 * G_PI) - offset;
@@ -2705,10 +2668,11 @@ paint_slice (cairo_t       *cr,
 		cairo_line_to (cr, x, y);
 	}
 
-	gdk_cairo_set_source_rgba (cr, fill);
+	cairo_set_line_width (cr, border.top);
+	gdk_cairo_set_source_rgba (cr, &fill);
 	cairo_fill_preserve (cr);
 
-	gdk_cairo_set_source_rgba (cr, stroke);
+	gdk_cairo_set_source_rgba (cr, &stroke);
 	cairo_stroke (cr);
 }
 
@@ -2718,241 +2682,22 @@ paint_pie_chart (GtkWidget *widget,
 		 gpointer data)
 {
 	NautilusPropertiesWindow *window;
-	gint width, height;
 	double free, used, reserved;
-	double xc, yc, radius;
-	GtkAllocation allocation;
-	GtkStyleContext *notebook_ctx;
-	GdkRGBA bg_color;
 
 	window = NAUTILUS_PROPERTIES_WINDOW (data);
-	gtk_widget_get_allocation (widget, &allocation);
-
-	width  = allocation.width;
-	height = allocation.height;
-
-	notebook_ctx = gtk_widget_get_style_context (GTK_WIDGET (window->details->notebook));
-	gtk_style_context_get_background_color (notebook_ctx,
-						gtk_widget_get_state_flags (GTK_WIDGET (window->details->notebook)),
-						&bg_color);
-
-	cairo_save (cr);
-	gdk_cairo_set_source_rgba (cr, &bg_color);
-	cairo_paint (cr);
-	cairo_restore (cr);
 
 	free = (double)window->details->volume_free / (double)window->details->volume_capacity;
 	used = (double)window->details->volume_used / (double)window->details->volume_capacity;
 	reserved = 1.0 - (used + free);
 
-	xc = width / 2;
-	yc = height / 2;
-
-	if (width < height) {
-		radius = width / 2 - 8;
-	} else {
-		radius = height / 2 - 8;
-	}
-
-	paint_slice (cr, xc, yc, radius,
-		     0, free,
-		     &window->details->free_color, &window->details->free_stroke_color);
-	paint_slice (cr, xc, yc, radius,
-		     free + used, reserved,
-		     &window->details->unknown_color, &window->details->unknown_stroke_color);
+	paint_slice (widget, cr,
+		     0, free, "free");
+	paint_slice (widget, cr,
+		     free + used, reserved, "unknown");
 	/* paint the used last so its slice strokes are on top */
-	paint_slice (cr, xc, yc, radius,
-		     free, used,
-		     &window->details->used_color, &window->details->used_stroke_color);
+	paint_slice (widget, cr,
+		     free, used, "used");
 }
-
-
-/* Copied from gtk/gtkstyle.c */
-
-static void
-rgb_to_hls (gdouble *r,
-            gdouble *g,
-            gdouble *b)
-{
-  gdouble min;
-  gdouble max;
-  gdouble red;
-  gdouble green;
-  gdouble blue;
-  gdouble h, l, s;
-  gdouble delta;
-  
-  red = *r;
-  green = *g;
-  blue = *b;
-  
-  if (red > green)
-    {
-      if (red > blue)
-        max = red;
-      else
-        max = blue;
-      
-      if (green < blue)
-        min = green;
-      else
-        min = blue;
-    }
-  else
-    {
-      if (green > blue)
-        max = green;
-      else
-        max = blue;
-      
-      if (red < blue)
-        min = red;
-      else
-        min = blue;
-    }
-  
-  l = (max + min) / 2;
-  s = 0;
-  h = 0;
-  
-  if (max != min)
-    {
-      if (l <= 0.5)
-        s = (max - min) / (max + min);
-      else
-        s = (max - min) / (2 - max - min);
-      
-      delta = max -min;
-      if (red == max)
-        h = (green - blue) / delta;
-      else if (green == max)
-        h = 2 + (blue - red) / delta;
-      else if (blue == max)
-        h = 4 + (red - green) / delta;
-      
-      h *= 60;
-      if (h < 0.0)
-        h += 360;
-    }
-  
-  *r = h;
-  *g = l;
-  *b = s;
-}
-
-static void
-hls_to_rgb (gdouble *h,
-            gdouble *l,
-            gdouble *s)
-{
-  gdouble hue;
-  gdouble lightness;
-  gdouble saturation;
-  gdouble m1, m2;
-  gdouble r, g, b;
-  
-  lightness = *l;
-  saturation = *s;
-  
-  if (lightness <= 0.5)
-    m2 = lightness * (1 + saturation);
-  else
-    m2 = lightness + saturation - lightness * saturation;
-  m1 = 2 * lightness - m2;
-  
-  if (saturation == 0)
-    {
-      *h = lightness;
-      *l = lightness;
-      *s = lightness;
-    }
-  else
-    {
-      hue = *h + 120;
-      while (hue > 360)
-        hue -= 360;
-      while (hue < 0)
-        hue += 360;
-      
-      if (hue < 60)
-        r = m1 + (m2 - m1) * hue / 60;
-      else if (hue < 180)
-        r = m2;
-      else if (hue < 240)
-        r = m1 + (m2 - m1) * (240 - hue) / 60;
-      else
-        r = m1;
-      
-      hue = *h;
-      while (hue > 360)
-        hue -= 360;
-      while (hue < 0)
-        hue += 360;
-      
-      if (hue < 60)
-        g = m1 + (m2 - m1) * hue / 60;
-      else if (hue < 180)
-        g = m2;
-      else if (hue < 240)
-        g = m1 + (m2 - m1) * (240 - hue) / 60;
-      else
-        g = m1;
-      
-      hue = *h - 120;
-      while (hue > 360)
-        hue -= 360;
-      while (hue < 0)
-        hue += 360;
-      
-      if (hue < 60)
-        b = m1 + (m2 - m1) * hue / 60;
-      else if (hue < 180)
-        b = m2;
-      else if (hue < 240)
-        b = m1 + (m2 - m1) * (240 - hue) / 60;
-      else
-        b = m1;
-      
-      *h = r;
-      *l = g;
-      *s = b;
-    }
-}
-static void
-_pie_style_shade (GdkRGBA *a,
-                  GdkRGBA *b,
-                  gdouble   k)
-{
-  gdouble red;
-  gdouble green;
-  gdouble blue;
-  
-  red = a->red;
-  green = a->green;
-  blue = a->blue;
-  
-  rgb_to_hls (&red, &green, &blue);
-
-  green *= k;
-  if (green > 1.0)
-    green = 1.0;
-  else if (green < 0.0)
-    green = 0.0;
-  
-  blue *= k;
-  if (blue > 1.0)
-    blue = 1.0;
-  else if (blue < 0.0)
-    blue = 0.0;
-  
-  hls_to_rgb (&red, &green, &blue);
-  
-  b->red = red;
-  b->green = green;
-  b->blue = blue;
-  b->alpha = a->alpha;
-}
-
 
 static GtkWidget* 
 create_pie_widget (NautilusPropertiesWindow *window)
@@ -2993,43 +2738,28 @@ create_pie_widget (NautilusPropertiesWindow *window)
 	gtk_container_set_border_width (GTK_CONTAINER (grid), 5);
 	gtk_grid_set_row_spacing (GTK_GRID (grid), 10);
 	gtk_grid_set_column_spacing (GTK_GRID (grid), 10);
-	style = gtk_widget_get_style_context (GTK_WIDGET (grid));
-
-	if (!gtk_style_context_lookup_color (style, "chart_rgba_0", &window->details->unknown_color)) {
-		window->details->unknown_color.red = UNKNOWN_FILL_R;
-		window->details->unknown_color.green = UNKNOWN_FILL_G;
-		window->details->unknown_color.blue = UNKNOWN_FILL_B;
-		window->details->unknown_color.alpha = 1;
-	}
-	if (!gtk_style_context_lookup_color (style, "chart_rgba_1", &window->details->used_color)) {
-		window->details->used_color.red = USED_FILL_R;
-		window->details->used_color.green = USED_FILL_G;
-		window->details->used_color.blue = USED_FILL_B;
-		window->details->used_color.alpha = 1;
-	}
-
-	if (!gtk_style_context_lookup_color (style, "chart_rgba_2", &window->details->free_color)) {
-		window->details->free_color.red = FREE_FILL_R;
-		window->details->free_color.green = FREE_FILL_G;
-		window->details->free_color.blue = FREE_FILL_B;
-		window->details->free_color.alpha = 1;
-	}
-
-	_pie_style_shade (&window->details->used_color, &window->details->used_stroke_color, 0.7);
-	_pie_style_shade (&window->details->free_color, &window->details->free_stroke_color, 0.7);
-	_pie_style_shade (&window->details->unknown_color, &window->details->unknown_stroke_color, 0.7);
 
 	pie_canvas = gtk_drawing_area_new ();
 	gtk_widget_set_size_request (pie_canvas, 200, 200);
+	style = gtk_widget_get_style_context (pie_canvas);
+	gtk_style_context_add_class (style, "disk-space-display");
 
 	used_canvas = gtk_drawing_area_new ();
 	gtk_widget_set_size_request (used_canvas, 20, 20);
+	style = gtk_widget_get_style_context (used_canvas);
+	gtk_style_context_add_class (style, "disk-space-display");
+	gtk_style_context_add_class (style, "used");
+
 	used_label = gtk_label_new (used);
 	/* Translators: "used" refers to the capacity of the filesystem */
 	used_type_label = gtk_label_new (_("used"));
 
 	free_canvas = gtk_drawing_area_new ();
 	gtk_widget_set_size_request (free_canvas, 20, 20);
+	style = gtk_widget_get_style_context (free_canvas);
+	gtk_style_context_add_class (style, "disk-space-display");
+	gtk_style_context_add_class (style, "free");
+
 	free_label = gtk_label_new (free);
 	/* Translators: "free" refers to the capacity of the filesystem */
 	free_type_label = gtk_label_new (_("free"));
@@ -3115,9 +2845,9 @@ create_pie_widget (NautilusPropertiesWindow *window)
 	g_signal_connect (pie_canvas, "draw",
 			  G_CALLBACK (paint_pie_chart), window);
 	g_signal_connect (used_canvas, "draw",
-			  G_CALLBACK (paint_used_legend), window);
+			  G_CALLBACK (paint_legend), window);
 	g_signal_connect (free_canvas, "draw",
-			  G_CALLBACK (paint_free_legend), window);
+			  G_CALLBACK (paint_legend), window);
 	        
 	return GTK_WIDGET (grid);
 }
