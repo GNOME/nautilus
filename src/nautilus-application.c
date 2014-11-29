@@ -673,8 +673,6 @@ nautilus_application_finalize (GObject *object)
 	g_clear_object (&application->priv->fdb_manager);
 	g_clear_object (&application->priv->search_provider);
 
-	notify_uninit ();
-
         G_OBJECT_CLASS (nautilus_application_parent_class)->finalize (object);
 }
 
@@ -1235,7 +1233,6 @@ nautilus_application_startup (GApplication *app)
 	menu_provider_init_callback ();
 	
 	/* Initialize the UI handler singleton for file operations */
-	notify_init (GETTEXT_PACKAGE);
 	self->priv->progress_handler = nautilus_progress_ui_handler_new ();
 
 	/* Check the user's .nautilus directories and post warnings
