@@ -173,13 +173,13 @@ action_quit (GSimpleAction *action,
 	     GVariant *parameter,
 	     gpointer user_data)
 {
-	GtkApplication *application = user_data;
-	GList *l;
+	NautilusApplication *application = user_data;
+	GList *windows, *l;
 
 	/* nautilus_window_close() doesn't do anything for desktop windows */
-	for (l = gtk_application_get_windows (GTK_APPLICATION (application)); l; l = l->next) {
-		if (NAUTILUS_IS_WINDOW (l->data))
-			nautilus_window_close (NAUTILUS_WINDOW (l->data));
+	windows = nautilus_application_get_windows (application);
+	for (l = windows; l != NULL; l = l->next) {
+		nautilus_window_close (l->data);
 	}
 }
 

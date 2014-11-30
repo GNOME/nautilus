@@ -82,7 +82,16 @@ struct _NautilusApplicationPriv {
 	GtkWidget *connect_server_window;
 
 	NautilusShellSearchProvider *search_provider;
+
+	GList *windows;
 };
+
+GList *
+nautilus_application_get_windows (NautilusApplication *application)
+{
+	return application->priv->windows;
+}
+
 
 NautilusProgressUIHandler *
 nautilus_application_get_progress_ui_handler (NautilusApplication *application)
@@ -317,21 +326,6 @@ do_upgrades_once (NautilusApplication *self)
 	g_free (xdg_dir);
 }
 
-static gboolean
-another_navigation_window_already_showing (NautilusApplication *application,
-					   NautilusWindow *the_window)
-{
-	GList *l;
-	
-	for (l = gtk_application_get_windows (GTK_APPLICATION (application)); l; l = l->next) {
-		if (NAUTILUS_IS_WINDOW (l->data) && l->data != the_window) {
-			return TRUE;
-		}
-	}
-	
-	return FALSE;
-}
-
 NautilusWindow *
 nautilus_application_create_window (NautilusApplication *application,
 				    GdkScreen           *screen)
@@ -339,10 +333,12 @@ nautilus_application_create_window (NautilusApplication *application,
 	NautilusWindow *window;
 	char *geometry_string;
 	gboolean maximized;
+	gint n_windows;
 
 	g_return_val_if_fail (NAUTILUS_IS_APPLICATION (application), NULL);
 	nautilus_profile_start (NULL);
 
+	n_windows = g_list_length (application->priv->windows);
 	window = nautilus_window_new (screen);
 
 	maximized = g_settings_get_boolean
@@ -357,16 +353,16 @@ nautilus_application_create_window (NautilusApplication *application,
 		(nautilus_window_state, NAUTILUS_WINDOW_STATE_GEOMETRY);
 	if (geometry_string != NULL &&
 	    geometry_string[0] != 0) {
-		/* Ignore saved window position if a window with the same
-		 * location is already showing. That way the two windows
-		 * wont appear at the exact same location on the screen.
+		/* Ignore saved window position if another window is already showing.
+		 * That way the two windows wont appear at the exact same
+		 * location on the screen.
 		 */
 		eel_gtk_window_set_initial_geometry_from_string 
 			(GTK_WINDOW (window), 
 			 geometry_string,
 			 NAUTILUS_WINDOW_MIN_WIDTH,
 			 NAUTILUS_WINDOW_MIN_HEIGHT,
-			 another_navigation_window_already_showing (application, window));
+			 n_windows > 0);
 	}
 	g_free (geometry_string);
 
@@ -380,6 +376,7 @@ static NautilusWindowSlot *
 get_window_slot_for_location (NautilusApplication *application, GFile *location)
 {
 	NautilusWindowSlot *slot;
+	NautilusWindow *window;
 	GList *l, *sl;
 
 	slot = NULL;
@@ -390,12 +387,11 @@ get_window_slot_for_location (NautilusApplication *application, GFile *location)
 		g_object_ref (location);
 	}
 
-	for (l = gtk_application_get_windows (GTK_APPLICATION (application)); l; l = l->next) {
-		if (!NAUTILUS_IS_WINDOW (l->data) || NAUTILUS_IS_DESKTOP_WINDOW (l->data))
-			continue;
+	for (l = application->priv->windows; l != NULL; l = l->next) {
+		window = l->data;
 
-		for (sl = nautilus_window_get_slots (NAUTILUS_WINDOW (l->data)); sl; sl = sl->next) {
-			NautilusWindowSlot *current = NAUTILUS_WINDOW_SLOT (sl->data);
+		for (sl = nautilus_window_get_slots (window); sl; sl = sl->next) {
+			NautilusWindowSlot *current = sl->data;
 			GFile *slot_location = nautilus_window_slot_get_location (current);
 
 			if (slot_location && g_file_equal (slot_location, location)) {
@@ -625,6 +621,8 @@ nautilus_application_finalize (GObject *object)
 	g_clear_object (&application->priv->dbus_manager);
 	g_clear_object (&application->priv->fdb_manager);
 	g_clear_object (&application->priv->search_provider);
+
+	g_list_free (application->priv->windows);
 
         G_OBJECT_CLASS (nautilus_application_parent_class)->finalize (object);
 }
@@ -1100,15 +1098,15 @@ update_dbus_opened_locations (NautilusApplication *app)
 	GList *locations = NULL;
 	gsize locations_size = 0;
 	gchar **locations_array;
+	NautilusWindow *window;
 
 	g_return_if_fail (NAUTILUS_IS_APPLICATION (app));
 
-	for (l = gtk_application_get_windows (GTK_APPLICATION (app)); l; l = l->next) {
-		if (!NAUTILUS_IS_WINDOW (l->data) || NAUTILUS_IS_DESKTOP_WINDOW (l->data))
-			continue;
+	for (l = app->priv->windows; l != NULL; l = l->next) {
+		window = l->data;
 
-		for (sl = nautilus_window_get_slots (NAUTILUS_WINDOW (l->data)); sl; sl = sl->next) {
-			NautilusWindowSlot *slot = NAUTILUS_WINDOW_SLOT (sl->data);
+		for (sl = nautilus_window_get_slots (window); sl; sl = sl->next) {
+			NautilusWindowSlot *slot = sl->data;
 			gchar *uri = nautilus_window_slot_get_location_uri (slot);
 
 			if (uri) {
@@ -1175,30 +1173,35 @@ static void
 nautilus_application_window_added (GtkApplication *app,
 				   GtkWindow *window)
 {
-	/* chain to parent */
+	NautilusApplication *self = NAUTILUS_APPLICATION (app);
+
 	GTK_APPLICATION_CLASS (nautilus_application_parent_class)->window_added (app, window);
 
-	g_signal_connect (window, "slot-added", G_CALLBACK (on_slot_added), app);
-	g_signal_connect (window, "slot-removed", G_CALLBACK (on_slot_removed), app);
+	if (NAUTILUS_IS_WINDOW (window)) {
+		self->priv->windows = g_list_prepend (self->priv->windows, window);
+		g_signal_connect (window, "slot-added", G_CALLBACK (on_slot_added), app);
+		g_signal_connect (window, "slot-removed", G_CALLBACK (on_slot_removed), app);
+	}
 }
 
 static void
 nautilus_application_window_removed (GtkApplication *app,
 				     GtkWindow *window)
 {
-	GList *l;
+	NautilusApplication *self = NAUTILUS_APPLICATION (app);
 
-	/* chain to parent */
 	GTK_APPLICATION_CLASS (nautilus_application_parent_class)->window_removed (app, window);
 
-	/* if this was the last window, close the previewer */
-	for (l = gtk_application_get_windows (GTK_APPLICATION (app)); l && !NAUTILUS_IS_WINDOW (l->data); l = l->next);
-	if (!l) {
-		nautilus_previewer_call_close ();
+	if (NAUTILUS_IS_WINDOW (window)) {
+		self->priv->windows = g_list_remove_all (self->priv->windows, window);
+		g_signal_handlers_disconnect_by_func (window, on_slot_added, app);
+		g_signal_handlers_disconnect_by_func (window, on_slot_removed, app);
 	}
 
-	g_signal_handlers_disconnect_by_func (window, on_slot_added, app);
-	g_signal_handlers_disconnect_by_func (window, on_slot_removed, app);
+	/* if this was the last window, close the previewer */
+	if (g_list_length (self->priv->windows) == 0) {
+		nautilus_previewer_call_close ();
+	}
 }
 
 static void
