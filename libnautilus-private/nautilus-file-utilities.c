@@ -314,20 +314,6 @@ nautilus_get_user_directory (void)
 }
 
 /**
- * nautilus_get_accel_map_file:
- * 
- * Get the path for the filename containing nautilus accelerator map.
- * The filename need not exist.
- *
- * Return value: the filename path
- **/
-char *
-nautilus_get_accel_map_file (void)
-{
-	return g_build_filename (g_get_user_config_dir (), "nautilus", "accels", NULL);
-}
-
-/**
  * nautilus_get_scripts_directory_path:
  *
  * Get the path for the directory containing nautilus scripts.

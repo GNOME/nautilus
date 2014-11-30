@@ -12,7 +12,6 @@ AM_CPPFLAGS = 						\
 	$(DISABLE_DEPRECATED)				\
 	$(TRACKER_CFLAGS)				\
 	-DDATADIR=\""$(datadir)"\" 			\
-	-DSYSCONFDIR=\""$(sysconfdir)"\" 			\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 	\
 	-DNAUTILUS_EXTENSIONDIR=\""$(libdir)/nautilus/extensions-3.0"\" \
 	$(NULL)

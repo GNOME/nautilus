@@ -23,10 +23,7 @@ AM_CPPFLAGS =							\
 	-DLIBDIR=\""$(libdir)"\" 				\
 	-DLIBEXECDIR=\""$(libexecdir)"\" 			\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 		\
-	-DUIDIR=\""$(datadir)/nautilus/ui"\" 		\
-	-DNAUTILUS_PIXMAPDIR=\""$(datadir)/pixmaps/nautilus"\" 	\
 	-DPREFIX=\""$(prefix)"\" 				\
-	-DSYSCONFDIR=\""$(sysconfdir)"\" 			\
 	-DVERSION="\"$(VERSION)\"" 				\
 	$(DISABLE_DEPRECATED) 		                        \
 	$(NULL)
