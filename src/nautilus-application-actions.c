@@ -163,11 +163,6 @@ action_kill (GSimpleAction *action,
 	     gpointer user_data)
 {
 	GtkApplication *application = user_data;
-	GList *windows;
-
-	/* this will also destroy the desktop windows */
-	windows = gtk_application_get_windows (application);
-	g_list_foreach (windows, (GFunc) gtk_widget_destroy, NULL);
 
 	/* we have been asked to force quit */
 	g_application_quit (G_APPLICATION (application));
