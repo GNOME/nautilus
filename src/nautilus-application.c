@@ -951,10 +951,10 @@ update_desktop_from_gsettings (NautilusApplication *self)
 static void
 init_desktop (NautilusApplication *self)
 {
-	update_desktop_from_gsettings (self);
-	g_signal_connect_swapped (gnome_background_preferences, "changed::" NAUTILUS_PREFERENCES_SHOW_DESKTOP,
+	g_signal_connect_swapped (gnome_background_preferences, "changed",
 				  G_CALLBACK (update_desktop_from_gsettings),
 				  self);
+	update_desktop_from_gsettings (self);
 }
 
 static gboolean 
