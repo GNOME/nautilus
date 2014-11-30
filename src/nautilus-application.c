@@ -920,14 +920,6 @@ nautilus_application_init (NautilusApplication *application)
 }
 
 static void
-init_icons_and_styles (void)
-{
-	/* initialize search path for custom icons */
-	gtk_icon_theme_append_search_path (gtk_icon_theme_get_default (),
-					   NAUTILUS_DATADIR G_DIR_SEPARATOR_S "icons");
-}
-
-static void
 nautilus_application_set_desktop_visible (NautilusApplication *self,
 					  gboolean             visible)
 {
@@ -1180,7 +1172,6 @@ nautilus_application_startup (GApplication *app)
 	nautilus_image_properties_page_register ();
 
 	/* initialize theming */
-	init_icons_and_styles ();
 	init_gtk_accels ();
 	
 	/* initialize nautilus modules */
