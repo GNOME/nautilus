@@ -697,18 +697,10 @@ nautilus_connect_server_dialog_class_init (NautilusConnectServerDialogClass *cla
 GtkWidget *
 nautilus_connect_server_dialog_new (NautilusWindow *window)
 {
-	GtkWidget *dialog;
-
-	dialog = gtk_widget_new (NAUTILUS_TYPE_CONNECT_SERVER_DIALOG,
-				 "use-header-bar", TRUE,
-				 NULL);
-
-	if (window) {
-		gtk_window_set_screen (GTK_WINDOW (dialog),
-				       gtk_window_get_screen (GTK_WINDOW (window)));
-	}
-
-	return dialog;
+	return g_object_new (NAUTILUS_TYPE_CONNECT_SERVER_DIALOG,
+			     "transient-for", window,
+			     "use-header-bar", TRUE,
+			     NULL);
 }
 
 void
