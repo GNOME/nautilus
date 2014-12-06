@@ -59,5 +59,6 @@ GtkWidget * nautilus_connect_server_dialog_new             (NautilusWindow *wind
 GFile *     nautilus_connect_server_dialog_get_location    (NautilusConnectServerDialog *dialog);
 void        nautilus_connect_server_dialog_set_show_browse (NautilusConnectServerDialog *dialog,
 							    gboolean                     show);
+void        nautilus_connect_server_dialog_add_server      (NautilusFile                *file);
 
 #endif /* NAUTILUS_CONNECT_SERVER_DIALOG_H */

@@ -318,7 +318,7 @@ on_selection_changed (GtkTreeSelection            *selection,
 }
 
 static GBookmarkFile *
-server_list_load (NautilusConnectServerDialog *dialog)
+server_list_load (void)
 {
 	GBookmarkFile *bookmarks;
 	GError *error = NULL;
@@ -348,8 +348,7 @@ server_list_load (NautilusConnectServerDialog *dialog)
 }
 
 static void
-server_list_save (NautilusConnectServerDialog *dialog,
-		  GBookmarkFile               *bookmarks)
+server_list_save (GBookmarkFile *bookmarks)
 {
 	char *filename;
 
@@ -365,7 +364,7 @@ populate_server_list (NautilusConnectServerDialog *dialog)
 	char **uris;
 	int i;
 
-	bookmarks = server_list_load (dialog);
+	bookmarks = server_list_load ();
 	if (bookmarks == NULL) {
 		return;
 	}
@@ -397,13 +396,13 @@ server_list_remove (NautilusConnectServerDialog *dialog,
 {
 	GBookmarkFile *bookmarks;
 
-	bookmarks = server_list_load (dialog);
+	bookmarks = server_list_load ();
 	if (bookmarks == NULL) {
 		return;
 	}
 
 	g_bookmark_file_remove_item (bookmarks, uri, NULL);
-	server_list_save (dialog, bookmarks);
+	server_list_save (bookmarks);
 	g_bookmark_file_free (bookmarks);
 }
 
@@ -416,7 +415,7 @@ server_list_remove_all (NautilusConnectServerDialog *dialog)
 	if (bookmarks == NULL) {
 		return;
 	}
-	server_list_save (dialog, bookmarks);
+	server_list_save (bookmarks);
 	g_bookmark_file_free (bookmarks);
 }
 
@@ -710,4 +709,28 @@ nautilus_connect_server_dialog_new (NautilusWindow *window)
 	}
 
 	return dialog;
+}
+
+void
+nautilus_connect_server_dialog_add_server (NautilusFile *file)
+{
+	GBookmarkFile *bookmarks;
+	char *uri;
+	char *title;
+
+	bookmarks = server_list_load ();
+	if (bookmarks == NULL) {
+		return;
+	}
+
+	uri = nautilus_file_get_uri (file);
+	title = nautilus_file_get_display_name (file);
+	g_bookmark_file_set_title (bookmarks, uri, title);
+	g_bookmark_file_set_visited (bookmarks, uri, -1);
+	g_bookmark_file_add_application (bookmarks, uri, NULL, NULL);
+	g_free (uri);
+	g_free (title);
+
+	server_list_save (bookmarks);
+	g_bookmark_file_free (bookmarks);
 }
