@@ -455,7 +455,6 @@ nautilus_file_clear_info (NautilusFile *file)
 	file->details->is_symlink = FALSE;
 	file->details->is_hidden = FALSE;
 	file->details->is_mountpoint = FALSE;
-	file->details->is_gone = FALSE;
 	file->details->uid = -1;
 	file->details->gid = -1;
 	file->details->can_read = TRUE;
