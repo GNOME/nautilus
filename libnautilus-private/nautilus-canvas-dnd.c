@@ -224,6 +224,7 @@ icon_get_data_binder (NautilusCanvasIcon *icon, gpointer data)
 	EelIRect widget_rect;
 	char *uri;
 	NautilusCanvasContainer *container;
+	NautilusFile *file;
 
 	context = (CanvasGetDataBinderContext *)data;
 
@@ -236,13 +237,15 @@ icon_get_data_binder (NautilusCanvasIcon *icon, gpointer data)
 	canvas_rect_world_to_widget (EEL_CANVAS (container), &world_rect, &widget_rect);
 
 	uri = nautilus_canvas_container_get_icon_uri (container, icon);
-	if (!eel_uri_is_desktop (uri)) {
+	file = nautilus_file_get_by_uri (uri);
+	if (!eel_uri_is_desktop (uri) && !nautilus_file_is_nautilus_link (file)) {
 		g_free (uri);
 		uri = nautilus_canvas_container_get_icon_activation_uri (container, icon);
 	}
 
 	if (uri == NULL) {
 		g_warning ("no URI for one of the iterated icons");
+		nautilus_file_unref (file);
 		return TRUE;
 	}
 
@@ -262,6 +265,7 @@ icon_get_data_binder (NautilusCanvasIcon *icon, gpointer data)
 			   context->iteratee_data);
 
 	g_free (uri);
+	nautilus_file_unref (file);
 
 	return TRUE;
 }
