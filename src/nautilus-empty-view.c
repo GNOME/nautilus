@@ -140,12 +140,6 @@ nautilus_empty_view_update_menus (NautilusView *view)
 	NAUTILUS_VIEW_CLASS (nautilus_empty_view_parent_class)->update_menus (view);
 }
 
-/* Reset sort criteria and zoom level to match defaults */
-static void
-nautilus_empty_view_reset_to_defaults (NautilusView *view)
-{
-}
-
 static void
 nautilus_empty_view_bump_zoom_level (NautilusView *view, int zoom_increment)
 {
@@ -265,7 +259,6 @@ nautilus_empty_view_class_init (NautilusEmptyViewClass *class)
 	nautilus_view_class->remove_file = nautilus_empty_view_remove_file;
 	nautilus_view_class->merge_menus = nautilus_empty_view_merge_menus;
 	nautilus_view_class->update_menus = nautilus_empty_view_update_menus;
-	nautilus_view_class->reset_to_defaults = nautilus_empty_view_reset_to_defaults;
 	nautilus_view_class->restore_default_zoom_level = nautilus_empty_view_restore_default_zoom_level;
 	nautilus_view_class->reveal_selection = nautilus_empty_view_reveal_selection;
 	nautilus_view_class->select_all = nautilus_empty_view_select_all;

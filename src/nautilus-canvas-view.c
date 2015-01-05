@@ -1220,26 +1220,6 @@ nautilus_canvas_view_update_menus (NautilusView *view)
 }
 
 static void
-nautilus_canvas_view_reset_to_defaults (NautilusView *view)
-{
-	NautilusCanvasContainer *canvas_container;
-	NautilusCanvasView *canvas_view;
-
-	canvas_view = NAUTILUS_CANVAS_VIEW (view);
-	canvas_container = get_canvas_container (canvas_view);
-
-	clear_sort_criterion (canvas_view);
-	nautilus_canvas_container_set_keep_aligned 
-		(canvas_container, get_default_directory_keep_aligned ());
-
-	nautilus_canvas_container_sort (canvas_container);
-
-	update_layout_menus (canvas_view);
-
-	nautilus_canvas_view_restore_default_zoom_level (view);
-}
-
-static void
 nautilus_canvas_view_select_all (NautilusView *view)
 {
 	NautilusCanvasContainer *canvas_container;
@@ -2061,7 +2041,6 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
 	nautilus_view_class->get_selection_for_file_transfer = nautilus_canvas_view_get_selection;
 	nautilus_view_class->is_empty = nautilus_canvas_view_is_empty;
 	nautilus_view_class->remove_file = nautilus_canvas_view_remove_file;
-	nautilus_view_class->reset_to_defaults = nautilus_canvas_view_reset_to_defaults;
 	nautilus_view_class->restore_default_zoom_level = nautilus_canvas_view_restore_default_zoom_level;
 	nautilus_view_class->reveal_selection = nautilus_canvas_view_reveal_selection;
 	nautilus_view_class->select_all = nautilus_canvas_view_select_all;

@@ -3092,42 +3092,6 @@ nautilus_list_view_update_menus (NautilusView *view)
 	NAUTILUS_VIEW_CLASS (nautilus_list_view_parent_class)->update_menus (view);
 }
 
-/* Reset sort criteria and zoom level to match defaults */
-static void
-nautilus_list_view_reset_to_defaults (NautilusView *view)
-{
-	NautilusFile *file;
-	const gchar *default_sort_order;
-	gboolean default_sort_reversed;
-	char **default_columns;
-	char **default_order;
-
-	file = nautilus_view_get_directory_as_file (view);
-
-	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN, NULL, NULL);
-	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED, NULL, NULL);
-	nautilus_file_set_metadata_list (file, NAUTILUS_METADATA_KEY_LIST_VIEW_COLUMN_ORDER, NULL);
-	nautilus_file_set_metadata_list (file, NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS, NULL);
-
-	default_sort_order = get_default_sort_order (file, &default_sort_reversed);
-
-	gtk_tree_sortable_set_sort_column_id
-		(GTK_TREE_SORTABLE (NAUTILUS_LIST_VIEW (view)->details->model),
-		 nautilus_list_model_get_sort_column_id_from_attribute (NAUTILUS_LIST_VIEW (view)->details->model,
-								  g_quark_from_string (default_sort_order)),
-		 default_sort_reversed ? GTK_SORT_DESCENDING : GTK_SORT_ASCENDING);
-
-	nautilus_list_view_set_zoom_level (NAUTILUS_LIST_VIEW (view), get_default_zoom_level (), FALSE);
-
-	default_columns = get_default_visible_columns (NAUTILUS_LIST_VIEW (view));
-	default_order = get_default_column_order (NAUTILUS_LIST_VIEW (view));
-
-	apply_columns_settings (NAUTILUS_LIST_VIEW (view), default_order, default_columns);
-
-	g_strfreev (default_columns);
-	g_strfreev (default_order);
-}
-
 static void
 nautilus_list_view_set_zoom_level (NautilusListView *view,
 				   NautilusListZoomLevel new_level,
@@ -3598,7 +3562,6 @@ nautilus_list_view_class_init (NautilusListViewClass *class)
 	nautilus_view_class->merge_menus = nautilus_list_view_merge_menus;
 	nautilus_view_class->unmerge_menus = nautilus_list_view_unmerge_menus;
 	nautilus_view_class->update_menus = nautilus_list_view_update_menus;
-	nautilus_view_class->reset_to_defaults = nautilus_list_view_reset_to_defaults;
 	nautilus_view_class->restore_default_zoom_level = nautilus_list_view_restore_default_zoom_level;
 	nautilus_view_class->reveal_selection = nautilus_list_view_reveal_selection;
 	nautilus_view_class->select_all = nautilus_list_view_select_all;

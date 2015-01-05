@@ -453,25 +453,6 @@ nautilus_view_reveal_selection (NautilusView *view)
 	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->reveal_selection (view);
 }
 
-/**
- * nautilus_view_reset_to_defaults:
- *
- * set sorting order, zoom level, etc. to match defaults
- * 
- **/
-static void
-nautilus_view_reset_to_defaults (NautilusView *view)
-{
-	GtkAction *action;
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_SHOW_HIDDEN_FILES);
-	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
-				      g_settings_get_boolean (gtk_filechooser_preferences, NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES));
-
-        NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->reset_to_defaults (view);
-}
-
 static gboolean
 nautilus_view_using_manual_layout (NautilusView  *view)
 {
@@ -1499,15 +1480,6 @@ action_select_pattern_callback (GtkAction *action,
 	g_assert (NAUTILUS_IS_VIEW (callback_data));
 
 	select_pattern(callback_data);
-}
-
-static void
-action_reset_to_defaults_callback (GtkAction *action, 
-				   gpointer callback_data)
-{
-	g_assert (NAUTILUS_IS_VIEW (callback_data));
-
-	nautilus_view_reset_to_defaults (callback_data);
 }
 
 static void
@@ -7194,16 +7166,6 @@ static const GtkActionEntry directory_view_entries[] = {
  /* label, accelerator */        N_("_Redo"), "<shift><control>Z",
  /* tooltip */                   N_("Redo the last undone action"),
                                  G_CALLBACK (action_redo_callback) },
-  /*
-   * multiview-TODO: decide whether "Reset to Defaults" should
-   * be window-wide, and not just view-wide.
-   * Since this also resets the "Show hidden files" mode,
-   * it is a mixture of both ATM.
-   */
-  /* name, stock id */         { NAUTILUS_ACTION_RESET_TO_DEFAULTS, NULL,
-  /* label, accelerator */       N_("Reset View to _Defaults"), NULL,
-  /* tooltip */                  N_("Reset sorting order and zoom level to match preferences for this view"),
-				 G_CALLBACK (action_reset_to_defaults_callback) },
   /* name, stock id */         { NAUTILUS_ACTION_MOUNT_VOLUME, NULL,
   /* label, accelerator */       N_("_Mount"), NULL,
   /* tooltip */                  N_("Mount the selected volume"),

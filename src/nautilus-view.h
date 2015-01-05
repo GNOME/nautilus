@@ -131,12 +131,6 @@ struct NautilusViewClass {
 
 	/* Function pointers that don't have corresponding signals */
 
-        /* reset_to_defaults is a function pointer that subclasses must 
-         * override to set sort order, zoom level, etc to match default
-         * values. 
-         */
-        void     (* reset_to_defaults)	         (NautilusView *view);
-
 	/* get_backing uri is a function pointer for subclasses to
 	 * override. Subclasses may replace it with a function that
 	 * returns the URI for the location where to create new folders,
