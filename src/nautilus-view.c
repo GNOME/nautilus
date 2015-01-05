@@ -8794,9 +8794,7 @@ nautilus_view_pop_up_selection_context_menu  (NautilusView *view,
  *
  * Pop up a context menu appropriate to the view globally at the last right click location.
  * @view: NautilusView of interest.
- * 
- * Return value: NautilusDirectory for this view.
- * 
+ *
  **/
 void 
 nautilus_view_pop_up_background_context_menu (NautilusView *view, 
