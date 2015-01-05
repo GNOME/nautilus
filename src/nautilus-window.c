@@ -1115,7 +1115,7 @@ path_bar_path_event_callback (NautilusPathBar *path_bar,
 		view = nautilus_window_slot_get_view (slot);
 		if (view != NULL) {
 			uri = g_file_get_uri (location);
-			nautilus_view_pop_up_location_context_menu (view, event, uri);
+			nautilus_view_pop_up_pathbar_context_menu (view, event, uri);
 			g_free (uri);
 		}
 

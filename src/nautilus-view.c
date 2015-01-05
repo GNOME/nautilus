@@ -170,9 +170,9 @@ struct NautilusViewDetails
 	NautilusWindowSlot *slot;
 	NautilusDirectory *model;
 	NautilusFile *directory_as_file;
-	NautilusFile *location_popup_directory_as_file;
-	GdkEventButton *location_popup_event;
 	GtkActionGroup *dir_action_group;
+	NautilusFile *pathbar_popup_directory_as_file;
+	GdkEventButton *pathbar_popup_event;
 	guint dir_merge_id;
 
 	gboolean supports_zooming;
@@ -305,8 +305,8 @@ static void     nautilus_view_select_file                      (NautilusView    
 static void     update_templates_directory                     (NautilusView *view);
 
 static gboolean file_list_all_are_folders                      (GList *file_list);
+static void unschedule_pop_up_pathbar_context_menu (NautilusView *view);
 
-static void unschedule_pop_up_location_context_menu (NautilusView *view);
 
 G_DEFINE_TYPE (NautilusView, nautilus_view, GTK_TYPE_SCROLLED_WINDOW);
 
@@ -1137,7 +1137,7 @@ action_location_open_alternate_callback (GtkAction *action,
 
 	view = NAUTILUS_VIEW (callback_data);
 
-	file = view->details->location_popup_directory_as_file;
+	file = view->details->pathbar_popup_directory_as_file;
 	if (file == NULL) {
 		return;
 	}
@@ -1155,7 +1155,7 @@ action_location_open_in_new_tab_callback (GtkAction *action,
 
 	view = NAUTILUS_VIEW (callback_data);
 
-	file = view->details->location_popup_directory_as_file;
+	file = view->details->pathbar_popup_directory_as_file;
 	if (file == NULL) {
 		return;
 	}
@@ -2592,9 +2592,9 @@ nautilus_view_finalize (GObject *object)
 	g_signal_handlers_disconnect_by_func (gnome_lockdown_preferences,
 					      schedule_update_menus, view);
 
-	unschedule_pop_up_location_context_menu (view);
-	if (view->details->location_popup_event != NULL) {
-		gdk_event_free ((GdkEvent *) view->details->location_popup_event);
+	unschedule_pop_up_pathbar_context_menu (view);
+	if (view->details->pathbar_popup_event != NULL) {
+		gdk_event_free ((GdkEvent *) view->details->pathbar_popup_event);
 	}
 
 	g_hash_table_destroy (view->details->non_ready_files);
@@ -7659,78 +7659,78 @@ nautilus_view_pop_up_background_context_menu (NautilusView *view,
 }
 
 static void
-real_pop_up_location_context_menu (NautilusView *view)
+real_pop_up_pathbar_context_menu (NautilusView *view)
 {
 	/* always update the menu before showing it. Shouldn't be too expensive. */
 	real_update_location_menu (view);
 
-	update_context_menu_position_from_event (view, view->details->location_popup_event);
+	update_context_menu_position_from_event (view, view->details->pathbar_popup_event);
 
 	eel_pop_up_context_menu (create_popup_menu 
 				 (view, NAUTILUS_VIEW_POPUP_PATH_LOCATION),
-				 view->details->location_popup_event);
+				 view->details->pathbar_popup_event);
 }
 
 static void
-location_popup_file_attributes_ready (NautilusFile *file,
-				      gpointer      data)
+pathbar_popup_file_attributes_ready (NautilusFile *file,
+				     gpointer      data)
 {
 	NautilusView *view;
 
 	view = NAUTILUS_VIEW (data);
 	g_assert (NAUTILUS_IS_VIEW (view));
 
-	g_assert (file == view->details->location_popup_directory_as_file);
+	g_assert (file == view->details->pathbar_popup_directory_as_file);
 
-	real_pop_up_location_context_menu (view);
+	real_pop_up_pathbar_context_menu (view);
 }
 
 static void
-unschedule_pop_up_location_context_menu (NautilusView *view)
+unschedule_pop_up_pathbar_context_menu (NautilusView *view)
 {
-	if (view->details->location_popup_directory_as_file != NULL) {
-		g_assert (NAUTILUS_IS_FILE (view->details->location_popup_directory_as_file));
-		nautilus_file_cancel_call_when_ready (view->details->location_popup_directory_as_file,
-						      location_popup_file_attributes_ready,
+	if (view->details->pathbar_popup_directory_as_file != NULL) {
+		g_assert (NAUTILUS_IS_FILE (view->details->pathbar_popup_directory_as_file));
+		nautilus_file_cancel_call_when_ready (view->details->pathbar_popup_directory_as_file,
+						      pathbar_popup_file_attributes_ready,
 						      view);
-		nautilus_file_unref (view->details->location_popup_directory_as_file);
-		view->details->location_popup_directory_as_file = NULL;
+		nautilus_file_unref (view->details->pathbar_popup_directory_as_file);
+		view->details->pathbar_popup_directory_as_file = NULL;
 	}
 }
 
 static void
-schedule_pop_up_location_context_menu (NautilusView *view,
-				       GdkEventButton  *event,
-				       NautilusFile    *file)
+schedule_pop_up_pathbar_context_menu (NautilusView *view,
+				      GdkEventButton  *event,
+				      NautilusFile    *file)
 {
 	g_assert (NAUTILUS_IS_FILE (file));
 
-	if (view->details->location_popup_event != NULL) {
-		gdk_event_free ((GdkEvent *) view->details->location_popup_event);
+	if (view->details->pathbar_popup_event != NULL) {
+		gdk_event_free ((GdkEvent *) view->details->pathbar_popup_event);
 	}
-	view->details->location_popup_event = (GdkEventButton *) gdk_event_copy ((GdkEvent *)event);
+	view->details->pathbar_popup_event = (GdkEventButton *) gdk_event_copy ((GdkEvent *)event);
 
-	if (file == view->details->location_popup_directory_as_file) {
+	if (file == view->details->pathbar_popup_directory_as_file) {
 		if (nautilus_file_check_if_ready (file, NAUTILUS_FILE_ATTRIBUTE_INFO |
 						  NAUTILUS_FILE_ATTRIBUTE_MOUNT |
 						  NAUTILUS_FILE_ATTRIBUTE_FILESYSTEM_INFO)) {
-			real_pop_up_location_context_menu (view);
+			real_pop_up_pathbar_context_menu (view);
 		}
 	} else {
-		unschedule_pop_up_location_context_menu (view);
+		unschedule_pop_up_pathbar_context_menu (view);
 
-		view->details->location_popup_directory_as_file = nautilus_file_ref (file);
-		nautilus_file_call_when_ready (view->details->location_popup_directory_as_file,
+		view->details->pathbar_popup_directory_as_file = nautilus_file_ref (file);
+		nautilus_file_call_when_ready (view->details->pathbar_popup_directory_as_file,
 					       NAUTILUS_FILE_ATTRIBUTE_INFO |
 					       NAUTILUS_FILE_ATTRIBUTE_MOUNT |
 					       NAUTILUS_FILE_ATTRIBUTE_FILESYSTEM_INFO,
-					       location_popup_file_attributes_ready,
+					       pathbar_popup_file_attributes_ready,
 					       view);
 	}
 }
 
 /**
- * nautilus_view_pop_up_location_context_menu
+ * nautilus_view_pop_up_pathbar_context_menu
  *
  * Pop up a context menu appropriate to the view globally.
  * @view: NautilusView of interest.
@@ -7740,9 +7740,9 @@ schedule_pop_up_location_context_menu (NautilusView *view,
  *
  **/
 void 
-nautilus_view_pop_up_location_context_menu (NautilusView *view, 
-					    GdkEventButton  *event,
-					    const char      *location)
+nautilus_view_pop_up_pathbar_context_menu (NautilusView *view, 
+					   GdkEventButton  *event,
+					   const char      *location)
 {
 	NautilusFile *file;
 
@@ -7755,7 +7755,7 @@ nautilus_view_pop_up_location_context_menu (NautilusView *view,
 	}
 
 	if (file != NULL) {
-		schedule_pop_up_location_context_menu (view, event, file);
+		schedule_pop_up_pathbar_context_menu (view, event, file);
 		nautilus_file_unref (file);
 	}
 }
