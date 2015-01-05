@@ -275,7 +275,6 @@ static void     nautilus_view_create_links_for_files           (NautilusView    
 							        GArray               *item_locations);
 static void     trash_or_delete_files                          (GtkWindow            *parent_window,
 								const GList          *files,
-								gboolean              delete_if_all_already_in_trash,
 								NautilusView      *view);
 static void     load_directory                                 (NautilusView      *view,
 								NautilusDirectory    *directory);
@@ -1277,7 +1276,7 @@ trash_or_delete_selected_files (NautilusView *view)
 	if (!view->details->selection_was_removed) {
 		selection = nautilus_view_get_selection_for_file_transfer (view);
 		trash_or_delete_files (nautilus_view_get_containing_window (view),
-				       selection, TRUE,
+				       selection,
 				       view);
 		nautilus_file_list_free (selection);
 		view->details->selection_was_removed = TRUE;
@@ -4096,7 +4095,6 @@ trash_or_delete_done_cb (GHashTable *debuting_uris,
 static void
 trash_or_delete_files (GtkWindow *parent_window,
 		       const GList *files,
-		       gboolean delete_if_all_already_in_trash,
 		       NautilusView *view)
 {
 	GList *locations;
@@ -7012,7 +7010,7 @@ action_location_trash_callback (GtkAction *action,
 
 	files = g_list_append (NULL, file);
 	trash_or_delete_files (nautilus_view_get_containing_window (view),
-			       files, TRUE,
+			       files,
 			       view);
 	g_list_free (files);
 }
