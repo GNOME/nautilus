@@ -1129,6 +1129,43 @@ action_open_new_tab_callback (GtkAction *action,
 }
 
 static void
+action_location_open_alternate_callback (GtkAction *action,
+					 gpointer   callback_data)
+{
+	NautilusView *view;
+	NautilusFile *file;
+
+	view = NAUTILUS_VIEW (callback_data);
+
+	file = view->details->location_popup_directory_as_file;
+	if (file == NULL) {
+		return;
+	}
+	nautilus_view_activate_file (view,
+				     file,
+				     NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW);
+}
+
+static void
+action_location_open_in_new_tab_callback (GtkAction *action,
+					  gpointer   callback_data)
+{
+	NautilusView *view;
+	NautilusFile *file;
+
+	view = NAUTILUS_VIEW (callback_data);
+
+	file = view->details->location_popup_directory_as_file;
+	if (file == NULL) {
+		return;
+	}
+
+	nautilus_view_activate_file (view,
+				     file,
+				     NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB);
+}
+
+static void
 app_chooser_dialog_response_cb (GtkDialog *dialog,
 				gint response_id,
 				gpointer user_data)
@@ -6369,44 +6406,6 @@ action_detect_media_callback (GtkAction *action,
 		}
 	}
 	nautilus_file_list_free (selection);
-}
-
-
-static void
-action_location_open_alternate_callback (GtkAction *action,
-					 gpointer   callback_data)
-{
-	NautilusView *view;
-	NautilusFile *file;
-
-	view = NAUTILUS_VIEW (callback_data);
-
-	file = view->details->location_popup_directory_as_file;
-	if (file == NULL) {
-		return;
-	}
-	nautilus_view_activate_file (view,
-				     file,
-				     NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW);
-}
-
-static void
-action_location_open_in_new_tab_callback (GtkAction *action,
-					  gpointer   callback_data)
-{
-	NautilusView *view;
-	NautilusFile *file;
-
-	view = NAUTILUS_VIEW (callback_data);
-
-	file = view->details->location_popup_directory_as_file;
-	if (file == NULL) {
-		return;
-	}
-
-	nautilus_view_activate_file (view,
-				     file,
-				     NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB);
 }
 
 gboolean
