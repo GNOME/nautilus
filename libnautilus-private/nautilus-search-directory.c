@@ -38,7 +38,6 @@
 
 struct NautilusSearchDirectoryDetails {
 	NautilusQuery *query;
-	char *saved_search_uri;
 	gboolean modified;
 
 	NautilusSearchEngine *engine;
@@ -752,7 +751,6 @@ search_finalize (GObject *object)
 	NautilusSearchDirectory *search;
 
 	search = NAUTILUS_SEARCH_DIRECTORY (object);
-	g_free (search->details->saved_search_uri);
 
 	g_hash_table_destroy (search->details->files_hash);
 
@@ -893,7 +891,7 @@ nautilus_search_directory_set_query (NautilusSearchDirectory *search,
 	}
 
 	file = nautilus_directory_get_existing_corresponding_file (NAUTILUS_DIRECTORY (search));
-	if ((file != NULL) && (search->details->saved_search_uri == NULL)) {
+	if (file != NULL) {
 		nautilus_search_directory_file_update_display_name (NAUTILUS_SEARCH_DIRECTORY_FILE (file));
 	}
 	nautilus_file_unref (file);
@@ -909,68 +907,8 @@ nautilus_search_directory_get_query (NautilusSearchDirectory *search)
 	return NULL;
 }
 
-void
-nautilus_search_directory_set_saved_search (NautilusSearchDirectory *search,
-					    GFile *saved_search)
-{
-	NautilusQuery *query;
-	char *file;
-
-	search->details->saved_search_uri = g_file_get_uri (saved_search);
-	file = g_file_get_path (saved_search);
-
-	if (file != NULL) {
-		query = nautilus_query_load (file);
-		if (query != NULL) {
-			nautilus_search_directory_set_query (search, query);
-			g_object_unref (query);
-		}
-		g_free (file);
-	} else {
-		g_warning ("Non-local saved searches not supported");
-	}
-
-	search->details->modified = FALSE;
-}
-
-gboolean
-nautilus_search_directory_is_saved_search (NautilusSearchDirectory *search)
-{
-	return search->details->saved_search_uri != NULL;
-}
-
 gboolean
 nautilus_search_directory_is_modified (NautilusSearchDirectory *search)
 {
 	return search->details->modified;
-}
-
-void
-nautilus_search_directory_save_to_file (NautilusSearchDirectory *search,
-					const char              *save_file_uri)
-{
-	char *file;
-	
-	file = g_filename_from_uri (save_file_uri, NULL, NULL);
-	if (file == NULL) {
-		return;
-	}
-
-	if (search->details->query != NULL) {
-		nautilus_query_save (search->details->query, file);
-	}
-	
-	g_free (file);
-}
-
-void
-nautilus_search_directory_save_search (NautilusSearchDirectory *search)
-{
-	if (search->details->saved_search_uri == NULL) {
-		return;
-	}
-
-	nautilus_search_directory_save_to_file (search,
-						search->details->saved_search_uri);
-	search->details->modified = FALSE;
 }

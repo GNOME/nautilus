@@ -57,9 +57,6 @@ void           nautilus_search_directory_set_saved_search (NautilusSearchDirecto
 							   GFile                   *saved_search);
 gboolean       nautilus_search_directory_is_saved_search (NautilusSearchDirectory *search);
 gboolean       nautilus_search_directory_is_modified     (NautilusSearchDirectory *search);
-void           nautilus_search_directory_save_search     (NautilusSearchDirectory *search);
-void           nautilus_search_directory_save_to_file    (NautilusSearchDirectory *search,
-							  const char              *save_file_uri);
 
 NautilusQuery *nautilus_search_directory_get_query       (NautilusSearchDirectory *search);
 void           nautilus_search_directory_set_query       (NautilusSearchDirectory *search,

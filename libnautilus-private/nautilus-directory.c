@@ -546,14 +546,12 @@ nautilus_directory_new (GFile *location)
 	NautilusDirectory *directory;
 	GType type;
 	char *uri;
-	gboolean is_saved_search;
 
 	uri = g_file_get_uri (location);
-	is_saved_search = g_str_has_suffix (uri, NAUTILUS_SAVED_SEARCH_EXTENSION);
 
 	if (eel_uri_is_desktop (uri)) {
 		type = NAUTILUS_TYPE_DESKTOP_DIRECTORY;
-	} else if (eel_uri_is_search (uri) || is_saved_search) {
+	} else if (eel_uri_is_search (uri)) {
 		type = NAUTILUS_TYPE_SEARCH_DIRECTORY;
 	} else {
 		type = NAUTILUS_TYPE_VFS_DIRECTORY;
@@ -562,9 +560,6 @@ nautilus_directory_new (GFile *location)
 	g_free (uri);
 
 	directory = g_object_new (type, "location", location, NULL);
-	if (is_saved_search) {
-		nautilus_search_directory_set_saved_search (NAUTILUS_SEARCH_DIRECTORY (directory), location);
-	}
 
 	return directory;
 }
