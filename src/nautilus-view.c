@@ -8770,8 +8770,6 @@ real_update_menus (NautilusView *view)
  * @view: NautilusView of interest.
  * @event: The event that triggered this context menu.
  * 
- * Return value: NautilusDirectory for this view.
- * 
  **/
 void 
 nautilus_view_pop_up_selection_context_menu  (NautilusView *view, 
