@@ -1892,25 +1892,6 @@ action_properties_callback (GtkAction *action,
         nautilus_file_list_free (selection);
 }
 
-static void
-action_location_properties_callback (GtkAction *action,
-				     gpointer   callback_data)
-{
-	NautilusView *view;
-	GList           *files;
-
-	g_assert (NAUTILUS_IS_VIEW (callback_data));
-
-	view = NAUTILUS_VIEW (callback_data);
-	g_assert (NAUTILUS_IS_FILE (view->details->location_popup_directory_as_file));
-
-	files = g_list_append (NULL, nautilus_file_ref (view->details->location_popup_directory_as_file));
-
-	nautilus_properties_window_present (files, GTK_WIDGET (view), NULL);
-
-	nautilus_file_list_free (files);
-}
-
 static gboolean
 all_files_in_trash (GList *files)
 {
@@ -6390,126 +6371,6 @@ action_detect_media_callback (GtkAction *action,
 	nautilus_file_list_free (selection);
 }
 
-static void
-action_location_mount_volume_callback (GtkAction *action,
-				       gpointer data)
-{
-	NautilusFile *file;
-	NautilusView *view;
-	GMountOperation *mount_op;
-
-	view = NAUTILUS_VIEW (data);
-
-	file = view->details->location_popup_directory_as_file;
-	if (file == NULL) {
-		return;
-	}
-
-	mount_op = gtk_mount_operation_new (nautilus_view_get_containing_window (view));
-	g_mount_operation_set_password_save (mount_op, G_PASSWORD_SAVE_FOR_SESSION);
-	nautilus_file_mount (file, mount_op, NULL, file_mount_callback, view);
-	g_object_unref (mount_op);
-}
-
-static void
-action_location_unmount_volume_callback (GtkAction *action,
-					 gpointer data)
-{
-	NautilusFile *file;
-	NautilusView *view;
-	GMountOperation *mount_op;
-
-	view = NAUTILUS_VIEW (data);
-
-	file = view->details->location_popup_directory_as_file;
-	if (file == NULL) {
-		return;
-	}
-
-	mount_op = gtk_mount_operation_new (nautilus_view_get_containing_window (view));
-	nautilus_file_unmount (file, mount_op, NULL,
-			       file_unmount_callback, g_object_ref (view));
-	g_object_unref (mount_op);
-}
-
-static void
-action_location_eject_volume_callback (GtkAction *action,
-				       gpointer data)
-{
-	NautilusFile *file;
-	NautilusView *view;
-	GMountOperation *mount_op;
-
-	view = NAUTILUS_VIEW (data);
-
-	file = view->details->location_popup_directory_as_file;
-	if (file == NULL) {
-		return;
-	}
-	
-	mount_op = gtk_mount_operation_new (nautilus_view_get_containing_window (view));
-	nautilus_file_eject (file, mount_op, NULL,
-			     file_eject_callback, g_object_ref (view));
-	g_object_unref (mount_op);
-}
-
-static void
-action_location_start_volume_callback (GtkAction *action,
-				       gpointer   data)
-{
-	NautilusFile *file;
-	NautilusView *view;
-	GMountOperation *mount_op;
-
-	view = NAUTILUS_VIEW (data);
-
-	file = view->details->location_popup_directory_as_file;
-	if (file == NULL) {
-		return;
-	}
-
-	mount_op = gtk_mount_operation_new (nautilus_view_get_containing_window (view));
-	nautilus_file_start (file, mount_op, NULL, file_start_callback, view);
-	g_object_unref (mount_op);
-}
-
-static void
-action_location_stop_volume_callback (GtkAction *action,
-				      gpointer   data)
-{
-	NautilusFile *file;
-	NautilusView *view;
-	GMountOperation *mount_op;
-
-	view = NAUTILUS_VIEW (data);
-
-	file = view->details->location_popup_directory_as_file;
-	if (file == NULL) {
-		return;
-	}
-
-	mount_op = gtk_mount_operation_new (nautilus_view_get_containing_window (view));
-	nautilus_file_stop (file, mount_op, NULL,
-			    file_stop_callback, view);
-	g_object_unref (mount_op);
-}
-
-static void
-action_location_detect_media_callback (GtkAction *action,
-				       gpointer   data)
-{
-	NautilusFile *file;
-	NautilusView *view;
-
-	view = NAUTILUS_VIEW (data);
-
-	file = view->details->location_popup_directory_as_file;
-	if (file == NULL) {
-		return;
-	}
-
-	nautilus_file_poll_for_media (file);
-}
 
 static void
 action_location_open_alternate_callback (GtkAction *action,
@@ -6546,118 +6407,6 @@ action_location_open_in_new_tab_callback (GtkAction *action,
 	nautilus_view_activate_file (view,
 				     file,
 				     NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB);
-}
-
-static void
-action_location_cut_callback (GtkAction *action,
-			      gpointer   callback_data)
-{
-	NautilusView *view;
-	NautilusFile *file;
-	GList *files;
-
-	view = NAUTILUS_VIEW (callback_data);
-
-	file = view->details->location_popup_directory_as_file;
-	g_return_if_fail (file != NULL);
-
-	files = g_list_append (NULL, file);
-	copy_or_cut_files (view, files, TRUE);
-	g_list_free (files);
-}
-
-static void
-action_location_copy_callback (GtkAction *action,
-			       gpointer   callback_data)
-{
-	NautilusView *view;
-	NautilusFile *file;
-	GList *files;
-
-	view = NAUTILUS_VIEW (callback_data);
-
-	file = view->details->location_popup_directory_as_file;
-	g_return_if_fail (file != NULL);
-
-	files = g_list_append (NULL, file);
-	copy_or_cut_files (view, files, FALSE);
-	g_list_free (files);
-}
-
-static void
-action_location_paste_files_into_callback (GtkAction *action,
-					   gpointer callback_data)
-{
-	NautilusView *view;
-	NautilusFile *file;
-
-	view = NAUTILUS_VIEW (callback_data);
-
-	file = view->details->location_popup_directory_as_file;
-	g_return_if_fail (file != NULL);
-
-	paste_into (view, file);
-}
-
-static void
-action_location_trash_callback (GtkAction *action,
-				gpointer   callback_data)
-{
-	NautilusView *view;
-	NautilusFile *file;
-	GList *files;
-
-	view = NAUTILUS_VIEW (callback_data);
-
-	file = view->details->location_popup_directory_as_file;
-	g_return_if_fail (file != NULL);
-
-	files = g_list_append (NULL, file);
-	trash_or_delete_files (nautilus_view_get_containing_window (view),
-			       files,
-			       view);
-	g_list_free (files);
-}
-
-static void
-action_location_delete_callback (GtkAction *action,
-				 gpointer   callback_data)
-{
-	NautilusView *view;
-	NautilusFile *file;
-	GFile *location;
-	GList *files;
-
-	view = NAUTILUS_VIEW (callback_data);
-
-	file = view->details->location_popup_directory_as_file;
-	g_return_if_fail (file != NULL);
-
-	location = nautilus_file_get_location (file);
-
-	files = g_list_append (NULL, location);
-	nautilus_file_operations_delete (files, nautilus_view_get_containing_window (view),
-					 NULL, NULL);
-
-	g_list_free_full (files, g_object_unref);
-}
-
-static void
-action_location_restore_from_trash_callback (GtkAction *action,
-					     gpointer callback_data)
-{
-	NautilusView *view;
-	NautilusFile *file;
-	GList l;
-
-	view = NAUTILUS_VIEW (callback_data);
-	file = view->details->location_popup_directory_as_file;
-
-	l.prev = NULL;
-	l.next = NULL;
-	l.data = file;
-	nautilus_restore_files_from_trash (&l,
-					   nautilus_view_get_containing_window (view));
 }
 
 gboolean
@@ -6840,61 +6589,6 @@ static const GtkActionEntry directory_view_entries[] = {
   /* label, accelerator */       N_("Open in New _Tab"), NULL,
   /* tooltip */                  N_("Open this folder in a new tab"),
 				 G_CALLBACK (action_location_open_in_new_tab_callback) },
-
-  /* name, stock id */         { NAUTILUS_ACTION_LOCATION_CUT, NULL,
-  /* label, accelerator */       N_("Cu_t"), NULL,
-  /* tooltip */                  N_("Prepare this folder to be moved with a Paste command"),
-				 G_CALLBACK (action_location_cut_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_LOCATION_COPY, NULL,
-  /* label, accelerator */       N_("_Copy"), NULL,
-  /* tooltip */                  N_("Prepare this folder to be copied with a Paste command"),
-				 G_CALLBACK (action_location_copy_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_LOCATION_PASTE_FILES_INTO, NULL,
-  /* label, accelerator */       N_("_Paste Into Folder"), NULL,
-  /* tooltip */                  N_("Move or copy files previously selected by a Cut or Copy command into this folder"),
-				 G_CALLBACK (action_location_paste_files_into_callback) },
-
-  /* name, stock id */         { NAUTILUS_ACTION_LOCATION_TRASH, NULL,
-  /* label, accelerator */       N_("Mo_ve to Trash"), NULL,
-  /* tooltip */                  N_("Move this folder to the Trash"),
-				 G_CALLBACK (action_location_trash_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_LOCATION_DELETE, NAUTILUS_ICON_DELETE,
-  /* label, accelerator */       N_("_Delete"), NULL,
-  /* tooltip */                  N_("Delete this folder, without moving to the Trash"),
-				 G_CALLBACK (action_location_delete_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_LOCATION_RESTORE_FROM_TRASH, NULL,
-  /* label, accelerator */       N_("_Restore"), NULL, NULL,
-				 G_CALLBACK (action_location_restore_from_trash_callback) },
-
-  /* name, stock id */         { NAUTILUS_ACTION_LOCATION_MOUNT_VOLUME, NULL,
-  /* label, accelerator */       N_("_Mount"), NULL,
-  /* tooltip */                  N_("Mount the volume associated with this folder"),
-				 G_CALLBACK (action_location_mount_volume_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_LOCATION_UNMOUNT_VOLUME, NULL,
-  /* label, accelerator */       N_("_Unmount"), NULL,
-  /* tooltip */                  N_("Unmount the volume associated with this folder"),
-				 G_CALLBACK (action_location_unmount_volume_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_LOCATION_EJECT_VOLUME, NULL,
-  /* label, accelerator */       N_("_Eject"), NULL,
-  /* tooltip */                  N_("Eject the volume associated with this folder"),
-				 G_CALLBACK (action_location_eject_volume_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_LOCATION_START_VOLUME, NULL,
-  /* label, accelerator */       N_("_Start"), NULL,
-  /* tooltip */                  N_("Start the volume associated with this folder"),
-				 G_CALLBACK (action_location_start_volume_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_LOCATION_STOP_VOLUME, NULL,
-  /* label, accelerator */       N_("_Stop"), NULL,
-  /* tooltip */                  N_("Stop the volume associated with this folder"),
-				 G_CALLBACK (action_location_stop_volume_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_LOCATION_POLL, NULL,
-  /* label, accelerator */       N_("_Detect Media"), NULL,
-  /* tooltip */                  N_("Detect media in the selected drive"),
-				 G_CALLBACK (action_location_detect_media_callback) },
-
-  /* name, stock id */         { NAUTILUS_ACTION_LOCATION_PROPERTIES, NULL,
-  /* label, accelerator */       N_("P_roperties"), NULL,
-  /* tooltip */                  N_("View or modify the properties of this folder"),
-				 G_CALLBACK (action_location_properties_callback) },
 };
 
 static const GtkToggleActionEntry directory_view_toggle_entries[] = {
@@ -7059,17 +6753,6 @@ clipboard_targets_received (GtkClipboard     *clipboard,
 	gtk_action_set_sensitive (action,
 	                          can_paste && count == 1 &&
 	                          can_paste_into_file (NAUTILUS_FILE (selection->data)));
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_LOCATION_PASTE_FILES_INTO);
-	g_object_set_data (G_OBJECT (action),
-			   "can-paste-according-to-clipboard",
-			   GINT_TO_POINTER (can_paste));
-	gtk_action_set_sensitive (action,
-				  GPOINTER_TO_INT (g_object_get_data (G_OBJECT (action),
-								      "can-paste-according-to-clipboard")) &&
-				  GPOINTER_TO_INT (g_object_get_data (G_OBJECT (action),
-								      "can-paste-according-to-destination")));
 
 	nautilus_file_list_free (selection);
 	
@@ -7456,107 +7139,6 @@ real_update_menus_volumes (NautilusView *view,
 	gtk_action_set_visible (action, show_poll);
 }
 
-static void
-real_update_location_menu_volumes (NautilusView *view)
-{
-	GtkAction *action;
-	NautilusFile *file;
-	gboolean show_mount;
-	gboolean show_unmount;
-	gboolean show_eject;
-	gboolean show_start;
-	gboolean show_stop;
-	gboolean show_poll;
-	GDriveStartStopType start_stop_type;
-
-	g_assert (NAUTILUS_IS_VIEW (view));
-	g_assert (NAUTILUS_IS_FILE (view->details->location_popup_directory_as_file));
-
-	file = NAUTILUS_FILE (view->details->location_popup_directory_as_file);
-	file_should_show_foreach (file,
-				  &show_mount,
-				  &show_unmount,
-				  &show_eject,
-				  &show_start,
-				  &show_stop,
-				  &show_poll,
-				  &start_stop_type);
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_LOCATION_MOUNT_VOLUME);
-	gtk_action_set_visible (action, show_mount);
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_LOCATION_UNMOUNT_VOLUME);
-	gtk_action_set_visible (action, show_unmount);
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_LOCATION_EJECT_VOLUME);
-	gtk_action_set_visible (action, show_eject);
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_LOCATION_START_VOLUME);
-	gtk_action_set_visible (action, show_start);
-	if (show_start) {
-		switch (start_stop_type) {
-		default:
-		case G_DRIVE_START_STOP_TYPE_UNKNOWN:
-			gtk_action_set_label (action, _("_Start"));
-			gtk_action_set_tooltip (action, _("Start the selected drive"));
-			break;
-		case G_DRIVE_START_STOP_TYPE_SHUTDOWN:
-			gtk_action_set_label (action, _("_Start"));
-			gtk_action_set_tooltip (action, _("Start the selected drive"));
-			break;
-		case G_DRIVE_START_STOP_TYPE_NETWORK:
-			gtk_action_set_label (action, _("_Connect"));
-			gtk_action_set_tooltip (action, _("Connect to the selected drive"));
-			break;
-		case G_DRIVE_START_STOP_TYPE_MULTIDISK:
-			gtk_action_set_label (action, _("_Start Multi-disk Drive"));
-			gtk_action_set_tooltip (action, _("Start the selected multi-disk drive"));
-			break;
-		case G_DRIVE_START_STOP_TYPE_PASSWORD:
-			gtk_action_set_label (action, _("_Unlock Drive"));
-			gtk_action_set_tooltip (action, _("Unlock the selected drive"));
-			break;
-		}
-	}
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_LOCATION_STOP_VOLUME);
-	gtk_action_set_visible (action, show_stop);
-	if (show_stop) {
-		switch (start_stop_type) {
-		default:
-		case G_DRIVE_START_STOP_TYPE_UNKNOWN:
-			gtk_action_set_label (action, _("_Stop"));
-			gtk_action_set_tooltip (action, _("Stop the selected volume"));
-			break;
-		case G_DRIVE_START_STOP_TYPE_SHUTDOWN:
-			gtk_action_set_label (action, _("_Safely Remove Drive"));
-			gtk_action_set_tooltip (action, _("Safely remove the selected drive"));
-			break;
-		case G_DRIVE_START_STOP_TYPE_NETWORK:
-			gtk_action_set_label (action, _("_Disconnect"));
-			gtk_action_set_tooltip (action, _("Disconnect the selected drive"));
-			break;
-		case G_DRIVE_START_STOP_TYPE_MULTIDISK:
-			gtk_action_set_label (action, _("_Stop Multi-disk Drive"));
-			gtk_action_set_tooltip (action, _("Stop the selected multi-disk drive"));
-			break;
-		case G_DRIVE_START_STOP_TYPE_PASSWORD:
-			gtk_action_set_label (action, _("_Lock Drive"));
-			gtk_action_set_tooltip (action, _("Lock the selected drive"));
-			break;
-		}
-	}
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_LOCATION_POLL);
-	gtk_action_set_visible (action, show_poll);
-}
-
 /* TODO: we should split out this routine into two functions:
  * Update on clipboard changes
  * Update on selection changes
@@ -7604,15 +7186,7 @@ static void
 real_update_location_menu (NautilusView *view)
 {
 	GtkAction *action;
-	NautilusFile *file;
-	gboolean is_special_link;
-	gboolean is_desktop_or_home_dir;
-	gboolean is_recent;
-	gboolean can_delete_file, show_delete;
-	gboolean show_separate_delete_command;
-	GList l;
 	char *label;
-	char *tip;
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      NAUTILUS_ACTION_LOCATION_OPEN_ALTERNATE);
@@ -7629,89 +7203,6 @@ real_update_location_menu (NautilusView *view)
 	g_object_set (action,
 		      "label", label,
 		      NULL);
-
-	file = view->details->location_popup_directory_as_file;
-	g_assert (NAUTILUS_IS_FILE (file));
-	g_assert (nautilus_file_check_if_ready (file, NAUTILUS_FILE_ATTRIBUTE_INFO |
-						NAUTILUS_FILE_ATTRIBUTE_MOUNT |
-						NAUTILUS_FILE_ATTRIBUTE_FILESYSTEM_INFO));
-
-	is_special_link = NAUTILUS_IS_DESKTOP_ICON_FILE (file);
-	is_desktop_or_home_dir = nautilus_file_is_home (file)
-		|| nautilus_file_is_desktop_directory (file);
-	is_recent = nautilus_file_is_in_recent (file);
-
-	can_delete_file =
-		nautilus_file_can_delete (file) &&
-		!is_special_link &&
-		!is_desktop_or_home_dir;
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_LOCATION_CUT);
-	gtk_action_set_sensitive (action, !is_recent && can_delete_file);
-	gtk_action_set_visible (action, !is_recent);
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_LOCATION_PASTE_FILES_INTO);
-	g_object_set_data (G_OBJECT (action),
-			   "can-paste-according-to-destination",
-			   GINT_TO_POINTER (can_paste_into_file (file)));
-	gtk_action_set_sensitive (action,
-				  !is_recent &&
-				  GPOINTER_TO_INT (g_object_get_data (G_OBJECT (action),
-								      "can-paste-according-to-clipboard")) &&
-				  GPOINTER_TO_INT (g_object_get_data (G_OBJECT (action),
-								      "can-paste-according-to-destination")));
-	gtk_action_set_visible (action, !is_recent);
-
-	show_delete = TRUE;
-
-	if (file != NULL &&
-	    nautilus_file_is_in_trash (file)) {
-		if (nautilus_file_is_self_owned (file)) {
-			show_delete = FALSE;
-		}
-
-		label = _("_Delete Permanently");
-		tip = _("Delete the open folder permanently");
-		show_separate_delete_command = FALSE;
-	} else {
-		label = _("Mo_ve to Trash");
-		tip = _("Move the open folder to the Trash");
-		show_separate_delete_command = g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ENABLE_DELETE);
-	}
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_LOCATION_TRASH);
-	g_object_set (action,
-		      "label", label,
-		      "tooltip", tip,
-		      "icon-name", (file != NULL &&
-				    nautilus_file_is_in_trash (file)) ?
-		      NAUTILUS_ICON_DELETE : NAUTILUS_ICON_TRASH_FULL,
-		      NULL);
-	gtk_action_set_sensitive (action, can_delete_file);
-	gtk_action_set_visible (action, show_delete);
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_LOCATION_DELETE);
-	gtk_action_set_visible (action, show_separate_delete_command);
-	if (show_separate_delete_command) {
-		gtk_action_set_sensitive (action, can_delete_file);
-		g_object_set (action,
-			      "icon-name", NAUTILUS_ICON_DELETE,
-			      "sensitive", can_delete_file,
-			      NULL);
-	}
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_LOCATION_RESTORE_FROM_TRASH);
-	l.prev = NULL;
-	l.next = NULL;
-	l.data = file;
-	update_restore_from_trash_action (action, &l, TRUE);
-
-	real_update_location_menu_volumes (view);
 }
 
 static void
