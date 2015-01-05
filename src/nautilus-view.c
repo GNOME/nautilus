@@ -1054,6 +1054,7 @@ action_open_close_parent_callback (GtkAction *action,
 }
 
 static void
+
 action_open_item_location_callback (GtkAction *action,
 				    gpointer callback_data)
 {
@@ -6399,125 +6400,6 @@ action_detect_media_callback (GtkAction *action,
 }
 
 static void
-action_self_mount_volume_callback (GtkAction *action,
-				   gpointer data)
-{
-	NautilusFile *file;
-	NautilusView *view;
-	GMountOperation *mount_op;
-
-	view = NAUTILUS_VIEW (data);
-
-	file = nautilus_view_get_directory_as_file (view);
-	if (file == NULL) {
-		return;
-	}
-
-	mount_op = gtk_mount_operation_new (nautilus_view_get_containing_window (view));
-	g_mount_operation_set_password_save (mount_op, G_PASSWORD_SAVE_FOR_SESSION);
-	nautilus_file_mount (file, mount_op, NULL, file_mount_callback, view);
-	g_object_unref (mount_op);
-}
-
-static void
-action_self_unmount_volume_callback (GtkAction *action,
-				     gpointer data)
-{
-	NautilusFile *file;
-	NautilusView *view;
-	GMountOperation *mount_op;
-
-	view = NAUTILUS_VIEW (data);
-
-	file = nautilus_view_get_directory_as_file (view);
-	if (file == NULL) {
-		return;
-	}
-
-	mount_op = gtk_mount_operation_new (nautilus_view_get_containing_window (view));
-	nautilus_file_unmount (file, mount_op, NULL, file_unmount_callback, g_object_ref (view));
-	g_object_unref (mount_op);
-}
-
-static void
-action_self_eject_volume_callback (GtkAction *action,
-				   gpointer data)
-{
-	NautilusFile *file;
-	NautilusView *view;
-	GMountOperation *mount_op;
-
-	view = NAUTILUS_VIEW (data);
-
-	file = nautilus_view_get_directory_as_file (view);
-	if (file == NULL) {
-		return;
-	}
-	
-	mount_op = gtk_mount_operation_new (nautilus_view_get_containing_window (view));
-	nautilus_file_eject (file, mount_op, NULL, file_eject_callback, g_object_ref (view));
-	g_object_unref (mount_op);
-}
-
-static void
-action_self_start_volume_callback (GtkAction *action,
-				   gpointer   data)
-{
-	NautilusFile *file;
-	NautilusView *view;
-	GMountOperation *mount_op;
-
-	view = NAUTILUS_VIEW (data);
-
-	file = nautilus_view_get_directory_as_file (view);
-	if (file == NULL) {
-		return;
-	}
-
-	mount_op = gtk_mount_operation_new (nautilus_view_get_containing_window (view));
-	nautilus_file_start (file, mount_op, NULL, file_start_callback, view);
-	g_object_unref (mount_op);
-}
-
-static void
-action_self_stop_volume_callback (GtkAction *action,
-				  gpointer   data)
-{
-	NautilusFile *file;
-	NautilusView *view;
-	GMountOperation *mount_op;
-
-	view = NAUTILUS_VIEW (data);
-
-	file = nautilus_view_get_directory_as_file (view);
-	if (file == NULL) {
-		return;
-	}
-
-	mount_op = gtk_mount_operation_new (nautilus_view_get_containing_window (view));
-	nautilus_file_stop (file, mount_op, NULL,
-			    file_stop_callback, view);
-	g_object_unref (mount_op);
-}
-
-static void
-action_self_detect_media_callback (GtkAction *action,
-				   gpointer   data)
-{
-	NautilusFile *file;
-	NautilusView *view;
-
-	view = NAUTILUS_VIEW (data);
-
-	file = nautilus_view_get_directory_as_file (view);
-	if (file == NULL) {
-		return;
-	}
-
-	nautilus_file_poll_for_media (file);
-}
-
-static void
 action_location_mount_volume_callback (GtkAction *action,
 				       gpointer data)
 {
@@ -6957,30 +6839,6 @@ static const GtkActionEntry directory_view_entries[] = {
   /* label, accelerator */       N_("_Detect Media"), NULL,
   /* tooltip */                  N_("Detect media in the selected drive"),
 				 G_CALLBACK (action_detect_media_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_SELF_MOUNT_VOLUME, NULL,
-  /* label, accelerator */       N_("_Mount"), NULL,
-  /* tooltip */                  N_("Mount the volume associated with the open folder"),
-				 G_CALLBACK (action_self_mount_volume_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_SELF_UNMOUNT_VOLUME, NULL,
-  /* label, accelerator */       N_("_Unmount"), NULL,
-  /* tooltip */                  N_("Unmount the volume associated with the open folder"),
-				 G_CALLBACK (action_self_unmount_volume_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_SELF_EJECT_VOLUME, NULL,
-  /* label, accelerator */       N_("_Eject"), NULL,
-  /* tooltip */                  N_("Eject the volume associated with the open folder"),
-				 G_CALLBACK (action_self_eject_volume_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_SELF_START_VOLUME, NULL,
-  /* label, accelerator */       N_("_Start"), NULL,
-  /* tooltip */                  N_("Start the volume associated with the open folder"),
-				 G_CALLBACK (action_self_start_volume_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_SELF_STOP_VOLUME, NULL,
-  /* label, accelerator */       N_("_Stop"), NULL,
-  /* tooltip */                  N_("Stop the volume associated with the open folder"),
-				 G_CALLBACK (action_self_stop_volume_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_SELF_POLL, NULL,
-  /* label, accelerator */       N_("_Detect Media"), NULL,
-  /* tooltip */                  N_("Detect media in the selected drive"),
-				 G_CALLBACK (action_self_detect_media_callback) },
   /* name, stock id */         { "OpenCloseParent", NULL,
   /* label, accelerator */       N_("Open File and Close window"), "<alt><shift>Down",
   /* tooltip */                  NULL,
@@ -7334,57 +7192,6 @@ file_should_show_foreach (NautilusFile        *file,
 	*start_stop_type = nautilus_file_get_start_stop_type (file);
 }
 
-static void
-file_should_show_self (NautilusFile        *file,
-		       gboolean            *show_mount,
-		       gboolean            *show_unmount,
-		       gboolean            *show_eject,
-		       gboolean            *show_start,
-		       gboolean            *show_stop,
-		       gboolean            *show_poll,
-		       GDriveStartStopType *start_stop_type)
-{
-	*show_mount = FALSE;
-	*show_unmount = FALSE;
-	*show_eject = FALSE;
-	*show_start = FALSE;
-	*show_stop = FALSE;
-	*show_poll = FALSE;
-
-	if (file == NULL) {
-		return;
-	}
-
-	if (nautilus_file_can_eject (file)) {
-		*show_eject = TRUE;
-	}
-
-	if (nautilus_file_can_mount (file)) {
-		*show_mount = TRUE;
-	}
-
-	if (nautilus_file_can_start (file) || nautilus_file_can_start_degraded (file)) {
-		*show_start = TRUE;
-	}
-
-	if (nautilus_file_can_stop (file)) {
-		*show_stop = TRUE;
-	}
-
-	/* Dot not show both Unmount and Eject/Safe Removal; too confusing to
-	 * have too many menu entries */
-	if (nautilus_file_can_unmount (file) && !*show_eject && !*show_stop) {
-		*show_unmount = TRUE;
-	}
-
-	if (nautilus_file_can_poll_for_media (file) && !nautilus_file_is_media_check_automatic (file)) {
-		*show_poll = TRUE;
-	}
-
-	*start_stop_type = nautilus_file_get_start_stop_type (file);
-
-}
-
 static gboolean
 files_are_all_directories (GList *files)
 {
@@ -7553,13 +7360,6 @@ real_update_menus_volumes (NautilusView *view,
 	gboolean show_stop;
 	gboolean show_poll;
 	GDriveStartStopType start_stop_type;
-	gboolean show_self_mount;
-	gboolean show_self_unmount;
-	gboolean show_self_eject;
-	gboolean show_self_start;
-	gboolean show_self_stop;
-	gboolean show_self_poll;
-	GDriveStartStopType self_start_stop_type;
 	GtkAction *action;
 
 	show_mount = (selection != NULL);
@@ -7569,7 +7369,6 @@ real_update_menus_volumes (NautilusView *view,
 	show_stop = (selection != NULL && selection_count == 1);
 	show_poll = (selection != NULL && selection_count == 1);
 	start_stop_type = G_DRIVE_START_STOP_TYPE_UNKNOWN;
-	self_start_stop_type = G_DRIVE_START_STOP_TYPE_UNKNOWN;
 
 	for (l = selection; l != NULL && (show_mount || show_unmount
 					  || show_eject
@@ -7674,94 +7473,6 @@ real_update_menus_volumes (NautilusView *view,
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      NAUTILUS_ACTION_POLL);
 	gtk_action_set_visible (action, show_poll);
-
-	show_self_mount = show_self_unmount = show_self_eject =
-		show_self_start = show_self_stop = show_self_poll = FALSE;
-
-	file = nautilus_view_get_directory_as_file (view);
-	file_should_show_self (file,
-			       &show_self_mount,
-			       &show_self_unmount,
-			       &show_self_eject,
-			       &show_self_start,
-			       &show_self_stop,
-			       &show_self_poll,
-			       &self_start_stop_type);
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_SELF_MOUNT_VOLUME);
-	gtk_action_set_visible (action, show_self_mount);
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_SELF_UNMOUNT_VOLUME);
-	gtk_action_set_visible (action, show_self_unmount);
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_SELF_EJECT_VOLUME);
-	gtk_action_set_visible (action, show_self_eject);
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_SELF_START_VOLUME);
-	gtk_action_set_visible (action, show_self_start);
-	if (show_self_start) {
-		switch (self_start_stop_type) {
-		default:
-		case G_DRIVE_START_STOP_TYPE_UNKNOWN:
-			gtk_action_set_label (action, _("_Start"));
-			gtk_action_set_tooltip (action, _("Start the drive associated with the open folder"));
-			break;
-		case G_DRIVE_START_STOP_TYPE_SHUTDOWN:
-			gtk_action_set_label (action, _("_Start"));
-			gtk_action_set_tooltip (action, _("Start the drive associated with the open folder"));
-			break;
-		case G_DRIVE_START_STOP_TYPE_NETWORK:
-			gtk_action_set_label (action, _("_Connect"));
-			gtk_action_set_tooltip (action, _("Connect to the drive associated with the open folder"));
-			break;
-		case G_DRIVE_START_STOP_TYPE_MULTIDISK:
-			gtk_action_set_label (action, _("_Start Multi-disk Drive"));
-			gtk_action_set_tooltip (action, _("Start the multi-disk drive associated with the open folder"));
-			break;
-		case G_DRIVE_START_STOP_TYPE_PASSWORD:
-			gtk_action_set_label (action, _("_Unlock Drive"));
-			gtk_action_set_tooltip (action, _("Unlock the drive associated with the open folder"));
-			break;
-		}
-	}
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_SELF_STOP_VOLUME);
-	gtk_action_set_visible (action, show_self_stop);
-	if (show_self_stop) {
-		switch (self_start_stop_type) {
-		default:
-		case G_DRIVE_START_STOP_TYPE_UNKNOWN:
-			gtk_action_set_label (action, _("_Stop"));
-			gtk_action_set_tooltip (action, _("_Stop the drive associated with the open folder"));
-			break;
-		case G_DRIVE_START_STOP_TYPE_SHUTDOWN:
-			gtk_action_set_label (action, _("_Safely Remove Drive"));
-			gtk_action_set_tooltip (action, _("Safely remove the drive associated with the open folder"));
-			break;
-		case G_DRIVE_START_STOP_TYPE_NETWORK:
-			gtk_action_set_label (action, _("_Disconnect"));
-			gtk_action_set_tooltip (action, _("Disconnect the drive associated with the open folder"));
-			break;
-		case G_DRIVE_START_STOP_TYPE_MULTIDISK:
-			gtk_action_set_label (action, _("_Stop Multi-disk Drive"));
-			gtk_action_set_tooltip (action, _("Stop the multi-disk drive associated with the open folder"));
-			break;
-		case G_DRIVE_START_STOP_TYPE_PASSWORD:
-			gtk_action_set_label (action, _("_Lock Drive"));
-			gtk_action_set_tooltip (action, _("Lock the drive associated with the open folder"));
-			break;
-		}
-	}
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_SELF_POLL);
-	gtk_action_set_visible (action, show_self_poll);
-
 }
 
 static void
