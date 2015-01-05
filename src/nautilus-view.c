@@ -1444,15 +1444,6 @@ action_select_pattern_callback (GtkAction *action,
 	select_pattern(callback_data);
 }
 
-static void
-action_empty_trash_callback (GtkAction *action,
-			     gpointer callback_data)
-{                
-        g_assert (NAUTILUS_IS_VIEW (callback_data));
-
-	nautilus_file_operations_empty_trash (GTK_WIDGET (callback_data));
-}
-
 typedef struct {
 	NautilusView *view;
 	NautilusFile *new_file;
@@ -6743,10 +6734,6 @@ static const GtkActionEntry directory_view_entries[] = {
   /* label, accelerator */       N_("_Open Scripts Folder"), NULL,
   /* tooltip */                 N_("Show the folder containing the scripts that appear in this menu"),
 				 G_CALLBACK (action_open_scripts_folder_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_EMPTY_TRASH, NULL,
-  /* label, accelerator */       N_("E_mpty Trash"), NULL,
-  /* tooltip */                  N_("Delete all items in the Trash"),
-				 G_CALLBACK (action_empty_trash_callback) },
   /* name, stock id */         { NAUTILUS_ACTION_CUT, NULL,
   /* label, accelerator */       N_("Cu_t"), "<control>X",
   /* tooltip */                  N_("Prepare the selected files to be moved with a Paste command"),
@@ -7087,12 +7074,6 @@ clipboard_targets_received (GtkClipboard     *clipboard,
 	nautilus_file_list_free (selection);
 	
 	g_object_unref (view);
-}
-
-static gboolean
-should_show_empty_trash (NautilusView *view)
-{
-	return (showing_trash_directory (view));
 }
 
 static gboolean
@@ -8078,14 +8059,6 @@ real_update_menus (NautilusView *view)
 
 	gtk_action_set_sensitive (action, show_properties);
 	gtk_action_set_visible (action, show_properties);
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_EMPTY_TRASH);
-	g_object_set (action,
-		      "label", _("E_mpty Trash"),
-		      NULL);
-	gtk_action_set_sensitive (action, !nautilus_trash_monitor_is_empty ());
-	gtk_action_set_visible (action, should_show_empty_trash (view));
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      NAUTILUS_ACTION_SELECT_ALL);
