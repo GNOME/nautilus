@@ -28,6 +28,8 @@
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_APPLICATION
 #include <libnautilus-private/nautilus-debug.h>
+#include <libnautilus-private/nautilus-ui-utilities.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 
 static void
 action_new_window (GSimpleAction *action,
@@ -240,12 +242,33 @@ action_show_file_transfers (GSimpleAction *action,
 	nautilus_progress_ui_handler_ensure_window (progress_handler);
 }
 
+static void
+action_show_hide_sidebar (GSimpleAction *action,
+			  GVariant      *state,
+			  gpointer       user_data)
+{
+	GList *window, *windows;
+
+	windows = gtk_application_get_windows (GTK_APPLICATION (user_data));
+
+	for (window = windows; window != NULL; window = window->next) {
+		if (g_variant_get_boolean (state)) {
+			nautilus_window_show_sidebar (window->data);
+		} else {
+			nautilus_window_hide_sidebar (window->data);
+		}
+	}
+
+	g_simple_action_set_state (action, state);
+}
+
 static GActionEntry app_entries[] = {
 	{ "new-window", action_new_window, NULL, NULL, NULL },
 	{ "connect-to-server", action_connect_to_server, NULL, NULL, NULL },
 	{ "enter-location", action_enter_location, NULL, NULL, NULL },
 	{ "bookmarks", action_bookmarks, NULL, NULL, NULL },
 	{ "preferences", action_preferences, NULL, NULL, NULL },
+	{ "show-hide-sidebar", NULL, NULL, "true", action_show_hide_sidebar },
 	{ "search", action_search, "(ss)", NULL, NULL },
 	{ "about", action_about, NULL, NULL, NULL },
 	{ "help", action_help, NULL, NULL, NULL },
@@ -261,12 +284,12 @@ nautilus_init_application_actions (NautilusApplication *app)
 {
 	GtkBuilder *builder;
 	GError *error = NULL;
+	gboolean show_sidebar;
 	const gchar *debug_no_app_menu;
 
 	g_action_map_add_action_entries (G_ACTION_MAP (app),
 					 app_entries, G_N_ELEMENTS (app_entries),
 					 app);
-	gtk_application_add_accelerator (GTK_APPLICATION (app), "F10", "win.gear-menu", NULL);
 
 	builder = gtk_builder_new ();
 	gtk_builder_add_from_resource (builder, "/org/gnome/nautilus/nautilus-app-menu.ui", &error);
@@ -288,4 +311,14 @@ nautilus_init_application_actions (NautilusApplication *app)
 			      "gtk-shell-shows-app-menu", FALSE,
 			      NULL);
 	}
+
+	show_sidebar = g_settings_get_boolean (nautilus_window_state,
+					       NAUTILUS_WINDOW_STATE_START_WITH_SIDEBAR);
+
+	g_action_group_change_action_state (G_ACTION_GROUP (app),
+					    "show-hide-sidebar",
+					    g_variant_new_boolean (show_sidebar));
+
+	nautilus_application_add_accelerator (G_APPLICATION (app), "app.show-hide-sidebar", "F9");
+	nautilus_application_add_accelerator (G_APPLICATION (app), "app.bookmarks", "<control>b");
 }

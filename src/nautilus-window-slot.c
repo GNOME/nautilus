@@ -24,7 +24,6 @@
 
 #include "nautilus-window-slot.h"
 
-#include "nautilus-actions.h"
 #include "nautilus-application.h"
 #include "nautilus-canvas-view.h"
 #include "nautilus-desktop-window.h"
@@ -168,11 +167,10 @@ nautilus_window_slot_content_view_matches_iid (NautilusWindowSlot *slot,
 	return g_strcmp0 (nautilus_view_get_view_id (slot->details->content_view), iid) == 0;
 }
 
-static void
-nautilus_window_slot_sync_view_as_menus (NautilusWindowSlot *slot)
+void
+nautilus_window_slot_sync_view_mode (NautilusWindowSlot *slot)
 {
-	GtkActionGroup *action_group;
-	GtkAction *action;
+	GAction *action;
 
 	if (slot != nautilus_window_get_active_slot (slot->details->window)) {
 		return;
@@ -182,18 +180,14 @@ nautilus_window_slot_sync_view_as_menus (NautilusWindowSlot *slot)
 		return;
 	}
 
-	action_group = nautilus_window_get_main_action_group (slot->details->window);
+	action = g_action_map_lookup_action (G_ACTION_MAP (slot->details->window), "view-mode");
 
 	if (nautilus_window_slot_content_view_matches_iid (slot, NAUTILUS_LIST_VIEW_ID)) {
-		action = gtk_action_group_get_action (action_group, NAUTILUS_ACTION_VIEW_LIST);
+		g_action_change_state (action, g_variant_new_string ("list"));
 	} else if (nautilus_window_slot_content_view_matches_iid (slot, NAUTILUS_CANVAS_VIEW_ID)) {
-		action = gtk_action_group_get_action (action_group, NAUTILUS_ACTION_VIEW_GRID);
+		g_action_change_state (action, g_variant_new_string ("grid"));
 	} else {
-		action = NULL;
-	}
-
-	if (action != NULL) {
-		gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), TRUE);
+		g_simple_action_set_enabled (G_SIMPLE_ACTION (action), FALSE);
 	}
 }
 
@@ -381,8 +375,7 @@ void
 nautilus_window_slot_set_search_visible (NautilusWindowSlot *slot,
 					 gboolean            visible)
 {
-	GtkActionGroup *action_group;
-	GtkAction *action;
+	GAction *action;
 	gboolean old_visible;
 	GFile *return_location;
 	gboolean active_slot;
@@ -423,9 +416,8 @@ nautilus_window_slot_set_search_visible (NautilusWindowSlot *slot,
 	}
 
 	/* also synchronize the window action state */
-	action_group = nautilus_window_get_main_action_group (slot->details->window);
-	action = gtk_action_group_get_action (action_group, NAUTILUS_ACTION_SEARCH);
-	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), visible);
+	action =  g_action_map_lookup_action (G_ACTION_MAP (slot->details->window), "toggle-search");
+	g_simple_action_set_state (G_SIMPLE_ACTION (action), g_variant_new_boolean (visible));
 
 	/* If search was active on this slot and became inactive, change
 	 * the slot location to the real directory.
@@ -478,14 +470,9 @@ real_active (NautilusWindowSlot *slot)
 	/* sync window to new slot */
 	nautilus_window_sync_allow_stop (window, slot);
 	nautilus_window_sync_title (window, slot);
-	nautilus_window_sync_zoom_widgets (window);
 	nautilus_window_sync_location_widgets (window);
 	nautilus_window_slot_sync_search_widgets (slot);
-
-	if (slot->details->viewed_file != NULL) {
-		nautilus_window_slot_sync_view_as_menus (slot);
-		nautilus_window_load_extension_menus (window);
-	}
+	nautilus_window_slot_sync_view_mode (slot);
 }
 
 static void
@@ -1522,9 +1509,9 @@ end_location_change (NautilusWindowSlot *slot)
 
 	nautilus_window_slot_set_allow_stop (slot, FALSE);
 
-        /* Now we can free details->pending_scroll_to, since the load_complete
-         * callback already has been emitted.
-         */
+	/* Now we can free details->pending_scroll_to, since the load_complete
+	 * callback already has been emitted.
+	 */
 	g_free (slot->details->pending_scroll_to);
 	slot->details->pending_scroll_to = NULL;
 
@@ -1534,10 +1521,6 @@ end_location_change (NautilusWindowSlot *slot)
 static void
 free_location_change (NautilusWindowSlot *slot)
 {
-	NautilusWindow *window;
-
-	window = nautilus_window_slot_get_window (slot);
-
 	g_clear_object (&slot->details->pending_location);
 	g_list_free_full (slot->details->pending_selection, g_object_unref);
 	slot->details->pending_selection = NULL;
@@ -1563,7 +1546,6 @@ free_location_change (NautilusWindowSlot *slot)
 		nautilus_view_stop_loading (slot->details->new_content_view);
 		slot->details->temporarily_ignore_view_signals = FALSE;
 
-		nautilus_window_disconnect_content_view (window, slot->details->new_content_view);
 		g_object_unref (slot->details->new_content_view);
 		slot->details->new_content_view = NULL;
         }
@@ -2148,15 +2130,8 @@ nautilus_window_slot_update_for_new_location (NautilusWindowSlot *slot)
 	nautilus_window_slot_set_location (slot, new_location);
 
 	if (slot == nautilus_window_get_active_slot (window)) {
-		/* Sync up and zoom action states */
-		nautilus_window_sync_up_button (window);
-		nautilus_window_sync_zoom_widgets (window);
-
 		/* Sync the content view menu for this new location. */
-		nautilus_window_slot_sync_view_as_menus (slot);
-
-		/* Load menus from nautilus extensions for this location */
-		nautilus_window_load_extension_menus (window);
+		nautilus_window_slot_sync_view_mode (slot);
 	}
 
 	if (slot == nautilus_window_get_active_slot (window) &&
@@ -2361,8 +2336,6 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *slot)
 	window = nautilus_window_slot_get_window (slot);
 
 	if (slot->details->content_view != NULL) {
-		nautilus_window_disconnect_content_view (window, slot->details->content_view);
-
 		widget = GTK_WIDGET (slot->details->content_view);
 		gtk_widget_destroy (widget);
 		g_object_unref (slot->details->content_view);
@@ -2376,9 +2349,6 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *slot)
 		widget = GTK_WIDGET (slot->details->content_view);
 		gtk_container_add (GTK_CONTAINER (slot->details->view_overlay), widget);
 		gtk_widget_show (widget);
-
-		/* connect new view */
-		nautilus_window_connect_content_view (slot->details->window, slot->details->content_view);
 
 		if (!NAUTILUS_IS_SEARCH_DIRECTORY (nautilus_view_get_model (slot->details->content_view)) &&
 		    slot == nautilus_window_get_active_slot (window)) {
@@ -2446,9 +2416,6 @@ nautilus_window_slot_dispose (GObject *object)
 	nautilus_window_slot_remove_extra_location_widgets (slot);
 
 	if (slot->details->content_view) {
-		nautilus_window_disconnect_content_view (nautilus_window_slot_get_window (slot),
-							 slot->details->content_view);
-
 		widget = GTK_WIDGET (slot->details->content_view);
 		gtk_widget_destroy (widget);
 		g_object_unref (slot->details->content_view);

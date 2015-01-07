@@ -123,5 +123,6 @@ void    nautilus_window_slot_go_up                         (NautilusWindowSlot *
 void    nautilus_window_slot_set_status			   (NautilusWindowSlot *slot,
 							    const char         *primary_status,
 							    const char         *detail_status);
+void nautilus_window_slot_sync_view_mode (NautilusWindowSlot *slot);
 
 #endif /* NAUTILUS_WINDOW_SLOT_H */

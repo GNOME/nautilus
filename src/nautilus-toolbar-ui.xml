@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <!-- interface-requires gtk+ 3.8 -->
+  <template class="NautilusToolbar" parent="GtkHeaderBar">
+    <property name="visible">True</property>
+    <property name="show-close-button">True</property>
+    <child>
+      <object class="GtkBox" id="navigation_box">
+        <property name="visible">True</property>
+        <property name="orientation">horizontal</property>
+        <style>
+          <class name="linked"/>
+          <class name="raised"/>
+        </style>
+        <child>
+          <object class="GtkButton" id="back_button">
+            <property name="visible">True</property>
+            <property name="sensitive">True</property>
+            <property name="action_name">win.back</property>
+            <style>
+              <class name="image-button"/>
+            </style>
+            <child>
+              <object class="GtkImage" id="back_icon">
+                <property name="visible">True</property>
+                <property name="icon-name">go-previous-symbolic</property>
+                <property name="icon-size">1</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="pack-type">start</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="forward_button">
+            <property name="visible">True</property>
+            <property name="sensitive">True</property>
+            <property name="action_name">win.forward</property>
+            <style>
+              <class name="image-button"/>
+            </style>
+            <child>
+              <object class="GtkImage" id="forward_icon">
+                <property name="visible">True</property>
+                <property name="icon-name">go-next-symbolic</property>
+                <property name="icon-size">1</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="pack-type">start</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="pack-type">start</property>
+      </packing>
+      </child>
+      <child>
+        <object class="GtkBox" id="path_bar_container">
+        </object>
+        <packing>
+            <property name="pack-type">start</property>
+        </packing>
+      </child>
+      <child>
+        <object class="GtkBox" id="location_entry_container">
+        </object>
+        <packing>
+          <property name="pack-type">start</property>
+        </packing>
+      </child>
+      <child>
+        <object class="GtkMenuButton" id="action_button">
+          <property name="visible">True</property>
+          <property name="sensitive">True</property>
+          <property name="action_name">win.action-menu</property>
+          <style>
+            <class name="image-button"/>
+          </style>
+          <child>
+            <object class="GtkImage" id="action_icon">
+              <property name="visible">True</property>
+              <property name="icon-name">open-menu-symbolic</property>
+              <property name="icon-size">1</property>
+            </object>
+          </child>
+        </object>
+        <packing>
+          <property name="pack-type">end</property>
+        </packing>
+      </child>
+      <child>
+        <object class="GtkMenuButton" id="view_button">
+          <property name="visible">True</property>
+          <property name="sensitive">True</property>
+          <style>
+            <class name="image-button"/>
+          </style>
+        </object>
+        <packing>
+          <property name="pack-type">end</property>
+        </packing>
+      </child>
+      <child>
+        <object class="GtkToggleButton" id="search_button">
+          <property name="visible">True</property>
+          <property name="sensitive">True</property>
+          <property name="action_name">win.toggle-search</property>
+          <style>
+            <class name="image-button"/>
+          </style>
+          <child>
+            <object class="GtkImage" id="search_icon">
+              <property name="visible">True</property>
+              <property name="icon-name">edit-find-symbolic</property>
+              <property name="icon-size">1</property>
+            </object>
+          </child>
+        </object>
+        <packing>
+          <property name="pack-type">end</property>
+        </packing>
+      </child>
+  </template>
+</interface>

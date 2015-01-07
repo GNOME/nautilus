@@ -91,10 +91,6 @@ GType            nautilus_window_get_type             (void);
 NautilusWindow * nautilus_window_new                  (GdkScreen         *screen);
 void             nautilus_window_close                (NautilusWindow    *window);
 
-void             nautilus_window_connect_content_view (NautilusWindow    *window,
-						       NautilusView      *view);
-void             nautilus_window_disconnect_content_view (NautilusWindow    *window,
-							  NautilusView      *view);
 
 void             nautilus_window_go_to                (NautilusWindow    *window,
                                                        GFile             *location);
@@ -103,9 +99,6 @@ void             nautilus_window_go_to_full           (NautilusWindow    *window
                                                        NautilusWindowGoToCallback callback,
                                                        gpointer           user_data);
 void             nautilus_window_new_tab              (NautilusWindow    *window);
-
-GtkUIManager *   nautilus_window_get_ui_manager       (NautilusWindow    *window);
-GtkActionGroup * nautilus_window_get_main_action_group (NautilusWindow   *window);
 
 void                 nautilus_window_view_visible          (NautilusWindow *window,
                                                             NautilusView *view);
@@ -126,6 +119,7 @@ void     nautilus_window_back_or_forward      (NautilusWindow *window,
                                                gboolean        back,
                                                guint           distance,
                                                NautilusWindowOpenFlags flags);
+void nautilus_window_reset_menus (NautilusWindow *window);
 
 
 gboolean nautilus_window_disable_chrome_mapping (GValue *value,
@@ -135,4 +129,5 @@ gboolean nautilus_window_disable_chrome_mapping (GValue *value,
 NautilusWindowOpenFlags nautilus_event_get_window_open_flags   (void);
 void     nautilus_window_show_about_dialog    (NautilusWindow *window);
 
+GtkWidget *nautilus_window_get_toolbar (NautilusWindow *window);
 #endif

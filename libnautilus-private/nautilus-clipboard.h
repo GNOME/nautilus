@@ -26,18 +26,6 @@
 
 #include <gtk/gtk.h>
 
-/* This makes this editable or text view put clipboard commands into
- * the passed UI manager when the editable/text view is in focus.
- * Callers in Nautilus normally get the UI manager from
- * nautilus_window_get_ui_manager. */
-/* The shares selection changes argument should be set to true if the
- * widget uses the signal "selection-changed" to tell others about
- * text selection changes.  The NautilusEntry widget
- * is currently the only editable in nautilus that shares selection
- * changes. */
-void nautilus_clipboard_set_up_editable            (GtkEditable        *target,
-						    GtkUIManager       *ui_manager,
-						    gboolean            shares_selection_changes);
 void nautilus_clipboard_clear_if_colliding_uris    (GtkWidget          *widget,
 						    const GList        *item_uris,
 						    GdkAtom             copied_files_atom);

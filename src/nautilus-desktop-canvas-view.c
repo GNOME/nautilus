@@ -27,7 +27,6 @@
 
 #include "nautilus-desktop-canvas-view.h"
 
-#include "nautilus-actions.h"
 #include "nautilus-canvas-view-container.h"
 #include "nautilus-view.h"
 
@@ -65,8 +64,6 @@
 struct NautilusDesktopCanvasViewDetails
 {
 	GdkWindow *root_window;
-	GtkActionGroup *desktop_action_group;
-	guint desktop_merge_id;
 
 	/* For the desktop rescanning
 	 */
@@ -76,8 +73,7 @@ struct NautilusDesktopCanvasViewDetails
 };
 
 static void     default_zoom_level_changed                        (gpointer                user_data);
-static void     real_merge_menus                                  (NautilusView        *view);
-static void     real_update_menus                                 (NautilusView        *view);
+static void     real_update_context_menus                         (NautilusView           *view);
 static void     nautilus_desktop_canvas_view_update_canvas_container_fonts  (NautilusDesktopCanvasView      *view);
 static void     font_changed_callback                             (gpointer                callback_data);
 
@@ -239,7 +235,6 @@ static void
 nautilus_desktop_canvas_view_dispose (GObject *object)
 {
 	NautilusDesktopCanvasView *canvas_view;
-	GtkUIManager *ui_manager;
 
 	canvas_view = NAUTILUS_DESKTOP_CANVAS_VIEW (object);
 
@@ -249,13 +244,6 @@ nautilus_desktop_canvas_view_dispose (GObject *object)
 		canvas_view->details->reload_desktop_timeout = 0;
 	}
 
-	ui_manager = nautilus_view_get_ui_manager (NAUTILUS_VIEW (canvas_view));
-	if (ui_manager != NULL) {
-		nautilus_ui_unmerge_ui (ui_manager,
-					&canvas_view->details->desktop_merge_id,
-					&canvas_view->details->desktop_action_group);
-	}
-
 	g_signal_handlers_disconnect_by_func (nautilus_icon_view_preferences,
 					      default_zoom_level_changed,
 					      canvas_view);
@@ -263,7 +251,7 @@ nautilus_desktop_canvas_view_dispose (GObject *object)
 					      font_changed_callback,
 					      canvas_view);
 	g_signal_handlers_disconnect_by_func (gnome_lockdown_preferences,
-					      nautilus_view_update_menus,
+					      nautilus_view_update_context_menus,
 					      canvas_view);
 
 	G_OBJECT_CLASS (nautilus_desktop_canvas_view_parent_class)->dispose (object);
@@ -278,8 +266,7 @@ nautilus_desktop_canvas_view_class_init (NautilusDesktopCanvasViewClass *class)
 
 	G_OBJECT_CLASS (class)->dispose = nautilus_desktop_canvas_view_dispose;
 
-	vclass->merge_menus = real_merge_menus;
-	vclass->update_menus = real_update_menus;
+	vclass->update_context_menus = real_update_context_menus;
 	vclass->get_view_id = real_get_id;
 
 	g_type_class_add_private (class, sizeof (NautilusDesktopCanvasViewDetails));
@@ -517,7 +504,7 @@ nautilus_desktop_canvas_view_init (NautilusDesktopCanvasView *desktop_canvas_vie
 
 	g_signal_connect_swapped (gnome_lockdown_preferences,
 				  "changed::" NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE,
-				  G_CALLBACK (nautilus_view_update_menus),
+				  G_CALLBACK (nautilus_view_update_context_menus),
 				  desktop_canvas_view);
 }
 
@@ -559,53 +546,58 @@ get_control_center_command (const gchar ** params_out)
 }
 
 static void
-action_change_background_callback (GtkAction *action, 
-				   gpointer data)
+action_change_background (GSimpleAction *action,
+			  GVariant      *state,
+			  gpointer       user_data)
 {
 	const gchar *control_center_cmd, *params;
 
-        g_assert (NAUTILUS_VIEW (data));
+        g_assert (NAUTILUS_VIEW (user_data));
 
 	control_center_cmd = get_control_center_command (&params);
 	if (control_center_cmd == NULL) {
 		return;
 	}
 
-	nautilus_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (data)),
+	nautilus_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (user_data)),
 						  control_center_cmd,
 						  FALSE,
 						  params, NULL);
 }
 
 static void
-action_empty_trash_conditional_callback (GtkAction *action,
-					 gpointer data)
+action_empty_trash (GSimpleAction *action,
+		    GVariant      *state,
+		    gpointer       user_data)
 {
-        g_assert (NAUTILUS_IS_VIEW (data));
+	g_assert (NAUTILUS_IS_VIEW (user_data));
 
-	nautilus_file_operations_empty_trash (GTK_WIDGET (data));
+	nautilus_file_operations_empty_trash (GTK_WIDGET (user_data));
 }
 
 static void
-action_stretch_callback (GtkAction *action,
-			 gpointer callback_data)
+action_stretch (GSimpleAction *action,
+		GVariant      *state,
+		gpointer       user_data)
 {
 	nautilus_canvas_container_show_stretch_handles
-		(get_canvas_container (callback_data));
+		(get_canvas_container (user_data));
 }
 
 static void
-action_unstretch_callback (GtkAction *action,
-			   gpointer callback_data)
+action_unstretch (GSimpleAction *action,
+		  GVariant      *state,
+		  gpointer       user_data)
 {
-	nautilus_canvas_container_unstretch (get_canvas_container (callback_data));
+	nautilus_canvas_container_unstretch (get_canvas_container (user_data));
 }
 
 static void
-action_clean_up_callback (GtkAction *action,
-			  gpointer callback_data)
+action_organize_desktop_by_name (GSimpleAction *action,
+				 GVariant      *state,
+				 gpointer       user_data)
 {
-	nautilus_canvas_view_clean_up_by_name (NAUTILUS_CANVAS_VIEW (callback_data));
+	nautilus_canvas_view_clean_up_by_name (NAUTILUS_CANVAS_VIEW (user_data));
 }
 
 static gboolean
@@ -637,146 +629,59 @@ trash_link_is_selection (NautilusView *view)
 	return result;
 }
 
-static void
-real_update_menus (NautilusView *view)
-{
-	NautilusDesktopCanvasView *desktop_view;
-        NautilusCanvasContainer *canvas_container;
-	gboolean include_empty_trash;
-	char *label;
-	GtkAction *action;
-        int selection_count;
-
-	g_assert (NAUTILUS_IS_DESKTOP_CANVAS_VIEW (view));
-
-	NAUTILUS_VIEW_CLASS (nautilus_desktop_canvas_view_parent_class)->update_menus (view);
-
-	desktop_view = NAUTILUS_DESKTOP_CANVAS_VIEW (view);
-
-	/* Empty Trash */
-	include_empty_trash = trash_link_is_selection (view);
-	action = gtk_action_group_get_action (desktop_view->details->desktop_action_group,
-					      NAUTILUS_ACTION_EMPTY_TRASH_CONDITIONAL);
-	gtk_action_set_visible (action,
-				include_empty_trash);
-	if (include_empty_trash) {
-		label = g_strdup (_("E_mpty Trash"));
-		g_object_set (action , "label", label, NULL);
-		gtk_action_set_sensitive (action,
-					  !nautilus_trash_monitor_is_empty ());
-		g_free (label);
-	}
-
-	/* Stretch */
-        selection_count = nautilus_view_get_selection_count (view);
-        canvas_container = get_canvas_container (desktop_view);
-
-	action = gtk_action_group_get_action (desktop_view->details->desktop_action_group,
-					      NAUTILUS_ACTION_STRETCH);
-	gtk_action_set_sensitive (action,
-				  selection_count == 1
-				  && canvas_container != NULL
-				  && !nautilus_canvas_container_has_stretch_handles (canvas_container));
-	gtk_action_set_visible (action, TRUE);
-
-	/* Unstretch */
-	action = gtk_action_group_get_action (desktop_view->details->desktop_action_group,
-					      NAUTILUS_ACTION_UNSTRETCH);
-	g_object_set (action, "label",
-		      (selection_count > 1)
-		      ? _("Restore Icons' Original Si_zes")
-		      : _("Restore Icon's Original Si_ze"),
-		      NULL);
-	gtk_action_set_sensitive (action,
-				  canvas_container != NULL
-				  && nautilus_canvas_container_is_stretched (canvas_container));
-	gtk_action_set_visible (action, TRUE);
-}
-
-static const GtkActionEntry desktop_view_entries[] = {
-	/* name, stock id */
-	{ NAUTILUS_ACTION_CHANGE_BACKGROUND, NULL,
-	  /* label, accelerator */
-	  N_("Change Desktop _Background"), NULL,
-	  /* tooltip */
-	  N_("Show a window that lets you set your desktop background's pattern or color"),
-	  G_CALLBACK (action_change_background_callback) },
-	/* name, stock id */
-	{ "Empty Trash Conditional", NULL,
-	  /* label, accelerator */
-	  N_("Empty Trash"), NULL,
-	  /* tooltip */
-	  N_("Delete all items in the Trash"),
-	  G_CALLBACK (action_empty_trash_conditional_callback) },
-	/* name, stock id */
-	{ NAUTILUS_ACTION_CLEAN_UP, NULL,
-	  /* label, accelerator */
-	  N_("_Organize Desktop by Name"), NULL,
-	  /* tooltip */
-	  N_("Reposition icons to better fit in the window and avoid overlapping"),
-	  G_CALLBACK (action_clean_up_callback) },
-	/* name, stock id */
-         { "Stretch", NULL,
-	   /* label, accelerator */
-	   N_("Resize Icon…"), NULL,
-	   /* tooltip */
-	   N_("Make the selected icons resizable"),
-	   G_CALLBACK (action_stretch_callback) },
-	/* name, stock id */
-	{ "Unstretch", NULL,
-	  /* label, accelerator */
-	  N_("Restore Icons' Original Si_zes"), NULL,
-	  /* tooltip */
-	  N_("Restore each selected icon to its original size"),
-	  G_CALLBACK (action_unstretch_callback) },
+const GActionEntry desktop_view_entries[] = {
+	{ "change-background", action_change_background },
+	{ "organize-desktop-by-name", action_organize_desktop_by_name },
+	{ "empty-trash", action_empty_trash },
+	{ "stretch", action_stretch },
+	{ "unstretch", action_unstretch },
 };
 
 static void
-real_merge_menus (NautilusView *view)
+real_update_context_menus (NautilusView *view)
 {
+	NautilusCanvasContainer *canvas_container;
 	NautilusDesktopCanvasView *desktop_view;
-	GtkUIManager *ui_manager;
-	GtkActionGroup *action_group;
-	GtkAction *action;
+	GAction *action;
+	GActionGroup *view_action_group;
+	int selection_count;
 
-	NAUTILUS_VIEW_CLASS (nautilus_desktop_canvas_view_parent_class)->merge_menus (view);
+	g_assert (NAUTILUS_IS_DESKTOP_CANVAS_VIEW (view));
 
+	NAUTILUS_VIEW_CLASS (nautilus_desktop_canvas_view_parent_class)->update_context_menus (view);
+
+	view_action_group = nautilus_view_get_action_group (view);
 	desktop_view = NAUTILUS_DESKTOP_CANVAS_VIEW (view);
 
-	ui_manager = nautilus_view_get_ui_manager (view);
+	g_action_map_add_action_entries (G_ACTION_MAP (view_action_group),
+					 desktop_view_entries,
+					 G_N_ELEMENTS (desktop_view_entries),
+					 view);
 
-	action_group = gtk_action_group_new ("DesktopViewActions");
-	gtk_action_group_set_translation_domain (action_group, GETTEXT_PACKAGE);
-	desktop_view->details->desktop_action_group = action_group;
-	gtk_action_group_add_actions (action_group, 
-				      desktop_view_entries, G_N_ELEMENTS (desktop_view_entries),
-				      view);
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group), "empty-trash");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), trash_link_is_selection (view));
 
-	gtk_ui_manager_insert_action_group (ui_manager, action_group, 0);
-	g_object_unref (action_group); /* owned by ui manager */
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group), "keep-aligned");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), TRUE);
 
-	desktop_view->details->desktop_merge_id =
-		gtk_ui_manager_add_ui_from_resource (ui_manager, "/org/gnome/nautilus/nautilus-desktop-canvas-view-ui.xml", NULL);
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group), "organize-desktop-by-name");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), TRUE);
 
-	gtk_ui_manager_add_ui (ui_manager,
-			       desktop_view->details->desktop_merge_id,
-			       POPUP_PATH_CANVAS_APPEARANCE,
-			       NAUTILUS_ACTION_STRETCH,
-			       NAUTILUS_ACTION_STRETCH,
-			       GTK_UI_MANAGER_MENUITEM,
-			       FALSE);
-	gtk_ui_manager_add_ui (ui_manager,
-			       desktop_view->details->desktop_merge_id,
-			       POPUP_PATH_CANVAS_APPEARANCE,
-			       NAUTILUS_ACTION_UNSTRETCH,
-			       NAUTILUS_ACTION_UNSTRETCH,
-			       GTK_UI_MANAGER_MENUITEM,
-			       FALSE);
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group), "change-background");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), TRUE);
 
-	if (get_control_center_command (NULL) == NULL) {
-		action = gtk_action_group_get_action (action_group, NAUTILUS_ACTION_CHANGE_BACKGROUND);
-		gtk_action_set_visible (action, FALSE);
-	}
+	/* Stretch */
+	selection_count = nautilus_view_get_selection_count (view);
+	canvas_container = get_canvas_container (desktop_view);
+
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group), "stretch");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), selection_count == 1 &&
+							       canvas_container != NULL &&
+							       !nautilus_canvas_container_has_stretch_handles (canvas_container));
+	/* Unstretch */
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group), "unstretch");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), canvas_container != NULL &&
+							       nautilus_canvas_container_is_stretched (canvas_container));
 }
 
 NautilusView *

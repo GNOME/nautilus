@@ -1,0 +1,228 @@
+<?xml version="1.0"?>
+<interface>
+  <menu id="background-menu">
+    <item>
+      <attribute name="label" translatable="yes">New _Folder</attribute>
+      <attribute name="action">view.new-folder</attribute>
+    </item>
+    <submenu>
+      <attribute name="id">templates-submenu</attribute>
+      <attribute name="label" translatable="yes">New _Document</attribute>
+      <attribute name="action">view.new-document</attribute>
+      <attribute name="hidden-when">action-disabled</attribute>
+    </submenu>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">_Paste</attribute>
+        <attribute name="action">view.paste</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Select _All</attribute>
+        <attribute name="action">view.select-all</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">P_roperties</attribute>
+        <attribute name="action">view.properties</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">_Keep aligned</attribute>
+        <attribute name="action">view.keep-aligned</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Organize _Desktop by Name</attribute>
+        <attribute name="action">view.organize-desktop-by-name</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Change _Background</attribute>
+        <attribute name="action">view.change-background</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+    </section>
+  </menu>
+  <menu id="selection-menu">
+    <section>
+      <attribute name="id">new-folder-with-selection-section</attribute>
+    </section>
+    <section>
+      <attribute name="id">open-with-default-application-section</attribute>
+    </section>
+    <submenu>
+      <attribute name="id">scripts-submenu</attribute>
+      <attribute name="label" translatable="yes">_Scripts</attribute>
+      <attribute name="action">view.scripts</attribute>
+      <attribute name="hidden-when">action-disabled</attribute>
+      <section>
+        <item>
+          <attribute name="label" translatable="yes">_Open Scripts Folder</attribute>
+          <attribute name="action">view.open-scripts-folder</attribute>
+          <attribute name="hidden-when">action-disabled</attribute>
+        </item>
+      </section>
+    </submenu>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">_Open Item Location</attribute>
+        <attribute name="action">view.open-item-location</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Open In New _Window</attribute>
+        <attribute name="action">view.open-item-new-window</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Open In New _Tab</attribute>
+        <attribute name="action">view.open-item-new-tab</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Open With Other _Application</attribute>
+        <attribute name="action">view.open-with-other-application</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+    </section>
+    <section>
+      <attribute name="id">drive-section</attribute>
+      <item>
+        <attribute name="label" translatable="yes">_Mount</attribute>
+        <attribute name="action">view.mount-volume</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Unmount</attribute>
+        <attribute name="action">view.unmount-volume</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Eject</attribute>
+        <attribute name="action">view.eject-volume</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Start</attribute>
+        <attribute name="action">view.start-volume</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Stop</attribute>
+        <attribute name="action">view.stop-volume</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Detect Media</attribute>
+        <attribute name="action">view.detect-media</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Cu_t</attribute>
+        <attribute name="action">view.cut</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Copy</attribute>
+        <attribute name="action">view.copy</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Paste Into Folder</attribute>
+        <attribute name="action">view.paste-into</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Move to…</attribute>
+        <attribute name="action">view.move-to</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Copy to…</attribute>
+        <attribute name="action">view.copy-to</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Mo_ve to Trash</attribute>
+        <attribute name="action">view.move-to-trash</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Delete Permanently</attribute>
+        <attribute name="action">view.delete</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Empty Trash</attribute>
+        <attribute name="action">view.empty-trash</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Restore From Trash</attribute>
+        <attribute name="action">view.restore-from-trash</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Resize Icon…</attribute>
+        <attribute name="action">view.stretch</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Restore Icon's Original Size</attribute>
+        <attribute name="action">view.unstretch</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Rena_me</attribute>
+        <attribute name="action">view.rename</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Set As Wallpaper</attribute>
+        <attribute name="action">view.set-as-wallpaper</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">P_roperties</attribute>
+        <attribute name="action">view.properties</attribute>
+      </item>
+    </section>
+  </menu>
+  <menu id="pathbar-menu">
+    <section>
+      <item>
+          <attribute name="label" translatable="yes">Open In New _Window</attribute>
+          <attribute name="action">view.pathbar-open-item-new-window</attribute>
+          <attribute name="hidden-when">action-disabled</attribute>
+        </item>
+        <item>
+          <attribute name="label" translatable="yes">Open In New _Tab</attribute>
+          <attribute name="action">view.pathbar-open-item-new-tab</attribute>
+          <attribute name="hidden-when">action-disabled</attribute>
+        </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">P_roperties</attribute>
+        <attribute name="action">view.pathbar-properties</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>

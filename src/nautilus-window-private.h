@@ -36,13 +36,6 @@
 /* FIXME bugzilla.gnome.org 42575: Migrate more fields into here. */
 struct NautilusWindowDetails
 {
-        GtkUIManager *ui_manager;
-        GtkActionGroup *main_action_group; /* owned by ui_manager */
-
-        /* Menus. */
-        guint extensions_menu_merge_id;
-        GtkActionGroup *extensions_menu_action_group;
-
         GtkWidget *notebook;
 
         /* available slots, and active slot.
@@ -103,13 +96,5 @@ void nautilus_window_sync_allow_stop       (NautilusWindow *window,
 					    NautilusWindowSlot *slot);
 void nautilus_window_sync_title            (NautilusWindow *window,
 					    NautilusWindowSlot *slot);
-void nautilus_window_sync_zoom_widgets     (NautilusWindow *window);
-void nautilus_window_sync_up_button        (NautilusWindow *window);
-
-/* window menus */
-void               nautilus_window_initialize_actions                    (NautilusWindow    *window);
-void               nautilus_window_initialize_menus                      (NautilusWindow    *window);
-
-void               nautilus_window_update_show_hide_menu_items           (NautilusWindow     *window);
 
 #endif /* NAUTILUS_WINDOW_PRIVATE_H */

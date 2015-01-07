@@ -219,7 +219,11 @@ struct NautilusViewClass {
          * It is called (at least) whenever the selection changes. If overridden, 
          * subclasses must call parent class's function.
          */
-        void    (* update_menus)         	(NautilusView *view);
+        void    (* update_context_menus)         	(NautilusView *view);
+
+        void    (* update_toolbar_menus)         	(NautilusView *view);
+
+        void    (* update_actions_state)         	(NautilusView *view);
 
 	/* sort_files is a function pointer that subclasses can override
 	 * to provide a sorting order to determine which files should be
@@ -284,9 +288,8 @@ struct NautilusViewClass {
 	void           (* scroll_to_file)	  (NautilusView          *view,
 						   const char            *uri);
 
-        /* Signals used only for keybindings */
-        gboolean (* trash)                         (NautilusView *view);
-        gboolean (* delete)                        (NautilusView *view);
+	NautilusWindow * (*get_window) 	          (NautilusView *view);
+	GActionGroup *   (*get_action_group) 	  (NautilusView *view);
 };
 
 /* GObject support */
@@ -323,7 +326,6 @@ void                nautilus_view_preview_files                    (NautilusView
 void                nautilus_view_start_batching_selection_changes (NautilusView  *view);
 void                nautilus_view_stop_batching_selection_changes  (NautilusView  *view);
 void                nautilus_view_notify_selection_changed         (NautilusView  *view);
-GtkUIManager *      nautilus_view_get_ui_manager                   (NautilusView  *view);
 NautilusDirectory  *nautilus_view_get_model                        (NautilusView  *view);
 NautilusFile       *nautilus_view_get_directory_as_file            (NautilusView  *view);
 void                nautilus_view_pop_up_background_context_menu   (NautilusView  *view,
@@ -350,6 +352,7 @@ void                nautilus_view_remove_subdirectory             (NautilusView 
 								   NautilusDirectory*directory);
 
 gboolean            nautilus_view_is_editable                     (NautilusView *view);
+NautilusWindow *    nautilus_view_get_window 			  (NautilusView *view);
 
 /* NautilusView methods */
 const char *      nautilus_view_get_view_id                (NautilusView      *view);
@@ -403,6 +406,14 @@ void              nautilus_view_pop_up_pathbar_context_menu (NautilusView    *vi
 void              nautilus_view_grab_focus                 (NautilusView      *view);
 void              nautilus_view_update_menus               (NautilusView      *view);
 
+void              nautilus_view_update_context_menus       (NautilusView      *view);
+void              nautilus_view_update_toolbar_menus       (NautilusView      *view);
+void              nautilus_view_update_actions_state       (NautilusView      *view);
+
 gboolean          nautilus_view_get_show_hidden_files      (NautilusView      *view);
+void		  nautilus_view_action_show_hidden_files   (NautilusView      *view,
+							    gboolean           show_hidden);
+
+GActionGroup *    nautilus_view_get_action_group           (NautilusView      *view);
 
 #endif /* NAUTILUS_VIEW_H */

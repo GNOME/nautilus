@@ -29,87 +29,146 @@
 
 #include <gio/gio.h>
 #include <gtk/gtk.h>
+#include <string.h>
 
-void
-nautilus_ui_unmerge_ui (GtkUIManager *ui_manager,
-			guint *merge_id,
-			GtkActionGroup **action_group)
+static GMenuModel *
+find_gmenu_model (GMenuModel  *model,
+		  const gchar *model_id)
 {
-	if (*merge_id != 0) {
-		gtk_ui_manager_remove_ui (ui_manager,
-					  *merge_id);
-		*merge_id = 0;
-	}
-	if (*action_group != NULL) {
-		gtk_ui_manager_remove_action_group (ui_manager,
-						    *action_group);
-		*action_group = NULL;
-	}
-}
-     
-void
-nautilus_ui_prepare_merge_ui (GtkUIManager *ui_manager,
-			      const char *name,
-			      guint *merge_id,
-			      GtkActionGroup **action_group)
-{
-	*merge_id = gtk_ui_manager_new_merge_id (ui_manager);
-	*action_group = gtk_action_group_new (name);
-	gtk_action_group_set_translation_domain (*action_group, GETTEXT_PACKAGE);
-	gtk_ui_manager_insert_action_group (ui_manager, *action_group, 0);
-	g_object_unref (*action_group); /* owned by ui manager */
-}
+	gint i, n_items;
+	GMenuModel *insertion_model = NULL;
 
-static void
-extension_action_callback (GtkAction *action,
-			   gpointer callback_data)
-{
-	nautilus_menu_item_activate (NAUTILUS_MENU_ITEM (callback_data));
-}
+	n_items = g_menu_model_get_n_items (model);
 
-GtkAction *
-nautilus_action_from_menu_item (NautilusMenuItem *item,
-				GtkWidget        *parent_widget)
-{
-	char *name, *label, *tip, *icon_name;
-	gboolean sensitive, priority;
-	GtkAction *action;
-	GdkPixbuf *pixbuf;
+	for (i = 0; i < n_items && !insertion_model; i++) {
+		gchar *id = NULL;
+		if (g_menu_model_get_item_attribute (model, i, "id", "s", &id) &&
+		    g_strcmp0 (id, model_id) == 0) {
+			insertion_model = g_menu_model_get_item_link (model, i, G_MENU_LINK_SECTION);
+			if (!insertion_model)
+				insertion_model = g_menu_model_get_item_link (model, i, G_MENU_LINK_SUBMENU);
+		} else {
+			GMenuModel *submodel;
+			GMenuModel *submenu;
+			gint j, j_items;
 
-	g_object_get (G_OBJECT (item),
-		      "name", &name, "label", &label,
-		      "tip", &tip, "icon", &icon_name,
-		      "sensitive", &sensitive,
-		      "priority", &priority,
-		      NULL);
+			submodel = g_menu_model_get_item_link (model, i, G_MENU_LINK_SECTION);
 
-	action = gtk_action_new (name,
-				 label,
-				 tip,
-				 NULL);
+			if (!submodel) {
+			        submodel = g_menu_model_get_item_link (model, i, G_MENU_LINK_SUBMENU);
+				if (!submodel)
+					continue;
+			}
 
-	if (icon_name != NULL) {
-		pixbuf = nautilus_ui_get_menu_icon (icon_name, parent_widget);
-		if (pixbuf != NULL) {
-			gtk_action_set_gicon (action, G_ICON (pixbuf));
-			g_object_unref (pixbuf);
+			j_items = g_menu_model_get_n_items (submodel);
+			for (j = 0; j < j_items && !insertion_model; j++) {
+				submenu = g_menu_model_get_item_link (submodel, j, G_MENU_LINK_SUBMENU);
+				if (submenu)
+					insertion_model = find_gmenu_model (submenu, model_id);
+			}
 		}
+
+		g_free (id);
 	}
 
-	gtk_action_set_sensitive (action, sensitive);
-	g_object_set (action, "is-important", priority, NULL);
+	return insertion_model;
+}
 
-	g_signal_connect_data (action, "activate",
-			       G_CALLBACK (extension_action_callback),
-			       g_object_ref (item),
-			       (GClosureNotify)g_object_unref, 0);
+/*
+ * The original GMenu is modified adding to the section @submodel_name
+ * the items in @gmenu_to_merge.
+ * @gmenu_to_merge should be a list of menu items.
+ */
+void
+nautilus_gmenu_merge (GMenu       *original,
+		      GMenu       *gmenu_to_merge,
+		      const gchar *submodel_name,
+		      gboolean     prepend)
+{
+	gint i, n_items;
+	GMenuModel *submodel;
+	GMenuItem *item;
 
-	g_free (name);
-	g_free (label);
-	g_free (tip);
-	g_free (icon_name);
+	g_return_if_fail (G_IS_MENU (original));
+	g_return_if_fail (G_IS_MENU (gmenu_to_merge));
 
-	return action;
+	submodel = find_gmenu_model (G_MENU_MODEL (original), submodel_name);
+
+	g_return_if_fail (submodel != NULL);
+
+	n_items = g_menu_model_get_n_items (G_MENU_MODEL (gmenu_to_merge));
+
+	for (i = 0; i < n_items; i++) {
+		item = g_menu_item_new_from_model (G_MENU_MODEL (gmenu_to_merge), i);
+		if (prepend)
+			g_menu_prepend_item (G_MENU (submodel), item);
+		else
+			g_menu_append_item (G_MENU (submodel), item);
+		g_object_unref (item);
+	}
+}
+
+/*
+ * The GMenu @menu is modified adding to the section @submodel_name
+ * the item @item.
+ */
+void
+nautilus_gmenu_add_item_in_submodel (GMenu       *menu,
+				     GMenuItem   *item,
+				     const gchar *submodel_name,
+				     gboolean     prepend)
+{
+	GMenuModel *submodel;
+
+	g_return_if_fail (G_IS_MENU (menu));
+	g_return_if_fail (G_IS_MENU_ITEM (item));
+
+	submodel = find_gmenu_model (G_MENU_MODEL (menu), submodel_name);
+
+	g_return_if_fail (submodel != NULL);
+	if (prepend)
+		g_menu_prepend_item (G_MENU (submodel), item);
+	else
+		g_menu_append_item (G_MENU (submodel), item);
+}
+
+void
+nautilus_pop_up_context_menu (GtkWidget      *parent,
+			      GMenu          *menu,
+			      GdkEventButton *event)
+{
+	GtkWidget *gtk_menu;
+
+	int button;
+
+	g_return_if_fail (G_IS_MENU (menu));
+	g_return_if_fail (GTK_IS_WIDGET (parent));
+
+	gtk_menu = gtk_menu_new_from_model (G_MENU_MODEL (menu));
+	gtk_menu_attach_to_widget (GTK_MENU (gtk_menu), parent, NULL);
+	/* The event button needs to be 0 if we're popping up this menu from
+	 * a button release, else a 2nd click outside the menu with any button
+	 * other than the one that invoked the menu will be ignored (instead
+	 * of dismissing the menu). This is a subtle fragility of the GTK menu code.
+	 */
+	if (event) {
+		button = event->type == GDK_BUTTON_RELEASE
+			? 0
+			: event->button;
+	} else {
+		button = 0;
+	}
+
+	gtk_menu_popup (GTK_MENU (gtk_menu),			/* menu */
+			NULL,					/* parent_menu_shell */
+			NULL,					/* parent_menu_item */
+			NULL,					/* popup_position_func */
+			NULL,					/* popup_position_data */
+			button,					/* button */
+			event ? event->time : gtk_get_current_event_time ()); /* activate_time */
+
+	g_object_ref_sink (gtk_menu);
+	g_object_unref (gtk_menu);
 }
 
 GdkPixbuf *
@@ -160,6 +219,18 @@ nautilus_escape_action_name (const char *action_name,
 			break;
 		case '"':
 			g_string_append (s, "\\q");
+			break;
+		case ' ':
+			g_string_append (s, "+");
+			break;
+		case '(':
+			g_string_append (s, "#");
+			break;
+		case ')':
+			g_string_append (s, "^");
+			break;
+		case ':':
+			g_string_append (s, "\\\\");
 			break;
 		default:
 			g_string_append_c (s, *action_name);

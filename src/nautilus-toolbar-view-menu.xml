@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class ="GtkPopoverMenu" id="view_menu_widget">
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="border_width">9</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">6</property>
+        <property name="width_request">160</property>
+        <child>
+          <object class="GtkBox" id="views_box">
+            <property name="visible">True</property>
+            <property name="orientation">horizontal</property>
+            <style>
+                <class name="linked"/>
+            </style>
+            <child>
+              <object class="GtkModelButton" id="grid_button">
+                <property name="visible">True</property>
+                <property name="text">Grid</property>
+                <property name="action-name">win.view-mode</property>
+                <property name="action-target">'grid'</property>
+                <property name="iconic">True</property>
+                <property name="centered">True</property>
+                <property name="icon">icon_grid</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkModelButton" id="list_button">
+                <property name="visible">True</property>
+                <property name="text">List</property>
+                <property name="action-name">win.view-mode</property>
+                <property name="action-target">'list'</property>
+                <property name="iconic">True</property>
+                <property name="centered">True</property>
+                <property name="icon">icon_list</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkScale" id="zoom_level_scale">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="draw_value">False</property>
+            <property name="has_origin">False</property>
+            <property name="adjustment">zoom_adjustment_grid</property>
+            <property name="round_digits">0</property>
+            <property name="restrict_to_fill_level">False</property>
+            <marks>
+              <mark value="0" position="bottom"/>
+              <mark value="1" position="bottom"/>
+              <mark value="2" position="bottom"/>
+            </marks>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox" id="sort_menu">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkSeparator">
+                <property name="visible">True</property>
+                <property name="orientation">horizontal</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="sort_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="label" translatable="yes">Sort</property>
+                <property name="margin-start">12</property>
+                <style>
+                  <class name="separator"/>
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="GtkModelButton" id="sort_name">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="text" translatable="yes">_Name</property>
+                <property name="action-name">view.sort</property>
+                <property name="action-target">'name'</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkModelButton" id="sort_size">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="text" translatable="yes">_Size</property>
+                <property name="action-name">view.sort</property>
+                <property name="action-target">'size'</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkModelButton" id="sort_type">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="text" translatable="yes">_Type</property>
+                <property name="action-name">view.sort</property>
+                <property name="action-target">'type'</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkModelButton" id="sort_access_date">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="text" translatable="yes">Last _Opened</property>
+                <property name="action-name">view.sort</property>
+                <property name="action-target">'access-date'</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkModelButton" id="sort_trash_time">
+                <property name="visible">False</property>
+                <property name="can_focus">True</property>
+                <property name="text" translatable="yes">Last _Trashed</property>
+                <property name="action-name">view.sort</property>
+                <property name="action-target">'trash-time'</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkModelButton" id="sort_search_relevance">
+                <property name="visible">False</property>
+                <property name="can_focus">True</property>
+                <property name="text" translatable="yes">Search _Relevance</property>
+                <property name="action-name">view.sort</property>
+                <property name="action-target">'search-relevance'</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSeparator">
+                <property name="visible">True</property>
+                <property name="orientation">horizontal</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkModelButton" id="reversed_order">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="text" translatable="yes">Re_verse order</property>
+                <property name="action-name">view.reversed-order</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+            <property name="orientation">horizontal</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="visible_columns">
+            <property name="visible">False</property>
+            <property name="can_focus">True</property>
+            <property name="text" translatable="yes">_Visible Columns…</property>
+            <property name="action-name">view.visible-columns</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="show_hidden_files">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="text" translatable="yes">Show _Hidden Files</property>
+            <property name="action-name">view.show-hidden-files</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="reload">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="text" translatable="yes">_Reload</property>
+            <property name="action-name">win.reload</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="stop">
+            <property name="visible">False</property>
+            <property name="can_focus">True</property>
+            <property name="text" translatable="yes">St_op</property>
+            <property name="action-name">win.stop</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GThemedIcon" id="icon_grid">
+    <property name="name">view-grid-symbolic</property>
+  </object>
+  <object class="GThemedIcon" id="icon_list">
+    <property name="name">view-list-symbolic</property>
+  </object>
+  <object class="GtkAdjustment" id="zoom_adjustment_list">
+    <property name="lower">0</property>
+    <property name="upper">2</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">1</property>
+    <property name="value">1</property>
+  </object>
+  <object class="GtkAdjustment" id="zoom_adjustment_grid">
+    <property name="lower">0</property>
+    <property name="upper">2</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">1</property>
+    <property name="value">1</property>
+  </object>
+</interface>

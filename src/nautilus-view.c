@@ -29,7 +29,6 @@
 
 #include "nautilus-view.h"
 
-#include "nautilus-actions.h"
 #include "nautilus-application.h"
 #include "nautilus-desktop-canvas-view.h"
 #include "nautilus-error-reporting.h"
@@ -37,6 +36,8 @@
 #include "nautilus-mime-actions.h"
 #include "nautilus-previewer.h"
 #include "nautilus-properties-window.h"
+#include "nautilus-window.h"
+#include "nautilus-toolbar.h"
 
 #if ENABLE_EMPTY_VIEW
 #include "nautilus-empty-view.h"
@@ -111,26 +112,6 @@
 
 #define MAX_QUEUED_UPDATES 500
 
-#define NAUTILUS_VIEW_MENU_PATH_APPLICATIONS_SUBMENU_PLACEHOLDER  "/ActionMenu/Open Placeholder/Open With/Applications Placeholder"
-#define NAUTILUS_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER    	  "/ActionMenu/Open Placeholder/Applications Placeholder"
-#define NAUTILUS_VIEW_MENU_PATH_SCRIPTS_PLACEHOLDER               "/ActionMenu/Open Placeholder/Scripts/Scripts Placeholder"
-#define NAUTILUS_VIEW_MENU_PATH_EXTENSION_ACTIONS_PLACEHOLDER     "/ActionMenu/Edit/Extension Actions"
-#define NAUTILUS_VIEW_MENU_PATH_NEW_DOCUMENTS_PLACEHOLDER  	  "/ActionMenu/New Items Placeholder/New Documents/New Documents Placeholder"
-#define NAUTILUS_VIEW_MENU_PATH_OPEN				  "/ActionMenu/Open Placeholder/Open"
-
-#define NAUTILUS_VIEW_POPUP_PATH_SELECTION			  "/selection"
-#define NAUTILUS_VIEW_POPUP_PATH_APPLICATIONS_SUBMENU_PLACEHOLDER "/selection/Open Placeholder/Open With/Applications Placeholder"
-#define NAUTILUS_VIEW_POPUP_PATH_APPLICATIONS_PLACEHOLDER    	  "/selection/Open Placeholder/Applications Placeholder"
-#define NAUTILUS_VIEW_POPUP_PATH_SCRIPTS_PLACEHOLDER    	  "/selection/Open Placeholder/Scripts/Scripts Placeholder"
-#define NAUTILUS_VIEW_POPUP_PATH_EXTENSION_ACTIONS		  "/selection/Extension Actions"
-#define NAUTILUS_VIEW_POPUP_PATH_OPEN				  "/selection/Open Placeholder/Open"
-
-#define NAUTILUS_VIEW_POPUP_PATH_BACKGROUND			  "/background"
-#define NAUTILUS_VIEW_POPUP_PATH_BACKGROUND_SCRIPTS_PLACEHOLDER	  "/background/Before Zoom Items/New Object Items/Scripts/Scripts Placeholder"
-#define NAUTILUS_VIEW_POPUP_PATH_BACKGROUND_NEW_DOCUMENTS_PLACEHOLDER "/background/Before Zoom Items/New Object Items/New Documents/New Documents Placeholder"
-
-#define NAUTILUS_VIEW_POPUP_PATH_LOCATION			  "/location"
-
 #define MAX_MENU_LEVELS 5
 #define TEMPLATE_LIMIT 30
 
@@ -144,7 +125,6 @@ enum {
 	FILE_CHANGED,
 	MOVE_COPY_ITEMS,
 	REMOVE_FILE,
-	ZOOM_LEVEL_CHANGED,
 	SELECTION_CHANGED,
 	TRASH,
 	DELETE,
@@ -170,7 +150,6 @@ struct NautilusViewDetails
 	NautilusWindowSlot *slot;
 	NautilusDirectory *model;
 	NautilusFile *directory_as_file;
-	GtkActionGroup *dir_action_group;
 	NautilusFile *pathbar_popup_directory_as_file;
 	GdkEventButton *pathbar_popup_event;
 	guint dir_merge_id;
@@ -178,18 +157,10 @@ struct NautilusViewDetails
 	gboolean supports_zooming;
 
 	GList *scripts_directory_list;
-	GtkActionGroup *scripts_action_group;
-	guint scripts_merge_id;
-	
 	GList *templates_directory_list;
-	GtkActionGroup *templates_action_group;
-	guint templates_merge_id;
-
-	GtkActionGroup *extensions_menu_action_group;
-	guint extensions_menu_merge_id;
 	
 	guint display_selection_idle_id;
-	guint update_menus_timeout_id;
+	guint update_context_menus_timeout_id;
 	guint update_status_idle_id;
 	guint reveal_selection_idle_id;
 
@@ -226,9 +197,8 @@ struct NautilusViewDetails
 	 * after it finishes loading the directory and its view.
 	 */
 	gboolean loading;
-	gboolean scripts_invalid;
-	gboolean templates_invalid;
 	gboolean templates_present;
+	gboolean scripts_present;
 
 	/* flag to indicate that no file updates should be dispatched to subclasses.
 	 * This is a workaround for bug #87701 that prevents the list view from
@@ -254,12 +224,15 @@ struct NautilusViewDetails
 	gboolean metadata_for_directory_as_file_pending;
 	gboolean metadata_for_files_in_directory_pending;
 
-	GtkActionGroup *open_with_action_group;
-	guint open_with_merge_id;
-
 	GList *subdirectory_list;
 
 	GdkPoint context_menu_position;
+
+	GMenu *selection_menu;
+	GMenu *background_menu;
+	GMenu *pathbar_menu;
+
+	GActionGroup *view_action_group;
 };
 
 typedef struct {
@@ -275,16 +248,12 @@ static void     trash_or_delete_files                          (GtkWindow       
 								NautilusView      *view);
 static void     load_directory                                 (NautilusView      *view,
 								NautilusDirectory    *directory);
-static void     nautilus_view_merge_menus                      (NautilusView      *view);
-static void     nautilus_view_unmerge_menus                    (NautilusView      *view);
-static void     nautilus_view_set_show_hidden_files           (NautilusView      *view,
-							       gboolean           show_hidden);
 static void     clipboard_changed_callback                     (NautilusClipboardMonitor *monitor,
 								NautilusView      *view);
 static void     open_one_in_new_window                         (gpointer              data,
 								gpointer              callback_data);
-static void     schedule_update_menus                          (NautilusView      *view);
-static void     remove_update_menus_timeout_callback           (NautilusView      *view);
+static void     schedule_update_context_menus                  (NautilusView      *view);
+static void     remove_update_context_menus_timeout_callback   (NautilusView      *view);
 static void     schedule_update_status                          (NautilusView      *view);
 static void     remove_update_status_idle_callback             (NautilusView *view); 
 static void     reset_update_interval                          (NautilusView      *view);
@@ -304,34 +273,12 @@ static void     nautilus_view_select_file                      (NautilusView    
 
 static void     update_templates_directory                     (NautilusView *view);
 
-static gboolean file_list_all_are_folders                      (GList *file_list);
 static void unschedule_pop_up_pathbar_context_menu (NautilusView *view);
 
+static void real_zoom_to_level (NautilusView  *view,
+				gint           zoom_level);
 
 G_DEFINE_TYPE (NautilusView, nautilus_view, GTK_TYPE_SCROLLED_WINDOW);
-
-/* virtual methods (public and non-public) */
-
-/**
- * nautilus_view_merge_menus:
- * 
- * Add this view's menus to the window's menu bar.
- * @view: NautilusView in question.
- */
-static void
-nautilus_view_merge_menus (NautilusView *view)
-{
-	g_return_if_fail (NAUTILUS_IS_VIEW (view));
-
-	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->merge_menus (view);
-}
-
-static void
-nautilus_view_unmerge_menus (NautilusView *view)
-{
-	g_return_if_fail (NAUTILUS_IS_VIEW (view));
-
-	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->unmerge_menus (view);}
 
 static char *
 real_get_backing_uri (NautilusView *view)
@@ -539,6 +486,20 @@ nautilus_view_bump_zoom_level (NautilusView *view,
 	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->bump_zoom_level (view, zoom_increment);
 }
 
+/* We want to keep the logic of which menus and when to update them in
+ * this class, so children need to chain to the parent when they set the zoom
+ * level through this function.
+ * The chain up should be done after the child updated the zoom level, so the
+ * menus are updated acordingly
+ *
+ */
+static void
+real_zoom_to_level (NautilusView      *view,
+		    gint               zoom_level)
+{
+	nautilus_view_update_toolbar_menus (view);
+}
+
 /**
  * nautilus_view_zoom_to_level:
  *
@@ -665,30 +626,6 @@ nautilus_view_get_selection (NautilusView *view)
 	return NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_selection (view);
 }
 
-/**
- * nautilus_view_update_menus:
- * 
- * Update the sensitivity and wording of dynamic menu items.
- * @view: NautilusView in question.
- */
-void
-nautilus_view_update_menus (NautilusView *view)
-{
-	g_return_if_fail (NAUTILUS_IS_VIEW (view));
-
-	if (!view->details->active) {
-		return;
-	}
-
-	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->update_menus (view);
-}
-
-typedef struct {
-	GAppInfo *application;
-	GList *files;
-	NautilusView *directory_view;
-} ApplicationLaunchParameters;
-
 typedef struct {
 	NautilusFile *file;
 	NautilusView *directory_view;
@@ -698,38 +635,6 @@ typedef struct {
 	NautilusFile *file;
 	NautilusView *directory_view;
 } CreateTemplateParameters;
-
-static ApplicationLaunchParameters *
-application_launch_parameters_new (GAppInfo *application,
-			      	   GList *files,
-			           NautilusView *directory_view)
-{
-	ApplicationLaunchParameters *result;
-
-	result = g_new0 (ApplicationLaunchParameters, 1);
-	result->application = g_object_ref (application);
-	result->files = nautilus_file_list_copy (files);
-
-	if (directory_view != NULL) {
-		g_object_ref (directory_view);
-		result->directory_view = directory_view;
-	}
-
-	return result;
-}
-
-static void
-application_launch_parameters_free (ApplicationLaunchParameters *parameters)
-{
-	g_object_unref (parameters->application);
-	nautilus_file_list_free (parameters->files);
-
-	if (parameters->directory_view != NULL) {
-		g_object_unref (parameters->directory_view);
-	}
-
-	g_free (parameters);
-}			      
 
 static GList *
 file_and_directory_list_to_files (GList *fad_list)
@@ -853,7 +758,7 @@ create_templates_parameters_free (CreateTemplateParameters *parameters)
 	g_free (parameters);
 }			      
 
-static NautilusWindow *
+NautilusWindow *
 nautilus_view_get_window (NautilusView  *view)
 {
 	return nautilus_window_slot_get_window (view->details->slot);
@@ -1027,23 +932,24 @@ nautilus_view_activate_file (NautilusView *view,
 }
 
 static void
-action_open_callback (GtkAction *action,
-		      gpointer callback_data)
+action_open_with_default_application (GSimpleAction *action,
+				      GVariant      *state,
+				      gpointer       user_data)
 {
 	NautilusView *view;
 
-	view = NAUTILUS_VIEW (callback_data);
+	view = NAUTILUS_VIEW (user_data);
 	nautilus_view_activate_selection (view);
 }
-
 static void
-action_open_close_parent_callback (GtkAction *action,
-				   gpointer callback_data)
+action_open_file_and_close_window (GSimpleAction *action,
+				   GVariant      *state,
+				   gpointer       user_data)
 {
 	GList *selection;
 	NautilusView *view;
 
-	view = NAUTILUS_VIEW (callback_data);
+	view = NAUTILUS_VIEW (user_data);
 
 	selection = nautilus_view_get_selection (view);
 	nautilus_view_activate_files (view,
@@ -1054,9 +960,9 @@ action_open_close_parent_callback (GtkAction *action,
 }
 
 static void
-
-action_open_item_location_callback (GtkAction *action,
-				    gpointer callback_data)
+action_open_item_location (GSimpleAction *action,
+			   GVariant      *state,
+			   gpointer       user_data)
 {
 	NautilusView *view;
 	GList *selection;
@@ -1065,7 +971,7 @@ action_open_item_location_callback (GtkAction *action,
 	NautilusFile *activation_file;
 	NautilusFile *location;
 
-	view = NAUTILUS_VIEW (callback_data);
+	view = NAUTILUS_VIEW (user_data);
 	selection = nautilus_view_get_selection (view);
 
 	if (!selection)
@@ -1084,36 +990,16 @@ action_open_item_location_callback (GtkAction *action,
 	nautilus_file_list_free (selection);
 }
 
-
 static void
-action_open_alternate_callback (GtkAction *action,
-				gpointer callback_data)
+action_open_item_new_tab (GSimpleAction *action,
+			  GVariant      *state,
+			  gpointer       user_data)
 {
 	NautilusView *view;
 	GList *selection;
 	GtkWindow *window;
 
-	view = NAUTILUS_VIEW (callback_data);
-	selection = nautilus_view_get_selection (view);
-
-	window = nautilus_view_get_containing_window (view);
-
-	if (nautilus_view_confirm_multiple (window, g_list_length (selection), FALSE)) {
-		g_list_foreach (selection, open_one_in_new_window, view);
-	}
-
-	nautilus_file_list_free (selection);
-}
-
-static void
-action_open_new_tab_callback (GtkAction *action,
-			      gpointer callback_data)
-{
-	NautilusView *view;
-	GList *selection;
-	GtkWindow *window;
-
-	view = NAUTILUS_VIEW (callback_data);
+	view = NAUTILUS_VIEW (user_data);
 	selection = nautilus_view_get_selection (view);
 
 	window = nautilus_view_get_containing_window (view);
@@ -1129,31 +1015,14 @@ action_open_new_tab_callback (GtkAction *action,
 }
 
 static void
-action_location_open_alternate_callback (GtkAction *action,
-					 gpointer   callback_data)
+action_pathbar_open_item_new_tab (GSimpleAction *action,
+				  GVariant      *state,
+				  gpointer       user_data)
 {
 	NautilusView *view;
 	NautilusFile *file;
 
-	view = NAUTILUS_VIEW (callback_data);
-
-	file = view->details->pathbar_popup_directory_as_file;
-	if (file == NULL) {
-		return;
-	}
-	nautilus_view_activate_file (view,
-				     file,
-				     NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW);
-}
-
-static void
-action_location_open_in_new_tab_callback (GtkAction *action,
-					  gpointer   callback_data)
-{
-	NautilusView *view;
-	NautilusFile *file;
-
-	view = NAUTILUS_VIEW (callback_data);
+	view = NAUTILUS_VIEW (user_data);
 
 	file = view->details->pathbar_popup_directory_as_file;
 	if (file == NULL) {
@@ -1245,12 +1114,13 @@ open_with_other_program (NautilusView *view)
 }
 
 static void
-action_other_application_callback (GtkAction *action,
-				   gpointer callback_data)
+action_open_with_other_application (GSimpleAction *action,
+				    GVariant      *state,
+				    gpointer       user_data)
 {
-	g_assert (NAUTILUS_IS_VIEW (callback_data));
+	g_assert (NAUTILUS_IS_VIEW (user_data));
 
-	open_with_other_program (NAUTILUS_VIEW (callback_data));
+	open_with_other_program (NAUTILUS_VIEW (user_data));
 }
 
 static void
@@ -1272,26 +1142,12 @@ trash_or_delete_selected_files (NautilusView *view)
 	}
 }
 
-static gboolean
-real_trash (NautilusView *view)
-{
-	GtkAction *action;
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_TRASH);
-	if (gtk_action_get_sensitive (action) &&
-	    gtk_action_get_visible (action)) {
-		trash_or_delete_selected_files (view);
-		return TRUE;
-	}
-	return FALSE;
-}
-
 static void
-action_trash_callback (GtkAction *action,
-		       gpointer callback_data)
+action_move_to_trash (GSimpleAction *action,
+		      GVariant      *state,
+		      gpointer       user_data)
 {
-        trash_or_delete_selected_files (NAUTILUS_VIEW (callback_data));
+        trash_or_delete_selected_files (NAUTILUS_VIEW (user_data));
 }
 
 static void
@@ -1320,20 +1176,22 @@ delete_selected_files (NautilusView *view)
 }
 
 static void
-action_delete_callback (GtkAction *action,
-			gpointer callback_data)
+action_delete (GSimpleAction *action,
+	       GVariant      *state,
+	       gpointer       user_data)
 {
-        delete_selected_files (NAUTILUS_VIEW (callback_data));
+	delete_selected_files (NAUTILUS_VIEW (user_data));
 }
 
 static void
-action_restore_from_trash_callback (GtkAction *action,
-				    gpointer callback_data)
+action_restore_from_trash (GSimpleAction *action,
+			   GVariant      *state,
+			   gpointer       user_data)
 {
 	NautilusView *view;
 	GList *selection;
 
-	view = NAUTILUS_VIEW (callback_data);
+	view = NAUTILUS_VIEW (user_data);
 
 	selection = nautilus_view_get_selection_for_file_transfer (view);
 	nautilus_restore_files_from_trash (selection,
@@ -1343,37 +1201,28 @@ action_restore_from_trash_callback (GtkAction *action,
 
 }
 
-static gboolean
-real_delete (NautilusView *view)
+static void
+action_select_all (GSimpleAction *action,
+		   GVariant      *state,
+		   gpointer       user_data)
 {
-	GtkAction *action;
+	NautilusView *view;
 
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_DELETE);
-	if (gtk_action_get_sensitive (action) &&
-	    gtk_action_get_visible (action)) {
-		delete_selected_files (view);
-		return TRUE;
-	}
-	return FALSE;
+	g_assert (NAUTILUS_IS_VIEW (user_data));
+
+	view = NAUTILUS_VIEW (user_data);
+
+	nautilus_view_select_all (view);
 }
 
 static void
-action_select_all_callback (GtkAction *action, 
-			    gpointer callback_data)
+action_invert_selection (GSimpleAction *action,
+			 GVariant      *state,
+			 gpointer       user_data)
 {
-	g_assert (NAUTILUS_IS_VIEW (callback_data));
+	g_assert (NAUTILUS_IS_VIEW (user_data));
 
-	nautilus_view_select_all (callback_data);
-}
-
-static void
-action_invert_selection_callback (GtkAction *action,
-				  gpointer callback_data)
-{
-	g_assert (NAUTILUS_IS_VIEW (callback_data));
-
-	nautilus_view_invert_selection (callback_data);
+	nautilus_view_invert_selection (user_data);
 }
 
 static void
@@ -1473,12 +1322,13 @@ select_pattern (NautilusView *view)
 }
 
 static void
-action_select_pattern_callback (GtkAction *action, 
-				gpointer callback_data)
+action_select_pattern (GSimpleAction *action,
+		       GVariant      *state,
+		       gpointer       user_data)
 {
-	g_assert (NAUTILUS_IS_VIEW (callback_data));
+	g_assert (NAUTILUS_IS_VIEW (user_data));
 
-	select_pattern(callback_data);
+	select_pattern(user_data);
 }
 
 typedef struct {
@@ -1886,34 +1736,37 @@ nautilus_view_new_file (NautilusView *directory_view,
 }
 
 static void
-action_new_folder_callback (GtkAction *action,
-			    gpointer callback_data)
-{                
-        g_assert (NAUTILUS_IS_VIEW (callback_data));
+action_new_folder (GSimpleAction *action,
+		   GVariant      *state,
+		   gpointer       user_data)
+{
+	g_assert (NAUTILUS_IS_VIEW (user_data));
 
-	nautilus_view_new_folder (NAUTILUS_VIEW (callback_data), FALSE);
+	nautilus_view_new_folder (NAUTILUS_VIEW (user_data), FALSE);
 }
 
 static void
-action_new_folder_with_selection_callback (GtkAction *action,
-					   gpointer callback_data)
+action_new_folder_with_selection (GSimpleAction *action,
+				  GVariant      *state,
+				  gpointer       user_data)
 {                
-        g_assert (NAUTILUS_IS_VIEW (callback_data));
+        g_assert (NAUTILUS_IS_VIEW (user_data));
 
-	nautilus_view_new_folder (NAUTILUS_VIEW (callback_data), TRUE);
+	nautilus_view_new_folder (NAUTILUS_VIEW (user_data), TRUE);
 }
 
 static void
-action_properties_callback (GtkAction *action,
-			    gpointer callback_data)
+action_properties (GSimpleAction *action,
+		   GVariant      *state,
+		   gpointer       user_data)
 {
         NautilusView *view;
         GList *selection;
 	GList *files;
         
-        g_assert (NAUTILUS_IS_VIEW (callback_data));
+        g_assert (NAUTILUS_IS_VIEW (user_data));
 
-        view = NAUTILUS_VIEW (callback_data);
+        view = NAUTILUS_VIEW (user_data);
 	selection = nautilus_view_get_selection (view);
 	if (g_list_length (selection) == 0) {
 		if (view->details->directory_as_file != NULL) {
@@ -1929,46 +1782,245 @@ action_properties_callback (GtkAction *action,
         nautilus_file_list_free (selection);
 }
 
-static gboolean
-all_files_in_trash (GList *files)
+static void
+action_pathbar_properties (GSimpleAction *action,
+			   GVariant      *state,
+			   gpointer       user_data)
 {
-	GList *node;
+	NautilusView *view;
+	GList           *files;
 
-	/* Result is ambiguous if called on NULL, so disallow. */
-	g_return_val_if_fail (files != NULL, FALSE);
+	g_assert (NAUTILUS_IS_VIEW (user_data));
 
-	for (node = files; node != NULL; node = node->next) {
-		if (!nautilus_file_is_in_trash (NAUTILUS_FILE (node->data))) {
-			return FALSE;
-		}
-	}
+	view = NAUTILUS_VIEW (user_data);
+	g_assert (NAUTILUS_IS_FILE (view->details->pathbar_popup_directory_as_file));
 
-	return TRUE;
-}
+	files = g_list_append (NULL, nautilus_file_ref (view->details->pathbar_popup_directory_as_file));
 
-static gboolean
-all_selected_items_in_trash (GList *selection)
-{
-	gboolean result;
+	nautilus_properties_window_present (files, GTK_WIDGET (view), NULL);
 
-	/* If the contents share a parent directory, we need only
-	 * check that parent directory. Otherwise we have to inspect
-	 * each selected item.
-	 */
-	result = (selection == NULL) ? FALSE : all_files_in_trash (selection);
-	return result;
+	nautilus_file_list_free (files);
 }
 
 static void
-action_show_hidden_files_callback (GtkAction *action,
-				   gpointer callback_data)
+nautilus_view_set_show_hidden_files (NautilusView *view,
+				     gboolean show_hidden)
+{
+	if (view->details->ignore_hidden_file_preferences) {
+		return;
+	}
+
+	if (show_hidden != view->details->show_hidden_files) {
+		view->details->show_hidden_files = show_hidden;
+		if (view->details->model != NULL) {
+			load_directory (view, view->details->model);
+		}
+	}
+}
+
+static void
+action_show_hidden_files (GSimpleAction *action,
+			  GVariant      *state,
+			  gpointer       user_data)
+{
+	gboolean show_hidden;
+	NautilusView *view;
+
+	g_assert (NAUTILUS_IS_VIEW (user_data));
+
+	view = NAUTILUS_VIEW (user_data);
+	show_hidden = g_variant_get_boolean (state);
+
+	nautilus_view_set_show_hidden_files (view, show_hidden);
+
+	g_simple_action_set_state (action, state);
+}
+
+static void
+action_undo (GSimpleAction *action,
+	     GVariant      *state,
+	     gpointer       user_data)
+{
+	GtkWidget *toplevel;
+	NautilusView *view;
+
+	g_assert (NAUTILUS_IS_VIEW (user_data));
+
+	view = NAUTILUS_VIEW (user_data);
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (view));
+	nautilus_file_undo_manager_undo (GTK_WINDOW (toplevel));
+}
+
+static void
+action_redo (GSimpleAction *action,
+	     GVariant      *state,
+	     gpointer       user_data)
+{
+	GtkWidget *toplevel;
+	NautilusView *view;
+
+	g_assert (NAUTILUS_IS_VIEW (user_data));
+
+	view = NAUTILUS_VIEW (user_data);
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (view));
+	nautilus_file_undo_manager_redo (GTK_WINDOW (toplevel));
+}
+
+static void
+action_zoom_in (GSimpleAction *action,
+		GVariant      *state,
+		gpointer       user_data)
 {
 	NautilusView *view;
 
-	view = NAUTILUS_VIEW (callback_data);
+	g_assert (NAUTILUS_IS_VIEW (user_data));
 
-	nautilus_view_set_show_hidden_files
-		(view, gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action)));
+	view = NAUTILUS_VIEW (user_data);
+
+	nautilus_view_bump_zoom_level (view, 1);
+}
+
+static void
+action_zoom_out (GSimpleAction *action,
+		 GVariant      *state,
+		 gpointer       user_data)
+{
+	NautilusView *view;
+
+	g_assert (NAUTILUS_IS_VIEW (user_data));
+
+	view = NAUTILUS_VIEW (user_data);
+
+	nautilus_view_bump_zoom_level (view, -1);
+}
+
+static void
+action_zoom_default (GSimpleAction *action,
+		     GVariant      *state,
+		     gpointer       user_data)
+{
+	nautilus_view_restore_default_zoom_level (user_data);
+}
+
+static void
+action_zoom_to_level (GSimpleAction *action,
+		      GVariant      *state,
+		      gpointer       user_data)
+{
+	NautilusView *view;
+	gdouble zoom_value;
+
+	g_assert (NAUTILUS_IS_VIEW (user_data));
+
+	view = NAUTILUS_VIEW (user_data);
+	zoom_value = g_variant_get_int32 (state);
+
+	nautilus_view_zoom_to_level (view, zoom_value);
+}
+
+static void
+action_open_item_new_window (GSimpleAction *action,
+			     GVariant      *state,
+			     gpointer       user_data)
+{
+	NautilusView *view;
+	GtkWindow *window;
+	GList *selection;
+
+	view = NAUTILUS_VIEW (user_data);
+	selection = nautilus_view_get_selection (view);
+	window = GTK_WINDOW (nautilus_view_get_containing_window (view));
+
+	if (nautilus_view_confirm_multiple (window, g_list_length (selection), TRUE)) {
+		g_list_foreach (selection, open_one_in_new_window, view);
+	}
+
+	nautilus_file_list_free (selection);
+}
+
+static void
+action_pathbar_open_item_new_window (GSimpleAction *action,
+				     GVariant      *state,
+				     gpointer       user_data)
+{
+	NautilusView *view;
+	NautilusFile *file;
+
+	view = NAUTILUS_VIEW (user_data);
+
+	file = view->details->pathbar_popup_directory_as_file;
+	if (file == NULL) {
+		return;
+	}
+
+	nautilus_view_activate_file (view,
+				     file,
+				     NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW);
+}
+
+static void
+paste_clipboard_data (NautilusView *view,
+		      GtkSelectionData *selection_data,
+		      char *destination_uri)
+{
+	gboolean cut;
+	GList *item_uris;
+
+	cut = FALSE;
+	item_uris = nautilus_clipboard_get_uri_list_from_selection_data (selection_data, &cut,
+									 copied_files_atom);
+
+	if (item_uris != NULL && destination_uri != NULL) {
+		nautilus_view_move_copy_items (view, item_uris, NULL, destination_uri,
+					       cut ? GDK_ACTION_MOVE : GDK_ACTION_COPY,
+					       0, 0);
+
+		/* If items are cut then remove from clipboard */
+		if (cut) {
+			gtk_clipboard_clear (nautilus_clipboard_get (GTK_WIDGET (view)));
+		}
+
+		g_list_free_full (item_uris, g_free);
+	}
+}
+
+static void
+paste_clipboard_received_callback (GtkClipboard     *clipboard,
+				   GtkSelectionData *selection_data,
+				   gpointer          data)
+{
+	NautilusView *view;
+	char *view_uri;
+
+	view = NAUTILUS_VIEW (data);
+
+	view_uri = nautilus_view_get_backing_uri (view);
+
+	if (view->details->slot != NULL) {
+		paste_clipboard_data (view, selection_data, view_uri);
+	}
+
+	g_free (view_uri);
+
+	g_object_unref (view);
+}
+
+static void
+action_paste_files (GSimpleAction *action,
+		    GVariant      *state,
+		    gpointer       user_data)
+{
+	NautilusView *view;
+
+	g_assert (NAUTILUS_IS_VIEW (user_data));
+
+	view = NAUTILUS_VIEW (user_data);
+
+	g_object_ref (view);
+	gtk_clipboard_request_contents (nautilus_clipboard_get (GTK_WIDGET (view)),
+					copied_files_atom,
+					paste_clipboard_received_callback,
+					view);
 }
 
 static void
@@ -2098,9 +2150,8 @@ scripts_added_or_changed_callback (NautilusDirectory *directory,
 
 	view = NAUTILUS_VIEW (callback_data);
 
-	view->details->scripts_invalid = TRUE;
 	if (view->details->active) {
-		schedule_update_menus (view);
+		schedule_update_context_menus (view);
 	}
 }
 
@@ -2113,9 +2164,8 @@ templates_added_or_changed_callback (NautilusDirectory *directory,
 
 	view = NAUTILUS_VIEW (callback_data);
 
-	view->details->templates_invalid = TRUE;
 	if (view->details->active) {
-		schedule_update_menus (view);
+		schedule_update_context_menus (view);
 	}
 }
 
@@ -2212,8 +2262,15 @@ slot_active (NautilusWindowSlot *slot,
 
 	view->details->active = TRUE;
 
-	nautilus_view_merge_menus (view);
-	schedule_update_menus (view);
+	/* Avoid updating the toolbar withouth making sure the toolbar
+	 * zoom slider has the correct adjustment that changes when the
+	 * view mode changes
+	 */
+	nautilus_window_slot_sync_view_mode (slot);
+	nautilus_view_update_context_menus(view);
+	nautilus_view_update_toolbar_menus (view);
+
+	schedule_update_context_menus (view);
 }
 
 static void
@@ -2226,8 +2283,7 @@ slot_inactive (NautilusWindowSlot *slot,
 
 	view->details->active = FALSE;
 
-	nautilus_view_unmerge_menus (view);
-	remove_update_menus_timeout_callback (view);
+	remove_update_context_menus_timeout_callback (view);
 }
 
 void
@@ -2256,92 +2312,14 @@ nautilus_view_get_selection_count (NautilusView *view)
 }
 
 static void
-update_undo_actions (NautilusView *view)
-{
-	NautilusFileUndoInfo *info;
-	NautilusFileUndoManagerState undo_state;
-	GtkAction *action;
-	const gchar *label, *tooltip;
-	gboolean available, is_undo;
-	gboolean undo_active, redo_active;
-	gchar *undo_label, *undo_description, *redo_label, *redo_description;
-
-	undo_label = undo_description = redo_label = redo_description = NULL;
-
-	undo_active = FALSE;
-	redo_active = FALSE;
-
-	info = nautilus_file_undo_manager_get_action ();
-	undo_state = nautilus_file_undo_manager_get_state ();
-
-	if (info != NULL && 
-	    (undo_state > NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE)) {
-		is_undo = (undo_state == NAUTILUS_FILE_UNDO_MANAGER_STATE_UNDO);
-
-		if (is_undo) {
-			undo_active = TRUE;
-		} else {
-			redo_active = TRUE;
-		}
-
-		nautilus_file_undo_info_get_strings (info,
-						     &undo_label, &undo_description,
-						     &redo_label, &redo_description);
-	}
-
-	/* Update undo entry */
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      "Undo");
-	available = undo_active;
-	if (available) {
-		label = undo_label;
-		tooltip = undo_description;
-	} else {
-		/* Reset to default info */
-		label = _("Undo");
-		tooltip = _("Undo last action");
-	}
-
-	g_object_set (action,
-		      "label", label,
-		      "tooltip", tooltip,
-		      NULL);
-	gtk_action_set_sensitive (action, available);
-
-	/* Update redo entry */
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      "Redo");
-	available = redo_active;
-	if (available) {
-		label = redo_label;
-		tooltip = redo_description;
-	} else {
-		/* Reset to default info */
-		label = _("Redo");
-		tooltip = _("Redo last undone action");
-	}
-
-	g_object_set (action,
-		      "label", label,
-		      "tooltip", tooltip,
-		      NULL);
-	gtk_action_set_sensitive (action, available);
-
-	g_free (undo_label);
-	g_free (undo_description);
-	g_free (redo_label);
-	g_free (redo_description);
-}
-
-static void
-undo_manager_changed_cb (NautilusFileUndoManager* manager,
-			 NautilusView *view)
+undo_manager_changed (NautilusFileUndoManager* manager,
+		      NautilusView *view)
 {
 	if (!view->details->active) {
 		return;
 	}
 
-	update_undo_actions (view);
+	nautilus_view_update_toolbar_menus (view);
 }
 
 void
@@ -2389,127 +2367,6 @@ have_bulk_rename_tool ()
 }
 
 static void
-nautilus_view_init (NautilusView *view)
-{
-	AtkObject *atk_object;
-	NautilusDirectory *scripts_directory;
-	NautilusDirectory *templates_directory;
-	char *templates_uri;
-
-	nautilus_profile_start (NULL);
-
-	view->details = G_TYPE_INSTANCE_GET_PRIVATE (view, NAUTILUS_TYPE_VIEW,
-						     NautilusViewDetails);
-
-	/* Default to true; desktop-icon-view sets to false */
-	view->details->show_foreign_files = TRUE;
-
-	view->details->non_ready_files =
-		g_hash_table_new_full (file_and_directory_hash,
-				       file_and_directory_equal,
-				       (GDestroyNotify)file_and_directory_free,
-				       NULL);
-
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (view),
-					GTK_POLICY_AUTOMATIC,
-					GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_hadjustment (GTK_SCROLLED_WINDOW (view), NULL);
-	gtk_scrolled_window_set_vadjustment (GTK_SCROLLED_WINDOW (view), NULL);
-
-	gtk_style_context_set_junction_sides (gtk_widget_get_style_context (GTK_WIDGET (view)),
-					      GTK_JUNCTION_TOP | GTK_JUNCTION_LEFT);
-
-	if (set_up_scripts_directory_global ()) {
-		scripts_directory = nautilus_directory_get_by_uri (scripts_directory_uri);
-		add_directory_to_scripts_directory_list (view, scripts_directory);
-		nautilus_directory_unref (scripts_directory);
-	} else {
-		g_warning ("Ignoring scripts directory, it may be a broken link\n");
-	}
-
-	if (nautilus_should_use_templates_directory ()) {
-		templates_uri = nautilus_get_templates_directory_uri ();
-		templates_directory = nautilus_directory_get_by_uri (templates_uri);
-		g_free (templates_uri);
-		add_directory_to_templates_directory_list (view, templates_directory);
-		nautilus_directory_unref (templates_directory);
-	}
-	update_templates_directory (view);
-
-	view->details->sort_directories_first =
-		g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
-	view->details->show_hidden_files =
-		g_settings_get_boolean (gtk_filechooser_preferences, NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
-
-	g_signal_connect_object (nautilus_trash_monitor_get (), "trash-state-changed",
-				 G_CALLBACK (nautilus_view_trash_state_changed_callback), view, 0);
-
-	/* React to clipboard changes */
-	g_signal_connect_object (nautilus_clipboard_monitor_get (), "clipboard-changed",
-				 G_CALLBACK (clipboard_changed_callback), view, 0);
-
-	/* Register to menu provider extension signal managing menu updates */
-	g_signal_connect_object (nautilus_signaller_get_current (), "popup-menu-changed",
-				 G_CALLBACK (schedule_update_menus), view, G_CONNECT_SWAPPED);
-
-	gtk_widget_show (GTK_WIDGET (view));
-
-	g_signal_connect_swapped (nautilus_preferences,
-				  "changed::" NAUTILUS_PREFERENCES_ENABLE_DELETE,
-				  G_CALLBACK (schedule_update_menus), view);
-	g_signal_connect_swapped (nautilus_preferences,
-				  "changed::" NAUTILUS_PREFERENCES_CLICK_POLICY,
-				  G_CALLBACK (click_policy_changed_callback),
-				  view);
-	g_signal_connect_swapped (nautilus_preferences,
-				  "changed::" NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST, 
-				  G_CALLBACK (sort_directories_first_changed_callback), view);
-	g_signal_connect_swapped (gtk_filechooser_preferences,
-				  "changed::" NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES, 
-				  G_CALLBACK (show_hidden_files_changed_callback), view);
-	g_signal_connect_swapped (gnome_lockdown_preferences,
-				  "changed::" NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE,
-				  G_CALLBACK (schedule_update_menus), view);
-
-	g_signal_connect_object (nautilus_file_undo_manager_get (), "undo-changed",
-				 G_CALLBACK (undo_manager_changed_cb), view, 0);
-
-	/* Accessibility */
-	atk_object = gtk_widget_get_accessible (GTK_WIDGET (view));
-	atk_object_set_name (atk_object, _("Content View"));
-	atk_object_set_description (atk_object, _("View of the current folder"));
-
-	nautilus_profile_end (NULL);
-}
-
-static void
-real_unmerge_menus (NautilusView *view)
-{
-	GtkUIManager *ui_manager;
-
-	ui_manager = nautilus_view_get_ui_manager (view);
-	if (ui_manager == NULL) {
-		return;
-	}
-
-	nautilus_ui_unmerge_ui (ui_manager,
-				&view->details->dir_merge_id,
-				&view->details->dir_action_group);
-	nautilus_ui_unmerge_ui (ui_manager,
-				&view->details->extensions_menu_merge_id,
-				&view->details->extensions_menu_action_group);
-	nautilus_ui_unmerge_ui (ui_manager,
-				&view->details->open_with_merge_id,
-				&view->details->open_with_action_group);
-	nautilus_ui_unmerge_ui (ui_manager,
-				&view->details->scripts_merge_id,
-				&view->details->scripts_action_group);
-	nautilus_ui_unmerge_ui (ui_manager,
-				&view->details->templates_merge_id,
-				&view->details->templates_action_group);
-}
-
-static void
 nautilus_view_destroy (GtkWidget *object)
 {
 	NautilusView *view;
@@ -2519,7 +2376,6 @@ nautilus_view_destroy (GtkWidget *object)
 
 	disconnect_model_handlers (view);
 
-	nautilus_view_unmerge_menus (view);
 	nautilus_view_stop_loading (view);
 
 	for (node = view->details->scripts_directory_list; node != NULL; node = next) {
@@ -2537,7 +2393,7 @@ nautilus_view_destroy (GtkWidget *object)
 						   view->details->subdirectory_list->data);
 	}
 
-	remove_update_menus_timeout_callback (view);
+	remove_update_context_menus_timeout_callback (view);
 	remove_update_status_idle_callback (view);
 
 	if (view->details->display_selection_idle_id != 0) {
@@ -2579,7 +2435,7 @@ nautilus_view_finalize (GObject *object)
 	view = NAUTILUS_VIEW (object);
 
 	g_signal_handlers_disconnect_by_func (nautilus_preferences,
-					      schedule_update_menus, view);
+					      schedule_update_context_menus, view);
 	g_signal_handlers_disconnect_by_func (nautilus_preferences,
 					      click_policy_changed_callback, view);
 	g_signal_handlers_disconnect_by_func (nautilus_preferences,
@@ -2590,7 +2446,7 @@ nautilus_view_finalize (GObject *object)
 					      nautilus_view_display_selection_info, view);
 
 	g_signal_handlers_disconnect_by_func (gnome_lockdown_preferences,
-					      schedule_update_menus, view);
+					      schedule_update_context_menus, view);
 
 	unschedule_pop_up_pathbar_context_menu (view);
 	if (view->details->pathbar_popup_event != NULL) {
@@ -2832,7 +2688,8 @@ done_loading (NautilusView *view,
 	 * is no NautilusWindow any more.
 	 */
 	if (window != NULL) {
-		schedule_update_menus (view);
+		nautilus_view_update_toolbar_menus (view);
+		schedule_update_context_menus (view);
 		schedule_update_status (view);
 		reset_update_interval (view);
 
@@ -3084,7 +2941,7 @@ copy_move_done_callback (GHashTable *debuting_files,
 					       G_CONNECT_AFTER);
 		}
 		/* Schedule menu update for undo items */
-		schedule_update_menus (directory_view);
+		schedule_update_context_menus (directory_view);
 	}
 
 	copy_move_done_data_free (copy_move_done_data);
@@ -3345,27 +3202,24 @@ display_selection_info_idle_callback (gpointer data)
 }
 
 static void
-remove_update_menus_timeout_callback (NautilusView *view) 
+remove_update_context_menus_timeout_callback (NautilusView *view)
 {
-	if (view->details->update_menus_timeout_id != 0) {
-		g_source_remove (view->details->update_menus_timeout_id);
-		view->details->update_menus_timeout_id = 0;
+	if (view->details->update_context_menus_timeout_id != 0) {
+		g_source_remove (view->details->update_context_menus_timeout_id);
+		view->details->update_context_menus_timeout_id = 0;
 	}
 }
 
 static void
-update_menus_if_pending (NautilusView *view)
+update_context_menus_if_pending (NautilusView *view)
 {
-	if (view->details->update_menus_timeout_id == 0) {
-		return;
-	}
+	remove_update_context_menus_timeout_callback (view);
 
-	remove_update_menus_timeout_callback (view);
-	nautilus_view_update_menus (view);
+	nautilus_view_update_context_menus(view);
 }
 
 static gboolean
-update_menus_timeout_callback (gpointer data)
+update_context_menus_timeout_callback (gpointer data)
 {
 	NautilusView *view;
 
@@ -3373,8 +3227,8 @@ update_menus_timeout_callback (gpointer data)
 
 	g_object_ref (G_OBJECT (view));
 
-	view->details->update_menus_timeout_id = 0;
-	nautilus_view_update_menus (view);
+	view->details->update_context_menus_timeout_id = 0;
+	nautilus_view_update_context_menus(view);
 
 	g_object_unref (G_OBJECT (view));
 
@@ -3596,7 +3450,7 @@ files_changed_callback (NautilusDirectory *directory,
 	/* A change in MIME type could affect the Open with menu, for
 	 * one thing, so we need to update menus when files change.
 	 */
-	schedule_update_menus (view);
+	schedule_update_context_menus (view);
 }
 
 static void
@@ -3709,19 +3563,6 @@ nautilus_view_get_loading (NautilusView *view)
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), FALSE);
 
 	return view->details->loading;
-}
-
-GtkUIManager *
-nautilus_view_get_ui_manager (NautilusView  *view)
-{
-	NautilusWindow *window;
-
-	if (view->details->slot == NULL) {
-		return NULL;
-	}
-
-	window = nautilus_window_slot_get_window (view->details->slot);
-	return nautilus_window_get_ui_manager (window);
 }
 
 /**
@@ -3888,6 +3729,17 @@ start_renaming_file (NautilusView *view,
 }
 
 static void
+open_one_in_new_window (gpointer data, gpointer callback_data)
+{
+	g_assert (NAUTILUS_IS_FILE (data));
+	g_assert (NAUTILUS_IS_VIEW (callback_data));
+
+	nautilus_view_activate_file (NAUTILUS_VIEW (callback_data),
+				     NAUTILUS_FILE (data),
+				     NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW);
+}
+
+static void
 update_context_menu_position_from_event (NautilusView *view,
 					 GdkEventButton  *event)
 {
@@ -3902,489 +3754,12 @@ update_context_menu_position_from_event (NautilusView *view,
 	}
 }
 
-/* handle the open command */
-
-static void
-open_one_in_new_window (gpointer data, gpointer callback_data)
-{
-	g_assert (NAUTILUS_IS_FILE (data));
-	g_assert (NAUTILUS_IS_VIEW (callback_data));
-
-	nautilus_view_activate_file (NAUTILUS_VIEW (callback_data),
-				     NAUTILUS_FILE (data),
-				     NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW);
-}
-
 NautilusFile *
 nautilus_view_get_directory_as_file (NautilusView *view)
 {
 	g_assert (NAUTILUS_IS_VIEW (view));
 
 	return view->details->directory_as_file; 
-}
-
-static void
-open_with_launch_application_callback (GtkAction *action,
-				       gpointer callback_data)
-{
-	ApplicationLaunchParameters *launch_parameters;
-	
-	launch_parameters = (ApplicationLaunchParameters *) callback_data;
-	nautilus_launch_application 
-		(launch_parameters->application,
-		 launch_parameters->files,
-		 nautilus_view_get_containing_window (launch_parameters->directory_view));
-}
-
-static char *
-escape_action_path (const char *action_path)
-{
-	GString *s;
-
-	if (action_path == NULL) {
-		return NULL;
-	}
-	
-	s = g_string_sized_new (strlen (action_path) + 2);
-
-	while (*action_path != 0) {
-		switch (*action_path) {
-		case '\\':
-			g_string_append (s, "\\\\");
-			break;
-		case '&':
-			g_string_append (s, "\\a");
-			break;
-		case '"':
-			g_string_append (s, "\\q");
-			break;
-		default:
-			g_string_append_c (s, *action_path);
-		}
-
-		action_path ++;
-	}
-	return g_string_free (s, FALSE);
-}
-
-
-static void
-add_submenu (GtkUIManager *ui_manager,
-	     GtkActionGroup *action_group,
-	     guint merge_id,
-	     const char *parent_path,
-	     const char *uri,
-	     const char *label,
-	     GdkPixbuf *pixbuf,
-	     gboolean add_action)
-{
-	char *escaped_label;
-	char *action_name;
-	char *submenu_name;
-	char *escaped_submenu_name;
-	GtkAction *action;
-	
-	if (parent_path != NULL) {
-		action_name = nautilus_escape_action_name (uri, "submenu_");
-		submenu_name = g_path_get_basename (uri);
-		escaped_submenu_name = escape_action_path (submenu_name);
-		escaped_label = eel_str_double_underscores (label);
-
-		if (add_action) {
-			action = gtk_action_new (action_name,
-						 escaped_label,
-						 NULL,
-						 NULL);
-			if (pixbuf != NULL) {
-				gtk_action_set_gicon (action, G_ICON (pixbuf));
-			}
-			
-			g_object_set (action, "hide-if-empty", FALSE, NULL);
-			
-			gtk_action_group_add_action (action_group,
-						     action);
-			g_object_unref (action);
-		}
-
-		gtk_ui_manager_add_ui (ui_manager,
-				       merge_id,
-				       parent_path,
-				       escaped_submenu_name,
-				       action_name,
-				       GTK_UI_MANAGER_MENU,
-				       FALSE);
-		g_free (action_name);
-		g_free (escaped_label);
-		g_free (submenu_name);
-		g_free (escaped_submenu_name);
-	}
-}
-
-static void
-menu_item_show_image (GtkUIManager *ui_manager,
-		      const char   *parent_path,
-		      const char   *action_name)
-{
-	char *path;
-	GtkWidget *menuitem;
-
-	path = g_strdup_printf ("%s/%s", parent_path, action_name);
-	menuitem = gtk_ui_manager_get_widget (ui_manager,
-					      path);
-	if (menuitem != NULL) {
-		gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (menuitem),
-							   TRUE);
-	}
-	g_free (path);
-}
-
-static void
-add_application_to_open_with_menu (NautilusView *view,
-				   GAppInfo *application, 
-				   GList *files,
-				   int index,
-				   const char *menu_placeholder,
-				   const char *popup_placeholder,
-				   const gboolean submenu)
-{
-	ApplicationLaunchParameters *launch_parameters;
-	char *tip;
-	char *label;
-	char *action_name;
-	char *escaped_app;
-	GtkAction *action;
-	GIcon *app_icon;
-	GtkUIManager *ui_manager;
-
-	launch_parameters = application_launch_parameters_new 
-		(application, files, view);
-	escaped_app = eel_str_double_underscores (g_app_info_get_name (application));
-	if (submenu)
-		label = g_strdup_printf ("%s", escaped_app);
-	else
-		label = g_strdup_printf (_("Open With %s"), escaped_app);
-
-	tip = g_strdup_printf (ngettext ("Use “%s” to open the selected item",
-					 "Use “%s” to open the selected items",
-					 g_list_length (files)),
-			       escaped_app);
-	g_free (escaped_app);
-
-	action_name = g_strdup_printf ("open_with_%d", index);
-	
-	action = gtk_action_new (action_name,
-				 label,
-				 tip,
-				 NULL);
-
-	app_icon = g_app_info_get_icon (application);
-	if (app_icon != NULL) {
-		g_object_ref (app_icon);
-	} else {
-		app_icon = g_themed_icon_new ("application-x-executable");
-	}
-
-	gtk_action_set_gicon (action, app_icon);
-	g_object_unref (app_icon);
-
-	g_signal_connect_data (action, "activate",
-			       G_CALLBACK (open_with_launch_application_callback),
-			       launch_parameters, 
-			       (GClosureNotify)application_launch_parameters_free, 0);
-
-	gtk_action_group_add_action (view->details->open_with_action_group,
-				     action);
-	g_object_unref (action);
-
-	ui_manager = nautilus_view_get_ui_manager (view);
-	gtk_ui_manager_add_ui (ui_manager,
-			       view->details->open_with_merge_id,
-			       popup_placeholder,
-			       action_name,
-			       action_name,
-			       GTK_UI_MANAGER_MENUITEM,
-			       FALSE);
-
-	menu_item_show_image (ui_manager, popup_placeholder, action_name);
-
-	g_free (action_name);
-	g_free (label);
-	g_free (tip);
-}
-
-static void
-get_x_content_async_callback (const char **content,
-			      gpointer user_data)
-{
-	NautilusView *view;
-
-	view = NAUTILUS_VIEW (user_data);
-
-	if (view->details->slot != NULL) {
-		schedule_update_menus (view);
-	}
-	g_object_unref (view);
-}
-
-static void
-add_x_content_apps (NautilusView *view, NautilusFile *file, GList **applications)
-{
-	GMount *mount;
-	char **x_content_types;
-	unsigned int n;
-
-	g_return_if_fail (applications != NULL);
-
-	mount = nautilus_file_get_mount (file);
-
-	if (mount == NULL) {
-		return;
-	}
-	
-	x_content_types = nautilus_get_cached_x_content_types_for_mount (mount);
-	if (x_content_types != NULL) {
-		for (n = 0; x_content_types[n] != NULL; n++) {
-			char *x_content_type = x_content_types[n];
-			GList *app_info_for_x_content_type;
-			
-			app_info_for_x_content_type = g_app_info_get_all_for_type (x_content_type);
-			*applications = g_list_concat (*applications, app_info_for_x_content_type);
-		}
-		g_strfreev (x_content_types);
-	} else {
-		nautilus_get_x_content_types_for_mount_async (mount,
-							      get_x_content_async_callback,
-							      NULL,
-							      g_object_ref (view));
-		
-	}
-
-	g_object_unref (mount);
-}
-
-static void
-reset_open_with_menu (NautilusView *view, GList *selection)
-{
-	GList *applications, *node;
-	NautilusFile *file;
-	gboolean submenu_visible, filter_default;
-	int num_applications;
-	int index;
-	gboolean other_applications_visible;
-	gboolean open_with_chooser_visible;
-	GtkUIManager *ui_manager;
-	GtkAction *action;
-	GAppInfo *default_app;
-
-	/* Clear any previous inserted items in the applications and viewers placeholders */
-
-	ui_manager = nautilus_view_get_ui_manager (view);
-	nautilus_ui_unmerge_ui (ui_manager,
-				&view->details->open_with_merge_id,
-				&view->details->open_with_action_group);
-	
-	nautilus_ui_prepare_merge_ui (ui_manager,
-				      "OpenWithGroup",
-				      &view->details->open_with_merge_id,
-				      &view->details->open_with_action_group);
-
-	other_applications_visible = (selection != NULL);
-	filter_default = (selection != NULL);
-
-	for (node = selection; node != NULL; node = node->next) {
-
-		file = NAUTILUS_FILE (node->data);
-
-		other_applications_visible &= (!nautilus_mime_file_opens_in_view (file) &&
-					       !nautilus_file_is_nautilus_link (file));
-	}
-
-	default_app = NULL;
-	if (filter_default) {
-		default_app = nautilus_mime_get_default_application_for_files (selection);
-	}
-
-	applications = NULL;
-	if (other_applications_visible) {
-		applications = nautilus_mime_get_applications_for_files (selection);
-	}
-
-	if (g_list_length (selection) == 1) {
-		add_x_content_apps (view, NAUTILUS_FILE (selection->data), &applications);
-	}
-
-
-	num_applications = g_list_length (applications);
-
-	submenu_visible = (num_applications > 1);
-
-	for (node = applications, index = 0; node != NULL; node = node->next, index++) {
-		GAppInfo *application;
-		char *menu_path;
-		char *popup_path;
-		
-		application = node->data;
-
-		if (default_app != NULL && g_app_info_equal (default_app, application)) {
-			continue;
-		}
-
-		if (submenu_visible) {
-			menu_path = NAUTILUS_VIEW_MENU_PATH_APPLICATIONS_SUBMENU_PLACEHOLDER;
-			popup_path = NAUTILUS_VIEW_POPUP_PATH_APPLICATIONS_SUBMENU_PLACEHOLDER;
-		} else {
-			menu_path = NAUTILUS_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER;
-			popup_path = NAUTILUS_VIEW_POPUP_PATH_APPLICATIONS_PLACEHOLDER;
-		}
-
-		gtk_ui_manager_add_ui (nautilus_view_get_ui_manager (view),
-				       view->details->open_with_merge_id,
-				       menu_path,
-				       "separator",
-				       NULL,
-				       GTK_UI_MANAGER_SEPARATOR,
-				       FALSE);
-				       
-		add_application_to_open_with_menu (view, 
-						   node->data, 
-						   selection, 
-						   index, 
-						   menu_path, popup_path, submenu_visible);
-	}
-	g_list_free_full (applications, g_object_unref);
-	if (default_app != NULL) {
-		g_object_unref (default_app);
-	}
-
-	open_with_chooser_visible = other_applications_visible &&
-		g_list_length (selection) == 1;
-
-	if (submenu_visible) {
-		action = gtk_action_group_get_action (view->details->dir_action_group,
-						      NAUTILUS_ACTION_OTHER_APPLICATION1);
-		gtk_action_set_visible (action, open_with_chooser_visible);
-		action = gtk_action_group_get_action (view->details->dir_action_group,
-						      NAUTILUS_ACTION_OTHER_APPLICATION2);
-		gtk_action_set_visible (action, FALSE);
-	} else {
-		action = gtk_action_group_get_action (view->details->dir_action_group,
-						      NAUTILUS_ACTION_OTHER_APPLICATION1);
-		gtk_action_set_visible (action, FALSE);
-		action = gtk_action_group_get_action (view->details->dir_action_group,
-						      NAUTILUS_ACTION_OTHER_APPLICATION2);
-		gtk_action_set_visible (action, open_with_chooser_visible);
-	}
-}
-
-static GList *
-get_all_extension_menu_items (GtkWidget *window,
-			      GList *selection)
-{
-	GList *items;
-	GList *providers;
-	GList *l;
-	
-	providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_MENU_PROVIDER);
-	items = NULL;
-
-	for (l = providers; l != NULL; l = l->next) {
-		NautilusMenuProvider *provider;
-		GList *file_items;
-		
-		provider = NAUTILUS_MENU_PROVIDER (l->data);
-		file_items = nautilus_menu_provider_get_file_items (provider,
-								    window,
-								    selection);
-		items = g_list_concat (items, file_items);		
-	}
-
-	nautilus_module_extension_list_free (providers);
-
-	return items;
-}
-
-typedef struct 
-{
-	NautilusMenuItem *item;
-	NautilusView *view;
-	GList *selection;
-	GtkAction *action;
-} ExtensionActionCallbackData;
-
-
-static void
-extension_action_callback_data_free (ExtensionActionCallbackData *data)
-{
-	g_object_unref (data->item);
-	nautilus_file_list_free (data->selection);
-	
-	g_free (data);
-}
-
-static gboolean
-search_in_menu_items (GList* items, const char *item_name)
-{
-	GList* list;
-	
-	for (list = items; list != NULL; list = list->next) {
-		NautilusMenu* menu;
-		char *name;
-		
-		g_object_get (list->data, "name", &name, NULL);
-		if (strcmp (name, item_name) == 0) {
-			g_free (name);
-			return TRUE;
-		}
-		g_free (name);
-
-		menu = NULL;
-		g_object_get (list->data, "menu", &menu, NULL);
-		if (menu != NULL) {
-			gboolean ret;
-			GList* submenus;
-
-			submenus = nautilus_menu_get_items (menu);
-			ret = search_in_menu_items (submenus, item_name);
-			nautilus_menu_item_list_free (submenus);
-			g_object_unref (menu);
-			if (ret) {
-				return TRUE;
-			}
-		}
-	}
-	return FALSE;
-}
-
-static void
-extension_action_callback (GtkAction *action,
-			   gpointer callback_data)
-{
-	ExtensionActionCallbackData *data;
-	char *item_name;
-	gboolean is_valid;
-	GList *l;
-	GList *items;
-
-	data = callback_data;
-
-	/* Make sure the selected menu item is valid for the final sniffed
-	 * mime type */
-	g_object_get (data->item, "name", &item_name, NULL);
-	items = get_all_extension_menu_items (gtk_widget_get_toplevel (GTK_WIDGET (data->view)), 
-					      data->selection);
-	
-	is_valid = search_in_menu_items (items, item_name);
-
-	for (l = items; l != NULL; l = l->next) {
-		g_object_unref (l->data);
-	}
-	g_list_free (items);
-	
-	g_free (item_name);
-
-	if (is_valid) {
-		nautilus_menu_item_activate (data->item);
-	}
 }
 
 static GdkPixbuf *
@@ -4403,153 +3778,6 @@ get_menu_icon_for_file (NautilusFile *file,
 	g_object_unref (info);
 	
 	return pixbuf;
-}
-
-static GtkAction *
-add_extension_action_for_files (NautilusView *view, 
-				NautilusMenuItem *item,
-				GList *files)
-{
-	char *name, *label, *tip, *icon;
-	gboolean sensitive, priority;
-	GtkAction *action;
-	GdkPixbuf *pixbuf;
-	ExtensionActionCallbackData *data;
-	
-	g_object_get (G_OBJECT (item), 
-		      "name", &name, "label", &label, 
-		      "tip", &tip, "icon", &icon,
-		      "sensitive", &sensitive,
-		      "priority", &priority,
-		      NULL);
-
-	action = gtk_action_new (name,
-				 label,
-				 tip,
-				 NULL);
-
-	if (icon != NULL) {
-		pixbuf = nautilus_ui_get_menu_icon (icon, GTK_WIDGET (view));
-		if (pixbuf != NULL) {
-			gtk_action_set_gicon (action, G_ICON (pixbuf));
-			g_object_unref (pixbuf);
-		}
-	}
-
-	gtk_action_set_sensitive (action, sensitive);
-	g_object_set (action, "is-important", priority, NULL);
-
-	data = g_new0 (ExtensionActionCallbackData, 1);
-	data->item = g_object_ref (item);
-	data->view = view;
-	data->selection = nautilus_file_list_copy (files);
-	data->action = action;
-
-	g_signal_connect_data (action, "activate",
-			       G_CALLBACK (extension_action_callback),
-			       data,
-			       (GClosureNotify)extension_action_callback_data_free, 0);
-		
-	gtk_action_group_add_action (view->details->extensions_menu_action_group,
-				     GTK_ACTION (action));
-	g_object_unref (action);
-	
-	g_free (name);
-	g_free (label);
-	g_free (tip);
-	g_free (icon);
-
-	return action;
-}
-
-static void
-add_extension_menu_items (NautilusView *view,
-			  GList *files,
-			  GList *menu_items,
-			  const char *subdirectory)
-{
-	GtkUIManager *ui_manager;
-	GList *l;
-
-	ui_manager = nautilus_view_get_ui_manager (view);
-	
-	for (l = menu_items; l; l = l->next) {
-		NautilusMenuItem *item;
-		NautilusMenu *menu;
-		GtkAction *action;
-		char *path;
-		
-		item = NAUTILUS_MENU_ITEM (l->data);
-		
-		g_object_get (item, "menu", &menu, NULL);
-		
-		action = add_extension_action_for_files (view, item, files);
-		
-		path = g_build_path ("/", NAUTILUS_VIEW_POPUP_PATH_EXTENSION_ACTIONS, subdirectory, NULL);
-		gtk_ui_manager_add_ui (ui_manager,
-				       view->details->extensions_menu_merge_id,
-				       path,
-				       gtk_action_get_name (action),
-				       gtk_action_get_name (action),
-				       (menu != NULL) ? GTK_UI_MANAGER_MENU : GTK_UI_MANAGER_MENUITEM,
-				       FALSE);
-		g_free (path);
-
-		path = g_build_path ("/", NAUTILUS_VIEW_MENU_PATH_EXTENSION_ACTIONS_PLACEHOLDER, subdirectory, NULL);
-		gtk_ui_manager_add_ui (ui_manager,
-				       view->details->extensions_menu_merge_id,
-				       path,
-				       gtk_action_get_name (action),
-				       gtk_action_get_name (action),
-				       (menu != NULL) ? GTK_UI_MANAGER_MENU : GTK_UI_MANAGER_MENUITEM,
-				       FALSE);
-		g_free (path);
-
-		/* recursively fill the menu */		       
-		if (menu != NULL) {
-			char *subdir;
-			GList *children;
-			
-			children = nautilus_menu_get_items (menu);
-			
-			subdir = g_build_path ("/", subdirectory, gtk_action_get_name (action), NULL);
-			add_extension_menu_items (view,
-						  files,
-						  children,
-						  subdir);
-
-			nautilus_menu_item_list_free (children);
-			g_free (subdir);
-		}			
-	}
-}
-
-static void
-reset_extension_actions_menu (NautilusView *view, GList *selection)
-{
-	GList *items;
-	GtkUIManager *ui_manager;
-	
-	/* Clear any previous inserted items in the extension actions placeholder */
-	ui_manager = nautilus_view_get_ui_manager (view);
-
-	nautilus_ui_unmerge_ui (ui_manager,
-				&view->details->extensions_menu_merge_id,
-				&view->details->extensions_menu_action_group);
-	
-	nautilus_ui_prepare_merge_ui (ui_manager,
-				      "DirExtensionsMenuGroup",
-				      &view->details->extensions_menu_merge_id,
-				      &view->details->extensions_menu_action_group);
-
-	items = get_all_extension_menu_items (gtk_widget_get_toplevel (GTK_WIDGET (view)), 
-					      selection);
-	if (items != NULL) {
-		add_extension_menu_items (view, selection, items, "");
-
-		g_list_foreach (items, (GFunc) g_object_unref, NULL);
-		g_list_free (items);
-	}
 }
 
 static char *
@@ -4745,7 +3973,9 @@ unset_script_environment_variables (void)
 }
 
 static void
-run_script_callback (GtkAction *action, gpointer callback_data)
+run_script (GSimpleAction *action,
+            GVariant      *state,
+            gpointer       user_data)
 {
 	ScriptLaunchParameters *launch_parameters;
 	GdkScreen *screen;
@@ -4756,7 +3986,7 @@ run_script_callback (GtkAction *action, gpointer callback_data)
 	char *old_working_dir;
 	char **parameters;
 	
-	launch_parameters = (ScriptLaunchParameters *) callback_data;
+	launch_parameters = (ScriptLaunchParameters *) user_data;
 
 	file_uri = nautilus_file_get_uri (launch_parameters->file);
 	local_file_path = g_filename_from_uri (file_uri, NULL, NULL);
@@ -4776,7 +4006,7 @@ run_script_callback (GtkAction *action, gpointer callback_data)
 
 	screen = gtk_widget_get_screen (GTK_WIDGET (launch_parameters->directory_view));
 
-	DEBUG ("run_script_callback, script_path=“%s” (omitting script parameters)",
+	DEBUG ("run_script, script_path=“%s” (omitting script parameters)",
 	       local_file_path);
 
 	nautilus_launch_application_from_command_array (screen, quoted_path, FALSE,
@@ -4791,112 +4021,48 @@ run_script_callback (GtkAction *action, gpointer callback_data)
 }
 
 static void
-add_script_to_scripts_menus (NautilusView *directory_view,
+add_script_to_scripts_menus (NautilusView *view,
 			     NautilusFile *file,
-			     const char *menu_path,
-			     const char *popup_path, 
-			     const char *popup_bg_path)
+			     GMenu *menu)
 {
+	gchar *name;
+	GdkPixbuf *mimetype_icon;
+	gchar *action_name, *detailed_action_name;
 	ScriptLaunchParameters *launch_parameters;
-	char *tip;
-	char *name;
-	char *uri;
-	char *action_name;
-	char *escaped_label;
-	GdkPixbuf *pixbuf;
-	GtkUIManager *ui_manager;
-	GtkAction *action;
+	GAction *action;
+	GMenuItem *menu_item;
+
+	launch_parameters = script_launch_parameters_new (file, view);
 
 	name = nautilus_file_get_display_name (file);
-	uri = nautilus_file_get_uri (file);
-	tip = g_strdup_printf (_("Run “%s” on any selected items"), name);
+	action_name = nautilus_escape_action_name (name, "script_");
 
-	launch_parameters = script_launch_parameters_new (file, directory_view);
-
-	action_name = nautilus_escape_action_name (uri, "script_");
-	escaped_label = eel_str_double_underscores (name);
-
-	action = gtk_action_new (action_name,
-				 escaped_label,
-				 tip,
-				 NULL);
-
-	pixbuf = get_menu_icon_for_file (file, GTK_WIDGET (directory_view));
-	if (pixbuf != NULL) {
-		gtk_action_set_gicon (action, G_ICON (pixbuf));
-		g_object_unref (pixbuf);
-	}
-
+	action = G_ACTION (g_simple_action_new (action_name, NULL));
+	
 	g_signal_connect_data (action, "activate",
-			       G_CALLBACK (run_script_callback),
+			       G_CALLBACK (run_script),
 			       launch_parameters,
 			       (GClosureNotify)script_launch_parameters_free, 0);
 
-	gtk_action_group_add_action_with_accel (directory_view->details->scripts_action_group,
-						action, NULL);
+	g_action_map_add_action (G_ACTION_MAP (view->details->view_action_group), action);
+	
 	g_object_unref (action);
+	
+	detailed_action_name =  g_strconcat ("view.", action_name, NULL);
+	menu_item = g_menu_item_new (name, detailed_action_name);
 
-	ui_manager = nautilus_view_get_ui_manager (directory_view);
-
-	gtk_ui_manager_add_ui (ui_manager,
-			       directory_view->details->scripts_merge_id,
-			       menu_path,
-			       action_name,
-			       action_name,
-			       GTK_UI_MANAGER_MENUITEM,
-			       FALSE);
-	gtk_ui_manager_add_ui (ui_manager,
-			       directory_view->details->scripts_merge_id,
-			       popup_path,
-			       action_name,
-			       action_name,
-			       GTK_UI_MANAGER_MENUITEM,
-			       FALSE);
-	gtk_ui_manager_add_ui (ui_manager,
-			       directory_view->details->scripts_merge_id,
-			       popup_bg_path,
-			       action_name,
-			       action_name,
-			       GTK_UI_MANAGER_MENUITEM,
-			       FALSE);
-
-	menu_item_show_image (ui_manager, menu_path, action_name);
-	menu_item_show_image (ui_manager, popup_path, action_name);
-	menu_item_show_image (ui_manager, popup_bg_path, action_name);
-
-	g_free (name);
-	g_free (uri);
-	g_free (tip);
-	g_free (action_name);
-	g_free (escaped_label);
-}
-
-static void
-add_submenu_to_directory_menus (NautilusView *directory_view,
-				GtkActionGroup *action_group,
-				guint merge_id,
-				NautilusFile *file,
-				const char *menu_path,
-				const char *popup_path,
-				const char *popup_bg_path)
-{
-	char *name;
-	GdkPixbuf *pixbuf;
-	char *uri;
-	GtkUIManager *ui_manager;
-
-	ui_manager = nautilus_view_get_ui_manager (directory_view);
-	uri = nautilus_file_get_uri (file);
-	name = nautilus_file_get_display_name (file);
-	pixbuf = get_menu_icon_for_file (file, GTK_WIDGET (directory_view));
-	add_submenu (ui_manager, action_group, merge_id, menu_path, uri, name, pixbuf, TRUE);
-	add_submenu (ui_manager, action_group, merge_id, popup_path, uri, name, pixbuf, FALSE);
-	add_submenu (ui_manager, action_group, merge_id, popup_bg_path, uri, name, pixbuf, FALSE);
-	if (pixbuf) {
-		g_object_unref (pixbuf);
+	mimetype_icon = get_menu_icon_for_file (file, GTK_WIDGET (view));
+	if (mimetype_icon != NULL) {
+		g_menu_item_set_icon (menu_item, G_ICON (mimetype_icon));
+		g_object_unref (mimetype_icon);
 	}
+
+	g_menu_append_item (menu, menu_item);
+
 	g_free (name);
-	g_free (uri);
+	g_free (action_name);
+	g_free (detailed_action_name);
+	g_object_unref (menu_item);
 }
 
 static gboolean
@@ -4923,199 +4089,169 @@ directory_belongs_in_scripts_menu (const char *uri)
 	return TRUE;
 }
 
-static gboolean
-update_directory_in_scripts_menu (NautilusView *view, NautilusDirectory *directory)
+static GMenu *
+update_directory_in_scripts_menu (NautilusView *view,
+				  NautilusDirectory *directory)
 {
-	char *menu_path, *popup_path, *popup_bg_path;
 	GList *file_list, *filtered, *node;
+	GMenu *menu, *children_menu;
+	GMenuItem *menu_item;
 	gboolean any_scripts;
 	NautilusFile *file;
 	NautilusDirectory *dir;
 	char *uri;
-	char *escaped_path;
-	
-	uri = nautilus_directory_get_uri (directory);
-	escaped_path = escape_action_path (uri + scripts_directory_uri_length);
-	g_free (uri);
-	menu_path = g_strconcat (NAUTILUS_VIEW_MENU_PATH_SCRIPTS_PLACEHOLDER,
-				 escaped_path,
-				 NULL);
-	popup_path = g_strconcat (NAUTILUS_VIEW_POPUP_PATH_SCRIPTS_PLACEHOLDER,
-				  escaped_path,
-				  NULL);
-	popup_bg_path = g_strconcat (NAUTILUS_VIEW_POPUP_PATH_BACKGROUND_SCRIPTS_PLACEHOLDER,
-				     escaped_path,
-				     NULL);
-	g_free (escaped_path);
+	int num;
+
+	g_return_if_fail (NAUTILUS_IS_VIEW (view));
+	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 
 	file_list = nautilus_directory_get_file_list (directory);
 	filtered = nautilus_file_list_filter_hidden (file_list, FALSE);
 	nautilus_file_list_free (file_list);
+	menu = g_menu_new ();
 
 	file_list = nautilus_file_list_sort_by_display_name (filtered);
 
+	num = 0;
 	any_scripts = FALSE;
-	for (node = file_list; node != NULL; node = node->next) {
+	for (node = file_list; num < TEMPLATE_LIMIT && node != NULL; node = node->next, num++) {
 		file = node->data;
-
-		if (nautilus_file_is_launchable (file)) {
-			add_script_to_scripts_menus (view, file, menu_path, popup_path, popup_bg_path);
-			any_scripts = TRUE;
-		} else if (nautilus_file_is_directory (file)) {
+		if (nautilus_file_is_directory (file)) {
 			uri = nautilus_file_get_uri (file);
 			if (directory_belongs_in_scripts_menu (uri)) {
 				dir = nautilus_directory_get_by_uri (uri);
 				add_directory_to_scripts_directory_list (view, dir);
+
+				children_menu = update_directory_in_scripts_menu (view, dir);
+
+				if (children_menu != NULL) {
+					menu_item = g_menu_item_new_submenu (nautilus_file_get_display_name (file),
+									     G_MENU_MODEL (children_menu));
+					g_menu_append_item (menu, menu_item);
+					any_scripts = TRUE;
+					g_object_unref (menu_item);
+					g_object_unref (children_menu);
+				}
+
 				nautilus_directory_unref (dir);
-
-				add_submenu_to_directory_menus (view,
-								view->details->scripts_action_group,
-								view->details->scripts_merge_id,
-								file, menu_path, popup_path, popup_bg_path);
-
-				any_scripts = TRUE;
 			}
 			g_free (uri);
+		} else if (nautilus_file_is_launchable (file)) {
+			add_script_to_scripts_menus (view, file, menu);
+			any_scripts = TRUE;
 		}
 	}
 
 	nautilus_file_list_free (file_list);
 
-	g_free (popup_path);
-	g_free (popup_bg_path);
-	g_free (menu_path);
+	if (!any_scripts) {
+		g_object_unref (menu);
+		menu = NULL;
+	}
 
-	return any_scripts;
+	return menu;
 }
+
+
 
 static void
 update_scripts_menu (NautilusView *view)
 {
-	gboolean any_scripts;
 	GList *sorted_copy, *node;
 	NautilusDirectory *directory;
+	GMenu *submenu;
 	char *uri;
-	GtkUIManager *ui_manager;
-	GtkAction *action;
 
-	/* There is a race condition here.  If we don't mark the scripts menu as
-	   valid before we begin our task then we can lose script menu updates that
-	   occur before we finish. */
-	view->details->scripts_invalid = FALSE;
-
-	ui_manager = nautilus_view_get_ui_manager (view);
-	nautilus_ui_unmerge_ui (ui_manager,
-				&view->details->scripts_merge_id,
-				&view->details->scripts_action_group);
-	
-	nautilus_ui_prepare_merge_ui (ui_manager,
-				      "ScriptsGroup",
-				      &view->details->scripts_merge_id,
-				      &view->details->scripts_action_group);
-
-	/* As we walk through the directories, remove any that no longer belong. */
-	any_scripts = FALSE;
 	sorted_copy = nautilus_directory_list_sort_by_uri
 		(nautilus_directory_list_copy (view->details->scripts_directory_list));
+
 	for (node = sorted_copy; node != NULL; node = node->next) {
 		directory = node->data;
 
 		uri = nautilus_directory_get_uri (directory);
 		if (!directory_belongs_in_scripts_menu (uri)) {
 			remove_directory_from_scripts_directory_list (view, directory);
-		} else if (update_directory_in_scripts_menu (view, directory)) {
-			any_scripts = TRUE;
 		}
 		g_free (uri);
 	}
 	nautilus_directory_list_free (sorted_copy);
 
-	action = gtk_action_group_get_action (view->details->dir_action_group, NAUTILUS_ACTION_SCRIPTS);
-	gtk_action_set_visible (action, any_scripts);
+	directory = nautilus_directory_get_by_uri (scripts_directory_uri);
+	submenu = update_directory_in_scripts_menu (view, directory);
+	if (submenu != NULL) {
+		nautilus_gmenu_merge (view->details->selection_menu,
+				      submenu,
+				      "scripts-submenu",
+				      TRUE);
+	}
+	
+	view->details->scripts_present = submenu != NULL;
 }
 
 static void
-create_template_callback (GtkAction *action, gpointer callback_data)
+create_template (GSimpleAction *action,
+                 GVariant      *state,
+                 gpointer       user_data)
 {
+
 	CreateTemplateParameters *parameters;
 
-	parameters = callback_data;
+	parameters = user_data;
 	
 	nautilus_view_new_file (parameters->directory_view, NULL, parameters->file);
 }
 
 static void
-add_template_to_templates_menus (NautilusView *directory_view,
+add_template_to_templates_menus (NautilusView *view,
 				 NautilusFile *file,
-				 const char *menu_path,
-				 const char *popup_bg_path)
+				 GMenu *menu)
 {
-	char *tmp, *tip, *uri, *name;
+	char *tmp, *uri, *name;
 	char *escaped_label;
-	GdkPixbuf *pixbuf;
-	char *action_name;
+	GdkPixbuf *mimetype_icon;
+	char *action_name, *detailed_action_name;
 	CreateTemplateParameters *parameters;
-	GtkUIManager *ui_manager;
-	GtkAction *action;
+	GAction *action;
+	GMenuItem *menu_item;
 
 	tmp = nautilus_file_get_display_name (file);
 	name = eel_filename_strip_extension (tmp);
 	g_free (tmp);
 
 	uri = nautilus_file_get_uri (file);
-	tip = g_strdup_printf (_("Create a new document from template “%s”"), name);
 
 	action_name = nautilus_escape_action_name (uri, "template_");
 	escaped_label = eel_str_double_underscores (name);
 	
-	parameters = create_template_parameters_new (file, directory_view);
+	parameters = create_template_parameters_new (file, view);
 
-	action = gtk_action_new (action_name,
-				 escaped_label,
-				 tip,
-				 NULL);
+	action = G_ACTION (g_simple_action_new (action_name, NULL));
 	
-	pixbuf = get_menu_icon_for_file (file, GTK_WIDGET (directory_view));
-	if (pixbuf != NULL) {
-		gtk_action_set_gicon (action, G_ICON (pixbuf));
-		g_object_unref (pixbuf);
-	}
-
 	g_signal_connect_data (action, "activate",
-			       G_CALLBACK (create_template_callback),
+			       G_CALLBACK (create_template),
 			       parameters, 
 			       (GClosureNotify)create_templates_parameters_free, 0);
+
+	g_action_map_add_action (G_ACTION_MAP (view->details->view_action_group), action);
 	
-	gtk_action_group_add_action (directory_view->details->templates_action_group,
-				     action);
 	g_object_unref (action);
-
-	ui_manager = nautilus_view_get_ui_manager (directory_view);
-
-	gtk_ui_manager_add_ui (ui_manager,
-			       directory_view->details->templates_merge_id,
-			       menu_path,
-			       action_name,
-			       action_name,
-			       GTK_UI_MANAGER_MENUITEM,
-			       FALSE);
 	
-	gtk_ui_manager_add_ui (ui_manager,
-			       directory_view->details->templates_merge_id,
-			       popup_bg_path,
-			       action_name,
-			       action_name,
-			       GTK_UI_MANAGER_MENUITEM,
-			       FALSE);
+	detailed_action_name =  g_strconcat ("view.", action_name, NULL);
+	menu_item = g_menu_item_new (name, detailed_action_name);
 
-	menu_item_show_image (ui_manager, menu_path, action_name);
-	menu_item_show_image (ui_manager, popup_bg_path, action_name);
+	mimetype_icon = get_menu_icon_for_file (file, GTK_WIDGET (view));
+	if (mimetype_icon != NULL) {
+		g_menu_item_set_icon (menu_item, G_ICON (mimetype_icon));
+		g_object_unref (mimetype_icon);
+	}
+
+	g_menu_append_item (menu, menu_item);
 
 	g_free (escaped_label);
 	g_free (name);
-	g_free (tip);
 	g_free (uri);
 	g_free (action_name);
+	g_free (detailed_action_name);
 }
 
 static void
@@ -5168,37 +4304,28 @@ directory_belongs_in_templates_menu (const char *templates_directory_uri,
 	return TRUE;
 }
 
-static gboolean
+static GMenu *
 update_directory_in_templates_menu (NautilusView *view,
-				    const char *templates_directory_uri,
 				    NautilusDirectory *directory)
 {
-	char *menu_path, *popup_bg_path;
 	GList *file_list, *filtered, *node;
+	GMenu *menu, *children_menu;
+	GMenuItem *menu_item;
 	gboolean any_templates;
 	NautilusFile *file;
 	NautilusDirectory *dir;
-	char *escaped_path;
 	char *uri;
+	char *templates_directory_uri;
 	int num;
 
-	/* We know this directory belongs to the template dir, so it must exist */
-	g_assert (templates_directory_uri);
-	
-	uri = nautilus_directory_get_uri (directory);
-	escaped_path = escape_action_path (uri + strlen (templates_directory_uri));
-	g_free (uri);
-	menu_path = g_strconcat (NAUTILUS_VIEW_MENU_PATH_NEW_DOCUMENTS_PLACEHOLDER,
-				 escaped_path,
-				 NULL);
-	popup_bg_path = g_strconcat (NAUTILUS_VIEW_POPUP_PATH_BACKGROUND_NEW_DOCUMENTS_PLACEHOLDER,
-				     escaped_path,
-				     NULL);
-	g_free (escaped_path);
+	g_return_if_fail (NAUTILUS_IS_VIEW (view));
+	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 
 	file_list = nautilus_directory_get_file_list (directory);
 	filtered = nautilus_file_list_filter_hidden (file_list, FALSE);
 	nautilus_file_list_free (file_list);
+	templates_directory_uri = nautilus_get_templates_directory_uri ();
+	menu = g_menu_new ();
 
 	file_list = nautilus_file_list_sort_by_display_name (filtered);
 
@@ -5206,34 +4333,41 @@ update_directory_in_templates_menu (NautilusView *view,
 	any_templates = FALSE;
 	for (node = file_list; num < TEMPLATE_LIMIT && node != NULL; node = node->next, num++) {
 		file = node->data;
-
 		if (nautilus_file_is_directory (file)) {
 			uri = nautilus_file_get_uri (file);
 			if (directory_belongs_in_templates_menu (templates_directory_uri, uri)) {
 				dir = nautilus_directory_get_by_uri (uri);
 				add_directory_to_templates_directory_list (view, dir);
+
+				children_menu = update_directory_in_templates_menu (view, dir);
+
+				if (children_menu != NULL) {
+					menu_item = g_menu_item_new_submenu (nautilus_file_get_display_name (file),
+									     G_MENU_MODEL (children_menu));
+					g_menu_append_item (menu, menu_item);
+					any_templates = TRUE;
+					g_object_unref (menu_item);
+					g_object_unref (children_menu);
+				}
+
 				nautilus_directory_unref (dir);
-
-				add_submenu_to_directory_menus (view,
-								view->details->templates_action_group,
-								view->details->templates_merge_id,
-								file, menu_path, NULL, popup_bg_path);
-
-				any_templates = TRUE;
 			}
 			g_free (uri);
 		} else if (nautilus_file_can_read (file)) {
-			add_template_to_templates_menus (view, file, menu_path, popup_bg_path);
+			add_template_to_templates_menus (view, file, menu);
 			any_templates = TRUE;
 		}
 	}
 
 	nautilus_file_list_free (file_list);
+	g_free (templates_directory_uri);
 
-	g_free (popup_bg_path);
-	g_free (menu_path);
+	if (!any_templates) {
+		g_object_unref (menu);
+		menu = NULL;
+	}
 
-	return any_templates;
+	return menu;
 }
 
 
@@ -5241,63 +4375,54 @@ update_directory_in_templates_menu (NautilusView *view,
 static void
 update_templates_menu (NautilusView *view)
 {
-	gboolean any_templates;
 	GList *sorted_copy, *node;
 	NautilusDirectory *directory;
-	GtkUIManager *ui_manager;
+	GMenu *submenu;
 	char *uri;
 	char *templates_directory_uri;
 
 	if (nautilus_should_use_templates_directory ()) {
 		templates_directory_uri = nautilus_get_templates_directory_uri ();
 	} else {
-		templates_directory_uri = NULL;
+		view->details->templates_present = FALSE;
+		return;
 	}
 
-	/* There is a race condition here.  If we don't mark the scripts menu as
-	   valid before we begin our task then we can lose template menu updates that
-	   occur before we finish. */
-	view->details->templates_invalid = FALSE;
 
-	ui_manager = nautilus_view_get_ui_manager (view);
-	nautilus_ui_unmerge_ui (ui_manager,
-				&view->details->templates_merge_id,
-				&view->details->templates_action_group);
-
-	nautilus_ui_prepare_merge_ui (ui_manager,
-				      "TemplatesGroup",
-				      &view->details->templates_merge_id,
-				      &view->details->templates_action_group);
-
-	/* As we walk through the directories, remove any that no longer belong. */
-	any_templates = FALSE;
 	sorted_copy = nautilus_directory_list_sort_by_uri
 		(nautilus_directory_list_copy (view->details->templates_directory_list));
+
 	for (node = sorted_copy; node != NULL; node = node->next) {
 		directory = node->data;
 
 		uri = nautilus_directory_get_uri (directory);
 		if (!directory_belongs_in_templates_menu (templates_directory_uri, uri)) {
 			remove_directory_from_templates_directory_list (view, directory);
-		} else if (update_directory_in_templates_menu (view,
-							       templates_directory_uri,
-							       directory)) {
-			any_templates = TRUE;
 		}
 		g_free (uri);
 	}
 	nautilus_directory_list_free (sorted_copy);
 
-	view->details->templates_present = any_templates;
+	directory = nautilus_directory_get_by_uri (templates_directory_uri);
+	submenu = update_directory_in_templates_menu (view, directory);
+	if (submenu != NULL) {
+		nautilus_gmenu_merge (view->details->background_menu,
+				      submenu,
+				      "templates-submenu",
+				      FALSE);
+	}
+	
+	view->details->templates_present = submenu != NULL;
 
 	g_free (templates_directory_uri);
 }
 
 
 static void
-action_open_scripts_folder_callback (GtkAction *action, 
-				     gpointer callback_data)
-{      
+action_open_scripts_folder (GSimpleAction *action,
+			    GVariant      *state,
+                            gpointer       user_data)
+{
 	NautilusView *view;
 	static GFile *location = NULL;
 
@@ -5305,22 +4430,8 @@ action_open_scripts_folder_callback (GtkAction *action,
 		location = g_file_new_for_uri (scripts_directory_uri);
 	}
 
-	view = NAUTILUS_VIEW (callback_data);
+	view = NAUTILUS_VIEW (user_data);
 	nautilus_window_slot_open_location (view->details->slot, location, 0);
-}
-
-static GtkMenu *
-create_popup_menu (NautilusView *view, const char *popup_path)
-{
-	GtkWidget *menu;
-	
-	menu = gtk_ui_manager_get_widget (nautilus_view_get_ui_manager (view),
-					  popup_path);
-	gtk_menu_set_screen (GTK_MENU (menu),
-			     gtk_widget_get_screen (GTK_WIDGET (view)));
-	gtk_widget_show (GTK_WIDGET (menu));
-
-	return GTK_MENU (menu);
 }
 
 typedef struct _CopyCallbackData {
@@ -5739,13 +4850,14 @@ copy_or_cut_files (NautilusView *view,
 }
 
 static void
-action_copy_files_callback (GtkAction *action,
-			    gpointer callback_data)
+action_copy (GSimpleAction *action,
+	     GVariant      *state,
+	     gpointer       user_data)
 {
 	NautilusView *view;
 	GList *selection;
 
-	view = NAUTILUS_VIEW (callback_data);
+	view = NAUTILUS_VIEW (user_data);
 
 	selection = nautilus_view_get_selection_for_file_transfer (view);
 	copy_or_cut_files (view, selection, FALSE);
@@ -5753,13 +4865,14 @@ action_copy_files_callback (GtkAction *action,
 }
 
 static void
-action_cut_files_callback (GtkAction *action,
-			   gpointer callback_data)
+action_cut (GSimpleAction *action,
+	    GVariant      *state,
+	    gpointer       user_data)
 {
 	NautilusView *view;
 	GList *selection;
 
-	view = NAUTILUS_VIEW (callback_data);
+	view = NAUTILUS_VIEW (user_data);
 
 	selection = nautilus_view_get_selection_for_file_transfer (view);
 	copy_or_cut_files (view, selection, TRUE);
@@ -5767,70 +4880,25 @@ action_cut_files_callback (GtkAction *action,
 }
 
 static void
-action_copy_to_callback (GtkAction *action,
-			 gpointer callback_data)
+action_copy_to (GSimpleAction *action,
+		GVariant      *state,
+		gpointer       user_data)
 {
 	NautilusView *view;
 
-	view = NAUTILUS_VIEW (callback_data);
+	view = NAUTILUS_VIEW (user_data);
 	copy_or_move_selection (view, FALSE);
 }
 
 static void
-action_move_to_callback (GtkAction *action,
-			 gpointer callback_data)
+action_move_to (GSimpleAction *action,
+		GVariant      *state,
+		gpointer       user_data)
 {
 	NautilusView *view;
 
-	view = NAUTILUS_VIEW (callback_data);
+	view = NAUTILUS_VIEW (user_data);
 	copy_or_move_selection (view, TRUE);
-}
-
-static void
-paste_clipboard_data (NautilusView *view,
-		      GtkSelectionData *selection_data,
-		      char *destination_uri)
-{
-	gboolean cut;
-	GList *item_uris;
-
-	cut = FALSE;
-	item_uris = nautilus_clipboard_get_uri_list_from_selection_data (selection_data, &cut,
-									 copied_files_atom);
-
-	if (item_uris != NULL && destination_uri != NULL) {
-		nautilus_view_move_copy_items (view, item_uris, NULL, destination_uri,
-					       cut ? GDK_ACTION_MOVE : GDK_ACTION_COPY,
-					       0, 0);
-
-		/* If items are cut then remove from clipboard */
-		if (cut) {
-			gtk_clipboard_clear (nautilus_clipboard_get (GTK_WIDGET (view)));
-		}
-
-		g_list_free_full (item_uris, g_free);
-	}
-}
-
-static void
-paste_clipboard_received_callback (GtkClipboard     *clipboard,
-				   GtkSelectionData *selection_data,
-				   gpointer          data)
-{
-	NautilusView *view;
-	char *view_uri;
-
-	view = NAUTILUS_VIEW (data);
-
-	view_uri = nautilus_view_get_backing_uri (view);
-
-	if (view->details->slot != NULL) {
-		paste_clipboard_data (view, selection_data, view_uri);
-	}
-
-	g_free (view_uri);
-
-	g_object_unref (view);
 }
 
 typedef struct {
@@ -5865,21 +4933,6 @@ paste_into_clipboard_received_callback (GtkClipboard     *clipboard,
 }
 
 static void
-action_paste_files_callback (GtkAction *action,
-			     gpointer callback_data)
-{
-	NautilusView *view;
-
-	view = NAUTILUS_VIEW (callback_data);
-
-	g_object_ref (view);
-	gtk_clipboard_request_contents (nautilus_clipboard_get (GTK_WIDGET (view)),
-					copied_files_atom,
-					paste_clipboard_received_callback,
-					view);
-}
-
-static void
 paste_into (NautilusView *view,
 	    NautilusFile *target)
 {
@@ -5900,13 +4953,14 @@ paste_into (NautilusView *view,
 }
 
 static void
-action_paste_files_into_callback (GtkAction *action,
-				  gpointer callback_data)
+action_paste_files_into (GSimpleAction *action,
+			 GVariant      *state,
+			 gpointer       user_data)
 {
 	NautilusView *view;
 	GList *selection;
 
-	view = NAUTILUS_VIEW (callback_data);
+	view = NAUTILUS_VIEW (user_data);
 	selection = nautilus_view_get_selection (view);
 	if (selection != NULL) {
 		paste_into (view, NAUTILUS_FILE (selection->data));
@@ -5947,38 +5001,6 @@ invoke_external_bulk_rename_utility (NautilusView *view,
 }
 
 static void
-real_action_undo (NautilusView *view)
-{
-	GtkWidget *toplevel;
-
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (view));
-	nautilus_file_undo_manager_undo (GTK_WINDOW (toplevel));
-}
-
-static void
-real_action_redo (NautilusView *view)
-{
-	GtkWidget *toplevel;
-
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (view));
-	nautilus_file_undo_manager_redo (GTK_WINDOW (toplevel));
-}
-
-static void
-action_undo_callback (GtkAction *action,
-		      gpointer callback_data)
-{
-	real_action_undo (NAUTILUS_VIEW (callback_data));
-}
-
-static void
-action_redo_callback (GtkAction *action,
-		      gpointer callback_data)
-{
-	real_action_redo (NAUTILUS_VIEW (callback_data));
-}
-
-static void
 real_action_rename (NautilusView *view,
 		    gboolean select_all)
 {
@@ -6010,17 +5032,11 @@ real_action_rename (NautilusView *view,
 }
 
 static void
-action_rename_callback (GtkAction *action,
-			gpointer callback_data)
+action_rename (GSimpleAction *action,
+	       GVariant      *state,
+	       gpointer       user_data)
 {
-	real_action_rename (NAUTILUS_VIEW (callback_data), FALSE);
-}
-
-static void
-action_rename_select_all_callback (GtkAction *action,
-				   gpointer callback_data)
-{
-	real_action_rename (NAUTILUS_VIEW (callback_data), TRUE);
+	real_action_rename (NAUTILUS_VIEW (user_data), TRUE);
 }
 
 #define BG_KEY_PRIMARY_COLOR      "primary-color"
@@ -6089,20 +5105,21 @@ can_set_wallpaper (GList *selection)
 }
 
 static void
-action_set_as_wallpaper_callback (GtkAction    *action,
-				  NautilusView *view)
+action_set_as_wallpaper (GSimpleAction *action,
+			 GVariant      *state,
+			 gpointer       user_data)
 {
 	GList *selection;
 
 	/* Copy the item to Pictures/Wallpaper since it may be
 	   remote. Then set it as the current wallpaper. */
 
-	g_assert (NAUTILUS_IS_VIEW (view));
+	g_assert (NAUTILUS_IS_VIEW (user_data));
 
-	selection = nautilus_view_get_selection (view);
+	selection = nautilus_view_get_selection (user_data);
 
 	if (can_set_wallpaper (selection)
-	    && selection_not_empty_in_menu_callback (view, selection)) {
+	    && selection_not_empty_in_menu_callback (user_data, selection)) {
 		NautilusFile *file;
 		char *target_uri;
 		GList *uris;
@@ -6122,7 +5139,7 @@ action_set_as_wallpaper_callback (GtkAction    *action,
 						    NULL,
 						    target_uri,
 						    GDK_ACTION_COPY,
-						    GTK_WIDGET (view),
+						    GTK_WIDGET (user_data),
 						    wallpaper_copy_done_callback,
 						    NULL);
 		g_free (target_uri);
@@ -6234,15 +5251,16 @@ file_stop_callback (NautilusFile  *file,
 }
 
 static void
-action_mount_volume_callback (GtkAction *action,
-			      gpointer data)
+action_mount_volume (GSimpleAction *action,
+		     GVariant      *state,
+		     gpointer       user_data)
 {
 	NautilusFile *file;
 	GList *selection, *l;
 	NautilusView *view;
 	GMountOperation *mount_op;
 
-        view = NAUTILUS_VIEW (data);
+        view = NAUTILUS_VIEW (user_data);
 	
 	selection = nautilus_view_get_selection (view);
 	for (l = selection; l != NULL; l = l->next) {
@@ -6261,14 +5279,15 @@ action_mount_volume_callback (GtkAction *action,
 }
 
 static void
-action_unmount_volume_callback (GtkAction *action,
-				gpointer data)
+action_unmount_volume (GSimpleAction *action,
+		       GVariant      *state,
+		       gpointer       user_data)
 {
 	NautilusFile *file;
 	GList *selection, *l;
 	NautilusView *view;
 
-        view = NAUTILUS_VIEW (data);
+        view = NAUTILUS_VIEW (user_data);
 	
 	selection = nautilus_view_get_selection (view);
 
@@ -6286,14 +5305,15 @@ action_unmount_volume_callback (GtkAction *action,
 }
 
 static void
-action_eject_volume_callback (GtkAction *action,
-			      gpointer data)
+action_eject_volume (GSimpleAction *action,
+		     GVariant      *state,
+		     gpointer       user_data)
 {
 	NautilusFile *file;
 	GList *selection, *l;
 	NautilusView *view;
 
-        view = NAUTILUS_VIEW (data);
+        view = NAUTILUS_VIEW (user_data);
 	
 	selection = nautilus_view_get_selection (view);
 	for (l = selection; l != NULL; l = l->next) {
@@ -6338,15 +5358,16 @@ file_start_callback (NautilusFile  *file,
 }
 
 static void
-action_start_volume_callback (GtkAction *action,
-			      gpointer   data)
+action_start_volume (GSimpleAction *action,
+		     GVariant      *state,
+		     gpointer       user_data)
 {
 	NautilusFile *file;
 	GList *selection, *l;
 	NautilusView *view;
 	GMountOperation *mount_op;
 
-	view = NAUTILUS_VIEW (data);
+	view = NAUTILUS_VIEW (user_data);
 
 	selection = nautilus_view_get_selection (view);
 	for (l = selection; l != NULL; l = l->next) {
@@ -6363,14 +5384,15 @@ action_start_volume_callback (GtkAction *action,
 }
 
 static void
-action_stop_volume_callback (GtkAction *action,
-			     gpointer   data)
+action_stop_volume (GSimpleAction *action,
+		    GVariant      *state,
+		    gpointer       user_data)
 {
 	NautilusFile *file;
 	GList *selection, *l;
 	NautilusView *view;
 
-        view = NAUTILUS_VIEW (data);
+        view = NAUTILUS_VIEW (user_data);
 
 	selection = nautilus_view_get_selection (view);
 	for (l = selection; l != NULL; l = l->next) {
@@ -6388,14 +5410,15 @@ action_stop_volume_callback (GtkAction *action,
 }
 
 static void
-action_detect_media_callback (GtkAction *action,
-			      gpointer   data)
+action_detect_media (GSimpleAction *action,
+		     GVariant      *state,
+		     gpointer       user_data)
 {
 	NautilusFile *file;
 	GList *selection, *l;
 	NautilusView *view;
 
-        view = NAUTILUS_VIEW (data);
+        view = NAUTILUS_VIEW (user_data);
 
 	selection = nautilus_view_get_selection (view);
 	for (l = selection; l != NULL; l = l->next) {
@@ -6414,267 +5437,55 @@ nautilus_view_get_show_hidden_files (NautilusView *view)
 	return view->details->show_hidden_files;
 }
 
-static void
-nautilus_view_set_show_hidden_files (NautilusView *view,
-				     gboolean show_hidden)
-{
-	if (view->details->ignore_hidden_file_preferences) {
-		return;
-	}
-
-	if (show_hidden != view->details->show_hidden_files) {
-		view->details->show_hidden_files = show_hidden;
-		if (view->details->model != NULL) {
-			load_directory (view, view->details->model);
-		}
-	}
-}
-
-static const GtkActionEntry directory_view_entries[] = {
-  /* name, stock id, label */  { NAUTILUS_ACTION_NEW_DOCUMENTS, "document-new", N_("New _Document") },
-  /* name, stock id, label */  { NAUTILUS_ACTION_OPEN_WITH, NULL, N_("Open Wit_h"),
-				 NULL, N_("Choose a program with which to open the selected item") },
-  /* name, stock id */         { NAUTILUS_ACTION_PROPERTIES, NULL,
-  /* label, accelerator */       N_("P_roperties"), "<alt>Return",
-  /* tooltip */                  N_("View or modify the properties of each selected item"),
-				 G_CALLBACK (action_properties_callback) },
-  /* name, stock id */         { "PropertiesAccel", NULL,
-  /* label, accelerator */       "PropertiesAccel", "<control>I",
-  /* tooltip */                  NULL,
-				 G_CALLBACK (action_properties_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_NEW_FOLDER, "folder-new",
-  /* label, accelerator */       N_("New _Folder"), "<control><shift>N",
-  /* tooltip */                  N_("Create a new empty folder inside this folder"),
-				 G_CALLBACK (action_new_folder_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_NEW_FOLDER_WITH_SELECTION, NULL,
-  /* label, accelerator */       N_("New Folder with Selection"), NULL,
-  /* tooltip */                  N_("Create a new folder containing the selected items"),
-				 G_CALLBACK (action_new_folder_with_selection_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_OPEN, NULL,
-  /* label, accelerator */       N_("_Open"), "<control>o",
-  /* tooltip */                  N_("Open the selected item in this window"),
-				 G_CALLBACK (action_open_callback) },
-  /* name, stock id */         { "OpenAccel", NULL,
-  /* label, accelerator */       "OpenAccel", "<alt>Down",
-  /* tooltip */                  NULL,
-				 G_CALLBACK (action_open_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_OPEN_ITEM_LOCATION, NULL,
-  /* label, accelerator */       N_("Open _Item Location"), "<control><alt>o",
-  /* tooltip */                  N_("Open the selected item's location in this window"),
-				 G_CALLBACK (action_open_item_location_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_OPEN_ALTERNATE, NULL,
-  /* label, accelerator */       N_("Open in Navigation Window"), "<control><shift>o",
-  /* tooltip */                  N_("Open each selected item in a navigation window"),
-				 G_CALLBACK (action_open_alternate_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_OPEN_IN_NEW_TAB, NULL,
-  /* label, accelerator */       N_("Open in New _Tab"), "<control><shift>t",
-  /* tooltip */                  N_("Open each selected item in a new tab"),
-				 G_CALLBACK (action_open_new_tab_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_OTHER_APPLICATION1, NULL,
-  /* label, accelerator */       N_("Other _Application…"), NULL,
-  /* tooltip */                  N_("Choose another application with which to open the selected item"),
-				 G_CALLBACK (action_other_application_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_OTHER_APPLICATION2, NULL,
-  /* label, accelerator */       N_("Open With Other _Application…"), NULL,
-  /* tooltip */                  N_("Choose another application with which to open the selected item"),
-				 G_CALLBACK (action_other_application_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_OPEN_SCRIPTS_FOLDER, NULL,
-  /* label, accelerator */       N_("_Open Scripts Folder"), NULL,
-  /* tooltip */                 N_("Show the folder containing the scripts that appear in this menu"),
-				 G_CALLBACK (action_open_scripts_folder_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_CUT, NULL,
-  /* label, accelerator */       N_("Cu_t"), "<control>X",
-  /* tooltip */                  N_("Prepare the selected files to be moved with a Paste command"),
-				 G_CALLBACK (action_cut_files_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_COPY, NULL,
-  /* label, accelerator */       N_("_Copy"), "<control>C",
-  /* tooltip */                  N_("Prepare the selected files to be copied with a Paste command"),
-				 G_CALLBACK (action_copy_files_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_PASTE, NULL,
-  /* label, accelerator */       N_("_Paste"), "<control>V",
-  /* tooltip */                  N_("Move or copy files previously selected by a Cut or Copy command"),
-				 G_CALLBACK (action_paste_files_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_PASTE_FILES_INTO, NULL,
-  /* label, accelerator */       N_("_Paste Into Folder"), NULL,
-  /* tooltip */                  N_("Move or copy files previously selected by a Cut or Copy command into the selected folder"),
-				 G_CALLBACK (action_paste_files_into_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_COPY_TO, NULL,
-  /* label, accelerator */       N_("Copy To…"), NULL,
-  /* tooltip */                  N_("Copy selected files to another location"),
-				 G_CALLBACK (action_copy_to_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_MOVE_TO, NULL,
-  /* label, accelerator */       N_("Move To…"), NULL,
-  /* tooltip */                  N_("Move selected files to another location"),
-				 G_CALLBACK (action_move_to_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_SELECT_ALL, NULL,
-  /* label, accelerator */       N_("Select _All"), "<control>A",
-  /* tooltip */                  N_("Select all items in this window"),
-				 G_CALLBACK (action_select_all_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_SELECT_PATTERN, NULL,
-  /* label, accelerator */       N_("Select I_tems Matching…"), "<control>S",
-  /* tooltip */                  N_("Select items in this window matching a given pattern"),
-				 G_CALLBACK (action_select_pattern_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_INVERT_SELECTION, NULL,
-  /* label, accelerator */       N_("_Invert Selection"), "<control><shift>I",
-  /* tooltip */                  N_("Select all and only the items that are not currently selected"),
-				 G_CALLBACK (action_invert_selection_callback) }, 
-  /* name, stock id */         { NAUTILUS_ACTION_RENAME, NULL,
-  /* label, accelerator */       N_("Rena_me…"), "F2",
-  /* tooltip */                  N_("Rename selected item"),
-				 G_CALLBACK (action_rename_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_SET_AS_WALLPAPER, NULL,
-  /* label, accelerator */       N_("Set as Wallpaper"), NULL,
-  /* tooltip */                  N_("Make item the wallpaper"),
-				 G_CALLBACK (action_set_as_wallpaper_callback) },
-  /* name, stock id */         { "RenameSelectAll", NULL,
-  /* label, accelerator */       "RenameSelectAll", "<shift>F2",
-  /* tooltip */                  NULL,
-				 G_CALLBACK (action_rename_select_all_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_TRASH, NULL,
-  /* label, accelerator */       N_("Mo_ve to Trash"), "<control>Delete",
-  /* tooltip */                  N_("Move each selected item to the Trash"),
-				 G_CALLBACK (action_trash_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_DELETE, NULL,
-  /* label, accelerator */       N_("_Delete"), "<shift>Delete",
-  /* tooltip */                  N_("Delete each selected item, without moving to the Trash"),
-				 G_CALLBACK (action_delete_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_RESTORE_FROM_TRASH, NULL,
-  /* label, accelerator */       N_("_Restore"), NULL,
-				 NULL,
-                 G_CALLBACK (action_restore_from_trash_callback) },
- /* name, stock id */          { NAUTILUS_ACTION_UNDO, NULL,
- /* label, accelerator */        N_("_Undo"), "<control>Z",
- /* tooltip */                   N_("Undo the last action"),
-                                 G_CALLBACK (action_undo_callback) },
- /* name, stock id */	       { NAUTILUS_ACTION_REDO, NULL,
- /* label, accelerator */        N_("_Redo"), "<shift><control>Z",
- /* tooltip */                   N_("Redo the last undone action"),
-                                 G_CALLBACK (action_redo_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_MOUNT_VOLUME, NULL,
-  /* label, accelerator */       N_("_Mount"), NULL,
-  /* tooltip */                  N_("Mount the selected volume"),
-				 G_CALLBACK (action_mount_volume_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_UNMOUNT_VOLUME, NULL,
-  /* label, accelerator */       N_("_Unmount"), NULL,
-  /* tooltip */                  N_("Unmount the selected volume"),
-				 G_CALLBACK (action_unmount_volume_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_EJECT_VOLUME, NULL,
-  /* label, accelerator */       N_("_Eject"), NULL,
-  /* tooltip */                  N_("Eject the selected volume"),
-				 G_CALLBACK (action_eject_volume_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_START_VOLUME, NULL,
-  /* label, accelerator */       N_("_Start"), NULL,
-  /* tooltip */                  N_("Start the selected volume"),
-				 G_CALLBACK (action_start_volume_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_STOP_VOLUME, NULL,
-  /* label, accelerator */       N_("_Stop"), NULL,
-  /* tooltip */                  N_("Stop the selected volume"),
-				 G_CALLBACK (action_stop_volume_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_POLL, NULL,
-  /* label, accelerator */       N_("_Detect Media"), NULL,
-  /* tooltip */                  N_("Detect media in the selected drive"),
-				 G_CALLBACK (action_detect_media_callback) },
-  /* name, stock id */         { "OpenCloseParent", NULL,
-  /* label, accelerator */       N_("Open File and Close window"), "<alt><shift>Down",
-  /* tooltip */                  NULL,
-				 G_CALLBACK (action_open_close_parent_callback) },
-
-  /* Location-specific actions */
-  /* name, stock id */         { NAUTILUS_ACTION_LOCATION_OPEN_ALTERNATE, NULL,
-  /* label, accelerator */       N_("Open in Navigation Window"), NULL,
-  /* tooltip */                  N_("Open this folder in a navigation window"),
-				 G_CALLBACK (action_location_open_alternate_callback) },
-  /* name, stock id */         { NAUTILUS_ACTION_LOCATION_OPEN_IN_NEW_TAB, NULL,
-  /* label, accelerator */       N_("Open in New _Tab"), NULL,
-  /* tooltip */                  N_("Open this folder in a new tab"),
-				 G_CALLBACK (action_location_open_in_new_tab_callback) },
+const GActionEntry view_entries[] = {
+	/* Toolbar menu */
+	{ "zoom-in",  action_zoom_in },
+	{ "zoom-out", action_zoom_out },
+	{ "zoom-default", action_zoom_default },
+	{ "zoom-to-level", NULL, NULL, "1", action_zoom_to_level },
+	{ "undo", action_undo },
+	{ "redo", action_redo },
+	{ "show-hidden-files", NULL, NULL, "true", action_show_hidden_files },
+	/* Background menu */
+	{ "new-folder", action_new_folder },
+	{ "select-all", action_select_all },
+	{ "paste", action_paste_files },
+	{ "new-document" },
+	/* Selection menu */
+	{ "scripts" },
+	{ "new-folder-with-selection", action_new_folder_with_selection },
+	{ "open-scripts-folder", action_open_scripts_folder },
+	{ "open-item-location", action_open_item_location },
+	{ "open-with-default-application", action_open_with_default_application },
+	{ "open-with-other-application", action_open_with_other_application },
+	{ "open-item-new-window", action_open_item_new_window },
+	{ "open-item-new-tab", action_open_item_new_tab },
+	{ "cut", action_cut},
+	{ "copy", action_copy},
+	{ "move-to", action_move_to},
+	{ "copy-to", action_copy_to},
+	{ "move-to-trash", action_move_to_trash},
+	{ "delete", action_delete},
+	{ "restore-from-trash", action_restore_from_trash},
+	{ "paste-into", action_paste_files_into },
+	{ "rename", action_rename},
+	{ "properties", action_properties},
+	{ "set-as-wallpaper", action_set_as_wallpaper },
+	{ "mount-volume", action_mount_volume },
+	{ "unmount-volume", action_unmount_volume },
+	{ "eject-volume", action_eject_volume },
+	{ "start-volume", action_start_volume },
+	{ "stop-volume", action_stop_volume },
+	{ "detect-media", action_detect_media },
+	/* Pathbar menu */
+	{ "pathbar-open-item-new-window", action_pathbar_open_item_new_window },
+	{ "pathbar-open-item-new-tab", action_pathbar_open_item_new_tab },
+	{ "pathbar-properties", action_pathbar_properties},
+	/* Only accesible by shorcuts */
+	{ "select-pattern", action_select_pattern },
+	{ "invert-selection", action_invert_selection },
+	{ "open-file-and-close-window", action_open_file_and_close_window }
 };
-
-static const GtkToggleActionEntry directory_view_toggle_entries[] = {
-  /* name, stock id */         { NAUTILUS_ACTION_SHOW_HIDDEN_FILES, NULL,
-  /* label, accelerator */       N_("Show _Hidden Files"), "<control>H",
-  /* tooltip */                  N_("Toggle the display of hidden files in the current window"),
-                                 G_CALLBACK (action_show_hidden_files_callback),
-                                 TRUE },
-};
-
-static void
-pre_activate (NautilusView *view,
-	      GtkAction *action,
-	      GtkActionGroup *action_group)
-{
-	GdkEvent *event;
-	GtkWidget *proxy;
-	gboolean activated_from_popup;
-
-	/* check whether action was activated through a popup menu.
-	 * If not, unset the last stored context menu popup position */
-	activated_from_popup = FALSE;
-
-	event = gtk_get_current_event ();
-	proxy = gtk_get_event_widget (event);
-
-	if (proxy != NULL) {
-		GtkWidget *toplevel;
-		GdkWindowTypeHint hint;
-
-		toplevel = gtk_widget_get_toplevel (proxy);
-
-		if (GTK_IS_WINDOW (toplevel)) {
-			hint = gtk_window_get_type_hint (GTK_WINDOW (toplevel));
-
-			if (hint == GDK_WINDOW_TYPE_HINT_POPUP_MENU) {
-				activated_from_popup = TRUE;
-			}
-		}
-	}
-
-	if (!activated_from_popup) {
-		update_context_menu_position_from_event (view, NULL);
-	}
-}
-
-static void
-real_merge_menus (NautilusView *view)
-{
-	GtkActionGroup *action_group;
-	GtkUIManager *ui_manager;
-	GtkAction *action;
-	char *tooltip;
-
-	ui_manager = nautilus_view_get_ui_manager (view);
-
-	action_group = gtk_action_group_new ("DirViewActions");
-	gtk_action_group_set_translation_domain (action_group, GETTEXT_PACKAGE);
-	view->details->dir_action_group = action_group;
-	gtk_action_group_add_actions (action_group, 
-				      directory_view_entries, G_N_ELEMENTS (directory_view_entries),
-				      view);
-	gtk_action_group_add_toggle_actions (action_group,
-					     directory_view_toggle_entries, G_N_ELEMENTS (directory_view_toggle_entries),
-					     view);
-
-	tooltip = g_strdup (_("Run or manage scripts"));
-	/* Create a script action here specially because its tooltip is dynamic */
-	action = gtk_action_new ("Scripts", _("_Scripts"), tooltip, NULL);
-	gtk_action_group_add_action (action_group, action);
-	g_object_unref (action);
-	g_free (tooltip);
-
-	g_signal_connect_object (action_group, "pre-activate",
-				 G_CALLBACK (pre_activate), G_OBJECT (view),
-				 G_CONNECT_SWAPPED);
-
-	/* Insert action group at end so clipboard action group ends up before it */
-	gtk_ui_manager_insert_action_group (ui_manager, action_group, -1);
-	g_object_unref (action_group); /* owned by ui manager */
-
-	view->details->dir_merge_id = gtk_ui_manager_add_ui_from_resource (ui_manager, "/org/gnome/nautilus/nautilus-directory-view-ui.xml", NULL);
-	
-	view->details->scripts_invalid = TRUE;
-	view->details->templates_invalid = TRUE;
-}
-
 
 static gboolean
 can_paste_into_file (NautilusFile *file)
@@ -6716,9 +5527,7 @@ clipboard_targets_received (GtkClipboard     *clipboard,
 	NautilusView *view;
 	gboolean can_paste;
 	int i;
-	GList *selection;
-	int count;
-	GtkAction *action;
+	GAction *action;
 
 	view = NAUTILUS_VIEW (user_data);
 	can_paste = FALSE;
@@ -6731,82 +5540,27 @@ clipboard_targets_received (GtkClipboard     *clipboard,
 	}
 
 	if (targets) {
-		for (i=0; i < n_targets; i++) {
+		for (i = 0; i < n_targets; i++) {
 			if (targets[i] == copied_files_atom) {
 				can_paste = TRUE;
 			}
 		}
 	}
-	
-	
-	selection = nautilus_view_get_selection (view);
-	count = g_list_length (selection);
-	
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_PASTE);
-	gtk_action_set_sensitive (action,
-				  can_paste && !nautilus_view_is_read_only (view));
 
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_PASTE_FILES_INTO);
-	gtk_action_set_sensitive (action,
-	                          can_paste && count == 1 &&
-	                          can_paste_into_file (NAUTILUS_FILE (selection->data)));
+	action = g_action_map_lookup_action (G_ACTION_MAP (view->details->view_action_group),
+					     "paste");
+	/* Take into account if the action was previously disabled for other reasons,
+	 * like the directory not being writabble */
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+				     can_paste && g_action_get_enabled (action));
 
-	nautilus_file_list_free (selection);
+	action = g_action_map_lookup_action (G_ACTION_MAP (view->details->view_action_group),
+					     "paste-into");
+
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+				     can_paste && g_action_get_enabled (action));
 	
 	g_object_unref (view);
-}
-
-static gboolean
-file_list_all_are_folders (GList *file_list)
-{
-	GList *l;
-	NautilusFile *file, *linked_file;
-	char *activation_uri;
-	gboolean is_dir;
-	
-	for (l = file_list; l != NULL; l = l->next) {
-		file = NAUTILUS_FILE (l->data);
-		if (nautilus_file_is_nautilus_link (file) &&
-		    !NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {
-			if (nautilus_file_is_launcher (file)) {
-				return FALSE;
-			}
-				
-			activation_uri = nautilus_file_get_activation_uri (file);
-			
-			if (activation_uri == NULL) {
-				g_free (activation_uri);
-				return FALSE;
-			}
-
-			linked_file = nautilus_file_get_existing_by_uri (activation_uri);
-
-			/* We might not actually know the type of the linked file yet,
-			 * however we don't want to schedule a read, since that might do things
-			 * like ask for password etc. This is a bit unfortunate, but I don't
-			 * know any way around it, so we do various heuristics here
-			 * to get things mostly right 
-			 */
-			is_dir =
-				(linked_file != NULL &&
-				 nautilus_file_is_directory (linked_file)) ||
-				(activation_uri != NULL &&
-				 activation_uri[strlen (activation_uri) - 1] == '/');
-			
-			nautilus_file_unref (linked_file);
-			g_free (activation_uri);
-			
-			if (!is_dir) {
-				return FALSE;
-			}
-		} else if (!(nautilus_file_is_directory (file) ||
-			     NAUTILUS_IS_DESKTOP_ICON_FILE (file))) {
-			return FALSE;
-		}
-	}
-	return TRUE;
 }
 
 static void
@@ -6856,57 +5610,18 @@ file_should_show_foreach (NautilusFile        *file,
 }
 
 static gboolean
-files_are_all_directories (GList *files)
-{
-	NautilusFile *file;
-	GList *l;
-	gboolean all_directories;
-
-	all_directories = TRUE;
-
-	for (l = files; l != NULL; l = l->next) {
-		file = NAUTILUS_FILE (l->data);
-		all_directories &= nautilus_file_is_directory (file);
-	}
-
-	return all_directories;
-}
-
-static gboolean
-files_is_none_directory (GList *files)
-{
-	NautilusFile *file;
-	GList *l;
-	gboolean no_directory;
-
-	no_directory = TRUE;
-
-	for (l = files; l != NULL; l = l->next) {
-		file = NAUTILUS_FILE (l->data);
-		no_directory &= !nautilus_file_is_directory (file);
-	}
-
-	return no_directory;
-}
-
-static void
-update_restore_from_trash_action (GtkAction *action,
-				  GList *files,
-				  gboolean is_self)
+can_restore_from_trash (GList *files)
 {
 	NautilusFile *original_file;
 	NautilusFile *original_dir;
 	GHashTable *original_dirs_hash;
 	GList *original_dirs;
-	GFile *original_location;
-	char *tooltip, *original_name;
+	gboolean can_restore;
 
 	original_file = NULL;
 	original_dir = NULL;
 	original_dirs = NULL;
 	original_dirs_hash = NULL;
-	original_location = NULL;
-	original_name = NULL;
 
 	if (files != NULL) {
 		if (g_list_length (files) == 1) {
@@ -6922,83 +5637,7 @@ update_restore_from_trash_action (GtkAction *action,
 		}
 	}
 
-	if (original_file != NULL || original_dirs != NULL) {
-		gtk_action_set_visible (action, TRUE);
-
-		if (original_file != NULL) {
-			original_location = nautilus_file_get_location (original_file);
-		} else if (original_dir != NULL) {
-			original_location = nautilus_file_get_location (original_dir);
-		}
-
-		if (original_location != NULL) {
-			original_name = g_file_get_parse_name (original_location);
-		}
-
-		if (is_self) {
-			g_assert (g_list_length (files) == 1);
-			g_assert (original_location != NULL);
-			tooltip = g_strdup_printf (_("Move the open folder out of the trash to “%s”"), original_name);
-		} else if (files_are_all_directories (files)) {
-			if (original_name != NULL) {
-				if (g_list_length (files) == 1) {
-					tooltip = g_strdup_printf (_("Move the selected folder out of the trash to “%s”"),
-								   original_name);
-				} else {
-					tooltip = g_strdup_printf (_("Move the selected folders out of the trash to “%s”"),
-								   original_name);
-				}
-			} else {
-				if (g_list_length (files) == 1) {
-					tooltip = g_strdup (_("Move the selected folder out of the trash"));
-				} else {
-					tooltip = g_strdup (_("Move the selected folders out of the trash"));
-				}
-			}
-		} else if (files_is_none_directory (files)) {
-			if (original_name != NULL) {
-				if (g_list_length (files) == 1) {
-					tooltip = g_strdup_printf (_("Move the selected file out of the trash to “%s”"),
-								   original_name);
-				} else {
-					tooltip = g_strdup_printf (_("Move the selected files out of the trash to “%s”"),
-								   original_name);
-				}
-			} else {
-				if (g_list_length (files) == 1) {
-					tooltip = g_strdup (_("Move the selected file out of the trash"));
-				} else {
-					tooltip = g_strdup (_("Move the selected files out of the trash"));
-				}
-			}
-		} else {
-			if (original_name != NULL) {
-				if (g_list_length (files) == 1) {
-					tooltip = g_strdup_printf (_("Move the selected item out of the trash to “%s”"),
-								   original_name);
-				} else {
-					tooltip = g_strdup_printf (_("Move the selected items out of the trash to “%s”"),
-								   original_name);
-				}
-			} else {
-				if (g_list_length (files) == 1) {
-					tooltip = g_strdup (_("Move the selected item out of the trash"));
-				} else {
-					tooltip = g_strdup (_("Move the selected items out of the trash"));
-				}
-			}
-		}
-		g_free (original_name);
-
-		g_object_set (action, "tooltip", tooltip, NULL);
-		g_free (tooltip);
-
-		if (original_location != NULL) {
-			g_object_unref (original_location);
-		}
-	} else {
-		gtk_action_set_visible (action, FALSE);
-	}
+	can_restore = original_file != NULL || original_dirs != NULL;
 
 	nautilus_file_unref (original_file);
 	nautilus_file_unref (original_dir);
@@ -7007,220 +5646,14 @@ update_restore_from_trash_action (GtkAction *action,
 	if (original_dirs_hash != NULL) {
 		g_hash_table_destroy (original_dirs_hash);
 	}
-}
-
-static void
-real_update_menus_volumes (NautilusView *view,
-			   GList *selection,
-			   gint selection_count)
-{
-	GList *l;
-	NautilusFile *file;
-	gboolean show_mount;
-	gboolean show_unmount;
-	gboolean show_eject;
-	gboolean show_start;
-	gboolean show_stop;
-	gboolean show_poll;
-	GDriveStartStopType start_stop_type;
-	GtkAction *action;
-
-	show_mount = (selection != NULL);
-	show_unmount = (selection != NULL);
-	show_eject = (selection != NULL);
-	show_start = (selection != NULL && selection_count == 1);
-	show_stop = (selection != NULL && selection_count == 1);
-	show_poll = (selection != NULL && selection_count == 1);
-	start_stop_type = G_DRIVE_START_STOP_TYPE_UNKNOWN;
-
-	for (l = selection; l != NULL && (show_mount || show_unmount
-					  || show_eject
-                                          || show_start || show_stop
-					  || show_poll);
-	     l = l->next) {
-		gboolean show_mount_one;
-		gboolean show_unmount_one;
-		gboolean show_eject_one;
-		gboolean show_start_one;
-		gboolean show_stop_one;
-		gboolean show_poll_one;
-
-		file = NAUTILUS_FILE (l->data);
-		file_should_show_foreach (file,
-					  &show_mount_one,
-					  &show_unmount_one,
-					  &show_eject_one,
-                                          &show_start_one,
-                                          &show_stop_one,
-					  &show_poll_one,
-					  &start_stop_type);
-
-		show_mount &= show_mount_one;
-		show_unmount &= show_unmount_one;
-		show_eject &= show_eject_one;
-		show_start &= show_start_one;
-		show_stop &= show_stop_one;
-		show_poll &= show_poll_one;
-	}
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_MOUNT_VOLUME);
-	gtk_action_set_visible (action, show_mount);
-	
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_UNMOUNT_VOLUME);
-	gtk_action_set_visible (action, show_unmount);
-	
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_EJECT_VOLUME);
-	gtk_action_set_visible (action, show_eject);
-	
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_START_VOLUME);
-	gtk_action_set_visible (action, show_start);
-	if (show_start) {
-		switch (start_stop_type) {
-		default:
-		case G_DRIVE_START_STOP_TYPE_UNKNOWN:
-			gtk_action_set_label (action, _("_Start"));
-			gtk_action_set_tooltip (action, _("Start the selected drive"));
-			break;
-		case G_DRIVE_START_STOP_TYPE_SHUTDOWN:
-			gtk_action_set_label (action, _("_Start"));
-			gtk_action_set_tooltip (action, _("Start the selected drive"));
-			break;
-		case G_DRIVE_START_STOP_TYPE_NETWORK:
-			gtk_action_set_label (action, _("_Connect"));
-			gtk_action_set_tooltip (action, _("Connect to the selected drive"));
-			break;
-		case G_DRIVE_START_STOP_TYPE_MULTIDISK:
-			gtk_action_set_label (action, _("_Start Multi-disk Drive"));
-			gtk_action_set_tooltip (action, _("Start the selected multi-disk drive"));
-			break;
-		case G_DRIVE_START_STOP_TYPE_PASSWORD:
-			gtk_action_set_label (action, _("U_nlock Drive"));
-			gtk_action_set_tooltip (action, _("Unlock the selected drive"));
-			break;
-		}
-	}
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_STOP_VOLUME);
-	gtk_action_set_visible (action, show_stop);
-	if (show_stop) {
-		switch (start_stop_type) {
-		default:
-		case G_DRIVE_START_STOP_TYPE_UNKNOWN:
-			gtk_action_set_label (action, _("_Stop"));
-			gtk_action_set_tooltip (action, _("Stop the selected drive"));
-			break;
-		case G_DRIVE_START_STOP_TYPE_SHUTDOWN:
-			gtk_action_set_label (action, _("_Safely Remove Drive"));
-			gtk_action_set_tooltip (action, _("Safely remove the selected drive"));
-			break;
-		case G_DRIVE_START_STOP_TYPE_NETWORK:
-			gtk_action_set_label (action, _("_Disconnect"));
-			gtk_action_set_tooltip (action, _("Disconnect the selected drive"));
-			break;
-		case G_DRIVE_START_STOP_TYPE_MULTIDISK:
-			gtk_action_set_label (action, _("_Stop Multi-disk Drive"));
-			gtk_action_set_tooltip (action, _("Stop the selected multi-disk drive"));
-			break;
-		case G_DRIVE_START_STOP_TYPE_PASSWORD:
-			gtk_action_set_label (action, _("_Lock Drive"));
-			gtk_action_set_tooltip (action, _("Lock the selected drive"));
-			break;
-		}
-	}
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_POLL);
-	gtk_action_set_visible (action, show_poll);
-}
-
-/* TODO: we should split out this routine into two functions:
- * Update on clipboard changes
- * Update on selection changes
- */
-static void
-real_update_paste_menu (NautilusView *view,
-			GList *selection,
-			gint selection_count)
-{
-	gboolean can_paste_files_into;
-	gboolean selection_is_read_only;
-	gboolean selection_contains_recent;
-	gboolean is_read_only;
-	GtkAction *action;
-
-	selection_is_read_only = selection_count == 1 &&
-		(!nautilus_file_can_write (NAUTILUS_FILE (selection->data)) &&
-		 !nautilus_file_has_activation_uri (NAUTILUS_FILE (selection->data)));
-
-	is_read_only = nautilus_view_is_read_only (view);
-	selection_contains_recent = showing_recent_directory (view);
-
-	can_paste_files_into = (!selection_contains_recent &&
-				selection_count == 1 &&
-	                        can_paste_into_file (NAUTILUS_FILE (selection->data)));
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_PASTE);
-	gtk_action_set_sensitive (action, !is_read_only);
-	gtk_action_set_visible (action, !selection_contains_recent);
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_PASTE_FILES_INTO);
-	gtk_action_set_visible (action, can_paste_files_into);
-	gtk_action_set_sensitive (action, !selection_is_read_only);
-
-	/* Ask the clipboard */
-	g_object_ref (view); /* Need to keep the object alive until we get the reply */
-	gtk_clipboard_request_targets (nautilus_clipboard_get (GTK_WIDGET (view)),
-				       clipboard_targets_received,
-				       view);
-}
-
-static void
-real_update_location_menu (NautilusView *view)
-{
-	GtkAction *action;
-	char *label;
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_LOCATION_OPEN_ALTERNATE);
-
-	label = _("Open in New _Window");
-	g_object_set (action,
-		      "label", label,
-		      NULL);
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_LOCATION_OPEN_IN_NEW_TAB);
-
-	label = _("Open in New _Tab");
-	g_object_set (action,
-		      "label", label,
-		      NULL);
+	return can_restore;
 }
 
 static void
 clipboard_changed_callback (NautilusClipboardMonitor *monitor, NautilusView *view)
 {
-	GList *selection;
-	gint selection_count;
-
-	if (!view->details->active) {
-		return;
-	}
-
-	selection = nautilus_view_get_selection (view);
-	selection_count = g_list_length (selection);
-
-	real_update_paste_menu (view, selection, selection_count);
-
-	nautilus_file_list_free (selection);
-	
+	/* Update paste menu item */
+	nautilus_view_update_context_menus (view);
 }
 
 static gboolean
@@ -7253,44 +5686,65 @@ can_trash_all (GList *files)
 	return TRUE;
 }
 
+GActionGroup *
+nautilus_view_get_action_group (NautilusView *view)
+{
+	g_assert (NAUTILUS_IS_VIEW (view));
+
+	return view->details->view_action_group;
+}
+
 static void
-real_update_menus (NautilusView *view)
+real_update_actions_state (NautilusView *view)
 {
 	GList *selection, *l;
+	NautilusFile *file;
 	gint selection_count;
-	const char *tip, *label;
-	char *label_with_underscore;
 	gboolean selection_contains_special_link;
 	gboolean selection_contains_desktop_or_home_dir;
 	gboolean selection_contains_recent;
 	gboolean selection_contains_search;
-	gboolean selection_all_in_trash;
+	gboolean selection_is_read_only;
 	gboolean can_create_files;
 	gboolean can_delete_files;
 	gboolean can_move_files;
 	gboolean can_trash_files;
 	gboolean can_copy_files;
+	gboolean can_paste_files_into;
 	gboolean show_separate_delete_command;
-	gboolean show_open_alternate;
-	gboolean show_open_in_new_tab;
-	gboolean can_open;
 	gboolean show_app, show_run;
-	GtkAction *action;
+	gboolean item_opens_in_view;
+	gboolean is_read_only;
+	GAction *action;
 	GAppInfo *app;
-	GIcon *app_icon;
-	GtkWidget *menuitem;
 	gboolean show_properties;
+	GActionGroup *view_action_group;
+	gboolean show_mount;
+	gboolean show_unmount;
+	gboolean show_eject;
+	gboolean show_start;
+	gboolean show_stop;
+	gboolean show_detect_media;
+	GDriveStartStopType start_stop_type;
+	NautilusFileUndoInfo *info;
+	NautilusFileUndoManagerState undo_state;
+	gboolean undo_active, redo_active;
+	gboolean is_undo;
+
+	view_action_group = view->details->view_action_group;
 
 	selection = nautilus_view_get_selection (view);
 	selection_count = g_list_length (selection);
-
 	selection_contains_special_link = special_link_in_selection (selection);
 	selection_contains_desktop_or_home_dir = desktop_or_home_dir_in_selection (selection);
 	selection_contains_recent = showing_recent_directory (view);
 	selection_contains_search = view->details->model &&
 		NAUTILUS_IS_SEARCH_DIRECTORY (view->details->model);
-	selection_all_in_trash = all_selected_items_in_trash (selection);
+	selection_is_read_only = selection_count == 1 &&
+		(!nautilus_file_can_write (NAUTILUS_FILE (selection->data)) &&
+		 !nautilus_file_has_activation_uri (NAUTILUS_FILE (selection->data)));
 
+	is_read_only = nautilus_view_is_read_only (view);
 	can_create_files = nautilus_view_supports_creating_files (view);
 	can_delete_files =
 		can_delete_all (selection) &&
@@ -7304,62 +5758,47 @@ real_update_menus (NautilusView *view)
 		!selection_contains_desktop_or_home_dir;
 	can_copy_files = selection_count != 0
 		&& !selection_contains_special_link;
-
 	can_move_files = can_delete_files && !selection_contains_recent;
+	can_paste_files_into = (!selection_contains_recent &&
+				selection_count == 1 &&
+	                        can_paste_into_file (NAUTILUS_FILE (selection->data)));
+	show_properties = !showing_network_directory (view) &&
+			  (!NAUTILUS_IS_DESKTOP_CANVAS_VIEW (view) || selection_count > 0);
 
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_RENAME);
-	/* rename sensitivity depending on selection */
+	/* Right click actions */
+	/* Selection menu actions */
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "new-folder-with-selection");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+				     can_create_files && can_delete_files && (selection_count > 1) && !selection_contains_recent);
+
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "rename");
 	if (selection_count > 1) {
-		/* If multiple files are selected, sensitivity depends on whether a bulk renamer is registered. */
-		gtk_action_set_sensitive (action, have_bulk_rename_tool ());
+		g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+					     have_bulk_rename_tool ());
 	} else {
-		gtk_action_set_sensitive (action,
-					  selection_count == 1 &&
-					  nautilus_view_can_rename_file (view, selection->data));
-	}
-	gtk_action_set_visible (action, !selection_contains_recent);
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_SET_AS_WALLPAPER);
-	/* rename sensitivity depending on selection */
-	if (can_set_wallpaper (selection)) {
-		gtk_action_set_visible (action, TRUE);
-	} else {
-		gtk_action_set_visible (action, FALSE);
+		g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+					     selection_count == 1 &&
+					     nautilus_view_can_rename_file (view, selection->data));
 	}
 
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_OPEN_ITEM_LOCATION);
-	if (selection_count == 1 &&
-	    (selection_contains_recent || selection_contains_search))
-	{
-		gtk_action_set_visible (action, TRUE);
-	} else {
-		gtk_action_set_visible (action, FALSE);
-	}
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "open-item-location");
 
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_NEW_FOLDER);
-	gtk_action_set_sensitive (action, can_create_files);
-	gtk_action_set_visible (action, !selection_contains_recent);
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+				     selection_count == 1 &&
+				     (selection_contains_recent || selection_contains_search));
 
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_NEW_FOLDER_WITH_SELECTION);
-	gtk_action_set_sensitive (action, can_create_files && can_delete_files && (selection_count > 1));
-	gtk_action_set_visible (action, !selection_contains_recent && (selection_count > 1));
-	label_with_underscore = g_strdup_printf (ngettext("New Folder with Selection (%'d Item)",
-							  "New Folder with Selection (%'d Items)",
-							  selection_count),
-						 selection_count);
-	g_object_set (action, "label", label_with_underscore, NULL);
-	g_free (label_with_underscore);
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "new-folder");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), can_create_files);
 
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_OPEN);
-	gtk_action_set_sensitive (action, selection_count != 0);
-	
-	can_open = show_app = show_run = selection_count != 0;
+
+	selection = nautilus_view_get_selection (view);
+	selection_count = g_list_length (selection);
+
+	show_app = show_run = item_opens_in_view = selection_count != 0;
 
 	for (l = selection; l != NULL; l = l->next) {
 		NautilusFile *file;
@@ -7374,236 +5813,515 @@ real_update_menus (NautilusView *view)
 			show_run = FALSE;
 		}
 
-		if (!show_app && !show_run) {
+		if (!nautilus_mime_file_opens_in_view (file)) {
+			item_opens_in_view = FALSE;
+		}
+
+		if (!show_app && !show_run && !item_opens_in_view) {
 			break;
 		}
-	} 
+	}
 
-	label_with_underscore = NULL;
-
+	/* Open With <App> menu item */
 	app = NULL;
-	app_icon = NULL;
-
-	if (can_open && show_app) {
+	if (show_app) {
 		app = nautilus_mime_get_default_application_for_files (selection);
 	}
 
-	if (app != NULL) {
-		char *escaped_app;
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "open-with-default-application");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), selection_count != 0);
 
+	/* Allow to select a different application to open the item */
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "open-with-other-application");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), app != NULL);
+
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "open-item-new-tab");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), item_opens_in_view);
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "open-item-new-window");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), item_opens_in_view);
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "set-as-wallpaper");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), 	can_set_wallpaper (selection));
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "restore-from-trash");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), can_restore_from_trash (selection));
+
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "move-to-trash");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), can_trash_files);
+
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "delete");
+	/* Only show it in trash folder or if the setting to include a delete
+	 * menu item is enabled */
+	show_separate_delete_command = g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ENABLE_DELETE);
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+				     can_delete_files &&
+				     (!can_trash_files || show_separate_delete_command));
+
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "cut");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+				     can_move_files && !selection_contains_recent);
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "copy");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+				     can_copy_files);
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "copy-to");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+				     can_copy_files);
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "move-to");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+				     can_move_files && !selection_contains_recent);
+
+	/* Drive menu */
+	show_mount = show_unmount = show_eject = show_start = show_stop = show_detect_media = FALSE;
+	for (l = selection; l != NULL && (show_mount || show_unmount
+					  || show_eject
+                                          || show_start || show_stop
+					  || show_detect_media);
+	     l = l->next) {
+		gboolean show_mount_one;
+		gboolean show_unmount_one;
+		gboolean show_eject_one;
+		gboolean show_start_one;
+		gboolean show_stop_one;
+		gboolean show_detect_media_one;
+
+		file = NAUTILUS_FILE (l->data);
+		file_should_show_foreach (file,
+					  &show_mount_one,
+					  &show_unmount_one,
+					  &show_eject_one,
+                                          &show_start_one,
+                                          &show_stop_one,
+					  &show_detect_media_one,
+					  &start_stop_type);
+
+		show_mount &= show_mount_one;
+		show_unmount &= show_unmount_one;
+		show_eject &= show_eject_one;
+		show_start &= show_start_one;
+		show_stop &= show_stop_one;
+		show_detect_media &= show_detect_media_one;
+	}
+
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "mount-volume");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+				     show_mount);
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "unmount-volume");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+				     show_unmount);
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "eject-volume");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+				     show_eject);
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "start-volume");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+				     show_start);
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "stop-volume");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+				     show_stop);
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "detect-media");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+				     show_detect_media);
+
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "scripts");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+				     view->details->scripts_present);
+
+	/* Background menu actions */
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "new-folder");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), can_create_files);
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "paste");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+				     !is_read_only && !selection_contains_recent);
+
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "paste-into");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+				     !selection_is_read_only && !selection_contains_recent &&
+				     can_paste_files_into);
+
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "properties");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+				     show_properties);
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "new-document");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+				     can_create_files &&
+				     !selection_contains_recent &&
+				     view->details->templates_present);
+
+	/* Ask the clipboard */
+	g_object_ref (view); /* Need to keep the object alive until we get the reply */
+	gtk_clipboard_request_targets (nautilus_clipboard_get (GTK_WIDGET (view)),
+				       clipboard_targets_received,
+				       view);
+
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "select-all");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+				     !nautilus_view_is_empty (view));
+
+	/* Toolbar menu actions */
+	/* Undo and Redo */
+	info = nautilus_file_undo_manager_get_action ();
+	undo_state = nautilus_file_undo_manager_get_state ();
+	undo_active = redo_active = FALSE;
+	if (info != NULL &&
+	    (undo_state > NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE)) {
+		is_undo = (undo_state == NAUTILUS_FILE_UNDO_MANAGER_STATE_UNDO);
+		undo_active = is_undo;
+		redo_active = !is_undo;
+	}
+
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "undo");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), undo_active);
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "redo");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), redo_active);
+
+	g_action_group_change_action_state (view_action_group,
+					    "show-hidden-files",
+					    g_variant_new_boolean (view->details->show_hidden_files));
+
+	/* Zoom */
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "zoom-in");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+				     nautilus_view_can_zoom_in (view));
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "zoom-out");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+				     nautilus_view_can_zoom_out (view));
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "zoom-default");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+				     nautilus_view_supports_zooming (view));
+}
+
+/* Convenience function to be called when updating menus,
+ * so children can subclass it and it will be called when
+ * they chain up to the parent in update_context_menus
+ * or update_toolbar_menus
+ */
+void
+nautilus_view_update_actions_state (NautilusView *view)
+{
+	g_assert(NAUTILUS_IS_VIEW (view));
+
+	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->update_actions_state (view);
+}
+
+static void
+update_selection_menu (NautilusView *view)
+{
+	GList *selection, *l;
+	NautilusFile *file;
+	gint selection_count;
+	gboolean show_app, show_run;
+	gboolean item_opens_in_view;
+	gchar *item_label;
+	GAppInfo *app;
+	GIcon *app_icon;
+	GMenuItem *menu_item;
+	gboolean show_mount;
+	gboolean show_unmount;
+	gboolean show_eject;
+	gboolean show_start;
+	gboolean show_stop;
+	gboolean show_detect_media;
+	GDriveStartStopType start_stop_type;
+
+	selection = nautilus_view_get_selection (view);
+	selection_count = g_list_length (selection);
+
+	show_mount = (selection != NULL);
+	show_unmount = (selection != NULL);
+	show_eject = (selection != NULL);
+	show_start = (selection != NULL && selection_count == 1);
+	show_stop = (selection != NULL && selection_count == 1);
+	show_detect_media = (selection != NULL && selection_count == 1);
+
+	item_label = g_strdup_printf (_("New Folder with Selection (%'d Items)"),
+				      selection_count);
+	menu_item = g_menu_item_new (item_label, "view.new-folder-with-selection");
+	g_menu_item_set_attribute (menu_item, "hidden-when", "s", "action-disabled");
+	nautilus_gmenu_add_item_in_submodel (view->details->selection_menu,
+					     menu_item,
+					     "new-folder-with-selection-section",
+					     FALSE);
+	g_object_unref (menu_item);
+	g_free (item_label);
+
+	/* Open With <App> menu item */
+	show_app = show_run = item_opens_in_view = selection_count != 0;
+	for (l = selection; l != NULL; l = l->next) {
+		NautilusFile *file;
+
+		file = NAUTILUS_FILE (selection->data);
+
+		if (!nautilus_mime_file_opens_in_external_app (file)) {
+			show_app = FALSE;
+		}
+
+		if (!nautilus_mime_file_launches (file)) {
+			show_run = FALSE;
+		}
+
+		if (!nautilus_mime_file_opens_in_view (file)) {
+			item_opens_in_view = FALSE;
+		}
+
+		if (!show_app && !show_run && !item_opens_in_view) {
+			break;
+		}
+	}
+
+	item_label = NULL;
+	app = NULL;
+	app_icon = NULL;
+	if (show_app) {
+		app = nautilus_mime_get_default_application_for_files (selection);
+	}
+
+	char *escaped_app;
+
+	if (app != NULL) {
 		escaped_app = eel_str_double_underscores (g_app_info_get_name (app));
-		label_with_underscore = g_strdup_printf (_("_Open With %s"),
-							 escaped_app);
+		item_label = g_strdup_printf (_("Open With %s"), escaped_app);
 
 		app_icon = g_app_info_get_icon (app);
 		if (app_icon != NULL) {
 			g_object_ref (app_icon);
 		}
-
 		g_free (escaped_app);
 		g_object_unref (app);
 	} else if (show_run) {
-		label_with_underscore = g_strdup (_("Run"));
+		item_label = g_strdup (_("Run"));
 	} else {
-		label_with_underscore = g_strdup (_("_Open"));
+		item_label = g_strdup (_("Open"));
 	}
 
-	g_object_set (action, "label", label_with_underscore, NULL);
-	g_free (label_with_underscore);
+	menu_item = g_menu_item_new (item_label, "view.open-with-default-application");
+	if (app_icon != NULL)
+		g_menu_item_set_icon (menu_item, app_icon);
 
-	menuitem = gtk_ui_manager_get_widget (
-					      nautilus_view_get_ui_manager (view),
-					      NAUTILUS_VIEW_POPUP_PATH_OPEN);
+	nautilus_gmenu_add_item_in_submodel (view->details->selection_menu,
+					     menu_item,
+					     "open-with-default-application-section",
+					     FALSE);
 
-	/* Only force displaying the icon if it is an application icon */
-	gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (menuitem), app_icon != NULL);
+	g_free (item_label);
+	g_object_unref (menu_item);
 
-	if (app_icon == NULL) {
-		app_icon = g_themed_icon_new ("gtk-open");
+	/* Drives */
+	for (l = selection; l != NULL && (show_mount || show_unmount
+					  || show_eject
+                                          || show_start || show_stop
+					  || show_detect_media);
+	     l = l->next) {
+		gboolean show_mount_one;
+		gboolean show_unmount_one;
+		gboolean show_eject_one;
+		gboolean show_start_one;
+		gboolean show_stop_one;
+		gboolean show_detect_media_one;
+
+		file = NAUTILUS_FILE (l->data);
+		file_should_show_foreach (file,
+					  &show_mount_one,
+					  &show_unmount_one,
+					  &show_eject_one,
+                                          &show_start_one,
+                                          &show_stop_one,
+					  &show_detect_media_one,
+					  &start_stop_type);
+
+		show_mount &= show_mount_one;
+		show_unmount &= show_unmount_one;
+		show_eject &= show_eject_one;
+		show_start &= show_start_one;
+		show_stop &= show_stop_one;
+		show_detect_media &= show_detect_media_one;
 	}
 
-	gtk_action_set_gicon (action, app_icon);
-	g_object_unref (app_icon);
+	if (show_start) {
+		switch (start_stop_type) {
+		default:
+		case G_DRIVE_START_STOP_TYPE_UNKNOWN:
+		case G_DRIVE_START_STOP_TYPE_SHUTDOWN:
+			item_label = _("_Start");
+			break;
+		case G_DRIVE_START_STOP_TYPE_NETWORK:
+			item_label = _("_Connect");
+			break;
+		case G_DRIVE_START_STOP_TYPE_MULTIDISK:
+			item_label = _("_Start Multi-disk Drive");
+			break;
+		case G_DRIVE_START_STOP_TYPE_PASSWORD:
+			item_label = _("U_nlock Drive");
+			break;
+		}
 
-	gtk_action_set_visible (action, can_open);
-
-	show_open_alternate = file_list_all_are_folders (selection) &&
-		selection_count > 0 &&
-		!NAUTILUS_IS_DESKTOP_CANVAS_VIEW (view);
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_OPEN_ALTERNATE);
-
-	gtk_action_set_sensitive (action,  selection_count != 0);
-	gtk_action_set_visible (action, show_open_alternate);
-
-	if (selection_count == 0 || selection_count == 1) {
-		label_with_underscore = g_strdup (_("Open in New _Window"));
-	} else {
-		label_with_underscore = g_strdup_printf (ngettext("Open in %'d New _Window",
-								  "Open in %'d New _Windows",
-								  selection_count), 
-							 selection_count);
+		menu_item = g_menu_item_new (item_label, "view.start-volume");
+		nautilus_gmenu_add_item_in_submodel (view->details->selection_menu,
+						     menu_item,
+						     "drive-section",
+						     FALSE);
+		g_object_unref (menu_item);
 	}
 
-	g_object_set (action, "label", 
-		      label_with_underscore,
-		      NULL);
-	g_free (label_with_underscore);
+	if (show_stop) {
+		switch (start_stop_type) {
+		default:
+		case G_DRIVE_START_STOP_TYPE_UNKNOWN:
+			item_label = _("Stop Drive");
+			break;
+		case G_DRIVE_START_STOP_TYPE_SHUTDOWN:
+			item_label = _("_Safely Remove Drive");
+			break;
+		case G_DRIVE_START_STOP_TYPE_NETWORK:
+			item_label = _("_Disconnect");
+			break;
+		case G_DRIVE_START_STOP_TYPE_MULTIDISK:
+			item_label = _("_Stop Multi-disk Drive");
+			break;
+		case G_DRIVE_START_STOP_TYPE_PASSWORD:
+			item_label = _("_Lock Drive");
+			break;
+		}
 
-	show_open_in_new_tab = show_open_alternate;
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_OPEN_IN_NEW_TAB);
-	gtk_action_set_sensitive (action, selection_count != 0);
-	gtk_action_set_visible (action, show_open_in_new_tab);
-
-	if (selection_count == 0 || selection_count == 1) {
-		label_with_underscore = g_strdup (_("Open in New _Tab"));
-	} else {
-		label_with_underscore = g_strdup_printf (ngettext("Open in %'d New _Tab",
-								  "Open in %'d New _Tabs",
-								  selection_count), 
-							 selection_count);
+		menu_item = g_menu_item_new (item_label, "view.stop-volume");
+		nautilus_gmenu_add_item_in_submodel (view->details->selection_menu,
+						     menu_item,
+						     "drive-section",
+						     FALSE);
+		g_object_unref (menu_item);
 	}
 
-	g_object_set (action, "label", 
-		      label_with_underscore,
-		      NULL);
-	g_free (label_with_underscore);
+	update_scripts_menu (view);
+}
 
-	/* Broken into its own function just for convenience */
-	reset_open_with_menu (view, selection);
-	reset_extension_actions_menu (view, selection);
+static void
+update_background_menu (NautilusView *view)
+{
 
-	if (selection_all_in_trash) {
-		label = _("_Delete Permanently");
-		tip = _("Delete all selected items permanently");
-		show_separate_delete_command = FALSE;
-	} else {
-		label = _("Mo_ve to Trash");
-		tip = _("Move each selected item to the Trash");
-		show_separate_delete_command = g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ENABLE_DELETE);
-	}
-	
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_TRASH);
-	g_object_set (action,
-		      "label", label,
-		      "tooltip", tip,
-		      "icon-name", selection_all_in_trash ?
-		      NAUTILUS_ICON_DELETE : NAUTILUS_ICON_TRASH_FULL,
-		      NULL);
-	/* if the backend supports delete but not trash then don't show trash */
-	if (!can_trash_files && can_delete_files) {
-		gtk_action_set_visible (action, FALSE);
-	} else {
-		gtk_action_set_visible (action, TRUE);
-		gtk_action_set_sensitive (action, can_trash_files);
-	}
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_DELETE);
-	/* if the backend doesn't support trash but supports delete
-	   show the delete option. or if the user set this  pref */
-	gtk_action_set_visible (action, (!can_trash_files && can_delete_files) || show_separate_delete_command);
-
-	if (selection_contains_recent) {
-		label = _("Remo_ve from Recent");
-		tip = _("Remove each selected item from the recently used list");
-	} else {
-		label = _("_Delete");
-		tip = _("Delete each selected item, without moving to the Trash");
-	}
-
-	if ((!can_trash_files && can_delete_files) || show_separate_delete_command) {
-		g_object_set (action,
-			      "label", label,
-			      "tooltip", tip,
-			      "icon-name", NAUTILUS_ICON_DELETE,
-			      NULL);
-	}
-	gtk_action_set_sensitive (action, can_delete_files);
-
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_RESTORE_FROM_TRASH);
-	update_restore_from_trash_action (action, selection, FALSE);
-
-	show_properties = !showing_network_directory (view)
-		&& (!NAUTILUS_IS_DESKTOP_CANVAS_VIEW (view) || selection_count > 0);
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_PROPERTIES);
-
-	gtk_action_set_sensitive (action, show_properties);
-	gtk_action_set_visible (action, show_properties);
-
-	if (selection_count == 0) {
-		gtk_action_set_tooltip (action, _("View or modify the properties of the open folder"));
-	} else {
-		gtk_action_set_tooltip (action, _("View or modify the properties of each selected item"));
-	}
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_PROPERTIES_ACCEL);
-
-	gtk_action_set_sensitive (action, show_properties);
-	gtk_action_set_visible (action, show_properties);
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_SELECT_ALL);
-	gtk_action_set_sensitive (action, !nautilus_view_is_empty (view));
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_SELECT_PATTERN);
-	gtk_action_set_sensitive (action, !nautilus_view_is_empty (view));
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_INVERT_SELECTION);
-	gtk_action_set_sensitive (action, !nautilus_view_is_empty (view));
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_CUT);
-	gtk_action_set_sensitive (action, can_move_files);
-	gtk_action_set_visible (action, !selection_contains_recent);
-
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_COPY);
-	gtk_action_set_sensitive (action, can_copy_files);
-
-	real_update_paste_menu (view, selection, selection_count);
-
-	real_update_menus_volumes (view, selection, selection_count);
-
-	update_undo_actions (view);
-
-	nautilus_file_list_free (selection);
-
-	if (view->details->scripts_invalid) {
-		update_scripts_menu (view);
-	}
-
-	if (can_create_files
-	    && !selection_contains_recent
-	    && view->details->templates_invalid) {
+	if (nautilus_view_supports_creating_files (view) &&
+	    !showing_recent_directory (view))
 		update_templates_menu (view);
+}
+
+static void
+real_update_context_menus (NautilusView *view)
+{
+	g_clear_object (&view->details->background_menu);
+	g_clear_object (&view->details->selection_menu);
+	g_clear_object (&view->details->pathbar_menu);
+
+	GtkBuilder *builder;
+	builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-view-context-menus.xml");
+	view->details->background_menu = g_object_ref (G_MENU (gtk_builder_get_object (builder, "background-menu")));
+	view->details->selection_menu = g_object_ref (G_MENU (gtk_builder_get_object (builder, "selection-menu")));
+	view->details->pathbar_menu = g_object_ref (G_MENU (gtk_builder_get_object (builder, "pathbar-menu")));
+	g_object_unref (builder);
+
+	update_selection_menu (view);
+	update_background_menu (view);
+	nautilus_view_update_actions_state (view);
+}
+
+/* Convenience function to reset the context menus owned by the view and update
+ * them with the current state.
+ * Children can subclass it and add items on the menu after chaining up to the
+ * parent, so menus are already reseted.
+ * It will also update the actions state, which will also update children
+ * actions state if the children subclass nautilus_view_update_actions_state
+ */
+void
+nautilus_view_update_context_menus (NautilusView *view)
+{
+	g_assert(NAUTILUS_IS_VIEW (view));
+
+	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->update_context_menus (view);
+}
+
+static void
+real_update_toolbar_menus (NautilusView *view)
+{
+	NautilusToolbar *toolbar;
+	NautilusWindow *window;
+	NautilusFileUndoInfo *info;
+	NautilusFileUndoManagerState undo_state;
+	gboolean undo_active, redo_active;
+	gchar *undo_label, *undo_description, *redo_label, *redo_description;
+	GMenuItem *undo_menu_item, *redo_menu_item;
+	gboolean is_undo;
+
+	undo_label = undo_description = redo_label = redo_description = NULL;
+
+	toolbar = NAUTILUS_TOOLBAR (nautilus_window_get_toolbar (nautilus_view_get_window (view)));
+	window = nautilus_view_get_window (view);
+	nautilus_toolbar_reset_menus (toolbar);
+	nautilus_window_reset_menus (window);
+
+	/* Undo and Redo */
+	info = nautilus_file_undo_manager_get_action ();
+	undo_state = nautilus_file_undo_manager_get_state ();
+	undo_active = redo_active = FALSE;
+	if (info != NULL &&
+	    (undo_state > NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE)) {
+		is_undo = (undo_state == NAUTILUS_FILE_UNDO_MANAGER_STATE_UNDO);
+		undo_active = is_undo;
+		redo_active = !is_undo;
+		nautilus_file_undo_info_get_strings (info,
+						     &undo_label, &undo_description,
+						     &redo_label, &redo_description);
 	}
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_NEW_DOCUMENTS);
-	gtk_action_set_sensitive (action, can_create_files);
-	gtk_action_set_visible (action, !selection_contains_recent && view->details->templates_present);
 
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_COPY_TO);
-	gtk_action_set_sensitive (action, can_copy_files);
+	undo_label = undo_active ? undo_label : _("Undo");
+	redo_label = redo_active ? redo_label : _("Redo");
+	undo_menu_item = g_menu_item_new (undo_label, "view.undo");
+	redo_menu_item = g_menu_item_new (redo_label, "view.redo");
+	nautilus_toolbar_action_menu_add_item (toolbar, undo_menu_item, "undo-redo-section");
+	nautilus_toolbar_action_menu_add_item (toolbar, redo_menu_item, "undo-redo-section");
 
-	action = gtk_action_group_get_action (view->details->dir_action_group,
-					      NAUTILUS_ACTION_MOVE_TO);
-	gtk_action_set_sensitive (action, can_move_files);
-	gtk_action_set_visible (action, !selection_contains_recent);
+	nautilus_view_update_actions_state (view);
 
-	action = gtk_action_group_get_action (view->details->dir_action_group, NAUTILUS_ACTION_SHOW_HIDDEN_FILES);
-	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), view->details->show_hidden_files);
+	g_object_unref (undo_menu_item);
+	g_object_unref (redo_menu_item);
+}
+
+/* Convenience function to reset the menus owned by the but that are managed on
+ * the toolbar and update them with the current state.
+ * Children can subclass it and add items on the menu after chaining up to the
+ * parent, so menus are already reseted.
+ * It will also update the actions state, which will also update children
+ * actions state if the children subclass nautilus_view_update_actions_state
+ */
+void
+nautilus_view_update_toolbar_menus (NautilusView *view)
+{
+	g_assert(NAUTILUS_IS_VIEW (view));
+
+	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->update_toolbar_menus (view);
 }
 
 /**
@@ -7623,13 +6341,11 @@ nautilus_view_pop_up_selection_context_menu  (NautilusView *view,
 	/* Make the context menu items not flash as they update to proper disabled,
 	 * etc. states by forcing menus to update now.
 	 */
-	update_menus_if_pending (view);
+	update_context_menus_if_pending (view);
 
 	update_context_menu_position_from_event (view, event);
 
-	eel_pop_up_context_menu (create_popup_menu 
-				 (view, NAUTILUS_VIEW_POPUP_PATH_SELECTION),
-				 event);
+	nautilus_pop_up_context_menu (GTK_WIDGET (view), view->details->selection_menu, event);
 }
 
 /**
@@ -7648,27 +6364,24 @@ nautilus_view_pop_up_background_context_menu (NautilusView *view,
 	/* Make the context menu items not flash as they update to proper disabled,
 	 * etc. states by forcing menus to update now.
 	 */
-	update_menus_if_pending (view);
+	update_context_menus_if_pending (view);
 
 	update_context_menu_position_from_event (view, event);
 
-
-	eel_pop_up_context_menu (create_popup_menu 
-				 (view, NAUTILUS_VIEW_POPUP_PATH_BACKGROUND),
-				 event);
+	nautilus_pop_up_context_menu (GTK_WIDGET (view), view->details->background_menu, event);
 }
 
 static void
 real_pop_up_pathbar_context_menu (NautilusView *view)
 {
-	/* always update the menu before showing it. Shouldn't be too expensive. */
-	real_update_location_menu (view);
+	/* Make the context menu items not flash as they update to proper disabled,
+	 * etc. states by forcing menus to update now.
+	 */
+	update_context_menus_if_pending (view);
 
 	update_context_menu_position_from_event (view, view->details->pathbar_popup_event);
 
-	eel_pop_up_context_menu (create_popup_menu 
-				 (view, NAUTILUS_VIEW_POPUP_PATH_LOCATION),
-				 view->details->pathbar_popup_event);
+	nautilus_pop_up_context_menu (GTK_WIDGET (view), view->details->pathbar_menu, view->details->pathbar_popup_event);
 }
 
 static void
@@ -7761,7 +6474,7 @@ nautilus_view_pop_up_pathbar_context_menu (NautilusView *view,
 }
 
 static void
-schedule_update_menus (NautilusView *view) 
+schedule_update_context_menus (NautilusView *view) 
 {
 	g_assert (NAUTILUS_IS_VIEW (view));
 
@@ -7774,9 +6487,9 @@ schedule_update_menus (NautilusView *view)
 	}
 	
 	/* Schedule a menu update with the current update interval */
-	if (view->details->update_menus_timeout_id == 0) {
-		view->details->update_menus_timeout_id
-			= g_timeout_add (view->details->update_interval, update_menus_timeout_callback, view);
+	if (view->details->update_context_menus_timeout_id == 0) {
+		view->details->update_context_menus_timeout_id
+			= g_timeout_add (view->details->update_interval, update_context_menus_timeout_callback, view);
 	}
 }
 
@@ -7862,7 +6575,7 @@ nautilus_view_notify_selection_changed (NautilusView *view)
 		 */
 
 		/* Schedule an update of menu item states to match selection */
-		schedule_update_menus (view);
+		schedule_update_context_menus (view);
 	}
 }
 
@@ -7873,7 +6586,7 @@ file_changed_callback (NautilusFile *file, gpointer callback_data)
 
 	schedule_changes (view);
 
-	schedule_update_menus (view);
+	schedule_update_context_menus (view);
 	schedule_update_status (view);
 }
 
@@ -7908,7 +6621,7 @@ load_directory (NautilusView *view,
 	 * location, so they won't have any false lingering knowledge
 	 * of old selection.
 	 */
-	schedule_update_menus (view);
+	schedule_update_context_menus (view);
 	
 	while (view->details->subdirectory_list != NULL) {
 		nautilus_view_remove_subdirectory (view,
@@ -8340,7 +7053,7 @@ nautilus_view_trash_state_changed_callback (NautilusTrashMonitor *trash_monitor,
 	view = (NautilusView *) callback_data;
 	g_assert (NAUTILUS_IS_VIEW (view));
 	
-	schedule_update_menus (view);
+	schedule_update_context_menus (view);
 }
 
 void
@@ -8505,13 +7218,9 @@ nautilus_view_parent_set (GtkWidget *widget,
 		if (view->details->slot == 
 		    nautilus_window_get_active_slot (nautilus_view_get_window (view))) {
 			view->details->active = TRUE;
-
-			nautilus_view_merge_menus (view);
-			schedule_update_menus (view);
 		}
 	} else {
-		nautilus_view_unmerge_menus (view);
-		remove_update_menus_timeout_callback (view);
+		remove_update_context_menus_timeout_callback (view);
 	}
 }
 
@@ -8521,7 +7230,6 @@ nautilus_view_class_init (NautilusViewClass *klass)
 	GObjectClass *oclass;
 	GtkWidgetClass *widget_class;
 	GtkScrolledWindowClass *scrolled_window_class;
-	GtkBindingSet *binding_set;
 
 	widget_class = GTK_WIDGET_CLASS (klass);
 	scrolled_window_class = GTK_SCROLLED_WINDOW_CLASS (klass);
@@ -8605,13 +7313,6 @@ nautilus_view_class_init (NautilusViewClass *klass)
 		              NULL, NULL,
 		              g_cclosure_marshal_generic,
 		              G_TYPE_NONE, 2, NAUTILUS_TYPE_FILE, NAUTILUS_TYPE_DIRECTORY);
-	signals[ZOOM_LEVEL_CHANGED] =
-		g_signal_new ("zoom-level-changed",
-			      G_TYPE_FROM_CLASS (klass),
-			      G_SIGNAL_RUN_LAST,
-			      0, NULL, NULL,
-			      g_cclosure_marshal_VOID__VOID,
-			      G_TYPE_NONE, 0);
 	signals[SELECTION_CHANGED] =
 		g_signal_new ("selection-changed",
 			      G_TYPE_FROM_CLASS (klass),
@@ -8620,22 +7321,6 @@ nautilus_view_class_init (NautilusViewClass *klass)
 			      NULL, NULL,
 			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
-	signals[TRASH] =
-		g_signal_new ("trash",
-			      G_TYPE_FROM_CLASS (klass),
-			      G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
-			      G_STRUCT_OFFSET (NautilusViewClass, trash),
-			      g_signal_accumulator_true_handled, NULL,
-			      g_cclosure_marshal_generic,
-			      G_TYPE_BOOLEAN, 0);
-	signals[DELETE] =
-		g_signal_new ("delete",
-			      G_TYPE_FROM_CLASS (klass),
-			      G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
-			      G_STRUCT_OFFSET (NautilusViewClass, delete),
-			      g_signal_accumulator_true_handled, NULL,
-			      g_cclosure_marshal_generic,
-			      G_TYPE_BOOLEAN, 0);
 
 	klass->get_selected_icon_locations = real_get_selected_icon_locations;
 	klass->is_read_only = real_is_read_only;
@@ -8643,11 +7328,12 @@ nautilus_view_class_init (NautilusViewClass *klass)
 	klass->start_renaming_file = start_renaming_file;
 	klass->get_backing_uri = real_get_backing_uri;
 	klass->using_manual_layout = real_using_manual_layout;
-        klass->merge_menus = real_merge_menus;
-        klass->unmerge_menus = real_unmerge_menus;
-        klass->update_menus = real_update_menus;
-	klass->trash = real_trash;
-	klass->delete = real_delete;
+	klass->get_window = nautilus_view_get_window;
+	klass->get_action_group = nautilus_view_get_action_group;
+	klass->update_context_menus = real_update_context_menus;
+	klass->update_actions_state = real_update_actions_state;
+	klass->update_toolbar_menus = real_update_toolbar_menus;
+	klass->zoom_to_level = real_zoom_to_level;
 
 	copied_files_atom = gdk_atom_intern ("x-special/gnome-copied-files", FALSE);
 
@@ -8667,14 +7353,139 @@ nautilus_view_class_init (NautilusViewClass *klass)
 				      G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
+}
 
-	binding_set = gtk_binding_set_by_class (klass);
-	gtk_binding_entry_add_signal (binding_set, GDK_KEY_Delete, GDK_CONTROL_MASK,
-				      "trash", 0);
-	gtk_binding_entry_add_signal (binding_set, GDK_KEY_KP_Delete, GDK_CONTROL_MASK,
-				      "trash", 0);
-	gtk_binding_entry_add_signal (binding_set, GDK_KEY_KP_Delete, GDK_SHIFT_MASK,
-				      "delete", 0);
+static void
+nautilus_view_init (NautilusView *view)
+{
+	AtkObject *atk_object;
+	NautilusDirectory *scripts_directory;
+	NautilusDirectory *templates_directory;
+	gchar *templates_uri;
+	GApplication *app;
+
+	nautilus_profile_start (NULL);
+
+	view->details = G_TYPE_INSTANCE_GET_PRIVATE (view, NAUTILUS_TYPE_VIEW,
+						     NautilusViewDetails);
+
+	/* Default to true; desktop-icon-view sets to false */
+	view->details->show_foreign_files = TRUE;
+
+	view->details->non_ready_files =
+		g_hash_table_new_full (file_and_directory_hash,
+				       file_and_directory_equal,
+				       (GDestroyNotify)file_and_directory_free,
+				       NULL);
+
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (view),
+					GTK_POLICY_AUTOMATIC,
+					GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_hadjustment (GTK_SCROLLED_WINDOW (view), NULL);
+	gtk_scrolled_window_set_vadjustment (GTK_SCROLLED_WINDOW (view), NULL);
+
+	gtk_style_context_set_junction_sides (gtk_widget_get_style_context (GTK_WIDGET (view)),
+					      GTK_JUNCTION_TOP | GTK_JUNCTION_LEFT);
+
+	if (set_up_scripts_directory_global ()) {
+		scripts_directory = nautilus_directory_get_by_uri (scripts_directory_uri);
+		add_directory_to_scripts_directory_list (view, scripts_directory);
+		nautilus_directory_unref (scripts_directory);
+	} else {
+		g_warning ("Ignoring scripts directory, it may be a broken link\n");
+	}
+
+	if (nautilus_should_use_templates_directory ()) {
+		templates_uri = nautilus_get_templates_directory_uri ();
+		templates_directory = nautilus_directory_get_by_uri (templates_uri);
+		g_free (templates_uri);
+		add_directory_to_templates_directory_list (view, templates_directory);
+		nautilus_directory_unref (templates_directory);
+	}
+	update_templates_directory (view);
+
+	view->details->sort_directories_first =
+		g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
+	view->details->show_hidden_files =
+		g_settings_get_boolean (gtk_filechooser_preferences, NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
+
+	g_signal_connect_object (nautilus_trash_monitor_get (), "trash-state-changed",
+				 G_CALLBACK (nautilus_view_trash_state_changed_callback), view, 0);
+
+	/* React to clipboard changes */
+	g_signal_connect_object (nautilus_clipboard_monitor_get (), "clipboard-changed",
+				 G_CALLBACK (clipboard_changed_callback), view, 0);
+
+	/* Register to menu provider extension signal managing menu updates */
+	g_signal_connect_object (nautilus_signaller_get_current (), "popup-menu-changed",
+				 G_CALLBACK (schedule_update_context_menus), view, G_CONNECT_SWAPPED);
+
+	gtk_widget_show (GTK_WIDGET (view));
+
+	g_signal_connect_swapped (nautilus_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_ENABLE_DELETE,
+				  G_CALLBACK (schedule_update_context_menus), view);
+	g_signal_connect_swapped (nautilus_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_CLICK_POLICY,
+				  G_CALLBACK (click_policy_changed_callback),
+				  view);
+	g_signal_connect_swapped (nautilus_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
+				  G_CALLBACK (sort_directories_first_changed_callback), view);
+	g_signal_connect_swapped (gtk_filechooser_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+				  G_CALLBACK (show_hidden_files_changed_callback), view);
+	g_signal_connect_swapped (gnome_lockdown_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE,
+				  G_CALLBACK (schedule_update_context_menus), view);
+
+	g_signal_connect_object (nautilus_file_undo_manager_get (), "undo-changed",
+				 G_CALLBACK (undo_manager_changed), view, 0);
+
+	/* Accessibility */
+	atk_object = gtk_widget_get_accessible (GTK_WIDGET (view));
+	atk_object_set_name (atk_object, _("Content View"));
+	atk_object_set_description (atk_object, _("View of the current folder"));
+
+	view->details->view_action_group = G_ACTION_GROUP (g_simple_action_group_new ());
+	g_action_map_add_action_entries (G_ACTION_MAP (view->details->view_action_group),
+					view_entries,
+					G_N_ELEMENTS (view_entries),
+					view);
+	gtk_widget_insert_action_group (GTK_WIDGET (view),
+					"view",
+					G_ACTION_GROUP (view->details->view_action_group));
+
+	app = g_application_get_default ();
+
+	/* Toolbar menu */
+	nautilus_application_add_accelerator (app, "view.zoom-in", "<control>plus");
+	nautilus_application_add_accelerator (app, "view.zoom-out", "<control>minus");
+	nautilus_application_add_accelerator (app, "view.undo", "<control>z");
+	nautilus_application_add_accelerator (app, "view.redo", "<shift><control>z");
+	nautilus_application_add_accelerator (app, "view.show-hidden-files", "<control>h");
+	/* Background menu */
+	nautilus_application_add_accelerator (app, "view.select-all", "<control>a");
+	nautilus_application_add_accelerator (app, "view.paste", "<control>v");
+	/* Selection menu */
+	nautilus_application_add_accelerator (app, "view.open-with-default-application", "<control>o");
+	nautilus_application_add_accelerator (app, "view.open-item-new-tab", "<shift><control>t");
+	nautilus_application_add_accelerator (app, "view.open-item-new-window", "<shift><control>w");
+	nautilus_application_add_accelerator (app, "view.move-to-trash", "<control>Delete");
+	nautilus_application_add_accelerator (app, "view.delete", "<shift>Delete");
+	nautilus_application_add_accelerator (app, "view.properties", "<control>i");
+	nautilus_application_add_accelerator (app, "view.open-item-location", "<control><alt>o");
+	nautilus_application_add_accelerator (app, "view.rename", "F2");
+	nautilus_application_add_accelerator (app, "view.cut", "<control>x");
+	nautilus_application_add_accelerator (app, "view.copy", "<control>c");
+	nautilus_application_add_accelerator (app, "view.delete", "<shift>Delete");
+	/* Only accesible by shorcuts */
+	nautilus_application_add_accelerator (app, "view.select-pattern", "<control>s");
+	nautilus_application_add_accelerator (app, "view.zoom-default", "<control>0");
+	nautilus_application_add_accelerator (app, "view.invert-selection", "<shift><control>i");
+	nautilus_application_add_accelerator (app, "view.open-file-and-close-window", "<control><shift>Down");
+
+	nautilus_profile_end (NULL);
 }
 
 NautilusView *

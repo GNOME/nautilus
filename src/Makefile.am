@@ -137,7 +137,6 @@ nautilus_built_sources = \
 	$(NULL)
 
 nautilus_SOURCES = \
-	nautilus-actions.h			\
 	nautilus-application.c			\
 	nautilus-application.h			\
 	nautilus-application-actions.c		\
@@ -208,7 +207,6 @@ nautilus_SOURCES = \
 	nautilus-view.h				\
 	nautilus-view-dnd.c			\
 	nautilus-view-dnd.h			\
-	nautilus-window-menus.c         	\
 	nautilus-window-private.h		\
 	nautilus-window-slot.c			\
 	nautilus-window-slot.h			\

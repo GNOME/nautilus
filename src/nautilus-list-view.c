@@ -30,6 +30,7 @@
 #include "nautilus-list-model.h"
 #include "nautilus-error-reporting.h"
 #include "nautilus-view-dnd.h"
+#include "nautilus-toolbar.h"
 
 #include <string.h>
 #include <eel/eel-vfs-extensions.h>
@@ -60,8 +61,6 @@
 struct NautilusListViewDetails {
 	GtkTreeView *tree_view;
 	NautilusListModel *model;
-	GtkActionGroup *list_action_group;
-	guint list_merge_id;
 
 	GtkTreeViewColumn   *file_name_column;
 	int file_name_column_num;
@@ -88,7 +87,6 @@ struct NautilusListViewDetails {
 	gboolean drag_started;
 	gboolean ignore_button_release;
 	gboolean row_selected_on_button_down;
-	gboolean menus_ready;
 	gboolean active;
 	
 	GHashTable *columns;
@@ -129,9 +127,8 @@ static GtkTargetList *          source_target_list = NULL;
 
 static GList *nautilus_list_view_get_selection                   (NautilusView   *view);
 static GList *nautilus_list_view_get_selection_for_file_transfer (NautilusView   *view);
-static void   nautilus_list_view_set_zoom_level                  (NautilusListView      *view,
-								  NautilusListZoomLevel  new_level,
-								  gboolean           always_set_level);
+static void   nautilus_list_view_set_zoom_level                  (NautilusListView        *view,
+								  NautilusListZoomLevel    new_level);
 static void   nautilus_list_view_scroll_to_file                  (NautilusListView        *view,
 								  NautilusFile      *file);
 static void   nautilus_list_view_rename_callback                 (NautilusFile      *file,
@@ -1290,11 +1287,6 @@ cell_renderer_editing_started_cb (GtkCellRenderer *renderer,
 
 	g_signal_connect (entry, "focus-out-event",
 			  G_CALLBACK (editable_focus_out_cb), list_view);
-
-	nautilus_clipboard_set_up_editable
-		(GTK_EDITABLE (entry),
-		 nautilus_view_get_ui_manager (NAUTILUS_VIEW (list_view)),
-		 FALSE);
 }
 
 static void
@@ -3005,12 +2997,13 @@ create_column_editor (NautilusListView *view)
 }
 
 static void
-action_visible_columns_callback (GtkAction *action,
-				 gpointer callback_data)
+action_visible_columns (GSimpleAction *action,
+			GVariant      *state,
+			gpointer       user_data)
 {
 	NautilusListView *list_view;
 	
-	list_view = NAUTILUS_LIST_VIEW (callback_data);
+	list_view = NAUTILUS_LIST_VIEW (user_data);
 
 	if (list_view->details->column_editor) {
 		gtk_window_present (GTK_WINDOW (list_view->details->column_editor));
@@ -3023,79 +3016,30 @@ action_visible_columns_callback (GtkAction *action,
 	}
 }
 
-static const GtkActionEntry list_view_entries[] = {
-	/* name, stock id */     { "Visible Columns", NULL,
-				   /* label, accelerator */   N_("Visible _Columns…"), NULL,
-				   /* tooltip */              N_("Select the columns visible in this folder"),
-				   G_CALLBACK (action_visible_columns_callback) },
+const GActionEntry list_view_entries[] = {
+	{ "visible-columns", action_visible_columns },
 };
 
 static void
-nautilus_list_view_merge_menus (NautilusView *view)
+nautilus_list_view_update_toolbar_menus (NautilusView *view)
 {
 	NautilusListView *list_view;
-	GtkUIManager *ui_manager;
-	GtkActionGroup *action_group;
-
-	list_view = NAUTILUS_LIST_VIEW (view);
-
-	NAUTILUS_VIEW_CLASS (nautilus_list_view_parent_class)->merge_menus (view);
-
-	ui_manager = nautilus_view_get_ui_manager (view);
-
-	action_group = gtk_action_group_new ("ListViewActions");
-	gtk_action_group_set_translation_domain (action_group, GETTEXT_PACKAGE);
-	list_view->details->list_action_group = action_group;
-	gtk_action_group_add_actions (action_group, 
-				      list_view_entries, G_N_ELEMENTS (list_view_entries),
-				      list_view);
-
-	gtk_ui_manager_insert_action_group (ui_manager, action_group, 0);
-	g_object_unref (action_group); /* owned by ui manager */
-
-	list_view->details->list_merge_id =
-		gtk_ui_manager_add_ui_from_resource (ui_manager, "/org/gnome/nautilus/nautilus-list-view-ui.xml", NULL);
-
-	list_view->details->menus_ready = TRUE;
-}
-
-static void
-nautilus_list_view_unmerge_menus (NautilusView *view)
-{
-	NautilusListView *list_view;
-	GtkUIManager *ui_manager;
-
-	list_view = NAUTILUS_LIST_VIEW (view);
-
-	NAUTILUS_VIEW_CLASS (nautilus_list_view_parent_class)->unmerge_menus (view);
-
-	ui_manager = nautilus_view_get_ui_manager (view);
-	if (ui_manager != NULL) {
-		nautilus_ui_unmerge_ui (ui_manager,
-					&list_view->details->list_merge_id,
-					&list_view->details->list_action_group);
-	}
-}
-
-static void
-nautilus_list_view_update_menus (NautilusView *view)
-{
-	NautilusListView *list_view;
+	NautilusToolbar *toolbar;
 
         list_view = NAUTILUS_LIST_VIEW (view);
 
-	/* don't update if the menus aren't ready */
-	if (!list_view->details->menus_ready) {
-		return;
-	}
+	NAUTILUS_VIEW_CLASS (nautilus_list_view_parent_class)->update_toolbar_menus (view);
 
-	NAUTILUS_VIEW_CLASS (nautilus_list_view_parent_class)->update_menus (view);
+	toolbar = NAUTILUS_TOOLBAR (nautilus_window_get_toolbar (nautilus_view_get_window (view)));
+	nautilus_toolbar_view_menu_widget_set_zoom_level (toolbar,
+							  (gdouble) list_view->details->zoom_level);
+
+	nautilus_toolbar_show_visible_columns (toolbar);
 }
 
 static void
 nautilus_list_view_set_zoom_level (NautilusListView *view,
-				   NautilusListZoomLevel new_level,
-				   gboolean always_emit)
+				   NautilusListZoomLevel new_level)
 {
 	int column;
 
@@ -3104,14 +3048,10 @@ nautilus_list_view_set_zoom_level (NautilusListView *view,
 			  new_level <= NAUTILUS_LIST_ZOOM_LEVEL_LARGE);
 
 	if (view->details->zoom_level == new_level) {
-		if (always_emit) {
-			g_signal_emit_by_name (NAUTILUS_VIEW(view), "zoom-level-changed");
-		}
 		return;
 	}
 
 	view->details->zoom_level = new_level;
-	g_signal_emit_by_name (NAUTILUS_VIEW(view), "zoom-level-changed");
 
 	/* Select correctly scaled icons. */
 	column = nautilus_list_model_get_column_id_from_zoom_level (new_level);
@@ -3119,10 +3059,22 @@ nautilus_list_view_set_zoom_level (NautilusListView *view,
 					     GTK_CELL_RENDERER (view->details->pixbuf_cell),
 					     "surface", column,
 					     NULL);
-
-	nautilus_view_update_menus (NAUTILUS_VIEW (view));
-
 	set_up_pixbuf_size (view);
+}
+
+static void
+nautilus_list_view_zoom_to_level (NautilusView *view,
+				  gint zoom_level)
+{
+	NautilusListView *list_view;
+
+	g_return_if_fail (NAUTILUS_IS_LIST_VIEW (view));
+
+	list_view = NAUTILUS_LIST_VIEW (view);
+
+	nautilus_list_view_set_zoom_level (list_view, zoom_level);
+
+	NAUTILUS_VIEW_CLASS (nautilus_list_view_parent_class)->zoom_to_level (view, zoom_level);
 }
 
 static void
@@ -3138,32 +3090,16 @@ nautilus_list_view_bump_zoom_level (NautilusView *view, int zoom_increment)
 
 	if (new_level >= NAUTILUS_LIST_ZOOM_LEVEL_SMALL &&
 	    new_level <= NAUTILUS_LIST_ZOOM_LEVEL_LARGE) {
-		nautilus_list_view_set_zoom_level (list_view, new_level, FALSE);
+		nautilus_list_view_zoom_to_level (view, new_level);
 	}
-}
-static void
-nautilus_list_view_zoom_to_level (NautilusView *view,
-				  gint          zoom_level)
-{
-	NautilusListView *list_view;
-
-	g_return_if_fail (NAUTILUS_IS_LIST_VIEW (view));
-
-	list_view = NAUTILUS_LIST_VIEW (view);
-
-	nautilus_list_view_set_zoom_level (list_view, zoom_level, FALSE);
 }
 
 static void
 nautilus_list_view_restore_default_zoom_level (NautilusView *view)
 {
-	NautilusListView *list_view;
-
 	g_return_if_fail (NAUTILUS_IS_LIST_VIEW (view));
 
-	list_view = NAUTILUS_LIST_VIEW (view);
-
-	nautilus_list_view_set_zoom_level (list_view, get_default_zoom_level (), FALSE);
+	nautilus_list_view_zoom_to_level (view, get_default_zoom_level ());
 }
 
 static gboolean 
@@ -3559,10 +3495,8 @@ nautilus_list_view_class_init (NautilusListViewClass *class)
 	nautilus_view_class->get_selection_for_file_transfer = nautilus_list_view_get_selection_for_file_transfer;
 	nautilus_view_class->is_empty = nautilus_list_view_is_empty;
 	nautilus_view_class->remove_file = nautilus_list_view_remove_file;
-	nautilus_view_class->merge_menus = nautilus_list_view_merge_menus;
-	nautilus_view_class->unmerge_menus = nautilus_list_view_unmerge_menus;
-	nautilus_view_class->update_menus = nautilus_list_view_update_menus;
 	nautilus_view_class->restore_default_zoom_level = nautilus_list_view_restore_default_zoom_level;
+	nautilus_view_class->update_toolbar_menus = nautilus_list_view_update_toolbar_menus;
 	nautilus_view_class->reveal_selection = nautilus_list_view_reveal_selection;
 	nautilus_view_class->select_all = nautilus_list_view_select_all;
 	nautilus_view_class->select_first = nautilus_list_view_select_first;
@@ -3582,6 +3516,7 @@ nautilus_list_view_class_init (NautilusListViewClass *class)
 static void
 nautilus_list_view_init (NautilusListView *list_view)
 {
+	GActionGroup *view_action_group;
 	list_view->details = g_new0 (NautilusListViewDetails, 1);
 
 	/* ensure that the zoom level is always set before settings up the tree view columns */
@@ -3609,13 +3544,19 @@ nautilus_list_view_init (NautilusListView *list_view)
 	nautilus_list_view_click_policy_changed (NAUTILUS_VIEW (list_view));
 
 	nautilus_list_view_sort_directories_first_changed (NAUTILUS_VIEW (list_view));
-	nautilus_list_view_set_zoom_level (list_view, get_default_zoom_level (), TRUE);
+	nautilus_list_view_set_zoom_level (list_view, get_default_zoom_level ());
 
 	list_view->details->hover_path = NULL;
 	list_view->details->clipboard_handler_id =
 		g_signal_connect (nautilus_clipboard_monitor_get (),
 		                  "clipboard-info",
 		                  G_CALLBACK (list_view_notify_clipboard_info), list_view);
+
+	view_action_group = nautilus_view_get_action_group (NAUTILUS_VIEW (list_view));
+	g_action_map_add_action_entries (G_ACTION_MAP (view_action_group),
+					list_view_entries,
+					G_N_ELEMENTS (list_view_entries),
+					list_view);
 }
 
 NautilusView *

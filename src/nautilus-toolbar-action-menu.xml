@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<interface>
+  <!-- interface-requires gtk+ 3.0 -->
+  <menu id="action-menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">New _Folder</attribute>
+        <attribute name="action">view.new-folder</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">New _Tab</attribute>
+        <attribute name="action">win.new-tab</attribute>
+      </item>
+    </section>
+    <section>
+      <attribute name="id">undo-redo-section</attribute>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Select _All</attribute>
+        <attribute name="action">view.select-all</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Enter _Location</attribute>
+        <attribute name="action">win.enter-location</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">_Bookmark this Location</attribute>
+        <attribute name="action">win.bookmark-current-location</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>

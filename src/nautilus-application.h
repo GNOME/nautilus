@@ -63,6 +63,10 @@ NautilusApplication * nautilus_application_new (void);
 NautilusWindow *     nautilus_application_create_window (NautilusApplication *application,
 							 GdkScreen           *screen);
 
+void nautilus_application_add_accelerator (GApplication *app,
+					   const gchar  *action_name,
+					   const gchar  *accel);
+
 GList * nautilus_application_get_windows (NautilusApplication *application);
 
 void nautilus_application_open_location (NautilusApplication *application,

@@ -26,15 +26,18 @@
 #include <gtk/gtk.h>
 #include <libnautilus-extension/nautilus-menu-item.h>
 
-void        nautilus_ui_unmerge_ui                 (GtkUIManager      *ui_manager,
-						    guint             *merge_id,
-						    GtkActionGroup   **action_group);
-void        nautilus_ui_prepare_merge_ui           (GtkUIManager      *ui_manager,
-						    const char        *name,
-						    guint             *merge_id,
-						    GtkActionGroup   **action_group);
-GtkAction * nautilus_action_from_menu_item         (NautilusMenuItem  *item,
-						    GtkWidget         *parent_widget);
+
+void nautilus_gmenu_add_item_in_submodel 	   (GMenu             *menu,
+						    GMenuItem         *item,
+						    const gchar       *section_name,
+						    gboolean           prepend);
+void nautilus_gmenu_merge                          (GMenu             *original,
+						    GMenu             *gmenu_to_merge,
+						    const gchar       *submodel_name,
+						    gboolean           prepend);
+void nautilus_pop_up_context_menu                  (GtkWidget         *parent,
+						    GMenu             *menu,
+						    GdkEventButton    *event);
 
 GdkPixbuf * nautilus_ui_get_menu_icon              (const char        *icon_name,
 						    GtkWidget         *parent_widget);

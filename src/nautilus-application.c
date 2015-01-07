@@ -86,6 +86,19 @@ struct _NautilusApplicationPriv {
 	GList *windows;
 };
 
+void
+nautilus_application_add_accelerator (GApplication *app,
+				      const gchar  *action_name,
+				      const gchar  *accel)
+{
+	const gchar *vaccels[] = {
+		accel,
+		NULL
+	};
+
+	gtk_application_set_accels_for_action (GTK_APPLICATION (app), action_name, vaccels);
+}
+
 GList *
 nautilus_application_get_windows (NautilusApplication *application)
 {
