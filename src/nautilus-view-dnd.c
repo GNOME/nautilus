@@ -529,13 +529,18 @@ nautilus_view_handle_hover (NautilusView *view,
 	NautilusWindowSlot *slot;
 	GFile *location;
 	GFile *current_location;
+	NautilusFile *target_file;
+	gboolean target_is_dir;
 
 	slot = nautilus_view_get_nautilus_window_slot (view);
 
 	location = g_file_new_for_uri (target_uri);
+	target_file = nautilus_file_get_existing (location);
+	target_is_dir = nautilus_file_get_file_type (target_file) == G_FILE_TYPE_DIRECTORY;
 	current_location = nautilus_window_slot_get_location (slot);
-	if (! (current_location != NULL && g_file_equal(location, current_location))) {
+	if (target_is_dir && ! (current_location != NULL && g_file_equal(location, current_location))) {
 		nautilus_window_slot_open_location (slot, location, 0);
 	}
 	g_object_unref (location);
+	nautilus_file_unref (target_file);
 }
