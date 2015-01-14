@@ -74,5 +74,7 @@ void        nautilus_floating_bar_add_action       (NautilusFloatingBar *self,
 						    gint action_id);
 void        nautilus_floating_bar_cleanup_actions  (NautilusFloatingBar *self);
 
+void        nautilus_floating_bar_remove_hover_timeout (NautilusFloatingBar *self);
+
 #endif /* __NAUTILUS_FLOATING_BAR_H__ */
 

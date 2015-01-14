@@ -445,6 +445,7 @@ real_floating_bar_set_short_status (NautilusFilesView *view,
 
         if ((primary_status == NULL && detail_status == NULL) || disable_chrome) {
                 gtk_widget_hide (view->details->floating_bar);
+                nautilus_floating_bar_remove_hover_timeout (NAUTILUS_FLOATING_BAR (view->details->floating_bar));
                 return;
         }
 
