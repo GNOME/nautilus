@@ -1884,19 +1884,15 @@ nautilus_window_sync_zoom_widgets (NautilusWindow *window)
 	GtkAction *action;
 	gboolean supports_zooming;
 	gboolean can_zoom, can_zoom_in, can_zoom_out;
-	NautilusZoomLevel zoom_level;
 
 	slot = nautilus_window_get_active_slot (window);
 	view = nautilus_window_slot_get_view (slot);
 
 	if (view != NULL) {
 		supports_zooming = nautilus_view_supports_zooming (view);
-		zoom_level = nautilus_view_get_zoom_level (view);
-		can_zoom = supports_zooming &&
-			   zoom_level >= NAUTILUS_ZOOM_LEVEL_SMALLEST &&
-			   zoom_level <= NAUTILUS_ZOOM_LEVEL_LARGEST;
-		can_zoom_in = can_zoom && nautilus_view_can_zoom_in (view);
-		can_zoom_out = can_zoom && nautilus_view_can_zoom_out (view);
+		can_zoom_in = supports_zooming && nautilus_view_can_zoom_in (view);
+		can_zoom_out = supports_zooming && nautilus_view_can_zoom_out (view);
+		can_zoom = can_zoom_out || can_zoom_in;
 	} else {
 		supports_zooming = FALSE;
 		can_zoom = FALSE;

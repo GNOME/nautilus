@@ -64,13 +64,9 @@ static const char * const default_view_values[] = {
 };
 
 static const char * const zoom_values[] = {
-	"smallest",
-	"smaller",
 	"small",
 	"standard",
 	"large",
-	"larger",
-	"largest",
 	NULL
 };
 

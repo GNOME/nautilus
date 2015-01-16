@@ -4446,7 +4446,7 @@ nautilus_file_get_thumbnail_icon (NautilusFile *file,
 	if (flags & NAUTILUS_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE) {
 		modified_size = size * scale;
 	} else {
-		modified_size = size * scale * cached_thumbnail_size / NAUTILUS_ICON_SIZE_STANDARD;
+		modified_size = size * scale * cached_thumbnail_size / NAUTILUS_CANVAS_ICON_SIZE_SMALL;
 		DEBUG ("Modifying icon size to %d, as our cached thumbnail size is %d",
 		       modified_size, cached_thumbnail_size);
 	}
@@ -4458,14 +4458,14 @@ nautilus_file_get_thumbnail_icon (NautilusFile *file,
 		s = MAX (w, h);
 		/* Don't scale up small thumbnails in the standard view */
 		if (s <= cached_thumbnail_size) {
-			thumb_scale = (double) size / NAUTILUS_ICON_SIZE_STANDARD;
+			thumb_scale = (double) size / NAUTILUS_CANVAS_ICON_SIZE_SMALL;
 		} else {
 			thumb_scale = (double) modified_size / s;
 		}
 
 		/* Make sure that icons don't get smaller than NAUTILUS_ICON_SIZE_SMALLEST */
-		if (s * thumb_scale <= NAUTILUS_ICON_SIZE_SMALLEST) {
-			thumb_scale = (double) NAUTILUS_ICON_SIZE_SMALLEST / s;
+		if (s * thumb_scale <= NAUTILUS_CANVAS_ICON_SIZE_SMALL) {
+			thumb_scale = (double) NAUTILUS_CANVAS_ICON_SIZE_SMALL / s;
 		}
 
 		if (file->details->thumbnail_scale == thumb_scale &&

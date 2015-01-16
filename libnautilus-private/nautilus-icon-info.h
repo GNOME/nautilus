@@ -11,16 +11,19 @@ G_BEGIN_DECLS
 
 /* Names for Nautilus's different zoom levels, from tiniest items to largest items */
 typedef enum {
-	NAUTILUS_ZOOM_LEVEL_SMALLEST,
-	NAUTILUS_ZOOM_LEVEL_SMALLER,
-	NAUTILUS_ZOOM_LEVEL_SMALL,
-	NAUTILUS_ZOOM_LEVEL_STANDARD,
-	NAUTILUS_ZOOM_LEVEL_LARGE,
-	NAUTILUS_ZOOM_LEVEL_LARGER,
-	NAUTILUS_ZOOM_LEVEL_LARGEST
-} NautilusZoomLevel;
+	NAUTILUS_CANVAS_ZOOM_LEVEL_SMALL,
+	NAUTILUS_CANVAS_ZOOM_LEVEL_STANDARD,
+	NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE,
+} NautilusCanvasZoomLevel;
 
-#define NAUTILUS_ZOOM_LEVEL_N_ENTRIES (NAUTILUS_ZOOM_LEVEL_LARGEST + 1)
+typedef enum {
+	NAUTILUS_LIST_ZOOM_LEVEL_SMALL,
+	NAUTILUS_LIST_ZOOM_LEVEL_STANDARD,
+	NAUTILUS_LIST_ZOOM_LEVEL_LARGE,
+} NautilusListZoomLevel;
+
+#define NAUTILUS_LIST_ZOOM_LEVEL_N_ENTRIES (NAUTILUS_LIST_ZOOM_LEVEL_LARGE + 1)
+#define NAUTILUS_CANVAS_ZOOM_LEVEL_N_ENTRIES (NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE + 1)
 
 /* Nominal icon sizes for each Nautilus zoom level.
  * This scheme assumes that icons are designed to
@@ -28,13 +31,13 @@ typedef enum {
  * be square. Since individual icons can be stretched,
  * each icon is not constrained to this nominal size.
  */
-#define NAUTILUS_ICON_SIZE_SMALLEST	16
-#define NAUTILUS_ICON_SIZE_SMALLER	24
-#define NAUTILUS_ICON_SIZE_SMALL	32
-#define NAUTILUS_ICON_SIZE_STANDARD	48
-#define NAUTILUS_ICON_SIZE_LARGE	72
-#define NAUTILUS_ICON_SIZE_LARGER	96
-#define NAUTILUS_ICON_SIZE_LARGEST     192
+#define NAUTILUS_LIST_ICON_SIZE_SMALL		16
+#define NAUTILUS_LIST_ICON_SIZE_STANDARD	32
+#define NAUTILUS_LIST_ICON_SIZE_LARGE		48
+
+#define NAUTILUS_CANVAS_ICON_SIZE_SMALL		64
+#define NAUTILUS_CANVAS_ICON_SIZE_STANDARD	96
+#define NAUTILUS_CANVAS_ICON_SIZE_LARGE		128
 
 /* Maximum size of an icon that the icon factory will ever produce */
 #define NAUTILUS_ICON_MAXIMUM_SIZE     320
@@ -76,7 +79,8 @@ const char *          nautilus_icon_info_get_used_name                (NautilusI
 void                  nautilus_icon_info_clear_caches                 (void);
 
 /* Relationship between zoom levels and icons sizes. */
-guint nautilus_get_icon_size_for_zoom_level          (NautilusZoomLevel  zoom_level);
+guint nautilus_get_list_icon_size_for_zoom_level          (NautilusListZoomLevel  zoom_level);
+guint nautilus_get_canvas_icon_size_for_zoom_level          (NautilusCanvasZoomLevel  zoom_level);
 
 gint  nautilus_get_icon_size_for_stock_size          (GtkIconSize        size);
 guint nautilus_icon_get_emblem_size_for_icon_size    (guint              size);

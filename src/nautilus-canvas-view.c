@@ -154,7 +154,7 @@ static void                 nautilus_canvas_view_set_directory_sort_by        (N
 									     NautilusFile         *file,
 									     const char           *sort_by);
 static void                 nautilus_canvas_view_set_zoom_level               (NautilusCanvasView           *view,
-									     NautilusZoomLevel     new_level,
+									     NautilusCanvasZoomLevel     new_level,
 									     gboolean              always_emit);
 static void                 nautilus_canvas_view_update_click_mode            (NautilusCanvasView           *canvas_view);
 static gboolean             nautilus_canvas_view_supports_scaling	      (NautilusCanvasView           *canvas_view);
@@ -775,15 +775,15 @@ get_sort_criterion_by_sort_type (NautilusFileSortType sort_type)
 
 #define DEFAULT_ZOOM_LEVEL(canvas_view) default_zoom_level
 
-static NautilusZoomLevel
+static NautilusCanvasZoomLevel
 get_default_zoom_level (NautilusCanvasView *canvas_view)
 {
-	NautilusZoomLevel default_zoom_level;
+	NautilusCanvasZoomLevel default_zoom_level;
 
 	default_zoom_level = g_settings_get_enum (nautilus_icon_view_preferences,
 						  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL);
 
-	return CLAMP (DEFAULT_ZOOM_LEVEL(canvas_view), NAUTILUS_ZOOM_LEVEL_SMALLEST, NAUTILUS_ZOOM_LEVEL_LARGEST);
+	return CLAMP (DEFAULT_ZOOM_LEVEL(canvas_view), NAUTILUS_CANVAS_ZOOM_LEVEL_SMALL, NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE);
 }
 
 static void
@@ -868,24 +868,24 @@ nautilus_canvas_view_end_loading (NautilusView *view,
 	canvas_view_notify_clipboard_info (monitor, info, canvas_view);
 }
 
-static NautilusZoomLevel
+static NautilusCanvasZoomLevel
 nautilus_canvas_view_get_zoom_level (NautilusView *view)
 {
-	g_return_val_if_fail (NAUTILUS_IS_CANVAS_VIEW (view), NAUTILUS_ZOOM_LEVEL_STANDARD);
+	g_return_val_if_fail (NAUTILUS_IS_CANVAS_VIEW (view), NAUTILUS_CANVAS_ZOOM_LEVEL_STANDARD);
 	
 	return nautilus_canvas_container_get_zoom_level (get_canvas_container (NAUTILUS_CANVAS_VIEW (view)));
 }
 
 static void
-nautilus_canvas_view_set_zoom_level (NautilusCanvasView *view,
-				   NautilusZoomLevel new_level,
-				   gboolean always_emit)
+nautilus_canvas_view_set_zoom_level (NautilusCanvasView      *view,
+				     NautilusCanvasZoomLevel  new_level,
+				     gboolean                 always_emit)
 {
 	NautilusCanvasContainer *canvas_container;
 
 	g_return_if_fail (NAUTILUS_IS_CANVAS_VIEW (view));
-	g_return_if_fail (new_level >= NAUTILUS_ZOOM_LEVEL_SMALLEST &&
-			  new_level <= NAUTILUS_ZOOM_LEVEL_LARGEST);
+	g_return_if_fail (new_level >= NAUTILUS_CANVAS_ZOOM_LEVEL_SMALL &&
+			  new_level <= NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE);
 
 	canvas_container = get_canvas_container (view);
 	if (nautilus_canvas_container_get_zoom_level (canvas_container) == new_level) {
@@ -905,23 +905,8 @@ nautilus_canvas_view_set_zoom_level (NautilusCanvasView *view,
 }
 
 static void
-nautilus_canvas_view_bump_zoom_level (NautilusView *view, int zoom_increment)
-{
-	NautilusZoomLevel new_level;
-
-	g_return_if_fail (NAUTILUS_IS_CANVAS_VIEW (view));
-
-	new_level = nautilus_canvas_view_get_zoom_level (view) + zoom_increment;
-
-	if (new_level >= NAUTILUS_ZOOM_LEVEL_SMALLEST &&
-	    new_level <= NAUTILUS_ZOOM_LEVEL_LARGEST) {
-		nautilus_view_zoom_to_level (view, new_level);
-	}
-}
-
-static void
 nautilus_canvas_view_zoom_to_level (NautilusView *view,
-			    NautilusZoomLevel zoom_level)
+				    gint          zoom_level)
 {
 	NautilusCanvasView *canvas_view;
 
@@ -932,6 +917,25 @@ nautilus_canvas_view_zoom_to_level (NautilusView *view,
 }
 
 static void
+nautilus_canvas_view_bump_zoom_level (NautilusView *view, int zoom_increment)
+{
+	NautilusCanvasZoomLevel new_level;
+
+	g_return_if_fail (NAUTILUS_IS_CANVAS_VIEW (view));
+	if (!nautilus_view_supports_zooming (view)) {
+		return;
+	}
+
+
+	new_level = nautilus_canvas_view_get_zoom_level (view) + zoom_increment;
+
+	if (new_level >= NAUTILUS_CANVAS_ZOOM_LEVEL_SMALL &&
+	    new_level <= NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE) {
+		nautilus_canvas_view_zoom_to_level (view, new_level);
+	}
+}
+
+static void
 nautilus_canvas_view_restore_default_zoom_level (NautilusView *view)
 {
 	NautilusCanvasView *canvas_view;
@@ -939,7 +943,7 @@ nautilus_canvas_view_restore_default_zoom_level (NautilusView *view)
 	g_return_if_fail (NAUTILUS_IS_CANVAS_VIEW (view));
 
 	canvas_view = NAUTILUS_CANVAS_VIEW (view);
-	nautilus_view_zoom_to_level
+	nautilus_canvas_view_zoom_to_level
 		(view, get_default_zoom_level (canvas_view));
 }
 
@@ -949,7 +953,7 @@ nautilus_canvas_view_can_zoom_in (NautilusView *view)
 	g_return_val_if_fail (NAUTILUS_IS_CANVAS_VIEW (view), FALSE);
 
 	return nautilus_canvas_view_get_zoom_level (view) 
-		< NAUTILUS_ZOOM_LEVEL_LARGEST;
+		< NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE;
 }
 
 static gboolean 
@@ -958,7 +962,7 @@ nautilus_canvas_view_can_zoom_out (NautilusView *view)
 	g_return_val_if_fail (NAUTILUS_IS_CANVAS_VIEW (view), FALSE);
 
 	return nautilus_canvas_view_get_zoom_level (view) 
-		> NAUTILUS_ZOOM_LEVEL_SMALLEST;
+		> NAUTILUS_CANVAS_ZOOM_LEVEL_SMALL;
 }
 
 static gboolean
@@ -1079,10 +1083,6 @@ layout_changed_callback (NautilusCanvasContainer *container,
 static gboolean
 nautilus_canvas_view_can_rename_file (NautilusView *view, NautilusFile *file)
 {
-	if (!(nautilus_canvas_view_get_zoom_level (view) > NAUTILUS_ZOOM_LEVEL_SMALLEST)) {
-		return FALSE;
-	}
-
 	return NAUTILUS_VIEW_CLASS(nautilus_canvas_view_parent_class)->can_rename_file (view, file);
 }
 
@@ -2070,7 +2070,6 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
 	nautilus_view_class->invert_selection = nautilus_canvas_view_invert_selection;
 	nautilus_view_class->compare_files = compare_files;
 	nautilus_view_class->zoom_to_level = nautilus_canvas_view_zoom_to_level;
-	nautilus_view_class->get_zoom_level = nautilus_canvas_view_get_zoom_level;
         nautilus_view_class->click_policy_changed = nautilus_canvas_view_click_policy_changed;
         nautilus_view_class->merge_menus = nautilus_canvas_view_merge_menus;
         nautilus_view_class->unmerge_menus = nautilus_canvas_view_unmerge_menus;

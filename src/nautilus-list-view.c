@@ -71,7 +71,7 @@ struct NautilusListViewDetails {
 	GList *cells;
 	GtkCellEditable *editable_widget;
 
-	NautilusZoomLevel zoom_level;
+	NautilusListZoomLevel zoom_level;
 
 	NautilusTreeViewDragDest *drag_dest;
 
@@ -129,8 +129,8 @@ static GtkTargetList *          source_target_list = NULL;
 
 static GList *nautilus_list_view_get_selection                   (NautilusView   *view);
 static GList *nautilus_list_view_get_selection_for_file_transfer (NautilusView   *view);
-static void   nautilus_list_view_set_zoom_level                  (NautilusListView        *view,
-								  NautilusZoomLevel  new_level,
+static void   nautilus_list_view_set_zoom_level                  (NautilusListView      *view,
+								  NautilusListZoomLevel  new_level,
 								  gboolean           always_set_level);
 static void   nautilus_list_view_scroll_to_file                  (NautilusListView        *view,
 								  NautilusFile      *file);
@@ -1887,7 +1887,7 @@ set_up_pixbuf_size (NautilusListView *view)
 	int icon_size;
 
 	/* Make all rows the same size. */
-	icon_size = nautilus_get_icon_size_for_zoom_level (view->details->zoom_level);
+	icon_size = nautilus_list_model_get_icon_size_for_zoom_level (view->details->zoom_level);
 	gtk_cell_renderer_set_fixed_size (GTK_CELL_RENDERER (view->details->pixbuf_cell),
 					  -1, icon_size);
 
@@ -2310,16 +2310,16 @@ set_sort_order_from_metadata_and_preferences (NautilusListView *list_view)
 					      sort_reversed ? GTK_SORT_DESCENDING : GTK_SORT_ASCENDING);					      
 }
 
-static NautilusZoomLevel
+static NautilusListZoomLevel
 get_default_zoom_level (void) {
-	NautilusZoomLevel default_zoom_level;
+	NautilusListZoomLevel default_zoom_level;
 
 	default_zoom_level = g_settings_get_enum (nautilus_list_view_preferences,
 						  NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL);
 
-	if (default_zoom_level <  NAUTILUS_ZOOM_LEVEL_SMALLEST
-	    || NAUTILUS_ZOOM_LEVEL_LARGEST < default_zoom_level) {
-		default_zoom_level = NAUTILUS_ZOOM_LEVEL_SMALL;
+	if (default_zoom_level <  NAUTILUS_LIST_ZOOM_LEVEL_SMALL
+	    || default_zoom_level > NAUTILUS_LIST_ZOOM_LEVEL_LARGE) {
+		default_zoom_level = NAUTILUS_LIST_ZOOM_LEVEL_STANDARD;
 	}
 
 	return default_zoom_level;
@@ -3130,14 +3130,14 @@ nautilus_list_view_reset_to_defaults (NautilusView *view)
 
 static void
 nautilus_list_view_set_zoom_level (NautilusListView *view,
-				   NautilusZoomLevel new_level,
+				   NautilusListZoomLevel new_level,
 				   gboolean always_emit)
 {
 	int column;
 
 	g_return_if_fail (NAUTILUS_IS_LIST_VIEW (view));
-	g_return_if_fail (new_level >= NAUTILUS_ZOOM_LEVEL_SMALLEST &&
-			  new_level <= NAUTILUS_ZOOM_LEVEL_LARGEST);
+	g_return_if_fail (new_level >= NAUTILUS_LIST_ZOOM_LEVEL_SMALL &&
+			  new_level <= NAUTILUS_LIST_ZOOM_LEVEL_LARGE);
 
 	if (view->details->zoom_level == new_level) {
 		if (always_emit) {
@@ -3172,27 +3172,14 @@ nautilus_list_view_bump_zoom_level (NautilusView *view, int zoom_increment)
 	list_view = NAUTILUS_LIST_VIEW (view);
 	new_level = list_view->details->zoom_level + zoom_increment;
 
-	if (new_level >= NAUTILUS_ZOOM_LEVEL_SMALLEST &&
-	    new_level <= NAUTILUS_ZOOM_LEVEL_LARGEST) {
+	if (new_level >= NAUTILUS_LIST_ZOOM_LEVEL_SMALL &&
+	    new_level <= NAUTILUS_LIST_ZOOM_LEVEL_LARGE) {
 		nautilus_list_view_set_zoom_level (list_view, new_level, FALSE);
 	}
 }
-
-static NautilusZoomLevel
-nautilus_list_view_get_zoom_level (NautilusView *view)
-{
-	NautilusListView *list_view;
-
-	g_return_val_if_fail (NAUTILUS_IS_LIST_VIEW (view), NAUTILUS_ZOOM_LEVEL_STANDARD);
-
-	list_view = NAUTILUS_LIST_VIEW (view);
-
-	return list_view->details->zoom_level;
-}
-
 static void
 nautilus_list_view_zoom_to_level (NautilusView *view,
-				  NautilusZoomLevel zoom_level)
+				  gint          zoom_level)
 {
 	NautilusListView *list_view;
 
@@ -3220,7 +3207,7 @@ nautilus_list_view_can_zoom_in (NautilusView *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_LIST_VIEW (view), FALSE);
 
-	return NAUTILUS_LIST_VIEW (view)->details->zoom_level	< NAUTILUS_ZOOM_LEVEL_LARGEST;
+	return NAUTILUS_LIST_VIEW (view)->details->zoom_level < NAUTILUS_LIST_ZOOM_LEVEL_LARGE;
 }
 
 static gboolean 
@@ -3228,7 +3215,7 @@ nautilus_list_view_can_zoom_out (NautilusView *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_LIST_VIEW (view), FALSE);
 
-	return NAUTILUS_LIST_VIEW (view)->details->zoom_level > NAUTILUS_ZOOM_LEVEL_SMALLEST;
+	return NAUTILUS_LIST_VIEW (view)->details->zoom_level > NAUTILUS_LIST_ZOOM_LEVEL_SMALL;
 }
 
 static void
@@ -3621,7 +3608,6 @@ nautilus_list_view_class_init (NautilusListViewClass *class)
 	nautilus_view_class->compare_files = nautilus_list_view_compare_files;
 	nautilus_view_class->sort_directories_first_changed = nautilus_list_view_sort_directories_first_changed;
 	nautilus_view_class->start_renaming_file = nautilus_list_view_start_renaming_file;
-	nautilus_view_class->get_zoom_level = nautilus_list_view_get_zoom_level;
 	nautilus_view_class->zoom_to_level = nautilus_list_view_zoom_to_level;
 	nautilus_view_class->end_file_changes = nautilus_list_view_end_file_changes;
 	nautilus_view_class->using_manual_layout = nautilus_list_view_using_manual_layout;

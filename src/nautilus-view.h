@@ -189,12 +189,10 @@ struct NautilusViewClass {
         void    (* bump_zoom_level)      	(NautilusView *view,
 					  	 int zoom_increment);
 
-        /* zoom_to_level is a function pointer that subclasses must override
-         * to set the zoom level of an object to the specified level. */
-        void    (* zoom_to_level) 		(NautilusView *view, 
-        				         NautilusZoomLevel level);
-
-        NautilusZoomLevel (* get_zoom_level)    (NautilusView *view);
+	/* zoom_to_level is a function pointer that subclasses must override
+ 	 * to set the zoom level of an object to the specified level. */
+	void    (* zoom_to_level) 		(NautilusView *view, 
+						 gint          level);
 
 	/* restore_default_zoom_level is a function pointer that subclasses must override
          * to restore the zoom level of an object to a default setting. */
@@ -398,11 +396,10 @@ gboolean          nautilus_view_supports_zooming           (NautilusView      *v
 void              nautilus_view_bump_zoom_level            (NautilusView      *view,
 							    int                zoom_increment);
 void              nautilus_view_zoom_to_level              (NautilusView      *view,
-							    NautilusZoomLevel  level);
+							    gint               level);
 void              nautilus_view_restore_default_zoom_level (NautilusView      *view);
 gboolean          nautilus_view_can_zoom_in                (NautilusView      *view);
 gboolean          nautilus_view_can_zoom_out               (NautilusView      *view);
-NautilusZoomLevel nautilus_view_get_zoom_level             (NautilusView      *view);
 void              nautilus_view_pop_up_location_context_menu (NautilusView    *view,
 							      GdkEventButton  *event,
 							      const char      *location);

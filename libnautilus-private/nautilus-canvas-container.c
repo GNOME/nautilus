@@ -95,7 +95,7 @@
 #define CONTAINER_PAD_TOP 4
 #define CONTAINER_PAD_BOTTOM 4
 
-#define STANDARD_ICON_GRID_WIDTH 155
+#define STANDARD_ICON_GRID_WIDTH 80
 
 /* Desktop layout mode defines */
 #define DESKTOP_PAD_HORIZONTAL 	10
@@ -350,14 +350,29 @@ icon_set_position (NautilusCanvasIcon *icon,
 	icon->y = y;
 }
 
+
+static guint
+nautilus_canvas_container_get_icon_size_for_zoom_level (NautilusCanvasZoomLevel zoom_level)
+{
+	switch (zoom_level) {
+	case NAUTILUS_CANVAS_ZOOM_LEVEL_SMALL:
+		return NAUTILUS_CANVAS_ICON_SIZE_SMALL;
+	case NAUTILUS_CANVAS_ZOOM_LEVEL_STANDARD:
+		return NAUTILUS_CANVAS_ICON_SIZE_STANDARD;
+	case NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE:
+		return NAUTILUS_CANVAS_ICON_SIZE_LARGE;
+	}
+	g_return_val_if_reached (NAUTILUS_CANVAS_ICON_SIZE_STANDARD);
+}
+
 static void
 icon_get_size (NautilusCanvasContainer *container,
 		 NautilusCanvasIcon *icon,
 		 guint *size)
 {
 	if (size != NULL) {
-		*size = MAX (nautilus_get_icon_size_for_zoom_level (container->details->zoom_level)
-			     * icon->scale, NAUTILUS_ICON_SIZE_SMALLEST);
+		*size = MAX (nautilus_canvas_container_get_icon_size_for_zoom_level (container->details->zoom_level)
+			     * icon->scale, NAUTILUS_CANVAS_ICON_SIZE_SMALL);
 	}
 }
 
@@ -382,7 +397,7 @@ icon_set_size (NautilusCanvasContainer *container,
 	}
 
 	scale = (double) icon_size /
-		nautilus_get_icon_size_for_zoom_level
+		nautilus_canvas_container_get_icon_size_for_zoom_level
 		(container->details->zoom_level);
 	nautilus_canvas_container_move_icon (container, icon,
 					       icon->x, icon->y,
@@ -1092,7 +1107,7 @@ nautilus_canvas_container_update_scroll_region (NautilusCanvasContainer *contain
 	vadj = gtk_scrollable_get_vadjustment (GTK_SCROLLABLE (container));
 
 	/* Scroll by 1/4 icon each time you click. */
-	step_increment = nautilus_get_icon_size_for_zoom_level
+	step_increment = nautilus_canvas_container_get_icon_size_for_zoom_level
 		(container->details->zoom_level) / 4;
 	if (gtk_adjustment_get_step_increment (hadj) != step_increment) {
 		gtk_adjustment_set_step_increment (hadj, step_increment);
@@ -5151,7 +5166,7 @@ handle_focus_out_event (GtkWidget *widget, GdkEventFocus *event, gpointer user_d
 }
 
 
-static int text_ellipsis_limits[NAUTILUS_ZOOM_LEVEL_N_ENTRIES];
+static int text_ellipsis_limits[NAUTILUS_CANVAS_ZOOM_LEVEL_N_ENTRIES];
 static int desktop_text_ellipsis_limit;
 
 static gboolean
@@ -5188,13 +5203,9 @@ get_text_ellipsis_limit_for_zoom (char **strs,
 }
 
 static const char * zoom_level_names[] = {
-	"smallest",
-	"smaller",
 	"small",
 	"standard",
 	"large",
-	"larger",
-	"largest"
 };
 
 static void
@@ -5209,7 +5220,7 @@ text_ellipsis_limit_changed_callback (gpointer callback_data)
 
 	/* set default */
 	get_text_ellipsis_limit_for_zoom (pref, NULL, &one_limit);
-	for (i = 0; i < NAUTILUS_ZOOM_LEVEL_N_ENTRIES; i++) {
+	for (i = 0; i < NAUTILUS_CANVAS_ZOOM_LEVEL_N_ENTRIES; i++) {
 		text_ellipsis_limits[i] = one_limit;
 	}
 
@@ -5244,7 +5255,7 @@ nautilus_canvas_container_init (NautilusCanvasContainer *container)
 
 	details->icon_set = g_hash_table_new (g_direct_hash, g_direct_equal);
 	details->layout_timestamp = UNDEFINED_TIME;
-	details->zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
+	details->zoom_level = NAUTILUS_CANVAS_ZOOM_LEVEL_STANDARD;
 
 	container->details = details;
 
@@ -6314,7 +6325,7 @@ nautilus_canvas_container_request_update (NautilusCanvasContainer *container,
 
 /* zooming */
 
-NautilusZoomLevel
+NautilusCanvasZoomLevel
 nautilus_canvas_container_get_zoom_level (NautilusCanvasContainer *container)
 {
         return container->details->zoom_level;
@@ -6332,10 +6343,10 @@ nautilus_canvas_container_set_zoom_level (NautilusCanvasContainer *container, in
 	end_renaming_mode (container, TRUE);
 		
 	pinned_level = new_level;
-        if (pinned_level < NAUTILUS_ZOOM_LEVEL_SMALLEST) {
-		pinned_level = NAUTILUS_ZOOM_LEVEL_SMALLEST;
-        } else if (pinned_level > NAUTILUS_ZOOM_LEVEL_LARGEST) {
-        	pinned_level = NAUTILUS_ZOOM_LEVEL_LARGEST;
+	if (pinned_level < NAUTILUS_CANVAS_ZOOM_LEVEL_SMALL) {
+		pinned_level = NAUTILUS_CANVAS_ZOOM_LEVEL_SMALL;
+	} else if (pinned_level > NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE) {
+		pinned_level = NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE;
 	}
 
         if (pinned_level == details->zoom_level) {
@@ -6344,8 +6355,8 @@ nautilus_canvas_container_set_zoom_level (NautilusCanvasContainer *container, in
 	
 	details->zoom_level = pinned_level;
 	
-	pixels_per_unit = (double) nautilus_get_icon_size_for_zoom_level (pinned_level)
-		/ NAUTILUS_ICON_SIZE_STANDARD;
+	pixels_per_unit = (double) nautilus_canvas_container_get_icon_size_for_zoom_level (pinned_level)
+		/ NAUTILUS_CANVAS_ICON_SIZE_STANDARD;
 	eel_canvas_set_pixels_per_unit (EEL_CANVAS (container), pixels_per_unit);
 
 	nautilus_canvas_container_request_update_all_internal (container, TRUE);
@@ -6890,7 +6901,7 @@ compute_stretch (StretchState *start,
 		y_stretch = - y_stretch;
 	}
 	current->icon_size = MAX ((int) start->icon_size + MIN (x_stretch, y_stretch),
-				    (int) NAUTILUS_ICON_SIZE_SMALLEST);
+				    (int) NAUTILUS_CANVAS_ICON_SIZE_SMALL);
 
 	/* Figure out where the corner of the icon should be. */
 	current->icon_x = start->icon_x;
@@ -7882,8 +7893,8 @@ nautilus_canvas_container_widget_to_file_operation_position (NautilusCanvasConta
 	position->y = (int) y;
 
 	/* ensure that we end up in the middle of the icon */
-	position->x -= nautilus_get_icon_size_for_zoom_level (container->details->zoom_level) / 2;
-	position->y -= nautilus_get_icon_size_for_zoom_level (container->details->zoom_level) / 2;
+	position->x -= nautilus_canvas_container_get_icon_size_for_zoom_level (container->details->zoom_level) / 2;
+	position->y -= nautilus_canvas_container_get_icon_size_for_zoom_level (container->details->zoom_level) / 2;
 }
 
 static void 

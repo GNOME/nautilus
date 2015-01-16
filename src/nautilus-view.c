@@ -584,7 +584,7 @@ nautilus_view_bump_zoom_level (NautilusView *view,
  **/
 void
 nautilus_view_zoom_to_level (NautilusView *view,
-			     NautilusZoomLevel zoom_level)
+			     gint          zoom_level)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW (view));
 
@@ -593,18 +593,6 @@ nautilus_view_zoom_to_level (NautilusView *view,
 	}
 
 	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->zoom_to_level (view, zoom_level);
-}
-
-NautilusZoomLevel
-nautilus_view_get_zoom_level (NautilusView *view)
-{
-	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NAUTILUS_ZOOM_LEVEL_STANDARD);
-
-	if (!nautilus_view_supports_zooming (view)) {
-		return NAUTILUS_ZOOM_LEVEL_STANDARD;
-	}
-
-	return NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_zoom_level (view);
 }
 
 /**

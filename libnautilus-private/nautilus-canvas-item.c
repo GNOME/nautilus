@@ -49,7 +49,9 @@
 #define LABEL_OFFSET 1
 #define LABEL_LINE_SPACING 0
 
-#define MAX_TEXT_WIDTH_STANDARD 135
+/* Width of the label with the standard icon size NAUTILUS_CANVAS_ICON_SIZE_SMALL.
+ * It will adapt to other sizes keeping the same space.*/
+#define MAX_TEXT_WIDTH_STANDARD 110
 
 /* special text height handling
  * each item has three text height variables:

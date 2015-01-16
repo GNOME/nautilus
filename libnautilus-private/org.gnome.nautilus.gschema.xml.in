@@ -31,14 +31,16 @@
     <value nick="trash-time" value="6"/>
   </enum>
 
-  <enum id="org.gnome.nautilus.ZoomLevel">
-    <value nick="smallest" value="0"/>
-    <value nick="smaller" value="1"/>
-    <value nick="small" value="2"/>
-    <value nick="standard" value="3"/>
-    <value nick="large" value="4"/>
-    <value nick="larger" value="5"/>
-    <value nick="largest" value="6"/>
+  <enum id="org.gnome.nautilus.CanvasZoomLevel">
+    <value nick="small" value="0"/>
+    <value nick="standard" value="1"/>
+    <value nick="large" value="2"/>
+  </enum>
+
+  <enum id="org.gnome.nautilus.ListZoomLevel">
+    <value nick="small" value="0"/>
+    <value nick="standard" value="1"/>
+    <value nick="large" value="2"/>
   </enum>
 
   <enum id="org.gnome.nautilus.TabPosition">
@@ -168,7 +170,7 @@
 
   <schema id="org.gnome.nautilus.icon-view" path="/org/gnome/nautilus/icon-view/" gettext-domain="nautilus">
     <key name="captions" type="as">
-      <default>[ 'none', 'size', 'date_modified' ]</default>
+      <default>[ 'none', 'none', 'none' ]</default>
       <_summary>List of possible captions on icons</_summary>
       <_description>A list of captions below an icon in the icon view and
       the desktop.  The actual number of captions shown depends on
@@ -176,7 +178,7 @@
       "size", "type", "date_modified", "owner",
       "group", "permissions", and "mime_type".</_description>
     </key>
-    <key name="default-zoom-level" enum="org.gnome.nautilus.ZoomLevel">
+    <key name="default-zoom-level" enum="org.gnome.nautilus.CanvasZoomLevel">
       <default>'standard'</default>
       <_summary>Default icon zoom level</_summary>
       <_description>Default zoom level used by the icon view.</_description>
@@ -184,7 +186,7 @@
     <key name="thumbnail-size" type="i">
       <default>64</default>
       <_summary>Default Thumbnail Icon Size</_summary>
-      <_description>The default size of an icon for a thumbnail in the icon view.</_description>
+      <_description>The default size of an icon for a thumbnail in the icon view when using NAUTILUS_ICON_SIZE_SMALL size.</_description>
     </key>
     <key name="text-ellipsis-limit" type="as">
       <default>[ '3' ]</default>
@@ -206,14 +208,13 @@
 	     for zoom level "smaller". Do not shorten file names for other zoom levels.
 
 	     Available zoom levels:
-	     smallest (33%), smaller (50%), small (66%), standard (100%), large (150%),
-	     larger (200%), largest (400%)</_description>
+	     small, standard, large</_description>
     </key>
   </schema>
 
   <schema id="org.gnome.nautilus.list-view" path="/org/gnome/nautilus/list-view/" gettext-domain="nautilus">
-    <key name="default-zoom-level" enum="org.gnome.nautilus.ZoomLevel">
-      <default>'small'</default>
+    <key name="default-zoom-level" enum="org.gnome.nautilus.CanvasZoomLevel">
+      <default>'standard'</default>
       <_summary>Default list zoom level</_summary>
       <_description>Default zoom level used by the list view.</_description>
     </key>

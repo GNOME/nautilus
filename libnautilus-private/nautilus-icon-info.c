@@ -568,34 +568,6 @@ nautilus_icon_info_get_used_name (NautilusIconInfo  *icon)
 	return icon->icon_name;
 }
 
-/* Return nominal icon size for given zoom level.
- * @zoom_level: zoom level for which to find matching icon size.
- * 
- * Return value: icon size between NAUTILUS_ICON_SIZE_SMALLEST and
- * NAUTILUS_ICON_SIZE_LARGEST, inclusive.
- */
-guint
-nautilus_get_icon_size_for_zoom_level (NautilusZoomLevel zoom_level)
-{
-	switch (zoom_level) {
-	case NAUTILUS_ZOOM_LEVEL_SMALLEST:
-		return NAUTILUS_ICON_SIZE_SMALLEST;
-	case NAUTILUS_ZOOM_LEVEL_SMALLER:
-		return NAUTILUS_ICON_SIZE_SMALLER;
-	case NAUTILUS_ZOOM_LEVEL_SMALL:
-		return NAUTILUS_ICON_SIZE_SMALL;
-	case NAUTILUS_ZOOM_LEVEL_STANDARD:
-		return NAUTILUS_ICON_SIZE_STANDARD;
-	case NAUTILUS_ZOOM_LEVEL_LARGE:
-		return NAUTILUS_ICON_SIZE_LARGE;
-	case NAUTILUS_ZOOM_LEVEL_LARGER:
-		return NAUTILUS_ICON_SIZE_LARGER;
-	case NAUTILUS_ZOOM_LEVEL_LARGEST:
-		return NAUTILUS_ICON_SIZE_LARGEST;
-	}
-	g_return_val_if_reached (NAUTILUS_ICON_SIZE_STANDARD);
-}
-
 gint
 nautilus_get_icon_size_for_stock_size (GtkIconSize size)
 {
@@ -604,7 +576,7 @@ nautilus_get_icon_size_for_stock_size (GtkIconSize size)
   if (gtk_icon_size_lookup (size, &w, &h)) {
     return MAX (w, h);
   } 
-  return NAUTILUS_ICON_SIZE_STANDARD;
+  return NAUTILUS_CANVAS_ICON_SIZE_SMALL;
 }
 
 

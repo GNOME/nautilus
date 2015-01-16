@@ -331,21 +331,21 @@ desktop_canvas_container_realize (GtkWidget *widget,
 	gdk_window_set_background_rgba (bin_window, &transparent);
 }
 
-static NautilusZoomLevel
+static NautilusCanvasZoomLevel
 get_default_zoom_level (void)
 {
-	NautilusZoomLevel default_zoom_level;
+	NautilusCanvasZoomLevel default_zoom_level;
 
 	default_zoom_level = g_settings_get_enum (nautilus_icon_view_preferences,
 						  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL);
 
-	return CLAMP (default_zoom_level, NAUTILUS_ZOOM_LEVEL_SMALLEST, NAUTILUS_ZOOM_LEVEL_LARGEST);
+	return CLAMP (default_zoom_level, NAUTILUS_CANVAS_ZOOM_LEVEL_SMALL, NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE);
 }
 
 static void
 default_zoom_level_changed (gpointer user_data)
 {
-	NautilusZoomLevel new_level;
+	NautilusCanvasZoomLevel new_level;
 	NautilusDesktopCanvasView *desktop_canvas_view;
 
 	desktop_canvas_view = NAUTILUS_DESKTOP_CANVAS_VIEW (user_data);

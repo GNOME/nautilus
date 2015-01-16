@@ -53,7 +53,7 @@ nautilus_empty_view_add_file (NautilusView *view, NautilusFile *file, NautilusDi
 	if (!timer) timer = g_timer_new ();
 
 	g_timer_start (timer);
-	icon = nautilus_file_get_icon_pixbuf (file, nautilus_get_icon_size_for_zoom_level (NAUTILUS_ZOOM_LEVEL_STANDARD), TRUE, 0);
+	icon = nautilus_file_get_icon_pixbuf (file, nautilus_get_icon_size_for_zoom_level (NAUTILUS_CANVAS_ZOOM_LEVEL_STANDARD), TRUE, 0);
 
 	elaps = g_timer_elapsed (timer, NULL);
 	g_timer_stop (timer);
@@ -151,15 +151,15 @@ nautilus_empty_view_bump_zoom_level (NautilusView *view, int zoom_increment)
 {
 }
 
-static NautilusZoomLevel
+static NautilusCanvasZoomLevel
 nautilus_empty_view_get_zoom_level (NautilusView *view)
 {
-	return NAUTILUS_ZOOM_LEVEL_STANDARD;
+	return NAUTILUS_CANVAS_ZOOM_LEVEL_STANDARD;
 }
 
 static void
 nautilus_empty_view_zoom_to_level (NautilusView *view,
-			    NautilusZoomLevel zoom_level)
+			    NautilusCanvasZoomLevel zoom_level)
 {
 }
 

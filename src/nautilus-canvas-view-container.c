@@ -218,13 +218,9 @@ nautilus_canvas_view_container_get_icon_text_attribute_names (NautilusCanvasCont
 	int piece_count;
 
 	const int pieces_by_level[] = {
-		0,	/* NAUTILUS_ZOOM_LEVEL_SMALLEST */
-		0,	/* NAUTILUS_ZOOM_LEVEL_SMALLER */
-		0,	/* NAUTILUS_ZOOM_LEVEL_SMALL */
-		1,	/* NAUTILUS_ZOOM_LEVEL_STANDARD */
-		2,	/* NAUTILUS_ZOOM_LEVEL_LARGE */
-		2,	/* NAUTILUS_ZOOM_LEVEL_LARGER */
-		3	/* NAUTILUS_ZOOM_LEVEL_LARGEST */
+		3,	/* NAUTILUS_ZOOM_LEVEL_SMALL */
+		3,	/* NAUTILUS_ZOOM_LEVEL_STANDARD */
+		3,	/* NAUTILUS_ZOOM_LEVEL_LARGE */
 	};
 
 	piece_count = pieces_by_level[nautilus_canvas_container_get_zoom_level (container)];
@@ -262,14 +258,8 @@ nautilus_canvas_view_container_get_icon_text (NautilusCanvasContainer *container
 
 	use_additional = (additional_text != NULL);
 
-	/* In the smallest zoom mode, no text is drawn. */
-	if (nautilus_canvas_container_get_zoom_level (container) == NAUTILUS_ZOOM_LEVEL_SMALLEST &&
-            !include_invisible) {
-		*editable_text = NULL;
-	} else {
-		/* Strip the suffix for nautilus object xml files. */
-		*editable_text = nautilus_file_get_display_name (file);
-	}
+	/* Strip the suffix for nautilus object xml files. */
+	*editable_text = nautilus_file_get_display_name (file);
 
 	if (!use_additional) {
 		return;

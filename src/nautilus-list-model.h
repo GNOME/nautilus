@@ -45,13 +45,9 @@
 enum {
 	NAUTILUS_LIST_MODEL_FILE_COLUMN,
 	NAUTILUS_LIST_MODEL_SUBDIRECTORY_COLUMN,
-	NAUTILUS_LIST_MODEL_SMALLEST_ICON_COLUMN,
-	NAUTILUS_LIST_MODEL_SMALLER_ICON_COLUMN,
 	NAUTILUS_LIST_MODEL_SMALL_ICON_COLUMN,
 	NAUTILUS_LIST_MODEL_STANDARD_ICON_COLUMN,
 	NAUTILUS_LIST_MODEL_LARGE_ICON_COLUMN,
-	NAUTILUS_LIST_MODEL_LARGER_ICON_COLUMN,
-	NAUTILUS_LIST_MODEL_LARGEST_ICON_COLUMN,
 	NAUTILUS_LIST_MODEL_FILE_NAME_IS_EDITABLE_COLUMN,
 	NAUTILUS_LIST_MODEL_NUM_COLUMNS
 };
@@ -102,8 +98,9 @@ GQuark   nautilus_list_model_get_attribute_from_sort_column_id (NautilusListMode
 void     nautilus_list_model_sort_files                        (NautilusListModel *model,
 								GList **files);
 
-NautilusZoomLevel nautilus_list_model_get_zoom_level_from_column_id (int               column);
-int               nautilus_list_model_get_column_id_from_zoom_level (NautilusZoomLevel zoom_level);
+NautilusListZoomLevel nautilus_list_model_get_zoom_level_from_column_id (int               column);
+int               nautilus_list_model_get_column_id_from_zoom_level (NautilusListZoomLevel zoom_level);
+guint    nautilus_list_model_get_icon_size_for_zoom_level      (NautilusListZoomLevel zoom_level);
 
 NautilusFile *    nautilus_list_model_file_for_path (NautilusListModel *model, GtkTreePath *path);
 gboolean          nautilus_list_model_load_subdirectory (NautilusListModel *model, GtkTreePath *path, NautilusDirectory **directory);

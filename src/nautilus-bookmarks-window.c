@@ -743,7 +743,7 @@ nautilus_bookmarks_window_constructed (GObject *object)
 	gtk_tree_view_append_column (self->priv->tree_view,
 				     GTK_TREE_VIEW_COLUMN (col));
 	gtk_tree_view_column_set_fixed_width (GTK_TREE_VIEW_COLUMN (col),
-					      NAUTILUS_ICON_SIZE_SMALLER);
+					      NAUTILUS_LIST_ICON_SIZE_SMALL);
 
 	rend = gtk_cell_renderer_text_new ();
 	g_object_set (rend,
