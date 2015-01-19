@@ -232,13 +232,19 @@ row_deleted_callback (GtkTreeModel *model,
 	list_changed (NAUTILUS_COLUMN_CHOOSER (user_data));
 }
 
+static void move_up_clicked_callback (GtkWidget *button, gpointer user_data);
+static void move_down_clicked_callback (GtkWidget *button, gpointer user_data);
+
 static void
 add_tree_view (NautilusColumnChooser *chooser)
 {
 	GtkWidget *scrolled;
+	GtkWidget *box;
 	GtkWidget *view;
+	GtkWidget *inline_toolbar;
 	GtkListStore *store;
 	GtkCellRenderer *cell;
+	GtkStyleContext *style_context;
 	GtkTreeSelection *selection;
 	
 	view = gtk_tree_view_new ();
@@ -296,9 +302,42 @@ add_tree_view (NautilusColumnChooser *chooser)
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
 	gtk_widget_show (GTK_WIDGET (scrolled));
-	
+
+	box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	gtk_widget_show (GTK_WIDGET (box));
+
 	gtk_container_add (GTK_CONTAINER (scrolled), view);
-	gtk_box_pack_start (GTK_BOX (chooser), scrolled, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (box), scrolled, TRUE, TRUE, 0);
+
+	inline_toolbar = gtk_toolbar_new ();
+	gtk_widget_show (GTK_WIDGET (inline_toolbar));
+
+	style_context = gtk_widget_get_style_context (GTK_WIDGET (inline_toolbar));
+	gtk_style_context_add_class (style_context, GTK_STYLE_CLASS_INLINE_TOOLBAR);
+	gtk_toolbar_set_icon_size (GTK_TOOLBAR (inline_toolbar), GTK_ICON_SIZE_SMALL_TOOLBAR);
+
+	chooser->details->move_up_button = GTK_WIDGET (gtk_tool_button_new (NULL, NULL));
+	gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (chooser->details->move_up_button),
+				       "go-up-symbolic");
+	g_signal_connect (chooser->details->move_up_button,
+			  "clicked",  G_CALLBACK (move_up_clicked_callback),
+			  chooser);
+	gtk_widget_show_all (chooser->details->move_up_button);
+	gtk_widget_set_sensitive (chooser->details->move_up_button, FALSE);
+	gtk_container_add (GTK_CONTAINER (inline_toolbar), chooser->details->move_up_button);
+
+	chooser->details->move_down_button = GTK_WIDGET (gtk_tool_button_new (NULL, NULL));
+	gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (chooser->details->move_down_button),
+				       "go-down-symbolic");
+	g_signal_connect (chooser->details->move_down_button,
+			  "clicked",  G_CALLBACK (move_down_clicked_callback),
+			  chooser);
+	gtk_widget_show_all (chooser->details->move_down_button);
+	gtk_widget_set_sensitive (chooser->details->move_down_button, FALSE);
+	gtk_container_add (GTK_CONTAINER (inline_toolbar), chooser->details->move_down_button);
+	gtk_box_pack_start (GTK_BOX (box), inline_toolbar, FALSE, FALSE, 0);
+
+	gtk_box_pack_start (GTK_BOX (chooser), box, TRUE, TRUE, 0);
 }
 
 static void
@@ -309,9 +348,9 @@ move_up_clicked_callback (GtkWidget *button, gpointer user_data)
 	GtkTreeSelection *selection;
 
 	chooser = NAUTILUS_COLUMN_CHOOSER (user_data);
-	
+
 	selection = gtk_tree_view_get_selection (chooser->details->view);
-	
+
 	if (gtk_tree_selection_get_selected (selection, NULL, &iter)) {
 		GtkTreePath *path;
 		GtkTreeIter prev;
@@ -337,14 +376,14 @@ move_down_clicked_callback (GtkWidget *button, gpointer user_data)
 	GtkTreeSelection *selection;
 
 	chooser = NAUTILUS_COLUMN_CHOOSER (user_data);
-	
+
 	selection = gtk_tree_view_get_selection (chooser->details->view);
-	
+
 	if (gtk_tree_selection_get_selected (selection, NULL, &iter)) {
 		GtkTreeIter next;
 
 		next = iter;
-		
+
 		if (gtk_tree_model_iter_next (GTK_TREE_MODEL (chooser->details->store), &next)) {
 			gtk_list_store_move_after (chooser->details->store,
 						   &iter,
@@ -366,33 +405,10 @@ static void
 add_buttons (NautilusColumnChooser *chooser)
 {
 	GtkWidget *box;
-	GtkWidget *separator;
 	
 	box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
 	gtk_widget_show (box);
 	
-	chooser->details->move_up_button = gtk_button_new_with_mnemonic (_("Move _Up"));
-	g_signal_connect (chooser->details->move_up_button, 
-			  "clicked",  G_CALLBACK (move_up_clicked_callback),
-			  chooser);
-	gtk_widget_show_all (chooser->details->move_up_button);
-	gtk_widget_set_sensitive (chooser->details->move_up_button, FALSE);
-	gtk_box_pack_start (GTK_BOX (box), chooser->details->move_up_button,
-			    FALSE, FALSE, 0);
-
-	chooser->details->move_down_button = gtk_button_new_with_mnemonic (_("Move Dow_n"));
-	g_signal_connect (chooser->details->move_down_button, 
-			  "clicked",  G_CALLBACK (move_down_clicked_callback),
-			  chooser);
-	gtk_widget_show_all (chooser->details->move_down_button);
-	gtk_widget_set_sensitive (chooser->details->move_down_button, FALSE);
-	gtk_box_pack_start (GTK_BOX (box), chooser->details->move_down_button,
-			    FALSE, FALSE, 0);
-
-	separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
-	gtk_widget_show (separator);
-	gtk_box_pack_start (GTK_BOX (box), separator, FALSE, FALSE, 0);	
-
 	chooser->details->use_default_button = gtk_button_new_with_mnemonic (_("Reset to De_fault"));
 	gtk_widget_set_tooltip_text (chooser->details->use_default_button,
 				     _("Replace the current List Columns settings with the default settings"));
