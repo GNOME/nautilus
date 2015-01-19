@@ -35,6 +35,7 @@ struct _NautilusColumnChooserDetails
 	GtkTreeView *view;
 	GtkListStore *store;
 
+	GtkWidget *main_box;
 	GtkWidget *move_up_button;
 	GtkWidget *move_down_button;
 	GtkWidget *use_default_button;
@@ -239,12 +240,9 @@ static void
 add_tree_view (NautilusColumnChooser *chooser)
 {
 	GtkWidget *scrolled;
-	GtkWidget *box;
 	GtkWidget *view;
-	GtkWidget *inline_toolbar;
 	GtkListStore *store;
 	GtkCellRenderer *cell;
-	GtkStyleContext *style_context;
 	GtkTreeSelection *selection;
 	
 	view = gtk_tree_view_new ();
@@ -303,41 +301,8 @@ add_tree_view (NautilusColumnChooser *chooser)
 					GTK_POLICY_AUTOMATIC);
 	gtk_widget_show (GTK_WIDGET (scrolled));
 
-	box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	gtk_widget_show (GTK_WIDGET (box));
-
 	gtk_container_add (GTK_CONTAINER (scrolled), view);
-	gtk_box_pack_start (GTK_BOX (box), scrolled, TRUE, TRUE, 0);
-
-	inline_toolbar = gtk_toolbar_new ();
-	gtk_widget_show (GTK_WIDGET (inline_toolbar));
-
-	style_context = gtk_widget_get_style_context (GTK_WIDGET (inline_toolbar));
-	gtk_style_context_add_class (style_context, GTK_STYLE_CLASS_INLINE_TOOLBAR);
-	gtk_toolbar_set_icon_size (GTK_TOOLBAR (inline_toolbar), GTK_ICON_SIZE_SMALL_TOOLBAR);
-
-	chooser->details->move_up_button = GTK_WIDGET (gtk_tool_button_new (NULL, NULL));
-	gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (chooser->details->move_up_button),
-				       "go-up-symbolic");
-	g_signal_connect (chooser->details->move_up_button,
-			  "clicked",  G_CALLBACK (move_up_clicked_callback),
-			  chooser);
-	gtk_widget_show_all (chooser->details->move_up_button);
-	gtk_widget_set_sensitive (chooser->details->move_up_button, FALSE);
-	gtk_container_add (GTK_CONTAINER (inline_toolbar), chooser->details->move_up_button);
-
-	chooser->details->move_down_button = GTK_WIDGET (gtk_tool_button_new (NULL, NULL));
-	gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (chooser->details->move_down_button),
-				       "go-down-symbolic");
-	g_signal_connect (chooser->details->move_down_button,
-			  "clicked",  G_CALLBACK (move_down_clicked_callback),
-			  chooser);
-	gtk_widget_show_all (chooser->details->move_down_button);
-	gtk_widget_set_sensitive (chooser->details->move_down_button, FALSE);
-	gtk_container_add (GTK_CONTAINER (inline_toolbar), chooser->details->move_down_button);
-	gtk_box_pack_start (GTK_BOX (box), inline_toolbar, FALSE, FALSE, 0);
-
-	gtk_box_pack_start (GTK_BOX (chooser), box, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (chooser->details->main_box), scrolled, TRUE, TRUE, 0);
 }
 
 static void
@@ -404,23 +369,59 @@ use_default_clicked_callback (GtkWidget *button, gpointer user_data)
 static void
 add_buttons (NautilusColumnChooser *chooser)
 {
+	GtkWidget *inline_toolbar;
+	GtkStyleContext *style_context;
+	GtkToolItem *tool_item;
 	GtkWidget *box;
-	
-	box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
-	gtk_widget_show (box);
-	
+
+	inline_toolbar = gtk_toolbar_new ();
+	gtk_widget_show (GTK_WIDGET (inline_toolbar));
+
+	style_context = gtk_widget_get_style_context (GTK_WIDGET (inline_toolbar));
+	gtk_style_context_add_class (style_context, GTK_STYLE_CLASS_INLINE_TOOLBAR);
+	gtk_box_pack_start (GTK_BOX (chooser->details->main_box), inline_toolbar,
+			    FALSE, FALSE, 0);
+
+	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	tool_item = gtk_tool_item_new ();
+	gtk_container_add (GTK_CONTAINER (tool_item), box);
+	gtk_container_add (GTK_CONTAINER (inline_toolbar), GTK_WIDGET (tool_item));
+
+	chooser->details->move_up_button = gtk_button_new_from_icon_name ("go-up-symbolic",
+									  GTK_ICON_SIZE_SMALL_TOOLBAR);
+	g_signal_connect (chooser->details->move_up_button,
+			  "clicked",  G_CALLBACK (move_up_clicked_callback),
+			  chooser);
+	gtk_widget_set_sensitive (chooser->details->move_up_button, FALSE);
+	gtk_container_add (GTK_CONTAINER (box), chooser->details->move_up_button);
+
+	chooser->details->move_down_button = gtk_button_new_from_icon_name ("go-down-symbolic",
+									    GTK_ICON_SIZE_SMALL_TOOLBAR);
+	g_signal_connect (chooser->details->move_down_button,
+			  "clicked",  G_CALLBACK (move_down_clicked_callback),
+			  chooser);
+	gtk_widget_set_sensitive (chooser->details->move_down_button, FALSE);
+	gtk_container_add (GTK_CONTAINER (box), chooser->details->move_down_button);
+
+	tool_item = gtk_separator_tool_item_new ();
+	gtk_separator_tool_item_set_draw (GTK_SEPARATOR_TOOL_ITEM (tool_item), FALSE);
+	gtk_tool_item_set_expand (tool_item, TRUE);
+	gtk_container_add (GTK_CONTAINER (inline_toolbar), GTK_WIDGET (tool_item));
+
+	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	tool_item = gtk_tool_item_new ();
+	gtk_container_add (GTK_CONTAINER (tool_item), box);
+	gtk_container_add (GTK_CONTAINER (inline_toolbar), GTK_WIDGET (tool_item));
+
 	chooser->details->use_default_button = gtk_button_new_with_mnemonic (_("Reset to De_fault"));
 	gtk_widget_set_tooltip_text (chooser->details->use_default_button,
 				     _("Replace the current List Columns settings with the default settings"));
 	g_signal_connect (chooser->details->use_default_button, 
 			  "clicked",  G_CALLBACK (use_default_clicked_callback),
 			  chooser);
-	gtk_widget_show (chooser->details->use_default_button);
-	gtk_box_pack_start (GTK_BOX (box), chooser->details->use_default_button,
-			    FALSE, FALSE, 0);
+	gtk_container_add (GTK_CONTAINER (box), chooser->details->use_default_button);
 
-	gtk_box_pack_start (GTK_BOX (chooser), box,
-			    FALSE, FALSE, 0);
+	gtk_widget_show_all (inline_toolbar);
 }
 
 static void
@@ -488,6 +489,11 @@ nautilus_column_chooser_init (NautilusColumnChooser *chooser)
 		      "spacing", 8,
 		      "orientation", GTK_ORIENTATION_HORIZONTAL,
 		      NULL);
+
+	chooser->details->main_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	gtk_widget_set_hexpand (chooser->details->main_box, TRUE);
+	gtk_widget_show (chooser->details->main_box);
+	gtk_container_add (GTK_CONTAINER (chooser), chooser->details->main_box);
 
 	add_tree_view (chooser);
 	add_buttons (chooser);

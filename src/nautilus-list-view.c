@@ -2965,6 +2965,7 @@ create_column_editor (NautilusListView *view)
 
 	box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 12);
 	gtk_container_set_border_width (GTK_CONTAINER (box), 12);
+	gtk_widget_set_hexpand (box, TRUE);
 	gtk_widget_show (box);
 	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (window))), box,
 			    TRUE, TRUE, 0);
