@@ -393,7 +393,9 @@ add_buttons (NautilusColumnChooser *chooser)
 	gtk_widget_show (separator);
 	gtk_box_pack_start (GTK_BOX (box), separator, FALSE, FALSE, 0);	
 
-	chooser->details->use_default_button = gtk_button_new_with_mnemonic (_("Use De_fault"));
+	chooser->details->use_default_button = gtk_button_new_with_mnemonic (_("Reset to De_fault"));
+	gtk_widget_set_tooltip_text (chooser->details->use_default_button,
+				     _("Replace the current List Columns settings with the default settings"));
 	g_signal_connect (chooser->details->use_default_button, 
 			  "clicked",  G_CALLBACK (use_default_clicked_callback),
 			  chooser);
