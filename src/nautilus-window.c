@@ -1570,7 +1570,7 @@ nautilus_window_destroy (GtkWidget *object)
 	if (window->details->active_slot != NULL) {
 		/* Make sure active slot is last one to be closed, to avoid default activation
 		 * of others slots when closing the active one, see bug #741952  */
-		slots_copy = g_list_sort_with_data (slots_copy, (GCompareFunc) sort_slots_active_last, window);
+		slots_copy = g_list_sort_with_data (slots_copy, (GCompareDataFunc) sort_slots_active_last, window);
 	}
 	g_list_foreach (slots_copy, (GFunc) destroy_slots_foreach, window);
 	g_list_free (slots_copy);
