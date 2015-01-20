@@ -63,12 +63,16 @@ find_gmenu_model (GMenuModel  *model,
 			j_items = g_menu_model_get_n_items (submodel);
 			for (j = 0; j < j_items; j++) {
 				submenu = g_menu_model_get_item_link (submodel, j, G_MENU_LINK_SUBMENU);
-				if (submenu)
+				if (submenu) {
 					insertion_model = find_gmenu_model (submenu, model_id);
+					g_object_unref (submenu);
+				}
 
 				if (insertion_model)
 					break;
 			}
+
+			g_object_unref (submodel);
 		}
 
 		g_free (id);
@@ -109,6 +113,8 @@ nautilus_gmenu_merge (GMenu       *original,
 			g_menu_append_item (G_MENU (submodel), item);
 		g_object_unref (item);
 	}
+
+	g_object_unref (submodel);
 }
 
 /*
@@ -133,6 +139,8 @@ nautilus_gmenu_add_item_in_submodel (GMenu       *menu,
 		g_menu_prepend_item (G_MENU (submodel), item);
 	else
 		g_menu_append_item (G_MENU (submodel), item);
+
+	g_object_unref (submodel);
 }
 
 void
