@@ -1066,8 +1066,6 @@ nautilus_canvas_view_update_toolbar_menus (NautilusView *view)
 
 	toolbar = NAUTILUS_TOOLBAR (nautilus_window_get_toolbar (nautilus_view_get_window (view)));
 
-
-
 	nautilus_toolbar_show_sort_menu (toolbar);
 
 	file = nautilus_view_get_directory_as_file (NAUTILUS_VIEW (view));

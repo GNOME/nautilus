@@ -633,8 +633,9 @@ nautilus_toolbar_hide_reload (NautilusToolbar *self)
 	gtk_widget_hide (self->priv->reload);
 }
 
-void nautilus_toolbar_view_menu_widget_set_zoom_level (NautilusToolbar *self,
-						       gdouble          level)
+void
+nautilus_toolbar_view_menu_widget_set_zoom_level (NautilusToolbar *self,
+						  gdouble          level)
 {
 	g_return_if_fail (NAUTILUS_IS_TOOLBAR (self));
 

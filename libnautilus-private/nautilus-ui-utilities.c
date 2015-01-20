@@ -54,17 +54,20 @@ find_gmenu_model (GMenuModel  *model,
 
 			submodel = g_menu_model_get_item_link (model, i, G_MENU_LINK_SECTION);
 
-			if (!submodel) {
+			if (!submodel)
 			        submodel = g_menu_model_get_item_link (model, i, G_MENU_LINK_SUBMENU);
-				if (!submodel)
-					continue;
-			}
+
+			if (!submodel)
+				continue;
 
 			j_items = g_menu_model_get_n_items (submodel);
-			for (j = 0; j < j_items && !insertion_model; j++) {
+			for (j = 0; j < j_items; j++) {
 				submenu = g_menu_model_get_item_link (submodel, j, G_MENU_LINK_SUBMENU);
 				if (submenu)
 					insertion_model = find_gmenu_model (submenu, model_id);
+
+				if (insertion_model)
+					break;
 			}
 		}
 
@@ -146,6 +149,7 @@ nautilus_pop_up_context_menu (GtkWidget      *parent,
 
 	gtk_menu = gtk_menu_new_from_model (G_MENU_MODEL (menu));
 	gtk_menu_attach_to_widget (GTK_MENU (gtk_menu), parent, NULL);
+
 	/* The event button needs to be 0 if we're popping up this menu from
 	 * a button release, else a 2nd click outside the menu with any button
 	 * other than the one that invoked the menu will be ignored (instead
