@@ -2158,10 +2158,6 @@ update_info_internal (NautilusFile *file,
 						  FALSE);
 
 	mime_type = g_file_info_get_content_type (info);
-	if (g_strcmp0 (mime_type, NAUTILUS_SAVED_SEARCH_MIMETYPE) == 0) {
-		g_file_info_set_file_type (info, G_FILE_TYPE_DIRECTORY);
-	}
-
 	file_type = g_file_info_get_file_type (info);
 	if (file->details->type != file_type) {
 		changed = TRUE;

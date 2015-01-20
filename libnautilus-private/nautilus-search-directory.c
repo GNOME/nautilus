@@ -38,7 +38,6 @@
 
 struct NautilusSearchDirectoryDetails {
 	NautilusQuery *query;
-	gboolean modified;
 
 	NautilusSearchEngine *engine;
 
@@ -881,8 +880,6 @@ nautilus_search_directory_set_query (NautilusSearchDirectory *search,
 	NautilusFile *file;
 
 	if (search->details->query != query) {
-		search->details->modified = TRUE;
-
 		g_object_ref (query);
 		g_clear_object (&search->details->query);
 		search->details->query = query;
@@ -905,10 +902,4 @@ nautilus_search_directory_get_query (NautilusSearchDirectory *search)
 	}
 					   
 	return NULL;
-}
-
-gboolean
-nautilus_search_directory_is_modified (NautilusSearchDirectory *search)
-{
-	return search->details->modified;
 }
