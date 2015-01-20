@@ -3929,7 +3929,6 @@ add_extension_menu_items (NautilusView *view,
 	GMenu *gmenu, *children_menu;
 	char *name, *parsed_name, *label, *detailed_action_name;
 	gboolean sensitive;
-	GdkPixbuf *pixbuf;
 
 	gmenu = g_menu_new ();
 
@@ -4333,8 +4332,8 @@ update_directory_in_scripts_menu (NautilusView *view,
 	char *uri;
 	int num;
 
-	g_return_if_fail (NAUTILUS_IS_VIEW (view));
-	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NULL);
+	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 
 	file_list = nautilus_directory_get_file_list (directory);
 	filtered = nautilus_file_list_filter_hidden (file_list, FALSE);
@@ -4549,8 +4548,8 @@ update_directory_in_templates_menu (NautilusView *view,
 	char *templates_directory_uri;
 	int num;
 
-	g_return_if_fail (NAUTILUS_IS_VIEW (view));
-	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NULL);
+	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 
 	file_list = nautilus_directory_get_file_list (directory);
 	filtered = nautilus_file_list_filter_hidden (file_list, FALSE);
