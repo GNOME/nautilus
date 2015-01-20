@@ -1,9 +1,5 @@
 NULL=
 
-xml_in_files = nautilus.xml.in
-xml_files = $(xml_in_files:.xml.in=.xml)
-@INTLTOOL_XML_RULE@
-
 desktopdir       = $(datadir)/applications
 desktop_DATA     = 					\
 	$(desktop_in_files:.desktop.in=.desktop)	\
@@ -23,9 +19,6 @@ appdata_DATA = $(appdata_in_files:.xml.in=.xml)
 @INTLTOOL_XML_RULE@
 
 @INTLTOOL_DESKTOP_RULE@
-
-mimedir = $(datadir)/mime/packages
-mime_DATA = $(xml_files)
 
 servicedir = $(datadir)/dbus-1/services
 service_DATA = $(service_in_files:.service.in=.service)
@@ -48,7 +41,6 @@ EXTRA_DIST =				\
 	dbus-interfaces.xml		\
 	freedesktop-dbus-interfaces.xml	\
 	shell-search-provider-dbus-interfaces.xml \
-	$(xml_in_files) 		\
 	$(desktop_in_files)		\
 	$(service_in_files)		\
 	$(autostart_in_files)		\
@@ -56,21 +48,11 @@ EXTRA_DIST =				\
 	$(appdata_in_files)		\
 	$(NULL)
 
-CLEANFILES = $(xml_files)	\
+CLEANFILES =			\
 	$(desktop_DATA)		\
 	$(service_DATA)		\
 	$(autostart_DATA)	\
 	$(appdata_DATA)		\
 	$(NULL)
-
-install-data-hook:
-if ENABLE_UPDATE_MIMEDB
-	$(UPDATE_MIME_DATABASE) "$(DESTDIR)$(datadir)/mime"
-endif
-
-uninstall-hook:
-if ENABLE_UPDATE_MIMEDB
-	$(UPDATE_MIME_DATABASE) "$(DESTDIR)$(datadir)/mime"
-endif
 
 -include $(top_srcdir)/git.mk
