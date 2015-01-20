@@ -3780,6 +3780,289 @@ get_menu_icon_for_file (NautilusFile *file,
 	return pixbuf;
 }
 
+static GList *
+get_extension_selection_menu_items (NautilusView *view)
+{
+	NautilusWindow *window;
+	GList *items;
+	GList *providers;
+	GList *l;
+	GList *selection;
+
+	window = nautilus_view_get_window (view);
+	selection = nautilus_view_get_selection (view);
+	providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_MENU_PROVIDER);
+	items = NULL;
+
+	for (l = providers; l != NULL; l = l->next) {
+		NautilusMenuProvider *provider;
+		GList *file_items;
+
+		provider = NAUTILUS_MENU_PROVIDER (l->data);
+		file_items = nautilus_menu_provider_get_file_items (provider,
+								    GTK_WIDGET (window),
+								    selection);
+		items = g_list_concat (items, file_items);
+	}
+
+	nautilus_module_extension_list_free (providers);
+
+	return items;
+}
+
+static GList *
+get_extension_background_menu_items (NautilusView *view)
+{
+	NautilusWindow *window;
+	NautilusFile *file;
+	GList *items;
+	GList *providers;
+	GList *l;
+
+	window = nautilus_view_get_window (view);
+	providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_MENU_PROVIDER);
+	file = nautilus_window_slot_get_file (view->details->slot);
+	items = NULL;
+
+	for (l = providers; l != NULL; l = l->next) {
+		NautilusMenuProvider *provider;
+		GList *file_items;
+
+		provider = NAUTILUS_MENU_PROVIDER (l->data);
+		file_items = nautilus_menu_provider_get_background_items (provider,
+									  GTK_WIDGET (window),
+									  file);
+		items = g_list_concat (items, file_items);
+	}
+
+	nautilus_module_extension_list_free (providers);
+
+	return items;
+}
+
+typedef struct
+{
+	NautilusMenuItem *item;
+	NautilusView *view;
+	GList *selection;
+	GAction *action;
+} ExtensionActionCallbackData;
+
+
+static void
+extension_action_callback_data_free (ExtensionActionCallbackData *data)
+{
+	g_object_unref (data->item);
+	nautilus_file_list_free (data->selection);
+
+	g_free (data);
+}
+
+static gboolean
+search_in_menu_items (GList      * items,
+		      const char *item_name)
+{
+	GList* list;
+
+	for (list = items; list != NULL; list = list->next) {
+		NautilusMenu* menu;
+		char *name;
+
+		g_object_get (list->data, "name", &name, NULL);
+		if (strcmp (name, item_name) == 0) {
+			g_free (name);
+			return TRUE;
+		}
+		g_free (name);
+
+		menu = NULL;
+		g_object_get (list->data, "menu", &menu, NULL);
+		if (menu != NULL) {
+			gboolean ret;
+			GList* submenus;
+
+			submenus = nautilus_menu_get_items (menu);
+			ret = search_in_menu_items (submenus, item_name);
+			nautilus_menu_item_list_free (submenus);
+			g_object_unref (menu);
+			if (ret) {
+				return TRUE;
+			}
+		}
+	}
+	return FALSE;
+}
+
+static void
+extension_action_callback (GSimpleAction *action,
+			   GVariant      *state,
+			   gpointer       user_data)
+{
+	ExtensionActionCallbackData *data;
+	char *item_name;
+	gboolean is_valid;
+	GList *l;
+	GList *selection_items, *background_items;
+
+	data = user_data;
+
+	/* Make sure the selected menu item is valid for the final sniffed
+	 * mime type */
+	g_object_get (data->item, "name", &item_name, NULL);
+	selection_items = get_extension_selection_menu_items (data->view);
+	background_items = get_extension_background_menu_items (data->view);
+
+	is_valid = search_in_menu_items (selection_items, item_name);
+	if (!is_valid)
+		is_valid = search_in_menu_items (background_items, item_name);
+
+	for (l = selection_items; l != NULL; l = l->next) {
+		g_object_unref (l->data);
+	}
+	for (l = background_items; l != NULL; l = l->next) {
+		g_object_unref (l->data);
+	}
+
+	g_list_free (selection_items);
+	g_list_free (background_items);
+
+	g_free (item_name);
+
+	if (is_valid) {
+		nautilus_menu_item_activate (data->item);
+	}
+}
+
+static void
+add_extension_action (NautilusView *view,
+		      NautilusMenuItem *item)
+{
+	char *name, *label, *parsed_name;
+	gboolean sensitive;
+	GAction *action;
+	ExtensionActionCallbackData *data;
+
+	g_object_get (G_OBJECT (item),
+		      "name", &name, "label", &label,
+		      "sensitive", &sensitive,
+		      NULL);
+
+	parsed_name = nautilus_escape_action_name (name, "extension_");
+	action = G_ACTION (g_simple_action_new (parsed_name, NULL));
+
+	data = g_new0 (ExtensionActionCallbackData, 1);
+	data->item = g_object_ref (item);
+	data->view = view;
+	data->action = action;
+
+	g_signal_connect_data (action, "activate",
+			       G_CALLBACK (extension_action_callback),
+			       data,
+			       (GClosureNotify)extension_action_callback_data_free, 0);
+
+	g_action_map_add_action  (G_ACTION_MAP (view->details->view_action_group),
+				  action);
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), sensitive);
+	g_object_unref (action);
+
+	g_free (name);
+	g_free (parsed_name);
+	g_free (label);
+}
+
+static GMenu *
+add_extension_menu_items (NautilusView *view,
+			  GList        *menu_items,
+			  GMenu        *insertion_menu,
+			  GMenuItem    *submenu_parent)
+{
+	GList *l;
+	GMenuItem *menu_item;
+	GMenu *gmenu, *children_menu;
+	char *name, *parsed_name, *label, *detailed_action_name;
+	gboolean sensitive;
+	GdkPixbuf *pixbuf;
+
+	gmenu = g_menu_new ();
+
+	for (l = menu_items; l; l = l->next) {
+		NautilusMenuItem *item;
+		NautilusMenu *menu;
+
+		item = NAUTILUS_MENU_ITEM (l->data);
+
+		g_object_get (item, "menu", &menu, NULL);
+
+		g_object_get (G_OBJECT (item),
+			      "name", &name, "label", &label,
+			      "sensitive", &sensitive,
+			      NULL);
+
+		add_extension_action (view, item);
+		parsed_name = nautilus_escape_action_name (name, "extension_");
+		detailed_action_name =  g_strconcat ("view.", parsed_name, NULL);
+		menu_item = g_menu_item_new (label, detailed_action_name);
+		 if (menu != NULL) {
+			GList *children;
+
+			children = nautilus_menu_get_items (menu);
+
+			children_menu = add_extension_menu_items (view,
+								  children,
+								  insertion_menu,
+								  menu_item);
+
+			nautilus_menu_item_list_free (children);
+			g_menu_item_set_submenu (menu_item, G_MENU_MODEL (children_menu));
+		}
+
+		g_menu_append_item (gmenu, menu_item);
+	}
+
+	if (submenu_parent) {
+		g_menu_item_set_submenu (submenu_parent, G_MENU_MODEL (gmenu));
+	} else {
+		nautilus_gmenu_merge (insertion_menu,
+				      gmenu,
+				      "extensions",
+				      FALSE);
+	}
+
+	g_free (name);
+	g_free (parsed_name);
+	g_free (label);
+
+	return gmenu;
+}
+
+static void
+update_extensions_menus (NautilusView *view)
+{
+	GList *selection_items, *background_items;
+
+	selection_items = get_extension_selection_menu_items (view);
+	background_items = get_extension_background_menu_items (view);
+	if (selection_items != NULL) {
+		add_extension_menu_items (view,
+					  selection_items,
+					  view->details->selection_menu,
+					  NULL);
+
+		g_list_foreach (selection_items, (GFunc) g_object_unref, NULL);
+		g_list_free (selection_items);
+	}
+
+	if (background_items != NULL) {
+		add_extension_menu_items (view,
+					  background_items,
+					  view->details->selection_menu,
+					  NULL);
+
+		g_list_foreach (background_items, (GFunc) g_object_unref, NULL);
+		g_list_free (background_items);
+	}
+}
+
 static char *
 change_to_view_directory (NautilusView *view)
 {
@@ -6245,6 +6528,8 @@ real_update_context_menus (NautilusView *view)
 
 	update_selection_menu (view);
 	update_background_menu (view);
+	update_extensions_menus (view);
+
 	nautilus_view_update_actions_state (view);
 }
 
