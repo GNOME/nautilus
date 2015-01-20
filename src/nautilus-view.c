@@ -275,9 +275,6 @@ static void     update_templates_directory                     (NautilusView *vi
 
 static void unschedule_pop_up_pathbar_context_menu (NautilusView *view);
 
-static void real_zoom_to_level (NautilusView  *view,
-				gint           zoom_level);
-
 G_DEFINE_TYPE (NautilusView, nautilus_view, GTK_TYPE_SCROLLED_WINDOW);
 
 static char *
@@ -484,39 +481,6 @@ nautilus_view_bump_zoom_level (NautilusView *view,
 	}
 
 	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->bump_zoom_level (view, zoom_increment);
-}
-
-/* We want to keep the logic of which menus and when to update them in
- * this class, so children need to chain to the parent when they set the zoom
- * level through this function.
- * The chain up should be done after the child updated the zoom level, so the
- * menus are updated acordingly
- *
- */
-static void
-real_zoom_to_level (NautilusView      *view,
-		    gint               zoom_level)
-{
-	nautilus_view_update_toolbar_menus (view);
-}
-
-/**
- * nautilus_view_zoom_to_level:
- *
- * Set the current zoom level by invoking the relevant subclass through the slot
- * 
- **/
-void
-nautilus_view_zoom_to_level (NautilusView *view,
-			     gint          zoom_level)
-{
-	g_return_if_fail (NAUTILUS_IS_VIEW (view));
-
-	if (!nautilus_view_supports_zooming (view)) {
-		return;
-	}
-
-	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->zoom_to_level (view, zoom_level);
 }
 
 /**
@@ -1900,22 +1864,6 @@ action_zoom_default (GSimpleAction *action,
 		     gpointer       user_data)
 {
 	nautilus_view_restore_default_zoom_level (user_data);
-}
-
-static void
-action_zoom_to_level (GSimpleAction *action,
-		      GVariant      *state,
-		      gpointer       user_data)
-{
-	NautilusView *view;
-	gdouble zoom_value;
-
-	g_assert (NAUTILUS_IS_VIEW (user_data));
-
-	view = NAUTILUS_VIEW (user_data);
-	zoom_value = g_variant_get_int32 (state);
-
-	nautilus_view_zoom_to_level (view, zoom_value);
 }
 
 static void
@@ -5725,7 +5673,6 @@ const GActionEntry view_entries[] = {
 	{ "zoom-in",  action_zoom_in },
 	{ "zoom-out", action_zoom_out },
 	{ "zoom-default", action_zoom_default },
-	{ "zoom-to-level", NULL, NULL, "1", action_zoom_to_level },
 	{ "undo", action_undo },
 	{ "redo", action_redo },
 	{ "show-hidden-files", NULL, NULL, "true", action_show_hidden_files },
@@ -7618,7 +7565,6 @@ nautilus_view_class_init (NautilusViewClass *klass)
 	klass->update_context_menus = real_update_context_menus;
 	klass->update_actions_state = real_update_actions_state;
 	klass->update_toolbar_menus = real_update_toolbar_menus;
-	klass->zoom_to_level = real_zoom_to_level;
 
 	copied_files_atom = gdk_atom_intern ("x-special/gnome-copied-files", FALSE);
 

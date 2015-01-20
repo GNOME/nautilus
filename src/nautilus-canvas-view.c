@@ -149,8 +149,6 @@ static const SortCriterion sort_criteria[] = {
 static void                 nautilus_canvas_view_set_directory_sort_by        (NautilusCanvasView           *canvas_view,
 									     NautilusFile         *file,
 									     const char           *sort_by);
-static void                 nautilus_canvas_view_set_zoom_level               (NautilusCanvasView           *view,
-									       NautilusCanvasZoomLevel     new_level);
 static void                 nautilus_canvas_view_update_click_mode            (NautilusCanvasView           *canvas_view);
 static gboolean             nautilus_canvas_view_supports_scaling	      (NautilusCanvasView           *canvas_view);
 static void                 nautilus_canvas_view_reveal_selection       (NautilusView               *view);
@@ -685,8 +683,6 @@ get_sort_criterion_by_sort_type (NautilusFileSortType sort_type)
 	return &sort_criteria[0];
 }
 
-#define DEFAULT_ZOOM_LEVEL(canvas_view) default_zoom_level
-
 static NautilusCanvasZoomLevel
 get_default_zoom_level (NautilusCanvasView *canvas_view)
 {
@@ -695,7 +691,7 @@ get_default_zoom_level (NautilusCanvasView *canvas_view)
 	default_zoom_level = g_settings_get_enum (nautilus_icon_view_preferences,
 						  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL);
 
-	return CLAMP (DEFAULT_ZOOM_LEVEL(canvas_view), NAUTILUS_CANVAS_ZOOM_LEVEL_SMALL, NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE);
+	return CLAMP (default_zoom_level, NAUTILUS_CANVAS_ZOOM_LEVEL_SMALL, NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE);
 }
 
 static void
@@ -791,35 +787,24 @@ nautilus_canvas_view_get_zoom_level (NautilusView *view)
 }
 
 static void
-nautilus_canvas_view_set_zoom_level (NautilusCanvasView      *view,
-				     NautilusCanvasZoomLevel  new_level)
+nautilus_canvas_view_zoom_to_level (NautilusView *view,
+				    gint          new_level)
 {
+	NautilusCanvasView *canvas_view;
 	NautilusCanvasContainer *canvas_container;
 
 	g_return_if_fail (NAUTILUS_IS_CANVAS_VIEW (view));
 	g_return_if_fail (new_level >= NAUTILUS_CANVAS_ZOOM_LEVEL_SMALL &&
 			  new_level <= NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE);
 
-	canvas_container = get_canvas_container (view);
+
+	canvas_view = NAUTILUS_CANVAS_VIEW (view);
+	canvas_container = get_canvas_container (canvas_view);
 	if (nautilus_canvas_container_get_zoom_level (canvas_container) == new_level)
 		return;
 
 	nautilus_canvas_container_set_zoom_level (canvas_container, new_level);
-}
-
-static void
-nautilus_canvas_view_zoom_to_level (NautilusView *view,
-				    gint          zoom_level)
-{
-	NautilusCanvasView *canvas_view;
-
-	g_assert (NAUTILUS_IS_CANVAS_VIEW (view));
-
-	canvas_view = NAUTILUS_CANVAS_VIEW (view);
-	nautilus_canvas_view_set_zoom_level (canvas_view, zoom_level);
-
-	/* Chain up to the parent to update menus */
-	NAUTILUS_VIEW_CLASS (nautilus_canvas_view_parent_class)->zoom_to_level (view, zoom_level);
+	nautilus_view_update_toolbar_menus (view);
 }
 
 static void
@@ -964,6 +949,21 @@ action_sort_order_changed (GSimpleAction *action,
 }
 
 static void
+action_zoom_to_level (GSimpleAction *action,
+		      GVariant      *state,
+		      gpointer       user_data)
+{
+	NautilusView *view;
+	NautilusCanvasZoomLevel zoom_level;
+
+	g_assert (NAUTILUS_IS_VIEW (user_data));
+
+	view = NAUTILUS_VIEW (user_data);
+	zoom_level = g_variant_get_int32 (state);
+	nautilus_canvas_view_zoom_to_level (view, zoom_level);
+}
+
+static void
 switch_to_manual_layout (NautilusCanvasView *canvas_view)
 {
 	if (!nautilus_canvas_view_using_auto_layout (canvas_view) ||
@@ -1019,6 +1019,7 @@ const GActionEntry canvas_view_entries[] = {
 	{ "keep-aligned", NULL, NULL, "true", action_keep_aligned },
 	{ "reversed-order", NULL, NULL, "false", action_reversed_order },
 	{ "sort", NULL, "s", "'name'", action_sort_order_changed },
+	{ "zoom-to-level", NULL, NULL, "1", action_zoom_to_level }
 };
 
 static void
@@ -1843,7 +1844,6 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
 	nautilus_view_class->add_file = nautilus_canvas_view_add_file;
 	nautilus_view_class->begin_loading = nautilus_canvas_view_begin_loading;
 	nautilus_view_class->bump_zoom_level = nautilus_canvas_view_bump_zoom_level;
-	nautilus_view_class->zoom_to_level = nautilus_canvas_view_zoom_to_level;
 	nautilus_view_class->can_rename_file = nautilus_canvas_view_can_rename_file;
 	nautilus_view_class->can_zoom_in = nautilus_canvas_view_can_zoom_in;
 	nautilus_view_class->can_zoom_out = nautilus_canvas_view_can_zoom_out;
@@ -1862,7 +1862,6 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
 	nautilus_view_class->set_selection = nautilus_canvas_view_set_selection;
 	nautilus_view_class->invert_selection = nautilus_canvas_view_invert_selection;
 	nautilus_view_class->compare_files = compare_files;
-	nautilus_view_class->zoom_to_level = nautilus_canvas_view_zoom_to_level;
         nautilus_view_class->click_policy_changed = nautilus_canvas_view_click_policy_changed;
 	nautilus_view_class->update_toolbar_menus = nautilus_canvas_view_update_toolbar_menus;
 	nautilus_view_class->update_actions_state = nautilus_canvas_view_update_actions_state;

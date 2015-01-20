@@ -2816,6 +2816,36 @@ nautilus_list_view_select_first (NautilusView *view)
 }
 
 static void
+nautilus_list_view_zoom_to_level (NautilusView *view,
+				  gint zoom_level)
+{
+	NautilusListView *list_view;
+
+	g_return_if_fail (NAUTILUS_IS_LIST_VIEW (view));
+
+	list_view = NAUTILUS_LIST_VIEW (view);
+
+	nautilus_list_view_set_zoom_level (list_view, zoom_level);
+
+	nautilus_view_update_toolbar_menus (view);
+}
+
+static void
+action_zoom_to_level (GSimpleAction *action,
+		      GVariant      *state,
+		      gpointer       user_data)
+{
+	NautilusView *view;
+	NautilusListZoomLevel zoom_level;
+
+	g_assert (NAUTILUS_IS_VIEW (user_data));
+
+	view = NAUTILUS_VIEW (user_data);
+	zoom_level = g_variant_get_int32 (state);
+	nautilus_list_view_zoom_to_level (view, zoom_level);
+}
+
+static void
 column_editor_response_callback (GtkWidget *dialog, 
 				 int response_id,
 				 gpointer user_data)
@@ -3018,6 +3048,7 @@ action_visible_columns (GSimpleAction *action,
 
 const GActionEntry list_view_entries[] = {
 	{ "visible-columns", action_visible_columns },
+	{ "zoom-to-level", NULL, NULL, "1", action_zoom_to_level }
 };
 
 static void
@@ -3060,21 +3091,6 @@ nautilus_list_view_set_zoom_level (NautilusListView *view,
 					     "surface", column,
 					     NULL);
 	set_up_pixbuf_size (view);
-}
-
-static void
-nautilus_list_view_zoom_to_level (NautilusView *view,
-				  gint zoom_level)
-{
-	NautilusListView *list_view;
-
-	g_return_if_fail (NAUTILUS_IS_LIST_VIEW (view));
-
-	list_view = NAUTILUS_LIST_VIEW (view);
-
-	nautilus_list_view_set_zoom_level (list_view, zoom_level);
-
-	NAUTILUS_VIEW_CLASS (nautilus_list_view_parent_class)->zoom_to_level (view, zoom_level);
 }
 
 static void
@@ -3505,7 +3521,6 @@ nautilus_list_view_class_init (NautilusListViewClass *class)
 	nautilus_view_class->compare_files = nautilus_list_view_compare_files;
 	nautilus_view_class->sort_directories_first_changed = nautilus_list_view_sort_directories_first_changed;
 	nautilus_view_class->start_renaming_file = nautilus_list_view_start_renaming_file;
-	nautilus_view_class->zoom_to_level = nautilus_list_view_zoom_to_level;
 	nautilus_view_class->end_file_changes = nautilus_list_view_end_file_changes;
 	nautilus_view_class->using_manual_layout = nautilus_list_view_using_manual_layout;
 	nautilus_view_class->get_view_id = nautilus_list_view_get_id;

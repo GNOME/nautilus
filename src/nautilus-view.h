@@ -183,11 +183,6 @@ struct NautilusViewClass {
         void    (* bump_zoom_level)      	(NautilusView *view,
 					  	 int zoom_increment);
 
-	/* zoom_to_level is a function pointer that subclasses must override
- 	 * to set the zoom level of an object to the specified level. */
-	void    (* zoom_to_level) 		(NautilusView *view, 
-						 gint          level);
-
 	/* restore_default_zoom_level is a function pointer that subclasses must override
          * to restore the zoom level of an object to a default setting. */
         void    (* restore_default_zoom_level) (NautilusView *view);
