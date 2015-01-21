@@ -601,8 +601,7 @@ set_pending_icon_to_reveal (NautilusCanvasContainer *container, NautilusCanvasIc
 
 static void
 item_get_canvas_bounds (EelCanvasItem *item,
-			EelIRect *bounds,
-			gboolean safety_pad)
+			EelIRect *bounds)
 {
 	EelDRect world_rect;
 	
@@ -617,13 +616,12 @@ item_get_canvas_bounds (EelCanvasItem *item,
 	eel_canvas_item_i2w (item->parent,
 			     &world_rect.x1,
 			     &world_rect.y1);
-	if (safety_pad) {
-		world_rect.x0 -= ICON_PAD_LEFT + ICON_PAD_RIGHT;
-		world_rect.x1 += ICON_PAD_LEFT + ICON_PAD_RIGHT;
 
-		world_rect.y0 -= ICON_PAD_TOP + ICON_PAD_BOTTOM;
-		world_rect.y1 += ICON_PAD_TOP + ICON_PAD_BOTTOM;
-	}
+	world_rect.x0 -= ICON_PAD_LEFT + ICON_PAD_RIGHT;
+	world_rect.x1 += ICON_PAD_LEFT + ICON_PAD_RIGHT;
+
+	world_rect.y0 -= ICON_PAD_TOP + ICON_PAD_BOTTOM;
+	world_rect.y1 += ICON_PAD_TOP + ICON_PAD_BOTTOM;
 
 	eel_canvas_w2c (item->canvas,
 			world_rect.x0,
@@ -640,14 +638,13 @@ item_get_canvas_bounds (EelCanvasItem *item,
 static void
 icon_get_row_and_column_bounds (NautilusCanvasContainer *container,
 				NautilusCanvasIcon *icon,
-				EelIRect *bounds,
-				gboolean safety_pad)
+				EelIRect *bounds)
 {
 	GList *p;
 	NautilusCanvasIcon *one_icon;
 	EelIRect one_bounds;
 
-	item_get_canvas_bounds (EEL_CANVAS_ITEM (icon->item), bounds, safety_pad);
+	item_get_canvas_bounds (EEL_CANVAS_ITEM (icon->item), bounds);
 
 	for (p = container->details->icons; p != NULL; p = p->next) {
 		one_icon = p->data;
@@ -657,13 +654,13 @@ icon_get_row_and_column_bounds (NautilusCanvasContainer *container,
 		}
 
 		if (compare_icons_horizontal (container, icon, one_icon) == 0) {
-			item_get_canvas_bounds (EEL_CANVAS_ITEM (one_icon->item), &one_bounds, safety_pad);
+			item_get_canvas_bounds (EEL_CANVAS_ITEM (one_icon->item), &one_bounds);
 			bounds->x0 = MIN (bounds->x0, one_bounds.x0);
 			bounds->x1 = MAX (bounds->x1, one_bounds.x1);
 		}
 
 		if (compare_icons_vertical (container, icon, one_icon) == 0) {
-			item_get_canvas_bounds (EEL_CANVAS_ITEM (one_icon->item), &one_bounds, safety_pad);
+			item_get_canvas_bounds (EEL_CANVAS_ITEM (one_icon->item), &one_bounds);
 			bounds->y0 = MIN (bounds->y0, one_bounds.y0);
 			bounds->y1 = MAX (bounds->y1, one_bounds.y1);
 		}
@@ -694,9 +691,9 @@ reveal_icon (NautilusCanvasContainer *container,
 
 	if (nautilus_canvas_container_is_auto_layout (container)) {
 		/* ensure that we reveal the entire row/column */
-		icon_get_row_and_column_bounds (container, icon, &bounds, TRUE);
+		icon_get_row_and_column_bounds (container, icon, &bounds);
 	} else {
-		item_get_canvas_bounds (EEL_CANVAS_ITEM (icon->item), &bounds, TRUE);
+		item_get_canvas_bounds (EEL_CANVAS_ITEM (icon->item), &bounds);
 	}
 	if (bounds.y0 < gtk_adjustment_get_value (vadj)) {
 		gtk_adjustment_set_value (vadj, bounds.y0);
@@ -5606,9 +5603,9 @@ nautilus_canvas_container_scroll_to_canvas (NautilusCanvasContainer  *container,
 
 			if (nautilus_canvas_container_is_auto_layout (container)) {
 				/* ensure that we reveal the entire row/column */
-				icon_get_row_and_column_bounds (container, icon, &bounds, TRUE);
+				icon_get_row_and_column_bounds (container, icon, &bounds);
 			} else {
-				item_get_canvas_bounds (EEL_CANVAS_ITEM (icon->item), &bounds, TRUE);
+				item_get_canvas_bounds (EEL_CANVAS_ITEM (icon->item), &bounds);
 			}
 
 			if (nautilus_canvas_container_is_layout_vertical (container)) {
