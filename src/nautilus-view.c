@@ -3864,15 +3864,8 @@ extension_action_callback (GSimpleAction *action,
 	if (!is_valid)
 		is_valid = search_in_menu_items (background_items, item_name);
 
-	for (l = selection_items; l != NULL; l = l->next) {
-		g_object_unref (l->data);
-	}
-	for (l = background_items; l != NULL; l = l->next) {
-		g_object_unref (l->data);
-	}
-
-	g_list_free (selection_items);
-	g_list_free (background_items);
+	nautilus_menu_item_list_free (selection_items);
+	nautilus_menu_item_list_free (background_items);
 
 	g_free (item_name);
 
@@ -3995,8 +3988,7 @@ update_extensions_menus (NautilusView *view)
 					  view->details->selection_menu,
 					  NULL);
 
-		g_list_foreach (selection_items, (GFunc) g_object_unref, NULL);
-		g_list_free (selection_items);
+		nautilus_menu_item_list_free (selection_items);
 	}
 
 	if (background_items != NULL) {
@@ -4005,8 +3997,7 @@ update_extensions_menus (NautilusView *view)
 					  view->details->selection_menu,
 					  NULL);
 
-		g_list_foreach (background_items, (GFunc) g_object_unref, NULL);
-		g_list_free (background_items);
+		nautilus_menu_item_list_free (background_items);
 	}
 }
 
