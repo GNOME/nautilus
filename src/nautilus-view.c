@@ -3791,11 +3791,9 @@ get_extension_background_menu_items (NautilusView *view)
 typedef struct
 {
 	NautilusMenuItem *item;
-	NautilusView *view;
 	GList *selection;
 	GAction *action;
 } ExtensionActionCallbackData;
-
 
 static void
 extension_action_callback_data_free (ExtensionActionCallbackData *data)
@@ -3806,72 +3804,15 @@ extension_action_callback_data_free (ExtensionActionCallbackData *data)
 	g_free (data);
 }
 
-static gboolean
-search_in_menu_items (GList      * items,
-		      const char *item_name)
-{
-	GList* list;
-
-	for (list = items; list != NULL; list = list->next) {
-		NautilusMenu* menu;
-		char *name;
-
-		g_object_get (list->data, "name", &name, NULL);
-		if (strcmp (name, item_name) == 0) {
-			g_free (name);
-			return TRUE;
-		}
-		g_free (name);
-
-		menu = NULL;
-		g_object_get (list->data, "menu", &menu, NULL);
-		if (menu != NULL) {
-			gboolean ret;
-			GList* submenus;
-
-			submenus = nautilus_menu_get_items (menu);
-			ret = search_in_menu_items (submenus, item_name);
-			nautilus_menu_item_list_free (submenus);
-			g_object_unref (menu);
-			if (ret) {
-				return TRUE;
-			}
-		}
-	}
-	return FALSE;
-}
-
 static void
 extension_action_callback (GSimpleAction *action,
 			   GVariant      *state,
 			   gpointer       user_data)
 {
 	ExtensionActionCallbackData *data;
-	char *item_name;
-	gboolean is_valid;
-	GList *l;
-	GList *selection_items, *background_items;
 
 	data = user_data;
-
-	/* Make sure the selected menu item is valid for the final sniffed
-	 * mime type */
-	g_object_get (data->item, "name", &item_name, NULL);
-	selection_items = get_extension_selection_menu_items (data->view);
-	background_items = get_extension_background_menu_items (data->view);
-
-	is_valid = search_in_menu_items (selection_items, item_name);
-	if (!is_valid)
-		is_valid = search_in_menu_items (background_items, item_name);
-
-	nautilus_menu_item_list_free (selection_items);
-	nautilus_menu_item_list_free (background_items);
-
-	g_free (item_name);
-
-	if (is_valid) {
-		nautilus_menu_item_activate (data->item);
-	}
+	nautilus_menu_item_activate (data->item);
 }
 
 static void
@@ -3893,7 +3834,6 @@ add_extension_action (NautilusView *view,
 
 	data = g_new0 (ExtensionActionCallbackData, 1);
 	data->item = g_object_ref (item);
-	data->view = view;
 	data->action = action;
 
 	g_signal_connect_data (action, "activate",
