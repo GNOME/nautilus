@@ -120,26 +120,18 @@ nautilus_canvas_view_container_prioritize_thumbnailing (NautilusCanvasContainer 
 	}
 }
 
-static void
-update_auto_strv_as_quarks (GSettings   *settings,
-			    const gchar *key,
-			    gpointer     user_data)
+static GQuark *
+get_quark_from_strv (gchar ** value)
 {
-	GQuark **storage = user_data;
-	int i = 0;
-	char **value;
+	GQuark *quark;
+	int i;
 
-	value = g_settings_get_strv (settings, key);
-
-	g_free (*storage);
-	*storage = g_new (GQuark, g_strv_length (value) + 1);
-
+	quark = g_new0 (GQuark, g_strv_length (value) + 1);
 	for (i = 0; value[i] != NULL; ++i) {
-		(*storage)[i] = g_quark_from_string (value[i]);
+		quark[i] = g_quark_from_string (value[i]);
 	}
-	(*storage)[i] = 0;
 
-	g_strfreev (value);
+	return quark;
 }
 
 /*
@@ -149,17 +141,13 @@ update_auto_strv_as_quarks (GSettings   *settings,
 static GQuark *
 nautilus_canvas_view_container_get_icon_text_attributes_from_preferences (void)
 {
-	static GQuark *attributes = NULL;
+	GQuark *attributes;
+	gchar **value;
 
-	if (attributes == NULL) {
-		update_auto_strv_as_quarks (nautilus_icon_view_preferences, 
-					    NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
-					    &attributes);
-		g_signal_connect (nautilus_icon_view_preferences, 
-				  "changed::" NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
-				  G_CALLBACK (update_auto_strv_as_quarks),
-				  &attributes);
-	}
+	value = g_settings_get_strv (nautilus_icon_view_preferences,
+				     NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS);
+	attributes = get_quark_from_strv (value);
+	g_strfreev (value);
 
 	/* We don't need to sanity check the attributes list even though it came
 	 * from preferences.
