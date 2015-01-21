@@ -3819,13 +3819,13 @@ static void
 add_extension_action (NautilusView *view,
 		      NautilusMenuItem *item)
 {
-	char *name, *label, *parsed_name;
+	char *name, *parsed_name;
 	gboolean sensitive;
 	GAction *action;
 	ExtensionActionCallbackData *data;
 
-	g_object_get (G_OBJECT (item),
-		      "name", &name, "label", &label,
+	g_object_get (item,
+		      "name", &name,
 		      "sensitive", &sensitive,
 		      NULL);
 
@@ -3839,80 +3839,82 @@ add_extension_action (NautilusView *view,
 	g_signal_connect_data (action, "activate",
 			       G_CALLBACK (extension_action_callback),
 			       data,
-			       (GClosureNotify)extension_action_callback_data_free, 0);
+			       (GClosureNotify) extension_action_callback_data_free, 0);
 
-	g_action_map_add_action  (G_ACTION_MAP (view->details->view_action_group),
-				  action);
+	g_action_map_add_action (G_ACTION_MAP (view->details->view_action_group), action);
 	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), sensitive);
-	g_object_unref (action);
 
 	g_free (name);
 	g_free (parsed_name);
-	g_free (label);
+	g_object_unref (action);
 }
 
 static GMenu *
-add_extension_menu_items (NautilusView *view,
-			  GList        *menu_items,
-			  GMenu        *insertion_menu,
-			  GMenuItem    *submenu_parent)
+build_menu_for_extension_menu_items (NautilusView *view,
+				     GList *menu_items)
 {
 	GList *l;
-	GMenuItem *menu_item;
-	GMenu *gmenu, *children_menu;
-	char *name, *parsed_name, *label, *detailed_action_name;
-	gboolean sensitive;
+	GMenu *gmenu;
 
 	gmenu = g_menu_new ();
 
 	for (l = menu_items; l; l = l->next) {
 		NautilusMenuItem *item;
 		NautilusMenu *menu;
+		GMenuItem *menu_item;
+		char *name, *label, *parsed_name, *detailed_action_name;
 
 		item = NAUTILUS_MENU_ITEM (l->data);
 
-		g_object_get (item, "menu", &menu, NULL);
-
-		g_object_get (G_OBJECT (item),
-			      "name", &name, "label", &label,
-			      "sensitive", &sensitive,
+		g_object_get (item,
+			      "label", &label,
+			      "menu", &menu,
+			      "name", &name,
 			      NULL);
 
 		add_extension_action (view, item);
 		parsed_name = nautilus_escape_action_name (name, "extension_");
 		detailed_action_name =  g_strconcat ("view.", parsed_name, NULL);
 		menu_item = g_menu_item_new (label, detailed_action_name);
-		 if (menu != NULL) {
+
+		if (menu != NULL) {
 			GList *children;
+			GMenu *children_menu;
 
 			children = nautilus_menu_get_items (menu);
-
-			children_menu = add_extension_menu_items (view,
-								  children,
-								  insertion_menu,
-								  menu_item);
+			children_menu = build_menu_for_extension_menu_items (view, children);
+			g_menu_item_set_submenu (menu_item, G_MENU_MODEL (children_menu));
 
 			nautilus_menu_item_list_free (children);
-			g_menu_item_set_submenu (menu_item, G_MENU_MODEL (children_menu));
+			g_object_unref (children_menu);
 		}
 
 		g_menu_append_item (gmenu, menu_item);
-	}
 
-	if (submenu_parent) {
-		g_menu_item_set_submenu (submenu_parent, G_MENU_MODEL (gmenu));
-	} else {
-		nautilus_gmenu_merge (insertion_menu,
-				      gmenu,
-				      "extensions",
-				      FALSE);
+		g_free (parsed_name);
+		g_free (detailed_action_name);
+		g_free (name);
+		g_free (label);
+		g_object_unref (menu_item);
 	}
-
-	g_free (name);
-	g_free (parsed_name);
-	g_free (label);
 
 	return gmenu;
+}
+
+static void
+add_extension_menu_items (NautilusView *view,
+			  GList        *menu_items,
+			  GMenu        *insertion_menu)
+{
+	GMenu *menu;
+
+	menu = build_menu_for_extension_menu_items (view, menu_items);
+	nautilus_gmenu_merge (insertion_menu,
+			      menu,
+			      "extensions",
+			      FALSE);
+
+	g_object_unref (menu);
 }
 
 static void
@@ -3921,22 +3923,18 @@ update_extensions_menus (NautilusView *view)
 	GList *selection_items, *background_items;
 
 	selection_items = get_extension_selection_menu_items (view);
-	background_items = get_extension_background_menu_items (view);
 	if (selection_items != NULL) {
 		add_extension_menu_items (view,
 					  selection_items,
-					  view->details->selection_menu,
-					  NULL);
-
+					  view->details->selection_menu);
 		nautilus_menu_item_list_free (selection_items);
 	}
 
+	background_items = get_extension_background_menu_items (view);
 	if (background_items != NULL) {
 		add_extension_menu_items (view,
 					  background_items,
-					  view->details->background_menu,
-					  NULL);
-
+					  view->details->background_menu);
 		nautilus_menu_item_list_free (background_items);
 	}
 }
