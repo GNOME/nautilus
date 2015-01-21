@@ -206,8 +206,8 @@ nautilus_canvas_view_container_get_icon_text_attribute_names (NautilusCanvasCont
 	int piece_count;
 
 	const int pieces_by_level[] = {
-		3,	/* NAUTILUS_ZOOM_LEVEL_SMALL */
-		3,	/* NAUTILUS_ZOOM_LEVEL_STANDARD */
+		1,	/* NAUTILUS_ZOOM_LEVEL_SMALL */
+		2,	/* NAUTILUS_ZOOM_LEVEL_STANDARD */
 		3,	/* NAUTILUS_ZOOM_LEVEL_LARGE */
 	};
 
