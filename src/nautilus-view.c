@@ -4327,6 +4327,7 @@ update_scripts_menu (NautilusView *view)
 				      submenu,
 				      "scripts-submenu",
 				      TRUE);
+		g_object_unref (submenu);
 	}
 	
 	view->details->scripts_present = submenu != NULL;
@@ -4392,6 +4393,7 @@ add_template_to_templates_menus (NautilusView *view,
 	g_free (uri);
 	g_free (action_name);
 	g_free (detailed_action_name);
+	g_object_unref (menu_item);
 }
 
 static void
@@ -4550,6 +4552,7 @@ update_templates_menu (NautilusView *view)
 				      submenu,
 				      "templates-submenu",
 				      FALSE);
+		g_object_unref (submenu);
 	}
 	
 	view->details->templates_present = submenu != NULL;
