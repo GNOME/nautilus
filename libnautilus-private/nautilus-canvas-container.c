@@ -85,8 +85,6 @@
 
 #define ICON_PAD_LEFT 4
 #define ICON_PAD_RIGHT 4
-#define ICON_BASE_WIDTH 96
-
 #define ICON_PAD_TOP 4
 #define ICON_PAD_BOTTOM 4
 
