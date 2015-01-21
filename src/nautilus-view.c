@@ -3728,20 +3728,64 @@ get_menu_icon_for_file (NautilusFile *file,
 	return pixbuf;
 }
 
-typedef struct
+static GList *
+get_extension_selection_menu_items (NautilusView *view)
 {
-	NautilusMenuItem *item;
+	NautilusWindow *window;
+	GList *items;
+	GList *providers;
+	GList *l;
 	GList *selection;
-	GAction *action;
-} ExtensionActionCallbackData;
 
-static void
-extension_action_callback_data_free (ExtensionActionCallbackData *data)
+	window = nautilus_view_get_window (view);
+	selection = nautilus_view_get_selection (view);
+	providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_MENU_PROVIDER);
+	items = NULL;
+
+	for (l = providers; l != NULL; l = l->next) {
+		NautilusMenuProvider *provider;
+		GList *file_items;
+
+		provider = NAUTILUS_MENU_PROVIDER (l->data);
+		file_items = nautilus_menu_provider_get_file_items (provider,
+								    GTK_WIDGET (window),
+								    selection);
+		items = g_list_concat (items, file_items);
+	}
+
+	nautilus_module_extension_list_free (providers);
+
+	return items;
+}
+
+static GList *
+get_extension_background_menu_items (NautilusView *view)
 {
-	g_object_unref (data->item);
-	nautilus_file_list_free (data->selection);
+	NautilusWindow *window;
+	NautilusFile *file;
+	GList *items;
+	GList *providers;
+	GList *l;
 
-	g_free (data);
+	window = nautilus_view_get_window (view);
+	providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_MENU_PROVIDER);
+	file = nautilus_window_slot_get_file (view->details->slot);
+	items = NULL;
+
+	for (l = providers; l != NULL; l = l->next) {
+		NautilusMenuProvider *provider;
+		GList *file_items;
+
+		provider = NAUTILUS_MENU_PROVIDER (l->data);
+		file_items = nautilus_menu_provider_get_background_items (provider,
+									  GTK_WIDGET (window),
+									  file);
+		items = g_list_concat (items, file_items);
+	}
+
+	nautilus_module_extension_list_free (providers);
+
+	return items;
 }
 
 static void
@@ -3749,54 +3793,43 @@ extension_action_callback (GSimpleAction *action,
 			   GVariant      *state,
 			   gpointer       user_data)
 {
-	ExtensionActionCallbackData *data;
-
-	data = user_data;
-	nautilus_menu_item_activate (data->item);
+	NautilusMenuItem *item = user_data;
+	nautilus_menu_item_activate (item);
 }
 
 static void
-add_extension_action (NautilusView     *view,
+add_extension_action (NautilusView *view,
 		      NautilusMenuItem *item,
-		      gchar            *prefix)
+		      const char *action_name)
 {
-	char *name, *parsed_name;
 	gboolean sensitive;
-	GAction *action;
-	ExtensionActionCallbackData *data;
+	GSimpleAction *action;
 
 	g_object_get (item,
-		      "name", &name,
 		      "sensitive", &sensitive,
 		      NULL);
 
-	parsed_name = nautilus_escape_action_name (name, prefix);
-	action = G_ACTION (g_simple_action_new (parsed_name, NULL));
-
-	data = g_new0 (ExtensionActionCallbackData, 1);
-	data->item = g_object_ref (item);
-	data->action = action;
-
+	action = g_simple_action_new (action_name, NULL);
 	g_signal_connect_data (action, "activate",
 			       G_CALLBACK (extension_action_callback),
-			       data,
-			       (GClosureNotify) extension_action_callback_data_free, 0);
+			       g_object_ref (item),
+			       (GClosureNotify) g_object_unref, 0);
 
-	g_action_map_add_action (G_ACTION_MAP (view->details->view_action_group), action);
-	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), sensitive);
+	g_action_map_add_action (G_ACTION_MAP (view->details->view_action_group),
+				 G_ACTION (action));
+	g_simple_action_set_enabled (action, sensitive);
 
-	g_free (name);
-	g_free (parsed_name);
 	g_object_unref (action);
 }
 
 static GMenu *
 build_menu_for_extension_menu_items (NautilusView *view,
-				     GList        *menu_items,
-				     gchar        *prefix)
+				     const gchar *extension_prefix,
+				     GList *menu_items)
 {
 	GList *l;
 	GMenu *gmenu;
+	gint idx = 0;
 
 	gmenu = g_menu_new ();
 
@@ -3804,7 +3837,8 @@ build_menu_for_extension_menu_items (NautilusView *view,
 		NautilusMenuItem *item;
 		NautilusMenu *menu;
 		GMenuItem *menu_item;
-		char *name, *label, *parsed_name, *detailed_action_name;
+		char *name, *label;
+		char *extension_id, *prefix, *parsed_name, *detailed_action_name;
 
 		item = NAUTILUS_MENU_ITEM (l->data);
 
@@ -3814,8 +3848,11 @@ build_menu_for_extension_menu_items (NautilusView *view,
 			      "name", &name,
 			      NULL);
 
-		add_extension_action (view, item, prefix);
+		extension_id = g_strdup_printf ("%s_%d", extension_prefix, idx);
+		prefix = g_strdup_printf ("extension_%s_", extension_id);
 		parsed_name = nautilus_escape_action_name (name, prefix);
+		add_extension_action (view, item, parsed_name);
+
 		detailed_action_name =  g_strconcat ("view.", parsed_name, NULL);
 		menu_item = g_menu_item_new (label, detailed_action_name);
 
@@ -3824,7 +3861,7 @@ build_menu_for_extension_menu_items (NautilusView *view,
 			GMenu *children_menu;
 
 			children = nautilus_menu_get_items (menu);
-			children_menu = build_menu_for_extension_menu_items (view, children, prefix);
+			children_menu = build_menu_for_extension_menu_items (view, extension_id, children);
 			g_menu_item_set_submenu (menu_item, G_MENU_MODEL (children_menu));
 
 			nautilus_menu_item_list_free (children);
@@ -3832,8 +3869,11 @@ build_menu_for_extension_menu_items (NautilusView *view,
 		}
 
 		g_menu_append_item (gmenu, menu_item);
+		idx++;
 
+		g_free (extension_id);
 		g_free (parsed_name);
+		g_free (prefix);
 		g_free (detailed_action_name);
 		g_free (name);
 		g_free (label);
@@ -3845,13 +3885,13 @@ build_menu_for_extension_menu_items (NautilusView *view,
 
 static void
 add_extension_menu_items (NautilusView *view,
+			  const gchar  *extension_prefix,
 			  GList        *menu_items,
-			  GMenu        *insertion_menu,
-			  gchar        *prefix)
+			  GMenu        *insertion_menu)
 {
 	GMenu *menu;
 
-	menu = build_menu_for_extension_menu_items (view, menu_items, prefix);
+	menu = build_menu_for_extension_menu_items (view, extension_prefix, menu_items);
 	nautilus_gmenu_merge (insertion_menu,
 			      menu,
 			      "extensions",
@@ -3864,56 +3904,24 @@ static void
 update_extensions_menus (NautilusView *view)
 {
 	GList *selection_items, *background_items;
-	NautilusWindow *window;
-	NautilusFile *file;
-	GList *providers;
-	GList *l;
-	GList *selection;
-	gchar *prefix;
-	int index;
 
-	window = nautilus_view_get_window (view);
-	providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_MENU_PROVIDER);
-	selection = nautilus_view_get_selection (view);
-	file = nautilus_window_slot_get_file (view->details->slot);
-
-	index = 0;
-	for (l = providers; l != NULL; l = l->next) {
-		NautilusMenuProvider *provider;
-
-		provider = NAUTILUS_MENU_PROVIDER (l->data);
-		background_items = nautilus_menu_provider_get_background_items (provider,
-										GTK_WIDGET (window),
-										file);
-		selection_items = nautilus_menu_provider_get_file_items (provider,
-									 GTK_WIDGET (window),
-									 selection);
-		if (selection_items != NULL) {
-			/* Make sure actions names are unique */
-			prefix = g_strdup_printf ("extension_selection_%i", index);
-			add_extension_menu_items (view,
-						  selection_items,
-						  view->details->selection_menu,
-						  prefix);
-			nautilus_menu_item_list_free (selection_items);
-			g_free (prefix);
-		}
-
-		if (background_items != NULL) {
-			/* Make sure actions names are unique */
-			prefix = g_strdup_printf ("extension_background_%i", index);
-			add_extension_menu_items (view,
-						  selection_items,
-						  view->details->selection_menu,
-						  prefix);
-			nautilus_menu_item_list_free (background_items);
-			g_free (prefix);
-		}
-
-		index++;
+	selection_items = get_extension_selection_menu_items (view);
+	if (selection_items != NULL) {
+		add_extension_menu_items (view,
+					  "selection",
+					  selection_items,
+					  view->details->selection_menu);
+		nautilus_menu_item_list_free (selection_items);
 	}
 
-	nautilus_module_extension_list_free (providers);
+	background_items = get_extension_background_menu_items (view);
+	if (background_items != NULL) {
+		add_extension_menu_items (view,
+					  "background",
+					  background_items,
+					  view->details->background_menu);
+		nautilus_menu_item_list_free (background_items);
+	}
 }
 
 static char *
