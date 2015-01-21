@@ -33,9 +33,6 @@
 #include <libnautilus-private/nautilus-thumbnails.h>
 #include <libnautilus-private/nautilus-desktop-icon-file.h>
 
-#define ICON_TEXT_ATTRIBUTES_NUM_ITEMS		3
-#define ICON_TEXT_ATTRIBUTES_DEFAULT_TOKENS	"size,date_modified,type"
-
 G_DEFINE_TYPE (NautilusCanvasViewContainer, nautilus_canvas_view_container, NAUTILUS_TYPE_CANVAS_CONTAINER);
 
 static GQuark attribute_none_q;
