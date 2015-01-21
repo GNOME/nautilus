@@ -4363,21 +4363,17 @@ add_template_to_templates_menus (NautilusView *view,
 	g_free (tmp);
 
 	uri = nautilus_file_get_uri (file);
-
 	action_name = nautilus_escape_action_name (uri, "template_");
+	action = G_ACTION (g_simple_action_new (action_name, NULL));
 	parameters = create_template_parameters_new (file, view);
 
-	action = G_ACTION (g_simple_action_new (action_name, NULL));
-	
 	g_signal_connect_data (action, "activate",
 			       G_CALLBACK (create_template),
 			       parameters, 
 			       (GClosureNotify)create_templates_parameters_free, 0);
 
 	g_action_map_add_action (G_ACTION_MAP (view->details->view_action_group), action);
-	
-	g_object_unref (action);
-	
+
 	detailed_action_name =  g_strconcat ("view.", action_name, NULL);
 	menu_item = g_menu_item_new (name, detailed_action_name);
 
@@ -4393,6 +4389,7 @@ add_template_to_templates_menus (NautilusView *view,
 	g_free (uri);
 	g_free (action_name);
 	g_free (detailed_action_name);
+	g_object_unref (action);
 	g_object_unref (menu_item);
 }
 
