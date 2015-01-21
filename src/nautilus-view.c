@@ -3994,7 +3994,7 @@ update_extensions_menus (NautilusView *view)
 	if (background_items != NULL) {
 		add_extension_menu_items (view,
 					  background_items,
-					  view->details->selection_menu,
+					  view->details->background_menu,
 					  NULL);
 
 		nautilus_menu_item_list_free (background_items);
