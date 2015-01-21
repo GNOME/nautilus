@@ -4351,7 +4351,6 @@ add_template_to_templates_menus (NautilusView *view,
 				 GMenu *menu)
 {
 	char *tmp, *uri, *name;
-	char *escaped_label;
 	GdkPixbuf *mimetype_icon;
 	char *action_name, *detailed_action_name;
 	CreateTemplateParameters *parameters;
@@ -4365,8 +4364,6 @@ add_template_to_templates_menus (NautilusView *view,
 	uri = nautilus_file_get_uri (file);
 
 	action_name = nautilus_escape_action_name (uri, "template_");
-	escaped_label = eel_str_double_underscores (name);
-	
 	parameters = create_template_parameters_new (file, view);
 
 	action = G_ACTION (g_simple_action_new (action_name, NULL));
@@ -4391,7 +4388,6 @@ add_template_to_templates_menus (NautilusView *view,
 
 	g_menu_append_item (menu, menu_item);
 
-	g_free (escaped_label);
 	g_free (name);
 	g_free (uri);
 	g_free (action_name);
