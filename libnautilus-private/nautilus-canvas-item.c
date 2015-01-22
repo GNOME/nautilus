@@ -49,9 +49,13 @@
 #define LABEL_OFFSET 1
 #define LABEL_LINE_SPACING 0
 
+/* Text padding */
+#define TEXT_BACK_PADDING_X 4
+#define TEXT_BACK_PADDING_Y 1
+
 /* Width of the label with the standard icon size NAUTILUS_CANVAS_ICON_SIZE_STANDARD.
  * It will adapt to other sizes keeping the same space.*/
-#define MAX_TEXT_WIDTH_STANDARD 110
+#define MAX_TEXT_WIDTH_STANDARD (134 - 2 * TEXT_BACK_PADDING_X)
 
 /* special text height handling
  * each item has three text height variables:
@@ -669,9 +673,6 @@ layout_get_size_for_layout (PangoLayout *layout,
 		pango_layout_iter_free (iter);
 	}
 }
-
-#define TEXT_BACK_PADDING_X 4
-#define TEXT_BACK_PADDING_Y 1
 
 static void
 prepare_pango_layout_width (NautilusCanvasItem *item,
