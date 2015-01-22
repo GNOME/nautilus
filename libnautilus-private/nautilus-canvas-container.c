@@ -93,6 +93,12 @@
 #define CONTAINER_PAD_TOP 4
 #define CONTAINER_PAD_BOTTOM 4
 
+/* Width of a "grid unit". Canvas items will always take up one or more
+ * grid units, rounding up their size relative to the unit width.
+ * So with an 80px grid unit, a 100px canvas item would take two grid units,
+ * where a 76px canvas item would only take one.
+ * Canvas items are then centered in the extra available space.
+ */
 #define STANDARD_ICON_GRID_WIDTH 80
 
 /* Desktop layout mode defines */
@@ -1275,6 +1281,7 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
 							    &bounds.x0, &bounds.y0,
 							    &bounds.x1, &bounds.y1);
 
+		/* Normalize the icon width to the grid unit */
 		icon_width = ceil ((bounds.x1 - bounds.x0)/grid_width) * grid_width;
 
 		/* Calculate size above/below baseline */
