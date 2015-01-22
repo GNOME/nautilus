@@ -49,7 +49,7 @@
 #define LABEL_OFFSET 1
 #define LABEL_LINE_SPACING 0
 
-/* Width of the label with the standard icon size NAUTILUS_CANVAS_ICON_SIZE_SMALL.
+/* Width of the label with the standard icon size NAUTILUS_CANVAS_ICON_SIZE_STANDARD.
  * It will adapt to other sizes keeping the same space.*/
 #define MAX_TEXT_WIDTH_STANDARD 110
 
