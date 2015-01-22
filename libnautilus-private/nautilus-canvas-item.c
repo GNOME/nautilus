@@ -677,12 +677,8 @@ static void
 prepare_pango_layout_width (NautilusCanvasItem *item,
 			    PangoLayout *layout)
 {
-	if (nautilus_canvas_item_get_max_text_width (item) < 0) {
-		pango_layout_set_width (layout, -1);
-	} else {
-		pango_layout_set_width (layout, floor (nautilus_canvas_item_get_max_text_width (item)) * PANGO_SCALE);
-		pango_layout_set_ellipsize (layout, PANGO_ELLIPSIZE_END);
-	}
+	pango_layout_set_width (layout, floor (nautilus_canvas_item_get_max_text_width (item)) * PANGO_SCALE);
+	pango_layout_set_ellipsize (layout, PANGO_ELLIPSIZE_END);
 }
 
 static void
