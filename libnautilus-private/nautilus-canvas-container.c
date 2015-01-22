@@ -1272,13 +1272,13 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
 
 		/* Assume it's only one level hierarchy to avoid costly affine calculations */
 		nautilus_canvas_item_get_bounds_for_layout (icon->item,
-								   &bounds.x0, &bounds.y0,
-								   &bounds.x1, &bounds.y1);
+							    &bounds.x0, &bounds.y0,
+							    &bounds.x1, &bounds.y1);
 
-		icon_bounds = nautilus_canvas_item_get_icon_rectangle (icon->item);
 		icon_width = ceil ((bounds.x1 - bounds.x0)/grid_width) * grid_width;
-		
+
 		/* Calculate size above/below baseline */
+		icon_bounds = nautilus_canvas_item_get_icon_rectangle (icon->item);
 		height_above = icon_bounds.y1 - bounds.y0;
 		height_below = bounds.y1 - icon_bounds.y1;
 
