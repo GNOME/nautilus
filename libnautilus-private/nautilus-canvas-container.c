@@ -1248,7 +1248,7 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
 	double height_above, height_below;
 	double line_width;
 	double grid_width;
-	int icon_width;
+	int icon_width, icon_size;
 	int i;
 	GtkAllocation allocation;
 
@@ -1265,6 +1265,7 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
 	canvas_width = CANVAS_WIDTH(container, allocation);
 
 	grid_width = STANDARD_ICON_GRID_WIDTH;
+	icon_size = nautilus_canvas_container_get_icon_size_for_zoom_level (container->details->zoom_level);
 
 	line_width = 0;
 	line_start = icons;
@@ -1281,8 +1282,12 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
 							    &bounds.x0, &bounds.y0,
 							    &bounds.x1, &bounds.y1);
 
-		/* Normalize the icon width to the grid unit */
-		icon_width = ceil ((bounds.x1 - bounds.x0)/grid_width) * grid_width;
+		/* Normalize the icon width to the grid unit.
+		 * Use the icon size for this zoom level too in the calculation, since
+		 * the actual bounds might be smaller - e.g. because we have a very
+		 * narrow thumbnail.
+		 */
+		icon_width = ceil (MAX ((bounds.x1 - bounds.x0), icon_size) / grid_width) * grid_width;
 
 		/* Calculate size above/below baseline */
 		icon_bounds = nautilus_canvas_item_get_icon_rectangle (icon->item);
