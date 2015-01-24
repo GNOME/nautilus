@@ -4244,6 +4244,7 @@ update_directory_in_scripts_menu (NautilusView *view,
 	NautilusFile *file;
 	NautilusDirectory *dir;
 	char *uri;
+	gchar *file_name;
 	int num;
 
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NULL);
@@ -4269,12 +4270,14 @@ update_directory_in_scripts_menu (NautilusView *view,
 				children_menu = update_directory_in_scripts_menu (view, dir);
 
 				if (children_menu != NULL) {
-					menu_item = g_menu_item_new_submenu (nautilus_file_get_display_name (file),
+					file_name = nautilus_file_get_display_name (file);
+					menu_item = g_menu_item_new_submenu (file_name,
 									     G_MENU_MODEL (children_menu));
 					g_menu_append_item (menu, menu_item);
 					any_scripts = TRUE;
 					g_object_unref (menu_item);
 					g_object_unref (children_menu);
+					g_free (file_name);
 				}
 
 				nautilus_directory_unref (dir);
