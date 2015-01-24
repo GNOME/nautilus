@@ -5,7 +5,6 @@ data/org.gnome.Nautilus.appdata.xml.in
 data/nautilus-autorun-software.desktop.in.in
 data/nautilus-connect-server.desktop.in.in
 data/org.gnome.Nautilus.desktop.in.in
-data/nautilus.xml.in
 eel/eel-canvas.c
 eel/eel-editable-label.c
 eel/eel-glib-extensions.c
@@ -54,21 +53,17 @@ src/nautilus-bookmarks-window.c
 [type: gettext/glade]src/nautilus-bookmarks-window.ui
 src/nautilus-canvas-view.c
 src/nautilus-canvas-view-container.c
-src/nautilus-canvas-view-ui.xml
 src/nautilus-connect-server.c
 src/nautilus-connect-server-dialog.c
 src/nautilus-desktop-canvas-view.c
-src/nautilus-desktop-canvas-view-ui.xml
 src/nautilus-desktop-item-properties.c
 src/nautilus-desktop-window.c
-src/nautilus-directory-view-ui.xml
 src/nautilus-error-reporting.c
 src/nautilus-file-management-properties.c
 [type: gettext/glade]src/nautilus-file-management-properties.ui
 src/nautilus-image-properties-page.c
 src/nautilus-list-model.c
 src/nautilus-list-view.c
-src/nautilus-list-view-ui.xml
 src/nautilus-location-entry.c
 src/nautilus-main.c
 src/nautilus-mime-actions.c
@@ -78,14 +73,16 @@ src/nautilus-progress-ui-handler.c
 src/nautilus-properties-window.c
 src/nautilus-query-editor.c
 src/nautilus-shell-search-provider.c
-src/nautilus-shell-ui.xml
 src/nautilus-special-location-bar.c
 src/nautilus-toolbar.c
+[type: gettext/glade]src/nautilus-toolbar-action-menu.xml
+[type: gettext/glade]src/nautilus-toolbar-ui.xml
+[type: gettext/glade]src/nautilus-toolbar-view-menu.xml
 src/nautilus-trash-bar.c
 src/nautilus-view.c
+[type: gettext/glade]src/nautilus-view-context-menus.xml
 src/nautilus-view-dnd.c
 src/nautilus-window.c
-src/nautilus-window-menus.c
 src/nautilus-window-private.h
 src/nautilus-window-slot.c
 src/nautilus-x-content-bar.c
