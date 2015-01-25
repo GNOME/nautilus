@@ -613,16 +613,11 @@ nautilus_toolbar_reset_menus (NautilusToolbar *self)
 
 	gtk_widget_set_visible (self->priv->visible_columns,
 				g_action_group_has_action (view_action_group, "visible-columns"));
+	gtk_widget_set_visible (self->priv->sort_menu,
+				g_action_group_has_action (view_action_group, "sort"));
 
-	gtk_widget_hide (self->priv->sort_menu);
 	gtk_widget_hide (self->priv->sort_trash_time);
 	gtk_widget_hide (self->priv->sort_search_relevance);
-}
-
-void
-nautilus_toolbar_show_sort_menu (NautilusToolbar *self)
-{
-	gtk_widget_show (self->priv->sort_menu);
 }
 
 void
