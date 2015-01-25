@@ -611,10 +611,12 @@ nautilus_toolbar_reset_menus (NautilusToolbar *self)
 					"view",
 					G_ACTION_GROUP (view_action_group));
 
+	gtk_widget_set_visible (self->priv->visible_columns,
+				g_action_group_has_action (view_action_group, "visible-columns"));
+
 	gtk_widget_hide (self->priv->sort_menu);
 	gtk_widget_hide (self->priv->sort_trash_time);
 	gtk_widget_hide (self->priv->sort_search_relevance);
-	gtk_widget_hide (self->priv->visible_columns);
 }
 
 void
@@ -633,12 +635,6 @@ void
 nautilus_toolbar_show_sort_search_relevance (NautilusToolbar *self)
 {
 	gtk_widget_show (self->priv->sort_search_relevance);
-}
-
-void
-nautilus_toolbar_show_visible_columns (NautilusToolbar *self)
-{
-	gtk_widget_show (self->priv->visible_columns);
 }
 
 void

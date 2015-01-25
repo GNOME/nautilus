@@ -86,6 +86,5 @@ void nautilus_toolbar_update_view_mode (NautilusToolbar *self,
 void nautilus_toolbar_show_sort_menu (NautilusToolbar *self);
 void nautilus_toolbar_show_sort_trash_time (NautilusToolbar *self);
 void nautilus_toolbar_show_sort_search_relevance (NautilusToolbar *self);
-void nautilus_toolbar_show_visible_columns (NautilusToolbar *self);
 
 #endif /* __NAUTILUS_TOOLBAR_H__ */

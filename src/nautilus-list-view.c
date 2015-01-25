@@ -3064,8 +3064,6 @@ nautilus_list_view_update_toolbar_menus (NautilusView *view)
 	toolbar = NAUTILUS_TOOLBAR (nautilus_window_get_toolbar (nautilus_view_get_window (view)));
 	nautilus_toolbar_view_menu_widget_set_zoom_level (toolbar,
 							  (gdouble) list_view->details->zoom_level);
-
-	nautilus_toolbar_show_visible_columns (toolbar);
 }
 
 static void
