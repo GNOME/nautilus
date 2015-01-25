@@ -68,8 +68,6 @@ GtkWidget *nautilus_toolbar_new (NautilusWindow *window);
 GtkWidget *nautilus_toolbar_get_path_bar (NautilusToolbar *self);
 GtkWidget *nautilus_toolbar_get_location_entry (NautilusToolbar *self);
 
-void nautilus_toolbar_set_show_main_bar (NautilusToolbar *self,
-					 gboolean show_main_bar);
 void nautilus_toolbar_set_show_location_entry (NautilusToolbar *self,
 					       gboolean show_location_entry);
 void nautilus_toolbar_action_menu_add_item (NautilusToolbar *self,
