@@ -77,7 +77,6 @@ void nautilus_toolbar_action_menu_add_item (NautilusToolbar *self,
 					    const gchar     *section_name);
 void nautilus_toolbar_reset_menus (NautilusToolbar *self);
 
-void nautilus_toolbar_sync_navigation_buttons (NautilusToolbar *self);
 void nautilus_toolbar_view_menu_widget_set_zoom_level (NautilusToolbar *self,
 						       gdouble level);
 

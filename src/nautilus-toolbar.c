@@ -128,25 +128,6 @@ activate_forward_menu_item_callback (GtkMenuItem *menu_item, NautilusWindow *win
 	activate_back_or_forward_menu_item (menu_item, window, FALSE);
 }
 
-void
-nautilus_toolbar_sync_navigation_buttons (NautilusToolbar *self)
-{
-	NautilusWindowSlot *active_slot;
-	GAction *action;
-	gboolean enabled;
-
-	/* Check if the back and forward buttons need enabling or disabling. */
-	active_slot = nautilus_window_get_active_slot (self->priv->window);
-
-	action = g_action_map_lookup_action (G_ACTION_MAP (self->priv->window), "back");
-	enabled = nautilus_window_slot_get_back_history (active_slot) != NULL;
-	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), enabled);
-
-	action = g_action_map_lookup_action (G_ACTION_MAP (self->priv->window), "forward");
-	enabled = nautilus_window_slot_get_forward_history (active_slot) != NULL;
-	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), enabled);
-}
-
 static void
 fill_menu (NautilusWindow *window,
 	   GtkWidget *menu,
