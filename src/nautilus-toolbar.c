@@ -519,6 +519,9 @@ nautilus_toolbar_dispose (GObject *obj)
 					      toolbar_update_appearance, self);
 	unschedule_menu_popup_timeout (self);
 
+	g_clear_object (&self->priv->zoom_adjustment_grid);
+	g_clear_object (&self->priv->zoom_adjustment_list);
+
 	G_OBJECT_CLASS (nautilus_toolbar_parent_class)->dispose (obj);
 }
 
