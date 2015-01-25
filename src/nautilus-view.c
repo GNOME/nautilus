@@ -6441,8 +6441,8 @@ real_update_toolbar_menus (NautilusView *view)
 						     &redo_label, &redo_description);
 	}
 
-	undo_label = undo_active ? undo_label : _("Undo");
-	redo_label = redo_active ? redo_label : _("Redo");
+	undo_label = undo_active ? undo_label : g_strdup (_("Undo"));
+	redo_label = redo_active ? redo_label : g_strdup (_("Redo"));
 	undo_menu_item = g_menu_item_new (undo_label, "view.undo");
 	redo_menu_item = g_menu_item_new (redo_label, "view.redo");
 	nautilus_toolbar_action_menu_add_item (toolbar, undo_menu_item, "undo-redo-section");
@@ -6452,6 +6452,10 @@ real_update_toolbar_menus (NautilusView *view)
 
 	g_object_unref (undo_menu_item);
 	g_object_unref (redo_menu_item);
+	g_free (undo_label);
+	g_free (undo_description);
+	g_free (redo_label);
+	g_free (redo_description);
 }
 
 /* Convenience function to reset the menus owned by the but that are managed on
