@@ -471,10 +471,6 @@ nautilus_toolbar_init (NautilusToolbar *self)
 					G_MENU_MODEL (self->priv->action_menu));
 	g_object_unref (builder);
 
-	g_signal_connect(self->priv->zoom_level_scale, "value-changed",
-			 G_CALLBACK(zoom_level_changed),
-			 self);
-
 	g_object_set_data (G_OBJECT (self->priv->back_button), "nav-direction",
 			   GUINT_TO_POINTER (NAUTILUS_NAVIGATION_DIRECTION_BACK));
 	g_object_set_data (G_OBJECT (self->priv->forward_button), "nav-direction",
@@ -487,6 +483,8 @@ nautilus_toolbar_init (NautilusToolbar *self)
 			  G_CALLBACK (navigation_button_press_cb), self);
 	g_signal_connect (self->priv->forward_button, "button-release-event",
 			  G_CALLBACK (navigation_button_release_cb), self);
+	g_signal_connect (self->priv->zoom_level_scale, "value-changed",
+			  G_CALLBACK (zoom_level_changed), self);
 
 	gtk_widget_show_all (GTK_WIDGET (self));
 	toolbar_update_appearance (self);
