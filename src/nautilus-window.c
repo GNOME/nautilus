@@ -81,6 +81,7 @@ static void mouse_back_button_changed		     (gpointer                  callback_
 static void mouse_forward_button_changed	     (gpointer                  callback_data);
 static void use_extra_mouse_buttons_changed          (gpointer                  callback_data);
 static void nautilus_window_initialize_actions 	     (NautilusWindow *window);
+static GtkWidget * nautilus_window_ensure_location_entry (NautilusWindow *window);
 
 /* Sanity check: highest mouse button value I could find was 14. 5 is our 
  * lower threshold (well-documented to be the one of the button events for the 
@@ -252,8 +253,9 @@ action_enter_location (GSimpleAction *action,
 		       GVariant      *state,
 		       gpointer       user_data)
 {
-	g_action_group_activate_action (G_ACTION_GROUP (g_application_get_default ()),
-					"enter-location", NULL);
+	NautilusWindow *window = user_data;
+
+	nautilus_window_ensure_location_entry (window);
 }
 
 static void
@@ -1365,7 +1367,7 @@ nautilus_window_sync_location_widgets (NautilusWindow *window)
 	nautilus_window_sync_bookmarks (window);
 }
 
-GtkWidget *
+static GtkWidget *
 nautilus_window_ensure_location_entry (NautilusWindow *window)
 {
 	GtkWidget *location_entry;
