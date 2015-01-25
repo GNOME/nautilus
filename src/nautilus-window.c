@@ -371,11 +371,9 @@ action_view_mode (GSimpleAction *action,
 {
 	const gchar *name;
 	NautilusWindowSlot *slot;
-	NautilusToolbar *toolbar;
 
 	name =  g_variant_get_string (value, NULL);
 	slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (user_data));
-	toolbar = NAUTILUS_TOOLBAR (nautilus_window_get_toolbar (NAUTILUS_WINDOW (user_data)));
 
 	if (g_strcmp0 (name, "list") == 0) {
 		nautilus_window_slot_set_content_view (slot, NAUTILUS_LIST_VIEW_ID);
@@ -384,8 +382,6 @@ action_view_mode (GSimpleAction *action,
 	} else {
 		g_assert_not_reached ();
 	}
-
-	nautilus_toolbar_update_view_mode (toolbar, name);
 
 	g_simple_action_set_state (action, value);
 }

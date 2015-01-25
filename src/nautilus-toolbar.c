@@ -87,32 +87,6 @@ G_DEFINE_TYPE_WITH_PRIVATE(NautilusToolbar, nautilus_toolbar, GTK_TYPE_HEADER_BA
 
 static void unschedule_menu_popup_timeout (NautilusToolbar *self);
 
-void
-nautilus_toolbar_update_view_mode (NautilusToolbar *self,
-				   const gchar *view_mode)
-{
-	gchar *name;
-	GtkWidget *image;
-
-	if (g_strcmp0 (view_mode, "list") == 0) {
-		name = "view-list-symbolic";
-		self->priv->active_zoom_adjustment = self->priv->zoom_adjustment_list;
-	} else if (g_strcmp0 (view_mode, "grid") == 0) {
-		name = "view-grid-symbolic";
-		self->priv->active_zoom_adjustment = self->priv->zoom_adjustment_grid;
-	} else {
-		g_assert_not_reached ();
-	}
-
-	gtk_range_set_adjustment (GTK_RANGE (self->priv->zoom_level_scale),
-				  self->priv->active_zoom_adjustment);
-
-	image = gtk_image_new ();
-	gtk_button_set_image (GTK_BUTTON (self->priv->view_button), image);
-	gtk_image_set_from_icon_name (GTK_IMAGE (image), name,
-				      GTK_ICON_SIZE_MENU);
-}
-
 static void
 toolbar_update_appearance (NautilusToolbar *self)
 {
@@ -294,6 +268,36 @@ show_menu (NautilusToolbar *self,
 }
 
 static void
+action_view_mode_state_changed (GActionGroup *action_group,
+				gchar *action_name,
+				GVariant *value,
+				gpointer user_data)
+{
+	NautilusToolbar *self = user_data;
+	const gchar *view_mode = g_variant_get_string (value, NULL);
+	gchar *name;
+	GtkWidget *image;
+
+	if (g_strcmp0 (view_mode, "list") == 0) {
+		name = "view-list-symbolic";
+		self->priv->active_zoom_adjustment = self->priv->zoom_adjustment_list;
+	} else if (g_strcmp0 (view_mode, "grid") == 0) {
+		name = "view-grid-symbolic";
+		self->priv->active_zoom_adjustment = self->priv->zoom_adjustment_grid;
+	} else {
+		g_assert_not_reached ();
+	}
+
+	gtk_range_set_adjustment (GTK_RANGE (self->priv->zoom_level_scale),
+				  self->priv->active_zoom_adjustment);
+
+	image = gtk_image_new ();
+	gtk_button_set_image (GTK_BUTTON (self->priv->view_button), image);
+	gtk_image_set_from_icon_name (GTK_IMAGE (image), name,
+				      GTK_ICON_SIZE_MENU);
+}
+
+static void
 action_reload_enabled_changed (GActionGroup *action_group,
 			       gchar *action_name,
 			       gboolean enabled,
@@ -319,10 +323,13 @@ nautilus_toolbar_set_window (NautilusToolbar *self,
 
 {
 	self->priv->window = window;
+
 	g_signal_connect (self->priv->window, "action-enabled-changed::stop",
 			  G_CALLBACK (action_stop_enabled_changed), self);
 	g_signal_connect (self->priv->window, "action-enabled-changed::reload",
 			  G_CALLBACK (action_reload_enabled_changed), self);
+	g_signal_connect (self->priv->window, "action-state-changed::view-mode",
+			  G_CALLBACK (action_view_mode_state_changed), self);
 }
 
 #define MENU_POPUP_TIMEOUT 1200
