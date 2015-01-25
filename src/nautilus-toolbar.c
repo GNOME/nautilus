@@ -580,8 +580,6 @@ nautilus_toolbar_reset_menus (NautilusToolbar *self)
 	GActionGroup *view_action_group;
 	GtkBuilder *builder;
 
-	gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (self->priv->action_button), NULL);
-
 	builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-toolbar-action-menu.xml");
 	self->priv->action_menu = G_MENU (gtk_builder_get_object (builder, "action-menu"));
 	gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (self->priv->action_button),
