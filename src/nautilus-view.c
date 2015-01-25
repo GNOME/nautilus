@@ -7474,7 +7474,6 @@ nautilus_view_class_init (NautilusViewClass *klass)
 	klass->get_backing_uri = real_get_backing_uri;
 	klass->using_manual_layout = real_using_manual_layout;
 	klass->get_window = nautilus_view_get_window;
-	klass->get_action_group = nautilus_view_get_action_group;
 	klass->update_context_menus = real_update_context_menus;
 	klass->update_actions_state = real_update_actions_state;
 	klass->update_toolbar_menus = real_update_toolbar_menus;

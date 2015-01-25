@@ -284,7 +284,6 @@ struct NautilusViewClass {
 						   const char            *uri);
 
 	NautilusWindow * (*get_window) 	          (NautilusView *view);
-	GActionGroup *   (*get_action_group) 	  (NautilusView *view);
 };
 
 /* GObject support */
