@@ -30,7 +30,6 @@
 #include "nautilus-floating-bar.h"
 #include "nautilus-list-view.h"
 #include "nautilus-special-location-bar.h"
-#include "nautilus-toolbar.h"
 #include "nautilus-trash-bar.h"
 #include "nautilus-window-private.h"
 #include "nautilus-x-content-bar.h"
