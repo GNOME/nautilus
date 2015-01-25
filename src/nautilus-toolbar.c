@@ -293,6 +293,38 @@ show_menu (NautilusToolbar *self,
                         button, event_time);
 }
 
+static void
+action_reload_enabled_changed (GActionGroup *action_group,
+			       gchar *action_name,
+			       gboolean enabled,
+			       gpointer user_data)
+{
+	NautilusToolbar *self = user_data;
+	gtk_widget_set_visible (self->priv->reload, enabled);
+}
+
+static void
+action_stop_enabled_changed (GActionGroup *action_group,
+			     gchar *action_name,
+			     gboolean enabled,
+			     gpointer user_data)
+{
+	NautilusToolbar *self = user_data;
+	gtk_widget_set_visible (self->priv->stop, enabled);
+}
+
+static void
+nautilus_toolbar_set_window (NautilusToolbar *self,
+			     NautilusWindow *window)
+
+{
+	self->priv->window = window;
+	g_signal_connect (self->priv->window, "action-enabled-changed::stop",
+			  G_CALLBACK (action_stop_enabled_changed), self);
+	g_signal_connect (self->priv->window, "action-enabled-changed::reload",
+			  G_CALLBACK (action_reload_enabled_changed), self);
+}
+
 #define MENU_POPUP_TIMEOUT 1200
 
 typedef struct {
@@ -481,7 +513,7 @@ nautilus_toolbar_set_property (GObject *object,
 
 	switch (property_id) {
 	case PROP_WINDOW:
-		self->priv->window = g_value_get_object (value);
+		nautilus_toolbar_set_window (self, g_value_get_object (value));
 		break;
 	case PROP_SHOW_LOCATION_ENTRY:
 		nautilus_toolbar_set_show_location_entry (self, g_value_get_boolean (value));
@@ -607,30 +639,6 @@ void
 nautilus_toolbar_show_visible_columns (NautilusToolbar *self)
 {
 	gtk_widget_show (self->priv->visible_columns);
-}
-
-void
-nautilus_toolbar_show_stop (NautilusToolbar *self)
-{
-	gtk_widget_show (self->priv->stop);
-}
-
-void
-nautilus_toolbar_show_reload (NautilusToolbar *self)
-{
-	gtk_widget_show (self->priv->reload);
-}
-
-void
-nautilus_toolbar_hide_stop (NautilusToolbar *self)
-{
-	gtk_widget_hide (self->priv->stop);
-}
-
-void
-nautilus_toolbar_hide_reload (NautilusToolbar *self)
-{
-	gtk_widget_hide (self->priv->reload);
 }
 
 void

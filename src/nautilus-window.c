@@ -742,13 +742,6 @@ nautilus_window_sync_allow_stop (NautilusWindow *window,
 		if (slot_is_active) {
 			g_simple_action_set_enabled (G_SIMPLE_ACTION (stop_action), slot_allow_stop);
 			g_simple_action_set_enabled (G_SIMPLE_ACTION (reload_action), !slot_allow_stop);
-			if (slot_allow_stop) {
-				nautilus_toolbar_hide_reload (NAUTILUS_TOOLBAR (window->details->toolbar));
-				nautilus_toolbar_show_stop (NAUTILUS_TOOLBAR (window->details->toolbar));
-			} else {
-				nautilus_toolbar_hide_stop (NAUTILUS_TOOLBAR (window->details->toolbar));
-				nautilus_toolbar_show_reload (NAUTILUS_TOOLBAR (window->details->toolbar));
-			}
 		}
 		if (gtk_widget_get_realized (GTK_WIDGET (window))) {
 			update_cursor (window);
