@@ -86,7 +86,6 @@
 #include <libnautilus-private/nautilus-ui-utilities.h>
 #include <libnautilus-private/nautilus-signaller.h>
 #include <libnautilus-private/nautilus-icon-names.h>
-#include <libnautilus-private/nautilus-file-undo-manager.h>
 
 #define GNOME_DESKTOP_USE_UNSTABLE_API
 #include <gdesktop-enums.h>
@@ -1801,36 +1800,6 @@ action_show_hidden_files (GSimpleAction *action,
 }
 
 static void
-action_undo (GSimpleAction *action,
-	     GVariant      *state,
-	     gpointer       user_data)
-{
-	GtkWidget *toplevel;
-	NautilusView *view;
-
-	g_assert (NAUTILUS_IS_VIEW (user_data));
-
-	view = NAUTILUS_VIEW (user_data);
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (view));
-	nautilus_file_undo_manager_undo (GTK_WINDOW (toplevel));
-}
-
-static void
-action_redo (GSimpleAction *action,
-	     GVariant      *state,
-	     gpointer       user_data)
-{
-	GtkWidget *toplevel;
-	NautilusView *view;
-
-	g_assert (NAUTILUS_IS_VIEW (user_data));
-
-	view = NAUTILUS_VIEW (user_data);
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (view));
-	nautilus_file_undo_manager_redo (GTK_WINDOW (toplevel));
-}
-
-static void
 action_zoom_in (GSimpleAction *action,
 		GVariant      *state,
 		gpointer       user_data)
@@ -2257,17 +2226,6 @@ nautilus_view_get_selection_count (NautilusView *view)
 	nautilus_file_list_free (files);
 	
 	return len;
-}
-
-static void
-undo_manager_changed (NautilusFileUndoManager* manager,
-		      NautilusView *view)
-{
-	if (!view->details->active) {
-		return;
-	}
-
-	nautilus_view_update_toolbar_menus (view);
 }
 
 void
@@ -5585,8 +5543,6 @@ const GActionEntry view_entries[] = {
 	{ "zoom-in",  action_zoom_in },
 	{ "zoom-out", action_zoom_out },
 	{ "zoom-default", action_zoom_default },
-	{ "undo", action_undo },
-	{ "redo", action_redo },
 	{ "show-hidden-files", NULL, NULL, "true", action_show_hidden_files },
 	/* Background menu */
 	{ "new-folder", action_new_folder },
@@ -5868,10 +5824,6 @@ real_update_actions_state (NautilusView *view)
 	gboolean show_stop;
 	gboolean show_detect_media;
 	GDriveStartStopType start_stop_type;
-	NautilusFileUndoInfo *info;
-	NautilusFileUndoManagerState undo_state;
-	gboolean undo_active, redo_active;
-	gboolean is_undo;
 
 	view_action_group = view->details->view_action_group;
 
@@ -6122,24 +6074,6 @@ real_update_actions_state (NautilusView *view)
 				     !nautilus_view_is_empty (view));
 
 	/* Toolbar menu actions */
-	/* Undo and Redo */
-	info = nautilus_file_undo_manager_get_action ();
-	undo_state = nautilus_file_undo_manager_get_state ();
-	undo_active = redo_active = FALSE;
-	if (info != NULL &&
-	    (undo_state > NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE)) {
-		is_undo = (undo_state == NAUTILUS_FILE_UNDO_MANAGER_STATE_UNDO);
-		undo_active = is_undo;
-		redo_active = !is_undo;
-	}
-
-	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-					     "undo");
-	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), undo_active);
-	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-					     "redo");
-	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), redo_active);
-
 	g_action_group_change_action_state (view_action_group,
 					    "show-hidden-files",
 					    g_variant_new_boolean (view->details->show_hidden_files));
@@ -6413,50 +6347,13 @@ real_update_toolbar_menus (NautilusView *view)
 {
 	NautilusToolbar *toolbar;
 	NautilusWindow *window;
-	NautilusFileUndoInfo *info;
-	NautilusFileUndoManagerState undo_state;
-	gboolean undo_active, redo_active;
-	gchar *undo_label, *undo_description, *redo_label, *redo_description;
-	gboolean is_undo;
-	GMenu* undo_section;
 
-	undo_label = undo_description = redo_label = redo_description = NULL;
-
-	toolbar = NAUTILUS_TOOLBAR (nautilus_window_get_toolbar (nautilus_view_get_window (view)));
 	window = nautilus_view_get_window (view);
+	toolbar = NAUTILUS_TOOLBAR (nautilus_window_get_toolbar (window));
 	nautilus_toolbar_reset_menus (toolbar);
 	nautilus_window_reset_menus (window);
 
-	/* Undo and Redo */
-	info = nautilus_file_undo_manager_get_action ();
-	undo_state = nautilus_file_undo_manager_get_state ();
-	undo_active = redo_active = FALSE;
-	if (info != NULL &&
-	    (undo_state > NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE)) {
-		is_undo = (undo_state == NAUTILUS_FILE_UNDO_MANAGER_STATE_UNDO);
-		undo_active = is_undo;
-		redo_active = !is_undo;
-		nautilus_file_undo_info_get_strings (info,
-						     &undo_label, &undo_description,
-						     &redo_label, &redo_description);
-	}
-
-	undo_section = g_menu_new ();
-	undo_label = undo_active ? undo_label : g_strdup (_("Undo"));
-	redo_label = redo_active ? redo_label : g_strdup (_("Redo"));
-	g_menu_append (undo_section, undo_label, "view.undo");
-	g_menu_append (undo_section, redo_label, "view.redo");
-	nautilus_gmenu_replace_section (nautilus_toolbar_get_action_menu (toolbar),
-					"undo-redo-section",
-					G_MENU_MODEL (undo_section));
-
 	nautilus_view_update_actions_state (view);
-
-	g_object_unref (undo_section);
-	g_free (undo_label);
-	g_free (undo_description);
-	g_free (redo_label);
-	g_free (redo_description);
 }
 
 /* Convenience function to reset the menus owned by the but that are managed on
@@ -7587,9 +7484,6 @@ nautilus_view_init (NautilusView *view)
 				  "changed::" NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE,
 				  G_CALLBACK (schedule_update_context_menus), view);
 
-	g_signal_connect_object (nautilus_file_undo_manager_get (), "undo-changed",
-				 G_CALLBACK (undo_manager_changed), view, 0);
-
 	/* Accessibility */
 	atk_object = gtk_widget_get_accessible (GTK_WIDGET (view));
 	atk_object_set_name (atk_object, _("Content View"));
@@ -7609,8 +7503,6 @@ nautilus_view_init (NautilusView *view)
 	/* Toolbar menu */
 	nautilus_application_add_accelerator (app, "view.zoom-in", "<control>plus");
 	nautilus_application_add_accelerator (app, "view.zoom-out", "<control>minus");
-	nautilus_application_add_accelerator (app, "view.undo", "<control>z");
-	nautilus_application_add_accelerator (app, "view.redo", "<shift><control>z");
 	nautilus_application_add_accelerator (app, "view.show-hidden-files", "<control>h");
 	/* Background menu */
 	nautilus_application_add_accelerator (app, "view.select-all", "<control>a");

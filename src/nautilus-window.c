@@ -58,6 +58,7 @@
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-file-operations.h>
+#include <libnautilus-private/nautilus-file-undo-manager.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-profile.h>
@@ -354,6 +355,26 @@ action_prompt_for_location_home (GSimpleAction *action,
 }
 
 static void
+action_redo (GSimpleAction *action,
+	     GVariant      *state,
+	     gpointer       user_data)
+{
+	NautilusWindow *window = user_data;
+
+	nautilus_file_undo_manager_redo (GTK_WINDOW (window));
+}
+
+static void
+action_undo (GSimpleAction *action,
+	     GVariant      *state,
+	     gpointer       user_data)
+{
+	NautilusWindow *window = user_data;
+
+	nautilus_file_undo_manager_undo (GTK_WINDOW (window));
+}
+
+static void
 action_toggle_state_action_button (GSimpleAction *action,
 				   GVariant      *state,
 				   gpointer       user_data)
@@ -388,6 +409,55 @@ action_view_mode (GSimpleAction *action,
 	g_simple_action_set_state (action, value);
 }
 
+static void
+undo_manager_changed (NautilusWindow *window)
+{
+	NautilusToolbar *toolbar;
+	NautilusFileUndoInfo *info;
+	NautilusFileUndoManagerState undo_state;
+	gboolean undo_active, redo_active;
+	gchar *undo_label, *undo_description, *redo_label, *redo_description;
+	gboolean is_undo;
+	GMenu* undo_section;
+	GAction *action;
+
+	toolbar = NAUTILUS_TOOLBAR (window->details->toolbar);
+	undo_label = undo_description = redo_label = redo_description = NULL;
+
+	info = nautilus_file_undo_manager_get_action ();
+	undo_state = nautilus_file_undo_manager_get_state ();
+	undo_active = redo_active = FALSE;
+	if (info != NULL &&
+	    (undo_state > NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE)) {
+		is_undo = (undo_state == NAUTILUS_FILE_UNDO_MANAGER_STATE_UNDO);
+		undo_active = is_undo;
+		redo_active = !is_undo;
+		nautilus_file_undo_info_get_strings (info,
+						     &undo_label, &undo_description,
+						     &redo_label, &redo_description);
+	}
+
+	action = g_action_map_lookup_action (G_ACTION_MAP (window), "undo");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), undo_active);
+	action = g_action_map_lookup_action (G_ACTION_MAP (window), "redo");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), redo_active);
+
+	undo_section = g_menu_new ();
+	undo_label = undo_active ? undo_label : g_strdup (_("Undo"));
+	redo_label = redo_active ? redo_label : g_strdup (_("Redo"));
+	g_menu_append (undo_section, undo_label, "win.undo");
+	g_menu_append (undo_section, redo_label, "win.redo");
+	nautilus_gmenu_replace_section (nautilus_toolbar_get_action_menu (toolbar),
+					"undo-redo-section",
+					G_MENU_MODEL (undo_section));
+
+	g_object_unref (undo_section);
+	g_free (undo_label);
+	g_free (undo_description);
+	g_free (redo_label);
+	g_free (redo_description);
+}
+
 const GActionEntry win_entries[] = {
 	{ "back",  action_back },
 	{ "forward",  action_forward },
@@ -399,6 +469,8 @@ const GActionEntry win_entries[] = {
 	{ "enter-location", action_enter_location },
 	{ "bookmark-current-location", action_bookmark_current_location },
 	{ "toggle-search", NULL, NULL, "false", action_toggle_search },
+	{ "undo", action_undo },
+	{ "redo", action_redo },
 	{ "view-mode", NULL, "s", "''", action_view_mode },
 	/* Only accesible by shorcuts */
 	{ "close-current-view", action_close_current_view },
@@ -436,6 +508,8 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 	nautilus_application_add_accelerator (app, "win.view-mode('grid')", "<control>2");
 	nautilus_application_add_accelerator (app, "win.close-current-view", "<control>w");
 	nautilus_application_add_accelerator (app, "win.reload", "<control>r");
+	nautilus_application_add_accelerator (app, "win.undo", "<control>z");
+	nautilus_application_add_accelerator (app, "win.redo", "<shift><control>z");
 	/* Only accesible by shorcuts */
 	nautilus_application_add_accelerator (app, "win.bookmark-current-location", "<control>d");
 	nautilus_application_add_accelerator (app, "win.up", "<alt>Up");
@@ -461,6 +535,10 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 		nautilus_window_show_sidebar (window);
 
 	g_variant_unref (state);
+
+	g_signal_connect_object (nautilus_file_undo_manager_get (), "undo-changed",
+				 G_CALLBACK (undo_manager_changed), window, G_CONNECT_SWAPPED);
+	undo_manager_changed (window);
 }
 
 void
