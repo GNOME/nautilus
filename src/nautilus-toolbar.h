@@ -67,12 +67,10 @@ GtkWidget *nautilus_toolbar_new (NautilusWindow *window);
 
 GtkWidget *nautilus_toolbar_get_path_bar (NautilusToolbar *self);
 GtkWidget *nautilus_toolbar_get_location_entry (NautilusToolbar *self);
+GMenu     *nautilus_toolbar_get_action_menu (NautilusToolbar *self);
 
 void nautilus_toolbar_set_show_location_entry (NautilusToolbar *self,
 					       gboolean show_location_entry);
-void nautilus_toolbar_action_menu_add_item (NautilusToolbar *self,
-					    GMenuItem       *item,
-					    const gchar     *section_name);
 void nautilus_toolbar_reset_menus (NautilusToolbar *self);
 
 void nautilus_toolbar_view_menu_widget_set_zoom_level (NautilusToolbar *self,

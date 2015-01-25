@@ -565,29 +565,11 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
 }
 
 void
-nautilus_toolbar_action_menu_add_item (NautilusToolbar *self,
-				       GMenuItem       *item,
-				       const gchar     *section_name)
-{
-	nautilus_gmenu_add_item_in_submodel (self->priv->action_menu,
-					     item,
-					     section_name,
-					     FALSE);
-}
-
-void
 nautilus_toolbar_reset_menus (NautilusToolbar *self)
 {
 	NautilusWindowSlot *slot;
 	NautilusView *view;
 	GActionGroup *view_action_group;
-	GtkBuilder *builder;
-
-	builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-toolbar-action-menu.xml");
-	self->priv->action_menu = G_MENU (gtk_builder_get_object (builder, "action-menu"));
-	gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (self->priv->action_button),
-					G_MENU_MODEL (self->priv->action_menu));
-	g_object_unref (builder);
 
 	/* Allow actions from the current view to be activated through
 	 * the view menu and action menu of the toolbar */
@@ -646,6 +628,12 @@ nautilus_toolbar_new (NautilusWindow *window)
 			     "custom-title", gtk_label_new (NULL),
 			     "valign", GTK_ALIGN_CENTER,
 			     NULL);
+}
+
+GMenu *
+nautilus_toolbar_get_action_menu (NautilusToolbar *self)
+{
+	return self->priv->action_menu;
 }
 
 GtkWidget *

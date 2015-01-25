@@ -6417,8 +6417,8 @@ real_update_toolbar_menus (NautilusView *view)
 	NautilusFileUndoManagerState undo_state;
 	gboolean undo_active, redo_active;
 	gchar *undo_label, *undo_description, *redo_label, *redo_description;
-	GMenuItem *undo_menu_item, *redo_menu_item;
 	gboolean is_undo;
+	GMenu* undo_section;
 
 	undo_label = undo_description = redo_label = redo_description = NULL;
 
@@ -6441,17 +6441,18 @@ real_update_toolbar_menus (NautilusView *view)
 						     &redo_label, &redo_description);
 	}
 
+	undo_section = g_menu_new ();
 	undo_label = undo_active ? undo_label : g_strdup (_("Undo"));
 	redo_label = redo_active ? redo_label : g_strdup (_("Redo"));
-	undo_menu_item = g_menu_item_new (undo_label, "view.undo");
-	redo_menu_item = g_menu_item_new (redo_label, "view.redo");
-	nautilus_toolbar_action_menu_add_item (toolbar, undo_menu_item, "undo-redo-section");
-	nautilus_toolbar_action_menu_add_item (toolbar, redo_menu_item, "undo-redo-section");
+	g_menu_append (undo_section, undo_label, "view.undo");
+	g_menu_append (undo_section, redo_label, "view.redo");
+	nautilus_gmenu_replace_section (nautilus_toolbar_get_action_menu (toolbar),
+					"undo-redo-section",
+					G_MENU_MODEL (undo_section));
 
 	nautilus_view_update_actions_state (view);
 
-	g_object_unref (undo_menu_item);
-	g_object_unref (redo_menu_item);
+	g_object_unref (undo_section);
 	g_free (undo_label);
 	g_free (undo_description);
 	g_free (redo_label);
