@@ -399,7 +399,6 @@ zoom_level_changed (GtkRange *range,
 	slot = nautilus_window_get_active_slot (self->priv->window);
 	view = nautilus_window_slot_get_current_view (slot);
 
-	g_print ("changing action state to %f in toolbar\n", zoom_level);
 	g_action_group_change_action_state (nautilus_view_get_action_group (view),
 					    "zoom-to-level",
 					    g_variant_new_int32 ((gint) zoom_level));
@@ -597,7 +596,6 @@ nautilus_toolbar_reset_menus (NautilusToolbar *self)
 	gtk_widget_set_visible (self->priv->sort_search_relevance, sort_search);
 
 	variant = g_action_group_get_action_state (view_action_group, "zoom-to-level");
-	g_print ("reading back %d in the update\n", g_variant_get_int32 (variant));
 	gtk_adjustment_set_value (self->priv->zoom_adjustment,
 				  g_variant_get_int32 (variant));
 	g_variant_unref (variant);
