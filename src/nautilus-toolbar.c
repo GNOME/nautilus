@@ -572,7 +572,7 @@ nautilus_toolbar_reset_menus (NautilusToolbar *self)
 	GActionGroup *view_action_group;
 	GVariant *sort_hint;
 	GVariantIter iter;
-	gboolean sort_trash, sort_search;
+	gboolean sort_trash, sort_search, has_sort;
 	const gchar *hint;
 
 	/* Allow actions from the current view to be activated through
@@ -586,21 +586,24 @@ nautilus_toolbar_reset_menus (NautilusToolbar *self)
 
 	gtk_widget_set_visible (self->priv->visible_columns,
 				g_action_group_has_action (view_action_group, "visible-columns"));
-	gtk_widget_set_visible (self->priv->sort_menu,
-				g_action_group_has_action (view_action_group, "sort"));
 
-	sort_hint = g_action_group_get_action_state_hint (view_action_group, "sort");
+	has_sort = g_action_group_has_action (view_action_group, "sort");
 	sort_trash = sort_search = FALSE;
+	gtk_widget_set_visible (self->priv->sort_menu, has_sort);
 
-	g_variant_iter_init (&iter, sort_hint);
-	while (g_variant_iter_next (&iter, "&s", &hint)) {
-		if (g_strcmp0 (hint, "trash-time") == 0)
-			sort_trash = TRUE;
-		if (g_strcmp0 (hint, "search-relevance") == 0)
-			sort_search = TRUE;
+	if (has_sort) {
+		sort_hint = g_action_group_get_action_state_hint (view_action_group, "sort");
+		g_variant_iter_init (&iter, sort_hint);
+
+		while (g_variant_iter_next (&iter, "&s", &hint)) {
+			if (g_strcmp0 (hint, "trash-time") == 0)
+				sort_trash = TRUE;
+			if (g_strcmp0 (hint, "search-relevance") == 0)
+				sort_search = TRUE;
+		}
+
+		g_variant_unref (sort_hint);
 	}
-
-	g_variant_unref (sort_hint);
 
 	gtk_widget_set_visible (self->priv->sort_trash_time, sort_trash);
 	gtk_widget_set_visible (self->priv->sort_search_relevance, sort_search);
