@@ -72,10 +72,13 @@ enum
 
 static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 
+typedef gboolean (* SortCriterionMatchFunc) (NautilusFile *file);
+
 typedef struct {
 	const NautilusFileSortType sort_type;
 	const char *metadata_text;
 	const char *action_target_name;
+	SortCriterionMatchFunc match_func;
 } SortCriterion;
 
 typedef enum {
@@ -137,12 +140,14 @@ static const SortCriterion sort_criteria[] = {
 	{
 		NAUTILUS_FILE_SORT_BY_TRASHED_TIME,
 		"trashed",
-		"trash-time"
+		"trash-time",
+		nautilus_file_is_in_trash
 	},
 	{
 		NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE,
 		NULL,
 		"search-relevance",
+		nautilus_file_is_in_search
 	}
 };
 
@@ -1023,6 +1028,34 @@ const GActionEntry canvas_view_entries[] = {
 };
 
 static void
+update_sort_action_state_hint (NautilusCanvasView *canvas_view)
+{
+	NautilusFile *file;
+	GVariantBuilder builder;
+	GActionGroup *action_group;
+	GAction *action;
+	GVariant *state_hint;
+	gint idx;
+
+	file = nautilus_view_get_directory_as_file (NAUTILUS_VIEW (canvas_view));
+	g_variant_builder_init (&builder, G_VARIANT_TYPE ("as"));
+
+	for (idx = 0; idx < G_N_ELEMENTS (sort_criteria); idx++) {
+		if (sort_criteria[idx].match_func == NULL ||
+		    (file != NULL && sort_criteria[idx].match_func (file)))
+			g_variant_builder_add (&builder, "s", sort_criteria[idx].action_target_name);
+	}
+
+	state_hint = g_variant_builder_end (&builder);
+
+	action_group = nautilus_view_get_action_group (NAUTILUS_VIEW (canvas_view));
+	action = g_action_map_lookup_action (G_ACTION_MAP (action_group), "sort");
+	g_simple_action_set_state_hint (G_SIMPLE_ACTION (action), state_hint);
+
+	g_variant_unref (state_hint);
+}
+
+static void
 nautilus_canvas_view_update_actions_state (NautilusView *view)
 {
 	GActionGroup *view_action_group;
@@ -1052,12 +1085,13 @@ nautilus_canvas_view_update_actions_state (NautilusView *view)
 		keep_aligned = nautilus_canvas_container_is_keep_aligned (get_canvas_container (canvas_view));
 		g_action_change_state (action, g_variant_new_boolean (keep_aligned));
 	}
+
+	update_sort_action_state_hint (canvas_view);
 }
 
 static void
 nautilus_canvas_view_update_toolbar_menus (NautilusView *view)
 {
-	NautilusFile *file;
 	NautilusToolbar *toolbar;
 	NautilusCanvasContainer *canvas_container;
 	gint zoom_level;
@@ -1065,14 +1099,6 @@ nautilus_canvas_view_update_toolbar_menus (NautilusView *view)
 	NAUTILUS_VIEW_CLASS (nautilus_canvas_view_parent_class)->update_toolbar_menus (view);
 
 	toolbar = NAUTILUS_TOOLBAR (nautilus_window_get_toolbar (nautilus_view_get_window (view)));
-
-	file = nautilus_view_get_directory_as_file (NAUTILUS_VIEW (view));
-	if (file != NULL && nautilus_file_is_in_trash (file))
-		nautilus_toolbar_show_sort_trash_time (toolbar);
-
-	if (file != NULL && nautilus_file_is_in_search (file))
-		nautilus_toolbar_show_sort_search_relevance (toolbar);
-
 	canvas_container = get_canvas_container (NAUTILUS_CANVAS_VIEW (view));
 	zoom_level = nautilus_canvas_container_get_zoom_level (canvas_container);
 

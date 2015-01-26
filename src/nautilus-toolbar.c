@@ -570,6 +570,10 @@ nautilus_toolbar_reset_menus (NautilusToolbar *self)
 	NautilusWindowSlot *slot;
 	NautilusView *view;
 	GActionGroup *view_action_group;
+	GVariant *sort_hint;
+	GVariantIter iter;
+	gboolean sort_trash, sort_search;
+	const gchar *hint;
 
 	/* Allow actions from the current view to be activated through
 	 * the view menu and action menu of the toolbar */
@@ -585,20 +589,21 @@ nautilus_toolbar_reset_menus (NautilusToolbar *self)
 	gtk_widget_set_visible (self->priv->sort_menu,
 				g_action_group_has_action (view_action_group, "sort"));
 
-	gtk_widget_hide (self->priv->sort_trash_time);
-	gtk_widget_hide (self->priv->sort_search_relevance);
-}
+	sort_hint = g_action_group_get_action_state_hint (view_action_group, "sort");
+	sort_trash = sort_search = FALSE;
 
-void
-nautilus_toolbar_show_sort_trash_time (NautilusToolbar *self)
-{
-	gtk_widget_show (self->priv->sort_trash_time);
-}
+	g_variant_iter_init (&iter, sort_hint);
+	while (g_variant_iter_next (&iter, "&s", &hint)) {
+		if (g_strcmp0 (hint, "trash-time") == 0)
+			sort_trash = TRUE;
+		if (g_strcmp0 (hint, "search-relevance") == 0)
+			sort_search = TRUE;
+	}
 
-void
-nautilus_toolbar_show_sort_search_relevance (NautilusToolbar *self)
-{
-	gtk_widget_show (self->priv->sort_search_relevance);
+	g_variant_unref (sort_hint);
+
+	gtk_widget_set_visible (self->priv->sort_trash_time, sort_trash);
+	gtk_widget_set_visible (self->priv->sort_search_relevance, sort_search);
 }
 
 void

@@ -76,7 +76,4 @@ void nautilus_toolbar_reset_menus (NautilusToolbar *self);
 void nautilus_toolbar_view_menu_widget_set_zoom_level (NautilusToolbar *self,
 						       gdouble level);
 
-void nautilus_toolbar_show_sort_trash_time (NautilusToolbar *self);
-void nautilus_toolbar_show_sort_search_relevance (NautilusToolbar *self);
-
 #endif /* __NAUTILUS_TOOLBAR_H__ */
