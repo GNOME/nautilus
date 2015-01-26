@@ -802,13 +802,15 @@ nautilus_canvas_view_zoom_to_level (NautilusView *view,
 	g_return_if_fail (new_level >= NAUTILUS_CANVAS_ZOOM_LEVEL_SMALL &&
 			  new_level <= NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE);
 
-
 	canvas_view = NAUTILUS_CANVAS_VIEW (view);
 	canvas_container = get_canvas_container (canvas_view);
 	if (nautilus_canvas_container_get_zoom_level (canvas_container) == new_level)
 		return;
 
 	nautilus_canvas_container_set_zoom_level (canvas_container, new_level);
+	g_action_group_change_action_state (nautilus_view_get_action_group (view),
+					    "zoom-to-level", g_variant_new_int32 (new_level));
+
 	nautilus_view_update_toolbar_menus (view);
 }
 
@@ -828,8 +830,6 @@ nautilus_canvas_view_bump_zoom_level (NautilusView *view, int zoom_increment)
 	    new_level <= NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE) {
 		nautilus_canvas_view_zoom_to_level (view, new_level);
 	}
-
-	nautilus_view_update_toolbar_menus (view);
 }
 
 static void
@@ -966,6 +966,8 @@ action_zoom_to_level (GSimpleAction *action,
 	view = NAUTILUS_VIEW (user_data);
 	zoom_level = g_variant_get_int32 (state);
 	nautilus_canvas_view_zoom_to_level (view, zoom_level);
+
+	g_simple_action_set_state (G_SIMPLE_ACTION (action), state);
 }
 
 static void
@@ -1087,23 +1089,6 @@ nautilus_canvas_view_update_actions_state (NautilusView *view)
 	}
 
 	update_sort_action_state_hint (canvas_view);
-}
-
-static void
-nautilus_canvas_view_update_toolbar_menus (NautilusView *view)
-{
-	NautilusToolbar *toolbar;
-	NautilusCanvasContainer *canvas_container;
-	gint zoom_level;
-
-	NAUTILUS_VIEW_CLASS (nautilus_canvas_view_parent_class)->update_toolbar_menus (view);
-
-	toolbar = NAUTILUS_TOOLBAR (nautilus_window_get_toolbar (nautilus_view_get_window (view)));
-	canvas_container = get_canvas_container (NAUTILUS_CANVAS_VIEW (view));
-	zoom_level = nautilus_canvas_container_get_zoom_level (canvas_container);
-
-	nautilus_toolbar_view_menu_widget_set_zoom_level (toolbar,
-							  (gdouble) (zoom_level));
 }
 
 static void
@@ -1885,7 +1870,6 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
 	nautilus_view_class->invert_selection = nautilus_canvas_view_invert_selection;
 	nautilus_view_class->compare_files = compare_files;
         nautilus_view_class->click_policy_changed = nautilus_canvas_view_click_policy_changed;
-	nautilus_view_class->update_toolbar_menus = nautilus_canvas_view_update_toolbar_menus;
 	nautilus_view_class->update_actions_state = nautilus_canvas_view_update_actions_state;
         nautilus_view_class->sort_directories_first_changed = nautilus_canvas_view_sort_directories_first_changed;
         nautilus_view_class->start_renaming_file = nautilus_canvas_view_start_renaming_file;

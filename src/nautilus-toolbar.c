@@ -53,8 +53,6 @@ struct _NautilusToolbarPrivate {
 
 	guint popup_timeout_id;
 
-	gdouble scale_zoom_level;
-
 	GtkWidget *view_button;
 	GtkWidget *action_button;
 
@@ -65,9 +63,7 @@ struct _NautilusToolbarPrivate {
 	GtkWidget *visible_columns;
 	GtkWidget *stop;
 	GtkWidget *reload;
-	GtkAdjustment *zoom_adjustment_grid;
-	GtkAdjustment *zoom_adjustment_list;
-	GtkAdjustment *active_zoom_adjustment;
+	GtkAdjustment *zoom_adjustment;
 	GtkWidget *zoom_level_scale;
 	GMenu *action_menu;
 
@@ -256,21 +252,16 @@ action_view_mode_state_changed (GActionGroup *action_group,
 {
 	NautilusToolbar *self = user_data;
 	const gchar *view_mode = g_variant_get_string (value, NULL);
-	gchar *name;
+	const gchar *name;
 	GtkWidget *image;
 
 	if (g_strcmp0 (view_mode, "list") == 0) {
 		name = "view-list-symbolic";
-		self->priv->active_zoom_adjustment = self->priv->zoom_adjustment_list;
 	} else if (g_strcmp0 (view_mode, "grid") == 0) {
 		name = "view-grid-symbolic";
-		self->priv->active_zoom_adjustment = self->priv->zoom_adjustment_grid;
 	} else {
 		g_assert_not_reached ();
 	}
-
-	gtk_range_set_adjustment (GTK_RANGE (self->priv->zoom_level_scale),
-				  self->priv->active_zoom_adjustment);
 
 	image = gtk_image_new ();
 	gtk_button_set_image (GTK_BUTTON (self->priv->view_button), image);
@@ -408,6 +399,7 @@ zoom_level_changed (GtkRange *range,
 	slot = nautilus_window_get_active_slot (self->priv->window);
 	view = nautilus_window_slot_get_current_view (slot);
 
+	g_print ("changing action state to %f in toolbar\n", zoom_level);
 	g_action_group_change_action_state (nautilus_view_get_action_group (view),
 					    "zoom-to-level",
 					    g_variant_new_int32 ((gint) zoom_level));
@@ -432,8 +424,7 @@ nautilus_toolbar_init (NautilusToolbar *self)
 	builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-toolbar-view-menu.xml");
 	self->priv->view_menu_widget =  GTK_WIDGET (gtk_builder_get_object (builder, "view_menu_widget"));
 	self->priv->zoom_level_scale = GTK_WIDGET (gtk_builder_get_object (builder, "zoom_level_scale"));
-	self->priv->zoom_adjustment_grid = g_object_ref (GTK_ADJUSTMENT (gtk_builder_get_object (builder, "zoom_adjustment_grid")));
-	self->priv->zoom_adjustment_list = g_object_ref (GTK_ADJUSTMENT (gtk_builder_get_object (builder, "zoom_adjustment_list")));
+	self->priv->zoom_adjustment = GTK_ADJUSTMENT (gtk_builder_get_object (builder, "zoom_adjustment"));
 
 	self->priv->sort_menu =  GTK_WIDGET (gtk_builder_get_object (builder, "sort_menu"));
 	self->priv->sort_trash_time =  GTK_WIDGET (gtk_builder_get_object (builder, "sort_trash_time"));
@@ -519,9 +510,6 @@ nautilus_toolbar_dispose (GObject *obj)
 					      toolbar_update_appearance, self);
 	unschedule_menu_popup_timeout (self);
 
-	g_clear_object (&self->priv->zoom_adjustment_grid);
-	g_clear_object (&self->priv->zoom_adjustment_list);
-
 	G_OBJECT_CLASS (nautilus_toolbar_parent_class)->dispose (obj);
 }
 
@@ -570,7 +558,7 @@ nautilus_toolbar_reset_menus (NautilusToolbar *self)
 	NautilusWindowSlot *slot;
 	NautilusView *view;
 	GActionGroup *view_action_group;
-	GVariant *sort_hint;
+	GVariant *variant;
 	GVariantIter iter;
 	gboolean sort_trash, sort_search, has_sort;
 	const gchar *hint;
@@ -592,8 +580,8 @@ nautilus_toolbar_reset_menus (NautilusToolbar *self)
 	gtk_widget_set_visible (self->priv->sort_menu, has_sort);
 
 	if (has_sort) {
-		sort_hint = g_action_group_get_action_state_hint (view_action_group, "sort");
-		g_variant_iter_init (&iter, sort_hint);
+		variant = g_action_group_get_action_state_hint (view_action_group, "sort");
+		g_variant_iter_init (&iter, variant);
 
 		while (g_variant_iter_next (&iter, "&s", &hint)) {
 			if (g_strcmp0 (hint, "trash-time") == 0)
@@ -602,29 +590,17 @@ nautilus_toolbar_reset_menus (NautilusToolbar *self)
 				sort_search = TRUE;
 		}
 
-		g_variant_unref (sort_hint);
+		g_variant_unref (variant);
 	}
 
 	gtk_widget_set_visible (self->priv->sort_trash_time, sort_trash);
 	gtk_widget_set_visible (self->priv->sort_search_relevance, sort_search);
-}
 
-void
-nautilus_toolbar_view_menu_widget_set_zoom_level (NautilusToolbar *self,
-						  gdouble          level)
-{
-	g_return_if_fail (NAUTILUS_IS_TOOLBAR (self));
-
-	/* We only want to change the level when there's and actual view
-	 * mode set, so skip all other calls to here. Those calls came from
-	 * update_toolbar_menus in the natuilus-view after a parent is set, etc.
-	 * We will receive eventually a mode change and another update here by nautilus view
-	 * update_toolbar_menus */
-	if (self->priv->active_zoom_adjustment == NULL)
-		return;
-
-	gtk_adjustment_set_value (GTK_ADJUSTMENT (self->priv->active_zoom_adjustment),
-				  level);
+	variant = g_action_group_get_action_state (view_action_group, "zoom-to-level");
+	g_print ("reading back %d in the update\n", g_variant_get_int32 (variant));
+	gtk_adjustment_set_value (self->priv->zoom_adjustment,
+				  g_variant_get_int32 (variant));
+	g_variant_unref (variant);
 }
 
 GtkWidget *

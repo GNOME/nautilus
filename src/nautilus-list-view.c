@@ -2825,7 +2825,13 @@ nautilus_list_view_zoom_to_level (NautilusView *view,
 
 	list_view = NAUTILUS_LIST_VIEW (view);
 
+	if (list_view->details->zoom_level == zoom_level) {
+		return;
+	}
+
 	nautilus_list_view_set_zoom_level (list_view, zoom_level);
+	g_action_group_change_action_state (nautilus_view_get_action_group (view),
+					    "zoom-to-level", g_variant_new_int32 (zoom_level));
 
 	nautilus_view_update_toolbar_menus (view);
 }
@@ -2843,6 +2849,8 @@ action_zoom_to_level (GSimpleAction *action,
 	view = NAUTILUS_VIEW (user_data);
 	zoom_level = g_variant_get_int32 (state);
 	nautilus_list_view_zoom_to_level (view, zoom_level);
+
+	g_simple_action_set_state (G_SIMPLE_ACTION (action), state);
 }
 
 static void
@@ -3050,21 +3058,6 @@ const GActionEntry list_view_entries[] = {
 	{ "visible-columns", action_visible_columns },
 	{ "zoom-to-level", NULL, NULL, "1", action_zoom_to_level }
 };
-
-static void
-nautilus_list_view_update_toolbar_menus (NautilusView *view)
-{
-	NautilusListView *list_view;
-	NautilusToolbar *toolbar;
-
-        list_view = NAUTILUS_LIST_VIEW (view);
-
-	NAUTILUS_VIEW_CLASS (nautilus_list_view_parent_class)->update_toolbar_menus (view);
-
-	toolbar = NAUTILUS_TOOLBAR (nautilus_window_get_toolbar (nautilus_view_get_window (view)));
-	nautilus_toolbar_view_menu_widget_set_zoom_level (toolbar,
-							  (gdouble) list_view->details->zoom_level);
-}
 
 static void
 nautilus_list_view_set_zoom_level (NautilusListView *view,
@@ -3510,7 +3503,6 @@ nautilus_list_view_class_init (NautilusListViewClass *class)
 	nautilus_view_class->is_empty = nautilus_list_view_is_empty;
 	nautilus_view_class->remove_file = nautilus_list_view_remove_file;
 	nautilus_view_class->restore_default_zoom_level = nautilus_list_view_restore_default_zoom_level;
-	nautilus_view_class->update_toolbar_menus = nautilus_list_view_update_toolbar_menus;
 	nautilus_view_class->reveal_selection = nautilus_list_view_reveal_selection;
 	nautilus_view_class->select_all = nautilus_list_view_select_all;
 	nautilus_view_class->select_first = nautilus_list_view_select_first;

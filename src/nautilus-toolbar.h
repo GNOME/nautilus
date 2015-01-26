@@ -73,7 +73,4 @@ void nautilus_toolbar_set_show_location_entry (NautilusToolbar *self,
 					       gboolean show_location_entry);
 void nautilus_toolbar_reset_menus (NautilusToolbar *self);
 
-void nautilus_toolbar_view_menu_widget_set_zoom_level (NautilusToolbar *self,
-						       gdouble level);
-
 #endif /* __NAUTILUS_TOOLBAR_H__ */

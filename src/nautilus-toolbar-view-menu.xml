@@ -56,7 +56,7 @@
             <property name="can_focus">True</property>
             <property name="draw_value">False</property>
             <property name="has_origin">False</property>
-            <property name="adjustment">zoom_adjustment_grid</property>
+            <property name="adjustment">zoom_adjustment</property>
             <property name="round_digits">0</property>
             <property name="restrict_to_fill_level">False</property>
             <marks>
@@ -210,14 +210,7 @@
   <object class="GThemedIcon" id="icon_list">
     <property name="name">view-list-symbolic</property>
   </object>
-  <object class="GtkAdjustment" id="zoom_adjustment_list">
-    <property name="lower">0</property>
-    <property name="upper">2</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">1</property>
-    <property name="value">1</property>
-  </object>
-  <object class="GtkAdjustment" id="zoom_adjustment_grid">
+  <object class="GtkAdjustment" id="zoom_adjustment">
     <property name="lower">0</property>
     <property name="upper">2</property>
     <property name="step_increment">1</property>

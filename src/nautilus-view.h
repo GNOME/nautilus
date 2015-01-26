@@ -216,8 +216,6 @@ struct NautilusViewClass {
          */
         void    (* update_context_menus)         	(NautilusView *view);
 
-        void    (* update_toolbar_menus)         	(NautilusView *view);
-
         void    (* update_actions_state)         	(NautilusView *view);
 
 	/* sort_files is a function pointer that subclasses can override
