@@ -1001,10 +1001,10 @@ trash_strings_func (NautilusFileUndoInfo *info,
 		*redo_description = g_strdup_printf (_("Move '%s' to trash"), name);
 
 		g_free (name);
-
-		*undo_label = g_strdup (_("_Undo Trash"));
-		*redo_label = g_strdup (_("_Redo Trash"));
 	}
+
+	*undo_label = g_strdup (_("_Undo Trash"));
+	*redo_label = g_strdup (_("_Redo Trash"));
 }
 
 static void
