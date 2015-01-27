@@ -308,6 +308,11 @@ AC_ARG_ENABLE(update-mimedb,
     enable_update_mimedb=yes)
 AM_CONDITIONAL(ENABLE_UPDATE_MIMEDB, test x$enable_update_mimedb = xyes)
 
+LIBGD_INIT([
+  notification
+  static
+])
+
 AC_CONFIG_FILES([
 Makefile
 data/Makefile
@@ -324,6 +329,7 @@ libnautilus-private/Makefile
 libnautilus-extension/Makefile
 libnautilus-extension/libnautilus-extension.pc
 libnautilus-extension/libnautilus-extension-uninstalled.pc
+libgd/Makefile
 po/Makefile.in
 src/Makefile
 nautilus-sendto-extension/Makefile

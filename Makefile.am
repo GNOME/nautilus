@@ -4,6 +4,7 @@ DIRS =				\
 	eel			\
 	libnautilus-extension	\
 	libnautilus-private 	\
+	libgd                   \
 	src 			\
 	test 			\
 	po 			\
@@ -56,6 +57,6 @@ MAINTAINERCLEANFILES = \
 
 DISTCHECK_CONFIGURE_FLAGS = --disable-update-mimedb --enable-gtk-doc
 
-ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
+ACLOCAL_AMFLAGS = -I m4 -I libgd ${ACLOCAL_FLAGS}
 
 -include $(top_srcdir)/git.mk

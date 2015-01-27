@@ -14,6 +14,8 @@ PKG_NAME="nautilus"
     exit 1
 }
 
+git submodule update --init --recursive
+
 which gnome-autogen.sh || {
     echo "gnome-autogen.sh not found, you need to install gnome-common"
     exit 1
