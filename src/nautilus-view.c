@@ -7510,7 +7510,7 @@ nautilus_view_init (NautilusView *view)
 	nautilus_application_add_accelerator (app, "view.open-with-default-application", "<control>o");
 	nautilus_application_add_accelerator (app, "view.open-item-new-tab", "<shift><control>t");
 	nautilus_application_add_accelerator (app, "view.open-item-new-window", "<shift><control>w");
-	nautilus_application_add_accelerator (app, "view.move-to-trash", "<control>Delete");
+	nautilus_application_add_accelerator (app, "view.move-to-trash", "Delete");
 	nautilus_application_add_accelerator (app, "view.delete", "<shift>Delete");
 	nautilus_application_add_accelerator (app, "view.properties", "<control>i");
 	nautilus_application_add_accelerator (app, "view.open-item-location", "<control><alt>o");
