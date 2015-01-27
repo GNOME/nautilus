@@ -1872,17 +1872,33 @@ trash_orig_path_cell_data_func (GtkTreeViewColumn *column,
 	location_cell_data_func (column, renderer, model, iter, view, TRUE);
 }
 
+#define SMALL_ZOOM_ICON_PADDING 10
+#define LARGE_ZOOM_ICON_PADDING 6
+
+static gint
+nautilus_list_view_get_icon_padding_for_zoom_level (NautilusListZoomLevel zoom_level)
+{
+	switch (zoom_level) {
+	case NAUTILUS_LIST_ZOOM_LEVEL_SMALL:
+		return SMALL_ZOOM_ICON_PADDING;
+	case NAUTILUS_LIST_ZOOM_LEVEL_STANDARD:
+	case NAUTILUS_LIST_ZOOM_LEVEL_LARGE:
+		return LARGE_ZOOM_ICON_PADDING;
+	default:
+		g_assert_not_reached ();
+	}
+}
 
 static void
 set_up_pixbuf_size (NautilusListView *view)
 {
-	int icon_size;
+	int icon_size, icon_padding;
 
 	/* Make all rows the same size. */
 	icon_size = nautilus_list_model_get_icon_size_for_zoom_level (view->details->zoom_level);
+	icon_padding = nautilus_list_view_get_icon_padding_for_zoom_level (view->details->zoom_level);
 	gtk_cell_renderer_set_fixed_size (GTK_CELL_RENDERER (view->details->pixbuf_cell),
-					  -1, icon_size);
-
+					  -1, icon_size + 2 * icon_padding);
 
 	/* FIXME: https://bugzilla.gnome.org/show_bug.cgi?id=641518 */
 	gtk_tree_view_columns_autosize (view->details->tree_view);
