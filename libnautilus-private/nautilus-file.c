@@ -4459,9 +4459,9 @@ nautilus_file_get_thumbnail_icon (NautilusFile *file,
 			thumb_scale = (double) modified_size / s;
 		}
 
-		/* Make sure that icons don't get smaller than NAUTILUS_ICON_SIZE_SMALLEST */
-		if (s * thumb_scale <= NAUTILUS_CANVAS_ICON_SIZE_SMALL) {
-			thumb_scale = (double) NAUTILUS_CANVAS_ICON_SIZE_SMALL / s;
+		/* Make sure that icons don't get smaller than NAUTILUS_LIST_ICON_SIZE_SMALL */
+		if (s * thumb_scale <= NAUTILUS_LIST_ICON_SIZE_SMALL) {
+			thumb_scale = (double) NAUTILUS_LIST_ICON_SIZE_SMALL / s;
 		}
 
 		if (file->details->thumbnail_scale == thumb_scale &&
