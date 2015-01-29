@@ -7,12 +7,12 @@
         <property name="can_focus">False</property>
         <property name="border_width">9</property>
         <property name="orientation">vertical</property>
-        <property name="spacing">6</property>
         <property name="width_request">160</property>
         <child>
           <object class="GtkBox" id="views_box">
             <property name="visible">True</property>
             <property name="orientation">horizontal</property>
+            <property name="margin-bottom">6</property>
             <style>
                 <class name="linked"/>
             </style>
@@ -79,6 +79,8 @@
               <object class="GtkSeparator">
                 <property name="visible">True</property>
                 <property name="orientation">horizontal</property>
+                <property name="margin-top">6</property>
+                <property name="margin-bottom">6</property>
               </object>
             </child>
             <child>
@@ -151,6 +153,8 @@
               <object class="GtkSeparator">
                 <property name="visible">True</property>
                 <property name="orientation">horizontal</property>
+                <property name="margin-top">6</property>
+                <property name="margin-bottom">6</property>
               </object>
             </child>
             <child>
@@ -167,6 +171,8 @@
           <object class="GtkSeparator">
             <property name="visible">True</property>
             <property name="orientation">horizontal</property>
+            <property name="margin-top">6</property>
+            <property name="margin-bottom">6</property>
           </object>
         </child>
         <child>
