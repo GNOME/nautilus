@@ -178,6 +178,10 @@ nautilus_SOURCES = \
 	nautilus-list-view.h 			\
 	nautilus-location-entry.c               \
 	nautilus-location-entry.h               \
+	nautilus-notification-delete.c          \
+	nautilus-notification-delete.h          \
+	nautilus-notification-manager.c         \
+	nautilus-notification-manager.h         \
 	nautilus-main.c 			\
 	nautilus-mime-actions.c 		\
 	nautilus-mime-actions.h 		\

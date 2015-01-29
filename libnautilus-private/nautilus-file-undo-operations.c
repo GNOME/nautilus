@@ -186,7 +186,7 @@ nautilus_file_undo_info_class_init (NautilusFileUndoInfoClass *klass)
 	g_object_class_install_properties (oclass, N_PROPERTIES, properties);
 }
 
-static NautilusFileUndoOp
+NautilusFileUndoOp
 nautilus_file_undo_info_get_op_type (NautilusFileUndoInfo *self)
 {
 	return self->priv->op_type;
@@ -1268,6 +1268,12 @@ nautilus_file_undo_info_trash_add_file (NautilusFileUndoInfoTrash *self,
 	orig_trash_time = current_time.tv_sec;
 
 	g_hash_table_insert (self->priv->trashed, g_object_ref (file), GSIZE_TO_POINTER (orig_trash_time));
+}
+
+GList *
+nautilus_file_undo_info_trash_get_files (NautilusFileUndoInfoTrash *self)
+{
+	return g_hash_table_get_keys (self->priv->trashed);
 }
 
 /* recursive permissions */

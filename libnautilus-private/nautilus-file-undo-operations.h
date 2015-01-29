@@ -96,6 +96,8 @@ void nautilus_file_undo_info_get_strings (NautilusFileUndoInfo *self,
 					  gchar **redo_label,
 					  gchar **redo_description);
 
+NautilusFileUndoOp nautilus_file_undo_info_get_op_type (NautilusFileUndoInfo *self);
+
 /* copy/move/duplicate/link/restore from trash */
 #define NAUTILUS_TYPE_FILE_UNDO_INFO_EXT         (nautilus_file_undo_info_ext_get_type ())
 #define NAUTILUS_FILE_UNDO_INFO_EXT(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), NAUTILUS_TYPE_FILE_UNDO_INFO_EXT, NautilusFileUndoInfoExt))
@@ -206,6 +208,7 @@ GType nautilus_file_undo_info_trash_get_type (void) G_GNUC_CONST;
 NautilusFileUndoInfo *nautilus_file_undo_info_trash_new (gint item_count);
 void nautilus_file_undo_info_trash_add_file (NautilusFileUndoInfoTrash *self,
 					     GFile                     *file);
+GList *nautilus_file_undo_info_trash_get_files (NautilusFileUndoInfoTrash *self);
 
 /* recursive permissions */
 #define NAUTILUS_TYPE_FILE_UNDO_INFO_REC_PERMISSIONS         (nautilus_file_undo_info_rec_permissions_get_type ())

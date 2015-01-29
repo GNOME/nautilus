@@ -42,6 +42,10 @@
 #include "nautilus-window-slot.h"
 #include "nautilus-list-view.h"
 #include "nautilus-view.h"
+#include "nautilus-notification-manager.h"
+#include "nautilus-notification-delete.h"
+#include "nautilus-file-undo-manager.h"
+#include "nautilus-file-undo-operations.h"
 
 #include <eel/eel-debug.h>
 #include <eel/eel-gtk-extensions.h>
@@ -1461,6 +1465,27 @@ nautilus_window_ensure_location_entry (NautilusWindow *window)
 }
 
 static void
+nautilus_window_on_undo_changed (NautilusFileUndoManager *manager,
+                                 NautilusWindow          *window)
+{
+	NautilusNotificationDelete *notification;
+	NautilusFileUndoInfo *undo_info;
+	NautilusFileUndoManagerState state;
+
+	nautilus_notification_manager_remove_all (NAUTILUS_NOTIFICATION_MANAGER (window->details->notification_manager));
+	undo_info = nautilus_file_undo_manager_get_action ();
+	state = nautilus_file_undo_manager_get_state ();
+
+	if (undo_info != NULL &&
+            state == NAUTILUS_FILE_UNDO_MANAGER_STATE_UNDO &&
+            nautilus_file_undo_info_get_op_type (undo_info) == NAUTILUS_FILE_UNDO_OP_MOVE_TO_TRASH) {
+		notification = nautilus_notification_delete_new (window);
+		nautilus_notification_manager_add_notification (NAUTILUS_NOTIFICATION_MANAGER (window->details->notification_manager),
+                                                                GTK_WIDGET (notification));
+	}
+}
+
+static void
 path_bar_location_changed_callback (GtkWidget      *widget,
 				    GFile          *location,
 				    NautilusWindow *window)
@@ -1823,9 +1848,8 @@ create_notebook (NautilusWindow *window)
 	gtk_widget_show (notebook);
 	gtk_container_set_border_width (GTK_CONTAINER (notebook), 0);
 
-	gtk_box_pack_start (GTK_BOX (window->details->main_view),
-			    notebook,
-			    TRUE, TRUE, 0);
+	gtk_container_add (GTK_CONTAINER (window->details->main_view),
+                           notebook);
 
 	return notebook;
 }
@@ -1867,13 +1891,20 @@ nautilus_window_constructed (GObject *self)
 	gtk_container_add (GTK_CONTAINER (grid), window->details->content_paned);
 	gtk_widget_show (window->details->content_paned);
 
-	window->details->main_view = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	gtk_paned_pack2 (GTK_PANED (window->details->content_paned), window->details->main_view,
-			 TRUE, FALSE);
+	window->details->main_view = gtk_overlay_new ();
+	gtk_paned_pack2 (GTK_PANED (window->details->content_paned),
+                         window->details->main_view,
+                         TRUE, FALSE);
 	gtk_widget_show (window->details->main_view);
 
 	window->details->notebook = create_notebook (window);
 	nautilus_window_set_initial_window_geometry (window);
+
+	window->details->notification_manager = GTK_WIDGET (nautilus_notification_manager_new ());
+	gtk_overlay_add_overlay (GTK_OVERLAY (window->details->main_view),
+                                 window->details->notification_manager);
+	g_signal_connect_after (nautilus_file_undo_manager_get (), "undo-changed",
+                                G_CALLBACK (nautilus_window_on_undo_changed), self);
 
 	/* Is required that the UI is constructed before initializating the actions, since
 	 * some actions trigger UI widgets to show/hide. */
@@ -1998,6 +2029,10 @@ nautilus_window_finalize (GObject *object)
 		g_source_remove (window->details->sidebar_width_handler_id);
 		window->details->sidebar_width_handler_id = 0;
 	}
+
+	g_signal_handlers_disconnect_by_func (nautilus_file_undo_manager_get (),
+                                              G_CALLBACK (nautilus_window_on_undo_changed),
+                                              window);
 
 	/* nautilus_window_close() should have run */
 	g_assert (window->details->slots == NULL);

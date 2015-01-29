@@ -54,6 +54,9 @@ struct NautilusWindowDetails
         /* Main view */
         GtkWidget *main_view;
 
+	/* Notifications */
+        GtkWidget *notification_manager;
+
         /* Toolbar */
         GtkWidget *toolbar;
         gboolean temporary_navigation_bar;
