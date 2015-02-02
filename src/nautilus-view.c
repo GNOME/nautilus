@@ -6136,9 +6136,10 @@ update_selection_menu (NautilusView *view)
 	show_stop = (selection != NULL && selection_count == 1);
 	show_detect_media = (selection != NULL && selection_count == 1);
 	start_stop_type = G_DRIVE_START_STOP_TYPE_UNKNOWN;
-
-	item_label = g_strdup_printf (_("New Folder with Selection (%'d Items)"),
-				      selection_count);
+	item_label = g_strdup_printf (ngettext ("New Folder with Selection (%'d Items)",
+	                                        "New Folder with Selection (%'d Items)",
+	                                        selection_count),
+	                              selection_count);
 	menu_item = g_menu_item_new (item_label, "view.new-folder-with-selection");
 	g_menu_item_set_attribute (menu_item, "hidden-when", "s", "action-disabled");
 	nautilus_gmenu_add_item_in_submodel (view->details->selection_menu,
