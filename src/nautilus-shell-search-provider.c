@@ -512,8 +512,10 @@ result_list_attributes_ready_cb (GList    *file_list,
   ResultMetasData *data = user_data;
   GVariantBuilder meta;
   NautilusFile *file;
+  GFile *file_location;
   GList *l;
   gchar *uri, *display_name;
+  gchar *description;
   gchar *thumbnail_path;
   GIcon *gicon;
   GFile *location;
@@ -528,11 +530,15 @@ result_list_attributes_ready_cb (GList    *file_list,
 
     uri = nautilus_file_get_uri (file);
     display_name = get_display_name (data->self, file);
+    file_location = nautilus_file_get_location (file);
+    description = g_file_get_path (file_location);
 
     g_variant_builder_add (&meta, "{sv}",
                            "id", g_variant_new_string (uri));
     g_variant_builder_add (&meta, "{sv}",
                            "name", g_variant_new_string (display_name));
+    g_variant_builder_add (&meta, "{sv}",
+                           "description", g_variant_new_string (description));
 
     gicon = NULL;
     thumbnail_path = nautilus_file_get_thumbnail_path (file);
@@ -562,6 +568,7 @@ result_list_attributes_ready_cb (GList    *file_list,
                          g_strdup (uri), g_variant_ref_sink (meta_variant));
 
     g_free (display_name);
+    g_free (description);
     g_free (uri);
   }
 
