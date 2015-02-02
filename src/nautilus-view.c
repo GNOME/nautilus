@@ -6342,8 +6342,8 @@ nautilus_view_update_context_menus (NautilusView *view)
 	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->update_context_menus (view);
 }
 
-/* Convenience function to reset the menus owned by the but that are managed on
- * the toolbar and update them with the current state.
+/* Convenience function to reset the menus owned by the view but managed on
+ * the toolbar, and update them with the current state.
  * It will also update the actions state, which will also update children
  * actions state if the children subclass nautilus_view_update_actions_state
  */
