@@ -2348,11 +2348,6 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *slot)
 		widget = GTK_WIDGET (slot->details->content_view);
 		gtk_container_add (GTK_CONTAINER (slot->details->view_overlay), widget);
 		gtk_widget_show (widget);
-
-		if (!NAUTILUS_IS_SEARCH_DIRECTORY (nautilus_view_get_model (slot->details->content_view)) &&
-		    slot == nautilus_window_get_active_slot (window)) {
-			nautilus_view_grab_focus (slot->details->content_view);
-		}
 	}
 }
 
