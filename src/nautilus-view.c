@@ -6355,6 +6355,13 @@ nautilus_view_update_toolbar_menus (NautilusView *view)
 
 	g_assert (NAUTILUS_IS_VIEW (view));
 
+	/* Don't update after destroy (#349551),
+	 * or if we are not active.
+	 */
+	if (view->details->slot == NULL ||
+	    !view->details->active) {
+		return;
+	}
 	window = nautilus_view_get_window (view);
 	toolbar = NAUTILUS_TOOLBAR (nautilus_window_get_toolbar (window));
 	nautilus_toolbar_reset_menus (toolbar);
