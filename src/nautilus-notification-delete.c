@@ -158,19 +158,23 @@ nautilus_notification_delete_init (NautilusNotificationDelete *self)
   if (length == 1)
     {
       file_label = g_file_get_basename (files->data);
-      label = g_strdup_printf (_("%s deleted"), file_label);
-      g_free (file_label);
+      markup = g_markup_printf_escaped ("<b>%s</b>", file_label);
+      label = g_strdup_printf (_("%s deleted"), markup);
     }
   else
     {
-      label = g_strdup_printf (ngettext ("%d file deleted", "%d files deleted", length), length);
+      /* Translators: this is the first part of a "%d files deleted" string */
+      file_label = g_strdup_printf (ngettext ("%d file", "%d files", length), length);
+      markup = g_markup_printf_escaped ("<b>%s</b>", file_label);
+
+      /* Translators: this is the second part of a "%d files deleted" string */
+      label = g_strdup_printf (ngettext ("%s deleted", "%s deleted", length), markup);
     }
 
   label_widget = gtk_label_new (label);
   gtk_label_set_max_width_chars (GTK_LABEL (label_widget), 50);
   gtk_label_set_ellipsize (GTK_LABEL (label_widget), PANGO_ELLIPSIZE_MIDDLE);
-  markup = g_markup_printf_escaped ("<span font_weight=\"bold\">%s</span>", label);
-  gtk_label_set_markup (GTK_LABEL (label_widget), markup);
+  gtk_label_set_markup (GTK_LABEL (label_widget), label);
   gtk_widget_set_halign (label_widget, GTK_ALIGN_START);
   gtk_widget_set_margin_end (label_widget, 30);
   gtk_container_add (GTK_CONTAINER (self), label_widget);
@@ -199,6 +203,7 @@ nautilus_notification_delete_init (NautilusNotificationDelete *self)
                                                        g_object_unref);
 
   g_free (label);
+  g_free (file_label);
   g_free (markup);
   g_list_free (files);
 }
