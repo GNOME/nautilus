@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2015-02-03 11:40+0000\n"
-"PO-Revision-Date: 2015-02-03 19:34+0100\n"
+"POT-Creation-Date: 2015-02-03 18:35+0000\n"
+"PO-Revision-Date: 2015-02-03 19:43+0100\n"
 "Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
 "Language-Team: Slovak <gnome-sk-list@gnome.org>\n"
 "Language: sk\n"
@@ -56,7 +56,7 @@ msgstr "Pripojiť k serveru"
 # desktop entry name
 #. Set initial window title
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1 ../src/nautilus-file-management-properties.ui.h:29 ../src/nautilus-properties-window.c:4188
-#: ../src/nautilus-window.c:2361 ../src/nautilus-window.c:2530
+#: ../src/nautilus-window.c:2394 ../src/nautilus-window.c:2563
 msgid "Files"
 msgstr "Súbory"
 
@@ -912,7 +912,7 @@ msgid "All items in the Trash will be permanently deleted."
 msgstr "Všetky položky v Koši budú trvale odstránené."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1399 ../libnautilus-private/nautilus-file-operations.c:2275
-#: ../src/nautilus-window.c:1216
+#: ../src/nautilus-window.c:1218
 msgid "Empty _Trash"
 msgstr "Vyprázdniť _Kôš"
 
@@ -1361,7 +1361,7 @@ msgstr "Vyprázdňuje sa Kôš"
 msgid "Unable to mark launcher trusted (executable)"
 msgstr "Nebolo možné označiť spúšťač ako dôveryhodný (spustiteľný)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:133 ../src/nautilus-window.c:446
+#: ../libnautilus-private/nautilus-file-undo-operations.c:133 ../src/nautilus-window.c:448
 msgid "Undo"
 msgstr "Vrátiť"
 
@@ -1369,7 +1369,7 @@ msgstr "Vrátiť"
 msgid "Undo last action"
 msgstr "Vráti poslednú operáciu späť"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:140 ../src/nautilus-window.c:447
+#: ../libnautilus-private/nautilus-file-undo-operations.c:140 ../src/nautilus-window.c:449
 msgid "Redo"
 msgstr "Zopakovať"
 
@@ -1669,67 +1669,67 @@ msgstr "_Vrátiť zahodenie do Koša"
 msgid "_Redo Trash"
 msgstr "_Zopakovať zahodenie do Koša"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1297
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1303
 #, c-format
 msgid "Restore original permissions of items enclosed in '%s'"
 msgstr "Obnoviť pôvodné oprávnenia položiek obsiahnutých v „%s“"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1298
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1304
 #, c-format
 msgid "Set permissions of items enclosed in '%s'"
 msgstr "Nastaviť oprávnenia položiek obsiahnutých v „%s“"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1300 ../libnautilus-private/nautilus-file-undo-operations.c:1455
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1306 ../libnautilus-private/nautilus-file-undo-operations.c:1461
 msgid "_Undo Change Permissions"
 msgstr "_Vrátiť zmenu oprávnení"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1301 ../libnautilus-private/nautilus-file-undo-operations.c:1456
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1307 ../libnautilus-private/nautilus-file-undo-operations.c:1462
 msgid "_Redo Change Permissions"
 msgstr "_Zopakovať zmenu oprávnení"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1452
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1458
 #, c-format
 msgid "Restore original permissions of '%s'"
 msgstr "Obnoviť pôvodné oprávnenia „%s“"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1453
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1459
 #, c-format
 msgid "Set permissions of '%s'"
 msgstr "Nastaviť oprávnenia „%s“"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1563
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1569
 #, c-format
 msgid "Restore group of '%s' to '%s'"
 msgstr "Obnoviť skupinu „%s“ na „%s“"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1565
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1571
 #, c-format
 msgid "Set group of '%s' to '%s'"
 msgstr "Nastaviť skupinu „%s“ na „%s“"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1568
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1574
 msgid "_Undo Change Group"
 msgstr "_Vrátiť zmenu skupiny"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1569
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1575
 msgid "_Redo Change Group"
 msgstr "_Zopakovať zmenu skupiny"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1571
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1577
 #, c-format
 msgid "Restore owner of '%s' to '%s'"
 msgstr "Obnoviť vlastníka „%s“ na „%s“"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1573
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1579
 #, c-format
 msgid "Set owner of '%s' to '%s'"
 msgstr "Nastaviť vlastníka „%s“ na „%s“"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1576
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1582
 msgid "_Undo Change Owner"
 msgstr "_Vrátiť zmenu vlastníka"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1577
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1583
 msgid "_Redo Change Owner"
 msgstr "_Zopakovať zmenu vlastníka"
 
@@ -2470,6 +2470,7 @@ msgstr "Presunúť hore"
 msgid "Move Down"
 msgstr "Presunúť dole"
 
+# DK: https://bugzilla.gnome.org/show_bug.cgi?id=743947
 #: ../src/nautilus-bookmarks-window.ui.h:4 ../src/nautilus-toolbar-view-menu.xml.h:2
 msgid "_Name"
 msgstr "_Názov"
@@ -3966,32 +3967,32 @@ msgstr "Pustený text.txt"
 msgid "dropped data"
 msgstr "pustené údaje"
 
-#: ../src/nautilus-window.c:1230
+#: ../src/nautilus-window.c:1232
 msgid "_Properties"
 msgstr "V_lastnosti"
 
 # menu item
-#: ../src/nautilus-window.c:1239
+#: ../src/nautilus-window.c:1241
 msgid "_Format…"
 msgstr "_Formátovať…"
 
-#: ../src/nautilus-window.c:1583
+#: ../src/nautilus-window.c:1606
 msgid "_New Tab"
 msgstr "_Nová karta"
 
-#: ../src/nautilus-window.c:1593
+#: ../src/nautilus-window.c:1616
 msgid "Move Tab _Left"
 msgstr "Presunúť kartu _vľavo"
 
-#: ../src/nautilus-window.c:1601
+#: ../src/nautilus-window.c:1624
 msgid "Move Tab _Right"
 msgstr "Presunúť kartu vp_ravo"
 
-#: ../src/nautilus-window.c:1612
+#: ../src/nautilus-window.c:1635
 msgid "_Close Tab"
 msgstr "_Zatvoriť kartu"
 
-#: ../src/nautilus-window.c:2532
+#: ../src/nautilus-window.c:2565
 msgid "Access and organize your files."
 msgstr "Práca s vašimi súbormi."
 
@@ -3999,7 +4000,7 @@ msgstr "Práca s vašimi súbormi."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2541
+#: ../src/nautilus-window.c:2574
 msgid "translator-credits"
 msgstr ""
 "Stanislav Višňovský\n"
