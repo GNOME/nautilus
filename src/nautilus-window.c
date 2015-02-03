@@ -44,8 +44,6 @@
 #include "nautilus-view.h"
 #include "nautilus-notification-manager.h"
 #include "nautilus-notification-delete.h"
-#include "nautilus-file-undo-manager.h"
-#include "nautilus-file-undo-operations.h"
 
 #include <eel/eel-debug.h>
 #include <eel/eel-gtk-extensions.h>

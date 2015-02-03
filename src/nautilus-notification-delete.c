@@ -21,8 +21,9 @@
 #include "nautilus-window.h"
 #include "nautilus-notification-delete.h"
 #include "nautilus-notification-manager.h"
-#include "nautilus-file-undo-manager.h"
-#include "nautilus-file-undo-operations.h"
+
+#include <libnautilus-private/nautilus-file-undo-manager.h>
+#include <libnautilus-private/nautilus-file-undo-operations.h>
 
 struct _NautilusNotificationDeletePrivate
 {
