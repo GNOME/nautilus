@@ -2324,15 +2324,12 @@ nautilus_window_slot_connect_new_content_view (NautilusWindowSlot *slot)
 static void
 nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *slot)
 {
-	NautilusWindow *window;
 	GtkWidget *widget;
 
 	if ((slot->details->new_content_view == NULL) ||
 	    gtk_widget_get_parent (GTK_WIDGET (slot->details->new_content_view)) != NULL) {
 		return;
 	}
-
-	window = nautilus_window_slot_get_window (slot);
 
 	if (slot->details->content_view != NULL) {
 		widget = GTK_WIDGET (slot->details->content_view);
