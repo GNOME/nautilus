@@ -6136,7 +6136,7 @@ update_selection_menu (NautilusView *view)
 	show_stop = (selection != NULL && selection_count == 1);
 	show_detect_media = (selection != NULL && selection_count == 1);
 	start_stop_type = G_DRIVE_START_STOP_TYPE_UNKNOWN;
-	item_label = g_strdup_printf (ngettext ("New Folder with Selection (%'d Items)",
+	item_label = g_strdup_printf (ngettext ("New Folder with Selection (%'d Item)",
 	                                        "New Folder with Selection (%'d Items)",
 	                                        selection_count),
 	                              selection_count);
