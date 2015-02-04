@@ -5137,7 +5137,7 @@ action_rename (GSimpleAction *action,
 	       GVariant      *state,
 	       gpointer       user_data)
 {
-	real_action_rename (NAUTILUS_VIEW (user_data), TRUE);
+	real_action_rename (NAUTILUS_VIEW (user_data), FALSE);
 }
 
 #define BG_KEY_PRIMARY_COLOR      "primary-color"
