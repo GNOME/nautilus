@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2015-02-03 18:35+0000\n"
-"PO-Revision-Date: 2015-02-03 19:43+0100\n"
+"POT-Creation-Date: 2015-02-04 13:46+0000\n"
+"PO-Revision-Date: 2015-02-04 20:14+0100\n"
 "Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
 "Language-Team: Slovak <gnome-sk-list@gnome.org>\n"
 "Language: sk\n"
@@ -55,8 +55,8 @@ msgstr "Pripojiť k serveru"
 
 # desktop entry name
 #. Set initial window title
-#: ../data/org.gnome.Nautilus.desktop.in.in.h:1 ../src/nautilus-file-management-properties.ui.h:29 ../src/nautilus-properties-window.c:4188
-#: ../src/nautilus-window.c:2394 ../src/nautilus-window.c:2563
+#: ../data/org.gnome.Nautilus.desktop.in.in.h:1 ../src/nautilus-file-management-properties.ui.h:29 ../src/nautilus-properties-window.c:4189
+#: ../src/nautilus-window.c:2401 ../src/nautilus-window.c:2570
 msgid "Files"
 msgstr "Súbory"
 
@@ -146,7 +146,7 @@ msgstr "Zobraziť ďalšie po_drobnosti"
 #: ../libnautilus-private/nautilus-file-operations.c:183 ../src/nautilus-connect-server-dialog.c:652 ../src/nautilus-location-entry.c:274
 #: ../src/nautilus-mime-actions.c:647 ../src/nautilus-mime-actions.c:651 ../src/nautilus-mime-actions.c:722
 #: ../src/nautilus-mime-actions.c:1065 ../src/nautilus-mime-actions.c:1571 ../src/nautilus-mime-actions.c:1795
-#: ../src/nautilus-properties-window.c:4179 ../src/nautilus-properties-window.c:5163 ../src/nautilus-query-editor.c:491
+#: ../src/nautilus-properties-window.c:4180 ../src/nautilus-properties-window.c:5164 ../src/nautilus-query-editor.c:491
 #: ../src/nautilus-view.c:780 ../src/nautilus-view.c:1238 ../src/nautilus-view.c:4880
 msgid "_Cancel"
 msgstr "_Zrušiť"
@@ -161,7 +161,7 @@ msgstr " (neplatný znak Unicode)"
 
 #: ../libnautilus-private/nautilus-bookmark.c:107 ../libnautilus-private/nautilus-desktop-link.c:129
 #: ../libnautilus-private/nautilus-file-utilities.c:265 ../src/nautilus-list-view.c:1824 ../src/nautilus-pathbar.c:295
-#: ../src/nautilus-query-editor.c:1066 ../src/nautilus-shell-search-provider.c:285
+#: ../src/nautilus-query-editor.c:1067 ../src/nautilus-shell-search-provider.c:285
 msgid "Home"
 msgstr "Domov"
 
@@ -234,7 +234,7 @@ msgstr "Skupina"
 msgid "The group of the file."
 msgstr "Skupina vlastníka súboru."
 
-#: ../libnautilus-private/nautilus-column-utilities.c:111 ../src/nautilus-properties-window.c:4250
+#: ../libnautilus-private/nautilus-column-utilities.c:111 ../src/nautilus-properties-window.c:4251
 msgid "Permissions"
 msgstr "Oprávnenia"
 
@@ -1361,7 +1361,7 @@ msgstr "Vyprázdňuje sa Kôš"
 msgid "Unable to mark launcher trusted (executable)"
 msgstr "Nebolo možné označiť spúšťač ako dôveryhodný (spustiteľný)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:133 ../src/nautilus-window.c:448
+#: ../libnautilus-private/nautilus-file-undo-operations.c:133 ../src/nautilus-notification-delete.c:183 ../src/nautilus-window.c:448
 msgid "Undo"
 msgstr "Vrátiť"
 
@@ -2792,7 +2792,7 @@ msgstr "Zobraziť _miniatúry:"
 msgid "_Only for files smaller than:"
 msgstr "_Iba pre súbory menšie ako:"
 
-#: ../src/nautilus-file-management-properties.ui.h:32 ../src/nautilus-properties-window.c:4191
+#: ../src/nautilus-file-management-properties.ui.h:32 ../src/nautilus-properties-window.c:4192
 msgid "Folders"
 msgstr "Priečinky"
 
@@ -3190,6 +3190,26 @@ msgstr[2] "Otvárajú sa %d položky."
 msgid "Close tab"
 msgstr "Zatvoriť kartu"
 
+#. Translators: this is the second part of a "%d files deleted" string
+#: ../src/nautilus-notification-delete.c:163 ../src/nautilus-notification-delete.c:172
+#, c-format
+msgid "%s deleted"
+msgid_plural "%s deleted"
+msgstr[0] "%s odstránených"
+msgstr[1] "%s odstránený"
+msgstr[2] "%s odstránené"
+
+#. Translators: this is the first part of a "%d files deleted" string
+#: ../src/nautilus-notification-delete.c:168
+#, c-format
+#| msgid "%'u file"
+#| msgid_plural "%'u files"
+msgid "%d file"
+msgid_plural "%d files"
+msgstr[0] "%d súborov"
+msgstr[1] "jeden súbor"
+msgstr[2] "%d súbory"
+
 #: ../src/nautilus-progress-ui-handler.c:104 ../src/nautilus-progress-ui-handler.c:171 ../src/nautilus-progress-ui-handler.c:227
 msgid "File Operations"
 msgstr "Operácie so súbormi"
@@ -3402,82 +3422,82 @@ msgstr "Prístup k súborom:"
 msgid "_Owner:"
 msgstr "_Vlastník:"
 
-#: ../src/nautilus-properties-window.c:3931 ../src/nautilus-properties-window.c:4195
+#: ../src/nautilus-properties-window.c:3931 ../src/nautilus-properties-window.c:4196
 msgid "Owner:"
 msgstr "Vlastník:"
 
-#: ../src/nautilus-properties-window.c:3953
+#: ../src/nautilus-properties-window.c:3954
 msgid "_Group:"
 msgstr "_Skupina:"
 
-#: ../src/nautilus-properties-window.c:3961 ../src/nautilus-properties-window.c:4209
+#: ../src/nautilus-properties-window.c:3962 ../src/nautilus-properties-window.c:4210
 msgid "Group:"
 msgstr "Skupina:"
 
-#: ../src/nautilus-properties-window.c:3982
+#: ../src/nautilus-properties-window.c:3983
 msgid "Others"
 msgstr "Ostatní:"
 
-#: ../src/nautilus-properties-window.c:3997
+#: ../src/nautilus-properties-window.c:3998
 msgid "Execute:"
 msgstr "Spustenie:"
 
-#: ../src/nautilus-properties-window.c:4000
+#: ../src/nautilus-properties-window.c:4001
 msgid "Allow _executing file as program"
 msgstr "Povoliť _spustenie súboru ako programu"
 
 # window title
-#: ../src/nautilus-properties-window.c:4176
+#: ../src/nautilus-properties-window.c:4177
 msgid "Change Permissions for Enclosed Files"
 msgstr "Zmena oprávnení k obsiahnutým súborom"
 
-#: ../src/nautilus-properties-window.c:4180
+#: ../src/nautilus-properties-window.c:4181
 msgid "Change"
 msgstr "Zmeniť"
 
-#: ../src/nautilus-properties-window.c:4223
+#: ../src/nautilus-properties-window.c:4224
 msgid "Others:"
 msgstr "Ostatní:"
 
-#: ../src/nautilus-properties-window.c:4264
+#: ../src/nautilus-properties-window.c:4265
 msgid "You are not the owner, so you cannot change these permissions."
 msgstr "Nie ste vlastníkom, takže nemôžete meniť tieto oprávnenia."
 
-#: ../src/nautilus-properties-window.c:4279
+#: ../src/nautilus-properties-window.c:4280
 msgid "Security context:"
 msgstr "Bezpečnostný kontext:"
 
 # button
-#: ../src/nautilus-properties-window.c:4294
+#: ../src/nautilus-properties-window.c:4295
 msgid "Change Permissions for Enclosed Files…"
 msgstr "Zmeniť oprávnenia k obsiahnutým súborom…"
 
-#: ../src/nautilus-properties-window.c:4304
+#: ../src/nautilus-properties-window.c:4305
 #, c-format
 msgid "The permissions of “%s” could not be determined."
 msgstr "Oprávnenia pre „%s“ nie je možné určiť."
 
-#: ../src/nautilus-properties-window.c:4307
+#: ../src/nautilus-properties-window.c:4308
 msgid "The permissions of the selected file could not be determined."
 msgstr "Oprávnenia pre vybraný súbor nie je možné určiť."
 
-#: ../src/nautilus-properties-window.c:4555
+#: ../src/nautilus-properties-window.c:4556
 msgid "Open With"
 msgstr "Otvoriť pomocou"
 
-#: ../src/nautilus-properties-window.c:4876
+#: ../src/nautilus-properties-window.c:4877
 msgid "Creating Properties window."
 msgstr "Vytvára sa okno Vlastnosti."
 
-#: ../src/nautilus-properties-window.c:5160
+#: ../src/nautilus-properties-window.c:5161
 msgid "Select Custom Icon"
 msgstr "Vybrať vlastnú ikonu"
 
-#: ../src/nautilus-properties-window.c:5162
+#: ../src/nautilus-properties-window.c:5163
 msgid "_Revert"
 msgstr "_Vrátiť"
 
-#: ../src/nautilus-properties-window.c:5164
+#: ../src/nautilus-properties-window.c:5165
 msgid "_Open"
 msgstr "_Otvoriť"
 
@@ -3530,15 +3550,15 @@ msgid "Remove this criterion from the search"
 msgstr "Odobrať toto kritérium z vyhľadávania"
 
 #. create the Current/All Files selector
-#: ../src/nautilus-query-editor.c:940
+#: ../src/nautilus-query-editor.c:941
 msgid "Current"
 msgstr "Aktuálne"
 
-#: ../src/nautilus-query-editor.c:943
+#: ../src/nautilus-query-editor.c:944
 msgid "All Files"
 msgstr "Všetky súbory"
 
-#: ../src/nautilus-query-editor.c:965
+#: ../src/nautilus-query-editor.c:966
 msgid "Add a new criterion to this search"
 msgstr "Pridať nové kritérium k tomuto vyhľadávaniu"
 
@@ -3976,23 +3996,23 @@ msgstr "V_lastnosti"
 msgid "_Format…"
 msgstr "_Formátovať…"
 
-#: ../src/nautilus-window.c:1606
+#: ../src/nautilus-window.c:1613
 msgid "_New Tab"
 msgstr "_Nová karta"
 
-#: ../src/nautilus-window.c:1616
+#: ../src/nautilus-window.c:1623
 msgid "Move Tab _Left"
 msgstr "Presunúť kartu _vľavo"
 
-#: ../src/nautilus-window.c:1624
+#: ../src/nautilus-window.c:1631
 msgid "Move Tab _Right"
 msgstr "Presunúť kartu vp_ravo"
 
-#: ../src/nautilus-window.c:1635
+#: ../src/nautilus-window.c:1642
 msgid "_Close Tab"
 msgstr "_Zatvoriť kartu"
 
-#: ../src/nautilus-window.c:2565
+#: ../src/nautilus-window.c:2572
 msgid "Access and organize your files."
 msgstr "Práca s vašimi súbormi."
 
@@ -4000,7 +4020,7 @@ msgstr "Práca s vašimi súbormi."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2574
+#: ../src/nautilus-window.c:2581
 msgid "translator-credits"
 msgstr ""
 "Stanislav Višňovský\n"
