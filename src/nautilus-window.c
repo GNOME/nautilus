@@ -1469,6 +1469,7 @@ nautilus_window_on_undo_changed (NautilusFileUndoManager *manager,
 	NautilusNotificationDelete *notification;
 	NautilusFileUndoInfo *undo_info;
 	NautilusFileUndoManagerState state;
+	GList *files;
 
 	nautilus_notification_manager_remove_all (NAUTILUS_NOTIFICATION_MANAGER (window->details->notification_manager));
 	undo_info = nautilus_file_undo_manager_get_action ();
@@ -1477,9 +1478,15 @@ nautilus_window_on_undo_changed (NautilusFileUndoManager *manager,
 	if (undo_info != NULL &&
             state == NAUTILUS_FILE_UNDO_MANAGER_STATE_UNDO &&
             nautilus_file_undo_info_get_op_type (undo_info) == NAUTILUS_FILE_UNDO_OP_MOVE_TO_TRASH) {
-		notification = nautilus_notification_delete_new (window);
-		nautilus_notification_manager_add_notification (NAUTILUS_NOTIFICATION_MANAGER (window->details->notification_manager),
-                                                                GTK_WIDGET (notification));
+		files = nautilus_file_undo_info_trash_get_files (NAUTILUS_FILE_UNDO_INFO_TRASH (undo_info));
+
+		/* Don't pop up a notification if user canceled the operation */
+		if (g_list_length (files) > 0) {
+			notification = nautilus_notification_delete_new (window);
+			nautilus_notification_manager_add_notification (NAUTILUS_NOTIFICATION_MANAGER (window->details->notification_manager),
+		                                                        GTK_WIDGET (notification));
+		}
+		g_list_free (files);
 	}
 }
 
