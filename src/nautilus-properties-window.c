@@ -3935,7 +3935,6 @@ create_simple_permissions (NautilusPropertiesWindow *window, GtkGrid *page_grid)
 					    "owner",
 					    INCONSISTENT_STATE_STRING,
 					    FALSE); 
-		gtk_widget_set_sensitive (GTK_WIDGET (value), FALSE);
 		gtk_label_set_mnemonic_widget (owner_label, value);
 	}
 	if (has_directory && has_file) {
