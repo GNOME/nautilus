@@ -41,13 +41,13 @@
 #define NAUTILUS_PROGRESS_INFO_WIDGET_GET_CLASS(obj) \
 	(G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_PROGRESS_INFO_WIDGET, NautilusProgressInfoWidgetClass))
 
-typedef struct _NautilusProgressInfoWidgetPriv NautilusProgressInfoWidgetPriv;
+typedef struct _NautilusProgressInfoWidgetPrivate NautilusProgressInfoWidgetPrivate;
 
 typedef struct {
 	GtkBox parent;
 
 	/* private */
-	NautilusProgressInfoWidgetPriv *priv;
+	NautilusProgressInfoWidgetPrivate *priv;
 } NautilusProgressInfoWidget;
 
 typedef struct {
