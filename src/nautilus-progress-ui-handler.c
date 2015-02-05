@@ -37,8 +37,8 @@
 struct _NautilusProgressUIHandlerPriv {
 	NautilusProgressInfoManager *manager;
 
-	GtkWidget *progress_window;
-	GtkWidget *window_vbox;
+	GtkWidget *progress_dialog;
+	GtkWidget *content_area;
 	guint active_infos;
 
 	GtkStatusIcon *status_icon;
@@ -70,7 +70,7 @@ status_icon_activate_cb (GtkStatusIcon *icon,
 			 NautilusProgressUIHandler *self)
 {	
 	gtk_status_icon_set_visible (icon, FALSE);
-	gtk_window_present (GTK_WINDOW (self->priv->progress_window));
+	gtk_window_present (GTK_WINDOW (self->priv->progress_dialog));
 }
 
 static void
@@ -155,35 +155,30 @@ progress_window_delete_event (GtkWidget *widget,
 static void
 progress_ui_handler_ensure_window (NautilusProgressUIHandler *self)
 {
-	GtkWidget *vbox, *progress_window;
+	GtkWidget *progress_dialog;
 	
-	if (self->priv->progress_window != NULL) {
+	if (self->priv->progress_dialog != NULL) {
 		return;
 	}
 	
-	progress_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	self->priv->progress_window = progress_window;
-	gtk_window_set_resizable (GTK_WINDOW (progress_window),
+	progress_dialog = g_object_new (GTK_TYPE_DIALOG, "use-header-bar", TRUE, NULL);
+	self->priv->progress_dialog = progress_dialog;
+	gtk_window_set_resizable (GTK_WINDOW (progress_dialog),
 				  FALSE);
-	gtk_container_set_border_width (GTK_CONTAINER (progress_window), 10);
+	gtk_container_set_border_width (GTK_CONTAINER (progress_dialog), 10);
  
-	gtk_window_set_title (GTK_WINDOW (progress_window),
+	gtk_window_set_title (GTK_WINDOW (progress_dialog),
 			      _("File Operations"));
-	gtk_window_set_wmclass (GTK_WINDOW (progress_window),
+	gtk_window_set_wmclass (GTK_WINDOW (progress_dialog),
 				"file_progress", "Nautilus");
-	gtk_window_set_position (GTK_WINDOW (progress_window),
+	gtk_window_set_position (GTK_WINDOW (progress_dialog),
 				 GTK_WIN_POS_CENTER);
-	gtk_window_set_icon_name (GTK_WINDOW (progress_window),
+	gtk_window_set_icon_name (GTK_WINDOW (progress_dialog),
 				"system-file-manager");
 
-	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	gtk_box_set_spacing (GTK_BOX (vbox), 5);
-	gtk_container_add (GTK_CONTAINER (progress_window),
-			   vbox);
-	self->priv->window_vbox = vbox;
-	gtk_widget_show (vbox);
+	self->priv->content_area = gtk_dialog_get_content_area (GTK_DIALOG (self->priv->progress_dialog));
 
-	g_signal_connect (progress_window,
+	g_signal_connect (progress_dialog,
 			  "delete-event",
 			  (GCallback) progress_window_delete_event, self);
 }
@@ -207,7 +202,7 @@ progress_ui_handler_add_to_window (NautilusProgressUIHandler *self,
 	progress = nautilus_progress_info_widget_new (info);
 	progress_ui_handler_ensure_window (self);
 
-	gtk_box_pack_start (GTK_BOX (self->priv->window_vbox),
+	gtk_box_pack_start (GTK_BOX (self->priv->content_area),
 			    progress,
 			    FALSE, FALSE, 6);
 
@@ -252,12 +247,12 @@ progress_info_finished_cb (NautilusProgressInfo *info,
 	self->priv->active_infos--;
 
 	if (self->priv->active_infos > 0) {
-		if (!gtk_widget_get_visible (self->priv->progress_window)) {
+		if (!gtk_widget_get_visible (self->priv->progress_dialog)) {
 			progress_ui_handler_update_notification_or_status (self);
 		}
 	} else {
-		if (gtk_widget_get_visible (self->priv->progress_window)) {
-			gtk_widget_hide (self->priv->progress_window);
+		if (gtk_widget_get_visible (self->priv->progress_dialog)) {
+			gtk_widget_hide (self->priv->progress_dialog);
 		} else {
 			progress_ui_handler_hide_notification_or_status (self);
 			progress_ui_handler_show_complete_notification (self);
@@ -277,9 +272,9 @@ handle_new_progress_info (NautilusProgressUIHandler *self,
 	if (self->priv->active_infos == 1) {
 		/* this is the only active operation, present the window */
 		progress_ui_handler_add_to_window (self, info);
-		gtk_window_present (GTK_WINDOW (self->priv->progress_window));
+		gtk_window_present (GTK_WINDOW (self->priv->progress_dialog));
 	} else {
-		if (gtk_widget_get_visible (self->priv->progress_window)) {
+		if (gtk_widget_get_visible (self->priv->progress_dialog)) {
 			progress_ui_handler_add_to_window (self, info);
 		} else {
 			progress_ui_handler_update_notification_or_status (self);
@@ -452,5 +447,5 @@ void
 nautilus_progress_ui_handler_ensure_window (NautilusProgressUIHandler *self)
 {
 	if (self->priv->active_infos > 0)
-		gtk_window_present (GTK_WINDOW (self->priv->progress_window));
+		gtk_window_present (GTK_WINDOW (self->priv->progress_dialog));
 }
