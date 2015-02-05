@@ -18,8 +18,8 @@ msgstr ""
 "Project-Id-Version: nautilus trunk\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2015-02-04 11:13+0000\n"
-"PO-Revision-Date: 2015-02-04 16:04+0300\n"
+"POT-Creation-Date: 2015-02-05 12:51+0000\n"
+"PO-Revision-Date: 2015-02-06 00:02+0300\n"
 "Last-Translator: Stas Solovey <whats_up@tut.by>\n"
 "Language-Team: Русский <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
@@ -72,8 +72,8 @@ msgstr "Подключение к серверу"
 #. Set initial window title
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
 #: ../src/nautilus-file-management-properties.ui.h:29
-#: ../src/nautilus-properties-window.c:4189 ../src/nautilus-window.c:2394
-#: ../src/nautilus-window.c:2563
+#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2401
+#: ../src/nautilus-window.c:2570
 msgid "Files"
 msgstr "Nautilus"
 
@@ -172,8 +172,8 @@ msgstr "Показать _подробности"
 #: ../src/nautilus-mime-actions.c:651 ../src/nautilus-mime-actions.c:722
 #: ../src/nautilus-mime-actions.c:1065 ../src/nautilus-mime-actions.c:1571
 #: ../src/nautilus-mime-actions.c:1795
-#: ../src/nautilus-properties-window.c:4180
-#: ../src/nautilus-properties-window.c:5164 ../src/nautilus-query-editor.c:491
+#: ../src/nautilus-properties-window.c:4179
+#: ../src/nautilus-properties-window.c:5163 ../src/nautilus-query-editor.c:491
 #: ../src/nautilus-view.c:780 ../src/nautilus-view.c:1238
 #: ../src/nautilus-view.c:4880
 msgid "_Cancel"
@@ -266,7 +266,7 @@ msgid "The group of the file."
 msgstr "Группа файла."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:111
-#: ../src/nautilus-properties-window.c:4251
+#: ../src/nautilus-properties-window.c:4250
 msgid "Permissions"
 msgstr "Права"
 
@@ -723,7 +723,7 @@ msgstr "_Выбрать новое имя для назначения"
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:521
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:316
 msgid "Reset"
-msgstr "Сброс"
+msgstr "Сбросить"
 
 #. Setup the checkbox to apply the action to all files
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:533
@@ -757,7 +757,7 @@ msgstr "Повто_рить"
 
 #: ../libnautilus-private/nautilus-file-operations.c:187
 msgid "_Delete"
-msgstr "Удалить _безвозвратно"
+msgstr "Удали_ть"
 
 #: ../libnautilus-private/nautilus-file-operations.c:188
 msgid "Delete _All"
@@ -1484,7 +1484,7 @@ msgid "Unable to mark launcher trusted (executable)"
 msgstr "Не удалось отметить значок запуска проверенным (исполняемым)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:133
-#: ../src/nautilus-window.c:448
+#: ../src/nautilus-notification-delete.c:183 ../src/nautilus-window.c:448
 msgid "Undo"
 msgstr "Отменить"
 
@@ -1632,7 +1632,7 @@ msgstr "Копировать «%s» в «%s»"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:419
 msgid "_Undo Copy"
-msgstr "_Вернуть копию"
+msgstr "_Отменить копирование"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:420
 msgid "_Redo Copy"
@@ -1869,7 +1869,7 @@ msgstr "Не удалось определить исходное располо
 
 #: ../libnautilus-private/nautilus-file-utilities.c:922
 msgid "The item cannot be restored from trash"
-msgstr "Объект не может быть восстановлен из корзины."
+msgstr "Объект не может быть восстановлен из корзины"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:80
 #, c-format
@@ -1984,7 +1984,7 @@ msgstr "Не удалось выполнить поисковый запрос"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:1
 msgid "Where to position newly open tabs in browser windows."
-msgstr "Расположение открываемых вкладок в окнах обозревателя"
+msgstr "Расположение открываемых вкладок в окнах обозревателя."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:2
 msgid ""
@@ -1992,9 +1992,8 @@ msgid ""
 "current tab. If set to \"end\", then new tabs are appended to the end of the "
 "tab list."
 msgstr ""
-"Если ключ имеет значение \"after_current_tab\", новые вкладки создаются "
-"после текущей; если \"end\" — новые вкладки добавляются в конец списка "
-"вкладок."
+"Если ключ имеет значение «after_current_tab», новые вкладки создаются после "
+"текущей; если «end» — новые вкладки добавляются в конец списка вкладок."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:3
 msgid "Always use the location entry, instead of the pathbar"
@@ -2045,23 +2044,23 @@ msgid ""
 "server. If set to \"local-only\" then only show counts for local file "
 "systems. If set to \"never\" then never bother to compute item counts."
 msgstr ""
-"Критерий отображения количества объектов в папке. Если установлено \"always"
-"\", количество объектов будет подсчитываться всегда, даже если папка "
-"находится на удалённом сервере. Если установлено \"local_only\", количество "
-"объектов будет подсчитываться только для локальных файловых систем. Если "
-"установлено \"never\", количество объектов никогда не будет подсчитываться."
+"Критерий отображения количества объектов в папке. Если установлено «always», "
+"количество объектов будет подсчитываться всегда, даже если папка находится "
+"на удалённом сервере. Если установлено «local_only», количество объектов "
+"будет подсчитываться только для локальных файловых систем. Если установлено "
+"«never», количество объектов никогда не будет подсчитываться."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:11
 msgid "Type of click used to launch/open files"
-msgstr "Тип щелчка, используемый для запуска/открытия файлов"
+msgstr "Тип нажатия, используемый для запуска/открытия файлов"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:12
 msgid ""
 "Possible values are \"single\" to launch files on a single click, or \"double"
 "\" to launch them on a double click."
 msgstr ""
-"Допустимыми значениями являются: \"single\" для запуска файлов одинарным "
-"щелчком и \"double\" для запуска файлов двойным щелчком."
+"Допустимыми значениями являются: «single» для запуска файлов одинарным "
+"нажатием и «double» для запуска файлов двойным нажатием."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:13
 msgid "What to do with executable text files when activated"
@@ -2075,8 +2074,8 @@ msgid ""
 "text files."
 msgstr ""
 "Что делать с исполняемыми текстовыми файлами при их активизации (одиночным "
-"или двойным щелчком). Допустимые значения: \"launch\" — запускать их как "
-"программы; \"ask\" — запрашивать нужное действие через диалог; \"display\" — "
+"или двойным щелчком). Допустимые значения: «launch» — запускать их как "
+"программы; «ask» — запрашивать нужное действие через диалог; «display» — "
 "показывать их как текстовые файлы."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:15
@@ -2148,7 +2147,7 @@ msgstr ""
 "Критерий отображения миниатюр. Если установлено «always», миниатюры будут "
 "отображаться всегда, даже если папка находится на удалённом сервере. Если "
 "установлено «local_only», миниатюры будут создаваться только для файлов на "
-"локальных файловых системах. Если установлено «\"never», вместо миниатюр "
+"локальных файловых системах. Если установлено «never», вместо миниатюр "
 "всегда будет использоваться значок типа файла. Применяется ко всем типам "
 "файлов, для которых возможен предварительный просмотр."
 
@@ -2189,7 +2188,7 @@ msgid ""
 "\", \"size\", \"type\" and \"mtime\"."
 msgstr ""
 "Порядок сортировки объектов по умолчанию в режиме просмотра значков. "
-"Допустимые значения: \"name\", \"size\", \"type\" и \"mtime\"."
+"Допустимые значения: «name», «size», «type» и «mtime»."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:31
 msgid "Reverse sort order in new windows"
@@ -2221,7 +2220,7 @@ msgid ""
 msgstr ""
 "При посещении папки будет использоваться этот режим просмотра, если именно "
 "для этой папки не выбран другой режим просмотра. Возможные варианты: "
-"\"list_view\", \"icon_view\"."
+"«list_view», «icon_view»."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:35
 msgid "Whether to show hidden files"
@@ -2247,7 +2246,7 @@ msgid ""
 "their executable name and any command line options. If the executable name "
 "is not set to a full path, it will be searched for in the search path."
 msgstr ""
-"Если этот ключ установлен, Nautilus добавит адреса (URI) выделенных файлов и "
+"Если этот ключ установлен, Nautilus добавит адреса URI выделенных файлов и "
 "обработает результат как командную строку для массового переименования. "
 "Приложения для массового переименования можно зарегистрировать в этом ключе, "
 "присвоив значению ключа строку, состоящую из имён исполняемых файлов и любых "
@@ -2579,11 +2578,11 @@ msgstr "параметр --check нельзя использовать вмес�
 
 #: ../src/nautilus-application.c:619
 msgid "--quit cannot be used with URIs."
-msgstr "параметр --quit нельзя использовать с адресами (URI)."
+msgstr "параметр --quit нельзя использовать с адресами URI."
 
 #: ../src/nautilus-application.c:627
 msgid "--select must be used with at least an URI."
-msgstr "--select должен использоваться по крайней мере с одним адресом (URI)."
+msgstr "--select должен использоваться по крайней мере с одним адресом URI."
 
 #: ../src/nautilus-application.c:634
 msgid "--no-desktop and --force-desktop cannot be used together."
@@ -2608,11 +2607,11 @@ msgstr "Показать версию программы."
 
 #: ../src/nautilus-application.c:729
 msgid "Always open a new window for browsing specified URIs"
-msgstr "Всегда открывать новое окно, если указывается адрес (URI)."
+msgstr "Всегда открывать новое окно, если указывается адрес URI"
 
 #: ../src/nautilus-application.c:731
 msgid "Only create windows for explicitly specified URIs."
-msgstr "Создавать окна только для заданных явно адресов (URI)."
+msgstr "Создавать окна только для заданных явно адресов URI."
 
 #: ../src/nautilus-application.c:733
 msgid "Never manage the desktop (ignore the GSettings preference)."
@@ -2625,7 +2624,7 @@ msgstr "Всегда не управлять рабочим столом (игн
 
 #: ../src/nautilus-application.c:737
 msgid "Quit Nautilus."
-msgstr "Выйти из Nautilus."
+msgstr "Завершить Nautilus."
 
 #: ../src/nautilus-application.c:739
 msgid "Select specified URI in parent folder."
@@ -2633,7 +2632,7 @@ msgstr "Выбрать указанный URI в родительской пап
 
 #: ../src/nautilus-application.c:740
 msgid "[URI...]"
-msgstr "[URI...]"
+msgstr "[URI…]"
 
 #. Translators: this is a fatal error quit message printed on the
 #. * command line
@@ -2648,7 +2647,7 @@ msgid ""
 "%s"
 msgstr ""
 "При попытке показать справку произошла ошибка: \n"
-"%s."
+"%s"
 
 #: ../src/nautilus-app-menu.ui.h:1
 msgid "New _Window"
@@ -3076,7 +3075,7 @@ msgid "_Only for files smaller than:"
 msgstr "_Только для файлов меньше, чем:"
 
 #: ../src/nautilus-file-management-properties.ui.h:32
-#: ../src/nautilus-properties-window.c:4192
+#: ../src/nautilus-properties-window.c:4191
 msgid "Folders"
 msgstr "Папки"
 
@@ -3365,7 +3364,7 @@ msgstr "Эту ссылку нельзя использовать, потому 
 #: ../src/nautilus-mime-actions.c:651
 #: ../src/nautilus-view-context-menus.xml.h:26
 msgid "Mo_ve to Trash"
-msgstr "_Удалить"
+msgstr "_Переместить в корзину"
 
 #: ../src/nautilus-mime-actions.c:711
 #, c-format
@@ -3410,7 +3409,7 @@ msgstr "Неизвестный тип файла"
 #: ../src/nautilus-mime-actions.c:1225
 #, c-format
 msgid "There is no application installed for “%s” files"
-msgstr "Для файлов типа «%s» не установлено ни одного приложения."
+msgstr "Для файлов типа «%s» не установлено ни одного приложения"
 
 #: ../src/nautilus-mime-actions.c:1240
 msgid "_Select Application"
@@ -3475,13 +3474,32 @@ msgstr "Открывается «%s»."
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
-msgstr[0] "Открывается %d объект"
-msgstr[1] "Открывается %d объекта"
-msgstr[2] "Открывается %d объектов"
+msgstr[0] "Открывается %d объект."
+msgstr[1] "Открывается %d объекта."
+msgstr[2] "Открывается %d объектов."
 
 #: ../src/nautilus-notebook.c:382
 msgid "Close tab"
 msgstr "Закрыть вкладку"
+
+#. Translators: this is the second part of a "%d files deleted" string
+#: ../src/nautilus-notification-delete.c:163
+#: ../src/nautilus-notification-delete.c:172
+#, c-format
+msgid "%s deleted"
+msgid_plural "%s deleted"
+msgstr[0] "%s удалён"
+msgstr[1] "%s удалены"
+msgstr[2] "%s удалено"
+
+#. Translators: this is the first part of a "%d files deleted" string
+#: ../src/nautilus-notification-delete.c:168
+#, c-format
+msgid "%d file"
+msgid_plural "%d files"
+msgstr[0] "%d файл"
+msgstr[1] "%d файла"
+msgstr[2] "%d файлов"
 
 #: ../src/nautilus-progress-ui-handler.c:104
 #: ../src/nautilus-progress-ui-handler.c:171
@@ -3703,81 +3721,81 @@ msgid "_Owner:"
 msgstr "_Владелец:"
 
 #: ../src/nautilus-properties-window.c:3931
-#: ../src/nautilus-properties-window.c:4196
+#: ../src/nautilus-properties-window.c:4195
 msgid "Owner:"
 msgstr "Владелец:"
 
-#: ../src/nautilus-properties-window.c:3954
+#: ../src/nautilus-properties-window.c:3953
 msgid "_Group:"
 msgstr "_Группа:"
 
-#: ../src/nautilus-properties-window.c:3962
-#: ../src/nautilus-properties-window.c:4210
+#: ../src/nautilus-properties-window.c:3961
+#: ../src/nautilus-properties-window.c:4209
 msgid "Group:"
 msgstr "Группа:"
 
-#: ../src/nautilus-properties-window.c:3983
+#: ../src/nautilus-properties-window.c:3982
 msgid "Others"
 msgstr "Остальные"
 
-#: ../src/nautilus-properties-window.c:3998
+#: ../src/nautilus-properties-window.c:3997
 msgid "Execute:"
 msgstr "Выполнение:"
 
-#: ../src/nautilus-properties-window.c:4001
+#: ../src/nautilus-properties-window.c:4000
 msgid "Allow _executing file as program"
 msgstr "_Разрешить выполнение файла как программы"
 
-#: ../src/nautilus-properties-window.c:4177
+#: ../src/nautilus-properties-window.c:4176
 msgid "Change Permissions for Enclosed Files"
 msgstr "Изменить права на вложенные файлы"
 
-#: ../src/nautilus-properties-window.c:4181
+#: ../src/nautilus-properties-window.c:4180
 msgid "Change"
 msgstr "Изменить"
 
-#: ../src/nautilus-properties-window.c:4224
+#: ../src/nautilus-properties-window.c:4223
 msgid "Others:"
 msgstr "Остальные:"
 
-#: ../src/nautilus-properties-window.c:4265
+#: ../src/nautilus-properties-window.c:4264
 msgid "You are not the owner, so you cannot change these permissions."
 msgstr "Нельзя изменить эти права, поскольку вы не являетесь владельцем."
 
-#: ../src/nautilus-properties-window.c:4280
+#: ../src/nautilus-properties-window.c:4279
 msgid "Security context:"
 msgstr "Контекст безопасности:"
 
-#: ../src/nautilus-properties-window.c:4295
+#: ../src/nautilus-properties-window.c:4294
 msgid "Change Permissions for Enclosed Files…"
 msgstr "Изменить права на вложенные файлы…"
 
-#: ../src/nautilus-properties-window.c:4305
+#: ../src/nautilus-properties-window.c:4304
 #, c-format
 msgid "The permissions of “%s” could not be determined."
 msgstr "Не удалось определить права доступа к объекту «%s»."
 
-#: ../src/nautilus-properties-window.c:4308
+#: ../src/nautilus-properties-window.c:4307
 msgid "The permissions of the selected file could not be determined."
 msgstr "Не удалось определить права доступа к выделенному файлу."
 
-#: ../src/nautilus-properties-window.c:4556
+#: ../src/nautilus-properties-window.c:4555
 msgid "Open With"
 msgstr "Открыть с помощью"
 
-#: ../src/nautilus-properties-window.c:4877
+#: ../src/nautilus-properties-window.c:4876
 msgid "Creating Properties window."
 msgstr "Создание окна свойств."
 
-#: ../src/nautilus-properties-window.c:5161
+#: ../src/nautilus-properties-window.c:5160
 msgid "Select Custom Icon"
 msgstr "Выбрать другой значок"
 
-#: ../src/nautilus-properties-window.c:5163
+#: ../src/nautilus-properties-window.c:5162
 msgid "_Revert"
 msgstr "_Вернуть"
 
-#: ../src/nautilus-properties-window.c:5165
+#: ../src/nautilus-properties-window.c:5164
 msgid "_Open"
 msgstr "_Открыть"
 
@@ -3864,7 +3882,7 @@ msgstr "Создать _вкладку"
 msgid "Select _All"
 msgstr "Выделить _всё"
 
-#: ../src/nautilus-toolbar-action-menu.xml.h:4"
+#: ../src/nautilus-toolbar-action-menu.xml.h:4
 msgid "Enter _Location"
 msgstr "Ввести _адрес"
 
@@ -4229,7 +4247,7 @@ msgstr "_Восстановить из корзины"
 
 #: ../src/nautilus-view-context-menus.xml.h:30
 msgid "Resize Icon…"
-msgstr "Растянуть значок…"
+msgstr "Изменить размер значка…"
 
 #: ../src/nautilus-view-context-menus.xml.h:31
 msgid "Restore Icon's Original Size"
@@ -4276,31 +4294,31 @@ msgstr "_Свойства"
 msgid "_Format…"
 msgstr "_Форматировать…"
 
-#: ../src/nautilus-window.c:1606
+#: ../src/nautilus-window.c:1613
 msgid "_New Tab"
 msgstr "Создать _вкладку"
 
-#: ../src/nautilus-window.c:1616
+#: ../src/nautilus-window.c:1623
 msgid "Move Tab _Left"
 msgstr "Переместить вкладку в_лево"
 
-#: ../src/nautilus-window.c:1624
+#: ../src/nautilus-window.c:1631
 msgid "Move Tab _Right"
 msgstr "Переместить вкладку в_право"
 
-#: ../src/nautilus-window.c:1635
+#: ../src/nautilus-window.c:1642
 msgid "_Close Tab"
 msgstr "_Закрыть вкладку"
 
-#: ../src/nautilus-window.c:2565
+#: ../src/nautilus-window.c:2572
 msgid "Access and organize your files."
-msgstr "Управление файлами."
+msgstr "Доступ и управление файлами."
 
 #. Translators should localize the following string
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2574
+#: ../src/nautilus-window.c:2581
 msgid "translator-credits"
 msgstr ""
 "Valek Filippov <frob@df.ru>, 2000-2002.\n"
@@ -4375,7 +4393,7 @@ msgstr "Поиск…"
 
 #: ../src/nautilus-x-content-bar.c:92
 msgid "Audio CD"
-msgstr "Звуковой компакт-диск"
+msgstr "Audio CD"
 
 #: ../src/nautilus-x-content-bar.c:94
 msgid "Audio DVD"
@@ -4411,13 +4429,13 @@ msgstr "Содержит музыку"
 
 #: ../src/nautilus-x-content-bar.c:110
 msgid "Contains software"
-msgstr "Содержит программное обеспечение."
+msgstr "Содержит программное обеспечение"
 
 #. fallback to generic greeting
 #: ../src/nautilus-x-content-bar.c:113
 #, c-format
 msgid "Detected as “%s”"
-msgstr "Определено как «%s»."
+msgstr "Определено как «%s»"
 
 #: ../src/nautilus-x-content-bar.c:135
 msgid "Contains music and photos"
