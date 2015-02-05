@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: nautilus.master.is\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2015-01-28 10:16+0000\n"
-"PO-Revision-Date: 2015-01-28 10:32+0000\n"
+"POT-Creation-Date: 2015-02-05 11:18+0000\n"
+"PO-Revision-Date: 2015-02-05 12:50+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic <translation-team-is@lists.sourceforge.net>\n"
 "Language: is\n"
@@ -62,8 +62,8 @@ msgstr "Tengjast þjóni"
 #. Set initial window title
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
 #: ../src/nautilus-file-management-properties.ui.h:29
-#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2361
-#: ../src/nautilus-window.c:2530
+#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2401
+#: ../src/nautilus-window.c:2570
 msgid "Files"
 msgstr "Skrár"
 
@@ -181,7 +181,7 @@ msgstr " (ógilt Unicode)"
 #: ../libnautilus-private/nautilus-desktop-link.c:129
 #: ../libnautilus-private/nautilus-file-utilities.c:265
 #: ../src/nautilus-list-view.c:1824 ../src/nautilus-pathbar.c:295
-#: ../src/nautilus-query-editor.c:1066
+#: ../src/nautilus-query-editor.c:1067
 #: ../src/nautilus-shell-search-provider.c:285
 msgid "Home"
 msgstr "Heim"
@@ -191,7 +191,6 @@ msgid "The selection rectangle"
 msgstr "Valramminn"
 
 #: ../libnautilus-private/nautilus-column-chooser.c:416
-#| msgid "Reset View to _Defaults"
 msgid "Reset to De_fault"
 msgstr "Endurstilla á s_jálfgefið"
 
@@ -965,7 +964,7 @@ msgstr "Öllum atriðum í ruslinu verður endanlega eytt."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1399
 #: ../libnautilus-private/nautilus-file-operations.c:2275
-#: ../src/nautilus-window.c:1216
+#: ../src/nautilus-window.c:1218
 msgid "Empty _Trash"
 msgstr "_Tæma ruslið"
 
@@ -1465,7 +1464,7 @@ msgid "Unable to mark launcher trusted (executable)"
 msgstr "Tókst ekki að merkja ræsirinn sem treystum (keyranlegan)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:133
-#: ../src/nautilus-window.c:446
+#: ../src/nautilus-notification-delete.c:183 ../src/nautilus-window.c:448
 msgid "Undo"
 msgstr "Afturkalla"
 
@@ -1474,7 +1473,7 @@ msgid "Undo last action"
 msgstr "Afturkalla síðustu aðgerð"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:140
-#: ../src/nautilus-window.c:447
+#: ../src/nautilus-window.c:449
 msgid "Redo"
 msgstr "Endurtaka"
 
@@ -1760,69 +1759,69 @@ msgstr "_Afturkalla sendingu í ruslið"
 msgid "_Redo Trash"
 msgstr "_Endurtaka sendingu í ruslið"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1297
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1303
 #, c-format
 msgid "Restore original permissions of items enclosed in '%s'"
 msgstr "Endurheimta upphaflegar heimildir fyrir atriðin í '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1298
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1304
 #, c-format
 msgid "Set permissions of items enclosed in '%s'"
 msgstr "Setja heimildir fyrir atriðin í '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1300
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1455
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1306
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1461
 msgid "_Undo Change Permissions"
 msgstr "_Hætta við breytingu á heimildum"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1301
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1456
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1307
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1462
 msgid "_Redo Change Permissions"
 msgstr "Endu_rtaka breytingu á heimildum"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1452
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1458
 #, c-format
 msgid "Restore original permissions of '%s'"
 msgstr "Endurheimta upphaflegar heimildir fyrir '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1453
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1459
 #, c-format
 msgid "Set permissions of '%s'"
 msgstr "Setja heimildir fyrir '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1563
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1569
 #, c-format
 msgid "Restore group of '%s' to '%s'"
 msgstr "Endurheimta hópheimild '%s' sem '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1565
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1571
 #, c-format
 msgid "Set group of '%s' to '%s'"
 msgstr "Setja hópheimildir '%s' sem '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1568
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1574
 msgid "_Undo Change Group"
 msgstr "_Hætta við breytingu á hóp"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1569
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1575
 msgid "_Redo Change Group"
 msgstr "Endu_rtaka breytingu á hóp"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1571
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1577
 #, c-format
 msgid "Restore owner of '%s' to '%s'"
 msgstr "Endurheimta eiganda '%s' sem '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1573
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1579
 #, c-format
 msgid "Set owner of '%s' to '%s'"
 msgstr "Setja eiganda '%s' sem '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1576
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1582
 msgid "_Undo Change Owner"
 msgstr "_Hætta við breytingu á eiganda"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1577
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1583
 msgid "_Redo Change Owner"
 msgstr "Endu_rtaka breytingu á eiganda"
 
@@ -2241,7 +2240,6 @@ msgid "Default Thumbnail Icon Size"
 msgstr "Sjálfgefin stærð táknmynda"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:44
-#| msgid "The default size of an icon for a thumbnail in the icon view."
 msgid ""
 "The default size of an icon for a thumbnail in the icon view when using "
 "NAUTILUS_ICON_SIZE_SMALL size."
@@ -2254,21 +2252,6 @@ msgid "Text Ellipsis Limit"
 msgstr "Mörk þrípunkts í texta"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:46
-#| msgid ""
-#| "A string specifying how parts of overlong file names should be replaced "
-#| "by ellipses, depending on the zoom level. Each of the list entries is of "
-#| "the form \"Zoom Level:Integer\". For each specified zoom level, if the "
-#| "given integer is larger than 0, the file name will not exceed the given "
-#| "number of lines. If the integer is 0 or smaller, no limit is imposed on "
-#| "the specified zoom level. A default entry of the form \"Integer\" without "
-#| "any specified zoom level is also allowed. It defines the maximum number "
-#| "of lines for all other zoom levels. Examples: 0 - always display overlong "
-#| "file names; 3 - shorten file names if they exceed three lines; smallest:5,"
-#| "smaller:4,0 - shorten file names if they exceed five lines for zoom level "
-#| "\"smallest\". Shorten file names if they exceed four lines for zoom level "
-#| "\"smaller\". Do not shorten file names for other zoom levels. Available "
-#| "zoom levels: smallest (33%), smaller (50%), small (66%), standard (100%), "
-#| "large (150%), larger (200%), largest (400%)"
 msgid ""
 "A string specifying how parts of overlong file names should be replaced by "
 "ellipses, depending on the zoom level. Each of the list entries is of the "
@@ -2618,7 +2601,6 @@ msgid "New _Window"
 msgstr "Nýr _gluggi"
 
 #: ../src/nautilus-app-menu.ui.h:2
-#| msgid "_Show Sidebar"
 msgid "Sidebar"
 msgstr "Hliðarslá"
 
@@ -3095,7 +3077,6 @@ msgid "Small"
 msgstr "Lítið"
 
 #: ../src/nautilus-file-management-properties.ui.h:46
-#| msgid "Calendar"
 msgid "Standard"
 msgstr "Staðlað"
 
@@ -3446,6 +3427,25 @@ msgstr[1] "Opna %d hluti."
 msgid "Close tab"
 msgstr "Loka flipa"
 
+#. Translators: this is the second part of a "%d files deleted" string
+#: ../src/nautilus-notification-delete.c:163
+#: ../src/nautilus-notification-delete.c:172
+#, c-format
+msgid "%s deleted"
+msgid_plural "%s deleted"
+msgstr[0] "%s eytt"
+msgstr[1] "%s eytt"
+
+#. Translators: this is the first part of a "%d files deleted" string
+#: ../src/nautilus-notification-delete.c:168
+#, c-format
+#| msgid "%'u file"
+#| msgid_plural "%'u files"
+msgid "%d file"
+msgid_plural "%d files"
+msgstr[0] "%d skrá"
+msgstr[1] "%d skrár"
+
 #: ../src/nautilus-progress-ui-handler.c:104
 #: ../src/nautilus-progress-ui-handler.c:171
 #: ../src/nautilus-progress-ui-handler.c:227
@@ -3577,7 +3577,6 @@ msgid "Link target:"
 msgstr "Áfangastaður tengils:"
 
 #: ../src/nautilus-properties-window.c:2998
-#| msgid "_Paste Into Folder"
 msgid "Parent Folder:"
 msgstr "Yfirmappa:"
 
@@ -3790,15 +3789,15 @@ msgid "Remove this criterion from the search"
 msgstr "Fjarlægja þessa forsendu úr leitinni"
 
 #. create the Current/All Files selector
-#: ../src/nautilus-query-editor.c:940
+#: ../src/nautilus-query-editor.c:941
 msgid "Current"
 msgstr "Núverandi"
 
-#: ../src/nautilus-query-editor.c:943
+#: ../src/nautilus-query-editor.c:944
 msgid "All Files"
 msgstr "Allar skrár"
 
-#: ../src/nautilus-query-editor.c:965
+#: ../src/nautilus-query-editor.c:966
 msgid "Add a new criterion to this search"
 msgstr "Bæta við nýju skilirði í leitina"
 
@@ -3827,12 +3826,10 @@ msgid "Select _All"
 msgstr "Velja _allt"
 
 #: ../src/nautilus-toolbar-action-menu.xml.h:4
-#| msgid "Enter _Location…"
 msgid "Enter _Location"
 msgstr "Settu inn st_aðsetningu:"
 
 #: ../src/nautilus-toolbar-action-menu.xml.h:5
-#| msgid "Bookmark this Location"
 msgid "_Bookmark this Location"
 msgstr "Setja þessa staðsetningu í _bókamerki"
 
@@ -3841,12 +3838,10 @@ msgid "Sort"
 msgstr "Raða"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:3
-#| msgid "Size"
 msgid "_Size"
 msgstr "_Stærð"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:4
-#| msgid "Type"
 msgid "_Type"
 msgstr "_Tegund"
 
@@ -3855,22 +3850,19 @@ msgid "Last _Opened"
 msgstr "Síðast _opnað"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:6
-#| msgid "Empty _Trash"
 msgid "Last _Trashed"
 msgstr "Síðast _hent"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:7
-#| msgid "By Search Relevance"
 msgid "Search _Relevance"
 msgstr "Samsvö_run við leit"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:8
-#| msgid "Re_versed Order"
-msgid "Re_verse order"
+#| msgid "Re_verse order"
+msgid "Re_verse Order"
 msgstr "Öfu_g röð"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:9
-#| msgid "Visible _Columns…"
 msgid "_Visible Columns…"
 msgstr "Sýnilegir _dálkar…"
 
@@ -4041,69 +4033,68 @@ msgstr "Ekki tókst að stöðva drif"
 msgid "Unable to start “%s”"
 msgstr "Get ekki ræst “%s”"
 
-#: ../src/nautilus-view.c:6140
+#: ../src/nautilus-view.c:6139
 #, c-format
-#| msgid "New Folder with Selection (%'d Item)"
-#| msgid_plural "New Folder with Selection (%'d Items)"
-msgid "New Folder with Selection (%'d Items)"
-msgstr "Ný mappa með völdu (%'d atriði)"
+#| msgid "New Folder with Selection (%'d Items)"
+msgid "New Folder with Selection (%'d Item)"
+msgid_plural "New Folder with Selection (%'d Items)"
+msgstr[0] "Ný mappa með völdu (%'d atriði)"
+msgstr[1] "Ný mappa með völdu (%'d atriði)"
 
-#: ../src/nautilus-view.c:6186
+#: ../src/nautilus-view.c:6187
 #, c-format
 msgid "Open With %s"
 msgstr "Opna með %s"
 
-#: ../src/nautilus-view.c:6195
+#: ../src/nautilus-view.c:6196
 msgid "Run"
 msgstr "Keyra"
 
-#: ../src/nautilus-view.c:6197
-#| msgid "_Open"
+#: ../src/nautilus-view.c:6198
 msgid "Open"
 msgstr "Opna"
 
-#: ../src/nautilus-view.c:6248 ../src/nautilus-view-context-menus.xml.h:18
+#: ../src/nautilus-view.c:6249 ../src/nautilus-view-context-menus.xml.h:18
 msgid "_Start"
 msgstr "_Ræsa"
 
-#: ../src/nautilus-view.c:6251
+#: ../src/nautilus-view.c:6252
 msgid "_Connect"
 msgstr "_Tengjast"
 
-#: ../src/nautilus-view.c:6254
+#: ../src/nautilus-view.c:6255
 msgid "_Start Multi-disk Drive"
 msgstr "Ræ_sa margdiska-drif"
 
-#: ../src/nautilus-view.c:6257
+#: ../src/nautilus-view.c:6258
 msgid "U_nlock Drive"
 msgstr "_Aflæsa drifi"
 
-#: ../src/nautilus-view.c:6273
-#| msgid "_Lock Drive"
+#: ../src/nautilus-view.c:6274
 msgid "Stop Drive"
 msgstr "Stöðva drif"
 
-#: ../src/nautilus-view.c:6276
+#: ../src/nautilus-view.c:6277
 msgid "_Safely Remove Drive"
 msgstr "_Fjarlægja drif á öruggan máta"
 
-#: ../src/nautilus-view.c:6279
+#: ../src/nautilus-view.c:6280
 msgid "_Disconnect"
 msgstr "_Aftengja"
 
-#: ../src/nautilus-view.c:6282
+#: ../src/nautilus-view.c:6283
 msgid "_Stop Multi-disk Drive"
 msgstr "_Stöðva margdiskatæki"
 
-#: ../src/nautilus-view.c:6285
+#: ../src/nautilus-view.c:6286
 msgid "_Lock Drive"
 msgstr "_Læsa drifi"
 
-#: ../src/nautilus-view.c:7480
+#: ../src/nautilus-view.c:7488
 msgid "Content View"
 msgstr "Innihaldssýn"
 
-#: ../src/nautilus-view.c:7481
+#: ../src/nautilus-view.c:7489
 msgid "View of the current folder"
 msgstr "Skoða þessa möppu"
 
@@ -4116,17 +4107,14 @@ msgid "P_roperties"
 msgstr "_Eiginleikar"
 
 #: ../src/nautilus-view-context-menus.xml.h:6
-#| msgid "_Keep Aligned"
 msgid "_Keep aligned"
 msgstr "_Halda jöfnuðu"
 
 #: ../src/nautilus-view-context-menus.xml.h:7
-#| msgid "_Organize Desktop by Name"
 msgid "Organize _Desktop by Name"
 msgstr "Raða á skjáb_orð eftir heiti"
 
 #: ../src/nautilus-view-context-menus.xml.h:8
-#| msgid "Change Desktop _Background"
 msgid "Change _Background"
 msgstr "Breyta _bakgrunni"
 
@@ -4139,22 +4127,18 @@ msgid "_Open Scripts Folder"
 msgstr "_Opna skriftumöppu"
 
 #: ../src/nautilus-view-context-menus.xml.h:11
-#| msgid "Open _Item Location"
 msgid "_Open Item Location"
 msgstr "_Opna staðsetningu atriðis"
 
 #: ../src/nautilus-view-context-menus.xml.h:12
-#| msgid "Open in New _Window"
 msgid "Open In New _Window"
 msgstr "Opna í nýjum _glugga"
 
 #: ../src/nautilus-view-context-menus.xml.h:13
-#| msgid "Open in New _Tab"
 msgid "Open In New _Tab"
 msgstr "Opna í nýjum _flipa"
 
 #: ../src/nautilus-view-context-menus.xml.h:14
-#| msgid "Open With Other _Application…"
 msgid "Open With Other _Application"
 msgstr "Opn_a með öðru forriti"
 
@@ -4183,12 +4167,10 @@ msgid "_Paste Into Folder"
 msgstr "Líma inn í mö_ppu"
 
 #: ../src/nautilus-view-context-menus.xml.h:24
-#| msgid "Move To…"
 msgid "Move to…"
 msgstr "Færa í…"
 
 #: ../src/nautilus-view-context-menus.xml.h:25
-#| msgid "Copy To…"
 msgid "Copy to…"
 msgstr "Afrita í…"
 
@@ -4201,7 +4183,6 @@ msgid "Empty Trash"
 msgstr "Tæma rusl"
 
 #: ../src/nautilus-view-context-menus.xml.h:29
-#| msgid "_Undo Restore from Trash"
 msgid "_Restore From Trash"
 msgstr "_Endurheimta úr rusli"
 
@@ -4210,17 +4191,14 @@ msgid "Resize Icon…"
 msgstr "Breyta stærð táknmyndar…"
 
 #: ../src/nautilus-view-context-menus.xml.h:31
-#| msgid "Restore Icon's Original Si_ze"
 msgid "Restore Icon's Original Size"
 msgstr "Endurheimta upprunalega stærð táknmyndar"
 
 #: ../src/nautilus-view-context-menus.xml.h:32
-#| msgid "Rena_me…"
 msgid "Rena_me"
 msgstr "Endur_nefna"
 
 #: ../src/nautilus-view-context-menus.xml.h:33
-#| msgid "Set as Wallpaper"
 msgid "Set As Wallpaper"
 msgstr "Setja sem bakgrunnsmynd"
 
@@ -4249,31 +4227,31 @@ msgstr "slepptur texti.txt"
 msgid "dropped data"
 msgstr "færð gögn"
 
-#: ../src/nautilus-window.c:1230
+#: ../src/nautilus-window.c:1232
 msgid "_Properties"
 msgstr "_Stillingar"
 
-#: ../src/nautilus-window.c:1239
+#: ../src/nautilus-window.c:1241
 msgid "_Format…"
 msgstr "_Forsníða…"
 
-#: ../src/nautilus-window.c:1583
+#: ../src/nautilus-window.c:1613
 msgid "_New Tab"
 msgstr "_Nýr flipi"
 
-#: ../src/nautilus-window.c:1593
+#: ../src/nautilus-window.c:1623
 msgid "Move Tab _Left"
 msgstr "Færa f_lipa til hægri"
 
-#: ../src/nautilus-window.c:1601
+#: ../src/nautilus-window.c:1631
 msgid "Move Tab _Right"
 msgstr "Fæ_ra flipa til hægri"
 
-#: ../src/nautilus-window.c:1612
+#: ../src/nautilus-window.c:1642
 msgid "_Close Tab"
 msgstr "_Loka flipa"
 
-#: ../src/nautilus-window.c:2532
+#: ../src/nautilus-window.c:2572
 msgid "Access and organize your files."
 msgstr "Skoða og skipuleggja skrárnar þínar."
 
@@ -4281,7 +4259,7 @@ msgstr "Skoða og skipuleggja skrárnar þínar."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2541
+#: ../src/nautilus-window.c:2581
 msgid "translator-credits"
 msgstr ""
 "Samúel Jón Gunnarsson, sammi@techattack.nu, 2003\n"
