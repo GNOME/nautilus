@@ -914,10 +914,10 @@ setup_widgets (NautilusQueryEditor *editor)
 
 	/* create the toolbar and the box container for its contents */
 	toolbar = gtk_toolbar_new ();
+	gtk_toolbar_set_show_arrow (GTK_TOOLBAR (toolbar), FALSE);
 	gtk_style_context_add_class (gtk_widget_get_style_context (toolbar),
 				     "search-bar");
 	gtk_box_pack_start (GTK_BOX (editor), toolbar, TRUE, TRUE, 0);
-	g_object_set (G_OBJECT (editor), "width-request", 400, NULL);
 
 	item = gtk_tool_item_new ();
 	gtk_tool_item_set_expand (item, TRUE);
