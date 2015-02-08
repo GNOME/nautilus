@@ -405,6 +405,19 @@ zoom_level_changed (GtkRange *range,
 }
 
 static void
+view_menu_popover_closed (GtkPopover *popover,
+			  NautilusToolbar *self)
+{
+	NautilusWindowSlot *slot;
+	NautilusView *view;
+
+	slot = nautilus_window_get_active_slot (self->priv->window);
+	view = nautilus_window_slot_get_current_view (slot);
+
+	nautilus_view_grab_focus (view);
+}
+
+static void
 nautilus_toolbar_init (NautilusToolbar *self)
 {
 	GtkBuilder *builder;
@@ -432,6 +445,8 @@ nautilus_toolbar_init (NautilusToolbar *self)
 	self->priv->reload =  GTK_WIDGET (gtk_builder_get_object (builder, "reload"));
 	self->priv->stop =  GTK_WIDGET (gtk_builder_get_object (builder, "stop"));
 
+	g_signal_connect (self->priv->view_menu_widget, "closed",
+			  G_CALLBACK (view_menu_popover_closed), self);
 	gtk_menu_button_set_popover (GTK_MENU_BUTTON (self->priv->view_button),
 				     self->priv->view_menu_widget);
 	g_object_unref (builder);
