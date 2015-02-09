@@ -28,7 +28,7 @@
 #include "nautilus-notebook.h"
 
 #include "nautilus-window.h"
-#include "nautilus-window-private.h"
+#include "nautilus-window.h"
 #include "nautilus-window-slot.h"
 #include "nautilus-window-slot-dnd.h"
 
@@ -117,7 +117,7 @@ find_notebook_at_pointer (gint abs_x, gint abs_y)
 	/* toplevel should be an NautilusWindow */
 	if (toplevel != NULL && NAUTILUS_IS_WINDOW (toplevel))
 	{
-		return NAUTILUS_NOTEBOOK (NAUTILUS_WINDOW (toplevel)->details->notebook);
+		return NAUTILUS_NOTEBOOK (nautilus_window_get_notebook (NAUTILUS_WINDOW (toplevel)));
 	}
 
 	return NULL;

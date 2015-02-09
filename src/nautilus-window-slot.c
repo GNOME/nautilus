@@ -31,7 +31,7 @@
 #include "nautilus-list-view.h"
 #include "nautilus-special-location-bar.h"
 #include "nautilus-trash-bar.h"
-#include "nautilus-window-private.h"
+#include "nautilus-window.h"
 #include "nautilus-x-content-bar.h"
 
 #include <glib/gi18n.h>
@@ -460,11 +460,11 @@ real_active (NautilusWindowSlot *slot)
 	int page_num;
 
 	window = slot->details->window;
-	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (window->details->notebook),
+	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (nautilus_window_get_notebook (window)),
 					  GTK_WIDGET (slot));
 	g_assert (page_num >= 0);
 
-	gtk_notebook_set_current_page (GTK_NOTEBOOK (window->details->notebook), page_num);
+	gtk_notebook_set_current_page (GTK_NOTEBOOK (nautilus_window_get_notebook (window)), page_num);
 
 	/* sync window to new slot */
 	nautilus_window_sync_allow_stop (window, slot);

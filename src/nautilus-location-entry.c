@@ -33,7 +33,6 @@
 #include "nautilus-location-entry.h"
 
 #include "nautilus-application.h"
-#include "nautilus-window-private.h"
 #include "nautilus-window.h"
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>

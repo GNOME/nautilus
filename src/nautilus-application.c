@@ -40,7 +40,6 @@
 #include "nautilus-self-check-functions.h"
 #include "nautilus-shell-search-provider.h"
 #include "nautilus-window.h"
-#include "nautilus-window-private.h"
 #include "nautilus-window-slot.h"
 
 #include <libnautilus-private/nautilus-directory-private.h>

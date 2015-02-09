@@ -23,7 +23,7 @@
 
 #include <config.h>
 #include "nautilus-desktop-window.h"
-#include "nautilus-window-private.h"
+#include "nautilus-window.h"
 
 #include <X11/Xatom.h>
 #include <gdk/gdkx.h>

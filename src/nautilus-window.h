@@ -72,6 +72,18 @@ typedef gboolean (* NautilusWindowGoToCallback) (NautilusWindow *window,
 #define NAUTILUS_WINDOW_SIDEBAR_PLACES "places"
 #define NAUTILUS_WINDOW_SIDEBAR_TREE "tree"
 
+/* window geometry */
+/* Min values are very small, and a Nautilus window at this tiny size is *almost*
+ * completely unusable. However, if all the extra bits (sidebar, location bar, etc)
+ * are turned off, you can see an icon or two at this size. See bug 5946.
+ */
+
+#define NAUTILUS_WINDOW_MIN_WIDTH		200
+#define NAUTILUS_WINDOW_MIN_HEIGHT		200
+#define NAUTILUS_WINDOW_DEFAULT_WIDTH		890
+#define NAUTILUS_WINDOW_DEFAULT_HEIGHT		550
+
+
 struct NautilusWindowClass {
         GtkApplicationWindowClass parent_spot;
 
@@ -81,10 +93,12 @@ struct NautilusWindowClass {
         void   (* close) (NautilusWindow *window);
 };
 
+typedef struct _NautilusWindowPrivate NautilusWindowPrivate;
+
 struct NautilusWindow {
         GtkApplicationWindow parent_object;
         
-        NautilusWindowDetails *details;
+        NautilusWindowPrivate *priv;
 };
 
 GType            nautilus_window_get_type             (void);
@@ -120,6 +134,8 @@ void     nautilus_window_back_or_forward      (NautilusWindow *window,
                                                NautilusWindowOpenFlags flags);
 void nautilus_window_reset_menus (NautilusWindow *window);
 
+GtkWidget *         nautilus_window_get_notebook (NautilusWindow *window);
+
 
 gboolean nautilus_window_disable_chrome_mapping (GValue *value,
                                                  GVariant *variant,
@@ -129,4 +145,12 @@ NautilusWindowOpenFlags nautilus_event_get_window_open_flags   (void);
 void     nautilus_window_show_about_dialog    (NautilusWindow *window);
 
 GtkWidget *nautilus_window_get_toolbar (NautilusWindow *window);
+
+/* sync window GUI with current slot. Used when changing slots,
+ * and when updating the slot state.
+ */
+void nautilus_window_sync_allow_stop       (NautilusWindow *window,
+					    NautilusWindowSlot *slot);
+void nautilus_window_sync_title            (NautilusWindow *window,
+					    NautilusWindowSlot *slot);
 #endif
