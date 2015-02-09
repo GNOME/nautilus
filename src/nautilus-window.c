@@ -2378,11 +2378,6 @@ use_extra_mouse_buttons_changed (gpointer callback_data)
 	mouse_extra_buttons = g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_MOUSE_USE_EXTRA_BUTTONS);
 }
 
-
-/*
- * Main API
- */
-
 static void
 nautilus_window_init (NautilusWindow *window)
 {
