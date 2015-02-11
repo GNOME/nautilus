@@ -1302,21 +1302,12 @@ places_sidebar_populate_popup_cb (GtkPlacesSidebar *sidebar,
 static void
 nautilus_window_set_up_sidebar (NautilusWindow *window)
 {
-	window->priv->sidebar = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
-	gtk_style_context_add_class (gtk_widget_get_style_context (window->priv->sidebar),
-				     GTK_STYLE_CLASS_SIDEBAR);
-
-	gtk_paned_pack1 (GTK_PANED (window->priv->content_paned),
-			 GTK_WIDGET (window->priv->sidebar),
-			 FALSE, FALSE);
-
 	setup_side_pane_width (window);
 	g_signal_connect (window->priv->sidebar,
 			  "size-allocate",
 			  G_CALLBACK (side_pane_size_allocate_callback),
 			  window);
 
-	window->priv->places_sidebar = gtk_places_sidebar_new ();
 	gtk_places_sidebar_set_open_flags (GTK_PLACES_SIDEBAR (window->priv->places_sidebar),
 					   (GTK_PLACES_OPEN_NORMAL
 					    | GTK_PLACES_OPEN_NEW_TAB
@@ -1340,22 +1331,6 @@ nautilus_window_set_up_sidebar (NautilusWindow *window)
 
 	g_signal_connect (window, "loading-uri",
 			  G_CALLBACK (window_loading_uri_cb), window);
-
-	gtk_box_pack_start (GTK_BOX (window->priv->sidebar), window->priv->places_sidebar, TRUE, TRUE, 0);
-	gtk_widget_show (window->priv->places_sidebar);
-	gtk_widget_show (window->priv->sidebar);
-}
-
-static void
-nautilus_window_tear_down_sidebar (NautilusWindow *window)
-{
-	DEBUG ("Destroying sidebar");
-
-	if (window->priv->sidebar != NULL) {
-		gtk_widget_destroy (GTK_WIDGET (window->priv->sidebar));
-		window->priv->sidebar = NULL;
-		window->priv->places_sidebar = NULL;
-	}
 }
 
 void
@@ -1363,11 +1338,7 @@ nautilus_window_hide_sidebar (NautilusWindow *window)
 {
 	DEBUG ("Called hide_sidebar()");
 
-	if (window->priv->sidebar == NULL) {
-		return;
-	}
-
-	nautilus_window_tear_down_sidebar (window);
+	gtk_widget_hide (window->priv->sidebar);
 }
 
 void
@@ -1375,15 +1346,12 @@ nautilus_window_show_sidebar (NautilusWindow *window)
 {
 	DEBUG ("Called show_sidebar()");
 
-	if (window->priv->sidebar != NULL) {
-		return;
-	}
-
 	if (window->priv->disable_chrome) {
 		return;
 	}
 
-	nautilus_window_set_up_sidebar (window);
+	gtk_widget_show (window->priv->sidebar);
+	setup_side_pane_width (window);
 }
 
 gboolean
@@ -1844,22 +1812,19 @@ nautilus_window_get_toolbar (NautilusWindow *window)
 	return window->priv->toolbar;
 }
 
-static GtkWidget *
-create_toolbar (NautilusWindow *window)
+static void
+setup_toolbar (NautilusWindow *window)
 {
-	GtkWidget *toolbar;
 	GtkWidget *path_bar;
 	GtkWidget *location_entry;
 
-	/* build the toolbar */
-	toolbar = nautilus_toolbar_new (NAUTILUS_WINDOW (window));
-
+	g_object_set (window->priv->toolbar, "window", window, NULL);
 	g_object_bind_property (window, "disable-chrome",
-				toolbar, "visible",
+				window->priv->toolbar, "visible",
 				G_BINDING_INVERT_BOOLEAN);
 
 	/* connect to the pathbar signals */
-	path_bar = nautilus_toolbar_get_path_bar (NAUTILUS_TOOLBAR (toolbar));
+	path_bar = nautilus_toolbar_get_path_bar (NAUTILUS_TOOLBAR (window->priv->toolbar));
 
 	g_signal_connect_object (path_bar, "path-clicked",
 				 G_CALLBACK (path_bar_location_changed_callback), window, 0);
@@ -1867,14 +1832,13 @@ create_toolbar (NautilusWindow *window)
 				 G_CALLBACK (path_bar_path_event_callback), window, 0);
 
 	/* connect to the location entry signals */
-	location_entry = nautilus_toolbar_get_location_entry (NAUTILUS_TOOLBAR (toolbar));
+	location_entry = nautilus_toolbar_get_location_entry (NAUTILUS_TOOLBAR (window->priv->toolbar));
 
 	g_signal_connect_object (location_entry, "location-changed",
 				 G_CALLBACK (location_entry_location_changed_callback), window, 0);
 	g_signal_connect_object (location_entry, "cancel",
 				 G_CALLBACK (location_entry_cancel_callback), window, 0);
 
-	return toolbar;
 }
 
 static void
@@ -1961,53 +1925,38 @@ notebook_create_window_cb (GtkNotebook *notebook,
 	return GTK_NOTEBOOK (new_window->priv->notebook);
 }
 
-static GtkWidget *
-create_notebook (NautilusWindow *window)
+static void
+setup_notebook (NautilusWindow *window)
 {
-	GtkWidget *notebook;
-
-	notebook = g_object_new (NAUTILUS_TYPE_NOTEBOOK, NULL);
-	g_signal_connect (notebook, "tab-close-request",
+	g_signal_connect (window->priv->notebook, "tab-close-request",
 			  G_CALLBACK (notebook_tab_close_requested),
 			  window);
-	g_signal_connect (notebook, "popup-menu",
+	g_signal_connect (window->priv->notebook, "popup-menu",
 			  G_CALLBACK (notebook_popup_menu_cb),
 			  window);
-	g_signal_connect (notebook, "switch-page",
+	g_signal_connect (window->priv->notebook, "switch-page",
 			  G_CALLBACK (notebook_switch_page_cb),
 			  window);
-	g_signal_connect (notebook, "create-window",
+	g_signal_connect (window->priv->notebook, "create-window",
 			  G_CALLBACK (notebook_create_window_cb),
 			  window);
-	g_signal_connect (notebook, "page-added",
+	g_signal_connect (window->priv->notebook, "page-added",
 			  G_CALLBACK (notebook_page_added_cb),
 			  window);
-	g_signal_connect (notebook, "page-removed",
+	g_signal_connect (window->priv->notebook, "page-removed",
 			  G_CALLBACK (notebook_page_removed_cb),
 			  window);
-	g_signal_connect_after (notebook, "button-press-event",
+	g_signal_connect_after (window->priv->notebook, "button-press-event",
 				G_CALLBACK (notebook_button_press_cb),
 				window);
-
-	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (notebook), FALSE);
-	gtk_notebook_set_show_border (GTK_NOTEBOOK (notebook), FALSE);
-	gtk_widget_show (notebook);
-	gtk_container_set_border_width (GTK_CONTAINER (notebook), 0);
-
-	gtk_container_add (GTK_CONTAINER (window->priv->main_view),
-                           notebook);
-
-	return notebook;
 }
 
 static void
 nautilus_window_constructed (GObject *self)
 {
 	NautilusWindow *window;
-	GtkWidget *grid;
 	NautilusWindowSlot *slot;
 	NautilusApplication *application;
-	g_autoptr (GtkBuilder) builder;
 
 	window = NAUTILUS_WINDOW (self);
 
@@ -2018,46 +1967,12 @@ nautilus_window_constructed (GObject *self)
 	application = NAUTILUS_APPLICATION (g_application_get_default ());
 	gtk_window_set_application (GTK_WINDOW (window), GTK_APPLICATION (application));
 
-	/* disable automatic menubar handling, since we show our regular
-	 * menubar together with the app menu.
-	 */
-	gtk_application_window_set_show_menubar (GTK_APPLICATION_WINDOW (self), FALSE);
+	setup_toolbar (window);
 
-	grid = gtk_grid_new ();
-	gtk_orientable_set_orientation (GTK_ORIENTABLE (grid), GTK_ORIENTATION_VERTICAL);
-	gtk_widget_show (grid);
-	gtk_container_add (GTK_CONTAINER (window), grid);
-
-	window->priv->toolbar = create_toolbar (window);
-	gtk_window_set_titlebar (GTK_WINDOW (window), window->priv->toolbar);
-
-	window->priv->content_paned = gtk_paned_new (GTK_ORIENTATION_HORIZONTAL);
-	gtk_widget_set_hexpand (window->priv->content_paned, TRUE);
-	gtk_widget_set_vexpand (window->priv->content_paned, TRUE);
-
-	gtk_container_add (GTK_CONTAINER (grid), window->priv->content_paned);
-	gtk_widget_show (window->priv->content_paned);
-
-	window->priv->main_view = gtk_overlay_new ();
-	gtk_paned_pack2 (GTK_PANED (window->priv->content_paned),
-                         window->priv->main_view,
-                         TRUE, FALSE);
-	gtk_widget_show (window->priv->main_view);
-
-	window->priv->notebook = create_notebook (window);
 	nautilus_window_set_initial_window_geometry (window);
+	setup_notebook (window);
+	nautilus_window_set_up_sidebar (window);
 
-	builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-notification-delete.ui");
-	window->priv->notification_delete = GTK_WIDGET (gtk_builder_get_object (builder, "notification_delete"));
-	window->priv->notification_delete_label = GTK_WIDGET (gtk_builder_get_object (builder, "notification_delete_label"));
-	window->priv->notification_delete_close = GTK_WIDGET (gtk_builder_get_object (builder, "notification_delete_close"));
-	window->priv->notification_delete_undo = GTK_WIDGET (gtk_builder_get_object (builder, "notification_delete_undo"));
-	gtk_overlay_add_overlay (GTK_OVERLAY (window->priv->main_view),
-                                 window->priv->notification_delete);
-	g_signal_connect_object (window->priv->notification_delete_close, "clicked",
-	                         G_CALLBACK (nautilus_window_on_notification_delete_close_clicked), window, 0);
-	g_signal_connect_object (window->priv->notification_delete_undo, "clicked",
-	                         G_CALLBACK (nautilus_window_on_notification_delete_undo_clicked), window, 0);
 
 	g_signal_connect_after (nautilus_file_undo_manager_get (), "undo-changed",
                                 G_CALLBACK (nautilus_window_on_undo_changed), self);
@@ -2145,9 +2060,6 @@ nautilus_window_destroy (GtkWidget *object)
 	window = NAUTILUS_WINDOW (object);
 
 	DEBUG ("Destroying window");
-
-	/* close the sidebar first */
-	nautilus_window_tear_down_sidebar (window);
 
 	/* close all slots safely */
 	slots_copy = g_list_copy (window->priv->slots);
@@ -2541,16 +2453,25 @@ nautilus_window_init (NautilusWindow *window)
 
 	window->priv = nautilus_window_get_instance_private (window);
 
+	g_type_ensure (NAUTILUS_TYPE_TOOLBAR);
+	g_type_ensure (NAUTILUS_TYPE_NOTEBOOK);
+	gtk_widget_init_template (GTK_WIDGET (window));
+
+	g_signal_connect_object (window->priv->notification_delete_close, "clicked",
+	                         G_CALLBACK (nautilus_window_on_notification_delete_close_clicked), window, 0);
+	g_signal_connect_object (window->priv->notification_delete_undo, "clicked",
+	                         G_CALLBACK (nautilus_window_on_notification_delete_undo_clicked), window, 0);
+
+	g_object_bind_property (window, "disable-chrome",
+				window->priv->sidebar, "visible",
+				G_BINDING_INVERT_BOOLEAN);
+
 	window->priv->slots = NULL;
 	window->priv->active_slot = NULL;
 
 	window_group = gtk_window_group_new ();
 	gtk_window_group_add_window (window_group, GTK_WINDOW (window));
 	g_object_unref (window_group);
-
-	/* Set initial window title */
-	gtk_window_set_title (GTK_WINDOW (window), _("Files"));
-	gtk_window_set_icon_name (GTK_WINDOW (window), "system-file-manager");
 }
 
 static void
@@ -2583,6 +2504,19 @@ nautilus_window_class_init (NautilusWindowClass *class)
 	wclass->delete_event = nautilus_window_delete_event;
 
 	class->close = real_window_close;
+
+	gtk_widget_class_set_template_from_resource (wclass,
+	                                             "/org/gnome/nautilus/nautilus-window.ui");
+	gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, toolbar);
+	gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, content_paned);
+	gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, sidebar);
+	gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, places_sidebar);
+	gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, main_view);
+	gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, notebook);
+	gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, notification_delete);
+	gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, notification_delete_label);
+	gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, notification_delete_undo);
+	gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, notification_delete_close);
 
 	properties[PROP_DISABLE_CHROME] =
 		g_param_spec_boolean ("disable-chrome",

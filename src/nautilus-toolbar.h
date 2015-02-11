@@ -27,7 +27,6 @@
 
 #include <gtk/gtk.h>
 
-#include "nautilus-window.h"
 
 #define NAUTILUS_TYPE_TOOLBAR nautilus_toolbar_get_type()
 #define NAUTILUS_TOOLBAR(obj) \
@@ -63,7 +62,7 @@ struct _NautilusToolbarClass {
 
 GType nautilus_toolbar_get_type (void);
 
-GtkWidget *nautilus_toolbar_new (NautilusWindow *window);
+GtkWidget *nautilus_toolbar_new (void);
 
 GtkWidget *nautilus_toolbar_get_path_bar (NautilusToolbar *self);
 GtkWidget *nautilus_toolbar_get_location_entry (NautilusToolbar *self);

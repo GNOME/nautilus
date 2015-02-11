@@ -28,6 +28,7 @@
 
 #include "nautilus-location-entry.h"
 #include "nautilus-pathbar.h"
+#include "nautilus-window.h"
 
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-ui-utilities.h>
@@ -544,7 +545,7 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
 				     "The NautilusWindow",
 				     "The NautilusWindow this toolbar is part of",
 				     NAUTILUS_TYPE_WINDOW,
-				     G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
+				     G_PARAM_WRITABLE |
 				     G_PARAM_STATIC_STRINGS);
 	properties[PROP_SHOW_LOCATION_ENTRY] =
 		g_param_spec_boolean ("show-location-entry",
@@ -617,10 +618,9 @@ nautilus_toolbar_reset_menus (NautilusToolbar *self)
 }
 
 GtkWidget *
-nautilus_toolbar_new (NautilusWindow *window)
+nautilus_toolbar_new ()
 {
 	return g_object_new (NAUTILUS_TYPE_TOOLBAR,
-			     "window", window,
 			     "show-close-button", TRUE,
 			     "custom-title", gtk_label_new (NULL),
 			     "valign", GTK_ALIGN_CENTER,
