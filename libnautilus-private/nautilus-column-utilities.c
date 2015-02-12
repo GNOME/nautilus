@@ -78,6 +78,7 @@ get_builtin_columns (void)
 					       "label", _("Modified"),
 					       "description", _("The date the file was modified."),
 					       "default-sort-order", GTK_SORT_DESCENDING,
+					       "xalign", 1.0,
 					       NULL));
 	columns = g_list_append (columns,
 				 g_object_new (NAUTILUS_TYPE_COLUMN,
@@ -86,6 +87,7 @@ get_builtin_columns (void)
 					       "label", _("Accessed"),
 					       "description", _("The date the file was accessed."),
 					       "default-sort-order", GTK_SORT_DESCENDING,
+					       "xalign", 1.0,
 					       NULL));
 
 	columns = g_list_append (columns,
@@ -168,6 +170,7 @@ get_trash_columns (void)
 						       "attribute", "trashed_on",
 						       "label", _("Trashed On"),
 						       "description", _("Date when file was moved to the Trash"),
+					               "xalign", 1.0,
 						       NULL));
 		columns = g_list_append (columns,
 			                 g_object_new (NAUTILUS_TYPE_COLUMN,
