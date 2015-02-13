@@ -4645,7 +4645,7 @@ nautilus_file_get_trash_original_file_parent_as_string (NautilusFile *file)
 		parent = nautilus_file_get_parent (orig_file);
 		location = nautilus_file_get_location (parent);
 
-		filename = g_file_get_parse_name (location);
+		filename = g_file_get_basename (location);
 
 		g_object_unref (location);
 		nautilus_file_unref (parent);

@@ -1828,13 +1828,7 @@ location_cell_data_func (GtkTreeViewColumn *column,
 		 */
 		where = g_strdup ("");
 	} else if (g_file_has_prefix (dir_location, base_location)) {
-		gchar *relative_path;
-
-		relative_path = g_file_get_relative_path (base_location,
-		                                          dir_location);
-		where = g_filename_display_name (relative_path);
-
-		g_free (relative_path);
+	  	where = g_file_get_basename (dir_location);
 	}
 
 	if (where != NULL) {
