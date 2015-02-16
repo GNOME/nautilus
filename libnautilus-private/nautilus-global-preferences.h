@@ -160,6 +160,9 @@ typedef enum
 #define NAUTILUS_PREFERENCES_RECENT_FILES_ENABLED          "remember-recent-files"
 
 
+/* Move to trash shorcut changed dialog */
+#define NAUTILUS_PREFERENCES_SHOW_MOVE_TO_TRASH_SHORCUT_CHANGED_DIALOG "show-move-to-trash-shorcut-changed-dialog"
+
 void nautilus_global_preferences_init                      (void);
 char *nautilus_global_preferences_get_default_folder_viewer_preference_as_iid (void);
 
