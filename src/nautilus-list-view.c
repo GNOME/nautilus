@@ -148,19 +148,19 @@ static char **get_default_column_order                           (NautilusListVi
 G_DEFINE_TYPE (NautilusListView, nautilus_list_view, NAUTILUS_TYPE_VIEW);
 
 static const char * default_search_visible_columns[] = {
-	"name", "size", "type", "where", NULL
+	"name", "size", "where", NULL
 };
 
 static const char * default_search_columns_order[] = {
-	"name", "size", "type", "where", NULL
+	"name", "size", "where", NULL
 };
 
 static const char * default_trash_visible_columns[] = {
-	"name", "size", "type", "trashed_on", "trash_orig_path", NULL
+	"name", "size", "trashed_on", "trash_orig_path", NULL
 };
 
 static const char * default_trash_columns_order[] = {
-	"name", "size", "type", "trashed_on", "trash_orig_path", NULL
+	"name", "size", "trashed_on", "trash_orig_path", NULL
 };
 
 static const gchar*
