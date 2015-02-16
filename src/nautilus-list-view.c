@@ -156,11 +156,11 @@ static const char * default_search_columns_order[] = {
 };
 
 static const char * default_trash_visible_columns[] = {
-	"name", "size", "trashed_on", "trash_orig_path", NULL
+	"name", "size", "trash_orig_path", "trashed_on", NULL
 };
 
 static const char * default_trash_columns_order[] = {
-	"name", "size", "trashed_on", "trash_orig_path", NULL
+	"name", "size", "trash_orig_path", "trashed_on", NULL
 };
 
 static const gchar*

@@ -34,13 +34,13 @@ static const char *default_column_order[] = {
 	"name",
 	"size",
 	"type",
-	"date_modified",
-	"date_accessed",
 	"owner",
 	"group",
 	"permissions",
 	"mime_type",
 	"where",
+	"date_modified",
+	"date_accessed",
 	NULL
 };
 
