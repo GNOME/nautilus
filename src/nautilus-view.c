@@ -928,14 +928,14 @@ got_it_clicked (GtkDialog *dialog,
                 gpointer   user_data)
 {
 	g_settings_set_boolean (nautilus_preferences,
-                                NAUTILUS_PREFERENCES_SHOW_MOVE_TO_TRASH_SHORCUT_CHANGED_DIALOG,
+                                NAUTILUS_PREFERENCES_SHOW_MOVE_TO_TRASH_SHORTCUT_CHANGED_DIALOG,
                                 FALSE);
 }
 
 static void
-action_show_move_to_trash_shorcut_changed_dialog (GSimpleAction *action,
-                                                  GVariant      *state,
-                                                  gpointer       user_data)
+action_show_move_to_trash_shortcut_changed_dialog (GSimpleAction *action,
+                                                   GVariant      *state,
+                                                   gpointer       user_data)
 {
 	NautilusView *view;
 	GtkWindow *dialog;
@@ -944,10 +944,10 @@ action_show_move_to_trash_shorcut_changed_dialog (GSimpleAction *action,
 
 	view = (NautilusView *) user_data;
 	show_dialog_preference = g_settings_get_boolean (nautilus_preferences,
-	                                                 NAUTILUS_PREFERENCES_SHOW_MOVE_TO_TRASH_SHORCUT_CHANGED_DIALOG);
+	                                                 NAUTILUS_PREFERENCES_SHOW_MOVE_TO_TRASH_SHORTCUT_CHANGED_DIALOG);
 	if (show_dialog_preference) {
-		builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-move-to-trash-shorcut-changed.ui");
-		dialog = (GtkWindow *) gtk_builder_get_object (builder, "move_to_trash_shorcut_changed_dialog");
+		builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-move-to-trash-shortcut-changed.ui");
+		dialog = (GtkWindow *) gtk_builder_get_object (builder, "move_to_trash_shortcut_changed_dialog");
 
 		gtk_window_set_transient_for (dialog, (GtkWindow *) nautilus_view_get_window (view));
 	  	g_signal_connect (dialog, "response",
@@ -5623,7 +5623,7 @@ const GActionEntry view_entries[] = {
 	{ "invert-selection", action_invert_selection },
 	{ "open-file-and-close-window", action_open_file_and_close_window },
 	/* Warning dialog for the change of the shorcut to move to trash */
-	{ "show-move-to-trash-shorcut-changed-dialog", action_show_move_to_trash_shorcut_changed_dialog }
+	{ "show-move-to-trash-shortcut-changed-dialog", action_show_move_to_trash_shortcut_changed_dialog }
 };
 
 static gboolean
@@ -7567,7 +7567,7 @@ nautilus_view_init (NautilusView *view)
 
 	/* Show a warning dialog to inform the user that the shorcut for move to trash
 	 * changed */
-	nautilus_application_add_accelerator (app, "view.show-move-to-trash-shorcut-changed-dialog", "<control>Delete");
+	nautilus_application_add_accelerator (app, "view.show-move-to-trash-shortcut-changed-dialog", "<control>Delete");
 
 	nautilus_profile_end (NULL);
 }
