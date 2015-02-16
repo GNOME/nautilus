@@ -18,8 +18,8 @@ msgstr ""
 "Project-Id-Version: nautilus trunk\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2015-02-05 12:51+0000\n"
-"PO-Revision-Date: 2015-02-06 00:02+0300\n"
+"POT-Creation-Date: 2015-02-15 23:21+0000\n"
+"PO-Revision-Date: 2015-02-16 12:58+0300\n"
 "Last-Translator: Stas Solovey <whats_up@tut.by>\n"
 "Language-Team: Русский <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
@@ -72,8 +72,8 @@ msgstr "Подключение к серверу"
 #. Set initial window title
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
 #: ../src/nautilus-file-management-properties.ui.h:29
-#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2401
-#: ../src/nautilus-window.c:2570
+#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2396
+#: ../src/nautilus-window.c:2565
 msgid "Files"
 msgstr "Nautilus"
 
@@ -3501,9 +3501,13 @@ msgstr[0] "%d файл"
 msgstr[1] "%d файла"
 msgstr[2] "%d файлов"
 
+#: ../src/nautilus-progress-info-widget.xml.h:1
+msgid "label"
+msgstr "метка"
+
 #: ../src/nautilus-progress-ui-handler.c:104
 #: ../src/nautilus-progress-ui-handler.c:171
-#: ../src/nautilus-progress-ui-handler.c:227
+#: ../src/nautilus-progress-ui-handler.c:222
 msgid "File Operations"
 msgstr "Действия над файлами"
 
@@ -3520,7 +3524,7 @@ msgstr[0] "Идёт %'d действие над файлами"
 msgstr[1] "Идут %'d действия над файлами"
 msgstr[2] "Идёт %'d действий над файлами"
 
-#: ../src/nautilus-progress-ui-handler.c:229
+#: ../src/nautilus-progress-ui-handler.c:224
 msgid "All file operations have been successfully completed"
 msgstr "Все операции с файлами успешно завершены"
 
@@ -4310,7 +4314,7 @@ msgstr "Переместить вкладку в_право"
 msgid "_Close Tab"
 msgstr "_Закрыть вкладку"
 
-#: ../src/nautilus-window.c:2572
+#: ../src/nautilus-window.c:2567
 msgid "Access and organize your files."
 msgstr "Доступ и управление файлами."
 
@@ -4318,16 +4322,9 @@ msgstr "Доступ и управление файлами."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2581
+#: ../src/nautilus-window.c:2576
 msgid "translator-credits"
 msgstr ""
-"Valek Filippov <frob@df.ru>, 2000-2002.\n"
-"Dmitry G. Mastrukov <dmitry@taurussoft.org>, 2002-2004.\n"
-"Sun G11n <gnome_int_l10n@ireland.sun.com>, 2002.\n"
-"Andrew W. Nosenko <awn@bcs.zp.ua>, 2003.\n"
-"Leonid Kanter <leon@asplinux.ru>, 2003, 2004, 2005, 2006, 2007.\n"
-"Vasiliy Faronov <qvvx@yandex.ru>, 2008.\n"
-"Alexander Sigachov <alexander.sigachov@gmail.com>, 2006.\n"
 "Yuri Kozlov <yuray@komyakino.ru>, 2010.\n"
 "Yuri Myasoedov <omerta13@yandex.ru>, 2012, 2013.\n"
 "Stas Solovey <whats_up@tut.by>, 2011, 2013, 2014, 2015."
