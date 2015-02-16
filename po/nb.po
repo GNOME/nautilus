@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 3.15.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-09 18:18+0100\n"
-"PO-Revision-Date: 2015-02-09 18:19+0100\n"
+"POT-Creation-Date: 2015-02-16 18:13+0100\n"
+"PO-Revision-Date: 2015-02-12 10:50+0100\n"
 "Last-Translator: Åka Sikrom <a4NOSPAMPLEASETHANKYOU@hush.com>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: no\n"
@@ -25,7 +25,7 @@ msgid ""
 "desktop. It provides a simple and integrated way of managing your files and "
 "browsing your file system."
 msgstr ""
-"Nautilus, også kjent som Filer, er forvalgt filbehandler for GNOME "
+"Nautilus, også kjent som Filer, er forvalgt filbehandler for GNOME-"
 "skrivebordet. Det gir deg en enkel og integrert måte å håndtere filer og "
 "filsystemet på."
 
@@ -56,8 +56,8 @@ msgstr "Koble til tjener"
 #. Set initial window title
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
 #: ../src/nautilus-file-management-properties.ui.h:29
-#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2401
-#: ../src/nautilus-window.c:2570
+#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2396
+#: ../src/nautilus-window.c:2565
 msgid "Files"
 msgstr "Filer"
 
@@ -3417,9 +3417,13 @@ msgid_plural "%d files"
 msgstr[0] "%d fil"
 msgstr[1] "%d filer"
 
+#: ../src/nautilus-progress-info-widget.xml.h:1
+msgid "label"
+msgstr "etikett"
+
 #: ../src/nautilus-progress-ui-handler.c:104
 #: ../src/nautilus-progress-ui-handler.c:171
-#: ../src/nautilus-progress-ui-handler.c:227
+#: ../src/nautilus-progress-ui-handler.c:222
 msgid "File Operations"
 msgstr "Filoperasjoner"
 
@@ -3435,7 +3439,7 @@ msgid_plural "%'d file operations active"
 msgstr[0] "%'d aktiv filoperasjon"
 msgstr[1] "%'d aktive filoperasjoner"
 
-#: ../src/nautilus-progress-ui-handler.c:229
+#: ../src/nautilus-progress-ui-handler.c:224
 msgid "All file operations have been successfully completed"
 msgstr "Alle filoperasjoner er fullført"
 
@@ -4209,7 +4213,7 @@ msgstr "Flytt fane til høy_re"
 msgid "_Close Tab"
 msgstr "_Lukk fane"
 
-#: ../src/nautilus-window.c:2572
+#: ../src/nautilus-window.c:2567
 msgid "Access and organize your files."
 msgstr "Utforsk og organiser filer."
 
@@ -4217,7 +4221,7 @@ msgstr "Utforsk og organiser filer."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2581
+#: ../src/nautilus-window.c:2576
 msgid "translator-credits"
 msgstr ""
 "Kjartan Maraas <kmaraas@gnome.org>\n"
