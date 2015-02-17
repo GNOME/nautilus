@@ -2088,8 +2088,11 @@ create_and_set_up_tree_view (NautilusListView *view)
 								 view, NULL);
 		} else {
 			cell = gd_styled_text_renderer_new ();
+			/* FIXME: should be just dim-label.
+			 * See https://bugzilla.gnome.org/show_bug.cgi?id=744397
+			 */
 			gd_styled_text_renderer_add_class (GD_STYLED_TEXT_RENDERER (cell),
-							   "dim-label");
+							   "nautilus-list-dim-label");
 
 			g_object_set (cell,
 				      "xalign", xalign,
