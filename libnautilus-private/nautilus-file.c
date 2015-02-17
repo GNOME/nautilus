@@ -103,6 +103,12 @@ typedef enum {
 	SHOW_HIDDEN = 1 << 0,
 } FilterOptions;
 
+typedef enum {
+	NAUTILUS_DATE_FORMAT_REGULAR = 0,
+	NAUTILUS_DATE_FORMAT_REGULAR_WITH_TIME = 1,
+	NAUTILUS_DATE_FORMAT_FULL = 2,
+} NautilusDateFormat;
+
 typedef void (* ModifyListFunction) (GList **list, NautilusFile *file);
 
 enum {
@@ -128,6 +134,7 @@ static GQuark attribute_name_q,
 	attribute_modification_date_q,
 	attribute_date_modified_q,
 	attribute_date_modified_full_q,
+	attribute_date_modified_with_time_q,
 	attribute_accessed_date_q,
 	attribute_date_accessed_q,
 	attribute_date_accessed_full_q,
@@ -3227,7 +3234,7 @@ nautilus_file_compare_for_sort_by_attribute_q   (NautilusFile                   
 						       NAUTILUS_FILE_SORT_BY_TYPE,
 						       directories_first,
 						       reversed);
-	} else if (attribute == attribute_modification_date_q || attribute == attribute_date_modified_q || attribute == attribute_date_modified_full_q) {
+	} else if (attribute == attribute_modification_date_q || attribute == attribute_date_modified_q || attribute == attribute_date_modified_with_time_q || attribute == attribute_date_modified_full_q) {
 		return nautilus_file_compare_for_sort (file_1, file_2,
 						       NAUTILUS_FILE_SORT_BY_MTIME,
 						       directories_first,
@@ -4668,9 +4675,9 @@ nautilus_file_get_trash_original_file_parent_as_string (NautilusFile *file)
  * 
  **/
 static char *
-nautilus_file_get_date_as_string (NautilusFile     *file,
-                                  NautilusDateType  date_type,
-                                  gboolean          full_date)
+nautilus_file_get_date_as_string (NautilusFile       *file,
+                                  NautilusDateType    date_type,
+                                  NautilusDateFormat  date_format)
 {
 	time_t file_time_raw;
   	GDateTime *file_date, *now;
@@ -4684,7 +4691,7 @@ nautilus_file_get_date_as_string (NautilusFile     *file,
 		return NULL;
 
   	file_date = g_date_time_new_from_unix_local (file_time_raw);
-	if (!full_date) {
+	if (date_format != NAUTILUS_DATE_FORMAT_FULL) {
 		now = g_date_time_new_now_local ();
 
 		daysAgo = g_date_time_difference (now, file_date) / (24 * 60 * 60 * 1000 * 1000L);
@@ -4704,23 +4711,83 @@ nautilus_file_get_date_as_string (NautilusFile     *file,
 		}
 		// Show the word "Yesterday" and time if date is on yesterday
 		else if (daysAgo < 2) {
-			// xgettext:no-c-format
-			format = N_("Yesterday");
+			if (date_format == NAUTILUS_DATE_FORMAT_REGULAR) {
+				// xgettext:no-c-format
+				format = N_("Yesterday");
+			} else {
+				if (use_24) {
+					/* Translators: this is the word Yesterday followed by
+					 * a time in 24h format. i.e. "Yesterday 23:04" */
+					// xgettext:no-c-format
+					format = N_("Yesterday %H:%M");
+				} else {
+					/* Translators: this is the word Yesterday followed by
+					 * a time in 12h format. i.e. "Yesterday 9:04 PM" */
+					// xgettext:no-c-format
+					format = N_("Yesterday %l:%M %p");
+				}
+			}
 		}
 		// Show a week day and time if date is in the last week
 		else if (daysAgo < 7) {
-			// xgettext:no-c-format
-			format = N_("%a");
+			if (date_format == NAUTILUS_DATE_FORMAT_REGULAR) {
+				// xgettext:no-c-format
+				format = N_("%a");
+			} else {
+				if (use_24) {
+					/* Translators: this is the name of the week day followed by
+					 * a time in 24h format. i.e. "Monday 23:04" */
+					// xgettext:no-c-format
+					format = N_("%a %H:%M");
+				} else {
+					/* Translators: this is the week day name followed by
+					 * a time in 12h format. i.e. "Monday 9:04 PM" */
+					// xgettext:no-c-format
+					format = N_("%a %l:%M %p");
+				}
+			}
 		} else if (g_date_time_get_year (file_date) == g_date_time_get_year (now)) {
-			/* Translators: this is the day of the month plus the short
-			 * month name i.e. "3 Feb" */
-			// xgettext:no-c-format
-			format = N_("%-e %b");
+			if (date_format == NAUTILUS_DATE_FORMAT_REGULAR) {
+				/* Translators: this is the day of the month plus the short
+				 * month name i.e. "3 Feb" */
+				// xgettext:no-c-format
+				format = N_("%-e %b");
+			} else {
+				if (use_24) {
+					/* Translators: this is the day of the month followed
+					 * by the day number followed by a time in
+					 * 24h format i.e. "3 Feb 23:04" */
+					// xgettext:no-c-format
+					format = N_("%-e %b %H:%M");
+				} else {
+					/* Translators: this is the day of the month followed
+					 * by the day number followed by a time in
+					 * 12h format i.e. "3 Feb 9:04 PM" */
+					// xgettext:no-c-format
+					format = N_("%-e %b %l:%M %p");
+				}
+			}
 		} else {
-			/* Translators: this is the day of the month followed by the short
-			 * month name followed by the year i.e. "3 Feb 2015" */
-			// xgettext:no-c-format
-			format = N_("%-e %b %Y");
+			if (date_format == NAUTILUS_DATE_FORMAT_REGULAR) {
+				/* Translators: this is the day of the month followed by the short
+				 * month name followed by the year i.e. "3 Feb 2015" */
+				// xgettext:no-c-format
+				format = N_("%-e %b %Y");
+			} else {
+				if (use_24) {
+					/* Translators: this is the day number followed
+					 * by the month name followed by the year followed
+					 * by a time in 24h format i.e. "3 Feb 2015 23:04" */
+					// xgettext:no-c-format
+					format = N_("%-e %b %Y %H:%M");
+				} else {
+					/* Translators: this is the day number followed
+					 * by the month name followed by the year followed
+					 * by a time in 12h format i.e. "3 Feb 2015 9:04 PM" */
+					// xgettext:no-c-format
+					format = N_("%-e %b %Y %l:%M %p");
+				}
+			}
 		}
 	} else {
 		format = N_("%c");
@@ -6192,32 +6259,37 @@ nautilus_file_get_string_attribute_q (NautilusFile *file, GQuark attribute_q)
 	if (attribute_q == attribute_date_modified_q) {
 		return nautilus_file_get_date_as_string (file, 
 							 NAUTILUS_DATE_TYPE_MODIFIED,
-		                                         FALSE);
+		                                         NAUTILUS_DATE_FORMAT_REGULAR);
 	}
 	if (attribute_q == attribute_date_modified_full_q) {
 		return nautilus_file_get_date_as_string (file, 
 							 NAUTILUS_DATE_TYPE_MODIFIED,
-		                                         TRUE);
+		                                         NAUTILUS_DATE_FORMAT_FULL);
+	}
+	if (attribute_q == attribute_date_modified_with_time_q) {
+		return nautilus_file_get_date_as_string (file,
+							 NAUTILUS_DATE_TYPE_MODIFIED,
+		                                         NAUTILUS_DATE_FORMAT_REGULAR_WITH_TIME);
 	}
 	if (attribute_q == attribute_date_accessed_q) {
 		return nautilus_file_get_date_as_string (file,
 							 NAUTILUS_DATE_TYPE_ACCESSED,
-		                                         FALSE);
+		                                         NAUTILUS_DATE_FORMAT_REGULAR);
 	}
 	if (attribute_q == attribute_date_accessed_full_q) {
 		return nautilus_file_get_date_as_string (file,
 							 NAUTILUS_DATE_TYPE_ACCESSED,
-		                                         TRUE);
+		                                         NAUTILUS_DATE_FORMAT_FULL);
 	}
 	if (attribute_q == attribute_trashed_on_q) {
 		return nautilus_file_get_date_as_string (file,
 							 NAUTILUS_DATE_TYPE_TRASHED,
-		                                         FALSE);
+		                                         NAUTILUS_DATE_FORMAT_REGULAR);
 	}
 	if (attribute_q == attribute_trashed_on_full_q) {
 		return nautilus_file_get_date_as_string (file,
 							 NAUTILUS_DATE_TYPE_TRASHED,
-		                                         TRUE);
+		                                         NAUTILUS_DATE_FORMAT_FULL);
 	}
 	if (attribute_q == attribute_permissions_q) {
 		return nautilus_file_get_permissions_as_string (file);
@@ -6366,6 +6438,7 @@ nautilus_file_is_date_sort_attribute_q (GQuark attribute_q)
 	if (attribute_q == attribute_modification_date_q ||
 	    attribute_q == attribute_date_modified_q ||
 	    attribute_q == attribute_date_modified_full_q ||
+	    attribute_q == attribute_date_modified_with_time_q ||
 	    attribute_q == attribute_accessed_date_q ||
 	    attribute_q == attribute_date_accessed_q ||
 	    attribute_q == attribute_date_accessed_full_q ||
@@ -7928,6 +8001,7 @@ nautilus_file_class_init (NautilusFileClass *class)
 	attribute_modification_date_q = g_quark_from_static_string ("modification_date");
 	attribute_date_modified_q = g_quark_from_static_string ("date_modified");
 	attribute_date_modified_full_q = g_quark_from_static_string ("date_modified_full");
+	attribute_date_modified_with_time_q = g_quark_from_static_string ("date_modified_with_time");
 	attribute_accessed_date_q = g_quark_from_static_string ("accessed_date");
 	attribute_date_accessed_q = g_quark_from_static_string ("date_accessed");
 	attribute_date_accessed_full_q = g_quark_from_static_string ("date_accessed_full");
