@@ -62,7 +62,6 @@ get_builtin_columns (void)
 					       "attribute", "size",
 					       "label", _("Size"),
 					       "description", _("The size of the file."),
-					       "xalign", 1.0,
 					       NULL));
 	columns = g_list_append (columns,
 				 g_object_new (NAUTILUS_TYPE_COLUMN,
