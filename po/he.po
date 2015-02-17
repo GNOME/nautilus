@@ -20,9 +20,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eel.HEAD.he\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-17 00:10+0200\n"
-"PO-Revision-Date: 2015-02-17 00:11+0200\n"
-"Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
+"POT-Creation-Date: 2015-02-17 15:51+0200\n"
+"PO-Revision-Date: 2015-02-17 15:58+0200\n"
+"Last-Translator: Yosef Or Boczko <yoseforb@gnome.org>\n"
 "Language-Team: עברית <>\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
@@ -87,8 +87,8 @@ msgstr "X"
 msgid "Y"
 msgstr "Y"
 
-#: ../eel/eel-editable-label.c:312 ../libnautilus-private/nautilus-file.c:6386
-#: ../libnautilus-private/nautilus-file.c:6387
+#: ../eel/eel-editable-label.c:312 ../libnautilus-private/nautilus-file.c:6463
+#: ../libnautilus-private/nautilus-file.c:6464
 msgid "Text"
 msgstr "טקסט"
 
@@ -201,20 +201,20 @@ msgstr "איפוס _לבררת המחדל"
 msgid "Replace the current List Columns settings with the default settings"
 msgstr "החלפת הגדרות רשימת העמודות עם הגדרות בררת המחדל"
 
-#: ../libnautilus-private/nautilus-column-utilities.c:56
-#: ../src/nautilus-list-view.c:2054
+#: ../libnautilus-private/nautilus-column-utilities.c:57
+#: ../src/nautilus-list-view.c:2048
 msgid "Name"
 msgstr "שם"
 
-#: ../libnautilus-private/nautilus-column-utilities.c:57
+#: ../libnautilus-private/nautilus-column-utilities.c:58
 msgid "The name and icon of the file."
 msgstr "שם וסמל הקובץ."
 
-#: ../libnautilus-private/nautilus-column-utilities.c:63
+#: ../libnautilus-private/nautilus-column-utilities.c:64
 msgid "Size"
 msgstr "גודל"
 
-#: ../libnautilus-private/nautilus-column-utilities.c:64
+#: ../libnautilus-private/nautilus-column-utilities.c:65
 msgid "The size of the file."
 msgstr "גודל הקובץ."
 
@@ -231,80 +231,85 @@ msgid "Modified"
 msgstr "מועד שינוי"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:79
+#: ../libnautilus-private/nautilus-column-utilities.c:137
 msgid "The date the file was modified."
 msgstr "תאריך עדכון הקובץ."
 
-#: ../libnautilus-private/nautilus-column-utilities.c:86
+#: ../libnautilus-private/nautilus-column-utilities.c:87
 msgid "Accessed"
 msgstr "מועד גישה"
 
-#: ../libnautilus-private/nautilus-column-utilities.c:87
+#: ../libnautilus-private/nautilus-column-utilities.c:88
 msgid "The date the file was accessed."
 msgstr "התאריך בו ניגשו לקובץ."
 
-#: ../libnautilus-private/nautilus-column-utilities.c:95
+#: ../libnautilus-private/nautilus-column-utilities.c:97
 msgid "Owner"
 msgstr "בעלים"
 
-#: ../libnautilus-private/nautilus-column-utilities.c:96
+#: ../libnautilus-private/nautilus-column-utilities.c:98
 msgid "The owner of the file."
 msgstr "הבעלים של הקובץ"
 
-#: ../libnautilus-private/nautilus-column-utilities.c:103
+#: ../libnautilus-private/nautilus-column-utilities.c:105
 msgid "Group"
 msgstr "קבוצה"
 
-#: ../libnautilus-private/nautilus-column-utilities.c:104
+#: ../libnautilus-private/nautilus-column-utilities.c:106
 msgid "The group of the file."
 msgstr "הקבוצה של הקובץ."
 
-#: ../libnautilus-private/nautilus-column-utilities.c:111
+#: ../libnautilus-private/nautilus-column-utilities.c:113
 #: ../src/nautilus-properties-window.c:4250
 msgid "Permissions"
 msgstr "הרשאות"
 
-#: ../libnautilus-private/nautilus-column-utilities.c:112
+#: ../libnautilus-private/nautilus-column-utilities.c:114
 msgid "The permissions of the file."
 msgstr "ההרשאות של הקובץ."
 
-#: ../libnautilus-private/nautilus-column-utilities.c:119
+#: ../libnautilus-private/nautilus-column-utilities.c:121
 msgid "MIME Type"
 msgstr "סוג MIME"
 
-#: ../libnautilus-private/nautilus-column-utilities.c:120
+#: ../libnautilus-private/nautilus-column-utilities.c:122
 msgid "The mime type of the file."
 msgstr "סוג MIME של הקובץ."
 
-#: ../libnautilus-private/nautilus-column-utilities.c:127
+#: ../libnautilus-private/nautilus-column-utilities.c:129
 #: ../src/nautilus-image-properties-page.c:413
 msgid "Location"
 msgstr "מיקום"
 
-#: ../libnautilus-private/nautilus-column-utilities.c:128
+#: ../libnautilus-private/nautilus-column-utilities.c:130
 msgid "The location of the file."
 msgstr "מיקום הקובץ."
 
-#: ../libnautilus-private/nautilus-column-utilities.c:169
+#: ../libnautilus-private/nautilus-column-utilities.c:136
+msgid "Modified - Time"
+msgstr "מועד שינוי - זמן"
+
+#: ../libnautilus-private/nautilus-column-utilities.c:179
 msgid "Trashed On"
 msgstr "נזרק לאשפה"
 
-#: ../libnautilus-private/nautilus-column-utilities.c:170
+#: ../libnautilus-private/nautilus-column-utilities.c:180
 msgid "Date when file was moved to the Trash"
 msgstr "התאריך בו הקובץ הועבר אל האשפה"
 
-#: ../libnautilus-private/nautilus-column-utilities.c:176
+#: ../libnautilus-private/nautilus-column-utilities.c:187
 msgid "Original Location"
 msgstr "המיקום המקורי"
 
-#: ../libnautilus-private/nautilus-column-utilities.c:177
+#: ../libnautilus-private/nautilus-column-utilities.c:188
 msgid "Original location of file before moved to the Trash"
 msgstr "המיקום המקורי של הקובץ לפני שהועבר לאשפה"
 
-#: ../libnautilus-private/nautilus-column-utilities.c:194
+#: ../libnautilus-private/nautilus-column-utilities.c:205
 msgid "Relevance"
 msgstr "רלוונטיות"
 
-#: ../libnautilus-private/nautilus-column-utilities.c:195
+#: ../libnautilus-private/nautilus-column-utilities.c:206
 msgid "Relevance rank for search"
 msgstr "דירוג רלוונטיות החיפוש"
 
@@ -360,136 +365,198 @@ msgstr "_קישור לכאן"
 msgid "Cancel"
 msgstr "ביטול"
 
-#: ../libnautilus-private/nautilus-file.c:1226
+#: ../libnautilus-private/nautilus-file.c:1233
 #: ../libnautilus-private/nautilus-vfs-file.c:369
 msgid "This file cannot be mounted"
 msgstr "לא ניתן לחבר את קובץ זה"
 
-#: ../libnautilus-private/nautilus-file.c:1271
+#: ../libnautilus-private/nautilus-file.c:1278
 msgid "This file cannot be unmounted"
 msgstr "לא ניתן לנתק את הקובץ זה"
 
-#: ../libnautilus-private/nautilus-file.c:1305
+#: ../libnautilus-private/nautilus-file.c:1312
 msgid "This file cannot be ejected"
 msgstr "לא ניתן להוציא את הקובץ הזה"
 
-#: ../libnautilus-private/nautilus-file.c:1338
+#: ../libnautilus-private/nautilus-file.c:1345
 #: ../libnautilus-private/nautilus-vfs-file.c:547
 msgid "This file cannot be started"
 msgstr "לא ניתן להתחיל את הקובץ זה"
 
-#: ../libnautilus-private/nautilus-file.c:1390
-#: ../libnautilus-private/nautilus-file.c:1421
+#: ../libnautilus-private/nautilus-file.c:1397
+#: ../libnautilus-private/nautilus-file.c:1428
 msgid "This file cannot be stopped"
 msgstr "לא ניתן לעצור את הקובץ הזה"
 
-#: ../libnautilus-private/nautilus-file.c:1837
+#: ../libnautilus-private/nautilus-file.c:1844
 #, c-format
 msgid "Slashes are not allowed in filenames"
 msgstr "„/“ (לוכסנים) אסורים לשימוש בשמות קבצים"
 
-#: ../libnautilus-private/nautilus-file.c:1855
+#: ../libnautilus-private/nautilus-file.c:1862
 #, c-format
 msgid "File not found"
 msgstr "קובץ לא נמצא"
 
-#: ../libnautilus-private/nautilus-file.c:1883
+#: ../libnautilus-private/nautilus-file.c:1890
 #, c-format
 msgid "Toplevel files cannot be renamed"
 msgstr "לא ניתן לשנות שם עבור קובצי רמה ראשונה"
 
-#: ../libnautilus-private/nautilus-file.c:1906
+#: ../libnautilus-private/nautilus-file.c:1913
 #, c-format
 msgid "Unable to rename desktop icon"
 msgstr "לא ניתן לשנות את שם סמל שולחן העבודה"
 
-#: ../libnautilus-private/nautilus-file.c:1935
+#: ../libnautilus-private/nautilus-file.c:1942
 #, c-format
 msgid "Unable to rename desktop file"
 msgstr "לא ניתן לשנות שם קובץ שולחן עבודה"
 
-#.
-#. * Note to localizers: You can look at man strftime
-#. * for details on the format, but you should only use
-#. * the specifiers from the C standard, not extensions.
-#. * These include "%" followed by one of
-#. * "aAbBcdHIjmMpSUwWxXyYZ". There are two extensions
-#. * in the Nautilus version of strftime that can be
-#. * used (and match GNU extensions). Putting a "-"
-#. * between the "%" and any numeric directive will turn
-#. * off zero padding, and putting a "_" there will use
-#. * space padding instead of zero padding.
-#.
-#: ../libnautilus-private/nautilus-file.c:4672
-msgid "%R"
-msgstr "%R"
-
-#: ../libnautilus-private/nautilus-file.c:4673
-msgid "%-I:%M %P"
+#. Translators: Time in 24h format
+#: ../libnautilus-private/nautilus-file.c:4706
+msgid "%H:%M"
 msgstr "%H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4674
-#: ../libnautilus-private/nautilus-file.c:4675
-msgid "%b %-e"
-msgstr "ה־%-e ב%b"
+#. Translators: Time in 12h format
+#: ../libnautilus-private/nautilus-file.c:4709
+msgid "%l:%M %p"
+msgstr "%l:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:4676
-msgid "%b %-d %Y"
-msgstr "ה־%-d ב%b %Y"
+#: ../libnautilus-private/nautilus-file.c:4716
+#, no-c-format
+msgid "Yesterday"
+msgstr "אתמול"
 
-#: ../libnautilus-private/nautilus-file.c:4677
-msgid "%a, %b %e %Y %I:%M:%S %p"
-msgstr "%a, ה־%e ב%b %Y %H:%M:%S"
+#. Translators: this is the word Yesterday followed by
+#. * a time in 24h format. i.e. "Yesterday 23:04"
+#: ../libnautilus-private/nautilus-file.c:4722
+#, no-c-format
+msgid "Yesterday %H:%M"
+msgstr "אתמול, %H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4678
-msgid "%a, %b %e %Y %T"
-msgstr "%a, ה־%e ב%b %Y %T"
+#. Translators: this is the word Yesterday followed by
+#. * a time in 12h format. i.e. "Yesterday 9:04 PM"
+#: ../libnautilus-private/nautilus-file.c:4727
+#, no-c-format
+msgid "Yesterday %l:%M %p"
+msgstr "אתמול, %l:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:5161
+#: ../libnautilus-private/nautilus-file.c:4735
+#, no-c-format
+msgid "%a"
+msgstr "%a"
+
+#. Translators: this is the name of the week day followed by
+#. * a time in 24h format. i.e. "Monday 23:04"
+#: ../libnautilus-private/nautilus-file.c:4741
+#, no-c-format
+msgid "%a %H:%M"
+msgstr "%a, %H:%M"
+
+#. Translators: this is the week day name followed by
+#. * a time in 12h format. i.e. "Monday 9:04 PM"
+#: ../libnautilus-private/nautilus-file.c:4746
+#, no-c-format
+msgid "%a %l:%M %p"
+msgstr "%a, %l:%M %p"
+
+#. Translators: this is the day of the month followed
+#. * by the abbreviated month name i.e. "3 Feb"
+#: ../libnautilus-private/nautilus-file.c:4754
+#, no-c-format
+msgid "%-e %b"
+msgstr "%-e ב%b"
+
+#. Translators: this is the day of the month followed
+#. * by the abbreviated month name followed by a time in
+#. * 24h format i.e. "3 Feb 23:04"
+#: ../libnautilus-private/nautilus-file.c:4761
+#, no-c-format
+msgid "%-e %b %H:%M"
+msgstr "%-e ב%b, %H:%M"
+
+#. Translators: this is the day of the month followed
+#. * by the abbreviated month name followed by a time in
+#. * 12h format i.e. "3 Feb 9:04"
+#: ../libnautilus-private/nautilus-file.c:4767
+#, no-c-format
+msgid "%-e %b %l:%M %p"
+msgstr "%-e ב%b, %l:%M %p"
+
+#. Translators: this is the day of the month followed by the abbreviated
+#. * month name followed by the year i.e. "3 Feb 2015"
+#: ../libnautilus-private/nautilus-file.c:4775
+#, no-c-format
+msgid "%-e %b %Y"
+msgstr "%-e ב%b %Y"
+
+#. Translators: this is the day number followed
+#. * by the abbreviated month name followed by the year followed
+#. * by a time in 24h format i.e. "3 Feb 2015 23:04"
+#: ../libnautilus-private/nautilus-file.c:4782
+#, no-c-format
+msgid "%-e %b %Y %H:%M"
+msgstr "%-e ב%b %Y %H:%M"
+
+#. Translators: this is the day number followed
+#. * by the abbreviated month name followed by the year followed
+#. * by a time in 12h format i.e. "3 Feb 2015 9:04 PM"
+#: ../libnautilus-private/nautilus-file.c:4788
+#, no-c-format
+msgid "%-e %b %Y %l:%M %p"
+msgstr "%-e ב%b %Y %l:%M %p"
+
+#: ../libnautilus-private/nautilus-file.c:4793
+#, c-format
+msgid "%c"
+msgstr "%c"
+
+#: ../libnautilus-private/nautilus-file.c:5232
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "אין הרשאה להגדרת הרשאות"
 
-#: ../libnautilus-private/nautilus-file.c:5456
+#: ../libnautilus-private/nautilus-file.c:5527
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "אין הרשאה להגדרת הבעלים"
 
-#: ../libnautilus-private/nautilus-file.c:5474
+#: ../libnautilus-private/nautilus-file.c:5545
 #, c-format
 msgid "Specified owner '%s' doesn't exist"
 msgstr "הבעלים שצוינו '%s' לא קיימים"
 
-#: ../libnautilus-private/nautilus-file.c:5738
+#: ../libnautilus-private/nautilus-file.c:5809
 #, c-format
 msgid "Not allowed to set group"
 msgstr "לא מורשה לקבוע את הקבוצה"
 
-#: ../libnautilus-private/nautilus-file.c:5756
+#: ../libnautilus-private/nautilus-file.c:5827
 #, c-format
 msgid "Specified group '%s' doesn't exist"
 msgstr "הקבוצה '%s' שצוינה לא קיימת"
 
 #. Translators: "Me" is used to indicate the file is owned by me (the current user)
-#: ../libnautilus-private/nautilus-file.c:5891
+#: ../libnautilus-private/nautilus-file.c:5962
 msgid "Me"
 msgstr "אני"
 
-#: ../libnautilus-private/nautilus-file.c:5915
+#: ../libnautilus-private/nautilus-file.c:5986
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
 msgstr[0] "פריט אחד"
 msgstr[1] "%'u פריטים"
 
-#: ../libnautilus-private/nautilus-file.c:5916
+#: ../libnautilus-private/nautilus-file.c:5987
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "תיקייה אחת"
 msgstr[1] "%'u תיקיות"
 
-#: ../libnautilus-private/nautilus-file.c:5917
+#: ../libnautilus-private/nautilus-file.c:5988
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -497,92 +564,92 @@ msgstr[0] "קובץ אחד"
 msgstr[1] "%'u קבצים"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:6313
-#: ../libnautilus-private/nautilus-file.c:6329
+#: ../libnautilus-private/nautilus-file.c:6389
+#: ../libnautilus-private/nautilus-file.c:6405
 msgid "? items"
 msgstr "? פריטים"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:6319
+#: ../libnautilus-private/nautilus-file.c:6395
 msgid "? bytes"
 msgstr "? בתים"
 
-#: ../libnautilus-private/nautilus-file.c:6336
-#: ../libnautilus-private/nautilus-file.c:6416
+#: ../libnautilus-private/nautilus-file.c:6412
+#: ../libnautilus-private/nautilus-file.c:6493
 msgid "Unknown"
 msgstr "לא ידוע"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:6350
+#: ../libnautilus-private/nautilus-file.c:6426
 #: ../src/nautilus-properties-window.c:1178
 msgid "unknown"
 msgstr "לא ידוע"
 
-#: ../libnautilus-private/nautilus-file.c:6380
-#: ../libnautilus-private/nautilus-file.c:6388
-#: ../libnautilus-private/nautilus-file.c:6439
+#: ../libnautilus-private/nautilus-file.c:6457
+#: ../libnautilus-private/nautilus-file.c:6465
+#: ../libnautilus-private/nautilus-file.c:6516
 msgid "Program"
 msgstr "תכנית"
 
-#: ../libnautilus-private/nautilus-file.c:6381
+#: ../libnautilus-private/nautilus-file.c:6458
 msgid "Audio"
 msgstr "שמע"
 
-#: ../libnautilus-private/nautilus-file.c:6382
+#: ../libnautilus-private/nautilus-file.c:6459
 msgid "Font"
 msgstr "גופן"
 
-#: ../libnautilus-private/nautilus-file.c:6383
+#: ../libnautilus-private/nautilus-file.c:6460
 #: ../src/nautilus-image-properties-page.c:767
 msgid "Image"
 msgstr "תמונה"
 
-#: ../libnautilus-private/nautilus-file.c:6384
+#: ../libnautilus-private/nautilus-file.c:6461
 msgid "Archive"
 msgstr "ארכיון"
 
-#: ../libnautilus-private/nautilus-file.c:6385
+#: ../libnautilus-private/nautilus-file.c:6462
 msgid "Markup"
 msgstr "שפת סימון"
 
-#: ../libnautilus-private/nautilus-file.c:6389
+#: ../libnautilus-private/nautilus-file.c:6466
 #: ../src/nautilus-query-editor.c:326
 msgid "Video"
 msgstr "וידאו"
 
-#: ../libnautilus-private/nautilus-file.c:6390
+#: ../libnautilus-private/nautilus-file.c:6467
 msgid "Contacts"
 msgstr "אנשי קשר"
 
-#: ../libnautilus-private/nautilus-file.c:6391
+#: ../libnautilus-private/nautilus-file.c:6468
 msgid "Calendar"
 msgstr "יומן"
 
-#: ../libnautilus-private/nautilus-file.c:6392
+#: ../libnautilus-private/nautilus-file.c:6469
 msgid "Document"
 msgstr "מסמך"
 
-#: ../libnautilus-private/nautilus-file.c:6393
+#: ../libnautilus-private/nautilus-file.c:6470
 #: ../src/nautilus-query-editor.c:392
 msgid "Presentation"
 msgstr "מצגת"
 
-#: ../libnautilus-private/nautilus-file.c:6394
+#: ../libnautilus-private/nautilus-file.c:6471
 #: ../src/nautilus-query-editor.c:376
 msgid "Spreadsheet"
 msgstr "גיליון אלקטרוני"
 
-#: ../libnautilus-private/nautilus-file.c:6441
+#: ../libnautilus-private/nautilus-file.c:6518
 msgid "Binary"
 msgstr "בינרי"
 
-#: ../libnautilus-private/nautilus-file.c:6445
+#: ../libnautilus-private/nautilus-file.c:6522
 msgid "Folder"
 msgstr "תיקייה"
 
-#: ../libnautilus-private/nautilus-file.c:6476
+#: ../libnautilus-private/nautilus-file.c:6553
 msgid "Link"
 msgstr "קישור"
 
@@ -591,15 +658,15 @@ msgstr "קישור"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file.c:6482
+#: ../libnautilus-private/nautilus-file.c:6559
 #: ../libnautilus-private/nautilus-file-operations.c:377
 #: ../src/nautilus-view-dnd.c:122
 #, c-format
 msgid "Link to %s"
 msgstr "קישור ל־%s"
 
-#: ../libnautilus-private/nautilus-file.c:6498
-#: ../libnautilus-private/nautilus-file.c:6512
+#: ../libnautilus-private/nautilus-file.c:6575
+#: ../libnautilus-private/nautilus-file.c:6589
 msgid "Link (broken)"
 msgstr "קישור (שבור)"
 
@@ -2480,6 +2547,15 @@ msgstr "שליחת קובץ בדוא״ל…"
 msgid "Send files by mail…"
 msgstr "שליחת קבצים בדוא״ל…"
 
+#: ../src/nautilus-application-actions.c:115
+#, c-format
+msgid ""
+"There was an error displaying help: \n"
+"%s"
+msgstr ""
+"אירעה שגיאה בהצגת העזרה: \n"
+"%s"
+
 #. Some sort of failure occurred. How 'bout we tell the user?
 #: ../src/nautilus-application.c:179 ../src/nautilus-window-slot.c:1592
 msgid "Oops! Something went wrong."
@@ -2581,15 +2657,6 @@ msgstr "[URI...]"
 #: ../src/nautilus-application.c:820
 msgid "Could not register the application"
 msgstr "לא ניתן לרשום את היישום"
-
-#: ../src/nautilus-application-actions.c:115
-#, c-format
-msgid ""
-"There was an error displaying help: \n"
-"%s"
-msgstr ""
-"אירעה שגיאה בהצגת העזרה: \n"
-"%s"
 
 #: ../src/nautilus-app-menu.ui.h:1
 msgid "New _Window"
@@ -2980,7 +3047,7 @@ msgstr ""
 "יותר מידע יופיע ככל שרמת התקריב תגדל."
 
 #: ../src/nautilus-file-management-properties.ui.h:24
-#: ../src/nautilus-list-view.c:2156
+#: ../src/nautilus-list-view.c:2154
 msgid "List View"
 msgstr "תצוגת רשימה"
 
@@ -3249,12 +3316,12 @@ msgstr "(ריק)"
 msgid "Use Default"
 msgstr "שימוש בבררת המחדל"
 
-#: ../src/nautilus-list-view.c:3000
+#: ../src/nautilus-list-view.c:2998
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s עמודות גלויות"
 
-#: ../src/nautilus-list-view.c:3020
+#: ../src/nautilus-list-view.c:3018
 msgid "Choose the order of information to appear in this folder:"
 msgstr "בחירת סדר המידע שיופיע בתיקייה זו:"
 
@@ -3404,6 +3471,22 @@ msgid "Opening %d item."
 msgid_plural "Opening %d items."
 msgstr[0] "נפתח פריט אחד."
 msgstr[1] "‏%d פריטים נפתחים."
+
+#: ../src/nautilus-move-to-trash-shortcut-changed.ui.h:1
+msgid "Delete Shortcuts Have Changed"
+msgstr "שונו צירופי המקשים למחיקה"
+
+#: ../src/nautilus-move-to-trash-shortcut-changed.ui.h:2
+msgid ""
+"With the latest version of Files, you no longer need to hold Ctrl to delete "
+"- the Delete key will work when pressed on its own."
+msgstr ""
+"עם הגרסה האחרונה של קבצים, אין עוד צורל להחזיק את Ctrl על מנת למחוק, המקש "
+"Delete יעבוד בלחיצה עליו בלבד."
+
+#: ../src/nautilus-move-to-trash-shortcut-changed.ui.h:3
+msgid "Got it"
+msgstr "הבנתי"
 
 #: ../src/nautilus-notebook.c:382
 msgid "Close tab"
@@ -4354,6 +4437,15 @@ msgstr "מכיל תמונות ומוזיקה"
 #: ../src/nautilus-x-content-bar.c:201
 msgid "Open with:"
 msgstr "פתיחה באמצעות:"
+
+#~ msgid "%R"
+#~ msgstr "%R"
+
+#~ msgid "%b %-e"
+#~ msgstr "ה־%-e ב%b"
+
+#~ msgid "%a, %b %e %Y %T"
+#~ msgstr "%a, ה־%e ב%b %Y %T"
 
 #~ msgid "Saved search"
 #~ msgstr "חיפוש שמור"
@@ -5744,9 +5836,6 @@ msgstr "פתיחה באמצעות:"
 #~ msgid "today at 00:00 PM"
 #~ msgstr "היום ב־00:00"
 
-#~ msgid "today at %-I:%M %p"
-#~ msgstr "היום ב־%-H:%M"
-
 #~ msgid "today, 00:00 PM"
 #~ msgstr "היום, 00:00"
 
@@ -5768,12 +5857,6 @@ msgstr "פתיחה באמצעות:"
 #~ msgid "yesterday, 00:00 PM"
 #~ msgstr "אתמול, 00:00"
 
-#~ msgid "yesterday, %-I:%M %p"
-#~ msgstr "אתמול, %-H:%M"
-
-#~ msgid "yesterday"
-#~ msgstr "אתמול"
-
 #~ msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 #~ msgstr "רביעי, 00 בספטמבר 0000 ב־00:00:00 PM"
 
@@ -5791,9 +5874,6 @@ msgstr "פתיחה באמצעות:"
 
 #~ msgid "Oct 00 0000 at 00:00 PM"
 #~ msgstr "00 באוק' 0000 ב־00:00"
-
-#~ msgid "%b %-d %Y at %-I:%M %p"
-#~ msgstr "%-d ב%b %Y ב־%-H:%M"
 
 #~ msgid "Oct 00 0000, 00:00 PM"
 #~ msgstr "00 באוק' 0000, 00:00"
