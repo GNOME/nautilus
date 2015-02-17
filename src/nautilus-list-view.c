@@ -41,6 +41,7 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <glib-object.h>
+#include <libgd/gd.h>
 #include <libnautilus-extension/nautilus-column-provider.h>
 #include <libnautilus-private/nautilus-clipboard-monitor.h>
 #include <libnautilus-private/nautilus-column-chooser.h>
@@ -2086,14 +2087,13 @@ create_and_set_up_tree_view (NautilusListView *view)
 								 (GtkTreeCellDataFunc) filename_cell_data_func,
 								 view, NULL);
 		} else {
-			cell = gtk_cell_renderer_text_new ();
-			/* Match Adwaita dim-label style */
-		  	GdkRGBA dim_text = {.0, .0, .0, 0.55};
+			cell = gd_styled_text_renderer_new ();
+			gd_styled_text_renderer_add_class (GD_STYLED_TEXT_RENDERER (cell),
+							   "dim-label");
 
 			g_object_set (cell,
 				      "xalign", xalign,
 				      "xpad", 5,
-			              "foreground-rgba", &dim_text,
 				      NULL);
 			if (!strcmp (name, "permissions")) {
 				g_object_set (cell,

@@ -311,6 +311,7 @@ AM_CONDITIONAL(ENABLE_UPDATE_MIMEDB, test x$enable_update_mimedb = xyes)
 LIBGD_INIT([
   notification
   static
+  _view-common
 ])
 
 AC_CONFIG_FILES([
