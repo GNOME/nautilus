@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2015-02-17 11:18+0000\n"
-"PO-Revision-Date: 2015-02-17 14:19+0100\n"
+"POT-Creation-Date: 2015-02-17 23:22+0000\n"
+"PO-Revision-Date: 2015-02-18 09:07+0100\n"
 "Last-Translator: Milo Casagrande <milo@milo.name>\n"
 "Language-Team: Italiano <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -365,13 +365,12 @@ msgstr "Impossibile rinominare il file desktop"
 #. Translators: Time in 24h format
 #: ../libnautilus-private/nautilus-file.c:4706
 msgid "%H:%M"
-msgstr "%-k:%M"
+msgstr "%H:%M"
 
 #. Translators: Time in 12h format
 #: ../libnautilus-private/nautilus-file.c:4709
-#| msgid "%-I:%M %P"
 msgid "%l:%M %p"
-msgstr "%l:%M %p"
+msgstr "%I:%M %p"
 
 #: ../libnautilus-private/nautilus-file.c:4716
 #, no-c-format
@@ -383,14 +382,14 @@ msgstr "Ieri"
 #: ../libnautilus-private/nautilus-file.c:4722
 #, no-c-format
 msgid "Yesterday %H:%M"
-msgstr "Ieri, %-k:%M"
+msgstr "Ieri, %H:%M"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 12h format. i.e. "Yesterday 9:04 PM"
 #: ../libnautilus-private/nautilus-file.c:4727
 #, no-c-format
 msgid "Yesterday %l:%M %p"
-msgstr "Ieri, %l:%M %p"
+msgstr "Ieri, %I:%M %p"
 
 #: ../libnautilus-private/nautilus-file.c:4735
 #, no-c-format
@@ -402,65 +401,60 @@ msgstr "%a"
 #: ../libnautilus-private/nautilus-file.c:4741
 #, no-c-format
 msgid "%a %H:%M"
-msgstr "%a, %-k:%M"
+msgstr "%a, %H:%M"
 
 #. Translators: this is the week day name followed by
 #. * a time in 12h format. i.e. "Monday 9:04 PM"
 #: ../libnautilus-private/nautilus-file.c:4746
 #, no-c-format
-#| msgid "%-I:%M %P"
 msgid "%a %l:%M %p"
-msgstr "%a, %l:%M %p"
+msgstr "%a, %I:%M %p"
 
-#. Translators: this is the day of the month plus the short
-#. * month name i.e. "3 Feb"
+#. Translators: this is the day of the month followed
+#. * by the abbreviated month name i.e. "3 Feb"
 #: ../libnautilus-private/nautilus-file.c:4754
 #, no-c-format
 msgid "%-e %b"
 msgstr "%-e %b"
 
 #. Translators: this is the day of the month followed
-#. * by the day number followed by a time in
+#. * by the abbreviated month name followed by a time in
 #. * 24h format i.e. "3 Feb 23:04"
 #: ../libnautilus-private/nautilus-file.c:4761
 #, no-c-format
 msgid "%-e %b %H:%M"
-msgstr "%-e %b %-k:%M"
+msgstr "%-e %b %H:%M"
 
 #. Translators: this is the day of the month followed
-#. * by the day number followed by a time in
-#. * 12h format i.e. "3 Feb 9:04 PM"
+#. * by the abbreviated month name followed by a time in
+#. * 12h format i.e. "3 Feb 9:04"
 #: ../libnautilus-private/nautilus-file.c:4767
 #, no-c-format
-#| msgid "%a, %b %e %Y %I:%M:%S %p"
 msgid "%-e %b %l:%M %p"
-msgstr "%-e %b %l:%M %p"
+msgstr "%-e %b %I:%M %p"
 
-#. Translators: this is the day of the month followed by the short
+#. Translators: this is the day of the month followed by the abbreviated
 #. * month name followed by the year i.e. "3 Feb 2015"
 #: ../libnautilus-private/nautilus-file.c:4775
 #, no-c-format
-#| msgid "%b %-d %Y"
 msgid "%-e %b %Y"
 msgstr "%-e %b %Y"
 
 #. Translators: this is the day number followed
-#. * by the month name followed by the year followed
+#. * by the abbreviated month name followed by the year followed
 #. * by a time in 24h format i.e. "3 Feb 2015 23:04"
 #: ../libnautilus-private/nautilus-file.c:4782
 #, no-c-format
-#| msgid "%a, %b %e %Y %I:%M:%S %p"
 msgid "%-e %b %Y %H:%M"
-msgstr "%-e %b %Y %-k:%M"
+msgstr "%-e %b %Y %H:%M"
 
 #. Translators: this is the day number followed
-#. * by the month name followed by the year followed
+#. * by the abbreviated month name followed by the year followed
 #. * by a time in 12h format i.e. "3 Feb 2015 9:04 PM"
 #: ../libnautilus-private/nautilus-file.c:4788
 #, no-c-format
-#| msgid "%a, %b %e %Y %I:%M:%S %p"
 msgid "%-e %b %Y %l:%M %p"
-msgstr "%-e %b %Y %l:%M %p"
+msgstr "%-e %b %Y %I:%M %p"
 
 #: ../libnautilus-private/nautilus-file.c:4793
 #, c-format
@@ -2333,10 +2327,8 @@ msgid "New _Window"
 msgstr "_Nuova finestra"
 
 #: ../src/nautilus-app-menu.ui.h:2
-#, fuzzy
-#| msgid "_Show Sidebar"
 msgid "Sidebar"
-msgstr "_Mosta riquadro laterale"
+msgstr "Riquadro laterale"
 
 #: ../src/nautilus-app-menu.ui.h:3
 msgid "Connect to _Server…"
@@ -3149,22 +3141,20 @@ msgstr "Chiude la scheda"
 #, c-format
 msgid "%s deleted"
 msgid_plural "%s deleted"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s eliminato"
+msgstr[1] "%s eliminati"
 
 #. Translators: this is the first part of a "%d files deleted" string
 #: ../src/nautilus-notification-delete.c:168
-#, fuzzy, c-format
-#| msgid "%'u file"
-#| msgid_plural "%'u files"
+#, c-format
 msgid "%d file"
 msgid_plural "%d files"
-msgstr[0] "%'u file"
-msgstr[1] "%'u file"
+msgstr[0] "%d file"
+msgstr[1] "%d file"
 
 #: ../src/nautilus-progress-info-widget.xml.h:1
 msgid "label"
-msgstr ""
+msgstr "etichetta"
 
 #: ../src/nautilus-progress-ui-handler.c:104 ../src/nautilus-progress-ui-handler.c:171 ../src/nautilus-progress-ui-handler.c:222
 msgid "File Operations"
@@ -3293,10 +3283,8 @@ msgid "Link target:"
 msgstr "Collegamento a:"
 
 #: ../src/nautilus-properties-window.c:2998
-#, fuzzy
-#| msgid "_Paste Into Folder"
 msgid "Parent Folder:"
-msgstr "_Incolla nella cartella"
+msgstr "Cartella superiore:"
 
 #: ../src/nautilus-properties-window.c:3006
 msgid "Volume:"
@@ -3550,32 +3538,24 @@ msgid "Select _All"
 msgstr "_Seleziona tutto"
 
 #: ../src/nautilus-toolbar-action-menu.xml.h:4
-#, fuzzy
-#| msgid "Enter _Location…"
 msgid "Enter _Location"
-msgstr "Inserisci _posizione…"
+msgstr "Inserisci _posizione"
 
 #: ../src/nautilus-toolbar-action-menu.xml.h:5
-#, fuzzy
-#| msgid "Bookmark this Location"
 msgid "_Bookmark this Location"
-msgstr "Aggiungi posizione ai segnalibri"
+msgstr "Aggiungi _posizione ai segnalibri"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:1
 msgid "Sort"
-msgstr ""
+msgstr "Ordina"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:3
-#, fuzzy
-#| msgid "Size"
 msgid "_Size"
-msgstr "Dimensione"
+msgstr "_Dimensione"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:4
-#, fuzzy
-#| msgid "Type"
 msgid "_Type"
-msgstr "Tipo"
+msgstr "_Tipo"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:5
 msgid "Last _Opened"
@@ -3594,14 +3574,10 @@ msgid "Search _Relevance"
 msgstr "Per attinenza ricerca"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:8
-#, fuzzy
-#| msgid "Re_versed Order"
 msgid "Re_verse Order"
 msgstr "_Ordine inverso"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:9
-#, fuzzy
-#| msgid "Visible _Columns…"
 msgid "_Visible Columns…"
 msgstr "Colonne visi_bili…"
 
@@ -3615,7 +3591,7 @@ msgstr "_Aggiorna"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:12
 msgid "St_op"
-msgstr ""
+msgstr "Fe_rma"
 
 #: ../src/nautilus-trash-bar.c:202
 msgid "Restore"
@@ -3782,10 +3758,8 @@ msgid "Run"
 msgstr "Esegui"
 
 #: ../src/nautilus-view.c:6239
-#, fuzzy
-#| msgid "_Open"
 msgid "Open"
-msgstr "_Apri"
+msgstr "Apri"
 
 #: ../src/nautilus-view.c:6290 ../src/nautilus-view-context-menus.xml.h:18
 msgid "_Start"
@@ -3804,10 +3778,8 @@ msgid "U_nlock Drive"
 msgstr "S_blocca unità"
 
 #: ../src/nautilus-view.c:6315
-#, fuzzy
-#| msgid "_Lock Drive"
 msgid "Stop Drive"
-msgstr "_Blocca unità"
+msgstr "Ferma unità"
 
 #: ../src/nautilus-view.c:6318
 msgid "_Safely Remove Drive"
@@ -3846,8 +3818,6 @@ msgid "P_roperties"
 msgstr "P_roprietà"
 
 #: ../src/nautilus-view-context-menus.xml.h:6
-#, fuzzy
-#| msgid "_Keep Aligned"
 msgid "_Keep aligned"
 msgstr "Mantieni a_llineate"
 
@@ -3858,10 +3828,8 @@ msgid "Organize _Desktop by Name"
 msgstr "_Ordina icone per nome"
 
 #: ../src/nautilus-view-context-menus.xml.h:8
-#, fuzzy
-#| msgid "Change Desktop _Background"
 msgid "Change _Background"
-msgstr "Ca_mbia sfondo scrivania"
+msgstr "Ca_mbia sfondo"
 
 #: ../src/nautilus-view-context-menus.xml.h:9
 msgid "_Scripts"
@@ -3872,28 +3840,20 @@ msgid "_Open Scripts Folder"
 msgstr "_Apri cartella degli script"
 
 #: ../src/nautilus-view-context-menus.xml.h:11
-#, fuzzy
-#| msgid "Open _Item Location"
 msgid "_Open Item Location"
 msgstr "Apri _posizione oggetto"
 
 #: ../src/nautilus-view-context-menus.xml.h:12
-#, fuzzy
-#| msgid "Open in New _Window"
 msgid "Open In New _Window"
 msgstr "Apri in nuova _finestra"
 
 #: ../src/nautilus-view-context-menus.xml.h:13
-#, fuzzy
-#| msgid "Open in New _Tab"
 msgid "Open In New _Tab"
 msgstr "Apri in nuova sc_heda"
 
 #: ../src/nautilus-view-context-menus.xml.h:14
-#, fuzzy
-#| msgid "Open With Other _Application…"
 msgid "Open With Other _Application"
-msgstr "Apri con altra applica_zione…"
+msgstr "Apri con altra applica_zione"
 
 #: ../src/nautilus-view-context-menus.xml.h:15
 msgid "_Mount"
@@ -3919,17 +3879,11 @@ msgstr "_Rileva supporto"
 msgid "_Paste Into Folder"
 msgstr "_Incolla nella cartella"
 
-# FIXME!!!!!
 #: ../src/nautilus-view-context-menus.xml.h:24
-#, fuzzy
-#| msgid "Move To…"
 msgid "Move to…"
 msgstr "Sposta su…"
 
-# FIXME!!!!!
 #: ../src/nautilus-view-context-menus.xml.h:25
-#, fuzzy
-#| msgid "Copy To…"
 msgid "Copy to…"
 msgstr "Copia su…"
 
@@ -3960,15 +3914,10 @@ msgid "Restore Icon's Original Size"
 msgstr "Icona alla dimensione _originale"
 
 #: ../src/nautilus-view-context-menus.xml.h:32
-#, fuzzy
-#| msgid "Rena_me…"
 msgid "Rena_me"
-msgstr "Rino_mina…"
+msgstr "Rino_mina"
 
-# FIXME?!?
 #: ../src/nautilus-view-context-menus.xml.h:33
-#, fuzzy
-#| msgid "Set as Wallpaper"
 msgid "Set As Wallpaper"
 msgstr "Imposta come sfondo"
 
