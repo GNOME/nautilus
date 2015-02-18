@@ -4683,7 +4683,7 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
   	GDateTime *file_date, *now;
 	gint days_ago;
 	gboolean use_24;
-	gchar *format;
+	const gchar *format;
 	gchar *result;
 	gchar *result_with_ratio;
 
