@@ -10,18 +10,18 @@
 # Alexander Sigachov <alexander.sigachov@gmail.com>, 2006.
 # Yuri Kozlov <yuray@komyakino.ru>, 2010.
 # Dmitry Shachnev <mitya57@ubuntu.com>, 2012.
-# Stas Solovey <whats_up@tut.by>, 2011, 2013, 2014, 2015.
 # Yuri Myasoedov <ymyasoedov@yandex.ru>, 2012, 2013, 2015.
+# Stas Solovey <whats_up@tut.by>, 2011, 2013, 2014, 2015.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus trunk\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2015-02-19 11:36+0000\n"
-"PO-Revision-Date: 2015-02-19 18:34+0300\n"
-"Last-Translator: Yuri Myasoedov <ymyasoedov@yandex.ru>\n"
-"Language-Team: русский <gnome-cyr@gnome.org>\n"
+"POT-Creation-Date: 2015-02-23 23:22+0000\n"
+"PO-Revision-Date: 2015-02-24 13:48+0300\n"
+"Last-Translator: Stas Solovey <whats_up@tut.by>\n"
+"Language-Team: Русский <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,9 +38,9 @@ msgid ""
 "desktop. It provides a simple and integrated way of managing your files and "
 "browsing your file system."
 msgstr ""
-"Приложение Nautilus (также известное как Файлы) — файловый менеджер по "
-"умолчанию для рабочего стола GNOME. Предоставляет простой способ для "
-"управления файлами и навигации по файловой системе."
+"Nautilus — файловый менеджер по умолчанию для рабочего стола GNOME. "
+"Предоставляет простой способ для управления файлами и навигации по файловой "
+"системе."
 
 #: ../data/org.gnome.Nautilus.appdata.xml.in.h:2
 msgid ""
@@ -293,7 +293,6 @@ msgid "The location of the file."
 msgstr "Местоположение файла."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:136
-#| msgid "Modified"
 msgid "Modified - Time"
 msgstr "Последнее изменение"
 
@@ -431,7 +430,6 @@ msgstr "%H:%M"
 
 #. Translators: Time in 12h format
 #: ../libnautilus-private/nautilus-file.c:4709
-#| msgid "%-I:%M %P"
 msgid "%l:%M %p"
 msgstr "%l:%M %p"
 
@@ -457,29 +455,30 @@ msgstr "Вчера %l:%M %p"
 #: ../libnautilus-private/nautilus-file.c:4735
 #, no-c-format
 msgid "%a"
-msgstr ""
+msgstr "%a"
 
 #. Translators: this is the name of the week day followed by
 #. * a time in 24h format. i.e. "Monday 23:04"
 #: ../libnautilus-private/nautilus-file.c:4741
 #, no-c-format
 msgid "%a %H:%M"
-msgstr ""
+msgstr "%a %H:%M"
 
 #. Translators: this is the week day name followed by
 #. * a time in 12h format. i.e. "Monday 9:04 PM"
 #: ../libnautilus-private/nautilus-file.c:4746
-#, fuzzy, no-c-format
+#, no-c-format
 #| msgid "%-I:%M %P"
 msgid "%a %l:%M %p"
-msgstr "%-I:%M %P"
+msgstr "%a %l:%M %p"
 
+# точка нужна (3 фев.)
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name i.e. "3 Feb"
 #: ../libnautilus-private/nautilus-file.c:4754
 #, no-c-format
 msgid "%-e %b"
-msgstr ""
+msgstr "%-e %b."
 
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
@@ -487,51 +486,51 @@ msgstr ""
 #: ../libnautilus-private/nautilus-file.c:4761
 #, no-c-format
 msgid "%-e %b %H:%M"
-msgstr ""
+msgstr "%-e %b. %H:%M"
 
 # исправление даты
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 12h format i.e. "3 Feb 9:04"
 #: ../libnautilus-private/nautilus-file.c:4767
-#, fuzzy, no-c-format
+#, no-c-format
 #| msgid "%a, %b %e %Y %I:%M:%S %p"
 msgid "%-e %b %l:%M %p"
-msgstr "%a, %e %b. %Y %I:%M:%S %p"
+msgstr "%-e %b. %l:%M %p"
 
 # исправление даты
 #. Translators: this is the day of the month followed by the abbreviated
 #. * month name followed by the year i.e. "3 Feb 2015"
 #: ../libnautilus-private/nautilus-file.c:4775
-#, fuzzy, no-c-format
+#, no-c-format
 #| msgid "%b %-d %Y"
 msgid "%-e %b %Y"
-msgstr "%-d %b. %Y"
+msgstr "%-e %b. %Y"
 
 # исправление даты
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 24h format i.e. "3 Feb 2015 23:04"
 #: ../libnautilus-private/nautilus-file.c:4782
-#, fuzzy, no-c-format
+#, no-c-format
 #| msgid "%a, %b %e %Y %I:%M:%S %p"
 msgid "%-e %b %Y %H:%M"
-msgstr "%a, %e %b. %Y %I:%M:%S %p"
+msgstr "%-e %b. %Y %H:%M"
 
 # исправление даты
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 12h format i.e. "3 Feb 2015 9:04 PM"
 #: ../libnautilus-private/nautilus-file.c:4788
-#, fuzzy, no-c-format
+#, no-c-format
 #| msgid "%a, %b %e %Y %I:%M:%S %p"
 msgid "%-e %b %Y %l:%M %p"
-msgstr "%a, %e %b. %Y %I:%M:%S %p"
+msgstr "%-e %b. %Y %l:%M %p"
 
 #: ../libnautilus-private/nautilus-file.c:4795
 #, c-format
 msgid "%c"
-msgstr ""
+msgstr "%c"
 
 #: ../libnautilus-private/nautilus-file.c:5234
 #, c-format
@@ -2167,12 +2166,16 @@ msgstr ""
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:17
 msgid "Show a warning dialog for the change of the shortcut for move to trash"
 msgstr ""
+"Показывать диалоговое окно с предупреждением о смене комбинации клавиш для "
+"удаления в корзину"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:18
 msgid ""
 "Show a warning dialog for the change of the shortcut for move to trash from "
 "control + delete to just delete."
 msgstr ""
+"Показывать диалоговое окно с предупреждением о смене комбинации клавиш для "
+"удаления в корзину с «Сtrl+Delete» на просто «Delete»."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:19
 msgid "Use extra mouse button events in Nautilus' browser window"
@@ -3571,8 +3574,8 @@ msgid ""
 "With the latest version of Files, you no longer need to hold Ctrl to delete "
 "- the Delete key will work when pressed on its own."
 msgstr ""
-"В последней версии Nautilus при удалении больше не надо удерживать клавишу "
-"Ctrl, достаточно просто нажать клавишу Delete."
+"В последней версии Nautilus при удалении больше не нужно удерживать клавишу "
+"«Ctrl», достаточно просто нажать клавишу «Delete»."
 
 #: ../src/nautilus-move-to-trash-shortcut-changed.ui.h:3
 msgid "Got it"
