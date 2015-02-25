@@ -942,21 +942,21 @@ action_show_move_to_trash_shortcut_changed_dialog (GSimpleAction *action,
 	GtkBuilder *builder;
 	gboolean show_dialog_preference;
 
-	view = (NautilusView *) user_data;
+	view = NAUTILUS_VIEW (user_data);
 	show_dialog_preference = g_settings_get_boolean (nautilus_preferences,
 	                                                 NAUTILUS_PREFERENCES_SHOW_MOVE_TO_TRASH_SHORTCUT_CHANGED_DIALOG);
 	if (show_dialog_preference) {
 		builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-move-to-trash-shortcut-changed.ui");
-		dialog = (GtkWindow *) gtk_builder_get_object (builder, "move_to_trash_shortcut_changed_dialog");
+		dialog = GTK_WINDOW (gtk_builder_get_object (builder, "move_to_trash_shortcut_changed_dialog"));
 
-		gtk_window_set_transient_for (dialog, (GtkWindow *) nautilus_view_get_window (view));
+		gtk_window_set_transient_for (dialog, GTK_WINDOW (nautilus_view_get_window (view)));
 	  	g_signal_connect (dialog, "response",
                                   G_CALLBACK (got_it_clicked),
                                   view);
 
-		gtk_widget_show ((GtkWidget *) dialog);
-		gtk_dialog_run((GtkDialog *) dialog);
-		gtk_widget_destroy ((GtkWidget *) dialog);
+		gtk_widget_show (GTK_WIDGET (dialog));
+		gtk_dialog_run(GTK_DIALOG (dialog));
+		gtk_widget_destroy (GTK_WIDGET (dialog));
 
 	  	g_object_unref (builder);
 	}
