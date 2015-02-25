@@ -678,6 +678,9 @@ nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow
 
 	preferences_dialog = dialog;
 	g_object_add_weak_pointer (G_OBJECT (dialog), (gpointer *) &preferences_dialog);
+	gtk_window_set_transient_for (GTK_WINDOW (dialog), window);
+	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+
 	gtk_widget_show (dialog);
 }
 
