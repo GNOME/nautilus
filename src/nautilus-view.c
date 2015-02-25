@@ -7559,6 +7559,7 @@ nautilus_view_init (NautilusView *view)
 	nautilus_application_add_accelerator (app, "view.cut", "<control>x");
 	nautilus_application_add_accelerator (app, "view.copy", "<control>c");
 	nautilus_application_add_accelerator (app, "view.delete", "<shift>Delete");
+	nautilus_application_add_accelerator (app, "view.new-folder", "<control><shift>n");
 	/* Only accesible by shorcuts */
 	nautilus_application_add_accelerator (app, "view.select-pattern", "<control>s");
 	nautilus_application_add_accelerator (app, "view.zoom-default", "<control>0");
