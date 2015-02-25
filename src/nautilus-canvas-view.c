@@ -1963,6 +1963,9 @@ nautilus_canvas_view_init (NautilusCanvasView *canvas_view)
 					 canvas_view_entries,
 					 G_N_ELEMENTS (canvas_view_entries),
 					 canvas_view);
+	/* Keep the action synced with the actual value, so the toolbar can poll it */
+	g_action_group_change_action_state (nautilus_view_get_action_group (NAUTILUS_VIEW (canvas_view)),
+					    "zoom-to-level", g_variant_new_int32 (get_default_zoom_level (canvas_view)));
 }
 
 NautilusView *

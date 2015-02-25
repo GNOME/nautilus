@@ -3580,6 +3580,9 @@ nautilus_list_view_init (NautilusListView *list_view)
 					list_view_entries,
 					G_N_ELEMENTS (list_view_entries),
 					list_view);
+	/* Keep the action synced with the actual value, so the toolbar can poll it */
+	g_action_group_change_action_state (nautilus_view_get_action_group (NAUTILUS_VIEW (list_view)),
+					    "zoom-to-level", g_variant_new_int32 (get_default_zoom_level ()));
 }
 
 NautilusView *
