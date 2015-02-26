@@ -29,8 +29,6 @@
 
 G_BEGIN_DECLS
 
-#ifdef ENABLE_DEBUG
-
 typedef enum {
   NAUTILUS_DEBUG_APPLICATION = 1 << 1,
   NAUTILUS_DEBUG_BOOKMARKS = 1 << 2,
@@ -75,22 +73,6 @@ void nautilus_debug_files (DebugFlags flag, GList *files,
 #define DEBUGGING nautilus_debug_flag_is_set(DEBUG_FLAG)
 
 #endif /* DEBUG_FLAG */
-
-#else /* ENABLE_DEBUG */
-
-#ifdef DEBUG_FLAG
-
-#define DEBUG(format, ...) \
-  G_STMT_START { } G_STMT_END
-
-#define DEBUG_FILES(files, format, ...) \
-  G_STMT_START { } G_STMT_END
-
-#define DEBUGGING 0
-
-#endif /* DEBUG_FLAG */
-
-#endif /* ENABLE_DEBUG */
 
 G_END_DECLS
 
