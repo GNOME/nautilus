@@ -30,8 +30,6 @@
 
 #include "nautilus-file.h"
 
-#ifdef ENABLE_DEBUG
-
 static DebugFlags flags = 0;
 static gboolean initialized = FALSE;
 
@@ -163,4 +161,3 @@ nautilus_debug_files (DebugFlags flag,
   va_end (args);
 }
 
-#endif /* ENABLE_DEBUG */

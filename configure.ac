@@ -69,24 +69,6 @@ dnl ==========================================================================
 GTK_DOC_CHECK([1.4])
 
 dnl ==========================================================================
-
-AC_ARG_ENABLE(debug,
-  AS_HELP_STRING([--disable-debug],[Disable debugging code]),
-  [
-    case "${enableval}" in
-      yes|no) enable_debug="${enableval}" ;;
-      *)   AC_MSG_ERROR(bad value ${enableval} for --enable-debug) ;;
-    esac
-  ],
-  [enable_debug=yes])
-
-if test "$enable_debug" = yes; then
-  AC_DEFINE(ENABLE_DEBUG, [], [Enable debug code])
-else
-  enable_debug=no
-fi
-
-dnl ==========================================================================
 dnl Enable Profiling
 
 AC_ARG_ENABLE(profiling,
@@ -352,7 +334,6 @@ nautilus-$VERSION:
 	nautilus-sendto ext:	$enable_nst_extension
 	Tracker support:	$enable_tracker
 
-        debugging support:      ${enable_debug}
         profiling support:      ${enable_profiling}
 	nautilus-extension documentation: ${enable_gtk_doc}
 	nautilus-extension introspection: ${found_introspection}
