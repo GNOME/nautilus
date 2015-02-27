@@ -1941,7 +1941,7 @@ nautilus_file_rename (NautilusFile *file,
 
 		if (!success) {
 			error = g_error_new (G_IO_ERROR, G_IO_ERROR_FAILED,
-					     _("Unable to rename desktop file"));
+					     _("Probably the content of the file is an invalid desktop file format"));
 			(* callback) (file, NULL, error, callback_data);
 			g_error_free (error);
 			return;
