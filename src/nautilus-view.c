@@ -5602,7 +5602,8 @@ const GActionEntry view_entries[] = {
 	{ "move-to", action_move_to},
 	{ "copy-to", action_copy_to},
 	{ "move-to-trash", action_move_to_trash},
-	{ "delete", action_delete},
+	{ "delete-from-trash", action_delete },
+	{ "delete-permanently", action_delete },
 	{ "restore-from-trash", action_restore_from_trash},
 	{ "paste-into", action_paste_files_into },
 	{ "rename", action_rename},
@@ -5825,6 +5826,21 @@ can_trash_all (GList *files)
 	return TRUE;
 }
 
+static gboolean
+all_in_trash (GList *files)
+{
+	NautilusFile *file;
+	GList *l;
+
+	for (l = files; l != NULL; l = l->next) {
+		file = l->data;
+		if (!nautilus_file_is_in_trash (file)) {
+			return FALSE;
+		}
+	}
+	return TRUE;
+}
+
 GActionGroup *
 nautilus_view_get_action_group (NautilusView *view)
 {
@@ -5843,6 +5859,7 @@ real_update_actions_state (NautilusView *view)
 	gboolean selection_contains_desktop_or_home_dir;
 	gboolean selection_contains_recent;
 	gboolean selection_contains_search;
+	gboolean selection_all_in_trash;
 	gboolean selection_is_read_only;
 	gboolean can_create_files;
 	gboolean can_delete_files;
@@ -5878,6 +5895,7 @@ real_update_actions_state (NautilusView *view)
 	selection_is_read_only = selection_count == 1 &&
 		(!nautilus_file_can_write (NAUTILUS_FILE (selection->data)) &&
 		 !nautilus_file_has_activation_uri (NAUTILUS_FILE (selection->data)));
+	selection_all_in_trash = all_in_trash (selection);
 
 	is_read_only = nautilus_view_is_read_only (view);
 	can_create_files = nautilus_view_supports_creating_files (view);
@@ -5990,13 +6008,17 @@ real_update_actions_state (NautilusView *view)
 	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), can_trash_files);
 
 	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-					     "delete");
+					     "delete-from-trash");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+	                             can_delete_files && selection_all_in_trash);
+
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "delete-permanently");
 	/* Only show it in trash folder or if the setting to include a delete
 	 * menu item is enabled */
 	show_separate_delete_command = g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ENABLE_DELETE);
 	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-				     can_delete_files &&
-				     (!can_trash_files || show_separate_delete_command));
+				     can_delete_files && show_separate_delete_command);
 
 	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
 					     "cut");
@@ -7552,12 +7574,13 @@ nautilus_view_init (NautilusView *view)
 	nautilus_application_add_accelerator (app, "view.open-item-new-tab", "<shift><control>t");
 	nautilus_application_add_accelerator (app, "view.open-item-new-window", "<shift><control>w");
 	nautilus_application_add_accelerator (app, "view.move-to-trash", "Delete");
+	nautilus_application_add_accelerator (app, "view.delete-from-trash", "Delete");
+	nautilus_application_add_accelerator (app, "view.delete-permanently", "<shift>Delete");
 	nautilus_application_add_accelerator (app, "view.properties", "<control>i");
 	nautilus_application_add_accelerator (app, "view.open-item-location", "<control><alt>o");
 	nautilus_application_add_accelerator (app, "view.rename", "F2");
 	nautilus_application_add_accelerator (app, "view.cut", "<control>x");
 	nautilus_application_add_accelerator (app, "view.copy", "<control>c");
-	nautilus_application_add_accelerator (app, "view.delete", "<shift>Delete");
 	nautilus_application_add_accelerator (app, "view.new-folder", "<control><shift>n");
 	/* Only accesible by shorcuts */
 	nautilus_application_add_accelerator (app, "view.select-pattern", "<control>s");
