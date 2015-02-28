@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2015-02-18 11:22+0000\n"
-"PO-Revision-Date: 2015-02-18 16:31+0100\n"
+"POT-Creation-Date: 2015-02-27 23:25+0000\n"
+"PO-Revision-Date: 2015-02-28 11:01+0100\n"
 "Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
 "Language-Team: Slovak <gnome-sk-list@gnome.org>\n"
 "Language: sk\n"
@@ -160,7 +160,7 @@ msgid " (invalid Unicode)"
 msgstr " (neplatný znak Unicode)"
 
 #: ../libnautilus-private/nautilus-bookmark.c:107 ../libnautilus-private/nautilus-desktop-link.c:129
-#: ../libnautilus-private/nautilus-file-utilities.c:265 ../src/nautilus-list-view.c:1824 ../src/nautilus-pathbar.c:295
+#: ../libnautilus-private/nautilus-file-utilities.c:265 ../src/nautilus-list-view.c:1825 ../src/nautilus-pathbar.c:295
 #: ../src/nautilus-query-editor.c:1067 ../src/nautilus-shell-search-provider.c:285
 msgid "Home"
 msgstr "Domov"
@@ -178,7 +178,7 @@ msgstr "Nastaviť na pre_dvolené"
 msgid "Replace the current List Columns settings with the default settings"
 msgstr "Nahradí aktuálne nastavenia zoznamu stĺpcov s predvolenými nastaveniami"
 
-#: ../libnautilus-private/nautilus-column-utilities.c:57 ../src/nautilus-list-view.c:2048
+#: ../libnautilus-private/nautilus-column-utilities.c:57 ../src/nautilus-list-view.c:2049
 msgid "Name"
 msgstr "Názov"
 
@@ -2839,7 +2839,7 @@ msgstr "Popisy ikôn"
 msgid "Choose the order of information to appear beneath icon names. More information will appear when zooming in closer."
 msgstr "Vyberte poradie, v akom sa budú zobrazovať informácie pod názvami ikon. Ďalšie informácie sa zobrazia pri väčšom priblížení."
 
-#: ../src/nautilus-file-management-properties.ui.h:24 ../src/nautilus-list-view.c:2154
+#: ../src/nautilus-file-management-properties.ui.h:24 ../src/nautilus-list-view.c:2157
 msgid "List View"
 msgstr "Zobrazenie zoznamu"
 
@@ -3101,16 +3101,16 @@ msgstr "Načítava sa…"
 msgid "(Empty)"
 msgstr "(prázdny)"
 
-#: ../src/nautilus-list-view.c:1606
+#: ../src/nautilus-list-view.c:1607
 msgid "Use Default"
 msgstr "Použiť predvolené"
 
-#: ../src/nautilus-list-view.c:2998
+#: ../src/nautilus-list-view.c:3001
 #, c-format
 msgid "%s Visible Columns"
 msgstr "Viditeľné stĺpce pre %s"
 
-#: ../src/nautilus-list-view.c:3018
+#: ../src/nautilus-list-view.c:3021
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Vyberte poradie, v akom sa budú zobrazovať informácie v tomto priečinku."
 
@@ -3729,8 +3729,8 @@ msgid "St_op"
 msgstr "_Zastaviť"
 
 #: ../src/nautilus-trash-bar.c:202
-msgid "Restore"
-msgstr "Obnoviť"
+msgid "_Restore"
+msgstr "_Obnoviť"
 
 #: ../src/nautilus-trash-bar.c:205
 msgid "Restore selected items to their original position"
@@ -3738,8 +3738,8 @@ msgstr "Obnoviť vybrané položky na ich pôvodnú pozíciu"
 
 #. Translators: "Empty" is an action (for the trash) , not a state
 #: ../src/nautilus-trash-bar.c:209
-msgid "Empty"
-msgstr "Vyprázdniť"
+msgid "_Empty"
+msgstr "Vyp_rázdniť"
 
 #: ../src/nautilus-trash-bar.c:212
 msgid "Delete all items in the Trash"
@@ -3884,7 +3884,7 @@ msgid "Unable to start “%s”"
 msgstr "Nepodarilo sa spustiť „%s“"
 
 # https://bugzilla.gnome.org/show_bug.cgi?id=743557
-#: ../src/nautilus-view.c:6180
+#: ../src/nautilus-view.c:6202
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
@@ -3892,60 +3892,60 @@ msgstr[0] "Nový priečinok s výberom (%'d položiek)"
 msgstr[1] "Nový priečinok s výberom (jedna položka)"
 msgstr[2] "Nový priečinok s výberom (%'d položky)"
 
-#: ../src/nautilus-view.c:6228
+#: ../src/nautilus-view.c:6250
 #, c-format
 msgid "Open With %s"
 msgstr "Otvoriť aplikáciou %s"
 
-#: ../src/nautilus-view.c:6237
+#: ../src/nautilus-view.c:6259
 msgid "Run"
 msgstr "Spustiť"
 
-#: ../src/nautilus-view.c:6239
+#: ../src/nautilus-view.c:6261
 msgid "Open"
 msgstr "Otvoriť"
 
-#: ../src/nautilus-view.c:6290 ../src/nautilus-view-context-menus.xml.h:18
+#: ../src/nautilus-view.c:6312 ../src/nautilus-view-context-menus.xml.h:18
 msgid "_Start"
 msgstr "_Spustiť"
 
-#: ../src/nautilus-view.c:6293
+#: ../src/nautilus-view.c:6315
 msgid "_Connect"
 msgstr "P_ripojiť"
 
-#: ../src/nautilus-view.c:6296
+#: ../src/nautilus-view.c:6318
 msgid "_Start Multi-disk Drive"
 msgstr "_Spustiť viacdiskovú jednotku"
 
-#: ../src/nautilus-view.c:6299
+#: ../src/nautilus-view.c:6321
 msgid "U_nlock Drive"
 msgstr "Odomk_núť jednotku"
 
-#: ../src/nautilus-view.c:6315
+#: ../src/nautilus-view.c:6337
 msgid "Stop Drive"
 msgstr "Zastaviť jednotku"
 
-#: ../src/nautilus-view.c:6318
+#: ../src/nautilus-view.c:6340
 msgid "_Safely Remove Drive"
 msgstr "_Bezpečne odobrať vybranú jednotku"
 
-#: ../src/nautilus-view.c:6321
+#: ../src/nautilus-view.c:6343
 msgid "_Disconnect"
 msgstr "O_dpojiť"
 
-#: ../src/nautilus-view.c:6324
+#: ../src/nautilus-view.c:6346
 msgid "_Stop Multi-disk Drive"
 msgstr "Za_staviť viacdiskovú jednotku"
 
-#: ../src/nautilus-view.c:6327
+#: ../src/nautilus-view.c:6349
 msgid "_Lock Drive"
 msgstr "_Zamknúť jednotku"
 
-#: ../src/nautilus-view.c:7529
+#: ../src/nautilus-view.c:7551
 msgid "Content View"
 msgstr "Zobrazenie obsahu"
 
-#: ../src/nautilus-view.c:7530
+#: ../src/nautilus-view.c:7552
 msgid "View of the current folder"
 msgstr "Zobrazenie aktuálneho priečinka"
 
@@ -4029,30 +4029,34 @@ msgid "Copy to…"
 msgstr "Skopírovať do…"
 
 #: ../src/nautilus-view-context-menus.xml.h:27
-msgid "_Delete Permanently"
-msgstr "Trvale o_dstrániť"
+msgid "_Delete from Trash"
+msgstr "Odstrániť z _koša"
 
 #: ../src/nautilus-view-context-menus.xml.h:28
+msgid "D_elete Permanently"
+msgstr "Trvale o_dstrániť"
+
+#: ../src/nautilus-view-context-menus.xml.h:29
 msgid "Empty Trash"
 msgstr "Vyprázdniť Kôš"
 
-#: ../src/nautilus-view-context-menus.xml.h:29
+#: ../src/nautilus-view-context-menus.xml.h:30
 msgid "_Restore From Trash"
 msgstr "O_bnoviť z Koša"
 
-#: ../src/nautilus-view-context-menus.xml.h:30
+#: ../src/nautilus-view-context-menus.xml.h:31
 msgid "Resize Icon…"
 msgstr "Zmeniť veľkosť ikony…"
 
-#: ../src/nautilus-view-context-menus.xml.h:31
+#: ../src/nautilus-view-context-menus.xml.h:32
 msgid "Restore Icon's Original Size"
 msgstr "Obnoviť pôvodnú veľkosť ikony"
 
-#: ../src/nautilus-view-context-menus.xml.h:32
+#: ../src/nautilus-view-context-menus.xml.h:33
 msgid "Rena_me"
 msgstr "Pre_menovať"
 
-#: ../src/nautilus-view-context-menus.xml.h:33
+#: ../src/nautilus-view-context-menus.xml.h:34
 msgid "Set As Wallpaper"
 msgstr "Nastaviť ako pozadie plochy"
 
@@ -4233,6 +4237,9 @@ msgstr "Obsahuje fotografie a hudbu"
 #: ../src/nautilus-x-content-bar.c:201
 msgid "Open with:"
 msgstr "Otvoriť pomocou:"
+
+#~ msgid "Restore"
+#~ msgstr "Obnoviť"
 
 #~ msgid "%R"
 #~ msgstr "%R"
@@ -4522,9 +4529,6 @@ msgstr "Otvoriť pomocou:"
 
 #~ msgid "Delete each selected item, without moving to the Trash"
 #~ msgstr "Odstráni všetky vybrané položky bez presunu do Koša"
-
-#~ msgid "_Restore"
-#~ msgstr "_Obnoviť"
 
 #~ msgid "_Undo"
 #~ msgstr "_Späť"
