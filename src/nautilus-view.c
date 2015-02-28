@@ -6014,11 +6014,8 @@ real_update_actions_state (NautilusView *view)
 
 	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
 					     "delete-permanently");
-	/* Only show it in trash folder or if the setting to include a delete
-	 * menu item is enabled */
-	show_separate_delete_command = g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_ENABLE_DELETE);
 	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-				     can_delete_files && show_separate_delete_command);
+				     can_delete_files);
 
 	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
 					     "cut");
@@ -7529,9 +7526,6 @@ nautilus_view_init (NautilusView *view)
 
 	gtk_widget_show (GTK_WIDGET (view));
 
-	g_signal_connect_swapped (nautilus_preferences,
-				  "changed::" NAUTILUS_PREFERENCES_ENABLE_DELETE,
-				  G_CALLBACK (schedule_update_context_menus), view);
 	g_signal_connect_swapped (nautilus_preferences,
 				  "changed::" NAUTILUS_PREFERENCES_CLICK_POLICY,
 				  G_CALLBACK (click_policy_changed_callback),
