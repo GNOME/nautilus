@@ -2087,6 +2087,7 @@ create_and_set_up_tree_view (NautilusListView *view)
 								 (GtkTreeCellDataFunc) filename_cell_data_func,
 								 view, NULL);
 		} else {
+			/* We need to use libgd */
 			cell = gd_styled_text_renderer_new ();
 			/* FIXME: should be just dim-label.
 			 * See https://bugzilla.gnome.org/show_bug.cgi?id=744397
