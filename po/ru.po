@@ -11,6 +11,7 @@
 # Yuri Kozlov <yuray@komyakino.ru>, 2010.
 # Dmitry Shachnev <mitya57@ubuntu.com>, 2012.
 # Yuri Myasoedov <ymyasoedov@yandex.ru>, 2012, 2013, 2015.
+# Ivan Komaritsyn <vantu5z@mail.ru>, 2015.
 # Stas Solovey <whats_up@tut.by>, 2011, 2013, 2014, 2015.
 #
 msgid ""
@@ -18,8 +19,8 @@ msgstr ""
 "Project-Id-Version: nautilus trunk\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2015-02-23 23:22+0000\n"
-"PO-Revision-Date: 2015-02-24 13:48+0300\n"
+"POT-Creation-Date: 2015-03-01 19:03+0000\n"
+"PO-Revision-Date: 2015-03-02 00:15+0300\n"
 "Last-Translator: Stas Solovey <whats_up@tut.by>\n"
 "Language-Team: Русский <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
@@ -29,8 +30,6 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 "X-Generator: Gtranslator 2.91.6\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: ../data/org.gnome.Nautilus.appdata.xml.in.h:1
 msgid ""
@@ -71,9 +70,9 @@ msgstr "Подключение к серверу"
 
 #. Set initial window title
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
-#: ../src/nautilus-file-management-properties.ui.h:29
-#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2396
-#: ../src/nautilus-window.c:2565
+#: ../src/nautilus-file-management-properties.ui.h:28
+#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2502
+#: ../src/nautilus-window.c:2671
 msgid "Files"
 msgstr "Nautilus"
 
@@ -468,7 +467,6 @@ msgstr "%a %H:%M"
 #. * a time in 12h format. i.e. "Monday 9:04 PM"
 #: ../libnautilus-private/nautilus-file.c:4746
 #, no-c-format
-#| msgid "%-I:%M %P"
 msgid "%a %l:%M %p"
 msgstr "%a %l:%M %p"
 
@@ -494,7 +492,6 @@ msgstr "%-e %b. %H:%M"
 #. * 12h format i.e. "3 Feb 9:04"
 #: ../libnautilus-private/nautilus-file.c:4767
 #, no-c-format
-#| msgid "%a, %b %e %Y %I:%M:%S %p"
 msgid "%-e %b %l:%M %p"
 msgstr "%-e %b. %l:%M %p"
 
@@ -503,7 +500,6 @@ msgstr "%-e %b. %l:%M %p"
 #. * month name followed by the year i.e. "3 Feb 2015"
 #: ../libnautilus-private/nautilus-file.c:4775
 #, no-c-format
-#| msgid "%b %-d %Y"
 msgid "%-e %b %Y"
 msgstr "%-e %b. %Y"
 
@@ -513,7 +509,6 @@ msgstr "%-e %b. %Y"
 #. * by a time in 24h format i.e. "3 Feb 2015 23:04"
 #: ../libnautilus-private/nautilus-file.c:4782
 #, no-c-format
-#| msgid "%a, %b %e %Y %I:%M:%S %p"
 msgid "%-e %b %Y %H:%M"
 msgstr "%-e %b. %Y %H:%M"
 
@@ -523,7 +518,6 @@ msgstr "%-e %b. %Y %H:%M"
 #. * by a time in 12h format i.e. "3 Feb 2015 9:04 PM"
 #: ../libnautilus-private/nautilus-file.c:4788
 #, no-c-format
-#| msgid "%a, %b %e %Y %I:%M:%S %p"
 msgid "%-e %b %Y %l:%M %p"
 msgstr "%-e %b. %Y %l:%M %p"
 
@@ -1557,7 +1551,7 @@ msgid "Unable to mark launcher trusted (executable)"
 msgstr "Не удалось отметить значок запуска проверенным (исполняемым)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:133
-#: ../src/nautilus-notification-delete.c:183 ../src/nautilus-window.c:448
+#: ../src/nautilus-window.c:448
 msgid "Undo"
 msgstr "Отменить"
 
@@ -2093,24 +2087,10 @@ msgstr ""
 "попытке удалить файлы и при очистке корзины."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:7
-msgid "Whether to enable immediate deletion"
-msgstr "Включено ли немедленное удаление"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:8
-msgid ""
-"If set to true, then Nautilus will have a feature allowing you to delete a "
-"file immediately and in-place, instead of moving it to the trash. This "
-"feature can be dangerous, so use caution."
-msgstr ""
-"Если этот ключ установлен, Nautilus будет позволять удалять файлы "
-"немедленно, без перемещения их в корзину. В этом случае вы можете нечаянно "
-"потерять важные данные, поэтому будьте осторожны."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:9
 msgid "When to show number of items in a folder"
 msgstr "Показывать ли количество объектов в папке"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:10
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:8
 msgid ""
 "Speed tradeoff for when to show the number of items in a folder. If set to "
 "\"always\" then always show item counts, even if the folder is on a remote "
@@ -2123,11 +2103,11 @@ msgstr ""
 "будет подсчитываться только для локальных файловых систем. Если установлено "
 "«never», количество объектов никогда не будет подсчитываться."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:11
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:9
 msgid "Type of click used to launch/open files"
 msgstr "Тип нажатия, используемый для запуска/открытия файлов"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:12
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:10
 msgid ""
 "Possible values are \"single\" to launch files on a single click, or \"double"
 "\" to launch them on a double click."
@@ -2135,11 +2115,11 @@ msgstr ""
 "Допустимыми значениями являются: «single» для запуска файлов одинарным "
 "нажатием и «double» для запуска файлов двойным нажатием."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:13
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:11
 msgid "What to do with executable text files when activated"
 msgstr "Что делать с исполняемыми текстовыми файлами при их активизации"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:14
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:12
 msgid ""
 "What to do with executable text files when they are activated (single or "
 "double clicked). Possible values are \"launch\" to launch them as programs, "
@@ -2151,11 +2131,11 @@ msgstr ""
 "программы; «ask» — запрашивать нужное действие через диалог; «display» — "
 "показывать их как текстовые файлы."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:15
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:13
 msgid "Show the package installer for unknown mime types"
 msgstr "Показывать программу установки пакетов для неизвестных типов mime"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:16
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:14
 msgid ""
 "Whether to show the user a package installer dialog in case an unknown mime "
 "type is opened, in order to search for an application to handle it."
@@ -2163,13 +2143,13 @@ msgstr ""
 "Показывать ли пользователю программу управления пакетами при открытии файла "
 "с неизвестным типом mime для поиска приложения для работы с ним."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:17
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:15
 msgid "Show a warning dialog for the change of the shortcut for move to trash"
 msgstr ""
 "Показывать диалоговое окно с предупреждением о смене комбинации клавиш для "
 "удаления в корзину"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:18
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:16
 msgid ""
 "Show a warning dialog for the change of the shortcut for move to trash from "
 "control + delete to just delete."
@@ -2177,11 +2157,11 @@ msgstr ""
 "Показывать диалоговое окно с предупреждением о смене комбинации клавиш для "
 "удаления в корзину с «Сtrl+Delete» на просто «Delete»."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:19
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:17
 msgid "Use extra mouse button events in Nautilus' browser window"
 msgstr "Использовать дополнительные кнопки мыши в окне Nautilus"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:20
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:18
 msgid ""
 "For users with mice that have \"Forward\" and \"Back\" buttons, this key "
 "will determine if any action is taken inside of Nautilus when either is "
@@ -2191,11 +2171,11 @@ msgstr ""
 "определяет, будет ли выполняться какое-нибудь действие в Nautilus, если "
 "любая из кнопок нажата."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:21
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:19
 msgid "Mouse button to activate the \"Forward\" command in browser window"
 msgstr "Кнопка мыши для запуска команды «Вперёд» в окне обозревателя"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:22
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:20
 msgid ""
 "For users with mice that have buttons for \"Forward\" and \"Back\", this key "
 "will set which button activates the \"Forward\" command in a browser window. "
@@ -2205,11 +2185,11 @@ msgstr ""
 "определяет, по какой из кнопок в окне обозревателя нужно выполнить команду "
 "«Вперёд». Возможные значения лежат в диапазоне от 6 до 14."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:23
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:21
 msgid "Mouse button to activate the \"Back\" command in browser window"
 msgstr "Кнопка мыши для запуска команды «Назад» в окне обозревателя"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:24
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:22
 msgid ""
 "For users with mice that have buttons for \"Forward\" and \"Back\", this key "
 "will set which button activates the \"Back\" command in a browser window. "
@@ -2219,11 +2199,11 @@ msgstr ""
 "определяет, по какой из кнопок в окне обозревателя нужно выполнить команду "
 "«Назад». Возможные значения лежат в диапазоне от 6 до 14."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:25
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:23
 msgid "When to show thumbnails of files"
 msgstr "Когда показывать миниатюры файл"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:26
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:24
 msgid ""
 "Speed tradeoff for when to show a file as a thumbnail. If set to \"always\" "
 "then always thumbnail, even if the folder is on a remote server. If set to "
@@ -2238,11 +2218,11 @@ msgstr ""
 "всегда будет использоваться значок типа файла. Применяется ко всем типам "
 "файлов, для которых возможен предварительный просмотр."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:27
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:25
 msgid "Maximum image size for thumbnailing"
 msgstr "Максимальный размер изображения для построения миниатюр"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:28
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:26
 msgid ""
 "Images over this size (in bytes) won't be thumbnailed. The purpose of this "
 "setting is to avoid thumbnailing large images that may take a long time to "
@@ -2253,11 +2233,11 @@ msgstr ""
 "миниатюр для больших изображений, для которых может потребоваться много "
 "времени на загрузку или много памяти."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:29
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:27
 msgid "Show folders first in windows"
 msgstr "Показывать папки перед файлами в окнах"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:30
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:28
 msgid ""
 "If set to true, then Nautilus shows folders prior to showing files in the "
 "icon and list views."
@@ -2265,11 +2245,11 @@ msgstr ""
 "Если этот ключ установлен, Nautilus будет показывать папки перед файлами в "
 "режимах просмотра в виде значков и в виде списка."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:31
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:29
 msgid "Default sort order"
 msgstr "Порядок сортировки по умолчанию"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:32
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:30
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\" and \"mtime\"."
@@ -2277,11 +2257,11 @@ msgstr ""
 "Порядок сортировки объектов по умолчанию в режиме просмотра значков. "
 "Допустимые значения: «name», «size», «type» и «mtime»."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:33
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:31
 msgid "Reverse sort order in new windows"
 msgstr "Использовать обратный порядок сортировки для новых окон"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:34
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:32
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -2295,11 +2275,11 @@ msgstr ""
 "порядка от меньшего к большему будет использован порядок от большего к "
 "меньшему."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:35
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:33
 msgid "Default folder viewer"
 msgstr "Компонент просмотра папок по умолчанию"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:36
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:34
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
 "another view for that particular folder. Possible values are \"list-view\", "
@@ -2309,11 +2289,11 @@ msgstr ""
 "для этой папки не выбран другой режим просмотра. Возможные варианты: "
 "«list_view», «icon_view»."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:37
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:35
 msgid "Whether to show hidden files"
 msgstr "Показывать ли скрытые файлы"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:38
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:36
 msgid ""
 "This key is deprecated and ignored. The \"show-hidden\" key from \"org.gtk."
 "Settings.FileChooser\" is now used instead."
@@ -2321,11 +2301,11 @@ msgstr ""
 "Этот параметр устарел и игнорируется. Вместо него используется параметр "
 "«show-hidden» в «org.gtk.Settings.FileChooser»."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:39
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:37
 msgid "Bulk rename utility"
 msgstr "Утилита массового переименования"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:40
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:38
 msgid ""
 "If set, Nautilus will append URIs of selected files and treat the result as "
 "a command line for bulk renaming. Bulk rename applications can register "
@@ -2341,11 +2321,11 @@ msgstr ""
 "файла указано не по полному пути, поиск файла будет осуществляться в пути "
 "поиска."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:41
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:39
 msgid "List of possible captions on icons"
 msgstr "Список возможных подписей к значкам"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:42
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:40
 msgid ""
 "A list of captions below an icon in the icon view and the desktop. The "
 "actual number of captions shown depends on the zoom level. Some possible "
@@ -2357,19 +2337,19 @@ msgstr ""
 "значения: «size», «type», «date_modified», «owner», «group», «permissions» и "
 "«mime_type»."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:43
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:41
 msgid "Default icon zoom level"
 msgstr "Масштаб значков по умолчанию"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:44
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:42
 msgid "Default zoom level used by the icon view."
 msgstr "Масштаб по умолчанию при просмотре в виде значков."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:45
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:43
 msgid "Default Thumbnail Icon Size"
 msgstr "Размер значков-миниатюр по умолчанию"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:46
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:44
 msgid ""
 "The default size of an icon for a thumbnail in the icon view when using "
 "NAUTILUS_ICON_SIZE_SMALL size."
@@ -2377,11 +2357,11 @@ msgstr ""
 "Размер миниатюры по умолчанию при просмотре в виде значков при использовании "
 "размера NAUTILUS_ICON_SIZE_SMALL."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:47
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:45
 msgid "Text Ellipsis Limit"
 msgstr "Параметры сокращения имён"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:48
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:46
 msgid ""
 "A string specifying how parts of overlong file names should be replaced by "
 "ellipses, depending on the zoom level. Each of the list entries is of the "
@@ -2410,54 +2390,54 @@ msgstr ""
 "строки для масштаба «smaller» и не ограничивать длину имён файлов в других "
 "масштабах. Доступные масштабы: small, standard, large"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:49
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:47
 msgid "Default list zoom level"
 msgstr "Масштаб списка по умолчанию"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:50
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:48
 msgid "Default zoom level used by the list view."
 msgstr "Масштаб по умолчанию при просмотре в виде списка."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:51
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:49
 msgid "Default list of columns visible in the list view"
 msgstr "Перечень столбцов списка по умолчанию"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:52
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:50
 msgid "Default list of columns visible in the list view."
 msgstr ""
 "Перечень столбцов, показываемых по умолчанию при просмотре в виде списка."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:53
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:51
 msgid "Default column order in the list view"
 msgstr "Порядок столбцов списка по умолчанию"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:54
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:52
 msgid "Default column order in the list view."
 msgstr "Порядок столбцов по умолчанию при просмотре в виде списка."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:55
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:53
 msgid "Use tree view"
 msgstr "Использовать просмотр в виде дерева"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:56
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:54
 msgid ""
 "Whether a tree should be used for list view navigation instead of a flat list"
 msgstr "Использовать дерево для просмотра вместо обычного списка"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:57
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:55
 msgid "Desktop font"
 msgstr "Шрифт рабочего стола"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:58
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:56
 msgid "The font description used for the icons on the desktop."
 msgstr ""
 "Описание шрифта, используемого для подписей к значкам на рабочем столе."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:59
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:57
 msgid "Home icon visible on desktop"
 msgstr "Значок домашней папки присутствует на рабочем столе"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:60
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:58
 msgid ""
 "If this is set to true, an icon linking to the home folder will be put on "
 "the desktop."
@@ -2465,11 +2445,11 @@ msgstr ""
 "Если этот ключ установлен, на рабочий стол будет помещён значок, ссылающийся "
 "на домашнюю папку."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:61
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:59
 msgid "Trash icon visible on desktop"
 msgstr "Значок корзины присутствует на рабочем столе"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:62
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:60
 msgid ""
 "If this is set to true, an icon linking to the trash will be put on the "
 "desktop."
@@ -2477,11 +2457,11 @@ msgstr ""
 "Если этот ключ установлен, на рабочий стол будет помещён значок, ссылающийся "
 "на корзину."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:63
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:61
 msgid "Show mounted volumes on the desktop"
 msgstr "Показывать подключённые тома на рабочем столе"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:64
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:62
 msgid ""
 "If this is set to true, icons linking to mounted volumes will be put on the "
 "desktop."
@@ -2489,11 +2469,11 @@ msgstr ""
 "Если этот ключ установлен, на рабочий стол будут помещаться значки, "
 "ссылающиеся на присоединённые тома."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:65
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:63
 msgid "Network Servers icon visible on the desktop"
 msgstr "Значок «Сетевые серверы» присутствует на рабочем столе"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:66
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:64
 msgid ""
 "If this is set to true, an icon linking to the Network Servers view will be "
 "put on the desktop."
@@ -2501,11 +2481,11 @@ msgstr ""
 "Если этот ключ установлен, на рабочий стол будет помещён значок, ссылающийся "
 "на «Сетевые серверы»."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:67
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:65
 msgid "Desktop home icon name"
 msgstr "Имя значка «Домашняя папка» на рабочем столе"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:68
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:66
 msgid ""
 "This name can be set if you want a custom name for the home icon on the "
 "desktop."
@@ -2513,11 +2493,11 @@ msgstr ""
 "Это имя может быть установлено, если необходимо переименовать значок "
 "домашней папки на рабочем столе."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:69
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:67
 msgid "Desktop trash icon name"
 msgstr "Имя значка «Корзина» на рабочем столе"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:70
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:68
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
@@ -2525,11 +2505,11 @@ msgstr ""
 "Это имя может быть установлено, если необходимо переименовать значок корзины "
 "на рабочем столе."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:71
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:69
 msgid "Network servers icon name"
 msgstr "Имя значка сетевых серверов"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:72
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:70
 msgid ""
 "This name can be set if you want a custom name for the network servers icon "
 "on the desktop."
@@ -2537,7 +2517,7 @@ msgstr ""
 "Это имя может быть установлено, если необходимо переименовать значок сетевых "
 "серверов на рабочем столе."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:73
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:71
 msgid ""
 "An integer specifying how parts of overlong file names should be replaced by "
 "ellipses on the desktop. If the number is larger than 0, the file name will "
@@ -2549,11 +2529,11 @@ msgstr ""
 "превышать заданное число строк. Если число меньше или равно нулю, "
 "ограничение на число строк не устанавливается."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:74
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:72
 msgid "Fade the background on change"
 msgstr "Использовать плавное затухание при смене фона"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:75
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:73
 msgid ""
 "If set to true, then Nautilus will use a fade effect to change the desktop "
 "background."
@@ -2561,50 +2541,50 @@ msgstr ""
 "Если этот ключ установлен, Nautilus будет использовать плавное затухание при "
 "смене фона."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:76
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:74
 msgid "The geometry string for a navigation window."
 msgstr "Строка геометрии для окна обозревателя."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:77
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:75
 msgid ""
 "A string containing the saved geometry and coordinates string for navigation "
 "windows."
 msgstr ""
 "Строка, содержащая сохранённую геометрию и координаты для окон обозревателя."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:78
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:76
 msgid "Whether the navigation window should be maximized."
 msgstr "Должно ли окно обозревателя иметь максимально возможный размер."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:79
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:77
 msgid "Whether the navigation window should be maximized by default."
 msgstr ""
 "Должно ли окно обозревателя иметь по умолчанию максимально возможный размер."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:80
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:78
 msgid "Width of the side pane"
 msgstr "Ширина боковой панели"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:81
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:79
 msgid "The default width of the side pane in new windows."
 msgstr "Ширина боковой панели в новых окнах по умолчанию."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:82
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:80
 msgid "Show location bar in new windows"
 msgstr "Показывать строку адреса в новых окнах"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:83
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:81
 msgid ""
 "If set to true, newly opened windows will have the location bar visible."
 msgstr ""
 "Если этот ключ установлен, во вновь создаваемых окнах будет видна строка "
 "адреса."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:84
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:82
 msgid "Show side pane in new windows"
 msgstr "Показывать боковую панель в новых окнах"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:85
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:83
 msgid "If set to true, newly opened windows will have the side pane visible."
 msgstr ""
 "Если этот ключ установлен, во вновь создаваемых окнах будет видна боковая "
@@ -2830,7 +2810,7 @@ msgid "_Location"
 msgstr "_Адрес"
 
 #: ../src/nautilus-canvas-view-container.c:466
-#: ../src/nautilus-file-management-properties.ui.h:35
+#: ../src/nautilus-file-management-properties.ui.h:34
 msgid "Icon View"
 msgstr "Просмотр в виде значков"
 
@@ -3026,7 +3006,7 @@ msgid "Renaming “%s” to “%s”."
 msgstr "Переименование «%s» в «%s»."
 
 #. Translators: this is referred to captions under icons.
-#: ../src/nautilus-file-management-properties.c:198
+#: ../src/nautilus-file-management-properties.c:197
 #: ../src/nautilus-properties-window.c:3763
 #: ../src/nautilus-properties-window.c:3790
 msgid "None"
@@ -3115,14 +3095,10 @@ msgid "Ask before _emptying the Trash or deleting files"
 msgstr "_Спрашивать перед очисткой корзины и удалением файлов"
 
 #: ../src/nautilus-file-management-properties.ui.h:21
-msgid "I_nclude a Delete command that bypasses Trash"
-msgstr "_Включить команду удаления, не использующую корзину"
-
-#: ../src/nautilus-file-management-properties.ui.h:22
 msgid "Icon Captions"
 msgstr "Подписи к значкам"
 
-#: ../src/nautilus-file-management-properties.ui.h:23
+#: ../src/nautilus-file-management-properties.ui.h:22
 msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
@@ -3130,135 +3106,135 @@ msgstr ""
 "Выберите порядок сведений, которые будут показаны под именами значков. Чем "
 "больше масштаб просмотра, тем больше показывается сведений."
 
-#: ../src/nautilus-file-management-properties.ui.h:24
-#: ../src/nautilus-list-view.c:2157
+#: ../src/nautilus-file-management-properties.ui.h:23
+#: ../src/nautilus-list-view.c:2158
 msgid "List View"
 msgstr "Просмотр в виде списка"
 
-#: ../src/nautilus-file-management-properties.ui.h:25
+#: ../src/nautilus-file-management-properties.ui.h:24
 msgid "Navigate folders in a tree"
 msgstr "Показывать папки в виде дерева"
 
-#: ../src/nautilus-file-management-properties.ui.h:26
+#: ../src/nautilus-file-management-properties.ui.h:25
 msgid "Display"
 msgstr "Просмотр"
 
-#: ../src/nautilus-file-management-properties.ui.h:27
+#: ../src/nautilus-file-management-properties.ui.h:26
 msgid "Choose the order of information to appear in the list view."
 msgstr ""
 "Выберите порядок сведений, которые будут показаны при просмотре в виде "
 "списка."
 
-#: ../src/nautilus-file-management-properties.ui.h:28
+#: ../src/nautilus-file-management-properties.ui.h:27
 msgid "List Columns"
 msgstr "Столбцы списка"
 
-#: ../src/nautilus-file-management-properties.ui.h:30
+#: ../src/nautilus-file-management-properties.ui.h:29
 msgid "Show _thumbnails:"
 msgstr "Показывать _миниатюры:"
 
-#: ../src/nautilus-file-management-properties.ui.h:31
+#: ../src/nautilus-file-management-properties.ui.h:30
 msgid "_Only for files smaller than:"
 msgstr "_Только для файлов меньше, чем:"
 
-#: ../src/nautilus-file-management-properties.ui.h:32
+#: ../src/nautilus-file-management-properties.ui.h:31
 #: ../src/nautilus-properties-window.c:4191
 msgid "Folders"
 msgstr "Папки"
 
-#: ../src/nautilus-file-management-properties.ui.h:33
+#: ../src/nautilus-file-management-properties.ui.h:32
 msgid "Count _number of items:"
 msgstr "Показывать _число объектов:"
 
-#: ../src/nautilus-file-management-properties.ui.h:34
+#: ../src/nautilus-file-management-properties.ui.h:33
 msgid "Preview"
 msgstr "Миниатюры"
 
-#: ../src/nautilus-file-management-properties.ui.h:36
+#: ../src/nautilus-file-management-properties.ui.h:35
 msgid "Always"
 msgstr "Всегда"
 
-#: ../src/nautilus-file-management-properties.ui.h:37
+#: ../src/nautilus-file-management-properties.ui.h:36
 msgid "Local Files Only"
 msgstr "Только для локальных файлов"
 
-#: ../src/nautilus-file-management-properties.ui.h:38
+#: ../src/nautilus-file-management-properties.ui.h:37
 msgid "Never"
 msgstr "Никогда"
 
-#: ../src/nautilus-file-management-properties.ui.h:39
+#: ../src/nautilus-file-management-properties.ui.h:38
 msgid "By Name"
 msgstr "По имени"
 
-#: ../src/nautilus-file-management-properties.ui.h:40
+#: ../src/nautilus-file-management-properties.ui.h:39
 msgid "By Size"
 msgstr "По размеру"
 
-#: ../src/nautilus-file-management-properties.ui.h:41
+#: ../src/nautilus-file-management-properties.ui.h:40
 msgid "By Type"
 msgstr "По типу"
 
-#: ../src/nautilus-file-management-properties.ui.h:42
+#: ../src/nautilus-file-management-properties.ui.h:41
 msgid "By Modification Date"
 msgstr "По дате изменения"
 
-#: ../src/nautilus-file-management-properties.ui.h:43
+#: ../src/nautilus-file-management-properties.ui.h:42
 msgid "By Access Date"
 msgstr "По дате обращения"
 
-#: ../src/nautilus-file-management-properties.ui.h:44
+#: ../src/nautilus-file-management-properties.ui.h:43
 msgid "By Trashed Date"
 msgstr "По дате удаления"
 
-#: ../src/nautilus-file-management-properties.ui.h:45
+#: ../src/nautilus-file-management-properties.ui.h:44
 msgid "Small"
 msgstr "Маленький"
 
-#: ../src/nautilus-file-management-properties.ui.h:46
+#: ../src/nautilus-file-management-properties.ui.h:45
 msgid "Standard"
 msgstr "Обычный"
 
-#: ../src/nautilus-file-management-properties.ui.h:47
+#: ../src/nautilus-file-management-properties.ui.h:46
 msgid "Large"
 msgstr "Большой"
 
-#: ../src/nautilus-file-management-properties.ui.h:48
+#: ../src/nautilus-file-management-properties.ui.h:47
 msgid "100 KB"
 msgstr "100 КБ"
 
-#: ../src/nautilus-file-management-properties.ui.h:49
+#: ../src/nautilus-file-management-properties.ui.h:48
 msgid "500 KB"
 msgstr "500 КБ"
 
-#: ../src/nautilus-file-management-properties.ui.h:50
+#: ../src/nautilus-file-management-properties.ui.h:49
 msgid "1 MB"
 msgstr "1 МБ"
 
-#: ../src/nautilus-file-management-properties.ui.h:51
+#: ../src/nautilus-file-management-properties.ui.h:50
 msgid "3 MB"
 msgstr "3 МБ"
 
-#: ../src/nautilus-file-management-properties.ui.h:52
+#: ../src/nautilus-file-management-properties.ui.h:51
 msgid "5 MB"
 msgstr "5 МБ"
 
-#: ../src/nautilus-file-management-properties.ui.h:53
+#: ../src/nautilus-file-management-properties.ui.h:52
 msgid "10 MB"
 msgstr "10 МБ"
 
-#: ../src/nautilus-file-management-properties.ui.h:54
+#: ../src/nautilus-file-management-properties.ui.h:53
 msgid "100 MB"
 msgstr "100 МБ"
 
-#: ../src/nautilus-file-management-properties.ui.h:55
+#: ../src/nautilus-file-management-properties.ui.h:54
 msgid "1 GB"
 msgstr "1 ГБ"
 
-#: ../src/nautilus-file-management-properties.ui.h:56
+#: ../src/nautilus-file-management-properties.ui.h:55
 msgid "2 GB"
 msgstr "2 ГБ"
 
-#: ../src/nautilus-file-management-properties.ui.h:57
+#: ../src/nautilus-file-management-properties.ui.h:56
 msgid "4 GB"
 msgstr "4 ГБ"
 
@@ -3404,12 +3380,12 @@ msgid "Use Default"
 msgstr "Использовать по умолчанию"
 
 # Заголовок диалогового окна.
-#: ../src/nautilus-list-view.c:3001
+#: ../src/nautilus-list-view.c:3002
 #, c-format
 msgid "%s Visible Columns"
 msgstr "Видимые столбцы «%s»"
 
-#: ../src/nautilus-list-view.c:3021
+#: ../src/nautilus-list-view.c:3022
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Выберите порядок сведений, которые будут показаны в этой папке:"
 
@@ -3585,24 +3561,9 @@ msgstr "Понятно"
 msgid "Close tab"
 msgstr "Закрыть вкладку"
 
-#. Translators: this is the second part of a "%d files deleted" string
-#: ../src/nautilus-notification-delete.c:163
-#: ../src/nautilus-notification-delete.c:172
-#, c-format
-msgid "%s deleted"
-msgid_plural "%s deleted"
-msgstr[0] "%s удалён"
-msgstr[1] "%s удалены"
-msgstr[2] "%s удалено"
-
-#. Translators: this is the first part of a "%d files deleted" string
-#: ../src/nautilus-notification-delete.c:168
-#, c-format
-msgid "%d file"
-msgid_plural "%d files"
-msgstr[0] "%d файл"
-msgstr[1] "%d файла"
-msgstr[2] "%d файлов"
+#: ../src/nautilus-notification-delete.ui.h:1
+msgid "undo"
+msgstr "отменить"
 
 #: ../src/nautilus-progress-info-widget.xml.h:1
 msgid "label"
@@ -4042,8 +4003,8 @@ msgid "St_op"
 msgstr "Ост_ановить"
 
 #: ../src/nautilus-trash-bar.c:202
-msgid "Restore"
-msgstr "Восстановить"
+msgid "_Restore"
+msgstr "Восс_тановить"
 
 #: ../src/nautilus-trash-bar.c:205
 msgid "Restore selected items to their original position"
@@ -4051,8 +4012,8 @@ msgstr "Восстановить выделенные объекты к исхо
 
 #. Translators: "Empty" is an action (for the trash) , not a state
 #: ../src/nautilus-trash-bar.c:209
-msgid "Empty"
-msgstr "Очистить"
+msgid "_Empty"
+msgstr "_Очистить"
 
 #: ../src/nautilus-trash-bar.c:212
 msgid "Delete all items in the Trash"
@@ -4197,7 +4158,7 @@ msgid "Unable to start “%s”"
 msgstr "Не удалось запустить «%s»"
 
 # Может быть "создать папку из выделенных объектов"
-#: ../src/nautilus-view.c:6180
+#: ../src/nautilus-view.c:6198
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
@@ -4207,60 +4168,60 @@ msgstr[2] "Создать папку из выделенного (%'d объек
 
 # "Открыть с помощью программы "%s" -- это слишком длинно и не помешается
 # на боковую панель даже без распаковки `%s'.
-#: ../src/nautilus-view.c:6228
+#: ../src/nautilus-view.c:6246
 #, c-format
 msgid "Open With %s"
 msgstr "Открыть с помощью «%s»"
 
-#: ../src/nautilus-view.c:6237
+#: ../src/nautilus-view.c:6255
 msgid "Run"
 msgstr "Запустить"
 
-#: ../src/nautilus-view.c:6239
+#: ../src/nautilus-view.c:6257
 msgid "Open"
 msgstr "Открыть"
 
-#: ../src/nautilus-view.c:6290 ../src/nautilus-view-context-menus.xml.h:18
+#: ../src/nautilus-view.c:6308 ../src/nautilus-view-context-menus.xml.h:18
 msgid "_Start"
 msgstr "_Запустить"
 
-#: ../src/nautilus-view.c:6293
+#: ../src/nautilus-view.c:6311
 msgid "_Connect"
 msgstr "_Подключиться"
 
-#: ../src/nautilus-view.c:6296
+#: ../src/nautilus-view.c:6314
 msgid "_Start Multi-disk Drive"
 msgstr "_Запустить мультидисковый привод"
 
-#: ../src/nautilus-view.c:6299
+#: ../src/nautilus-view.c:6317
 msgid "U_nlock Drive"
 msgstr "_Разблокировать привод"
 
-#: ../src/nautilus-view.c:6315
+#: ../src/nautilus-view.c:6333
 msgid "Stop Drive"
 msgstr "Остановить привод"
 
-#: ../src/nautilus-view.c:6318
+#: ../src/nautilus-view.c:6336
 msgid "_Safely Remove Drive"
 msgstr "_Безопасно удалить привод"
 
-#: ../src/nautilus-view.c:6321
+#: ../src/nautilus-view.c:6339
 msgid "_Disconnect"
 msgstr "_Отсоединить"
 
-#: ../src/nautilus-view.c:6324
+#: ../src/nautilus-view.c:6342
 msgid "_Stop Multi-disk Drive"
 msgstr "_Остановить мультидисковый привод"
 
-#: ../src/nautilus-view.c:6327
+#: ../src/nautilus-view.c:6345
 msgid "_Lock Drive"
 msgstr "Б_локировать привод"
 
-#: ../src/nautilus-view.c:7529
+#: ../src/nautilus-view.c:7544
 msgid "Content View"
 msgstr "Просмотр содержимого"
 
-#: ../src/nautilus-view.c:7530
+#: ../src/nautilus-view.c:7545
 msgid "View of the current folder"
 msgstr "Просмотр текущей папки"
 
@@ -4341,8 +4302,8 @@ msgid "Copy to…"
 msgstr "Копировать в…"
 
 #: ../src/nautilus-view-context-menus.xml.h:27
-msgid "_Delete Permanently"
-msgstr "_Удалить окончательно"
+msgid "_Delete from Trash"
+msgstr "Удалить из _корзины"
 
 #: ../src/nautilus-view-context-menus.xml.h:28
 msgid "Empty Trash"
@@ -4401,23 +4362,41 @@ msgstr "_Свойства"
 msgid "_Format…"
 msgstr "_Форматировать…"
 
-#: ../src/nautilus-window.c:1613
+#. Translators: this is the second part of a "%d files deleted" string
+#: ../src/nautilus-window.c:1528 ../src/nautilus-window.c:1535
+#, c-format
+msgid "%s deleted"
+msgid_plural "%s deleted"
+msgstr[0] "%s удалён"
+msgstr[1] "%s удалены"
+msgstr[2] "%s удалено"
+
+#. Translators: this is the first part of a "%d files deleted" string
+#: ../src/nautilus-window.c:1531
+#, c-format
+msgid "%d file"
+msgid_plural "%d files"
+msgstr[0] "%d файл"
+msgstr[1] "%d файла"
+msgstr[2] "%d файлов"
+
+#: ../src/nautilus-window.c:1704
 msgid "_New Tab"
 msgstr "Создать _вкладку"
 
-#: ../src/nautilus-window.c:1623
+#: ../src/nautilus-window.c:1714
 msgid "Move Tab _Left"
 msgstr "Переместить вкладку в_лево"
 
-#: ../src/nautilus-window.c:1631
+#: ../src/nautilus-window.c:1722
 msgid "Move Tab _Right"
 msgstr "Переместить вкладку в_право"
 
-#: ../src/nautilus-window.c:1642
+#: ../src/nautilus-window.c:1733
 msgid "_Close Tab"
 msgstr "_Закрыть вкладку"
 
-#: ../src/nautilus-window.c:2567
+#: ../src/nautilus-window.c:2673
 msgid "Access and organize your files."
 msgstr "Доступ и управление файлами."
 
@@ -4425,7 +4404,7 @@ msgstr "Доступ и управление файлами."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2576
+#: ../src/nautilus-window.c:2682
 msgid "translator-credits"
 msgstr ""
 "Yuri Kozlov <yuray@komyakino.ru>, 2010.\n"
