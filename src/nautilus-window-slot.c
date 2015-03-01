@@ -1600,7 +1600,7 @@ display_view_selection_failure (NautilusWindow *window, NautilusFile *file,
 	} else if (error->domain == G_IO_ERROR) {
 		switch (error->code) {
 		case G_IO_ERROR_NOT_FOUND:
-			error_message = g_strdup (_("Unable to find the requested file. Please check the spelling and try again."));
+			detail_message = g_strdup (_("Unable to find the requested file. Please check the spelling and try again."));
 			break;
 		case G_IO_ERROR_NOT_SUPPORTED:
 			scheme_string = g_file_get_uri_scheme (location);
