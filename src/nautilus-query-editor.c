@@ -202,7 +202,6 @@ nautilus_query_editor_class_init (NautilusQueryEditorClass *class)
 {
 	GObjectClass *gobject_class;
 	GtkWidgetClass *widget_class;
-	GtkBindingSet *binding_set;
 
 	gobject_class = G_OBJECT_CLASS (class);
         gobject_class->dispose = nautilus_query_editor_dispose;
@@ -237,9 +236,6 @@ nautilus_query_editor_class_init (NautilusQueryEditorClass *class)
 		              g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 
-	binding_set = gtk_binding_set_by_class (class);
-	gtk_binding_entry_add_signal (binding_set, GDK_KEY_Escape, 0, "cancel", 0);
-
 	g_type_class_add_private (class, sizeof (NautilusQueryEditorDetails));
 }
 
@@ -266,6 +262,13 @@ entry_changed_cb (GtkWidget *entry, NautilusQueryEditor *editor)
 	}
 
 	nautilus_query_editor_changed (editor);
+}
+
+static void
+nautilus_query_editor_on_stop_search (GtkWidget           *entry,
+                                      NautilusQueryEditor *editor)
+{
+	g_signal_emit (editor, signals[CANCEL], 0);
 }
 
 /* Type */
@@ -936,6 +939,8 @@ setup_widgets (NautilusQueryEditor *editor)
 			  G_CALLBACK (entry_activate_cb), editor);
 	g_signal_connect (editor->details->entry, "search-changed",
 			  G_CALLBACK (entry_changed_cb), editor);
+	g_signal_connect (editor->details->entry, "stop-search",
+                          G_CALLBACK (nautilus_query_editor_on_stop_search), editor);
 
 	/* create the Current/All Files selector */
 	editor->details->search_current_button = gtk_radio_button_new_with_label (NULL, _("Current"));
