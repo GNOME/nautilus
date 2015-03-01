@@ -42,8 +42,6 @@
 #include "nautilus-window-slot.h"
 #include "nautilus-list-view.h"
 #include "nautilus-view.h"
-#include "nautilus-notification-manager.h"
-#include "nautilus-notification-delete.h"
 
 #include <eel/eel-debug.h>
 #include <eel/eel-gtk-extensions.h>
@@ -94,6 +92,8 @@ static GtkWidget * nautilus_window_ensure_location_entry (NautilusWindow *window
  * defined values for these like the XKB stuff, huh?
  */
 #define UPPER_MOUSE_LIMIT 14
+
+#define NOTIFICATION_TIMEOUT 6 //s
 
 enum {
 	PROP_DISABLE_CHROME = 1,
@@ -1463,15 +1463,100 @@ nautilus_window_ensure_location_entry (NautilusWindow *window)
 }
 
 static void
+nautilus_window_on_notification_delete_undo_clicked (GtkWidget  *notification,
+                                                     gpointer    user_data)
+{
+	NautilusWindow *window;
+
+	window = NAUTILUS_WINDOW (user_data);
+
+	if (window->details->notification_delete_timeout_id != 0) {
+		g_source_remove (window->details->notification_delete_timeout_id);
+		window->details->notification_delete_timeout_id = 0;
+	}
+
+	gtk_revealer_set_reveal_child (GTK_REVEALER (window->details->notification_delete), FALSE);
+	nautilus_file_undo_manager_undo (GTK_WINDOW (window));
+}
+
+static void
+nautilus_window_on_notification_delete_close_clicked (GtkWidget  *notification,
+                                                      gpointer    user_data)
+{
+	NautilusWindow *window;
+
+	window = NAUTILUS_WINDOW (user_data);
+
+	if (window->details->notification_delete_timeout_id != 0) {
+		g_source_remove (window->details->notification_delete_timeout_id);
+		window->details->notification_delete_timeout_id = 0;
+	}
+
+	gtk_revealer_set_reveal_child (GTK_REVEALER (window->details->notification_delete), FALSE);
+}
+
+static gboolean
+nautilus_window_on_notification_delete_timeout (gpointer user_data)
+{
+	NautilusWindow *window;
+
+	window = NAUTILUS_WINDOW (user_data);
+
+	if (window->details->notification_delete_timeout_id != 0) {
+		g_source_remove (window->details->notification_delete_timeout_id);
+		window->details->notification_delete_timeout_id = 0;
+	}
+
+	gtk_revealer_set_reveal_child (GTK_REVEALER (window->details->notification_delete), FALSE);
+
+	return FALSE;
+}
+
+static char *
+nautilus_window_notification_delete_get_label (NautilusFileUndoInfo *undo_info,
+                                               GList *files)
+{
+	gchar *file_label;
+	gchar *markup;
+	gchar *label;
+	gint length;
+
+	length = g_list_length (files);
+	if (length == 1) {
+		file_label = g_file_get_basename (files->data);
+		markup = g_markup_printf_escaped ("<b>%s</b>", file_label);
+		label = g_strdup_printf (_("%s deleted"), markup);
+	} else {
+		/* Translators: this is the first part of a "%d files deleted" string */
+		file_label = g_strdup_printf (ngettext ("%d file", "%d files", length), length);
+		markup = g_markup_printf_escaped ("<b>%s</b>", file_label);
+
+		/* Translators: this is the second part of a "%d files deleted" string */
+		label = g_strdup_printf (ngettext ("%s deleted", "%s deleted", length), markup);
+	}
+
+	g_free (file_label);
+	g_free (markup);
+
+	return label;
+}
+
+static void
 nautilus_window_on_undo_changed (NautilusFileUndoManager *manager,
                                  NautilusWindow          *window)
 {
-	NautilusNotificationDelete *notification;
 	NautilusFileUndoInfo *undo_info;
 	NautilusFileUndoManagerState state;
+	int transition_durantion;
+	gchar *label;
 	GList *files;
 
-	nautilus_notification_manager_remove_all (NAUTILUS_NOTIFICATION_MANAGER (window->details->notification_manager));
+	/* Hide it inmediatily so we can animate the new notification. */
+	transition_durantion = gtk_revealer_get_transition_duration (GTK_REVEALER (window->details->notification_delete));
+	gtk_revealer_set_transition_duration (GTK_REVEALER (window->details->notification_delete), 0);
+	gtk_revealer_set_reveal_child (GTK_REVEALER (window->details->notification_delete), FALSE);
+	gtk_revealer_set_transition_duration (GTK_REVEALER (window->details->notification_delete), transition_durantion);
+
 	undo_info = nautilus_file_undo_manager_get_action ();
 	state = nautilus_file_undo_manager_get_state ();
 
@@ -1484,9 +1569,13 @@ nautilus_window_on_undo_changed (NautilusFileUndoManager *manager,
 		 * is not in the this window. This is an easy way to know from which window
 		 * was the delete operation made */
 		if (g_list_length (files) > 0 && gtk_window_has_toplevel_focus (GTK_WINDOW (window))) {
-			notification = nautilus_notification_delete_new (window);
-			nautilus_notification_manager_add_notification (NAUTILUS_NOTIFICATION_MANAGER (window->details->notification_manager),
-		                                                        GTK_WIDGET (notification));
+			label = nautilus_window_notification_delete_get_label (undo_info, files);
+			gtk_label_set_markup (GTK_LABEL (window->details->notification_delete_label), label);
+			gtk_revealer_set_reveal_child (GTK_REVEALER (window->details->notification_delete), TRUE);
+			window->details->notification_delete_timeout_id = g_timeout_add_seconds (NOTIFICATION_TIMEOUT,
+			                                                                         nautilus_window_on_notification_delete_timeout,
+			                                                                         window);
+			g_free (label);
 		}
 		g_list_free (files);
 	}
@@ -1868,6 +1957,7 @@ nautilus_window_constructed (GObject *self)
 	GtkWidget *grid;
 	NautilusWindowSlot *slot;
 	NautilusApplication *application;
+	g_autoptr (GtkBuilder) builder;
 
 	window = NAUTILUS_WINDOW (self);
 
@@ -1907,9 +1997,18 @@ nautilus_window_constructed (GObject *self)
 	window->details->notebook = create_notebook (window);
 	nautilus_window_set_initial_window_geometry (window);
 
-	window->details->notification_manager = GTK_WIDGET (nautilus_notification_manager_new ());
+	builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-notification-delete.ui");
+	window->details->notification_delete = GTK_WIDGET (gtk_builder_get_object (builder, "notification_delete"));
+	window->details->notification_delete_label = GTK_WIDGET (gtk_builder_get_object (builder, "notification_delete_label"));
+	window->details->notification_delete_close = GTK_WIDGET (gtk_builder_get_object (builder, "notification_delete_close"));
+	window->details->notification_delete_undo = GTK_WIDGET (gtk_builder_get_object (builder, "notification_delete_undo"));
 	gtk_overlay_add_overlay (GTK_OVERLAY (window->details->main_view),
-                                 window->details->notification_manager);
+                                 window->details->notification_delete);
+	g_signal_connect_object (window->details->notification_delete_close, "clicked",
+	                         G_CALLBACK (nautilus_window_on_notification_delete_close_clicked), window, 0);
+	g_signal_connect_object (window->details->notification_delete_undo, "clicked",
+	                         G_CALLBACK (nautilus_window_on_notification_delete_undo_clicked), window, 0);
+
 	g_signal_connect_after (nautilus_file_undo_manager_get (), "undo-changed",
                                 G_CALLBACK (nautilus_window_on_undo_changed), self);
 
@@ -2035,6 +2134,11 @@ nautilus_window_finalize (GObject *object)
 	if (window->details->sidebar_width_handler_id != 0) {
 		g_source_remove (window->details->sidebar_width_handler_id);
 		window->details->sidebar_width_handler_id = 0;
+	}
+
+	if (window->details->notification_delete_timeout_id != 0) {
+		g_source_remove (window->details->notification_delete_timeout_id);
+		window->details->notification_delete_timeout_id = 0;
 	}
 
 	g_signal_handlers_disconnect_by_func (nautilus_file_undo_manager_get (),

@@ -55,7 +55,11 @@ struct NautilusWindowDetails
         GtkWidget *main_view;
 
 	/* Notifications */
-        GtkWidget *notification_manager;
+        GtkWidget *notification_delete;
+        GtkWidget *notification_delete_label;
+        GtkWidget *notification_delete_close;
+        GtkWidget *notification_delete_undo;
+	guint notification_delete_timeout_id;
 
         /* Toolbar */
         GtkWidget *toolbar;
