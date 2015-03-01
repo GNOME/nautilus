@@ -1480,8 +1480,10 @@ nautilus_window_on_undo_changed (NautilusFileUndoManager *manager,
             nautilus_file_undo_info_get_op_type (undo_info) == NAUTILUS_FILE_UNDO_OP_MOVE_TO_TRASH) {
 		files = nautilus_file_undo_info_trash_get_files (NAUTILUS_FILE_UNDO_INFO_TRASH (undo_info));
 
-		/* Don't pop up a notification if user canceled the operation */
-		if (g_list_length (files) > 0) {
+		/* Don't pop up a notification if user canceled the operation or the focus
+		 * is not in the this window. This is an easy way to know from which window
+		 * was the delete operation made */
+		if (g_list_length (files) > 0 && gtk_window_has_toplevel_focus (GTK_WINDOW (window))) {
 			notification = nautilus_notification_delete_new (window);
 			nautilus_notification_manager_add_notification (NAUTILUS_NOTIFICATION_MANAGER (window->details->notification_manager),
 		                                                        GTK_WIDGET (notification));
