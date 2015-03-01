@@ -5867,7 +5867,6 @@ real_update_actions_state (NautilusView *view)
 	gboolean can_trash_files;
 	gboolean can_copy_files;
 	gboolean can_paste_files_into;
-	gboolean show_separate_delete_command;
 	gboolean show_app, show_run;
 	gboolean item_opens_in_view;
 	gboolean is_read_only;
