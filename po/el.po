@@ -69,8 +69,8 @@ msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2015-03-01 23:27+0000\n"
-"PO-Revision-Date: 2015-03-02 10:02+0200\n"
+"POT-Creation-Date: 2015-03-02 15:55+0000\n"
+"PO-Revision-Date: 2015-03-02 23:37+0200\n"
 "Last-Translator: Efstathios Iosifidis <iosifidis@opensuse.org>\n"
 "Language-Team: Greek, Modern (1453-) <opensuse-translation-el@opensuse.org>\n"
 "Language: el\n"
@@ -120,11 +120,9 @@ msgid "Connect to Server"
 msgstr "Σύνδεση σε διακομιστή"
 
 #
-#. Set initial window title
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
 #: ../src/nautilus-file-management-properties.ui.h:28
-#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2502
-#: ../src/nautilus-window.c:2671
+#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2658
 msgid "Files"
 msgstr "Αρχεία"
 
@@ -223,12 +221,12 @@ msgstr "Εμφάνιση περισσότερων _λεπτομερειών"
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:542
 #: ../libnautilus-private/nautilus-file-operations.c:183
 #: ../src/nautilus-connect-server-dialog.c:652
-#: ../src/nautilus-location-entry.c:274 ../src/nautilus-mime-actions.c:647
+#: ../src/nautilus-location-entry.c:273 ../src/nautilus-mime-actions.c:647
 #: ../src/nautilus-mime-actions.c:651 ../src/nautilus-mime-actions.c:722
 #: ../src/nautilus-mime-actions.c:1065 ../src/nautilus-mime-actions.c:1571
 #: ../src/nautilus-mime-actions.c:1795
 #: ../src/nautilus-properties-window.c:4179
-#: ../src/nautilus-properties-window.c:5163 ../src/nautilus-query-editor.c:491
+#: ../src/nautilus-properties-window.c:5163 ../src/nautilus-query-editor.c:494
 #: ../src/nautilus-view.c:780 ../src/nautilus-view.c:1277
 #: ../src/nautilus-view.c:4919
 msgid "_Cancel"
@@ -246,7 +244,7 @@ msgstr " (άκυρο Unicode)"
 #: ../libnautilus-private/nautilus-desktop-link.c:129
 #: ../libnautilus-private/nautilus-file-utilities.c:265
 #: ../src/nautilus-list-view.c:1825 ../src/nautilus-pathbar.c:295
-#: ../src/nautilus-query-editor.c:1067
+#: ../src/nautilus-query-editor.c:1072
 #: ../src/nautilus-shell-search-provider.c:285
 msgid "Home"
 msgstr "Προσωπικός φάκελος"
@@ -402,7 +400,7 @@ msgstr ""
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:95
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:104
-#: ../src/nautilus-location-entry.c:274 ../src/nautilus-mime-actions.c:1065
+#: ../src/nautilus-location-entry.c:273 ../src/nautilus-mime-actions.c:1065
 #: ../src/nautilus-mime-actions.c:1242 ../src/nautilus-mime-actions.c:1795
 #: ../src/nautilus-view.c:780
 msgid "_OK"
@@ -694,7 +692,7 @@ msgid "Markup"
 msgstr "Σήμανση"
 
 #: ../libnautilus-private/nautilus-file.c:6468
-#: ../src/nautilus-query-editor.c:326
+#: ../src/nautilus-query-editor.c:329
 msgid "Video"
 msgstr "Βίντεο"
 
@@ -711,12 +709,12 @@ msgid "Document"
 msgstr "Έγγραφο"
 
 #: ../libnautilus-private/nautilus-file.c:6472
-#: ../src/nautilus-query-editor.c:392
+#: ../src/nautilus-query-editor.c:395
 msgid "Presentation"
 msgstr "Παρουσίαση"
 
 #: ../libnautilus-private/nautilus-file.c:6473
-#: ../src/nautilus-query-editor.c:376
+#: ../src/nautilus-query-editor.c:379
 msgid "Spreadsheet"
 msgstr "Λογιστικό φύλλο"
 
@@ -1112,7 +1110,7 @@ msgstr "Όλα τα αντικείμενα στα απορρίμματα θα δ
 
 #: ../libnautilus-private/nautilus-file-operations.c:1399
 #: ../libnautilus-private/nautilus-file-operations.c:2275
-#: ../src/nautilus-window.c:1218
+#: ../src/nautilus-window.c:1267
 msgid "Empty _Trash"
 msgstr "Άδειασμα α_πορριμμάτων"
 
@@ -1627,7 +1625,7 @@ msgid "Unable to mark launcher trusted (executable)"
 msgstr "Αδυναμία σημείωσης ως έμπιστου του εκκινητή (εκτελέσιμος)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:133
-#: ../src/nautilus-window.c:448
+#: ../src/nautilus-window.c:491 ../src/nautilus-window.ui.h:2
 msgid "Undo"
 msgstr "Αναίρεση"
 
@@ -1636,7 +1634,7 @@ msgid "Undo last action"
 msgstr "Αναίρεση της τελευταίας ενέργειας"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:140
-#: ../src/nautilus-window.c:449
+#: ../src/nautilus-window.c:492
 msgid "Redo"
 msgstr "Επανάληψη"
 
@@ -2702,11 +2700,11 @@ msgstr ""
 "%s"
 
 #. Some sort of failure occurred. How 'bout we tell the user?
-#: ../src/nautilus-application.c:179 ../src/nautilus-window-slot.c:1596
+#: ../src/nautilus-application.c:178 ../src/nautilus-window-slot.c:1596
 msgid "Oops! Something went wrong."
 msgstr "Ωχ όχι! Κάτι πήγε στραβά."
 
-#: ../src/nautilus-application.c:181
+#: ../src/nautilus-application.c:180
 #, c-format
 msgid ""
 "Unable to create a required folder. Please create the following folder, or "
@@ -2718,7 +2716,7 @@ msgstr ""
 "δημιουργηθεί:\n"
 "%s"
 
-#: ../src/nautilus-application.c:186
+#: ../src/nautilus-application.c:185
 #, c-format
 msgid ""
 "Unable to create required folders. Please create the following folders, or "
@@ -2730,7 +2728,7 @@ msgstr ""
 "δημιουργηθούν:\n"
 "%s"
 
-#: ../src/nautilus-application.c:318
+#: ../src/nautilus-application.c:317
 msgid ""
 "Nautilus 3.0 deprecated this directory and tried migrating this "
 "configuration to ~/.config/nautilus"
@@ -2738,75 +2736,75 @@ msgstr ""
 "Στον Ναυτίλο 3.0 αυτός ο φάκελος είναι παρωχημένος και έγινε προσπάθεια "
 "μεταφοράς αυτής της ρύθμισης στο ~/.config/nautilus"
 
-#: ../src/nautilus-application.c:612
+#: ../src/nautilus-application.c:611
 msgid "--check cannot be used with other options."
 msgstr "Το --check δε χρησιμοποιείται μαζί με άλλες επιλογές."
 
-#: ../src/nautilus-application.c:619
+#: ../src/nautilus-application.c:618
 msgid "--quit cannot be used with URIs."
 msgstr "Το --quit δεν μπορεί να χρησιμοποιηθεί με URI."
 
-#: ../src/nautilus-application.c:627
+#: ../src/nautilus-application.c:626
 msgid "--select must be used with at least an URI."
 msgstr "Το --select πρέπει να χρησιμοποιηθεί με τουλάχιστον ένα URI."
 
-#: ../src/nautilus-application.c:634
+#: ../src/nautilus-application.c:633
 msgid "--no-desktop and --force-desktop cannot be used together."
 msgstr ""
 "Τα --no-desktop και --force-desktop δεν μπορούν να χρησιμοποιηθούν μαζί."
 
-#: ../src/nautilus-application.c:718
+#: ../src/nautilus-application.c:717
 msgid "Perform a quick set of self-check tests."
 msgstr "Εκτέλεση ενός συνόλου γρήγορων δοκιμών αυτοελέγχων."
 
-#: ../src/nautilus-application.c:725
+#: ../src/nautilus-application.c:724
 msgid "Create the initial window with the given geometry."
 msgstr "Δημιουργία του αρχικού παραθύρου με τη δοσμένη γεωμετρία."
 
 #
-#: ../src/nautilus-application.c:725
+#: ../src/nautilus-application.c:724
 msgid "GEOMETRY"
 msgstr "ΓΕΩΜΕΤΡΙΑ"
 
-#: ../src/nautilus-application.c:727
+#: ../src/nautilus-application.c:726
 msgid "Show the version of the program."
 msgstr "Εμφάνιση της έκδοσης του προγράμματος."
 
-#: ../src/nautilus-application.c:729
+#: ../src/nautilus-application.c:728
 msgid "Always open a new window for browsing specified URIs"
 msgstr "Να ανοίγεται πάντα νέο παράθυρο για περιήγηση καθορισμένων URI"
 
-#: ../src/nautilus-application.c:731
+#: ../src/nautilus-application.c:730
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Δημιουργία παραθύρων μόνο για τα URI που έχουν οριστεί ρητά."
 
-#: ../src/nautilus-application.c:733
+#: ../src/nautilus-application.c:732
 msgid "Never manage the desktop (ignore the GSettings preference)."
 msgstr ""
 "Να μη γίνεται ποτέ διαχείριση της επιφάνειας εργασίας (αγνοεί τις "
 "προτιμήσεις του GSettings)."
 
-#: ../src/nautilus-application.c:735
+#: ../src/nautilus-application.c:734
 msgid "Always manage the desktop (ignore the GSettings preference)."
 msgstr ""
 "Να γίνεται πάντα διαχείριση της επιφάνειας εργασίας (αγνοεί τις προτιμήσεις "
 "του GSettings)."
 
-#: ../src/nautilus-application.c:737
+#: ../src/nautilus-application.c:736
 msgid "Quit Nautilus."
 msgstr "Τερματισμός του Ναυτίλου."
 
-#: ../src/nautilus-application.c:739
+#: ../src/nautilus-application.c:738
 msgid "Select specified URI in parent folder."
 msgstr "Επιλέξτε τα καθορισμένα URI στο γονικό φάκελο."
 
-#: ../src/nautilus-application.c:740
+#: ../src/nautilus-application.c:739
 msgid "[URI...]"
 msgstr "[URI...]"
 
 #. Translators: this is a fatal error quit message printed on the
 #. * command line
-#: ../src/nautilus-application.c:820
+#: ../src/nautilus-application.c:819
 msgid "Could not register the application"
 msgstr "Αδυναμία εγγραφής της εφαρμογής"
 
@@ -3504,14 +3502,14 @@ msgstr "%s ορατές στήλες"
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Επιλέξτε τον τρόπο ταξινόμησης των πληροφοριών στο φάκελο:"
 
-#: ../src/nautilus-location-entry.c:259
+#: ../src/nautilus-location-entry.c:258
 #, c-format
 msgid "Do you want to view %d location?"
 msgid_plural "Do you want to view %d locations?"
 msgstr[0] "Θέλετε να εμφανιστεί %d τοποθεσία;"
 msgstr[1] "Θέλετε να εμφανιστούν %d τοποθεσίες;"
 
-#: ../src/nautilus-location-entry.c:263 ../src/nautilus-mime-actions.c:1061
+#: ../src/nautilus-location-entry.c:262 ../src/nautilus-mime-actions.c:1061
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
@@ -3674,10 +3672,6 @@ msgstr "Το κατάλαβα"
 #: ../src/nautilus-notebook.c:382
 msgid "Close tab"
 msgstr "Κλείσιμο καρτέλας"
-
-#: ../src/nautilus-notification-delete.ui.h:1
-msgid "undo"
-msgstr "αναίρεση"
 
 #: ../src/nautilus-progress-info-widget.xml.h:1
 msgid "label"
@@ -3992,61 +3986,61 @@ msgstr "Άν_οιγμα"
 msgid "File Type"
 msgstr "Τύπος αρχείου"
 
-#: ../src/nautilus-query-editor.c:293
+#: ../src/nautilus-query-editor.c:296
 msgid "Documents"
 msgstr "Έγγραφα"
 
-#: ../src/nautilus-query-editor.c:311
+#: ../src/nautilus-query-editor.c:314
 msgid "Music"
 msgstr "Μουσική"
 
-#: ../src/nautilus-query-editor.c:342
+#: ../src/nautilus-query-editor.c:345
 msgid "Picture"
 msgstr "Εικόνα"
 
-#: ../src/nautilus-query-editor.c:362
+#: ../src/nautilus-query-editor.c:365
 msgid "Illustration"
 msgstr "Εικονογραφία"
 
-#: ../src/nautilus-query-editor.c:401
+#: ../src/nautilus-query-editor.c:404
 msgid "Pdf / Postscript"
 msgstr "Pdf / Postscript"
 
-#: ../src/nautilus-query-editor.c:409
+#: ../src/nautilus-query-editor.c:412
 msgid "Text File"
 msgstr "Αρχείο κειμένου"
 
-#: ../src/nautilus-query-editor.c:488
+#: ../src/nautilus-query-editor.c:491
 msgid "Select type"
 msgstr "Επιλογή τύπου"
 
-#: ../src/nautilus-query-editor.c:492
+#: ../src/nautilus-query-editor.c:495
 msgid "Select"
 msgstr "Επιλογή"
 
-#: ../src/nautilus-query-editor.c:572
+#: ../src/nautilus-query-editor.c:575
 msgid "Any"
 msgstr "Οποιοσδήποτε"
 
-#: ../src/nautilus-query-editor.c:587
+#: ../src/nautilus-query-editor.c:590
 msgid "Other Type…"
 msgstr "Άλλος τύπος…"
 
-#: ../src/nautilus-query-editor.c:858
+#: ../src/nautilus-query-editor.c:861
 msgid "Remove this criterion from the search"
 msgstr "Αφαίρεση αυτού του κριτηρίου αναζήτησης"
 
 #. create the Current/All Files selector
-#: ../src/nautilus-query-editor.c:941
+#: ../src/nautilus-query-editor.c:946
 msgid "Current"
 msgstr "Τρέχοντα"
 
 #
-#: ../src/nautilus-query-editor.c:944
+#: ../src/nautilus-query-editor.c:949
 msgid "All Files"
 msgstr "Όλα τα αρχεία"
 
-#: ../src/nautilus-query-editor.c:966
+#: ../src/nautilus-query-editor.c:971
 msgid "Add a new criterion to this search"
 msgstr "Προσθήκη νέου κριτηρίου στην αναζήτηση"
 
@@ -4487,16 +4481,16 @@ msgstr "Αφημένο κείμενο.txt"
 msgid "dropped data"
 msgstr "αφημένα δεδομένα"
 
-#: ../src/nautilus-window.c:1232
+#: ../src/nautilus-window.c:1281
 msgid "_Properties"
 msgstr "_Ιδιότητες"
 
-#: ../src/nautilus-window.c:1241
+#: ../src/nautilus-window.c:1290
 msgid "_Format…"
 msgstr "_Διαμόρφωση…"
 
 #. Translators: this is the second part of a "%d files deleted" string
-#: ../src/nautilus-window.c:1528 ../src/nautilus-window.c:1535
+#: ../src/nautilus-window.c:1545 ../src/nautilus-window.c:1552
 #, c-format
 msgid "%s deleted"
 msgid_plural "%s deleted"
@@ -4504,30 +4498,30 @@ msgstr[0] "%s διαγράφηκε"
 msgstr[1] "%s διαγράφηκαν"
 
 #. Translators: this is the first part of a "%d files deleted" string
-#: ../src/nautilus-window.c:1531
+#: ../src/nautilus-window.c:1548
 #, c-format
 msgid "%d file"
 msgid_plural "%d files"
 msgstr[0] "%d αρχείο"
 msgstr[1] "%d αρχεία"
 
-#: ../src/nautilus-window.c:1704
+#: ../src/nautilus-window.c:1726
 msgid "_New Tab"
 msgstr "_Νέα καρτέλα"
 
-#: ../src/nautilus-window.c:1714
+#: ../src/nautilus-window.c:1736
 msgid "Move Tab _Left"
 msgstr "Μετακίνηση καρτέλας _αριστερά"
 
-#: ../src/nautilus-window.c:1722
+#: ../src/nautilus-window.c:1744
 msgid "Move Tab _Right"
 msgstr "Μετακίνηση καρτέλας _δεξιά"
 
-#: ../src/nautilus-window.c:1733
+#: ../src/nautilus-window.c:1755
 msgid "_Close Tab"
 msgstr "_Κλείσιμο καρτέλας"
 
-#: ../src/nautilus-window.c:2673
+#: ../src/nautilus-window.c:2660
 msgid "Access and organize your files."
 msgstr "Προσπελάστε και οργανώστε τα αρχεία σας."
 
@@ -4536,7 +4530,7 @@ msgstr "Προσπελάστε και οργανώστε τα αρχεία σα�
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2682
+#: ../src/nautilus-window.c:2669
 msgid "translator-credits"
 msgstr ""
 "Ελληνική μεταφραστική ομάδα GNOME\n"
@@ -4612,6 +4606,12 @@ msgstr "Μη διαχειρίσιμο μήνυμα σφάλματος: %s"
 msgid "Searching…"
 msgstr "Αναζήτηση…"
 
+#
+#: ../src/nautilus-window.ui.h:1
+#| msgid "Files"
+msgid "_Files"
+msgstr "_Αρχεία"
+
 #: ../src/nautilus-x-content-bar.c:92
 msgid "Audio CD"
 msgstr "CD ήχου"
@@ -4671,6 +4671,9 @@ msgstr "Περιέχει φωτογραφίες και μουσική"
 #: ../src/nautilus-x-content-bar.c:201
 msgid "Open with:"
 msgstr "Άνοιγμα με:"
+
+#~ msgid "undo"
+#~ msgstr "αναίρεση"
 
 #~ msgid "Whether to enable immediate deletion"
 #~ msgstr "Αν θα είναι ενεργοποιημένη η άμεση διαγραφή"
