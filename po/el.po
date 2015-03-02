@@ -69,8 +69,8 @@ msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2015-02-28 20:21+0000\n"
-"PO-Revision-Date: 2015-02-28 23:20+0200\n"
+"POT-Creation-Date: 2015-03-01 23:27+0000\n"
+"PO-Revision-Date: 2015-03-02 10:02+0200\n"
 "Last-Translator: Efstathios Iosifidis <iosifidis@opensuse.org>\n"
 "Language-Team: Greek, Modern (1453-) <opensuse-translation-el@opensuse.org>\n"
 "Language: el\n"
@@ -78,7 +78,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Gtranslator 2.91.6\n"
+"X-Generator: Poedit 1.5.7\n"
 "X-Project-Style: gnome\n"
 
 #: ../data/org.gnome.Nautilus.appdata.xml.in.h:1
@@ -123,8 +123,8 @@ msgstr "Σύνδεση σε διακομιστή"
 #. Set initial window title
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
 #: ../src/nautilus-file-management-properties.ui.h:28
-#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2396
-#: ../src/nautilus-window.c:2565
+#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2502
+#: ../src/nautilus-window.c:2671
 msgid "Files"
 msgstr "Αρχεία"
 
@@ -1627,7 +1627,7 @@ msgid "Unable to mark launcher trusted (executable)"
 msgstr "Αδυναμία σημείωσης ως έμπιστου του εκκινητή (εκτελέσιμος)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:133
-#: ../src/nautilus-notification-delete.c:183 ../src/nautilus-window.c:448
+#: ../src/nautilus-window.c:448
 msgid "Undo"
 msgstr "Αναίρεση"
 
@@ -2702,7 +2702,7 @@ msgstr ""
 "%s"
 
 #. Some sort of failure occurred. How 'bout we tell the user?
-#: ../src/nautilus-application.c:179 ../src/nautilus-window-slot.c:1592
+#: ../src/nautilus-application.c:179 ../src/nautilus-window-slot.c:1596
 msgid "Oops! Something went wrong."
 msgstr "Ωχ όχι! Κάτι πήγε στραβά."
 
@@ -3218,7 +3218,7 @@ msgstr ""
 "θα εμφανίζονται."
 
 #: ../src/nautilus-file-management-properties.ui.h:23
-#: ../src/nautilus-list-view.c:2157
+#: ../src/nautilus-list-view.c:2158
 msgid "List View"
 msgstr "Προβολή λίστας"
 
@@ -3483,7 +3483,7 @@ msgstr "Αποτυχία φόρτωσης πληροφοριών εικόνας"
 
 #: ../src/nautilus-image-properties-page.c:706
 #: ../src/nautilus-list-model.c:371 ../src/nautilus-window-slot.c:604
-#: ../src/nautilus-window-slot.c:2186
+#: ../src/nautilus-window-slot.c:2190
 msgid "Loading…"
 msgstr "Φόρτωση…"
 
@@ -3495,12 +3495,12 @@ msgstr "(Άδειο)"
 msgid "Use Default"
 msgstr "Χρήση προεπιλογής"
 
-#: ../src/nautilus-list-view.c:3001
+#: ../src/nautilus-list-view.c:3002
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s ορατές στήλες"
 
-#: ../src/nautilus-list-view.c:3021
+#: ../src/nautilus-list-view.c:3022
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Επιλέξτε τον τρόπο ταξινόμησης των πληροφοριών στο φάκελο:"
 
@@ -3675,22 +3675,9 @@ msgstr "Το κατάλαβα"
 msgid "Close tab"
 msgstr "Κλείσιμο καρτέλας"
 
-#. Translators: this is the second part of a "%d files deleted" string
-#: ../src/nautilus-notification-delete.c:163
-#: ../src/nautilus-notification-delete.c:172
-#, c-format
-msgid "%s deleted"
-msgid_plural "%s deleted"
-msgstr[0] "%s διαγράφηκε"
-msgstr[1] "%s διαγράφηκαν"
-
-#. Translators: this is the first part of a "%d files deleted" string
-#: ../src/nautilus-notification-delete.c:168
-#, c-format
-msgid "%d file"
-msgid_plural "%d files"
-msgstr[0] "%d αρχείο"
-msgstr[1] "%d αρχεία"
+#: ../src/nautilus-notification-delete.ui.h:1
+msgid "undo"
+msgstr "αναίρεση"
 
 #: ../src/nautilus-progress-info-widget.xml.h:1
 msgid "label"
@@ -4298,69 +4285,69 @@ msgstr "Αδυναμία διακοπής μονάδας δίσκου"
 msgid "Unable to start “%s”"
 msgstr "Αδυναμία εκκίνησης του “%s”"
 
-#: ../src/nautilus-view.c:6199
+#: ../src/nautilus-view.c:6198
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "Νέος φάκελος με επιλογή (%'d αντικείμενο)"
 msgstr[1] "Νέος φάκελος με επιλογή (%'d αντικείμενα)"
 
-#: ../src/nautilus-view.c:6247
+#: ../src/nautilus-view.c:6246
 #, c-format
 msgid "Open With %s"
 msgstr "Άνοιγμα με %s"
 
-#: ../src/nautilus-view.c:6256
+#: ../src/nautilus-view.c:6255
 msgid "Run"
 msgstr "Εκτέλεση"
 
 #
-#: ../src/nautilus-view.c:6258
+#: ../src/nautilus-view.c:6257
 msgid "Open"
 msgstr "Άνοιγμα"
 
 #
-#: ../src/nautilus-view.c:6309 ../src/nautilus-view-context-menus.xml.h:18
+#: ../src/nautilus-view.c:6308 ../src/nautilus-view-context-menus.xml.h:18
 msgid "_Start"
 msgstr "_Εκκίνηση"
 
-#: ../src/nautilus-view.c:6312
+#: ../src/nautilus-view.c:6311
 msgid "_Connect"
 msgstr "Σύν_δεση"
 
-#: ../src/nautilus-view.c:6315
+#: ../src/nautilus-view.c:6314
 msgid "_Start Multi-disk Drive"
 msgstr "_Εκκίνηση μονάδας πολλαπλών δίσκων"
 
-#: ../src/nautilus-view.c:6318
+#: ../src/nautilus-view.c:6317
 msgid "U_nlock Drive"
 msgstr "_Ξεκλείδωμα μονάδας δίσκου"
 
-#: ../src/nautilus-view.c:6334
+#: ../src/nautilus-view.c:6333
 msgid "Stop Drive"
 msgstr "Διακοπή μονάδας δίσκου"
 
-#: ../src/nautilus-view.c:6337
+#: ../src/nautilus-view.c:6336
 msgid "_Safely Remove Drive"
 msgstr "Ασφα_λής αφαίρεση μονάδας δίσκου"
 
-#: ../src/nautilus-view.c:6340
+#: ../src/nautilus-view.c:6339
 msgid "_Disconnect"
 msgstr "_Αποσύνδεση"
 
-#: ../src/nautilus-view.c:6343
+#: ../src/nautilus-view.c:6342
 msgid "_Stop Multi-disk Drive"
 msgstr "_Διακοπή μονάδας πολλαπλών δίσκων"
 
-#: ../src/nautilus-view.c:6346
+#: ../src/nautilus-view.c:6345
 msgid "_Lock Drive"
 msgstr "Κλείδ_ωμα μονάδας δίσκου"
 
-#: ../src/nautilus-view.c:7545
+#: ../src/nautilus-view.c:7544
 msgid "Content View"
 msgstr "Προβολή περιεχομένου"
 
-#: ../src/nautilus-view.c:7546
+#: ../src/nautilus-view.c:7545
 msgid "View of the current folder"
 msgstr "Προβολή του τρέχοντος φακέλου"
 
@@ -4446,7 +4433,6 @@ msgid "Copy to…"
 msgstr "Αντιγραφή σε…"
 
 #: ../src/nautilus-view-context-menus.xml.h:27
-#| msgid "_Redo Restore from Trash"
 msgid "_Delete from Trash"
 msgstr "_Διαγραφή από τα απορρίμματα"
 
@@ -4509,23 +4495,39 @@ msgstr "_Ιδιότητες"
 msgid "_Format…"
 msgstr "_Διαμόρφωση…"
 
-#: ../src/nautilus-window.c:1613
+#. Translators: this is the second part of a "%d files deleted" string
+#: ../src/nautilus-window.c:1528 ../src/nautilus-window.c:1535
+#, c-format
+msgid "%s deleted"
+msgid_plural "%s deleted"
+msgstr[0] "%s διαγράφηκε"
+msgstr[1] "%s διαγράφηκαν"
+
+#. Translators: this is the first part of a "%d files deleted" string
+#: ../src/nautilus-window.c:1531
+#, c-format
+msgid "%d file"
+msgid_plural "%d files"
+msgstr[0] "%d αρχείο"
+msgstr[1] "%d αρχεία"
+
+#: ../src/nautilus-window.c:1704
 msgid "_New Tab"
 msgstr "_Νέα καρτέλα"
 
-#: ../src/nautilus-window.c:1623
+#: ../src/nautilus-window.c:1714
 msgid "Move Tab _Left"
 msgstr "Μετακίνηση καρτέλας _αριστερά"
 
-#: ../src/nautilus-window.c:1631
+#: ../src/nautilus-window.c:1722
 msgid "Move Tab _Right"
 msgstr "Μετακίνηση καρτέλας _δεξιά"
 
-#: ../src/nautilus-window.c:1642
+#: ../src/nautilus-window.c:1733
 msgid "_Close Tab"
 msgstr "_Κλείσιμο καρτέλας"
 
-#: ../src/nautilus-window.c:2567
+#: ../src/nautilus-window.c:2673
 msgid "Access and organize your files."
 msgstr "Προσπελάστε και οργανώστε τα αρχεία σας."
 
@@ -4534,7 +4536,7 @@ msgstr "Προσπελάστε και οργανώστε τα αρχεία σα�
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2576
+#: ../src/nautilus-window.c:2682
 msgid "translator-credits"
 msgstr ""
 "Ελληνική μεταφραστική ομάδα GNOME\n"
@@ -4551,40 +4553,40 @@ msgstr ""
 "Για περισσότερες πληροφορίες, επισκεφθείτε τη σελίδα\n"
 "http://gnome.gr/"
 
-#: ../src/nautilus-window-slot.c:1274 ../src/nautilus-window-slot.c:1446
+#: ../src/nautilus-window-slot.c:1278 ../src/nautilus-window-slot.c:1450
 #, c-format
 msgid "Unable to load location"
 msgstr "Αδυναμία φόρτωσης της τοποθεσίας"
 
-#: ../src/nautilus-window-slot.c:1596
+#: ../src/nautilus-window-slot.c:1600
 msgid "Unable to display the contents of this folder."
 msgstr "Αδυναμία εμφάνισης των περιεχομένων αυτού του φακέλου."
 
-#: ../src/nautilus-window-slot.c:1598
+#: ../src/nautilus-window-slot.c:1602
 msgid "This location doesn't appear to be a folder."
 msgstr "Η τοποθεσία δεν φαίνεται να είναι φάκελος."
 
-#: ../src/nautilus-window-slot.c:1603
+#: ../src/nautilus-window-slot.c:1607
 msgid ""
 "Unable to find the requested file. Please check the spelling and try again."
 msgstr ""
 "Αδύνατη η εύρεση του ζητούμενου αρχείου. Παρακαλούμε, ελέγξτε την ορθογραφία "
 "και προσπαθήστε ξανά."
 
-#: ../src/nautilus-window-slot.c:1608
+#: ../src/nautilus-window-slot.c:1612
 #, c-format
 msgid "“%s” locations are not supported."
 msgstr "Δεν υποστηρίζονται οι τοποθεσίες “%s”."
 
-#: ../src/nautilus-window-slot.c:1611
+#: ../src/nautilus-window-slot.c:1615
 msgid "Unable to handle this kind of location."
 msgstr "Αδύνατος ο χειρισμός τέτοιου είδους τοποθεσιών."
 
-#: ../src/nautilus-window-slot.c:1616
+#: ../src/nautilus-window-slot.c:1620
 msgid "Unable to access the requested location."
 msgstr "Αδύνατη η πρόσβαση στη ζητούμενη τοποθεσία."
 
-#: ../src/nautilus-window-slot.c:1619
+#: ../src/nautilus-window-slot.c:1623
 msgid "Don't have permission to access the requested location."
 msgstr "Δεν έχετε δικαίωμα πρόσβασης στη ζητούμενη τοποθεσία."
 
@@ -4593,7 +4595,7 @@ msgstr "Δεν έχετε δικαίωμα πρόσβασης στη ζητού�
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: ../src/nautilus-window-slot.c:1627
+#: ../src/nautilus-window-slot.c:1631
 msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
@@ -4601,12 +4603,12 @@ msgstr ""
 "Αδύνατη η εύρεση της ζητούμενης τοποθεσίας. Παρακαλούμε ελέγξτε την "
 "ορθογραφία ή τις ρυθμίσεις δικτύου."
 
-#: ../src/nautilus-window-slot.c:1638
+#: ../src/nautilus-window-slot.c:1642
 #, c-format
 msgid "Unhandled error message: %s"
 msgstr "Μη διαχειρίσιμο μήνυμα σφάλματος: %s"
 
-#: ../src/nautilus-window-slot.c:2186
+#: ../src/nautilus-window-slot.c:2190
 msgid "Searching…"
 msgstr "Αναζήτηση…"
 
@@ -4699,718 +4701,3 @@ msgstr "Άνοιγμα με:"
 
 #~ msgid "Copy the selected text to the clipboard"
 #~ msgstr "Αντιγραφή του επιλεγμένου κειμένου στο πρόχειρο"
-
-#
-#~ msgid "Paste the text stored on the clipboard"
-#~ msgstr "Επικόλληση του κειμένου που είναι αποθηκευμένο στο πρόχειρο"
-
-#~ msgid "Select all the text in a text field"
-#~ msgstr "Επιλογή όλου του κειμένου ενός πεδίου κειμένου"
-
-#~ msgid "Move _Up"
-#~ msgstr "Μετακίνηση _πάνω"
-
-#~ msgid "Move Dow_n"
-#~ msgstr "Μετακίνηση _κάτω"
-
-#~ msgid "Use De_fault"
-#~ msgstr "Χρήση _προεπιλογής"
-
-#~ msgid "%R"
-#~ msgstr "%R"
-
-#~ msgid "%b %-e"
-#~ msgstr "%b %-e"
-
-#~ msgid "%a, %b %e %Y %T"
-#~ msgstr "%a, %b %e %Y %T"
-
-#~ msgid "_Bookmarks"
-#~ msgstr "_Σελιδοδείκτες"
-
-#~ msgid "Display icons in the opposite order"
-#~ msgstr "Εμφάνιση των εικονιδίων σε αντίστροφη σειρά"
-
-#~ msgid "Keep icons lined up on a grid"
-#~ msgstr "Διατήρηση ευθυγράμμισης των εικονιδίων στο πλέγμα"
-
-#~ msgid "_Manually"
-#~ msgstr "_Χειροκίνητα"
-
-#~ msgid "Leave icons wherever they are dropped"
-#~ msgstr "Διατήρηση των εικονιδίων στη θέση που αφέθηκαν"
-
-#~ msgid "By _Name"
-#~ msgstr "Κατά όν_ομα"
-
-#~ msgid "Keep icons sorted by name in rows"
-#~ msgstr "Ταξινόμηση των εικονιδίων με βάση το όνομά τους"
-
-#~ msgid "By _Size"
-#~ msgstr "Κατά _μέγεθος"
-
-#~ msgid "Keep icons sorted by size in rows"
-#~ msgstr "Ταξινόμηση των εικονιδίων σε γραμμές με βάση το μέγεθός τους"
-
-#~ msgid "By _Type"
-#~ msgstr "Κατά _είδος"
-
-#~ msgid "Keep icons sorted by type in rows"
-#~ msgstr "Ταξινόμηση των εικονιδίων σε γραμμές με βάση τον τύπο τους"
-
-#~ msgid "By Modification _Date"
-#~ msgstr "Κατά _ημερομηνία τροποποίησης"
-
-#~ msgid "Keep icons sorted by modification date in rows"
-#~ msgstr ""
-#~ "Ταξινόμηση των εικονιδίων σε γραμμές με βάση την ημερομηνία τροποποίησής "
-#~ "τους"
-
-#~ msgid "By _Access Date"
-#~ msgstr "Κατά ημερομηνία πρόσβ_ασης"
-
-#~ msgid "Keep icons sorted by access date in rows"
-#~ msgstr ""
-#~ "Ταξινόμηση των εικονιδίων σε σειρές με βάση την ημερομηνία πρόσβασης"
-
-#~ msgid "By T_rash Time"
-#~ msgstr "Κατά ώρα δια_γραφής"
-
-#~ msgid "Keep icons sorted by trash time in rows"
-#~ msgstr ""
-#~ "Ταξινόμηση των εικονιδίων σε σειρές με βάση την ώρα μετακίνησης στα "
-#~ "απορρίμματα"
-
-#~ msgid "Keep icons sorted by search relevance in rows"
-#~ msgstr "Ταξινόμηση των εικονιδίων σε σειρές με βάση τη συνάφεια αναζήτησης"
-
-#~ msgid "E_mpty Trash"
-#~ msgstr "Ά_δειασμα απορριμμάτων"
-
-#~ msgid "Restore Icons' Original Si_zes"
-#~ msgstr "Επαναφορά αρ_χικών διαστάσεων εικονιδίων"
-
-#~ msgid ""
-#~ "Show a window that lets you set your desktop background's pattern or color"
-#~ msgstr ""
-#~ "Εμφανίζει ένα παράθυρο που επιτρέπει τον ορισμό του μοτίβου ή χρώματος "
-#~ "του φόντου της επιφάνειας εργασίας"
-
-#~ msgid "Reposition icons to better fit in the window and avoid overlapping"
-#~ msgstr ""
-#~ "Αναταξινόμηση εικονιδίων, έτσι ώστε να ταιριάζουν καλύτερα στο παράθυρο "
-#~ "και να μην επικαλύπτονται"
-
-#~ msgid "Make the selected icons resizable"
-#~ msgstr "Δυνατότητα αλλαγής διαστάσεων των επιλεγμένων εικονιδίων"
-
-#~ msgid "Restore each selected icon to its original size"
-#~ msgstr "Επαναφορά κάθε επιλεγμένου εικονιδίου στις αρχικές του διαστάσεις"
-
-#~ msgid "33%"
-#~ msgstr "33%"
-
-#~ msgid "50%"
-#~ msgstr "50%"
-
-#~ msgid "66%"
-#~ msgstr "66%"
-
-#~ msgid "100%"
-#~ msgstr "100%"
-
-#~ msgid "150%"
-#~ msgstr "150%"
-
-#~ msgid "200%"
-#~ msgstr "200%"
-
-#~ msgid "400%"
-#~ msgstr "400%"
-
-#~ msgid "Select the columns visible in this folder"
-#~ msgstr "Επιλέξτε τις στήλες που θα είναι ορατές στο φάκελο"
-
-#
-#~ msgid "Location:"
-#~ msgstr "Τοποθεσία:"
-
-#~ msgid "Location options"
-#~ msgstr "Επιλογές τοποθεσίας"
-
-#~ msgid "View options"
-#~ msgstr "Επιλογές προβολής"
-
-#~ msgid "Save Search as"
-#~ msgstr "Αποθήκευση αναζήτησης ως"
-
-#~ msgid "_Save"
-#~ msgstr "_Αποθήκευση"
-
-#
-#~ msgid "Search _name:"
-#~ msgstr "Όν_ομα αναζήτησης:"
-
-#~ msgid "_Folder:"
-#~ msgstr "_Φάκελος:"
-
-#~ msgid "Select Folder to Save Search In"
-#~ msgstr "Επιλογή φακέλου για αποθήκευση της αναζήτησης"
-
-#
-#~ msgid "Use “%s” to open the selected item"
-#~ msgid_plural "Use “%s” to open the selected items"
-#~ msgstr[0] "Χρήση του “%s” για το άνοιγμα του επιλεγμένου αντικειμένου"
-#~ msgstr[1] "Χρήση του “%s” για το άνοιγμα των επιλεγμένων αντικειμένων"
-
-#
-#~ msgid "Run “%s” on any selected items"
-#~ msgstr "Εκτέλεση του “%s” για κάθε επιλεγμένο αντικείμενο"
-
-#~ msgid "Create a new document from template “%s”"
-#~ msgstr "Δημιουργία νέου εγγράφου από το πρότυπο “%s”"
-
-#~ msgid "Open Wit_h"
-#~ msgstr "Άνοιγμα _με"
-
-#
-#~ msgid "Choose a program with which to open the selected item"
-#~ msgstr "Επιλογή προγράμματος για το άνοιγμα του επιλεγμένου αντικειμένου"
-
-#~ msgid "View or modify the properties of each selected item"
-#~ msgstr "Εμφάνιση ή τροποποίηση των ιδιοτήτων κάθε επιλεγμένου αντικειμένου"
-
-#~ msgid "Create a new empty folder inside this folder"
-#~ msgstr "Δημιουργία νέου κενού φακέλου μέσα σε αυτόν το φάκελο"
-
-#~ msgid "New Folder with Selection"
-#~ msgstr "Νέος φάκελος με επιλογή"
-
-#
-#~ msgid "Create a new folder containing the selected items"
-#~ msgstr "Δημιουργεί έναν νέο φάκελο περιέχοντας τα επιλεγμένα αντικείμενα"
-
-#~ msgid "Open the selected item in this window"
-#~ msgstr "Άνοιγμα του επιλεγμένου αντικειμένου σε αυτό το παράθυρο"
-
-#~ msgid "Open the selected item's location in this window"
-#~ msgstr "Άνοιγμα θέσης επιλεγμένου αντικειμένου σε αυτό το παράθυρο"
-
-#~ msgid "Open in Navigation Window"
-#~ msgstr "Άνοιγμα σε παράθυρο περιηγητή"
-
-#
-#~ msgid "Open each selected item in a navigation window"
-#~ msgstr "Άνοιγμα κάθε επιλεγμένου αντικειμένου σε παράθυρο περιηγητή"
-
-#
-#~ msgid "Open each selected item in a new tab"
-#~ msgstr "Άνοιγμα κάθε επιλεγμένου αντικειμένου σε νέα καρτέλα"
-
-#~ msgid "Other _Application…"
-#~ msgstr "Άλλη ε_φαρμογή…"
-
-#
-#~ msgid "Choose another application with which to open the selected item"
-#~ msgstr "Επιλογή άλλης εφαρμογής για το άνοιγμα του επιλεγμένου αντικειμένου"
-
-#~ msgid "Show the folder containing the scripts that appear in this menu"
-#~ msgstr ""
-#~ "Εμφάνιση του φακέλου που περιέχει τις δέσμες ενεργειών αυτού του μενού"
-
-#~ msgid "Prepare the selected files to be moved with a Paste command"
-#~ msgstr ""
-#~ "Προετοιμασία μεταφοράς των επιλεγμένων αρχείων με την εντολή Επικόλληση"
-
-#~ msgid "Prepare the selected files to be copied with a Paste command"
-#~ msgstr ""
-#~ "Προετοιμασία αντιγραφής των επιλεγμένων αρχείων με την εντολή Επικόλληση"
-
-#~ msgid "Move or copy files previously selected by a Cut or Copy command"
-#~ msgstr ""
-#~ "Μεταφορά ή αντιγραφή των αρχείων που επιλέχθηκαν πριν με την εντολή "
-#~ "Αποκοπή ή Αντιγραφή"
-
-#~ msgid ""
-#~ "Move or copy files previously selected by a Cut or Copy command into the "
-#~ "selected folder"
-#~ msgstr ""
-#~ "Μεταφορά ή αντιγραφή των αρχείων που επιλέχθηκαν πριν με την εντολή "
-#~ "Αποκοπή ή Αντιγραφή μέσα στον επιλεγμένο φάκελο"
-
-#~ msgid "Copy selected files to another location"
-#~ msgstr "Αντιγραφή των επιλεγμένων αρχείων σε άλλη θέση"
-
-#~ msgid "Move selected files to another location"
-#~ msgstr "Μετακίνηση των επιλεγμένων αρχείων σε άλλη θέση"
-
-#~ msgid "Select all items in this window"
-#~ msgstr "Επιλογή όλων των αντικειμένων αυτού του παραθύρου"
-
-#~ msgid "Select I_tems Matching…"
-#~ msgstr "Επιλογή αν_τικειμένων που ταιριάζουν…"
-
-#~ msgid "Select items in this window matching a given pattern"
-#~ msgstr ""
-#~ "Επιλογή των αντικειμένων του παραθύρου που ταιριάζουν σε συγκεκριμένο "
-#~ "μοτίβο"
-
-#~ msgid "_Invert Selection"
-#~ msgstr "_Αντιστροφή επιλογής"
-
-#~ msgid "Select all and only the items that are not currently selected"
-#~ msgstr ""
-#~ "Επιλογή όλων και μόνο αυτών των αντικειμένων που δεν είναι επιλεγμένα "
-#~ "αυτή τη στιγμή"
-
-#~ msgid "Ma_ke Link"
-#~ msgid_plural "Ma_ke Links"
-#~ msgstr[0] "Δημιουργία συν_δέσμου"
-#~ msgstr[1] "Δημιουργία συν_δέσμων"
-
-#
-#~ msgid "Create a symbolic link for each selected item"
-#~ msgstr "Δημιουργία συμβολικού συνδέσμου για κάθε επιλεγμένο αντικείμενο"
-
-#~ msgid "Rename selected item"
-#~ msgstr "Μετονομασία επιλεγμένου αντικειμένου"
-
-#~ msgid "Make item the wallpaper"
-#~ msgstr "Ορισμός αντικειμένου ως ταπετσαρία"
-
-#~ msgid "Move each selected item to the Trash"
-#~ msgstr "Μετακίνηση κάθε επιλεγμένου αντικειμένου στα απορρίμματα"
-
-#~ msgid "Delete each selected item, without moving to the Trash"
-#~ msgstr ""
-#~ "Διαγραφή κάθε επιλεγμένου αντικειμένου, χωρίς προηγούμενη μετακίνηση στα "
-#~ "απορρίμματα"
-
-#~ msgid "_Undo"
-#~ msgstr "_Αναίρεση"
-
-#~ msgid "Undo the last action"
-#~ msgstr "Αναίρεση της τελευταίας ενέργειας"
-
-#~ msgid "_Redo"
-#~ msgstr "_Επανάληψη"
-
-#~ msgid "Redo the last undone action"
-#~ msgstr "Επανάληψη της τελευταίας αναιρεμένης ενέργειας"
-
-#~ msgid ""
-#~ "Reset sorting order and zoom level to match preferences for this view"
-#~ msgstr ""
-#~ "Επαναφορά της σειράς ταξινόμησης και του επιπέδου εστίασης που ταιριάζουν "
-#~ "στις προτιμήσεις για αυτήν την προβολή"
-
-#~ msgid "Mount the selected volume"
-#~ msgstr "Προσάρτηση του επιλεγμένου τόμου"
-
-#~ msgid "Unmount the selected volume"
-#~ msgstr "Αποπροσάρτηση του επιλεγμένου τόμου"
-
-#~ msgid "Eject the selected volume"
-#~ msgstr "Εξαγωγή του επιλεγμένου τόμου"
-
-#~ msgid "Start the selected volume"
-#~ msgstr "Εκκίνηση του επιλεγμένου τόμου"
-
-#~ msgid "Stop the selected volume"
-#~ msgstr "Διακοπή του επιλεγμένου τόμου"
-
-#~ msgid "Detect media in the selected drive"
-#~ msgstr "Εντοπισμός πολυμέσων στην επιλεγμένη μονάδα δίσκου"
-
-#~ msgid "Mount the volume associated with the open folder"
-#~ msgstr "Προσάρτηση του τόμου που σχετίζεται με τον ανοικτό φάκελο"
-
-#~ msgid "Unmount the volume associated with the open folder"
-#~ msgstr "Αποπροσάρτηση του τόμου που σχετίζεται με τον ανοικτό φάκελο"
-
-#~ msgid "Eject the volume associated with the open folder"
-#~ msgstr "Εξαγωγή του τόμου που σχετίζεται με τον ανοικτό φάκελο"
-
-#~ msgid "Start the volume associated with the open folder"
-#~ msgstr "Εκκίνηση του τόμου που σχετίζεται με τον ανοικτό φάκελο"
-
-#~ msgid "Stop the volume associated with the open folder"
-#~ msgstr "Διακοπή του τόμου που σχετίζεται με τον ανοικτό φάκελο"
-
-#~ msgid "Open File and Close window"
-#~ msgstr "Άνοιγμα αρχείου και κλείσιμο παραθύρου"
-
-#~ msgid "Sa_ve Search"
-#~ msgstr "Απο_θήκευση αναζήτησης"
-
-#~ msgid "Save the edited search"
-#~ msgstr "Αποθήκευση της τροποποιημένης αναζήτησης"
-
-#~ msgid "Sa_ve Search As…"
-#~ msgstr "Απο_θήκευση αναζήτησης ως…"
-
-#~ msgid "Save the current search as a file"
-#~ msgstr "Αποθήκευση της τρέχουσας αναζήτησης ως αρχείο"
-
-#
-#~ msgid "Open this folder in a navigation window"
-#~ msgstr "Άνοιγμα αυτού του φακέλου σε παράθυρο περιηγητή"
-
-#
-#~ msgid "Open this folder in a new tab"
-#~ msgstr "Άνοιγμα αυτού του φακέλου σε νέα καρτέλα"
-
-#~ msgid "Prepare this folder to be moved with a Paste command"
-#~ msgstr "Προετοιμασία μεταφοράς του φακέλου με την εντολή Επικόλληση"
-
-#~ msgid "Prepare this folder to be copied with a Paste command"
-#~ msgstr "Προετοιμασία αντιγραφής του φακέλου με την εντολή Επικόλληση"
-
-#~ msgid ""
-#~ "Move or copy files previously selected by a Cut or Copy command into this "
-#~ "folder"
-#~ msgstr ""
-#~ "Μεταφορά ή αντιγραφή σε αυτόν το φάκελο των αρχείων που επιλέχθηκαν πριν "
-#~ "με την εντολή Αποκοπή ή Αντιγραφή"
-
-#~ msgid "Move this folder to the Trash"
-#~ msgstr "Μεταφορά αυτού του φακέλου στα απορρίμματα"
-
-#~ msgid "Delete this folder, without moving to the Trash"
-#~ msgstr "Διαγραφή αυτού του φακέλου, χωρίς μεταφορά στα απορρίμματα"
-
-#~ msgid "Mount the volume associated with this folder"
-#~ msgstr "Προσάρτηση του τόμου που σχετίζεται με αυτόν τον φάκελο"
-
-#~ msgid "Unmount the volume associated with this folder"
-#~ msgstr "Αποπροσάρτηση του τόμου που σχετίζεται με αυτόν τον φάκελο"
-
-#~ msgid "Eject the volume associated with this folder"
-#~ msgstr "Εξαγωγή του τόμου που σχετίζεται με αυτόν τον φάκελο"
-
-#~ msgid "Start the volume associated with this folder"
-#~ msgstr "Εκκίνηση του τόμου που σχετίζεται με αυτόν τον φάκελο"
-
-#~ msgid "Stop the volume associated with this folder"
-#~ msgstr "Διακοπή του τόμου που σχετίζεται με αυτόν τον φάκελο"
-
-#~ msgid "View or modify the properties of this folder"
-#~ msgstr "Εμφάνιση ή τροποποίηση των ιδιοτήτων αυτού του φακέλου"
-
-#~ msgid "Toggle the display of hidden files in the current window"
-#~ msgstr "Εναλλαγή της εμφάνισης των κρυφών αρχείων του τρέχοντος παραθύρου"
-
-#~ msgid "Run or manage scripts"
-#~ msgstr "Εκτέλεση ή διαχείριση των δεσμών ενεργειών"
-
-#~ msgid "Move the open folder out of the trash to “%s”"
-#~ msgstr "Μεταφορά του ανοικτού φακέλου έξω από τα απορρίμματα, στο “%s”"
-
-#~ msgid "Move the selected folder out of the trash to “%s”"
-#~ msgstr "Μεταφορά του επιλεγμένου φακέλου έξω από τα απορρίμματα, στο “%s”"
-
-#~ msgid "Move the selected folders out of the trash to “%s”"
-#~ msgstr "Μεταφορά των επιλεγμένων φακέλων έξω από τα απορρίμματα, στο “%s”"
-
-#~ msgid "Move the selected folder out of the trash"
-#~ msgstr "Μεταφορά του επιλεγμένου φακέλου έξω από τα απορρίμματα"
-
-#~ msgid "Move the selected folders out of the trash"
-#~ msgstr "Μεταφορά των επιλεγμένων φακέλων έξω από τα απορρίμματα"
-
-#~ msgid "Move the selected file out of the trash to “%s”"
-#~ msgstr "Μεταφορά του επιλεγμένου αρχείου έξω από τα απορρίμματα, στο “%s”"
-
-#~ msgid "Move the selected files out of the trash to “%s”"
-#~ msgstr "Μεταφορά των επιλεγμένων αρχείων έξω από τα απορρίμματα, στο “%s”"
-
-#~ msgid "Move the selected file out of the trash"
-#~ msgstr "Μεταφορά του επιλεγμένου αρχείου έξω από τα απορρίμματα"
-
-#~ msgid "Move the selected files out of the trash"
-#~ msgstr "Μεταφορά των επιλεγμένων αρχείων έξω από τα απορρίμματα"
-
-#~ msgid "Move the selected item out of the trash to “%s”"
-#~ msgstr ""
-#~ "Μεταφορά του επιλεγμένου αντικειμένου έξω από τα απορρίμματα, στο “%s”"
-
-#~ msgid "Move the selected items out of the trash to “%s”"
-#~ msgstr ""
-#~ "Μεταφορά των επιλεγμένων αντικειμένων έξω από τα απορρίμματα, στο “%s”"
-
-#~ msgid "Move the selected item out of the trash"
-#~ msgstr "Μεταφορά του επιλεγμένου αντικειμένου έξω από τα απορρίμματα"
-
-#~ msgid "Move the selected items out of the trash"
-#~ msgstr "Μεταφορά των επιλεγμένων αντικειμένων έξω από τα απορρίμματα"
-
-#~ msgid "Start the selected drive"
-#~ msgstr "Εκκίνηση της επιλεγμένης μονάδας δίσκου"
-
-#~ msgid "Connect to the selected drive"
-#~ msgstr "Σύνδεση στην επιλεγμένη μονάδα δίσκου"
-
-#~ msgid "Start the selected multi-disk drive"
-#~ msgstr "Εκκίνηση της επιλεγμένης μονάδας πολλαπλών δίσκων"
-
-#~ msgid "Unlock the selected drive"
-#~ msgstr "Ξεκλείδωμα της επιλεγμένης μονάδας δίσκου"
-
-#~ msgid "Stop the selected drive"
-#~ msgstr "Διακοπή της επιλεγμένης μονάδας δίσκου"
-
-#~ msgid "Safely remove the selected drive"
-#~ msgstr "Ασφαλής αφαίρεση της επιλεγμένης μονάδας δίσκου"
-
-#~ msgid "Disconnect the selected drive"
-#~ msgstr "Αποσύνδεση της επιλεγμένης μονάδας δίσκου"
-
-#~ msgid "Stop the selected multi-disk drive"
-#~ msgstr "Διακοπή της επιλεγμένης μονάδας πολλαπλών δίσκων"
-
-#~ msgid "Lock the selected drive"
-#~ msgstr "Κλείδωμα της επιλεγμένης μονάδας δίσκου"
-
-#~ msgid "Start the drive associated with the open folder"
-#~ msgstr "Εκκίνηση της μονάδας δίσκου που σχετίζεται με τον ανοικτό φάκελο"
-
-#~ msgid "Connect to the drive associated with the open folder"
-#~ msgstr "Σύνδεση στην μονάδα δίσκου που σχετίζεται με τον ανοικτό φάκελο"
-
-#~ msgid "Start the multi-disk drive associated with the open folder"
-#~ msgstr ""
-#~ "Εκκίνηση της μονάδας πολλαπλών δίσκων που σχετίζεται με τον ανοικτό φάκελο"
-
-#~ msgid "_Unlock Drive"
-#~ msgstr "_Ξεκλείδωμα μονάδας δίσκου"
-
-#~ msgid "Unlock the drive associated with the open folder"
-#~ msgstr "Ξεκλείδωμα της μονάδας δίσκου που σχετίζεται με τον ανοικτό φάκελο"
-
-#~ msgid "_Stop the drive associated with the open folder"
-#~ msgstr "_Διακοπή της μονάδας δίσκου που σχετίζεται με τον ανοικτό φάκελο"
-
-#~ msgid "Safely remove the drive associated with the open folder"
-#~ msgstr ""
-#~ "Ασφαλής αφαίρεση της μονάδας δίσκου που σχετίζεται με τον ανοικτό φάκελο"
-
-#~ msgid "Disconnect the drive associated with the open folder"
-#~ msgstr "Αποσύνδεση της μονάδας δίσκου που σχετίζεται με τον ανοικτό φάκελο"
-
-#~ msgid "Stop the multi-disk drive associated with the open folder"
-#~ msgstr ""
-#~ "Διακοπή της μονάδας πολλαπλών δίσκων που σχετίζεται με τον ανοικτό φάκελο"
-
-#~ msgid "Lock the drive associated with the open folder"
-#~ msgstr "Κλείδωμα της μονάδας δίσκου που σχετίζεται με τον ανοικτό φάκελο"
-
-#~ msgid "Delete the open folder permanently"
-#~ msgstr "Οριστική διαγραφή του ανοικτού φακέλου"
-
-#~ msgid "Move the open folder to the Trash"
-#~ msgstr "Μεταφορά του ανοικτού φακέλου στα απορρίμματα"
-
-#~ msgid "_Open With %s"
-#~ msgstr "Άν_οιγμα με %s"
-
-#~ msgid "Open in %'d New _Window"
-#~ msgid_plural "Open in %'d New _Windows"
-#~ msgstr[0] "Άνοιγμα σε %'d νέο παρά_θυρο"
-#~ msgstr[1] "Άνοιγμα σε %'d νέα παρά_θυρα"
-
-#~ msgid "Open in %'d New _Tab"
-#~ msgid_plural "Open in %'d New _Tabs"
-#~ msgstr[0] "Άνοιγμα σε %'d νέα _καρτέλα"
-#~ msgstr[1] "Άνοιγμα σε %'d νέες _καρτέλες"
-
-#~ msgid "Delete all selected items permanently"
-#~ msgstr "Οριστική διαγραφή όλων των επιλεγμένων αντικειμένων"
-
-#~ msgid "Remo_ve from Recent"
-#~ msgstr "Α_φαίρεση από τα πρόσφατα"
-
-#~ msgid "Remove each selected item from the recently used list"
-#~ msgstr "Αφαίρεση κάθε επιλεγμένου αντικειμένου από την πρόσφατη λίστα"
-
-#~ msgid "View or modify the properties of the open folder"
-#~ msgstr "Εμφάνιση ή τροποποίηση των ιδιοτήτων του ανοικτού φακέλου"
-
-#~ msgid "_Close"
-#~ msgstr "_Κλείσιμο"
-
-#~ msgid "Close this folder"
-#~ msgstr "Κλείσιμο αυτού του φακέλου"
-
-#~ msgid "Edit Nautilus preferences"
-#~ msgstr "Επεξεργασία προτιμήσεων του Ναυτίλου"
-
-#~ msgid "Open _Parent"
-#~ msgstr "Άνοιγμα _γονικού"
-
-#~ msgid "Open the parent folder"
-#~ msgstr "Άνοιγμα του γονικού φακέλου"
-
-#~ msgid "Stop loading the current location"
-#~ msgstr "Διακοπή φόρτωσης της τρέχουσας τοποθεσίας"
-
-#~ msgid "Reload the current location"
-#~ msgstr "Επαναφόρτωση της τρέχουσας τοποθεσίας"
-
-#~ msgid "_All Topics"
-#~ msgstr "Ό_λα τα θέματα"
-
-#~ msgid "Display Nautilus help"
-#~ msgstr "Εμφάνιση βοήθειας Ναυτίλου"
-
-#~ msgid "Search for files"
-#~ msgstr "Αναζήτηση για αρχεία"
-
-#~ msgid ""
-#~ "Locate files based on file name and type. Save your searches for later "
-#~ "use."
-#~ msgstr ""
-#~ "Εντοπίστε τα αρχεία με βάση το όνομα του αρχείου και τον τύπο. "
-#~ "Αποθηκεύστε τις αναζητήσεις σας για μελλοντική χρήση."
-
-#~ msgid "Sort files and folders"
-#~ msgstr "Ταξινόμηση αρχείων και φακέλων"
-
-#~ msgid "Arrange files by name, size, type, or when they were changed."
-#~ msgstr ""
-#~ "Τακτοποιήστε τα αρχεία κατά όνομα, μέγεθος, τύπο, ή όταν έχουν αλλάξει."
-
-#~ msgid "Find a lost file"
-#~ msgstr "Βρείτε ένα χαμένο αρχείο"
-
-#~ msgid ""
-#~ "Follow these tips if you can't find a file you created or downloaded."
-#~ msgstr ""
-#~ "Ακολουθήστε αυτές τις συμβουλές, αν δεν μπορείτε να βρείτε ένα αρχείο που "
-#~ "δημιουργήσατε ή κάνατε λήψη."
-
-#~ msgid "Share and transfer files"
-#~ msgstr "Μερισμός και μεταφορά αρχείων"
-
-#~ msgid ""
-#~ "Easily transfer files to your contacts and devices from the file manager."
-#~ msgstr ""
-#~ "Εύκολη μεταφορά αρχείων στις επαφές σας και τις συσκευές σας από τον "
-#~ "διαχειριστή αρχείων."
-
-#~ msgid "Display credits for the creators of Nautilus"
-#~ msgstr "Εμφάνιση μνείας των δημιουργών του Ναυτίλου"
-
-#~ msgid "Zoom _In"
-#~ msgstr "_Μεγέθυνση"
-
-#~ msgid "Increase the view size"
-#~ msgstr "Αύξηση του μεγέθους προβολής"
-
-#~ msgid "Zoom _Out"
-#~ msgstr "_Σμίκρυνση"
-
-#~ msgid "Decrease the view size"
-#~ msgstr "Μείωση του μεγέθους προβολής"
-
-#~ msgid "Normal Si_ze"
-#~ msgstr "_Κανονικό μέγεθος"
-
-#~ msgid "Use the normal view size"
-#~ msgstr "Χρήση του κανονικού μεγέθους προβολής"
-
-#~ msgid "Connect to a remote computer or shared disk"
-#~ msgstr "Σύνδεση σε απομακρυσμένο υπολογιστή ή κοινόχρηστο δίσκο"
-
-#~ msgid "_Home"
-#~ msgstr "Προσωπικός _φάκελος"
-
-#~ msgid "Open your personal folder"
-#~ msgstr "Άνοιγμα του προσωπικού σας φακέλου"
-
-#~ msgid "Open another Nautilus window for the displayed location"
-#~ msgstr "Άνοιγμα άλλου παραθύρου του Ναυτίλου για την εμφανιζόμενη τοποθεσία"
-
-#~ msgid "Open another tab for the displayed location"
-#~ msgstr "Άνοιγμα άλλης καρτέλας για την εμφανιζόμενη τοποθεσία"
-
-#~ msgid "Close _All Windows"
-#~ msgstr "Κλείσιμο ό_λων των παραθύρων"
-
-#~ msgid "Close all Navigation windows"
-#~ msgstr "Κλείσιμο όλων των παραθύρων του Ναυτίλου"
-
-#~ msgid "_Back"
-#~ msgstr "_Πίσω"
-
-#~ msgid "Go to the previous visited location"
-#~ msgstr "Μετάβαση στην προηγούμενη τοποθεσία που είχατε επισκεφθεί"
-
-#~ msgid "_Forward"
-#~ msgstr "_Μπροστά"
-
-#~ msgid "Go to the next visited location"
-#~ msgstr "Μετάβαση στην επόμενη τοποθεσία που είχατε επισκεφθεί"
-
-#~ msgid "Specify a location to open"
-#~ msgstr "Ορίστε μια τοποθεσία για άνοιγμα"
-
-#~ msgid "Add a bookmark for the current location"
-#~ msgstr "Προσθήκη σελιδοδείκτη για την τρέχουσα τοποθεσία"
-
-#~ msgid "_Bookmarks…"
-#~ msgstr "_Σελιδοδείκτες…"
-
-#~ msgid "Display and edit bookmarks"
-#~ msgstr "Εμφάνιση και επεξεργασία σελιδοδεικτών"
-
-#~ msgid "_Previous Tab"
-#~ msgstr "_Προηγούμενη καρτέλα"
-
-#~ msgid "Activate previous tab"
-#~ msgstr "Ενεργοποίηση προηγούμενης καρτέλας"
-
-#~ msgid "_Next Tab"
-#~ msgstr "_Επόμενη καρτέλα"
-
-#~ msgid "Activate next tab"
-#~ msgstr "Ενεργοποίηση επόμενης καρτέλας"
-
-#~ msgid "Move current tab to left"
-#~ msgstr "Μετακίνηση της τρέχουσας καρτέλας αριστερά"
-
-#~ msgid "Move current tab to right"
-#~ msgstr "Μετακίνηση της τρέχουσας καρτέλας δεξιά"
-
-#~ msgid "Change the visibility of this window's side pane"
-#~ msgstr "Αλλαγή της ορατότητας της πλευρικής στήλης αυτού του παραθύρου"
-
-#~ msgid "_Search for Files…"
-#~ msgstr "_Αναζήτηση αρχείων…"
-
-#~ msgid "Search documents and folders by name"
-#~ msgstr "Εντοπισμός εγγράφων και φακέλων κατά όνομα"
-
-#~ msgid "List"
-#~ msgstr "Λίστα"
-
-#~ msgid "View items as a list"
-#~ msgstr "Προβολή αντικειμένων ως λίστα"
-
-#~ msgid "View items as a grid of icons"
-#~ msgstr "Προβολή αντικειμένων ως πλέγμα εικονιδίων"
-
-#
-#~ msgid "_Up"
-#~ msgstr "_Πάνω"
-
-#~ msgid "--geometry cannot be used with more than one URI."
-#~ msgstr "το --geometry χρησιμοποιείται μόνο με ένα URI."
-
-#~ msgid ""
-#~ "\n"
-#~ "\n"
-#~ "Browse the file system with the file manager"
-#~ msgstr ""
-#~ "\n"
-#~ "\n"
-#~ "Περιήγηση του συστήματος αρχείων με τον διαχειριστή αρχείων"
