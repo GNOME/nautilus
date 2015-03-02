@@ -1562,7 +1562,8 @@ nautilus_window_on_undo_changed (NautilusFileUndoManager *manager,
 
 	if (undo_info != NULL &&
             state == NAUTILUS_FILE_UNDO_MANAGER_STATE_UNDO &&
-            nautilus_file_undo_info_get_op_type (undo_info) == NAUTILUS_FILE_UNDO_OP_MOVE_TO_TRASH) {
+            nautilus_file_undo_info_get_op_type (undo_info) == NAUTILUS_FILE_UNDO_OP_MOVE_TO_TRASH &&
+            !NAUTILUS_IS_DESKTOP_WINDOW (window)) {
 		files = nautilus_file_undo_info_trash_get_files (NAUTILUS_FILE_UNDO_INFO_TRASH (undo_info));
 
 		/* Don't pop up a notification if user canceled the operation or the focus
