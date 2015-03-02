@@ -1573,6 +1573,10 @@ nautilus_window_on_undo_changed (NautilusFileUndoManager *manager,
 	gtk_revealer_set_transition_duration (GTK_REVEALER (window->priv->notification_delete), 0);
 	gtk_revealer_set_reveal_child (GTK_REVEALER (window->priv->notification_delete), FALSE);
 	gtk_revealer_set_transition_duration (GTK_REVEALER (window->priv->notification_delete), transition_durantion);
+	if (window->priv->notification_delete_timeout_id != 0) {
+		g_source_remove (window->priv->notification_delete_timeout_id);
+		window->priv->notification_delete_timeout_id = 0;
+	}
 
 	undo_info = nautilus_file_undo_manager_get_action ();
 	state = nautilus_file_undo_manager_get_state ();
