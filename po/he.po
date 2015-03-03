@@ -20,8 +20,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eel.HEAD.he\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-02 01:18+0200\n"
-"PO-Revision-Date: 2015-03-02 01:18+0200\n"
+"POT-Creation-Date: 2015-03-03 14:20+0200\n"
+"PO-Revision-Date: 2015-03-02 23:18+0200\n"
 "Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
 "Language-Team: עברית <>\n"
 "Language: he\n"
@@ -63,11 +63,9 @@ msgstr "הפעלת התכנה"
 msgid "Connect to Server"
 msgstr "התחברות לשרת"
 
-#. Set initial window title
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
 #: ../src/nautilus-file-management-properties.ui.h:28
-#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2502
-#: ../src/nautilus-window.c:2671
+#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2658
 msgid "Files"
 msgstr "קבצים"
 
@@ -161,12 +159,12 @@ msgstr "הצגת _פרטים נוספים"
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:542
 #: ../libnautilus-private/nautilus-file-operations.c:183
 #: ../src/nautilus-connect-server-dialog.c:652
-#: ../src/nautilus-location-entry.c:274 ../src/nautilus-mime-actions.c:647
+#: ../src/nautilus-location-entry.c:273 ../src/nautilus-mime-actions.c:647
 #: ../src/nautilus-mime-actions.c:651 ../src/nautilus-mime-actions.c:722
 #: ../src/nautilus-mime-actions.c:1065 ../src/nautilus-mime-actions.c:1571
 #: ../src/nautilus-mime-actions.c:1795
 #: ../src/nautilus-properties-window.c:4179
-#: ../src/nautilus-properties-window.c:5163 ../src/nautilus-query-editor.c:491
+#: ../src/nautilus-properties-window.c:5163 ../src/nautilus-query-editor.c:494
 #: ../src/nautilus-view.c:780 ../src/nautilus-view.c:1277
 #: ../src/nautilus-view.c:4919
 msgid "_Cancel"
@@ -184,7 +182,7 @@ msgstr " (יוניקוד לא תקני)"
 #: ../libnautilus-private/nautilus-desktop-link.c:129
 #: ../libnautilus-private/nautilus-file-utilities.c:265
 #: ../src/nautilus-list-view.c:1825 ../src/nautilus-pathbar.c:295
-#: ../src/nautilus-query-editor.c:1067
+#: ../src/nautilus-query-editor.c:1072
 #: ../src/nautilus-shell-search-provider.c:285
 msgid "Home"
 msgstr "בית"
@@ -331,7 +329,7 @@ msgstr "אם ברצונך לשלוף את הכרך, נא להשתמש ב„של�
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:95
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:104
-#: ../src/nautilus-location-entry.c:274 ../src/nautilus-mime-actions.c:1065
+#: ../src/nautilus-location-entry.c:273 ../src/nautilus-mime-actions.c:1065
 #: ../src/nautilus-mime-actions.c:1242 ../src/nautilus-mime-actions.c:1795
 #: ../src/nautilus-view.c:780
 msgid "_OK"
@@ -615,7 +613,7 @@ msgid "Markup"
 msgstr "שפת סימון"
 
 #: ../libnautilus-private/nautilus-file.c:6468
-#: ../src/nautilus-query-editor.c:326
+#: ../src/nautilus-query-editor.c:329
 msgid "Video"
 msgstr "וידאו"
 
@@ -632,12 +630,12 @@ msgid "Document"
 msgstr "מסמך"
 
 #: ../libnautilus-private/nautilus-file.c:6472
-#: ../src/nautilus-query-editor.c:392
+#: ../src/nautilus-query-editor.c:395
 msgid "Presentation"
 msgstr "מצגת"
 
 #: ../libnautilus-private/nautilus-file.c:6473
-#: ../src/nautilus-query-editor.c:376
+#: ../src/nautilus-query-editor.c:379
 msgid "Spreadsheet"
 msgstr "גיליון אלקטרוני"
 
@@ -1029,7 +1027,7 @@ msgstr "כל פריטי האשפה ימחקו לצמיתות."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1399
 #: ../libnautilus-private/nautilus-file-operations.c:2275
-#: ../src/nautilus-window.c:1218
+#: ../src/nautilus-window.c:1267
 msgid "Empty _Trash"
 msgstr "פינוי ה_אשפה"
 
@@ -1512,7 +1510,7 @@ msgid "Unable to mark launcher trusted (executable)"
 msgstr "לא ניתן לסמן את המשגר כמהימן (קובץ הפעלה)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:133
-#: ../src/nautilus-window.c:448
+#: ../src/nautilus-window.c:491 ../src/nautilus-window.ui.h:2
 msgid "Undo"
 msgstr "ביטול"
 
@@ -1521,7 +1519,7 @@ msgid "Undo last action"
 msgstr "ביטול הפעולה האחרונה"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:140
-#: ../src/nautilus-window.c:449
+#: ../src/nautilus-window.c:492
 msgid "Redo"
 msgstr "ביצוע שוב"
 
@@ -2543,11 +2541,11 @@ msgstr ""
 "%s"
 
 #. Some sort of failure occurred. How 'bout we tell the user?
-#: ../src/nautilus-application.c:179 ../src/nautilus-window-slot.c:1596
+#: ../src/nautilus-application.c:178 ../src/nautilus-window-slot.c:1596
 msgid "Oops! Something went wrong."
 msgstr "אופס! משהו השתבש."
 
-#: ../src/nautilus-application.c:181
+#: ../src/nautilus-application.c:180
 #, c-format
 msgid ""
 "Unable to create a required folder. Please create the following folder, or "
@@ -2558,7 +2556,7 @@ msgstr ""
 "כאלה המאפשרות את יצירתה:\n"
 "%s"
 
-#: ../src/nautilus-application.c:186
+#: ../src/nautilus-application.c:185
 #, c-format
 msgid ""
 "Unable to create required folders. Please create the following folders, or "
@@ -2569,7 +2567,7 @@ msgstr ""
 "הרשאות כאלה המאפשרות את יצירתן:\n"
 "%s"
 
-#: ../src/nautilus-application.c:318
+#: ../src/nautilus-application.c:317
 msgid ""
 "Nautilus 3.0 deprecated this directory and tried migrating this "
 "configuration to ~/.config/nautilus"
@@ -2577,70 +2575,70 @@ msgstr ""
 "ב־Nautilus 3.0 הופסק השימוש בתיקייה זו והתצורה הייתה אמורה לעבור אל ‎~/."
 "config/nautilus"
 
-#: ../src/nautilus-application.c:612
+#: ../src/nautilus-application.c:611
 msgid "--check cannot be used with other options."
 msgstr "--check cannot be used with other options."
 
-#: ../src/nautilus-application.c:619
+#: ../src/nautilus-application.c:618
 msgid "--quit cannot be used with URIs."
 msgstr "--quit cannot be used with URIs."
 
-#: ../src/nautilus-application.c:627
+#: ../src/nautilus-application.c:626
 msgid "--select must be used with at least an URI."
 msgstr "--select must be used with at least an URI."
 
-#: ../src/nautilus-application.c:634
+#: ../src/nautilus-application.c:633
 msgid "--no-desktop and --force-desktop cannot be used together."
 msgstr "--no-desktop and --force-desktop cannot be used together."
 
 # console messages
-#: ../src/nautilus-application.c:718
+#: ../src/nautilus-application.c:717
 msgid "Perform a quick set of self-check tests."
 msgstr "Perform a quick set of self-check tests."
 
-#: ../src/nautilus-application.c:725
+#: ../src/nautilus-application.c:724
 msgid "Create the initial window with the given geometry."
 msgstr "Create the initial window with the given geometry."
 
-#: ../src/nautilus-application.c:725
+#: ../src/nautilus-application.c:724
 msgid "GEOMETRY"
 msgstr "GEOMETRY"
 
-#: ../src/nautilus-application.c:727
+#: ../src/nautilus-application.c:726
 msgid "Show the version of the program."
 msgstr "Show the version of the progam."
 
-#: ../src/nautilus-application.c:729
+#: ../src/nautilus-application.c:728
 msgid "Always open a new window for browsing specified URIs"
 msgstr "Always open a new window for browsing specified URIs"
 
-#: ../src/nautilus-application.c:731
+#: ../src/nautilus-application.c:730
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Only create windows for explicitly specified URIs."
 
-#: ../src/nautilus-application.c:733
+#: ../src/nautilus-application.c:732
 msgid "Never manage the desktop (ignore the GSettings preference)."
 msgstr "Never manage the desktop (ignore the GSettings preference)."
 
-#: ../src/nautilus-application.c:735
+#: ../src/nautilus-application.c:734
 msgid "Always manage the desktop (ignore the GSettings preference)."
 msgstr "Always manage the desktop (ignore the GSettings preference)."
 
-#: ../src/nautilus-application.c:737
+#: ../src/nautilus-application.c:736
 msgid "Quit Nautilus."
 msgstr "Quit Nautilus."
 
-#: ../src/nautilus-application.c:739
+#: ../src/nautilus-application.c:738
 msgid "Select specified URI in parent folder."
 msgstr "Select specified URI in parent folder."
 
-#: ../src/nautilus-application.c:740
+#: ../src/nautilus-application.c:739
 msgid "[URI...]"
 msgstr "[URI...]"
 
 #. Translators: this is a fatal error quit message printed on the
 #. * command line
-#: ../src/nautilus-application.c:820
+#: ../src/nautilus-application.c:819
 msgid "Could not register the application"
 msgstr "לא ניתן לרשום את היישום"
 
@@ -3307,14 +3305,14 @@ msgstr "%s עמודות גלויות"
 msgid "Choose the order of information to appear in this folder:"
 msgstr "בחירת סדר המידע שיופיע בתיקייה זו:"
 
-#: ../src/nautilus-location-entry.c:259
+#: ../src/nautilus-location-entry.c:258
 #, c-format
 msgid "Do you want to view %d location?"
 msgid_plural "Do you want to view %d locations?"
 msgstr[0] "האם ברצונך לצפות במיקום אחד?"
 msgstr[1] "האם ברצונך לצפות ב־%d מיקומים?"
 
-#: ../src/nautilus-location-entry.c:263 ../src/nautilus-mime-actions.c:1061
+#: ../src/nautilus-location-entry.c:262 ../src/nautilus-mime-actions.c:1061
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
@@ -3473,10 +3471,6 @@ msgstr "הבנתי"
 #: ../src/nautilus-notebook.c:382
 msgid "Close tab"
 msgstr "סגירת לשונית"
-
-#: ../src/nautilus-notification-delete.ui.h:1
-msgid "undo"
-msgstr "ביטול"
 
 #: ../src/nautilus-progress-info-widget.xml.h:1
 msgid "label"
@@ -3778,60 +3772,60 @@ msgstr "_פתיחה"
 msgid "File Type"
 msgstr "סוג קובץ"
 
-#: ../src/nautilus-query-editor.c:293
+#: ../src/nautilus-query-editor.c:296
 msgid "Documents"
 msgstr "מסמכים"
 
-#: ../src/nautilus-query-editor.c:311
+#: ../src/nautilus-query-editor.c:314
 msgid "Music"
 msgstr "מוזיקה"
 
-#: ../src/nautilus-query-editor.c:342
+#: ../src/nautilus-query-editor.c:345
 msgid "Picture"
 msgstr "תמונה"
 
-#: ../src/nautilus-query-editor.c:362
+#: ../src/nautilus-query-editor.c:365
 msgid "Illustration"
 msgstr "הדמיה"
 
-#: ../src/nautilus-query-editor.c:401
+#: ../src/nautilus-query-editor.c:404
 msgid "Pdf / Postscript"
 msgstr "Pdf / Postscript"
 
-#: ../src/nautilus-query-editor.c:409
+#: ../src/nautilus-query-editor.c:412
 msgid "Text File"
 msgstr "קובץ טקסט"
 
-#: ../src/nautilus-query-editor.c:488
+#: ../src/nautilus-query-editor.c:491
 msgid "Select type"
 msgstr "בחירת סוג"
 
-#: ../src/nautilus-query-editor.c:492
+#: ../src/nautilus-query-editor.c:495
 msgid "Select"
 msgstr "בחירה"
 
-#: ../src/nautilus-query-editor.c:572
+#: ../src/nautilus-query-editor.c:575
 msgid "Any"
 msgstr "כל סוג"
 
-#: ../src/nautilus-query-editor.c:587
+#: ../src/nautilus-query-editor.c:590
 msgid "Other Type…"
 msgstr "סוג אחר…"
 
-#: ../src/nautilus-query-editor.c:858
+#: ../src/nautilus-query-editor.c:861
 msgid "Remove this criterion from the search"
 msgstr "הסרת קריטריון זה מהחיפוש"
 
 #. create the Current/All Files selector
-#: ../src/nautilus-query-editor.c:941
+#: ../src/nautilus-query-editor.c:946
 msgid "Current"
 msgstr "נוכחי"
 
-#: ../src/nautilus-query-editor.c:944
+#: ../src/nautilus-query-editor.c:949
 msgid "All Files"
 msgstr "כל הקבצים"
 
-#: ../src/nautilus-query-editor.c:966
+#: ../src/nautilus-query-editor.c:971
 msgid "Add a new criterion to this search"
 msgstr "הוספת קריטריון חדש לחיפוש זה"
 
@@ -4250,16 +4244,16 @@ msgstr "טקסט שנגרר.txt"
 msgid "dropped data"
 msgstr "נתונים שנשמטו"
 
-#: ../src/nautilus-window.c:1232
+#: ../src/nautilus-window.c:1281
 msgid "_Properties"
 msgstr "_מאפיינים"
 
-#: ../src/nautilus-window.c:1241
+#: ../src/nautilus-window.c:1290
 msgid "_Format…"
 msgstr "_פרמוט…"
 
 #. Translators: this is the second part of a "%d files deleted" string
-#: ../src/nautilus-window.c:1528 ../src/nautilus-window.c:1535
+#: ../src/nautilus-window.c:1545 ../src/nautilus-window.c:1552
 #, c-format
 msgid "%s deleted"
 msgid_plural "%s deleted"
@@ -4267,30 +4261,30 @@ msgstr[0] "%s נמחק"
 msgstr[1] "%s נמחקו"
 
 #. Translators: this is the first part of a "%d files deleted" string
-#: ../src/nautilus-window.c:1531
+#: ../src/nautilus-window.c:1548
 #, c-format
 msgid "%d file"
 msgid_plural "%d files"
 msgstr[0] "קובץ אחד"
 msgstr[1] "%d קבצים"
 
-#: ../src/nautilus-window.c:1704
+#: ../src/nautilus-window.c:1726
 msgid "_New Tab"
 msgstr "_לשונית חדשה"
 
-#: ../src/nautilus-window.c:1714
+#: ../src/nautilus-window.c:1736
 msgid "Move Tab _Left"
 msgstr "הזזת לשונית _שמאלה"
 
-#: ../src/nautilus-window.c:1722
+#: ../src/nautilus-window.c:1744
 msgid "Move Tab _Right"
 msgstr "הזזת לשונית י_מינה"
 
-#: ../src/nautilus-window.c:1733
+#: ../src/nautilus-window.c:1755
 msgid "_Close Tab"
 msgstr "סגירת ה_לשונית"
 
-#: ../src/nautilus-window.c:2673
+#: ../src/nautilus-window.c:2660
 msgid "Access and organize your files."
 msgstr "גישה לקבצים שלך וארגונם."
 
@@ -4298,7 +4292,7 @@ msgstr "גישה לקבצים שלך וארגונם."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2682
+#: ../src/nautilus-window.c:2669
 msgid "translator-credits"
 msgstr ""
 "גיל אשר <dolfin@rpg.org.il>\n"
@@ -4365,6 +4359,10 @@ msgstr "הודעת שגיאה בלתי מטופלת: %s"
 msgid "Searching…"
 msgstr "מתבצע חיפוש…"
 
+#: ../src/nautilus-window.ui.h:1
+msgid "_Files"
+msgstr "_קבצים"
+
 #: ../src/nautilus-x-content-bar.c:92
 msgid "Audio CD"
 msgstr "תקליטור שמע"
@@ -4422,6 +4420,9 @@ msgstr "מכיל תמונות ומוזיקה"
 #: ../src/nautilus-x-content-bar.c:201
 msgid "Open with:"
 msgstr "פתיחה באמצעות:"
+
+#~ msgid "undo"
+#~ msgstr "ביטול"
 
 #~ msgid "Whether to enable immediate deletion"
 #~ msgstr "Whether to enable immediate deletion"
