@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2015-02-28 23:24+0000\n"
-"PO-Revision-Date: 2015-03-01 10:48+0100\n"
+"POT-Creation-Date: 2015-03-03 11:24+0000\n"
+"PO-Revision-Date: 2015-03-03 16:13+0100\n"
 "Last-Translator: Balázs Úr <urbalazs@gmail.com>\n"
 "Language-Team: Hungarian <openscope at googlegroups dot com>\n"
 "Language: hu\n"
@@ -63,11 +63,9 @@ msgstr "Szoftver futtatása"
 msgid "Connect to Server"
 msgstr "Kapcsolódás kiszolgálóhoz"
 
-#. Set initial window title
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
 #: ../src/nautilus-file-management-properties.ui.h:28
-#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2396
-#: ../src/nautilus-window.c:2565
+#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2658
 msgid "Files"
 msgstr "Fájlok"
 
@@ -161,12 +159,12 @@ msgstr "Több _részlet megjelenítése"
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:542
 #: ../libnautilus-private/nautilus-file-operations.c:183
 #: ../src/nautilus-connect-server-dialog.c:652
-#: ../src/nautilus-location-entry.c:274 ../src/nautilus-mime-actions.c:647
+#: ../src/nautilus-location-entry.c:273 ../src/nautilus-mime-actions.c:647
 #: ../src/nautilus-mime-actions.c:651 ../src/nautilus-mime-actions.c:722
 #: ../src/nautilus-mime-actions.c:1065 ../src/nautilus-mime-actions.c:1571
 #: ../src/nautilus-mime-actions.c:1795
 #: ../src/nautilus-properties-window.c:4179
-#: ../src/nautilus-properties-window.c:5163 ../src/nautilus-query-editor.c:491
+#: ../src/nautilus-properties-window.c:5163 ../src/nautilus-query-editor.c:494
 #: ../src/nautilus-view.c:780 ../src/nautilus-view.c:1277
 #: ../src/nautilus-view.c:4919
 msgid "_Cancel"
@@ -184,7 +182,7 @@ msgstr " (érvénytelen Unicode)"
 #: ../libnautilus-private/nautilus-desktop-link.c:129
 #: ../libnautilus-private/nautilus-file-utilities.c:265
 #: ../src/nautilus-list-view.c:1825 ../src/nautilus-pathbar.c:295
-#: ../src/nautilus-query-editor.c:1067
+#: ../src/nautilus-query-editor.c:1072
 #: ../src/nautilus-shell-search-provider.c:285
 msgid "Home"
 msgstr "Saját mappa"
@@ -334,7 +332,7 @@ msgstr ""
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:95
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:104
-#: ../src/nautilus-location-entry.c:274 ../src/nautilus-mime-actions.c:1065
+#: ../src/nautilus-location-entry.c:273 ../src/nautilus-mime-actions.c:1065
 #: ../src/nautilus-mime-actions.c:1242 ../src/nautilus-mime-actions.c:1795
 #: ../src/nautilus-view.c:780
 msgid "_OK"
@@ -620,7 +618,7 @@ msgid "Markup"
 msgstr "Jelölőkód"
 
 #: ../libnautilus-private/nautilus-file.c:6468
-#: ../src/nautilus-query-editor.c:326
+#: ../src/nautilus-query-editor.c:329
 msgid "Video"
 msgstr "Videó"
 
@@ -637,12 +635,12 @@ msgid "Document"
 msgstr "Dokumentum"
 
 #: ../libnautilus-private/nautilus-file.c:6472
-#: ../src/nautilus-query-editor.c:392
+#: ../src/nautilus-query-editor.c:395
 msgid "Presentation"
 msgstr "Bemutató"
 
 #: ../libnautilus-private/nautilus-file.c:6473
-#: ../src/nautilus-query-editor.c:376
+#: ../src/nautilus-query-editor.c:379
 msgid "Spreadsheet"
 msgstr "Táblázat"
 
@@ -1027,7 +1025,7 @@ msgstr "A Kuka összes eleme véglegesen törölve lesz."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1399
 #: ../libnautilus-private/nautilus-file-operations.c:2275
-#: ../src/nautilus-window.c:1218
+#: ../src/nautilus-window.c:1267
 msgid "Empty _Trash"
 msgstr "_Kuka ürítése"
 
@@ -1515,7 +1513,7 @@ msgid "Unable to mark launcher trusted (executable)"
 msgstr "A parancsikon nem jelölhető megbízhatónak (végrehajthatónak)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:133
-#: ../src/nautilus-notification-delete.c:183 ../src/nautilus-window.c:448
+#: ../src/nautilus-window.c:491 ../src/nautilus-window.ui.h:2
 msgid "Undo"
 msgstr "Visszavonás"
 
@@ -1524,7 +1522,7 @@ msgid "Undo last action"
 msgstr "Az utolsó művelet visszavonása"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:140
-#: ../src/nautilus-window.c:449
+#: ../src/nautilus-window.c:492
 msgid "Redo"
 msgstr "Mégis"
 
@@ -2557,11 +2555,11 @@ msgstr ""
 "%s"
 
 #. Some sort of failure occurred. How 'bout we tell the user?
-#: ../src/nautilus-application.c:179 ../src/nautilus-window-slot.c:1592
+#: ../src/nautilus-application.c:178 ../src/nautilus-window-slot.c:1596
 msgid "Oops! Something went wrong."
 msgstr "Jaj! Valami elromlott."
 
-#: ../src/nautilus-application.c:181
+#: ../src/nautilus-application.c:180
 #, c-format
 msgid ""
 "Unable to create a required folder. Please create the following folder, or "
@@ -2572,7 +2570,7 @@ msgstr ""
 "állítsa be a jogosultságokat úgy, hogy létre lehessen hozni:\n"
 "%s"
 
-#: ../src/nautilus-application.c:186
+#: ../src/nautilus-application.c:185
 #, c-format
 msgid ""
 "Unable to create required folders. Please create the following folders, or "
@@ -2583,7 +2581,7 @@ msgstr ""
 "állítsa be a jogosultságokat úgy, hogy létre lehessen hozni:\n"
 "%s"
 
-#: ../src/nautilus-application.c:318
+#: ../src/nautilus-application.c:317
 msgid ""
 "Nautilus 3.0 deprecated this directory and tried migrating this "
 "configuration to ~/.config/nautilus"
@@ -2591,73 +2589,73 @@ msgstr ""
 "A Nautilus 3.0-ban elavulttá vált a könyvtár, és a beállítások át lettek "
 "költöztetve a ~/.config/nautilus alá"
 
-#: ../src/nautilus-application.c:612
+#: ../src/nautilus-application.c:611
 msgid "--check cannot be used with other options."
 msgstr "a --check nem használható más kapcsolókkal."
 
-#: ../src/nautilus-application.c:619
+#: ../src/nautilus-application.c:618
 msgid "--quit cannot be used with URIs."
 msgstr "a --quit nem használható URI-címekkel."
 
-#: ../src/nautilus-application.c:627
+#: ../src/nautilus-application.c:626
 msgid "--select must be used with at least an URI."
 msgstr "a --select legalább egy URI-címmel használandó."
 
-#: ../src/nautilus-application.c:634
+#: ../src/nautilus-application.c:633
 msgid "--no-desktop and --force-desktop cannot be used together."
 msgstr ""
 "A --no-desktop és a --force-desktop kapcsolók nem használhatók egyszerre."
 
-#: ../src/nautilus-application.c:718
+#: ../src/nautilus-application.c:717
 msgid "Perform a quick set of self-check tests."
 msgstr "Néhány gyors ellenőrzőrutin futtatása."
 
-#: ../src/nautilus-application.c:725
+#: ../src/nautilus-application.c:724
 msgid "Create the initial window with the given geometry."
 msgstr "Az indulóablak létrehozása adott helyen és méretekkel."
 
-#: ../src/nautilus-application.c:725
+#: ../src/nautilus-application.c:724
 msgid "GEOMETRY"
 msgstr "GEOMETRIA"
 
-#: ../src/nautilus-application.c:727
+#: ../src/nautilus-application.c:726
 msgid "Show the version of the program."
 msgstr "A program verziószámának megjelenítése."
 
-#: ../src/nautilus-application.c:729
+#: ../src/nautilus-application.c:728
 msgid "Always open a new window for browsing specified URIs"
 msgstr "Mindig nyisson új ablakot a megadott URI címek tallózásához."
 
-#: ../src/nautilus-application.c:731
+#: ../src/nautilus-application.c:730
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Csak a közvetlenül megadott URI címek számára hozzon létre ablakot."
 
-#: ../src/nautilus-application.c:733
+#: ../src/nautilus-application.c:732
 msgid "Never manage the desktop (ignore the GSettings preference)."
 msgstr ""
 "Soha ne kezelje az asztalt (figyelmen kívül hagyja a GSettings "
 "beállításokat)."
 
-#: ../src/nautilus-application.c:735
+#: ../src/nautilus-application.c:734
 msgid "Always manage the desktop (ignore the GSettings preference)."
 msgstr ""
 "Mindig kezelje az asztalt (figyelmen kívül hagyja a GSettings beállításokat)."
 
-#: ../src/nautilus-application.c:737
+#: ../src/nautilus-application.c:736
 msgid "Quit Nautilus."
 msgstr "Kilépés a Nautilusból."
 
-#: ../src/nautilus-application.c:739
+#: ../src/nautilus-application.c:738
 msgid "Select specified URI in parent folder."
 msgstr "A megadott URI kiválasztása a szülőmappában."
 
-#: ../src/nautilus-application.c:740
+#: ../src/nautilus-application.c:739
 msgid "[URI...]"
 msgstr "[URI…]"
 
 #. Translators: this is a fatal error quit message printed on the
 #. * command line
-#: ../src/nautilus-application.c:820
+#: ../src/nautilus-application.c:819
 msgid "Could not register the application"
 msgstr "Az alkalmazás nem regisztrálható"
 
@@ -3052,7 +3050,7 @@ msgstr ""
 "alatt. Egyre több adat jelenik meg, ahogyan kinagyítja a nézetet."
 
 #: ../src/nautilus-file-management-properties.ui.h:23
-#: ../src/nautilus-list-view.c:2157
+#: ../src/nautilus-list-view.c:2158
 msgid "List View"
 msgstr "Listanézet"
 
@@ -3310,7 +3308,7 @@ msgstr "Nem sikerült betölteni a képinformációkat"
 
 #: ../src/nautilus-image-properties-page.c:706
 #: ../src/nautilus-list-model.c:371 ../src/nautilus-window-slot.c:604
-#: ../src/nautilus-window-slot.c:2186
+#: ../src/nautilus-window-slot.c:2190
 msgid "Loading…"
 msgstr "Betöltés…"
 
@@ -3322,23 +3320,23 @@ msgstr "(Üres)"
 msgid "Use Default"
 msgstr "Alapértelmezett használata"
 
-#: ../src/nautilus-list-view.c:3001
+#: ../src/nautilus-list-view.c:3002
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s látható oszlop"
 
-#: ../src/nautilus-list-view.c:3021
+#: ../src/nautilus-list-view.c:3022
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Válassza ki az információk megjelenési sorrendjét a mappában:"
 
-#: ../src/nautilus-location-entry.c:259
+#: ../src/nautilus-location-entry.c:258
 #, c-format
 msgid "Do you want to view %d location?"
 msgid_plural "Do you want to view %d locations?"
 msgstr[0] "Meg akar tekinteni %d helyet?"
 msgstr[1] "Meg akar tekinteni %d helyet?"
 
-#: ../src/nautilus-location-entry.c:263 ../src/nautilus-mime-actions.c:1061
+#: ../src/nautilus-location-entry.c:262 ../src/nautilus-mime-actions.c:1061
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
@@ -3498,23 +3496,6 @@ msgstr "Megvan"
 #: ../src/nautilus-notebook.c:382
 msgid "Close tab"
 msgstr "Lap bezárása"
-
-#. Translators: this is the second part of a "%d files deleted" string
-#: ../src/nautilus-notification-delete.c:163
-#: ../src/nautilus-notification-delete.c:172
-#, c-format
-msgid "%s deleted"
-msgid_plural "%s deleted"
-msgstr[0] "%s törölve"
-msgstr[1] "%s törölve"
-
-#. Translators: this is the first part of a "%d files deleted" string
-#: ../src/nautilus-notification-delete.c:168
-#, c-format
-msgid "%d file"
-msgid_plural "%d files"
-msgstr[0] "%d fájl"
-msgstr[1] "%d fájl"
 
 #: ../src/nautilus-progress-info-widget.xml.h:1
 msgid "label"
@@ -3816,60 +3797,60 @@ msgstr "_Megnyitás"
 msgid "File Type"
 msgstr "Fájltípus"
 
-#: ../src/nautilus-query-editor.c:293
+#: ../src/nautilus-query-editor.c:296
 msgid "Documents"
 msgstr "Dokumentumok"
 
-#: ../src/nautilus-query-editor.c:311
+#: ../src/nautilus-query-editor.c:314
 msgid "Music"
 msgstr "Zene"
 
-#: ../src/nautilus-query-editor.c:342
+#: ../src/nautilus-query-editor.c:345
 msgid "Picture"
 msgstr "Kép"
 
-#: ../src/nautilus-query-editor.c:362
+#: ../src/nautilus-query-editor.c:365
 msgid "Illustration"
 msgstr "Illusztráció"
 
-#: ../src/nautilus-query-editor.c:401
+#: ../src/nautilus-query-editor.c:404
 msgid "Pdf / Postscript"
 msgstr "Pdf/Postscript"
 
-#: ../src/nautilus-query-editor.c:409
+#: ../src/nautilus-query-editor.c:412
 msgid "Text File"
 msgstr "Szöveges fájl"
 
-#: ../src/nautilus-query-editor.c:488
+#: ../src/nautilus-query-editor.c:491
 msgid "Select type"
 msgstr "Válassza ki a típust"
 
-#: ../src/nautilus-query-editor.c:492
+#: ../src/nautilus-query-editor.c:495
 msgid "Select"
 msgstr "Válasszon"
 
-#: ../src/nautilus-query-editor.c:572
+#: ../src/nautilus-query-editor.c:575
 msgid "Any"
 msgstr "Bármi"
 
-#: ../src/nautilus-query-editor.c:587
+#: ../src/nautilus-query-editor.c:590
 msgid "Other Type…"
 msgstr "Más típus…"
 
-#: ../src/nautilus-query-editor.c:858
+#: ../src/nautilus-query-editor.c:861
 msgid "Remove this criterion from the search"
 msgstr "Ezen feltétel eltávolítása a keresésből"
 
 #. create the Current/All Files selector
-#: ../src/nautilus-query-editor.c:941
+#: ../src/nautilus-query-editor.c:946
 msgid "Current"
 msgstr "Aktuális"
 
-#: ../src/nautilus-query-editor.c:944
+#: ../src/nautilus-query-editor.c:949
 msgid "All Files"
 msgstr "Minden fájl"
 
-#: ../src/nautilus-query-editor.c:966
+#: ../src/nautilus-query-editor.c:971
 msgid "Add a new criterion to this search"
 msgstr "Új feltétel hozzáadása a kereséshez"
 
@@ -4097,67 +4078,67 @@ msgstr "A meghajtó nem állítható le"
 msgid "Unable to start “%s”"
 msgstr "A(z) „%s” nem indítható"
 
-#: ../src/nautilus-view.c:6199
+#: ../src/nautilus-view.c:6198
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "Új mappa a kijelöltekkel (%'d elem)"
 msgstr[1] "Új mappa a kijelöltekkel (%'d elem)"
 
-#: ../src/nautilus-view.c:6247
+#: ../src/nautilus-view.c:6246
 #, c-format
 msgid "Open With %s"
 msgstr "Megnyitás ezzel: %s"
 
-#: ../src/nautilus-view.c:6256
+#: ../src/nautilus-view.c:6255
 msgid "Run"
 msgstr "Futtatás"
 
-#: ../src/nautilus-view.c:6258
+#: ../src/nautilus-view.c:6257
 msgid "Open"
 msgstr "Megnyitás"
 
-#: ../src/nautilus-view.c:6309 ../src/nautilus-view-context-menus.xml.h:18
+#: ../src/nautilus-view.c:6308 ../src/nautilus-view-context-menus.xml.h:18
 msgid "_Start"
 msgstr "In_dítás"
 
-#: ../src/nautilus-view.c:6312
+#: ../src/nautilus-view.c:6311
 msgid "_Connect"
 msgstr "Kapcs_olódás"
 
-#: ../src/nautilus-view.c:6315
+#: ../src/nautilus-view.c:6314
 msgid "_Start Multi-disk Drive"
 msgstr "Többleme_zes meghajtó indítása"
 
-#: ../src/nautilus-view.c:6318
+#: ../src/nautilus-view.c:6317
 msgid "U_nlock Drive"
 msgstr "Meghajtó felol_dása"
 
-#: ../src/nautilus-view.c:6334
+#: ../src/nautilus-view.c:6333
 msgid "Stop Drive"
 msgstr "Meghajtó leállítása"
 
-#: ../src/nautilus-view.c:6337
+#: ../src/nautilus-view.c:6336
 msgid "_Safely Remove Drive"
 msgstr "Meghajtó _biztonságos eltávolítása"
 
-#: ../src/nautilus-view.c:6340
+#: ../src/nautilus-view.c:6339
 msgid "_Disconnect"
 msgstr "_Bontás"
 
-#: ../src/nautilus-view.c:6343
+#: ../src/nautilus-view.c:6342
 msgid "_Stop Multi-disk Drive"
 msgstr "_Többlemezes meghajtó leállítása"
 
-#: ../src/nautilus-view.c:6346
+#: ../src/nautilus-view.c:6345
 msgid "_Lock Drive"
 msgstr "Meghajtó _zárolása"
 
-#: ../src/nautilus-view.c:7545
+#: ../src/nautilus-view.c:7544
 msgid "Content View"
 msgstr "Tartalomnézet"
 
-#: ../src/nautilus-view.c:7546
+#: ../src/nautilus-view.c:7545
 msgid "View of the current folder"
 msgstr "A jelenlegi mappa nézete"
 
@@ -4238,7 +4219,6 @@ msgid "Copy to…"
 msgstr "Másolás ide…"
 
 #: ../src/nautilus-view-context-menus.xml.h:27
-#| msgid "_Redo Restore from Trash"
 msgid "_Delete from Trash"
 msgstr "_Törlés a Kukából"
 
@@ -4291,31 +4271,47 @@ msgstr "Ejtett szöveg.txt"
 msgid "dropped data"
 msgstr "ejtett adatok"
 
-#: ../src/nautilus-window.c:1232
+#: ../src/nautilus-window.c:1281
 msgid "_Properties"
 msgstr "T_ulajdonságok"
 
-#: ../src/nautilus-window.c:1241
+#: ../src/nautilus-window.c:1290
 msgid "_Format…"
 msgstr "_Formázás…"
 
-#: ../src/nautilus-window.c:1613
+#. Translators: this is the second part of a "%d files deleted" string
+#: ../src/nautilus-window.c:1545 ../src/nautilus-window.c:1552
+#, c-format
+msgid "%s deleted"
+msgid_plural "%s deleted"
+msgstr[0] "%s törölve"
+msgstr[1] "%s törölve"
+
+#. Translators: this is the first part of a "%d files deleted" string
+#: ../src/nautilus-window.c:1548
+#, c-format
+msgid "%d file"
+msgid_plural "%d files"
+msgstr[0] "%d fájl"
+msgstr[1] "%d fájl"
+
+#: ../src/nautilus-window.c:1726
 msgid "_New Tab"
 msgstr "Új _lap"
 
-#: ../src/nautilus-window.c:1623
+#: ../src/nautilus-window.c:1736
 msgid "Move Tab _Left"
 msgstr "Lap mozgatása b_alra"
 
-#: ../src/nautilus-window.c:1631
+#: ../src/nautilus-window.c:1744
 msgid "Move Tab _Right"
 msgstr "Lap mozgatása j_obbra"
 
-#: ../src/nautilus-window.c:1642
+#: ../src/nautilus-window.c:1755
 msgid "_Close Tab"
 msgstr "Lap _bezárása"
 
-#: ../src/nautilus-window.c:2567
+#: ../src/nautilus-window.c:2660
 msgid "Access and organize your files."
 msgstr "Fájlok elérése és rendszerezése."
 
@@ -4323,7 +4319,7 @@ msgstr "Fájlok elérése és rendszerezése."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2576
+#: ../src/nautilus-window.c:2669
 msgid "translator-credits"
 msgstr ""
 "Bán Szabolcs <shooby at gnome dot hu>\n"
@@ -4335,40 +4331,40 @@ msgstr ""
 "Tímár András <timar at gnome dot hu>\n"
 "Lukács Bence <lukacs.bence1 at gmail dot com>"
 
-#: ../src/nautilus-window-slot.c:1274 ../src/nautilus-window-slot.c:1446
+#: ../src/nautilus-window-slot.c:1278 ../src/nautilus-window-slot.c:1450
 #, c-format
 msgid "Unable to load location"
 msgstr "A hely nem tölthető be"
 
-#: ../src/nautilus-window-slot.c:1596
+#: ../src/nautilus-window-slot.c:1600
 msgid "Unable to display the contents of this folder."
 msgstr "A mappa tartalma nem jeleníthető meg."
 
-#: ../src/nautilus-window-slot.c:1598
+#: ../src/nautilus-window-slot.c:1602
 msgid "This location doesn't appear to be a folder."
 msgstr "A hely nem tűnik mappának."
 
-#: ../src/nautilus-window-slot.c:1603
+#: ../src/nautilus-window-slot.c:1607
 msgid ""
 "Unable to find the requested file. Please check the spelling and try again."
 msgstr ""
 "A kért fájl nem található. Ellenőrizze, hogy mindent jól írt-e be, és "
 "próbálja meg újra."
 
-#: ../src/nautilus-window-slot.c:1608
+#: ../src/nautilus-window-slot.c:1612
 #, c-format
 msgid "“%s” locations are not supported."
 msgstr "„%s” helyek nem támogatottak."
 
-#: ../src/nautilus-window-slot.c:1611
+#: ../src/nautilus-window-slot.c:1615
 msgid "Unable to handle this kind of location."
 msgstr "Ez a fajta hely nem kezelhető."
 
-#: ../src/nautilus-window-slot.c:1616
+#: ../src/nautilus-window-slot.c:1620
 msgid "Unable to access the requested location."
 msgstr "A kért hely nem érhető el."
 
-#: ../src/nautilus-window-slot.c:1619
+#: ../src/nautilus-window-slot.c:1623
 msgid "Don't have permission to access the requested location."
 msgstr "Nincs jogosultsága elérni a kért helyet."
 
@@ -4377,7 +4373,7 @@ msgstr "Nincs jogosultsága elérni a kért helyet."
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: ../src/nautilus-window-slot.c:1627
+#: ../src/nautilus-window-slot.c:1631
 msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
@@ -4385,14 +4381,19 @@ msgstr ""
 "A kért hely nem található. Ellenőrizze, hogy mindent jól írt-e be, vagy a "
 "hálózati beállításokat."
 
-#: ../src/nautilus-window-slot.c:1638
+#: ../src/nautilus-window-slot.c:1642
 #, c-format
 msgid "Unhandled error message: %s"
 msgstr "Nem kezelt hibaüzenet: %s"
 
-#: ../src/nautilus-window-slot.c:2186
+#: ../src/nautilus-window-slot.c:2190
 msgid "Searching…"
 msgstr "Keresés…"
+
+#: ../src/nautilus-window.ui.h:1
+#| msgid "Files"
+msgid "_Files"
+msgstr "_Fájlok"
 
 #: ../src/nautilus-x-content-bar.c:92
 msgid "Audio CD"
