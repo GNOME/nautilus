@@ -20,8 +20,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eel.HEAD.he\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-03 14:20+0200\n"
-"PO-Revision-Date: 2015-03-02 23:18+0200\n"
+"POT-Creation-Date: 2015-03-04 20:41+0200\n"
+"PO-Revision-Date: 2015-03-04 20:43+0200\n"
 "Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
 "Language-Team: עברית <>\n"
 "Language: he\n"
@@ -414,12 +414,12 @@ msgstr "לא ניתן לשנות שם קובץ שולחן עבודה"
 #. Translators: Time in 24h format
 #: ../libnautilus-private/nautilus-file.c:4706
 msgid "%H:%M"
-msgstr "%H:%M"
+msgstr "%H∶%M"
 
 #. Translators: Time in 12h format
 #: ../libnautilus-private/nautilus-file.c:4709
 msgid "%l:%M %p"
-msgstr "%l:%M %p"
+msgstr "%l∶%M %p"
 
 #: ../libnautilus-private/nautilus-file.c:4716
 #, no-c-format
@@ -431,14 +431,14 @@ msgstr "אתמול"
 #: ../libnautilus-private/nautilus-file.c:4722
 #, no-c-format
 msgid "Yesterday %H:%M"
-msgstr "אתמול, %H:%M"
+msgstr "אתמול, %H∶%M"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 12h format. i.e. "Yesterday 9:04 PM"
 #: ../libnautilus-private/nautilus-file.c:4727
 #, no-c-format
 msgid "Yesterday %l:%M %p"
-msgstr "אתמול, %l:%M %p"
+msgstr "אתמול, %l∶%M %p"
 
 #: ../libnautilus-private/nautilus-file.c:4735
 #, no-c-format
@@ -450,14 +450,14 @@ msgstr "%a"
 #: ../libnautilus-private/nautilus-file.c:4741
 #, no-c-format
 msgid "%a %H:%M"
-msgstr "%a, %H:%M"
+msgstr "%a, %H∶%M"
 
 #. Translators: this is the week day name followed by
 #. * a time in 12h format. i.e. "Monday 9:04 PM"
 #: ../libnautilus-private/nautilus-file.c:4746
 #, no-c-format
 msgid "%a %l:%M %p"
-msgstr "%a, %l:%M %p"
+msgstr "%a, %l∶%M %p"
 
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name i.e. "3 Feb"
@@ -472,7 +472,7 @@ msgstr "%-e ב%b"
 #: ../libnautilus-private/nautilus-file.c:4761
 #, no-c-format
 msgid "%-e %b %H:%M"
-msgstr "%-e ב%b, %H:%M"
+msgstr "%-e ב%b, %H∶%M"
 
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
@@ -480,7 +480,7 @@ msgstr "%-e ב%b, %H:%M"
 #: ../libnautilus-private/nautilus-file.c:4767
 #, no-c-format
 msgid "%-e %b %l:%M %p"
-msgstr "%-e ב%b, %l:%M %p"
+msgstr "%-e ב%b, %l∶%M %p"
 
 #. Translators: this is the day of the month followed by the abbreviated
 #. * month name followed by the year i.e. "3 Feb 2015"
@@ -495,7 +495,7 @@ msgstr "%-e ב%b %Y"
 #: ../libnautilus-private/nautilus-file.c:4782
 #, no-c-format
 msgid "%-e %b %Y %H:%M"
-msgstr "%-e ב%b %Y %H:%M"
+msgstr "%-e ב%b %Y %H∶%M"
 
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
@@ -503,7 +503,7 @@ msgstr "%-e ב%b %Y %H:%M"
 #: ../libnautilus-private/nautilus-file.c:4788
 #, no-c-format
 msgid "%-e %b %Y %l:%M %p"
-msgstr "%-e ב%b %Y %l:%M %p"
+msgstr "%-e ב%b %Y %l∶%M %p"
 
 #: ../libnautilus-private/nautilus-file.c:4795
 #, c-format
@@ -3472,10 +3472,6 @@ msgstr "הבנתי"
 msgid "Close tab"
 msgstr "סגירת לשונית"
 
-#: ../src/nautilus-progress-info-widget.xml.h:1
-msgid "label"
-msgstr "תווית"
-
 #: ../src/nautilus-progress-ui-handler.c:104
 #: ../src/nautilus-progress-ui-handler.c:171
 #: ../src/nautilus-progress-ui-handler.c:222
@@ -4420,6 +4416,9 @@ msgstr "מכיל תמונות ומוזיקה"
 #: ../src/nautilus-x-content-bar.c:201
 msgid "Open with:"
 msgstr "פתיחה באמצעות:"
+
+#~ msgid "label"
+#~ msgstr "תווית"
 
 #~ msgid "undo"
 #~ msgstr "ביטול"
