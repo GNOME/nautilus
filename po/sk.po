@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2015-03-03 23:18+0000\n"
-"PO-Revision-Date: 2015-03-04 11:55+0100\n"
+"POT-Creation-Date: 2015-03-06 13:43+0000\n"
+"PO-Revision-Date: 2015-03-06 21:46+0100\n"
 "Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
 "Language-Team: Slovak <gnome-sk-list@gnome.org>\n"
 "Language: sk\n"
@@ -55,7 +55,7 @@ msgstr "Pripojiť k serveru"
 
 # desktop entry name
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1 ../src/nautilus-file-management-properties.ui.h:28 ../src/nautilus-properties-window.c:4188
-#: ../src/nautilus-window.c:2658
+#: ../src/nautilus-window.c:2649
 msgid "Files"
 msgstr "Súbory"
 
@@ -3264,10 +3264,6 @@ msgstr "Rozumiem"
 msgid "Close tab"
 msgstr "Zatvoriť kartu"
 
-#: ../src/nautilus-progress-info-widget.xml.h:1
-msgid "label"
-msgstr "štítok"
-
 #: ../src/nautilus-progress-ui-handler.c:104 ../src/nautilus-progress-ui-handler.c:171 ../src/nautilus-progress-ui-handler.c:222
 msgid "File Operations"
 msgstr "Operácie so súbormi"
@@ -4054,41 +4050,36 @@ msgstr "V_lastnosti"
 msgid "_Format…"
 msgstr "_Formátovať…"
 
-#. Translators: this is the second part of a "%d files deleted" string
-#: ../src/nautilus-window.c:1545 ../src/nautilus-window.c:1552
+#: ../src/nautilus-window.c:1543
 #, c-format
-msgid "%s deleted"
-msgid_plural "%s deleted"
-msgstr[0] "%s odstránených"
-msgstr[1] "%s odstránený"
-msgstr[2] "%s odstránené"
+msgid "“%s” deleted"
+msgstr "Súbor „%s“ odstránený"
 
-#. Translators: this is the first part of a "%d files deleted" string
-#: ../src/nautilus-window.c:1548
+#: ../src/nautilus-window.c:1546
 #, c-format
-msgid "%d file"
-msgid_plural "%d files"
-msgstr[0] "%d súborov"
-msgstr[1] "jeden súbor"
-msgstr[2] "%d súbory"
+msgid "%d file deleted"
+msgid_plural "%d files deleted"
+msgstr[0] "%d súborov odstránených"
+msgstr[1] "%d súbor odstránený"
+msgstr[2] "%d súbory odstránené"
 
-#: ../src/nautilus-window.c:1726
+#: ../src/nautilus-window.c:1717
 msgid "_New Tab"
 msgstr "_Nová karta"
 
-#: ../src/nautilus-window.c:1736
+#: ../src/nautilus-window.c:1727
 msgid "Move Tab _Left"
 msgstr "Presunúť kartu _vľavo"
 
-#: ../src/nautilus-window.c:1744
+#: ../src/nautilus-window.c:1735
 msgid "Move Tab _Right"
 msgstr "Presunúť kartu vp_ravo"
 
-#: ../src/nautilus-window.c:1755
+#: ../src/nautilus-window.c:1746
 msgid "_Close Tab"
 msgstr "_Zatvoriť kartu"
 
-#: ../src/nautilus-window.c:2660
+#: ../src/nautilus-window.c:2651
 msgid "Access and organize your files."
 msgstr "Práca s vašimi súbormi."
 
@@ -4096,7 +4087,7 @@ msgstr "Práca s vašimi súbormi."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2669
+#: ../src/nautilus-window.c:2660
 msgid "translator-credits"
 msgstr ""
 "Stanislav Višňovský\n"
@@ -4221,6 +4212,21 @@ msgstr "Obsahuje fotografie a hudbu"
 #: ../src/nautilus-x-content-bar.c:201
 msgid "Open with:"
 msgstr "Otvoriť pomocou:"
+
+#~ msgid "label"
+#~ msgstr "štítok"
+
+#~ msgid "%s deleted"
+#~ msgid_plural "%s deleted"
+#~ msgstr[0] "%s odstránených"
+#~ msgstr[1] "%s odstránený"
+#~ msgstr[2] "%s odstránené"
+
+#~ msgid "%d file"
+#~ msgid_plural "%d files"
+#~ msgstr[0] "%d súborov"
+#~ msgstr[1] "jeden súbor"
+#~ msgstr[2] "%d súbory"
 
 #~ msgid "undo"
 #~ msgstr "vrátiť"
