@@ -30,16 +30,16 @@ msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2015-03-05 11:21+0000\n"
-"PO-Revision-Date: 2015-03-05 14:48-0300\n"
-"Last-Translator: Enrico Nicoletto <liverig@gmail.com>\n"
+"POT-Creation-Date: 2015-03-06 13:43+0000\n"
+"PO-Revision-Date: 2015-03-06 11:31-0300\n"
+"Last-Translator: Rafael Ferreira <rafael.f.f1@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 1.7.3\n"
+"X-Generator: Poedit 1.7.4\n"
 "X-Project-Style: gnome\n"
 
 #: ../data/org.gnome.Nautilus.appdata.xml.in.h:1
@@ -79,7 +79,7 @@ msgstr "Conectar ao servidor"
 
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
 #: ../src/nautilus-file-management-properties.ui.h:28
-#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2658
+#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2649
 msgid "Files"
 msgstr "Arquivos"
 
@@ -4280,39 +4280,35 @@ msgstr "_Propriedades"
 msgid "_Format…"
 msgstr "_Formatar…"
 
-#. Translators: this is the second part of a "%d files deleted" string
-#: ../src/nautilus-window.c:1545 ../src/nautilus-window.c:1552
+#: ../src/nautilus-window.c:1543
 #, c-format
-msgid "%s deleted"
-msgid_plural "%s deleted"
-msgstr[0] "%s excluído"
-msgstr[1] "%s excluídos"
+msgid "“%s” deleted"
+msgstr "\"%s\" excluído"
 
-#. Translators: this is the first part of a "%d files deleted" string
-#: ../src/nautilus-window.c:1548
+#: ../src/nautilus-window.c:1546
 #, c-format
-msgid "%d file"
-msgid_plural "%d files"
-msgstr[0] "%d arquivo"
-msgstr[1] "%d arquivos"
+msgid "%d file deleted"
+msgid_plural "%d files deleted"
+msgstr[0] "%d arquivo excluído"
+msgstr[1] "%d arquivos excluídos"
 
-#: ../src/nautilus-window.c:1726
+#: ../src/nautilus-window.c:1717
 msgid "_New Tab"
 msgstr "Nova a_ba"
 
-#: ../src/nautilus-window.c:1736
+#: ../src/nautilus-window.c:1727
 msgid "Move Tab _Left"
 msgstr "Mover aba para _esquerda"
 
-#: ../src/nautilus-window.c:1744
+#: ../src/nautilus-window.c:1735
 msgid "Move Tab _Right"
 msgstr "Mover aba para _direita"
 
-#: ../src/nautilus-window.c:1755
+#: ../src/nautilus-window.c:1746
 msgid "_Close Tab"
 msgstr "_Fechar aba"
 
-#: ../src/nautilus-window.c:2660
+#: ../src/nautilus-window.c:2651
 msgid "Access and organize your files."
 msgstr "Acesse e organize seus arquivos."
 
@@ -4320,7 +4316,7 @@ msgstr "Acesse e organize seus arquivos."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2669
+#: ../src/nautilus-window.c:2660
 msgid "translator-credits"
 msgstr ""
 "Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>\n"
@@ -4466,6 +4462,16 @@ msgstr "Contém fotos e músicas"
 #: ../src/nautilus-x-content-bar.c:201
 msgid "Open with:"
 msgstr "Abrir com:"
+
+#~ msgid "%s deleted"
+#~ msgid_plural "%s deleted"
+#~ msgstr[0] "%s excluído"
+#~ msgstr[1] "%s excluídos"
+
+#~ msgid "%d file"
+#~ msgid_plural "%d files"
+#~ msgstr[0] "%d arquivo"
+#~ msgstr[1] "%d arquivos"
 
 #~ msgid "undo"
 #~ msgstr "desfazer"
