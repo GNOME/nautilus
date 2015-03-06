@@ -430,84 +430,6 @@ nautilus_desktop_canvas_view_update_canvas_container_fonts (NautilusDesktopCanva
 	g_free (font);
 }
 
-static void
-nautilus_desktop_canvas_view_init (NautilusDesktopCanvasView *desktop_canvas_view)
-{
-	NautilusCanvasContainer *canvas_container;
-	GtkAllocation allocation;
-	GtkAdjustment *hadj, *vadj;
-
-	desktop_canvas_view->details = G_TYPE_INSTANCE_GET_PRIVATE (desktop_canvas_view,
-								  NAUTILUS_TYPE_DESKTOP_CANVAS_VIEW,
-								  NautilusDesktopCanvasViewDetails);
-
-	if (desktop_directory == NULL) {
-		desktop_directory = nautilus_get_desktop_directory ();
-	}
-
-	canvas_container = get_canvas_container (desktop_canvas_view);
-	nautilus_canvas_view_container_set_sort_desktop (NAUTILUS_CANVAS_VIEW_CONTAINER (canvas_container), TRUE);
-
-	/* Do a reload on the desktop if we don't have FAM, a smarter
-	 * way to keep track of the items on the desktop.
-	 */
-	if (!nautilus_monitor_active ()) {
-		desktop_canvas_view->details->delayed_init_signal = g_signal_connect_object
-			(desktop_canvas_view, "begin-loading",
-			 G_CALLBACK (delayed_init), desktop_canvas_view, 0);
-	}
-	
-	nautilus_canvas_container_set_is_fixed_size (canvas_container, TRUE);
-	nautilus_canvas_container_set_is_desktop (canvas_container, TRUE);
-	nautilus_canvas_container_set_store_layout_timestamps (canvas_container, TRUE);
-
-	/* Set allocation to be at 0, 0 */
-	gtk_widget_get_allocation (GTK_WIDGET (canvas_container), &allocation);
-	allocation.x = 0;
-	allocation.y = 0;
-	gtk_widget_set_allocation (GTK_WIDGET (canvas_container), &allocation);
-	
-	gtk_widget_queue_resize (GTK_WIDGET (canvas_container));
-
-	hadj = gtk_scrollable_get_hadjustment (GTK_SCROLLABLE (canvas_container));
-	vadj = gtk_scrollable_get_vadjustment (GTK_SCROLLABLE (canvas_container));
-
-	gtk_adjustment_set_value (hadj, 0);
-	gtk_adjustment_set_value (vadj, 0);
-
-	nautilus_view_ignore_hidden_file_preferences
-		(NAUTILUS_VIEW (desktop_canvas_view));
-
-	nautilus_view_set_show_foreign (NAUTILUS_VIEW (desktop_canvas_view),
-					FALSE);
-
-	g_signal_connect_object (canvas_container, "realize",
-				 G_CALLBACK (desktop_canvas_container_realize), desktop_canvas_view, 0);
-
-	g_signal_connect_object (desktop_canvas_view, "realize",
-				 G_CALLBACK (realized_callback), desktop_canvas_view, 0);
-	g_signal_connect_object (desktop_canvas_view, "unrealize",
-				 G_CALLBACK (unrealized_callback), desktop_canvas_view, 0);
-
-	g_signal_connect_swapped (nautilus_icon_view_preferences,
-				  "changed::" NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
-				  G_CALLBACK (default_zoom_level_changed),
-				  desktop_canvas_view);
-
-	g_signal_connect_swapped (nautilus_desktop_preferences,
-				  "changed::" NAUTILUS_PREFERENCES_DESKTOP_FONT,
-				  G_CALLBACK (font_changed_callback),
-				  desktop_canvas_view);
-
-	default_zoom_level_changed (desktop_canvas_view);
-	nautilus_desktop_canvas_view_update_canvas_container_fonts (desktop_canvas_view);
-
-	g_signal_connect_swapped (gnome_lockdown_preferences,
-				  "changed::" NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE,
-				  G_CALLBACK (nautilus_view_update_context_menus),
-				  desktop_canvas_view);
-}
-
 static const gchar *
 get_control_center_command (const gchar ** params_out)
 {
@@ -682,6 +604,84 @@ real_update_context_menus (NautilusView *view)
 	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group), "unstretch");
 	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), canvas_container != NULL &&
 							       nautilus_canvas_container_is_stretched (canvas_container));
+}
+
+static void
+nautilus_desktop_canvas_view_init (NautilusDesktopCanvasView *desktop_canvas_view)
+{
+	NautilusCanvasContainer *canvas_container;
+	GtkAllocation allocation;
+	GtkAdjustment *hadj, *vadj;
+
+	desktop_canvas_view->details = G_TYPE_INSTANCE_GET_PRIVATE (desktop_canvas_view,
+								  NAUTILUS_TYPE_DESKTOP_CANVAS_VIEW,
+								  NautilusDesktopCanvasViewDetails);
+
+	if (desktop_directory == NULL) {
+		desktop_directory = nautilus_get_desktop_directory ();
+	}
+
+	canvas_container = get_canvas_container (desktop_canvas_view);
+	nautilus_canvas_view_container_set_sort_desktop (NAUTILUS_CANVAS_VIEW_CONTAINER (canvas_container), TRUE);
+
+	/* Do a reload on the desktop if we don't have FAM, a smarter
+	 * way to keep track of the items on the desktop.
+	 */
+	if (!nautilus_monitor_active ()) {
+		desktop_canvas_view->details->delayed_init_signal = g_signal_connect_object
+			(desktop_canvas_view, "begin-loading",
+			 G_CALLBACK (delayed_init), desktop_canvas_view, 0);
+	}
+
+	nautilus_canvas_container_set_is_fixed_size (canvas_container, TRUE);
+	nautilus_canvas_container_set_is_desktop (canvas_container, TRUE);
+	nautilus_canvas_container_set_store_layout_timestamps (canvas_container, TRUE);
+
+	/* Set allocation to be at 0, 0 */
+	gtk_widget_get_allocation (GTK_WIDGET (canvas_container), &allocation);
+	allocation.x = 0;
+	allocation.y = 0;
+	gtk_widget_set_allocation (GTK_WIDGET (canvas_container), &allocation);
+
+	gtk_widget_queue_resize (GTK_WIDGET (canvas_container));
+
+	hadj = gtk_scrollable_get_hadjustment (GTK_SCROLLABLE (canvas_container));
+	vadj = gtk_scrollable_get_vadjustment (GTK_SCROLLABLE (canvas_container));
+
+	gtk_adjustment_set_value (hadj, 0);
+	gtk_adjustment_set_value (vadj, 0);
+
+	nautilus_view_ignore_hidden_file_preferences
+		(NAUTILUS_VIEW (desktop_canvas_view));
+
+	nautilus_view_set_show_foreign (NAUTILUS_VIEW (desktop_canvas_view),
+					FALSE);
+
+	g_signal_connect_object (canvas_container, "realize",
+				 G_CALLBACK (desktop_canvas_container_realize), desktop_canvas_view, 0);
+
+	g_signal_connect_object (desktop_canvas_view, "realize",
+				 G_CALLBACK (realized_callback), desktop_canvas_view, 0);
+	g_signal_connect_object (desktop_canvas_view, "unrealize",
+				 G_CALLBACK (unrealized_callback), desktop_canvas_view, 0);
+
+	g_signal_connect_swapped (nautilus_icon_view_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
+				  G_CALLBACK (default_zoom_level_changed),
+				  desktop_canvas_view);
+
+	g_signal_connect_swapped (nautilus_desktop_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_DESKTOP_FONT,
+				  G_CALLBACK (font_changed_callback),
+				  desktop_canvas_view);
+
+	default_zoom_level_changed (desktop_canvas_view);
+	nautilus_desktop_canvas_view_update_canvas_container_fonts (desktop_canvas_view);
+
+	g_signal_connect_swapped (gnome_lockdown_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE,
+				  G_CALLBACK (nautilus_view_update_context_menus),
+				  desktop_canvas_view);
 }
 
 NautilusView *
