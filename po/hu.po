@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2015-03-03 11:24+0000\n"
-"PO-Revision-Date: 2015-03-03 16:13+0100\n"
+"POT-Creation-Date: 2015-03-06 13:43+0000\n"
+"PO-Revision-Date: 2015-03-06 21:25+0100\n"
 "Last-Translator: Balázs Úr <urbalazs@gmail.com>\n"
 "Language-Team: Hungarian <openscope at googlegroups dot com>\n"
 "Language: hu\n"
@@ -65,7 +65,7 @@ msgstr "Kapcsolódás kiszolgálóhoz"
 
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
 #: ../src/nautilus-file-management-properties.ui.h:28
-#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2658
+#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2649
 msgid "Files"
 msgstr "Fájlok"
 
@@ -3497,10 +3497,6 @@ msgstr "Megvan"
 msgid "Close tab"
 msgstr "Lap bezárása"
 
-#: ../src/nautilus-progress-info-widget.xml.h:1
-msgid "label"
-msgstr "címke"
-
 #: ../src/nautilus-progress-ui-handler.c:104
 #: ../src/nautilus-progress-ui-handler.c:171
 #: ../src/nautilus-progress-ui-handler.c:222
@@ -4279,39 +4275,38 @@ msgstr "T_ulajdonságok"
 msgid "_Format…"
 msgstr "_Formázás…"
 
-#. Translators: this is the second part of a "%d files deleted" string
-#: ../src/nautilus-window.c:1545 ../src/nautilus-window.c:1552
+#: ../src/nautilus-window.c:1543
 #, c-format
-msgid "%s deleted"
-msgid_plural "%s deleted"
-msgstr[0] "%s törölve"
-msgstr[1] "%s törölve"
+#| msgid "“%s” selected"
+msgid "“%s” deleted"
+msgstr "„%s” törölve"
 
-#. Translators: this is the first part of a "%d files deleted" string
-#: ../src/nautilus-window.c:1548
+#: ../src/nautilus-window.c:1546
 #, c-format
-msgid "%d file"
-msgid_plural "%d files"
-msgstr[0] "%d fájl"
-msgstr[1] "%d fájl"
+#| msgid "%'d file left to delete"
+#| msgid_plural "%'d files left to delete"
+msgid "%d file deleted"
+msgid_plural "%d files deleted"
+msgstr[0] "%d fájl törölve"
+msgstr[1] "%d fájl törölve"
 
-#: ../src/nautilus-window.c:1726
+#: ../src/nautilus-window.c:1717
 msgid "_New Tab"
 msgstr "Új _lap"
 
-#: ../src/nautilus-window.c:1736
+#: ../src/nautilus-window.c:1727
 msgid "Move Tab _Left"
 msgstr "Lap mozgatása b_alra"
 
-#: ../src/nautilus-window.c:1744
+#: ../src/nautilus-window.c:1735
 msgid "Move Tab _Right"
 msgstr "Lap mozgatása j_obbra"
 
-#: ../src/nautilus-window.c:1755
+#: ../src/nautilus-window.c:1746
 msgid "_Close Tab"
 msgstr "Lap _bezárása"
 
-#: ../src/nautilus-window.c:2660
+#: ../src/nautilus-window.c:2651
 msgid "Access and organize your files."
 msgstr "Fájlok elérése és rendszerezése."
 
@@ -4319,7 +4314,7 @@ msgstr "Fájlok elérése és rendszerezése."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2669
+#: ../src/nautilus-window.c:2660
 msgid "translator-credits"
 msgstr ""
 "Bán Szabolcs <shooby at gnome dot hu>\n"
@@ -4391,7 +4386,6 @@ msgid "Searching…"
 msgstr "Keresés…"
 
 #: ../src/nautilus-window.ui.h:1
-#| msgid "Files"
 msgid "_Files"
 msgstr "_Fájlok"
 
@@ -4452,6 +4446,19 @@ msgstr "Fényképeket és zenéket tartalmaz"
 #: ../src/nautilus-x-content-bar.c:201
 msgid "Open with:"
 msgstr "Megnyitás ezzel:"
+
+#~ msgid "label"
+#~ msgstr "címke"
+
+#~ msgid "%s deleted"
+#~ msgid_plural "%s deleted"
+#~ msgstr[0] "%s törölve"
+#~ msgstr[1] "%s törölve"
+
+#~ msgid "%d file"
+#~ msgid_plural "%d files"
+#~ msgstr[0] "%d fájl"
+#~ msgstr[1] "%d fájl"
 
 #~ msgid "Whether to enable immediate deletion"
 #~ msgstr "Engedélyezze-e az azonnali törlést"
