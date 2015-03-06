@@ -575,11 +575,6 @@ real_update_context_menus (NautilusView *view)
 	view_action_group = nautilus_view_get_action_group (view);
 	desktop_view = NAUTILUS_DESKTOP_CANVAS_VIEW (view);
 
-	g_action_map_add_action_entries (G_ACTION_MAP (view_action_group),
-					 desktop_view_entries,
-					 G_N_ELEMENTS (desktop_view_entries),
-					 view);
-
 	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group), "empty-trash");
 	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), trash_link_is_selection (view));
 
@@ -611,6 +606,7 @@ nautilus_desktop_canvas_view_init (NautilusDesktopCanvasView *desktop_canvas_vie
 {
 	NautilusCanvasContainer *canvas_container;
 	GtkAllocation allocation;
+	GActionGroup *view_action_group;
 	GtkAdjustment *hadj, *vadj;
 
 	desktop_canvas_view->details = G_TYPE_INSTANCE_GET_PRIVATE (desktop_canvas_view,
@@ -682,6 +678,13 @@ nautilus_desktop_canvas_view_init (NautilusDesktopCanvasView *desktop_canvas_vie
 				  "changed::" NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE,
 				  G_CALLBACK (nautilus_view_update_context_menus),
 				  desktop_canvas_view);
+
+	view_action_group = nautilus_view_get_action_group (NAUTILUS_VIEW (desktop_canvas_view));
+
+	g_action_map_add_action_entries (G_ACTION_MAP (view_action_group),
+					 desktop_view_entries,
+					 G_N_ELEMENTS (desktop_view_entries),
+					 NAUTILUS_VIEW (desktop_canvas_view));
 }
 
 NautilusView *
