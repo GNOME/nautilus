@@ -22,8 +22,8 @@ msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2015-03-04 11:24+0000\n"
-"PO-Revision-Date: 2015-03-04 18:34+0100\n"
+"POT-Creation-Date: 2015-03-08 11:23+0000\n"
+"PO-Revision-Date: 2015-03-08 22:34+0100\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -71,7 +71,7 @@ msgstr "Připojit se k serveru"
 
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
 #: ../src/nautilus-file-management-properties.ui.h:28
-#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2658
+#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2652
 msgid "Files"
 msgstr "Soubory"
 
@@ -293,7 +293,6 @@ msgid "The location of the file."
 msgstr "Umístění souboru"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:136
-#| msgid "Modified"
 msgid "Modified - Time"
 msgstr "Změněný – čas"
 
@@ -432,7 +431,6 @@ msgstr "%-H∶%M"
 
 #. Translators: Time in 12h format
 #: ../libnautilus-private/nautilus-file.c:4709
-#| msgid "%-I:%M %P"
 msgid "%l:%M %p"
 msgstr "%-l∶%M %p"
 
@@ -471,7 +469,6 @@ msgstr "%a, %-H∶%M"
 #. * a time in 12h format. i.e. "Monday 9:04 PM"
 #: ../libnautilus-private/nautilus-file.c:4746
 #, no-c-format
-#| msgid "%-I:%M %P"
 msgid "%a %l:%M %p"
 msgstr "%a %-l∶%M %p"
 
@@ -495,7 +492,6 @@ msgstr "%-e. %B %-H∶%M"
 #. * 12h format i.e. "3 Feb 9:04"
 #: ../libnautilus-private/nautilus-file.c:4767
 #, no-c-format
-#| msgid "%a, %b %e %Y %I:%M:%S %p"
 msgid "%-e %b %l:%M %p"
 msgstr "%-e. %B %-l∶%M %p"
 
@@ -503,7 +499,6 @@ msgstr "%-e. %B %-l∶%M %p"
 #. * month name followed by the year i.e. "3 Feb 2015"
 #: ../libnautilus-private/nautilus-file.c:4775
 #, no-c-format
-#| msgid "%b %-d %Y"
 msgid "%-e %b %Y"
 msgstr "%-e. %B %Y"
 
@@ -512,7 +507,6 @@ msgstr "%-e. %B %Y"
 #. * by a time in 24h format i.e. "3 Feb 2015 23:04"
 #: ../libnautilus-private/nautilus-file.c:4782
 #, no-c-format
-#| msgid "%a, %b %e %Y %I:%M:%S %p"
 msgid "%-e %b %Y %H:%M"
 msgstr "%-e. %B %Y %-H∶%M"
 
@@ -521,7 +515,6 @@ msgstr "%-e. %B %Y %-H∶%M"
 #. * by a time in 12h format i.e. "3 Feb 2015 9:04 PM"
 #: ../libnautilus-private/nautilus-file.c:4788
 #, no-c-format
-#| msgid "%a, %b %e %Y %I:%M:%S %p"
 msgid "%-e %b %Y %l:%M %p"
 msgstr "%-e. %B %Y %-l∶%M %p"
 
@@ -3551,10 +3544,6 @@ msgstr "Jasné"
 msgid "Close tab"
 msgstr "Zavřít kartu"
 
-#: ../src/nautilus-progress-info-widget.xml.h:1
-msgid "label"
-msgstr ""
-
 #: ../src/nautilus-progress-ui-handler.c:104
 #: ../src/nautilus-progress-ui-handler.c:171
 #: ../src/nautilus-progress-ui-handler.c:222
@@ -3986,7 +3975,6 @@ msgid "St_op"
 msgstr "Zas_tavit"
 
 #: ../src/nautilus-trash-bar.c:202
-#| msgid "Restore"
 msgid "_Restore"
 msgstr "O_bnovit"
 
@@ -3996,7 +3984,6 @@ msgstr "Obnovit vybrané položky na jejich původní místa"
 
 #. Translators: "Empty" is an action (for the trash) , not a state
 #: ../src/nautilus-trash-bar.c:209
-#| msgid "Empty"
 msgid "_Empty"
 msgstr "V_yprázdnit"
 
@@ -4284,7 +4271,6 @@ msgid "Copy to…"
 msgstr "Kopírovat do…"
 
 #: ../src/nautilus-view-context-menus.xml.h:27
-#| msgid "_Redo Restore from Trash"
 msgid "_Delete from Trash"
 msgstr "_Smazat z koše"
 
@@ -4345,41 +4331,39 @@ msgstr "_Vlastnosti"
 msgid "_Format…"
 msgstr "_Formátovat…"
 
-#. Translators: this is the second part of a "%d files deleted" string
-#: ../src/nautilus-window.c:1545 ../src/nautilus-window.c:1552
+#. Translators: only one item has been deleted and %s is its name.
+#: ../src/nautilus-window.c:1544
 #, c-format
-msgid "%s deleted"
-msgid_plural "%s deleted"
-msgstr[0] "smazán %s"
-msgstr[1] "smazány %s"
-msgstr[2] "smazáno %s"
+msgid "“%s” deleted"
+msgstr "Byl smazán soubor „%s“"
 
-#. Translators: this is the first part of a "%d files deleted" string
-#: ../src/nautilus-window.c:1548
+#. Translators: one or more items might have been deleted, and %d
+#. * is the count.
+#: ../src/nautilus-window.c:1549
 #, c-format
-msgid "%d file"
-msgid_plural "%d files"
-msgstr[0] "%d soubor"
-msgstr[1] "%d soubory"
-msgstr[2] "%d souborů"
+msgid "%d file deleted"
+msgid_plural "%d files deleted"
+msgstr[0] "Byl smazán %d soubor"
+msgstr[1] "Byly smazány %d soubory"
+msgstr[2] "Bylo smazáno %d souborů"
 
-#: ../src/nautilus-window.c:1726
+#: ../src/nautilus-window.c:1720
 msgid "_New Tab"
 msgstr "_Nová karta"
 
-#: ../src/nautilus-window.c:1736
+#: ../src/nautilus-window.c:1730
 msgid "Move Tab _Left"
 msgstr "Přesunout kartu v_levo"
 
-#: ../src/nautilus-window.c:1744
+#: ../src/nautilus-window.c:1738
 msgid "Move Tab _Right"
 msgstr "Přesunout kartu vp_ravo"
 
-#: ../src/nautilus-window.c:1755
+#: ../src/nautilus-window.c:1749
 msgid "_Close Tab"
 msgstr "_Zavřít kartu"
 
-#: ../src/nautilus-window.c:2660
+#: ../src/nautilus-window.c:2654
 msgid "Access and organize your files."
 msgstr "Přístup a organizace vašich souborů"
 
@@ -4387,7 +4371,7 @@ msgstr "Přístup a organizace vašich souborů"
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2669
+#: ../src/nautilus-window.c:2663
 msgid "translator-credits"
 msgstr ""
 "Michal Bukovjan <bukm@centrum.cz>\n"
@@ -4462,7 +4446,6 @@ msgid "Searching…"
 msgstr "Hledá se…"
 
 #: ../src/nautilus-window.ui.h:1
-#| msgid "Files"
 msgid "_Files"
 msgstr "_Soubory"
 
@@ -4523,30 +4506,3 @@ msgstr "Obsahuje fotografie a hudbu"
 #: ../src/nautilus-x-content-bar.c:201
 msgid "Open with:"
 msgstr "Otevřít pomocí:"
-
-#~ msgid "%R"
-#~ msgstr "%-H:%M"
-
-#~ msgid "%b %-e"
-#~ msgstr "%-e. %b"
-
-#~ msgid "%a, %b %e %Y %T"
-#~ msgstr "%a, %-d. %b %Y %-H:%M"
-
-#~ msgid "Whether to enable immediate deletion"
-#~ msgstr "Jestli povolit okamžité odstranění"
-
-#~ msgid ""
-#~ "If set to true, then Nautilus will have a feature allowing you to delete "
-#~ "a file immediately and in-place, instead of moving it to the trash. This "
-#~ "feature can be dangerous, so use caution."
-#~ msgstr ""
-#~ "Je-li nastaveno na pravda (true), bude mít Nautilus vlastnost umožňující "
-#~ "vám smazat soubor okamžitě a na tom samém místě, soubor nebude přesunut "
-#~ "do koše. Tato vlastnost může být nebezpečná, takže buďte opatrní."
-
-#~ msgid "I_nclude a Delete command that bypasses Trash"
-#~ msgstr "Nabízet příkaz Smazat, který nep_oužívá koš"
-
-#~ msgid "_Delete Permanently"
-#~ msgstr "S_mazat natrvalo"
