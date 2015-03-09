@@ -5310,14 +5310,8 @@ handle_canvas_double_click (NautilusCanvasContainer *container,
 	    clicked_within_double_click_interval (container) &&
 	    details->double_click_icon[0] == details->double_click_icon[1] &&
 	    details->double_click_button[0] == details->double_click_button[1]) {
-		if (!button_event_modifies_selection (event)) {
-			activate_selected_items (container);
-			return TRUE;
-		} else if ((event->state & GDK_CONTROL_MASK) == 0 &&
-			   (event->state & GDK_SHIFT_MASK) != 0) {
-			activate_selected_items_alternate (container, icon);
-			return TRUE;
-		}
+		details->double_clicked = TRUE;
+		return TRUE;
 	}
 
 	return FALSE;
@@ -5440,22 +5434,38 @@ item_event_callback (EelCanvasItem *item,
 {
 	NautilusCanvasContainer *container;
 	NautilusCanvasIcon *icon;
+	GdkEventButton *event_button;
 
 	container = NAUTILUS_CANVAS_CONTAINER (data);
 
 	icon = NAUTILUS_CANVAS_ITEM (item)->user_data;
 	g_assert (icon != NULL);
 
+	event_button = &event->button;
+
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
-		if (handle_canvas_button_press (container, icon, &event->button)) {
+		container->details->double_clicked = FALSE;
+		if (handle_canvas_button_press (container, icon, event_button)) {
 			/* Stop the event from being passed along further. Returning
 			 * TRUE ain't enough. 
 			 */
 			return TRUE;
 		}
 		return FALSE;
+	case GDK_BUTTON_RELEASE:
+		if (event_button->button == DRAG_BUTTON
+		    && container->details->double_clicked) {
+			if (!button_event_modifies_selection (event_button)) {
+				activate_selected_items (container);
+			} else if ((event_button->state & GDK_CONTROL_MASK) == 0 &&
+				   (event_button->state & GDK_SHIFT_MASK) != 0) {
+				activate_selected_items_alternate (container, icon);
+			}
+		}
+		/* fall through */
 	default:
+		container->details->double_clicked = FALSE;
 		return FALSE;
 	}
 }
