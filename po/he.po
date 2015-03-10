@@ -20,8 +20,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eel.HEAD.he\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-04 20:41+0200\n"
-"PO-Revision-Date: 2015-03-04 20:43+0200\n"
+"POT-Creation-Date: 2015-03-11 01:22+0200\n"
+"PO-Revision-Date: 2015-03-11 01:23+0200\n"
 "Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
 "Language-Team: עברית <>\n"
 "Language: he\n"
@@ -65,7 +65,7 @@ msgstr "התחברות לשרת"
 
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
 #: ../src/nautilus-file-management-properties.ui.h:28
-#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2658
+#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2652
 msgid "Files"
 msgstr "קבצים"
 
@@ -4248,39 +4248,38 @@ msgstr "_מאפיינים"
 msgid "_Format…"
 msgstr "_פרמוט…"
 
-#. Translators: this is the second part of a "%d files deleted" string
-#: ../src/nautilus-window.c:1545 ../src/nautilus-window.c:1552
+#. Translators: only one item has been deleted and %s is its name.
+#: ../src/nautilus-window.c:1544
 #, c-format
-msgid "%s deleted"
-msgid_plural "%s deleted"
-msgstr[0] "%s נמחק"
-msgstr[1] "%s נמחקו"
+msgid "“%s” deleted"
+msgstr "‏„%s” נמחק"
 
-#. Translators: this is the first part of a "%d files deleted" string
-#: ../src/nautilus-window.c:1548
+#. Translators: one or more items might have been deleted, and %d
+#. * is the count.
+#: ../src/nautilus-window.c:1549
 #, c-format
-msgid "%d file"
-msgid_plural "%d files"
-msgstr[0] "קובץ אחד"
-msgstr[1] "%d קבצים"
+msgid "%d file deleted"
+msgid_plural "%d files deleted"
+msgstr[0] "נמחק קובץ אחד"
+msgstr[1] "%d קבצים נמחקו"
 
-#: ../src/nautilus-window.c:1726
+#: ../src/nautilus-window.c:1720
 msgid "_New Tab"
 msgstr "_לשונית חדשה"
 
-#: ../src/nautilus-window.c:1736
+#: ../src/nautilus-window.c:1730
 msgid "Move Tab _Left"
 msgstr "הזזת לשונית _שמאלה"
 
-#: ../src/nautilus-window.c:1744
+#: ../src/nautilus-window.c:1738
 msgid "Move Tab _Right"
 msgstr "הזזת לשונית י_מינה"
 
-#: ../src/nautilus-window.c:1755
+#: ../src/nautilus-window.c:1749
 msgid "_Close Tab"
 msgstr "סגירת ה_לשונית"
 
-#: ../src/nautilus-window.c:2660
+#: ../src/nautilus-window.c:2654
 msgid "Access and organize your files."
 msgstr "גישה לקבצים שלך וארגונם."
 
@@ -4288,7 +4287,7 @@ msgstr "גישה לקבצים שלך וארגונם."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2669
+#: ../src/nautilus-window.c:2663
 msgid "translator-credits"
 msgstr ""
 "גיל אשר <dolfin@rpg.org.il>\n"
@@ -4416,6 +4415,16 @@ msgstr "מכיל תמונות ומוזיקה"
 #: ../src/nautilus-x-content-bar.c:201
 msgid "Open with:"
 msgstr "פתיחה באמצעות:"
+
+#~ msgid "%s deleted"
+#~ msgid_plural "%s deleted"
+#~ msgstr[0] "%s נמחק"
+#~ msgstr[1] "%s נמחקו"
+
+#~ msgid "%d file"
+#~ msgid_plural "%d files"
+#~ msgstr[0] "קובץ אחד"
+#~ msgstr[1] "%d קבצים"
 
 #~ msgid "label"
 #~ msgstr "תווית"
