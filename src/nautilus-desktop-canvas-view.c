@@ -24,6 +24,7 @@
 */
 
 #include <config.h>
+#include <stdlib.h>
 
 #include "nautilus-desktop-canvas-view.h"
 
@@ -258,6 +259,42 @@ nautilus_desktop_canvas_view_dispose (GObject *object)
 }
 
 static void
+nautilus_desktop_canvas_view_end_loading (NautilusView *view,
+                                          gboolean all_files_seen)
+{
+	gboolean needs_reorganization;
+	gchar *stored_size_icon;
+	guint current_zoom;
+	guint current_icon_size;
+	gchar *current_icon_size_string;
+	NautilusFile *file;
+
+  	NAUTILUS_VIEW_CLASS (nautilus_desktop_canvas_view_parent_class)->end_loading (view, all_files_seen);
+
+        if (!all_files_seen)
+          return;
+
+  	file = nautilus_view_get_directory_as_file (view);
+  	g_return_if_fail (file != NULL);
+
+	stored_size_icon = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_DESKTOP_ICON_SIZE, NULL);
+	current_zoom = nautilus_canvas_container_get_zoom_level (get_canvas_container (view));
+	current_icon_size = nautilus_canvas_container_get_icon_size_for_zoom_level (current_zoom);
+	needs_reorganization = stored_size_icon == NULL || atoi (stored_size_icon) != current_icon_size;
+
+	if (needs_reorganization) {
+		current_icon_size_string = g_strdup_printf ("%d", current_icon_size);
+		nautilus_canvas_view_clean_up_by_name (NAUTILUS_CANVAS_VIEW (view));
+	  	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_DESKTOP_ICON_SIZE,
+                                            NULL, current_icon_size_string);
+
+	  	g_free (current_icon_size_string);
+	}
+
+	g_free (stored_size_icon);
+}
+
+static void
 nautilus_desktop_canvas_view_class_init (NautilusDesktopCanvasViewClass *class)
 {
 	NautilusViewClass *vclass;
@@ -268,6 +305,7 @@ nautilus_desktop_canvas_view_class_init (NautilusDesktopCanvasViewClass *class)
 
 	vclass->update_context_menus = real_update_context_menus;
 	vclass->get_view_id = real_get_id;
+	vclass->end_loading = nautilus_desktop_canvas_view_end_loading;
 
 	g_type_class_add_private (class, sizeof (NautilusDesktopCanvasViewDetails));
 }
@@ -330,16 +368,35 @@ get_default_zoom_level (void)
 }
 
 static void
+set_up_zoom_level (NautilusDesktopCanvasView *desktop_canvas_view)
+{
+	NautilusCanvasZoomLevel new_level;
+
+	new_level = get_default_zoom_level ();
+	nautilus_canvas_container_set_zoom_level (get_canvas_container (desktop_canvas_view),
+                                                  new_level);
+}
+
+static void
 default_zoom_level_changed (gpointer user_data)
 {
 	NautilusCanvasZoomLevel new_level;
 	NautilusDesktopCanvasView *desktop_canvas_view;
+	gint new_icon_size;
+	NautilusFile *file;
+	gchar *new_icon_size_string;
 
 	desktop_canvas_view = NAUTILUS_DESKTOP_CANVAS_VIEW (user_data);
+	file = nautilus_view_get_directory_as_file (NAUTILUS_VIEW (user_data));
 	new_level = get_default_zoom_level ();
+	new_icon_size = nautilus_canvas_container_get_icon_size_for_zoom_level (new_level);
+	new_icon_size_string = g_strdup_printf ("%d", new_icon_size);
 
-	nautilus_canvas_container_set_zoom_level (get_canvas_container (desktop_canvas_view),
-						new_level);
+	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_DESKTOP_ICON_SIZE,
+                                    NULL, new_icon_size_string);
+        set_up_zoom_level (desktop_canvas_view);
+
+	g_free (new_icon_size_string);
 }
 
 static gboolean
@@ -671,7 +728,7 @@ nautilus_desktop_canvas_view_init (NautilusDesktopCanvasView *desktop_canvas_vie
 				  G_CALLBACK (font_changed_callback),
 				  desktop_canvas_view);
 
-	default_zoom_level_changed (desktop_canvas_view);
+	set_up_zoom_level (desktop_canvas_view);
 	nautilus_desktop_canvas_view_update_canvas_container_fonts (desktop_canvas_view);
 
 	g_signal_connect_swapped (gnome_lockdown_preferences,

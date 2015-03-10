@@ -41,6 +41,8 @@
 #define NAUTILUS_METADATA_KEY_ICON_VIEW_KEEP_ALIGNED            "nautilus-icon-view-keep-aligned"
 #define NAUTILUS_METADATA_KEY_ICON_VIEW_LAYOUT_TIMESTAMP	"nautilus-icon-view-layout-timestamp"
 
+#define NAUTILUS_METADATA_KEY_DESKTOP_ICON_SIZE           "nautilus-desktop-icon-size"
+
 #define NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN      	"nautilus-list-view-sort-column"
 #define NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED    	"nautilus-list-view-sort-reversed"
 #define NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS    	"nautilus-list-view-visible-columns"

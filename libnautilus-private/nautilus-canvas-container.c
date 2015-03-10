@@ -355,7 +355,7 @@ icon_set_position (NautilusCanvasIcon *icon,
 }
 
 
-static guint
+guint
 nautilus_canvas_container_get_icon_size_for_zoom_level (NautilusCanvasZoomLevel zoom_level)
 {
 	switch (zoom_level) {
