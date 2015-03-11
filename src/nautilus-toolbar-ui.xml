@@ -86,6 +86,12 @@
             <property name="icon-size">1</property>
           </object>
         </child>
+        <child internal-child="accessible">
+          <object class="AtkObject">
+            <property name="accessible-name" translatable="yes">Action menu</property>
+            <property name="accessible-description" translatable="yes">Open action menu</property>
+          </object>
+        </child>
       </object>
       <packing>
         <property name="pack-type">end</property>
@@ -98,6 +104,12 @@
         <style>
           <class name="image-button"/>
         </style>
+        <child internal-child="accessible">
+          <object class="AtkObject">
+            <property name="accessible-name" translatable="yes">View menu</property>
+            <property name="accessible-description" translatable="yes">Open view menu</property>
+          </object>
+        </child>
       </object>
       <packing>
         <property name="pack-type">end</property>
@@ -116,6 +128,12 @@
             <property name="visible">True</property>
             <property name="icon-name">edit-find-symbolic</property>
             <property name="icon-size">1</property>
+          </object>
+        </child>
+        <child internal-child="accessible">
+          <object class="AtkObject">
+            <property name="accessible-name" translatable="yes">Search</property>
+            <property name="accessible-description" translatable="yes">Search files</property>
           </object>
         </child>
       </object>
