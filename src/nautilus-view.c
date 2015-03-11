@@ -5987,7 +5987,8 @@ real_update_actions_state (NautilusView *view)
 	/* Allow to select a different application to open the item */
 	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
 					     "open-with-other-application");
-	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), app != NULL);
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+				     app != NULL && selection_count == 1);
 
 	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
 					     "open-item-new-tab");
