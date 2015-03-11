@@ -69,16 +69,16 @@ msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2015-03-02 15:55+0000\n"
-"PO-Revision-Date: 2015-03-02 23:37+0200\n"
-"Last-Translator: Efstathios Iosifidis <iosifidis@opensuse.org>\n"
+"POT-Creation-Date: 2015-03-11 11:26+0000\n"
+"PO-Revision-Date: 2015-03-11 14:20+0200\n"
+"Last-Translator: Tom Tryfonidis <tomtryf@gmail.com>\n"
 "Language-Team: Greek, Modern (1453-) <opensuse-translation-el@opensuse.org>\n"
 "Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.5.7\n"
+"X-Generator: Poedit 1.7.4\n"
 "X-Project-Style: gnome\n"
 
 #: ../data/org.gnome.Nautilus.appdata.xml.in.h:1
@@ -122,7 +122,7 @@ msgstr "Σύνδεση σε διακομιστή"
 #
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
 #: ../src/nautilus-file-management-properties.ui.h:28
-#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2658
+#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2652
 msgid "Files"
 msgstr "Αρχεία"
 
@@ -2102,6 +2102,7 @@ msgstr "Προετοιμασία"
 #: ../libnautilus-private/nautilus-search-directory-file.c:159
 #: ../libnautilus-private/nautilus-search-directory-file.c:211
 #: ../libnautilus-private/nautilus-search-directory-file.c:256
+#: ../src/nautilus-toolbar-ui.xml.h:5
 msgid "Search"
 msgstr "Αναζήτηση"
 
@@ -3673,10 +3674,6 @@ msgstr "Το κατάλαβα"
 msgid "Close tab"
 msgstr "Κλείσιμο καρτέλας"
 
-#: ../src/nautilus-progress-info-widget.xml.h:1
-msgid "label"
-msgstr "ετικέτα"
-
 #: ../src/nautilus-progress-ui-handler.c:104
 #: ../src/nautilus-progress-ui-handler.c:171
 #: ../src/nautilus-progress-ui-handler.c:222
@@ -4077,6 +4074,26 @@ msgstr "Εισαγωγή τοπο_θεσίας"
 #: ../src/nautilus-toolbar-action-menu.xml.h:5
 msgid "_Bookmark this Location"
 msgstr "Προσθή_κη σελιδοδείκτη σε αυτή την τοποθεσία"
+
+#: ../src/nautilus-toolbar-ui.xml.h:1
+msgid "Action menu"
+msgstr "Μενού ενεργειών"
+
+#: ../src/nautilus-toolbar-ui.xml.h:2
+msgid "Open action menu"
+msgstr "Άνοιγμα μενού ενεργειών"
+
+#: ../src/nautilus-toolbar-ui.xml.h:3
+msgid "View menu"
+msgstr "Μενού προβολής"
+
+#: ../src/nautilus-toolbar-ui.xml.h:4
+msgid "Open view menu"
+msgstr "Άνοιγμα μενού προβολής"
+
+#: ../src/nautilus-toolbar-ui.xml.h:6
+msgid "Search files"
+msgstr "Αναζήτηση αρχείων"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:1
 msgid "Sort"
@@ -4489,39 +4506,40 @@ msgstr "_Ιδιότητες"
 msgid "_Format…"
 msgstr "_Διαμόρφωση…"
 
-#. Translators: this is the second part of a "%d files deleted" string
-#: ../src/nautilus-window.c:1545 ../src/nautilus-window.c:1552
+#
+#. Translators: only one item has been deleted and %s is its name.
+#: ../src/nautilus-window.c:1544
 #, c-format
-msgid "%s deleted"
-msgid_plural "%s deleted"
-msgstr[0] "%s διαγράφηκε"
-msgstr[1] "%s διαγράφηκαν"
+msgid "“%s” deleted"
+msgstr "Διαγράφηκε το “%s”"
 
-#. Translators: this is the first part of a "%d files deleted" string
-#: ../src/nautilus-window.c:1548
+#
+#. Translators: one or more items might have been deleted, and %d
+#. * is the count.
+#: ../src/nautilus-window.c:1549
 #, c-format
-msgid "%d file"
-msgid_plural "%d files"
-msgstr[0] "%d αρχείο"
-msgstr[1] "%d αρχεία"
+msgid "%d file deleted"
+msgid_plural "%d files deleted"
+msgstr[0] "Διαγράφηκε %d αρχείο"
+msgstr[1] "Διαγράφηκαν %d αρχεία"
 
-#: ../src/nautilus-window.c:1726
+#: ../src/nautilus-window.c:1720
 msgid "_New Tab"
 msgstr "_Νέα καρτέλα"
 
-#: ../src/nautilus-window.c:1736
+#: ../src/nautilus-window.c:1730
 msgid "Move Tab _Left"
 msgstr "Μετακίνηση καρτέλας _αριστερά"
 
-#: ../src/nautilus-window.c:1744
+#: ../src/nautilus-window.c:1738
 msgid "Move Tab _Right"
 msgstr "Μετακίνηση καρτέλας _δεξιά"
 
-#: ../src/nautilus-window.c:1755
+#: ../src/nautilus-window.c:1749
 msgid "_Close Tab"
 msgstr "_Κλείσιμο καρτέλας"
 
-#: ../src/nautilus-window.c:2660
+#: ../src/nautilus-window.c:2654
 msgid "Access and organize your files."
 msgstr "Προσπελάστε και οργανώστε τα αρχεία σας."
 
@@ -4530,7 +4548,7 @@ msgstr "Προσπελάστε και οργανώστε τα αρχεία σα�
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2669
+#: ../src/nautilus-window.c:2663
 msgid "translator-credits"
 msgstr ""
 "Ελληνική μεταφραστική ομάδα GNOME\n"
@@ -4608,7 +4626,6 @@ msgstr "Αναζήτηση…"
 
 #
 #: ../src/nautilus-window.ui.h:1
-#| msgid "Files"
 msgid "_Files"
 msgstr "_Αρχεία"
 
@@ -4671,6 +4688,19 @@ msgstr "Περιέχει φωτογραφίες και μουσική"
 #: ../src/nautilus-x-content-bar.c:201
 msgid "Open with:"
 msgstr "Άνοιγμα με:"
+
+#~ msgid "label"
+#~ msgstr "ετικέτα"
+
+#~ msgid "%s deleted"
+#~ msgid_plural "%s deleted"
+#~ msgstr[0] "%s διαγράφηκε"
+#~ msgstr[1] "%s διαγράφηκαν"
+
+#~ msgid "%d file"
+#~ msgid_plural "%d files"
+#~ msgstr[0] "%d αρχείο"
+#~ msgstr[1] "%d αρχεία"
 
 #~ msgid "undo"
 #~ msgstr "αναίρεση"
