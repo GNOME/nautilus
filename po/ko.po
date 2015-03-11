@@ -21,8 +21,8 @@ msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2015-03-07 11:22+0000\n"
-"PO-Revision-Date: 2015-03-08 02:19+0900\n"
+"POT-Creation-Date: 2015-03-11 12:59+0000\n"
+"PO-Revision-Date: 2015-03-12 02:48+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr@googlegroups.com>\n"
 "Language: Korean\n"
@@ -529,7 +529,7 @@ msgstr "소유자를 설정하도록 허용되지 않았습니다"
 #: ../libnautilus-private/nautilus-file.c:5547
 #, c-format
 msgid "Specified owner '%s' doesn't exist"
-msgstr "지정한 소유자 '%s'이(가) 존재하지 않습니다"
+msgstr "지정한 소유자 '%s'이(가) 없습니다"
 
 #: ../libnautilus-private/nautilus-file.c:5811
 #, c-format
@@ -539,7 +539,7 @@ msgstr "그룹을 설정하도록 허용되지 않았습니다"
 #: ../libnautilus-private/nautilus-file.c:5829
 #, c-format
 msgid "Specified group '%s' doesn't exist"
-msgstr "지정한 그룹 '%s'이(가) 존재하지 않습니다"
+msgstr "지정한 그룹 '%s'이(가) 없습니다"
 
 #. Translators: "Me" is used to indicate the file is owned by me (the current user)
 #: ../libnautilus-private/nautilus-file.c:5964
@@ -1940,6 +1940,7 @@ msgstr "준비 중"
 #: ../libnautilus-private/nautilus-search-directory-file.c:159
 #: ../libnautilus-private/nautilus-search-directory-file.c:211
 #: ../libnautilus-private/nautilus-search-directory-file.c:256
+#: ../src/nautilus-toolbar-ui.xml.h:5
 msgid "Search"
 msgstr "검색"
 
@@ -2052,7 +2053,9 @@ msgstr "휴지통으로 옮기는 단축키가 바뀌었음을 경고하는 대�
 msgid ""
 "Show a warning dialog for the change of the shortcut for move to trash from "
 "control + delete to just delete."
-msgstr "휴지통으로 옮기는 단축키가 Control + Delete에서 Delete로 바뀌었음을 경고하는 대화 상자를 표시합니다."
+msgstr ""
+"휴지통으로 옮기는 단축키가 Control + Delete에서 Delete로 바뀌었음을 경고하는 "
+"대화 상자를 표시합니다."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:17
 msgid "Use extra mouse button events in Nautilus' browser window"
@@ -2158,7 +2161,10 @@ msgid ""
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
 "sorted from \"z\" to \"a\"; if sorted by size, instead of being "
 "incrementally they will be sorted decrementally."
-msgstr "참이면, 새 창에서 파일을 반대로 정렬합니다. 즉, 이름으로 정렬할 경우에 \"a\"부터 \"z\" 순서로 정렬하는 게 아니라 \"z\"에서 \"a\" 순서로 정렬합니다. 크기 순서대로 정렬하면 오름차 순이 아니라 내림차 순으로 정렬합니다."
+msgstr ""
+"참이면, 새 창에서 파일을 반대로 정렬합니다. 즉, 이름으로 정렬할 경우에 \"a"
+"\"부터 \"z\" 순서로 정렬하는 게 아니라 \"z\"에서 \"a\" 순서로 정렬합니다. 크"
+"기 순서대로 정렬하면 오름차 순이 아니라 내림차 순으로 정렬합니다."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:33
 msgid "Default folder viewer"
@@ -2234,7 +2240,9 @@ msgstr "기본 썸네일 아이콘 크기"
 msgid ""
 "The default size of an icon for a thumbnail in the icon view when using "
 "NAUTILUS_ICON_SIZE_SMALL size."
-msgstr "NAUTILUS_ICON_SIZE_SMALL 크기로 사용할 때 아이콘 보기에 있는 썸네일의 기본 아이콘 크기."
+msgstr ""
+"NAUTILUS_ICON_SIZE_SMALL 크기로 사용할 때 아이콘 보기에 있는 썸네일의 기본 아"
+"이콘 크기."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:45
 msgid "Text Ellipsis Limit"
@@ -2255,7 +2263,18 @@ msgid ""
 "Shorten file names if they exceed four lines for zoom level \"smaller\". Do "
 "not shorten file names for other zoom levels. Available zoom levels: small, "
 "standard, large"
-msgstr "확대/축소 단계 따라 매우 긴 파일 이름의 일부분을 말줄임표로 바꾸는 방법을 지정하는 문자열입니다. 각 목록의 항목은 \"확대/축소 단계:정수\"형식입니다. 각 확대/축소 단계에 대해, 0보다 큰 값이 주어지면, 파일 이름은 값 만큼의 줄까지 사용하게 됩니다. 0보다 작은 값이 주어지면, 파일 이름을 표시하는 길이에 제한이 없어집니다. 확대/축소 단계 지정 없이 \"정수\"의 형식으로 기본 항목을 지정할 수도 있습니다. 이 경우 지정되지 않은 확대/축소 단계에 대해 최대 줄수를 지정합니다. 예: \"0\" - 항상 긴 파일이름 모두 표시하기, \"3\" - 3줄까지 파일이름 표시하기, \"smallest:5,smaller:4,0\" - 가장 작은 확대 수준에서는 5줄까지 표시하고 조금 작은 확대 수준에서는 4줄까지 표시하고 그 외의 확대/축소 단계는 제한하지 않기. 사용 가능한 확대/축소 단계는 다음과 같습니다: small, standard, large"
+msgstr ""
+"확대/축소 단계 따라 매우 긴 파일 이름의 일부분을 말줄임표로 바꾸는 방법을 지"
+"정하는 문자열입니다. 각 목록의 항목은 \"확대/축소 단계:정수\"형식입니다. 각 "
+"확대/축소 단계에 대해, 0보다 큰 값이 주어지면, 파일 이름은 값 만큼의 줄까지 "
+"사용하게 됩니다. 0보다 작은 값이 주어지면, 파일 이름을 표시하는 길이에 제한"
+"이 없어집니다. 확대/축소 단계 지정 없이 \"정수\"의 형식으로 기본 항목을 지정"
+"할 수도 있습니다. 이 경우 지정되지 않은 확대/축소 단계에 대해 최대 줄수를 지"
+"정합니다. 예: \"0\" - 항상 긴 파일이름 모두 표시하기, \"3\" - 3줄까지 파일이"
+"름 표시하기, \"smallest:5,smaller:4,0\" - 가장 작은 확대 수준에서는 5줄까지 "
+"표시하고 조금 작은 확대 수준에서는 4줄까지 표시하고 그 외의 확대/축소 단계는 "
+"제한하지 않기. 사용 가능한 확대/축소 단계는 다음과 같습니다: small, "
+"standard, large"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:47
 msgid "Default list zoom level"
@@ -3380,7 +3399,9 @@ msgstr "삭제 단축키가 바뀌었습니다"
 msgid ""
 "With the latest version of Files, you no longer need to hold Ctrl to delete "
 "- the Delete key will work when pressed on its own."
-msgstr "파일 프로그램의 최근 버전에서는 이제 삭제할 때 Ctrl을 누르고 있을 필요가 없습니다. Delete 키만 눌러도 동작합니다."
+msgstr ""
+"파일 프로그램의 최근 버전에서는 이제 삭제할 때 Ctrl을 누르고 있을 필요가 없습"
+"니다. Delete 키만 눌러도 동작합니다."
 
 #: ../src/nautilus-move-to-trash-shortcut-changed.ui.h:3
 msgid "Got it"
@@ -3769,6 +3790,27 @@ msgstr "위치 입력(_L)"
 #: ../src/nautilus-toolbar-action-menu.xml.h:5
 msgid "_Bookmark this Location"
 msgstr "책갈피에 이 위치 추가(_B)"
+
+#: ../src/nautilus-toolbar-ui.xml.h:1
+msgid "Action menu"
+msgstr "동작 메뉴"
+
+#: ../src/nautilus-toolbar-ui.xml.h:2
+msgid "Open action menu"
+msgstr "동작 메뉴를 엽니다"
+
+#: ../src/nautilus-toolbar-ui.xml.h:3
+msgid "View menu"
+msgstr "보기 메뉴"
+
+#: ../src/nautilus-toolbar-ui.xml.h:4
+msgid "Open view menu"
+msgstr "보기 메뉴를 엽니다"
+
+# tooltip
+#: ../src/nautilus-toolbar-ui.xml.h:6
+msgid "Search files"
+msgstr "파일을 검색합니다"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:1
 msgid "Sort"
