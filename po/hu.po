@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2015-03-06 13:43+0000\n"
-"PO-Revision-Date: 2015-03-06 21:25+0100\n"
+"POT-Creation-Date: 2015-03-14 11:24+0000\n"
+"PO-Revision-Date: 2015-03-14 20:59+0100\n"
 "Last-Translator: Balázs Úr <urbalazs@gmail.com>\n"
 "Language-Team: Hungarian <openscope at googlegroups dot com>\n"
 "Language: hu\n"
@@ -65,7 +65,7 @@ msgstr "Kapcsolódás kiszolgálóhoz"
 
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
 #: ../src/nautilus-file-management-properties.ui.h:28
-#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2649
+#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2652
 msgid "Files"
 msgstr "Fájlok"
 
@@ -1981,6 +1981,7 @@ msgstr "Előkészítés"
 #: ../libnautilus-private/nautilus-search-directory-file.c:159
 #: ../libnautilus-private/nautilus-search-directory-file.c:211
 #: ../libnautilus-private/nautilus-search-directory-file.c:256
+#: ../src/nautilus-toolbar-ui.xml.h:5
 msgid "Search"
 msgstr "Keresés"
 
@@ -3882,6 +3883,27 @@ msgstr "_Hely megadása"
 msgid "_Bookmark this Location"
 msgstr "Hely _könyvjelzőzése"
 
+#: ../src/nautilus-toolbar-ui.xml.h:1
+msgid "Action menu"
+msgstr "Művelet menü"
+
+#: ../src/nautilus-toolbar-ui.xml.h:2
+msgid "Open action menu"
+msgstr "Művelet menü megnyitása"
+
+#: ../src/nautilus-toolbar-ui.xml.h:3
+msgid "View menu"
+msgstr "Nézet menü"
+
+#: ../src/nautilus-toolbar-ui.xml.h:4
+msgid "Open view menu"
+msgstr "Nézet menü megnyitása"
+
+#: ../src/nautilus-toolbar-ui.xml.h:6
+#| msgid "Search for files"
+msgid "Search files"
+msgstr "Fájlok keresése"
+
 #: ../src/nautilus-toolbar-view-menu.xml.h:1
 msgid "Sort"
 msgstr "Rendezés"
@@ -4074,67 +4096,67 @@ msgstr "A meghajtó nem állítható le"
 msgid "Unable to start “%s”"
 msgstr "A(z) „%s” nem indítható"
 
-#: ../src/nautilus-view.c:6198
+#: ../src/nautilus-view.c:6199
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "Új mappa a kijelöltekkel (%'d elem)"
 msgstr[1] "Új mappa a kijelöltekkel (%'d elem)"
 
-#: ../src/nautilus-view.c:6246
+#: ../src/nautilus-view.c:6247
 #, c-format
 msgid "Open With %s"
 msgstr "Megnyitás ezzel: %s"
 
-#: ../src/nautilus-view.c:6255
+#: ../src/nautilus-view.c:6256
 msgid "Run"
 msgstr "Futtatás"
 
-#: ../src/nautilus-view.c:6257
+#: ../src/nautilus-view.c:6258
 msgid "Open"
 msgstr "Megnyitás"
 
-#: ../src/nautilus-view.c:6308 ../src/nautilus-view-context-menus.xml.h:18
+#: ../src/nautilus-view.c:6309 ../src/nautilus-view-context-menus.xml.h:18
 msgid "_Start"
 msgstr "In_dítás"
 
-#: ../src/nautilus-view.c:6311
+#: ../src/nautilus-view.c:6312
 msgid "_Connect"
 msgstr "Kapcs_olódás"
 
-#: ../src/nautilus-view.c:6314
+#: ../src/nautilus-view.c:6315
 msgid "_Start Multi-disk Drive"
 msgstr "Többleme_zes meghajtó indítása"
 
-#: ../src/nautilus-view.c:6317
+#: ../src/nautilus-view.c:6318
 msgid "U_nlock Drive"
 msgstr "Meghajtó felol_dása"
 
-#: ../src/nautilus-view.c:6333
+#: ../src/nautilus-view.c:6334
 msgid "Stop Drive"
 msgstr "Meghajtó leállítása"
 
-#: ../src/nautilus-view.c:6336
+#: ../src/nautilus-view.c:6337
 msgid "_Safely Remove Drive"
 msgstr "Meghajtó _biztonságos eltávolítása"
 
-#: ../src/nautilus-view.c:6339
+#: ../src/nautilus-view.c:6340
 msgid "_Disconnect"
 msgstr "_Bontás"
 
-#: ../src/nautilus-view.c:6342
+#: ../src/nautilus-view.c:6343
 msgid "_Stop Multi-disk Drive"
 msgstr "_Többlemezes meghajtó leállítása"
 
-#: ../src/nautilus-view.c:6345
+#: ../src/nautilus-view.c:6346
 msgid "_Lock Drive"
 msgstr "Meghajtó _zárolása"
 
-#: ../src/nautilus-view.c:7544
+#: ../src/nautilus-view.c:7545
 msgid "Content View"
 msgstr "Tartalomnézet"
 
-#: ../src/nautilus-view.c:7545
+#: ../src/nautilus-view.c:7546
 msgid "View of the current folder"
 msgstr "A jelenlegi mappa nézete"
 
@@ -4275,38 +4297,38 @@ msgstr "T_ulajdonságok"
 msgid "_Format…"
 msgstr "_Formázás…"
 
-#: ../src/nautilus-window.c:1543
+#. Translators: only one item has been deleted and %s is its name.
+#: ../src/nautilus-window.c:1544
 #, c-format
-#| msgid "“%s” selected"
 msgid "“%s” deleted"
 msgstr "„%s” törölve"
 
-#: ../src/nautilus-window.c:1546
+#. Translators: one or more items might have been deleted, and %d
+#. * is the count.
+#: ../src/nautilus-window.c:1549
 #, c-format
-#| msgid "%'d file left to delete"
-#| msgid_plural "%'d files left to delete"
 msgid "%d file deleted"
 msgid_plural "%d files deleted"
 msgstr[0] "%d fájl törölve"
 msgstr[1] "%d fájl törölve"
 
-#: ../src/nautilus-window.c:1717
+#: ../src/nautilus-window.c:1720
 msgid "_New Tab"
 msgstr "Új _lap"
 
-#: ../src/nautilus-window.c:1727
+#: ../src/nautilus-window.c:1730
 msgid "Move Tab _Left"
 msgstr "Lap mozgatása b_alra"
 
-#: ../src/nautilus-window.c:1735
+#: ../src/nautilus-window.c:1738
 msgid "Move Tab _Right"
 msgstr "Lap mozgatása j_obbra"
 
-#: ../src/nautilus-window.c:1746
+#: ../src/nautilus-window.c:1749
 msgid "_Close Tab"
 msgstr "Lap _bezárása"
 
-#: ../src/nautilus-window.c:2651
+#: ../src/nautilus-window.c:2654
 msgid "Access and organize your files."
 msgstr "Fájlok elérése és rendszerezése."
 
@@ -4314,7 +4336,7 @@ msgstr "Fájlok elérése és rendszerezése."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2660
+#: ../src/nautilus-window.c:2663
 msgid "translator-credits"
 msgstr ""
 "Bán Szabolcs <shooby at gnome dot hu>\n"
@@ -5041,9 +5063,6 @@ msgstr "Megnyitás ezzel:"
 
 #~ msgid "Display Nautilus help"
 #~ msgstr "A Nautilus súgójának megjelenítése"
-
-#~ msgid "Search for files"
-#~ msgstr "Fájlok keresése"
 
 #~ msgid ""
 #~ "Locate files based on file name and type. Save your searches for later "
