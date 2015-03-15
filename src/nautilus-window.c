@@ -2493,10 +2493,6 @@ nautilus_window_init (NautilusWindow *window)
 	g_signal_connect_object (window->priv->notification_delete_undo, "clicked",
 	                         G_CALLBACK (nautilus_window_on_notification_delete_undo_clicked), window, 0);
 
-	g_object_bind_property (window, "disable-chrome",
-				window->priv->sidebar, "visible",
-				G_BINDING_INVERT_BOOLEAN);
-
 	window->priv->slots = NULL;
 	window->priv->active_slot = NULL;
 
