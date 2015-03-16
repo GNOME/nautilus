@@ -897,13 +897,31 @@ nautilus_application_set_desktop_visible (NautilusApplication *self,
 static void
 update_desktop_from_gsettings (NautilusApplication *self)
 {
+	GdkDisplay *display;
+	gboolean visible;
+
 	/* desktop GSetting was overridden - don't do anything */
 	if (self->priv->desktop_override) {
 		return;
 	}
 
-	nautilus_application_set_desktop_visible (self, g_settings_get_boolean (gnome_background_preferences,
-										NAUTILUS_PREFERENCES_SHOW_DESKTOP));
+#ifdef GDK_WINDOWING_X11
+	display = gdk_display_get_default ();
+	visible = g_settings_get_boolean (gnome_background_preferences,
+                                          NAUTILUS_PREFERENCES_SHOW_DESKTOP);
+	if (!GDK_IS_X11_DISPLAY (display)) {
+		if (visible)
+			g_warning ("Desktop icons only supported on X11. Desktop not created");
+
+		return;
+	}
+
+	nautilus_application_set_desktop_visible (self, visible);
+
+	return;
+#endif
+
+	g_warning ("Desktop icons only supported on X11. Desktop not created");
 }
 
 static void
