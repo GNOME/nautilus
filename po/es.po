@@ -25,8 +25,8 @@ msgstr ""
 "Project-Id-Version: nautilus.master.es\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2015-03-08 11:23+0000\n"
-"PO-Revision-Date: 2015-03-08 21:20+0100\n"
+"POT-Creation-Date: 2015-03-16 11:18+0000\n"
+"PO-Revision-Date: 2015-03-16 17:56+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
 "Language: \n"
@@ -2222,6 +2222,7 @@ msgstr "Preparando"
 #: ../libnautilus-private/nautilus-search-directory-file.c:159
 #: ../libnautilus-private/nautilus-search-directory-file.c:211
 #: ../libnautilus-private/nautilus-search-directory-file.c:256
+#: ../src/nautilus-toolbar-ui.xml.h:5
 msgid "Search"
 msgstr "Buscar"
 
@@ -4327,6 +4328,30 @@ msgstr "Introducir _lugar"
 msgid "_Bookmark this Location"
 msgstr "Añadir este lugar a _marcadores"
 
+# src/nautilus-location-bar.c:401
+#: ../src/nautilus-toolbar-ui.xml.h:1
+#| msgid "Acti_on:"
+msgid "Action menu"
+msgstr "Menú Acción"
+
+#: ../src/nautilus-toolbar-ui.xml.h:2
+msgid "Open action menu"
+msgstr "Abrir el menú «Acción»"
+
+#: ../src/nautilus-toolbar-ui.xml.h:3
+msgid "View menu"
+msgstr "Menú Ver"
+
+#: ../src/nautilus-toolbar-ui.xml.h:4
+msgid "Open view menu"
+msgstr "Abrir el menú «Ver»"
+
+# libnautilus-private/nautilus-global-preferences.c:727
+#: ../src/nautilus-toolbar-ui.xml.h:6
+#| msgid "Search for files"
+msgid "Search files"
+msgstr "Buscar archivos"
+
 #: ../src/nautilus-toolbar-view-menu.xml.h:1
 msgid "Sort"
 msgstr "Ordenar"
@@ -4545,7 +4570,7 @@ msgstr "No se pudo parar la unidad"
 msgid "Unable to start “%s”"
 msgstr "No se pudo iniciar «%s»"
 
-#: ../src/nautilus-view.c:6198
+#: ../src/nautilus-view.c:6199
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
@@ -4553,64 +4578,64 @@ msgstr[0] "Carpeta nueva con la selección (%'d elemento)"
 msgstr[1] "Carpeta nueva con la selección (%'d elementos)"
 
 # src/nautilus-sidebar.c:1145
-#: ../src/nautilus-view.c:6246
+#: ../src/nautilus-view.c:6247
 #, c-format
 msgid "Open With %s"
 msgstr "Abrir con %s"
 
-#: ../src/nautilus-view.c:6255
+#: ../src/nautilus-view.c:6256
 msgid "Run"
 msgstr "Ejecutar"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-directory-view.c:2114
-#: ../src/nautilus-view.c:6257
+#: ../src/nautilus-view.c:6258
 msgid "Open"
 msgstr "Abrir"
 
-#: ../src/nautilus-view.c:6308 ../src/nautilus-view-context-menus.xml.h:18
+#: ../src/nautilus-view.c:6309 ../src/nautilus-view-context-menus.xml.h:18
 msgid "_Start"
 msgstr "_Iniciar"
 
-#: ../src/nautilus-view.c:6311
+#: ../src/nautilus-view.c:6312
 msgid "_Connect"
 msgstr "_Conectar"
 
-#: ../src/nautilus-view.c:6314
+#: ../src/nautilus-view.c:6315
 msgid "_Start Multi-disk Drive"
 msgstr "_Iniciar unidad multidisco"
 
-#: ../src/nautilus-view.c:6317
+#: ../src/nautilus-view.c:6318
 msgid "U_nlock Drive"
 msgstr "D_esbloquear unidad"
 
-#: ../src/nautilus-view.c:6333
+#: ../src/nautilus-view.c:6334
 msgid "Stop Drive"
 msgstr "Detener unidad"
 
 # src/nautilus-property-browser.c:1985
-#: ../src/nautilus-view.c:6336
+#: ../src/nautilus-view.c:6337
 msgid "_Safely Remove Drive"
 msgstr "Expulsar unidad de forma _segura"
 
-#: ../src/nautilus-view.c:6339
+#: ../src/nautilus-view.c:6340
 msgid "_Disconnect"
 msgstr "_Desconectar"
 
-#: ../src/nautilus-view.c:6342
+#: ../src/nautilus-view.c:6343
 msgid "_Stop Multi-disk Drive"
 msgstr "_Parar unidad multidisco"
 
-#: ../src/nautilus-view.c:6345
+#: ../src/nautilus-view.c:6346
 msgid "_Lock Drive"
 msgstr "_Bloquear unidad"
 
 # src/file-manager/fm-properties-window.c:878
-#: ../src/nautilus-view.c:7544
+#: ../src/nautilus-view.c:7545
 msgid "Content View"
 msgstr "Vista del contenido"
 
-#: ../src/nautilus-view.c:7545
+#: ../src/nautilus-view.c:7546
 msgid "View of the current folder"
 msgstr "Vista de la carpeta actual"
 
@@ -4782,7 +4807,6 @@ msgstr "_Formatear…"
 #. Translators: only one item has been deleted and %s is its name.
 #: ../src/nautilus-window.c:1544
 #, c-format
-#| msgid "“%s” selected"
 msgid "“%s” deleted"
 msgstr "«%s» eliminado"
 
@@ -4791,8 +4815,6 @@ msgstr "«%s» eliminado"
 #. * is the count.
 #: ../src/nautilus-window.c:1549
 #, c-format
-#| msgid "%'d file left to delete"
-#| msgid_plural "%'d files left to delete"
 msgid "%d file deleted"
 msgid_plural "%d files deleted"
 msgstr[0] "%d archivo eliminado"
@@ -5771,10 +5793,6 @@ msgstr "Abrir con:"
 # src/nautilus-window-manage-views.c:218 src/nautilus-window-menus.c:437
 #~ msgid "Display Nautilus help"
 #~ msgstr "Mostrar la ayuda de Nautilus"
-
-# libnautilus-private/nautilus-global-preferences.c:727
-#~ msgid "Search for files"
-#~ msgstr "Buscar archivos"
 
 #~ msgid ""
 #~ "Locate files based on file name and type. Save your searches for later "
@@ -7697,10 +7715,6 @@ msgstr "Abrir con:"
 
 #~ msgid "<b>Other Media</b>"
 #~ msgstr "<b>Otros soportes</b>"
-
-# src/nautilus-location-bar.c:401
-#~ msgid "Acti_on:"
-#~ msgstr "_Acción:"
 
 #~ msgid "B_rowse media when inserted"
 #~ msgstr "E_xaminar los soportes al introducirlos"
