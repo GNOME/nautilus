@@ -17,10 +17,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-master-po-gl-54706\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-03 01:18+0100\n"
-"PO-Revision-Date: 2015-03-03 01:18+0100\n"
+"POT-Creation-Date: 2015-03-18 00:37+0100\n"
+"PO-Revision-Date: 2015-03-18 00:40+0100\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
-"Language-Team: Galician <>\n"
+"Language-Team: Galician <gnome-l10n-gl@gnome.org>\n"
 "Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -65,7 +65,7 @@ msgstr "Conectarse a un servidor"
 
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
 #: ../src/nautilus-file-management-properties.ui.h:28
-#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2658
+#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2652
 msgid "Files"
 msgstr "Ficheiros"
 
@@ -2013,6 +2013,7 @@ msgstr "Preparando"
 #: ../libnautilus-private/nautilus-search-directory-file.c:159
 #: ../libnautilus-private/nautilus-search-directory-file.c:211
 #: ../libnautilus-private/nautilus-search-directory-file.c:256
+#: ../src/nautilus-toolbar-ui.xml.h:5
 msgid "Search"
 msgstr "Buscar"
 
@@ -3531,10 +3532,6 @@ msgstr "Entendido"
 msgid "Close tab"
 msgstr "Pechar lapela"
 
-#: ../src/nautilus-progress-info-widget.xml.h:1
-msgid "label"
-msgstr "etiqueta"
-
 #: ../src/nautilus-progress-ui-handler.c:104
 #: ../src/nautilus-progress-ui-handler.c:171
 #: ../src/nautilus-progress-ui-handler.c:222
@@ -3919,6 +3916,26 @@ msgstr "Escriba a localización"
 msgid "_Bookmark this Location"
 msgstr "_Marcar esta localización"
 
+#: ../src/nautilus-toolbar-ui.xml.h:1
+msgid "Action menu"
+msgstr "Menú de acción"
+
+#: ../src/nautilus-toolbar-ui.xml.h:2
+msgid "Open action menu"
+msgstr "Abrir menú de acción"
+
+#: ../src/nautilus-toolbar-ui.xml.h:3
+msgid "View menu"
+msgstr "Menú Ver"
+
+#: ../src/nautilus-toolbar-ui.xml.h:4
+msgid "Open view menu"
+msgstr "Abrir menú Ver"
+
+#: ../src/nautilus-toolbar-ui.xml.h:6
+msgid "Search files"
+msgstr "Buscar ficheiros"
+
 #: ../src/nautilus-toolbar-view-menu.xml.h:1
 msgid "Sort"
 msgstr "Ordenar"
@@ -4111,67 +4128,67 @@ msgstr "Non é posíbel deter a unidade"
 msgid "Unable to start “%s”"
 msgstr "Non foi posíbel iniciar «%s»"
 
-#: ../src/nautilus-view.c:6198
+#: ../src/nautilus-view.c:6199
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "Cartafol novo coa selección (%'d elemento)"
 msgstr[1] "Cartafol novo coa selección (%'d elementos)"
 
-#: ../src/nautilus-view.c:6246
+#: ../src/nautilus-view.c:6247
 #, c-format
 msgid "Open With %s"
 msgstr "Abrir con %s"
 
-#: ../src/nautilus-view.c:6255
+#: ../src/nautilus-view.c:6256
 msgid "Run"
 msgstr "Executar"
 
-#: ../src/nautilus-view.c:6257
+#: ../src/nautilus-view.c:6258
 msgid "Open"
 msgstr "Abrir"
 
-#: ../src/nautilus-view.c:6308 ../src/nautilus-view-context-menus.xml.h:18
+#: ../src/nautilus-view.c:6309 ../src/nautilus-view-context-menus.xml.h:18
 msgid "_Start"
 msgstr "_Iniciar"
 
-#: ../src/nautilus-view.c:6311
+#: ../src/nautilus-view.c:6312
 msgid "_Connect"
 msgstr "_Conectar"
 
-#: ../src/nautilus-view.c:6314
+#: ../src/nautilus-view.c:6315
 msgid "_Start Multi-disk Drive"
 msgstr "_Iniciar unidade multidisco"
 
-#: ../src/nautilus-view.c:6317
+#: ../src/nautilus-view.c:6318
 msgid "U_nlock Drive"
 msgstr "De_sbloquear unidade"
 
-#: ../src/nautilus-view.c:6333
+#: ../src/nautilus-view.c:6334
 msgid "Stop Drive"
 msgstr "Deter unidade"
 
-#: ../src/nautilus-view.c:6336
+#: ../src/nautilus-view.c:6337
 msgid "_Safely Remove Drive"
 msgstr "Extraer unidade de forma _segura"
 
-#: ../src/nautilus-view.c:6339
+#: ../src/nautilus-view.c:6340
 msgid "_Disconnect"
 msgstr "_Desconectar"
 
-#: ../src/nautilus-view.c:6342
+#: ../src/nautilus-view.c:6343
 msgid "_Stop Multi-disk Drive"
 msgstr "_Deter unidade multidisco"
 
-#: ../src/nautilus-view.c:6345
+#: ../src/nautilus-view.c:6346
 msgid "_Lock Drive"
 msgstr "_Bloquear unidade"
 
-#: ../src/nautilus-view.c:7544
+#: ../src/nautilus-view.c:7545
 msgid "Content View"
 msgstr "Visualización de contido"
 
-#: ../src/nautilus-view.c:7545
+#: ../src/nautilus-view.c:7546
 msgid "View of the current folder"
 msgstr "Visualización do cartafol actual"
 
@@ -4313,39 +4330,38 @@ msgstr "_Propiedades"
 msgid "_Format…"
 msgstr "_Formatar…"
 
-#. Translators: this is the second part of a "%d files deleted" string
-#: ../src/nautilus-window.c:1545 ../src/nautilus-window.c:1552
+#. Translators: only one item has been deleted and %s is its name.
+#: ../src/nautilus-window.c:1544
 #, c-format
-msgid "%s deleted"
-msgid_plural "%s deleted"
-msgstr[0] "%s eliminado"
-msgstr[1] "%s eliminados"
+msgid "“%s” deleted"
+msgstr "«%s» eliminado"
 
-#. Translators: this is the first part of a "%d files deleted" string
-#: ../src/nautilus-window.c:1548
+#. Translators: one or more items might have been deleted, and %d
+#. * is the count.
+#: ../src/nautilus-window.c:1549
 #, c-format
-msgid "%d file"
-msgid_plural "%d files"
-msgstr[0] "%d ficheiro"
-msgstr[1] "%d ficheiros"
+msgid "%d file deleted"
+msgid_plural "%d files deleted"
+msgstr[0] "%d ficheiro eliminado"
+msgstr[1] "%d ficheiros eliminados"
 
-#: ../src/nautilus-window.c:1726
+#: ../src/nautilus-window.c:1720
 msgid "_New Tab"
 msgstr "_Nova lapela"
 
-#: ../src/nautilus-window.c:1736
+#: ../src/nautilus-window.c:1730
 msgid "Move Tab _Left"
 msgstr "Mover a lapela á _esquerda"
 
-#: ../src/nautilus-window.c:1744
+#: ../src/nautilus-window.c:1738
 msgid "Move Tab _Right"
 msgstr "Mover a lapela á _dereita"
 
-#: ../src/nautilus-window.c:1755
+#: ../src/nautilus-window.c:1749
 msgid "_Close Tab"
 msgstr "_Pechar a lapela"
 
-#: ../src/nautilus-window.c:2660
+#: ../src/nautilus-window.c:2654
 msgid "Access and organize your files."
 msgstr "Acceder aos seus ficheiros e organizalos."
 
@@ -4353,7 +4369,7 @@ msgstr "Acceder aos seus ficheiros e organizalos."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2669
+#: ../src/nautilus-window.c:2663
 msgid "translator-credits"
 msgstr ""
 "Leandro Regueiro <leandro.regueiro@gmail.com>, 2012\n"
@@ -4486,6 +4502,19 @@ msgstr "Contén fotos e música"
 #: ../src/nautilus-x-content-bar.c:201
 msgid "Open with:"
 msgstr "Abrir con:"
+
+#~ msgid "label"
+#~ msgstr "etiqueta"
+
+#~ msgid "%s deleted"
+#~ msgid_plural "%s deleted"
+#~ msgstr[0] "%s eliminado"
+#~ msgstr[1] "%s eliminados"
+
+#~ msgid "%d file"
+#~ msgid_plural "%d files"
+#~ msgstr[0] "%d ficheiro"
+#~ msgstr[1] "%d ficheiros"
 
 #~ msgid "Whether to enable immediate deletion"
 #~ msgstr "Indica se se activa a eliminación inmediata"
@@ -5072,9 +5101,6 @@ msgstr "Abrir con:"
 
 #~ msgid "Display Nautilus help"
 #~ msgstr "Mostrar a axuda de Nautilus"
-
-#~ msgid "Search for files"
-#~ msgstr "Buscar por ficheiros"
 
 #~ msgid ""
 #~ "Locate files based on file name and type. Save your searches for later "
