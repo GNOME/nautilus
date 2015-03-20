@@ -51,8 +51,8 @@ msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2015-03-04 17:49+0000\n"
-"PO-Revision-Date: 2015-03-04 22:41+0200\n"
+"POT-Creation-Date: 2015-03-11 15:03+0000\n"
+"PO-Revision-Date: 2015-03-11 20:02+0200\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
 "Language-Team: suomi <gnome-fi-laatu@lists.sourceforge.net>\n"
 "Language: fi\n"
@@ -103,7 +103,7 @@ msgstr "Yhdistä palvelimeen"
 
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
 #: ../src/nautilus-file-management-properties.ui.h:28
-#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2658
+#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2652
 msgid "Files"
 msgstr "Tiedostot"
 
@@ -232,7 +232,6 @@ msgid "The selection rectangle"
 msgstr "Valittu suorakulmio"
 
 #: ../libnautilus-private/nautilus-column-chooser.c:416
-#| msgid "Reset View to _Defaults"
 msgid "Reset to De_fault"
 msgstr "Palauta _oletukset"
 
@@ -325,7 +324,6 @@ msgid "The location of the file."
 msgstr "Tiedoston sijainti."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:136
-#| msgid "Modified"
 msgid "Modified - Time"
 msgstr "Muokattu - Aika"
 
@@ -466,7 +464,6 @@ msgstr "%H:%M"
 
 #. Translators: Time in 12h format
 #: ../libnautilus-private/nautilus-file.c:4709
-#| msgid "%-I:%M %P"
 msgid "%l:%M %p"
 msgstr "%l:%M %p"
 
@@ -505,7 +502,6 @@ msgstr "%a %H:%M"
 #. * a time in 12h format. i.e. "Monday 9:04 PM"
 #: ../libnautilus-private/nautilus-file.c:4746
 #, no-c-format
-#| msgid "%-I:%M %P"
 msgid "%a %l:%M %p"
 msgstr "%a %l:%M %p"
 
@@ -529,7 +525,6 @@ msgstr "%-e. %b %H:%M"
 #. * 12h format i.e. "3 Feb 9:04"
 #: ../libnautilus-private/nautilus-file.c:4767
 #, no-c-format
-#| msgid "%a, %b %e %Y %I:%M:%S %p"
 msgid "%-e %b %l:%M %p"
 msgstr "%-e %b %l:%M %p"
 
@@ -537,7 +532,6 @@ msgstr "%-e %b %l:%M %p"
 #. * month name followed by the year i.e. "3 Feb 2015"
 #: ../libnautilus-private/nautilus-file.c:4775
 #, no-c-format
-#| msgid "%b %-d %Y"
 msgid "%-e %b %Y"
 msgstr "%-e. %Bta %Y"
 
@@ -546,7 +540,6 @@ msgstr "%-e. %Bta %Y"
 #. * by a time in 24h format i.e. "3 Feb 2015 23:04"
 #: ../libnautilus-private/nautilus-file.c:4782
 #, no-c-format
-#| msgid "%a, %b %e %Y %I:%M:%S %p"
 msgid "%-e %b %Y %H:%M"
 msgstr "%-e. %b %Y %H:%M"
 
@@ -555,7 +548,6 @@ msgstr "%-e. %b %Y %H:%M"
 #. * by a time in 12h format i.e. "3 Feb 2015 9:04 PM"
 #: ../libnautilus-private/nautilus-file.c:4788
 #, no-c-format
-#| msgid "%a, %b %e %Y %I:%M:%S %p"
 msgid "%-e %b %Y %l:%M %p"
 msgstr "%-e %b %Y %l:%M %p"
 
@@ -2045,6 +2037,7 @@ msgstr "Valmistellaan"
 #: ../libnautilus-private/nautilus-search-directory-file.c:159
 #: ../libnautilus-private/nautilus-search-directory-file.c:211
 #: ../libnautilus-private/nautilus-search-directory-file.c:256
+#: ../src/nautilus-toolbar-ui.xml.h:5
 msgid "Search"
 msgstr "Etsi"
 
@@ -2734,7 +2727,6 @@ msgid "New _Window"
 msgstr "_Uusi ikkuna"
 
 #: ../src/nautilus-app-menu.ui.h:2
-#| msgid "_Show Sidebar"
 msgid "Sidebar"
 msgstr "Sivupaneeli"
 
@@ -3203,7 +3195,6 @@ msgid "Small"
 msgstr "Pieni"
 
 #: ../src/nautilus-file-management-properties.ui.h:45
-#| msgid "Calendar"
 msgid "Standard"
 msgstr "Tavallinen"
 
@@ -3698,7 +3689,6 @@ msgid "Link target:"
 msgstr "Linkin kohde:"
 
 #: ../src/nautilus-properties-window.c:2998
-#| msgid "_Paste Into Folder"
 msgid "Parent Folder:"
 msgstr "Ylätason kansio:"
 
@@ -3947,26 +3937,43 @@ msgid "Select _All"
 msgstr "Valitse _kaikki"
 
 #: ../src/nautilus-toolbar-action-menu.xml.h:4
-#| msgid "Enter _Location…"
 msgid "Enter _Location"
 msgstr "Kirjoita _sijainti"
 
 #: ../src/nautilus-toolbar-action-menu.xml.h:5
-#| msgid "Bookmark this Location"
 msgid "_Bookmark this Location"
 msgstr "Lisää sijainti ki_rjanmerkiksi"
+
+#: ../src/nautilus-toolbar-ui.xml.h:1
+msgid "Action menu"
+msgstr "Toimintovalikko"
+
+#: ../src/nautilus-toolbar-ui.xml.h:2
+msgid "Open action menu"
+msgstr "Avaa toimintovalikko"
+
+#: ../src/nautilus-toolbar-ui.xml.h:3
+msgid "View menu"
+msgstr "Näkymävalikko"
+
+#: ../src/nautilus-toolbar-ui.xml.h:4
+msgid "Open view menu"
+msgstr "Avaa näkymävalikko"
+
+#: ../src/nautilus-toolbar-ui.xml.h:6
+#| msgid "Search for files"
+msgid "Search files"
+msgstr "Etsi tiedostoja"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:1
 msgid "Sort"
 msgstr "Järjestys"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:3
-#| msgid "Size"
 msgid "_Size"
 msgstr "_Koko"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:4
-#| msgid "Type"
 msgid "_Type"
 msgstr "_Tyyppi"
 
@@ -3975,22 +3982,18 @@ msgid "Last _Opened"
 msgstr "Viim_eksi avattu"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:6
-#| msgid "Empty _Trash"
 msgid "Last _Trashed"
 msgstr "R_oskakoriin siirtoaika"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:7
-#| msgid "By Search Relevance"
 msgid "Search _Relevance"
 msgstr "Hakureleva_nssi"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:8
-#| msgid "Re_versed Order"
 msgid "Re_verse Order"
 msgstr "_Käänteinen järjestys"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:9
-#| msgid "Visible _Columns…"
 msgid "_Visible Columns…"
 msgstr "Näkyvät _sarakkeet…"
 
@@ -4016,7 +4019,6 @@ msgstr "Palauta valitut kohteet niiden alkuperäisiin sijainteihin"
 
 #. Translators: "Empty" is an action (for the trash) , not a state
 #: ../src/nautilus-trash-bar.c:209
-#| msgid "Empty"
 msgid "_Empty"
 msgstr "_Tyhjennä"
 
@@ -4155,69 +4157,67 @@ msgstr "Asemaa ei voi pysäyttää"
 msgid "Unable to start “%s”"
 msgstr "Kohdetta \"%s\" ei voi käynnistää"
 
-#: ../src/nautilus-view.c:6198
+#: ../src/nautilus-view.c:6199
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "Uusi kansio valinnalla (%'d kohde)"
 msgstr[1] "Uusi kansio valinnalla (%'d kohdetta)"
 
-#: ../src/nautilus-view.c:6246
+#: ../src/nautilus-view.c:6247
 #, c-format
 msgid "Open With %s"
 msgstr "Avaa sovelluksella %s"
 
-#: ../src/nautilus-view.c:6255
+#: ../src/nautilus-view.c:6256
 msgid "Run"
 msgstr "Suorita"
 
-#: ../src/nautilus-view.c:6257
-#| msgid "_Open"
+#: ../src/nautilus-view.c:6258
 msgid "Open"
 msgstr "Avaa"
 
-#: ../src/nautilus-view.c:6308 ../src/nautilus-view-context-menus.xml.h:18
+#: ../src/nautilus-view.c:6309 ../src/nautilus-view-context-menus.xml.h:18
 msgid "_Start"
 msgstr "_Käynnistä"
 
-#: ../src/nautilus-view.c:6311
+#: ../src/nautilus-view.c:6312
 msgid "_Connect"
 msgstr "_Yhdistä"
 
-#: ../src/nautilus-view.c:6314
+#: ../src/nautilus-view.c:6315
 msgid "_Start Multi-disk Drive"
 msgstr "_Käynnistä usean levyn asema"
 
-#: ../src/nautilus-view.c:6317
+#: ../src/nautilus-view.c:6318
 msgid "U_nlock Drive"
 msgstr "Avaa _aseman lukitus"
 
-#: ../src/nautilus-view.c:6333
-#| msgid "_Lock Drive"
+#: ../src/nautilus-view.c:6334
 msgid "Stop Drive"
 msgstr "Pysäytä asema"
 
-#: ../src/nautilus-view.c:6336
+#: ../src/nautilus-view.c:6337
 msgid "_Safely Remove Drive"
 msgstr "_Sammuta asema turvallisesti"
 
-#: ../src/nautilus-view.c:6339
+#: ../src/nautilus-view.c:6340
 msgid "_Disconnect"
 msgstr "_Katkaise yhteys"
 
-#: ../src/nautilus-view.c:6342
+#: ../src/nautilus-view.c:6343
 msgid "_Stop Multi-disk Drive"
 msgstr "_Pysäytä usean levyn asema"
 
-#: ../src/nautilus-view.c:6345
+#: ../src/nautilus-view.c:6346
 msgid "_Lock Drive"
 msgstr "_Lukitse asema"
 
-#: ../src/nautilus-view.c:7544
+#: ../src/nautilus-view.c:7545
 msgid "Content View"
 msgstr "Sisältönäkymä"
 
-#: ../src/nautilus-view.c:7545
+#: ../src/nautilus-view.c:7546
 msgid "View of the current folder"
 msgstr "Nykyisen kansion näkymä"
 
@@ -4230,17 +4230,14 @@ msgid "P_roperties"
 msgstr "_Ominaisuudet"
 
 #: ../src/nautilus-view-context-menus.xml.h:6
-#| msgid "_Keep Aligned"
 msgid "_Keep aligned"
 msgstr "Pi_dä tasattuna"
 
 #: ../src/nautilus-view-context-menus.xml.h:7
-#| msgid "_Organize Desktop by Name"
 msgid "Organize _Desktop by Name"
 msgstr "_Järjestä kohteet nimen mukaan"
 
 #: ../src/nautilus-view-context-menus.xml.h:8
-#| msgid "Change Desktop _Background"
 msgid "Change _Background"
 msgstr "Muuta työpöydän _taustaa"
 
@@ -4253,22 +4250,18 @@ msgid "_Open Scripts Folder"
 msgstr "Avaa _skriptikansio"
 
 #: ../src/nautilus-view-context-menus.xml.h:11
-#| msgid "Open _Item Location"
 msgid "_Open Item Location"
 msgstr "A_vaa kohteen sijainti"
 
 #: ../src/nautilus-view-context-menus.xml.h:12
-#| msgid "Open in New _Window"
 msgid "Open In New _Window"
 msgstr "Avaa uudessa _ikkunassa"
 
 #: ../src/nautilus-view-context-menus.xml.h:13
-#| msgid "Open in New _Tab"
 msgid "Open In New _Tab"
 msgstr "Avaa uudessa _välilehdessä"
 
 #: ../src/nautilus-view-context-menus.xml.h:14
-#| msgid "Open With Other _Application…"
 msgid "Open With Other _Application"
 msgstr "Avaa _muussa sovelluksessa"
 
@@ -4297,17 +4290,14 @@ msgid "_Paste Into Folder"
 msgstr "L_iitä tiedostoja kansioon"
 
 #: ../src/nautilus-view-context-menus.xml.h:24
-#| msgid "Move To…"
 msgid "Move to…"
 msgstr "Siirrä sijaintiin…"
 
 #: ../src/nautilus-view-context-menus.xml.h:25
-#| msgid "Copy To…"
 msgid "Copy to…"
 msgstr "Kopioi sijaintiin…"
 
 #: ../src/nautilus-view-context-menus.xml.h:27
-#| msgid "_Redo Restore from Trash"
 msgid "_Delete from Trash"
 msgstr "Poista _roskakorista"
 
@@ -4316,7 +4306,6 @@ msgid "Empty Trash"
 msgstr "Tyhjennä roskakori"
 
 #: ../src/nautilus-view-context-menus.xml.h:29
-#| msgid "_Undo Restore from Trash"
 msgid "_Restore From Trash"
 msgstr "_Palauta roskakorista"
 
@@ -4325,17 +4314,14 @@ msgid "Resize Icon…"
 msgstr "Muuta kuvakkeen kokoa…"
 
 #: ../src/nautilus-view-context-menus.xml.h:31
-#| msgid "Restore Icon's Original Si_ze"
 msgid "Restore Icon's Original Size"
 msgstr "Palauta kuvakkeen alkuperäinen koko"
 
 #: ../src/nautilus-view-context-menus.xml.h:32
-#| msgid "Rena_me…"
 msgid "Rena_me"
 msgstr "Nime_ä uudelleen"
 
 #: ../src/nautilus-view-context-menus.xml.h:33
-#| msgid "Set as Wallpaper"
 msgid "Set As Wallpaper"
 msgstr "Aseta taustakuvaksi"
 
@@ -4372,41 +4358,41 @@ msgstr "_Ominaisuudet"
 msgid "_Format…"
 msgstr "_Alusta…"
 
-#. Translators: this is the second part of a "%d files deleted" string
-#: ../src/nautilus-window.c:1545 ../src/nautilus-window.c:1552
+#. Translators: only one item has been deleted and %s is its name.
+#: ../src/nautilus-window.c:1544
 #, c-format
-msgid "%s deleted"
-msgid_plural "%s deleted"
-msgstr[0] "%s poistettu"
-msgstr[1] "%s poistettu"
+#| msgid "“%s” selected"
+msgid "“%s” deleted"
+msgstr "”%s” poistettu"
 
-#. Translators: this is the first part of a "%d files deleted" string
-#: ../src/nautilus-window.c:1548
+#. Translators: one or more items might have been deleted, and %d
+#. * is the count.
+#: ../src/nautilus-window.c:1549
 #, c-format
-#| msgid "%'u file"
-#| msgid_plural "%'u files"
-msgid "%d file"
-msgid_plural "%d files"
-msgstr[0] "%d tiedosto"
-msgstr[1] "%d tiedostoa"
+#| msgid "%'d file left to delete"
+#| msgid_plural "%'d files left to delete"
+msgid "%d file deleted"
+msgid_plural "%d files deleted"
+msgstr[0] "%d tiedosto poistettu"
+msgstr[1] "%d tiedostoa poistettu"
 
-#: ../src/nautilus-window.c:1726
+#: ../src/nautilus-window.c:1720
 msgid "_New Tab"
 msgstr "Uusi _välilehti"
 
-#: ../src/nautilus-window.c:1736
+#: ../src/nautilus-window.c:1730
 msgid "Move Tab _Left"
 msgstr "Siirrä välilehteä _vasemmalle"
 
-#: ../src/nautilus-window.c:1744
+#: ../src/nautilus-window.c:1738
 msgid "Move Tab _Right"
 msgstr "Siirrä välilehteä _oikealle"
 
-#: ../src/nautilus-window.c:1755
+#: ../src/nautilus-window.c:1749
 msgid "_Close Tab"
 msgstr "_Sulje välilehti"
 
-#: ../src/nautilus-window.c:2660
+#: ../src/nautilus-window.c:2654
 msgid "Access and organize your files."
 msgstr "Käsittele ja järjestä tiedostoja"
 
@@ -4414,7 +4400,7 @@ msgstr "Käsittele ja järjestä tiedostoja"
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2669
+#: ../src/nautilus-window.c:2663
 msgid "translator-credits"
 msgstr ""
 "Ilkka Tuohela, 2005-2009\n"
@@ -4495,7 +4481,6 @@ msgid "Searching…"
 msgstr "Etsitään…"
 
 #: ../src/nautilus-window.ui.h:1
-#| msgid "Files"
 msgid "_Files"
 msgstr "_Tiedostot"
 
@@ -4556,6 +4541,18 @@ msgstr "Sisältää kuvia ja musiikkia"
 #: ../src/nautilus-x-content-bar.c:201
 msgid "Open with:"
 msgstr "Avaa sovelluksella:"
+
+#~ msgid "%s deleted"
+#~ msgid_plural "%s deleted"
+#~ msgstr[0] "%s poistettu"
+#~ msgstr[1] "%s poistettu"
+
+#~| msgid "%'u file"
+#~| msgid_plural "%'u files"
+#~ msgid "%d file"
+#~ msgid_plural "%d files"
+#~ msgstr[0] "%d tiedosto"
+#~ msgstr[1] "%d tiedostoa"
 
 #~ msgid "Saved search"
 #~ msgstr "Tallennettu haku"
@@ -5119,9 +5116,6 @@ msgstr "Avaa sovelluksella:"
 
 #~ msgid "Display Nautilus help"
 #~ msgstr "Näytä Nautiluksen ohje"
-
-#~ msgid "Search for files"
-#~ msgstr "Etsi tiedostoja"
 
 #~ msgid ""
 #~ "Locate files based on file name and type. Save your searches for later "
