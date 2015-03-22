@@ -493,13 +493,32 @@ get_control_center_command (const gchar ** params_out)
 	gchar *path;
 	const gchar *retval;
 	const gchar *params;
+	const gchar *xdg_current_desktop;
+	gchar **desktop_names;
+	gboolean is_unity;
+	int i;
 
 	path = NULL;
 	retval = NULL;
 	params = NULL;
 
+	xdg_current_desktop = g_getenv ("XDG_CURRENT_DESKTOP");
+
+	/* Detect the Unity-based environments */
+	is_unity = FALSE;
+	if (xdg_current_desktop != NULL) {
+		desktop_names = g_strsplit (xdg_current_desktop, ":", 0);
+		for (i = 0; desktop_names[i]; ++i) {
+			if (!g_strcmp0 (desktop_names[i], "Unity")) {
+				is_unity = TRUE;
+				break;
+			}
+		}
+		g_strfreev (desktop_names);
+	}
+
 	/* In Unity look for unity-control-center */
-	if (g_strcmp0 (g_getenv ("XDG_CURRENT_DESKTOP"), "Unity") == 0) {
+	if (is_unity) {
 		path = g_find_program_in_path ("unity-control-center");
 		if (path != NULL) {
 			retval = "unity-control-center";
