@@ -729,7 +729,7 @@ create_folder_redo_func (NautilusFileUndoInfoCreate *self,
 
 	parent = g_file_get_parent (self->priv->target_file);
 	parent_uri = g_file_get_uri (parent);
-	nautilus_file_operations_new_folder (NULL, NULL, parent_uri,
+	nautilus_file_operations_new_folder (NULL, NULL, parent_uri, NULL,
 					     create_callback, self);
 
 	g_free (parent_uri);

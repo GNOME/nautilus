@@ -6256,6 +6256,7 @@ void
 nautilus_file_operations_new_folder (GtkWidget *parent_view, 
 				     GdkPoint *target_point,
 				     const char *parent_dir,
+				     const char *folder_name,
 				     NautilusCreateCallback done_callback,
 				     gpointer done_callback_data)
 {
@@ -6271,6 +6272,7 @@ nautilus_file_operations_new_folder (GtkWidget *parent_view,
 	job->done_callback = done_callback;
 	job->done_callback_data = done_callback_data;
 	job->dest_dir = g_file_new_for_uri (parent_dir);
+	job->filename = g_strdup (folder_name);
 	job->make_dir = TRUE;
 	if (target_point != NULL) {
 		job->position = *target_point;
