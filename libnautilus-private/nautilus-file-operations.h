@@ -64,7 +64,6 @@ void nautilus_file_operations_empty_trash (GtkWidget                 *parent_vie
 void nautilus_file_operations_new_folder  (GtkWidget                 *parent_view,
 					   GdkPoint                  *target_point,
 					   const char                *parent_dir_uri,
-					   const char                *folder_name,
 					   NautilusCreateCallback     done_callback,
 					   gpointer                   done_callback_data);
 void nautilus_file_operations_new_file    (GtkWidget                 *parent_view,

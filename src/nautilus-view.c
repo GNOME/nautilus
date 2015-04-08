@@ -1404,6 +1404,22 @@ rename_file (NautilusView *view, NautilusFile *new_file)
 	nautilus_view_reveal_selection (view);
 }
 
+static void
+reveal_newly_added_folder (NautilusView *view, NautilusFile *new_file,
+			   NautilusDirectory *directory, GFile *target_location)
+{
+	GFile *location;
+
+	location = nautilus_file_get_location (new_file);
+	if (g_file_equal (location, target_location)) {
+		g_signal_handlers_disconnect_by_func (view,
+						      G_CALLBACK (reveal_newly_added_folder),
+						      (void *) target_location);
+		rename_file (view, new_file);
+	}
+	g_object_unref (location);
+}
+
 typedef struct {
 	NautilusView *directory_view;
 	GHashTable *added_locations;
@@ -1537,6 +1553,22 @@ new_folder_done (GFile *new_folder,
 					       0, 0);
 		g_list_free_full (uris, g_free);
 		g_free (target_uri);
+	} else {
+		if (g_hash_table_lookup_extended (data->added_locations, new_folder, NULL, NULL)) {
+			/* The file was already added */
+			rename_file (directory_view, file);
+		} else {
+			/* We need to run after the default handler adds the folder we want to
+			 * operate on. The ADD_FILE signal is registered as G_SIGNAL_RUN_LAST, so we
+			 * must use connect_after.
+			 */
+			g_signal_connect_data (directory_view,
+					       "add-file",
+					       G_CALLBACK (reveal_newly_added_folder),
+					       g_object_ref (new_folder),
+					       (GClosureNotify)g_object_unref,
+					       G_CONNECT_AFTER);
+		}
 	}
 
 	nautilus_file_unref (file);
@@ -1592,133 +1624,30 @@ context_menu_to_file_operation_position (NautilusView *view)
 }
 
 static void
-nautilus_view_add_file_dialog_validate_entry (GObject    *object,
-                                              GParamSpec *params,
-                                              gpointer    user_data)
-{
-	const gchar *text;
-
-	g_assert (object && GTK_IS_ENTRY (object));
-	g_assert (user_data && GTK_IS_DIALOG (user_data));
-
-	text = gtk_entry_get_text (GTK_ENTRY (object));
-
-	gtk_dialog_set_response_sensitive (GTK_DIALOG (user_data),
-                                           GTK_RESPONSE_OK,
-                                           g_utf8_strlen (text, -1) > 0);
-}
-
-static void
-nautilus_view_add_file_dialog_entry_activate (GtkWidget *entry,
-                                              gpointer   user_data)
-{
-	const gchar *text;
-
-	g_assert (entry && GTK_IS_ENTRY (entry));
-	g_assert (user_data && GTK_IS_DIALOG (user_data));
-
-	text = gtk_entry_get_text (GTK_ENTRY (entry));
-
-	if (g_utf8_strlen (text, -1) > 0) {
-		gtk_dialog_response (GTK_DIALOG (user_data),
-                                     GTK_RESPONSE_OK);
-	}
-}
-
-static void
 nautilus_view_new_folder (NautilusView *directory_view,
 			  gboolean      with_selection)
 {
-	GtkWidget *dialog;
-	GtkWidget *label;
-	GtkWidget *entry;
-	GtkWidget *box;
-	GtkWidget *window;
-	GtkWidget *area;
-	gint response;
+	char *parent_uri;
+	NewFolderData *data;
+	GdkPoint *pos;
 
-	// Dialog label
-	label = gtk_label_new (_("Name"));
-	gtk_style_context_add_class (gtk_widget_get_style_context (label),
-                                     "dim-label");
+	data = new_folder_data_new (directory_view, with_selection);
 
-	// Folder name entry
-	entry = gtk_entry_new ();
-	gtk_widget_set_hexpand (entry, TRUE);
+	g_signal_connect_data (directory_view,
+			       "add-file",
+			       G_CALLBACK (track_newly_added_locations),
+			       data,
+			       (GClosureNotify)NULL,
+			       G_CONNECT_AFTER);
 
-	// Dialog
-	window = gtk_widget_get_toplevel (GTK_WIDGET (directory_view));
-	dialog = gtk_dialog_new_with_buttons (_("New Folder"),
-                                              GTK_WINDOW (window),
-                                              GTK_DIALOG_MODAL | GTK_DIALOG_USE_HEADER_BAR | GTK_DIALOG_DESTROY_WITH_PARENT,
-                                              _("Cancel"),
-                                              GTK_RESPONSE_CANCEL,
-                                              _("Create"),
-                                              GTK_RESPONSE_OK,
-                                              NULL);
+	pos = context_menu_to_file_operation_position (directory_view);
 
-	gtk_dialog_set_default_response (GTK_DIALOG (dialog),
-                                         GTK_RESPONSE_OK);
+	parent_uri = nautilus_view_get_backing_uri (directory_view);
+	nautilus_file_operations_new_folder (GTK_WIDGET (directory_view),
+					     pos, parent_uri,
+					     new_folder_done, data);
 
-	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog	),
-                                           GTK_RESPONSE_OK,
-                                           FALSE);
-
-	gtk_container_set_border_width (GTK_CONTAINER (dialog), 12);
-
-	// Main box
-	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
-	area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
-
-	gtk_container_add (GTK_CONTAINER (box), label);
-	gtk_container_add (GTK_CONTAINER (box), entry);
-	gtk_container_add (GTK_CONTAINER (area), box);
-
-	gtk_widget_show_all (box);
-
-	// Only allow non-null names
-	g_signal_connect (entry,
-                          "notify::text",
-                          G_CALLBACK (nautilus_view_add_file_dialog_validate_entry),
-                          dialog);
-	g_signal_connect (entry,
-                          "activate",
-                          G_CALLBACK (nautilus_view_add_file_dialog_entry_activate),
-                          dialog);
-
-	// Show the dialog and wait for user interaction
-	response = gtk_dialog_run (GTK_DIALOG (dialog));
-
-	// Perform the action on GTK_RESPONSE_OK response
-	if (response == GTK_RESPONSE_OK) {
-		char *parent_uri;
-		gchar *name;
-		NewFolderData *data;
-		GdkPoint *pos;
-
-		data = new_folder_data_new (directory_view, with_selection);
-		name = gtk_entry_get_text (GTK_ENTRY (entry));
-
-		g_signal_connect_data (directory_view,
-                                       "add-file",
-                                       G_CALLBACK (track_newly_added_locations),
-                                       data,
-                                       (GClosureNotify)NULL,
-                                       G_CONNECT_AFTER);
-
-		pos = context_menu_to_file_operation_position (directory_view);
-
-		parent_uri = nautilus_view_get_backing_uri (directory_view);
-		nautilus_file_operations_new_folder (GTK_WIDGET (directory_view),
-                                                     pos,
-                                                     parent_uri,
-                                                     name,
-                                                     new_folder_done, data);
-
-		g_free (parent_uri);
-	  }
-
-	gtk_widget_destroy (dialog);
+	g_free (parent_uri);
 }
 
 static NewFolderData *
