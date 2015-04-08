@@ -162,7 +162,7 @@ static const struct {
 #ifdef HAVE_X11_XF86KEYSYM_H
 	/* Window actions */
 	{ XF86XK_AddFavorite,	"bookmark-current-location" },
-	{ XF86XK_Favorites,	"edit-bookmarks" },
+	{ XF86XK_Favorites,	"bookmarks" },
 	{ XF86XK_Go,		"enter-location" },
 	{ XF86XK_HomePage,      "go-home" },
 	{ XF86XK_OpenURL,	"enter-location" },
