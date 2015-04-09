@@ -468,7 +468,6 @@ nautilus_application_open_location (NautilusApplication *application,
 		sel_list = g_list_prepend (sel_list, nautilus_file_get (selection));
 	}
 
-	gtk_window_set_startup_id (GTK_WINDOW (window), startup_id);
 	nautilus_window_slot_open_location_full (slot, location, 0, sel_list, NULL, NULL);
 
 	if (sel_list != NULL) {
