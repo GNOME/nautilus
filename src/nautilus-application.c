@@ -662,52 +662,28 @@ do_perform_self_checks (void)
 }
 
 static void
-select_items_ready_cb (GObject *source,
-		       GAsyncResult *res,
-		       gpointer user_data)
-{
-	GDBusConnection *connection = G_DBUS_CONNECTION (source);
-	NautilusApplication *self = user_data;
-	GError *error = NULL;
-
-	g_dbus_connection_call_finish (connection, res, &error);
-
-	if (error != NULL) {
-		g_warning ("Unable to select specified URIs %s\n", error->message);
-		g_error_free (error);
-
-		/* open default location instead */
-		g_application_open (G_APPLICATION (self), NULL, 0, "");
-	}
-}
-
-static void
 nautilus_application_select (NautilusApplication *self,
 			     GFile **files,
 			     gint len)
 {
-	GDBusConnection *connection = g_application_get_dbus_connection (G_APPLICATION (self));
-	GVariantBuilder builder;
-	gint idx;
-	gchar *uri;
+  int i;
+  GFile *file;
+  GFile *parent;
 
-	g_variant_builder_init (&builder, G_VARIANT_TYPE ("as"));
-	for (idx = 0; idx < len; idx++) {
-		uri = g_file_get_uri (files[idx]);
-		g_variant_builder_add (&builder, "s", uri);
-		g_free (uri);
-	}
-
-	g_dbus_connection_call (connection,
-				NAUTILUS_FDO_DBUS_NAME,
-				NAUTILUS_FDO_DBUS_PATH,
-				NAUTILUS_FDO_DBUS_IFACE,
-				"ShowItems",
-				g_variant_new ("(ass)", &builder, ""), NULL,
-				G_DBUS_CALL_FLAGS_NONE, G_MAXINT, NULL,
-				select_items_ready_cb, self);
-
-	g_variant_builder_clear (&builder);
+  for (i = 0; i < len; i++)
+    {
+      file = files[i];
+      parent = g_file_get_parent (file);
+      if (parent != NULL)
+        {
+          nautilus_application_open_location (self, parent, file, NULL);
+          g_object_unref (parent);
+        }
+      else
+        {
+          nautilus_application_open_location (self, file, NULL, NULL);
+        }
+    }
 }
 
 const GOptionEntry options[] = {
@@ -740,6 +716,21 @@ const GOptionEntry options[] = {
 	{ NULL }
 };
 
+static void
+nautilus_application_activate (GApplication *app)
+{
+	GFile **files;
+
+	DEBUG ("Calling activate");
+
+	files = g_malloc0 (2 * sizeof (GFile *));
+	files[0] = g_file_new_for_path (g_get_home_dir ());
+	nautilus_application_open (app, files, 1, NULL);
+
+	g_object_unref (files[0]);
+	g_free (files);
+}
+
 static gint
 nautilus_application_handle_file_args (NautilusApplication *self,
 				       GVariantDict        *options)
@@ -764,8 +755,9 @@ nautilus_application_handle_file_args (NautilusApplication *self,
 		file = g_file_new_for_path (g_get_home_dir ());
 		g_ptr_array_add (file_array, file);
 	} else {
-		/* No options or options that glib already manages */
-		return -1;
+		/* No command line options or files, just activate the application */
+		nautilus_application_activate (G_APPLICATION (self));
+		return EXIT_SUCCESS;
 	}
 
 	len = file_array->len;
@@ -774,9 +766,9 @@ nautilus_application_handle_file_args (NautilusApplication *self,
 	if (g_variant_dict_contains (options, "select")) {
 		nautilus_application_select (self, files, len);
 	} else {
-		/* Invoke "Open" to create new windows */
-		g_application_open (G_APPLICATION (self), files, len,
-				    g_variant_dict_contains (options, "new-window") ? "new-window" : "");
+		/* Create new windows */
+		nautilus_application_open (G_APPLICATION (self), files, len,
+                                           g_variant_dict_contains (options, "new-window") ? "new-window" : "");
 	}
 
 	g_ptr_array_unref (file_array);
@@ -785,17 +777,22 @@ nautilus_application_handle_file_args (NautilusApplication *self,
 }
 
 static gint
-nautilus_application_handle_local_options (GApplication *application,
-					   GVariantDict *options)
+nautilus_application_command_line (GApplication            *application,
+                                   GApplicationCommandLine *command_line,
+                                   gpointer                 user_data)
 {
 	NautilusApplication *self = NAUTILUS_APPLICATION (application);
 	gint retval = -1;
+	GVariantDict *options;
 	GError *error = NULL;
 
 	nautilus_profile_start (NULL);
 
+	options = g_application_command_line_get_options_dict (command_line);
+
 	if (g_variant_dict_contains (options, "version")) {
-		g_print ("GNOME nautilus " PACKAGE_VERSION "\n");
+		g_application_command_line_print (command_line,
+                                                  "GNOME nautilus " PACKAGE_VERSION "\n");
 		retval = EXIT_SUCCESS;
 		goto out;
 	}
@@ -815,7 +812,8 @@ nautilus_application_handle_local_options (GApplication *application,
 	if (error != NULL) {
 		/* Translators: this is a fatal error quit message printed on the
 		 * command line */
-		g_printerr ("%s: %s\n", _("Could not register the application"), error->message);
+		g_application_command_line_printerr (command_line,
+                                            	     "%s: %s\n", _("Could not register the application"), error->message);
 		g_error_free (error);
 
 		retval = EXIT_FAILURE;
@@ -842,9 +840,9 @@ nautilus_application_handle_local_options (GApplication *application,
 	}
 
 	if (g_variant_dict_contains (options, "no-default-window")) {
-		/* We want to avoid trigering the activate signal; so no window is created.
-		 * GApplication doesn't call activate if we return a value >= 0.
-		 * Use EXIT_SUCCESS since is >= 0. */
+		/* Do nothing. If icons on desktop are enabled, it will create
+		 * the desktop window which will hold the application. If not,
+		 * it will just exit. */
 		retval = EXIT_SUCCESS;
 		goto out;
 	}
@@ -858,26 +856,15 @@ nautilus_application_handle_local_options (GApplication *application,
 }
 
 static void
-nautilus_application_activate (GApplication *app)
-{
-	GFile **files;
-
-	DEBUG ("Calling activate");
-
-	files = g_malloc0 (2 * sizeof (GFile *));
-	files[0] = g_file_new_for_path (g_get_home_dir ());
-	g_application_open (app, files, 1, "new-window");
-
-	g_object_unref (files[0]);
-	g_free (files);
-}
-
-static void
 nautilus_application_init (NautilusApplication *application)
 {
 	application->priv =
 		G_TYPE_INSTANCE_GET_PRIVATE (application, NAUTILUS_TYPE_APPLICATION,
 					     NautilusApplicationPriv);
+
+	g_signal_connect (application, "command-line",
+                          G_CALLBACK (nautilus_application_command_line),
+                          NULL);
 
 	g_application_add_main_option_entries (G_APPLICATION (application), options);
 }
@@ -1206,10 +1193,8 @@ nautilus_application_class_init (NautilusApplicationClass *class)
 	application_class->startup = nautilus_application_startup;
 	application_class->activate = nautilus_application_activate;
 	application_class->quit_mainloop = nautilus_application_quit_mainloop;
-	application_class->open = nautilus_application_open;
 	application_class->dbus_register = nautilus_application_dbus_register;
 	application_class->dbus_unregister = nautilus_application_dbus_unregister;
-	application_class->handle_local_options = nautilus_application_handle_local_options;
 
 	gtkapp_class = GTK_APPLICATION_CLASS (class);
 	gtkapp_class->window_added = nautilus_application_window_added;
@@ -1223,7 +1208,7 @@ nautilus_application_new (void)
 {
 	return g_object_new (NAUTILUS_TYPE_APPLICATION,
 			     "application-id", "org.gnome.Nautilus",
-			     "flags", G_APPLICATION_HANDLES_OPEN,
+			     "flags", G_APPLICATION_HANDLES_COMMAND_LINE,
 			     "inactivity-timeout", 12000,
 			     "register-session", TRUE,
 			     NULL);
