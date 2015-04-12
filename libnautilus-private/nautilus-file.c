@@ -4792,6 +4792,7 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
 
 		g_date_time_unref (now);
 	} else {
+		// xgettext:no-c-format
 		format = N_("%c");
 	}
 
