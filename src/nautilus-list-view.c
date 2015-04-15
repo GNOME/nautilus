@@ -1867,7 +1867,8 @@ trash_orig_path_cell_data_func (GtkTreeViewColumn *column,
 	location_cell_data_func (column, renderer, model, iter, view, TRUE);
 }
 
-#define SMALL_ZOOM_ICON_PADDING 10
+#define SMALL_ZOOM_ICON_PADDING 0
+#define STANDARD_ZOOM_ICON_PADDING 6
 #define LARGE_ZOOM_ICON_PADDING 6
 
 static gint
@@ -1877,6 +1878,7 @@ nautilus_list_view_get_icon_padding_for_zoom_level (NautilusListZoomLevel zoom_l
 	case NAUTILUS_LIST_ZOOM_LEVEL_SMALL:
 		return SMALL_ZOOM_ICON_PADDING;
 	case NAUTILUS_LIST_ZOOM_LEVEL_STANDARD:
+		return STANDARD_ZOOM_ICON_PADDING;
 	case NAUTILUS_LIST_ZOOM_LEVEL_LARGE:
 		return LARGE_ZOOM_ICON_PADDING;
 	default:
