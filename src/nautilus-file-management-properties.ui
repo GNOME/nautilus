@@ -269,7 +269,7 @@
                                   <object class="GtkComboBox" id="icon_view_zoom_combobox">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="model">model3</property>
+                                    <property name="model">icon_view_zoom_levels</property>
                                     <child>
                                       <object class="GtkCellRendererText" id="renderer3"/>
                                       <attributes>
@@ -363,7 +363,7 @@
                                   <object class="GtkComboBox" id="list_view_zoom_combobox">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="model">model4</property>
+                                    <property name="model">list_view_zoom_levels</property>
                                     <child>
                                       <object class="GtkCellRendererText" id="renderer5"/>
                                       <attributes>
@@ -1333,7 +1333,7 @@
       </row>
     </data>
   </object>
-  <object class="GtkListStore" id="model4">
+  <object class="GtkListStore" id="list_view_zoom_levels">
     <columns>
       <!-- column-name gchararray -->
       <column type="gchararray"/>
@@ -1350,7 +1350,7 @@
       </row>
     </data>
   </object>
-  <object class="GtkListStore" id="model6">
+  <object class="GtkListStore" id="icon_view_zoom_levels">
     <columns>
       <!-- column-name gchararray -->
       <column type="gchararray"/>
