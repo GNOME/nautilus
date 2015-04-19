@@ -726,12 +726,15 @@ create_folder_redo_func (NautilusFileUndoInfoCreate *self,
 {
 	GFile *parent;
 	gchar *parent_uri;
+	gchar *name;
 
+	name = g_file_get_basename (self->priv->target_file);
 	parent = g_file_get_parent (self->priv->target_file);
 	parent_uri = g_file_get_uri (parent);
-	nautilus_file_operations_new_folder (NULL, NULL, parent_uri,
+	nautilus_file_operations_new_folder (NULL, NULL, parent_uri, name,
 					     create_callback, self);
 
+	g_free (name);
 	g_free (parent_uri);
 	g_object_unref (parent);
 }

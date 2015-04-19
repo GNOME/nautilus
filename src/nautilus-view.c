@@ -50,6 +50,7 @@
 #include <glib/gstdio.h>
 #include <gio/gio.h>
 #include <math.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -114,6 +115,9 @@
 #define MAX_MENU_LEVELS 5
 #define TEMPLATE_LIMIT 30
 
+/* Time to show the duplicated folder label */
+#define NEW_FOLDER_DIALOG_ERROR_LABEL_TIMEOUT 500
+
 enum {
 	ADD_FILE,
 	BEGIN_FILE_CHANGES,
@@ -152,6 +156,8 @@ struct NautilusViewDetails
 	NautilusFile *pathbar_popup_directory_as_file;
 	GdkEventButton *pathbar_popup_event;
 	guint dir_merge_id;
+
+	gint new_folder_name_timeout_id;
 
 	gboolean supports_zooming;
 
@@ -1415,7 +1421,7 @@ reveal_newly_added_folder (NautilusView *view, NautilusFile *new_file,
 		g_signal_handlers_disconnect_by_func (view,
 						      G_CALLBACK (reveal_newly_added_folder),
 						      (void *) target_location);
-		rename_file (view, new_file);
+		nautilus_view_select_file (view, new_file);
 	}
 	g_object_unref (location);
 }
@@ -1556,7 +1562,7 @@ new_folder_done (GFile *new_folder,
 	} else {
 		if (g_hash_table_lookup_extended (data->added_locations, new_folder, NULL, NULL)) {
 			/* The file was already added */
-			rename_file (directory_view, file);
+			nautilus_view_select_file (directory_view, file);
 		} else {
 			/* We need to run after the default handler adds the folder we want to
 			 * operate on. The ADD_FILE signal is registered as G_SIGNAL_RUN_LAST, so we
@@ -1623,31 +1629,210 @@ context_menu_to_file_operation_position (NautilusView *view)
 	}
 }
 
+typedef struct {
+	NautilusView *view;
+	GtkWidget *dialog;
+	GtkWidget *label;
+} NewFolderDialogData;
+
+static gboolean
+show_has_folder_label (NewFolderDialogData *data)
+{
+	gtk_label_set_label (GTK_LABEL (data->label), _("A file or folder with that name already exists."));
+	data->view->details->new_folder_name_timeout_id = 0;
+	return FALSE;
+}
+
+static void
+nautilus_view_add_file_dialog_validate_name (GObject    *object,
+                                             GParamSpec *params,
+                                             gpointer    user_data)
+{
+	NewFolderDialogData *data = user_data;
+	NautilusFile *file;
+	NautilusView *view;
+	GtkWidget *dialog;
+	gboolean contains_slash;
+	gboolean is_empty;
+	gboolean has_folder;
+	GList *file_list, *node;
+	const gchar *text;
+
+	g_assert (GTK_IS_ENTRY (object));
+	g_assert (user_data);
+	g_assert (NAUTILUS_IS_VIEW (data->view));
+	g_assert (GTK_IS_DIALOG (data->dialog));
+	g_assert (GTK_IS_LABEL (data->label));
+
+	text = gtk_entry_get_text (GTK_ENTRY (object));
+	dialog = gtk_widget_get_toplevel (GTK_WIDGET (object));
+	is_empty = gtk_entry_get_text_length (GTK_ENTRY (object)) == 0;
+	contains_slash = strstr (text, "/") != NULL;
+
+	/* Check whether current location already has
+	 * a folder with the proposed name.
+	 */
+	view = data->view;
+	has_folder = FALSE;
+	file_list = nautilus_directory_get_file_list (view->details->model);
+
+	for (node = file_list; node != NULL; node = node->next) {
+		file = node->data;
+
+		if (nautilus_file_compare_display_name (file, text) == 0) {
+			has_folder = TRUE;
+			break;
+		}
+	}
+
+	nautilus_file_list_free (file_list);
+
+	/* Remove any sources left behind by
+	 * previous calls of this function.
+	 */
+	if (view->details->new_folder_name_timeout_id > 0) {
+		g_source_remove (view->details->new_folder_name_timeout_id);
+		view->details->new_folder_name_timeout_id = 0;
+	}
+
+	if (has_folder && !contains_slash && !is_empty) {
+		/* Before showing the dup folder label, clear out the
+		 * previous message to stop showing any previous errors,
+		 * considering that there are other possible error
+		 * labels.
+		 */
+		gtk_label_set_label (GTK_LABEL (data->label), NULL);
+
+		view->details->new_folder_name_timeout_id = g_timeout_add (NEW_FOLDER_DIALOG_ERROR_LABEL_TIMEOUT,
+		                                                           (GSourceFunc)show_has_folder_label,
+		                                                           user_data);
+	} else if (contains_slash) {
+		/* If the user types forbidden characters,
+		 * immediately shows the error label.
+		 */
+		gtk_label_set_label (GTK_LABEL (data->label), _("Folder names cannot contain \"/\"."));
+	} else {
+		/* No errors detected, empty the label */
+		gtk_label_set_label (GTK_LABEL (data->label), NULL);
+	}
+
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog),
+                                           GTK_RESPONSE_OK,
+                                           !is_empty && !contains_slash && !has_folder);
+}
+
+static void
+nautilus_view_add_file_dialog_entry_activate (GtkWidget *entry,
+                                              gpointer   user_data)
+{
+	NewFolderDialogData *data = user_data;
+	GtkWidget *create_button;
+
+	g_assert (GTK_IS_ENTRY (entry));
+	g_assert (user_data);
+	g_assert (NAUTILUS_IS_VIEW (data->view));
+	g_assert (GTK_IS_DIALOG (data->dialog));
+	g_assert (GTK_IS_LABEL (data->label));
+
+	create_button = gtk_dialog_get_widget_for_response (GTK_DIALOG (data->dialog),
+                                                            GTK_RESPONSE_OK);
+
+	/* nautilus_view_add_file_dialog_validate_content performs
+	 * all the necessary validation, and it's not needed to check
+	 * it all again. Checking if the "Create" button is sensitive
+	 * is enough.
+	 */
+	if (gtk_widget_get_sensitive (create_button)) {
+		gtk_dialog_response (GTK_DIALOG (data->dialog),
+                                     GTK_RESPONSE_OK);
+	} else {
+		NautilusView *view = data->view;
+
+		/* Since typos are immediately shown, only
+		 * handle name collisions here.
+		 */
+		if (view->details->new_folder_name_timeout_id > 0) {
+			g_source_remove (view->details->new_folder_name_timeout_id);
+			show_has_folder_label (data);
+		}
+	}
+}
+
 static void
 nautilus_view_new_folder (NautilusView *directory_view,
 			  gboolean      with_selection)
 {
-	char *parent_uri;
-	NewFolderData *data;
-	GdkPoint *pos;
+	NewFolderDialogData *dialog_data;
+	GtkBuilder *builder;
+	GtkWindow *dialog;
+	GtkEntry *entry;
+	gint response;
 
-	data = new_folder_data_new (directory_view, with_selection);
+	builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-new-folder-dialog.ui");
+	dialog = GTK_WINDOW (gtk_builder_get_object (builder, "new_folder_dialog"));
+	entry = GTK_ENTRY (gtk_builder_get_object (builder, "name_entry"));
 
-	g_signal_connect_data (directory_view,
-			       "add-file",
-			       G_CALLBACK (track_newly_added_locations),
-			       data,
-			       (GClosureNotify)NULL,
-			       G_CONNECT_AFTER);
+	/* build up dialog fields */
+	dialog_data = g_new0 (NewFolderDialogData, 1);
+	dialog_data->view = directory_view;
+	dialog_data->dialog = GTK_WIDGET (dialog);
+	dialog_data->label = GTK_WIDGET (gtk_builder_get_object (builder, "error_label"));
 
-	pos = context_menu_to_file_operation_position (directory_view);
+	gtk_window_set_transient_for (dialog,
+                                      GTK_WINDOW (nautilus_view_get_window (directory_view)));
 
-	parent_uri = nautilus_view_get_backing_uri (directory_view);
-	nautilus_file_operations_new_folder (GTK_WIDGET (directory_view),
-					     pos, parent_uri,
-					     new_folder_done, data);
+	/* Connect signals */
+	gtk_builder_add_callback_symbols (builder,
+                                          "validate_cb",
+                                          G_CALLBACK (nautilus_view_add_file_dialog_validate_name),
+                                          "activated_cb",
+                                          G_CALLBACK (nautilus_view_add_file_dialog_entry_activate),
+                                          NULL);
 
-	g_free (parent_uri);
+	gtk_builder_connect_signals (builder, dialog_data);
+
+	response = gtk_dialog_run (GTK_DIALOG (dialog));
+
+	if (response == GTK_RESPONSE_OK) {
+		NewFolderData *data;
+		GdkPoint *pos;
+		char *parent_uri;
+		gchar *name;
+
+		data = new_folder_data_new (directory_view, with_selection);
+		name = g_strdup (gtk_entry_get_text (entry));
+		g_strstrip (name);
+
+		g_signal_connect_data (directory_view,
+				       "add-file",
+				       G_CALLBACK (track_newly_added_locations),
+				       data,
+				       (GClosureNotify)NULL,
+				       G_CONNECT_AFTER);
+
+		pos = context_menu_to_file_operation_position (directory_view);
+
+		parent_uri = nautilus_view_get_backing_uri (directory_view);
+		nautilus_file_operations_new_folder (GTK_WIDGET (directory_view),
+                                                     pos, parent_uri, name,
+                                                     new_folder_done, data);
+
+		g_free (parent_uri);
+		g_free (name);
+	}
+
+	/* If there's any resources left from the delayed
+	 * message, it should be removed before it gets
+	 * triggered.
+	 */
+	if (directory_view->details->new_folder_name_timeout_id > 0) {
+		g_source_remove (directory_view->details->new_folder_name_timeout_id);
+		directory_view->details->new_folder_name_timeout_id = 0;
+	}
+
+	g_free (dialog_data);
+	g_object_unref (builder);
+	gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
 static NewFolderData *
