@@ -1440,10 +1440,6 @@ typedef struct {
 
 static void
 rename_newly_added_folder (NautilusView *view, NautilusFile *removed_file,
-			   NautilusDirectory *directory, NewFolderSelectionData *data);
-
-static void
-rename_newly_added_folder (NautilusView *view, NautilusFile *removed_file,
 			   NautilusDirectory *directory, NewFolderSelectionData *data)
 {
 	GFile *location;
