@@ -1650,8 +1650,7 @@ static void
 nautilus_view_validate_file_name (FileNameDialogData *data)
 {
 	gboolean duplicated_name;
-	gboolean contains_slash;
-	gboolean is_empty;
+	gboolean valid_name;
 	gchar *name;
 	GList *files;
 	GList *node;
@@ -1664,9 +1663,8 @@ nautilus_view_validate_file_name (FileNameDialogData *data)
 	g_assert (NAUTILUS_IS_VIEW (data->view));
 
 	name = g_strstrip (g_strdup (gtk_entry_get_text (GTK_ENTRY (data->name_entry))));
-	is_empty = strlen (name) == 0;
-	contains_slash = strstr (name, "/") != NULL;
 	duplicated_name = FALSE;
+	valid_name = FALSE;
 	files = nautilus_directory_get_file_list (data->view->details->model);
 
 	for (node = files; node != NULL; node = node->next) {
@@ -1689,12 +1687,12 @@ nautilus_view_validate_file_name (FileNameDialogData *data)
 		data->view->details->dialog_duplicated_name_label_timeout_id = 0;
 	}
 
-	if (duplicated_name && !contains_slash && !is_empty) {
+	if (duplicated_name) {
 		data->view->details->dialog_duplicated_name_label_timeout_id =
             	    g_timeout_add (DIALOG_DUPLICATED_NAME_ERROR_LABEL_TIMEOUT,
 		                   (GSourceFunc)duplicated_file_label_show,
 		                   data);
-	} else if (contains_slash) {
+	} else if (strstr (name, "/") != NULL) {
 		if (data->target_is_folder)
 			gtk_label_set_label (GTK_LABEL (data->error_label), _("Folder names cannot contain “/”."));
 		else
@@ -1702,11 +1700,12 @@ nautilus_view_validate_file_name (FileNameDialogData *data)
 	} else {
 		/* No errors detected, empty the label */
 		gtk_label_set_label (GTK_LABEL (data->error_label), NULL);
+		valid_name = strlen (name) > 0;
 	}
 
 	gtk_dialog_set_response_sensitive (GTK_DIALOG (data->dialog),
                                            GTK_RESPONSE_OK,
-                                           !is_empty && !contains_slash && !duplicated_name);
+                                           valid_name);
 	g_free (name);
 }
 
