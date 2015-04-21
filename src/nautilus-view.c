@@ -1697,6 +1697,16 @@ nautilus_view_validate_file_name (FileNameDialogData *data)
 			gtk_label_set_label (GTK_LABEL (data->error_label), _("Folder names cannot contain “/”."));
 		else
 			gtk_label_set_label (GTK_LABEL (data->error_label), _("Files names cannot contain “/”."));
+	} else if (strcmp (name, ".") == 0){
+		if (data->target_is_folder)
+			gtk_label_set_label (GTK_LABEL (data->error_label), _("A folder can not be called “.”."));
+		else
+			gtk_label_set_label (GTK_LABEL (data->error_label), _("A file can not be called “.”."));
+	} else if (strcmp (name, "..") == 0){
+		if (data->target_is_folder)
+			gtk_label_set_label (GTK_LABEL (data->error_label), _("A folder can not be called “..”."));
+		else
+			gtk_label_set_label (GTK_LABEL (data->error_label), _("A file can not be called “..”."));
 	} else {
 		/* No errors detected, empty the label */
 		gtk_label_set_label (GTK_LABEL (data->error_label), NULL);
