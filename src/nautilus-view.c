@@ -1630,12 +1630,18 @@ typedef struct {
 	GtkWidget *dialog;
 	GtkWidget *error_label;
 	GtkWidget *name_entry;
+	gboolean target_is_folder;
+	gboolean duplicated_is_folder;
 } FileNameDialogData;
 
 static gboolean
 duplicated_file_label_show (FileNameDialogData *data)
 {
-	gtk_label_set_label (GTK_LABEL (data->error_label), _("A file or folder with that name already exists."));
+	if (data->duplicated_is_folder)
+		gtk_label_set_label (GTK_LABEL (data->error_label), _("A folder with that name already exists."));
+	else
+		gtk_label_set_label (GTK_LABEL (data->error_label), _("A file with that name already exists."));
+
 	data->view->details->dialog_duplicated_name_label_timeout_id = 0;
 	return FALSE;
 }
@@ -1668,6 +1674,7 @@ nautilus_view_validate_file_name (FileNameDialogData *data)
 
 		if (nautilus_file_compare_display_name (file, name) == 0) {
 			duplicated_name = TRUE;
+			data->duplicated_is_folder = nautilus_file_is_directory (file);
 			break;
 		}
 	}
@@ -1688,7 +1695,10 @@ nautilus_view_validate_file_name (FileNameDialogData *data)
 		                   (GSourceFunc)duplicated_file_label_show,
 		                   data);
 	} else if (contains_slash) {
-		gtk_label_set_label (GTK_LABEL (data->error_label), _("Folder names cannot contain \"/\"."));
+		if (data->target_is_folder)
+			gtk_label_set_label (GTK_LABEL (data->error_label), _("Folder names cannot contain \"/\"."));
+		else
+			gtk_label_set_label (GTK_LABEL (data->error_label), _("Files names cannot contain \"/\"."));
 	} else {
 		/* No errors detected, empty the label */
 		gtk_label_set_label (GTK_LABEL (data->error_label), NULL);
@@ -1760,6 +1770,7 @@ nautilus_view_new_folder (NautilusView *directory_view,
 	dialog_data->dialog = GTK_WIDGET (dialog);
 	dialog_data->error_label = GTK_WIDGET (gtk_builder_get_object (builder, "error_label"));
 	dialog_data->name_entry = GTK_WIDGET (gtk_builder_get_object (builder, "name_entry"));
+	dialog_data->target_is_folder = TRUE;
 
 	gtk_window_set_transient_for (dialog,
                                       GTK_WINDOW (nautilus_view_get_window (directory_view)));
