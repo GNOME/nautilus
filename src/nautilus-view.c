@@ -1652,7 +1652,7 @@ nautilus_view_validate_file_name (FileNameDialogData *data)
 	gboolean duplicated_name;
 	gboolean contains_slash;
 	gboolean is_empty;
-	const gchar *name;
+	gchar *name;
 	GList *files;
 	GList *node;
 	NautilusFile *file;
@@ -1663,7 +1663,7 @@ nautilus_view_validate_file_name (FileNameDialogData *data)
 	g_assert (GTK_IS_DIALOG (data->dialog));
 	g_assert (NAUTILUS_IS_VIEW (data->view));
 
-	name = gtk_entry_get_text (GTK_ENTRY (data->name_entry));
+	name = g_strstrip (g_strdup (gtk_entry_get_text (GTK_ENTRY (data->name_entry))));
 	is_empty = strlen (name) == 0;
 	contains_slash = strstr (name, "/") != NULL;
 	duplicated_name = FALSE;
@@ -1707,6 +1707,7 @@ nautilus_view_validate_file_name (FileNameDialogData *data)
 	gtk_dialog_set_response_sensitive (GTK_DIALOG (data->dialog),
                                            GTK_RESPONSE_OK,
                                            !is_empty && !contains_slash && !duplicated_name);
+	g_free (name);
 }
 
 static void
