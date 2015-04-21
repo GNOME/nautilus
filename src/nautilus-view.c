@@ -1696,9 +1696,9 @@ nautilus_view_validate_file_name (FileNameDialogData *data)
 		                   data);
 	} else if (contains_slash) {
 		if (data->target_is_folder)
-			gtk_label_set_label (GTK_LABEL (data->error_label), _("Folder names cannot contain \"/\"."));
+			gtk_label_set_label (GTK_LABEL (data->error_label), _("Folder names cannot contain “/”."));
 		else
-			gtk_label_set_label (GTK_LABEL (data->error_label), _("Files names cannot contain \"/\"."));
+			gtk_label_set_label (GTK_LABEL (data->error_label), _("Files names cannot contain “/”."));
 	} else {
 		/* No errors detected, empty the label */
 		gtk_label_set_label (GTK_LABEL (data->error_label), NULL);
