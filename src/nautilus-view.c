@@ -116,7 +116,7 @@
 #define TEMPLATE_LIMIT 30
 
 /* Time to show the duplicated folder label */
-#define NEW_FOLDER_DIALOG_ERROR_LABEL_TIMEOUT 500
+#define DIALOG_DUPLICATED_NAME_ERROR_LABEL_TIMEOUT 500
 
 enum {
 	ADD_FILE,
@@ -157,7 +157,7 @@ struct NautilusViewDetails
 	GdkEventButton *pathbar_popup_event;
 	guint dir_merge_id;
 
-	gint new_folder_name_timeout_id;
+	gint dialog_duplicated_name_label_timeout_id;
 
 	gboolean supports_zooming;
 
@@ -1628,112 +1628,98 @@ context_menu_to_file_operation_position (NautilusView *view)
 typedef struct {
 	NautilusView *view;
 	GtkWidget *dialog;
-	GtkWidget *label;
-} NewFolderDialogData;
+	GtkWidget *error_label;
+	GtkWidget *name_entry;
+} FileNameDialogData;
 
 static gboolean
-show_has_folder_label (NewFolderDialogData *data)
+duplicated_file_label_show (FileNameDialogData *data)
 {
-	gtk_label_set_label (GTK_LABEL (data->label), _("A file or folder with that name already exists."));
-	data->view->details->new_folder_name_timeout_id = 0;
+	gtk_label_set_label (GTK_LABEL (data->error_label), _("A file or folder with that name already exists."));
+	data->view->details->dialog_duplicated_name_label_timeout_id = 0;
 	return FALSE;
 }
 
 static void
-nautilus_view_add_file_dialog_validate_name (GObject    *object,
-                                             GParamSpec *params,
-                                             gpointer    user_data)
+nautilus_view_validate_file_name (FileNameDialogData *data)
 {
-	NewFolderDialogData *data = user_data;
-	NautilusFile *file;
-	NautilusView *view;
-	GtkWidget *dialog;
+	gboolean duplicated_name;
 	gboolean contains_slash;
 	gboolean is_empty;
-	gboolean has_folder;
-	GList *file_list, *node;
-	const gchar *text;
+	const gchar *name;
+	GList *files;
+	GList *node;
+	NautilusFile *file;
 
-	g_assert (GTK_IS_ENTRY (object));
-	g_assert (user_data);
-	g_assert (NAUTILUS_IS_VIEW (data->view));
+	g_assert (data != NULL);
+	g_assert (GTK_IS_ENTRY (data->name_entry));
+	g_assert (GTK_IS_LABEL (data->error_label));
 	g_assert (GTK_IS_DIALOG (data->dialog));
-	g_assert (GTK_IS_LABEL (data->label));
+	g_assert (NAUTILUS_IS_VIEW (data->view));
 
-	text = gtk_entry_get_text (GTK_ENTRY (object));
-	dialog = gtk_widget_get_toplevel (GTK_WIDGET (object));
-	is_empty = gtk_entry_get_text_length (GTK_ENTRY (object)) == 0;
-	contains_slash = strstr (text, "/") != NULL;
+	name = gtk_entry_get_text (GTK_ENTRY (data->name_entry));
+	is_empty = strlen (name) == 0;
+	contains_slash = strstr (name, "/") != NULL;
+	duplicated_name = FALSE;
+	files = nautilus_directory_get_file_list (data->view->details->model);
 
-	/* Check whether current location already has
-	 * a folder with the proposed name.
-	 */
-	view = data->view;
-	has_folder = FALSE;
-	file_list = nautilus_directory_get_file_list (view->details->model);
-
-	for (node = file_list; node != NULL; node = node->next) {
+	for (node = files; node != NULL; node = node->next) {
 		file = node->data;
 
-		if (nautilus_file_compare_display_name (file, text) == 0) {
-			has_folder = TRUE;
+		if (nautilus_file_compare_display_name (file, name) == 0) {
+			duplicated_name = TRUE;
 			break;
 		}
 	}
 
-	nautilus_file_list_free (file_list);
+	nautilus_file_list_free (files);
 
 	/* Remove any sources left behind by
 	 * previous calls of this function.
 	 */
-	if (view->details->new_folder_name_timeout_id > 0) {
-		g_source_remove (view->details->new_folder_name_timeout_id);
-		view->details->new_folder_name_timeout_id = 0;
+	if (data->view->details->dialog_duplicated_name_label_timeout_id > 0) {
+		g_source_remove (data->view->details->dialog_duplicated_name_label_timeout_id);
+		data->view->details->dialog_duplicated_name_label_timeout_id = 0;
 	}
 
-	if (has_folder && !contains_slash && !is_empty) {
-		/* Before showing the dup folder label, clear out the
-		 * previous message to stop showing any previous errors,
-		 * considering that there are other possible error
-		 * labels.
-		 */
-		gtk_label_set_label (GTK_LABEL (data->label), NULL);
-
-		view->details->new_folder_name_timeout_id = g_timeout_add (NEW_FOLDER_DIALOG_ERROR_LABEL_TIMEOUT,
-		                                                           (GSourceFunc)show_has_folder_label,
-		                                                           user_data);
+	if (duplicated_name && !contains_slash && !is_empty) {
+		data->view->details->dialog_duplicated_name_label_timeout_id =
+            	    g_timeout_add (DIALOG_DUPLICATED_NAME_ERROR_LABEL_TIMEOUT,
+		                   (GSourceFunc)duplicated_file_label_show,
+		                   data);
 	} else if (contains_slash) {
-		/* If the user types forbidden characters,
-		 * immediately shows the error label.
-		 */
-		gtk_label_set_label (GTK_LABEL (data->label), _("Folder names cannot contain \"/\"."));
+		gtk_label_set_label (GTK_LABEL (data->error_label), _("Folder names cannot contain \"/\"."));
 	} else {
 		/* No errors detected, empty the label */
-		gtk_label_set_label (GTK_LABEL (data->label), NULL);
+		gtk_label_set_label (GTK_LABEL (data->error_label), NULL);
 	}
 
-	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog),
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (data->dialog),
                                            GTK_RESPONSE_OK,
-                                           !is_empty && !contains_slash && !has_folder);
+                                           !is_empty && !contains_slash && !duplicated_name);
 }
 
 static void
-nautilus_view_add_file_dialog_entry_activate (GtkWidget *entry,
-                                              gpointer   user_data)
+nautilus_view_new_folder_dialog_validate_name (GObject    *object,
+                                               GParamSpec *params,
+                                               gpointer    user_data)
 {
-	NewFolderDialogData *data = user_data;
+	nautilus_view_validate_file_name (user_data);
+
+}
+
+static void
+nautilus_view_new_folder_dialog_entry_activate (GtkWidget *entry,
+                                                gpointer   user_data)
+{
+	FileNameDialogData *data;
 	GtkWidget *create_button;
 
-	g_assert (GTK_IS_ENTRY (entry));
-	g_assert (user_data);
-	g_assert (NAUTILUS_IS_VIEW (data->view));
-	g_assert (GTK_IS_DIALOG (data->dialog));
-	g_assert (GTK_IS_LABEL (data->label));
-
+	data = (FileNameDialogData *) user_data;
 	create_button = gtk_dialog_get_widget_for_response (GTK_DIALOG (data->dialog),
                                                             GTK_RESPONSE_OK);
 
-	/* nautilus_view_add_file_dialog_validate_content performs
+	/* nautilus_view_new_folder_dialog_validate_name performs
 	 * all the necessary validation, and it's not needed to check
 	 * it all again. Checking if the "Create" button is sensitive
 	 * is enough.
@@ -1747,9 +1733,9 @@ nautilus_view_add_file_dialog_entry_activate (GtkWidget *entry,
 		/* Since typos are immediately shown, only
 		 * handle name collisions here.
 		 */
-		if (view->details->new_folder_name_timeout_id > 0) {
-			g_source_remove (view->details->new_folder_name_timeout_id);
-			show_has_folder_label (data);
+		if (view->details->dialog_duplicated_name_label_timeout_id > 0) {
+			g_source_remove (view->details->dialog_duplicated_name_label_timeout_id);
+			duplicated_file_label_show (data);
 		}
 	}
 }
@@ -1758,7 +1744,7 @@ static void
 nautilus_view_new_folder (NautilusView *directory_view,
 			  gboolean      with_selection)
 {
-	NewFolderDialogData *dialog_data;
+	FileNameDialogData *dialog_data;
 	GtkBuilder *builder;
 	GtkWindow *dialog;
 	GtkEntry *entry;
@@ -1769,20 +1755,21 @@ nautilus_view_new_folder (NautilusView *directory_view,
 	entry = GTK_ENTRY (gtk_builder_get_object (builder, "name_entry"));
 
 	/* build up dialog fields */
-	dialog_data = g_new0 (NewFolderDialogData, 1);
+	dialog_data = g_new0 (FileNameDialogData, 1);
 	dialog_data->view = directory_view;
 	dialog_data->dialog = GTK_WIDGET (dialog);
-	dialog_data->label = GTK_WIDGET (gtk_builder_get_object (builder, "error_label"));
+	dialog_data->error_label = GTK_WIDGET (gtk_builder_get_object (builder, "error_label"));
+	dialog_data->name_entry = GTK_WIDGET (gtk_builder_get_object (builder, "name_entry"));
 
 	gtk_window_set_transient_for (dialog,
                                       GTK_WINDOW (nautilus_view_get_window (directory_view)));
 
 	/* Connect signals */
 	gtk_builder_add_callback_symbols (builder,
-                                          "validate_cb",
-                                          G_CALLBACK (nautilus_view_add_file_dialog_validate_name),
-                                          "activated_cb",
-                                          G_CALLBACK (nautilus_view_add_file_dialog_entry_activate),
+                                          "nautilus_view_new_folder_dialog_validate_name",
+                                          G_CALLBACK (nautilus_view_new_folder_dialog_validate_name),
+                                          "nautilus_view_new_folder_dialog_entry_activate",
+                                          G_CALLBACK (nautilus_view_new_folder_dialog_entry_activate),
                                           NULL);
 
 	gtk_builder_connect_signals (builder, dialog_data);
@@ -1821,9 +1808,9 @@ nautilus_view_new_folder (NautilusView *directory_view,
 	 * message, it should be removed before it gets
 	 * triggered.
 	 */
-	if (directory_view->details->new_folder_name_timeout_id > 0) {
-		g_source_remove (directory_view->details->new_folder_name_timeout_id);
-		directory_view->details->new_folder_name_timeout_id = 0;
+	if (directory_view->details->dialog_duplicated_name_label_timeout_id > 0) {
+		g_source_remove (directory_view->details->dialog_duplicated_name_label_timeout_id);
+		directory_view->details->dialog_duplicated_name_label_timeout_id = 0;
 	}
 
 	g_free (dialog_data);

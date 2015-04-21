@@ -34,8 +34,8 @@
           <object class="GtkEntry" id="name_entry">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <signal name="notify::text" handler="validate_cb" swapped="no" />
-            <signal name="activate" handler="activated_cb" swapped="no" />
+            <signal name="notify::text" handler="nautilus_view_new_folder_dialog_validate_name" swapped="no" />
+            <signal name="activate" handler="nautilus_view_new_folder_dialog_entry_activate" swapped="no" />
           </object>
           <packing>
             <property name="expand">False</property>
