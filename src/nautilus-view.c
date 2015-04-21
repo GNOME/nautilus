@@ -1750,30 +1750,34 @@ nautilus_view_new_folder_dialog_entry_activate (GtkWidget *entry,
 	}
 }
 
-static void
-nautilus_view_new_folder (NautilusView *directory_view,
-			  gboolean      with_selection)
+typedef struct {
+	gint response;
+	gchar *name;
+} FileNameDialogReturnData;
+
+static FileNameDialogReturnData*
+nautilus_view_new_file_name_dialog (NautilusView *view)
 {
 	FileNameDialogData *dialog_data;
+	FileNameDialogReturnData *dialog_return_data;
 	GtkBuilder *builder;
 	GtkWindow *dialog;
 	GtkEntry *entry;
-	gint response;
 
 	builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-new-folder-dialog.ui");
 	dialog = GTK_WINDOW (gtk_builder_get_object (builder, "new_folder_dialog"));
 	entry = GTK_ENTRY (gtk_builder_get_object (builder, "name_entry"));
 
 	/* build up dialog fields */
-	dialog_data = g_new0 (FileNameDialogData, 1);
-	dialog_data->view = directory_view;
+	dialog_data = g_new (FileNameDialogData, 1);
+	dialog_data->view = view;
 	dialog_data->dialog = GTK_WIDGET (dialog);
 	dialog_data->error_label = GTK_WIDGET (gtk_builder_get_object (builder, "error_label"));
 	dialog_data->name_entry = GTK_WIDGET (gtk_builder_get_object (builder, "name_entry"));
 	dialog_data->target_is_folder = TRUE;
 
 	gtk_window_set_transient_for (dialog,
-                                      GTK_WINDOW (nautilus_view_get_window (directory_view)));
+                                      GTK_WINDOW (nautilus_view_get_window (view)));
 
 	/* Connect signals */
 	gtk_builder_add_callback_symbols (builder,
@@ -1785,17 +1789,33 @@ nautilus_view_new_folder (NautilusView *directory_view,
 
 	gtk_builder_connect_signals (builder, dialog_data);
 
-	response = gtk_dialog_run (GTK_DIALOG (dialog));
+	dialog_return_data = g_new (FileNameDialogReturnData, 1);
+	dialog_return_data->response = gtk_dialog_run (GTK_DIALOG (dialog));
+	dialog_return_data->name = g_strstrip (g_strdup (gtk_entry_get_text (entry)));
 
-	if (response == GTK_RESPONSE_OK) {
+	g_object_unref (builder);
+	g_free (dialog_data);
+	gtk_widget_destroy (GTK_WIDGET (dialog));
+
+	return dialog_return_data;
+}
+
+static void
+nautilus_view_new_folder (NautilusView *directory_view,
+			  gboolean      with_selection)
+{
+	FileNameDialogReturnData *dialog_return_data;
+
+	dialog_return_data = nautilus_view_new_file_name_dialog (directory_view);
+
+	if (dialog_return_data->response == GTK_RESPONSE_OK) {
 		NewFolderData *data;
 		GdkPoint *pos;
 		char *parent_uri;
 		gchar *name;
 
 		data = new_folder_data_new (directory_view, with_selection);
-		name = g_strdup (gtk_entry_get_text (entry));
-		g_strstrip (name);
+		name = dialog_return_data->name;
 
 		g_signal_connect_data (directory_view,
 				       "add-file",
@@ -1824,9 +1844,7 @@ nautilus_view_new_folder (NautilusView *directory_view,
 		directory_view->details->dialog_duplicated_name_label_timeout_id = 0;
 	}
 
-	g_free (dialog_data);
-	g_object_unref (builder);
-	gtk_widget_destroy (GTK_WIDGET (dialog));
+	g_free (dialog_return_data);
 }
 
 static NewFolderData *
