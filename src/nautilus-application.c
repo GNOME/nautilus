@@ -477,6 +477,12 @@ nautilus_application_open_location (NautilusApplication *application,
 	nautilus_profile_end (NULL);
 }
 
+/* Note: when launched from command line we do not reach this method
+ * since we manually handle the command line parameters in order to
+ * parse --no-default-window, etc.
+ * However this method is called when open() is called via dbus, for
+ * instance when gtk_uri_open () is called from outside.
+ */
 static void
 nautilus_application_open (GApplication *app,
 			   GFile **files,
@@ -1195,6 +1201,7 @@ nautilus_application_class_init (NautilusApplicationClass *class)
 	application_class->quit_mainloop = nautilus_application_quit_mainloop;
 	application_class->dbus_register = nautilus_application_dbus_register;
 	application_class->dbus_unregister = nautilus_application_dbus_unregister;
+	application_class->open = nautilus_application_open;
 
 	gtkapp_class = GTK_APPLICATION_CLASS (class);
 	gtkapp_class->window_added = nautilus_application_window_added;
