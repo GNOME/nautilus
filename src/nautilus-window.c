@@ -552,7 +552,7 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 	nautilus_application_add_accelerator (app, "win.view-mode('list')", "<control>1");
 	nautilus_application_add_accelerator (app, "win.view-mode('grid')", "<control>2");
 	nautilus_application_add_accelerator (app, "win.close-current-view", "<control>w");
-	nautilus_application_add_accelerator (app, "win.reload", "<control>r");
+	nautilus_application_add_accelerator (app, "win.reload", "F5");
 	nautilus_application_add_accelerator (app, "win.undo", "<control>z");
 	nautilus_application_add_accelerator (app, "win.redo", "<shift><control>z");
 	/* Only accesible by shorcuts */
