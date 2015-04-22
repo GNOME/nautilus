@@ -1046,61 +1046,53 @@ app_chooser_dialog_response_cb (GtkDialog *dialog,
 				gpointer user_data)
 {
 	GtkWindow *parent_window;
-	NautilusFile *file;
+	GList *files;
 	GAppInfo *info;
-	GList files;
 
 	parent_window = user_data;
+	files = g_object_get_data (G_OBJECT (dialog), "directory-view:files");
 
-	if (response_id != GTK_RESPONSE_OK) {
-		gtk_widget_destroy (GTK_WIDGET (dialog));
-		return;
-	}
+	if (response_id != GTK_RESPONSE_OK)
+                goto out;
 
 	info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (dialog));
-	file = g_object_get_data (G_OBJECT (dialog), "directory-view:file");
 
 	g_signal_emit_by_name (nautilus_signaller_get_current (), "mime-data-changed");
 
-	files.next = NULL;
-	files.prev = NULL;
-	files.data = file;
-	nautilus_launch_application (info, &files, parent_window);
+	nautilus_launch_application (info, files, parent_window);
 
-	gtk_widget_destroy (GTK_WIDGET (dialog));
 	g_object_unref (info);
+out:
+	gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
 static void
 choose_program (NautilusView *view,
-		NautilusFile *file)
+                GList        *files)
 {
 	GtkWidget *dialog;
-	GFile *location;
+	gchar *mime_type;
 	GtkWindow *parent_window;
 
 	g_assert (NAUTILUS_IS_VIEW (view));
-	g_assert (NAUTILUS_IS_FILE (file));
 
-	nautilus_file_ref (file);
-	location = nautilus_file_get_location (file);
+	mime_type = nautilus_file_get_mime_type (files->data);
 	parent_window = nautilus_view_get_containing_window (view);
 
-	dialog = gtk_app_chooser_dialog_new (parent_window,
-					     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_USE_HEADER_BAR,
-					     location);
-	g_object_set_data_full (G_OBJECT (dialog), 
-				"directory-view:file",
-				g_object_ref (file),
-				(GDestroyNotify)g_object_unref);
+	dialog = gtk_app_chooser_dialog_new_for_content_type (parent_window,
+                                                              GTK_DIALOG_MODAL |
+                                                              GTK_DIALOG_DESTROY_WITH_PARENT |
+                                                              GTK_DIALOG_USE_HEADER_BAR,
+                                                              mime_type);
+	g_object_set_data_full (G_OBJECT (dialog),
+				"directory-view:files",
+				files,
+				(GDestroyNotify) nautilus_file_list_free);
 	gtk_widget_show (dialog);
 
-	g_signal_connect_object (dialog, "response", 
+	g_signal_connect_object (dialog, "response",
 				 G_CALLBACK (app_chooser_dialog_response_cb),
 				 parent_window, 0);
-
-	g_object_unref (location);
-	nautilus_file_unref (file);	
 }
 
 static void
@@ -1111,12 +1103,7 @@ open_with_other_program (NautilusView *view)
 	g_assert (NAUTILUS_IS_VIEW (view));
 
        	selection = nautilus_view_get_selection (view);
-
-	if (selection_contains_one_item_in_menu_callback (view, selection)) {
-		choose_program (view, NAUTILUS_FILE (selection->data));
-	}
-
-	nautilus_file_list_free (selection);
+	choose_program (view, selection);
 }
 
 static void
@@ -6220,7 +6207,7 @@ real_update_actions_state (NautilusView *view)
 	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
 					     "open-with-other-application");
 	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-				     app != NULL && selection_count == 1);
+				     app != NULL);
 
 	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
 					     "open-item-new-tab");
