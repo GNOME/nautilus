@@ -3147,69 +3147,6 @@ nautilus_list_view_can_zoom_out (NautilusView *view)
 }
 
 static void
-nautilus_list_view_start_renaming_file (NautilusView *view,
-					NautilusFile *file,
-					gboolean select_all)
-{
-	NautilusListView *list_view;
-	GtkTreeIter iter;
-	GtkTreePath *path;
-	
-	list_view = NAUTILUS_LIST_VIEW (view);
-	
-	/* Select all if we are in renaming mode already */
-	if (list_view->details->file_name_column && list_view->details->editable_widget) {
-		gtk_editable_select_region (GTK_EDITABLE (list_view->details->editable_widget),
-					    0,
-					    -1);
-		return;
-	}
-
-	if (!nautilus_list_model_get_first_iter_for_file (list_view->details->model, file, &iter)) {
-		return;
-	}
-
-	/* call parent class to make sure the right icon is selected */
-	NAUTILUS_VIEW_CLASS (nautilus_list_view_parent_class)->start_renaming_file (view, file, select_all);
-
-	/* Freeze updates to the view to prevent losing rename focus when the tree view updates */
-	nautilus_view_freeze_updates (NAUTILUS_VIEW (view));
-
-	path = gtk_tree_model_get_path (GTK_TREE_MODEL (list_view->details->model), &iter);
-
-	/* Make filename-cells editable. */
-	g_object_set (G_OBJECT (list_view->details->file_name_cell),
-		      "editable", TRUE,
-		      NULL);
-
-	gtk_tree_view_scroll_to_cell (list_view->details->tree_view,
-				      NULL,
-				      list_view->details->file_name_column,
-				      TRUE, 0.0, 0.0);
-	gtk_tree_view_set_cursor_on_cell (list_view->details->tree_view,
-					  path,
-					  list_view->details->file_name_column,
-					  GTK_CELL_RENDERER (list_view->details->file_name_cell),
-					  TRUE);
-
-	/* set cursor also triggers editing-started, where we save the editable widget */
-	if (list_view->details->editable_widget != NULL) {
-		int start_offset = 0;
-		int end_offset = -1;
-
-		if (!select_all) {
-			eel_filename_get_rename_region (list_view->details->original_name,
-							&start_offset, &end_offset);
-		}
-
-		gtk_editable_select_region (GTK_EDITABLE (list_view->details->editable_widget),
-					    start_offset, end_offset);
-	}
-
-	gtk_tree_path_free (path);
-}
-
-static void
 nautilus_list_view_click_policy_changed (NautilusView *directory_view)
 {
 	GdkWindow *win;
@@ -3237,7 +3174,7 @@ nautilus_list_view_click_policy_changed (NautilusView *directory_view)
 		if (gtk_widget_get_realized (GTK_WIDGET (tree))) {
 			win = gtk_widget_get_window (GTK_WIDGET (tree));
 			gdk_window_set_cursor (win, NULL);
-			
+
 			display = gtk_widget_get_display (GTK_WIDGET (view));
 			if (display != NULL) {
 				gdk_display_flush (display);
@@ -3266,10 +3203,10 @@ static void
 default_visible_columns_changed_callback (gpointer callback_data)
 {
 	NautilusListView *list_view;
-	
+
 	list_view = NAUTILUS_LIST_VIEW (callback_data);
 
-	set_columns_settings_from_metadata_and_preferences (list_view);	
+	set_columns_settings_from_metadata_and_preferences (list_view);
 }
 
 static void
@@ -3531,7 +3468,6 @@ nautilus_list_view_class_init (NautilusListViewClass *class)
 	nautilus_view_class->invert_selection = nautilus_list_view_invert_selection;
 	nautilus_view_class->compare_files = nautilus_list_view_compare_files;
 	nautilus_view_class->sort_directories_first_changed = nautilus_list_view_sort_directories_first_changed;
-	nautilus_view_class->start_renaming_file = nautilus_list_view_start_renaming_file;
 	nautilus_view_class->end_file_changes = nautilus_list_view_end_file_changes;
 	nautilus_view_class->using_manual_layout = nautilus_list_view_using_manual_layout;
 	nautilus_view_class->get_view_id = nautilus_list_view_get_id;

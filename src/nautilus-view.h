@@ -248,12 +248,6 @@ struct NautilusViewClass {
 
 	gboolean (* can_rename_file)            (NautilusView *view,
 						 NautilusFile *file);
-	/* select_all specifies whether the whole filename should be selected
-	 * or only its basename (i.e. everything except the extension)
-	 * */
-	void	 (* start_renaming_file)        (NautilusView *view,
-					  	 NautilusFile *file,
-						 gboolean select_all);
 
 	/* convert *point from widget's coordinate system to a coordinate
 	 * system used for specifying file operation positions, which is view-specific.

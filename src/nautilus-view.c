@@ -181,8 +181,6 @@ struct NautilusViewDetails
 	guint done_loading_handler_id;
 	guint file_changed_handler_id;
 
-	guint delayed_rename_file_id;
-
 	GList *new_added_files;
 	GList *new_changed_files;
 
@@ -1339,77 +1337,6 @@ action_select_pattern (GSimpleAction *action,
 	select_pattern(user_data);
 }
 
-typedef struct {
-	NautilusView *view;
-	NautilusFile *new_file;
-} RenameData;
-
-static gboolean
-delayed_rename_file_hack_callback (RenameData *data)
-{
-	NautilusView *view;
-	NautilusFile *new_file;
-
-	view = data->view;
-	new_file = data->new_file;
-
-	if (view->details->slot != NULL &&
-	    view->details->active) {
-		NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->start_renaming_file (view, new_file, FALSE);
-		nautilus_view_reveal_selection (view);
-	}
-
-	return FALSE;
-}
-
-static void
-delayed_rename_file_hack_removed (RenameData *data)
-{
-	g_object_unref (data->view);
-	nautilus_file_unref (data->new_file);
-	g_free (data);
-}
-
-
-static void
-rename_file (NautilusView *view, NautilusFile *new_file)
-{
-	RenameData *data;
-
-	/* HACK!!!!
-	   This is a work around bug in listview. After the rename is
-	   enabled we will get file changes due to info about the new
-	   file being read, which will cause the model to change. When
-	   the model changes GtkTreeView clears the editing. This hack just
-	   delays editing for some time to try to avoid this problem.
-	   A major problem is that the selection of the row causes us
-	   to load the slow mimetype for the file, which leads to a
-	   file_changed. So, before we delay we select the row.
-	*/
-	if (NAUTILUS_IS_LIST_VIEW (view)) {
-		nautilus_view_select_file (view, new_file);
-		
-		data = g_new (RenameData, 1);
-		data->view = g_object_ref (view);
-		data->new_file = nautilus_file_ref (new_file);
-		if (view->details->delayed_rename_file_id != 0) {
-			g_source_remove (view->details->delayed_rename_file_id);
-		}
-		view->details->delayed_rename_file_id = 
-			g_timeout_add_full (G_PRIORITY_DEFAULT,
-					    100, (GSourceFunc)delayed_rename_file_hack_callback,
-					    data, (GDestroyNotify) delayed_rename_file_hack_removed);
-		
-		return;
-	}
-
-	/* no need to select because start_renaming_file selects
-	 * nautilus_view_select_file (view, new_file);
-	 */
-	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->start_renaming_file (view, new_file, FALSE);
-	nautilus_view_reveal_selection (view);
-}
-
 static void
 reveal_newly_added_folder (NautilusView *view, NautilusFile *new_file,
 			   NautilusDirectory *directory, GFile *target_location)
@@ -1439,30 +1366,6 @@ typedef struct {
 } NewFolderSelectionData;
 
 static void
-rename_newly_added_folder (NautilusView *view, NautilusFile *removed_file,
-			   NautilusDirectory *directory, NewFolderSelectionData *data)
-{
-	GFile *location;
-
-	location = nautilus_file_get_location (removed_file);
-	if (!g_hash_table_remove (data->to_remove_locations, location)) {
-		g_assert_not_reached ();
-	}
-	g_object_unref (location);
-	if (g_hash_table_size (data->to_remove_locations) == 0) {
-		nautilus_view_set_selection (data->directory_view, NULL);
-		g_signal_handlers_disconnect_by_func (data->directory_view,
-						      G_CALLBACK (rename_newly_added_folder),
-						      (void *) data);
-
-		rename_file (data->directory_view, data->new_folder);
-		g_object_unref (data->new_folder);
-		g_hash_table_destroy (data->to_remove_locations);
-		g_free (data);
-	}
-}
-
-static void
 track_newly_added_locations (NautilusView *view, NautilusFile *new_file,
 			     NautilusDirectory *directory, gpointer user_data)
 {
@@ -1474,7 +1377,7 @@ track_newly_added_locations (NautilusView *view, NautilusFile *new_file,
 }
 
 static void
-new_folder_done (GFile *new_folder, 
+new_folder_done (GFile *new_folder,
 		 gboolean success,
 		 gpointer user_data)
 {
@@ -1499,11 +1402,11 @@ new_folder_done (GFile *new_folder,
 	if (new_folder == NULL) {
 		goto fail;
 	}
-	
+
 	screen = gtk_widget_get_screen (GTK_WIDGET (directory_view));
 	g_snprintf (screen_string, sizeof (screen_string), "%d", gdk_screen_get_number (screen));
 
-	
+
 	file = nautilus_file_get (new_folder);
 	nautilus_file_set_metadata
 		(file, NAUTILUS_METADATA_KEY_SCREEN,
@@ -1539,13 +1442,6 @@ new_folder_done (GFile *new_folder,
 		uris = g_list_reverse (uris);
 
 		target_uri = nautilus_file_get_uri (file);
-
-		g_signal_connect_data (directory_view,
-				       "remove-file",
-				       G_CALLBACK (rename_newly_added_folder),
-				       sdata,
-				       (GClosureNotify)NULL,
-				       G_CONNECT_AFTER);
 
 		nautilus_view_move_copy_items (directory_view,
 					       uris,
@@ -2704,16 +2600,11 @@ nautilus_view_destroy (GtkWidget *object)
 		view->details->reveal_selection_idle_id = 0;
 	}
 
-	if (view->details->delayed_rename_file_id != 0) {
-		g_source_remove (view->details->delayed_rename_file_id);
-		view->details->delayed_rename_file_id = 0;
-	}
-
 	if (view->details->model) {
 		nautilus_directory_unref (view->details->model);
 		view->details->model = NULL;
 	}
-	
+
 	if (view->details->directory_as_file) {
 		nautilus_file_unref (view->details->directory_as_file);
 		view->details->directory_as_file = NULL;
@@ -4012,18 +3903,6 @@ nautilus_view_set_is_renaming (NautilusView *view,
 			       gboolean      is_renaming)
 {
 	view->details->is_renaming = is_renaming;
-}
-
-static void
-start_renaming_file (NautilusView *view,
-		     NautilusFile *file,
-		     gboolean select_all)
-{
-	view->details->is_renaming = TRUE;
-
-	if (file !=  NULL) {
-		nautilus_view_select_file (view, file);
-	}
 }
 
 static void
@@ -7785,7 +7664,6 @@ nautilus_view_class_init (NautilusViewClass *klass)
 	klass->get_selected_icon_locations = real_get_selected_icon_locations;
 	klass->is_read_only = real_is_read_only;
 	klass->can_rename_file = can_rename_file;
-	klass->start_renaming_file = start_renaming_file;
 	klass->get_backing_uri = real_get_backing_uri;
 	klass->using_manual_layout = real_using_manual_layout;
 	klass->get_window = nautilus_view_get_window;

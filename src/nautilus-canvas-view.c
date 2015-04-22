@@ -1009,19 +1009,6 @@ nautilus_canvas_view_can_rename_file (NautilusView *view, NautilusFile *file)
 	return NAUTILUS_VIEW_CLASS(nautilus_canvas_view_parent_class)->can_rename_file (view, file);
 }
 
-static void
-nautilus_canvas_view_start_renaming_file (NautilusView *view,
-				  NautilusFile *file,
-				  gboolean select_all)
-{
-	/* call parent class to make sure the right canvas is selected */
-	NAUTILUS_VIEW_CLASS(nautilus_canvas_view_parent_class)->start_renaming_file (view, file, select_all);
-	
-	/* start renaming */
-	nautilus_canvas_container_start_renaming_selected_item
-		(get_canvas_container (NAUTILUS_CANVAS_VIEW (view)), select_all);
-}
-
 const GActionEntry canvas_view_entries[] = {
 	{ "keep-aligned", NULL, NULL, "true", action_keep_aligned },
 	{ "reversed-order", NULL, NULL, "false", action_reversed_order },
@@ -1373,27 +1360,6 @@ icon_position_changed_callback (NautilusCanvasContainer *container,
 		 "1.0", scale_string);
 }
 
-/* Attempt to change the filename to the new text.  Notify user if operation fails. */
-static void
-icon_rename_ended_cb (NautilusCanvasContainer *container,
-		      NautilusFile *file,				    
-		      const char *new_name,
-		      NautilusCanvasView *canvas_view)
-{
-	g_assert (NAUTILUS_IS_FILE (file));
-
-	nautilus_view_set_is_renaming (NAUTILUS_VIEW (canvas_view), FALSE);
-
-	/* Don't allow a rename with an empty string. Revert to original 
-	 * without notifying the user.
-	 */
-	if ((new_name == NULL) || (new_name[0] == '\0')) {
-		return;
-	}
-
-	nautilus_rename_file (file, new_name, NULL, NULL);
-}
-
 static char *
 get_icon_uri_callback (NautilusCanvasContainer *container,
 		       NautilusFile *file,
@@ -1664,8 +1630,6 @@ create_canvas_container (NautilusCanvasView *canvas_view)
 				 G_CALLBACK (get_stored_icon_position_callback), canvas_view, 0);
 	g_signal_connect_object (canvas_container, "layout-changed",
 				 G_CALLBACK (layout_changed_callback), canvas_view, 0);
-	g_signal_connect_object (canvas_container, "icon-rename-ended",
-				 G_CALLBACK (icon_rename_ended_cb), canvas_view, 0);
 	g_signal_connect_object (canvas_container, "icon-stretch-started",
 				 G_CALLBACK (nautilus_view_update_context_menus), canvas_view,
 				 G_CONNECT_SWAPPED);
@@ -1872,7 +1836,6 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
         nautilus_view_class->click_policy_changed = nautilus_canvas_view_click_policy_changed;
 	nautilus_view_class->update_actions_state = nautilus_canvas_view_update_actions_state;
         nautilus_view_class->sort_directories_first_changed = nautilus_canvas_view_sort_directories_first_changed;
-        nautilus_view_class->start_renaming_file = nautilus_canvas_view_start_renaming_file;
 	nautilus_view_class->using_manual_layout = nautilus_canvas_view_using_manual_layout;
 	nautilus_view_class->widget_to_file_operation_position = nautilus_canvas_view_widget_to_file_operation_position;
 	nautilus_view_class->get_view_id = nautilus_canvas_view_get_id;

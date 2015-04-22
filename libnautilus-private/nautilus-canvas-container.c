@@ -148,9 +148,6 @@ static gboolean      all_selected                                   (NautilusCan
 static gboolean      has_selection                                  (NautilusCanvasContainer *container);
 static void          icon_destroy                                   (NautilusCanvasContainer *container,
 								       NautilusCanvasIcon          *icon);
-static void          end_renaming_mode                              (NautilusCanvasContainer *container,
-								     gboolean               commit);
-static NautilusCanvasIcon *get_icon_being_renamed                         (NautilusCanvasContainer *container);
 static void          finish_adding_new_icons                        (NautilusCanvasContainer *container);
 static inline void   icon_get_bounding_box                          (NautilusCanvasIcon          *icon,
 								       int                   *x1_return,
@@ -158,9 +155,6 @@ static inline void   icon_get_bounding_box                          (NautilusCan
 								       int                   *x2_return,
 								       int                   *y2_return,
 								       NautilusCanvasItemBoundsUsage usage);
-static gboolean      is_renaming                                    (NautilusCanvasContainer *container);
-static gboolean      is_renaming_pending                            (NautilusCanvasContainer *container);
-static void          process_pending_icon_to_rename                 (NautilusCanvasContainer *container);
 static void          handle_hadjustment_changed                     (GtkAdjustment         *adjustment,
 								     NautilusCanvasContainer *container);
 static void          handle_vadjustment_changed                     (GtkAdjustment         *adjustment,
@@ -286,13 +280,9 @@ icon_set_position (NautilusCanvasIcon *icon,
 
 	container = NAUTILUS_CANVAS_CONTAINER (EEL_CANVAS_ITEM (icon->item)->canvas);
 
-	if (icon == get_icon_being_renamed (container)) {
-		end_renaming_mode (container, TRUE);
-	}
-
 	if (nautilus_canvas_container_get_is_fixed_size (container)) {
 		/*  FIXME: This should be:
-		    
+
 		    container_x = GTK_WIDGET (container)->allocation.x;
 		    container_y = GTK_WIDGET (container)->allocation.y;
 		    container_width = GTK_WIDGET (container)->allocation.width;
@@ -440,8 +430,6 @@ static void
 icon_toggle_selected (NautilusCanvasContainer *container,
 		      NautilusCanvasIcon *icon)
 {		
-	end_renaming_mode (container, TRUE);
-
 	icon->is_selected = !icon->is_selected;
 	if (icon->is_selected) {
 		container->details->selection = g_list_prepend (container->details->selection, icon->data);
@@ -1921,7 +1909,6 @@ redo_layout_internal (NautilusCanvasContainer *container)
 	nautilus_canvas_container_update_scroll_region (container);
 
 	process_pending_icon_to_reveal (container);
-	process_pending_icon_to_rename (container);
 	nautilus_canvas_container_update_visible_icons (container);
 }
 
@@ -2135,10 +2122,6 @@ nautilus_canvas_container_move_icon (NautilusCanvasContainer *container,
 	
 	emit_signal = FALSE;
 	
-	if (icon == get_icon_being_renamed (container)) {
-		end_renaming_mode (container, TRUE);
-	}
-
 	if (scale != icon->scale) {
 		icon->scale = scale;
 		nautilus_canvas_container_update_icon (container, icon);
@@ -3993,10 +3976,7 @@ button_press_event (GtkWidget *widget,
 	/* Invoke the canvas event handler and see if an item picks up the event. */
 	clicked_on_icon = GTK_WIDGET_CLASS (nautilus_canvas_container_parent_class)->button_press_event (widget, event);
 	
-	/* Move focus to canvas container, unless we're still renaming (to avoid exiting
-	 * renaming mode)
-	 */
-  	if (!gtk_widget_has_focus (widget) && !(is_renaming (container) || is_renaming_pending (container))) {
+  	if (!gtk_widget_has_focus (widget)) {
     		gtk_widget_grab_focus (widget);
     	}
 
@@ -4042,7 +4022,6 @@ button_press_event (GtkWidget *widget,
 
 	/* Button 3 does a contextual menu. */
 	if (event->button == CONTEXTUAL_MENU_BUTTON) {
-		end_renaming_mode (container, TRUE);
 		selection_changed = unselect_all (container);
 		if (selection_changed) {
 			g_signal_emit (container, signals[SELECTION_CHANGED], 0);
@@ -4470,8 +4449,6 @@ motion_notify_event (GtkWidget *widget,
 				details->drag_started = TRUE;
 				details->drag_state = DRAG_STATE_MOVE_OR_COPY;
 
-				end_renaming_mode (container, TRUE);
-			
 				eel_canvas_w2c (EEL_CANVAS (container),
 						details->drag_x,
 						details->drag_y,
@@ -4545,111 +4522,95 @@ key_press_event (GtkWidget *widget,
 	container = NAUTILUS_CANVAS_CONTAINER (widget);
 	handled = FALSE;
 
-	if (is_renaming (container) || is_renaming_pending (container)) {
-		switch (event->keyval) {
-		case GDK_KEY_Return:
-		case GDK_KEY_KP_Enter:
-			end_renaming_mode (container, TRUE);	
+	switch (event->keyval) {
+	case GDK_KEY_Home:
+	case GDK_KEY_KP_Home:
+		keyboard_home (container, event);
+		handled = TRUE;
+		break;
+	case GDK_KEY_End:
+	case GDK_KEY_KP_End:
+		keyboard_end (container, event);
+		handled = TRUE;
+		break;
+	case GDK_KEY_Left:
+	case GDK_KEY_KP_Left:
+		/* Don't eat Alt-Left, as that is used for history browsing */
+		if ((event->state & GDK_MOD1_MASK) == 0) {
+			keyboard_left (container, event);
 			handled = TRUE;
-			break;			
-		case GDK_KEY_Escape:
-			end_renaming_mode (container, FALSE);
-			handled = TRUE;
-			break;
-		default:
-			break;
 		}
-	} else {
-		switch (event->keyval) {
-		case GDK_KEY_Home:
-		case GDK_KEY_KP_Home:
-			keyboard_home (container, event);
+		break;
+	case GDK_KEY_Up:
+	case GDK_KEY_KP_Up:
+		/* Don't eat Alt-Up, as that is used for alt-shift-Up */
+		if ((event->state & GDK_MOD1_MASK) == 0) {
+			keyboard_up (container, event);
 			handled = TRUE;
-			break;
-		case GDK_KEY_End:
-		case GDK_KEY_KP_End:
-			keyboard_end (container, event);
-			handled = TRUE;
-			break;
-		case GDK_KEY_Left:
-		case GDK_KEY_KP_Left:
-			/* Don't eat Alt-Left, as that is used for history browsing */
-			if ((event->state & GDK_MOD1_MASK) == 0) {
-				keyboard_left (container, event);
-				handled = TRUE;
-			}
-			break;
-		case GDK_KEY_Up:
-		case GDK_KEY_KP_Up:
-			/* Don't eat Alt-Up, as that is used for alt-shift-Up */
-			if ((event->state & GDK_MOD1_MASK) == 0) {
-				keyboard_up (container, event);
-				handled = TRUE;
-			}
-			break;
-		case GDK_KEY_Right:
-		case GDK_KEY_KP_Right:
-			/* Don't eat Alt-Right, as that is used for history browsing */
-			if ((event->state & GDK_MOD1_MASK) == 0) {
-				keyboard_right (container, event);
-				handled = TRUE;
-			}
-			break;
-		case GDK_KEY_Down:
-		case GDK_KEY_KP_Down:
-			/* Don't eat Alt-Down, as that is used for Open */
-			if ((event->state & GDK_MOD1_MASK) == 0) {
-				keyboard_down (container, event);
-				handled = TRUE;
-			}
-			break;
-		case GDK_KEY_space:
-			keyboard_space (container, event);
-			handled = TRUE;
-			break;
-		case GDK_KEY_Return:
-		case GDK_KEY_KP_Enter:
-			if ((event->state & GDK_SHIFT_MASK) != 0) {
-				activate_selected_items_alternate (container, NULL);
-			} else {
-				activate_selected_items (container);
-			}
-			
-			handled = TRUE;
-			break;
- 		case GDK_KEY_Escape:
-			handled = undo_stretching (container);
-			break;
- 		case GDK_KEY_plus:
- 		case GDK_KEY_minus:
- 		case GDK_KEY_equal:
- 		case GDK_KEY_KP_Add:
- 		case GDK_KEY_KP_Subtract:
- 		case GDK_KEY_0:
- 		case GDK_KEY_KP_0:
-			if (event->state & GDK_CONTROL_MASK) {
-				handled = keyboard_stretching (container, event);
-			}
-			break;
-		case GDK_KEY_F10:
-			/* handle Ctrl+F10 because we want to display the
-			 * background popup even if something is selected.
-			 * The other cases are handled by popup_menu().
-			 */
-			if (event->state & GDK_CONTROL_MASK) {
-				handled = handle_popups (container, event,
-							 "context_click_background");
-			}
-			break;
-		case GDK_KEY_v:
-			/* Eat Control + v to not enable type ahead */
-			if ((event->state & GDK_CONTROL_MASK) != 0) {
-				handled = TRUE;
-			}
-			break;
-		default:
-			break;
 		}
+		break;
+	case GDK_KEY_Right:
+	case GDK_KEY_KP_Right:
+		/* Don't eat Alt-Right, as that is used for history browsing */
+		if ((event->state & GDK_MOD1_MASK) == 0) {
+			keyboard_right (container, event);
+			handled = TRUE;
+		}
+		break;
+	case GDK_KEY_Down:
+	case GDK_KEY_KP_Down:
+		/* Don't eat Alt-Down, as that is used for Open */
+		if ((event->state & GDK_MOD1_MASK) == 0) {
+			keyboard_down (container, event);
+			handled = TRUE;
+		}
+		break;
+	case GDK_KEY_space:
+		keyboard_space (container, event);
+		handled = TRUE;
+		break;
+	case GDK_KEY_Return:
+	case GDK_KEY_KP_Enter:
+		if ((event->state & GDK_SHIFT_MASK) != 0) {
+			activate_selected_items_alternate (container, NULL);
+		} else {
+			activate_selected_items (container);
+		}
+
+		handled = TRUE;
+		break;
+	case GDK_KEY_Escape:
+		handled = undo_stretching (container);
+		break;
+	case GDK_KEY_plus:
+	case GDK_KEY_minus:
+	case GDK_KEY_equal:
+	case GDK_KEY_KP_Add:
+	case GDK_KEY_KP_Subtract:
+	case GDK_KEY_0:
+	case GDK_KEY_KP_0:
+		if (event->state & GDK_CONTROL_MASK) {
+			handled = keyboard_stretching (container, event);
+		}
+		break;
+	case GDK_KEY_F10:
+		/* handle Ctrl+F10 because we want to display the
+		 * background popup even if something is selected.
+		 * The other cases are handled by popup_menu().
+		 */
+		if (event->state & GDK_CONTROL_MASK) {
+			handled = handle_popups (container, event,
+						 "context_click_background");
+		}
+		break;
+	case GDK_KEY_v:
+		/* Eat Control + v to not enable type ahead */
+		if ((event->state & GDK_CONTROL_MASK) != 0) {
+			handled = TRUE;
+		}
+		break;
+	default:
+		break;
 	}
 
 	if (!handled) {
@@ -4866,27 +4827,6 @@ nautilus_canvas_container_class_init (NautilusCanvasContainerClass *class)
 		                g_cclosure_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1,
 				G_TYPE_POINTER);
-	signals[ICON_RENAME_STARTED]
-		= g_signal_new ("icon-rename-started",
-		                G_TYPE_FROM_CLASS (class),
-		                G_SIGNAL_RUN_LAST,
-		                G_STRUCT_OFFSET (NautilusCanvasContainerClass,
-						 icon_rename_started),
-		                NULL, NULL,
-		                g_cclosure_marshal_VOID__POINTER,
-		                G_TYPE_NONE, 1,
-				G_TYPE_POINTER);
-	signals[ICON_RENAME_ENDED]
-		= g_signal_new ("icon-rename-ended",
-		                G_TYPE_FROM_CLASS (class),
-		                G_SIGNAL_RUN_LAST,
-		                G_STRUCT_OFFSET (NautilusCanvasContainerClass,
-						 icon_rename_ended),
-		                NULL, NULL,
-		                g_cclosure_marshal_generic,
-		                G_TYPE_NONE, 2,
-				G_TYPE_POINTER,
-				G_TYPE_STRING);
 	signals[GET_ICON_URI]
 		= g_signal_new ("get-icon-uri",
 		                G_TYPE_FROM_CLASS (class),
@@ -5165,8 +5105,6 @@ handle_focus_in_event (GtkWidget *widget, GdkEventFocus *event, gpointer user_da
 static gboolean
 handle_focus_out_event (GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
 {
-	/* End renaming and commit change. */
-	end_renaming_mode (NAUTILUS_CANVAS_CONTAINER (widget), TRUE);
 	update_selected (NAUTILUS_CANVAS_CONTAINER (widget));
 
 	return FALSE;
@@ -5493,8 +5431,6 @@ nautilus_canvas_container_clear (NautilusCanvasContainer *container)
 		return;
 	}
 
-	end_renaming_mode (container, TRUE);
-	
 	clear_keyboard_focus (container);
 	clear_keyboard_rubberband_start (container);
 	unschedule_keyboard_icon_reveal (container);
@@ -5826,23 +5762,6 @@ activate_selected_items_alternate (NautilusCanvasContainer *container,
 	g_list_free (selection);
 }
 
-static NautilusCanvasIcon *
-get_icon_being_renamed (NautilusCanvasContainer *container)
-{
-	NautilusCanvasIcon *rename_icon;
-
-	if (!is_renaming (container)) {
-		return NULL;
-	}
-
-	g_assert (!has_multiple_selection (container));
-
-	rename_icon = get_first_selected_icon (container);
-	g_assert (rename_icon != NULL);
-
-	return rename_icon;
-}			 
-
 static NautilusIconInfo *
 nautilus_canvas_container_get_icon_images (NautilusCanvasContainer *container,
 					     NautilusCanvasIconData      *data,
@@ -6017,17 +5936,6 @@ nautilus_canvas_container_update_icon (NautilusCanvasContainer *container,
 						   &editable_text,
 						   &additional_text,
 						   FALSE);
-
-	/* If name of icon being renamed was changed from elsewhere, end renaming mode. 
-	 * Alternatively, we could replace the characters in the editable text widget
-	 * with the new name, but that could cause timing problems if the user just
-	 * happened to be typing at that moment.
-	 */
-	if (icon == get_icon_being_renamed (container) &&
-	    g_strcmp0 (editable_text,
-		       nautilus_canvas_item_get_editable_text (icon->item)) != 0) {
-		end_renaming_mode (container, FALSE);
-	}
 
 	eel_canvas_item_set (EEL_CANVAS_ITEM (icon->item),
 			     "editable_text", editable_text,
@@ -6299,8 +6207,6 @@ nautilus_canvas_container_remove (NautilusCanvasContainer *container,
 	g_return_val_if_fail (NAUTILUS_IS_CANVAS_CONTAINER (container), FALSE);
 	g_return_val_if_fail (data != NULL, FALSE);
 
-	end_renaming_mode (container, FALSE);
-		
 	icon = g_hash_table_lookup (container->details->icon_set, data);
 
 	if (icon == NULL) {
@@ -6357,8 +6263,6 @@ nautilus_canvas_container_set_zoom_level (NautilusCanvasContainer *container, in
 	
 	details = container->details;
 
-	end_renaming_mode (container, TRUE);
-		
 	pinned_level = new_level;
 	if (pinned_level < NAUTILUS_CANVAS_ZOOM_LEVEL_SMALL) {
 		pinned_level = NAUTILUS_CANVAS_ZOOM_LEVEL_SMALL;
@@ -7136,245 +7040,6 @@ nautilus_canvas_container_is_auto_layout (NautilusCanvasContainer *container)
 	return container->details->auto_layout;
 }
 
-static void
-pending_icon_to_rename_destroy_callback (NautilusCanvasItem *item, NautilusCanvasContainer *container)
-{
-	g_assert (container->details->pending_icon_to_rename != NULL);
-	g_assert (container->details->pending_icon_to_rename->item == item);
-	container->details->pending_icon_to_rename = NULL;
-}
-
-static NautilusCanvasIcon *
-get_pending_icon_to_rename (NautilusCanvasContainer *container)
-{
-	return container->details->pending_icon_to_rename;
-}
-
-static void
-set_pending_icon_to_rename (NautilusCanvasContainer *container, NautilusCanvasIcon *icon)
-{
-	NautilusCanvasIcon *old_icon;
-	
-	old_icon = container->details->pending_icon_to_rename;
-	
-	if (icon == old_icon) {
-		return;
-	}
-	
-	if (old_icon != NULL) {
-		g_signal_handlers_disconnect_by_func
-			(old_icon->item,
-			 G_CALLBACK (pending_icon_to_rename_destroy_callback),
-			 container);
-	}
-	
-	if (icon != NULL) {
-		g_signal_connect (icon->item, "destroy",
-				  G_CALLBACK (pending_icon_to_rename_destroy_callback), container);
-	}
-	
-	container->details->pending_icon_to_rename = icon;
-}
-
-static void
-process_pending_icon_to_rename (NautilusCanvasContainer *container)
-{
-	NautilusCanvasIcon *pending_icon_to_rename;
-	
-	pending_icon_to_rename = get_pending_icon_to_rename (container);
-	
-	if (pending_icon_to_rename != NULL) {
-		if (pending_icon_to_rename->is_selected && !has_multiple_selection (container)) {
-			nautilus_canvas_container_start_renaming_selected_item (container, FALSE);
-		} else {
-			set_pending_icon_to_rename (container, NULL);
-		}
-	}
-}
-
-static gboolean
-is_renaming_pending (NautilusCanvasContainer *container)
-{
-	return get_pending_icon_to_rename (container) != NULL;
-}
-
-static gboolean
-is_renaming (NautilusCanvasContainer *container)
-{
-	return container->details->renaming;
-}
-
-/**
- * nautilus_canvas_container_start_renaming_selected_item
- * @container: An canvas container widget.
- * @select_all: Whether the whole file should initially be selected, or
- *              only its basename (i.e. everything except its extension).
- * 
- * Displays the edit name widget on the first selected icon
- **/
-void
-nautilus_canvas_container_start_renaming_selected_item (NautilusCanvasContainer *container,
-							gboolean select_all)
-{
-	NautilusCanvasContainerDetails *details;
-	NautilusCanvasIcon *icon;
-	EelDRect icon_rect;
-	PangoContext *context;
-	PangoFontDescription *desc;
-	const char *editable_text;
-	int x, y, width;
-	int start_offset, end_offset;
-
-	/* Check if it already in renaming mode, if so - select all */
-	details = container->details;
-	if (details->renaming) {
-		eel_editable_label_select_region (EEL_EDITABLE_LABEL (details->rename_widget),
-						  0,
-						  -1);
-		return;
-	}
-
-	/* Find selected icon */
-	icon = get_first_selected_icon (container);
-	if (icon == NULL) {
-		return;
-	}
-
-	g_assert (!has_multiple_selection (container));
-
-
-	if (!icon_is_positioned (icon)) {
-		set_pending_icon_to_rename (container, icon);
-		return;
-	}
-	
-	set_pending_icon_to_rename (container, NULL);
-
-	/* Make a copy of the original editable text for a later compare */
-	editable_text = nautilus_canvas_item_get_editable_text (icon->item);
-
-	/* This could conceivably be NULL if a rename was triggered really early. */
-	if (editable_text == NULL) {
-		return;
-	}
-
-	details->original_text = g_strdup (editable_text);
-	
-	/* Freeze updates so files added while renaming don't cause rename to loose focus, bug #318373 */
-	nautilus_canvas_container_freeze_updates (container);
-
-	/* Create text renaming widget, if it hasn't been created already.
-	 * We deal with the broken canvas text item widget by keeping it around
-	 * so its contents can still be cut and pasted as part of the clipboard
-	 */
-	if (details->rename_widget == NULL) {
-		details->rename_widget = eel_editable_label_new ("Test text");
-		eel_editable_label_set_line_wrap (EEL_EDITABLE_LABEL (details->rename_widget), TRUE);
-		eel_editable_label_set_line_wrap_mode (EEL_EDITABLE_LABEL (details->rename_widget), PANGO_WRAP_WORD_CHAR);
-		eel_editable_label_set_draw_outline (EEL_EDITABLE_LABEL (details->rename_widget), TRUE);
-
-		eel_editable_label_set_justify (EEL_EDITABLE_LABEL (details->rename_widget), GTK_JUSTIFY_CENTER);
-
-		gtk_misc_set_padding (GTK_MISC (details->rename_widget), 1, 1);
-		gtk_layout_put (GTK_LAYOUT (container),
-				details->rename_widget, 0, 0);
-	} 
-
-	/* Set the right font */
-	if (details->font) {
-		desc = pango_font_description_from_string (details->font);
-	} else {
-		context = gtk_widget_get_pango_context (GTK_WIDGET (container));
-		desc = pango_font_description_copy (pango_context_get_font_description (context));
-	}
-	eel_editable_label_set_font_description (EEL_EDITABLE_LABEL (details->rename_widget),
-						 desc);
-	pango_font_description_free (desc);
-	
-	icon_rect = nautilus_canvas_item_get_icon_rectangle (icon->item);
-
-	width = nautilus_canvas_item_get_max_text_width (icon->item);
-
-	eel_canvas_w2c (EEL_CANVAS_ITEM (icon->item)->canvas,
-			(icon_rect.x0 + icon_rect.x1) / 2,
-			icon_rect.y1,
-			&x, &y);
-	x = x - width / 2 - 1;
-
-	gtk_layout_move (GTK_LAYOUT (container),
-			 details->rename_widget,
-			 x, y);
-	
-	gtk_widget_set_size_request (details->rename_widget,
-				     width, -1);
-	eel_editable_label_set_text (EEL_EDITABLE_LABEL (details->rename_widget),
-				     editable_text);
-	if (select_all) {
-		start_offset = 0;
-		end_offset = -1;
-	} else {
-		eel_filename_get_rename_region (editable_text, &start_offset, &end_offset);
-	}
-
-	gtk_widget_show (details->rename_widget);
-	gtk_widget_grab_focus (details->rename_widget);
-
-	eel_editable_label_select_region (EEL_EDITABLE_LABEL (details->rename_widget),
-					  start_offset,
-					  end_offset);
-	
-	g_signal_emit (container,
-		       signals[ICON_RENAME_STARTED], 0,
-		       GTK_EDITABLE (details->rename_widget));
-	
-	nautilus_canvas_container_update_icon (container, icon);
-	
-	/* We are in renaming mode */
-	details->renaming = TRUE;
-	nautilus_canvas_item_set_renaming (icon->item, TRUE);
-}
-
-static void
-end_renaming_mode (NautilusCanvasContainer *container, gboolean commit)
-{
-	NautilusCanvasIcon *icon;
-	const char *changed_text = NULL;
-
-	set_pending_icon_to_rename (container, NULL);
-
-	icon = get_icon_being_renamed (container);
-	if (icon == NULL) {
-		return;
-	}
-
-	/* We are not in renaming mode */
-	container->details->renaming = FALSE;
-	nautilus_canvas_item_set_renaming (icon->item, FALSE);
-	
-	nautilus_canvas_container_unfreeze_updates (container);
-
-	if (commit) {
-		set_pending_icon_to_reveal (container, icon);
-	}
-
-	gtk_widget_grab_focus (GTK_WIDGET (container));
-	
-	if (commit) {
-		/* Verify that text has been modified before signalling change. */			
-		changed_text = eel_editable_label_get_text (EEL_EDITABLE_LABEL (container->details->rename_widget));
-		if (strcmp (container->details->original_text, changed_text) == 0) {
-			changed_text = NULL;
-		}
-	}
-
-	g_signal_emit (container,
-		       signals[ICON_RENAME_ENDED], 0,
-		       icon->data,		       changed_text);
-
-	gtk_widget_hide (container->details->rename_widget);
-	g_free (container->details->original_text);
-}
-
 gboolean
 nautilus_canvas_container_has_stored_icon_positions (NautilusCanvasContainer *container)
 {
@@ -7491,8 +7156,8 @@ nautilus_canvas_container_set_font (NautilusCanvasContainer *container,
 /**
  * nautilus_canvas_container_get_icon_description
  * @container: An canvas container widget.
- * @data: Icon data 
- * 
+ * @data: Icon data
+ *
  * Gets the description for the icon. This function may return NULL.
  **/
 char*
@@ -7561,7 +7226,7 @@ nautilus_canvas_container_accessible_do_action (AtkAction *accessible, int i)
 	if (!widget) {
 		return FALSE;
 	}
-	
+
 	container = NAUTILUS_CANVAS_CONTAINER (widget);
 	switch (i) {
 	case ACTION_ACTIVATE :
@@ -7589,15 +7254,15 @@ nautilus_canvas_container_accessible_get_n_actions (AtkAction *accessible)
 }
 
 static const char *
-nautilus_canvas_container_accessible_action_get_description (AtkAction *accessible, 
+nautilus_canvas_container_accessible_action_get_description (AtkAction *accessible,
 							     int i)
 {
 	NautilusCanvasContainerAccessiblePrivate *priv;
-	
+
 	g_assert (i < LAST_ACTION);
 
 	priv = GET_ACCESSIBLE_PRIV (accessible);
-	
+
 	if (priv->action_descriptions[i]) {
 		return priv->action_descriptions[i];
 	} else {
@@ -7942,9 +7607,6 @@ nautilus_canvas_container_accessible_get_n_children (AtkObject *accessible)
 	container = NAUTILUS_CANVAS_CONTAINER (widget);
 
 	i = g_hash_table_size (container->details->icon_set);
-	if (container->details->rename_widget) {
-		i++;
-	}
 
 	return i;
 }
@@ -7974,17 +7636,8 @@ nautilus_canvas_container_accessible_ref_child (AtkObject *accessible, int i)
                 g_object_ref (atk_object);
 
                 return atk_object;
-        } else {
-		if (i == g_list_length (container->details->icons)) {
-			if (container->details->rename_widget) {
-				atk_object = gtk_widget_get_accessible (container->details->rename_widget);
-				g_object_ref (atk_object);
-
-                		return atk_object;
-			}
-		}
-                return NULL;
         }
+        return NULL;
 }
 
 G_DEFINE_TYPE_WITH_CODE (NautilusCanvasContainerAccessible, nautilus_canvas_container_accessible,
@@ -7993,7 +7646,7 @@ G_DEFINE_TYPE_WITH_CODE (NautilusCanvasContainerAccessible, nautilus_canvas_cont
 			 G_IMPLEMENT_INTERFACE (ATK_TYPE_SELECTION, nautilus_canvas_container_accessible_selection_interface_init))
 
 static void
-nautilus_canvas_container_accessible_initialize (AtkObject *accessible, 
+nautilus_canvas_container_accessible_initialize (AtkObject *accessible,
 						 gpointer data)
 {
 	NautilusCanvasContainer *container;
