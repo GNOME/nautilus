@@ -1999,7 +1999,6 @@ create_and_set_up_tree_view (NautilusListView *view)
 
 	gtk_tree_selection_set_mode (gtk_tree_view_get_selection (view->details->tree_view), GTK_SELECTION_MULTIPLE);
 	gtk_tree_view_set_rules_hint (view->details->tree_view, TRUE);
-	gtk_tree_view_set_grid_lines (view->details->tree_view, GTK_TREE_VIEW_GRID_LINES_HORIZONTAL);
 
 	g_settings_bind (nautilus_list_view_preferences, NAUTILUS_PREFERENCES_LIST_VIEW_USE_TREE,
 			 view->details->tree_view, "show-expanders",
