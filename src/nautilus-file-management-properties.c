@@ -41,8 +41,6 @@
 
 /* string enum preferences */
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DEFAULT_VIEW_WIDGET "default_view_combobox"
-#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ICON_VIEW_ZOOM_WIDGET "icon_view_zoom_combobox"
-#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_LIST_VIEW_ZOOM_WIDGET "list_view_zoom_combobox"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_ORDER_WIDGET "sort_order_combobox"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_FILES_WIDGET "preview_image_combobox"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_FOLDER_WIDGET "preview_folder_combobox"
@@ -59,13 +57,6 @@
 static const char * const default_view_values[] = {
 	"icon-view",
 	"list-view",
-	NULL
-};
-
-static const char * const zoom_values[] = {
-	"small",
-	"standard",
-	"large",
 	NULL
 };
 
@@ -591,7 +582,7 @@ nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow
 	/* setup UI */
 	nautilus_file_management_properties_size_group_create (builder,
 							       "views_label",
-							       4);
+							       2);
 	nautilus_file_management_properties_size_group_create (builder,
 							       "captions_label",
 							       3);
@@ -621,14 +612,6 @@ nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow
 			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DEFAULT_VIEW_WIDGET,
 			   NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
 			   (const char **) default_view_values);
-	bind_builder_enum (builder, nautilus_icon_view_preferences,
-			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ICON_VIEW_ZOOM_WIDGET,
-			   NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
-			   (const char **) zoom_values);
-	bind_builder_enum (builder, nautilus_list_view_preferences,
-			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_LIST_VIEW_ZOOM_WIDGET,
-			   NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
-			   (const char **) zoom_values);
 	bind_builder_enum (builder, nautilus_preferences,
 			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_ORDER_WIDGET,
 			   NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER,

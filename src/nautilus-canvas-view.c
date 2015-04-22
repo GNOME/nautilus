@@ -968,6 +968,9 @@ action_zoom_to_level (GSimpleAction *action,
 	nautilus_canvas_view_zoom_to_level (view, zoom_level);
 
 	g_simple_action_set_state (G_SIMPLE_ACTION (action), state);
+	g_settings_set_enum (nautilus_icon_view_preferences,
+                             NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
+                             zoom_level);
 }
 
 static void
