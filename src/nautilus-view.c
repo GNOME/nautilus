@@ -1865,7 +1865,7 @@ nautilus_view_new_folder_dialog_new (NautilusView *view,
 	gtk_builder_connect_signals (builder, dialog_data);
 	gtk_button_set_label (GTK_BUTTON (button_ok), _("Create"));
 	gtk_label_set_text (GTK_LABEL (label_file_name), _("Folder name"));
-	gtk_window_set_title (GTK_WINDOW (dialog_data->dialog), _("New folder"));
+	gtk_window_set_title (GTK_WINDOW (dialog_data->dialog), _("New Folder"));
 
 	g_signal_connect (dialog_data->dialog,
                           "response",
