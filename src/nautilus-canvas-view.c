@@ -1061,13 +1061,35 @@ nautilus_canvas_view_update_actions_state (NautilusView *view)
 
 	view_action_group = nautilus_view_get_action_group (view);
 	if (nautilus_canvas_view_supports_auto_layout (canvas_view)) {
-		g_action_group_change_action_state (view_action_group,
-						    "reversed-order",
-						    g_variant_new_boolean (NAUTILUS_CANVAS_VIEW (view)->details->sort_reversed));
+		GVariant *sort_state;
+		GVariant *reversed_state;
 
-		g_action_group_change_action_state (view_action_group,
-						    "sort",
-						    g_variant_new_string (NAUTILUS_CANVAS_VIEW (view)->details->sort->action_target_name));
+		/* When we change the sort action state, even using the same value, it triggers
+		 * the sort action changed handler, which reveals the selection, since we expect
+		 * the selection to be visible when the user changes the sort order. But we may
+		 * need to update the actions state for others reason than an actual sort change,
+		 * so we need to prevent to trigger the sort action changed handler for those cases.
+		 * To achieve this, check if the action state value actually changed before setting
+		 * it. The same happens to the reversed-order state.
+		 */
+		sort_state = g_action_group_get_action_state (view_action_group, "sort");
+		reversed_state = g_action_group_get_action_state (view_action_group, "reversed-order");
+
+		if (NAUTILUS_CANVAS_VIEW (view)->details->sort_reversed != g_variant_get_boolean (reversed_state)) {
+			g_action_group_change_action_state (view_action_group,
+							    "reversed-order",
+							    g_variant_new_boolean (NAUTILUS_CANVAS_VIEW (view)->details->sort_reversed));
+		}
+
+		if (g_strcmp0 (g_variant_get_string (sort_state, NULL),
+                               NAUTILUS_CANVAS_VIEW (view)->details->sort->action_target_name) != 0) {
+			g_action_group_change_action_state (view_action_group,
+                                                            "sort",
+                                                             g_variant_new_string (NAUTILUS_CANVAS_VIEW (view)->details->sort->action_target_name));
+		}
+
+		g_variant_unref (reversed_state);
+		g_variant_unref (sort_state);
 	}
 
 	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group), "keep-aligned");
