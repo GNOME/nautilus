@@ -988,6 +988,34 @@ setup_side_pane_width (NautilusWindow *window)
 				window->priv->side_pane_width);
 }
 
+static void
+nautilus_window_location_opened (NautilusWindow *window,
+                                 GFile          *location,
+                                 GError         *error,
+                                 gpointer        user_data)
+{
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+
+	if (error) {
+		NautilusFile *old_file;
+		GFile *old_location;
+
+		old_file = nautilus_window_slot_get_file (window->priv->active_slot);
+		old_location = nautilus_file_get_location (old_file);
+
+		gtk_places_sidebar_set_location (GTK_PLACES_SIDEBAR (window->priv->places_sidebar), old_location);
+
+		g_warning ("error opening location: %s", error->message);
+
+		nautilus_window_slot_display_view_selection_failure (window,
+                                                                     old_file,
+                                                                     location,
+                                                                     error);
+
+		g_object_unref (old_location);
+	}
+}
+
 /* Callback used when the places sidebar changes location; we need to change the displayed folder */
 static void
 places_sidebar_open_location_cb (GtkPlacesSidebar	*sidebar,
@@ -1013,7 +1041,12 @@ places_sidebar_open_location_cb (GtkPlacesSidebar	*sidebar,
 		break;
 	}
 
-	nautilus_window_slot_open_location (window->priv->active_slot, location, flags);
+	nautilus_window_slot_open_location_full (window->priv->active_slot,
+                                                 location,
+                                                 flags,
+                                                 NULL,
+                                                 (NautilusWindowGoToCallback) nautilus_window_location_opened,
+                                                 NULL);
 }
 
 /* Callback used when the places sidebar needs us to present an error message */

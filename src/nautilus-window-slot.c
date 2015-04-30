@@ -656,10 +656,6 @@ static void got_file_info_for_view_selection_callback (NautilusFile             
 static gboolean create_content_view                   (NautilusWindowSlot         *slot,
 						       const char                 *view_id,
 						       GError                    **error);
-static void display_view_selection_failure            (NautilusWindow             *window,
-						       NautilusFile               *file,
-						       GFile                      *location,
-						       GError                     *error);
 static void load_new_location                         (NautilusWindowSlot         *slot,
 						       GFile                      *location,
 						       GList                      *selection,
@@ -1278,8 +1274,10 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 					     _("Unable to load location"));
 		}
 		if (!report_callback (slot, error)) {
-			display_view_selection_failure (window, file,
-							location, error);
+			nautilus_window_slot_display_view_selection_failure (window,
+                                                                             file,
+                                                                             location,
+                                                                             error);
 		}
 
 		if (!gtk_widget_get_visible (GTK_WIDGET (window))) {
@@ -1583,9 +1581,11 @@ cancel_location_change (NautilusWindowSlot *slot)
         end_location_change (slot);
 }
 
-static void
-display_view_selection_failure (NautilusWindow *window, NautilusFile *file,
-				GFile *location, GError *error)
+void
+nautilus_window_slot_display_view_selection_failure (NautilusWindow *window,
+                                                     NautilusFile   *file,
+                                                     GFile          *location,
+                                                     GError         *error)
 {
 	char *error_message;
 	char *detail_message;

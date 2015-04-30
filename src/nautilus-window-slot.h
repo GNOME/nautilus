@@ -125,4 +125,9 @@ void    nautilus_window_slot_set_status			   (NautilusWindowSlot *slot,
 							    const char         *detail_status);
 void nautilus_window_slot_sync_view_mode (NautilusWindowSlot *slot);
 
+void nautilus_window_slot_display_view_selection_failure   (NautilusWindow *window,
+                                                            NautilusFile   *file,
+                                                            GFile          *location,
+                                                            GError         *error);
+
 #endif /* NAUTILUS_WINDOW_SLOT_H */
