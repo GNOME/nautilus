@@ -1752,12 +1752,6 @@ nautilus_view_rename_dialog_new (NautilusView *view,
 	else
 		gtk_label_set_text (GTK_LABEL (label_file_name), _("File name"));
 	gtk_entry_set_text (GTK_ENTRY (dialog_data->name_entry), nautilus_file_get_name (target_file));
-	/* Select the name part withouth the file extension */
-	eel_filename_get_rename_region (nautilus_file_get_name (target_file),
-                                        &start_offset, &end_offset);
-	gtk_editable_select_region (GTK_EDITABLE (dialog_data->name_entry),
-                                    start_offset, end_offset);
-
 	gtk_builder_connect_signals (builder, dialog_data);
 
 	g_signal_connect (dialog_data->dialog,
@@ -1766,6 +1760,12 @@ nautilus_view_rename_dialog_new (NautilusView *view,
                           user_data);
 
 	gtk_widget_show_all (dialog_data->dialog);
+	/* Select the name part withouth the file extension */
+	eel_filename_get_rename_region (nautilus_file_get_name (target_file),
+                                        &start_offset, &end_offset);
+	gtk_editable_select_region (GTK_EDITABLE (dialog_data->name_entry),
+                                    start_offset, end_offset);
+
         /* Update the ok button status */
         nautilus_view_file_name_dialog_validate_name (dialog_data);
 
