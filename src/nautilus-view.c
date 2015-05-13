@@ -5822,7 +5822,13 @@ const GActionEntry view_entries[] = {
 	{ "copy-to", action_copy_to},
 	{ "move-to-trash", action_move_to_trash},
 	{ "delete-from-trash", action_delete },
-	{ "delete-permanently", action_delete },
+        /* We separate the shortcut and the menu item since we want the shortcut
+         * to always be available, but we don't want the menu item shown if not
+         * completely necesary. Since the visibility of the menu item is based on
+         * the action enability, we need to split the actions for the menu and the
+         * shortcut. */
+	{ "delete-permanently-shortcut", action_delete },
+	{ "delete-permanently-menu-item", action_delete },
 	{ "restore-from-trash", action_restore_from_trash},
 	{ "paste-into", action_paste_files_into },
 	{ "rename", action_rename},
@@ -6234,9 +6240,15 @@ real_update_actions_state (NautilusView *view)
 	                             can_delete_files && selection_all_in_trash);
 
 	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-					     "delete-permanently");
+					     "delete-permanently-shortcut");
 	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
 				     can_delete_files);
+
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "delete-permanently-menu-item");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+				     can_delete_files && !can_trash_files &&
+                                     !selection_all_in_trash && !selection_contains_recent);
 
 	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
 					     "cut");
@@ -7789,7 +7801,7 @@ nautilus_view_init (NautilusView *view)
 	nautilus_application_add_accelerator (app, "view.open-item-new-window", "<shift><control>w");
 	nautilus_application_add_accelerator (app, "view.move-to-trash", "Delete");
 	nautilus_application_add_accelerator (app, "view.delete-from-trash", "Delete");
-	nautilus_application_add_accelerator (app, "view.delete-permanently", "<shift>Delete");
+	nautilus_application_add_accelerator (app, "view.delete-permanently-shortcut", "<shift>Delete");
 	nautilus_application_add_accelerator (app, "view.properties", "<control>i");
 	nautilus_application_add_accelerator (app, "view.open-item-location", "<control><alt>o");
 	nautilus_application_add_accelerator (app, "view.rename", "F2");
