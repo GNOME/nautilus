@@ -538,6 +538,11 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 	gchar detailed_action[80];
 	gchar accel[80];
 	gint i;
+	const gchar *reload_accels[] = {
+                "F5",
+                "<ctrl>r",
+                NULL
+        };
 
 	g_action_map_add_action_entries (G_ACTION_MAP (window),
 					 win_entries, G_N_ELEMENTS (win_entries),
@@ -552,7 +557,10 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 	nautilus_application_add_accelerator (app, "win.view-mode('list')", "<control>1");
 	nautilus_application_add_accelerator (app, "win.view-mode('grid')", "<control>2");
 	nautilus_application_add_accelerator (app, "win.close-current-view", "<control>w");
-	nautilus_application_add_accelerator (app, "win.reload", "F5");
+
+        /* Special case reload, since users are used to use two shortcuts instead of one */
+	gtk_application_set_accels_for_action (GTK_APPLICATION (app), "win.reload", reload_accels);
+
 	nautilus_application_add_accelerator (app, "win.undo", "<control>z");
 	nautilus_application_add_accelerator (app, "win.redo", "<shift><control>z");
 	/* Only accesible by shorcuts */
