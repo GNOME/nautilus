@@ -1144,6 +1144,17 @@ action_move_to_trash (GSimpleAction *action,
 }
 
 static void
+action_remove_from_recent (GSimpleAction *action,
+                           GVariant      *state,
+                           gpointer       user_data)
+{
+        /* TODO:implement a set of functions for this, is very confusing to
+         * call trash_or_delete_file to remove from recent, even if it does like
+         * that not deleting/moving the files to trash */
+        trash_or_delete_selected_files (NAUTILUS_VIEW (user_data));
+}
+
+static void
 delete_selected_files (NautilusView *view)
 {
         GList *selection;
@@ -5829,6 +5840,7 @@ const GActionEntry view_entries[] = {
          * shortcut. */
 	{ "delete-permanently-shortcut", action_delete },
 	{ "delete-permanently-menu-item", action_delete },
+	{ "remove-from-recent", action_remove_from_recent },
 	{ "restore-from-trash", action_restore_from_trash},
 	{ "paste-into", action_paste_files_into },
 	{ "rename", action_rename},
@@ -6249,6 +6261,11 @@ real_update_actions_state (NautilusView *view)
 	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
 				     can_delete_files && !can_trash_files &&
                                      !selection_all_in_trash && !selection_contains_recent);
+
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+					     "remove-from-recent");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                     selection_contains_recent && selection_count > 0);
 
 	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
 					     "cut");
