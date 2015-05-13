@@ -6207,7 +6207,9 @@ real_update_actions_state (NautilusView *view)
 	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
 					     "open-with-other-application");
 	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-				     app != NULL);
+				     app != NULL ||
+                                     (selection_count > 0 &&
+                                      nautilus_file_is_directory (NAUTILUS_FILE (selection->data))));
 
 	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
 					     "open-item-new-tab");
