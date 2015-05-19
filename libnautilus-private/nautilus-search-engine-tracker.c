@@ -36,6 +36,8 @@ struct NautilusSearchEngineTrackerDetails {
 	gboolean       query_pending;
 	GQueue        *hits_pending;
 
+	gboolean       recursive;
+
 	GCancellable  *cancellable;
 };
 
@@ -234,6 +236,8 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 	GString *sparql;
 	GList *mimetypes, *l;
 	gint mime_count;
+	GSettings *nautilus_preferences;
+	gboolean recursive;
 
 	tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (provider);
 
@@ -248,6 +252,10 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 		g_idle_add (search_finished_idle, provider);
 		return;
 	}
+
+	nautilus_preferences = g_settings_new ("org.gnome.nautilus.preferences");
+	recursive = g_settings_get_boolean (nautilus_preferences, "enable-recursive-search");
+	tracker->details->recursive = recursive;
 
 	query_text = nautilus_query_get_text (tracker->details->query);
 	downcase = g_utf8_strdown (query_text, -1);
@@ -269,11 +277,15 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 		g_string_append (sparql, "nie:mimeType ?mime ;");
 	}
 
-	g_string_append_printf (sparql,
-				" fts:match '\"%s*\"' . FILTER ("
-				" tracker:uri-is-descendant('%s', nie:url(?urn)) &&"
-				" fn:contains(fn:lower-case(nfo:fileName(?urn)), '%s')",
-				search_text, location_uri, search_text);
+	g_string_append_printf (sparql, " fts:match '\"%s*\"' . FILTER ( ", search_text);
+
+	if (!tracker->details->recursive) {
+		g_string_append_printf (sparql, "tracker:uri-is-parent('%s', nie:url(?urn)) && ", location_uri);
+	} else {
+		g_string_append_printf (sparql, "tracker:uri-is-descendant('%s', nie:url(?urn)) && ", location_uri);
+	}
+
+	g_string_append_printf (sparql, "fn:contains(fn:lower-case(nfo:fileName(?urn)), '%s')", search_text);
 
 	if (mime_count > 0) {
 		g_string_append (sparql, " && (");
