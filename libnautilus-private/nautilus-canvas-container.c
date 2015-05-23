@@ -39,7 +39,6 @@
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-art-extensions.h>
-#include <eel/eel-editable-label.h>
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>

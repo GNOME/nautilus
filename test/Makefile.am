@@ -22,7 +22,6 @@ noinst_PROGRAMS =\
 	test-nautilus-search-engine \
 	test-nautilus-directory-async \
 	test-nautilus-copy \
-	test-eel-editable-label	\
 	$(NULL)
 
 test_nautilus_copy_SOURCES = test-copy.c test.c
