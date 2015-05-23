@@ -782,16 +782,6 @@ nautilus_view_confirm_multiple (GtkWindow *parent_window,
 }
 
 static gboolean
-selection_contains_one_item_in_menu_callback (NautilusView *view, GList *selection)
-{
-	if (g_list_length (selection) == 1) {
-		return TRUE;
-	}
-
-	return FALSE;
-}
-
-static gboolean
 selection_not_empty_in_menu_callback (NautilusView *view, GList *selection)
 {
 	if (selection != NULL) {
