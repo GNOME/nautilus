@@ -577,8 +577,8 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 
 	/* Alt+N for the first 9 tabs */
 	for (i = 0; i < 9; ++i) {
-		g_snprintf(detailed_action, sizeof (detailed_action), "win.go-to-tab(%i)", i);
-		g_snprintf(accel, sizeof (accel), "<alt>%i", i + 1);
+		g_snprintf (detailed_action, sizeof (detailed_action), "win.go-to-tab(%i)", i);
+		g_snprintf (accel, sizeof (accel), "<alt>%i", i + 1);
 		nautilus_application_add_accelerator (app, detailed_action, accel);
 	}
 
