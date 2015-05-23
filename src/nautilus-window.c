@@ -83,8 +83,6 @@ static void mouse_forward_button_changed	     (gpointer                  callbac
 static void use_extra_mouse_buttons_changed          (gpointer                  callback_data);
 static void nautilus_window_initialize_actions 	     (NautilusWindow *window);
 static GtkWidget * nautilus_window_ensure_location_entry (NautilusWindow *window);
-void               nautilus_window_prompt_for_location                 (NautilusWindow *window,
-                                                                        GFile          *location);
 
 /* Sanity check: highest mouse button value I could find was 14. 5 is our 
  * lower threshold (well-documented to be the one of the button events for the 
@@ -377,10 +375,14 @@ action_prompt_for_location_root (GSimpleAction *action,
 				 GVariant      *state,
 				 gpointer       user_data)
 {
+	NautilusWindow *window = user_data;
 	GFile *location;
+	GtkWidget *entry;
 
 	location = g_file_new_for_path ("/");
-	nautilus_window_prompt_for_location (NAUTILUS_WINDOW (user_data), location);
+	entry = nautilus_window_ensure_location_entry (window);
+	nautilus_location_entry_set_location (NAUTILUS_LOCATION_ENTRY (entry), location);
+
 	g_object_unref (location);
 }
 
@@ -882,19 +884,6 @@ GtkWidget *
 nautilus_window_get_notebook (NautilusWindow *window)
 {
 	return window->priv->notebook;
-}
-
-void
-nautilus_window_prompt_for_location (NautilusWindow *window,
-				     GFile          *location)
-{
-	GtkWidget *entry;
-
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-	g_return_if_fail (G_IS_FILE (location));
-
-	entry = nautilus_window_ensure_location_entry (window);
-	nautilus_location_entry_set_location (NAUTILUS_LOCATION_ENTRY (entry), location);
 }
 
 /* Code should never force the window taller than this size.
