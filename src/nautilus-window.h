@@ -117,6 +117,8 @@ void             nautilus_window_new_tab              (NautilusWindow    *window
 void                 nautilus_window_view_visible          (NautilusWindow *window,
                                                             NautilusView *view);
 NautilusWindowSlot * nautilus_window_get_active_slot       (NautilusWindow *window);
+void                 nautilus_window_set_active_slot       (NautilusWindow    *window,
+                                                            NautilusWindowSlot *slot);
 GList *              nautilus_window_get_slots             (NautilusWindow *window);
 NautilusWindowSlot * nautilus_window_open_slot             (NautilusWindow *window,
                                                             NautilusWindowOpenSlotFlags flags);

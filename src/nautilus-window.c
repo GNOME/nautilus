@@ -83,8 +83,6 @@ static void mouse_forward_button_changed	     (gpointer                  callbac
 static void use_extra_mouse_buttons_changed          (gpointer                  callback_data);
 static void nautilus_window_initialize_actions 	     (NautilusWindow *window);
 static GtkWidget * nautilus_window_ensure_location_entry (NautilusWindow *window);
-void               nautilus_window_set_active_slot                     (NautilusWindow    *window,
-                                                                        NautilusWindowSlot *slot);
 void               nautilus_window_prompt_for_location                 (NautilusWindow *window,
                                                                         GFile          *location);
 
