@@ -114,8 +114,6 @@ struct NautilusCanvasItemDetails {
 	guint rendered_is_prelit : 1;
 	guint rendered_is_focused : 1;
 	
-	guint is_renaming : 1;
-	
 	guint bounds_cached : 1;
 	
 	guint is_visible : 1;
@@ -903,8 +901,7 @@ draw_label_text (NautilusCanvasItem *item,
 			      NULL);
 
 	/* if the canvas is highlighted, do some set-up */
-	if (needs_highlight &&
-	    !details->is_renaming) {
+	if (needs_highlight) {
 		state |= GTK_STATE_FLAG_SELECTED;
 
 		frame_x = text_rect.x0;
@@ -940,8 +937,7 @@ draw_label_text (NautilusCanvasItem *item,
 
 	x = text_rect.x0 + ((text_rect.x1 - text_rect.x0) - max_text_width) / 2;
 
-	if (have_editable &&
-	    !details->is_renaming) {
+	if (have_editable) {
 		state = base_state;
 
 		if (prelight_label && item->details->is_prelit) {
@@ -965,8 +961,7 @@ draw_label_text (NautilusCanvasItem *item,
 		gtk_style_context_restore (context);
 	}
 
-	if (have_additional &&
-	    !details->is_renaming) {
+	if (have_additional) {
 		state = base_state;
 
 		if (needs_highlight) {
@@ -1461,8 +1456,7 @@ hit_test (NautilusCanvasItem *canvas_item, EelIRect icon_rect)
 	}
 
 	/* Check for hit in the text. */
-	if (eel_irect_hits_irect (details->text_rect, icon_rect)
-	    && !canvas_item->details->is_renaming) {
+	if (eel_irect_hits_irect (details->text_rect, icon_rect)) {
 		return TRUE;
 	}
 	
@@ -1827,28 +1821,6 @@ nautilus_canvas_item_hit_test_rectangle (NautilusCanvasItem *item, EelIRect icon
 	g_return_val_if_fail (NAUTILUS_IS_CANVAS_ITEM (item), FALSE);
 
 	return hit_test (item, icon_rect);
-}
-
-const char *
-nautilus_canvas_item_get_editable_text (NautilusCanvasItem *canvas_item)
-{
-	g_return_val_if_fail (NAUTILUS_IS_CANVAS_ITEM (canvas_item), NULL);
-
-	return canvas_item->details->editable_text;
-}
-
-void
-nautilus_canvas_item_set_renaming (NautilusCanvasItem *item, gboolean state)
-{
-	g_return_if_fail (NAUTILUS_IS_CANVAS_ITEM (item));
-	g_return_if_fail (state == FALSE || state == TRUE);
-
-	if (!item->details->is_renaming == !state) {
-		return;
-	}
-
-	item->details->is_renaming = state;
-	eel_canvas_item_request_update (EEL_CANVAS_ITEM (item));
 }
 
 double

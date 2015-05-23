@@ -203,16 +203,6 @@ struct NautilusViewDetails
 	gboolean templates_present;
 	gboolean scripts_present;
 
-	/* flag to indicate that no file updates should be dispatched to subclasses.
-	 * This is a workaround for bug #87701 that prevents the list view from
-	 * losing focus when the underlying GtkTreeView is updated.
-	 */
-	gboolean updates_frozen;
-	guint	 updates_queued;
-	gboolean needs_reload;
-
-	gboolean is_renaming;
-
 	gboolean sort_directories_first;
 
 	gboolean show_foreign_files;
@@ -3331,12 +3321,6 @@ process_old_files (NautilusView *view)
 static void
 display_pending_files (NautilusView *view)
 {
-
-	/* Don't dispatch any updates while the view is frozen. */
-	if (view->details->updates_frozen) {
-		return;
-	}
-
 	process_new_files (view);
 	process_old_files (view);
 
@@ -3344,29 +3328,6 @@ display_pending_files (NautilusView *view)
 	    && nautilus_directory_are_all_files_seen (view->details->model)
 	    && g_hash_table_size (view->details->non_ready_files) == 0) {
 		done_loading (view, TRUE);
-	}
-}
-
-void
-nautilus_view_freeze_updates (NautilusView *view)
-{
-	view->details->updates_frozen = TRUE;
-	view->details->updates_queued = 0;
-	view->details->needs_reload = FALSE;
-}
-
-void
-nautilus_view_unfreeze_updates (NautilusView *view)
-{
-	view->details->updates_frozen = FALSE;
-
-	if (view->details->needs_reload) {
-		view->details->needs_reload = FALSE;
-		if (view->details->model != NULL) {
-			load_directory (view, view->details->model);
-		}
-	} else {
-		schedule_idle_display_of_pending_files (view);
 	}
 }
 
@@ -3485,24 +3446,6 @@ queue_pending_files (NautilusView *view,
 	if (files == NULL) {
 		return;
 	}
-
-	/* Don't queue any more updates if we need to reload anyway */
-	if (view->details->needs_reload) {
-		return;
-	}
-
-	if (view->details->updates_frozen) {
-		view->details->updates_queued += g_list_length (files);
-		/* Mark the directory for reload when there are too much queued
-		 * changes to prevent the pending list from growing infinitely.
-		 */
-		if (view->details->updates_queued > MAX_QUEUED_UPDATES) {
-			view->details->needs_reload = TRUE;
-			return;
-		}
-	}
-
-	
 
 	*pending_list = g_list_concat (file_and_directory_list_from_files (directory, files),
 				       *pending_list);
@@ -3888,19 +3831,6 @@ static gboolean
 can_rename_file (NautilusView *view, NautilusFile *file)
 {
 	return nautilus_file_can_rename (file);
-}
-
-gboolean
-nautilus_view_get_is_renaming (NautilusView *view)
-{
-	return view->details->is_renaming;
-}
-
-void
-nautilus_view_set_is_renaming (NautilusView *view,
-			       gboolean      is_renaming)
-{
-	view->details->is_renaming = is_renaming;
 }
 
 static void

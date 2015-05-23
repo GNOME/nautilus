@@ -73,9 +73,6 @@ void        nautilus_canvas_item_set_emblems              (NautilusCanvasItem   
 void        nautilus_canvas_item_set_show_stretch_handles (NautilusCanvasItem       *item,
 							   gboolean                  show_stretch_handles);
 double      nautilus_canvas_item_get_max_text_width       (NautilusCanvasItem       *item);
-const char *nautilus_canvas_item_get_editable_text        (NautilusCanvasItem       *canvas_item);
-void        nautilus_canvas_item_set_renaming             (NautilusCanvasItem       *canvas_item,
-							   gboolean                  state);
 
 /* geometry and hit testing */
 gboolean    nautilus_canvas_item_hit_test_rectangle       (NautilusCanvasItem       *item,

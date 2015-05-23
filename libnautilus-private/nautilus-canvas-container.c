@@ -5778,28 +5778,6 @@ nautilus_canvas_container_get_icon_images (NautilusCanvasContainer *container,
 }
 
 static void
-nautilus_canvas_container_freeze_updates (NautilusCanvasContainer *container)
-{
-	NautilusCanvasContainerClass *klass;
-
-	klass = NAUTILUS_CANVAS_CONTAINER_GET_CLASS (container);
-	g_assert (klass->freeze_updates != NULL);
-
-	klass->freeze_updates (container);
-}
-
-static void
-nautilus_canvas_container_unfreeze_updates (NautilusCanvasContainer *container)
-{
-	NautilusCanvasContainerClass *klass;
-
-	klass = NAUTILUS_CANVAS_CONTAINER_GET_CLASS (container);
-	g_assert (klass->unfreeze_updates != NULL);
-
-	klass->unfreeze_updates (container);
-}
-
-static void
 nautilus_canvas_container_prioritize_thumbnailing (NautilusCanvasContainer *container,
 						   NautilusCanvasIcon *icon)
 {

@@ -409,24 +409,6 @@ nautilus_canvas_view_container_compare_icons_by_name (NautilusCanvasContainer *c
 }
 
 static void
-nautilus_canvas_view_container_freeze_updates (NautilusCanvasContainer *container)
-{
-	NautilusCanvasView *canvas_view;
-	canvas_view = get_canvas_view (container);
-	g_return_if_fail (canvas_view != NULL);
-	nautilus_view_freeze_updates (NAUTILUS_VIEW (canvas_view));
-}
-
-static void
-nautilus_canvas_view_container_unfreeze_updates (NautilusCanvasContainer *container)
-{
-	NautilusCanvasView *canvas_view;
-	canvas_view = get_canvas_view (container);
-	g_return_if_fail (canvas_view != NULL);
-	nautilus_view_unfreeze_updates (NAUTILUS_VIEW (canvas_view));
-}
-
-static void
 nautilus_canvas_view_container_class_init (NautilusCanvasViewContainerClass *klass)
 {
 	NautilusCanvasContainerClass *ic_class;
@@ -442,8 +424,6 @@ nautilus_canvas_view_container_class_init (NautilusCanvasViewContainerClass *kla
 
 	ic_class->compare_icons = nautilus_canvas_view_container_compare_icons;
 	ic_class->compare_icons_by_name = nautilus_canvas_view_container_compare_icons_by_name;
-	ic_class->freeze_updates = nautilus_canvas_view_container_freeze_updates;
-	ic_class->unfreeze_updates = nautilus_canvas_view_container_unfreeze_updates;
 }
 
 static void

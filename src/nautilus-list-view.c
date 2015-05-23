@@ -69,7 +69,6 @@ struct NautilusListViewDetails {
 	GtkCellRendererPixbuf *pixbuf_cell;
 	GtkCellRendererText   *file_name_cell;
 	GList *cells;
-	GtkCellEditable *editable_widget;
 
 	NautilusListZoomLevel zoom_level;
 
@@ -95,10 +94,6 @@ struct NautilusListViewDetails {
 
 	char *original_name;
 	
-	NautilusFile *renaming_file;
-	gboolean rename_done;
-	guint renaming_file_activate_timeout;
-
 	gulong clipboard_handler_id;
 
 	GQuark last_sort_attr;
@@ -119,9 +114,6 @@ struct SelectionForeachData {
 /* We wait two seconds after row is collapsed to unload the subdirectory */
 #define COLLAPSE_TO_UNLOAD_DELAY 2
 
-/* Wait for the rename to end when activating a file being renamed */
-#define WAIT_FOR_RENAME_ON_ACTIVATE 200
-
 static GdkCursor *              hand_cursor = NULL;
 
 static GtkTargetList *          source_target_list = NULL;
@@ -132,10 +124,6 @@ static void   nautilus_list_view_set_zoom_level                  (NautilusListVi
 								  NautilusListZoomLevel    new_level);
 static void   nautilus_list_view_scroll_to_file                  (NautilusListView        *view,
 								  NautilusFile      *file);
-static void   nautilus_list_view_rename_callback                 (NautilusFile      *file,
-								  GFile             *result_location,
-								  GError            *error,
-								  gpointer           callback_data);
 
 static void   apply_columns_settings                             (NautilusListView *list_view,
                                                                   char **column_order,
@@ -255,23 +243,6 @@ activate_selected_items (NautilusListView *view)
 	GList *file_list;
 	
 	file_list = nautilus_list_view_get_selection (NAUTILUS_VIEW (view));
-
-	
-	if (view->details->renaming_file) {
-		/* We're currently renaming a file, wait until the rename is
-		   finished, or the activation uri will be wrong */
-		if (view->details->renaming_file_activate_timeout == 0) {
-			view->details->renaming_file_activate_timeout =
-				g_timeout_add (WAIT_FOR_RENAME_ON_ACTIVATE, (GSourceFunc) activate_selected_items, view);
-		}
-		return;
-	}
-	
-	if (view->details->renaming_file_activate_timeout != 0) {
-		g_source_remove (view->details->renaming_file_activate_timeout);
-		view->details->renaming_file_activate_timeout = 0;
-	}
-	
 	nautilus_view_activate_files (NAUTILUS_VIEW (view),
 				      file_list,
 				      0, TRUE);
@@ -1255,106 +1226,6 @@ sort_column_changed_callback (GtkTreeSortable *sortable,
 	view->details->last_sort_attr = sort_attr;
 }
 
-static gboolean
-editable_focus_out_cb (GtkWidget *widget,
-		       GdkEvent *event,
-		       gpointer user_data)
-{
-	NautilusListView *view = user_data;
-
-	view->details->editable_widget = NULL;
-
-	nautilus_view_set_is_renaming (NAUTILUS_VIEW (view), FALSE);
-	nautilus_view_unfreeze_updates (NAUTILUS_VIEW (view));
-
-	return FALSE;
-}
-
-static void
-cell_renderer_editing_started_cb (GtkCellRenderer *renderer,
-				  GtkCellEditable *editable,
-				  const gchar *path_str,
-				  NautilusListView *list_view)
-{
-	GtkEntry *entry;
-
-	entry = GTK_ENTRY (editable);
-	list_view->details->editable_widget = editable;
-
-	/* Free a previously allocated original_name */
-	g_free (list_view->details->original_name);
-
-	list_view->details->original_name = g_strdup (gtk_entry_get_text (entry));
-
-	g_signal_connect (entry, "focus-out-event",
-			  G_CALLBACK (editable_focus_out_cb), list_view);
-}
-
-static void
-cell_renderer_editing_canceled (GtkCellRendererText *cell,
-				NautilusListView    *view)
-{
-	view->details->editable_widget = NULL;
-
-	nautilus_view_set_is_renaming (NAUTILUS_VIEW (view), FALSE);
-	nautilus_view_unfreeze_updates (NAUTILUS_VIEW (view));
-}
-
-static void
-cell_renderer_edited (GtkCellRendererText *cell,
-		      const char          *path_str,
-		      const char          *new_text,
-		      NautilusListView    *view)
-{
-	GtkTreePath *path;
-	NautilusFile *file;
-	GtkTreeIter iter;
-
-	view->details->editable_widget = NULL;
-	nautilus_view_set_is_renaming (NAUTILUS_VIEW (view), FALSE);
-
-	/* Don't allow a rename with an empty string. Revert to original 
-	 * without notifying the user.
-	 */
-	if (new_text[0] == '\0') {
-		g_object_set (G_OBJECT (view->details->file_name_cell),
-			      "editable", FALSE,
-			      NULL);
-		nautilus_view_unfreeze_updates (NAUTILUS_VIEW (view));
-		return;
-	}
-	
-	path = gtk_tree_path_new_from_string (path_str);
-
-	gtk_tree_model_get_iter (GTK_TREE_MODEL (view->details->model),
-				 &iter, path);
-
-	gtk_tree_path_free (path);
-	
-	gtk_tree_model_get (GTK_TREE_MODEL (view->details->model),
-			    &iter,
-			    NAUTILUS_LIST_MODEL_FILE_COLUMN, &file,
-			    -1);
-
-	/* Only rename if name actually changed */
-	if (strcmp (new_text, view->details->original_name) != 0) {
-		view->details->renaming_file = nautilus_file_ref (file);
-		view->details->rename_done = FALSE;
-		nautilus_rename_file (file, new_text, nautilus_list_view_rename_callback, g_object_ref (view));
-		g_free (view->details->original_name);
-		view->details->original_name = g_strdup (new_text);
-	}
-	
-	nautilus_file_unref (file);
-
-	/*We're done editing - make the filename-cells readonly again.*/
-	g_object_set (G_OBJECT (view->details->file_name_cell),
-		      "editable", FALSE,
-		      NULL);
-
-	nautilus_view_unfreeze_updates (NAUTILUS_VIEW (view));
-}
-
 static char *
 get_root_uri_callback (NautilusTreeViewDragDest *dest,
 		       gpointer user_data)
@@ -2079,10 +1950,6 @@ create_and_set_up_tree_view (NautilusListView *view)
 				      "xpad", 5,
 				      NULL);
 
-			g_signal_connect (cell, "edited", G_CALLBACK (cell_renderer_edited), view);
-			g_signal_connect (cell, "editing-canceled", G_CALLBACK (cell_renderer_editing_canceled), view);
-			g_signal_connect (cell, "editing-started", G_CALLBACK (cell_renderer_editing_started_cb), view);
-
 			gtk_tree_view_column_pack_start (view->details->file_name_column, cell, TRUE);
 			gtk_tree_view_column_set_cell_data_func (view->details->file_name_column, cell,
 								 (GtkTreeCellDataFunc) filename_cell_data_func,
@@ -2349,24 +2216,6 @@ nautilus_list_view_begin_loading (NautilusView *view)
 }
 
 static void
-stop_cell_editing (NautilusListView *list_view)
-{
-	GtkTreeViewColumn *column;
-
-	/* Stop an ongoing rename to commit the name changes when the user
-	 * changes directories without exiting cell edit mode. It also prevents
-	 * the edited handler from being called on the cleared list model.
-	 */
-	column = list_view->details->file_name_column;
-	if (column != NULL && list_view->details->editable_widget != NULL &&
-	    GTK_IS_CELL_EDITABLE (list_view->details->editable_widget)) {
-		gtk_cell_editable_editing_done (list_view->details->editable_widget);
-	}
-
-	g_clear_object (&list_view->details->renaming_file);
-}
-
-static void
 nautilus_list_view_clear (NautilusView *view)
 {
 	NautilusListView *list_view;
@@ -2374,67 +2223,18 @@ nautilus_list_view_clear (NautilusView *view)
 	list_view = NAUTILUS_LIST_VIEW (view);
 
 	if (list_view->details->model != NULL) {
-		stop_cell_editing (list_view);
 		nautilus_list_model_clear (list_view->details->model);
 	}
 }
 
 static void
-nautilus_list_view_rename_callback (NautilusFile *file,
-				    GFile *result_location,
-				    GError *error,
-				    gpointer callback_data)
-{
-	NautilusListView *view;
-	
-	view = NAUTILUS_LIST_VIEW (callback_data);
-
-	if (view->details->renaming_file) {
-		view->details->rename_done = TRUE;
-		
-		if (error != NULL) {
-			/* If the rename failed (or was cancelled), kill renaming_file.
-			 * We won't get a change event for the rename, so otherwise
-			 * it would stay around forever.
-			 */
-			nautilus_file_unref (view->details->renaming_file);
-			view->details->renaming_file = NULL;
-		}
-	}
-	
-	g_object_unref (view);
-}
-
-
-static void
 nautilus_list_view_file_changed (NautilusView *view, NautilusFile *file, NautilusDirectory *directory)
 {
 	NautilusListView *listview;
-	GtkTreeIter iter;
-	GtkTreePath *file_path;
 
 	listview = NAUTILUS_LIST_VIEW (view);
 	
 	nautilus_list_model_file_changed (listview->details->model, file, directory);
-
-	if (listview->details->renaming_file != NULL &&
-	    file == listview->details->renaming_file &&
-	    listview->details->rename_done) {
-		/* This is (probably) the result of the rename operation, and
-		 * the tree-view changes above could have resorted the list, so
-		 * scroll to the new position
-		 */
-		if (nautilus_list_model_get_tree_iter_from_file (listview->details->model, file, directory, &iter)) {
-			file_path = gtk_tree_model_get_path (GTK_TREE_MODEL (listview->details->model), &iter);
-			gtk_tree_view_scroll_to_cell (listview->details->tree_view,
-						      file_path, NULL,
-						      FALSE, 0.0, 0.0);
-			gtk_tree_path_free (file_path);
-		}
-		
-		nautilus_file_unref (listview->details->renaming_file);
-		listview->details->renaming_file = NULL;
-	}
 }
 
 typedef struct {
@@ -3257,7 +3057,6 @@ nautilus_list_view_dispose (GObject *object)
 	list_view = NAUTILUS_LIST_VIEW (object);
 
 	if (list_view->details->model) {
-		stop_cell_editing (list_view);
 		g_object_unref (list_view->details->model);
 		list_view->details->model = NULL;
 	}
@@ -3265,11 +3064,6 @@ nautilus_list_view_dispose (GObject *object)
 	if (list_view->details->drag_dest) {
 		g_object_unref (list_view->details->drag_dest);
 		list_view->details->drag_dest = NULL;
-	}
-
-	if (list_view->details->renaming_file_activate_timeout != 0) {
-		g_source_remove (list_view->details->renaming_file_activate_timeout);
-		list_view->details->renaming_file_activate_timeout = 0;
 	}
 
 	if (list_view->details->clipboard_handler_id != 0) {

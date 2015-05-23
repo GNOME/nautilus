@@ -152,8 +152,6 @@ typedef struct {
 	int          (* compare_icons_by_name)    (NautilusCanvasContainer *container,
 						     NautilusCanvasIconData *canvas_a,
 						     NautilusCanvasIconData *canvas_b);
-	void         (* freeze_updates)           (NautilusCanvasContainer *container);
-	void         (* unfreeze_updates)         (NautilusCanvasContainer *container);
 	void         (* prioritize_thumbnailing)  (NautilusCanvasContainer *container,
 						   NautilusCanvasIconData *data);
 
@@ -202,11 +200,6 @@ typedef struct {
 	void         (* icon_position_changed)    (NautilusCanvasContainer *container,
 						     NautilusCanvasIconData *data,
 						     const NautilusCanvasPosition *position);
-	void         (* icon_rename_started)      (NautilusCanvasContainer *container,
-						     GtkWidget *renaming_widget);
-	void         (* icon_rename_ended)        (NautilusCanvasContainer *container,
-						     NautilusCanvasIconData *data,
-						     const char *text);
 	void	     (* icon_stretch_started)     (NautilusCanvasContainer *container,
 						     NautilusCanvasIconData *data);
 	void	     (* icon_stretch_ended)       (NautilusCanvasContainer *container,
@@ -288,8 +281,6 @@ gboolean          nautilus_canvas_container_has_stretch_handles           (Nauti
 gboolean          nautilus_canvas_container_is_stretched                  (NautilusCanvasContainer  *container);
 void              nautilus_canvas_container_show_stretch_handles          (NautilusCanvasContainer  *container);
 void              nautilus_canvas_container_unstretch                     (NautilusCanvasContainer  *container);
-void              nautilus_canvas_container_start_renaming_selected_item  (NautilusCanvasContainer  *container,
-									   gboolean                select_all);
 
 /* options */
 NautilusCanvasZoomLevel nautilus_canvas_container_get_zoom_level                (NautilusCanvasContainer  *view);

@@ -175,13 +175,6 @@ nautilus_empty_view_can_zoom_out (NautilusView *view)
 }
 
 static void
-nautilus_empty_view_start_renaming_file (NautilusView *view,
-				  NautilusFile *file,
-				  gboolean select_all)
-{
-}
-
-static void
 nautilus_empty_view_click_policy_changed (NautilusView *directory_view)
 {
 }
@@ -265,7 +258,6 @@ nautilus_empty_view_class_init (NautilusEmptyViewClass *class)
 	nautilus_view_class->set_selection = nautilus_empty_view_set_selection;
 	nautilus_view_class->compare_files = nautilus_empty_view_compare_files;
 	nautilus_view_class->sort_directories_first_changed = nautilus_empty_view_sort_directories_first_changed;
-	nautilus_view_class->start_renaming_file = nautilus_empty_view_start_renaming_file;
 	nautilus_view_class->get_zoom_level = nautilus_empty_view_get_zoom_level;
 	nautilus_view_class->zoom_to_level = nautilus_empty_view_zoom_to_level;
 	nautilus_view_class->end_file_changes = nautilus_empty_view_end_file_changes;

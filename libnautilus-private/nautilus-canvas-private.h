@@ -153,11 +153,6 @@ struct NautilusCanvasContainerDetails {
 	 */
 	NautilusCanvasIcon *pending_icon_to_reveal;
 
-	/* If a request is made to rename an unpositioned icon we remember
-	 * it and start renaming it once it gets positioned (in relayout).
-	 */
-	NautilusCanvasIcon *pending_icon_to_rename;
-
 	/* Remembered information about the start of the current event. */
 	guint32 button_down_time;
 	
@@ -176,11 +171,6 @@ struct NautilusCanvasContainerDetails {
 
 	NautilusCanvasIcon *range_selection_base_icon;
 	
-	/* Renaming Details */
-	gboolean renaming;
-	GtkWidget *rename_widget;	/* Editable text item */
-	char *original_text;			/* Copy of editable text for later compare */
-
 	/* Idle ID. */
 	guint idle_id;
 
