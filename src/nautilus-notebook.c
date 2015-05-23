@@ -28,7 +28,6 @@
 #include "nautilus-notebook.h"
 
 #include "nautilus-window.h"
-#include "nautilus-window.h"
 #include "nautilus-window-slot.h"
 #include "nautilus-window-slot-dnd.h"
 
@@ -38,7 +37,6 @@
 #include <gtk/gtk.h>
 
 #define AFTER_ALL_TABS -1
-#define NOT_IN_APP_WINDOWS -2
 
 static int  nautilus_notebook_insert_page	 (GtkNotebook *notebook,
 					  GtkWidget *child,
@@ -87,53 +85,6 @@ nautilus_notebook_class_init (NautilusNotebookClass *klass)
 			      NAUTILUS_TYPE_WINDOW_SLOT);
 }
 
-
-/* FIXME remove when gtknotebook's func for this becomes public, bug #.... */
-static NautilusNotebook *
-find_notebook_at_pointer (gint abs_x, gint abs_y)
-{
-	GdkDeviceManager *manager;
-	GdkDevice *pointer;
-	GdkWindow *win_at_pointer, *toplevel_win;
-	gpointer toplevel = NULL;
-	gint x, y;
-
-	/* FIXME multi-head */
-	manager = gdk_display_get_device_manager (gdk_display_get_default ());
-	pointer = gdk_device_manager_get_client_pointer (manager);
-	win_at_pointer = gdk_device_get_window_at_position (pointer, &x, &y);
-
-	if (win_at_pointer == NULL)
-	{
-		/* We are outside all windows containing a notebook */
-		return NULL;
-	}
-
-	toplevel_win = gdk_window_get_toplevel (win_at_pointer);
-
-	/* get the GtkWidget which owns the toplevel GdkWindow */
-	gdk_window_get_user_data (toplevel_win, &toplevel);
-
-	/* toplevel should be an NautilusWindow */
-	if (toplevel != NULL && NAUTILUS_IS_WINDOW (toplevel))
-	{
-		return NAUTILUS_NOTEBOOK (nautilus_window_get_notebook (NAUTILUS_WINDOW (toplevel)));
-	}
-
-	return NULL;
-}
-
-static gboolean
-is_in_notebook_window (NautilusNotebook *notebook,
-		       gint abs_x, gint abs_y)
-{
-	NautilusNotebook *nb_at_pointer;
-
-	nb_at_pointer = find_notebook_at_pointer (abs_x, abs_y);
-
-	return nb_at_pointer == notebook;
-}
-
 static gint
 find_tab_num_at_pos (NautilusNotebook *notebook, gint abs_x, gint abs_y)
 {
@@ -144,18 +95,6 @@ find_tab_num_at_pos (NautilusNotebook *notebook, gint abs_x, gint abs_y)
 	GtkAllocation allocation;
 
 	tab_pos = gtk_notebook_get_tab_pos (GTK_NOTEBOOK (notebook));
-
-	if (gtk_notebook_get_n_pages (nb) == 0)
-	{
-		return AFTER_ALL_TABS;
-	}
-
-	/* For some reason unfullscreen + quick click can
-	   cause a wrong click event to be reported to the tab */
-	if (!is_in_notebook_window(notebook, abs_x, abs_y))
-	{
-		return NOT_IN_APP_WINDOWS;
-	}
 
 	while ((page = gtk_notebook_get_nth_page (nb, page_num)))
 	{
