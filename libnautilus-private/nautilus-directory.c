@@ -753,25 +753,6 @@ nautilus_directory_find_file_by_name (NautilusDirectory *directory,
 	return node == NULL ? NULL : NAUTILUS_FILE (node->data);
 }
 
-/* "." for the directory-as-file, otherwise the filename */
-NautilusFile *
-nautilus_directory_find_file_by_internal_filename (NautilusDirectory *directory,
-						   const char *internal_filename)
-{
-	NautilusFile *result;
-
-	if (g_strcmp0 (internal_filename, ".") == 0) {
-		result = nautilus_directory_get_existing_corresponding_file (directory);
-		if (result != NULL) {
-			nautilus_file_unref (result);
-		}
-	} else {
-		result = nautilus_directory_find_file_by_name (directory, internal_filename);
-	}
-
-	return result;
-}
-
 void
 nautilus_directory_emit_files_added (NautilusDirectory *directory,
 				     GList *added_files)
@@ -1048,44 +1029,6 @@ nautilus_directory_notify_files_added (GList *files)
 	nautilus_profile_end (NULL);
 }
 
-static void
-g_file_pair_free (GFilePair *pair)
-{
-	g_object_unref (pair->to);
-	g_object_unref (pair->from);
-	g_free (pair);
-}
-
-static GList *
-uri_pairs_to_file_pairs (GList *uri_pairs)
-{
-	GList *l, *file_pair_list;
-	GFilePair *file_pair;
-	URIPair *uri_pair;
-	
-	file_pair_list = NULL;
-
-	for (l = uri_pairs; l != NULL; l = l->next) {
-		uri_pair = l->data;
-		file_pair = g_new (GFilePair, 1);
-		file_pair->from = g_file_new_for_uri (uri_pair->from_uri);
-		file_pair->to = g_file_new_for_uri (uri_pair->to_uri);
-		
-		file_pair_list = g_list_prepend (file_pair_list, file_pair);
-	}
-	return g_list_reverse (file_pair_list);
-}
-
-void
-nautilus_directory_notify_files_added_by_uri (GList *uris)
-{
-	GList *files;
-
-	files = nautilus_file_list_from_uris (uris);
-	nautilus_directory_notify_files_added (files);
-	g_list_free_full (files, g_object_unref);
-}
-
 void
 nautilus_directory_notify_files_changed (GList *files)
 {
@@ -1120,16 +1063,6 @@ nautilus_directory_notify_files_changed (GList *files)
 	/* Now send out the changed signals. */
 	g_hash_table_foreach (changed_lists, call_files_changed_unref_free_list, NULL);
 	g_hash_table_destroy (changed_lists);
-}
-
-void
-nautilus_directory_notify_files_changed_by_uri (GList *uris)
-{
-	GList *files;
-
-	files = nautilus_file_list_from_uris (uris);
-	nautilus_directory_notify_files_changed (files);
-	g_list_free_full (files, g_object_unref);
 }
 
 void
@@ -1178,16 +1111,6 @@ nautilus_directory_notify_files_removed (GList *files)
 	/* Invalidate count for each parent directory. */
 	g_hash_table_foreach (parent_directories, invalidate_count_and_unref, NULL);
 	g_hash_table_destroy (parent_directories);
-}
-
-void
-nautilus_directory_notify_files_removed_by_uri (GList *uris)
-{
-	GList *files;
-
-	files = nautilus_file_list_from_uris (uris);
-	nautilus_directory_notify_files_changed (files);
-	g_list_free_full (files, g_object_unref);
 }
 
 static void
@@ -1457,17 +1380,6 @@ nautilus_directory_notify_files_moved (GList *file_pairs)
 }
 
 void
-nautilus_directory_notify_files_moved_by_uri (GList *uri_pairs)
-{
-	GList *file_pairs;
-
-	file_pairs = uri_pairs_to_file_pairs (uri_pairs);
-	nautilus_directory_notify_files_moved (file_pairs);
-	g_list_foreach (file_pairs, (GFunc)g_file_pair_free, NULL);
-	g_list_free (file_pairs);
-}
-
-void
 nautilus_directory_schedule_position_set (GList *position_setting_list)
 {
 	GList *p;
@@ -1533,25 +1445,6 @@ nautilus_directory_contains_file (NautilusDirectory *directory,
 	}
 
 	return NAUTILUS_DIRECTORY_CLASS (G_OBJECT_GET_CLASS (directory))->contains_file (directory, file);
-}
-
-char *
-nautilus_directory_get_file_uri (NautilusDirectory *directory,
-				 const char *file_name)
-{
-	GFile *child;
-	char *result;
-
-	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
-	g_return_val_if_fail (file_name != NULL, NULL);
-
-	result = NULL;
-
-	child = g_file_get_child (directory->details->location, file_name);
-	result = g_file_get_uri (child);
-	g_object_unref (child);
-	
-	return result;
 }
 
 void
@@ -1787,16 +1680,6 @@ GList *
 nautilus_directory_list_sort_by_uri (GList *list)
 {
 	return g_list_sort (list, compare_by_uri_cover);
-}
-
-gboolean
-nautilus_directory_is_desktop_directory (NautilusDirectory   *directory)
-{
-	if (directory->details->location == NULL) {
-		return FALSE;
-	}
-
-	return nautilus_is_desktop_directory (directory->details->location);
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)

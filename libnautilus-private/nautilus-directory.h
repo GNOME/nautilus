@@ -167,10 +167,6 @@ GFile *            nautilus_directory_get_location             (NautilusDirector
 gboolean           nautilus_directory_contains_file            (NautilusDirectory         *directory,
 								NautilusFile              *file);
 
-/* Get the uri of the file in the directory, NULL if not found */
-char *             nautilus_directory_get_file_uri             (NautilusDirectory         *directory,
-								const char                *file_name);
-
 /* Get (and ref) a NautilusFile object for this directory. */
 NautilusFile *     nautilus_directory_get_corresponding_file   (NautilusDirectory         *directory);
 
@@ -230,9 +226,6 @@ void               nautilus_directory_list_unref               (GList           
 void               nautilus_directory_list_free                (GList                     *directory_list);
 GList *            nautilus_directory_list_copy                (GList                     *directory_list);
 GList *            nautilus_directory_list_sort_by_uri         (GList                     *directory_list);
-
-/* Fast way to check if a directory is the desktop directory */
-gboolean           nautilus_directory_is_desktop_directory     (NautilusDirectory         *directory);
 
 gboolean           nautilus_directory_is_editable              (NautilusDirectory         *directory);
 

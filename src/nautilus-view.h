@@ -291,7 +291,6 @@ char *              nautilus_view_get_uri                          (NautilusView
 void                nautilus_view_display_selection_info           (NautilusView  *view);
 
 GdkAtom	            nautilus_view_get_copied_files_atom            (NautilusView  *view);
-gboolean            nautilus_view_get_active                       (NautilusView  *view);
 
 /* Wrappers for signal emitters. These are normally called 
  * only by NautilusView itself. They have corresponding signals
@@ -391,7 +390,6 @@ void              nautilus_view_update_context_menus       (NautilusView      *v
 void              nautilus_view_update_toolbar_menus       (NautilusView      *view);
 void              nautilus_view_update_actions_state       (NautilusView      *view);
 
-gboolean          nautilus_view_get_show_hidden_files      (NautilusView      *view);
 void		  nautilus_view_action_show_hidden_files   (NautilusView      *view,
 							    gboolean           show_hidden);
 

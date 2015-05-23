@@ -27,14 +27,12 @@
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory.h"
 #include "nautilus-file-attributes.h"
-#include "nautilus-icon-names.h"
 #include <eel/eel-debug.h>
 #include <gio/gio.h>
 #include <string.h>
 
 struct NautilusTrashMonitorDetails {
 	gboolean empty;
-	GIcon *icon;
 	GFileMonitor *file_monitor;
 };
 
@@ -55,9 +53,6 @@ nautilus_trash_monitor_finalize (GObject *object)
 
 	trash_monitor = NAUTILUS_TRASH_MONITOR (object);
 
-	if (trash_monitor->details->icon) {
-		g_object_unref (trash_monitor->details->icon);
-	}
 	if (trash_monitor->details->file_monitor) {
 		g_object_unref (trash_monitor->details->file_monitor);
 	}
@@ -88,18 +83,6 @@ nautilus_trash_monitor_class_init (NautilusTrashMonitorClass *klass)
 }
 
 static void
-update_icon (NautilusTrashMonitor *trash_monitor)
-{
-	g_clear_object (&trash_monitor->details->icon);
-
-	if (trash_monitor->details->empty) {
-		trash_monitor->details->icon = g_themed_icon_new (NAUTILUS_ICON_TRASH);
-	} else {
-		trash_monitor->details->icon = g_themed_icon_new (NAUTILUS_ICON_TRASH_FULL);
-	}
-}
-
-static void
 update_empty_info (NautilusTrashMonitor *trash_monitor,
 		   gboolean is_empty)
 {
@@ -108,7 +91,6 @@ update_empty_info (NautilusTrashMonitor *trash_monitor,
 	}
 	
 	trash_monitor->details->empty = is_empty;
-	update_icon (trash_monitor);
 
 	/* trash got empty or full, notify everyone who cares */
 	g_signal_emit (trash_monitor,
@@ -195,7 +177,6 @@ nautilus_trash_monitor_init (NautilusTrashMonitor *trash_monitor)
 							      NautilusTrashMonitorDetails);
 
 	trash_monitor->details->empty = TRUE;
-	update_icon (trash_monitor);
 
 	location = g_file_new_for_uri ("trash:///");
 
@@ -236,16 +217,4 @@ nautilus_trash_monitor_is_empty (void)
 
 	monitor = nautilus_trash_monitor_get ();
 	return monitor->details->empty;
-}
-
-GIcon *
-nautilus_trash_monitor_get_icon (void)
-{
-	NautilusTrashMonitor *monitor;
-
-	monitor = nautilus_trash_monitor_get ();
-	if (monitor->details->icon) {
-		return g_object_ref (monitor->details->icon);
-	}
-	return NULL;
 }

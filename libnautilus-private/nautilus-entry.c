@@ -63,17 +63,6 @@ nautilus_entry_new (void)
 	return gtk_widget_new (NAUTILUS_TYPE_ENTRY, NULL);
 }
 
-GtkWidget *
-nautilus_entry_new_with_max_length (guint16 max)
-{
-	GtkWidget *widget;
-
-	widget = gtk_widget_new (NAUTILUS_TYPE_ENTRY, NULL);
-	gtk_entry_set_max_length (GTK_ENTRY (widget), max);
-
-	return widget;
-}
-
 static void
 nautilus_entry_finalize (GObject *object)
 {

@@ -199,9 +199,6 @@ struct NautilusCanvasContainerDetails {
 	gboolean single_click_mode;
 	gboolean auto_layout;
 
-	/* Label position */
-	NautilusCanvasLabelPosition label_position;
-
 	/* Should the container keep icons aligned to a grid */
 	gboolean keep_aligned;
 
@@ -264,7 +261,6 @@ char *        nautilus_canvas_container_get_icon_drop_target_uri    (NautilusCan
 								       NautilusCanvasIcon          *canvas);
 void          nautilus_canvas_container_update_icon                 (NautilusCanvasContainer *container,
 								       NautilusCanvasIcon          *canvas);
-gboolean      nautilus_canvas_container_has_stored_icon_positions   (NautilusCanvasContainer *container);
 gboolean      nautilus_canvas_container_scroll                      (NautilusCanvasContainer *container,
 								     int                    delta_x,
 								     int                    delta_y);

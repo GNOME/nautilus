@@ -108,17 +108,14 @@ NautilusDragSelectionItem  *nautilus_drag_selection_item_new		(void);
 void			    nautilus_drag_destroy_selection_list	(GList				      *selection_list);
 GList			   *nautilus_drag_build_selection_list		(GtkSelectionData		      *data);
 
-char **			    nautilus_drag_uri_array_from_selection_list (const GList			      *selection_list);
 GList *			    nautilus_drag_uri_list_from_selection_list	(const GList			      *selection_list);
 
-char **			    nautilus_drag_uri_array_from_list		(const GList			      *uri_list);
 GList *			    nautilus_drag_uri_list_from_array		(const char			     **uris);
 
 gboolean		    nautilus_drag_items_local			(const char			      *target_uri,
 									 const GList			      *selection_list);
 gboolean		    nautilus_drag_uris_local			(const char			      *target_uri,
 									 const GList			      *source_uri_list);
-gboolean		    nautilus_drag_items_in_trash		(const GList			      *selection_list);
 gboolean		    nautilus_drag_items_on_desktop		(const GList			      *selection_list);
 void			    nautilus_drag_default_drop_action_for_icons (GdkDragContext			      *context,
 									 const char			      *target_uri,
@@ -127,13 +124,6 @@ void			    nautilus_drag_default_drop_action_for_icons (GdkDragContext			      *
 GdkDragAction		    nautilus_drag_default_drop_action_for_netscape_url (GdkDragContext			     *context);
 GdkDragAction		    nautilus_drag_default_drop_action_for_uri_list     (GdkDragContext			     *context,
 										const char			     *target_uri_string);
-gboolean		    nautilus_drag_drag_data_get			(GtkWidget			      *widget,
-									 GdkDragContext			      *context,
-									 GtkSelectionData		      *selection_data,
-									 guint				       info,
-									 guint32			       time,
-									 gpointer			       container_context,
-									 NautilusDragEachSelectedItemIterator  each_selected_item_iterator);
 GList			   *nautilus_drag_create_selection_cache	(gpointer			       container_context,
 									 NautilusDragEachSelectedItemIterator  each_selected_item_iterator);
 gboolean		    nautilus_drag_drag_data_get_from_cache	(GList				      *cache,

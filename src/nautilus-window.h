@@ -108,10 +108,6 @@ void             nautilus_window_close                (NautilusWindow    *window
 
 void             nautilus_window_go_to                (NautilusWindow    *window,
                                                        GFile             *location);
-void             nautilus_window_go_to_full           (NautilusWindow    *window,
-                                                       GFile             *location,
-                                                       NautilusWindowGoToCallback callback,
-                                                       gpointer           user_data);
 void             nautilus_window_new_tab              (NautilusWindow    *window);
 
 void                 nautilus_window_view_visible          (NautilusWindow *window,
@@ -137,11 +133,6 @@ void     nautilus_window_back_or_forward      (NautilusWindow *window,
 void nautilus_window_reset_menus (NautilusWindow *window);
 
 GtkWidget *         nautilus_window_get_notebook (NautilusWindow *window);
-
-
-gboolean nautilus_window_disable_chrome_mapping (GValue *value,
-                                                 GVariant *variant,
-                                                 gpointer user_data);
 
 NautilusWindowOpenFlags nautilus_event_get_window_open_flags   (void);
 void     nautilus_window_show_about_dialog    (NautilusWindow *window);

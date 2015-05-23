@@ -55,10 +55,6 @@ typedef struct {
 	double scale;
 } NautilusCanvasPosition;
 
-typedef enum {
-	NAUTILUS_CANVAS_LABEL_POSITION_UNDER,
-} NautilusCanvasLabelPosition;
-
 #define	NAUTILUS_CANVAS_CONTAINER_TYPESELECT_FLUSH_DELAY 1000000
 
 typedef struct NautilusCanvasContainerDetails NautilusCanvasContainerDetails;
@@ -137,8 +133,7 @@ typedef struct {
 	NautilusIconInfo *(* get_icon_images)     (NautilusCanvasContainer *container,
 						     NautilusCanvasIconData *data,
 						     int canvas_size,
-						     gboolean for_drag_accept,
-						     gboolean *has_window_open);
+						     gboolean for_drag_accept);
 	void         (* get_icon_text)            (NautilusCanvasContainer *container,
 						     NautilusCanvasIconData *data,
 						     char **editable_text,
@@ -252,8 +247,6 @@ void              nautilus_canvas_container_set_auto_layout               (Nauti
 gboolean          nautilus_canvas_container_is_keep_aligned               (NautilusCanvasContainer  *container);
 void              nautilus_canvas_container_set_keep_aligned              (NautilusCanvasContainer  *container,
 									   gboolean                keep_aligned);
-void              nautilus_canvas_container_set_label_position            (NautilusCanvasContainer  *container,
-									   NautilusCanvasLabelPosition pos);
 void              nautilus_canvas_container_sort                          (NautilusCanvasContainer  *container);
 void              nautilus_canvas_container_freeze_icon_positions         (NautilusCanvasContainer  *container);
 

@@ -116,19 +116,6 @@ nautilus_drag_destroy_selection_list (GList *list)
 	g_list_free (list);
 }
 
-char **
-nautilus_drag_uri_array_from_selection_list (const GList *selection_list)
-{
-	GList *uri_list;
-	char **uris;
-
-	uri_list = nautilus_drag_uri_list_from_selection_list (selection_list);
-	uris = nautilus_drag_uri_array_from_list (uri_list);
-	g_list_free_full (uri_list, g_free);
-
-	return uris;
-}
-
 GList *
 nautilus_drag_uri_list_from_selection_list (const GList *selection_list)
 {
@@ -145,26 +132,6 @@ nautilus_drag_uri_list_from_selection_list (const GList *selection_list)
 	}
 
 	return g_list_reverse (uri_list);
-}
-
-char **
-nautilus_drag_uri_array_from_list (const GList *uri_list)
-{
-	const GList *l;
-	char **uris;
-	int i;
-
-	if (uri_list == NULL) {
-		return NULL;
-	}
-
-	uris = g_new0 (char *, g_list_length ((GList *) uri_list));
-	for (i = 0, l = uri_list; l != NULL; l = l->next) {
-		uris[i++] = g_strdup ((char *) l->data);
-	}
-	uris[i] = NULL;
-
-	return uris;
 }
 
 GList *
@@ -319,17 +286,6 @@ nautilus_drag_items_local (const char *target_uri_string,
 
 	return nautilus_drag_file_local_internal (target_uri_string,
 						  ((NautilusDragSelectionItem *)selection_list->data)->uri);
-}
-
-gboolean
-nautilus_drag_items_in_trash (const GList *selection_list)
-{
-	/* check if the first item on the list is in trash.
-	 * FIXME:
-	 * we should really test each item but that would be slow for large selections
-	 * and currently dropped items can only be from the same container
-	 */
-	return eel_uri_is_trash (((NautilusDragSelectionItem *)selection_list->data)->uri);
 }
 
 gboolean
@@ -655,41 +611,6 @@ nautilus_drag_drag_data_get_from_cache (GList *cache,
 		(*func) (item->uri, item->icon_x, item->icon_y, item->icon_width, item->icon_height, result);
 	}
 
-	gtk_selection_data_set (selection_data,
-				gtk_selection_data_get_target (selection_data),
-				8, (guchar *) result->str, result->len);
-	g_string_free (result, TRUE);
-
-	return TRUE;
-}
-
-gboolean
-nautilus_drag_drag_data_get (GtkWidget *widget,
-			GdkDragContext *context,
-			GtkSelectionData *selection_data,
-			guint info,
-			guint32 time,
-			gpointer container_context,
-			NautilusDragEachSelectedItemIterator each_selected_item_iterator)
-{
-	GString *result;
-		
-	switch (info) {
-	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
-		result = g_string_new (NULL);
-		(* each_selected_item_iterator) (add_one_gnome_icon, container_context, result);
-		break;
-		
-	case NAUTILUS_ICON_DND_URI_LIST:
-	case NAUTILUS_ICON_DND_TEXT:
-		result = g_string_new (NULL);
-		(* each_selected_item_iterator) (add_one_uri, container_context, result);
-		break;
-
-	default:
-		return FALSE;
-	}
-	
 	gtk_selection_data_set (selection_data,
 				gtk_selection_data_get_target (selection_data),
 				8, (guchar *) result->str, result->len);

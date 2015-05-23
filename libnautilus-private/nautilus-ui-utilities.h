@@ -42,9 +42,6 @@ void nautilus_pop_up_context_menu                  (GtkWidget         *parent,
 						    GMenu             *menu,
 						    GdkEventButton    *event);
 
-GdkPixbuf * nautilus_ui_get_menu_icon              (const char        *icon_name,
-						    GtkWidget         *parent_widget);
-
 char * nautilus_escape_action_name                 (const char        *action_name,
 						    const char        *prefix);
 void   nautilus_ui_frame_image                     (GdkPixbuf        **pixbuf);

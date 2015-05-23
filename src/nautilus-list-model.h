@@ -74,7 +74,6 @@ void     nautilus_list_model_file_changed                      (NautilusListMode
 								NautilusFile         *file,
 								NautilusDirectory    *directory);
 gboolean nautilus_list_model_is_empty                          (NautilusListModel          *model);
-guint    nautilus_list_model_get_length                        (NautilusListModel          *model);
 void     nautilus_list_model_remove_file                       (NautilusListModel          *model,
 								NautilusFile         *file,
 								NautilusDirectory    *directory);
@@ -123,8 +122,6 @@ int               nautilus_list_model_compare_func (NautilusListModel *model,
 
 int               nautilus_list_model_add_column (NautilusListModel *model,
 						  NautilusColumn *column);
-int               nautilus_list_model_get_column_number (NautilusListModel *model,
-							 const char *column_name);
 
 void              nautilus_list_model_subdirectory_done_loading (NautilusListModel       *model,
 								 NautilusDirectory *directory);

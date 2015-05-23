@@ -603,18 +603,6 @@ nautilus_window_go_to (NautilusWindow *window, GFile *location)
 					    location, 0);
 }
 
-void
-nautilus_window_go_to_full (NautilusWindow *window,
-			    GFile          *location,
-			    NautilusWindowGoToCallback callback,
-			    gpointer        user_data)
-{
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-
-	nautilus_window_slot_open_location_full (nautilus_window_get_active_slot (window),
-						 location, 0, NULL, callback, user_data);
-}
-
 static int
 bookmark_list_get_uri_index (GList *list, GFile *location)
 {
@@ -1380,20 +1368,6 @@ nautilus_window_show_sidebar (NautilusWindow *window)
 
 	gtk_widget_show (window->priv->sidebar);
 	setup_side_pane_width (window);
-}
-
-gboolean
-nautilus_window_disable_chrome_mapping (GValue *value,
-					GVariant *variant,
-					gpointer user_data)
-{
-	NautilusWindow *window = user_data;
-
-	g_value_set_boolean (value,
-			     g_variant_get_boolean (variant) &&
-			     !window->priv->disable_chrome);
-
-	return TRUE;
 }
 
 static inline NautilusWindowSlot *

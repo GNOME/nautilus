@@ -3374,15 +3374,6 @@ nautilus_file_is_home (NautilusFile *file)
 }
 
 gboolean
-nautilus_file_is_in_desktop (NautilusFile *file)
-{
-	if (file->details->directory->details->location) {
-		return nautilus_is_desktop_directory (file->details->directory->details->location);
-	}
-	return FALSE;
-}
-
-gboolean
 nautilus_file_is_in_search (NautilusFile *file)
 {
 	char *uri;
@@ -4356,9 +4347,7 @@ nautilus_file_get_gicon (NautilusFile *file,
 		if (((flags & NAUTILUS_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT) ||
 		     (flags & NAUTILUS_FILE_ICON_FLAGS_FOR_OPEN_FOLDER) ||
 		     (flags & NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON) ||
-		     (flags & NAUTILUS_FILE_ICON_FLAGS_USE_EMBLEMS) ||
-		     ((flags & NAUTILUS_FILE_ICON_FLAGS_IGNORE_VISITING) == 0 &&
-		      nautilus_file_has_open_window (file))) &&
+		     (flags & NAUTILUS_FILE_ICON_FLAGS_USE_EMBLEMS)) &&
 		    G_IS_THEMED_ICON (file->details->icon)) {
 			names = g_themed_icon_get_names (G_THEMED_ICON (file->details->icon));
 			prepend_array = g_ptr_array_new ();
@@ -4383,11 +4372,6 @@ nautilus_file_get_gicon (NautilusFile *file,
 			}
 			if (is_folder && (flags & NAUTILUS_FILE_ICON_FLAGS_FOR_OPEN_FOLDER)) {
 				g_ptr_array_add (prepend_array, "folder-open");
-			}
-			if (is_folder &&
-			    (flags & NAUTILUS_FILE_ICON_FLAGS_IGNORE_VISITING) == 0 &&
-			    nautilus_file_has_open_window (file)) {
-				g_ptr_array_add (prepend_array, "folder-visiting");
 			}
 			if (is_folder &&
 			    (flags & NAUTILUS_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT)) {
@@ -4875,23 +4859,6 @@ nautilus_file_should_show_directory_item_count (NautilusFile *file)
 	return get_speed_tradeoff_preference_for_file (file, show_directory_item_count);
 }
 
-gboolean
-nautilus_file_should_show_type (NautilusFile *file)
-{
-	char *uri;
-	gboolean ret;
-
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-
-	uri = nautilus_file_get_uri (file);
-	ret = ((strcmp (uri, "computer:///") != 0) &&
-	       (strcmp (uri, "network:///") != 0) &&
-	       (strcmp (uri, "smb:///") != 0));
-	g_free (uri);
-
-	return ret;
-}
-
 /**
  * nautilus_file_get_directory_item_count
  * 
@@ -4993,35 +4960,6 @@ nautilus_file_recompute_deep_counts (NautilusFile *file)
 			nautilus_directory_async_state_changed (file->details->directory);
 		}
 	}
-}
-
-
-/**
- * nautilus_file_get_directory_item_mime_types
- * 
- * Get the list of mime-types present in a directory.
- * @file: NautilusFile representing a directory. It is an error to
- * call this function on a file that is not a directory.
- * @mime_list: Place to put the list of mime-types.
- * 
- * Returns: TRUE if mime-type list is available.
- * 
- **/
-gboolean
-nautilus_file_get_directory_item_mime_types (NautilusFile *file,
-					     GList **mime_list)
-{
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-	g_return_val_if_fail (mime_list != NULL, FALSE);
-
-	if (!nautilus_file_is_directory (file)
-	    || !file->details->got_mime_list) {
-		*mime_list = NULL;
-		return FALSE;
-	}
-
-	*mime_list = g_list_copy_deep (file->details->mime_list, (GCopyFunc) g_strdup, NULL);
-	return TRUE;
 }
 
 gboolean
@@ -6708,12 +6646,6 @@ nautilus_file_is_symbolic_link (NautilusFile *file)
 	return file->details->is_symlink;
 }
 
-gboolean
-nautilus_file_is_mountpoint (NautilusFile *file)
-{
-	return file->details->is_mountpoint;
-}
-
 GMount *
 nautilus_file_get_mount (NautilusFile *file)
 {
@@ -7468,25 +7400,6 @@ nautilus_file_invalidate_attributes_internal (NautilusFile *file,
 }
 
 gboolean
-nautilus_file_has_open_window (NautilusFile *file)
-{
-	return file->details->has_open_window;
-}
-
-void
-nautilus_file_set_has_open_window (NautilusFile *file,
-				   gboolean has_open_window)
-{
-	has_open_window = (has_open_window != FALSE);
-
-	if (file->details->has_open_window != has_open_window) {
-		file->details->has_open_window = has_open_window;
-		nautilus_file_changed (file);
-	}
-}
-
-
-gboolean
 nautilus_file_is_thumbnailing (NautilusFile *file)
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
@@ -7652,23 +7565,6 @@ GList *
 nautilus_file_list_copy (GList *list)
 {
 	return g_list_copy (nautilus_file_list_ref (list));
-}
-
-GList *
-nautilus_file_list_from_uris (GList *uri_list)
-{
-	GList *l, *file_list;
-	const char *uri;
-	GFile *file;
-	
-	file_list = NULL;
-
-	for (l = uri_list; l != NULL; l = l->next) {
-		uri = l->data;
-		file = g_file_new_for_uri (uri);
-		file_list = g_list_prepend (file_list, file);
-	}
-	return g_list_reverse (file_list);
 }
 
 static gboolean

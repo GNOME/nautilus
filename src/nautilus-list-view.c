@@ -3327,9 +3327,3 @@ nautilus_list_view_new (NautilusWindowSlot *slot)
 			     "window-slot", slot,
 			     NULL);
 }
-
-GtkTreeView*
-nautilus_list_view_get_tree_view (NautilusListView *list_view)
-{
-	return list_view->details->tree_view;
-}

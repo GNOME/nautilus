@@ -175,7 +175,6 @@ gboolean                nautilus_file_is_mime_type                      (Nautilu
 									 const char                     *mime_type);
 gboolean                nautilus_file_is_launchable                     (NautilusFile                   *file);
 gboolean                nautilus_file_is_symbolic_link                  (NautilusFile                   *file);
-gboolean                nautilus_file_is_mountpoint                     (NautilusFile                   *file);
 GMount *                nautilus_file_get_mount                         (NautilusFile                   *file);
 char *                  nautilus_file_get_volume_free_space             (NautilusFile                   *file);
 char *                  nautilus_file_get_volume_name                   (NautilusFile                   *file);
@@ -191,7 +190,6 @@ gboolean		nautilus_file_is_archive			(NautilusFile			*file);
 gboolean                nautilus_file_is_in_search                      (NautilusFile                   *file);
 gboolean                nautilus_file_is_in_trash                       (NautilusFile                   *file);
 gboolean                nautilus_file_is_in_recent                      (NautilusFile                   *file);
-gboolean                nautilus_file_is_in_desktop                     (NautilusFile                   *file);
 gboolean                nautilus_file_is_in_network                     (NautilusFile                   *file);
 gboolean		nautilus_file_is_home				(NautilusFile                   *file);
 gboolean                nautilus_file_is_desktop_directory              (NautilusFile                   *file);
@@ -208,9 +206,6 @@ NautilusRequestStatus   nautilus_file_get_deep_counts                   (Nautilu
 									 gboolean                        force);
 gboolean                nautilus_file_should_show_thumbnail             (NautilusFile                   *file);
 gboolean                nautilus_file_should_show_directory_item_count  (NautilusFile                   *file);
-gboolean                nautilus_file_should_show_type                  (NautilusFile                   *file);
-gboolean                nautilus_file_get_directory_item_mime_types     (NautilusFile                   *file,
-									 GList                         **mime_list);
 
 void                    nautilus_file_set_search_relevance              (NautilusFile                   *file,
 									 gdouble                         relevance);
@@ -436,10 +431,6 @@ GdkPixbuf *             nautilus_file_get_icon_pixbuf                   (Nautilu
 									 int                             scale,
 									 NautilusFileIconFlags           flags);
 
-gboolean                nautilus_file_has_open_window                   (NautilusFile                   *file);
-void                    nautilus_file_set_has_open_window               (NautilusFile                   *file,
-									 gboolean                        has_open_window);
-
 /* Thumbnailing handling */
 gboolean                nautilus_file_is_thumbnailing                   (NautilusFile                   *file);
 
@@ -450,7 +441,6 @@ GList *                 nautilus_file_list_ref                          (GList  
 void                    nautilus_file_list_unref                        (GList                          *file_list);
 void                    nautilus_file_list_free                         (GList                          *file_list);
 GList *                 nautilus_file_list_copy                         (GList                          *file_list);
-GList *                 nautilus_file_list_from_uris                    (GList                          *uri_list);
 GList *			nautilus_file_list_sort_by_display_name		(GList				*file_list);
 void                    nautilus_file_list_call_when_ready              (GList                          *file_list,
 									 NautilusFileAttributes          attributes,

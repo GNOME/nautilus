@@ -63,7 +63,5 @@ void           nautilus_query_add_mime_type      (NautilusQuery *query, const ch
 gdouble        nautilus_query_matches_string     (NautilusQuery *query, const gchar *string);
 
 char *         nautilus_query_to_readable_string (NautilusQuery *query);
-NautilusQuery *nautilus_query_load               (char *file);
-gboolean       nautilus_query_save               (NautilusQuery *query, char *file);
 
 #endif /* NAUTILUS_QUERY_H */

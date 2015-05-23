@@ -53,6 +53,5 @@ typedef struct {
 
 GType nautilus_list_view_get_type (void);
 NautilusView * nautilus_list_view_new (NautilusWindowSlot *slot);
-GtkTreeView* nautilus_list_view_get_tree_view (NautilusListView *list_view);
 
 #endif /* NAUTILUS_LIST_VIEW_H */

@@ -84,8 +84,6 @@ gboolean    nautilus_canvas_item_hit_test_stretch_handles (NautilusCanvasItem   
 void        nautilus_canvas_item_invalidate_label         (NautilusCanvasItem       *item);
 void        nautilus_canvas_item_invalidate_label_size    (NautilusCanvasItem       *item);
 EelDRect    nautilus_canvas_item_get_icon_rectangle     (const NautilusCanvasItem *item);
-EelDRect    nautilus_canvas_item_get_text_rectangle       (NautilusCanvasItem       *item,
-							   gboolean                  for_layout);
 void        nautilus_canvas_item_get_bounds_for_layout    (NautilusCanvasItem       *item,
 							   double *x1, double *y1, double *x2, double *y2);
 void        nautilus_canvas_item_get_bounds_for_entire_item (NautilusCanvasItem       *item,

@@ -962,12 +962,6 @@ nautilus_list_model_is_empty (NautilusListModel *model)
 	return (g_sequence_get_length (model->details->files) == 0);
 }
 
-guint
-nautilus_list_model_get_length (NautilusListModel *model)
-{
-	return g_sequence_get_length (model->details->files);
-}
-
 static void
 nautilus_list_model_remove (NautilusListModel *model, GtkTreeIter *iter)
 {
@@ -1332,30 +1326,6 @@ nautilus_list_model_add_column (NautilusListModel *model,
 	g_object_ref (column);
 
 	return NAUTILUS_LIST_MODEL_NUM_COLUMNS + (model->details->columns->len - 1);
-}
-
-int
-nautilus_list_model_get_column_number (NautilusListModel *model,
-				       const char *column_name)
-{
-	int i;
-
-	for (i = 0; i < model->details->columns->len; i++) {
-		NautilusColumn *column;
-		char *name;
-		
-		column = model->details->columns->pdata[i];
-
-		g_object_get (G_OBJECT (column), "name", &name, NULL);
-
-		if (!strcmp (name, column_name)) {
-			g_free (name);
-			return NAUTILUS_LIST_MODEL_NUM_COLUMNS + i;
-		}
-		g_free (name);
-	}
-
-	return -1;
 }
 
 static void

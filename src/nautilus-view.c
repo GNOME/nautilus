@@ -5721,12 +5721,6 @@ action_detect_media (GSimpleAction *action,
 	nautilus_file_list_free (selection);
 }
 
-gboolean
-nautilus_view_get_show_hidden_files (NautilusView *view)
-{
-	return view->details->show_hidden_files;
-}
-
 const GActionEntry view_entries[] = {
 	/* Toolbar menu */
 	{ "zoom-in",  action_zoom_in },
@@ -7353,13 +7347,6 @@ nautilus_view_stop_batching_selection_changes (NautilusView *view)
 			nautilus_view_notify_selection_changed (view);
 		}
 	}
-}
-
-gboolean
-nautilus_view_get_active (NautilusView *view)
-{
-	g_assert (NAUTILUS_IS_VIEW (view));
-	return view->details->active;
 }
 
 static GArray *

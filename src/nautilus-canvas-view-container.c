@@ -48,8 +48,7 @@ static NautilusIconInfo *
 nautilus_canvas_view_container_get_icon_images (NautilusCanvasContainer *container,
 					      NautilusCanvasIconData      *data,
 					      int                    size,
-					      gboolean               for_drag_accept,
-					      gboolean              *has_window_open)
+					      gboolean               for_drag_accept)
 {
 	NautilusCanvasView *canvas_view;
 	NautilusFile *file;
@@ -63,8 +62,6 @@ nautilus_canvas_view_container_get_icon_images (NautilusCanvasContainer *contain
 	canvas_view = get_canvas_view (container);
 	g_return_val_if_fail (canvas_view != NULL, NULL);
 	
-	*has_window_open = nautilus_file_has_open_window (file);
-
 	flags = NAUTILUS_FILE_ICON_FLAGS_USE_EMBLEMS |
 		NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS;
 

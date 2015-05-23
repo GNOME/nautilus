@@ -5765,15 +5765,14 @@ static NautilusIconInfo *
 nautilus_canvas_container_get_icon_images (NautilusCanvasContainer *container,
 					     NautilusCanvasIconData      *data,
 					     int                    size,
-					     gboolean               for_drag_accept,
-					     gboolean              *has_open_window)
+					     gboolean               for_drag_accept)
 {
 	NautilusCanvasContainerClass *klass;
 
 	klass = NAUTILUS_CANVAS_CONTAINER_GET_CLASS (container);
 	g_assert (klass->get_icon_images != NULL);
 
-	return klass->get_icon_images (container, data, size, for_drag_accept, has_open_window);
+	return klass->get_icon_images (container, data, size, for_drag_accept);
 }
 
 static void
@@ -5880,7 +5879,6 @@ nautilus_canvas_container_update_icon (NautilusCanvasContainer *container,
 	NautilusIconInfo *icon_info;
 	GdkPixbuf *pixbuf;
 	char *editable_text, *additional_text;
-	gboolean has_open_window;
 	
 	if (icon == NULL) {
 		return;
@@ -5902,8 +5900,7 @@ nautilus_canvas_container_update_icon (NautilusCanvasContainer *container,
 
 	/* Get the icons. */
 	icon_info = nautilus_canvas_container_get_icon_images (container, icon->data, icon_size,
-							       icon == details->drop_target,							     
-							       &has_open_window);
+							       icon == details->drop_target);
 
 	pixbuf = nautilus_icon_info_get_pixbuf (icon_info);
 	g_object_unref (icon_info);
@@ -6946,21 +6943,6 @@ nautilus_canvas_container_set_keep_aligned (NautilusCanvasContainer *container,
 	}
 }
 
-void
-nautilus_canvas_container_set_label_position (NautilusCanvasContainer *container,
-					      NautilusCanvasLabelPosition position)
-{
-	g_return_if_fail (NAUTILUS_IS_CANVAS_CONTAINER (container));
-
-	if (container->details->label_position != position) {
-		container->details->label_position = position;
-
-		nautilus_canvas_container_request_update_all_internal (container, TRUE);
-
-		schedule_redo_layout (container);
-	}
-}
-
 /* Switch from automatic to manual layout, freezing all the icons in their
  * current positions instead of restoring canvas positions from the last manual
  * layout as set_auto_layout does.
@@ -7015,30 +6997,6 @@ nautilus_canvas_container_is_auto_layout (NautilusCanvasContainer *container)
 	g_return_val_if_fail (NAUTILUS_IS_CANVAS_CONTAINER (container), FALSE);
 
 	return container->details->auto_layout;
-}
-
-gboolean
-nautilus_canvas_container_has_stored_icon_positions (NautilusCanvasContainer *container)
-{
-	GList *p;
-	NautilusCanvasIcon *icon;
-	gboolean have_stored_position;
-	NautilusCanvasPosition position;
-
-	for (p = container->details->icons; p != NULL; p = p->next) {
-		icon = p->data;
-
-		have_stored_position = FALSE;
-		g_signal_emit (container,
-			       signals[GET_STORED_ICON_POSITION], 0,
-			       icon->data,
-			       &position,
-			       &have_stored_position);
-		if (have_stored_position) {
-			return TRUE;
-		}
-	}
-	return FALSE;
 }
 
 void

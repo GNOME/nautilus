@@ -642,28 +642,6 @@ nautilus_bookmark_get_has_custom_name (NautilusBookmark *bookmark)
 }
 
 /**
- * nautilus_bookmark_set_custom_name:
- *
- * Change the user-displayed name of a bookmark.
- * @new_name: The new user-displayed name for this bookmark, mustn't be NULL.
- *
- **/
-void
-nautilus_bookmark_set_custom_name (NautilusBookmark *bookmark,
-				   const char *new_name)
-{
-	g_return_if_fail (new_name != NULL);
-	g_return_if_fail (NAUTILUS_IS_BOOKMARK (bookmark));
-
-	g_object_set (bookmark,
-		      "custom-name", TRUE,
-		      "name", new_name,
-		      NULL);
-
-	g_signal_emit (bookmark, signals[CONTENTS_CHANGED], 0);
-}
-
-/**
  * nautilus_bookmark_compare_with:
  *
  * Check whether two bookmarks are considered identical.
@@ -805,10 +783,4 @@ char *
 nautilus_bookmark_get_scroll_pos (NautilusBookmark      *bookmark)
 {
 	return g_strdup (bookmark->details->scroll_file);
-}
-
-gboolean
-nautilus_bookmark_get_exists (NautilusBookmark *bookmark)
-{
-	return bookmark->details->exists;
 }

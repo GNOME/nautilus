@@ -68,64 +68,6 @@ nautilus_desktop_link_monitor_get (void)
 	return the_link_monitor;
 }
 
-static void
-volume_delete_dialog (GtkWidget *parent_view,
-                      NautilusDesktopLink *link)
-{
-	GMount *mount;
-	char *dialog_str;
-	char *display_name;
-
-	mount = nautilus_desktop_link_get_mount (link);
-
-	if (mount != NULL) {
-		display_name = nautilus_desktop_link_get_display_name (link);
-		dialog_str = g_strdup_printf (_("You cannot move the volume “%s” to the trash."),
-					      display_name);
-		g_free (display_name);
-
-		if (g_mount_can_eject (mount)) {
-			eel_run_simple_dialog
-				(parent_view, 
-				 FALSE,
-				 GTK_MESSAGE_ERROR,
-				 dialog_str,
-				 _("If you want to eject the volume, please use Eject in the "
-				   "popup menu of the volume."),
-				 _("_OK"), NULL);
-		} else {
-			eel_run_simple_dialog
-				(parent_view, 
-				 FALSE,
-				 GTK_MESSAGE_ERROR,
-				 dialog_str,
-				 _("If you want to unmount the volume, please use Unmount Volume in the "
-				   "popup menu of the volume."),
-				 _("_OK"), NULL);
-		}
-
-		g_object_unref (mount);
-		g_free (dialog_str);
-	}
-}
-
-void
-nautilus_desktop_link_monitor_delete_link (NautilusDesktopLinkMonitor *monitor,
-					   NautilusDesktopLink *link,
-					   GtkWidget *parent_view)
-{
-	switch (nautilus_desktop_link_get_link_type (link)) {
-	case NAUTILUS_DESKTOP_LINK_HOME:
-	case NAUTILUS_DESKTOP_LINK_TRASH:
-	case NAUTILUS_DESKTOP_LINK_NETWORK:
-		/* just ignore. We don't allow you to delete these */
-		break;
-	default:
-		volume_delete_dialog (parent_view, link);
-		break;
-	}
-}
-
 static gboolean
 volume_file_name_used (NautilusDesktopLinkMonitor *monitor,
 		       const char *name)

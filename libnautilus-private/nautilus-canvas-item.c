@@ -1662,47 +1662,6 @@ nautilus_canvas_item_get_icon_rectangle (const NautilusCanvasItem *item)
 	return rectangle;
 }
 
-EelDRect
-nautilus_canvas_item_get_text_rectangle (NautilusCanvasItem *item,
-					 gboolean for_layout)
-{
-	/* FIXME */
-	EelIRect icon_rectangle;
-	EelIRect text_rectangle;
-	EelDRect ret;
-	double pixels_per_unit;
-	gint width, height;
-	
-	g_return_val_if_fail (NAUTILUS_IS_CANVAS_ITEM (item), eel_drect_empty);
-
-	icon_rectangle.x0 = item->details->x;
-	icon_rectangle.y0 = item->details->y;
-	
-	pixels_per_unit = EEL_CANVAS_ITEM (item)->canvas->pixels_per_unit;
-	get_scaled_icon_size (item, &width, &height);
-	icon_rectangle.x1 = icon_rectangle.x0 + width / pixels_per_unit;
-	icon_rectangle.y1 = icon_rectangle.y0 + height / pixels_per_unit;
-
-	measure_label_text (item);
-
-	text_rectangle = compute_text_rectangle (item, icon_rectangle, FALSE,
-						 for_layout ? BOUNDS_USAGE_FOR_LAYOUT : BOUNDS_USAGE_FOR_DISPLAY);
- 
-	ret.x0 = text_rectangle.x0;
-	ret.y0 = text_rectangle.y0;
-	ret.x1 = text_rectangle.x1;
-	ret.y1 = text_rectangle.y1;
-
-        eel_canvas_item_i2w (EEL_CANVAS_ITEM (item),
-                             &ret.x0,
-                             &ret.y0);
-        eel_canvas_item_i2w (EEL_CANVAS_ITEM (item),
-                             &ret.x1,
-                             &ret.y1);
- 
-        return ret;
-}
-
 /* Get the rectangle of the icon only, in canvas coordinates. */
 static void
 get_icon_rectangle (NautilusCanvasItem *item,

@@ -418,18 +418,6 @@ nautilus_get_templates_directory (void)
 	return g_strdup (g_get_user_special_dir (G_USER_DIRECTORY_TEMPLATES));
 }
 
-void
-nautilus_create_templates_directory (void)
-{
-	char *dir;
-
-	dir = nautilus_get_templates_directory ();
-	if (!g_file_test (dir, G_FILE_TEST_EXISTS)) {
-		g_mkdir (dir, DEFAULT_NAUTILUS_DIRECTORY_MODE);
-	}
-	g_free (dir);
-}
-
 char *
 nautilus_get_templates_directory_uri (void)
 {
@@ -439,22 +427,6 @@ nautilus_get_templates_directory_uri (void)
 	uri = g_filename_to_uri (directory, NULL, NULL);
 	g_free (directory);
 	return uri;
-}
-
-char *
-nautilus_get_searches_directory (void)
-{
-	char *user_dir;
-	char *searches_dir;
-
-	user_dir = nautilus_get_user_directory ();
-	searches_dir = g_build_filename (user_dir, "searches", NULL);
-	g_free (user_dir);
-	
-	if (!g_file_test (searches_dir, G_FILE_TEST_EXISTS))
-		g_mkdir (searches_dir, DEFAULT_NAUTILUS_DIRECTORY_MODE);
-
-	return searches_dir;
 }
 
 /* These need to be reset to NULL when desktop_is_home_dir changes */
