@@ -784,8 +784,7 @@ nautilus_application_handle_file_args (NautilusApplication *self,
 
 static gint
 nautilus_application_command_line (GApplication            *application,
-                                   GApplicationCommandLine *command_line,
-                                   gpointer                 user_data)
+                                   GApplicationCommandLine *command_line)
 {
 	NautilusApplication *self = NAUTILUS_APPLICATION (application);
 	gint retval = -1;
@@ -853,10 +852,6 @@ nautilus_application_init (NautilusApplication *application)
 	application->priv =
 		G_TYPE_INSTANCE_GET_PRIVATE (application, NAUTILUS_TYPE_APPLICATION,
 					     NautilusApplicationPriv);
-
-	g_signal_connect (application, "command-line",
-                          G_CALLBACK (nautilus_application_command_line),
-                          NULL);
 
 	g_application_add_main_option_entries (G_APPLICATION (application), options);
 }
@@ -1188,6 +1183,7 @@ nautilus_application_class_init (NautilusApplicationClass *class)
 	application_class->dbus_register = nautilus_application_dbus_register;
 	application_class->dbus_unregister = nautilus_application_dbus_unregister;
 	application_class->open = nautilus_application_open;
+	application_class->command_line = nautilus_application_command_line;
 
 	gtkapp_class = GTK_APPLICATION_CLASS (class);
 	gtkapp_class->window_added = nautilus_application_window_added;
