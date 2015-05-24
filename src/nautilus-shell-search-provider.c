@@ -59,8 +59,6 @@ struct _NautilusShellSearchProvider {
   PendingSearch *current_search;
 
   GHashTable *metas_cache;
-
-  GVolumeMonitor *volumes;
 };
 
 G_DEFINE_TYPE (NautilusShellSearchProvider, nautilus_shell_search_provider, G_TYPE_OBJECT)
@@ -267,8 +265,10 @@ search_add_volumes_and_bookmarks (PendingSearch *search)
   GFile *location;
   SearchHitCandidate *candidate;
   NautilusBookmarkList *bookmarks;
+  GVolumeMonitor *volume_monitor;
 
   bookmarks = nautilus_application_get_bookmarks (NAUTILUS_APPLICATION (g_application_get_default ()));
+  volume_monitor = g_volume_monitor_get ();
   candidates = NULL;
 
   /* first add bookmarks */
@@ -301,7 +301,7 @@ search_add_volumes_and_bookmarks (PendingSearch *search)
   mounts_to_check = NULL;
 
   /* first check all connected drives */
-  drives = g_volume_monitor_get_connected_drives (search->self->volumes);
+  drives = g_volume_monitor_get_connected_drives (volume_monitor);
   for (l = drives; l != NULL; l = l->next) {
     drive = l->data;
     volumes = g_drive_get_volumes (drive);
@@ -319,7 +319,7 @@ search_add_volumes_and_bookmarks (PendingSearch *search)
   g_list_free_full (drives, g_object_unref);
 
   /* then volumes that don't have a drive */
-  volumes = g_volume_monitor_get_volumes (search->self->volumes);
+  volumes = g_volume_monitor_get_volumes (volume_monitor);
   for (l = volumes; l != NULL; l = l->next) {
     volume = l->data;
     drive = g_volume_get_drive (volume);
@@ -335,7 +335,7 @@ search_add_volumes_and_bookmarks (PendingSearch *search)
   g_list_free_full (volumes, g_object_unref);
 
   /* then mounts that have no volume */
-  mounts = g_volume_monitor_get_mounts (search->self->volumes);
+  mounts = g_volume_monitor_get_mounts (volume_monitor);
   for (l = mounts; l != NULL; l = l->next) {
     mount = l->data;
 
@@ -384,6 +384,7 @@ search_add_volumes_and_bookmarks (PendingSearch *search)
     }
   }
   g_list_free_full (candidates, (GDestroyNotify) search_hit_candidate_free);
+  g_object_unref (volume_monitor);
 }
 
 static void
@@ -679,8 +680,6 @@ search_provider_dispose (GObject *obj)
   g_hash_table_destroy (self->metas_cache);
   cancel_current_search (self);
 
-  g_clear_object (&self->volumes);
-
   G_OBJECT_CLASS (nautilus_shell_search_provider_parent_class)->dispose (obj);
 }
 
@@ -689,7 +688,6 @@ nautilus_shell_search_provider_init (NautilusShellSearchProvider *self)
 {
   self->metas_cache = g_hash_table_new_full (g_str_hash, g_str_equal,
                                              g_free, (GDestroyNotify) g_variant_unref);
-  self->volumes = g_volume_monitor_get ();
 
   self->skeleton = nautilus_shell_search_provider2_skeleton_new ();
 
