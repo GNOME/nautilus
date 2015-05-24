@@ -7623,6 +7623,11 @@ nautilus_view_init (NautilusView *view)
 	NautilusDirectory *templates_directory;
 	gchar *templates_uri;
 	GApplication *app;
+	const gchar *open_accels[] = {
+		"<control>o",
+		"<alt>Down",
+		NULL
+	};
 
 	nautilus_profile_start (NULL);
 
@@ -7720,7 +7725,8 @@ nautilus_view_init (NautilusView *view)
 	nautilus_application_add_accelerator (app, "view.select-all", "<control>a");
 	nautilus_application_add_accelerator (app, "view.paste", "<control>v");
 	/* Selection menu */
-	nautilus_application_add_accelerator (app, "view.open-with-default-application", "<control>o");
+	gtk_application_set_accels_for_action (GTK_APPLICATION (app),
+					       "view.open-with-default-application", open_accels);
 	nautilus_application_add_accelerator (app, "view.open-item-new-tab", "<shift><control>t");
 	nautilus_application_add_accelerator (app, "view.open-item-new-window", "<shift><control>w");
 	nautilus_application_add_accelerator (app, "view.move-to-trash", "Delete");
