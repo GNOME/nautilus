@@ -790,7 +790,6 @@ nautilus_application_command_line (GApplication            *application,
 	NautilusApplication *self = NAUTILUS_APPLICATION (application);
 	gint retval = -1;
 	GVariantDict *options;
-	GError *error = NULL;
 
 	nautilus_profile_start (NULL);
 
@@ -810,19 +809,6 @@ nautilus_application_command_line (GApplication            *application,
 
 	if (g_variant_dict_contains (options, "check")) {
 		retval = do_perform_self_checks ();
-		goto out;
-	}
-
-	g_application_register (application, NULL, &error);
-
-	if (error != NULL) {
-		/* Translators: this is a fatal error quit message printed on the
-		 * command line */
-		g_application_command_line_printerr (command_line,
-                                            	     "%s: %s\n", _("Could not register the application"), error->message);
-		g_error_free (error);
-
-		retval = EXIT_FAILURE;
 		goto out;
 	}
 
