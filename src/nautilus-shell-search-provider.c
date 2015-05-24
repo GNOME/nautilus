@@ -60,7 +60,6 @@ struct _NautilusShellSearchProvider {
 
   GHashTable *metas_cache;
 
-  NautilusBookmarkList *bookmarks;
   GVolumeMonitor *volumes;
 };
 
@@ -72,9 +71,12 @@ get_display_name (NautilusShellSearchProvider *self,
 {
   GFile *location;
   NautilusBookmark *bookmark;
+  NautilusBookmarkList *bookmarks;
+
+  bookmarks = nautilus_application_get_bookmarks (NAUTILUS_APPLICATION (g_application_get_default ()));
 
   location = nautilus_file_get_location (file);
-  bookmark = nautilus_bookmark_list_item_with_location (self->bookmarks, location, NULL);
+  bookmark = nautilus_bookmark_list_item_with_location (bookmarks, location, NULL);
   g_object_unref (location);
 
   if (bookmark)
@@ -89,9 +91,12 @@ get_gicon (NautilusShellSearchProvider *self,
 {
   GFile *location;
   NautilusBookmark *bookmark;
+  NautilusBookmarkList *bookmarks;
+
+  bookmarks = nautilus_application_get_bookmarks (NAUTILUS_APPLICATION (g_application_get_default ()));
 
   location = nautilus_file_get_location (file);
-  bookmark = nautilus_bookmark_list_item_with_location (self->bookmarks, location, NULL);
+  bookmark = nautilus_bookmark_list_item_with_location (bookmarks, location, NULL);
   g_object_unref (location);
 
   if (bookmark)
@@ -261,13 +266,15 @@ search_add_volumes_and_bookmarks (PendingSearch *search)
   GMount *mount;
   GFile *location;
   SearchHitCandidate *candidate;
+  NautilusBookmarkList *bookmarks;
 
+  bookmarks = nautilus_application_get_bookmarks (NAUTILUS_APPLICATION (g_application_get_default ()));
   candidates = NULL;
 
   /* first add bookmarks */
-  length = nautilus_bookmark_list_length (search->self->bookmarks);
+  length = nautilus_bookmark_list_length (bookmarks);
   for (idx = 0; idx < length; idx++) {
-    bookmark = nautilus_bookmark_list_item_at (search->self->bookmarks, idx);
+    bookmark = nautilus_bookmark_list_item_at (bookmarks, idx);
 
     name = nautilus_bookmark_get_name (bookmark);
     if (name == NULL)
@@ -682,7 +689,6 @@ nautilus_shell_search_provider_init (NautilusShellSearchProvider *self)
 {
   self->metas_cache = g_hash_table_new_full (g_str_hash, g_str_equal,
                                              g_free, (GDestroyNotify) g_variant_unref);
-  self->bookmarks = nautilus_application_get_bookmarks (NAUTILUS_APPLICATION (g_application_get_default ()));
   self->volumes = g_volume_monitor_get ();
 
   self->skeleton = nautilus_shell_search_provider2_skeleton_new ();
