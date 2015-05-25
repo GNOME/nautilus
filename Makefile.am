@@ -3,8 +3,8 @@ include $(top_srcdir)/Makefile.shared
 DIRS =				\
 	eel			\
 	libnautilus-extension	\
-	libnautilus-private 	\
 	libgd                   \
+	libnautilus-private 	\
 	src 			\
 	test 			\
 	po 			\
