@@ -22,9 +22,9 @@
  */
 
 #include <config.h>
+#include <glib/gi18n-lib.h>
 #include <gtk/gtk.h>
 #include "nautilus-column.h"
-#include "nautilus-extension-i18n.h"
 
 enum {
 	PROP_0,

@@ -24,7 +24,7 @@
 #include <config.h>
 #include "nautilus-property-page.h"
 
-#include "nautilus-extension-i18n.h"
+#include <glib/gi18n-lib.h>
 
 enum {
 	PROP_0,

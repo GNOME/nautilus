@@ -22,8 +22,8 @@
  */
 
 #include <config.h>
+#include <glib/gi18n-lib.h>
 #include "nautilus-menu.h"
-#include "nautilus-extension-i18n.h"
 
 enum {
 	ACTIVATE,

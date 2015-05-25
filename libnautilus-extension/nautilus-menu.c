@@ -22,9 +22,9 @@
 
 #include <config.h>
 #include "nautilus-menu.h"
-#include "nautilus-extension-i18n.h"
 
 #include <glib.h>
+#include <glib/gi18n-lib.h>
 
 #define NAUTILUS_MENU_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), NAUTILUS_TYPE_MENU, NautilusMenuPrivate))
 G_DEFINE_TYPE (NautilusMenu, nautilus_menu, G_TYPE_OBJECT);
