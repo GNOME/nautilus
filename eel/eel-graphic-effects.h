@@ -33,12 +33,4 @@ GdkPixbuf *eel_create_spotlight_pixbuf (GdkPixbuf *source_pixbuf);
 GdkPixbuf* eel_create_colorized_pixbuf (GdkPixbuf *source_pixbuf,
 					GdkRGBA *color);
 
-/* embed in image in a frame */
-GdkPixbuf *eel_embed_image_in_frame    (GdkPixbuf *source_image,
-					GdkPixbuf *frame_image,
-					int        left_offset,
-					int        top_offset,
-					int        right_offset,
-					int        bottom_offset);
-
 #endif /* EEL_GRAPHIC_EFFECTS_H */
