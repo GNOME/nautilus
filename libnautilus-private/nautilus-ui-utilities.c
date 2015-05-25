@@ -29,6 +29,7 @@
 
 #include <gio/gio.h>
 #include <gtk/gtk.h>
+#include <libgd/gd.h>
 #include <string.h>
 
 static GMenuModel *
@@ -253,18 +254,6 @@ nautilus_escape_action_name (const char *action_name,
 	return g_string_free (s, FALSE);
 }
 
-static GdkPixbuf *
-nautilus_get_thumbnail_frame (void)
-{
-	static GdkPixbuf *thumbnail_frame = NULL;
-
-	if (thumbnail_frame == NULL) {
-		thumbnail_frame = gdk_pixbuf_new_from_resource ("/org/gnome/nautilus/icons/thumbnail_frame.png", NULL);
-	}
-
-	return thumbnail_frame;
-}
-
 #define NAUTILUS_THUMBNAIL_FRAME_LEFT 3
 #define NAUTILUS_THUMBNAIL_FRAME_TOP 3
 #define NAUTILUS_THUMBNAIL_FRAME_RIGHT 3
@@ -273,22 +262,17 @@ nautilus_get_thumbnail_frame (void)
 void
 nautilus_ui_frame_image (GdkPixbuf **pixbuf)
 {
-	GdkPixbuf *pixbuf_with_frame, *frame;
-	int left_offset, top_offset, right_offset, bottom_offset;
+	GtkBorder border;
+	GdkPixbuf *pixbuf_with_frame;
 
-	frame = nautilus_get_thumbnail_frame ();
-	if (frame == NULL) {
-		return;
-	}
+	border.left = NAUTILUS_THUMBNAIL_FRAME_LEFT;
+	border.top = NAUTILUS_THUMBNAIL_FRAME_TOP;
+	border.right = NAUTILUS_THUMBNAIL_FRAME_RIGHT;
+	border.bottom = NAUTILUS_THUMBNAIL_FRAME_BOTTOM;
 
-	left_offset = NAUTILUS_THUMBNAIL_FRAME_LEFT;
-	top_offset = NAUTILUS_THUMBNAIL_FRAME_TOP;
-	right_offset = NAUTILUS_THUMBNAIL_FRAME_RIGHT;
-	bottom_offset = NAUTILUS_THUMBNAIL_FRAME_BOTTOM;
-
-	pixbuf_with_frame = eel_embed_image_in_frame
-		(*pixbuf, frame,
-		 left_offset, top_offset, right_offset, bottom_offset);
+	pixbuf_with_frame = gd_embed_image_in_frame (*pixbuf,
+						     "resource:///org/gnome/nautilus/icons/thumbnail_frame.png",
+						     &border, &border);
 	g_object_unref (*pixbuf);
 
 	*pixbuf = pixbuf_with_frame;

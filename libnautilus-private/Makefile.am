@@ -5,6 +5,7 @@ noinst_LTLIBRARIES=libnautilus-private.la
 AM_CPPFLAGS = 						\
 	-I$(top_srcdir) 				\
 	-I$(top_builddir) 				\
+	-I$(top_srcdir)/libgd                           \
 	$(BASE_CFLAGS)					\
 	$(COMMON_CFLAGS)				\
 	$(NAUTILUS_CFLAGS)				\
@@ -31,6 +32,7 @@ libnautilus_private_la_LIBADD =		\
 	$(TRACKER_LIBS)			\
 	$(top_builddir)/eel/libeel-2.la \
 	$(top_builddir)/libnautilus-extension/libnautilus-extension.la \
+	$(top_builddir)/libgd/libgd.la  \
 	$(BASE_LIBS)			\
 	$(COMMON_LIBS)			\
 	$(NAUTILUS_LIBS)		\
