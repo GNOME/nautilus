@@ -9,6 +9,8 @@ DOC_MODULE=libnautilus-extension
 # The top-level SGML file.
 DOC_MAIN_SGML_FILE=$(DOC_MODULE)-docs.xml
 
+SCAN_OPTIONS=--rebuild-types
+
 # The directory containing the source code. Relative to $(srcdir).
 # gtk-doc will search all .c & .h files beneath here for inline comments
 # documenting the functions and macros.
