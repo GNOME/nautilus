@@ -45,6 +45,16 @@ G_BEGIN_DECLS
 typedef struct _NautilusMenuProvider       NautilusMenuProvider;
 typedef struct _NautilusMenuProviderIface  NautilusMenuProviderIface;
 
+/**
+ * NautilusMenuProviderIface:
+ * @g_iface: The parent interface.
+ * @get_file_items: Returns a #GList of #NautilusMenuItem.
+ *   See nautilus_menu_provider_get_file_items() for details.
+ * @get_background_items: Returns a #GList of #NautilusMenuItem.
+ *   See nautilus_menu_provider_get_background_items() for details.
+ *
+ * Interface for extensions to provide additional menu items.
+ */
 struct _NautilusMenuProviderIface {
 	GTypeInterface g_iface;
 

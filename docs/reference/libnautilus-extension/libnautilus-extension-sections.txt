@@ -28,26 +28,11 @@ NAUTILUS_MENU_PROVIDER_GET_IFACE
 
 <SECTION>
 <FILE>nautilus-menu</FILE>
-NAUTILUS_TYPE_MENU_ITEM
-NAUTILUS_MENU_ITEM
-NAUTILUS_MENU_ITEM_CLASS
-NAUTILUS_MENU_IS_ITEM
-NAUTILUS_MENU_IS_ITEM_CLASS
-NAUTILUS_MENU_ITEM_GET_CLASS
 NautilusMenuPrivate
-NautilusMenuItemDetails
-<TITLE>NautilusMenu</TITLE>
 NautilusMenu
-<TITLE>NautilusMenuItem</TITLE>
-NautilusMenuItem
 nautilus_menu_new
 nautilus_menu_append_item
 nautilus_menu_get_items
-nautilus_menu_item_list_free
-nautilus_menu_item_get_type
-nautilus_menu_item_new
-nautilus_menu_item_activate
-nautilus_menu_item_set_submenu
 <SUBSECTION Standard>
 NAUTILUS_MENU
 NAUTILUS_IS_MENU
@@ -56,6 +41,24 @@ nautilus_menu_get_type
 NAUTILUS_MENU_CLASS
 NAUTILUS_IS_MENU_CLASS
 NAUTILUS_MENU_GET_CLASS
+</SECTION>
+
+<SECTION>
+<FILE>nautilus-menu-item</FILE>
+NautilusMenuItem
+nautilus_menu_item_list_free
+nautilus_menu_item_get_type
+nautilus_menu_item_new
+nautilus_menu_item_activate
+nautilus_menu_item_set_submenu
+<SUBSECTION Standard>
+NAUTILUS_TYPE_MENU_ITEM
+NAUTILUS_MENU_ITEM
+NAUTILUS_MENU_ITEM_CLASS
+NAUTILUS_MENU_IS_ITEM
+NAUTILUS_MENU_IS_ITEM_CLASS
+NAUTILUS_MENU_ITEM_GET_CLASS
+NautilusMenuItemDetails
 </SECTION>
 
 <SECTION>
@@ -92,7 +95,6 @@ NautilusFileInfo
 NautilusFileInfoIface
 nautilus_file_info_create
 nautilus_file_info_create_for_uri
-nautilus_file_info_getter
 nautilus_file_info_lookup
 nautilus_file_info_lookup_for_uri
 nautilus_file_info_list_copy
@@ -126,8 +128,6 @@ NAUTILUS_FILE_INFO_GET_IFACE
 
 <SECTION>
 <FILE>nautilus-column</FILE>
-NautilusColumnDetails
-<TITLE>NautilusColumn</TITLE>
 NautilusColumn
 nautilus_column_new
 <SUBSECTION Standard>
@@ -138,6 +138,7 @@ nautilus_column_get_type
 NAUTILUS_COLUMN_CLASS
 NAUTILUS_INFO_IS_COLUMN_CLASS
 NAUTILUS_COLUMN_GET_CLASS
+NautilusColumnDetails
 </SECTION>
 
 <SECTION>
@@ -145,10 +146,14 @@ NAUTILUS_COLUMN_GET_CLASS
 NautilusInfoProvider
 NautilusInfoProviderIface
 NautilusInfoProviderUpdateComplete
+NautilusOperationHandle
+NautilusOperationResult
 nautilus_info_provider_update_file_info
 nautilus_info_provider_cancel_update
 nautilus_info_provider_update_complete_invoke
 <SUBSECTION Standard>
+NAUTILUS_TYPE_OPERATION_RESULT
+nautilus_operation_result_get_type
 NAUTILUS_INFO_PROVIDER
 NAUTILUS_IS_INFO_PROVIDER
 NAUTILUS_TYPE_INFO_PROVIDER
@@ -158,8 +163,6 @@ NAUTILUS_INFO_PROVIDER_GET_IFACE
 
 <SECTION>
 <FILE>nautilus-property-page</FILE>
-NautilusPropertyPageDetails
-<TITLE>NautilusPropertyPage</TITLE>
 NautilusPropertyPage
 nautilus_property_page_new
 <SUBSECTION Standard>
@@ -170,20 +173,13 @@ nautilus_property_page_get_type
 NAUTILUS_PROPERTY_PAGE_CLASS
 NAUTILUS_IS_PROPERTY_PAGE_CLASS
 NAUTILUS_PROPERTY_PAGE_GET_CLASS
+NautilusPropertyPageDetails
 </SECTION>
 
 <SECTION>
 <FILE>nautilus-extension-types</FILE>
-NAUTILUS_TYPE_OPERATION_RESULT
-NautilusOperationHandle
-NautilusOperationResult
-nautilus_operation_result_get_type
 nautilus_module_initialize
 nautilus_module_shutdown
 nautilus_module_list_types
-</SECTION>
-
-<SECTION>
-<FILE>nautilus-menu-item</FILE>
 </SECTION>
 

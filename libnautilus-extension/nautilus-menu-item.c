@@ -57,6 +57,20 @@ static guint signals[LAST_SIGNAL];
 static GObjectClass *parent_class = NULL;
 
 /**
+ * SECTION:nautilus-menu-item
+ * @title: NautilusMenuItem
+ * @short_description: Menu item descriptor object
+ * @include: libnautilus-extension/nautilus-menu-item.h
+ *
+ * #NautilusMenuItem is an object that describes an item in a file manager
+ * menu. Extensions can provide #NautilusMenuItem objects by registering a
+ * #NautilusMenuProvider and returning them from
+ * nautilus_menu_provider_get_file_items(), or
+ * nautilus_menu_provider_get_background_items(), which will be called by the
+ * main application when creating menus.
+ */
+
+/**
  * nautilus_menu_item_new:
  * @name: the identifier for the menu item
  * @label: the user-visible label of the menu item

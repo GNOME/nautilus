@@ -26,6 +26,16 @@
 
 #include <glib-object.h>
 
+/**
+ * SECTION:nautilus-column-provider
+ * @title: NautilusColumnProvider
+ * @short_description: Interface to provide additional list view columns
+ * @include: libnautilus-extension/nautilus-column-provider.h
+ *
+ * #NautilusColumnProvider allows extension to provide additional columns
+ * in the file manager list view.
+ */
+
 static void
 nautilus_column_provider_base_init (gpointer g_class)
 {

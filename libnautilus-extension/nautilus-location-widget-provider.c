@@ -26,6 +26,16 @@
 
 #include <glib-object.h>
 
+/**
+ * SECTION:nautilus-location-widget-provider
+ * @title: NautilusLocationWidgetProvider
+ * @short_description: Interface to provide additional location widgets
+ * @include: libnautilus-extension/nautilus-location-widget-provider.h
+ *
+ * #NautilusLocationWidgetProvider allows extension to provide additional location
+ * widgets in the file manager views.
+ */
+
 static void
 nautilus_location_widget_provider_base_init (gpointer g_class)
 {

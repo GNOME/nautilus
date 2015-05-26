@@ -50,6 +50,19 @@ struct _NautilusColumnDetails {
 G_DEFINE_TYPE (NautilusColumn, nautilus_column, G_TYPE_OBJECT);
 
 /**
+ * SECTION:nautilus-column
+ * @title: NautilusColumn
+ * @short_description: List view column descriptor object
+ * @include: libnautilus-extension/nautilus-column.h
+ *
+ * #NautilusColumn is an object that describes a column in the file manager
+ * list view. Extensions can provide #NautilusColumn by registering a
+ * #NautilusColumnProvider and returning them from
+ * nautilus_column_provider_get_columns(), which will be called by the main
+ * application when creating a view.
+ */
+
+/**
  * nautilus_column_new:
  * @name: identifier of the column
  * @attribute: the file attribute to be displayed in the column

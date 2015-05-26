@@ -26,6 +26,17 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
+/**
+ * SECTION:nautilus-menu
+ * @title: NautilusMenu
+ * @short_description: Menu descriptor object
+ * @include: libnautilus-extension/nautilus-menu.h
+ *
+ * #NautilusMenu is an object that describes a submenu in a file manager
+ * menu. Extensions can provide #NautilusMenu objects by attaching them to
+ * #NautilusMenuItem objects, using nautilus_menu_item_set_submenu().
+ */
+
 #define NAUTILUS_MENU_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), NAUTILUS_TYPE_MENU, NautilusMenuPrivate))
 G_DEFINE_TYPE (NautilusMenu, nautilus_menu, G_TYPE_OBJECT);
 

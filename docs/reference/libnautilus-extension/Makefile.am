@@ -34,7 +34,7 @@ CFILE_GLOB=$(top_srcdir)/libnautilus-extension/*.c
 
 # Header files to ignore when scanning.
 IGNORE_HFILES = \
-	config.h \
+	nautilus-extension-private.h \
 	$(NULL)
 
 # Images to copy into HTML directory

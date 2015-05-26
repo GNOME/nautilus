@@ -45,6 +45,14 @@ G_BEGIN_DECLS
 typedef struct _NautilusLocationWidgetProvider       NautilusLocationWidgetProvider;
 typedef struct _NautilusLocationWidgetProviderIface  NautilusLocationWidgetProviderIface;
 
+/**
+ * NautilusLocationWidgetProviderIface:
+ * @g_iface: The parent interface.
+ * @get_widget: Returns a #GtkWidget.
+ *   See nautilus_location_widget_provider_get_widget() for details.
+ *
+ * Interface for extensions to provide additional location widgets.
+ */
 struct _NautilusLocationWidgetProviderIface {
 	GTypeInterface g_iface;
 

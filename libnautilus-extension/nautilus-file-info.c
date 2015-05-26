@@ -25,6 +25,16 @@
 NautilusFileInfo *(*nautilus_file_info_getter) (GFile *location, gboolean create);
 
 /**
+ * SECTION:nautilus-file-info
+ * @title: NautilusFileInfo
+ * @short_description: File interface for nautilus extensions
+ * @include: libnautilus-extension/nautilus-file-info.h
+ *
+ * #NautilusFileInfo provides methods to get and modify information
+ * about file objects in the file manager.
+ */
+
+/**
  * nautilus_file_info_list_copy:
  * @files: (element-type NautilusFileInfo): the files to copy
  *

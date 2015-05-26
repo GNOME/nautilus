@@ -44,6 +44,14 @@ G_BEGIN_DECLS
 typedef struct _NautilusColumnProvider       NautilusColumnProvider;
 typedef struct _NautilusColumnProviderIface  NautilusColumnProviderIface;
 
+/**
+ * NautilusColumnProviderIface:
+ * @g_iface: The parent interface.
+ * @get_columns: Returns a #GList of #NautilusColumn.
+ *   See nautilus_column_provider_get_columns() for details.
+ *
+ * Interface for extensions to provide additional list view columns.
+ */
 struct _NautilusColumnProviderIface {
 	GTypeInterface g_iface;
 

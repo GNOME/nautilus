@@ -35,7 +35,6 @@ G_BEGIN_DECLS
 #define NAUTILUS_IS_FILE_INFO(obj)        (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_FILE_INFO))
 #define NAUTILUS_FILE_INFO_GET_IFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), NAUTILUS_TYPE_FILE_INFO, NautilusFileInfoIface))
 
-
 #ifndef NAUTILUS_FILE_DEFINED
 #define NAUTILUS_FILE_DEFINED
 /* Using NautilusFile for the vtable to make implementing this in 
@@ -46,7 +45,50 @@ typedef struct NautilusFile          NautilusFile;
 typedef NautilusFile                  NautilusFileInfo;
 typedef struct _NautilusFileInfoIface NautilusFileInfoIface;
 
-
+/**
+ * NautilusFileInfoIface:
+ * @g_iface: The parent interface.
+ * @is_gone: Returns whether the file info is gone.
+ *   See nautilus_file_info_is_gone() for details.
+ * @get_name: Returns the file name as a string.
+ *   See nautilus_file_info_get_name() for details.
+ * @get_uri: Returns the file URI as a string.
+ *   See nautilus_file_info_get_uri() for details.
+ * @get_parent_uri: Returns the file parent URI as a string.
+ *   See nautilus_file_info_get_parent_uri() for details.
+ * @get_uri_scheme: Returns the file URI scheme as a string.
+ *   See nautilus_file_info_get_uri_scheme() for details.
+ * @get_mime_type: Returns the file mime type as a string.
+ *   See nautilus_file_info_get_mime_type() for details.
+ * @is_mime_type: Returns whether the file is the given mime type.
+ *   See nautilus_file_info_is_mime_type() for details.
+ * @is_directory: Returns whether the file is a directory.
+ *   See nautilus_file_info_is_directory() for details.
+ * @add_emblem: Adds an emblem to this file.
+ *   See nautilus_file_info_add_emblem() for details.
+ * @get_string_attribute: Returns the specified file attribute as a string.
+ *   See nautilus_file_info_get_string_attribute() for details.
+ * @add_string_attribute: Sets the specified string file attribute value.
+ *   See nautilus_file_info_add_string_attribute() for details.
+ * @invalidate_extension_info: Invalidates information of the file provided by extensions.
+ *   See nautilus_file_info_invalidate_extension_info() for details.
+ * @get_activation_uri: Returns the file activation URI as a string.
+ *   See nautilus_file_info_get_activation_uri() for details.
+ * @get_file_type: Returns the file type.
+ *   See nautilus_file_info_get_file_type() for details.
+ * @get_location: Returns the file location as a #GFile.
+ *   See nautilus_file_info_get_location() for details.
+ * @get_parent_location: Returns the file parent location as a #GFile.
+ *   See nautilus_file_info_get_parent_location() for details.
+ * @get_parent_info: Returns the file parent #NautilusFileInfo.
+ *   See nautilus_file_info_get_parent_info() for details.
+ * @get_mount: Returns the file mount as a #GMount.
+ *   See nautilus_file_info_get_mount() for details.
+ * @can_write: Returns whether the file is writable.
+ *   See nautilus_file_info_can_write() for details.
+ *
+ * Interface for extensions to provide additional menu items.
+ */
 struct _NautilusFileInfoIface 
 {
 	GTypeInterface g_iface;

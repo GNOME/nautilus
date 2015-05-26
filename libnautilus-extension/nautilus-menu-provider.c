@@ -27,6 +27,16 @@
 
 #include <glib-object.h>
 
+/**
+ * SECTION:nautilus-menu-provider
+ * @title: NautilusMenuProvider
+ * @short_description: Interface to provide additional menu items
+ * @include: libnautilus-extension/nautilus-menu-provider.h
+ *
+ * #NautilusMenuProvider allows extension to provide additional menu items
+ * in the file manager menus.
+ */
+
 static void
 nautilus_menu_provider_base_init (gpointer g_class)
 {

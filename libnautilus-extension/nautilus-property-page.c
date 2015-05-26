@@ -43,6 +43,19 @@ struct _NautilusPropertyPageDetails {
 static GObjectClass *parent_class = NULL;
 
 /**
+ * SECTION:nautilus-property-page
+ * @title: NautilusPropertyPage
+ * @short_description: Property page descriptor object
+ * @include: libnautilus-extension/nautilus-property-page.h
+ *
+ * #NautilusPropertyPage is an object that describes a page in the file
+ * properties dialog. Extensions can provide #NautilusPropertyPage objects
+ * by registering a #NautilusPropertyPageProvider and returning them from
+ * nautilus_property_page_provider_get_pages(), which will be called by the
+ * main application when creating file properties dialogs.
+ */
+
+/**
  * nautilus_property_page_new:
  * @name: the identifier for the property page
  * @label: the user-visible label of the property page

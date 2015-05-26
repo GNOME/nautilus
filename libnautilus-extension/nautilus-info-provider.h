@@ -47,7 +47,16 @@ typedef void (*NautilusInfoProviderUpdateComplete) (NautilusInfoProvider    *pro
 						    NautilusOperationHandle *handle,
 						    NautilusOperationResult  result,
 						    gpointer                 user_data);
-
+/**
+ * NautilusInfoProviderIface:
+ * @g_iface: The parent interface.
+ * @update_file_info: Returns a #NautilusOperationResult.
+ *   See nautilus_info_provider_update_file_info() for details.
+ * @cancel_update: Cancels a previous call to nautilus_info_provider_update_file_info().
+ *   See nautilus_info_provider_cancel_update() for details.
+ *
+ * Interface for extensions to provide additional information about files.
+ */
 struct _NautilusInfoProviderIface {
 	GTypeInterface g_iface;
 

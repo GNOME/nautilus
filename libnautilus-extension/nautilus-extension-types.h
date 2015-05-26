@@ -34,11 +34,27 @@ G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_OPERATION_RESULT (nautilus_operation_result_get_type ())
 
-/* Handle for asynchronous interfaces.  These are opaque handles that must
- * be unique within an extension object.  These are returned by operations
- * that return NAUTILUS_OPERATION_IN_PROGRESS */
+/**
+ * NautilusOperationHandle:
+ *
+ * Handle for asynchronous interfaces. These are opaque handles that must
+ * be unique within an extension object. These are returned by operations
+ * that return #NAUTILUS_OPERATION_IN_PROGRESS.
+ */
 typedef struct _NautilusOperationHandle NautilusOperationHandle;
 
+/**
+ * NautilusOperationResult:
+ * @NAUTILUS_OPERATION_COMPLETE: the operation succeeded, and the extension
+ *  is done with the request.
+ * @NAUTILUS_OPERATION_FAILED: the operation failed.
+ * @NAUTILUS_OPERATION_IN_PROGRESS: the extension has begin an async operation.
+ *  When this value is returned, the extension must set the handle parameter
+ *  and call the callback closure when the operation is complete.
+ *
+ * Return values for asynchronous operations performed by the extension.
+ * See nautilus_info_provider_update_file_info().
+ */
 typedef enum {
 	/* Returned if the call succeeded, and the extension is done 
 	 * with the request */
@@ -55,6 +71,15 @@ typedef enum {
 } NautilusOperationResult;
 
 GType nautilus_operation_result_get_type (void);
+
+/**
+ * SECTION:nautilus-extension-types
+ * @title: NautilusModule
+ * @short_description: Initialize an extension
+ * @include: libnautilus-extension/nautilus-extension-types.h
+ *
+ * Methods that each extension implements.
+ */
 
 void nautilus_module_initialize (GTypeModule  *module);
 void nautilus_module_shutdown   (void);

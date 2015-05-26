@@ -27,6 +27,16 @@
 
 #include <glib-object.h>
 
+/**
+ * SECTION:nautilus-property-page-provider
+ * @title: NautilusPropertyPageProvider
+ * @short_description: Interface to provide additional property pages
+ * @include: libnautilus-extension/nautilus-property-page-provider.h
+ *
+ * #NautilusPropertyPageProvider allows extension to provide additional pages
+ * for the file properties dialog.
+ */
+
 static void
 nautilus_property_page_provider_base_init (gpointer g_class)
 {

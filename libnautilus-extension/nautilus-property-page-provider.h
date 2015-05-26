@@ -45,11 +45,19 @@ G_BEGIN_DECLS
 typedef struct _NautilusPropertyPageProvider       NautilusPropertyPageProvider;
 typedef struct _NautilusPropertyPageProviderIface  NautilusPropertyPageProviderIface;
 
+/**
+ * NautilusPropertyPageProviderIface:
+ * @g_iface: The parent interface.
+ * @get_pages: Returns a #GList of #NautilusPropertyPage.
+ *   See nautilus_property_page_provider_get_pages() for details.
+ *
+ * Interface for extensions to provide additional property pages.
+ */
 struct _NautilusPropertyPageProviderIface {
 	GTypeInterface g_iface;
 
-	GList *(*get_pages) (NautilusPropertyPageProvider     *provider,
-			     GList                    *files);
+	GList *(*get_pages) (NautilusPropertyPageProvider *provider,
+			     GList                        *files);
 };
 
 /* Interface Functions */
