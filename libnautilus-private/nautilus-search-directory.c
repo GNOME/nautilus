@@ -26,6 +26,7 @@
 #include "nautilus-file.h"
 #include "nautilus-file-private.h"
 #include "nautilus-file-utilities.h"
+#include "nautilus-global-preferences.h"
 #include "nautilus-search-provider.h"
 #include "nautilus-search-engine.h"
 #include "nautilus-search-engine-model.h"
@@ -142,7 +143,6 @@ start_search (NautilusSearchDirectory *search)
 {
 	NautilusSearchEngineModel *model_provider;
 	NautilusSearchEngineSimple *simple_provider;
-	GSettings *nautilus_preferences;
 	gboolean recursive;
 
 	if (!search->details->query) {
@@ -169,7 +169,6 @@ start_search (NautilusSearchDirectory *search)
 	nautilus_search_engine_model_set_model (model_provider, search->details->base_model);
 
 	simple_provider = nautilus_search_engine_get_simple_provider (search->details->engine);
-	nautilus_preferences = g_settings_new ("org.gnome.nautilus.preferences");
 	recursive = g_settings_get_boolean (nautilus_preferences, "enable-recursive-search");
 	g_object_set (simple_provider, "recursive", recursive, NULL);
 

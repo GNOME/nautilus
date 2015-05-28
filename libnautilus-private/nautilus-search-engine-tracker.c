@@ -21,12 +21,14 @@
  */
 
 #include <config.h>
+#include "nautilus-search-engine-tracker.h"
+
+#include "nautilus-global-preferences.h"
 #include "nautilus-search-hit.h"
 #include "nautilus-search-provider.h"
-#include "nautilus-search-engine-tracker.h"
+
 #include <string.h>
 #include <gio/gio.h>
-
 #include <libtracker-sparql/tracker-sparql.h>
 
 struct NautilusSearchEngineTrackerDetails {
@@ -236,7 +238,6 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 	GString *sparql;
 	GList *mimetypes, *l;
 	gint mime_count;
-	GSettings *nautilus_preferences;
 	gboolean recursive;
 
 	tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (provider);
@@ -253,7 +254,6 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 		return;
 	}
 
-	nautilus_preferences = g_settings_new ("org.gnome.nautilus.preferences");
 	recursive = g_settings_get_boolean (nautilus_preferences, "enable-recursive-search");
 	tracker->details->recursive = recursive;
 
