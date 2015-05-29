@@ -1,3 +1,21 @@
+Major changes in 3.17.2:
+* Fix window focus issues when starting nautilus (Carlos Soriano)
+* Fix handling of command line options in diferent cases (Carlos Soriano)
+* Decrease the padding on list view (Carlos Soriano)
+* Use a dialog for creating folders (Georges Basile Stavracas Neto)
+* Use a dialog for renaming files (Carlos Soriano)
+* Allow F5 and ctrl+r as shortcuts for refresh the view (Carlos Soriano)
+* Make the zoom slider the preference itself (Carlos Soriano)
+* Allow opening with a different app than default for multiple files (Carlos Soriano)
+* Fix view scrolling when selecting with ctrl + mouse (Georges Basile Stavracas Neto)
+* Don't always make the sidebar visible on start (Antonio Fernandes)
+* Allow opening folders with another app (Carlos Soriano)
+* Show Delete Permanently on systems that does not support Trash (Carlos Soriano)
+* Add Alt<down> shorcut for opening
+* Fix some icons sizes inconsistency (Cosimo Cechi)
+* Add public API documentation for Nautilus extensions (Cosimo Cechi)
+* Add a gsetting to toggle recursive search (Felipe Borges)
+
 Major changes in 3.16.0:
 * Support multiple desktop names in XDG_CURRENT_DESKTOP (Dmitry Shachnev)
 * Workaround distcheck (Carlos Soriano)
