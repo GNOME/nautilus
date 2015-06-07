@@ -826,10 +826,14 @@ nautilus_application_command_line (GApplication            *application,
 		g_action_group_activate_action (G_ACTION_GROUP (application),
 						"open-desktop", NULL);
 	} else if (g_variant_dict_contains (options, "no-desktop")) {
-		DEBUG ("Forcing desktop off, as requested");
-		self->priv->desktop_override = TRUE;
-		g_action_group_activate_action (G_ACTION_GROUP (application),
-						"close-desktop", NULL);
+		if (g_application_get_is_remote (application)) {
+			DEBUG ("Not primary instance. Ignoring --no-desktop.");
+		} else {
+			DEBUG ("Forcing desktop off, as requested");
+			self->priv->desktop_override = TRUE;
+			g_action_group_activate_action (G_ACTION_GROUP (application),
+							"close-desktop", NULL);
+		}
 	}
 
 	if (g_variant_dict_contains (options, "no-default-window")) {
