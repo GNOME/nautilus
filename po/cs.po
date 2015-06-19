@@ -2115,7 +2115,7 @@ msgstr ""
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:25
 msgid "When to show thumbnails of files"
-msgstr "Kdy zobrazovat náhledy souborů"
+msgstr "Kdy zobrazovat miniatury souborů"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:26
 msgid ""
@@ -2125,16 +2125,16 @@ msgid ""
 "\"never\" then never bother to thumbnail files, just use a generic icon. "
 "Despite what the name may suggest, this applies to any previewable file type."
 msgstr ""
-"Rozhodnutí, kdy zobrazovat soubory jako náhled. Je-li nastaveno na „always“, "
-"tak pokaždé tvořit náhledy, i když je složka na vzdáleném serveru. Je-li "
-"nastaveno na „local-only“, zobrazovat náhledy jen pro místní systémy "
-"souborů. Je-li nastaveno na „never“, tak se nikdy neobtěžovat s náhledy "
-"obrázků, prostě použít obecnou ikonu. Toto bude provedeno vždy, nehledě na "
+"Rozhodnutí, kdy zobrazovat soubory jako miniatury. Je-li nastaveno na „always“, "
+"tak pokaždé tvořit miniatury, i když je složka na vzdáleném serveru. Je-li "
+"nastaveno na „local-only“, zobrazovat miniatury jen pro místní systémy "
+"souborů. Je-li nastaveno na „never“, tak se nikdy neobtěžovat s miniaturami "
+"souborů a prostě použít obecnou ikonu. Toto bude provedeno vždy, nehledě na "
 "název souboru."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:27
 msgid "Maximum image size for thumbnailing"
-msgstr "Maximální velikost obrázku pro náhledy"
+msgstr "Maximální velikost obrázku pro miniatury"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:28
 msgid ""
@@ -2142,8 +2142,8 @@ msgid ""
 "setting is to avoid thumbnailing large images that may take a long time to "
 "load or use lots of memory."
 msgstr ""
-"Pro obrázky nad tuto velikost (v bajtech) nebudou tvořeny náhledy. Účel "
-"tohoto nastavení je vyhnout se tvoření náhledů velkých obrázků, které se "
+"Pro obrázky nad tuto velikost (v bajtech) nebudou tvořeny miniatury. Účel "
+"tohoto nastavení je vyhnout se tvoření miniatur velkých obrázků, které se "
 "mohou dlouho načítat a používat hodně paměti."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:29
@@ -2258,15 +2258,15 @@ msgstr "Výchozí úroveň zvětšení používaná při Zobrazení s ikonami."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:45
 msgid "Default Thumbnail Icon Size"
-msgstr "Výchozí velikost ikon náhledu"
+msgstr "Výchozí velikost ikon s miniaturou"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:46
 msgid ""
 "The default size of an icon for a thumbnail in the icon view when using "
 "NAUTILUS_ICON_SIZE_SMALL size."
 msgstr ""
-"Výchozí velikost ikony náhledu v ikonovém zobrazení při použití "
-"velikostiNAUTILUS_ICON_SIZE_SMALL."
+"Výchozí velikost ikony s miniaturou v ikonovém zobrazení při použití "
+"velikosti NAUTILUS_ICON_SIZE_SMALL."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:47
 msgid "Text Ellipsis Limit"
@@ -3014,7 +3014,7 @@ msgstr "Sloupce seznamu"
 
 #: ../src/nautilus-file-management-properties.ui.h:25
 msgid "Show _thumbnails:"
-msgstr "Zobrazovat ná_hledy:"
+msgstr "Zobrazovat minia_tury:"
 
 #: ../src/nautilus-file-management-properties.ui.h:26
 msgid "_Only for files smaller than:"
