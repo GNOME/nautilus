@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: nautilus.HEAD.ro\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilu"
 "s&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2015-05-24 10:00+0000\n"
-"PO-Revision-Date: 2015-05-25 17:42+0200\n"
+"POT-Creation-Date: 2015-06-22 11:04+0000\n"
+"PO-Revision-Date: 2015-06-22 19:43+0200\n"
 "Last-Translator: Daniel Șerbănescu <daniel [at] serbanescu [dot] dk>\n"
 "Language-Team: Gnome Romanian Translation Team\n"
 "Language: ro\n"
@@ -56,7 +56,7 @@ msgstr "Rulează programe"
 
 #. set dialog properties
 #: ../data/nautilus-connect-server.desktop.in.in.h:1
-#: ../src/nautilus-connect-server-dialog.c:546
+#: ../src/nautilus-connect-server-dialog.c:547
 msgid "Connect to Server"
 msgstr "Conectare la server"
 
@@ -72,7 +72,8 @@ msgstr "Accesați și organizați fișiere"
 
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:3
 msgid "folder;manager;explore;disk;filesystem;"
-msgstr "folder;manager;explore;disk;filesystem;administrator;dosar;disc;sistem;"
+msgstr ""
+"folder;manager;explore;disk;filesystem;administrator;dosar;disc;sistem;"
 
 #: ../eel/eel-canvas.c:1254 ../eel/eel-canvas.c:1255
 msgid "X"
@@ -90,7 +91,7 @@ msgstr "Arată mai multe _detalii"
 #: ../eel/eel-stock-dialogs.c:195
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:542
 #: ../libnautilus-private/nautilus-file-operations.c:183
-#: ../src/nautilus-connect-server-dialog.c:652
+#: ../src/nautilus-connect-server-dialog.c:653
 #: ../src/nautilus-location-entry.c:273 ../src/nautilus-mime-actions.c:439
 #: ../src/nautilus-mime-actions.c:443 ../src/nautilus-mime-actions.c:514
 #: ../src/nautilus-mime-actions.c:857 ../src/nautilus-mime-actions.c:1363
@@ -115,7 +116,7 @@ msgstr " (Unicode nevalid)"
 #: ../libnautilus-private/nautilus-file-utilities.c:265
 #: ../src/nautilus-list-view.c:1696 ../src/nautilus-pathbar.c:295
 #: ../src/nautilus-query-editor.c:1072
-#: ../src/nautilus-shell-search-provider.c:285
+#: ../src/nautilus-shell-search-provider.c:292
 msgid "Home"
 msgstr "Dosar personal"
 
@@ -124,7 +125,6 @@ msgid "The selection rectangle"
 msgstr "Dreptunghiul de selecție"
 
 #: ../libnautilus-private/nautilus-column-chooser.c:416
-#| msgid "Reset View to _Defaults"
 msgid "Reset to De_fault"
 msgstr "Restabilește la _implicite"
 
@@ -219,7 +219,6 @@ msgid "The location of the file."
 msgstr "Locația fișierului."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:136
-#| msgid "Modified"
 msgid "Modified - Time"
 msgstr "Modificat - Timp"
 
@@ -330,13 +329,11 @@ msgstr "%H:%M"
 
 #. Translators: Time in 12h format
 #: ../libnautilus-private/nautilus-file.c:4693
-#| msgid "today, %-I:%M %p"
 msgid "%l:%M %p"
 msgstr "%l:%M %p"
 
 #: ../libnautilus-private/nautilus-file.c:4700
 #, no-c-format
-#| msgid "yesterday"
 msgid "Yesterday"
 msgstr "ieri"
 
@@ -344,7 +341,6 @@ msgstr "ieri"
 #. * a time in 24h format. i.e. "Yesterday 23:04"
 #: ../libnautilus-private/nautilus-file.c:4706
 #, no-c-format
-#| msgid "yesterday, %-I:%M %p"
 msgid "Yesterday %H:%M"
 msgstr "ieri la %H:%M"
 
@@ -352,7 +348,6 @@ msgstr "ieri la %H:%M"
 #. * a time in 12h format. i.e. "Yesterday 9:04 PM"
 #: ../libnautilus-private/nautilus-file.c:4711
 #, no-c-format
-#| msgid "yesterday, %-I:%M %p"
 msgid "Yesterday %l:%M %p"
 msgstr "Ieri la %l:%M %p"
 
@@ -372,7 +367,6 @@ msgstr "%a la %H:%M"
 #. * a time in 12h format. i.e. "Monday 9:04 PM"
 #: ../libnautilus-private/nautilus-file.c:4730
 #, no-c-format
-#| msgid "today at %-I:%M %p"
 msgid "%a %l:%M %p"
 msgstr "%a la %l:%M %p"
 
@@ -396,7 +390,6 @@ msgstr "%-e %b %H:%M"
 #. * 12h format i.e. "3 Feb 9:04"
 #: ../libnautilus-private/nautilus-file.c:4751
 #, no-c-format
-#| msgid "%b %-d %Y at %-I:%M %p"
 msgid "%-e %b %l:%M %p"
 msgstr "%-e %b %l:%M %p"
 
@@ -404,7 +397,6 @@ msgstr "%-e %b %l:%M %p"
 #. * month name followed by the year i.e. "3 Feb 2015"
 #: ../libnautilus-private/nautilus-file.c:4759
 #, no-c-format
-#| msgid "%b %-d %Y, %-I:%M %p"
 msgid "%-e %b %Y"
 msgstr "%-e %b %Y"
 
@@ -413,7 +405,6 @@ msgstr "%-e %b %Y"
 #. * by a time in 24h format i.e. "3 Feb 2015 23:04"
 #: ../libnautilus-private/nautilus-file.c:4766
 #, no-c-format
-#| msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgid "%-e %b %Y %H:%M"
 msgstr "%-e %b %Y %H:%M"
 
@@ -422,7 +413,6 @@ msgstr "%-e %b %Y %H:%M"
 #. * by a time in 12h format i.e. "3 Feb 2015 9:04 PM"
 #: ../libnautilus-private/nautilus-file.c:4772
 #, no-c-format
-#| msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgid "%-e %b %Y %l:%M %p"
 msgstr "%-e %b %Y %l:%M %p"
 
@@ -1305,7 +1295,8 @@ msgstr ""
 msgid ""
 "The folder “%B” cannot be copied because you do not have permissions to read "
 "it."
-msgstr "Dosarul „%B” nu poate fi copiat deoarece nu aveți permisiuni de citire."
+msgstr ""
+"Dosarul „%B” nu poate fi copiat deoarece nu aveți permisiuni de citire."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3691
 #: ../libnautilus-private/nautilus-file-operations.c:4381
@@ -1508,7 +1499,6 @@ msgstr[2] "Se mută %d de fișiere în „%s”"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:372
 #, c-format
-#| msgid "Undo the edit"
 msgid "_Undo Move %d item"
 msgid_plural "_Undo Move %d items"
 msgstr[0] "An_ulează mutarea a %d element"
@@ -1517,7 +1507,6 @@ msgstr[2] "An_ulează mutarea a %d de elemente"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:375
 #, c-format
-#| msgid "Redo the edit"
 msgid "_Redo Move %d item"
 msgid_plural "_Redo Move %d items"
 msgstr[0] "_Refă mutarea a %d element"
@@ -1535,7 +1524,6 @@ msgid "Move '%s' to '%s'"
 msgstr "Mută „%s” la „%s”"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:382
-#| msgid "_Undo"
 msgid "_Undo Move"
 msgstr "An_ulează mutarea"
 
@@ -1544,12 +1532,10 @@ msgid "_Redo Move"
 msgstr "_Refă mutarea"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:386
-#| msgid "The item cannot be restored from trash"
 msgid "_Undo Restore from Trash"
 msgstr "An_ulează restaurarea de la gunoi"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:387
-#| msgid "The item cannot be restored from trash"
 msgid "_Redo Restore from Trash"
 msgstr "_Refă restaurarea de la gunoi"
 
@@ -1625,7 +1611,6 @@ msgid "Copy '%s' to '%s'"
 msgstr "Copiază „%s” în „%s”"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:419
-#| msgid "_Undo"
 msgid "_Undo Copy"
 msgstr "An_ulează copierea"
 
@@ -1635,7 +1620,6 @@ msgstr "_Refă copierea"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:424
 #, c-format
-#| msgid "Duplicate each selected item"
 msgid "Delete %d duplicated item"
 msgid_plural "Delete %d duplicated items"
 msgstr[0] "Șterge %d element duplicat"
@@ -1644,8 +1628,6 @@ msgstr[2] "Șterge %d de elemente duplicate"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:427
 #, c-format
-#| msgid "Duplicating %'d file (in \"%B\")"
-#| msgid_plural "Duplicating %'d files (in \"%B\")"
 msgid "Duplicate %d item in '%s'"
 msgid_plural "Duplicate %d items in '%s'"
 msgstr[0] "Duplică %d element în „%s”"
@@ -1654,8 +1636,6 @@ msgstr[2] "Duplică %d de elemente în „%s”"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:431
 #, c-format
-#| msgid "Duplicating %'d file"
-#| msgid_plural "Duplicating %'d files"
 msgid "_Undo Duplicate %d item"
 msgid_plural "_Undo Duplicate %d items"
 msgstr[0] "An_ulează duplicarea a %d element"
@@ -1664,8 +1644,6 @@ msgstr[2] "An_ulează duplicarea a %d de elemente"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:434
 #, c-format
-#| msgid "Duplicating %'d file"
-#| msgid_plural "Duplicating %'d files"
 msgid "_Redo Duplicate %d item"
 msgid_plural "_Redo Duplicate %d items"
 msgstr[0] "_Refă duplicarea a %d element"
@@ -1674,23 +1652,19 @@ msgstr[2] "_Refă duplicarea a %d de elemente"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:439
 #, c-format
-#| msgid "Duplicating \"%B\""
 msgid "Duplicate '%s' in '%s'"
 msgstr "Duplică „%s” în „%s”"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:442
-#| msgid "D_uplicate"
 msgid "_Undo Duplicate"
 msgstr "An_ulează duplicarea"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:443
-#| msgid "D_uplicate"
 msgid "_Redo Duplicate"
 msgstr "_Refă duplicarea"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:447
 #, c-format
-#| msgid "_Double click to open items"
 msgid "Delete links to %d item"
 msgid_plural "Delete links to %d items"
 msgstr[0] "Șterge legăturile către %d element"
@@ -1699,8 +1673,6 @@ msgstr[2] "Șterge legăturile către %d de elemente"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:450
 #, c-format
-#| msgid "Making link to %'d file"
-#| msgid_plural "Making links to %'d files"
 msgid "Create links to %d item"
 msgid_plural "Create links to %d items"
 msgstr[0] "Creează legături către %d element"
@@ -1709,61 +1681,50 @@ msgstr[2] "Creează legături către %d de elemente"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:454
 #, c-format
-#| msgid "Another link to %s"
 msgid "Delete link to '%s'"
 msgstr "Șterge legătura la „%s”"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:455
 #, c-format
-#| msgid "Another link to %s"
 msgid "Create link to '%s'"
 msgstr "Crează legătură la „%s”"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:457
-#| msgid "Undo the edit"
 msgid "_Undo Create Link"
 msgstr "An_ulează crearea legăturii"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:458
-#| msgid "Redo the edit"
 msgid "_Redo Create Link"
 msgstr "_Refă crearea legăturii"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:674
 #, c-format
-#| msgid "Create and delete files"
 msgid "Create an empty file '%s'"
 msgstr "Crează un fișier gol „%s”"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:676
-#| msgid "_Empty File"
 msgid "_Undo Create Empty File"
 msgstr "An_ulează crearea fișierului gol"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:677
-#| msgid "_Empty File"
 msgid "_Redo Create Empty File"
 msgstr "_Refă crearea fișierului gol"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:679
 #, c-format
-#| msgid "Create New _Folder"
 msgid "Create a new folder '%s'"
 msgstr "Crează un dosar nou „%s”"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:681
-#| msgid "Create New _Folder"
 msgid "_Undo Create Folder"
 msgstr "An_ulează crearea dosarului"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:682
-#| msgid "Create New _Folder"
 msgid "_Redo Create Folder"
 msgstr "_Refă crearea dosarului"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:684
 #, c-format
-#| msgid "Create a new document from template \"%s\""
 msgid "Create new file '%s' from template "
 msgstr "Creează un fișier nou „%s” din șablon"
 
@@ -1782,12 +1743,10 @@ msgid "Rename '%s' as '%s'"
 msgstr "Redenumește „%s” ca „%s”"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:873
-#| msgid "Rename"
 msgid "_Undo Rename"
 msgstr "An_ulează redenumirea"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:874
-#| msgid "Rename"
 msgid "_Redo Rename"
 msgstr "_Refă redenumirea"
 
@@ -1810,12 +1769,10 @@ msgid "Move '%s' to trash"
 msgstr "Mută „%s” la coșul de gunoi"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1009
-#| msgid "_Trash"
 msgid "_Undo Trash"
 msgstr "An_ulează mutarea la coșul de gunoi"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1010
-#| msgid "Mo_ve to Trash"
 msgid "_Redo Trash"
 msgstr "_Refă mutarea la coșul de gunoi"
 
@@ -1831,13 +1788,11 @@ msgstr "Definește permisiunile elementelor conținute în „%s”"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1309
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1464
-#| msgid "Folder Permissions:"
 msgid "_Undo Change Permissions"
 msgstr "An_ulează schimbarea permisiunilor"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1310
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1465
-#| msgid "Folder Permissions:"
 msgid "_Redo Change Permissions"
 msgstr "_Refă schimbarea permisiunilor"
 
@@ -2038,12 +1993,21 @@ msgstr ""
 "întotdeauna un câmp text în locul barei de butoane pentru bara de locație."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:5
+#| msgid "Whether to enable immediate deletion"
+msgid "Whether to enable recursive search or not"
+msgstr "Dacă să activeze căutarea recursivă sau nu"
+
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:6
+msgid "Enables or disables recursive search in Nautilus."
+msgstr "Activează sau dezactivează căutarea recursivă în Nautilus."
+
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:7
 msgid "Whether to ask for confirmation when deleting files, or emptying Trash"
 msgstr ""
 "Dacă se va cere confirmarea la ștergerea fișierelor, sau la golirea coșului "
 "de gunoi."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:6
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:8
 msgid ""
 "If set to true, then Nautilus will ask for confirmation when you attempt to "
 "delete files, or empty the Trash."
@@ -2051,11 +2015,11 @@ msgstr ""
 "Dacă opțiunea este activată, Nautilus va solicita confirmare la ștergerea "
 "fișierelor sau la golirea Coșului de gunoi."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:7
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:9
 msgid "When to show number of items in a folder"
 msgstr "Când să afișeze numărul de elemente în dosare"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:8
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:10
 msgid ""
 "Speed tradeoff for when to show the number of items in a folder. If set to "
 "\"always\" then always show item counts, even if the folder is on a remote "
@@ -2064,15 +2028,15 @@ msgid ""
 msgstr ""
 "Compromisul de viteză pentru afișarea numărului de elemente dintr-un dosar. "
 "Dacă valoarea este „always”, numărul de elemente va fi afișat întotdeauna, "
-"chiar dacă dosarul este situat pe un server la distanță; pentru „local-only”"
-", numărul de elemente va fi afișat doar pentru directoarele locale, iar "
+"chiar dacă dosarul este situat pe un server la distanță; pentru „local-"
+"only”, numărul de elemente va fi afișat doar pentru directoarele locale, iar "
 "valoarea „never” va suprima complet afișarea statisticilor."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:9
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:11
 msgid "Type of click used to launch/open files"
 msgstr "Tipul de clic folosit pentru a lansa/deschide fișiere"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:10
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:12
 msgid ""
 "Possible values are \"single\" to launch files on a single click, or \"double"
 "\" to launch them on a double click."
@@ -2080,11 +2044,11 @@ msgstr ""
 "Valorile posibile sunt „single” pentru lansarea fișierelor cu un singur "
 "clic, sau „double” pentru lansarea acestora cu dublu clic."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:11
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:13
 msgid "What to do with executable text files when activated"
 msgstr "Comportarea fișierelor text executabile la activare"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:12
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:14
 msgid ""
 "What to do with executable text files when they are activated (single or "
 "double clicked). Possible values are \"launch\" to launch them as programs, "
@@ -2096,11 +2060,11 @@ msgstr ""
 "întreba ce urmează să facă printr-un dialog, și „display” pentru a le afișa "
 "ca fișiere text."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:13
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:15
 msgid "Show the package installer for unknown mime types"
 msgstr "Arată instalatorul de pachete pentru tipuri mime necunoscute"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:14
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:16
 msgid ""
 "Whether to show the user a package installer dialog in case an unknown mime "
 "type is opened, in order to search for an application to handle it."
@@ -2109,13 +2073,13 @@ msgstr ""
 "deschis un fișier cu mime necunoscut, pentru a căuta aplicația care le poate "
 "gestiona."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:15
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:17
 msgid "Show a warning dialog for the change of the shortcut for move to trash"
 msgstr ""
 "Afișează un dialog de avertizare pentru schimbarea scurtăturii pentru "
 "mutarea la coșul de gunoi"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:16
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:18
 msgid ""
 "Show a warning dialog for the change of the shortcut for move to trash from "
 "control + delete to just delete."
@@ -2123,13 +2087,13 @@ msgstr ""
 "Arată un dialog de avertizare pentru schimbarea scurtăturii pentru mutare la "
 "coșul de gunoi de la Control + Delete la doar Delete."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:17
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:19
 msgid "Use extra mouse button events in Nautilus' browser window"
 msgstr ""
 "Folosește evenimente adiționale ale butoanelor de maus în ferestra de "
 "navigare Nautilus"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:18
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:20
 msgid ""
 "For users with mice that have \"Forward\" and \"Back\" buttons, this key "
 "will determine if any action is taken inside of Nautilus when either is "
@@ -2139,11 +2103,11 @@ msgstr ""
 "această cheie determină dacă Nautilus va răspunde la apăsarea unuia dintre "
 "ele."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:19
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:21
 msgid "Mouse button to activate the \"Forward\" command in browser window"
 msgstr "Buton maus pentru a activa comanda „Înainte” din fereastra de navigare"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:20
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:22
 msgid ""
 "For users with mice that have buttons for \"Forward\" and \"Back\", this key "
 "will set which button activates the \"Forward\" command in a browser window. "
@@ -2153,11 +2117,11 @@ msgstr ""
 "această cheie determină care buton activează comanda „Înainte” în ferastra "
 "de navigare. Valorile posibile sunt între 6 și 14."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:21
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:23
 msgid "Mouse button to activate the \"Back\" command in browser window"
 msgstr "Buton maus pentru a activa comanda „Înapoi” din fereastra de navigare"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:22
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:24
 msgid ""
 "For users with mice that have buttons for \"Forward\" and \"Back\", this key "
 "will set which button activates the \"Back\" command in a browser window. "
@@ -2167,11 +2131,11 @@ msgstr ""
 "această cheie determină care buton activează comanda „Înapoi” în fereastra "
 "de navigare. Valorile posibile sunt între 6 și 14."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:23
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:25
 msgid "When to show thumbnails of files"
 msgstr "Când să se afișeze miniaturi pentru fișiere"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:24
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:26
 msgid ""
 "Speed tradeoff for when to show a file as a thumbnail. If set to \"always\" "
 "then always thumbnail, even if the folder is on a remote server. If set to "
@@ -2187,11 +2151,11 @@ msgstr ""
 "ce numele poate sugera, acest lucru este valabil pentru orice tip de fișier "
 "ce suportă previzualizare."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:25
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:27
 msgid "Maximum image size for thumbnailing"
 msgstr "Dimensiunea maximă a fișierelor pentru care se produc miniaturi"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:26
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:28
 msgid ""
 "Images over this size (in bytes) won't be thumbnailed. The purpose of this "
 "setting is to avoid thumbnailing large images that may take a long time to "
@@ -2202,11 +2166,11 @@ msgstr ""
 "imaginilor foarte mari, proces ce ar putea dura foarte mult sau folosi "
 "foarte multă memorie."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:27
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:29
 msgid "Show folders first in windows"
 msgstr "Arată mai întâi dosarele"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:28
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:30
 msgid ""
 "If set to true, then Nautilus shows folders prior to showing files in the "
 "icon and list views."
@@ -2214,11 +2178,11 @@ msgstr ""
 "Dacă opțiunea este activată, dosarele vor fi afișate înaintea fișierelor în "
 "modurile de vizualizare „listă” sau „iconițe”."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:29
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:31
 msgid "Default sort order"
 msgstr "Ordinea implicită de sortare"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:30
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:32
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\" and \"mtime\"."
@@ -2226,11 +2190,11 @@ msgstr ""
 "Ordinea implicită de sortare pentru elemente în vizualizarea cu iconițe. "
 "Valori posibile sunt „name”, „size”, „type”, și „mtime”."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:31
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:33
 msgid "Reverse sort order in new windows"
 msgstr "Ordine inversă de sortare în noile ferestre"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:32
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:34
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -2242,11 +2206,11 @@ msgstr ""
 "se facă de la „a” la „z”, se va face de la „z” la „a”; la sortarea după "
 "dimensiune, vor fi sortate de la mai mare către mai mic."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:33
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:35
 msgid "Default folder viewer"
 msgstr "Modul implicit de vizualizare pentru dosare"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:34
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:36
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
 "another view for that particular folder. Possible values are \"list-view\", "
@@ -2256,11 +2220,11 @@ msgstr ""
 "selectat un alt mod de afișare pentru acel dosar în particular. Valori "
 "posibile sunt „list-view”, și „icon-view”."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:35
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:37
 msgid "Whether to show hidden files"
 msgstr "Dacă să afișeze fișierele ascunse"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:36
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:38
 msgid ""
 "This key is deprecated and ignored. The \"show-hidden\" key from \"org.gtk."
 "Settings.FileChooser\" is now used instead."
@@ -2268,11 +2232,11 @@ msgstr ""
 "Această cheie este depășită și ignorată. Cheia „show-hidden” din „org.gtk."
 "Settings.FileChooser” este acum utilizată."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:37
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:39
 msgid "Bulk rename utility"
 msgstr "Utilitar pentru redenumire în masă"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:38
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:40
 msgid ""
 "If set, Nautilus will append URIs of selected files and treat the result as "
 "a command line for bulk renaming. Bulk rename applications can register "
@@ -2287,18 +2251,12 @@ msgstr ""
 "și orice opțiune de linie de comandă. Dacă numele executabilului nu este "
 "stabilit la o cale completă, va fi căutat în bara de căutare."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:39
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:41
 msgid "List of possible captions on icons"
 msgstr ""
 "Lista câmpurilor care pot fi afișate în legenda explicativă pentru iconițe"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:40
-#| msgid ""
-#| "A list of captions below an icon in the icon view and the desktop. The "
-#| "actual number of captions shown depends on the zoom level. Some possible "
-#| "values are: \"size\", \"type\", \"date_modified\", \"date_changed\", "
-#| "\"date_accessed\", \"owner\", \"group\", \"permissions\", "
-#| "\"octal_permissions\" and \"mime_type\"."
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:42
 msgid ""
 "A list of captions below an icon in the icon view and the desktop. The "
 "actual number of captions shown depends on the zoom level. Some possible "
@@ -2307,25 +2265,24 @@ msgid ""
 msgstr ""
 "O listă de câmpuri explicative afișate sub iconițe în modul de vizualizare "
 "cu iconițe sau pe desktop. Numărul efectiv de câmpuri afișate depinde de "
-"nivelul de mărire. Valorile admise sunt: „size” (dimensiunea), „type” (tipul)"
-", „date_modified” (data ultimei modificări a conținutului), „owner” "
-"(proprietar), „group” (grup), „permissions” (permisiuni) și „mime_type” (tip "
-"mime)."
+"nivelul de mărire. Valorile admise sunt: „size” (dimensiunea), "
+"„type” (tipul), „date_modified” (data ultimei modificări a conținutului), "
+"„owner” (proprietar), „group” (grup), „permissions” (permisiuni) și "
+"„mime_type” (tip mime)."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:41
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:43
 msgid "Default icon zoom level"
 msgstr "Nivelul implicit de mărire pentru iconițe"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:42
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:44
 msgid "Default zoom level used by the icon view."
 msgstr "Nivelul implicit de mărire pentru modul de vizualizare cu iconițe."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:43
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:45
 msgid "Default Thumbnail Icon Size"
 msgstr "Dimensiunea implicită pentru iconițe"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:44
-#| msgid "The default size of an icon for a thumbnail in the icon view."
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:46
 msgid ""
 "The default size of an icon for a thumbnail in the icon view when using "
 "NAUTILUS_ICON_SIZE_SMALL size."
@@ -2333,26 +2290,11 @@ msgstr ""
 "Dimensiunea implicită a iconițelor pentru miniaturi în modul de vizualizare "
 "cu iconițe când se folosește dimensiunea NAUTILUS_ICON_SIZE_SMALL."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:45
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:47
 msgid "Text Ellipsis Limit"
 msgstr "Limită omisie text"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:46
-#| msgid ""
-#| "A string specifying how parts of overlong file names should be replaced "
-#| "by ellipses, depending on the zoom level. Each of the list entries is of "
-#| "the form \"Zoom Level:Integer\". For each specified zoom level, if the "
-#| "given integer is larger than 0, the file name will not exceed the given "
-#| "number of lines. If the integer is 0 or smaller, no limit is imposed on "
-#| "the specified zoom level. A default entry of the form \"Integer\" without "
-#| "any specified zoom level is also allowed. It defines the maximum number "
-#| "of lines for all other zoom levels. Examples: 0 - always display overlong "
-#| "file names; 3 - shorten file names if they exceed three lines; smallest:5,"
-#| "smaller:4,0 - shorten file names if they exceed five lines for zoom level "
-#| "\"smallest\". Shorten file names if they exceed four lines for zoom level "
-#| "\"smaller\". Do not shorten file names for other zoom levels. Available "
-#| "zoom levels: smallest (33%), smaller (50%), small (66%), standard (100%), "
-#| "large (150%), larger (200%), largest (400%)"
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:48
 msgid ""
 "A string specifying how parts of overlong file names should be replaced by "
 "ellipses, depending on the zoom level. Each of the list entries is of the "
@@ -2378,58 +2320,58 @@ msgstr ""
 "valoare definește numărul maxim de linii al tuturor celorlalte nivele. "
 "Exemple: 0 - afișează întotdeauna numele lungi; 3 - scurtează numele "
 "fișierelor dacă depășesc 3 linii; „smallest:5,smaller:4,0” - scurtează "
-"numele fișierelor dacă depășesc 5 linii pentru nivelul de scalare „smallest”"
-". Nu scurtează numele fișierelor pentru alte nivele. Nivele disponibile: "
-"small, standard, large"
+"numele fișierelor dacă depășesc 5 linii pentru nivelul de scalare "
+"„smallest”. Nu scurtează numele fișierelor pentru alte nivele. Nivele "
+"disponibile: small, standard, large"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:47
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:49
 msgid "Default list zoom level"
 msgstr "Nivelul implicit de mărire pentru modul de vizualizare „listă”"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:48
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:50
 msgid "Default zoom level used by the list view."
 msgstr "Nivelul implicit de mărire utilizat în modul de vizualizare „listă”."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:49
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:51
 msgid "Default list of columns visible in the list view"
 msgstr "Lista implicită de coloane vizibile în modul de vizualizare „listă”"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:50
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:52
 msgid "Default list of columns visible in the list view."
 msgstr "Lista implicită de coloane vizibile în modul de vizualizare „listă”."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:51
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:53
 msgid "Default column order in the list view"
 msgstr "Ordinea implicită a coloanelor în modul de vizualizare „listă”"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:52
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:54
 msgid "Default column order in the list view."
 msgstr "Ordinea implicită a coloanelor în modul de vizualizare „listă”."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:53
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:55
 msgid "Use tree view"
 msgstr "Vizualizare arborescentă"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:54
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:56
 msgid ""
 "Whether a tree should be used for list view navigation instead of a flat list"
 msgstr ""
 "Dacă un arbore ar trebui să fie utilizat pentru navigarea vizualizării de "
 "tip listă în schimbul unei liste plane"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:55
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:57
 msgid "Desktop font"
 msgstr "Font pentru desktop"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:56
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:58
 msgid "The font description used for the icons on the desktop."
 msgstr "Descrierea fontului folosit pentru iconițele de pe desktop."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:57
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:59
 msgid "Home icon visible on desktop"
 msgstr "Iconița „Dosar personal” vizibilă pe desktop"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:58
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:60
 msgid ""
 "If this is set to true, an icon linking to the home folder will be put on "
 "the desktop."
@@ -2437,11 +2379,11 @@ msgstr ""
 "Dacă opțiunea este activată, pe desktop va fi afișată o iconiță care permite "
 "afișarea Dosarului personal."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:59
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:61
 msgid "Trash icon visible on desktop"
 msgstr "Iconița Coș de gunoi vizibilă pe desktop"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:60
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:62
 msgid ""
 "If this is set to true, an icon linking to the trash will be put on the "
 "desktop."
@@ -2449,11 +2391,11 @@ msgstr ""
 "Dacă opțiunea este activată, pe desktop va fi afișată o iconiță care permite "
 "accesarea Coșului de gunoi."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:61
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:63
 msgid "Show mounted volumes on the desktop"
 msgstr "Arată pe desktop volumele montate"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:62
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:64
 msgid ""
 "If this is set to true, icons linking to mounted volumes will be put on the "
 "desktop."
@@ -2461,11 +2403,11 @@ msgstr ""
 "Dacă opțiunea este activată, pe desktop vor fi afișate iconițe care permit "
 "accesarea volumelor montate."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:63
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:65
 msgid "Network Servers icon visible on the desktop"
 msgstr "Iconița Servere din rețea vizibilă pe desktop"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:64
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:66
 msgid ""
 "If this is set to true, an icon linking to the Network Servers view will be "
 "put on the desktop."
@@ -2473,11 +2415,11 @@ msgstr ""
 "Dacă opțiunea este activată, pe desktop va fi afișată o iconiță care permite "
 "afișarea locației Serverelor de rețea."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:65
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:67
 msgid "Desktop home icon name"
 msgstr "Nume alternativ pentru iconița Dosar personal"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:66
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:68
 msgid ""
 "This name can be set if you want a custom name for the home icon on the "
 "desktop."
@@ -2485,11 +2427,11 @@ msgstr ""
 "Acest nume poate fi definit dacă doriți un nume personalizat pentru iconița "
 "Acasă de pe de desktop."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:67
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:69
 msgid "Desktop trash icon name"
 msgstr "Nume alternativ pentru iconița Coș de gunoi"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:68
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:70
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
@@ -2497,11 +2439,11 @@ msgstr ""
 "Acest nume poate fi definit dacă doriți un nume personalizat pentru iconița "
 "„Coș de gunoi” de pe de desktop."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:69
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:71
 msgid "Network servers icon name"
 msgstr "Nume alternativ pentru iconița Servere de rețea"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:70
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:72
 msgid ""
 "This name can be set if you want a custom name for the network servers icon "
 "on the desktop."
@@ -2509,7 +2451,7 @@ msgstr ""
 "Acest nume poate fi definit dacă doriți un nume personalizat pentru iconița "
 "serverelor de rețea de pe desktop."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:71
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:73
 msgid ""
 "An integer specifying how parts of overlong file names should be replaced by "
 "ellipses on the desktop. If the number is larger than 0, the file name will "
@@ -2522,11 +2464,11 @@ msgstr ""
 "este 0 sau mai mic, nicio limită nu este impusă asupra numărului de linii "
 "afișate."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:72
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:74
 msgid "Fade the background on change"
 msgstr "Estompează fundalul la schimbare"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:73
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:75
 msgid ""
 "If set to true, then Nautilus will use a fade effect to change the desktop "
 "background."
@@ -2534,11 +2476,11 @@ msgstr ""
 "Dacă opțiunea este activată, Nautilus va folosi un efect de atenuare pentru "
 "a schimba fundalul desktopului."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:74
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:76
 msgid "The geometry string for a navigation window."
 msgstr "Șirul care descrie geometria unei ferestre de navigare."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:75
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:77
 msgid ""
 "A string containing the saved geometry and coordinates string for navigation "
 "windows."
@@ -2546,38 +2488,38 @@ msgstr ""
 "Un text conținând geometria salvată și textul de coordonate pentru "
 "ferestrele de navigare."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:76
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:78
 msgid "Whether the navigation window should be maximized."
 msgstr "Dacă fereastra de navigare să fie maximizată."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:77
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:79
 msgid "Whether the navigation window should be maximized by default."
 msgstr "Dacă fereastra de navigare să fie implicit maximizată."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:78
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:80
 msgid "Width of the side pane"
 msgstr "Lățimea panoului lateral"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:79
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:81
 msgid "The default width of the side pane in new windows."
 msgstr "Lățimea implicită a panoului lateral în noile ferestre."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:80
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:82
 msgid "Show location bar in new windows"
 msgstr "Arată bara de locație în ferestre noi"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:81
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:83
 msgid ""
 "If set to true, newly opened windows will have the location bar visible."
 msgstr ""
 "Dacă opțiunea este activată, ferestrele noi vor avea bara de locație "
 "vizibilă."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:82
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:84
 msgid "Show side pane in new windows"
 msgstr "Arată panoul lateral în ferestre noi"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:83
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:85
 msgid "If set to true, newly opened windows will have the side pane visible."
 msgstr ""
 "Dacă opțiunea este activată, ferestrele noi vor avea panoul lateral vizibil."
@@ -2698,10 +2640,6 @@ msgstr "Selectați URIul specificat în dosarul părinte"
 #: ../src/nautilus-application.c:720
 msgid "[URI...]"
 msgstr "[URI...]"
-
-#: ../src/nautilus-application.c:822
-msgid "Could not register the application"
-msgstr "Nu s-a putut înregistra aplicația"
 
 #: ../src/nautilus-app-menu.ui.h:1
 msgid "New _Window"
@@ -2839,23 +2777,23 @@ msgstr "Nu arată ca o adresă."
 msgid "For example, %s"
 msgstr "De exemplu, %s"
 
-#: ../src/nautilus-connect-server-dialog.c:492
+#: ../src/nautilus-connect-server-dialog.c:493
 msgid "_Remove"
 msgstr "_Elimină"
 
-#: ../src/nautilus-connect-server-dialog.c:501
+#: ../src/nautilus-connect-server-dialog.c:502
 msgid "_Clear All"
 msgstr "Șt_erge tot"
 
-#: ../src/nautilus-connect-server-dialog.c:562
+#: ../src/nautilus-connect-server-dialog.c:563
 msgid "_Server Address"
 msgstr "Adresa _serverului"
 
-#: ../src/nautilus-connect-server-dialog.c:586
+#: ../src/nautilus-connect-server-dialog.c:587
 msgid "_Recent Servers"
 msgstr "Servere _recente"
 
-#: ../src/nautilus-connect-server-dialog.c:655
+#: ../src/nautilus-connect-server-dialog.c:656
 msgid "C_onnect"
 msgstr "C_onectare"
 
@@ -3052,7 +2990,7 @@ msgstr "Între_abă de fiecare dată"
 
 #. trash
 #: ../src/nautilus-file-management-properties.ui.h:15
-#: ../src/nautilus-shell-search-provider.c:290 ../src/nautilus-trash-bar.c:194
+#: ../src/nautilus-shell-search-provider.c:297 ../src/nautilus-trash-bar.c:194
 msgid "Trash"
 msgstr "Coș de gunoi"
 
@@ -3155,7 +3093,6 @@ msgid "Small"
 msgstr "Mic"
 
 #: ../src/nautilus-file-management-properties.ui.h:41
-#| msgid "Calendar"
 msgid "Standard"
 msgstr "Standard"
 
@@ -3667,7 +3604,6 @@ msgid "Link target:"
 msgstr "Destinație legătură:"
 
 #: ../src/nautilus-properties-window.c:2998
-#| msgid "_Paste Into Folder"
 msgid "Parent Folder:"
 msgstr "Dosar părinte:"
 
@@ -3916,22 +3852,18 @@ msgid "Select _All"
 msgstr "Selecte_ază tot"
 
 #: ../src/nautilus-toolbar-action-menu.xml.h:4
-#| msgid "Enter _Location…"
 msgid "Enter _Location"
 msgstr "Introduceți _locația"
 
 #: ../src/nautilus-toolbar-action-menu.xml.h:5
-#| msgid "Bookmark this Location"
 msgid "_Bookmark this Location"
 msgstr "Î_nsemnați această locație"
 
 #: ../src/nautilus-toolbar-ui.xml.h:1
-#| msgid "Acti_on:"
 msgid "Action menu"
 msgstr "Meniu acțiune"
 
 #: ../src/nautilus-toolbar-ui.xml.h:2
-#| msgid "Open _Location..."
 msgid "Open action menu"
 msgstr "Deschide meniul acțiune"
 
@@ -3940,12 +3872,10 @@ msgid "View menu"
 msgstr "Meniu vizualizare"
 
 #: ../src/nautilus-toolbar-ui.xml.h:4
-#| msgid "Open in New _Window"
 msgid "Open view menu"
 msgstr "Deschide meniul vizualizare"
 
 #: ../src/nautilus-toolbar-ui.xml.h:6
-#| msgid "_Search for Files…"
 msgid "Search files"
 msgstr "Caută fișiere"
 
@@ -3954,37 +3884,30 @@ msgid "Sort"
 msgstr "Sortează"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:3
-#| msgid "Size"
 msgid "_Size"
 msgstr "Dimen_siune"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:4
-#| msgid "_Type:"
 msgid "_Type"
 msgstr "_Tip"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:5
-#| msgid "Last changed:"
 msgid "Last _Opened"
 msgstr "Ultima _deschidere"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:6
-#| msgid "Empty _Trash"
 msgid "Last _Trashed"
 msgstr "Ultima ș_tergere"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:7
-#| msgid "By Search Relevance"
 msgid "Search _Relevance"
 msgstr "_Relevanța căutării"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:8
-#| msgid "Re_versed Order"
 msgid "Re_verse Order"
 msgstr "Ordine in_versă"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:9
-#| msgid "Visible _Columns…"
 msgid "_Visible Columns…"
 msgstr "_Coloane vizibile…"
 
@@ -4010,7 +3933,6 @@ msgstr "Restaurează fiecare element selectat la poziția inițială"
 
 #. Translators: "Empty" is an action (for the trash) , not a state
 #: ../src/nautilus-trash-bar.c:209
-#| msgid "Empty"
 msgid "_Empty"
 msgstr "_Gol"
 
@@ -4051,12 +3973,10 @@ msgid "Examples: "
 msgstr "Exemple: "
 
 #: ../src/nautilus-view.c:1528
-#| msgid "A folder with the same name already exists in “%s”."
 msgid "A folder with that name already exists."
 msgstr "Un dosar cu acel nume există deja."
 
 #: ../src/nautilus-view.c:1530
-#| msgid "A folder with the same name already exists in “%s”."
 msgid "A file with that name already exists."
 msgstr "Un fișier cu acel nume există deja."
 
@@ -4069,53 +3989,43 @@ msgid "Files names cannot contain “/”."
 msgstr "Numele fișierelor nu pot conține „/”."
 
 #: ../src/nautilus-view.c:1594
-#| msgid "The color cannot be installed."
 msgid "A folder can not be called “.”."
 msgstr "Un dosar nu poate fi numit „.”."
 
 #: ../src/nautilus-view.c:1596
-#| msgid "This file cannot be ejected"
 msgid "A file can not be called “.”."
 msgstr "Un fișier nu poate fi numit „.”."
 
 #: ../src/nautilus-view.c:1599
-#| msgid "The color cannot be installed."
 msgid "A folder can not be called “..”."
 msgstr "Un dosar nu poate fi numit „..”."
 
 #: ../src/nautilus-view.c:1601
-#| msgid "This file cannot be ejected"
 msgid "A file can not be called “..”."
 msgstr "Un fișier nu poate fi numit „..”."
 
 #: ../src/nautilus-view.c:1735
-#| msgid "Re_name"
 msgid "Rename"
 msgstr "Redenumește"
 
 #: ../src/nautilus-view.c:1737
 #, c-format
-#| msgid "Replace file “%s”?"
 msgid "Rename “%s”"
 msgstr "Redenumește „%s”"
 
 #: ../src/nautilus-view.c:1742 ../src/nautilus-view.c:1858
-#| msgid "Folder access:"
 msgid "Folder name"
 msgstr "Nume dosar"
 
 #: ../src/nautilus-view.c:1744
-#| msgid "File Manager"
 msgid "File name"
 msgstr "Nume fișier"
 
 #: ../src/nautilus-view.c:1857
-#| msgid "Creator"
 msgid "Create"
 msgstr "Creează"
 
 #: ../src/nautilus-view.c:1859
-#| msgid "New _Folder"
 msgid "New Folder"
 msgstr "Dosar nou"
 
@@ -4243,7 +4153,6 @@ msgid "Run"
 msgstr "Execută"
 
 #: ../src/nautilus-view.c:6422
-#| msgid "_Open"
 msgid "Open"
 msgstr "Deschide"
 
@@ -4264,7 +4173,6 @@ msgid "U_nlock Drive"
 msgstr "Deblochează u_nitatea"
 
 #: ../src/nautilus-view.c:6498
-#| msgid "_Lock Drive"
 msgid "Stop Drive"
 msgstr "Oprește unitatea"
 
@@ -4284,11 +4192,11 @@ msgstr "Oprește unitatea multi-di_sc"
 msgid "_Lock Drive"
 msgstr "B_lochează unitatea"
 
-#: ../src/nautilus-view.c:7701
+#: ../src/nautilus-view.c:7706
 msgid "Content View"
 msgstr "Vizualizare conținut"
 
-#: ../src/nautilus-view.c:7702
+#: ../src/nautilus-view.c:7707
 msgid "View of the current folder"
 msgstr "Vizualizarea dosarului curent"
 
@@ -4305,17 +4213,14 @@ msgid "P_roperties"
 msgstr "P_roprietăți"
 
 #: ../src/nautilus-view-context-menus.xml.h:6
-#| msgid "_Keep Aligned"
 msgid "_Keep aligned"
 msgstr "_Păstrează alinierea"
 
 #: ../src/nautilus-view-context-menus.xml.h:7
-#| msgid "_Organize Desktop by Name"
 msgid "Organize _Desktop by Name"
 msgstr "Organizează _desktopul după nume"
 
 #: ../src/nautilus-view-context-menus.xml.h:8
-#| msgid "Change Desktop _Background"
 msgid "Change _Background"
 msgstr "Schim_bă fundalul"
 
@@ -4328,22 +4233,18 @@ msgid "_Open Scripts Folder"
 msgstr "Deschide dosarul cu _scripturi"
 
 #: ../src/nautilus-view-context-menus.xml.h:11
-#| msgid "Open _Item Location"
 msgid "_Open Item Location"
 msgstr "Deschide locația _elementului"
 
 #: ../src/nautilus-view-context-menus.xml.h:12
-#| msgid "Open in New _Tab"
 msgid "Open In New _Tab"
 msgstr "Deschide într-un _tab nou"
 
 #: ../src/nautilus-view-context-menus.xml.h:13
-#| msgid "Open in New _Window"
 msgid "Open In New _Window"
 msgstr "Deschide într-o _fereastră nouă"
 
 #: ../src/nautilus-view-context-menus.xml.h:14
-#| msgid "Open With Other _Application…"
 msgid "Open With Other _Application"
 msgstr "Deschide cu altă _aplicație"
 
@@ -4380,17 +4281,14 @@ msgid "_Paste Into Folder"
 msgstr "Li_pește în dosar"
 
 #: ../src/nautilus-view-context-menus.xml.h:24
-#| msgid "Move To…"
 msgid "Move to…"
 msgstr "Mută în…"
 
 #: ../src/nautilus-view-context-menus.xml.h:25
-#| msgid "Copy To…"
 msgid "Copy to…"
 msgstr "Copiază în…"
 
 #: ../src/nautilus-view-context-menus.xml.h:27
-#| msgid "The item cannot be restored from trash"
 msgid "_Delete from Trash"
 msgstr "Ș_terge de la gunoi"
 
@@ -4403,7 +4301,6 @@ msgid "Empty Trash"
 msgstr "Golește coșul de gunoi"
 
 #: ../src/nautilus-view-context-menus.xml.h:30
-#| msgid "The item cannot be restored from trash"
 msgid "_Restore From Trash"
 msgstr "_Restaurează de la gunoi"
 
@@ -4412,22 +4309,18 @@ msgid "Resize Icon…"
 msgstr "Redimensionează iconița…"
 
 #: ../src/nautilus-view-context-menus.xml.h:32
-#| msgid "Restore Icon's Original Si_ze"
 msgid "Restore Icon's Original Size"
 msgstr "Restaurează dimensiunea originală a iconiței"
 
 #: ../src/nautilus-view-context-menus.xml.h:33
-#| msgid "Rena_me…"
 msgid "Rena_me"
 msgstr "Redenu_mește"
 
 #: ../src/nautilus-view-context-menus.xml.h:34
-#| msgid "Set as Wallpaper"
 msgid "Set As Wallpaper"
 msgstr "Definește ca fundal"
 
 #: ../src/nautilus-view-context-menus.xml.h:35
-#| msgid "Remo_ve from Recent"
 msgid "_Remove from Recent"
 msgstr "Elimină din _Recente"
 
@@ -4468,7 +4361,6 @@ msgstr "_Formatează…"
 #. Translators: only one item has been deleted and %s is its name.
 #: ../src/nautilus-window.c:1546
 #, c-format
-#| msgid "“%s” selected"
 msgid "“%s” deleted"
 msgstr "„%s” șters"
 
@@ -4476,8 +4368,6 @@ msgstr "„%s” șters"
 #. * is the count.
 #: ../src/nautilus-window.c:1551
 #, c-format
-#| msgid "%'d file left to delete"
-#| msgid_plural "%'d files left to delete"
 msgid "%d file deleted"
 msgid_plural "%d files deleted"
 msgstr[0] "%'d fișier șters"
@@ -4583,7 +4473,6 @@ msgid "Searching…"
 msgstr "Se caută…"
 
 #: ../src/nautilus-window.ui.h:1
-#| msgid "Files"
 msgid "_Files"
 msgstr "_Fișiere"
 
@@ -4644,6 +4533,9 @@ msgstr "Conține fotografii și muzică"
 #: ../src/nautilus-x-content-bar.c:201
 msgid "Open with:"
 msgstr "Deschide cu:"
+
+#~ msgid "Could not register the application"
+#~ msgstr "Nu s-a putut înregistra aplicația"
 
 #~ msgid "Saved search"
 #~ msgstr "Căutare salvată"
@@ -4741,9 +4633,6 @@ msgstr "Deschide cu:"
 #~| msgid "%a, %b %-d %Y at %-I:%M %p"
 #~ msgid "%a, %b %e %Y %T"
 #~ msgstr "%a, %-d %b %Y la %-H:%M"
-
-#~ msgid "Whether to enable immediate deletion"
-#~ msgstr "Dacă să activeze ștergerea fără avertizare"
 
 #~ msgid ""
 #~ "If set to true, then Nautilus will have a feature allowing you to delete "
