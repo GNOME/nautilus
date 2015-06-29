@@ -2062,6 +2062,9 @@ action_show_hidden_files (GSimpleAction *action,
 
 	nautilus_view_set_show_hidden_files (view, show_hidden);
 
+        g_settings_set_boolean (gtk_filechooser_preferences,
+                                NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+                                show_hidden);
 	g_simple_action_set_state (action, state);
 }
 

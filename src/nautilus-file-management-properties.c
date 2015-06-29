@@ -49,7 +49,6 @@
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_FOLDERS_FIRST_WIDGET "sort_folders_first_checkbutton"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_LIST_VIEW_USE_TREE_WIDGET "use_tree_view_checkbutton"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TRASH_CONFIRM_WIDGET "trash_confirm_checkbutton"
-#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SHOW_HIDDEN_WIDGET "hidden_files_checkbutton"
 
 /* int enums */
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_THUMBNAIL_LIMIT_WIDGET "preview_image_size_combobox"
@@ -592,9 +591,6 @@ nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow
 	bind_builder_bool (builder, nautilus_preferences,
 			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TRASH_CONFIRM_WIDGET,
 			   NAUTILUS_PREFERENCES_CONFIRM_TRASH);
-	bind_builder_bool (builder, gtk_filechooser_preferences,
-			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SHOW_HIDDEN_WIDGET,
-			   NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
 	bind_builder_bool (builder, nautilus_list_view_preferences,
 			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_LIST_VIEW_USE_TREE_WIDGET,
 			   NAUTILUS_PREFERENCES_LIST_VIEW_USE_TREE);
