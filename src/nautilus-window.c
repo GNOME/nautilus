@@ -445,8 +445,14 @@ action_view_mode (GSimpleAction *action,
 
 	if (g_strcmp0 (name, "list") == 0) {
 		nautilus_window_slot_set_content_view (slot, NAUTILUS_LIST_VIEW_ID);
+                g_settings_set_enum (nautilus_preferences,
+                                     NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
+                                     NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW);
 	} else if (g_strcmp0 (name, "grid") == 0) {
 		nautilus_window_slot_set_content_view (slot, NAUTILUS_CANVAS_VIEW_ID);
+                g_settings_set_enum (nautilus_preferences,
+                                     NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
+                                     NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW);
 	} else {
 		g_assert_not_reached ();
 	}

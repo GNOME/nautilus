@@ -54,12 +54,6 @@
 /* int enums */
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_THUMBNAIL_LIMIT_WIDGET "preview_image_size_combobox"
 
-static const char * const default_view_values[] = {
-	"icon-view",
-	"list-view",
-	NULL
-};
-
 static const char * const sort_order_values[] = {
 	"name",
 	"size",
@@ -581,9 +575,6 @@ nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow
 
 	/* setup UI */
 	nautilus_file_management_properties_size_group_create (builder,
-							       "views_label",
-							       2);
-	nautilus_file_management_properties_size_group_create (builder,
 							       "captions_label",
 							       3);
 	nautilus_file_management_properties_size_group_create (builder,
@@ -608,10 +599,6 @@ nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow
 			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_LIST_VIEW_USE_TREE_WIDGET,
 			   NAUTILUS_PREFERENCES_LIST_VIEW_USE_TREE);
 
-	bind_builder_enum (builder, nautilus_preferences,
-			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DEFAULT_VIEW_WIDGET,
-			   NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
-			   (const char **) default_view_values);
 	bind_builder_enum (builder, nautilus_preferences,
 			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_ORDER_WIDGET,
 			   NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER,
