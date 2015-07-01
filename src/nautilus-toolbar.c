@@ -59,6 +59,8 @@ struct _NautilusToolbarPrivate {
 
 	GtkWidget *view_menu_widget;
 	GtkWidget *sort_menu;
+	GtkWidget *sort_modification_date;
+	GtkWidget *sort_access_date;
 	GtkWidget *sort_trash_time;
 	GtkWidget *sort_search_relevance;
 	GtkWidget *visible_columns;
@@ -440,6 +442,8 @@ nautilus_toolbar_init (NautilusToolbar *self)
 	self->priv->zoom_adjustment = GTK_ADJUSTMENT (gtk_builder_get_object (builder, "zoom_adjustment"));
 
 	self->priv->sort_menu =  GTK_WIDGET (gtk_builder_get_object (builder, "sort_menu"));
+	self->priv->sort_modification_date =  GTK_WIDGET (gtk_builder_get_object (builder, "sort_modification_date"));
+	self->priv->sort_access_date =  GTK_WIDGET (gtk_builder_get_object (builder, "sort_access_date"));
 	self->priv->sort_trash_time =  GTK_WIDGET (gtk_builder_get_object (builder, "sort_trash_time"));
 	self->priv->sort_search_relevance =  GTK_WIDGET (gtk_builder_get_object (builder, "sort_search_relevance"));
 	self->priv->visible_columns =  GTK_WIDGET (gtk_builder_get_object (builder, "visible_columns"));
@@ -575,7 +579,7 @@ nautilus_toolbar_reset_menus (NautilusToolbar *self)
 	GActionGroup *view_action_group;
 	GVariant *variant;
 	GVariantIter iter;
-	gboolean sort_trash, sort_search, has_sort;
+	gboolean show_sort_trash, show_sort_search, show_sort_access, show_sort_modification, has_sort;
 	const gchar *hint;
 
 	/* Allow actions from the current view to be activated through
@@ -591,7 +595,7 @@ nautilus_toolbar_reset_menus (NautilusToolbar *self)
 				g_action_group_has_action (view_action_group, "visible-columns"));
 
 	has_sort = g_action_group_has_action (view_action_group, "sort");
-	sort_trash = sort_search = FALSE;
+	show_sort_trash = show_sort_search = show_sort_modification = show_sort_access = FALSE;
 	gtk_widget_set_visible (self->priv->sort_menu, has_sort);
 
 	if (has_sort) {
@@ -600,16 +604,22 @@ nautilus_toolbar_reset_menus (NautilusToolbar *self)
 
 		while (g_variant_iter_next (&iter, "&s", &hint)) {
 			if (g_strcmp0 (hint, "trash-time") == 0)
-				sort_trash = TRUE;
+				show_sort_trash = TRUE;
 			if (g_strcmp0 (hint, "search-relevance") == 0)
-				sort_search = TRUE;
+				show_sort_search = TRUE;
+			if (g_strcmp0 (hint, "access-date") == 0)
+				show_sort_access = TRUE;
+			if (g_strcmp0 (hint, "modification-date") == 0)
+				show_sort_modification = TRUE;
 		}
 
 		g_variant_unref (variant);
 	}
 
-	gtk_widget_set_visible (self->priv->sort_trash_time, sort_trash);
-	gtk_widget_set_visible (self->priv->sort_search_relevance, sort_search);
+	gtk_widget_set_visible (self->priv->sort_trash_time, show_sort_trash);
+	gtk_widget_set_visible (self->priv->sort_search_relevance, show_sort_search);
+	gtk_widget_set_visible (self->priv->sort_modification_date, show_sort_modification);
+	gtk_widget_set_visible (self->priv->sort_access_date, show_sort_access);
 
 	variant = g_action_group_get_action_state (view_action_group, "zoom-to-level");
 	gtk_adjustment_set_value (self->priv->zoom_adjustment,
