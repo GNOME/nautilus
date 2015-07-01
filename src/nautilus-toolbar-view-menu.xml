@@ -132,6 +132,15 @@
               </object>
             </child>
             <child>
+              <object class="GtkModelButton" id="sort_modification_date">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="text" translatable="yes">Last _Modified</property>
+                <property name="action-name">view.sort</property>
+                <property name="action-target">'modification-date'</property>
+              </object>
+            </child>
+            <child>
               <object class="GtkModelButton" id="sort_trash_time">
                 <property name="visible">False</property>
                 <property name="can_focus">True</property>

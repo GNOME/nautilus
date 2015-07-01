@@ -107,6 +107,12 @@ struct NautilusCanvasViewDetails
 	gboolean supports_keep_aligned;
 };
 
+static gboolean
+file_is_not_in_recent (NautilusFile *file)
+{
+        return !nautilus_file_is_in_recent (file);
+}
+
 /* Note that the first item in this list is the default sort,
  * and that the items show up in the menu in the order they
  * appear in this list.
@@ -130,12 +136,14 @@ static const SortCriterion sort_criteria[] = {
 	{
 		NAUTILUS_FILE_SORT_BY_MTIME,
 		"modification date",
-		"modification-date"
+		"modification-date",
+                file_is_not_in_recent
 	},
 	{
 		NAUTILUS_FILE_SORT_BY_ATIME,
 		"access date",
-		"access-date"
+		"access-date",
+                nautilus_file_is_in_recent
 	},
 	{
 		NAUTILUS_FILE_SORT_BY_TRASHED_TIME,
