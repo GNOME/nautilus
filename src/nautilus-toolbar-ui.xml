@@ -141,5 +141,58 @@
         <property name="pack-type">end</property>
       </packing>
     </child>
+    <child>
+      <object class="GtkRevealer" id="operations_revealer">
+        <property name="visible">True</property>
+        <property name="transition-type">GTK_REVEALER_TRANSITION_TYPE_CROSSFADE</property>
+        <child>
+          <object class="GtkMenuButton" id="operations_button">
+            <property name="visible">False</property>
+            <property name="popover">operations_popover</property>
+            <style>
+              <class name="button"/>
+            </style>
+            <child>
+              <object class="GtkDrawingArea" id="operations_icon">
+                <property name="visible">True</property>
+                <property name="height-request">16</property>
+                <property name="width-request">16</property>
+                <property name="valign">GTK_ALIGN_CENTER</property>
+                <property name="halign">GTK_ALIGN_CENTER</property>
+                <signal name="draw" handler="on_operations_icon_draw" object="NautilusToolbar" swapped="no"/>
+              </object>
+            </child>
+            <child internal-child="accessible">
+              <object class="AtkObject">
+                <property name="accessible-name" translatable="yes">Operations in progress</property>
+                <property name="accessible-description" translatable="yes">Open operations in progress</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+      <packing>
+        <property name="pack-type">end</property>
+      </packing>
+    </child>
   </template>
+  <object class="GtkPopover" id="operations_popover">
+    <property name="modal">false</property>
+    <property name="relative-to">operations_button</property>
+    <child>
+      <object class="GtkScrolledWindow">
+        <property name="visible">True</property>
+        <property name="hscrollbar_policy">GTK_POLICY_NEVER</property>
+        <property name="min-content-height">270</property>
+        <child>
+          <object class="GtkBox" id="operations_container">
+            <property name="orientation">vertical</property>
+            <property name="visible">True</property>
+            <property name="margin">12</property>
+            <property name="spacing">10</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
 </interface>

@@ -37,6 +37,7 @@
 #include "nautilus-freedesktop-dbus.h"
 #include "nautilus-image-properties-page.h"
 #include "nautilus-previewer.h"
+#include "nautilus-progress-persistence-handler.h"
 #include "nautilus-self-check-functions.h"
 #include "nautilus-shell-search-provider.h"
 #include "nautilus-window.h"
@@ -70,7 +71,7 @@
 G_DEFINE_TYPE (NautilusApplication, nautilus_application, GTK_TYPE_APPLICATION);
 
 struct _NautilusApplicationPriv {
-	NautilusProgressUIHandler *progress_handler;
+	NautilusProgressPersistenceHandler *progress_handler;
 	NautilusDBusManager *dbus_manager;
 	NautilusFreedesktopDBus *fdb_manager;
 
@@ -102,13 +103,6 @@ GList *
 nautilus_application_get_windows (NautilusApplication *application)
 {
 	return application->priv->windows;
-}
-
-
-NautilusProgressUIHandler *
-nautilus_application_get_progress_ui_handler (NautilusApplication *application)
-{
-	return application->priv->progress_handler;
 }
 
 NautilusBookmarkList *
@@ -996,7 +990,7 @@ nautilus_application_startup (GApplication *app)
 	menu_provider_init_callback ();
 	
 	/* Initialize the UI handler singleton for file operations */
-	self->priv->progress_handler = nautilus_progress_ui_handler_new ();
+	self->priv->progress_handler = nautilus_progress_persistence_handler_new (G_OBJECT (self));
 
 	/* Check the user's .nautilus directories and post warnings
 	 * if there are problems.
@@ -1169,6 +1163,7 @@ nautilus_application_window_removed (GtkApplication *app,
 	/* if this was the last window, close the previewer */
 	if (g_list_length (self->priv->windows) == 0) {
 		nautilus_previewer_call_close ();
+                nautilus_progress_persistence_handler_make_persistent (self->priv->progress_handler);
 	}
 }
 

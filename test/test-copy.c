@@ -69,7 +69,7 @@ main (int argc, char* argv[])
 	
 	gtk_widget_show (window);
 
-        manager = nautilus_progress_info_manager_new ();
+        manager = nautilus_progress_info_manager_dup_singleton ();
 
 	nautilus_file_operations_copy (sources,
 				       NULL /* GArray *relative_item_points */,

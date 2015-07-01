@@ -57,11 +57,12 @@ struct _NautilusProgressInfoManagerClass {
 
 GType nautilus_progress_info_manager_get_type (void);
 
-NautilusProgressInfoManager* nautilus_progress_info_manager_new (void);
+NautilusProgressInfoManager* nautilus_progress_info_manager_dup_singleton (void);
 
 void nautilus_progress_info_manager_add_new_info (NautilusProgressInfoManager *self,
                                                   NautilusProgressInfo *info);
 GList *nautilus_progress_info_manager_get_all_infos (NautilusProgressInfoManager *self);
+gboolean nautilus_progress_manager_are_all_infos_finished (NautilusProgressInfoManager *self);
 
 G_END_DECLS
 

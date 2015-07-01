@@ -44,14 +44,14 @@
 typedef struct _NautilusProgressInfoWidgetPrivate NautilusProgressInfoWidgetPrivate;
 
 typedef struct {
-	GtkBox parent;
+	GtkGrid parent;
 
 	/* private */
 	NautilusProgressInfoWidgetPrivate *priv;
 } NautilusProgressInfoWidget;
 
 typedef struct {
-	GtkBoxClass parent_class;
+	GtkGridClass parent_class;
 } NautilusProgressInfoWidgetClass;
 
 GType nautilus_progress_info_widget_get_type (void);

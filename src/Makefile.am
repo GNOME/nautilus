@@ -189,8 +189,8 @@ nautilus_SOURCES = \
 	nautilus-previewer.h			\
 	nautilus-progress-info-widget.c		\
 	nautilus-progress-info-widget.h		\
-	nautilus-progress-ui-handler.c		\
-	nautilus-progress-ui-handler.h		\
+	nautilus-progress-persistence-handler.c	\
+	nautilus-progress-persistence-handler.h	\
 	nautilus-properties-window.c		\
 	nautilus-properties-window.h		\
 	nautilus-query-editor.c			\

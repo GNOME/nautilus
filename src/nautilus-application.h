@@ -27,7 +27,6 @@
 #include <gtk/gtk.h>
 
 #include "nautilus-bookmark-list.h"
-#include "nautilus-progress-ui-handler.h"
 #include "nautilus-window.h"
 
 #define NAUTILUS_DESKTOP_ICON_VIEW_IID	"OAFIID:Nautilus_File_Manager_Desktop_Canvas_View"
@@ -81,7 +80,4 @@ void nautilus_application_edit_bookmarks (NautilusApplication *application,
 
 GtkWidget * nautilus_application_connect_server (NautilusApplication *application,
 						 NautilusWindow      *window);
-
-NautilusProgressUIHandler * nautilus_application_get_progress_ui_handler (NautilusApplication *application);
-
 #endif /* __NAUTILUS_APPLICATION_H__ */

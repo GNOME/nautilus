@@ -78,6 +78,13 @@ void          nautilus_progress_info_set_progress    (NautilusProgressInfo *info
 						      double                total);
 void          nautilus_progress_info_pulse_progress  (NautilusProgressInfo *info);
 
+void          nautilus_progress_info_set_remaining_time (NautilusProgressInfo *info,
+                                                         gdouble               time);
+gdouble       nautilus_progress_info_get_remaining_time (NautilusProgressInfo *info);
+void          nautilus_progress_info_set_elapsed_time (NautilusProgressInfo *info,
+                                                       gdouble               time);
+gdouble       nautilus_progress_info_get_elapsed_time (NautilusProgressInfo *info);
+
 
 
 #endif /* NAUTILUS_PROGRESS_INFO_H */

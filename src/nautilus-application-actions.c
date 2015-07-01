@@ -217,18 +217,6 @@ action_search (GSimpleAction *action,
 }
 
 static void
-action_show_file_transfers (GSimpleAction *action,
-			    GVariant *parameter,
-			    gpointer user_data)
-{
-	NautilusApplication *application = user_data;
-	NautilusProgressUIHandler *progress_handler;
-
-	progress_handler = nautilus_application_get_progress_ui_handler (application);
-	nautilus_progress_ui_handler_ensure_window (progress_handler);
-}
-
-static void
 action_show_hide_sidebar (GSimpleAction *action,
 			  GVariant      *state,
 			  gpointer       user_data)
@@ -261,7 +249,6 @@ static GActionEntry app_entries[] = {
 	{ "kill", action_kill, NULL, NULL, NULL },
 	{ "open-desktop", action_open_desktop, NULL, NULL, NULL },
 	{ "close-desktop", action_close_desktop, NULL, NULL, NULL },
-	{ "show-file-transfers", action_show_file_transfers, NULL, NULL, NULL }
 };
 
 void

@@ -1478,13 +1478,18 @@ report_delete_progress (CommonJob *job,
 					    f (_("Deleting files")));
 
 	elapsed = g_timer_elapsed (job->time, NULL);
-	if (elapsed < SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE) {
+        transfer_rate = 0;
+        remaining_time = INT_MAX;
+	if (elapsed > 0) {
+		transfer_rate = transfer_info->num_files / elapsed;
+                if (transfer_rate > 0)
+		        remaining_time = (source_info->num_files - transfer_info->num_files) / transfer_rate;
+	}
 
+	if (elapsed < SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE) {
 		nautilus_progress_info_set_details (job->progress, files_left_s);
 	} else {
 		char *details, *time_left_s;
-		transfer_rate = transfer_info->num_files / elapsed;
-		remaining_time = files_left / transfer_rate;
 
 		/* To translators: %T will expand to a time like "2 minutes".
  		 * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
@@ -1500,6 +1505,12 @@ report_delete_progress (CommonJob *job,
 		g_free (time_left_s);
 	}
 
+        if (elapsed > SECONDS_NEEDED_FOR_APROXIMATE_TRANSFER_RATE) {
+                nautilus_progress_info_set_remaining_time (job->progress,
+                                                           remaining_time);
+                nautilus_progress_info_set_elapsed_time (job->progress,
+                                                         elapsed);
+        }
 	g_free (files_left_s);
 
 	if (source_info->num_files != 0) {
@@ -3039,8 +3050,11 @@ report_copy_progress (CopyMoveJob *copy_job,
 	
 	elapsed = g_timer_elapsed (job->time, NULL);
 	transfer_rate = 0;
+        remaining_time = INT_MAX;
 	if (elapsed > 0) {
 		transfer_rate = transfer_info->num_bytes / elapsed;
+                if (transfer_rate > 0)
+		        remaining_time = (total_size - transfer_info->num_bytes) / transfer_rate;
 	}
 
 	if (elapsed < SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE &&
@@ -3051,7 +3065,6 @@ report_copy_progress (CopyMoveJob *copy_job,
 		nautilus_progress_info_take_details (job->progress, s);
 	} else {
 		char *s;
-		remaining_time = (total_size - transfer_info->num_bytes) / transfer_rate;
 
 		/* To translators: %S will expand to a size like "2 bytes" or "3 MB", %T to a time duration like
 		 * "2 minutes". So the whole thing will be something like "2 kb of 4 MB -- 2 hours left (4kb/sec)"
@@ -3066,6 +3079,13 @@ report_copy_progress (CopyMoveJob *copy_job,
 		       (goffset)transfer_rate);
 		nautilus_progress_info_take_details (job->progress, s);
 	}
+
+        if (elapsed > SECONDS_NEEDED_FOR_APROXIMATE_TRANSFER_RATE) {
+                nautilus_progress_info_set_remaining_time (job->progress,
+                                                           remaining_time);
+                nautilus_progress_info_set_elapsed_time (job->progress,
+                                                         elapsed);
+        }
 
 	nautilus_progress_info_set_progress (job->progress, transfer_info->num_bytes, total_size);
 }

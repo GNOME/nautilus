@@ -42,7 +42,7 @@ enum {
 static GParamSpec *properties[NUM_PROPERTIES] = { NULL };
 
 G_DEFINE_TYPE_WITH_PRIVATE (NautilusProgressInfoWidget, nautilus_progress_info_widget,
-                            GTK_TYPE_BOX);
+                            GTK_TYPE_GRID);
 
 static void
 info_finished (NautilusProgressInfoWidget *self)
@@ -93,6 +93,9 @@ nautilus_progress_info_widget_dispose (GObject *obj)
 {
 	NautilusProgressInfoWidget *self = NAUTILUS_PROGRESS_INFO_WIDGET (obj);
 
+        if (self->priv->info != NULL) {
+                g_signal_handlers_disconnect_by_data (self->priv->info, self);
+        }
 	g_clear_object (&self->priv->info);
 
 	G_OBJECT_CLASS (nautilus_progress_info_widget_parent_class)->dispose (obj);
@@ -185,8 +188,5 @@ nautilus_progress_info_widget_new (NautilusProgressInfo *info)
 {
 	return g_object_new (NAUTILUS_TYPE_PROGRESS_INFO_WIDGET,
 			     "info", info,
-			     "orientation", GTK_ORIENTATION_VERTICAL,
-			     "homogeneous", FALSE,
-			     "spacing", 5,
 			     NULL);
 }

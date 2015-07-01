@@ -28,6 +28,8 @@
 #include <gtk/gtk.h>
 #include <gio/gio.h>
 
+#define SECONDS_NEEDED_FOR_APROXIMATE_TRANSFER_RATE 1
+
 typedef void (* NautilusCopyCallback)      (GHashTable *debuting_uris,
 					    gboolean    success,
 					    gpointer    callback_data);

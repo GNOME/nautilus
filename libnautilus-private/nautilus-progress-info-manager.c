@@ -111,7 +111,7 @@ progress_info_finished_cb (NautilusProgressInfo *info,
 }
 
 NautilusProgressInfoManager *
-nautilus_progress_info_manager_new (void)
+nautilus_progress_info_manager_dup_singleton (void)
 {
 	return g_object_new (NAUTILUS_TYPE_PROGRESS_INFO_MANAGER, NULL);
 }
@@ -138,4 +138,18 @@ GList *
 nautilus_progress_info_manager_get_all_infos (NautilusProgressInfoManager *self)
 {
 	return self->priv->progress_infos;
+}
+
+gboolean
+nautilus_progress_manager_are_all_infos_finished (NautilusProgressInfoManager *self)
+{
+        GList *l;
+
+        for (l = self->priv->progress_infos; l != NULL; l = l->next) {
+                if (!nautilus_progress_info_get_is_finished (l->data)) {
+                      return FALSE;
+                    }
+        }
+
+        return TRUE;
 }

@@ -29,12 +29,17 @@
 #include "nautilus-location-entry.h"
 #include "nautilus-pathbar.h"
 #include "nautilus-window.h"
+#include "nautilus-progress-info-widget.h"
 
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-ui-utilities.h>
+#include <libnautilus-private/nautilus-progress-info-manager.h>
+#include <libnautilus-private/nautilus-file-operations.h>
 
 #include <glib/gi18n.h>
 #include <math.h>
+
+#define OPERATION_MINIMUM_TIME 5 //s
 
 typedef enum {
 	NAUTILUS_NAVIGATION_DIRECTION_NONE,
@@ -53,10 +58,16 @@ struct _NautilusToolbarPrivate {
 	gboolean show_location_entry;
 
 	guint popup_timeout_id;
+        guint start_operations_timeout_id;
 
+	GtkWidget *operations_button;
 	GtkWidget *view_button;
 	GtkWidget *action_button;
 
+        GtkWidget *operations_popover;
+        GtkWidget *operations_container;
+        GtkWidget *operations_revealer;
+        GtkWidget *operations_icon;
 	GtkWidget *view_menu_widget;
 	GtkWidget *sort_menu;
 	GtkWidget *sort_modification_date;
@@ -72,6 +83,8 @@ struct _NautilusToolbarPrivate {
 
 	GtkWidget *forward_button;
 	GtkWidget *back_button;
+
+        NautilusProgressInfoManager *progress_manager;
 };
 
 enum {
@@ -420,6 +433,209 @@ view_menu_popover_closed (GtkPopover *popover,
 	nautilus_view_grab_focus (view);
 }
 
+static gboolean
+should_hide_operations_button (NautilusToolbar *self)
+{
+        GList *progress_infos;
+        GList *l;
+
+        progress_infos = nautilus_progress_info_manager_get_all_infos (self->priv->progress_manager);
+
+        for (l = progress_infos; l != NULL; l = l->next) {
+                if (nautilus_progress_info_get_elapsed_time (l->data) +
+                    nautilus_progress_info_get_remaining_time (l->data) > OPERATION_MINIMUM_TIME) {
+                        return FALSE;
+                }
+        }
+
+        return TRUE;
+}
+
+static void
+on_progress_info_progress_changed (NautilusProgressInfo *info,
+                                   NautilusToolbar      *self)
+{
+        /* Update the pie chart progress */
+        gtk_widget_queue_draw (self->priv->operations_icon);
+}
+
+static void
+on_progress_info_finished (NautilusProgressInfo *info,
+                           NautilusToolbar      *self)
+{
+        /* Update the pie chart progress */
+        gtk_widget_queue_draw (self->priv->operations_icon);
+
+        if (should_hide_operations_button (self)) {
+                gtk_revealer_set_reveal_child (GTK_REVEALER (self->priv->operations_revealer),
+                                               FALSE);
+        }
+}
+
+static void
+disconnect_progress_infos (NautilusToolbar *self)
+{
+        GList *progress_infos;
+        GList *l;
+
+        progress_infos = nautilus_progress_info_manager_get_all_infos (self->priv->progress_manager);
+        for (l = progress_infos; l != NULL; l = l->next) {
+                g_signal_handlers_disconnect_by_data (l->data, self);
+        }
+}
+
+static void
+update_operations (NautilusToolbar *self)
+{
+        GList *progress_infos;
+        GList *l;
+        GtkWidget *progress;
+        guint total_remaining_time = 0;
+
+        gtk_container_foreach (GTK_CONTAINER (self->priv->operations_container),
+                               (GtkCallback) gtk_widget_destroy,
+                               NULL);
+
+        disconnect_progress_infos (self);
+
+        progress_infos = nautilus_progress_info_manager_get_all_infos (self->priv->progress_manager);
+        for (l = progress_infos; l != NULL; l = l->next) {
+                if (nautilus_progress_info_get_elapsed_time (l->data) +
+                    nautilus_progress_info_get_remaining_time (l->data) > OPERATION_MINIMUM_TIME) {
+                        total_remaining_time = nautilus_progress_info_get_remaining_time (l->data);
+
+	                g_signal_connect (l->data, "finished",
+			                  G_CALLBACK (on_progress_info_finished), self);
+	                g_signal_connect (l->data, "progress-changed",
+			                  G_CALLBACK (on_progress_info_progress_changed), self);
+                        progress = nautilus_progress_info_widget_new (l->data);
+                        gtk_box_pack_start (GTK_BOX (self->priv->operations_container),
+                                            progress,
+                                            FALSE, FALSE, 0);
+                }
+        }
+
+        /* Either we are already showing the button, so keep showing it until the user
+         * toggle it to hide the operations popover, or, if we want now to show it,
+         * we have to have at least one operation that its total stimated time
+         * is longer than OPERATION_MINIMUM_TIME seconds, or if we failed to get
+         * a correct stimated time and it's around OPERATION_MINIMUM_TIME,
+         * showing the button for just for a moment because now we realized the
+         * estimated time is longer than a OPERATION_MINIMUM_TIME is odd, so show
+         * it only if the remaining time is bigger than again OPERATION_MINIMUM_TIME.
+         */
+        if (total_remaining_time > OPERATION_MINIMUM_TIME ||
+            gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (self->priv->operations_button))) {
+                gtk_revealer_set_reveal_child (GTK_REVEALER (self->priv->operations_revealer),
+                                               TRUE);
+                gtk_widget_queue_draw (self->priv->operations_icon);
+        }
+}
+
+static gboolean
+on_progress_info_started_timeout (NautilusToolbar *self)
+{
+        update_operations (self);
+
+        /* In case we didn't show the operations button because the operation total
+         * time stimation is not good enough, update again to make sure we don't miss
+         * a long time operation because of that */
+        if (!nautilus_progress_manager_are_all_infos_finished (self->priv->progress_manager)) {
+                return G_SOURCE_CONTINUE;
+        } else {
+                self->priv->start_operations_timeout_id = 0;
+                return G_SOURCE_REMOVE;
+        }
+}
+
+static void
+schedule_operations_start (NautilusToolbar *self)
+{
+        if (self->priv->start_operations_timeout_id == 0) {
+                /* Timeout is a little more than what we require for a stimated operation
+                 * total time, to make sure the stimated total time is correct */
+                self->priv->start_operations_timeout_id =
+                        g_timeout_add (SECONDS_NEEDED_FOR_APROXIMATE_TRANSFER_RATE * 1000 + 500,
+                                       (GSourceFunc) on_progress_info_started_timeout,
+                                       self);
+        }
+}
+
+static void
+unschedule_operations_start (NautilusToolbar *self)
+{
+        if (self->priv->start_operations_timeout_id != 0) {
+                g_source_remove (self->priv->start_operations_timeout_id);
+                self->priv->start_operations_timeout_id = 0;
+        }
+}
+
+static void
+on_progress_info_started (NautilusProgressInfo *info,
+                          NautilusToolbar      *self)
+{
+        g_signal_handlers_disconnect_by_data (info, self);
+        schedule_operations_start (self);
+}
+
+static void
+on_new_progress_info (NautilusProgressInfoManager *manager,
+                      NautilusProgressInfo        *info,
+                      NautilusToolbar             *self)
+{
+        g_signal_connect (info, "started",
+                          G_CALLBACK (on_progress_info_started), self);
+}
+
+static void
+on_operations_icon_draw (GtkWidget       *widget,
+                         cairo_t         *cr,
+                         NautilusToolbar *self)
+{
+        gfloat elapsed_progress = 0;
+        gint remaining_progress = 0;
+        gint total_progress;
+        gdouble ratio;
+        GList *progress_infos;
+        GList *l;
+        guint width;
+        guint height;
+        GdkRGBA background = {.red = 0, .green = 0, .blue = 0, .alpha = 0.2 };
+        GdkRGBA foreground = {.red = 0, .green = 0, .blue = 0, .alpha = 0.7 };
+
+        progress_infos = nautilus_progress_info_manager_get_all_infos (self->priv->progress_manager);
+        for (l = progress_infos; l != NULL; l = l->next) {
+                remaining_progress += nautilus_progress_info_get_remaining_time (l->data);
+                elapsed_progress += nautilus_progress_info_get_elapsed_time (l->data);
+        }
+
+        total_progress = remaining_progress + elapsed_progress;
+
+        if (total_progress > 0)
+                ratio = MAX (0.05, elapsed_progress / total_progress);
+        else
+                ratio = 0.05;
+
+
+        width = gtk_widget_get_allocated_width (widget);
+        height = gtk_widget_get_allocated_height (widget);
+
+        gdk_cairo_set_source_rgba(cr, &background);
+        cairo_arc (cr,
+                   width / 2.0, height / 2.0,
+                   MIN (width, height) / 2.0,
+                   0, 2 *G_PI);
+        cairo_fill (cr);
+        cairo_move_to (cr, width / 2.0, height / 2.0);
+        gdk_cairo_set_source_rgba (cr, &foreground);
+        cairo_arc (cr,
+                   width / 2.0, height / 2.0,
+                   MIN (width, height) / 2.0,
+                   -G_PI / 2.0, ratio * 2 * G_PI - G_PI / 2.0);
+
+        cairo_fill (cr);
+}
+
 static void
 nautilus_toolbar_init (NautilusToolbar *self)
 {
@@ -461,6 +677,11 @@ nautilus_toolbar_init (NautilusToolbar *self)
 	gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (self->priv->action_button),
 					G_MENU_MODEL (self->priv->action_menu));
 	g_object_unref (builder);
+
+        self->priv->progress_manager = nautilus_progress_info_manager_dup_singleton ();
+	g_signal_connect (self->priv->progress_manager, "new-progress-info",
+			  G_CALLBACK (on_new_progress_info), self);
+        update_operations (self);
 
 	g_object_set_data (G_OBJECT (self->priv->back_button), "nav-direction",
 			   GUINT_TO_POINTER (NAUTILUS_NAVIGATION_DIRECTION_BACK));
@@ -527,7 +748,12 @@ nautilus_toolbar_dispose (GObject *obj)
 
 	g_signal_handlers_disconnect_by_func (nautilus_preferences,
 					      toolbar_update_appearance, self);
+        disconnect_progress_infos (self);
 	unschedule_menu_popup_timeout (self);
+        unschedule_operations_start (self);
+
+        g_signal_handlers_disconnect_by_data (self->priv->progress_manager, self);
+        g_clear_object (&self->priv->progress_manager);
 
 	G_OBJECT_CLASS (nautilus_toolbar_parent_class)->dispose (obj);
 }
@@ -563,12 +789,18 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
 	gtk_widget_class_set_template_from_resource (widget_class,
 						     "/org/gnome/nautilus/nautilus-toolbar-ui.xml");
 
+	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, operations_button);
+	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, operations_icon);
+	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, operations_container);
+	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, operations_revealer);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, view_button);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, action_button);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, path_bar_container);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, location_entry_container);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, back_button);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, forward_button);
+
+        gtk_widget_class_bind_template_callback (widget_class, on_operations_icon_draw);
 }
 
 void

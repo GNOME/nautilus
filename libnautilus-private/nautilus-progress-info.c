@@ -50,6 +50,8 @@ struct _NautilusProgressInfo
 	char *status;
 	char *details;
 	double progress;
+        gdouble remaining_time;
+        gdouble elapsed_time;
 	gboolean activity_mode;
 	gboolean started;
 	gboolean finished;
@@ -162,7 +164,7 @@ nautilus_progress_info_init (NautilusProgressInfo *info)
 
 	info->cancellable = g_cancellable_new ();
 
-	manager = nautilus_progress_info_manager_new ();
+	manager = nautilus_progress_info_manager_dup_singleton ();
 	nautilus_progress_info_manager_add_new_info (manager, info);
 	g_object_unref (manager);
 }
@@ -569,4 +571,46 @@ nautilus_progress_info_set_progress (NautilusProgressInfo *info,
 	}
 	
 	G_UNLOCK (progress_info);
+}
+
+void
+nautilus_progress_info_set_remaining_time (NautilusProgressInfo *info,
+                                           gdouble               time)
+{
+        G_LOCK (progress_info);
+        info->remaining_time = time;
+        G_UNLOCK (progress_info);
+}
+
+gdouble
+nautilus_progress_info_get_remaining_time (NautilusProgressInfo *info)
+{
+        gint remaining_time;
+
+        G_LOCK (progress_info);
+        remaining_time = info->remaining_time;
+        G_UNLOCK (progress_info);
+
+        return remaining_time;
+}
+
+void
+nautilus_progress_info_set_elapsed_time (NautilusProgressInfo *info,
+                                         gdouble               time)
+{
+        G_LOCK (progress_info);
+        info->elapsed_time = time;
+        G_UNLOCK (progress_info);
+}
+
+gdouble
+nautilus_progress_info_get_elapsed_time (NautilusProgressInfo *info)
+{
+        gint elapsed_time;
+
+        G_LOCK (progress_info);
+        elapsed_time = info->elapsed_time;
+        G_UNLOCK (progress_info);
+
+        return elapsed_time;
 }
