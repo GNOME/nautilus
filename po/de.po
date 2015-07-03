@@ -48,10 +48,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-18 16:46+0200\n"
-"PO-Revision-Date: 2015-04-18 16:48+0100\n"
-"Last-Translator: Christian Kirbach <christian.kirbach@gmail.com>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
+"POT-Creation-Date: 2015-06-19 22:58+0000\n"
+"PO-Revision-Date: 2015-06-20 09:34+0100\n"
+"Last-Translator: Benjamin Steinwender <b@stbe.at>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -92,13 +93,13 @@ msgstr "Software ausführen"
 
 #. set dialog properties
 #: ../data/nautilus-connect-server.desktop.in.in.h:1
-#: ../src/nautilus-connect-server-dialog.c:546
+#: ../src/nautilus-connect-server-dialog.c:547
 msgid "Connect to Server"
 msgstr "Mit Server verbinden"
 
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
-#: ../src/nautilus-file-management-properties.ui.h:28
-#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2652
+#: ../src/nautilus-file-management-properties.ui.h:24
+#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2639
 msgid "Files"
 msgstr "Dateien"
 
@@ -118,74 +119,6 @@ msgstr "X"
 msgid "Y"
 msgstr "Y"
 
-#: ../eel/eel-editable-label.c:312 ../libnautilus-private/nautilus-file.c:6466
-#: ../libnautilus-private/nautilus-file.c:6467
-msgid "Text"
-msgstr "Text"
-
-#: ../eel/eel-editable-label.c:313
-msgid "The text of the label."
-msgstr "Der Beschriftungstext."
-
-#: ../eel/eel-editable-label.c:319
-msgid "Justification"
-msgstr "Ausrichtung"
-
-#: ../eel/eel-editable-label.c:320
-msgid ""
-"The alignment of the lines in the text of the label relative to each other. "
-"This does NOT affect the alignment of the label within its allocation. See "
-"GtkMisc::xalign for that."
-msgstr ""
-"Die Ausrichtung der Zeilen des Beschriftungstextes relativ zueinander. Dies "
-"beeinflusst NICHT die Ausrichtung der Beschriftung innerhalb des ihr "
-"zugewiesenen Bereichs. Siehe hierzu auch GtkMisc::xalign."
-
-#: ../eel/eel-editable-label.c:328
-msgid "Line wrap"
-msgstr "Zeilenumbruch"
-
-#: ../eel/eel-editable-label.c:329
-msgid "If set, wrap lines if the text becomes too wide."
-msgstr "Sollen Zeilen umgebrochen werden, wenn der Text zu lang wird?"
-
-#: ../eel/eel-editable-label.c:336
-msgid "Cursor Position"
-msgstr "Position der Eingabemarke"
-
-#: ../eel/eel-editable-label.c:337
-msgid "The current position of the insertion cursor in chars."
-msgstr "Die aktuelle Position der Einfügemarke in Zeichen."
-
-#: ../eel/eel-editable-label.c:346
-msgid "Selection Bound"
-msgstr "Markierungsgrenze"
-
-#: ../eel/eel-editable-label.c:347
-msgid ""
-"The position of the opposite end of the selection from the cursor in chars."
-msgstr ""
-"Die Position des gegenüberliegenden Endes der Markierung relativ zur "
-"Eingabemarke in Zeichen."
-
-#: ../eel/eel-editable-label.c:3084
-#: ../src/nautilus-view-context-menus.xml.h:21
-msgid "Cu_t"
-msgstr "_Ausschneiden"
-
-#: ../eel/eel-editable-label.c:3086
-#: ../src/nautilus-view-context-menus.xml.h:22
-msgid "_Copy"
-msgstr "_Kopieren"
-
-#: ../eel/eel-editable-label.c:3088 ../src/nautilus-view-context-menus.xml.h:3
-msgid "_Paste"
-msgstr "_Einfügen"
-
-#: ../eel/eel-editable-label.c:3091
-msgid "Select All"
-msgstr "Alles markieren"
-
 #: ../eel/eel-gtk-extensions.c:326
 msgid "Show more _details"
 msgstr "Weitere _Details anzeigen"
@@ -194,15 +127,15 @@ msgstr "Weitere _Details anzeigen"
 #: ../eel/eel-stock-dialogs.c:195
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:542
 #: ../libnautilus-private/nautilus-file-operations.c:183
-#: ../src/nautilus-connect-server-dialog.c:652
-#: ../src/nautilus-location-entry.c:273 ../src/nautilus-mime-actions.c:647
-#: ../src/nautilus-mime-actions.c:651 ../src/nautilus-mime-actions.c:722
-#: ../src/nautilus-mime-actions.c:1065 ../src/nautilus-mime-actions.c:1571
-#: ../src/nautilus-mime-actions.c:1795
+#: ../src/nautilus-connect-server-dialog.c:653
+#: ../src/nautilus-location-entry.c:273 ../src/nautilus-mime-actions.c:439
+#: ../src/nautilus-mime-actions.c:443 ../src/nautilus-mime-actions.c:514
+#: ../src/nautilus-mime-actions.c:857 ../src/nautilus-mime-actions.c:1363
+#: ../src/nautilus-mime-actions.c:1587
 #: ../src/nautilus-properties-window.c:4179
 #: ../src/nautilus-properties-window.c:5163 ../src/nautilus-query-editor.c:494
-#: ../src/nautilus-view.c:780 ../src/nautilus-view.c:1277
-#: ../src/nautilus-view.c:4919
+#: ../src/nautilus-view.c:774 ../src/nautilus-view.c:1259
+#: ../src/nautilus-view.c:5069
 msgid "_Cancel"
 msgstr "_Abbrechen"
 
@@ -217,13 +150,13 @@ msgstr " (Unicode ungültig)"
 #: ../libnautilus-private/nautilus-bookmark.c:107
 #: ../libnautilus-private/nautilus-desktop-link.c:129
 #: ../libnautilus-private/nautilus-file-utilities.c:265
-#: ../src/nautilus-list-view.c:1825 ../src/nautilus-pathbar.c:295
+#: ../src/nautilus-list-view.c:1696 ../src/nautilus-pathbar.c:295
 #: ../src/nautilus-query-editor.c:1072
-#: ../src/nautilus-shell-search-provider.c:285
+#: ../src/nautilus-shell-search-provider.c:292
 msgid "Home"
 msgstr "Persönlicher Ordner"
 
-#: ../libnautilus-private/nautilus-canvas-container.c:2471
+#: ../libnautilus-private/nautilus-canvas-container.c:2453
 msgid "The selection rectangle"
 msgstr "Das Auswähl-Rechteck"
 
@@ -238,7 +171,7 @@ msgstr ""
 "ersetzen"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:57
-#: ../src/nautilus-list-view.c:2051
+#: ../src/nautilus-list-view.c:1921
 msgid "Name"
 msgstr "Name"
 
@@ -354,55 +287,27 @@ msgstr "Relevanzrang der Suche"
 msgid "on the desktop"
 msgstr "auf dem Schreibtisch"
 
-#: ../libnautilus-private/nautilus-desktop-link-monitor.c:83
-#, c-format
-msgid "You cannot move the volume “%s” to the trash."
-msgstr "Sie können den Datenträger »%s« nicht in den Papierkorb verschieben."
-
-#: ../libnautilus-private/nautilus-desktop-link-monitor.c:93
-msgid ""
-"If you want to eject the volume, please use Eject in the popup menu of the "
-"volume."
-msgstr ""
-"Verwenden Sie »Auswerfen« im Einblend-Menü des Datenträgers, falls Sie ihn "
-"auswerfen möchten."
-
-#: ../libnautilus-private/nautilus-desktop-link-monitor.c:95
-#: ../libnautilus-private/nautilus-desktop-link-monitor.c:104
-#: ../src/nautilus-location-entry.c:273 ../src/nautilus-mime-actions.c:1065
-#: ../src/nautilus-mime-actions.c:1242 ../src/nautilus-mime-actions.c:1795
-#: ../src/nautilus-view.c:780
-msgid "_OK"
-msgstr "_OK"
-
-#: ../libnautilus-private/nautilus-desktop-link-monitor.c:102
-msgid ""
-"If you want to unmount the volume, please use Unmount Volume in the popup "
-"menu of the volume."
-msgstr ""
-"Verwenden Sie »Aushängen« im Einblend-Menü des Datenträgers, falls Sie ihn "
-"aushängen möchten."
-
 #. Translators: this is of the format "hostname (uri-scheme)"
 #: ../libnautilus-private/nautilus-directory.c:517
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../libnautilus-private/nautilus-dnd.c:773
+#: ../libnautilus-private/nautilus-dnd.c:694
 msgid "_Move Here"
 msgstr "Hierher _verschieben"
 
-#: ../libnautilus-private/nautilus-dnd.c:778
+#: ../libnautilus-private/nautilus-dnd.c:699
 msgid "_Copy Here"
 msgstr "Hierher _kopieren"
 
 # CHECK
-#: ../libnautilus-private/nautilus-dnd.c:783
+#: ../libnautilus-private/nautilus-dnd.c:704
 msgid "_Link Here"
 msgstr "_Verknüpfung erstellen"
 
-#: ../libnautilus-private/nautilus-dnd.c:790
+#: ../libnautilus-private/nautilus-dnd.c:711
+#: ../src/nautilus-file-name-dialog.ui.h:1
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -455,56 +360,56 @@ msgid "Unable to rename desktop file"
 msgstr "Schreibtischdatei konnte nicht umbenannt werden"
 
 #. Translators: Time in 24h format
-#: ../libnautilus-private/nautilus-file.c:4706
+#: ../libnautilus-private/nautilus-file.c:4690
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. Translators: Time in 12h format
-#: ../libnautilus-private/nautilus-file.c:4709
+#: ../libnautilus-private/nautilus-file.c:4693
 msgid "%l:%M %p"
 msgstr "%I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:4716
+#: ../libnautilus-private/nautilus-file.c:4700
 #, no-c-format
 msgid "Yesterday"
 msgstr "Gestern"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 24h format. i.e. "Yesterday 23:04"
-#: ../libnautilus-private/nautilus-file.c:4722
+#: ../libnautilus-private/nautilus-file.c:4706
 #, no-c-format
 msgid "Yesterday %H:%M"
 msgstr "Gestern %H:%M"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 12h format. i.e. "Yesterday 9:04 PM"
-#: ../libnautilus-private/nautilus-file.c:4727
+#: ../libnautilus-private/nautilus-file.c:4711
 #, no-c-format
 msgid "Yesterday %l:%M %p"
 msgstr "Gestern %l:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:4735
+#: ../libnautilus-private/nautilus-file.c:4719
 #, no-c-format
 msgid "%a"
 msgstr "%a"
 
 #. Translators: this is the name of the week day followed by
 #. * a time in 24h format. i.e. "Monday 23:04"
-#: ../libnautilus-private/nautilus-file.c:4741
+#: ../libnautilus-private/nautilus-file.c:4725
 #, no-c-format
 msgid "%a %H:%M"
 msgstr "%a %H:%M"
 
 #. Translators: this is the week day name followed by
 #. * a time in 12h format. i.e. "Monday 9:04 PM"
-#: ../libnautilus-private/nautilus-file.c:4746
+#: ../libnautilus-private/nautilus-file.c:4730
 #, no-c-format
 msgid "%a %l:%M %p"
 msgstr "%a %l:%M %p"
 
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name i.e. "3 Feb"
-#: ../libnautilus-private/nautilus-file.c:4754
+#: ../libnautilus-private/nautilus-file.c:4738
 #, no-c-format
 msgid "%-e %b"
 msgstr "%e. %b"
@@ -512,7 +417,7 @@ msgstr "%e. %b"
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 24h format i.e. "3 Feb 23:04"
-#: ../libnautilus-private/nautilus-file.c:4761
+#: ../libnautilus-private/nautilus-file.c:4745
 #, no-c-format
 msgid "%-e %b %H:%M"
 msgstr "%e. %b %H:%M"
@@ -520,14 +425,14 @@ msgstr "%e. %b %H:%M"
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 12h format i.e. "3 Feb 9:04"
-#: ../libnautilus-private/nautilus-file.c:4767
+#: ../libnautilus-private/nautilus-file.c:4751
 #, no-c-format
 msgid "%-e %b %l:%M %p"
 msgstr "%e. %b %l:%M %p"
 
 #. Translators: this is the day of the month followed by the abbreviated
 #. * month name followed by the year i.e. "3 Feb 2015"
-#: ../libnautilus-private/nautilus-file.c:4775
+#: ../libnautilus-private/nautilus-file.c:4759
 #, no-c-format
 msgid "%-e %b %Y"
 msgstr "%-e. %b %Y"
@@ -535,7 +440,7 @@ msgstr "%-e. %b %Y"
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 24h format i.e. "3 Feb 2015 23:04"
-#: ../libnautilus-private/nautilus-file.c:4782
+#: ../libnautilus-private/nautilus-file.c:4766
 #, no-c-format
 msgid "%-e %b %Y %H:%M"
 msgstr "%e. %b %Y %H:%M"
@@ -543,61 +448,61 @@ msgstr "%e. %b %Y %H:%M"
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 12h format i.e. "3 Feb 2015 9:04 PM"
-#: ../libnautilus-private/nautilus-file.c:4788
+#: ../libnautilus-private/nautilus-file.c:4772
 #, no-c-format
 msgid "%-e %b %Y %l:%M %p"
 msgstr "%e. %b %Y %l:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:4796
+#: ../libnautilus-private/nautilus-file.c:4780
 #, no-c-format
 msgid "%c"
 msgstr "%c"
 
-#: ../libnautilus-private/nautilus-file.c:5235
+#: ../libnautilus-private/nautilus-file.c:5173
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "Setzen der Zugriffsrechte nicht erlaubt"
 
-#: ../libnautilus-private/nautilus-file.c:5530
+#: ../libnautilus-private/nautilus-file.c:5468
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "Setzen des Besitzers nicht erlaubt"
 
-#: ../libnautilus-private/nautilus-file.c:5548
+#: ../libnautilus-private/nautilus-file.c:5486
 #, c-format
 msgid "Specified owner '%s' doesn't exist"
 msgstr "Der angegebene Besitzer »%s« existiert nicht"
 
-#: ../libnautilus-private/nautilus-file.c:5812
+#: ../libnautilus-private/nautilus-file.c:5750
 #, c-format
 msgid "Not allowed to set group"
 msgstr "Setzen der Gruppe nicht erlaubt"
 
-#: ../libnautilus-private/nautilus-file.c:5830
+#: ../libnautilus-private/nautilus-file.c:5768
 #, c-format
 msgid "Specified group '%s' doesn't exist"
 msgstr "Die angegebene Gruppe »%s« existiert nicht"
 
 #. Translators: "Me" is used to indicate the file is owned by me (the current user)
-#: ../libnautilus-private/nautilus-file.c:5965
+#: ../libnautilus-private/nautilus-file.c:5903
 msgid "Me"
 msgstr "Ich"
 
-#: ../libnautilus-private/nautilus-file.c:5989
+#: ../libnautilus-private/nautilus-file.c:5927
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
 msgstr[0] "%'u Objekt"
 msgstr[1] "%'u Objekte"
 
-#: ../libnautilus-private/nautilus-file.c:5990
+#: ../libnautilus-private/nautilus-file.c:5928
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u Ordner"
 msgstr[1] "%'u Ordner"
 
-#: ../libnautilus-private/nautilus-file.c:5991
+#: ../libnautilus-private/nautilus-file.c:5929
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -605,92 +510,97 @@ msgstr[0] "%'u Datei"
 msgstr[1] "%'u Dateien"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:6392
-#: ../libnautilus-private/nautilus-file.c:6408
+#: ../libnautilus-private/nautilus-file.c:6330
+#: ../libnautilus-private/nautilus-file.c:6346
 msgid "? items"
 msgstr "? Objekte"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:6398
+#: ../libnautilus-private/nautilus-file.c:6336
 msgid "? bytes"
 msgstr "? Byte"
 
-#: ../libnautilus-private/nautilus-file.c:6415
-#: ../libnautilus-private/nautilus-file.c:6496
+#: ../libnautilus-private/nautilus-file.c:6353
+#: ../libnautilus-private/nautilus-file.c:6434
 msgid "Unknown"
 msgstr "Unbekannt"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:6429
+#: ../libnautilus-private/nautilus-file.c:6367
 #: ../src/nautilus-properties-window.c:1178
 msgid "unknown"
 msgstr "unbekannt"
 
-#: ../libnautilus-private/nautilus-file.c:6460
-#: ../libnautilus-private/nautilus-file.c:6468
-#: ../libnautilus-private/nautilus-file.c:6519
+#: ../libnautilus-private/nautilus-file.c:6398
+#: ../libnautilus-private/nautilus-file.c:6406
+#: ../libnautilus-private/nautilus-file.c:6457
 msgid "Program"
 msgstr "Programm"
 
-#: ../libnautilus-private/nautilus-file.c:6461
+#: ../libnautilus-private/nautilus-file.c:6399
 msgid "Audio"
 msgstr "Audio"
 
-#: ../libnautilus-private/nautilus-file.c:6462
+#: ../libnautilus-private/nautilus-file.c:6400
 msgid "Font"
 msgstr "Schriftart"
 
-#: ../libnautilus-private/nautilus-file.c:6463
+#: ../libnautilus-private/nautilus-file.c:6401
 #: ../src/nautilus-image-properties-page.c:767
 msgid "Image"
 msgstr "Bild"
 
-#: ../libnautilus-private/nautilus-file.c:6464
+#: ../libnautilus-private/nautilus-file.c:6402
 msgid "Archive"
 msgstr "Archiv"
 
-#: ../libnautilus-private/nautilus-file.c:6465
+#: ../libnautilus-private/nautilus-file.c:6403
 msgid "Markup"
 msgstr "Markup"
 
-#: ../libnautilus-private/nautilus-file.c:6469
+#: ../libnautilus-private/nautilus-file.c:6404
+#: ../libnautilus-private/nautilus-file.c:6405
+msgid "Text"
+msgstr "Text"
+
+#: ../libnautilus-private/nautilus-file.c:6407
 #: ../src/nautilus-query-editor.c:329
 msgid "Video"
 msgstr "Video"
 
-#: ../libnautilus-private/nautilus-file.c:6470
+#: ../libnautilus-private/nautilus-file.c:6408
 msgid "Contacts"
 msgstr "Kontakte"
 
-#: ../libnautilus-private/nautilus-file.c:6471
+#: ../libnautilus-private/nautilus-file.c:6409
 msgid "Calendar"
 msgstr "Kalender"
 
-#: ../libnautilus-private/nautilus-file.c:6472
+#: ../libnautilus-private/nautilus-file.c:6410
 msgid "Document"
 msgstr "Dokument"
 
-#: ../libnautilus-private/nautilus-file.c:6473
+#: ../libnautilus-private/nautilus-file.c:6411
 #: ../src/nautilus-query-editor.c:395
 msgid "Presentation"
 msgstr "Präsentation"
 
-#: ../libnautilus-private/nautilus-file.c:6474
+#: ../libnautilus-private/nautilus-file.c:6412
 #: ../src/nautilus-query-editor.c:379
 msgid "Spreadsheet"
 msgstr "Tabellendokument"
 
-#: ../libnautilus-private/nautilus-file.c:6521
+#: ../libnautilus-private/nautilus-file.c:6459
 msgid "Binary"
 msgstr "Binärdatei"
 
-#: ../libnautilus-private/nautilus-file.c:6525
+#: ../libnautilus-private/nautilus-file.c:6463
 msgid "Folder"
 msgstr "Ordner"
 
-#: ../libnautilus-private/nautilus-file.c:6556
+#: ../libnautilus-private/nautilus-file.c:6494
 msgid "Link"
 msgstr "Verknüpfung"
 
@@ -699,15 +609,15 @@ msgstr "Verknüpfung"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file.c:6562
+#: ../libnautilus-private/nautilus-file.c:6500
 #: ../libnautilus-private/nautilus-file-operations.c:377
 #: ../src/nautilus-view-dnd.c:122
 #, c-format
 msgid "Link to %s"
 msgstr "Verknüpfung mit %s"
 
-#: ../libnautilus-private/nautilus-file.c:6578
-#: ../libnautilus-private/nautilus-file.c:6592
+#: ../libnautilus-private/nautilus-file.c:6516
+#: ../libnautilus-private/nautilus-file.c:6530
 msgid "Link (broken)"
 msgstr "Verknüpfung (fehlerhaft)"
 
@@ -1069,7 +979,7 @@ msgstr "Alle Objekte im Papierkorb werden dauerhaft gelöscht."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1399
 #: ../libnautilus-private/nautilus-file-operations.c:2275
-#: ../src/nautilus-window.c:1267
+#: ../src/nautilus-window.c:1283
 msgid "Empty _Trash"
 msgstr "_Papierkorb leeren"
 
@@ -1216,7 +1126,7 @@ msgstr "Papierkorb _nicht leeren"
 
 #. Translators: %s is a file name formatted for display
 #: ../libnautilus-private/nautilus-file-operations.c:2406
-#: ../src/nautilus-view.c:5311
+#: ../src/nautilus-view.c:5461
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "Zugreifen auf »%s« nicht möglich"
@@ -1576,14 +1486,14 @@ msgstr "Fehler beim Erstellen der Datei »%B«."
 msgid "There was an error creating the directory in %F."
 msgstr "Beim Erstellen des Ordners in »%F« ist ein Fehler aufgetreten."
 
-#: ../libnautilus-private/nautilus-file-operations.c:6487
+#: ../libnautilus-private/nautilus-file-operations.c:6489
 msgid "Emptying Trash"
 msgstr "Papierkorb wird geleert"
 
-#: ../libnautilus-private/nautilus-file-operations.c:6535
-#: ../libnautilus-private/nautilus-file-operations.c:6576
-#: ../libnautilus-private/nautilus-file-operations.c:6611
-#: ../libnautilus-private/nautilus-file-operations.c:6646
+#: ../libnautilus-private/nautilus-file-operations.c:6537
+#: ../libnautilus-private/nautilus-file-operations.c:6578
+#: ../libnautilus-private/nautilus-file-operations.c:6613
+#: ../libnautilus-private/nautilus-file-operations.c:6648
 msgid "Unable to mark launcher trusted (executable)"
 msgstr "Vertrauenswürdige Markierung des Starters (ausführbar) nicht möglich"
 
@@ -1667,7 +1577,7 @@ msgstr[0] "%d Objekt zurück in den Papierkorb verschieben"
 msgstr[1] "%d Objekte zurück in den Papierkorb verschieben"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:393
-#: ../libnautilus-private/nautilus-file-undo-operations.c:979
+#: ../libnautilus-private/nautilus-file-undo-operations.c:982
 #, c-format
 msgid "Restore %d item from trash"
 msgid_plural "Restore %d items from trash"
@@ -1844,118 +1754,118 @@ msgstr "Erstellung aus Vorlage _rückgängig machen"
 msgid "_Redo Create from Template"
 msgstr "Erstellung aus Vorlage _wiederholen"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:867
-#: ../libnautilus-private/nautilus-file-undo-operations.c:868
+#: ../libnautilus-private/nautilus-file-undo-operations.c:870
+#: ../libnautilus-private/nautilus-file-undo-operations.c:871
 #, c-format
 msgid "Rename '%s' as '%s'"
 msgstr "»%s« als »%s« wiederherstellen"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:870
+#: ../libnautilus-private/nautilus-file-undo-operations.c:873
 msgid "_Undo Rename"
 msgstr "Umbenennen _rückgängig machen"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:871
+#: ../libnautilus-private/nautilus-file-undo-operations.c:874
 msgid "_Redo Rename"
 msgstr "Umbenennen wiede_rholen"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:982
+#: ../libnautilus-private/nautilus-file-undo-operations.c:985
 #, c-format
 msgid "Move %d item to trash"
 msgid_plural "Move %d items to trash"
 msgstr[0] "%d Objekt in den Papierkorb verschieben"
 msgstr[1] "%d Objekte in den Papierkorb verschieben"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:994
+#: ../libnautilus-private/nautilus-file-undo-operations.c:997
 #, c-format
 msgid "Restore '%s' to '%s'"
 msgstr "»%s« in »%s« wiederherstellen"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1001
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1004
 #, c-format
 msgid "Move '%s' to trash"
 msgstr "»%s« in den Papierkorb verschieben"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1006
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1009
 msgid "_Undo Trash"
 msgstr "Verschieben in den Papierkorb _rückgängig machen"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1007
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1010
 msgid "_Redo Trash"
 msgstr "Verschieben in den Papierkorb _wiederholen"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1303
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1306
 #, c-format
 msgid "Restore original permissions of items enclosed in '%s'"
 msgstr ""
 "Ursprüngliche Zugriffsrechte der in »%s« enthaltenen Objekte wiederherstellen"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1304
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1307
 #, c-format
 msgid "Set permissions of items enclosed in '%s'"
 msgstr "Die Zugriffsrechte der in »%s« enthaltenen Objekte bearbeiten"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1306
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1461
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1309
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1464
 msgid "_Undo Change Permissions"
 msgstr "Ändern der Zugriffsrechte _rückgängig machen"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1307
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1462
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1310
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1465
 msgid "_Redo Change Permissions"
 msgstr "Ändern der Zugriffsrechte _wiederholen"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1458
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1461
 #, c-format
 msgid "Restore original permissions of '%s'"
 msgstr "Ursprüngliche Zugriffsrechte von »%s« wiederherstellen"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1459
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1462
 #, c-format
 msgid "Set permissions of '%s'"
 msgstr "Die Zugriffsrechte von »%s« bearbeiten"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1569
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1572
 #, c-format
 msgid "Restore group of '%s' to '%s'"
 msgstr "Gruppe von »%s« auf »%s« wiederherstellen"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1571
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1574
 #, c-format
 msgid "Set group of '%s' to '%s'"
 msgstr "Gruppe von »%s« auf »%s« setzen"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1574
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1577
 msgid "_Undo Change Group"
 msgstr "Ändern der Gruppe _rückgängig"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1575
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1578
 msgid "_Redo Change Group"
 msgstr "Ändern der Gruppe _wiederholen"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1577
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1580
 #, c-format
 msgid "Restore owner of '%s' to '%s'"
 msgstr "Eigentümer von »%s« als »%s« wiederherstellen"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1579
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1582
 #, c-format
 msgid "Set owner of '%s' to '%s'"
 msgstr "Eigentümer von »%s« auf »%s« setzen"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1582
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1585
 msgid "_Undo Change Owner"
 msgstr "Eigentumsänderung _rückgängig machen"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1583
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1586
 msgid "_Redo Change Owner"
 msgstr "Eigentumsänderung _wiederholen"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:918
+#: ../libnautilus-private/nautilus-file-utilities.c:890
 #, c-format
 msgid "Could not determine original location of “%s” "
 msgstr "Ursprünglicher Ort von »%s« konnte nicht ermittelt werden"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:922
+#: ../libnautilus-private/nautilus-file-utilities.c:894
 msgid "The item cannot be restored from trash"
 msgstr "Das Objekt kann aus dem Papierkorb nicht wiederhergestellt werden"
 
@@ -2104,12 +2014,20 @@ msgstr ""
 "ein Texteingabefeld für die Adressleiste anstatt der Pfadleiste."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:5
+msgid "Whether to enable recursive search or not"
+msgstr "Legt fest, ob rekursive Suche aktiviert werden soll"
+
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:6
+msgid "Enables or disables recursive search in Nautilus."
+msgstr "Aktiviert und deaktiviert rekursive Suche in Nautilus."
+
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:7
 msgid "Whether to ask for confirmation when deleting files, or emptying Trash"
 msgstr ""
 "Legt fest, ob beim Löschen von Dateien oder beim Leeren des Papierkorbs "
 "nachgefragt werden soll."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:6
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:8
 msgid ""
 "If set to true, then Nautilus will ask for confirmation when you attempt to "
 "delete files, or empty the Trash."
@@ -2117,11 +2035,11 @@ msgstr ""
 "Falls dieser Schlüssel wahr ist, fragt Nautilus beim Versuch nach, Dateien "
 "zu löschen oder den Papierkorb zu leeren."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:7
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:9
 msgid "When to show number of items in a folder"
 msgstr "Wann die Anzahl der Objekte in einem Ordner angezeigt werden soll"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:8
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:10
 msgid ""
 "Speed tradeoff for when to show the number of items in a folder. If set to "
 "\"always\" then always show item counts, even if the folder is on a remote "
@@ -2134,11 +2052,11 @@ msgstr ""
 "anzeigen, falls er sich auf einem lokalen Dateisystem befindet) sowie "
 "»never« (keinesfalls anzeigen)."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:9
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:11
 msgid "Type of click used to launch/open files"
 msgstr "Klicktyp zum Ausführen/Öffnen von Dateien"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:10
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:12
 msgid ""
 "Possible values are \"single\" to launch files on a single click, or \"double"
 "\" to launch them on a double click."
@@ -2146,13 +2064,13 @@ msgstr ""
 "Zulässige Werte: »single« (Dateien per Einzelklick starten) sowie "
 "»double« (Dateien per Doppelklick starten)."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:11
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:13
 msgid "What to do with executable text files when activated"
 msgstr ""
 "Wie soll mit ausführbaren Textdateien verfahren werden, wenn sie aktiviert "
 "werden?"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:12
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:14
 msgid ""
 "What to do with executable text files when they are activated (single or "
 "double clicked). Possible values are \"launch\" to launch them as programs, "
@@ -2164,12 +2082,12 @@ msgstr ""
 "»launch« (wie Anwendungen ausführen), »ask« (per Dialog rückfragen) sowie "
 "»display« (wie Textdateien anzeigen)."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:13
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:15
 msgid "Show the package installer for unknown mime types"
 msgstr ""
 "Installationsdialog für Software-Pakete bei unbekannten Dateitypen anzeigen"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:14
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:16
 msgid ""
 "Whether to show the user a package installer dialog in case an unknown mime "
 "type is opened, in order to search for an application to handle it."
@@ -2178,13 +2096,13 @@ msgstr ""
 "angezeigt werden soll, wenn ein unbekannter Dateityp geöffnet wird, um eine "
 "Anwendung zu suchen, die mit diesen umgehen kann."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:15
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:17
 msgid "Show a warning dialog for the change of the shortcut for move to trash"
 msgstr ""
 "Einen Warndialog anzeigen, der auf die Änderung der Tastenkobination zum "
 "Löschen hinweist."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:16
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:18
 msgid ""
 "Show a warning dialog for the change of the shortcut for move to trash from "
 "control + delete to just delete."
@@ -2192,11 +2110,11 @@ msgstr ""
 "Einen Warndialog anzeigen, der die Änderung der Tastaturkombination zum "
 "Löschen bekannt gibt. Statt Strg + Entf reicht nun die Entf-Taste."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:17
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:19
 msgid "Use extra mouse button events in Nautilus' browser window"
 msgstr "Zusätzliche Maustastenereignisse im Browser-Fenster nutzen"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:18
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:20
 msgid ""
 "For users with mice that have \"Forward\" and \"Back\" buttons, this key "
 "will determine if any action is taken inside of Nautilus when either is "
@@ -2207,11 +2125,11 @@ msgstr ""
 "innerhalb von Nautilus durchgeführt werden soll, wenn eine dieser Tasten "
 "betätigt wird."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:19
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:21
 msgid "Mouse button to activate the \"Forward\" command in browser window"
 msgstr "Maustaste zum Auslösen des »Vorwärts«-Befehls in einem Browser-Fenster"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:20
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:22
 msgid ""
 "For users with mice that have buttons for \"Forward\" and \"Back\", this key "
 "will set which button activates the \"Forward\" command in a browser window. "
@@ -2221,11 +2139,11 @@ msgstr ""
 "verwenden, bestimmt dieser Schlüssel, welche Taste den »Vorwärts«-Befehl in "
 "einem Browser-Fenster auslöst. Mögliche Werte liegen zwischen 6 und 14."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:21
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:23
 msgid "Mouse button to activate the \"Back\" command in browser window"
 msgstr "Maustaste zum Auslösen des »Zurück«-Befehls in einem Browser-Fenster"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:22
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:24
 msgid ""
 "For users with mice that have buttons for \"Forward\" and \"Back\", this key "
 "will set which button activates the \"Back\" command in a browser window. "
@@ -2235,11 +2153,11 @@ msgstr ""
 "verwenden, bestimmt dieser Schlüssel, welche Taste den »Zurück«-Befehl in "
 "einem Browser-Fenster auslöst. Mögliche Werte liegen zwischen 6 und 14."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:23
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:25
 msgid "When to show thumbnails of files"
 msgstr "Wann Miniatur-Vorschaubilder von Dateien angezeigt werden sollen"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:24
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:26
 msgid ""
 "Speed tradeoff for when to show a file as a thumbnail. If set to \"always\" "
 "then always thumbnail, even if the folder is on a remote server. If set to "
@@ -2255,11 +2173,11 @@ msgstr ""
 "Unabhängig vom Namen gilt diese Einstellung für alle Dateitypen mit "
 "Vorschaumöglichkeit."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:25
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:27
 msgid "Maximum image size for thumbnailing"
 msgstr "Maximale Bildgröße für Miniatur-Vorschaubilder"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:26
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:28
 msgid ""
 "Images over this size (in bytes) won't be thumbnailed. The purpose of this "
 "setting is to avoid thumbnailing large images that may take a long time to "
@@ -2270,11 +2188,11 @@ msgstr ""
 "Anlegen von Miniatur-Vorschaubildern großer Bilder zu verhindern, weil dies "
 "lange Ladezeiten oder hohen Speicherverbrauch zur Folge hätte."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:27
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:29
 msgid "Show folders first in windows"
 msgstr "Ordner in Fenstern zuerst anzeigen?"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:28
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:30
 msgid ""
 "If set to true, then Nautilus shows folders prior to showing files in the "
 "icon and list views."
@@ -2282,11 +2200,11 @@ msgstr ""
 "Falls dieser Schlüssel wahr ist, zeigt Nautilus in der Symbol- und "
 "Listenansicht Ordner vor Dateien an."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:29
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:31
 msgid "Default sort order"
 msgstr "Voreingestellte Sortierreihenfolge"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:30
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:32
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\" and \"mtime\"."
@@ -2295,11 +2213,11 @@ msgstr ""
 "Zulässige Werte: »name« (Name), »size« (Größe), »type« (Typ) sowie "
 "»mtime« (Änderungsdatum)."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:31
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:33
 msgid "Reverse sort order in new windows"
 msgstr "Sortierreihenfolge in neu geöffneten Fenstern umkehren?"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:32
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:34
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -2312,11 +2230,11 @@ msgstr ""
 "»a« angezeigt; falls sie der Größe nach sortiert werden, werden sie auf- "
 "statt absteigend angezeigt."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:33
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:35
 msgid "Default folder viewer"
 msgstr "Voreingestellte Ordneransicht"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:34
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:36
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
 "another view for that particular folder. Possible values are \"list-view\", "
@@ -2326,11 +2244,11 @@ msgstr ""
 "haben eine andere Ansicht für diesen bestimmten Ordner festgelegt. Zulässige "
 "Werte sind: »list_view« (Listenansicht) und »icon_view« (Symbolansicht)."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:35
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:37
 msgid "Whether to show hidden files"
 msgstr "Verborgene Dateien anzeigen?"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:36
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:38
 msgid ""
 "This key is deprecated and ignored. The \"show-hidden\" key from \"org.gtk."
 "Settings.FileChooser\" is now used instead."
@@ -2338,11 +2256,11 @@ msgstr ""
 "Dieser Schlüssel ist veraltet und wird ignoriert. Stattdessen wird nun der "
 "Schlüssel »show-hidden« aus »org.gtk.Settings.FileChooser« verwendet."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:37
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:39
 msgid "Bulk rename utility"
 msgstr "Werkzeug zum Umbenennen vieler Dateien"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:38
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:40
 msgid ""
 "If set, Nautilus will append URIs of selected files and treat the result as "
 "a command line for bulk renaming. Bulk rename applications can register "
@@ -2359,11 +2277,11 @@ msgstr ""
 "ausführbaren Datei nicht mit vollem Pfad angegeben ist, so wird danach im "
 "aktuellen Suchpfad gesucht."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:39
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:41
 msgid "List of possible captions on icons"
 msgstr "Liste zulässiger Symbolbeschriftungen"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:40
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:42
 msgid ""
 "A list of captions below an icon in the icon view and the desktop. The "
 "actual number of captions shown depends on the zoom level. Some possible "
@@ -2377,19 +2295,19 @@ msgstr ""
 "»group« (Gruppe), »permissions« (Zugriffsrechte) sowie »mime_type« (MIME-"
 "Typ)."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:41
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:43
 msgid "Default icon zoom level"
 msgstr "Voreingestellte Symbolvergrößerungsstufe"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:42
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:44
 msgid "Default zoom level used by the icon view."
 msgstr "Voreingestellte Vergrößerungsstufe der Symbolansicht."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:43
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:45
 msgid "Default Thumbnail Icon Size"
 msgstr "Voreingestellte Symbolgröße der Miniatur-Vorschaubilder"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:44
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:46
 msgid ""
 "The default size of an icon for a thumbnail in the icon view when using "
 "NAUTILUS_ICON_SIZE_SMALL size."
@@ -2397,11 +2315,11 @@ msgstr ""
 "Die Standardgröße eines Symbols für ein Miniatur-Vorschaubild in der "
 "Symbolansicht bei Verwendung der Größe NAUTILUS_ICON_SIZE_SMALL."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:45
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:47
 msgid "Text Ellipsis Limit"
 msgstr "Lange Dateinamen kürzen"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:46
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:48
 msgid ""
 "A string specifying how parts of overlong file names should be replaced by "
 "ellipses, depending on the zoom level. Each of the list entries is of the "
@@ -2431,54 +2349,54 @@ msgstr ""
 "»smaller« sind. Dateinamen in anderen Ansichtsgrößen nicht kürzen. "
 "Verfügbare Ansichtsgrößen sind: »small«, »standard« und »large«."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:47
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:49
 msgid "Default list zoom level"
 msgstr "Voreingestellte Listenvergrößerungsstufe"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:48
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:50
 msgid "Default zoom level used by the list view."
 msgstr "Voreingestellte Vergrößerungsstufe der Listenansicht."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:49
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:51
 msgid "Default list of columns visible in the list view"
 msgstr "Vorgabeliste in der Listenansicht anzuzeigender Spalten"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:50
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:52
 msgid "Default list of columns visible in the list view."
 msgstr "Vorgabeliste in der Listenansicht anzuzeigender Spalten."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:51
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:53
 msgid "Default column order in the list view"
 msgstr "Voreingestellte Spaltenreihenfolge der Listenansicht"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:52
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:54
 msgid "Default column order in the list view."
 msgstr "Voreingestellte Spaltenreihenfolge der Listenansicht."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:53
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:55
 msgid "Use tree view"
 msgstr "Baumansicht verwenden"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:54
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:56
 msgid ""
 "Whether a tree should be used for list view navigation instead of a flat list"
 msgstr ""
 "Legt fest, ob ein Baum für die Listenansicht verwendet werden soll anstelle "
 "einer einfachen Liste"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:55
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:57
 msgid "Desktop font"
 msgstr "Schrift auf dem Schreibtisch"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:56
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:58
 msgid "The font description used for the icons on the desktop."
 msgstr "Die Beschreibung der Schriftart für die Symbole auf dem Schreibtisch."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:57
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:59
 msgid "Home icon visible on desktop"
 msgstr "Symbol »Persönlicher Ordner« auf dem Schreibtisch anzeigen"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:58
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:60
 msgid ""
 "If this is set to true, an icon linking to the home folder will be put on "
 "the desktop."
@@ -2486,11 +2404,11 @@ msgstr ""
 "Falls dieser Schlüssel wahr ist, wird auf dem Schreibtisch eine Verknüpfung "
 "mit dem persönlichen Ordner angezeigt."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:59
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:61
 msgid "Trash icon visible on desktop"
 msgstr "Papierkorb-Symbol auf Schreibtisch anzeigen"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:60
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:62
 msgid ""
 "If this is set to true, an icon linking to the trash will be put on the "
 "desktop."
@@ -2498,11 +2416,11 @@ msgstr ""
 "Falls dieser Schlüssel wahr ist, wird auf dem Schreibtisch eine Verknüpfung "
 "mit dem Papierkorb angezeigt."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:61
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:63
 msgid "Show mounted volumes on the desktop"
 msgstr "Eingebundene Datenträger auf dem Schreibtisch anzeigen"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:62
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:64
 msgid ""
 "If this is set to true, icons linking to mounted volumes will be put on the "
 "desktop."
@@ -2510,11 +2428,11 @@ msgstr ""
 "Falls dieser Schlüssel wahr ist, werden auf dem Schreibtisch Symbole "
 "angezeigt, die mit eingebundenen Datenträgern verknüpft sind."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:63
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:65
 msgid "Network Servers icon visible on the desktop"
 msgstr "Symbol »Netzwerk-Server« auf dem Schreibtisch anzeigen"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:64
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:66
 msgid ""
 "If this is set to true, an icon linking to the Network Servers view will be "
 "put on the desktop."
@@ -2522,11 +2440,11 @@ msgstr ""
 "Falls dieser Schlüssel wahr ist, wird auf dem Schreibtisch eine Verknüpfung "
 "mit den Netzwerk-Servern angezeigt."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:65
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:67
 msgid "Desktop home icon name"
 msgstr "Name des Schreibtischsymbols »Persönlicher Ordner«"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:66
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:68
 msgid ""
 "This name can be set if you want a custom name for the home icon on the "
 "desktop."
@@ -2534,11 +2452,11 @@ msgstr ""
 "Dieser Wert legt einen benutzerdefinierten Namen für das Symbol "
 "»Persönlichen Ordner« auf dem Schreibtisch fest."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:67
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:69
 msgid "Desktop trash icon name"
 msgstr "Name des Schreibtischsymbols »Papierkorb«"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:68
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:70
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
@@ -2546,11 +2464,11 @@ msgstr ""
 "Dieser Wert legt einen benutzerdefinierten Namen für das Symbol »Papierkorb« "
 "auf dem Schreibtisch fest."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:69
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:71
 msgid "Network servers icon name"
 msgstr "Name des Schreibtischsymbols »Netzwerk-Server«"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:70
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:72
 msgid ""
 "This name can be set if you want a custom name for the network servers icon "
 "on the desktop."
@@ -2558,7 +2476,7 @@ msgstr ""
 "Dieser Wert legt einen benutzerdefinierten Namen für das Symbol »Netzwerk-"
 "Server« auf dem Schreibtisch fest."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:71
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:73
 msgid ""
 "An integer specifying how parts of overlong file names should be replaced by "
 "ellipses on the desktop. If the number is larger than 0, the file name will "
@@ -2570,11 +2488,11 @@ msgstr ""
 "in Zeilen nicht überschreiten. Wird eine Zahl kleiner oder gleich 0 "
 "angegeben, wird die Länge nicht begrenzt."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:72
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:74
 msgid "Fade the background on change"
 msgstr "Das Hintergrundbild fließend wechseln"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:73
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:75
 msgid ""
 "If set to true, then Nautilus will use a fade effect to change the desktop "
 "background."
@@ -2582,11 +2500,11 @@ msgstr ""
 "Falls dieser Schlüssel wahr ist, wechselt Nautilus das Hintergrundbild in "
 "einem fließenden Übergang."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:74
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:76
 msgid "The geometry string for a navigation window."
 msgstr "Die Geometrie-Zeichenkette für das Navigationsfenster."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:75
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:77
 msgid ""
 "A string containing the saved geometry and coordinates string for navigation "
 "windows."
@@ -2594,39 +2512,39 @@ msgstr ""
 "Eine Zeichenkette, welche die gespeicherte Geometrie und die Koordinaten für "
 "Navigationsfenster enthält."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:76
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:78
 msgid "Whether the navigation window should be maximized."
 msgstr "Legt fest, ob das Navigationsfenster maximiert werden soll."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:77
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:79
 msgid "Whether the navigation window should be maximized by default."
 msgstr ""
 "Legt fest, ob das Navigationsfenster standardmäßig maximiert werden soll."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:78
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:80
 msgid "Width of the side pane"
 msgstr "Breite der Seitenleiste"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:79
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:81
 msgid "The default width of the side pane in new windows."
 msgstr "Die Vorgabebreite der Seitenleiste in neu geöffneten Fenstern."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:80
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:82
 msgid "Show location bar in new windows"
 msgstr "Adressleiste in neu geöffneten Fenstern anzeigen?"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:81
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:83
 msgid ""
 "If set to true, newly opened windows will have the location bar visible."
 msgstr ""
 "Falls dieser Schlüssel wahr ist, wird in neu geöffneten Fenstern die "
 "Adressleiste angezeigt."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:82
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:84
 msgid "Show side pane in new windows"
 msgstr "Seitenleiste in neu geöffneten Fenstern anzeigen?"
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:83
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:85
 msgid "If set to true, newly opened windows will have the side pane visible."
 msgstr ""
 "Falls dieser Schlüssel wahr ist, wird in neu geöffneten Fenstern die "
@@ -2691,74 +2609,70 @@ msgstr ""
 "Ab Version 3.0 ist dieser Ordner veraltet und Nautilus hat versucht, diese "
 "Konfiguration nach ~/.config/nautilus zu migrieren"
 
-#: ../src/nautilus-application.c:610
+#: ../src/nautilus-application.c:616
 msgid "--check cannot be used with other options."
 msgstr "»--check« darf nicht mit anderen Optionen verwendet werden."
 
-#: ../src/nautilus-application.c:617
+#: ../src/nautilus-application.c:623
 msgid "--quit cannot be used with URIs."
 msgstr "»--quit« darf nicht zusammen mit Adressen verwendet werden."
 
-#: ../src/nautilus-application.c:625
+#: ../src/nautilus-application.c:631
 msgid "--select must be used with at least an URI."
 msgstr "»--select« muss mit zumindest einer Adresse verwendet werden."
 
-#: ../src/nautilus-application.c:632
+#: ../src/nautilus-application.c:638
 msgid "--no-desktop and --force-desktop cannot be used together."
 msgstr ""
 "»--no-desktop« und »--force-desktop« dürfen nicht gemeinsam verwendet werden."
 
-#: ../src/nautilus-application.c:692
+#: ../src/nautilus-application.c:698
 msgid "Perform a quick set of self-check tests."
 msgstr "Einen Satz schnelle Selbsttests durchführen."
 
-#: ../src/nautilus-application.c:699
+#: ../src/nautilus-application.c:705
 msgid "Create the initial window with the given geometry."
 msgstr "Das erste Fenster mit der angegebenen Geometrie öffnen."
 
-#: ../src/nautilus-application.c:699
+#: ../src/nautilus-application.c:705
 msgid "GEOMETRY"
 msgstr "GEOMETRIE"
 
-#: ../src/nautilus-application.c:701
+#: ../src/nautilus-application.c:707
 msgid "Show the version of the program."
 msgstr "Die Versionsnummer des Programms anzeigen."
 
-#: ../src/nautilus-application.c:703
+#: ../src/nautilus-application.c:709
 msgid "Always open a new window for browsing specified URIs"
 msgstr "Ein neues Fenster immer für browser-spezifierte Adressen öffnen"
 
-#: ../src/nautilus-application.c:705
+#: ../src/nautilus-application.c:711
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Nur für ausdrücklich angegebene Adressen Fenster anlegen."
 
-#: ../src/nautilus-application.c:707
+#: ../src/nautilus-application.c:713
 msgid "Never manage the desktop (ignore the GSettings preference)."
 msgstr ""
 "Keinesfalls den Schreibtisch verwalten (die Einstellungen im Einstellungen-"
 "Dialog ignorieren)."
 
-#: ../src/nautilus-application.c:709
+#: ../src/nautilus-application.c:715
 msgid "Always manage the desktop (ignore the GSettings preference)."
 msgstr ""
 "Den Schreibtisch immer verwalten (die Einstellungen im Einstellungen-Dialog "
 "ignorieren)."
 
-#: ../src/nautilus-application.c:711
+#: ../src/nautilus-application.c:717
 msgid "Quit Nautilus."
 msgstr "Nautilus beenden."
 
-#: ../src/nautilus-application.c:713
+#: ../src/nautilus-application.c:719
 msgid "Select specified URI in parent folder."
 msgstr "Wählen Sie die vorgegebene Adresse im übergeordneten Ordner."
 
-#: ../src/nautilus-application.c:714
+#: ../src/nautilus-application.c:720
 msgid "[URI...]"
 msgstr "[ADRESSE …]"
-
-#: ../src/nautilus-application.c:816
-msgid "Could not register the application"
-msgstr "Anwendung konnte nicht registriert werden"
 
 #: ../src/nautilus-app-menu.ui.h:1
 msgid "New _Window"
@@ -2822,7 +2736,7 @@ msgstr ""
 "Wenn Sie diesem Ort nicht vertrauen oder unsicher sind, so drücken Sie bitte "
 "Abbrechen."
 
-#: ../src/nautilus-autorun-software.c:240 ../src/nautilus-mime-actions.c:723
+#: ../src/nautilus-autorun-software.c:240 ../src/nautilus-mime-actions.c:515
 msgid "_Run"
 msgstr "Aus_führen"
 
@@ -2855,14 +2769,14 @@ msgstr "_Name"
 msgid "_Location"
 msgstr "_Ort"
 
-#: ../src/nautilus-canvas-view-container.c:466
-#: ../src/nautilus-file-management-properties.ui.h:34
+#: ../src/nautilus-canvas-view-container.c:443
+#: ../src/nautilus-file-management-properties.ui.h:30
 msgid "Icon View"
 msgstr "Symbolansicht"
 
 #. if it wasn't cancelled show a dialog
-#: ../src/nautilus-connect-server.c:52 ../src/nautilus-mime-actions.c:1869
-#: ../src/nautilus-mime-actions.c:2133
+#: ../src/nautilus-connect-server.c:52 ../src/nautilus-mime-actions.c:1661
+#: ../src/nautilus-mime-actions.c:1925
 msgid "Unable to access location"
 msgstr "Zugriff auf den Ort ist nicht möglich"
 
@@ -2900,23 +2814,23 @@ msgstr "Dies sieht nicht nach einer Adresse aus."
 msgid "For example, %s"
 msgstr "Zum Beispiel: %s"
 
-#: ../src/nautilus-connect-server-dialog.c:492
+#: ../src/nautilus-connect-server-dialog.c:493
 msgid "_Remove"
 msgstr "_Entfernen"
 
-#: ../src/nautilus-connect-server-dialog.c:501
+#: ../src/nautilus-connect-server-dialog.c:502
 msgid "_Clear All"
 msgstr "Alles _entfernen"
 
-#: ../src/nautilus-connect-server-dialog.c:562
+#: ../src/nautilus-connect-server-dialog.c:563
 msgid "_Server Address"
 msgstr "_Serveradresse"
 
-#: ../src/nautilus-connect-server-dialog.c:586
+#: ../src/nautilus-connect-server-dialog.c:587
 msgid "_Recent Servers"
 msgstr "_Zuletzt verwendete Server"
 
-#: ../src/nautilus-connect-server-dialog.c:655
+#: ../src/nautilus-connect-server-dialog.c:656
 msgid "C_onnect"
 msgstr "_Verbinden"
 
@@ -3059,7 +2973,7 @@ msgstr "»%s« wird in »%s« umbenannt."
 
 # Spaltenname
 #. Translators: this is referred to captions under icons.
-#: ../src/nautilus-file-management-properties.c:197
+#: ../src/nautilus-file-management-properties.c:188
 #: ../src/nautilus-properties-window.c:3763
 #: ../src/nautilus-properties-window.c:3790
 msgid "None"
@@ -3090,69 +3004,53 @@ msgid "Show hidden and _backup files"
 msgstr "Verborgene Dateien und _Sicherheitskopien anzeigen"
 
 #: ../src/nautilus-file-management-properties.ui.h:7
-msgid "Icon View Defaults"
-msgstr "Vorgaben für Symbolansicht"
-
-#: ../src/nautilus-file-management-properties.ui.h:8
-msgid "Default _zoom level:"
-msgstr "_Voreingestellte Vergrößerungsstufe:"
-
-#: ../src/nautilus-file-management-properties.ui.h:9
-msgid "List View Defaults"
-msgstr "Vorgaben für Listenansicht"
-
-#: ../src/nautilus-file-management-properties.ui.h:10
-msgid "D_efault zoom level:"
-msgstr "_Voreingestellte Vergrößerungsstufe:"
-
-#: ../src/nautilus-file-management-properties.ui.h:11
 msgid "Views"
 msgstr "Ansichten"
 
-#: ../src/nautilus-file-management-properties.ui.h:12
+#: ../src/nautilus-file-management-properties.ui.h:8
 msgid "Behavior"
 msgstr "Verhalten"
 
-#: ../src/nautilus-file-management-properties.ui.h:13
+#: ../src/nautilus-file-management-properties.ui.h:9
 msgid "_Single click to open items"
 msgstr "_Einfacher Klick zum Öffnen von Objekten"
 
-#: ../src/nautilus-file-management-properties.ui.h:14
+#: ../src/nautilus-file-management-properties.ui.h:10
 msgid "_Double click to open items"
 msgstr "_Doppelklick zum Öffnen von Objekten"
 
-#: ../src/nautilus-file-management-properties.ui.h:15
+#: ../src/nautilus-file-management-properties.ui.h:11
 msgid "Executable Text Files"
 msgstr "Ausführbare Textdateien"
 
-#: ../src/nautilus-file-management-properties.ui.h:16
+#: ../src/nautilus-file-management-properties.ui.h:12
 msgid "_Run executable text files when they are opened"
 msgstr "Ausführbare Textdateien _ausführen, wenn sie geöffnet werden"
 
-#: ../src/nautilus-file-management-properties.ui.h:17
+#: ../src/nautilus-file-management-properties.ui.h:13
 msgid "_View executable text files when they are opened"
 msgstr "Ausführbare Textdateien an_zeigen, wenn sie geöffnet werden"
 
-#: ../src/nautilus-file-management-properties.ui.h:18
+#: ../src/nautilus-file-management-properties.ui.h:14
 msgid "_Ask each time"
 msgstr "_Jedes Mal nachfragen"
 
 #. trash
-#: ../src/nautilus-file-management-properties.ui.h:19
-#: ../src/nautilus-shell-search-provider.c:290 ../src/nautilus-trash-bar.c:194
+#: ../src/nautilus-file-management-properties.ui.h:15
+#: ../src/nautilus-shell-search-provider.c:297 ../src/nautilus-trash-bar.c:194
 msgid "Trash"
 msgstr "Papierkorb"
 
-#: ../src/nautilus-file-management-properties.ui.h:20
+#: ../src/nautilus-file-management-properties.ui.h:16
 msgid "Ask before _emptying the Trash or deleting files"
 msgstr ""
 "Vor dem Leeren des Papierkorbs oder dem Löschen von Dateien _nachfragen"
 
-#: ../src/nautilus-file-management-properties.ui.h:21
+#: ../src/nautilus-file-management-properties.ui.h:17
 msgid "Icon Captions"
 msgstr "Symbolbeschriftungen"
 
-#: ../src/nautilus-file-management-properties.ui.h:22
+#: ../src/nautilus-file-management-properties.ui.h:18
 msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
@@ -3161,135 +3059,135 @@ msgstr ""
 "Symbolnamen angezeigt werden sollen. Je mehr Sie die Ansicht vergrößern, "
 "desto mehr Informationen werden angezeigt."
 
-#: ../src/nautilus-file-management-properties.ui.h:23
-#: ../src/nautilus-list-view.c:2160
+#: ../src/nautilus-file-management-properties.ui.h:19
+#: ../src/nautilus-list-view.c:2026
 msgid "List View"
 msgstr "Listenansicht"
 
-#: ../src/nautilus-file-management-properties.ui.h:24
+#: ../src/nautilus-file-management-properties.ui.h:20
 msgid "Navigate folders in a tree"
 msgstr "Ordner in der Baumansicht navigieren"
 
-#: ../src/nautilus-file-management-properties.ui.h:25
+#: ../src/nautilus-file-management-properties.ui.h:21
 msgid "Display"
 msgstr "Anzeige"
 
-#: ../src/nautilus-file-management-properties.ui.h:26
+#: ../src/nautilus-file-management-properties.ui.h:22
 msgid "Choose the order of information to appear in the list view."
 msgstr ""
 "Legen Sie die Reihenfolge fest, in der in der Listenansicht Informationen "
 "angezeigt werden sollen."
 
-#: ../src/nautilus-file-management-properties.ui.h:27
+#: ../src/nautilus-file-management-properties.ui.h:23
 msgid "List Columns"
 msgstr "Listenspalten"
 
-#: ../src/nautilus-file-management-properties.ui.h:29
+#: ../src/nautilus-file-management-properties.ui.h:25
 msgid "Show _thumbnails:"
 msgstr "_Miniatur-Vorschaubilder anzeigen:"
 
-#: ../src/nautilus-file-management-properties.ui.h:30
+#: ../src/nautilus-file-management-properties.ui.h:26
 msgid "_Only for files smaller than:"
 msgstr "_Nur für Dateien kleiner als:"
 
-#: ../src/nautilus-file-management-properties.ui.h:31
+#: ../src/nautilus-file-management-properties.ui.h:27
 #: ../src/nautilus-properties-window.c:4191
 msgid "Folders"
 msgstr "Ordner"
 
-#: ../src/nautilus-file-management-properties.ui.h:32
+#: ../src/nautilus-file-management-properties.ui.h:28
 msgid "Count _number of items:"
 msgstr "_Anzahl der Objekte anzeigen:"
 
-#: ../src/nautilus-file-management-properties.ui.h:33
+#: ../src/nautilus-file-management-properties.ui.h:29
 msgid "Preview"
 msgstr "Vorschau"
 
-#: ../src/nautilus-file-management-properties.ui.h:35
+#: ../src/nautilus-file-management-properties.ui.h:31
 msgid "Always"
 msgstr "Immer"
 
-#: ../src/nautilus-file-management-properties.ui.h:36
+#: ../src/nautilus-file-management-properties.ui.h:32
 msgid "Local Files Only"
 msgstr "Nur lokale Dateien"
 
-#: ../src/nautilus-file-management-properties.ui.h:37
+#: ../src/nautilus-file-management-properties.ui.h:33
 msgid "Never"
 msgstr "Nie"
 
-#: ../src/nautilus-file-management-properties.ui.h:38
+#: ../src/nautilus-file-management-properties.ui.h:34
 msgid "By Name"
 msgstr "Nach Name"
 
-#: ../src/nautilus-file-management-properties.ui.h:39
+#: ../src/nautilus-file-management-properties.ui.h:35
 msgid "By Size"
 msgstr "Nach Größe"
 
-#: ../src/nautilus-file-management-properties.ui.h:40
+#: ../src/nautilus-file-management-properties.ui.h:36
 msgid "By Type"
 msgstr "Nach Typ"
 
-#: ../src/nautilus-file-management-properties.ui.h:41
+#: ../src/nautilus-file-management-properties.ui.h:37
 msgid "By Modification Date"
 msgstr "Nach Änderungsdatum"
 
-#: ../src/nautilus-file-management-properties.ui.h:42
+#: ../src/nautilus-file-management-properties.ui.h:38
 msgid "By Access Date"
 msgstr "Nach Zugriffsdatum"
 
-#: ../src/nautilus-file-management-properties.ui.h:43
+#: ../src/nautilus-file-management-properties.ui.h:39
 msgid "By Trashed Date"
 msgstr "Nach Löschdatum"
 
-#: ../src/nautilus-file-management-properties.ui.h:44
+#: ../src/nautilus-file-management-properties.ui.h:40
 msgid "Small"
 msgstr "Klein"
 
-#: ../src/nautilus-file-management-properties.ui.h:45
+#: ../src/nautilus-file-management-properties.ui.h:41
 msgid "Standard"
 msgstr "Standard"
 
-#: ../src/nautilus-file-management-properties.ui.h:46
+#: ../src/nautilus-file-management-properties.ui.h:42
 msgid "Large"
 msgstr "Groß"
 
-#: ../src/nautilus-file-management-properties.ui.h:47
+#: ../src/nautilus-file-management-properties.ui.h:43
 msgid "100 KB"
 msgstr "100 KB"
 
-#: ../src/nautilus-file-management-properties.ui.h:48
+#: ../src/nautilus-file-management-properties.ui.h:44
 msgid "500 KB"
 msgstr "500 KB"
 
-#: ../src/nautilus-file-management-properties.ui.h:49
+#: ../src/nautilus-file-management-properties.ui.h:45
 msgid "1 MB"
 msgstr "1 MB"
 
-#: ../src/nautilus-file-management-properties.ui.h:50
+#: ../src/nautilus-file-management-properties.ui.h:46
 msgid "3 MB"
 msgstr "3 MB"
 
-#: ../src/nautilus-file-management-properties.ui.h:51
+#: ../src/nautilus-file-management-properties.ui.h:47
 msgid "5 MB"
 msgstr "5 MB"
 
-#: ../src/nautilus-file-management-properties.ui.h:52
+#: ../src/nautilus-file-management-properties.ui.h:48
 msgid "10 MB"
 msgstr "10 MB"
 
-#: ../src/nautilus-file-management-properties.ui.h:53
+#: ../src/nautilus-file-management-properties.ui.h:49
 msgid "100 MB"
 msgstr "100 MB"
 
-#: ../src/nautilus-file-management-properties.ui.h:54
+#: ../src/nautilus-file-management-properties.ui.h:50
 msgid "1 GB"
 msgstr "1 GB"
 
-#: ../src/nautilus-file-management-properties.ui.h:55
+#: ../src/nautilus-file-management-properties.ui.h:51
 msgid "2 GB"
 msgstr "2 GB"
 
-#: ../src/nautilus-file-management-properties.ui.h:56
+#: ../src/nautilus-file-management-properties.ui.h:52
 msgid "4 GB"
 msgstr "4 GB"
 
@@ -3429,16 +3327,16 @@ msgstr "Ladevorgang …"
 msgid "(Empty)"
 msgstr "(Leer)"
 
-#: ../src/nautilus-list-view.c:1607
+#: ../src/nautilus-list-view.c:1478
 msgid "Use Default"
 msgstr "Vorgabe verwenden"
 
-#: ../src/nautilus-list-view.c:3004
+#: ../src/nautilus-list-view.c:2806
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s anzuzeigende Spalten"
 
-#: ../src/nautilus-list-view.c:3024
+#: ../src/nautilus-list-view.c:2826
 msgid "Choose the order of information to appear in this folder:"
 msgstr ""
 "Legen Sie die Reihenfolge fest, in der in diesem Ordner Informationen "
@@ -3451,100 +3349,106 @@ msgid_plural "Do you want to view %d locations?"
 msgstr[0] "Wollen Sie %d Ort anzeigen?"
 msgstr[1] "Wollen Sie %d Orte anzeigen?"
 
-#: ../src/nautilus-location-entry.c:262 ../src/nautilus-mime-actions.c:1061
+#: ../src/nautilus-location-entry.c:262 ../src/nautilus-mime-actions.c:853
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
 msgstr[0] "Dies würde %d Einzelfenster öffnen."
 msgstr[1] "Dies würde %d Einzelfenster öffnen."
 
-#: ../src/nautilus-mime-actions.c:631
+#: ../src/nautilus-location-entry.c:273 ../src/nautilus-mime-actions.c:857
+#: ../src/nautilus-mime-actions.c:1034 ../src/nautilus-mime-actions.c:1587
+#: ../src/nautilus-view.c:774
+msgid "_OK"
+msgstr "_OK"
+
+#: ../src/nautilus-mime-actions.c:423
 #, c-format
 msgid "The link “%s” is broken. Move it to Trash?"
 msgstr ""
 "Die Verknüpfung »%s« ist fehlerhaft. Soll sie in den Papierkorb verschoben "
 "werden?"
 
-#: ../src/nautilus-mime-actions.c:633
+#: ../src/nautilus-mime-actions.c:425
 #, c-format
 msgid "The link “%s” is broken."
 msgstr "Die Verknüpfung »%s« ist fehlerhaft."
 
-#: ../src/nautilus-mime-actions.c:639
+#: ../src/nautilus-mime-actions.c:431
 msgid "This link cannot be used because it has no target."
 msgstr ""
 "Diese Verknüpfung kann nicht verwendet werden, weil sie auf kein Ziel "
 "verweist."
 
-#: ../src/nautilus-mime-actions.c:641
+#: ../src/nautilus-mime-actions.c:433
 #, c-format
 msgid "This link cannot be used because its target “%s” doesn't exist."
 msgstr ""
 "Diese Verknüpfung kann nicht verwendet werden, weil ihr Ziel »%s« nicht "
 "existiert."
 
-#: ../src/nautilus-mime-actions.c:651
+#: ../src/nautilus-mime-actions.c:443
 #: ../src/nautilus-view-context-menus.xml.h:26
 msgid "Mo_ve to Trash"
 msgstr "In den _Papierkorb verschieben"
 
-#: ../src/nautilus-mime-actions.c:711
+#: ../src/nautilus-mime-actions.c:503
 #, c-format
 msgid "Do you want to run “%s”, or display its contents?"
 msgstr "Wollen Sie »%s« ausführen oder dessen Inhalt anzeigen lassen?"
 
-#: ../src/nautilus-mime-actions.c:713
+#: ../src/nautilus-mime-actions.c:505
 #, c-format
 msgid "“%s” is an executable text file."
 msgstr "»%s« ist eine ausführbare Textdatei."
 
-#: ../src/nautilus-mime-actions.c:719
+#: ../src/nautilus-mime-actions.c:511
 msgid "Run in _Terminal"
 msgstr "Im _Terminal ausführen"
 
-#: ../src/nautilus-mime-actions.c:720
+#: ../src/nautilus-mime-actions.c:512
 msgid "_Display"
 msgstr "An_zeigen"
 
-#: ../src/nautilus-mime-actions.c:1056 ../src/nautilus-mime-actions.c:1791
-#: ../src/nautilus-view.c:771
+#: ../src/nautilus-mime-actions.c:848 ../src/nautilus-mime-actions.c:1583
+#: ../src/nautilus-view.c:765
 msgid "Are you sure you want to open all files?"
 msgstr "Sind Sie sicher, dass Sie alle Fenster öffnen wollen?"
 
-#: ../src/nautilus-mime-actions.c:1058
+#: ../src/nautilus-mime-actions.c:850
 #, c-format
 msgid "This will open %d separate tab."
 msgid_plural "This will open %d separate tabs."
 msgstr[0] "Dies würde %d Reiter öffnen."
 msgstr[1] "Dies würde %d Reiter öffnen."
 
-#: ../src/nautilus-mime-actions.c:1123
+#: ../src/nautilus-mime-actions.c:915
 #, c-format
 msgid "Could not display “%s”."
 msgstr "»%s« konnte nicht angezeigt werden."
 
-#: ../src/nautilus-mime-actions.c:1221
+#: ../src/nautilus-mime-actions.c:1013
 msgid "The file is of an unknown type"
 msgstr "Die Datei hat einen unbekannten Dateityp"
 
-#: ../src/nautilus-mime-actions.c:1225
+#: ../src/nautilus-mime-actions.c:1017
 #, c-format
 msgid "There is no application installed for “%s” files"
 msgstr "Für den Dateityp »%s« ist keine Anwendung installiert"
 
-#: ../src/nautilus-mime-actions.c:1240
+#: ../src/nautilus-mime-actions.c:1032
 msgid "_Select Application"
 msgstr "_Wählen Sie eine Anwendung"
 
-#: ../src/nautilus-mime-actions.c:1276
+#: ../src/nautilus-mime-actions.c:1068
 msgid "There was an internal error trying to search for applications:"
 msgstr "Beim Suchen nach Anwendungen ist ein interner Fehler aufgetreten:"
 
-#: ../src/nautilus-mime-actions.c:1278
+#: ../src/nautilus-mime-actions.c:1070
 msgid "Unable to search for application"
 msgstr "Suche nach Anwendung gescheitert"
 
-#: ../src/nautilus-mime-actions.c:1397
+#: ../src/nautilus-mime-actions.c:1189
 #, c-format
 msgid ""
 "There is no application installed for “%s” files.\n"
@@ -3553,11 +3457,11 @@ msgstr ""
 "Für den Dateityp »%s« ist keine Anwendung installiert.\n"
 "Möchten Sie nach Anwendungen suchen, die diesen Dateityp öffnen können?"
 
-#: ../src/nautilus-mime-actions.c:1547
+#: ../src/nautilus-mime-actions.c:1339
 msgid "Untrusted application launcher"
 msgstr "Starter für nicht vertrauenswürdige Anwendungen"
 
-#: ../src/nautilus-mime-actions.c:1550
+#: ../src/nautilus-mime-actions.c:1342
 #, c-format
 msgid ""
 "The application launcher “%s” has not been marked as trusted. If you do not "
@@ -3567,31 +3471,31 @@ msgstr ""
 "Ihnen die Herkunft dieser Datei nicht bekannt ist, so kann das Starten "
 "unsicher sein."
 
-#: ../src/nautilus-mime-actions.c:1565
+#: ../src/nautilus-mime-actions.c:1357
 msgid "_Launch Anyway"
 msgstr "_Trotzdem starten"
 
-#: ../src/nautilus-mime-actions.c:1568
+#: ../src/nautilus-mime-actions.c:1360
 msgid "Mark as _Trusted"
 msgstr "Als _vertrauenswürdig markieren"
 
-#: ../src/nautilus-mime-actions.c:1792
+#: ../src/nautilus-mime-actions.c:1584
 #, c-format
 msgid "This will open %d separate application."
 msgid_plural "This will open %d separate applications."
 msgstr[0] "Dies würde %d zusätzliche Anwendung öffnen."
 msgstr[1] "Dies würde %d zusätzliche Anwendungen öffnen."
 
-#: ../src/nautilus-mime-actions.c:2212
+#: ../src/nautilus-mime-actions.c:2004
 msgid "Unable to start location"
 msgstr "Starten des Ortes nicht möglich"
 
-#: ../src/nautilus-mime-actions.c:2296
+#: ../src/nautilus-mime-actions.c:2088
 #, c-format
 msgid "Opening “%s”."
 msgstr "»%s« wird geöffnet."
 
-#: ../src/nautilus-mime-actions.c:2299
+#: ../src/nautilus-mime-actions.c:2091
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -3614,7 +3518,7 @@ msgstr ""
 msgid "Got it"
 msgstr "Verstanden"
 
-#: ../src/nautilus-notebook.c:382
+#: ../src/nautilus-notebook.c:321
 msgid "Close tab"
 msgstr "Schließen"
 
@@ -4094,37 +3998,94 @@ msgstr "_Leeren"
 msgid "Delete all items in the Trash"
 msgstr "Alle Objekte im Papierkorb löschen"
 
-#: ../src/nautilus-view.c:773
+#: ../src/nautilus-view.c:767
 #, c-format
 msgid "This will open %'d separate tab."
 msgid_plural "This will open %'d separate tabs."
 msgstr[0] "Dies würde %'d Reiter öffnen."
 msgstr[1] "Dies würde %'d Reiter öffnen."
 
-#: ../src/nautilus-view.c:776
+#: ../src/nautilus-view.c:770
 #, c-format
 msgid "This will open %'d separate window."
 msgid_plural "This will open %'d separate windows."
 msgstr[0] "Dies würde %'d Einzelfenster öffnen."
 msgstr[1] "Dies würde %'d Einzelfenster öffnen."
 
-#: ../src/nautilus-view.c:1274
+#: ../src/nautilus-view.c:1256
 msgid "Select Items Matching"
 msgstr "Nach Muster auswählen"
 
-#: ../src/nautilus-view.c:1279 ../src/nautilus-view.c:4920
+#: ../src/nautilus-view.c:1261 ../src/nautilus-view.c:5070
 msgid "_Select"
 msgstr "A_uswählen"
 
-#: ../src/nautilus-view.c:1287
+#: ../src/nautilus-view.c:1269
 msgid "_Pattern:"
 msgstr "_Muster:"
 
-#: ../src/nautilus-view.c:1293
+#: ../src/nautilus-view.c:1275
 msgid "Examples: "
 msgstr "Beispiele:"
 
-#: ../src/nautilus-view.c:2062
+#: ../src/nautilus-view.c:1528
+msgid "A folder with that name already exists."
+msgstr "Ein Ordner mit gleichem Namen existiert bereits."
+
+#: ../src/nautilus-view.c:1530
+msgid "A file with that name already exists."
+msgstr "Eine Datei mit gleichem Namen existiert bereits."
+
+#: ../src/nautilus-view.c:1589
+msgid "Folder names cannot contain “/”."
+msgstr "Ordernamen dürfen »/« nicht enthalten."
+
+#: ../src/nautilus-view.c:1591
+msgid "Files names cannot contain “/”."
+msgstr "Dateinamen dürfen »/« nicht enthalten."
+
+#: ../src/nautilus-view.c:1594
+msgid "A folder can not be called “.”."
+msgstr "Ein Ordner darf nicht ».« genannt werden."
+
+#: ../src/nautilus-view.c:1596
+msgid "A file can not be called “.”."
+msgstr "Eine Datei darf nicht ».« genannt werden."
+
+#: ../src/nautilus-view.c:1599
+msgid "A folder can not be called “..”."
+msgstr "Ein Ordner darf nicht »..« genannt werden."
+
+#: ../src/nautilus-view.c:1601
+msgid "A file can not be called “..”."
+msgstr "Eine Datei darf nicht »..« genannt werden."
+
+#: ../src/nautilus-view.c:1735
+msgid "Rename"
+msgstr "Umbenennen"
+
+#: ../src/nautilus-view.c:1737
+#, c-format
+msgid "Rename “%s”"
+msgstr "»%s« umbenennen?"
+
+#: ../src/nautilus-view.c:1742 ../src/nautilus-view.c:1858
+msgid "Folder name"
+msgstr "Ordnername"
+
+#: ../src/nautilus-view.c:1744
+msgid "File name"
+msgstr "Dateiname"
+
+#: ../src/nautilus-view.c:1857
+msgid "Create"
+msgstr "Erstellen"
+
+#: ../src/nautilus-view.c:1859
+msgid "New Folder"
+msgstr "Neuer Ordner"
+
+#: ../src/nautilus-view.c:2289
 msgid ""
 "Nautilus 3.6 deprecated this directory and tried migrating this "
 "configuration to ~/.local/share/nautilus"
@@ -4132,19 +4093,19 @@ msgstr ""
 "Ab Version 3.6 ist dieser Ordner veraltet und Nautilus hat versucht, diese "
 "Konfiguration nach ~/.config/nautilus zu migrieren"
 
-#: ../src/nautilus-view.c:2478 ../src/nautilus-view.c:2513
+#: ../src/nautilus-view.c:2700 ../src/nautilus-view.c:2735
 #, c-format
 msgid "“%s” selected"
 msgstr "»%s« ausgewählt"
 
-#: ../src/nautilus-view.c:2480
+#: ../src/nautilus-view.c:2702
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "%'d Ordner ausgewählt"
 msgstr[1] "%'d Ordner ausgewählt"
 
-#: ../src/nautilus-view.c:2490
+#: ../src/nautilus-view.c:2712
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
@@ -4152,14 +4113,14 @@ msgstr[0] "(enthält %'d Objekt)"
 msgstr[1] "(enthält %'d Objekte)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: ../src/nautilus-view.c:2501
+#: ../src/nautilus-view.c:2723
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
 msgstr[0] "(enthält insgesamt %'d Objekt)"
 msgstr[1] "(enthält insgesamt %'d Objekte)"
 
-#: ../src/nautilus-view.c:2516
+#: ../src/nautilus-view.c:2738
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -4167,7 +4128,7 @@ msgstr[0] "%'d Objekt ausgewählt"
 msgstr[1] "%'d Objekte ausgewählt"
 
 #. Folders selected also, use "other" terminology
-#: ../src/nautilus-view.c:2523
+#: ../src/nautilus-view.c:2745
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -4178,7 +4139,7 @@ msgstr[1] "%'d weitere Objekte ausgewählt"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: ../src/nautilus-view.c:2537
+#: ../src/nautilus-view.c:2759
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -4190,108 +4151,112 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: ../src/nautilus-view.c:2561
+#: ../src/nautilus-view.c:2783
 #, c-format
 msgid "%s %s, %s %s"
 msgstr "%s %s, %s %s"
 
-#: ../src/nautilus-view.c:4909
+#: ../src/nautilus-view.c:5059
 msgid "Select Move Destination"
 msgstr "Verschiebungsziel auswählen"
 
-#: ../src/nautilus-view.c:4911
+#: ../src/nautilus-view.c:5061
 msgid "Select Copy Destination"
 msgstr "Kopierziel auswählen"
 
 #. Translators: %s is a file name formatted for display
-#: ../src/nautilus-view.c:5338
+#: ../src/nautilus-view.c:5488
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "Entfernen von %s nicht möglich"
 
 #. Translators: %s is a file name formatted for display
-#: ../src/nautilus-view.c:5365
+#: ../src/nautilus-view.c:5515
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "Auswerfen von »%s« nicht möglich"
 
-#: ../src/nautilus-view.c:5387
+#: ../src/nautilus-view.c:5537
 msgid "Unable to stop drive"
 msgstr "Laufwerk konnte nicht gestoppt werden"
 
 #. Translators: %s is a file name formatted for display
-#: ../src/nautilus-view.c:5492
+#: ../src/nautilus-view.c:5642
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "Starten von »%s« nicht möglich"
 
-#: ../src/nautilus-view.c:6199
+#: ../src/nautilus-view.c:6363
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "Neuer Ordner mit Auswahl (%'d Element)"
 msgstr[1] "Neuer Ordner mit Auswahl (%'d Elemente)"
 
-#: ../src/nautilus-view.c:6247
+#: ../src/nautilus-view.c:6411
 #, c-format
 msgid "Open With %s"
 msgstr "Mit %s öffnen"
 
-#: ../src/nautilus-view.c:6256
+#: ../src/nautilus-view.c:6420
 msgid "Run"
 msgstr "Ausführen"
 
-#: ../src/nautilus-view.c:6258
+#: ../src/nautilus-view.c:6422
 msgid "Open"
 msgstr "Öffnen"
 
-#: ../src/nautilus-view.c:6309 ../src/nautilus-view-context-menus.xml.h:18
+#: ../src/nautilus-view.c:6473 ../src/nautilus-view-context-menus.xml.h:18
 msgid "_Start"
 msgstr "_Starten"
 
-#: ../src/nautilus-view.c:6312
+#: ../src/nautilus-view.c:6476
 msgid "_Connect"
 msgstr "_Verbinden"
 
-#: ../src/nautilus-view.c:6315
+#: ../src/nautilus-view.c:6479
 msgid "_Start Multi-disk Drive"
 msgstr "Multimedienlaufwerk _starten"
 
-#: ../src/nautilus-view.c:6318
+#: ../src/nautilus-view.c:6482
 msgid "U_nlock Drive"
 msgstr "Laufwerk en_tsperren"
 
-#: ../src/nautilus-view.c:6334
+#: ../src/nautilus-view.c:6498
 msgid "Stop Drive"
 msgstr "Laufwerk anhalten"
 
-#: ../src/nautilus-view.c:6337
+#: ../src/nautilus-view.c:6501
 msgid "_Safely Remove Drive"
 msgstr "Laufwerk _sicher entfernen"
 
-#: ../src/nautilus-view.c:6340
+#: ../src/nautilus-view.c:6504
 msgid "_Disconnect"
 msgstr "_Trennen"
 
-#: ../src/nautilus-view.c:6343
+#: ../src/nautilus-view.c:6507
 msgid "_Stop Multi-disk Drive"
 msgstr "Multimedienlaufwerk _stoppen"
 
-#: ../src/nautilus-view.c:6346
+#: ../src/nautilus-view.c:6510
 msgid "_Lock Drive"
 msgstr "Laufwerk _sperren"
 
-#: ../src/nautilus-view.c:7545
+#: ../src/nautilus-view.c:7706
 msgid "Content View"
 msgstr "Inhaltsansicht"
 
-#: ../src/nautilus-view.c:7546
+#: ../src/nautilus-view.c:7707
 msgid "View of the current folder"
 msgstr "Ansicht des aktuellen Ordners"
 
 #: ../src/nautilus-view-context-menus.xml.h:2
 msgid "New _Document"
 msgstr "Neues _Dokument"
+
+#: ../src/nautilus-view-context-menus.xml.h:3
+msgid "_Paste"
+msgstr "_Einfügen"
 
 #: ../src/nautilus-view-context-menus.xml.h:5
 msgid "P_roperties"
@@ -4353,6 +4318,14 @@ msgstr "_Stopp"
 msgid "_Detect Media"
 msgstr "Medium _erkennen"
 
+#: ../src/nautilus-view-context-menus.xml.h:21
+msgid "Cu_t"
+msgstr "_Ausschneiden"
+
+#: ../src/nautilus-view-context-menus.xml.h:22
+msgid "_Copy"
+msgstr "_Kopieren"
+
 #: ../src/nautilus-view-context-menus.xml.h:23
 msgid "_Paste Into Folder"
 msgstr "In Ordner e_infügen"
@@ -4370,28 +4343,36 @@ msgid "_Delete from Trash"
 msgstr "Im Papierkorb _löschen"
 
 #: ../src/nautilus-view-context-menus.xml.h:28
+msgid "_Delete Permanently"
+msgstr "_Dauerhaft löschen"
+
+#: ../src/nautilus-view-context-menus.xml.h:29
 msgid "Empty Trash"
 msgstr "Papierkorb leeren"
 
-#: ../src/nautilus-view-context-menus.xml.h:29
+#: ../src/nautilus-view-context-menus.xml.h:30
 msgid "_Restore From Trash"
 msgstr "Aus dem Papierkorb _wiederherstellen"
 
-#: ../src/nautilus-view-context-menus.xml.h:30
+#: ../src/nautilus-view-context-menus.xml.h:31
 msgid "Resize Icon…"
 msgstr "Symbolgröße ändern …"
 
-#: ../src/nautilus-view-context-menus.xml.h:31
+#: ../src/nautilus-view-context-menus.xml.h:32
 msgid "Restore Icon's Original Size"
 msgstr "Ursprüngliche Symbolgröße wiederherstellen"
 
-#: ../src/nautilus-view-context-menus.xml.h:32
+#: ../src/nautilus-view-context-menus.xml.h:33
 msgid "Rena_me"
 msgstr "_Umbenennen"
 
-#: ../src/nautilus-view-context-menus.xml.h:33
+#: ../src/nautilus-view-context-menus.xml.h:34
 msgid "Set As Wallpaper"
 msgstr "Als Hintergrund festlegen"
+
+#: ../src/nautilus-view-context-menus.xml.h:35
+msgid "_Remove from Recent"
+msgstr "Aus »Neu und _kürzlich geöffnet« entfernen"
 
 #: ../src/nautilus-view-dnd.c:169 ../src/nautilus-view-dnd.c:203
 #: ../src/nautilus-view-dnd.c:294
@@ -4419,46 +4400,46 @@ msgstr "Kopierter Text.txt"
 msgid "dropped data"
 msgstr "abgelegte Daten"
 
-#: ../src/nautilus-window.c:1281
+#: ../src/nautilus-window.c:1297
 msgid "_Properties"
 msgstr "Ei_genschaften"
 
-#: ../src/nautilus-window.c:1290
+#: ../src/nautilus-window.c:1306
 msgid "_Format…"
 msgstr "_Formatieren …"
 
 #. Translators: only one item has been deleted and %s is its name.
-#: ../src/nautilus-window.c:1544
+#: ../src/nautilus-window.c:1546
 #, c-format
 msgid "“%s” deleted"
 msgstr "»%s« gelöscht"
 
 #. Translators: one or more items might have been deleted, and %d
 #. * is the count.
-#: ../src/nautilus-window.c:1549
+#: ../src/nautilus-window.c:1551
 #, c-format
 msgid "%d file deleted"
 msgid_plural "%d files deleted"
 msgstr[0] "%d Datei gelöscht"
 msgstr[1] "%d Dateien gelöscht"
 
-#: ../src/nautilus-window.c:1720
+#: ../src/nautilus-window.c:1722
 msgid "_New Tab"
 msgstr "Neuer _Reiter"
 
-#: ../src/nautilus-window.c:1730
+#: ../src/nautilus-window.c:1732
 msgid "Move Tab _Left"
 msgstr "Reiter nach _links verschieben"
 
-#: ../src/nautilus-window.c:1738
+#: ../src/nautilus-window.c:1740
 msgid "Move Tab _Right"
 msgstr "Reiter nach _rechts verschieben"
 
-#: ../src/nautilus-window.c:1749
+#: ../src/nautilus-window.c:1751
 msgid "_Close Tab"
 msgstr "S_chließen"
 
-#: ../src/nautilus-window.c:2654
+#: ../src/nautilus-window.c:2641
 msgid "Access and organize your files."
 msgstr "Auf Ihre Dateien zugreifen und diese organisieren."
 
@@ -4466,7 +4447,7 @@ msgstr "Auf Ihre Dateien zugreifen und diese organisieren."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2663
+#: ../src/nautilus-window.c:2650
 msgid "translator-credits"
 msgstr ""
 "Christian Meyer <chrisime@gnome.org>\n"
@@ -4479,7 +4460,7 @@ msgstr ""
 "Daniel Winzen <d@winzen4.de>\n"
 "Hedda Peters <hpeters@redhat.com>"
 
-#: ../src/nautilus-window-slot.c:1278 ../src/nautilus-window-slot.c:1450
+#: ../src/nautilus-window-slot.c:1274 ../src/nautilus-window-slot.c:1448
 #, c-format
 msgid "Unable to load location"
 msgstr "Laden des Ortes nicht möglich"
@@ -4602,6 +4583,79 @@ msgstr "Enthält Fotos und Musik"
 msgid "Open with:"
 msgstr "Öffnen mit:"
 
+#~ msgid "The text of the label."
+#~ msgstr "Der Beschriftungstext."
+
+#~ msgid "Justification"
+#~ msgstr "Ausrichtung"
+
+#~ msgid ""
+#~ "The alignment of the lines in the text of the label relative to each "
+#~ "other. This does NOT affect the alignment of the label within its "
+#~ "allocation. See GtkMisc::xalign for that."
+#~ msgstr ""
+#~ "Die Ausrichtung der Zeilen des Beschriftungstextes relativ zueinander. "
+#~ "Dies beeinflusst NICHT die Ausrichtung der Beschriftung innerhalb des ihr "
+#~ "zugewiesenen Bereichs. Siehe hierzu auch GtkMisc::xalign."
+
+#~ msgid "Line wrap"
+#~ msgstr "Zeilenumbruch"
+
+#~ msgid "If set, wrap lines if the text becomes too wide."
+#~ msgstr "Sollen Zeilen umgebrochen werden, wenn der Text zu lang wird?"
+
+#~ msgid "Cursor Position"
+#~ msgstr "Position der Eingabemarke"
+
+#~ msgid "The current position of the insertion cursor in chars."
+#~ msgstr "Die aktuelle Position der Einfügemarke in Zeichen."
+
+#~ msgid "Selection Bound"
+#~ msgstr "Markierungsgrenze"
+
+#~ msgid ""
+#~ "The position of the opposite end of the selection from the cursor in "
+#~ "chars."
+#~ msgstr ""
+#~ "Die Position des gegenüberliegenden Endes der Markierung relativ zur "
+#~ "Eingabemarke in Zeichen."
+
+#~ msgid "Select All"
+#~ msgstr "Alles markieren"
+
+#~ msgid "You cannot move the volume “%s” to the trash."
+#~ msgstr ""
+#~ "Sie können den Datenträger »%s« nicht in den Papierkorb verschieben."
+
+#~ msgid ""
+#~ "If you want to eject the volume, please use Eject in the popup menu of "
+#~ "the volume."
+#~ msgstr ""
+#~ "Verwenden Sie »Auswerfen« im Einblend-Menü des Datenträgers, falls Sie "
+#~ "ihn auswerfen möchten."
+
+#~ msgid ""
+#~ "If you want to unmount the volume, please use Unmount Volume in the popup "
+#~ "menu of the volume."
+#~ msgstr ""
+#~ "Verwenden Sie »Aushängen« im Einblend-Menü des Datenträgers, falls Sie "
+#~ "ihn aushängen möchten."
+
+#~ msgid "Could not register the application"
+#~ msgstr "Anwendung konnte nicht registriert werden"
+
+#~ msgid "Icon View Defaults"
+#~ msgstr "Vorgaben für Symbolansicht"
+
+#~ msgid "Default _zoom level:"
+#~ msgstr "_Voreingestellte Vergrößerungsstufe:"
+
+#~ msgid "List View Defaults"
+#~ msgstr "Vorgaben für Listenansicht"
+
+#~ msgid "D_efault zoom level:"
+#~ msgstr "_Voreingestellte Vergrößerungsstufe:"
+
 #~ msgid "%s deleted"
 #~ msgid_plural "%s deleted"
 #~ msgstr[0] "%s gelöscht"
@@ -4623,9 +4677,6 @@ msgstr "Öffnen mit:"
 #~ msgid "%a, %b %e %Y %T"
 #~ msgstr "%a, %e. %b %Y %T"
 
-#~ msgid "Whether to enable immediate deletion"
-#~ msgstr "Legt fest, ob das sofortige Löschen verwendet werden soll."
-
 #~ msgid ""
 #~ "If set to true, then Nautilus will have a feature allowing you to delete "
 #~ "a file immediately and in-place, instead of moving it to the trash. This "
@@ -4638,9 +4689,6 @@ msgstr "Öffnen mit:"
 
 #~ msgid "I_nclude a Delete command that bypasses Trash"
 #~ msgstr "Einen _Löschbefehl bereitstellen, der den Papierkorb umgeht"
-
-#~ msgid "_Delete Permanently"
-#~ msgstr "_Dauerhaft löschen"
 
 #~ msgid "Saved search"
 #~ msgstr "Gespeicherte Suche"
