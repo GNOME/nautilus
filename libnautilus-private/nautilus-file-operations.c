@@ -2634,8 +2634,8 @@ nautilus_file_operations_mount_volume_full (GtkWindow *parent_window,
 }
 
 static void
-report_count_progress (CommonJob *job,
-		       SourceInfo *source_info)
+report_preparing_count_progress (CommonJob *job,
+                                 SourceInfo *source_info)
 {
 	char *s;
 
@@ -2680,7 +2680,7 @@ count_file (GFileInfo *info,
 	source_info->num_bytes += g_file_info_get_size (info);
 
 	if (source_info->num_files_since_progress++ > 100) {
-		report_count_progress (job, source_info);
+		report_preparing_count_progress (job, source_info);
 		source_info->num_files_since_progress = 0;
 	}
 }
@@ -2923,7 +2923,7 @@ scan_sources (GList *files,
 	memset (source_info, 0, sizeof (SourceInfo));
 	source_info->op = kind;
 
-	report_count_progress (job, source_info);
+	report_preparing_count_progress (job, source_info);
 	
 	for (l = files; l != NULL && !job_aborted (job); l = l->next) {
 		file = l->data;
@@ -2934,7 +2934,7 @@ scan_sources (GList *files,
 	}
 
 	/* Make sure we report the final count */
-	report_count_progress (job, source_info);
+	report_preparing_count_progress (job, source_info);
 }
 
 static void
@@ -4983,7 +4983,7 @@ nautilus_file_operations_copy (GList *files,
 }
 
 static void
-report_move_progress (CopyMoveJob *move_job, int total, int left)
+report_preparing_move_progress (CopyMoveJob *move_job, int total, int left)
 {
 	CommonJob *job;
 
@@ -5284,7 +5284,7 @@ move_files_prepare (CopyMoveJob *job,
 
 	total = left = g_list_length (job->files);
 
-	report_move_progress (job, total, left);
+	report_preparing_move_progress (job, total, left);
 
 	i = 0;
 	for (l = job->files;
@@ -5310,7 +5310,7 @@ move_files_prepare (CopyMoveJob *job,
 				   point,
 				   fallbacks,
 				   left);
-		report_move_progress (job, total, --left);
+		report_preparing_move_progress (job, total, --left);
 		i++;
 	}
 
@@ -5531,7 +5531,7 @@ nautilus_file_operations_move (GList *files,
 }
 
 static void
-report_link_progress (CopyMoveJob *link_job, int total, int left)
+report_preparing_link_progress (CopyMoveJob *link_job, int total, int left)
 {
 	CommonJob *job;
 
@@ -5771,7 +5771,7 @@ link_job (GIOSchedulerJob *io_job,
 
 	total = left = g_list_length (job->files);
 	
-	report_link_progress (job, total, left);
+	report_preparing_link_progress (job, total, left);
 
 	i = 0;
 	for (l = job->files;
@@ -5789,7 +5789,7 @@ link_job (GIOSchedulerJob *io_job,
 		link_file (job, src, job->destination,
 			   &dest_fs_type, job->debuting_files,
 			   point, left);
-		report_link_progress (job, total, --left);
+		report_preparing_link_progress (job, total, --left);
 		i++;
 		
 	}
