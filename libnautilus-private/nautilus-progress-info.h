@@ -86,6 +86,10 @@ void          nautilus_progress_info_set_elapsed_time (NautilusProgressInfo *inf
                                                        gdouble               time);
 gdouble       nautilus_progress_info_get_elapsed_time (NautilusProgressInfo *info);
 
+void nautilus_progress_info_set_destination (NautilusProgressInfo *info,
+                                             GFile                *file);
+GFile *nautilus_progress_info_get_destination (NautilusProgressInfo *info);
+
 
 
 #endif /* NAUTILUS_PROGRESS_INFO_H */

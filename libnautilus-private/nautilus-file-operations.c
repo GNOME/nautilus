@@ -4910,6 +4910,9 @@ nautilus_file_operations_copy_file (GFile *source_file,
 	job->done_callback_data = done_callback_data;
 	job->files = g_list_append (NULL, g_object_ref (source_file));
 	job->destination = g_object_ref (target_dir);
+        /* Need to indicate the destination for the operation notification open
+         * button. */
+        nautilus_progress_info_set_destination (((CommonJob *)job)->progress, target_dir);
 	job->target_name = g_strdup (new_name);
 	job->debuting_files = g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal, g_object_unref, NULL);
 
@@ -4947,6 +4950,9 @@ nautilus_file_operations_copy (GList *files,
 	job->done_callback_data = done_callback_data;
 	job->files = g_list_copy_deep (files, (GCopyFunc) g_object_ref, NULL);
 	job->destination = g_object_ref (target_dir);
+        /* Need to indicate the destination for the operation notification open
+         * button. */
+        nautilus_progress_info_set_destination (((CommonJob *)job)->progress, target_dir);
 	if (relative_item_points != NULL &&
 	    relative_item_points->len > 0) {
 		job->icon_positions =
@@ -5485,6 +5491,9 @@ nautilus_file_operations_move (GList *files,
 	job->done_callback_data = done_callback_data;
 	job->files = g_list_copy_deep (files, (GCopyFunc) g_object_ref, NULL);
 	job->destination = g_object_ref (target_dir);
+        /* Need to indicate the destination for the operation notification open
+         * button. */
+        nautilus_progress_info_set_destination (((CommonJob *)job)->progress, target_dir);
 	if (relative_item_points != NULL &&
 	    relative_item_points->len > 0) {
 		job->icon_positions =
@@ -5811,6 +5820,9 @@ nautilus_file_operations_link (GList *files,
 	job->done_callback_data = done_callback_data;
 	job->files = g_list_copy_deep (files, (GCopyFunc) g_object_ref, NULL);
 	job->destination = g_object_ref (target_dir);
+        /* Need to indicate the destination for the operation notification open
+         * button. */
+        nautilus_progress_info_set_destination (((CommonJob *)job)->progress, target_dir);
 	if (relative_item_points != NULL &&
 	    relative_item_points->len > 0) {
 		job->icon_positions =
@@ -5846,12 +5858,19 @@ nautilus_file_operations_duplicate (GList *files,
 				    gpointer done_callback_data)
 {
 	CopyMoveJob *job;
+        GFile *parent;
 
 	job = op_job_new (CopyMoveJob, parent_window);
 	job->done_callback = done_callback;
 	job->done_callback_data = done_callback_data;
 	job->files = g_list_copy_deep (files, (GCopyFunc) g_object_ref, NULL);
 	job->destination = NULL;
+        /* Duplicate files doesn't have a destination, since is the same as source.
+         * For that set as destination the source parent folder */
+        parent = g_file_get_parent (files->data);
+        /* Need to indicate the destination for the operation notification open
+         * button. */
+        nautilus_progress_info_set_destination (((CommonJob *)job)->progress, parent);
 	if (relative_item_points != NULL &&
 	    relative_item_points->len > 0) {
 		job->icon_positions =
@@ -5877,6 +5896,8 @@ nautilus_file_operations_duplicate (GList *files,
 			   NULL, /* destroy notify */
 			   0,
 			   job->common.cancellable);
+
+        g_object_unref (parent);
 }
 
 static gboolean

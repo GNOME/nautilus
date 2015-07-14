@@ -146,4 +146,8 @@ void nautilus_window_sync_allow_stop       (NautilusWindow *window,
 					    NautilusWindowSlot *slot);
 void nautilus_window_sync_title            (NautilusWindow *window,
 					    NautilusWindowSlot *slot);
+
+void nautilus_window_show_operation_notification (NautilusWindow *window,
+                                                  gchar          *main_label,
+                                                  GFile          *folder_to_open);
 #endif

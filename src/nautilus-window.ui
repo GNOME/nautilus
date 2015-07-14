@@ -123,6 +123,75 @@
                     </child>
                   </object>
                 </child>
+                <child type="overlay">
+                  <object class="GtkRevealer" id="notification_operation">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">center</property>
+                    <property name="valign">start</property>
+                    <property name="transition_duration">100</property>
+                    <child>
+                      <object class="GtkFrame">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="margin_start">12</property>
+                            <property name="margin_end">4</property>
+                            <child>
+                              <object class="GtkLabel" id="notification_operation_label">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="max_width_chars">50</property>
+                                <property name="ellipsize">middle</property>
+                                <property name="margin_end">30</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="notification_operation_open">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="no_show_all">True</property>
+                                <property name="margin_end">6</property>
+                                <signal name="clicked" handler="on_notification_operation_open_clicked" object="NautilusWindow" swapped="no"/>
+                                <style>
+                                  <class name="text-button"/>
+                                </style>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="notification_operation_close">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="relief">none</property>
+                                <property name="focus_on_click">False</property>
+                                <signal name="clicked" handler="on_notification_operation_close_clicked" object="NautilusWindow" swapped="no"/>
+                                <child>
+                                  <object class="GtkImage">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="icon_name">window-close-symbolic</property>
+                                    <property name="icon_size">2</property>
+                                  </object>
+                                </child>
+                                <style>
+                                  <class name="image-button"/>
+                                </style>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <style>
+                          <class name="app-notification"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
               </object>
             </child>
           </object>

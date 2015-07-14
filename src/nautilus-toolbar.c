@@ -61,6 +61,7 @@ struct _NautilusToolbarPrivate {
 	guint popup_timeout_id;
         guint start_operations_timeout_id;
         guint remove_finished_operations_timeout_id;
+        guint operations_button_attention_timeout_id;
 
 	GtkWidget *operations_button;
 	GtkWidget *view_button;
@@ -492,6 +493,19 @@ schedule_remove_finished_operations (NautilusToolbar *self)
         }
 }
 
+static gboolean
+remove_operations_button_attention_style (NautilusToolbar *self)
+{
+        GtkStyleContext *style_context;
+
+        style_context = gtk_widget_get_style_context (self->priv->operations_button);
+        gtk_style_context_remove_class (style_context,
+                                        "suggested-action");
+        self->priv->operations_button_attention_timeout_id = 0;
+
+        return G_SOURCE_REMOVE;
+}
+
 static void
 on_progress_info_cancelled (NautilusToolbar *self)
 {
@@ -510,14 +524,40 @@ on_progress_info_progress_changed (NautilusToolbar *self)
 }
 
 static void
-on_progress_info_finished (NautilusToolbar *self)
+on_progress_info_finished (NautilusToolbar      *self,
+                           NautilusProgressInfo *info)
 {
+        GtkStyleContext *style_context;
+        gchar *main_label;
+        GFile *folder_to_open;
+
         /* Update the pie chart progress */
         gtk_widget_queue_draw (self->priv->operations_icon);
 
         if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (self->priv->operations_button))) {
                 schedule_remove_finished_operations (self);
         }
+
+        folder_to_open = nautilus_progress_info_get_destination (info);
+        /* If destination is null, don't show a notification. This happens when the
+         * operation is a trash operation, which we already show a diferent kind of
+         * notification */
+        if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (self->priv->operations_button)) &&
+            folder_to_open != NULL) {
+                style_context = gtk_widget_get_style_context (self->priv->operations_button);
+                gtk_style_context_add_class (style_context,
+                                             "suggested-action");
+                self->priv->operations_button_attention_timeout_id = g_timeout_add_seconds (1,
+                                                                                            (GSourceFunc) remove_operations_button_attention_style,
+                                                                                            self);
+                main_label = nautilus_progress_info_get_status (info);
+                nautilus_window_show_operation_notification (self->priv->window,
+                                                             main_label,
+                                                             folder_to_open);
+                g_free (main_label);
+        }
+
+        g_clear_object (&folder_to_open);
 }
 
 static void
@@ -594,9 +634,6 @@ on_progress_info_started_timeout (NautilusToolbar *self)
                 return G_SOURCE_CONTINUE;
         } else {
                 self->priv->start_operations_timeout_id = 0;
-                if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (self->priv->operations_button))) {
-                        schedule_remove_finished_operations (self);
-                }
                 return G_SOURCE_REMOVE;
         }
 }
@@ -826,6 +863,11 @@ nautilus_toolbar_dispose (GObject *obj)
 	unschedule_menu_popup_timeout (self);
         unschedule_remove_finished_operations (self);
         unschedule_operations_start (self);
+
+        if (self->priv->operations_button_attention_timeout_id != 0) {
+                g_source_remove (self->priv->operations_button_attention_timeout_id);
+                self->priv->operations_button_attention_timeout_id = 0;
+        }
 
         g_signal_handlers_disconnect_by_data (self->priv->progress_manager, self);
         g_clear_object (&self->priv->progress_manager);

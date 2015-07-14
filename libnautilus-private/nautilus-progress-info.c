@@ -68,6 +68,8 @@ struct _NautilusProgressInfo
 	gboolean cancel_at_idle;
 	gboolean changed_at_idle;
 	gboolean progress_at_idle;
+
+        GFile *destination;
 };
 
 struct _NautilusProgressInfoClass
@@ -92,6 +94,7 @@ nautilus_progress_info_finalize (GObject *object)
 	g_object_unref (info->cancellable);
         g_cancellable_cancel (info->details_in_thread_cancellable);
         g_clear_object (&info->details_in_thread_cancellable);
+        g_clear_object (&info->destination);
 	
 	if (G_OBJECT_CLASS (nautilus_progress_info_parent_class)->finalize) {
 		(*G_OBJECT_CLASS (nautilus_progress_info_parent_class)->finalize) (object);
@@ -686,4 +689,26 @@ nautilus_progress_info_get_elapsed_time (NautilusProgressInfo *info)
         G_UNLOCK (progress_info);
 
         return elapsed_time;
+}
+
+void
+nautilus_progress_info_set_destination (NautilusProgressInfo *info,
+                                        GFile                *file)
+{
+        G_LOCK (progress_info);
+        g_clear_object (&info->destination);
+        info->destination = g_object_ref (file);
+        G_UNLOCK (progress_info);
+}
+
+GFile *
+nautilus_progress_info_get_destination (NautilusProgressInfo *info)
+{
+        GFile *destination;
+
+        G_LOCK (progress_info);
+        destination = g_object_ref (info->destination);
+        G_UNLOCK (progress_info);
+
+        return destination;
 }
