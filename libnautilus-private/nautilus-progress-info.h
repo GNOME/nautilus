@@ -60,6 +60,7 @@ void          nautilus_progress_info_cancel          (NautilusProgressInfo *info
 gboolean      nautilus_progress_info_get_is_started  (NautilusProgressInfo *info);
 gboolean      nautilus_progress_info_get_is_finished (NautilusProgressInfo *info);
 gboolean      nautilus_progress_info_get_is_paused   (NautilusProgressInfo *info);
+gboolean      nautilus_progress_info_get_is_cancelled (NautilusProgressInfo *info);
 
 void          nautilus_progress_info_start           (NautilusProgressInfo *info);
 void          nautilus_progress_info_finish          (NautilusProgressInfo *info);

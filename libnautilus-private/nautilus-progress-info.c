@@ -34,6 +34,7 @@ enum {
   PROGRESS_CHANGED,
   STARTED,
   FINISHED,
+  CANCELLED,
   LAST_SIGNAL
 };
 
@@ -46,6 +47,8 @@ struct _NautilusProgressInfo
 	GObject parent_instance;
 	
 	GCancellable *cancellable;
+        guint cancellable_id;
+        GCancellable *details_in_thread_cancellable;
 	
 	char *status;
 	char *details;
@@ -62,6 +65,7 @@ struct _NautilusProgressInfo
 	
 	gboolean start_at_idle;
 	gboolean finish_at_idle;
+	gboolean cancel_at_idle;
 	gboolean changed_at_idle;
 	gboolean progress_at_idle;
 };
@@ -84,7 +88,10 @@ nautilus_progress_info_finalize (GObject *object)
 
 	g_free (info->status);
 	g_free (info->details);
+        g_cancellable_disconnect (info->cancellable, info->cancellable_id);
 	g_object_unref (info->cancellable);
+        g_cancellable_cancel (info->details_in_thread_cancellable);
+        g_clear_object (&info->details_in_thread_cancellable);
 	
 	if (G_OBJECT_CLASS (nautilus_progress_info_parent_class)->finalize) {
 		(*G_OBJECT_CLASS (nautilus_progress_info_parent_class)->finalize) (object);
@@ -155,6 +162,155 @@ nautilus_progress_info_class_init (NautilusProgressInfoClass *klass)
 			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
 	
+	signals[CANCELLED] =
+		g_signal_new ("cancelled",
+			      NAUTILUS_TYPE_PROGRESS_INFO,
+			      G_SIGNAL_RUN_LAST,
+			      0,
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE, 0);
+}
+
+static gboolean
+idle_callback (gpointer data)
+{
+	NautilusProgressInfo *info = data;
+	gboolean start_at_idle;
+	gboolean finish_at_idle;
+	gboolean changed_at_idle;
+	gboolean progress_at_idle;
+	gboolean cancelled_at_idle;
+	GSource *source;
+
+	source = g_main_current_source ();
+
+	G_LOCK (progress_info);
+
+	/* Protect agains races where the source has
+	   been destroyed on another thread while it
+	   was being dispatched.
+	   Similar to what gdk_threads_add_idle does.
+	*/
+	if (g_source_is_destroyed (source)) {
+		G_UNLOCK (progress_info);
+		return FALSE;
+	}
+
+	/* We hadn't destroyed the source, so take a ref.
+	 * This might ressurect the object from dispose, but
+	 * that should be ok.
+	 */
+	g_object_ref (info);
+
+	g_assert (source == info->idle_source);
+
+	g_source_unref (source);
+	info->idle_source = NULL;
+
+	start_at_idle = info->start_at_idle;
+	finish_at_idle = info->finish_at_idle;
+	changed_at_idle = info->changed_at_idle;
+	progress_at_idle = info->progress_at_idle;
+	cancelled_at_idle = info->cancel_at_idle;
+
+	info->start_at_idle = FALSE;
+	info->finish_at_idle = FALSE;
+	info->changed_at_idle = FALSE;
+	info->progress_at_idle = FALSE;
+	info->cancel_at_idle = FALSE;
+
+	G_UNLOCK (progress_info);
+
+	if (start_at_idle) {
+		g_signal_emit (info,
+			       signals[STARTED],
+			       0);
+	}
+
+	if (changed_at_idle) {
+		g_signal_emit (info,
+			       signals[CHANGED],
+			       0);
+	}
+
+	if (progress_at_idle) {
+		g_signal_emit (info,
+			       signals[PROGRESS_CHANGED],
+			       0);
+	}
+
+	if (finish_at_idle) {
+		g_signal_emit (info,
+			       signals[FINISHED],
+			       0);
+	}
+
+	if (cancelled_at_idle) {
+		g_signal_emit (info,
+			       signals[CANCELLED],
+			       0);
+	}
+
+	g_object_unref (info);
+
+	return FALSE;
+}
+
+
+/* Called with lock held */
+static void
+queue_idle (NautilusProgressInfo *info, gboolean now)
+{
+	if (info->idle_source == NULL ||
+	    (now && !info->source_is_now)) {
+		if (info->idle_source) {
+			g_source_destroy (info->idle_source);
+			g_source_unref (info->idle_source);
+			info->idle_source = NULL;
+		}
+
+		info->source_is_now = now;
+		if (now) {
+			info->idle_source = g_idle_source_new ();
+		} else {
+			info->idle_source = g_timeout_source_new (SIGNAL_DELAY_MSEC);
+		}
+		g_source_set_callback (info->idle_source, idle_callback, info, NULL);
+		g_source_attach (info->idle_source, NULL);
+	}
+}
+
+static void
+set_details_in_thread (GTask                *task,
+                       NautilusProgressInfo *info,
+                       gpointer              user_data,
+                       GCancellable         *cancellable)
+{
+        if (!g_cancellable_is_cancelled (cancellable)) {
+                nautilus_progress_info_set_details  (info, _("Cancelled"));
+                G_LOCK (progress_info);
+		info->cancel_at_idle = TRUE;
+		queue_idle (info, TRUE);
+                G_UNLOCK (progress_info);
+        }
+}
+
+static void
+on_canceled (GCancellable         *cancellable,
+             NautilusProgressInfo *info)
+{
+        GTask *task;
+
+        /* We can't do any lock operaton here, since this is probably the main
+         * thread, so modify the details in another thread. Also it can happens
+         * that we were finalizing the object, so create a new cancellable here
+         * so it can be cancelled in finalize */
+        info->details_in_thread_cancellable = g_cancellable_new ();
+        task = g_task_new (info, info->details_in_thread_cancellable, NULL, NULL);
+        g_task_run_in_thread (task, (GTaskThreadFunc) set_details_in_thread);
+
+        g_object_unref (task);
 }
 
 static void
@@ -163,6 +319,10 @@ nautilus_progress_info_init (NautilusProgressInfo *info)
 	NautilusProgressInfoManager *manager;
 
 	info->cancellable = g_cancellable_new ();
+        info->cancellable_id = g_cancellable_connect (info->cancellable,
+                                                      G_CALLBACK (on_canceled),
+                                                      info,
+                                                      NULL);
 
 	manager = nautilus_progress_info_manager_dup_singleton ();
 	nautilus_progress_info_manager_add_new_info (manager, info);
@@ -258,6 +418,18 @@ nautilus_progress_info_get_cancellable (NautilusProgressInfo *info)
 }
 
 gboolean
+nautilus_progress_info_get_is_cancelled (NautilusProgressInfo *info)
+{
+        gboolean cancelled;
+
+        G_LOCK (progress_info);
+        cancelled = g_cancellable_is_cancelled (info->cancellable);
+        G_UNLOCK (progress_info);
+
+        return cancelled;
+}
+
+gboolean
 nautilus_progress_info_get_is_started (NautilusProgressInfo *info)
 {
 	gboolean res;
@@ -297,105 +469,6 @@ nautilus_progress_info_get_is_paused (NautilusProgressInfo *info)
 	G_UNLOCK (progress_info);
 	
 	return res;
-}
-
-static gboolean
-idle_callback (gpointer data)
-{
-	NautilusProgressInfo *info = data;
-	gboolean start_at_idle;
-	gboolean finish_at_idle;
-	gboolean changed_at_idle;
-	gboolean progress_at_idle;
-	GSource *source;
-
-	source = g_main_current_source ();
-	
-	G_LOCK (progress_info);
-
-	/* Protect agains races where the source has
-	   been destroyed on another thread while it
-	   was being dispatched.
-	   Similar to what gdk_threads_add_idle does.
-	*/
-	if (g_source_is_destroyed (source)) {
-		G_UNLOCK (progress_info);
-		return FALSE;
-	}
-
-	/* We hadn't destroyed the source, so take a ref.
-	 * This might ressurect the object from dispose, but
-	 * that should be ok.
-	 */
-	g_object_ref (info);
-
-	g_assert (source == info->idle_source);
-	
-	g_source_unref (source);
-	info->idle_source = NULL;
-	
-	start_at_idle = info->start_at_idle;
-	finish_at_idle = info->finish_at_idle;
-	changed_at_idle = info->changed_at_idle;
-	progress_at_idle = info->progress_at_idle;
-	
-	info->start_at_idle = FALSE;
-	info->finish_at_idle = FALSE;
-	info->changed_at_idle = FALSE;
-	info->progress_at_idle = FALSE;
-	
-	G_UNLOCK (progress_info);
-	
-	if (start_at_idle) {
-		g_signal_emit (info,
-			       signals[STARTED],
-			       0);
-	}
-	
-	if (changed_at_idle) {
-		g_signal_emit (info,
-			       signals[CHANGED],
-			       0);
-	}
-	
-	if (progress_at_idle) {
-		g_signal_emit (info,
-			       signals[PROGRESS_CHANGED],
-			       0);
-	}
-	
-	if (finish_at_idle) {
-		g_signal_emit (info,
-			       signals[FINISHED],
-			       0);
-	}
-	
-	g_object_unref (info);
-	
-	return FALSE;
-}
-
-/* Called with lock held */
-static void
-queue_idle (NautilusProgressInfo *info, gboolean now)
-{
-	if (info->idle_source == NULL ||
-	    (now && !info->source_is_now)) {
-		if (info->idle_source) {
-			g_source_destroy (info->idle_source);
-			g_source_unref (info->idle_source);
-			info->idle_source = NULL;
-		}
-		
-		info->source_is_now = now;
-		if (now) {
-			info->idle_source = g_idle_source_new ();
-		} else {
-			info->idle_source = g_timeout_source_new (SIGNAL_DELAY_MSEC);
-		}
-		g_source_set_callback (info->idle_source, idle_callback, info, NULL);
-		g_source_attach (info->idle_source, NULL);
-	}
 }
 
 void

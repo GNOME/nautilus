@@ -47,7 +47,13 @@ G_DEFINE_TYPE_WITH_PRIVATE (NautilusProgressInfoWidget, nautilus_progress_info_w
 static void
 info_finished (NautilusProgressInfoWidget *self)
 {
-	gtk_widget_destroy (GTK_WIDGET (self));
+  	gtk_widget_set_sensitive (self->priv->cancel, FALSE);
+}
+
+static void
+info_cancelled (NautilusProgressInfoWidget *self)
+{
+  	gtk_widget_set_sensitive (self->priv->cancel, FALSE);
 }
 
 static void
@@ -85,7 +91,6 @@ cancel_clicked (GtkWidget *button,
 		NautilusProgressInfoWidget *self)
 {
 	nautilus_progress_info_cancel (self->priv->info);
-	gtk_widget_set_sensitive (button, FALSE);
 }
 
 static void
@@ -117,6 +122,9 @@ nautilus_progress_info_widget_constructed (GObject *obj)
 	g_signal_connect_swapped (self->priv->info,
 				  "finished",
 				  G_CALLBACK (info_finished), self);
+	g_signal_connect_swapped (self->priv->info,
+				  "cancelled",
+				  G_CALLBACK (info_cancelled), self);
 
 	update_data (self);
 	update_progress (self);
@@ -186,7 +194,15 @@ nautilus_progress_info_widget_class_init (NautilusProgressInfoWidgetClass *klass
 GtkWidget *
 nautilus_progress_info_widget_new (NautilusProgressInfo *info)
 {
-	return g_object_new (NAUTILUS_TYPE_PROGRESS_INFO_WIDGET,
+        NautilusProgressInfoWidget *self;
+
+	self = g_object_new (NAUTILUS_TYPE_PROGRESS_INFO_WIDGET,
 			     "info", info,
 			     NULL);
+
+        gtk_widget_set_sensitive (self->priv->cancel,
+                                  !nautilus_progress_info_get_is_finished (self->priv->info) &&
+                                  !nautilus_progress_info_get_is_cancelled (self->priv->info));
+
+        return GTK_WIDGET (self);
 }

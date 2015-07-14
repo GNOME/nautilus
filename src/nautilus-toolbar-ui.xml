@@ -149,6 +149,7 @@
           <object class="GtkMenuButton" id="operations_button">
             <property name="visible">False</property>
             <property name="popover">operations_popover</property>
+            <signal name="toggled" handler="on_operations_button_toggled" object="NautilusToolbar" swapped="yes"/>
             <style>
               <class name="button"/>
             </style>

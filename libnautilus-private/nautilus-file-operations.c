@@ -1453,29 +1453,50 @@ report_delete_progress (CommonJob *job,
 	double elapsed, transfer_rate;
 	int remaining_time;
 	gint64 now;
-	char *files_left_s;
+	char *details;
+        char *status;
+        DeleteJob *delete_job;
 
+        delete_job = (DeleteJob *) job;
 	now = g_get_monotonic_time ();
-	if (transfer_info->last_report_time != 0 &&
-	    ABS ((gint64)(transfer_info->last_report_time - now)) < 100 * NSEC_PER_MICROSEC) {
-		return;
-	}
-	transfer_info->last_report_time = now;
-	
 	files_left = source_info->num_files - transfer_info->num_files;
 
 	/* Races and whatnot could cause this to be negative... */
 	if (files_left < 0) {
-		files_left = 1;
+		files_left = 0;
 	}
 
-	files_left_s = f (ngettext ("%'d file left to delete",
-				    "%'d files left to delete",
-				    files_left),
-			  files_left);
+        /* If the number of files left is 0, we want to update the status withouth
+         * considering this time, since we want to change the status to completed
+         * and probably we won't get more calls to this function */
+	if (transfer_info->last_report_time != 0 &&
+	    ABS ((gint64)(transfer_info->last_report_time - now)) < 100 * NSEC_PER_MICROSEC &&
+            files_left > 0) {
+		return;
+	}
 
-	nautilus_progress_info_take_status (job->progress,
-					    f (_("Deleting files")));
+	transfer_info->last_report_time = now;
+
+        if (source_info->num_files == 1) {
+                if (files_left == 0) {
+                        status = _("Deleted “%B”");
+                } else {
+                        status = _("Deleting “%B”");
+                }
+	        nautilus_progress_info_take_status (job->progress,
+					            f (status,
+                                                       (GFile*) delete_job->files->data));
+
+        } else {
+                if (files_left == 0) {
+                        status = _("Deleted %'d files");
+                } else {
+                        status = _("Deleting %'d files");
+                }
+	        nautilus_progress_info_take_status (job->progress,
+					            f (status,
+                                                       source_info->num_files));
+        }
 
 	elapsed = g_timer_elapsed (job->time, NULL);
         transfer_rate = 0;
@@ -1487,23 +1508,35 @@ report_delete_progress (CommonJob *job,
 	}
 
 	if (elapsed < SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE) {
-		nautilus_progress_info_set_details (job->progress, files_left_s);
+                if (files_left > 0) {
+                        details = f (_("%'d / %'d"),
+                                     transfer_info->num_files + 1,
+                                     source_info->num_files);
+                } else {
+                        details = f (_("%'d / %'d"),
+                                     transfer_info->num_files,
+                                     source_info->num_files);
+                }
 	} else {
-		char *details, *time_left_s;
-
-		/* To translators: %T will expand to a time like "2 minutes".
- 		 * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
- 		 */
-		time_left_s = f (ngettext ("%T left",
-					   "%T left",
-					   seconds_count_format_time_units (remaining_time)),
-				 remaining_time);
-
-		details = g_strconcat (files_left_s, " \xE2\x80\x94 ", time_left_s, NULL);
-		nautilus_progress_info_take_details (job->progress, details);
-
-		g_free (time_left_s);
+                if (files_left > 0) {
+	                /* To translators: %T will expand to a time duration like "2 minutes".
+                         * So the whole thing will be something like "1 of 5 -- 2 hours left (4 files/sec)"
+	                 *
+	                 * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
+	                 */
+	                details = f (ngettext ("%'d / %'d \xE2\x80\x94 %T left (%d files/sec)",
+	                                       "%'d / %'d \xE2\x80\x94 %T left (%d files/sec)",
+			                       seconds_count_format_time_units (remaining_time)),
+                                     transfer_info->num_files + 1, source_info->num_files,
+                                     remaining_time,
+                                     (int) transfer_rate + 0.5);
+                } else {
+                        details = f (_("%'d / %'d"),
+                                     transfer_info->num_files,
+                                     source_info->num_files);
+                }
 	}
+	nautilus_progress_info_set_details (job->progress, details);
 
         if (elapsed > SECONDS_NEEDED_FOR_APROXIMATE_TRANSFER_RATE) {
                 nautilus_progress_info_set_remaining_time (job->progress,
@@ -1511,7 +1544,6 @@ report_delete_progress (CommonJob *job,
                 nautilus_progress_info_set_elapsed_time (job->progress,
                                                          elapsed);
         }
-	g_free (files_left_s);
 
 	if (source_info->num_files != 0) {
 		nautilus_progress_info_set_progress (job->progress, transfer_info->num_files, source_info->num_files);
@@ -1786,49 +1818,220 @@ delete_files (CommonJob *job, GList *files, int *files_skipped)
 }
 
 static void
-report_trash_progress (CommonJob *job,
-		       int files_trashed,
-		       int total_files)
+report_trash_progress (CommonJob    *job,
+                       SourceInfo   *source_info,
+                       TransferInfo *transfer_info)
 {
 	int files_left;
-	char *s;
+	double elapsed, transfer_rate;
+	int remaining_time;
+	gint64 now;
+	char *details;
+        char *status;
+        DeleteJob *delete_job;
 
-	files_left = total_files - files_trashed;
+        delete_job = (DeleteJob *) job;
+	now = g_get_monotonic_time ();
+	files_left = source_info->num_files - transfer_info->num_files;
 
-	nautilus_progress_info_take_status (job->progress,
-					    f (_("Moving files to trash")));
+	/* Races and whatnot could cause this to be negative... */
+	if (files_left < 0) {
+		files_left = 0;
+	}
 
-	s = f (ngettext ("%'d file left to trash",
-			 "%'d files left to trash",
-			 files_left),
-	       files_left);
-	nautilus_progress_info_take_details (job->progress, s);
+        /* If the number of files left is 0, we want to update the status withouth
+         * considering this time, since we want to change the status to completed
+         * and probably we won't get more calls to this function */
+	if (transfer_info->last_report_time != 0 &&
+	    ABS ((gint64)(transfer_info->last_report_time - now)) < 100 * NSEC_PER_MICROSEC &&
+            files_left > 0) {
+		return;
+	}
 
-	if (total_files != 0) {
-		nautilus_progress_info_set_progress (job->progress, files_trashed, total_files);
+	transfer_info->last_report_time = now;
+
+        if (source_info->num_files == 1) {
+                if (files_left > 0) {
+                        status = _("Trashing “%B”");
+                } else {
+                        status = _("Trashed “%B”");
+                }
+	        nautilus_progress_info_take_status (job->progress,
+					            f (status,
+                                                       (GFile*) delete_job->files->data));
+
+        } else {
+                if (files_left > 0) {
+                        status = _("Trashing %'d files");
+                } else {
+                        status = _("Trashed %'d files");
+                }
+	        nautilus_progress_info_take_status (job->progress,
+					            f (status,
+                                                       source_info->num_files));
+        }
+
+
+	elapsed = g_timer_elapsed (job->time, NULL);
+        transfer_rate = 0;
+        remaining_time = INT_MAX;
+	if (elapsed > 0) {
+		transfer_rate = transfer_info->num_files / elapsed;
+                if (transfer_rate > 0)
+		        remaining_time = (source_info->num_files - transfer_info->num_files) / transfer_rate;
+	}
+
+	if (elapsed < SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE) {
+                if (files_left > 0) {
+                        details = f (_("%'d / %'d"),
+                                     transfer_info->num_files + 1,
+                                     source_info->num_files);
+                } else {
+                        details = f (_("%'d / %'d"),
+                                     transfer_info->num_files,
+                                     source_info->num_files);
+                }
+	} else {
+                if (files_left > 0) {
+	                /* To translators: %T will expand to a time duration like "2 minutes".
+                         * So the whole thing will be something like "1 of 5 -- 2 hours left (4 files/sec)"
+	                 *
+	                 * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
+	                 */
+	                details = f (ngettext ("%'d / %'d \xE2\x80\x94 %T left (%d files/sec)",
+	                                       "%'d / %'d \xE2\x80\x94 %T left (%d files/sec)",
+			                       seconds_count_format_time_units (remaining_time)),
+                                     transfer_info->num_files + 1, source_info->num_files,
+                                     remaining_time,
+                                     (int) transfer_rate + 0.5);
+                } else {
+                        details = f (_("%'d / %'d"),
+                                     transfer_info->num_files,
+                                     source_info->num_files);
+                }
+	}
+	nautilus_progress_info_set_details (job->progress, details);
+
+        if (elapsed > SECONDS_NEEDED_FOR_APROXIMATE_TRANSFER_RATE) {
+                nautilus_progress_info_set_remaining_time (job->progress,
+                                                           remaining_time);
+                nautilus_progress_info_set_elapsed_time (job->progress,
+                                                         elapsed);
+        }
+
+	if (source_info->num_files != 0) {
+		nautilus_progress_info_set_progress (job->progress, transfer_info->num_files, source_info->num_files);
 	}
 }
 
+static void
+trash_file (CommonJob    *job,
+            GFile        *file,
+            gboolean     *skipped_file,
+            SourceInfo   *source_info,
+            TransferInfo *transfer_info,
+            gboolean      toplevel,
+            GList        *to_delete)
+{
+	GError *error;
+	char *primary, *secondary, *details;
+	int response;
+
+	if (should_skip_file (job, file)) {
+		*skipped_file = TRUE;
+		return;
+	}
+
+	error = NULL;
+
+	if (g_file_trash (file, job->cancellable, &error)) {
+	        transfer_info->num_files ++;
+		nautilus_file_changes_queue_file_removed (file);
+
+		if (job->undo_info != NULL) {
+			nautilus_file_undo_info_trash_add_file (NAUTILUS_FILE_UNDO_INFO_TRASH (job->undo_info), file);
+		}
+
+		report_trash_progress (job, source_info, transfer_info);
+                return;
+	}
+
+	if (job->skip_all_error) {
+	        *skipped_file = TRUE;
+		goto skip;
+	}
+
+	if (job->delete_all) {
+		to_delete = g_list_prepend (to_delete, file);
+		goto skip;
+	}
+
+	/* Translators: %B is a file name */
+	primary = f (_("“%B” can't be put in the trash. Do you want to delete it immediately?"), file);
+	details = NULL;
+	secondary = NULL;
+	if (!IS_IO_ERROR (error, NOT_SUPPORTED)) {
+		details = error->message;
+	} else if (!g_file_is_native (file)) {
+		secondary = f (_("This remote location does not support sending items to the trash."));
+	}
+
+	response = run_question (job,
+				 primary,
+				 secondary,
+				 details,
+				 (source_info->num_files - transfer_info->num_files) > 1,
+				 CANCEL, SKIP_ALL, SKIP, DELETE_ALL, DELETE,
+				 NULL);
+
+	if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
+		((DeleteJob *) job)->user_cancel = TRUE;
+		abort_job (job);
+	} else if (response == 1) { /* skip all */
+	        *skipped_file = TRUE;
+		job->skip_all_error = TRUE;
+	} else if (response == 2) { /* skip */
+	        *skipped_file = TRUE;
+		job->skip_all_error = TRUE;
+	} else if (response == 3) { /* delete all */
+		to_delete = g_list_prepend (to_delete, file);
+		job->delete_all = TRUE;
+	} else if (response == 4) { /* delete */
+		to_delete = g_list_prepend (to_delete, file);
+	}
+
+skip:
+	g_error_free (error);
+}
 
 static void
-trash_files (CommonJob *job, GList *files, int *files_skipped)
+trash_files (CommonJob *job,
+             GList     *files,
+             int       *files_skipped)
 {
 	GList *l;
 	GFile *file;
 	GList *to_delete;
-	GError *error;
-	int total_files, files_trashed;
-	char *primary, *secondary, *details;
-	int response;
+	SourceInfo source_info;
+	TransferInfo transfer_info;
+        gboolean skipped_file;
 
 	if (job_aborted (job)) {
 		return;
 	}
 
-	total_files = g_list_length (files);
-	files_trashed = 0;
+	scan_sources (files,
+		      &source_info,
+		      job,
+		      OP_KIND_TRASH);
+	if (job_aborted (job)) {
+		return;
+	}
 
-	report_trash_progress (job, files_trashed, total_files);
+	g_timer_start (job->time);
+
+	memset (&transfer_info, 0, sizeof (transfer_info));
+	report_trash_progress (job, &source_info, &transfer_info);
 
 	to_delete = NULL;
 	for (l = files;
@@ -1836,64 +2039,13 @@ trash_files (CommonJob *job, GList *files, int *files_skipped)
 	     l = l->next) {
 		file = l->data;
 
-		error = NULL;
-
-		if (!g_file_trash (file, job->cancellable, &error)) {
-			if (job->skip_all_error) {
-				(*files_skipped)++;
-				goto skip;
-			}
-
-			if (job->delete_all) {
-				to_delete = g_list_prepend (to_delete, file);
-				goto skip;
-			}
-
-			/* Translators: %B is a file name */
-			primary = f (_("“%B” can't be put in the trash. Do you want to delete it immediately?"), file);
-			details = NULL;
-			secondary = NULL;
-			if (!IS_IO_ERROR (error, NOT_SUPPORTED)) {
-				details = error->message;
-			} else if (!g_file_is_native (file)) {
-				secondary = f (_("This remote location does not support sending items to the trash."));
-			}
-
-			response = run_question (job,
-						 primary,
-						 secondary,
-						 details,
-						 (total_files - files_trashed) > 1,
-						 CANCEL, SKIP_ALL, SKIP, DELETE_ALL, DELETE,
-						 NULL);
-
-			if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
-				((DeleteJob *) job)->user_cancel = TRUE;				
-				abort_job (job);
-			} else if (response == 1) { /* skip all */
-				(*files_skipped)++;
-				job->skip_all_error = TRUE;
-			} else if (response == 2) { /* skip */
-				(*files_skipped)++;
-			} else if (response == 3) { /* delete all */
-				to_delete = g_list_prepend (to_delete, file);
-				job->delete_all = TRUE;
-			} else if (response == 4) { /* delete */
-				to_delete = g_list_prepend (to_delete, file);
-			}
-
-		skip:
-			g_error_free (error);
-			total_files--;
-		} else {
-			nautilus_file_changes_queue_file_removed (file);
-
-			if (job->undo_info != NULL) {
-				nautilus_file_undo_info_trash_add_file (NAUTILUS_FILE_UNDO_INFO_TRASH (job->undo_info), file);
-			}
-
-			files_trashed++;
-			report_trash_progress (job, files_trashed, total_files);
+		skipped_file = FALSE;
+                trash_file (job, file,
+                            &skipped_file,
+                            &source_info, &transfer_info,
+                            TRUE, to_delete);
+		if (skipped_file) {
+			(*files_skipped)++;
 		}
 	}
 
@@ -2968,6 +3120,8 @@ report_copy_progress (CopyMoveJob *copy_job,
 	guint64 now;
 	CommonJob *job;
 	gboolean is_move;
+        gchar *status;
+        char *details;
 
 	job = (CommonJob *)copy_job;
 
@@ -2975,73 +3129,103 @@ report_copy_progress (CopyMoveJob *copy_job,
 	
 	now = g_get_monotonic_time ();
 
-	if (transfer_info->last_report_time != 0 &&
-	    ABS ((gint64)(transfer_info->last_report_time - now)) < 100 * NSEC_PER_MICROSEC) {
-		return;
-	}
-	transfer_info->last_report_time = now;
-	
 	files_left = source_info->num_files - transfer_info->num_files;
 
 	/* Races and whatnot could cause this to be negative... */
 	if (files_left < 0) {
-		files_left = 1;
+		files_left = 0;
 	}
+
+        /* If the number of files left is 0, we want to update the status withouth
+         * considering this time, since we want to change the status to completed
+         * and probably we won't get more calls to this function */
+	if (transfer_info->last_report_time != 0 &&
+	    ABS ((gint64)(transfer_info->last_report_time - now)) < 100 * NSEC_PER_MICROSEC &&
+            files_left > 0) {
+		return;
+	}
+	transfer_info->last_report_time = now;
 
 	if (files_left != transfer_info->last_reported_files_left ||
 	    transfer_info->last_reported_files_left == 0) {
 		/* Avoid changing this unless files_left changed since last time */
 		transfer_info->last_reported_files_left = files_left;
-		
+
 		if (source_info->num_files == 1) {
 			if (copy_job->destination != NULL) {
+                                if (is_move) {
+                                        if (files_left > 0) {
+                                                status = _("Moving “%B” to “%B”");
+                                        } else {
+                                                status = _("Moved “%B” to “%B”");
+                                        }
+                                } else {
+                                        if (files_left > 0) {
+                                                status = _("Copying “%B” to “%B”");
+                                        } else {
+                                                status = _("Copied “%B” to “%B”");
+                                        }
+                                }
 				nautilus_progress_info_take_status (job->progress,
-								    f (is_move ?
-								       _("Moving “%B” to “%B”"):
-								       _("Copying “%B” to “%B”"),
+								    f (status,
 								       copy_job->fake_display_source != NULL ?
 								       copy_job->fake_display_source :
 								       (GFile *)copy_job->files->data,
 								       copy_job->destination));
 			} else {
+                                if (files_left > 0) {
+                                        status = _("Duplicating “%B”");
+                                } else {
+                                        status = _("Duplicated “%B”");
+                                }
 				nautilus_progress_info_take_status (job->progress,
-								    f (_("Duplicating “%B”"),
+								    f (status,
 								       (GFile *)copy_job->files->data));
 			}
-		} else if (copy_job->files != NULL &&
-			   copy_job->files->next == NULL) {
+		} else if (copy_job->files != NULL) {
 			if (copy_job->destination != NULL) {
-				nautilus_progress_info_take_status (job->progress,
-								    f (is_move ?
-								       _("Moving file %'d of %'d (in “%B”) to “%B”")
-								       :
-								       _("Copying file %'d of %'d (in “%B”) to “%B”"),
-								       transfer_info->num_files + 1,
-								       source_info->num_files,
-								       (GFile *)copy_job->files->data,
-								       copy_job->destination));
+                                if (files_left > 0) {
+                                        if (is_move) {
+                                                status = _("Moving %'d files to “%B”");
+                                        } else {
+                                                status = _("Copying %'d files to “%B”");
+                                        }
+				        nautilus_progress_info_take_status (job->progress,
+								            f (status,
+								               source_info->num_files,
+								               (GFile *)copy_job->destination,
+								               copy_job->destination));
+                                } else {
+                                        if (is_move) {
+                                                status = _("Moved %'d files to “%B”");
+                                        } else {
+                                                status = _("Copied %'d files to “%B”");
+                                        }
+				        nautilus_progress_info_take_status (job->progress,
+								            f (status,
+								               source_info->num_files,
+								               (GFile *)copy_job->destination,
+								               copy_job->destination));
+                                }
 			} else {
-				nautilus_progress_info_take_status (job->progress,
-								    f (_("Duplicating file %'d of %'d (in “%B”)"),
-								       transfer_info->num_files + 1,
-								       source_info->num_files,
-								       (GFile *)copy_job->files->data));
-			}
-		} else {
-			if (copy_job->destination != NULL) {
-				nautilus_progress_info_take_status (job->progress,
-								    f (is_move ?
-								       _("Moving file %'d of %'d to “%B”")
-								       :
-								       _ ("Copying file %'d of %'d to “%B”"),
-								       transfer_info->num_files + 1,
-								       source_info->num_files,
-								       copy_job->destination));
-			} else {
-				nautilus_progress_info_take_status (job->progress,
-								    f (_("Duplicating file %'d of %'d"),
-								       transfer_info->num_files + 1,
-								       source_info->num_files));
+                                GFile *parent;
+
+                                parent = g_file_get_parent (copy_job->files->data);
+                                if (files_left > 0) {
+                                        status = _("Duplicating %'d files in “%B”");
+				        nautilus_progress_info_take_status (job->progress,
+								            f (status,
+								               transfer_info->num_files + 1,
+								               source_info->num_files,
+								               parent));
+                                } else {
+                                        status = _("Duplicated %'d files in “%B”");
+				        nautilus_progress_info_take_status (job->progress,
+								            f (status,
+								               source_info->num_files,
+								               parent));
+                                }
+                                g_object_unref (parent);
 			}
 		}
 	}
@@ -3057,28 +3241,63 @@ report_copy_progress (CopyMoveJob *copy_job,
 		        remaining_time = (total_size - transfer_info->num_bytes) / transfer_rate;
 	}
 
-	if (elapsed < SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE &&
-	    transfer_rate > 0) {
-		char *s;
-		/* To translators: %S will expand to a size like "2 bytes" or "3 MB", so something like "4 kb of 4 MB" */		
-		s = f (_("%S of %S"), transfer_info->num_bytes, total_size);
-		nautilus_progress_info_take_details (job->progress, s);
+  	if (elapsed < SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE &&
+            transfer_rate > 0) {
+                if (source_info->num_files == 1) {
+	                /* To translators: %S will expand to a size like "2 bytes" or "3 MB", so something like "4 kb of 4 MB" */
+	                details = f (_("%S / %S"), transfer_info->num_bytes, total_size);
+                } else {
+                        if (files_left > 0) {
+	                        details = f (_("%'d / %'d"),
+                                             transfer_info->num_files + 1,
+                                             source_info->num_files);
+                        } else {
+                                details = f (_("%'d / %'d"),
+                                             transfer_info->num_files,
+                                             source_info->num_files);
+                        }
+                }
 	} else {
-		char *s;
-
-		/* To translators: %S will expand to a size like "2 bytes" or "3 MB", %T to a time duration like
-		 * "2 minutes". So the whole thing will be something like "2 kb of 4 MB -- 2 hours left (4kb/sec)"
-		 *
-		 * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
-		 */		
-		s = f (ngettext ("%S of %S \xE2\x80\x94 %T left (%S/sec)",
-				 "%S of %S \xE2\x80\x94 %T left (%S/sec)",
-				 seconds_count_format_time_units (remaining_time)),
-		       transfer_info->num_bytes, total_size,
-		       remaining_time,
-		       (goffset)transfer_rate);
-		nautilus_progress_info_take_details (job->progress, s);
+                if (source_info->num_files == 1) {
+                        if (files_left > 0) {
+		                /* To translators: %S will expand to a size like "2 bytes" or "3 MB", %T to a time duration like
+		                 * "2 minutes". So the whole thing will be something like "2 kb / 4 MB -- 2 hours left (4kb/sec)"
+		                 *
+		                 * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
+		                 */
+		                details = f (ngettext ("%S / %S \xE2\x80\x94 %T left (%S/sec)",
+		                                       "%S / %S \xE2\x80\x94 %T left (%S/sec)",
+				                       seconds_count_format_time_units (remaining_time)),
+                                             transfer_info->num_bytes, total_size,
+                                             remaining_time,
+                                             (goffset)transfer_rate);
+                        } else {
+		                /* To translators: %S will expand to a size like "2 bytes" or "3 MB". */
+                                details = f (_("%S / %S"),
+                                             transfer_info->num_bytes,
+                                             total_size);
+                        }
+                } else {
+                        if (files_left > 0) {
+		                /* To translators: %T will expand to a time duration like "2 minutes".
+                                 * So the whole thing will be something like "1 / 5 -- 2 hours left (4kb/sec)"
+		                 *
+		                 * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
+		                 */
+		                details = f (ngettext ("%'d / %'d \xE2\x80\x94 %T left (%S/sec)",
+		                                       "%'d / %'d \xE2\x80\x94 %T left (%S/sec)",
+				                       seconds_count_format_time_units (remaining_time)),
+                                             transfer_info->num_files + 1, source_info->num_files,
+                                             remaining_time,
+                                             (goffset)transfer_rate);
+                        } else {
+                                details = f (_("%'d / %'d"),
+                                             transfer_info->num_files,
+                                             source_info->num_files);
+                        }
+                }
 	}
+	nautilus_progress_info_take_details (job->progress, details);
 
         if (elapsed > SECONDS_NEEDED_FOR_APROXIMATE_TRANSFER_RATE) {
                 nautilus_progress_info_set_remaining_time (job->progress,

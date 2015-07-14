@@ -102,14 +102,6 @@ nautilus_progress_info_manager_class_init (NautilusProgressInfoManagerClass *kla
 	g_type_class_add_private (klass, sizeof (NautilusProgressInfoManagerPriv));
 }
 
-static void
-progress_info_finished_cb (NautilusProgressInfo *info,
-			   NautilusProgressInfoManager *self)
-{
-	self->priv->progress_infos =
-		g_list_remove (self->priv->progress_infos, info);
-}
-
 NautilusProgressInfoManager *
 nautilus_progress_info_manager_dup_singleton (void)
 {
@@ -128,10 +120,25 @@ nautilus_progress_info_manager_add_new_info (NautilusProgressInfoManager *self,
 	self->priv->progress_infos =
 		g_list_prepend (self->priv->progress_infos, g_object_ref (info));
 
-	g_signal_connect (info, "finished",
-			  G_CALLBACK (progress_info_finished_cb), self);
-
 	g_signal_emit (self, signals[NEW_PROGRESS_INFO], 0, info);
+}
+
+void
+nautilus_progress_info_manager_remove_finished_or_cancelled_infos (NautilusProgressInfoManager *self)
+{
+        GList *l;
+        GList *next;
+
+        l = self->priv->progress_infos;
+        while (l != NULL) {
+                next = l->next;
+                if (nautilus_progress_info_get_is_finished (l->data) ||
+                    nautilus_progress_info_get_is_cancelled (l->data)) {
+                        self->priv->progress_infos = g_list_remove (self->priv->progress_infos,
+                                                                    l->data);
+                }
+                l = next;
+        }
 }
 
 GList *
@@ -141,12 +148,13 @@ nautilus_progress_info_manager_get_all_infos (NautilusProgressInfoManager *self)
 }
 
 gboolean
-nautilus_progress_manager_are_all_infos_finished (NautilusProgressInfoManager *self)
+nautilus_progress_manager_are_all_infos_finished_or_cancelled (NautilusProgressInfoManager *self)
 {
         GList *l;
 
         for (l = self->priv->progress_infos; l != NULL; l = l->next) {
-                if (!nautilus_progress_info_get_is_finished (l->data)) {
+                if (!(nautilus_progress_info_get_is_finished (l->data) ||
+                      nautilus_progress_info_get_is_cancelled (l->data))) {
                       return FALSE;
                     }
         }
