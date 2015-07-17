@@ -1466,7 +1466,7 @@ report_delete_progress (CommonJob *job,
 		files_left = 0;
 	}
 
-        /* If the number of files left is 0, we want to update the status withouth
+        /* If the number of files left is 0, we want to update the status without
          * considering this time, since we want to change the status to completed
          * and probably we won't get more calls to this function */
 	if (transfer_info->last_report_time != 0 &&
@@ -1520,7 +1520,7 @@ report_delete_progress (CommonJob *job,
 	} else {
                 if (files_left > 0) {
 	                /* To translators: %T will expand to a time duration like "2 minutes".
-                         * So the whole thing will be something like "1 of 5 -- 2 hours left (4 files/sec)"
+                         * So the whole thing will be something like "1 / 5 -- 2 hours left (4 files/sec)"
 	                 *
 	                 * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 	                 */
@@ -1839,7 +1839,7 @@ report_trash_progress (CommonJob    *job,
 		files_left = 0;
 	}
 
-        /* If the number of files left is 0, we want to update the status withouth
+        /* If the number of files left is 0, we want to update the status without
          * considering this time, since we want to change the status to completed
          * and probably we won't get more calls to this function */
 	if (transfer_info->last_report_time != 0 &&
@@ -1894,7 +1894,7 @@ report_trash_progress (CommonJob    *job,
 	} else {
                 if (files_left > 0) {
 	                /* To translators: %T will expand to a time duration like "2 minutes".
-                         * So the whole thing will be something like "1 of 5 -- 2 hours left (4 files/sec)"
+                         * So the whole thing will be something like "1 / 5 -- 2 hours left (4 files/sec)"
 	                 *
 	                 * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 	                 */
@@ -3136,7 +3136,7 @@ report_copy_progress (CopyMoveJob *copy_job,
 		files_left = 0;
 	}
 
-        /* If the number of files left is 0, we want to update the status withouth
+        /* If the number of files left is 0, we want to update the status without
          * considering this time, since we want to change the status to completed
          * and probably we won't get more calls to this function */
 	if (transfer_info->last_report_time != 0 &&
@@ -3244,7 +3244,7 @@ report_copy_progress (CopyMoveJob *copy_job,
   	if (elapsed < SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE &&
             transfer_rate > 0) {
                 if (source_info->num_files == 1) {
-	                /* To translators: %S will expand to a size like "2 bytes" or "3 MB", so something like "4 kb of 4 MB" */
+	                /* To translators: %S will expand to a size like "2 bytes" or "3 MB", so something like "4 kb / 4 MB" */
 	                details = f (_("%S / %S"), transfer_info->num_bytes, total_size);
                 } else {
                         if (files_left > 0) {
@@ -3744,7 +3744,7 @@ create_dest_dir (CommonJob *job,
 
 /* a return value of FALSE means retry, i.e.
  * the destination has changed and the source
- * is expected to re-try the preceeding
+ * is expected to re-try the preceding
  * g_file_move() or g_file_copy() call with
  * the new destination.
  */
@@ -4745,7 +4745,7 @@ copy_files (CopyMoveJob *job,
 
 	report_copy_progress (job, source_info, transfer_info);
 
-	/* Query the source dir, not the file because if its a symlink we'll follow it */
+	/* Query the source dir, not the file because if it's a symlink we'll follow it */
 	source_dir = g_file_get_parent ((GFile *) job->files->data);
 	if (source_dir) {
 		inf = g_file_query_filesystem_info (source_dir, "filesystem::readonly", NULL, NULL);
@@ -4990,7 +4990,7 @@ report_preparing_move_progress (CopyMoveJob *move_job, int total, int left)
 	job = (CommonJob *)move_job;
 	
 	nautilus_progress_info_take_status (job->progress,
-					    f (_("Preparing to Move to “%B”"),
+					    f (_("Preparing to move to “%B”"),
 					       move_job->destination));
 
 	nautilus_progress_info_take_details (job->progress,
