@@ -1661,27 +1661,35 @@ nautilus_window_show_operation_notification (NautilusWindow *window,
         gchar *button_label;
         gchar *folder_name;
         NautilusFile *folder;
+        GFile *current_location;
 
+        current_location = nautilus_window_slot_get_location (window->priv->active_slot);
 	if (gtk_window_has_toplevel_focus (GTK_WINDOW (window)) &&
             !NAUTILUS_IS_DESKTOP_WINDOW (window)) {
                 remove_notifications (window);
-                window->priv->folder_to_open = g_object_ref (folder_to_open);
-                folder = nautilus_file_get (folder_to_open);
-                folder_name = nautilus_file_get_display_name (folder);
-                button_label = g_strdup_printf (_("Open %s"), folder_name);
-		gtk_label_set_text (GTK_LABEL (window->priv->notification_operation_label),
+	        gtk_label_set_text (GTK_LABEL (window->priv->notification_operation_label),
                                     main_label);
-                gtk_button_set_label (GTK_BUTTON (window->priv->notification_operation_open),
-                                      button_label);
-		gtk_revealer_set_reveal_child (GTK_REVEALER (window->priv->notification_operation), TRUE);
-		window->priv->notification_operation_timeout_id = g_timeout_add_seconds (NOTIFICATION_TIMEOUT,
+
+                if (g_file_equal (folder_to_open, current_location)) {
+                        gtk_widget_hide (window->priv->notification_operation_open);
+                } else {
+                        gtk_widget_show (window->priv->notification_operation_open);
+                        window->priv->folder_to_open = g_object_ref (folder_to_open);
+                        folder = nautilus_file_get (folder_to_open);
+                        folder_name = nautilus_file_get_display_name (folder);
+                        button_label = g_strdup_printf (_("Open %s"), folder_name);
+                        gtk_button_set_label (GTK_BUTTON (window->priv->notification_operation_open),
+                                              button_label);
+                        g_object_unref (folder);
+                        g_free (folder_name);
+                        g_free (button_label);
+                }
+
+	        gtk_revealer_set_reveal_child (GTK_REVEALER (window->priv->notification_operation), TRUE);
+	        window->priv->notification_operation_timeout_id = g_timeout_add_seconds (NOTIFICATION_TIMEOUT,
                                                                                          (GSourceFunc) on_notification_operation_timeout,
                                                                                          window);
-              g_object_unref (folder);
-              g_free (folder_name);
-              g_free (button_label);
 	}
-
 }
 
 static void
