@@ -1692,24 +1692,29 @@ location_cell_data_func (GtkTreeViewColumn *column,
 		g_object_unref (query);
 	}
 
-	if (g_file_equal (home_location, dir_location)) {
-		where = g_strdup (_("Home"));
-	} else if (g_file_equal (base_location, dir_location)) {
+	if (g_file_equal (base_location, dir_location)) {
 		/* Only occurs when search result is
 		 * a direct child of the base location
 		 */
 		where = g_strdup ("");
+        } else if (g_file_equal (home_location, dir_location)) {
+		where = g_strdup (_("Home"));
 	} else if (g_file_has_prefix (dir_location, base_location)) {
-	  	where = g_file_get_basename (dir_location);
-	}
+                gchar *relative_path;
 
-	if (where != NULL) {
-		g_object_set (G_OBJECT (renderer),
-		              "text", where,
-		              NULL);
+                relative_path = g_file_get_relative_path (home_location, dir_location);
+                where = g_filename_display_name (relative_path);
 
-		g_free (where);
-	}
+                g_free (relative_path);
+	} else {
+                where =  g_file_get_path (dir_location);
+        }
+
+	g_object_set (G_OBJECT (renderer),
+	              "text", where,
+	              NULL);
+
+	g_free (where);
 
 	g_object_unref (base_location);
 	g_object_unref (dir_location);
