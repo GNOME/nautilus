@@ -110,6 +110,7 @@ struct _NautilusWindowPrivate {
         int side_pane_width;
         GtkWidget *sidebar;        /* container for the GtkPlacesSidebar */
         GtkWidget *places_sidebar; /* the actual GtkPlacesSidebar */
+        GVolume *selected_volume; /* the selected volume in the sidebar popup callback */
 
         /* Main view */
         GtkWidget *main_view;
@@ -513,97 +514,6 @@ undo_manager_changed (NautilusWindow *window)
 	g_free (undo_description);
 	g_free (redo_label);
 	g_free (redo_description);
-}
-
-const GActionEntry win_entries[] = {
-	{ "back",  action_back },
-	{ "forward",  action_forward },
-	{ "up",  action_up },
-	{ "action-menu", action_toggle_state_action_button, NULL, "false", NULL },
-	{ "reload", action_reload },
-	{ "stop", action_stop },
-	{ "new-tab", action_new_tab },
-	{ "enter-location", action_enter_location },
-	{ "bookmark-current-location", action_bookmark_current_location },
-	{ "toggle-search", NULL, NULL, "false", action_toggle_search },
-	{ "undo", action_undo },
-	{ "redo", action_redo },
-	{ "view-mode", NULL, "s", "''", action_view_mode },
-	/* Only accesible by shorcuts */
-	{ "close-current-view", action_close_current_view },
-	{ "go-home", action_go_home },
-	{ "tab-previous", action_tab_previous },
-	{ "tab-next", action_tab_next },
-	{ "tab-move-left", action_tab_move_left },
-	{ "tab-move-right", action_tab_move_right },
-	{ "prompt-root-location", action_prompt_for_location_root },
-	{ "prompt-home-location", action_prompt_for_location_home },
-	{ "go-to-tab", NULL, "i", "0", action_go_to_tab },
-};
-
-static void
-nautilus_window_initialize_actions (NautilusWindow *window)
-{
-	GApplication *app;
-	GAction *action;
-	GVariant *state;
-	gchar detailed_action[80];
-	gchar accel[80];
-	gint i;
-	const gchar *reload_accels[] = {
-                "F5",
-                "<ctrl>r",
-                NULL
-        };
-
-	g_action_map_add_action_entries (G_ACTION_MAP (window),
-					 win_entries, G_N_ELEMENTS (win_entries),
-					 window);
-
-	app = g_application_get_default ();
-	nautilus_application_add_accelerator (app, "win.back", "<alt>Left");
-	nautilus_application_add_accelerator (app, "win.forward", "<alt>Right");
-	nautilus_application_add_accelerator (app, "win.enter-location", "<control>l");
-	nautilus_application_add_accelerator (app, "win.new-tab", "<control>t");
-	nautilus_application_add_accelerator (app, "win.toggle-search", "<control>f");
-	nautilus_application_add_accelerator (app, "win.view-mode('list')", "<control>1");
-	nautilus_application_add_accelerator (app, "win.view-mode('grid')", "<control>2");
-	nautilus_application_add_accelerator (app, "win.close-current-view", "<control>w");
-
-        /* Special case reload, since users are used to use two shortcuts instead of one */
-	gtk_application_set_accels_for_action (GTK_APPLICATION (app), "win.reload", reload_accels);
-
-	nautilus_application_add_accelerator (app, "win.undo", "<control>z");
-	nautilus_application_add_accelerator (app, "win.redo", "<shift><control>z");
-	/* Only accesible by shorcuts */
-	nautilus_application_add_accelerator (app, "win.bookmark-current-location", "<control>d");
-	nautilus_application_add_accelerator (app, "win.up", "<alt>Up");
-	nautilus_application_add_accelerator (app, "win.go-home", "<alt>Home");
-	nautilus_application_add_accelerator (app, "win.tab-previous", "<control>Page_Up");
-	nautilus_application_add_accelerator (app, "win.tab-next", "<control>Page_Down");
-	nautilus_application_add_accelerator (app, "win.tab-move-left", "<shift><control>Page_Up");
-	nautilus_application_add_accelerator (app, "win.tab-move-right", "<shift><control>Page_Down");
-	nautilus_application_add_accelerator (app, "win.prompt-root-location", "slash");
-	nautilus_application_add_accelerator (app, "win.prompt-home-location", "asciitilde");
-	nautilus_application_add_accelerator (app, "win.action-menu", "F10");
-
-	/* Alt+N for the first 9 tabs */
-	for (i = 0; i < 9; ++i) {
-		g_snprintf (detailed_action, sizeof (detailed_action), "win.go-to-tab(%i)", i);
-		g_snprintf (accel, sizeof (accel), "<alt>%i", i + 1);
-		nautilus_application_add_accelerator (app, detailed_action, accel);
-	}
-
-	action = g_action_map_lookup_action (G_ACTION_MAP (app), "show-hide-sidebar");
-	state = g_action_get_state (action);
-	if (g_variant_get_boolean (state))
-		nautilus_window_show_sidebar (window);
-
-	g_variant_unref (state);
-
-	g_signal_connect_object (nautilus_file_undo_manager_get (), "undo-changed",
-				 G_CALLBACK (undo_manager_changed), window, G_CONNECT_SWAPPED);
-	undo_manager_changed (window);
 }
 
 void
@@ -1181,8 +1091,9 @@ window_loading_uri_cb (NautilusWindow *window,
 
 /* Callback used in the "empty trash" menu item from the places sidebar */
 static void
-empty_trash_cb (GtkMenuItem *item,
-		gpointer     user_data)
+action_empty_trash (GSimpleAction *action,
+                    GVariant      *variant,
+                    gpointer       user_data)
 {
 	NautilusWindow *window = NAUTILUS_WINDOW (user_data);
 
@@ -1191,8 +1102,9 @@ empty_trash_cb (GtkMenuItem *item,
 
 /* Callback used for the "properties" menu item from the places sidebar */
 static void
-properties_cb (GtkMenuItem *item,
-	       gpointer     user_data)
+action_properties (GSimpleAction *action,
+                   GVariant      *variant,
+                   gpointer       user_data)
 {
 	NautilusWindow *window = NAUTILUS_WINDOW (user_data);
 	GFile *selected;
@@ -1235,20 +1147,17 @@ should_show_format_command (GVolume *volume)
 }
 
 static void
-format_cb (GtkMenuItem *item,
-	   gpointer     user_data)
+action_format (GSimpleAction *action,
+               GVariant      *variant,
+               gpointer       user_data)
 {
 	NautilusWindow *window = NAUTILUS_WINDOW (user_data);
 	GAppInfo *app_info;
 	gchar *cmdline, *device_identifier, *xid_string;
-	GVolume *volume;
 	gint xid;
 
-	volume = g_object_get_data (G_OBJECT (item), "nautilus-volume");
-
-	g_assert (volume != NULL && G_IS_VOLUME (volume));
-
-	device_identifier = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+	device_identifier = g_volume_get_identifier (window->priv->selected_volume,
+                                              G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
 	xid = (gint) gdk_x11_window_get_xid (gtk_widget_get_window (GTK_WIDGET (window)));
 	xid_string = g_strdup_printf ("%d", xid);
 
@@ -1264,65 +1173,82 @@ format_cb (GtkMenuItem *item,
 	g_free (device_identifier);
 	g_free (xid_string);
 	g_clear_object (&app_info);
+	g_clear_object (&window->priv->selected_volume);
 }
 
-/* Destroy notification function used from g_object_set_data_full() */
 static void
-menu_item_destroy_notify_cb (gpointer data)
+add_menu_separator (GtkWidget *menu)
 {
-	GVolume *volume;
+        GtkWidget *separator;
 
-	volume = G_VOLUME (data);
-	g_object_unref (volume);
+        separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
+        gtk_container_add (GTK_CONTAINER (menu), separator);
+        gtk_widget_set_margin_top (separator, 6);
+        gtk_widget_set_margin_bottom (separator, 6);
+	gtk_widget_show (separator);
 }
 
 static void
 places_sidebar_populate_popup_cb (GtkPlacesSidebar *sidebar,
-				  GtkMenu          *menu,
+				  GtkWidget        *menu,
 				  GFile            *selected_item,
 				  GVolume          *selected_volume,
 				  gpointer          user_data)
 {
 	NautilusWindow *window = NAUTILUS_WINDOW (user_data);
-	GtkWidget *item;
 	GFile *trash;
+        GtkWidget *menu_item;
+        GAction *action;
+
+        g_print ("popup\n");
 
 	if (selected_item) {
 		trash = g_file_new_for_uri ("trash:///");
 		if (g_file_equal (trash, selected_item)) {
-			eel_gtk_menu_append_separator (menu);
+                        add_menu_separator (menu);
 
-			item = gtk_menu_item_new_with_mnemonic (_("Empty _Trash"));
-			g_signal_connect (item, "activate",
-					  G_CALLBACK (empty_trash_cb), window);
-			gtk_widget_show (item);
-			gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+                        menu_item = gtk_model_button_new ();
+                        gtk_actionable_set_action_name (GTK_ACTIONABLE (menu_item),
+                                                        "win.empty-trash");
+                        g_object_set (menu_item, "text", _("Empty _Trash"), NULL);
+                        gtk_container_add (GTK_CONTAINER (menu), menu_item);
+			gtk_widget_show (menu_item);
 
-			if (nautilus_trash_monitor_is_empty ())
-				gtk_widget_set_sensitive (item, FALSE);
+                        action = g_action_map_lookup_action (G_ACTION_MAP (window),
+                                                             "empty-trash");
+                        g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                                     !nautilus_trash_monitor_is_empty ());
 		}
 		g_object_unref (trash);
 
 		if (g_file_is_native (selected_item)) {
-			eel_gtk_menu_append_separator (menu);
+                        add_menu_separator (menu);
 
-			item = gtk_menu_item_new_with_mnemonic (_("_Properties"));
-			g_signal_connect (item, "activate",
-					  G_CALLBACK (properties_cb), window);
-			gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-			gtk_widget_show (item);
+                        menu_item = gtk_model_button_new ();
+                        gtk_actionable_set_action_name (GTK_ACTIONABLE (menu_item),
+                                                        "win.properties");
+                        g_object_set (menu_item, "text", _("_Properties"), NULL);
+                        gtk_container_add (GTK_CONTAINER (menu), menu_item);
+			gtk_widget_show (menu_item);
 		}
 	}
 	if (selected_volume) {
 		if (should_show_format_command (selected_volume)) {
-			item = gtk_menu_item_new_with_mnemonic (_("_Format…"));
-			g_object_set_data_full (G_OBJECT (item), "nautilus-volume",
-						g_object_ref (selected_volume),
-						menu_item_destroy_notify_cb);
-			g_signal_connect (item, "activate",
-					  G_CALLBACK (format_cb), window);
-			gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-			gtk_widget_show (item);
+                        menu_item = gtk_model_button_new ();
+                        gtk_actionable_set_action_name (GTK_ACTIONABLE (menu_item),
+                                                        "win.format");
+                        g_object_set (menu_item, "text", _("_Format…"), NULL);
+                        if (selected_volume != NULL && G_IS_VOLUME (selected_volume)) {
+                                window->priv->selected_volume = g_object_ref (selected_volume);
+                        }
+                        gtk_container_add (GTK_CONTAINER (menu), menu_item);
+			gtk_widget_show (menu_item);
+
+                        action = g_action_map_lookup_action (G_ACTION_MAP (window),
+                                                             "format");
+                        g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                                     selected_volume != NULL &&
+                                                     G_IS_VOLUME (selected_volume));
 		}
 	}
 }
@@ -2043,6 +1969,101 @@ setup_notebook (NautilusWindow *window)
 				G_CALLBACK (notebook_button_press_cb),
 				window);
 }
+
+const GActionEntry win_entries[] = {
+	{ "back",  action_back },
+	{ "forward",  action_forward },
+	{ "up",  action_up },
+	{ "action-menu", action_toggle_state_action_button, NULL, "false", NULL },
+	{ "reload", action_reload },
+	{ "stop", action_stop },
+	{ "new-tab", action_new_tab },
+	{ "enter-location", action_enter_location },
+	{ "bookmark-current-location", action_bookmark_current_location },
+	{ "toggle-search", NULL, NULL, "false", action_toggle_search },
+	{ "undo", action_undo },
+	{ "redo", action_redo },
+	{ "view-mode", NULL, "s", "''", action_view_mode },
+	/* Only accesible by shorcuts */
+	{ "close-current-view", action_close_current_view },
+	{ "go-home", action_go_home },
+	{ "tab-previous", action_tab_previous },
+	{ "tab-next", action_tab_next },
+	{ "tab-move-left", action_tab_move_left },
+	{ "tab-move-right", action_tab_move_right },
+	{ "prompt-root-location", action_prompt_for_location_root },
+	{ "prompt-home-location", action_prompt_for_location_home },
+	{ "go-to-tab", NULL, "i", "0", action_go_to_tab },
+	{ "empty-trash", action_empty_trash },
+	{ "properties", action_properties },
+	{ "format", action_format },
+};
+
+static void
+nautilus_window_initialize_actions (NautilusWindow *window)
+{
+	GApplication *app;
+	GAction *action;
+	GVariant *state;
+	gchar detailed_action[80];
+	gchar accel[80];
+	gint i;
+	const gchar *reload_accels[] = {
+                "F5",
+                "<ctrl>r",
+                NULL
+        };
+
+	g_action_map_add_action_entries (G_ACTION_MAP (window),
+					 win_entries, G_N_ELEMENTS (win_entries),
+					 window);
+
+	app = g_application_get_default ();
+	nautilus_application_add_accelerator (app, "win.back", "<alt>Left");
+	nautilus_application_add_accelerator (app, "win.forward", "<alt>Right");
+	nautilus_application_add_accelerator (app, "win.enter-location", "<control>l");
+	nautilus_application_add_accelerator (app, "win.new-tab", "<control>t");
+	nautilus_application_add_accelerator (app, "win.toggle-search", "<control>f");
+	nautilus_application_add_accelerator (app, "win.view-mode('list')", "<control>1");
+	nautilus_application_add_accelerator (app, "win.view-mode('grid')", "<control>2");
+	nautilus_application_add_accelerator (app, "win.close-current-view", "<control>w");
+
+        /* Special case reload, since users are used to use two shortcuts instead of one */
+	gtk_application_set_accels_for_action (GTK_APPLICATION (app), "win.reload", reload_accels);
+
+	nautilus_application_add_accelerator (app, "win.undo", "<control>z");
+	nautilus_application_add_accelerator (app, "win.redo", "<shift><control>z");
+	/* Only accesible by shorcuts */
+	nautilus_application_add_accelerator (app, "win.bookmark-current-location", "<control>d");
+	nautilus_application_add_accelerator (app, "win.up", "<alt>Up");
+	nautilus_application_add_accelerator (app, "win.go-home", "<alt>Home");
+	nautilus_application_add_accelerator (app, "win.tab-previous", "<control>Page_Up");
+	nautilus_application_add_accelerator (app, "win.tab-next", "<control>Page_Down");
+	nautilus_application_add_accelerator (app, "win.tab-move-left", "<shift><control>Page_Up");
+	nautilus_application_add_accelerator (app, "win.tab-move-right", "<shift><control>Page_Down");
+	nautilus_application_add_accelerator (app, "win.prompt-root-location", "slash");
+	nautilus_application_add_accelerator (app, "win.prompt-home-location", "asciitilde");
+	nautilus_application_add_accelerator (app, "win.action-menu", "F10");
+
+	/* Alt+N for the first 9 tabs */
+	for (i = 0; i < 9; ++i) {
+		g_snprintf (detailed_action, sizeof (detailed_action), "win.go-to-tab(%i)", i);
+		g_snprintf (accel, sizeof (accel), "<alt>%i", i + 1);
+		nautilus_application_add_accelerator (app, detailed_action, accel);
+	}
+
+	action = g_action_map_lookup_action (G_ACTION_MAP (app), "show-hide-sidebar");
+	state = g_action_get_state (action);
+	if (g_variant_get_boolean (state))
+		nautilus_window_show_sidebar (window);
+
+	g_variant_unref (state);
+
+	g_signal_connect_object (nautilus_file_undo_manager_get (), "undo-changed",
+				 G_CALLBACK (undo_manager_changed), window, G_CONNECT_SWAPPED);
+	undo_manager_changed (window);
+}
+
 
 static void
 nautilus_window_constructed (GObject *self)
