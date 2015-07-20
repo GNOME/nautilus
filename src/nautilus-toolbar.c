@@ -929,7 +929,7 @@ nautilus_toolbar_reset_menus (NautilusToolbar *self)
 	GActionGroup *view_action_group;
 	GVariant *variant;
 	GVariantIter iter;
-	gboolean show_sort_trash, show_sort_search, show_sort_access, show_sort_modification, has_sort;
+	gboolean show_sort_trash, show_sort_search, show_sort_access, show_sort_modification, enable_sort;
 	const gchar *hint;
 
 	/* Allow actions from the current view to be activated through
@@ -944,11 +944,11 @@ nautilus_toolbar_reset_menus (NautilusToolbar *self)
 	gtk_widget_set_visible (self->priv->visible_columns,
 				g_action_group_has_action (view_action_group, "visible-columns"));
 
-	has_sort = g_action_group_has_action (view_action_group, "sort");
+	enable_sort = g_action_group_get_action_enabled (view_action_group, "sort");
 	show_sort_trash = show_sort_search = show_sort_modification = show_sort_access = FALSE;
-	gtk_widget_set_visible (self->priv->sort_menu, has_sort);
+	gtk_widget_set_visible (self->priv->sort_menu, enable_sort);
 
-	if (has_sort) {
+	if (enable_sort) {
 		variant = g_action_group_get_action_state_hint (view_action_group, "sort");
 		g_variant_iter_init (&iter, variant);
 
