@@ -158,7 +158,6 @@ typedef enum
 /* Recent files */
 #define NAUTILUS_PREFERENCES_RECENT_FILES_ENABLED          "remember-recent-files"
 
-
 /* Move to trash shorcut changed dialog */
 #define NAUTILUS_PREFERENCES_SHOW_MOVE_TO_TRASH_SHORTCUT_CHANGED_DIALOG "show-move-to-trash-shortcut-changed-dialog"
 
