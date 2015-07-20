@@ -666,9 +666,6 @@ file_and_directory_hash  (gconstpointer  v)
 	return GPOINTER_TO_UINT (fad->file) ^ GPOINTER_TO_UINT (fad->directory);
 }
 
-
-
-
 static ScriptLaunchParameters *
 script_launch_parameters_new (NautilusFile *file,
 			      NautilusView *directory_view)
