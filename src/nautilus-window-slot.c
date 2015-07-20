@@ -1140,7 +1140,6 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 {
         GError *error = NULL;
 	char *view_id;
-	char *mimetype;
 	NautilusWindow *window;
 	NautilusWindowSlot *slot;
 	NautilusFile *viewed_file, *parent_file;
@@ -1246,8 +1245,6 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 	    (error->domain == G_IO_ERROR && error->code == G_IO_ERROR_NOT_SUPPORTED)) {
 		/* We got the information we need, now pick what view to use: */
 
-		mimetype = nautilus_file_get_mime_type (file);
-
 		/* Otherwise, use default */
 		if (slot->details->content_view != NULL) {
 			view_id = g_strdup (nautilus_view_get_view_id (slot->details->content_view));
@@ -1256,8 +1253,6 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 		if (view_id == NULL) {
 			view_id = nautilus_global_preferences_get_default_folder_viewer_preference_as_iid ();
 		}
-
-		g_free (mimetype);
 	}
 
 	if (view_id != NULL) {
