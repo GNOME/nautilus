@@ -1185,7 +1185,7 @@ add_menu_separator (GtkWidget *menu)
         gtk_container_add (GTK_CONTAINER (menu), separator);
         gtk_widget_set_margin_top (separator, 6);
         gtk_widget_set_margin_bottom (separator, 6);
-	gtk_widget_show (separator);
+        gtk_widget_show (separator);
 }
 
 static void
@@ -1200,8 +1200,6 @@ places_sidebar_populate_popup_cb (GtkPlacesSidebar *sidebar,
         GtkWidget *menu_item;
         GAction *action;
 
-        g_print ("popup\n");
-
 	if (selected_item) {
 		trash = g_file_new_for_uri ("trash:///");
 		if (g_file_equal (trash, selected_item)) {
@@ -1212,7 +1210,7 @@ places_sidebar_populate_popup_cb (GtkPlacesSidebar *sidebar,
                                                         "win.empty-trash");
                         g_object_set (menu_item, "text", _("Empty _Trash"), NULL);
                         gtk_container_add (GTK_CONTAINER (menu), menu_item);
-			gtk_widget_show (menu_item);
+                        gtk_widget_show (menu_item);
 
                         action = g_action_map_lookup_action (G_ACTION_MAP (window),
                                                              "empty-trash");
@@ -1229,7 +1227,7 @@ places_sidebar_populate_popup_cb (GtkPlacesSidebar *sidebar,
                                                         "win.properties");
                         g_object_set (menu_item, "text", _("_Properties"), NULL);
                         gtk_container_add (GTK_CONTAINER (menu), menu_item);
-			gtk_widget_show (menu_item);
+                        gtk_widget_show (menu_item);
 		}
 	}
 	if (selected_volume) {
@@ -1242,7 +1240,7 @@ places_sidebar_populate_popup_cb (GtkPlacesSidebar *sidebar,
                                 window->priv->selected_volume = g_object_ref (selected_volume);
                         }
                         gtk_container_add (GTK_CONTAINER (menu), menu_item);
-			gtk_widget_show (menu_item);
+                        gtk_widget_show (menu_item);
 
                         action = g_action_map_lookup_action (G_ACTION_MAP (window),
                                                              "format");
