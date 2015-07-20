@@ -440,6 +440,19 @@ action_toggle_state_action_button (GSimpleAction *action,
 }
 
 static void
+check_use_list_view_on_search (NautilusWindowSlot *slot)
+{
+        GFile *location;
+
+        location = nautilus_window_slot_get_location (slot);
+        if (nautilus_file_is_in_search (nautilus_file_get (location))) {
+              g_settings_set_boolean (nautilus_preferences,
+                                      NAUTILUS_PREFERENCES_LIST_VIEW_ON_SEARCH,
+                                      FALSE);
+        }
+}
+
+static void
 action_view_mode (GSimpleAction *action,
 		  GVariant      *value,
 		  gpointer       user_data)
@@ -456,6 +469,9 @@ action_view_mode (GSimpleAction *action,
                                      NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
                                      NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW);
 	} else if (g_strcmp0 (name, "grid") == 0) {
+                /* If the user manually changed the view mode, disable the automatic
+                 * switch to list view on search */
+                check_use_list_view_on_search (slot);
 		nautilus_window_slot_set_content_view (slot, NAUTILUS_CANVAS_VIEW_ID);
                 g_settings_set_enum (nautilus_preferences,
                                      NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,

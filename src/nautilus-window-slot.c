@@ -124,6 +124,7 @@ struct NautilusWindowSlotDetails {
 	gboolean tried_mount;
 	NautilusWindowGoToCallback open_callback;
 	gpointer open_callback_user_data;
+        gchar *view_mode_before_search;
 };
 
 static guint signals[LAST_SIGNAL] = { 0 };
@@ -1245,11 +1246,38 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 	    (error->domain == G_IO_ERROR && error->code == G_IO_ERROR_NOT_SUPPORTED)) {
 		/* We got the information we need, now pick what view to use: */
 
-		/* Otherwise, use default */
-		if (slot->details->content_view != NULL) {
-			view_id = g_strdup (nautilus_view_get_view_id (slot->details->content_view));
+                /* If we are in search, try to use by default list view. This will be deactivated
+                 * if the user manually switch to a diferent view mode */
+                if (nautilus_file_is_in_search (nautilus_file_get (location))) {
+                        if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_LIST_VIEW_ON_SEARCH)) {
+                                /* If it's already set, is because we already made the change to search mode,
+                                 * so the view mode of the current view will be the one search is using,
+                                 * which is not the one we are interested in */
+                                if (slot->details->view_mode_before_search == NULL) {
+                                        slot->details->view_mode_before_search = g_strdup (nautilus_view_get_view_id (slot->details->content_view));
+                                }
+                                view_id = g_strdup (NAUTILUS_LIST_VIEW_IID);
+                        } else {
+                                g_free (slot->details->view_mode_before_search);
+                                slot->details->view_mode_before_search = NULL;
+                        }
+                }
+
+                /* If there is already a view, just use the view mode that it's currently using, or
+                 * if we were on search before, use what we were using before entering
+                 * search mode */
+		if (slot->details->content_view != NULL && view_id == NULL) {
+                        if (slot->details->view_mode_before_search != NULL) {
+                                view_id = g_strdup (slot->details->view_mode_before_search);
+                                g_free (slot->details->view_mode_before_search);
+                                slot->details->view_mode_before_search = NULL;
+                        } else {
+			        view_id = g_strdup (nautilus_view_get_view_id (slot->details->content_view));
+                        }
 		}
 
+                /* If there is not previous view in this slot, use the default view mode
+                 * from preferences */
 		if (view_id == NULL) {
 			view_id = nautilus_global_preferences_get_default_folder_viewer_preference_as_iid ();
 		}
@@ -2439,6 +2467,11 @@ nautilus_window_slot_dispose (GObject *object)
 		 * It was already here before the slot migration, though */
 		g_object_ref (slot->details->location);
 	}
+
+        if (slot->details->view_mode_before_search) {
+                g_free (slot->details->view_mode_before_search);
+                slot->details->view_mode_before_search = NULL;
+        }
 
 	g_list_free_full (slot->details->pending_selection, g_object_unref);
 	slot->details->pending_selection = NULL;
