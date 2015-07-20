@@ -7459,7 +7459,6 @@ nautilus_view_scroll_event (GtkWidget *widget,
 	return GTK_WIDGET_CLASS (nautilus_view_parent_class)->scroll_event (widget, event);
 }
 
-
 static void
 nautilus_view_parent_set (GtkWidget *widget,
 			  GtkWidget *old_parent)
