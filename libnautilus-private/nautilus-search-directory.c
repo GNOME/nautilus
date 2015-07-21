@@ -513,7 +513,6 @@ search_directory_ensure_loaded (NautilusSearchDirectory *search)
 	}
 
 	search->details->search_loaded = TRUE;
-	nautilus_directory_emit_done_loading (NAUTILUS_DIRECTORY (search));
 
 	/* Add all file callbacks */
 	g_list_foreach (search->details->pending_callback_list,
@@ -592,6 +591,7 @@ static void
 search_engine_finished (NautilusSearchEngine *engine, NautilusSearchDirectory *search)
 {
 	search_directory_ensure_loaded (search);
+	nautilus_directory_emit_done_loading (NAUTILUS_DIRECTORY (search));
 }
 
 static void
