@@ -320,7 +320,7 @@ build_grid (GtkWidget *container,
 		label = gtk_label_new (label_text);
 		gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 		g_free (label_text);
-		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+                gtk_label_set_xalign (GTK_LABEL (label), 0);
 		gtk_size_group_add_widget (label_size_group, label);
 
 		entry = gtk_entry_new ();

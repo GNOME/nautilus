@@ -2833,7 +2833,8 @@ create_column_editor (NautilusListView *view)
 	label = gtk_label_new (NULL);
 	gtk_label_set_markup (GTK_LABEL (label), str);
 	gtk_label_set_line_wrap (GTK_LABEL (label), FALSE);
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0);
+        gtk_label_set_xalign (GTK_LABEL (label), 0);
+        gtk_label_set_yalign (GTK_LABEL (label), 0);
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (box), label, FALSE, FALSE, 0);
 

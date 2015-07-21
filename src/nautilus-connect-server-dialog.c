@@ -562,7 +562,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 
 	label = gtk_label_new_with_mnemonic (_("_Server Address"));
 	boldify_label (GTK_LABEL (label));
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_label_set_xalign (GTK_LABEL (label), 0);
 	gtk_grid_attach (GTK_GRID (grid), label, 0, row++, 1, 1);
 	gtk_widget_show (label);
 
@@ -576,7 +576,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	gtk_widget_show (dialog->details->uri_entry);
 
 	label = gtk_label_new (NULL);
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_label_set_xalign (GTK_LABEL (label), 0);
 	gtk_grid_attach (GTK_GRID (grid), label, 0, row++, 1, 1);
 	gtk_widget_show (label);
 	dialog->details->error_label = label;
@@ -586,7 +586,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 
 	label = gtk_label_new_with_mnemonic (_("_Recent Servers"));
 	boldify_label (GTK_LABEL (label));
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_label_set_xalign (GTK_LABEL (label), 0);
 	gtk_grid_attach (GTK_GRID (grid), label, 0, row++, 1, 1);
 	gtk_widget_show (label);
 

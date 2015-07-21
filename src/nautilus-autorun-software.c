@@ -221,7 +221,7 @@ present_autorun_for_software_dialog (GMount *mount)
 					       gtk_widget_get_scale_factor (GTK_WIDGET (dialog)));
 	pixbuf = nautilus_icon_info_get_pixbuf_at_size (icon_info, icon_size);
 	image = gtk_image_new_from_pixbuf (pixbuf);
-	gtk_misc_set_alignment (GTK_MISC (image), 0.5, 0.0);
+        gtk_widget_set_valign (image, GTK_ALIGN_START);
 
 	gtk_message_dialog_set_image (GTK_MESSAGE_DIALOG (dialog), image);
 

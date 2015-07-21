@@ -1263,7 +1263,7 @@ attach_label (GtkGrid *grid,
 		gtk_label_set_selectable (GTK_LABEL (label_field), TRUE);
 	}
 
-	gtk_misc_set_alignment (GTK_MISC (label_field), 0, 0.5);
+	gtk_label_set_xalign (GTK_LABEL (label_field), 0);
 	gtk_widget_show (label_field);
 
 	if (ellipsize_text) {
@@ -4188,14 +4188,12 @@ on_change_permissions_clicked (GtkWidget                *button,
 			    TRUE, TRUE, 0);
 
 	label = gtk_label_new (_("Files"));
-	gtk_misc_set_alignment (GTK_MISC (label), 0.5, 0.5);
 	gtk_grid_attach (grid, label, 1, 0, 1, 1);
 	label = gtk_label_new (_("Folders"));
-	gtk_misc_set_alignment (GTK_MISC (label), 0.5, 0.5);
 	gtk_grid_attach (grid, label, 2, 0, 1, 1);
 
 	label = gtk_label_new (_("Owner:"));
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_label_set_xalign (GTK_LABEL (label), 0);
 	gtk_grid_attach (grid, label, 0, 1, 1, 1);
 	combo = create_permissions_combo_box (PERMISSION_USER, FALSE);
 	window->details->change_permission_combos = g_list_prepend (window->details->change_permission_combos,
@@ -4209,7 +4207,7 @@ on_change_permissions_clicked (GtkWidget                *button,
 	gtk_grid_attach (grid, combo, 2, 1, 1, 1);
 
 	label = gtk_label_new (_("Group:"));
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_label_set_xalign (GTK_LABEL (label), 0);
 	gtk_grid_attach (grid, label, 0, 2, 1, 1);
 	combo = create_permissions_combo_box (PERMISSION_GROUP, FALSE);
 	window->details->change_permission_combos = g_list_prepend (window->details->change_permission_combos,
@@ -4223,7 +4221,7 @@ on_change_permissions_clicked (GtkWidget                *button,
 	gtk_grid_attach (grid, combo, 2, 2, 1, 1);
 
 	label = gtk_label_new (_("Others:"));
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_label_set_xalign (GTK_LABEL (label), 0);
 	gtk_grid_attach (grid, label, 0, 3, 1, 1);
 	combo = create_permissions_combo_box (PERMISSION_OTHER, FALSE);
 	window->details->change_permission_combos = g_list_prepend (window->details->change_permission_combos,

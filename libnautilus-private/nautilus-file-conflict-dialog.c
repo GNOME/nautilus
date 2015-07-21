@@ -194,7 +194,7 @@ file_list_ready_cb (GList *files,
 	label = gtk_label_new (primary_text);
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
 	gtk_label_set_line_wrap_mode (GTK_LABEL (label), PANGO_WRAP_WORD_CHAR);
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_label_set_xalign (GTK_LABEL (label), 0.0);
 	gtk_box_pack_start (GTK_BOX (details->titles_vbox),
 			    label, FALSE, FALSE, 0);
 	gtk_widget_show (label);
@@ -210,7 +210,7 @@ file_list_ready_cb (GList *files,
 
 	label = gtk_label_new (secondary_text);
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_label_set_xalign (GTK_LABEL (label), 0.0);
 	gtk_box_pack_start (GTK_BOX (details->titles_vbox),
 			    label, FALSE, FALSE, 0);
 	gtk_widget_show (label);
@@ -477,7 +477,7 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 	widget = gtk_image_new_from_icon_name ("dialog-warning",
 					       GTK_ICON_SIZE_DIALOG);
 	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
-	gtk_misc_set_alignment (GTK_MISC (widget), 0.5, 0.0);
+	gtk_widget_set_valign (widget, GTK_ALIGN_START);
 
 	/* Setup the vbox containing the dialog body */
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 12);

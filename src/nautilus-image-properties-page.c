@@ -139,14 +139,16 @@ append_item (NautilusImagePropertiesPage *page,
 	pango_attr_list_insert (attrs, pango_attr_weight_new (PANGO_WEIGHT_BOLD));
 	gtk_label_set_attributes (GTK_LABEL (name_label), attrs);
 	pango_attr_list_unref (attrs);
-	gtk_misc_set_alignment (GTK_MISC (name_label), 0, 0);
+        gtk_label_set_xalign (GTK_LABEL (name_label), 0);
+        gtk_label_set_yalign (GTK_LABEL (name_label), 0);
 	gtk_container_add (GTK_CONTAINER (page->details->grid), name_label);
 	gtk_widget_show (name_label);
 
 	if (value != NULL) {
 		label = gtk_label_new (value);
 		gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
-		gtk_misc_set_alignment (GTK_MISC (label), 0, 0);
+                gtk_label_set_xalign (GTK_LABEL (label), 0);
+                gtk_label_set_yalign (GTK_LABEL (label), 0);
 		gtk_grid_attach_next_to (GTK_GRID (page->details->grid), label,
 					 name_label, GTK_POS_RIGHT,
 					 1, 1);
