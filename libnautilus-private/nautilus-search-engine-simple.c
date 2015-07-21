@@ -144,7 +144,8 @@ search_thread_done_idle (gpointer user_data)
 	        DEBUG ("Simple engine finished");
         }
 	engine->details->active_search = NULL;
-	nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (engine));
+	nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (engine),
+                                           NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL);
 
 	search_thread_data_free (data);
 

@@ -17,11 +17,27 @@ AM_CPPFLAGS = 						\
 	-DNAUTILUS_EXTENSIONDIR=\""$(libdir)/nautilus/extensions-3.0"\" \
 	$(NULL)
 
+# Basic sanity checks
+$(if $(GLIB_MKENUMS),,$(error Need to define GLIB_MKENUMS))
+
 if ENABLE_TRACKER
 nautilus_tracker_engine_sources = \
 	nautilus-search-engine-tracker.c \
 	nautilus-search-engine-tracker.h
 endif
+
+BUILT_SOURCES = 					\
+	nautilus-private-enum-types.h			\
+	nautilus-private-enum-types.c			\
+	$(NULL)
+
+ENUM_TYPES = nautilus-search-provider.h
+
+nautilus-private-enum-types.h: nautilus-private-enum-types.h.template $(ENUM_TYPES) $(GLIB_MKENUMS)
+	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template nautilus-private-enum-types.h.template $(ENUM_TYPES)) > $@
+
+nautilus-private-enum-types.c: nautilus-private-enum-types.c.template $(ENUM_TYPES) $(GLIB_MKENUMS)
+	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template nautilus-private-enum-types.c.template $(ENUM_TYPES)) > $@
 
 libnautilus_private_la_LDFLAGS =	\
 	-no-undefined			\
@@ -186,6 +202,8 @@ EXTRA_DIST =				\
 	nautilus.convert		\
 	$(gsettingsschema_in_files)     \
 	$(TRACKER_SOURCES)		\
+	nautilus-private-enum-types.h.template	\
+	nautilus-private-enum-types.c.template	\
 	$(NULL)
 
 CLEANFILES = \

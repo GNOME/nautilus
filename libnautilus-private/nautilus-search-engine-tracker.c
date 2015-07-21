@@ -115,7 +115,8 @@ search_finished (NautilusSearchEngineTracker *tracker,
 	        DEBUG ("Tracker engine error %s", error->message);
 		nautilus_search_provider_error (NAUTILUS_SEARCH_PROVIDER (tracker), error->message);
 	} else {
-		nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (tracker));
+		nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (tracker),
+                                                   NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL);
                 if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
 	                DEBUG ("Tracker engine finished and cancelled");
                 } else {

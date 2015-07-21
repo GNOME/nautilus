@@ -188,12 +188,14 @@ check_providers_status (NautilusSearchEngine *engine)
 		nautilus_search_provider_error (NAUTILUS_SEARCH_PROVIDER (engine),
 						_("Unable to complete the requested search"));
 	} else {
-		nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (engine));
                 if (engine->details->restart) {
 		        DEBUG ("Search engine finished and restarting");
                 } else {
 		        DEBUG ("Search engine finished");
                 }
+		nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (engine),
+                                                   engine->details->restart ? NAUTILUS_SEARCH_PROVIDER_STATUS_RESTARTING :
+                                                                              NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL);
 	}
 
 	engine->details->running = FALSE;
@@ -219,8 +221,9 @@ search_provider_error (NautilusSearchProvider *provider,
 }
 
 static void
-search_provider_finished (NautilusSearchProvider *provider,
-			  NautilusSearchEngine   *engine)
+search_provider_finished (NautilusSearchProvider       *provider,
+                          NautilusSearchProviderStatus  status,
+                          NautilusSearchEngine         *engine)
 
 {
 	DEBUG ("Search provider finished");

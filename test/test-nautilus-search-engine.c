@@ -13,7 +13,8 @@ hits_added_cb (NautilusSearchEngine *engine, GSList *hits)
 }
 
 static void
-finished_cb (NautilusSearchEngine *engine)
+finished_cb (NautilusSearchEngine         *engine,
+             NautilusSearchProviderStatus  status)
 {
 	g_print ("finished!\n");
 	gtk_main_quit ();

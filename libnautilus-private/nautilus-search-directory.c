@@ -588,10 +588,26 @@ search_engine_error (NautilusSearchEngine *engine, const char *error_message, Na
 }
 
 static void
-search_engine_finished (NautilusSearchEngine *engine, NautilusSearchDirectory *search)
+search_engine_finished (NautilusSearchEngine         *engine,
+                        NautilusSearchProviderStatus  status,
+                        NautilusSearchDirectory      *search)
 {
-	search_directory_ensure_loaded (search);
-	nautilus_directory_emit_done_loading (NAUTILUS_DIRECTORY (search));
+        /* If the search engine is going to restart means it finished an old search
+         * that was stopped or cancelled.
+         * Don't emit the done loading signal in this case, since this means the search
+         * directory tried to start a new search before all the search providers were finished
+         * in the search engine.
+         * If we emit the done-loading signal in this situation the client will think
+         * that it finished the current search, not an old one like it's actually
+         * happening. */
+        if (status == NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL) {
+                search_directory_ensure_loaded (search);
+	        nautilus_directory_emit_done_loading (NAUTILUS_DIRECTORY (search));
+        } else if (status == NAUTILUS_SEARCH_PROVIDER_STATUS_RESTARTING) {
+                /* Remove file monitors of the files from an old search that just
+                 * actually finished */
+                reset_file_list (search);
+        }
 }
 
 static void

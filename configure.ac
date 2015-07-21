@@ -283,6 +283,7 @@ m4_ifdef([GOBJECT_INTROSPECTION_CHECK],
 dnl ==========================================================================
 
 AC_PATH_PROG(UPDATE_MIME_DATABASE, update-mime-database, no)
+AC_PATH_PROG(GLIB_MKENUMS, glib-mkenums)
 
 AC_ARG_ENABLE(update-mimedb,
    AS_HELP_STRING([--disable-update-mimedb],

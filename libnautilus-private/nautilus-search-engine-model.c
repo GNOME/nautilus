@@ -88,8 +88,9 @@ search_finished (NautilusSearchEngineModel *model)
 	}
 
 	model->details->query_pending = FALSE;
-	nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (model));
 	DEBUG ("Model engine finished");
+	nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (model),
+                                           NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL);
 	g_object_unref (model);
 
 	return FALSE;
