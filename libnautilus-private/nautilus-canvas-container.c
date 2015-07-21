@@ -4156,11 +4156,13 @@ start_stretching (NautilusCanvasContainer *container)
 	NautilusCanvasContainerDetails *details;
 	NautilusCanvasIcon *icon;
 	GtkWidget *toplevel;
+        GdkDisplay *display;
 	GtkCornerType corner;
 	GdkCursor *cursor;
 
 	details = container->details;
 	icon = details->stretch_icon;
+        display = gtk_widget_get_display (GTK_WIDGET (container));
 	
 	/* Check if we hit the stretch handles. */
 	if (!nautilus_canvas_item_hit_test_stretch_handles (icon->item,
@@ -4171,16 +4173,16 @@ start_stretching (NautilusCanvasContainer *container)
 
 	switch (corner) {
 	case GTK_CORNER_TOP_LEFT:
-		cursor = gdk_cursor_new (GDK_TOP_LEFT_CORNER);
+		cursor = gdk_cursor_new_for_display (display, GDK_TOP_LEFT_CORNER);
 		break;
 	case GTK_CORNER_BOTTOM_LEFT:
-		cursor = gdk_cursor_new (GDK_BOTTOM_LEFT_CORNER);
+		cursor = gdk_cursor_new_for_display (display,GDK_BOTTOM_LEFT_CORNER);
 		break;
 	case GTK_CORNER_TOP_RIGHT:
-		cursor = gdk_cursor_new (GDK_TOP_RIGHT_CORNER);
+		cursor = gdk_cursor_new_for_display (display,GDK_TOP_RIGHT_CORNER);
 		break;
 	case GTK_CORNER_BOTTOM_RIGHT:
-		cursor = gdk_cursor_new (GDK_BOTTOM_RIGHT_CORNER);
+		cursor = gdk_cursor_new_for_display (display,GDK_BOTTOM_RIGHT_CORNER);
 		break;
 	default: 
 		cursor = NULL;

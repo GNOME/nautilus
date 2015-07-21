@@ -3103,9 +3103,11 @@ start_long_operation (NautilusPropertiesWindow *window)
 {
 	if (window->details->long_operation_underway == 0) {
 		/* start long operation */
+                GdkDisplay *display;
 		GdkCursor * cursor;
-		
-		cursor = gdk_cursor_new (GDK_WATCH);
+
+                display = gtk_widget_get_display (GTK_WIDGET (window));
+		cursor = gdk_cursor_new_for_display (display, GDK_WATCH);
 		gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (window)), cursor);
 		g_object_unref (cursor);
 	}

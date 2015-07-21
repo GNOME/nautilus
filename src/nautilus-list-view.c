@@ -2963,6 +2963,7 @@ nautilus_list_view_click_policy_changed (NautilusView *directory_view)
 	GtkTreeView *tree;
 
 	view = NAUTILUS_LIST_VIEW (directory_view);
+        display = gtk_widget_get_display (GTK_WIDGET (view));
 
 	/* ensure that we unset the hand cursor and refresh underlined rows */
 	if (get_click_policy () == NAUTILUS_CLICK_POLICY_DOUBLE) {
@@ -2982,7 +2983,6 @@ nautilus_list_view_click_policy_changed (NautilusView *directory_view)
 			win = gtk_widget_get_window (GTK_WIDGET (tree));
 			gdk_window_set_cursor (win, NULL);
 
-			display = gtk_widget_get_display (GTK_WIDGET (view));
 			if (display != NULL) {
 				gdk_display_flush (display);
 			}
@@ -2991,7 +2991,7 @@ nautilus_list_view_click_policy_changed (NautilusView *directory_view)
 		g_clear_object (&hand_cursor);
 	} else if (get_click_policy () == NAUTILUS_CLICK_POLICY_SINGLE) {
 		if (hand_cursor == NULL) {
-			hand_cursor = gdk_cursor_new(GDK_HAND2);
+			hand_cursor = gdk_cursor_new_for_display (display, GDK_HAND2);
 		}
 	}
 }

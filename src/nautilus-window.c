@@ -761,7 +761,10 @@ update_cursor (NautilusWindow *window)
 	slot = nautilus_window_get_active_slot (window);
 
 	if (nautilus_window_slot_get_allow_stop (slot)) {
-		cursor = gdk_cursor_new (GDK_WATCH);
+                GdkDisplay *display;
+
+                display = gtk_widget_get_display (GTK_WIDGET (window));
+		cursor = gdk_cursor_new_for_display (display, GDK_WATCH);
 		gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (window)), cursor);
 		g_object_unref (cursor);
 	} else {
