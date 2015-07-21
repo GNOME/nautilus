@@ -371,7 +371,6 @@ nautilus_search_engine_simple_stop (NautilusSearchProvider *provider)
 	if (simple->details->active_search != NULL) {
 		DEBUG ("Simple engine stop");
 		g_cancellable_cancel (simple->details->active_search->cancellable);
-		simple->details->active_search = NULL;
 	}
 }
 
