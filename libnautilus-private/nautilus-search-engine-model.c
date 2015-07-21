@@ -28,6 +28,8 @@
 #include "nautilus-directory-private.h"
 #include "nautilus-file.h"
 #include "nautilus-ui-utilities.h"
+#define DEBUG_FLAG NAUTILUS_DEBUG_SEARCH
+#include "nautilus-debug.h"
 
 #include <string.h>
 #include <glib.h>
@@ -78,6 +80,7 @@ static gboolean
 search_finished (NautilusSearchEngineModel *model)
 {
 	if (model->details->hits != NULL) {
+	        DEBUG ("Model engine hits added");
 		nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (model),
 						     model->details->hits);
 		g_list_free_full (model->details->hits, g_object_unref);
@@ -86,6 +89,7 @@ search_finished (NautilusSearchEngineModel *model)
 
 	model->details->query_pending = FALSE;
 	nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (model));
+	DEBUG ("Model engine finished");
 	g_object_unref (model);
 
 	return FALSE;
@@ -165,6 +169,8 @@ nautilus_search_engine_model_start (NautilusSearchProvider *provider)
 		return;
 	}
 
+	DEBUG ("Model engine start");
+
 	g_object_ref (model);
 	model->details->query_pending = TRUE;
 
@@ -186,6 +192,8 @@ nautilus_search_engine_model_stop (NautilusSearchProvider *provider)
 	model = NAUTILUS_SEARCH_ENGINE_MODEL (provider);
 
 	if (model->details->query_pending) {
+	        DEBUG ("Model engine stop");
+
 		nautilus_directory_cancel_callback (model->details->directory,
 						    model_directory_ready_cb, model);
 		search_finished_idle (model);

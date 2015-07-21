@@ -26,6 +26,8 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-search-hit.h"
 #include "nautilus-search-provider.h"
+#define DEBUG_FLAG NAUTILUS_DEBUG_SEARCH
+#include "nautilus-debug.h"
 
 #include <string.h>
 #include <gio/gio.h>
@@ -79,6 +81,8 @@ check_pending_hits (NautilusSearchEngineTracker *tracker,
 	GList *hits = NULL;
 	NautilusSearchHit *hit;
 
+	DEBUG ("Tracker engine add hits");
+
 	if (!force_send &&
 	    g_queue_get_length (tracker->details->hits_pending) < BATCH_SIZE) {
 		return;
@@ -96,6 +100,8 @@ static void
 search_finished (NautilusSearchEngineTracker *tracker,
 		 GError *error)
 {
+	DEBUG ("Tracker engine finished");
+
 	if (error == NULL) {
 		check_pending_hits (tracker, TRUE);
 	} else {
@@ -106,9 +112,15 @@ search_finished (NautilusSearchEngineTracker *tracker,
 	tracker->details->query_pending = FALSE;
 
 	if (error && !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+	        DEBUG ("Tracker engine error %s", error->message);
 		nautilus_search_provider_error (NAUTILUS_SEARCH_PROVIDER (tracker), error->message);
 	} else {
 		nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (tracker));
+                if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+	                DEBUG ("Tracker engine finished and cancelled");
+                } else {
+	                DEBUG ("Tracker engine finished");
+                }
 	}
 
 	g_object_unref (tracker);
@@ -225,6 +237,8 @@ search_finished_idle (gpointer user_data)
 {
 	NautilusSearchEngineTracker *tracker = user_data;
 
+	DEBUG ("Tracker engine finished idle");
+
 	search_finished (tracker, NULL);
 
 	return FALSE;
@@ -246,6 +260,7 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 		return;
 	}
 
+	DEBUG ("Tracker engine start");
 	g_object_ref (tracker);
 	tracker->details->query_pending = TRUE;
 
@@ -324,6 +339,7 @@ nautilus_search_engine_tracker_stop (NautilusSearchProvider *provider)
 	tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (provider);
 	
 	if (tracker->details->query_pending) {
+		DEBUG ("Tracker engine stop");
 		g_cancellable_cancel (tracker->details->cancellable);
 		g_clear_object (&tracker->details->cancellable);
 		tracker->details->query_pending = FALSE;

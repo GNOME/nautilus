@@ -137,8 +137,12 @@ search_thread_done_idle (gpointer user_data)
 	SearchThreadData *data = user_data;
 	NautilusSearchEngineSimple *engine = data->engine;
 
-	DEBUG ("Simple engine done");
 
+        if (g_cancellable_is_cancelled (data->cancellable)) {
+	        DEBUG ("Simple engine finished and cancelled");
+        } else {
+	        DEBUG ("Simple engine finished");
+        }
 	engine->details->active_search = NULL;
 	nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (engine));
 
@@ -158,9 +162,8 @@ search_thread_add_hits_idle (gpointer user_data)
 {
 	SearchHitsData *data = user_data;
 
-	DEBUG ("Simple engine add hits");
-
 	if (!g_cancellable_is_cancelled (data->thread_data->cancellable)) {
+	        DEBUG ("Simple engine add hits");
 		nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (data->thread_data->engine),
 						     data->hits);
 	}

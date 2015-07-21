@@ -188,15 +188,18 @@ check_providers_status (NautilusSearchEngine *engine)
 		nautilus_search_provider_error (NAUTILUS_SEARCH_PROVIDER (engine),
 						_("Unable to complete the requested search"));
 	} else {
-		DEBUG ("Search engine finished");
 		nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (engine));
+                if (engine->details->restart) {
+		        DEBUG ("Search engine finished and restarting");
+                } else {
+		        DEBUG ("Search engine finished");
+                }
 	}
 
 	engine->details->running = FALSE;
 	g_hash_table_remove_all (engine->details->uris);
 
 	if (engine->details->restart) {
-		DEBUG ("Restarting engine");
 		nautilus_search_engine_start (NAUTILUS_SEARCH_PROVIDER (engine));
 	}
 
