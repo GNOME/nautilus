@@ -2547,6 +2547,10 @@ nautilus_view_destroy (GtkWidget *object)
 	view = NAUTILUS_VIEW (object);
 
 	disconnect_model_handlers (view);
+	if (view->details->model) {
+		nautilus_directory_unref (view->details->model);
+		view->details->model = NULL;
+	}
 
 	nautilus_view_stop_loading (view);
 
@@ -2578,10 +2582,6 @@ nautilus_view_destroy (GtkWidget *object)
 		view->details->reveal_selection_idle_id = 0;
 	}
 
-	if (view->details->model) {
-		nautilus_directory_unref (view->details->model);
-		view->details->model = NULL;
-	}
 
 	if (view->details->directory_as_file) {
 		nautilus_file_unref (view->details->directory_as_file);
@@ -2841,7 +2841,6 @@ done_loading (NautilusView *view,
 {
 	GList *selection;
 	gboolean do_reveal = FALSE;
-	NautilusWindow *window;
 
 	if (!view->details->loading) {
 		return;
@@ -2849,12 +2848,9 @@ done_loading (NautilusView *view,
 
 	nautilus_profile_start (NULL);
 
-	window = nautilus_view_get_window (view);
-
-	/* This can be called during destruction, in which case there
-	 * is no NautilusWindow any more.
-	 */
-	if (window != NULL) {
+        /* This can be called during destruction, in which case we set the model
+         * as NULL. */
+	if (view->details->model != NULL) {
 		nautilus_view_update_toolbar_menus (view);
 		schedule_update_context_menus (view);
 		schedule_update_status (view);
