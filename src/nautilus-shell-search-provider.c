@@ -182,8 +182,9 @@ search_hit_compare_relevance (gconstpointer a,
 }
 
 static void
-search_finished_cb (NautilusSearchEngine *engine,
-                    gpointer              user_data)
+search_finished_cb (NautilusSearchEngine         *engine,
+                    NautilusSearchProviderStatus  status,
+                    gpointer                      user_data)
 {
   PendingSearch *search = user_data;
   GList *hits, *l;
