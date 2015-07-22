@@ -506,14 +506,8 @@ search_callback_add_pending_file_callbacks (SearchCallback *callback)
 }
 
 static void
-search_directory_ensure_loaded (NautilusSearchDirectory *search)
+search_directory_add_pending_files_callbacks (NautilusSearchDirectory *search)
 {
-	if (search->details->search_loaded) {
-		return;
-	}
-
-	search->details->search_loaded = TRUE;
-
 	/* Add all file callbacks */
 	g_list_foreach (search->details->pending_callback_list,
 			(GFunc)search_callback_add_pending_file_callbacks, NULL);
@@ -572,7 +566,8 @@ search_engine_hits_added (NautilusSearchEngine *engine, GList *hits,
 	nautilus_file_emit_changed (file);
 	nautilus_file_unref (file);
 
-	search_directory_ensure_loaded (search);
+	search->details->search_loaded = TRUE;
+	search_directory_add_pending_files_callbacks (search);
 }
 
 static void
@@ -601,7 +596,8 @@ search_engine_finished (NautilusSearchEngine         *engine,
          * that it finished the current search, not an old one like it's actually
          * happening. */
         if (status == NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL) {
-                search_directory_ensure_loaded (search);
+                search->details->search_loaded = TRUE;
+                search_directory_add_pending_files_callbacks (search);
 	        nautilus_directory_emit_done_loading (NAUTILUS_DIRECTORY (search));
         } else if (status == NAUTILUS_SEARCH_PROVIDER_STATUS_RESTARTING) {
                 /* Remove file monitors of the files from an old search that just
