@@ -440,9 +440,9 @@ search_call_when_ready (NautilusDirectory *directory,
 
 	if (wait_for_file_list && !search->details->search_loaded) {
 		/* Add it to the pending callback list, which will be
-		 * processed when the directory has finished loading
-		 */
-		search->details->pending_callback_list = 
+		 * processed when the directory has valid data from the new
+                 * search and all data and signals from previous searchs is removed. */
+		search->details->pending_callback_list =
 			g_list_prepend (search->details->pending_callback_list, search_callback);
 
 		/* We might need to start the search engine */
