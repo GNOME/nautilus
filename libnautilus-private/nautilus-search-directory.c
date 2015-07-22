@@ -43,7 +43,21 @@ struct NautilusSearchDirectoryDetails {
 	NautilusSearchEngine *engine;
 
 	gboolean search_running;
-	gboolean search_loaded;
+        /* When the search directory is stopped or cancelled, we migth wait
+         * until all data and signals from previous search are stopped and removed
+         * from the search engine. While this situation happens we don't want to connect
+         * clients to our signals, and we will wait until the search data and signals
+         * are valid and ready.
+         * The worst thing that can happens if we don't do this is that new clients
+         * migth get the information of old searchs if they are waiting_for_file_list.
+         * But that shouldn't be a big deal since old clients have the old information.
+         * But anyway it's currently unused for this case since the only client is
+         * nautilus-view and is not waiting_for_file_list :) .
+         *
+         * The other use case is for letting clients know if information of the directory
+         * is outdated or not valid. This might happens for automatic
+         * scheduled timeouts. */
+	gboolean search_ready_and_valid;
 
 	GList *files;
 	GHashTable *files_hash;
@@ -159,7 +173,7 @@ start_search (NautilusSearchDirectory *search)
 
 	/* We need to start the search engine */
 	search->details->search_running = TRUE;
-	search->details->search_loaded = FALSE;
+	search->details->search_ready_and_valid = FALSE;
 
 	set_hidden_files (search);
 	nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (search->details->engine),
@@ -438,7 +452,7 @@ search_call_when_ready (NautilusDirectory *directory,
 	search_callback->wait_for_attributes = file_attributes;
 	search_callback->wait_for_file_list = wait_for_file_list;
 
-	if (wait_for_file_list && !search->details->search_loaded) {
+	if (wait_for_file_list && !search->details->search_ready_and_valid) {
 		/* Add it to the pending callback list, which will be
 		 * processed when the directory has valid data from the new
                  * search and all data and signals from previous searchs is removed. */
@@ -522,7 +536,7 @@ static void
 on_search_directory_search_ready_and_valid (NautilusSearchDirectory *search)
 {
 	search_directory_add_pending_files_callbacks (search);
-        search->details->search_loaded = TRUE;
+        search->details->search_ready_and_valid = TRUE;
 }
 
 static void
@@ -622,7 +636,7 @@ search_force_reload (NautilusDirectory *directory)
 		return;
 	}
 	
-	search->details->search_loaded = FALSE;
+	search->details->search_ready_and_valid = FALSE;
 
 	/* Remove file monitors */
 	reset_file_list (search);
@@ -637,7 +651,7 @@ search_are_all_files_seen (NautilusDirectory *directory)
 	search = NAUTILUS_SEARCH_DIRECTORY (directory);
 
 	return (!search->details->query ||
-		search->details->search_loaded);
+		search->details->search_ready_and_valid);
 }
 
 static gboolean
