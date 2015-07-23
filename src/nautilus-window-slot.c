@@ -107,6 +107,9 @@ struct NautilusWindowSlotDetails {
 	gboolean allow_stop;
 	gboolean needs_reload;
 	gboolean load_with_search;
+        /* It could be either the view is loading the files or the search didn't
+         * finish. Used for showing a spinner to provide feedback to the user. */
+        gboolean busy;
 
 	/* New location. */
 	GFile *pending_location;
@@ -190,6 +193,18 @@ nautilus_window_slot_sync_view_mode (NautilusWindowSlot *slot)
 }
 
 static void
+remove_loading_floating_bar (NautilusWindowSlot *slot)
+{
+	if (slot->details->loading_timeout_id != 0) {
+		g_source_remove (slot->details->loading_timeout_id);
+		slot->details->loading_timeout_id = 0;
+	}
+
+	gtk_widget_hide (slot->details->floating_bar);
+	nautilus_floating_bar_cleanup_actions (NAUTILUS_FLOATING_BAR (slot->details->floating_bar));
+}
+
+static void
 nautilus_window_slot_on_done_loading (NautilusDirectory  *directory,
                                       NautilusWindowSlot *slot)
 {
@@ -197,6 +212,8 @@ nautilus_window_slot_on_done_loading (NautilusDirectory  *directory,
 
 	files = nautilus_directory_get_file_list (directory);
 
+        slot->details->busy = FALSE;
+        remove_loading_floating_bar (slot);
 	if (g_list_length (files) != 0) {
 		gtk_widget_hide (slot->details->no_search_results_widget);
         } else {
@@ -654,18 +671,6 @@ nautilus_window_slot_init (NautilusWindowSlot *slot)
 {
 	slot->details = G_TYPE_INSTANCE_GET_PRIVATE
 		(slot, NAUTILUS_TYPE_WINDOW_SLOT, NautilusWindowSlotDetails);
-}
-
-static void
-remove_loading_floating_bar (NautilusWindowSlot *slot)
-{
-	if (slot->details->loading_timeout_id != 0) {
-		g_source_remove (slot->details->loading_timeout_id);
-		slot->details->loading_timeout_id = 0;
-	}
-
-	gtk_widget_hide (slot->details->floating_bar);
-	nautilus_floating_bar_cleanup_actions (NAUTILUS_FLOATING_BAR (slot->details->floating_bar));
 }
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_WINDOW
@@ -2252,7 +2257,12 @@ view_end_loading_cb (NautilusView       *view,
 		slot->details->needs_reload = FALSE;
 	}
 
-	remove_loading_floating_bar (slot);
+        /* If it is a search directory, it will hide the toolbar when the search engine
+         * finishes, not every time the view end loading the new files */
+        if (!NAUTILUS_IS_SEARCH_DIRECTORY (nautilus_view_get_model (slot->details->content_view))) {
+                slot->details->busy = FALSE;
+	        remove_loading_floating_bar (slot);
+        }
 }
 
 static void
@@ -2275,7 +2285,7 @@ real_setup_loading_floating_bar (NautilusWindowSlot *slot)
 						 _("Searching…") : _("Loading…"));
 	nautilus_floating_bar_set_details_label (NAUTILUS_FLOATING_BAR (slot->details->floating_bar), NULL);
 	nautilus_floating_bar_set_show_spinner (NAUTILUS_FLOATING_BAR (slot->details->floating_bar),
-						TRUE);
+						slot->details->busy);
 	nautilus_floating_bar_add_action (NAUTILUS_FLOATING_BAR (slot->details->floating_bar),
 					  "process-stop-symbolic",
 					  NAUTILUS_FLOATING_BAR_ACTION_ID_STOP);
@@ -2319,6 +2329,7 @@ view_begin_loading_cb (NautilusView       *view,
 {
 	nautilus_profile_start (NULL);
 
+        slot->details->busy = TRUE;
 	if (view == slot->details->new_content_view) {
 		location_has_really_changed (slot);
 	} else {
@@ -2738,7 +2749,7 @@ real_slot_set_short_status (NautilusWindowSlot *slot,
 
 	nautilus_floating_bar_cleanup_actions (NAUTILUS_FLOATING_BAR (slot->details->floating_bar));
 	nautilus_floating_bar_set_show_spinner (NAUTILUS_FLOATING_BAR (slot->details->floating_bar),
-						FALSE);
+						slot->details->busy);
 
 	g_object_get (nautilus_window_slot_get_window (slot),
 		      "disable-chrome", &disable_chrome,
