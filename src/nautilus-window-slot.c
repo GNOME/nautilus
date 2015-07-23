@@ -125,6 +125,9 @@ struct NautilusWindowSlotDetails {
 	NautilusWindowGoToCallback open_callback;
 	gpointer open_callback_user_data;
         gchar *view_mode_before_search;
+
+        /*Folder is empty */
+        GtkWidget *folder_is_empty_widget;
 };
 
 static guint signals[LAST_SIGNAL] = { 0 };
@@ -652,6 +655,10 @@ nautilus_window_slot_constructed (GObject *object)
 	slot->details->no_search_results_widget = GTK_WIDGET (gtk_builder_get_object (builder, "no_search_results"));
 	gtk_overlay_add_overlay (GTK_OVERLAY (slot->details->view_overlay),
 				 slot->details->no_search_results_widget);
+        builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-folder-is-empty.ui");
+	slot->details->folder_is_empty_widget = GTK_WIDGET (gtk_builder_get_object (builder, "folder_is_empty"));
+	gtk_overlay_add_overlay (GTK_OVERLAY (slot->details->view_overlay),
+				 slot->details->folder_is_empty_widget);
         g_object_unref (builder);
 
 	slot->details->floating_bar = nautilus_floating_bar_new (NULL, NULL, FALSE);
@@ -2242,6 +2249,10 @@ view_end_loading_cb (NautilusView       *view,
 		     gboolean            all_files_seen,
 		     NautilusWindowSlot *slot)
 {
+        NautilusDirectory *directory;
+        GList *files;
+        gboolean show_folder_is_empty;
+
 	/* Only handle this if we're expecting it.
 	 * Don't handle it if its from an old view we've switched from */
 	if (view == slot->details->content_view && all_files_seen) {
@@ -2257,10 +2268,23 @@ view_end_loading_cb (NautilusView       *view,
 		slot->details->needs_reload = FALSE;
 	}
 
+        directory = nautilus_view_get_model (slot->details->content_view);
+        /* If there is no directory associated, we are probably in the middle
+         * of some change, so better to not show anything so it doesn't flash */
+        if (directory != NULL) {
+                files = nautilus_directory_get_file_list (directory);
+                show_folder_is_empty = g_list_length (files) == 0;
+                nautilus_file_list_free (files);
+        } else {
+                show_folder_is_empty = FALSE;
+        }
         /* If it is a search directory, it will hide the toolbar when the search engine
          * finishes, not every time the view end loading the new files */
         if (!NAUTILUS_IS_SEARCH_DIRECTORY (nautilus_view_get_model (slot->details->content_view))) {
                 slot->details->busy = FALSE;
+                if (show_folder_is_empty) {
+                        gtk_widget_show (slot->details->folder_is_empty_widget);
+                }
 	        remove_loading_floating_bar (slot);
         }
 }
@@ -2330,6 +2354,7 @@ view_begin_loading_cb (NautilusView       *view,
 	nautilus_profile_start (NULL);
 
         slot->details->busy = TRUE;
+        gtk_widget_hide (slot->details->folder_is_empty_widget);
 	if (view == slot->details->new_content_view) {
 		location_has_really_changed (slot);
 	} else {
