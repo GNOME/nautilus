@@ -1635,8 +1635,15 @@ cancel_location_change (NautilusWindowSlot *slot)
 {
 	GList *selection;
 	GFile *location;
+        NautilusDirectory *directory;
 
 	location = nautilus_window_slot_get_location (slot);
+
+	directory = nautilus_directory_get (slot->details->location);
+        disconnect_directory_signals (slot, directory);
+        /* Stops current loading or search if any, so we are not slow */
+	nautilus_view_stop_loading (slot->details->content_view);
+        nautilus_directory_unref (directory);
 
         if (slot->details->pending_location != NULL
             && location != NULL
@@ -2715,8 +2722,6 @@ nautilus_window_slot_set_allow_stop (NautilusWindowSlot *slot,
 void
 nautilus_window_slot_stop_loading (NautilusWindowSlot *slot)
 {
-	nautilus_view_stop_loading (slot->details->content_view);
-
 
         cancel_location_change (slot);
 }
