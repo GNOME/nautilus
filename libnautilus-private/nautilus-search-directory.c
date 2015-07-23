@@ -492,8 +492,8 @@ search_cancel_callback (NautilusDirectory *directory,
 		search->details->callback_list = g_list_remove (search->details->callback_list, search_callback);
 		
 		search_callback_destroy (search_callback);
-		
-		return;
+
+	        goto done;
 	} 
 
 	/* Check for a pending callback */
@@ -503,11 +503,12 @@ search_cancel_callback (NautilusDirectory *directory,
 		search->details->pending_callback_list = g_list_remove (search->details->pending_callback_list, search_callback);
 
 		search_callback_destroy (search_callback);
-
-		if (!search->details->pending_callback_list) {
-			stop_search (search);
-		}
 	}
+
+done:
+        if (!search->details->callback_list && !search->details->pending_callback_list) {
+	        stop_search (search);
+        }
 }
 
 static void

@@ -2546,12 +2546,6 @@ nautilus_view_destroy (GtkWidget *object)
 
 	view = NAUTILUS_VIEW (object);
 
-	disconnect_model_handlers (view);
-	if (view->details->model) {
-		nautilus_directory_unref (view->details->model);
-		view->details->model = NULL;
-	}
-
 	nautilus_view_stop_loading (view);
 
 	for (node = view->details->scripts_directory_list; node != NULL; node = next) {
@@ -6896,7 +6890,6 @@ load_directory (NautilusView *view,
 	}
 
 	old_directory = view->details->model;
-	disconnect_model_handlers (view);
 
 	nautilus_directory_ref (directory);
 	view->details->model = directory;
@@ -7132,6 +7125,11 @@ nautilus_view_stop_loading (NautilusView *view)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW (view));
 
+	disconnect_model_handlers (view);
+	if (view->details->model) {
+		nautilus_directory_unref (view->details->model);
+		view->details->model = NULL;
+	}
 	unschedule_display_of_pending_files (view);
 	reset_update_interval (view);
 
