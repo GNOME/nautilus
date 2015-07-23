@@ -108,12 +108,6 @@ struct NautilusWindowSlotDetails {
 	gboolean needs_reload;
 	gboolean load_with_search;
 
-	/* Ensures that we do not react on signals of a
-	 * view that is re-used as new view when its loading
-	 * is cancelled
-	 */
-	gboolean temporarily_ignore_view_signals;
-
 	/* New location. */
 	GFile *pending_location;
 	NautilusLocationChangeType location_change_type;
@@ -1631,10 +1625,6 @@ free_location_change (NautilusWindowSlot *slot)
         }
 
         if (slot->details->new_content_view != NULL) {
-		slot->details->temporarily_ignore_view_signals = TRUE;
-		nautilus_view_stop_loading (slot->details->new_content_view);
-		slot->details->temporarily_ignore_view_signals = FALSE;
-
 		g_object_unref (slot->details->new_content_view);
 		slot->details->new_content_view = NULL;
         }
@@ -2237,10 +2227,6 @@ view_end_loading_cb (NautilusView       *view,
 		     gboolean            all_files_seen,
 		     NautilusWindowSlot *slot)
 {
-	if (slot->details->temporarily_ignore_view_signals) {
-		return;
-	}
-
 	/* Only handle this if we're expecting it.
 	 * Don't handle it if its from an old view we've switched from */
 	if (view == slot->details->content_view && all_files_seen) {
@@ -2321,10 +2307,6 @@ static void
 view_begin_loading_cb (NautilusView       *view,
 		       NautilusWindowSlot *slot)
 {
-	if (slot->details->temporarily_ignore_view_signals) {
-		return;
-	}
-
 	nautilus_profile_start (NULL);
 
 	if (view == slot->details->new_content_view) {
@@ -2735,11 +2717,6 @@ nautilus_window_slot_stop_loading (NautilusWindowSlot *slot)
 {
 	nautilus_view_stop_loading (slot->details->content_view);
 
-	if (slot->details->new_content_view != NULL) {
-		slot->details->temporarily_ignore_view_signals = TRUE;
-		nautilus_view_stop_loading (slot->details->new_content_view);
-		slot->details->temporarily_ignore_view_signals = FALSE;
-	}
 
         cancel_location_change (slot);
 }
