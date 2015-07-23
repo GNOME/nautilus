@@ -7157,9 +7157,6 @@ nautilus_view_stop_loading (NautilusView *view)
 	g_list_free_full (view->details->pending_selection, g_object_unref);
 	view->details->pending_selection = NULL;
 
-	if (view->details->model != NULL) {
-		nautilus_directory_file_monitor_remove (view->details->model, view);
-	}
 	done_loading (view, FALSE);
 }
 
