@@ -217,6 +217,10 @@ nautilus_window_slot_on_done_loading (NautilusDirectory  *directory,
 
         slot->details->busy = FALSE;
         remove_loading_floating_bar (slot);
+        /* For this pourpose, we could check directly to see if the view is empty,
+         * instead of avoiding races disconnecting the model when appropiate.
+         * But I think we are doing better disconnecting when we know the data
+         * of the directory is not valid */
 	if (g_list_length (files) != 0) {
 		gtk_widget_hide (slot->details->no_search_results_widget);
         } else {
