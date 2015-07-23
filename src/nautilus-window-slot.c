@@ -136,6 +136,7 @@ static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 static void nautilus_window_slot_force_reload (NautilusWindowSlot *slot);
 static void location_has_really_changed (NautilusWindowSlot *slot);
 static void nautilus_window_slot_connect_new_content_view (NautilusWindowSlot *slot);
+static void nautilus_window_slot_disconnect_content_view (NautilusWindowSlot *slot);
 static void nautilus_window_slot_emit_location_change (NautilusWindowSlot *slot, GFile *from, GFile *to);
 
 static void
@@ -209,6 +210,28 @@ nautilus_window_slot_on_done_loading (NautilusDirectory  *directory,
         }
 
 	nautilus_file_list_unref (files);
+}
+
+static void
+connect_directory_signals (NautilusWindowSlot *slot,
+                           NautilusDirectory  *directory)
+{
+        if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
+                g_signal_connect_object (directory, "done-loading",
+                                         G_CALLBACK (nautilus_window_slot_on_done_loading),
+                                         slot, 0);
+        }
+}
+
+static void
+disconnect_directory_signals (NautilusWindowSlot *slot,
+                              NautilusDirectory  *directory)
+{
+        if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
+                g_signal_handlers_disconnect_by_func (directory,
+                                                      G_CALLBACK (nautilus_window_slot_on_done_loading),
+                                                      slot);
+        }
 }
 
 static void
@@ -906,21 +929,13 @@ begin_location_change (NautilusWindowSlot *slot,
 	previous_directory = nautilus_directory_get (previous_location);
         directory = nautilus_directory_get (location);
 
+        gtk_widget_hide (slot->details->no_search_results_widget);
 	/* Disconnect search signals from the old directory if it was a search directory */
-        if (NAUTILUS_IS_SEARCH_DIRECTORY (previous_directory)) {
-                gtk_widget_hide (slot->details->no_search_results_widget);
-	        g_signal_handlers_disconnect_by_func (previous_directory,
-	                                              G_CALLBACK (nautilus_window_slot_on_done_loading),
-	                                              slot);
-        }
+        disconnect_directory_signals (slot, previous_directory);
 	nautilus_directory_unref (previous_directory);
 
-        /* Connect to the done loading signal if it is a search directory to update
-         * the no results widget */
-        if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
-	        g_signal_connect_object (directory, "done-loading",
-				         G_CALLBACK (nautilus_window_slot_on_done_loading), slot, 0);
-        }
+        /* Avoid to update status from the current view in our async calls */
+        nautilus_window_slot_disconnect_content_view (slot);
 
 	/* If there is no new selection and the new location is
 	 * a (grand)parent of the old location then we automatically
@@ -1449,6 +1464,7 @@ create_content_view (NautilusWindowSlot *slot,
 		view_id = NAUTILUS_DESKTOP_ICON_VIEW_IID;
 	}
 
+        nautilus_window_slot_disconnect_content_view (slot);
         if (nautilus_window_slot_content_view_matches_iid (slot, view_id)) {
                 /* reuse existing content view */
                 view = slot->details->content_view;
@@ -1459,13 +1475,17 @@ create_content_view (NautilusWindowSlot *slot,
 		view = nautilus_view_new (view_id, slot);
 
                 slot->details->new_content_view = view;
-		nautilus_window_slot_connect_new_content_view (slot);
         }
+        nautilus_window_slot_connect_new_content_view (slot);
 
 	/* Forward search selection and state before loading the new model */
 	old_location = nautilus_window_slot_get_location (slot);
 	old_directory = nautilus_directory_get (old_location);
 	new_directory = nautilus_directory_get (slot->details->pending_location);
+
+        /* Connect to the done loading signal if it is a search directory to update
+         * the no results widget */
+        connect_directory_signals (slot, new_directory);
 
 	if (NAUTILUS_IS_SEARCH_DIRECTORY (new_directory) &&
 	    !NAUTILUS_IS_SEARCH_DIRECTORY (old_directory)) {
@@ -2382,15 +2402,19 @@ nautilus_window_slot_setup_extra_location_widgets (NautilusWindowSlot *slot)
 static void
 nautilus_window_slot_connect_new_content_view (NautilusWindowSlot *slot)
 {
+	if (slot->details->new_content_view != NULL) {
+		g_signal_connect (slot->details->new_content_view, "begin-loading", G_CALLBACK (view_begin_loading_cb), slot);
+		g_signal_connect (slot->details->new_content_view, "end-loading", G_CALLBACK (view_end_loading_cb), slot);
+	}
+}
+
+static void
+nautilus_window_slot_disconnect_content_view (NautilusWindowSlot *slot)
+{
 	if (slot->details->content_view != NULL) {
 		/* disconnect old view */
 		g_signal_handlers_disconnect_by_func (slot->details->content_view, G_CALLBACK (view_end_loading_cb), slot);
 		g_signal_handlers_disconnect_by_func (slot->details->content_view, G_CALLBACK (view_begin_loading_cb), slot);
-	}
-
-	if (slot->details->new_content_view != NULL) {
-		g_signal_connect (slot->details->new_content_view, "begin-loading", G_CALLBACK (view_begin_loading_cb), slot);
-		g_signal_connect (slot->details->new_content_view, "end-loading", G_CALLBACK (view_end_loading_cb), slot);
 	}
 }
 
@@ -2515,11 +2539,7 @@ nautilus_window_slot_dispose (GObject *object)
 		g_object_ref (slot->details->location);
 
 		directory = nautilus_directory_get (slot->details->location);
-                if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
-	                g_signal_handlers_disconnect_by_func (directory,
-	                                                      G_CALLBACK (nautilus_window_slot_on_done_loading),
-	                                                      slot);
-                }
+                disconnect_directory_signals (slot, directory);
                 g_object_unref (directory);
 	}
 
