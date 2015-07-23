@@ -930,6 +930,9 @@ begin_location_change (NautilusWindowSlot *slot,
 
         /* Avoid to update status from the current view in our async calls */
         nautilus_window_slot_disconnect_content_view (slot);
+        /* We are going to change the location, so make sure we stop any loading
+         * or searching of the previous view, so we avoid to be slow */
+        nautilus_view_stop_loading (slot->details->content_view);
 
 	/* If there is no new selection and the new location is
 	 * a (grand)parent of the old location then we automatically
