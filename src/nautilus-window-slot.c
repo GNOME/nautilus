@@ -211,6 +211,7 @@ static void
 check_empty_states (NautilusWindowSlot *slot)
 {
 	GList *files;
+	GList *filtered;
         NautilusDirectory *directory;
         gboolean show_hidden_files;
 
@@ -221,14 +222,15 @@ check_empty_states (NautilusWindowSlot *slot)
 	        files = nautilus_directory_get_file_list (directory);
                 show_hidden_files = g_settings_get_boolean (gtk_filechooser_preferences,
                                                             NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
-                files = nautilus_file_list_filter_hidden (files, show_hidden_files);
-                if (g_list_length (files) == 0) {
+                filtered = nautilus_file_list_filter_hidden (files, show_hidden_files);
+                if (g_list_length (filtered) == 0) {
                         if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
 	                        gtk_widget_show (slot->details->no_search_results_widget);
                         } else {
 	                        gtk_widget_show (slot->details->folder_is_empty_widget);
                         }
                 }
+                nautilus_file_list_unref (filtered);
                 nautilus_file_list_unref (files);
         }
 }
