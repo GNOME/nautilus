@@ -138,6 +138,7 @@ static void location_has_really_changed (NautilusWindowSlot *slot);
 static void nautilus_window_slot_connect_new_content_view (NautilusWindowSlot *slot);
 static void nautilus_window_slot_disconnect_content_view (NautilusWindowSlot *slot);
 static void nautilus_window_slot_emit_location_change (NautilusWindowSlot *slot, GFile *from, GFile *to);
+static void setup_loading_floating_bar (NautilusWindowSlot *slot);
 
 static void
 nautilus_window_slot_sync_search_widgets (NautilusWindowSlot *slot)
@@ -208,26 +209,50 @@ remove_loading_floating_bar (NautilusWindowSlot *slot)
 }
 
 static void
+mark_busy (NautilusWindowSlot *slot,
+           gboolean            busy)
+{
+        slot->details->busy = busy;
+        if (busy) {
+                setup_loading_floating_bar (slot);
+        } else {
+                remove_loading_floating_bar (slot);
+        }
+}
+
+static void
+check_empty_states (NautilusWindowSlot *slot)
+{
+	GList *files;
+        NautilusDirectory *directory;
+
+        gtk_widget_hide (slot->details->no_search_results_widget);
+        gtk_widget_hide (slot->details->folder_is_empty_widget);
+        directory = nautilus_view_get_model (slot->details->content_view);
+        if (!slot->details->busy && directory != NULL) {
+	        files = nautilus_directory_get_file_list (directory);
+                if (g_list_length (files) == 0) {
+                        if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
+	                        gtk_widget_show (slot->details->no_search_results_widget);
+                        } else {
+	                        gtk_widget_show (slot->details->folder_is_empty_widget);
+                        }
+                }
+                nautilus_file_list_unref (files);
+        }
+}
+
+static void
 nautilus_window_slot_on_done_loading (NautilusDirectory  *directory,
                                       NautilusWindowSlot *slot)
 {
-	GList *files;
 
-	files = nautilus_directory_get_file_list (directory);
-
-        slot->details->busy = FALSE;
-        remove_loading_floating_bar (slot);
+        mark_busy (slot, FALSE);
         /* For this pourpose, we could check directly to see if the view is empty,
          * instead of avoiding races disconnecting the model when appropiate.
          * But I think we are doing better disconnecting when we know the data
          * of the directory is not valid */
-	if (g_list_length (files) != 0) {
-		gtk_widget_hide (slot->details->no_search_results_widget);
-        } else {
-		gtk_widget_show (slot->details->no_search_results_widget);
-        }
-
-	nautilus_file_list_unref (files);
+        check_empty_states (slot);
 }
 
 static void
@@ -939,7 +964,6 @@ begin_location_change (NautilusWindowSlot *slot,
 	previous_directory = nautilus_directory_get (previous_location);
         directory = nautilus_directory_get (location);
 
-        gtk_widget_hide (slot->details->no_search_results_widget);
 	/* Disconnect search signals from the old directory if it was a search directory */
         disconnect_directory_signals (slot, previous_directory);
 	nautilus_directory_unref (previous_directory);
@@ -1849,7 +1873,6 @@ nautilus_window_slot_force_reload (NautilusWindowSlot *slot)
 
 	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
 
-        gtk_widget_hide (slot->details->no_search_results_widget);
 	location = nautilus_window_slot_get_location (slot);
 	if (location == NULL) {
 		return;
@@ -2255,10 +2278,6 @@ view_end_loading_cb (NautilusView       *view,
 		     gboolean            all_files_seen,
 		     NautilusWindowSlot *slot)
 {
-        NautilusDirectory *directory;
-        GList *files;
-        gboolean show_folder_is_empty;
-
 	/* Only handle this if we're expecting it.
 	 * Don't handle it if its from an old view we've switched from */
 	if (view == slot->details->content_view && all_files_seen) {
@@ -2274,25 +2293,13 @@ view_end_loading_cb (NautilusView       *view,
 		slot->details->needs_reload = FALSE;
 	}
 
-        directory = nautilus_view_get_model (slot->details->content_view);
-        /* If there is no directory associated, we are probably in the middle
-         * of some change, so better to not show anything so it doesn't flash */
-        if (directory != NULL) {
-                files = nautilus_directory_get_file_list (directory);
-                show_folder_is_empty = g_list_length (files) == 0;
-                nautilus_file_list_free (files);
-        } else {
-                show_folder_is_empty = FALSE;
-        }
         /* If it is a search directory, it will hide the toolbar when the search engine
          * finishes, not every time the view end loading the new files */
         if (!NAUTILUS_IS_SEARCH_DIRECTORY (nautilus_view_get_model (slot->details->content_view))) {
-                slot->details->busy = FALSE;
-                if (show_folder_is_empty) {
-                        gtk_widget_show (slot->details->folder_is_empty_widget);
-                }
-	        remove_loading_floating_bar (slot);
+                mark_busy (slot, FALSE);
         }
+
+        check_empty_states (slot);
 }
 
 static void
@@ -2360,14 +2367,14 @@ view_begin_loading_cb (NautilusView       *view,
 	nautilus_profile_start (NULL);
 
         slot->details->busy = TRUE;
-        gtk_widget_hide (slot->details->folder_is_empty_widget);
 	if (view == slot->details->new_content_view) {
 		location_has_really_changed (slot);
 	} else {
 		nautilus_window_slot_set_allow_stop (slot, TRUE);
 	}
 
-	setup_loading_floating_bar (slot);
+        mark_busy (slot, TRUE);
+        check_empty_states (slot);
 
 	nautilus_profile_end (NULL);
 }
