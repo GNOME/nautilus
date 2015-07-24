@@ -1489,9 +1489,13 @@ report_delete_progress (CommonJob *job,
 
         } else {
                 if (files_left == 0) {
-                        status = _("Deleted %'d files");
+                        status = ngettext ("Deleted %'d file",
+                                           "Deleted %'d files",
+                                           source_info->num_files);
                 } else {
-                        status = _("Deleting %'d files");
+                        status = ngettext ("Deleting %'d file",
+                                           "Deleting %'d files",
+                                           source_info->num_files);
                 }
 	        nautilus_progress_info_take_status (job->progress,
 					            f (status,
@@ -1519,17 +1523,29 @@ report_delete_progress (CommonJob *job,
                 }
 	} else {
                 if (files_left > 0) {
+                        gchar *time_left_message;
+                        gchar *files_per_second_message;
+                        gchar *concat_detail;
+
 	                /* To translators: %T will expand to a time duration like "2 minutes".
                          * So the whole thing will be something like "1 / 5 -- 2 hours left (4 files/sec)"
-	                 *
-	                 * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 	                 */
-	                details = f (ngettext ("%'d / %'d \xE2\x80\x94 %T left (%d files/sec)",
-	                                       "%'d / %'d \xE2\x80\x94 %T left (%d files/sec)",
-			                       seconds_count_format_time_units (remaining_time)),
+                        time_left_message = ngettext ("%'d / %'d \xE2\x80\x94 %T left",
+	                                              "%'d / %'d \xE2\x80\x94 %T left",
+			                              seconds_count_format_time_units (remaining_time));
+                        files_per_second_message = ngettext ("(%d file/sec)",
+	                                                     "(%d files/sec)",
+                                                              (int) transfer_rate + 0.5);
+                        concat_detail = g_strconcat (time_left_message, files_per_second_message, NULL);
+
+	                details = f (concat_detail,
                                      transfer_info->num_files + 1, source_info->num_files,
                                      remaining_time,
                                      (int) transfer_rate + 0.5);
+
+                        g_free (time_left_message);
+                        g_free (files_per_second_message);
+                        g_free (concat_detail);
                 } else {
                         details = f (_("%'d / %'d"),
                                      transfer_info->num_files,
@@ -1862,9 +1878,13 @@ report_trash_progress (CommonJob    *job,
 
         } else {
                 if (files_left > 0) {
-                        status = _("Trashing %'d files");
+                        status = ngettext ("Trashing %'d file",
+                                           "Trashing %'d files",
+                                            source_info->num_files);
                 } else {
-                        status = _("Trashed %'d files");
+                        status = ngettext ("Trashed %'d file",
+                                           "Trashed %'d files",
+                                           source_info->num_files);
                 }
 	        nautilus_progress_info_take_status (job->progress,
 					            f (status,
@@ -3186,9 +3206,13 @@ report_copy_progress (CopyMoveJob *copy_job,
 			if (copy_job->destination != NULL) {
                                 if (files_left > 0) {
                                         if (is_move) {
-                                                status = _("Moving %'d files to “%B”");
+                                                status = ngettext ("Moving %'d file to “%B”",
+                                                                   "Moving %'d files to “%B”",
+                                                                    source_info->num_files);
                                         } else {
-                                                status = _("Copying %'d files to “%B”");
+                                                status = ngettext ("Copying %'d file to “%B”",
+                                                                   "Copying %'d files to “%B”",
+                                                                   source_info->num_files);
                                         }
 				        nautilus_progress_info_take_status (job->progress,
 								            f (status,
@@ -3197,9 +3221,13 @@ report_copy_progress (CopyMoveJob *copy_job,
 								               copy_job->destination));
                                 } else {
                                         if (is_move) {
-                                                status = _("Moved %'d files to “%B”");
+                                                status = ngettext ("Moved %'d file to “%B”",
+                                                                   "Moved %'d files to “%B”",
+                                                                   source_info->num_files);
                                         } else {
-                                                status = _("Copied %'d files to “%B”");
+                                                status = ngettext ("Copied %'d file to “%B”",
+                                                                   "Copied %'d files to “%B”",
+                                                                   source_info->num_files);
                                         }
 				        nautilus_progress_info_take_status (job->progress,
 								            f (status,
@@ -3212,14 +3240,18 @@ report_copy_progress (CopyMoveJob *copy_job,
 
                                 parent = g_file_get_parent (copy_job->files->data);
                                 if (files_left > 0) {
-                                        status = _("Duplicating %'d files in “%B”");
+                                        status = ngettext ("Duplicating %'d file in “%B”",
+                                                           "Duplicating %'d files in “%B”",
+                                                           transfer_info->num_files + 1);
 				        nautilus_progress_info_take_status (job->progress,
 								            f (status,
 								               transfer_info->num_files + 1,
 								               source_info->num_files,
 								               parent));
                                 } else {
-                                        status = _("Duplicated %'d files in “%B”");
+                                        status = ngettext ("Duplicated %'d file in “%B”",
+                                                           "Duplicated %'d files in “%B”",
+                                                           source_info->num_files);
 				        nautilus_progress_info_take_status (job->progress,
 								            f (status,
 								               source_info->num_files,
