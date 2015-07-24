@@ -2445,11 +2445,22 @@ nautilus_window_slot_setup_extra_location_widgets (NautilusWindowSlot *slot)
 }
 
 static void
+view_end_file_changes_cb (NautilusView       *view,
+                           NautilusWindowSlot *slot)
+{
+        /* When creating or deleting a file the done-loading signal is not emitted,
+         * given that the view doesn't actually reload, so connect to the
+         * end-file-changes for update the empty states */
+        check_empty_states (slot);
+}
+
+static void
 nautilus_window_slot_connect_new_content_view (NautilusWindowSlot *slot)
 {
 	if (slot->details->new_content_view != NULL) {
 		g_signal_connect (slot->details->new_content_view, "begin-loading", G_CALLBACK (view_begin_loading_cb), slot);
 		g_signal_connect (slot->details->new_content_view, "end-loading", G_CALLBACK (view_end_loading_cb), slot);
+		g_signal_connect (slot->details->new_content_view, "end-file-changes", G_CALLBACK (view_end_file_changes_cb), slot);
 	}
 }
 
@@ -2460,6 +2471,7 @@ nautilus_window_slot_disconnect_content_view (NautilusWindowSlot *slot)
 		/* disconnect old view */
 		g_signal_handlers_disconnect_by_func (slot->details->content_view, G_CALLBACK (view_end_loading_cb), slot);
 		g_signal_handlers_disconnect_by_func (slot->details->content_view, G_CALLBACK (view_begin_loading_cb), slot);
+		g_signal_handlers_disconnect_by_func (slot->details->content_view, G_CALLBACK (view_end_file_changes_cb), slot);
 	}
 }
 
