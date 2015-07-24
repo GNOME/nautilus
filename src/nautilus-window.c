@@ -764,7 +764,7 @@ update_cursor (NautilusWindow *window)
                 GdkDisplay *display;
 
                 display = gtk_widget_get_display (GTK_WIDGET (window));
-                cursor = gdk_cursor_new_from_name (display, "left_ptr_watch");
+                cursor = gdk_cursor_new_from_name (display, "progress");
 		gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (window)), cursor);
 		g_object_unref (cursor);
 	} else {
