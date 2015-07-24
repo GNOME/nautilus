@@ -104,12 +104,11 @@ struct NautilusWindowSlotDetails {
 
         /* Load state */
 	GCancellable *find_mount_cancellable;
+        /* It could be either the view is loading the files or the search didn't
+         * finish. Used for showing a spinner to provide feedback to the user. */
 	gboolean allow_stop;
 	gboolean needs_reload;
 	gboolean load_with_search;
-        /* It could be either the view is loading the files or the search didn't
-         * finish. Used for showing a spinner to provide feedback to the user. */
-        gboolean busy;
 
 	/* New location. */
 	GFile *pending_location;
@@ -209,18 +208,6 @@ remove_loading_floating_bar (NautilusWindowSlot *slot)
 }
 
 static void
-mark_busy (NautilusWindowSlot *slot,
-           gboolean            busy)
-{
-        slot->details->busy = busy;
-        if (busy) {
-                setup_loading_floating_bar (slot);
-        } else {
-                remove_loading_floating_bar (slot);
-        }
-}
-
-static void
 check_empty_states (NautilusWindowSlot *slot)
 {
 	GList *files;
@@ -230,7 +217,7 @@ check_empty_states (NautilusWindowSlot *slot)
         gtk_widget_hide (slot->details->no_search_results_widget);
         gtk_widget_hide (slot->details->folder_is_empty_widget);
         directory = nautilus_view_get_model (slot->details->content_view);
-        if (!slot->details->busy && directory != NULL) {
+        if (!slot->details->allow_stop && directory != NULL) {
 	        files = nautilus_directory_get_file_list (directory);
                 show_hidden_files = g_settings_get_boolean (gtk_filechooser_preferences,
                                                             NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
@@ -251,7 +238,8 @@ nautilus_window_slot_on_done_loading (NautilusDirectory  *directory,
                                       NautilusWindowSlot *slot)
 {
 
-        mark_busy (slot, FALSE);
+        remove_loading_floating_bar (slot);
+        nautilus_window_slot_set_allow_stop (slot, FALSE);
         /* For this pourpose, we could check directly to see if the view is empty,
          * instead of avoiding races disconnecting the model when appropiate.
          * But I think we are doing better disconnecting when we know the data
@@ -2300,7 +2288,8 @@ view_end_loading_cb (NautilusView       *view,
         /* If it is a search directory, it will hide the toolbar when the search engine
          * finishes, not every time the view end loading the new files */
         if (!NAUTILUS_IS_SEARCH_DIRECTORY (nautilus_view_get_model (slot->details->content_view))) {
-                mark_busy (slot, FALSE);
+                remove_loading_floating_bar (slot);
+                nautilus_window_slot_set_allow_stop (slot, FALSE);
         }
 
         check_empty_states (slot);
@@ -2326,7 +2315,7 @@ real_setup_loading_floating_bar (NautilusWindowSlot *slot)
 						 _("Searching…") : _("Loading…"));
 	nautilus_floating_bar_set_details_label (NAUTILUS_FLOATING_BAR (slot->details->floating_bar), NULL);
 	nautilus_floating_bar_set_show_spinner (NAUTILUS_FLOATING_BAR (slot->details->floating_bar),
-						slot->details->busy);
+						slot->details->allow_stop);
 	nautilus_floating_bar_add_action (NAUTILUS_FLOATING_BAR (slot->details->floating_bar),
 					  "process-stop-symbolic",
 					  NAUTILUS_FLOATING_BAR_ACTION_ID_STOP);
@@ -2370,14 +2359,13 @@ view_begin_loading_cb (NautilusView       *view,
 {
 	nautilus_profile_start (NULL);
 
-        slot->details->busy = TRUE;
 	if (view == slot->details->new_content_view) {
 		location_has_really_changed (slot);
 	} else {
 		nautilus_window_slot_set_allow_stop (slot, TRUE);
 	}
 
-        mark_busy (slot, TRUE);
+        setup_loading_floating_bar (slot);
         check_empty_states (slot);
 
 	nautilus_profile_end (NULL);
@@ -2790,7 +2778,7 @@ nautilus_window_slot_set_allow_stop (NautilusWindowSlot *slot,
 void
 nautilus_window_slot_stop_loading (NautilusWindowSlot *slot)
 {
-
+        remove_loading_floating_bar (slot);
         cancel_location_change (slot);
 }
 
@@ -2803,7 +2791,7 @@ real_slot_set_short_status (NautilusWindowSlot *slot,
 
 	nautilus_floating_bar_cleanup_actions (NAUTILUS_FLOATING_BAR (slot->details->floating_bar));
 	nautilus_floating_bar_set_show_spinner (NAUTILUS_FLOATING_BAR (slot->details->floating_bar),
-						slot->details->busy);
+						slot->details->allow_stop);
 
 	g_object_get (nautilus_window_slot_get_window (slot),
 		      "disable-chrome", &disable_chrome,
