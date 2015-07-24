@@ -1059,6 +1059,18 @@ showing_recent_directory (NautilusView *view)
 	return FALSE;
 }
 
+static gboolean
+showing_search_directory (NautilusView *view)
+{
+	NautilusFile *file;
+
+	file = nautilus_view_get_directory_as_file (view);
+	if (file != NULL) {
+		return nautilus_file_is_in_search (file);
+	}
+	return FALSE;
+}
+
 static void
 nautilus_canvas_view_update_actions_state (NautilusView *view)
 {
@@ -1109,7 +1121,8 @@ nautilus_canvas_view_update_actions_state (NautilusView *view)
 				     canvas_view->details->supports_keep_aligned);
 	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group), "sort");
 	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-				     !showing_recent_directory (view));
+				     !showing_recent_directory (view) &&
+                                     !showing_search_directory (view));
 	if (canvas_view->details->supports_keep_aligned) {
 		keep_aligned = nautilus_canvas_container_is_keep_aligned (get_canvas_container (canvas_view));
 		g_action_change_state (action, g_variant_new_boolean (keep_aligned));
