@@ -48,17 +48,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-30 23:14+0200\n"
-"PO-Revision-Date: 2015-04-30 23:14+0100\n"
-"Last-Translator: Christian Kirbach <christian.kirbach@gmail.com>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
+"POT-Creation-Date: 2015-07-13 11:02+0000\n"
+"PO-Revision-Date: 2015-07-13 23:30+0200\n"
+"Last-Translator: Bernd Homuth <dev@hmt.im>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Gtranslator 2.91.6\n"
 "X-Project-Style: gnome\n"
 
 #: ../data/org.gnome.Nautilus.appdata.xml.in.h:1
@@ -98,7 +99,7 @@ msgstr "Mit Server verbinden"
 
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
 #: ../src/nautilus-file-management-properties.ui.h:28
-#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2652
+#: ../src/nautilus-properties-window.c:4188 ../src/nautilus-window.c:2656
 msgid "Files"
 msgstr "Dateien"
 
@@ -1069,7 +1070,7 @@ msgstr "Alle Objekte im Papierkorb werden dauerhaft gelöscht."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1399
 #: ../libnautilus-private/nautilus-file-operations.c:2275
-#: ../src/nautilus-window.c:1267
+#: ../src/nautilus-window.c:1275
 msgid "Empty _Trash"
 msgstr "_Papierkorb leeren"
 
@@ -4051,31 +4052,36 @@ msgid "Last _Opened"
 msgstr "Zuletzt _geöffnet"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:6
+#| msgid "Last modified:"
+msgid "Last _Modified"
+msgstr "Änderungsdatu_m"
+
+#: ../src/nautilus-toolbar-view-menu.xml.h:7
 msgid "Last _Trashed"
 msgstr "Zuletzt in den _Papierkorb verschoben"
 
-#: ../src/nautilus-toolbar-view-menu.xml.h:7
+#: ../src/nautilus-toolbar-view-menu.xml.h:8
 msgid "Search _Relevance"
 msgstr "Such_relevanz"
 
-#: ../src/nautilus-toolbar-view-menu.xml.h:8
+#: ../src/nautilus-toolbar-view-menu.xml.h:9
 msgid "Re_verse Order"
 msgstr "Umge_kehrte Reihenfolge"
 
 # CHECK
-#: ../src/nautilus-toolbar-view-menu.xml.h:9
+#: ../src/nautilus-toolbar-view-menu.xml.h:10
 msgid "_Visible Columns…"
 msgstr "_Sichtbare Spalten …"
 
-#: ../src/nautilus-toolbar-view-menu.xml.h:10
+#: ../src/nautilus-toolbar-view-menu.xml.h:11
 msgid "Show _Hidden Files"
 msgstr "_Verborgene Dateien anzeigen"
 
-#: ../src/nautilus-toolbar-view-menu.xml.h:11
+#: ../src/nautilus-toolbar-view-menu.xml.h:12
 msgid "_Reload"
 msgstr "A_ktualisieren"
 
-#: ../src/nautilus-toolbar-view-menu.xml.h:12
+#: ../src/nautilus-toolbar-view-menu.xml.h:13
 msgid "St_op"
 msgstr "_Anhalten"
 
@@ -4227,67 +4233,67 @@ msgstr "Laufwerk konnte nicht gestoppt werden"
 msgid "Unable to start “%s”"
 msgstr "Starten von »%s« nicht möglich"
 
-#: ../src/nautilus-view.c:6186
+#: ../src/nautilus-view.c:6188
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "Neuer Ordner mit Auswahl (%'d Element)"
 msgstr[1] "Neuer Ordner mit Auswahl (%'d Elemente)"
 
-#: ../src/nautilus-view.c:6234
+#: ../src/nautilus-view.c:6236
 #, c-format
 msgid "Open With %s"
 msgstr "Mit %s öffnen"
 
-#: ../src/nautilus-view.c:6243
+#: ../src/nautilus-view.c:6245
 msgid "Run"
 msgstr "Ausführen"
 
-#: ../src/nautilus-view.c:6245
+#: ../src/nautilus-view.c:6247
 msgid "Open"
 msgstr "Öffnen"
 
-#: ../src/nautilus-view.c:6296 ../src/nautilus-view-context-menus.xml.h:18
+#: ../src/nautilus-view.c:6298 ../src/nautilus-view-context-menus.xml.h:18
 msgid "_Start"
 msgstr "_Starten"
 
-#: ../src/nautilus-view.c:6299
+#: ../src/nautilus-view.c:6301
 msgid "_Connect"
 msgstr "_Verbinden"
 
-#: ../src/nautilus-view.c:6302
+#: ../src/nautilus-view.c:6304
 msgid "_Start Multi-disk Drive"
 msgstr "Multimedienlaufwerk _starten"
 
-#: ../src/nautilus-view.c:6305
+#: ../src/nautilus-view.c:6307
 msgid "U_nlock Drive"
 msgstr "Laufwerk en_tsperren"
 
-#: ../src/nautilus-view.c:6321
+#: ../src/nautilus-view.c:6323
 msgid "Stop Drive"
 msgstr "Laufwerk anhalten"
 
-#: ../src/nautilus-view.c:6324
+#: ../src/nautilus-view.c:6326
 msgid "_Safely Remove Drive"
 msgstr "Laufwerk _sicher entfernen"
 
-#: ../src/nautilus-view.c:6327
+#: ../src/nautilus-view.c:6329
 msgid "_Disconnect"
 msgstr "_Trennen"
 
-#: ../src/nautilus-view.c:6330
+#: ../src/nautilus-view.c:6332
 msgid "_Stop Multi-disk Drive"
 msgstr "Multimedienlaufwerk _stoppen"
 
-#: ../src/nautilus-view.c:6333
+#: ../src/nautilus-view.c:6335
 msgid "_Lock Drive"
 msgstr "Laufwerk _sperren"
 
-#: ../src/nautilus-view.c:7532
+#: ../src/nautilus-view.c:7534
 msgid "Content View"
 msgstr "Inhaltsansicht"
 
-#: ../src/nautilus-view.c:7533
+#: ../src/nautilus-view.c:7535
 msgid "View of the current folder"
 msgstr "Ansicht des aktuellen Ordners"
 
@@ -4421,46 +4427,46 @@ msgstr "Kopierter Text.txt"
 msgid "dropped data"
 msgstr "abgelegte Daten"
 
-#: ../src/nautilus-window.c:1281
+#: ../src/nautilus-window.c:1289
 msgid "_Properties"
 msgstr "Ei_genschaften"
 
-#: ../src/nautilus-window.c:1290
+#: ../src/nautilus-window.c:1298
 msgid "_Format…"
 msgstr "_Formatieren …"
 
 #. Translators: only one item has been deleted and %s is its name.
-#: ../src/nautilus-window.c:1544
+#: ../src/nautilus-window.c:1552
 #, c-format
 msgid "“%s” deleted"
 msgstr "»%s« gelöscht"
 
 #. Translators: one or more items might have been deleted, and %d
 #. * is the count.
-#: ../src/nautilus-window.c:1549
+#: ../src/nautilus-window.c:1557
 #, c-format
 msgid "%d file deleted"
 msgid_plural "%d files deleted"
 msgstr[0] "%d Datei gelöscht"
 msgstr[1] "%d Dateien gelöscht"
 
-#: ../src/nautilus-window.c:1720
+#: ../src/nautilus-window.c:1728
 msgid "_New Tab"
 msgstr "Neuer _Reiter"
 
-#: ../src/nautilus-window.c:1730
+#: ../src/nautilus-window.c:1738
 msgid "Move Tab _Left"
 msgstr "Reiter nach _links verschieben"
 
-#: ../src/nautilus-window.c:1738
+#: ../src/nautilus-window.c:1746
 msgid "Move Tab _Right"
 msgstr "Reiter nach _rechts verschieben"
 
-#: ../src/nautilus-window.c:1749
+#: ../src/nautilus-window.c:1757
 msgid "_Close Tab"
 msgstr "S_chließen"
 
-#: ../src/nautilus-window.c:2654
+#: ../src/nautilus-window.c:2658
 msgid "Access and organize your files."
 msgstr "Auf Ihre Dateien zugreifen und diese organisieren."
 
@@ -4468,7 +4474,7 @@ msgstr "Auf Ihre Dateien zugreifen und diese organisieren."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2663
+#: ../src/nautilus-window.c:2667
 msgid "translator-credits"
 msgstr ""
 "Christian Meyer <chrisime@gnome.org>\n"
