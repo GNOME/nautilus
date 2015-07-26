@@ -181,29 +181,30 @@ nautilus_desktop_window_constructed (GObject *obj)
 	nautilus_desktop_window_init_selection (window);
 	nautilus_desktop_window_init_actions (window);
 
-	/* Set the accessible name so that it doesn't inherit the cryptic desktop URI. */
-	accessible = gtk_widget_get_accessible (GTK_WIDGET (window));
+	if (window->details->desktop_selection != NULL) {
+		/* Set the accessible name so that it doesn't inherit the cryptic desktop URI. */
+		accessible = gtk_widget_get_accessible (GTK_WIDGET (window));
 
-	if (accessible) {
-		atk_object_set_name (accessible, _("Desktop"));
+		if (accessible) {
+			atk_object_set_name (accessible, _("Desktop"));
+		}
+
+		/* Special sawmill setting */
+		gtk_window_set_wmclass (GTK_WINDOW (window), "desktop_window", "Nautilus");
+
+		/* Point window at the desktop folder.
+		 * Note that nautilus_desktop_window_init is too early to do this.
+		 */
+		nautilus_desktop_window_update_directory (window);
+		gtk_widget_override_background_color (GTK_WIDGET (window), 0, &transparent);
+
+		/* We realize it immediately so that the NAUTILUS_DESKTOP_WINDOW_ID
+		 * property is set so gnome-settings-daemon doesn't try to set
+		 * background. And we do a gdk_flush() to be sure X gets it.
+		 */
+		gtk_widget_realize (GTK_WIDGET (window));
+		gdk_flush ();
 	}
-
-	/* Special sawmill setting */
-	gtk_window_set_wmclass (GTK_WINDOW (window), "desktop_window", "Nautilus");
-
-	/* Point window at the desktop folder.
-	 * Note that nautilus_desktop_window_init is too early to do this.
-	 */
-	nautilus_desktop_window_update_directory (window);
-        gtk_widget_override_background_color (GTK_WIDGET (window), 0, &transparent);
-
-	/* We realize it immediately so that the NAUTILUS_DESKTOP_WINDOW_ID
-	 * property is set so gnome-settings-daemon doesn't try to set
-	 * background. And we do a gdk_flush() to be sure X gets it.
-	 */
-	gtk_widget_realize (GTK_WIDGET (window));
-	gdk_flush ();
-
 }
 
 static void
