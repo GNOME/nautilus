@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2015-07-24 23:06+0000\n"
-"PO-Revision-Date: 2015-07-25 08:03+0200\n"
+"POT-Creation-Date: 2015-07-27 06:41+0000\n"
+"PO-Revision-Date: 2015-07-27 09:59+0200\n"
 "Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
 "Language-Team: Slovak <gnome-sk-list@gnome.org>\n"
 "Language: sk\n"
@@ -930,7 +930,6 @@ msgstr "Odstraňuje sa „%B“"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1492
 #, c-format
-#| msgid "Deleting files"
 msgid "Deleted %'d file"
 msgid_plural "Deleted %'d files"
 msgstr[0] "%'d súborov odstránených"
@@ -939,7 +938,6 @@ msgstr[2] "%'d súbory odstránené"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1496
 #, c-format
-#| msgid "Deleting files"
 msgid "Deleting %'d file"
 msgid_plural "Deleting %'d files"
 msgstr[0] "Odstraňuje sa %'d súborov"
@@ -959,8 +957,6 @@ msgstr "%'d / %'d"
 #. * So the whole thing will be something like "1 / 5 -- 2 hours left (4 files/sec)"
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:1533
-#| msgid "%S of %S — %T left (%S/sec)"
-#| msgid_plural "%S of %S — %T left (%S/sec)"
 msgid "%'d / %'d — %T left"
 msgid_plural "%'d / %'d — %T left"
 msgstr[0] "%'d / %'d — zostáva %T"
@@ -969,8 +965,6 @@ msgstr[2] "%'d / %'d — zostávajú %T"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1536
 #, c-format
-#| msgid "%d file"
-#| msgid_plural "%d files"
 msgid "(%d file/sec)"
 msgid_plural "(%d files/sec)"
 msgstr[0] "(%d súborov/sek)"
@@ -1023,7 +1017,6 @@ msgstr "„%B“ vyhodený do Koša"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1881
 #, c-format
-#| msgid "Trashing Files"
 msgid "Trashing %'d file"
 msgid_plural "Trashing %'d files"
 msgstr[0] "%'d súborov sa vyhadzuje do Koša"
@@ -1032,7 +1025,6 @@ msgstr[2] "%'d súbory sa vyhadzujú do Koša"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1885
 #, c-format
-#| msgid "Trashing Files"
 msgid "Trashed %'d file"
 msgid_plural "Trashed %'d files"
 msgstr[0] "%'d súborov vyhodených do Koša"
@@ -1045,8 +1037,6 @@ msgstr[2] "%'d súbory vyhodené do Koša"
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:1921
-#| msgid "%S of %S — %T left (%S/sec)"
-#| msgid_plural "%S of %S — %T left (%S/sec)"
 msgid "%'d / %'d — %T left (%d files/sec)"
 msgid_plural "%'d / %'d — %T left (%d files/sec)"
 msgstr[0] "%'d / %'d — zostáva %T (%d súborov/sek)"
@@ -1214,7 +1204,6 @@ msgid "Duplicated “%B”"
 msgstr "„%B“ zduplikovaný"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3209
-#| msgid "Moving file %'d of %'d to “%B”"
 msgid "Moving %'d file to “%B”"
 msgid_plural "Moving %'d files to “%B”"
 msgstr[0] "Presúva sa %'d súborov do „%B“"
@@ -1222,7 +1211,6 @@ msgstr[1] "Presúva sa %'d súbor do „%B“"
 msgstr[2] "Presúvajú sa %'d súbory do „%B“"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3213
-#| msgid "Copying file %'d of %'d to “%B”"
 msgid "Copying %'d file to “%B”"
 msgid_plural "Copying %'d files to “%B”"
 msgstr[0] "Kopíruje sa %'d súborov do „%B“"
@@ -1230,7 +1218,6 @@ msgstr[1] "Kopíruje sa %'d súbor do „%B“"
 msgstr[2] "Kopírujú sa %'d súbory do „%B“"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3224
-#| msgid "Moving file %'d of %'d to “%B”"
 msgid "Moved %'d file to “%B”"
 msgid_plural "Moved %'d files to “%B”"
 msgstr[0] "%'d súborov presunutých do „%B“"
@@ -1238,7 +1225,6 @@ msgstr[1] "%'d súbor presunutý do „%B“"
 msgstr[2] "%'d súbory presunuté do „%B“"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3228
-#| msgid "Copying file %'d of %'d to “%B”"
 msgid "Copied %'d file to “%B”"
 msgid_plural "Copied %'d files to “%B”"
 msgstr[0] "%'d skopírovaných do „%B“"
@@ -1246,7 +1232,6 @@ msgstr[1] "%'d súbor skopírovaný do „%B“"
 msgstr[2] "%'d súbory skopírované do „%B“"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3243
-#| msgid "Duplicating file %'d of %'d (in “%B”)"
 msgid "Duplicating %'d file in “%B”"
 msgid_plural "Duplicating %'d files in “%B”"
 msgstr[0] "Duplikuje sa %'d súborov v „%B“"
@@ -1254,7 +1239,6 @@ msgstr[1] "Duplikuje sa %'d súbor v „%B“"
 msgstr[2] "Duplikujú sa %'d súbory v „%B“"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3252
-#| msgid "Duplicating file %'d of %'d (in “%B”)"
 msgid "Duplicated %'d file in “%B”"
 msgid_plural "Duplicated %'d files in “%B”"
 msgstr[0] "%'d súborov zduplikovaných v „%B“"
@@ -1274,8 +1258,6 @@ msgstr "%S / %S"
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:3300
-#| msgid "%S of %S — %T left (%S/sec)"
-#| msgid_plural "%S of %S — %T left (%S/sec)"
 msgid "%S / %S — %T left (%S/sec)"
 msgid_plural "%S / %S — %T left (%S/sec)"
 msgstr[0] "%S / %S — zostáva %T (%S/sek)"
@@ -1288,8 +1270,6 @@ msgstr[2] "%S / %S — zostávajú %T (%S/sek)"
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:3319
-#| msgid "%S of %S — %T left (%S/sec)"
-#| msgid_plural "%S of %S — %T left (%S/sec)"
 msgid "%'d / %'d — %T left (%S/sec)"
 msgid_plural "%'d / %'d — %T left (%S/sec)"
 msgstr[0] "%'d / %'d — zostáva %T (%S/sek)"
@@ -2162,13 +2142,15 @@ msgstr "Tento kľúč je zastaralý a ignorovaný. Teraz je namiesto neho použi
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:39
 msgid "Whether to switch to the list view on search"
-msgstr ""
+msgstr "Či sa má prepnúť na zobrazenie zoznamu pri vyhľadávaní"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:40
 msgid ""
 "If this is set to true, view mode will be switched to the list view while searching. However, if the user changes the mode manually, this "
 "will be disabled."
 msgstr ""
+"Ak je nastavené na true, režim zobrazenia bude počas vyhľadávania prepnutý na zobrazenie zoznamu. Avšak ak používateľ zmení režim ručne, "
+"toto nastavenie bude zakázané."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:41
 msgid "Bulk rename utility"
@@ -2242,7 +2224,7 @@ msgstr "Predvolená úroveň zväčšenia zoznamu"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:52
 msgid "Default zoom level used by the list view."
-msgstr "Predvolená úroveň zväčšenia v zobrazení zoznam."
+msgstr "Predvolená úroveň zväčšenia v zobrazení zoznamu."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:53
 msgid "Default list of columns visible in the list view"
