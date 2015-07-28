@@ -1793,7 +1793,9 @@ create_and_set_up_tree_view (NautilusListView *view)
 	GList *nautilus_columns;
 	GList *l;
 	gchar **default_column_order, **default_visible_columns;
+        GtkWidget *content_widget;
 	
+        content_widget = nautilus_view_get_content_widget (NAUTILUS_VIEW (view));
 	view->details->tree_view = GTK_TREE_VIEW (gtk_tree_view_new ());
 	view->details->columns = g_hash_table_new_full (g_str_hash, 
 							g_str_equal,
@@ -2025,7 +2027,7 @@ create_and_set_up_tree_view (NautilusListView *view)
 				default_visible_columns);
 
 	gtk_widget_show (GTK_WIDGET (view->details->tree_view));
-	gtk_container_add (GTK_CONTAINER (view), GTK_WIDGET (view->details->tree_view));
+	gtk_container_add (GTK_CONTAINER (content_widget), GTK_WIDGET (view->details->tree_view));
 
         atk_obj = gtk_widget_get_accessible (GTK_WIDGET (view->details->tree_view));
         atk_object_set_name (atk_obj, _("List View"));
