@@ -1797,7 +1797,7 @@ create_and_set_up_tree_view (NautilusListView *view)
 	
         content_widget = nautilus_view_get_content_widget (NAUTILUS_VIEW (view));
 	view->details->tree_view = GTK_TREE_VIEW (gtk_tree_view_new ());
-	view->details->columns = g_hash_table_new_full (g_str_hash, 
+	view->details->columns = g_hash_table_new_full (g_str_hash,
 							g_str_equal,
 							(GDestroyNotify) g_free,
 							NULL);
