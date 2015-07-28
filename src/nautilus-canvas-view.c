@@ -1640,7 +1640,9 @@ static NautilusCanvasContainer *
 create_canvas_container (NautilusCanvasView *canvas_view)
 {
 	NautilusCanvasContainer *canvas_container;
+        GtkWidget *content_widget;
 
+        content_widget = nautilus_view_get_content_widget (NAUTILUS_VIEW (canvas_view));
 	canvas_container = nautilus_canvas_view_container_new (canvas_view);
 	canvas_view->details->canvas_container = GTK_WIDGET (canvas_container);
 	g_object_add_weak_pointer (G_OBJECT (canvas_container),
@@ -1695,7 +1697,7 @@ create_canvas_container (NautilusCanvasView *canvas_view)
 	g_signal_connect_object (canvas_container, "store-layout-timestamp",
 				 G_CALLBACK (store_layout_timestamp), canvas_view, 0);
 
-	gtk_container_add (GTK_CONTAINER (canvas_view),
+        gtk_container_add (GTK_CONTAINER (content_widget),
 			   GTK_WIDGET (canvas_container));
 
 	nautilus_canvas_view_update_click_mode (canvas_view);
@@ -1932,8 +1934,6 @@ nautilus_canvas_view_init (NautilusCanvasView *canvas_view)
 {
 	NautilusCanvasContainer *canvas_container;
   	GActionGroup *view_action_group;
-
-        g_return_if_fail (gtk_bin_get_child (GTK_BIN (canvas_view)) == NULL);
 
 	canvas_view->details = g_new0 (NautilusCanvasViewDetails, 1);
 	canvas_view->details->sort = &sort_criteria[0];

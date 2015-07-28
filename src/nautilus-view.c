@@ -226,6 +226,11 @@ struct NautilusViewDetails
 	GMenu *pathbar_menu;
 
 	GActionGroup *view_action_group;
+
+        /* Empty states */
+        GtkWidget *overlay;
+        GtkWidget *folder_is_empty_widget;
+        GtkWidget *no_search_results_widget;
 };
 
 typedef struct {
@@ -266,9 +271,37 @@ static void     nautilus_view_select_file                      (NautilusView    
 
 static void     update_templates_directory                     (NautilusView *view);
 
+static void     check_empty_states                             (NautilusView *view);
+
 static void unschedule_pop_up_pathbar_context_menu (NautilusView *view);
 
 G_DEFINE_TYPE (NautilusView, nautilus_view, GTK_TYPE_SCROLLED_WINDOW);
+
+static void
+check_empty_states (NautilusView *view)
+{
+        GList *files;
+        GList *filtered;
+        gboolean show_hidden_files;
+
+        gtk_widget_hide (view->details->no_search_results_widget);
+        gtk_widget_hide (view->details->folder_is_empty_widget);
+        if (!view->details->loading && view->details->model) {
+	        files = nautilus_directory_get_file_list (view->details->model);
+                show_hidden_files = g_settings_get_boolean (gtk_filechooser_preferences,
+                                                            NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
+                filtered = nautilus_file_list_filter_hidden (files, show_hidden_files);
+                if (g_list_length (filtered) == 0) {
+                        if (NAUTILUS_IS_SEARCH_DIRECTORY (view->details->model)) {
+	                        gtk_widget_show (view->details->no_search_results_widget);
+                        } else {
+	                        gtk_widget_show (view->details->folder_is_empty_widget);
+                        }
+                }
+                nautilus_file_list_unref (filtered);
+                nautilus_file_list_unref (files);
+        }
+}
 
 static char *
 real_get_backing_uri (NautilusView *view)
@@ -2888,6 +2921,8 @@ done_loading (NautilusView *view,
 	view->details->loading = FALSE;
 	g_signal_emit (view, signals[END_LOADING], 0, all_files_seen);
 
+        check_empty_states (view);
+
 	nautilus_profile_end (NULL);
 }
 
@@ -3273,6 +3308,7 @@ process_old_files (NautilusView *view)
 		}
 
 		g_signal_emit (view, signals[END_FILE_CHANGES], 0);
+                check_empty_states (view);
 
 		if (files_changed != NULL) {
 			selection = nautilus_view_get_selection (view);
@@ -3690,6 +3726,14 @@ nautilus_view_get_model (NautilusView *view)
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NULL);
 
 	return view->details->model;
+}
+
+GtkWidget*
+nautilus_view_get_content_widget (NautilusView *view)
+{
+        g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NULL);
+
+        return view->details->overlay;
 }
 
 GdkAtom
@@ -6951,6 +6995,8 @@ finish_loading (NautilusView *view)
 	g_signal_emit (view, signals[BEGIN_LOADING], 0);
 	nautilus_profile_end ("BEGIN_LOADING");
 
+        check_empty_states (view);
+
 	/* Assume we have now all information to show window */
 	nautilus_window_view_visible  (nautilus_view_get_window (view), NAUTILUS_VIEW (view));
 
@@ -7608,6 +7654,7 @@ nautilus_view_class_init (NautilusViewClass *klass)
 static void
 nautilus_view_init (NautilusView *view)
 {
+        GtkBuilder *builder;
 	AtkObject *atk_object;
 	NautilusDirectory *scripts_directory;
 	NautilusDirectory *templates_directory;
@@ -7623,6 +7670,25 @@ nautilus_view_init (NautilusView *view)
 
 	view->details = G_TYPE_INSTANCE_GET_PRIVATE (view, NAUTILUS_TYPE_VIEW,
 						     NautilusViewDetails);
+
+        /* Overlay */
+        view->details->overlay = gtk_overlay_new ();
+        gtk_widget_show (view->details->overlay);
+
+        gtk_container_add (GTK_CONTAINER (view), view->details->overlay);
+
+        /* Empty states */
+        builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-no-search-results.ui");
+	view->details->no_search_results_widget = GTK_WIDGET (gtk_builder_get_object (builder, "no_search_results"));
+	gtk_overlay_add_overlay (GTK_OVERLAY (view->details->overlay),
+				 view->details->no_search_results_widget);
+        g_object_unref (builder);
+
+        builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-folder-is-empty.ui");
+	view->details->folder_is_empty_widget = GTK_WIDGET (gtk_builder_get_object (builder, "folder_is_empty"));
+	gtk_overlay_add_overlay (GTK_OVERLAY (view->details->overlay),
+				 view->details->folder_is_empty_widget);
+        g_object_unref (builder);
 
 	/* Default to true; desktop-icon-view sets to false */
 	view->details->show_foreign_files = TRUE;
