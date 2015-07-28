@@ -32,6 +32,7 @@
 #include "nautilus-application.h"
 #include "nautilus-desktop-canvas-view.h"
 #include "nautilus-error-reporting.h"
+#include "nautilus-floating-bar.h"
 #include "nautilus-list-view.h"
 #include "nautilus-mime-actions.h"
 #include "nautilus-previewer.h"
@@ -117,6 +118,9 @@
 
 /* Time to show the duplicated folder label */
 #define DIALOG_DUPLICATED_NAME_ERROR_LABEL_TIMEOUT 500
+
+/* Delay to show the Loading... floating bar */
+#define FLOATING_BAR_LOADING_DELAY 500 /* ms */
 
 enum {
 	ADD_FILE,
@@ -227,10 +231,16 @@ struct NautilusViewDetails
 
 	GActionGroup *view_action_group;
 
+        GtkWidget *scrolled_window;
+
         /* Empty states */
-        GtkWidget *overlay;
         GtkWidget *folder_is_empty_widget;
         GtkWidget *no_search_results_widget;
+
+        /* Floating bar */
+        guint floating_bar_set_status_timeout_id;
+        guint floating_bar_loading_timeout_id;
+        GtkWidget *floating_bar;
 };
 
 typedef struct {
@@ -275,26 +285,24 @@ static void     check_empty_states                             (NautilusView *vi
 
 static void unschedule_pop_up_pathbar_context_menu (NautilusView *view);
 
-G_DEFINE_TYPE (NautilusView, nautilus_view, GTK_TYPE_SCROLLED_WINDOW);
+G_DEFINE_TYPE (NautilusView, nautilus_view, GTK_TYPE_OVERLAY);
 
 static void
 check_empty_states (NautilusView *view)
 {
 	GList *files;
 	GList *filtered;
-        NautilusDirectory *directory;
         gboolean show_hidden_files;
 
         gtk_widget_hide (view->details->no_search_results_widget);
         gtk_widget_hide (view->details->folder_is_empty_widget);
-        directory = view->details->model;
-        if (!view->details->loading && directory != NULL) {
-	        files = nautilus_directory_get_file_list (directory);
+        if (!view->details->loading && view->details->model) {
+	        files = nautilus_directory_get_file_list (view->details->model);
                 show_hidden_files = g_settings_get_boolean (gtk_filechooser_preferences,
                                                             NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
                 filtered = nautilus_file_list_filter_hidden (files, show_hidden_files);
                 if (g_list_length (filtered) == 0) {
-                        if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
+                        if (nautilus_view_is_search (view)) {
 	                        gtk_widget_show (view->details->no_search_results_widget);
                         } else {
 	                        gtk_widget_show (view->details->folder_is_empty_widget);
@@ -305,26 +313,200 @@ check_empty_states (NautilusView *view)
         }
 }
 
+/*
+ * Floating Bar code
+ */
+static void
+remove_loading_floating_bar (NautilusView *view)
+{
+	if (view->details->floating_bar_loading_timeout_id != 0) {
+		g_source_remove (view->details->floating_bar_loading_timeout_id);
+		view->details->floating_bar_loading_timeout_id = 0;
+	}
+
+	gtk_widget_hide (view->details->floating_bar);
+	nautilus_floating_bar_cleanup_actions (NAUTILUS_FLOATING_BAR (view->details->floating_bar));
+}
+
+static void
+real_setup_loading_floating_bar (NautilusView *view)
+{
+	gboolean disable_chrome;
+
+	g_object_get (nautilus_view_get_window (view),
+		      "disable-chrome", &disable_chrome,
+		      NULL);
+
+	if (disable_chrome) {
+		gtk_widget_hide (view->details->floating_bar);
+		return;
+	}
+
+	nautilus_floating_bar_cleanup_actions (NAUTILUS_FLOATING_BAR (view->details->floating_bar));
+	nautilus_floating_bar_set_primary_label (NAUTILUS_FLOATING_BAR (view->details->floating_bar),
+						 nautilus_view_is_search (view) ? _("Searching…") : _("Loading…"));
+	nautilus_floating_bar_set_details_label (NAUTILUS_FLOATING_BAR (view->details->floating_bar), NULL);
+	nautilus_floating_bar_set_show_spinner (NAUTILUS_FLOATING_BAR (view->details->floating_bar), view->details->loading);
+	nautilus_floating_bar_add_action (NAUTILUS_FLOATING_BAR (view->details->floating_bar),
+					  "process-stop-symbolic",
+					  NAUTILUS_FLOATING_BAR_ACTION_ID_STOP);
+
+	gtk_widget_set_halign (view->details->floating_bar, GTK_ALIGN_END);
+	gtk_widget_show (view->details->floating_bar);
+}
+
+static gboolean
+setup_loading_floating_bar_timeout_cb (gpointer user_data)
+{
+	NautilusView *view = user_data;
+
+	view->details->floating_bar_loading_timeout_id = 0;
+	real_setup_loading_floating_bar (view);
+
+	return FALSE;
+}
+
+static void
+setup_loading_floating_bar (NautilusView *view)
+{
+	/* setup loading overlay */
+	if (view->details->floating_bar_set_status_timeout_id != 0) {
+		g_source_remove (view->details->floating_bar_set_status_timeout_id);
+		view->details->floating_bar_set_status_timeout_id = 0;
+	}
+
+	if (view->details->floating_bar_loading_timeout_id != 0) {
+		g_source_remove (view->details->floating_bar_loading_timeout_id);
+		view->details->floating_bar_loading_timeout_id = 0;
+	}
+
+	view->details->floating_bar_loading_timeout_id =
+		g_timeout_add (FLOATING_BAR_LOADING_DELAY, setup_loading_floating_bar_timeout_cb, view);
+}
+
+static void
+floating_bar_action_cb (NautilusFloatingBar *floating_bar,
+                        gint                 action,
+                        NautilusView        *view)
+{
+        if (action == NAUTILUS_FLOATING_BAR_ACTION_ID_STOP) {
+                remove_loading_floating_bar (view);
+                nautilus_window_slot_stop_loading (view->details->slot);
+        }
+}
+
+static void
+real_floating_bar_set_short_status (NautilusView *view,
+                                    const gchar  *primary_status,
+                                    const gchar  *detail_status)
+{
+        gboolean disable_chrome;
+
+        nautilus_floating_bar_cleanup_actions (NAUTILUS_FLOATING_BAR (view->details->floating_bar));
+        nautilus_floating_bar_set_show_spinner (NAUTILUS_FLOATING_BAR (view->details->floating_bar), view->details->loading);
+
+        g_object_get (nautilus_view_get_window (view),
+                      "disable-chrome", &disable_chrome,
+                      NULL);
+
+        if ((primary_status == NULL && detail_status == NULL) || disable_chrome) {
+                gtk_widget_hide (view->details->floating_bar);
+                return;
+        }
+
+        nautilus_floating_bar_set_labels (NAUTILUS_FLOATING_BAR (view->details->floating_bar),
+                                          primary_status,
+                                          detail_status);
+
+        gtk_widget_show (view->details->floating_bar);
+}
+
+typedef struct {
+	gchar *primary_status;
+	gchar *detail_status;
+	NautilusView *view;
+} FloatingBarSetStatusData;
+
+static void
+floating_bar_set_status_data_free (gpointer data)
+{
+	FloatingBarSetStatusData *status_data = data;
+
+	g_free (status_data->primary_status);
+	g_free (status_data->detail_status);
+
+	g_slice_free (FloatingBarSetStatusData, data);
+}
+
+static gboolean
+floating_bar_set_status_timeout_cb (gpointer data)
+{
+	FloatingBarSetStatusData *status_data = data;
+
+	status_data->view->details->floating_bar_set_status_timeout_id = 0;
+	real_floating_bar_set_short_status (status_data->view,
+				            status_data->primary_status,
+				            status_data->detail_status);
+
+	return FALSE;
+}
+
+static void
+set_floating_bar_status (NautilusView *view,
+                         const gchar  *primary_status,
+                         const gchar  *detail_status)
+{
+	GtkSettings *settings;
+	gint double_click_time;
+	FloatingBarSetStatusData *status_data;
+
+	if (view->details->floating_bar_set_status_timeout_id != 0) {
+		g_source_remove (view->details->floating_bar_set_status_timeout_id);
+		view->details->floating_bar_set_status_timeout_id = 0;
+	}
+
+	settings = gtk_settings_get_for_screen (gtk_widget_get_screen (GTK_WIDGET (view)));
+	g_object_get (settings,
+		      "gtk-double-click-time", &double_click_time,
+		      NULL);
+
+	status_data = g_slice_new0 (FloatingBarSetStatusData);
+	status_data->primary_status = g_strdup (primary_status);
+	status_data->detail_status = g_strdup (detail_status);
+	status_data->view = view;
+
+	/* waiting for half of the double-click-time before setting
+	 * the status seems to be a good approximation of not setting it
+	 * too often and not delaying the statusbar too much.
+	 */
+	view->details->floating_bar_set_status_timeout_id =
+		g_timeout_add_full (G_PRIORITY_DEFAULT,
+				    (guint) (double_click_time / 2),
+				    floating_bar_set_status_timeout_cb,
+				    status_data,
+				    floating_bar_set_status_data_free);
+}
+
 static char *
 real_get_backing_uri (NautilusView *view)
 {
 	NautilusDirectory *directory;
 	char *uri;
-       
+
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NULL);
 
 	if (view->details->model == NULL) {
 		return NULL;
 	}
-       
+
 	directory = view->details->model;
-       
+
 	if (NAUTILUS_IS_DESKTOP_DIRECTORY (directory)) {
 		directory = nautilus_desktop_directory_get_real_directory (NAUTILUS_DESKTOP_DIRECTORY (directory));
 	} else {
 		nautilus_directory_ref (directory);
 	}
-       
+
 	uri = nautilus_directory_get_uri (directory);
 
 	nautilus_directory_unref (directory);
@@ -577,6 +759,15 @@ nautilus_view_restore_default_zoom_level (NautilusView *view)
 	}
 
 	NAUTILUS_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->restore_default_zoom_level (view);
+}
+
+gboolean
+nautilus_view_is_search (NautilusView *view)
+{
+  if (!view->details->model)
+    return FALSE;
+
+  return NAUTILUS_IS_SEARCH_DIRECTORY (view->details->model);
 }
 
 const char *
@@ -2509,7 +2700,7 @@ nautilus_view_grab_focus (NautilusView *view)
 {
 	/* focus the child of the scrolled window if it exists */
 	GtkWidget *child;
-	child = gtk_bin_get_child (GTK_BIN (view));
+	child = gtk_bin_get_child (GTK_BIN (view->details->scrolled_window));
 	if (child) {
 		gtk_widget_grab_focus (GTK_WIDGET (child));
 	}
@@ -2610,6 +2801,16 @@ nautilus_view_destroy (GtkWidget *object)
 		g_source_remove (view->details->reveal_selection_idle_id);
 		view->details->reveal_selection_idle_id = 0;
 	}
+
+        if (view->details->floating_bar_set_status_timeout_id != 0) {
+                g_source_remove (view->details->floating_bar_set_status_timeout_id);
+                view->details->floating_bar_set_status_timeout_id = 0;
+        }
+
+        if (view->details->floating_bar_loading_timeout_id != 0) {
+                g_source_remove (view->details->floating_bar_loading_timeout_id);
+                view->details->floating_bar_loading_timeout_id = 0;
+        }
 
 
 	if (view->details->directory_as_file) {
@@ -2823,8 +3024,7 @@ nautilus_view_display_selection_info (NautilusView *view)
 	g_free (non_folder_count_str);
 	g_free (non_folder_item_count_str);
 
-	nautilus_window_slot_set_status (view->details->slot,
-					 primary_status, detail_status);
+        set_floating_bar_status (view, primary_status, detail_status);
 
 	g_free (primary_status);
 	g_free (detail_status);
@@ -2841,12 +3041,10 @@ nautilus_view_load_location (NautilusView *nautilus_view,
 			     GFile        *location)
 {
 	NautilusDirectory *directory;
-	NautilusView *directory_view;
 
-	directory_view = NAUTILUS_VIEW (nautilus_view);
 	nautilus_profile_start (NULL);
 	directory = nautilus_directory_get (location);
-	load_directory (directory_view, directory);
+	load_directory (nautilus_view, directory);
 	nautilus_directory_unref (directory);
 	nautilus_profile_end (NULL);
 }
@@ -2881,14 +3079,14 @@ done_loading (NautilusView *view,
          * as NULL. */
 	if (view->details->model != NULL) {
 		nautilus_view_update_toolbar_menus (view);
+                remove_loading_floating_bar (view);
 		schedule_update_context_menus (view);
 		schedule_update_status (view);
 		reset_update_interval (view);
 
 		selection = view->details->pending_selection;
 
-		if (NAUTILUS_IS_SEARCH_DIRECTORY (view->details->model)
-		    && all_files_seen) {
+		if (nautilus_view_is_search (view) && all_files_seen) {
 			nautilus_view_select_first (view);
 			do_reveal = TRUE;
 		} else if (selection != NULL && all_files_seen) {
@@ -3618,6 +3816,8 @@ done_loading_callback (NautilusDirectory *directory,
 		 */
 		unschedule_display_of_pending_files (view);
 		schedule_timeout_display_of_pending_files (view, UPDATE_INTERVAL_MIN);
+
+                remove_loading_floating_bar (view);
 	}
 	nautilus_profile_end (NULL);
 }
@@ -3728,6 +3928,14 @@ nautilus_view_get_model (NautilusView *view)
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NULL);
 
 	return view->details->model;
+}
+
+GtkWidget*
+nautilus_view_get_content_widget (NautilusView *view)
+{
+        g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NULL);
+
+	return view->details->scrolled_window;
 }
 
 GdkAtom
@@ -6068,8 +6276,7 @@ real_update_actions_state (NautilusView *view)
 	selection_contains_special_link = special_link_in_selection (selection);
 	selection_contains_desktop_or_home_dir = desktop_or_home_dir_in_selection (selection);
 	selection_contains_recent = showing_recent_directory (view);
-	selection_contains_search = view->details->model &&
-		NAUTILUS_IS_SEARCH_DIRECTORY (view->details->model);
+	selection_contains_search = nautilus_view_is_search (view);
 	selection_is_read_only = selection_count == 1 &&
 		(!nautilus_file_can_write (NAUTILUS_FILE (selection->data)) &&
 		 !nautilus_file_has_activation_uri (NAUTILUS_FILE (selection->data)));
@@ -6916,6 +7123,8 @@ load_directory (NautilusView *view,
 
 	view->details->loading = TRUE;
 
+        setup_loading_floating_bar (view);
+
 	/* Update menus when directory is empty, before going to new
 	 * location, so they won't have any false lingering knowledge
 	 * of old selection.
@@ -7487,7 +7696,7 @@ nautilus_view_scroll_event (GtkWidget *widget,
 		return TRUE;
 	}
 
-	return GTK_WIDGET_CLASS (nautilus_view_parent_class)->scroll_event (widget, event);
+	return FALSE;
 }
 
 static void
@@ -7519,25 +7728,12 @@ nautilus_view_parent_set (GtkWidget *widget,
 }
 
 static void
-nautilus_view_container_add (GtkContainer *container,
-                             GtkWidget    *widget)
-{
-        NautilusView *view = NAUTILUS_VIEW (container);
-
-        gtk_container_add (GTK_CONTAINER (view->details->overlay), widget);
-}
-
-static void
 nautilus_view_class_init (NautilusViewClass *klass)
 {
 	GObjectClass *oclass;
 	GtkWidgetClass *widget_class;
-        GtkContainerClass *container_class;
-	GtkScrolledWindowClass *scrolled_window_class;
 
 	widget_class = GTK_WIDGET_CLASS (klass);
-	scrolled_window_class = GTK_SCROLLED_WINDOW_CLASS (klass);
-        container_class = GTK_CONTAINER_CLASS (klass);
 	oclass = G_OBJECT_CLASS (klass);
 
 	oclass->finalize = nautilus_view_finalize;
@@ -7547,14 +7743,7 @@ nautilus_view_class_init (NautilusViewClass *klass)
 	widget_class->scroll_event = nautilus_view_scroll_event;
 	widget_class->parent_set = nautilus_view_parent_set;
 
-        container_class->add = nautilus_view_container_add;
-
 	g_type_class_add_private (klass, sizeof (NautilusViewDetails));
-
-	/* Get rid of the strange 3-pixel gap that GtkScrolledWindow
-	 * uses by default. It does us no good.
-	 */
-	scrolled_window_class->scrollbar_spacing = 0;
 
 	signals[ADD_FILE] =
 		g_signal_new ("add-file",
@@ -7678,27 +7867,44 @@ nautilus_view_init (NautilusView *view)
 	view->details = G_TYPE_INSTANCE_GET_PRIVATE (view, NAUTILUS_TYPE_VIEW,
 						     NautilusViewDetails);
 
-        /* Overlay */
-        view->details->overlay = gtk_overlay_new ();
-        gtk_widget_show (view->details->overlay);
+        gtk_widget_add_events (GTK_WIDGET (view),
+                               GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK);
 
-        /* Since the GtkContainer::add method was already overriden by the time
-         * _init is called, we have to manually use the parent's ::add method.
-         */
-        GTK_CONTAINER_CLASS (nautilus_view_parent_class)->add (GTK_CONTAINER (view), view->details->overlay);
+        /* Scrolled Window */
+        view->details->scrolled_window = gtk_scrolled_window_new (NULL, NULL);
+        gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (view->details->scrolled_window),
+					GTK_POLICY_AUTOMATIC,
+					GTK_POLICY_AUTOMATIC);
+        gtk_widget_show (view->details->scrolled_window);
+
+        g_signal_connect_swapped (view->details->scrolled_window,
+                                  "scroll-event",
+                                  G_CALLBACK (nautilus_view_scroll_event),
+                                  view);
+
+        gtk_container_add (GTK_CONTAINER (view), view->details->scrolled_window);
 
         /* Empty states */
         builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-no-search-results.ui");
 	view->details->no_search_results_widget = GTK_WIDGET (gtk_builder_get_object (builder, "no_search_results"));
-	gtk_overlay_add_overlay (GTK_OVERLAY (view->details->overlay),
-				 view->details->no_search_results_widget);
+	gtk_overlay_add_overlay (GTK_OVERLAY (view), view->details->no_search_results_widget);
         g_object_unref (builder);
 
         builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-folder-is-empty.ui");
 	view->details->folder_is_empty_widget = GTK_WIDGET (gtk_builder_get_object (builder, "folder_is_empty"));
-	gtk_overlay_add_overlay (GTK_OVERLAY (view->details->overlay),
-				 view->details->folder_is_empty_widget);
+	gtk_overlay_add_overlay (GTK_OVERLAY (view), view->details->folder_is_empty_widget);
         g_object_unref (builder);
+
+        /* Floating bar */
+        view->details->floating_bar = nautilus_floating_bar_new (NULL, NULL, FALSE);
+        gtk_widget_set_halign (view->details->floating_bar, GTK_ALIGN_END);
+        gtk_widget_set_valign (view->details->floating_bar, GTK_ALIGN_END);
+        gtk_overlay_add_overlay (GTK_OVERLAY (view), view->details->floating_bar);
+
+        g_signal_connect (view->details->floating_bar,
+                          "action",
+                          G_CALLBACK (floating_bar_action_cb),
+                          view);
 
 	/* Default to true; desktop-icon-view sets to false */
 	view->details->show_foreign_files = TRUE;
@@ -7708,12 +7914,6 @@ nautilus_view_init (NautilusView *view)
 				       file_and_directory_equal,
 				       (GDestroyNotify)file_and_directory_free,
 				       NULL);
-
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (view),
-					GTK_POLICY_AUTOMATIC,
-					GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_hadjustment (GTK_SCROLLED_WINDOW (view), NULL);
-	gtk_scrolled_window_set_vadjustment (GTK_SCROLLED_WINDOW (view), NULL);
 
 	gtk_style_context_set_junction_sides (gtk_widget_get_style_context (GTK_WIDGET (view)),
 					      GTK_JUNCTION_TOP | GTK_JUNCTION_LEFT);
