@@ -2293,6 +2293,11 @@ nautilus_view_set_show_hidden_files (NautilusView *view,
 
 	if (show_hidden != view->details->show_hidden_files) {
 		view->details->show_hidden_files = show_hidden;
+
+                g_settings_set_boolean (gtk_filechooser_preferences,
+                                        NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+                                        show_hidden);
+
 		if (view->details->model != NULL) {
 			load_directory (view, view->details->model);
 		}
@@ -2314,9 +2319,6 @@ action_show_hidden_files (GSimpleAction *action,
 
 	nautilus_view_set_show_hidden_files (view, show_hidden);
 
-        g_settings_set_boolean (gtk_filechooser_preferences,
-                                NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-                                show_hidden);
 	g_simple_action_set_state (action, state);
 }
 
