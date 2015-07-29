@@ -2253,27 +2253,6 @@ nautilus_window_view_visible (NautilusWindow *window,
 
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
-	/* FIXME: this code is odd and should not really be needed, but
-	 * removing it causes bugs, see e.g.
-	 * https://bugzilla.gnome.org/show_bug.cgi?id=679640
-	 *
-	 * Needs more investigation...
-	 */
-	slot = nautilus_view_get_nautilus_window_slot (view);
-	if (g_object_get_data (G_OBJECT (slot), "nautilus-window-view-visible") != NULL) {
-		return;
-	}
-
-	g_object_set_data (G_OBJECT (slot), "nautilus-window-view-visible", GINT_TO_POINTER (1));
-
-	/* Look for other non-visible slots */
-	for (l = window->priv->slots; l != NULL; l = l->next) {
-		slot = l->data;
-		if (g_object_get_data (G_OBJECT (slot), "nautilus-window-view-visible") == NULL) {
-			return;
-		}
-	}
-
 	/* Look for other non-visible slots */
 	for (l = window->priv->slots; l != NULL; l = l->next) {
 		slot = l->data;
