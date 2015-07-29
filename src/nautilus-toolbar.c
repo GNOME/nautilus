@@ -426,13 +426,7 @@ static void
 view_menu_popover_closed (GtkPopover *popover,
 			  NautilusToolbar *self)
 {
-	NautilusWindowSlot *slot;
-	NautilusView *view;
-
-	slot = nautilus_window_get_active_slot (self->priv->window);
-	view = nautilus_window_slot_get_current_view (slot);
-
-	nautilus_view_grab_focus (view);
+        gtk_widget_grab_focus (GTK_WIDGET (self->priv->window));
 }
 
 static gboolean
