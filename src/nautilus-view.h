@@ -380,7 +380,6 @@ gboolean          nautilus_view_can_zoom_out               (NautilusView      *v
 void              nautilus_view_pop_up_pathbar_context_menu (NautilusView    *view,
 							     GdkEventButton  *event,
 							     const char      *location);
-void              nautilus_view_grab_focus                 (NautilusView      *view);
 void              nautilus_view_update_menus               (NautilusView      *view);
 
 void              nautilus_view_update_context_menus       (NautilusView      *view);
