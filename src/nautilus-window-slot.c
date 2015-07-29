@@ -385,7 +385,7 @@ nautilus_window_slot_set_search_visible (NautilusWindowSlot *slot,
 		}
 
 		if (active_slot) {
-			nautilus_window_grab_focus (slot->details->window);
+			gtk_widget_grab_focus (GTK_WIDGET (slot->details->window));
 		}
 
 		/* Now hide the editor and clear its state */
@@ -2376,9 +2376,28 @@ nautilus_window_slot_dispose (GObject *object)
 }
 
 static void
+nautilus_window_slot_grab_focus (GtkWidget *widget)
+{
+        NautilusWindowSlot *slot;
+
+        slot = NAUTILUS_WINDOW_SLOT (widget);
+
+        GTK_WIDGET_CLASS (nautilus_window_slot_parent_class)->grab_focus (widget);
+
+        if (slot->details->search_visible) {
+                gtk_widget_grab_focus (GTK_WIDGET (slot->details->query_editor));
+        } else if (slot->details->content_view) {
+                gtk_widget_grab_focus (GTK_WIDGET (slot->details->content_view));
+        } else if (slot->details->new_content_view) {
+                gtk_widget_grab_focus (GTK_WIDGET (slot->details->new_content_view));
+        }
+}
+
+static void
 nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
 {
 	GObjectClass *oclass = G_OBJECT_CLASS (klass);
+        GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
 	klass->active = real_active;
 	klass->inactive = real_inactive;
@@ -2387,6 +2406,8 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
 	oclass->constructed = nautilus_window_slot_constructed;
 	oclass->set_property = nautilus_window_slot_set_property;
 	oclass->get_property = nautilus_window_slot_get_property;
+
+        widget_class->grab_focus = nautilus_window_slot_grab_focus;
 
 	signals[ACTIVE] =
 		g_signal_new ("active",

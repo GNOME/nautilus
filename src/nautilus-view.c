@@ -2697,12 +2697,18 @@ slot_inactive (NautilusWindowSlot *slot,
 	remove_update_context_menus_timeout_callback (view);
 }
 
-void
-nautilus_view_grab_focus (NautilusView *view)
+static void
+nautilus_view_grab_focus (GtkWidget *widget)
 {
 	/* focus the child of the scrolled window if it exists */
+        NautilusView *view;
 	GtkWidget *child;
+
+        view = NAUTILUS_VIEW (widget);
 	child = gtk_bin_get_child (GTK_BIN (view->details->scrolled_window));
+
+        GTK_WIDGET_CLASS (nautilus_view_parent_class)->grab_focus (widget);
+
 	if (child) {
 		gtk_widget_grab_focus (GTK_WIDGET (child));
 	}
@@ -7744,6 +7750,7 @@ nautilus_view_class_init (NautilusViewClass *klass)
 	widget_class->destroy = nautilus_view_destroy;
 	widget_class->scroll_event = nautilus_view_scroll_event;
 	widget_class->parent_set = nautilus_view_parent_set;
+        widget_class->grab_focus = nautilus_view_grab_focus;
 
 	g_type_class_add_private (klass, sizeof (NautilusViewDetails));
 
