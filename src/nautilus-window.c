@@ -590,17 +590,17 @@ remember_focus_widget (NautilusWindow *window)
 	}
 }
 
-void
-nautilus_window_grab_focus (NautilusWindow *window)
+static void
+nautilus_window_grab_focus (GtkWidget *widget)
 {
 	NautilusWindowSlot *slot;
-	NautilusView *view;
 
-	slot = nautilus_window_get_active_slot (window);
-	view = nautilus_window_slot_get_view (slot);
+	slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (widget));
 
-	if (view) {
-		nautilus_view_grab_focus (view);
+        GTK_WIDGET_CLASS (nautilus_window_parent_class)->grab_focus (widget);
+
+	if (slot) {
+		gtk_widget_grab_focus (GTK_WIDGET (slot));
 	}
 }
 
@@ -608,12 +608,7 @@ static void
 restore_focus_widget (NautilusWindow *window)
 {
 	if (window->priv->last_focus_widget != NULL) {
-		if (NAUTILUS_IS_VIEW (window->priv->last_focus_widget)) {
-			nautilus_view_grab_focus (NAUTILUS_VIEW (window->priv->last_focus_widget));
-		} else {
-			gtk_widget_grab_focus (window->priv->last_focus_widget);
-		}
-
+		gtk_widget_grab_focus (window->priv->last_focus_widget);
 		unset_focus_widget (window);
 	}
 }
@@ -2285,7 +2280,7 @@ nautilus_window_view_visible (NautilusWindow *window,
 		nautilus_window_slot_update_title (slot);
 	}
 
-	nautilus_window_grab_focus (window);
+	gtk_widget_grab_focus (GTK_WIDGET (window));
 
 	/* All slots, show window */
 	gtk_widget_show (GTK_WIDGET (window));
@@ -2623,6 +2618,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
 	wclass->window_state_event = nautilus_window_state_event;
 	wclass->button_press_event = nautilus_window_button_press_event;
 	wclass->delete_event = nautilus_window_delete_event;
+        wclass->grab_focus = nautilus_window_grab_focus;
 
 	class->close = real_window_close;
 

@@ -903,7 +903,7 @@ entry_key_press_event_cb (GtkWidget           *widget,
 			  NautilusQueryEditor *editor)
 {
 	if (event->keyval == GDK_KEY_Down) {
-		nautilus_window_grab_focus (NAUTILUS_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (widget))));
+		gtk_widget_grab_focus (gtk_widget_get_toplevel (GTK_WIDGET (widget)));
 	}
 	return FALSE;
 }
