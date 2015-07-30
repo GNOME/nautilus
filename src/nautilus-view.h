@@ -62,13 +62,13 @@ typedef struct NautilusViewClass NautilusViewClass;
 typedef struct NautilusViewDetails NautilusViewDetails;
 
 struct NautilusView {
-	GtkScrolledWindow parent;
+	GtkOverlay parent;
 
 	NautilusViewDetails *details;
 };
 
 struct NautilusViewClass {
-	GtkScrolledWindowClass parent_class;
+	GtkOverlayClass parent_class;
 
 	/* The 'clear' signal is emitted to empty the view of its contents.
 	 * It must be replaced by each subclass.
@@ -380,7 +380,6 @@ gboolean          nautilus_view_can_zoom_out               (NautilusView      *v
 void              nautilus_view_pop_up_pathbar_context_menu (NautilusView    *view,
 							     GdkEventButton  *event,
 							     const char      *location);
-void              nautilus_view_grab_focus                 (NautilusView      *view);
 void              nautilus_view_update_menus               (NautilusView      *view);
 
 void              nautilus_view_update_context_menus       (NautilusView      *view);
@@ -391,5 +390,6 @@ void		  nautilus_view_action_show_hidden_files   (NautilusView      *view,
 							    gboolean           show_hidden);
 
 GActionGroup *    nautilus_view_get_action_group           (NautilusView      *view);
+gboolean          nautilus_view_is_search_directory        (NautilusView      *view);
 
 #endif /* NAUTILUS_VIEW_H */
