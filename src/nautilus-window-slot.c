@@ -27,7 +27,6 @@
 #include "nautilus-application.h"
 #include "nautilus-canvas-view.h"
 #include "nautilus-desktop-window.h"
-#include "nautilus-floating-bar.h"
 #include "nautilus-list-view.h"
 #include "nautilus-special-location-bar.h"
 #include "nautilus-trash-bar.h"
@@ -61,12 +60,6 @@ enum {
 
 struct NautilusWindowSlotDetails {
 	NautilusWindow *window;
-
-	/* floating bar */
-	guint set_status_timeout_id;
-	guint loading_timeout_id;
-	GtkWidget *floating_bar;
-	GtkWidget *view_overlay;
 
 	/* slot contains
 	 *  1) an vbox containing extra_location_widgets
@@ -131,28 +124,18 @@ static void location_has_really_changed (NautilusWindowSlot *slot);
 static void nautilus_window_slot_connect_new_content_view (NautilusWindowSlot *slot);
 static void nautilus_window_slot_disconnect_content_view (NautilusWindowSlot *slot);
 static void nautilus_window_slot_emit_location_change (NautilusWindowSlot *slot, GFile *from, GFile *to);
-static void setup_loading_floating_bar (NautilusWindowSlot *slot);
 
 static void
 nautilus_window_slot_sync_search_widgets (NautilusWindowSlot *slot)
 {
-	NautilusDirectory *directory;
-	gboolean toggle;
-
 	if (slot != nautilus_window_get_active_slot (slot->details->window)) {
 		return;
 	}
 
-	toggle = slot->details->search_visible;
-
-	if (slot->details->content_view != NULL) {
-		directory = nautilus_view_get_model (slot->details->content_view);
-		if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
-			toggle = TRUE;
-		}
-	}
-
-	nautilus_window_slot_set_search_visible (slot, toggle);
+        nautilus_window_slot_set_search_visible (slot,
+                                                 slot->details->search_visible ||
+                                                 (slot->details->content_view &&
+                                                  nautilus_view_is_search (slot->details->content_view)));
 }
 
 static gboolean
@@ -187,49 +170,6 @@ nautilus_window_slot_sync_view_mode (NautilusWindowSlot *slot)
 	} else {
 		g_simple_action_set_enabled (G_SIMPLE_ACTION (action), FALSE);
 	}
-}
-
-static void
-remove_loading_floating_bar (NautilusWindowSlot *slot)
-{
-	if (slot->details->loading_timeout_id != 0) {
-		g_source_remove (slot->details->loading_timeout_id);
-		slot->details->loading_timeout_id = 0;
-	}
-
-	gtk_widget_hide (slot->details->floating_bar);
-	nautilus_floating_bar_cleanup_actions (NAUTILUS_FLOATING_BAR (slot->details->floating_bar));
-}
-
-static void
-nautilus_window_slot_on_done_loading (NautilusDirectory  *directory,
-                                      NautilusWindowSlot *slot)
-{
-
-        remove_loading_floating_bar (slot);
-        nautilus_window_slot_set_allow_stop (slot, FALSE);
-}
-
-static void
-connect_directory_signals (NautilusWindowSlot *slot,
-                           NautilusDirectory  *directory)
-{
-        if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
-                g_signal_connect_object (directory, "done-loading",
-                                         G_CALLBACK (nautilus_window_slot_on_done_loading),
-                                         slot, 0);
-        }
-}
-
-static void
-disconnect_directory_signals (NautilusWindowSlot *slot,
-                              NautilusDirectory  *directory)
-{
-        if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
-                g_signal_handlers_disconnect_by_func (directory,
-                                                      G_CALLBACK (nautilus_window_slot_on_done_loading),
-                                                      slot);
-        }
 }
 
 static void
@@ -526,16 +466,6 @@ real_inactive (NautilusWindowSlot *slot)
 }
 
 static void
-floating_bar_action_cb (NautilusFloatingBar *floating_bar,
-			gint action,
-			NautilusWindowSlot *slot)
-{
-	if (action == NAUTILUS_FLOATING_BAR_ACTION_ID_STOP) {
-		nautilus_window_slot_stop_loading (slot);
-	}
-}
-
-static void
 remove_all_extra_location_widgets (GtkWidget *widget,
 				   gpointer data)
 {
@@ -626,22 +556,6 @@ nautilus_window_slot_constructed (GObject *object)
 			   GTK_WIDGET (slot->details->query_editor));
 	gtk_widget_show_all (slot->details->query_editor_revealer);
 	nautilus_window_slot_add_extra_location_widget (slot, slot->details->query_editor_revealer);
-
-	slot->details->view_overlay = gtk_overlay_new ();
-	gtk_widget_add_events (slot->details->view_overlay,
-			       GDK_ENTER_NOTIFY_MASK |
-			       GDK_LEAVE_NOTIFY_MASK);
-	gtk_box_pack_start (GTK_BOX (slot), slot->details->view_overlay, TRUE, TRUE, 0);
-	gtk_widget_show (slot->details->view_overlay);
-
-	slot->details->floating_bar = nautilus_floating_bar_new (NULL, NULL, FALSE);
-	gtk_widget_set_halign (slot->details->floating_bar, GTK_ALIGN_END);
-	gtk_widget_set_valign (slot->details->floating_bar, GTK_ALIGN_END);
-	gtk_overlay_add_overlay (GTK_OVERLAY (slot->details->view_overlay),
-				 slot->details->floating_bar);
-
-	g_signal_connect (slot->details->floating_bar, "action",
-			  G_CALLBACK (floating_bar_action_cb), slot);
 
 	slot->details->title = g_strdup (_("Loading…"));
 }
@@ -889,7 +803,6 @@ begin_location_change (NautilusWindowSlot *slot,
 		       NautilusWindowGoToCallback callback,
 		       gpointer user_data)
 {
-	NautilusDirectory *previous_directory;
         NautilusDirectory *directory;
         NautilusFile *file;
 	gboolean force_reload;
@@ -905,12 +818,8 @@ begin_location_change (NautilusWindowSlot *slot,
 
 	nautilus_profile_start (NULL);
 
-	previous_directory = nautilus_directory_get (previous_location);
         directory = nautilus_directory_get (location);
 
-	/* Disconnect search signals from the old directory if it was a search directory */
-        disconnect_directory_signals (slot, previous_directory);
-	nautilus_directory_unref (previous_directory);
 
         /* Avoid to update status from the current view in our async calls */
         nautilus_window_slot_disconnect_content_view (slot);
@@ -945,7 +854,6 @@ begin_location_change (NautilusWindowSlot *slot,
 	end_location_change (slot);
 
 	nautilus_window_slot_set_allow_stop (slot, TRUE);
-	nautilus_window_slot_set_status (slot, NULL, NULL);
 
 	g_assert (slot->details->pending_location == NULL);
 	g_assert (slot->details->pending_selection == NULL);
@@ -1466,10 +1374,6 @@ create_content_view (NautilusWindowSlot *slot,
 	old_directory = nautilus_directory_get (old_location);
 	new_directory = nautilus_directory_get (slot->details->pending_location);
 
-        /* Connect to the done loading signal if it is a search directory to update
-         * the no results widget */
-        connect_directory_signals (slot, new_directory);
-
 	if (NAUTILUS_IS_SEARCH_DIRECTORY (new_directory) &&
 	    !NAUTILUS_IS_SEARCH_DIRECTORY (old_directory)) {
 		nautilus_search_directory_set_base_model (NAUTILUS_SEARCH_DIRECTORY (new_directory), old_directory);
@@ -1629,7 +1533,6 @@ cancel_location_change (NautilusWindowSlot *slot)
 	location = nautilus_window_slot_get_location (slot);
 
 	directory = nautilus_directory_get (slot->details->location);
-        disconnect_directory_signals (slot, directory);
         /* Stops current loading or search if any, so we are not slow */
 	nautilus_view_stop_loading (slot->details->content_view);
         nautilus_directory_unref (directory);
@@ -2237,70 +2140,7 @@ view_end_loading_cb (NautilusView       *view,
 		slot->details->needs_reload = FALSE;
 	}
 
-        /* If it is a search directory, it will hide the toolbar when the search engine
-         * finishes, not every time the view end loading the new files */
-        if (!NAUTILUS_IS_SEARCH_DIRECTORY (nautilus_view_get_model (slot->details->content_view))) {
-                remove_loading_floating_bar (slot);
-                nautilus_window_slot_set_allow_stop (slot, FALSE);
-        }
-}
-
-static void
-real_setup_loading_floating_bar (NautilusWindowSlot *slot)
-{
-	gboolean disable_chrome;
-
-	g_object_get (nautilus_window_slot_get_window (slot),
-		      "disable-chrome", &disable_chrome,
-		      NULL);
-
-	if (disable_chrome) {
-		gtk_widget_hide (slot->details->floating_bar);
-		return;
-	}
-
-	nautilus_floating_bar_cleanup_actions (NAUTILUS_FLOATING_BAR (slot->details->floating_bar));
-	nautilus_floating_bar_set_primary_label (NAUTILUS_FLOATING_BAR (slot->details->floating_bar),
-						 NAUTILUS_IS_SEARCH_DIRECTORY (nautilus_view_get_model (slot->details->content_view)) ?
-						 _("Searching…") : _("Loading…"));
-	nautilus_floating_bar_set_details_label (NAUTILUS_FLOATING_BAR (slot->details->floating_bar), NULL);
-	nautilus_floating_bar_set_show_spinner (NAUTILUS_FLOATING_BAR (slot->details->floating_bar),
-						slot->details->allow_stop);
-	nautilus_floating_bar_add_action (NAUTILUS_FLOATING_BAR (slot->details->floating_bar),
-					  "process-stop-symbolic",
-					  NAUTILUS_FLOATING_BAR_ACTION_ID_STOP);
-
-	gtk_widget_set_halign (slot->details->floating_bar, GTK_ALIGN_END);
-	gtk_widget_show (slot->details->floating_bar);
-}
-
-static gboolean
-setup_loading_floating_bar_timeout_cb (gpointer user_data)
-{
-	NautilusWindowSlot *slot = user_data;
-
-	slot->details->loading_timeout_id = 0;
-	real_setup_loading_floating_bar (slot);
-
-	return FALSE;
-}
-
-static void
-setup_loading_floating_bar (NautilusWindowSlot *slot)
-{
-	/* setup loading overlay */
-	if (slot->details->set_status_timeout_id != 0) {
-		g_source_remove (slot->details->set_status_timeout_id);
-		slot->details->set_status_timeout_id = 0;
-	}
-
-	if (slot->details->loading_timeout_id != 0) {
-		g_source_remove (slot->details->loading_timeout_id);
-		slot->details->loading_timeout_id = 0;
-	}
-
-	slot->details->loading_timeout_id =
-		g_timeout_add (500, setup_loading_floating_bar_timeout_cb, slot);
+        nautilus_window_slot_set_allow_stop (slot, FALSE);
 }
 
 static void
@@ -2315,9 +2155,7 @@ view_begin_loading_cb (NautilusView       *view,
 		nautilus_window_slot_set_allow_stop (slot, TRUE);
 	}
 
-        setup_loading_floating_bar (slot);
-
-	nautilus_profile_end (NULL);
+        nautilus_profile_end (NULL);
 }
 
 static void
@@ -2422,7 +2260,8 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *slot)
 		slot->details->new_content_view = NULL;
 
 		widget = GTK_WIDGET (slot->details->content_view);
-		gtk_container_add (GTK_CONTAINER (slot->details->view_overlay), widget);
+                gtk_container_add (GTK_CONTAINER (slot), widget);
+                gtk_widget_set_vexpand (widget, TRUE);
 		gtk_widget_show (widget);
 	}
 }
@@ -2476,7 +2315,6 @@ static void
 nautilus_window_slot_dispose (GObject *object)
 {
 	NautilusWindowSlot *slot;
-	NautilusDirectory *directory;
 	GtkWidget *widget;
 
 	slot = NAUTILUS_WINDOW_SLOT (object);
@@ -2500,16 +2338,6 @@ nautilus_window_slot_dispose (GObject *object)
 		slot->details->new_content_view = NULL;
 	}
 
-	if (slot->details->set_status_timeout_id != 0) {
-		g_source_remove (slot->details->set_status_timeout_id);
-		slot->details->set_status_timeout_id = 0;
-	}
-
-	if (slot->details->loading_timeout_id != 0) {
-		g_source_remove (slot->details->loading_timeout_id);
-		slot->details->loading_timeout_id = 0;
-	}
-
 	nautilus_window_slot_set_viewed_file (slot, NULL);
 	/* TODO? why do we unref here? the file is NULL.
 	 * It was already here before the slot move, though */
@@ -2519,10 +2347,6 @@ nautilus_window_slot_dispose (GObject *object)
 		/* TODO? why do we ref here, instead of unreffing?
 		 * It was already here before the slot migration, though */
 		g_object_ref (slot->details->location);
-
-		directory = nautilus_directory_get (slot->details->location);
-                disconnect_directory_signals (slot, directory);
-                g_object_unref (directory);
 	}
 
         if (slot->details->view_mode_before_search) {
@@ -2715,111 +2539,7 @@ nautilus_window_slot_set_allow_stop (NautilusWindowSlot *slot,
 void
 nautilus_window_slot_stop_loading (NautilusWindowSlot *slot)
 {
-        remove_loading_floating_bar (slot);
         cancel_location_change (slot);
-}
-
-static void
-real_slot_set_short_status (NautilusWindowSlot *slot,
-			    const gchar *primary_status,
-			    const gchar *detail_status)
-{
-	gboolean disable_chrome;
-
-	nautilus_floating_bar_cleanup_actions (NAUTILUS_FLOATING_BAR (slot->details->floating_bar));
-	nautilus_floating_bar_set_show_spinner (NAUTILUS_FLOATING_BAR (slot->details->floating_bar),
-						slot->details->allow_stop);
-
-	g_object_get (nautilus_window_slot_get_window (slot),
-		      "disable-chrome", &disable_chrome,
-		      NULL);
-
-	if ((primary_status == NULL && detail_status == NULL) || disable_chrome) {
-		gtk_widget_hide (slot->details->floating_bar);
-		return;
-	}
-
-	nautilus_floating_bar_set_labels (NAUTILUS_FLOATING_BAR (slot->details->floating_bar),
-					  primary_status, detail_status);
-	gtk_widget_show (slot->details->floating_bar);
-}
-
-typedef struct {
-	gchar *primary_status;
-	gchar *detail_status;
-	NautilusWindowSlot *slot;
-} SetStatusData;
-
-static void
-set_status_data_free (gpointer data)
-{
-	SetStatusData *status_data = data;
-
-	g_free (status_data->primary_status);
-	g_free (status_data->detail_status);
-
-	g_slice_free (SetStatusData, data);
-}
-
-static gboolean
-set_status_timeout_cb (gpointer data)
-{
-	SetStatusData *status_data = data;
-
-	status_data->slot->details->set_status_timeout_id = 0;
-	real_slot_set_short_status (status_data->slot,
-				    status_data->primary_status,
-				    status_data->detail_status);
-
-	return FALSE;
-}
-
-static void
-set_floating_bar_status (NautilusWindowSlot *slot,
-			 const gchar *primary_status,
-			 const gchar *detail_status)
-{
-	GtkSettings *settings;
-	gint double_click_time;
-	SetStatusData *status_data;
-
-	if (slot->details->set_status_timeout_id != 0) {
-		g_source_remove (slot->details->set_status_timeout_id);
-		slot->details->set_status_timeout_id = 0;
-	}
-
-	settings = gtk_settings_get_for_screen (gtk_widget_get_screen (GTK_WIDGET (slot->details->content_view)));
-	g_object_get (settings,
-		      "gtk-double-click-time", &double_click_time,
-		      NULL);
-
-	status_data = g_slice_new0 (SetStatusData);
-	status_data->primary_status = g_strdup (primary_status);
-	status_data->detail_status = g_strdup (detail_status);
-	status_data->slot = slot;
-
-	/* waiting for half of the double-click-time before setting
-	 * the status seems to be a good approximation of not setting it
-	 * too often and not delaying the statusbar too much.
-	 */
-	slot->details->set_status_timeout_id =
-		g_timeout_add_full (G_PRIORITY_DEFAULT,
-				    (guint) (double_click_time / 2),
-				    set_status_timeout_cb,
-				    status_data,
-				    set_status_data_free);
-}
-
-void
-nautilus_window_slot_set_status (NautilusWindowSlot *slot,
-				 const char *primary_status,
-				 const char *detail_status)
-{
-	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
-
-	if (slot->details->content_view != NULL) {
-		set_floating_bar_status (slot, primary_status, detail_status);
-	}
 }
 
 /* returns either the pending or the actual current uri */
