@@ -377,9 +377,6 @@ void              nautilus_view_zoom_to_level              (NautilusView      *v
 void              nautilus_view_restore_default_zoom_level (NautilusView      *view);
 gboolean          nautilus_view_can_zoom_in                (NautilusView      *view);
 gboolean          nautilus_view_can_zoom_out               (NautilusView      *view);
-void              nautilus_view_pop_up_pathbar_context_menu (NautilusView    *view,
-							     GdkEventButton  *event,
-							     const char      *location);
 void              nautilus_view_update_menus               (NautilusView      *view);
 
 void              nautilus_view_update_context_menus       (NautilusView      *view);

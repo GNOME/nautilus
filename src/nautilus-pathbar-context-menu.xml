@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <menu id="pathbar-menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Open In New _Tab</attribute>
+        <attribute name="action">pathbar.open-item-new-tab</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Open In New _Window</attribute>
+        <attribute name="action">pathbar.open-item-new-window</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">P_roperties</attribute>
+        <attribute name="action">pathbar.properties</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>

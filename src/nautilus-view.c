@@ -157,8 +157,6 @@ struct NautilusViewDetails
 	NautilusWindowSlot *slot;
 	NautilusDirectory *model;
 	NautilusFile *directory_as_file;
-	NautilusFile *pathbar_popup_directory_as_file;
-	GdkEventButton *pathbar_popup_event;
 	guint dir_merge_id;
 
 	gint dialog_duplicated_name_label_timeout_id;
@@ -227,7 +225,6 @@ struct NautilusViewDetails
 
 	GMenu *selection_menu;
 	GMenu *background_menu;
-	GMenu *pathbar_menu;
 
 	GActionGroup *view_action_group;
 
@@ -282,8 +279,6 @@ static void     nautilus_view_select_file                      (NautilusView    
 static void     update_templates_directory                     (NautilusView *view);
 
 static void     check_empty_states                             (NautilusView *view);
-
-static void unschedule_pop_up_pathbar_context_menu (NautilusView *view);
 
 G_DEFINE_TYPE (NautilusView, nautilus_view, GTK_TYPE_OVERLAY);
 
@@ -1221,26 +1216,6 @@ action_open_item_new_tab (GSimpleAction *action,
 	}
 
 	nautilus_file_list_free (selection);
-}
-
-static void
-action_pathbar_open_item_new_tab (GSimpleAction *action,
-				  GVariant      *state,
-				  gpointer       user_data)
-{
-	NautilusView *view;
-	NautilusFile *file;
-
-	view = NAUTILUS_VIEW (user_data);
-
-	file = view->details->pathbar_popup_directory_as_file;
-	if (file == NULL) {
-		return;
-	}
-
-	nautilus_view_activate_file (view,
-				     file,
-				     NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB);
 }
 
 static void
@@ -2235,26 +2210,6 @@ action_properties (GSimpleAction *action,
 }
 
 static void
-action_pathbar_properties (GSimpleAction *action,
-			   GVariant      *state,
-			   gpointer       user_data)
-{
-	NautilusView *view;
-	GList           *files;
-
-	g_assert (NAUTILUS_IS_VIEW (user_data));
-
-	view = NAUTILUS_VIEW (user_data);
-	g_assert (NAUTILUS_IS_FILE (view->details->pathbar_popup_directory_as_file));
-
-	files = g_list_append (NULL, nautilus_file_ref (view->details->pathbar_popup_directory_as_file));
-
-	nautilus_properties_window_present (files, GTK_WIDGET (view), NULL);
-
-	nautilus_file_list_free (files);
-}
-
-static void
 nautilus_view_set_show_hidden_files (NautilusView *view,
 				     gboolean show_hidden)
 {
@@ -2347,26 +2302,6 @@ action_open_item_new_window (GSimpleAction *action,
 	}
 
 	nautilus_file_list_free (selection);
-}
-
-static void
-action_pathbar_open_item_new_window (GSimpleAction *action,
-				     GVariant      *state,
-				     gpointer       user_data)
-{
-	NautilusView *view;
-	NautilusFile *file;
-
-	view = NAUTILUS_VIEW (user_data);
-
-	file = view->details->pathbar_popup_directory_as_file;
-	if (file == NULL) {
-		return;
-	}
-
-	nautilus_view_activate_file (view,
-				     file,
-				     NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW);
 }
 
 static void
@@ -2852,11 +2787,6 @@ nautilus_view_finalize (GObject *object)
 
 	g_signal_handlers_disconnect_by_func (gnome_lockdown_preferences,
 					      schedule_update_context_menus, view);
-
-	unschedule_pop_up_pathbar_context_menu (view);
-	if (view->details->pathbar_popup_event != NULL) {
-		gdk_event_free ((GdkEvent *) view->details->pathbar_popup_event);
-	}
 
 	g_hash_table_destroy (view->details->non_ready_files);
 
@@ -6010,10 +5940,6 @@ const GActionEntry view_entries[] = {
 	{ "start-volume", action_start_volume },
 	{ "stop-volume", action_stop_volume },
 	{ "detect-media", action_detect_media },
-	/* Pathbar menu */
-	{ "pathbar-open-item-new-window", action_pathbar_open_item_new_window },
-	{ "pathbar-open-item-new-tab", action_pathbar_open_item_new_tab },
-	{ "pathbar-properties", action_pathbar_properties},
 	/* Only accesible by shorcuts */
 	{ "select-pattern", action_select_pattern },
 	{ "invert-selection", action_invert_selection },
@@ -6779,13 +6705,11 @@ real_update_context_menus (NautilusView *view)
 {
 	g_clear_object (&view->details->background_menu);
 	g_clear_object (&view->details->selection_menu);
-	g_clear_object (&view->details->pathbar_menu);
 
 	GtkBuilder *builder;
 	builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-view-context-menus.xml");
 	view->details->background_menu = g_object_ref (G_MENU (gtk_builder_get_object (builder, "background-menu")));
 	view->details->selection_menu = g_object_ref (G_MENU (gtk_builder_get_object (builder, "selection-menu")));
-	view->details->pathbar_menu = g_object_ref (G_MENU (gtk_builder_get_object (builder, "pathbar-menu")));
 	g_object_unref (builder);
 
 	update_selection_menu (view);
@@ -6886,109 +6810,7 @@ nautilus_view_pop_up_background_context_menu (NautilusView *view,
 }
 
 static void
-real_pop_up_pathbar_context_menu (NautilusView *view)
-{
-	/* Make the context menu items not flash as they update to proper disabled,
-	 * etc. states by forcing menus to update now.
-	 */
-	update_context_menus_if_pending (view);
-
-	update_context_menu_position_from_event (view, view->details->pathbar_popup_event);
-
-	nautilus_pop_up_context_menu (GTK_WIDGET (view), view->details->pathbar_menu, view->details->pathbar_popup_event);
-}
-
-static void
-pathbar_popup_file_attributes_ready (NautilusFile *file,
-				     gpointer      data)
-{
-	NautilusView *view;
-
-	view = NAUTILUS_VIEW (data);
-	g_assert (NAUTILUS_IS_VIEW (view));
-
-	g_assert (file == view->details->pathbar_popup_directory_as_file);
-
-	real_pop_up_pathbar_context_menu (view);
-}
-
-static void
-unschedule_pop_up_pathbar_context_menu (NautilusView *view)
-{
-	if (view->details->pathbar_popup_directory_as_file != NULL) {
-		g_assert (NAUTILUS_IS_FILE (view->details->pathbar_popup_directory_as_file));
-		nautilus_file_cancel_call_when_ready (view->details->pathbar_popup_directory_as_file,
-						      pathbar_popup_file_attributes_ready,
-						      view);
-		nautilus_file_unref (view->details->pathbar_popup_directory_as_file);
-		view->details->pathbar_popup_directory_as_file = NULL;
-	}
-}
-
-static void
-schedule_pop_up_pathbar_context_menu (NautilusView *view,
-				      GdkEventButton  *event,
-				      NautilusFile    *file)
-{
-	g_assert (NAUTILUS_IS_FILE (file));
-
-	if (view->details->pathbar_popup_event != NULL) {
-		gdk_event_free ((GdkEvent *) view->details->pathbar_popup_event);
-	}
-	view->details->pathbar_popup_event = (GdkEventButton *) gdk_event_copy ((GdkEvent *)event);
-
-	if (file == view->details->pathbar_popup_directory_as_file) {
-		if (nautilus_file_check_if_ready (file, NAUTILUS_FILE_ATTRIBUTE_INFO |
-						  NAUTILUS_FILE_ATTRIBUTE_MOUNT |
-						  NAUTILUS_FILE_ATTRIBUTE_FILESYSTEM_INFO)) {
-			real_pop_up_pathbar_context_menu (view);
-		}
-	} else {
-		unschedule_pop_up_pathbar_context_menu (view);
-
-		view->details->pathbar_popup_directory_as_file = nautilus_file_ref (file);
-		nautilus_file_call_when_ready (view->details->pathbar_popup_directory_as_file,
-					       NAUTILUS_FILE_ATTRIBUTE_INFO |
-					       NAUTILUS_FILE_ATTRIBUTE_MOUNT |
-					       NAUTILUS_FILE_ATTRIBUTE_FILESYSTEM_INFO,
-					       pathbar_popup_file_attributes_ready,
-					       view);
-	}
-}
-
-/**
- * nautilus_view_pop_up_pathbar_context_menu
- *
- * Pop up a context menu appropriate to the view globally.
- * @view: NautilusView of interest.
- * @event: GdkEventButton triggering the popup.
- * @location: The location the popup-menu should be created for,
- * or NULL for the currently displayed location.
- *
- **/
-void 
-nautilus_view_pop_up_pathbar_context_menu (NautilusView *view, 
-					   GdkEventButton  *event,
-					   const char      *location)
-{
-	NautilusFile *file;
-
-	g_assert (NAUTILUS_IS_VIEW (view));
-
-	if (location != NULL) {
-		file = nautilus_file_get_by_uri (location);
-	} else {
-		file = nautilus_file_ref (view->details->directory_as_file);
-	}
-
-	if (file != NULL) {
-		schedule_pop_up_pathbar_context_menu (view, event, file);
-		nautilus_file_unref (file);
-	}
-}
-
-static void
-schedule_update_context_menus (NautilusView *view) 
+schedule_update_context_menus (NautilusView *view)
 {
 	g_assert (NAUTILUS_IS_VIEW (view));
 

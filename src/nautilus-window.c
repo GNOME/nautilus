@@ -937,12 +937,10 @@ nautilus_window_location_opened (NautilusWindow *window,
 
 /* Callback used when the places sidebar changes location; we need to change the displayed folder */
 static void
-places_sidebar_open_location_cb (GtkPlacesSidebar	*sidebar,
-				 GFile			*location,
-				 GtkPlacesOpenFlags	 open_flags,
-				 gpointer		 user_data)
+open_location_cb (NautilusWindow     *window,
+                  GFile              *location,
+                  GtkPlacesOpenFlags  open_flags)
 {
-	NautilusWindow *window = NAUTILUS_WINDOW (user_data);
 	NautilusWindowOpenFlags flags;
 
 	switch (open_flags) {
@@ -1280,8 +1278,8 @@ nautilus_window_set_up_sidebar (NautilusWindow *window)
 					    | GTK_PLACES_OPEN_NEW_WINDOW));
 	gtk_places_sidebar_set_show_connect_to_server (GTK_PLACES_SIDEBAR (window->priv->places_sidebar), TRUE);
 
-	g_signal_connect (window->priv->places_sidebar, "open-location",
-			  G_CALLBACK (places_sidebar_open_location_cb), window);
+        g_signal_connect_swapped (window->priv->places_sidebar, "open-location",
+                                  G_CALLBACK (open_location_cb), window);
 	g_signal_connect (window->priv->places_sidebar, "show-error-message",
 			  G_CALLBACK (places_sidebar_show_error_message_cb), window);
 	g_signal_connect (window->priv->places_sidebar, "show-connect-to-server",
@@ -1648,53 +1646,6 @@ path_bar_location_changed_callback (GtkWidget      *widget,
 	}
 }
 
-static gboolean
-path_bar_path_event_callback (NautilusPathBar *path_bar,
-			      GFile           *location,
-			      GdkEventButton  *event,
-			      NautilusWindow  *window)
-{
-	NautilusWindowSlot *slot;
-	NautilusWindowOpenFlags flags;
-	int mask;
-	NautilusView *view;
-	char *uri;
-
-	if (event->type == GDK_BUTTON_RELEASE) {
-		mask = event->state & gtk_accelerator_get_default_mod_mask ();
-		flags = 0;
-
-		if (event->button == 2 && mask == 0) {
-			flags = NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
-		} else if (event->button == 1 && mask == GDK_CONTROL_MASK) {
-			flags = NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
-		}
-
-		if (flags != 0) {
-			slot = nautilus_window_get_active_slot (window);
-			nautilus_window_slot_open_location (slot, location, flags);
-		}
-
-		return FALSE;
-	}
-
-	if (event->button == 3) {
-		slot = nautilus_window_get_active_slot (window);
-		view = nautilus_window_slot_get_view (slot);
-		if (view != NULL) {
-			uri = g_file_get_uri (location);
-			nautilus_view_pop_up_pathbar_context_menu (view, event, uri);
-			g_free (uri);
-		}
-
-		return TRUE;
-	} else if (event->button == 2) {
-		return TRUE;
-	}
-
-	return FALSE;
-}
-
 static void
 notebook_popup_menu_new_tab_cb (GtkMenuItem *menuitem,
 				gpointer user_data)
@@ -1859,8 +1810,8 @@ setup_toolbar (NautilusWindow *window)
 
 	g_signal_connect_object (path_bar, "path-clicked",
 				 G_CALLBACK (path_bar_location_changed_callback), window, 0);
-	g_signal_connect_object (path_bar, "path-event",
-				 G_CALLBACK (path_bar_path_event_callback), window, 0);
+        g_signal_connect_swapped (path_bar, "open-location",
+                                  G_CALLBACK (open_location_cb), window);
 
 	/* connect to the location entry signals */
 	location_entry = nautilus_toolbar_get_location_entry (NAUTILUS_TOOLBAR (window->priv->toolbar));

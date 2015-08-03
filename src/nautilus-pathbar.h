@@ -47,9 +47,9 @@ struct _NautilusPathBarClass
 
 	void     (* path_clicked)   (NautilusPathBar  *path_bar,
 				     GFile            *location);
-	gboolean (* path_event)     (NautilusPathBar  *path_bar,
-				     GdkEventButton   *event,
-				     GFile            *location);
+        void     (* open_location)  (NautilusPathBar   *path_bar,
+                                     GFile             *location,
+                                     GtkPlacesOpenFlags flags);
 };
 
 GType    nautilus_path_bar_get_type (void) G_GNUC_CONST;

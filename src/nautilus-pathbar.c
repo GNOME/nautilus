@@ -24,18 +24,20 @@
 #include <gio/gio.h>
 
 #include "nautilus-pathbar.h"
+#include "nautilus-properties-window.h"
 
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-icon-names.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
+#include <libnautilus-private/nautilus-ui-utilities.h>
 
 #include "nautilus-window-slot-dnd.h"
 
 enum {
+        OPEN_LOCATION,
         PATH_CLICKED,
-        PATH_EVENT,
         LAST_SIGNAL
 };
 
@@ -91,6 +93,12 @@ struct _NautilusPathBarDetails {
 
 	unsigned int drag_slider_timeout;
 	gboolean drag_slider_timeout_for_up_button;
+
+        GActionGroup *action_group;
+
+        GMenu *context_menu;
+        NautilusFile *context_menu_file;
+        GdkEventButton *context_menu_event;
 };
 
 
@@ -112,6 +120,85 @@ static void     nautilus_path_bar_update_button_state      (ButtonData      *but
 							    gboolean         current_dir);
 static void     nautilus_path_bar_update_path              (NautilusPathBar *path_bar,
 							    GFile           *file_path);
+static void     unschedule_pop_up_context_menu             (NautilusPathBar *path_bar);
+static void     action_pathbar_open_item_new_window        (GSimpleAction   *action,
+                                                            GVariant        *state,
+                                                            gpointer         user_data);
+static void     action_pathbar_open_item_new_tab           (GSimpleAction   *action,
+                                                            GVariant        *state,
+                                                            gpointer         user_data);
+static void     action_pathbar_properties                  (GSimpleAction   *action,
+                                                            GVariant        *state,
+                                                            gpointer         user_data);
+
+const GActionEntry path_bar_actions[] = {
+        { "open-item-new-tab", action_pathbar_open_item_new_tab },
+        { "open-item-new-window", action_pathbar_open_item_new_window },
+        { "properties", action_pathbar_properties}
+};
+
+
+static void
+action_pathbar_open_item_new_tab (GSimpleAction *action,
+				  GVariant      *state,
+				  gpointer       user_data)
+{
+        NautilusPathBar *path_bar;
+        GFile *location;
+
+        path_bar = NAUTILUS_PATH_BAR (user_data);
+
+        if (!path_bar->priv->context_menu_file) {
+                return;
+        }
+
+        location = nautilus_file_get_location (path_bar->priv->context_menu_file);
+
+        if (location) {
+                g_signal_emit (user_data, path_bar_signals[OPEN_LOCATION], 0, location, GTK_PLACES_OPEN_NEW_TAB);
+                g_object_unref (location);
+        }
+}
+
+static void
+action_pathbar_open_item_new_window (GSimpleAction *action,
+				     GVariant      *state,
+				     gpointer       user_data)
+{
+        NautilusPathBar *path_bar;
+        GFile *location;
+
+        path_bar = NAUTILUS_PATH_BAR (user_data);
+
+        if (!path_bar->priv->context_menu_file) {
+                return;
+        }
+
+        location = nautilus_file_get_location (path_bar->priv->context_menu_file);
+
+        if (location) {
+                g_signal_emit (user_data, path_bar_signals[OPEN_LOCATION], 0, location, GTK_PLACES_OPEN_NEW_WINDOW);
+                g_object_unref (location);
+        }
+}
+
+static void
+action_pathbar_properties (GSimpleAction *action,
+			   GVariant      *state,
+			   gpointer       user_data)
+{
+        NautilusPathBar *path_bar;
+        GList *files;
+
+        path_bar = NAUTILUS_PATH_BAR (user_data);
+        g_assert (NAUTILUS_IS_FILE (path_bar->priv->context_menu_file));
+
+        files = g_list_append (NULL, nautilus_file_ref (path_bar->priv->context_menu_file));
+
+        nautilus_properties_window_present (files, GTK_WIDGET (path_bar), NULL);
+
+        nautilus_file_list_free (files);
+}
 
 static GtkWidget *
 get_slider_button (NautilusPathBar  *path_bar,
@@ -200,7 +287,24 @@ nautilus_path_bar_slider_drag_leave (GtkWidget      *widget,
 static void
 nautilus_path_bar_init (NautilusPathBar *path_bar)
 {
+        GtkBuilder *builder;
+
 	path_bar->priv = G_TYPE_INSTANCE_GET_PRIVATE (path_bar, NAUTILUS_TYPE_PATH_BAR, NautilusPathBarDetails);
+
+        /* Action group */
+        path_bar->priv->action_group = G_ACTION_GROUP (g_simple_action_group_new ());
+        g_action_map_add_action_entries (G_ACTION_MAP (path_bar->priv->action_group),
+                                         path_bar_actions,
+                                         G_N_ELEMENTS (path_bar_actions),
+                                         path_bar);
+        gtk_widget_insert_action_group (GTK_WIDGET (path_bar),
+                                        "pathbar",
+                                        G_ACTION_GROUP (path_bar->priv->action_group));
+
+        /* Context menu */
+        builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-pathbar-context-menu.xml");
+        path_bar->priv->context_menu = g_object_ref (G_MENU (gtk_builder_get_object (builder, "pathbar-menu")));
+        g_object_unref (builder);
 
 	gtk_widget_set_has_window (GTK_WIDGET (path_bar), FALSE);
         gtk_widget_set_redraw_on_allocate (GTK_WIDGET (path_bar), FALSE);
@@ -261,6 +365,11 @@ nautilus_path_bar_finalize (GObject *object)
 	}
 
         g_list_free (path_bar->priv->button_list);
+
+        unschedule_pop_up_context_menu (NAUTILUS_PATH_BAR (object));
+        if (path_bar->priv->context_menu_event) {
+                gdk_event_free ((GdkEvent *) path_bar->priv->context_menu_event);
+        }
 
         G_OBJECT_CLASS (nautilus_path_bar_parent_class)->finalize (object);
 }
@@ -1001,6 +1110,15 @@ nautilus_path_bar_class_init (NautilusPathBarClass *path_bar_class)
         container_class->remove = nautilus_path_bar_remove;
 	container_class->get_path_for_child = nautilus_path_bar_get_path_for_child;
 
+        path_bar_signals [OPEN_LOCATION] =
+                g_signal_new ("open-location",
+                  G_OBJECT_CLASS_TYPE (path_bar_class),
+                  G_SIGNAL_RUN_FIRST | G_SIGNAL_RUN_LAST,
+                  G_STRUCT_OFFSET (NautilusPathBarClass, open_location),
+                  NULL, NULL, NULL,
+                  G_TYPE_NONE, 2,
+                  G_TYPE_FILE,
+                  GTK_TYPE_PLACES_OPEN_FLAGS);
         path_bar_signals [PATH_CLICKED] =
                 g_signal_new ("path-clicked",
 		  G_OBJECT_CLASS_TYPE (path_bar_class),
@@ -1010,15 +1128,6 @@ nautilus_path_bar_class_init (NautilusPathBarClass *path_bar_class)
 		  g_cclosure_marshal_VOID__OBJECT,
 		  G_TYPE_NONE, 1,
 		  G_TYPE_FILE);
-        path_bar_signals [PATH_EVENT] =
-                g_signal_new ("path-event",
-		  G_OBJECT_CLASS_TYPE (path_bar_class),
-		  G_SIGNAL_RUN_FIRST | G_SIGNAL_RUN_LAST,
-		  G_STRUCT_OFFSET (NautilusPathBarClass, path_event),
-		  NULL, NULL, NULL,
-		  G_TYPE_BOOLEAN, 2,
-		  G_TYPE_FILE,
-		  GDK_TYPE_EVENT);
 
 	 gtk_container_class_handle_border_width (container_class);
 	 g_type_class_add_private (path_bar_class, sizeof (NautilusPathBarDetails));
@@ -1282,36 +1391,127 @@ button_clicked_cb (GtkWidget *button,
         g_signal_emit (path_bar, path_bar_signals [PATH_CLICKED], 0, button_data->path);
 }
 
+
+static void
+real_pop_up_pathbar_context_menu (NautilusPathBar *path_bar)
+{
+        nautilus_pop_up_context_menu (GTK_WIDGET (path_bar),
+                                      path_bar->priv->context_menu,
+                                      path_bar->priv->context_menu_event);
+}
+
+static void
+pathbar_popup_file_attributes_ready (NautilusFile *file,
+                                     gpointer      data)
+{
+	NautilusPathBar *path_bar;
+
+	path_bar = NAUTILUS_PATH_BAR (data);
+	g_assert (NAUTILUS_IS_PATH_BAR (path_bar));
+
+	g_assert (file == path_bar->priv->context_menu_file);
+
+	real_pop_up_pathbar_context_menu (path_bar);
+}
+
+static void
+unschedule_pop_up_context_menu (NautilusPathBar *path_bar)
+{
+        if (path_bar->priv->context_menu_file) {
+                g_assert (NAUTILUS_IS_FILE (path_bar->priv->context_menu_file));
+                nautilus_file_cancel_call_when_ready (path_bar->priv->context_menu_file,
+                                                      pathbar_popup_file_attributes_ready,
+                                                      path_bar);
+                g_clear_pointer (&path_bar->priv->context_menu_file, nautilus_file_unref);
+        }
+}
+
+static void
+schedule_pop_up_context_menu (NautilusPathBar *path_bar,
+                              GdkEventButton  *event,
+                              NautilusFile    *file)
+{
+        g_assert (NAUTILUS_IS_FILE (file));
+
+        if (path_bar->priv->context_menu_event != NULL) {
+                gdk_event_free ((GdkEvent *) path_bar->priv->context_menu_event);
+        }
+        path_bar->priv->context_menu_event = (GdkEventButton *) gdk_event_copy ((GdkEvent *)event);
+
+        if (file == path_bar->priv->context_menu_file) {
+                if (nautilus_file_check_if_ready (file,
+                                                  NAUTILUS_FILE_ATTRIBUTE_INFO |
+                                                  NAUTILUS_FILE_ATTRIBUTE_MOUNT |
+                                                  NAUTILUS_FILE_ATTRIBUTE_FILESYSTEM_INFO)) {
+                        real_pop_up_pathbar_context_menu (path_bar);
+		}
+        } else {
+                unschedule_pop_up_context_menu (path_bar);
+
+                path_bar->priv->context_menu_file = nautilus_file_ref (file);
+                nautilus_file_call_when_ready (path_bar->priv->context_menu_file,
+                                               NAUTILUS_FILE_ATTRIBUTE_INFO |
+                                               NAUTILUS_FILE_ATTRIBUTE_MOUNT |
+                                               NAUTILUS_FILE_ATTRIBUTE_FILESYSTEM_INFO,
+                                               pathbar_popup_file_attributes_ready,
+                                               path_bar);
+        }
+}
+
+static void
+pop_up_pathbar_context_menu (NautilusPathBar *path_bar,
+                             GdkEventButton  *event,
+                             NautilusFile    *file)
+{
+	if (file) {
+		schedule_pop_up_context_menu (path_bar, event, file);
+		nautilus_file_unref (file);
+	}
+}
+
 static gboolean
 button_event_cb (GtkWidget *button,
 		 GdkEventButton *event,
 		 gpointer   data)
 {
+        GtkPlacesOpenFlags flags;
         ButtonData *button_data;
         NautilusPathBar *path_bar;
-        GList *button_list;
-	gboolean retval;
+        int mask;
 
         button_data = BUTTON_DATA (data);
         path_bar = NAUTILUS_PATH_BAR (gtk_widget_get_parent (button));
 
 	if (event->type == GDK_BUTTON_PRESS) {
-		g_object_set_data (G_OBJECT (button), "handle-button-release",
-				   GINT_TO_POINTER (TRUE));
-	}
+                g_object_set_data (G_OBJECT (button), "handle-button-release", GINT_TO_POINTER (TRUE));
 
-	if (event->type == GDK_BUTTON_RELEASE &&
-	    !GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (button),
-						  "handle-button-release"))) {
-		return FALSE;
-	}
+                if (event->button == 3) {
+                        pop_up_pathbar_context_menu (path_bar, event, button_data->file);
+                        return TRUE;
+                }
 
-        button_list = g_list_find (path_bar->priv->button_list, button_data);
-        g_assert (button_list != NULL);
+	} else if (event->type == GDK_BUTTON_RELEASE) {
+                mask = event->state & gtk_accelerator_get_default_mod_mask ();
+                flags = 0;
 
-        g_signal_emit (path_bar, path_bar_signals [PATH_EVENT], 0, button_data->path, event, &retval);
+                if (!GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (button), "handle-button-release"))) {
+                        return FALSE;
+                }
 
-	return retval;
+                if (event->button == 2 && mask == 0) {
+                        flags = GTK_PLACES_OPEN_NEW_TAB;
+                } else if (event->button == 1 && mask == GDK_CONTROL_MASK) {
+                        flags = GTK_PLACES_OPEN_NEW_WINDOW;
+                }
+
+                if (flags != 0) {
+                        g_signal_emit (path_bar, path_bar_signals[OPEN_LOCATION], 0, button_data->path, flags);
+                }
+
+                return FALSE;
+        }
+
+        return FALSE;
 }
 
 static void
