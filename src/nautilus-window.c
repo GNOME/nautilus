@@ -2195,27 +2195,6 @@ nautilus_window_finalize (GObject *object)
 	G_OBJECT_CLASS (nautilus_window_parent_class)->finalize (object);
 }
 
-void
-nautilus_window_view_visible (NautilusWindow *window,
-			      NautilusView   *view)
-{
-	NautilusWindowSlot *slot;
-	GList *l;
-
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-
-	/* Look for other non-visible slots */
-	for (l = window->priv->slots; l != NULL; l = l->next) {
-		slot = l->data;
-		nautilus_window_slot_update_title (slot);
-	}
-
-	gtk_widget_grab_focus (GTK_WIDGET (window));
-
-	/* All slots, show window */
-	gtk_widget_show (GTK_WIDGET (window));
-}
-
 static void
 nautilus_window_save_geometry (NautilusWindow *window)
 {

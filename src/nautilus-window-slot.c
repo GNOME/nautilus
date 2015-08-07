@@ -2155,6 +2155,10 @@ view_begin_loading_cb (NautilusView       *view,
 		nautilus_window_slot_set_allow_stop (slot, TRUE);
 	}
 
+        gtk_widget_grab_focus (GTK_WIDGET (slot->details->window));
+
+        gtk_widget_show (GTK_WIDGET (slot->details->window));
+
         nautilus_profile_end (NULL);
 }
 

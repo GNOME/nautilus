@@ -7030,9 +7030,6 @@ finish_loading (NautilusView *view)
 
         check_empty_states (view);
 
-	/* Assume we have now all information to show window */
-	nautilus_window_view_visible  (nautilus_view_get_window (view), NAUTILUS_VIEW (view));
-
 	if (nautilus_directory_are_all_files_seen (view->details->model)) {
 		/* Unschedule a pending update and schedule a new one with the minimal
 		 * update interval. This gives the view a short chance at gathering the
