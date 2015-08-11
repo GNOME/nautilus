@@ -229,6 +229,12 @@ nautilus_empty_view_get_id (NautilusView *view)
 	return NAUTILUS_EMPTY_VIEW_ID;
 }
 
+static GIcon*
+nautilus_empty_view_get_icon (NautilusView *view)
+{
+        return NULL;
+}
+
 static void
 nautilus_empty_view_class_init (NautilusEmptyViewClass *class)
 {
@@ -266,6 +272,7 @@ nautilus_empty_view_class_init (NautilusEmptyViewClass *class)
 	nautilus_view_class->get_view_id = nautilus_empty_view_get_id;
 	nautilus_view_class->get_first_visible_file = nautilus_empty_view_get_first_visible_file;
 	nautilus_view_class->scroll_to_file = nautilus_empty_view_scroll_to_file;
+        nautilus_view_class->get_icon = nautilus_empty_view_get_icon;
 }
 
 static void

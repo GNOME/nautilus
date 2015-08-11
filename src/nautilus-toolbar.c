@@ -71,21 +71,18 @@ struct _NautilusToolbarPrivate {
         GtkWidget *operations_container;
         GtkWidget *operations_revealer;
         GtkWidget *operations_icon;
-	GtkWidget *view_menu_widget;
-	GtkWidget *sort_menu;
-	GtkWidget *sort_trash_time;
-	GtkWidget *sort_search_relevance;
-	GtkWidget *visible_columns;
-	GtkWidget *stop;
-	GtkWidget *reload;
-	GtkAdjustment *zoom_adjustment;
-	GtkWidget *zoom_level_scale;
+	GtkWidget *view_icon;
 	GMenu *action_menu;
 
 	GtkWidget *forward_button;
 	GtkWidget *back_button;
 
         NautilusProgressInfoManager *progress_manager;
+
+        /* active slot & bindings */
+        NautilusWindowSlot *active_slot;
+        GBinding *icon_binding;
+        GBinding *view_widget_binding;
 };
 
 enum {
@@ -262,66 +259,6 @@ show_menu (NautilusToolbar *self,
                         button, event_time);
 }
 
-static void
-action_view_mode_state_changed (GActionGroup *action_group,
-				gchar *action_name,
-				GVariant *value,
-				gpointer user_data)
-{
-	NautilusToolbar *self = user_data;
-	const gchar *view_mode = g_variant_get_string (value, NULL);
-	const gchar *name;
-	GtkWidget *image;
-
-	if (g_strcmp0 (view_mode, "list") == 0) {
-		name = "view-list-symbolic";
-	} else if (g_strcmp0 (view_mode, "grid") == 0) {
-		name = "view-grid-symbolic";
-	} else {
-		g_assert_not_reached ();
-	}
-
-	image = gtk_image_new ();
-	gtk_button_set_image (GTK_BUTTON (self->priv->view_button), image);
-	gtk_image_set_from_icon_name (GTK_IMAGE (image), name,
-				      GTK_ICON_SIZE_MENU);
-}
-
-static void
-action_reload_enabled_changed (GActionGroup *action_group,
-			       gchar *action_name,
-			       gboolean enabled,
-			       gpointer user_data)
-{
-	NautilusToolbar *self = user_data;
-	gtk_widget_set_visible (self->priv->reload, enabled);
-}
-
-static void
-action_stop_enabled_changed (GActionGroup *action_group,
-			     gchar *action_name,
-			     gboolean enabled,
-			     gpointer user_data)
-{
-	NautilusToolbar *self = user_data;
-	gtk_widget_set_visible (self->priv->stop, enabled);
-}
-
-static void
-nautilus_toolbar_set_window (NautilusToolbar *self,
-			     NautilusWindow *window)
-
-{
-	self->priv->window = window;
-
-	g_signal_connect (self->priv->window, "action-enabled-changed::stop",
-			  G_CALLBACK (action_stop_enabled_changed), self);
-	g_signal_connect (self->priv->window, "action-enabled-changed::reload",
-			  G_CALLBACK (action_reload_enabled_changed), self);
-	g_signal_connect (self->priv->window, "action-state-changed::view-mode",
-			  G_CALLBACK (action_view_mode_state_changed), self);
-}
-
 #define MENU_POPUP_TIMEOUT 1200
 
 typedef struct {
@@ -403,30 +340,6 @@ navigation_button_release_cb (GtkButton *button,
         unschedule_menu_popup_timeout (self);
 
         return FALSE;
-}
-
-static void
-zoom_level_changed (GtkRange *range,
-		    NautilusToolbar *self)
-{
-	NautilusWindowSlot *slot;
-	NautilusView *view;
-	gdouble zoom_level;
-
-	zoom_level = gtk_range_get_value (range);
-	slot = nautilus_window_get_active_slot (self->priv->window);
-	view = nautilus_window_slot_get_current_view (slot);
-
-	g_action_group_change_action_state (nautilus_view_get_action_group (view),
-					    "zoom-to-level",
-					    g_variant_new_int32 ((gint) zoom_level));
-}
-
-static void
-view_menu_popover_closed (GtkPopover *popover,
-			  NautilusToolbar *self)
-{
-        gtk_widget_grab_focus (GTK_WIDGET (self->priv->window));
 }
 
 static gboolean
@@ -755,24 +668,6 @@ nautilus_toolbar_init (NautilusToolbar *self)
 	gtk_container_add (GTK_CONTAINER (self->priv->location_entry_container),
 					  self->priv->location_entry);
 
-	builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-toolbar-view-menu.xml");
-	self->priv->view_menu_widget =  GTK_WIDGET (gtk_builder_get_object (builder, "view_menu_widget"));
-	self->priv->zoom_level_scale = GTK_WIDGET (gtk_builder_get_object (builder, "zoom_level_scale"));
-	self->priv->zoom_adjustment = GTK_ADJUSTMENT (gtk_builder_get_object (builder, "zoom_adjustment"));
-
-	self->priv->sort_menu =  GTK_WIDGET (gtk_builder_get_object (builder, "sort_menu"));
-	self->priv->sort_trash_time =  GTK_WIDGET (gtk_builder_get_object (builder, "sort_trash_time"));
-	self->priv->sort_search_relevance =  GTK_WIDGET (gtk_builder_get_object (builder, "sort_search_relevance"));
-	self->priv->visible_columns =  GTK_WIDGET (gtk_builder_get_object (builder, "visible_columns"));
-	self->priv->reload =  GTK_WIDGET (gtk_builder_get_object (builder, "reload"));
-	self->priv->stop =  GTK_WIDGET (gtk_builder_get_object (builder, "stop"));
-
-	g_signal_connect (self->priv->view_menu_widget, "closed",
-			  G_CALLBACK (view_menu_popover_closed), self);
-	gtk_menu_button_set_popover (GTK_MENU_BUTTON (self->priv->view_button),
-				     self->priv->view_menu_widget);
-	g_object_unref (builder);
-
 	builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-toolbar-action-menu.xml");
 	self->priv->action_menu = G_MENU (gtk_builder_get_object (builder, "action-menu"));
 	gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (self->priv->action_button),
@@ -796,8 +691,6 @@ nautilus_toolbar_init (NautilusToolbar *self)
 			  G_CALLBACK (navigation_button_press_cb), self);
 	g_signal_connect (self->priv->forward_button, "button-release-event",
 			  G_CALLBACK (navigation_button_release_cb), self);
-	g_signal_connect (self->priv->zoom_level_scale, "value-changed",
-			  G_CALLBACK (zoom_level_changed), self);
 
 	gtk_widget_show_all (GTK_WIDGET (self));
 	toolbar_update_appearance (self);
@@ -831,7 +724,7 @@ nautilus_toolbar_set_property (GObject *object,
 
 	switch (property_id) {
 	case PROP_WINDOW:
-		nautilus_toolbar_set_window (self, g_value_get_object (value));
+		self->priv->window = g_value_get_object (value);
 		break;
 	case PROP_SHOW_LOCATION_ENTRY:
 		nautilus_toolbar_set_show_location_entry (self, g_value_get_boolean (value));
@@ -901,6 +794,7 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, operations_container);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, operations_revealer);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, view_button);
+        gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, view_icon);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, action_button);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, path_bar_container);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, location_entry_container);
@@ -909,56 +803,6 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
 
         gtk_widget_class_bind_template_callback (widget_class, on_operations_icon_draw);
         gtk_widget_class_bind_template_callback (widget_class, on_operations_button_toggled);
-}
-
-void
-nautilus_toolbar_reset_menus (NautilusToolbar *self)
-{
-	NautilusWindowSlot *slot;
-	NautilusView *view;
-	GActionGroup *view_action_group;
-	GVariant *variant;
-	GVariantIter iter;
-	gboolean show_sort_trash, show_sort_search, show_sort_access, show_sort_modification, enable_sort;
-	const gchar *hint;
-
-	/* Allow actions from the current view to be activated through
-	 * the view menu and action menu of the toolbar */
-	slot = nautilus_window_get_active_slot (self->priv->window);
-	view = nautilus_window_slot_get_current_view (slot);
-	view_action_group = nautilus_view_get_action_group (view);
-	gtk_widget_insert_action_group (GTK_WIDGET (self),
-					"view",
-					G_ACTION_GROUP (view_action_group));
-
-	gtk_widget_set_visible (self->priv->visible_columns,
-				g_action_group_has_action (view_action_group, "visible-columns"));
-
-	enable_sort = g_action_group_get_action_enabled (view_action_group, "sort");
-	show_sort_trash = show_sort_search = show_sort_modification = show_sort_access = FALSE;
-	gtk_widget_set_visible (self->priv->sort_menu, enable_sort);
-
-	if (enable_sort) {
-		variant = g_action_group_get_action_state_hint (view_action_group, "sort");
-		g_variant_iter_init (&iter, variant);
-
-		while (g_variant_iter_next (&iter, "&s", &hint)) {
-			if (g_strcmp0 (hint, "trash-time") == 0)
-				show_sort_trash = TRUE;
-			if (g_strcmp0 (hint, "search-relevance") == 0)
-				show_sort_search = TRUE;
-		}
-
-		g_variant_unref (variant);
-	}
-
-	gtk_widget_set_visible (self->priv->sort_trash_time, show_sort_trash);
-	gtk_widget_set_visible (self->priv->sort_search_relevance, show_sort_search);
-
-	variant = g_action_group_get_action_state (view_action_group, "zoom-to-level");
-	gtk_adjustment_set_value (self->priv->zoom_adjustment,
-				  g_variant_get_int32 (variant));
-	g_variant_unref (variant);
 }
 
 GtkWidget *
@@ -999,4 +843,75 @@ nautilus_toolbar_set_show_location_entry (NautilusToolbar *self,
 
 		g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SHOW_LOCATION_ENTRY]);
 	}
+}
+
+static gboolean
+nautilus_toolbar_view_icon_transform_to (GBinding     *binding,
+                                         const GValue *from_value,
+                                         GValue       *to_value,
+                                         gpointer      user_data)
+{
+        GIcon *icon;
+
+        icon = g_value_get_object (from_value);
+
+        if (icon) {
+                g_value_set_object (to_value, icon);
+        }
+
+        return TRUE;
+}
+
+static gboolean
+nautilus_toolbar_view_widget_transform_to (GBinding     *binding,
+                                           const GValue *from_value,
+                                           GValue       *to_value,
+                                           gpointer      user_data)
+{
+        NautilusToolbar *toolbar;
+        GtkWidget *view_widget;
+
+        toolbar = NAUTILUS_TOOLBAR (user_data);
+        view_widget = g_value_get_object (from_value);
+
+        gtk_widget_set_sensitive (toolbar->priv->view_button, view_widget != NULL);
+        gtk_menu_button_set_popover (GTK_MENU_BUTTON (toolbar->priv->view_button), NULL);
+
+        g_value_set_object (to_value, view_widget);
+
+        return TRUE;
+}
+
+void
+nautilus_toolbar_set_active_slot (NautilusToolbar    *toolbar,
+                                  NautilusWindowSlot *slot)
+{
+        g_return_if_fail (NAUTILUS_IS_TOOLBAR (toolbar));
+
+        g_clear_pointer (&toolbar->priv->icon_binding, g_binding_unbind);
+        g_clear_pointer (&toolbar->priv->view_widget_binding, g_binding_unbind);
+
+        if (toolbar->priv->active_slot != slot) {
+                toolbar->priv->active_slot = slot;
+
+                if (slot) {
+                        toolbar->priv->icon_binding =
+                                        g_object_bind_property_full (slot, "icon",
+                                                                     toolbar->priv->view_icon, "gicon",
+                                                                     G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE,
+                                                                     (GBindingTransformFunc) nautilus_toolbar_view_icon_transform_to,
+                                                                     NULL,
+                                                                     toolbar,
+                                                                     NULL);
+                        toolbar->priv->view_widget_binding =
+                                        g_object_bind_property_full (slot, "view-widget",
+                                                                     toolbar->priv->view_button, "popover",
+                                                                     G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE,
+                                                                     (GBindingTransformFunc) nautilus_toolbar_view_widget_transform_to,
+                                                                     NULL,
+                                                                     toolbar,
+                                                                     NULL);
+                }
+
+        }
 }

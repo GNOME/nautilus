@@ -104,6 +104,12 @@
         <style>
           <class name="image-button"/>
         </style>
+        <child>
+          <object class="GtkImage" id="view_icon">
+            <property name="visible">True</property>
+            <property name="icon-size">1</property>
+          </object>
+        </child>
         <child internal-child="accessible">
           <object class="AtkObject">
             <property name="accessible-name" translatable="yes">View menu</property>

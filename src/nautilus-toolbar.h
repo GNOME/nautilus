@@ -27,6 +27,7 @@
 
 #include <gtk/gtk.h>
 
+#include "nautilus-window-slot.h"
 
 #define NAUTILUS_TYPE_TOOLBAR nautilus_toolbar_get_type()
 #define NAUTILUS_TOOLBAR(obj) \
@@ -70,6 +71,8 @@ GMenu     *nautilus_toolbar_get_action_menu (NautilusToolbar *self);
 
 void nautilus_toolbar_set_show_location_entry (NautilusToolbar *self,
 					       gboolean show_location_entry);
-void nautilus_toolbar_reset_menus (NautilusToolbar *self);
+
+void       nautilus_toolbar_set_active_slot    (NautilusToolbar    *toolbar,
+                                                NautilusWindowSlot *slot);
 
 #endif /* __NAUTILUS_TOOLBAR_H__ */

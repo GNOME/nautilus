@@ -55,6 +55,8 @@ enum {
 
 enum {
 	PROP_WINDOW = 1,
+        PROP_ICON,
+        PROP_VIEW_WIDGET,
 	NUM_PROPERTIES
 };
 
@@ -527,6 +529,12 @@ nautilus_window_slot_get_property (GObject *object,
 	case PROP_WINDOW:
 		g_value_set_object (value, slot->details->window);
 		break;
+        case PROP_ICON:
+                g_value_set_object (value, nautilus_window_slot_get_icon (slot));
+                break;
+        case PROP_VIEW_WIDGET:
+                g_value_set_object (value, nautilus_window_slot_get_view_widget (slot));
+                break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 		break;
@@ -2267,6 +2275,9 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *slot)
                 gtk_container_add (GTK_CONTAINER (slot), widget);
                 gtk_widget_set_vexpand (widget, TRUE);
 		gtk_widget_show (widget);
+
+                g_object_notify_by_pspec (G_OBJECT (slot), properties[PROP_ICON]);
+                g_object_notify_by_pspec (G_OBJECT (slot), properties[PROP_VIEW_WIDGET]);
 	}
 }
 
@@ -2447,6 +2458,20 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
 				     "The NautilusWindow this slot is part of",
 				     NAUTILUS_TYPE_WINDOW,
 				     G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
+
+        properties[PROP_ICON] =
+		g_param_spec_object ("icon",
+				     "Icon that represents the slot",
+				     "The icon that represents the slot",
+				     G_TYPE_ICON,
+				     G_PARAM_READABLE);
+
+        properties[PROP_VIEW_WIDGET] =
+		g_param_spec_object ("view-widget",
+				     "Widget for the view menu",
+				     "The widget for the view's menu",
+				     GTK_TYPE_WIDGET,
+				     G_PARAM_READABLE);
 
 	g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 	g_type_class_add_private (klass, sizeof (NautilusWindowSlotDetails));
@@ -2655,4 +2680,28 @@ nautilus_window_slot_new (NautilusWindow *window)
 	return g_object_new (NAUTILUS_TYPE_WINDOW_SLOT,
 			     "window", window,
 			     NULL);
+}
+
+GIcon*
+nautilus_window_slot_get_icon (NautilusWindowSlot *slot)
+{
+        NautilusView *view;
+
+        g_return_val_if_fail (NAUTILUS_IS_WINDOW_SLOT (slot), NULL);
+
+        view = nautilus_window_slot_get_current_view (slot);
+
+        return view ? nautilus_view_get_icon (view) : NULL;
+}
+
+GtkWidget*
+nautilus_window_slot_get_view_widget (NautilusWindowSlot *slot)
+{
+        NautilusView *view;
+
+        g_return_val_if_fail (NAUTILUS_IS_WINDOW_SLOT (slot), NULL);
+
+        view = nautilus_window_slot_get_current_view (slot);
+
+        return view ? nautilus_view_get_view_widget (view) : NULL;
 }
