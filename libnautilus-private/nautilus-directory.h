@@ -167,6 +167,8 @@ GFile *            nautilus_directory_get_location             (NautilusDirector
 gboolean           nautilus_directory_contains_file            (NautilusDirectory         *directory,
 								NautilusFile              *file);
 
+NautilusFile*           nautilus_directory_get_file_by_name            (NautilusDirectory *directory,
+                                                                        const gchar       *name);
 /* Get (and ref) a NautilusFile object for this directory. */
 NautilusFile *     nautilus_directory_get_corresponding_file   (NautilusDirectory         *directory);
 

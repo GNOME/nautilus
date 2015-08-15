@@ -276,6 +276,8 @@ struct NautilusViewClass {
 						   const char            *uri);
 
 	NautilusWindow * (*get_window) 	          (NautilusView *view);
+
+        GdkRectangle * (*compute_rename_popover_relative_to) (NautilusView *view);
 };
 
 /* GObject support */

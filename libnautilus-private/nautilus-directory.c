@@ -1447,6 +1447,28 @@ nautilus_directory_contains_file (NautilusDirectory *directory,
 	return NAUTILUS_DIRECTORY_CLASS (G_OBJECT_GET_CLASS (directory))->contains_file (directory, file);
 }
 
+NautilusFile*
+nautilus_directory_get_file_by_name (NautilusDirectory *directory,
+                                     const gchar       *name)
+{
+        GList *files;
+        GList *l;
+        NautilusFile *result = NULL;
+
+        files = nautilus_directory_get_file_list (directory);
+
+        for (l = files; l != NULL; l = l->next) {
+                if (nautilus_file_compare_display_name (l->data, name) == 0) {
+                     result = nautilus_file_ref (l->data);
+                     break;
+                }
+        }
+
+        nautilus_file_list_free (files);
+
+        return result;
+}
+
 void
 nautilus_directory_call_when_ready (NautilusDirectory *directory,
 				    NautilusFileAttributes file_attributes,

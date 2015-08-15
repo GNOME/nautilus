@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk+" version="3.14"/>
-  <object class="GtkDialog" id="file_name_dialog">
+  <object class="GtkDialog" id="create_folder_dialog">
     <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="window_position">center-on-parent</property>
@@ -32,8 +32,8 @@
           <object class="GtkEntry" id="name_entry">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <signal name="notify::text" handler="nautilus_view_file_name_dialog_entry_on_validate" swapped="no" />
-            <signal name="activate" handler="nautilus_view_file_name_dialog_entry_on_activate" swapped="no" />
+            <signal name="changed" handler="create_folder_dialog_entry_on_changed" swapped="no" />
+            <signal name="activate" handler="create_folder_dialog_entry_on_activate" swapped="no" />
           </object>
           <packing>
             <property name="expand">False</property>

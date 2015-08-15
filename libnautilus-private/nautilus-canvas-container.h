@@ -270,6 +270,7 @@ void			  nautilus_canvas_container_invert_selection				(NautilusCanvasContainer 
 void              nautilus_canvas_container_set_selection                 (NautilusCanvasContainer  *view,
 									   GList                  *selection);
 GArray    *       nautilus_canvas_container_get_selected_icon_locations   (NautilusCanvasContainer  *view);
+GArray    *       nautilus_canvas_container_get_selected_icons_bounding_box (NautilusCanvasContainer *container);
 gboolean          nautilus_canvas_container_has_stretch_handles           (NautilusCanvasContainer  *container);
 gboolean          nautilus_canvas_container_is_stretched                  (NautilusCanvasContainer  *container);
 void              nautilus_canvas_container_show_stretch_handles          (NautilusCanvasContainer  *container);

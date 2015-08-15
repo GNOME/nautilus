@@ -1172,6 +1172,23 @@ nautilus_canvas_view_reveal_selection (NautilusView *view)
         nautilus_file_list_free (selection);
 }
 
+static GdkRectangle*
+nautilus_canvas_view_compute_rename_popover_relative_to (NautilusView *view)
+{
+        GArray *bounding_boxes;
+        GdkRectangle *bounding_box;
+        NautilusCanvasContainer *canvas_container;
+
+        canvas_container = get_canvas_container (NAUTILUS_CANVAS_VIEW (view));
+        bounding_boxes = nautilus_canvas_container_get_selected_icons_bounding_box (canvas_container);
+        /* We only allow renaming one item at once */
+        bounding_box = &g_array_index (bounding_boxes, GdkRectangle, 0);
+
+        g_array_free (bounding_boxes, FALSE);
+
+        return bounding_box;
+}
+
 static GArray *
 nautilus_canvas_view_get_selected_icon_locations (NautilusView *view)
 {
@@ -1877,6 +1894,7 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
 	nautilus_view_class->end_loading = nautilus_canvas_view_end_loading;
 	nautilus_view_class->file_changed = nautilus_canvas_view_file_changed;
 	nautilus_view_class->get_selected_icon_locations = nautilus_canvas_view_get_selected_icon_locations;
+	nautilus_view_class->compute_rename_popover_relative_to = nautilus_canvas_view_compute_rename_popover_relative_to;
 	nautilus_view_class->get_selection = nautilus_canvas_view_get_selection;
 	nautilus_view_class->get_selection_for_file_transfer = nautilus_canvas_view_get_selection;
 	nautilus_view_class->is_empty = nautilus_canvas_view_is_empty;
