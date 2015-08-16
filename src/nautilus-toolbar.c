@@ -855,6 +855,8 @@ nautilus_toolbar_view_icon_transform_to (GBinding     *binding,
 
         icon = g_value_get_object (from_value);
 
+        /* As per design decision, we let the previous used icon if no
+         * view menu is available */
         if (icon) {
                 g_value_set_object (to_value, icon);
         }
