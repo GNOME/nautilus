@@ -44,6 +44,10 @@
 #include "nautilus-empty-view.h"
 #endif
 
+#ifdef HAVE_X11_XF86KEYSYM_H
+#include <X11/XF86keysym.h>
+#endif
+
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
@@ -299,6 +303,18 @@ static void     update_templates_directory                     (NautilusView *vi
 static void     check_empty_states                             (NautilusView *view);
 
 G_DEFINE_TYPE (NautilusView, nautilus_view, GTK_TYPE_OVERLAY);
+
+static const struct {
+	unsigned int keyval;
+	const char *action;
+} extra_view_keybindings [] = {
+#ifdef HAVE_X11_XF86KEYSYM_H
+	/* View actions */
+	{ XF86XK_ZoomIn,	"zoom-in" },
+	{ XF86XK_ZoomOut,	"zoom-out" },
+
+#endif
+};
 
 static void
 check_empty_states (NautilusView *view)
@@ -7755,6 +7771,34 @@ nautilus_view_parent_set (GtkWidget *widget,
 	}
 }
 
+static gboolean
+nautilus_view_key_press_event (GtkWidget   *widget,
+                               GdkEventKey *event)
+{
+        NautilusView *view;
+        gint i;
+
+        view = NAUTILUS_VIEW (widget);
+
+        for (i = 0; i < G_N_ELEMENTS (extra_view_keybindings); i++) {
+                if (extra_view_keybindings[i].keyval == event->keyval) {
+                        GAction *action;
+
+                        action = g_action_map_lookup_action (G_ACTION_MAP (view->details->view_action_group),
+                                                             extra_view_keybindings[i].action);
+
+                        if (g_action_get_enabled (action)) {
+                                g_action_activate (action, NULL);
+                                return GDK_EVENT_STOP;
+                        }
+
+                        break;
+                }
+        }
+
+        return GDK_EVENT_PROPAGATE;
+}
+
 static void
 nautilus_view_class_init (NautilusViewClass *klass)
 {
@@ -7769,6 +7813,7 @@ nautilus_view_class_init (NautilusViewClass *klass)
 	oclass->set_property = nautilus_view_set_property;
 
 	widget_class->destroy = nautilus_view_destroy;
+        widget_class->key_press_event = nautilus_view_key_press_event;
 	widget_class->scroll_event = nautilus_view_scroll_event;
 	widget_class->parent_set = nautilus_view_parent_set;
         widget_class->grab_focus = nautilus_view_grab_focus;

@@ -41,7 +41,6 @@
 #include "nautilus-toolbar.h"
 #include "nautilus-window-slot.h"
 #include "nautilus-list-view.h"
-#include "nautilus-view.h"
 
 #include <eel/eel-debug.h>
 #include <eel/eel-gtk-extensions.h>
@@ -176,10 +175,6 @@ static const struct {
 	{ XF86XK_Stop,		"stop" },
 	{ XF86XK_Back,		"back" },
 	{ XF86XK_Forward,	"forward" },
-	/* View actions */
-	{ XF86XK_ZoomIn,	"zoom-in" },
-	{ XF86XK_ZoomOut,	"zoom-out" },
-
 #endif
 };
 
@@ -2297,19 +2292,13 @@ nautilus_window_key_press_event (GtkWidget *widget,
 				 GdkEventKey *event)
 {
 	NautilusWindow *window;
-	NautilusWindowSlot *active_slot;
-	NautilusView *view;
 	GtkWidget *focus_widget;
 	int i;
 
 	window = NAUTILUS_WINDOW (widget);
 
-	active_slot = nautilus_window_get_active_slot (window);
-	view =  nautilus_window_slot_get_view (active_slot);
-
 	focus_widget = gtk_window_get_focus (GTK_WINDOW (window));
-	if (view != NULL && focus_widget != NULL &&
-	    GTK_IS_EDITABLE (focus_widget)) {
+        if (focus_widget != NULL && GTK_IS_EDITABLE (focus_widget)) {
 		/* if we have input focus on a GtkEditable (e.g. a GtkEntry), forward
 		 * the event to it before activating accelerator bindings too.
 		 */
@@ -2320,14 +2309,9 @@ nautilus_window_key_press_event (GtkWidget *widget,
 
 	for (i = 0; i < G_N_ELEMENTS (extra_window_keybindings); i++) {
 		if (extra_window_keybindings[i].keyval == event->keyval) {
-			const GActionGroup *action_group;
 			GAction *action;
 
 			action = g_action_map_lookup_action (G_ACTION_MAP (window), extra_window_keybindings[i].action);
-			if (action == NULL) {
-				action_group = nautilus_view_get_action_group (view);
-				action = g_action_map_lookup_action (G_ACTION_MAP (action_group), extra_window_keybindings[i].action);
-			}
 
 			g_assert (action != NULL);
 			if (g_action_get_enabled (action)) {
