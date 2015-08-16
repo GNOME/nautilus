@@ -121,7 +121,7 @@
 #define TEMPLATE_LIMIT 30
 
 /* Delay to show the duplicated label when creating a folder */
-#define CREATE_FOLDER_DUPLICATED_LABEL_TIMEOUT 500
+#define FILE_NAME_DUPLICATED_LABEL_TIMEOUT 500
 
 /* Delay to show the Loading... floating bar */
 #define FLOATING_BAR_LOADING_DELAY 500 /* ms */
@@ -165,7 +165,7 @@ struct NautilusViewDetails
 	NautilusFile *directory_as_file;
 	guint dir_merge_id;
 
-	gint create_folder_duplicated_label_timeout_id;
+	gint duplicated_label_timeout_id;
         GtkWidget *rename_file_popover;
 
 	gboolean supports_zooming;
@@ -1778,24 +1778,14 @@ typedef struct {
         GtkWidget *widget;
 	GtkWidget *error_label;
 	GtkWidget *name_entry;
+        GtkWidget *activate_button;
 	gboolean target_is_folder;
 	NautilusFile *target_file;
-        GtkWidget *activate_button;
 	gboolean duplicated_is_folder;
-} FileNameWidgetData;
-
-typedef struct {
-	NautilusView *view;
-        GtkWidget *widget;
-	GtkWidget *name_entry;
-	NautilusFile *target_file;
-} RenameDialogData;
-
-typedef struct {
-	NautilusView *view;
-	GtkWidget *name_entry;
+        void (*on_name_accepted) (gpointer data);
+        /* For create folder only */
 	gboolean with_selection;
-} NewFolderDialogData;
+} FileNameWidgetData;
 
 static gboolean
 duplicated_file_label_show (FileNameWidgetData *data)
@@ -1805,7 +1795,7 @@ duplicated_file_label_show (FileNameWidgetData *data)
 	else
 		gtk_label_set_label (GTK_LABEL (data->error_label), _("A file with that name already exists."));
 
-	data->view->details->create_folder_duplicated_label_timeout_id = 0;
+	data->view->details->duplicated_label_timeout_id = 0;
 
 	return G_SOURCE_REMOVE;
 }
@@ -1837,15 +1827,14 @@ validate_file_name (const gchar *name,
 }
 
 static void
-create_folder_dialog_entry_on_changed (GtkEntry *entry,
-                                       gpointer  user_data)
+file_name_widget_entry_on_changed (gpointer user_data)
 {
 	FileNameWidgetData *data;
         NautilusFile *existing_file;
         gchar *name;
         gchar *error_message;
         gboolean valid_name;
-        gboolean can_create_folder;
+        gboolean duplicated;
 
         data = (FileNameWidgetData *) user_data;
         name = g_strstrip (g_strdup (gtk_entry_get_text (GTK_ENTRY (data->name_entry))));
@@ -1855,75 +1844,132 @@ create_folder_dialog_entry_on_changed (GtkEntry *entry,
         existing_file = nautilus_directory_get_file_by_name (data->view->details->model, name);
 
         valid_name = strlen (name) > 0 && error_message == NULL;
-        can_create_folder = existing_file == NULL && valid_name;
-        gtk_widget_set_sensitive (data->activate_button, can_create_folder);
+        /* If there is a target file and the name is the same, we don't show it
+         * as duplicated. This is the case for renaming. */
+        duplicated = existing_file != NULL &&
+                     (data->target_file == NULL ||
+                      nautilus_file_compare_display_name (data->target_file, name) != 0);
+        gtk_widget_set_sensitive (data->activate_button, valid_name && !duplicated);
 
-        if (data->view->details->create_folder_duplicated_label_timeout_id > 0) {
-                g_source_remove (data->view->details->create_folder_duplicated_label_timeout_id);
-                data->view->details->create_folder_duplicated_label_timeout_id = 0;
+        if (data->view->details->duplicated_label_timeout_id > 0) {
+                g_source_remove (data->view->details->duplicated_label_timeout_id);
+                data->view->details->duplicated_label_timeout_id = 0;
         }
 
         /* Report duplicated file only if not other message shown (for instance,
          * folders like "." or ".." will always exists, but we consider it as an
-         * error, not as a duplicated file) */
-        if (existing_file != NULL && valid_name) {
+         * error, not as a duplicated file or if the name is the same as the file
+         * we are renaming also don't report as a duplicated */
+        if (duplicated && valid_name) {
                 data->duplicated_is_folder = nautilus_file_is_directory (existing_file);
-                data->view->details->create_folder_duplicated_label_timeout_id =
-                        g_timeout_add (CREATE_FOLDER_DUPLICATED_LABEL_TIMEOUT,
+                data->view->details->duplicated_label_timeout_id =
+                        g_timeout_add (FILE_NAME_DUPLICATED_LABEL_TIMEOUT,
                                        (GSourceFunc)duplicated_file_label_show,
                                        data);
         }
 
         if (existing_file != NULL)
                 nautilus_file_unref (existing_file);
-}
-
-static void
-rename_file_popover_entry_on_changed (GtkEntry *entry,
-                                      gpointer  user_data)
-{
-	FileNameWidgetData *data;
-        gboolean valid_name;
-        gchar *name;
-        gchar *error_message;
-
-        data = (FileNameWidgetData *) user_data;
-        name = g_strstrip (g_strdup (gtk_entry_get_text (GTK_ENTRY (data->name_entry))));
-        error_message = validate_file_name (name, nautilus_file_is_directory (data->target_file));
-        gtk_label_set_label (GTK_LABEL (data->error_label), error_message);
-
-        valid_name = strlen (name) > 0 && error_message == NULL;
-        gtk_widget_set_sensitive (data->activate_button, valid_name);
 
         g_free (name);
 }
 
 static void
-create_folder_dialog_entry_on_activate (GtkWidget *entry,
-                                        gpointer   user_data)
+create_folder_dialog_on_response (GtkDialog *dialog,
+                                  gint       response_id,
+                                  gpointer   user_data)
+{
+	FileNameWidgetData *widget_data;
+
+	widget_data = (FileNameWidgetData *) user_data;
+
+	if (response_id == GTK_RESPONSE_OK) {
+		NewFolderData *data;
+		GdkPoint *pos;
+		char *parent_uri;
+		gchar *name;
+
+		data = new_folder_data_new (widget_data->view, widget_data->with_selection);
+
+		name = g_strstrip (g_strdup (gtk_entry_get_text (GTK_ENTRY (widget_data->name_entry))));
+		g_signal_connect_data (widget_data->view,
+				       "add-file",
+				       G_CALLBACK (track_newly_added_locations),
+				       data,
+				       (GClosureNotify)NULL,
+				       G_CONNECT_AFTER);
+
+		pos = context_menu_to_file_operation_position (widget_data->view);
+
+		parent_uri = nautilus_view_get_backing_uri (widget_data->view);
+		nautilus_file_operations_new_folder (GTK_WIDGET (widget_data->view),
+                                                     pos, parent_uri, name,
+                                                     new_folder_done, data);
+
+		g_free (parent_uri);
+		g_free (name);
+	}
+
+	gtk_widget_destroy (GTK_WIDGET (dialog));
+	g_free (user_data);
+}
+
+
+static void
+create_folder_on_name_accepted (gpointer user_data)
+{
+        FileNameWidgetData *data;
+
+        data = (FileNameWidgetData *) user_data;
+        gtk_dialog_response (GTK_DIALOG (data->widget),
+                             GTK_RESPONSE_OK);
+}
+
+static void
+rename_file_on_name_accepted (gpointer user_data)
+{
+        FileNameWidgetData *data;
+        gchar *name;
+
+        data = (FileNameWidgetData *) user_data;
+
+        name = g_strstrip (g_strdup (gtk_entry_get_text (GTK_ENTRY (data->name_entry))));
+        nautilus_rename_file (data->target_file, name, NULL, NULL);
+
+        nautilus_view_select_file (data->view, data->target_file);
+        nautilus_view_reveal_selection (data->view);
+
+        gtk_widget_hide (data->widget);
+
+        g_free (name);
+}
+
+static void
+file_name_widget_on_activate (gpointer user_data)
 {
 	FileNameWidgetData *data;
         NautilusFile *existing_file;
         gchar *name;
         gchar *error_message;
         gboolean valid_name;
-        gboolean can_create_folder;
+        gboolean duplicated;
 
-        data = (FileNameWidgetData *) user_data;
+	data = (FileNameWidgetData *) user_data;
         name = g_strstrip (g_strdup (gtk_entry_get_text (GTK_ENTRY (data->name_entry))));
         existing_file = nautilus_directory_get_file_by_name (data->view->details->model, name);
         error_message = validate_file_name (name, TRUE);
         valid_name = strlen (name) > 0 && error_message == NULL;
-        can_create_folder = existing_file == NULL && valid_name;
+        duplicated = existing_file != NULL &&
+                     (data->target_file == NULL ||
+                      nautilus_file_compare_display_name (data->target_file, name) != 0);
 
-        if (data->view->details->create_folder_duplicated_label_timeout_id > 0) {
-                g_source_remove (data->view->details->create_folder_duplicated_label_timeout_id);
-                data->view->details->create_folder_duplicated_label_timeout_id = 0;
+        if (data->view->details->duplicated_label_timeout_id > 0) {
+                g_source_remove (data->view->details->duplicated_label_timeout_id);
+                data->view->details->duplicated_label_timeout_id = 0;
         }
 
-        if (can_create_folder) {
-                gtk_dialog_response (GTK_DIALOG (data->widget),
-                                     GTK_RESPONSE_OK);
+        if (valid_name && !duplicated) {
+                data->on_name_accepted ((gpointer) data);
         } else {
                 /* Report duplicated file only if not other message shown (for instance,
                  * folders like "." or ".." will always exists, but we consider it as an
@@ -1938,32 +1984,7 @@ create_folder_dialog_entry_on_activate (GtkWidget *entry,
         if (existing_file != NULL)
                 nautilus_file_unref (existing_file);
 
-        g_free (name);
-}
-
-static void
-rename_file_popover_rename_button_on_clicked (GtkButton *entry,
-                                              gpointer  *user_data)
-{
-	RenameDialogData *rename_data;
-	gchar *name;
-
-	rename_data = (RenameDialogData *) user_data;
-
-	g_assert (rename_data != NULL);
-	g_assert (GTK_IS_ENTRY (rename_data->name_entry));
-	g_assert (NAUTILUS_IS_FILE (rename_data->target_file));
-
-	name = g_strstrip (g_strdup (gtk_entry_get_text (GTK_ENTRY (rename_data->name_entry))));
-	nautilus_rename_file (rename_data->target_file, name, NULL, NULL);
 	g_free (name);
-
-	nautilus_view_select_file (rename_data->view, rename_data->target_file);
-	nautilus_view_reveal_selection (rename_data->view);
-
-        gtk_widget_hide (rename_data->widget);
-
-	g_free (rename_data);
 }
 
 static void
@@ -1988,7 +2009,6 @@ nautilus_view_rename_file_popover_new (NautilusView *view,
                                        NautilusFile *target_file)
 {
 	FileNameWidgetData *widget_data;
-	RenameDialogData *rename_data;
 	GtkWidget *label_file_name;
 	GtkBuilder *builder;
 	gint start_offset, end_offset;
@@ -2002,6 +2022,7 @@ nautilus_view_rename_file_popover_new (NautilusView *view,
 
 	widget_data = g_new (FileNameWidgetData, 1);
 	widget_data->view = view;
+	widget_data->on_name_accepted = rename_file_on_name_accepted;
 	widget_data->widget = GTK_WIDGET (gtk_builder_get_object (builder, "rename_file_popover"));
 	widget_data->activate_button = GTK_WIDGET (gtk_builder_get_object (builder, "rename_button"));
 	widget_data->error_label = GTK_WIDGET (gtk_builder_get_object (builder, "error_label"));
@@ -2011,37 +2032,25 @@ nautilus_view_rename_file_popover_new (NautilusView *view,
 
         view->details->rename_file_popover = widget_data->widget;
 
-	rename_data = g_new (RenameDialogData, 1);
-	rename_data->view = view;
-	rename_data->widget = widget_data->widget;
-	rename_data->target_file = target_file;
-	rename_data->name_entry = widget_data->name_entry;
+	/* Connect signals */
+	gtk_builder_add_callback_symbols (builder,
+                                          "file_name_widget_entry_on_changed",
+                                          G_CALLBACK (file_name_widget_entry_on_changed),
+                                          "file_name_widget_on_activate",
+                                          G_CALLBACK (file_name_widget_on_activate),
+                                          "rename_file_popover_on_closed",
+                                          G_CALLBACK (rename_file_popover_on_closed),
+                                          "rename_file_popover_on_unmap",
+                                          G_CALLBACK (gtk_widget_destroy),
+                                          NULL);
+
+	gtk_builder_connect_signals (builder, widget_data);
 
 	if (widget_data->target_is_folder)
 		gtk_label_set_text (GTK_LABEL (label_file_name), _("Folder name"));
 	else
 		gtk_label_set_text (GTK_LABEL (label_file_name), _("File name"));
 	gtk_entry_set_text (GTK_ENTRY (widget_data->name_entry), nautilus_file_get_name (target_file));
-
-	g_signal_connect (widget_data->activate_button,
-                  	  "clicked",
-                          G_CALLBACK (rename_file_popover_rename_button_on_clicked),
-                          rename_data);
-
-	g_signal_connect (widget_data->name_entry,
-                  	  "changed",
-                          G_CALLBACK (rename_file_popover_entry_on_changed),
-                          widget_data);
-
-	g_signal_connect (GTK_POPOVER (widget_data->widget),
-                  	  "closed",
-                          G_CALLBACK (rename_file_popover_on_closed),
-                          widget_data);
-
-	g_signal_connect (GTK_POPOVER (widget_data->widget),
-                  	  "unmap",
-                          G_CALLBACK (gtk_widget_destroy),
-                          NULL);
 
         relative_to = nautilus_view_compute_rename_popover_relative_to (view);
         gtk_popover_set_default_widget (GTK_POPOVER (widget_data->widget),
@@ -2050,6 +2059,7 @@ nautilus_view_rename_file_popover_new (NautilusView *view,
         gtk_popover_set_relative_to (GTK_POPOVER (widget_data->widget),
                                      GTK_WIDGET (view));
 	gtk_widget_show (widget_data->widget);
+        gtk_widget_grab_focus (widget_data->widget);
 
 	/* Select the name part withouth the file extension */
 	eel_filename_get_rename_region (nautilus_file_get_name (target_file),
@@ -2058,59 +2068,10 @@ nautilus_view_rename_file_popover_new (NautilusView *view,
                                     start_offset, end_offset);
 
         /* Update the rename button status */
-        rename_file_popover_entry_on_changed (GTK_ENTRY (widget_data->name_entry),
-                                              widget_data);
+        file_name_widget_entry_on_changed (widget_data);
 
 
 	g_object_unref (builder);
-}
-
-static void
-nautilus_view_new_folder_dialog_on_response (GtkDialog *dialog,
-                                             gint       response_id,
-                                             gpointer   user_data)
-{
-	NewFolderDialogData *new_folder_data;
-
-	new_folder_data = (NewFolderDialogData *) user_data;
-
-	g_assert (new_folder_data != NULL);
-	g_assert (GTK_IS_ENTRY (new_folder_data->name_entry));
-
-	if (response_id == GTK_RESPONSE_OK) {
-		NewFolderData *data;
-		GdkPoint *pos;
-		char *parent_uri;
-		gchar *name;
-
-		data = new_folder_data_new (new_folder_data->view, new_folder_data->with_selection);
-
-		name = g_strstrip (g_strdup (gtk_entry_get_text (GTK_ENTRY (new_folder_data->name_entry))));
-		g_signal_connect_data (new_folder_data->view,
-				       "add-file",
-				       G_CALLBACK (track_newly_added_locations),
-				       data,
-				       (GClosureNotify)NULL,
-				       G_CONNECT_AFTER);
-
-		pos = context_menu_to_file_operation_position (new_folder_data->view);
-
-		parent_uri = nautilus_view_get_backing_uri (new_folder_data->view);
-		nautilus_file_operations_new_folder (GTK_WIDGET (new_folder_data->view),
-                                                     pos, parent_uri, name,
-                                                     new_folder_done, data);
-
-		g_free (parent_uri);
-		g_free (name);
-	}
-
-        if (new_folder_data->view->details->create_folder_duplicated_label_timeout_id > 0) {
-                g_source_remove (new_folder_data->view->details->create_folder_duplicated_label_timeout_id);
-                new_folder_data->view->details->create_folder_duplicated_label_timeout_id = 0;
-        }
-
-	gtk_widget_destroy (GTK_WIDGET (dialog));
-	g_free (user_data);
 }
 
 static void
@@ -2118,7 +2079,6 @@ nautilus_view_new_folder_dialog_new (NautilusView *view,
                                      gboolean      with_selection)
 {
 	FileNameWidgetData *widget_data;
-	NewFolderDialogData *user_data;
 	GtkWidget *label_file_name;
 	GtkBuilder *builder;
 
@@ -2127,27 +2087,26 @@ nautilus_view_new_folder_dialog_new (NautilusView *view,
 
 	widget_data = g_new (FileNameWidgetData, 1);
 	widget_data->view = view;
+	widget_data->on_name_accepted = create_folder_on_name_accepted;
 	widget_data->widget = GTK_WIDGET (gtk_builder_get_object (builder, "create_folder_dialog"));
 	widget_data->activate_button = GTK_WIDGET (gtk_builder_get_object (builder, "ok_button"));
 	widget_data->error_label = GTK_WIDGET (gtk_builder_get_object (builder, "error_label"));
 	widget_data->name_entry = GTK_WIDGET (gtk_builder_get_object (builder, "name_entry"));
 	widget_data->target_is_folder = TRUE;
 	widget_data->target_file = NULL;
-
-	user_data = g_new (NewFolderDialogData, 1);
-	user_data->view = view;
-	user_data->with_selection = with_selection;
-	user_data->name_entry = widget_data->name_entry;
+        widget_data->with_selection = with_selection;
 
 	gtk_window_set_transient_for (GTK_WINDOW (widget_data->widget),
                                       GTK_WINDOW (nautilus_view_get_window (view)));
 
 	/* Connect signals */
 	gtk_builder_add_callback_symbols (builder,
-                                          "create_folder_dialog_entry_on_changed",
-                                          G_CALLBACK (create_folder_dialog_entry_on_changed),
-                                          "create_folder_dialog_entry_on_activate",
-                                          G_CALLBACK (create_folder_dialog_entry_on_activate),
+                                          "file_name_widget_entry_on_changed",
+                                          G_CALLBACK (file_name_widget_entry_on_changed),
+                                          "file_name_widget_on_activate",
+                                          G_CALLBACK (file_name_widget_on_activate),
+                                          "create_folder_dialog_on_response",
+                                          G_CALLBACK (create_folder_dialog_on_response),
                                           NULL);
 
 	gtk_builder_connect_signals (builder, widget_data);
@@ -2156,15 +2115,9 @@ nautilus_view_new_folder_dialog_new (NautilusView *view,
 	gtk_label_set_text (GTK_LABEL (label_file_name), _("Folder name"));
 	gtk_window_set_title (GTK_WINDOW (widget_data->widget), _("New Folder"));
 
-	g_signal_connect (widget_data->widget,
-                          "response",
-                          G_CALLBACK (nautilus_view_new_folder_dialog_on_response),
-                          user_data);
-
 	gtk_widget_show_all (widget_data->widget);
         /* Update the ok button status */
-        create_folder_dialog_entry_on_changed (GTK_ENTRY (widget_data->name_entry),
-                                               widget_data);
+        file_name_widget_entry_on_changed (widget_data);
 
 	g_object_unref (builder);
 }
