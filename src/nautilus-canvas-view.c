@@ -1180,11 +1180,19 @@ nautilus_canvas_view_compute_rename_popover_relative_to (NautilusView *view)
         GArray *bounding_boxes;
         GdkRectangle *bounding_box;
         NautilusCanvasContainer *canvas_container;
+        GtkAdjustment *vadjustment, *hadjustment;
+        GtkWidget *parent_container;
 
         canvas_container = get_canvas_container (NAUTILUS_CANVAS_VIEW (view));
         bounding_boxes = nautilus_canvas_container_get_selected_icons_bounding_box (canvas_container);
         /* We only allow renaming one item at once */
         bounding_box = &g_array_index (bounding_boxes, GdkRectangle, 0);
+        parent_container = nautilus_view_get_content_widget (view);
+        vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (parent_container));
+        hadjustment = gtk_scrolled_window_get_hadjustment (GTK_SCROLLED_WINDOW (parent_container));
+
+        bounding_box->x -= gtk_adjustment_get_value (hadjustment);
+        bounding_box->y -= gtk_adjustment_get_value (vadjustment);
 
         g_array_free (bounding_boxes, FALSE);
 
