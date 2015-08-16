@@ -26,7 +26,7 @@
 #include <config.h>
 
 #include "nautilus-notebook.h"
-#include "nautilus-view-dnd.h"
+#include "nautilus-files-view-dnd.h"
 #include "nautilus-window-slot-dnd.h"
 
 typedef struct {
@@ -331,7 +331,7 @@ slot_proxy_handle_drop (GtkWidget                *widget,
 {
   GtkWidget *window;
   NautilusWindowSlot *target_slot;
-  NautilusView *target_view;
+  NautilusFilesView *target_view;
   char *target_uri;
   GList *uri_list;
 
@@ -368,18 +368,18 @@ slot_proxy_handle_drop (GtkWidget                *widget,
       uri_list = nautilus_drag_uri_list_from_selection_list (drag_info->data.selection_list);
       g_assert (uri_list != NULL);
 
-      nautilus_view_drop_proxy_received_uris (target_view,
+      nautilus_files_view_drop_proxy_received_uris (target_view,
                                               uri_list,
                                               target_uri,
                                               gdk_drag_context_get_selected_action (context));
       g_list_free_full (uri_list, g_free);
     } else if (drag_info->info == NAUTILUS_ICON_DND_URI_LIST) {
-      nautilus_view_drop_proxy_received_uris (target_view,
+      nautilus_files_view_drop_proxy_received_uris (target_view,
                                               drag_info->data.uri_list,
                                               target_uri,
                                               gdk_drag_context_get_selected_action (context));
     } if (drag_info->info == NAUTILUS_ICON_DND_NETSCAPE_URL) {
-      nautilus_view_handle_netscape_url_drop (target_view,
+      nautilus_files_view_handle_netscape_url_drop (target_view,
                                               drag_info->data.netscape_url,
                                               target_uri,
                                               gdk_drag_context_get_selected_action (context),

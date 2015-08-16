@@ -165,6 +165,10 @@ nautilus_SOURCES = \
 	nautilus-error-reporting.h		\
 	nautilus-file-management-properties.c	\
 	nautilus-file-management-properties.h	\
+	nautilus-files-view.c			\
+	nautilus-files-view.h			\
+	nautilus-files-view-dnd.c		\
+	nautilus-files-view-dnd.h		\
 	nautilus-floating-bar.c			\
 	nautilus-floating-bar.h			\
 	nautilus-freedesktop-dbus.c		\
@@ -205,10 +209,6 @@ nautilus_SOURCES = \
 	nautilus-toolbar.h			\
 	nautilus-trash-bar.c			\
 	nautilus-trash-bar.h			\
-	nautilus-view.c				\
-	nautilus-view.h				\
-	nautilus-view-dnd.c			\
-	nautilus-view-dnd.h			\
 	nautilus-window-slot.c			\
 	nautilus-window-slot.h			\
 	nautilus-window-slot-dnd.c		\

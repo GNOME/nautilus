@@ -26,7 +26,7 @@
 #ifndef NAUTILUS_LIST_VIEW_H
 #define NAUTILUS_LIST_VIEW_H
 
-#include "nautilus-view.h"
+#include "nautilus-files-view.h"
 
 #define NAUTILUS_TYPE_LIST_VIEW nautilus_list_view_get_type()
 #define NAUTILUS_LIST_VIEW(obj) \
@@ -43,15 +43,15 @@
 typedef struct NautilusListViewDetails NautilusListViewDetails;
 
 typedef struct {
-	NautilusView parent_instance;
+	NautilusFilesView parent_instance;
 	NautilusListViewDetails *details;
 } NautilusListView;
 
 typedef struct {
-	NautilusViewClass parent_class;
+	NautilusFilesViewClass parent_class;
 } NautilusListViewClass;
 
 GType nautilus_list_view_get_type (void);
-NautilusView * nautilus_list_view_new (NautilusWindowSlot *slot);
+NautilusFilesView * nautilus_list_view_new (NautilusWindowSlot *slot);
 
 #endif /* NAUTILUS_LIST_VIEW_H */

@@ -50,6 +50,6 @@ typedef struct {
 
 /* GObject support */
 GType   nautilus_desktop_canvas_view_get_type (void);
-NautilusView * nautilus_desktop_canvas_view_new (NautilusWindowSlot *slot);
+NautilusFilesView * nautilus_desktop_canvas_view_new (NautilusWindowSlot *slot);
 
 #endif /* NAUTILUS_DESKTOP_CANVAS_VIEW_H */

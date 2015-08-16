@@ -346,13 +346,13 @@ fm_desktop_canvas_container_icons_compare (NautilusCanvasContainer *container,
 {
 	NautilusFile *file_a;
 	NautilusFile *file_b;
-	NautilusView *directory_view;
+	NautilusFilesView *directory_view;
 	SortCategory category_a, category_b;
 
 	file_a = (NautilusFile *) data_a;
 	file_b = (NautilusFile *) data_b;
 
-	directory_view = NAUTILUS_VIEW (NAUTILUS_CANVAS_VIEW_CONTAINER (container)->view);
+	directory_view = NAUTILUS_FILES_VIEW (NAUTILUS_CANVAS_VIEW_CONTAINER (container)->view);
 	g_return_val_if_fail (directory_view != NULL, 0);
 	
 	category_a = get_sort_category (file_a);
@@ -361,7 +361,7 @@ fm_desktop_canvas_container_icons_compare (NautilusCanvasContainer *container,
 	if (category_a == category_b) {
 		return nautilus_file_compare_for_sort 
 			(file_a, file_b, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME, 
-			 nautilus_view_should_sort_directories_first (directory_view),
+			 nautilus_files_view_should_sort_directories_first (directory_view),
 			 FALSE);
 	}
 

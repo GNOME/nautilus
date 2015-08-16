@@ -26,7 +26,7 @@
 
 #include "nautilus-trash-bar.h"
 
-#include "nautilus-view.h"
+#include "nautilus-files-view.h"
 #include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file.h>
@@ -47,19 +47,19 @@ enum {
 
 struct NautilusTrashBarPrivate
 {
-	NautilusView *view;
+	NautilusFilesView *view;
 	gulong selection_handler_id;
 };
 
 G_DEFINE_TYPE (NautilusTrashBar, nautilus_trash_bar, GTK_TYPE_INFO_BAR);
 
 static void
-selection_changed_cb (NautilusView *view,
+selection_changed_cb (NautilusFilesView *view,
 		      NautilusTrashBar *bar)
 {
 	int count;
 
-	count = nautilus_view_get_selection_count (view);
+	count = nautilus_files_view_get_selection_count (view);
 
 	gtk_info_bar_set_response_sensitive (GTK_INFO_BAR (bar),
 					     TRASH_BAR_RESPONSE_RESTORE,
@@ -140,8 +140,8 @@ nautilus_trash_bar_class_init (NautilusTrashBarClass *klass)
 					 PROP_VIEW,
 					 g_param_spec_object ("view",
 							      "view",
-							      "the NautilusView",
-							      NAUTILUS_TYPE_VIEW,
+							      "the NautilusFilesView",
+							      NAUTILUS_TYPE_FILES_VIEW,
 							      G_PARAM_WRITABLE |
 							      G_PARAM_CONSTRUCT_ONLY |
 							      G_PARAM_STATIC_STRINGS));
@@ -166,7 +166,7 @@ trash_bar_response_cb (GtkInfoBar *infobar,
 		nautilus_file_operations_empty_trash (window);
 		break;
 	case TRASH_BAR_RESPONSE_RESTORE:
-		files = nautilus_view_get_selection (bar->priv->view);
+		files = nautilus_files_view_get_selection (bar->priv->view);
 		nautilus_restore_files_from_trash (files, GTK_WINDOW (window));
 		nautilus_file_list_free (files);
 		break;
@@ -224,7 +224,7 @@ nautilus_trash_bar_init (NautilusTrashBar *bar)
 }
 
 GtkWidget *
-nautilus_trash_bar_new (NautilusView *view)
+nautilus_trash_bar_new (NautilusFilesView *view)
 {
 	return g_object_new (NAUTILUS_TYPE_TRASH_BAR,
 			     "view", view,

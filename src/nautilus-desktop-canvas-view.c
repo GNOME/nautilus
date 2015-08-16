@@ -29,7 +29,7 @@
 #include "nautilus-desktop-canvas-view.h"
 
 #include "nautilus-canvas-view-container.h"
-#include "nautilus-view.h"
+#include "nautilus-files-view.h"
 
 #include <X11/Xatom.h>
 #include <gtk/gtk.h>
@@ -74,7 +74,7 @@ struct NautilusDesktopCanvasViewDetails
 };
 
 static void     default_zoom_level_changed                        (gpointer                user_data);
-static void     real_update_context_menus                         (NautilusView           *view);
+static void     real_update_context_menus                         (NautilusFilesView           *view);
 static void     nautilus_desktop_canvas_view_update_canvas_container_fonts  (NautilusDesktopCanvasView      *view);
 static void     font_changed_callback                             (gpointer                callback_data);
 
@@ -227,7 +227,7 @@ desktop_canvas_view_property_filter (GdkXEvent *gdk_xevent,
 }
 
 static const char *
-real_get_id (NautilusView *view)
+real_get_id (NautilusFilesView *view)
 {
 	return NAUTILUS_DESKTOP_CANVAS_VIEW_ID;
 }
@@ -252,14 +252,14 @@ nautilus_desktop_canvas_view_dispose (GObject *object)
 					      font_changed_callback,
 					      canvas_view);
 	g_signal_handlers_disconnect_by_func (gnome_lockdown_preferences,
-					      nautilus_view_update_context_menus,
+					      nautilus_files_view_update_context_menus,
 					      canvas_view);
 
 	G_OBJECT_CLASS (nautilus_desktop_canvas_view_parent_class)->dispose (object);
 }
 
 static void
-nautilus_desktop_canvas_view_end_loading (NautilusView *view,
+nautilus_desktop_canvas_view_end_loading (NautilusFilesView *view,
                                           gboolean all_files_seen)
 {
 	gboolean needs_reorganization;
@@ -269,12 +269,12 @@ nautilus_desktop_canvas_view_end_loading (NautilusView *view,
 	gchar *current_icon_size_string;
 	NautilusFile *file;
 
-  	NAUTILUS_VIEW_CLASS (nautilus_desktop_canvas_view_parent_class)->end_loading (view, all_files_seen);
+  	NAUTILUS_FILES_VIEW_CLASS (nautilus_desktop_canvas_view_parent_class)->end_loading (view, all_files_seen);
 
         if (!all_files_seen)
           return;
 
-  	file = nautilus_view_get_directory_as_file (view);
+  	file = nautilus_files_view_get_directory_as_file (view);
   	g_return_if_fail (file != NULL);
 
 	stored_size_icon = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_DESKTOP_ICON_SIZE, NULL);
@@ -297,9 +297,9 @@ nautilus_desktop_canvas_view_end_loading (NautilusView *view,
 static void
 nautilus_desktop_canvas_view_class_init (NautilusDesktopCanvasViewClass *class)
 {
-	NautilusViewClass *vclass;
+	NautilusFilesViewClass *vclass;
 
-	vclass = NAUTILUS_VIEW_CLASS (class);
+	vclass = NAUTILUS_FILES_VIEW_CLASS (class);
 
 	G_OBJECT_CLASS (class)->dispose = nautilus_desktop_canvas_view_dispose;
 
@@ -387,7 +387,7 @@ default_zoom_level_changed (gpointer user_data)
 	gchar *new_icon_size_string;
 
 	desktop_canvas_view = NAUTILUS_DESKTOP_CANVAS_VIEW (user_data);
-	file = nautilus_view_get_directory_as_file (NAUTILUS_VIEW (user_data));
+	file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (user_data));
 	new_level = get_default_zoom_level ();
 	new_icon_size = nautilus_canvas_container_get_icon_size_for_zoom_level (new_level);
 	new_icon_size_string = g_strdup_printf ("%d", new_icon_size);
@@ -421,7 +421,7 @@ do_desktop_rescan (gpointer data)
 	desktop_canvas_view->details->pending_rescan = TRUE;
 
 	nautilus_directory_force_reload
-		(nautilus_view_get_model (NAUTILUS_VIEW (desktop_canvas_view)));
+		(nautilus_files_view_get_model (NAUTILUS_FILES_VIEW (desktop_canvas_view)));
 
 	return TRUE;
 }
@@ -448,7 +448,7 @@ static void
 delayed_init (NautilusDesktopCanvasView *desktop_canvas_view)
 {
 	/* Keep track of the load time. */
-	g_signal_connect_object (nautilus_view_get_model (NAUTILUS_VIEW (desktop_canvas_view)),
+	g_signal_connect_object (nautilus_files_view_get_model (NAUTILUS_FILES_VIEW (desktop_canvas_view)),
 				 "done-loading",
 				 G_CALLBACK (done_loading), desktop_canvas_view, 0);
 
@@ -550,7 +550,7 @@ action_change_background (GSimpleAction *action,
 {
 	const gchar *control_center_cmd, *params;
 
-        g_assert (NAUTILUS_VIEW (user_data));
+        g_assert (NAUTILUS_FILES_VIEW (user_data));
 
 	control_center_cmd = get_control_center_command (&params);
 	if (control_center_cmd == NULL) {
@@ -568,7 +568,7 @@ action_empty_trash (GSimpleAction *action,
 		    GVariant      *state,
 		    gpointer       user_data)
 {
-	g_assert (NAUTILUS_IS_VIEW (user_data));
+	g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
 
 	nautilus_file_operations_empty_trash (GTK_WIDGET (user_data));
 }
@@ -599,7 +599,7 @@ action_organize_desktop_by_name (GSimpleAction *action,
 }
 
 static gboolean
-trash_link_is_selection (NautilusView *view)
+trash_link_is_selection (NautilusFilesView *view)
 {
 	GList *selection;
 	NautilusDesktopLink *link;
@@ -607,7 +607,7 @@ trash_link_is_selection (NautilusView *view)
 
 	result = FALSE;
 	
-	selection = nautilus_view_get_selection (view);
+	selection = nautilus_files_view_get_selection (view);
 
 	if ((g_list_length (selection) == 1) &&
 	    NAUTILUS_IS_DESKTOP_ICON_FILE (selection->data)) {
@@ -636,7 +636,7 @@ const GActionEntry desktop_view_entries[] = {
 };
 
 static void
-real_update_context_menus (NautilusView *view)
+real_update_context_menus (NautilusFilesView *view)
 {
 	NautilusCanvasContainer *canvas_container;
 	NautilusDesktopCanvasView *desktop_view;
@@ -646,9 +646,9 @@ real_update_context_menus (NautilusView *view)
 
 	g_assert (NAUTILUS_IS_DESKTOP_CANVAS_VIEW (view));
 
-	NAUTILUS_VIEW_CLASS (nautilus_desktop_canvas_view_parent_class)->update_context_menus (view);
+	NAUTILUS_FILES_VIEW_CLASS (nautilus_desktop_canvas_view_parent_class)->update_context_menus (view);
 
-	view_action_group = nautilus_view_get_action_group (view);
+	view_action_group = nautilus_files_view_get_action_group (view);
 	desktop_view = NAUTILUS_DESKTOP_CANVAS_VIEW (view);
 
 	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group), "empty-trash");
@@ -664,7 +664,7 @@ real_update_context_menus (NautilusView *view)
 	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), TRUE);
 
 	/* Stretch */
-	selection_count = nautilus_view_get_selection_count (view);
+	selection_count = nautilus_files_view_get_selection_count (view);
 	canvas_container = get_canvas_container (desktop_view);
 
 	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group), "stretch");
@@ -723,10 +723,10 @@ nautilus_desktop_canvas_view_init (NautilusDesktopCanvasView *desktop_canvas_vie
 	gtk_adjustment_set_value (hadj, 0);
 	gtk_adjustment_set_value (vadj, 0);
 
-	nautilus_view_ignore_hidden_file_preferences
-		(NAUTILUS_VIEW (desktop_canvas_view));
+	nautilus_files_view_ignore_hidden_file_preferences
+		(NAUTILUS_FILES_VIEW (desktop_canvas_view));
 
-	nautilus_view_set_show_foreign (NAUTILUS_VIEW (desktop_canvas_view),
+	nautilus_files_view_set_show_foreign (NAUTILUS_FILES_VIEW (desktop_canvas_view),
 					FALSE);
 
 	g_signal_connect_object (canvas_container, "realize",
@@ -752,18 +752,18 @@ nautilus_desktop_canvas_view_init (NautilusDesktopCanvasView *desktop_canvas_vie
 
 	g_signal_connect_swapped (gnome_lockdown_preferences,
 				  "changed::" NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE,
-				  G_CALLBACK (nautilus_view_update_context_menus),
+				  G_CALLBACK (nautilus_files_view_update_context_menus),
 				  desktop_canvas_view);
 
-	view_action_group = nautilus_view_get_action_group (NAUTILUS_VIEW (desktop_canvas_view));
+	view_action_group = nautilus_files_view_get_action_group (NAUTILUS_FILES_VIEW (desktop_canvas_view));
 
 	g_action_map_add_action_entries (G_ACTION_MAP (view_action_group),
 					 desktop_view_entries,
 					 G_N_ELEMENTS (desktop_view_entries),
-					 NAUTILUS_VIEW (desktop_canvas_view));
+					 NAUTILUS_FILES_VIEW (desktop_canvas_view));
 }
 
-NautilusView *
+NautilusFilesView *
 nautilus_desktop_canvas_view_new (NautilusWindowSlot *slot)
 {
 	return g_object_new (NAUTILUS_TYPE_DESKTOP_CANVAS_VIEW,

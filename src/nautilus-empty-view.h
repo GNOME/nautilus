@@ -24,7 +24,7 @@
 #ifndef NAUTILUS_EMPTY_VIEW_H
 #define NAUTILUS_EMPTY_VIEW_H
 
-#include "nautilus-view.h"
+#include "nautilus-files-view.h"
 
 #define NAUTILUS_TYPE_EMPTY_VIEW nautilus_empty_view_get_type()
 #define NAUTILUS_EMPTY_VIEW(obj) \
@@ -41,15 +41,15 @@
 typedef struct NautilusEmptyViewDetails NautilusEmptyViewDetails;
 
 typedef struct {
-	NautilusView parent_instance;
+	NautilusFilesView parent_instance;
 	NautilusEmptyViewDetails *details;
 } NautilusEmptyView;
 
 typedef struct {
-	NautilusViewClass parent_class;
+	NautilusFilesViewClass parent_class;
 } NautilusEmptyViewClass;
 
 GType nautilus_empty_view_get_type (void);
-NautilusView * nautilus_empty_view_new (NautilusWindowSlot *slot);
+NautilusFilesView * nautilus_empty_view_new (NautilusWindowSlot *slot);
 
 #endif /* NAUTILUS_EMPTY_VIEW_H */

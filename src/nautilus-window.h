@@ -54,7 +54,7 @@ typedef gboolean (* NautilusWindowGoToCallback) (NautilusWindow *window,
                                                  GError *error,
                                                  gpointer user_data);
 
-#include "nautilus-view.h"
+#include "nautilus-files-view.h"
 #include "nautilus-window-slot.h"
 
 #define NAUTILUS_TYPE_WINDOW nautilus_window_get_type()

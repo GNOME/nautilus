@@ -25,7 +25,7 @@
 #ifndef NAUTILUS_CANVAS_VIEW_H
 #define NAUTILUS_CANVAS_VIEW_H
 
-#include "nautilus-view.h"
+#include "nautilus-files-view.h"
 #include "libnautilus-private/nautilus-canvas-container.h"
 
 typedef struct NautilusCanvasView NautilusCanvasView;
@@ -46,12 +46,12 @@ typedef struct NautilusCanvasViewClass NautilusCanvasViewClass;
 typedef struct NautilusCanvasViewDetails NautilusCanvasViewDetails;
 
 struct NautilusCanvasView {
-	NautilusView parent;
+	NautilusFilesView parent;
 	NautilusCanvasViewDetails *details;
 };
 
 struct NautilusCanvasViewClass {
-	NautilusViewClass parent_class;
+	NautilusFilesViewClass parent_class;
 };
 
 /* GObject support */
@@ -63,7 +63,7 @@ void    nautilus_canvas_view_filter_by_screen (NautilusCanvasView *canvas_view,
 					     gboolean filter);
 void    nautilus_canvas_view_clean_up_by_name (NautilusCanvasView *canvas_view);
 
-NautilusView * nautilus_canvas_view_new (NautilusWindowSlot *slot);
+NautilusFilesView * nautilus_canvas_view_new (NautilusWindowSlot *slot);
 
 NautilusCanvasContainer * nautilus_canvas_view_get_canvas_container (NautilusCanvasView *view);
 
