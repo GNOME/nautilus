@@ -2851,6 +2851,11 @@ nautilus_view_finalize (GObject *object)
 
 	g_hash_table_destroy (view->details->non_ready_files);
 
+        if (view->details->rename_file_popover != NULL) {
+                gtk_popover_set_relative_to (GTK_POPOVER (view->details->rename_file_popover),
+                                             NULL);
+        }
+
 	G_OBJECT_CLASS (nautilus_view_parent_class)->finalize (object);
 }
 
