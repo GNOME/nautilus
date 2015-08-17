@@ -209,6 +209,8 @@ nautilus_SOURCES = \
 	nautilus-toolbar.h			\
 	nautilus-trash-bar.c			\
 	nautilus-trash-bar.h			\
+	nautilus-view.c				\
+	nautilus-view.h				\
 	nautilus-window-slot.c			\
 	nautilus-window-slot.h			\
 	nautilus-window-slot-dnd.c		\

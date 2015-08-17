@@ -39,6 +39,7 @@
 #include "nautilus-properties-window.h"
 #include "nautilus-window.h"
 #include "nautilus-toolbar.h"
+#include "nautilus-view.h"
 
 #if ENABLE_EMPTY_VIEW
 #include "nautilus-empty-view.h"
@@ -147,11 +148,14 @@ enum {
         PROP_SUPPORTS_ZOOMING,
         PROP_ICON,
         PROP_VIEW_WIDGET,
+        PROP_IS_SEARCH,
+        PROP_IS_LOADING,
+        PROP_LOCATION,
+        PROP_SEARCH_QUERY,
         NUM_PROPERTIES
 };
 
 static guint signals[LAST_SIGNAL];
-static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 
 static GdkAtom copied_files_atom;
 
@@ -163,7 +167,10 @@ struct NautilusFilesViewDetails
         NautilusWindowSlot *slot;
         NautilusDirectory *model;
         NautilusFile *directory_as_file;
+        GFile *location;
         guint dir_merge_id;
+
+        NautilusQuery *search_query;
 
         gint duplicated_label_timeout_id;
         GtkWidget *rename_file_popover;
@@ -302,7 +309,14 @@ static void     update_templates_directory                     (NautilusFilesVie
 
 static void     check_empty_states                             (NautilusFilesView *view);
 
-G_DEFINE_TYPE (NautilusFilesView, nautilus_files_view, GTK_TYPE_OVERLAY);
+static gboolean nautilus_files_view_is_searching               (NautilusView      *view);
+
+static void     nautilus_files_view_iface_init                 (NautilusViewInterface *view);
+
+G_DEFINE_TYPE_WITH_CODE (NautilusFilesView,
+                         nautilus_files_view,
+                         GTK_TYPE_OVERLAY,
+                         G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_VIEW, nautilus_files_view_iface_init));
 
 static const struct {
         unsigned int keyval;
@@ -331,7 +345,7 @@ check_empty_states (NautilusFilesView *view)
                                                             NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
                 filtered = nautilus_file_list_filter_hidden (files, show_hidden_files);
                 if (g_list_length (filtered) == 0) {
-                        if (nautilus_files_view_is_search (view)) {
+                        if (nautilus_view_is_searching (NAUTILUS_VIEW (view))) {
                                 gtk_widget_show (view->details->no_search_results_widget);
                         } else {
                                 gtk_widget_show (view->details->folder_is_empty_widget);
@@ -373,7 +387,7 @@ real_setup_loading_floating_bar (NautilusFilesView *view)
 
         nautilus_floating_bar_cleanup_actions (NAUTILUS_FLOATING_BAR (view->details->floating_bar));
         nautilus_floating_bar_set_primary_label (NAUTILUS_FLOATING_BAR (view->details->floating_bar),
-                                                 nautilus_files_view_is_search (view) ? _("Searching…") : _("Loading…"));
+                                                 nautilus_view_is_searching (NAUTILUS_VIEW (view)) ? _("Searching…") : _("Loading…"));
         nautilus_floating_bar_set_details_label (NAUTILUS_FLOATING_BAR (view->details->floating_bar), NULL);
         nautilus_floating_bar_set_show_spinner (NAUTILUS_FLOATING_BAR (view->details->floating_bar), view->details->loading);
         nautilus_floating_bar_add_action (NAUTILUS_FLOATING_BAR (view->details->floating_bar),
@@ -628,18 +642,18 @@ nautilus_files_view_using_manual_layout (NautilusFilesView  *view)
 
 /**
  * nautilus_files_view_get_icon:
- * @view: a #NautilusFilesView
+ * @view: a #NautilusView
  *
  * Retrieves the #GIcon that represents @view.
  *
  * Returns: (transfer none): the #Gicon that represents @view
  */
-GIcon*
-nautilus_files_view_get_icon (NautilusFilesView *view)
+static GIcon*
+nautilus_files_view_get_icon (NautilusView *view)
 {
         g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), NULL);
 
-        return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_icon (view);
+        return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_icon (NAUTILUS_FILES_VIEW (view));
 }
 
 /**
@@ -651,12 +665,12 @@ nautilus_files_view_get_icon (NautilusFilesView *view)
  *
  * Returns: (transfer none): a #GtkWidget for the view menu
  */
-GtkWidget*
-nautilus_files_view_get_view_widget (NautilusFilesView *view)
+static GtkWidget*
+nautilus_files_view_get_view_widget (NautilusView *view)
 {
         g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), NULL);
 
-        return view->details->view_menu_widget;
+        return NAUTILUS_FILES_VIEW (view)->details->view_menu_widget;
 }
 
 /**
@@ -825,12 +839,16 @@ nautilus_files_view_restore_default_zoom_level (NautilusFilesView *view)
 }
 
 gboolean
-nautilus_files_view_is_search (NautilusFilesView *view)
+nautilus_files_view_is_searching (NautilusView *view)
 {
-  if (!view->details->model)
+  NautilusFilesView *files_view;
+
+  files_view = NAUTILUS_FILES_VIEW (view);
+
+  if (!files_view->details->model)
     return FALSE;
 
-  return NAUTILUS_IS_SEARCH_DIRECTORY (view->details->model);
+  return NAUTILUS_IS_SEARCH_DIRECTORY (files_view->details->model);
 }
 
 const char *
@@ -864,12 +882,12 @@ nautilus_files_view_scroll_to_file (NautilusFilesView *view,
  * Return value: GList of NautilusFile pointers representing the selection.
  *
  **/
-GList *
-nautilus_files_view_get_selection (NautilusFilesView *view)
+static GList*
+nautilus_files_view_get_selection (NautilusView *view)
 {
         g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), NULL);
 
-        return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_selection (view);
+        return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_selection (NAUTILUS_FILES_VIEW (view));
 }
 
 typedef struct {
@@ -1122,7 +1140,7 @@ nautilus_files_view_activate_selection (NautilusFilesView *view)
 {
         GList *selection;
 
-        selection = nautilus_files_view_get_selection (view);
+        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
         nautilus_files_view_activate_files (view,
                                       selection,
                                       0,
@@ -1186,7 +1204,7 @@ action_open_file_and_close_window (GSimpleAction *action,
 
         view = NAUTILUS_FILES_VIEW (user_data);
 
-        selection = nautilus_files_view_get_selection (view);
+        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
         nautilus_files_view_activate_files (view,
                                       selection,
                                       NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND,
@@ -1246,7 +1264,7 @@ action_open_item_location (GSimpleAction *action,
         NautilusFile *location;
 
         view = NAUTILUS_FILES_VIEW (user_data);
-        selection = nautilus_files_view_get_selection (view);
+        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
 
         if (!selection)
                 return;
@@ -1274,7 +1292,7 @@ action_open_item_new_tab (GSimpleAction *action,
         GtkWindow *window;
 
         view = NAUTILUS_FILES_VIEW (user_data);
-        selection = nautilus_files_view_get_selection (view);
+        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
 
         window = nautilus_files_view_get_containing_window (view);
 
@@ -1350,7 +1368,7 @@ open_with_other_program (NautilusFilesView *view)
 
         g_assert (NAUTILUS_IS_FILES_VIEW (view));
 
-               selection = nautilus_files_view_get_selection (view);
+               selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
         choose_program (view, selection);
 }
 
@@ -2256,7 +2274,7 @@ action_properties (GSimpleAction *action,
         g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
 
         view = NAUTILUS_FILES_VIEW (user_data);
-        selection = nautilus_files_view_get_selection (view);
+        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
         if (g_list_length (selection) == 0) {
                 if (view->details->directory_as_file != NULL) {
                         files = g_list_append (NULL, nautilus_file_ref (view->details->directory_as_file));
@@ -2356,7 +2374,7 @@ action_open_item_new_window (GSimpleAction *action,
         GList *selection;
 
         view = NAUTILUS_FILES_VIEW (user_data);
-        selection = nautilus_files_view_get_selection (view);
+        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
         window = GTK_WINDOW (nautilus_files_view_get_containing_window (view));
 
         if (nautilus_files_view_confirm_multiple (window, g_list_length (selection), TRUE)) {
@@ -2674,7 +2692,6 @@ slot_active (NautilusWindowSlot *slot,
          * zoom slider has the correct adjustment that changes when the
          * view mode changes
          */
-        nautilus_window_slot_sync_view_mode (slot);
         nautilus_files_view_update_context_menus(view);
         nautilus_files_view_update_toolbar_menus (view);
 
@@ -2718,23 +2735,9 @@ nautilus_files_view_grab_focus (GtkWidget *widget)
         }
 }
 
-int
-nautilus_files_view_get_selection_count (NautilusFilesView *view)
-{
-        /* FIXME: This could be faster if we special cased it in subclasses */
-        GList *files;
-        int len;
-
-        files = nautilus_files_view_get_selection (NAUTILUS_FILES_VIEW (view));
-        len = g_list_length (files);
-        nautilus_file_list_free (files);
-
-        return len;
-}
-
-void
-nautilus_files_view_set_selection (NautilusFilesView *nautilus_files_view,
-                                   GList             *selection)
+static void
+nautilus_files_view_set_selection (NautilusView *nautilus_files_view,
+                                   GList        *selection)
 {
         NautilusFilesView *view;
 
@@ -2830,6 +2833,9 @@ nautilus_files_view_destroy (GtkWidget *object)
                 view->details->directory_as_file = NULL;
         }
 
+        g_clear_object (&view->details->search_query);
+        g_clear_object (&view->details->location);
+
         /* We don't own the slot, so no unref */
         view->details->slot = NULL;
 
@@ -2895,7 +2901,7 @@ nautilus_files_view_display_selection_info (NautilusFilesView *view)
 
         g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
 
-        selection = nautilus_files_view_get_selection (view);
+        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
 
         folder_item_count_known = TRUE;
         folder_count = 0;
@@ -3048,15 +3054,15 @@ nautilus_files_view_send_selection_change (NautilusFilesView *view)
         g_signal_emit (view, signals[SELECTION_CHANGED], 0);
 }
 
-void
-nautilus_files_view_load_location (NautilusFilesView *nautilus_files_view,
-                                   GFile             *location)
+static void
+nautilus_files_view_set_location (NautilusView *view,
+                                  GFile        *location)
 {
         NautilusDirectory *directory;
 
         nautilus_profile_start (NULL);
         directory = nautilus_directory_get (location);
-        load_directory (nautilus_files_view, directory);
+        load_directory (NAUTILUS_FILES_VIEW (view), directory);
         nautilus_directory_unref (directory);
         nautilus_profile_end (NULL);
 }
@@ -3098,7 +3104,7 @@ done_loading (NautilusFilesView *view,
 
                 selection = view->details->pending_selection;
 
-                if (nautilus_files_view_is_search (view) && all_files_seen) {
+                if (nautilus_view_is_searching (NAUTILUS_VIEW (view)) && all_files_seen) {
                         nautilus_files_view_select_first (view);
                         do_reveal = TRUE;
                 } else if (selection != NULL && all_files_seen) {
@@ -3132,6 +3138,7 @@ done_loading (NautilusFilesView *view,
 
         view->details->loading = FALSE;
         g_signal_emit (view, signals[END_LOADING], 0, all_files_seen);
+        g_object_notify (G_OBJECT (view), "is-loading");
 
         check_empty_states (view);
 
@@ -3529,7 +3536,7 @@ process_old_files (NautilusFilesView *view)
                 check_empty_states (view);
 
                 if (files_changed != NULL) {
-                        selection = nautilus_files_view_get_selection (view);
+                        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
                         files = file_and_directory_list_to_files (files_changed);
                         send_selection_change = eel_g_lists_sort_and_check_for_intersection
                                 (&files, &selection);
@@ -4143,7 +4150,7 @@ get_extension_selection_menu_items (NautilusFilesView *view)
         GList *selection;
 
         window = nautilus_files_view_get_window (view);
-        selection = nautilus_files_view_get_selection (view);
+        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
         providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_MENU_PROVIDER);
         items = NULL;
 
@@ -4552,7 +4559,7 @@ run_script (GSimpleAction *action,
 
         old_working_dir = change_to_view_directory (launch_parameters->directory_view);
 
-        selected_files = nautilus_files_view_get_selection (launch_parameters->directory_view);
+        selected_files = nautilus_view_get_selection (NAUTILUS_VIEW (launch_parameters->directory_view));
         set_script_environment_variables (launch_parameters->directory_view, selected_files);
 
         parameters = get_file_names_as_parameter_array (selected_files,
@@ -5514,7 +5521,7 @@ action_paste_files_into (GSimpleAction *action,
         GList *selection;
 
         view = NAUTILUS_FILES_VIEW (user_data);
-        selection = nautilus_files_view_get_selection (view);
+        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
         if (selection != NULL) {
                 paste_into (view, NAUTILUS_FILE (selection->data));
                 nautilus_file_list_free (selection);
@@ -5562,7 +5569,7 @@ real_action_rename (NautilusFilesView *view,
 
         g_assert (NAUTILUS_IS_FILES_VIEW (view));
 
-        selection = nautilus_files_view_get_selection (view);
+        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
 
         if (selection_not_empty_in_menu_callback (view, selection)) {
                 /* If there is more than one file selected, invoke a batch renamer */
@@ -5669,7 +5676,7 @@ action_set_as_wallpaper (GSimpleAction *action,
 
         g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
 
-        selection = nautilus_files_view_get_selection (user_data);
+        selection = nautilus_view_get_selection (user_data);
 
         if (can_set_wallpaper (selection)
             && selection_not_empty_in_menu_callback (user_data, selection)) {
@@ -5815,7 +5822,7 @@ action_mount_volume (GSimpleAction *action,
 
         view = NAUTILUS_FILES_VIEW (user_data);
 
-        selection = nautilus_files_view_get_selection (view);
+        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
         for (l = selection; l != NULL; l = l->next) {
                 file = NAUTILUS_FILE (l->data);
 
@@ -5842,7 +5849,7 @@ action_unmount_volume (GSimpleAction *action,
 
         view = NAUTILUS_FILES_VIEW (user_data);
 
-        selection = nautilus_files_view_get_selection (view);
+        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
 
         for (l = selection; l != NULL; l = l->next) {
                 file = NAUTILUS_FILE (l->data);
@@ -5868,7 +5875,7 @@ action_eject_volume (GSimpleAction *action,
 
         view = NAUTILUS_FILES_VIEW (user_data);
 
-        selection = nautilus_files_view_get_selection (view);
+        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
         for (l = selection; l != NULL; l = l->next) {
                 file = NAUTILUS_FILE (l->data);
 
@@ -5922,7 +5929,7 @@ action_start_volume (GSimpleAction *action,
 
         view = NAUTILUS_FILES_VIEW (user_data);
 
-        selection = nautilus_files_view_get_selection (view);
+        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
         for (l = selection; l != NULL; l = l->next) {
                 file = NAUTILUS_FILE (l->data);
 
@@ -5947,7 +5954,7 @@ action_stop_volume (GSimpleAction *action,
 
         view = NAUTILUS_FILES_VIEW (user_data);
 
-        selection = nautilus_files_view_get_selection (view);
+        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
         for (l = selection; l != NULL; l = l->next) {
                 file = NAUTILUS_FILE (l->data);
 
@@ -5969,11 +5976,11 @@ action_detect_media (GSimpleAction *action,
 {
         NautilusFile *file;
         GList *selection, *l;
-        NautilusFilesView *view;
+        NautilusView *view;
 
-        view = NAUTILUS_FILES_VIEW (user_data);
+        view = NAUTILUS_VIEW (user_data);
 
-        selection = nautilus_files_view_get_selection (view);
+        selection = nautilus_view_get_selection (view);
         for (l = selection; l != NULL; l = l->next) {
                 file = NAUTILUS_FILE (l->data);
 
@@ -6295,12 +6302,12 @@ real_update_actions_state (NautilusFilesView *view)
 
         view_action_group = view->details->view_action_group;
 
-        selection = nautilus_files_view_get_selection (view);
+        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
         selection_count = g_list_length (selection);
         selection_contains_special_link = special_link_in_selection (selection);
         selection_contains_desktop_or_home_dir = desktop_or_home_dir_in_selection (selection);
         selection_contains_recent = showing_recent_directory (view);
-        selection_contains_search = nautilus_files_view_is_search (view);
+        selection_contains_search = nautilus_view_is_searching (NAUTILUS_VIEW (view));
         selection_is_read_only = selection_count == 1 &&
                 (!nautilus_file_can_write (NAUTILUS_FILE (selection->data)) &&
                  !nautilus_file_has_activation_uri (NAUTILUS_FILE (selection->data)));
@@ -6357,7 +6364,7 @@ real_update_actions_state (NautilusFilesView *view)
         g_simple_action_set_enabled (G_SIMPLE_ACTION (action), can_create_files);
 
 
-        selection = nautilus_files_view_get_selection (view);
+        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
         selection_count = g_list_length (selection);
 
         show_app = show_run = item_opens_in_view = selection_count != 0;
@@ -6609,7 +6616,7 @@ update_selection_menu (NautilusFilesView *view)
         gboolean show_detect_media;
         GDriveStartStopType start_stop_type;
 
-        selection = nautilus_files_view_get_selection (view);
+        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
         selection_count = g_list_length (selection);
 
         show_mount = (selection != NULL);
@@ -7016,7 +7023,7 @@ nautilus_files_view_notify_selection_changed (NautilusFilesView *view)
 
         g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
 
-        selection = nautilus_files_view_get_selection (view);
+        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
         window = nautilus_files_view_get_containing_window (view);
         DEBUG_FILES (selection, "Selection changed in window %p", window);
         nautilus_file_list_free (selection);
@@ -7069,8 +7076,6 @@ static void
 load_directory (NautilusFilesView *view,
                 NautilusDirectory *directory)
 {
-        NautilusDirectory *old_directory;
-        NautilusFile *old_file;
         NautilusFileAttributes attributes;
 
         g_assert (NAUTILUS_IS_FILES_VIEW (view));
@@ -7096,16 +7101,16 @@ load_directory (NautilusFilesView *view,
                                                    view->details->subdirectory_list->data);
         }
 
-        old_directory = view->details->model;
+        g_set_object (&view->details->model, directory);
 
-        nautilus_directory_ref (directory);
-        view->details->model = directory;
-        nautilus_directory_unref (old_directory);
+        g_clear_object (&view->details->directory_as_file);
+        view->details->directory_as_file = nautilus_directory_get_corresponding_file (directory);
 
-        old_file = view->details->directory_as_file;
-        view->details->directory_as_file =
-                nautilus_directory_get_corresponding_file (directory);
-        nautilus_file_unref (old_file);
+        g_clear_object (&view->details->location);
+        view->details->location = nautilus_directory_get_location (directory);
+
+        g_object_notify (G_OBJECT (view), "location");
+        g_object_notify (G_OBJECT (view), "is-searching");
 
         /* FIXME bugzilla.gnome.org 45062: In theory, we also need to monitor metadata here (as
          * well as doing a call when ready), in case external forces
@@ -7156,6 +7161,7 @@ finish_loading (NautilusFilesView *view)
          */
         nautilus_profile_start ("BEGIN_LOADING");
         g_signal_emit (view, signals[BEGIN_LOADING], 0);
+        g_object_notify (G_OBJECT (view), "is-loading");
         nautilus_profile_end ("BEGIN_LOADING");
 
         check_empty_states (view);
@@ -7572,11 +7578,27 @@ nautilus_files_view_get_property (GObject    *object,
 
         switch (prop_id) {
         case PROP_ICON:
-                g_value_set_object (value, nautilus_files_view_get_icon (view));
+                g_value_set_object (value, nautilus_view_get_icon (NAUTILUS_VIEW (view)));
                 break;
 
         case PROP_VIEW_WIDGET:
-                g_value_set_object (value, nautilus_files_view_get_view_widget (view));
+                g_value_set_object (value, nautilus_view_get_view_widget (NAUTILUS_VIEW (view)));
+                break;
+
+        case PROP_IS_LOADING:
+                g_value_set_boolean (value, nautilus_view_is_loading (NAUTILUS_VIEW (view)));
+                break;
+
+        case PROP_IS_SEARCH:
+                g_value_set_boolean (value, nautilus_view_is_searching (NAUTILUS_VIEW (view)));
+                break;
+
+        case PROP_LOCATION:
+                g_value_set_object (value, nautilus_view_get_location (NAUTILUS_VIEW (view)));
+                break;
+
+        case PROP_SEARCH_QUERY:
+                g_value_set_object (value, view->details->search_query);
                 break;
 
         default:
@@ -7613,6 +7635,15 @@ nautilus_files_view_set_property (GObject      *object,
         case PROP_SUPPORTS_ZOOMING:
                 directory_view->details->supports_zooming = g_value_get_boolean (value);
                 break;
+
+        case PROP_LOCATION:
+                nautilus_view_set_location (NAUTILUS_VIEW (directory_view), g_value_get_object (value));
+                break;
+
+        case PROP_SEARCH_QUERY:
+                nautilus_view_set_search_query (NAUTILUS_VIEW (directory_view), g_value_get_object (value));
+                break;
+
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -7791,6 +7822,110 @@ nautilus_files_view_key_press_event (GtkWidget   *widget,
         return GDK_EVENT_PROPAGATE;
 }
 
+static NautilusQuery*
+nautilus_files_view_get_search_query (NautilusView *view)
+{
+        return NAUTILUS_FILES_VIEW (view)->details->search_query;
+}
+
+static void
+nautilus_files_view_set_search_query (NautilusView  *view,
+                                      NautilusQuery *query)
+{
+        NautilusFilesView *files_view;
+        GFile *location;
+
+        files_view = NAUTILUS_FILES_VIEW (view);
+        location = NULL;
+
+        g_set_object (&files_view->details->search_query, query);
+        g_object_notify (G_OBJECT (view), "search-query");
+
+        if (query) {
+                if (nautilus_view_is_searching (view)) {
+                        location = nautilus_directory_get_location (files_view->details->model);
+
+                        /*
+                         * Reuse the search directory if we are already searching, and
+                         * only update the current location.
+                         */
+                        nautilus_search_directory_set_query (NAUTILUS_SEARCH_DIRECTORY (files_view->details->model), query);
+                        nautilus_view_set_location (view, location);
+                } else {
+                        NautilusDirectory *directory;
+                        NautilusFile *file;
+                        gchar *path;
+                        gchar *uri;
+
+                        uri = nautilus_search_directory_generate_new_uri ();
+                        location = g_file_new_for_uri (uri);
+                        file = nautilus_file_get (location);
+                        path = g_file_get_uri (location);
+
+                        directory = nautilus_directory_get (location);
+                        g_assert (NAUTILUS_IS_SEARCH_DIRECTORY (directory));
+
+                        nautilus_search_directory_set_base_model (NAUTILUS_SEARCH_DIRECTORY (directory), files_view->details->model);
+                        nautilus_search_directory_set_query (NAUTILUS_SEARCH_DIRECTORY (directory), query);
+
+                        load_directory (files_view, directory);
+
+                        g_object_notify (G_OBJECT (view), "is-searching");
+
+                        nautilus_directory_unref (directory);
+                        nautilus_file_unref (file);
+                        g_free (uri);
+                        g_free (path);
+                }
+        } else {
+                 if (nautilus_view_is_searching (view)) {
+                        NautilusDirectory *base;
+
+                        base = nautilus_search_directory_get_base_model (NAUTILUS_SEARCH_DIRECTORY (files_view->details->model));
+
+                        load_directory (files_view, base);
+                }
+        }
+
+        g_clear_object (&location);
+}
+
+static GFile*
+nautilus_files_view_get_location (NautilusView *view)
+{
+        NautilusFilesView *files_view;
+
+        files_view = NAUTILUS_FILES_VIEW (view);
+
+        return files_view->details->location;
+}
+
+static gboolean
+nautilus_files_view_is_loading (NautilusView *view)
+{
+        NautilusFilesView *files_view;
+
+        files_view = NAUTILUS_FILES_VIEW (view);
+
+        return files_view->details->loading;
+}
+
+static void
+nautilus_files_view_iface_init (NautilusViewInterface *iface)
+{
+        iface->get_icon = nautilus_files_view_get_icon;
+        iface->get_location = nautilus_files_view_get_location;
+        iface->set_location = nautilus_files_view_set_location;
+        iface->get_selection = nautilus_files_view_get_selection;
+        iface->set_selection = nautilus_files_view_set_selection;
+        iface->get_search_query = nautilus_files_view_get_search_query;
+        iface->set_search_query = nautilus_files_view_set_search_query;
+        iface->get_view_widget = nautilus_files_view_get_view_widget;
+        iface->is_searching = nautilus_files_view_is_searching;
+        iface->is_loading = nautilus_files_view_is_loading;
+}
+
+
 static void
 nautilus_files_view_class_init (NautilusFilesViewClass *klass)
 {
@@ -7896,35 +8031,31 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
 
         copied_files_atom = gdk_atom_intern ("x-special/gnome-copied-files", FALSE);
 
-        properties[PROP_WINDOW_SLOT] =
+        g_object_class_install_property (
+                oclass,
+                PROP_WINDOW_SLOT,
                 g_param_spec_object ("window-slot",
                                      "Window Slot",
                                      "The parent window slot reference",
                                      NAUTILUS_TYPE_WINDOW_SLOT,
                                      G_PARAM_WRITABLE |
-                                     G_PARAM_CONSTRUCT_ONLY);
-        properties[PROP_SUPPORTS_ZOOMING] =
+                                     G_PARAM_CONSTRUCT_ONLY));
+        g_object_class_install_property (
+                oclass,
+                PROP_SUPPORTS_ZOOMING,
                 g_param_spec_boolean ("supports-zooming",
                                       "Supports zooming",
                                       "Whether the view supports zooming",
                                       TRUE,
                                       G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
-                                      G_PARAM_STATIC_STRINGS);
-        properties[PROP_ICON] =
-                g_param_spec_object ("icon",
-                                     "Icon",
-                                     "The icon that represents the view",
-                                     G_TYPE_ICON,
-                                     G_PARAM_READABLE);
+                                      G_PARAM_STATIC_STRINGS));
 
-        properties[PROP_VIEW_WIDGET] =
-                g_param_spec_object ("view-widget",
-                                     "View widget",
-                                     "The view's widget that will appear under the view menu button",
-                                     GTK_TYPE_WIDGET,
-                                     G_PARAM_READABLE);
-
-        g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
+        g_object_class_override_property (oclass, PROP_ICON, "icon");
+        g_object_class_override_property (oclass, PROP_VIEW_WIDGET, "view-widget");
+        g_object_class_override_property (oclass, PROP_IS_LOADING, "is-loading");
+        g_object_class_override_property (oclass, PROP_IS_SEARCH, "is-searching");
+        g_object_class_override_property (oclass, PROP_LOCATION, "location");
+        g_object_class_override_property (oclass, PROP_SEARCH_QUERY, "search-query");
 }
 
 static void

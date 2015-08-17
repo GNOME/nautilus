@@ -1162,7 +1162,7 @@ nautilus_canvas_view_reveal_selection (NautilusFilesView *view)
 
 	g_return_if_fail (NAUTILUS_IS_CANVAS_VIEW (view));
 
-        selection = nautilus_files_view_get_selection (view);
+        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
 
 	/* Make sure at least one of the selected items is scrolled into view */
 	if (selection != NULL) {

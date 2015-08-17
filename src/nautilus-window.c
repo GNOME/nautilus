@@ -2263,7 +2263,7 @@ nautilus_window_set_active_slot (NautilusWindow *window, NautilusWindowSlot *new
 	/* make old slot inactive if it exists (may be NULL after init, for example) */
 	if (old_slot != NULL) {
 		/* inform slot & view */
-		g_signal_emit_by_name (old_slot, "inactive");
+		nautilus_window_slot_set_active (old_slot, FALSE);
 	}
 
 	window->priv->active_slot = new_slot;
@@ -2276,7 +2276,7 @@ nautilus_window_set_active_slot (NautilusWindow *window, NautilusWindowSlot *new
                 nautilus_toolbar_set_active_slot (NAUTILUS_TOOLBAR (window->priv->toolbar), new_slot);
 
 		/* inform slot & view */
-                g_signal_emit_by_name (new_slot, "active");
+                nautilus_window_slot_set_active (new_slot, TRUE);
 	}
 }
 

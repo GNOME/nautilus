@@ -607,7 +607,7 @@ trash_link_is_selection (NautilusFilesView *view)
 
 	result = FALSE;
 	
-	selection = nautilus_files_view_get_selection (view);
+	selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
 
 	if ((g_list_length (selection) == 1) &&
 	    NAUTILUS_IS_DESKTOP_ICON_FILE (selection->data)) {
@@ -642,6 +642,7 @@ real_update_context_menus (NautilusFilesView *view)
 	NautilusDesktopCanvasView *desktop_view;
 	GAction *action;
 	GActionGroup *view_action_group;
+        GList *selection;
 	int selection_count;
 
 	g_assert (NAUTILUS_IS_DESKTOP_CANVAS_VIEW (view));
@@ -664,13 +665,17 @@ real_update_context_menus (NautilusFilesView *view)
 	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), TRUE);
 
 	/* Stretch */
-	selection_count = nautilus_files_view_get_selection_count (view);
+        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
+	selection_count = g_list_length (selection);
 	canvas_container = get_canvas_container (desktop_view);
 
 	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group), "stretch");
 	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), selection_count == 1 &&
 							       canvas_container != NULL &&
 							       !nautilus_canvas_container_has_stretch_handles (canvas_container));
+
+        nautilus_file_list_free (selection);
+
 	/* Unstretch */
 	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group), "unstretch");
 	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), canvas_container != NULL &&

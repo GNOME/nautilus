@@ -57,13 +57,17 @@ static void
 selection_changed_cb (NautilusFilesView *view,
 		      NautilusTrashBar *bar)
 {
+        GList *selection;
 	int count;
 
-	count = nautilus_files_view_get_selection_count (view);
+        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
+	count = g_list_length (selection);
 
 	gtk_info_bar_set_response_sensitive (GTK_INFO_BAR (bar),
 					     TRASH_BAR_RESPONSE_RESTORE,
 					     (count > 0));
+
+        nautilus_file_list_free (selection);
 }
 
 static void
@@ -166,7 +170,7 @@ trash_bar_response_cb (GtkInfoBar *infobar,
 		nautilus_file_operations_empty_trash (window);
 		break;
 	case TRASH_BAR_RESPONSE_RESTORE:
-		files = nautilus_files_view_get_selection (bar->priv->view);
+		files = nautilus_view_get_selection (NAUTILUS_VIEW (bar->priv->view));
 		nautilus_restore_files_from_trash (files, GTK_WINDOW (window));
 		nautilus_file_list_free (files);
 		break;

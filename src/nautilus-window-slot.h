@@ -30,6 +30,7 @@ typedef struct NautilusWindowSlotClass NautilusWindowSlotClass;
 typedef struct NautilusWindowSlotDetails NautilusWindowSlotDetails;
 
 #include "nautilus-files-view.h"
+#include "nautilus-view.h"
 #include "nautilus-window.h"
 
 #define NAUTILUS_TYPE_WINDOW_SLOT	 (nautilus_window_slot_get_type())
@@ -87,15 +88,13 @@ char *  nautilus_window_slot_get_location_uri		   (NautilusWindowSlot *slot);
 
 NautilusFile *    nautilus_window_slot_get_file            (NautilusWindowSlot *slot);
 NautilusBookmark *nautilus_window_slot_get_bookmark        (NautilusWindowSlot *slot);
-NautilusFilesView *    nautilus_window_slot_get_view            (NautilusWindowSlot *slot);
+NautilusView*  nautilus_window_slot_get_view               (NautilusWindowSlot *slot);
 
-NautilusFilesView * nautilus_window_slot_get_current_view       (NautilusWindowSlot *slot);
+NautilusView*  nautilus_window_slot_get_current_view       (NautilusWindowSlot *slot);
 char *         nautilus_window_slot_get_current_uri        (NautilusWindowSlot *slot);
 
 GList * nautilus_window_slot_get_back_history              (NautilusWindowSlot *slot);
 GList * nautilus_window_slot_get_forward_history           (NautilusWindowSlot *slot);
-
-GFile * nautilus_window_slot_get_query_editor_location     (NautilusWindowSlot *slot);
 void    nautilus_window_slot_set_search_visible            (NautilusWindowSlot *slot,
 							    gboolean            visible);
 
@@ -120,8 +119,6 @@ void    nautilus_window_slot_go_home			   (NautilusWindowSlot *slot,
 void    nautilus_window_slot_go_up                         (NautilusWindowSlot *slot,
 							    NautilusWindowOpenFlags flags);
 
-void nautilus_window_slot_sync_view_mode (NautilusWindowSlot *slot);
-
 void nautilus_window_slot_display_view_selection_failure   (NautilusWindow *window,
                                                             NautilusFile   *file,
                                                             GFile          *location,
@@ -130,5 +127,10 @@ void nautilus_window_slot_display_view_selection_failure   (NautilusWindow *wind
 GIcon*   nautilus_window_slot_get_icon                     (NautilusWindowSlot *slot);
 
 GtkWidget* nautilus_window_slot_get_view_widget            (NautilusWindowSlot *slot);
+
+gboolean nautilus_window_slot_get_active                   (NautilusWindowSlot *slot);
+
+void     nautilus_window_slot_set_active                   (NautilusWindowSlot *slot,
+                                                            gboolean            active);
 
 #endif /* NAUTILUS_WINDOW_SLOT_H */

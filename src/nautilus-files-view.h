@@ -359,14 +359,6 @@ void              nautilus_files_view_new_file_with_initial_contents (NautilusFi
 
 /* selection handling */
 void              nautilus_files_view_activate_selection         (NautilusFilesView      *view);
-int               nautilus_files_view_get_selection_count        (NautilusFilesView      *view);
-GList *           nautilus_files_view_get_selection              (NautilusFilesView      *view);
-void              nautilus_files_view_set_selection              (NautilusFilesView      *view,
-                                                                  GList                  *selection);
-
-
-void              nautilus_files_view_load_location              (NautilusFilesView      *view,
-                                                                  GFile                  *location);
 void              nautilus_files_view_stop_loading               (NautilusFilesView      *view);
 
 char *            nautilus_files_view_get_first_visible_file     (NautilusFilesView      *view);
@@ -392,10 +384,5 @@ void              nautilus_files_view_action_show_hidden_files   (NautilusFilesV
 
 GActionGroup *    nautilus_files_view_get_action_group           (NautilusFilesView      *view);
 GtkWidget*        nautilus_files_view_get_content_widget         (NautilusFilesView      *view);
-gboolean          nautilus_files_view_is_search                  (NautilusFilesView      *view);
-
-GIcon*            nautilus_files_view_get_icon                   (NautilusFilesView      *view);
-
-GtkWidget*        nautilus_files_view_get_view_widget            (NautilusFilesView      *view);
 
 #endif /* NAUTILUS_FILES_VIEW_H */

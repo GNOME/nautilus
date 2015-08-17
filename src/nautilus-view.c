@@ -1,0 +1,266 @@
+/* nautilus-view.c
+ *
+ * Copyright (C) 2015 Georges Basile Stavracas Neto <georges.stavracas@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#include "config.h"
+
+#include "nautilus-view.h"
+
+G_DEFINE_INTERFACE (NautilusView, nautilus_view, GTK_TYPE_WIDGET)
+
+static void
+nautilus_view_default_init (NautilusViewInterface *iface)
+{
+        /**
+         * NautilusView::icon:
+         *
+         * The #GIcon that represents the view, or %NULL.
+         */
+        g_object_interface_install_property (iface,
+                                             g_param_spec_object ("icon",
+                                                                  "Icon that represents the view",
+                                                                  "The icon that represents the view",
+                                                                  G_TYPE_ICON,
+                                                                  G_PARAM_READABLE));
+
+        /**
+         * NautilusView::view-widget:
+         *
+         * %TRUE if the view is loading the location, %FALSE otherwise.
+         */
+        g_object_interface_install_property (iface,
+                                             g_param_spec_object ("view-widget",
+                                                                  "View widget for the menu",
+                                                                  "The view widget that appears under the view menu",
+                                                                  GTK_TYPE_WIDGET,
+                                                                  G_PARAM_READABLE));
+
+        /**
+         * NautilusView::is-loading:
+         *
+         * %TRUE if the view is loading the location, %FALSE otherwise.
+         */
+        g_object_interface_install_property (iface,
+                                             g_param_spec_boolean ("is-loading",
+                                                                   "Current view is loading",
+                                                                   "Whether the current view is loading the location or not",
+                                                                   FALSE,
+                                                                   G_PARAM_READABLE));
+
+        /**
+         * NautilusView::is-searching:
+         *
+         * %TRUE if the view is searching, %FALSE otherwise.
+         */
+        g_object_interface_install_property (iface,
+                                             g_param_spec_boolean ("is-searching",
+                                                                   "Current view is searching",
+                                                                   "Whether the current view is searching or not",
+                                                                   FALSE,
+                                                                   G_PARAM_READABLE));
+
+        /**
+         * NautilusView::location:
+         *
+         * The current location of the view.
+         */
+        g_object_interface_install_property (iface,
+                                             g_param_spec_object ("location",
+                                                                  "Location displayed by the view",
+                                                                  "The current location displayed by the view",
+                                                                  G_TYPE_FILE,
+                                                                  G_PARAM_READWRITE));
+
+        /**
+         * NautilusView::search-query:
+         *
+         * The search query being performed, or NULL.
+         */
+        g_object_interface_install_property (iface,
+                                             g_param_spec_object ("search-query",
+                                                                  "Search query being performed",
+                                                                  "The search query being performed on the view",
+                                                                  NAUTILUS_TYPE_QUERY,
+                                                                  G_PARAM_READWRITE));
+}
+
+/**
+ * nautilus_view_get_icon:
+ * @view: a #NautilusView
+ *
+ * Retrieves the #GIcon that represents @view.
+ *
+ * Returns: (transfer none): a #GIcon
+ */
+GIcon*
+nautilus_view_get_icon (NautilusView *view)
+{
+        g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->get_icon, NULL);
+
+        return NAUTILUS_VIEW_GET_IFACE (view)->get_icon (view);
+}
+
+/**
+ * nautilus_view_get_view_widget:
+ * @view: a #NautilusView
+ *
+ * Retrieves the view menu widget from @view.
+ *
+ * Returns: (transfer none): the widget displayed under view menu.
+ */
+GtkWidget*
+nautilus_view_get_view_widget (NautilusView *view)
+{
+        g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->get_view_widget, NULL);
+
+        return NAUTILUS_VIEW_GET_IFACE (view)->get_view_widget (view);
+}
+
+/**
+ * nautilus_view_get_search_query:
+ * @view: a #NautilusView
+ *
+ * Retrieves the current current location of @view.
+ *
+ * Returns: (transfer none): a #GFile
+ */
+GFile*
+nautilus_view_get_location (NautilusView *view)
+{
+        g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->get_location, NULL);
+
+        return NAUTILUS_VIEW_GET_IFACE (view)->get_location (view);
+}
+
+/**
+ * nautilus_view_set_location:
+ * @view: a #NautilusView
+ * @location: the location displayed by @view
+ *
+ * Sets the location of @view.
+ *
+ * Returns:
+ */
+void
+nautilus_view_set_location (NautilusView *view,
+                            GFile        *location)
+{
+        g_return_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->set_location);
+
+        NAUTILUS_VIEW_GET_IFACE (view)->set_location (view, location);
+}
+
+/**
+ * nautilus_view_get_selection:
+ * @view: a #NautilusView
+ *
+ * Get the current selection of the view.
+ *
+ * Returns: (transfer full) (type GFile): a newly allocated list
+ * of the currently selected files.
+ */
+GList*
+nautilus_view_get_selection (NautilusView *view)
+{
+        g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->get_selection, NULL);
+
+        return NAUTILUS_VIEW_GET_IFACE (view)->get_selection (view);
+}
+
+/**
+ * nautilus_view_set_selection:
+ * @view: a #NautilusView
+ * @selection: (nullable): a list of files
+ *
+ * Sets the current selection of the view.
+ *
+ * Returns:
+ */
+void
+nautilus_view_set_selection (NautilusView *view,
+                             GList        *selection)
+{
+        g_return_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->set_selection);
+
+        NAUTILUS_VIEW_GET_IFACE (view)->set_selection (view, selection);
+}
+
+/**
+ * nautilus_view_get_search_query:
+ * @view: a #NautilusView
+ *
+ * Retrieves the current search query displayed by @view.
+ *
+ * Returns: (transfer none): a #
+ */
+NautilusQuery*
+nautilus_view_get_search_query (NautilusView *view)
+{
+        g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->get_search_query, NULL);
+
+        return NAUTILUS_VIEW_GET_IFACE (view)->get_search_query (view);
+}
+
+/**
+ * nautilus_view_set_search_query:
+ * @view: a #NautilusView
+ * @query: the search query to be performed, or %NULL
+ *
+ * Sets the current search query performed by @view.
+ *
+ * Returns:
+ */
+void
+nautilus_view_set_search_query (NautilusView  *view,
+                                NautilusQuery *query)
+{
+        g_return_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->set_search_query);
+
+        NAUTILUS_VIEW_GET_IFACE (view)->set_search_query (view, query);
+}
+
+/**
+ * nautilus_view_is_loading:
+ * @view: a #NautilusView
+ *
+ * Whether @view is loading the current location.
+ *
+ * Returns: %TRUE if @view is loading, %FALSE otherwise.
+ */
+gboolean
+nautilus_view_is_loading (NautilusView *view)
+{
+        g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->is_loading, FALSE);
+
+        return NAUTILUS_VIEW_GET_IFACE (view)->is_loading (view);
+}
+
+/**
+ * nautilus_view_is_searching:
+ * @view: a #NautilusView
+ *
+ * Whether @view is searching.
+ *
+ * Returns: %TRUE if @view is searching, %FALSE otherwise.
+ */
+gboolean
+nautilus_view_is_searching (NautilusView *view)
+{
+        g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->is_searching, FALSE);
+
+        return NAUTILUS_VIEW_GET_IFACE (view)->is_searching (view);
+}
