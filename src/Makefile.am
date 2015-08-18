@@ -139,6 +139,10 @@ nautilus_built_sources = \
 	$(NULL)
 
 nautilus_SOURCES = \
+	gtk/gtkplacesview.c			\
+	gtk/gtkplacesviewprivate.h		\
+	gtk/gtkplacesviewrow.c			\
+	gtk/gtkplacesviewrowprivate.h		\
 	nautilus-application.c			\
 	nautilus-application.h			\
 	nautilus-application-actions.c		\
@@ -189,6 +193,8 @@ nautilus_SOURCES = \
 	nautilus-notebook.h			\
 	nautilus-pathbar.c			\
 	nautilus-pathbar.h			\
+	nautilus-places-view.c			\
+	nautilus-places-view.h			\
 	nautilus-previewer.c			\
 	nautilus-previewer.h			\
 	nautilus-progress-info-widget.c		\

@@ -33,6 +33,8 @@
                   <object class="GtkPlacesSidebar" id="places_sidebar">
                     <property name="visible">True</property>
                     <property name="populate-all">True</property>
+                    <property name="show-other-locations">True</property>
+                    <signal name="show-other-locations" handler="places_sidebar_show_other_locations" object="NautilusWindow" swapped="yes" />
                   </object>
                   <packing>
                     <property name="pack_type">start</property>

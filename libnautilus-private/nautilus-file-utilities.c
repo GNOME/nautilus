@@ -268,10 +268,16 @@ nautilus_compute_title_for_location (GFile *location)
 	title = NULL;
 	if (location) {
 		file = nautilus_file_get (location);
-		title = nautilus_file_get_description (file);
-		if (title == NULL) {
-			title = nautilus_file_get_display_name (file);
-		}
+
+                if (nautilus_file_is_other_locations (file)) {
+                        title = g_strdup (_("Other Locations"));
+                } else {
+                        title = nautilus_file_get_description (file);
+
+                        if (title == NULL) {
+                                title = nautilus_file_get_display_name (file);
+                        }
+                }
 		nautilus_file_unref (file);
 	}
 

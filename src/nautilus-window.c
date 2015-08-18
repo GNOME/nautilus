@@ -986,6 +986,18 @@ places_sidebar_show_connect_to_server_cb (GtkPlacesSidebar *sidebar,
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 }
 
+static void
+places_sidebar_show_other_locations (NautilusWindow   *window)
+{
+        GFile *location;
+
+        location = g_file_new_for_uri ("other-locations:///");
+
+        open_location_cb (window, location, GTK_PLACES_OPEN_NORMAL);
+
+        g_object_unref (location);
+}
+
 static GList *
 build_selection_list_from_gfile_list (GList *gfile_list)
 {
@@ -1271,7 +1283,6 @@ nautilus_window_set_up_sidebar (NautilusWindow *window)
 					   (GTK_PLACES_OPEN_NORMAL
 					    | GTK_PLACES_OPEN_NEW_TAB
 					    | GTK_PLACES_OPEN_NEW_WINDOW));
-	gtk_places_sidebar_set_show_connect_to_server (GTK_PLACES_SIDEBAR (window->priv->places_sidebar), TRUE);
 
         g_signal_connect_swapped (window->priv->places_sidebar, "open-location",
                                   G_CALLBACK (open_location_cb), window);
@@ -2533,6 +2544,8 @@ nautilus_window_class_init (NautilusWindowClass *class)
 	gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, notification_operation_label);
 	gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, notification_operation_open);
 	gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, notification_operation_close);
+
+        gtk_widget_class_bind_template_callback (wclass, places_sidebar_show_other_locations);
 
 	properties[PROP_DISABLE_CHROME] =
 		g_param_spec_boolean ("disable-chrome",

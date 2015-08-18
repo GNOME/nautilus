@@ -360,7 +360,13 @@ slot_proxy_handle_drop (GtkWidget                *widget,
 
   target_view = NULL;
   if (target_slot != NULL) {
-    target_view = nautilus_window_slot_get_current_view (target_slot);
+        NautilusView *view;
+
+        view = nautilus_window_slot_get_current_view (target_slot);
+
+        if (view && NAUTILUS_IS_FILES_VIEW (view)) {
+                target_view = NAUTILUS_FILES_VIEW (view);
+        }
   }
 
   if (target_slot != NULL && target_view != NULL) {

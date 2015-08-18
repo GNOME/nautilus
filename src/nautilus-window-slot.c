@@ -29,6 +29,7 @@
 #include "nautilus-desktop-window.h"
 #include "nautilus-list-view.h"
 #include "nautilus-mime-actions.h"
+#include "nautilus-places-view.h"
 #include "nautilus-special-location-bar.h"
 #include "nautilus-trash-bar.h"
 #include "nautilus-view.h"
@@ -121,6 +122,7 @@ struct NautilusWindowSlotDetails {
 	NautilusWindowGoToCallback open_callback;
 	gpointer open_callback_user_data;
         gchar *view_mode_before_search;
+        gchar *view_mode_before_places;
 };
 
 static guint signals[LAST_SIGNAL] = { 0 };
@@ -133,15 +135,108 @@ static void nautilus_window_slot_sync_actions (NautilusWindowSlot *slot);
 static void nautilus_window_slot_connect_new_content_view (NautilusWindowSlot *slot);
 static void nautilus_window_slot_disconnect_content_view (NautilusWindowSlot *slot);
 static void nautilus_window_slot_emit_location_change (NautilusWindowSlot *slot, GFile *from, GFile *to);
+static gboolean nautilus_window_slot_content_view_matches (NautilusWindowSlot *slot, const char *iid);
+static NautilusView* nautilus_window_slot_get_view_for_location (NautilusWindowSlot *slot, GFile *location);
+
+static NautilusView*
+nautilus_window_slot_get_view_for_location (NautilusWindowSlot *slot,
+                                            GFile              *location)
+{
+        NautilusWindow *window;
+        NautilusView *view;
+        NautilusFile *file;
+
+        window = nautilus_window_slot_get_window (slot);
+        file = nautilus_file_get (location);
+        view = NULL;
+
+        /* FIXME bugzilla.gnome.org 41243:
+	 * We should use inheritance instead of these special cases
+	 * for the desktop window.
+	 */
+        if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
+                view = NAUTILUS_VIEW (nautilus_files_view_new (NAUTILUS_DESKTOP_ICON_VIEW_IID, slot));
+        } else if (nautilus_file_is_other_locations (file)) {
+                view = NAUTILUS_VIEW (nautilus_places_view_new ());
+
+                /* Save the current view, so we can go back after places view */
+                if (slot->details->content_view && NAUTILUS_IS_FILES_VIEW (slot->details->content_view)) {
+                        g_clear_pointer (&slot->details->view_mode_before_places, g_free);
+                        slot->details->view_mode_before_places = g_strdup (nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (slot->details->content_view)));
+                }
+        } else {
+                gchar *view_id;
+
+                view_id = NULL;
+
+                /* If we are in search, try to use by default list view. This will be deactivated
+                 * if the user manually switch to a diferent view mode */
+                if (nautilus_file_is_in_search (file)) {
+                        if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_LIST_VIEW_ON_SEARCH)) {
+                                /* If it's already set, is because we already made the change to search mode,
+                                 * so the view mode of the current view will be the one search is using,
+                                 * which is not the one we are interested in */
+                                if (slot->details->view_mode_before_search == NULL) {
+                                        slot->details->view_mode_before_search = g_strdup (nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (slot->details->content_view)));
+                                }
+                                view_id = g_strdup (NAUTILUS_LIST_VIEW_IID);
+                        } else {
+                                g_free (slot->details->view_mode_before_search);
+                                slot->details->view_mode_before_search = NULL;
+                        }
+                }
+
+                /* If there is already a view, just use the view mode that it's currently using, or
+                 * if we were on search before, use what we were using before entering
+                 * search mode */
+	        if (slot->details->content_view != NULL && view_id == NULL) {
+                        if (slot->details->view_mode_before_search != NULL) {
+                                view_id = slot->details->view_mode_before_search;
+                                slot->details->view_mode_before_search = NULL;
+                        } else if (NAUTILUS_IS_PLACES_VIEW (slot->details->content_view)) {
+                                view_id = slot->details->view_mode_before_places;
+                                slot->details->view_mode_before_places = NULL;
+                        } else {
+		                view_id = g_strdup (nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (slot->details->content_view)));
+                        }
+	        }
+
+                /* If there is not previous view in this slot, use the default view mode
+                 * from preferences */
+	        if (view_id == NULL) {
+		        view_id = nautilus_global_preferences_get_default_folder_viewer_preference_as_iid ();
+	        }
+
+                /* Try to reuse the current view */
+                if (nautilus_window_slot_content_view_matches (slot, view_id)) {
+                        view = slot->details->content_view;
+                } else {
+                        view = NAUTILUS_VIEW (nautilus_files_view_new (view_id, slot));
+                }
+
+                g_free (view_id);
+        }
+
+        nautilus_file_unref (file);
+
+        return g_object_ref (view);
+}
 
 static gboolean
-nautilus_window_slot_content_view_matches_iid (NautilusWindowSlot *slot,
-					       const char *iid)
+nautilus_window_slot_content_view_matches (NautilusWindowSlot *slot,
+                                           const char         *iid)
 {
 	if (slot->details->content_view == NULL) {
 		return FALSE;
 	}
-	return g_strcmp0 (nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (slot->details->content_view)), iid) == 0;
+
+        if (!iid && NAUTILUS_IS_PLACES_VIEW (slot->details->content_view)) {
+                return TRUE;
+        } else if (iid && NAUTILUS_IS_FILES_VIEW (slot->details->content_view)){
+                return g_strcmp0 (nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (slot->details->content_view)), iid) == 0;
+        } else {
+                return FALSE;
+        }
 }
 
 static void
@@ -170,10 +265,11 @@ nautilus_window_slot_sync_actions (NautilusWindowSlot *slot)
 
         /* View mode */
 	action = g_action_map_lookup_action (G_ACTION_MAP (slot->details->window), "view-mode");
+        g_simple_action_set_enabled (G_SIMPLE_ACTION (action), TRUE);
 
-	if (nautilus_window_slot_content_view_matches_iid (slot, NAUTILUS_LIST_VIEW_ID)) {
+	if (nautilus_window_slot_content_view_matches (slot, NAUTILUS_LIST_VIEW_ID)) {
 		g_action_change_state (action, g_variant_new_string ("list"));
-	} else if (nautilus_window_slot_content_view_matches_iid (slot, NAUTILUS_CANVAS_VIEW_ID)) {
+	} else if (nautilus_window_slot_content_view_matches (slot, NAUTILUS_CANVAS_VIEW_ID)) {
 		g_action_change_state (action, g_variant_new_string ("grid"));
 	} else {
 		g_simple_action_set_enabled (G_SIMPLE_ACTION (action), FALSE);
@@ -521,8 +617,8 @@ static void end_location_change                       (NautilusWindowSlot       
 static void cancel_location_change                    (NautilusWindowSlot         *slot);
 static void got_file_info_for_view_selection_callback (NautilusFile               *file,
 						       gpointer                    callback_data);
-static gboolean create_content_view                   (NautilusWindowSlot         *slot,
-						       const char                 *view_id,
+static gboolean setup_view                            (NautilusWindowSlot         *slot,
+                                                       NautilusView               *view,
 						       GError                    **error);
 static void load_new_location                         (NautilusWindowSlot         *slot,
 						       GFile                      *location,
@@ -742,13 +838,11 @@ begin_location_change (NautilusWindowSlot *slot,
 
 	nautilus_profile_start (NULL);
 
-        directory = nautilus_directory_get (location);
-
         /* Avoid to update status from the current view in our async calls */
         nautilus_window_slot_disconnect_content_view (slot);
         /* We are going to change the location, so make sure we stop any loading
          * or searching of the previous view, so we avoid to be slow */
-        if (slot->details->content_view) {
+        if (slot->details->content_view && NAUTILUS_IS_FILES_VIEW (slot->details->content_view)) {
                 nautilus_files_view_stop_loading (NAUTILUS_FILES_VIEW (slot->details->content_view));
         }
 
@@ -796,6 +890,8 @@ begin_location_change (NautilusWindowSlot *slot,
 	 * after determining an initial view (in the components), then
 	 * we end up fetching things twice.
 	 */
+        directory = nautilus_directory_get (location);
+
 	if (type == NAUTILUS_LOCATION_CHANGE_RELOAD) {
 		force_reload = TRUE;
 	} else if (!nautilus_monitor_active ()) {
@@ -819,7 +915,8 @@ begin_location_change (NautilusWindowSlot *slot,
 
         /* Set current_bookmark scroll pos */
         if (slot->details->current_location_bookmark != NULL &&
-            slot->details->content_view != NULL) {
+            slot->details->content_view != NULL &&
+            NAUTILUS_IS_FILES_VIEW (slot->details->content_view)) {
                 current_pos = nautilus_files_view_get_first_visible_file (NAUTILUS_FILES_VIEW (slot->details->content_view));
                 nautilus_bookmark_set_scroll_pos (slot->details->current_location_bookmark, current_pos);
                 g_free (current_pos);
@@ -1016,10 +1113,10 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 					   gpointer callback_data)
 {
         GError *error = NULL;
-	char *view_id;
 	NautilusWindow *window;
 	NautilusWindowSlot *slot;
 	NautilusFile *viewed_file, *parent_file;
+        NautilusView *view;
 	GFile *location, *default_location;
 	GMountOperation *mount_op;
 	MountNotMountedData *data;
@@ -1116,54 +1213,16 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 	nautilus_file_unref (parent_file);
 	location = slot->details->pending_location;
 
-	view_id = NULL;
+        view = NULL;
 
-        if (error == NULL ||
-	    (error->domain == G_IO_ERROR && error->code == G_IO_ERROR_NOT_SUPPORTED)) {
-		/* We got the information we need, now pick what view to use: */
-
-                /* If we are in search, try to use by default list view. This will be deactivated
-                 * if the user manually switch to a diferent view mode */
-                if (nautilus_file_is_in_search (nautilus_file_get (location))) {
-                        if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_LIST_VIEW_ON_SEARCH)) {
-                                /* If it's already set, is because we already made the change to search mode,
-                                 * so the view mode of the current view will be the one search is using,
-                                 * which is not the one we are interested in */
-                                if (slot->details->view_mode_before_search == NULL) {
-                                        slot->details->view_mode_before_search = g_strdup (nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (slot->details->content_view)));
-                                }
-                                view_id = g_strdup (NAUTILUS_LIST_VIEW_IID);
-                        } else {
-                                g_free (slot->details->view_mode_before_search);
-                                slot->details->view_mode_before_search = NULL;
-                        }
-                }
-
-                /* If there is already a view, just use the view mode that it's currently using, or
-                 * if we were on search before, use what we were using before entering
-                 * search mode */
-		if (slot->details->content_view != NULL && view_id == NULL) {
-                        if (slot->details->view_mode_before_search != NULL) {
-                                view_id = g_strdup (slot->details->view_mode_before_search);
-                                g_free (slot->details->view_mode_before_search);
-                                slot->details->view_mode_before_search = NULL;
-                        } else {
-			        view_id = g_strdup (nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (slot->details->content_view)));
-                        }
-		}
-
-                /* If there is not previous view in this slot, use the default view mode
-                 * from preferences */
-		if (view_id == NULL) {
-			view_id = nautilus_global_preferences_get_default_folder_viewer_preference_as_iid ();
-		}
+        if (!error || (error && error->domain == G_IO_ERROR && error->code == G_IO_ERROR_NOT_SUPPORTED)) {
+                view = nautilus_window_slot_get_view_for_location (slot, location);
 	}
 
-	if (view_id != NULL) {
+        if (view != NULL) {
 		GError *err = NULL;
 
-		create_content_view (slot, view_id, &err);
-		g_free (view_id);
+                setup_view (slot, view, &err);
 
 		report_callback (slot, err);
 		g_clear_error (&err);
@@ -1240,7 +1299,6 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 	g_clear_error (&error);
 
 	nautilus_file_unref (file);
-
 	nautilus_profile_end (NULL);
 }
 
@@ -1252,52 +1310,26 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
  * view, and the current location will be used.
  */
 static gboolean
-create_content_view (NautilusWindowSlot *slot,
-		     const char *view_id,
-		     GError **error_out)
+setup_view (NautilusWindowSlot  *slot,
+            NautilusView        *view,
+            GError             **error_out)
 {
-	NautilusWindow *window;
-        NautilusView *view;
-	GList *selection;
 	gboolean ret = TRUE;
 	GError *error = NULL;
 	GFile *old_location;
 
-	window = nautilus_window_slot_get_window (slot);
-
 	nautilus_profile_start (NULL);
 
-	/* FIXME bugzilla.gnome.org 41243:
-	 * We should use inheritance instead of these special cases
-	 * for the desktop window.
-	 */
-	if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
-		/* We force the desktop to use a desktop_icon_view. It's simpler
-		 * to fix it here than trying to make it pick the right view in
-		 * the first place.
-		 */
-		view_id = NAUTILUS_DESKTOP_ICON_VIEW_IID;
-	}
-
         nautilus_window_slot_disconnect_content_view (slot);
-        if (nautilus_window_slot_content_view_matches_iid (slot, view_id)) {
-                /* reuse existing content view */
-                view = slot->details->content_view;
-                slot->details->new_content_view = view;
-		g_object_ref (view);
-        } else {
-                /* create a new content view */
-		view = NAUTILUS_VIEW (nautilus_files_view_new (view_id, slot));
 
-                slot->details->new_content_view = view;
-        }
+        slot->details->new_content_view = view;
+
         nautilus_window_slot_connect_new_content_view (slot);
 
 	/* Forward search selection and state before loading the new model */
         old_location = slot->details->content_view ? nautilus_view_get_location (slot->details->content_view) : NULL;
 
 	/* Actually load the pending location and selection: */
-
         if (slot->details->pending_location != NULL) {
 		load_new_location (slot,
 				   slot->details->pending_location,
@@ -1345,13 +1377,11 @@ load_new_location (NautilusWindowSlot *slot,
 		   gboolean tell_current_content_view,
 		   gboolean tell_new_content_view)
 {
-	GList *selection_copy;
 	NautilusView *view;
 
 	g_assert (slot != NULL);
 	g_assert (location != NULL);
 
-	selection_copy = g_list_copy_deep (selection, (GCopyFunc) g_object_ref, NULL);
 	view = NULL;
 
 	nautilus_profile_start (NULL);
@@ -1372,8 +1402,6 @@ load_new_location (NautilusWindowSlot *slot,
 		   report_load_underway was called from load_location */
 		nautilus_view_set_selection (view, selection);
 	}
-
-	g_list_free_full (selection_copy, g_object_unref);
 
 	nautilus_profile_end (NULL);
 }
@@ -1447,7 +1475,8 @@ cancel_location_change (NautilusWindowSlot *slot)
 
         if (slot->details->pending_location != NULL
             && location != NULL
-            && slot->details->content_view != NULL) {
+            && slot->details->content_view != NULL
+            && NAUTILUS_IS_FILES_VIEW (slot->details->content_view)) {
 
                 /* No need to tell the new view - either it is the
                  * same as the old view, in which case it will already
@@ -1548,7 +1577,7 @@ nautilus_window_slot_set_content_view (NautilusWindowSlot *slot,
 	DEBUG ("Change view of window %s to %s", uri, id);
 	g_free (uri);
 
-	if (nautilus_window_slot_content_view_matches_iid (slot, id)) {
+	if (nautilus_window_slot_content_view_matches (slot, id)) {
 		return;
         }
 
@@ -1564,14 +1593,13 @@ nautilus_window_slot_set_content_view (NautilusWindowSlot *slot,
                  * is currently visible */
                 slot->details->pending_scroll_to = nautilus_files_view_get_first_visible_file (NAUTILUS_FILES_VIEW (slot->details->content_view));
         }
+
 	slot->details->location_change_type = NAUTILUS_LOCATION_CHANGE_RELOAD;
 
-        if (!create_content_view (slot, id, NULL)) {
+        if (!setup_view (slot, NAUTILUS_VIEW (view), NULL)) {
 		/* Just load the homedir. */
 		nautilus_window_slot_go_home (slot, FALSE);
 	}
-
-        nautilus_file_list_free (selection);
 }
 
 void
@@ -2152,7 +2180,7 @@ nautilus_window_slot_connect_new_content_view (NautilusWindowSlot *slot)
 static void
 nautilus_window_slot_disconnect_content_view (NautilusWindowSlot *slot)
 {
-	if (slot->details->content_view != NULL) {
+        if (slot->details->new_content_view && NAUTILUS_IS_FILES_VIEW (slot->details->new_content_view)) {
 		/* disconnect old view */
                 g_signal_handlers_disconnect_by_func (slot->details->content_view,
                                                       G_CALLBACK (view_is_loading_changed_cb),

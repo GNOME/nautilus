@@ -43,6 +43,7 @@ enum {
 
 typedef enum {
         NORMAL_BUTTON,
+        OTHER_LOCATIONS_BUTTON,
         ROOT_BUTTON,
         HOME_BUTTON,
 	MOUNT_BUTTON
@@ -400,11 +401,14 @@ nautilus_path_bar_dispose (GObject *object)
 static const char *
 get_dir_name (ButtonData *button_data)
 {
-	if (button_data->type == HOME_BUTTON) {
-		return _("Home");
-	} else {
-		return button_data->dir_name;
-	}
+        switch (button_data->type) {
+        case HOME_BUTTON:
+                return _("Home");
+        case OTHER_LOCATIONS_BUTTON:
+                return _("Other Locations");
+        default:
+                return button_data->dir_name;
+        }
 }
 
 /* We always want to request the same size for the label, whether
@@ -1629,8 +1633,13 @@ setup_button_type (ButtonData       *button_data,
 		   GFile *location)
 {
 	GMount *mount;
+        gchar *uri;
 
-	if (nautilus_is_root_directory (location)) {
+        uri = g_file_get_uri (location);
+
+        if (g_strcmp0 (uri, "other-locations:///") == 0) {
+                button_data->type = OTHER_LOCATIONS_BUTTON;
+        } else if (nautilus_is_root_directory (location)) {
 		button_data->type = ROOT_BUTTON;
 	} else if (nautilus_is_home_directory (location)) {
 		button_data->type = HOME_BUTTON;
@@ -1644,6 +1653,8 @@ setup_button_type (ButtonData       *button_data,
 	} else {
 		button_data->type = NORMAL_BUTTON;
 	}
+
+        g_free (uri);
 }
 
 static void
