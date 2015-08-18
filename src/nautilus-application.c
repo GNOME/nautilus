@@ -31,7 +31,6 @@
 
 #include "nautilus-application-actions.h"
 #include "nautilus-bookmarks-window.h"
-#include "nautilus-connect-server-dialog.h"
 #include "nautilus-dbus-manager.h"
 #include "nautilus-desktop-window.h"
 #include "nautilus-freedesktop-dbus.h"
@@ -78,8 +77,6 @@ struct _NautilusApplicationPriv {
 	gboolean desktop_override;
 
 	NautilusBookmarkList *bookmark_list;
-
-	GtkWidget *connect_server_window;
 
 	NautilusShellSearchProvider *search_provider;
 
@@ -514,71 +511,6 @@ nautilus_application_open (GApplication *app,
 			gtk_window_present (GTK_WINDOW (window));
 		}
 	}
-}
-
-static gboolean
-go_to_server_cb (NautilusWindow *window,
-		 GFile          *location,
-		 GError         *error,
-		 gpointer        user_data)
-{
-	gboolean retval;
-	NautilusFile *file;
-
-	if (error == NULL) {
-		file = nautilus_file_get_existing (location);
-		nautilus_connect_server_dialog_add_server (file);
-		nautilus_file_unref (file);
-
-		retval = TRUE;
-	} else {
-		retval = FALSE;
-	}
-
-	return retval;
-}
-
-static void
-on_connect_server_response (GtkDialog      *dialog,
-			    int             response,
-			    GtkApplication *application)
-{
-	if (response == GTK_RESPONSE_OK) {
-		GFile *location;
-		NautilusWindow *window = NAUTILUS_WINDOW (gtk_application_get_active_window (application));
-
-		location = nautilus_connect_server_dialog_get_location (NAUTILUS_CONNECT_SERVER_DIALOG (dialog));
-		if (location != NULL) {
-			nautilus_window_slot_open_location_full (nautilus_window_get_active_slot (window),
-								 location,
-								 NAUTILUS_WINDOW_OPEN_FLAG_USE_DEFAULT_LOCATION,
-								 NULL, go_to_server_cb, application);
-		}
-	}
-
-	gtk_widget_destroy (GTK_WIDGET (dialog));
-}
-
-GtkWidget *
-nautilus_application_connect_server (NautilusApplication *application,
-				     NautilusWindow      *window)
-{
-	GtkWidget *dialog;
-
-	dialog = application->priv->connect_server_window;
-
-	if (dialog == NULL) {
-		dialog = nautilus_connect_server_dialog_new (window);
-		g_signal_connect (dialog, "response", G_CALLBACK (on_connect_server_response), application);
-		application->priv->connect_server_window = dialog;
-
-		g_object_add_weak_pointer (G_OBJECT (dialog),
-					   (gpointer *) &application->priv->connect_server_window);
-	}
-
-	gtk_window_present (GTK_WINDOW (dialog));
-
-	return dialog;
 }
 
 static void

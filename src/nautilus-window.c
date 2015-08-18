@@ -973,19 +973,6 @@ places_sidebar_show_error_message_cb (GtkPlacesSidebar *sidebar,
 	eel_show_error_dialog (primary, secondary, GTK_WINDOW (window));
 }
 
-/* Callback used when the places sidebar needs us to present the Connect to Server dialog */
-static void
-places_sidebar_show_connect_to_server_cb (GtkPlacesSidebar *sidebar,
-					  gpointer          user_data)
-{
-	NautilusWindow *window = NAUTILUS_WINDOW (user_data);
-	NautilusApplication *application = NAUTILUS_APPLICATION (g_application_get_default ());
-	GtkWidget *dialog;
- 
-	dialog = nautilus_application_connect_server (application, window);
-	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
-}
-
 static void
 places_sidebar_show_other_locations (NautilusWindow   *window)
 {
@@ -1288,8 +1275,6 @@ nautilus_window_set_up_sidebar (NautilusWindow *window)
                                   G_CALLBACK (open_location_cb), window);
 	g_signal_connect (window->priv->places_sidebar, "show-error-message",
 			  G_CALLBACK (places_sidebar_show_error_message_cb), window);
-	g_signal_connect (window->priv->places_sidebar, "show-connect-to-server",
-			  G_CALLBACK (places_sidebar_show_connect_to_server_cb), window);
 	g_signal_connect (window->priv->places_sidebar, "drag-action-requested",
 			  G_CALLBACK (places_sidebar_drag_action_requested_cb), window);
 	g_signal_connect (window->priv->places_sidebar, "drag-action-ask",

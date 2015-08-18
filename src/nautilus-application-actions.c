@@ -50,17 +50,6 @@ action_new_window (GSimpleAction *action,
 }
 
 static void
-action_connect_to_server (GSimpleAction *action,
-			  GVariant *parameter,
-			  gpointer user_data)
-{
-	GtkApplication *application = user_data;
-
-	nautilus_application_connect_server (NAUTILUS_APPLICATION (application),
-					     NAUTILUS_WINDOW (gtk_application_get_active_window (application)));
-}
-
-static void
 action_bookmarks (GSimpleAction *action,
 		  GVariant *parameter,
 		  gpointer user_data)
@@ -238,7 +227,6 @@ action_show_hide_sidebar (GSimpleAction *action,
 
 static GActionEntry app_entries[] = {
 	{ "new-window", action_new_window, NULL, NULL, NULL },
-	{ "connect-to-server", action_connect_to_server, NULL, NULL, NULL },
 	{ "bookmarks", action_bookmarks, NULL, NULL, NULL },
 	{ "preferences", action_preferences, NULL, NULL, NULL },
 	{ "show-hide-sidebar", NULL, NULL, "true", action_show_hide_sidebar },
