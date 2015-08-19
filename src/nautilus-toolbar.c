@@ -39,8 +39,8 @@
 #include <glib/gi18n.h>
 #include <math.h>
 
-#define OPERATION_MINIMUM_TIME 5 //s
-#define REMOVE_FINISHED_OPERATIONS_TIEMOUT 2 //s
+#define OPERATION_MINIMUM_TIME 2 //s
+#define REMOVE_FINISHED_OPERATIONS_TIEMOUT 3 //s
 
 typedef enum {
 	NAUTILUS_NAVIGATION_DIRECTION_NONE,
