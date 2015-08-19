@@ -41,8 +41,20 @@
 }
 
 /* Toolbar */
+
+/* Here we use the .button background-image colors from Adwaita, but ligthen them,
+ * since is not possible to use lighten () in common css. */
+@keyframes needs_attention_keyframes {
+    0% {background-image: linear-gradient(to bottom, #fafafa, #ededed 40%,  #e0e0e0)}
+    50% {background-image: linear-gradient(to bottom, #fafafa, #ededed 40%,  #f9f9f9)}
+    100% {background-image: linear-gradient(to bottom, #fafafa, #ededed 40%,  #e0e0e0)}
+}
 .nautilus-operations-button-needs-attention {
-  background-image: linear-gradient(to bottom, #fafafa, #ededed 40%,  #f9f9f9);
+  animation: needs_attention_keyframes 1s ease-in;
+}
+.nautilus-operations-button-needs-attention-multiple {
+  animation: needs_attention_keyframes 1s ease-in;
+  animation-iteration-count: 3;
 }
 
 /* Floating status bar */
