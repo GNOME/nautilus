@@ -405,7 +405,7 @@ remove_operations_button_attention_style (NautilusToolbar *self)
 
         style_context = gtk_widget_get_style_context (self->priv->operations_button);
         gtk_style_context_remove_class (style_context,
-                                        "suggested-action");
+                                        "nautilus-operations-button-needs-attention");
         self->priv->operations_button_attention_timeout_id = 0;
 
         return G_SOURCE_REMOVE;
@@ -451,7 +451,7 @@ on_progress_info_finished (NautilusToolbar      *self,
             folder_to_open != NULL) {
                 style_context = gtk_widget_get_style_context (self->priv->operations_button);
                 gtk_style_context_add_class (style_context,
-                                             "suggested-action");
+                                             "nautilus-operations-button-needs-attention");
                 self->priv->operations_button_attention_timeout_id = g_timeout_add_seconds (1,
                                                                                             (GSourceFunc) remove_operations_button_attention_style,
                                                                                             self);
