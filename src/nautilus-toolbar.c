@@ -519,8 +519,8 @@ update_operations (NautilusToolbar *self)
          * estimated time is longer than a OPERATION_MINIMUM_TIME is odd, so show
          * it only if the remaining time is bigger than again OPERATION_MINIMUM_TIME.
          */
-        if (total_remaining_time > OPERATION_MINIMUM_TIME ||
-            gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (self->priv->operations_button))) {
+        if (total_remaining_time > OPERATION_MINIMUM_TIME &&
+            !gtk_revealer_get_reveal_child (GTK_REVEALER (self->priv->operations_revealer))) {
                 gtk_revealer_set_reveal_child (GTK_REVEALER (self->priv->operations_revealer),
                                                TRUE);
                 gtk_widget_queue_draw (self->priv->operations_icon);
