@@ -69,6 +69,8 @@ struct _NautilusToolbarPrivate {
 	GtkWidget *view_button;
 	GtkWidget *action_button;
 
+        guint n_progress_infos_showing;
+
         GtkWidget *operations_popover;
         GtkWidget *operations_container;
         GtkWidget *operations_revealer;
@@ -465,6 +467,9 @@ on_progress_info_cancelled (NautilusToolbar *self)
 {
         /* Update the pie chart progress */
         gtk_widget_queue_draw (self->priv->operations_icon);
+
+        self->priv->n_progress_infos_showing--;
+
         if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (self->priv->operations_button))) {
                 schedule_remove_finished_operations (self);
         }
@@ -486,6 +491,8 @@ on_progress_info_finished (NautilusToolbar      *self,
 
         /* Update the pie chart progress */
         gtk_widget_queue_draw (self->priv->operations_icon);
+
+        self->priv->n_progress_infos_showing--;
 
         if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (self->priv->operations_button))) {
                 schedule_remove_finished_operations (self);
@@ -535,10 +542,12 @@ update_operations (NautilusToolbar *self)
         disconnect_progress_infos (self);
 
         progress_infos = nautilus_progress_info_manager_get_all_infos (self->priv->progress_manager);
+        self->priv->n_progress_infos_showing = 0;
         for (l = progress_infos; l != NULL; l = l->next) {
                 if (nautilus_progress_info_get_elapsed_time (l->data) +
                     nautilus_progress_info_get_remaining_time (l->data) > OPERATION_MINIMUM_TIME) {
                         total_remaining_time = nautilus_progress_info_get_remaining_time (l->data);
+                        self->priv->n_progress_infos_showing++;
 
 	                g_signal_connect_swapped (l->data, "finished",
 			                          G_CALLBACK (on_progress_info_finished), self);
@@ -574,12 +583,16 @@ update_operations (NautilusToolbar *self)
 static gboolean
 on_progress_info_started_timeout (NautilusToolbar *self)
 {
+        GList *progress_infos;
+
         update_operations (self);
 
         /* In case we didn't show the operations button because the operation total
          * time stimation is not good enough, update again to make sure we don't miss
          * a long time operation because of that */
-        if (!nautilus_progress_manager_are_all_infos_finished_or_cancelled (self->priv->progress_manager)) {
+        progress_infos = nautilus_progress_info_manager_get_all_infos (self->priv->progress_manager);
+        if (!nautilus_progress_manager_are_all_infos_finished_or_cancelled (self->priv->progress_manager) &&
+            g_list_length (progress_infos) != self->priv->n_progress_infos_showing) {
                 return G_SOURCE_CONTINUE;
         } else {
                 self->priv->start_operations_timeout_id = 0;
