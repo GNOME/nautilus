@@ -1118,13 +1118,13 @@ nautilus_canvas_view_update_actions_state (NautilusFilesView *view)
 		g_variant_unref (sort_state);
 	}
 
-	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group), "keep-aligned");
-	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-				     canvas_view->details->supports_keep_aligned);
 	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group), "sort");
 	g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
 				     !showing_recent_directory (view) &&
                                      !showing_search_directory (view));
+        action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group), "keep-aligned");
+        g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                     canvas_view->details->supports_keep_aligned);
 	if (canvas_view->details->supports_keep_aligned) {
 		keep_aligned = nautilus_canvas_container_is_keep_aligned (get_canvas_container (canvas_view));
 		g_action_change_state (action, g_variant_new_boolean (keep_aligned));
