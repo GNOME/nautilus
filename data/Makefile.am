@@ -6,8 +6,7 @@ desktop_DATA     = 					\
 	nautilus-classic.desktop
 desktop_in_files = 					\
 	org.gnome.Nautilus.desktop.in			\
-	nautilus-autorun-software.desktop.in		\
-	nautilus-connect-server.desktop.in
+	nautilus-autorun-software.desktop.in
 
 autostartdir     = $(sysconfdir)/xdg/autostart
 autostart_in_files = nautilus-autostart.desktop.in
