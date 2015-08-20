@@ -383,11 +383,13 @@ get_window_slot_for_location (NautilusApplication *application, GFile *location)
 {
 	NautilusWindowSlot *slot;
 	NautilusWindow *window;
+        NautilusFile *file;
 	GList *l, *sl;
 
 	slot = NULL;
+        file = nautilus_file_get (location);
 
-	if (g_file_query_file_type (location, G_FILE_QUERY_INFO_NONE, NULL) != G_FILE_TYPE_DIRECTORY) {
+	if (!nautilus_file_is_directory (file)) {
 		location = g_file_get_parent (location);
 	} else {
 		g_object_ref (location);
@@ -411,6 +413,7 @@ get_window_slot_for_location (NautilusApplication *application, GFile *location)
 		}
 	}
 
+        nautilus_file_unref (file);
 	g_object_unref (location);
 
 	return slot;
