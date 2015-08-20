@@ -1215,7 +1215,8 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 
         view = NULL;
 
-        if (!error || (error && error->domain == G_IO_ERROR && error->code == G_IO_ERROR_NOT_SUPPORTED)) {
+        /* why do we accept ERROR_NOT_SUPPORTED? */
+        if (!error || g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED)) {
                 view = nautilus_window_slot_get_view_for_location (slot, location);
 	}
 
