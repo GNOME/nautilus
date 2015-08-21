@@ -74,7 +74,6 @@ struct _GtkPlacesViewPrivate
   GtkEntryCompletion            *address_entry_completion;
   GtkListStore                  *completion_store;
 
-  GList                         *detected_networks;
   GCancellable                  *networks_fetching_cancellable;
 
   guint                          local_only : 1;
@@ -903,10 +902,10 @@ update_network_state (GtkPlacesView *view)
 
 static void
 populate_networks (GtkPlacesView   *view,
-                   GFileEnumerator *enumerator)
+                   GFileEnumerator *enumerator,
+                   GList           *detected_networks)
 {
   GList *l;
-  GtkPlacesViewPrivate *priv;
   GFile *file;
   GFile *activatable_file;
   gchar *uri;
@@ -914,10 +913,7 @@ populate_networks (GtkPlacesView   *view,
   GIcon *icon;
   gchar *display_name;
 
-
-  priv = gtk_places_view_get_instance_private (view);
-
-  for (l = priv->detected_networks; l != NULL; l = l->next)
+  for (l = detected_networks; l != NULL; l = l->next)
     {
       file = g_file_enumerator_get_child (enumerator, l->data);
       type = g_file_info_get_file_type (l->data);
@@ -936,8 +932,6 @@ populate_networks (GtkPlacesView   *view,
       g_clear_object (&file);
       g_clear_object (&activatable_file);
     }
-
-  g_clear_object (&enumerator);
 }
 
 static void
@@ -947,29 +941,29 @@ network_enumeration_next_files_finished (GObject      *source_object,
 {
   GtkPlacesViewPrivate *priv;
   GtkPlacesView *view;
+  GList *detected_networks;
   GError *error;
 
   view = GTK_PLACES_VIEW (user_data);
   priv = gtk_places_view_get_instance_private (view);
   error = NULL;
 
-  /* clean previous fetched networks */
-  g_list_free_full (priv->detected_networks, g_object_unref);
   priv->fetching_networks = FALSE;
+  detected_networks = g_file_enumerator_next_files_finish (G_FILE_ENUMERATOR (source_object),
+                                                           res, &error);
 
-  priv->detected_networks = g_file_enumerator_next_files_finish (G_FILE_ENUMERATOR (source_object),
-                                                                 res, &error);
   if (error)
     {
       if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
         g_warning ("Failed to fetch network locations: %s", error->message);
 
       g_clear_error (&error);
-      g_clear_object (&source_object);
     }
   else
     {
-      populate_networks (view, G_FILE_ENUMERATOR (source_object));
+      populate_networks (view, G_FILE_ENUMERATOR (source_object), detected_networks);
+
+      g_list_free_full (detected_networks, g_object_unref);
     }
 
     /* avoid to update widgets if the operation was cancelled in finalize */
@@ -997,7 +991,7 @@ network_enumeration_finished (GObject      *source_object,
 
   if (error)
     {
-      if (error->code != G_IO_ERROR_CANCELLED)
+      if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
         g_warning ("Failed to fetch network locations: %s", error->message);
 
       g_clear_error (&error);
@@ -1026,8 +1020,6 @@ fetch_networks (GtkPlacesView *view)
   g_clear_object (&priv->networks_fetching_cancellable);
   priv->networks_fetching_cancellable = g_cancellable_new ();
   priv->fetching_networks = TRUE;
-
-  update_network_state (view);
 
   g_file_enumerate_children_async (network_file,
                                    "standard::type,standard::target-uri,standard::name,standard::display-name,standard::icon",
