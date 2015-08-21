@@ -339,7 +339,7 @@ check_empty_states (NautilusFilesView *view)
 
         gtk_widget_hide (view->details->no_search_results_widget);
         gtk_widget_hide (view->details->folder_is_empty_widget);
-        if (!view->details->loading && view->details->model) {
+        if (!view->details->loading && view->details->model && !NAUTILUS_IS_DESKTOP_CANVAS_VIEW (view)) {
                 files = nautilus_directory_get_file_list (view->details->model);
                 show_hidden_files = g_settings_get_boolean (gtk_filechooser_preferences,
                                                             NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
