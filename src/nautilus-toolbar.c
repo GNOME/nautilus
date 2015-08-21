@@ -69,8 +69,6 @@ struct _NautilusToolbarPrivate {
 	GtkWidget *view_button;
 	GtkWidget *action_button;
 
-        guint n_progress_infos_showing;
-
         GtkWidget *operations_popover;
         GtkWidget *operations_container;
         GtkWidget *operations_revealer;
@@ -347,12 +345,39 @@ navigation_button_release_cb (GtkButton *button,
 }
 
 static gboolean
+should_show_progress_info (NautilusProgressInfo *info)
+{
+
+        return nautilus_progress_info_get_elapsed_time (info) +
+               nautilus_progress_info_get_remaining_time (info) > OPERATION_MINIMUM_TIME;
+}
+
+static GList*
+get_filtered_progress_infos (NautilusToolbar *self)
+{
+        GList *l;
+        GList *filtered_progress_infos;
+        GList *progress_infos;
+
+        progress_infos = nautilus_progress_info_manager_get_all_infos (self->priv->progress_manager);
+        filtered_progress_infos = NULL;
+
+        for (l = progress_infos; l != NULL; l = l->next) {
+                if (should_show_progress_info (l->data)) {
+                        filtered_progress_infos = g_list_append (filtered_progress_infos, l->data);
+                    }
+        }
+
+        return filtered_progress_infos;
+}
+
+static gboolean
 should_hide_operations_button (NautilusToolbar *self)
 {
         GList *progress_infos;
         GList *l;
 
-        progress_infos = nautilus_progress_info_manager_get_all_infos (self->priv->progress_manager);
+        progress_infos = get_filtered_progress_infos (self);
 
         for (l = progress_infos; l != NULL; l = l->next) {
                 if (nautilus_progress_info_get_elapsed_time (l->data) +
@@ -362,6 +387,8 @@ should_hide_operations_button (NautilusToolbar *self)
                         return FALSE;
                 }
         }
+
+        g_list_free (progress_infos);
 
         return TRUE;
 }
@@ -468,8 +495,6 @@ on_progress_info_cancelled (NautilusToolbar *self)
         /* Update the pie chart progress */
         gtk_widget_queue_draw (self->priv->operations_icon);
 
-        self->priv->n_progress_infos_showing--;
-
         if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (self->priv->operations_button))) {
                 schedule_remove_finished_operations (self);
         }
@@ -491,8 +516,6 @@ on_progress_info_finished (NautilusToolbar      *self,
 
         /* Update the pie chart progress */
         gtk_widget_queue_draw (self->priv->operations_icon);
-
-        self->priv->n_progress_infos_showing--;
 
         if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (self->priv->operations_button))) {
                 schedule_remove_finished_operations (self);
@@ -541,26 +564,23 @@ update_operations (NautilusToolbar *self)
 
         disconnect_progress_infos (self);
 
-        progress_infos = nautilus_progress_info_manager_get_all_infos (self->priv->progress_manager);
-        self->priv->n_progress_infos_showing = 0;
+        progress_infos = get_filtered_progress_infos (self);
         for (l = progress_infos; l != NULL; l = l->next) {
-                if (nautilus_progress_info_get_elapsed_time (l->data) +
-                    nautilus_progress_info_get_remaining_time (l->data) > OPERATION_MINIMUM_TIME) {
-                        total_remaining_time = nautilus_progress_info_get_remaining_time (l->data);
-                        self->priv->n_progress_infos_showing++;
+                total_remaining_time = nautilus_progress_info_get_remaining_time (l->data);
 
-	                g_signal_connect_swapped (l->data, "finished",
-			                          G_CALLBACK (on_progress_info_finished), self);
-	                g_signal_connect_swapped (l->data, "cancelled",
-			                          G_CALLBACK (on_progress_info_cancelled), self);
-	                g_signal_connect_swapped (l->data, "progress-changed",
-			                          G_CALLBACK (on_progress_info_progress_changed), self);
-                        progress = nautilus_progress_info_widget_new (l->data);
-                        gtk_box_pack_start (GTK_BOX (self->priv->operations_container),
-                                            progress,
-                                            FALSE, FALSE, 0);
-                }
+                g_signal_connect_swapped (l->data, "finished",
+		                          G_CALLBACK (on_progress_info_finished), self);
+                g_signal_connect_swapped (l->data, "cancelled",
+		                          G_CALLBACK (on_progress_info_cancelled), self);
+                g_signal_connect_swapped (l->data, "progress-changed",
+		                          G_CALLBACK (on_progress_info_progress_changed), self);
+                progress = nautilus_progress_info_widget_new (l->data);
+                gtk_box_pack_start (GTK_BOX (self->priv->operations_container),
+                                    progress,
+                                    FALSE, FALSE, 0);
         }
+
+        g_list_free (progress_infos);
 
         /* Either we are already showing the button, so keep showing it until the user
          * toggle it to hide the operations popover, or, if we want now to show it,
@@ -584,20 +604,25 @@ static gboolean
 on_progress_info_started_timeout (NautilusToolbar *self)
 {
         GList *progress_infos;
+        GList *filtered_progress_infos;
 
         update_operations (self);
 
         /* In case we didn't show the operations button because the operation total
          * time stimation is not good enough, update again to make sure we don't miss
          * a long time operation because of that */
+
         progress_infos = nautilus_progress_info_manager_get_all_infos (self->priv->progress_manager);
+        filtered_progress_infos = get_filtered_progress_infos (self);
         if (!nautilus_progress_manager_are_all_infos_finished_or_cancelled (self->priv->progress_manager) &&
-            g_list_length (progress_infos) != self->priv->n_progress_infos_showing) {
+            g_list_length (progress_infos) != g_list_length (filtered_progress_infos)) {
                 return G_SOURCE_CONTINUE;
         } else {
                 self->priv->start_operations_timeout_id = 0;
                 return G_SOURCE_REMOVE;
         }
+
+        g_list_free (filtered_progress_infos);
 }
 
 static void
@@ -657,7 +682,7 @@ on_operations_icon_draw (GtkWidget       *widget,
         GdkRGBA foreground = {.red = 0, .green = 0, .blue = 0, .alpha = 0.7 };
 
         all_cancelled = TRUE;
-        progress_infos = nautilus_progress_info_manager_get_all_infos (self->priv->progress_manager);
+        progress_infos = get_filtered_progress_infos (self);
         for (l = progress_infos; l != NULL; l = l->next) {
                 if (!nautilus_progress_info_get_is_cancelled (l->data)) {
                         all_cancelled = FALSE;
@@ -665,6 +690,8 @@ on_operations_icon_draw (GtkWidget       *widget,
                         elapsed_progress += nautilus_progress_info_get_elapsed_time (l->data);
                 }
         }
+
+        g_list_free (progress_infos);
 
         total_progress = remaining_progress + elapsed_progress;
 
