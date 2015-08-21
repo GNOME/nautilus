@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: nautilus gnome-2-32\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2015-08-06 11:10+0000\n"
-"PO-Revision-Date: 2015-08-06 22:43+0300\n"
+"POT-Creation-Date: 2015-08-21 11:13+0000\n"
+"PO-Revision-Date: 2015-08-21 19:38+0300\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -56,15 +56,9 @@ msgstr ""
 msgid "Run Software"
 msgstr "Įvykdyti programą"
 
-#. set dialog properties
-#: ../data/nautilus-connect-server.desktop.in.in.h:1
-#: ../src/nautilus-connect-server-dialog.c:547
-msgid "Connect to Server"
-msgstr "Prisijungti prie serverio"
-
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
 #: ../src/nautilus-file-management-properties.ui.h:22
-#: ../src/nautilus-properties-window.c:4190 ../src/nautilus-window.c:2708
+#: ../src/nautilus-properties-window.c:4190 ../src/nautilus-window.c:2671
 msgid "Files"
 msgstr "Failai"
 
@@ -92,15 +86,14 @@ msgstr "Ro_dyti išsamiau"
 #: ../eel/eel-stock-dialogs.c:195
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:542
 #: ../libnautilus-private/nautilus-file-operations.c:183
-#: ../src/nautilus-connect-server-dialog.c:653
 #: ../src/nautilus-location-entry.c:273 ../src/nautilus-mime-actions.c:439
 #: ../src/nautilus-mime-actions.c:443 ../src/nautilus-mime-actions.c:514
 #: ../src/nautilus-mime-actions.c:857 ../src/nautilus-mime-actions.c:1363
 #: ../src/nautilus-mime-actions.c:1587
 #: ../src/nautilus-properties-window.c:4181
 #: ../src/nautilus-properties-window.c:5163 ../src/nautilus-query-editor.c:494
-#: ../src/nautilus-view.c:992 ../src/nautilus-view.c:1457
-#: ../src/nautilus-view.c:5243
+#: ../src/nautilus-files-view.c:1079 ../src/nautilus-files-view.c:1547
+#: ../src/nautilus-files-view.c:5339
 msgid "_Cancel"
 msgstr "_Atsisakyti"
 
@@ -113,9 +106,16 @@ msgid " (invalid Unicode)"
 msgstr " (netinkamas Unikodas)"
 
 #: ../libnautilus-private/nautilus-bookmark.c:107
+#: ../libnautilus-private/nautilus-file-utilities.c:273
+#: ../src/nautilus-pathbar.c:408
+#| msgid "Enter _Location"
+msgid "Other Locations"
+msgstr "Kitos vietos"
+
+#: ../libnautilus-private/nautilus-bookmark.c:109
 #: ../libnautilus-private/nautilus-desktop-link.c:129
 #: ../libnautilus-private/nautilus-file-utilities.c:265
-#: ../src/nautilus-list-view.c:1701 ../src/nautilus-pathbar.c:404
+#: ../src/nautilus-list-view.c:1709 ../src/nautilus-pathbar.c:406
 #: ../src/nautilus-query-editor.c:1072
 #: ../src/nautilus-shell-search-provider.c:293
 msgid "Home"
@@ -134,7 +134,7 @@ msgid "Replace the current List Columns settings with the default settings"
 msgstr "Pakeisti dabartinius sąrašo stulpelių nustatymus numatytaisiais"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:57
-#: ../src/nautilus-list-view.c:1928
+#: ../src/nautilus-list-view.c:1936 ../src/nautilus-rename-file-popover.ui.h:1
 msgid "Name"
 msgstr "Pavadinimas"
 
@@ -269,7 +269,7 @@ msgid "_Link Here"
 msgstr "_Sukurti nuorodą čia"
 
 #: ../libnautilus-private/nautilus-dnd.c:711
-#: ../src/nautilus-file-name-dialog.ui.h:1
+#: ../src/nautilus-create-folder-dialog.ui.h:1
 msgid "Cancel"
 msgstr "Atsisakyti"
 
@@ -581,7 +581,7 @@ msgstr "Saitas"
 #. appended to new link file
 #: ../libnautilus-private/nautilus-file.c:6500
 #: ../libnautilus-private/nautilus-file-operations.c:377
-#: ../src/nautilus-view-dnd.c:122
+#: ../src/nautilus-files-view-dnd.c:123
 #, c-format
 msgid "Link to %s"
 msgstr "Nuoroda į %s"
@@ -962,7 +962,7 @@ msgstr "Visi elementai iš šiukšlinės bus negrįžtamai ištrinti."
 #  FIXME: We don't use spaces to pad labels!
 #: ../libnautilus-private/nautilus-file-operations.c:1399
 #: ../libnautilus-private/nautilus-file-operations.c:2458
-#: ../src/nautilus-window.c:1223
+#: ../src/nautilus-window.c:1217
 msgid "Empty _Trash"
 msgstr "Iš_valyti šiukšlinę"
 
@@ -980,18 +980,15 @@ msgstr[1] "Ar tikrai norite visiškai ištrinti %'d pažymėtus elementus?"
 msgstr[2] "Ar tikrai norite visiškai ištrinti %'d pažymėtų elementų?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1482
-#| msgid "Detected as “%s”"
 msgid "Deleted “%B”"
 msgstr "Ištrintas „%B“"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1484
-#| msgid "Duplicating “%B”"
 msgid "Deleting “%B”"
 msgstr "Trinamas „%B“"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1492
 #, c-format
-#| msgid "Deleting files"
 msgid "Deleted %'d file"
 msgid_plural "Deleted %'d files"
 msgstr[0] "Ištrintas %'d failas"
@@ -1000,7 +997,6 @@ msgstr[2] "Ištrinta %'d failų"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1496
 #, c-format
-#| msgid "Deleting files"
 msgid "Deleting %'d file"
 msgid_plural "Deleting %'d files"
 msgstr[0] "Trinamas %'d failas"
@@ -1024,8 +1020,6 @@ msgstr "%'d / %'d"
 #. * So the whole thing will be something like "1 / 5 -- 2 hours left (4 files/sec)"
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:1533
-#| msgid "%S of %S — %T left (%S/sec)"
-#| msgid_plural "%S of %S — %T left (%S/sec)"
 msgid "%'d / %'d — %T left"
 msgid_plural "%'d / %'d — %T left"
 msgstr[0] "%'d / %'d — %T liko"
@@ -1035,8 +1029,6 @@ msgstr[2] "%'d / %'d — %T liko"
 # c-format
 #: ../libnautilus-private/nautilus-file-operations.c:1536
 #, c-format
-#| msgid "%d file"
-#| msgid_plural "%d files"
 msgid "(%d file/sec)"
 msgid_plural "(%d files/sec)"
 msgstr[0] "(%d failas/sek)"
@@ -1092,18 +1084,15 @@ msgid "There was an error deleting %B."
 msgstr "Klaida šalinant aplanką %B."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1871
-#| msgid "Duplicating “%B”"
 msgid "Trashing “%B”"
 msgstr "Išmetamas „%B“"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1873
-#| msgid "Trashed On"
 msgid "Trashed “%B”"
 msgstr "Išmestas „B“"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1881
 #, c-format
-#| msgid "Trashing Files"
 msgid "Trashing %'d file"
 msgid_plural "Trashing %'d files"
 msgstr[0] "Išmetamas %'d failas"
@@ -1112,7 +1101,6 @@ msgstr[2] "Išmetama %'d failų"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1885
 #, c-format
-#| msgid "Trashed On"
 msgid "Trashed %'d file"
 msgid_plural "Trashed %'d files"
 msgstr[0] "Išmestas %'d failas"
@@ -1125,8 +1113,6 @@ msgstr[2] "Išmesta %'d failų"
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:1921
-#| msgid "%S of %S — %T left (%S/sec)"
-#| msgid_plural "%S of %S — %T left (%S/sec)"
 msgid "%'d / %'d — %T left (%d files/sec)"
 msgid_plural "%'d / %'d — %T left (%d files/sec)"
 msgstr[0] "%'d / %'d — liko %T (%d failų/sec)"
@@ -1176,7 +1162,7 @@ msgstr "_Neišvalyti šiukšlinės"
 
 #. Translators: %s is a file name formatted for display
 #: ../libnautilus-private/nautilus-file-operations.c:2589
-#: ../src/nautilus-view.c:5635
+#: ../src/nautilus-files-view.c:5731
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "Nepavyko pasiekti „%s“"
@@ -1294,7 +1280,6 @@ msgid "Moving “%B” to “%B”"
 msgstr "Perkeliama „%B“ į „%B“."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3180
-#| msgid "Moving “%B” to “%B”"
 msgid "Moved “%B” to “%B”"
 msgstr "„%B“ perkeltas į „%B“"
 
@@ -1303,7 +1288,6 @@ msgid "Copying “%B” to “%B”"
 msgstr "Kopijuojama „%B“ į „%B“."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3186
-#| msgid "Copying “%B” to “%B”"
 msgid "Copied “%B” to “%B”"
 msgstr "„%B“ kopijuojamas į „%B“"
 
@@ -1312,12 +1296,10 @@ msgid "Duplicating “%B”"
 msgstr "Kuriama „%B“ kopija"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3199
-#| msgid "Duplicating “%B”"
 msgid "Duplicated “%B”"
 msgstr "Sukurta „%B“ kopija"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3209
-#| msgid "Moving file %'d of %'d to “%B”"
 msgid "Moving %'d file to “%B”"
 msgid_plural "Moving %'d files to “%B”"
 msgstr[0] "Perkeliamas %'d failas į „%B“"
@@ -1326,7 +1308,6 @@ msgstr[2] "Perkeliama %'d failų į „%B“"
 
 #  localizers: progress dialog title
 #: ../libnautilus-private/nautilus-file-operations.c:3213
-#| msgid "Copying file %'d of %'d to “%B”"
 msgid "Copying %'d file to “%B”"
 msgid_plural "Copying %'d files to “%B”"
 msgstr[0] "Kopijuojamas %'d failas į „%B“"
@@ -1334,7 +1315,6 @@ msgstr[1] "Kopijuojami %'d failai į „%B“"
 msgstr[2] "Kopijuojama %'d failų į „%B“"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3224
-#| msgid "Moving file %'d of %'d to “%B”"
 msgid "Moved %'d file to “%B”"
 msgid_plural "Moved %'d files to “%B”"
 msgstr[0] "Perkeltas %'d failas į „%B“"
@@ -1343,7 +1323,6 @@ msgstr[2] "Perkelta %'d failų į „%B“"
 
 #  localizers: progress dialog title
 #: ../libnautilus-private/nautilus-file-operations.c:3228
-#| msgid "Copying file %'d of %'d to “%B”"
 msgid "Copied %'d file to “%B”"
 msgid_plural "Copied %'d files to “%B”"
 msgstr[0] "Nukopijuotas %'d failas į „%B“"
@@ -1351,7 +1330,6 @@ msgstr[1] "Nukopijuoti %'d failai į „%B“"
 msgstr[2] "Nukopijuota %'d failų į „%B“"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3243
-#| msgid "Duplicating file %'d of %'d (in “%B”)"
 msgid "Duplicating %'d file in “%B”"
 msgid_plural "Duplicating %'d files in “%B”"
 msgstr[0] "Kuriama %'d failo kopija „%B“ viduje"
@@ -1359,7 +1337,6 @@ msgstr[1] "Kuriamos %'d failų kopijos „%B“ viduje"
 msgstr[2] "Kuriamos %'d failų kopijos „%B“ viduje"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3252
-#| msgid "Duplicating file %'d of %'d (in “%B”)"
 msgid "Duplicated %'d file in “%B”"
 msgid_plural "Duplicated %'d files in “%B”"
 msgstr[0] "Sukurta %'d failo kopija „%B“ viduje"
@@ -1380,8 +1357,6 @@ msgstr "%S / %S"
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:3300
-#| msgid "%S of %S — %T left (%S/sec)"
-#| msgid_plural "%S of %S — %T left (%S/sec)"
 msgid "%S / %S — %T left (%S/sec)"
 msgid_plural "%S / %S — %T left (%S/sec)"
 msgstr[0] "%S / %S — liko %T (%S/sek)"
@@ -1394,8 +1369,6 @@ msgstr[2] "%S / %S — liko %T (%S/sek)"
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:3319
-#| msgid "%S of %S — %T left (%S/sec)"
-#| msgid_plural "%S of %S — %T left (%S/sec)"
 msgid "%'d / %'d — %T left (%S/sec)"
 msgid_plural "%'d / %'d — %T left (%S/sec)"
 msgstr[0] "%'d / %'d — liko %T (%S/sek)"
@@ -1500,7 +1473,6 @@ msgid "Copying Files"
 msgstr "Kopijuojami failai"
 
 #: ../libnautilus-private/nautilus-file-operations.c:5025
-#| msgid "Preparing to Move to “%B”"
 msgid "Preparing to move to “%B”"
 msgstr "Ruošiamasi perkelti į „%B“"
 
@@ -1595,7 +1567,7 @@ msgid "Unable to mark launcher trusted (executable)"
 msgstr "Nepavyko pažymėti leistuko kaip patikimo (vykdomo)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:133
-#: ../src/nautilus-window.c:520 ../src/nautilus-window.ui.h:2
+#: ../src/nautilus-window.c:515 ../src/nautilus-window.ui.h:2
 msgid "Undo"
 msgstr "Atšaukti"
 
@@ -1604,7 +1576,7 @@ msgid "Undo last action"
 msgstr "Atšaukti paskutinį veiksmą"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:140
-#: ../src/nautilus-window.c:521
+#: ../src/nautilus-window.c:516
 msgid "Redo"
 msgstr "Pakartoti"
 
@@ -1974,12 +1946,12 @@ msgstr "_Atšaukti savininko pakeitimą"
 msgid "_Redo Change Owner"
 msgstr "Paka_rtoti savininko pakeitimą"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:890
+#: ../libnautilus-private/nautilus-file-utilities.c:896
 #, c-format
 msgid "Could not determine original location of “%s” "
 msgstr "Nepavyko nustatyti originalios „%s“ vietos"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:894
+#: ../libnautilus-private/nautilus-file-utilities.c:900
 msgid "The item cannot be restored from trash"
 msgstr "Šio elemento negalima atstatyti iš šiukšlinės"
 
@@ -2073,7 +2045,6 @@ msgid "Details: "
 msgstr "Detalės: "
 
 #: ../libnautilus-private/nautilus-progress-info.c:294
-#| msgid "Cancel"
 msgid "Cancelled"
 msgstr "Atsisakyta"
 
@@ -2126,7 +2097,6 @@ msgstr ""
 "visada bus naudojamas teksto įvesties laukelis, o ne kelio juosta."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:5
-#| msgid "Whether to enable immediate deletion"
 msgid "Whether to enable recursive search or not"
 msgstr "Ar įjungti rekursyvią paiešką"
 
@@ -2655,7 +2625,7 @@ msgstr "Siųsti failą el. paštu…"
 msgid "Send files by mail…"
 msgstr "Siųsti failus el. paštu…"
 
-#: ../src/nautilus-application-actions.c:115
+#: ../src/nautilus-application-actions.c:104
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -2665,11 +2635,11 @@ msgstr ""
 "%s"
 
 #. Some sort of failure occurred. How 'bout we tell the user?
-#: ../src/nautilus-application.c:172 ../src/nautilus-window-slot.c:1573
+#: ../src/nautilus-application.c:169 ../src/nautilus-window-slot.c:1511
 msgid "Oops! Something went wrong."
 msgstr "Oi! Atsitiko kažkas negero."
 
-#: ../src/nautilus-application.c:174
+#: ../src/nautilus-application.c:171
 #, c-format
 msgid ""
 "Unable to create a required folder. Please create the following folder, or "
@@ -2680,7 +2650,7 @@ msgstr ""
 "reikiamas teises, kad jį būtų galima sukurti:\n"
 "%s"
 
-#: ../src/nautilus-application.c:179
+#: ../src/nautilus-application.c:176
 #, c-format
 msgid ""
 "Unable to create required folders. Please create the following folders, or "
@@ -2691,7 +2661,7 @@ msgstr ""
 "reikiamas teises, kad juos būtų galima sukurti:\n"
 "%s"
 
-#: ../src/nautilus-application.c:311
+#: ../src/nautilus-application.c:308
 msgid ""
 "Nautilus 3.0 deprecated this directory and tried migrating this "
 "configuration to ~/.config/nautilus"
@@ -2699,63 +2669,63 @@ msgstr ""
 "Šio aplanko Nautilus 3.0 nebenaudos, o aplanke esančius nustatymus bandys "
 "perkelti į ~/.config/nautilus"
 
-#: ../src/nautilus-application.c:610
+#: ../src/nautilus-application.c:545
 msgid "--check cannot be used with other options."
 msgstr "--check negali būti naudojamas su kitais parametrais."
 
-#: ../src/nautilus-application.c:617
+#: ../src/nautilus-application.c:552
 msgid "--quit cannot be used with URIs."
 msgstr "--quit negali būti naudojamas su URI."
 
-#: ../src/nautilus-application.c:625
+#: ../src/nautilus-application.c:560
 msgid "--select must be used with at least an URI."
 msgstr "--select turi būti naudojamas su bent vienu URI."
 
-#: ../src/nautilus-application.c:632
+#: ../src/nautilus-application.c:567
 msgid "--no-desktop and --force-desktop cannot be used together."
 msgstr "--no-desktop ir --force-desktop negali būti naudojami kartu."
 
-#: ../src/nautilus-application.c:692
+#: ../src/nautilus-application.c:627
 msgid "Perform a quick set of self-check tests."
 msgstr "Atlikti keletą greitų savipatikrų."
 
-#: ../src/nautilus-application.c:699
+#: ../src/nautilus-application.c:634
 msgid "Create the initial window with the given geometry."
 msgstr "Sukurti pradinį nurodytų matmenų langą."
 
-#: ../src/nautilus-application.c:699
+#: ../src/nautilus-application.c:634
 msgid "GEOMETRY"
 msgstr "GEOMETRIJA"
 
-#: ../src/nautilus-application.c:701
+#: ../src/nautilus-application.c:636
 msgid "Show the version of the program."
 msgstr "Rodyti programos versiją."
 
-#: ../src/nautilus-application.c:703
+#: ../src/nautilus-application.c:638
 msgid "Always open a new window for browsing specified URIs"
 msgstr "Visada atverti naują langą naršant nurodytus URI"
 
-#: ../src/nautilus-application.c:705
+#: ../src/nautilus-application.c:640
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Sukurti langus tik nurodytiems URI."
 
-#: ../src/nautilus-application.c:707
+#: ../src/nautilus-application.c:642
 msgid "Never manage the desktop (ignore the GSettings preference)."
 msgstr "Nevaldyti darbastalio (nepaisyti GSettings nustatymo)."
 
-#: ../src/nautilus-application.c:709
+#: ../src/nautilus-application.c:644
 msgid "Always manage the desktop (ignore the GSettings preference)."
 msgstr "Visada valdyti darbastalį (nepaisyti GSettings nustatymo)."
 
-#: ../src/nautilus-application.c:711
+#: ../src/nautilus-application.c:646
 msgid "Quit Nautilus."
 msgstr "Išjungti Nautilus."
 
-#: ../src/nautilus-application.c:713
+#: ../src/nautilus-application.c:648
 msgid "Select specified URI in parent folder."
 msgstr "Pažymėti nurodytą URI tėviniame aplanke."
 
-#: ../src/nautilus-application.c:714
+#: ../src/nautilus-application.c:649
 msgid "[URI...]"
 msgstr "[URI…]"
 
@@ -2768,22 +2738,18 @@ msgid "Sidebar"
 msgstr "Šoninė juosta"
 
 #: ../src/nautilus-app-menu.ui.h:3
-msgid "Connect to _Server…"
-msgstr "Prisijungti prie _serverio..."
-
-#: ../src/nautilus-app-menu.ui.h:4
 msgid "Prefere_nces"
 msgstr "_Nustatymai"
 
-#: ../src/nautilus-app-menu.ui.h:5
+#: ../src/nautilus-app-menu.ui.h:4
 msgid "_Help"
 msgstr "_Žinynas"
 
-#: ../src/nautilus-app-menu.ui.h:6
+#: ../src/nautilus-app-menu.ui.h:5
 msgid "_About"
 msgstr "_Apie"
 
-#: ../src/nautilus-app-menu.ui.h:7
+#: ../src/nautilus-app-menu.ui.h:6
 msgid "_Quit"
 msgstr "_Išeiti"
 
@@ -2856,66 +2822,6 @@ msgstr "_Vieta"
 #: ../src/nautilus-file-management-properties.ui.h:28
 msgid "Icon View"
 msgstr "Piktogramų vaizdas"
-
-#. if it wasn't cancelled show a dialog
-#: ../src/nautilus-connect-server.c:52 ../src/nautilus-mime-actions.c:1661
-#: ../src/nautilus-mime-actions.c:1925
-msgid "Unable to access location"
-msgstr "Nepavyko pasiekti vietos"
-
-#: ../src/nautilus-connect-server.c:73
-msgid "Unable to display location"
-msgstr "Nepavyko parodyti vietos"
-
-#: ../src/nautilus-connect-server.c:139
-msgid "Print but do not open the URI"
-msgstr "Rodyti, bet neatverti URI"
-
-#. Translators: This is the --help description for the connect to server app,
-#. the initial newlines are between the command line arg and the description
-#: ../src/nautilus-connect-server.c:151
-msgid ""
-"\n"
-"\n"
-"Add connect to server mount"
-msgstr ""
-"\n"
-"\n"
-"Pridėti prisijungimą prie serverio prijungimo"
-
-#: ../src/nautilus-connect-server-dialog.c:109
-msgid "This file server type is not recognized."
-msgstr "Šis failų serverio tipas neatpažintas."
-
-#: ../src/nautilus-connect-server-dialog.c:116
-msgid "This doesn't look like an address."
-msgstr "Tai nepanašu į adresą."
-
-#. Translators: %s is a URI of the form "smb://foo.example.com"
-#: ../src/nautilus-connect-server-dialog.c:225
-#, c-format
-msgid "For example, %s"
-msgstr "Pavyzdžiui %s"
-
-#: ../src/nautilus-connect-server-dialog.c:493
-msgid "_Remove"
-msgstr "Pa_šalinti"
-
-#: ../src/nautilus-connect-server-dialog.c:502
-msgid "_Clear All"
-msgstr "_Išvalyti viską"
-
-#: ../src/nautilus-connect-server-dialog.c:563
-msgid "_Server Address"
-msgstr "_Serverio adresas"
-
-#: ../src/nautilus-connect-server-dialog.c:587
-msgid "_Recent Servers"
-msgstr "Paskutiniai _naudoti serveriai"
-
-#: ../src/nautilus-connect-server-dialog.c:656
-msgid "C_onnect"
-msgstr "Prisi_jungti"
 
 #: ../src/nautilus-desktop-item-properties.c:404
 #: ../src/nautilus-desktop-item-properties.c:414
@@ -3105,7 +3011,7 @@ msgstr "_Klausti kiekvieną kartą"
 
 #. trash
 #: ../src/nautilus-file-management-properties.ui.h:13
-#: ../src/nautilus-shell-search-provider.c:298 ../src/nautilus-trash-bar.c:194
+#: ../src/nautilus-shell-search-provider.c:298 ../src/nautilus-trash-bar.c:198
 msgid "Trash"
 msgstr "Šiukšlinė"
 
@@ -3126,7 +3032,7 @@ msgstr ""
 "Daugiau informacijos bus matoma didinant mastelį."
 
 #: ../src/nautilus-file-management-properties.ui.h:17
-#: ../src/nautilus-list-view.c:2033
+#: ../src/nautilus-list-view.c:2041
 msgid "List View"
 msgstr "Sąrašo vaizdas"
 
@@ -3383,8 +3289,8 @@ msgid "Failed to load image information"
 msgstr "Nepavyko įkelti paveikslėlio informacijos"
 
 #: ../src/nautilus-image-properties-page.c:708
-#: ../src/nautilus-list-model.c:371 ../src/nautilus-view.c:342
-#: ../src/nautilus-window-slot.c:560
+#: ../src/nautilus-list-model.c:371 ../src/nautilus-files-view.c:390
+#: ../src/nautilus-window-slot.c:580
 msgid "Loading…"
 msgstr "Įkeliama…"
 
@@ -3392,16 +3298,16 @@ msgstr "Įkeliama…"
 msgid "(Empty)"
 msgstr "(Tuščias)"
 
-#: ../src/nautilus-list-view.c:1478
+#: ../src/nautilus-list-view.c:1486
 msgid "Use Default"
 msgstr "Naudoti numatytąjį"
 
-#: ../src/nautilus-list-view.c:2813
+#: ../src/nautilus-list-view.c:2821
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s matomos skiltys"
 
-#: ../src/nautilus-list-view.c:2833
+#: ../src/nautilus-list-view.c:2841
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Pasirinkite šiame aplanke pateikiamos informacijos tvarką:"
 
@@ -3423,7 +3329,7 @@ msgstr[2] "Bus atverta %d atskirų langų."
 
 #: ../src/nautilus-location-entry.c:273 ../src/nautilus-mime-actions.c:857
 #: ../src/nautilus-mime-actions.c:1034 ../src/nautilus-mime-actions.c:1587
-#: ../src/nautilus-view.c:992
+#: ../src/nautilus-files-view.c:1079
 msgid "_OK"
 msgstr "_Gerai"
 
@@ -3448,7 +3354,7 @@ msgstr ""
 "Ši nuoroda negali būti naudojama, kadangi jos tikslas „%s“ neegzistuoja."
 
 #: ../src/nautilus-mime-actions.c:443
-#: ../src/nautilus-view-context-menus.xml.h:26
+#: ../src/nautilus-files-view-context-menus.xml.h:26
 msgid "Mo_ve to Trash"
 msgstr "Perke_lti į šiukšlinę"
 
@@ -3471,7 +3377,7 @@ msgid "_Display"
 msgstr "_Peržiūrėti"
 
 #: ../src/nautilus-mime-actions.c:848 ../src/nautilus-mime-actions.c:1583
-#: ../src/nautilus-view.c:983
+#: ../src/nautilus-files-view.c:1070
 msgid "Are you sure you want to open all files?"
 msgstr "Ar tikrai norite atverti visus failus?"
 
@@ -3548,6 +3454,13 @@ msgstr[0] "Bus atverta %d atskira programa."
 msgstr[1] "Bus atvertos %d atskiros programos."
 msgstr[2] "Bus atverta %d atskirų programų."
 
+#. if it wasn't cancelled show a dialog
+#: ../src/nautilus-mime-actions.c:1661 ../src/nautilus-mime-actions.c:1925
+#: ../src/gtk/gtkplacesview.c:1186 ../src/gtk/gtkplacesview.c:1215
+#: ../src/gtk/gtkplacesview.c:1270
+msgid "Unable to access location"
+msgstr "Nepavyko pasiekti vietos"
+
 #: ../src/nautilus-mime-actions.c:2004
 msgid "Unable to start location"
 msgstr "Nepavyko paleisti vietos"
@@ -3570,9 +3483,6 @@ msgid "Delete Shortcuts Have Changed"
 msgstr "Trynimo trumpiniai pasikeitė"
 
 #: ../src/nautilus-move-to-trash-shortcut-changed.ui.h:2
-#| msgid ""
-#| "With the latest version of Files, you no longer need to hold Ctrl to "
-#| "delete - the Delete key will work when pressed on its own."
 msgid ""
 "With the latest version of Files, you no longer need to hold Ctrl to delete—"
 "the Delete key will work when pressed on its own."
@@ -3588,12 +3498,11 @@ msgstr "Supratau"
 msgid "No Results Found"
 msgstr "Nerasta rezultatų"
 
-#: ../src/nautilus-no-search-results.ui.h:2
+#: ../src/nautilus-no-search-results.ui.h:2 ../src/gtk/gtkplacesview.ui.h:5
 msgid "Try a different search"
 msgstr "Mėginkite kitą paiešką"
 
 #: ../src/nautilus-folder-is-empty.ui.h:1
-#| msgid "Folders"
 msgid "Folder is Empty"
 msgstr "Aplankas yra tuščias"
 
@@ -3602,17 +3511,17 @@ msgid "Close tab"
 msgstr "Užverti kortelę"
 
 #: ../src/nautilus-pathbar-context-menu.xml.h:1
-#: ../src/nautilus-view-context-menus.xml.h:12
+#: ../src/nautilus-files-view-context-menus.xml.h:12
 msgid "Open In New _Tab"
 msgstr "Atverti naujoje _kortelėje"
 
 #: ../src/nautilus-pathbar-context-menu.xml.h:2
-#: ../src/nautilus-view-context-menus.xml.h:13
+#: ../src/nautilus-files-view-context-menus.xml.h:13
 msgid "Open In New _Window"
 msgstr "Atverti naujame _lange"
 
 #: ../src/nautilus-pathbar-context-menu.xml.h:3
-#: ../src/nautilus-view-context-menus.xml.h:5
+#: ../src/nautilus-files-view-context-menus.xml.h:5
 msgid "P_roperties"
 msgstr "_Savybės"
 
@@ -3910,7 +3819,8 @@ msgstr "Pasirinkite pasirinktinę piktogramą"
 msgid "_Revert"
 msgstr "_Grąžinti"
 
-#: ../src/nautilus-properties-window.c:5164
+#. Open item is always present
+#: ../src/nautilus-properties-window.c:5164 ../src/gtk/gtkplacesview.c:1596
 msgid "_Open"
 msgstr "_Atverti"
 
@@ -3975,6 +3885,11 @@ msgstr "Visi failai"
 msgid "Add a new criterion to this search"
 msgstr "Pridėti šiai paieškai naują kriterijų"
 
+#: ../src/nautilus-rename-file-popover.ui.h:2
+#| msgid "Rename"
+msgid "_Rename"
+msgstr "Pe_rvadinti"
+
 #: ../src/nautilus-special-location-bar.c:51
 msgid "Files in this folder will appear in the New Document menu."
 msgstr "Failai šiame aplanke pasirodys meniu „Sukurti dokumentą“."
@@ -3984,7 +3899,7 @@ msgid "Executable files in this folder will appear in the Scripts menu."
 msgstr "Visi vykdomieji failai šiame aplanke pasirodys scenarijų meniu."
 
 #: ../src/nautilus-toolbar-action-menu.xml.h:1
-#: ../src/nautilus-view-context-menus.xml.h:1
+#: ../src/nautilus-files-view-context-menus.xml.h:1
 msgid "New _Folder"
 msgstr "Naujas a_plankas"
 
@@ -3993,7 +3908,7 @@ msgid "New _Tab"
 msgstr "Nauja _kortelė"
 
 #: ../src/nautilus-toolbar-action-menu.xml.h:3
-#: ../src/nautilus-view-context-menus.xml.h:4
+#: ../src/nautilus-files-view-context-menus.xml.h:4
 msgid "Select _All"
 msgstr "Pažymėti _viską"
 
@@ -4046,7 +3961,6 @@ msgid "_Type"
 msgstr "_Tipas"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:5
-#| msgid "Last modified:"
 msgid "Last _Modified"
 msgstr "Paskutinis _keitimo"
 
@@ -4079,28 +3993,28 @@ msgstr "Iš _naujo"
 msgid "St_op"
 msgstr "_Stabdyti"
 
-#: ../src/nautilus-trash-bar.c:202
+#: ../src/nautilus-trash-bar.c:206
 msgid "_Restore"
 msgstr "_Atstatyti"
 
-#: ../src/nautilus-trash-bar.c:205
+#: ../src/nautilus-trash-bar.c:209
 msgid "Restore selected items to their original position"
 msgstr "Grąžinti pasirinktus elementus į jų pradines vietas"
 
 #. Translators: "Empty" is an action (for the trash) , not a state
-#: ../src/nautilus-trash-bar.c:209
+#: ../src/nautilus-trash-bar.c:213
 msgid "_Empty"
 msgstr "Iš_valyti"
 
-#: ../src/nautilus-trash-bar.c:212
+#: ../src/nautilus-trash-bar.c:216
 msgid "Delete all items in the Trash"
 msgstr "Ištrinti visus failus iš šiukšlinės"
 
-#: ../src/nautilus-view.c:342
+#: ../src/nautilus-files-view.c:390
 msgid "Searching…"
 msgstr "Ieškoma..."
 
-#: ../src/nautilus-view.c:985
+#: ../src/nautilus-files-view.c:1072
 #, c-format
 msgid "This will open %'d separate tab."
 msgid_plural "This will open %'d separate tabs."
@@ -4108,7 +4022,7 @@ msgstr[0] "Bus atverta %'d atskira kortelė."
 msgstr[1] "Bus atvertos %'d atskiros kortelės."
 msgstr[2] "Bus atverta %'d atskirų kortelių."
 
-#: ../src/nautilus-view.c:988
+#: ../src/nautilus-files-view.c:1075
 #, c-format
 msgid "This will open %'d separate window."
 msgid_plural "This will open %'d separate windows."
@@ -4116,90 +4030,71 @@ msgstr[0] "Bus atvertas %'d atskiras langas."
 msgstr[1] "Bus atverti %'d atskiri langai."
 msgstr[2] "Bus atverta %'d atskirų langų."
 
-#: ../src/nautilus-view.c:1454
+#: ../src/nautilus-files-view.c:1544
 msgid "Select Items Matching"
 msgstr "Pažymėti elementus, atitinkančius"
 
-#: ../src/nautilus-view.c:1459 ../src/nautilus-view.c:5244
+#: ../src/nautilus-files-view.c:1549 ../src/nautilus-files-view.c:5340
 msgid "_Select"
 msgstr "_Pažymėti"
 
-#: ../src/nautilus-view.c:1467
+#: ../src/nautilus-files-view.c:1557
 msgid "_Pattern:"
 msgstr "Š_ablonas:"
 
-#: ../src/nautilus-view.c:1473
+#: ../src/nautilus-files-view.c:1563
 msgid "Examples: "
 msgstr "Pavyzdžiai:"
 
-#: ../src/nautilus-view.c:1726
-#| msgid "A folder with the same name already exists in “%s”."
+#: ../src/nautilus-files-view.c:1821
 msgid "A folder with that name already exists."
 msgstr "Aplankas tuo pačiu vardu jau yra."
 
-#: ../src/nautilus-view.c:1728
-#| msgid "A folder with the same name already exists in “%s”."
+#: ../src/nautilus-files-view.c:1823
 msgid "A file with that name already exists."
 msgstr "Aplankas tuo pačiu vardu jau yra."
 
-#: ../src/nautilus-view.c:1787
+#: ../src/nautilus-files-view.c:1838
 msgid "Folder names cannot contain “/”."
 msgstr "Aplankų pavadinimuose negali būti „/“."
 
-#: ../src/nautilus-view.c:1789
+#: ../src/nautilus-files-view.c:1840
 msgid "Files names cannot contain “/”."
 msgstr "Failų pavadinimuose negali būti „/“."
 
-#: ../src/nautilus-view.c:1792
+#: ../src/nautilus-files-view.c:1843
 msgid "A folder can not be called “.”."
 msgstr "Aplankas negali vadintis „.“."
 
-#: ../src/nautilus-view.c:1794
-#| msgid "This file cannot be ejected"
+#: ../src/nautilus-files-view.c:1845
 msgid "A file can not be called “.”."
 msgstr "Failas negali vadintis „.“."
 
-#: ../src/nautilus-view.c:1797
+#: ../src/nautilus-files-view.c:1848
 msgid "A folder can not be called “..”."
 msgstr "Aplankas negali vadintis „..“."
 
-#: ../src/nautilus-view.c:1799
-#| msgid "This file cannot be ejected"
+#: ../src/nautilus-files-view.c:1850
 msgid "A file can not be called “..”."
 msgstr "Failas negali vadintis „..“."
 
-#: ../src/nautilus-view.c:1933
-#| msgid "Re_name"
-msgid "Rename"
-msgstr "Pervadinti"
-
-#: ../src/nautilus-view.c:1935
-#, c-format
-#| msgid "Replace file “%s”?"
-msgid "Rename “%s”"
-msgstr "Pervadinti „%s“"
-
-#: ../src/nautilus-view.c:1940 ../src/nautilus-view.c:2056
-#| msgid "Folder access:"
+#: ../src/nautilus-files-view.c:2076 ../src/nautilus-files-view.c:2141
 msgid "Folder name"
 msgstr "Aplanko pavadinimas"
 
-#: ../src/nautilus-view.c:1942
-#| msgid "File access:"
+#: ../src/nautilus-files-view.c:2078
 msgid "File name"
 msgstr "Failo pavadinimas"
 
-#: ../src/nautilus-view.c:2055
-#| msgid "Creator"
+#: ../src/nautilus-files-view.c:2140
 msgid "Create"
 msgstr "Sukurti"
 
-#: ../src/nautilus-view.c:2057
-#| msgid "New _Folder"
+#: ../src/nautilus-files-view.c:2142
 msgid "New Folder"
 msgstr "Naujas aplankas"
 
-#: ../src/nautilus-view.c:2452
+#: ../src/nautilus-files-view.c:2532
 msgid ""
 "Nautilus 3.6 deprecated this directory and tried migrating this "
 "configuration to ~/.local/share/nautilus"
@@ -4207,13 +4102,13 @@ msgstr ""
 "Šio aplanko Nautilus 3.6 nebenaudos, o aplanke esančius nustatymus bandys "
 "perkelti į ~/.local/share/nautilus"
 
-#: ../src/nautilus-view.c:2868 ../src/nautilus-view.c:2903
+#: ../src/nautilus-files-view.c:2948 ../src/nautilus-files-view.c:2983
 #, c-format
 msgid "“%s” selected"
 msgstr "pasirinktas „%s“"
 
 # c-format
-#: ../src/nautilus-view.c:2870
+#: ../src/nautilus-files-view.c:2950
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
@@ -4221,7 +4116,7 @@ msgstr[0] "Pasirinktas %'d aplankas"
 msgstr[1] "Pasirinkti %'d aplankai"
 msgstr[2] "Pasirinkta %'d aplankų"
 
-#: ../src/nautilus-view.c:2880
+#: ../src/nautilus-files-view.c:2960
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
@@ -4230,7 +4125,7 @@ msgstr[1] "(kuriuose yra %'d elementai)"
 msgstr[2] "(kuriuose yra %'d elementų)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: ../src/nautilus-view.c:2891
+#: ../src/nautilus-files-view.c:2971
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
@@ -4239,7 +4134,7 @@ msgstr[1] "(kuriuose yra iš viso %'d elementai)"
 msgstr[2] "(kuriuose yra iš viso %'d elementų)"
 
 #  translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: ../src/nautilus-view.c:2906
+#: ../src/nautilus-files-view.c:2986
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -4249,7 +4144,7 @@ msgstr[2] "Pasirinkta %'d elementų"
 
 #  translators: this is preceded with a string of form 'N folders' (N more than 1)
 #. Folders selected also, use "other" terminology
-#: ../src/nautilus-view.c:2913
+#: ../src/nautilus-files-view.c:2993
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -4261,7 +4156,7 @@ msgstr[2] "Pasirinkta %'d kitų elementų"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: ../src/nautilus-view.c:2927
+#: ../src/nautilus-files-view.c:3007
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -4279,42 +4174,42 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: ../src/nautilus-view.c:2951
+#: ../src/nautilus-files-view.c:3031
 #, c-format
 msgid "%s %s, %s %s"
 msgstr "%s %s, %s %s"
 
-#: ../src/nautilus-view.c:5233
+#: ../src/nautilus-files-view.c:5329
 msgid "Select Move Destination"
 msgstr "Pasirinkite perkėlimo paskirtį"
 
-#: ../src/nautilus-view.c:5235
+#: ../src/nautilus-files-view.c:5331
 msgid "Select Copy Destination"
 msgstr "Pasirinkite kopijavimo paskirtį"
 
 #. Translators: %s is a file name formatted for display
-#: ../src/nautilus-view.c:5662
+#: ../src/nautilus-files-view.c:5758
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "Nepavyko pašalinti „%s“"
 
 #. Translators: %s is a file name formatted for display
-#: ../src/nautilus-view.c:5689
+#: ../src/nautilus-files-view.c:5785
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "Nepavyko išstumti „%s“"
 
-#: ../src/nautilus-view.c:5711
+#: ../src/nautilus-files-view.c:5807
 msgid "Unable to stop drive"
 msgstr "Nepavyko sustabdyti kaupiklio"
 
 #. Translators: %s is a file name formatted for display
-#: ../src/nautilus-view.c:5816
+#: ../src/nautilus-files-view.c:5912
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "Nepavyko paleisti „%s“"
 
-#: ../src/nautilus-view.c:6532
+#: ../src/nautilus-files-view.c:6629
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
@@ -4322,211 +4217,213 @@ msgstr[0] "Naujas aplankas su pažymėjimu (%'d elementas)"
 msgstr[1] "Naujas aplankas su pažymėjimu (%'d elementai)"
 msgstr[2] "Naujas aplankas su pažymėjimu (%'d elementų)"
 
-#: ../src/nautilus-view.c:6580
+#: ../src/nautilus-files-view.c:6677
 #, c-format
 msgid "Open With %s"
 msgstr "Atverti naudojant %s"
 
-#: ../src/nautilus-view.c:6589
+#: ../src/nautilus-files-view.c:6686
 msgid "Run"
 msgstr "Vykdyti"
 
-#: ../src/nautilus-view.c:6591
+#: ../src/nautilus-files-view.c:6688
 msgid "Open"
 msgstr "Atverti"
 
-#: ../src/nautilus-view.c:6642 ../src/nautilus-view-context-menus.xml.h:18
+#: ../src/nautilus-files-view.c:6739
+#: ../src/nautilus-files-view-context-menus.xml.h:18
 msgid "_Start"
 msgstr "_Paleisti"
 
-#: ../src/nautilus-view.c:6645
+#: ../src/nautilus-files-view.c:6742 ../src/gtk/gtkplacesview.c:1651
 msgid "_Connect"
 msgstr "_Prisijungti"
 
-#: ../src/nautilus-view.c:6648
+#: ../src/nautilus-files-view.c:6745
 msgid "_Start Multi-disk Drive"
 msgstr "_Paleisti daugiadiskį kaupiklį"
 
-#: ../src/nautilus-view.c:6651
+#: ../src/nautilus-files-view.c:6748
 msgid "U_nlock Drive"
 msgstr "_Atrakinti kaupiklį"
 
-#: ../src/nautilus-view.c:6667
+#: ../src/nautilus-files-view.c:6764
 msgid "Stop Drive"
 msgstr "Stabdyti kaupiklį"
 
-#: ../src/nautilus-view.c:6670
+#: ../src/nautilus-files-view.c:6767
 msgid "_Safely Remove Drive"
 msgstr "_Saugiai išimti kaupiklį"
 
-#: ../src/nautilus-view.c:6673
+#: ../src/nautilus-files-view.c:6770 ../src/gtk/gtkplacesview.c:1641
 msgid "_Disconnect"
 msgstr "_Atjungti"
 
-#: ../src/nautilus-view.c:6676
+#: ../src/nautilus-files-view.c:6773
 msgid "_Stop Multi-disk Drive"
 msgstr "_Sustabdyti daugiadiskį kaupiklį"
 
-#: ../src/nautilus-view.c:6679
+#: ../src/nautilus-files-view.c:6776
 msgid "_Lock Drive"
 msgstr "_Užrakinti kaupiklį"
 
-#: ../src/nautilus-view.c:7807
+#: ../src/nautilus-files-view.c:8205
 msgid "Content View"
 msgstr "Turinio vaizdas"
 
-#: ../src/nautilus-view.c:7808
+#: ../src/nautilus-files-view.c:8206
 msgid "View of the current folder"
 msgstr "Šio aplanko vaizdas"
 
-#: ../src/nautilus-view-context-menus.xml.h:2
+#: ../src/nautilus-files-view-context-menus.xml.h:2
 msgid "New _Document"
 msgstr "Naują _dokumentą"
 
-#: ../src/nautilus-view-context-menus.xml.h:3
+#: ../src/nautilus-files-view-context-menus.xml.h:3
 msgid "_Paste"
 msgstr "Į_dėti"
 
-#: ../src/nautilus-view-context-menus.xml.h:6
+#: ../src/nautilus-files-view-context-menus.xml.h:6
 msgid "_Keep aligned"
 msgstr "Laikytis ly_giavimo"
 
-#: ../src/nautilus-view-context-menus.xml.h:7
+#: ../src/nautilus-files-view-context-menus.xml.h:7
 msgid "Organize _Desktop by Name"
 msgstr "_Sutvarkyti darbastalį pagal pavadinimą"
 
-#: ../src/nautilus-view-context-menus.xml.h:8
+#: ../src/nautilus-files-view-context-menus.xml.h:8
 msgid "Change _Background"
 msgstr "Keisti _foną"
 
-#: ../src/nautilus-view-context-menus.xml.h:9
+#: ../src/nautilus-files-view-context-menus.xml.h:9
 msgid "_Scripts"
 msgstr "_Scenarijai"
 
-#: ../src/nautilus-view-context-menus.xml.h:10
+#: ../src/nautilus-files-view-context-menus.xml.h:10
 msgid "_Open Scripts Folder"
 msgstr "_Atverti scenarijų aplanką"
 
-#: ../src/nautilus-view-context-menus.xml.h:11
+#: ../src/nautilus-files-view-context-menus.xml.h:11
 msgid "_Open Item Location"
 msgstr "Atverti elemento _vietą"
 
-#: ../src/nautilus-view-context-menus.xml.h:14
+#: ../src/nautilus-files-view-context-menus.xml.h:14
 msgid "Open With Other _Application"
 msgstr "Atverti kita _programa"
 
-#: ../src/nautilus-view-context-menus.xml.h:15
+#: ../src/nautilus-files-view-context-menus.xml.h:15
+#: ../src/gtk/gtkplacesview.c:1651
 msgid "_Mount"
 msgstr "_Prijungti"
 
-#: ../src/nautilus-view-context-menus.xml.h:16
+#: ../src/nautilus-files-view-context-menus.xml.h:16
+#: ../src/gtk/gtkplacesview.c:1641
 msgid "_Unmount"
 msgstr "At_jungti"
 
-#: ../src/nautilus-view-context-menus.xml.h:17
+#: ../src/nautilus-files-view-context-menus.xml.h:17
 msgid "_Eject"
 msgstr "_Išimti"
 
-#: ../src/nautilus-view-context-menus.xml.h:19
+#: ../src/nautilus-files-view-context-menus.xml.h:19
 msgid "_Stop"
 msgstr "Susta_bdyti"
 
-#: ../src/nautilus-view-context-menus.xml.h:20
+#: ../src/nautilus-files-view-context-menus.xml.h:20
 msgid "_Detect Media"
 msgstr "_Aptikti laikmeną"
 
-#: ../src/nautilus-view-context-menus.xml.h:21
+#: ../src/nautilus-files-view-context-menus.xml.h:21
 msgid "Cu_t"
 msgstr "Iški_rpti"
 
-#: ../src/nautilus-view-context-menus.xml.h:22
+#: ../src/nautilus-files-view-context-menus.xml.h:22
 msgid "_Copy"
 msgstr "_Kopijuoti"
 
-#: ../src/nautilus-view-context-menus.xml.h:23
+#: ../src/nautilus-files-view-context-menus.xml.h:23
 msgid "_Paste Into Folder"
 msgstr "Į_dėti į aplanką"
 
-#: ../src/nautilus-view-context-menus.xml.h:24
+#: ../src/nautilus-files-view-context-menus.xml.h:24
 msgid "Move to…"
 msgstr "Perkelti į…"
 
-#: ../src/nautilus-view-context-menus.xml.h:25
+#: ../src/nautilus-files-view-context-menus.xml.h:25
 msgid "Copy to…"
 msgstr "Kopijuoti į…"
 
-#: ../src/nautilus-view-context-menus.xml.h:27
+#: ../src/nautilus-files-view-context-menus.xml.h:27
 msgid "_Delete from Trash"
 msgstr "Iš_trinti iš šiukšlinės"
 
-#: ../src/nautilus-view-context-menus.xml.h:28
+#: ../src/nautilus-files-view-context-menus.xml.h:28
 msgid "_Delete Permanently"
 msgstr "_Ištrinti negrįžtamai"
 
-#: ../src/nautilus-view-context-menus.xml.h:29
+#: ../src/nautilus-files-view-context-menus.xml.h:29
 msgid "Empty Trash"
 msgstr "Išvalyti šiukšlinę"
 
-#: ../src/nautilus-view-context-menus.xml.h:30
+#: ../src/nautilus-files-view-context-menus.xml.h:30
 msgid "_Restore From Trash"
 msgstr "_Atstatyti iš šiukšlinės"
 
-#: ../src/nautilus-view-context-menus.xml.h:31
+#: ../src/nautilus-files-view-context-menus.xml.h:31
 msgid "Resize Icon…"
 msgstr "Ištempti piktogramą…"
 
-#: ../src/nautilus-view-context-menus.xml.h:32
+#: ../src/nautilus-files-view-context-menus.xml.h:32
 msgid "Restore Icon's Original Size"
 msgstr "Atstatyti _originalų piktogramos dydį"
 
-#: ../src/nautilus-view-context-menus.xml.h:33
+#: ../src/nautilus-files-view-context-menus.xml.h:33
 msgid "Rena_me"
 msgstr "Pervadi_nti"
 
-#: ../src/nautilus-view-context-menus.xml.h:34
+#: ../src/nautilus-files-view-context-menus.xml.h:34
 msgid "Set As Wallpaper"
 msgstr "Nustatyti kaip foną"
 
-#: ../src/nautilus-view-context-menus.xml.h:35
-#| msgid "Remo_ve from Recent"
+#: ../src/nautilus-files-view-context-menus.xml.h:35
 msgid "_Remove from Recent"
 msgstr "Pa_šalinti iš neseniai naudotų"
 
-#: ../src/nautilus-view-dnd.c:169 ../src/nautilus-view-dnd.c:203
-#: ../src/nautilus-view-dnd.c:294
+#: ../src/nautilus-files-view-dnd.c:170 ../src/nautilus-files-view-dnd.c:204
+#: ../src/nautilus-files-view-dnd.c:295
 msgid "Drag and drop is not supported."
 msgstr "Vilkimo ir numetimo operacija nepalaikoma."
 
-#: ../src/nautilus-view-dnd.c:170
+#: ../src/nautilus-files-view-dnd.c:171
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Vilkimo ir numetimo operacija veikia tik vietinėse failų sistemose."
 
-#: ../src/nautilus-view-dnd.c:204 ../src/nautilus-view-dnd.c:295
+#: ../src/nautilus-files-view-dnd.c:205 ../src/nautilus-files-view-dnd.c:296
 msgid "An invalid drag type was used."
 msgstr "Panaudotas netinkamas vilkimo tipas."
 
 #. Translator: This is the filename used for when you dnd text to a directory
-#: ../src/nautilus-view-dnd.c:382
+#: ../src/nautilus-files-view-dnd.c:383
 msgid "Dropped Text.txt"
 msgstr "Numestas tekstas.txt"
 
 #. Translator: This is the filename used for when you dnd raw
 #. * data to a directory, if the source didn't supply a name.
 #.
-#: ../src/nautilus-view-dnd.c:480
+#: ../src/nautilus-files-view-dnd.c:481
 msgid "dropped data"
 msgstr "nuvilkti duomenys"
 
-#: ../src/nautilus-window.c:1240
+#: ../src/nautilus-window.c:1234
 msgid "_Properties"
 msgstr "_Savybės"
 
-#: ../src/nautilus-window.c:1250
+#: ../src/nautilus-window.c:1244
 msgid "_Format…"
 msgstr "_Formatuoti…"
 
 #. Translators: only one item has been deleted and %s is its name.
-#: ../src/nautilus-window.c:1510
+#: ../src/nautilus-window.c:1501
 #, c-format
 msgid "“%s” deleted"
 msgstr "„%s“ ištrintas"
@@ -4534,7 +4431,7 @@ msgstr "„%s“ ištrintas"
 # c-format
 #. Translators: one or more items might have been deleted, and %d
 #. * is the count.
-#: ../src/nautilus-window.c:1515
+#: ../src/nautilus-window.c:1506
 #, c-format
 msgid "%d file deleted"
 msgid_plural "%d files deleted"
@@ -4542,29 +4439,28 @@ msgstr[0] "Ištrintas %d failas"
 msgstr[1] "Ištrinti %d failai"
 msgstr[2] "Ištrinta %d failų"
 
-#: ../src/nautilus-window.c:1616
+#: ../src/nautilus-window.c:1607
 #, c-format
-#| msgid "Open With %s"
 msgid "Open %s"
 msgstr "Atverti %s"
 
-#: ../src/nautilus-window.c:1704
+#: ../src/nautilus-window.c:1695
 msgid "_New Tab"
 msgstr "Nauja _kortelė"
 
-#: ../src/nautilus-window.c:1714
+#: ../src/nautilus-window.c:1705
 msgid "Move Tab _Left"
 msgstr "Perkelti kortelę _kairėn"
 
-#: ../src/nautilus-window.c:1722
+#: ../src/nautilus-window.c:1713
 msgid "Move Tab _Right"
 msgstr "Perkelti kortelę _dešinėn"
 
-#: ../src/nautilus-window.c:1733
+#: ../src/nautilus-window.c:1724
 msgid "_Close Tab"
 msgstr "_Užverti kortelę"
 
-#: ../src/nautilus-window.c:2710
+#: ../src/nautilus-window.c:2673
 msgid "Access and organize your files."
 msgstr "Prieikite ir tvarkykite savo failus. "
 
@@ -4572,7 +4468,7 @@ msgstr "Prieikite ir tvarkykite savo failus. "
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2719
+#: ../src/nautilus-window.c:2682
 msgid "translator-credits"
 msgstr ""
 "Vertėjai:\n"
@@ -4583,38 +4479,38 @@ msgstr ""
 "Gediminas Paulauskas <menesis@chatsubo.lt>,\n"
 "Aurimas Černius <aurisc4@gmail.com>"
 
-#: ../src/nautilus-window-slot.c:1248 ../src/nautilus-window-slot.c:1423
+#: ../src/nautilus-window-slot.c:1233 ../src/nautilus-window-slot.c:1359
 #, c-format
 msgid "Unable to load location"
 msgstr "Nepavyko įkelti vietos"
 
-#: ../src/nautilus-window-slot.c:1577
+#: ../src/nautilus-window-slot.c:1515
 msgid "Unable to display the contents of this folder."
 msgstr "Nepavyko parodyti šio aplanko turinio."
 
-#: ../src/nautilus-window-slot.c:1579
+#: ../src/nautilus-window-slot.c:1517
 msgid "This location doesn't appear to be a folder."
 msgstr "Ši vieta yra ne aplankas."
 
-#: ../src/nautilus-window-slot.c:1584
+#: ../src/nautilus-window-slot.c:1522
 msgid ""
 "Unable to find the requested file. Please check the spelling and try again."
 msgstr "Nepavyko rasti prašomo failo. Patikrinkite rašybą ir bandykite vėl."
 
-#: ../src/nautilus-window-slot.c:1589
+#: ../src/nautilus-window-slot.c:1527
 #, c-format
 msgid "“%s” locations are not supported."
 msgstr "„%s“ vietos nepalaikomos."
 
-#: ../src/nautilus-window-slot.c:1592
+#: ../src/nautilus-window-slot.c:1530
 msgid "Unable to handle this kind of location."
 msgstr "Nepavyko apdoroti šio tipo vietos."
 
-#: ../src/nautilus-window-slot.c:1597
+#: ../src/nautilus-window-slot.c:1535
 msgid "Unable to access the requested location."
 msgstr "Nepavyko prieiti prašomos vietos."
 
-#: ../src/nautilus-window-slot.c:1600
+#: ../src/nautilus-window-slot.c:1538
 msgid "Don't have permission to access the requested location."
 msgstr "Neturite teisių prieiti prašomos vietos."
 
@@ -4623,14 +4519,14 @@ msgstr "Neturite teisių prieiti prašomos vietos."
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: ../src/nautilus-window-slot.c:1608
+#: ../src/nautilus-window-slot.c:1546
 msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
 msgstr ""
 "Nepavyko rasti prašomos vietos. Patikrinkite rašybą arba tinklo nustatymus."
 
-#: ../src/nautilus-window-slot.c:1619
+#: ../src/nautilus-window-slot.c:1557
 #, c-format
 msgid "Unhandled error message: %s"
 msgstr "Neapdorotos klaidos pranešimas: %s"
@@ -4696,6 +4592,230 @@ msgstr "Turi nuotraukų ir muzikos"
 #: ../src/nautilus-x-content-bar.c:201
 msgid "Open with:"
 msgstr "Atverti naudojant:"
+
+#: ../src/gtk/gtkplacesviewrow.ui.h:1 ../src/gtk/gtkplacesviewrow.c:324
+#| msgid "_Unmount"
+msgid "Unmount"
+msgstr "Atjungti"
+
+#. Translators: Server as any successfully connected network address
+#: ../src/gtk/gtkplacesview.ui.h:2
+#| msgid "_Recent Servers"
+msgid "No recent servers found"
+msgstr "Nėra neseniai naudotų serverių"
+
+#: ../src/gtk/gtkplacesview.ui.h:3
+#| msgid "_Recent Servers"
+msgid "Recent Servers"
+msgstr "Neseniai naudoti serveriai"
+
+#: ../src/gtk/gtkplacesview.ui.h:4
+#| msgid "No Results Found"
+msgid "No results found"
+msgstr "Nerasta rezultatų"
+
+#: ../src/gtk/gtkplacesview.ui.h:6
+#| msgid "Connect to Server"
+msgid "Connect to _Server"
+msgstr "Prisijungti prie _serverio"
+
+#. Restore from Cancel to Connect
+#: ../src/gtk/gtkplacesview.ui.h:7 ../src/gtk/gtkplacesview.c:1165
+#| msgid "C_onnect"
+msgid "Con_nect"
+msgstr "Prisi_jungti"
+
+#: ../src/gtk/gtkplacesview.ui.h:8
+#| msgid "_Server Address"
+msgid "Enter server address…"
+msgstr "Įveskite _serverio adresą…"
+
+#: ../src/gtk/gtkplacesview.c:887
+msgid "Searching for network locations"
+msgstr "Ieškoma tinklo vietų"
+
+#: ../src/gtk/gtkplacesview.c:895
+#| msgid "No Results Found"
+msgid "No networks locations found"
+msgstr "Nerasta tinklo vietų"
+
+#: ../src/gtk/gtkplacesview.c:1070
+msgid "Computer"
+msgstr "Kompiuteris"
+
+#. if it wasn't cancelled show a dialog
+#: ../src/gtk/gtkplacesview.c:1319
+#| msgid "Unable to unmount %V"
+msgid "Unable to unmount volume"
+msgstr "Nepavyko atjungi tomo"
+
+#. Allow to cancel the operation
+#: ../src/gtk/gtkplacesview.c:1401
+#| msgid "Cancel"
+msgid "Cance_l"
+msgstr "_Atsisakyti"
+
+#: ../src/gtk/gtkplacesview.c:1606
+#| msgid "Open In New _Tab"
+msgid "Open in New _Tab"
+msgstr "Atverti naujoje _kortelėje"
+
+#: ../src/gtk/gtkplacesview.c:1617
+#| msgid "Open In New _Window"
+msgid "Open in New _Window"
+msgstr "Atverti naujame _lange"
+
+#: ../src/gtk/gtkplacesview.c:1816
+#| msgid "Unable to start location"
+msgid "Unable to get remote server location"
+msgstr "Nepavyko gauti nutolusio serverio vietos"
+
+#: ../src/gtk/gtkplacesview.c:1935 ../src/gtk/gtkplacesview.c:1944
+msgid "Networks"
+msgstr "Tinklai"
+
+#: ../src/gtk/gtkplacesview.c:1935 ../src/gtk/gtkplacesview.c:1944
+msgid "On This Computer"
+msgstr "Šiame kompiuteryje"
+
+#: ../src/gtk/gtkplacesview.c:2137
+#| msgid "Location"
+msgid "open-location"
+msgstr "atverti-vietą"
+
+#: ../src/gtk/gtkplacesview.c:2160
+msgid "show-error-message"
+msgstr "rodyti-klaidos-pranešimą"
+
+#: ../src/gtk/gtkplacesview.c:2172
+#| msgid "Local Files Only"
+msgid "Local Only"
+msgstr "Tik vietiniai"
+
+#: ../src/gtk/gtkplacesview.c:2173
+#| msgid "Whether to show hidden files"
+msgid "Whether the sidebar only includes local files"
+msgstr "Ar šoniniame polangyje rodomi tik vietiniai failai"
+
+#: ../src/gtk/gtkplacesview.c:2179
+#| msgid "Loading…"
+msgid "Loading"
+msgstr "Įkeliama"
+
+#: ../src/gtk/gtkplacesview.c:2180
+#| msgid "Open another tab for the displayed location"
+msgid "Whether the view is loading locations"
+msgstr "Ar vaizdas įkelia vietas"
+
+#: ../src/gtk/gtkplacesview.c:2186
+#| msgid "Open %s"
+msgid "Open Flags"
+msgstr "Atvėrimo pažymiai"
+
+#: ../src/gtk/gtkplacesview.c:2187
+msgid ""
+"Modes in which the calling application can open locations selected in the "
+"sidebar"
+msgstr ""
+"Kokiomis veiksenomis kviečiančios programos gali atverti šoniniame polangyje "
+"pasirinktas vietas"
+
+#: ../src/gtk/gtkplacesviewrow.c:180
+msgid "Icon of the row"
+msgstr "Eilutės piktograma"
+
+#: ../src/gtk/gtkplacesviewrow.c:181
+msgid "The icon representing the volume"
+msgstr "Tomą nusakanti piktograma"
+
+#: ../src/gtk/gtkplacesviewrow.c:187
+msgid "Name of the volume"
+msgstr "Tomo pavadinimas"
+
+#: ../src/gtk/gtkplacesviewrow.c:188
+#| msgid "The owner of the file."
+msgid "The name of the volume"
+msgstr "Tomo pavadinimas"
+
+#: ../src/gtk/gtkplacesviewrow.c:194
+#| msgid "Stop the selected volume"
+msgid "Path of the volume"
+msgstr "Tomo kelias"
+
+#: ../src/gtk/gtkplacesviewrow.c:195
+#| msgid "The type of the file."
+msgid "The path of the volume"
+msgstr "Tomo kelias"
+
+#: ../src/gtk/gtkplacesviewrow.c:201
+msgid "Volume represented by the row"
+msgstr "Eilutės nusakomas tomas"
+
+#: ../src/gtk/gtkplacesviewrow.c:202
+msgid "The volume represented by the row"
+msgstr "Eilutės nusakomas tomas"
+
+#: ../src/gtk/gtkplacesviewrow.c:208
+msgid "Mount represented by the row"
+msgstr "Eilutės nusakomas prijungimo taškas"
+
+#: ../src/gtk/gtkplacesviewrow.c:209
+msgid "The mount point represented by the row, if any"
+msgstr "Eilutės nusakomas prijungimo taškas, jei yra"
+
+#: ../src/gtk/gtkplacesviewrow.c:215
+msgid "File represented by the row"
+msgstr "Eilutės nusakomas failas"
+
+#: ../src/gtk/gtkplacesviewrow.c:216
+msgid "The file represented by the row, if any"
+msgstr "Eilutės nusakomas failas, jei yra"
+
+#: ../src/gtk/gtkplacesviewrow.c:222 ../src/gtk/gtkplacesviewrow.c:223
+msgid "Whether the row represents a network location"
+msgstr "Ar eilutė nusako tinklo vietą"
+
+#: ../src/gtk/gtkplacesviewrow.c:324
+#| msgid "_Disconnect"
+msgid "Disconnect"
+msgstr "Atjungti"
+
+#~ msgid "Connect to _Server…"
+#~ msgstr "Prisijungti prie _serverio..."
+
+#~ msgid "Unable to display location"
+#~ msgstr "Nepavyko parodyti vietos"
+
+#~ msgid "Print but do not open the URI"
+#~ msgstr "Rodyti, bet neatverti URI"
+
+#~ msgid ""
+#~ "\n"
+#~ "\n"
+#~ "Add connect to server mount"
+#~ msgstr ""
+#~ "\n"
+#~ "\n"
+#~ "Pridėti prisijungimą prie serverio prijungimo"
+
+#~ msgid "This file server type is not recognized."
+#~ msgstr "Šis failų serverio tipas neatpažintas."
+
+#~ msgid "This doesn't look like an address."
+#~ msgstr "Tai nepanašu į adresą."
+
+#~ msgid "For example, %s"
+#~ msgstr "Pavyzdžiui %s"
+
+#~ msgid "_Remove"
+#~ msgstr "Pa_šalinti"
+
+#~ msgid "_Clear All"
+#~ msgstr "_Išvalyti viską"
+
+#~| msgid "Replace file “%s”?"
+#~ msgid "Rename “%s”"
+#~ msgstr "Pervadinti „%s“"
 
 #~ msgid "The text of the label."
 #~ msgstr "Etiketės tekstas"
@@ -5153,9 +5273,6 @@ msgstr "Atverti naudojant:"
 #~ msgid "Start the selected volume"
 #~ msgstr "Paleisti pasirinktą laikmeną"
 
-#~ msgid "Stop the selected volume"
-#~ msgstr "Sustabdyti pasirinktą laikmeną"
-
 #~ msgid "Detect media in the selected drive"
 #~ msgstr "Aptikti laikmeną pažymėtame įrenginyje"
 
@@ -5457,9 +5574,6 @@ msgstr "Atverti naudojant:"
 
 #~ msgid "Open another Nautilus window for the displayed location"
 #~ msgstr "Atverti kitą Nautilus langą šiai rodomai vietai"
-
-#~ msgid "Open another tab for the displayed location"
-#~ msgstr "Atverti kitą kortelę šiai rodomai vietai"
 
 #~ msgid "Close _All Windows"
 #~ msgstr "Užverti _visus langus"
