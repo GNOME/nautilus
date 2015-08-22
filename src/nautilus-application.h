@@ -29,8 +29,6 @@
 #include "nautilus-bookmark-list.h"
 #include "nautilus-window.h"
 
-#define NAUTILUS_DESKTOP_ICON_VIEW_IID	"OAFIID:Nautilus_File_Manager_Desktop_Canvas_View"
-
 #define NAUTILUS_TYPE_APPLICATION nautilus_application_get_type()
 #define NAUTILUS_APPLICATION(obj) \
   (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_APPLICATION, NautilusApplication))

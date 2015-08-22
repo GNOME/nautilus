@@ -27,6 +27,7 @@
 
 #include "nautilus-file-utilities.h"
 #include "nautilus-file.h"
+#include "src/nautilus-files-view.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-stock-dialogs.h>
@@ -57,9 +58,9 @@ nautilus_global_preferences_get_default_folder_viewer_preference_as_iid (void)
 		g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER);
 
 	if (preference_value == NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW) {
-		viewer_iid = NAUTILUS_LIST_VIEW_IID;
+		viewer_iid = NAUTILUS_LIST_VIEW_ID;
 	} else {
-		viewer_iid = NAUTILUS_CANVAS_VIEW_IID;
+		viewer_iid = NAUTILUS_CANVAS_VIEW_ID;
 	}
 
 	return g_strdup (viewer_iid);

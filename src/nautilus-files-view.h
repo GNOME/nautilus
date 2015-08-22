@@ -40,12 +40,12 @@ typedef struct NautilusFilesViewClass NautilusFilesViewClass;
 #include "nautilus-window-slot.h"
 
 #if ENABLE_EMPTY_VIEW
-#define NAUTILUS_EMPTY_VIEW_ID "OAFIID:Nautilus_File_Manager_Empty_View"
+#define NAUTILUS_EMPTY_VIEW_ID "empty"
 #endif
 
-#define NAUTILUS_CANVAS_VIEW_ID "OAFIID:Nautilus_File_Manager_Canvas_View"
-#define NAUTILUS_DESKTOP_CANVAS_VIEW_ID "OAFIID:Nautilus_File_Manager_Desktop_Canvas_View"
-#define NAUTILUS_LIST_VIEW_ID "OAFIID:Nautilus_File_Manager_List_View"
+#define NAUTILUS_CANVAS_VIEW_ID "grid"
+#define NAUTILUS_DESKTOP_VIEW_ID "desktop"
+#define NAUTILUS_LIST_VIEW_ID "list"
 
 #define NAUTILUS_TYPE_FILES_VIEW nautilus_files_view_get_type()
 #define NAUTILUS_FILES_VIEW(obj)\

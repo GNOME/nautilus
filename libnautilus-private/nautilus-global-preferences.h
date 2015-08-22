@@ -82,11 +82,6 @@ enum
 	NAUTILUS_DEFAULT_FOLDER_VIEWER_OTHER
 };
 
-/* These IIDs are used by the preferences code and in nautilus-application.c */
-#define NAUTILUS_CANVAS_VIEW_IID	"OAFIID:Nautilus_File_Manager_Canvas_View"
-#define NAUTILUS_LIST_VIEW_IID		"OAFIID:Nautilus_File_Manager_List_View"
-
-
 /* Icon View */
 #define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL		"default-zoom-level"
 

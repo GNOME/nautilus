@@ -435,50 +435,6 @@ action_toggle_state_action_button (GSimpleAction *action,
 }
 
 static void
-action_view_mode (GSimpleAction *action,
-		  GVariant      *value,
-		  gpointer       user_data)
-{
-	const gchar *name;
-	NautilusWindowSlot *slot;
-        GFile *location;
-
-	name =  g_variant_get_string (value, NULL);
-	slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (user_data));
-
-	if (g_strcmp0 (name, "list") == 0) {
-		nautilus_window_slot_set_content_view (slot, NAUTILUS_LIST_VIEW_ID);
-                /* If this change is caused because of the automatic list view
-                 * switch for search, don't set as default list view */
-                location = nautilus_window_slot_get_location (slot);
-                if (!(nautilus_file_is_in_search (nautilus_file_get (location))  &&
-                      g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_LIST_VIEW_ON_SEARCH))) {;
-                        g_settings_set_enum (nautilus_preferences,
-                                             NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
-                                             NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW);
-                }
-	} else if (g_strcmp0 (name, "grid") == 0) {
-		nautilus_window_slot_set_content_view (slot, NAUTILUS_CANVAS_VIEW_ID);
-
-                /* If the user manually changed the view mode to grid, disable the automatic
-                 * switch to list view on search */
-                location = nautilus_window_slot_get_location (slot);
-                if (nautilus_file_is_in_search (nautilus_file_get (location))) {
-                      g_settings_set_boolean (nautilus_preferences,
-                                              NAUTILUS_PREFERENCES_LIST_VIEW_ON_SEARCH,
-                                              FALSE);
-                }
-                g_settings_set_enum (nautilus_preferences,
-                                     NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
-                                     NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW);
-	} else {
-		g_assert_not_reached ();
-	}
-
-	g_simple_action_set_state (action, value);
-}
-
-static void
 undo_manager_changed (NautilusWindow *window)
 {
 	NautilusToolbar *toolbar;
@@ -1937,7 +1893,6 @@ const GActionEntry win_entries[] = {
 	{ "toggle-search", NULL, NULL, "false", action_toggle_search },
 	{ "undo", action_undo },
 	{ "redo", action_redo },
-	{ "view-mode", NULL, "s", "''", action_view_mode },
 	/* Only accesible by shorcuts */
 	{ "close-current-view", action_close_current_view },
 	{ "go-home", action_go_home },
@@ -1978,8 +1933,6 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 	nautilus_application_add_accelerator (app, "win.enter-location", "<control>l");
 	nautilus_application_add_accelerator (app, "win.new-tab", "<control>t");
 	nautilus_application_add_accelerator (app, "win.toggle-search", "<control>f");
-	nautilus_application_add_accelerator (app, "win.view-mode('list')", "<control>1");
-	nautilus_application_add_accelerator (app, "win.view-mode('grid')", "<control>2");
 	nautilus_application_add_accelerator (app, "win.close-current-view", "<control>w");
 
         /* Special case reload, since users are used to use two shortcuts instead of one */

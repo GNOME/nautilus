@@ -8259,7 +8259,7 @@ nautilus_files_view_new (const gchar        *id,
                 view = nautilus_canvas_view_new (slot);
         } else if (g_strcmp0 (id, NAUTILUS_LIST_VIEW_ID) == 0) {
                 view = nautilus_list_view_new (slot);
-        } else if (g_strcmp0 (id, NAUTILUS_DESKTOP_CANVAS_VIEW_ID) == 0) {
+        } else if (g_strcmp0 (id, NAUTILUS_DESKTOP_VIEW_ID) == 0) {
                 view = nautilus_desktop_canvas_view_new (slot);
         }
 #if ENABLE_EMPTY_VIEW
