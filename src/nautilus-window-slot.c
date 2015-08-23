@@ -263,10 +263,13 @@ nautilus_window_slot_sync_actions (NautilusWindowSlot *slot)
 	}
 
         /* Search */
-        action =  g_action_map_lookup_action (G_ACTION_MAP (slot->details->window), "toggle-search");
+        action =  g_action_map_lookup_action (G_ACTION_MAP (slot->details->slot_action_group),
+                                              "toggle-search");
+        /* Don't allow search on desktop */
+        g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                      !NAUTILUS_IS_DESKTOP_CANVAS_VIEW (nautilus_window_slot_get_current_view (slot)));
 
-        /* By setting the toggle-search action state, NautilusWindow will call nautilus_window_slot_set_search_visible() */
-        g_simple_action_set_state (G_SIMPLE_ACTION (action), g_variant_new_boolean (show_search));
+        g_action_change_state (action, g_variant_new_boolean (show_search));
 
         /* Files view mode */
         action =  g_action_map_lookup_action (G_ACTION_MAP (slot->details->slot_action_group), "files-view-mode");
@@ -587,6 +590,20 @@ nautilus_window_slot_constructed (GObject *object)
 
 	slot->details->title = g_strdup (_("Loading…"));
 }
+
+static void
+action_toggle_search (GSimpleAction *action,
+                      GVariant      *state,
+                      gpointer       user_data)
+{
+        NautilusWindowSlot *slot;
+
+        slot = NAUTILUS_WINDOW_SLOT (user_data);
+        nautilus_window_slot_set_search_visible (slot, g_variant_get_boolean (state));
+
+        g_simple_action_set_state (action, state);
+}
+
 static void
 action_files_view_mode (GSimpleAction *action,
 		        GVariant      *value,
@@ -631,6 +648,7 @@ action_files_view_mode (GSimpleAction *action,
 
 const GActionEntry slot_entries[] = {
         { "files-view-mode", NULL, "s", "''", action_files_view_mode },
+        { "toggle-search", NULL, NULL, "false", action_toggle_search },
 };
 
 static void
@@ -653,6 +671,7 @@ nautilus_window_slot_init (NautilusWindowSlot *slot)
                                         G_ACTION_GROUP (slot->details->slot_action_group));
         nautilus_application_add_accelerator (app, "slot.files-view-mode('list')", "<control>1");
         nautilus_application_add_accelerator (app, "slot.files-view-mode('grid')", "<control>2");
+        nautilus_application_add_accelerator (app, "slot.toggle-search", "<control>f");
 }
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_WINDOW

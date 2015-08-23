@@ -360,19 +360,6 @@ action_go_to_tab (GSimpleAction *action,
 }
 
 static void
-action_toggle_search (GSimpleAction *action,
-		      GVariant      *state,
-		      gpointer       user_data)
-{
-	NautilusWindowSlot *slot;
-
-	slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (user_data));
-	nautilus_window_slot_set_search_visible (slot, g_variant_get_boolean (state));
-
-	g_simple_action_set_state (action, state);
-}
-
-static void
 action_prompt_for_location_root (GSimpleAction *action,
 				 GVariant      *state,
 				 gpointer       user_data)
@@ -1890,7 +1877,6 @@ const GActionEntry win_entries[] = {
 	{ "new-tab", action_new_tab },
 	{ "enter-location", action_enter_location },
 	{ "bookmark-current-location", action_bookmark_current_location },
-	{ "toggle-search", NULL, NULL, "false", action_toggle_search },
 	{ "undo", action_undo },
 	{ "redo", action_redo },
 	/* Only accesible by shorcuts */
@@ -1932,7 +1918,6 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 	nautilus_application_add_accelerator (app, "win.forward", "<alt>Right");
 	nautilus_application_add_accelerator (app, "win.enter-location", "<control>l");
 	nautilus_application_add_accelerator (app, "win.new-tab", "<control>t");
-	nautilus_application_add_accelerator (app, "win.toggle-search", "<control>f");
 	nautilus_application_add_accelerator (app, "win.close-current-view", "<control>w");
 
         /* Special case reload, since users are used to use two shortcuts instead of one */
