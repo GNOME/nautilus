@@ -291,7 +291,7 @@ nautilus_mime_application_chooser_build_ui (NautilusMimeApplicationChooser *choo
 	gtk_label_set_line_wrap (GTK_LABEL (chooser->details->label), TRUE);
 	gtk_label_set_line_wrap_mode (GTK_LABEL (chooser->details->label),
 				      PANGO_WRAP_WORD_CHAR);
-        gtk_label_set_max_width_chars (GTK_LABEL (chooser->details->label), 60);
+	gtk_label_set_max_width_chars (GTK_LABEL (chooser->details->label), 60);
 	gtk_box_pack_start (GTK_BOX (chooser), chooser->details->label, 
 			    FALSE, FALSE, 0);
 
