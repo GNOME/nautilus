@@ -2076,7 +2076,7 @@ nautilus_files_view_rename_file_popover_new (NautilusFilesView *view,
                 gtk_label_set_text (GTK_LABEL (label_file_name), _("Folder name"));
         else
                 gtk_label_set_text (GTK_LABEL (label_file_name), _("File name"));
-        gtk_entry_set_text (GTK_ENTRY (widget_data->name_entry), nautilus_file_get_name (target_file));
+        gtk_entry_set_text (GTK_ENTRY (widget_data->name_entry), nautilus_file_get_display_name (target_file));
 
         relative_to = nautilus_files_view_compute_rename_popover_relative_to (view);
         gtk_popover_set_default_widget (GTK_POPOVER (widget_data->widget),
@@ -2088,7 +2088,7 @@ nautilus_files_view_rename_file_popover_new (NautilusFilesView *view,
         gtk_widget_grab_focus (widget_data->widget);
 
         /* Select the name part withouth the file extension */
-        eel_filename_get_rename_region (nautilus_file_get_name (target_file),
+        eel_filename_get_rename_region (nautilus_file_get_display_name (target_file),
                                         &start_offset, &end_offset);
         gtk_editable_select_region (GTK_EDITABLE (widget_data->name_entry),
                                     start_offset, end_offset);
