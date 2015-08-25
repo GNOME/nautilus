@@ -141,6 +141,7 @@ static void nautilus_window_slot_disconnect_content_view (NautilusWindowSlot *sl
 static void nautilus_window_slot_emit_location_change (NautilusWindowSlot *slot, GFile *from, GFile *to);
 static gboolean nautilus_window_slot_content_view_matches (NautilusWindowSlot *slot, const char *iid);
 static NautilusView* nautilus_window_slot_get_view_for_location (NautilusWindowSlot *slot, GFile *location);
+static void nautilus_window_slot_set_content_view (NautilusWindowSlot *slot, const char	*id);
 
 static NautilusView*
 nautilus_window_slot_get_view_for_location (NautilusWindowSlot *slot,

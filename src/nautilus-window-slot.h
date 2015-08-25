@@ -111,9 +111,6 @@ gboolean nautilus_window_slot_handle_event       	   (NautilusWindowSlot *slot,
 
 void    nautilus_window_slot_queue_reload		   (NautilusWindowSlot *slot);
 
-void	 nautilus_window_slot_set_content_view	           (NautilusWindowSlot *slot,
-							    const char		*id);
-
 void    nautilus_window_slot_go_home			   (NautilusWindowSlot *slot,
 							    NautilusWindowOpenFlags flags);
 void    nautilus_window_slot_go_up                         (NautilusWindowSlot *slot,
