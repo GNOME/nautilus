@@ -41,13 +41,10 @@ typedef enum {
         NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND = 1 << 0,
         NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW = 1 << 1,
         NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB = 1 << 2,
-        NAUTILUS_WINDOW_OPEN_FLAG_USE_DEFAULT_LOCATION = 1 << 3
+        NAUTILUS_WINDOW_OPEN_SLOT_APPEND = 1 << 3,
+        NAUTILUS_WINDOW_OPEN_FLAG_USE_DEFAULT_LOCATION = 1 << 4,
+        NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE = 1 << 5
 } NautilusWindowOpenFlags;
-
-typedef enum {
-	NAUTILUS_WINDOW_OPEN_SLOT_NONE = 0,
-	NAUTILUS_WINDOW_OPEN_SLOT_APPEND = 1
-}  NautilusWindowOpenSlotFlags;
 
 typedef gboolean (* NautilusWindowGoToCallback) (NautilusWindow *window,
                                                  GFile *location,
@@ -105,16 +102,19 @@ GType            nautilus_window_get_type             (void);
 NautilusWindow * nautilus_window_new                  (GdkScreen         *screen);
 void             nautilus_window_close                (NautilusWindow    *window);
 
+void nautilus_window_open_location_full               (NautilusWindow          *window,
+                                                       GFile                   *location,
+                                                       NautilusWindowOpenFlags  flags,
+                                                       GList                   *selection,
+                                                       NautilusWindowSlot      *target_slot);
 
-void             nautilus_window_go_to                (NautilusWindow    *window,
-                                                       GFile             *location);
 void             nautilus_window_new_tab              (NautilusWindow    *window);
 NautilusWindowSlot * nautilus_window_get_active_slot       (NautilusWindow *window);
 void                 nautilus_window_set_active_slot       (NautilusWindow    *window,
                                                             NautilusWindowSlot *slot);
 GList *              nautilus_window_get_slots             (NautilusWindow *window);
 NautilusWindowSlot * nautilus_window_open_slot             (NautilusWindow *window,
-                                                            NautilusWindowOpenSlotFlags flags);
+                                                            NautilusWindowOpenFlags flags);
 void                 nautilus_window_slot_close            (NautilusWindow *window,
                                                             NautilusWindowSlot *slot);
 

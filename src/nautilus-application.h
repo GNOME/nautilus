@@ -71,6 +71,13 @@ void nautilus_application_open_location (NautilusApplication *application,
 					 GFile *selection,
 					 const char *startup_id);
 
+void nautilus_application_open_location_full (NautilusApplication     *application,
+                                              GFile                   *location,
+                                              NautilusWindowOpenFlags  flags,
+                                              GList                   *selection,
+                                              NautilusWindow          *target_window,
+                                              NautilusWindowSlot      *target_slot);
+
 NautilusBookmarkList *
      nautilus_application_get_bookmarks  (NautilusApplication *application);
 void nautilus_application_edit_bookmarks (NautilusApplication *application,

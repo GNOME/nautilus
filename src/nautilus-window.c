@@ -82,6 +82,7 @@ static void mouse_forward_button_changed	     (gpointer                  callbac
 static void use_extra_mouse_buttons_changed          (gpointer                  callback_data);
 static void nautilus_window_initialize_actions 	     (NautilusWindow *window);
 static GtkWidget * nautilus_window_ensure_location_entry (NautilusWindow *window);
+static void nautilus_window_report_location_change (NautilusWindow *window);
 
 /* Sanity check: highest mouse button value I could find was 14. 5 is our 
  * lower threshold (well-documented to be the one of the button events for the 
@@ -198,13 +199,14 @@ action_go_home (GSimpleAction *action,
 		gpointer       user_data)
 {
 	NautilusWindow *window;
-	NautilusWindowSlot *slot;
+        GFile *home;
 
 	window = NAUTILUS_WINDOW (user_data);
-	slot = nautilus_window_get_active_slot (window);
+        home = g_file_new_for_path (g_get_home_dir ());
 
-	nautilus_window_slot_go_home (slot,
-				      nautilus_event_get_window_open_flags ());
+        nautilus_window_open_location_full (window, home, nautilus_event_get_window_open_flags (), NULL, NULL);
+
+        g_object_unref (home);
 }
 
 static void
@@ -246,7 +248,10 @@ action_up (GSimpleAction *action,
 	if (location != NULL) {
 		parent = g_file_get_parent (location);
 		if (parent != NULL)
-			nautilus_window_slot_go_up (slot, nautilus_event_get_window_open_flags ());
+                        nautilus_window_open_location_full (NAUTILUS_WINDOW (user_data),
+                                                            parent,
+                                                            nautilus_event_get_window_open_flags (),
+                                                            NULL, NULL);
 
 		g_clear_object (&parent);
 	}
@@ -470,13 +475,59 @@ undo_manager_changed (NautilusWindow *window)
 	g_free (redo_description);
 }
 
-void
-nautilus_window_go_to (NautilusWindow *window, GFile *location)
+static void
+on_location_changed (NautilusWindow *window)
 {
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
-	nautilus_window_slot_open_location (nautilus_window_get_active_slot (window),
-					    location, 0);
+        nautilus_window_report_location_change (window);
+        gtk_places_sidebar_set_location (GTK_PLACES_SIDEBAR (window->priv->places_sidebar),
+                                         nautilus_window_slot_get_location (nautilus_window_get_active_slot (window)));
+}
+
+static void
+on_slot_loading_changed (NautilusWindowSlot *slot,
+                         GParamSpec         *pspec,
+                         NautilusWindow     *window)
+{
+        if (nautilus_window_get_active_slot (window) == slot)
+                on_location_changed (window);
+}
+
+void
+nautilus_window_open_location_full (NautilusWindow          *window,
+                                    GFile                   *location,
+                                    NautilusWindowOpenFlags  flags,
+                                    GList                   *selection,
+                                    NautilusWindowSlot      *target_slot)
+{
+        NautilusWindowSlot *active_slot;
+        gboolean new_tab_at_end;
+
+        active_slot = nautilus_window_get_active_slot (window);
+
+        /* Assert that we are not managing new windows */
+        g_assert (! (flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW));
+	/* if the flags say we want a new tab, open a slot in the current window */
+	if ((flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB) != 0) {
+                new_tab_at_end = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_NEW_TAB_POSITION) == NAUTILUS_NEW_TAB_POSITION_END;
+                if (new_tab_at_end)
+		flags |= NAUTILUS_WINDOW_OPEN_SLOT_APPEND;
+
+		target_slot = nautilus_window_open_slot (window, flags);
+	}
+
+	if (target_slot == NULL) {
+		target_slot = active_slot;
+	}
+
+        /* Make the opened location the one active if we weren't ask for the
+         * oposite, since it's the most usual use case */
+        if (!(flags & NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE)) {
+                gtk_window_present (GTK_WINDOW (window));
+                nautilus_window_set_active_slot (window, target_slot);
+        }
+
+	nautilus_window_slot_open_location_full (target_slot, location, flags, selection);
 }
 
 static int
@@ -569,7 +620,7 @@ location_entry_location_changed_callback (GtkWidget      *widget,
 
 	restore_focus_widget (window);
 
-	nautilus_window_slot_open_location (window->priv->active_slot, location, 0);
+	nautilus_window_open_location_full (window, location, 0, NULL, NULL);
 }
 
 static void
@@ -593,6 +644,21 @@ notebook_switch_page_cb (GtkNotebook    *notebook,
 }
 
 static void
+connect_slot (NautilusWindow     *window,
+              NautilusWindowSlot *slot)
+{
+        g_signal_connect (slot, "notify::loading",
+                          G_CALLBACK (on_slot_loading_changed), window);
+}
+
+static void
+disconnect_slot (NautilusWindow     *window,
+                 NautilusWindowSlot *slot)
+{
+        g_signal_handlers_disconnect_by_data (slot, window);
+}
+
+static void
 close_slot (NautilusWindow     *window,
 	    NautilusWindowSlot *slot,
 	    gboolean            remove_from_notebook)
@@ -603,6 +669,8 @@ close_slot (NautilusWindow     *window,
 	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
 
 	DEBUG ("Closing slot %p", slot);
+
+        disconnect_slot (window, slot);
 
 	window->priv->slots = g_list_remove (window->priv->slots, slot);
 
@@ -621,13 +689,14 @@ close_slot (NautilusWindow     *window,
 
 NautilusWindowSlot *
 nautilus_window_open_slot (NautilusWindow             *window,
-			   NautilusWindowOpenSlotFlags flags)
+			   NautilusWindowOpenFlags flags)
 {
 	NautilusWindowSlot *slot;
 
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
 	slot = nautilus_window_slot_new (window);
+        connect_slot (window, slot);
 
 	g_signal_handlers_block_by_func (window->priv->notebook,
 					 G_CALLBACK (notebook_switch_page_cb),
@@ -652,22 +721,15 @@ void
 nautilus_window_new_tab (NautilusWindow *window)
 {
 	NautilusWindowSlot *current_slot;
-	NautilusWindowSlot *new_slot;
 	NautilusWindowOpenFlags flags;
 	GFile *location;
-	int new_slot_position;
 	char *scheme;
 
 	current_slot = nautilus_window_get_active_slot (window);
 	location = nautilus_window_slot_get_location (current_slot);
 
 	if (location != NULL) {
-		flags = 0;
-
-		new_slot_position = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_NEW_TAB_POSITION);
-		if (new_slot_position == NAUTILUS_NEW_TAB_POSITION_END) {
-			flags = NAUTILUS_WINDOW_OPEN_SLOT_APPEND;
-		}
+		flags = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_NEW_TAB_POSITION);
 
 		scheme = g_file_get_uri_scheme (location);
 		if (strcmp (scheme, "x-nautilus-search") == 0) {
@@ -678,9 +740,8 @@ nautilus_window_new_tab (NautilusWindow *window)
 
 		g_free (scheme);
 
-		new_slot = nautilus_window_open_slot (window, flags);
-		nautilus_window_set_active_slot (window, new_slot);
-		nautilus_window_slot_open_location (new_slot, location, 0);
+                flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
+		nautilus_window_open_location_full (window, location, flags, NULL, NULL);
 		g_object_unref (location);
 	}
 }
@@ -845,34 +906,6 @@ setup_side_pane_width (NautilusWindow *window)
 				window->priv->side_pane_width);
 }
 
-static void
-nautilus_window_location_opened (NautilusWindow *window,
-                                 GFile          *location,
-                                 GError         *error,
-                                 gpointer        user_data)
-{
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-
-	if (error) {
-		NautilusFile *old_file;
-		GFile *old_location;
-
-		old_file = nautilus_window_slot_get_file (window->priv->active_slot);
-		old_location = nautilus_file_get_location (old_file);
-
-		gtk_places_sidebar_set_location (GTK_PLACES_SIDEBAR (window->priv->places_sidebar), old_location);
-
-		g_warning ("error opening location: %s", error->message);
-
-		nautilus_window_slot_display_view_selection_failure (window,
-                                                                     old_file,
-                                                                     location,
-                                                                     error);
-
-		g_object_unref (old_location);
-	}
-}
-
 /* Callback used when the places sidebar changes location; we need to change the displayed folder */
 static void
 open_location_cb (NautilusWindow     *window,
@@ -896,12 +929,8 @@ open_location_cb (NautilusWindow     *window,
 		break;
 	}
 
-	nautilus_window_slot_open_location_full (window->priv->active_slot,
-                                                 location,
-                                                 flags,
-                                                 NULL,
-                                                 (NautilusWindowGoToCallback) nautilus_window_location_opened,
-                                                 NULL);
+        nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
+                                                 location, flags, NULL, NULL, NULL);
 }
 
 /* Callback used when the places sidebar needs us to present an error message */
@@ -1021,21 +1050,6 @@ places_sidebar_drag_perform_drop_cb (GtkPlacesSidebar *sidebar,
 
 	g_free (dest_uri);
 	g_list_free_full (source_uri_list, g_free);
-}
-
-/* Callback for our own loading_uri signal.  We update the sidebar's path. */
-static void
-window_loading_uri_cb (NautilusWindow *window,
-		       char           *location,
-		       gpointer        user_data)
-{
-	if (window->priv->places_sidebar) {
-		GFile *file;
-
-		file = g_file_new_for_uri (location);
-		gtk_places_sidebar_set_location (GTK_PLACES_SIDEBAR (window->priv->places_sidebar), file);
-		g_object_unref (file);
-	}
 }
 
 /* Callback used in the "empty trash" menu item from the places sidebar */
@@ -1226,9 +1240,6 @@ nautilus_window_set_up_sidebar (NautilusWindow *window)
 			  G_CALLBACK (places_sidebar_drag_perform_drop_cb), window);
 	g_signal_connect (window->priv->places_sidebar, "populate-popup",
 			  G_CALLBACK (places_sidebar_populate_popup_cb), window);
-
-	g_signal_connect (window, "loading-uri",
-			  G_CALLBACK (window_loading_uri_cb), window);
 }
 
 void
@@ -1502,9 +1513,8 @@ static void
 on_notification_operation_open_clicked (GtkWidget      *notification,
                                         NautilusWindow *window)
 {
-        nautilus_window_slot_open_location (window->priv->active_slot,
-                                            window->priv->folder_to_open,
-                                            0);
+        nautilus_window_open_location_full (window, window->priv->folder_to_open,
+                                            0, NULL, NULL);
         hide_notification_operation (window);
 }
 
@@ -1576,7 +1586,7 @@ path_bar_location_changed_callback (GtkWidget      *widget,
 	if (i >= 0) {
 		nautilus_window_back_or_forward (window, TRUE, i, 0);
 	} else {
-		nautilus_window_slot_open_location (slot, location, 0);
+                nautilus_window_open_location_full (window, location, 0, NULL, NULL);
 	}
 }
 
@@ -2164,12 +2174,15 @@ static void
 nautilus_window_report_location_change (NautilusWindow *window)
 {
 	NautilusWindowSlot *slot;
+        GFile *location;
 	gchar *uri;
 
 	slot = nautilus_window_get_active_slot (window);
-	uri = nautilus_window_slot_get_current_uri (slot);
+	location = nautilus_window_slot_get_location (slot);
 
-	if (uri != NULL) {
+        /* location can be null on creating for first time the slot */
+	if (location != NULL) {
+                uri = g_file_get_uri (location);
 		g_signal_emit (window, signals[LOADING_URI], 0, uri);
 		g_free (uri);
 	}
@@ -2182,8 +2195,6 @@ nautilus_window_set_active_slot (NautilusWindow *window, NautilusWindowSlot *new
 
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
-	DEBUG ("Setting new slot %p as active", new_slot);
-
 	if (new_slot) {
 		g_assert ((window == nautilus_window_slot_get_window (new_slot)));
 	}
@@ -2193,6 +2204,8 @@ nautilus_window_set_active_slot (NautilusWindow *window, NautilusWindowSlot *new
 	if (old_slot == new_slot) {
 		return;
 	}
+
+	DEBUG ("Setting new slot %p as active, old slot inactive %p", new_slot, old_slot);
 
 	/* make old slot inactive if it exists (may be NULL after init, for example) */
 	if (old_slot != NULL) {
@@ -2204,13 +2217,12 @@ nautilus_window_set_active_slot (NautilusWindow *window, NautilusWindowSlot *new
 
 	/* make new slot active, if it exists */
 	if (new_slot) {
-		/* inform sidebar panels */
-                nautilus_window_report_location_change (window);
-
                 nautilus_toolbar_set_active_slot (NAUTILUS_TOOLBAR (window->priv->toolbar), new_slot);
 
 		/* inform slot & view */
                 nautilus_window_slot_set_active (new_slot, TRUE);
+
+                on_location_changed (window);
 	}
 }
 

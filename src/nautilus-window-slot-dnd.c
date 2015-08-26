@@ -26,6 +26,7 @@
 #include <config.h>
 
 #include "nautilus-notebook.h"
+#include "nautilus-application.h"
 #include "nautilus-files-view-dnd.h"
 #include "nautilus-window-slot-dnd.h"
 
@@ -79,8 +80,6 @@ static void
 switch_location (NautilusDragSlotProxyInfo *drag_info)
 {
   GFile *location;
-  GFile *current_location;
-  NautilusWindowSlot *target_slot;
   GtkWidget *window;
 
   if (drag_info->target_file == NULL) {
@@ -90,13 +89,10 @@ switch_location (NautilusDragSlotProxyInfo *drag_info)
   window = gtk_widget_get_toplevel (drag_info->widget);
   g_assert (NAUTILUS_IS_WINDOW (window));
 
-  target_slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (window));
-
-  current_location = nautilus_window_slot_get_location (target_slot);
   location = nautilus_file_get_location (drag_info->target_file);
-  if (! (current_location != NULL && g_file_equal (location, current_location))) {
-	nautilus_window_slot_open_location (target_slot, location, 0);
-  }
+  nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
+                                           location, NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE,
+                                           NULL, NAUTILUS_WINDOW (window), NULL);
   g_object_unref (location);
 }
 
@@ -158,6 +154,7 @@ slot_proxy_drag_motion (GtkWidget          *widget,
   GdkAtom target;
   int action;
   char *target_uri;
+  GFile *location;
   gboolean valid_text_drag;
   gboolean valid_xds_drag;
 
@@ -195,7 +192,8 @@ slot_proxy_drag_motion (GtkWidget          *widget,
     }
 
     if (target_slot != NULL) {
-      target_uri = nautilus_window_slot_get_current_uri (target_slot);
+        location = nautilus_window_slot_get_location (target_slot);
+        target_uri = g_file_get_uri (location);
     }
   }
 
@@ -334,6 +332,7 @@ slot_proxy_handle_drop (GtkWidget                *widget,
   NautilusFilesView *target_view;
   char *target_uri;
   GList *uri_list;
+  GFile *location;
 
   if (!drag_info->have_data ||
       !drag_info->have_valid_data) {
@@ -355,7 +354,8 @@ slot_proxy_handle_drop (GtkWidget                *widget,
   if (drag_info->target_file != NULL) {
     target_uri = nautilus_file_get_uri (drag_info->target_file);
   } else if (target_slot != NULL) {
-    target_uri = nautilus_window_slot_get_current_uri (target_slot);
+    location = nautilus_window_slot_get_location (target_slot);
+    target_uri = g_file_get_uri (location);
   }
 
   target_view = NULL;

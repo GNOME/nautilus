@@ -30,6 +30,7 @@
 #include "nautilus-files-view-dnd.h"
 
 #include "nautilus-files-view.h"
+#include "nautilus-application.h"
 
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
@@ -540,7 +541,9 @@ nautilus_files_view_handle_hover (NautilusFilesView *view,
         target_is_dir = nautilus_file_get_file_type (target_file) == G_FILE_TYPE_DIRECTORY;
         current_location = nautilus_window_slot_get_location (slot);
         if (target_is_dir && ! (current_location != NULL && g_file_equal(location, current_location))) {
-                nautilus_window_slot_open_location (slot, location, 0);
+                nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
+                                                         location, NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE,
+                                                         NULL, NULL, slot);
         }
         g_object_unref (location);
         nautilus_file_unref (target_file);

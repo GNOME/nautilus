@@ -609,7 +609,8 @@ on_row_activated (GtkTreeView       *view,
 		return;
 	}
 
-	nautilus_window_go_to (self->priv->parent_window, location);
+        nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
+                                                 location, 0, NULL, NULL, NULL);
 	g_object_unref (location);
 }
 

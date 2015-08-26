@@ -24,6 +24,7 @@
 #include <config.h>
 #include "nautilus-desktop-window.h"
 #include "nautilus-window.h"
+#include "nautilus-application.h"
 
 #include <X11/Xatom.h>
 #include <gdk/gdkx.h>
@@ -57,7 +58,8 @@ nautilus_desktop_window_update_directory (NautilusDesktopWindow *window)
 
 	window->details->loaded = FALSE;
 	location = g_file_new_for_uri (EEL_DESKTOP_URI);
-	nautilus_window_go_to (NAUTILUS_WINDOW (window), location);
+        nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
+                                                 location, 0, NULL, NAUTILUS_WINDOW (window), NULL);
 	window->details->loaded = TRUE;
 
 	g_object_unref (location);

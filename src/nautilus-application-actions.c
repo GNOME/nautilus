@@ -37,16 +37,13 @@ action_new_window (GSimpleAction *action,
 		   gpointer user_data)
 {
 	GtkApplication *application = user_data;
-	NautilusWindow *window;
-	GtkWindow *cur_window;
+        GFile *home;
 
-	cur_window = gtk_application_get_active_window (application);
-	window = nautilus_application_create_window (NAUTILUS_APPLICATION (application),
-						     cur_window ?
-						     gtk_window_get_screen (cur_window) :
-						     gdk_screen_get_default ());
+        home = g_file_new_for_path (g_get_home_dir ());
+        nautilus_application_open_location_full (NAUTILUS_APPLICATION (application), home,
+                                                 NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW, NULL, NULL, NULL);
 
-	nautilus_window_slot_go_home (nautilus_window_get_active_slot (window), 0);
+        g_object_unref (home);
 }
 
 static void

@@ -72,31 +72,17 @@ NautilusWindow * nautilus_window_slot_get_window           (NautilusWindowSlot *
 void             nautilus_window_slot_set_window           (NautilusWindowSlot *slot,
 							    NautilusWindow     *window);
 
-/* convenience wrapper without selection and callback/user_data */
-#define nautilus_window_slot_open_location(slot, location, flags)\
-	nautilus_window_slot_open_location_full(slot, location, flags, NULL, NULL, NULL)
-
-void nautilus_window_slot_open_location_full              (NautilusWindowSlot *slot,
-							   GFile	      *location,
-							   NautilusWindowOpenFlags flags,
-							   GList	      *new_selection,
-							   NautilusWindowGoToCallback callback,
-							   gpointer	       user_data);
+void nautilus_window_slot_open_location_full              (NautilusWindowSlot      *slot,
+                                                           GFile                   *location,
+                                                           NautilusWindowOpenFlags  flags,
+                                                           GList                   *new_selection);
 
 GFile * nautilus_window_slot_get_location		   (NautilusWindowSlot *slot);
-char *  nautilus_window_slot_get_location_uri		   (NautilusWindowSlot *slot);
 
-NautilusFile *    nautilus_window_slot_get_file            (NautilusWindowSlot *slot);
 NautilusBookmark *nautilus_window_slot_get_bookmark        (NautilusWindowSlot *slot);
-NautilusView*  nautilus_window_slot_get_view               (NautilusWindowSlot *slot);
-
-NautilusView*  nautilus_window_slot_get_current_view       (NautilusWindowSlot *slot);
-char *         nautilus_window_slot_get_current_uri        (NautilusWindowSlot *slot);
 
 GList * nautilus_window_slot_get_back_history              (NautilusWindowSlot *slot);
 GList * nautilus_window_slot_get_forward_history           (NautilusWindowSlot *slot);
-void    nautilus_window_slot_set_search_visible            (NautilusWindowSlot *slot,
-							    gboolean            visible);
 
 gboolean nautilus_window_slot_get_allow_stop               (NautilusWindowSlot *slot);
 void     nautilus_window_slot_set_allow_stop		   (NautilusWindowSlot *slot,
@@ -111,16 +97,6 @@ gboolean nautilus_window_slot_handle_event       	   (NautilusWindowSlot *slot,
 
 void    nautilus_window_slot_queue_reload		   (NautilusWindowSlot *slot);
 
-void    nautilus_window_slot_go_home			   (NautilusWindowSlot *slot,
-							    NautilusWindowOpenFlags flags);
-void    nautilus_window_slot_go_up                         (NautilusWindowSlot *slot,
-							    NautilusWindowOpenFlags flags);
-
-void nautilus_window_slot_display_view_selection_failure   (NautilusWindow *window,
-                                                            NautilusFile   *file,
-                                                            GFile          *location,
-                                                            GError         *error);
-
 GIcon*   nautilus_window_slot_get_icon                     (NautilusWindowSlot *slot);
 
 GtkWidget* nautilus_window_slot_get_view_widget            (NautilusWindowSlot *slot);
@@ -129,5 +105,9 @@ gboolean nautilus_window_slot_get_active                   (NautilusWindowSlot *
 
 void     nautilus_window_slot_set_active                   (NautilusWindowSlot *slot,
                                                             gboolean            active);
+gboolean nautilus_window_slot_get_loading                  (NautilusWindowSlot *slot);
+
+/* Only used by slot-dnd */
+NautilusView*  nautilus_window_slot_get_current_view       (NautilusWindowSlot *slot);
 
 #endif /* NAUTILUS_WINDOW_SLOT_H */

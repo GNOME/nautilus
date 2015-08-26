@@ -417,10 +417,120 @@ get_window_slot_for_location (NautilusApplication *application, GFile *location)
 	return slot;
 }
 
+static void
+new_window_show_callback (GtkWidget *widget,
+                          gpointer   user_data)
+{
+	NautilusWindow *window;
+
+	window = NAUTILUS_WINDOW (user_data);
+	nautilus_window_close (window);
+
+	g_signal_handlers_disconnect_by_func (widget,
+					      G_CALLBACK (new_window_show_callback),
+					      user_data);
+}
+
+void
+nautilus_application_open_location_full (NautilusApplication     *application,
+                                         GFile                   *location,
+                                         NautilusWindowOpenFlags  flags,
+                                         GList                   *selection,
+                                         NautilusWindow          *target_window,
+                                         NautilusWindowSlot      *target_slot)
+{
+        NautilusWindowSlot *active_slot;
+        NautilusWindow *active_window;
+        GFile *old_location;
+	char *old_uri, *new_uri;
+	gboolean use_same;
+
+	use_same = TRUE;
+        active_window = NAUTILUS_WINDOW (gtk_application_get_active_window (GTK_APPLICATION (application)));
+        active_slot = nautilus_window_get_active_slot (active_window);
+
+	/* Just for debug.*/
+
+	old_location = nautilus_window_slot_get_location (active_slot);
+        /* this happens at startup */
+        if (old_location == NULL)
+		old_uri = g_strdup ("(none)");
+        else
+                old_uri = g_file_get_uri (old_location);
+
+	new_uri = g_file_get_uri (location);
+
+	DEBUG ("Application opening location, old: %s, new: %s", old_uri, new_uri);
+	nautilus_profile_start ("Application opening location, old: %s, new: %s", old_uri, new_uri);
+
+	g_free (old_uri);
+	g_free (new_uri);
+        /* end debug */
+
+        if ((target_window && NAUTILUS_IS_DESKTOP_WINDOW (target_window)) ||
+            (!target_window && NAUTILUS_IS_DESKTOP_WINDOW (active_window))) {
+                NautilusWindow *desktop_target_window;
+
+                desktop_target_window = target_window ? target_window : active_window;
+		use_same = !nautilus_desktop_window_loaded (NAUTILUS_DESKTOP_WINDOW (desktop_target_window));
+
+		/* if we're requested to open a new tab on the desktop, open a window
+		 * instead.
+		 */
+		if (flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB) {
+			flags ^= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
+			flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
+		}
+	}
+
+	g_assert (!((flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) != 0 &&
+		    (flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB) != 0));
+
+	/* and if the flags specify so, this is overridden */
+	if ((flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) != 0) {
+		use_same = FALSE;
+	}
+
+	/* now get/create the window */
+	if (use_same) {
+                if (!target_window) {
+                        if (!target_slot) {
+                                target_window = active_window;
+                        } else {
+                                target_window = nautilus_window_slot_get_window (target_slot);
+                        }
+                }
+	} else {
+		target_window = nautilus_application_create_window (application,
+                                                                    gtk_window_get_screen (GTK_WINDOW (active_window)));
+	}
+
+        g_assert (target_window != NULL);
+
+	/* close the current window if the flags say so */
+	if ((flags & NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND) != 0) {
+		if (NAUTILUS_IS_DESKTOP_WINDOW (active_window)) {
+			if (gtk_widget_get_visible (GTK_WIDGET (target_window))) {
+				nautilus_window_close (active_window);
+			} else {
+				g_signal_connect_object (target_window,
+							 "show",
+							 G_CALLBACK (new_window_show_callback),
+							 active_window,
+							 G_CONNECT_AFTER);
+			}
+		}
+	}
+
+        /* Application is the one that manages windows, so this flag shouldn't use
+         * it anymore by any client */
+        flags &= ~NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
+        nautilus_window_open_location_full (target_window, location, flags, selection, target_slot);
+}
 
 static void
 open_window (NautilusApplication *application,
-	     GFile *location)
+             GFile               *location)
 {
 	NautilusWindow *window;
 
@@ -428,9 +538,13 @@ open_window (NautilusApplication *application,
 	window = nautilus_application_create_window (application, gdk_screen_get_default ());
 
 	if (location != NULL) {
-		nautilus_window_go_to (window, location);
+                nautilus_application_open_location_full (application, location, 0, NULL, window, NULL);
 	} else {
-		nautilus_window_slot_go_home (nautilus_window_get_active_slot (window), 0);
+                GFile *home;
+	        home = g_file_new_for_path (g_get_home_dir ());
+                nautilus_application_open_location_full (application, home, 0, NULL, window, NULL);
+
+                g_object_unref (home);
 	}
 
 	nautilus_profile_end (NULL);
@@ -438,9 +552,9 @@ open_window (NautilusApplication *application,
 
 void
 nautilus_application_open_location (NautilusApplication *application,
-				    GFile *location,
-				    GFile *selection,
-				    const char *startup_id)
+                                    GFile               *location,
+                                    GFile               *selection,
+                                    const char          *startup_id)
 {
 	NautilusWindow *window;
 	NautilusWindowSlot *slot;
@@ -448,22 +562,19 @@ nautilus_application_open_location (NautilusApplication *application,
 
 	nautilus_profile_start (NULL);
 
-	slot = get_window_slot_for_location (application, location);
-
-	if (!slot) {
-		window = nautilus_application_create_window (application, gdk_screen_get_default ());
-		slot = nautilus_window_get_active_slot (window);
-	} else {
-		window = nautilus_window_slot_get_window (slot);
-		nautilus_window_set_active_slot (window, slot);
-		gtk_window_present (GTK_WINDOW (window));
-	}
-
 	if (selection != NULL) {
 		sel_list = g_list_prepend (sel_list, nautilus_file_get (selection));
 	}
 
-	nautilus_window_slot_open_location_full (slot, location, 0, sel_list, NULL, NULL);
+	slot = get_window_slot_for_location (application, location);
+
+	if (!slot) {
+		window = nautilus_application_create_window (application, gdk_screen_get_default ());
+	} else {
+		window = nautilus_window_slot_get_window (slot);
+	}
+
+	nautilus_application_open_location_full (application, location, 0, sel_list, window, slot);
 
 	if (sel_list != NULL) {
 		nautilus_file_list_free (sel_list);
@@ -487,7 +598,6 @@ nautilus_application_open (GApplication *app,
 	NautilusApplication *self = NAUTILUS_APPLICATION (app);
 	gboolean force_new = (g_strcmp0 (hint, "new-window") == 0);
 	NautilusWindowSlot *slot = NULL;
-	NautilusWindow *window;
 	GFile *file;
 	gint idx;
 
@@ -505,11 +615,7 @@ nautilus_application_open (GApplication *app,
 			open_window (self, file);
 		} else {
 			/* We open the location again to update any possible selection */
-			nautilus_window_slot_open_location (slot, file, 0);
-
-			window = nautilus_window_slot_get_window (slot);
-			nautilus_window_set_active_slot (window, slot);
-			gtk_window_present (GTK_WINDOW (window));
+			nautilus_application_open_location_full (NAUTILUS_APPLICATION (app), file, 0, NULL, NULL, slot);
 		}
 	}
 }
@@ -997,6 +1103,7 @@ update_dbus_opened_locations (NautilusApplication *app)
 	gsize locations_size = 0;
 	gchar **locations_array;
 	NautilusWindow *window;
+        GFile *location;
 
 	g_return_if_fail (NAUTILUS_IS_APPLICATION (app));
 
@@ -1005,9 +1112,10 @@ update_dbus_opened_locations (NautilusApplication *app)
 
 		for (sl = nautilus_window_get_slots (window); sl; sl = sl->next) {
 			NautilusWindowSlot *slot = sl->data;
-			gchar *uri = nautilus_window_slot_get_location_uri (slot);
+                        location = nautilus_window_slot_get_location (slot);
 
-			if (uri) {
+			if (location != NULL) {
+			        gchar *uri = g_file_get_uri (location);
 				GList *found = g_list_find_custom (locations, uri, (GCompareFunc) g_strcmp0);
 
 				if (!found) {

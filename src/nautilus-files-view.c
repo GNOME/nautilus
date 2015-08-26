@@ -4174,14 +4174,12 @@ static GList *
 get_extension_background_menu_items (NautilusFilesView *view)
 {
         NautilusWindow *window;
-        NautilusFile *file;
         GList *items;
         GList *providers;
         GList *l;
 
         window = nautilus_files_view_get_window (view);
         providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_MENU_PROVIDER);
-        file = nautilus_window_slot_get_file (view->details->slot);
         items = NULL;
 
         for (l = providers; l != NULL; l = l->next) {
@@ -4191,7 +4189,7 @@ get_extension_background_menu_items (NautilusFilesView *view)
                 provider = NAUTILUS_MENU_PROVIDER (l->data);
                 file_items = nautilus_menu_provider_get_background_items (provider,
                                                                           GTK_WIDGET (window),
-                                                                          file);
+                                                                          view->details->directory_as_file);
                 items = g_list_concat (items, file_items);
         }
 
@@ -4983,15 +4981,14 @@ action_open_scripts_folder (GSimpleAction *action,
                             GVariant      *state,
                             gpointer       user_data)
 {
-        NautilusFilesView *view;
         static GFile *location = NULL;
 
         if (location == NULL) {
                 location = g_file_new_for_uri (scripts_directory_uri);
         }
 
-        view = NAUTILUS_FILES_VIEW (user_data);
-        nautilus_window_slot_open_location (view->details->slot, location, 0);
+        nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
+                                                 location, 0, NULL, NULL, NULL);
 }
 
 typedef struct _CopyCallbackData {
@@ -5048,26 +5045,30 @@ static void
 add_bookmarks_for_window_slot (CopyCallbackData   *data,
                                NautilusWindowSlot *slot)
 {
+        GFile *location;
         char *uri;
 
-        uri = nautilus_window_slot_get_location_uri (slot);
-        if (uri != NULL) {
+        location = nautilus_window_slot_get_location (slot);
+        if (location != NULL) {
+                uri = g_file_get_uri (location);
                 add_bookmark_for_uri (data, uri);
+                g_free (uri);
         }
-        g_free (uri);
 }
 
 static void
 remove_bookmarks_for_window_slot (CopyCallbackData   *data,
                                   NautilusWindowSlot *slot)
 {
+        GFile *location;
         char *uri;
 
-        uri = nautilus_window_slot_get_location_uri (slot);
-        if (uri != NULL) {
+        location = nautilus_window_slot_get_location (slot);
+        if (location != NULL) {
+                uri = g_file_get_uri (location);
                 remove_bookmark_for_uri (data, uri);
+                g_free (uri);
         }
-        g_free (uri);
 }
 
 static void

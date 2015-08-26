@@ -19,6 +19,7 @@
 #include "nautilus-mime-actions.h"
 #include "nautilus-places-view.h"
 #include "nautilus-window-slot.h"
+#include "nautilus-application.h"
 #include "gtk/gtkplacesviewprivate.h"
 
 typedef struct
@@ -199,16 +200,12 @@ nautilus_places_view_set_location (NautilusView *view,
 
                 /*
                  * If it's not trying to open the places view itself, simply
-                 * delegates the location to window-slot, which takes care of
+                 * delegates the location to application, which takes care of
                  * selecting the appropriate view.
                  */
                 if (!g_strcmp0 (uri, "other-locations:///") == 0) {
-                        GtkWidget *slot;
-
-                        slot = gtk_widget_get_ancestor (GTK_WIDGET (view), NAUTILUS_TYPE_WINDOW_SLOT);
-                        g_assert (slot != NULL);
-
-                        nautilus_window_slot_open_location (NAUTILUS_WINDOW_SLOT (slot), location, 0);
+                        nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
+                                                                 location, 0, NULL, NULL, NULL);
                 } else {
                         g_set_object (&priv->location, location);
                 }

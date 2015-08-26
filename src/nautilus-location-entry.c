@@ -225,11 +225,8 @@ drag_data_received_callback (GtkWidget *widget,
 			     gpointer callback_data)
 {
 	char **names;
-	NautilusApplication *application;
 	int name_count;
-	NautilusWindow *new_window;
 	GtkWidget *window;
-	GdkScreen      *screen;
 	gboolean new_windows_for_extras;
 	char *prompt;
 	char *detail;
@@ -290,13 +287,10 @@ drag_data_received_callback (GtkWidget *widget,
 	if (new_windows_for_extras) {
 		int i;
 
-		application = NAUTILUS_APPLICATION (g_application_get_default ());
-		screen = gtk_window_get_screen (GTK_WINDOW (window));
-
 		for (i = 1; names[i] != NULL; ++i) {
-			new_window = nautilus_application_create_window (application, screen);
 			location = g_file_new_for_uri (names[i]);
-			nautilus_window_go_to (new_window, location);
+                        nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
+                                                                 location, NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW, NULL, NULL, NULL);
 			g_object_unref (location);
 		}
 	}

@@ -26,6 +26,7 @@
 #include "nautilus-mime-actions.h"
 
 #include "nautilus-window-slot.h"
+#include "nautilus-application.h"
 
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-stock-dialogs.h>
@@ -1548,7 +1549,8 @@ activate_files (ActivateParameters *parameters)
 
 			uri = nautilus_file_get_activation_uri (file);
 			f = g_file_new_for_uri (uri);
-			nautilus_window_slot_open_location (parameters->slot, f, flags);
+                        nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
+                                                                 f, flags, NULL, NULL, NULL);
 			g_object_unref (f);
 			g_free (uri);
 		}
