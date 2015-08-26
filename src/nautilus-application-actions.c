@@ -161,51 +161,6 @@ action_quit (GSimpleAction *action,
 }
 
 static void
-action_search (GSimpleAction *action,
-	       GVariant *parameter,
-	       gpointer user_data)
-{
-	GtkApplication *application = user_data;
-	const gchar *string, *uri;
-	NautilusQuery *query;
-	NautilusDirectory *directory;
-	gchar *search_uri;
-	NautilusWindow *window;
-	GtkWindow *cur_window;
-	GFile *location;
-
-	g_variant_get (parameter, "(ss)", &uri, &string);
-
-	if (strlen (string) == 0 ||
-	    strlen (uri) == 0) {
-		return;
-	}
-
-	query = nautilus_query_new ();
-	nautilus_query_set_location (query, uri);
-	nautilus_query_set_text (query, string);
-
-	search_uri = nautilus_search_directory_generate_new_uri ();
-	location = g_file_new_for_uri (search_uri);
-	g_free (search_uri);
-
-	directory = nautilus_directory_get (location);
-	nautilus_search_directory_set_query (NAUTILUS_SEARCH_DIRECTORY (directory), query);
-
-	cur_window = gtk_application_get_active_window (application);
-	window = nautilus_application_create_window (NAUTILUS_APPLICATION (application),
-						     cur_window ?
-						     gtk_window_get_screen (cur_window) :
-						     gdk_screen_get_default ());
-
-	nautilus_window_slot_open_location (nautilus_window_get_active_slot (window), location, 0);
-
-	nautilus_directory_unref (directory);
-	g_object_unref (query);
-	g_object_unref (location);
-}
-
-static void
 action_show_hide_sidebar (GSimpleAction *action,
 			  GVariant      *state,
 			  gpointer       user_data)
@@ -230,7 +185,6 @@ static GActionEntry app_entries[] = {
 	{ "bookmarks", action_bookmarks, NULL, NULL, NULL },
 	{ "preferences", action_preferences, NULL, NULL, NULL },
 	{ "show-hide-sidebar", NULL, NULL, "true", action_show_hide_sidebar },
-	{ "search", action_search, "(ss)", NULL, NULL },
 	{ "about", action_about, NULL, NULL, NULL },
 	{ "help", action_help, NULL, NULL, NULL },
 	{ "quit", action_quit, NULL, NULL, NULL },
