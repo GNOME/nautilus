@@ -40,8 +40,7 @@
 #include <math.h>
 
 #define OPERATION_MINIMUM_TIME 2 //s
-#define NEEDS_ATTENTION_ANIMATION_TIMEOUT 1000 //ms
-#define NEEDS_ATTENTION_ANIMATION_MULTIPLE_TIMEOUT 3000 //ms
+#define NEEDS_ATTENTION_ANIMATION_TIMEOUT 2000 //ms
 #define REMOVE_FINISHED_OPERATIONS_TIEMOUT 3 //s
 
 typedef enum {
@@ -430,19 +429,6 @@ schedule_remove_finished_operations (NautilusToolbar *self)
 }
 
 static gboolean
-remove_operations_button_attention_style_multiple (NautilusToolbar *self)
-{
-        GtkStyleContext *style_context;
-
-        style_context = gtk_widget_get_style_context (self->priv->operations_button);
-        gtk_style_context_remove_class (style_context,
-                                        "nautilus-operations-button-needs-attention-multiple");
-        self->priv->operations_button_attention_timeout_id = 0;
-
-        return G_SOURCE_REMOVE;
-}
-
-static gboolean
 remove_operations_button_attention_style (NautilusToolbar *self)
 {
         GtkStyleContext *style_context;
@@ -463,29 +449,12 @@ add_operations_button_attention_style (NautilusToolbar *self)
         style_context = gtk_widget_get_style_context (self->priv->operations_button);
 
         remove_operations_button_attention_style (self);
-        remove_operations_button_attention_style_multiple (self);
+        remove_operations_button_attention_style (self);
 
         gtk_style_context_add_class (style_context,
                                      "nautilus-operations-button-needs-attention");
         self->priv->operations_button_attention_timeout_id = g_timeout_add (NEEDS_ATTENTION_ANIMATION_TIMEOUT,
                                                                             (GSourceFunc) remove_operations_button_attention_style,
-                                                                            self);
-}
-
-static void
-add_operations_button_attention_multiple_style (NautilusToolbar *self)
-{
-        GtkStyleContext *style_context;
-
-        style_context = gtk_widget_get_style_context (self->priv->operations_button);
-
-        remove_operations_button_attention_style (self);
-        remove_operations_button_attention_style_multiple (self);
-
-        gtk_style_context_add_class (style_context,
-                                     "nautilus-operations-button-needs-attention-multiple");
-        self->priv->operations_button_attention_timeout_id = g_timeout_add (NEEDS_ATTENTION_ANIMATION_MULTIPLE_TIMEOUT,
-                                                                            (GSourceFunc) remove_operations_button_attention_style_multiple,
                                                                             self);
 }
 
@@ -593,7 +562,7 @@ update_operations (NautilusToolbar *self)
          */
         if (total_remaining_time > OPERATION_MINIMUM_TIME &&
             !gtk_revealer_get_reveal_child (GTK_REVEALER (self->priv->operations_revealer))) {
-                add_operations_button_attention_multiple_style (self);
+                add_operations_button_attention_style (self);
                 gtk_revealer_set_reveal_child (GTK_REVEALER (self->priv->operations_revealer),
                                                TRUE);
                 gtk_widget_queue_draw (self->priv->operations_icon);
