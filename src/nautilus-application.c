@@ -386,7 +386,8 @@ get_window_slot_for_location (NautilusApplication *application, GFile *location)
 	slot = NULL;
         file = nautilus_file_get (location);
 
-	if (!nautilus_file_is_directory (file) && !nautilus_file_is_other_locations (file)) {
+        if (!nautilus_file_is_directory (file) && !nautilus_file_is_other_locations (file) &&
+            g_file_has_parent (location, NULL)) {
 		location = g_file_get_parent (location);
 	} else {
 		g_object_ref (location);
