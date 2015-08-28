@@ -53,7 +53,6 @@ G_DEFINE_TYPE (NautilusWindowSlot, nautilus_window_slot, GTK_TYPE_BOX);
 enum {
 	ACTIVE,
 	INACTIVE,
-	LOCATION_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -63,6 +62,7 @@ enum {
         PROP_ICON,
         PROP_VIEW_WIDGET,
 	PROP_LOADING,
+        PROP_LOCATION,
 	NUM_PROPERTIES
 };
 
@@ -138,7 +138,6 @@ static void hide_query_editor (NautilusWindowSlot *slot);
 static void nautilus_window_slot_sync_actions (NautilusWindowSlot *slot);
 static void nautilus_window_slot_connect_new_content_view (NautilusWindowSlot *slot);
 static void nautilus_window_slot_disconnect_content_view (NautilusWindowSlot *slot);
-static void nautilus_window_slot_emit_location_change (NautilusWindowSlot *slot, GFile *from, GFile *to);
 static gboolean nautilus_window_slot_content_view_matches (NautilusWindowSlot *slot, const char *iid);
 static NautilusView* nautilus_window_slot_get_view_for_location (NautilusWindowSlot *slot, GFile *location);
 static void nautilus_window_slot_set_content_view (NautilusWindowSlot *slot, const char	*id);
@@ -146,6 +145,8 @@ static void nautilus_window_slot_set_loading (NautilusWindowSlot *slot, gboolean
 char * nautilus_window_slot_get_location_uri (NautilusWindowSlot *slot);
 static void nautilus_window_slot_set_search_visible (NautilusWindowSlot *slot,
 					             gboolean            visible);
+static void nautilus_window_slot_set_location (NautilusWindowSlot *slot,
+                                               GFile              *location);
 
 static NautilusView*
 nautilus_window_slot_get_view_for_location (NautilusWindowSlot *slot,
@@ -534,6 +535,9 @@ nautilus_window_slot_set_property (GObject *object,
 	case PROP_WINDOW:
 		nautilus_window_slot_set_window (slot, g_value_get_object (value));
 		break;
+	case PROP_LOCATION:
+		nautilus_window_slot_set_location (slot, g_value_get_object (value));
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 		break;
@@ -563,6 +567,9 @@ nautilus_window_slot_get_property (GObject *object,
                 break;
         case PROP_LOADING:
                 g_value_set_boolean (value, nautilus_window_slot_get_loading (slot));
+                break;
+        case PROP_LOCATION:
+                g_value_set_object (value, nautilus_window_slot_get_current_location (slot));
                 break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -906,13 +913,14 @@ nautilus_window_slot_set_location (NautilusWindowSlot *slot,
 	}
 
 	nautilus_window_slot_update_title (slot);
-	nautilus_window_slot_emit_location_change (slot, old_location, location);
 
         nautilus_query_editor_set_location (slot->details->query_editor, location);
 
 	if (old_location) {
 		g_object_unref (old_location);
 	}
+
+        g_object_notify_by_pspec (G_OBJECT (slot), properties[PROP_LOCATION]);
 }
 
 static void
@@ -1901,23 +1909,6 @@ found_mount_cb (GObject *source_object,
 }
 
 static void
-nautilus_window_slot_emit_location_change (NautilusWindowSlot *slot,
-					   GFile *from,
-					   GFile *to)
-{
-	char *from_uri = NULL;
-	char *to_uri = NULL;
-
-	if (from != NULL)
-		from_uri = g_file_get_uri (from);
-	if (to != NULL)
-		to_uri = g_file_get_uri (to);
-	g_signal_emit_by_name (slot, "location-changed", from_uri, to_uri);
-	g_free (to_uri);
-	g_free (from_uri);
-}
-
-static void
 nautilus_window_slot_show_trash_bar (NautilusWindowSlot *slot)
 {
 	GtkWidget *bar;
@@ -2307,17 +2298,6 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
 			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
 
-	signals[LOCATION_CHANGED] =
-		g_signal_new ("location-changed",
-			      G_TYPE_FROM_CLASS (klass),
-			      G_SIGNAL_RUN_LAST,
-			      0,
-			      NULL, NULL,
-			      g_cclosure_marshal_generic,
-			      G_TYPE_NONE, 2,
-			      G_TYPE_STRING,
-			      G_TYPE_STRING);
-
         properties[PROP_ACTIVE] =
                 g_param_spec_boolean ("active",
                                       "Whether the slot is active",
@@ -2351,6 +2331,13 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
 				     "The widget for the view's menu",
 				     GTK_TYPE_WIDGET,
 				     G_PARAM_READABLE);
+
+        properties[PROP_LOCATION] =
+		g_param_spec_object ("location",
+				     "Current location visible on the slot",
+				     "Either the location that is used currently, or the pending location. Clients will see the same value they set, and therefore it will be cosistent from clients point of view.",
+				     G_TYPE_FILE,
+				     G_PARAM_READWRITE);
 
 	g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 	g_type_class_add_private (klass, sizeof (NautilusWindowSlotDetails));

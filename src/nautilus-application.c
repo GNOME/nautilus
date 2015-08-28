@@ -1145,10 +1145,9 @@ update_dbus_opened_locations (NautilusApplication *app)
 }
 
 static void
-on_slot_location_changed (NautilusWindowSlot *slot,
-			  const char         *from,
- 			  const char         *to,
-			  NautilusApplication *application)
+on_slot_location_changed (NautilusWindowSlot  *slot,
+                          GParamSpec          *pspec,
+                          NautilusApplication *application)
 {
 	update_dbus_opened_locations (application);
 }
@@ -1162,7 +1161,7 @@ on_slot_added (NautilusWindow      *window,
 		update_dbus_opened_locations (application);
 	}
 
-	g_signal_connect (slot, "location-changed", G_CALLBACK (on_slot_location_changed), application);
+	g_signal_connect (slot, "notify::location", G_CALLBACK (on_slot_location_changed), application);
 }
 
 static void
