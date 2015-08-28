@@ -82,7 +82,6 @@ static void mouse_forward_button_changed	     (gpointer                  callbac
 static void use_extra_mouse_buttons_changed          (gpointer                  callback_data);
 static void nautilus_window_initialize_actions 	     (NautilusWindow *window);
 static GtkWidget * nautilus_window_ensure_location_entry (NautilusWindow *window);
-static void nautilus_window_report_location_change (NautilusWindow *window);
 
 /* Sanity check: highest mouse button value I could find was 14. 5 is our 
  * lower threshold (well-documented to be the one of the button events for the 
@@ -147,7 +146,6 @@ enum {
 };
 
 enum {
-	LOADING_URI,
 	SLOT_ADDED,
 	SLOT_REMOVED,
 	LAST_SIGNAL
@@ -478,8 +476,6 @@ undo_manager_changed (NautilusWindow *window)
 static void
 on_location_changed (NautilusWindow *window)
 {
-
-        nautilus_window_report_location_change (window);
         gtk_places_sidebar_set_location (GTK_PLACES_SIDEBAR (window->priv->places_sidebar),
                                          nautilus_window_slot_get_location (nautilus_window_get_active_slot (window)));
 }
@@ -2166,28 +2162,6 @@ nautilus_window_close (NautilusWindow *window)
 	NAUTILUS_WINDOW_CLASS (G_OBJECT_GET_CLASS (window))->close (window);
 }
 
-/* reports location change to window's "loading-uri" clients, i.e.
- * sidebar panels [used when switching tabs]. It will emit the pending
- * location, or the existing location if none is pending.
- */
-static void
-nautilus_window_report_location_change (NautilusWindow *window)
-{
-	NautilusWindowSlot *slot;
-        GFile *location;
-	gchar *uri;
-
-	slot = nautilus_window_get_active_slot (window);
-	location = nautilus_window_slot_get_location (slot);
-
-        /* location can be null on creating for first time the slot */
-	if (location != NULL) {
-                uri = g_file_get_uri (location);
-		g_signal_emit (window, signals[LOADING_URI], 0, uri);
-		g_free (uri);
-	}
-}
-
 void
 nautilus_window_set_active_slot (NautilusWindow *window, NautilusWindowSlot *new_slot)
 {
@@ -2489,16 +2463,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
 				      FALSE,
 				      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY |
 				      G_PARAM_STATIC_STRINGS);
-
-	signals[LOADING_URI] =
-		g_signal_new ("loading-uri",
-			      G_TYPE_FROM_CLASS (class),
-			      G_SIGNAL_RUN_LAST,
-			      0,
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__STRING,
-			      G_TYPE_NONE, 1,
-			      G_TYPE_STRING);
 	signals[SLOT_ADDED] =
 		g_signal_new ("slot-added",
 			      G_TYPE_FROM_CLASS (class),

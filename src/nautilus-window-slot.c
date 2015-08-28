@@ -2172,11 +2172,6 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *slot)
 static void
 change_view (NautilusWindowSlot *slot)
 {
-	NautilusWindow *window;
-	GFile *location;
-
-	window = nautilus_window_slot_get_window (slot);
-
 	/* Switch to the new content view.
 	 * Destroy the extra location widgets first, since they might hold
 	 * a pointer to the old view, which will possibly be destroyed inside
@@ -2194,21 +2189,6 @@ change_view (NautilusWindowSlot *slot)
 	 * add back the extra location widgets.
 	 */
 	nautilus_window_slot_setup_extra_location_widgets (slot);
-
-	location = nautilus_window_slot_get_location (slot);
-	if (location != NULL) {
-		g_object_ref (location);
-
-		if (nautilus_window_slot_get_active (slot)) {
-			char *uri;
-
-			uri = g_file_get_uri (location);
-			g_signal_emit_by_name (window, "loading-uri", uri);
-			g_free (uri);
-		}
-
-		g_object_unref (location);
-	}
 }
 
 static void
@@ -2422,11 +2402,11 @@ nautilus_window_slot_set_window (NautilusWindowSlot *slot,
 }
 
 /* nautilus_window_slot_update_title:
- * 
+ *
  * Re-calculate the slot title.
  * Called when the location or view has changed.
  * @slot: The NautilusWindowSlot in question.
- * 
+ *
  */
 void
 nautilus_window_slot_update_title (NautilusWindowSlot *slot)
