@@ -1773,14 +1773,6 @@ canvas_view_handle_raw (NautilusCanvasContainer *container, const char *raw_data
 				       raw_data, length, target_uri, direct_save_uri, action, x, y);
 }
 
-static void
-canvas_view_handle_hover (NautilusCanvasContainer *container,
-			  const char *target_uri,
-			  NautilusCanvasView *view)
-{
-	nautilus_files_view_handle_hover (NAUTILUS_FILES_VIEW (view), target_uri);
-}
-
 static char *
 canvas_view_get_first_visible_file (NautilusFilesView *view)
 {
@@ -2006,8 +1998,6 @@ nautilus_canvas_view_init (NautilusCanvasView *canvas_view)
 				 G_CALLBACK (canvas_view_handle_text), canvas_view, 0);
 	g_signal_connect_object (canvas_container, "handle-raw",
 				 G_CALLBACK (canvas_view_handle_raw), canvas_view, 0);
-	g_signal_connect_object (canvas_container, "handle-hover",
-				 G_CALLBACK (canvas_view_handle_hover), canvas_view, 0);
 
 	canvas_view->details->clipboard_handler_id =
 		g_signal_connect (nautilus_clipboard_monitor_get (),
