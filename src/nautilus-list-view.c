@@ -2146,6 +2146,38 @@ get_column_order (NautilusListView *list_view)
 }
 
 static void
+check_allow_sort (NautilusListView *list_view)
+{
+        GList *column_names;
+        GList *l;
+        NautilusFile *file;
+        GtkTreeViewColumn *column;
+        gboolean allow_sorting;
+        int sort_column_id;
+
+        column_names = g_hash_table_get_keys (list_view->details->columns);
+        file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (list_view));
+        allow_sorting = ! (nautilus_file_is_in_recent (file) || nautilus_file_is_in_search (file));
+
+        for (l = column_names; l != NULL; l = l->next) {
+                column = g_hash_table_lookup (list_view->details->columns, l->data);
+                if (allow_sorting) {
+		        sort_column_id = nautilus_list_model_get_sort_column_id_from_attribute (list_view->details->model,
+                                                                                                g_quark_from_string (l->data));
+                        /* Restore its original sorting id. We rely on that the keys of the hashmap
+                         * use the same string than the sort criterias */
+                        gtk_tree_view_column_set_sort_column_id (column, sort_column_id);
+                } else {
+                        /* This disables the header and any sorting capability (like shortcuts),
+                         * but leaving them interactionable so the user can still resize them */
+                        gtk_tree_view_column_set_sort_column_id (column, -1);
+                }
+        }
+
+        g_list_free (column_names);
+}
+
+static void
 set_columns_settings_from_metadata_and_preferences (NautilusListView *list_view)
 {
 	char **column_order;
@@ -2217,7 +2249,8 @@ nautilus_list_view_begin_loading (NautilusFilesView *view)
 	list_view = NAUTILUS_LIST_VIEW (view);
 
 	set_sort_order_from_metadata_and_preferences (list_view);
-	set_columns_settings_from_metadata_and_preferences (list_view);
+        set_columns_settings_from_metadata_and_preferences (list_view);
+        check_allow_sort (list_view);
 }
 
 static void
