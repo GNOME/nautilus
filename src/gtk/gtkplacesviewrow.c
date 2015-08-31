@@ -177,50 +177,50 @@ gtk_places_view_row_class_init (GtkPlacesViewRowClass *klass)
 
   properties[PROP_ICON] =
           g_param_spec_object ("icon",
-                               _("Icon of the row"),
-                               _("The icon representing the volume"),
+                               "Icon of the row",
+                               "The icon representing the volume",
                                G_TYPE_ICON,
                                G_PARAM_READWRITE);
 
   properties[PROP_NAME] =
           g_param_spec_string ("name",
-                               _("Name of the volume"),
-                               _("The name of the volume"),
+                               "Name of the volume",
+                               "The name of the volume",
                                "",
                                G_PARAM_READWRITE);
 
   properties[PROP_PATH] =
           g_param_spec_string ("path",
-                               _("Path of the volume"),
-                               _("The path of the volume"),
+                               "Path of the volume",
+                               "The path of the volume",
                                "",
                                G_PARAM_READWRITE);
 
   properties[PROP_VOLUME] =
           g_param_spec_object ("volume",
-                               _("Volume represented by the row"),
-                               _("The volume represented by the row"),
+                               "Volume represented by the row",
+                               "The volume represented by the row",
                                G_TYPE_VOLUME,
                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
 
   properties[PROP_MOUNT] =
           g_param_spec_object ("mount",
-                               _("Mount represented by the row"),
-                               _("The mount point represented by the row, if any"),
+                               "Mount represented by the row",
+                               "The mount point represented by the row, if any",
                                G_TYPE_MOUNT,
                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
 
   properties[PROP_FILE] =
           g_param_spec_object ("file",
-                               _("File represented by the row"),
-                               _("The file represented by the row, if any"),
+                               "File represented by the row",
+                               "The file represented by the row, if any",
                                G_TYPE_FILE,
                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
 
   properties[PROP_IS_NETWORK] =
           g_param_spec_boolean ("is-network",
-                                _("Whether the row represents a network location"),
-                                _("Whether the row represents a network location"),
+                                "Whether the row represents a network location",
+                                "Whether the row represents a network location",
                                 FALSE,
                                 G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
 
