@@ -85,7 +85,6 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-link.h>
 #include <libnautilus-private/nautilus-metadata.h>
-#include <libnautilus-private/nautilus-recent.h>
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-profile.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
