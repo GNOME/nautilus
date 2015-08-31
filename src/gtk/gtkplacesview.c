@@ -2138,7 +2138,7 @@ gtk_places_view_class_init (GtkPlacesViewClass *klass)
    * Since: 3.18
    */
   places_view_signals [OPEN_LOCATION] =
-          g_signal_new (_("open-location"),
+          g_signal_new ("open-location",
                         G_OBJECT_CLASS_TYPE (object_class),
                         G_SIGNAL_RUN_FIRST,
                         G_STRUCT_OFFSET (GtkPlacesViewClass, open_location),
@@ -2161,7 +2161,7 @@ gtk_places_view_class_init (GtkPlacesViewClass *klass)
    * Since: 3.18
    */
   places_view_signals [SHOW_ERROR_MESSAGE] =
-          g_signal_new (_("show-error-message"),
+          g_signal_new ("show-error-message",
                         G_OBJECT_CLASS_TYPE (object_class),
                         G_SIGNAL_RUN_FIRST,
                         G_STRUCT_OFFSET (GtkPlacesViewClass, show_error_message),
@@ -2173,22 +2173,22 @@ gtk_places_view_class_init (GtkPlacesViewClass *klass)
 
   properties[PROP_LOCAL_ONLY] =
           g_param_spec_boolean ("local-only",
-                                _("Local Only"),
-                                _("Whether the sidebar only includes local files"),
+                                "Local Only",
+                                "Whether the sidebar only includes local files",
                                 FALSE,
                                 G_PARAM_READWRITE);
 
   properties[PROP_LOADING] =
           g_param_spec_boolean ("loading",
-                                _("Loading"),
-                                _("Whether the view is loading locations"),
+                                "Loading",
+                                "Whether the view is loading locations",
                                 FALSE,
                                 G_PARAM_READABLE);
 
   properties[PROP_OPEN_FLAGS] =
           g_param_spec_flags ("open-flags",
-                              _("Open Flags"),
-                              _("Modes in which the calling application can open locations selected in the sidebar"),
+                              "Open Flags",
+                              "Modes in which the calling application can open locations selected in the sidebar",
                               GTK_TYPE_PLACES_OPEN_FLAGS,
                               GTK_PLACES_OPEN_NORMAL,
                               G_PARAM_READWRITE);
