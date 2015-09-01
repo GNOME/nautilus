@@ -489,7 +489,7 @@ nautilus_properties_window_drag_data_received (GtkWidget *widget, GdkDragContext
 	if (!exactly_one) {
 		eel_show_error_dialog
 			(_("You cannot assign more than one custom icon at a time!"),
-			 _("Please drag just one image to set a custom icon."), 
+			 _("Please drop just one image to set a custom icon."),
 			 window);
 	} else {		
 		if (uri_is_local_image (uris[0])) {			
