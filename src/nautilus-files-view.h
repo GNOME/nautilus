@@ -62,13 +62,13 @@ typedef struct NautilusFilesViewClass NautilusFilesViewClass;
 typedef struct NautilusFilesViewDetails NautilusFilesViewDetails;
 
 struct NautilusFilesView {
-        GtkOverlay parent;
+        GtkGrid parent;
 
         NautilusFilesViewDetails *details;
 };
 
 struct NautilusFilesViewClass {
-        GtkOverlayClass parent_class;
+        GtkGridClass parent_class;
 
         /* The 'clear' signal is emitted to empty the view of its contents.
          * It must be replaced by each subclass.

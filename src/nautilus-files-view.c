@@ -163,6 +163,10 @@ static int scripts_directory_uri_length;
 
 struct NautilusFilesViewDetails
 {
+        /* Main components */
+        GtkWidget *overlay;
+        GtkWidget *remote_warning_bar;
+
         NautilusWindowSlot *slot;
         NautilusDirectory *model;
         NautilusFile *directory_as_file;
@@ -314,7 +318,7 @@ static void     nautilus_files_view_iface_init                 (NautilusViewInte
 
 G_DEFINE_TYPE_WITH_CODE (NautilusFilesView,
                          nautilus_files_view,
-                         GTK_TYPE_OVERLAY,
+                         GTK_TYPE_GRID,
                          G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_VIEW, nautilus_files_view_iface_init));
 
 static const struct {
@@ -6940,6 +6944,23 @@ load_directory (NautilusFilesView *view,
 }
 
 static void
+check_remote_warning_bar (NautilusFilesView *view)
+{
+        if (nautilus_view_is_searching (NAUTILUS_VIEW (view))) {
+                NautilusDirectory *base;
+
+                base = nautilus_search_directory_get_base_model (NAUTILUS_SEARCH_DIRECTORY (view->details->model));
+                if (nautilus_directory_is_remote (base))
+                        gtk_widget_show_all (view->details->remote_warning_bar);
+                else
+                        gtk_widget_hide (view->details->remote_warning_bar);
+        } else {
+                        gtk_widget_hide (view->details->remote_warning_bar);
+        }
+}
+
+
+static void
 finish_loading (NautilusFilesView *view)
 {
         NautilusFileAttributes attributes;
@@ -6955,6 +6976,7 @@ finish_loading (NautilusFilesView *view)
         nautilus_profile_end ("BEGIN_LOADING");
 
         check_empty_states (view);
+        check_remote_warning_bar (view);
 
         if (nautilus_directory_are_all_files_seen (view->details->model)) {
                 /* Unschedule a pending update and schedule a new one with the minimal
@@ -7676,7 +7698,7 @@ nautilus_files_view_set_search_query (NautilusView  *view,
                         load_directory (files_view, base);
                 }
         }
-
+        check_remote_warning_bar (files_view);
         g_clear_object (&location);
 }
 
@@ -7868,13 +7890,6 @@ nautilus_files_view_init (NautilusFilesView *view)
         view->details = G_TYPE_INSTANCE_GET_PRIVATE (view, NAUTILUS_TYPE_FILES_VIEW,
                                                      NautilusFilesViewDetails);
 
-        /* NautilusFloatingBar listen to its parent's 'enter-notify-event' signal
-         * and GtkOverlay doesn't have it enabled by default, so we have to add them
-         * here.
-         */
-        gtk_widget_add_events (GTK_WIDGET (view),
-                               GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK);
-
         /* View menu */
         builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-toolbar-view-menu.xml");
         view->details->view_menu_widget =  g_object_ref (gtk_builder_get_object (builder, "view_menu_widget"));
@@ -7893,6 +7908,26 @@ nautilus_files_view_init (NautilusFilesView *view)
 
         g_object_unref (builder);
 
+        /* Main widgets */
+        gtk_orientable_set_orientation (GTK_ORIENTABLE (view), GTK_ORIENTATION_VERTICAL);
+        view->details->overlay = gtk_overlay_new ();
+        gtk_widget_set_vexpand (view->details->overlay, TRUE);
+        gtk_widget_set_hexpand (view->details->overlay, TRUE);
+        builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-remote-warning-bar.ui");
+        view->details->remote_warning_bar = GTK_WIDGET (gtk_builder_get_object (builder, "remote_warning_bar"));
+        gtk_container_add (GTK_CONTAINER (view), view->details->overlay);
+        gtk_container_add (GTK_CONTAINER (view), view->details->remote_warning_bar);
+        gtk_widget_show (view->details->overlay);
+
+        g_object_unref (builder);
+
+        /* NautilusFloatingBar listen to its parent's 'enter-notify-event' signal
+         * and GtkOverlay doesn't have it enabled by default, so we have to add them
+         * here.
+         */
+        gtk_widget_add_events (GTK_WIDGET (view->details->overlay),
+                               GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK);
+
         /* Scrolled Window */
         view->details->scrolled_window = gtk_scrolled_window_new (NULL, NULL);
         gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (view->details->scrolled_window),
@@ -7905,24 +7940,24 @@ nautilus_files_view_init (NautilusFilesView *view)
                                   G_CALLBACK (nautilus_files_view_scroll_event),
                                   view);
 
-        gtk_container_add (GTK_CONTAINER (view), view->details->scrolled_window);
+        gtk_container_add (GTK_CONTAINER (view->details->overlay), view->details->scrolled_window);
 
         /* Empty states */
         builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-no-search-results.ui");
         view->details->no_search_results_widget = GTK_WIDGET (gtk_builder_get_object (builder, "no_search_results"));
-        gtk_overlay_add_overlay (GTK_OVERLAY (view), view->details->no_search_results_widget);
+        gtk_overlay_add_overlay (GTK_OVERLAY (view->details->overlay), view->details->no_search_results_widget);
         g_object_unref (builder);
 
         builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-folder-is-empty.ui");
         view->details->folder_is_empty_widget = GTK_WIDGET (gtk_builder_get_object (builder, "folder_is_empty"));
-        gtk_overlay_add_overlay (GTK_OVERLAY (view), view->details->folder_is_empty_widget);
+        gtk_overlay_add_overlay (GTK_OVERLAY (view->details->overlay), view->details->folder_is_empty_widget);
         g_object_unref (builder);
 
         /* Floating bar */
         view->details->floating_bar = nautilus_floating_bar_new (NULL, NULL, FALSE);
         gtk_widget_set_halign (view->details->floating_bar, GTK_ALIGN_END);
         gtk_widget_set_valign (view->details->floating_bar, GTK_ALIGN_END);
-        gtk_overlay_add_overlay (GTK_OVERLAY (view), view->details->floating_bar);
+        gtk_overlay_add_overlay (GTK_OVERLAY (view->details->overlay), view->details->floating_bar);
 
         g_signal_connect (view->details->floating_bar,
                           "action",
