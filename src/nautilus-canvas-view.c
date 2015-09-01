@@ -266,44 +266,36 @@ get_stored_icon_position_callback (NautilusCanvasContainer *container,
 }
 
 static void
-real_set_sort_criterion (NautilusCanvasView *canvas_view,
-                         const SortCriterion *sort,
-                         gboolean clear,
-			 gboolean set_metadata)
+update_sort_criterion (NautilusCanvasView  *canvas_view,
+                       const SortCriterion *sort,
+                       gboolean             set_metadata)
 {
 	NautilusFile *file;
+        const SortCriterion *overrided_sort_criterion;
+        gboolean overrided_reversed;
 
 	file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (canvas_view));
 
-	if (clear) {
-		nautilus_file_set_metadata (file,
-					    NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY, NULL, NULL);
-		nautilus_file_set_metadata (file,
-					    NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED, NULL, NULL);
-		canvas_view->details->sort =
-			get_sort_criterion_by_sort_type	(get_default_sort_order
-							 (file, &canvas_view->details->sort_reversed));
-	} else if (set_metadata) {
-		/* Store the new sort setting. */
-		nautilus_canvas_view_set_directory_sort_by (canvas_view,
-						    file,
-						    sort->metadata_text);
-	}
-}
+        /* Make sure we use the default one and not one that the user used previously
+         * of the change to not allow sorting on search and recent, or the
+         * case that the user or some app modified directly the metadata */
+        if (nautilus_file_is_in_search (file) || nautilus_file_is_in_recent (file)) {
+	        overrided_sort_criterion = get_sort_criterion_by_sort_type (get_default_sort_order (file, NULL));
+	        nautilus_file_get_default_sort_attribute (file, &overrided_reversed);
+                set_sort_reversed (canvas_view, overrided_reversed, FALSE);
+        } else if (sort != NULL && canvas_view->details->sort != sort) {
+                overrided_sort_criterion = sort;
+                if (set_metadata) {
+	                /* Store the new sort setting. */
+                        nautilus_canvas_view_set_directory_sort_by (canvas_view,
+			                                            file,
+			                                            sort->metadata_text);
+                }
+	} else {
+                return;
+        }
 
-static void
-set_sort_criterion (NautilusCanvasView *canvas_view,
-		    const SortCriterion *sort,
-		    gboolean set_metadata)
-{
-	if (sort == NULL ||
-	    canvas_view->details->sort == sort) {
-		return;
-	}
-
-	canvas_view->details->sort = sort;
-
-        real_set_sort_criterion (canvas_view, sort, FALSE, set_metadata);
+        canvas_view->details->sort = overrided_sort_criterion;
 }
 
 void
@@ -316,9 +308,9 @@ nautilus_canvas_view_clean_up_by_name (NautilusCanvasView *canvas_view)
 
 	/* Hardwire Clean Up to always be by name, in forward order */
 	saved_sort_reversed = canvas_view->details->sort_reversed;
-	
+
 	set_sort_reversed (canvas_view, FALSE, FALSE);
-	set_sort_criterion (canvas_view, &sort_criteria[0], FALSE);
+	update_sort_criterion (canvas_view, &sort_criteria[0], FALSE);
 
 	nautilus_canvas_container_sort (canvas_container);
 	nautilus_canvas_container_freeze_icon_positions (canvas_container);
@@ -725,7 +717,7 @@ nautilus_canvas_view_begin_loading (NautilusFilesView *view)
 	 * container doesn't have any icons at this point.
 	 */
 	sort_name = nautilus_canvas_view_get_directory_sort_by (canvas_view, file);
-	set_sort_criterion (canvas_view, get_sort_criterion_by_metadata_text (sort_name), FALSE);
+	update_sort_criterion (canvas_view, get_sort_criterion_by_metadata_text (sort_name), FALSE);
 	g_free (sort_name);
 
 	/* Set the sort direction from the metadata. */
@@ -946,7 +938,7 @@ action_sort_order_changed (GSimpleAction *action,
 	if (sort_criterion->sort_type == NAUTILUS_FILE_SORT_NONE) {
 		switch_to_manual_layout (user_data);
 	} else {
-		set_sort_criterion (user_data, sort_criterion, TRUE);
+		update_sort_criterion (user_data, sort_criterion, TRUE);
 
 		nautilus_canvas_container_sort (get_canvas_container (user_data));
 		nautilus_canvas_view_reveal_selection (NAUTILUS_FILES_VIEW (user_data));
@@ -1519,7 +1511,7 @@ default_sort_order_changed_callback (gpointer callback_data)
 
 	file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (canvas_view));
 	sort_name = nautilus_canvas_view_get_directory_sort_by (canvas_view, file);
-	set_sort_criterion (canvas_view, get_sort_criterion_by_metadata_text (sort_name), FALSE);
+	update_sort_criterion (canvas_view, get_sort_criterion_by_metadata_text (sort_name), FALSE);
 	g_free (sort_name);
 
 	canvas_container = get_canvas_container (canvas_view);

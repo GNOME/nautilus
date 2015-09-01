@@ -2202,25 +2202,32 @@ set_sort_order_from_metadata_and_preferences (NautilusListView *list_view)
 	const gchar *default_sort_order;
 	
 	file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (list_view));
-	sort_attribute = nautilus_file_get_metadata (file,
-						     NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN,
-						     NULL);
-	sort_column_id = nautilus_list_model_get_sort_column_id_from_attribute (list_view->details->model,
-									  g_quark_from_string (sort_attribute));
-	g_free (sort_attribute);
+        default_sort_order = get_default_sort_order (file, &default_sort_reversed);
+        if (!(nautilus_file_is_in_recent (file) || nautilus_file_is_in_search (file))) {
+	        sort_attribute = nautilus_file_get_metadata (file,
+						             NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN,
+						             NULL);
+	        sort_column_id = nautilus_list_model_get_sort_column_id_from_attribute (list_view->details->model,
+									          g_quark_from_string (sort_attribute));
+	        g_free (sort_attribute);
 
-	default_sort_order = get_default_sort_order (file, &default_sort_reversed);
-	
-	if (sort_column_id == -1) {
-		sort_column_id =
-			nautilus_list_model_get_sort_column_id_from_attribute (list_view->details->model,
-									 g_quark_from_string (default_sort_order));
-	}
+	        if (sort_column_id == -1) {
+		        sort_column_id =
+			        nautilus_list_model_get_sort_column_id_from_attribute (list_view->details->model,
+									         g_quark_from_string (default_sort_order));
+	        }
 
-	sort_reversed = nautilus_file_get_boolean_metadata (file,
-							    NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED,
-							    default_sort_reversed);
-
+	        sort_reversed = nautilus_file_get_boolean_metadata (file,
+							            NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED,
+							            default_sort_reversed);
+        } else {
+                /* Make sure we use the default one and not one that the user used previously
+                 * of the change to not allow sorting on search and recent, or the
+                 * case that the user or some app modified directly the metadata */
+                sort_column_id = nautilus_list_model_get_sort_column_id_from_attribute (list_view->details->model,
+                                                                                        g_quark_from_string (default_sort_order));
+                sort_reversed = default_sort_reversed;
+        }
 	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (list_view->details->model),
 					      sort_column_id,
 					      sort_reversed ? GTK_SORT_DESCENDING : GTK_SORT_ASCENDING);					      
