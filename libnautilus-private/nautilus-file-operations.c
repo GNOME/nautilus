@@ -1533,6 +1533,8 @@ report_delete_progress (CommonJob *job,
 
 	                /* To translators: %T will expand to a time duration like "2 minutes".
                          * So the whole thing will be something like "1 / 5 -- 2 hours left (4 files/sec)"
+	                 *
+	                 * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 	                 */
                         time_left_message = ngettext ("%'d / %'d \xE2\x80\x94 %T left",
 	                                              "%'d / %'d \xE2\x80\x94 %T left",
