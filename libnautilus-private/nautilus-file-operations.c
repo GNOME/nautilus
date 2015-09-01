@@ -1513,10 +1513,14 @@ report_delete_progress (CommonJob *job,
 
 	if (elapsed < SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE) {
                 if (files_left > 0) {
+                        /* To translators: %'d is the number of files completed for the operation,
+                         * so it will be something like 2/14. */
                         details = f (_("%'d / %'d"),
                                      transfer_info->num_files + 1,
                                      source_info->num_files);
                 } else {
+                        /* To translators: %'d is the number of files completed for the operation,
+                         * so it will be something like 2/14. */
                         details = f (_("%'d / %'d"),
                                      transfer_info->num_files,
                                      source_info->num_files);
@@ -1547,6 +1551,8 @@ report_delete_progress (CommonJob *job,
                         g_free (files_per_second_message);
                         g_free (concat_detail);
                 } else {
+                        /* To translators: %'d is the number of files completed for the operation,
+                         * so it will be something like 2/14. */
                         details = f (_("%'d / %'d"),
                                      transfer_info->num_files,
                                      source_info->num_files);
@@ -1903,10 +1909,14 @@ report_trash_progress (CommonJob    *job,
 
 	if (elapsed < SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE) {
                 if (files_left > 0) {
+                        /* To translators: %'d is the number of files completed for the operation,
+                         * so it will be something like 2/14. */
                         details = f (_("%'d / %'d"),
                                      transfer_info->num_files + 1,
                                      source_info->num_files);
                 } else {
+                        /* To translators: %'d is the number of files completed for the operation,
+                         * so it will be something like 2/14. */
                         details = f (_("%'d / %'d"),
                                      transfer_info->num_files,
                                      source_info->num_files);
@@ -1925,6 +1935,8 @@ report_trash_progress (CommonJob    *job,
                                      remaining_time,
                                      (int) transfer_rate + 0.5);
                 } else {
+                        /* To translators: %'d is the number of files completed for the operation,
+                         * so it will be something like 2/14. */
                         details = f (_("%'d / %'d"),
                                      transfer_info->num_files,
                                      source_info->num_files);
@@ -3280,10 +3292,14 @@ report_copy_progress (CopyMoveJob *copy_job,
 	                details = f (_("%S / %S"), transfer_info->num_bytes, total_size);
                 } else {
                         if (files_left > 0) {
+                                /* To translators: %'d is the number of files completed for the operation,
+                                 * so it will be something like 2/14. */
 	                        details = f (_("%'d / %'d"),
                                              transfer_info->num_files + 1,
                                              source_info->num_files);
                         } else {
+                                /* To translators: %'d is the number of files completed for the operation,
+                                 * so it will be something like 2/14. */
                                 details = f (_("%'d / %'d"),
                                              transfer_info->num_files,
                                              source_info->num_files);
@@ -3323,6 +3339,8 @@ report_copy_progress (CopyMoveJob *copy_job,
                                              remaining_time,
                                              (goffset)transfer_rate);
                         } else {
+                                /* To translators: %'d is the number of files completed for the operation,
+                                 * so it will be something like 2/14. */
                                 details = f (_("%'d / %'d"),
                                              transfer_info->num_files,
                                              source_info->num_files);
