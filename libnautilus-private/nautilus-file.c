@@ -6999,7 +6999,7 @@ nautilus_file_is_in_recent (NautilusFile *file)
 }
 
 /**
- * nautilus_file_is_in_network
+ * nautilus_file_is_remote
  * 
  * Check if this file is a file in Network.
  * @file: NautilusFile representing the file in question.
@@ -7008,11 +7008,11 @@ nautilus_file_is_in_recent (NautilusFile *file)
  * 
  **/
 gboolean
-nautilus_file_is_in_network (NautilusFile *file)
+nautilus_file_is_remote (NautilusFile *file)
 {
 	g_assert (NAUTILUS_IS_FILE (file));
 
-	return nautilus_directory_is_in_network (file->details->directory);
+	return nautilus_directory_is_remote (file->details->directory);
 }
 
 /**

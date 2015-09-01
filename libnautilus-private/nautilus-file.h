@@ -190,7 +190,7 @@ gboolean		nautilus_file_is_archive			(NautilusFile			*file);
 gboolean                nautilus_file_is_in_search                      (NautilusFile                   *file);
 gboolean                nautilus_file_is_in_trash                       (NautilusFile                   *file);
 gboolean                nautilus_file_is_in_recent                      (NautilusFile                   *file);
-gboolean                nautilus_file_is_in_network                     (NautilusFile                   *file);
+gboolean                nautilus_file_is_remote                         (NautilusFile                   *file);
 gboolean                nautilus_file_is_other_locations                (NautilusFile                   *file);
 gboolean		nautilus_file_is_home				(NautilusFile                   *file);
 gboolean                nautilus_file_is_desktop_directory              (NautilusFile                   *file);

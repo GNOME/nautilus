@@ -709,13 +709,13 @@ showing_trash_directory (NautilusFilesView *view)
 }
 
 static gboolean
-showing_network_directory (NautilusFilesView *view)
+showing_remote_directory (NautilusFilesView *view)
 {
         NautilusFile *file;
 
         file = nautilus_files_view_get_directory_as_file (view);
         if (file != NULL) {
-                return nautilus_file_is_in_network (file);
+                return nautilus_file_is_remote (file);
         }
         return FALSE;
 }
@@ -6121,7 +6121,7 @@ real_update_actions_state (NautilusFilesView *view)
         can_paste_files_into = (!selection_contains_recent &&
                                 selection_count == 1 &&
                                 can_paste_into_file (NAUTILUS_FILE (selection->data)));
-        show_properties = !showing_network_directory (view) &&
+        show_properties = !showing_remote_directory (view) &&
                           (!NAUTILUS_IS_DESKTOP_CANVAS_VIEW (view) || selection_count > 0);
 
         /* Right click actions */
