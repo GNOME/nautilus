@@ -1923,17 +1923,31 @@ report_trash_progress (CommonJob    *job,
                 }
 	} else {
                 if (files_left > 0) {
+                        gchar *time_left_message;
+                        gchar *files_per_second_message;
+                        gchar *concat_detail;
+
 	                /* To translators: %T will expand to a time duration like "2 minutes".
                          * So the whole thing will be something like "1 / 5 -- 2 hours left (4 files/sec)"
 	                 *
 	                 * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 	                 */
-	                details = f (ngettext ("%'d / %'d \xE2\x80\x94 %T left (%d files/sec)",
-	                                       "%'d / %'d \xE2\x80\x94 %T left (%d files/sec)",
-			                       seconds_count_format_time_units (remaining_time)),
+                        time_left_message = ngettext ("%'d / %'d \xE2\x80\x94 %T left",
+	                                              "%'d / %'d \xE2\x80\x94 %T left",
+			                              seconds_count_format_time_units (remaining_time));
+                        files_per_second_message = ngettext ("(%d file/sec)",
+	                                                     "(%d files/sec)",
+                                                              (int) transfer_rate + 0.5);
+                        concat_detail = g_strconcat (time_left_message, files_per_second_message, NULL);
+
+	                details = f (concat_detail,
                                      transfer_info->num_files + 1, source_info->num_files,
                                      remaining_time,
                                      (int) transfer_rate + 0.5);
+
+                        g_free (time_left_message);
+                        g_free (files_per_second_message);
+                        g_free (concat_detail);
                 } else {
                         /* To translators: %'d is the number of files completed for the operation,
                          * so it will be something like 2/14. */
