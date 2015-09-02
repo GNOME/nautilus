@@ -30,7 +30,6 @@
 #include "nautilus-files-view-dnd.h"
 
 #include "nautilus-files-view.h"
-#include "nautilus-global-preferences.h"
 #include "nautilus-application.h"
 
 #include <eel/eel-stock-dialogs.h>
@@ -40,6 +39,7 @@
 
 #include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-dnd.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 
 #define GET_ANCESTOR(obj) \
         GTK_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (obj), GTK_TYPE_WINDOW))
