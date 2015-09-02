@@ -1295,6 +1295,14 @@ list_view_handle_raw (NautilusTreeViewDragDest *dest, const char *raw_data,
 }
 
 static void
+list_view_handle_hover (NautilusTreeViewDragDest *dest,
+			const char *target_uri,
+			NautilusListView *view)
+{
+	nautilus_files_view_handle_hover (NAUTILUS_FILES_VIEW (view), target_uri);
+}
+
+static void
 move_copy_items_callback (NautilusTreeViewDragDest *dest,
 			  const GList *item_uris,
 			  const char *target_uri,
@@ -1826,6 +1834,8 @@ create_and_set_up_tree_view (NautilusListView *view)
 				 G_CALLBACK (list_view_handle_text), view, 0);
 	g_signal_connect_object (view->details->drag_dest, "handle-raw",
 				 G_CALLBACK (list_view_handle_raw), view, 0);
+	g_signal_connect_object (view->details->drag_dest, "handle-hover",
+				 G_CALLBACK (list_view_handle_hover), view, 0);
 
 	g_signal_connect_object (gtk_tree_view_get_selection (view->details->tree_view),
 				 "changed",

@@ -523,3 +523,28 @@ nautilus_files_view_drop_proxy_received_uris (NautilusFilesView *view,
 
         g_free (container_uri);
 }
+
+void
+nautilus_files_view_handle_hover (NautilusFilesView *view,
+                                  const char        *target_uri)
+{
+        NautilusWindowSlot *slot;
+        GFile *location;
+        GFile *current_location;
+        NautilusFile *target_file;
+        gboolean target_is_dir;
+
+        slot = nautilus_files_view_get_nautilus_window_slot (view);
+
+        location = g_file_new_for_uri (target_uri);
+        target_file = nautilus_file_get_existing (location);
+        target_is_dir = nautilus_file_get_file_type (target_file) == G_FILE_TYPE_DIRECTORY;
+        current_location = nautilus_window_slot_get_location (slot);
+        if (target_is_dir && ! (current_location != NULL && g_file_equal(location, current_location))) {
+                nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
+                                                         location, NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE,
+                                                         NULL, NULL, slot);
+        }
+        g_object_unref (location);
+        nautilus_file_unref (target_file);
+}
