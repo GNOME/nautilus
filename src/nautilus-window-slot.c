@@ -120,7 +120,6 @@ struct NautilusWindowSlotDetails {
 	guint location_change_distance;
 	char *pending_scroll_to;
 	GList *pending_selection;
-	gboolean pending_use_default_location;
 	NautilusFile *determine_view_file;
 	GCancellable *mount_cancellable;
 	GError *mount_error;
@@ -747,7 +746,6 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot      *slot,
             nautilus_file_selection_equal (old_selection, new_selection))
           goto done;
 
-	slot->details->pending_use_default_location = ((flags & NAUTILUS_WINDOW_OPEN_FLAG_USE_DEFAULT_LOCATION) != 0);
 	begin_location_change (slot, location, old_location, new_selection,
 			       NAUTILUS_LOCATION_CHANGE_STANDARD, 0, NULL);
 
@@ -1153,11 +1151,10 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 	NautilusWindowSlot *slot;
 	NautilusFile *viewed_file, *parent_file;
         NautilusView *view;
-	GFile *location, *default_location;
+	GFile *location;
 	GMountOperation *mount_op;
 	MountNotMountedData *data;
 	NautilusApplication *app;
-	GMount *mount;
 
 	slot = callback_data;
 	window = nautilus_window_slot_get_window (slot);
@@ -1188,35 +1185,6 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 					       mount_not_mounted_callback, data);
 		g_object_unref (location);
 		g_object_unref (mount_op);
-
-		goto done;
-	}
-
-	mount = NULL;
-	default_location = NULL;
-
-	if (slot->details->pending_use_default_location) {
-		mount = nautilus_file_get_mount (file);
-		slot->details->pending_use_default_location = FALSE;
-	}
-
-	if (mount != NULL) {
-		default_location = g_mount_get_default_location (mount);
-		g_object_unref (mount);
-	}
-
-	if (default_location != NULL &&
-	    !g_file_equal (slot->details->pending_location, default_location)) {
-		g_clear_object (&slot->details->pending_location);
-		slot->details->pending_location = default_location;
-		slot->details->determine_view_file = nautilus_file_get (default_location);
-
-		nautilus_file_invalidate_all_attributes (slot->details->determine_view_file);
-		nautilus_file_call_when_ready (slot->details->determine_view_file,
-					       NAUTILUS_FILE_ATTRIBUTE_INFO |
-					       NAUTILUS_FILE_ATTRIBUTE_MOUNT,
-					       got_file_info_for_view_selection_callback,
-					       slot);
 
 		goto done;
 	}

@@ -42,8 +42,7 @@ typedef enum {
         NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW = 1 << 1,
         NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB = 1 << 2,
         NAUTILUS_WINDOW_OPEN_SLOT_APPEND = 1 << 3,
-        NAUTILUS_WINDOW_OPEN_FLAG_USE_DEFAULT_LOCATION = 1 << 4,
-        NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE = 1 << 5
+        NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE = 1 << 4
 } NautilusWindowOpenFlags;
 
 typedef gboolean (* NautilusWindowGoToCallback) (NautilusWindow *window,
