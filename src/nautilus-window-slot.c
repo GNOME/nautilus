@@ -852,9 +852,6 @@ begin_location_change (NautilusWindowSlot         *slot,
 
 	if (force_reload) {
 		nautilus_directory_force_reload (directory);
-		file = nautilus_directory_get_corresponding_file (directory);
-		nautilus_file_invalidate_all_attributes (file);
-		nautilus_file_unref (file);
 	}
 
         nautilus_directory_unref (directory);

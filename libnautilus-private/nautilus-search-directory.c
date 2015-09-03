@@ -636,6 +636,7 @@ static void
 search_force_reload (NautilusDirectory *directory)
 {
 	NautilusSearchDirectory *search;
+        NautilusFile *file;
 
 	search = NAUTILUS_SEARCH_DIRECTORY (directory);
 
@@ -648,6 +649,10 @@ search_force_reload (NautilusDirectory *directory)
 	/* Remove file monitors */
 	reset_file_list (search);
 	stop_search (search);
+
+	file = nautilus_directory_get_corresponding_file (directory);
+	nautilus_file_invalidate_all_attributes (file);
+	nautilus_file_unref (file);
 }
 
 static gboolean
