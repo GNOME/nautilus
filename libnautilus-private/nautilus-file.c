@@ -7012,7 +7012,11 @@ nautilus_file_is_remote (NautilusFile *file)
 {
 	g_assert (NAUTILUS_IS_FILE (file));
 
-	return nautilus_directory_is_remote (file->details->directory);
+        if (nautilus_file_is_directory (file))
+                return nautilus_directory_is_remote (nautilus_directory_get_for_file (file));
+        else
+	        return nautilus_directory_is_remote (file->details->directory);
+
 }
 
 /**

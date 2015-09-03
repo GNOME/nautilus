@@ -188,7 +188,7 @@ start_search (NautilusSearchDirectory *search)
         /* It's too slow to search recursively on locations that are on the network. So
          * for that case, just search in the current directory */
 	recursive = g_settings_get_boolean (nautilus_preferences, "enable-recursive-search") &&
-                    !nautilus_file_is_remote (directory_as_file);
+                    !nautilus_directory_is_remote (search->details->base_model);
         g_object_unref (directory_as_file);
 	g_object_set (simple_provider, "recursive", recursive, NULL);
 

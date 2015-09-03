@@ -615,6 +615,7 @@ nautilus_directory_is_remote (NautilusDirectory *directory)
 {
         GFileInfo *info;
         gboolean is_remote;
+        GError *error = NULL;
 
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
@@ -623,7 +624,15 @@ nautilus_directory_is_remote (NautilusDirectory *directory)
 	}
 
 	info = g_file_query_filesystem_info (directory->details->location, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE,
-					     NULL, NULL);
+					     NULL, &error);
+        if (error) {
+                /* Custom schemas like x-nautilus-desktop or other-locations:///
+                 * should not yell warnings */
+                if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED))
+                        g_warning ("Can't peek the uri: %s filesystem type with error: %s",
+                                   g_file_get_uri (directory->details->location), error->message);
+        }
+        g_clear_error (&error);
         if (info) {
                 const gchar *type;
 

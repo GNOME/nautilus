@@ -715,13 +715,21 @@ showing_trash_directory (NautilusFilesView *view)
 static gboolean
 showing_remote_directory (NautilusFilesView *view)
 {
-        NautilusFile *file;
+        NautilusDirectory *base;
 
-        file = nautilus_files_view_get_directory_as_file (view);
-        if (file != NULL) {
-                return nautilus_file_is_remote (file);
-        }
-        return FALSE;
+        /* Nautilus search is kind of special, since when we swtich to a search directory
+         * its uri is something invented, not a real GFile or where we were before
+         * entering search. For that we need to get the base model of the search directory,
+         * that is basically the real location we were before entering search */
+        if (NAUTILUS_IS_SEARCH_DIRECTORY (view->details->model))
+                base = nautilus_search_directory_get_base_model (NAUTILUS_SEARCH_DIRECTORY (view->details->model));
+        else
+                base = view->details->model;
+
+        if (base != NULL)
+                return nautilus_directory_is_remote (base);
+        else
+                return FALSE;
 }
 
 static gboolean
@@ -6947,10 +6955,7 @@ static void
 check_remote_warning_bar (NautilusFilesView *view)
 {
         if (nautilus_view_is_searching (NAUTILUS_VIEW (view))) {
-                NautilusDirectory *base;
-
-                base = nautilus_search_directory_get_base_model (NAUTILUS_SEARCH_DIRECTORY (view->details->model));
-                if (nautilus_directory_is_remote (base))
+                if (showing_trash_directory (view))
                         gtk_widget_show_all (view->details->remote_warning_bar);
                 else
                         gtk_widget_hide (view->details->remote_warning_bar);
