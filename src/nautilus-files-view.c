@@ -2032,6 +2032,10 @@ rename_file_popover_on_closed (GtkPopover *popover,
 
         widget_data = (FileNameWidgetData *) user_data;
         widget_data->view->details->rename_file_popover = NULL;
+        if (widget_data->view->details->duplicated_label_timeout_id > 0) {
+                g_source_remove (widget_data->view->details->duplicated_label_timeout_id);
+                widget_data->view->details->duplicated_label_timeout_id = 0;
+        }
         g_free (widget_data);
 }
 
