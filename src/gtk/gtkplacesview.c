@@ -990,23 +990,22 @@ network_enumeration_finished (GObject      *source_object,
 {
   GtkPlacesViewPrivate *priv;
   GFileEnumerator *enumerator;
-  GtkPlacesView *view;
   GError *error;
 
-  view = GTK_PLACES_VIEW (user_data);
-  priv = gtk_places_view_get_instance_private (view);
   error = NULL;
   enumerator = g_file_enumerate_children_finish (G_FILE (source_object), res, &error);
 
   if (error)
     {
-      if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+      if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED) &&
+          !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED))
         g_warning ("Failed to fetch network locations: %s", error->message);
 
       g_clear_error (&error);
     }
   else
     {
+      priv = gtk_places_view_get_instance_private (GTK_PLACES_VIEW (user_data));
       g_file_enumerator_next_files_async (enumerator,
                                           G_MAXINT32,
                                           G_PRIORITY_DEFAULT,
