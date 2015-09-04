@@ -249,16 +249,43 @@ nautilus_window_slot_content_view_matches (NautilusWindowSlot *slot,
 }
 
 static void
-nautilus_window_slot_sync_actions (NautilusWindowSlot *slot)
+check_search_visible (NautilusWindowSlot *slot)
 {
+        NautilusQuery *query;
         NautilusView *view;
+        gchar *text;
         GAction *action;
-        gboolean show_search;
-        GVariant *variant;
+
+        query = nautilus_query_editor_get_query (slot->details->query_editor);
+        action =  g_action_map_lookup_action (G_ACTION_MAP (slot->details->slot_action_group),
+                                              "search-visible");
+        /* Don't allow search on desktop */
+        g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                      !NAUTILUS_IS_DESKTOP_CANVAS_VIEW (nautilus_window_slot_get_current_view (slot)));
 
         view = nautilus_window_slot_get_current_view (slot);
-        show_search = (nautilus_window_slot_get_search_visible (slot) ||
-                       (view && nautilus_view_is_searching (view)));
+        /* If we changed location just to another search location, for example,
+         * when changing the query, just keep the search visible */
+        if (nautilus_view_is_searching (view))
+                return;
+
+        if (query) {
+                text = nautilus_query_get_text (query);
+                /* If the view is not searching, but search is visible, and the
+                 * query is empty, we don't hide it. Some users enable the search
+                 * and then change locations, then they search. */
+                if (strlen (text) != 0)
+                        nautilus_window_slot_set_search_visible (slot, FALSE);
+                g_free (text);
+                g_object_unref (query);
+        }
+}
+
+static void
+nautilus_window_slot_sync_actions (NautilusWindowSlot *slot)
+{
+        GAction *action;
+        GVariant *variant;
 
         if (!nautilus_window_slot_get_active (slot)) {
 		return;
@@ -268,14 +295,10 @@ nautilus_window_slot_sync_actions (NautilusWindowSlot *slot)
 		return;
 	}
 
-        /* Search */
-        action =  g_action_map_lookup_action (G_ACTION_MAP (slot->details->slot_action_group),
-                                              "search-visible");
-        /* Don't allow search on desktop */
-        g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                      !NAUTILUS_IS_DESKTOP_CANVAS_VIEW (nautilus_window_slot_get_current_view (slot)));
-
-        g_action_change_state (action, g_variant_new_boolean (show_search));
+        /* Check if we need to close the search or not after changing the location.
+         * Needs to be done after the change has been done, if not, a loop happens,
+         * because setting the search enabled or not actually opens a location */
+        check_search_visible (slot);
 
         /* Files view mode */
         action =  g_action_map_lookup_action (G_ACTION_MAP (slot->details->slot_action_group), "files-view-mode");
@@ -346,6 +369,8 @@ hide_query_editor (NautilusWindowSlot *slot)
 		slot->details->qe_activated_id = 0;
 	}
 
+	nautilus_query_editor_set_query (slot->details->query_editor, NULL);
+
         if (nautilus_view_is_searching (view)) {
                 GList *selection;
 
@@ -359,8 +384,6 @@ hide_query_editor (NautilusWindowSlot *slot)
 
                 nautilus_file_list_free (selection);
         }
-
-	nautilus_query_editor_set_query (slot->details->query_editor, NULL);
 
         if (nautilus_window_slot_get_active (slot)) {
                 gtk_widget_grab_focus (GTK_WIDGET (slot->details->window));
@@ -2177,11 +2200,13 @@ static void
 nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *slot)
 {
 	GtkWidget *widget;
+        gboolean reusing_view;
 
-	if ((slot->details->new_content_view == NULL) ||
-	    gtk_widget_get_parent (GTK_WIDGET (slot->details->new_content_view)) != NULL) {
-		return;
-	}
+        reusing_view = gtk_widget_get_parent (GTK_WIDGET (slot->details->new_content_view)) != NULL;
+        /* We are either reusing the view, so new_content_view and content_view
+         * are the same, or the new_content_view is invalid */
+        if (slot->details->new_content_view == NULL || reusing_view)
+                goto done;
 
 	if (slot->details->content_view != NULL) {
 		widget = GTK_WIDGET (slot->details->content_view);
@@ -2202,6 +2227,12 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *slot)
                 g_object_notify_by_pspec (G_OBJECT (slot), properties[PROP_ICON]);
                 g_object_notify_by_pspec (G_OBJECT (slot), properties[PROP_VIEW_WIDGET]);
 	}
+
+done:
+        /* Clean up, so we don't confuse having a new_content_view available or
+         * just that we didn't care about it here */
+        slot->details->new_content_view = NULL;
+
 }
 
 /* This is called when we have decided we can actually change to the new view/location situation. */
