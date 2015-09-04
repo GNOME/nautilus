@@ -2316,6 +2316,12 @@ nautilus_files_view_set_show_hidden_files (NautilusFilesView *view,
                                         show_hidden);
 
                 if (view->details->model != NULL) {
+                        /* We have to simulate that we are a client asking to swtich to a new
+                         * location, and of course we have our own ref to it. In this
+                         * case, the client (this function) and the server (the view) has the same
+                         * reference, and the server will unref its current model, giving
+                         * a "use after free" crash. So take a ref here. */
+                        nautilus_directory_ref (view->details->model);
                         load_directory (view, view->details->model);
                 }
         }
