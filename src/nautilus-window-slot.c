@@ -385,9 +385,11 @@ static void
 show_query_editor (NautilusWindowSlot *slot)
 {
         NautilusView *view;
+        GFile *location;
 
         view = nautilus_window_slot_get_current_view (slot);
 
+        location = nautilus_window_slot_get_current_location (slot);
         if (nautilus_view_is_searching (view)) {
                 NautilusQuery *query;
 
@@ -396,6 +398,9 @@ show_query_editor (NautilusWindowSlot *slot)
                 if (query != NULL) {
                         nautilus_query_editor_set_query (slot->details->query_editor, query);
                 }
+        } else {
+                /* In this way, when the query changes it will open the actual search */
+                nautilus_query_editor_set_location (slot->details->query_editor, location);
         }
 
 	gtk_revealer_set_reveal_child (GTK_REVEALER (slot->details->query_editor_revealer),
