@@ -7651,14 +7651,22 @@ nautilus_files_view_set_search_query (NautilusView  *view,
 {
         NautilusFilesView *files_view;
         GFile *location;
+        gchar *text;
+        gboolean valid_query = FALSE;
 
         files_view = NAUTILUS_FILES_VIEW (view);
         location = NULL;
+        if (query) {
+                text = nautilus_query_get_text (query);
+                valid_query = strlen (text) > 0;
+
+                g_free (text);
+        }
 
         g_set_object (&files_view->details->search_query, query);
         g_object_notify (G_OBJECT (view), "search-query");
 
-        if (query) {
+        if (valid_query) {
                 if (nautilus_view_is_searching (view)) {
                         location = nautilus_directory_get_location (files_view->details->model);
 
