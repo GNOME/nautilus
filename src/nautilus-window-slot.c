@@ -754,6 +754,79 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot      *slot,
 	nautilus_profile_end (NULL);
 }
 
+static GList*
+check_select_old_location_containing_folder (GList              *new_selection,
+                                             GFile              *location,
+                                             GFile              *previous_location)
+{
+	GFile *from_folder, *parent;
+
+	/* If there is no new selection and the new location is
+	 * a (grand)parent of the old location then we automatically
+	 * select the folder the previous location was in */
+	if (new_selection == NULL && previous_location != NULL &&
+	    g_file_has_prefix (previous_location, location)) {
+		from_folder = g_object_ref (previous_location);
+		parent = g_file_get_parent (from_folder);
+		while (parent != NULL && !g_file_equal (parent, location)) {
+			g_object_unref (from_folder);
+			from_folder = parent;
+			parent = g_file_get_parent (from_folder);
+		}
+
+		if (parent != NULL) {
+			new_selection = g_list_prepend (NULL, nautilus_file_get (from_folder));
+			g_object_unref (parent);
+		}
+
+		g_object_unref (from_folder);
+	}
+
+        return new_selection;
+}
+
+static void
+check_force_reload (GFile                      *location,
+                    NautilusLocationChangeType  type)
+{
+        NautilusDirectory *directory;
+	gboolean force_reload;
+
+        /* The code to force a reload is here because if we do it
+	 * after determining an initial view (in the components), then
+	 * we end up fetching things twice.
+	 */
+        directory = nautilus_directory_get (location);
+
+	if (type == NAUTILUS_LOCATION_CHANGE_RELOAD) {
+		force_reload = TRUE;
+	} else if (!nautilus_monitor_active ()) {
+		force_reload = TRUE;
+	} else {
+		force_reload = !nautilus_directory_is_local (directory);
+	}
+
+	if (force_reload) {
+		nautilus_directory_force_reload (directory);
+	}
+
+        nautilus_directory_unref (directory);
+}
+
+static void
+save_scroll_position_for_history (NautilusWindowSlot *slot)
+{
+        char *current_pos;
+        /* Set current_bookmark scroll pos */
+        if (slot->details->current_location_bookmark != NULL &&
+            slot->details->content_view != NULL &&
+            NAUTILUS_IS_FILES_VIEW (slot->details->content_view)) {
+                current_pos = nautilus_files_view_get_first_visible_file (NAUTILUS_FILES_VIEW (slot->details->content_view));
+                nautilus_bookmark_set_scroll_pos (slot->details->current_location_bookmark, current_pos);
+                g_free (current_pos);
+        }
+}
+
 /*
  * begin_location_change
  *
@@ -779,11 +852,6 @@ begin_location_change (NautilusWindowSlot         *slot,
                        guint                       distance,
                        const char                 *scroll_pos)
 {
-        NautilusDirectory *directory;
-        NautilusFile *file;
-	gboolean force_reload;
-        char *current_pos;
-	GFile *from_folder, *parent;
 	g_assert (slot != NULL);
         g_assert (location != NULL);
         g_assert (type == NAUTILUS_LOCATION_CHANGE_BACK
@@ -800,30 +868,11 @@ begin_location_change (NautilusWindowSlot         *slot,
                 nautilus_files_view_stop_loading (NAUTILUS_FILES_VIEW (slot->details->content_view));
         }
 
-	/* If there is no new selection and the new location is
-	 * a (grand)parent of the old location then we automatically
-	 * select the folder the previous location was in */
-	if (new_selection == NULL && previous_location != NULL &&
-	    g_file_has_prefix (previous_location, location)) {
-		from_folder = g_object_ref (previous_location);
-		parent = g_file_get_parent (from_folder);
-		while (parent != NULL && !g_file_equal (parent, location)) {
-			g_object_unref (from_folder);
-			from_folder = parent;
-			parent = g_file_get_parent (from_folder);
-		}
-
-		if (parent != NULL) {
-			new_selection = g_list_prepend (NULL, nautilus_file_get (from_folder));
-			g_object_unref (parent);
-		}
-
-		g_object_unref (from_folder);
-	}
-
 	end_location_change (slot);
 
 	nautilus_window_slot_set_allow_stop (slot, TRUE);
+
+        new_selection = check_select_old_location_containing_folder (new_selection, location, previous_location);
 
 	g_assert (slot->details->pending_location == NULL);
 	g_assert (slot->details->pending_selection == NULL);
@@ -836,36 +885,11 @@ begin_location_change (NautilusWindowSlot         *slot,
 
 	slot->details->pending_scroll_to = g_strdup (scroll_pos);
 
-	/* The code to force a reload is here because if we do it
-	 * after determining an initial view (in the components), then
-	 * we end up fetching things twice.
-	 */
-        directory = nautilus_directory_get (location);
+        check_force_reload (location, type);
 
-	if (type == NAUTILUS_LOCATION_CHANGE_RELOAD) {
-		force_reload = TRUE;
-	} else if (!nautilus_monitor_active ()) {
-		force_reload = TRUE;
-	} else {
-		force_reload = !nautilus_directory_is_local (directory);
-	}
+        save_scroll_position_for_history (slot);
 
-	if (force_reload) {
-		nautilus_directory_force_reload (directory);
-	}
-
-        nautilus_directory_unref (directory);
-
-        /* Set current_bookmark scroll pos */
-        if (slot->details->current_location_bookmark != NULL &&
-            slot->details->content_view != NULL &&
-            NAUTILUS_IS_FILES_VIEW (slot->details->content_view)) {
-                current_pos = nautilus_files_view_get_first_visible_file (NAUTILUS_FILES_VIEW (slot->details->content_view));
-                nautilus_bookmark_set_scroll_pos (slot->details->current_location_bookmark, current_pos);
-                g_free (current_pos);
-        }
-
-	/* Get the info needed for view selection */
+	/* Get the info needed to make decisions about how to open the new location */
 	slot->details->determine_view_file = nautilus_file_get (location);
 	g_assert (slot->details->determine_view_file != NULL);
 
@@ -1132,6 +1156,85 @@ nautilus_window_slot_display_view_selection_failure (NautilusWindow *window,
 	g_free (detail_message);
 }
 
+static gboolean
+handle_mount_if_needed (NautilusWindowSlot *slot,
+                        NautilusFile       *file)
+{
+	NautilusWindow *window;
+  	GMountOperation *mount_op;
+	MountNotMountedData *data;
+	GFile *location;
+        GError *error = NULL;
+        gboolean needs_mount_handling = FALSE;
+
+	window = nautilus_window_slot_get_window (slot);
+        if (slot->details->mount_error) {
+                error = g_error_copy (slot->details->mount_error);
+        } else if (nautilus_file_get_file_info_error (file) != NULL) {
+                error = g_error_copy (nautilus_file_get_file_info_error (file));
+        }
+
+        if (error && error->domain == G_IO_ERROR && error->code == G_IO_ERROR_NOT_MOUNTED &&
+            !slot->details->tried_mount) {
+                slot->details->tried_mount = TRUE;
+
+                mount_op = gtk_mount_operation_new (GTK_WINDOW (window));
+                g_mount_operation_set_password_save (mount_op, G_PASSWORD_SAVE_FOR_SESSION);
+                location = nautilus_file_get_location (file);
+                data = g_new0 (MountNotMountedData, 1);
+                data->cancellable = g_cancellable_new ();
+                data->slot = slot;
+                slot->details->mount_cancellable = data->cancellable;
+                g_file_mount_enclosing_volume (location, 0, mount_op, slot->details->mount_cancellable,
+                                               mount_not_mounted_callback, data);
+                g_object_unref (location);
+                g_object_unref (mount_op);
+
+                needs_mount_handling = TRUE;
+        }
+
+        g_clear_error (&error);
+
+        return needs_mount_handling;
+}
+
+static gboolean
+handle_regular_file_if_needed (NautilusWindowSlot *slot,
+                               NautilusFile       *file)
+{
+        NautilusFile *parent_file;
+        gboolean needs_regular_file_handling = FALSE;
+
+        parent_file = nautilus_file_get_parent (file);
+        if ((parent_file != NULL) &&
+            nautilus_file_get_file_type (file) == G_FILE_TYPE_REGULAR) {
+            if (slot->details->pending_selection != NULL) {
+                g_list_free_full (slot->details->pending_selection, (GDestroyNotify) nautilus_file_unref);
+            }
+
+            g_clear_object (&slot->details->pending_location);
+            g_free (slot->details->pending_scroll_to);
+
+            slot->details->pending_location = nautilus_file_get_parent_location (file);
+            slot->details->pending_selection = g_list_prepend (NULL, nautilus_file_ref (file));
+            slot->details->determine_view_file = parent_file;
+            slot->details->pending_scroll_to = nautilus_file_get_uri (file);
+
+            nautilus_file_invalidate_all_attributes (slot->details->determine_view_file);
+            nautilus_file_call_when_ready (slot->details->determine_view_file,
+                               NAUTILUS_FILE_ATTRIBUTE_INFO |
+                               NAUTILUS_FILE_ATTRIBUTE_MOUNT,
+                               got_file_info_for_view_selection_callback,
+                               slot);
+
+           needs_regular_file_handling = TRUE;
+        }
+
+        nautilus_file_unref (parent_file);
+
+        return needs_regular_file_handling;
+}
+
 static void
 got_file_info_for_view_selection_callback (NautilusFile *file,
 					   gpointer callback_data)
@@ -1139,11 +1242,10 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
         GError *error = NULL;
 	NautilusWindow *window;
 	NautilusWindowSlot *slot;
-	NautilusFile *viewed_file, *parent_file;
+	NautilusFile *viewed_file;
         NautilusView *view;
 	GFile *location;
-	GMountOperation *mount_op;
-	MountNotMountedData *data;
+
 	NautilusApplication *app;
 
 	slot = callback_data;
@@ -1154,67 +1256,24 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 
 	nautilus_profile_start (NULL);
 
-	if (slot->details->mount_error) {
-		error = g_error_copy (slot->details->mount_error);
-	} else if (nautilus_file_get_file_info_error (file) != NULL) {
-		error = g_error_copy (nautilus_file_get_file_info_error (file));
-	}
+        if (handle_mount_if_needed (slot, file))
+                goto done;
 
-	if (error && error->domain == G_IO_ERROR && error->code == G_IO_ERROR_NOT_MOUNTED &&
-	    !slot->details->tried_mount) {
-		slot->details->tried_mount = TRUE;
+        if (handle_regular_file_if_needed (slot, file))
+                goto done;
 
-		mount_op = gtk_mount_operation_new (GTK_WINDOW (window));
-		g_mount_operation_set_password_save (mount_op, G_PASSWORD_SAVE_FOR_SESSION);
-		location = nautilus_file_get_location (file);
-		data = g_new0 (MountNotMountedData, 1);
-		data->cancellable = g_cancellable_new ();
-		data->slot = slot;
-		slot->details->mount_cancellable = data->cancellable;
-		g_file_mount_enclosing_volume (location, 0, mount_op, slot->details->mount_cancellable,
-					       mount_not_mounted_callback, data);
-		g_object_unref (location);
-		g_object_unref (mount_op);
+        if (slot->details->mount_error) {
+                error = g_error_copy (slot->details->mount_error);
+        } else if (nautilus_file_get_file_info_error (file) != NULL) {
+                error = g_error_copy (nautilus_file_get_file_info_error (file));
+        }
 
-		goto done;
-	}
-
-	parent_file = nautilus_file_get_parent (file);
-	if ((parent_file != NULL) &&
-	    nautilus_file_get_file_type (file) == G_FILE_TYPE_REGULAR) {
-		if (slot->details->pending_selection != NULL) {
-			g_list_free_full (slot->details->pending_selection, (GDestroyNotify) nautilus_file_unref);
-		}
-
-		g_clear_object (&slot->details->pending_location);
-		g_free (slot->details->pending_scroll_to);
-
-		slot->details->pending_location = nautilus_file_get_parent_location (file);
-		slot->details->pending_selection = g_list_prepend (NULL, nautilus_file_ref (file));
-		slot->details->determine_view_file = parent_file;
-		slot->details->pending_scroll_to = nautilus_file_get_uri (file);
-
-		nautilus_file_invalidate_all_attributes (slot->details->determine_view_file);
-		nautilus_file_call_when_ready (slot->details->determine_view_file,
-					       NAUTILUS_FILE_ATTRIBUTE_INFO |
-					       NAUTILUS_FILE_ATTRIBUTE_MOUNT,
-					       got_file_info_for_view_selection_callback,
-					       slot);
-
-		goto done;
-	}
-
-	nautilus_file_unref (parent_file);
 	location = slot->details->pending_location;
 
-        view = NULL;
-
-        /* why do we accept ERROR_NOT_SUPPORTED? */
+        /* desktop and other-locations GFile operations report G_IO_ERROR_NOT_SUPPORTED,
+         * but it's not an actual error for Nautilus */
         if (!error || g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED)) {
                 view = nautilus_window_slot_get_view_for_location (slot, location);
-	}
-
-        if (view != NULL) {
                 setup_view (slot, view);
 	} else {
 		if (error == NULL) {
