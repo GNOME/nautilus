@@ -2096,7 +2096,7 @@ nautilus_files_view_rename_file_popover_new (NautilusFilesView *view,
         gtk_popover_set_relative_to (GTK_POPOVER (widget_data->widget),
                                      GTK_WIDGET (view));
         gtk_widget_show (widget_data->widget);
-        gtk_widget_grab_focus (widget_data->widget);
+        gtk_widget_grab_focus (widget_data->name_entry);
 
         /* Select the name part withouth the file extension */
         eel_filename_get_rename_region (nautilus_file_get_display_name (target_file),
