@@ -104,7 +104,6 @@ struct NautilusWindowSlotDetails {
 	gulong qe_changed_id;
 	gulong qe_cancel_id;
 	gulong qe_activated_id;
-	gboolean search_visible;
 
         /* Load state */
 	GCancellable *find_mount_cancellable;
@@ -144,6 +143,7 @@ static void nautilus_window_slot_set_loading (NautilusWindowSlot *slot, gboolean
 char * nautilus_window_slot_get_location_uri (NautilusWindowSlot *slot);
 static void nautilus_window_slot_set_search_visible (NautilusWindowSlot *slot,
 					             gboolean            visible);
+static gboolean nautilus_window_slot_get_search_visible (NautilusWindowSlot *slot);
 static void nautilus_window_slot_set_location (NautilusWindowSlot *slot,
                                                GFile              *location);
 
@@ -257,7 +257,8 @@ nautilus_window_slot_sync_actions (NautilusWindowSlot *slot)
         GVariant *variant;
 
         view = nautilus_window_slot_get_current_view (slot);
-        show_search = (slot->details->search_visible || (view && nautilus_view_is_searching (view)));
+        show_search = (nautilus_window_slot_get_search_visible (slot) ||
+                       (view && nautilus_view_is_searching (view)));
 
         if (!nautilus_window_slot_get_active (slot)) {
 		return;
@@ -269,7 +270,7 @@ nautilus_window_slot_sync_actions (NautilusWindowSlot *slot)
 
         /* Search */
         action =  g_action_map_lookup_action (G_ACTION_MAP (slot->details->slot_action_group),
-                                              "toggle-search");
+                                              "search-visible");
         /* Don't allow search on desktop */
         g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                       !NAUTILUS_IS_DESKTOP_CANVAS_VIEW (nautilus_window_slot_get_current_view (slot)));
@@ -420,18 +421,30 @@ show_query_editor (NautilusWindowSlot *slot)
 
 static void
 nautilus_window_slot_set_search_visible (NautilusWindowSlot *slot,
-					 gboolean            visible)
+                                        gboolean            visible)
 {
-        if (slot->details->search_visible != visible) {
-                /* set search active state for the slot */
-                slot->details->search_visible = visible;
+        GAction *action;
 
-                if (visible) {
-                        show_query_editor (slot);
-                } else {
-                        hide_query_editor (slot);
-                }
-        }
+        action = g_action_map_lookup_action (G_ACTION_MAP (slot->details->slot_action_group),
+                                             "search-visible");
+        g_action_change_state (action, g_variant_new_boolean (visible));
+}
+
+static gboolean
+nautilus_window_slot_get_search_visible (NautilusWindowSlot *slot)
+{
+        GAction *action;
+        GVariant *state;
+        gboolean searching;
+
+        action = g_action_map_lookup_action (G_ACTION_MAP (slot->details->slot_action_group),
+                                             "search-visible");
+        state = g_action_get_state (action);
+        searching = g_variant_get_boolean (state);
+
+        g_variant_unref (state);
+
+        return searching;
 }
 
 gboolean
@@ -604,16 +617,26 @@ nautilus_window_slot_constructed (GObject *object)
 }
 
 static void
-action_toggle_search (GSimpleAction *action,
-                      GVariant      *state,
-                      gpointer       user_data)
+action_search_visible (GSimpleAction *action,
+                       GVariant      *state,
+                       gpointer       user_data)
 {
         NautilusWindowSlot *slot;
+        GVariant *current_state;
 
         slot = NAUTILUS_WINDOW_SLOT (user_data);
-        nautilus_window_slot_set_search_visible (slot, g_variant_get_boolean (state));
+        current_state = g_action_get_state (G_ACTION (action));
+        if (g_variant_get_boolean (current_state) != g_variant_get_boolean (state)) {
+                g_simple_action_set_state (action, state);
 
-        g_simple_action_set_state (action, state);
+                if (g_variant_get_boolean (state)) {
+                        show_query_editor (slot);
+                } else {
+                        hide_query_editor (slot);
+                }
+        }
+
+        g_variant_unref (current_state);
 }
 
 static void
@@ -660,7 +683,7 @@ action_files_view_mode (GSimpleAction *action,
 
 const GActionEntry slot_entries[] = {
         { "files-view-mode", NULL, "s", "''", action_files_view_mode },
-        { "toggle-search", NULL, NULL, "false", action_toggle_search },
+        { "search-visible", NULL, NULL, "false", action_search_visible },
 };
 
 static void
@@ -683,7 +706,7 @@ nautilus_window_slot_init (NautilusWindowSlot *slot)
                                         G_ACTION_GROUP (slot->details->slot_action_group));
         nautilus_application_add_accelerator (app, "slot.files-view-mode('list')", "<control>1");
         nautilus_application_add_accelerator (app, "slot.files-view-mode('grid')", "<control>2");
-        nautilus_application_add_accelerator (app, "slot.toggle-search", "<control>f");
+        nautilus_application_add_accelerator (app, "slot.search-visible", "<control>f");
 }
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_WINDOW
@@ -2272,7 +2295,7 @@ nautilus_window_slot_grab_focus (GtkWidget *widget)
 
         GTK_WIDGET_CLASS (nautilus_window_slot_parent_class)->grab_focus (widget);
 
-        if (slot->details->search_visible) {
+        if (nautilus_window_slot_get_search_visible (slot)) {
                 gtk_widget_grab_focus (GTK_WIDGET (slot->details->query_editor));
         } else if (slot->details->content_view) {
                 gtk_widget_grab_focus (GTK_WIDGET (slot->details->content_view));
