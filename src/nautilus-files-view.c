@@ -1876,7 +1876,7 @@ file_name_widget_entry_on_changed (gpointer user_data)
 
         data = (FileNameWidgetData *) user_data;
         name = g_strstrip (g_strdup (gtk_entry_get_text (GTK_ENTRY (data->name_entry))));
-        error_message = validate_file_name (name, TRUE);
+        error_message = validate_file_name (name, data->target_is_folder);
         gtk_label_set_label (GTK_LABEL (data->error_label), error_message);
 
         existing_file = nautilus_directory_get_file_by_name (data->view->details->model, name);
@@ -1995,7 +1995,7 @@ file_name_widget_on_activate (gpointer user_data)
         data = (FileNameWidgetData *) user_data;
         name = g_strstrip (g_strdup (gtk_entry_get_text (GTK_ENTRY (data->name_entry))));
         existing_file = nautilus_directory_get_file_by_name (data->view->details->model, name);
-        error_message = validate_file_name (name, TRUE);
+        error_message = validate_file_name (name, data->target_is_folder);
         valid_name = strlen (name) > 0 && error_message == NULL;
         duplicated = existing_file != NULL &&
                      (data->target_file == NULL ||
