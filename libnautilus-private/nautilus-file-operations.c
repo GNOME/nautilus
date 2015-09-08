@@ -3271,7 +3271,7 @@ report_copy_progress (CopyMoveJob *copy_job,
                                                            transfer_info->num_files + 1);
 				        nautilus_progress_info_take_status (job->progress,
 								            f (status,
-								               transfer_info->num_files + 1,
+								               source_info->num_files + 1,
 								               parent));
                                 } else {
                                         status = ngettext ("Duplicated %'d file in “%B”",
