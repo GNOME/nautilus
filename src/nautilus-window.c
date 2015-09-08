@@ -1071,12 +1071,20 @@ action_properties (GSimpleAction *action,
 	NautilusFile *file;
 
 	selected = gtk_places_sidebar_get_location (GTK_PLACES_SIDEBAR (window->priv->places_sidebar));
+
+        /* Currently the sidebar returns NULL if the current location is not in
+         * the sidebar */
+        if (selected == NULL)
+                goto done;
+
 	file = nautilus_file_get (selected);
-	g_object_unref (selected);
 
 	list = g_list_append (NULL, file);
 	nautilus_properties_window_present (list, GTK_WIDGET (window), NULL);
 	nautilus_file_list_free (list);
+
+done:
+	g_object_unref (selected);
 }
 
 static gboolean
