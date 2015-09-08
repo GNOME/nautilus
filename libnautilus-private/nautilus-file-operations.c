@@ -3217,8 +3217,8 @@ report_copy_progress (CopyMoveJob *copy_job,
 				nautilus_progress_info_take_status (job->progress,
 								    f (status,
 								       copy_job->fake_display_source != NULL ?
-								       copy_job->fake_display_source :
-								       (GFile *)copy_job->files->data,
+								                copy_job->fake_display_source :
+								                (GFile *)copy_job->files->data,
 								       copy_job->destination));
 			} else {
                                 if (files_left > 0) {
@@ -3245,8 +3245,7 @@ report_copy_progress (CopyMoveJob *copy_job,
 				        nautilus_progress_info_take_status (job->progress,
 								            f (status,
 								               source_info->num_files,
-								               (GFile *)copy_job->destination,
-								               copy_job->destination));
+								               (GFile *)copy_job->destination));
                                 } else {
                                         if (is_move) {
                                                 status = ngettext ("Moved %'d file to “%B”",
@@ -3260,8 +3259,7 @@ report_copy_progress (CopyMoveJob *copy_job,
 				        nautilus_progress_info_take_status (job->progress,
 								            f (status,
 								               source_info->num_files,
-								               (GFile *)copy_job->destination,
-								               copy_job->destination));
+								               (GFile *)copy_job->destination));
                                 }
 			} else {
                                 GFile *parent;
@@ -3274,7 +3272,6 @@ report_copy_progress (CopyMoveJob *copy_job,
 				        nautilus_progress_info_take_status (job->progress,
 								            f (status,
 								               transfer_info->num_files + 1,
-								               source_info->num_files,
 								               parent));
                                 } else {
                                         status = ngettext ("Duplicated %'d file in “%B”",
