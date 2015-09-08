@@ -86,6 +86,9 @@ struct NautilusListViewDetails {
 
 	GtkTreePath *hover_path;
 
+        gint last_event_button_x;
+        gint last_event_button_y;
+
 	guint drag_button;
 	int drag_x;
 	int drag_y;
@@ -645,6 +648,8 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 	tree_view = GTK_TREE_VIEW (widget);
 	tree_view_class = GTK_WIDGET_GET_CLASS (tree_view);
 	selection = gtk_tree_view_get_selection (tree_view);
+        view->details->last_event_button_x = event->x;
+        view->details->last_event_button_y = event->y;
 
 	/* Don't handle extra mouse buttons here */
 	if (event->button > 5) {
@@ -1042,6 +1047,9 @@ key_press_callback (GtkWidget *widget, GdkEventKey *event, gpointer callback_dat
 
 	view = NAUTILUS_FILES_VIEW (callback_data);
 	handled = FALSE;
+
+        NAUTILUS_LIST_VIEW (view)->details->last_event_button_x = -1;
+        NAUTILUS_LIST_VIEW (view)->details->last_event_button_y = -1;
 
 	switch (event->keyval) {
 	case GDK_KEY_F10:
@@ -3313,11 +3321,15 @@ nautilus_list_view_compute_rename_popover_relative_to (NautilusFilesView *view)
                                                            rect->x, rect->y,
                                                            &rect->x, &rect->y);
 
-        rect->x = CLAMP (gtk_widget_get_allocated_width (GTK_WIDGET (tree_view)) * 0.5 -
-                         RENAME_POPOVER_RELATIVE_TO_RECTANGLE_WIDTH * 0.5,
-                         0,
-                         gtk_widget_get_allocated_width (GTK_WIDGET (tree_view)) -
-                         RENAME_POPOVER_RELATIVE_TO_RECTANGLE_WIDTH);
+        if (list_view->details->last_event_button_x > 0) {
+                rect->x = list_view->details->last_event_button_x;
+        }  else {
+                rect->x = CLAMP (gtk_widget_get_allocated_width (GTK_WIDGET (tree_view)) * 0.5 -
+                                 RENAME_POPOVER_RELATIVE_TO_RECTANGLE_WIDTH * 0.5,
+                                 0,
+                                 gtk_widget_get_allocated_width (GTK_WIDGET (tree_view)) -
+                                 RENAME_POPOVER_RELATIVE_TO_RECTANGLE_WIDTH);
+        }
         rect->width = RENAME_POPOVER_RELATIVE_TO_RECTANGLE_WIDTH;
 
         g_list_free_full (list, (GDestroyNotify) gtk_tree_path_free);
