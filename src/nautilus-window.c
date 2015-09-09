@@ -1075,15 +1075,13 @@ action_properties (GSimpleAction *action,
         /* Currently the sidebar returns NULL if the current location is not in
          * the sidebar */
         if (selected == NULL)
-                goto done;
+                return;
 
 	file = nautilus_file_get (selected);
 
 	list = g_list_append (NULL, file);
 	nautilus_properties_window_present (list, GTK_WIDGET (window), NULL);
 	nautilus_file_list_free (list);
-
-done:
 	g_object_unref (selected);
 }
 
