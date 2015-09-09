@@ -110,6 +110,7 @@ struct _NautilusWindowPrivate {
         GtkWidget *sidebar;        /* container for the GtkPlacesSidebar */
         GtkWidget *places_sidebar; /* the actual GtkPlacesSidebar */
         GVolume *selected_volume; /* the selected volume in the sidebar popup callback */
+        GFile *selected_file; /* the selected file in the sidebar popup callback */
 
         /* Main view */
         GtkWidget *main_view;
@@ -1066,23 +1067,16 @@ action_properties (GSimpleAction *action,
                    gpointer       user_data)
 {
 	NautilusWindow *window = NAUTILUS_WINDOW (user_data);
-	GFile *selected;
 	GList *list;
 	NautilusFile *file;
 
-	selected = gtk_places_sidebar_get_location (GTK_PLACES_SIDEBAR (window->priv->places_sidebar));
-
-        /* Currently the sidebar returns NULL if the current location is not in
-         * the sidebar */
-        if (selected == NULL)
-                return;
-
-	file = nautilus_file_get (selected);
+	file = nautilus_file_get (window->priv->selected_file);
 
 	list = g_list_append (NULL, file);
 	nautilus_properties_window_present (list, GTK_WIDGET (window), NULL);
 	nautilus_file_list_free (list);
-	g_object_unref (selected);
+
+	g_clear_object (&window->priv->selected_file);
 }
 
 static gboolean
@@ -1156,7 +1150,7 @@ add_menu_separator (GtkWidget *menu)
 static void
 places_sidebar_populate_popup_cb (GtkPlacesSidebar *sidebar,
 				  GtkWidget        *menu,
-				  GFile            *selected_item,
+				  GFile            *selected_file,
 				  GVolume          *selected_volume,
 				  gpointer          user_data)
 {
@@ -1165,9 +1159,9 @@ places_sidebar_populate_popup_cb (GtkPlacesSidebar *sidebar,
         GtkWidget *menu_item;
         GAction *action;
 
-	if (selected_item) {
+	if (selected_file) {
 		trash = g_file_new_for_uri ("trash:///");
-		if (g_file_equal (trash, selected_item)) {
+		if (g_file_equal (trash, selected_file)) {
                         add_menu_separator (menu);
 
                         menu_item = gtk_model_button_new ();
@@ -1184,7 +1178,8 @@ places_sidebar_populate_popup_cb (GtkPlacesSidebar *sidebar,
 		}
 		g_object_unref (trash);
 
-		if (g_file_is_native (selected_item)) {
+		if (g_file_is_native (selected_file)) {
+                        window->priv->selected_file = g_object_ref (selected_file);
                         add_menu_separator (menu);
 
                         menu_item = gtk_model_button_new ();
