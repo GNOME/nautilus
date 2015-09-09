@@ -1159,6 +1159,9 @@ places_sidebar_populate_popup_cb (GtkPlacesSidebar *sidebar,
         GtkWidget *menu_item;
         GAction *action;
 
+	g_clear_object (&window->priv->selected_file);
+	g_clear_object (&window->priv->selected_volume);
+
 	if (selected_file) {
 		trash = g_file_new_for_uri ("trash:///");
 		if (g_file_equal (trash, selected_file)) {
@@ -2120,6 +2123,9 @@ nautilus_window_finalize (GObject *object)
                 g_source_remove (window->priv->notification_operation_timeout_id);
                 window->priv->notification_operation_timeout_id = 0;
 	}
+
+	g_clear_object (&window->priv->selected_file);
+	g_clear_object (&window->priv->selected_volume);
 
 	g_signal_handlers_disconnect_by_func (nautilus_file_undo_manager_get (),
                                               G_CALLBACK (nautilus_window_on_undo_changed),
