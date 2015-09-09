@@ -179,9 +179,12 @@ struct _NautilusFileUndoInfoRenameClass {
 
 GType nautilus_file_undo_info_rename_get_type (void) G_GNUC_CONST;
 NautilusFileUndoInfo *nautilus_file_undo_info_rename_new (void);
-void nautilus_file_undo_info_rename_set_data (NautilusFileUndoInfoRename *self,
-					      GFile                      *old_file,
-					      GFile                      *new_file);
+void nautilus_file_undo_info_rename_set_data_pre (NautilusFileUndoInfoRename *self,
+						  GFile                      *old_file,
+						  gchar                      *old_display_name,
+						  gchar                      *new_display_name);
+void nautilus_file_undo_info_rename_set_data_post (NautilusFileUndoInfoRename *self,
+						   GFile                      *new_file);
 
 /* trash */
 #define NAUTILUS_TYPE_FILE_UNDO_INFO_TRASH         (nautilus_file_undo_info_trash_get_type ())

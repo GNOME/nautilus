@@ -1791,8 +1791,8 @@ rename_callback (GObject *source_object,
 
 	if (new_file != NULL) {
 		if (op->undo_info != NULL) {
-			nautilus_file_undo_info_rename_set_data (NAUTILUS_FILE_UNDO_INFO_RENAME (op->undo_info),
-								 G_FILE (source_object), new_file);
+			nautilus_file_undo_info_rename_set_data_post (NAUTILUS_FILE_UNDO_INFO_RENAME (op->undo_info),
+								      new_file);
 		}
 
 		g_file_query_info_async (new_file,
@@ -1970,6 +1970,11 @@ nautilus_file_rename (NautilusFile *file,
 	/* Tell the undo manager a rename is taking place */
 	if (!nautilus_file_undo_manager_pop_flag ()) {
 		op->undo_info = nautilus_file_undo_info_rename_new ();
+
+		old_name = nautilus_file_get_display_name (file);
+		nautilus_file_undo_info_rename_set_data_pre (NAUTILUS_FILE_UNDO_INFO_RENAME (op->undo_info),
+							     location, old_name, new_file_name);
+		g_free (old_name);
 	}
 
 	/* Do the renaming. */
