@@ -467,6 +467,12 @@ nautilus_application_open_location_full (NautilusApplication     *application,
 	g_free (new_uri);
         /* end debug */
 
+        /* In case a target slot is provided, we can use it's associated window.
+         * In case a target window were given as well, we give preference to the
+         * slot we target at */
+        if (target_slot != NULL)
+                target_window = nautilus_window_slot_get_window (target_slot);
+
         if ((target_window && NAUTILUS_IS_DESKTOP_WINDOW (target_window)) ||
             (!target_window && NAUTILUS_IS_DESKTOP_WINDOW (active_window))) {
                 NautilusWindow *desktop_target_window;
