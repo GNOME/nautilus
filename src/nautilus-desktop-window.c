@@ -58,8 +58,13 @@ nautilus_desktop_window_update_directory (NautilusDesktopWindow *window)
 
 	window->details->loaded = FALSE;
 	location = g_file_new_for_uri (EEL_DESKTOP_URI);
+        /* We use NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE so the nautilus-window
+         * doesn't call gtk_window_present () which raises the window on the stack
+         * and actually hides it from the background */
         nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
-                                                 location, 0, NULL, NAUTILUS_WINDOW (window), NULL);
+                                                 location,
+                                                 NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE,
+                                                 NULL, NAUTILUS_WINDOW (window), NULL);
 	window->details->loaded = TRUE;
 
 	g_object_unref (location);
