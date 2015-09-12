@@ -3324,10 +3324,10 @@ nautilus_list_view_compute_rename_popover_relative_to (NautilusFilesView *view)
         if (list_view->details->last_event_button_x > 0) {
                 rect->x = list_view->details->last_event_button_x;
         }  else {
-                rect->x = CLAMP (gtk_widget_get_allocated_width (GTK_WIDGET (tree_view)) * 0.5 -
+                rect->x = CLAMP (gtk_tree_view_column_get_width (list_view->details->file_name_column) * 0.5 -
                                  RENAME_POPOVER_RELATIVE_TO_RECTANGLE_WIDTH * 0.5,
                                  0,
-                                 gtk_widget_get_allocated_width (GTK_WIDGET (tree_view)) -
+                                 gtk_tree_view_column_get_width (list_view->details->file_name_column) -
                                  RENAME_POPOVER_RELATIVE_TO_RECTANGLE_WIDTH);
         }
         rect->width = RENAME_POPOVER_RELATIVE_TO_RECTANGLE_WIDTH;
