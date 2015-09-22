@@ -1106,6 +1106,8 @@ nautilus_query_editor_set_location (NautilusQueryEditor *editor,
                 editor->details->current_uri = g_file_get_uri (location);
         }
 	update_location (editor);
+
+        g_clear_object (&directory);
 }
 
 static void
