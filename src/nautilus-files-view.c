@@ -6965,7 +6965,7 @@ static void
 check_remote_warning_bar (NautilusFilesView *view)
 {
         if (nautilus_view_is_searching (NAUTILUS_VIEW (view))) {
-                if (showing_trash_directory (view))
+                if (showing_remote_directory (view))
                         gtk_widget_show_all (view->details->remote_warning_bar);
                 else
                         gtk_widget_hide (view->details->remote_warning_bar);
