@@ -1089,8 +1089,22 @@ void
 nautilus_query_editor_set_location (NautilusQueryEditor *editor,
 				    GFile               *location)
 {
+        NautilusDirectory *directory;
+        NautilusDirectory *base_model;
+
 	g_free (editor->details->current_uri);
-	editor->details->current_uri = g_file_get_uri (location);
+
+        /* The client could set us a location that is actually a search directory,
+         * like what happens with the slot when updating the query editor location.
+         * However here we want the real location used as a model for the search,
+         * not the search directory invented uri. */
+        directory = nautilus_directory_get (location);
+        if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
+                base_model = nautilus_search_directory_get_base_model (NAUTILUS_SEARCH_DIRECTORY (directory));
+                editor->details->current_uri = nautilus_directory_get_uri (base_model);
+        } else {
+                editor->details->current_uri = g_file_get_uri (location);
+        }
 	update_location (editor);
 }
 
