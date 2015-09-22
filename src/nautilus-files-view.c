@@ -7681,8 +7681,7 @@ nautilus_files_view_set_search_query (NautilusView  *view,
                         location = nautilus_directory_get_location (files_view->details->model);
 
                         /*
-                         * Reuse the search directory if we are already searching, and
-                         * only update the current location.
+                         * Reuse the search directory and reload it.
                          */
                         nautilus_search_directory_set_query (NAUTILUS_SEARCH_DIRECTORY (files_view->details->model), query);
                         nautilus_view_set_location (view, location);
@@ -7703,7 +7702,7 @@ nautilus_files_view_set_search_query (NautilusView  *view,
                         nautilus_search_directory_set_base_model (NAUTILUS_SEARCH_DIRECTORY (directory), files_view->details->model);
                         nautilus_search_directory_set_query (NAUTILUS_SEARCH_DIRECTORY (directory), query);
 
-                        load_directory (files_view, directory);
+                        nautilus_view_set_location (view, location);
 
                         g_object_notify (G_OBJECT (view), "is-searching");
 
@@ -7717,8 +7716,9 @@ nautilus_files_view_set_search_query (NautilusView  *view,
                         NautilusDirectory *base;
 
                         base = nautilus_search_directory_get_base_model (NAUTILUS_SEARCH_DIRECTORY (files_view->details->model));
+                        location = nautilus_directory_get_location (base);
 
-                        load_directory (files_view, base);
+                        nautilus_view_set_location (view, location);
                 }
         }
         check_remote_warning_bar (files_view);
