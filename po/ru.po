@@ -19,17 +19,17 @@ msgstr ""
 "Project-Id-Version: nautilus trunk\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2015-09-17 11:27+0000\n"
-"PO-Revision-Date: 2015-09-22 21:15+0300\n"
-"Last-Translator: Yuri Myasoedov <ymyasoedov@yandex.ru>\n"
+"POT-Creation-Date: 2015-09-27 11:50+0000\n"
+"PO-Revision-Date: 2015-09-27 23:38+0300\n"
+"Last-Translator: Stas Solovey <whats_up@tut.by>\n"
 "Language-Team: Русский <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 1.6.9\n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+"X-Generator: Gtranslator 2.91.7\n"
 
 #: ../data/org.gnome.Nautilus.appdata.xml.in.h:1
 msgid ""
@@ -94,8 +94,7 @@ msgstr "Показать _подробности"
 #: ../src/nautilus-location-entry.c:270 ../src/nautilus-mime-actions.c:440
 #: ../src/nautilus-mime-actions.c:444 ../src/nautilus-mime-actions.c:515
 #: ../src/nautilus-mime-actions.c:858 ../src/nautilus-mime-actions.c:1364
-#: ../src/nautilus-mime-actions.c:1589
-#: ../src/nautilus-properties-window.c:4188
+#: ../src/nautilus-mime-actions.c:1589 ../src/nautilus-properties-window.c:4188
 #: ../src/nautilus-properties-window.c:5170 ../src/nautilus-query-editor.c:494
 #: ../src/nautilus-files-view.c:1090 ../src/nautilus-files-view.c:1558
 #: ../src/nautilus-files-view.c:5153
@@ -113,7 +112,6 @@ msgstr " (недопустимая последовательность Юник
 #: ../libnautilus-private/nautilus-bookmark.c:107
 #: ../libnautilus-private/nautilus-file-utilities.c:273
 #: ../src/nautilus-pathbar.c:408
-#| msgid "Enter _Location"
 msgid "Other Locations"
 msgstr "Другие места"
 
@@ -974,18 +972,15 @@ msgstr[1] "Действительно безвозвратно удалить %'
 msgstr[2] "Действительно безвозвратно удалить %'d выделенных объектов?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1482
-#| msgid "Detected as “%s”"
 msgid "Deleted “%B”"
 msgstr "Удалено «%B»"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1484
-#| msgid "Duplicating “%B”"
 msgid "Deleting “%B”"
 msgstr "Удаляется «%B»"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1492
 #, c-format
-#| msgid "Deleting files"
 msgid "Deleted %'d file"
 msgid_plural "Deleted %'d files"
 msgstr[0] "Удалён %'d файл"
@@ -994,7 +989,6 @@ msgstr[2] "Удалено %'d файлов"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1496
 #, c-format
-#| msgid "Deleting files"
 msgid "Deleting %'d file"
 msgid_plural "Deleting %'d files"
 msgstr[0] "Удаляется %'d файл"
@@ -1023,8 +1017,6 @@ msgstr "%'d из %'d"
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:1539
 #: ../libnautilus-private/nautilus-file-operations.c:1937
-#| msgid "%S of %S — %T left (%S/sec)"
-#| msgid_plural "%S of %S — %T left (%S/sec)"
 msgid "%'d / %'d — %T left"
 msgid_plural "%'d / %'d — %T left"
 msgstr[0] "%'d из %'d — осталось %T"
@@ -1034,8 +1026,6 @@ msgstr[2] "%'d из %'d — осталось %T"
 #: ../libnautilus-private/nautilus-file-operations.c:1542
 #: ../libnautilus-private/nautilus-file-operations.c:1940
 #, c-format
-#| msgid "%d file"
-#| msgid_plural "%d files"
 msgid "(%d file/sec)"
 msgid_plural "(%d files/sec)"
 msgstr[0] "(%d файл/с)"
@@ -1090,18 +1080,15 @@ msgid "There was an error deleting %B."
 msgstr "Произошла ошибка при удалении %B."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1879
-#| msgid "Duplicating “%B”"
 msgid "Trashing “%B”"
 msgstr "Перемещение в корзину «%B»"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1881
-#| msgid "Trashed On"
 msgid "Trashed “%B”"
 msgstr "Перемещено в корзину «%B»"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1889
 #, c-format
-#| msgid "Trashing Files"
 msgid "Trashing %'d file"
 msgid_plural "Trashing %'d files"
 msgstr[0] "Перемещение в корзину %'d файл"
@@ -1110,7 +1097,6 @@ msgstr[2] "Перемещение в корзину %'d файлов"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1893
 #, c-format
-#| msgid "Trashed On"
 msgid "Trashed %'d file"
 msgid_plural "Trashed %'d files"
 msgstr[0] "Перемещён в корзину %'d файл"
@@ -1281,7 +1267,6 @@ msgid "Moving “%B” to “%B”"
 msgstr "Перемещение «%B» в «%B»"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3208
-#| msgid "Moving “%B” to “%B”"
 msgid "Moved “%B” to “%B”"
 msgstr "Перемещено «%B» в «%B»"
 
@@ -1290,7 +1275,6 @@ msgid "Copying “%B” to “%B”"
 msgstr "Копирование «%B» в «%B»"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3214
-#| msgid "Copying “%B” to “%B”"
 msgid "Copied “%B” to “%B”"
 msgstr "Скопировано «%B» в «%B»"
 
@@ -1299,12 +1283,10 @@ msgid "Duplicating “%B”"
 msgstr "Дублирование «%B»"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3227
-#| msgid "Duplicating “%B”"
 msgid "Duplicated “%B”"
 msgstr "Дублировано «%B»"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3237
-#| msgid "Moving file %'d of %'d to “%B”"
 msgid "Moving %'d file to “%B”"
 msgid_plural "Moving %'d files to “%B”"
 msgstr[0] "Перемещение %'d файла в «%B»"
@@ -1312,7 +1294,6 @@ msgstr[1] "Перемещение %'d файлов в «%B»"
 msgstr[2] "Перемещение %'d файлов в «%B»"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3241
-#| msgid "Copying file %'d of %'d to “%B”"
 msgid "Copying %'d file to “%B”"
 msgid_plural "Copying %'d files to “%B”"
 msgstr[0] "Копирование файла (%'d из %'d) в «%B»"
@@ -1320,7 +1301,6 @@ msgstr[1] "Копирование %'d файлов в «%B»"
 msgstr[2] "Копирование %'d файлов в «%B»"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3251
-#| msgid "Moving file %'d of %'d to “%B”"
 msgid "Moved %'d file to “%B”"
 msgid_plural "Moved %'d files to “%B”"
 msgstr[0] "Перемещён %'d файл в «%B»"
@@ -1328,7 +1308,6 @@ msgstr[1] "Перемещено %'d файла в «%B»"
 msgstr[2] "Перемещено %'d файлов в «%B»"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3255
-#| msgid "Copying file %'d of %'d to “%B”"
 msgid "Copied %'d file to “%B”"
 msgid_plural "Copied %'d files to “%B”"
 msgstr[0] "Скопирован %'d файл в «%B»"
@@ -1336,7 +1315,6 @@ msgstr[1] "Скопировано %'d файла в «%B»"
 msgstr[2] "Скопировано %'d файлов в «%B»"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3269
-#| msgid "Duplicating file %'d of %'d (in “%B”)"
 msgid "Duplicating %'d file in “%B”"
 msgid_plural "Duplicating %'d files in “%B”"
 msgstr[0] "Дублирование %'d файла в «%B»"
@@ -1344,7 +1322,6 @@ msgstr[1] "Дублирование %'d файлов в «%B»"
 msgstr[2] "Дублирование %'d файлов в «%B»"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3277
-#| msgid "Duplicating file %'d of %'d (in “%B”)"
 msgid "Duplicated %'d file in “%B”"
 msgid_plural "Duplicated %'d files in “%B”"
 msgstr[0] "Дублирован %'d файл в «%B»"
@@ -1365,8 +1342,6 @@ msgstr "%S из %S"
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:3329
-#| msgid "%S of %S — %T left (%S/sec)"
-#| msgid_plural "%S of %S — %T left (%S/sec)"
 msgid "%S / %S — %T left (%S/sec)"
 msgid_plural "%S / %S — %T left (%S/sec)"
 msgstr[0] "%S из %S — осталось %T (%S/с)"
@@ -1379,8 +1354,6 @@ msgstr[2] "%S из %S — осталось %T (%S/с)"
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:3348
-#| msgid "%S of %S — %T left (%S/sec)"
-#| msgid_plural "%S of %S — %T left (%S/sec)"
 msgid "%'d / %'d — %T left (%S/sec)"
 msgid_plural "%'d / %'d — %T left (%S/sec)"
 msgstr[0] "%'d из %'d — осталось %T (%S/с)"
@@ -1485,7 +1458,6 @@ msgid "Copying Files"
 msgstr "Копируются файлы"
 
 #: ../libnautilus-private/nautilus-file-operations.c:5159
-#| msgid "Preparing to Move to “%B”"
 msgid "Preparing to move to “%B”"
 msgstr "Подготовка к перемещению в «%B»"
 
@@ -2058,7 +2030,6 @@ msgid "Details: "
 msgstr "Подробности: "
 
 #: ../libnautilus-private/nautilus-progress-info.c:294
-#| msgid "Cancel"
 msgid "Cancelled"
 msgstr "Отменено"
 
@@ -2388,9 +2359,6 @@ msgstr ""
 "операции перетаскивания"
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:44
-#| msgid ""
-#| "If this is set to true, an icon linking to the home folder will be put on "
-#| "the desktop."
 msgid ""
 "If this is set to true, when performing a drag and drop operation the "
 "hovered folder will open automatically after a timeout"
@@ -2670,7 +2638,6 @@ msgstr ""
 
 #: ../nautilus-sendto-extension/nautilus-nste.c:96
 #: ../nautilus-sendto-extension/nautilus-nste.c:101
-#| msgid "Move to…"
 msgid "Send to…"
 msgstr "Отправить…"
 
@@ -2870,7 +2837,6 @@ msgstr "Переместить вниз"
 
 #. "Name" is the label on the rigth side of the bookmark window referencing the bookmark name
 #: ../src/nautilus-bookmarks-window.ui.h:5
-#| msgid "_Name"
 msgctxt "Bookmark"
 msgid "_Name"
 msgstr "_Имя"
@@ -3351,9 +3317,8 @@ msgstr "Оценка"
 msgid "Failed to load image information"
 msgstr "Не удалось получить сведения об изображении"
 
-#: ../src/nautilus-image-properties-page.c:708
-#: ../src/nautilus-list-model.c:371 ../src/nautilus-files-view.c:393
-#: ../src/nautilus-window-slot.c:644
+#: ../src/nautilus-image-properties-page.c:708 ../src/nautilus-list-model.c:371
+#: ../src/nautilus-files-view.c:393 ../src/nautilus-window-slot.c:644
 msgid "Loading…"
 msgstr "Загрузка…"
 
@@ -3518,8 +3483,8 @@ msgstr[2] "Откроется %d отдельных приложений."
 
 #. if it wasn't cancelled show a dialog
 #: ../src/nautilus-mime-actions.c:1663 ../src/nautilus-mime-actions.c:1927
-#: ../src/gtk/gtkplacesview.c:1179 ../src/gtk/gtkplacesview.c:1223
-#: ../src/gtk/gtkplacesview.c:1274
+#: ../src/gtk/gtkplacesview.c:1180 ../src/gtk/gtkplacesview.c:1224
+#: ../src/gtk/gtkplacesview.c:1275
 msgid "Unable to access location"
 msgstr "Не удалось получить доступ к местопложению"
 
@@ -3545,9 +3510,6 @@ msgid "Delete Shortcuts Have Changed"
 msgstr "Изменилась комбинация клавиш для удаления "
 
 #: ../src/nautilus-move-to-trash-shortcut-changed.ui.h:2
-#| msgid ""
-#| "With the latest version of Files, you no longer need to hold Ctrl to "
-#| "delete—the Delete key will work when pressed on its own."
 msgid ""
 "With the latest version of Files, you no longer need to hold Ctrl to delete "
 "— the Delete key will work when pressed on its own."
@@ -3568,7 +3530,6 @@ msgid "Try a different search"
 msgstr "Попробуйте другой поисковый запрос"
 
 #: ../src/nautilus-folder-is-empty.ui.h:1
-#| msgid "Folders"
 msgid "Folder is Empty"
 msgstr "Папка пуста"
 
@@ -3618,7 +3579,6 @@ msgid "You cannot assign more than one custom icon at a time!"
 msgstr "Нельзя назначить более одного пользовательского значка одновременно!"
 
 #: ../src/nautilus-properties-window.c:492
-#| msgid "Please drag just one image to set a custom icon."
 msgid "Please drop just one image to set a custom icon."
 msgstr ""
 "Перетащите только одно изображение, чтобы установить пользовательский значок."
@@ -3652,7 +3612,6 @@ msgstr "Свойства"
 #. To translators: %s is the name of the folder.
 #: ../src/nautilus-properties-window.c:829
 #, c-format
-#| msgid "%s Properties"
 msgctxt "folder"
 msgid "%s Properties"
 msgstr "Свойства %s"
@@ -3661,7 +3620,6 @@ msgstr "Свойства %s"
 #. To translators: %s is the name of the file.
 #: ../src/nautilus-properties-window.c:832
 #, c-format
-#| msgid "%s Properties"
 msgctxt "file"
 msgid "%s Properties"
 msgstr "Свойства %s"
@@ -3898,7 +3856,7 @@ msgid "_Revert"
 msgstr "_Вернуть"
 
 #. Open item is always present
-#: ../src/nautilus-properties-window.c:5171 ../src/gtk/gtkplacesview.c:1616
+#: ../src/nautilus-properties-window.c:5171 ../src/gtk/gtkplacesview.c:1617
 msgid "_Open"
 msgstr "_Открыть"
 
@@ -3968,7 +3926,6 @@ msgid "Remote location — only searching the current folder"
 msgstr "Удалённое местоположение — поиск только в текущей папке"
 
 #: ../src/nautilus-rename-file-popover.ui.h:2
-#| msgid "Rename"
 msgid "_Rename"
 msgstr "_Переименовать"
 
@@ -4036,7 +3993,6 @@ msgstr "Сортировать"
 
 #. This is used to sort by name in the toolbar view menu
 #: ../src/nautilus-toolbar-view-menu.xml.h:3
-#| msgid "_Name"
 msgctxt "Sort Criterion"
 msgid "_Name"
 msgstr "_Имя"
@@ -4063,7 +4019,7 @@ msgstr "Р_елевантность поиска"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:9
 msgid "Re_verse Order"
-msgstr "О_братный порядок"
+msgstr "В _обратном порядке"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:10
 msgid "_Visible Columns…"
@@ -4075,7 +4031,7 @@ msgstr "Показывать скрытые _файлы"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:12
 msgid "_Reload"
-msgstr "_Перезагрузить"
+msgstr "_Обновить"
 
 #: ../src/nautilus-toolbar-view-menu.xml.h:13
 msgid "St_op"
@@ -4317,7 +4273,7 @@ msgstr "Открыть"
 msgid "_Start"
 msgstr "_Запустить"
 
-#: ../src/nautilus-files-view.c:6554 ../src/gtk/gtkplacesview.c:1671
+#: ../src/nautilus-files-view.c:6554 ../src/gtk/gtkplacesview.c:1672
 msgid "_Connect"
 msgstr "_Подключиться"
 
@@ -4337,7 +4293,7 @@ msgstr "Остановить привод"
 msgid "_Safely Remove Drive"
 msgstr "_Безопасно удалить привод"
 
-#: ../src/nautilus-files-view.c:6582 ../src/gtk/gtkplacesview.c:1661
+#: ../src/nautilus-files-view.c:6582 ../src/gtk/gtkplacesview.c:1662
 msgid "_Disconnect"
 msgstr "_Отсоединить"
 
@@ -4394,12 +4350,12 @@ msgid "Open With Other _Application"
 msgstr "Открыть в другой _программе"
 
 #: ../src/nautilus-files-view-context-menus.xml.h:15
-#: ../src/gtk/gtkplacesview.c:1671
+#: ../src/gtk/gtkplacesview.c:1672
 msgid "_Mount"
 msgstr "_Присоединить"
 
 #: ../src/nautilus-files-view-context-menus.xml.h:16
-#: ../src/gtk/gtkplacesview.c:1661
+#: ../src/gtk/gtkplacesview.c:1662
 msgid "_Unmount"
 msgstr "О_тсоединить том"
 
@@ -4524,7 +4480,6 @@ msgstr[2] "Удалено %d файлов"
 # на боковую панель даже без распаковки `%s'.
 #: ../src/nautilus-window.c:1560
 #, c-format
-#| msgid "Open With %s"
 msgid "Open %s"
 msgstr "Открыть %s"
 
@@ -4677,18 +4632,15 @@ msgid "Open with:"
 msgstr "Открыть с помощью:"
 
 #: ../src/gtk/gtkplacesviewrow.ui.h:1 ../src/gtk/gtkplacesviewrow.c:324
-#| msgid "_Unmount"
 msgid "Unmount"
 msgstr "Отсоединить"
 
 #. Translators: Server as any successfully connected network address
 #: ../src/gtk/gtkplacesview.ui.h:2
-#| msgid "_Recent Servers"
 msgid "No recent servers found"
 msgstr "Недавних серверов нет"
 
 #: ../src/gtk/gtkplacesview.ui.h:3
-#| msgid "_Recent Servers"
 msgid "Recent Servers"
 msgstr "Недавние серверы"
 
@@ -4698,18 +4650,15 @@ msgstr "Результатов не найдено"
 
 # заголовок диалогового окна
 #: ../src/gtk/gtkplacesview.ui.h:6
-#| msgid "Connect to Server"
 msgid "Connect to _Server"
 msgstr "Подключиться к _серверу"
 
 #. Restore from Cancel to Connect
-#: ../src/gtk/gtkplacesview.ui.h:7 ../src/gtk/gtkplacesview.c:1196
-#| msgid "C_onnect"
+#: ../src/gtk/gtkplacesview.ui.h:7 ../src/gtk/gtkplacesview.c:1197
 msgid "Con_nect"
 msgstr "_Подключиться"
 
 #: ../src/gtk/gtkplacesview.ui.h:8
-#| msgid "_Server Address"
 msgid "Enter server address…"
 msgstr "Ввести адрес сервера…"
 
@@ -4721,47 +4670,41 @@ msgstr "Поиск сетевых местоположений"
 msgid "No network locations found"
 msgstr "Сетевые местоположения не найдены"
 
-#: ../src/gtk/gtkplacesview.c:1069
+#: ../src/gtk/gtkplacesview.c:1070
 msgid "Computer"
 msgstr "Компьютер"
 
 #. if it wasn't cancelled show a dialog
-#: ../src/gtk/gtkplacesview.c:1337
-#| msgid "Unable to unmount %V"
+#: ../src/gtk/gtkplacesview.c:1338
 msgid "Unable to unmount volume"
 msgstr "Не удалось отсоединить том"
 
 #. Allow to cancel the operation
-#: ../src/gtk/gtkplacesview.c:1419
-#| msgid "Cancel"
+#: ../src/gtk/gtkplacesview.c:1420
 msgid "Cance_l"
 msgstr "_Отменить"
 
-#: ../src/gtk/gtkplacesview.c:1626
-#| msgid "Open In New _Tab"
+#: ../src/gtk/gtkplacesview.c:1627
 msgid "Open in New _Tab"
 msgstr "Открыть в новой _вкладке"
 
-#: ../src/gtk/gtkplacesview.c:1637
-#| msgid "Open In New _Window"
+#: ../src/gtk/gtkplacesview.c:1638
 msgid "Open in New _Window"
 msgstr "Открыть в _новом окне"
 
-#: ../src/gtk/gtkplacesview.c:1836
-#| msgid "Unable to start location"
+#: ../src/gtk/gtkplacesview.c:1837
 msgid "Unable to get remote server location"
 msgstr "Не удалось открыть удалённое местоположение"
 
-#: ../src/gtk/gtkplacesview.c:1955 ../src/gtk/gtkplacesview.c:1964
+#: ../src/gtk/gtkplacesview.c:1956 ../src/gtk/gtkplacesview.c:1965
 msgid "Networks"
 msgstr "Сети"
 
-#: ../src/gtk/gtkplacesview.c:1955 ../src/gtk/gtkplacesview.c:1964
+#: ../src/gtk/gtkplacesview.c:1956 ../src/gtk/gtkplacesview.c:1965
 msgid "On This Computer"
 msgstr "На этом компьютере"
 
 #: ../src/gtk/gtkplacesviewrow.c:324
-#| msgid "_Disconnect"
 msgid "Disconnect"
 msgstr "Отключить"
 
