@@ -24,26 +24,21 @@
 #define NAUTILUS_QUERY_H
 
 #include <glib-object.h>
+#include <gio/gio.h>
+
+typedef enum {
+        NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS,
+        NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED
+} NautilusQuerySearchType;
+
+typedef enum {
+        NAUTILUS_QUERY_SEARCH_CONTENT_SIMPLE,
+        NAUTILUS_QUERY_SEARCH_CONTENT_FULL_TEXT,
+} NautilusQuerySearchContent;
 
 #define NAUTILUS_TYPE_QUERY		(nautilus_query_get_type ())
-#define NAUTILUS_QUERY(obj)		(G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_QUERY, NautilusQuery))
-#define NAUTILUS_QUERY_CLASS(klass)	(G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_QUERY, NautilusQueryClass))
-#define NAUTILUS_IS_QUERY(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_QUERY))
-#define NAUTILUS_IS_QUERY_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_QUERY))
-#define NAUTILUS_QUERY_GET_CLASS(obj)    (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_QUERY, NautilusQueryClass))
 
-typedef struct NautilusQueryDetails NautilusQueryDetails;
-
-typedef struct NautilusQuery {
-	GObject parent;
-	NautilusQueryDetails *details;
-} NautilusQuery;
-
-typedef struct {
-	GObjectClass parent_class;
-} NautilusQueryClass;
-
-GType          nautilus_query_get_type (void);
+G_DECLARE_FINAL_TYPE (NautilusQuery, nautilus_query, NAUTILUS, QUERY, GObject)
 
 NautilusQuery* nautilus_query_new      (void);
 
@@ -53,15 +48,40 @@ void           nautilus_query_set_text           (NautilusQuery *query, const ch
 gboolean       nautilus_query_get_show_hidden_files (NautilusQuery *query);
 void           nautilus_query_set_show_hidden_files (NautilusQuery *query, gboolean show_hidden);
 
-char *         nautilus_query_get_location       (NautilusQuery *query);
-void           nautilus_query_set_location       (NautilusQuery *query, const char *uri);
+GFile*         nautilus_query_get_location       (NautilusQuery *query);
+void           nautilus_query_set_location       (NautilusQuery *query,
+                                                  GFile         *location);
 
 GList *        nautilus_query_get_mime_types     (NautilusQuery *query);
 void           nautilus_query_set_mime_types     (NautilusQuery *query, GList *mime_types);
 void           nautilus_query_add_mime_type      (NautilusQuery *query, const char *mime_type);
 
+NautilusQuerySearchContent nautilus_query_get_search_content (NautilusQuery *query);
+void                       nautilus_query_set_search_content (NautilusQuery              *query,
+                                                              NautilusQuerySearchContent  content);
+
+NautilusQuerySearchType nautilus_query_get_search_type (NautilusQuery *query);
+void                    nautilus_query_set_search_type (NautilusQuery           *query,
+                                                        NautilusQuerySearchType  type);
+
+GDateTime*     nautilus_query_get_date           (NautilusQuery *query);
+void           nautilus_query_set_date           (NautilusQuery *query,
+                                                  GDateTime     *date);
+
+gboolean       nautilus_query_get_recursive      (NautilusQuery *query);
+
+void           nautilus_query_set_recursive      (NautilusQuery *query,
+                                                  gboolean       recursive);
+
+gboolean       nautilus_query_get_searching      (NautilusQuery *query);
+
+void           nautilus_query_set_searching      (NautilusQuery *query,
+                                                  gboolean       searching);
+
 gdouble        nautilus_query_matches_string     (NautilusQuery *query, const gchar *string);
 
 char *         nautilus_query_to_readable_string (NautilusQuery *query);
+
+gboolean       nautilus_query_is_empty           (NautilusQuery *query);
 
 #endif /* NAUTILUS_QUERY_H */

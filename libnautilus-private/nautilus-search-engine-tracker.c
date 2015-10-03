@@ -250,6 +250,7 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 {
 	NautilusSearchEngineTracker *tracker;
 	gchar	*query_text, *search_text, *location_uri, *downcase;
+        GFile *location;
 	GString *sparql;
 	GList *mimetypes, *l;
 	gint mime_count;
@@ -279,7 +280,8 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 	g_free (query_text);
 	g_free (downcase);
 
-	location_uri = nautilus_query_get_location (tracker->details->query);
+        location = nautilus_query_get_location (tracker->details->query);
+	location_uri = location ? g_file_get_uri (location) : NULL;
 	mimetypes = nautilus_query_get_mime_types (tracker->details->query);
 
 	mime_count = g_list_length (mimetypes);
@@ -330,6 +332,7 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 	g_free (search_text);
 	g_free (location_uri);
 	g_list_free_full (mimetypes, g_free);
+        g_object_unref (location);
 }
 
 static void

@@ -1463,12 +1463,12 @@ location_cell_data_func (GtkTreeViewColumn *column,
 		base_location = g_object_ref (home_location);
 	} else {
 		NautilusQuery *query;
-		gchar *base_uri;
 		NautilusFile *base;
+                GFile *location;
 
 		query = nautilus_search_directory_get_query (NAUTILUS_SEARCH_DIRECTORY (directory));
-		base_uri = nautilus_query_get_location (query);
-		base = nautilus_file_get_by_uri (base_uri);
+                location = nautilus_query_get_location (query);
+		base = nautilus_file_get (location);
 
 		if (!nautilus_file_is_in_recent (base)) {
 			base_location = nautilus_file_get_location (base);
@@ -1477,7 +1477,7 @@ location_cell_data_func (GtkTreeViewColumn *column,
 		}
 
 		nautilus_file_unref (base);
-		g_free (base_uri);
+                g_object_unref (location);
 		g_object_unref (query);
 	}
 

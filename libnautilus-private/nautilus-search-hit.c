@@ -55,7 +55,6 @@ nautilus_search_hit_compute_scores (NautilusSearchHit *hit,
 				    NautilusQuery     *query)
 {
 	GDateTime *now;
-	char *query_uri;
 	GFile *query_location;
 	GFile *hit_location;
 	GTimeSpan m_diff = G_MAXINT64;
@@ -65,8 +64,7 @@ nautilus_search_hit_compute_scores (NautilusSearchHit *hit,
 	gdouble proximity_bonus = 0.0;
 	gdouble match_bonus = 0.0;
 
-	query_uri = nautilus_query_get_location (query);
-	query_location = g_file_new_for_uri (query_uri);
+	query_location = nautilus_query_get_location (query);
 	hit_location = g_file_new_for_uri (hit->details->uri);
 
 	if (g_file_has_prefix (hit_location, query_location)) {
@@ -122,7 +120,6 @@ nautilus_search_hit_compute_scores (NautilusSearchHit *hit,
 	       proximity_bonus, recent_bonus, match_bonus);
 
 	g_date_time_unref (now);
-	g_free (query_uri);
 	g_object_unref (query_location);
 }
 

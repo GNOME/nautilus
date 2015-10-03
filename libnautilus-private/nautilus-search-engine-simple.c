@@ -93,7 +93,6 @@ search_thread_data_new (NautilusSearchEngineSimple *engine,
 			NautilusQuery *query)
 {
 	SearchThreadData *data;
-	char *uri;
 	GFile *location;
 	
 	data = g_new0 (SearchThreadData, 1);
@@ -103,9 +102,7 @@ search_thread_data_new (NautilusSearchEngineSimple *engine,
 	data->visited = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 	data->query = g_object_ref (query);
 
-	uri = nautilus_query_get_location (query);
-	location = g_file_new_for_uri (uri);
-	g_free (uri);
+	location = nautilus_query_get_location (query);
 
 	g_queue_push_tail (data->directories, location);
 	data->mime_types = nautilus_query_get_mime_types (query);

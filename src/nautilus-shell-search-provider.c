@@ -392,9 +392,10 @@ execute_search (NautilusShellSearchProvider *self,
                 GDBusMethodInvocation          *invocation,
                 gchar                         **terms)
 {
-  gchar *terms_joined, *home_uri;
+  gchar *terms_joined;
   NautilusQuery *query;
   PendingSearch *pending_search;
+  GFile *home;
 
   cancel_current_search (self);
 
@@ -406,12 +407,12 @@ execute_search (NautilusShellSearchProvider *self,
   }
 
   terms_joined = g_strjoinv (" ", terms);
-  home_uri = nautilus_get_home_directory_uri ();
+  home = g_file_new_for_path (g_get_home_dir ());
 
   query = nautilus_query_new ();
   nautilus_query_set_show_hidden_files (query, FALSE);
   nautilus_query_set_text (query, terms_joined);
-  nautilus_query_set_location (query, home_uri);
+  nautilus_query_set_location (query, home);
 
   pending_search = g_slice_new0 (PendingSearch);
   pending_search->invocation = g_object_ref (invocation);
@@ -439,7 +440,7 @@ execute_search (NautilusShellSearchProvider *self,
                                       query);
   nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (pending_search->engine));
 
-  g_free (home_uri);
+  g_clear_object (&home);
   g_free (terms_joined);
 }
 

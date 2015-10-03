@@ -892,19 +892,16 @@ nautilus_search_directory_set_base_model (NautilusSearchDirectory *search,
 	}
 
 	if (search->details->query != NULL) {
-		gchar *uri;
 		GFile *query_location, *model_location;
 		gboolean is_equal;
 
-		uri = nautilus_query_get_location (search->details->query);
-		query_location = g_file_new_for_uri (uri);
+                query_location = nautilus_query_get_location (search->details->query);
 		model_location = nautilus_directory_get_location (base_model);
 
 		is_equal = g_file_equal (model_location, query_location);
 
 		g_object_unref (model_location);
 		g_object_unref (query_location);
-		g_free (uri);
 
 		if (!is_equal) {
 			return;
@@ -945,11 +942,20 @@ nautilus_search_directory_set_query (NautilusSearchDirectory *search,
 				     NautilusQuery *query)
 {
 	NautilusFile *file;
+        NautilusQuery *old_query;
 
-	if (search->details->query != query) {
-		g_object_ref (query);
-		g_clear_object (&search->details->query);
-		search->details->query = query;
+        old_query = search->details->query;
+
+	if (g_set_object (&search->details->query, query)) {
+                /* Disconnect from the previous query changes */
+                if (old_query) {
+                        g_signal_handlers_disconnect_by_func (old_query, search_force_reload, search);
+                }
+
+                if (query) {
+                        g_signal_connect_swapped (query, "notify", G_CALLBACK (search_force_reload), search);
+                }
+
 
 		g_object_notify_by_pspec (G_OBJECT (search), properties[PROP_QUERY]);
 	}

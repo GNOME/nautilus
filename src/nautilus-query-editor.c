@@ -64,7 +64,7 @@ struct NautilusQueryEditorDetails {
 
 	GtkWidget *search_current_button;
 	GtkWidget *search_all_button;
-	char *current_uri;
+        GFile *current_location;
 
 	GList *rows;
 
@@ -243,8 +243,8 @@ GFile *
 nautilus_query_editor_get_location (NautilusQueryEditor *editor)
 {
 	GFile *file = NULL;
-	if (editor->details->current_uri != NULL)
-		file = g_file_new_for_uri (editor->details->current_uri);
+        if (editor->details->current_location != NULL)
+                file = g_object_ref (editor->details->current_location);
 	return file;
 }
 
@@ -1007,16 +1007,16 @@ static void
 add_location_to_query (NautilusQueryEditor *editor,
 		       NautilusQuery       *query)
 {
-	char *uri;
+        GFile *location;
 
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (editor->details->search_all_button))) {
-		uri = nautilus_get_home_directory_uri ();
+		location = g_file_new_for_uri (nautilus_get_home_directory_uri ());
 	} else {
-		uri = g_strdup (editor->details->current_uri);
+                location = nautilus_query_editor_get_location (editor);
 	}
 
-	nautilus_query_set_location (query, uri);
-	g_free (uri);
+	nautilus_query_set_location (query, location);
+	g_clear_object (&location);
 }
 
 NautilusQuery *
@@ -1064,7 +1064,7 @@ update_location (NautilusQueryEditor *editor)
 	NautilusFile *file;
 	GtkWidget *label;
 
-	file = nautilus_file_get_by_uri (editor->details->current_uri);
+        file = nautilus_file_get (editor->details->current_location);
 
 	if (file != NULL) {
 		char *name;
@@ -1092,7 +1092,7 @@ nautilus_query_editor_set_location (NautilusQueryEditor *editor,
         NautilusDirectory *directory;
         NautilusDirectory *base_model;
 
-	g_free (editor->details->current_uri);
+	g_clear_object (&editor->details->current_location);
 
         /* The client could set us a location that is actually a search directory,
          * like what happens with the slot when updating the query editor location.
@@ -1101,9 +1101,9 @@ nautilus_query_editor_set_location (NautilusQueryEditor *editor,
         directory = nautilus_directory_get (location);
         if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
                 base_model = nautilus_search_directory_get_base_model (NAUTILUS_SEARCH_DIRECTORY (directory));
-                editor->details->current_uri = nautilus_directory_get_uri (base_model);
+                editor->details->current_location = nautilus_directory_get_location (base_model);
         } else {
-                editor->details->current_uri = g_file_get_uri (location);
+                editor->details->current_location = g_object_ref (location);
         }
 	update_location (editor);
 
@@ -1152,15 +1152,14 @@ nautilus_query_editor_set_query (NautilusQueryEditor	*editor,
 	}
 	g_free (current_text);
 
-	g_free (editor->details->current_uri);
-	editor->details->current_uri = NULL;
+        g_clear_object (&editor->details->current_location);
 
 	update_rows (editor, query);
 	g_clear_object (&editor->details->query);
 
 	if (query != NULL) {
 		editor->details->query = g_object_ref (query);
-		editor->details->current_uri = nautilus_query_get_location (query);
+		editor->details->current_location = nautilus_query_get_location (query);
 		update_location (editor);
 	}
 

@@ -31,7 +31,10 @@ BUILT_SOURCES = 					\
 	nautilus-private-enum-types.c			\
 	$(NULL)
 
-ENUM_TYPES = nautilus-search-provider.h
+ENUM_TYPES =						\
+	nautilus-query.h				\
+	nautilus-search-provider.h
+
 
 nautilus-private-enum-types.h: nautilus-private-enum-types.h.template $(ENUM_TYPES) $(GLIB_MKENUMS)
 	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template nautilus-private-enum-types.h.template $(ENUM_TYPES)) > $@
