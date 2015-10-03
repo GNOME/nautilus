@@ -32,6 +32,8 @@
 
 #include <config.h>
 #include <math.h>
+#include <src/nautilus-window.h>
+
 #include "nautilus-canvas-dnd.h"
 
 #include "nautilus-file-dnd.h"
@@ -528,12 +530,18 @@ drag_end_callback (GtkWidget *widget,
 {
 	NautilusCanvasContainer *container;
 	NautilusCanvasDndInfo *dnd_info;
+        NautilusWindow *window;
 
 	container = NAUTILUS_CANVAS_CONTAINER (widget);
+        window = NAUTILUS_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (container)));
 	dnd_info = container->details->dnd_info;
 
 	nautilus_drag_destroy_selection_list (dnd_info->drag_info.selection_list);
+	nautilus_drag_destroy_selection_list (container->details->dnd_source_info->selection_cache);
 	dnd_info->drag_info.selection_list = NULL;
+        container->details->dnd_source_info->selection_cache = NULL;
+
+        nautilus_window_end_dnd (window, context);
 }
 
 static NautilusCanvasIcon *
@@ -1074,6 +1082,13 @@ nautilus_canvas_container_receive_dropped_icons (NautilusCanvasContainer *contai
 	container->details->dnd_info->drag_info.selection_list = NULL;
 }
 
+NautilusDragInfo *
+nautilus_canvas_dnd_get_drag_source_data (NautilusCanvasContainer *container,
+                                          GdkDragContext          *context)
+{
+        return container->details->dnd_source_info;
+}
+
 static void
 nautilus_canvas_container_get_drop_action (NautilusCanvasContainer *container,
 					 GdkDragContext *context,
@@ -1104,8 +1119,9 @@ nautilus_canvas_container_get_drop_action (NautilusCanvasContainer *container,
 	switch (container->details->dnd_info->drag_info.data_type) {
 	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
 		if (container->details->dnd_info->drag_info.selection_list != NULL) {
-			nautilus_drag_default_drop_action_for_icons (context, drop_target, 
-								     container->details->dnd_info->drag_info.selection_list, 
+			nautilus_drag_default_drop_action_for_icons (context, drop_target,
+								     container->details->dnd_info->drag_info.selection_list,
+                                                                     0,
 								     action);
 		}
 		break;
@@ -1258,12 +1274,14 @@ drag_begin_callback (GtkWidget      *widget,
 {
 	NautilusCanvasContainer *container;
 	NautilusDragInfo *drag_info;
+        NautilusWindow *window;
 	cairo_surface_t *surface;
 	double x1, y1, x2, y2, winx, winy;
 	int x_offset, y_offset;
 	int start_x, start_y;
 
 	container = NAUTILUS_CANVAS_CONTAINER (widget);
+        window = NAUTILUS_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (container)));
 
 	start_x = container->details->dnd_info->drag_info.start_x +
 		gtk_adjustment_get_value (gtk_scrollable_get_hadjustment (GTK_SCROLLABLE (container)));
@@ -1290,6 +1308,10 @@ drag_begin_callback (GtkWidget      *widget,
 	drag_info->selection_cache = nautilus_drag_create_selection_cache (widget,
 									   each_icon_get_data_binder);
 
+        container->details->dnd_source_info->selection_cache = nautilus_drag_create_selection_cache (widget,
+                                                                                                     each_icon_get_data_binder);
+
+        nautilus_window_start_dnd (window, context);
 }
 
 void
@@ -1301,11 +1323,14 @@ nautilus_canvas_dnd_begin_drag (NautilusCanvasContainer *container,
 			      int                    start_y)
 {
 	NautilusCanvasDndInfo *dnd_info;
+	NautilusDragInfo *dnd_source_info;
 	
 	g_return_if_fail (NAUTILUS_IS_CANVAS_CONTAINER (container));
 	g_return_if_fail (event != NULL);
 
 	dnd_info = container->details->dnd_info;
+	container->details->dnd_source_info = g_new0 (NautilusDragInfo, 1);
+	dnd_source_info = container->details->dnd_source_info;
 	g_return_if_fail (dnd_info != NULL);
 	
 	/* Notice that the event is in bin_window coordinates, because of
@@ -1316,6 +1341,7 @@ nautilus_canvas_dnd_begin_drag (NautilusCanvasContainer *container,
 	dnd_info->drag_info.start_y = start_y -
 		gtk_adjustment_get_value (gtk_scrollable_get_vadjustment (GTK_SCROLLABLE (container)));	
 
+        dnd_source_info->source_actions = actions;
 	/* start the drag */
 	gtk_drag_begin_with_coordinates (GTK_WIDGET (container),
 					 dnd_info->drag_info.target_list,

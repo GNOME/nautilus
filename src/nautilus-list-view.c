@@ -333,6 +333,7 @@ motion_notify_callback (GtkWidget *widget,
 		}
 	}
 
+        nautilus_list_view_dnd_init (view);
         handled = nautilus_list_view_dnd_drag_begin (view, event);
 
 	return handled;
@@ -1621,7 +1622,6 @@ create_and_set_up_tree_view (NautilusListView *view)
 				 "changed",
 				 G_CALLBACK (list_selection_changed_callback), view, 0);
 
-        nautilus_list_view_dnd_init (view);
 	g_signal_connect_object (view->details->tree_view, "motion-notify-event",
 				 G_CALLBACK (motion_notify_callback), view, 0);
 	g_signal_connect_object (view->details->tree_view, "enter-notify-event",

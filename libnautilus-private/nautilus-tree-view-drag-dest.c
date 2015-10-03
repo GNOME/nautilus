@@ -513,6 +513,7 @@ get_drop_action (NautilusTreeViewDragDest *dest,
 			(context,
 			 drop_target,
 			 dest->details->drag_list,
+                         0,
 			 &action);
 		break;
 	case NAUTILUS_ICON_DND_NETSCAPE_URL:

@@ -214,6 +214,7 @@ slot_proxy_drag_motion (GtkWidget          *widget,
     if (drag_info->info == NAUTILUS_ICON_DND_GNOME_ICON_LIST) {
       nautilus_drag_default_drop_action_for_icons (context, target_uri,
                                                    drag_info->data.selection_list,
+						   0,
                                                    &action);
     } else if (drag_info->info == NAUTILUS_ICON_DND_URI_LIST) {
       action = nautilus_drag_default_drop_action_for_uri_list (context, target_uri);

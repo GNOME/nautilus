@@ -977,6 +977,24 @@ build_selection_list_from_gfile_list (GList *gfile_list)
 	return g_list_reverse (result);
 }
 
+void
+nautilus_window_start_dnd (NautilusWindow *window,
+                           GdkDragContext *context)
+{
+        gtk_places_sidebar_set_drop_targets_visible (GTK_PLACES_SIDEBAR (window->priv->places_sidebar),
+                                                     TRUE,
+                                                     context);
+}
+
+void
+nautilus_window_end_dnd (NautilusWindow *window,
+                         GdkDragContext *context)
+{
+        gtk_places_sidebar_set_drop_targets_visible (GTK_PLACES_SIDEBAR (window->priv->places_sidebar),
+                                                     FALSE,
+                                                     context);
+}
+
 /* Callback used when the places sidebar needs to know the drag action to suggest */
 static GdkDragAction
 places_sidebar_drag_action_requested_cb (GtkPlacesSidebar *sidebar,
@@ -988,17 +1006,28 @@ places_sidebar_drag_action_requested_cb (GtkPlacesSidebar *sidebar,
 	GList *items;
 	char *uri;
 	int action = 0;
+        NautilusDragInfo *info;
+        guint32 source_actions;
 
-	items = build_selection_list_from_gfile_list (source_file_list);
+        info = nautilus_drag_get_source_data (context);
+        if (info != NULL) {
+                items = info->selection_cache;
+                source_actions = info->source_actions;
+        } else {
+                items = build_selection_list_from_gfile_list (source_file_list);
+                source_actions = 0;
+        }
 	uri = g_file_get_uri (dest_file);
 
         if (g_list_length (items) < 1)
                 goto out;
 
-	nautilus_drag_default_drop_action_for_icons (context, uri, items, &action);
+	nautilus_drag_default_drop_action_for_icons (context, uri, items, source_actions, &action);
 
 out:
-	nautilus_drag_destroy_selection_list (items);
+        if (info == NULL)
+	        nautilus_drag_destroy_selection_list (items);
+
 	g_free (uri);
 
 	return action;

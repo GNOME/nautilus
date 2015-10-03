@@ -22,8 +22,13 @@
 
 #include "nautilus-list-view.h"
 
+#include "nautilus-dnd.h"
+
 void nautilus_list_view_dnd_init (NautilusListView *list_view);
 gboolean nautilus_list_view_dnd_drag_begin (NautilusListView *list_view,
                                             GdkEventMotion   *event);
+NautilusDragInfo *
+nautilus_list_view_dnd_get_drag_source_data (NautilusListView *list_view,
+                                             GdkDragContext   *context);
 
 #endif /* NAUTILUS_LIST_VIEW_DND_H */

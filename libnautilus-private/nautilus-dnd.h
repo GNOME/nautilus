@@ -90,6 +90,11 @@ typedef struct {
 	gboolean waiting_to_autoscroll;
 	gint64 start_auto_scroll_in;
 
+        /* source context actions. Used for peek the actions using a GdkDragContext
+         * source at drag-begin time when they are not available yet (they become
+         * available at drag-motion time) */
+        guint32 source_actions;
+
 } NautilusDragInfo;
 
 typedef void		(* NautilusDragEachSelectedItemDataGet)	(const char *url, 
@@ -120,6 +125,7 @@ gboolean		    nautilus_drag_items_on_desktop		(const GList			      *selection_li
 void			    nautilus_drag_default_drop_action_for_icons (GdkDragContext			      *context,
 									 const char			      *target_uri,
 									 const GList			      *items,
+                                                                         guint32                               source_actions,
 									 int				      *action);
 GdkDragAction		    nautilus_drag_default_drop_action_for_netscape_url (GdkDragContext			     *context);
 GdkDragAction		    nautilus_drag_default_drop_action_for_uri_list     (GdkDragContext			     *context,
@@ -148,5 +154,7 @@ void			    nautilus_drag_autoscroll_start		(NautilusDragInfo		      *drag_info,
 void			    nautilus_drag_autoscroll_stop		(NautilusDragInfo		      *drag_info);
 
 gboolean		    nautilus_drag_selection_includes_special_link (GList			      *selection_list);
+
+NautilusDragInfo *          nautilus_drag_get_source_data                 (GdkDragContext                     *context);
 
 #endif

@@ -54,4 +54,7 @@ void   nautilus_canvas_dnd_begin_drag            (NautilusCanvasContainer *conta
 						  int                    start_y);
 void   nautilus_canvas_dnd_end_drag              (NautilusCanvasContainer *container);
 
+NautilusDragInfo* nautilus_canvas_dnd_get_drag_source_data (NautilusCanvasContainer *container,
+                                                            GdkDragContext          *context);
+
 #endif /* NAUTILUS_CANVAS_DND_H */

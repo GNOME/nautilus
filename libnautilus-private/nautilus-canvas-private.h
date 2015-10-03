@@ -182,6 +182,7 @@ struct NautilusCanvasContainerDetails {
 
 	/* DnD info. */
 	NautilusCanvasDndInfo *dnd_info;
+	NautilusDragInfo *dnd_source_info;
 
 	/* zoom level */
 	int zoom_level;

@@ -20,6 +20,7 @@
 
 #include "nautilus-list-model.h"
 #include "nautilus-tree-view-drag-dest.h"
+#include "nautilus-dnd.h"
 
 struct NautilusListViewDetails {
   GtkTreeView *tree_view;
@@ -53,6 +54,7 @@ struct NautilusListViewDetails {
   gboolean ignore_button_release;
   gboolean row_selected_on_button_down;
   gboolean active;
+  NautilusDragInfo *drag_source_info;
 
   GHashTable *columns;
   GtkWidget *column_editor;

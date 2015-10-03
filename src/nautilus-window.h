@@ -145,4 +145,8 @@ void nautilus_window_sync_title            (NautilusWindow *window,
 void nautilus_window_show_operation_notification (NautilusWindow *window,
                                                   gchar          *main_label,
                                                   GFile          *folder_to_open);
+void nautilus_window_start_dnd (NautilusWindow *window,
+                                GdkDragContext *context);
+void nautilus_window_end_dnd (NautilusWindow *window,
+                              GdkDragContext *context);
 #endif
