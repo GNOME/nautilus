@@ -209,11 +209,13 @@ nautilus_list_view_dnd_drag_begin (NautilusListView *list_view,
                                     event->x,
                                     event->y))
         {
-          gtk_drag_begin (GTK_WIDGET (list_view->details->tree_view),
-                          source_target_list,
-                          GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK | GDK_ACTION_ASK,
-                          list_view->details->drag_button,
-                          (GdkEvent*)event);
+          gtk_drag_begin_with_coordinates (GTK_WIDGET (list_view->details->tree_view),
+                                           source_target_list,
+                                           GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK | GDK_ACTION_ASK,
+                                           list_view->details->drag_button,
+                                           (GdkEvent*)event,
+                                           -1,
+                                           -1);
         }
       return TRUE;
     }
