@@ -181,6 +181,9 @@ nautilus_SOURCES = \
 	nautilus-list-model.h			\
 	nautilus-list-view.c			\
 	nautilus-list-view.h 			\
+	nautilus-list-view-private.h		\
+	nautilus-list-view-dnd.c		\
+	nautilus-list-view-dnd.h		\
 	nautilus-location-entry.c               \
 	nautilus-location-entry.h               \
 	nautilus-main.c 			\
