@@ -179,7 +179,6 @@ nautilus_SOURCES = \
 	nautilus-image-properties-page.h	\
 	nautilus-list-model.c			\
 	nautilus-list-model.h			\
-	nautilus-list-view-private.h 		\
 	nautilus-list-view.c			\
 	nautilus-list-view.h 			\
 	nautilus-location-entry.c               \
