@@ -100,7 +100,6 @@ struct NautilusWindowSlotDetails {
 
 	/* Query editor */
 	NautilusQueryEditor *query_editor;
-	GtkWidget *query_editor_revealer;
 	gulong qe_changed_id;
 	gulong qe_cancel_id;
 	gulong qe_activated_id;
@@ -357,8 +356,7 @@ hide_query_editor (NautilusWindowSlot *slot)
 
         view = nautilus_window_slot_get_current_view (slot);
 
-	gtk_revealer_set_reveal_child (GTK_REVEALER (slot->details->query_editor_revealer),
-				       FALSE);
+	gtk_search_bar_set_search_mode (GTK_SEARCH_BAR (slot->details->query_editor), FALSE);
 
 	if (slot->details->qe_changed_id > 0) {
 		g_signal_handler_disconnect (slot->details->query_editor, slot->details->qe_changed_id);
@@ -412,11 +410,9 @@ static void
 show_query_editor (NautilusWindowSlot *slot)
 {
         NautilusView *view;
-        GFile *location;
 
         view = nautilus_window_slot_get_current_view (slot);
 
-        location = nautilus_window_slot_get_current_location (slot);
         if (nautilus_view_is_searching (view)) {
                 NautilusQuery *query;
 
@@ -425,13 +421,9 @@ show_query_editor (NautilusWindowSlot *slot)
                 if (query != NULL) {
                         nautilus_query_editor_set_query (slot->details->query_editor, query);
                 }
-        } else {
-                /* In this way, when the query changes it will open the actual search */
-                nautilus_query_editor_set_location (slot->details->query_editor, location);
         }
 
-	gtk_revealer_set_reveal_child (GTK_REVEALER (slot->details->query_editor_revealer),
-				       TRUE);
+        gtk_search_bar_set_search_mode (GTK_SEARCH_BAR (slot->details->query_editor), TRUE);
 	gtk_widget_grab_focus (GTK_WIDGET (slot->details->query_editor));
 
 	if (slot->details->qe_changed_id == 0) {
@@ -489,7 +481,8 @@ nautilus_window_slot_handle_event (NautilusWindowSlot *slot,
 	retval = FALSE;
 	window = nautilus_window_slot_get_window (slot);
 	if (!NAUTILUS_IS_DESKTOP_WINDOW (window)) {
-		retval = nautilus_query_editor_handle_event (slot->details->query_editor, event);
+                retval = gtk_search_bar_handle_event (GTK_SEARCH_BAR (slot->details->query_editor),
+                                                      (GdkEvent*) event);
 	}
 
 	if (retval) {
@@ -540,7 +533,7 @@ remove_all_extra_location_widgets (GtkWidget *widget,
 	NautilusDirectory *directory;
 
 	directory = nautilus_directory_get (slot->details->location);
-	if (widget != GTK_WIDGET (slot->details->query_editor_revealer)) {
+	if (widget != GTK_WIDGET (slot->details->query_editor)) {
 		gtk_container_remove (GTK_CONTAINER (slot->details->extra_location_widgets), widget);
 	}
 
@@ -639,11 +632,12 @@ nautilus_window_slot_constructed (GObject *object)
 	gtk_widget_show (extras_vbox);
 
 	slot->details->query_editor = NAUTILUS_QUERY_EDITOR (nautilus_query_editor_new ());
-	slot->details->query_editor_revealer = gtk_revealer_new ();
-	gtk_container_add (GTK_CONTAINER (slot->details->query_editor_revealer),
-			   GTK_WIDGET (slot->details->query_editor));
-	gtk_widget_show_all (slot->details->query_editor_revealer);
-	nautilus_window_slot_add_extra_location_widget (slot, slot->details->query_editor_revealer);
+        gtk_widget_show (GTK_WIDGET (slot->details->query_editor));
+        nautilus_window_slot_add_extra_location_widget (slot, GTK_WIDGET (slot->details->query_editor));
+
+        g_object_bind_property (slot, "location",
+                                slot->details->query_editor, "location",
+                                G_BINDING_DEFAULT);
 
 	slot->details->title = g_strdup (_("Loading…"));
 }
@@ -972,8 +966,6 @@ nautilus_window_slot_set_location (NautilusWindowSlot *slot,
 	}
 
 	nautilus_window_slot_update_title (slot);
-
-        nautilus_query_editor_set_location (slot->details->query_editor, location);
 
 	if (old_location) {
 		g_object_unref (old_location);
@@ -2033,7 +2025,6 @@ view_started_loading (NautilusWindowSlot *slot,
                 nautilus_window_slot_set_allow_stop (slot, TRUE);
         }
 
-        nautilus_query_editor_set_location (slot->details->query_editor, nautilus_view_get_location (view));
         gtk_widget_grab_focus (GTK_WIDGET (slot->details->window));
 
         gtk_widget_show (GTK_WIDGET (slot->details->window));

@@ -75,6 +75,7 @@ $(dbus_shell_search_provider_built_sources) : Makefile.am $(top_srcdir)/data/she
 		$(NULL)
 
 headers =					\
+	nautilus-search-popover.h		\
 	nautilus-special-location-bar.h		\
 	$(NULL)
 
@@ -196,6 +197,8 @@ nautilus_SOURCES = \
 	nautilus-properties-window.h		\
 	nautilus-query-editor.c			\
 	nautilus-query-editor.h			\
+	nautilus-search-popover.c		\
+	nautilus-search-popover.h		\
 	nautilus-self-check-functions.c 	\
 	nautilus-self-check-functions.h 	\
 	nautilus-shell-search-provider.h	\

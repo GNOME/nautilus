@@ -28,41 +28,23 @@
 #include <libnautilus-private/nautilus-query.h>
 
 #define NAUTILUS_TYPE_QUERY_EDITOR nautilus_query_editor_get_type()
-#define NAUTILUS_QUERY_EDITOR(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_QUERY_EDITOR, NautilusQueryEditor))
-#define NAUTILUS_QUERY_EDITOR_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_QUERY_EDITOR, NautilusQueryEditorClass))
-#define NAUTILUS_IS_QUERY_EDITOR(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_QUERY_EDITOR))
-#define NAUTILUS_IS_QUERY_EDITOR_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_QUERY_EDITOR))
-#define NAUTILUS_QUERY_EDITOR_GET_CLASS(obj) \
-  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_QUERY_EDITOR, NautilusQueryEditorClass))
 
-typedef struct NautilusQueryEditorDetails NautilusQueryEditorDetails;
+G_DECLARE_DERIVABLE_TYPE (NautilusQueryEditor, nautilus_query_editor, NAUTILUS, QUERY_EDITOR, GtkSearchBar)
 
-typedef struct NautilusQueryEditor {
-	GtkBox parent;
-	NautilusQueryEditorDetails *details;
-} NautilusQueryEditor;
-
-typedef struct {
-	GtkBoxClass parent_class;
+struct _NautilusQueryEditorClass {
+        GtkSearchBarClass parent_class;
 
 	void (* changed)   (NautilusQueryEditor  *editor,
 			    NautilusQuery        *query,
 			    gboolean              reload);
 	void (* cancel)    (NautilusQueryEditor *editor);
 	void (* activated) (NautilusQueryEditor *editor);
-} NautilusQueryEditorClass;
+};
 
 #include "nautilus-window-slot.h"
 
 GType      nautilus_query_editor_get_type     	   (void);
 GtkWidget* nautilus_query_editor_new          	   (void);
-
-gboolean       nautilus_query_editor_handle_event (NautilusQueryEditor *editor,
-						   GdkEventKey         *event);
 
 NautilusQuery *nautilus_query_editor_get_query   (NautilusQueryEditor *editor);
 void           nautilus_query_editor_set_query   (NautilusQueryEditor *editor,
