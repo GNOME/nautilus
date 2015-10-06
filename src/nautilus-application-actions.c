@@ -152,9 +152,14 @@ action_quit (GSimpleAction *action,
 
 	/* nautilus_window_close() doesn't do anything for desktop windows */
 	windows = nautilus_application_get_windows (application);
+        /* make a copy, since the original list will be modified when destroying
+         * a window, making this list invalid */
+        windows = g_list_copy (windows);
 	for (l = windows; l != NULL; l = l->next) {
 		nautilus_window_close (l->data);
 	}
+
+        g_list_free (windows);
 }
 
 static void
