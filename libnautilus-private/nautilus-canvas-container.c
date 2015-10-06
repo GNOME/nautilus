@@ -147,7 +147,7 @@ static gboolean      all_selected                                   (NautilusCan
 static gboolean      has_selection                                  (NautilusCanvasContainer *container);
 static void          icon_destroy                                   (NautilusCanvasContainer *container,
 								       NautilusCanvasIcon          *icon);
-static void          finish_adding_new_icons                        (NautilusCanvasContainer *container);
+static gboolean      finish_adding_new_icons                        (NautilusCanvasContainer *container);
 static inline void   icon_get_bounding_box                          (NautilusCanvasIcon          *icon,
 								       int                   *x1_return,
 								       int                   *y1_return,
