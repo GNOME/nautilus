@@ -428,7 +428,7 @@ schedule_remove_finished_operations (NautilusToolbar *self)
         }
 }
 
-static gboolean
+static void
 remove_operations_button_attention_style (NautilusToolbar *self)
 {
         GtkStyleContext *style_context;
@@ -436,9 +436,24 @@ remove_operations_button_attention_style (NautilusToolbar *self)
         style_context = gtk_widget_get_style_context (self->priv->operations_button);
         gtk_style_context_remove_class (style_context,
                                         "nautilus-operations-button-needs-attention");
+}
+
+static gboolean
+on_remove_operations_button_attention_style_timeout (NautilusToolbar *self)
+{
+        remove_operations_button_attention_style (self);
         self->priv->operations_button_attention_timeout_id = 0;
 
         return G_SOURCE_REMOVE;
+}
+
+static void
+unschedule_operations_button_attention_style (NautilusToolbar *self)
+{
+        if (self->priv->operations_button_attention_timeout_id!= 0) {
+                g_source_remove (self->priv->operations_button_attention_timeout_id);
+                self->priv->operations_button_attention_timeout_id = 0;
+        }
 }
 
 static void
@@ -448,13 +463,13 @@ add_operations_button_attention_style (NautilusToolbar *self)
 
         style_context = gtk_widget_get_style_context (self->priv->operations_button);
 
-        remove_operations_button_attention_style (self);
+        unschedule_operations_button_attention_style (self);
         remove_operations_button_attention_style (self);
 
         gtk_style_context_add_class (style_context,
                                      "nautilus-operations-button-needs-attention");
         self->priv->operations_button_attention_timeout_id = g_timeout_add (NEEDS_ATTENTION_ANIMATION_TIMEOUT,
-                                                                            (GSourceFunc) remove_operations_button_attention_style,
+                                                                            (GSourceFunc) on_remove_operations_button_attention_style_timeout,
                                                                             self);
 }
 
@@ -799,11 +814,7 @@ nautilus_toolbar_dispose (GObject *obj)
 	unschedule_menu_popup_timeout (self);
         unschedule_remove_finished_operations (self);
         unschedule_operations_start (self);
-
-        if (self->priv->operations_button_attention_timeout_id != 0) {
-                g_source_remove (self->priv->operations_button_attention_timeout_id);
-                self->priv->operations_button_attention_timeout_id = 0;
-        }
+        unschedule_operations_button_attention_style (self);
 
         g_signal_handlers_disconnect_by_data (self->priv->progress_manager, self);
         g_clear_object (&self->priv->progress_manager);
