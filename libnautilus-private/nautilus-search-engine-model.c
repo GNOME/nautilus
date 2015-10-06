@@ -45,7 +45,13 @@ struct NautilusSearchEngineModelDetails {
 	guint finished_id;
 };
 
-static void nautilus_search_provider_init (NautilusSearchProviderIface  *iface);
+enum {
+        PROP_0,
+        PROP_RUNNING,
+        LAST_PROP
+};
+
+static void nautilus_search_provider_init (NautilusSearchProviderInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusSearchEngineModel,
 			 nautilus_search_engine_model,
@@ -90,6 +96,9 @@ search_finished (NautilusSearchEngineModel *model)
 	}
 
 	model->details->query_pending = FALSE;
+
+        g_object_notify (G_OBJECT (model), "running");
+
 	DEBUG ("Model engine finished");
 	nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (model),
                                            NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL);
@@ -120,9 +129,11 @@ model_directory_ready_cb (NautilusDirectory	*directory,
 	gdouble match;
 	gboolean found;
 	NautilusSearchHit *hit;
+        GDateTime *dt;
 
 	files = nautilus_directory_get_file_list (directory);
 	mime_types = nautilus_query_get_mime_types (model->details->query);
+        dt = nautilus_query_get_date (model->details->query);
 	hits = NULL;
 
 	for (l = files; l != NULL; l = l->next) {
@@ -143,9 +154,53 @@ model_directory_ready_cb (NautilusDirectory	*directory,
 			}
 		}
 
+                if (found && dt != NULL) {
+                        NautilusQuerySearchType type;
+                        guint64 query_time, current_file_time;
+                        const gchar *attrib;
+                        GFileInfo *info;
+                        GError *error;
+                        GFile *location;
+
+			g_message ("searching for date %s", g_date_time_format (dt, "%X"));
+
+                        type = nautilus_query_get_search_type (model->details->query);
+                        location = nautilus_file_get_location (file);
+		        error = NULL;
+
+                        if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS) {
+                                attrib = G_FILE_ATTRIBUTE_TIME_ACCESS;
+                        } else {
+                                attrib = G_FILE_ATTRIBUTE_TIME_MODIFIED;
+                        }
+
+                        query_time = g_date_time_to_unix (dt);
+
+                        /* Query current file's attribute */
+                        info = g_file_query_info (location,
+                                                  attrib,
+                                                  G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                                  NULL,
+                                                  &error);
+
+                        if (error) {
+                                /* Silently ignore errors */
+                                g_clear_error (&error);
+                                found = FALSE;
+                        } else {
+                                current_file_time = g_file_info_get_attribute_uint64 (info, attrib);
+                                found = (query_time <= current_file_time);
+                        }
+
+                        g_clear_object (&location);
+                }
+
 		if (found) {
 			uri = nautilus_file_get_uri (file);
 			hit = nautilus_search_hit_new (uri);
+
+			g_message ("found in model engine - %s", uri);
+
 			nautilus_search_hit_set_fts_rank (hit, match);
 			hits = g_list_prepend (hits, hit);
 			g_free (uri);
@@ -176,6 +231,8 @@ nautilus_search_engine_model_start (NautilusSearchProvider *provider)
 
 	g_object_ref (model);
 	model->details->query_pending = TRUE;
+
+        g_object_notify (G_OBJECT (provider), "running");
 
 	if (model->details->directory == NULL) {
 		search_finished_idle (model);
@@ -218,12 +275,41 @@ nautilus_search_engine_model_set_query (NautilusSearchProvider *provider,
 	model->details->query = query;
 }
 
+static gboolean
+nautilus_search_engine_model_is_running (NautilusSearchProvider *provider)
+{
+        NautilusSearchEngineModel *model;
+
+        model = NAUTILUS_SEARCH_ENGINE_MODEL (provider);
+
+        return model->details->query_pending;
+}
+
 static void
-nautilus_search_provider_init (NautilusSearchProviderIface *iface)
+nautilus_search_provider_init (NautilusSearchProviderInterface *iface)
 {
 	iface->set_query = nautilus_search_engine_model_set_query;
 	iface->start = nautilus_search_engine_model_start;
 	iface->stop = nautilus_search_engine_model_stop;
+        iface->is_running = nautilus_search_engine_model_is_running;
+}
+
+static void
+nautilus_search_engine_model_get_property (GObject    *object,
+                                           guint       prop_id,
+                                           GValue     *value,
+                                           GParamSpec *pspec)
+{
+        NautilusSearchProvider *self = NAUTILUS_SEARCH_PROVIDER (object);
+
+        switch (prop_id) {
+        case PROP_RUNNING:
+                g_value_set_boolean (value, nautilus_search_engine_model_is_running (self));
+                break;
+
+        default:
+                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        }
 }
 
 static void
@@ -233,6 +319,14 @@ nautilus_search_engine_model_class_init (NautilusSearchEngineModelClass *class)
 
 	gobject_class = G_OBJECT_CLASS (class);
 	gobject_class->finalize = finalize;
+        gobject_class->get_property = nautilus_search_engine_model_get_property;
+
+        /**
+         * NautilusSearchEngine::running:
+         *
+         * Whether the search engine is running a search.
+         */
+        g_object_class_override_property (gobject_class, PROP_RUNNING, "running");
 
 	g_type_class_add_private (class, sizeof (NautilusSearchEngineModelDetails));
 }

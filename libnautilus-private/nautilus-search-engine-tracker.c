@@ -45,7 +45,13 @@ struct NautilusSearchEngineTrackerDetails {
 	GCancellable  *cancellable;
 };
 
-static void nautilus_search_provider_init (NautilusSearchProviderIface  *iface);
+enum {
+        PROP_0,
+        PROP_RUNNING,
+        LAST_PROP
+};
+
+static void nautilus_search_provider_init (NautilusSearchProviderInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusSearchEngineTracker,
 			 nautilus_search_engine_tracker,
@@ -110,6 +116,8 @@ search_finished (NautilusSearchEngineTracker *tracker,
 	}
 
 	tracker->details->query_pending = FALSE;
+
+        g_object_notify (G_OBJECT (tracker), "running");
 
 	if (error && !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
 	        DEBUG ("Tracker engine error %s", error->message);
@@ -255,6 +263,7 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 	GList *mimetypes, *l;
 	gint mime_count;
 	gboolean recursive;
+        GDateTime *dt;
 
 	tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (provider);
 
@@ -265,6 +274,8 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 	DEBUG ("Tracker engine start");
 	g_object_ref (tracker);
 	tracker->details->query_pending = TRUE;
+
+        g_object_notify (G_OBJECT (provider), "running");
 
 	if (tracker->details->connection == NULL) {
 		g_idle_add (search_finished_idle, provider);
@@ -283,10 +294,11 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
         location = nautilus_query_get_location (tracker->details->query);
 	location_uri = location ? g_file_get_uri (location) : NULL;
 	mimetypes = nautilus_query_get_mime_types (tracker->details->query);
+        dt = nautilus_query_get_date (tracker->details->query);
 
 	mime_count = g_list_length (mimetypes);
 
-	sparql = g_string_new ("SELECT DISTINCT nie:url(?urn) fts:rank(?urn) tracker:coalesce(nfo:fileLastModified(?urn), nie:contentLastModified(?urn)) tracker:coalesce(nfo:fileLastAccessed(?urn), nie:contentAccessed(?urn)) "
+	sparql = g_string_new ("SELECT DISTINCT nie:url(?urn) fts:rank(?urn) tracker:coalesce(nfo:fileLastModified(?urn), nie:contentLastModified(?urn)) AS ?mtime tracker:coalesce(nfo:fileLastAccessed(?urn), nie:contentAccessed(?urn)) AS ?atime \n"
 			       "WHERE {"
 			       "  ?urn a nfo:FileDataObject ;"
 			       "  tracker:available true ; ");
@@ -305,6 +317,24 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 
 	g_string_append_printf (sparql, "fn:contains(fn:lower-case(nfo:fileName(?urn)), '%s')", search_text);
 
+        if (dt != NULL) {
+                NautilusQuerySearchType type;
+                gchar *dt_format;
+
+                type = nautilus_query_get_search_type (tracker->details->query);
+                dt_format = g_date_time_format (dt, "%Y-%m-%dT%H:%M:%S");
+
+                g_string_append (sparql, " && ");
+
+                if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS) {
+                        g_string_append_printf (sparql, "?atime <= \"%s\"^^xsd:dateTime", dt_format);
+                } else {
+                        g_string_append_printf (sparql, "?mtime <= \"%s\"^^xsd:dateTime", dt_format);
+                }
+
+                g_free (dt_format);
+        }
+
 	if (mime_count > 0) {
 		g_string_append (sparql, " && (");
 
@@ -316,7 +346,7 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 			g_string_append_printf (sparql, "fn:contains(?mime, '%s')",
 						(gchar *) l->data);
 		}
-		g_string_append (sparql, ")");
+		g_string_append (sparql, ")\n");
 	}
 
 	g_string_append (sparql, ")} ORDER BY DESC (fts:rank(?urn))");
@@ -347,6 +377,8 @@ nautilus_search_engine_tracker_stop (NautilusSearchProvider *provider)
 		g_cancellable_cancel (tracker->details->cancellable);
 		g_clear_object (&tracker->details->cancellable);
 		tracker->details->query_pending = FALSE;
+
+	        g_object_notify (G_OBJECT (provider), "running");
 	}
 }
 
@@ -363,12 +395,41 @@ nautilus_search_engine_tracker_set_query (NautilusSearchProvider *provider,
 	tracker->details->query = query;
 }
 
+static gboolean
+nautilus_search_engine_tracker_is_running (NautilusSearchProvider *provider)
+{
+        NautilusSearchEngineTracker *tracker;
+
+        tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (provider);
+
+        return tracker->details->query_pending;
+}
+
 static void
-nautilus_search_provider_init (NautilusSearchProviderIface *iface)
+nautilus_search_provider_init (NautilusSearchProviderInterface *iface)
 {
 	iface->set_query = nautilus_search_engine_tracker_set_query;
 	iface->start = nautilus_search_engine_tracker_start;
 	iface->stop = nautilus_search_engine_tracker_stop;
+        iface->is_running = nautilus_search_engine_tracker_is_running;
+}
+
+static void
+nautilus_search_engine_tracker_get_property (GObject    *object,
+                                             guint       prop_id,
+                                             GValue     *value,
+                                             GParamSpec *pspec)
+{
+        NautilusSearchProvider *self = NAUTILUS_SEARCH_PROVIDER (object);
+
+        switch (prop_id) {
+        case PROP_RUNNING:
+                g_value_set_boolean (value, nautilus_search_engine_tracker_is_running (self));
+                break;
+
+        default:
+                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        }
 }
 
 static void
@@ -378,6 +439,14 @@ nautilus_search_engine_tracker_class_init (NautilusSearchEngineTrackerClass *cla
 
 	gobject_class = G_OBJECT_CLASS (class);
 	gobject_class->finalize = finalize;
+        gobject_class->get_property = nautilus_search_engine_tracker_get_property;
+
+        /**
+         * NautilusSearchEngine::running:
+         *
+         * Whether the search engine is running a search.
+         */
+        g_object_class_override_property (gobject_class, PROP_RUNNING, "running");
 
 	g_type_class_add_private (class, sizeof (NautilusSearchEngineTrackerDetails));
 }

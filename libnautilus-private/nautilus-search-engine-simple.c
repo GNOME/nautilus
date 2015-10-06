@@ -36,6 +36,7 @@
 
 enum {
 	PROP_RECURSIVE = 1,
+        PROP_RUNNING,
 	NUM_PROPERTIES
 };
 
@@ -67,9 +68,7 @@ struct NautilusSearchEngineSimpleDetails {
 	gboolean query_finished;
 };
 
-static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
-
-static void nautilus_search_provider_init (NautilusSearchProviderIface  *iface);
+static void nautilus_search_provider_init (NautilusSearchProviderInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusSearchEngineSimple,
 			 nautilus_search_engine_simple,
@@ -144,6 +143,8 @@ search_thread_done_idle (gpointer user_data)
 	nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (engine),
                                            NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL);
 
+        g_object_notify (G_OBJECT (engine), "running");
+
 	search_thread_data_free (data);
 
 	return FALSE;
@@ -195,6 +196,7 @@ send_batch (SearchThreadData *thread_data)
 	G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN "," \
 	G_FILE_ATTRIBUTE_STANDARD_TYPE "," \
 	G_FILE_ATTRIBUTE_TIME_MODIFIED "," \
+        G_FILE_ATTRIBUTE_TIME_ACCESS "," \
 	G_FILE_ATTRIBUTE_ID_FILE
 
 static void
@@ -250,6 +252,27 @@ visit_directory (GFile *dir, SearchThreadData *data)
 				}
 			}
 		}
+
+                if (found && nautilus_query_get_date (data->query) != NULL) {
+                        NautilusQuerySearchType type;
+                        GDateTime *date;
+                        guint64 current_file_time, query_time;
+                        const gchar *attrib;
+
+                        type = nautilus_query_get_search_type (data->query);
+
+                        if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS) {
+                                attrib = G_FILE_ATTRIBUTE_TIME_ACCESS;
+                        } else {
+                                attrib = G_FILE_ATTRIBUTE_TIME_MODIFIED;
+                        }
+
+                        date = nautilus_query_get_date (data->query);
+                        query_time = g_date_time_to_unix (date);
+                        current_file_time = g_file_info_get_attribute_uint64 (info, attrib);
+
+                        found = (query_time <= current_file_time);
+                }
 		
 		if (found) {
 			NautilusSearchHit *hit;
@@ -356,6 +379,8 @@ nautilus_search_engine_simple_start (NautilusSearchProvider *provider)
 	thread = g_thread_new ("nautilus-search-simple", search_thread_func, data);
 	simple->details->active_search = data;
 
+        g_object_notify (G_OBJECT (provider), "running");
+
 	g_thread_unref (thread);
 }
 
@@ -383,6 +408,16 @@ nautilus_search_engine_simple_set_query (NautilusSearchProvider *provider,
 	g_object_ref (query);
 	g_clear_object (&simple->details->query);
 	simple->details->query = query;
+}
+
+static gboolean
+nautilus_search_engine_simple_is_running (NautilusSearchProvider *provider)
+{
+        NautilusSearchEngineSimple *simple;
+
+        simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (provider);
+
+        return simple->details->active_search != NULL;
 }
 
 static void
@@ -416,6 +451,9 @@ nautilus_search_engine_simple_get_property (GObject *object,
 	engine = NAUTILUS_SEARCH_ENGINE_SIMPLE (object);
 
 	switch (arg_id) {
+	case PROP_RUNNING:
+                g_value_set_boolean (value, nautilus_search_engine_simple_is_running (NAUTILUS_SEARCH_PROVIDER (engine)));
+                break;
 	case PROP_RECURSIVE:
 		g_value_set_boolean (value, engine->details->recursive);
 		break;
@@ -423,11 +461,12 @@ nautilus_search_engine_simple_get_property (GObject *object,
 }
 
 static void
-nautilus_search_provider_init (NautilusSearchProviderIface *iface)
+nautilus_search_provider_init (NautilusSearchProviderInterface *iface)
 {
 	iface->set_query = nautilus_search_engine_simple_set_query;
 	iface->start = nautilus_search_engine_simple_start;
 	iface->stop = nautilus_search_engine_simple_stop;
+        iface->is_running = nautilus_search_engine_simple_is_running;
 }
 
 static void
@@ -440,13 +479,26 @@ nautilus_search_engine_simple_class_init (NautilusSearchEngineSimpleClass *class
 	gobject_class->get_property = nautilus_search_engine_simple_get_property;
 	gobject_class->set_property = nautilus_search_engine_simple_set_property;
 
-	properties[PROP_RECURSIVE] = g_param_spec_boolean ("recursive",
-							   "recursive",
-							   "recursive",
-							   FALSE,
-							   G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
+        /**
+	 * NautilusSearchEngineSimple::recursive:
+	 *
+	 * Whether the search is recursive or not.
+	 */
+	g_object_class_install_property (gobject_class,
+					 PROP_RECURSIVE,
+					 g_param_spec_boolean ("recursive",
+                                                               "recursive",
+                                                               "recursive",
+                                                               FALSE,
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
-	g_object_class_install_properties (gobject_class, NUM_PROPERTIES, properties);
+        /**
+         * NautilusSearchEngine::running:
+         *
+         * Whether the search engine is running a search.
+         */
+        g_object_class_override_property (gobject_class, PROP_RUNNING, "running");
+
 	g_type_class_add_private (class, sizeof (NautilusSearchEngineSimpleDetails));
 }
 

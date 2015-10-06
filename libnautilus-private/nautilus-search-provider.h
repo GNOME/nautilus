@@ -29,15 +29,12 @@ typedef enum {
   NAUTILUS_SEARCH_PROVIDER_STATUS_RESTARTING
 } NautilusSearchProviderStatus;
 
-#define NAUTILUS_TYPE_SEARCH_PROVIDER           (nautilus_search_provider_get_type ())
-#define NAUTILUS_SEARCH_PROVIDER(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_SEARCH_PROVIDER, NautilusSearchProvider))
-#define NAUTILUS_IS_SEARCH_PROVIDER(obj)        (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_SEARCH_PROVIDER))
-#define NAUTILUS_SEARCH_PROVIDER_GET_IFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), NAUTILUS_TYPE_SEARCH_PROVIDER, NautilusSearchProviderIface))
 
-typedef struct _NautilusSearchProvider       NautilusSearchProvider;
-typedef struct _NautilusSearchProviderIface  NautilusSearchProviderIface;
+#define NAUTILUS_TYPE_SEARCH_PROVIDER (nautilus_search_provider_get_type ())
 
-struct _NautilusSearchProviderIface {
+G_DECLARE_INTERFACE (NautilusSearchProvider, nautilus_search_provider, NAUTILUS, SEARCH_PROVIDER, GObject)
+
+struct _NautilusSearchProviderInterface {
         GTypeInterface g_iface;
 
         /* VTable */
@@ -75,6 +72,7 @@ struct _NautilusSearchProviderIface {
         void (*finished) (NautilusSearchProvider       *provider,
                           NautilusSearchProviderStatus  status);
         void (*error) (NautilusSearchProvider *provider, const char *error_message);
+        gboolean (*is_running) (NautilusSearchProvider *provider);
 };
 
 GType          nautilus_search_provider_get_type        (void) G_GNUC_CONST;
@@ -91,6 +89,8 @@ void           nautilus_search_provider_finished        (NautilusSearchProvider 
                                                          NautilusSearchProviderStatus  status);
 void           nautilus_search_provider_error           (NautilusSearchProvider *provider,
                                                          const char *error_message);
+
+gboolean       nautilus_search_provider_is_running      (NautilusSearchProvider *provider);
 
 G_END_DECLS
 

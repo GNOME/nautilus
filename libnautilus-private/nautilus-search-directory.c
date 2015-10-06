@@ -65,6 +65,8 @@ struct NautilusSearchDirectoryDetails {
 	GList *callback_list;
 	GList *pending_callback_list;
 
+        GBinding *binding;
+
 	NautilusDirectory *base_model;
 };
 
@@ -939,18 +941,26 @@ nautilus_search_directory_set_query (NautilusSearchDirectory *search,
 
         old_query = search->details->query;
 
-	if (g_set_object (&search->details->query, query)) {
+	if (search->details->query != query) {
+	        search->details->query = query;
+
+	        g_clear_pointer (&search->details->binding, g_binding_unbind);
+
                 /* Disconnect from the previous query changes */
                 if (old_query) {
                         g_signal_handlers_disconnect_by_func (old_query, search_force_reload, search);
                 }
 
                 if (query) {
+		        search->details->binding = g_object_bind_property (search->details->engine, "running",
+									   query, "searching",
+									   G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
                         g_signal_connect_swapped (query, "notify", G_CALLBACK (search_force_reload), search);
                 }
 
-
 		g_object_notify_by_pspec (G_OBJECT (search), properties[PROP_QUERY]);
+
+	        g_clear_object (&old_query);
 	}
 
 	file = nautilus_directory_get_existing_corresponding_file (NAUTILUS_DIRECTORY (search));

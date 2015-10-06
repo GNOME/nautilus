@@ -32,50 +32,28 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-static void nautilus_search_provider_base_init (gpointer g_iface);
-
-GType
-nautilus_search_provider_get_type (void)
-{
-	static GType search_provider_type = 0;
-
-	if (!search_provider_type) {
-		const GTypeInfo search_provider_info = {
-			sizeof (NautilusSearchProviderIface), /* class_size */
-			nautilus_search_provider_base_init,   /* base_init */
-			NULL,           /* base_finalize */
-			NULL,
-			NULL,           /* class_finalize */
-			NULL,           /* class_data */
-			0,
-			0,              /* n_preallocs */
-			NULL
-		};
-
-		search_provider_type = g_type_register_static (G_TYPE_INTERFACE,
-							       "NautilusSearchProvider",
-							       &search_provider_info,
-							       0);
-
-		g_type_interface_add_prerequisite (search_provider_type, G_TYPE_OBJECT);
-	}
-
-	return search_provider_type;
-}
+G_DEFINE_INTERFACE (NautilusSearchProvider, nautilus_search_provider, G_TYPE_OBJECT)
 
 static void
-nautilus_search_provider_base_init (gpointer g_iface)
+nautilus_search_provider_default_init (NautilusSearchProviderInterface *iface)
 {
-	static gboolean initialized = FALSE;
 
-	if (initialized) {
-		return;
-	}
+        /**
+         * NautilusSearchProvider::running:
+         *
+         * Whether the provider is running a search.
+         */
+        g_object_interface_install_property (iface,
+                                             g_param_spec_boolean ("running",
+                                                                   "Whether the provider is running",
+                                                                   "Whether the provider is running a search",
+                                                                   FALSE,
+                                                                   G_PARAM_READABLE));
 
 	signals[HITS_ADDED] = g_signal_new ("hits-added",
 					    NAUTILUS_TYPE_SEARCH_PROVIDER,
 					    G_SIGNAL_RUN_LAST,
-					    G_STRUCT_OFFSET (NautilusSearchProviderIface, hits_added),
+					    G_STRUCT_OFFSET (NautilusSearchProviderInterface, hits_added),
 					    NULL, NULL,
 					    g_cclosure_marshal_VOID__POINTER,
 					    G_TYPE_NONE, 1,
@@ -84,7 +62,7 @@ nautilus_search_provider_base_init (gpointer g_iface)
 	signals[FINISHED] = g_signal_new ("finished",
 					  NAUTILUS_TYPE_SEARCH_PROVIDER,
 					  G_SIGNAL_RUN_LAST,
-					  G_STRUCT_OFFSET (NautilusSearchProviderIface, finished),
+					  G_STRUCT_OFFSET (NautilusSearchProviderInterface, finished),
 					  NULL, NULL,
 					  g_cclosure_marshal_VOID__ENUM,
 					  G_TYPE_NONE, 1,
@@ -93,13 +71,11 @@ nautilus_search_provider_base_init (gpointer g_iface)
 	signals[ERROR] = g_signal_new ("error",
 				       NAUTILUS_TYPE_SEARCH_PROVIDER,
 				       G_SIGNAL_RUN_LAST,
-				       G_STRUCT_OFFSET (NautilusSearchProviderIface, error),
+				       G_STRUCT_OFFSET (NautilusSearchProviderInterface, error),
 				       NULL, NULL,
 				       g_cclosure_marshal_VOID__STRING,
 				       G_TYPE_NONE, 1,
 				       G_TYPE_STRING);
-
-	initialized = TRUE;
 }
 
 void
@@ -155,4 +131,13 @@ nautilus_search_provider_error (NautilusSearchProvider *provider, const char *er
 	g_warning ("Provider %s failed with error %s\n",
 		   G_OBJECT_TYPE_NAME (provider), error_message);
 	g_signal_emit (provider, signals[ERROR], 0, error_message);
+}
+
+gboolean
+nautilus_search_provider_is_running (NautilusSearchProvider *provider)
+{
+        g_return_val_if_fail (NAUTILUS_IS_SEARCH_PROVIDER (provider), FALSE);
+        g_return_val_if_fail (NAUTILUS_SEARCH_PROVIDER_GET_IFACE (provider)->is_running, FALSE);
+
+        return NAUTILUS_SEARCH_PROVIDER_GET_IFACE (provider)->is_running (provider);
 }

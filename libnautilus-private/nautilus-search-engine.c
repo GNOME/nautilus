@@ -51,7 +51,15 @@ struct NautilusSearchEngineDetails
 	gboolean restart;
 };
 
-static void nautilus_search_provider_init (NautilusSearchProviderIface  *iface);
+enum {
+        PROP_0,
+        PROP_RUNNING,
+        LAST_PROP
+};
+
+static void nautilus_search_provider_init (NautilusSearchProviderInterface *iface);
+
+static gboolean nautilus_search_engine_is_running (NautilusSearchProvider *provider);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusSearchEngine,
 			 nautilus_search_engine,
@@ -118,6 +126,8 @@ nautilus_search_engine_start (NautilusSearchProvider *provider)
 
 	engine->details->running = TRUE;
 
+        g_object_notify (G_OBJECT (provider), "running");
+
 	if (num_finished < engine->details->providers_running) {
 		engine->details->restart = TRUE;
 	} else {
@@ -140,6 +150,8 @@ nautilus_search_engine_stop (NautilusSearchProvider *provider)
 
 	engine->details->running = FALSE;
 	engine->details->restart = FALSE;
+
+        g_object_notify (G_OBJECT (provider), "running");
 }
 
 static void
@@ -199,6 +211,8 @@ check_providers_status (NautilusSearchEngine *engine)
 	}
 
 	engine->details->running = FALSE;
+        g_object_notify (G_OBJECT (engine), "running");
+
 	g_hash_table_remove_all (engine->details->uris);
 
 	if (engine->details->restart) {
@@ -247,12 +261,23 @@ connect_provider_signals (NautilusSearchEngine   *engine,
 			  engine);
 }
 
+static gboolean
+nautilus_search_engine_is_running (NautilusSearchProvider *provider)
+{
+        NautilusSearchEngine *engine;
+
+        engine = NAUTILUS_SEARCH_ENGINE (provider);
+
+        return engine->details->running;
+}
+
 static void
-nautilus_search_provider_init (NautilusSearchProviderIface *iface)
+nautilus_search_provider_init (NautilusSearchProviderInterface *iface)
 {
 	iface->set_query = nautilus_search_engine_set_query;
 	iface->start = nautilus_search_engine_start;
 	iface->stop = nautilus_search_engine_stop;
+        iface->is_running = nautilus_search_engine_is_running;
 }
 
 static void
@@ -272,6 +297,24 @@ nautilus_search_engine_finalize (GObject *object)
 }
 
 static void
+nautilus_search_engine_get_property (GObject    *object,
+                                     guint       prop_id,
+                                     GValue     *value,
+                                     GParamSpec *pspec)
+{
+        NautilusSearchProvider *self = NAUTILUS_SEARCH_PROVIDER (object);
+
+        switch (prop_id) {
+        case PROP_RUNNING:
+                g_value_set_boolean (value, nautilus_search_engine_is_running (self));
+                break;
+
+        default:
+                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        }
+}
+
+static void
 nautilus_search_engine_class_init (NautilusSearchEngineClass *class)
 {
 	GObjectClass *object_class;
@@ -279,6 +322,14 @@ nautilus_search_engine_class_init (NautilusSearchEngineClass *class)
 	object_class = (GObjectClass *) class;
 
 	object_class->finalize = nautilus_search_engine_finalize;
+        object_class->get_property = nautilus_search_engine_get_property;
+
+        /**
+         * NautilusSearchEngine::running:
+         *
+         * Whether the search engine is running a search.
+         */
+        g_object_class_override_property (object_class, PROP_RUNNING, "running");
 
 	g_type_class_add_private (class, sizeof (NautilusSearchEngineDetails));
 }
