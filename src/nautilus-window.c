@@ -992,8 +992,12 @@ places_sidebar_drag_action_requested_cb (GtkPlacesSidebar *sidebar,
 	items = build_selection_list_from_gfile_list (source_file_list);
 	uri = g_file_get_uri (dest_file);
 
+        if (g_list_length (items) < 1)
+                goto out;
+
 	nautilus_drag_default_drop_action_for_icons (context, uri, items, &action);
 
+out:
 	nautilus_drag_destroy_selection_list (items);
 	g_free (uri);
 
