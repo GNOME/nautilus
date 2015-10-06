@@ -7858,21 +7858,13 @@ set_search_query_internal (NautilusFilesView *files_view,
                            NautilusDirectory *base_model)
 {
         GFile *location;
-        gchar *text;
-        gboolean valid_query = FALSE;
 
         location = NULL;
-        if (query) {
-                text = nautilus_query_get_text (query);
-                valid_query = strlen (text) > 0;
-
-                g_free (text);
-        }
 
         g_set_object (&files_view->details->search_query, query);
         g_object_notify (G_OBJECT (files_view), "search-query");
 
-        if (valid_query) {
+        if (!nautilus_query_is_empty (query)) {
                 if (nautilus_view_is_searching (NAUTILUS_VIEW (files_view))) {
                         /*
                          * Reuse the search directory and reload it.
