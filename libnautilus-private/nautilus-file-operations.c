@@ -1549,8 +1549,6 @@ report_delete_progress (CommonJob *job,
                                      remaining_time,
                                      (int) transfer_rate + 0.5);
 
-                        g_free (time_left_message);
-                        g_free (files_per_second_message);
                         g_free (concat_detail);
                 } else {
                         /* To translators: %'d is the number of files completed for the operation,
@@ -1947,8 +1945,6 @@ report_trash_progress (CommonJob    *job,
                                      remaining_time,
                                      (int) transfer_rate + 0.5);
 
-                        g_free (time_left_message);
-                        g_free (files_per_second_message);
                         g_free (concat_detail);
                 } else {
                         /* To translators: %'d is the number of files completed for the operation,
