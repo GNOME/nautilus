@@ -348,14 +348,7 @@ nautilus_bookmark_connect_file (NautilusBookmark *bookmark)
 		DEBUG ("%s: creating file", nautilus_bookmark_get_name (bookmark));
 
 		bookmark->details->file = nautilus_file_get (bookmark->details->location);
-                /* Similar to what we do when a file has been trashed or deleted
-                 * withouth noticing in bookmark_changed, just try to fall graciously.
-                 */
-                if (nautilus_file_is_gone (bookmark->details->file))
-                  {
-                        nautilus_bookmark_disconnect_file (bookmark);
-                        return;
-                  }
+		g_assert (!nautilus_file_is_gone (bookmark->details->file));
 
 		g_signal_connect_object (bookmark->details->file, "changed",
 					 G_CALLBACK (bookmark_file_changed_callback), bookmark, 0);
