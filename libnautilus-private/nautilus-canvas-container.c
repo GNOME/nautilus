@@ -178,6 +178,7 @@ static int compare_icons_vertical (NautilusCanvasContainer *container,
 				     NautilusCanvasIcon *icon_b);
 
 static void store_layout_timestamps_now (NautilusCanvasContainer *container);
+static void schedule_redo_layout (NautilusCanvasContainer *container);
 
 static const char *nautilus_canvas_container_accessible_action_names[] = {
 	"activate",
@@ -1885,7 +1886,13 @@ lay_down_icons (NautilusCanvasContainer *container, GList *icons, double start_y
 static void
 redo_layout_internal (NautilusCanvasContainer *container)
 {
-	finish_adding_new_icons (container);
+        gboolean layout_possible;
+
+	layout_possible = finish_adding_new_icons (container);
+        if (!layout_possible) {
+                schedule_redo_layout (container);
+                return;
+        }
 
 	/* Don't do any re-laying-out during stretching. Later we
 	 * might add smart logic that does this and leaves room for
@@ -5968,7 +5975,7 @@ finish_adding_icon (NautilusCanvasContainer *container,
 	g_signal_emit (container, signals[ICON_ADDED], 0, icon->data);
 }
 
-static void
+static gboolean
 finish_adding_new_icons (NautilusCanvasContainer *container)
 {
 	GList *p, *new_icons, *no_position_icons, *semi_position_icons;
@@ -6006,6 +6013,10 @@ finish_adding_new_icons (NautilusCanvasContainer *container)
 		/* This is currently only used on the desktop.
 		 * Thus, we pass FALSE for tight, like lay_down_icons_tblr */
 		grid = placement_grid_new (container, FALSE);
+
+                /* we can do nothing, just return */
+                if (grid == NULL)
+                        return FALSE;
 
 		for (p = container->details->icons; p != NULL; p = p->next) {
 			icon = p->data;
@@ -6068,6 +6079,8 @@ finish_adding_new_icons (NautilusCanvasContainer *container)
 		store_layout_timestamps_now (container);
 		container->details->store_layout_timestamps_when_finishing_new_icons = FALSE;
 	}
+
+        return TRUE;
 }
 
 static gboolean
