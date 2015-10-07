@@ -600,13 +600,13 @@ on_progress_info_started_timeout (NautilusToolbar *self)
         filtered_progress_infos = get_filtered_progress_infos (self);
         if (!nautilus_progress_manager_are_all_infos_finished_or_cancelled (self->priv->progress_manager) &&
             g_list_length (progress_infos) != g_list_length (filtered_progress_infos)) {
+                g_list_free (filtered_progress_infos);
                 return G_SOURCE_CONTINUE;
         } else {
+                g_list_free (filtered_progress_infos);
                 self->priv->start_operations_timeout_id = 0;
                 return G_SOURCE_REMOVE;
         }
-
-        g_list_free (filtered_progress_infos);
 }
 
 static void
