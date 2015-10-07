@@ -7170,11 +7170,6 @@ nautilus_files_view_stop_loading (NautilusFilesView *view)
 {
         g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
 
-        disconnect_model_handlers (view);
-        if (view->details->model) {
-                nautilus_directory_unref (view->details->model);
-                view->details->model = NULL;
-        }
         unschedule_display_of_pending_files (view);
         reset_update_interval (view);
 
@@ -7197,6 +7192,12 @@ nautilus_files_view_stop_loading (NautilusFilesView *view)
         view->details->pending_selection = NULL;
 
         done_loading (view, FALSE);
+
+        disconnect_model_handlers (view);
+        if (view->details->model) {
+                nautilus_directory_unref (view->details->model);
+                view->details->model = NULL;
+        }
 }
 
 gboolean
