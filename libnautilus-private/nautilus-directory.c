@@ -602,6 +602,8 @@ nautilus_directory_is_in_recent (NautilusDirectory *directory)
 }
 
 static const gchar * const remote_types[] = {
+  "afp",
+  "google-drive",
   "sftp",
   "webdav",
   "ftp",
