@@ -1062,6 +1062,7 @@ directory_load_done (NautilusDirectory *directory,
 	GList *node;
 
 	nautilus_profile_start (NULL);
+        g_object_ref (directory);
 
 	directory->details->directory_loaded = TRUE;
 	directory->details->directory_loaded_sent_notification = FALSE;
@@ -1089,6 +1090,7 @@ directory_load_done (NautilusDirectory *directory,
 
 	directory_load_cancel (directory);
 
+        g_object_unref (directory);
 	nautilus_profile_end (NULL);
 }
 
