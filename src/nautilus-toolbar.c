@@ -393,7 +393,7 @@ should_hide_operations_button (NautilusToolbar *self)
 }
 
 static gboolean
-remove_finished_operations (NautilusToolbar *self)
+on_remove_finished_operations_timeout (NautilusToolbar *self)
 {
         nautilus_progress_info_manager_remove_finished_or_cancelled_infos (self->priv->progress_manager);
         if (should_hide_operations_button (self)) {
@@ -423,7 +423,7 @@ schedule_remove_finished_operations (NautilusToolbar *self)
         if (self->priv->remove_finished_operations_timeout_id == 0) {
                 self->priv->remove_finished_operations_timeout_id =
                         g_timeout_add_seconds (REMOVE_FINISHED_OPERATIONS_TIEMOUT,
-                                               (GSourceFunc) remove_finished_operations,
+                                               (GSourceFunc) on_remove_finished_operations_timeout,
                                                self);
         }
 }
