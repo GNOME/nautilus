@@ -6143,8 +6143,7 @@ real_update_actions_state (NautilusFilesView *view)
         can_paste_files_into = (!selection_contains_recent &&
                                 selection_count == 1 &&
                                 can_paste_into_file (NAUTILUS_FILE (selection->data)));
-        show_properties = !showing_remote_directory (view) &&
-                          (!NAUTILUS_IS_DESKTOP_CANVAS_VIEW (view) || selection_count > 0);
+        show_properties = !NAUTILUS_IS_DESKTOP_CANVAS_VIEW (view) || selection_count > 0;
 
         /* Right click actions */
         /* Selection menu actions */
