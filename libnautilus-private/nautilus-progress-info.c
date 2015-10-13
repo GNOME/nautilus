@@ -49,6 +49,8 @@ struct _NautilusProgressInfo
 	GCancellable *cancellable;
         guint cancellable_id;
         GCancellable *details_in_thread_cancellable;
+
+        GTimer *progress_timer;
 	
 	char *status;
 	char *details;
@@ -90,6 +92,7 @@ nautilus_progress_info_finalize (GObject *object)
 
 	g_free (info->status);
 	g_free (info->details);
+        g_clear_object (&info->progress_timer);
         g_cancellable_disconnect (info->cancellable, info->cancellable_id);
 	g_object_unref (info->cancellable);
         g_cancellable_cancel (info->details_in_thread_cancellable);
@@ -294,6 +297,7 @@ set_details_in_thread (GTask                *task,
                 nautilus_progress_info_set_details  (info, _("Cancelled"));
                 G_LOCK (progress_info);
 		info->cancel_at_idle = TRUE;
+                g_timer_stop (info->progress_timer);
 		queue_idle (info, TRUE);
                 G_UNLOCK (progress_info);
         }
@@ -330,6 +334,7 @@ nautilus_progress_info_init (NautilusProgressInfo *info)
 	manager = nautilus_progress_info_manager_dup_singleton ();
 	nautilus_progress_info_manager_add_new_info (manager, info);
 	g_object_unref (manager);
+        info->progress_timer = g_timer_new ();
 }
 
 NautilusProgressInfo *
@@ -402,6 +407,7 @@ nautilus_progress_info_cancel (NautilusProgressInfo *info)
 	G_LOCK (progress_info);
 	
 	g_cancellable_cancel (info->cancellable);
+        g_timer_stop (info->progress_timer);
 	
 	G_UNLOCK (progress_info);
 }
@@ -481,6 +487,7 @@ nautilus_progress_info_pause (NautilusProgressInfo *info)
 
 	if (!info->paused) {
 		info->paused = TRUE;
+                g_timer_stop (info->progress_timer);
 	}
 
 	G_UNLOCK (progress_info);
@@ -493,6 +500,7 @@ nautilus_progress_info_resume (NautilusProgressInfo *info)
 
 	if (info->paused) {
 		info->paused = FALSE;
+                g_timer_continue (info->progress_timer);
 	}
 
 	G_UNLOCK (progress_info);
@@ -505,6 +513,7 @@ nautilus_progress_info_start (NautilusProgressInfo *info)
 	
 	if (!info->started) {
 		info->started = TRUE;
+                g_timer_start (info->progress_timer);
 		
 		info->start_at_idle = TRUE;
 		queue_idle (info, TRUE);
@@ -520,6 +529,7 @@ nautilus_progress_info_finish (NautilusProgressInfo *info)
 	
 	if (!info->finished) {
 		info->finished = TRUE;
+                g_timer_stop (info->progress_timer);
 		
 		info->finish_at_idle = TRUE;
 		queue_idle (info, TRUE);
@@ -686,6 +696,19 @@ nautilus_progress_info_get_elapsed_time (NautilusProgressInfo *info)
 
         G_LOCK (progress_info);
         elapsed_time = info->elapsed_time;
+        G_UNLOCK (progress_info);
+
+        return elapsed_time;
+}
+
+gdouble
+nautilus_progress_info_get_total_elapsed_time (NautilusProgressInfo *info)
+{
+        gdouble elapsed_time;
+
+        G_LOCK (progress_info);
+        elapsed_time = info->elapsed_time + g_timer_elapsed (info->progress_timer,
+                                                             NULL);
         G_UNLOCK (progress_info);
 
         return elapsed_time;

@@ -347,7 +347,7 @@ static gboolean
 should_show_progress_info (NautilusProgressInfo *info)
 {
 
-        return nautilus_progress_info_get_elapsed_time (info) +
+        return nautilus_progress_info_get_total_elapsed_time (info) +
                nautilus_progress_info_get_remaining_time (info) > OPERATION_MINIMUM_TIME;
 }
 
@@ -379,7 +379,7 @@ should_hide_operations_button (NautilusToolbar *self)
         progress_infos = get_filtered_progress_infos (self);
 
         for (l = progress_infos; l != NULL; l = l->next) {
-                if (nautilus_progress_info_get_elapsed_time (l->data) +
+                if (nautilus_progress_info_get_total_elapsed_time (l->data) +
                     nautilus_progress_info_get_remaining_time (l->data) > OPERATION_MINIMUM_TIME &&
                     !nautilus_progress_info_get_is_cancelled (l->data) &&
                     !nautilus_progress_info_get_is_finished (l->data)) {
@@ -540,7 +540,7 @@ update_operations (NautilusToolbar *self)
         GList *progress_infos;
         GList *l;
         GtkWidget *progress;
-        guint total_remaining_time = 0;
+        gboolean should_show_progress_button = FALSE;
 
         gtk_container_foreach (GTK_CONTAINER (self->priv->operations_container),
                                (GtkCallback) gtk_widget_destroy,
@@ -550,7 +550,8 @@ update_operations (NautilusToolbar *self)
 
         progress_infos = get_filtered_progress_infos (self);
         for (l = progress_infos; l != NULL; l = l->next) {
-                total_remaining_time = nautilus_progress_info_get_remaining_time (l->data);
+                should_show_progress_button = should_show_progress_button ||
+                                              should_show_progress_info (l->data);
 
                 g_signal_connect_swapped (l->data, "finished",
 		                          G_CALLBACK (on_progress_info_finished), self);
@@ -575,7 +576,7 @@ update_operations (NautilusToolbar *self)
          * estimated time is longer than a OPERATION_MINIMUM_TIME is odd, so show
          * it only if the remaining time is bigger than again OPERATION_MINIMUM_TIME.
          */
-        if (total_remaining_time > OPERATION_MINIMUM_TIME &&
+        if (should_show_progress_button &&
             !gtk_revealer_get_reveal_child (GTK_REVEALER (self->priv->operations_revealer))) {
                 add_operations_button_attention_style (self);
                 gtk_revealer_set_reveal_child (GTK_REVEALER (self->priv->operations_revealer),
