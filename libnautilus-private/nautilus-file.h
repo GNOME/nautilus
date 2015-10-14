@@ -218,6 +218,8 @@ GFilesystemPreviewType  nautilus_file_get_filesystem_use_preview        (Nautilu
 
 char *                  nautilus_file_get_filesystem_id                 (NautilusFile                   *file);
 
+char *                  nautilus_file_get_filesystem_type               (NautilusFile                   *file);
+
 NautilusFile *          nautilus_file_get_trash_original_file           (NautilusFile                   *file);
 
 /* Permissions. */

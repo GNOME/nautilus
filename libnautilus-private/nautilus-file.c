@@ -837,6 +837,8 @@ finalize (GObject *object)
 	}
 
 	eel_ref_str_unref (file->details->filesystem_id);
+	eel_ref_str_unref (file->details->filesystem_type);
+        file->details->filesystem_type = NULL;
 	g_free (file->details->trash_orig_path);
 
 	g_list_free_full (file->details->mime_list, g_free);
@@ -4057,6 +4059,27 @@ nautilus_file_get_filesystem_use_preview (NautilusFile *file)
 	return use_preview;
 }
 
+char *
+nautilus_file_get_filesystem_type (NautilusFile *file)
+{
+        NautilusFile *parent;
+        char *filesystem_type = NULL;
+
+        g_assert (NAUTILUS_IS_FILE (file));
+
+        if (nautilus_file_is_directory (file)) {
+                filesystem_type = g_strdup (eel_ref_str_peek (file->details->filesystem_type));
+        } else {
+                parent = nautilus_file_get_parent (file);
+                if (parent != NULL) {
+                        filesystem_type = g_strdup (eel_ref_str_peek (parent->details->filesystem_type));
+                        nautilus_file_unref (parent);
+                }
+        }
+
+        return filesystem_type;
+}
+
 gboolean
 nautilus_file_should_show_thumbnail (NautilusFile *file)
 {
@@ -7003,25 +7026,36 @@ nautilus_file_is_in_recent (NautilusFile *file)
 	return nautilus_directory_is_in_recent (file->details->directory);
 }
 
+static const gchar * const remote_types[] = {
+  "afp",
+  "google-drive",
+  "sftp",
+  "webdav",
+  "ftp",
+  "nfs",
+  "cifs",
+  NULL
+};
+
 /**
  * nautilus_file_is_remote
- * 
- * Check if this file is a file in Network.
+ *
+ * Check if this file is a file in a remote filesystem.
  * @file: NautilusFile representing the file in question.
- * 
- * Returns: TRUE if @file is in Network.
+ *
+ * Returns: TRUE if @file is in a remote filesystem.
  * 
  **/
 gboolean
 nautilus_file_is_remote (NautilusFile *file)
 {
-	g_assert (NAUTILUS_IS_FILE (file));
+        char *filesystem_type;
 
-        if (nautilus_file_is_directory (file))
-                return nautilus_directory_is_remote (nautilus_directory_get_for_file (file));
-        else
-	        return nautilus_directory_is_remote (file->details->directory);
+        g_assert (NAUTILUS_IS_FILE (file));
 
+        filesystem_type = nautilus_file_get_filesystem_type (file);
+
+        return filesystem_type != NULL && g_strv_contains (remote_types, filesystem_type);
 }
 
 /**

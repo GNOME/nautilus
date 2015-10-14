@@ -601,55 +601,19 @@ nautilus_directory_is_in_recent (NautilusDirectory *directory)
 	return g_file_has_uri_scheme (directory->details->location, "recent");
 }
 
-static const gchar * const remote_types[] = {
-  "afp",
-  "google-drive",
-  "sftp",
-  "webdav",
-  "ftp",
-  "nfs",
-  "cifs",
-  NULL
-};
-
 gboolean
 nautilus_directory_is_remote (NautilusDirectory *directory)
 {
-        GFileInfo *info;
+        NautilusFile *file;
         gboolean is_remote;
-        GError *error = NULL;
 
-	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+        g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
-	if (directory->details->location == NULL) {
-		return FALSE;
-	}
+        file = nautilus_directory_get_corresponding_file (directory);
+        is_remote = nautilus_file_is_remote (file);
+        nautilus_file_unref (file);
 
-	info = g_file_query_filesystem_info (directory->details->location, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE,
-					     NULL, &error);
-        if (error) {
-                /* Custom schemas like x-nautilus-desktop or other-locations:///
-                 * should not yell warnings */
-                if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED))
-                        g_warning ("Can't peek the uri: %s filesystem type with error: %s",
-                                   g_file_get_uri (directory->details->location), error->message);
-        }
-        g_clear_error (&error);
-        if (info) {
-                const gchar *type;
-
-                type = g_file_info_get_attribute_string (info, "filesystem::type");
-                if (type != NULL)
-                        is_remote = g_strv_contains (remote_types, type);
-                else
-                        is_remote = FALSE;
-
-                g_object_unref (info);
-        } else {
-                is_remote = FALSE;
-        }
-
-  return is_remote;
+        return is_remote;
 }
 
 gboolean

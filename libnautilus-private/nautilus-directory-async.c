@@ -3951,6 +3951,7 @@ got_filesystem_info (FilesystemInfoState *state, GFileInfo *info)
 {
 	NautilusDirectory *directory;
 	NautilusFile *file;
+        char *filesystem_type;
 
 	/* careful here, info may be NULL */
 
@@ -3967,6 +3968,11 @@ got_filesystem_info (FilesystemInfoState *state, GFileInfo *info)
 			g_file_info_get_attribute_uint32 (info, G_FILE_ATTRIBUTE_FILESYSTEM_USE_PREVIEW);
 		file->details->filesystem_readonly = 
 			g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_FILESYSTEM_READONLY);
+                filesystem_type = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
+                if (g_strcmp0 (eel_ref_str_peek (file->details->filesystem_type), filesystem_type) != 0) {
+                        eel_ref_str_unref (file->details->filesystem_type);
+		        file->details->filesystem_type = eel_ref_str_get_unique (filesystem_type);
+                }
 	}
 	
 	nautilus_directory_async_state_changed (directory);
@@ -4038,7 +4044,8 @@ filesystem_info_start (NautilusDirectory *directory,
 
 	g_file_query_filesystem_info_async (location,
 					    G_FILE_ATTRIBUTE_FILESYSTEM_READONLY ","
-					    G_FILE_ATTRIBUTE_FILESYSTEM_USE_PREVIEW,
+					    G_FILE_ATTRIBUTE_FILESYSTEM_USE_PREVIEW ","
+                                            G_FILE_ATTRIBUTE_FILESYSTEM_TYPE,
 					    G_PRIORITY_DEFAULT,
 					    state->cancellable, 
 					    query_filesystem_info_callback, 
