@@ -707,8 +707,7 @@ nautilus_progress_info_get_total_elapsed_time (NautilusProgressInfo *info)
         gdouble elapsed_time;
 
         G_LOCK (progress_info);
-        elapsed_time = info->elapsed_time + g_timer_elapsed (info->progress_timer,
-                                                             NULL);
+        elapsed_time = g_timer_elapsed (info->progress_timer, NULL);
         G_UNLOCK (progress_info);
 
         return elapsed_time;
