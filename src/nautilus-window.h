@@ -112,8 +112,6 @@ NautilusWindowSlot * nautilus_window_get_active_slot       (NautilusWindow *wind
 void                 nautilus_window_set_active_slot       (NautilusWindow    *window,
                                                             NautilusWindowSlot *slot);
 GList *              nautilus_window_get_slots             (NautilusWindow *window);
-NautilusWindowSlot * nautilus_window_open_slot             (NautilusWindow *window,
-                                                            NautilusWindowOpenFlags flags);
 void                 nautilus_window_slot_close            (NautilusWindow *window,
                                                             NautilusWindowSlot *slot);
 

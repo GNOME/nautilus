@@ -490,6 +490,71 @@ on_slot_loading_changed (NautilusWindowSlot *slot,
                 on_location_changed (window);
 }
 
+static void
+notebook_switch_page_cb (GtkNotebook    *notebook,
+			 GtkWidget      *page,
+			 unsigned int    page_num,
+			 NautilusWindow *window)
+{
+	NautilusWindowSlot *slot;
+	GtkWidget *widget;
+
+	widget = gtk_notebook_get_nth_page (GTK_NOTEBOOK (window->priv->notebook), page_num);
+	g_assert (widget != NULL);
+
+	/* find slot corresponding to the target page */
+	slot = NAUTILUS_WINDOW_SLOT (widget);
+	g_assert (slot != NULL);
+
+	nautilus_window_set_active_slot (nautilus_window_slot_get_window (slot),
+					 slot);
+}
+
+static void
+connect_slot (NautilusWindow     *window,
+              NautilusWindowSlot *slot)
+{
+        g_signal_connect (slot, "notify::loading",
+                          G_CALLBACK (on_slot_loading_changed), window);
+}
+
+static void
+disconnect_slot (NautilusWindow     *window,
+                 NautilusWindowSlot *slot)
+{
+        g_signal_handlers_disconnect_by_data (slot, window);
+}
+
+static NautilusWindowSlot *
+nautilus_window_open_slot (NautilusWindow             *window,
+			   NautilusWindowOpenFlags flags)
+{
+	NautilusWindowSlot *slot;
+
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	slot = nautilus_window_slot_new (window);
+        connect_slot (window, slot);
+
+	g_signal_handlers_block_by_func (window->priv->notebook,
+					 G_CALLBACK (notebook_switch_page_cb),
+					 window);
+	nautilus_notebook_add_tab (NAUTILUS_NOTEBOOK (window->priv->notebook),
+				   slot,
+				   (flags & NAUTILUS_WINDOW_OPEN_SLOT_APPEND) != 0 ?
+				   -1 :
+				   gtk_notebook_get_current_page (GTK_NOTEBOOK (window->priv->notebook)) + 1,
+				   FALSE);
+	g_signal_handlers_unblock_by_func (window->priv->notebook,
+					   G_CALLBACK (notebook_switch_page_cb),
+					   window);
+
+	window->priv->slots = g_list_append (window->priv->slots, slot);
+	g_signal_emit (window, signals[SLOT_ADDED], 0, slot);
+
+	return slot;
+}
+
 void
 nautilus_window_open_location_full (NautilusWindow          *window,
                                     GFile                   *location,
@@ -621,41 +686,6 @@ location_entry_location_changed_callback (GtkWidget      *widget,
 }
 
 static void
-notebook_switch_page_cb (GtkNotebook    *notebook,
-			 GtkWidget      *page,
-			 unsigned int    page_num,
-			 NautilusWindow *window)
-{
-	NautilusWindowSlot *slot;
-	GtkWidget *widget;
-
-	widget = gtk_notebook_get_nth_page (GTK_NOTEBOOK (window->priv->notebook), page_num);
-	g_assert (widget != NULL);
-
-	/* find slot corresponding to the target page */
-	slot = NAUTILUS_WINDOW_SLOT (widget);
-	g_assert (slot != NULL);
-
-	nautilus_window_set_active_slot (nautilus_window_slot_get_window (slot),
-					 slot);
-}
-
-static void
-connect_slot (NautilusWindow     *window,
-              NautilusWindowSlot *slot)
-{
-        g_signal_connect (slot, "notify::loading",
-                          G_CALLBACK (on_slot_loading_changed), window);
-}
-
-static void
-disconnect_slot (NautilusWindow     *window,
-                 NautilusWindowSlot *slot)
-{
-        g_signal_handlers_disconnect_by_data (slot, window);
-}
-
-static void
 close_slot (NautilusWindow     *window,
 	    NautilusWindowSlot *slot,
 	    gboolean            remove_from_notebook)
@@ -682,36 +712,6 @@ close_slot (NautilusWindow     *window,
 		/* this will call gtk_widget_destroy on the slot */
 		gtk_notebook_remove_page (notebook, page_num);
 	}
-}
-
-NautilusWindowSlot *
-nautilus_window_open_slot (NautilusWindow             *window,
-			   NautilusWindowOpenFlags flags)
-{
-	NautilusWindowSlot *slot;
-
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
-	slot = nautilus_window_slot_new (window);
-        connect_slot (window, slot);
-
-	g_signal_handlers_block_by_func (window->priv->notebook,
-					 G_CALLBACK (notebook_switch_page_cb),
-					 window);
-	nautilus_notebook_add_tab (NAUTILUS_NOTEBOOK (window->priv->notebook),
-				   slot,
-				   (flags & NAUTILUS_WINDOW_OPEN_SLOT_APPEND) != 0 ?
-				   -1 :
-				   gtk_notebook_get_current_page (GTK_NOTEBOOK (window->priv->notebook)) + 1,
-				   FALSE);
-	g_signal_handlers_unblock_by_func (window->priv->notebook,
-					   G_CALLBACK (notebook_switch_page_cb),
-					   window);
-
-	window->priv->slots = g_list_append (window->priv->slots, slot);
-	g_signal_emit (window, signals[SLOT_ADDED], 0, slot);
-
-	return slot;
 }
 
 void
