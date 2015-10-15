@@ -526,7 +526,7 @@ disconnect_slot (NautilusWindow     *window,
 }
 
 static NautilusWindowSlot *
-nautilus_window_open_slot (NautilusWindow             *window,
+nautilus_window_create_slot (NautilusWindow             *window,
 			   NautilusWindowOpenFlags flags)
 {
 	NautilusWindowSlot *slot;
@@ -575,7 +575,7 @@ nautilus_window_open_location_full (NautilusWindow          *window,
                 if (new_tab_at_end)
 		flags |= NAUTILUS_WINDOW_OPEN_SLOT_APPEND;
 
-		target_slot = nautilus_window_open_slot (window, flags);
+		target_slot = nautilus_window_create_slot (window, flags);
 	}
 
 	if (target_slot == NULL) {
@@ -2030,7 +2030,7 @@ nautilus_window_constructed (GObject *self)
 	 * some actions trigger UI widgets to show/hide. */
 	nautilus_window_initialize_actions (window);
 
-	slot = nautilus_window_open_slot (window, 0);
+	slot = nautilus_window_create_slot (window, 0);
 	nautilus_window_set_active_slot (window, slot);
 
 	window->priv->bookmarks_id =
