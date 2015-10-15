@@ -1,3 +1,13 @@
+Major changes in 3.18.1:
+* Multiple crash fixes (Carlos Soriano)
+* Use GtkPlacesSidebar hints to improve drag and drop experience (Carlos Soriano)
+* Fix remote filesystem check for google drive (Carlos Soriano)
+* Fix properties not being available on some file systems (Carlos Soriano)
+* Fix not being able to trash on some file systems (Carlos Soriano)
+* Fix calculation of operations button that was not showing soon enough in big operations (Carlos Soriano)
+* Get filesystem type asynchronously, so the view is never frozen (Carlos Soriano)
+* Make the delete shortcut also work for delete permanently on filesystem that does not support trash (Carlos Soriano)
+
 Major changes in 3.18.0:
 * Fixed various sidebar crashes (Carlos Soriano)
 * Use a correct file number for copy/move operations (Carlos Soriano)
