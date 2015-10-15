@@ -455,33 +455,29 @@ gtk_places_view_set_property (GObject      *object,
 }
 
 static gboolean
-is_removable_volume (GVolume *volume)
+is_external_volume (GVolume *volume)
 {
-  gboolean is_removable;
+  gboolean is_external;
   GDrive *drive;
-  GMount *mount;
   gchar *id;
 
   drive = g_volume_get_drive (volume);
-  mount = g_volume_get_mount (volume);
   id = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_CLASS);
 
-  is_removable = g_volume_can_eject (volume);
+  is_external = g_volume_can_eject (volume);
 
   /* NULL volume identifier only happens on removable devices */
-  is_removable |= !id;
+  is_external |= !id;
 
   if (drive)
-    is_removable |= g_drive_can_eject (drive);
-
-  if (mount)
-    is_removable |= (g_mount_can_eject (mount) && !g_mount_can_unmount (mount));
+    is_external |= g_drive_can_eject (drive) ||
+                   g_drive_is_media_removable (drive) ||
+                   g_drive_can_stop (drive);
 
   g_clear_object (&drive);
-  g_clear_object (&mount);
   g_free (id);
 
-  return is_removable;
+  return is_external;
 }
 
 typedef struct
@@ -558,7 +554,7 @@ populate_servers (GtkPlacesView *view)
 
       grid = g_object_new (GTK_TYPE_GRID,
                            "orientation", GTK_ORIENTATION_VERTICAL,
-                           "border-width", 6,
+                           "border-width", 3,
                            NULL);
 
       /* name of the connected uri, if any */
@@ -684,7 +680,6 @@ add_volume (GtkPlacesView *view,
             GVolume       *volume)
 {
   gboolean is_network;
-  GDrive *drive;
   GMount *mount;
   GFile *root;
   GIcon *icon;
@@ -692,22 +687,8 @@ add_volume (GtkPlacesView *view,
   gchar *name;
   gchar *path;
 
-  if (is_removable_volume (volume))
+  if (is_external_volume (volume))
     return;
-
-  drive = g_volume_get_drive (volume);
-
-  if (drive)
-    {
-      gboolean is_removable;
-
-      is_removable = g_drive_is_media_removable (drive) ||
-                     g_volume_can_eject (volume);
-      g_object_unref (drive);
-
-      if (is_removable)
-        return;
-    }
 
   identifier = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_CLASS);
   is_network = g_strcmp0 (identifier, "network") == 0;
@@ -798,10 +779,6 @@ add_drive (GtkPlacesView *view,
 {
   GList *volumes;
   GList *l;
-
-  /* Removable devices won't appear here */
-  if (g_drive_can_eject (drive))
-    return;
 
   volumes = g_drive_get_volumes (drive);
 
@@ -1849,12 +1826,20 @@ on_address_entry_text_changed (GtkPlacesView *view)
   priv = gtk_places_view_get_instance_private (view);
   supported = FALSE;
   supported_protocols = g_vfs_get_supported_uri_schemes (g_vfs_get_default ());
-
-  if (!supported_protocols)
-    return;
-
   address = g_strdup (gtk_entry_get_text (GTK_ENTRY (priv->address_entry)));
   scheme = g_uri_parse_scheme (address);
+
+  if (strlen (address) > 0)
+    gtk_entry_set_icon_from_icon_name (GTK_ENTRY (priv->address_entry),
+                                       GTK_ENTRY_ICON_SECONDARY,
+                                       "edit-clear-symbolic");
+  else
+    gtk_entry_set_icon_from_icon_name (GTK_ENTRY (priv->address_entry),
+                                       GTK_ENTRY_ICON_SECONDARY,
+                                       NULL);
+
+  if (!supported_protocols)
+    goto out;
 
   if (!scheme)
     goto out;
@@ -1865,6 +1850,16 @@ on_address_entry_text_changed (GtkPlacesView *view)
 out:
   gtk_widget_set_sensitive (priv->connect_button, supported);
   g_free (address);
+  g_free (scheme);
+}
+
+static void
+on_address_entry_clear_pressed (GtkPlacesView        *view,
+                                GtkEntryIconPosition  icon_pos,
+                                GdkEvent             *event,
+                                GtkEntry             *entry)
+{
+  gtk_entry_set_text (entry, "");
 }
 
 static void
@@ -1972,12 +1967,12 @@ listbox_header_func (GtkListBoxRow *row,
       GtkWidget *separator;
 
       header = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
+      gtk_widget_set_margin_top (header, 6);
 
       separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
 
       label = g_object_new (GTK_TYPE_LABEL,
                             "use_markup", TRUE,
-                            "margin-top", 6,
                             "margin-start", 12,
                             "label", text,
                             "xalign", 0.0f,
@@ -2241,6 +2236,7 @@ gtk_places_view_class_init (GtkPlacesViewClass *klass)
   gtk_widget_class_bind_template_child_private (widget_class, GtkPlacesView, stack);
 
   gtk_widget_class_bind_template_callback (widget_class, on_address_entry_text_changed);
+  gtk_widget_class_bind_template_callback (widget_class, on_address_entry_clear_pressed);
   gtk_widget_class_bind_template_callback (widget_class, on_connect_button_clicked);
   gtk_widget_class_bind_template_callback (widget_class, on_key_press_event);
   gtk_widget_class_bind_template_callback (widget_class, on_listbox_row_activated);
