@@ -401,7 +401,7 @@ struct {
 	    NULL
 	  }
 	},
-	{ N_("Pdf / Postscript"),
+	{ N_("PDF / PostScript"),
 	  { "application/pdf",
 	    "application/postscript",
 	    "application/x-dvi",
