@@ -796,7 +796,15 @@ nautilus_application_handle_file_args (NautilusApplication *self,
 
 	if (remaining) {
 		for (idx = 0; remaining[idx] != NULL; idx++) {
-			file = g_file_new_for_commandline_arg (remaining[idx]);
+                        gchar *cwd;
+
+                        g_variant_dict_lookup (options, "cwd", "s", &cwd);
+                        if (cwd == NULL) {
+                                file = g_file_new_for_commandline_arg (remaining[idx]);
+                        } else {
+                                file = g_file_new_for_commandline_arg_and_cwd (remaining[idx], cwd);
+                                g_free (cwd);
+                        }
 			g_ptr_array_add (file_array, file);
 		}
 	} else if (g_variant_dict_contains (options, "new-window")) {
@@ -1216,6 +1224,23 @@ nautilus_application_window_removed (GtkApplication *app,
 	}
 }
 
+/* Manage the local instance command line options. This is only necessary to
+ * resolv correctly relative paths, since if the main instance resolv them in
+ * command_line, it will do it with its current cwd, which may not be correct for the
+ * non main GApplication instance */
+static gint
+nautilus_application_handle_local_options (GApplication *app,
+                                           GVariantDict *options)
+{
+  gchar *cwd;
+
+  cwd = g_get_current_dir ();
+  g_variant_dict_insert (options, "cwd", "s", cwd);
+  g_free (cwd);
+
+  return -1;
+}
+
 static void
 nautilus_application_class_init (NautilusApplicationClass *class)
 {
@@ -1234,6 +1259,7 @@ nautilus_application_class_init (NautilusApplicationClass *class)
 	application_class->dbus_unregister = nautilus_application_dbus_unregister;
 	application_class->open = nautilus_application_open;
 	application_class->command_line = nautilus_application_command_line;
+	application_class->handle_local_options = nautilus_application_handle_local_options;
 
 	gtkapp_class = GTK_APPLICATION_CLASS (class);
 	gtkapp_class->window_added = nautilus_application_window_added;
