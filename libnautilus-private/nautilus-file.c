@@ -3742,8 +3742,9 @@ nautilus_file_peek_display_name (NautilusFile *file)
 			g_free (escaped_name);
 		}
 	}
-	
-	return eel_ref_str_peek (file->details->display_name);
+
+	return file->details->display_name ?
+		eel_ref_str_peek (file->details->display_name) : "";
 }
 
 char *
