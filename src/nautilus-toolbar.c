@@ -663,8 +663,14 @@ on_operations_icon_draw (GtkWidget       *widget,
         guint width;
         guint height;
         gboolean all_cancelled;
-        GdkRGBA background = {.red = 0, .green = 0, .blue = 0, .alpha = 0.2 };
-        GdkRGBA foreground = {.red = 0, .green = 0, .blue = 0, .alpha = 0.7 };
+        GdkRGBA background;
+        GdkRGBA foreground;
+        GtkStyleContext *style_context;
+
+        style_context = gtk_widget_get_style_context (widget);
+        gtk_style_context_get_color (style_context, gtk_widget_get_state_flags (widget), &foreground);
+        background = foreground;
+        background.alpha *= 0.3;
 
         all_cancelled = TRUE;
         progress_infos = get_filtered_progress_infos (self);
