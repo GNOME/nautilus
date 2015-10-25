@@ -455,6 +455,35 @@ action_view_mode (GSimpleAction *action,
 }
 
 static void
+action_func_key_press (GSimpleAction *action,
+		  GVariant      *value,
+		  gpointer       user_data)
+{
+	NautilusWindow *window = user_data;
+	//Get the func key number
+	gint16 num = g_variant_get_int32 (value);
+	char scripts_path[] = "";
+	//Get the current directory path
+	GtkWidget *entry = nautilus_toolbar_get_location_entry(nautilus_window_get_toolbar(window));
+	const char* current_dir = gtk_editable_get_chars (GTK_EDITABLE (NAUTILUS_LOCATION_ENTRY (entry)), 0, -1);
+    //Get the home of the user
+	char home[500];
+	strncpy(home,g_get_home_dir(),sizeof(home));
+	//Run the script in the folder scripts_path with the name Fi.sh where i is the number of the pressed func key
+	char script_name[] = "/.config/nautilus/func-scripts/Fi.sh \"";
+	script_name[32] = num+'0'; //convert num into a char
+	//Prepare the command to run appending the current path as parameter
+	int buf_len = 2000;
+	char *cmd = (char*)malloc(sizeof(char)*buf_len);
+	int home_len = strlen(home);
+	int script_name_len = sizeof(script_name);
+	strncpy(cmd,home,home_len);
+	strcat(strncat(strncat(cmd,script_name,script_name_len),current_dir,(buf_len-script_name_len-home_len-1)),"\"");
+	g_spawn_command_line_sync(cmd, stdout, stderr, 0, NULL);
+	free(cmd);
+}
+
+static void
 undo_manager_changed (NautilusWindow *window)
 {
 	NautilusToolbar *toolbar;
@@ -527,6 +556,7 @@ const GActionEntry win_entries[] = {
 	{ "prompt-root-location", action_prompt_for_location_root },
 	{ "prompt-home-location", action_prompt_for_location_home },
 	{ "go-to-tab", NULL, "i", "0", action_go_to_tab },
+	{ "func-key", NULL, "i", "0", action_func_key_press },
 };
 
 static void
@@ -575,6 +605,15 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 	nautilus_application_add_accelerator (app, "win.prompt-home-location", "asciitilde");
 	nautilus_application_add_accelerator (app, "win.action-menu", "F10");
 
+	/* For all the function keys (F1-F12) */
+	for (i = 1; i < 12; ++i) {
+		g_snprintf(detailed_action, sizeof (detailed_action), "win.func-key(%i)", i);
+		g_snprintf(accel, sizeof (accel), "F%i", i);
+		nautilus_application_add_accelerator (app, detailed_action, accel);
+	}
+	
+    memset(detailed_action,0,sizeof(detailed_action));
+    
 	/* Alt+N for the first 9 tabs */
 	for (i = 0; i < 9; ++i) {
 		g_snprintf(detailed_action, sizeof (detailed_action), "win.go-to-tab(%i)", i);
