@@ -460,12 +460,10 @@ action_func_key_press (GSimpleAction *action,
 		  gpointer       user_data)
 {
 	NautilusWindow *window = user_data;
+
 	//Get the func key number
 	gint16 num = g_variant_get_int32 (value);
 	char scripts_path[] = "";
-	//Get the current directory path
-	GtkWidget *entry = nautilus_toolbar_get_location_entry(nautilus_window_get_toolbar(window));
-	const char* current_dir = gtk_editable_get_chars (GTK_EDITABLE (NAUTILUS_LOCATION_ENTRY (entry)), 0, -1);
         //Get the home of the user
 	char home[500];
 	strncpy(home,g_get_home_dir(),sizeof(home));
@@ -480,9 +478,42 @@ action_func_key_press (GSimpleAction *action,
 	strncpy(cmd,home,home_len);
 	strncat(cmd,script_name,script_name_len);
 	if( access( cmd, F_OK ) != -1 ) { //if file exists
+		//Get the current directory path
+		GtkWidget *entry = nautilus_toolbar_get_location_entry(nautilus_window_get_toolbar(window));
+		const char* current_dir = gtk_editable_get_chars (GTK_EDITABLE (NAUTILUS_LOCATION_ENTRY (entry)), 0, -1);
+		//Pass current path as first argument
+		int current_dir_len = strlen(current_dir);
+		int max_len=buf_len-script_name_len-home_len; //Free space
+		int t = buf_len-max_len; //Non free space
+		while (current_dir_len+3 > max_len){
+			buf_len = buf_len*2;
+			cmd = (char*)realloc(cmd,sizeof(char)*buf_len);
+			max_len = buf_len-t;
+		}
 		strcat(cmd," \"");
-		strncat(cmd,current_dir,(buf_len-script_name_len-home_len-3));
+		strncat(cmd,current_dir,max_len-2);
 		strcat(cmd,"\"");
+		max_len = max_len-current_dir_len-3;
+		//The next arguments will be the selected files in the folder
+		NautilusView *view = nautilus_window_slot_get_current_view(nautilus_window_get_active_slot(window));
+		GList *files = nautilus_view_get_selection(view);
+		char *file_name = NULL;
+		int file_name_len = 0;
+		while (files != NULL) {
+			file_name = nautilus_file_get_name((NautilusFile*)files->data);
+			file_name_len = strlen(file_name);
+			t = buf_len-max_len;
+			while (file_name_len+3 > max_len) {
+				buf_len = buf_len*2;
+				cmd = (char*)realloc(cmd,sizeof(char)*buf_len);
+				max_len = buf_len-t;
+			}
+			strcat(cmd," \"");
+			strncat(cmd,file_name,max_len-2);
+			strcat(cmd,"\"");
+			max_len = max_len-file_name_len-3;
+			files=g_list_next(files);
+		}
 		g_spawn_command_line_sync(cmd, stdout, stderr, 0, NULL);
 	}
 	free(cmd);
