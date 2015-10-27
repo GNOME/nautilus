@@ -470,7 +470,7 @@ action_func_key_press (GSimpleAction *action,
 	char home[500];
 	strncpy(home,g_get_home_dir(),sizeof(home));
 	//Run the script in the folder scripts_path with the name Fi.sh where i is the number of the pressed func key
-	char script_name[] = "/.config/nautilus/func-scripts/Fi \"";
+	char script_name[] = "/.config/nautilus/func-scripts/Fi";
 	script_name[32] = num+'0'; //convert num into a char
 	//Prepare the command to run appending the current path as parameter
 	int buf_len = 2000;
@@ -478,8 +478,13 @@ action_func_key_press (GSimpleAction *action,
 	int home_len = strlen(home);
 	int script_name_len = sizeof(script_name);
 	strncpy(cmd,home,home_len);
-	strcat(strncat(strncat(cmd,script_name,script_name_len),current_dir,(buf_len-script_name_len-home_len-1)),"\"");
-	g_spawn_command_line_sync(cmd, stdout, stderr, 0, NULL);
+	strncat(cmd,script_name,script_name_len);
+	if( access( cmd, F_OK ) != -1 ) { //if file exists
+		strcat(cmd," \"");
+		strncat(cmd,current_dir,(buf_len-script_name_len-home_len-3));
+		strcat(cmd,"\"");
+		g_spawn_command_line_sync(cmd, stdout, stderr, 0, NULL);
+	}
 	free(cmd);
 }
 
