@@ -466,7 +466,7 @@ action_func_key_press (GSimpleAction *action,
 	//Get the current directory path
 	GtkWidget *entry = nautilus_toolbar_get_location_entry(nautilus_window_get_toolbar(window));
 	const char* current_dir = gtk_editable_get_chars (GTK_EDITABLE (NAUTILUS_LOCATION_ENTRY (entry)), 0, -1);
-    //Get the home of the user
+        //Get the home of the user
 	char home[500];
 	strncpy(home,g_get_home_dir(),sizeof(home));
 	//Run the script in the folder scripts_path with the name Fi.sh where i is the number of the pressed func key
