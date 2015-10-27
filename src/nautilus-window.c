@@ -470,7 +470,7 @@ action_func_key_press (GSimpleAction *action,
 	char home[500];
 	strncpy(home,g_get_home_dir(),sizeof(home));
 	//Run the script in the folder scripts_path with the name Fi.sh where i is the number of the pressed func key
-	char script_name[] = "/.config/nautilus/func-scripts/Fi.sh \"";
+	char script_name[] = "/.config/nautilus/func-scripts/Fi \"";
 	script_name[32] = num+'0'; //convert num into a char
 	//Prepare the command to run appending the current path as parameter
 	int buf_len = 2000;
