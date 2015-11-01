@@ -56,6 +56,7 @@ typedef gboolean (* NautilusWindowGoToCallback) (NautilusWindow *window,
 
 #include "nautilus-view.h"
 #include "nautilus-window-slot.h"
+#include "stdlib.h"
 
 #define NAUTILUS_TYPE_WINDOW nautilus_window_get_type()
 #define NAUTILUS_WINDOW(obj) \
@@ -71,6 +72,8 @@ typedef gboolean (* NautilusWindowGoToCallback) (NautilusWindow *window,
 
 #define NAUTILUS_WINDOW_SIDEBAR_PLACES "places"
 #define NAUTILUS_WINDOW_SIDEBAR_TREE "tree"
+
+#define SHORTCUTS_PATH "/.config/nautilus/shortcuts"
 
 /* window geometry */
 /* Min values are very small, and a Nautilus window at this tiny size is *almost*

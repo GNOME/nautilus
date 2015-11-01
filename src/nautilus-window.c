@@ -454,69 +454,49 @@ action_view_mode (GSimpleAction *action,
 	g_simple_action_set_state (action, value);
 }
 
+
 static void
-action_func_key_press (GSimpleAction *action,
+action_custom_key_press (GSimpleAction *action,
 		  GVariant      *value,
 		  gpointer       user_data)
 {
 	NautilusWindow *window = user_data;
-
-	//Get the func key number
-	gint16 num = g_variant_get_int32 (value);
-	char scripts_path[] = "";
-        //Get the home of the user
-	char home[500];
-	strncpy(home,g_get_home_dir(),sizeof(home));
-	//Run the script in the folder scripts_path with the name Fi.sh where i is the number of the pressed func key
-	char script_name[] = "/.config/nautilus/func-scripts/Fi";
-	script_name[32] = num+'0'; //convert num into a char
-	//Prepare the command to run appending the current path as parameter
-	int buf_len = 2000;
-	char *cmd = (char*)malloc(sizeof(char)*buf_len);
-	int home_len = strlen(home);
-	int script_name_len = sizeof(script_name);
-	strncpy(cmd,home,home_len);
-	strncat(cmd,script_name,script_name_len);
-	if( access( cmd, F_OK ) != -1 ) { //if file exists
-		//Get the current directory path
-		GtkWidget *entry = nautilus_toolbar_get_location_entry(nautilus_window_get_toolbar(window));
-		const char* current_dir = gtk_editable_get_chars (GTK_EDITABLE (NAUTILUS_LOCATION_ENTRY (entry)), 0, -1);
-		//Pass current path as first argument
-		int current_dir_len = strlen(current_dir);
-		int max_len=buf_len-script_name_len-home_len; //Free space
-		int t = buf_len-max_len; //Non free space
-		while (current_dir_len+3 > max_len){
-			buf_len = buf_len*2;
-			cmd = (char*)realloc(cmd,sizeof(char)*buf_len);
-			max_len = buf_len-t;
-		}
-		strcat(cmd," \"");
-		strncat(cmd,current_dir,max_len-2);
-		strcat(cmd,"\"");
-		max_len = max_len-current_dir_len-3;
-		//The next arguments will be the selected files in the folder
-		NautilusView *view = nautilus_window_slot_get_current_view(nautilus_window_get_active_slot(window));
-		GList *files = nautilus_view_get_selection(view);
-		char *file_name = NULL;
-		int file_name_len = 0;
-		while (files != NULL) {
-			file_name = nautilus_file_get_name((NautilusFile*)files->data);
-			file_name_len = strlen(file_name);
-			t = buf_len-max_len;
-			while (file_name_len+3 > max_len) {
-				buf_len = buf_len*2;
-				cmd = (char*)realloc(cmd,sizeof(char)*buf_len);
-				max_len = buf_len-t;
-			}
-			strcat(cmd," \"");
-			strncat(cmd,file_name,max_len-2);
-			strcat(cmd,"\"");
-			max_len = max_len-file_name_len-3;
-			files=g_list_next(files);
-		}
-		g_spawn_command_line_sync(cmd, stdout, stderr, 0, NULL);
-	}
-	free(cmd);
+	const gchar *cmd =  g_variant_get_string (value, NULL);
+	//%d will be replaced by the path of the current directory
+    char *p = strstr(cmd, "%d");
+	if (p && !strstr(p+2,"%d")) { //Only one %d is allowed
+        GtkWidget *entry = nautilus_toolbar_get_location_entry((NautilusToolbar*)nautilus_window_get_toolbar(window));
+        const char* current_dir = gtk_editable_get_chars (GTK_EDITABLE (NAUTILUS_LOCATION_ENTRY (entry)), 0, -1);
+        cmd = g_regex_replace(g_regex_new("%d",0,0,NULL), cmd, -1, 0, current_dir, 0, NULL);
+    }
+    //%f will be replaced by the selected files in the folder
+    p = strstr(cmd, "%f");
+    if (p && !strstr(p+2, "%f")) { //Only one %f is allowed
+        NautilusView *view = nautilus_window_slot_get_current_view(nautilus_window_get_active_slot(window));
+        GList *files = nautilus_view_get_selection(view);
+        char *file_name = NULL;
+        int file_name_len = 0;
+        int t,max_len = 0, buf_len = 2000;
+        char *all_files = (char*)malloc(sizeof(char)*buf_len);
+        all_files[0]='\0';
+        while (files != NULL) {
+            file_name = nautilus_file_get_name((NautilusFile*)files->data);
+            file_name_len = strlen(file_name);
+                t = buf_len-max_len;
+                while (file_name_len+3 > max_len) {
+                    buf_len = buf_len*2;
+                    all_files = (char*)realloc(all_files,sizeof(char)*buf_len);
+                    max_len = buf_len-t;
+                }
+                strcat(all_files," \"");
+                strncat(all_files,file_name,max_len-2);
+                strcat(all_files,"\"");
+                max_len = max_len-file_name_len-3;
+                files=g_list_next(files);
+        }
+        cmd = g_regex_replace(g_regex_new("%f",0,0,NULL), cmd, -1, 0, all_files, 0, NULL);
+    }
+	g_spawn_command_line_async(cmd, NULL);
 }
 
 static void
@@ -592,8 +572,30 @@ const GActionEntry win_entries[] = {
 	{ "prompt-root-location", action_prompt_for_location_root },
 	{ "prompt-home-location", action_prompt_for_location_home },
 	{ "go-to-tab", NULL, "i", "0", action_go_to_tab },
-	{ "func-key", NULL, "i", "0", action_func_key_press },
+    { "custom-key-press", NULL, "s", "''", action_custom_key_press },
 };
+
+static void
+nautilus_load_custom_shortcuts(GApplication *app){ 
+    gchar *path = g_strconcat(g_get_home_dir(),SHORTCUTS_PATH,NULL);
+    if(( access(path, R_OK) != -1 ) && ( access(path, W_OK) == -1) ) { //Check permissions 
+        FILE *fp = fopen(path, "r");
+        char *line = (char*)malloc(sizeof(char)*500);
+        size_t line_len = 400;
+        char *shortcut, *cmd;
+        gchar *detailed_action;
+        while (getline(&line,&line_len,fp) > 0) {
+		    shortcut = strtok(line," ");
+            cmd = strtok(NULL,""); //rest of the string
+            cmd[strcspn(cmd, "\n")] = '\0';
+            cmd = g_regex_replace(g_regex_new("'",0,0,NULL), cmd, -1, 0, "\"", 0, NULL);
+            detailed_action = g_strconcat("win.custom-key-press('",cmd,"')",NULL);
+		    nautilus_application_add_accelerator (app, detailed_action, shortcut);
+        }
+        fclose(fp);
+    }
+    g_free(path);
+}
 
 static void
 nautilus_window_initialize_actions (NautilusWindow *window)
@@ -614,8 +616,8 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 					 win_entries, G_N_ELEMENTS (win_entries),
 					 window);
 
-	app = g_application_get_default ();
-	nautilus_application_add_accelerator (app, "win.back", "<alt>Left");
+	app = g_application_get_default ();	
+    nautilus_application_add_accelerator (app, "win.back", "<alt>Left");
 	nautilus_application_add_accelerator (app, "win.forward", "<alt>Right");
 	nautilus_application_add_accelerator (app, "win.enter-location", "<control>l");
 	nautilus_application_add_accelerator (app, "win.new-tab", "<control>t");
@@ -626,7 +628,7 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 
         /* Special case reload, since users are used to use two shortcuts instead of one */
 	gtk_application_set_accels_for_action (GTK_APPLICATION (app), "win.reload", reload_accels);
-
+    nautilus_load_custom_shortcuts(app);
 	nautilus_application_add_accelerator (app, "win.undo", "<control>z");
 	nautilus_application_add_accelerator (app, "win.redo", "<shift><control>z");
 	/* Only accesible by shorcuts */
@@ -640,15 +642,6 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 	nautilus_application_add_accelerator (app, "win.prompt-root-location", "slash");
 	nautilus_application_add_accelerator (app, "win.prompt-home-location", "asciitilde");
 	nautilus_application_add_accelerator (app, "win.action-menu", "F10");
-
-	/* For all the function keys (F1-F12) */
-	for (i = 1; i < 12; ++i) {
-		g_snprintf(detailed_action, sizeof (detailed_action), "win.func-key(%i)", i);
-		g_snprintf(accel, sizeof (accel), "F%i", i);
-		nautilus_application_add_accelerator (app, detailed_action, accel);
-	}
-	
-    memset(detailed_action,0,sizeof(detailed_action));
     
 	/* Alt+N for the first 9 tabs */
 	for (i = 0; i < 9; ++i) {
@@ -656,8 +649,8 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 		g_snprintf(accel, sizeof (accel), "<alt>%i", i + 1);
 		nautilus_application_add_accelerator (app, detailed_action, accel);
 	}
-
-	action = g_action_map_lookup_action (G_ACTION_MAP (app), "show-hide-sidebar");
+	
+    action = g_action_map_lookup_action (G_ACTION_MAP (app), "show-hide-sidebar");
 	state = g_action_get_state (action);
 	if (g_variant_get_boolean (state))
 		nautilus_window_show_sidebar (window);
@@ -2034,7 +2027,7 @@ setup_notebook (NautilusWindow *window)
 
 static void
 nautilus_window_constructed (GObject *self)
-{
+{ 
 	NautilusWindow *window;
 	NautilusWindowSlot *slot;
 	NautilusApplication *application;
