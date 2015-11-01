@@ -650,7 +650,7 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 		nautilus_application_add_accelerator (app, detailed_action, accel);
 	}
 	
-    action = g_action_map_lookup_action (G_ACTION_MAP (app), "show-hide-sidebar");
+	action = g_action_map_lookup_action (G_ACTION_MAP (app), "show-hide-sidebar");
 	state = g_action_get_state (action);
 	if (g_variant_get_boolean (state))
 		nautilus_window_show_sidebar (window);
