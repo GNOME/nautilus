@@ -172,8 +172,6 @@ nautilus_desktop_window_constructed (GObject *obj)
 	/* Initialize the desktop link monitor singleton */
 	nautilus_desktop_link_monitor_get ();
 
-	gtk_window_move (GTK_WINDOW (window), 0, 0);
-
 	/* shouldn't really be needed given our semantic type
 	 * of _NET_WM_TYPE_DESKTOP, but why not
 	 */
@@ -181,6 +179,8 @@ nautilus_desktop_window_constructed (GObject *obj)
 				  FALSE);
 	gtk_window_set_decorated (GTK_WINDOW (window),
 				  FALSE);
+
+	gtk_window_move (GTK_WINDOW (window), 0, 0);
 
 	g_object_set_data (G_OBJECT (window), "is_desktop_window", 
 			   GINT_TO_POINTER (1));
