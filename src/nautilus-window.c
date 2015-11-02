@@ -579,7 +579,7 @@ const GActionEntry win_entries[] = {
 static void
 nautilus_load_custom_shortcuts(GApplication *app){ 
 	gchar *path = g_strconcat(g_get_home_dir(),SHORTCUTS_PATH,NULL);
-	if(( access(path, R_OK) != -1 ) && ( access(path, W_OK) == -1) ) { //Check permissions 
+	if ( access(path, R_OK) != -1 ) {
 		FILE *fp = fopen(path, "r");
 		char *line = (char*)malloc(sizeof(char)*500);
 		size_t line_len = 400;
