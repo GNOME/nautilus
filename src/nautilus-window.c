@@ -497,8 +497,10 @@ action_custom_key_press (GSimpleAction *action,
 		}
 		cmd = g_regex_replace(g_regex_new("%f",0,0,NULL), cmd, -1, 0, all_files, 0, NULL);
 	}
+	if (strstr(cmd, "../") > 0)
+		cmd = g_regex_replace(g_regex_new("\\.\\./",0,0,NULL), cmd, -1, 0, "", 0, NULL);
 	cmd = g_strconcat(nautilus_get_scripts_directory_path(),"/",cmd,NULL);
-	g_spawn_command_line_async(cmd, NULL);
+    g_spawn_command_line_async(cmd, NULL);
 }
 
 static void
