@@ -483,17 +483,17 @@ action_custom_key_press (GSimpleAction *action,
 		while (files != NULL) {
 			file_name = nautilus_file_get_name((NautilusFile*)files->data);
 			file_name_len = strlen(file_name);
-            while (file_name_len+3 > max_len) {
-                t = buf_len-max_len; //Already used space
-                buf_len = buf_len*2;
-                all_files = (char*)realloc(all_files,sizeof(char)*buf_len);
-                max_len = buf_len-t;
-            }
-            strcat(all_files,"\"");
-            strncat(all_files,file_name,max_len-3);
-            strcat(all_files,"\" ");
-            max_len = max_len-file_name_len-3;
-            files=g_list_next(files);
+			while (file_name_len+3 > max_len) {
+				t = buf_len-max_len; //Already used space
+				buf_len = buf_len*2;
+				all_files = (char*)realloc(all_files,sizeof(char)*buf_len);
+				max_len = buf_len-t;
+			}
+			strcat(all_files,"\"");
+			strncat(all_files,file_name,max_len-3);
+			strcat(all_files,"\" ");
+			max_len = max_len-file_name_len-3;
+			files=g_list_next(files);
 		}
 		cmd = g_regex_replace(g_regex_new("%f",0,0,NULL), cmd, -1, 0, all_files, 0, NULL);
 	}
@@ -583,20 +583,19 @@ nautilus_load_custom_shortcuts(GApplication *app){
 		FILE *fp = fopen(path, "r");
 		char *line = (char*)malloc(sizeof(char)*500);
 		size_t line_len = 400;
-        ssize_t read;
+		ssize_t read;
 		char *shortcut, *cmd;
 		gchar *detailed_action;
 		while ((read = getline(&line,&line_len,fp)) > 0) {
-            line[read-1]='\0'; //Remove the new line at the end
-            cmd = strstr(line," ");
-            if (cmd > 0) {
-                cmd[0] = '\0';
-                shortcut = line;
-                cmd+=1;
-                cmd = g_regex_replace(g_regex_new("'",0,0,NULL), cmd, -1, 0, "\"", 0, NULL);
-                detailed_action = g_strconcat("win.custom-key-press('",cmd,"')",NULL);
-                nautilus_application_add_accelerator (app, detailed_action, shortcut);
-            }
+			line[read-1]='\0'; //Remove the new line at the end
+			cmd = strstr(line," ");
+			if (cmd > 0) {
+				cmd[0] = '\0';
+				shortcut = line;
+				cmd = g_regex_replace(g_regex_new("'",0,0,NULL), ++cmd, -1, 0, "\"", 0, NULL);
+				detailed_action = g_strconcat("win.custom-key-press('",cmd,"')",NULL);
+				nautilus_application_add_accelerator (app, detailed_action, shortcut);
+			}
 		}
 		fclose(fp);
 	}
