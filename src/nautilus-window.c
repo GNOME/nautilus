@@ -497,6 +497,7 @@ action_custom_key_press (GSimpleAction *action,
 		}
 		cmd = g_regex_replace(g_regex_new("%f",0,0,NULL), cmd, -1, 0, all_files, 0, NULL);
 	}
+	cmd = g_strconcat(nautilus_get_scripts_directory_path(),"/",cmd,NULL);
 	g_spawn_command_line_async(cmd, NULL);
 }
 
@@ -636,7 +637,6 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 	nautilus_application_add_accelerator (app, "win.undo", "<control>z");
 	nautilus_application_add_accelerator (app, "win.redo", "<shift><control>z");
 	/* Only accesible by shorcuts */
-	nautilus_load_custom_shortcuts(app);
 	nautilus_application_add_accelerator (app, "win.bookmark-current-location", "<control>d");
 	nautilus_application_add_accelerator (app, "win.up", "<alt>Up");
 	nautilus_application_add_accelerator (app, "win.go-home", "<alt>Home");
@@ -655,7 +655,9 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 		nautilus_application_add_accelerator (app, detailed_action, accel);
 	}
 	
-	action = g_action_map_lookup_action (G_ACTION_MAP (app), "show-hide-sidebar");
+	nautilus_load_custom_shortcuts(app);
+	
+    action = g_action_map_lookup_action (G_ACTION_MAP (app), "show-hide-sidebar");
 	state = g_action_get_state (action);
 	if (g_variant_get_boolean (state))
 		nautilus_window_show_sidebar (window);
