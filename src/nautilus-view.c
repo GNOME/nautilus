@@ -592,11 +592,6 @@ nautilus_view_get_selection (NautilusView *view)
 typedef struct {
 	NautilusFile *file;
 	NautilusView *directory_view;
-} ScriptLaunchParameters;
-
-typedef struct {
-	NautilusFile *file;
-	NautilusView *directory_view;
 } CreateTemplateParameters;
 
 static GList *
@@ -675,7 +670,7 @@ file_and_directory_hash  (gconstpointer  v)
 
 
 
-static ScriptLaunchParameters *
+ScriptLaunchParameters *
 script_launch_parameters_new (NautilusFile *file,
 			      NautilusView *directory_view)
 {
@@ -3946,8 +3941,8 @@ get_file_names_as_parameter_array (GList *selection,
 	parameters = g_new (char *, g_list_length (selection) + 1);
 
 	model_location = nautilus_directory_get_location (model);
-
-	for (node = selection, i = 0; node != NULL; node = node->next, i++) {
+	
+    for (node = selection, i = 0; node != NULL; node = node->next, i++) {
 		file = NAUTILUS_FILE (node->data);
 
 		if (!nautilus_file_is_local (file)) {
@@ -4100,7 +4095,7 @@ unset_script_environment_variables (void)
 	g_unsetenv ("NAUTILUS_SCRIPT_WINDOW_GEOMETRY");
 }
 
-static void
+void
 run_script (GSimpleAction *action,
             GVariant      *state,
             gpointer       user_data)
@@ -4311,6 +4306,10 @@ update_scripts_menu (NautilusView *view)
 	submenu = update_directory_in_scripts_menu (view, directory);
 	if (submenu != NULL) {
 		nautilus_gmenu_merge (view->details->selection_menu,
+				      submenu,
+				      "scripts-submenu",
+				      TRUE);
+		nautilus_gmenu_merge (view->details->background_menu,
 				      submenu,
 				      "scripts-submenu",
 				      TRUE);

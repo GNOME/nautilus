@@ -11,6 +11,19 @@
       <attribute name="action">view.new-document</attribute>
       <attribute name="hidden-when">action-disabled</attribute>
     </submenu>
+    <submenu>
+      <attribute name="id">scripts-submenu</attribute>
+      <attribute name="label" translatable="yes">_Scripts</attribute>
+      <attribute name="action">view.scripts</attribute>
+      <attribute name="hidden-when">action-disabled</attribute>
+      <section>
+        <item>
+          <attribute name="label" translatable="yes">_Open Scripts Folder</attribute>
+          <attribute name="action">view.open-scripts-folder</attribute>
+          <attribute name="hidden-when">action-disabled</attribute>
+        </item>
+      </section>
+    </submenu>
     <section>
       <item>
         <attribute name="label" translatable="yes">_Paste</attribute>

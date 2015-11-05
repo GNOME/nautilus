@@ -462,45 +462,12 @@ action_custom_key_press (GSimpleAction *action,
 {
 	NautilusWindow *window = user_data;
 	const gchar *cmd =  g_variant_get_string (value, NULL);
-	//%d will be replaced by the path of the current directory
-	char *p = strstr(cmd, "%d");
-	if (p && !strstr(p+2,"%d")) { //Only one %d is allowed
-		GtkWidget *entry = nautilus_toolbar_get_location_entry((NautilusToolbar*)nautilus_window_get_toolbar(window));
-		const char* current_dir = gtk_editable_get_chars (GTK_EDITABLE (NAUTILUS_LOCATION_ENTRY (entry)), 0, -1);
-		cmd = g_regex_replace(g_regex_new("%d",0,0,NULL), cmd, -1, 0, current_dir, 0, NULL);
-	}
-	//%f will be replaced by the selected files in the folder
-	p = strstr(cmd, "%f");
-	if (p && !strstr(p+2, "%f")) { //Only one %f is allowed
-		NautilusView *view = nautilus_window_slot_get_current_view(nautilus_window_get_active_slot(window));
-		GList *files = nautilus_view_get_selection(view);
-		char *file_name = NULL;
-		int file_name_len = 0;
-		int t, max_len, buf_len = 2000;
-		char *all_files = (char*)malloc(sizeof(char)*buf_len);
-		all_files[0]='\0';
-        max_len = buf_len;
-		while (files != NULL) {
-			file_name = nautilus_file_get_name((NautilusFile*)files->data);
-			file_name_len = strlen(file_name);
-			while (file_name_len+3 > max_len) {
-				t = buf_len-max_len; //Already used space
-				buf_len = buf_len*2;
-				all_files = (char*)realloc(all_files,sizeof(char)*buf_len);
-				max_len = buf_len-t;
-			}
-			strcat(all_files,"\"");
-			strncat(all_files,file_name,max_len-3);
-			strcat(all_files,"\" ");
-			max_len = max_len-file_name_len-3;
-			files=g_list_next(files);
-		}
-		cmd = g_regex_replace(g_regex_new("%f",0,0,NULL), cmd, -1, 0, all_files, 0, NULL);
-	}
+	NautilusView *view = nautilus_window_slot_get_current_view(nautilus_window_get_active_slot(window));
 	if (strstr(cmd, "../") > 0)
 		cmd = g_regex_replace(g_regex_new("\\.\\./",0,0,NULL), cmd, -1, 0, "", 0, NULL);
-	cmd = g_strconcat(nautilus_get_scripts_directory_path(),"/",cmd,NULL);
-    g_spawn_command_line_async(cmd, NULL);
+	cmd = g_strconcat("file://",nautilus_get_scripts_directory_path(),"/",cmd,NULL);
+	NautilusFile *file = nautilus_file_get_by_uri(cmd);
+	run_script(NULL,NULL,script_launch_parameters_new (file, view));
 }
 
 static void
