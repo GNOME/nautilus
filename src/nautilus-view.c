@@ -147,6 +147,8 @@ static GdkAtom copied_files_atom;
 static char *scripts_directory_uri = NULL;
 static int scripts_directory_uri_length;
 
+static GHashTable *script_accels = NULL;
+
 struct NautilusViewDetails
 {
 	NautilusWindowSlot *slot;
@@ -4189,6 +4191,11 @@ add_script_to_scripts_menus (NautilusView *view,
 	}
 
 	g_menu_append_item (menu, menu_item);
+    
+	gchar *shortcut = NULL;
+	if (shortcut = g_hash_table_lookup(script_accels,action_name)) {
+		nautilus_application_add_accelerator(g_application_get_default(),detailed_action_name,shortcut);       
+	}
 
 	g_free (name);
 	g_free (action_name);
@@ -4222,7 +4229,7 @@ directory_belongs_in_scripts_menu (const char *uri)
 
 static void
 nautilus_load_custom_accel_for_scripts(){
-	const gchar *path = g_strconcat(g_get_home_dir(),SHORTCUTS_PATH,NULL);
+	gchar *path = g_strconcat(g_get_home_dir(),SHORTCUTS_PATH,NULL);
 	gchar *contents;
 	GError *error = NULL;
 	if (g_file_get_contents(path, &contents, NULL, &error)) {
@@ -4232,8 +4239,8 @@ nautilus_load_custom_accel_for_scripts(){
 			gchar **result = g_strsplit(lines[i], " ", 2);
 			gchar *shortcut = g_strndup(result[0],MAX_SHORTCUT_LENGTH);
 			gchar *action_name = g_regex_replace(g_regex_new("'",0,0,NULL), result[1], -1, 0, "\"", 0, NULL);
-			gchar *full_action_name = nautilus_escape_action_name (action_name, "view.script_");
-			nautilus_application_add_accelerator(g_application_get_default(),full_action_name,shortcut);
+			gchar *full_action_name = nautilus_escape_action_name (action_name, "script_");
+			g_hash_table_insert(script_accels, full_action_name, shortcut);
 			g_free(action_name);
 			g_free(result);
 			g_free(contents);
@@ -4263,7 +4270,10 @@ update_directory_in_scripts_menu (NautilusView *view,
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NULL);
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 
-	file_list = nautilus_directory_get_file_list (directory);
+	if(script_accels == NULL) script_accels = g_hash_table_new(g_str_hash,g_str_equal);
+	nautilus_load_custom_accel_for_scripts();
+	
+    file_list = nautilus_directory_get_file_list (directory);
 	filtered = nautilus_file_list_filter_hidden (file_list, FALSE);
 	nautilus_file_list_free (file_list);
 	menu = g_menu_new ();
@@ -4303,8 +4313,6 @@ update_directory_in_scripts_menu (NautilusView *view,
 	}
 
 	nautilus_file_list_free (file_list);
-
-	nautilus_load_custom_accel_for_scripts();
 
 	if (!any_scripts) {
 		g_object_unref (menu);
