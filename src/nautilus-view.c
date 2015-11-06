@@ -4314,6 +4314,7 @@ update_directory_in_scripts_menu (NautilusView *view,
 }
 
 
+
 static void
 update_scripts_menu (NautilusView *view)
 {
