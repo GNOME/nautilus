@@ -67,11 +67,6 @@ struct NautilusView {
 	NautilusViewDetails *details;
 };
 
-typedef struct {                                                                                                                       
-    NautilusFile *file;
-    NautilusView *directory_view;
-} ScriptLaunchParameters;
-
 struct NautilusViewClass {
 	GtkScrolledWindowClass parent_class;
 
@@ -412,13 +407,5 @@ void		  nautilus_view_action_show_hidden_files   (NautilusView      *view,
 							    gboolean           show_hidden);
 
 GActionGroup *    nautilus_view_get_action_group           (NautilusView      *view);
-
-/* Functions to manage the scripts */
-void              run_script                               (GSimpleAction    *action,
-							    GVariant        *state,
-							    gpointer        user_data);
-ScriptLaunchParameters * script_launch_parameters_new      (NautilusFile       *file,
-							    NautilusView    *directory_view);
-
 
 #endif /* NAUTILUS_VIEW_H */

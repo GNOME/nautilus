@@ -454,22 +454,6 @@ action_view_mode (GSimpleAction *action,
 	g_simple_action_set_state (action, value);
 }
 
-
-static void
-action_custom_key_press (GSimpleAction *action,
-		  GVariant      *value,
-		  gpointer       user_data)
-{
-	NautilusWindow *window = user_data;
-	const gchar *cmd =  g_variant_get_string (value, NULL);
-	NautilusView *view = nautilus_window_slot_get_current_view(nautilus_window_get_active_slot(window));
-	if (strstr(cmd, "../") > 0)
-		cmd = g_regex_replace(g_regex_new("\\.\\./",0,0,NULL), cmd, -1, 0, "", 0, NULL);
-	cmd = g_strconcat("file://",nautilus_get_scripts_directory_path(),"/",cmd,NULL);
-	NautilusFile *file = nautilus_file_get_by_uri(cmd);
-	run_script(NULL,NULL,script_launch_parameters_new (file, view));
-}
-
 static void
 undo_manager_changed (NautilusWindow *window)
 {
@@ -543,34 +527,7 @@ const GActionEntry win_entries[] = {
 	{ "prompt-root-location", action_prompt_for_location_root },
 	{ "prompt-home-location", action_prompt_for_location_home },
 	{ "go-to-tab", NULL, "i", "0", action_go_to_tab },
-	{ "custom-key-press", NULL, "s", "''", action_custom_key_press },
 };
-
-static void
-nautilus_load_custom_shortcuts(GApplication *app){ 
-	gchar *path = g_strconcat(g_get_home_dir(),SHORTCUTS_PATH,NULL);
-	if ( access(path, R_OK) != -1 ) {
-		FILE *fp = fopen(path, "r");
-		char *line = (char*)malloc(sizeof(char)*500);
-		size_t line_len = 400;
-		ssize_t read;
-		char *shortcut, *cmd;
-		gchar *detailed_action;
-		while ((read = getline(&line,&line_len,fp)) > 0) {
-			line[read-1]='\0'; //Remove the new line at the end
-			cmd = strstr(line," ");
-			if (cmd > 0) {
-				cmd[0] = '\0';
-				shortcut = line;
-				cmd = g_regex_replace(g_regex_new("'",0,0,NULL), ++cmd, -1, 0, "\"", 0, NULL);
-				detailed_action = g_strconcat("win.custom-key-press('",cmd,"')",NULL);
-				nautilus_application_add_accelerator (app, detailed_action, shortcut);
-			}
-		}
-		fclose(fp);
-	}
-	g_free(path);
-}
 
 static void
 nautilus_window_initialize_actions (NautilusWindow *window)
@@ -603,6 +560,7 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 
         /* Special case reload, since users are used to use two shortcuts instead of one */
 	gtk_application_set_accels_for_action (GTK_APPLICATION (app), "win.reload", reload_accels);
+
 	nautilus_application_add_accelerator (app, "win.undo", "<control>z");
 	nautilus_application_add_accelerator (app, "win.redo", "<shift><control>z");
 	/* Only accesible by shorcuts */
@@ -616,17 +574,15 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 	nautilus_application_add_accelerator (app, "win.prompt-root-location", "slash");
 	nautilus_application_add_accelerator (app, "win.prompt-home-location", "asciitilde");
 	nautilus_application_add_accelerator (app, "win.action-menu", "F10");
-    
+
 	/* Alt+N for the first 9 tabs */
 	for (i = 0; i < 9; ++i) {
 		g_snprintf(detailed_action, sizeof (detailed_action), "win.go-to-tab(%i)", i);
 		g_snprintf(accel, sizeof (accel), "<alt>%i", i + 1);
 		nautilus_application_add_accelerator (app, detailed_action, accel);
 	}
-	
-	nautilus_load_custom_shortcuts(app);
-	
-    action = g_action_map_lookup_action (G_ACTION_MAP (app), "show-hide-sidebar");
+
+	action = g_action_map_lookup_action (G_ACTION_MAP (app), "show-hide-sidebar");
 	state = g_action_get_state (action);
 	if (g_variant_get_boolean (state))
 		nautilus_window_show_sidebar (window);
@@ -2003,7 +1959,7 @@ setup_notebook (NautilusWindow *window)
 
 static void
 nautilus_window_constructed (GObject *self)
-{ 
+{
 	NautilusWindow *window;
 	NautilusWindowSlot *slot;
 	NautilusApplication *application;

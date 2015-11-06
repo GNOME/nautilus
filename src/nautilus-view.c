@@ -114,6 +114,9 @@
 #define MAX_MENU_LEVELS 5
 #define TEMPLATE_LIMIT 30
 
+#define SHORTCUTS_PATH "/.config/nautilus/shortcuts"
+#define MAX_SHORTCUT_LENGTH 30
+
 enum {
 	ADD_FILE,
 	BEGIN_FILE_CHANGES,
@@ -4162,13 +4165,13 @@ add_script_to_scripts_menus (NautilusView *view,
 
 	action = G_ACTION (g_simple_action_new (action_name, NULL));
 	
-	g_signal_connect_data (action, "activate",
+    g_signal_connect_data (action, "activate",
 			       G_CALLBACK (run_script),
 			       launch_parameters,
 			       (GClosureNotify)script_launch_parameters_free, 0);
 
 	g_action_map_add_action (G_ACTION_MAP (view->details->view_action_group), action);
-	
+
 	g_object_unref (action);
 	
 	detailed_action_name =  g_strconcat ("view.", action_name, NULL);
@@ -4270,6 +4273,8 @@ update_directory_in_scripts_menu (NautilusView *view,
 
 	nautilus_file_list_free (file_list);
 
+    nautilus_load_custom_accel_for_scripts();
+
 	if (!any_scripts) {
 		g_object_unref (menu);
 		menu = NULL;
@@ -4278,7 +4283,30 @@ update_directory_in_scripts_menu (NautilusView *view,
 	return menu;
 }
 
-
+static void
+nautilus_load_custom_accel_for_scripts(){
+	const gchar *path = g_strconcat(g_get_home_dir(),SHORTCUTS_PATH,NULL);
+	gchar *contents;
+	GError *error = NULL;
+	if (g_file_get_contents(path, &contents, NULL, &error)) {
+		gchar **lines = g_strsplit(contents, "\n", -1);
+		int i;
+		for(i=0; strstr(lines[i]," ") > 0; i++) {
+			gchar **result = g_strsplit(lines[i], " ", 2);
+			gchar *shortcut = g_strndup(result[0],MAX_SHORTCUT_LENGTH);
+			gchar *action_name = g_regex_replace(g_regex_new("'",0,0,NULL), result[1], -1, 0, "\"", 0, NULL);
+			gchar *full_action_name = nautilus_escape_action_name (action_name, "view.script_");
+			nautilus_application_add_accelerator(g_application_get_default(),full_action_name,shortcut);
+			g_free(action_name);
+			g_free(result);
+			g_free(contents);
+		}
+	} else
+		if (error != NULL) {
+			DEBUG ("Unable to open '%s', error message: %s", path, error->message);
+			g_clear_error (&error);
+		}
+}
 
 static void
 update_scripts_menu (NautilusView *view)
