@@ -4243,6 +4243,7 @@ nautilus_load_custom_accel_for_scripts(){
 			DEBUG ("Unable to open '%s', error message: %s", path, error->message);
 			g_clear_error (&error);
 		}
+	g_free(path);
 }
 
 static GMenu *
