@@ -4234,10 +4234,10 @@ nautilus_load_custom_accel_for_scripts(){
 	if (g_file_get_contents(path, &contents, NULL, &error)) {
 		gchar **lines = g_strsplit(contents, "\n", -1);
 		g_free(contents);
-        const int max_len = 100;
+		const int max_len = 100;
 		int i;
 		for(i=0; strstr(lines[i]," ") > 0; i++) {
-		    gchar **result = g_strsplit(lines[i], " ", 2);
+			gchar **result = g_strsplit(lines[i], " ", 2);
 			g_hash_table_insert(script_accels, g_strndup(result[1],max_len), g_strndup(result[0],max_len));
 			g_free(result);
 		}
