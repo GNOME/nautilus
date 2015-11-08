@@ -115,7 +115,6 @@
 #define TEMPLATE_LIMIT 30
 
 #define SHORTCUTS_PATH "/.config/nautilus/shortcuts"
-#define MAX_SHORTCUT_LENGTH 30
 
 enum {
 	ADD_FILE,
@@ -4193,7 +4192,7 @@ add_script_to_scripts_menus (NautilusView *view,
 	g_menu_append_item (menu, menu_item);
     
 	gchar *shortcut = NULL;
-	if (shortcut = g_hash_table_lookup(script_accels,action_name)) {
+	if (shortcut = g_hash_table_lookup(script_accels,name)) {
 		nautilus_application_add_accelerator(g_application_get_default(),detailed_action_name,shortcut);       
 	}
 
@@ -4234,16 +4233,13 @@ nautilus_load_custom_accel_for_scripts(){
 	GError *error = NULL;
 	if (g_file_get_contents(path, &contents, NULL, &error)) {
 		gchar **lines = g_strsplit(contents, "\n", -1);
+		g_free(contents);
+        const int max_len = 100;
 		int i;
 		for(i=0; strstr(lines[i]," ") > 0; i++) {
-			gchar **result = g_strsplit(lines[i], " ", 2);
-			gchar *shortcut = g_strndup(result[0],MAX_SHORTCUT_LENGTH);
-			gchar *action_name = g_regex_replace(g_regex_new("'",0,0,NULL), result[1], -1, 0, "\"", 0, NULL);
-			gchar *full_action_name = nautilus_escape_action_name (action_name, "script_");
-			g_hash_table_insert(script_accels, full_action_name, shortcut);
-			g_free(action_name);
+		    gchar **result = g_strsplit(lines[i], " ", 2);
+			g_hash_table_insert(script_accels, g_strndup(result[1],max_len), g_strndup(result[0],max_len));
 			g_free(result);
-			g_free(contents);
 		}
 	} else
 		if (error != NULL) {
