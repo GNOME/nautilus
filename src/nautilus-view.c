@@ -4227,26 +4227,26 @@ directory_belongs_in_scripts_menu (const char *uri)
 }
 
 static void
-nautilus_load_custom_accel_for_scripts(){
-	gchar *path = g_strconcat(g_get_home_dir(),SHORTCUTS_PATH,NULL);
+nautilus_load_custom_accel_for_scripts (){
+	gchar *path = g_strconcat (g_get_home_dir (), SHORTCUTS_PATH, NULL);
 	gchar *contents;
 	GError *error = NULL;
-	if (g_file_get_contents(path, &contents, NULL, &error)) {
-		gchar **lines = g_strsplit(contents, "\n", -1);
-		g_free(contents);
+	if (g_file_get_contents (path, &contents, NULL, &error)) {
+		gchar **lines = g_strsplit (contents, "\n", -1);
+		g_free (contents);
 		const int max_len = 100;
 		int i;
-		for(i=0; strstr(lines[i]," ") > 0; i++) {
-			gchar **result = g_strsplit(lines[i], " ", 2);
-			g_hash_table_insert(script_accels, g_strndup(result[1],max_len), g_strndup(result[0],max_len));
-			g_free(result);
+		for(i=0; strstr (lines[i]," ") > 0; i++) {
+			gchar **result = g_strsplit (lines[i], " ", 2);
+			g_hash_table_insert (script_accels, g_strndup (result[1], max_len), g_strndup (result[0], max_len));
+			g_free (result);
 		}
-	} else
-		if (error != NULL) {
-			DEBUG ("Unable to open '%s', error message: %s", path, error->message);
-			g_clear_error (&error);
-		}
-	g_free(path);
+		g_free (lines);
+	} else {
+		DEBUG ("Unable to open '%s', error message: %s", path, error->message);
+		g_clear_error (&error);
+	}
+	g_free (path);
 }
 
 static GMenu *
@@ -4266,10 +4266,12 @@ update_directory_in_scripts_menu (NautilusView *view,
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NULL);
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 
-	if(script_accels == NULL) script_accels = g_hash_table_new(g_str_hash,g_str_equal);
-	nautilus_load_custom_accel_for_scripts();
+	if(script_accels == NULL) {
+		script_accels = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+		nautilus_load_custom_accel_for_scripts ();
+	}
 	
-    file_list = nautilus_directory_get_file_list (directory);
+	file_list = nautilus_directory_get_file_list (directory);
 	filtered = nautilus_file_list_filter_hidden (file_list, FALSE);
 	nautilus_file_list_free (file_list);
 	menu = g_menu_new ();
