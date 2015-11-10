@@ -4192,8 +4192,8 @@ add_script_to_scripts_menus (NautilusView *view,
 	g_menu_append_item (menu, menu_item);
     
 	gchar *shortcut = NULL;
-	if (shortcut = g_hash_table_lookup(script_accels,name)) {
-		nautilus_application_add_accelerator(g_application_get_default(),detailed_action_name,shortcut);       
+	if (shortcut = g_hash_table_lookup (script_accels, name)) {
+		nautilus_application_add_accelerator (g_application_get_default(), detailed_action_name, shortcut);       
 	}
 
 	g_free (name);
@@ -4238,7 +4238,7 @@ nautilus_load_custom_accel_for_scripts (void)
 	if (g_file_get_contents (path, &contents, NULL, &error)) {
 		gchar **lines = g_strsplit (contents, "\n", -1);
 		g_free (contents);
-		for(i = 0; lines[i] && (strstr (lines[i], " ") > 0); i++) {
+		for (i = 0; lines[i] && (strstr (lines[i], " ") > 0); i++) {
 			gchar **result = g_strsplit (lines[i], " ", 2);
 			g_hash_table_insert (script_accels, g_strndup (result[1], max_len), g_strndup (result[0], max_len));
 			g_free (result);
