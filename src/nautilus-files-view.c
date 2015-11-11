@@ -4689,8 +4689,6 @@ nautilus_load_custom_accel_for_scripts (void)
 	const int max_len = 100;
 	int i;
 
-	g_print ("loading map\n");
-
 	path = g_build_filename (g_get_user_config_dir (), SHORTCUTS_PATH, NULL);
 
 	if (g_file_get_contents (path, &contents, NULL, &error)) {
