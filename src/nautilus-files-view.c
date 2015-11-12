@@ -1141,13 +1141,19 @@ nautilus_files_view_preview_files (NautilusFilesView *view,
                                    GArray            *locations)
 {
         gchar *uri;
-        guint xid;
+        guint xid = 0;
         GtkWidget *toplevel;
+        GdkWindow *window;
 
         uri = nautilus_file_get_uri (files->data);
         toplevel = gtk_widget_get_toplevel (GTK_WIDGET (view));
 
-        xid = gdk_x11_window_get_xid (gtk_widget_get_window (toplevel));
+#ifdef GDK_WINDOWING_X11
+        window = gtk_widget_get_window (toplevel);
+        if (GDK_IS_X11_WINDOW (window))
+          xid = gdk_x11_window_get_xid (gtk_widget_get_window (toplevel));
+#endif
+
         nautilus_previewer_call_show_file (uri, xid, TRUE);
 
         g_free (uri);
