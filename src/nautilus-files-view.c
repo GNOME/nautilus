@@ -115,6 +115,9 @@
 #define DUPLICATE_HORIZONTAL_ICON_OFFSET 70
 #define DUPLICATE_VERTICAL_ICON_OFFSET   30
 
+#define RENAME_ENTRY_MIN_CHARS 20
+#define RENAME_ENTRY_MAX_CHARS 35
+
 #define MAX_QUEUED_UPDATES 500
 
 #define MAX_MENU_LEVELS 5
@@ -2058,6 +2061,7 @@ nautilus_files_view_rename_file_popover_new (NautilusFilesView *view,
         GtkBuilder *builder;
         gint start_offset, end_offset;
         GdkRectangle *relative_to;
+        gint n_chars;
 
         if (view->details->rename_file_popover != NULL)
           return;
@@ -2109,6 +2113,9 @@ nautilus_files_view_rename_file_popover_new (NautilusFilesView *view,
         /* Select the name part withouth the file extension */
         eel_filename_get_rename_region (nautilus_file_get_display_name (target_file),
                                         &start_offset, &end_offset);
+        n_chars = g_utf8_strlen (nautilus_file_get_display_name (target_file), -1);
+        gtk_entry_set_width_chars (GTK_ENTRY (widget_data->name_entry),
+                                   MIN (MAX (n_chars, RENAME_ENTRY_MIN_CHARS), RENAME_ENTRY_MAX_CHARS));
         gtk_editable_select_region (GTK_EDITABLE (widget_data->name_entry),
                                     start_offset, end_offset);
 
