@@ -858,7 +858,7 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
 	g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 
 	gtk_widget_class_set_template_from_resource (widget_class,
-						     "/org/gnome/nautilus/ui/nautilus-toolbar-ui.ui");
+						     "/org/gnome/nautilus/ui/nautilus-toolbar.ui");
 
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, operations_button);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, operations_icon);
