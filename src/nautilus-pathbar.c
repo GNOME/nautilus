@@ -1469,7 +1469,6 @@ pop_up_pathbar_context_menu (NautilusPathBar *path_bar,
 {
 	if (file) {
 		schedule_pop_up_context_menu (path_bar, event, file);
-		nautilus_file_unref (file);
 	}
 }
 
