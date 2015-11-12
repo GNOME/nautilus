@@ -695,7 +695,7 @@ nautilus_bookmarks_window_constructed (GObject *object)
 
 	builder = gtk_builder_new ();
 	if (!gtk_builder_add_from_resource (builder,
-					    "/org/gnome/nautilus/nautilus-bookmarks-window.ui",
+					    "/org/gnome/nautilus/ui/nautilus-bookmarks-window.ui",
 					    &error)) {
 		g_object_unref (builder);
 

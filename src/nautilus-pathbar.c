@@ -303,7 +303,7 @@ nautilus_path_bar_init (NautilusPathBar *path_bar)
                                         G_ACTION_GROUP (path_bar->priv->action_group));
 
         /* Context menu */
-        builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-pathbar-context-menu.xml");
+        builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-pathbar-context-menu.ui");
         path_bar->priv->context_menu = g_object_ref (G_MENU (gtk_builder_get_object (builder, "pathbar-menu")));
         g_object_unref (builder);
 

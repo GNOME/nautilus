@@ -659,7 +659,7 @@ nautilus_file_management_properties_dialog_show (GtkWindow *window)
 	builder = gtk_builder_new ();
 
 	gtk_builder_add_from_resource (builder,
-				       "/org/gnome/nautilus/nautilus-file-management-properties.ui",
+				       "/org/gnome/nautilus/ui/nautilus-file-management-properties.ui",
 				       NULL);
 
 	nautilus_file_management_properties_dialog_setup (builder, window);

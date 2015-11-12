@@ -2478,7 +2478,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
 	class->close = real_window_close;
 
 	gtk_widget_class_set_template_from_resource (wclass,
-	                                             "/org/gnome/nautilus/nautilus-window.ui");
+	                                             "/org/gnome/nautilus/ui/nautilus-window.ui");
 	gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, toolbar);
 	gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, content_paned);
 	gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, sidebar);

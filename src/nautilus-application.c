@@ -979,7 +979,7 @@ theme_changed (GtkSettings *settings)
 			GFile *file;
 
 			provider = gtk_css_provider_new ();
-			file = g_file_new_for_uri ("resource:///org/gnome/nautilus/Adwaita.css");
+			file = g_file_new_for_uri ("resource:///org/gnome/nautilus/css/Adwaita.css");
 			gtk_css_provider_load_from_file (provider, file, NULL);
 			g_object_unref (file);
 		}

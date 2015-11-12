@@ -743,7 +743,7 @@ nautilus_toolbar_init (NautilusToolbar *self)
 	gtk_container_add (GTK_CONTAINER (self->priv->location_entry_container),
 					  self->priv->location_entry);
 
-	builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-toolbar-action-menu.xml");
+	builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-toolbar-action-menu.ui");
 	self->priv->action_menu = G_MENU (gtk_builder_get_object (builder, "action-menu"));
 	gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (self->priv->action_button),
 					G_MENU_MODEL (self->priv->action_menu));
@@ -858,7 +858,7 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
 	g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 
 	gtk_widget_class_set_template_from_resource (widget_class,
-						     "/org/gnome/nautilus/nautilus-toolbar-ui.xml");
+						     "/org/gnome/nautilus/ui/nautilus-toolbar-ui.ui");
 
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, operations_button);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, operations_icon);

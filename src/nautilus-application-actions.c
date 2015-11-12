@@ -208,7 +208,7 @@ nautilus_init_application_actions (NautilusApplication *app)
 					 app);
 
 	builder = gtk_builder_new ();
-	gtk_builder_add_from_resource (builder, "/org/gnome/nautilus/nautilus-app-menu.ui", &error);
+	gtk_builder_add_from_resource (builder, "/org/gnome/nautilus/ui/nautilus-app-menu.ui", &error);
 
 	if (error == NULL) {
 		gtk_application_set_app_menu (GTK_APPLICATION (app),

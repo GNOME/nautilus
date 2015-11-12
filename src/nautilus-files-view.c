@@ -1251,7 +1251,7 @@ action_show_move_to_trash_shortcut_changed_dialog (GSimpleAction *action,
         show_dialog_preference = g_settings_get_boolean (nautilus_preferences,
                                                          NAUTILUS_PREFERENCES_SHOW_MOVE_TO_TRASH_SHORTCUT_CHANGED_DIALOG);
         if (show_dialog_preference) {
-                builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-move-to-trash-shortcut-changed.ui");
+                builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-move-to-trash-shortcut-changed.ui");
                 dialog = GTK_WINDOW (gtk_builder_get_object (builder, "move_to_trash_shortcut_changed_dialog"));
 
                 gtk_window_set_transient_for (dialog, GTK_WINDOW (nautilus_files_view_get_window (view)));
@@ -2062,7 +2062,7 @@ nautilus_files_view_rename_file_popover_new (NautilusFilesView *view,
         if (view->details->rename_file_popover != NULL)
           return;
 
-        builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-rename-file-popover.ui");
+        builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-rename-file-popover.ui");
         label_file_name = GTK_WIDGET (gtk_builder_get_object (builder, "name_label"));
 
         widget_data = g_new (FileNameWidgetData, 1);
@@ -2127,7 +2127,7 @@ nautilus_files_view_new_folder_dialog_new (NautilusFilesView *view,
         GtkWidget *label_file_name;
         GtkBuilder *builder;
 
-        builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-create-folder-dialog.ui");
+        builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-create-folder-dialog.ui");
         label_file_name = GTK_WIDGET (gtk_builder_get_object (builder, "name_label"));
 
         widget_data = g_new (FileNameWidgetData, 1);
@@ -6663,7 +6663,7 @@ real_update_context_menus (NautilusFilesView *view)
         g_clear_object (&view->details->selection_menu);
 
         GtkBuilder *builder;
-        builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-files-view-context-menus.xml");
+        builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-files-view-context-menus.ui");
         view->details->background_menu = g_object_ref (G_MENU (gtk_builder_get_object (builder, "background-menu")));
         view->details->selection_menu = g_object_ref (G_MENU (gtk_builder_get_object (builder, "selection-menu")));
         g_object_unref (builder);
@@ -7962,7 +7962,7 @@ nautilus_files_view_init (NautilusFilesView *view)
                                                      NautilusFilesViewDetails);
 
         /* View menu */
-        builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-toolbar-view-menu.xml");
+        builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-toolbar-view-menu.ui");
         view->details->view_menu_widget =  g_object_ref (gtk_builder_get_object (builder, "view_menu_widget"));
         view->details->zoom_level_scale = GTK_WIDGET (gtk_builder_get_object (builder, "zoom_level_scale"));
         view->details->zoom_adjustment = GTK_ADJUSTMENT (gtk_builder_get_object (builder, "zoom_adjustment"));
@@ -7984,7 +7984,7 @@ nautilus_files_view_init (NautilusFilesView *view)
         view->details->overlay = gtk_overlay_new ();
         gtk_widget_set_vexpand (view->details->overlay, TRUE);
         gtk_widget_set_hexpand (view->details->overlay, TRUE);
-        builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-remote-warning-bar.ui");
+        builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-remote-warning-bar.ui");
         view->details->remote_warning_bar = GTK_WIDGET (gtk_builder_get_object (builder, "remote_warning_bar"));
         gtk_container_add (GTK_CONTAINER (view), view->details->overlay);
         gtk_container_add (GTK_CONTAINER (view), view->details->remote_warning_bar);
@@ -8014,12 +8014,12 @@ nautilus_files_view_init (NautilusFilesView *view)
         gtk_container_add (GTK_CONTAINER (view->details->overlay), view->details->scrolled_window);
 
         /* Empty states */
-        builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-no-search-results.ui");
+        builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-no-search-results.ui");
         view->details->no_search_results_widget = GTK_WIDGET (gtk_builder_get_object (builder, "no_search_results"));
         gtk_overlay_add_overlay (GTK_OVERLAY (view->details->overlay), view->details->no_search_results_widget);
         g_object_unref (builder);
 
-        builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/nautilus-folder-is-empty.ui");
+        builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-folder-is-empty.ui");
         view->details->folder_is_empty_widget = GTK_WIDGET (gtk_builder_get_object (builder, "folder_is_empty"));
         gtk_overlay_add_overlay (GTK_OVERLAY (view->details->overlay), view->details->folder_is_empty_widget);
         g_object_unref (builder);

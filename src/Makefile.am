@@ -83,11 +83,11 @@ headers =					\
 	nautilus-special-location-bar.h		\
 	$(NULL)
 
-resource_files = $(shell glib-compile-resources --sourcedir=$(srcdir) --generate-dependencies $(srcdir)/nautilus.gresource.xml)
-nautilus-resources.c: nautilus.gresource.xml $(resource_files)
-	glib-compile-resources --target=$@ --sourcedir=$(srcdir) --generate-source --c-name nautilus $(srcdir)/nautilus.gresource.xml
-nautilus-resources.h: nautilus.gresource.xml $(resource_files)
-	glib-compile-resources --target=$@ --sourcedir=$(srcdir) --generate-header --c-name nautilus $(srcdir)/nautilus.gresource.xml
+resource_files = $(shell glib-compile-resources --sourcedir=$(srcdir)/resources --generate-dependencies $(srcdir)/resources/nautilus.gresource.xml)
+nautilus-resources.c: resources/nautilus.gresource.xml $(resource_files)
+	glib-compile-resources --target=$@ --sourcedir=$(srcdir)/resources --generate-source --c-name nautilus $(srcdir)/resources/nautilus.gresource.xml
+nautilus-resources.h: resources/nautilus.gresource.xml $(resource_files)
+	glib-compile-resources --target=$@ --sourcedir=$(srcdir)/resources --generate-header --c-name nautilus $(srcdir)/resources/nautilus.gresource.xml
 
 nautilus-enum-types.h: stamp-nautilus-enum-types.h
 	$(AM_V_GEN)true
