@@ -75,4 +75,6 @@ void nautilus_toolbar_set_show_location_entry (NautilusToolbar *self,
 void       nautilus_toolbar_set_active_slot    (NautilusToolbar    *toolbar,
                                                 NautilusWindowSlot *slot);
 
+gboolean   nautilus_toolbar_is_operations_button_active (NautilusToolbar *toolbar);
+
 #endif /* __NAUTILUS_TOOLBAR_H__ */

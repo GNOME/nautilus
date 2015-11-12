@@ -30,6 +30,7 @@
 #include "nautilus-pathbar.h"
 #include "nautilus-window.h"
 #include "nautilus-progress-info-widget.h"
+#include "nautilus-application.h"
 
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-ui-utilities.h>
@@ -473,13 +474,38 @@ add_operations_button_attention_style (NautilusToolbar *self)
                                                                             self);
 }
 
+/* It's not the most beautiful solution, but we need to check wheter all windows
+ * have it's button inactive, so the toolbar can schedule to remove the operations
+ * only in that case to avoid other windows to show an empty popover in the oposite
+ * case */
+static gboolean
+is_all_windows_operations_buttons_inactive ()
+{
+        GApplication *application;
+        GList *windows;
+        GList *l;
+        GtkWidget *toolbar;
+
+        application = g_application_get_default ();
+        windows = nautilus_application_get_windows (NAUTILUS_APPLICATION (application));
+
+        for (l = windows; l != NULL; l = l->next) {
+                toolbar = nautilus_window_get_toolbar (NAUTILUS_WINDOW (l->data));
+                if (nautilus_toolbar_is_operations_button_active (NAUTILUS_TOOLBAR (toolbar))) {
+                          return FALSE;
+                }
+        }
+
+        return TRUE;
+}
+
 static void
 on_progress_info_cancelled (NautilusToolbar *self)
 {
         /* Update the pie chart progress */
         gtk_widget_queue_draw (self->priv->operations_icon);
 
-        if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (self->priv->operations_button))) {
+        if (is_all_windows_operations_buttons_inactive ()) {
                 schedule_remove_finished_operations (self);
         }
 }
@@ -501,7 +527,7 @@ on_progress_info_finished (NautilusToolbar      *self,
         /* Update the pie chart progress */
         gtk_widget_queue_draw (self->priv->operations_icon);
 
-        if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (self->priv->operations_button))) {
+        if (is_all_windows_operations_buttons_inactive ()){
                 schedule_remove_finished_operations (self);
         }
 
@@ -720,7 +746,7 @@ static void
 on_operations_button_toggled (NautilusToolbar *self)
 {
         unschedule_remove_finished_operations (self);
-        if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (self->priv->operations_button))) {
+        if (is_all_windows_operations_buttons_inactive ()) {
                 schedule_remove_finished_operations (self);
         } else {
                 update_operations (self);
@@ -987,4 +1013,10 @@ nautilus_toolbar_set_active_slot (NautilusToolbar    *toolbar,
                 }
 
         }
+}
+
+gboolean
+nautilus_toolbar_is_operations_button_active (NautilusToolbar *self)
+{
+        return gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (self->priv->operations_button));
 }
