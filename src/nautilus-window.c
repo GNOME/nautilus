@@ -926,8 +926,11 @@ open_location_cb (NautilusWindow     *window,
 		break;
 	}
 
+        /* FIXME: We shouldn't need to provide the window, but seems gtk_application_get_active_window
+         * is not working properly in GtkApplication, so we cannot rely on that...
+         */
         nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
-                                                 location, flags, NULL, NULL, NULL);
+                                                 location, flags, NULL, window, NULL);
 }
 
 /* Callback used when the places sidebar needs us to present an error message */

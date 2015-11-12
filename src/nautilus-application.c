@@ -446,6 +446,10 @@ nautilus_application_open_location_full (NautilusApplication     *application,
 	gboolean use_same;
 
 	use_same = TRUE;
+        /* FIXME: We are having problems on getting the current focused window with
+         * gtk_application_get_active_window, see https://bugzilla.gnome.org/show_bug.cgi?id=756499
+         * so what we do is never rely on this on the callers, but would be cool to
+	 * make it work withouth explicitly setting the active window on the callers. */
         active_window = NAUTILUS_WINDOW (gtk_application_get_active_window (GTK_APPLICATION (application)));
         active_slot = nautilus_window_get_active_slot (active_window);
 
