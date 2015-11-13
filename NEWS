@@ -1,4 +1,17 @@
 Major changes in 3.18.1:
+* Show SD cards and external hard drives in the sidebar, not in the Other Places view (Carlos Soriano)
+* Fix nautilus not opening a new window when used from command line (Carlos Soriano)
+* Fix crash using samba (Iain Lane)
+* Allow 3rd party themes to tweak operations button color (Elias Aebi)
+* Fix recurrent crash when closing Nautilus (Debarshi Ray)
+* Avoid empty operations popover (Carlos Soriano)
+* Fix nautilus opening locations in a different window than the one the user is using (Carlos Soriano)
+* Fix Other Places lock ups (Benjamin Otte & Emmanuelle Bassi)
+* Adapt rename entry to the width of the file and increase the minimum (Carlos Soriano)
+* Increase max width of operations popover to fix ellipsize translations (Carlos Soriano)
+* Fix recurrent crashers (Carlos Soriano)
+
+Major changes in 3.18.1:
 * Multiple crash fixes (Carlos Soriano)
 * Use GtkPlacesSidebar hints to improve drag and drop experience (Carlos Soriano)
 * Fix remote filesystem check for google drive (Carlos Soriano)
