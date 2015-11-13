@@ -228,7 +228,7 @@ nautilus_window_slot_get_view_for_location (NautilusWindowSlot *slot,
 
         nautilus_file_unref (file);
 
-        return g_object_ref (view);
+        return view;
 }
 
 static gboolean
