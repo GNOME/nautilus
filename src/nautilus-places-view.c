@@ -352,5 +352,12 @@ nautilus_places_view_init (NautilusPlacesView *self)
 NautilusPlacesView *
 nautilus_places_view_new (void)
 {
-        return g_object_new (NAUTILUS_TYPE_PLACES_VIEW, NULL);
+        NautilusPlacesView *view;
+
+        view = g_object_new (NAUTILUS_TYPE_PLACES_VIEW, NULL);
+        if (g_object_is_floating (view)) {
+                g_object_ref_sink (view);
+        }
+
+        return view;
 }
