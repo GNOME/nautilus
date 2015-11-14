@@ -20,16 +20,16 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
 "POT-Creation-Date: 2015-09-27 11:50+0000\n"
-"PO-Revision-Date: 2015-09-27 23:38+0300\n"
-"Last-Translator: Stas Solovey <whats_up@tut.by>\n"
+"PO-Revision-Date: 2015-11-14 20:32+0300\n"
+"Last-Translator: Yuri Myasoedov <ymyasoedov@yandex.ru>\n"
 "Language-Team: Русский <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
-"X-Generator: Gtranslator 2.91.7\n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 1.6.9\n"
 
 #: ../data/org.gnome.Nautilus.appdata.xml.in.h:1
 msgid ""
@@ -94,7 +94,8 @@ msgstr "Показать _подробности"
 #: ../src/nautilus-location-entry.c:270 ../src/nautilus-mime-actions.c:440
 #: ../src/nautilus-mime-actions.c:444 ../src/nautilus-mime-actions.c:515
 #: ../src/nautilus-mime-actions.c:858 ../src/nautilus-mime-actions.c:1364
-#: ../src/nautilus-mime-actions.c:1589 ../src/nautilus-properties-window.c:4188
+#: ../src/nautilus-mime-actions.c:1589
+#: ../src/nautilus-properties-window.c:4188
 #: ../src/nautilus-properties-window.c:5170 ../src/nautilus-query-editor.c:494
 #: ../src/nautilus-files-view.c:1090 ../src/nautilus-files-view.c:1558
 #: ../src/nautilus-files-view.c:5153
@@ -3317,8 +3318,9 @@ msgstr "Оценка"
 msgid "Failed to load image information"
 msgstr "Не удалось получить сведения об изображении"
 
-#: ../src/nautilus-image-properties-page.c:708 ../src/nautilus-list-model.c:371
-#: ../src/nautilus-files-view.c:393 ../src/nautilus-window-slot.c:644
+#: ../src/nautilus-image-properties-page.c:708
+#: ../src/nautilus-list-model.c:371 ../src/nautilus-files-view.c:393
+#: ../src/nautilus-window-slot.c:644
 msgid "Loading…"
 msgstr "Загрузка…"
 
@@ -3486,7 +3488,7 @@ msgstr[2] "Откроется %d отдельных приложений."
 #: ../src/gtk/gtkplacesview.c:1180 ../src/gtk/gtkplacesview.c:1224
 #: ../src/gtk/gtkplacesview.c:1275
 msgid "Unable to access location"
-msgstr "Не удалось получить доступ к местопложению"
+msgstr "Не удалось получить доступ к местоположению"
 
 #: ../src/nautilus-mime-actions.c:2006
 msgid "Unable to start location"
@@ -4707,161 +4709,3 @@ msgstr "На этом компьютере"
 #: ../src/gtk/gtkplacesviewrow.c:324
 msgid "Disconnect"
 msgstr "Отключить"
-
-#~ msgid "%'d file left to delete"
-#~ msgid_plural "%'d files left to delete"
-#~ msgstr[0] "осталось удалить %'d файл"
-#~ msgstr[1] "осталось удалить %'d файла"
-#~ msgstr[2] "осталось удалить %'d файлов"
-
-#~ msgid "%T left"
-#~ msgid_plural "%T left"
-#~ msgstr[0] "%T осталась"
-#~ msgstr[1] "%T осталось"
-#~ msgstr[2] "%T осталось"
-
-#~ msgid "Moving files to trash"
-#~ msgstr "Идёт перемещение файлов в корзину"
-
-#~ msgid "%'d file left to trash"
-#~ msgid_plural "%'d files left to trash"
-#~ msgstr[0] "осталось удалить в корзину %'d файл"
-#~ msgstr[1] "осталось удалить в корзину %'d файла"
-#~ msgstr[2] "осталось удалить в корзину %'d файлов"
-
-#~ msgid "Moving file %'d of %'d (in “%B”) to “%B”"
-#~ msgstr "Перемещение файла %'d из %'d (в «%B») в «%B»"
-
-#~ msgid "Copying file %'d of %'d (in “%B”) to “%B”"
-#~ msgstr "Копирование файла %'d из %'d (в «%B») в «%B»"
-
-#~ msgid "Duplicating file %'d of %'d"
-#~ msgstr "Дублирование файла %'d из %'d"
-
-#~ msgid "%S of %S"
-#~ msgstr "%S из %S"
-
-# кнопка, при нажатии на которую происхоит сжатие файла\папки и отправка через email
-#~ msgid "Email…"
-#~ msgstr "Отправить по почте…"
-
-#~ msgid "Connect to _Server…"
-#~ msgstr "Подключиться к _серверу…"
-
-#~ msgid "Unable to display location"
-#~ msgstr "Не удалось открыть местоположение"
-
-#~ msgid "Print but do not open the URI"
-#~ msgstr "Показать, но не открывать URI"
-
-#~ msgid ""
-#~ "\n"
-#~ "\n"
-#~ "Add connect to server mount"
-#~ msgstr ""
-#~ "\n"
-#~ "\n"
-#~ "Добавить подключение к серверу"
-
-#~ msgid "This file server type is not recognized."
-#~ msgstr "Тип этого файлового сервера не распознан."
-
-#~ msgid "This doesn't look like an address."
-#~ msgstr "Это не похоже на адрес."
-
-#~ msgid "For example, %s"
-#~ msgstr "Например, %s"
-
-#~ msgid "_Remove"
-#~ msgstr "_Удалить"
-
-#~ msgid "_Clear All"
-#~ msgstr "_Очистить всё"
-
-#~ msgid "Last _Opened"
-#~ msgstr "Последнее _открытое"
-
-#~| msgid "Replace file “%s”?"
-#~ msgid "Rename “%s”"
-#~ msgstr "Переименовать «%s»"
-
-#~ msgid "The text of the label."
-#~ msgstr "Текст метки."
-
-#~ msgid "Justification"
-#~ msgstr "Выравнивание"
-
-#~ msgid ""
-#~ "The alignment of the lines in the text of the label relative to each "
-#~ "other. This does NOT affect the alignment of the label within its "
-#~ "allocation. See GtkMisc::xalign for that."
-#~ msgstr ""
-#~ "Выравнивание строк текста метки относительно друг друга. Эта настройка НЕ "
-#~ "влияет на выравнивание самой метки, для этого используйте свойство "
-#~ "GtkMisc::xalign."
-
-#~ msgid "Line wrap"
-#~ msgstr "Перенос строк"
-
-#~ msgid "If set, wrap lines if the text becomes too wide."
-#~ msgstr "Если установлено, длинные строки переносятся."
-
-#~ msgid "Cursor Position"
-#~ msgstr "Положение курсора"
-
-#~ msgid "The current position of the insertion cursor in chars."
-#~ msgstr "Текущее положение курсора вставки в буквах."
-
-#~ msgid "Selection Bound"
-#~ msgstr "Границы выделения"
-
-#~ msgid ""
-#~ "The position of the opposite end of the selection from the cursor in "
-#~ "chars."
-#~ msgstr "Положение противоположных концов выделения от курсора в буквах."
-
-#~ msgid "Select All"
-#~ msgstr "Выделить всё"
-
-#~ msgid "You cannot move the volume “%s” to the trash."
-#~ msgstr "Том «%s» нельзя переместить в корзину."
-
-#~ msgid ""
-#~ "If you want to eject the volume, please use Eject in the popup menu of "
-#~ "the volume."
-#~ msgstr ""
-#~ "Чтобы извлечь том, используйте пункт «Извлечь» в контекстном меню тома."
-
-#~ msgid ""
-#~ "If you want to unmount the volume, please use Unmount Volume in the popup "
-#~ "menu of the volume."
-#~ msgstr ""
-#~ "Чтобы отсоединить том, используйте пункт «Отсоединить том» в контекстном "
-#~ "меню тома."
-
-#~ msgid "Could not register the application"
-#~ msgstr "Не удалось зарегистрировать приложение"
-
-#~ msgid "View _new folders using:"
-#~ msgstr "Просматривать _новые папки используя:"
-
-#~ msgid "Show hidden and _backup files"
-#~ msgstr "Показывать _скрытые файлы и резервные копии"
-
-#~ msgid "Icon View Defaults"
-#~ msgstr "Просмотр в виде значков"
-
-#~ msgid "Default _zoom level:"
-#~ msgstr "Ис_ходный масштаб:"
-
-#~ msgid "List View Defaults"
-#~ msgstr "Просмотр в виде списка"
-
-#~ msgid "D_efault zoom level:"
-#~ msgstr "Исхо_дный масштаб:"
-
-#~ msgid "%s deleted"
-#~ msgid_plural "%s deleted"
-#~ msgstr[0] "%s удалён"
-#~ msgstr[1] "%s удалены"
-#~ msgstr[2] "%s удалено"
