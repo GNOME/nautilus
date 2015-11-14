@@ -4651,7 +4651,7 @@ add_script_to_scripts_menus (NautilusFilesView *view,
 
         g_menu_append_item (menu, menu_item);
 
-	if (shortcut = g_hash_table_lookup (script_accels, name)) {
+	if ((shortcut = g_hash_table_lookup (script_accels, name))) {
 		nautilus_application_add_accelerator (g_application_get_default(),
 						      detailed_action_name, shortcut);
 	}

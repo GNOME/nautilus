@@ -3951,7 +3951,7 @@ got_filesystem_info (FilesystemInfoState *state, GFileInfo *info)
 {
 	NautilusDirectory *directory;
 	NautilusFile *file;
-        char *filesystem_type;
+        const char *filesystem_type;
 
 	/* careful here, info may be NULL */
 
