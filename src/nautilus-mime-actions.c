@@ -1173,8 +1173,6 @@ pk_proxy_appeared_cb (GObject *source,
 
 		/* show an unhelpful dialog */
 		show_unhandled_type_error (parameters_install);
-		/* The callback wasn't started, so we have to free the parameters */
-		activate_parameters_install_free (parameters_install);
 
 		return;
 	}
