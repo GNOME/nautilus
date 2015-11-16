@@ -1071,7 +1071,10 @@ search_for_application_dbus_call_notify_cb (GDBusProxy   *proxy,
 			    eel_show_error_dialog (_("Unable to search for application"), message,
 			                           parameters_install->parent_window);
 			    g_free (message);
-		    }
+		} else {
+			g_warning ("Error while trying to search for applications: %s",
+				   error->message);
+		}
 
 		g_error_free (error);
 		activate_parameters_install_free (parameters_install);
