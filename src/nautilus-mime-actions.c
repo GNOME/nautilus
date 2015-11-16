@@ -1157,18 +1157,19 @@ pk_proxy_appeared_cb (GObject *source,
 		      gpointer user_data)
 {
         ActivateParametersInstall *parameters_install = user_data;
-	char *mime_type;
+	char *mime_type, *name_owner;
 	char *error_message;
 	GtkWidget *dialog;
         GDBusProxy *proxy;
 	GError *error = NULL;
 
 	proxy = g_dbus_proxy_new_for_bus_finish (res, &error);
+	name_owner = g_dbus_proxy_get_name_owner (proxy);
 
-	if (error != NULL) {
+	if (error != NULL || name_owner == NULL) {
 		g_warning ("Couldn't call Modify on the PackageKit interface: %s",
-			   error->message);
-		g_error_free (error);
+			   error != NULL ? error->message : "no owner for PackageKit");
+		g_clear_error (&error);
 
 		/* show an unhelpful dialog */
 		show_unhandled_type_error (parameters_install);
@@ -1177,6 +1178,8 @@ pk_proxy_appeared_cb (GObject *source,
 
 		return;
 	}
+
+	g_free (name_owner);
 
 	mime_type = nautilus_file_get_mime_type (parameters_install->file);
 	error_message = get_application_no_mime_type_handler_message (parameters_install->file,
