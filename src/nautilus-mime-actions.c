@@ -1063,14 +1063,14 @@ search_for_application_dbus_call_notify_cb (GDBusProxy   *proxy,
 	if (variant == NULL) {
 		if (!g_dbus_error_is_remote_error (error) ||
 		    g_strcmp0 (g_dbus_error_get_remote_error (error), "org.freedesktop.PackageKit.Modify.Failed") == 0) {
-			    char *message;
+			char *message;
 
-			    message = g_strdup_printf ("%s\n%s",
-						       _("There was an internal error trying to search for applications:"),
-						       error->message);
-			    eel_show_error_dialog (_("Unable to search for application"), message,
-			                           parameters_install->parent_window);
-			    g_free (message);
+			message = g_strdup_printf ("%s\n%s",
+						   _("There was an internal error trying to search for applications:"),
+						   error->message);
+			eel_show_error_dialog (_("Unable to search for application"), message,
+					       parameters_install->parent_window);
+			g_free (message);
 		} else {
 			g_warning ("Error while trying to search for applications: %s",
 				   error->message);
