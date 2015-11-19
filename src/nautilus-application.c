@@ -1023,6 +1023,8 @@ nautilus_application_startup (GApplication *app)
 
 	nautilus_profile_start (NULL);
 
+	g_application_set_resource_base_path (app, "/org/gnome/nautilus");
+
 	/* chain up to the GTK+ implementation early, so gtk_init()
 	 * is called for us.
 	 */
