@@ -182,6 +182,17 @@ action_show_hide_sidebar (GSimpleAction *action,
 	g_simple_action_set_state (action, state);
 }
 
+static void
+action_show_help_overlay (GSimpleAction *action,
+                          GVariant      *state,
+                          gpointer       user_data)
+{
+        GtkApplication *application = user_data;
+        GtkWindow *window = gtk_application_get_active_window (application);
+
+        g_action_group_activate_action (G_ACTION_GROUP (window), "show-help-overlay", NULL);
+}
+
 static GActionEntry app_entries[] = {
 	{ "new-window", action_new_window, NULL, NULL, NULL },
 	{ "bookmarks", action_bookmarks, NULL, NULL, NULL },
@@ -193,6 +204,7 @@ static GActionEntry app_entries[] = {
 	{ "kill", action_kill, NULL, NULL, NULL },
 	{ "open-desktop", action_open_desktop, NULL, NULL, NULL },
 	{ "close-desktop", action_close_desktop, NULL, NULL, NULL },
+	{ "show-help-overlay", action_show_help_overlay, NULL, NULL, NULL },
 };
 
 void
