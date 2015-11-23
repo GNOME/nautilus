@@ -219,19 +219,6 @@ nautilus_init_application_actions (NautilusApplication *app)
 					 app_entries, G_N_ELEMENTS (app_entries),
 					 app);
 
-	builder = gtk_builder_new ();
-	gtk_builder_add_from_resource (builder, "/org/gnome/nautilus/ui/nautilus-app-menu.ui", &error);
-
-	if (error == NULL) {
-		gtk_application_set_app_menu (GTK_APPLICATION (app),
-					      G_MENU_MODEL (gtk_builder_get_object (builder, "app-menu")));
-	} else {
-		g_critical ("Unable to add the application menu: %s\n", error->message);
-		g_error_free (error);
-	}
-
-	g_object_unref (builder);
-
 	debug_no_app_menu = g_getenv ("NAUTILUS_DEBUG_NO_APP_MENU");
 	if (debug_no_app_menu) {
 		DEBUG ("Disabling app menu GtkSetting as requested...");
