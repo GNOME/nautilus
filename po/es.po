@@ -27,8 +27,8 @@ msgstr ""
 "Project-Id-Version: nautilus.master.es\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2015-11-16 01:38+0000\n"
-"PO-Revision-Date: 2015-11-16 12:33+0100\n"
+"POT-Creation-Date: 2015-11-24 01:43+0000\n"
+"PO-Revision-Date: 2015-11-24 11:23+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
 "Language: \n"
@@ -86,7 +86,6 @@ msgstr "carpeta;gestor;explorar;disco;sistema de archivos;"
 
 # src/file-manager/fm-directory-view.c:2126
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:4
-#| msgid "New _Window"
 msgid "New Window"
 msgstr "Ventana nueva"
 
@@ -112,7 +111,7 @@ msgstr "Mostrar más _detalles"
 #: ../src/nautilus-files-view.c:5214 ../src/nautilus-location-entry.c:270
 #: ../src/nautilus-mime-actions.c:440 ../src/nautilus-mime-actions.c:444
 #: ../src/nautilus-mime-actions.c:515 ../src/nautilus-mime-actions.c:858
-#: ../src/nautilus-mime-actions.c:1364 ../src/nautilus-mime-actions.c:1589
+#: ../src/nautilus-mime-actions.c:1368 ../src/nautilus-mime-actions.c:1593
 #: ../src/nautilus-properties-window.c:4188
 #: ../src/nautilus-properties-window.c:5170 ../src/nautilus-query-editor.c:494
 msgid "_Cancel"
@@ -1711,7 +1710,8 @@ msgstr "No se puede marcar el lanzador confiado (ejecutable)"
 
 # src/nautilus-first-time-druid.c:290
 #: ../libnautilus-private/nautilus-file-undo-operations.c:133
-#: ../src/nautilus-window.c:462 ../src/resources/ui/nautilus-window.ui.h:2
+#: ../src/nautilus-window.c:462 ../src/resources/gtk/help-overlay.ui.h:51
+#: ../src/resources/ui/nautilus-window.ui.h:2
 msgid "Undo"
 msgstr "Deshacer"
 
@@ -1721,7 +1721,7 @@ msgstr "Deshacer la última acción"
 
 # src/file-manager/fm-properties-window.c:1573
 #: ../libnautilus-private/nautilus-file-undo-operations.c:140
-#: ../src/nautilus-window.c:463
+#: ../src/nautilus-window.c:463 ../src/resources/gtk/help-overlay.ui.h:52
 msgid "Redo"
 msgstr "Rehacer"
 
@@ -2232,6 +2232,7 @@ msgstr "Preparando"
 #: ../libnautilus-private/nautilus-search-directory-file.c:159
 #: ../libnautilus-private/nautilus-search-directory-file.c:211
 #: ../libnautilus-private/nautilus-search-directory-file.c:256
+#: ../src/resources/gtk/help-overlay.ui.h:5
 #: ../src/resources/ui/nautilus-toolbar.ui.h:5
 msgid "Search"
 msgstr "Buscar"
@@ -3200,7 +3201,7 @@ msgstr "Cargando…"
 
 # src/file-manager/fm-directory-view.c:1855
 #: ../src/nautilus-files-view.c:1088 ../src/nautilus-mime-actions.c:849
-#: ../src/nautilus-mime-actions.c:1585
+#: ../src/nautilus-mime-actions.c:1589
 msgid "Are you sure you want to open all files?"
 msgstr "¿Está seguro de que quiere abrir todos los archivos?"
 
@@ -3220,7 +3221,7 @@ msgstr[1] "Esto abrirá %'d ventanas separadas."
 
 #: ../src/nautilus-files-view.c:1097 ../src/nautilus-location-entry.c:270
 #: ../src/nautilus-mime-actions.c:858 ../src/nautilus-mime-actions.c:1035
-#: ../src/nautilus-mime-actions.c:1589
+#: ../src/nautilus-mime-actions.c:1593
 msgid "_OK"
 msgstr "_Aceptar"
 
@@ -3427,7 +3428,7 @@ msgstr "Ejecutar"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-directory-view.c:2114
-#: ../src/nautilus-files-view.c:6560
+#: ../src/nautilus-files-view.c:6560 ../src/resources/gtk/help-overlay.ui.h:8
 msgid "Open"
 msgstr "Abrir"
 
@@ -3775,7 +3776,7 @@ msgstr "Hubo un error interno al intentar buscar aplicaciones:"
 msgid "Unable to search for application"
 msgstr "No se pudo buscar una aplicación"
 
-#: ../src/nautilus-mime-actions.c:1190
+#: ../src/nautilus-mime-actions.c:1194
 #, c-format
 msgid ""
 "There is no application installed for “%s” files.\n"
@@ -3784,11 +3785,11 @@ msgstr ""
 "No existe una aplicación instalada para los archivos «%s».\n"
 "¿Quiere buscar una aplicación para abrir este archivo?"
 
-#: ../src/nautilus-mime-actions.c:1340
+#: ../src/nautilus-mime-actions.c:1344
 msgid "Untrusted application launcher"
 msgstr "Lanzador de aplicación sin confianza"
 
-#: ../src/nautilus-mime-actions.c:1343
+#: ../src/nautilus-mime-actions.c:1347
 #, c-format
 msgid ""
 "The application launcher “%s” has not been marked as trusted. If you do not "
@@ -3797,15 +3798,15 @@ msgstr ""
 "El lanzador de la aplicación «%s» no se ha marcado como confiado. Si no "
 "conoce el origen de este archivo, lanzarlo puede no ser seguro."
 
-#: ../src/nautilus-mime-actions.c:1358
+#: ../src/nautilus-mime-actions.c:1362
 msgid "_Launch Anyway"
 msgstr "_Lanzar de todas formas"
 
-#: ../src/nautilus-mime-actions.c:1361
+#: ../src/nautilus-mime-actions.c:1365
 msgid "Mark as _Trusted"
 msgstr "Marcar como de con_fianza"
 
-#: ../src/nautilus-mime-actions.c:1586
+#: ../src/nautilus-mime-actions.c:1590
 #, c-format
 msgid "This will open %d separate application."
 msgid_plural "This will open %d separate applications."
@@ -3813,23 +3814,23 @@ msgstr[0] "Esto abrirá %d aplicación separada."
 msgstr[1] "Esto abrirá %d aplicaciones separadas."
 
 #. if it wasn't cancelled show a dialog
-#: ../src/nautilus-mime-actions.c:1663 ../src/nautilus-mime-actions.c:1927
+#: ../src/nautilus-mime-actions.c:1667 ../src/nautilus-mime-actions.c:1931
 #: ../src/gtk/gtkplacesview.c:1157 ../src/gtk/gtkplacesview.c:1201
 #: ../src/gtk/gtkplacesview.c:1252
 msgid "Unable to access location"
 msgstr "No se pudo acceder al lugar"
 
-#: ../src/nautilus-mime-actions.c:2006
+#: ../src/nautilus-mime-actions.c:2010
 msgid "Unable to start location"
 msgstr "No se pudo iniciar el lugar"
 
-#: ../src/nautilus-mime-actions.c:2090
+#: ../src/nautilus-mime-actions.c:2094
 #, c-format
 msgid "Opening “%s”."
 msgstr "Abriendo «%s»."
 
 # src/file-manager/fm-icon-view.c:1277
-#: ../src/nautilus-mime-actions.c:2093
+#: ../src/nautilus-mime-actions.c:2097
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -4494,28 +4495,302 @@ msgstr "Contiene fotos y música"
 msgid "Open with:"
 msgstr "Abrir con:"
 
+#: ../src/resources/gtk/help-overlay.ui.h:1
+msgid "General"
+msgstr "General"
+
 # src/file-manager/fm-directory-view.c:2126
-#: ../src/resources/ui/nautilus-app-menu.ui.h:1
+#: ../src/resources/gtk/help-overlay.ui.h:2
+#| msgid "New Window"
+msgid "New window"
+msgstr "Ventana nueva"
+
+#: ../src/resources/gtk/help-overlay.ui.h:3
+#| msgid "_New Tab"
+msgid "New tab"
+msgstr "Pestaña nueva"
+
+#: ../src/resources/gtk/help-overlay.ui.h:4
+#| msgid "_Close Tab"
+msgid "Close Tab"
+msgstr "Cerrar pestaña"
+
+#: ../src/resources/gtk/help-overlay.ui.h:6
+#| msgid "Show Details"
+msgid "Show help"
+msgstr "Mostrar ayuda"
+
+# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
+# src/file-manager/fm-directory-view.c:2114
+#: ../src/resources/gtk/help-overlay.ui.h:7
+#| msgid "Open"
+msgid "Opening"
+msgstr "Abriendo"
+
+#: ../src/resources/gtk/help-overlay.ui.h:9
+#| msgid "Add a bookmark for the current location"
+msgid "Bookmark current location"
+msgstr "Añade un marcador para la ubicación actual"
+
+# src/file-manager/fm-directory-view.c:2151
+#: ../src/resources/gtk/help-overlay.ui.h:10
+#| msgctxt "folder"
+#| msgid "%s Properties"
+msgid "Show item properties"
+msgstr "Mostrar las propiedades del elemento"
+
+# src/file-manager/fm-directory-view.c:2126
+#: ../src/resources/gtk/help-overlay.ui.h:11
+#| msgid "Open in New _Tab"
+msgid "Open in new tab"
+msgstr "Abrir en una pestaña nueva"
+
+# src/file-manager/fm-directory-view.c:2126
+#: ../src/resources/gtk/help-overlay.ui.h:12
+#| msgid "Open in New _Window"
+msgid "Open in new window"
+msgstr "Abrir en una ventana nueva"
+
+# libnautilus-private/nautilus-global-preferences.c:693
+#: ../src/resources/gtk/help-overlay.ui.h:13
+#| msgid "_Open Item Location"
+msgid "Open item location"
+msgstr "Abrir la ubicación del elemento"
+
+# src/file-manager/fm-directory-view.c:2126
+#: ../src/resources/gtk/help-overlay.ui.h:14
+#| msgid "Open File and Close window"
+msgid "Open file and close window"
+msgstr "Abrir archivo y cerrar la ventana"
+
+# src/file-manager/fm-directory-view.c:2120
+#: ../src/resources/gtk/help-overlay.ui.h:15
+#| msgid "Open with other Application..."
+msgid "Open with default application"
+msgstr "Abrir con la aplicación predeterminada"
+
+# components/help/hyperbola-filefmt.c:398
+# components/help/hyperbola-filefmt.c:671
+#: ../src/resources/gtk/help-overlay.ui.h:16
+#| msgid "Apparition"
+msgid "Navigation"
+msgstr "Navegación"
+
+#: ../src/resources/gtk/help-overlay.ui.h:17
+msgid "Go back"
+msgstr "Atrás"
+
+#: ../src/resources/gtk/help-overlay.ui.h:18
+#| msgid "_Forward"
+msgid "Go forward"
+msgstr "Adelante"
+
+#: ../src/resources/gtk/help-overlay.ui.h:19
+msgid "Go up"
+msgstr "Subir"
+
+#: ../src/resources/gtk/help-overlay.ui.h:20
+msgid "Go down"
+msgstr "Bajar"
+
+# src/file-manager/fm-directory-view.c:2403
+# src/file-manager/fm-directory-view.c:2646
+#: ../src/resources/gtk/help-overlay.ui.h:21
+#| msgid "List View"
+msgid "List view"
+msgstr "Vista de lista"
+
+# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
+# components/music/nautilus-music-view.c:1122
+#: ../src/resources/gtk/help-overlay.ui.h:22
+#| msgid "Preview"
+msgid "Grid view"
+msgstr "Vista de rejilla"
+
+# src/nautilus-location-bar.c:401
+#: ../src/resources/gtk/help-overlay.ui.h:23
+#| msgid "Enter _Location"
+msgid "Enter location"
+msgstr "Introducir ubicación"
+
+# libnautilus-private/nautilus-global-preferences.c:165
+#: ../src/resources/gtk/help-overlay.ui.h:24
+#| msgid "Close this folder"
+msgid "Go to home folder"
+msgstr "Ir a la carpeta de inicio"
+
+#: ../src/resources/gtk/help-overlay.ui.h:25
+#| msgid "Activate previous tab"
+msgid "Go to previous tab"
+msgstr "Ir a la pestaña anterior"
+
+#: ../src/resources/gtk/help-overlay.ui.h:26
+#| msgid "Activate next tab"
+msgid "Go to next tab"
+msgstr "Ir a la siguiente pestaña"
+
+#: ../src/resources/gtk/help-overlay.ui.h:27
+#| msgid "Move Tab _Left"
+msgid "Move tab left"
+msgstr "Mover pestaña a la izquierda"
+
+#: ../src/resources/gtk/help-overlay.ui.h:28
+#| msgid "Move Tab _Right"
+msgid "Move tab right"
+msgstr "Mover pestaña a la derecha"
+
+#: ../src/resources/gtk/help-overlay.ui.h:29
+msgid "Go to tab"
+msgstr "Ir a la pestaña"
+
+# src/nautilus-location-bar.c:401
+#: ../src/resources/gtk/help-overlay.ui.h:30
+#| msgid "open-location"
+msgid "Prompt root location"
+msgstr "Preguntar la ubicación de la raíz"
+
+# src/nautilus-location-bar.c:401
+#: ../src/resources/gtk/help-overlay.ui.h:31
+#| msgid "open-location"
+msgid "Prompt home location"
+msgstr "Preguntar la ubicación de la carpeta de iniio"
+
+# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
+# libnautilus-private/nautilus-global-preferences.c:222
+#: ../src/resources/gtk/help-overlay.ui.h:32
+#| msgid "Views"
+msgid "View"
+msgstr "Ver"
+
+# src/file-manager/fm-directory-view.c:2268
+#: ../src/resources/gtk/help-overlay.ui.h:33
+#| msgid "Zoom In"
+msgid "Zoom in"
+msgstr "Ampliar"
+
+# src/file-manager/fm-directory-view.c:2270
+#: ../src/resources/gtk/help-overlay.ui.h:34
+#| msgid "Zoom Out"
+msgid "Zoom out"
+msgstr "Reducir"
+
+# src/file-manager/fm-properties-window.c:1563
+#: ../src/resources/gtk/help-overlay.ui.h:35
+#| msgid "Use tree view"
+msgid "Refresh view"
+msgstr "Actualizar vista"
+
+#: ../src/resources/gtk/help-overlay.ui.h:36
+#| msgid "Show _Hidden Files"
+msgid "Show/hide hidden files"
+msgstr "Mostrar/ocultar los archivos ocultos"
+
+#: ../src/resources/gtk/help-overlay.ui.h:37
+#| msgid "_Show Sidebar"
+msgid "Show/hide sidebar"
+msgstr "Mostrar/ocultar barra lateral"
+
+#: ../src/resources/gtk/help-overlay.ui.h:38
+#| msgid "Open action menu"
+msgid "Show/hide action menu"
+msgstr "Mostrar/ocultar el menú «Acción»"
+
+#: ../src/resources/gtk/help-overlay.ui.h:39
+#| msgid "No bookmarks defined"
+msgid "Show bookmarks manager"
+msgstr "Mostrar el gestor de marcadores"
+
+#: ../src/resources/gtk/help-overlay.ui.h:40
+#| msgid "Reset"
+msgid "Reset zoom"
+msgstr "Restablecer nivel de ampliación"
+
+#: ../src/resources/gtk/help-overlay.ui.h:41
+#| msgid "_Invert Selection"
+msgid "Invert selection"
+msgstr "Invertir selección"
+
+# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
+# libnautilus-private/nautilus-undo-signal-handlers.c:174
+#: ../src/resources/gtk/help-overlay.ui.h:42
+#| msgid "Edit"
+msgid "Editing"
+msgstr "Editando"
+
+# src/file-manager/fm-directory-view.c:2140
+# src/file-manager/fm-directory-view.c:2257
+#: ../src/resources/gtk/help-overlay.ui.h:43
+#| msgid "Create New _Folder"
+msgid "Create folder"
+msgstr "Crear carpeta"
+
+# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
+# libnautilus-private/nautilus-icon-text-item.c:1487
+# src/file-manager/fm-icon-view.c:1105
+#: ../src/resources/gtk/help-overlay.ui.h:44
+#| msgid "_Rename"
+msgid "Rename"
+msgstr "Renombrar"
+
+# src/file-manager/fm-directory-view.c:2145
+#: ../src/resources/gtk/help-overlay.ui.h:45
+#| msgid "Mo_ve to Trash"
+msgid "Move to trash"
+msgstr "Mover a la papelera"
+
+# src/file-manager/fm-directory-view.c:2678
+#: ../src/resources/gtk/help-overlay.ui.h:46
+#| msgid "_Delete Permanently"
+msgid "Delete permanently"
+msgstr "Eliminar permanentemente"
+
+#: ../src/resources/gtk/help-overlay.ui.h:47
+#| msgid "_Copy"
+msgid "Copy"
+msgstr "Copiar"
+
+#: ../src/resources/gtk/help-overlay.ui.h:48
+#| msgid "_Paste"
+msgid "Paste"
+msgstr "Pegar"
+
+#: ../src/resources/gtk/help-overlay.ui.h:49
+#| msgid "Select All"
+msgid "Select all"
+msgstr "Seleccionar todo"
+
+# libnautilus-private/nautilus-global-preferences.c:622
+#: ../src/resources/gtk/help-overlay.ui.h:50
+#| msgid "Select Items Matching"
+msgid "Select items matching"
+msgstr "Seleccionar elementos coincidentes"
+
+# src/file-manager/fm-directory-view.c:2126
+#: ../src/resources/gtk/menus.ui.h:1
 msgid "New _Window"
 msgstr "_Ventana nueva"
 
-#: ../src/resources/ui/nautilus-app-menu.ui.h:2
+#: ../src/resources/gtk/menus.ui.h:2
 msgid "Sidebar"
 msgstr "Barra lateral"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/nautilus-first-time-druid.c:272
-#: ../src/resources/ui/nautilus-app-menu.ui.h:3
+#: ../src/resources/gtk/menus.ui.h:3
 msgid "Prefere_nces"
 msgstr "Prefere_ncias"
 
+#: ../src/resources/gtk/menus.ui.h:4
+msgid "_Keyboard Shortcuts"
+msgstr "_Atajos del teclado"
+
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/nautilus-window-menus.c:1325
-#: ../src/resources/ui/nautilus-app-menu.ui.h:4
+#: ../src/resources/gtk/menus.ui.h:5
 msgid "_Help"
 msgstr "Ay_uda"
 
-#: ../src/resources/ui/nautilus-app-menu.ui.h:5
+#: ../src/resources/gtk/menus.ui.h:6
 msgid "_About"
 msgstr "Acerca _de"
 
@@ -4523,7 +4798,7 @@ msgstr "Acerca _de"
 # libnautilus-private/nautilus-search-bar-criterion.c:71
 # libnautilus-private/nautilus-search-bar-criterion.c:86
 # libnautilus-private/nautilus-search-bar-criterion.c:141
-#: ../src/resources/ui/nautilus-app-menu.ui.h:6
+#: ../src/resources/gtk/menus.ui.h:7
 msgid "_Quit"
 msgstr "_Salir"
 
@@ -5185,10 +5460,6 @@ msgstr "Introduzca la dirección del servidor…"
 #~ msgid "Email…"
 #~ msgstr "Correo-e…"
 
-# src/nautilus-location-bar.c:401
-#~ msgid "open-location"
-#~ msgstr "abrir ubicación"
-
 #~ msgid "show-error-message"
 #~ msgstr "mostrar mensaje de error"
 
@@ -5386,9 +5657,6 @@ msgstr "Introduzca la dirección del servidor…"
 #~ msgstr ""
 #~ "La posición en caracteres del extremo opuesto de la selección desde el "
 #~ "cursor ."
-
-#~ msgid "Select All"
-#~ msgstr "Seleccionar todo"
 
 # src/file-manager/dfos-xfer.c:744
 #~ msgid "You cannot move the volume “%s” to the trash."
@@ -5736,9 +6004,6 @@ msgstr "Introduzca la dirección del servidor…"
 #~ msgstr ""
 #~ "Selecciona los elementos en esta ventana que coincidan con un patrón dado"
 
-#~ msgid "_Invert Selection"
-#~ msgstr "_Invertir selección"
-
 #~ msgid "Select all and only the items that are not currently selected"
 #~ msgstr ""
 #~ "Selecciona únicamente los elementos que no están actualmente seleccionados"
@@ -5819,10 +6084,6 @@ msgstr "Introduzca la dirección del servidor…"
 
 #~ msgid "Stop the volume associated with the open folder"
 #~ msgstr "Parar el volumen asociado con la carpeta abierta"
-
-# src/file-manager/fm-directory-view.c:2126
-#~ msgid "Open File and Close window"
-#~ msgstr "Abrir archivo y cerrar ventana"
 
 #~ msgid "Sa_ve Search"
 #~ msgstr "Guardar _búsqueda"
@@ -6039,10 +6300,6 @@ msgstr "Introduzca la dirección del servidor…"
 #~ msgid "_Close"
 #~ msgstr "_Cerrar"
 
-# libnautilus-private/nautilus-global-preferences.c:165
-#~ msgid "Close this folder"
-#~ msgstr "Cerrar esta carpeta"
-
 #~ msgid "Open _Parent"
 #~ msgstr "Abrir cont_enedora"
 
@@ -6095,9 +6352,6 @@ msgstr "Introduzca la dirección del servidor…"
 #~ msgid "Go to the previous visited location"
 #~ msgstr "Ir al lugar anterior visitado"
 
-#~ msgid "_Forward"
-#~ msgstr "A_delante"
-
 # src/nautilus-window-menus.c:670
 #~ msgid "Go to the next visited location"
 #~ msgstr "Ir al siguiente lugar visitado"
@@ -6108,9 +6362,6 @@ msgstr "Introduzca la dirección del servidor…"
 
 #~ msgid "Specify a location to open"
 #~ msgstr "Especifique un lugar para abrir"
-
-#~ msgid "Add a bookmark for the current location"
-#~ msgstr "Añade un marcador para el lugar actual"
 
 # src/nautilus-window-menus.c:1235
 #~ msgid "_Bookmarks…"
@@ -6123,23 +6374,14 @@ msgstr "Introduzca la dirección del servidor…"
 #~ msgid "_Previous Tab"
 #~ msgstr "Pestaña _anterior"
 
-#~ msgid "Activate previous tab"
-#~ msgstr "Activar la pestaña anterior"
-
 #~ msgid "_Next Tab"
 #~ msgstr "_Siguiente pestaña"
-
-#~ msgid "Activate next tab"
-#~ msgstr "Activar la siguiente pestaña"
 
 #~ msgid "Move current tab to left"
 #~ msgstr "Mover la pestaña actual a la izquierda"
 
 #~ msgid "Move current tab to right"
 #~ msgstr "Mover la pestaña actual a la derecha"
-
-#~ msgid "_Show Sidebar"
-#~ msgstr "_Mostrar barra lateral"
 
 #~ msgid "Change the visibility of this window's side pane"
 #~ msgstr "Cambia la visibilidad del panel lateral de esta ventana"
@@ -7003,11 +7245,6 @@ msgstr "Introduzca la dirección del servidor…"
 #~ msgid "Search Folder"
 #~ msgstr "Carpeta de búsqueda"
 
-# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
-# libnautilus-private/nautilus-undo-signal-handlers.c:174
-#~ msgid "Edit"
-#~ msgstr "Editar"
-
 #~ msgid "Edit the saved search"
 #~ msgstr "Editar la búsqueda guardada"
 
@@ -7206,11 +7443,6 @@ msgstr "Introduzca la dirección del servidor…"
 
 #~ msgid "_Format:"
 #~ msgstr "_Formato:"
-
-# src/file-manager/fm-directory-view.c:2140
-# src/file-manager/fm-directory-view.c:2257
-#~ msgid "Create New _Folder"
-#~ msgstr "Crear una ca_rpeta"
 
 #~ msgid "Network Neighbourhood"
 #~ msgstr "Entorno de red"
@@ -7594,14 +7826,6 @@ msgstr "Introduzca la dirección del servidor…"
 #~ msgid "Show search"
 #~ msgstr "Mostrar búsqueda"
 
-# src/file-manager/fm-directory-view.c:2268
-#~ msgid "Zoom In"
-#~ msgstr "Ampliar"
-
-# src/file-manager/fm-directory-view.c:2270
-#~ msgid "Zoom Out"
-#~ msgstr "Reducir"
-
 # src/file-manager/fm-directory-view.c:2270
 #~ msgid "Zoom to Default"
 #~ msgstr "Ampliar hasta lo predeterminado"
@@ -7930,10 +8154,6 @@ msgstr "Introduzca la dirección del servidor…"
 # src/file-manager/fm-properties-window.c:844
 #~ msgid "Do Nothing"
 #~ msgstr "No hacer nada"
-
-# src/file-manager/fm-directory-view.c:2120
-#~ msgid "Open with other Application..."
-#~ msgstr "Abrir con otra aplicación…"
 
 #~ msgid "You have just inserted an Audio CD."
 #~ msgstr "Ha introducido un CD de sonido."
@@ -8269,11 +8489,6 @@ msgstr "Introduzca la dirección del servidor…"
 # src/nautilus-window-menus.c:1235
 #~ msgid "Add _bookmark"
 #~ msgstr "Añadir _marcador"
-
-# components/help/hyperbola-filefmt.c:398
-# components/help/hyperbola-filefmt.c:671
-#~ msgid "Apparition"
-#~ msgstr "Aparición"
 
 #~ msgid "Azul"
 #~ msgstr "Azul"
