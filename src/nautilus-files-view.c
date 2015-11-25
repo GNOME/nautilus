@@ -8152,7 +8152,7 @@ nautilus_files_view_init (NautilusFilesView *view)
         nautilus_application_add_accelerator (app, "view.move-to-trash", "Delete");
         nautilus_application_add_accelerator (app, "view.delete-from-trash", "Delete");
         nautilus_application_add_accelerator (app, "view.delete-permanently-shortcut", "<shift>Delete");
-        /* When trash is not available, allow the delete shortcut to delete permanently, that is, when
+        /* When trash is not available, allow the "Delete" key to delete permanently, that is, when
          * the menu item is available, since we never make both the trash and delete-permanently-menu-item
          * actions active */
         nautilus_application_add_accelerator (app, "view.delete-permanently-menu-item", "Delete");
