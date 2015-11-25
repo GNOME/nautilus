@@ -5895,6 +5895,11 @@ const GActionEntry view_entries[] = {
          * shortcut. */
         { "delete-permanently-shortcut", action_delete },
         { "delete-permanently-menu-item", action_delete },
+        /* This is only shown when the setting to show always delete permanently
+         * is set and when the common use cases for delete permanently which uses
+         * Delete as a shortcut are not needed. For instance this will be only
+         * present when the setting is true and when it can trash files */
+        { "permanent-delete-permanently-menu-item", action_delete },
         { "remove-from-recent", action_remove_from_recent },
         { "restore-from-trash", action_restore_from_trash},
         { "paste-into", action_paste_files_into },
@@ -6169,6 +6174,7 @@ real_update_actions_state (NautilusFilesView *view)
         gboolean show_start;
         gboolean show_stop;
         gboolean show_detect_media;
+        gboolean settings_show_delete_permanently;
         GDriveStartStopType start_stop_type;
 
         view_action_group = view->details->view_action_group;
@@ -6203,6 +6209,8 @@ real_update_actions_state (NautilusFilesView *view)
                                 selection_count == 1 &&
                                 can_paste_into_file (NAUTILUS_FILE (selection->data)));
         show_properties = !NAUTILUS_IS_DESKTOP_CANVAS_VIEW (view) || selection_count > 0;
+         settings_show_delete_permanently = g_settings_get_boolean (nautilus_preferences,
+                                                                    NAUTILUS_PREFERENCES_SHOW_DELETE_PERMANENTLY);
 
         /* Right click actions */
         /* Selection menu actions */
@@ -6310,6 +6318,13 @@ real_update_actions_state (NautilusFilesView *view)
                                              "delete-permanently-menu-item");
         g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                      can_delete_files && !can_trash_files &&
+                                     !selection_all_in_trash && !selection_contains_recent);
+
+        action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                             "permanent-delete-permanently-menu-item");
+        g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                     can_delete_files && can_trash_files &&
+                                     settings_show_delete_permanently &&
                                      !selection_all_in_trash && !selection_contains_recent);
 
         action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
@@ -8141,6 +8156,7 @@ nautilus_files_view_init (NautilusFilesView *view)
          * the menu item is available, since we never make both the trash and delete-permanently-menu-item
          * actions active */
         nautilus_application_add_accelerator (app, "view.delete-permanently-menu-item", "Delete");
+        nautilus_application_add_accelerator (app, "view.permanent-delete-permanently-menu-item", "<shift>Delete");
         nautilus_application_add_accelerator (app, "view.properties", "<control>i");
         nautilus_application_add_accelerator (app, "view.open-item-location", "<control><alt>o");
         nautilus_application_add_accelerator (app, "view.rename", "F2");
