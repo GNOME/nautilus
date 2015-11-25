@@ -919,7 +919,6 @@ begin_location_change (NautilusWindowSlot         *slot,
         new_selection = check_select_old_location_containing_folder (new_selection, location, previous_location);
 
 	g_assert (slot->details->pending_location == NULL);
-	g_assert (slot->details->pending_selection == NULL);
 
 	slot->details->pending_location = g_object_ref (location);
 	slot->details->location_change_type = type;
