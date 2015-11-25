@@ -1725,7 +1725,7 @@ new_folder_done (GFile    *new_folder,
                 sdata->directory_view = directory_view;
                 sdata->to_remove_locations = g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal,
                                                                     g_object_unref, NULL);
-                sdata->new_folder = g_object_ref (file);
+                sdata->new_folder = nautilus_file_ref (file);
 
                 uris = NULL;
                 for (l = data->selection; l != NULL; l = l->next) {
@@ -2866,10 +2866,8 @@ nautilus_files_view_destroy (GtkWidget *object)
         }
 
 
-        if (view->details->directory_as_file) {
-                nautilus_file_unref (view->details->directory_as_file);
-                view->details->directory_as_file = NULL;
-        }
+        nautilus_file_unref (view->details->directory_as_file);
+        view->details->directory_as_file = NULL;
 
         g_clear_object (&view->details->search_query);
         g_clear_object (&view->details->location);
@@ -6975,7 +6973,7 @@ load_directory (NautilusFilesView *view,
 
         g_set_object (&view->details->model, directory);
 
-        g_clear_object (&view->details->directory_as_file);
+        nautilus_file_unref (view->details->directory_as_file);
         view->details->directory_as_file = nautilus_directory_get_corresponding_file (directory);
 
         g_clear_object (&view->details->location);
