@@ -1273,8 +1273,6 @@ handle_regular_file_if_needed (NautilusWindowSlot *slot,
            needs_regular_file_handling = TRUE;
         }
 
-        nautilus_file_unref (parent_file);
-
         return needs_regular_file_handling;
 }
 
