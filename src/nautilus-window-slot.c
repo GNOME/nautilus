@@ -746,13 +746,6 @@ nautilus_window_slot_init (NautilusWindowSlot *slot)
  */
 #include "nautilus-desktop-window.h"
 
-/* This number controls a maximum character count for a URL that is
- * displayed as part of a dialog. It's fairly arbitrary -- big enough
- * to allow most "normal" URIs to display in full, but small enough to
- * prevent the dialog from getting insanely wide.
- */
-#define MAX_URI_IN_DIALOG_LENGTH 60
-
 static void begin_location_change                     (NautilusWindowSlot         *slot,
                                                        GFile                      *location,
                                                        GFile                      *previous_location,
