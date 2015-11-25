@@ -2278,9 +2278,6 @@ nautilus_window_slot_dispose (GObject *object)
 	}
 
 	nautilus_window_slot_set_viewed_file (slot, NULL);
-	/* TODO? why do we unref here? the file is NULL.
-	 * It was already here before the slot move, though */
-	nautilus_file_unref (slot->details->viewed_file);
 
 	if (slot->details->location) {
 		/* TODO? why do we ref here, instead of unreffing?
