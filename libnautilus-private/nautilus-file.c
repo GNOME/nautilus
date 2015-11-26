@@ -4694,6 +4694,7 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
 {
 	time_t file_time_raw;
   	GDateTime *file_date, *now;
+        GDateTime *today_midnight;
 	gint days_ago;
 	gboolean use_24;
 	const gchar *format;
@@ -4706,8 +4707,13 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
   	file_date = g_date_time_new_from_unix_local (file_time_raw);
 	if (date_format != NAUTILUS_DATE_FORMAT_FULL) {
 		now = g_date_time_new_now_local ();
+                today_midnight = g_date_time_new_local (g_date_time_get_year (now),
+                                                        g_date_time_get_month (now),
+                                                        g_date_time_get_day_of_month (now),
+                                                        0, 1, 0);
 
-		days_ago = g_date_time_difference (now, file_date) / (24 * 60 * 60 * 1000 * 1000L);
+		days_ago = g_date_time_difference (today_midnight, file_date) /
+                           (24 * 60 * 60 * 1000 * 1000L);
 
 		use_24 = g_settings_get_enum (gnome_interface_preferences, "clock-format") ==
 		         G_DESKTOP_CLOCK_FORMAT_24H;
@@ -4804,6 +4810,7 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
 		}
 
 		g_date_time_unref (now);
+		g_date_time_unref (today_midnight);
 	} else {
 		// xgettext:no-c-format
 		format = N_("%c");
