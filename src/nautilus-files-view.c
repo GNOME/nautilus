@@ -2900,6 +2900,9 @@ nautilus_files_view_finalize (GObject *object)
                                               schedule_update_context_menus, view);
 
         g_hash_table_destroy (view->details->non_ready_files);
+        g_clear_object (&view->details->background_menu);
+        g_clear_object (&view->details->selection_menu);
+        g_clear_object (&view->details->view_menu_widget);
 
         if (view->details->rename_file_popover != NULL) {
                 gtk_popover_set_relative_to (GTK_POPOVER (view->details->rename_file_popover),
@@ -6690,8 +6693,8 @@ real_update_context_menus (NautilusFilesView *view)
 
         GtkBuilder *builder;
         builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-files-view-context-menus.ui");
-        view->details->background_menu = g_object_ref (G_MENU (gtk_builder_get_object (builder, "background-menu")));
-        view->details->selection_menu = g_object_ref (G_MENU (gtk_builder_get_object (builder, "selection-menu")));
+        view->details->background_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "background-menu")));
+        view->details->selection_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "selection-menu")));
         g_object_unref (builder);
 
         update_selection_menu (view);
@@ -7989,7 +7992,7 @@ nautilus_files_view_init (NautilusFilesView *view)
 
         /* View menu */
         builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-toolbar-view-menu.ui");
-        view->details->view_menu_widget =  g_object_ref (gtk_builder_get_object (builder, "view_menu_widget"));
+        view->details->view_menu_widget =  g_object_ref_sink (gtk_builder_get_object (builder, "view_menu_widget"));
         view->details->zoom_level_scale = GTK_WIDGET (gtk_builder_get_object (builder, "zoom_level_scale"));
         view->details->zoom_adjustment = GTK_ADJUSTMENT (gtk_builder_get_object (builder, "zoom_adjustment"));
 
