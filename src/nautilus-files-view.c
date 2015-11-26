@@ -1018,7 +1018,6 @@ create_template_parameters_new (NautilusFile      *file,
         CreateTemplateParameters *result;
 
         result = g_new0 (CreateTemplateParameters, 1);
-        g_object_ref (directory_view);
         result->directory_view = directory_view;
         nautilus_file_ref (file);
         result->file = file;
@@ -1029,7 +1028,6 @@ create_template_parameters_new (NautilusFile      *file,
 static void
 create_templates_parameters_free (CreateTemplateParameters *parameters)
 {
-        g_object_unref (parameters->directory_view);
         nautilus_file_unref (parameters->file);
         g_free (parameters);
 }
