@@ -1714,30 +1714,12 @@ new_folder_done (GFile    *new_folder,
                                    screen_string);
 
         if (data->selection != NULL) {
-                NewFolderSelectionData *sdata;
                 GList *uris, *l;
                 char *target_uri;
 
-                sdata = g_new (NewFolderSelectionData, 1);
-                sdata->directory_view = directory_view;
-                sdata->to_remove_locations = g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal,
-                                                                    g_object_unref, NULL);
-                sdata->new_folder = nautilus_file_ref (file);
-
                 uris = NULL;
                 for (l = data->selection; l != NULL; l = l->next) {
-                        GFile *old_location;
-                        GFile *new_location;
-                        char *basename;
-
                         uris = g_list_prepend (uris, nautilus_file_get_uri ((NautilusFile *) l->data));
-
-                        old_location = nautilus_file_get_location (l->data);
-                        basename = g_file_get_basename (old_location);
-                        new_location = g_file_resolve_relative_path (new_folder, basename);
-                        g_hash_table_insert (sdata->to_remove_locations, new_location, NULL);
-                        g_free (basename);
-                        g_object_unref (old_location);
                 }
                 uris = g_list_reverse (uris);
 
