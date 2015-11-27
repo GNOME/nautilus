@@ -1709,10 +1709,9 @@ new_folder_done (GFile    *new_folder,
 
 
         file = nautilus_file_get (new_folder);
-        nautilus_file_set_metadata
-                (file, NAUTILUS_METADATA_KEY_SCREEN,
-                 NULL,
-                 screen_string);
+        nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_SCREEN,
+                                   NULL,
+                                   screen_string);
 
         if (data->selection != NULL) {
                 NewFolderSelectionData *sdata;
@@ -1745,11 +1744,11 @@ new_folder_done (GFile    *new_folder,
                 target_uri = nautilus_file_get_uri (file);
 
                 nautilus_files_view_move_copy_items (directory_view,
-                                               uris,
-                                               NULL,
-                                               target_uri,
-                                               GDK_ACTION_MOVE,
-                                               0, 0);
+                                                     uris,
+                                                     NULL,
+                                                     target_uri,
+                                                     GDK_ACTION_MOVE,
+                                                     0, 0);
                 g_list_free_full (uris, g_free);
                 g_free (target_uri);
         } else {
