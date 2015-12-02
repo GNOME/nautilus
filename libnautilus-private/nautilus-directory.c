@@ -574,6 +574,7 @@ nautilus_directory_is_local (NautilusDirectory *directory)
 	}
 
 	return nautilus_directory_is_in_trash (directory) ||
+               nautilus_directory_is_in_recent (directory) ||
 	       g_file_is_native (directory->details->location);
 }
 

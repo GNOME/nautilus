@@ -250,31 +250,6 @@ nautilus_mime_actions_get_required_file_attributes (void)
 		NAUTILUS_FILE_ATTRIBUTE_LINK_INFO;
 }
 
-static gboolean
-file_has_local_path (NautilusFile *file)
-{
-	GFile *location;
-	char *path;
-	gboolean res;
-
-	
-	/* Don't only check _is_native, because we want to support
-	   using the fuse path */
-	location = nautilus_file_get_location (file);
-	if (g_file_is_native (location)) {
-		res = TRUE;
-	} else {
-		path = g_file_get_path (location);
-		
-		res = path != NULL;
-		
-		g_free (path);
-	}
-	g_object_unref (location);
-	
-	return res;
-}
-
 GAppInfo *
 nautilus_mime_get_default_application_for_file (NautilusFile *file)
 {
@@ -287,7 +262,7 @@ nautilus_mime_get_default_application_for_file (NautilusFile *file)
 	}
 
 	mime_type = nautilus_file_get_mime_type (file);
-	app = g_app_info_get_default_for_type (mime_type, !file_has_local_path (file));
+	app = g_app_info_get_default_for_type (mime_type, !nautilus_file_is_local (file));
 	g_free (mime_type);
 
 	if (app == NULL) {
