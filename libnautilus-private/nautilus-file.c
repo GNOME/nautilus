@@ -4712,7 +4712,7 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
                                                         g_date_time_get_day_of_month (now),
                                                         0, 1, 0);
 
-		days_ago = g_date_time_difference (now, file_date) / G_TIME_SPAN_DAY;
+		days_ago = g_date_time_difference (today_midnight, file_date) / G_TIME_SPAN_DAY;
 
 		use_24 = g_settings_get_enum (gnome_interface_preferences, "clock-format") ==
 		         G_DESKTOP_CLOCK_FORMAT_24H;
