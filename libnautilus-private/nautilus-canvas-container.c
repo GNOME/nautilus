@@ -6411,9 +6411,11 @@ nautilus_canvas_container_get_icons_bounding_box (NautilusCanvasContainer *conta
 		icon_get_bounding_box ((NautilusCanvasIcon *)node->data,
                                        &x1, &y1, &x2, &y2,
 				       BOUNDS_USAGE_FOR_DISPLAY);
-                g_array_index (result, GdkRectangle, index).x = x1 * EEL_CANVAS (container)->pixels_per_unit;
+                g_array_index (result, GdkRectangle, index).x = x1 * EEL_CANVAS (container)->pixels_per_unit +
+                                                                container->details->left_margin;
                 g_array_index (result, GdkRectangle, index).width = (x2 - x1) * EEL_CANVAS (container)->pixels_per_unit;
-                g_array_index (result, GdkRectangle, index).y = y1 * EEL_CANVAS (container)->pixels_per_unit;
+                g_array_index (result, GdkRectangle, index).y = y1 * EEL_CANVAS (container)->pixels_per_unit +
+                                                                container->details->top_margin;
                 g_array_index (result, GdkRectangle, index).height = (y2 - y1) * EEL_CANVAS (container)->pixels_per_unit;
         }
 
