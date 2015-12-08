@@ -924,7 +924,7 @@ begin_location_change (NautilusWindowSlot         *slot,
 	slot->details->location_change_type = type;
 	slot->details->location_change_distance = distance;
 	slot->details->tried_mount = FALSE;
-	slot->details->pending_selection = g_list_copy_deep (new_selection, (GCopyFunc) g_object_ref, NULL);
+	slot->details->pending_selection = nautilus_file_list_copy (new_selection);
 
 	slot->details->pending_scroll_to = g_strdup (scroll_pos);
 
@@ -1252,7 +1252,7 @@ handle_regular_file_if_needed (NautilusWindowSlot *slot,
         if ((parent_file != NULL) &&
             nautilus_file_get_file_type (file) == G_FILE_TYPE_REGULAR) {
             if (slot->details->pending_selection != NULL) {
-                g_list_free_full (slot->details->pending_selection, (GDestroyNotify) nautilus_file_unref);
+                nautilus_file_list_free (slot->details->pending_selection);
             }
 
             g_clear_object (&slot->details->pending_location);
@@ -1423,7 +1423,7 @@ setup_view (NautilusWindowSlot *slot,
 				   FALSE,
 				   TRUE);
 
-		g_list_free_full (slot->details->pending_selection, g_object_unref);
+		nautilus_file_list_free (slot->details->pending_selection);
 		slot->details->pending_selection = NULL;
 	} else if (old_location != NULL) {
                 GList *selection;
@@ -1435,7 +1435,7 @@ setup_view (NautilusWindowSlot *slot,
 				   selection,
 				   FALSE,
 				   TRUE);
-		g_list_free_full (selection, g_object_unref);
+		nautilus_file_list_free (selection);
 	} else {
                 ret = FALSE;
                 goto out;
@@ -1512,7 +1512,7 @@ static void
 free_location_change (NautilusWindowSlot *slot)
 {
 	g_clear_object (&slot->details->pending_location);
-	g_list_free_full (slot->details->pending_selection, g_object_unref);
+	nautilus_file_list_free (slot->details->pending_selection);
 	slot->details->pending_selection = NULL;
 
         /* Don't free details->pending_scroll_to, since thats needed until
@@ -1569,7 +1569,7 @@ cancel_location_change (NautilusWindowSlot *slot)
 				   selection,
 				   TRUE,
 				   FALSE);
-		g_list_free_full (selection, g_object_unref);
+		nautilus_file_list_free (selection);
         }
 
         end_location_change (slot);
@@ -1698,7 +1698,7 @@ nautilus_window_slot_force_reload (NautilusWindowSlot *slot)
 		 NAUTILUS_LOCATION_CHANGE_RELOAD, 0, current_pos);
         g_free (current_pos);
 	g_object_unref (location);
-	g_list_free_full (selection, g_object_unref);
+	nautilus_file_list_free (selection);
 }
 
 void
@@ -2284,7 +2284,7 @@ nautilus_window_slot_dispose (GObject *object)
                 slot->details->view_mode_before_search = NULL;
         }
 
-	g_list_free_full (slot->details->pending_selection, g_object_unref);
+	nautilus_file_list_free (slot->details->pending_selection);
 	slot->details->pending_selection = NULL;
 
 	g_clear_object (&slot->details->current_location_bookmark);
