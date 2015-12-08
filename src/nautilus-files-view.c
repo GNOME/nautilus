@@ -361,8 +361,8 @@ check_empty_states (NautilusFilesView *view)
                                 gtk_widget_show (view->details->folder_is_empty_widget);
                         }
                 }
-                nautilus_file_list_unref (filtered);
-                nautilus_file_list_unref (files);
+                nautilus_file_list_free (filtered);
+                nautilus_file_list_free (files);
         }
 }
 
@@ -3281,13 +3281,13 @@ pre_copy_move (NautilusFilesView *directory_view)
  * and (as a side effect) remove them from the debuting uri hash table.
  */
 static gboolean
-copy_move_done_partition_func (gpointer data,
-                               gpointer callback_data)
+copy_move_done_partition_func (NautilusFile *file,
+                               gpointer      callback_data)
 {
          GFile *location;
          gboolean result;
 
-        location = nautilus_file_get_location (NAUTILUS_FILE (data));
+        location = nautilus_file_get_location (file);
         result = g_hash_table_remove ((GHashTable *) callback_data, location);
         g_object_unref (location);
 
@@ -3329,6 +3329,7 @@ copy_move_done_callback (GHashTable *debuting_files,
         NautilusFilesView  *directory_view;
         CopyMoveDoneData *copy_move_done_data;
         DebutingFilesData  *debuting_files_data;
+        GList *failed_files;
 
         copy_move_done_data = (CopyMoveDoneData *) data;
         directory_view = copy_move_done_data->directory_view;
@@ -3338,11 +3339,12 @@ copy_move_done_callback (GHashTable *debuting_files,
 
                 debuting_files_data = g_new (DebutingFilesData, 1);
                 debuting_files_data->debuting_files = g_hash_table_ref (debuting_files);
-                debuting_files_data->added_files = eel_g_list_partition
-                        (copy_move_done_data->added_files,
-                         copy_move_done_partition_func,
-                         debuting_files,
-                         &copy_move_done_data->added_files);
+                debuting_files_data->added_files = nautilus_file_list_filter (copy_move_done_data->added_files,
+                                                                              &failed_files,
+                                                                              copy_move_done_partition_func,
+                                                                              debuting_files);
+                nautilus_file_list_free (copy_move_done_data->added_files);
+                copy_move_done_data->added_files = failed_files;
 
                 /* We're passed the same data used by pre_copy_move_add_file_callback, so disconnecting
                  * it will free data. We've already siphoned off the added_files we need, and stashed the
@@ -4778,6 +4780,7 @@ update_directory_in_scripts_menu (NautilusFilesView *view,
         }
 
         nautilus_file_list_free (file_list);
+        nautilus_file_list_free (filtered);
 
         if (!any_scripts) {
                 g_object_unref (menu);
@@ -4957,11 +4960,11 @@ update_directory_in_templates_menu (NautilusFilesView *view,
         templates_directory_uri = nautilus_get_templates_directory_uri ();
         menu = g_menu_new ();
 
-        file_list = nautilus_file_list_sort_by_display_name (filtered);
+        filtered = nautilus_file_list_sort_by_display_name (filtered);
 
         num = 0;
         any_templates = FALSE;
-        for (node = file_list; num < TEMPLATE_LIMIT && node != NULL; node = node->next, num++) {
+        for (node = filtered; num < TEMPLATE_LIMIT && node != NULL; node = node->next, num++) {
                 file = node->data;
                 if (nautilus_file_is_directory (file)) {
                         uri = nautilus_file_get_uri (file);
@@ -4989,7 +4992,7 @@ update_directory_in_templates_menu (NautilusFilesView *view,
                 }
         }
 
-        nautilus_file_list_free (file_list);
+        nautilus_file_list_free (filtered);
         g_free (templates_directory_uri);
 
         if (!any_templates) {

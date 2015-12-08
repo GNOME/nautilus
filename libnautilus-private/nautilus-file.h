@@ -92,6 +92,8 @@ typedef enum {
 
 typedef void (*NautilusFileCallback)          (NautilusFile  *file,
 				               gpointer       callback_data);
+typedef gboolean (*NautilusFileFilterFunc)    (NautilusFile  *file,
+                                               gpointer       callback_data);
 typedef void (*NautilusFileListCallback)      (GList         *file_list,
 				               gpointer       callback_data);
 typedef void (*NautilusFileOperationCallback) (NautilusFile  *file,
@@ -451,6 +453,11 @@ void                    nautilus_file_list_call_when_ready              (GList  
 									 NautilusFileListCallback        callback,
 									 gpointer                        callback_data);
 void                    nautilus_file_list_cancel_call_when_ready       (NautilusFileListHandle         *handle);
+
+GList *                 nautilus_file_list_filter                       (GList                          *files,
+                                                                         GList                         **failed,
+                                                                         NautilusFileFilterFunc          filter_function,
+                                                                         gpointer                        user_data);
 
 /* Debugging */
 void                    nautilus_file_dump                              (NautilusFile                   *file);

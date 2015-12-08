@@ -3394,13 +3394,11 @@ nautilus_file_is_in_search (NautilusFile *file)
 }
 
 static gboolean
-filter_hidden_partition_callback (gpointer data,
-				  gpointer callback_data)
+filter_hidden_partition_callback (NautilusFile *file,
+                                  gpointer      callback_data)
 {
-	NautilusFile *file;
 	FilterOptions options;
 
-	file = NAUTILUS_FILE (data);
 	options = GPOINTER_TO_INT (callback_data);
 
 	return nautilus_file_should_show (file,
@@ -3419,14 +3417,45 @@ nautilus_file_list_filter_hidden (GList    *files,
 	 * Eventually this should become a generic filtering thingy.
 	 */
 
-	filtered_files = nautilus_file_list_copy (files);
-	filtered_files = eel_g_list_partition (filtered_files,
-					       filter_hidden_partition_callback,
-					       GINT_TO_POINTER ((show_hidden ? SHOW_HIDDEN : 0)),
-					       &removed_files);
+	filtered_files = nautilus_file_list_filter (files,
+					            &removed_files,
+					            filter_hidden_partition_callback,
+					            GINT_TO_POINTER ((show_hidden ? SHOW_HIDDEN : 0)));
 	nautilus_file_list_free (removed_files);
 
 	return filtered_files;
+}
+
+/* This functions filters a file list when its items match a certain condition
+ * in the filter function. This function preserves the ordering.
+ */
+GList *
+nautilus_file_list_filter (GList                   *files,
+                           GList                  **failed,
+                           NautilusFileFilterFunc   filter_function,
+                           gpointer                 user_data)
+{
+        GList *filtered = NULL;
+        GList *l;
+        GList *last;
+        GList *reversed;
+
+        *failed = NULL;
+        /* Avoid using g_list_append since it's O(n) */
+        reversed = g_list_copy (files);
+        reversed = g_list_reverse (reversed);
+        last = g_list_last (reversed);
+        for (l = last; l != NULL; l = l->prev) {
+                if (filter_function (l->data, user_data)) {
+                        filtered = g_list_prepend (filtered, nautilus_file_ref (l->data));
+                } else {
+                        *failed = g_list_prepend (*failed, nautilus_file_ref (l->data));
+                }
+        }
+
+        g_list_free (reversed);
+
+        return filtered;
 }
 
 char *

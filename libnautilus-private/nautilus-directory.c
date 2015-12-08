@@ -1545,13 +1545,11 @@ nautilus_directory_is_not_empty (NautilusDirectory *directory)
 }
 
 static gboolean
-is_tentative (gpointer data, gpointer callback_data)
+is_tentative (NautilusFile *file,
+              gpointer      callback_data)
 {
-	NautilusFile *file;
-
 	g_assert (callback_data == NULL);
 
-	file = NAUTILUS_FILE (data);
 	/* Avoid returning files with !is_added, because these
 	 * will later be sent with the files_added signal, and a
 	 * user doing get_file_list + files_added monitoring will
@@ -1570,12 +1568,10 @@ real_get_file_list (NautilusDirectory *directory)
 {
 	GList *tentative_files, *non_tentative_files;
 
-	tentative_files = eel_g_list_partition
-		(g_list_copy (directory->details->file_list),
-		 is_tentative, NULL, &non_tentative_files);
-	g_list_free (tentative_files);
+	tentative_files = nautilus_file_list_filter (directory->details->file_list,
+                                                     &non_tentative_files, is_tentative, NULL);
+	nautilus_file_list_free (tentative_files);
 
-	nautilus_file_list_ref (non_tentative_files);
 	return non_tentative_files;
 }
 

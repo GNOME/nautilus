@@ -39,11 +39,6 @@ typedef gboolean (* EelPredicateFunction) (gpointer data,
 /* GList functions. */
 gboolean    eel_g_lists_sort_and_check_for_intersection (GList                **list_a,
 							 GList                **list_b);
-GList *     eel_g_list_partition                        (GList                 *list,
-							 EelPredicateFunction   predicate,
-							 gpointer               user_data,
-							 GList                **removed);
-
 /* GHashTable functions */
 void        eel_g_hash_table_safe_for_each              (GHashTable            *hash_table,
 							 GHFunc                 callback,
