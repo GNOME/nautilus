@@ -1596,7 +1596,7 @@ nautilus_window_show_operation_notification (NautilusWindow *window,
                         button_label = g_strdup_printf (_("Open %s"), folder_name);
                         gtk_button_set_label (GTK_BUTTON (window->priv->notification_operation_open),
                                               button_label);
-                        g_object_unref (folder);
+                        nautilus_file_unref (folder);
                         g_free (folder_name);
                         g_free (button_label);
                 }
