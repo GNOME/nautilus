@@ -92,7 +92,7 @@ open_location_cb (NautilusPlacesView *view,
                                              file,
                                              path,
                                              flags);
-
+                nautilus_file_unref (file);
         }
 }
 
