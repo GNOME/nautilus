@@ -231,5 +231,7 @@ GList *            nautilus_directory_list_sort_by_uri         (GList           
 
 gboolean           nautilus_directory_is_editable              (NautilusDirectory         *directory);
 
+void               nautilus_directory_dump                     (NautilusDirectory         *directory);
+
 
 #endif /* NAUTILUS_DIRECTORY_H */
