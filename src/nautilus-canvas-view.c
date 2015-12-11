@@ -735,8 +735,8 @@ nautilus_canvas_view_begin_loading (NautilusFilesView *view)
 		(get_canvas_container (canvas_view), 
 		 nautilus_canvas_view_get_directory_auto_layout (canvas_view, file));
 
-	/* We could changed to the trash directory or to searching, and then we
-	 * need to update the menus */
+	/* We could have changed to the trash directory or to searching, and then
+	 * we need to update the menus */
 	nautilus_files_view_update_context_menus(view);
 	nautilus_files_view_update_toolbar_menus(view);
 }
