@@ -513,6 +513,8 @@ nautilus_application_open_location_full (NautilusApplication     *application,
 	} else {
 		target_window = nautilus_application_create_window (application,
                                                                     gtk_window_get_screen (GTK_WINDOW (active_window)));
+                /* Whatever the caller says, the slot won't be the same */
+                target_slot = NULL;
 	}
 
         g_assert (target_window != NULL);
