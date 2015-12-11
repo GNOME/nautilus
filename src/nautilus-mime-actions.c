@@ -1550,8 +1550,12 @@ activate_files (ActivateParameters *parameters)
 
 			uri = nautilus_file_get_activation_uri (file);
 			f = g_file_new_for_uri (uri);
+                        /* FIXME: we need to pass the parent_window, but we only use it for the current active window,
+                         * which nautilus-application should take care of. However is not working and creating regressions
+                         * in some cases. Until we figure out what's going on, continue to use the parameters->slot
+                         * to make splicit the window we want to use for activating the files */
                         nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
-                                                                 f, flags, NULL, NULL, NULL);
+                                                                 f, flags, NULL, NULL, parameters->slot);
 			g_object_unref (f);
 			g_free (uri);
 		}
