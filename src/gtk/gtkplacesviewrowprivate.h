@@ -48,6 +48,12 @@ gboolean           gtk_places_view_row_get_is_network            (GtkPlacesViewR
 void               gtk_places_view_row_set_is_network            (GtkPlacesViewRow   *row,
                                                                   gboolean            is_network);
 
+void               gtk_places_view_row_set_path_size_group       (GtkPlacesViewRow   *row,
+                                                                  GtkSizeGroup       *group);
+
+void               gtk_places_view_row_set_space_size_group      (GtkPlacesViewRow   *row,
+                                                                  GtkSizeGroup       *group);
+
 G_END_DECLS
 
 #endif /* GTK_PLACES_VIEW_ROW_H */

@@ -28,6 +28,7 @@ struct _GtkPlacesViewRow
 {
   GtkListBoxRow  parent_instance;
 
+  GtkLabel      *available_space_label;
   GtkSpinner    *busy_spinner;
   GtkButton     *eject_button;
   GtkImage      *eject_icon;
@@ -39,6 +40,8 @@ struct _GtkPlacesViewRow
   GVolume       *volume;
   GMount        *mount;
   GFile         *file;
+
+  GCancellable  *cancellable;
 
   gint           is_network : 1;
 };
@@ -60,13 +63,123 @@ enum {
 static GParamSpec *properties [LAST_PROP];
 
 static void
+measure_available_space_finished (GObject      *object,
+                                  GAsyncResult *res,
+                                  gpointer      user_data)
+{
+  GtkPlacesViewRow *row = user_data;
+  GFileInfo *info;
+  GError *error;
+  guint64 free_space;
+  guint64 total_space;
+  gchar *formatted_free_size;
+  gchar *formatted_total_size;
+  gchar *label;
+
+  error = NULL;
+
+  info = g_file_query_filesystem_info_finish (G_FILE (object),
+                                              res,
+                                              &error);
+
+  if (error)
+    {
+      if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED) &&
+          !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_MOUNTED))
+        {
+          g_warning ("Failed to measure available space: %s", error->message);
+        }
+
+      g_clear_error (&error);
+      goto out;
+    }
+
+  if (!g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE) ||
+      !g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_FILESYSTEM_SIZE))
+    {
+      g_object_unref (info);
+      goto out;
+    }
+
+  free_space = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
+  total_space = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FILESYSTEM_SIZE);
+
+  formatted_free_size = g_format_size (free_space);
+  formatted_total_size = g_format_size (total_space);
+  /* Translators: respectively, free and total space of the drive */
+  label = g_strdup_printf (_("%s / %s available"), formatted_free_size, formatted_total_size);
+
+  gtk_label_set_label (row->available_space_label, label);
+
+  g_object_unref (info);
+  g_free (formatted_total_size);
+  g_free (formatted_free_size);
+  g_free (label);
+out:
+  g_object_unref (object);
+}
+
+static void
+measure_available_space (GtkPlacesViewRow *row)
+{
+  gboolean should_measure;
+
+  should_measure = (!row->is_network && (row->volume || row->mount || row->file));
+
+  gtk_label_set_label (row->available_space_label, "");
+  gtk_widget_set_visible (GTK_WIDGET (row->available_space_label), should_measure);
+
+  if (should_measure)
+    {
+      GFile *file = NULL;
+
+      if (row->file)
+        {
+          file = g_object_ref (row->file);
+        }
+      else if (row->mount)
+        {
+          file = g_mount_get_root (row->mount);
+        }
+      else if (row->volume)
+        {
+          GMount *mount;
+
+          mount = g_volume_get_mount (row->volume);
+
+          if (mount)
+            file = g_mount_get_root (row->mount);
+
+          g_clear_object (&mount);
+        }
+
+      if (file)
+        {
+          g_cancellable_cancel (row->cancellable);
+          g_clear_object (&row->cancellable);
+          row->cancellable = g_cancellable_new ();
+
+          g_file_query_filesystem_info_async (file,
+                                              G_FILE_ATTRIBUTE_FILESYSTEM_FREE "," G_FILE_ATTRIBUTE_FILESYSTEM_SIZE,
+                                              G_PRIORITY_DEFAULT,
+                                              row->cancellable,
+                                              measure_available_space_finished,
+                                              row);
+        }
+    }
+}
+
+static void
 gtk_places_view_row_finalize (GObject *object)
 {
   GtkPlacesViewRow *self = GTK_PLACES_VIEW_ROW (object);
 
+  g_cancellable_cancel (self->cancellable);
+
   g_clear_object (&self->volume);
   g_clear_object (&self->mount);
   g_clear_object (&self->file);
+  g_clear_object (&self->cancellable);
 
   G_OBJECT_CLASS (gtk_places_view_row_parent_class)->finalize (object);
 }
@@ -149,15 +262,26 @@ gtk_places_view_row_set_property (GObject      *object,
 
     case PROP_MOUNT:
       g_set_object (&self->mount, g_value_get_object (value));
-      gtk_widget_set_visible (GTK_WIDGET (self->eject_button), self->mount != NULL);
+
+      /*
+       * When we hide the eject button, no size is allocated for it. Since
+       * we want to have alignment between rows, it needs an empty space
+       * when the eject button is not available. So, call then
+       * gtk_widget_set_child_visible(), which makes the button allocate the
+       * size but it stays hidden when needed.
+       */
+      gtk_widget_set_child_visible (GTK_WIDGET (self->eject_button), self->mount != NULL);
+      measure_available_space (self);
       break;
 
     case PROP_FILE:
       g_set_object (&self->file, g_value_get_object (value));
+      measure_available_space (self);
       break;
 
     case PROP_IS_NETWORK:
       gtk_places_view_row_set_is_network (self, g_value_get_boolean (value));
+      measure_available_space (self);
       break;
 
     default:
@@ -228,6 +352,7 @@ gtk_places_view_row_class_init (GtkPlacesViewRowClass *klass)
 
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/gtk/gtkplacesviewrow.ui");
 
+  gtk_widget_class_bind_template_child (widget_class, GtkPlacesViewRow, available_space_label);
   gtk_widget_class_bind_template_child (widget_class, GtkPlacesViewRow, busy_spinner);
   gtk_widget_class_bind_template_child (widget_class, GtkPlacesViewRow, eject_button);
   gtk_widget_class_bind_template_child (widget_class, GtkPlacesViewRow, eject_icon);
@@ -323,4 +448,20 @@ gtk_places_view_row_set_is_network (GtkPlacesViewRow *row,
                                     GTK_ICON_SIZE_BUTTON);
       gtk_widget_set_tooltip_text (GTK_WIDGET (row->eject_button), is_network ? _("Disconnect") : _("Unmount"));
     }
+}
+
+void
+gtk_places_view_row_set_path_size_group (GtkPlacesViewRow *row,
+                                         GtkSizeGroup     *group)
+{
+  if (group)
+    gtk_size_group_add_widget (group, GTK_WIDGET (row->path_label));
+}
+
+void
+gtk_places_view_row_set_space_size_group (GtkPlacesViewRow *row,
+                                          GtkSizeGroup     *group)
+{
+  if (group)
+    gtk_size_group_add_widget (group, GTK_WIDGET (row->available_space_label));
 }

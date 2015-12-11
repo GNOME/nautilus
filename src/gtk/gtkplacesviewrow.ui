@@ -39,6 +39,7 @@
                 <property name="can_focus">False</property>
                 <property name="hexpand">True</property>
                 <property name="xalign">0</property>
+                <property name="ellipsize">end</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -47,13 +48,24 @@
               </packing>
             </child>
             <child>
+              <object class="GtkLabel" id="available_space_label">
+                <property name="visible">False</property>
+                <property name="xalign">1</property>
+                <style>
+                  <class name="dim-label" />
+                </style>
+              </object>
+              <packing>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkLabel" id="path_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="justify">right</property>
                 <property name="ellipsize">middle</property>
-                <property name="xalign">1</property>
-                <property name="width_chars">15</property>
+                <property name="xalign">0</property>
                 <property name="max_width_chars">15</property>
                 <style>
                   <class name="dim-label"/>
@@ -62,12 +74,12 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">2</property>
+                <property name="position">3</property>
               </packing>
             </child>
             <child>
               <object class="GtkButton" id="eject_button">
-                <property name="visible">False</property>
+                <property name="visible">True</property>
                 <property name="halign">end</property>
                 <property name="valign">center</property>
                 <property name="tooltip-text" translatable="yes">Unmount</property>
@@ -86,7 +98,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">3</property>
+                <property name="position">4</property>
               </packing>
             </child>
             <child>
@@ -98,7 +110,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">4</property>
+                <property name="position">5</property>
               </packing>
             </child>
           </object>
