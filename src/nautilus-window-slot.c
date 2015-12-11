@@ -1268,7 +1268,7 @@ handle_regular_file_if_needed (NautilusWindowSlot *slot,
 
             slot->details->pending_location = nautilus_file_get_parent_location (file);
             slot->details->pending_selection = g_list_prepend (NULL, nautilus_file_ref (file));
-            slot->details->determine_view_file = parent_file;
+            slot->details->determine_view_file = nautilus_file_ref (parent_file);
             slot->details->pending_scroll_to = nautilus_file_get_uri (file);
 
             nautilus_file_invalidate_all_attributes (slot->details->determine_view_file);
