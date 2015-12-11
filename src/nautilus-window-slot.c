@@ -2277,11 +2277,7 @@ nautilus_window_slot_dispose (GObject *object)
 
 	nautilus_window_slot_set_viewed_file (slot, NULL);
 
-	if (slot->details->location) {
-		/* TODO? why do we ref here, instead of unreffing?
-		 * It was already here before the slot migration, though */
-		g_object_ref (slot->details->location);
-	}
+        g_clear_object (&slot->details->location);
 
         if (slot->details->view_mode_before_search) {
                 g_free (slot->details->view_mode_before_search);
