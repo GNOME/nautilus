@@ -841,6 +841,7 @@ check_force_reload (GFile                      *location,
                     NautilusLocationChangeType  type)
 {
         NautilusDirectory *directory;
+        NautilusFile *file;
 	gboolean force_reload;
 
         /* The code to force a reload is here because if we do it
@@ -848,6 +849,7 @@ check_force_reload (GFile                      *location,
 	 * we end up fetching things twice.
 	 */
         directory = nautilus_directory_get (location);
+        file = nautilus_file_get (location);
 
 	if (type == NAUTILUS_LOCATION_CHANGE_RELOAD) {
 		force_reload = TRUE;
@@ -857,11 +859,16 @@ check_force_reload (GFile                      *location,
 		force_reload = !nautilus_directory_is_local (directory);
 	}
 
+        /* We need to invalidate file attributes as well due to how mounting works
+         * in the window slot and to avoid other caching issues.
+         * Read handle_mount_if_needed for one example */
 	if (force_reload) {
+                nautilus_file_invalidate_all_attributes (file);
 		nautilus_directory_force_reload (directory);
 	}
 
         nautilus_directory_unref (directory);
+        nautilus_file_unref (file);
 }
 
 static void
@@ -1207,6 +1214,23 @@ nautilus_window_slot_display_view_selection_failure (NautilusWindow *window,
 	g_free (detail_message);
 }
 
+/* FIXME: This works in the folowwing way. begin_location_change tries to get the
+ * information of the file directly.
+ * If the nautilus file finds that there is an error trying to get its
+ * information and the error match that the file is not mounted, it sets an
+ * internal attribute with the error then we try to mount it here.
+ *
+ * However, files are cached, and if the file doesn't get finalized in a location
+ * change, because needs to be in the navigation history or is a bookmark, and the
+ * file is not the root of the mount point, which is tracked by a volume monitor,
+ * and it gets unmounted aftwerwards, the file doesn't realize it's unmounted, and
+ * therefore this trick to open an unmounted file will fail the next time the user
+ * tries to open.
+ * For that, we need to always invalidate the file attributes when a location is
+ * changed, which is done in check_force_reload.
+ * A better way would be to make sure any children of the mounted root gets
+ * akwnoledge by it either by adding a reference to its parent volume monitor
+ * or with another solution. */
 static gboolean
 handle_mount_if_needed (NautilusWindowSlot *slot,
                         NautilusFile       *file)
