@@ -593,15 +593,6 @@ update_operations (NautilusToolbar *self)
 
         g_list_free (progress_infos);
 
-        /* Either we are already showing the button, so keep showing it until the user
-         * toggle it to hide the operations popover, or, if we want now to show it,
-         * we have to have at least one operation that its total stimated time
-         * is longer than OPERATION_MINIMUM_TIME seconds, or if we failed to get
-         * a correct stimated time and it's around OPERATION_MINIMUM_TIME,
-         * showing the button for just for a moment because now we realized the
-         * estimated time is longer than a OPERATION_MINIMUM_TIME is odd, so show
-         * it only if the remaining time is bigger than again OPERATION_MINIMUM_TIME.
-         */
         if (should_show_progress_button &&
             !gtk_revealer_get_reveal_child (GTK_REVEALER (self->priv->operations_revealer))) {
                 add_operations_button_attention_style (self);
