@@ -608,6 +608,10 @@ update_operations (NautilusToolbar *self)
                 gtk_revealer_set_reveal_child (GTK_REVEALER (self->priv->operations_revealer),
                                                TRUE);
                 gtk_widget_queue_draw (self->priv->operations_icon);
+
+                /* Show the popover at start to increase visibility */
+                gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->priv->operations_button),
+                                              TRUE);
         }
 }
 
