@@ -580,11 +580,11 @@ update_operations (NautilusToolbar *self)
                                               should_show_progress_info (l->data);
 
                 g_signal_connect_swapped (l->data, "finished",
-		                          G_CALLBACK (on_progress_info_finished), self);
+                                          G_CALLBACK (on_progress_info_finished), self);
                 g_signal_connect_swapped (l->data, "cancelled",
-		                          G_CALLBACK (on_progress_info_cancelled), self);
+                                          G_CALLBACK (on_progress_info_cancelled), self);
                 g_signal_connect_swapped (l->data, "progress-changed",
-		                          G_CALLBACK (on_progress_info_progress_changed), self);
+                                          G_CALLBACK (on_progress_info_progress_changed), self);
                 progress = nautilus_progress_info_widget_new (l->data);
                 gtk_box_pack_start (GTK_BOX (self->priv->operations_container),
                                     progress,
