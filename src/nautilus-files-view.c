@@ -5139,8 +5139,8 @@ on_destination_dialog_response (GtkDialog *dialog,
                 uris = g_list_reverse (uris);
 
                 nautilus_files_view_move_copy_items (copy_data->view, uris, NULL, target_uri,
-                                               copy_data->is_move ? GDK_ACTION_MOVE : GDK_ACTION_COPY,
-                                               0, 0);
+                                                     copy_data->is_move ? GDK_ACTION_MOVE : GDK_ACTION_COPY,
+                                                     0, 0);
 
                 g_list_free_full (uris, g_free);
                 g_free (target_uri);
