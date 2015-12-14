@@ -264,7 +264,7 @@ CLEANFILES = \
 EXTRA_DIST =					\
 	$(resource_files)			\
 	$(server_in_files)			\
-	nautilus.gresource.xml			\
+	resources/nautilus.gresource.xml	\
 	check-nautilus				\
 	$(NULL)
 
