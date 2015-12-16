@@ -187,12 +187,7 @@ nodist_libnautilus_private_la_SOURCES =\
 	$(BUILT_SOURCES) \
 	$(NULL)
 
-gsettings_SCHEMAS = org.gnome.nautilus.gschema.xml
-
-@GSETTINGS_RULES@
-
 EXTRA_DIST =				\
-	$(gsettings_SCHEMAS)     \
 	$(TRACKER_SOURCES)		\
 	nautilus-private-enum-types.h.template	\
 	nautilus-private-enum-types.c.template	\

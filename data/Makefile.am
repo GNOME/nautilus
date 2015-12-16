@@ -34,12 +34,17 @@ org.freedesktop.FileManager1.service: org.freedesktop.FileManager1.service.in Ma
 searchproviderdir = $(datadir)/gnome-shell/search-providers
 searchprovider_DATA = nautilus-search-provider.ini
 
+gsettings_SCHEMAS = org.gnome.nautilus.gschema.xml
+
+@GSETTINGS_RULES@
+
 EXTRA_DIST =				\
 	org.gnome.Nautilus.desktop	\
 	org.gnome.Nautilus.desktop.in	\
 	dbus-interfaces.xml		\
 	freedesktop-dbus-interfaces.xml	\
 	shell-search-provider-dbus-interfaces.xml \
+	$(gsettings_SCHEMAS)     \
 	$(desktop_in_files)		\
 	$(service_in_files)		\
 	$(autostart_in_files)		\
