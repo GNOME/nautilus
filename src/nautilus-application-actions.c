@@ -210,8 +210,6 @@ static GActionEntry app_entries[] = {
 void
 nautilus_init_application_actions (NautilusApplication *app)
 {
-	GtkBuilder *builder;
-	GError *error = NULL;
 	gboolean show_sidebar;
 	const gchar *debug_no_app_menu;
 
