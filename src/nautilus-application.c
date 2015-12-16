@@ -29,7 +29,6 @@
 
 #include "nautilus-application.h"
 
-#include "nautilus-application-actions.h"
 #include "nautilus-dbus-manager.h"
 #include "nautilus-desktop-window.h"
 #include "nautilus-freedesktop-dbus.h"
@@ -40,6 +39,7 @@
 #include "nautilus-shell-search-provider.h"
 #include "nautilus-window.h"
 #include "nautilus-window-slot.h"
+#include "nautilus-file-management-properties.h"
 
 #include <libnautilus-private/nautilus-directory-private.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
@@ -675,104 +675,296 @@ nautilus_application_select (NautilusApplication *self,
     }
 }
 
-const GOptionEntry options[] = {
-#ifndef NAUTILUS_OMIT_SELF_CHECK
-	{ "check", 'c', 0, G_OPTION_ARG_NONE, NULL,
-	  N_("Perform a quick set of self-check tests."), NULL },
-#endif
-	/* dummy, only for compatibility reasons */
-	{ "browser", '\0', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_NONE, NULL,
-	  NULL, NULL },
-	/* ditto */
-	{ "geometry", 'g', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_STRING, NULL,
-	  N_("Create the initial window with the given geometry."), N_("GEOMETRY") },
-	{ "version", '\0', 0, G_OPTION_ARG_NONE, NULL,
-	  N_("Show the version of the program."), NULL },
-	{ "new-window", 'w', 0, G_OPTION_ARG_NONE, NULL,
-	  N_("Always open a new window for browsing specified URIs"), NULL },
-	{ "no-default-window", 'n', 0, G_OPTION_ARG_NONE, NULL,
-	  N_("Only create windows for explicitly specified URIs."), NULL },
-	{ "no-desktop", '\0', 0, G_OPTION_ARG_NONE, NULL,
-	  N_("Never manage the desktop (ignore the GSettings preference)."), NULL },
-	{ "force-desktop", '\0', 0, G_OPTION_ARG_NONE, NULL,
-	  N_("Always manage the desktop (ignore the GSettings preference)."), NULL },
-	{ "quit", 'q', 0, G_OPTION_ARG_NONE, NULL,
-	  N_("Quit Nautilus."), NULL },
-	{ "select", 's', 0, G_OPTION_ARG_NONE, NULL,
-	  N_("Select specified URI in parent folder."), NULL },
-	{ G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, NULL, NULL,  N_("[URI...]") },
+static void
+action_new_window (GSimpleAction *action,
+                   GVariant      *parameter,
+                   gpointer       user_data)
+{
+        GtkApplication *application = user_data;
+        GFile *home;
 
-	{ NULL }
+        home = g_file_new_for_path (g_get_home_dir ());
+        nautilus_application_open_location_full (NAUTILUS_APPLICATION (application), home,
+                                                 NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW, NULL, NULL, NULL);
+
+        g_object_unref (home);
+}
+
+static void
+action_preferences (GSimpleAction *action,
+                    GVariant      *parameter,
+                    gpointer       user_data)
+{
+        GtkApplication *application = user_data;
+        nautilus_file_management_properties_dialog_show (gtk_application_get_active_window (application));
+}
+
+static void
+action_about (GSimpleAction *action,
+              GVariant      *parameter,
+              gpointer       user_data)
+{
+        GtkApplication *application = user_data;
+
+        nautilus_window_show_about_dialog (NAUTILUS_WINDOW (gtk_application_get_active_window (application)));
+}
+
+static void
+action_help (GSimpleAction *action,
+             GVariant      *parameter,
+             gpointer       user_data)
+{
+        GtkWindow *window;
+        GtkWidget *dialog;
+        GtkApplication *application = user_data;
+        GError *error = NULL;
+
+        window = gtk_application_get_active_window (application);
+        gtk_show_uri (window ?
+                      gtk_window_get_screen (GTK_WINDOW (window)) :
+                      gdk_screen_get_default (),
+                      "help:gnome-help/files",
+                      gtk_get_current_event_time (), &error);
+
+        if (error) {
+               dialog = gtk_message_dialog_new (window ? GTK_WINDOW (window) : NULL,
+                                                GTK_DIALOG_MODAL,
+                                                GTK_MESSAGE_ERROR,
+                                                GTK_BUTTONS_OK,
+                                                _("There was an error displaying help: \n%s"),
+                                                error->message);
+               g_signal_connect (G_OBJECT (dialog), "response",
+                                 G_CALLBACK (gtk_widget_destroy),
+                                 NULL);
+
+               gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+               gtk_widget_show (dialog);
+               g_error_free (error);
+        }
+}
+
+static void
+action_open_desktop (GSimpleAction *action,
+                     GVariant      *parameter,
+                     gpointer       user_data)
+{
+        nautilus_desktop_window_ensure ();
+}
+
+static void
+action_close_desktop (GSimpleAction *action,
+                      GVariant      *parameter,
+                      gpointer       user_data)
+{
+        GtkWidget *desktop_window;
+
+        desktop_window = nautilus_desktop_window_get ();
+        if (desktop_window != NULL) {
+                gtk_widget_destroy (desktop_window);
+        }
+}
+
+static void
+action_kill (GSimpleAction *action,
+             GVariant      *parameter,
+             gpointer       user_data)
+{
+        GtkApplication *application = user_data;
+
+        /* we have been asked to force quit */
+        g_application_quit (G_APPLICATION (application));
+}
+
+static void
+action_quit (GSimpleAction *action,
+             GVariant      *parameter,
+             gpointer       user_data)
+{
+        NautilusApplication *application = user_data;
+        GList *windows, *l;
+
+        /* nautilus_window_close() doesn't do anything for desktop windows */
+        windows = nautilus_application_get_windows (application);
+        /* make a copy, since the original list will be modified when destroying
+         * a window, making this list invalid */
+        windows = g_list_copy (windows);
+        for (l = windows; l != NULL; l = l->next) {
+                nautilus_window_close (l->data);
+        }
+
+        g_list_free (windows);
+}
+
+static void
+action_show_hide_sidebar (GSimpleAction *action,
+                          GVariant      *state,
+                          gpointer       user_data)
+{
+        GList *window, *windows;
+
+        windows = gtk_application_get_windows (GTK_APPLICATION (user_data));
+
+        for (window = windows; window != NULL; window = window->next) {
+                if (g_variant_get_boolean (state)) {
+                        nautilus_window_show_sidebar (window->data);
+                } else {
+                        nautilus_window_hide_sidebar (window->data);
+                }
+        }
+
+        g_simple_action_set_state (action, state);
+}
+
+static void
+action_show_help_overlay (GSimpleAction *action,
+                      GVariant      *state,
+                      gpointer       user_data)
+{
+        GtkApplication *application = user_data;
+        GtkWindow *window = gtk_application_get_active_window (application);
+
+        g_action_group_activate_action (G_ACTION_GROUP (window), "show-help-overlay", NULL);
+}
+
+static GActionEntry app_entries[] = {
+        { "new-window", action_new_window, NULL, NULL, NULL },
+        { "preferences", action_preferences, NULL, NULL, NULL },
+        { "show-hide-sidebar", NULL, NULL, "true", action_show_hide_sidebar },
+        { "about", action_about, NULL, NULL, NULL },
+        { "help", action_help, NULL, NULL, NULL },
+        { "quit", action_quit, NULL, NULL, NULL },
+        { "kill", action_kill, NULL, NULL, NULL },
+        { "open-desktop", action_open_desktop, NULL, NULL, NULL },
+        { "close-desktop", action_close_desktop, NULL, NULL, NULL },
+        { "show-help-overlay", action_show_help_overlay, NULL, NULL, NULL },
+};
+
+static void
+nautilus_init_application_actions (NautilusApplication *app)
+{
+        gboolean show_sidebar;
+        const gchar *debug_no_app_menu;
+
+        g_action_map_add_action_entries (G_ACTION_MAP (app),
+                                        app_entries, G_N_ELEMENTS (app_entries),
+                                        app);
+
+        debug_no_app_menu = g_getenv ("NAUTILUS_DEBUG_NO_APP_MENU");
+        if (debug_no_app_menu) {
+                DEBUG ("Disabling app menu GtkSetting as requested...");
+                g_object_set (gtk_settings_get_default (),
+                              "gtk-shell-shows-app-menu", FALSE,
+                              NULL);
+        }
+
+        show_sidebar = g_settings_get_boolean (nautilus_window_state,
+                                               NAUTILUS_WINDOW_STATE_START_WITH_SIDEBAR);
+
+        g_action_group_change_action_state (G_ACTION_GROUP (app),
+                                            "show-hide-sidebar",
+                                            g_variant_new_boolean (show_sidebar));
+
+        nautilus_application_add_accelerator (G_APPLICATION (app), "app.show-hide-sidebar", "F9");
+}
+
+const GOptionEntry options[] = {
+        #ifndef NAUTILUS_OMIT_SELF_CHECK
+        { "check", 'c', 0, G_OPTION_ARG_NONE, NULL,
+          N_("Perform a quick set of self-check tests."), NULL },
+        #endif
+        /* dummy, only for compatibility reasons */
+        { "browser", '\0', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_NONE, NULL,
+          NULL, NULL },
+        /* ditto */
+        { "geometry", 'g', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_STRING, NULL,
+          N_("Create the initial window with the given geometry."), N_("GEOMETRY") },
+        { "version", '\0', 0, G_OPTION_ARG_NONE, NULL,
+          N_("Show the version of the program."), NULL },
+        { "new-window", 'w', 0, G_OPTION_ARG_NONE, NULL,
+          N_("Always open a new window for browsing specified URIs"), NULL },
+        { "no-default-window", 'n', 0, G_OPTION_ARG_NONE, NULL,
+          N_("Only create windows for explicitly specified URIs."), NULL },
+        { "no-desktop", '\0', 0, G_OPTION_ARG_NONE, NULL,
+          N_("Never manage the desktop (ignore the GSettings preference)."), NULL },
+        { "force-desktop", '\0', 0, G_OPTION_ARG_NONE, NULL,
+          N_("Always manage the desktop (ignore the GSettings preference)."), NULL },
+        { "quit", 'q', 0, G_OPTION_ARG_NONE, NULL,
+          N_("Quit Nautilus."), NULL },
+        { "select", 's', 0, G_OPTION_ARG_NONE, NULL,
+          N_("Select specified URI in parent folder."), NULL },
+        { G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, NULL, NULL,  N_("[URI...]") },
+
+        { NULL }
 };
 
 static void
 nautilus_application_activate (GApplication *app)
 {
-	GFile **files;
+        GFile **files;
 
-	DEBUG ("Calling activate");
+        DEBUG ("Calling activate");
 
-	files = g_malloc0 (2 * sizeof (GFile *));
-	files[0] = g_file_new_for_path (g_get_home_dir ());
-	nautilus_application_open (app, files, 1, NULL);
+        files = g_malloc0 (2 * sizeof (GFile *));
+        files[0] = g_file_new_for_path (g_get_home_dir ());
+        nautilus_application_open (app, files, 1, NULL);
 
-	g_object_unref (files[0]);
-	g_free (files);
+        g_object_unref (files[0]);
+        g_free (files);
 }
 
 static gint
 nautilus_application_handle_file_args (NautilusApplication *self,
-				       GVariantDict        *options)
+                   GVariantDict        *options)
 {
-	GFile **files;
-	GFile *file;
-	gint idx, len;
-	const gchar * const *remaining = NULL;
-	GPtrArray *file_array;
+        GFile **files;
+        GFile *file;
+        gint idx, len;
+        const gchar * const *remaining = NULL;
+        GPtrArray *file_array;
 
-	g_variant_dict_lookup (options, G_OPTION_REMAINING, "^a&s", &remaining);
+        g_variant_dict_lookup (options, G_OPTION_REMAINING, "^a&s", &remaining);
 
-	/* Convert args to GFiles */
-	file_array = g_ptr_array_new_full (0, g_object_unref);
+        /* Convert args to GFiles */
+        file_array = g_ptr_array_new_full (0, g_object_unref);
 
-	if (remaining) {
-		for (idx = 0; remaining[idx] != NULL; idx++) {
-                        gchar *cwd;
+        if (remaining) {
+            for (idx = 0; remaining[idx] != NULL; idx++) {
+                            gchar *cwd;
 
-                        g_variant_dict_lookup (options, "cwd", "s", &cwd);
-                        if (cwd == NULL) {
-                                file = g_file_new_for_commandline_arg (remaining[idx]);
-                        } else {
-                                file = g_file_new_for_commandline_arg_and_cwd (remaining[idx], cwd);
-                                g_free (cwd);
-                        }
-			g_ptr_array_add (file_array, file);
-		}
-	} else if (g_variant_dict_contains (options, "new-window")) {
-		file = g_file_new_for_path (g_get_home_dir ());
-		g_ptr_array_add (file_array, file);
-	} else {
-		g_ptr_array_unref (file_array);
+                            g_variant_dict_lookup (options, "cwd", "s", &cwd);
+                            if (cwd == NULL) {
+                                    file = g_file_new_for_commandline_arg (remaining[idx]);
+                            } else {
+                                    file = g_file_new_for_commandline_arg_and_cwd (remaining[idx], cwd);
+                                    g_free (cwd);
+                            }
+                g_ptr_array_add (file_array, file);
+            }
+        } else if (g_variant_dict_contains (options, "new-window")) {
+            file = g_file_new_for_path (g_get_home_dir ());
+            g_ptr_array_add (file_array, file);
+        } else {
+            g_ptr_array_unref (file_array);
 
-		/* No command line options or files, just activate the application */
-		nautilus_application_activate (G_APPLICATION (self));
-		return EXIT_SUCCESS;
-	}
+            /* No command line options or files, just activate the application */
+            nautilus_application_activate (G_APPLICATION (self));
+            return EXIT_SUCCESS;
+        }
 
-	len = file_array->len;
-	files = (GFile **) file_array->pdata;
+        len = file_array->len;
+        files = (GFile **) file_array->pdata;
 
-	if (g_variant_dict_contains (options, "select")) {
-		nautilus_application_select (self, files, len);
-	} else {
-		/* Create new windows */
-		nautilus_application_open (G_APPLICATION (self), files, len,
-                                           g_variant_dict_contains (options, "new-window") ? "new-window" : "");
-	}
+        if (g_variant_dict_contains (options, "select")) {
+            nautilus_application_select (self, files, len);
+        } else {
+            /* Create new windows */
+            nautilus_application_open (G_APPLICATION (self), files, len,
+                                               g_variant_dict_contains (options, "new-window") ? "new-window" : "");
+        }
 
-	g_ptr_array_unref (file_array);
+        g_ptr_array_unref (file_array);
 
-	return EXIT_SUCCESS;
+        return EXIT_SUCCESS;
 }
 
 static gint
