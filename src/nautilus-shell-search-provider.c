@@ -256,7 +256,6 @@ search_add_volumes_and_bookmarks (PendingSearch *search)
   NautilusSearchHit *hit;
   NautilusBookmark *bookmark;
   const gchar *name;
-  gint length, idx;
   gchar *string, *uri;
   gdouble match;
   GList *l, *m, *drives, *volumes, *mounts, *mounts_to_check, *candidates;
@@ -266,17 +265,17 @@ search_add_volumes_and_bookmarks (PendingSearch *search)
   GFile *location;
   SearchHitCandidate *candidate;
   NautilusBookmarkList *bookmarks;
+  GList *all_bookmarks;
   GVolumeMonitor *volume_monitor;
 
   bookmarks = nautilus_application_get_bookmarks (NAUTILUS_APPLICATION (g_application_get_default ()));
+  all_bookmarks = nautilus_bookmark_list_get_all (bookmarks);
   volume_monitor = g_volume_monitor_get ();
   candidates = NULL;
 
   /* first add bookmarks */
-  length = nautilus_bookmark_list_length (bookmarks);
-  for (idx = 0; idx < length; idx++) {
-    bookmark = nautilus_bookmark_list_item_at (bookmarks, idx);
-
+  for (l = all_bookmarks; l != NULL; l = l->next) {
+    bookmark = NAUTILUS_BOOKMARK (l->data);
     name = nautilus_bookmark_get_name (bookmark);
     if (name == NULL)
       continue;

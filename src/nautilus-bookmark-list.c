@@ -703,3 +703,17 @@ nautilus_bookmark_list_new (void)
 
 	return list;
 }
+
+/**
+ * nautilus_bookmark_list_get_all:
+ *
+ * Get a GList of all NautilusBookmark.
+ * @bookmarks: NautilusBookmarkList from where to get the bookmarks.
+ **/
+GList *
+nautilus_bookmark_list_get_all (NautilusBookmarkList *bookmarks)
+{
+       g_return_val_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks), NULL);
+
+       return bookmarks->list;
+}
