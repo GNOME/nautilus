@@ -62,20 +62,9 @@ GType                   nautilus_bookmark_list_get_type            (void);
 NautilusBookmarkList *  nautilus_bookmark_list_new                 (void);
 void                    nautilus_bookmark_list_append              (NautilusBookmarkList   *bookmarks,
 								    NautilusBookmark *bookmark);
-void                    nautilus_bookmark_list_delete_item_at      (NautilusBookmarkList   *bookmarks,
-								    guint                   index);
-void                    nautilus_bookmark_list_insert_item         (NautilusBookmarkList   *bookmarks,
-								    NautilusBookmark *bookmark,
-								    guint                   index);
-guint                   nautilus_bookmark_list_length              (NautilusBookmarkList   *bookmarks);
-NautilusBookmark *      nautilus_bookmark_list_item_at             (NautilusBookmarkList   *bookmarks,
-								    guint                   index);
 NautilusBookmark *      nautilus_bookmark_list_item_with_location  (NautilusBookmarkList *bookmarks,
 								    GFile                *location,
 								    guint                *index);
-void                    nautilus_bookmark_list_move_item           (NautilusBookmarkList *bookmarks,
-								    guint                 index,
-								    guint                 destination);
 gboolean                nautilus_bookmark_list_can_bookmark_location (NautilusBookmarkList *list,
 								      GFile                *location);
 GList *                 nautilus_bookmark_list_get_all             (NautilusBookmarkList   *bookmarks);

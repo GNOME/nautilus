@@ -237,124 +237,6 @@ insert_bookmark_internal (NautilusBookmarkList *bookmarks,
 }
 
 /**
- * nautilus_bookmark_list_append:
- *
- * Append a bookmark to a bookmark list.
- * @bookmarks: NautilusBookmarkList to append to.
- * @bookmark: Bookmark to append a copy of.
- **/
-void
-nautilus_bookmark_list_append (NautilusBookmarkList *bookmarks, 
-			       NautilusBookmark     *bookmark)
-{
-	g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
-	g_return_if_fail (NAUTILUS_IS_BOOKMARK (bookmark));
-
-	if (g_list_find_custom (bookmarks->list, bookmark,
-				nautilus_bookmark_compare_with) != NULL) {
-		return;
-	}
-
-	insert_bookmark_internal (bookmarks, g_object_ref (bookmark), -1);
-	nautilus_bookmark_list_save_file (bookmarks);
-}
-
-/**
- * nautilus_bookmark_list_delete_item_at:
- * 
- * Delete the bookmark at the specified position.
- * @bookmarks: the list of bookmarks.
- * @index: index, must be less than length of list.
- **/
-void
-nautilus_bookmark_list_delete_item_at (NautilusBookmarkList *bookmarks, 
-				       guint                 index)
-{
-	GList *doomed;
-
-	g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
-	g_return_if_fail (index < g_list_length (bookmarks->list));
-
-	doomed = g_list_nth (bookmarks->list, index);
-	bookmarks->list = g_list_remove_link (bookmarks->list, doomed);
-
-	g_assert (NAUTILUS_IS_BOOKMARK (doomed->data));
-	stop_monitoring_bookmark (bookmarks, NAUTILUS_BOOKMARK (doomed->data));
-	g_object_unref (doomed->data);
-
-	g_list_free_1 (doomed);
-
-	nautilus_bookmark_list_save_file (bookmarks);
-}
-
-/**
- * nautilus_bookmark_list_move_item:
- *
- * Move the item from the given position to the destination.
- * @index: the index of the first bookmark.
- * @destination: the index of the second bookmark.
- **/
-void
-nautilus_bookmark_list_move_item (NautilusBookmarkList *bookmarks,
-				  guint index,
-				  guint destination)
-{
-	GList *bookmark_item;
-
-	if (index == destination) {
-		return;
-	}
-
-	bookmark_item = g_list_nth (bookmarks->list, index);
-	bookmarks->list = g_list_remove_link (bookmarks->list,
-					      bookmark_item);
-
-	bookmarks->list = g_list_insert (bookmarks->list,
-					 bookmark_item->data,
-					 destination);
-
-	nautilus_bookmark_list_save_file (bookmarks);
-}
-
-/**
- * nautilus_bookmark_list_insert_item:
- * 
- * Insert a bookmark at a specified position.
- * @bookmarks: the list of bookmarks.
- * @index: the position to insert the bookmark at.
- * @new_bookmark: the bookmark to insert a copy of.
- **/
-void
-nautilus_bookmark_list_insert_item (NautilusBookmarkList *bookmarks,
-				    NautilusBookmark     *new_bookmark,
-				    guint                 index)
-{
-	g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
-	g_return_if_fail (index <= g_list_length (bookmarks->list));
-
-	insert_bookmark_internal (bookmarks, g_object_ref (new_bookmark), index);
-	nautilus_bookmark_list_save_file (bookmarks);
-}
-
-/**
- * nautilus_bookmark_list_item_at:
- * 
- * Get the bookmark at the specified position.
- * @bookmarks: the list of bookmarks.
- * @index: index, must be less than length of list.
- * 
- * Return value: the bookmark at position @index in @bookmarks.
- **/
-NautilusBookmark *
-nautilus_bookmark_list_item_at (NautilusBookmarkList *bookmarks, guint index)
-{
-	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks), NULL);
-	g_return_val_if_fail (index < g_list_length (bookmarks->list), NULL);
-
-	return NAUTILUS_BOOKMARK (g_list_nth_data (bookmarks->list, index));
-}
-
-/**
  * nautilus_bookmark_list_item_with_location:
  *
  * Get the bookmark with the specified location, if any
@@ -404,19 +286,26 @@ nautilus_bookmark_list_item_with_location (NautilusBookmarkList *bookmarks,
 }
 
 /**
- * nautilus_bookmark_list_length:
- * 
- * Get the number of bookmarks in the list.
- * @bookmarks: the list of bookmarks.
- * 
- * Return value: the length of the bookmark list.
+ * nautilus_bookmark_list_append:
+ *
+ * Append a bookmark to a bookmark list.
+ * @bookmarks: NautilusBookmarkList to append to.
+ * @bookmark: Bookmark to append a copy of.
  **/
-guint
-nautilus_bookmark_list_length (NautilusBookmarkList *bookmarks)
+void
+nautilus_bookmark_list_append (NautilusBookmarkList *bookmarks,
+			       NautilusBookmark     *bookmark)
 {
-	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK_LIST(bookmarks), 0);
+	g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
+	g_return_if_fail (NAUTILUS_IS_BOOKMARK (bookmark));
 
-	return g_list_length (bookmarks->list);
+	if (g_list_find_custom (bookmarks->list, bookmark,
+				nautilus_bookmark_compare_with) != NULL) {
+		return;
+	}
+
+	insert_bookmark_internal (bookmarks, g_object_ref (bookmark), -1);
+	nautilus_bookmark_list_save_file (bookmarks);
 }
 
 static void

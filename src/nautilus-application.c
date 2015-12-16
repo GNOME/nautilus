@@ -30,7 +30,6 @@
 #include "nautilus-application.h"
 
 #include "nautilus-application-actions.h"
-#include "nautilus-bookmarks-window.h"
 #include "nautilus-dbus-manager.h"
 #include "nautilus-desktop-window.h"
 #include "nautilus-freedesktop-dbus.h"
@@ -110,16 +109,6 @@ nautilus_application_get_bookmarks (NautilusApplication *application)
 	}
 
 	return application->priv->bookmark_list;
-}
-
-void
-nautilus_application_edit_bookmarks (NautilusApplication *application,
-				     NautilusWindow      *window)
-{
-	GtkWindow *bookmarks_window;
-
-	bookmarks_window = nautilus_bookmarks_window_new (window);
-	gtk_window_present (bookmarks_window);
 }
 
 static gboolean

@@ -144,8 +144,6 @@ nautilus_SOURCES = \
 	nautilus-application-actions.h		\
 	nautilus-bookmark-list.c		\
 	nautilus-bookmark-list.h		\
-	nautilus-bookmarks-window.c		\
-	nautilus-bookmarks-window.h		\
 	nautilus-canvas-view.c			\
 	nautilus-canvas-view.h			\
 	nautilus-canvas-view-container.c	\

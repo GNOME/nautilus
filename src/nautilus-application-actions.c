@@ -47,17 +47,6 @@ action_new_window (GSimpleAction *action,
 }
 
 static void
-action_bookmarks (GSimpleAction *action,
-		  GVariant *parameter,
-		  gpointer user_data)
-{
-	GtkApplication *application = user_data;
-
-	nautilus_application_edit_bookmarks (NAUTILUS_APPLICATION (application),
-					     NAUTILUS_WINDOW (gtk_application_get_active_window (application)));
-}
-
-static void
 action_preferences (GSimpleAction *action,
 		    GVariant *parameter,
 		    gpointer user_data)
@@ -195,7 +184,6 @@ action_show_help_overlay (GSimpleAction *action,
 
 static GActionEntry app_entries[] = {
 	{ "new-window", action_new_window, NULL, NULL, NULL },
-	{ "bookmarks", action_bookmarks, NULL, NULL, NULL },
 	{ "preferences", action_preferences, NULL, NULL, NULL },
 	{ "show-hide-sidebar", NULL, NULL, "true", action_show_hide_sidebar },
 	{ "about", action_about, NULL, NULL, NULL },
@@ -233,5 +221,4 @@ nautilus_init_application_actions (NautilusApplication *app)
 					    g_variant_new_boolean (show_sidebar));
 
 	nautilus_application_add_accelerator (G_APPLICATION (app), "app.show-hide-sidebar", "F9");
-	nautilus_application_add_accelerator (G_APPLICATION (app), "app.bookmarks", "<control>b");
 }

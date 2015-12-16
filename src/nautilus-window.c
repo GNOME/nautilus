@@ -31,7 +31,6 @@
 #include <config.h>
 
 #include "nautilus-application.h"
-#include "nautilus-bookmarks-window.h"
 #include "nautilus-desktop-window.h"
 #include "nautilus-location-entry.h"
 #include "nautilus-mime-actions.h"
