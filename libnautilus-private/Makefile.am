@@ -187,16 +187,12 @@ nodist_libnautilus_private_la_SOURCES =\
 	$(BUILT_SOURCES) \
 	$(NULL)
 
-gsettingsschema_in_files = org.gnome.nautilus.gschema.xml.in
-gsettings_SCHEMAS = $(gsettingsschema_in_files:.xml.in=.xml)
-.PRECIOUS: $(gsettings_SCHEMAS)
-
-@INTLTOOL_XML_NOMERGE_RULE@
+gsettings_SCHEMAS = org.gnome.nautilus.gschema.xml
 
 @GSETTINGS_RULES@
 
 EXTRA_DIST =				\
-	$(gsettingsschema_in_files)     \
+	$(gsettings_SCHEMAS)     \
 	$(TRACKER_SOURCES)		\
 	nautilus-private-enum-types.h.template	\
 	nautilus-private-enum-types.c.template	\
@@ -204,7 +200,6 @@ EXTRA_DIST =				\
 
 CLEANFILES = \
 	$(BUILT_SOURCES)				\
-	$(gsettings_SCHEMAS)				\
 	$(NULL)
 
 dist-hook:

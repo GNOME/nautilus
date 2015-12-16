@@ -62,7 +62,7 @@ GLIB_DEFINE_LOCALEDIR(GNOMELOCALEDIR)
 
 GLIB_GSETTINGS
 
-IT_PROG_INTLTOOL([0.40.1])
+IT_PROG_INTLTOOL([0.50])
 
 dnl ==========================================================================
 
