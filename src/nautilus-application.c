@@ -275,60 +275,6 @@ mark_desktop_files_trusted (void)
 	g_free (do_once_file);
 }
 
-static void
-do_upgrades_once (NautilusApplication *self)
-{
-	char *metafile_dir, *updated, *nautilus_dir, *xdg_dir;
-	const gchar *message;
-	int fd, res;
-
-	mark_desktop_files_trusted ();
-
-	metafile_dir = g_build_filename (g_get_home_dir (),
-					 ".nautilus/metafiles", NULL);
-	if (g_file_test (metafile_dir, G_FILE_TEST_IS_DIR)) {
-		updated = g_build_filename (metafile_dir, "migrated-to-gvfs", NULL);
-		if (!g_file_test (updated, G_FILE_TEST_EXISTS)) {
-			g_spawn_command_line_async (LIBEXECDIR"/nautilus-convert-metadata --quiet", NULL);
-			fd = g_creat (updated, 0600);
-			if (fd != -1) {
-				close (fd);
-			}
-		}
-		g_free (updated);
-	}
-	g_free (metafile_dir);
-
-	nautilus_dir = g_build_filename (g_get_home_dir (),
-					 ".nautilus", NULL);
-	xdg_dir = nautilus_get_user_directory ();
-	if (g_file_test (nautilus_dir, G_FILE_TEST_IS_DIR)) {
-		/* test if we already attempted to migrate first */
-		updated = g_build_filename (nautilus_dir, "DEPRECATED-DIRECTORY", NULL);
-		message = _("Nautilus 3.0 deprecated this directory and tried migrating "
-			    "this configuration to ~/.config/nautilus");
-		if (!g_file_test (updated, G_FILE_TEST_EXISTS)) {
-			/* rename() works fine if the destination directory is
-			 * empty.
-			 */
-			res = g_rename (nautilus_dir, xdg_dir);
-
-			if (res == -1) {
-				fd = g_creat (updated, 0600);
-				if (fd != -1) {
-					res = write (fd, message, strlen (message));
-					close (fd);
-				}
-			}
-		}
-
-		g_free (updated);
-	}
-
-	g_free (nautilus_dir);
-	g_free (xdg_dir);
-}
-
 NautilusWindow *
 nautilus_application_create_window (NautilusApplication *application,
 				    GdkScreen           *screen)
@@ -1060,8 +1006,6 @@ nautilus_application_startup (GApplication *app)
 	 * if there are problems.
 	 */
 	check_required_directories (self);
-
-	do_upgrades_once (self);
 
 	nautilus_init_application_actions (self);
 	init_desktop (self);

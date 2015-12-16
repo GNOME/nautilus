@@ -5,10 +5,6 @@ bin_PROGRAMS=					\
 	nautilus-autorun-software		\
 	$(NULL)
 
-libexec_PROGRAMS=				\
-	nautilus-convert-metadata		\
-	$(NULL)
-
 AM_CPPFLAGS =							\
 	-I$(top_srcdir) 					\
 	-I$(top_srcdir)/libnautilus-private 			\
@@ -22,7 +18,6 @@ AM_CPPFLAGS =							\
 	$(EXEMPI_CFLAGS)                                        \
 	-DDATADIR=\""$(datadir)"\" 				\
 	-DLIBDIR=\""$(libdir)"\" 				\
-	-DLIBEXECDIR=\""$(libexecdir)"\" 			\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 		\
 	-DPREFIX=\""$(prefix)"\" 				\
 	-DVERSION="\"$(VERSION)\"" 				\
@@ -241,10 +236,6 @@ endif
 
 nautilus_autorun_software_SOURCES= 			\
 	nautilus-autorun-software.c			\
-	$(NULL)
-
-nautilus_convert_metadata_SOURCES= \
-	nautilus-convert-metadata.c	\
 	$(NULL)
 
 BUILT_SOURCES = 					\
