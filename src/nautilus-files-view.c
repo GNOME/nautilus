@@ -7757,14 +7757,10 @@ nautilus_files_view_set_search_query (NautilusView  *view,
                         nautilus_view_set_location (view, location);
                 } else {
                         NautilusDirectory *directory;
-                        NautilusFile *file;
-                        gchar *path;
                         gchar *uri;
 
                         uri = nautilus_search_directory_generate_new_uri ();
                         location = g_file_new_for_uri (uri);
-                        file = nautilus_file_get (location);
-                        path = g_file_get_uri (location);
 
                         directory = nautilus_directory_get (location);
                         g_assert (NAUTILUS_IS_SEARCH_DIRECTORY (directory));
@@ -7777,9 +7773,7 @@ nautilus_files_view_set_search_query (NautilusView  *view,
                         g_object_notify (G_OBJECT (view), "is-searching");
 
                         nautilus_directory_unref (directory);
-                        nautilus_file_unref (file);
                         g_free (uri);
-                        g_free (path);
                 }
         } else {
                  if (nautilus_view_is_searching (view)) {
