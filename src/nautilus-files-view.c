@@ -3092,6 +3092,14 @@ nautilus_files_view_set_location (NautilusView *view,
         nautilus_profile_start (NULL);
         directory = nautilus_directory_get (location);
         load_directory (NAUTILUS_FILES_VIEW (view), directory);
+        /* In case we want to load a previous search, sync the query */
+        if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
+                NautilusQuery *previous_query;
+
+                previous_query = nautilus_search_directory_get_query (NAUTILUS_SEARCH_DIRECTORY (directory));
+                nautilus_view_set_search_query (view, previous_query);
+                g_object_unref (previous_query);
+        }
         nautilus_directory_unref (directory);
         nautilus_profile_end (NULL);
 }
@@ -7754,7 +7762,14 @@ nautilus_files_view_set_search_query (NautilusView  *view,
                          * Reuse the search directory and reload it.
                          */
                         nautilus_search_directory_set_query (NAUTILUS_SEARCH_DIRECTORY (files_view->details->model), query);
-                        nautilus_view_set_location (view, location);
+                        /* It's important to use load_directory instead of set_location,
+                         * since the location is already correct, however we need
+                         * to reload the directory with the new query set. But
+                         * set_location has a check for wheter the location is a
+                         * search directory, so setting the location to a search
+                         * directory when is already serching will enter a loop.
+                         */
+                        load_directory (files_view, nautilus_directory_ref (files_view->details->model));
                 } else {
                         NautilusDirectory *directory;
                         gchar *uri;
