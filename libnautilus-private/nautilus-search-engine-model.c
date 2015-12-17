@@ -79,6 +79,8 @@ finalize (GObject *object)
 static gboolean
 search_finished (NautilusSearchEngineModel *model)
 {
+        model->details->finished_id = 0;
+
 	if (model->details->hits != NULL) {
 	        DEBUG ("Model engine hits added");
 		nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (model),
