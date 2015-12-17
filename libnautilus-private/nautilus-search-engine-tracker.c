@@ -120,7 +120,7 @@ search_finished (NautilusSearchEngineTracker *tracker,
                 if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
 	                DEBUG ("Tracker engine finished and cancelled");
                 } else {
-	                DEBUG ("Tracker engine finished");
+	                DEBUG ("Tracker engine finished correctly");
                 }
 	}
 
