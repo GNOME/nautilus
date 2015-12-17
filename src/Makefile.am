@@ -156,8 +156,8 @@ nautilus_SOURCES = \
 	nautilus-desktop-window.h		\
 	nautilus-error-reporting.c		\
 	nautilus-error-reporting.h		\
-	nautilus-file-management-properties.c	\
-	nautilus-file-management-properties.h	\
+	nautilus-preferences-dialog.c	\
+	nautilus-preferences-dialog.h	\
 	nautilus-files-view.c			\
 	nautilus-files-view.h			\
 	nautilus-files-view-dnd.c		\

@@ -1,6 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* nautilus-file-management-properties.h - Function to show the nautilus preference dialog.
+/* nautilus-preferences-dialog.h - Function to show the nautilus preference
+   dialog.
 
    Copyright (C) 2002 Jan Arne Petersen
 
@@ -21,16 +22,16 @@
    Authors: Jan Arne Petersen <jpetersen@uni-bonn.de>
 */
 
-#ifndef NAUTILUS_FILE_MANAGEMENT_PROPERTIES_H
-#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_H
+#ifndef NAUTILUS_PREFERENCES_DIALOG_H
+#define NAUTILUS_PREFERENCES_DIALOG_H
 
 #include <glib-object.h>
 #include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 
-void nautilus_file_management_properties_dialog_show (GtkWindow *window);
+void nautilus_preferences_dialog_show(GtkWindow *window);
 
 G_END_DECLS
 
-#endif /* NAUTILUS_FILE_MANAGEMENT_PROPERTIES_H */
+#endif /* NAUTILUS_PREFERENCES_DIALOG_H */

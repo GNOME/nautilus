@@ -39,7 +39,7 @@
 #include "nautilus-shell-search-provider.h"
 #include "nautilus-window.h"
 #include "nautilus-window-slot.h"
-#include "nautilus-file-management-properties.h"
+#include "nautilus-preferences-dialog.h"
 
 #include <libnautilus-private/nautilus-directory-private.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
@@ -696,7 +696,7 @@ action_preferences (GSimpleAction *action,
                     gpointer       user_data)
 {
         GtkApplication *application = user_data;
-        nautilus_file_management_properties_dialog_show (gtk_application_get_active_window (application));
+        nautilus_preferences_dialog_show (gtk_application_get_active_window (application));
 }
 
 static void
