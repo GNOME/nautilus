@@ -2337,7 +2337,6 @@ count_more_files_callback (GObject *source_object,
 	
 	if (g_cancellable_is_cancelled (state->cancellable)) {
 		/* Operation was cancelled. Bail out */
-		directory->details->count_in_progress = NULL;
 
 		async_job_end (directory, "directory count");
 		nautilus_directory_async_state_changed (directory);
@@ -2391,7 +2390,6 @@ count_children_callback (GObject *source_object,
 	if (g_cancellable_is_cancelled (state->cancellable)) {
 		/* Operation was cancelled. Bail out */
 		directory = state->directory;
-		directory->details->count_in_progress = NULL;
 
 		async_job_end (directory, "directory count");
 		nautilus_directory_async_state_changed (directory);
