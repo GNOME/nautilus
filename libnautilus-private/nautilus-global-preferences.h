@@ -164,6 +164,7 @@ typedef enum
 
 /* Context menu options */
 #define NAUTILUS_PREFERENCES_SHOW_DELETE_PERMANENTLY "show-delete-permanently"
+#define NAUTILUS_PREFERENCES_SHOW_CREATE_LINK "show-create-link"
 
 void nautilus_global_preferences_init                      (void);
 char *nautilus_global_preferences_get_default_folder_viewer_preference_as_iid (void);

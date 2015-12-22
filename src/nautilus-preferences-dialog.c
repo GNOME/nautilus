@@ -53,6 +53,8 @@
   "sort_folders_first_checkbutton"
 #define NAUTILUS_PREFERENCES_DIALOG_DELETE_PERMANENTLY_WIDGET                  \
   "show_delete_permanently_checkbutton"
+#define NAUTILUS_PREFERENCES_DIALOG_CREATE_LINK_WIDGET                         \
+  "show_create_link_checkbutton"
 #define NAUTILUS_PREFERENCES_DIALOG_LIST_VIEW_USE_TREE_WIDGET                  \
   "use_tree_view_checkbutton"
 #define NAUTILUS_PREFERENCES_DIALOG_TRASH_CONFIRM_WIDGET                       \
@@ -485,6 +487,9 @@ static void nautilus_preferences_dialog_setup(GtkBuilder *builder,
   bind_builder_bool(builder, nautilus_list_view_preferences,
                     NAUTILUS_PREFERENCES_DIALOG_LIST_VIEW_USE_TREE_WIDGET,
                     NAUTILUS_PREFERENCES_LIST_VIEW_USE_TREE);
+  bind_builder_bool(builder, nautilus_preferences,
+                    NAUTILUS_PREFERENCES_DIALOG_CREATE_LINK_WIDGET,
+                    NAUTILUS_PREFERENCES_SHOW_CREATE_LINK);
   bind_builder_bool(builder, nautilus_preferences,
                     NAUTILUS_PREFERENCES_DIALOG_DELETE_PERMANENTLY_WIDGET,
                     NAUTILUS_PREFERENCES_SHOW_DELETE_PERMANENTLY);
