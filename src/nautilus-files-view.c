@@ -2434,7 +2434,7 @@ paste_clipboard_data (NautilusFilesView *view,
         GdkDragAction action;
 
         action = nautilus_clipboard_monitor_is_cut (nautilus_clipboard_monitor_get ()) ?
-                GDK_ACTION_MOVE : GDK_ACTION_COPY;
+                 GDK_ACTION_MOVE : GDK_ACTION_COPY;
 
         handle_clipboard_data (view, selection_data, destination_uri, action);
 }
@@ -6262,9 +6262,8 @@ real_update_actions_state (NautilusFilesView *view)
                 !selection_contains_desktop_or_home_dir;
         can_copy_files = selection_count != 0
                 && !selection_contains_special_link;
-        can_link_files = (!nautilus_clipboard_monitor_is_cut (nautilus_clipboard_monitor_get ()) &&
-                          !selection_contains_recent &&
-                          !is_read_only);
+        can_link_files = !nautilus_clipboard_monitor_is_cut (nautilus_clipboard_monitor_get ()) &&
+                         !selection_contains_recent && !is_read_only;
         can_move_files = can_delete_files && !selection_contains_recent;
         can_paste_files_into = (!selection_contains_recent &&
                                 selection_count == 1 &&
