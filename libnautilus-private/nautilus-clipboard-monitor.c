@@ -205,6 +205,16 @@ nautilus_clipboard_monitor_get_clipboard_info (NautilusClipboardMonitor *monitor
 	return monitor->details->info;
 }
 
+gboolean
+nautilus_clipboard_monitor_is_cut (NautilusClipboardMonitor *monitor)
+{
+	NautilusClipboardInfo *info;
+
+	info = nautilus_clipboard_monitor_get_clipboard_info (monitor);
+
+	return info != NULL ? info->cut : FALSE;
+}
+
 void
 nautilus_clear_clipboard_callback (GtkClipboard *clipboard,
                                    gpointer      user_data)

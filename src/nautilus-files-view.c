@@ -2402,29 +2402,41 @@ action_open_item_new_window (GSimpleAction *action,
 }
 
 static void
-paste_clipboard_data (NautilusFilesView *view,
-                      GtkSelectionData  *selection_data,
-                      char              *destination_uri)
+handle_clipboard_data (NautilusFilesView *view,
+                       GtkSelectionData  *selection_data,
+                       char              *destination_uri,
+                       GdkDragAction      action)
 {
-        gboolean cut;
         GList *item_uris;
 
-        cut = FALSE;
-        item_uris = nautilus_clipboard_get_uri_list_from_selection_data (selection_data, &cut,
+        item_uris = nautilus_clipboard_get_uri_list_from_selection_data (selection_data, NULL,
                                                                          copied_files_atom);
 
         if (item_uris != NULL && destination_uri != NULL) {
                 nautilus_files_view_move_copy_items (view, item_uris, NULL, destination_uri,
-                                               cut ? GDK_ACTION_MOVE : GDK_ACTION_COPY,
-                                               0, 0);
+                                                     action,
+                                                     0, 0);
 
                 /* If items are cut then remove from clipboard */
-                if (cut) {
+                if (action == GDK_ACTION_MOVE) {
                         gtk_clipboard_clear (nautilus_clipboard_get (GTK_WIDGET (view)));
                 }
 
                 g_list_free_full (item_uris, g_free);
         }
+}
+
+static void
+paste_clipboard_data (NautilusFilesView *view,
+                      GtkSelectionData  *selection_data,
+                      char              *destination_uri)
+{
+        GdkDragAction action;
+
+        action = nautilus_clipboard_monitor_is_cut (nautilus_clipboard_monitor_get ()) ?
+                GDK_ACTION_MOVE : GDK_ACTION_COPY;
+
+        handle_clipboard_data (view, selection_data, destination_uri, action);
 }
 
 static void
@@ -2463,6 +2475,45 @@ action_paste_files (GSimpleAction *action,
         gtk_clipboard_request_contents (nautilus_clipboard_get (GTK_WIDGET (view)),
                                         copied_files_atom,
                                         paste_clipboard_received_callback,
+                                        view);
+}
+
+static void
+create_links_clipboard_received_callback (GtkClipboard     *clipboard,
+                                          GtkSelectionData *selection_data,
+                                          gpointer          data)
+{
+        NautilusFilesView *view;
+        char *view_uri;
+
+        view = NAUTILUS_FILES_VIEW (data);
+
+        view_uri = nautilus_files_view_get_backing_uri (view);
+
+        if (view->details->slot != NULL) {
+                handle_clipboard_data (view, selection_data, view_uri, GDK_ACTION_LINK);
+        }
+
+        g_free (view_uri);
+
+        g_object_unref (view);
+}
+
+static void
+action_create_links (GSimpleAction *action,
+                     GVariant      *state,
+                     gpointer       user_data)
+{
+        NautilusFilesView *view;
+
+        g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
+
+        view = NAUTILUS_FILES_VIEW (user_data);
+
+        g_object_ref (view);
+        gtk_clipboard_request_contents (nautilus_clipboard_get (GTK_WIDGET (view)),
+                                        copied_files_atom,
+                                        create_links_clipboard_received_callback,
                                         view);
 }
 
@@ -5876,6 +5927,7 @@ const GActionEntry view_entries[] = {
         { "new-folder", action_new_folder },
         { "select-all", action_select_all },
         { "paste", action_paste_files },
+        { "create-link", action_create_links },
         { "new-document" },
         /* Selection menu */
         { "scripts" },
@@ -6164,6 +6216,7 @@ real_update_actions_state (NautilusFilesView *view)
         gboolean can_move_files;
         gboolean can_trash_files;
         gboolean can_copy_files;
+        gboolean can_link_files;
         gboolean can_paste_files_into;
         gboolean show_app, show_run;
         gboolean item_opens_in_view;
@@ -6179,6 +6232,7 @@ real_update_actions_state (NautilusFilesView *view)
         gboolean show_stop;
         gboolean show_detect_media;
         gboolean settings_show_delete_permanently;
+        gboolean settings_show_create_link;
         GDriveStartStopType start_stop_type;
 
         view_action_group = view->details->view_action_group;
@@ -6208,6 +6262,9 @@ real_update_actions_state (NautilusFilesView *view)
                 !selection_contains_desktop_or_home_dir;
         can_copy_files = selection_count != 0
                 && !selection_contains_special_link;
+        can_link_files = (!nautilus_clipboard_monitor_is_cut (nautilus_clipboard_monitor_get ()) &&
+                          !selection_contains_recent &&
+                          !is_read_only);
         can_move_files = can_delete_files && !selection_contains_recent;
         can_paste_files_into = (!selection_contains_recent &&
                                 selection_count == 1 &&
@@ -6215,6 +6272,8 @@ real_update_actions_state (NautilusFilesView *view)
         show_properties = !NAUTILUS_IS_DESKTOP_CANVAS_VIEW (view) || selection_count > 0;
          settings_show_delete_permanently = g_settings_get_boolean (nautilus_preferences,
                                                                     NAUTILUS_PREFERENCES_SHOW_DELETE_PERMANENTLY);
+         settings_show_create_link = g_settings_get_boolean (nautilus_preferences,
+                                                             NAUTILUS_PREFERENCES_SHOW_CREATE_LINK);
 
         /* Right click actions */
         /* Selection menu actions */
@@ -6423,6 +6482,12 @@ real_update_actions_state (NautilusFilesView *view)
                                              "paste");
         g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                      !is_read_only && !selection_contains_recent);
+
+        action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                             "create-link");
+        g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                     can_link_files &&
+                                     settings_show_create_link);
 
         action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                              "paste-into");
@@ -8150,6 +8215,7 @@ nautilus_files_view_init (NautilusFilesView *view)
         /* Background menu */
         nautilus_application_add_accelerator (app, "view.select-all", "<control>a");
         nautilus_application_add_accelerator (app, "view.paste", "<control>v");
+        nautilus_application_add_accelerator (app, "view.create-link", "<control>m");
         /* Selection menu */
         gtk_application_set_accels_for_action (GTK_APPLICATION (app),
                                                "view.open-with-default-application", open_accels);

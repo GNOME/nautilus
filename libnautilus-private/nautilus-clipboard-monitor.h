@@ -65,6 +65,7 @@ NautilusClipboardMonitor *   nautilus_clipboard_monitor_get (void);
 void nautilus_clipboard_monitor_set_clipboard_info (NautilusClipboardMonitor *monitor,
                                                     NautilusClipboardInfo *info);
 NautilusClipboardInfo * nautilus_clipboard_monitor_get_clipboard_info (NautilusClipboardMonitor *monitor);
+gboolean nautilus_clipboard_monitor_is_cut (NautilusClipboardMonitor *monitor);
 void nautilus_clipboard_monitor_emit_changed (void);
 
 void nautilus_clear_clipboard_callback (GtkClipboard *clipboard,
