@@ -6014,12 +6014,12 @@ clipboard_targets_received (GtkClipboard *clipboard,
                             gpointer      user_data)
 {
         NautilusFilesView *view;
-        gboolean can_paste;
+        gboolean is_data_copied;
         int i;
         GAction *action;
 
         view = NAUTILUS_FILES_VIEW (user_data);
-        can_paste = FALSE;
+        is_data_copied = FALSE;
 
         if (view->details->slot == NULL ||
             !view->details->active) {
@@ -6031,7 +6031,7 @@ clipboard_targets_received (GtkClipboard *clipboard,
         if (targets) {
                 for (i = 0; i < n_targets; i++) {
                         if (targets[i] == copied_files_atom) {
-                                can_paste = TRUE;
+                                is_data_copied = TRUE;
                         }
                 }
         }
@@ -6041,13 +6041,19 @@ clipboard_targets_received (GtkClipboard *clipboard,
         /* Take into account if the action was previously disabled for other reasons,
          * like the directory not being writabble */
         g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                     can_paste && g_action_get_enabled (action));
+                                     is_data_copied && g_action_get_enabled (action));
 
         action = g_action_map_lookup_action (G_ACTION_MAP (view->details->view_action_group),
                                              "paste-into");
 
         g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                     can_paste && g_action_get_enabled (action));
+                                     is_data_copied && g_action_get_enabled (action));
+
+        action = g_action_map_lookup_action (G_ACTION_MAP (view->details->view_action_group),
+                                             "create-link");
+
+        g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                     is_data_copied && g_action_get_enabled (action));
 
         g_object_unref (view);
 }
