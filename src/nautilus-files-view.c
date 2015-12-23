@@ -5366,6 +5366,37 @@ action_cut (GSimpleAction *action,
 }
 
 static void
+action_create_links_in_place (GSimpleAction *action,
+                              GVariant      *state,
+                              gpointer       user_data)
+{
+        NautilusFilesView *view;
+        GList *selection;
+        GList *item_uris;
+        GList *l;
+        char *destination_uri;
+
+        view = NAUTILUS_FILES_VIEW (user_data);
+
+        selection = nautilus_files_view_get_selection_for_file_transfer (view);
+
+        item_uris = NULL;
+        for (l = selection; l != NULL; l = l->next) {
+            item_uris = g_list_prepend (item_uris, nautilus_file_get_uri(l->data));
+        }
+        item_uris = g_list_reverse (item_uris);
+
+        destination_uri = nautilus_files_view_get_backing_uri (view);
+
+        nautilus_files_view_move_copy_items (view, item_uris, NULL, destination_uri,
+                                             GDK_ACTION_LINK,
+                                             0, 0);
+
+        g_list_free_full (item_uris, g_free);
+        nautilus_file_list_free (selection);
+}
+
+static void
 action_copy_to (GSimpleAction *action,
                 GVariant      *state,
                 gpointer       user_data)
@@ -5940,6 +5971,7 @@ const GActionEntry view_entries[] = {
         { "open-item-new-tab", action_open_item_new_tab },
         { "cut", action_cut},
         { "copy", action_copy},
+        { "create-link-in-place", action_create_links_in_place },
         { "move-to", action_move_to},
         { "copy-to", action_copy_to},
         { "move-to-trash", action_move_to_trash},
@@ -6222,7 +6254,7 @@ real_update_actions_state (NautilusFilesView *view)
         gboolean can_move_files;
         gboolean can_trash_files;
         gboolean can_copy_files;
-        gboolean can_link_files;
+        gboolean can_link_from_copied_files;
         gboolean can_paste_files_into;
         gboolean show_app, show_run;
         gboolean item_opens_in_view;
@@ -6268,8 +6300,8 @@ real_update_actions_state (NautilusFilesView *view)
                 !selection_contains_desktop_or_home_dir;
         can_copy_files = selection_count != 0
                 && !selection_contains_special_link;
-        can_link_files = !nautilus_clipboard_monitor_is_cut (nautilus_clipboard_monitor_get ()) &&
-                         !selection_contains_recent && !is_read_only;
+        can_link_from_copied_files = !nautilus_clipboard_monitor_is_cut (nautilus_clipboard_monitor_get ()) &&
+                                     !selection_contains_recent && !is_read_only;
         can_move_files = can_delete_files && !selection_contains_recent;
         can_paste_files_into = (!selection_contains_recent &&
                                 selection_count == 1 &&
@@ -6409,6 +6441,12 @@ real_update_actions_state (NautilusFilesView *view)
         g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                      can_copy_files);
         action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                             "create-link-in-place");
+        g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                     can_copy_files &&
+                                     can_create_files &&
+                                     settings_show_create_link);
+        action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                              "copy-to");
         g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                      can_copy_files);
@@ -6491,7 +6529,7 @@ real_update_actions_state (NautilusFilesView *view)
         action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                              "create-link");
         g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                     can_link_files &&
+                                     can_link_from_copied_files &&
                                      settings_show_create_link);
 
         action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
@@ -8239,6 +8277,7 @@ nautilus_files_view_init (NautilusFilesView *view)
         nautilus_application_add_accelerator (app, "view.rename", "F2");
         nautilus_application_add_accelerator (app, "view.cut", "<control>x");
         nautilus_application_add_accelerator (app, "view.copy", "<control>c");
+        nautilus_application_add_accelerator (app, "view.create-link-in-place", "<control><shift>m");
         nautilus_application_add_accelerator (app, "view.new-folder", "<control><shift>n");
         /* Only accesible by shorcuts */
         nautilus_application_add_accelerator (app, "view.select-pattern", "<control>s");
