@@ -2231,7 +2231,7 @@ trash_or_delete_internal (GList                  *files,
 		inhibit_power_manager ((CommonJob *)job, _("Deleting Files"));
 	}
 	
-	if (try_trash && !nautilus_file_undo_manager_pop_flag ()) {
+	if (!nautilus_file_undo_manager_pop_flag () && try_trash) {
 		job->common.undo_info = nautilus_file_undo_info_trash_new (g_list_length (files));
 	}
 
