@@ -22,7 +22,7 @@ msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2015-12-24 13:50+0000\n"
+"POT-Creation-Date: 2015-12-24 15:07+0000\n"
 "PO-Revision-Date: 2015-12-24 15:54+0100\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
@@ -123,9 +123,6 @@ msgid "Whether to show a context menu item to delete permanently"
 msgstr "Zda zobrazovat v kontextové nabídce položku pro trvalé smazání"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:8
-#| msgid ""
-#| "If set to true, then Nautilus will ask for confirmation when you attempt "
-#| "to delete files, or empty the Trash."
 msgid ""
 "If set to true Nautilus will show a delete permanently context menu item to "
 "bypass the trash."
@@ -134,22 +131,21 @@ msgstr ""
 "zobrazovat položku, která umožňuje trvalé smazání obejitím koše."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:9
-msgid "Whether to show a context menu item to create links from copied files"
+msgid ""
+"Whether to show context menu items to create links from copied or selected "
+"files"
 msgstr ""
 "Zda zobrazovat v kontextové nabídce položku pro vytvoření odkazů z "
-"kopírovaných souborů"
+"kopírovaných nebo vybraných souborů"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:10
-#| msgid ""
-#| "If set to true, then Nautilus will ask for confirmation when you attempt "
-#| "to delete files, or empty the Trash."
 msgid ""
-"If set to true Nautilus will show a create link context menu item to create "
-"links from the copied files"
+"If set to true Nautilus will show context menu items to create links from "
+"the copied or selected files"
 msgstr ""
 "Je-li nastaveno na pravda (true), bude Nautilus v kontextové nabídce "
 "zobrazovat položku pro vytvoření odkazu, která vytváří odkazy z kopírovaných "
-"souborů."
+"nebo vybraných souborů."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:11
 msgid "Whether to ask for confirmation when deleting files, or emptying Trash"
@@ -592,7 +588,6 @@ msgstr ""
 "odkazující na zobrazení Síťové servery."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:76
-#| msgid "Home"
 msgctxt "home-icon-name"
 msgid "'Home'"
 msgstr "'Domů'"
@@ -610,7 +605,6 @@ msgstr ""
 "složky na pracovní ploše."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:79
-#| msgid "Trash"
 msgctxt "trash-icon-name"
 msgid "'Trash'"
 msgstr "'Koš'"
@@ -628,7 +622,6 @@ msgstr ""
 "koš."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:82
-#| msgid "Network servers icon name"
 msgctxt "network-icon-name"
 msgid "'Network Servers'"
 msgstr "'Síťové servery'"
@@ -1782,7 +1775,7 @@ msgstr "_Nevyprazdňovat koš"
 
 #. Translators: %s is a file name formatted for display
 #: ../libnautilus-private/nautilus-file-operations.c:2613
-#: ../src/nautilus-files-view.c:5657
+#: ../src/nautilus-files-view.c:5688
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "Nelze přistupovat k „%s“"
@@ -3154,28 +3147,28 @@ msgid "Select Copy Destination"
 msgstr "Vyberte cíl pro kopii"
 
 #. Translators: %s is a file name formatted for display
-#: ../src/nautilus-files-view.c:5684
+#: ../src/nautilus-files-view.c:5715
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "Nelze odstranit „%s“"
 
 #. Translators: %s is a file name formatted for display
-#: ../src/nautilus-files-view.c:5711
+#: ../src/nautilus-files-view.c:5742
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "Nelze vysunout „%s“"
 
-#: ../src/nautilus-files-view.c:5733
+#: ../src/nautilus-files-view.c:5764
 msgid "Unable to stop drive"
 msgstr "Zařízení nelze deaktivovat"
 
 #. Translators: %s is a file name formatted for display
-#: ../src/nautilus-files-view.c:5838
+#: ../src/nautilus-files-view.c:5869
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "Nelze aktivovat „%s“"
 
-#: ../src/nautilus-files-view.c:6588
+#: ../src/nautilus-files-view.c:6626
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
@@ -3183,61 +3176,61 @@ msgstr[0] "Nová složka s vybranou %'d položkou"
 msgstr[1] "Nová složka s vybranými %'d položkami"
 msgstr[2] "Nová složka s vybranými %'d položkami"
 
-#: ../src/nautilus-files-view.c:6636
+#: ../src/nautilus-files-view.c:6674
 #, c-format
 msgid "Open With %s"
 msgstr "Otevřít pomocí %s"
 
-#: ../src/nautilus-files-view.c:6645
+#: ../src/nautilus-files-view.c:6683
 msgid "Run"
 msgstr "Spustit"
 
-#: ../src/nautilus-files-view.c:6647 ../src/resources/gtk/help-overlay.ui.h:10
+#: ../src/nautilus-files-view.c:6685 ../src/resources/gtk/help-overlay.ui.h:10
 msgid "Open"
 msgstr "Otevřít"
 
-#: ../src/nautilus-files-view.c:6698
+#: ../src/nautilus-files-view.c:6736
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:19
 msgid "_Start"
 msgstr "_Aktivovat"
 
-#: ../src/nautilus-files-view.c:6701 ../src/gtk/gtkplacesview.c:1657
+#: ../src/nautilus-files-view.c:6739 ../src/gtk/gtkplacesview.c:1657
 msgid "_Connect"
 msgstr "_Připojit"
 
-#: ../src/nautilus-files-view.c:6704
+#: ../src/nautilus-files-view.c:6742
 msgid "_Start Multi-disk Drive"
 msgstr "_Aktivovat vícediskovou jednotku"
 
-#: ../src/nautilus-files-view.c:6707
+#: ../src/nautilus-files-view.c:6745
 msgid "U_nlock Drive"
 msgstr "Odemk_nout zařízení"
 
-#: ../src/nautilus-files-view.c:6723
+#: ../src/nautilus-files-view.c:6761
 msgid "Stop Drive"
 msgstr "Deaktivovat zařízení"
 
-#: ../src/nautilus-files-view.c:6726
+#: ../src/nautilus-files-view.c:6764
 msgid "_Safely Remove Drive"
 msgstr "_Bezpečně odebrat zařízení"
 
-#: ../src/nautilus-files-view.c:6729 ../src/gtk/gtkplacesview.c:1647
+#: ../src/nautilus-files-view.c:6767 ../src/gtk/gtkplacesview.c:1647
 msgid "_Disconnect"
 msgstr "O_dpojit"
 
-#: ../src/nautilus-files-view.c:6732
+#: ../src/nautilus-files-view.c:6770
 msgid "_Stop Multi-disk Drive"
 msgstr "_Deaktivovat vícediskovou jednotku"
 
-#: ../src/nautilus-files-view.c:6735
+#: ../src/nautilus-files-view.c:6773
 msgid "_Lock Drive"
 msgstr "_Uzamknout zařízení"
 
-#: ../src/nautilus-files-view.c:8203
+#: ../src/nautilus-files-view.c:8241
 msgid "Content View"
 msgstr "Zobrazení obsahu"
 
-#: ../src/nautilus-files-view.c:8204
+#: ../src/nautilus-files-view.c:8242
 msgid "View of the current folder"
 msgstr "Zobrazení aktuální složky"
 
@@ -4167,12 +4160,10 @@ msgid "General"
 msgstr "Obecné"
 
 #: ../src/resources/gtk/help-overlay.ui.h:2
-#| msgid "New Window"
 msgid "New window"
 msgstr "Nové okno"
 
 #: ../src/resources/gtk/help-overlay.ui.h:3
-#| msgid "Close tab"
 msgid "Close window or tab"
 msgstr "Zavřít okno či kartu"
 
@@ -4181,12 +4172,10 @@ msgid "Bookmarks"
 msgstr "Záložky"
 
 #: ../src/resources/gtk/help-overlay.ui.h:6
-#| msgid "_Bookmark this Location"
 msgid "Bookmark current location"
 msgstr "Přidat aktuální umístění do záložek"
 
 #: ../src/resources/gtk/help-overlay.ui.h:7
-#| msgid "Show Details"
 msgid "Show help"
 msgstr "Zobrazit nápovědu"
 
@@ -4195,32 +4184,26 @@ msgid "Shortcuts"
 msgstr "Zkratky"
 
 #: ../src/resources/gtk/help-overlay.ui.h:9
-#| msgid "Open"
 msgid "Opening"
 msgstr "Otevírání"
 
 #: ../src/resources/gtk/help-overlay.ui.h:11
-#| msgid "Open in New _Tab"
 msgid "Open in new tab"
 msgstr "Otevřít v nové kartě"
 
 #: ../src/resources/gtk/help-overlay.ui.h:12
-#| msgid "Open in New _Window"
 msgid "Open in new window"
 msgstr "Otevřít v novém okně"
 
 #: ../src/resources/gtk/help-overlay.ui.h:13
-#| msgid "Remote location — only searching the current folder"
 msgid "Open item location (search and recent only)"
 msgstr "Otevřít umístění položky (jen pro hledání a nedávné)"
 
 #: ../src/resources/gtk/help-overlay.ui.h:14
-#| msgid "Open in New _Window"
 msgid "Open file and close window"
 msgstr "Otevřít soubor a zavřít okno"
 
 #: ../src/resources/gtk/help-overlay.ui.h:15
-#| msgid "Open With Other _Application"
 msgid "Open with default application"
 msgstr "Otevřít pomocí výchozí aplikace"
 
@@ -4229,7 +4212,6 @@ msgid "Tabs"
 msgstr "Karty"
 
 #: ../src/resources/gtk/help-overlay.ui.h:17
-#| msgid "_New Tab"
 msgid "New tab"
 msgstr "Nová karta"
 
@@ -4242,17 +4224,14 @@ msgid "Go to next tab"
 msgstr "Přejít na následující kartu"
 
 #: ../src/resources/gtk/help-overlay.ui.h:20
-#| msgid "Open With"
 msgid "Open tab"
 msgstr "Otevřít kartu"
 
 #: ../src/resources/gtk/help-overlay.ui.h:21
-#| msgid "Move Tab _Left"
 msgid "Move tab left"
 msgstr "Přesunout kartu vlevo"
 
 #: ../src/resources/gtk/help-overlay.ui.h:22
-#| msgid "Move Tab _Right"
 msgid "Move tab right"
 msgstr "Přesunout kartu vpravo"
 
@@ -4281,7 +4260,6 @@ msgid "Go to home folder"
 msgstr "Přejít do domovské složky"
 
 #: ../src/resources/gtk/help-overlay.ui.h:29
-#| msgid "Enter _Location"
 msgid "Enter location"
 msgstr "Zadat umístění"
 
@@ -4294,7 +4272,6 @@ msgid "Location bar with home location"
 msgstr "Adresní lišta s domovským umístěním"
 
 #: ../src/resources/gtk/help-overlay.ui.h:32
-#| msgid "Views"
 msgid "View"
 msgstr "Zobrazení"
 
@@ -4307,17 +4284,14 @@ msgid "Zoom out"
 msgstr "Oddálit"
 
 #: ../src/resources/gtk/help-overlay.ui.h:35
-#| msgid "Reset"
 msgid "Reset zoom"
 msgstr "Výchozí přiblížení"
 
 #: ../src/resources/gtk/help-overlay.ui.h:36
-#| msgid "Use tree view"
 msgid "Refresh view"
 msgstr "Aktualizovat zobrazení"
 
 #: ../src/resources/gtk/help-overlay.ui.h:37
-#| msgid "Show _Hidden Files"
 msgid "Show/hide hidden files"
 msgstr "Zobrazit/skrýt skryté soubory"
 
@@ -4326,57 +4300,46 @@ msgid "Show/hide sidebar"
 msgstr "Zobrazit/skrýt postranní panel"
 
 #: ../src/resources/gtk/help-overlay.ui.h:39
-#| msgid "Open action menu"
 msgid "Show/hide action menu"
 msgstr "Zobrazit/skrýt nabídku činností"
 
 #: ../src/resources/gtk/help-overlay.ui.h:40
-#| msgid "List View"
 msgid "List view"
 msgstr "Zobrazit v seznamu"
 
 #: ../src/resources/gtk/help-overlay.ui.h:41
-#| msgid "Preview"
 msgid "Grid view"
 msgstr "Zobrazit v mřížce"
 
 #: ../src/resources/gtk/help-overlay.ui.h:42
-#| msgid "Rating"
 msgid "Editing"
 msgstr "Úpravy"
 
 #: ../src/resources/gtk/help-overlay.ui.h:43
-#| msgid "_Undo Create Folder"
 msgid "Create folder"
 msgstr "Vytvořit složku"
 
 #: ../src/resources/gtk/help-overlay.ui.h:44
-#| msgid "_Rename"
 msgid "Rename"
 msgstr "Přejmenovat"
 
 #: ../src/resources/gtk/help-overlay.ui.h:45
-#| msgid "Mo_ve to Trash"
 msgid "Move to trash"
 msgstr "Přesunout do koše"
 
 #: ../src/resources/gtk/help-overlay.ui.h:46
-#| msgid "_Delete Permanently"
 msgid "Delete permanently"
 msgstr "Trvale smazat"
 
 #: ../src/resources/gtk/help-overlay.ui.h:47
-#| msgid "_Copy"
 msgid "Copy"
 msgstr "Kopírovat"
 
 #: ../src/resources/gtk/help-overlay.ui.h:48
-#| msgid "_Paste"
 msgid "Paste"
 msgstr "Vložit"
 
 #: ../src/resources/gtk/help-overlay.ui.h:49
-#| msgid "Select _All"
 msgid "Select all"
 msgstr "Vybrat vše"
 
@@ -4385,13 +4348,10 @@ msgid "Invert selection"
 msgstr "Obrátit výběr"
 
 #: ../src/resources/gtk/help-overlay.ui.h:51
-#| msgid "Select Items Matching"
 msgid "Select items matching"
 msgstr "Vybrat vyhovující položky"
 
 #: ../src/resources/gtk/help-overlay.ui.h:54
-#| msgctxt "folder"
-#| msgid "%s Properties"
 msgid "Show item properties"
 msgstr "Zobrazit vlastnosti položky"
 
@@ -4437,7 +4397,6 @@ msgid "_Paste"
 msgstr "V_ložit"
 
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:4
-#| msgid "_Undo Create Link"
 msgid "Create _Link"
 msgstr "Vytvořit o_dkaz"
 
@@ -4973,29 +4932,3 @@ msgstr "Připojit se k _serveru"
 #: ../src/gtk/gtkplacesview.ui.h:8
 msgid "Enter server address…"
 msgstr "zadejte adresu serveru…"
-
-#~ msgid ""
-#~ "Nautilus 3.0 deprecated this directory and tried migrating this "
-#~ "configuration to ~/.config/nautilus"
-#~ msgstr ""
-#~ "V aplikaci Nautilus 3.0 je zavrženo použití této složky a nastavení se "
-#~ "zkusí převést do ~/.config/nautilus"
-
-#~ msgid "No bookmarks defined"
-#~ msgstr "Nedefinovány žádné záložky"
-
-#~ msgid "Remove"
-#~ msgstr "Odebrat"
-
-#~ msgid "Move Up"
-#~ msgstr "Posunout nahoru"
-
-#~ msgid "Move Down"
-#~ msgstr "Posunout dolů"
-
-#~ msgctxt "Bookmark"
-#~ msgid "_Name"
-#~ msgstr "_Název"
-
-#~ msgid "_Location"
-#~ msgstr "_Umístění"
