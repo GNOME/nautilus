@@ -478,6 +478,10 @@ typedef enum {
 	NAUTILUS_DATE_TYPE_TRASHED
 } NautilusDateType;
 
+gboolean                nautilus_file_get_date                          (NautilusFile                   *file,
+                                                                         NautilusDateType                date_type,
+                                                                         time_t                         *date);
+
 typedef struct {
 	GObjectClass parent_slot;
 
