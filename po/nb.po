@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 3.19.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-15 00:29+0100\n"
-"PO-Revision-Date: 2015-11-15 00:30+0100\n"
+"POT-Creation-Date: 2016-01-07 21:06+0100\n"
+"PO-Revision-Date: 2016-01-07 21:10+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: no\n"
@@ -48,8 +48,8 @@ msgid "Run Software"
 msgstr "Kjør programvare"
 
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
-#: ../src/nautilus-properties-window.c:4197 ../src/nautilus-window.c:2628
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:22
+#: ../src/nautilus-properties-window.c:4197 ../src/nautilus-window.c:2627
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:24
 msgid "Files"
 msgstr "Filer"
 
@@ -64,6 +64,616 @@ msgstr "mappe;håndterer;utforsk;disk;filsystem;"
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:4
 msgid "New Window"
 msgstr "Nytt vindu"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:1
+msgid "Where to position newly open tabs in browser windows."
+msgstr "Hvor nyåpnede faner skal plasseres i leservinduer."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:2
+msgid ""
+"If set to \"after-current-tab\", then new tabs are inserted after the "
+"current tab. If set to \"end\", then new tabs are appended to the end of the "
+"tab list."
+msgstr ""
+"Hvis verdien er «after-current-tab», settes nye faner inn etter gjeldende "
+"fane. Hvis verdien er «end», legges nye faner til i slutten av fanelisten."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:3
+msgid "Always use the location entry, instead of the pathbar"
+msgstr "Alltid bruk adressefeltet i stedet for stilinjen"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:4
+msgid ""
+"If set to true, then Nautilus browser windows will always use a textual "
+"input entry for the location toolbar, instead of the pathbar."
+msgstr ""
+"Hvis nøkkelen settes til «true», bruker Nautilus leservinduer alltid et "
+"tekstfelt som adressefelt i stedet for stilinjen."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:5
+msgid "Whether to enable recursive search or not"
+msgstr "Hvorvidt rekursivt søk skal slås på eller ikke"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:6
+msgid "Enables or disables recursive search in Nautilus."
+msgstr "Slå på eller av rekursivt søk i Nautilus."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:7
+msgid "Whether to show a context menu item to delete permanently"
+msgstr ""
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:8
+#, fuzzy
+msgid ""
+"If set to true Nautilus will show a delete permanently context menu item to "
+"bypass the trash."
+msgstr ""
+"Nautilus spør om bekreftelse ved sletting av filer eller tømming av "
+"papirkurven hvis verdien er «true»."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:9
+msgid ""
+"Whether to show context menu items to create links from copied or selected "
+"files"
+msgstr ""
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:10
+#, fuzzy
+msgid ""
+"If set to true Nautilus will show context menu items to create links from "
+"the copied or selected files"
+msgstr ""
+"Nautilus spør om bekreftelse ved sletting av filer eller tømming av "
+"papirkurven hvis verdien er «true»."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:11
+msgid "Whether to ask for confirmation when deleting files, or emptying Trash"
+msgstr "Om brukeren skal bekrefte sletting av filer eller tømming av papirkurv"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:12
+msgid ""
+"If set to true, then Nautilus will ask for confirmation when you attempt to "
+"delete files, or empty the Trash."
+msgstr ""
+"Nautilus spør om bekreftelse ved sletting av filer eller tømming av "
+"papirkurven hvis verdien er «true»."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:13
+msgid "When to show number of items in a folder"
+msgstr "Bestemmer når antall oppføringer i en mappe skal vises"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:14
+msgid ""
+"Speed tradeoff for when to show the number of items in a folder. If set to "
+"\"always\" then always show item counts, even if the folder is on a remote "
+"server. If set to \"local-only\" then only show counts for local file "
+"systems. If set to \"never\" then never bother to compute item counts."
+msgstr ""
+"Optimaliisering ved visning av antall oppføringer i en mappe. Hvis verdien "
+"er  «always», vises alltid antall oppføringer, selv om mappen er på en "
+"ekstern tjener. Hvis verdien er «local-only», vises antallet bare for lokale "
+"filsystemer. Hvis verdien er «never», blir antallet aldri beregnet."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:15
+msgid "Type of click used to launch/open files"
+msgstr "Type klikk som brukes for å starte/åpne filer"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:16
+msgid ""
+"Possible values are \"single\" to launch files on a single click, or \"double"
+"\" to launch them on a double click."
+msgstr ""
+"Mulige verdier er «single» for å starte filer ved enkeltklikk eller «double» "
+"for å starte dem med dobbeltklikk."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:17
+msgid "What to do with executable text files when activated"
+msgstr "Hva som skal gjøres med kjørbare tekstfiler når de trykkes på"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:18
+msgid ""
+"What to do with executable text files when they are activated (single or "
+"double clicked). Possible values are \"launch\" to launch them as programs, "
+"\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
+"text files."
+msgstr ""
+"Hva som skal gjøres med kjørbare tekstfiler når de enkelt- eller "
+"dobbeltklikkes på. Mulige verdier er «launch» for å starte dem som "
+"programmer, «ask» for å spørre hva brukeren vil gjøre og «display» for å "
+"vise dem som tekstfiler."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:19
+msgid "Show the package installer for unknown mime types"
+msgstr "Vis pakkeinstallasjon for ukjente MIME-typer"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:20
+msgid ""
+"Whether to show the user a package installer dialog in case an unknown mime "
+"type is opened, in order to search for an application to handle it."
+msgstr ""
+"Om brukeren skal presenteres med en pakkeinstallasjonsdialog når en ukjent "
+"MIME-type åpnes, slik at brukeren kan søke etter et program for å håndtere "
+"den."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:21
+msgid "Show a warning dialog for the change of the shortcut for move to trash"
+msgstr "Vis varslingsdialog ved endring av snarvei for å flytte til papirkurv"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:22
+msgid ""
+"Show a warning dialog for the change of the shortcut for move to trash from "
+"control + delete to just delete."
+msgstr ""
+"Vis varslingsdialog ved endring av snarvei for å flytte til papirkurv, med "
+"control + delete for å bare slette."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:23
+msgid "Use extra mouse button events in Nautilus' browser window"
+msgstr "Bruk ekstra museknapphendelser i Nautilus leservinduer"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:24
+msgid ""
+"For users with mice that have \"Forward\" and \"Back\" buttons, this key "
+"will determine if any action is taken inside of Nautilus when either is "
+"pressed."
+msgstr ""
+"Denne nøkkelen bestemmer hvilken handling som utføres i Nautilus når brukere "
+"med mus som har «Frem»- og «Tilbake»-knapper trykker på disse."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:25
+msgid "Mouse button to activate the \"Forward\" command in browser window"
+msgstr "Musknapp som aktiverer «Fremover»-knappen i nettleservinduet"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:26
+msgid ""
+"For users with mice that have buttons for \"Forward\" and \"Back\", this key "
+"will set which button activates the \"Forward\" command in a browser window. "
+"Possible values range between 6 and 14."
+msgstr ""
+"Denne nøkkelen bestemmer hvilken av musens evt. «Frem»- og «Tilbake»-knapper "
+"som utløser «Frem»-kommandoen i et utforskervindu. Gyldige verdier er tall "
+"mellom 6 og 14."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:27
+msgid "Mouse button to activate the \"Back\" command in browser window"
+msgstr "Musknapp som aktiverer «Tilbake»-knappen i nettleservinduet"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:28
+msgid ""
+"For users with mice that have buttons for \"Forward\" and \"Back\", this key "
+"will set which button activates the \"Back\" command in a browser window. "
+"Possible values range between 6 and 14."
+msgstr ""
+"Denne nøkkelen bestemmer hvilken av musens evt. «Frem»- og «Tilbake»-knapper "
+"som utløser «Tilbake»-kommandoen i et utforskervindu. Gyldige verdier er "
+"tall mellom 6 og 14."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:29
+msgid "When to show thumbnails of files"
+msgstr "Når filminiatyrer skal vises"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:30
+msgid ""
+"Speed tradeoff for when to show a file as a thumbnail. If set to \"always\" "
+"then always thumbnail, even if the folder is on a remote server. If set to "
+"\"local-only\" then only show thumbnails for local file systems. If set to "
+"\"never\" then never bother to thumbnail files, just use a generic icon. "
+"Despite what the name may suggest, this applies to any previewable file type."
+msgstr ""
+"Optimalisering ved visning av miniatyrbilder. Hvis verdien er «always», "
+"vises alltid miniatyrer, selv om mappen er på en ekstern tjener. Hvis "
+"verdien er «local-only», vises miniatyrer bare på lokale filsystemer. Hvis "
+"verdien er «never», vises alltid et forvalgt ikon i stedet for miniatyrer. "
+"Verdien brukes for alle filtyper som kan forhåndsvises, på tross av hva "
+"navnet tilsier."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:31
+msgid "Maximum image size for thumbnailing"
+msgstr "Maksimal miniatyrbildestørrelse"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:32
+msgid ""
+"Images over this size (in bytes) won't be thumbnailed. The purpose of this "
+"setting is to avoid thumbnailing large images that may take a long time to "
+"load or use lots of memory."
+msgstr ""
+"Bilder som (i byte) er større enn dette får ikke miniatyrer. Formålet med "
+"denne innstillingen er å unngå å lage miniatyrer av store bilder som kan ta "
+"lang tid å laste inn eller bruke mye minne."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:33
+msgid "Show folders first in windows"
+msgstr "Vis mapper først i vinduer"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:34
+msgid ""
+"If set to true, then Nautilus shows folders prior to showing files in the "
+"icon and list views."
+msgstr ""
+"Nautilus viser mapper foran filer i ikon- og listevisning hvis verdien er "
+"«true»."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:35
+msgid "Default sort order"
+msgstr "Forvalgt søkerekkefølge"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:36
+msgid ""
+"The default sort-order for items in the icon view. Possible values are \"name"
+"\", \"size\", \"type\" and \"mtime\"."
+msgstr ""
+"Forvalgt sorteringsrekkefølge for oppføringer i ikonvisning. Mulige verdier "
+"er «name», «size», «type» og «mtime»."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:37
+msgid "Reverse sort order in new windows"
+msgstr "Omvendt sorteringsrekkefølge i nye vinduer"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:38
+msgid ""
+"If true, files in new windows will be sorted in reverse order. ie, if sorted "
+"by name, then instead of sorting the files from \"a\" to \"z\", they will be "
+"sorted from \"z\" to \"a\"; if sorted by size, instead of being "
+"incrementally they will be sorted decrementally."
+msgstr ""
+"Filer i nye vinduer sorteres i omvendt rekkefølge hvis verdien er «true». "
+"For eksempel, hvis man sorterer på navn, sorteres filene fra «å» til «a» i "
+"stedet for «a» til «å». Hvis man sorterer på størrelse, sorteres filer i "
+"synkende rekkefølge i stedet for stigende."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:39
+msgid "Default folder viewer"
+msgstr "Forvalgt mappevisning"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:40
+msgid ""
+"When a folder is visited this viewer is used unless you have selected "
+"another view for that particular folder. Possible values are \"list-view\", "
+"and \"icon-view\"."
+msgstr ""
+"Når en mappe besøkes brukes dette visningsprogrammet med mindre du har valgt "
+"en annen visning for denne spesifikke mappen. Mulige verdier er «list-view» "
+"og «icon-view»."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:41
+msgid "Whether to show hidden files"
+msgstr "Om skjulte filer skal vises"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:42
+msgid ""
+"This key is deprecated and ignored. The \"show-hidden\" key from \"org.gtk."
+"Settings.FileChooser\" is now used instead."
+msgstr ""
+"Dette nøkkelen er utgått, og blir ignorert. Nøkkelen «show-hidden» fra «org."
+"gtk.Settings.FileChooser» brukes i stedet."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:43
+msgid "Whether to switch to the list view on search"
+msgstr "Hvorvidt listevisning brukes ved søk"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:44
+msgid ""
+"If this is set to true, view mode will be switched to the list view while "
+"searching. However, if the user changes the mode manually, this will be "
+"disabled."
+msgstr ""
+"Hvis denne settes til «true» vil visningsmodus byttes til listevisning ved "
+"søk. Hvis bruker bytter modus manuelt vil dette slås av."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:45
+msgid "Bulk rename utility"
+msgstr "Verktøy for å endre navn på mange filer"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:46
+msgid ""
+"If set, Nautilus will append URIs of selected files and treat the result as "
+"a command line for bulk renaming. Bulk rename applications can register "
+"themselves in this key by setting the key to a space-separated string of "
+"their executable name and any command line options. If the executable name "
+"is not set to a full path, it will be searched for in the search path."
+msgstr ""
+"Hvis dette er valgt, brukes adressen til valgte filer på en kommandolinje "
+"for buntvis navnendring av filer. Programmer som endrer filnavn buntvis kan "
+"registrere seg i denne nøkkelen ved å legge inn aktuelle kjørbare filnavn og "
+"evt. kommandolinjevalg, adskilt med mellomrom. Hvis aktuelt navn på kjørbar "
+"fil ikke er en fullstendig filsti, blir filen søkt etter i gjeldende søkesti."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:47
+msgid ""
+"Whether to open the hovered folder after a timeout when drag and drop "
+"operation"
+msgstr ""
+"Hvorvidt en mappe man står over vil åpnes automatisk etter en tid ved dra-og-"
+"slipp operasjoner"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:48
+msgid ""
+"If this is set to true, when performing a drag and drop operation the "
+"hovered folder will open automatically after a timeout"
+msgstr ""
+"Hvis verdien er «true», vil en mappe man står over åpnes automatisk etter en "
+"tid ved dra-og-slipp operasjoner."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:49
+msgid "List of possible captions on icons"
+msgstr "Liste med mulig bildetekst for ikoner"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:50
+msgid ""
+"A list of captions below an icon in the icon view and the desktop. The "
+"actual number of captions shown depends on the zoom level. Some possible "
+"values are: \"size\", \"type\", \"date_modified\", \"owner\", \"group\", "
+"\"permissions\", and \"mime_type\"."
+msgstr ""
+"En liste med bildetekst under ikoner i ikonvisning og på skrivebordet. "
+"Antall bildetekster som vises er avhengig av zoom-nivå. Mulige verdier er: "
+"«size», «type», «date_modified», «owner», «group», «permissions» og "
+"«mime_type»."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:51
+msgid "Default icon zoom level"
+msgstr "Forvalgt zoom-nivå for ikon"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:52
+msgid "Default zoom level used by the icon view."
+msgstr "Forvalgt zoom-nivå for ikonvisning."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:53
+msgid "Default Thumbnail Icon Size"
+msgstr "Forvalgt størrelse for miniatyrikon"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:54
+msgid ""
+"The default size of an icon for a thumbnail in the icon view when using "
+"NAUTILUS_ICON_SIZE_SMALL size."
+msgstr ""
+"Forvalgt størrelse på et ikon for en miniatyr i ikonvisning ved bruk av "
+"størrelsen «NAUTILUS_ICON_SIZE_SMALL»."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:55
+msgid "Text Ellipsis Limit"
+msgstr "Grense for tekst-ellipse"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:56
+msgid ""
+"A string specifying how parts of overlong file names should be replaced by "
+"ellipses, depending on the zoom level. Each of the list entries is of the "
+"form \"Zoom Level:Integer\". For each specified zoom level, if the given "
+"integer is larger than 0, the file name will not exceed the given number of "
+"lines. If the integer is 0 or smaller, no limit is imposed on the specified "
+"zoom level. A default entry of the form \"Integer\" without any specified "
+"zoom level is also allowed. It defines the maximum number of lines for all "
+"other zoom levels. Examples: 0 - always display overlong file names; 3 - "
+"shorten file names if they exceed three lines; smallest:5,smaller:4,0 - "
+"shorten file names if they exceed five lines for zoom level \"smallest\". "
+"Shorten file names if they exceed four lines for zoom level \"smaller\". Do "
+"not shorten file names for other zoom levels. Available zoom levels: small, "
+"standard, large"
+msgstr ""
+"En streng som bestemmer hvordan overskytende deler av for lange filnavn skal "
+"erstattes med ellipsetegn, avhengig av zoom-nivå. Hver listeoppføring er i "
+"formatet «zoom-nivå:heltall». For hvert valgt zoom-nivå, gitt at aktuelt "
+"heltall er større enn 0, skal filnavnet ikke overskyte valgt antall linjer. "
+"Hvis heltallet er 0 eller lavere, har valgt zoomnivå ingen grense. En "
+"forvalgt oppføring i formatet «heltall» uten zoomnivå er også tillatt, og "
+"bestemmer maskimalt antall linjer for alle andre zoomnivåer. For eksempel: 0 "
+"- vis alltid overskytende filnavn, 3 - forkort filnavn hvis de tar større "
+"plass enn tre linjer. «smallest:5,smaller:4,0» - forkort filnavn hvis de er "
+"tar større plass enn enn fem linjer for zoom-nivået «smallest», og hvis de "
+"tar større plass enn fire linjer for zoom-nivået «smaller». Filnavn "
+"forkortes ikke på andre zoom-nivåer. Følgende zoom-nivåer er tilgjengelig: "
+"«small», «standard» og «large»"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:57
+msgid "Default list zoom level"
+msgstr "Forvalgt zoom-nivå for liste"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:58
+msgid "Default zoom level used by the list view."
+msgstr "Forvalgt zoom-nivå for listevisning."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:59
+msgid "Default list of columns visible in the list view"
+msgstr "Forvalgt liste med kolonner synlig i listevisning"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:60
+msgid "Default list of columns visible in the list view."
+msgstr "Forvalgt liste med kolonner synlig i listevisning."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:61
+msgid "Default column order in the list view"
+msgstr "Forvalgt rekkefølge for kolonner i listevisning"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:62
+msgid "Default column order in the list view."
+msgstr "Forvalgt rekkefølge for kolonner i listevisning."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:63
+msgid "Use tree view"
+msgstr "Bruk trevisning"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:64
+msgid ""
+"Whether a tree should be used for list view navigation instead of a flat list"
+msgstr ""
+"Hvorvidt et tre skal brukes for navigasjon i listevisning i stedet for en "
+"flat liste"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:65
+msgctxt "desktop-font"
+msgid "''"
+msgstr ""
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:66
+msgid "Desktop font"
+msgstr "Skrift for skrivebord"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:67
+msgid "The font description used for the icons on the desktop."
+msgstr "Beskrivelse av skrifter for ikonene på skrivebordet."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:68
+msgid "Home icon visible on desktop"
+msgstr "Vis Hjem-ikonet på skrivebordet"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:69
+msgid ""
+"If this is set to true, an icon linking to the home folder will be put on "
+"the desktop."
+msgstr ""
+"Hvis verdien er «true», legges en svarvei til hjemmemappen på skrivebordet."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:70
+msgid "Trash icon visible on desktop"
+msgstr "Papirkurvikon synlig på skrivebordet"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:71
+msgid ""
+"If this is set to true, an icon linking to the trash will be put on the "
+"desktop."
+msgstr ""
+"Et ikon med en lenke til papirkurven plasseres på skrivebordet hvis denne "
+"settes til «true»."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:72
+msgid "Show mounted volumes on the desktop"
+msgstr "Vis monterte volum på skrivebordet"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:73
+msgid ""
+"If this is set to true, icons linking to mounted volumes will be put on the "
+"desktop."
+msgstr ""
+"Ikoner med en lenke til monterte volum plasseres på skrivebordet hvis denne "
+"settes til «true»."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:74
+msgid "Network Servers icon visible on the desktop"
+msgstr "Nettverk-ikonet er synlig på skrivebordet"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:75
+msgid ""
+"If this is set to true, an icon linking to the Network Servers view will be "
+"put on the desktop."
+msgstr ""
+"Et ikon med en lenke til nettverk plasseres på skrivebordet hvis denne "
+"settes til «true»."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:76
+msgctxt "home-icon-name"
+msgid "'Home'"
+msgstr "«Hjem»"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:77
+msgid "Desktop home icon name"
+msgstr "Ikonnavn for Hjem på skrivebordet"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:78
+msgid ""
+"This name can be set if you want a custom name for the home icon on the "
+"desktop."
+msgstr "Tilpasset navn for hjemmeikonet på skrivebordet."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:79
+msgctxt "trash-icon-name"
+msgid "'Trash'"
+msgstr "«Papirkurv»"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:80
+msgid "Desktop trash icon name"
+msgstr "Ikonnavn for Papirkurv på skrivebordet"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:81
+msgid ""
+"This name can be set if you want a custom name for the trash icon on the "
+"desktop."
+msgstr "Tilpasset navn for papirkurvikonet på skrivebordet."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:82
+msgctxt "network-icon-name"
+msgid "'Network Servers'"
+msgstr "«Nettverkstjenere»"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:83
+msgid "Network servers icon name"
+msgstr "Ikonnavn for nettverkstjenere"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:84
+msgid ""
+"This name can be set if you want a custom name for the network servers icon "
+"on the desktop."
+msgstr ""
+"Dette navnet kan settes hvis du ønsker et tilpasset navn for ikonet for "
+"nettverkstjenere på skrivebordet."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:85
+msgid ""
+"An integer specifying how parts of overlong file names should be replaced by "
+"ellipses on the desktop. If the number is larger than 0, the file name will "
+"not exceed the given number of lines. If the number is 0 or smaller, no "
+"limit is imposed on the number of displayed lines."
+msgstr ""
+"Et heltall som bestemmer hvordan deler av for lange filnavn skal erstattes "
+"med ellipsetegn på skrivebordet. Hvis tallet er høyere enn 0, skal filnavnet "
+"ikke ta større plass enn valgt antall linjer. Hvis tallet er 0 eller lavere, "
+"settes det ingen grense for antall linjer som kan vises."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:86
+msgid "Fade the background on change"
+msgstr "Glidende overgang for bakgrunnen ved endring"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:87
+msgid ""
+"If set to true, then Nautilus will use a fade effect to change the desktop "
+"background."
+msgstr ""
+"Nautilus endrer skrivebordet med glidende overgang hvis denne verdien er "
+"«true»."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:88
+msgid "The geometry string for a navigation window."
+msgstr "Geometristreng for et navigeringsvindu."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:89
+msgid ""
+"A string containing the saved geometry and coordinates string for navigation "
+"windows."
+msgstr ""
+"En streng som inneholder lagret geometri og koordinatstreng for "
+"navigeringsvinduer."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:90
+msgid "Whether the navigation window should be maximized."
+msgstr "Om navigeringsvinduet skal være maksimert."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:91
+msgid "Whether the navigation window should be maximized by default."
+msgstr "Om navigeringsvinduet skal være maksimert som forvalg."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:92
+msgid "Width of the side pane"
+msgstr "Bredde på sidepanelet"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:93
+msgid "The default width of the side pane in new windows."
+msgstr "Forvalgt bredde for sidepanelet i nye vinduer."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:94
+msgid "Show location bar in new windows"
+msgstr "Vis adressefelt i nye vinduer"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:95
+msgid ""
+"If set to true, newly opened windows will have the location bar visible."
+msgstr "Nye vinduer har adressefeltet synlig hvis verdien er «true»."
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:96
+msgid "Show side pane in new windows"
+msgstr "Vis sidelinje i nye vinduer"
+
+#: ../data/org.gnome.nautilus.gschema.xml.h:97
+msgid "If set to true, newly opened windows will have the side pane visible."
+msgstr "Nye vinduer har sidepanelet synlig hvis verdien er «true»."
 
 #: ../eel/eel-canvas.c:1254 ../eel/eel-canvas.c:1255
 msgid "X"
@@ -81,11 +691,11 @@ msgstr "Vis flere _detaljer"
 #: ../eel/eel-stock-dialogs.c:195
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:542
 #: ../libnautilus-private/nautilus-file-operations.c:183
-#: ../src/nautilus-files-view.c:1097 ../src/nautilus-files-view.c:1571
-#: ../src/nautilus-files-view.c:5214 ../src/nautilus-location-entry.c:270
-#: ../src/nautilus-mime-actions.c:440 ../src/nautilus-mime-actions.c:444
-#: ../src/nautilus-mime-actions.c:515 ../src/nautilus-mime-actions.c:858
-#: ../src/nautilus-mime-actions.c:1364 ../src/nautilus-mime-actions.c:1589
+#: ../src/nautilus-files-view.c:1095 ../src/nautilus-files-view.c:1569
+#: ../src/nautilus-files-view.c:5267 ../src/nautilus-location-entry.c:270
+#: ../src/nautilus-mime-actions.c:415 ../src/nautilus-mime-actions.c:419
+#: ../src/nautilus-mime-actions.c:490 ../src/nautilus-mime-actions.c:833
+#: ../src/nautilus-mime-actions.c:1343 ../src/nautilus-mime-actions.c:1572
 #: ../src/nautilus-properties-window.c:4188
 #: ../src/nautilus-properties-window.c:5170 ../src/nautilus-query-editor.c:494
 msgid "_Cancel"
@@ -110,7 +720,7 @@ msgstr "Andre lokasjoner"
 #: ../libnautilus-private/nautilus-file-utilities.c:265
 #: ../src/nautilus-list-view.c:1490 ../src/nautilus-pathbar.c:406
 #: ../src/nautilus-query-editor.c:1072
-#: ../src/nautilus-shell-search-provider.c:293
+#: ../src/nautilus-shell-search-provider.c:292
 msgid "Home"
 msgstr "Hjem"
 
@@ -316,56 +926,56 @@ msgid "Unable to rename desktop file"
 msgstr "Klarte ikke å endre navn på skrivebordsfil"
 
 #. Translators: Time in 24h format
-#: ../libnautilus-private/nautilus-file.c:4719
+#: ../libnautilus-private/nautilus-file.c:4753
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. Translators: Time in 12h format
-#: ../libnautilus-private/nautilus-file.c:4722
+#: ../libnautilus-private/nautilus-file.c:4756
 msgid "%l:%M %p"
 msgstr "%l:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:4729
+#: ../libnautilus-private/nautilus-file.c:4763
 #, no-c-format
 msgid "Yesterday"
 msgstr "I går"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 24h format. i.e. "Yesterday 23:04"
-#: ../libnautilus-private/nautilus-file.c:4735
+#: ../libnautilus-private/nautilus-file.c:4769
 #, no-c-format
 msgid "Yesterday %H:%M"
 msgstr "I går %H:%M"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 12h format. i.e. "Yesterday 9:04 PM"
-#: ../libnautilus-private/nautilus-file.c:4740
+#: ../libnautilus-private/nautilus-file.c:4774
 #, no-c-format
 msgid "Yesterday %l:%M %p"
 msgstr "I går %l:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:4748
+#: ../libnautilus-private/nautilus-file.c:4782
 #, no-c-format
 msgid "%a"
 msgstr "%a"
 
 #. Translators: this is the name of the week day followed by
 #. * a time in 24h format. i.e. "Monday 23:04"
-#: ../libnautilus-private/nautilus-file.c:4754
+#: ../libnautilus-private/nautilus-file.c:4788
 #, no-c-format
 msgid "%a %H:%M"
 msgstr "%a %H:%M"
 
 #. Translators: this is the week day name followed by
 #. * a time in 12h format. i.e. "Monday 9:04 PM"
-#: ../libnautilus-private/nautilus-file.c:4759
+#: ../libnautilus-private/nautilus-file.c:4793
 #, no-c-format
 msgid "%a %l:%M %p"
 msgstr "%a %l:%M %p"
 
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name i.e. "3 Feb"
-#: ../libnautilus-private/nautilus-file.c:4767
+#: ../libnautilus-private/nautilus-file.c:4801
 #, no-c-format
 msgid "%-e %b"
 msgstr "%-e. %b."
@@ -373,7 +983,7 @@ msgstr "%-e. %b."
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 24h format i.e. "3 Feb 23:04"
-#: ../libnautilus-private/nautilus-file.c:4774
+#: ../libnautilus-private/nautilus-file.c:4808
 #, no-c-format
 msgid "%-e %b %H:%M"
 msgstr "%-e. %b. %H:%M"
@@ -381,14 +991,14 @@ msgstr "%-e. %b. %H:%M"
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 12h format i.e. "3 Feb 9:04"
-#: ../libnautilus-private/nautilus-file.c:4780
+#: ../libnautilus-private/nautilus-file.c:4814
 #, no-c-format
 msgid "%-e %b %l:%M %p"
 msgstr "%-e. %b. %l:%M %p"
 
 #. Translators: this is the day of the month followed by the abbreviated
 #. * month name followed by the year i.e. "3 Feb 2015"
-#: ../libnautilus-private/nautilus-file.c:4788
+#: ../libnautilus-private/nautilus-file.c:4822
 #, no-c-format
 msgid "%-e %b %Y"
 msgstr "%-e. %b. %Y"
@@ -396,7 +1006,7 @@ msgstr "%-e. %b. %Y"
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 24h format i.e. "3 Feb 2015 23:04"
-#: ../libnautilus-private/nautilus-file.c:4795
+#: ../libnautilus-private/nautilus-file.c:4829
 #, no-c-format
 msgid "%-e %b %Y %H:%M"
 msgstr "%-e. %b. %Y %H:%M"
@@ -404,61 +1014,61 @@ msgstr "%-e. %b. %Y %H:%M"
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 12h format i.e. "3 Feb 2015 9:04 PM"
-#: ../libnautilus-private/nautilus-file.c:4801
+#: ../libnautilus-private/nautilus-file.c:4835
 #, no-c-format
 msgid "%-e %b %Y %l:%M %p"
 msgstr "%-e. %b. %Y %l:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:4809
+#: ../libnautilus-private/nautilus-file.c:4844
 #, no-c-format
 msgid "%c"
 msgstr "%c"
 
-#: ../libnautilus-private/nautilus-file.c:5202
+#: ../libnautilus-private/nautilus-file.c:5237
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "Du har ikke tilgang til å endre tillatelser"
 
-#: ../libnautilus-private/nautilus-file.c:5497
+#: ../libnautilus-private/nautilus-file.c:5532
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "Du har ikke tilgang til å velge eier"
 
-#: ../libnautilus-private/nautilus-file.c:5515
+#: ../libnautilus-private/nautilus-file.c:5550
 #, c-format
 msgid "Specified owner '%s' doesn't exist"
 msgstr "Oppgitt eier «%s» finnes ikke"
 
-#: ../libnautilus-private/nautilus-file.c:5779
+#: ../libnautilus-private/nautilus-file.c:5814
 #, c-format
 msgid "Not allowed to set group"
 msgstr "Ingen tilgang til å tilordne gruppe"
 
-#: ../libnautilus-private/nautilus-file.c:5797
+#: ../libnautilus-private/nautilus-file.c:5832
 #, c-format
 msgid "Specified group '%s' doesn't exist"
 msgstr "Oppgitt gruppe «%s» finnes ikke"
 
 #. Translators: "Me" is used to indicate the file is owned by me (the current user)
-#: ../libnautilus-private/nautilus-file.c:5932
+#: ../libnautilus-private/nautilus-file.c:5967
 msgid "Me"
 msgstr "Meg"
 
-#: ../libnautilus-private/nautilus-file.c:5956
+#: ../libnautilus-private/nautilus-file.c:5991
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
 msgstr[0] "%'u oppføring"
 msgstr[1] "%'u oppføringer"
 
-#: ../libnautilus-private/nautilus-file.c:5957
+#: ../libnautilus-private/nautilus-file.c:5992
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u mappe"
 msgstr[1] "%'u mapper"
 
-#: ../libnautilus-private/nautilus-file.c:5958
+#: ../libnautilus-private/nautilus-file.c:5993
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -466,97 +1076,97 @@ msgstr[0] "%'u fil"
 msgstr[1] "%'u filer"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:6359
-#: ../libnautilus-private/nautilus-file.c:6375
+#: ../libnautilus-private/nautilus-file.c:6394
+#: ../libnautilus-private/nautilus-file.c:6410
 msgid "? items"
 msgstr "? oppføringer"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:6365
+#: ../libnautilus-private/nautilus-file.c:6400
 msgid "? bytes"
 msgstr "? bytes"
 
-#: ../libnautilus-private/nautilus-file.c:6382
-#: ../libnautilus-private/nautilus-file.c:6463
+#: ../libnautilus-private/nautilus-file.c:6417
+#: ../libnautilus-private/nautilus-file.c:6498
 msgid "Unknown"
 msgstr "Ukjent"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:6396
+#: ../libnautilus-private/nautilus-file.c:6431
 #: ../src/nautilus-properties-window.c:1185
 msgid "unknown"
 msgstr "ukjent"
 
-#: ../libnautilus-private/nautilus-file.c:6427
-#: ../libnautilus-private/nautilus-file.c:6435
-#: ../libnautilus-private/nautilus-file.c:6486
+#: ../libnautilus-private/nautilus-file.c:6462
+#: ../libnautilus-private/nautilus-file.c:6470
+#: ../libnautilus-private/nautilus-file.c:6521
 msgid "Program"
 msgstr "Program"
 
-#: ../libnautilus-private/nautilus-file.c:6428
+#: ../libnautilus-private/nautilus-file.c:6463
 msgid "Audio"
 msgstr "Lyd-CD"
 
-#: ../libnautilus-private/nautilus-file.c:6429
+#: ../libnautilus-private/nautilus-file.c:6464
 msgid "Font"
 msgstr "Skrift"
 
-#: ../libnautilus-private/nautilus-file.c:6430
+#: ../libnautilus-private/nautilus-file.c:6465
 #: ../src/nautilus-image-properties-page.c:769
 msgid "Image"
 msgstr "Bilde"
 
-#: ../libnautilus-private/nautilus-file.c:6431
+#: ../libnautilus-private/nautilus-file.c:6466
 msgid "Archive"
 msgstr "Arkiv"
 
-#: ../libnautilus-private/nautilus-file.c:6432
+#: ../libnautilus-private/nautilus-file.c:6467
 msgid "Markup"
 msgstr "Merking"
 
-#: ../libnautilus-private/nautilus-file.c:6433
-#: ../libnautilus-private/nautilus-file.c:6434
+#: ../libnautilus-private/nautilus-file.c:6468
+#: ../libnautilus-private/nautilus-file.c:6469
 msgid "Text"
 msgstr "Tekst"
 
-#: ../libnautilus-private/nautilus-file.c:6436
+#: ../libnautilus-private/nautilus-file.c:6471
 #: ../src/nautilus-query-editor.c:329
 msgid "Video"
 msgstr "Video"
 
-#: ../libnautilus-private/nautilus-file.c:6437
+#: ../libnautilus-private/nautilus-file.c:6472
 msgid "Contacts"
 msgstr "Kontakter"
 
-#: ../libnautilus-private/nautilus-file.c:6438
+#: ../libnautilus-private/nautilus-file.c:6473
 msgid "Calendar"
 msgstr "Kalender"
 
-#: ../libnautilus-private/nautilus-file.c:6439
+#: ../libnautilus-private/nautilus-file.c:6474
 msgid "Document"
 msgstr "Dokument"
 
-#: ../libnautilus-private/nautilus-file.c:6440
+#: ../libnautilus-private/nautilus-file.c:6475
 #: ../src/nautilus-query-editor.c:395
 msgid "Presentation"
 msgstr "Presentasjon"
 
-#: ../libnautilus-private/nautilus-file.c:6441
+#: ../libnautilus-private/nautilus-file.c:6476
 #: ../src/nautilus-query-editor.c:379
 msgid "Spreadsheet"
 msgstr "Regneark"
 
-#: ../libnautilus-private/nautilus-file.c:6488
+#: ../libnautilus-private/nautilus-file.c:6523
 msgid "Binary"
 msgstr "Binærfil"
 
-#: ../libnautilus-private/nautilus-file.c:6492
+#: ../libnautilus-private/nautilus-file.c:6527
 msgid "Folder"
 msgstr "Mappe"
 
-#: ../libnautilus-private/nautilus-file.c:6523
+#: ../libnautilus-private/nautilus-file.c:6558
 msgid "Link"
 msgstr "Lenke"
 
@@ -565,15 +1175,15 @@ msgstr "Lenke"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file.c:6529
+#: ../libnautilus-private/nautilus-file.c:6564
 #: ../libnautilus-private/nautilus-file-operations.c:377
 #: ../src/nautilus-files-view-dnd.c:125
 #, c-format
 msgid "Link to %s"
 msgstr "Lenke til %s"
 
-#: ../libnautilus-private/nautilus-file.c:6545
-#: ../libnautilus-private/nautilus-file.c:6559
+#: ../libnautilus-private/nautilus-file.c:6580
+#: ../libnautilus-private/nautilus-file.c:6594
 msgid "Link (broken)"
 msgstr "Lenke (ødelagt)"
 
@@ -933,7 +1543,7 @@ msgstr "Alt som ligger i papirkurven slettes for godt."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1399
 #: ../libnautilus-private/nautilus-file-operations.c:2482
-#: ../src/nautilus-window.c:1209
+#: ../src/nautilus-window.c:1208
 msgid "Empty _Trash"
 msgstr "_Tøm papirkurv"
 
@@ -1120,7 +1730,7 @@ msgstr "Ikke tø_m papirkurv"
 
 #. Translators: %s is a file name formatted for display
 #: ../libnautilus-private/nautilus-file-operations.c:2613
-#: ../src/nautilus-files-view.c:5604
+#: ../src/nautilus-files-view.c:5688
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "Fikk ikke tilgang til «%s»"
@@ -1511,7 +2121,8 @@ msgid "Unable to mark launcher trusted (executable)"
 msgstr "Klarte ikke å merke oppstartsfil med tillit (kjørbar)"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:133
-#: ../src/nautilus-window.c:462 ../src/resources/ui/nautilus-window.ui.h:2
+#: ../src/nautilus-window.c:461 ../src/resources/gtk/help-overlay.ui.h:52
+#: ../src/resources/ui/nautilus-window.ui.h:2
 msgid "Undo"
 msgstr "Angre"
 
@@ -1520,7 +2131,7 @@ msgid "Undo last action"
 msgstr "Angre forrige handling"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:140
-#: ../src/nautilus-window.c:463
+#: ../src/nautilus-window.c:462 ../src/resources/gtk/help-overlay.ui.h:53
 msgid "Redo"
 msgstr "Gjør om"
 
@@ -1983,6 +2594,7 @@ msgstr "Forbereder"
 #: ../libnautilus-private/nautilus-search-directory-file.c:159
 #: ../libnautilus-private/nautilus-search-directory-file.c:211
 #: ../libnautilus-private/nautilus-search-directory-file.c:256
+#: ../src/resources/gtk/help-overlay.ui.h:4
 #: ../src/resources/ui/nautilus-toolbar.ui.h:5
 msgid "Search"
 msgstr "Søk"
@@ -1995,569 +2607,6 @@ msgstr "Søk etter «%s»"
 #: ../libnautilus-private/nautilus-search-engine.c:189
 msgid "Unable to complete the requested search"
 msgstr "Klarte ikke fullføre forespurt søk"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:1
-msgid "Where to position newly open tabs in browser windows."
-msgstr "Hvor nyåpnede faner skal plasseres i leservinduer."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:2
-msgid ""
-"If set to \"after-current-tab\", then new tabs are inserted after the "
-"current tab. If set to \"end\", then new tabs are appended to the end of the "
-"tab list."
-msgstr ""
-"Hvis verdien er «after-current-tab», settes nye faner inn etter gjeldende "
-"fane. Hvis verdien er «end», legges nye faner til i slutten av fanelisten."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:3
-msgid "Always use the location entry, instead of the pathbar"
-msgstr "Alltid bruk adressefeltet i stedet for stilinjen"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:4
-msgid ""
-"If set to true, then Nautilus browser windows will always use a textual "
-"input entry for the location toolbar, instead of the pathbar."
-msgstr ""
-"Hvis nøkkelen settes til «true», bruker Nautilus leservinduer alltid et "
-"tekstfelt som adressefelt i stedet for stilinjen."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:5
-msgid "Whether to enable recursive search or not"
-msgstr "Hvorvidt rekursivt søk skal slås på eller ikke"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:6
-msgid "Enables or disables recursive search in Nautilus."
-msgstr "Slå på eller av rekursivt søk i Nautilus."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:7
-msgid "Whether to ask for confirmation when deleting files, or emptying Trash"
-msgstr "Om brukeren skal bekrefte sletting av filer eller tømming av papirkurv"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:8
-msgid ""
-"If set to true, then Nautilus will ask for confirmation when you attempt to "
-"delete files, or empty the Trash."
-msgstr ""
-"Nautilus spør om bekreftelse ved sletting av filer eller tømming av "
-"papirkurven hvis verdien er «true»."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:9
-msgid "When to show number of items in a folder"
-msgstr "Bestemmer når antall oppføringer i en mappe skal vises"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:10
-msgid ""
-"Speed tradeoff for when to show the number of items in a folder. If set to "
-"\"always\" then always show item counts, even if the folder is on a remote "
-"server. If set to \"local-only\" then only show counts for local file "
-"systems. If set to \"never\" then never bother to compute item counts."
-msgstr ""
-"Optimaliisering ved visning av antall oppføringer i en mappe. Hvis verdien "
-"er  «always», vises alltid antall oppføringer, selv om mappen er på en "
-"ekstern tjener. Hvis verdien er «local-only», vises antallet bare for lokale "
-"filsystemer. Hvis verdien er «never», blir antallet aldri beregnet."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:11
-msgid "Type of click used to launch/open files"
-msgstr "Type klikk som brukes for å starte/åpne filer"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:12
-msgid ""
-"Possible values are \"single\" to launch files on a single click, or \"double"
-"\" to launch them on a double click."
-msgstr ""
-"Mulige verdier er «single» for å starte filer ved enkeltklikk eller «double» "
-"for å starte dem med dobbeltklikk."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:13
-msgid "What to do with executable text files when activated"
-msgstr "Hva som skal gjøres med kjørbare tekstfiler når de trykkes på"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:14
-msgid ""
-"What to do with executable text files when they are activated (single or "
-"double clicked). Possible values are \"launch\" to launch them as programs, "
-"\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
-"text files."
-msgstr ""
-"Hva som skal gjøres med kjørbare tekstfiler når de enkelt- eller "
-"dobbeltklikkes på. Mulige verdier er «launch» for å starte dem som "
-"programmer, «ask» for å spørre hva brukeren vil gjøre og «display» for å "
-"vise dem som tekstfiler."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:15
-msgid "Show the package installer for unknown mime types"
-msgstr "Vis pakkeinstallasjon for ukjente MIME-typer"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:16
-msgid ""
-"Whether to show the user a package installer dialog in case an unknown mime "
-"type is opened, in order to search for an application to handle it."
-msgstr ""
-"Om brukeren skal presenteres med en pakkeinstallasjonsdialog når en ukjent "
-"MIME-type åpnes, slik at brukeren kan søke etter et program for å håndtere "
-"den."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:17
-msgid "Show a warning dialog for the change of the shortcut for move to trash"
-msgstr "Vis varslingsdialog ved endring av snarvei for å flytte til papirkurv"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:18
-msgid ""
-"Show a warning dialog for the change of the shortcut for move to trash from "
-"control + delete to just delete."
-msgstr ""
-"Vis varslingsdialog ved endring av snarvei for å flytte til papirkurv, med "
-"control + delete for å bare slette."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:19
-msgid "Use extra mouse button events in Nautilus' browser window"
-msgstr "Bruk ekstra museknapphendelser i Nautilus leservinduer"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:20
-msgid ""
-"For users with mice that have \"Forward\" and \"Back\" buttons, this key "
-"will determine if any action is taken inside of Nautilus when either is "
-"pressed."
-msgstr ""
-"Denne nøkkelen bestemmer hvilken handling som utføres i Nautilus når brukere "
-"med mus som har «Frem»- og «Tilbake»-knapper trykker på disse."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:21
-msgid "Mouse button to activate the \"Forward\" command in browser window"
-msgstr "Musknapp som aktiverer «Fremover»-knappen i nettleservinduet"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:22
-msgid ""
-"For users with mice that have buttons for \"Forward\" and \"Back\", this key "
-"will set which button activates the \"Forward\" command in a browser window. "
-"Possible values range between 6 and 14."
-msgstr ""
-"Denne nøkkelen bestemmer hvilken av musens evt. «Frem»- og «Tilbake»-knapper "
-"som utløser «Frem»-kommandoen i et utforskervindu. Gyldige verdier er tall "
-"mellom 6 og 14."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:23
-msgid "Mouse button to activate the \"Back\" command in browser window"
-msgstr "Musknapp som aktiverer «Tilbake»-knappen i nettleservinduet"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:24
-msgid ""
-"For users with mice that have buttons for \"Forward\" and \"Back\", this key "
-"will set which button activates the \"Back\" command in a browser window. "
-"Possible values range between 6 and 14."
-msgstr ""
-"Denne nøkkelen bestemmer hvilken av musens evt. «Frem»- og «Tilbake»-knapper "
-"som utløser «Tilbake»-kommandoen i et utforskervindu. Gyldige verdier er "
-"tall mellom 6 og 14."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:25
-msgid "When to show thumbnails of files"
-msgstr "Når filminiatyrer skal vises"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:26
-msgid ""
-"Speed tradeoff for when to show a file as a thumbnail. If set to \"always\" "
-"then always thumbnail, even if the folder is on a remote server. If set to "
-"\"local-only\" then only show thumbnails for local file systems. If set to "
-"\"never\" then never bother to thumbnail files, just use a generic icon. "
-"Despite what the name may suggest, this applies to any previewable file type."
-msgstr ""
-"Optimalisering ved visning av miniatyrbilder. Hvis verdien er «always», "
-"vises alltid miniatyrer, selv om mappen er på en ekstern tjener. Hvis "
-"verdien er «local-only», vises miniatyrer bare på lokale filsystemer. Hvis "
-"verdien er «never», vises alltid et forvalgt ikon i stedet for miniatyrer. "
-"Verdien brukes for alle filtyper som kan forhåndsvises, på tross av hva "
-"navnet tilsier."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:27
-msgid "Maximum image size for thumbnailing"
-msgstr "Maksimal miniatyrbildestørrelse"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:28
-msgid ""
-"Images over this size (in bytes) won't be thumbnailed. The purpose of this "
-"setting is to avoid thumbnailing large images that may take a long time to "
-"load or use lots of memory."
-msgstr ""
-"Bilder som (i byte) er større enn dette får ikke miniatyrer. Formålet med "
-"denne innstillingen er å unngå å lage miniatyrer av store bilder som kan ta "
-"lang tid å laste inn eller bruke mye minne."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:29
-msgid "Show folders first in windows"
-msgstr "Vis mapper først i vinduer"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:30
-msgid ""
-"If set to true, then Nautilus shows folders prior to showing files in the "
-"icon and list views."
-msgstr ""
-"Nautilus viser mapper foran filer i ikon- og listevisning hvis verdien er "
-"«true»."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:31
-msgid "Default sort order"
-msgstr "Forvalgt søkerekkefølge"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:32
-msgid ""
-"The default sort-order for items in the icon view. Possible values are \"name"
-"\", \"size\", \"type\" and \"mtime\"."
-msgstr ""
-"Forvalgt sorteringsrekkefølge for oppføringer i ikonvisning. Mulige verdier "
-"er «name», «size», «type» og «mtime»."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:33
-msgid "Reverse sort order in new windows"
-msgstr "Omvendt sorteringsrekkefølge i nye vinduer"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:34
-msgid ""
-"If true, files in new windows will be sorted in reverse order. ie, if sorted "
-"by name, then instead of sorting the files from \"a\" to \"z\", they will be "
-"sorted from \"z\" to \"a\"; if sorted by size, instead of being "
-"incrementally they will be sorted decrementally."
-msgstr ""
-"Filer i nye vinduer sorteres i omvendt rekkefølge hvis verdien er «true». "
-"For eksempel, hvis man sorterer på navn, sorteres filene fra «å» til «a» i "
-"stedet for «a» til «å». Hvis man sorterer på størrelse, sorteres filer i "
-"synkende rekkefølge i stedet for stigende."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:35
-msgid "Default folder viewer"
-msgstr "Forvalgt mappevisning"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:36
-msgid ""
-"When a folder is visited this viewer is used unless you have selected "
-"another view for that particular folder. Possible values are \"list-view\", "
-"and \"icon-view\"."
-msgstr ""
-"Når en mappe besøkes brukes dette visningsprogrammet med mindre du har valgt "
-"en annen visning for denne spesifikke mappen. Mulige verdier er «list-view» "
-"og «icon-view»."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:37
-msgid "Whether to show hidden files"
-msgstr "Om skjulte filer skal vises"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:38
-msgid ""
-"This key is deprecated and ignored. The \"show-hidden\" key from \"org.gtk."
-"Settings.FileChooser\" is now used instead."
-msgstr ""
-"Dette nøkkelen er utgått, og blir ignorert. Nøkkelen «show-hidden» fra «org."
-"gtk.Settings.FileChooser» brukes i stedet."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:39
-msgid "Whether to switch to the list view on search"
-msgstr "Hvorvidt listevisning brukes ved søk"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:40
-msgid ""
-"If this is set to true, view mode will be switched to the list view while "
-"searching. However, if the user changes the mode manually, this will be "
-"disabled."
-msgstr ""
-"Hvis denne settes til «true» vil visningsmodus byttes til listevisning ved "
-"søk. Hvis bruker bytter modus manuelt vil dette slås av."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:41
-msgid "Bulk rename utility"
-msgstr "Verktøy for å endre navn på mange filer"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:42
-msgid ""
-"If set, Nautilus will append URIs of selected files and treat the result as "
-"a command line for bulk renaming. Bulk rename applications can register "
-"themselves in this key by setting the key to a space-separated string of "
-"their executable name and any command line options. If the executable name "
-"is not set to a full path, it will be searched for in the search path."
-msgstr ""
-"Hvis dette er valgt, brukes adressen til valgte filer på en kommandolinje "
-"for buntvis navnendring av filer. Programmer som endrer filnavn buntvis kan "
-"registrere seg i denne nøkkelen ved å legge inn aktuelle kjørbare filnavn og "
-"evt. kommandolinjevalg, adskilt med mellomrom. Hvis aktuelt navn på kjørbar "
-"fil ikke er en fullstendig filsti, blir filen søkt etter i gjeldende søkesti."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:43
-msgid ""
-"Whether to open the hovered folder after a timeout when drag and drop "
-"operation"
-msgstr ""
-"Hvorvidt en mappe man står over vil åpnes automatisk etter en tid ved dra-og-"
-"slipp operasjoner"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:44
-msgid ""
-"If this is set to true, when performing a drag and drop operation the "
-"hovered folder will open automatically after a timeout"
-msgstr ""
-"Hvis verdien er «true», vil en mappe man står over åpnes automatisk etter en "
-"tid ved dra-og-slipp operasjoner."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:45
-msgid "List of possible captions on icons"
-msgstr "Liste med mulig bildetekst for ikoner"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:46
-msgid ""
-"A list of captions below an icon in the icon view and the desktop. The "
-"actual number of captions shown depends on the zoom level. Some possible "
-"values are: \"size\", \"type\", \"date_modified\", \"owner\", \"group\", "
-"\"permissions\", and \"mime_type\"."
-msgstr ""
-"En liste med bildetekst under ikoner i ikonvisning og på skrivebordet. "
-"Antall bildetekster som vises er avhengig av zoom-nivå. Mulige verdier er: "
-"«size», «type», «date_modified», «owner», «group», «permissions» og "
-"«mime_type»."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:47
-msgid "Default icon zoom level"
-msgstr "Forvalgt zoom-nivå for ikon"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:48
-msgid "Default zoom level used by the icon view."
-msgstr "Forvalgt zoom-nivå for ikonvisning."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:49
-msgid "Default Thumbnail Icon Size"
-msgstr "Forvalgt størrelse for miniatyrikon"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:50
-msgid ""
-"The default size of an icon for a thumbnail in the icon view when using "
-"NAUTILUS_ICON_SIZE_SMALL size."
-msgstr ""
-"Forvalgt størrelse på et ikon for en miniatyr i ikonvisning ved bruk av "
-"størrelsen «NAUTILUS_ICON_SIZE_SMALL»."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:51
-msgid "Text Ellipsis Limit"
-msgstr "Grense for tekst-ellipse"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:52
-msgid ""
-"A string specifying how parts of overlong file names should be replaced by "
-"ellipses, depending on the zoom level. Each of the list entries is of the "
-"form \"Zoom Level:Integer\". For each specified zoom level, if the given "
-"integer is larger than 0, the file name will not exceed the given number of "
-"lines. If the integer is 0 or smaller, no limit is imposed on the specified "
-"zoom level. A default entry of the form \"Integer\" without any specified "
-"zoom level is also allowed. It defines the maximum number of lines for all "
-"other zoom levels. Examples: 0 - always display overlong file names; 3 - "
-"shorten file names if they exceed three lines; smallest:5,smaller:4,0 - "
-"shorten file names if they exceed five lines for zoom level \"smallest\". "
-"Shorten file names if they exceed four lines for zoom level \"smaller\". Do "
-"not shorten file names for other zoom levels. Available zoom levels: small, "
-"standard, large"
-msgstr ""
-"En streng som bestemmer hvordan overskytende deler av for lange filnavn skal "
-"erstattes med ellipsetegn, avhengig av zoom-nivå. Hver listeoppføring er i "
-"formatet «zoom-nivå:heltall». For hvert valgt zoom-nivå, gitt at aktuelt "
-"heltall er større enn 0, skal filnavnet ikke overskyte valgt antall linjer. "
-"Hvis heltallet er 0 eller lavere, har valgt zoomnivå ingen grense. En "
-"forvalgt oppføring i formatet «heltall» uten zoomnivå er også tillatt, og "
-"bestemmer maskimalt antall linjer for alle andre zoomnivåer. For eksempel: 0 "
-"- vis alltid overskytende filnavn, 3 - forkort filnavn hvis de tar større "
-"plass enn tre linjer. «smallest:5,smaller:4,0» - forkort filnavn hvis de er "
-"tar større plass enn enn fem linjer for zoom-nivået «smallest», og hvis de "
-"tar større plass enn fire linjer for zoom-nivået «smaller». Filnavn "
-"forkortes ikke på andre zoom-nivåer. Følgende zoom-nivåer er tilgjengelig: "
-"«small», «standard» og «large»"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:53
-msgid "Default list zoom level"
-msgstr "Forvalgt zoom-nivå for liste"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:54
-msgid "Default zoom level used by the list view."
-msgstr "Forvalgt zoom-nivå for listevisning."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:55
-msgid "Default list of columns visible in the list view"
-msgstr "Forvalgt liste med kolonner synlig i listevisning"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:56
-msgid "Default list of columns visible in the list view."
-msgstr "Forvalgt liste med kolonner synlig i listevisning."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:57
-msgid "Default column order in the list view"
-msgstr "Forvalgt rekkefølge for kolonner i listevisning"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:58
-msgid "Default column order in the list view."
-msgstr "Forvalgt rekkefølge for kolonner i listevisning."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:59
-msgid "Use tree view"
-msgstr "Bruk trevisning"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:60
-msgid ""
-"Whether a tree should be used for list view navigation instead of a flat list"
-msgstr ""
-"Hvorvidt et tre skal brukes for navigasjon i listevisning i stedet for en "
-"flat liste"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:61
-msgid "Desktop font"
-msgstr "Skrift for skrivebord"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:62
-msgid "The font description used for the icons on the desktop."
-msgstr "Beskrivelse av skrifter for ikonene på skrivebordet."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:63
-msgid "Home icon visible on desktop"
-msgstr "Vis Hjem-ikonet på skrivebordet"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:64
-msgid ""
-"If this is set to true, an icon linking to the home folder will be put on "
-"the desktop."
-msgstr ""
-"Hvis verdien er «true», legges en svarvei til hjemmemappen på skrivebordet."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:65
-msgid "Trash icon visible on desktop"
-msgstr "Papirkurvikon synlig på skrivebordet"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:66
-msgid ""
-"If this is set to true, an icon linking to the trash will be put on the "
-"desktop."
-msgstr ""
-"Et ikon med en lenke til papirkurven plasseres på skrivebordet hvis denne "
-"settes til «true»."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:67
-msgid "Show mounted volumes on the desktop"
-msgstr "Vis monterte volum på skrivebordet"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:68
-msgid ""
-"If this is set to true, icons linking to mounted volumes will be put on the "
-"desktop."
-msgstr ""
-"Ikoner med en lenke til monterte volum plasseres på skrivebordet hvis denne "
-"settes til «true»."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:69
-msgid "Network Servers icon visible on the desktop"
-msgstr "Nettverk-ikonet er synlig på skrivebordet"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:70
-msgid ""
-"If this is set to true, an icon linking to the Network Servers view will be "
-"put on the desktop."
-msgstr ""
-"Et ikon med en lenke til nettverk plasseres på skrivebordet hvis denne "
-"settes til «true»."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:71
-msgid "Desktop home icon name"
-msgstr "Ikonnavn for Hjem på skrivebordet"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:72
-msgid ""
-"This name can be set if you want a custom name for the home icon on the "
-"desktop."
-msgstr "Tilpasset navn for hjemmeikonet på skrivebordet."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:73
-msgid "Desktop trash icon name"
-msgstr "Ikonnavn for Papirkurv på skrivebordet"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:74
-msgid ""
-"This name can be set if you want a custom name for the trash icon on the "
-"desktop."
-msgstr "Tilpasset navn for papirkurvikonet på skrivebordet."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:75
-msgid "Network servers icon name"
-msgstr "Ikonnavn for nettverkstjenere"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:76
-msgid ""
-"This name can be set if you want a custom name for the network servers icon "
-"on the desktop."
-msgstr ""
-"Dette navnet kan settes hvis du ønsker et tilpasset navn for ikonet for "
-"nettverkstjenere på skrivebordet."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:77
-msgid ""
-"An integer specifying how parts of overlong file names should be replaced by "
-"ellipses on the desktop. If the number is larger than 0, the file name will "
-"not exceed the given number of lines. If the number is 0 or smaller, no "
-"limit is imposed on the number of displayed lines."
-msgstr ""
-"Et heltall som bestemmer hvordan deler av for lange filnavn skal erstattes "
-"med ellipsetegn på skrivebordet. Hvis tallet er høyere enn 0, skal filnavnet "
-"ikke ta større plass enn valgt antall linjer. Hvis tallet er 0 eller lavere, "
-"settes det ingen grense for antall linjer som kan vises."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:78
-msgid "Fade the background on change"
-msgstr "Glidende overgang for bakgrunnen ved endring"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:79
-msgid ""
-"If set to true, then Nautilus will use a fade effect to change the desktop "
-"background."
-msgstr ""
-"Nautilus endrer skrivebordet med glidende overgang hvis denne verdien er "
-"«true»."
-
-#. Translators: This is a string like "1201x1080+24+4" representing the size and coordinates of the nautilus window
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:81
-msgid "The geometry string for a navigation window."
-msgstr "Geometristreng for et navigeringsvindu."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:82
-msgid ""
-"A string containing the saved geometry and coordinates string for navigation "
-"windows."
-msgstr ""
-"En streng som inneholder lagret geometri og koordinatstreng for "
-"navigeringsvinduer."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:83
-msgid "Whether the navigation window should be maximized."
-msgstr "Om navigeringsvinduet skal være maksimert."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:84
-msgid "Whether the navigation window should be maximized by default."
-msgstr "Om navigeringsvinduet skal være maksimert som forvalg."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:85
-msgid "Width of the side pane"
-msgstr "Bredde på sidepanelet"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:86
-msgid "The default width of the side pane in new windows."
-msgstr "Forvalgt bredde for sidepanelet i nye vinduer."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:87
-msgid "Show location bar in new windows"
-msgstr "Vis adressefelt i nye vinduer"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:88
-msgid ""
-"If set to true, newly opened windows will have the location bar visible."
-msgstr "Nye vinduer har adressefeltet synlig hvis verdien er «true»."
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:89
-msgid "Show side pane in new windows"
-msgstr "Vis sidelinje i nye vinduer"
-
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:90
-msgid "If set to true, newly opened windows will have the side pane visible."
-msgstr "Nye vinduer har sidepanelet synlig hvis verdien er «true»."
 
 #: ../nautilus-sendto-extension/nautilus-nste.c:96
 #: ../nautilus-sendto-extension/nautilus-nste.c:101
@@ -2572,21 +2621,12 @@ msgstr "Send fil via e-post …"
 msgid "Send files by mail…"
 msgstr "Send filer via e-post …"
 
-#: ../src/nautilus-application-actions.c:101
-#, c-format
-msgid ""
-"There was an error displaying help: \n"
-"%s"
-msgstr ""
-"Det oppstod en feil under vising av hjelp: \n"
-"%s"
-
 #. Some sort of failure occurred. How 'bout we tell the user?
-#: ../src/nautilus-application.c:169 ../src/nautilus-window-slot.c:1155
+#: ../src/nautilus-application.c:158 ../src/nautilus-window-slot.c:1158
 msgid "Oops! Something went wrong."
 msgstr "Oops! Noe gikk galt."
 
-#: ../src/nautilus-application.c:171
+#: ../src/nautilus-application.c:160
 #, c-format
 msgid ""
 "Unable to create a required folder. Please create the following folder, or "
@@ -2597,7 +2637,7 @@ msgstr ""
 "tillatelser slik at den kan opprettes:\n"
 "%s"
 
-#: ../src/nautilus-application.c:176
+#: ../src/nautilus-application.c:165
 #, c-format
 msgid ""
 "Unable to create required folders. Please create the following folders, or "
@@ -2608,71 +2648,72 @@ msgstr ""
 "tillatelser slik at de kan opprettes:\n"
 "%s"
 
-#: ../src/nautilus-application.c:308
-msgid ""
-"Nautilus 3.0 deprecated this directory and tried migrating this "
-"configuration to ~/.config/nautilus"
-msgstr ""
-"Nautilus 3.0 bruker ikke denne mappen lenger, og prøvde å flytte oppsettet "
-"til ~/.config/nautilus"
-
-#: ../src/nautilus-application.c:662
+#: ../src/nautilus-application.c:599
 msgid "--check cannot be used with other options."
 msgstr "--check kan ikke brukes med samtidig med andre valg."
 
-#: ../src/nautilus-application.c:669
+#: ../src/nautilus-application.c:606
 msgid "--quit cannot be used with URIs."
 msgstr "--quit kan ikke brukes med adresser."
 
-#: ../src/nautilus-application.c:677
+#: ../src/nautilus-application.c:614
 msgid "--select must be used with at least an URI."
 msgstr "--selevt må brukes med minst én adresse."
 
-#: ../src/nautilus-application.c:684
+#: ../src/nautilus-application.c:621
 msgid "--no-desktop and --force-desktop cannot be used together."
 msgstr "--no-desktop og --force-desktop kan ikke brukes samtidig."
 
-#: ../src/nautilus-application.c:744
+#: ../src/nautilus-application.c:734
+#, c-format
+msgid ""
+"There was an error displaying help: \n"
+"%s"
+msgstr ""
+"Det oppstod en feil under vising av hjelp: \n"
+"%s"
+
+#: ../src/nautilus-application.c:873
 msgid "Perform a quick set of self-check tests."
 msgstr "Utfør et raskt sett med selvsjekk-tester."
 
-#: ../src/nautilus-application.c:751
+#: ../src/nautilus-application.c:880
 msgid "Create the initial window with the given geometry."
 msgstr "Opprett startvinduet med en oppgitt geometri."
 
-#: ../src/nautilus-application.c:751
+#: ../src/nautilus-application.c:880
 msgid "GEOMETRY"
 msgstr "GEOMETRI"
 
-#: ../src/nautilus-application.c:753
+#: ../src/nautilus-application.c:882
 msgid "Show the version of the program."
 msgstr "Vis versjonen av programmet."
 
-#: ../src/nautilus-application.c:755
+#: ../src/nautilus-application.c:884
 msgid "Always open a new window for browsing specified URIs"
 msgstr "Åpne alltid et nytt vindu for eksplisitt angitte adresser"
 
-#: ../src/nautilus-application.c:757
+#: ../src/nautilus-application.c:886
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Bare lag nye vinduer for eksplisitt angitte adresser."
 
-#: ../src/nautilus-application.c:759
+#: ../src/nautilus-application.c:888
 msgid "Never manage the desktop (ignore the GSettings preference)."
 msgstr "Ikke tegn opp skrivebordet (ignorer brukervalg satt i GSettings)."
 
-#: ../src/nautilus-application.c:761
+#: ../src/nautilus-application.c:890
 msgid "Always manage the desktop (ignore the GSettings preference)."
 msgstr "Alltid tegn opp skrivebordet (ignorer brukervalg satt i GSettings)."
 
-#: ../src/nautilus-application.c:763
+#: ../src/nautilus-application.c:892
 msgid "Quit Nautilus."
 msgstr "Avslutt Nautilus."
 
-#: ../src/nautilus-application.c:765
+#: ../src/nautilus-application.c:894
 msgid "Select specified URI in parent folder."
 msgstr "Velg oppgitt adresse i opphavsmappen."
 
-#: ../src/nautilus-application.c:766
+#: ../src/nautilus-application.c:895
 msgid "[URI...]"
 msgstr "[Adresse …]"
 
@@ -2710,20 +2751,12 @@ msgstr ""
 "Trykk Avbryt hvis du ikke stoler på denne plasseringen, eller hvis du er "
 "usikker."
 
-#: ../src/nautilus-autorun-software.c:240 ../src/nautilus-mime-actions.c:516
+#: ../src/nautilus-autorun-software.c:240 ../src/nautilus-mime-actions.c:491
 msgid "_Run"
 msgstr "Kjø_r"
 
-#: ../src/nautilus-bookmarks-window.c:166
-msgid "No bookmarks defined"
-msgstr "Ingen bokmerker definert"
-
-#: ../src/nautilus-bookmarks-window.c:712
-msgid "Bookmarks"
-msgstr "Bokmerker"
-
 #: ../src/nautilus-canvas-view-container.c:443
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:28
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:30
 msgid "Icon View"
 msgstr "Ikonvisning"
 
@@ -2856,112 +2889,105 @@ msgstr "Oppføringens navn er ikke endret."
 msgid "Renaming “%s” to “%s”."
 msgstr "Endrer navn fra «%s» til «%s»."
 
-#. Translators: this is referred to captions under icons.
-#: ../src/nautilus-file-management-properties.c:181
-#: ../src/nautilus-properties-window.c:3772
-#: ../src/nautilus-properties-window.c:3799
-msgid "None"
-msgstr "Ingen"
-
 #: ../src/nautilus-files-view.c:400
 msgid "Searching…"
 msgstr "Søker …"
 
 #: ../src/nautilus-files-view.c:400 ../src/nautilus-image-properties-page.c:708
-#: ../src/nautilus-list-model.c:371 ../src/nautilus-window-slot.c:644
+#: ../src/nautilus-list-model.c:371 ../src/nautilus-window-slot.c:648
 msgid "Loading…"
 msgstr "Laster …"
 
-#: ../src/nautilus-files-view.c:1088 ../src/nautilus-mime-actions.c:849
-#: ../src/nautilus-mime-actions.c:1585
+#: ../src/nautilus-files-view.c:1086 ../src/nautilus-mime-actions.c:824
+#: ../src/nautilus-mime-actions.c:1568
 msgid "Are you sure you want to open all files?"
 msgstr "Er du sikker på at du vil åpne alle filer?"
 
-#: ../src/nautilus-files-view.c:1090
+#: ../src/nautilus-files-view.c:1088
 #, c-format
 msgid "This will open %'d separate tab."
 msgid_plural "This will open %'d separate tabs."
 msgstr[0] "Dette åpner %'d separat fane."
 msgstr[1] "Dette åpner %'d separate faner."
 
-#: ../src/nautilus-files-view.c:1093
+#: ../src/nautilus-files-view.c:1091
 #, c-format
 msgid "This will open %'d separate window."
 msgid_plural "This will open %'d separate windows."
 msgstr[0] "Dette åpner %'d separat vindu."
 msgstr[1] "Dette åpner %'d separate vinduer."
 
-#: ../src/nautilus-files-view.c:1097 ../src/nautilus-location-entry.c:270
-#: ../src/nautilus-mime-actions.c:858 ../src/nautilus-mime-actions.c:1035
-#: ../src/nautilus-mime-actions.c:1589
+#: ../src/nautilus-files-view.c:1095 ../src/nautilus-location-entry.c:270
+#: ../src/nautilus-mime-actions.c:833 ../src/nautilus-mime-actions.c:1010
+#: ../src/nautilus-mime-actions.c:1572
 msgid "_OK"
 msgstr "_OK"
 
-#: ../src/nautilus-files-view.c:1568
+#: ../src/nautilus-files-view.c:1566
 msgid "Select Items Matching"
 msgstr "Velg oppføringer med treff"
 
-#: ../src/nautilus-files-view.c:1573 ../src/nautilus-files-view.c:5215
+#: ../src/nautilus-files-view.c:1571 ../src/nautilus-files-view.c:5268
 msgid "_Select"
 msgstr "_Velg"
 
-#: ../src/nautilus-files-view.c:1581
+#: ../src/nautilus-files-view.c:1579
 msgid "_Pattern:"
 msgstr "_Mønster:"
 
-#: ../src/nautilus-files-view.c:1587
+#: ../src/nautilus-files-view.c:1585
 msgid "Examples: "
 msgstr "Eksempler: "
 
-#: ../src/nautilus-files-view.c:1845
+#: ../src/nautilus-files-view.c:1824
 msgid "A folder with that name already exists."
 msgstr "En mappe med dette navnet eksisterer allerede."
 
-#: ../src/nautilus-files-view.c:1847
+#: ../src/nautilus-files-view.c:1826
 msgid "A file with that name already exists."
 msgstr "En fil med dette navnet eksisterer allerede."
 
-#: ../src/nautilus-files-view.c:1862
+#: ../src/nautilus-files-view.c:1841
 msgid "Folder names cannot contain “/”."
 msgstr "Mappenavn kan ikke inneholde «/»."
 
-#: ../src/nautilus-files-view.c:1864
+#: ../src/nautilus-files-view.c:1843
 msgid "Files names cannot contain “/”."
 msgstr "Filnavn kan ikke inneholde «/»."
 
-#: ../src/nautilus-files-view.c:1867
+#: ../src/nautilus-files-view.c:1846
 msgid "A folder can not be called “.”."
 msgstr "En mappe kan ikke kalles «.»."
 
-#: ../src/nautilus-files-view.c:1869
+#: ../src/nautilus-files-view.c:1848
 msgid "A file can not be called “.”."
 msgstr "En fil kan ikke kalles «.»."
 
-#: ../src/nautilus-files-view.c:1872
+#: ../src/nautilus-files-view.c:1851
 msgid "A folder can not be called “..”."
 msgstr "En mappe kan ikke kalles «..»."
 
-#: ../src/nautilus-files-view.c:1874
+#: ../src/nautilus-files-view.c:1853
 msgid "A file can not be called “..”."
 msgstr "En fil kan ikke kalles «..»."
 
-#: ../src/nautilus-files-view.c:2105 ../src/nautilus-files-view.c:2173
+#: ../src/nautilus-files-view.c:2084 ../src/nautilus-files-view.c:2152
 msgid "Folder name"
 msgstr "Mappenavn"
 
-#: ../src/nautilus-files-view.c:2107
+#: ../src/nautilus-files-view.c:2086
 msgid "File name"
 msgstr "Filnavn"
 
-#: ../src/nautilus-files-view.c:2172
+#: ../src/nautilus-files-view.c:2151
 msgid "Create"
 msgstr "Lag"
 
-#: ../src/nautilus-files-view.c:2174
+#: ../src/nautilus-files-view.c:2153
 msgid "New Folder"
 msgstr "Ny mappe"
 
-#: ../src/nautilus-files-view.c:2570
+#: ../src/nautilus-files-view.c:2600
 msgid ""
 "Nautilus 3.6 deprecated this directory and tried migrating this "
 "configuration to ~/.local/share/nautilus"
@@ -2969,19 +2995,19 @@ msgstr ""
 "Nautilus 3.6 bruker ikke denne mappen lenger, og prøvde å flytte oppsettet "
 "til ~/.local/share/nautilus"
 
-#: ../src/nautilus-files-view.c:2986 ../src/nautilus-files-view.c:3021
+#: ../src/nautilus-files-view.c:3028 ../src/nautilus-files-view.c:3063
 #, c-format
 msgid "“%s” selected"
 msgstr "«%s» valgt"
 
-#: ../src/nautilus-files-view.c:2988
+#: ../src/nautilus-files-view.c:3030
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "%'d mappe valgt"
 msgstr[1] "%'d mapper valgt"
 
-#: ../src/nautilus-files-view.c:2998
+#: ../src/nautilus-files-view.c:3040
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
@@ -2989,14 +3015,14 @@ msgstr[0] "(med %'d oppføring)"
 msgstr[1] "(med %'d oppføringer)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: ../src/nautilus-files-view.c:3009
+#: ../src/nautilus-files-view.c:3051
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
 msgstr[0] "(med totalt %'d oppføring)"
 msgstr[1] "(med totalt %'d oppføringer)"
 
-#: ../src/nautilus-files-view.c:3024
+#: ../src/nautilus-files-view.c:3066
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -3004,7 +3030,7 @@ msgstr[0] "%'d oppføring valgt"
 msgstr[1] "%'d oppføringer valgt"
 
 #. Folders selected also, use "other" terminology
-#: ../src/nautilus-files-view.c:3031
+#: ../src/nautilus-files-view.c:3073
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -3015,7 +3041,7 @@ msgstr[1] "%'d andre oppføringer valgt"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: ../src/nautilus-files-view.c:3045
+#: ../src/nautilus-files-view.c:3087
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -3027,103 +3053,103 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: ../src/nautilus-files-view.c:3069
+#: ../src/nautilus-files-view.c:3111
 #, c-format
 msgid "%s %s, %s %s"
 msgstr "%s %s, %s, %s"
 
-#: ../src/nautilus-files-view.c:5204
+#: ../src/nautilus-files-view.c:5257
 msgid "Select Move Destination"
 msgstr "Velg mål for flytting"
 
-#: ../src/nautilus-files-view.c:5206
+#: ../src/nautilus-files-view.c:5259
 msgid "Select Copy Destination"
 msgstr "Velg mål for kopiering"
 
 #. Translators: %s is a file name formatted for display
-#: ../src/nautilus-files-view.c:5631
+#: ../src/nautilus-files-view.c:5715
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "Klarte ikke å fjerne «%s»"
 
 #. Translators: %s is a file name formatted for display
-#: ../src/nautilus-files-view.c:5658
+#: ../src/nautilus-files-view.c:5742
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "Klarte ikke å løse ut «%s»"
 
-#: ../src/nautilus-files-view.c:5680
+#: ../src/nautilus-files-view.c:5764
 msgid "Unable to stop drive"
 msgstr "Klarte ikke å stoppe stasjon"
 
 #. Translators: %s is a file name formatted for display
-#: ../src/nautilus-files-view.c:5785
+#: ../src/nautilus-files-view.c:5869
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "Klarte ikke å starte «%s»"
 
-#: ../src/nautilus-files-view.c:6501
+#: ../src/nautilus-files-view.c:6626
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "Ny mappe med utvalg (%'d oppføring)"
 msgstr[1] "Ny mappe med utvalg (%'d oppføringer)"
 
-#: ../src/nautilus-files-view.c:6549
+#: ../src/nautilus-files-view.c:6674
 #, c-format
 msgid "Open With %s"
 msgstr "Åpne med %s"
 
-#: ../src/nautilus-files-view.c:6558
+#: ../src/nautilus-files-view.c:6683
 msgid "Run"
 msgstr "Kjør"
 
-#: ../src/nautilus-files-view.c:6560
+#: ../src/nautilus-files-view.c:6685 ../src/resources/gtk/help-overlay.ui.h:10
 msgid "Open"
 msgstr "Åpne"
 
-#: ../src/nautilus-files-view.c:6611
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:18
+#: ../src/nautilus-files-view.c:6736
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:19
 msgid "_Start"
 msgstr "_Start"
 
-#: ../src/nautilus-files-view.c:6614 ../src/gtk/gtkplacesview.c:1649
+#: ../src/nautilus-files-view.c:6739 ../src/gtk/gtkplacesview.c:1657
 msgid "_Connect"
 msgstr "_Koble til"
 
-#: ../src/nautilus-files-view.c:6617
+#: ../src/nautilus-files-view.c:6742
 msgid "_Start Multi-disk Drive"
 msgstr "_Start stasjon med flere disker"
 
-#: ../src/nautilus-files-view.c:6620
+#: ../src/nautilus-files-view.c:6745
 msgid "U_nlock Drive"
 msgstr "_Lås opp stasjon"
 
-#: ../src/nautilus-files-view.c:6636
+#: ../src/nautilus-files-view.c:6761
 msgid "Stop Drive"
 msgstr "Stopp stasjon"
 
-#: ../src/nautilus-files-view.c:6639
+#: ../src/nautilus-files-view.c:6764
 msgid "_Safely Remove Drive"
 msgstr "_Fjern stasjon på en trygg måte"
 
-#: ../src/nautilus-files-view.c:6642 ../src/gtk/gtkplacesview.c:1639
+#: ../src/nautilus-files-view.c:6767 ../src/gtk/gtkplacesview.c:1647
 msgid "_Disconnect"
 msgstr "_Koble fra"
 
-#: ../src/nautilus-files-view.c:6645
+#: ../src/nautilus-files-view.c:6770
 msgid "_Stop Multi-disk Drive"
 msgstr "_Stopp stasjon med flere disker"
 
-#: ../src/nautilus-files-view.c:6648
+#: ../src/nautilus-files-view.c:6773
 msgid "_Lock Drive"
 msgstr "_Lås stasjon"
 
-#: ../src/nautilus-files-view.c:8114
+#: ../src/nautilus-files-view.c:8241
 msgid "Content View"
 msgstr "Innholdsvisning"
 
-#: ../src/nautilus-files-view.c:8115
+#: ../src/nautilus-files-view.c:8242
 msgid "View of the current folder"
 msgstr "Visning for aktiv mappe"
 
@@ -3287,7 +3313,7 @@ msgid "Use Default"
 msgstr "Bruk forvalg"
 
 #: ../src/nautilus-list-view.c:1818
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:17
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:19
 msgid "List View"
 msgstr "Listevisning"
 
@@ -3307,89 +3333,89 @@ msgid_plural "Do you want to view %d locations?"
 msgstr[0] "Vil du vise %d plassering?"
 msgstr[1] "Vil du vise %d plasseringer?"
 
-#: ../src/nautilus-location-entry.c:259 ../src/nautilus-mime-actions.c:854
+#: ../src/nautilus-location-entry.c:259 ../src/nautilus-mime-actions.c:829
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
 msgstr[0] "Dette åpner %d separat vindu."
 msgstr[1] "Dette åpner %d separate vinduer."
 
-#: ../src/nautilus-mime-actions.c:424
+#: ../src/nautilus-mime-actions.c:399
 #, c-format
 msgid "The link “%s” is broken. Move it to Trash?"
 msgstr "Lenken «%s» er ødelagt. Vil du flytte den til papirkurven?"
 
-#: ../src/nautilus-mime-actions.c:426
+#: ../src/nautilus-mime-actions.c:401
 #, c-format
 msgid "The link “%s” is broken."
 msgstr "Lenken «%s» er ødelagt."
 
-#: ../src/nautilus-mime-actions.c:432
+#: ../src/nautilus-mime-actions.c:407
 msgid "This link cannot be used because it has no target."
 msgstr "Denne lenken kan ikke brukes fordi den ikke har noe mål."
 
-#: ../src/nautilus-mime-actions.c:434
+#: ../src/nautilus-mime-actions.c:409
 #, c-format
 msgid "This link cannot be used because its target “%s” doesn't exist."
 msgstr "Denne lenken kan ikke brukes, fordi målet «%s» ikke finnes."
 
-#: ../src/nautilus-mime-actions.c:444
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:26
+#: ../src/nautilus-mime-actions.c:419
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:27
 msgid "Mo_ve to Trash"
 msgstr "Fl_ytt til papirkurv"
 
-#: ../src/nautilus-mime-actions.c:504
+#: ../src/nautilus-mime-actions.c:479
 #, c-format
 msgid "Do you want to run “%s”, or display its contents?"
 msgstr "Vil du kjøre «%s», eller vise innholdet?"
 
-#: ../src/nautilus-mime-actions.c:506
+#: ../src/nautilus-mime-actions.c:481
 #, c-format
 msgid "“%s” is an executable text file."
 msgstr "«%s» er en kjørbar tekstfil."
 
-#: ../src/nautilus-mime-actions.c:512
+#: ../src/nautilus-mime-actions.c:487
 msgid "Run in _Terminal"
 msgstr "Kjør i _terminal"
 
-#: ../src/nautilus-mime-actions.c:513
+#: ../src/nautilus-mime-actions.c:488
 msgid "_Display"
 msgstr "_Vis"
 
-#: ../src/nautilus-mime-actions.c:851
+#: ../src/nautilus-mime-actions.c:826
 #, c-format
 msgid "This will open %d separate tab."
 msgid_plural "This will open %d separate tabs."
 msgstr[0] "Dette åpner %d separat fane."
 msgstr[1] "Dette åpner %d separate faner."
 
-#: ../src/nautilus-mime-actions.c:916
+#: ../src/nautilus-mime-actions.c:891
 #, c-format
 msgid "Could not display “%s”."
 msgstr "Klarte ikke å vise «%s»."
 
-#: ../src/nautilus-mime-actions.c:1014
+#: ../src/nautilus-mime-actions.c:989
 msgid "The file is of an unknown type"
 msgstr "Filen er av en ukjent type"
 
-#: ../src/nautilus-mime-actions.c:1018
+#: ../src/nautilus-mime-actions.c:993
 #, c-format
 msgid "There is no application installed for “%s” files"
 msgstr "Ingen program installert for %s-filer"
 
-#: ../src/nautilus-mime-actions.c:1033
+#: ../src/nautilus-mime-actions.c:1008
 msgid "_Select Application"
 msgstr "_Velg et program"
 
-#: ../src/nautilus-mime-actions.c:1069
+#: ../src/nautilus-mime-actions.c:1044
 msgid "There was an internal error trying to search for applications:"
 msgstr "En intern feil oppsto under søk etter programmer:"
 
-#: ../src/nautilus-mime-actions.c:1071
+#: ../src/nautilus-mime-actions.c:1046
 msgid "Unable to search for application"
 msgstr "Klarte ikke å søke etter program"
 
-#: ../src/nautilus-mime-actions.c:1190
+#: ../src/nautilus-mime-actions.c:1169
 #, c-format
 msgid ""
 "There is no application installed for “%s” files.\n"
@@ -3398,11 +3424,11 @@ msgstr ""
 "Ingen programmer er installert for «%s»-filer.\n"
 "Vil du søke etter et program som kan åpne denne filen?"
 
-#: ../src/nautilus-mime-actions.c:1340
+#: ../src/nautilus-mime-actions.c:1319
 msgid "Untrusted application launcher"
 msgstr "Oppstartsfil uten tillit"
 
-#: ../src/nautilus-mime-actions.c:1343
+#: ../src/nautilus-mime-actions.c:1322
 #, c-format
 msgid ""
 "The application launcher “%s” has not been marked as trusted. If you do not "
@@ -3411,15 +3437,15 @@ msgstr ""
 "Oppstartsfil «%s» for program har ikke tillit fra systemet. Hvis du ikke "
 "kjenner kilden til denne filen kan det være utrygt å starte den."
 
-#: ../src/nautilus-mime-actions.c:1358
+#: ../src/nautilus-mime-actions.c:1337
 msgid "_Launch Anyway"
 msgstr "Start _likevel"
 
-#: ../src/nautilus-mime-actions.c:1361
+#: ../src/nautilus-mime-actions.c:1340
 msgid "Mark as _Trusted"
 msgstr "Merk med _tillit"
 
-#: ../src/nautilus-mime-actions.c:1586
+#: ../src/nautilus-mime-actions.c:1569
 #, c-format
 msgid "This will open %d separate application."
 msgid_plural "This will open %d separate applications."
@@ -3427,22 +3453,22 @@ msgstr[0] "Dette åpner %d separat program."
 msgstr[1] "Dette åpner %d separate programmer."
 
 #. if it wasn't cancelled show a dialog
-#: ../src/nautilus-mime-actions.c:1663 ../src/nautilus-mime-actions.c:1927
-#: ../src/gtk/gtkplacesview.c:1157 ../src/gtk/gtkplacesview.c:1201
-#: ../src/gtk/gtkplacesview.c:1252
+#: ../src/nautilus-mime-actions.c:1646 ../src/nautilus-mime-actions.c:1910
+#: ../src/gtk/gtkplacesview.c:1165 ../src/gtk/gtkplacesview.c:1209
+#: ../src/gtk/gtkplacesview.c:1260
 msgid "Unable to access location"
 msgstr "Fikk ikke tilgang til plasseringen"
 
-#: ../src/nautilus-mime-actions.c:2006
+#: ../src/nautilus-mime-actions.c:1989
 msgid "Unable to start location"
 msgstr "Klarte ikke å starte plassering"
 
-#: ../src/nautilus-mime-actions.c:2090
+#: ../src/nautilus-mime-actions.c:2073
 #, c-format
 msgid "Opening “%s”."
 msgstr "Åpner «%s»."
 
-#: ../src/nautilus-mime-actions.c:2093
+#: ../src/nautilus-mime-actions.c:2076
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -3452,6 +3478,13 @@ msgstr[1] "Åpner %d oppføringer."
 #: ../src/nautilus-notebook.c:322
 msgid "Close tab"
 msgstr "Lukk fane"
+
+#. Translators: this is referred to captions under icons.
+#: ../src/nautilus-preferences-dialog.c:145
+#: ../src/nautilus-properties-window.c:3772
+#: ../src/nautilus-properties-window.c:3799
+msgid "None"
+msgstr "Ingen"
 
 #: ../src/nautilus-progress-persistence-handler.c:130
 #: ../src/nautilus-progress-persistence-handler.c:201
@@ -3709,7 +3742,7 @@ msgid "Change"
 msgstr "Endre"
 
 #: ../src/nautilus-properties-window.c:4199
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:25
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:27
 msgid "Folders"
 msgstr "Mapper"
 
@@ -3755,7 +3788,7 @@ msgid "_Revert"
 msgstr "Fo_rkast"
 
 #. Open item is always present
-#: ../src/nautilus-properties-window.c:5171 ../src/gtk/gtkplacesview.c:1594
+#: ../src/nautilus-properties-window.c:5171 ../src/gtk/gtkplacesview.c:1602
 msgid "_Open"
 msgstr "_Åpne"
 
@@ -3821,8 +3854,8 @@ msgid "Add a new criterion to this search"
 msgstr "Legg til nytt kriterie for dette søket"
 
 #. trash
-#: ../src/nautilus-shell-search-provider.c:298 ../src/nautilus-trash-bar.c:198
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:13
+#: ../src/nautilus-shell-search-provider.c:297 ../src/nautilus-trash-bar.c:198
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:15
 msgid "Trash"
 msgstr "Papirkurv"
 
@@ -3851,51 +3884,51 @@ msgstr "_Tøm"
 msgid "Delete all items in the Trash"
 msgstr "Slett alt som ligger i papirkurven"
 
-#: ../src/nautilus-window.c:1227
+#: ../src/nautilus-window.c:1226
 msgid "_Properties"
 msgstr "E_genskaper"
 
-#: ../src/nautilus-window.c:1237
+#: ../src/nautilus-window.c:1236
 msgid "_Format…"
 msgstr "_Formater …"
 
 #. Translators: only one item has been deleted and %s is its name.
-#: ../src/nautilus-window.c:1491
+#: ../src/nautilus-window.c:1490
 #, c-format
 msgid "“%s” deleted"
 msgstr "«%s» slettet"
 
 #. Translators: one or more items might have been deleted, and %d
 #. * is the count.
-#: ../src/nautilus-window.c:1496
+#: ../src/nautilus-window.c:1495
 #, c-format
 msgid "%d file deleted"
 msgid_plural "%d files deleted"
 msgstr[0] "%d fil slettet"
 msgstr[1] "%d filer slettet"
 
-#: ../src/nautilus-window.c:1596
+#: ../src/nautilus-window.c:1595
 #, c-format
 msgid "Open %s"
 msgstr "Åpne %s"
 
-#: ../src/nautilus-window.c:1684
+#: ../src/nautilus-window.c:1683
 msgid "_New Tab"
 msgstr "_Ny fane"
 
-#: ../src/nautilus-window.c:1694
+#: ../src/nautilus-window.c:1693
 msgid "Move Tab _Left"
 msgstr "F_lytt fane til venstre"
 
-#: ../src/nautilus-window.c:1702
+#: ../src/nautilus-window.c:1701
 msgid "Move Tab _Right"
 msgstr "Flytt fane til høy_re"
 
-#: ../src/nautilus-window.c:1713
+#: ../src/nautilus-window.c:1712
 msgid "_Close Tab"
 msgstr "_Lukk fane"
 
-#: ../src/nautilus-window.c:2630
+#: ../src/nautilus-window.c:2629
 msgid "Access and organize your files."
 msgstr "Utforsk og organiser filer."
 
@@ -3903,39 +3936,39 @@ msgstr "Utforsk og organiser filer."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2639
+#: ../src/nautilus-window.c:2638
 msgid "translator-credits"
 msgstr ""
 "Kjartan Maraas <kmaraas@gnome.org>\n"
 "Åka Sikrom <a4NOSPAMPLEASETHANKYOU@hush.com>"
 
-#: ../src/nautilus-window-slot.c:1159
+#: ../src/nautilus-window-slot.c:1162
 msgid "Unable to display the contents of this folder."
 msgstr "Klarte ikke å vise innholdet i denne mappen."
 
-#: ../src/nautilus-window-slot.c:1161
+#: ../src/nautilus-window-slot.c:1164
 msgid "This location doesn't appear to be a folder."
 msgstr "Plasseringen ser ikke ut til å være en mappe."
 
-#: ../src/nautilus-window-slot.c:1166
+#: ../src/nautilus-window-slot.c:1169
 msgid ""
 "Unable to find the requested file. Please check the spelling and try again."
 msgstr "Fant ikke forespurt fil. Sjekk stavingen og prøv igjen."
 
-#: ../src/nautilus-window-slot.c:1171
+#: ../src/nautilus-window-slot.c:1174
 #, c-format
 msgid "“%s” locations are not supported."
 msgstr "«%s»-plasseringer støttes ikke."
 
-#: ../src/nautilus-window-slot.c:1174
+#: ../src/nautilus-window-slot.c:1177
 msgid "Unable to handle this kind of location."
 msgstr "Kan ikke håndtere denne typen plassering."
 
-#: ../src/nautilus-window-slot.c:1179
+#: ../src/nautilus-window-slot.c:1182
 msgid "Unable to access the requested location."
 msgstr "Fikk ikke tilgang til forespurt plassering."
 
-#: ../src/nautilus-window-slot.c:1182
+#: ../src/nautilus-window-slot.c:1185
 msgid "Don't have permission to access the requested location."
 msgstr "Du har ikke tilgang til forespurt plassering."
 
@@ -3944,19 +3977,19 @@ msgstr "Du har ikke tilgang til forespurt plassering."
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: ../src/nautilus-window-slot.c:1190
+#: ../src/nautilus-window-slot.c:1193
 msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
 msgstr ""
 "Fant ikke forespurt plassering. Sjekk staving og evt. nettverksinnstillinger."
 
-#: ../src/nautilus-window-slot.c:1201
+#: ../src/nautilus-window-slot.c:1204
 #, c-format
 msgid "Unhandled error message: %s"
 msgstr "Uhåndtert feilmelding: %s"
 
-#: ../src/nautilus-window-slot.c:1332
+#: ../src/nautilus-window-slot.c:1352
 #, c-format
 msgid "Unable to load location"
 msgstr "Klarte ikke å laste inn plassering"
@@ -4019,235 +4052,238 @@ msgstr "Inneholder bilder og musikk"
 msgid "Open with:"
 msgstr "Åpne med:"
 
-#: ../src/resources/ui/nautilus-app-menu.ui.h:1
+#: ../src/resources/gtk/help-overlay.ui.h:1
+msgid "General"
+msgstr "Generelt"
+
+#: ../src/resources/gtk/help-overlay.ui.h:2
+msgid "New window"
+msgstr "Nytt vindu"
+
+#: ../src/resources/gtk/help-overlay.ui.h:3
+msgid "Close window or tab"
+msgstr "Lukk vindu eller fane"
+
+#: ../src/resources/gtk/help-overlay.ui.h:5
+msgid "Bookmarks"
+msgstr "Bokmerker"
+
+#: ../src/resources/gtk/help-overlay.ui.h:6
+msgid "Bookmark current location"
+msgstr "Lag bokmerke for denne plasseringen"
+
+#: ../src/resources/gtk/help-overlay.ui.h:7
+msgid "Show help"
+msgstr "Vis hjelp"
+
+#: ../src/resources/gtk/help-overlay.ui.h:8
+msgid "Shortcuts"
+msgstr "Snarveier"
+
+#: ../src/resources/gtk/help-overlay.ui.h:9
+msgid "Opening"
+msgstr "Åpner"
+
+#: ../src/resources/gtk/help-overlay.ui.h:11
+msgid "Open in new tab"
+msgstr "Åpne i ny fane"
+
+#: ../src/resources/gtk/help-overlay.ui.h:12
+msgid "Open in new window"
+msgstr "Åpne i nytt vindu"
+
+#: ../src/resources/gtk/help-overlay.ui.h:13
+#, fuzzy
+msgid "Open item location (search and recent only)"
+msgstr "Ekstern lokasjon – søker kun i aktiv mappe"
+
+#: ../src/resources/gtk/help-overlay.ui.h:14
+msgid "Open file and close window"
+msgstr "Åpne fil og lukk vindu"
+
+#: ../src/resources/gtk/help-overlay.ui.h:15
+msgid "Open with default application"
+msgstr "Åpne med forvalgt program"
+
+#: ../src/resources/gtk/help-overlay.ui.h:16
+msgid "Tabs"
+msgstr "Faner"
+
+#: ../src/resources/gtk/help-overlay.ui.h:17
+msgid "New tab"
+msgstr "Ny fane"
+
+#: ../src/resources/gtk/help-overlay.ui.h:18
+msgid "Go to previous tab"
+msgstr "Gå til forrige fane"
+
+#: ../src/resources/gtk/help-overlay.ui.h:19
+msgid "Go to next tab"
+msgstr "Gå til neste fane"
+
+#: ../src/resources/gtk/help-overlay.ui.h:20
+msgid "Open tab"
+msgstr "Åpne fane"
+
+#: ../src/resources/gtk/help-overlay.ui.h:21
+msgid "Move tab left"
+msgstr "Flytt fane til venstre"
+
+#: ../src/resources/gtk/help-overlay.ui.h:22
+msgid "Move tab right"
+msgstr "Flytt fane til høyre"
+
+#: ../src/resources/gtk/help-overlay.ui.h:23
+msgid "Navigation"
+msgstr "Navigasjon"
+
+#: ../src/resources/gtk/help-overlay.ui.h:24
+msgid "Go back"
+msgstr "Gå tilbake"
+
+#: ../src/resources/gtk/help-overlay.ui.h:25
+msgid "Go forward"
+msgstr "Gå fremover"
+
+#: ../src/resources/gtk/help-overlay.ui.h:26
+msgid "Go up"
+msgstr "Gå opp"
+
+#: ../src/resources/gtk/help-overlay.ui.h:27
+msgid "Go down"
+msgstr "Gå ned"
+
+#: ../src/resources/gtk/help-overlay.ui.h:28
+msgid "Go to home folder"
+msgstr "Gå til hjemmemappe"
+
+#: ../src/resources/gtk/help-overlay.ui.h:29
+msgid "Enter location"
+msgstr "Skriv inn plassering"
+
+#: ../src/resources/gtk/help-overlay.ui.h:30
+msgid "Location bar with root location"
+msgstr ""
+
+#: ../src/resources/gtk/help-overlay.ui.h:31
+msgid "Location bar with home location"
+msgstr ""
+
+#: ../src/resources/gtk/help-overlay.ui.h:32
+msgid "View"
+msgstr "Visning"
+
+#: ../src/resources/gtk/help-overlay.ui.h:33
+msgid "Zoom in"
+msgstr "Zoom inn"
+
+#: ../src/resources/gtk/help-overlay.ui.h:34
+msgid "Zoom out"
+msgstr "Zoom ut"
+
+#: ../src/resources/gtk/help-overlay.ui.h:35
+msgid "Reset zoom"
+msgstr "Nullstill zoom"
+
+#: ../src/resources/gtk/help-overlay.ui.h:36
+msgid "Refresh view"
+msgstr "Oppdater visning"
+
+#: ../src/resources/gtk/help-overlay.ui.h:37
+#, fuzzy
+msgid "Show/hide hidden files"
+msgstr "Vis skjulte _filer"
+
+#: ../src/resources/gtk/help-overlay.ui.h:38
+msgid "Show/hide sidebar"
+msgstr ""
+
+#: ../src/resources/gtk/help-overlay.ui.h:39
+#, fuzzy
+msgid "Show/hide action menu"
+msgstr "Åpne handlingsmeny"
+
+#: ../src/resources/gtk/help-overlay.ui.h:40
+msgid "List view"
+msgstr "Listevisning"
+
+#: ../src/resources/gtk/help-overlay.ui.h:41
+msgid "Grid view"
+msgstr "Rutenettvisning"
+
+#: ../src/resources/gtk/help-overlay.ui.h:42
+msgid "Editing"
+msgstr "Redigerer"
+
+#: ../src/resources/gtk/help-overlay.ui.h:43
+msgid "Create folder"
+msgstr "Lag mappe"
+
+#: ../src/resources/gtk/help-overlay.ui.h:44
+msgid "Rename"
+msgstr "Endre navn"
+
+#: ../src/resources/gtk/help-overlay.ui.h:45
+msgid "Move to trash"
+msgstr "Flytt til papirkurv"
+
+#: ../src/resources/gtk/help-overlay.ui.h:46
+msgid "Delete permanently"
+msgstr "Slett permanent"
+
+#: ../src/resources/gtk/help-overlay.ui.h:47
+msgid "Copy"
+msgstr "Kopier"
+
+#: ../src/resources/gtk/help-overlay.ui.h:48
+msgid "Paste"
+msgstr "Lim inn"
+
+#: ../src/resources/gtk/help-overlay.ui.h:49
+msgid "Select all"
+msgstr "Velg alt"
+
+#: ../src/resources/gtk/help-overlay.ui.h:50
+msgid "Invert selection"
+msgstr ""
+
+#: ../src/resources/gtk/help-overlay.ui.h:51
+#, fuzzy
+msgid "Select items matching"
+msgstr "Velg oppføringer med treff"
+
+#: ../src/resources/gtk/help-overlay.ui.h:54
+#, fuzzy
+msgid "Show item properties"
+msgstr "Egenskaper for %s"
+
+#: ../src/resources/gtk/menus.ui.h:1
 msgid "New _Window"
 msgstr "Nytt _vindu"
 
-#: ../src/resources/ui/nautilus-app-menu.ui.h:2
+#: ../src/resources/gtk/menus.ui.h:2
 msgid "Sidebar"
 msgstr "Sidelinje"
 
-#: ../src/resources/ui/nautilus-app-menu.ui.h:3
+#: ../src/resources/gtk/menus.ui.h:3
 msgid "Prefere_nces"
 msgstr "_Brukervalg"
 
-#: ../src/resources/ui/nautilus-app-menu.ui.h:4
+#: ../src/resources/gtk/menus.ui.h:4
+msgid "_Keyboard Shortcuts"
+msgstr ""
+
+#: ../src/resources/gtk/menus.ui.h:5
 msgid "_Help"
 msgstr "_Hjelp"
 
-#: ../src/resources/ui/nautilus-app-menu.ui.h:5
+#: ../src/resources/gtk/menus.ui.h:6
 msgid "_About"
 msgstr "_Om"
 
-#: ../src/resources/ui/nautilus-app-menu.ui.h:6
+#: ../src/resources/gtk/menus.ui.h:7
 msgid "_Quit"
 msgstr "A_vslutt"
-
-#: ../src/resources/ui/nautilus-bookmarks-window.ui.h:1
-msgid "Remove"
-msgstr "Fjern"
-
-#: ../src/resources/ui/nautilus-bookmarks-window.ui.h:2
-msgid "Move Up"
-msgstr "Flytt opp"
-
-#: ../src/resources/ui/nautilus-bookmarks-window.ui.h:3
-msgid "Move Down"
-msgstr "Flytt ned"
-
-#. "Name" is the label on the rigth side of the bookmark window referencing the bookmark name
-#: ../src/resources/ui/nautilus-bookmarks-window.ui.h:5
-msgctxt "Bookmark"
-msgid "_Name"
-msgstr "_Navn"
-
-#: ../src/resources/ui/nautilus-bookmarks-window.ui.h:6
-msgid "_Location"
-msgstr "_Plassering"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:1
-msgid "Files Preferences"
-msgstr "Brukervalg for Filer"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:2
-msgid "Default View"
-msgstr "Forvalgt visning"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:3
-msgid "_Arrange items:"
-msgstr "Pl_asser oppføringer:"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:4
-msgid "Sort _folders before files"
-msgstr "Sorter mapper _før filer"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:5
-msgid "Views"
-msgstr "Visninger"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:6
-msgid "Behavior"
-msgstr "Oppførsel"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:7
-msgid "_Single click to open items"
-msgstr "_Enkeltklikk for å åpne oppføringer"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:8
-msgid "_Double click to open items"
-msgstr "_Dobbeltklikk for å åpne oppføringer"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:9
-msgid "Executable Text Files"
-msgstr "Kjørbare tekstfiler"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:10
-msgid "_Run executable text files when they are opened"
-msgstr "K_jør kjørbare tekstfiler når de åpnes"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:11
-msgid "_View executable text files when they are opened"
-msgstr "_Vis kjørbare tekstfiler når de åpnes"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:12
-msgid "_Ask each time"
-msgstr "_Spør hver gang"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:14
-msgid "Ask before _emptying the Trash or deleting files"
-msgstr "Spør før tømming _av papirkurven eller sletting av filer"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:15
-msgid "Icon Captions"
-msgstr "Ikonsammendrag"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:16
-msgid ""
-"Choose the order of information to appear beneath icon names. More "
-"information will appear when zooming in closer."
-msgstr ""
-"Velg rekkefølgen for informasjonen som skal vises under ikonnavnene. Mer "
-"informasjon vises etter hvert som du zoomer inn."
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:18
-msgid "Navigate folders in a tree"
-msgstr "Bla gjennom mapper i et tre"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:19
-msgid "Display"
-msgstr "Vis"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:20
-msgid "Choose the order of information to appear in the list view."
-msgstr "Velg rekkefølgen for informasjonen som skal vises i listevisning."
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:21
-msgid "List Columns"
-msgstr "Listekolonner"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:23
-msgid "Show _thumbnails:"
-msgstr "Vis minia_tyrer:"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:24
-msgid "_Only for files smaller than:"
-msgstr "_Kun for filer mindre enn:"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:26
-msgid "Count _number of items:"
-msgstr "Vis a_ntall oppføringer:"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:27
-msgid "Preview"
-msgstr "Forhåndsvis"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:29
-msgid "Always"
-msgstr "Alltid"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:30
-msgid "Local Files Only"
-msgstr "Kun lokale filer"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:31
-msgid "Never"
-msgstr "Aldri"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:32
-msgid "By Name"
-msgstr "Etter navn"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:33
-msgid "By Size"
-msgstr "Etter størrelse"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:34
-msgid "By Type"
-msgstr "Etter type"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:35
-msgid "By Modification Date"
-msgstr "Etter endringsdato"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:36
-msgid "By Access Date"
-msgstr "Etter dato for åpning"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:37
-msgid "By Trashed Date"
-msgstr "Etter når den ble lagt i papirkurven"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:38
-msgid "Small"
-msgstr "Liten"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:39
-msgid "Standard"
-msgstr "Standard"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:40
-msgid "Large"
-msgstr "Stor"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:41
-msgid "100 KB"
-msgstr "100 KB"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:42
-msgid "500 KB"
-msgstr "500 KB"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:43
-msgid "1 MB"
-msgstr "1 MB"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:44
-msgid "3 MB"
-msgstr "3 MB"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:45
-msgid "5 MB"
-msgstr "5 MB"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:46
-msgid "10 MB"
-msgstr "10 MB"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:47
-msgid "100 MB"
-msgstr "100 MB"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:48
-msgid "1 GB"
-msgstr "1 GB"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:49
-msgid "2 GB"
-msgstr "2 GB"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:50
-msgid "4 GB"
-msgstr "4 GB"
 
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:1
 #: ../src/resources/ui/nautilus-toolbar-action-menu.ui.h:1
@@ -4263,128 +4299,133 @@ msgid "_Paste"
 msgstr "_Lim inn"
 
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:4
+#, fuzzy
+msgid "Create _Link"
+msgstr "An_gre oppretting av lenke"
+
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:5
 #: ../src/resources/ui/nautilus-toolbar-action-menu.ui.h:3
 msgid "Select _All"
 msgstr "Velg _alt"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:5
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:6
 #: ../src/resources/ui/nautilus-pathbar-context-menu.ui.h:3
 msgid "P_roperties"
 msgstr "E_genskaper"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:6
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:7
 msgid "_Keep aligned"
 msgstr "_Behold justert"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:7
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:8
 msgid "Organize _Desktop by Name"
 msgstr "_Organiser skrivebord etter navn"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:8
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:9
 msgid "Change _Background"
 msgstr "Endre _bakgrunn"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:9
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:10
 msgid "_Scripts"
 msgstr "_Skript"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:10
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:11
 msgid "_Open Scripts Folder"
 msgstr "_Åpne skript-mappe"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:11
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:12
 msgid "_Open Item Location"
 msgstr "_Åpne tilhørende mappe"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:12
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:13
 #: ../src/resources/ui/nautilus-pathbar-context-menu.ui.h:1
 msgid "Open In New _Tab"
 msgstr "Åpne i ny _fane"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:13
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:14
 #: ../src/resources/ui/nautilus-pathbar-context-menu.ui.h:2
 msgid "Open In New _Window"
 msgstr "Åpne i nytt _vindu"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:14
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:15
 msgid "Open With Other _Application"
 msgstr "Åpne med _annet program"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:15
-#: ../src/gtk/gtkplacesview.c:1649
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:16
+#: ../src/gtk/gtkplacesview.c:1657
 msgid "_Mount"
 msgstr "_Monter"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:16
-#: ../src/gtk/gtkplacesview.c:1639
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:17
+#: ../src/gtk/gtkplacesview.c:1647
 msgid "_Unmount"
 msgstr "_Avmonter"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:17
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:18
 msgid "_Eject"
 msgstr "Løs _ut"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:19
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:20
 msgid "_Stop"
 msgstr "_Stopp"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:20
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:21
 msgid "_Detect Media"
 msgstr "_Gjenkjenn media"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:21
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:22
 msgid "Cu_t"
 msgstr "Klipp u_t"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:22
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:23
 msgid "_Copy"
 msgstr "_Kopier"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:23
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:24
 msgid "_Paste Into Folder"
 msgstr "_Lim filer inn i mappe"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:24
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:25
 msgid "Move to…"
 msgstr "Flytt til …"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:25
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:26
 msgid "Copy to…"
 msgstr "Kopier til …"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:27
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:28
 msgid "_Delete from Trash"
 msgstr "_Slett fra papirkurv"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:28
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:29
 msgid "_Delete Permanently"
 msgstr "Slett _permanent"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:29
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:30
 msgid "Empty Trash"
 msgstr "Tøm papirkurv"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:30
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:31
 msgid "_Restore From Trash"
 msgstr "_Gjenopprett fra papirkurv"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:31
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:32
 msgid "Resize Icon…"
 msgstr "Endre størrelse på ikon …"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:32
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:33
 msgid "Restore Icon's Original Size"
 msgstr "Gjenopprett ikonets opprinnelige størrelse"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:33
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:34
 msgid "Rena_me"
 msgstr "E_ndre navn"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:34
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:35
 msgid "Set As Wallpaper"
 msgstr "Bruk som bakgrunn"
 
-#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:35
+#: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:36
 msgid "_Remove from Recent"
 msgstr "Fje_rn fra nylige"
 
@@ -4416,6 +4457,198 @@ msgstr "Fant ingen resultater"
 #: ../src/gtk/gtkplacesview.ui.h:5
 msgid "Try a different search"
 msgstr "Prøv et annet søk"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:1
+msgid "Files Preferences"
+msgstr "Brukervalg for Filer"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:2
+msgid "Default View"
+msgstr "Forvalgt visning"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:3
+msgid "_Arrange items:"
+msgstr "Pl_asser oppføringer:"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:4
+msgid "Sort _folders before files"
+msgstr "Sorter mapper _før filer"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:5
+msgid "Show context menu item to delete files permanently"
+msgstr ""
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:6
+msgid "Show context menu item to create links from copied files"
+msgstr ""
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:7
+msgid "Views"
+msgstr "Visninger"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:8
+msgid "Behavior"
+msgstr "Oppførsel"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:9
+msgid "_Single click to open items"
+msgstr "_Enkeltklikk for å åpne oppføringer"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:10
+msgid "_Double click to open items"
+msgstr "_Dobbeltklikk for å åpne oppføringer"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:11
+msgid "Executable Text Files"
+msgstr "Kjørbare tekstfiler"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:12
+msgid "_Run executable text files when they are opened"
+msgstr "K_jør kjørbare tekstfiler når de åpnes"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:13
+msgid "_View executable text files when they are opened"
+msgstr "_Vis kjørbare tekstfiler når de åpnes"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:14
+msgid "_Ask each time"
+msgstr "_Spør hver gang"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:16
+msgid "Ask before _emptying the Trash or deleting files"
+msgstr "Spør før tømming _av papirkurven eller sletting av filer"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:17
+msgid "Icon Captions"
+msgstr "Ikonsammendrag"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:18
+msgid ""
+"Choose the order of information to appear beneath icon names. More "
+"information will appear when zooming in closer."
+msgstr ""
+"Velg rekkefølgen for informasjonen som skal vises under ikonnavnene. Mer "
+"informasjon vises etter hvert som du zoomer inn."
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:20
+msgid "Navigate folders in a tree"
+msgstr "Bla gjennom mapper i et tre"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:21
+msgid "Display"
+msgstr "Vis"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:22
+msgid "Choose the order of information to appear in the list view."
+msgstr "Velg rekkefølgen for informasjonen som skal vises i listevisning."
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:23
+msgid "List Columns"
+msgstr "Listekolonner"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:25
+msgid "Show _thumbnails:"
+msgstr "Vis minia_tyrer:"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:26
+msgid "_Only for files smaller than:"
+msgstr "_Kun for filer mindre enn:"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:28
+msgid "Count _number of items:"
+msgstr "Vis a_ntall oppføringer:"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:29
+msgid "Preview"
+msgstr "Forhåndsvis"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:31
+msgid "Always"
+msgstr "Alltid"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:32
+msgid "Local Files Only"
+msgstr "Kun lokale filer"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:33
+msgid "Never"
+msgstr "Aldri"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:34
+msgid "By Name"
+msgstr "Etter navn"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:35
+msgid "By Size"
+msgstr "Etter størrelse"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:36
+msgid "By Type"
+msgstr "Etter type"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:37
+msgid "By Modification Date"
+msgstr "Etter endringsdato"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:38
+msgid "By Access Date"
+msgstr "Etter dato for åpning"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:39
+msgid "By Trashed Date"
+msgstr "Etter når den ble lagt i papirkurven"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:40
+msgid "Small"
+msgstr "Liten"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:41
+msgid "Standard"
+msgstr "Standard"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:42
+msgid "Large"
+msgstr "Stor"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:43
+msgid "100 KB"
+msgstr "100 KB"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:44
+msgid "500 KB"
+msgstr "500 KB"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:45
+msgid "1 MB"
+msgstr "1 MB"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:46
+msgid "3 MB"
+msgstr "3 MB"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:47
+msgid "5 MB"
+msgstr "5 MB"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:48
+msgid "10 MB"
+msgstr "10 MB"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:49
+msgid "100 MB"
+msgstr "100 MB"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:50
+msgid "1 GB"
+msgstr "1 GB"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:51
+msgid "2 GB"
+msgstr "2 GB"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:52
+msgid "4 GB"
+msgstr "4 GB"
 
 #: ../src/resources/ui/nautilus-remote-warning-bar.ui.h:1
 msgid "Remote location — only searching the current folder"
@@ -4519,58 +4752,64 @@ msgstr "St_opp"
 msgid "_Files"
 msgstr "_Filer"
 
-#: ../src/gtk/gtkplacesview.c:875
+#: ../src/gtk/gtkplacesview.c:883
 msgid "Searching for network locations"
 msgstr "Søker etter nettverkslokasjoner"
 
-#: ../src/gtk/gtkplacesview.c:882
+#: ../src/gtk/gtkplacesview.c:890
 msgid "No network locations found"
 msgstr "Fant ingen nettverkslokasjoner"
 
-#: ../src/gtk/gtkplacesview.c:1047
+#: ../src/gtk/gtkplacesview.c:1055
 msgid "Computer"
 msgstr "Datamaskin"
 
 #. Restore from Cancel to Connect
-#: ../src/gtk/gtkplacesview.c:1174 ../src/gtk/gtkplacesview.ui.h:7
+#: ../src/gtk/gtkplacesview.c:1182 ../src/gtk/gtkplacesview.ui.h:7
 msgid "Con_nect"
 msgstr "K_oble til"
 
 #. if it wasn't cancelled show a dialog
-#: ../src/gtk/gtkplacesview.c:1315
+#: ../src/gtk/gtkplacesview.c:1323
 msgid "Unable to unmount volume"
 msgstr "Kan ikke avmontere volum"
 
 #. Allow to cancel the operation
-#: ../src/gtk/gtkplacesview.c:1397
+#: ../src/gtk/gtkplacesview.c:1405
 msgid "Cance_l"
 msgstr "A_vbryt"
 
-#: ../src/gtk/gtkplacesview.c:1604
+#: ../src/gtk/gtkplacesview.c:1612
 msgid "Open in New _Tab"
 msgstr "Åpne i ny _fane"
 
-#: ../src/gtk/gtkplacesview.c:1615
+#: ../src/gtk/gtkplacesview.c:1623
 msgid "Open in New _Window"
 msgstr "Åpne i nytt _vindu"
 
-#: ../src/gtk/gtkplacesview.c:1814
+#: ../src/gtk/gtkplacesview.c:1822
 msgid "Unable to get remote server location"
 msgstr "Klarte ikke å hente ekstern serverlokasjon"
 
-#: ../src/gtk/gtkplacesview.c:1951 ../src/gtk/gtkplacesview.c:1960
+#: ../src/gtk/gtkplacesview.c:1959 ../src/gtk/gtkplacesview.c:1968
 msgid "Networks"
 msgstr "Nettverk"
 
-#: ../src/gtk/gtkplacesview.c:1951 ../src/gtk/gtkplacesview.c:1960
+#: ../src/gtk/gtkplacesview.c:1959 ../src/gtk/gtkplacesview.c:1968
 msgid "On This Computer"
 msgstr "På denne datamaskinen"
 
-#: ../src/gtk/gtkplacesviewrow.c:324
+#. Translators: respectively, free and total space of the drive
+#: ../src/gtk/gtkplacesviewrow.c:110
+#, c-format
+msgid "%s / %s available"
+msgstr "%s / %s tilgjengelig"
+
+#: ../src/gtk/gtkplacesviewrow.c:449
 msgid "Disconnect"
 msgstr "Koble fra"
 
-#: ../src/gtk/gtkplacesviewrow.c:324 ../src/gtk/gtkplacesviewrow.ui.h:1
+#: ../src/gtk/gtkplacesviewrow.c:449 ../src/gtk/gtkplacesviewrow.ui.h:1
 msgid "Unmount"
 msgstr "Avmonter"
 
