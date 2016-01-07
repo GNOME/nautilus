@@ -27,8 +27,8 @@ msgstr ""
 "Project-Id-Version: nautilus.master.es\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2015-12-17 14:54+0000\n"
-"PO-Revision-Date: 2015-12-18 09:51+0100\n"
+"POT-Creation-Date: 2015-12-22 01:52+0000\n"
+"PO-Revision-Date: 2015-12-22 11:58+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
 "Language: \n"
@@ -71,7 +71,7 @@ msgstr "Ejecutar programa"
 # components/music/nautilus-music-view.c:198
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
 #: ../src/nautilus-properties-window.c:4197 ../src/nautilus-window.c:2627
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:22
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:23
 msgid "Files"
 msgstr "Archivos"
 
@@ -602,7 +602,6 @@ msgstr ""
 "la vista de «Servidores de red»."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:74
-#| msgid "Home"
 msgctxt "home-icon-name"
 msgid "'Home'"
 msgstr "«Carpeta personal»"
@@ -620,7 +619,6 @@ msgstr ""
 "de la carpeta personal en el escritorio."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:77
-#| msgid "Trash"
 msgctxt "trash-icon-name"
 msgid "'Trash'"
 msgstr "«Papelera»"
@@ -639,7 +637,6 @@ msgstr ""
 
 # libnautilus-private/nautilus-global-preferences.c:592
 #: ../data/org.gnome.nautilus.gschema.xml.h:80
-#| msgid "Network servers icon name"
 msgctxt "network-icon-name"
 msgid "'Network Servers'"
 msgstr "«Servidores de red»"
@@ -3048,7 +3045,7 @@ msgstr "E_jecutar"
 # src/file-manager/fm-directory-view.c:2403
 # src/file-manager/fm-directory-view.c:2646
 #: ../src/nautilus-canvas-view-container.c:443
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:28
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:29
 msgid "Icon View"
 msgstr "Vista de icono"
 
@@ -3200,14 +3197,6 @@ msgstr "El elemento no se pudo renombrar."
 #, c-format
 msgid "Renaming “%s” to “%s”."
 msgstr "Renombrando  «%s» a «%s»."
-
-# src/file-manager/fm-icon-text-window.c:85
-#. Translators: this is referred to captions under icons.
-#: ../src/nautilus-file-management-properties.c:181
-#: ../src/nautilus-properties-window.c:3772
-#: ../src/nautilus-properties-window.c:3799
-msgid "None"
-msgstr "Ninguno"
 
 #: ../src/nautilus-files-view.c:400
 msgid "Searching…"
@@ -3686,7 +3675,7 @@ msgstr "Usar predeterminado"
 # src/file-manager/fm-directory-view.c:2403
 # src/file-manager/fm-directory-view.c:2646
 #: ../src/nautilus-list-view.c:1818
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:17
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:18
 msgid "List View"
 msgstr "Vista de lista"
 
@@ -3860,6 +3849,14 @@ msgstr[1] "Abriendo %d elementos."
 #: ../src/nautilus-notebook.c:322
 msgid "Close tab"
 msgstr "Cerrar pestaña"
+
+# src/file-manager/fm-icon-text-window.c:85
+#. Translators: this is referred to captions under icons.
+#: ../src/nautilus-preferences-dialog.c:143
+#: ../src/nautilus-properties-window.c:3772
+#: ../src/nautilus-properties-window.c:3799
+msgid "None"
+msgstr "Ninguno"
 
 # src/file-manager/fm-properties-window.c:1493
 #: ../src/nautilus-progress-persistence-handler.c:130
@@ -4162,7 +4159,7 @@ msgstr "Cambiar"
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
 #: ../src/nautilus-properties-window.c:4199
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:25
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:26
 msgid "Folders"
 msgstr "Carpetas"
 
@@ -4293,7 +4290,7 @@ msgstr "Añadir un criterio nuevo a esta búsqueda"
 
 #. trash
 #: ../src/nautilus-shell-search-provider.c:297 ../src/nautilus-trash-bar.c:198
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:13
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:14
 msgid "Trash"
 msgstr "Papelera"
 
@@ -4525,7 +4522,6 @@ msgid "New window"
 msgstr "Ventana nueva"
 
 #: ../src/resources/gtk/help-overlay.ui.h:3
-#| msgid "Close tab"
 msgid "Close window or tab"
 msgstr "Cerrar ventana o pestaña"
 
@@ -4543,7 +4539,6 @@ msgid "Show help"
 msgstr "Mostrar ayuda"
 
 #: ../src/resources/gtk/help-overlay.ui.h:8
-#| msgid "_Keyboard Shortcuts"
 msgid "Shortcuts"
 msgstr "Atajos"
 
@@ -4564,7 +4559,6 @@ msgid "Open in new window"
 msgstr "Abrir en una ventana nueva"
 
 #: ../src/resources/gtk/help-overlay.ui.h:13
-#| msgid "Remote location — only searching the current folder"
 msgid "Open item location (search and recent only)"
 msgstr ""
 "Abrir ubicación del elemento (sólo para búsqueda y elementos recientes)"
@@ -4580,7 +4574,6 @@ msgid "Open with default application"
 msgstr "Abrir con la aplicación predeterminada"
 
 #: ../src/resources/gtk/help-overlay.ui.h:16
-#| msgid "_Tabs"
 msgid "Tabs"
 msgstr "Pestañas"
 
@@ -4598,7 +4591,6 @@ msgstr "Ir a la siguiente pestaña"
 
 # src/file-manager/fm-directory-view.c:2117
 #: ../src/resources/gtk/help-overlay.ui.h:20
-#| msgid "Open With"
 msgid "Open tab"
 msgstr "Abrir pestaña"
 
@@ -4644,13 +4636,11 @@ msgstr "Introducir ubicación"
 
 # src/nautilus-location-bar.c:401
 #: ../src/resources/gtk/help-overlay.ui.h:30
-#| msgid "Prompt root location"
 msgid "Location bar with root location"
 msgstr "Barra de ubicación incluyendo la raíz"
 
 # src/nautilus-location-bar.c:401
 #: ../src/resources/gtk/help-overlay.ui.h:31
-#| msgid "Prompt home location"
 msgid "Location bar with home location"
 msgstr "Barra de ubicación incluyendo la carpeta personal"
 
@@ -4794,213 +4784,6 @@ msgstr "Acerca _de"
 #: ../src/resources/gtk/menus.ui.h:7
 msgid "_Quit"
 msgstr "_Salir"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:1
-msgid "Files Preferences"
-msgstr "Preferencias de archivos"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:2
-msgid "Default View"
-msgstr "Vista predeterminada"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:3
-msgid "_Arrange items:"
-msgstr "_Organizar los elementos:"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:4
-msgid "Sort _folders before files"
-msgstr "Colocar las carpetas _antes que los archivos"
-
-# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
-# libnautilus-private/nautilus-global-preferences.c:222
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:5
-msgid "Views"
-msgstr "Vistas"
-
-# libnautilus-private/nautilus-global-preferences.c:142
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:6
-msgid "Behavior"
-msgstr "Comportamiento"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:7
-msgid "_Single click to open items"
-msgstr "Un_a sola pulsación para abrir los elementos"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:8
-msgid "_Double click to open items"
-msgstr "_Doble pulsación para abrir los elementos"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:9
-msgid "Executable Text Files"
-msgstr "Archivos de texto ejecutables"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:10
-msgid "_Run executable text files when they are opened"
-msgstr "_Ejecutar los archivos de texto ejecutables al abrirlos"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:11
-msgid "_View executable text files when they are opened"
-msgstr "_Ver los archivos de texto ejecutables al abrirlos"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:12
-msgid "_Ask each time"
-msgstr "_Preguntar cada vez"
-
-# src/file-manager/fm-directory-view.c:2669
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:14
-msgid "Ask before _emptying the Trash or deleting files"
-msgstr "Preguntar antes de vacia_r la papelera o eliminar archivos"
-
-# src/nautilus-location-bar.c:401
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:15
-msgid "Icon Captions"
-msgstr "Descripciones de iconos"
-
-# src/file-manager/fm-icon-text-window.c:267
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:16
-msgid ""
-"Choose the order of information to appear beneath icon names. More "
-"information will appear when zooming in closer."
-msgstr ""
-"Seleccione el orden en que la información aparecerá debajo de los nombres de "
-"los iconos. Aparecerá más información cuando aumente la ampliación."
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:18
-msgid "Navigate folders in a tree"
-msgstr "Navegar por las carpetas en un árbol"
-
-# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
-# libnautilus-private/nautilus-global-preferences.c:149
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:19
-msgid "Display"
-msgstr "Visualización"
-
-# src/file-manager/fm-icon-text-window.c:267
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:20
-msgid "Choose the order of information to appear in the list view."
-msgstr ""
-"Seleccione el orden en que la información aparecerá en la vista de lista."
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:21
-msgid "List Columns"
-msgstr "Columnas de la lista"
-
-# libnautilus-private/nautilus-global-preferences.c:256
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:23
-msgid "Show _thumbnails:"
-msgstr "Mostrar _miniaturas:"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:24
-msgid "_Only for files smaller than:"
-msgstr "_Sólo para archivos menores de:"
-
-# src/file-manager/dfos-xfer.c:763
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:26
-msgid "Count _number of items:"
-msgstr "Contar el _número de elementos:"
-
-# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
-# components/music/nautilus-music-view.c:1122
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:27
-msgid "Preview"
-msgstr "Vista previa"
-
-# libnautilus-private/nautilus-global-preferences.c:582
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:29
-msgid "Always"
-msgstr "Siempre"
-
-# libnautilus-private/nautilus-global-preferences.c:587
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:30
-msgid "Local Files Only"
-msgstr "Sólo archivos locales"
-
-# libnautilus-private/nautilus-global-preferences.c:592
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:31
-msgid "Never"
-msgstr "Nunca"
-
-# src/file-manager/fm-icon-view.c:109
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:32
-msgid "By Name"
-msgstr "Por nombre"
-
-# src/file-manager/fm-icon-view.c:116
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:33
-msgid "By Size"
-msgstr "Por tamaño"
-
-# src/file-manager/fm-icon-view.c:123
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:34
-msgid "By Type"
-msgstr "Por tipo"
-
-# src/file-manager/fm-icon-view.c:130
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:35
-msgid "By Modification Date"
-msgstr "Por fecha de modificación"
-
-# src/file-manager/fm-properties-window.c:1105
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:36
-msgid "By Access Date"
-msgstr "Por fecha de acceso"
-
-# src/file-manager/fm-icon-view.c:109
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:37
-msgid "By Trashed Date"
-msgstr "Por _fecha movido a la papelera"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:38
-msgid "Small"
-msgstr "Pequeño"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:39
-msgid "Standard"
-msgstr "Estándar"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:40
-msgid "Large"
-msgstr "Grande"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:41
-msgid "100 KB"
-msgstr "100 KB"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:42
-msgid "500 KB"
-msgstr "500 KB"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:43
-msgid "1 MB"
-msgstr "1 MB"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:44
-msgid "3 MB"
-msgstr "3 MB"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:45
-msgid "5 MB"
-msgstr "5 MB"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:46
-msgid "10 MB"
-msgstr "10 MB"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:47
-msgid "100 MB"
-msgstr "100 MB"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:48
-msgid "1 GB"
-msgstr "1 GB"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:49
-msgid "2 GB"
-msgstr "2 GB"
-
-#: ../src/resources/ui/nautilus-file-management-properties.ui.h:50
-msgid "4 GB"
-msgstr "4 GB"
 
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
@@ -5201,6 +4984,220 @@ msgstr "No se encontraron resultados"
 #: ../src/gtk/gtkplacesview.ui.h:5
 msgid "Try a different search"
 msgstr "Pruebe una búsqueda diferente"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:1
+msgid "Files Preferences"
+msgstr "Preferencias de archivos"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:2
+msgid "Default View"
+msgstr "Vista predeterminada"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:3
+msgid "_Arrange items:"
+msgstr "_Organizar los elementos:"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:4
+msgid "Sort _folders before files"
+msgstr "Colocar las carpetas _antes que los archivos"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:5
+#| msgid "Whether to show a context menu item to delete permanently"
+msgid "Show context menu item to delete files permanently"
+msgstr ""
+"Mostrar un elemento del menú contextual para eliminar archivos "
+"permanentemente"
+
+# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
+# libnautilus-private/nautilus-global-preferences.c:222
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:6
+msgid "Views"
+msgstr "Vistas"
+
+# libnautilus-private/nautilus-global-preferences.c:142
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:7
+msgid "Behavior"
+msgstr "Comportamiento"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:8
+msgid "_Single click to open items"
+msgstr "Un_a sola pulsación para abrir los elementos"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:9
+msgid "_Double click to open items"
+msgstr "_Doble pulsación para abrir los elementos"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:10
+msgid "Executable Text Files"
+msgstr "Archivos de texto ejecutables"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:11
+msgid "_Run executable text files when they are opened"
+msgstr "_Ejecutar los archivos de texto ejecutables al abrirlos"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:12
+msgid "_View executable text files when they are opened"
+msgstr "_Ver los archivos de texto ejecutables al abrirlos"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:13
+msgid "_Ask each time"
+msgstr "_Preguntar cada vez"
+
+# src/file-manager/fm-directory-view.c:2669
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:15
+msgid "Ask before _emptying the Trash or deleting files"
+msgstr "Preguntar antes de vacia_r la papelera o eliminar archivos"
+
+# src/nautilus-location-bar.c:401
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:16
+msgid "Icon Captions"
+msgstr "Descripciones de iconos"
+
+# src/file-manager/fm-icon-text-window.c:267
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:17
+msgid ""
+"Choose the order of information to appear beneath icon names. More "
+"information will appear when zooming in closer."
+msgstr ""
+"Seleccione el orden en que la información aparecerá debajo de los nombres de "
+"los iconos. Aparecerá más información cuando aumente la ampliación."
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:19
+msgid "Navigate folders in a tree"
+msgstr "Navegar por las carpetas en un árbol"
+
+# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
+# libnautilus-private/nautilus-global-preferences.c:149
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:20
+msgid "Display"
+msgstr "Visualización"
+
+# src/file-manager/fm-icon-text-window.c:267
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:21
+msgid "Choose the order of information to appear in the list view."
+msgstr ""
+"Seleccione el orden en que la información aparecerá en la vista de lista."
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:22
+msgid "List Columns"
+msgstr "Columnas de la lista"
+
+# libnautilus-private/nautilus-global-preferences.c:256
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:24
+msgid "Show _thumbnails:"
+msgstr "Mostrar _miniaturas:"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:25
+msgid "_Only for files smaller than:"
+msgstr "_Sólo para archivos menores de:"
+
+# src/file-manager/dfos-xfer.c:763
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:27
+msgid "Count _number of items:"
+msgstr "Contar el _número de elementos:"
+
+# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
+# components/music/nautilus-music-view.c:1122
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:28
+msgid "Preview"
+msgstr "Vista previa"
+
+# libnautilus-private/nautilus-global-preferences.c:582
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:30
+msgid "Always"
+msgstr "Siempre"
+
+# libnautilus-private/nautilus-global-preferences.c:587
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:31
+msgid "Local Files Only"
+msgstr "Sólo archivos locales"
+
+# libnautilus-private/nautilus-global-preferences.c:592
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:32
+msgid "Never"
+msgstr "Nunca"
+
+# src/file-manager/fm-icon-view.c:109
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:33
+msgid "By Name"
+msgstr "Por nombre"
+
+# src/file-manager/fm-icon-view.c:116
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:34
+msgid "By Size"
+msgstr "Por tamaño"
+
+# src/file-manager/fm-icon-view.c:123
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:35
+msgid "By Type"
+msgstr "Por tipo"
+
+# src/file-manager/fm-icon-view.c:130
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:36
+msgid "By Modification Date"
+msgstr "Por fecha de modificación"
+
+# src/file-manager/fm-properties-window.c:1105
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:37
+msgid "By Access Date"
+msgstr "Por fecha de acceso"
+
+# src/file-manager/fm-icon-view.c:109
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:38
+msgid "By Trashed Date"
+msgstr "Por _fecha movido a la papelera"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:39
+msgid "Small"
+msgstr "Pequeño"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:40
+msgid "Standard"
+msgstr "Estándar"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:41
+msgid "Large"
+msgstr "Grande"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:42
+msgid "100 KB"
+msgstr "100 KB"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:43
+msgid "500 KB"
+msgstr "500 KB"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:44
+msgid "1 MB"
+msgstr "1 MB"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:45
+msgid "3 MB"
+msgstr "3 MB"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:46
+msgid "5 MB"
+msgstr "5 MB"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:47
+msgid "10 MB"
+msgstr "10 MB"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:48
+msgid "100 MB"
+msgstr "100 MB"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:49
+msgid "1 GB"
+msgstr "1 GB"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:50
+msgid "2 GB"
+msgstr "2 GB"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:51
+msgid "4 GB"
+msgstr "4 GB"
 
 #: ../src/resources/ui/nautilus-remote-warning-bar.ui.h:1
 msgid "Remote location — only searching the current folder"
