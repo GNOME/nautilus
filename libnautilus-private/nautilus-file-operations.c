@@ -2231,7 +2231,7 @@ trash_or_delete_internal (GList                  *files,
 		inhibit_power_manager ((CommonJob *)job, _("Deleting Files"));
 	}
 	
-	if (!nautilus_file_undo_manager_get_flag () && try_trash) {
+	if (!nautilus_file_undo_manager_is_operating () && try_trash) {
 		job->common.undo_info = nautilus_file_undo_info_trash_new (g_list_length (files));
 	}
 
@@ -5126,7 +5126,7 @@ nautilus_file_operations_copy (GList *files,
 
 	inhibit_power_manager ((CommonJob *)job, _("Copying Files"));
 
-	if (!nautilus_file_undo_manager_get_flag ()) {
+	if (!nautilus_file_undo_manager_is_operating ()) {
 		GFile* src_dir;
 
 		src_dir = g_file_get_parent (files->data);
@@ -5667,7 +5667,7 @@ nautilus_file_operations_move (GList *files,
 
 	inhibit_power_manager ((CommonJob *)job, _("Moving Files"));
 
-	if (!nautilus_file_undo_manager_get_flag ()) {
+	if (!nautilus_file_undo_manager_is_operating ()) {
 		GFile* src_dir;
 
 		src_dir = g_file_get_parent (files->data);
@@ -5994,7 +5994,7 @@ nautilus_file_operations_link (GList *files,
 	}
 	job->debuting_files = g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal, g_object_unref, NULL);
 
-	if (!nautilus_file_undo_manager_get_flag ()) {
+	if (!nautilus_file_undo_manager_is_operating ()) {
 		GFile* src_dir;
 
 		src_dir = g_file_get_parent (files->data);
@@ -6042,7 +6042,7 @@ nautilus_file_operations_duplicate (GList *files,
 	}
 	job->debuting_files = g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal, g_object_unref, NULL);
 
-	if (!nautilus_file_undo_manager_get_flag ()) {
+	if (!nautilus_file_undo_manager_is_operating ()) {
 		GFile* src_dir;
 
 		src_dir = g_file_get_parent (files->data);
@@ -6214,7 +6214,7 @@ nautilus_file_set_permissions_recursive (const char *directory,
 	job->done_callback = callback;
 	job->done_callback_data = callback_data;
 
-	if (!nautilus_file_undo_manager_get_flag ()) {
+	if (!nautilus_file_undo_manager_is_operating ()) {
 		job->common.undo_info = 
 			nautilus_file_undo_info_rec_permissions_new (job->file,
 								     file_permissions, file_mask,
@@ -6739,7 +6739,7 @@ nautilus_file_operations_new_folder (GtkWidget *parent_view,
 		job->has_position = TRUE;
 	}
 
-	if (!nautilus_file_undo_manager_get_flag ()) {
+	if (!nautilus_file_undo_manager_is_operating ()) {
 		job->common.undo_info = nautilus_file_undo_info_create_new (NAUTILUS_FILE_UNDO_OP_CREATE_FOLDER);
 	}
 
@@ -6781,7 +6781,7 @@ nautilus_file_operations_new_file_from_template (GtkWidget *parent_view,
 		job->src = g_file_new_for_uri (template_uri);
 	}
 
-	if (!nautilus_file_undo_manager_get_flag ()) {
+	if (!nautilus_file_undo_manager_is_operating ()) {
 		job->common.undo_info = nautilus_file_undo_info_create_new (NAUTILUS_FILE_UNDO_OP_CREATE_FILE_FROM_TEMPLATE);
 	}
 
@@ -6822,7 +6822,7 @@ nautilus_file_operations_new_file (GtkWidget *parent_view,
 	job->length = length;
 	job->filename = g_strdup (target_filename);
 
-	if (!nautilus_file_undo_manager_get_flag ()) {
+	if (!nautilus_file_undo_manager_is_operating ()) {
 		job->common.undo_info = nautilus_file_undo_info_create_new (NAUTILUS_FILE_UNDO_OP_CREATE_EMPTY_FILE);
 	}
 
