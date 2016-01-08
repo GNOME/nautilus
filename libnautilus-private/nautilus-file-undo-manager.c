@@ -158,6 +158,8 @@ undo_info_apply_ready (GObject *source,
 
 	success = nautilus_file_undo_info_apply_finish (info, res, &user_cancel, NULL);
 
+	self->priv->undo_redo_flag = FALSE;
+
 	/* just return in case we got another another operation set */
 	if ((self->priv->info != NULL) &&
 	    (self->priv->info != info)) {
@@ -189,8 +191,8 @@ do_undo_redo (NautilusFileUndoManager *self,
 	gboolean undo = self->priv->state == NAUTILUS_FILE_UNDO_MANAGER_STATE_UNDO;
 
 	self->priv->last_state = self->priv->state;
-	
-	nautilus_file_undo_manager_push_flag ();
+
+	self->priv->undo_redo_flag = TRUE;
 	nautilus_file_undo_info_apply_async (self->priv->info, undo, parent_window,
 					     undo_info_apply_ready, self);
 
@@ -261,28 +263,12 @@ nautilus_file_undo_manager_get_state (void)
 	return self->priv->state;
 }
 
-void
-nautilus_file_undo_manager_push_flag ()
-{
-	NautilusFileUndoManager *self = get_singleton ();
-	NautilusFileUndoManagerPrivate *priv = self->priv;
-
-	priv->undo_redo_flag = TRUE;
-}
 
 gboolean
-nautilus_file_undo_manager_pop_flag ()
+nautilus_file_undo_manager_get_flag ()
 {
 	NautilusFileUndoManager *self = get_singleton ();
-	NautilusFileUndoManagerPrivate *priv = self->priv;
-	gboolean retval = FALSE;
-
-	if (priv->undo_redo_flag) {
-		retval = TRUE;
-	}
-
-	priv->undo_redo_flag = FALSE;
-	return retval;
+	return self->priv->undo_redo_flag;
 }
 
 NautilusFileUndoManager *

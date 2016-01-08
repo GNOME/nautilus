@@ -1970,7 +1970,7 @@ nautilus_file_rename (NautilusFile *file,
 	location = nautilus_file_get_location (file);
 
 	/* Tell the undo manager a rename is taking place */
-	if (!nautilus_file_undo_manager_pop_flag ()) {
+	if (!nautilus_file_undo_manager_get_flag ()) {
 		op->undo_info = nautilus_file_undo_info_rename_new ();
 
 		old_name = nautilus_file_get_display_name (file);
@@ -5249,7 +5249,7 @@ nautilus_file_set_permissions (NautilusFile *file,
 		return;
 	}
 
-	if (!nautilus_file_undo_manager_pop_flag ()) {
+	if (!nautilus_file_undo_manager_get_flag ()) {
 		NautilusFileUndoInfo *undo_info;
 
 		undo_info = nautilus_file_undo_info_permissions_new (nautilus_file_get_location (file),
@@ -5562,7 +5562,7 @@ nautilus_file_set_owner (NautilusFile *file,
 		return;
 	}
 	
-	if (!nautilus_file_undo_manager_pop_flag ()) {
+	if (!nautilus_file_undo_manager_get_flag ()) {
 		NautilusFileUndoInfo *undo_info;
 		char* current_owner;
 
@@ -5840,7 +5840,7 @@ nautilus_file_set_group (NautilusFile *file,
 		return;
 	}
 
-	if (!nautilus_file_undo_manager_pop_flag ()) {
+	if (!nautilus_file_undo_manager_get_flag ()) {
 		NautilusFileUndoInfo *undo_info;
 		char *current_group;
 

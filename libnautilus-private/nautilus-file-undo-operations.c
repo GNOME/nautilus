@@ -1218,9 +1218,6 @@ trash_undo_func (NautilusFileUndoInfo *info,
 {
 	NautilusFileUndoInfoTrash *self = NAUTILUS_FILE_UNDO_INFO_TRASH (info);
 
-	/* Internally managed op, pop flag. */
-	nautilus_file_undo_manager_pop_flag ();
-
 	trash_retrieve_files_to_restore_async (self, trash_retrieve_files_ready, NULL);
 }
 
@@ -1348,10 +1345,6 @@ rec_permissions_undo_func (NautilusFileUndoInfo *info,
 			   GtkWindow *parent_window)
 {
 	NautilusFileUndoInfoRecPermissions *self = NAUTILUS_FILE_UNDO_INFO_REC_PERMISSIONS (info);
-
-	/* Internally managed op, pop flag. */
-	/* TODO: why? */
-	nautilus_file_undo_manager_pop_flag ();
 
 	if (g_hash_table_size (self->priv->original_permissions) > 0) {
 		GList *gfiles_list;
