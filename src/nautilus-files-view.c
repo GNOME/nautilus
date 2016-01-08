@@ -4804,11 +4804,11 @@ update_directory_in_scripts_menu (NautilusFilesView *view,
         nautilus_file_list_free (file_list);
         menu = g_menu_new ();
 
-        file_list = nautilus_file_list_sort_by_display_name (filtered);
+        filtered = nautilus_file_list_sort_by_display_name (filtered);
 
         num = 0;
         any_scripts = FALSE;
-        for (node = file_list; num < TEMPLATE_LIMIT && node != NULL; node = node->next, num++) {
+        for (node = filtered; num < TEMPLATE_LIMIT && node != NULL; node = node->next, num++) {
                 file = node->data;
                 if (nautilus_file_is_directory (file)) {
                         uri = nautilus_file_get_uri (file);
@@ -4838,7 +4838,6 @@ update_directory_in_scripts_menu (NautilusFilesView *view,
                 }
         }
 
-        nautilus_file_list_free (file_list);
         nautilus_file_list_free (filtered);
 
         if (!any_scripts) {
