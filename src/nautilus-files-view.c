@@ -6939,7 +6939,8 @@ load_directory (NautilusFilesView *view,
                                                    view->details->subdirectory_list->data);
         }
 
-        g_set_object (&view->details->model, directory);
+        nautilus_directory_unref (view->details->model);
+        view->details->model = nautilus_directory_ref (directory);
 
         g_clear_object (&view->details->directory_as_file);
         view->details->directory_as_file = nautilus_directory_get_corresponding_file (directory);
