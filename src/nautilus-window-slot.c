@@ -2222,7 +2222,8 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *slot)
 	GtkWidget *widget;
         gboolean reusing_view;
 
-        reusing_view = gtk_widget_get_parent (GTK_WIDGET (slot->details->new_content_view)) != NULL;
+        reusing_view = slot->details->new_content_view &&
+                       gtk_widget_get_parent (GTK_WIDGET (slot->details->new_content_view)) != NULL;
         /* We are either reusing the view, so new_content_view and content_view
          * are the same, or the new_content_view is invalid */
         if (slot->details->new_content_view == NULL || reusing_view)
