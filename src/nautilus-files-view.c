@@ -2895,6 +2895,18 @@ nautilus_files_view_destroy (GtkWidget *object)
                 view->details->floating_bar_loading_timeout_id = 0;
         }
 
+        g_signal_handlers_disconnect_by_func (nautilus_preferences,
+                                              schedule_update_context_menus, view);
+        g_signal_handlers_disconnect_by_func (nautilus_preferences,
+                                              click_policy_changed_callback, view);
+        g_signal_handlers_disconnect_by_func (nautilus_preferences,
+                                              sort_directories_first_changed_callback, view);
+        g_signal_handlers_disconnect_by_func (gtk_filechooser_preferences,
+                                              show_hidden_files_changed_callback, view);
+        g_signal_handlers_disconnect_by_func (nautilus_window_state,
+                                              nautilus_files_view_display_selection_info, view);
+        g_signal_handlers_disconnect_by_func (gnome_lockdown_preferences,
+                                              schedule_update_context_menus, view);
 
         nautilus_file_unref (view->details->directory_as_file);
         view->details->directory_as_file = NULL;
@@ -2915,19 +2927,6 @@ nautilus_files_view_finalize (GObject *object)
 
         view = NAUTILUS_FILES_VIEW (object);
 
-        g_signal_handlers_disconnect_by_func (nautilus_preferences,
-                                              schedule_update_context_menus, view);
-        g_signal_handlers_disconnect_by_func (nautilus_preferences,
-                                              click_policy_changed_callback, view);
-        g_signal_handlers_disconnect_by_func (nautilus_preferences,
-                                              sort_directories_first_changed_callback, view);
-        g_signal_handlers_disconnect_by_func (gtk_filechooser_preferences,
-                                              show_hidden_files_changed_callback, view);
-        g_signal_handlers_disconnect_by_func (nautilus_window_state,
-                                              nautilus_files_view_display_selection_info, view);
-
-        g_signal_handlers_disconnect_by_func (gnome_lockdown_preferences,
-                                              schedule_update_context_menus, view);
         g_clear_object (&view->details->view_action_group);
         g_clear_object (&view->details->background_menu);
         g_clear_object (&view->details->selection_menu);
