@@ -759,7 +759,6 @@ static void begin_location_change                     (NautilusWindowSlot       
                                                        const char                 *scroll_pos);
 static void free_location_change                      (NautilusWindowSlot         *slot);
 static void end_location_change                       (NautilusWindowSlot         *slot);
-static void cancel_location_change                    (NautilusWindowSlot         *slot);
 static void got_file_info_for_view_selection_callback (NautilusFile               *file,
 						       gpointer                    callback_data);
 static gboolean setup_view                            (NautilusWindowSlot *slot,
@@ -1555,49 +1554,6 @@ free_location_change (NautilusWindowSlot *slot)
 			(slot->details->determine_view_file,
 			 got_file_info_for_view_selection_callback, slot);
                 slot->details->determine_view_file = NULL;
-        }
-}
-
-static void
-cancel_location_change (NautilusWindowSlot *slot)
-{
-	GList *selection;
-	GFile *location;
-        NautilusDirectory *directory;
-
-	location = nautilus_window_slot_get_location (slot);
-
-	directory = nautilus_directory_get (slot->details->location);
-        /* Stops current loading or search if any, so we are not slow */
-        if (NAUTILUS_IS_FILES_VIEW (slot->details->content_view)) {
-                nautilus_files_view_stop_loading (NAUTILUS_FILES_VIEW (slot->details->content_view));
-        }
-        nautilus_directory_unref (directory);
-
-        if (slot->details->pending_location != NULL
-            && location != NULL
-            && slot->details->content_view != NULL
-            && NAUTILUS_IS_FILES_VIEW (slot->details->content_view)) {
-
-                /* No need to tell the new view - either it is the
-                 * same as the old view, in which case it will already
-                 * be told, or it is the very pending change we wish
-                 * to cancel.
-                 */
-		selection = nautilus_view_get_selection (slot->details->content_view);
-                load_new_location (slot,
-				   location,
-				   selection,
-				   TRUE,
-				   FALSE);
-		nautilus_file_list_free (selection);
-        }
-
-        end_location_change (slot);
-
-        if (slot->details->new_content_view) {
-                g_object_unref (slot->details->new_content_view);
-                slot->details->new_content_view = NULL;
         }
 }
 
@@ -2535,7 +2491,44 @@ nautilus_window_slot_set_allow_stop (NautilusWindowSlot *slot,
 void
 nautilus_window_slot_stop_loading (NautilusWindowSlot *slot)
 {
-        cancel_location_change (slot);
+        GList *selection;
+        GFile *location;
+        NautilusDirectory *directory;
+
+        location = nautilus_window_slot_get_location (slot);
+
+        directory = nautilus_directory_get (slot->details->location);
+
+        if (NAUTILUS_IS_FILES_VIEW (slot->details->content_view)) {
+                nautilus_files_view_stop_loading (NAUTILUS_FILES_VIEW (slot->details->content_view));
+        }
+
+        nautilus_directory_unref (directory);
+
+        if (slot->details->pending_location != NULL &&
+            location != NULL &&
+            slot->details->content_view != NULL &&
+            NAUTILUS_IS_FILES_VIEW (slot->details->content_view)) {
+                /* No need to tell the new view - either it is the
+                 * same as the old view, in which case it will already
+                 * be told, or it is the very pending change we wish
+                 * to cancel.
+                 */
+                selection = nautilus_view_get_selection (slot->details->content_view);
+                load_new_location (slot,
+                                   location,
+                                   selection,
+                                   TRUE,
+                                   FALSE);
+                nautilus_file_list_free (selection);
+        }
+
+        end_location_change (slot);
+
+        if (slot->details->new_content_view) {
+                g_object_unref (slot->details->new_content_view);
+                slot->details->new_content_view = NULL;
+        }
 }
 
 NautilusView*
