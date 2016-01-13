@@ -2860,6 +2860,11 @@ nautilus_files_view_destroy (GtkWidget *object)
         view->details->in_destruction = TRUE;
         nautilus_files_view_stop_loading (view);
 
+        if (view->details->model) {
+                nautilus_directory_unref (view->details->model);
+                view->details->model = NULL;
+        }
+
         for (node = view->details->scripts_directory_list; node != NULL; node = next) {
                 next = node->next;
                 remove_directory_from_scripts_directory_list (view, node->data);
@@ -7373,10 +7378,6 @@ nautilus_files_view_stop_loading (NautilusFilesView *view)
         done_loading (view, FALSE);
 
         disconnect_model_handlers (view);
-        if (view->details->model) {
-                nautilus_directory_unref (view->details->model);
-                view->details->model = NULL;
-        }
 }
 
 gboolean
