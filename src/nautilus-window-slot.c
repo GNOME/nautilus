@@ -919,11 +919,7 @@ begin_location_change (NautilusWindowSlot         *slot,
         nautilus_window_slot_disconnect_content_view (slot);
         /* We are going to change the location, so make sure we stop any loading
          * or searching of the previous view, so we avoid to be slow */
-        if (slot->details->content_view && NAUTILUS_IS_FILES_VIEW (slot->details->content_view)) {
-                nautilus_files_view_stop_loading (NAUTILUS_FILES_VIEW (slot->details->content_view));
-        }
-
-	end_location_change (slot);
+        nautilus_window_slot_stop_loading (slot);
 
 	nautilus_window_slot_set_allow_stop (slot, TRUE);
 
@@ -1560,11 +1556,6 @@ free_location_change (NautilusWindowSlot *slot)
 			 got_file_info_for_view_selection_callback, slot);
                 slot->details->determine_view_file = NULL;
         }
-
-        if (slot->details->new_content_view != NULL) {
-		g_object_unref (slot->details->new_content_view);
-		slot->details->new_content_view = NULL;
-        }
 }
 
 static void
@@ -1603,6 +1594,11 @@ cancel_location_change (NautilusWindowSlot *slot)
         }
 
         end_location_change (slot);
+
+        if (slot->details->new_content_view) {
+                g_object_unref (slot->details->new_content_view);
+                slot->details->new_content_view = NULL;
+        }
 }
 
 void
@@ -1627,7 +1623,7 @@ nautilus_window_slot_set_content_view (NautilusWindowSlot *slot,
         selection = nautilus_view_get_selection (slot->details->content_view);
         view = nautilus_files_view_new (id, slot);
 
-        end_location_change (slot);
+        nautilus_window_slot_stop_loading (slot);
 
         nautilus_window_slot_set_allow_stop (slot, TRUE);
 
