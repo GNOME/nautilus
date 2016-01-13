@@ -2909,7 +2909,7 @@ nautilus_files_view_destroy (GtkWidget *object)
 }
 
 static void
-nautilus_files_view_dispose (GObject *object)
+nautilus_files_view_finalize (GObject *object)
 {
         NautilusFilesView *view;
 
@@ -2937,16 +2937,6 @@ nautilus_files_view_dispose (GObject *object)
                 gtk_popover_set_relative_to (GTK_POPOVER (view->details->rename_file_popover),
                                              NULL);
         }
-
-        G_OBJECT_CLASS (nautilus_files_view_parent_class)->dispose (object);
-}
-
-static void
-nautilus_files_view_finalize (GObject *object)
-{
-        NautilusFilesView *view;
-
-        view = NAUTILUS_FILES_VIEW (object);
 
         g_hash_table_destroy (view->details->non_ready_files);
 
@@ -7958,7 +7948,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
         oclass = G_OBJECT_CLASS (klass);
 
         oclass->finalize = nautilus_files_view_finalize;
-        oclass->dispose = nautilus_files_view_dispose;
         oclass->get_property = nautilus_files_view_get_property;
         oclass->set_property = nautilus_files_view_set_property;
 
