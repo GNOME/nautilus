@@ -2907,6 +2907,10 @@ nautilus_files_view_destroy (GtkWidget *object)
                                               nautilus_files_view_display_selection_info, view);
         g_signal_handlers_disconnect_by_func (gnome_lockdown_preferences,
                                               schedule_update_context_menus, view);
+        g_signal_handlers_disconnect_by_func (nautilus_trash_monitor_get (),
+                                              nautilus_files_view_trash_state_changed_callback, view);
+        g_signal_handlers_disconnect_by_func (nautilus_clipboard_monitor_get (),
+                                              clipboard_changed_callback, view);
 
         nautilus_file_unref (view->details->directory_as_file);
         view->details->directory_as_file = NULL;
