@@ -229,6 +229,8 @@ struct NautilusFilesViewDetails
         gboolean templates_present;
         gboolean scripts_present;
 
+        gboolean in_destruction;
+
         gboolean sort_directories_first;
 
         gboolean show_foreign_files;
@@ -2855,6 +2857,7 @@ nautilus_files_view_destroy (GtkWidget *object)
 
         view = NAUTILUS_FILES_VIEW (object);
 
+        view->details->in_destruction = TRUE;
         nautilus_files_view_stop_loading (view);
 
         for (node = view->details->scripts_directory_list; node != NULL; node = next) {
@@ -3174,9 +3177,7 @@ done_loading (NautilusFilesView *view,
 
         nautilus_profile_start (NULL);
 
-        /* This can be called during destruction, in which case we set the model
-         * as NULL. */
-        if (view->details->model != NULL) {
+        if (!view->details->in_destruction) {
                 nautilus_files_view_update_toolbar_menus (view);
                 remove_loading_floating_bar (view);
                 schedule_update_context_menus (view);
@@ -8227,6 +8228,8 @@ nautilus_files_view_init (NautilusFilesView *view)
         g_signal_connect_swapped (gnome_lockdown_preferences,
                                   "changed::" NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE,
                                   G_CALLBACK (schedule_update_context_menus), view);
+
+        view->details->in_destruction = FALSE;
 
         /* Accessibility */
         atk_object = gtk_widget_get_accessible (GTK_WIDGET (view));
