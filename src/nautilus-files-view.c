@@ -2322,12 +2322,6 @@ nautilus_files_view_set_show_hidden_files (NautilusFilesView *view,
                                         show_hidden);
 
                 if (view->details->model != NULL) {
-                        /* We have to simulate that we are a client asking to swtich to a new
-                         * location, and of course we have our own ref to it. In this
-                         * case, the client (this function) and the server (the view) has the same
-                         * reference, and the server will unref its current model, giving
-                         * a "use after free" crash. So take a ref here. */
-                        nautilus_directory_ref (view->details->model);
                         load_directory (view, view->details->model);
                 }
         }
@@ -7111,8 +7105,11 @@ load_directory (NautilusFilesView *view,
                                                    view->details->subdirectory_list->data);
         }
 
-        nautilus_directory_unref (view->details->model);
-        view->details->model = nautilus_directory_ref (directory);
+        /* Avoid freeing it and won't be able to ref it */
+        if (view->details->model != directory) {
+                nautilus_directory_unref (view->details->model);
+                view->details->model = nautilus_directory_ref (directory);
+        }
 
         nautilus_file_unref (view->details->directory_as_file);
         view->details->directory_as_file = nautilus_directory_get_corresponding_file (directory);
@@ -7886,7 +7883,7 @@ set_search_query_internal (NautilusFilesView *files_view,
                          * search directory, so setting the location to a search
                          * directory when is already serching will enter a loop.
                          */
-                        load_directory (files_view, nautilus_directory_ref (files_view->details->model));
+                        load_directory (files_view, files_view->details->model);
                 } else {
                         NautilusDirectory *directory;
                         gchar *uri;
