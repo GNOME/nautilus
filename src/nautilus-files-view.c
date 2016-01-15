@@ -7868,8 +7868,6 @@ set_search_query_internal (NautilusFilesView *files_view,
 
         if (valid_query) {
                 if (nautilus_view_is_searching (NAUTILUS_VIEW (files_view))) {
-                        location = nautilus_directory_get_location (base_model);
-
                         /*
                          * Reuse the search directory and reload it.
                          */
