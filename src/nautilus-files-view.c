@@ -325,6 +325,10 @@ static gboolean nautilus_files_view_is_searching               (NautilusView    
 
 static void     nautilus_files_view_iface_init                 (NautilusViewInterface *view);
 
+static void     set_search_query_internal                      (NautilusFilesView *files_view,
+                                                                NautilusQuery     *query,
+                                                                NautilusDirectory *base_model);
+
 G_DEFINE_TYPE_WITH_CODE (NautilusFilesView,
                          nautilus_files_view,
                          GTK_TYPE_GRID,
@@ -3140,17 +3144,28 @@ nautilus_files_view_set_location (NautilusView *view,
                                   GFile        *location)
 {
         NautilusDirectory *directory;
+        NautilusFilesView *files_view;
 
         nautilus_profile_start (NULL);
+        files_view = NAUTILUS_FILES_VIEW (view);
         directory = nautilus_directory_get (location);
-        load_directory (NAUTILUS_FILES_VIEW (view), directory);
-        /* In case we want to load a previous search, sync the query */
+
+        nautilus_files_view_stop_loading (files_view);
+        /* In case we want to load a previous search we need to extract the real
+         * location and the search location, and load the directory when everything
+         * is ready. That's why we cannot use the nautilus_view_set_query, because
+         * to set a query we need a previous location loaded, but to load a search
+         * location we need to know the real location behind it. */
         if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
                 NautilusQuery *previous_query;
+                NautilusDirectory *base_model;
 
+                base_model = nautilus_search_directory_get_base_model (NAUTILUS_SEARCH_DIRECTORY (directory));
                 previous_query = nautilus_search_directory_get_query (NAUTILUS_SEARCH_DIRECTORY (directory));
-                nautilus_view_set_search_query (view, previous_query);
+                set_search_query_internal (files_view, previous_query, base_model);
                 g_object_unref (previous_query);
+        } else {
+                load_directory (NAUTILUS_FILES_VIEW (view), directory);
         }
         nautilus_directory_unref (directory);
         nautilus_profile_end (NULL);
@@ -7837,15 +7852,14 @@ nautilus_files_view_get_search_query (NautilusView *view)
 }
 
 static void
-nautilus_files_view_set_search_query (NautilusView  *view,
-                                      NautilusQuery *query)
+set_search_query_internal (NautilusFilesView *files_view,
+                           NautilusQuery     *query,
+                           NautilusDirectory *base_model)
 {
-        NautilusFilesView *files_view;
         GFile *location;
         gchar *text;
         gboolean valid_query = FALSE;
 
-        files_view = NAUTILUS_FILES_VIEW (view);
         location = NULL;
         if (query) {
                 text = nautilus_query_get_text (query);
@@ -7855,11 +7869,11 @@ nautilus_files_view_set_search_query (NautilusView  *view,
         }
 
         g_set_object (&files_view->details->search_query, query);
-        g_object_notify (G_OBJECT (view), "search-query");
+        g_object_notify (G_OBJECT (files_view), "search-query");
 
         if (valid_query) {
-                if (nautilus_view_is_searching (view)) {
-                        location = nautilus_directory_get_location (files_view->details->model);
+                if (nautilus_view_is_searching (NAUTILUS_VIEW (files_view))) {
+                        location = nautilus_directory_get_location (base_model);
 
                         /*
                          * Reuse the search directory and reload it.
@@ -7882,29 +7896,43 @@ nautilus_files_view_set_search_query (NautilusView  *view,
 
                         directory = nautilus_directory_get (location);
                         g_assert (NAUTILUS_IS_SEARCH_DIRECTORY (directory));
-
-                        nautilus_search_directory_set_base_model (NAUTILUS_SEARCH_DIRECTORY (directory), files_view->details->model);
+                        nautilus_search_directory_set_base_model (NAUTILUS_SEARCH_DIRECTORY (directory), base_model);
                         nautilus_search_directory_set_query (NAUTILUS_SEARCH_DIRECTORY (directory), query);
 
-                        nautilus_view_set_location (view, location);
+                        load_directory (files_view, directory);
 
-                        g_object_notify (G_OBJECT (view), "is-searching");
+                        g_object_notify (G_OBJECT (files_view), "is-searching");
 
                         nautilus_directory_unref (directory);
                         g_free (uri);
                 }
         } else {
-                 if (nautilus_view_is_searching (view)) {
-                        NautilusDirectory *base;
+                 if (nautilus_view_is_searching (NAUTILUS_VIEW (files_view))) {
+                        location = nautilus_directory_get_location (base_model);
 
-                        base = nautilus_search_directory_get_base_model (NAUTILUS_SEARCH_DIRECTORY (files_view->details->model));
-                        location = nautilus_directory_get_location (base);
-
-                        nautilus_view_set_location (view, location);
+                        nautilus_view_set_location (NAUTILUS_VIEW (files_view), location);
                 }
         }
         check_remote_warning_bar (files_view);
         g_clear_object (&location);
+}
+
+static void
+nautilus_files_view_set_search_query (NautilusView  *view,
+                                      NautilusQuery *query)
+{
+        NautilusDirectory *base_model;
+        NautilusFilesView *files_view;
+
+        files_view = NAUTILUS_FILES_VIEW (view);
+
+        if (nautilus_view_is_searching (view)) {
+                base_model = nautilus_search_directory_get_base_model (NAUTILUS_SEARCH_DIRECTORY (files_view->details->model));
+        } else {
+                base_model = files_view->details->model;
+        }
+
+        set_search_query_internal (NAUTILUS_FILES_VIEW (view), query, base_model);
 }
 
 static GFile*
