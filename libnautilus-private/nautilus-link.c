@@ -504,35 +504,38 @@ nautilus_link_local_get_link_uri (const char *uri)
 }
 
 static gboolean
-string_array_contains (char **array,
-		       const char *str)
+string_array_contains (gchar **array,
+                       gchar **desktop_names)
 {
-	char **p;
+	gchar **p;
+	gchar **desktop;
 
 	if (!array)
 		return FALSE;
 
-	for (p = array; *p; p++)
-		if (g_ascii_strcasecmp (*p, str) == 0) {
-			return TRUE;
+	for (p = array; *p; p++) {
+		for (desktop = desktop_names; *desktop; desktop++) {
+			if (g_ascii_strcasecmp (*p, *desktop) == 0)
+				return TRUE;
 		}
+	}
 
 	return FALSE;
 }
 
-static const gchar *
-get_session (void)
+static gchar **
+get_desktop_names (void)
 {
-	const gchar * session;
+	const gchar *current_desktop;
 
-	session = g_getenv ("XDG_CURRENT_DESKTOP");
+	current_desktop = g_getenv ("XDG_CURRENT_DESKTOP");
 
-	if (session == NULL || session[0] == 0) {
+	if (current_desktop == NULL || current_desktop[0] == 0) {
 		/* historic behavior */
-		session = "GNOME";
+		current_desktop = "GNOME";
 	}
 
-	return session;
+	return g_strsplit (current_desktop, ":", -1);
 }
 
 void
@@ -546,12 +549,11 @@ nautilus_link_get_link_info_given_file_contents (const char  *file_contents,
 						 gboolean    *is_foreign)
 {
 	GKeyFile *key_file;
+	gchar **desktop_names;
 	char *type;
 	char **only_show_in;
 	char **not_show_in;
-	const gchar *session;
 
-	session = get_session ();
 	key_file = g_key_file_new ();
 	if (!g_key_file_load_from_data (key_file,
 					file_contents,
@@ -561,6 +563,8 @@ nautilus_link_get_link_info_given_file_contents (const char  *file_contents,
 		g_key_file_free (key_file);
 		return; 
 	}
+
+	desktop_names = get_desktop_names ();
 
 	*uri = nautilus_link_get_link_uri_from_desktop (key_file, file_uri);
 	*name = nautilus_link_get_link_name_from_desktop (key_file);
@@ -577,17 +581,18 @@ nautilus_link_get_link_info_given_file_contents (const char  *file_contents,
 	*is_foreign = FALSE;
 	only_show_in = g_key_file_get_string_list (key_file, MAIN_GROUP,
 						   "OnlyShowIn", NULL, NULL);
-	if (session && only_show_in && !string_array_contains (only_show_in, session)) {
+	if (only_show_in && !string_array_contains (only_show_in, desktop_names)) {
 		*is_foreign = TRUE;
 	}
 	g_strfreev (only_show_in);
 
 	not_show_in = g_key_file_get_string_list (key_file, MAIN_GROUP,
 						  "NotShowIn", NULL, NULL);
-	if (session && not_show_in && string_array_contains (not_show_in, session)) {
+	if (not_show_in && string_array_contains (not_show_in, desktop_names)) {
 		*is_foreign = TRUE;
 	}
 	g_strfreev (not_show_in);
 
+	g_strfreev (desktop_names);
 	g_key_file_free (key_file);
 }
