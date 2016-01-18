@@ -746,6 +746,34 @@ clear_base_model (NautilusSearchDirectory *search)
 }
 
 static void
+search_connect_engine (NautilusSearchDirectory *search)
+{
+    g_signal_connect (search->details->engine, "hits-added",
+                      G_CALLBACK (search_engine_hits_added),
+                      search);
+    g_signal_connect (search->details->engine, "error",
+                      G_CALLBACK (search_engine_error),
+                      search);
+    g_signal_connect (search->details->engine, "finished",
+                      G_CALLBACK (search_engine_finished),
+                      search);
+}
+
+static void
+search_disconnect_engine (NautilusSearchDirectory *search)
+{
+    g_signal_handlers_disconnect_by_func (search->details->engine,
+                                          search_engine_hits_added,
+                                          search);
+    g_signal_handlers_disconnect_by_func (search->details->engine,
+                                          search_engine_error,
+                                          search);
+    g_signal_handlers_disconnect_by_func (search->details->engine,
+                                          search_engine_finished,
+                                          search);
+}
+
+static void
 search_dispose (GObject *object)
 {
 	NautilusSearchDirectory *search;
@@ -784,6 +812,7 @@ search_dispose (GObject *object)
 
 	g_clear_object (&search->details->query);
 	stop_search (search);
+        search_disconnect_engine(search);
 
 	g_clear_object (&search->details->engine);
 	
@@ -810,16 +839,8 @@ nautilus_search_directory_init (NautilusSearchDirectory *search)
 
 	search->details->files_hash = g_hash_table_new (g_direct_hash, g_direct_equal);
 
-	search->details->engine = nautilus_search_engine_new ();
-	g_signal_connect (search->details->engine, "hits-added",
-			  G_CALLBACK (search_engine_hits_added),
-			  search);
-	g_signal_connect (search->details->engine, "error",
-			  G_CALLBACK (search_engine_error),
-			  search);
-	g_signal_connect (search->details->engine, "finished",
-			  G_CALLBACK (search_engine_finished),
-			  search);
+        search->details->engine = nautilus_search_engine_new ();
+        search_connect_engine (search);
 }
 
 static void
