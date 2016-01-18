@@ -31,7 +31,8 @@ struct _NautilusProgressInfoWidgetPrivate {
 	GtkWidget *status; /* GtkLabel */
 	GtkWidget *details; /* GtkLabel */
 	GtkWidget *progress_bar;
-	GtkWidget *cancel;
+	GtkWidget *button;
+	GtkWidget *done_image;
 };
 
 enum {
@@ -47,13 +48,14 @@ G_DEFINE_TYPE_WITH_PRIVATE (NautilusProgressInfoWidget, nautilus_progress_info_w
 static void
 info_finished (NautilusProgressInfoWidget *self)
 {
-  	gtk_widget_set_sensitive (self->priv->cancel, FALSE);
+	gtk_button_set_image (GTK_BUTTON (self->priv->button), self->priv->done_image);
+	gtk_widget_set_sensitive (self->priv->button, FALSE);
 }
 
 static void
 info_cancelled (NautilusProgressInfoWidget *self)
 {
-  	gtk_widget_set_sensitive (self->priv->cancel, FALSE);
+	gtk_widget_set_sensitive (self->priv->button, FALSE);
 }
 
 static void
@@ -87,10 +89,12 @@ update_progress (NautilusProgressInfoWidget *self)
 }
 
 static void
-cancel_clicked (GtkWidget *button,
+button_clicked (GtkWidget *button,
 		NautilusProgressInfoWidget *self)
 {
-	nautilus_progress_info_cancel (self->priv->info);
+	if (!nautilus_progress_info_get_is_finished (self->priv->info)) {
+		nautilus_progress_info_cancel (self->priv->info);
+	}
 }
 
 static void
@@ -155,9 +159,8 @@ nautilus_progress_info_widget_init (NautilusProgressInfoWidget *self)
 
 	gtk_widget_init_template (GTK_WIDGET (self));
 
-	g_signal_connect (self->priv->cancel, "clicked",
-			  G_CALLBACK (cancel_clicked), self);
-
+	g_signal_connect (self->priv->button, "clicked",
+			  G_CALLBACK (button_clicked), self);
 }
 
 static void
@@ -188,7 +191,8 @@ nautilus_progress_info_widget_class_init (NautilusProgressInfoWidgetClass *klass
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusProgressInfoWidget, status);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusProgressInfoWidget, details);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusProgressInfoWidget, progress_bar);
-	gtk_widget_class_bind_template_child_private (widget_class, NautilusProgressInfoWidget, cancel);
+	gtk_widget_class_bind_template_child_private (widget_class, NautilusProgressInfoWidget, button);
+	gtk_widget_class_bind_template_child_private (widget_class, NautilusProgressInfoWidget, done_image);
 }
 
 GtkWidget *
@@ -200,9 +204,13 @@ nautilus_progress_info_widget_new (NautilusProgressInfo *info)
 			     "info", info,
 			     NULL);
 
-        gtk_widget_set_sensitive (self->priv->cancel,
-                                  !nautilus_progress_info_get_is_finished (self->priv->info) &&
-                                  !nautilus_progress_info_get_is_cancelled (self->priv->info));
+	if (nautilus_progress_info_get_is_finished (self->priv->info)) {
+		gtk_button_set_image (GTK_BUTTON (self->priv->button), self->priv->done_image);
+	}
 
-        return GTK_WIDGET (self);
+	gtk_widget_set_sensitive (self->priv->button,
+	                          !nautilus_progress_info_get_is_finished (self->priv->info) &&
+	                          !nautilus_progress_info_get_is_cancelled (self->priv->info));
+
+	return GTK_WIDGET (self);
 }
