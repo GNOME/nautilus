@@ -165,7 +165,6 @@ nautilus_desktop_window_constructed (GObject *obj)
 {
 	AtkObject *accessible;
 	NautilusDesktopWindow *window = NAUTILUS_DESKTOP_WINDOW (obj);
-        GdkRGBA transparent = {0, 0, 0, 0};
 
 	G_OBJECT_CLASS (nautilus_desktop_window_parent_class)->constructed (obj);
 
@@ -203,7 +202,6 @@ nautilus_desktop_window_constructed (GObject *obj)
 		 * Note that nautilus_desktop_window_init is too early to do this.
 		 */
 		nautilus_desktop_window_update_directory (window);
-		gtk_widget_override_background_color (GTK_WIDGET (window), 0, &transparent);
 
 		/* We realize it immediately so that the NAUTILUS_DESKTOP_WINDOW_ID
 		 * property is set so gnome-settings-daemon doesn't try to set
@@ -217,8 +215,25 @@ nautilus_desktop_window_constructed (GObject *obj)
 static void
 nautilus_desktop_window_init (NautilusDesktopWindow *window)
 {
+	const gchar *css;
+	GtkCssProvider *provider;
+
 	window->details = G_TYPE_INSTANCE_GET_PRIVATE (window, NAUTILUS_TYPE_DESKTOP_WINDOW,
 						       NautilusDesktopWindowDetails);
+
+	css = "nautilus-desktop-window,"
+	      "nautilus-desktop-window notebook {"
+	      "    background: transparent;"
+	      "}";
+
+	provider = gtk_css_provider_new ();
+	gtk_css_provider_load_from_data (provider, css, -1, NULL);
+
+	gtk_style_context_add_provider_for_screen (gdk_screen_get_default (),
+	                                           GTK_STYLE_PROVIDER (provider),
+	                                           GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
+	g_object_unref (provider);
 }
 
 static void
@@ -390,6 +405,8 @@ nautilus_desktop_window_class_init (NautilusDesktopWindowClass *klass)
 
 	nclass->sync_title = real_sync_title;
 	nclass->close = real_window_close;
+
+	gtk_widget_class_set_css_name (wclass, "nautilus-desktop-window");
 
 	g_type_class_add_private (klass, sizeof (NautilusDesktopWindowDetails));
 }
