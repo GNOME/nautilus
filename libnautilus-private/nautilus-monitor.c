@@ -3,6 +3,7 @@
    nautilus-monitor.c: file and directory change monitoring for nautilus
  
    Copyright (C) 2000, 2001 Eazel, Inc.
+   Copyright (C) 2016 Red Hat
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -20,6 +21,7 @@
    Authors: Seth Nickell <seth@eazel.com>
             Darin Adler <darin@bentspoon.com>
 	    Alex Graveley <alex@ximian.com>
+            Carlos Soriano <csoriano@gnome.org>
 */
 
 #include <config.h>
@@ -34,30 +36,6 @@ struct NautilusMonitor {
 	GVolumeMonitor *volume_monitor;
 	GFile *location;
 };
-
-gboolean
-nautilus_monitor_active (void)
-{
-	static gboolean tried_monitor = FALSE;
-	static gboolean monitor_success;
-	GFileMonitor *dir_monitor;
-	GFile *file;
-
-	if (tried_monitor == FALSE) {	
-		file = g_file_new_for_path (g_get_home_dir ());
-		dir_monitor = g_file_monitor_directory (file, G_FILE_MONITOR_NONE, NULL, NULL);
-		g_object_unref (file);
-		
-		monitor_success = (dir_monitor != NULL);
-		if (dir_monitor) {
-			g_object_unref (dir_monitor);
-		}
-
-		tried_monitor = TRUE;
-	}
-
-	return monitor_success;
-}
 
 static gboolean call_consume_changes_idle_id = 0;
 

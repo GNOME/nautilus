@@ -3,6 +3,7 @@
    nautilus-monitor.h: file and directory change monitoring for nautilus
  
    Copyright (C) 2000, 2001 Eazel, Inc.
+   Copyright (C) 2016 Red Hat, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -19,6 +20,7 @@
   
    Authors: Seth Nickell <seth@eazel.com>
             Darin Adler <darin@bentspoon.com>
+            Carlos Soriano <csoriano@gnome.org>
 */
 
 #ifndef NAUTILUS_MONITOR_H
@@ -29,7 +31,6 @@
 
 typedef struct NautilusMonitor NautilusMonitor;
 
-gboolean         nautilus_monitor_active    (void);
 NautilusMonitor *nautilus_monitor_directory (GFile *location);
 void             nautilus_monitor_cancel    (NautilusMonitor *monitor);
 
