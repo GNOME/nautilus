@@ -59,18 +59,9 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-/* Timeout to check the desktop directory for updates */
-#define RESCAN_TIMEOUT 4
-
 struct NautilusDesktopCanvasViewDetails
 {
 	GdkWindow *root_window;
-
-	/* For the desktop rescanning
-	 */
-	gulong delayed_init_signal;
-	guint reload_desktop_timeout;
-	gboolean pending_rescan;
 };
 
 static void     default_zoom_level_changed                        (gpointer                user_data);
@@ -81,7 +72,6 @@ static void     font_changed_callback                             (gpointer     
 G_DEFINE_TYPE (NautilusDesktopCanvasView, nautilus_desktop_canvas_view, NAUTILUS_TYPE_CANVAS_VIEW)
 
 static char *desktop_directory;
-static time_t desktop_dir_modify_time;
 
 #define get_canvas_container(w) nautilus_canvas_view_get_canvas_container(NAUTILUS_CANVAS_VIEW (w))
 
@@ -239,12 +229,6 @@ nautilus_desktop_canvas_view_dispose (GObject *object)
 
 	canvas_view = NAUTILUS_DESKTOP_CANVAS_VIEW (object);
 
-	/* Remove desktop rescan timeout. */
-	if (canvas_view->details->reload_desktop_timeout != 0) {
-		g_source_remove (canvas_view->details->reload_desktop_timeout);
-		canvas_view->details->reload_desktop_timeout = 0;
-	}
-
 	g_signal_handlers_disconnect_by_func (nautilus_icon_view_preferences,
 					      default_zoom_level_changed,
 					      canvas_view);
@@ -397,69 +381,6 @@ default_zoom_level_changed (gpointer user_data)
         set_up_zoom_level (desktop_canvas_view);
 
 	g_free (new_icon_size_string);
-}
-
-static gboolean
-do_desktop_rescan (gpointer data)
-{
-	NautilusDesktopCanvasView *desktop_canvas_view;
-	struct stat buf;
-
-	desktop_canvas_view = NAUTILUS_DESKTOP_CANVAS_VIEW (data);
-	if (desktop_canvas_view->details->pending_rescan) {
-		return TRUE;
-	}
-	
-	if (stat (desktop_directory, &buf) == -1) {
-		return TRUE;
-	}
-
-	if (buf.st_ctime == desktop_dir_modify_time) {
-		return TRUE;
-	}
-
-	desktop_canvas_view->details->pending_rescan = TRUE;
-
-	nautilus_directory_force_reload
-		(nautilus_files_view_get_model (NAUTILUS_FILES_VIEW (desktop_canvas_view)));
-
-	return TRUE;
-}
-
-static void
-done_loading (NautilusDirectory *model,
-	      NautilusDesktopCanvasView *desktop_canvas_view)
-{
-	struct stat buf;
-
-	desktop_canvas_view->details->pending_rescan = FALSE;
-	if (stat (desktop_directory, &buf) == -1) {
-		return;
-	}
-
-	desktop_dir_modify_time = buf.st_ctime;
-}
-
-/* This function is used because the NautilusDirectory model does not
- * exist always in the desktop_canvas_view, so we wait until it has been
- * instantiated.
- */
-static void
-delayed_init (NautilusDesktopCanvasView *desktop_canvas_view)
-{
-	/* Keep track of the load time. */
-	g_signal_connect_object (nautilus_files_view_get_model (NAUTILUS_FILES_VIEW (desktop_canvas_view)),
-				 "done-loading",
-				 G_CALLBACK (done_loading), desktop_canvas_view, 0);
-
-	/* Monitor desktop directory. */
-	desktop_canvas_view->details->reload_desktop_timeout =
-		g_timeout_add_seconds (RESCAN_TIMEOUT, do_desktop_rescan, desktop_canvas_view);
-
-	g_signal_handler_disconnect (desktop_canvas_view,
-				     desktop_canvas_view->details->delayed_init_signal);
-
-	desktop_canvas_view->details->delayed_init_signal = 0;
 }
 
 static void
@@ -700,15 +621,6 @@ nautilus_desktop_canvas_view_init (NautilusDesktopCanvasView *desktop_canvas_vie
 
 	canvas_container = get_canvas_container (desktop_canvas_view);
 	nautilus_canvas_view_container_set_sort_desktop (NAUTILUS_CANVAS_VIEW_CONTAINER (canvas_container), TRUE);
-
-	/* Do a reload on the desktop if we don't have FAM, a smarter
-	 * way to keep track of the items on the desktop.
-	 */
-	if (!nautilus_monitor_active ()) {
-		desktop_canvas_view->details->delayed_init_signal = g_signal_connect_object
-			(desktop_canvas_view, "begin-loading",
-			 G_CALLBACK (delayed_init), desktop_canvas_view, 0);
-	}
 
 	nautilus_canvas_container_set_is_fixed_size (canvas_container, TRUE);
 	nautilus_canvas_container_set_is_desktop (canvas_container, TRUE);

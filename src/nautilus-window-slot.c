@@ -849,8 +849,6 @@ check_force_reload (GFile                      *location,
 
 	if (type == NAUTILUS_LOCATION_CHANGE_RELOAD) {
 		force_reload = TRUE;
-	} else if (!nautilus_monitor_active ()) {
-		force_reload = TRUE;
 	} else {
 		force_reload = !nautilus_directory_is_local (directory);
 	}
