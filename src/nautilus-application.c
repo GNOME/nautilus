@@ -211,59 +211,6 @@ menu_provider_init_callback (void)
         nautilus_module_extension_list_free (providers);
 }
 
-static void
-mark_desktop_files_trusted (void)
-{
-	char *do_once_file;
-	GFile *f, *c;
-	GFileEnumerator *e;
-	GFileInfo *info;
-	const char *name;
-	int fd;
-	
-	do_once_file = g_build_filename (g_get_user_data_dir (),
-					 ".converted-launchers", NULL);
-
-	if (g_file_test (do_once_file, G_FILE_TEST_EXISTS)) {
-		goto out;
-	}
-
-	f = nautilus_get_desktop_location ();
-	e = g_file_enumerate_children (f,
-				       G_FILE_ATTRIBUTE_STANDARD_TYPE ","
-				       G_FILE_ATTRIBUTE_STANDARD_NAME ","
-				       G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE
-				       ,
-				       G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-				       NULL, NULL);
-	if (e == NULL) {
-		goto out2;
-	}
-	
-	while ((info = g_file_enumerator_next_file (e, NULL, NULL)) != NULL) {
-		name = g_file_info_get_name (info);
-		
-		if (g_str_has_suffix (name, ".desktop") &&
-		    !g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE)) {
-			c = g_file_get_child (f, name);
-			nautilus_file_mark_desktop_file_trusted (c,
-								 NULL, FALSE,
-								 NULL, NULL);
-			g_object_unref (c);
-		}
-		g_object_unref (info);
-	}
-	
-	g_object_unref (e);
- out2:
-	fd = g_creat (do_once_file, 0666);
-	close (fd);
-	
-	g_object_unref (f);
- out:	
-	g_free (do_once_file);
-}
-
 NautilusWindow *
 nautilus_application_create_window (NautilusApplication *application,
 				    GdkScreen           *screen)
@@ -295,8 +242,8 @@ nautilus_application_create_window (NautilusApplication *application,
 		 * That way the two windows wont appear at the exact same
 		 * location on the screen.
 		 */
-		eel_gtk_window_set_initial_geometry_from_string 
-			(GTK_WINDOW (window), 
+		eel_gtk_window_set_initial_geometry_from_string
+			(GTK_WINDOW (window),
 			 geometry_string,
 			 NAUTILUS_WINDOW_MIN_WIDTH,
 			 NAUTILUS_WINDOW_MIN_HEIGHT,
