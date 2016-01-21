@@ -1101,16 +1101,22 @@ theme_changed (GtkSettings *settings)
 	static GtkCssProvider *provider = NULL;
 	gchar *theme;
 	GdkScreen *screen;
+	GFile *file;
 
 	g_object_get (settings, "gtk-theme-name", &theme, NULL);
 	screen = gdk_screen_get_default ();
 
+	/* CSS we want to always load for any theme */
+	provider = gtk_css_provider_new ();
+	file = g_file_new_for_uri ("resource:///org/gnome/nautilus/css/nautilus.css");
+	gtk_css_provider_load_from_file (provider, file, NULL);
+	g_object_unref (file);
+
+	/* CSS that themes can override */
 	if (g_str_equal (theme, "Adwaita"))
 	{
 		if (provider == NULL)
 		{
-			GFile *file;
-
 			provider = gtk_css_provider_new ();
 			file = g_file_new_for_uri ("resource:///org/gnome/nautilus/css/Adwaita.css");
 			gtk_css_provider_load_from_file (provider, file, NULL);

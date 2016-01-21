@@ -215,25 +215,8 @@ nautilus_desktop_window_constructed (GObject *obj)
 static void
 nautilus_desktop_window_init (NautilusDesktopWindow *window)
 {
-	const gchar *css;
-	GtkCssProvider *provider;
-
 	window->details = G_TYPE_INSTANCE_GET_PRIVATE (window, NAUTILUS_TYPE_DESKTOP_WINDOW,
 						       NautilusDesktopWindowDetails);
-
-	css = "nautilus-desktop-window,"
-	      "nautilus-desktop-window notebook {"
-	      "    background: transparent;"
-	      "}";
-
-	provider = gtk_css_provider_new ();
-	gtk_css_provider_load_from_data (provider, css, -1, NULL);
-
-	gtk_style_context_add_provider_for_screen (gdk_screen_get_default (),
-	                                           GTK_STYLE_PROVIDER (provider),
-	                                           GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-
-	g_object_unref (provider);
 }
 
 static void
