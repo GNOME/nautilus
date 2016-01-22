@@ -3747,8 +3747,14 @@ queue_pending_files (NautilusFilesView  *view,
 
         *pending_list = g_list_concat (file_and_directory_list_from_files (directory, files),
                                        *pending_list);
-
-        if (! view->details->loading || nautilus_directory_are_all_files_seen (directory)) {
+        /* Generally we don't want to show the files while the directory is loading
+         * the files themselves, so we avoid jumping and oddities. However, for
+         * search it can be a long wait, and we actually want to show files as
+         * they are getting found. So for search is fine if not all files are
+         * seen */
+        if (!view->details->loading ||
+            (nautilus_directory_are_all_files_seen (directory) ||
+             nautilus_view_is_searching (NAUTILUS_VIEW (view)))) {
                 schedule_timeout_display_of_pending_files (view, view->details->update_interval);
         }
 }
