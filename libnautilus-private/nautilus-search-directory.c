@@ -594,7 +594,7 @@ search_engine_hits_added (NautilusSearchEngine *engine, GList *hits,
 	nautilus_file_emit_changed (file);
 	nautilus_file_unref (file);
 
-        on_search_directory_search_ready_and_valid (search);
+        search_directory_add_pending_files_callbacks (search);
 }
 
 static void
