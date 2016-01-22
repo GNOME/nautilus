@@ -7116,6 +7116,7 @@ load_directory (NautilusFilesView *view,
         view->details->location = nautilus_directory_get_location (directory);
 
         g_object_notify (G_OBJECT (view), "location");
+        g_object_notify (G_OBJECT (view), "is-loading");
         g_object_notify (G_OBJECT (view), "is-searching");
 
         /* FIXME bugzilla.gnome.org 45062: In theory, we also need to monitor metadata here (as
@@ -7181,7 +7182,6 @@ finish_loading (NautilusFilesView *view)
          */
         nautilus_profile_start ("BEGIN_LOADING");
         g_signal_emit (view, signals[BEGIN_LOADING], 0);
-        g_object_notify (G_OBJECT (view), "is-loading");
         nautilus_profile_end ("BEGIN_LOADING");
 
         check_empty_states (view);
