@@ -459,8 +459,8 @@ char *
 nautilus_query_to_readable_string (NautilusQuery *query)
 {
         if (!query || !query->text || query->text[0] == '\0') {
-		return g_strdup (_("Search"));
-	}
+                return g_strdup (_("Search"));
+        }
 
         return g_strdup_printf (_("Search for “%s”"), query->text);
 }
@@ -522,7 +522,6 @@ nautilus_query_set_date (NautilusQuery *query,
         if (query->datetime != date) {
                 g_clear_pointer (&query->datetime, g_date_time_unref);
                 if (date) {
-                        /* Assign the new date */
                         query->datetime = g_date_time_ref (date);
                 }
 
@@ -540,7 +539,7 @@ nautilus_query_get_searching (NautilusQuery *query)
 
 void
 nautilus_query_set_searching (NautilusQuery *query,
-			      gboolean       searching)
+                              gboolean       searching)
 {
         g_return_if_fail (NAUTILUS_IS_QUERY (query));
 
@@ -549,7 +548,7 @@ nautilus_query_set_searching (NautilusQuery *query,
         if (query->searching != searching) {
                 query->searching = searching;
 
-	        g_object_notify (G_OBJECT (query), "searching");
+                g_object_notify (G_OBJECT (query), "searching");
         }
 }
 
@@ -580,15 +579,15 @@ gboolean
 nautilus_query_is_empty (NautilusQuery *query)
 {
         if (!query) {
-	        return TRUE;
-	}
+                return TRUE;
+
+        }
 
         if (!query->datetime &&
-	    (!query->text ||
-	    (query->text && query->text[0] == '\0')) &&
-	    !query->mime_types) {
-	            return TRUE;
-	    }
+            (!query->text || (query->text && query->text[0] == '\0')) &&
+            !query->mime_types) {
+                return TRUE;
+    }
 
         return FALSE;
 }
