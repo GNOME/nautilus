@@ -3168,6 +3168,9 @@ nautilus_list_view_init (NautilusListView *list_view)
 
 	create_and_set_up_tree_view (list_view);
 
+	gtk_style_context_add_class (gtk_widget_get_style_context (list_view),
+				     "nautilus-list-view");
+
 	g_signal_connect_swapped (nautilus_preferences,
 				  "changed::" NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER,
 				  G_CALLBACK (default_sort_order_changed_callback),
