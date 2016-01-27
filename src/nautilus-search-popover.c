@@ -679,13 +679,6 @@ show_date_selection_widgets (NautilusSearchPopover *popover,
   gtk_widget_set_visible (popover->around_revealer, visible);
 
   gtk_revealer_set_reveal_child (GTK_REVEALER (popover->around_revealer), visible);
-
-  /* Only update the date button when we're not editing a query.
-   * Otherwise, when we select a date and try to select a mimetype,
-   * the label is unwantedly reset.
-   */
-  if (!popover->query)
-    update_date_label (popover, 0);
 }
 
 static void
